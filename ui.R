@@ -7,7 +7,6 @@ shinyUI(fluidPage(
   
   fluidRow(
     column(3, wellPanel(
-      textOutput('writeCurMap'),
       textInput("gbifName", label = "Enter scientific name of species", value = ''),
       actionButton("goName", "Submit name"),
       br(),
@@ -21,14 +20,12 @@ shinyUI(fluidPage(
     column(8,
       conditionalPanel("input.goName",
                        htmlOutput('GBIFtxt')),
+      conditionalPanel("input.goThin",
+                       textOutput('thinText')),
       br(),
       conditionalPanel("input.goMap",
                        plotOutput('GBIFmap'),
                        textOutput('mapText'))
-    ),
-    
-    column(4, conditionalPanel("input.goThin",
-                               verbatimTextOutput("thinConsole")))
+    )
   )
-
 ))
