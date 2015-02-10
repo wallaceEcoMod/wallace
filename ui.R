@@ -10,22 +10,27 @@ shinyUI(fluidPage(
       textInput("gbifName", label = "Enter scientific name of species", value = ''),
       actionButton("goName", "Submit name"),
       br(),
-      actionButton("goMap", "Map points")
-    ),
-
+      br(),
       conditionalPanel("input.goName",
-                       actionButton("goThin", "Thin occurrences"))
-    ),
+                       actionButton("goMap", "Map points")),
+      br(),
+      conditionalPanel("input.goName",
+                         actionButton("goThin", "Run spThin")),
+      br(),
+      conditionalPanel("input.goName",
+                         actionButton("goEval", "Run ENMeval"))
+      )),
     
     column(8,
       conditionalPanel("input.goName",
-                       htmlOutput('GBIFtxt')),
+                       textOutput('GBIFtxt')),
+      conditionalPanel("input.goMap",
+                       textOutput('mapText')),
       conditionalPanel("input.goThin",
                        textOutput('thinText')),
       br(),
       conditionalPanel("input.goMap",
-                       plotOutput('GBIFmap'),
-                       textOutput('mapText'))
+                       plotOutput('GBIFmap'))
     )
   )
 ))
