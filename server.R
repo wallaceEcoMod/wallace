@@ -1,11 +1,14 @@
 library(shiny)
-library(shinyIncubator)
+#library(shinyIncubator)
 library(dismo)
 library(rgbif)
 library(spThin)
+library(ENMeval)
+library(dismo)
 library(ggplot2)
 
-source("functions.R")
+#source("functions.R")
+
 
 
 shinyServer(function(input, output, session) {
@@ -21,30 +24,33 @@ shinyServer(function(input, output, session) {
         locs <- results$data[!is.na(results$data[,3]),][,c(4,3)]
         names(locs) <- c('lon', 'lat')
         values$df <- locs
+        c(nrow(locs), results$meta$count)
       })
     })
   })
   
-  output$GBIFtxt <- renderUI({
+  output$occTbl <- renderTable({
+    values$df
+  })
+  
+  output$GBIFtxt <- renderText({
     if (input$goName == 0) return()
     input$goName
-    GBIFsearch()
+    out <- GBIFsearch()
     name <- isolate(input$gbifName)
-    str1 <- paste('Total records for', name, 'found:', nrow(values$df), '(limit 500).')
-    str2 <- "Please enter bounding box coordinates for the analysis."
-    HTML(paste(str1, str2, sep='<br/>'))
+    paste('Total records for', name, 'returned [', out[1], '] out of [', out[2], '] total (limit 500).')
   })
   
   output$GBIFmap <- renderPlot({
-    if (input$goMap == 0) return()
+    mapWorld <- borders('world', colour = 'white', fill = 'white')
+    mp <- ggplot() + mapWorld + 
+      theme(panel.background = element_rect(fill = 'lightblue'))
+    if (input$goMap == 0) return(print(mp))
     input$goMap
     isolate({
       xl <- c(min(values$df$lon) - 5, max(values$df$lon) + 5)
       yl <- c(min(values$df$lat) - 5, max(values$df$lat) + 5)
-      mapWorld <- borders('world', colour = 'white', fill = 'white')
-      mp <- ggplot() + mapWorld + 
-        theme(panel.background = element_rect(fill = 'lightblue')) +
-        geom_point(data = values$df, mapping=aes(x = lon, y = lat), color = 'blue', size = 3) +
+      mp <- mp + geom_point(data = values$df, mapping=aes(x = lon, y = lat), color = 'blue', size = 3) +
         coord_cartesian(xlim = xl, ylim = yl)
       print(mp)
     })
@@ -56,7 +62,7 @@ shinyServer(function(input, output, session) {
     isolate({
         ptsNum <- nrow(values$df)
       })
-      paste('Currently displaying', ptsNum, 'points')
+      paste('Currently displaying [', ptsNum, '] points.')
   })
   
   runThin <- reactive({
@@ -64,7 +70,7 @@ shinyServer(function(input, output, session) {
     isolate({
       withProgress(message = "Thinning...", {
         df <- cbind(name=rep('sp', nrow(values$df)), values$df)
-        output <- thin(df, 'lat', 'lon', 'name', thin.par = 150, 
+        output <- thin(df, 'lat', 'lon', 'name', thin.par = input$thinDist, 
                        reps = 10, locs.thinned.list.return = TRUE, write.files = FALSE)
         names(output[[1]]) <- c('lon', 'lat')
         values$df <- output[[1]]
@@ -76,8 +82,22 @@ shinyServer(function(input, output, session) {
       if (input$goThin == 0) return()
       input$goThin
       locsThin <- runThin()
-      paste('Total records thinned to:', nrow(values$df))
+      paste('Total records thinned to [', nrow(values$df), '] points.')
     })
+  
+  runENMeval <- reactive({
+    input$goEval
+    isolate({
+      withProgress(message = "Downloading Worldclim data...", {
+        bioclim <- getData('worldclim', var = 'bio', res = 10)
+      })
+      withProgress(message = "Iteratively evaluating parameters in Maxent...", {
+        rms <- seq(input$rms[1], input$rms[2], input$rmsBy)
+        results <- ENMevaluate(values$df, bioclim, RMvalues = rms, fc = input$fcs, method = input$method)
+        
+      })
+    })
+  })
   
 #   output$thinConsole <- renderPrint({
 #     if (input$goThin == 0) return()
