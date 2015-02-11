@@ -92,11 +92,22 @@ shinyServer(function(input, output, session) {
       withProgress(message = "Downloading Worldclim data...", {
         bioclim <- getData('worldclim', var = 'bio', res = 10)
       })
-      withProgress(message = "Iteratively evaluating parameters in Maxent...", {
-        rms <- seq(input$rms[1], input$rms[2], input$rmsBy)
-        e <- ENMevaluate(values$df, bioclim, RMvalues = rms, fc = input$fcs, method = input$method)
-        values$evalTbl <- e@results
-      })
+      rms <- seq(input$rms[1], input$rms[2], input$rmsBy)
+      progress <- shiny::Progress$new()
+      progress$set(message = "Evaluating ENMs...", value = 0)
+      on.exit(progress$close())
+      n <- length(rms) * length(input$fcs)
+      updateProgress <- function(value = NULL, detail = NULL) {
+        progress$inc(amount = 1/n, detail = detail)
+      }
+      e <- ENMevaluate(values$df, bioclim, RMvalues = rms, fc = input$fcs, 
+                       method = input$method, updateProgress = updateProgress)
+      values$evalTbl <- e@results
+#       withProgress(message = "Iteratively evaluating parameters in Maxent...", {
+#         rms <- seq(input$rms[1], input$rms[2], input$rmsBy)
+#         e <- ENMevaluate(values$df, bioclim, RMvalues = rms, fc = input$fcs, method = input$method)
+#         values$evalTbl <- e@results
+#       })
     })
   })
   
