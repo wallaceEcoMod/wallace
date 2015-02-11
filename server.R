@@ -1,3 +1,7 @@
+list.of.packages <- c("shiny", "shinyIncubator", "ggplot2", "maps", "rgbif", "spThin")
+new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+if(length(new.packages)) install.packages(new.packages)
+
 library(shiny)
 #library(shinyIncubator)
 library(dismo)
@@ -8,7 +12,6 @@ library(dismo)
 library(ggplot2)
 
 #source("functions.R")
-
 
 
 shinyServer(function(input, output, session) {
@@ -29,9 +32,7 @@ shinyServer(function(input, output, session) {
     })
   })
   
-  output$occTbl <- renderTable({
-    values$df
-  })
+  output$occTbl <- renderTable({values$df})
   
   output$GBIFtxt <- renderText({
     if (input$goName == 0) return()
@@ -81,7 +82,7 @@ shinyServer(function(input, output, session) {
     output$thinText <- renderText({
       if (input$goThin == 0) return()
       input$goThin
-      locsThin <- runThin()
+      runThin()
       paste('Total records thinned to [', nrow(values$df), '] points.')
     })
   
@@ -93,11 +94,27 @@ shinyServer(function(input, output, session) {
       })
       withProgress(message = "Iteratively evaluating parameters in Maxent...", {
         rms <- seq(input$rms[1], input$rms[2], input$rmsBy)
-        results <- ENMevaluate(values$df, bioclim, RMvalues = rms, fc = input$fcs, method = input$method)
-        
+        e <- ENMevaluate(values$df, bioclim, RMvalues = rms, fc = input$fcs, method = input$method)
+        values$evalTbl <- e@results
       })
     })
   })
+  
+  output$evalTbl <- renderTable({values$evalTbl})
+  
+  output$evalTxt <- renderText({
+    if (input$goEval == 0) return()
+    input$goEval
+    runENMeval()
+    paste("Ran ENMeval and output table with", nrow(values$evalTbl), "rows.")
+  })
+  
+#   output$evalConsole <- renderPrint({
+#     if (input$goEval == 0) return()
+#     input$goEval
+#     isolate({values$evalConsole <- capture.output(runENMeval())})
+#     return(print(values$evalConsole))
+#   })
   
 #   output$thinConsole <- renderPrint({
 #     if (input$goThin == 0) return()

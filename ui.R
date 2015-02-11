@@ -35,16 +35,15 @@ shinyUI(fluidPage(
   
     mainPanel(
       tabsetPanel(
-        tabPanel("Map", 
-                 conditionalPanel("input.goName",
-                                  textOutput('GBIFtxt')),
-                 conditionalPanel("input.goMap",
-                                  textOutput('mapText')),
-                 conditionalPanel("input.goThin",
-                                  textOutput('thinText')),
+        tabPanel("Main", 
+                 conditionalPanel("input.goName", textOutput('GBIFtxt')),
+                 conditionalPanel("input.goMap", textOutput('mapText')),
+                 conditionalPanel("input.goThin", textOutput('thinText')),
+                 conditionalPanel("input.goEval", textOutput('evalTxt')),
                  br(),
                  plotOutput('GBIFmap')),
-        tabPanel("Occurrences", tableOutput('occTbl'))
+        tabPanel("Occurrence Table", tableOutput('occTbl')),
+        tabPanel("ENMeval Table", tableOutput('evalTbl'))
         #tabPanel("Plots", plotOutput())
       )
     )

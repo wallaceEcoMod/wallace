@@ -14,3 +14,9 @@
 # produced vignettes
 vignettes/*.html
 vignettes/*.pdf
+
+# spThin files
+spatial_thin_log.txt
+
+# worldclim files
+wc10
