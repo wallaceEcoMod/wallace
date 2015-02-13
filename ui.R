@@ -7,8 +7,12 @@ shinyUI(fluidPage(
   
   sidebarLayout(
     sidebarPanel(
-      textInput("gbifName", label = "Enter scientific name of species", value = ''),
-      actionButton("goName", "Submit name"),
+      conditionalPanel("output.fileUploaded",
+                       textInput("gbifName", label = "Enter scientific name of species", value = ''),
+                       actionButton("goName", "Submit name")),
+      br(),
+      conditionalPanel("output.gbifSearched",
+                       fileInput(inputId = "csvInput", label = "Upload Occurrence CSV")),
       br(),
       br(),
       conditionalPanel("input.goName",
@@ -37,6 +41,7 @@ shinyUI(fluidPage(
       tabsetPanel(
         tabPanel("Main", 
                  conditionalPanel("input.goName", textOutput('GBIFtxt')),
+                 conditionalPanel("output.fileUploaded", textOutput('a')),
                  conditionalPanel("input.goMap", textOutput('mapText')),
                  conditionalPanel("input.goThin", textOutput('thinText')),
                  conditionalPanel("input.goEval", textOutput('evalTxt')),

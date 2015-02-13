@@ -19,6 +19,7 @@ shinyServer(function(input, output, session) {
   values <- reactiveValues()
   
   GBIFsearch <- reactive({
+    if (input$gbifName == '') return(NULL)
     input$goName
     isolate({
       withProgress(message = "Searching GBIF...", {
@@ -32,6 +33,22 @@ shinyServer(function(input, output, session) {
     })
   })
   
+  getData <- reactive({
+    if (is.null(input$csvInput)) {
+      return(NULL)
+    } else {
+      values$df <- read.csv(input$csvInput$datapath, header = TRUE)
+    }
+  })
+  
+  output$fileUploaded <- reactive({
+    return(is.null(getData()))
+  })
+  
+  output$gbifSearched <- reactive({
+    return(is.null(GBIFsearch()))
+  })
+  
   output$occTbl <- renderTable({values$df})
   
   output$GBIFtxt <- renderText({
@@ -41,6 +58,17 @@ shinyServer(function(input, output, session) {
     name <- isolate(input$gbifName)
     paste('Total records for', name, 'returned [', out[1], '] out of [', out[2], '] total (limit 500).')
   })
+  
+  output$CSVtxt <- renderText({
+    if (is.null(input$csvInput)) return()
+    getData()
+    name <- values$df[1,1]
+    paste('Total records for', name, '[', nrow(values$df), ']')
+  })
+  
+  output$a <- renderText({
+    if (is.null(input$csvInput)) return()
+    'YIPPEE'})
   
   output$GBIFmap <- renderPlot({
     mapWorld <- borders('world', colour = 'white', fill = 'white')
@@ -120,17 +148,13 @@ shinyServer(function(input, output, session) {
     paste("Ran ENMeval and output table with", nrow(values$evalTbl), "rows.")
   })
   
-#   output$evalConsole <- renderPrint({
-#     if (input$goEval == 0) return()
-#     input$goEval
-#     isolate({values$evalConsole <- capture.output(runENMeval())})
-#     return(print(values$evalConsole))
-#   })
-  
 #   output$thinConsole <- renderPrint({
 #     if (input$goThin == 0) return()
 #     input$goThin
 #     isolate({values[["log"]] <- capture.output(runThin())})
 #     return(print(values[["log"]]))
 #   })
+
+  outputOptions(output, 'fileUploaded', suspendWhenHidden=FALSE)
+  outputOptions(output, 'gbifSearched', suspendWhenHidden=FALSE)
 })
