@@ -33,22 +33,6 @@ shinyServer(function(input, output, session) {
     })
   })
   
-  getData <- reactive({
-    if (is.null(input$csvInput)) {
-      return(NULL)
-    } else {
-      values$df <- read.csv(input$csvInput$datapath, header = TRUE)
-    }
-  })
-  
-  output$fileUploaded <- reactive({
-    return(is.null(getData()))
-  })
-  
-  output$gbifSearched <- reactive({
-    return(is.null(GBIFsearch()))
-  })
-  
   output$occTbl <- renderTable({values$df})
   
   output$GBIFtxt <- renderText({
@@ -58,17 +42,6 @@ shinyServer(function(input, output, session) {
     name <- isolate(input$gbifName)
     paste('Total records for', name, 'returned [', out[1], '] out of [', out[2], '] total (limit 500).')
   })
-  
-  output$CSVtxt <- renderText({
-    if (is.null(input$csvInput)) return()
-    getData()
-    name <- values$df[1,1]
-    paste('Total records for', name, '[', nrow(values$df), ']')
-  })
-  
-  output$a <- renderText({
-    if (is.null(input$csvInput)) return()
-    'YIPPEE'})
   
   output$GBIFmap <- renderPlot({
     mapWorld <- borders('world', colour = 'white', fill = 'white')
@@ -107,19 +80,18 @@ shinyServer(function(input, output, session) {
     })
   })
   
-    output$thinText <- renderText({
-      if (input$goThin == 0) return()
-      input$goThin
-      runThin()
-      paste('Total records thinned to [', nrow(values$df), '] points.')
-    })
+  output$thinText <- renderText({
+    if (input$goThin == 0) return()
+    input$goThin
+    runThin()
+    paste('Total records thinned to [', nrow(values$df), '] points.')
+  })
   
   runENMeval <- reactive({
     input$goEval
     isolate({
-      withProgress(message = "Downloading Worldclim data...", {
-        bioclim <- getData('worldclim', var = 'bio', res = 10)
-      })
+      path <- paste0('worldclim/', input$pred)
+      preds <- stack(file.path(path, list.files(path, pattern = "bil$")))
       rms <- seq(input$rms[1], input$rms[2], input$rmsBy)
       progress <- shiny::Progress$new()
       progress$set(message = "Evaluating ENMs...", value = 0)
@@ -128,14 +100,9 @@ shinyServer(function(input, output, session) {
       updateProgress <- function(value = NULL, detail = NULL) {
         progress$inc(amount = 1/n, detail = detail)
       }
-      e <- ENMevaluate(values$df, bioclim, RMvalues = rms, fc = input$fcs, 
+      e <- ENMevaluate(values$df, preds, RMvalues = rms, fc = input$fcs, 
                        method = input$method, updateProgress = updateProgress)
       values$evalTbl <- e@results
-#       withProgress(message = "Iteratively evaluating parameters in Maxent...", {
-#         rms <- seq(input$rms[1], input$rms[2], input$rmsBy)
-#         e <- ENMevaluate(values$df, bioclim, RMvalues = rms, fc = input$fcs, method = input$method)
-#         values$evalTbl <- e@results
-#       })
     })
   })
   
@@ -155,6 +122,4 @@ shinyServer(function(input, output, session) {
 #     return(print(values[["log"]]))
 #   })
 
-  outputOptions(output, 'fileUploaded', suspendWhenHidden=FALSE)
-  outputOptions(output, 'gbifSearched', suspendWhenHidden=FALSE)
 })

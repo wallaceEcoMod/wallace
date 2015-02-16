@@ -7,16 +7,16 @@ shinyUI(fluidPage(
   
   sidebarLayout(
     sidebarPanel(
-      conditionalPanel("output.fileUploaded",
-                       textInput("gbifName", label = "Enter scientific name of species", value = ''),
-                       actionButton("goName", "Submit name")),
-      br(),
-      conditionalPanel("output.gbifSearched",
-                       fileInput(inputId = "csvInput", label = "Upload Occurrence CSV")),
-      br(),
+      textInput("gbifName", label = "Enter scientific name of species", value = ''),
+      actionButton("goName", "Submit name"),
       br(),
       conditionalPanel("input.goName",
                        actionButton("goMap", "Map points")),
+      br(),
+      conditionalPanel("input.goName", selectInput("pred", label = "Choose predictors",
+                                                   choices = list(" " = " ", "30 arcsec" = "wc30arcsec", 
+                                                                  "2.5 arcmin" = "wc2.5arcmin", "5 arcmin" = "wc5arcmin", 
+                                                                  "10 arcmin" = "wc10arcmin"))),
       br(),
       conditionalPanel("input.goName",
                        numericInput("thinDist", label = "Thinning distance (km)", value = 25),
@@ -41,7 +41,6 @@ shinyUI(fluidPage(
       tabsetPanel(
         tabPanel("Main", 
                  conditionalPanel("input.goName", textOutput('GBIFtxt')),
-                 conditionalPanel("output.fileUploaded", textOutput('a')),
                  conditionalPanel("input.goMap", textOutput('mapText')),
                  conditionalPanel("input.goThin", textOutput('thinText')),
                  conditionalPanel("input.goEval", textOutput('evalTxt')),
