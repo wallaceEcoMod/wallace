@@ -48,6 +48,7 @@ shinyUI(fluidPage(
                  #uiOutput('test'),
                  conditionalPanel("input.goMap", textOutput('mapText')),
                  conditionalPanel("input.goThin", textOutput('thinText')),
+                 conditionalPanel("input.pred != ''", textOutput('predExtTxt')),
                  conditionalPanel("input.goEval", textOutput('evalTxt')),
                  br(),
                  plotOutput('GBIFmap')),

@@ -89,11 +89,10 @@ shinyServer(function(input, output, session) {
     input$goThin
     isolate({
       withProgress(message = "Thinning...", {
-        df <- cbind(name=rep('sp', nrow(values$df)), values$df)
-        output <- thin(df, 'lat', 'lon', 'name', thin.par = input$thinDist, 
+        output <- thin(values$df, 'lat', 'lon', 'spname', thin.par = input$thinDist, 
                        reps = 10, locs.thinned.list.return = TRUE, write.files = FALSE)
         names(output[[1]]) <- c('lon', 'lat')
-        values$df <- output[[1]]
+        values$df <- cbind(rep(values$df[1,1], nrow(output[[1]])), output[[1]])
       })
     })
   })
@@ -107,7 +106,6 @@ shinyServer(function(input, output, session) {
   
   makeBackgExt <- reactive({
     if (input$backg == "") return()
-    
     if (input$backg == 'bb') {
       xmin <- min(values$df$lon) - input$backgBuf
       xmax <- max(values$df$lon) + input$backgBuf
@@ -123,16 +121,24 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  output$test <- renderPrint(input$backg=='bb')
+  output$predExtTxt <- renderText({
+    if (input$pred == "") return()
+    path <- paste0('worldclim/', input$pred)
+    values$predPath <- file.path(path, list.files(path, pattern = "bil$"))
+    paste("Using Worldclim bio1-19 at", substring(input$pred, 3), "resolution.")
+  })
   
   runENMeval <- reactive({
     input$goEval
     isolate({
-      path <- paste0('worldclim/', input$pred)
-      preds <- stack(file.path(path, list.files(path, pattern = "bil$")))
-      preds_backgExt <- crop(preds, values$backgExt)
-      preds_backgExt <- mask(preds, values$backgExt)
-      backg_pts <- randomPoints(preds_backgExt, 10000)
+      withProgress(message = "Processing prediction rasters...", {
+        preds <- stack(values$predPath)
+        preds <- crop(preds, values$backgExt)
+        preds <- mask(preds, values$backgExt)
+      })
+      withProgress(message = "Generating background points...", {
+        backg_pts <- randomPoints(preds, 10000)
+      })
       
       rms <- seq(input$rms[1], input$rms[2], input$rmsBy)
       progress <- shiny::Progress$new()
@@ -142,7 +148,7 @@ shinyServer(function(input, output, session) {
       updateProgress <- function(value = NULL, detail = NULL) {
         progress$inc(amount = 1/n, detail = detail)
       }
-      e <- ENMevaluate(values$df[,2:3], preds_backgExt, bg.coords = backg_pts, RMvalues = rms, fc = input$fcs, 
+      e <- ENMevaluate(values$df[,2:3], preds, bg.coords = backg_pts, RMvalues = rms, fc = input$fcs, 
                        method = input$method, updateProgress = updateProgress)
       values$evalTbl <- e@results
     })
