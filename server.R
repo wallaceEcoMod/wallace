@@ -1,4 +1,4 @@
-list.of.packages <- c("shiny", "shinyIncubator", "ggplot2", "maps", "rgbif", "spThin")
+list.of.packages <- c("shiny", "shinyIncubator", "ggplot2", "maps", "rgbif", "spThin", "ENMeval")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 
@@ -31,29 +31,56 @@ shinyServer(function(input, output, session) {
     input$goName
     isolate({
       withProgress(message = "Searching GBIF...", {
-        results <- occ_search(scientificName = input$gbifName, limit = 50, 
+        results <- occ_search(scientificName = input$gbifName, limit = input$occurrences, 
                               fields = 'minimal', hasCoordinate = TRUE)
-        locs <- results$data[!is.na(results$data[,3]),][,c(1,4,3)]
-        names(locs) <- c('spname', 'lon', 'lat')
-        values$df <- locs
-        values$gbifoccs <- locs
-        c(nrow(locs), results$meta$count)
+        if(results$meta$count!=0){
+          locs <- results$data[!is.na(results$data[,3]),][,c(1,4,3)]
+          names(locs) <- c('spname', 'lon', 'lat')
+          values$df <- locs
+          values$gbifoccs <- locs
+          return(c(nrow(locs), results$meta$count))
+        }
       })
     })
   })
   
-  output$gbifOccTbl <- renderTable({values$gbifoccs})
-  
+  output$gbifOccTbl <- renderTable({
+    if (input$goName == 0) return()    
+    out <- GBIFsearch()
+    if(is.null(out)){
+        NULL
+      }else{
+        values$gbifoccs
+      }
+    })
+    
   output$GBIFtxt <- renderText({
     if (input$goName == 0) return()
-    input$goName
     out <- GBIFsearch()
     name <- isolate(input$gbifName)
-    paste('Total records for', name, 'returned [', out[1], '] out of [', out[2], '] total (limit 500).')
+    name2 <- length(unlist(strsplit(name, " ")))
+    
+    if(name2 == 1 && !is.null(out)){
+      paste("Please insert a binomial nomeclature. More than one species is being shown.")
+    }else{
+      if(name2 == 1 && is.null(out)){
+        paste("Please insert a binomial nomeclature.")      
+      }else{
+      if(name2 != 1 && is.null(out)){
+         paste('No records found for ', name, 
+              ". Please check the spelling.", sep="")
+        }else{
+        if(name2 != 1 && !is.null(out)){
+        paste('Total records for', name, 'returned [', out[1],
+        '] out of [', out[2], '] total (limit 500).')
+            }
+          }
+      }
+    }
   })
   
   plotMap <- function(pts=NULL, poly=NULL) {
-#     mapWorld <- borders('world', colour = 'white', fill = 'white')
+     mapWorld <- borders('world', colour = 'white', fill = 'white')
 #     mp <- ggplot() + mapWorld + 
 #       theme(panel.background = element_rect(fill = 'lightblue'))
     if (!is.null(pts)) {
@@ -72,11 +99,17 @@ shinyServer(function(input, output, session) {
   }
   
   output$GBIFmap1 <- renderPlot({
+    if (input$goName == 0) return(plotMap())
     # if (input$goMap == 0) return(plotMap())
     # input$goMap
     # makeBackgExt()
     # isolate({
-      plotMap(values$gbifoccs)
+    out <- GBIFsearch()
+    if(is.null(out)){
+    plot.new()
+    }else{
+    plotMap(values$gbifoccs)
+    }
     # values$backgExt
     # })
   })

@@ -19,7 +19,8 @@ shinyUI(fluidPage(
                      textInput("gbifName", label = "Enter scientific name of species (format: genus species)", value = ''),
                      actionButton("goName", "Submit name"),
                      br(),
-                     br()
+                     br(),
+                    sliderInput("occurrences", "Maximun number of occurrences:", min = 1, max = 500, value = 50)
                      #actionButton("goMap", "Map points")
     ),
     conditionalPanel("input.conditionedPanels == 2",
