@@ -15,8 +15,8 @@ shinyUI(fluidPage(
                      textInput("gbifName", label = "Enter scientific name of species", value = ''),
                      actionButton("goName", "Submit name"),
                      br(),
-                     br(),
-                     actionButton("goMap", "Map points")
+                     br()
+                     #actionButton("goMap", "Map points")
     ),
     conditionalPanel("input.conditionedPanels == 2",
                      span(strong("spThin"), style = "color:purple; font-size:18pt"), br(),
@@ -77,20 +77,24 @@ shinyUI(fluidPage(
   mainPanel(
     tabsetPanel(id = "conditionedPanels",
       tabPanel("1) Download GBIF Occurrence Points / Plot", value = 1,
-               conditionalPanel("input.goName", textOutput('GBIFtxt')),
-               conditionalPanel("input.goMap", textOutput('mapText')),
-               conditionalPanel("input.goEval", textOutput('evalTxt')),
                br(),
-               plotOutput('GBIFmap')
-               # tableOutput('occTbl'), 
+               conditionalPanel("input.goName", textOutput('GBIFtxt')),
+               br(),
+               plotOutput('GBIFmap1'),
+               tableOutput('gbifOccTbl')
                ),
       tabPanel("2) Thin occurrences", value = 2,
+               br(),
                conditionalPanel("input.goThin", textOutput('thinText')),
-               tableOutput('occTbl')),
+               plotOutput('GBIFmap2'),
+               tableOutput('thinOccTbl')
+               ),
       tabPanel("3) Choose Prediction Rasters", value = 3,
-               conditionalPanel("input.pred != ''", textOutput('predExtTxt'))
+               conditionalPanel("input.pred != ''", textOutput('predExtTxt')),
+               plotOutput('GBIFmap3')
                ),
       tabPanel("4) Evaluate ENMs", value = 4,
+               conditionalPanel("input.goEval", textOutput('evalTxt')),
                tableOutput('evalTbl'))
     )
   )

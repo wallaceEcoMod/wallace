@@ -36,12 +36,13 @@ shinyServer(function(input, output, session) {
         locs <- results$data[!is.na(results$data[,3]),][,c(1,4,3)]
         names(locs) <- c('spname', 'lon', 'lat')
         values$df <- locs
+        values$gbifoccs <- locs
         c(nrow(locs), results$meta$count)
       })
     })
   })
   
-  output$occTbl <- renderTable({values$df})
+  output$gbifOccTbl <- renderTable({values$gbifoccs})
   
   output$GBIFtxt <- renderText({
     if (input$goName == 0) return()
@@ -52,38 +53,38 @@ shinyServer(function(input, output, session) {
   })
   
   plotMap <- function(pts=NULL, poly=NULL) {
-    mapWorld <- borders('world', colour = 'white', fill = 'white')
-    mp <- ggplot() + mapWorld + 
-      theme(panel.background = element_rect(fill = 'lightblue'))
+#     mapWorld <- borders('world', colour = 'white', fill = 'white')
+#     mp <- ggplot() + mapWorld + 
+#       theme(panel.background = element_rect(fill = 'lightblue'))
     if (!is.null(pts)) {
       xl <- c(min(pts$lon) - 5, max(pts$lon) + 5)
       yl <- c(min(pts$lat) - 5, max(pts$lat) + 5)
-      mp <- mp + geom_point(aes(x = lon, y = lat), pts, color = 'blue', size = 3) +
-        coord_cartesian(xlim = xl, ylim = yl)
+      mp <- ggplot(pts, aes(x = lon, y = lat)) + 
+        mapWorld + theme(panel.background = element_rect(fill = 'lightblue')) +
+        geom_point(size = 3, colour = 'blue') +
+        coord_cartesian(xlim = xl, ylim = yl) + 
+        geom_text(label = row.names(pts), hjust = 1, vjust = -1)
       if (!is.null(poly)) {
-        mp <- mp + geom_path(aes(x = long, y = lat), fortify(poly), color = 'red')
+        mp <- mp + geom_path(aes(x = long, y = lat), fortify(poly), colour = 'red')
       }
+      print(mp)
     }
-    print(mp)
   }
   
-  output$GBIFmap <- renderPlot({
-    if (input$goMap == 0) return(plotMap())
-    input$goMap
-    makeBackgExt()
-    isolate({
-      plotMap(values$df, values$backgExt)
-    })
+  output$GBIFmap1 <- renderPlot({
+    # if (input$goMap == 0) return(plotMap())
+    # input$goMap
+    # makeBackgExt()
+    # isolate({
+      plotMap(values$gbifoccs)
+    # values$backgExt
+    # })
   })
   
-  output$mapText <- renderText({
-    if (input$goMap == 0) return()
-    input$goMap
-    isolate({
-        ptsNum <- nrow(values$df)
-      })
-      paste('Currently displaying [', ptsNum, '] points.')
-  })
+#   output$mapText <- renderText({
+#     ptsNum <- nrow(values$df)
+#     paste('Currently displaying [', ptsNum, '] points.')
+#   })
   
   runThin <- reactive({
     input$goThin
@@ -91,10 +92,18 @@ shinyServer(function(input, output, session) {
       withProgress(message = "Thinning...", {
         output <- thin(values$df, 'lat', 'lon', 'spname', thin.par = input$thinDist, 
                        reps = 10, locs.thinned.list.return = TRUE, write.files = FALSE)
-        names(output[[1]]) <- c('lon', 'lat')
-        values$df <- cbind(rep(values$df[1,1], nrow(output[[1]])), output[[1]])
+        thinout <- cbind(rep(values$df[1,1], nrow(output[[1]])), output[[1]])
+        names(thinout) <- c('spname', 'lon', 'lat')
+        values$df <- thinout
+        values$thinoccs <- thinout
       })
     })
+  })
+  
+  output$thinOccTbl <- renderTable({values$thinoccs})
+  
+  output$GBIFmap2 <- renderPlot({
+    plotMap(values$thinoccs)
   })
   
   output$thinText <- renderText({
@@ -126,6 +135,11 @@ shinyServer(function(input, output, session) {
     path <- paste0('worldclim/', input$pred)
     values$predPath <- file.path(path, list.files(path, pattern = "bil$"))
     paste("Using Worldclim bio1-19 at", substring(input$pred, 3), "resolution.")
+  })
+  
+  output$GBIFmap3 <- renderPlot({
+    makeBackgExt()
+    plotMap(values$df, values$backgExt)
   })
   
   runENMeval <- reactive({
