@@ -7,6 +7,11 @@ shinyUI(fluidPage(
   
   sidebarPanel(
     conditionalPanel("input.conditionedPanels == 1",
+                     "The first step is to download occurrence data from GBIF. After we
+                     acquire these points, it helps to examine them on a map plot. Future
+                     versions will allow the user to upload their own occurrence points as
+                     an alternate option.",
+                     hr(),
                      textInput("gbifName", label = "Enter scientific name of species", value = ''),
                      actionButton("goName", "Submit name"),
                      br(),
@@ -14,10 +19,24 @@ shinyUI(fluidPage(
                      actionButton("goMap", "Map points")
     ),
     conditionalPanel("input.conditionedPanels == 2",
-                     numericInput("thinDist", label = "Thinning distance (km)", value = 25),
+                     span(strong("spThin"), style = "color:purple; font-size:18pt"), br(),
+                     span(em("Spatial Thinning of Species Occurrence Records"), style = "font-size:10pt"), br(),
+                     a("CRAN homepage", href = "http://cran.r-project.org/web/packages/spThin/index.html"),
+                     hr(),
+                     "The spatial thinning step aims to reduce spatial autocorrelation for the
+                     environmental predictors, and is optional.",
+                     hr(),
+                     numericInput("thinDist", label = "Thinning distance (km)", value = 0),
                      actionButton("goThin", "Run spThin")
     ),
     conditionalPanel("input.conditionedPanels == 3",
+                     "The user then chooses which environmental variables to use as
+                     predictors. This data is in raster form and can be any resolution.
+                     For this demonstration, only the Worldclim bioclimatic rasters are 
+                     available at 4 resolutions, but future versions will allow users 
+                     to upload their own rasters.", br(),
+                     a("Worldclim homepage", href = "http://worldclim.org"),
+                     hr(),
                      selectInput("pred", label = "Predictor raster resolution",
                                  choices = list("Choose resolution" = "", 
                                                 "30 arcsec" = "wc30arcsec", 
@@ -30,6 +49,14 @@ shinyUI(fluidPage(
                      numericInput("backgBuf", label = "Background selection buffer distance", value = 0)
     ),
     conditionalPanel("input.conditionedPanels == 4",
+                     span(strong("ENMeval"), style = "color:purple; font-size:18pt"), br(),
+                     span(em("Automated Runs and Evaluations of Ecological Niche Models"), style = "font-size:10pt"), br(),
+                     a("CRAN homepage", href = "http://cran.r-project.org/web/packages/ENMeval/index.html"),
+                     hr(),
+                     "The evaluation step runs models with different limitations on complexity
+                     and outputs how well each performed on test data. This step aims to help the
+                     user decide on an optimal combination of complexity parameters.",
+                     hr(),
                      checkboxGroupInput("fcs", label = "Select feature classes", 
                                         choices = list("L" = "L", "LQ" = "LQ", "H" = "H",
                                                        "LQH" = "LQH", "LQHP" = "LQHP", "LQHPT" = "LQHPT"),
@@ -49,7 +76,7 @@ shinyUI(fluidPage(
   
   mainPanel(
     tabsetPanel(id = "conditionedPanels",
-      tabPanel("Download Occurrence Points / Plot", value = 1,
+      tabPanel("1) Download GBIF Occurrence Points / Plot", value = 1,
                conditionalPanel("input.goName", textOutput('GBIFtxt')),
                conditionalPanel("input.goMap", textOutput('mapText')),
                conditionalPanel("input.goEval", textOutput('evalTxt')),
@@ -57,13 +84,13 @@ shinyUI(fluidPage(
                plotOutput('GBIFmap')
                # tableOutput('occTbl'), 
                ),
-      tabPanel("Thin occurrences", value = 2,
+      tabPanel("2) Thin occurrences", value = 2,
                conditionalPanel("input.goThin", textOutput('thinText')),
                tableOutput('occTbl')),
-      tabPanel("Prediction Rasters", value = 3,
+      tabPanel("3) Choose Prediction Rasters", value = 3,
                conditionalPanel("input.pred != ''", textOutput('predExtTxt'))
                ),
-      tabPanel("Evaluate ENMs", value = 4,
+      tabPanel("4) Evaluate ENMs", value = 4,
                tableOutput('evalTbl'))
     )
   )
