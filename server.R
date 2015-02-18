@@ -31,7 +31,7 @@ shinyServer(function(input, output, session) {
     input$goName
     isolate({
       withProgress(message = "Searching GBIF...", {
-        results <- occ_search(scientificName = input$gbifName, limit = 50, 
+        results <- occ_search(scientificName = input$gbifName, limit = input$occurrences, 
                               fields = 'minimal', hasCoordinate = TRUE)
         if(results$meta$count!=0){
           locs <- results$data[!is.na(results$data[,3]),][,c(1,4,3)]
