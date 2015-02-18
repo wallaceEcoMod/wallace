@@ -45,6 +45,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$gbifOccTbl <- renderTable({
+    if (input$goName == 0) return()    
     out <- GBIFsearch()
     if(is.null(out)){
         NULL
@@ -98,6 +99,7 @@ shinyServer(function(input, output, session) {
   }
   
   output$GBIFmap1 <- renderPlot({
+    if (input$goName == 0) return(plotMap())
     # if (input$goMap == 0) return(plotMap())
     # input$goMap
     # makeBackgExt()
