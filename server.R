@@ -56,6 +56,7 @@ shinyServer(function(input, output, session) {
     
   output$GBIFtxt <- renderText({
     if (input$goName == 0) return()
+    input$goName
     out <- GBIFsearch()
     name <- isolate(input$gbifName)
     name2 <- length(unlist(strsplit(name, " ")))
