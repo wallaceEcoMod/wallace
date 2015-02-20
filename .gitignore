@@ -19,7 +19,7 @@ vignettes/*.pdf
 spatial_thin_log.txt
 
 # worldclim files
-worldclim
+wc*
 
 # r proj files
 .Rproj.user
