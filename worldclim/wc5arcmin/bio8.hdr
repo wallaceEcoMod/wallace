@@ -1,0 +1,29 @@
+BYTEORDER     I
+LAYOUT        BIL
+NROWS         1800
+NCOLS         4320
+NBANDS        1
+NBITS         16
+BANDROWBYTES  8640
+TOTALROWBYTES 8640
+BANDGAPBYTES  0
+NODATA        -9999
+ULXMAP        -179.95833333333333
+ULYMAP        89.9583333333333333
+XDIM          0.08333333333333333
+YDIM          0.08333333333333333
+PIXELTYPE     SIGNEDINT
+
+DatabaseName  WorldClim
+Version       1.4
+Release         3
+Created       20060101
+Projection    GEOGRAPHIC
+Datum         WGS84
+MinX          -180
+MaxX          180
+MinY          -60
+MaxY          90
+MinValue      -273
+MaxValue      376
+Variable      BIO8 = Mean Temperature of Wettest Quarter
