@@ -60,16 +60,14 @@ shinyUI(navbarPage(title, id = "conditionedPanels",
                                 br(),
                                 conditionalPanel("input.goName", textOutput('GBIFtxt')),
                                 br(),
-                              leafletMap(
-                                "map", "100%", 600,
-                                initialTileLayer = "//{s}.tiles.mapbox.com/v3/jcheng.map-5ebohr46/{z}/{x}/{y}.png",
-                                initialTileLayerAttribution = HTML('Maps by <a href="http://www.mapbox.com/">Mapbox</a>'),
-                                options=list(
-                                  center = c(0, 0),
-                                  zoom = 2,
-                                  minZoom  = 1,
-                                  maxZoom = 12
-                                  )
+                              leafletOutput("map", "100%", 600)
+                                #initialTileLayer = "//{s}.tiles.mapbox.com/v3/jcheng.map-5ebohr46/{z}/{x}/{y}.png",
+                                #initialTileLayerAttribution = HTML('Maps by <a href="http://www.mapbox.com/">Mapbox</a>'),
+                                #options=list(
+                                #  center = c(0, 0),
+                                #  zoom = 2,
+                                #  minZoom  = 1,
+                                #  maxZoom = 12
                                 ),
                               br(),
                               tableOutput('gbifOccTbl')
