@@ -1,0 +1,25 @@
+# Mac OS files
+.DS_Store
+
+# History files
+.Rhistory
+.Rapp.history
+
+# Example code in package build process
+*-Ex.R
+
+# RStudio files
+.Rproj.user/
+
+# produced vignettes
+vignettes/*.html
+vignettes/*.pdf
+
+# spThin files
+spatial_thin_log.txt
+
+# worldclim files
+wc*
+
+# r proj files
+.Rproj.user
