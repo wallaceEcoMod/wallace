@@ -189,7 +189,7 @@ shinyServer(function(input, output, session) {
   })
   
   # map of GBIF records
-  map <- createLeafletMap(session, 'map')
+  output$map <- renderLeaflet({leaflet()})
   observe({
     if (input$goName == 0) return() 
     input$goName
