@@ -1,18 +1,10 @@
-# check package dependencies, and download if necessary
-list.of.packages <- c("shiny", "ggplot2", "maps", "rgdal", "spThin", "colorRamps", "dismo", "rgeos", "XML")
+list.of.packages <- c("shiny", "ggplot2", "maps", "rgbif", "spThin", "ENMeval")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
-# rgbif needs to be downloaded from source
-if (!require('rgbif')) install.packages('rgbif', type='source')
-# use devtools to install leaflet and new unreleased version of ENMeval from github
-if (!require('devtools')) install.packages('devtools')
-library(devtools)
-if (!require('leaflet')) devtools::install_github('rstudio/leaflet')
-#install_github("bobmuscarella/ENMeval@edits")
+if (!("leaflet" %in% installed.packages()[,"Package"])) devtools::install_github("rstudio/leaflet")
 
-# load libraries
-library(colorRamps)
 library(shiny)
+library(dismo)
 library(rgbif)
 library(spThin)
 library(ENMeval)
@@ -20,13 +12,15 @@ library(dismo)
 library(rgeos)
 library(ggplot2)
 library(leaflet)
+library(devtools)
+#install_github("rCharts", "ramnathv", ref = "dev")
 
+#source("functions.R")
 
 ## -------------------------------------------------------------------- ##
-## Define functions
+## Define funtions
 ## -------------------------------------------------------------------- ##
 
-# for naming files
 nameAbbr <- function(spname) {
   namespl <- strsplit(tolower(spname[1,1]), " ")
   genusAbbr <- substring(namespl[[1]][1], 1, 1)
@@ -34,7 +28,6 @@ nameAbbr <- function(spname) {
   return(fullNameAbbr)
 }
 
-# make a minimum convex polygon as SpatialPolygons object
 mcp <- function (xy) {
   xy <- as.data.frame(coordinates(xy))
   coords.t <- chull(xy[, 1], xy[, 2])
@@ -43,28 +36,7 @@ mcp <- function (xy) {
   return(SpatialPolygons(list(Polygons(list(Polygon(as.matrix(xy.bord))), 1))))
 }
 
-
-makeOccIcons <- function(width = 10, height = 10, ...) {
-  occIcons <- c('H', 'O', 'P', 'U', 'F', 'M', 'I', 'L', 'A', 'X')
-  files <- character(9)
-  # create a sequence of png images
-  for (i in 1:9) {
-    f <- tempfile(fileext = '.png')
-    png(f, width = width, height = height, bg = 'transparent')
-    par(mar = c(0, 0, 0, 0))
-    plot.new()
-    points(.5, .5, pch = occIcons[i], cex = min(width, height) / 8, col='red', ...)
-    dev.off()
-    files[i] <- f
-  }
-  files
-}
-
-# this is currently only used for the raster mapping, but was originally used for all maps
-# before we implemented leaflet (the version of leaflet we used did not have raster plotting
-# functionality)-- we plan to recode using the new leaflet version (with new syntax) as a next 
-# step, whereupon a leaflet map will be used for plotting rasters too
-plotMap <- function(pts=NULL, poly=NULL, pred=NULL, addpo=NULL, pts2=NULL) {
+plotMap <- function(pts=NULL, poly=NULL, pred=NULL) {
   mapWorld <- borders('world', colour = 'white', fill = 'white')
   if (!is.null(pts)) {
     xl <- c(min(pts$lon) - 5, max(pts$lon) + 5)
@@ -87,25 +59,11 @@ plotMap <- function(pts=NULL, poly=NULL, pred=NULL, addpo=NULL, pts2=NULL) {
     #Make appropriate column headings
     colnames(pred.df) <- c("lon", "lat", "val")
     e <- extent(pred)
-    if(!addpo){
     mp <- ggplot(data = pred.df, aes(x = lon, y = lat)) + 
       mapWorld + theme(panel.background = element_rect(fill = 'lightblue')) + 
       geom_raster(aes(fill = val)) + 
-      coord_equal() +
       coord_cartesian(xlim =c(e[1] - 2, e[2] + 2), ylim =c(e[3] - 2, e[4] + 2)) +
-      #scale_fill_gradient("relative suitability (raw output)", limits = c(pred@data@min, pred@data@max), low = 'grey', high = 'blue')
-      scale_fill_gradientn("relative suitability (raw output)", limits = c(pred@data@min, pred@data@max), colours=matlab.like2(50))
-    }else{
-      mp <- ggplot(data = pred.df, aes(x = lon, y = lat)) + 
-        mapWorld + theme(panel.background = element_rect(fill = 'lightblue')) + 
-        geom_raster(aes(fill = val)) + 
-        coord_equal() +
-        coord_cartesian(xlim =c(e[1] - 2, e[2] + 2), ylim =c(e[3] - 2, e[4] + 2)) +
-        #scale_fill_gradient("relative suitability (raw output)", limits = c(pred@data@min, pred@data@max), low = 'grey', high = 'blue')
-        scale_fill_gradientn("relative suitability (raw output)", limits = c(pred@data@min, pred@data@max), colours=matlab.like2(50))
-      mp <- mp + geom_point(data=pts2, aes(x = lon, y = lat), size = 3, colour = 'red',
-                            position = 'jitter', shape = 1)  
-    }
+      scale_fill_gradient("relative suitability", limits = c(pred@data@min, pred@data@max), low = 'grey', high = 'blue')
     print(mp)
   }
 }
@@ -116,10 +74,8 @@ plotMap <- function(pts=NULL, poly=NULL, pred=NULL, addpo=NULL, pts2=NULL) {
 
 shinyServer(function(input, output, session) {
   
-  # this list carries data that is used by multiple reactive functions
   values <- reactiveValues()
   
-  # query GBIF based on user input, remove duplicate records
   GBIFsearch <- reactive({
     if (input$gbifName == '') return(NULL)
     input$goName
@@ -130,6 +86,7 @@ shinyServer(function(input, output, session) {
                               hasCoordinate = TRUE)
         if (results$meta$count != 0) {
           locs <- results$data[!is.na(results$data[,3]),][,c(1,3,4,2)]
+          #Remove duplicated rows
           dup <- duplicated(locs)
           locs <- locs[!dup, ]
           names(locs)[2:3] <- c('lon', 'lat')
@@ -141,7 +98,6 @@ shinyServer(function(input, output, session) {
     })
   })
   
-  # governs point removal behavior and modifies tables in "values"
   observe({
     if (input$remove == 0) return()
     isolate({
@@ -154,7 +110,7 @@ shinyServer(function(input, output, session) {
     })  
   })
   
-  # render the GBIF records data table
+  
   output$gbifOccTbl <- renderTable({
     if (input$goName == 0) return()
     input$goName
@@ -169,7 +125,6 @@ shinyServer(function(input, output, session) {
     })
   })
   
-  # handle downloading of GBIF csv
   output$downloadGBIFcsv <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$gbifoccs), "_gbifCleaned.csv")},
     content = function(file) {
@@ -177,7 +132,6 @@ shinyServer(function(input, output, session) {
     }
   )
       
-  # some error handling and text output for GBIF record downloads
   output$GBIFtxt <- renderText({
     if (input$goName == 0) return()
     isolate({
@@ -205,50 +159,51 @@ shinyServer(function(input, output, session) {
     })
   })
   
-  # map of GBIF records
+  # map1 <- createLeafletMap(session, 'map1')
   map1 <- leaflet() %>% addTiles() %>% setView(0, 0, zoom = 2)
   output$map1 <- renderLeaflet(map1)
   
-  observeEvent(input$goName, {
-    proxy <- leafletProxy("map1")
-    proxy %>% clearShapes()
-    lati <- values$gbifoccs[, 3]
-    longi <- values$gbifoccs[, 2]
-    print(values$gbifoccs)
-    proxy %>% fitBounds(min(longi), min(lati), max(longi), max(lati))
-    occIcons <- makeOccIcons()
-    iconList <- list(HUMAN_OBSERVATION=1, OBSERVATION=2, PRESERVED_SPECIMEN=3, 
-                     UNKNOWN_EVIDENCE=4, FOSSIL_SPECIMEN=5, MACHINE_OBSERVATION=6, 
-                     LIVING_SPECIMEN=7, LITERATURE_OCCURRENCE=8, MATERIAL_SAMPLE=9)
-    dfMarkers <- cbind(values$gbifoccs, basisNum=unlist(iconList[values$gbifoccs$basisOfRecord]))
-#     proxy %>% addMarkers(data = dfMarkers, lat = ~lat, lng = ~lon, 
-#                  layerId = as.numeric(rownames(values$gbifoccs)), 
-#                  icon = ~icons(occIcons[basisNum]))
-    proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
-                               layerId = as.numeric(rownames(values$gbifoccs)), 
-                               radius = 5, color = 'red', fill = FALSE, weight = 2)})
+  observe({
+    if (input$goName == 0) return()
+    input$goName
+    input$remove
+    isolate({
+      map1$clearShapes()
+      lati <- values$gbifoccs[, 3]
+      longi <- values$gbifoccs[, 2]
 
-  observeEvent(input$map_shape_click, {
-    leafletProxy("map1") %>% clearPopups()    
-    content <- as.character(tagList(
-      tags$strong(paste("ID:", event$id)),
-      tags$br(),
-      tags$strong(paste("Latitude:", event$lat)),        
-      tags$strong(paste("Longitude:", event$lng))                    
-    ))
-    leafletProxy("map1") %>% showPopup(input$map_shape_click$lat, input$map_shape_click$lng, content)
+      output$map1 <- renderLeaflet(map1)
+      map1$fitBounds(max(lati), max(longi), min(lati), min(longi))
+      map1$addCircle(lati, longi, layerId=as.numeric(rownames(values$gbifoccs)), 
+                    radius=8, options=list(weight=8, fill=FALSE, color='red'))
+    })
   })
 
-  # run spThin and return one of the optimal solutions as data.frame
+  observe({
+    # map1$clearPopups()
+    event <- input$map_shape_click
+    if (is.null(event)){return()}
+    isolate({
+      content <- as.character(tagList(
+        tags$strong(paste("ID:", event$id)),
+        tags$br(),
+        tags$strong(paste("Latitude:", event$lat)),        
+        tags$strong(paste("Longitude:", event$lng))                    
+        ))
+      map1 <- map1 %>% addPopups(event$lat, event$lng, content)
+      # map1$showPopup(event$lat, event$lng, content)
+      map1
+    })
+  })
+
   runThin <- reactive({
     input$goThin
     isolate({
       withProgress(message = "Thinning...", {
-        output <- thin(values$gbifoccs, 'lat', 'lon', 'name', thin.par = input$thinDist, 
+        output <- thin(values$df, 'lat', 'lon', 'name', thin.par = input$thinDist, 
                        reps = 10, locs.thinned.list.return = TRUE, write.files = FALSE,
                        verbose = FALSE)
-        # pull max, not first
-        thinout <- cbind(rep(values$gbifoccs[1,1], nrow(output[[1]])), output[[1]])
+        thinout <- cbind(rep(values$df[1,1], nrow(output[[1]])), output[[1]])
         names(thinout) <- c('name', 'lon', 'lat')
         values$df <- thinout
         values$thinoccs <- thinout
@@ -256,21 +211,34 @@ shinyServer(function(input, output, session) {
     })
   })
   
-  # render thinned records table
   output$thinOccTbl <- renderTable({values$thinoccs})
   
-  # map for thinned records
   map2 <- createLeafletMap(session, 'map2')
+  
   observe({
-    if (is.null(values$thinoccs)) return()
+    if (input$goThin == 0) return()
     input$goThin
     isolate({
-    map2$clearShapes()
-    lati2 <- values$thinoccs[, 3]
-    longi2 <- values$thinoccs[, 2]
-    map2$fitBounds(max(lati2), max(longi2), min(lati2), min(longi2))
-    map2$addCircle(lati2, longi2, layerId=as.numeric(rownames(values$thinoccs)),
-                   radius=8, options=list(weight=8, fill=FALSE, color='red'))
+      map2$clearShapes()
+      lati <- values$gbifoccs[, 3]
+      longi <- values$gbifoccs[, 2]
+      lati2 <- values$thinoccs[, 3]
+      longi2 <- values$thinoccs[, 2]
+#       lats <- c(lati, lati2)
+#       lons <- c(longi, longi2)
+#       allrownames <- c(rownames(values$gbifoccs), rownames(values$thinoccs))
+#       ngbif <- nrow(values$gbifoccs)
+#       nthin <- nrow(values$thinoccs)
+#       ntot <- ngbif + nthin
+      map2$fitBounds(max(lati), max(longi), min(lati), min(longi))
+      map2$addCircle(lati2, longi2, layerId = as.numeric(rownames(values$thinoccs)), 
+                     radius=8, options=list(weight=8, fill=FALSE, color='blue'))
+      map2$addCircle(lati, longi, layerId = as.numeric(rownames(values$gbifoccs)), 
+                     radius=8, options=list(weight=8, fill=FALSE, color='red'))
+#       map2$addCircle(lats, lons, layerId = as.numeric(allrownames), 
+#                      radius=8, eachOptions=list(weight=rep(8, times=ntot), 
+#                                                 fill=rep(FALSE, times=ntot), 
+#                                                 color=c(rep('red', times=ngbif), rep('blue', times=nthin))))
     })
   })
   
@@ -289,7 +257,6 @@ shinyServer(function(input, output, session) {
     })
   })
 
-  # text output for thinned records
   output$thinText <- renderText({
     if (input$goThin == 0) return()
     input$goThin
@@ -297,7 +264,6 @@ shinyServer(function(input, output, session) {
     paste('Total records thinned to [', nrow(values$df), '] points.')
   })
   
-  # handle download for thinned records csv
   output$downloadThincsv <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$gbifoccs), "_thinned_gbifCleaned.csv")},
     content = function(file) {
@@ -305,7 +271,7 @@ shinyServer(function(input, output, session) {
     }
   )
   
-  # text output for raster selection and removal of NA records
+  
   output$predTxt1 <- renderUI({
     ## Check if predictor path exists. If not, use the dismo function getData()
     if (input$pred == "" || input$pred == 'user') return()
@@ -324,11 +290,11 @@ shinyServer(function(input, output, session) {
       } else {
         str2 <- ""
       }
+      
       HTML(paste(str1, str2, sep = '<br/>'))
     })
   })
   
-  # future user input functionality for rasters
 #   output$predTxt2 <- renderUI({
 #     if (input$userPred == "") return()
 #     isolate({
@@ -338,7 +304,6 @@ shinyServer(function(input, output, session) {
 #     })
 #   })
   
-  # make a study region extent via user selection
   makeBackgExt <- reactive({
     if (input$backg == "" || input$pred == "") return()
     if (input$backg == 'bb') {
@@ -351,37 +316,28 @@ shinyServer(function(input, output, session) {
       values$backgExt2Map <- bb
     } else if (input$backg == 'mcp') {
       xy_mcp <- mcp(values$df[,2:3])
-      xy_mcp <- gBuffer(xy_mcp, width = input$backgBuf + res(values$pred)[1])
-      values$backgExt <- xy_mcp
+      values$backgExt <- gBuffer(xy_mcp, width = input$backgBuf + res(values$pred)[1])
       values$backgExt2Map <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
     }
   })
   
-  # map for study region
   map3 <- createLeafletMap(session, 'map3')
+  
   observe({
     if (input$backg == "") return()
     input$backg
-    valores <- values$df[, 2:3]
+    valores <- values$df
     makeBackgExt()
     back <- values$backgExt2Map
     isolate({
       map3$clearShapes()      
-      lati3 <- valores[, 2]
-      longi3 <- valores[, 1]
+      lati3 <- valores[, 3]
+      longi3 <- valores[, 2]
       map3$fitBounds(max(lati3), max(longi3), min(lati3), min(longi3))
-      map3$addCircle(    
-        lati3,
-        longi3,
-        layerId=as.numeric(rownames(valores)),
-        radius=8,
-        options=list(
-          weight=8,
-          fill=FALSE,
-          color='red'))
-        map3$addPolygon(lng=back[, 1], lat=back[, 2], layerId="1",
-                     options= list(weight=10, col="red"))
-      
+      map3$addCircle(lati3, longi3, layerId = as.numeric(rownames(valores)),
+                     radius=8, options=list(weight=8, fill=FALSE, color='red'))
+      map3$addPolygon(lng=back[, 1], lat=back[, 2], layerId="1",
+                      options= list(weight=10, col="red"))
     })
   })
   
@@ -400,7 +356,7 @@ shinyServer(function(input, output, session) {
     })
   })
 
-  # clip and mask rasters based on study region, make random points for background, run ENMeval via user inputs
+  
   runENMeval <- reactive({
     if (input$goEval == 0) return()
     input$goEval
@@ -433,20 +389,17 @@ shinyServer(function(input, output, session) {
     })
   })
   
-  # render table of ENMeval results
   output$evalTbl <- renderTable({values$evalTbl})
   
-  # out text for ENMeval run
   output$evalTxt <- renderText({
     if (input$goEval == 0) return()
     input$goEval
     runENMeval()
     if (!is.null(values$evalTbl)) {
-      paste("ENMeval ran successfully and output table with", nrow(values$evalTbl), "rows.")  
+      paste("Ran ENMeval and output table with", nrow(values$evalTbl), "rows.")  
     }
   })
   
-  # plotting functionality for ENMeval graphs
   output$evalPlot <- renderPlot ({
     if (input$goEval == 0) return()
     if (!is.null(values$evalTbl)) {
@@ -458,7 +411,7 @@ shinyServer(function(input, output, session) {
       segments(rep(.8, times=fc), 1:fc, rep(1.2, times=fc), 1:fc, lwd=1, col=col)
       points(rep(1, times=fc), 1:fc, ylim=c(-1,fc+2), cex=2, pch=21, bg=col)
       text(x=rep(1.3, times=fc), y=1:fc, labels=unique(values$evalTbl$features), adj=0)
-      text(x=1, y=fc+1, labels="Feature Classes", adj=.20, cex=1.3, font=2)
+      text(x=1, y=fc+.75, labels="Feature Classes", adj=.20, cex=1.3, font=2)
       eval.plot(values$evalTbl, legend=FALSE, value="delta.AICc")
       eval.plot(values$evalTbl, legend=FALSE, value="Mean.AUC", variance="Var.AUC")
       eval.plot(values$evalTbl, legend=FALSE, value="Mean.AUC.DIFF", variance="Var.AUC.DIFF")
@@ -467,7 +420,6 @@ shinyServer(function(input, output, session) {
     }
   })
    
-  # handle downloads for ENMeval results table csv
   output$downloadEvalcsv <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$gbifoccs), "_enmeval_results.csv")},
     content = function(file) {
@@ -475,7 +427,6 @@ shinyServer(function(input, output, session) {
     }
   )
   
-  # generates user selection of rasters to plot dynamically after they are created
   output$predSel <- renderUI({
     if (is.null(values$evalPreds)) return()
     n <- names(values$evalPreds)
@@ -485,13 +436,17 @@ shinyServer(function(input, output, session) {
                 choices = predNameList)
   })
   
-  # plot functionality for rasters -- currently uses plotMap
-  output$plotPred <- renderPlot({
-    plotMap(pred = values$evalPreds[[as.numeric(input$predSelServer)]], 
-            pts2 = values$df, addpo = input$plotpoints)
-            })
   
-  # handle download for rasters, as TIFF
+#   observe({
+#     if (values$predPlotRdy) {
+#       values$goPlot <- TRUE
+#     }
+#   })
+  
+  output$plotPred <- renderPlot({
+    plotMap(pred = values$evalPreds[[as.numeric(input$predSelServer)]])
+  })
+  
   output$downloadPred <- downloadHandler(
     filename = function() {paste0(names(values$evalPreds[[as.numeric(input$predSelServer)]]), "_pred.tif")},
     content = function(file) {
@@ -500,7 +455,6 @@ shinyServer(function(input, output, session) {
     }
   )
   
-  # legacy console printing for spThin
 #   output$thinConsole <- renderPrint({
 #     if (input$goThin == 0) return()
 #     input$goThin
