@@ -9,9 +9,9 @@ if (!require('devtools')) install.packages('devtools')
 library(devtools)
 if (!require('leaflet')) devtools::install_github('rstudio/leaflet')
 #install_github("bobmuscarella/ENMeval@edits")
+if (!require("DT")) devtools::install_github("rstudio/DT")
 
 # load libraries
-library(colorRamps)
 library(shiny)
 library(rgbif)
 library(spThin)
@@ -20,7 +20,6 @@ library(dismo)
 library(rgeos)
 library(ggplot2)
 library(leaflet)
-
 
 source("functions.R")
 
@@ -31,6 +30,7 @@ shinyServer(function(input, output, session) {
   
   # query GBIF based on user input, remove duplicate records
   observeEvent(input$goName, {
+    print(values$df)
     withProgress(message = "Searching GBIF...", {
       results <- occ_search(scientificName = input$gbifName, limit = input$occurrences, 
                             fields = c('name', 'decimalLongitude', 'decimalLatitude', 'basisOfRecord'), 
@@ -73,11 +73,11 @@ shinyServer(function(input, output, session) {
           }
         }
         output$GBIFtxt <- renderText(x)
+        # render the GBIF records data table
+        output$occTbl <- DT::renderDataTable({DT::datatable(values$df[,1:4])})
       }
     })
   })
-  
-  output$occTbl <- renderTable(values$df[,1:4])  # render the GBIF records data table
 
   # governs point removal behavior and modifies tables in "values"
   observe({
@@ -138,21 +138,25 @@ shinyServer(function(input, output, session) {
       # pull max, not first
       #       thinout <- cbind(rep(values$gbifoccs[1,1], nrow(output[[1]])), output[[1]])
       #       names(thinout) <- c('name', 'lon', 'lat')
-      values$df <- values$gbifoccs[rownames(output[[1]]),]
-      values$thinoccs <- values$gbifoccs[rownames(output[[1]]),]
+      thinned <- values$gbifoccs[rownames(output[[1]]),]
+      values$df <- thinned
+      values$thinoccs <- thinned
     })
-    output$thinText <- renderText({
-      paste('Total records thinned to [', nrow(values$thinoccs), '] points.')
-    })
+    output$thinText <- renderText(paste('Total records thinned to [', nrow(thinned), '] points.'))
+    # render the thinned records data table
+    output$occTbl <- DT::renderDataTable({DT::datatable(values$df[,1:4])})
 
     lati2 <- values$thinoccs[,3]
     longi2 <- values$thinoccs[,2]
-    #proxy2 <- leafletProxy("map2")
-#     proxy %>% fitBounds(min(longi2), min(lati2), max(longi2), max(lati2))
-    proxy %>% addCircleMarkers(data = values$thinoccs, lat = ~lat, lng = ~lon, 
-                               layerId = as.numeric(rownames(values$thinoccs)), 
-                               radius = 5, color = 'blue', fill = FALSE, weight = 2,
-                               popup = ~pop)
+    #     proxy %>% fitBounds(min(longi2), min(lati2), max(longi2), max(lati2))
+    proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
+                               layerId = as.numeric(rownames(values$gbifoccs)), 
+                               radius = 5, color = 'red', fill = FALSE, weight = 2,
+                               popup = ~pop) %>%
+      addCircleMarkers(data = values$thinoccs, lat = ~lat, lng = ~lon, 
+                       layerId = as.numeric(rownames(values$thinoccs)), 
+                       radius = 5, color = 'blue', fill = FALSE, weight = 2,
+                       popup = ~pop)
   })
   
   # handle download for thinned records csv
@@ -288,11 +292,10 @@ shinyServer(function(input, output, session) {
                        method = input$method, updateProgress = updateProgress)
       values$evalTbl <- e@results
       values$evalPreds <- e@predictions
+      # render table of ENMeval results
+      output$evalTbl <- DT::renderDataTable({DT::datatable(values$evalTbl)})
     })
   })
-  
-  # render table of ENMeval results
-  output$evalTbl <- renderTable({values$evalTbl})
   
   # out text for ENMeval run
   output$evalTxt <- renderText({

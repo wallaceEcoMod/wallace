@@ -4,10 +4,12 @@ if (!require("devtools"))
   install.packages("devtools")
 if (!require('shinyapps')) devtools::install_github("rstudio/shinyapps")
 if (!require('leaflet')) devtools::install_github("rstudio/leaflet")
+if (!require("DT")) devtools::install_github("rstudio/DT")
 
 library(shiny)
 library(shinyapps)
 library(leaflet)
+library(DT)
 
 source("ui_content.R")
 
@@ -112,6 +114,7 @@ shinyUI(fluidPage(title,
                            )
                     ),
                     column(8,
+                           br(),
                            conditionalPanel("input.goName", textOutput('GBIFtxt')),
                            conditionalPanel("input.goThin", textOutput('thinText')),
                            conditionalPanel("input.pred != ''", uiOutput('predTxt1')),
@@ -119,10 +122,11 @@ shinyUI(fluidPage(title,
                            conditionalPanel("input.goEval", textOutput('evalTxt')),
                            br(),
                            leafletOutput("map", height=600),
-                           tableOutput('occTbl'),
-                           tableOutput('evalTbl'),
+                           br(),
+                           DT::dataTableOutput('occTbl'),
+                           DT::dataTableOutput('evalTbl'),
                            plotOutput('evalPlot', width = 600)
                     )
-                  )                
+                  )        
 )
 )
