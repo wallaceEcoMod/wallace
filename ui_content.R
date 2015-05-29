@@ -7,19 +7,18 @@ tab1content <- tags$div(span(strong("rgbif"), style = "color:purple; font-size:1
                         a("CRAN homepage", href = "http://cran.r-project.org/web/packages/rgbif/index.html", target="_blank"),
                         br(),
                         a("rgbif documentation @ GBIF", href = "http://www.gbif.org/resource/81747", target="_blank"),
-                        br(), br(),
+                        br(),
                         "The first step is to download occurrence data (e.g. from GBIF; duplicate 
                                 records are removed). After acquiring these points, it is useful to examine 
                                 them on a map.",
                         br(),
-                        br(),
                         "Such datasets can contain errors; as a preliminary method of data-cleaning, 
                                 here the user can specify records to be removed. Additionally, the user can 
                                 download the records as a CSV file.",
-                        br(), br(),
+                        br(),
                         "Future versions will allow the user to download occurrence records from other 
-                                databases, as well as upload their own occurrence records as an alternate option.",
-                        br(), br())
+                                databases, as well as upload their own occurrence records as an alternate option."
+                        )
                         #span(em("<Not currently functional>"), style = "color:gray; font-size:10pt")
 
 tab2content <- tags$div(span(strong("spThin"), style = "color:purple; font-size:18pt"), br(),
@@ -39,7 +38,7 @@ tab2content <- tags$div(span(strong("spThin"), style = "color:purple; font-size:
                                 from other records. The user can download the thinned records as a CSV file. This step 
                                 is optional.",
                         br(), br())
-tab3content <- tags$div(span(em("Packages used: ggplot2, sp, rgeos"), style = "color:gray; font-size:8pt"), 
+tab3contentA <- tags$div(span(em("Packages used: ggplot2, sp, rgeos"), style = "color:gray; font-size:8pt"), 
                         br(), br(),
                         "The user then chooses which environmental variables to use as
                                 predictors. These data are in raster form.
@@ -58,6 +57,19 @@ tab3content <- tags$div(span(em("Packages used: ggplot2, sp, rgeos"), style = "c
                         br(), br(),
                         a("Worldclim homepage", href = "http://worldclim.org", target="_blank"),
                         br(), br())
+tab3contentB <-tags$div(span("References:", style = "font-size:9pt"), br(),
+                        span("Anderson, R.P. & A. Raza. (2010). The effect of the extent 
+                                             of the study region on GIS models of species geographic 
+                                             distributions and estimates of niche evolution: 
+                                             preliminary tests with montane rodents (genus Nephelomys) 
+                                             in Venezuela. Journal of Biogeography, 37: 1378–1393.", style = "font-size:9pt"), br(),
+                        span("Barve, N., V. Barve, A. Jiménez-Valverde, A. Lira-Noriega, 
+                                             S.P. Maher, A.T. Peterson, J. Soberón & F. Villalobos. 
+                                             (2011), The crucial role of the accessible area in 
+                                             ecological niche modeling and species distribution 
+                                             modeling. Ecological Modeling, 222: 1810–1819.", style = "font-size:9pt"))
+                        
+                        
 tab4content <- tags$div(span(strong("ENMeval"), style = "color:purple; font-size:18pt"), br(),
                         span(em("Automated Runs and Evaluations of Ecological Niche Models"), style = "font-size:10pt"), br(),
                         #span(em("Developers of ENMeval:"), style = "font-size:10pt"), br(),
