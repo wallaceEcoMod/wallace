@@ -133,6 +133,18 @@ shinyServer(function(input, output, session) {
           dup <- duplicated(locs)
           locs <- locs[!dup, ]
           names(locs)[2:3] <- c('lon', 'lat')
+          
+          popUpContent <- function(x) {
+            as.character(tagList(
+              tags$strong(paste("ID:", x['row'])),
+              tags$br(),
+              tags$strong(paste("Latitude:", x['lat'])),        
+              tags$strong(paste("Longitude:", x['lon']))
+            ))
+          }
+          locs$row <- row.names(locs)
+          locs$pop <- unlist(apply(locs, 1, popUpContent))
+          
           values$df <- locs
           values$gbifoccs <- locs
           return(c(nrow(locs), results$meta$count, sum(dup)))
@@ -164,7 +176,7 @@ shinyServer(function(input, output, session) {
       if (is.null(out)) {
         NULL
       } else {
-        values$gbifoccs
+        values$gbifoccs[,1:4]
       }
     })
   })
@@ -207,94 +219,87 @@ shinyServer(function(input, output, session) {
   
   # map of GBIF records
   map1 <- leaflet() %>% addTiles() %>% setView(0, 0, zoom = 2)
-  output$map1 <- renderLeaflet(map1)
+  output$map1 <- output$map2 <- renderLeaflet(map1)
+  
+#   # map of thinned GBIF records
+#   map2 <- leaflet() %>% addTiles() %>% setView(0, 0, zoom = 2)
+#   output$map2 <- renderLeaflet(map2)
+  
+  # proxies
+  proxy1 <- leafletProxy("map1")
+  proxy2 <- leafletProxy("map2")
   
   observeEvent(input$goName, {
-    proxy <- leafletProxy("map1")
-    proxy %>% clearShapes()
-    lati <- values$gbifoccs[, 3]
-    longi <- values$gbifoccs[, 2]
-    print(values$gbifoccs)
-    proxy %>% fitBounds(min(longi), min(lati), max(longi), max(lati))
-    occIcons <- makeOccIcons()
-    iconList <- list(HUMAN_OBSERVATION=1, OBSERVATION=2, PRESERVED_SPECIMEN=3, 
-                     UNKNOWN_EVIDENCE=4, FOSSIL_SPECIMEN=5, MACHINE_OBSERVATION=6, 
-                     LIVING_SPECIMEN=7, LITERATURE_OCCURRENCE=8, MATERIAL_SAMPLE=9)
-    dfMarkers <- cbind(values$gbifoccs, basisNum=unlist(iconList[values$gbifoccs$basisOfRecord]))
-#     proxy %>% addMarkers(data = dfMarkers, lat = ~lat, lng = ~lon, 
-#                  layerId = as.numeric(rownames(values$gbifoccs)), 
-#                  icon = ~icons(occIcons[basisNum]))
-    proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
-                               layerId = as.numeric(rownames(values$gbifoccs)), 
-                               radius = 5, color = 'red', fill = FALSE, weight = 2)})
+    proxy1 %>% clearShapes()
+    proxy2 %>% clearShapes()
+    lati <- values$gbifoccs[,3]
+    longi <- values$gbifoccs[,2]
+    proxy1 %>% fitBounds(min(longi), min(lati), max(longi), max(lati))
+    proxy2 %>% fitBounds(min(longi), min(lati), max(longi), max(lati))
+    
+    # this section makes letter icons for occs based on basisOfRecord
+#     occIcons <- makeOccIcons()
+#     iconList <- list(HUMAN_OBSERVATION=1, OBSERVATION=2, PRESERVED_SPECIMEN=3, 
+#                      UNKNOWN_EVIDENCE=4, FOSSIL_SPECIMEN=5, MACHINE_OBSERVATION=6, 
+#                      LIVING_SPECIMEN=7, LITERATURE_OCCURRENCE=8, MATERIAL_SAMPLE=9)
+#     values$gbifoccs$basisNum <- unlist(iconList[values$gbifoccs$basisOfRecord])
+#     proxy %>% addMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
+#                          layerId = as.numeric(rownames(values$gbifoccs)), 
+#                          icon = ~icons(occIcons[basisNum]))
 
-  observeEvent(input$map_shape_click, {
-    leafletProxy("map1") %>% clearPopups()    
-    content <- as.character(tagList(
-      tags$strong(paste("ID:", event$id)),
-      tags$br(),
-      tags$strong(paste("Latitude:", event$lat)),        
-      tags$strong(paste("Longitude:", event$lng))                    
-    ))
-    leafletProxy("map1") %>% showPopup(input$map_shape_click$lat, input$map_shape_click$lng, content)
-  })
+    proxy1 %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
+                               layerId = as.numeric(rownames(values$gbifoccs)), 
+                               radius = 5, color = 'red', fill = FALSE, weight = 2,
+                               popup = ~pop)
+    proxy2 %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
+                                layerId = as.numeric(rownames(values$gbifoccs)), 
+                                radius = 5, color = 'red', fill = FALSE, weight = 2,
+                                popup = ~pop)})
+
 
   # run spThin and return one of the optimal solutions as data.frame
-  runThin <- reactive({
-    input$goThin
-    isolate({
-      withProgress(message = "Thinning...", {
-        output <- thin(values$gbifoccs, 'lat', 'lon', 'name', thin.par = input$thinDist, 
-                       reps = 10, locs.thinned.list.return = TRUE, write.files = FALSE,
-                       verbose = FALSE)
-        # pull max, not first
-        thinout <- cbind(rep(values$gbifoccs[1,1], nrow(output[[1]])), output[[1]])
-        names(thinout) <- c('name', 'lon', 'lat')
-        values$df <- thinout
-        values$thinoccs <- thinout
-      })
-    })
-  })
-  
-  # render thinned records table
-  output$thinOccTbl <- renderTable({values$thinoccs})
-  
-  # map for thinned records
-  map2 <- createLeafletMap(session, 'map2')
-  observe({
-    if (is.null(values$thinoccs)) return()
-    input$goThin
-    isolate({
-    map2$clearShapes()
-    lati2 <- values$thinoccs[, 3]
-    longi2 <- values$thinoccs[, 2]
-    map2$fitBounds(max(lati2), max(longi2), min(lati2), min(longi2))
-    map2$addCircle(lati2, longi2, layerId=as.numeric(rownames(values$thinoccs)),
-                   radius=8, options=list(weight=8, fill=FALSE, color='red'))
-    })
-  })
-  
-  observe({
-    map2$clearPopups()    
-    event <- input$map2_shape_click
-    if (is.null(event)){return()}
-    isolate({
-      content <- as.character(tagList(
-        tags$strong(paste("ID:", event$id)),
-        tags$br(),
-        tags$strong(paste("Latitude:", event$lat)),        
-        tags$strong(paste("Longitude:", event$lng))                    
-      ))
-      map2$showPopup(event$lat, event$lng, content)
-    })
-  })
+#   runThin <- eventReactive(input$goThin, {
+#       withProgress(message = "Thinning...", {
+#         output <- thin(values$gbifoccs, 'lat', 'lon', 'name', thin.par = input$thinDist, 
+#                        reps = 10, locs.thinned.list.return = TRUE, write.files = FALSE,
+#                        verbose = FALSE)
+#         # pull max, not first
+#         thinout <- cbind(rep(values$gbifoccs[1,1], nrow(output[[1]])), output[[1]])
+#         names(thinout) <- c('name', 'lon', 'lat')
+#         values$df <- thinout
+#         values$thinoccs <- thinout
+#       })
+#   })
 
-  # text output for thinned records
+  # map thinned records when Thin button is pressed
+  observeEvent(input$goThin, {
+    withProgress(message = "Thinning...", {
+      output <- thin(values$gbifoccs, 'lat', 'lon', 'name', thin.par = input$thinDist, 
+                     reps = 10, locs.thinned.list.return = TRUE, write.files = FALSE,
+                     verbose = FALSE)
+      # pull max, not first
+#       thinout <- cbind(rep(values$gbifoccs[1,1], nrow(output[[1]])), output[[1]])
+#       names(thinout) <- c('name', 'lon', 'lat')
+      values$df <- values$gbifoccs[rownames(output[[1]]),]
+      values$thinoccs <- values$gbifoccs[rownames(output[[1]]),]
+    })
+
+    lati2 <- values$thinoccs[,3]
+    longi2 <- values$thinoccs[,2]
+    #proxy2 <- leafletProxy("map2")
+    proxy2 %>% clearShapes()
+    proxy2 %>% fitBounds(min(longi2), min(lati2), max(longi2), max(lati2))
+    proxy2 %>% addCircleMarkers(data = values$thinoccs, lat = ~lat, lng = ~lon, 
+                               layerId = as.numeric(rownames(values$thinoccs)), 
+                               radius = 5, color = 'blue', fill = FALSE, weight = 2,
+                               popup = ~pop)
+  })
+    
+  # render thinned records table
+  output$thinOccTbl <- renderTable({values$thinoccs[,1:4]})
+    
   output$thinText <- renderText({
-    if (input$goThin == 0) return()
-    input$goThin
-    runThin()
-    paste('Total records thinned to [', nrow(values$df), '] points.')
+    paste('Total records thinned to [', nrow(values$thinoccs), '] points.')
   })
   
   # handle download for thinned records csv
