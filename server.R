@@ -22,97 +22,7 @@ library(ggplot2)
 library(leaflet)
 
 
-## -------------------------------------------------------------------- ##
-## Define functions
-## -------------------------------------------------------------------- ##
-
-# for naming files
-nameAbbr <- function(spname) {
-  namespl <- strsplit(tolower(spname[1,1]), " ")
-  genusAbbr <- substring(namespl[[1]][1], 1, 1)
-  fullNameAbbr <- paste0(genusAbbr, "_", namespl[[1]][2])
-  return(fullNameAbbr)
-}
-
-# make a minimum convex polygon as SpatialPolygons object
-mcp <- function (xy) {
-  xy <- as.data.frame(coordinates(xy))
-  coords.t <- chull(xy[, 1], xy[, 2])
-  xy.bord <- xy[coords.t, ]
-  xy.bord <- rbind(xy.bord[nrow(xy.bord), ], xy.bord)
-  return(SpatialPolygons(list(Polygons(list(Polygon(as.matrix(xy.bord))), 1))))
-}
-
-
-makeOccIcons <- function(width = 10, height = 10, ...) {
-  occIcons <- c('H', 'O', 'P', 'U', 'F', 'M', 'I', 'L', 'A', 'X')
-  files <- character(9)
-  # create a sequence of png images
-  for (i in 1:9) {
-    f <- tempfile(fileext = '.png')
-    png(f, width = width, height = height, bg = 'transparent')
-    par(mar = c(0, 0, 0, 0))
-    plot.new()
-    points(.5, .5, pch = occIcons[i], cex = min(width, height) / 8, col='red', ...)
-    dev.off()
-    files[i] <- f
-  }
-  files
-}
-
-# this is currently only used for the raster mapping, but was originally used for all maps
-# before we implemented leaflet (the version of leaflet we used did not have raster plotting
-# functionality)-- we plan to recode using the new leaflet version (with new syntax) as a next 
-# step, whereupon a leaflet map will be used for plotting rasters too
-plotMap <- function(pts=NULL, poly=NULL, pred=NULL, addpo=NULL, pts2=NULL) {
-  mapWorld <- borders('world', colour = 'white', fill = 'white')
-  if (!is.null(pts)) {
-    xl <- c(min(pts$lon) - 5, max(pts$lon) + 5)
-    yl <- c(min(pts$lat) - 5, max(pts$lat) + 5)
-    mp <- ggplot(pts, aes(x = lon, y = lat)) + 
-      mapWorld + theme(panel.background = element_rect(fill = 'lightblue')) +
-      geom_point(size = 3, colour = 'blue', position = 'jitter', shape = 1) +
-      coord_cartesian(xlim = xl, ylim = yl) + 
-      geom_text(label = row.names(pts), hjust = 1, vjust = -1)
-    if (!is.null(poly)) {
-      mp <- mp + geom_path(aes(x = long, y = lat), fortify(poly), colour = 'red')
-    }
-    print(mp)
-  }
-  if (!is.null(pred)) {
-    # Convert raster to points
-    pred.p <- rasterToPoints(pred)
-    # Make the points a dataframe for ggplot
-    pred.df <- data.frame(pred.p)
-    #Make appropriate column headings
-    colnames(pred.df) <- c("lon", "lat", "val")
-    e <- extent(pred)
-    if(!addpo){
-    mp <- ggplot(data = pred.df, aes(x = lon, y = lat)) + 
-      mapWorld + theme(panel.background = element_rect(fill = 'lightblue')) + 
-      geom_raster(aes(fill = val)) + 
-      coord_equal() +
-      coord_cartesian(xlim =c(e[1] - 2, e[2] + 2), ylim =c(e[3] - 2, e[4] + 2)) +
-      #scale_fill_gradient("relative suitability (raw output)", limits = c(pred@data@min, pred@data@max), low = 'grey', high = 'blue')
-      scale_fill_gradientn("relative suitability (raw output)", limits = c(pred@data@min, pred@data@max), colours=matlab.like2(50))
-    }else{
-      mp <- ggplot(data = pred.df, aes(x = lon, y = lat)) + 
-        mapWorld + theme(panel.background = element_rect(fill = 'lightblue')) + 
-        geom_raster(aes(fill = val)) + 
-        coord_equal() +
-        coord_cartesian(xlim =c(e[1] - 2, e[2] + 2), ylim =c(e[3] - 2, e[4] + 2)) +
-        #scale_fill_gradient("relative suitability (raw output)", limits = c(pred@data@min, pred@data@max), low = 'grey', high = 'blue')
-        scale_fill_gradientn("relative suitability (raw output)", limits = c(pred@data@min, pred@data@max), colours=matlab.like2(50))
-      mp <- mp + geom_point(data=pts2, aes(x = lon, y = lat), size = 3, colour = 'red',
-                            position = 'jitter', shape = 1)  
-    }
-    print(mp)
-  }
-}
-
-## -------------------------------------------------------------------- ##
-## Main shinyServer code
-## -------------------------------------------------------------------- ##
+source("functions.R")
 
 shinyServer(function(input, output, session) {
   
@@ -120,39 +30,55 @@ shinyServer(function(input, output, session) {
   values <- reactiveValues()
   
   # query GBIF based on user input, remove duplicate records
-  GBIFsearch <- reactive({
-    if (input$gbifName == '') return(NULL)
-    input$goName
-    isolate({
-      withProgress(message = "Searching GBIF...", {
-        results <- occ_search(scientificName = input$gbifName, limit = input$occurrences, 
-                              fields = c('name', 'decimalLongitude', 'decimalLatitude', 'basisOfRecord'), 
-                              hasCoordinate = TRUE)
-        if (results$meta$count != 0) {
-          locs <- results$data[!is.na(results$data[,3]),][,c(1,3,4,2)]
-          dup <- duplicated(locs)
-          locs <- locs[!dup, ]
-          names(locs)[2:3] <- c('lon', 'lat')
-          
-          popUpContent <- function(x) {
-            as.character(tagList(
-              tags$strong(paste("ID:", x['row'])),
-              tags$br(),
-              tags$strong(paste("Latitude:", x['lat'])),        
-              tags$strong(paste("Longitude:", x['lon']))
-            ))
-          }
-          locs$row <- row.names(locs)
-          locs$pop <- unlist(apply(locs, 1, popUpContent))
-          
-          values$df <- locs
-          values$gbifoccs <- locs
-          return(c(nrow(locs), results$meta$count, sum(dup)))
+  observeEvent(input$goName, {
+    withProgress(message = "Searching GBIF...", {
+      results <- occ_search(scientificName = input$gbifName, limit = input$occurrences, 
+                            fields = c('name', 'decimalLongitude', 'decimalLatitude', 'basisOfRecord'), 
+                            hasCoordinate = TRUE)
+      if (results$meta$count != 0) {
+        locs <- results$data[!is.na(results$data[,3]),][,c(1,3,4,2)]
+        dup <- duplicated(locs)
+        locs <- locs[!dup, ]
+        names(locs)[2:3] <- c('lon', 'lat')
+        
+        popUpContent <- function(x) {
+          as.character(tagList(
+            tags$strong(paste("ID:", x['row'])),
+            tags$br(),
+            tags$strong(paste("Latitude:", x['lat'])),        
+            tags$strong(paste("Longitude:", x['lon']))
+          ))
         }
-      })
+        locs$row <- row.names(locs)
+        locs$pop <- unlist(apply(locs, 1, popUpContent))
+        
+        values$df <- locs
+        values$gbifoccs <- locs
+        
+        inName <- isolate(input$gbifName)
+        nameSplit <- length(unlist(strsplit(inName, " ")))
+        
+        if (nameSplit == 1 && !is.null(locs)) {
+          x <- paste("Please input both genus and species names. More than one species with this genus was found.")
+        } else {if (nameSplit == 1 && is.null(locs)) {
+            x <- paste("Please input both genus and species names.")      
+          } else {if (nameSplit != 1 && is.null(locs)) {
+              x <- paste0('No records found for ', inName, ". Please check the spelling.")
+            } else {if (nameSplit != 1 && !is.null(locs)) {
+                x <- paste('Total records for', values$gbifoccs[1,1], 'returned [', nrow(locs),
+                      '] out of [', results$meta$count, '] total (limit 500).
+                    Duplicated records removed [', sum(dup), "].")
+              }
+            }
+          }
+        }
+        output$GBIFtxt <- renderText(x)
+      }
     })
   })
   
+  output$occTbl <- renderTable(values$df[,1:4])  # render the GBIF records data table
+
   # governs point removal behavior and modifies tables in "values"
   observe({
     if (input$remove == 0) return()
@@ -166,21 +92,6 @@ shinyServer(function(input, output, session) {
     })  
   })
   
-  # render the GBIF records data table
-  output$gbifOccTbl <- renderTable({
-    if (input$goName == 0) return()
-    input$goName
-    input$remove
-    isolate({
-      out <- GBIFsearch()
-      if (is.null(out)) {
-        NULL
-      } else {
-        values$gbifoccs[,1:4]
-      }
-    })
-  })
-  
   # handle downloading of GBIF csv
   output$downloadGBIFcsv <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$gbifoccs), "_gbifCleaned.csv")},
@@ -188,54 +99,19 @@ shinyServer(function(input, output, session) {
       write.csv(values$gbifoccs, file)
     }
   )
-      
-  # some error handling and text output for GBIF record downloads
-  output$GBIFtxt <- renderText({
-    if (input$goName == 0) return()
-    isolate({
-    out <- GBIFsearch()
-    inName <- isolate(input$gbifName)
-    nameSplit <- length(unlist(strsplit(inName, " ")))
-    
-    if (nameSplit == 1 && !is.null(out)) {
-      paste("Please input both genus and species names. More than one species with this genus was found.")
-    } else {
-      if (nameSplit == 1 && is.null(out)) {
-        paste("Please input both genus and species names.")      
-      } else {
-        if (nameSplit != 1 && is.null(out)) {
-          paste0('No records found for ', inName, ". Please check the spelling.")
-        } else {
-          if (nameSplit != 1 && !is.null(out)) {
-              paste('Total records for', values$gbifoccs[1,1], 'returned [', out[1],
-                    '] out of [', out[2], '] total (limit 500).
-                    Duplicated records removed [', out[3], "].")
-          }
-        }
-      }
-    }
-    })
-  })
   
   # map of GBIF records
-  map1 <- leaflet() %>% addTiles() %>% setView(0, 0, zoom = 2)
-  output$map1 <- output$map2 <- renderLeaflet(map1)
-  
-#   # map of thinned GBIF records
-#   map2 <- leaflet() %>% addTiles() %>% setView(0, 0, zoom = 2)
-#   output$map2 <- renderLeaflet(map2)
+  map <- leaflet() %>% addTiles() %>% setView(0, 0, zoom = 2)
+  output$map <- renderLeaflet(map)
   
   # proxies
-  proxy1 <- leafletProxy("map1")
-  proxy2 <- leafletProxy("map2")
+  proxy <- leafletProxy("map")
   
   observeEvent(input$goName, {
-    proxy1 %>% clearShapes()
-    proxy2 %>% clearShapes()
+    proxy %>% clearShapes()
     lati <- values$gbifoccs[,3]
     longi <- values$gbifoccs[,2]
-    proxy1 %>% fitBounds(min(longi), min(lati), max(longi), max(lati))
-    proxy2 %>% fitBounds(min(longi), min(lati), max(longi), max(lati))
+    proxy %>% fitBounds(min(longi), min(lati), max(longi), max(lati))
     
     # this section makes letter icons for occs based on basisOfRecord
 #     occIcons <- makeOccIcons()
@@ -247,29 +123,11 @@ shinyServer(function(input, output, session) {
 #                          layerId = as.numeric(rownames(values$gbifoccs)), 
 #                          icon = ~icons(occIcons[basisNum]))
 
-    proxy1 %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
+    proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
                                layerId = as.numeric(rownames(values$gbifoccs)), 
                                radius = 5, color = 'red', fill = FALSE, weight = 2,
                                popup = ~pop)
-    proxy2 %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
-                                layerId = as.numeric(rownames(values$gbifoccs)), 
-                                radius = 5, color = 'red', fill = FALSE, weight = 2,
-                                popup = ~pop)})
-
-
-  # run spThin and return one of the optimal solutions as data.frame
-#   runThin <- eventReactive(input$goThin, {
-#       withProgress(message = "Thinning...", {
-#         output <- thin(values$gbifoccs, 'lat', 'lon', 'name', thin.par = input$thinDist, 
-#                        reps = 10, locs.thinned.list.return = TRUE, write.files = FALSE,
-#                        verbose = FALSE)
-#         # pull max, not first
-#         thinout <- cbind(rep(values$gbifoccs[1,1], nrow(output[[1]])), output[[1]])
-#         names(thinout) <- c('name', 'lon', 'lat')
-#         values$df <- thinout
-#         values$thinoccs <- thinout
-#       })
-#   })
+  })
 
   # map thinned records when Thin button is pressed
   observeEvent(input$goThin, {
@@ -278,28 +136,23 @@ shinyServer(function(input, output, session) {
                      reps = 10, locs.thinned.list.return = TRUE, write.files = FALSE,
                      verbose = FALSE)
       # pull max, not first
-#       thinout <- cbind(rep(values$gbifoccs[1,1], nrow(output[[1]])), output[[1]])
-#       names(thinout) <- c('name', 'lon', 'lat')
+      #       thinout <- cbind(rep(values$gbifoccs[1,1], nrow(output[[1]])), output[[1]])
+      #       names(thinout) <- c('name', 'lon', 'lat')
       values$df <- values$gbifoccs[rownames(output[[1]]),]
       values$thinoccs <- values$gbifoccs[rownames(output[[1]]),]
+    })
+    output$thinText <- renderText({
+      paste('Total records thinned to [', nrow(values$thinoccs), '] points.')
     })
 
     lati2 <- values$thinoccs[,3]
     longi2 <- values$thinoccs[,2]
     #proxy2 <- leafletProxy("map2")
-    proxy2 %>% clearShapes()
-    proxy2 %>% fitBounds(min(longi2), min(lati2), max(longi2), max(lati2))
-    proxy2 %>% addCircleMarkers(data = values$thinoccs, lat = ~lat, lng = ~lon, 
+#     proxy %>% fitBounds(min(longi2), min(lati2), max(longi2), max(lati2))
+    proxy %>% addCircleMarkers(data = values$thinoccs, lat = ~lat, lng = ~lon, 
                                layerId = as.numeric(rownames(values$thinoccs)), 
                                radius = 5, color = 'blue', fill = FALSE, weight = 2,
                                popup = ~pop)
-  })
-    
-  # render thinned records table
-  output$thinOccTbl <- renderTable({values$thinoccs[,1:4]})
-    
-  output$thinText <- renderText({
-    paste('Total records thinned to [', nrow(values$thinoccs), '] points.')
   })
   
   # handle download for thinned records csv
