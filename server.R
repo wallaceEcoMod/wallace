@@ -24,13 +24,11 @@ library(leaflet)
 source("functions.R")
 
 shinyServer(function(input, output, session) {
-  
   # this list carries data that is used by multiple reactive functions
   values <- reactiveValues()
   
   # query GBIF based on user input, remove duplicate records
   observeEvent(input$goName, {
-    print(values$df)
     withProgress(message = "Searching GBIF...", {
       results <- occ_search(scientificName = input$gbifName, limit = input$occurrences, 
                             fields = c('name', 'decimalLongitude', 'decimalLatitude', 'basisOfRecord'), 
@@ -61,24 +59,21 @@ shinyServer(function(input, output, session) {
         if (nameSplit == 1 && !is.null(locs)) {
           x <- paste("Please input both genus and species names. More than one species with this genus was found.")
         } else {if (nameSplit == 1 && is.null(locs)) {
-            x <- paste("Please input both genus and species names.")      
-          } else {if (nameSplit != 1 && is.null(locs)) {
-              x <- paste0('No records found for ', inName, ". Please check the spelling.")
-            } else {if (nameSplit != 1 && !is.null(locs)) {
-                x <- paste('Total records for', values$gbifoccs[1,1], 'returned [', nrow(locs),
-                      '] out of [', results$meta$count, '] total (limit 500).
+          x <- paste("Please input both genus and species names.")      
+        } else {if (nameSplit != 1 && is.null(locs)) {
+          x <- paste0('No records found for ', inName, ". Please check the spelling.")
+        } else {if (nameSplit != 1 && !is.null(locs)) {
+          x <- paste('Total records for', values$gbifoccs[1,1], 'returned [', nrow(locs),
+                     '] out of [', results$meta$count, '] total (limit 500).
                     Duplicated records removed [', sum(dup), "].")
-              }
-            }
-          }
-        }
+        }}}}
         output$GBIFtxt <- renderText(x)
         # render the GBIF records data table
         output$occTbl <- DT::renderDataTable({DT::datatable(values$df[,1:4])})
       }
     })
   })
-
+  
   # governs point removal behavior and modifies tables in "values"
   observe({
     if (input$remove == 0) return()
@@ -86,9 +81,9 @@ shinyServer(function(input, output, session) {
       rows <- as.numeric(rownames(values$gbifoccs))
       remo <- which(input$num == rows)
       if(length(remo)>0){
-       values$df <- values$gbifoccs[-remo, ]
-       values$gbifoccs <- values$gbifoccs[-remo, ]
-       }
+        values$df <- values$gbifoccs[-remo, ]
+        values$gbifoccs <- values$gbifoccs[-remo, ]
+      }
     })  
   })
   
@@ -114,21 +109,21 @@ shinyServer(function(input, output, session) {
     proxy %>% fitBounds(min(longi), min(lati), max(longi), max(lati))
     
     # this section makes letter icons for occs based on basisOfRecord
-#     occIcons <- makeOccIcons()
-#     iconList <- list(HUMAN_OBSERVATION=1, OBSERVATION=2, PRESERVED_SPECIMEN=3, 
-#                      UNKNOWN_EVIDENCE=4, FOSSIL_SPECIMEN=5, MACHINE_OBSERVATION=6, 
-#                      LIVING_SPECIMEN=7, LITERATURE_OCCURRENCE=8, MATERIAL_SAMPLE=9)
-#     values$gbifoccs$basisNum <- unlist(iconList[values$gbifoccs$basisOfRecord])
-#     proxy %>% addMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
-#                          layerId = as.numeric(rownames(values$gbifoccs)), 
-#                          icon = ~icons(occIcons[basisNum]))
-
+    #     occIcons <- makeOccIcons()
+    #     iconList <- list(HUMAN_OBSERVATION=1, OBSERVATION=2, PRESERVED_SPECIMEN=3, 
+    #                      UNKNOWN_EVIDENCE=4, FOSSIL_SPECIMEN=5, MACHINE_OBSERVATION=6, 
+    #                      LIVING_SPECIMEN=7, LITERATURE_OCCURRENCE=8, MATERIAL_SAMPLE=9)
+    #     values$gbifoccs$basisNum <- unlist(iconList[values$gbifoccs$basisOfRecord])
+    #     proxy %>% addMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
+    #                          layerId = as.numeric(rownames(values$gbifoccs)), 
+    #                          icon = ~icons(occIcons[basisNum]))
+    
     proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
                                layerId = as.numeric(rownames(values$gbifoccs)), 
                                radius = 5, color = 'red', fill = FALSE, weight = 2,
                                popup = ~pop)
   })
-
+  
   # map thinned records when Thin button is pressed
   observeEvent(input$goThin, {
     withProgress(message = "Thinning...", {
@@ -145,7 +140,7 @@ shinyServer(function(input, output, session) {
     output$thinText <- renderText(paste('Total records thinned to [', nrow(thinned), '] points.'))
     # render the thinned records data table
     output$occTbl <- DT::renderDataTable({DT::datatable(values$df[,1:4])})
-
+    
     lati2 <- values$thinoccs[,3]
     longi2 <- values$thinoccs[,2]
     #     proxy %>% fitBounds(min(longi2), min(lati2), max(longi2), max(lati2))
@@ -167,17 +162,18 @@ shinyServer(function(input, output, session) {
     }
   )
   
-  # text output for raster selection and removal of NA records
-  output$predTxt1 <- renderUI({
+  observe({
     ## Check if predictor path exists. If not, use the dismo function getData()
     if (input$pred == "" || input$pred == 'user') return()
-    isolate({
+    if (!is.null(values$df)) {
+      ## Check if predictor path exists. If not, use the dismo function getData()
       withProgress(message = "Downloading WorldClim data...", {
         values$pred <- getData(name = "worldclim", var = "bio", res = input$pred)
       })
-      withProgress(message = "Checking environmental values...", {
+      
+      withProgress(message = "Processing...", {
         locs.vals <- extract(values$pred[[1]], values$df[,2:3])
-        values$df <- values$df[!is.na(locs.vals),]
+        values$df <- values$df[!is.na(locs.vals),]        
       })
       str1 <- paste("Using WorldClim bio1-19 at", input$pred, " arcmin resolution.")
       if (sum(is.na(locs.vals)) > 0) {
@@ -186,23 +182,24 @@ shinyServer(function(input, output, session) {
       } else {
         str2 <- ""
       }
-      HTML(paste(str1, str2, sep = '<br/>'))
-    })
+      output$predTxt1 <- renderUI({HTML(paste(str1, str2, sep = '<br/>'))})
+    }
   })
   
-  # future user input functionality for rasters
-#   output$predTxt2 <- renderUI({
-#     if (input$userPred == "") return()
-#     isolate({
-#       files <- file.path(input$userPred, list.files(input$userPred))
-#       values$pred <- stack(files)
-#       paste("Using user-provided environmental data.")
-#     })
-#   })
   
-  # make a study region extent via user selection
-  makeBackgExt <- reactive({
-    if (input$backg == "" || input$pred == "") return()
+  # future user input functionality for rasters
+  #   output$predTxt2 <- renderUI({
+  #     if (input$userPred == "") return()
+  #     isolate({
+  #       files <- file.path(input$userPred, list.files(input$userPred))
+  #       values$pred <- stack(files)
+  #       paste("Using user-provided environmental data.")
+  #     })
+  #   })
+  
+  observe({
+    if (input$backg == "") return()
+    # generate background extent
     if (input$backg == 'bb') {
       xmin <- min(values$df$lon) - (input$backgBuf + res(values$pred)[1])
       xmax <- max(values$df$lon) + (input$backgBuf + res(values$pred)[1])
@@ -210,58 +207,20 @@ shinyServer(function(input, output, session) {
       ymax <- max(values$df$lat) + (input$backgBuf + res(values$pred)[1])
       bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin), ncol=2)
       values$backgExt <- SpatialPolygons(list(Polygons(list(Polygon(bb)), 1)))
-      values$backgExt2Map <- bb
     } else if (input$backg == 'mcp') {
       xy_mcp <- mcp(values$df[,2:3])
       xy_mcp <- gBuffer(xy_mcp, width = input$backgBuf + res(values$pred)[1])
       values$backgExt <- xy_mcp
-      values$backgExt2Map <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
+      bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
     }
-  })
-  
-  # map for study region
-  map3 <- createLeafletMap(session, 'map3')
-  observe({
-    if (input$backg == "") return()
-    input$backg
-    valores <- values$df[, 2:3]
-    makeBackgExt()
-    back <- values$backgExt2Map
-    isolate({
-      map3$clearShapes()      
-      lati3 <- valores[, 2]
-      longi3 <- valores[, 1]
-      map3$fitBounds(max(lati3), max(longi3), min(lati3), min(longi3))
-      map3$addCircle(    
-        lati3,
-        longi3,
-        layerId=as.numeric(rownames(valores)),
-        radius=8,
-        options=list(
-          weight=8,
-          fill=FALSE,
-          color='red'))
-        map3$addPolygon(lng=back[, 1], lat=back[, 2], layerId="1",
-                     options= list(weight=10, col="red"))
-      
-    })
-  })
-  
-  observe({
-    map3$clearPopups()    
-    event <- input$map3_shape_click
-    if (is.null(event)){return()}
-    isolate({
-      content <- as.character(tagList(
-        tags$strong(paste("ID:", event$id)),
-        tags$br(),
-        tags$strong(paste("Latitude:", event$lat)),        
-        tags$strong(paste("Longitude:", event$lng))                    
-      ))
-      map3$showPopup(event$lat, event$lng, content)
-    })
-  })
+    lati <- values$df[,2:3][,2]
+    longi <- values$df[,2:3][,1]
+    proxy %>% fitBounds(max(lati), max(longi), min(lati), min(longi))
+    proxy %>% addPolygons(lng=bb[,1], lat=bb[,2], layerId="1",
+                          options= list(weight=10, col="red"))
 
+  })
+  
   # clip and mask rasters based on study region, make random points for background, run ENMeval via user inputs
   runENMeval <- reactive({
     if (input$goEval == 0) return()
@@ -327,7 +286,7 @@ shinyServer(function(input, output, session) {
       eval.plot(values$evalTbl, legend=FALSE, value="Mean.OR10", variance="Var.OR10")
     }
   })
-   
+  
   # handle downloads for ENMeval results table csv
   output$downloadEvalcsv <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$gbifoccs), "_enmeval_results.csv")},
@@ -350,7 +309,7 @@ shinyServer(function(input, output, session) {
   output$plotPred <- renderPlot({
     plotMap(pred = values$evalPreds[[as.numeric(input$predSelServer)]], 
             pts2 = values$df, addpo = input$plotpoints)
-            })
+  })
   
   # handle download for rasters, as TIFF
   output$downloadPred <- downloadHandler(
@@ -362,11 +321,11 @@ shinyServer(function(input, output, session) {
   )
   
   # legacy console printing for spThin
-#   output$thinConsole <- renderPrint({
-#     if (input$goThin == 0) return()
-#     input$goThin
-#     isolate({values[["log"]] <- capture.output(runThin())})
-#     return(print(values[["log"]]))
-#   })
-
+  #   output$thinConsole <- renderPrint({
+  #     if (input$goThin == 0) return()
+  #     input$goThin
+  #     isolate({values[["log"]] <- capture.output(runThin())})
+  #     return(print(values[["log"]]))
+  #   })
+  
 })
