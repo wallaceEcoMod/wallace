@@ -23,9 +23,20 @@ library(leaflet)
 
 source("functions.R")
 
+
+
 shinyServer(function(input, output, session) {
-  # this list carries data that is used by multiple reactive functions
+  # make list to carry data used by multiple reactive functions
   values <- reactiveValues()
+  
+  output$log <- renderUI(HTML(values$log))
+  
+  # create map
+  map <- leaflet() %>% addTiles() %>% setView(0, 0, zoom = 2)
+  output$map <- renderLeaflet(map)
+  
+  # make map proxy to make further changes to existing map
+  proxy <- leafletProxy("map")
   
   # query GBIF based on user input, remove duplicate records
   observeEvent(input$goName, {
@@ -67,40 +78,12 @@ shinyServer(function(input, output, session) {
                      '] out of [', results$meta$count, '] total (limit 500).
                     Duplicated records removed [', sum(dup), "].")
         }}}}
-        output$GBIFtxt <- renderText(x)
+        values$log <- paste(values$log, x, sep='<br>')
         # render the GBIF records data table
         output$occTbl <- DT::renderDataTable({DT::datatable(values$df[,1:4])})
       }
     })
   })
-  
-  # governs point removal behavior and modifies tables in "values"
-  observe({
-    if (input$remove == 0) return()
-    isolate({
-      rows <- as.numeric(rownames(values$gbifoccs))
-      remo <- which(input$num == rows)
-      if(length(remo)>0){
-        values$df <- values$gbifoccs[-remo, ]
-        values$gbifoccs <- values$gbifoccs[-remo, ]
-      }
-    })  
-  })
-  
-  # handle downloading of GBIF csv
-  output$downloadGBIFcsv <- downloadHandler(
-    filename = function() {paste0(nameAbbr(values$gbifoccs), "_gbifCleaned.csv")},
-    content = function(file) {
-      write.csv(values$gbifoccs, file)
-    }
-  )
-  
-  # map of GBIF records
-  map <- leaflet() %>% addTiles() %>% setView(0, 0, zoom = 2)
-  output$map <- renderLeaflet(map)
-  
-  # proxies
-  proxy <- leafletProxy("map")
   
   observeEvent(input$goName, {
     proxy %>% clearShapes()
@@ -124,6 +107,31 @@ shinyServer(function(input, output, session) {
                                popup = ~pop)
   })
   
+  # governs point removal behavior and modifies tables in "values"
+  observe({
+    if (input$remove == 0) return()
+    isolate({
+      rows <- as.numeric(rownames(values$gbifoccs))
+      remo <- which(input$num == rows)
+      if(length(remo)>0){
+        values$df <- values$gbifoccs[-remo, ]
+        values$gbifoccs <- values$gbifoccs[-remo, ]
+        lati <- values$gbifoccs[,3]
+        longi <- values$gbifoccs[,2]
+        proxy %>% fitBounds(min(longi), min(lati), max(longi), max(lati))
+      }
+    })  
+  })
+  
+  # handle downloading of GBIF csv
+  output$downloadGBIFcsv <- downloadHandler(
+    filename = function() {paste0(nameAbbr(values$gbifoccs), "_gbifCleaned.csv")},
+    content = function(file) {
+      write.csv(values$gbifoccs, file)
+    }
+  )
+  
+  
   # map thinned records when Thin button is pressed
   observeEvent(input$goThin, {
     withProgress(message = "Thinning...", {
@@ -137,7 +145,7 @@ shinyServer(function(input, output, session) {
       values$df <- thinned
       values$thinoccs <- thinned
     })
-    output$thinText <- renderText(paste('Total records thinned to [', nrow(thinned), '] points.'))
+    values$log <- paste(values$log, paste('Total records thinned to [', nrow(thinned), '] points.'), sep='<br>')
     # render the thinned records data table
     output$occTbl <- DT::renderDataTable({DT::datatable(values$df[,1:4])})
     
@@ -176,14 +184,23 @@ shinyServer(function(input, output, session) {
         values$df <- values$df[!is.na(locs.vals),]        
       })
       str1 <- paste("Using WorldClim bio1-19 at", input$pred, " arcmin resolution.")
+
       if (sum(is.na(locs.vals)) > 0) {
         str2 <- paste0("Removed records with NA environmental values with IDs: ", 
                        paste(row.names(values$df[is.na(locs.vals),]), collapse=', '), ".")
       } else {
         str2 <- ""
       }
-      output$predTxt1 <- renderUI({HTML(paste(str1, str2, sep = '<br/>'))})
     }
+    values$predTxt <- paste(str1, str2, sep='<br>')
+  })
+  
+  observe({
+    if (!is.null(values$predTxt)) {
+      values$log <- paste(values$log, values$predTxt, sep='<br>')
+    }
+    values$predTxt <- NULL
+    print(values$log)
   })
   
   
@@ -222,68 +239,55 @@ shinyServer(function(input, output, session) {
   })
   
   # clip and mask rasters based on study region, make random points for background, run ENMeval via user inputs
-  runENMeval <- reactive({
-    if (input$goEval == 0) return()
-    input$goEval
-    isolate({
-      validate(
-        need(input$method != "randomkfold" && input$method != "user", "Please select a functional method.")
-      )
-      withProgress(message = "Processing environmental rasters...", {
-        #preds <- stack(values$predPath)
-        preds <- values$pred        
-        preds <- crop(preds, values$backgExt)
-        preds <- mask(preds, values$backgExt)
-      })
-      withProgress(message = "Generating background points...", {
-        backg_pts <- randomPoints(preds, 10000)
-      })
-      
-      rms <- seq(input$rms[1], input$rms[2], input$rmsBy)
-      progress <- shiny::Progress$new()
-      progress$set(message = "Evaluating ENMs...", value = 0)
-      on.exit(progress$close())
-      n <- length(rms) * length(input$fcs)
-      updateProgress <- function(value = NULL, detail = NULL) {
-        progress$inc(amount = 1/n, detail = detail)
-      }
-      e <- ENMevaluate(values$df[,2:3], preds, bg.coords = backg_pts, RMvalues = rms, fc = input$fcs, 
-                       method = input$method, updateProgress = updateProgress)
-      values$evalTbl <- e@results
-      values$evalPreds <- e@predictions
-      # render table of ENMeval results
-      output$evalTbl <- DT::renderDataTable({DT::datatable(values$evalTbl)})
+  observeEvent(input$goEval, {
+    validate(
+      need(input$method != "randomkfold" && input$method != "user", "Please select a functional method.")
+    )
+    withProgress(message = "Processing environmental rasters...", {
+      #preds <- stack(values$predPath)
+      preds <- values$pred        
+      preds <- crop(preds, values$backgExt)
+      preds <- mask(preds, values$backgExt)
     })
-  })
-  
-  # out text for ENMeval run
-  output$evalTxt <- renderText({
-    if (input$goEval == 0) return()
-    input$goEval
-    runENMeval()
-    if (!is.null(values$evalTbl)) {
-      paste("ENMeval ran successfully and output table with", nrow(values$evalTbl), "rows.")  
+    withProgress(message = "Generating background points...", {
+      backg_pts <- randomPoints(preds, 10000)
+    })
+    
+    rms <- seq(input$rms[1], input$rms[2], input$rmsBy)
+    progress <- shiny::Progress$new()
+    progress$set(message = "Evaluating ENMs...", value = 0)
+    on.exit(progress$close())
+    n <- length(rms) * length(input$fcs)
+    updateProgress <- function(value = NULL, detail = NULL) {
+      progress$inc(amount = 1/n, detail = detail)
     }
-  })
-  
-  # plotting functionality for ENMeval graphs
-  output$evalPlot <- renderPlot ({
-    if (input$goEval == 0) return()
+    e <- ENMevaluate(values$df[,2:3], preds, bg.coords = backg_pts, RMvalues = rms, fc = input$fcs, 
+                     method = input$method, updateProgress = updateProgress)
+    values$evalTbl <- e@results
+    values$evalPreds <- e@predictions
+    # render table of ENMeval results
+    output$evalTbl <- DT::renderDataTable({DT::datatable(values$evalTbl)})
     if (!is.null(values$evalTbl)) {
-      par(mfrow=c(3,2))
-      fc <- length(unique(values$evalTbl$features))
-      col <- rainbow(fc)
-      rm <- length(unique(values$evalTbl$rm))
-      plot(rep(1, times=fc), 1:fc, ylim=c(.5,fc+1), xlim=c(0,3), axes=F, ylab='', xlab='', cex=2, pch=21, bg=col)
-      segments(rep(.8, times=fc), 1:fc, rep(1.2, times=fc), 1:fc, lwd=1, col=col)
-      points(rep(1, times=fc), 1:fc, ylim=c(-1,fc+2), cex=2, pch=21, bg=col)
-      text(x=rep(1.3, times=fc), y=1:fc, labels=unique(values$evalTbl$features), adj=0)
-      text(x=1, y=fc+1, labels="Feature Classes", adj=.20, cex=1.3, font=2)
-      eval.plot(values$evalTbl, legend=FALSE, value="delta.AICc")
-      eval.plot(values$evalTbl, legend=FALSE, value="Mean.AUC", variance="Var.AUC")
-      eval.plot(values$evalTbl, legend=FALSE, value="Mean.AUC.DIFF", variance="Var.AUC.DIFF")
-      eval.plot(values$evalTbl, legend=FALSE, value="Mean.ORmin", variance="Var.ORmin")
-      eval.plot(values$evalTbl, legend=FALSE, value="Mean.OR10", variance="Var.OR10")
+      output$evalTxt <- renderText(
+        paste("ENMeval ran successfully and output table with", nrow(values$evalTbl), "rows.")
+      )
+      # plotting functionality for ENMeval graphs
+      output$evalPlot <- renderPlot({
+        par(mfrow=c(3,2))
+        fc <- length(unique(values$evalTbl$features))
+        col <- rainbow(fc)
+        rm <- length(unique(values$evalTbl$rm))
+        plot(rep(1, times=fc), 1:fc, ylim=c(.5,fc+1), xlim=c(0,3), axes=F, ylab='', xlab='', cex=2, pch=21, bg=col)
+        segments(rep(.8, times=fc), 1:fc, rep(1.2, times=fc), 1:fc, lwd=1, col=col)
+        points(rep(1, times=fc), 1:fc, ylim=c(-1,fc+2), cex=2, pch=21, bg=col)
+        text(x=rep(1.3, times=fc), y=1:fc, labels=unique(values$evalTbl$features), adj=0)
+        text(x=1, y=fc+1, labels="Feature Classes", adj=.20, cex=1.3, font=2)
+        eval.plot(values$evalTbl, legend=FALSE, value="delta.AICc")
+        eval.plot(values$evalTbl, legend=FALSE, value="Mean.AUC", variance="Var.AUC")
+        eval.plot(values$evalTbl, legend=FALSE, value="Mean.AUC.DIFF", variance="Var.AUC.DIFF")
+        eval.plot(values$evalTbl, legend=FALSE, value="Mean.ORmin", variance="Var.ORmin")
+        eval.plot(values$evalTbl, legend=FALSE, value="Mean.OR10", variance="Var.OR10")
+      })
     }
   })
   
@@ -319,13 +323,4 @@ shinyServer(function(input, output, session) {
       file.rename(res@file@name, file)
     }
   )
-  
-  # legacy console printing for spThin
-  #   output$thinConsole <- renderPrint({
-  #     if (input$goThin == 0) return()
-  #     input$goThin
-  #     isolate({values[["log"]] <- capture.output(runThin())})
-  #     return(print(values[["log"]]))
-  #   })
-  
 })
