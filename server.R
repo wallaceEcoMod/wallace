@@ -29,6 +29,8 @@ shinyServer(function(input, output, session) {
   # make list to carry data used by multiple reactive functions
   values <- reactiveValues()
   
+  #options(DT.options = list(pageLength = 1, language = list(search = 'Filter:')))
+  
   output$log <- renderUI(HTML(values$log))
   
   # create map
@@ -138,7 +140,8 @@ shinyServer(function(input, output, session) {
       output <- thin(values$gbifoccs, 'lat', 'lon', 'name', thin.par = input$thinDist, 
                      reps = 10, locs.thinned.list.return = TRUE, write.files = FALSE,
                      verbose = FALSE)
-      # pull max, not first
+      # pull max, not first (don't think this is implemented yet)
+      # this code is old, and doesn't do what it says it does...
       #       thinout <- cbind(rep(values$gbifoccs[1,1], nrow(output[[1]])), output[[1]])
       #       names(thinout) <- c('name', 'lon', 'lat')
       thinned <- values$gbifoccs[rownames(output[[1]]),]
@@ -178,13 +181,11 @@ shinyServer(function(input, output, session) {
       withProgress(message = "Downloading WorldClim data...", {
         values$pred <- getData(name = "worldclim", var = "bio", res = input$pred)
       })
-      
+      str1 <- paste("Using WorldClim bio1-19 at", input$pred, " arcmin resolution.")
       withProgress(message = "Processing...", {
         locs.vals <- extract(values$pred[[1]], values$df[,2:3])
         values$df <- values$df[!is.na(locs.vals),]        
       })
-      str1 <- paste("Using WorldClim bio1-19 at", input$pred, " arcmin resolution.")
-
       if (sum(is.na(locs.vals)) > 0) {
         str2 <- paste0("Removed records with NA environmental values with IDs: ", 
                        paste(row.names(values$df[is.na(locs.vals),]), collapse=', '), ".")
@@ -195,12 +196,14 @@ shinyServer(function(input, output, session) {
     values$predTxt <- paste(str1, str2, sep='<br>')
   })
   
+  # this is necessary because the above is not observeEvent, and thus for some
+  # reason when values$log is modified within observe, there's an infinite loop
   observe({
     if (!is.null(values$predTxt)) {
       values$log <- paste(values$log, values$predTxt, sep='<br>')
+      values$predTxt <- NULL
+      print(values$log)
     }
-    values$predTxt <- NULL
-    print(values$log)
   })
   
   
@@ -230,9 +233,9 @@ shinyServer(function(input, output, session) {
       values$backgExt <- xy_mcp
       bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
     }
-    lati <- values$df[,2:3][,2]
-    longi <- values$df[,2:3][,1]
-    proxy %>% fitBounds(max(lati), max(longi), min(lati), min(longi))
+    lati <- values$df[,3]
+    longi <- values$df[,2]
+    #proxy %>% fitBounds(max(lati), max(longi), min(lati), min(longi))
     proxy %>% addPolygons(lng=bb[,1], lat=bb[,2], layerId="1",
                           options= list(weight=10, col="red"))
 
@@ -245,7 +248,7 @@ shinyServer(function(input, output, session) {
     )
     withProgress(message = "Processing environmental rasters...", {
       #preds <- stack(values$predPath)
-      preds <- values$pred        
+      preds <- values$pred
       preds <- crop(preds, values$backgExt)
       preds <- mask(preds, values$backgExt)
     })
@@ -265,12 +268,16 @@ shinyServer(function(input, output, session) {
                      method = input$method, updateProgress = updateProgress)
     values$evalTbl <- e@results
     values$evalPreds <- e@predictions
+    print(e@results)
     # render table of ENMeval results
-    output$evalTbl <- DT::renderDataTable({DT::datatable(values$evalTbl)})
+    # code to do fixed columns -- problem is it makes the page selection disappear and you
+    # can't seem to pan around the table to see the other rows... likely a bug
+    # (extensions=list(FixedColumns=list(leftColumns=2)), options=list(dom='t', scrollX=TRUE, scrollCollapse=TRUE))
+    output$evalTbl <- DT::renderDataTable({DT::datatable(cbind(e@results[,1:3], round(e@results[,4:15], digits=3), nparam=e@results[,16]))})
+    
     if (!is.null(values$evalTbl)) {
-      output$evalTxt <- renderText(
-        paste("ENMeval ran successfully and output table with", nrow(values$evalTbl), "rows.")
-      )
+      x <- paste("ENMeval ran successfully and output table with", nrow(values$evalTbl), "rows.")
+      values$log <- paste(values$log, x, sep='<br>')
       # plotting functionality for ENMeval graphs
       output$evalPlot <- renderPlot({
         par(mfrow=c(3,2))
