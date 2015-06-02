@@ -23,7 +23,9 @@ library(leaflet)
 
 source("functions.R")
 
-
+# dev version of leaflet for overlaying rasters
+#devtools::install_github("jcheng5/rasterfaster")
+#devtools::install_github("rstudio/leaflet@joe/feature/raster-image")
 
 shinyServer(function(input, output, session) {
   # make list to carry data used by multiple reactive functions
@@ -115,12 +117,14 @@ shinyServer(function(input, output, session) {
     isolate({
       rows <- as.numeric(rownames(values$gbifoccs))
       remo <- which(input$num == rows)
-      if(length(remo)>0){
+      if (length(remo) > 0) {
         values$df <- values$gbifoccs[-remo, ]
         values$gbifoccs <- values$gbifoccs[-remo, ]
         lati <- values$gbifoccs[,3]
         longi <- values$gbifoccs[,2]
         proxy %>% fitBounds(min(longi), min(lati), max(longi), max(lati))
+        x <- paste0("Removed point ID ", input$num, ".")
+        values$log <- paste(values$log, x, sep='<br>')
       }
     })  
   })
@@ -235,10 +239,23 @@ shinyServer(function(input, output, session) {
     }
     lati <- values$df[,3]
     longi <- values$df[,2]
+    values$bb <- bb
     #proxy %>% fitBounds(max(lati), max(longi), min(lati), min(longi))
-    proxy %>% addPolygons(lng=bb[,1], lat=bb[,2], layerId="1",
+    proxy %>% addPolygons(lng=bb[,1], lat=bb[,2], layerId="backext",
                           options= list(weight=10, col="red"))
 
+  })
+  
+  # removes backext polygon if not on tab 3
+  observe({
+    if (input$tabs != "3) Variables") {
+      proxy %>% removeShape(layerId='backext')
+    } else {
+      if (!is.null(values$bb)) {
+        proxy %>% addPolygons(lng=values$bb[,1], lat=values$bb[,2], layerId="backext",
+                              options= list(weight=10, col="red"))  
+      }
+    }
   })
   
   # clip and mask rasters based on study region, make random points for background, run ENMeval via user inputs
@@ -316,10 +333,14 @@ shinyServer(function(input, output, session) {
                 choices = predNameList)
   })
   
-  # plot functionality for rasters -- currently uses plotMap
-  output$plotPred <- renderPlot({
-    plotMap(pred = values$evalPreds[[as.numeric(input$predSelServer)]], 
-            pts2 = values$df, addpo = input$plotpoints)
+  # plot raster on proxy
+  observeEvent(input$plotRas, {
+    if (input$tabs == "5) Predict") {
+      pred <- values$evalPreds[[as.numeric(input$predSelServer)]]
+      proxy %>% addRasterImage(pred, layerId='ras', colors="Spectral") 
+    } else {
+      proxy %>% removeImage(layerId='ras')
+    }
   })
   
   # handle download for rasters, as TIFF

@@ -97,11 +97,12 @@ shinyUI(fluidPage(title,
                                         downloadButton('downloadEvalcsv', "Download ENMeval Results CSV")
                              ),
                              tabPanel("5) Predict",
-                                        tab5content,
-                                        uiOutput("predSel"),
-                                        checkboxInput("plotpoints", label = "Plot occurrence points", value = FALSE),
-                                        br(),
-                                        downloadButton('downloadPred', "Download Current Prediction Raster")
+                                      tab5content,
+                                      uiOutput("predSel"),
+                                      actionButton("plotRas", "Plot Raster"),
+                                      checkboxInput("plotpoints", label = "Plot occurrence points", value = FALSE),
+                                      br(),
+                                      downloadButton('downloadPred', "Download Current Prediction Raster")
                              ),
                              tabPanel("ABOUT",
                                       fluidPage(titlePanel(h4("Wallace was created by an international team of ecologists:")),
