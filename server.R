@@ -31,9 +31,8 @@ shinyServer(function(input, output, session) {
   # make list to carry data used by multiple reactive functions
   values <- reactiveValues()
   
-  #options(DT.options = list(pageLength = 1, language = list(search = 'Filter:')))
-  
-  output$log <- renderUI(HTML(values$log))
+  output$log <- renderUI({tags$div(id='header', "LOG",
+                         tags$div(id='header-content', HTML(paste0(values$log, "<br>", collapse = ""))))})
   
   # create map
   map <- leaflet() %>% addTiles() %>% setView(0, 0, zoom = 2)
