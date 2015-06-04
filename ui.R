@@ -21,6 +21,30 @@ title <- HTML(paste0(span("WALLACE beta v0.1: ", style = "font-size:16pt"),
               Robert Muscarella, Robert P. Anderson", style = "font-size:7pt")))
 # Define UI for application that draws a histogram
 shinyUI(fluidPage(title,
+                  tags$head(
+                    tags$style(HTML(
+                      "#text { overflow: auto; }
+                       #header {
+                        position: relative;
+                        min-height: 75px;
+#                         background: #FFFFFF;
+                        z-index:10;
+                        background: inherit;
+                       }
+                      #header-content {
+                        position: absolute;
+                        z-index: 5;
+                        bottom: 0;
+                        left: 0;
+                      }
+                      #textContainer {
+                        height:100px; 
+                        overflow:auto; 
+                        border:1px solid green; 
+                        padding:5px
+                      }
+                       }"
+                    ))),
                   fluidRow(
                     column(4,
                            tabsetPanel(id='tabs',
@@ -115,7 +139,7 @@ shinyUI(fluidPage(title,
                            )
                     ),
                     column(8,
-                           htmlOutput("log"),
+                           div(id = "textContainer", htmlOutput("log")),
                            br(),
                            conditionalPanel("input.tabs != 4", leafletOutput("map", height=600)),
                            br(),
