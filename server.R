@@ -110,22 +110,53 @@ shinyServer(function(input, output, session) {
                                popup = ~pop)
   })
   
-  # governs point removal behavior and modifies tables in "values"
+  # functionality for drawing polygons on map
   observe({
-    if (input$remove == 0) return()
-    isolate({
-      rows <- as.numeric(rownames(values$gbifoccs))
-      remo <- which(input$num == rows)
-      if (length(remo) > 0) {
-        values$df <- values$gbifoccs[-remo, ]
-        values$gbifoccs <- values$gbifoccs[-remo, ]
-        lati <- values$gbifoccs[,3]
-        longi <- values$gbifoccs[,2]
-        proxy %>% fitBounds(min(longi), min(lati), max(longi), max(lati))
-        x <- paste0("Removed point ID ", input$num, ".")
-        values$log <- paste(values$log, x, sep='<br>')
-      }
-    })  
+    click <- input$map_click
+    if (is.null(click)) return()
+    latlng <- c(click$lng, click$lat)
+    values$drawPolyCoords <- isolate(rbind(values$drawPolyCoords, latlng))
+    proxy %>% removeShape("drawPoly")
+    proxy %>% addPolygons(values$drawPolyCoords[,1], values$drawPolyCoords[,2], 
+                          layerId='drawPoly', fill=FALSE, weight=3, color='green')      
+  })
+  
+  # erase poly with button click
+  observeEvent(input$erasePoly, {
+    proxy %>% clearShapes()
+    values$drawPolyCoords <- NULL
+    values$ptsSel
+    if (!is.null(values$gbifoccs)) {
+      values$df <- values$gbifoccs
+      proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
+                                 layerId = as.numeric(rownames(values$df)), 
+                                 radius = 5, color = 'red', fill = FALSE, weight = 2,
+                                 popup = ~pop)
+    }
+  })
+  
+  # select points intersecting drawn polygon (replace values$df)
+  observeEvent(input$selectPoly, {
+    pts <- SpatialPoints(values$gbifoccs[,2:3])
+    poly <- SpatialPolygons(list(Polygons(list(Polygon(values$drawPolyCoords)), ID='p')))
+    ptsSel <- values$gbifoccs[!(is.na(over(pts, poly))),]
+    proxy %>% addCircleMarkers(data = ptsSel, lat = ~lat, lng = ~lon, 
+                               layerId = as.numeric(rownames(ptsSel)), 
+                               radius = 5, color = 'red', fill = TRUE, fillColor = 'yellow', 
+                               weight = 2, popup = ~pop, fillOpacity=1)
+    values$ptsSel <- ptsSel
+    values$df <- ptsSel
+  })
+  
+  observe({
+    if (input$tabs != "1) Get Data") {
+      proxy %>% clearShapes()
+      proxy %>% clearMarkers()
+      proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
+                                 layerId = as.numeric(rownames(values$df)), 
+                                 radius = 5, color = 'red', fill = FALSE, weight = 2,
+                                 popup = ~pop)
+    }
   })
   
   # handle downloading of GBIF csv
@@ -135,7 +166,6 @@ shinyServer(function(input, output, session) {
       write.csv(values$gbifoccs, file)
     }
   )
-  
   
   # map thinned records when Thin button is pressed
   observeEvent(input$goThin, {
@@ -341,7 +371,7 @@ shinyServer(function(input, output, session) {
   })
 
   observe({
-    if (input$tabs == "5) Predict" | input$tabs == "ABOUT") & !is.null(values$predCur)) {
+    if ((input$tabs == "5) Predict" | input$tabs == "ABOUT") & !is.null(values$predCur)) {
       proxy %>% addRasterImage(values$predCur, layerId='ras', colors="Spectral") 
     } else {
       proxy %>% removeImage(layerId='ras')
