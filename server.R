@@ -335,8 +335,14 @@ shinyServer(function(input, output, session) {
   # plot raster on proxy
   observeEvent(input$plotRas, {
     if (input$tabs == "5) Predict") {
-      pred <- values$evalPreds[[as.numeric(input$predSelServer)]]
-      proxy %>% addRasterImage(pred, layerId='ras', colors="Spectral") 
+      values$predCur <- values$evalPreds[[as.numeric(input$predSelServer)]]
+      proxy %>% addRasterImage(values$predCur, layerId='ras', colors="Spectral")
+    } 
+  })
+
+  observe({
+    if (input$tabs == "5) Predict" | input$tabs == "ABOUT") & !is.null(values$predCur)) {
+      proxy %>% addRasterImage(values$predCur, layerId='ras', colors="Spectral") 
     } else {
       proxy %>% removeImage(layerId='ras')
     }
