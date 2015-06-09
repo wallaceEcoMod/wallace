@@ -1,2 +1,2 @@
-# shinyENM
-a Shiny implementation of ENM evaluation
+# WALLACE
+a shiny-implemented web app for building and evaluating ecological niche models from GBIF data
