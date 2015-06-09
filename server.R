@@ -86,15 +86,7 @@ shinyServer(function(input, output, session) {
   
   observe({
     if (is.null(input$userCSV)) return()
-    
-    inFile <- isolate(read.csv(input$userCSV$datapath, header = TRUE))
-    print(inFile)
-    if (names(inFile) > 3) {
-      x <- "ERROR: More than 3 columns in CSV file."
-    } else {
-      x <- paste0("User input ", input$userCSV$name, " with [", nrow(values$df), "[ records.")
-    }
-    values$log <- paste(values$log, x, sep='<br>')
+    inFile <- read.csv(input$userCSV$datapath, header = TRUE)
     
     values$spname <- inFile[1,1]
     names(inFile)[2:3] <- c('lon', 'lat')
@@ -103,15 +95,16 @@ shinyServer(function(input, output, session) {
     }
     inFile$row <- row.names(inFile)
     inFile$pop <- unlist(apply(inFile, 1, popUpContent))
-#     values$gbifoccs <- isolate(rbind(values$gbifoccs, inFile))
-#     values$df <- isolate(rbind(values$df, inFile))
-    print(values$df)
+    values$gbifoccs <- isolate(rbind(values$gbifoccs, inFile))
+    values$df <- isolate(rbind(values$df, inFile))
+    # this makes an infinite loop. not sure why...
+#     x <- paste0("User input ", input$userCSV$name, " with [", nrow(values$df), "[ records.")
+#     values$log <- paste(values$log, x, sep='<br>')
   })
     
   
   # map gbif occs
-  observe({
-    if (input$goName == '' | is.null(input$userCSV)) return()
+  observeEvent(input$goName, {
     proxy %>% clearShapes()
     lati <- values$gbifoccs[,3]
     longi <- values$gbifoccs[,2]
