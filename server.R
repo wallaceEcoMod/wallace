@@ -53,14 +53,6 @@ shinyServer(function(input, output, session) {
         locs <- locs[!dup, ]
         names(locs)[2:3] <- c('lon', 'lat')
         
-        popUpContent <- function(x) {
-          as.character(tagList(
-            tags$strong(paste("ID:", x['row'])),
-            tags$br(),
-            tags$strong(paste("Latitude:", x['lat'])),        
-            tags$strong(paste("Longitude:", x['lon']))
-          ))
-        }
         locs$row <- row.names(locs)
         locs$pop <- unlist(apply(locs, 1, popUpContent))
         
@@ -82,13 +74,44 @@ shinyServer(function(input, output, session) {
                     Duplicated records removed [', sum(dup), "].")
         }}}}
         values$log <- paste(values$log, x, sep='<br>')
-        # render the GBIF records data table
-        output$occTbl <- DT::renderDataTable({DT::datatable(values$df[,1:4])})
       }
     })
   })
   
-  observeEvent(input$goName, {
+  observe({
+    if (is.null(values$df)) return()
+    # render the GBIF records data table
+    output$occTbl <- DT::renderDataTable({DT::datatable(values$df[,1:4])})
+  })
+  
+  observe({
+    if (is.null(input$userCSV)) return()
+    
+    inFile <- isolate(read.csv(input$userCSV$datapath, header = TRUE))
+    print(inFile)
+    if (names(inFile) > 3) {
+      x <- "ERROR: More than 3 columns in CSV file."
+    } else {
+      x <- paste0("User input ", input$userCSV$name, " with [", nrow(values$df), "[ records.")
+    }
+    values$log <- paste(values$log, x, sep='<br>')
+    
+    values$spname <- inFile[1,1]
+    names(inFile)[2:3] <- c('lon', 'lat')
+    if (!("basisOfRecord" %in% names(inFile))) {
+      inFile$basisOfRecord <- NA
+    }
+    inFile$row <- row.names(inFile)
+    inFile$pop <- unlist(apply(inFile, 1, popUpContent))
+#     values$gbifoccs <- isolate(rbind(values$gbifoccs, inFile))
+#     values$df <- isolate(rbind(values$df, inFile))
+    print(values$df)
+  })
+    
+  
+  # map gbif occs
+  observe({
+    if (input$goName == '' | is.null(input$userCSV)) return()
     proxy %>% clearShapes()
     lati <- values$gbifoccs[,3]
     longi <- values$gbifoccs[,2]
@@ -163,7 +186,7 @@ shinyServer(function(input, output, session) {
   output$downloadGBIFcsv <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$gbifoccs), "_gbifCleaned.csv")},
     content = function(file) {
-      write.csv(values$gbifoccs, file)
+      write.csv(values$gbifoccs, file, row.names=FALSE)
     }
   )
   
