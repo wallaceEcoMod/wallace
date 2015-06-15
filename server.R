@@ -31,7 +31,7 @@ source("functions.R")
 
 shinyServer(function(input, output, session) {
   # make list to carry data used by multiple reactive functions
-  values <- reactiveValues(polyID=0)
+  values <- reactiveValues(polyID=0, polyErase=FALSE)
   
   output$log <- renderUI({tags$div(id='header', "LOG",
                          tags$div(id='header-content', HTML(paste0(values$log, "<br>", collapse = ""))))})
@@ -130,9 +130,18 @@ shinyServer(function(input, output, session) {
   
   # functionality for drawing polygons on map
   observe({
-    click <- input$map_click
-    if (is.null(click)) return()
-    latlng <- c(click$lng, click$lat)
+    latlng <- c(input$map_click$lng, input$map_click$lat)
+    # this functionality prevents existing map click from being
+    # added to new polygon
+    if (values$polyErase) {
+      if (identical(latlng, values$mapClick)) {
+        return()
+      } else {
+        values$polyErase <- FALSE 
+      }
+    }
+    if (is.null(input$map_click)) return()
+    values$mapClick <- latlng
     values$drawPolyCoords <- isolate(rbind(values$drawPolyCoords, latlng))
     proxy %>% removeShape("drawPoly")
     proxy %>% addPolygons(values$drawPolyCoords[,1], values$drawPolyCoords[,2], 
@@ -144,6 +153,7 @@ shinyServer(function(input, output, session) {
     proxy %>% clearShapes()
     values$drawPolyCoords <- NULL
     values$drawPolys <- NULL
+    values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
     values$ptsSel
     if (!is.null(values$gbifoccs)) {
       values$df <- values$gbifoccs
@@ -156,6 +166,7 @@ shinyServer(function(input, output, session) {
   
   # select points intersecting drawn polygons (replace values$df)
   observeEvent(input$selectPoly, {
+    values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
     values$polyID <- values$polyID + 1
     if (is.null(values$gbifoccs)) return()
     if (is.null(values$drawPolyCoords)) return()
@@ -180,13 +191,8 @@ shinyServer(function(input, output, session) {
   observe({
     if (is.null(values$drawPolys)) return()
     curPolys <- values$drawPolys@polygons
-    print(curPolys)
     numPolys <- length(curPolys)
-    print(numPolys)
     colors <- brewer.pal(numPolys, 'Accent')
-    print(colors)
-#     ifelse(numPolys == 2, colors <- colors[1:2], 
-#            ifelse(numPolys == 1, colors <- colors[1]))
     for (i in numPolys) {
       curPoly <- curPolys[i][[1]]@Polygons[[1]]@coords
       proxy %>% addPolygons(curPoly[,1], curPoly[,2], 
