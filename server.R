@@ -1,5 +1,5 @@
 # check package dependencies, and download if necessary
-list.of.packages <- c("shiny", "ggplot2", "maps", "rgdal", "spThin", "colorRamps", "dismo", "rgeos", "XML")
+list.of.packages <- c("shiny", "ggplot2", "maps", "RColorBrewer", "rgdal", "spThin", "colorRamps", "dismo", "rgeos", "XML")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 # rgbif needs to be downloaded from source
@@ -14,11 +14,13 @@ if (!require("DT")) devtools::install_github("rstudio/DT")
 # load libraries
 library(shiny)
 library(rgbif)
+library(maptools)
 library(spThin)
 library(ENMeval)
 library(dismo)
 library(rgeos)
 library(ggplot2)
+library(RColorBrewer)
 library(leaflet)
 
 source("functions.R")
@@ -29,7 +31,7 @@ source("functions.R")
 
 shinyServer(function(input, output, session) {
   # make list to carry data used by multiple reactive functions
-  values <- reactiveValues()
+  values <- reactiveValues(polyID=0)
   
   output$log <- renderUI({tags$div(id='header', "LOG",
                          tags$div(id='header-content', HTML(paste0(values$log, "<br>", collapse = ""))))})
@@ -141,6 +143,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$erasePoly, {
     proxy %>% clearShapes()
     values$drawPolyCoords <- NULL
+    values$drawPolys <- NULL
     values$ptsSel
     if (!is.null(values$gbifoccs)) {
       values$df <- values$gbifoccs
@@ -151,17 +154,45 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  # select points intersecting drawn polygon (replace values$df)
+  # select points intersecting drawn polygons (replace values$df)
   observeEvent(input$selectPoly, {
+    values$polyID <- values$polyID + 1
+    if (is.null(values$gbifoccs)) return()
+    if (is.null(values$drawPolyCoords)) return()
     pts <- SpatialPoints(values$gbifoccs[,2:3])
-    poly <- SpatialPolygons(list(Polygons(list(Polygon(values$drawPolyCoords)), ID='p')))
-    ptsSel <- values$gbifoccs[!(is.na(over(pts, poly))),]
+    newPoly <- SpatialPolygons(list(Polygons(list(Polygon(values$drawPolyCoords)), ID=values$polyID)))
+    if (is.null(values$drawPolys)) {
+      values$drawPolys <- newPoly
+    } else {
+      values$drawPolys <- spRbind(values$drawPolys, newPoly)
+    }
+    
+    ptsSel <- values$gbifoccs[!(is.na(over(pts, values$drawPolys))),]
     proxy %>% addCircleMarkers(data = ptsSel, lat = ~lat, lng = ~lon, 
                                layerId = as.numeric(rownames(ptsSel)), 
                                radius = 5, color = 'red', fill = TRUE, fillColor = 'yellow', 
                                weight = 2, popup = ~pop, fillOpacity=1)
+    values$drawPolyCoords <- NULL
     values$ptsSel <- ptsSel
     values$df <- ptsSel
+  })
+
+  observe({
+    if (is.null(values$drawPolys)) return()
+    curPolys <- values$drawPolys@polygons
+    print(curPolys)
+    numPolys <- length(curPolys)
+    print(numPolys)
+    colors <- brewer.pal(numPolys, 'Accent')
+    print(colors)
+#     ifelse(numPolys == 2, colors <- colors[1:2], 
+#            ifelse(numPolys == 1, colors <- colors[1]))
+    for (i in numPolys) {
+      curPoly <- curPolys[i][[1]]@Polygons[[1]]@coords
+      proxy %>% addPolygons(curPoly[,1], curPoly[,2], 
+                            layerId=paste0('drawPolys',i), 
+                            weight=3, color=colors[i])       
+    }
   })
   
   observe({
