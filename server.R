@@ -20,6 +20,7 @@ library(ENMeval)
 library(dismo)
 library(rgeos)
 library(ggplot2)
+# library(shinyFiles)
 library(RColorBrewer)
 library(leaflet)
 
@@ -86,6 +87,7 @@ shinyServer(function(input, output, session) {
     output$occTbl <- DT::renderDataTable({DT::datatable(values$df[,1:4])})
   })
   
+  # functionality for input of user CSV
   observe({
     if (is.null(input$userCSV)) return()
     inFile <- read.csv(input$userCSV$datapath, header = TRUE)
@@ -341,6 +343,16 @@ shinyServer(function(input, output, session) {
       xy_mcp <- gBuffer(xy_mcp, width = input$backgBuf + res(values$pred)[1])
       values$backgExt <- xy_mcp
       bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
+    } else if (input$backg == 'user' & !is.null(input$userBackg)) {
+#       file <- shinyFileChoose(input, 'userBackg', root=c(root='.'))
+#       path <- input$userBackg$datapath
+      name <- input$userBackg$name
+#       pathdir <- dirname(path)
+#       pathfile <- basename(path)
+      ext <- strsplit(name, '\\.')[[1]][2]
+      if (ext == 'csv') {
+        bb <- read.csv(input$userBackg$datapath, header = TRUE)
+      }
     }
     lati <- values$df[,3]
     longi <- values$df[,2]
