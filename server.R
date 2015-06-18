@@ -154,7 +154,6 @@ shinyServer(function(input, output, session) {
     values$drawPolyCoords <- NULL
     values$drawPolys <- NULL
     values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
-    values$ptsSel
     if (!is.null(values$gbifoccs)) {
       values$df <- values$gbifoccs
       proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
@@ -187,28 +186,52 @@ shinyServer(function(input, output, session) {
     values$ptsSel <- ptsSel
     values$df <- ptsSel
   })
-
-  observe({
-    if (is.null(values$drawPolys)) return()
-    curPolys <- values$drawPolys@polygons
-    numPolys <- length(curPolys)
-    colors <- brewer.pal(numPolys, 'Accent')
-    for (i in numPolys) {
-      curPoly <- curPolys[i][[1]]@Polygons[[1]]@coords
-      proxy %>% addPolygons(curPoly[,1], curPoly[,2], 
-                            layerId=paste0('drawPolys',i), 
-                            weight=3, color=colors[i])       
-    }
-  })
+  
+  # draw all drawn polygons and color according to colorBrewer
+#   observe({
+#     if (is.null(values$drawPolys)) return()
+#     curPolys <- values$drawPolys@polygons
+#     numPolys <- length(curPolys)
+#     colors <- brewer.pal(numPolys, 'Accent')
+#     for (i in numPolys) {
+#       curPoly <- curPolys[i][[1]]@Polygons[[1]]@coords
+#       proxy %>% addPolygons(curPoly[,1], curPoly[,2], 
+#                             layerId=paste0('drawPolys',i), 
+#                             weight=3, color=colors[i])       
+#     }
+#   })
   
   observe({
+    if (is.null(values$df)) return()
     if (input$tabs != "1) Get Data") {
       proxy %>% clearShapes()
       proxy %>% clearMarkers()
-      proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
-                                 layerId = as.numeric(rownames(values$df)), 
+    }
+    proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
+                               layerId = as.numeric(rownames(values$df)), 
+                               radius = 5, color = 'red', fill = FALSE, weight = 2,
+                               popup = ~pop)
+    if (input$tabs == "1) Get Data") {
+      # draw all user-drawn polygons and color according to colorBrewer
+      if (is.null(values$drawPolys)) return()
+      curPolys <- values$drawPolys@polygons
+      numPolys <- length(curPolys)
+      colors <- brewer.pal(numPolys, 'Accent')
+      for (i in numPolys) {
+        curPoly <- curPolys[i][[1]]@Polygons[[1]]@coords
+        proxy %>% addPolygons(curPoly[,1], curPoly[,2], 
+                              layerId=paste0('drawPolys',i), 
+                              weight=3, color=colors[i])   
+      }
+      proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
+                                 layerId = as.numeric(rownames(values$gbifoccs)), 
                                  radius = 5, color = 'red', fill = FALSE, weight = 2,
                                  popup = ~pop)
+      if (is.null(values$ptsSel)) return()
+      proxy %>% addCircleMarkers(data = values$ptsSel, lat = ~lat, lng = ~lon, 
+                                 layerId = as.numeric(rownames(values$ptsSel)), 
+                                 radius = 5, color = 'red', fill = TRUE, fillColor = 'yellow', 
+                                 weight = 2, popup = ~pop, fillOpacity=1)
     }
   })
   
