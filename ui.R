@@ -13,6 +13,14 @@ library(DT)
 
 source("ui_content.R")
 
+# function to make two small input boxes next to each other
+textInputRow<-function (inputId, label, value = "") 
+{
+  div(style="display:inline-block",
+      tags$label(label, `for` = inputId), 
+      tags$input(id = inputId, type = "text", value = value,class="input-small"))
+}
+
 #"Harnessing Digital Biodiversity Data via a GUI interface fueled by R"
 title <- HTML(paste0(span("WALLACE beta v0.1: ", style = "font-size:16pt"), 
                      span("Harnessing Digital Biodiversity Data for Predictive Modeling, fueled by R", 
@@ -117,6 +125,9 @@ shinyUI(fluidPage(title,
                                                                    "checkerboard2" = "checkerboard2",
                                                                    "randomkfold (not functional)" = "randomkfold",
                                                                    "user-specified (not functional)" = "user")),
+                                        conditionalPanel("input.method == 'user'", 
+                                                         uiOutput('occgrpSel'),
+                                                         uiOutput('bggrpSel')),
                                         actionButton("goEval", "Run ENMeval"),
                                         br(),
                                         br(),

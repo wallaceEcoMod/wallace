@@ -91,7 +91,13 @@ shinyServer(function(input, output, session) {
   observe({
     if (is.null(input$userCSV)) return()
     inFile <- read.csv(input$userCSV$datapath, header = TRUE)
-    
+    # make dynamic field selections for ui user-defined kfold groups
+    output$occgrpSel <- renderUI({
+      selectInput('occgrp', 'Occurrence Group Field', names(inFile))
+    })
+    output$bggrpSel <- renderUI({
+      selectInput('bggrp', 'Background Group Field', names(inFile))
+    })
     values$spname <- inFile[1,1]
     names(inFile)[2:3] <- c('lon', 'lat')
     if (!("basisOfRecord" %in% names(inFile))) {
@@ -284,6 +290,7 @@ shinyServer(function(input, output, session) {
     }
   )
   
+  # download predictor variables
   observe({
     ## Check if predictor path exists. If not, use the dismo function getData()
     if (input$pred == "" || input$pred == 'user') return()
@@ -328,6 +335,7 @@ shinyServer(function(input, output, session) {
   #     })
   #   })
   
+  # background extents
   observe({
     if (input$backg == "") return()
     # generate background extent
@@ -398,8 +406,14 @@ shinyServer(function(input, output, session) {
     updateProgress <- function(value = NULL, detail = NULL) {
       progress$inc(amount = 1/n, detail = detail)
     }
+    if (input$method == 'user') {
+      occgrp <- values$df[,input$occgrpSel]
+      bggrp <- values$df[,input$bggrpSel]
+    } else {
+      occgrp <- bggrp <- NULL
+    }
     e <- ENMevaluate(values$df[,2:3], preds, bg.coords = backg_pts, RMvalues = rms, fc = input$fcs, 
-                     method = input$method, updateProgress = updateProgress)
+                     method = input$method, occ.grp = , bg.grp = , updateProgress = updateProgress)
     values$evalTbl <- e@results
     values$evalPreds <- e@predictions
     print(e@results)
