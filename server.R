@@ -389,11 +389,11 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-  
+
   # clip and mask rasters based on study region, make random points for background, run ENMeval via user inputs
   observeEvent(input$goEval, {
     validate(
-      need(input$method != "randomkfold" && input$method != "user", "Please select a functional method.")
+      need(input$method != "randomkfold", "Please select a functional method.")
     )
     withProgress(message = "Processing environmental rasters...", {
       #preds <- stack(values$predPath)
@@ -401,9 +401,23 @@ shinyServer(function(input, output, session) {
       preds <- crop(preds, values$backgExt)
       preds <- mask(preds, values$backgExt)
     })
-    withProgress(message = "Generating background points...", {
-      backg_pts <- randomPoints(preds, 10000)
-    })
+
+    # if user kfold, get groups and assign occs and backg from inFile, 
+    # and if not, make backg pts and assign user kfold groups to NULL
+    if (input$method == 'user') {
+      occs <- values$inFile[values$inFile[,1] == values$spname,]
+      backg_pts <- values$inFile[values$inFile[,1] != values$spname,]
+      occgrp <- occs[,input$occgrp]
+      bggrp <- backg_pts[,input$bggrp]
+      occs <- occs[,2:3]
+      backg_pts <- backg_pts[,2:3]
+    } else {
+      occgrp <- bggrp <- NULL
+      occs <- values$df[,2:3]
+      withProgress(message = "Generating background points...", {
+        backg_pts <- randomPoints(preds, 10000)
+      })
+    }
     
     rms <- seq(input$rms[1], input$rms[2], input$rmsBy)
     progress <- shiny::Progress$new()
@@ -413,14 +427,9 @@ shinyServer(function(input, output, session) {
     updateProgress <- function(value = NULL, detail = NULL) {
       progress$inc(amount = 1/n, detail = detail)
     }
-    if (input$method == 'user') {
-      occgrp <- values$df[,input$occgrpSel]
-      bggrp <- values$df[,input$bggrpSel]
-    } else {
-      occgrp <- bggrp <- NULL
-    }
-    e <- ENMevaluate(values$df[,2:3], preds, bg.coords = backg_pts, RMvalues = rms, fc = input$fcs, 
-                     method = input$method, occ.grp = , bg.grp = , updateProgress = updateProgress)
+
+    e <- ENMevaluate(occs, preds, bg.coords = backg_pts, RMvalues = rms, fc = input$fcs, 
+                     method = input$method, occ.grp = occgrp, bg.grp = bggrp, updateProgress = updateProgress)
     values$evalTbl <- e@results
     values$evalPreds <- e@predictions
     print(e@results)
