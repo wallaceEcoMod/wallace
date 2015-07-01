@@ -59,8 +59,8 @@ shinyServer(function(input, output, session) {
         locs$row <- row.names(locs)
         locs$pop <- unlist(apply(locs, 1, popUpContent))
         
-        values$df <- locs
-        values$gbifoccs <- locs
+        values$df <- rbind(values$df, locs)
+        values$gbifoccs <- rbind(values$gbifoccs, locs)
         
         inName <- isolate(input$gbifName)
         nameSplit <- length(unlist(strsplit(inName, " ")))
@@ -87,10 +87,14 @@ shinyServer(function(input, output, session) {
     output$occTbl <- DT::renderDataTable({DT::datatable(values$df[,1:4])})
   })
   
+  observe({print(input$userCSV)})
+  
   # functionality for input of user CSV
-  observe({
+  observe({    
     if (is.null(input$userCSV)) return()
     inFile <- read.csv(input$userCSV$datapath, header = TRUE)
+    names(inFile)[2:3] <- c('lon', 'lat')
+    values$inFile <- inFile
     # make dynamic field selections for ui user-defined kfold groups
     output$occgrpSel <- renderUI({
       selectInput('occgrp', 'Occurrence Group Field', names(inFile))
@@ -98,20 +102,23 @@ shinyServer(function(input, output, session) {
     output$bggrpSel <- renderUI({
       selectInput('bggrp', 'Background Group Field', names(inFile))
     })
+    # subset to only occs, not backg, and just fields that match df
     values$spname <- inFile[1,1]
-    names(inFile)[2:3] <- c('lon', 'lat')
-    if (!("basisOfRecord" %in% names(inFile))) {
-      inFile$basisOfRecord <- NA
+    inFile.occs <- inFile[inFile[,1] == values$spname,]
+    inFile.occs <- inFile.occs[,c('name', 'lon', 'lat')]
+    if (!("basisOfRecord" %in% names(inFile.occs))) {
+      inFile.occs$basisOfRecord <- NA
     }
-    inFile$row <- row.names(inFile)
-    inFile$pop <- unlist(apply(inFile, 1, popUpContent))
-    values$gbifoccs <- isolate(rbind(values$gbifoccs, inFile))
-    values$df <- isolate(rbind(values$df, inFile))
+    inFile.occs$row <- row.names(inFile.occs)
+    inFile.occs$pop <- unlist(apply(inFile.occs, 1, popUpContent))
+    values$inFileOccs
+    # bind new csv occs to existing ones in df and gbifoccs
+    values$gbifoccs <- isolate(rbind(values$gbifoccs, inFile.occs))
+    values$df <- isolate(rbind(values$df, inFile.occs))
     # this makes an infinite loop. not sure why...
-#     x <- paste0("User input ", input$userCSV$name, " with [", nrow(values$df), "[ records.")
-#     values$log <- paste(values$log, x, sep='<br>')
+    #     x <- paste0("User input ", input$userCSV$name, " with [", nrow(values$df), "[ records.")
+    #     values$log <- paste(values$log, x, sep='<br>')
   })
-    
   
   # map gbif occs
   observeEvent(input$goName, {
