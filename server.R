@@ -271,6 +271,9 @@ shinyServer(function(input, output, session) {
       thinned <- values$gbifoccs[rownames(output[[1]]),]
       values$df <- thinned
       values$thinoccs <- thinned
+      if (!is.null(values$inFile)) {
+        thinned.inFile <- values$inFile[rownames(output[[1]]),] 
+      }
     })
     values$log <- paste(values$log, paste('Total records thinned to [', nrow(thinned), '] points.'), sep='<br>')
     # render the thinned records data table
@@ -316,7 +319,9 @@ shinyServer(function(input, output, session) {
           values$log <- isolate(paste(values$log, x2, sep='<br>'))
         }
         values$df <- values$df[!is.na(locs.vals),]
-        print(extract(values$pred[[1]], values$df[,2:3]))
+        if (!is.null(values$inFile)) {
+          values$inFile <- values$inFile[!is.na(locs.vals),]  
+        }
       })
     }
   })
@@ -437,7 +442,7 @@ shinyServer(function(input, output, session) {
     # code to do fixed columns -- problem is it makes the page selection disappear and you
     # can't seem to pan around the table to see the other rows... likely a bug
     # (extensions=list(FixedColumns=list(leftColumns=2)), options=list(dom='t', scrollX=TRUE, scrollCollapse=TRUE))
-    output$evalTbl <- DT::renderDataTable({DT::datatable(cbind(e@results[,1:3], round(e@results[,4:15], digits=3), nparam=e@results[,16]))})
+    output$evalTbl <- DT::renderDataTable({DT::datatable(cbind(e@results[,1:3], round(e@results[,4:15], digits=3)))})
     
     if (!is.null(values$evalTbl)) {
       x <- paste("ENMeval ran successfully and output table with", nrow(values$evalTbl), "rows.")
