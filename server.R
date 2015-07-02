@@ -306,19 +306,19 @@ shinyServer(function(input, output, session) {
       withProgress(message = "Downloading WorldClim data...", {
         values$pred <- getData(name = "worldclim", var = "bio", res = input$pred)
       })
-      str1 <- paste("Using WorldClim bio1-19 at", input$pred, " arcmin resolution.")
+      x1 <- paste("Using WorldClim bio1-19 at", input$pred, " arcmin resolution.")
+      values$log <- isolate(paste(values$log, x1, sep='<br>'))
       withProgress(message = "Processing...", {
         locs.vals <- extract(values$pred[[1]], values$df[,2:3])
-        values$df <- values$df[!is.na(locs.vals),]        
-      })
-      if (sum(is.na(locs.vals)) > 0) {
-        str2 <- paste0("Removed records with NA environmental values with IDs: ", 
+        if (sum(is.na(locs.vals)) > 0) {
+          x2 <- paste0("Removed records with NA environmental values with IDs: ", 
                        paste(row.names(values$df[is.na(locs.vals),]), collapse=', '), ".")
-      } else {
-        str2 <- ""
-      }
+          values$log <- isolate(paste(values$log, x2, sep='<br>'))
+        }
+        values$df <- values$df[!is.na(locs.vals),]
+        print(extract(values$pred[[1]], values$df[,2:3]))
+      })
     }
-    values$predTxt <- paste(str1, str2, sep='<br>')
   })
   
   # this is necessary because the above is not observeEvent, and thus for some
@@ -407,8 +407,8 @@ shinyServer(function(input, output, session) {
     if (input$method == 'user') {
       occs <- values$inFile[values$inFile[,1] == values$spname,]
       backg_pts <- values$inFile[values$inFile[,1] != values$spname,]
-      occgrp <- occs[,input$occgrp]
-      bggrp <- backg_pts[,input$bggrp]
+      occgrp <- as.numeric(occs[,input$occgrp])
+      bggrp <- as.numeric(backg_pts[,input$bggrp])
       occs <- occs[,2:3]
       backg_pts <- backg_pts[,2:3]
     } else {
