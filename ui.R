@@ -160,7 +160,7 @@ shinyUI(fluidPage(title,
                            conditionalPanel("input.tabs != 4", leafletOutput("map", height=600)),
                            br(),
                            conditionalPanel("input.tabs != 4", DT::dataTableOutput('occTbl')),
-                           conditionalPanel("input.tabs != 4", DT::dataTableOutput('evalTbl')),
+                           conditionalPanel("input.tabs == 4", DT::dataTableOutput('evalTbl')),
                            br(),
                            plotOutput('evalPlot', width = 600)
                     )
