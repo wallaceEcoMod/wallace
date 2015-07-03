@@ -381,12 +381,13 @@ shinyServer(function(input, output, session) {
       if (length(exts) == 1 & exts == 'csv') {
         bb <- read.csv(inPath, header = TRUE)
       } else if (length(exts) > 1 & 'shp' %in% exts) {
-        # rename temp files to their original names
+        # rename temp files to their original names - nice hack for inputting shapefiles in shiny
         file.rename(inPath, file.path(pathdir, names))
+        # get index of .shp
         i <- which(exts == 'shp')
-        print(pathdir[i])
-        print(strsplit(names[i], '\\.')[[1]][1])
+        # read in shapefile and extract coords
         poly <- readOGR(pathdir[i], strsplit(names[i], '\\.')[[1]][1])
+        poly <- gBuffer(poly, width = input$backgBuf + res(values$pred)[1])
         bb <- poly@polygons[[1]]@Polygons[[1]]@coords
       }
     }
