@@ -51,16 +51,17 @@ shinyServer(function(input, output, session) {
                             fields = c('name', 'decimalLongitude', 'decimalLatitude', 'basisOfRecord'), 
                             hasCoordinate = TRUE)
       if (results$meta$count != 0) {
-        locs <- results$data[!is.na(results$data[,3]),][,c(1,3,4,2)]
-        dup <- duplicated(locs)
-        locs <- locs[!dup, ]
+        locs.in <- results$data[!is.na(results$data[,3]),][,c(1,3,4,2)]
+        locs <- remDups(locs.in)
         names(locs)[2:3] <- c('lon', 'lat')
         
         locs$row <- row.names(locs)
         locs$pop <- unlist(apply(locs, 1, popUpContent))
         
         values$df <- rbind(values$df, locs)
+        values$df <- remDups(values$df)
         values$gbifoccs <- rbind(values$gbifoccs, locs)
+        values$gbifoccs <- remDups(values$gbifoccs)
         
         inName <- isolate(input$gbifName)
         nameSplit <- length(unlist(strsplit(inName, " ")))
@@ -74,7 +75,7 @@ shinyServer(function(input, output, session) {
         } else {if (nameSplit != 1 && !is.null(locs)) {
           x <- paste('Total records for', values$gbifoccs[1,1], 'returned [', nrow(locs),
                      '] out of [', results$meta$count, '] total (limit 500).
-                    Duplicated records removed [', sum(dup), "].")
+                    Duplicated records removed [', nrow(locs.in) - nrow(locs), "].")
         }}}}
         values$log <- paste(values$log, x, sep='<br>')
       }
@@ -112,9 +113,13 @@ shinyServer(function(input, output, session) {
     inFile.occs$row <- row.names(inFile.occs)
     inFile.occs$pop <- unlist(apply(inFile.occs, 1, popUpContent))
     values$inFileOccs
-    # bind new csv occs to existing ones in df and gbifoccs
-    values$gbifoccs <- isolate(rbind(values$gbifoccs, inFile.occs))
-    values$df <- isolate(rbind(values$df, inFile.occs))
+    # bind new csv occs to existing ones in df and gbifoccs (without duplicates)
+    addCSVpts <- function(df) {
+      df <- rbind(df, inFile.occs)
+      df <- remDups(df)
+    }
+    values$gbifoccs <- isolate(addCSVpts(values$gbifoccs))
+    values$df <- isolate(addCSVpts(values$df))
     # this makes an infinite loop. not sure why...
     #     x <- paste0("User input ", input$userCSV$name, " with [", nrow(values$df), "[ records.")
     #     values$log <- paste(values$log, x, sep='<br>')
