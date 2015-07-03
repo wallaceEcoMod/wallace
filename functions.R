@@ -19,6 +19,10 @@ mcp <- function (xy) {
   return(SpatialPolygons(list(Polygons(list(Polygon(as.matrix(xy.bord))), 1))))
 }
 
+remDups <- function(df) {
+  dups <- duplicated(df)
+  df <- df[!dups,]
+}
 
 makeOccIcons <- function(width = 10, height = 10, ...) {
   occIcons <- c('H', 'O', 'P', 'U', 'F', 'M', 'I', 'L', 'A', 'X')
