@@ -363,15 +363,26 @@ shinyServer(function(input, output, session) {
       xy_mcp <- gBuffer(xy_mcp, width = input$backgBuf + res(values$pred)[1])
       values$backgExt <- xy_mcp
       bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
-    } else if (input$backg == 'user' & !is.null(input$userBackg)) {
+    } else if (input$backg == 'user') {
+      if (is.null(input$userBackg)) return()
 #       file <- shinyFileChoose(input, 'userBackg', root=c(root='.'))
 #       path <- input$userBackg$datapath
-      name <- input$userBackg$name
-#       pathdir <- dirname(path)
-#       pathfile <- basename(path)
-      ext <- strsplit(name, '\\.')[[1]][2]
-      if (ext == 'csv') {
-        bb <- read.csv(input$userBackg$datapath, header = TRUE)
+      names <- input$userBackg$name
+      inPath <- input$userBackg$datapath
+      pathdir <- dirname(inPath)
+      pathfile <- basename(inPath)
+      # get extensions of all input files
+      exts <- sapply(strsplit(names, '\\.'), FUN=function(x) x[2])
+      if (length(exts) == 1 & exts == 'csv') {
+        bb <- read.csv(inPath, header = TRUE)
+      } else if (length(exts) > 1 & 'shp' %in% exts) {
+        # rename temp files to their original names
+        file.rename(inPath, file.path(pathdir, names))
+        i <- which(exts == 'shp')
+        print(pathdir[i])
+        print(strsplit(names[i], '\\.')[[1]][1])
+        poly <- readOGR(pathdir[i], strsplit(names[i], '\\.')[[1]][1])
+        bb <- poly@polygons[[1]]@Polygons[[1]]@coords
       }
     }
     lati <- values$df[,3]
