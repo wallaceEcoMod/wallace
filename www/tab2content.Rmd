@@ -1,0 +1,11 @@
+---
+title: "tab2content"
+output: html_document
+---
+<span style="color:purple; font-size:18pt; font-weight:bold">spThin</span>  
+<span style="font-size:10pt; font-style:italic">Spatial Thinning of Species Occurrence Records</span>  
+<span style="font-size:10pt"><span style="font-style:italic">Links to </span><a href="http://onlinelibrary.wiley.com/doi/10.1111/ecog.01132/abstract" target="_blank">software note</a> and <a href="http://cran.r-project.org/web/packages/spThin/index.html" target="_blank">CRAN</a></span>  
+<span style="font-size:9pt">Citation:  Aiello-Lammens, M. E., Boria, R. A., Radosavljevic, A., Vilela, B. and Anderson, R. P. (2015; Early View), spThin: an R package for spatial thinning of species occurrence records for use in ecological niche models</span>  
+<span style="color:gray; font-size:8pt; font-style:italic">Other packages used: ggplot2</span>  
+
+Datasets of occurrence records typically suffer from the effects of biased sampling across geography. spThin implements one way to reduce the effects of such biases, by spatial thinning that removes occurrence records less than a user-specified distance from other records. The user can download the thinned records as a CSV file. This step is optional.

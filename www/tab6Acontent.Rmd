@@ -1,0 +1,21 @@
+---
+title: "tab6Acontent"
+output: html_document
+---
+<img src="jamie.jpg" height="100" hspace="10" align="left">
+<img src="gc_logo.jpg" height="100" hspace="5">
+<img src="city_logo.jpg" height="50">
+
+<img src="matt.jpg" height="100" hspace="10">
+<img src="UConn_logo.tiff" width="100">
+
+<img src="bruno.jpg" height="100" hspace ="10">
+<img src="ufg.jpg" width="100" hspace="5">
+<img src="uah.jpg" width="140">
+
+<img src="bob.jpg" height="100" hspace="10">
+<img src="aarhus.jpg" height="50">
+
+<img src="rob.jpg" height="100" hspace="10">
+<img src="city_logo.jpg" height="50", hspace="5">
+<img src="gc_logo.jpg" height="100">
