@@ -1,0 +1,16 @@
+---
+title: "tab1content"
+output: html_document
+---
+<span style="color:purple; font-size:18pt; font-weight:bold">rgbif</span>  
+<span style="font-size:10pt; font-style:italic">Interface to the Global Biodiversity Information Facility API</span>  
+<span style="font-size:10pt; font-style:italic">Developers of rgbif: Scott Chamberlain, Karthik Ram, Vijay Barve, Dan Mcglinn</span>  
+<span style="font-size:8pt; font-style:italic;color:gray">Other packages used: ggplot2</span>  
+<a href="http://cran.r-project.org/web/packages/rgbif/index.html" target="_blank">CRAN homepage</a>  
+<a href="http://www.gbif.org/resource/81747" target="_blank">rgbif documentation @ GBIF</a>  
+
+The first step is to download occurrence data (e.g. from GBIF; duplicate records are removed). After acquiring these points, it is useful to examine them on a map.
+
+Such datasets can contain errors; as a preliminary method of data-cleaning, here the user can specify records to be removed. Additionally, the user can download the records as a CSV file.
+
+Future versions will allow the user to download occurrence records from other databases, as well as upload their own occurrence records as an alternate option.
