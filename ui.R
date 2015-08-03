@@ -31,27 +31,25 @@ title <- HTML(paste0(span("WALLACE beta v0.1: ", style = "font-size:16pt"),
 shinyUI(fluidPage(title,
                   tags$head(
                     tags$style(HTML(
-                      "#text { overflow: auto; }
-                       #header {
-                        position: relative;
-                        min-height: 75px;
-#                         background: #FFFFFF;
-                        z-index:10;
+                      "#logHeader {
+                        position:relative;
+                        min-height:90px;
                         background: inherit;
-                       }
-                      #header-content {
-                        position: absolute;
+                        z-index:10;
+                      }
+                      #logContent {
+                        position:absolute;
                         z-index: 5;
                         bottom: 0;
                         left: 0;
                       }
-                      #textContainer {
-                        height:100px; 
-                        overflow:auto; 
-                        border:1px solid green; 
-                        padding:5px
-                      }
-                       }"
+                      .scrollbox {
+                        height:100px;
+                        width:600px;
+                        padding:5px;
+                        overflow:auto;
+                        border:1px solid green;
+                      }"
                     ))),
                   fluidRow(
                     column(4,
@@ -152,7 +150,8 @@ shinyUI(fluidPage(title,
                            )
                     ),
                     column(8,
-                           div(id = "textContainer", htmlOutput("log")),
+                           "LOG",
+                           div(id = "wallaceLog", class = "scrollbox", htmlOutput("log")),
                            br(),
                            actionButton("erasePoly", "Erase Polygon"),
                            actionButton("selectPoly", "Select Pts With Poly"),
