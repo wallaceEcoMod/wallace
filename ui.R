@@ -14,43 +14,15 @@ library(DT)
 source("ui_content.R")
 
 # function to make two small input boxes next to each other
-textInputRow<-function (inputId, label, value = "") 
-{
-  div(style="display:inline-block",
-      tags$label(label, `for` = inputId), 
-      tags$input(id = inputId, type = "text", value = value,class="input-small"))
-}
+# textInputRow<-function (inputId, label, value = "") 
+# {
+#   div(style="display:inline-block",
+#       tags$label(label, `for` = inputId), 
+#       tags$input(id = inputId, type = "text", value = value,class="input-small"))
+# }
 
-#"Harnessing Digital Biodiversity Data via a GUI interface fueled by R"
-title <- HTML(paste0(span("WALLACE beta v0.1: ", style = "font-size:16pt"), 
-                     span("Harnessing Digital Biodiversity Data for Predictive Modeling, fueled by R", 
-                          style = "font-size:10pt"), "  |  ", 
-                     span("Developers: Jamie M. Kass, Matthew Aiello-Lammens, Bruno Vilela, 
-              Robert Muscarella, Robert P. Anderson", style = "font-size:7pt")))
-# Define UI for application that draws a histogram
-shinyUI(fluidPage(title,
-                  tags$head(
-                    tags$style(HTML(
-                      "#logHeader {
-                        position:relative;
-                        min-height:90px;
-                        background: inherit;
-                        z-index:10;
-                      }
-                      #logContent {
-                        position:absolute;
-                        z-index: 5;
-                        bottom: 0;
-                        left: 0;
-                      }
-                      .scrollbox {
-                        height:100px;
-                        width:600px;
-                        padding:5px;
-                        overflow:auto;
-                        border:1px solid green;
-                      }"
-                    ))),
+# Define UI for application
+shinyUI(fluidPage(includeCSS("styles.css"),
                   fluidRow(
                     column(4,
                            tabsetPanel(id='tabs',
