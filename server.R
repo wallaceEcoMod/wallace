@@ -1,5 +1,6 @@
 # check package dependencies, and download if necessary
-list.of.packages <- c("shiny", "ggplot2", "maps", "RColorBrewer", "rgdal", "spThin", "colorRamps", "dismo", "rgeos", "XML")
+list.of.packages <- c("shiny", "ggplot2", "maps", "RColorBrewer", "rgdal", 
+                      "spThin", "colorRamps", "dismo", "rgeos", "XML", "repmis")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 # rgbif needs to be downloaded from source
@@ -23,6 +24,7 @@ library(ggplot2)
 # library(shinyFiles)
 library(RColorBrewer)
 library(leaflet)
+library(repmis)
 
 source("functions.R")
 
@@ -330,6 +332,14 @@ shinyServer(function(input, output, session) {
         }
       })
     }
+  })
+  
+  # functionality for downloading .asc files from dropbox
+  observeEvent(input$dbAscGet, {
+               dbAsc <- source_DropboxData(input$dbAscFname, input$dbAscKey)
+               dims <- strsplit(input$dbAscDims, split=',')[[1]]
+               dbRas <- raster(dbAsc, crs=input$dbAscCRS, xmn=dims[1], xmx=dims[2],
+                               ymn=dims[3], ymx=dims[4])
   })
   
   # this is necessary because the above is not observeEvent, and thus for some
