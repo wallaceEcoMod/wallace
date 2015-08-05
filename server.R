@@ -28,9 +28,7 @@ library(repmis)
 
 source("functions.R")
 
-# dev version of leaflet for overlaying rasters
 #devtools::install_github("jcheng5/rasterfaster")
-#devtools::install_github("rstudio/leaflet@joe/feature/raster-image")
 
 shinyServer(function(input, output, session) {
   # make list to carry data used by multiple reactive functions
@@ -154,8 +152,7 @@ shinyServer(function(input, output, session) {
   # functionality for drawing polygons on map
   observe({
     latlng <- c(input$map_click$lng, input$map_click$lat)
-    # this functionality prevents existing map click from being
-    # added to new polygon
+    # this functionality prevents existing map click from being added to new polygon
     if (values$polyErase) {
       if (identical(latlng, values$mapClick)) {
         return()
@@ -201,39 +198,27 @@ shinyServer(function(input, output, session) {
     }
     
     ptsSel <- values$gbifoccs[!(is.na(over(pts, values$drawPolys))),]
-    proxy %>% addCircleMarkers(data = ptsSel, lat = ~lat, lng = ~lon, 
-                               layerId = as.numeric(rownames(ptsSel)), 
-                               radius = 5, color = 'red', fill = TRUE, fillColor = 'yellow', 
-                               weight = 2, popup = ~pop, fillOpacity=1)
+    proxy %>% clearMarkers()
+#     proxy %>% addCircleMarkers(data = ptsSel, lat = ~lat, lng = ~lon, 
+#                                layerId = as.numeric(rownames(ptsSel)), 
+#                                radius = 5, color = 'red', fill = TRUE, fillColor = 'yellow', 
+#                                weight = 2, popup = ~pop, fillOpacity=1)
     values$drawPolyCoords <- NULL
     values$ptsSel <- ptsSel
     values$df <- ptsSel
   })
-  
-  # draw all drawn polygons and color according to colorBrewer
-#   observe({
-#     if (is.null(values$drawPolys)) return()
-#     curPolys <- values$drawPolys@polygons
-#     numPolys <- length(curPolys)
-#     colors <- brewer.pal(numPolys, 'Accent')
-#     for (i in numPolys) {
-#       curPoly <- curPolys[i][[1]]@Polygons[[1]]@coords
-#       proxy %>% addPolygons(curPoly[,1], curPoly[,2], 
-#                             layerId=paste0('drawPolys',i), 
-#                             weight=3, color=colors[i])       
-#     }
-#   })
   
   observe({
     if (is.null(values$df)) return()
     if (input$tabs != "1) Get Data") {
       proxy %>% clearShapes()
       proxy %>% clearMarkers()
+      proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
+                                 layerId = as.numeric(rownames(values$df)), 
+                                 radius = 5, color = 'red', fill = FALSE, weight = 2,
+                                 popup = ~pop)
     }
-    proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
-                               layerId = as.numeric(rownames(values$df)), 
-                               radius = 5, color = 'red', fill = FALSE, weight = 2,
-                               popup = ~pop)
+
     if (input$tabs == "1) Get Data") {
       # draw all user-drawn polygons and color according to colorBrewer
       if (is.null(values$drawPolys)) return()
@@ -269,42 +254,44 @@ shinyServer(function(input, output, session) {
   # map thinned records when Thin button is pressed
   observeEvent(input$goThin, {
     withProgress(message = "Thinning...", {
-      output <- thin(values$gbifoccs, 'lat', 'lon', 'name', thin.par = input$thinDist, 
+      output <- thin(values$df, 'lat', 'lon', 'name', thin.par = input$thinDist, 
                      reps = 10, locs.thinned.list.return = TRUE, write.files = FALSE,
                      verbose = FALSE)
       # pull max, not first (don't think this is implemented yet)
       # this code is old, and doesn't do what it says it does...
       #       thinout <- cbind(rep(values$gbifoccs[1,1], nrow(output[[1]])), output[[1]])
       #       names(thinout) <- c('name', 'lon', 'lat')
-      thinned <- values$gbifoccs[rownames(output[[1]]),]
-      values$df <- thinned
-      values$thinoccs <- thinned
+      prethinned <- values$df
+      values$df <- values$df[rownames(output[[1]]),]
+      
       if (!is.null(values$inFile)) {
         thinned.inFile <- values$inFile[rownames(output[[1]]),] 
       }
     })
-    values$log <- paste(values$log, paste('Total records thinned to [', nrow(thinned), '] points.'), sep='<br>')
+    values$log <- paste(values$log, paste('Total records thinned to [', nrow(values$df), '] points.'), sep='<br>')
     # render the thinned records data table
     output$occTbl <- DT::renderDataTable({DT::datatable(values$df[,1:4])})
     
-    lati2 <- values$thinoccs[,3]
-    longi2 <- values$thinoccs[,2]
+    lati2 <- values$df[,3]
+    longi2 <- values$df[,2]
     #     proxy %>% fitBounds(min(longi2), min(lati2), max(longi2), max(lati2))
-    proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
+    proxy %>% addCircleMarkers(data = prethinned, lat = ~lat, lng = ~lon, 
                                layerId = as.numeric(rownames(values$gbifoccs)), 
                                radius = 5, color = 'red', fill = FALSE, weight = 2,
                                popup = ~pop) %>%
-      addCircleMarkers(data = values$thinoccs, lat = ~lat, lng = ~lon, 
-                       layerId = as.numeric(rownames(values$thinoccs)), 
+      addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
+                       layerId = as.numeric(rownames(values$df)), 
                        radius = 5, color = 'blue', fill = FALSE, weight = 2,
                        popup = ~pop)
+    print(prethinned)
+    print(values$df)
   })
   
   # handle download for thinned records csv
   output$downloadThincsv <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$gbifoccs), "_thinned_gbifCleaned.csv")},
     content = function(file) {
-      write.csv(values$thinoccs, file)
+      write.csv(values$df, file)
     }
   )
   
