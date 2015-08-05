@@ -42,7 +42,7 @@ makeOccIcons <- function(width = 10, height = 10, ...) {
 
 popUpContent <- function(x) {
   as.character(tagList(
-    tags$strong(paste("ID:", x['row'])),
+    tags$strong(paste("ID:", x['origID'])),
     tags$br(),
     tags$strong(paste("Latitude:", x['lat'])),        
     tags$strong(paste("Longitude:", x['lon']))
