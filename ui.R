@@ -133,7 +133,7 @@ shinyUI(pageWithSidebar(title,
                     conditionalPanel("input.tabs != 4 && input.tabs != 6", leafletOutput("map", height=600)),
                     br(),
                     conditionalPanel("input.tabs != 4 && input.tabs != 6", DT::dataTableOutput('occTbl')),
-                    conditionalPanel("input.tabs == 4", DT::dataTableOutput('evalTbl')),
+                    conditionalPanel("input.tabs == 4", uiOutput('evalTabs')),
                     conditionalPanel("input.tabs == 6", 
                                      fluidPage(titlePanel(h4("Wallace was created by an international team of ecologists:")),
                                                fluidRow(
@@ -141,8 +141,6 @@ shinyUI(pageWithSidebar(title,
                                                  column(4, includeMarkdown("www/tab6Bcontent.Rmd"))
                                                )
                                      )
-                    ),
-                    br(),
-                    plotOutput('evalPlot', width = 600)
+                    )
                   )
 ))

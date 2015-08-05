@@ -408,10 +408,8 @@ shinyServer(function(input, output, session) {
     bufTxt <- paste('Background extent buffered by', input$backgBuf, 'degrees.')
     values$log <- isolate(paste(values$log, bufTxt, sep='<br>'))  # add text to log
 
-    lati <- values$df[,3]
-    longi <- values$df[,2]
     values$bb <- bb
-    proxy %>% fitBounds(max(lati), max(longi), min(lati), min(longi))
+    proxy %>% fitBounds(max(bb[,1]), max(bb[,2]), min(bb[,1]), min(bb[,2]))
     proxy %>% addPolygons(lng=bb[,1], lat=bb[,2], layerId="backext",
                           options= list(weight=10, col="red"))
 
@@ -471,7 +469,6 @@ shinyServer(function(input, output, session) {
                      method = input$method, occ.grp = occgrp, bg.grp = bggrp, updateProgress = updateProgress)
     values$evalTbl <- e@results
     values$evalPreds <- e@predictions
-    print(e@results)
     # render table of ENMeval results
     # code to do fixed columns -- problem is it makes the page selection disappear and you
     # can't seem to pan around the table to see the other rows... likely a bug
@@ -479,8 +476,9 @@ shinyServer(function(input, output, session) {
     output$evalTbl <- DT::renderDataTable({DT::datatable(cbind(e@results[,1:3], round(e@results[,4:15], digits=3)))})
     
     if (!is.null(values$evalTbl)) {
-      x <- paste("ENMeval ran successfully and output table with statistics for", nrow(values$evalTbl), "models.")
-      values$log <- paste(values$log, x, sep='<br>')
+      enmevalTxt <- paste("ENMeval ran successfully and output results for", nrow(values$evalTbl), "models.")
+      values$log <- paste(values$log, enmevalTxt, sep='<br>')
+      
       # plotting functionality for ENMeval graphs
       output$evalPlot <- renderPlot({
         par(mfrow=c(3,2))
@@ -499,6 +497,12 @@ shinyServer(function(input, output, session) {
         eval.plot(values$evalTbl, legend=FALSE, value="Mean.OR10", variance="Var.OR10")
       })
     }
+    # a tabset within tab 4 to organize the enmEval outputs
+    output$evalTabs <- renderUI({
+      tabsetPanel(tabPanel("Results Table", DT::dataTableOutput('evalTbl')),
+                  tabPanel("Evaluation Graphs", plotOutput('evalPlot', width = 600))
+      )
+    })
   })
   
   # handle downloads for ENMeval results table csv
