@@ -110,10 +110,11 @@ shinyUI(pageWithSidebar(title,
                     conditionalPanel("input.tabs == 5",
                                      includeMarkdown("www/tab5content.Rmd"),
                                      uiOutput("predSel"),
-                                     actionButton("plotRas", "Plot Raster"),
-                                     checkboxInput("plotpoints", label = "Plot occurrence points", value = FALSE),
+                                     actionButton("plotPred", "Plot Continuous Prediction"),
+                                     actionButton("plotMTP", "Plot MTP Threshold"),
+                                     actionButton("plot10p", "Plot 10% Threshold"),
                                      br(),
-                                     downloadButton('downloadPred', "Download Current Prediction Raster")
+                                     downloadButton('downloadPred', "Download Current Plotted Prediction")
                     )
                   ),
                   mainPanel(
