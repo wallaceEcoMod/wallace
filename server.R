@@ -56,7 +56,7 @@ shinyServer(function(input, output, session) {
         locs <- remDups(locs.in)
         names(locs)[2:3] <- c('lon', 'lat')
         
-        locs$row <- row.names(locs)
+        locs$origID <- row.names(locs)
         locs$pop <- unlist(apply(locs, 1, popUpContent))
         
         values$df <- rbind(values$df, locs)
@@ -111,7 +111,7 @@ shinyServer(function(input, output, session) {
     if (!("basisOfRecord" %in% names(inFile.occs))) {
       inFile.occs$basisOfRecord <- NA
     }
-    inFile.occs$row <- row.names(inFile.occs)
+    inFile.occs$origID <- row.names(inFile.occs)
     inFile.occs$pop <- unlist(apply(inFile.occs, 1, popUpContent))
     values$inFileOccs
     # bind new csv occs to existing ones in df and gbifoccs (without duplicates)
@@ -144,7 +144,7 @@ shinyServer(function(input, output, session) {
     #                          icon = ~icons(occIcons[basisNum]))
     
     proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
-                               layerId = as.numeric(rownames(values$gbifoccs)), 
+                               layerId = as.numeric(values$gbifoccs$origID), 
                                radius = 5, color = 'red', fill = FALSE, weight = 2,
                                popup = ~pop)
   })
@@ -171,13 +171,14 @@ shinyServer(function(input, output, session) {
   # erase poly with button click
   observeEvent(input$erasePoly, {
     proxy %>% clearShapes()
+    proxy %>% clearMarkers()
     values$drawPolyCoords <- NULL
     values$drawPolys <- NULL
     values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
     if (!is.null(values$gbifoccs)) {
       values$df <- values$gbifoccs
       proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
-                                 layerId = as.numeric(rownames(values$df)), 
+                                 layerId = as.numeric(values$df$origID), 
                                  radius = 5, color = 'red', fill = FALSE, weight = 2,
                                  popup = ~pop)
     }
@@ -198,11 +199,10 @@ shinyServer(function(input, output, session) {
     }
     
     ptsSel <- values$gbifoccs[!(is.na(over(pts, values$drawPolys))),]
-    proxy %>% clearMarkers()
-#     proxy %>% addCircleMarkers(data = ptsSel, lat = ~lat, lng = ~lon, 
-#                                layerId = as.numeric(rownames(ptsSel)), 
-#                                radius = 5, color = 'red', fill = TRUE, fillColor = 'yellow', 
-#                                weight = 2, popup = ~pop, fillOpacity=1)
+    proxy %>% addCircleMarkers(data = ptsSel, lat = ~lat, lng = ~lon, 
+                               layerId = as.numeric(ptsSel$origID), 
+                               radius = 5, color = 'red', fill = TRUE, fillColor = 'yellow', 
+                               weight = 2, popup = ~pop, fillOpacity=1)
     values$drawPolyCoords <- NULL
     values$ptsSel <- ptsSel
     values$df <- ptsSel
@@ -210,16 +210,33 @@ shinyServer(function(input, output, session) {
   
   observe({
     if (is.null(values$df)) return()
-    if (input$tabs != "1) Get Data") {
+    if (input$tabs != 1) {
       proxy %>% clearShapes()
       proxy %>% clearMarkers()
-      proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
-                                 layerId = as.numeric(rownames(values$df)), 
-                                 radius = 5, color = 'red', fill = FALSE, weight = 2,
-                                 popup = ~pop)
+
+      if (input$tabs == 2) {
+        if (!is.null(values$prethinned)) {
+          lati <- values$prethinned[,3]
+          longi <- values$prethinned[,2]
+          proxy %>% fitBounds(min(longi), min(lati), max(longi), max(lati))
+          proxy %>% addCircleMarkers(data = values$prethinned, lat = ~lat, lng = ~lon, 
+                                     layerId = values$gbifoccs$origID, 
+                                     radius = 5, color = 'red', fill = FALSE, weight = 2,
+                                     popup = ~pop)
+          proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
+                                     layerId = values$df$origID, 
+                                     radius = 5, color = 'red', fill = TRUE, fillColor = 'blue',
+                                     weight = 2, popup = ~pop)          
+        } else {
+          proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
+                                     layerId = values$df$origID, 
+                                     radius = 5, color = 'red', fill = FALSE, weight = 2,
+                                     popup = ~pop)   
+        }
+      }
     }
 
-    if (input$tabs == "1) Get Data") {
+    if (input$tabs == 1) {
       # draw all user-drawn polygons and color according to colorBrewer
       if (is.null(values$drawPolys)) return()
       curPolys <- values$drawPolys@polygons
@@ -232,12 +249,12 @@ shinyServer(function(input, output, session) {
                               weight=3, color=colors[i])   
       }
       proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
-                                 layerId = as.numeric(rownames(values$gbifoccs)), 
+                                 layerId = as.numeric(values$gbifoccs$origID), 
                                  radius = 5, color = 'red', fill = FALSE, weight = 2,
                                  popup = ~pop)
       if (is.null(values$ptsSel)) return()
       proxy %>% addCircleMarkers(data = values$ptsSel, lat = ~lat, lng = ~lon, 
-                                 layerId = as.numeric(rownames(values$ptsSel)), 
+                                 layerId = as.numeric(values$ptsSel$origID), 
                                  radius = 5, color = 'red', fill = TRUE, fillColor = 'yellow', 
                                  weight = 2, popup = ~pop, fillOpacity=1)
     }
@@ -245,9 +262,9 @@ shinyServer(function(input, output, session) {
   
   # handle downloading of GBIF csv
   output$downloadGBIFcsv <- downloadHandler(
-    filename = function() {paste0(nameAbbr(values$gbifoccs), "_gbifCleaned.csv")},
+    filename = function() {paste0(nameAbbr(values$df), "_gbifCleaned.csv")},
     content = function(file) {
-      write.csv(values$gbifoccs, file, row.names=FALSE)
+      write.csv(values$df[,1:5], file, row.names=FALSE)
     }
   )
   
@@ -261,30 +278,16 @@ shinyServer(function(input, output, session) {
       # this code is old, and doesn't do what it says it does...
       #       thinout <- cbind(rep(values$gbifoccs[1,1], nrow(output[[1]])), output[[1]])
       #       names(thinout) <- c('name', 'lon', 'lat')
-      prethinned <- values$df
-      values$df <- values$df[rownames(output[[1]]),]
+      values$prethinned <- values$df
+      values$df <- values$df[as.numeric(rownames(output[[1]])),]
       
       if (!is.null(values$inFile)) {
-        thinned.inFile <- values$inFile[rownames(output[[1]]),] 
+        thinned.inFile <- values$inFile[as.numeric(rownames(output[[1]])),] 
       }
     })
-    values$log <- paste(values$log, paste('Total records thinned to [', nrow(values$df), '] points.'), sep='<br>')
+    values$log <- paste(values$log, paste('Total records thinned to [', nrow(values$df), '] points. Points filled in BLUE are retained.'), sep='<br>')
     # render the thinned records data table
     output$occTbl <- DT::renderDataTable({DT::datatable(values$df[,1:4])})
-    
-    lati2 <- values$df[,3]
-    longi2 <- values$df[,2]
-    #     proxy %>% fitBounds(min(longi2), min(lati2), max(longi2), max(lati2))
-    proxy %>% addCircleMarkers(data = prethinned, lat = ~lat, lng = ~lon, 
-                               layerId = as.numeric(rownames(values$gbifoccs)), 
-                               radius = 5, color = 'red', fill = FALSE, weight = 2,
-                               popup = ~pop) %>%
-      addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
-                       layerId = as.numeric(rownames(values$df)), 
-                       radius = 5, color = 'blue', fill = FALSE, weight = 2,
-                       popup = ~pop)
-    print(prethinned)
-    print(values$df)
   })
   
   # handle download for thinned records csv
@@ -400,7 +403,7 @@ shinyServer(function(input, output, session) {
   
   # removes backext polygon if not on tab 3
   observe({
-    if (input$tabs != "3) Variables") {
+    if (input$tabs != 3) {
       proxy %>% removeShape(layerId='backext')
     } else {
       if (!is.null(values$bb)) {
@@ -502,14 +505,14 @@ shinyServer(function(input, output, session) {
   
   # plot raster on proxy
   observeEvent(input$plotRas, {
-    if (input$tabs == "5) Predict") {
+    if (input$tabs == 5) {
       values$predCur <- values$evalPreds[[as.numeric(input$predSelServer)]]
       proxy %>% addRasterImage(values$predCur, layerId='ras', colors="Spectral")
     } 
   })
 
   observe({
-    if ((input$tabs == "5) Predict" | input$tabs == "ABOUT") & !is.null(values$predCur)) {
+    if ((input$tabs == 5 | input$tabs == 6) & !is.null(values$predCur)) {
       proxy %>% addRasterImage(values$predCur, layerId='ras', colors="Spectral") 
     } else {
       proxy %>% removeImage(layerId='ras')
