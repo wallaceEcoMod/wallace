@@ -467,34 +467,34 @@ shinyServer(function(input, output, session) {
 
     e <- ENMevaluate(occs, preds, bg.coords = backg_pts, RMvalues = rms, fc = input$fcs, 
                      method = input$method, occ.grp = occgrp, bg.grp = bggrp, updateProgress = updateProgress)
-    values$evalTbl <- e@results
-    values$evalPreds <- e@predictions
+    values$eval <- e
+    
     # render table of ENMeval results
     # code to do fixed columns -- problem is it makes the page selection disappear and you
     # can't seem to pan around the table to see the other rows... likely a bug
     # (extensions=list(FixedColumns=list(leftColumns=2)), options=list(dom='t', scrollX=TRUE, scrollCollapse=TRUE))
     output$evalTbl <- DT::renderDataTable({DT::datatable(cbind(e@results[,1:3], round(e@results[,4:15], digits=3)))})
     
-    if (!is.null(values$evalTbl)) {
-      enmevalTxt <- paste("ENMeval ran successfully and output results for", nrow(values$evalTbl), "models.")
+    if (!is.null(values$eval@results)) {
+      enmevalTxt <- paste("ENMeval ran successfully and output results for", nrow(values$eval@results), "models.")
       values$log <- paste(values$log, enmevalTxt, sep='<br>')
       
       # plotting functionality for ENMeval graphs
       output$evalPlot <- renderPlot({
         par(mfrow=c(3,2))
-        fc <- length(unique(values$evalTbl$features))
+        fc <- length(unique(values$eval@results$features))
         col <- rainbow(fc)
-        rm <- length(unique(values$evalTbl$rm))
+        rm <- length(unique(values$eval@results$rm))
         plot(rep(1, times=fc), 1:fc, ylim=c(.5,fc+1), xlim=c(0,3), axes=F, ylab='', xlab='', cex=2, pch=21, bg=col)
         segments(rep(.8, times=fc), 1:fc, rep(1.2, times=fc), 1:fc, lwd=1, col=col)
         points(rep(1, times=fc), 1:fc, ylim=c(-1,fc+2), cex=2, pch=21, bg=col)
-        text(x=rep(1.3, times=fc), y=1:fc, labels=unique(values$evalTbl$features), adj=0)
+        text(x=rep(1.3, times=fc), y=1:fc, labels=unique(values$eval@results$features), adj=0)
         text(x=1, y=fc+1, labels="Feature Classes", adj=.20, cex=1.3, font=2)
-        eval.plot(values$evalTbl, legend=FALSE, value="delta.AICc")
-        eval.plot(values$evalTbl, legend=FALSE, value="Mean.AUC", variance="Var.AUC")
-        eval.plot(values$evalTbl, legend=FALSE, value="Mean.AUC.DIFF", variance="Var.AUC.DIFF")
-        eval.plot(values$evalTbl, legend=FALSE, value="Mean.ORmin", variance="Var.ORmin")
-        eval.plot(values$evalTbl, legend=FALSE, value="Mean.OR10", variance="Var.OR10")
+        eval.plot(values$eval@results, legend=FALSE, value="delta.AICc")
+        eval.plot(values$eval@results, legend=FALSE, value="Mean.AUC", variance="Var.AUC")
+        eval.plot(values$eval@results, legend=FALSE, value="Mean.AUC.DIFF", variance="Var.AUC.DIFF")
+        eval.plot(values$eval@results, legend=FALSE, value="Mean.ORmin", variance="Var.ORmin")
+        eval.plot(values$eval@results, legend=FALSE, value="Mean.OR10", variance="Var.OR10")
       })
     }
     # a tabset within tab 4 to organize the enmEval outputs
@@ -509,41 +509,63 @@ shinyServer(function(input, output, session) {
   output$downloadEvalcsv <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$gbifoccs), "_enmeval_results.csv")},
     content = function(file) {
-      write.csv(values$evalTbl, file)
+      write.csv(values$eval@results, file)
     }
   )
   
   # generates user selection of rasters to plot dynamically after they are created
   output$predSel <- renderUI({
-    if (is.null(values$evalPreds)) return()
-    n <- names(values$evalPreds)
+    if (is.null(values$eval@predictions)) return()
+    n <- names(values$eval@predictions)
     predNameList <- setNames(as.list(seq(1, length(n))), n)
     values$rdyPlot <- 'rdy'
     selectInput("predSelServer", label = "Choose a model",
                 choices = predNameList)
   })
   
-  # plot raster on proxy
-  observeEvent(input$plotRas, {
+  # plot continuous prediction
+  observeEvent(input$plotPred, {
     if (input$tabs == 5) {
-      values$predCur <- values$evalPreds[[as.numeric(input$predSelServer)]]
+      proxy %>% clearImages()
+      values$predCur <- values$eval@predictions[[as.numeric(input$predSelServer)]]
+      proxy %>% addRasterImage(values$predCur, layerId='ras', colors="Spectral")
+    } 
+  })
+  
+  # plot MTP prediction
+  observeEvent(input$plotMTP, {
+    if (input$tabs == 5) {
+      proxy %>% clearImages()
+      mtp <- values$eval@models[[as.numeric(input$predSelServer)]]@results[60]
+      values$predCur <- values$eval@predictions[[as.numeric(input$predSelServer)]] > mtp
+      proxy %>% addRasterImage(values$predCur, layerId='ras', colors="Spectral")
+    } 
+  })
+  
+  # plot 10p prediction
+  observeEvent(input$plot10p, {
+    if (input$tabs == 5) {
+      proxy %>% clearImages()
+      p10 <- values$eval@models[[as.numeric(input$predSelServer)]]@results[64]
+      values$predCur <- values$eval@predictions[[as.numeric(input$predSelServer)]] > p10
       proxy %>% addRasterImage(values$predCur, layerId='ras', colors="Spectral")
     } 
   })
 
+  # erase raster if user goes to other tabs, puts it back when return to tab 5
   observe({
-    if ((input$tabs == 5 | input$tabs == 6) & !is.null(values$predCur)) {
+    if ((input$tabs == 5) & !is.null(values$predCur)) {
       proxy %>% addRasterImage(values$predCur, layerId='ras', colors="Spectral") 
     } else {
-      proxy %>% removeImage(layerId='ras')
+      proxy %>% clearImages()
     }
   })
   
   # handle download for rasters, as TIFF
   output$downloadPred <- downloadHandler(
-    filename = function() {paste0(names(values$evalPreds[[as.numeric(input$predSelServer)]]), "_pred.tif")},
+    filename = function() {paste0(names(values$eval@predictions[[as.numeric(input$predSelServer)]]), "_pred.tif")},
     content = function(file) {
-      res <- writeRaster(values$evalPreds[[as.numeric(input$predSelServer)]], file, format = "GTiff", overwrite = TRUE)
+      res <- writeRaster(values$eval@predictions[[as.numeric(input$predSelServer)]], file, format = "GTiff", overwrite = TRUE)
       file.rename(res@file@name, file)
     }
   )
