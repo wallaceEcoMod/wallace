@@ -208,34 +208,10 @@ shinyServer(function(input, output, session) {
     values$df <- ptsSel
   })
   
+  # functionality for plotting points and their colors based on which tab is active
   observe({
     if (is.null(values$df)) return()
-    if (input$tabs != 1) {
-      proxy %>% clearShapes()
-      proxy %>% clearMarkers()
-
-      if (input$tabs == 2) {
-        if (!is.null(values$prethinned)) {
-          lati <- values$prethinned[,3]
-          longi <- values$prethinned[,2]
-          proxy %>% fitBounds(min(longi), min(lati), max(longi), max(lati))
-          proxy %>% addCircleMarkers(data = values$prethinned, lat = ~lat, lng = ~lon, 
-                                     layerId = values$gbifoccs$origID, 
-                                     radius = 5, color = 'red', fill = FALSE, weight = 2,
-                                     popup = ~pop)
-          proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
-                                     layerId = values$df$origID, 
-                                     radius = 5, color = 'red', fill = TRUE, fillColor = 'blue',
-                                     weight = 2, popup = ~pop)          
-        } else {
-          proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
-                                     layerId = values$df$origID, 
-                                     radius = 5, color = 'red', fill = FALSE, weight = 2,
-                                     popup = ~pop)   
-        }
-      }
-    }
-
+    
     if (input$tabs == 1) {
       # draw all user-drawn polygons and color according to colorBrewer
       if (is.null(values$drawPolys)) return()
@@ -257,6 +233,39 @@ shinyServer(function(input, output, session) {
                                  layerId = as.numeric(values$ptsSel$origID), 
                                  radius = 5, color = 'red', fill = TRUE, fillColor = 'yellow', 
                                  weight = 2, popup = ~pop, fillOpacity=1)
+    }
+    
+    if (input$tabs != 1) {
+      proxy %>% clearShapes()
+      proxy %>% clearMarkers()
+
+      if (input$tabs == 2) {
+        if (!is.null(values$prethinned)) {
+          lati <- values$prethinned[,3]
+          longi <- values$prethinned[,2]
+          proxy %>% fitBounds(min(longi), min(lati), max(longi), max(lati))
+          proxy %>% clearMarkers()
+          proxy %>% addCircleMarkers(data = values$prethinned, lat = ~lat, lng = ~lon, 
+                                     layerId = values$prethinned$origID, 
+                                     radius = 5, color = 'red', fill = FALSE, weight = 2,
+                                     popup = ~pop)
+          proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
+                                     layerId = values$df$origID, 
+                                     radius = 5, color = 'red', fill = TRUE, fillColor = 'blue',
+                                     weight = 2, popup = ~pop)         
+        } else {
+          proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
+                                     layerId = values$df$origID, 
+                                     radius = 5, color = 'red', fill = FALSE, weight = 2,
+                                     popup = ~pop)
+        }
+      }
+      if (input$tabs %in% c(3,5)) {
+        proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
+                                   layerId = values$df$origID, 
+                                   radius = 2, color = 'black', fill = TRUE, fillColor = 'black',
+                                   fillOpacity = 1, weight = 2, popup = ~pop)
+      }
     }
   })
   
@@ -307,7 +316,7 @@ shinyServer(function(input, output, session) {
       withProgress(message = "Downloading WorldClim data...", {
         values$pred <- getData(name = "worldclim", var = "bio", res = input$pred)
       })
-      x1 <- paste("Using WorldClim bio1-19 at", input$pred, " arcmin resolution.")
+      x1 <- paste("Environmental predictors: WorldClim bio1-19 at", input$pred, " arcmin resolution.")
       values$log <- isolate(paste(values$log, x1, sep='<br>'))
       withProgress(message = "Processing...", {
         locs.vals <- extract(values$pred[[1]], values$df[,2:3])
@@ -364,11 +373,13 @@ shinyServer(function(input, output, session) {
       ymax <- max(values$df$lat) + (input$backgBuf + res(values$pred)[1])
       bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin), ncol=2)
       values$backgExt <- SpatialPolygons(list(Polygons(list(Polygon(bb)), 1)))
+      bbTxt <- 'Background extent: bounding box.'
     } else if (input$backg == 'mcp') {
       xy_mcp <- mcp(values$df[,2:3])
       xy_mcp <- gBuffer(xy_mcp, width = input$backgBuf + res(values$pred)[1])
       values$backgExt <- xy_mcp
       bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
+      bbTxt <- 'Background extent: minimum convex polygon.'
     } else if (input$backg == 'user') {
       if (is.null(input$userBackg)) return()
 #       file <- shinyFileChoose(input, 'userBackg', root=c(root='.'))
@@ -390,12 +401,17 @@ shinyServer(function(input, output, session) {
         poly <- readOGR(pathdir[i], strsplit(names[i], '\\.')[[1]][1])
         poly <- gBuffer(poly, width = input$backgBuf + res(values$pred)[1])
         bb <- poly@polygons[[1]]@Polygons[[1]]@coords
+        bbTxt <- 'Background extent: user-defined.'
       }
     }
+    values$log <- isolate(paste(values$log, bbTxt, sep='<br>'))  # add text to log
+    bufTxt <- paste('Background extent buffered by', input$backgBuf, 'degrees.')
+    values$log <- isolate(paste(values$log, bufTxt, sep='<br>'))  # add text to log
+
     lati <- values$df[,3]
     longi <- values$df[,2]
     values$bb <- bb
-    #proxy %>% fitBounds(max(lati), max(longi), min(lati), min(longi))
+    proxy %>% fitBounds(max(lati), max(longi), min(lati), min(longi))
     proxy %>% addPolygons(lng=bb[,1], lat=bb[,2], layerId="backext",
                           options= list(weight=10, col="red"))
 
@@ -463,7 +479,7 @@ shinyServer(function(input, output, session) {
     output$evalTbl <- DT::renderDataTable({DT::datatable(cbind(e@results[,1:3], round(e@results[,4:15], digits=3)))})
     
     if (!is.null(values$evalTbl)) {
-      x <- paste("ENMeval ran successfully and output table with", nrow(values$evalTbl), "rows.")
+      x <- paste("ENMeval ran successfully and output table with statistics for", nrow(values$evalTbl), "models.")
       values$log <- paste(values$log, x, sep='<br>')
       # plotting functionality for ENMeval graphs
       output$evalPlot <- renderPlot({
