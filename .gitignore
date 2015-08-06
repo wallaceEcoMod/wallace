@@ -23,3 +23,4 @@ wc*
 
 # r proj files
 .Rproj.user
+.RData
