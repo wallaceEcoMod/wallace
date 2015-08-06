@@ -9,6 +9,7 @@ if (!require('rgbif')) install.packages('rgbif', type='source')
 if (!require('devtools')) install.packages('devtools')
 library(devtools)
 if (!require('leaflet')) devtools::install_github('rstudio/leaflet')
+# for exp version of ENMeval with special updateProgress param for shiny
 #install_github("bobmuscarella/ENMeval@edits")
 if (!require("DT")) devtools::install_github("rstudio/DT")
 
