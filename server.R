@@ -515,7 +515,7 @@ shinyServer(function(input, output, session) {
   
   # generates user selection of rasters to plot dynamically after they are created
   output$predSel <- renderUI({
-    if (is.null(values$eval@predictions)) return()
+    if (is.null(values$eval)) return()
     n <- names(values$eval@predictions)
     predNameList <- setNames(as.list(seq(1, length(n))), n)
     values$rdyPlot <- 'rdy'
@@ -523,35 +523,46 @@ shinyServer(function(input, output, session) {
                 choices = predNameList)
   })
   
-  # plot continuous prediction
+  observe({
+    if (input$predForm == '') return()
+    if (input$predForm == 2) {
+      if (is.null(values$predsLog)) {
+        isolate({
+          # generate logistic outputs for all raw outputs
+          makeLog <- function(x) predict(x, values$pred, args=c('outputformat=logistic'))
+          print(values$log)
+          values$log <- isolate(paste(values$log, 'Generating logistic predictions...', sep='<br>'))  # add text to log
+          print(values$log)
+          values$predsLog <- stack(sapply(values$eval@models, FUN=makeLog))
+          logTime <- c(1,1,1)
+          values$log <- isolate(paste(values$log, paste0('Logistic predictions complete in ', 
+                                                         logTime[3], '.'), sep='<br>'))  # add text to log          
+        })
+      }
+    }
+  })
+  
+  # plot prediction based on user selection of output
   observeEvent(input$plotPred, {
     if (input$tabs == 5) {
       proxy %>% clearImages()
-      values$predCur <- values$eval@predictions[[as.numeric(input$predSelServer)]]
+      if (input$predForm == 1) {
+        values$predCur <- values$eval@predictions[[as.numeric(input$predSelServer)]]
+      } else if (input$predForm == 2) {
+        if (input$predThresh == 'mtp') {
+          mtp <- values$eval@models[[as.numeric(input$predSelServer)]]@results[60]
+          values$predCur <- values$predLog[[as.numeric(input$predSelServer)]] > mtp
+        } else if (input$predThresh == 'p10') {
+          p10 <- values$eval@models[[as.numeric(input$predSelServer)]]@results[64]
+          values$predCur <- values$predLog[[as.numeric(input$predSelServer)]] > p10
+        } else {
+          values$predCur <- values$predLog[[as.numeric(input$predSelServer)]]  
+        }
+      }
       proxy %>% addRasterImage(values$predCur, layerId='ras', colors="Spectral")
     } 
   })
   
-  # plot MTP prediction
-  observeEvent(input$plotMTP, {
-    if (input$tabs == 5) {
-      proxy %>% clearImages()
-      mtp <- values$eval@models[[as.numeric(input$predSelServer)]]@results[60]
-      values$predCur <- values$eval@predictions[[as.numeric(input$predSelServer)]] > mtp
-      proxy %>% addRasterImage(values$predCur, layerId='ras', colors="Spectral")
-    } 
-  })
-  
-  # plot 10p prediction
-  observeEvent(input$plot10p, {
-    if (input$tabs == 5) {
-      proxy %>% clearImages()
-      p10 <- values$eval@models[[as.numeric(input$predSelServer)]]@results[64]
-      values$predCur <- values$eval@predictions[[as.numeric(input$predSelServer)]] > p10
-      proxy %>% addRasterImage(values$predCur, layerId='ras', colors="Spectral")
-    } 
-  })
-
   # erase raster if user goes to other tabs, puts it back when return to tab 5
   observe({
     if ((input$tabs == 5) & !is.null(values$predCur)) {
