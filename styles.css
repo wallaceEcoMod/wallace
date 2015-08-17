@@ -7,8 +7,6 @@
 #logContent {
   position:absolute;
   z-index: 5;
-  bottom: 0;
-  left: 0;
 }
 .scrollbox {
   height:100px;
