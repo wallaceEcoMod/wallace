@@ -1,19 +1,19 @@
 # check package dependencies, and download if necessary
-list.of.packages <- c("shiny", "ggplot2", "maps", "RColorBrewer", "rgdal", 
-                      "spThin", "colorRamps", "dismo", "rgeos", "XML", "repmis")
+list.of.packages <- c("shiny", "leaflet", "ggplot2", "maps", "RColorBrewer", "rgdal", 
+                      "spThin", "colorRamps", "dismo", "rgeos", "XML", "repmis", "Rcpp", "RCurl", "curl")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
 # rgbif needs to be downloaded from source
 if (!require('rgbif')) install.packages('rgbif', type='source')
 # use devtools to install leaflet and new unreleased version of ENMeval from github
 if (!require('devtools')) install.packages('devtools')
-library(devtools)
-if (!require('leaflet')) devtools::install_github('rstudio/leaflet')
+#if (!require('leaflet')) devtools::install_github('rstudio/leaflet')
 # for exp version of ENMeval with special updateProgress param for shiny
 #install_github("bobmuscarella/ENMeval@edits")
 if (!require("DT")) devtools::install_github("rstudio/DT")
 
 # load libraries
+library(devtools)
 library(shiny)
 library(rgbif)
 library(maptools)
@@ -75,9 +75,9 @@ shinyServer(function(input, output, session) {
         } else {if (nameSplit != 1 && is.null(locs)) {
           x <- paste0('No records found for ', inName, ". Please check the spelling.")
         } else {if (nameSplit != 1 && !is.null(locs)) {
-          x <- paste('Total records for', values$gbifoccs[1,1], 'returned [', nrow(locs),
+          x <- paste('Total records for', values$gbifoccs[1,1], 'returned [', nrow(locs.in),
                      '] out of [', results$meta$count, '] total (limit 500).
-                    Duplicated records removed [', nrow(locs.in) - nrow(locs), "].")
+                    Duplicated records removed [', nrow(locs.in) - nrow(locs), "]: Remaining records [", nrow(locs), "].")
         }}}}
         values$log <- paste(values$log, x, sep='<br>')
       }
@@ -90,7 +90,7 @@ shinyServer(function(input, output, session) {
     output$occTbl <- DT::renderDataTable({DT::datatable(values$df[,1:4])})
   })
   
-  observe({print(input$userCSV)})
+  observe({print(values$log)})
   
   # functionality for input of user CSV
   observe({    
@@ -176,6 +176,8 @@ shinyServer(function(input, output, session) {
     values$drawPolyCoords <- NULL
     values$drawPolys <- NULL
     values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
+    x <- paste('Erased polygons, dataset is now back to', nrow(values$gbifoccs), 'records.')
+    values$log <- isolate(paste(values$log, x, sep='<br>'))
     if (!is.null(values$gbifoccs)) {
       values$df <- values$gbifoccs
       proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
@@ -207,6 +209,8 @@ shinyServer(function(input, output, session) {
     values$drawPolyCoords <- NULL
     values$ptsSel <- ptsSel
     values$df <- ptsSel
+    x <- paste('Selected', nrow(values$df), 'points.')
+    values$log <- isolate(paste(values$log, x, sep='<br>'))
   })
   
   # functionality for plotting points and their colors based on which tab is active
@@ -253,7 +257,7 @@ shinyServer(function(input, output, session) {
           proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
                                      layerId = values$df$origID, 
                                      radius = 5, color = 'red', fill = TRUE, fillColor = 'blue',
-                                     weight = 2, popup = ~pop)         
+                                     fillOpacity = 0.8, weight = 2, popup = ~pop)         
         } else {
           proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
                                      layerId = values$df$origID, 
@@ -264,8 +268,8 @@ shinyServer(function(input, output, session) {
       if (input$tabs %in% c(3,5)) {
         proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
                                    layerId = values$df$origID, 
-                                   radius = 2, color = 'black', fill = TRUE, fillColor = 'black',
-                                   fillOpacity = 1, weight = 2, popup = ~pop)
+                                   radius = 5, color = 'red', fill = FALSE, weight = 2,
+                                   popup = ~pop)
       }
     }
   })
