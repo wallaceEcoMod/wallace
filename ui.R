@@ -26,6 +26,7 @@ title <- HTML('<span style="font-size:25pt">WALLACE beta v0.1:</span>
 # Define UI for application
 shinyUI(pageWithSidebar(title,
                   sidebarPanel(includeCSS("styles.css"),
+                               includeScript("scroll.js"),
                     conditionalPanel("input.tabs == 1",
                                      includeMarkdown("www/tab1content.Rmd"),
                                      radioButtons("unusedDBselect", "Select Occurrence Data Source", 
