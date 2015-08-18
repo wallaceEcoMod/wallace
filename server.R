@@ -222,7 +222,7 @@ shinyServer(function(input, output, session) {
       proxy %>% clearImages()
       proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
                                  radius = 5, color = 'red', 
-                                 fill = FALSE, weight = 2, popup = ~pop)
+                                 fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
       # draw all user-drawn polygons and color according to colorBrewer
       if (!is.null(values$drawPolys)) {
         curPolys <- values$drawPolys@polygons
@@ -239,7 +239,10 @@ shinyServer(function(input, output, session) {
         proxy %>% addCircleMarkers(data = values$ptsSel, lat = ~lat, lng = ~lon, 
                                    radius = 5, color = 'red', 
                                    fill = TRUE, fillColor = 'yellow', 
-                                   weight = 2, popup = ~pop, fillOpacity=1)        
+                                   weight = 2, popup = ~pop, fillOpacity=1)
+        proxy %>% addLegend("bottomright", colors = c('red','yellow'), 
+                  title = "GBIF Records", labels = c('original', 'selected'),
+                  opacity = 1, layerId = 1)
       }
     }
 
@@ -253,15 +256,21 @@ shinyServer(function(input, output, session) {
         proxy %>% fitBounds(min(longi), min(lati), max(longi), max(lati))
         proxy %>% addCircleMarkers(data = values$prethinned, lat = ~lat, lng = ~lon, 
                                    radius = 5, color = 'red', 
-                                   fill = FALSE, weight = 2, popup = ~pop)
+                                   fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
         proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
                                    radius = 5, color = 'red', 
                                    fill = TRUE, fillColor = 'blue',
-                                   fillOpacity = 0.8, weight = 2, popup = ~pop)         
+                                   fillOpacity = 0.8, weight = 2, popup = ~pop)
+        proxy %>% addLegend("bottomright", colors = c('red', 'blue'), 
+                            title = "GBIF Records", labels = c('thinned', 'current'),
+                            opacity = 1, layerId = 1)
       } else {
         proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
                                    radius = 5, color = 'red', 
                                    fill = FALSE, weight = 2, popup = ~pop)
+        proxy %>% addLegend("bottomright", colors = c('red'), 
+                            title = "GBIF Records", labels = c('current'),
+                            opacity = 1, layerId = 1)
       }
     }
     
@@ -272,6 +281,9 @@ shinyServer(function(input, output, session) {
       proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
                                  radius = 5, color = 'red', 
                                  fill = FALSE, weight = 2, popup = ~pop)
+      proxy %>% addLegend("bottomright", colors = c('red'), 
+                          title = "GBIF Records", labels = c('current'),
+                          opacity = 1, layerId = 1)
       if (!is.null(values$bb)) {
         proxy %>% addPolygons(lng=values$bb[,1], lat=values$bb[,2], layerId="backext",
                               options= list(weight=10, col="red"))  
@@ -286,11 +298,16 @@ shinyServer(function(input, output, session) {
       proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
                                  radius = 5, color = 'black', 
                                  fill = TRUE, weight = 4, popup = ~pop)
+      proxy %>% addLegend("bottomright", colors = c('black'), 
+                          title = "GBIF Records", labels = c('current'),
+                          opacity = 1, layerId = 1)
       
       if (!is.null(values$predCur)) {
-        proxy %>% removeShape(layerId = c('backext'))
-        proxy %>% removeMarker(layerId = c('gbifLocs', 'selLocs', 'thinLocs'))
-        proxy %>% addRasterImage(values$predCur, layerId='ras', colors="Spectral") 
+        r <- values(values$predCur)
+        pal <- colorNumeric(c('yellow','green','blue'), r, na.color='transparent')
+        proxy %>% addRasterImage(values$predCur, colors = pal, opacity = 0.8)
+        proxy %>% addLegend("bottomright", pal = pal, title = "Predicted Suitability", 
+                            values = r, layerId = 1)
       }
     }
   })
@@ -320,7 +337,7 @@ shinyServer(function(input, output, session) {
         thinned.inFile <- values$inFile[as.numeric(rownames(output[[1]])),] 
       }
     })
-    writeLog(paste('* Total records thinned to [', nrow(values$df), '] points. Points filled in BLUE are retained.'))
+    writeLog(paste('* Total records thinned to [', nrow(values$df), '] points.'))
     # render the thinned records data table
     output$occTbl <- DT::renderDataTable({DT::datatable(values$df[,1:4])})
   })
