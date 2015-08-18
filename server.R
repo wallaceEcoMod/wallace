@@ -33,11 +33,14 @@ source("functions.R")
 
 shinyServer(function(input, output, session) {
   # make list to carry data used by multiple reactive functions
-  values <- reactiveValues(polyID=0, polyErase=FALSE)
+  values <- reactiveValues(polyID=0, polyErase=FALSE, log=c())
   
   output$log <- renderUI({tags$div(id='logHeader',
                                    tags$div(id='logContent', HTML(paste0(values$log, "<br>", collapse = ""))))})
-  
+  # add text to log
+  writeLog <- function(x) {
+    values$log <- paste(values$log, x, sep='<br>')
+  }
   
   # create map
   map <- leaflet() %>% addTiles() %>% setView(0, 0, zoom = 2)
@@ -48,40 +51,38 @@ shinyServer(function(input, output, session) {
   
   # query GBIF based on user input, remove duplicate records
   observeEvent(input$goName, {
-    withProgress(message = "Searching GBIF...", {
-      results <- occ_search(scientificName = input$gbifName, limit = input$occurrences, 
-                            fields = c('name', 'decimalLongitude', 'decimalLatitude', 'basisOfRecord'), 
-                            hasCoordinate = TRUE)
-      if (results$meta$count != 0) {
-        locs.in <- results$data[!is.na(results$data[,3]),][,c(1,3,4,2)]
-        locs <- remDups(locs.in)
-        names(locs)[2:3] <- c('lon', 'lat')
-        
-        locs$origID <- row.names(locs)
-        locs$pop <- unlist(apply(locs, 1, popUpContent))
-        
-        values$df <- rbind(values$df, locs)
-        values$df <- remDups(values$df)
-        values$gbifoccs <- rbind(values$gbifoccs, locs)
-        values$gbifoccs <- remDups(values$gbifoccs)
-        
-        inName <- isolate(input$gbifName)
-        nameSplit <- length(unlist(strsplit(inName, " ")))
-        
-        if (nameSplit == 1 && !is.null(locs)) {
-          x <- paste("Please input both genus and species names. More than one species with this genus was found.")
-        } else {if (nameSplit == 1 && is.null(locs)) {
-          x <- paste("Please input both genus and species names.")      
-        } else {if (nameSplit != 1 && is.null(locs)) {
-          x <- paste0('No records found for ', inName, ". Please check the spelling.")
-        } else {if (nameSplit != 1 && !is.null(locs)) {
-          x <- paste('Total records for', values$gbifoccs[1,1], 'returned [', nrow(locs.in),
-                     '] out of [', results$meta$count, '] total (limit 500).
+    writeLog("...Searching GBIF...")
+    results <- occ_search(scientificName = input$gbifName, limit = input$occurrences, 
+                          fields = c('name', 'decimalLongitude', 'decimalLatitude', 'basisOfRecord'), 
+                          hasCoordinate = TRUE)
+    if (results$meta$count != 0) {
+      locs.in <- results$data[!is.na(results$data[,3]),][,c(1,3,4,2)]
+      locs <- remDups(locs.in)
+      names(locs)[2:3] <- c('lon', 'lat')
+      
+      locs$origID <- row.names(locs)
+      locs$pop <- unlist(apply(locs, 1, popUpContent))
+      
+      values$df <- rbind(values$df, locs)
+      values$df <- remDups(values$df)
+      values$gbifoccs <- rbind(values$gbifoccs, locs)
+      values$gbifoccs <- remDups(values$gbifoccs)
+      
+      inName <- isolate(input$gbifName)
+      nameSplit <- length(unlist(strsplit(inName, " ")))
+      
+      if (nameSplit == 1 && !is.null(locs)) {
+        x <- paste("* Please input both genus and species names. More than one species with this genus was found.")
+      } else {if (nameSplit == 1 && is.null(locs)) {
+        x <- paste("* Please input both genus and species names.")      
+      } else {if (nameSplit != 1 && is.null(locs)) {
+        x <- paste0('* No records found for ', inName, ". Please check the spelling.")
+      } else {if (nameSplit != 1 && !is.null(locs)) {
+        x <- paste('* Total GBIF records for', values$gbifoccs[1,1], 'returned [', nrow(locs.in),
+                   '] out of [', results$meta$count, '] total (limit 500).
                     Duplicated records removed [', nrow(locs.in) - nrow(locs), "]: Remaining records [", nrow(locs), "].")
-        }}}}
-        values$log <- paste(values$log, x, sep='<br>')
-      }
-    })
+      }}}}}
+      writeLog(x)
   })
   
   observe({
@@ -176,8 +177,8 @@ shinyServer(function(input, output, session) {
     values$drawPolyCoords <- NULL
     values$drawPolys <- NULL
     values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
-    x <- paste('Erased polygons, dataset is now back to', nrow(values$gbifoccs), 'records.')
-    values$log <- isolate(paste(values$log, x, sep='<br>'))
+    x <- paste('* Erased polygons, dataset is now back to', nrow(values$gbifoccs), 'records.')
+    isolate(writeLog(x))
     if (!is.null(values$gbifoccs)) {
       values$df <- values$gbifoccs
       proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
@@ -209,8 +210,7 @@ shinyServer(function(input, output, session) {
     values$drawPolyCoords <- NULL
     values$ptsSel <- ptsSel
     values$df <- ptsSel
-    x <- paste('Selected', nrow(values$df), 'points.')
-    values$log <- isolate(paste(values$log, x, sep='<br>'))
+    isolate(writeLog(paste('* Selected', nrow(values$df), 'points.')))
   })
   
   # functionality for plotting points and their colors based on which tab is active
@@ -284,22 +284,22 @@ shinyServer(function(input, output, session) {
   
   # map thinned records when Thin button is pressed
   observeEvent(input$goThin, {
-    withProgress(message = "Thinning...", {
+    withProgress(message = "Spatially Thinning Records...", {
       output <- thin(values$df, 'lat', 'lon', 'name', thin.par = input$thinDist, 
                      reps = 10, locs.thinned.list.return = TRUE, write.files = FALSE,
                      verbose = FALSE)
-      # pull max, not first (don't think this is implemented yet)
-      # this code is old, and doesn't do what it says it does...
-      #       thinout <- cbind(rep(values$gbifoccs[1,1], nrow(output[[1]])), output[[1]])
-      #       names(thinout) <- c('name', 'lon', 'lat')
+    
       values$prethinned <- values$df
-      values$df <- values$df[as.numeric(rownames(output[[1]])),]
+      # pull thinned dataset with max records, not just the first in the list
+      maxThin <- which(sapply(output, nrow) == max(sapply(output, nrow)))
+      maxThin <- output[[ifelse(length(maxThin) > 1, maxThin[1], maxThin)]]  # if more than one max, pick first
+      values$df <- values$df[as.numeric(rownames(maxThin)),]
       
       if (!is.null(values$inFile)) {
         thinned.inFile <- values$inFile[as.numeric(rownames(output[[1]])),] 
       }
     })
-    values$log <- paste(values$log, paste('Total records thinned to [', nrow(values$df), '] points. Points filled in BLUE are retained.'), sep='<br>')
+    writeLog(paste('* Total records thinned to [', nrow(values$df), '] points. Points filled in BLUE are retained.'))
     # render the thinned records data table
     output$occTbl <- DT::renderDataTable({DT::datatable(values$df[,1:4])})
   })
@@ -321,14 +321,12 @@ shinyServer(function(input, output, session) {
       withProgress(message = "Downloading WorldClim data...", {
         values$pred <- getData(name = "worldclim", var = "bio", res = input$pred)
       })
-      x1 <- paste("Environmental predictors: WorldClim bio1-19 at", input$pred, " arcmin resolution.")
-      values$log <- isolate(paste(values$log, x1, sep='<br>'))
+      isolate(writeLog(paste("* Environmental predictors: WorldClim bio1-19 at", input$pred, " arcmin resolution.")))
       withProgress(message = "Processing...", {
         locs.vals <- extract(values$pred[[1]], values$df[,2:3])
         if (sum(is.na(locs.vals)) > 0) {
-          x2 <- paste0("Removed records with NA environmental values with IDs: ", 
-                       paste(row.names(values$df[is.na(locs.vals),]), collapse=', '), ".")
-          values$log <- isolate(paste(values$log, x2, sep='<br>'))
+          isolate(writeLog(paste0("* Removed records with NA environmental values with IDs: ", 
+                       paste(row.names(values$df[is.na(locs.vals),]), collapse=', '), ".")))
         }
         values$df <- values$df[!is.na(locs.vals),]
         if (!is.null(values$inFile)) {
@@ -350,9 +348,8 @@ shinyServer(function(input, output, session) {
   # reason when values$log is modified within observe, there's an infinite loop
   observe({
     if (!is.null(values$predTxt)) {
-      values$log <- paste(values$log, values$predTxt, sep='<br>')
+      writeLog(values$predTxt)
       values$predTxt <- NULL
-      print(values$log)
     }
   })
   
@@ -378,13 +375,13 @@ shinyServer(function(input, output, session) {
       ymax <- max(values$df$lat) + (input$backgBuf + res(values$pred)[1])
       bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin), ncol=2)
       values$backgExt <- SpatialPolygons(list(Polygons(list(Polygon(bb)), 1)))
-      bbTxt <- 'Background extent: bounding box.'
+      bbTxt <- '* Background extent: bounding box.'
     } else if (input$backg == 'mcp') {
       xy_mcp <- mcp(values$df[,2:3])
       xy_mcp <- gBuffer(xy_mcp, width = input$backgBuf + res(values$pred)[1])
       values$backgExt <- xy_mcp
       bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
-      bbTxt <- 'Background extent: minimum convex polygon.'
+      bbTxt <- '* Background extent: minimum convex polygon.'
     } else if (input$backg == 'user') {
       if (is.null(input$userBackg)) return()
 #       file <- shinyFileChoose(input, 'userBackg', root=c(root='.'))
@@ -406,12 +403,11 @@ shinyServer(function(input, output, session) {
         poly <- readOGR(pathdir[i], strsplit(names[i], '\\.')[[1]][1])
         poly <- gBuffer(poly, width = input$backgBuf + res(values$pred)[1])
         bb <- poly@polygons[[1]]@Polygons[[1]]@coords
-        bbTxt <- 'Background extent: user-defined.'
+        bbTxt <- '* Background extent: user-defined.'
       }
     }
-    values$log <- isolate(paste(values$log, bbTxt, sep='<br>'))  # add text to log
-    bufTxt <- paste('Background extent buffered by', input$backgBuf, 'degrees.')
-    values$log <- isolate(paste(values$log, bufTxt, sep='<br>'))  # add text to log
+    isolate(writeLog(bbTxt))
+    isolate(writeLog(paste('* Background extent buffered by', input$backgBuf, 'degrees.')))
 
     values$bb <- bb
     proxy %>% fitBounds(max(bb[,1]), max(bb[,2]), min(bb[,1]), min(bb[,2]))
@@ -481,8 +477,7 @@ shinyServer(function(input, output, session) {
     output$evalTbl <- DT::renderDataTable({DT::datatable(cbind(e@results[,1:3], round(e@results[,4:15], digits=3)))})
     
     if (!is.null(values$eval@results)) {
-      enmevalTxt <- paste("ENMeval ran successfully and output results for", nrow(values$eval@results), "models.")
-      values$log <- paste(values$log, enmevalTxt, sep='<br>')
+      writeLog(paste("* ENMeval ran successfully and output results for", nrow(values$eval@results), "models."))
       
       # plotting functionality for ENMeval graphs
       output$evalPlot <- renderPlot({
@@ -536,12 +531,11 @@ shinyServer(function(input, output, session) {
           # generate logistic outputs for all raw outputs
           makeLog <- function(x) predict(x, values$pred, args=c('outputformat=logistic'))
           print(values$log)
-          values$log <- isolate(paste(values$log, 'Generating logistic predictions...', sep='<br>'))  # add text to log
+          isolate(writeLog('* Generating logistic predictions...', sep='<br>'))
           print(values$log)
           values$predsLog <- stack(sapply(values$eval@models, FUN=makeLog))
           logTime <- c(1,1,1)
-          values$log <- isolate(paste(values$log, paste0('Logistic predictions complete in ', 
-                                                         logTime[3], '.'), sep='<br>'))  # add text to log          
+          isolate(writeLog(paste0('* Logistic predictions complete in ', logTime[3], '.')))
         })
       }
     }
