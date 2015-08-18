@@ -111,15 +111,13 @@ shinyUI(pageWithSidebar(title,
                     conditionalPanel("input.tabs == 5",
                                      includeMarkdown("www/tab5content.Rmd"),
                                      uiOutput("predSel"),
-                                     selectInput('predForm', label = "Prediction output",
-                                                 choices = list("Choose output" = "", "raw" = 1, "logistic" = 2)),
-                                     conditionalPanel('input.predForm == 2', 
-                                                      selectInput('predThresh', label = "Set logistic threshold",
-                                                                  choices = list("Choose threshold" = "", 
-                                                                                 "MTP" = 'mtp', "10%" = 'p10'))),
-                                     actionButton("plotPred", "Plot Prediction"),
+                                     selectInput('predThresh', label = "Set threshold",
+                                                 choices = list("No threshold" = 'no', 
+                                                                "MTP" = 'mtp', "10%" = 'p10')),
                                      br(),
-                                     downloadButton('downloadPred', "Download Current Plotted Prediction")
+                                     actionButton("plotPred", "Plot Prediction"),
+                                     br(), br(),
+                                     downloadButton('downloadPred', "Download Current Prediction")
                     )
                   ),
                   mainPanel(
