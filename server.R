@@ -63,10 +63,9 @@ shinyServer(function(input, output, session) {
       locs$origID <- row.names(locs)
       locs$pop <- unlist(apply(locs, 1, popUpContent))
       
-      values$df <- rbind(values$df, locs)
-      values$df <- remDups(values$df)
       values$gbifoccs <- rbind(values$gbifoccs, locs)
       values$gbifoccs <- remDups(values$gbifoccs)
+      values$df <- values$gbifoccs
       
       inName <- isolate(input$gbifName)
       nameSplit <- length(unlist(strsplit(inName, " ")))
@@ -213,63 +212,85 @@ shinyServer(function(input, output, session) {
     isolate(writeLog(paste('* Selected', nrow(values$df), 'points.')))
   })
   
-  # functionality for plotting points and their colors based on which tab is active
+  # behavior for plotting points and their colors based on which tab is active
   observe({
     if (is.null(values$df)) return()
     
     if (input$tabs == 1) {
-      # draw all user-drawn polygons and color according to colorBrewer
-      if (is.null(values$drawPolys)) return()
-      curPolys <- values$drawPolys@polygons
-      numPolys <- length(curPolys)
-      colors <- brewer.pal(numPolys, 'Accent')
-      for (i in numPolys) {
-        curPoly <- curPolys[i][[1]]@Polygons[[1]]@coords
-        proxy %>% addPolygons(curPoly[,1], curPoly[,2], 
-                              layerId=paste0('drawPolys',i), 
-                              weight=3, color=colors[i])   
-      }
+      proxy %>% clearMarkers()
+      proxy %>% clearShapes()
+      proxy %>% clearImages()
       proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
-                                 layerId = as.numeric(values$gbifoccs$origID), 
-                                 radius = 5, color = 'red', fill = FALSE, weight = 2,
-                                 popup = ~pop)
-      if (is.null(values$ptsSel)) return()
-      proxy %>% addCircleMarkers(data = values$ptsSel, lat = ~lat, lng = ~lon, 
-                                 layerId = as.numeric(values$ptsSel$origID), 
-                                 radius = 5, color = 'red', fill = TRUE, fillColor = 'yellow', 
-                                 weight = 2, popup = ~pop, fillOpacity=1)
+                                 radius = 5, color = 'red', 
+                                 fill = FALSE, weight = 2, popup = ~pop)
+      # draw all user-drawn polygons and color according to colorBrewer
+      if (!is.null(values$drawPolys)) {
+        curPolys <- values$drawPolys@polygons
+        numPolys <- length(curPolys)
+        colors <- brewer.pal(numPolys, 'Accent')
+        for (i in numPolys) {
+          curPoly <- curPolys[i][[1]]@Polygons[[1]]@coords
+          proxy %>% addPolygons(curPoly[,1], curPoly[,2], 
+                                group = 'tab1', weight=3, color=colors[i])   
+        }        
+      }
+
+      if (!is.null(values$ptsSel)) {
+        proxy %>% addCircleMarkers(data = values$ptsSel, lat = ~lat, lng = ~lon, 
+                                   radius = 5, color = 'red', 
+                                   fill = TRUE, fillColor = 'yellow', 
+                                   weight = 2, popup = ~pop, fillOpacity=1)        
+      }
+    }
+
+    if (input$tabs == 2) {
+      proxy %>% clearMarkers()
+      proxy %>% clearShapes()
+      proxy %>% clearImages()
+      if (!is.null(values$prethinned)) {
+        lati <- values$prethinned[,3]
+        longi <- values$prethinned[,2]
+        proxy %>% fitBounds(min(longi), min(lati), max(longi), max(lati))
+        proxy %>% addCircleMarkers(data = values$prethinned, lat = ~lat, lng = ~lon, 
+                                   radius = 5, color = 'red', 
+                                   fill = FALSE, weight = 2, popup = ~pop)
+        proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
+                                   radius = 5, color = 'red', 
+                                   fill = TRUE, fillColor = 'blue',
+                                   fillOpacity = 0.8, weight = 2, popup = ~pop)         
+      } else {
+        proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
+                                   radius = 5, color = 'red', 
+                                   fill = FALSE, weight = 2, popup = ~pop)
+      }
     }
     
-    if (input$tabs != 1) {
-      proxy %>% clearShapes()
+    if (input$tabs == 3) {
       proxy %>% clearMarkers()
-
-      if (input$tabs == 2) {
-        if (!is.null(values$prethinned)) {
-          lati <- values$prethinned[,3]
-          longi <- values$prethinned[,2]
-          proxy %>% fitBounds(min(longi), min(lati), max(longi), max(lati))
-          proxy %>% clearMarkers()
-          proxy %>% addCircleMarkers(data = values$prethinned, lat = ~lat, lng = ~lon, 
-                                     layerId = values$prethinned$origID, 
-                                     radius = 5, color = 'red', fill = FALSE, weight = 2,
-                                     popup = ~pop)
-          proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
-                                     layerId = values$df$origID, 
-                                     radius = 5, color = 'red', fill = TRUE, fillColor = 'blue',
-                                     fillOpacity = 0.8, weight = 2, popup = ~pop)         
-        } else {
-          proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
-                                     layerId = values$df$origID, 
-                                     radius = 5, color = 'red', fill = FALSE, weight = 2,
-                                     popup = ~pop)
-        }
+      proxy %>% clearShapes()
+      proxy %>% clearImages()
+      proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
+                                 radius = 5, color = 'red', 
+                                 fill = FALSE, weight = 2, popup = ~pop)
+      if (!is.null(values$bb)) {
+        proxy %>% addPolygons(lng=values$bb[,1], lat=values$bb[,2], layerId="backext",
+                              options= list(weight=10, col="red"))  
       }
-      if (input$tabs %in% c(3,5)) {
-        proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
-                                   layerId = values$df$origID, 
-                                   radius = 5, color = 'red', fill = FALSE, weight = 2,
-                                   popup = ~pop)
+    }
+    
+    # erase raster if user goes to other tabs, puts it back when return to tab 5
+    if (input$tabs == 5) {
+      proxy %>% clearMarkers()
+      proxy %>% clearShapes()
+      proxy %>% clearImages()
+      proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
+                                 radius = 5, color = 'black', 
+                                 fill = TRUE, weight = 4, popup = ~pop)
+      
+      if (!is.null(values$predCur)) {
+        proxy %>% removeShape(layerId = c('backext'))
+        proxy %>% removeMarker(layerId = c('gbifLocs', 'selLocs', 'thinLocs'))
+        proxy %>% addRasterImage(values$predCur, layerId='ras', colors="Spectral") 
       }
     }
   })
@@ -417,16 +438,7 @@ shinyServer(function(input, output, session) {
   })
   
   # removes backext polygon if not on tab 3
-  observe({
-    if (input$tabs != 3) {
-      proxy %>% removeShape(layerId='backext')
-    } else {
-      if (!is.null(values$bb)) {
-        proxy %>% addPolygons(lng=values$bb[,1], lat=values$bb[,2], layerId="backext",
-                              options= list(weight=10, col="red"))  
-      }
-    }
-  })
+
 
   # clip and mask rasters based on study region, make random points for background, run ENMeval via user inputs
   observeEvent(input$goEval, {
@@ -530,12 +542,10 @@ shinyServer(function(input, output, session) {
         isolate({
           # generate logistic outputs for all raw outputs
           makeLog <- function(x) predict(x, values$pred, args=c('outputformat=logistic'))
-          print(values$log)
-          isolate(writeLog('* Generating logistic predictions...', sep='<br>'))
-          print(values$log)
+          writeLog('* Generating logistic predictions...')
           values$predsLog <- stack(sapply(values$eval@models, FUN=makeLog))
           logTime <- c(1,1,1)
-          isolate(writeLog(paste0('* Logistic predictions complete in ', logTime[3], '.')))
+          writeLog(paste0('* Logistic predictions complete in ', logTime[3], '.'))
         })
       }
     }
@@ -560,15 +570,6 @@ shinyServer(function(input, output, session) {
       }
       proxy %>% addRasterImage(values$predCur, layerId='ras', colors="Spectral")
     } 
-  })
-  
-  # erase raster if user goes to other tabs, puts it back when return to tab 5
-  observe({
-    if ((input$tabs == 5) & !is.null(values$predCur)) {
-      proxy %>% addRasterImage(values$predCur, layerId='ras', colors="Spectral") 
-    } else {
-      proxy %>% clearImages()
-    }
   })
   
   # handle download for rasters, as TIFF
