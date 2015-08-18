@@ -152,21 +152,23 @@ shinyServer(function(input, output, session) {
   
   # functionality for drawing polygons on map
   observe({
-    latlng <- c(input$map_click$lng, input$map_click$lat)
-    # this functionality prevents existing map click from being added to new polygon
-    if (values$polyErase) {
-      if (identical(latlng, values$mapClick)) {
-        return()
-      } else {
-        values$polyErase <- FALSE 
+    if (input$tabs == 1) {
+      latlng <- c(input$map_click$lng, input$map_click$lat)
+      # this functionality prevents existing map click from being added to new polygon
+      if (values$polyErase) {
+        if (identical(latlng, values$mapClick)) {
+          return()
+        } else {
+          values$polyErase <- FALSE 
+        }
       }
+      if (is.null(input$map_click)) return()
+      values$mapClick <- latlng
+      values$drawPolyCoords <- isolate(rbind(values$drawPolyCoords, latlng))
+      proxy %>% removeShape("drawPoly")
+      proxy %>% addPolygons(values$drawPolyCoords[,1], values$drawPolyCoords[,2], 
+                            layerId='drawPoly', fill=FALSE, weight=3, color='green')
     }
-    if (is.null(input$map_click)) return()
-    values$mapClick <- latlng
-    values$drawPolyCoords <- isolate(rbind(values$drawPolyCoords, latlng))
-    proxy %>% removeShape("drawPoly")
-    proxy %>% addPolygons(values$drawPolyCoords[,1], values$drawPolyCoords[,2], 
-                          layerId='drawPoly', fill=FALSE, weight=3, color='green')      
   })
   
   # erase poly with button click
@@ -304,10 +306,17 @@ shinyServer(function(input, output, session) {
       
       if (!is.null(values$predCur)) {
         r <- values(values$predCur)
-        pal <- colorNumeric(c('yellow','green','blue'), r, na.color='transparent')
+        if (length(unique(r) < 4)) {
+          pal <- c('gray', 'blue')
+          proxy %>% addLegend("bottomright", colors = pal, 
+                              title = "Thresholded Suitability", labels = c(0, 1),
+                              opacity = 1, layerId = 1)
+        } else {
+          pal <- colorNumeric(c('yellow', 'green', 'blue'), r, na.color='transparent')  
+          proxy %>% addLegend("bottomright", pal = pal, title = "Predicted Suitability", 
+                              values = r, layerId = 1)
+        }
         proxy %>% addRasterImage(values$predCur, colors = pal, opacity = 0.8)
-        proxy %>% addLegend("bottomright", pal = pal, title = "Predicted Suitability", 
-                            values = r, layerId = 1)
       }
     }
   })
@@ -499,6 +508,17 @@ shinyServer(function(input, output, session) {
                      method = input$method, occ.grp = occgrp, bg.grp = bggrp, updateProgress = updateProgress)
     values$eval <- e
     
+    # get mtp and p10 for all models (as output is raw we can't get this from the model results table)
+    # this code is mostly pulled with modifications from ENMeval -- thanks Bob!
+    occVals <- extract(values$eval@predictions, occs)
+    values$mtps <- apply(occVals, MARGIN = 2, min)
+    if (nrow(occVals) < 10) {
+      n90 <- floor(nrow(occVals) * 0.9)
+    } else {
+      n90 <- ceiling(nrow(occVals) * 0.9)
+    }
+    values$p10s <- apply(occVals, MARGIN = 2, function(x) rev(sort(x))[n90])
+    
     # render table of ENMeval results
     # code to do fixed columns -- problem is it makes the page selection disappear and you
     # can't seem to pan around the table to see the other rows... likely a bug
@@ -552,41 +572,34 @@ shinyServer(function(input, output, session) {
                 choices = predNameList)
   })
   
-  observe({
-    if (input$predForm == '') return()
-    if (input$predForm == 2) {
-      if (is.null(values$predsLog)) {
-        isolate({
-          # generate logistic outputs for all raw outputs
-          makeLog <- function(x) predict(x, values$pred, args=c('outputformat=logistic'))
-          writeLog('* Generating logistic predictions...')
-          values$predsLog <- stack(sapply(values$eval@models, FUN=makeLog))
-          logTime <- c(1,1,1)
-          writeLog(paste0('* Logistic predictions complete in ', logTime[3], '.'))
-        })
-      }
-    }
-  })
+#   observe({
+#     if (input$predForm == '') return()
+#     if (input$predForm == 2) {
+#       if (is.null(values$predsLog)) {
+#         isolate({
+#           # generate logistic outputs for all raw outputs
+#           makeLog <- function(x) predict(x, values$pred, args=c('outputformat=logistic'))
+#           writeLog('* Generating logistic predictions...')
+#           values$predsLog <- stack(sapply(values$eval@models, FUN=makeLog))
+#           logTime <- c(1,1,1)
+#           writeLog(paste0('* Logistic predictions complete in ', logTime[3], '.'))
+#         })
+#       }
+#     }
+#   })
   
-  # plot prediction based on user selection of output
+  # set predCur based on user selection of threshold
   observeEvent(input$plotPred, {
-    if (input$tabs == 5) {
-      proxy %>% clearImages()
-      if (input$predForm == 1) {
-        values$predCur <- values$eval@predictions[[as.numeric(input$predSelServer)]]
-      } else if (input$predForm == 2) {
-        if (input$predThresh == 'mtp') {
-          mtp <- values$eval@models[[as.numeric(input$predSelServer)]]@results[60]
-          values$predCur <- values$predLog[[as.numeric(input$predSelServer)]] > mtp
-        } else if (input$predThresh == 'p10') {
-          p10 <- values$eval@models[[as.numeric(input$predSelServer)]]@results[64]
-          values$predCur <- values$predLog[[as.numeric(input$predSelServer)]] > p10
-        } else {
-          values$predCur <- values$predLog[[as.numeric(input$predSelServer)]]  
-        }
-      }
-      proxy %>% addRasterImage(values$predCur, layerId='ras', colors="Spectral")
-    } 
+    selRas <- values$eval@predictions[[as.numeric(input$predSelServer)]]
+    if (input$predThresh == 'no') {
+      values$predCur <- selRas
+    } else if (input$predThresh == 'mtp') {
+      mtp <- values$mtps[as.numeric(input$predSelServer)]
+      values$predCur <- selRas > mtp
+    } else if (input$predThresh == 'p10') {
+      p10 <- values$p10s[as.numeric(input$predSelServer)]
+      values$predCur <- selRas > p10
+    }
   })
   
   # handle download for rasters, as TIFF
