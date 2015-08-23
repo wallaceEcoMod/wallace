@@ -496,7 +496,7 @@ shinyServer(function(input, output, session) {
       withProgress(message = "Generating background points...", {
         backg_pts <- randomPoints(preds, 10000)
       })
-    } 
+    }
     
     rms <- seq(input$rms[1], input$rms[2], input$rmsBy)
     progress <- shiny::Progress$new()
