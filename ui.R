@@ -93,7 +93,8 @@ shinyUI(pageWithSidebar(title,
                                                                 "user-specified" = "user")),
                                      conditionalPanel("input.method == 'user'", 
                                                       uiOutput('occgrpSel'),
-                                                      uiOutput('bggrpSel'))
+                                                      uiOutput('bggrpSel')),
+                                     actionButton("goPart", "Partition")
                     ),
                     conditionalPanel("input.tabs == 6",
                                      includeMarkdown("www/tab6content.Rmd"),
