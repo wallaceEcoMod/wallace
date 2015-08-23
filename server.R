@@ -368,6 +368,9 @@ shinyServer(function(input, output, session) {
       withProgress(message = "Downloading WorldClim data...", {
         values$pred <- getData(name = "worldclim", var = "bio", res = input$pred)
       })
+      proxy %>% addLegend("topright", colors = c(), 
+                          title = "Predictors: Worldclim bio 1-19", labels = c(),
+                          opacity = 1, layerId = 1)
       isolate(writeLog(paste("* Environmental predictors: WorldClim bio1-19 at", input$pred, " arcmin resolution.")))
       withProgress(message = "Processing...", {
         locs.vals <- extract(values$pred[[1]], values$df[,2:3])
