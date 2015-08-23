@@ -276,7 +276,7 @@ shinyServer(function(input, output, session) {
       }
     }
     
-    if (input$tabs == 3) {
+    if (input$tabs == 4) {
       proxy %>% clearMarkers()
       proxy %>% clearShapes()
       proxy %>% clearImages()
@@ -293,7 +293,7 @@ shinyServer(function(input, output, session) {
     }
     
     # erase raster if user goes to other tabs, puts it back when return to tab 5
-    if (input$tabs == 5) {
+    if (input$tabs == 7) {
       proxy %>% clearMarkers()
       proxy %>% clearShapes()
       proxy %>% clearImages()
