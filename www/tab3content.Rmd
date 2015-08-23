@@ -1,0 +1,11 @@
+---
+title: "tab3content"
+output: html_document
+---
+<span style="font-size:8pt; font-style:italic;color:gray">Packages used: ggplot2, sp, rgeos</span>  
+
+The user then chooses which environmental variables to use as predictors. These data are in raster form. For this demonstration, WorldClim bioclimatic variables are made available at 3 resolutions. 
+
+Future versions will include other sets of environmental variables, as well as allow users to upload their own sets of environmental variables and designate a shapefile indicating a custom study region.
+
+<a href="http://worldclim.org" target="_blank">Worldclim homepage</a>
