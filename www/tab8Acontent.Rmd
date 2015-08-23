@@ -1,5 +1,5 @@
 ---
-title: "tab6Acontent"
+title: "tab8Acontent"
 output: html_document
 ---
 <img src="jamie.jpg" height="100" hspace="10" align="left">
