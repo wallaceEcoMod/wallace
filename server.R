@@ -337,7 +337,7 @@ shinyServer(function(input, output, session) {
   # map thinned records when Thin button is pressed
   observeEvent(input$goThin, {
       if (is.null(values$df)) {
-      writeLog("No species records")
+      writeLog("* Obtain the species occurrence record first")
       return()
       }
     withProgress(message = "Spatially Thinning Records...", {
