@@ -90,8 +90,6 @@ shinyServer(function(input, output, session) {
     output$occTbl <- DT::renderDataTable({DT::datatable(values$df[,1:4])})
   })
   
-  observe({print(values$log)})
-  
   # functionality for input of user CSV
   observe({    
     if (is.null(input$userCSV)) return()
@@ -305,13 +303,13 @@ shinyServer(function(input, output, session) {
                           opacity = 1, layerId = 1)
       
       if (!is.null(values$predCur)) {
-        r <- values(values$predCur)
-        if (length(unique(r) < 4)) {
+        if (input$predThresh == 'mtp' | input$predThresh == 'p10') {
           pal <- c('gray', 'blue')
           proxy %>% addLegend("bottomright", colors = pal, 
                               title = "Thresholded Suitability", labels = c(0, 1),
                               opacity = 1, layerId = 1)
         } else {
+          r <- values(values$predCur)
           pal <- colorNumeric(c('yellow', 'green', 'blue'), r, na.color='transparent')  
           proxy %>% addLegend("bottomright", pal = pal, title = "Predicted Suitability", 
                               values = r, layerId = 1)
@@ -572,26 +570,11 @@ shinyServer(function(input, output, session) {
                 choices = predNameList)
   })
   
-#   observe({
-#     if (input$predForm == '') return()
-#     if (input$predForm == 2) {
-#       if (is.null(values$predsLog)) {
-#         isolate({
-#           # generate logistic outputs for all raw outputs
-#           makeLog <- function(x) predict(x, values$pred, args=c('outputformat=logistic'))
-#           writeLog('* Generating logistic predictions...')
-#           values$predsLog <- stack(sapply(values$eval@models, FUN=makeLog))
-#           logTime <- c(1,1,1)
-#           writeLog(paste0('* Logistic predictions complete in ', logTime[3], '.'))
-#         })
-#       }
-#     }
-#   })
-  
   # set predCur based on user selection of threshold
   observeEvent(input$plotPred, {
     selRas <- values$eval@predictions[[as.numeric(input$predSelServer)]]
-    if (input$predThresh == 'no') {
+    values$rasName <- names(selRas)
+    if (input$predThresh == 'raw') {
       values$predCur <- selRas
     } else if (input$predThresh == 'mtp') {
       mtp <- values$mtps[as.numeric(input$predSelServer)]
@@ -604,9 +587,9 @@ shinyServer(function(input, output, session) {
   
   # handle download for rasters, as TIFF
   output$downloadPred <- downloadHandler(
-    filename = function() {paste0(names(values$eval@predictions[[as.numeric(input$predSelServer)]]), "_pred.tif")},
+    filename = function() {paste0(values$rasName, "_", input$predThresh, "_pred.tif")},
     content = function(file) {
-      res <- writeRaster(values$eval@predictions[[as.numeric(input$predSelServer)]], file, format = "GTiff", overwrite = TRUE)
+      res <- writeRaster(values$predCur, file, format = "GTiff", overwrite = TRUE)
       file.rename(res@file@name, file)
     }
   )
