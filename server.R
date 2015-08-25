@@ -425,7 +425,7 @@ shinyServer(function(input, output, session) {
   
   # background extents
   observe({
-    if (input$backg == "") return()
+    if (input$backg == "" | is.null(values$df) | is.null(values$pred)) return()
     # generate background extent
     if (input$backg == 'bb') {
       xmin <- min(values$df$lon) - (input$backgBuf + res(values$pred)[1])
