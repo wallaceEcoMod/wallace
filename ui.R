@@ -135,13 +135,19 @@ shinyUI(pageWithSidebar(title,
                                 tabPanel("4) Process Env Data", value=4),
                                 tabPanel("5) Partition Occ Data", value=5),
                                 tabPanel("6) Build Niche Model", value=6),
-                                tabPanel("7) Map Prediction", value=7),
+                                tabPanel("7) Visualize Prediction", value=7),
                                 tabPanel("8) ABOUT", value=8)
                     ),
                     "LOG",
-                    div(id = "wallaceLog", class = "scrollbox", htmlOutput("log")),
-                    br(),
-                    conditionalPanel("input.tabs == 1", actionButton("erasePoly", "Erase Polygon"), actionButton("selectPoly", "Select Pts With Poly")),
+                    fluidRow(
+                      column(9,
+                        div(id = "wallaceLog", class = "scrollbox", htmlOutput("log"))
+                        ),
+                      column(3,
+                             conditionalPanel("input.tabs == 1", actionButton("erasePoly", "Erase Polygon"), br(), br(),
+                                              actionButton("selectPoly", "Select Pts With Poly"))                        
+                             )
+                    ),
                     br(),
                     conditionalPanel("input.tabs != 6 && input.tabs != 8", leafletOutput("map", height=600)),
                     br(),
