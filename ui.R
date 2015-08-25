@@ -125,6 +125,9 @@ shinyUI(pageWithSidebar(title,
                                      actionButton("plotPred", "Plot Prediction"),
                                      br(), br(),
                                      downloadButton('downloadPred', "Download Current Prediction")
+                    ),
+                    conditionalPanel("input.tabs == 8",
+                                     h4("About")
                     )
                   ),
                   mainPanel(
