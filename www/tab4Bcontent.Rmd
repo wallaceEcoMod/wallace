@@ -4,8 +4,8 @@ output: html_document
 ---
 <span style="font-size:9pt">References:</span> 
 <span style="font-size:9pt">
-Anderson, R.P. & A. Raza. (2010). The effect of the extent of the study region on GIS models of species geographic distributions and estimates of niche evolution: preliminary tests with montane rodents (genus Nephelomys) in Venezuela. Journal of Biogeography, 37: 1378–1393.
-</span>
+*Anderson, R.P. & A. Raza. (2010). The effect of the extent of the study region on GIS models of species geographic distributions and estimates of niche evolution: preliminary tests with montane rodents (genus Nephelomys) in Venezuela. Journal of Biogeography, 37: 1378–1393.*
+</span>  
 <span style="font-size:9pt">
-Barve, N., V. Barve, A. Jiménez-Valverde, A. Lira-Noriega, S.P. Maher, A.T. Peterson, J. Soberón & F. Villalobos. (2011), The crucial role of the accessible area in ecological niche modeling and species distribution modeling. Ecological Modeling, 222: 1810–1819.
+*Barve, N., V. Barve, A. Jiménez-Valverde, A. Lira-Noriega, S.P. Maher, A.T. Peterson, J. Soberón & F. Villalobos. (2011), The crucial role of the accessible area in ecological niche modeling and species distribution modeling. Ecological Modeling, 222: 1810–1819.*
 </span>

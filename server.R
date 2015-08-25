@@ -466,9 +466,6 @@ shinyServer(function(input, output, session) {
 
   })
   
-  # removes backext polygon if not on tab 3
-
-
   # clip and mask rasters based on study region, make random points for background, run ENMeval via user inputs
   observeEvent(input$goEval, {
     validate(
