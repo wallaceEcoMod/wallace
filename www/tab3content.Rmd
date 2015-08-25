@@ -2,6 +2,7 @@
 title: "tab3content"
 output: html_document
 ---
+#### Obtain Environmental Data  
 <span style="font-size:8pt; font-style:italic;color:gray">Packages used: ggplot2, sp, rgeos</span>  
 
 The user then chooses which environmental variables to use as predictors. These data are in raster form. For this demonstration, WorldClim bioclimatic variables are made available at 3 resolutions. 

@@ -2,6 +2,7 @@
 title: "tab7content"
 output: html_document
 ---
+#### Visualize Model Prediction  
 <span style="color:gray; font-size:8pt; font-style:italic">Packages used: raster</span>  
 
 View the prediction rasters. You can download them individually and import into a GIS for further analysis.
