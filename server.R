@@ -57,7 +57,7 @@ shinyServer(function(input, output, session) {
                           hasCoordinate = TRUE)
     # Control species not found
     if (results$meta$count == 0) {
-      writeLog(paste(input$gbifName, "not found in gbif database"))
+      writeLog(paste('* No records found for ', input$gbifName, ". Please check the spelling."))
     }
                       
     if (results$meta$count != 0) {
