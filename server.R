@@ -336,6 +336,10 @@ shinyServer(function(input, output, session) {
   
   # map thinned records when Thin button is pressed
   observeEvent(input$goThin, {
+      if (is.null(values$df)) {
+      writeLog("No species records")
+      return()
+      }
     withProgress(message = "Spatially Thinning Records...", {
       output <- thin(values$df, 'lat', 'lon', 'name', thin.par = input$thinDist, 
                      reps = 10, locs.thinned.list.return = TRUE, write.files = FALSE,
