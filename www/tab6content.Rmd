@@ -2,13 +2,4 @@
 title: "tab6content"
 output: html_document
 ---
-#### Build Niche Model  
-<span style="color:purple; font-size:18pt; font-weight:bold">ENMeval</span>  
-<span style="font-size:10pt; font-style:italic">Automated Runs and Evaluations of Ecological Niche Models</span>  
-<span style="font-size:10pt"><span style="font-style:italic">Links to </span><a href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12261/abstract" target="_blank">software note</a> and <a href="http://cran.r-project.org/web/packages/ENMeval/index.html" target="_blank">CRAN</a></span>  
-<span style="font-size:9pt">
-Citation:  Muscarella, R., Galante, P. J., Soley-Guardia, M., Boria, R. A., Kass, J. M., Uriarte, M., Anderson, R. P. (2014), ENMeval: An R package for conducting spatially independent evaluations and estimating optimal model complexity for Maxent ecological niche models. Methods in Ecology and Evolution, 5: 1198–1205.
-</span>  
-<span style="color:gray; font-size:8pt; font-style:italic">Other packages used: ggplot2, raster, dismo</span>  
-
 The output of niche/distribution models varies greatly depending on model settings, in particular those affecting the level of model complexity. This step automates the tedious building of a suite of candidate models with differing limitations on complexity. Furthermore, it quantifies their performance on test records. These metrics can aid the user in selecting optimal settings.
