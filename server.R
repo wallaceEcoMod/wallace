@@ -281,7 +281,7 @@ shinyServer(function(input, output, session) {
       }
     }
     
-    if (input$tabs == 4) {
+    if (input$tabs == 3 | input$tabs == 4 | input$tabs == 5) {
       proxy %>% clearMarkers()
       proxy %>% clearShapes()
       proxy %>% clearImages()
@@ -291,7 +291,7 @@ shinyServer(function(input, output, session) {
       proxy %>% addLegend("bottomright", colors = c('red'), 
                           title = "GBIF Records", labels = c('current'),
                           opacity = 1, layerId = 1)
-      if (!is.null(values$bb)) {
+      if (!is.null(values$bb) & input$tabs == 4) {
         proxy %>% addPolygons(lng=values$bb[,1], lat=values$bb[,2], layerId="backext",
                               options= list(weight=10, col="red"))  
       }
@@ -467,14 +467,12 @@ shinyServer(function(input, output, session) {
         poly <- gBuffer(poly, width = input$backgBuf + res(values$pred)[1])
         values$backgExt <- poly
         bb <- poly@polygons[[1]]@Polygons[[1]]@coords
-        print(bb)
       }
       bbTxt <- '* Background extent: user-defined.'
     }
     isolate(writeLog(bbTxt))
     isolate(writeLog(paste('* Background extent buffered by', input$backgBuf, 'degrees.')))
     
-    print(bb)
     values$bb <- bb
     proxy %>% fitBounds(max(bb[,1]), max(bb[,2]), min(bb[,1]), min(bb[,2]))
     proxy %>% addPolygons(lng=bb[,1], lat=bb[,2], layerId="backext",
@@ -607,7 +605,7 @@ shinyServer(function(input, output, session) {
   output$downloadPred <- downloadHandler(
     filename = function() {paste0(values$rasName, "_", input$predThresh, "_pred.tif")},
     content = function(file) {
-      res <- writeRaster(values$predCur, file, format = "GTiff", overwrite = TRUE)
+      res <- writeRaster(values$predCur, file, format = input$predFileType, overwrite = TRUE)
       file.rename(res@file@name, file)
     }
   )
