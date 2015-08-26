@@ -1,0 +1,13 @@
+#rpkg {
+  font-size:12pt;
+  font-weight:bold;
+}
+#mod {
+  color:purple; 
+  font-size:18pt; 
+  font-weight:bold;
+}
+#pkgDes {
+  font-size:10pt; 
+  font-style:italic;
+}

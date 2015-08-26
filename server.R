@@ -414,9 +414,9 @@ shinyServer(function(input, output, session) {
   
   # background extents
   observe({
-    if (input$backg == "") return()
+    if (is.null(input$backgSelect) | is.null(values$pred)) return()
     # generate background extent
-    if (input$backg == 'bb') {
+    if (input$backgSelect == 'bb') {
       xmin <- min(values$df$lon) - (input$backgBuf + res(values$pred)[1])
       xmax <- max(values$df$lon) + (input$backgBuf + res(values$pred)[1])
       ymin <- min(values$df$lat) - (input$backgBuf + res(values$pred)[1])
@@ -424,13 +424,13 @@ shinyServer(function(input, output, session) {
       bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin), ncol=2)
       values$backgExt <- SpatialPolygons(list(Polygons(list(Polygon(bb)), 1)))
       bbTxt <- '* Background extent: bounding box.'
-    } else if (input$backg == 'mcp') {
+    } else if (input$backgSelect == 'mcp') {
       xy_mcp <- mcp(values$df[,2:3])
       xy_mcp <- gBuffer(xy_mcp, width = input$backgBuf + res(values$pred)[1])
       values$backgExt <- xy_mcp
       bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
       bbTxt <- '* Background extent: minimum convex polygon.'
-    } else if (input$backg == 'user') {
+    } else if (input$backgSelect == 'user') {
       if (is.null(input$userBackg)) return()
 #       file <- shinyFileChoose(input, 'userBackg', root=c(root='.'))
 #       path <- input$userBackg$datapath
@@ -441,7 +441,11 @@ shinyServer(function(input, output, session) {
       # get extensions of all input files
       exts <- sapply(strsplit(names, '\\.'), FUN=function(x) x[2])
       if (length(exts) == 1 & exts == 'csv') {
-        bb <- read.csv(inPath, header = TRUE)
+        shp <- read.csv(inPath, header = TRUE)
+        shp <- SpatialPolygons(list(Polygons(list(Polygon(bb)), 1)))
+        shp <- gBuffer(shp, width = input$backgBuf + res(values$pred)[1])
+        values$backgExt <- shp
+        bb <- shp@polygons[[1]]@Polygons[[1]]@coords
       } else if (length(exts) > 1 & 'shp' %in% exts) {
         # rename temp files to their original names - nice hack for inputting shapefiles in shiny
         file.rename(inPath, file.path(pathdir, names))
@@ -450,13 +454,16 @@ shinyServer(function(input, output, session) {
         # read in shapefile and extract coords
         poly <- readOGR(pathdir[i], strsplit(names[i], '\\.')[[1]][1])
         poly <- gBuffer(poly, width = input$backgBuf + res(values$pred)[1])
+        values$backgExt <- poly
         bb <- poly@polygons[[1]]@Polygons[[1]]@coords
-        bbTxt <- '* Background extent: user-defined.'
+        print(bb)
       }
+      bbTxt <- '* Background extent: user-defined.'
     }
     isolate(writeLog(bbTxt))
     isolate(writeLog(paste('* Background extent buffered by', input$backgBuf, 'degrees.')))
-
+    
+    print(bb)
     values$bb <- bb
     proxy %>% fitBounds(max(bb[,1]), max(bb[,2]), min(bb[,1]), min(bb[,2]))
     proxy %>% addPolygons(lng=bb[,1], lat=bb[,2], layerId="backext",

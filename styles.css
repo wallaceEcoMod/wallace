@@ -15,6 +15,13 @@
   overflow:auto;
   border:1px solid green;
 }
+hr {
+    border: none;
+    height: 5px;
+    /* Set the hr color */
+    color: #333; /* old IE */
+    background-color: #333; /* Modern Browsers */
+}
 #title1 {
   font-size:30pt;
 }
@@ -23,4 +30,22 @@
 }
 #title3 {
   font-size:7pt;
+}
+#rpkg {
+  font-size:12pt;
+  font-weight:bold;
+}
+#mod {
+  color:purple; 
+  font-size:18pt; 
+  font-weight:bold;
+}
+#pkgDes {
+  font-size:10pt; 
+  font-style:italic;
+}
+#pkgSm {
+  font-size:8pt; 
+  font-style:italic;
+  color:gray;
 }
