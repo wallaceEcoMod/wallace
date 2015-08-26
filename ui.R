@@ -262,6 +262,8 @@ shinyUI(pageWithSidebar(title,
                                                                        br(),
                                                                        actionButton("plotPred", "Plot Prediction"),
                                                                        br(), br(),
+                                                                       selectInput('predFileType', label = "Select File Type",
+                                                                                   choices = list("GRD" = 'raster', "ASCII" = 'ascii', "GeoTIFF" = 'GTiff')),
                                                                        downloadButton('downloadPred', "Download Current Prediction")
                                                       ),
                                                       includeMarkdown("www/tab7content.Rmd"),
