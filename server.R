@@ -55,6 +55,11 @@ shinyServer(function(input, output, session) {
     results <- occ_search(scientificName = input$gbifName, limit = input$occurrences, 
                           fields = c('name', 'decimalLongitude', 'decimalLatitude', 'basisOfRecord'), 
                           hasCoordinate = TRUE)
+    # Control species not found
+    if (results$meta$count == 0) {
+      writeLog(paste('* No records found for ', input$gbifName, ". Please check the spelling."))
+    }
+                      
     if (results$meta$count != 0) {
       locs.in <- results$data[!is.na(results$data[,3]),][,c(1,3,4,2)]
       locs <- remDups(locs.in)
@@ -80,8 +85,9 @@ shinyServer(function(input, output, session) {
         x <- paste('* Total GBIF records for', values$gbifoccs[1,1], 'returned [', nrow(locs.in),
                    '] out of [', results$meta$count, '] total (limit 500).
                     Duplicated records removed [', nrow(locs.in) - nrow(locs), "]: Remaining records [", nrow(locs), "].")
-      }}}}}
+      }}}}
       writeLog(x)
+      }
   })
   
   observe({
@@ -127,6 +133,7 @@ shinyServer(function(input, output, session) {
   
   # map gbif occs
   observeEvent(input$goName, {
+    if (is.null(values$gbifoccs)) {return()}
     proxy %>% clearShapes()
     lati <- values$gbifoccs[,3]
     longi <- values$gbifoccs[,2]
@@ -329,6 +336,10 @@ shinyServer(function(input, output, session) {
   
   # map thinned records when Thin button is pressed
   observeEvent(input$goThin, {
+      if (is.null(values$df)) {
+      writeLog("* Obtain the species occurrence record first")
+      return()
+      }
     withProgress(message = "Spatially Thinning Records...", {
       output <- thin(values$df, 'lat', 'lon', 'name', thin.par = input$thinDist, 
                      reps = 10, locs.thinned.list.return = TRUE, write.files = FALSE,
