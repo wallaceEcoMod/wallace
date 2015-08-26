@@ -274,7 +274,7 @@ shinyServer(function(input, output, session) {
       } else {
         proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
                                    radius = 5, color = 'red', 
-                                   fill = FALSE, weight = 2, popup = ~pop)
+                                   fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
         proxy %>% addLegend("bottomright", colors = c('red'), 
                             title = "GBIF Records", labels = c('current'),
                             opacity = 1, layerId = 1)
@@ -287,7 +287,7 @@ shinyServer(function(input, output, session) {
       proxy %>% clearImages()
       proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
                                  radius = 5, color = 'red', 
-                                 fill = FALSE, weight = 2, popup = ~pop)
+                                 fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
       proxy %>% addLegend("bottomright", colors = c('red'), 
                           title = "GBIF Records", labels = c('current'),
                           opacity = 1, layerId = 1)
