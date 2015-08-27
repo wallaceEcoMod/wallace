@@ -7,7 +7,7 @@ if(length(new.packages)) install.packages(new.packages)
 if (!require('rgbif')) install.packages('rgbif', type='source')
 # use devtools to install leaflet and new unreleased version of ENMeval from github
 if (!require('devtools')) install.packages('devtools')
-#if (!require('leaflet')) devtools::install_github('rstudio/leaflet')
+if (!require('leaflet')) devtools::install_github('rstudio/leaflet')
 # for exp version of ENMeval with special updateProgress param for shiny
 #install_github("bobmuscarella/ENMeval@edits")
 if (!require("DT")) devtools::install_github("rstudio/DT")
@@ -434,13 +434,13 @@ shinyServer(function(input, output, session) {
       ymax <- max(values$df$lat) + (input$backgBuf + res(values$pred)[1])
       bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin), ncol=2)
       values$backgExt <- SpatialPolygons(list(Polygons(list(Polygon(bb)), 1)))
-      bbTxt <- '* Background extent: bounding box.'
+      bbTxt <- 'bounding box'
     } else if (input$backgSelect == 'mcp') {
       xy_mcp <- mcp(values$df[,2:3])
       xy_mcp <- gBuffer(xy_mcp, width = input$backgBuf + res(values$pred)[1])
       values$backgExt <- xy_mcp
       bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
-      bbTxt <- '* Background extent: minimum convex polygon.'
+      bbTxt <- 'minimum convex polygon'
     } else if (input$backgSelect == 'user') {
       if (is.null(input$userBackg)) return()
 #       file <- shinyFileChoose(input, 'userBackg', root=c(root='.'))
@@ -468,59 +468,74 @@ shinyServer(function(input, output, session) {
         values$backgExt <- poly
         bb <- poly@polygons[[1]]@Polygons[[1]]@coords
       }
-      bbTxt <- '* Background extent: user-defined.'
+      bbTxt <- 'user-defined'
     }
-    isolate(writeLog(bbTxt))
+    isolate(writeLog(paste0("* Background extent: ", bbTxt, ".")))
     isolate(writeLog(paste('* Background extent buffered by', input$backgBuf, 'degrees.')))
     
     values$bb <- bb
     proxy %>% fitBounds(max(bb[,1]), max(bb[,2]), min(bb[,1]), min(bb[,2]))
     proxy %>% addPolygons(lng=bb[,1], lat=bb[,2], layerId="backext",
                           options= list(weight=10, col="red"))
-
+    
+    # clip and mask rasters based on study region
+    withProgress(message = "Processing environmental rasters...", {
+      predCrop <- crop(values$pred, values$backgExt)
+      values$predMsk <- mask(predCrop, values$backgExt)
+    })
+    isolate(writeLog(paste0('* Environmental rasters masked by ', bbTxt, '.')))
   })
   
-  # clip and mask rasters based on study region, make random points for background, run ENMeval via user inputs
-  observeEvent(input$goEval, {
-    validate(
-      need(input$method != "randomkfold", "Please select a functional method.")
-    )
-    withProgress(message = "Processing environmental rasters...", {
-      #preds <- stack(values$predPath)
-      preds <- values$pred
-      preds <- crop(preds, values$backgExt)
-      preds <- mask(preds, values$backgExt)
-    })
-
+  observeEvent(input$goPart, {
+    if (is.null(input$partSelect)) return()
     # if user kfold, get groups and assign occs and backg from inFile, 
     # and if not, make backg pts and assign user kfold groups to NULL
-    if (input$method == 'user') {
+    if (input$partSelect == 'user') {
       occs <- values$inFile[values$inFile[,1] == values$spname,]
-      backg_pts <- values$inFile[values$inFile[,1] != values$spname,]
-      occgrp <- as.numeric(occs[,input$occgrp])
-      bggrp <- as.numeric(backg_pts[,input$bggrp])
+      bg.coords <- values$inFile[values$inFile[,1] != values$spname,]
+      group.data <- list()
+      group.data[[1]] <- as.numeric(occs[,input$occ.grp])
+      group.data[[2]] <- as.numeric(backg_pts[,input$bg.grp])
       occs <- occs[,2:3]
-      backg_pts <- backg_pts[,2:3]
+      values$bg.coords <- backg_pts[,2:3]
     } else {
-      occgrp <- bggrp <- NULL
       occs <- values$df[,2:3]
-      withProgress(message = "Generating background points...", {
-        backg_pts <- randomPoints(preds, 10000)
-      })
-    } 
-    
-    rms <- seq(input$rms[1], input$rms[2], input$rmsBy)
-    progress <- shiny::Progress$new()
-    progress$set(message = "Evaluating ENMs...", value = 0)
-    on.exit(progress$close())
-    n <- length(rms) * length(input$fcs)
-    updateProgress <- function(value = NULL, detail = NULL) {
-      progress$inc(amount = 1/n, detail = detail)
+      if (is.null(values$bg.coords)) {
+        withProgress(message = "Generating background points...", {
+          bg.coords <- randomPoints(values$predMsk, 10000)
+          values$bg.coords <- as.data.frame(bg.coords)        
+        })
+      }
     }
-
-    e <- ENMevaluate(occs, preds, bg.coords = backg_pts, RMvalues = rms, fc = input$fcs, 
-                     method = input$method, occ.grp = occgrp, bg.grp = bggrp, updateProgress = updateProgress)
-    values$eval <- e
+    
+    if (input$partSelect == 'block') {group.data <- get.block(occs, values$bg.coords)}
+    if (input$partSelect == 'cb1') {group.data <- get.checkerboard1(occs, values$predMsk, values$bg.coords, input$aggFact)}
+    if (input$partSelect == 'cb2') {group.data <- get.checkerboard2(occs, values$predMsk, values$bg.coords, input$aggFact)}
+    if (input$partSelect == 'jack') {group.data <- get.jackknife(occs, values$bg.coords)}
+    if (input$partSelect == 'random') {group.data <- get.randomkfold(occs, values$bg.coords, input$kfolds)}
+    values$modParams <- list(occ.pts=occs, bg.pts=values$bg.coords, occ.grp=group.data[[1]], bg.grp=group.data[[2]])
+    print(group.data)
+  })
+  
+  # run ENMeval via user inputs
+  observeEvent(input$goEval, {
+    
+    if (input$modSelect == "Maxent") {
+      rms <- seq(input$rms[1], input$rms[2], input$rmsBy)
+      progress <- shiny::Progress$new()
+      progress$set(message = "Evaluating ENMs...", value = 0)
+      on.exit(progress$close())
+      n <- length(rms) * length(input$fcs)
+      updateProgress <- function(value = NULL, detail = NULL) {
+        progress$inc(amount = 1/n, detail = detail)
+      }
+      
+      e <- ENMevaluate(values$modParams$occ.pts, values$predMsk, bg.coords = values$modParams$bg.pts, 
+                       RMvalues = rms, fc = input$fcs, method = 'user', occ.grp = values$modParams$occ.grp, 
+                       bg.grp = values$modParams$bg.grp, updateProgress = updateProgress)
+      values$eval <- e  
+    }
+    
     
     # get mtp and p10 for all models (as output is raw we can't get this from the model results table)
     # this code is mostly pulled with modifications from ENMeval -- thanks Bob!
