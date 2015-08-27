@@ -514,7 +514,13 @@ shinyServer(function(input, output, session) {
     if (input$partSelect == 'jack') {group.data <- get.jackknife(occs, values$bg.coords)}
     if (input$partSelect == 'random') {group.data <- get.randomkfold(occs, values$bg.coords, input$kfolds)}
     values$modParams <- list(occ.pts=occs, bg.pts=values$bg.coords, occ.grp=group.data[[1]], bg.grp=group.data[[2]])
-    print(group.data)
+    
+    #newColors <- brewer.pal(max(group.data[[1]]), 'Accent')
+    newColors <- palette(rainbow(max(group.data[[1]])))
+    print(newColors)
+    proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
+                               radius = 5, color = 'red', fill = TRUE, 
+                               fillColor = newColors, weight = 2, popup = ~pop, fillOpacity = 1)
   })
   
   # run ENMeval via user inputs
