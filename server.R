@@ -342,7 +342,7 @@ shinyServer(function(input, output, session) {
       }
     withProgress(message = "Spatially Thinning Records...", {
       output <- thin(values$df, 'lat', 'lon', 'name', thin.par = input$thinDist, 
-                     reps = 10, locs.thinned.list.return = TRUE, write.files = FALSE,
+                     reps = 100, locs.thinned.list.return = TRUE, write.files = FALSE,
                      verbose = FALSE)
     
       values$prethinned <- values$df
@@ -434,13 +434,13 @@ shinyServer(function(input, output, session) {
       ymax <- max(values$df$lat) + (input$backgBuf + res(values$pred)[1])
       bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin), ncol=2)
       values$backgExt <- SpatialPolygons(list(Polygons(list(Polygon(bb)), 1)))
-      bbTxt <- 'bounding box'
+      values$bbTxt <- 'bounding box'
     } else if (input$backgSelect == 'mcp') {
       xy_mcp <- mcp(values$df[,2:3])
       xy_mcp <- gBuffer(xy_mcp, width = input$backgBuf + res(values$pred)[1])
       values$backgExt <- xy_mcp
       bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
-      bbTxt <- 'minimum convex polygon'
+      values$bbTxt <- 'minimum convex polygon'
     } else if (input$backgSelect == 'user') {
       if (is.null(input$userBackg)) return()
 #       file <- shinyFileChoose(input, 'userBackg', root=c(root='.'))
@@ -468,22 +468,24 @@ shinyServer(function(input, output, session) {
         values$backgExt <- poly
         bb <- poly@polygons[[1]]@Polygons[[1]]@coords
       }
-      bbTxt <- 'user-defined'
+      values$bbTxt <- 'user-defined'
     }
-    isolate(writeLog(paste0("* Background extent: ", bbTxt, ".")))
+    isolate(writeLog(paste0("* Background extent: ", values$bbTxt, ".")))
     isolate(writeLog(paste('* Background extent buffered by', input$backgBuf, 'degrees.')))
     
     values$bb <- bb
     proxy %>% fitBounds(max(bb[,1]), max(bb[,2]), min(bb[,1]), min(bb[,2]))
     proxy %>% addPolygons(lng=bb[,1], lat=bb[,2], layerId="backext",
                           options= list(weight=10, col="red"))
-    
+  })
+  
+  observeEvent(input$goBackgMask, {
     # clip and mask rasters based on study region
     withProgress(message = "Processing environmental rasters...", {
       predCrop <- crop(values$pred, values$backgExt)
       values$predMsk <- mask(predCrop, values$backgExt)
     })
-    isolate(writeLog(paste0('* Environmental rasters masked by ', bbTxt, '.')))
+    isolate(writeLog(paste0('* Environmental rasters masked by ', values$bbTxt, '.')))
   })
   
   observeEvent(input$goPart, {
@@ -514,13 +516,18 @@ shinyServer(function(input, output, session) {
     if (input$partSelect == 'jack') {group.data <- get.jackknife(occs, values$bg.coords)}
     if (input$partSelect == 'random') {group.data <- get.randomkfold(occs, values$bg.coords, input$kfolds)}
     values$modParams <- list(occ.pts=occs, bg.pts=values$bg.coords, occ.grp=group.data[[1]], bg.grp=group.data[[2]])
-    
+    print(group.data[[1]])
+    print(max(group.data[[1]]))
     #newColors <- brewer.pal(max(group.data[[1]]), 'Accent')
-    newColors <- palette(rainbow(max(group.data[[1]])))
+#     values$df$parts <- factor(group.data[[1]])
+#     newColors <- colorFactor(rainbow(max(group.data[[1]])), values$df$parts)
+#     fillColor = ~newColors(parts)
+    newColors <- gsub("FF$", "", rainbow(max(group.data[[1]])))
+    #newColors <- sample(colors(), max(group.data[[1]]))
     print(newColors)
     proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
                                radius = 5, color = 'red', fill = TRUE, 
-                               fillColor = newColors, weight = 2, popup = ~pop, fillOpacity = 1)
+                               fillColor = newColors[group.data[[1]]], weight = 2, popup = ~pop, fillOpacity = 1)
   })
   
   # run ENMeval via user inputs
