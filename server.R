@@ -100,7 +100,10 @@ shinyServer(function(input, output, session) {
   observe({    
     if (is.null(input$userCSV)) return()
     inFile <- read.csv(input$userCSV$datapath, header = TRUE)
-    names(inFile)[2:3] <- c('lon', 'lat')
+    if (names(inFile) != c('species', 'longitude', 'latitude')) {
+      writeLog('* Please input CSV file with columns "species", "longitude", "latitude".')
+      return()
+    }
     values$inFile <- inFile
     # make dynamic field selections for ui user-defined kfold groups
     output$occgrpSel <- renderUI({
@@ -112,7 +115,7 @@ shinyServer(function(input, output, session) {
     # subset to only occs, not backg, and just fields that match df
     values$spname <- inFile[1,1]
     inFile.occs <- inFile[inFile[,1] == values$spname,]
-    inFile.occs <- inFile.occs[,c('name', 'lon', 'lat')]
+    inFile.occs <- inFile.occs[,c('species', 'longitude', 'latitude')]
     if (!("basisOfRecord" %in% names(inFile.occs))) {
       inFile.occs$basisOfRecord <- NA
     }
