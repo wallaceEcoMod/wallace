@@ -185,15 +185,12 @@ shinyServer(function(input, output, session) {
     isolate(writeLog(x))
     if (!is.null(values$gbifoccs)) {
       values$df <- values$gbifoccs
-#       proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
-#                                  layerId = as.numeric(values$df$origID), 
-#                                  radius = 5, color = 'red', fill = FALSE, weight = 2,
-#                                  popup = ~pop)
     }
   })
   
   # select points intersecting drawn polygons (replace values$df)
   observeEvent(input$selectPoly, {
+    values$prethinned <- NULL  # resets prethinned to avoid it plotting if select pts -> spThin -> select pts -> spThin
     values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
     values$polyID <- values$polyID + 1
     if (is.null(values$gbifoccs)) return()
@@ -207,10 +204,6 @@ shinyServer(function(input, output, session) {
     }
     
     ptsSel <- values$gbifoccs[!(is.na(over(pts, values$drawPolys))),]
-#     proxy %>% addCircleMarkers(data = ptsSel, lat = ~lat, lng = ~lon, 
-#                                layerId = as.numeric(ptsSel$origID), 
-#                                radius = 5, color = 'red', fill = TRUE, fillColor = 'yellow', 
-#                                weight = 2, popup = ~pop, fillOpacity=1)
     values$drawPolyCoords <- NULL
     values$ptsSel <- ptsSel
     values$df <- ptsSel
@@ -231,19 +224,48 @@ shinyServer(function(input, output, session) {
     }
 
     if (input$tabs == 2) {
-      proxy %>% clearMarkers()
+      # proxy %>% clearMarkers()
       # proxy %>% clearShapes()
       proxy %>% clearImages()
       
-      proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
-                                 radius = 5, color = 'red', 
-                                 fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
-      proxy %>% addLegend("bottomright", colors = c('red'), 
-                          title = "GBIF Records", labels = c('current'),
-                          opacity = 1, layerId = 1)
+#       proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
+#                                  radius = 5, color = 'red', 
+#                                  fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
+#       proxy %>% addLegend("bottomright", colors = c('red'), 
+#                           title = "GBIF Records", labels = c('current'),
+#                           opacity = 1, layerId = 1)
       
       if (is.null(input$procOccSelect)) return()
       if (input$procOccSelect == "selpts") {
+        if (is.null(values$prethinned)) {
+          proxy %>% clearMarkers()
+          print('prethin null')
+          proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
+                                     radius = 5, color = 'red', 
+                                     fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop) 
+          if (!is.null(values$ptsSel)) {
+            proxy %>% addCircleMarkers(data = values$ptsSel, lat = ~lat, lng = ~lon, 
+                                       radius = 5, color = 'red', 
+                                       fill = TRUE, fillColor = 'yellow', 
+                                       weight = 2, popup = ~pop, fillOpacity=1)
+            proxy %>% addLegend("bottomright", colors = c('red','yellow'), 
+                                title = "GBIF Records", labels = c('original', 'selected'),
+                                opacity = 1, layerId = 1)
+          } else {
+            proxy %>% clearMarkers()
+            proxy %>% clearShapes()
+            proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
+                                       radius = 5, color = 'red', 
+                                       fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)          
+          }
+        } else {
+          proxy %>% clearMarkers()
+          print('prethin not null')
+          proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
+                                     radius = 5, color = 'red', 
+                                     fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
+        }
+        
         # draw all user-drawn polygons and color according to colorBrewer
         if (!is.null(values$drawPolys)) {
           curPolys <- values$drawPolys@polygons
@@ -251,26 +273,9 @@ shinyServer(function(input, output, session) {
           colors <- brewer.pal(numPolys, 'Accent')
           for (i in numPolys) {
             curPoly <- curPolys[i][[1]]@Polygons[[1]]@coords
-            print(curPoly)
             proxy %>% addPolygons(curPoly[,1], curPoly[,2], 
                                   weight=3, color=colors[i])   
           }        
-        }
-        
-        if (!is.null(values$ptsSel)) {
-          proxy %>% addCircleMarkers(data = values$ptsSel, lat = ~lat, lng = ~lon, 
-                                     radius = 5, color = 'red', 
-                                     fill = TRUE, fillColor = 'yellow', 
-                                     weight = 2, popup = ~pop, fillOpacity=1)
-          proxy %>% addLegend("bottomright", colors = c('red','yellow'), 
-                              title = "GBIF Records", labels = c('original', 'selected'),
-                              opacity = 1, layerId = 1)
-        } else {
-          proxy %>% clearMarkers()
-          proxy %>% clearShapes()
-          proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
-                                     radius = 5, color = 'red', 
-                                     fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)          
         }
       }
       
@@ -278,10 +283,14 @@ shinyServer(function(input, output, session) {
         proxy %>% clearMarkers()
         proxy %>% clearShapes()
         proxy %>% clearImages()
+        lati <- values$df[,3]
+        longi <- values$df[,2]
+        proxy %>% fitBounds(min(longi-1), min(lati-1), max(longi+1), max(lati+1))
         proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
                                    radius = 5, color = 'red', 
                                    fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
         if (!is.null(values$prethinned)) {
+          values$drawPolys <- NULL
           lati <- values$prethinned[,3]
           longi <- values$prethinned[,2]
           proxy %>% fitBounds(min(longi-1), min(lati-1), max(longi+1), max(lati+1))
@@ -540,7 +549,6 @@ shinyServer(function(input, output, session) {
 #     fillColor = ~newColors(parts)
     newColors <- gsub("FF$", "", rainbow(max(group.data[[1]])))
     #newColors <- sample(colors(), max(group.data[[1]]))
-    print(newColors)
     proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
                                radius = 5, color = 'red', fill = TRUE, 
                                fillColor = newColors[group.data[[1]]], weight = 2, popup = ~pop, fillOpacity = 1)
@@ -567,7 +575,6 @@ shinyServer(function(input, output, session) {
       output$evalTbl <- DT::renderDataTable({DT::datatable(round(e$results, digits=3))})
       output$evalPlot <- renderPlot(plot(e$models, a = input$bc1, b = input$bc2, p = input$bcProb))
       writeLog(paste("* Bioclim ran successfully and output evaluation results."))
-      print('A')
       # a tabset within tab 4 to organize the Bioclim outputs
       output$evalTabs <- renderUI({
         tabsetPanel(id = "bcTabs", 
@@ -576,7 +583,6 @@ shinyServer(function(input, output, session) {
           )
       })
     }
-    print('B')
     
     if (input$modSelect == "Maxent") {
       rms <- seq(input$rms[1], input$rms[2], input$rmsBy)
@@ -636,7 +642,6 @@ shinyServer(function(input, output, session) {
     # get mtp and p10 for all models (as output is raw we can't get this from the model results table)
     # this code is mostly pulled with modifications from ENMeval -- thanks Bob!
     
-    print('C')
     
     # render table of ENMeval results
     # code to do fixed columns -- problem is it makes the page selection disappear and you
