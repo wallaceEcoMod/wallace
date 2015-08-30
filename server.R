@@ -624,32 +624,63 @@ shinyServer(function(input, output, session) {
     if (is.null(input$partSelect)) return()
     # if user kfold, get groups and assign occs and backg from inFile,
     # and if not, make backg pts and assign user kfold groups to NULL
+    sinkSub("## Partition Occurrence Data")
     if (input$partSelect == 'user') {
-      occs <- values$inFile[values$inFile[,1] == values$spname,]
-      bg.coords <- values$inFile[values$inFile[,1] != values$spname,]
-      group.data <- list()
-      group.data[[1]] <- as.numeric(occs[,input$occ.grp])
-      group.data[[2]] <- as.numeric(backg_pts[,input$bg.grp])
-      occs <- occs[,2:3]
-      values$bg.coords <- backg_pts[,2:3]
+      sinkRmdmult(c(
+      occs <- values$inFile[values$inFile[,1] == values$spname,],
+      bg.coords <- values$inFile[values$inFile[,1] != values$spname,],
+      group.data <- list(),
+      group.data[[1]] <- as.numeric(occs[,input$occ.grp]),
+      group.data[[2]] <- as.numeric(backg_pts[,input$bg.grp]),
+      occs <- occs[,2:3],
+      values$bg.coords <- backg_pts[,2:3]),
+      "User defined background partition:")
     } else {
-      occs <- values$df[,2:3]
+      sinkRmd(
+      occs <- values$df[,2:3],
+      "Occurrence records:")
       if (is.null(values$bg.coords)) {
         withProgress(message = "Generating background points...", {
-          bg.coords <- randomPoints(values$predMsk, 10000)
-          values$bg.coords <- as.data.frame(bg.coords)
+          sinkRmdmult(c(
+          bg.coords <- randomPoints(values$predMsk, 10000),
+          values$bg.coords <- as.data.frame(bg.coords)),
+          "Generate background occurrences:")
         })
       }
     }
 
-      if (input$partSelect2 == 'block') {group.data <- get.block(occs, values$bg.coords)}
-      if (input$partSelect2 == 'cb1') {group.data <- get.checkerboard1(occs, values$predMsk, values$bg.coords, input$aggFact)}
-      if (input$partSelect2 == 'cb2') {group.data <- get.checkerboard2(occs, values$predMsk, values$bg.coords, input$aggFact)}
-      if (input$partSelect2 == 'jack') {group.data <- get.jackknife(occs, values$bg.coords)}
-      if (input$partSelect2 == 'random') {group.data <- get.randomkfold(occs, values$bg.coords, input$kfolds)}
+      if (input$partSelect2 == 'block') {
+        sinkRmd(
+        group.data <- get.block(occs, values$bg.coords),
+        paste("Data partition by", input$partSelect2, "method:"))
+        }
+      if (input$partSelect2 == 'cb1') {
+        sinkRmdob(input$aggFact, "Define the aggregation factor:")
+        sinkRmd(
+        group.data <- get.checkerboard1(occs, values$predMsk, values$bg.coords, input$aggFact),
+        paste("Data partition by", input$partSelect2, "method:"))
+        }
+      if (input$partSelect2 == 'cb2') {
+        sinkRmdob(input$aggFact, "Define the aggregation factor:")
+        sinkRmd(
+        group.data <- get.checkerboard2(occs, values$predMsk, values$bg.coords, input$aggFact),
+        paste("Data partition by", input$partSelect2, "method:"))
+        }
+      if (input$partSelect2 == 'jack') {
+        sinkRmd(
+        group.data <- get.jackknife(occs, values$bg.coords),
+        paste("Data partition by", input$partSelect2, "method:"))
+        }
+      if (input$partSelect2 == 'random') {
+        sinkRmdob(input$kfolds, "Define the number of folds:")
+        sinkRmd(
+        group.data <- get.randomkfold(occs, values$bg.coords, input$kfolds),
+        paste("Data partition by", input$partSelect2, "method:"))
+        }
 
-
-    values$modParams <- list(occ.pts=occs, bg.pts=values$bg.coords, occ.grp=group.data[[1]], bg.grp=group.data[[2]])
+    sinkRmd(
+    values$modParams <- list(occ.pts=occs, bg.pts=values$bg.coords, occ.grp=group.data[[1]], bg.grp=group.data[[2]]),
+    "Define modelling parameters:")
     #newColors <- brewer.pal(max(group.data[[1]]), 'Accent')
 #     values$df$parts <- factor(group.data[[1]])
 #     newColors <- colorFactor(rainbow(max(group.data[[1]])), values$df$parts)
