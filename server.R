@@ -522,6 +522,20 @@ shinyServer(function(input, output, session) {
     isolate(writeLog(paste0('* Environmental rasters masked by ', values$bbTxt, '.')))
   })
   
+  observe({
+    print(input$spSelect)
+    print(input$nspSelect)
+    if (!is.null(input$partSelect)) {
+      if (input$partSelect == 'nsp') {
+        updateRadioButtons(session, 'partSelect2', choices = list("jackknife" = "jack", "randomkfold" = "random"))
+      } else if (input$partSelect == 'sp') {
+        updateRadioButtons(session, 'partSelect2', choices = list("block" = "block",
+                                                                  "checkerboard1" = "cb1", 
+                                                                  "checkerboard2" = "cb2"))
+      }
+    }
+  })
+  
   observeEvent(input$goPart, {
     if (is.null(input$partSelect)) return()
     # if user kfold, get groups and assign occs and backg from inFile, 
@@ -543,12 +557,14 @@ shinyServer(function(input, output, session) {
         })
       }
     }
+
+      if (input$partSelect2 == 'block') {group.data <- get.block(occs, values$bg.coords)}
+      if (input$partSelect2 == 'cb1') {group.data <- get.checkerboard1(occs, values$predMsk, values$bg.coords, input$aggFact)}
+      if (input$partSelect2 == 'cb2') {group.data <- get.checkerboard2(occs, values$predMsk, values$bg.coords, input$aggFact)}
+      if (input$partSelect2 == 'jack') {group.data <- get.jackknife(occs, values$bg.coords)}
+      if (input$partSelect2 == 'random') {group.data <- get.randomkfold(occs, values$bg.coords, input$kfolds)}      
     
-    if (input$partSelect == 'block') {group.data <- get.block(occs, values$bg.coords)}
-    if (input$partSelect == 'cb1') {group.data <- get.checkerboard1(occs, values$predMsk, values$bg.coords, input$aggFact)}
-    if (input$partSelect == 'cb2') {group.data <- get.checkerboard2(occs, values$predMsk, values$bg.coords, input$aggFact)}
-    if (input$partSelect == 'jack') {group.data <- get.jackknife(occs, values$bg.coords)}
-    if (input$partSelect == 'random') {group.data <- get.randomkfold(occs, values$bg.coords, input$kfolds)}
+
     values$modParams <- list(occ.pts=occs, bg.pts=values$bg.coords, occ.grp=group.data[[1]], bg.grp=group.data[[2]])
     #newColors <- brewer.pal(max(group.data[[1]]), 'Accent')
 #     values$df$parts <- factor(group.data[[1]])
