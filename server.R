@@ -57,7 +57,7 @@ shinyServer(function(input, output, session) {
     sinkRmdTitle()
     sinkRmdob(
       input$gbifName,
-    paste("## Obtain occurrence data",
+    paste("## Obtain Occurrence Data",
           "\n\nThe analysis will be done for the following species:"))
     sinkRmdob(
       input$occurrences,
@@ -98,7 +98,7 @@ shinyServer(function(input, output, session) {
       values$df <- values$gbifoccs),
       "Adjusting table values:")
 
-      sinkSub("## Process occurrence data")
+      sinkSub("## Process Occurrence Data")
 
       inName <- isolate(input$gbifName)
       nameSplit <- length(unlist(strsplit(inName, " ")))
@@ -446,6 +446,7 @@ shinyServer(function(input, output, session) {
     if (!is.null(values$df)) {
       ## Check if predictor path exists. If not, use the dismo function getData()
       withProgress(message = "Downloading WorldClim data...", {
+        sinkSub("## Obtain Environmental Data")
         sinkRmdob(input$pred, "Resolution of worldclim data:")
         sinkRmd(
         values$pred <- getData(name = "worldclim", var = "bio", res = input$pred),
@@ -474,7 +475,7 @@ shinyServer(function(input, output, session) {
           "Remove occurrence records without environmental data from inFile:")
         }
       })
-    }
+      sinkSub("## Process Environmental Data")}
   })
 
   # functionality for downloading .asc files from dropbox
@@ -510,45 +511,78 @@ shinyServer(function(input, output, session) {
     if (is.null(input$backgSelect) | is.null(values$pred)) return()
     # generate background extent
     if (input$backgSelect == 'bb') {
-      xmin <- min(values$df$lon) - (input$backgBuf + res(values$pred)[1])
-      xmax <- max(values$df$lon) + (input$backgBuf + res(values$pred)[1])
-      ymin <- min(values$df$lat) - (input$backgBuf + res(values$pred)[1])
-      ymax <- max(values$df$lat) + (input$backgBuf + res(values$pred)[1])
-      bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin), ncol=2)
-      values$backgExt <- SpatialPolygons(list(Polygons(list(Polygon(bb)), 1)))
-      values$bbTxt <- 'bounding box'
+      sinkRmdob(input$backgBuf, "Define the buffer size of the background:")
+      sinkRmdmult(c(
+      xmin <- min(values$df$lon) - (input$backgBuf + res(values$pred)[1]),
+      xmax <- max(values$df$lon) + (input$backgBuf + res(values$pred)[1]),
+      ymin <- min(values$df$lat) - (input$backgBuf + res(values$pred)[1]),
+      ymax <- max(values$df$lat) + (input$backgBuf + res(values$pred)[1]),
+      bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin), ncol=2),
+      values$backgExt <- SpatialPolygons(list(Polygons(list(Polygon(bb)), 1))),
+      values$bbTxt <- 'bounding box'),
+      "Generate the box bounding background:")
+
     } else if (input$backgSelect == 'mcp') {
-      xy_mcp <- mcp(values$df[,2:3])
-      xy_mcp <- gBuffer(xy_mcp, width = input$backgBuf + res(values$pred)[1])
-      values$backgExt <- xy_mcp
-      bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
-      values$bbTxt <- 'minimum convex polygon'
+      sinkRmdob(input$backgBuf, "Define the buffer size of the background:")
+      sinkRmdmult(c(
+      xy_mcp <- mcp(values$df[,2:3]),
+      xy_mcp <- gBuffer(xy_mcp, width = input$backgBuf + res(values$pred)[1]),
+      values$backgExt <- xy_mcp,
+      bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords,
+      values$bbTxt <- 'minimum convex polygon'),
+      "Generate the minimun convex polygon background:")
     } else if (input$backgSelect == 'user') {
       if (is.null(input$userBackg)) return()
 #       file <- shinyFileChoose(input, 'userBackg', root=c(root='.'))
 #       path <- input$userBackg$datapath
-      names <- input$userBackg$name
-      inPath <- input$userBackg$datapath
-      pathdir <- dirname(inPath)
-      pathfile <- basename(inPath)
+      sinkFalse("userBackg <- NULL", "Define user background:")
+      sinkRmdob(input$userBackg$name, "User background name:")
+      sinkRmdob(input$userBackg$datapath, "User background path:")
+
+      sinkRmdmult(c(
+      names <- input$userBackg$name,
+      inPath <- input$userBackg$datapath,
+      pathdir <- dirname(inPath),
+      pathfile <- basename(inPath)),
+      "Adjust path and names to load the background:")
+
       # get extensions of all input files
-      exts <- sapply(strsplit(names, '\\.'), FUN=function(x) x[2])
+      sinkRmd(
+      exts <- sapply(strsplit(names, '\\.'), FUN=function(x) x[2]),
+      "Get extensions of all input files:")
+
       if (length(exts) == 1 & exts == 'csv') {
-        shp <- read.csv(inPath, header = TRUE)
-        shp <- SpatialPolygons(list(Polygons(list(Polygon(bb)), 1)))
-        shp <- gBuffer(shp, width = input$backgBuf + res(values$pred)[1])
-        values$backgExt <- shp
-        bb <- shp@polygons[[1]]@Polygons[[1]]@coords
+
+        sinkRmdob(input$backgBuf, "Define the buffer size of the background:")
+
+        sinkRmdt(
+        shp <- read.csv(inPath, header = TRUE),
+        "Read the shapefile for the background:")
+
+        sinkRmdmult(c(
+        shp <- SpatialPolygons(list(Polygons(list(Polygon(bb)), 1))),
+        shp <- gBuffer(shp, width = input$backgBuf + res(values$pred)[1]),
+        values$backgExt <- shp,
+        bb <- shp@polygons[[1]]@Polygons[[1]]@coords),
+        "Generate the user-defined background plus the buffer:")
+
       } else if (length(exts) > 1 & 'shp' %in% exts) {
         # rename temp files to their original names - nice hack for inputting shapefiles in shiny
-        file.rename(inPath, file.path(pathdir, names))
+        sinkRmdob(input$backgBuf, "Define the buffer size of the background:")
+
+        sinkRmdmult(c(
+        file.rename(inPath, file.path(pathdir, names)),
         # get index of .shp
-        i <- which(exts == 'shp')
+        i <- which(exts == 'shp'),
         # read in shapefile and extract coords
-        poly <- readOGR(pathdir[i], strsplit(names[i], '\\.')[[1]][1])
-        poly <- gBuffer(poly, width = input$backgBuf + res(values$pred)[1])
-        values$backgExt <- poly
-        bb <- poly@polygons[[1]]@Polygons[[1]]@coords
+        poly <- readOGR(pathdir[i], strsplit(names[i], '\\.')[[1]][1])),
+        "Read the shapefile for the background:")
+
+        sinkRmdmult(c(
+        poly <- gBuffer(poly, width = input$backgBuf + res(values$pred)[1]),
+        values$backgExt <- poly,
+        bb <- poly@polygons[[1]]@Polygons[[1]]@coords),
+        "Generate the user-defined background plus the buffer:")
       }
       values$bbTxt <- 'user-defined'
     }
@@ -564,8 +598,10 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goBackgMask, {
     # clip and mask rasters based on study region
     withProgress(message = "Processing environmental rasters...", {
-      predCrop <- crop(values$pred, values$backgExt)
-      values$predMsk <- mask(predCrop, values$backgExt)
+      sinkRmdmult(c(
+      predCrop <- crop(values$pred, values$backgExt),
+      values$predMsk <- mask(predCrop, values$backgExt)),
+      "Mask environmental variables by the background:")
     })
     isolate(writeLog(paste0('* Environmental rasters masked by ', values$bbTxt, '.')))
   })
