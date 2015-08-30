@@ -44,7 +44,7 @@ sinkRmdTitle <- function(title = "Code description") {
 
 
 # Function to apply for the code of Wallace to generate the .Rmd file
-sinkRmd <- function(x, coment) {
+sinkRmd <- function(x, comment) {
   x
   call.line <- as.character(substitute(x))
   call.line[1:2] <- call.line[2:1]
@@ -52,7 +52,7 @@ sinkRmd <- function(x, coment) {
   call.line <- gsub("values\\$", "", call.line)
   sink(file = "temp.Rmd", append = TRUE)
   cat("\n\n")
-  cat(coment)
+  cat(comment)
   cat("\n```{r, warning = FALSE, message = FALSE}\n")
   cat(call.line)
   cat("\n```")
@@ -61,7 +61,7 @@ sinkRmd <- function(x, coment) {
 
 
 # Multiple
-sinkRmdmult <- function(x, coment) {
+sinkRmdmult <- function(x, comment) {
   x
   call.line <- as.character(substitute(x))
   call.line <- call.line[-1]
@@ -70,7 +70,7 @@ sinkRmdmult <- function(x, coment) {
   rmdprint <- paste0(call.line, "\n")
   sink(file = "temp.Rmd", append = TRUE)
   cat("\n\n")
-  cat(coment, sep = "")
+  cat(comment, sep = "")
   cat("\n```{r, warning = FALSE, message = FALSE}\n ")
   cat(rmdprint)
   cat("\n```")
@@ -79,7 +79,7 @@ sinkRmdmult <- function(x, coment) {
 
 
 # Function for variables
-sinkRmdob <- function(x, coment) {
+sinkRmdob <- function(x, comment) {
   char <- is.character(x)
   call.line <- as.character(substitute(x))
   if (length(call.line) > 1) {
@@ -93,7 +93,7 @@ sinkRmdob <- function(x, coment) {
   }
   sink(file = "temp.Rmd", append = TRUE)
   cat("\n\n")
-  cat(coment)
+  cat(comment)
   cat("\n```{r}\n")
   cat(paste(call.line, "<-", x))
   cat("\n```")
@@ -102,10 +102,10 @@ sinkRmdob <- function(x, coment) {
 
 
 # False variables
-sinkFalse <- function(x, coment) {
+sinkFalse <- function(x, comment) {
   sink(file = "temp.Rmd", append = TRUE)
   cat("\n\n")
-  cat(coment, sep = "")
+  cat(comment, sep = "")
   cat("\n```{r, warning = FALSE, message = FALSE}\n")
   cat(x)
   cat("\n```")
@@ -113,10 +113,10 @@ sinkFalse <- function(x, coment) {
 }
 
 # Sink subtitles
-sinkSub <- function(coment) {
+sinkSub <- function(comment) {
   sink(file = "temp.Rmd", append = TRUE)
   cat("\n\n")
-  cat(coment)
+  cat(comment)
   sink()
 }
 
