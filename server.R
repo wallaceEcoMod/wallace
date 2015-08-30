@@ -407,16 +407,21 @@ shinyServer(function(input, output, session) {
       return()
       }
     withProgress(message = "Spatially Thinning Records...", {
+      sinkRmdob(input$thinDist, "Thin distance:")
+      sinkRmd(
       output <- thin(values$df, 'lat', 'lon', 'name', thin.par = input$thinDist,
                      reps = 100, locs.thinned.list.return = TRUE, write.files = FALSE,
-                     verbose = FALSE)
-
+                     verbose = FALSE),
+      "Thin occurrence records:"
+      )
       values$prethinned <- values$df
       # pull thinned dataset with max records, not just the first in the list
-      maxThin <- which(sapply(output, nrow) == max(sapply(output, nrow)))
-      maxThin <- output[[ifelse(length(maxThin) > 1, maxThin[1], maxThin)]]  # if more than one max, pick first
-      values$df <- values$df[as.numeric(rownames(maxThin)),]
-
+      sinkRmdmult(c(
+      maxThin <- which(sapply(output, nrow) == max(sapply(output, nrow))),
+      maxThin <- output[[ifelse(length(maxThin) > 1, maxThin[1], maxThin)]],  # if more than one max, pick first
+      values$df <- values$df[as.numeric(rownames(maxThin)),]),
+      "Change df to thinned data:"
+      )
       if (!is.null(values$inFile)) {
         thinned.inFile <- values$inFile[as.numeric(rownames(output[[1]])),]
       }

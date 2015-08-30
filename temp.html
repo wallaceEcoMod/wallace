@@ -129,6 +129,14 @@ library(repmis)</code></pre>
 <p>Subset with selected points:</p>
 <pre class="r"><code> ptsSel &lt;- gbifoccs[ptseln, ]
  df &lt;- ptsSel</code></pre>
+<p>Thin distance:</p>
+<pre class="r"><code>thinDist &lt;- 10</code></pre>
+<p>Thin occurrence records:</p>
+<pre class="r"><code>output &lt;- thin(df, &quot;lat&quot;, &quot;lon&quot;, &quot;name&quot;, thin.par = thinDist, reps = 100, locs.thinned.list.return = TRUE, write.files = FALSE, verbose = FALSE)</code></pre>
+<p>Change df to thinned data:</p>
+<pre class="r"><code> maxThin &lt;- which(sapply(output, nrow) == max(sapply(output, nrow)))
+ maxThin &lt;- output[[ifelse(length(maxThin) &gt; 1, maxThin[1], maxThin)]]
+ df &lt;- df[as.numeric(rownames(maxThin)), ]</code></pre>
 </div>
 
 
