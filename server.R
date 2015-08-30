@@ -53,15 +53,17 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goName, {
     writeLog("...Searching GBIF...")
     results <- occ_search(scientificName = input$gbifName, limit = input$occurrences, 
-                          fields = c('name', 'decimalLongitude', 'decimalLatitude', 'basisOfRecord'), 
                           hasCoordinate = TRUE)
+    values$gbifOrig <- results
     # Control species not found
     if (results$meta$count == 0) {
       writeLog(paste('* No records found for ', input$gbifName, ". Please check the spelling."))
     }
                       
     if (results$meta$count != 0) {
-      locs.in <- results$data[!is.na(results$data[,3]),][,c(1,3,4,2)]
+      cols <- c('name','decimalLongitude','decimalLatitude', 'country', 'stateProvince', 
+                'locality', 'elevation', 'basisOfRecord')
+      locs.in <- results$data[!is.na(results$data[,3]),][,cols]
       locs <- remDups(locs.in)
       names(locs)[2:3] <- c('lon', 'lat')
       
@@ -93,7 +95,12 @@ shinyServer(function(input, output, session) {
   observe({
     if (is.null(values$df)) return()
     # render the GBIF records data table
-    output$occTbl <- DT::renderDataTable({DT::datatable(values$df[,1:4])})
+    output$occTbl <- DT::renderDataTable({DT::datatable(values$df[,1:8], 
+                                                        options = list(
+                                                          autoWidth = TRUE,
+                                                          columnDefs = list(list(width = '40%', targets = 6)),
+                                                          scrollX=TRUE, scrollY=400
+                                                        ))})
   })
   
   # functionality for input of user CSV
@@ -101,7 +108,7 @@ shinyServer(function(input, output, session) {
     if (is.null(input$userCSV)) return()
     inFile <- read.csv(input$userCSV$datapath, header = TRUE)
     if (names(inFile) != c('species', 'longitude', 'latitude')) {
-      writeLog('* Please input CSV file with columns "species", "longitude", "latitude".')
+      writeLog('* ERROR: Please input CSV file with columns "species", "longitude", "latitude".')
       return()
     }
     values$inFile <- inFile
@@ -152,6 +159,14 @@ shinyServer(function(input, output, session) {
     #                          layerId = as.numeric(rownames(values$gbifoccs)), 
     #                          icon = ~icons(occIcons[basisNum]))
   })
+  
+  # handle downloading of GBIF csv
+  output$downloadGBIFcsv <- downloadHandler(
+    filename = function() {paste0(nameAbbr(values$df), "_gbifCleaned.csv")},
+    content = function(file) {
+      write.csv(values$gbifOrig, file, row.names=FALSE)
+    }
+  )
   
   # functionality for drawing polygons on map
   observe({
@@ -352,14 +367,6 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-  
-  # handle downloading of GBIF csv
-  output$downloadGBIFcsv <- downloadHandler(
-    filename = function() {paste0(nameAbbr(values$df), "_gbifCleaned.csv")},
-    content = function(file) {
-      write.csv(values$df[,1:5], file, row.names=FALSE)
-    }
-  )
   
   # map thinned records when Thin button is pressed
   observeEvent(input$goThin, {
