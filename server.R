@@ -57,7 +57,8 @@ shinyServer(function(input, output, session) {
     sinkRmdTitle()
     sinkRmdob(
       input$gbifName,
-    "The analysis will be done for the following species:")
+    paste("## Obtain occurrence data",
+          "\n\nThe analysis will be done for the following species:"))
     sinkRmdob(
       input$occurrences,
       "The search of occurrences will be limited to:")
@@ -72,6 +73,7 @@ shinyServer(function(input, output, session) {
     sinkRmd(
     values$gbifOrig <- results,
     "Rename the results:")
+
     # Control species not found
     if (results$meta$count == 0) {
       writeLog(paste('* No records found for ', input$gbifName, ". Please check the spelling."))
@@ -95,6 +97,8 @@ shinyServer(function(input, output, session) {
       values$gbifoccs <- remDups(values$gbifoccs),
       values$df <- values$gbifoccs),
       "Adjusting table values:")
+
+      sinkSub("## Process occurrence data")
 
       inName <- isolate(input$gbifName)
       nameSplit <- length(unlist(strsplit(inName, " ")))
@@ -129,7 +133,7 @@ shinyServer(function(input, output, session) {
   observe({
     if (is.null(input$userCSV)) return()
     inFile <- read.csv(input$userCSV$datapath, header = TRUE)
-    if (names(inFile) != c('species', 'longitude', 'latitude')) {
+    if (all(names(inFile) %in% c('species', 'longitude', 'latitude'))) {
       writeLog('* ERROR: Please input CSV file with columns "species", "longitude", "latitude".')
       return()
     }
@@ -239,11 +243,17 @@ shinyServer(function(input, output, session) {
     } else {
       values$drawPolys <- spRbind(values$drawPolys, newPoly)
     }
+    ptseln <- as.numeric(which(!(is.na(over(pts, values$drawPolys)))))
 
-    ptsSel <- values$gbifoccs[!(is.na(over(pts, values$drawPolys))),]
+    sinkRmdob(ptseln, "Selected points with the polygon:")
+
+    sinkRmdmult(c(
+    ptsSel <- values$gbifoccs[ptseln, ],
+    values$df <- ptsSel),
+    "Subset with selected points:")
+
     values$drawPolyCoords <- NULL
     values$ptsSel <- ptsSel
-    values$df <- ptsSel
     isolate(writeLog(paste('* Selected', nrow(values$df), 'points.')))
   })
 

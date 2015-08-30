@@ -44,63 +44,70 @@ popUpContent <- function(x) {
   as.character(tagList(
     tags$strong(paste("ID:", x['origID'])),
     tags$br(),
-    tags$strong(paste("Latitude:", x['lat'])),        
+    tags$strong(paste("Latitude:", x['lat'])),
     tags$strong(paste("Longitude:", x['lon']))
   ))
 }
 
 BioClim_eval <- function (occs, bg.pts, occ.grp, bg.grp, env) {
-  
+
   # RUN FULL DATA MODEL
   full.mod <- bioclim(env, occs)
   pred <- predict(env, full.mod)
-  
+
   # CREATE HOLDERS FOR RESULTS
   AUC.TEST <- double()
   AUC.DIFF <- double()
   OR10 <- double()
   ORmin <- double()
-  
+
   # SET NUMBER OF TEST BINS
   nk <- length(unique(occ.grp))
-  
+
   for (k in 1:nk) {
-    
+
     # SPLIT TEST AND TRAIN DATA
     test.pts <- occs[occ.grp == k, ]
     train.pts <- occs[occ.grp != k, ]
     backg.pts <- bg.pts[bg.grp != k, ]
     mod <- bioclim(env, train.pts)
-    
+
     # GET AUC METRICS
     AUC.TEST[k] <- evaluate(p=test.pts, a=backg.pts, mod=mod, x=env)@auc
     AUC.TRAIN <- evaluate(p=train.pts, a=backg.pts, mod=mod, x=env)@auc
     AUC.DIFF[k] <- max(0, AUC.TRAIN - AUC.TEST[k])
-    
+
     # GET PREDICTED VALUES AT OCCURRENCES FOR OMISSION RATE STATS
     train.pred <- predict(env, mod)
     p.train <- extract(train.pred, train.pts)
     p.test <- extract(train.pred, test.pts)
-    
+
     # FIND THRESHOLD FOR OR10
     if (nrow(train.pts) < 10) {
       n90 <- floor(nrow(train.pts) * 0.9)
     } else {
       n90 <- ceiling(nrow(train.pts) * 0.9)
     }
-    
+
     # GET OMISSION RATE STATS
     train.thr.10 <- rev(sort(p.train))[n90]
     OR10[k] <- mean(p.test < train.thr.10)
     ORmin[k] <- mean(p.test < min(p.train))
   }
-  
+
   # COMPILE AND SUMMARIZE RESULTS
   stats <- as.data.frame(rbind(AUC.DIFF, AUC.TEST, OR10, ORmin))
   stats <- cbind(apply(stats, 1, mean), corrected.var(stats, nk), stats)
   colnames(stats) <- c("Mean", "Variance", paste("Bin", 1:nk))
   rownames(stats) <- c("AUC.DIFF", "AUC.TEST","OR10","ORmin")
-  
+
   # THIS FORMAT FOR RETURNED DATA ATTEMPTS TO MATCH WHAT HAPPENS IN WALLACE ALREADY FOR ENMEVAL.
-  return(list(models=full.mod, results=stats, predictions=pred))  
+  return(list(models=full.mod, results=stats, predictions=pred))
+}
+
+
+# Bind csv and occ records
+addCSVpts <- function(df) {
+  df <- rbind(df, inFile.occs)
+  df <- remDups(df)
 }

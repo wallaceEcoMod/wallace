@@ -63,13 +63,21 @@ img {
 <h1 class="title">Code description</h1>
 </div>
 
+<div id="TOC">
+<ul>
+<li><a href="#about">About</a></li>
+<li><a href="#packages-instalation">Packages instalation</a></li>
+<li><a href="#obtain-occurrence-data">Obtain occurrence data</a></li>
+<li><a href="#process-occurrence-data">Process occurrence data</a></li>
+</ul>
+</div>
 
-<div id="about" class="section level1">
-<h1>About</h1>
+<div id="about" class="section level2">
+<h2>About</h2>
 <p>This document describes the R code used in Wallace.</p>
 </div>
-<div id="packages-instalation" class="section level1">
-<h1>Packages instalation</h1>
+<div id="packages-instalation" class="section level2">
+<h2>Packages instalation</h2>
 <p>Before start, install the following packages:</p>
 <pre class="r"><code>install.packages(devtools)
 install.packages(rgbif)
@@ -90,6 +98,9 @@ library(rgeos)
 library(repmis)</code></pre>
 <p>Load the functions necessary to run the analysis:</p>
 <pre class="r"><code>source('functions.R')</code></pre>
+</div>
+<div id="obtain-occurrence-data" class="section level2">
+<h2>Obtain occurrence data</h2>
 <p>The analysis will be done for the following species:</p>
 <pre class="r"><code>gbifName &lt;- 'tremarctos ornatus'</code></pre>
 <p>The search of occurrences will be limited to:</p>
@@ -99,7 +110,7 @@ library(repmis)</code></pre>
 <p>Rename the results:</p>
 <pre class="r"><code>gbifOrig &lt;- results</code></pre>
 <p>Occurrence table changes:</p>
-<pre class="r"><code>cols &lt;- c(&quot;name&quot;, &quot;decimalLongitude&quot;, &quot;decimalLatitude&quot;, &quot;country&quot;, &quot;stateProvince&quot;, &quot;locality&quot;, &quot;elevation&quot;, &quot;basisOfRecord&quot;)
+<pre class="r"><code> cols &lt;- c(&quot;name&quot;, &quot;decimalLongitude&quot;, &quot;decimalLatitude&quot;, &quot;country&quot;, &quot;stateProvince&quot;, &quot;locality&quot;, &quot;elevation&quot;, &quot;basisOfRecord&quot;)
  locs.in &lt;- results$data[!is.na(results$data[, 3]), ][, cols]
  locs &lt;- remDups(locs.in)
  names(locs)[2:3] &lt;- c(&quot;lon&quot;, &quot;lat&quot;)
@@ -107,9 +118,17 @@ library(repmis)</code></pre>
 <p>Create the null object:</p>
 <pre class="r"><code>gbifoccs &lt;- NULL</code></pre>
 <p>Adjusting table values:</p>
-<pre class="r"><code>gbifoccs &lt;- rbind(gbifoccs, locs)
+<pre class="r"><code> gbifoccs &lt;- rbind(gbifoccs, locs)
  gbifoccs &lt;- remDups(gbifoccs)
  df &lt;- gbifoccs</code></pre>
+</div>
+<div id="process-occurrence-data" class="section level2">
+<h2>Process occurrence data</h2>
+<p>Selected points with the polygon:</p>
+<pre class="r"><code>ptseln &lt;- c(1, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18)</code></pre>
+<p>Subset with selected points:</p>
+<pre class="r"><code> ptsSel &lt;- gbifoccs[ptseln, ]
+ df &lt;- ptsSel</code></pre>
 </div>
 
 
