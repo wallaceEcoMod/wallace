@@ -6,10 +6,13 @@ sinkRmdTitle <- function(title = "Code description") {
   sink(file = "temp.Rmd")
   cat("---\n")
   cat(paste("title:", paste("\'", title, "\'", sep ="")))
+  cat("\noutput:")
+  cat("\n html_document:")
+  cat("\n  toc: true")
   cat("\n---")
-  cat("\n\n# About")
+  cat("\n\n## About")
   cat("\n\nThis document describes the R code used in Wallace.")
-  cat("\n\n# Packages instalation")
+  cat("\n\n## Packages instalation")
   cat("\n\nBefore start, install the following packages:")
   cat("\n```{r, eval = FALSE}\n")
   cat("install.packages(devtools)\n")
@@ -21,7 +24,7 @@ sinkRmdTitle <- function(title = "Code description") {
   cat("install.packages(rgeos)\n")
   cat("install.packages(repmis)")
   cat("\n```")
-  cat("\nNow load them:")
+  cat("\n\nNow load them:")
   cat("\n```{r, message = FALSE}\n")
   cat("library(devtools)\n")
   cat("library(rgbif)\n")
@@ -32,7 +35,7 @@ sinkRmdTitle <- function(title = "Code description") {
   cat("library(rgeos)\n")
   cat("library(repmis)")
   cat("\n```")
-  cat("\nLoad the functions necessary to run the analysis:")
+  cat("\n\nLoad the functions necessary to run the analysis:")
   cat("\n```{r}\n")
   cat("source('functions.R')")
   cat("\n```")
@@ -56,25 +59,6 @@ sinkRmd <- function(x, coment) {
   sink()
 }
 
-# Function for variables
-sinkRmdob <- function(x, coment) {
-  char <- is.character(x)
-  call.line <- as.character(substitute(x))
-  if (length(call.line) > 1) {
-    call.line <- call.line[3]
-  }
-  if (char) {
-    x <- paste("'", x, "'", sep = "")
-  }
-  sink(file = "temp.Rmd", append = TRUE)
-  cat("\n\n")
-  cat(coment)
-  cat("\n```{r}\n")
-  cat(paste(call.line, "<-", x))
-  cat("\n```")
-  sink()
-}
-
 
 # Multiple
 sinkRmdmult <- function(x, coment) {
@@ -93,6 +77,30 @@ sinkRmdmult <- function(x, coment) {
   sink()
 }
 
+
+# Function for variables
+sinkRmdob <- function(x, coment) {
+  char <- is.character(x)
+  call.line <- as.character(substitute(x))
+  if (length(call.line) > 1) {
+    call.line <- call.line[3]
+  }
+  if (char) {
+    x <- paste("'", x, "'", sep = "")
+  }
+  if (length(x) > 1) {
+    x <- paste0("c(", paste(x, collapse = ", "), ")")
+  }
+  sink(file = "temp.Rmd", append = TRUE)
+  cat("\n\n")
+  cat(coment)
+  cat("\n```{r}\n")
+  cat(paste(call.line, "<-", x))
+  cat("\n```")
+  sink()
+}
+
+
 # False variables
 sinkFalse <- function(x, coment) {
   sink(file = "temp.Rmd", append = TRUE)
@@ -103,3 +111,12 @@ sinkFalse <- function(x, coment) {
   cat("\n```")
   sink()
 }
+
+# Sink subtitles
+sinkSub <- function(coment) {
+  sink(file = "temp.Rmd", append = TRUE)
+  cat("\n\n")
+  cat(coment)
+  sink()
+}
+
