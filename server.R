@@ -151,11 +151,6 @@ shinyServer(function(input, output, session) {
     #     proxy %>% addMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
     #                          layerId = as.numeric(rownames(values$gbifoccs)), 
     #                          icon = ~icons(occIcons[basisNum]))
-    
-    proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
-                               layerId = as.numeric(values$gbifoccs$origID), 
-                               radius = 5, color = 'red', fill = FALSE, weight = 2,
-                               popup = ~pop)
   })
   
   # functionality for drawing polygons on map
@@ -182,19 +177,18 @@ shinyServer(function(input, output, session) {
   
   # erase poly with button click
   observeEvent(input$erasePoly, {
-    proxy %>% clearShapes()
-    proxy %>% clearMarkers()
     values$drawPolyCoords <- NULL
+    values$ptsSel <- NULL
     values$drawPolys <- NULL
     values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
     x <- paste('* Erased polygons, dataset is now back to', nrow(values$gbifoccs), 'records.')
     isolate(writeLog(x))
     if (!is.null(values$gbifoccs)) {
       values$df <- values$gbifoccs
-      proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
-                                 layerId = as.numeric(values$df$origID), 
-                                 radius = 5, color = 'red', fill = FALSE, weight = 2,
-                                 popup = ~pop)
+#       proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
+#                                  layerId = as.numeric(values$df$origID), 
+#                                  radius = 5, color = 'red', fill = FALSE, weight = 2,
+#                                  popup = ~pop)
     }
   })
   
@@ -213,10 +207,10 @@ shinyServer(function(input, output, session) {
     }
     
     ptsSel <- values$gbifoccs[!(is.na(over(pts, values$drawPolys))),]
-    proxy %>% addCircleMarkers(data = ptsSel, lat = ~lat, lng = ~lon, 
-                               layerId = as.numeric(ptsSel$origID), 
-                               radius = 5, color = 'red', fill = TRUE, fillColor = 'yellow', 
-                               weight = 2, popup = ~pop, fillOpacity=1)
+#     proxy %>% addCircleMarkers(data = ptsSel, lat = ~lat, lng = ~lon, 
+#                                layerId = as.numeric(ptsSel$origID), 
+#                                radius = 5, color = 'red', fill = TRUE, fillColor = 'yellow', 
+#                                weight = 2, popup = ~pop, fillOpacity=1)
     values$drawPolyCoords <- NULL
     values$ptsSel <- ptsSel
     values$df <- ptsSel
@@ -238,52 +232,70 @@ shinyServer(function(input, output, session) {
 
     if (input$tabs == 2) {
       proxy %>% clearMarkers()
-      proxy %>% clearShapes()
+      # proxy %>% clearShapes()
       proxy %>% clearImages()
       
-      # draw all user-drawn polygons and color according to colorBrewer
-      if (!is.null(values$drawPolys)) {
-        curPolys <- values$drawPolys@polygons
-        numPolys <- length(curPolys)
-        colors <- brewer.pal(numPolys, 'Accent')
-        for (i in numPolys) {
-          curPoly <- curPolys[i][[1]]@Polygons[[1]]@coords
-          proxy %>% addPolygons(curPoly[,1], curPoly[,2], 
-                                group = 'tab1', weight=3, color=colors[i])   
-        }        
+      proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
+                                 radius = 5, color = 'red', 
+                                 fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
+      proxy %>% addLegend("bottomright", colors = c('red'), 
+                          title = "GBIF Records", labels = c('current'),
+                          opacity = 1, layerId = 1)
+      
+      if (is.null(input$procOccSelect)) return()
+      if (input$procOccSelect == "selpts") {
+        # draw all user-drawn polygons and color according to colorBrewer
+        if (!is.null(values$drawPolys)) {
+          curPolys <- values$drawPolys@polygons
+          numPolys <- length(curPolys)
+          colors <- brewer.pal(numPolys, 'Accent')
+          for (i in numPolys) {
+            curPoly <- curPolys[i][[1]]@Polygons[[1]]@coords
+            print(curPoly)
+            proxy %>% addPolygons(curPoly[,1], curPoly[,2], 
+                                  weight=3, color=colors[i])   
+          }        
+        }
+        
+        if (!is.null(values$ptsSel)) {
+          proxy %>% addCircleMarkers(data = values$ptsSel, lat = ~lat, lng = ~lon, 
+                                     radius = 5, color = 'red', 
+                                     fill = TRUE, fillColor = 'yellow', 
+                                     weight = 2, popup = ~pop, fillOpacity=1)
+          proxy %>% addLegend("bottomright", colors = c('red','yellow'), 
+                              title = "GBIF Records", labels = c('original', 'selected'),
+                              opacity = 1, layerId = 1)
+        } else {
+          proxy %>% clearMarkers()
+          proxy %>% clearShapes()
+          proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
+                                     radius = 5, color = 'red', 
+                                     fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)          
+        }
       }
       
-      if (!is.null(values$ptsSel)) {
-        proxy %>% addCircleMarkers(data = values$ptsSel, lat = ~lat, lng = ~lon, 
-                                   radius = 5, color = 'red', 
-                                   fill = TRUE, fillColor = 'yellow', 
-                                   weight = 2, popup = ~pop, fillOpacity=1)
-        proxy %>% addLegend("bottomright", colors = c('red','yellow'), 
-                            title = "GBIF Records", labels = c('original', 'selected'),
-                            opacity = 1, layerId = 1)
-      }
-      
-      if (!is.null(values$prethinned)) {
-        lati <- values$prethinned[,3]
-        longi <- values$prethinned[,2]
-        proxy %>% fitBounds(min(longi), min(lati), max(longi), max(lati))
-        proxy %>% addCircleMarkers(data = values$prethinned, lat = ~lat, lng = ~lon, 
-                                   radius = 5, color = 'red', 
-                                   fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
-        proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
-                                   radius = 5, color = 'red', 
-                                   fill = TRUE, fillColor = 'blue',
-                                   fillOpacity = 0.8, weight = 2, popup = ~pop)
-        proxy %>% addLegend("bottomright", colors = c('red', 'blue'), 
-                            title = "GBIF Records", labels = c('thinned', 'current'),
-                            opacity = 1, layerId = 1)
-      } else {
+      if (input$procOccSelect == "spthin") {
+        proxy %>% clearMarkers()
+        proxy %>% clearShapes()
+        proxy %>% clearImages()
         proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
                                    radius = 5, color = 'red', 
                                    fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
-        proxy %>% addLegend("bottomright", colors = c('red'), 
-                            title = "GBIF Records", labels = c('current'),
-                            opacity = 1, layerId = 1)
+        if (!is.null(values$prethinned)) {
+          lati <- values$prethinned[,3]
+          longi <- values$prethinned[,2]
+          proxy %>% fitBounds(min(longi-1), min(lati-1), max(longi+1), max(lati+1))
+          proxy %>% addCircleMarkers(data = values$prethinned, lat = ~lat, lng = ~lon, 
+                                     radius = 5, color = 'red', 
+                                     fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
+          proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon, 
+                                     radius = 5, color = 'red', 
+                                     fill = TRUE, fillColor = 'blue',
+                                     fillOpacity = 0.8, weight = 2, popup = ~pop)
+          proxy %>% addLegend("bottomright", colors = c('red', 'blue'), 
+                              title = "GBIF Records", labels = c('thinned', 'current'),
+                              opacity = 1, layerId = 1)
+        }
       }
     }
     
