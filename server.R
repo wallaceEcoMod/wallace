@@ -446,21 +446,32 @@ shinyServer(function(input, output, session) {
     if (!is.null(values$df)) {
       ## Check if predictor path exists. If not, use the dismo function getData()
       withProgress(message = "Downloading WorldClim data...", {
-        values$pred <- getData(name = "worldclim", var = "bio", res = input$pred)
+        sinkRmdob(input$pred, "Resolution of worldclim data:")
+        sinkRmd(
+        values$pred <- getData(name = "worldclim", var = "bio", res = input$pred),
+        "Donwload environmental data")
       })
       proxy %>% addLegend("topright", colors = c(),
                           title = "Predictors: Worldclim bio 1-19", labels = c(),
                           opacity = 1, layerId = 2)
       isolate(writeLog(paste("* Environmental predictors: WorldClim bio1-19 at", input$pred, " arcmin resolution.")))
       withProgress(message = "Processing...", {
-        locs.vals <- extract(values$pred[[1]], values$df[,2:3])
+        sinkRmd(
+        locs.vals <- extract(values$pred[[1]], values$df[,2:3]),
+        "Extract environmental values to check for NA:")
+
         if (sum(is.na(locs.vals)) > 0) {
           isolate(writeLog(paste0("* Removed records with NA environmental values with IDs: ",
                        paste(row.names(values$df[is.na(locs.vals),]), collapse=', '), ".")))
         }
-        values$df <- values$df[!is.na(locs.vals),]
+        sinkRmd(
+        values$df <- values$df[!is.na(locs.vals),],
+        "Remove occurrence records without environmental data:")
+
         if (!is.null(values$inFile)) {
-          values$inFile <- values$inFile[!is.na(locs.vals),]
+          sinkRmd(
+          values$inFile <- values$inFile[!is.na(locs.vals), ],
+          "Remove occurrence records without environmental data from inFile:")
         }
       })
     }
