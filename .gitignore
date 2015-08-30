@@ -24,3 +24,11 @@ wc*
 # r proj files
 .Rproj.user
 .RData
+
+# .rmd files
+temp*
+www*
+
+#
+KeepNA
+keepInteger
