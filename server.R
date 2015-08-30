@@ -160,7 +160,8 @@ shinyServer(function(input, output, session) {
   
   # functionality for drawing polygons on map
   observe({
-    if (input$tabs == 1) {
+    if (is.null(input$procOccSelect)) return()
+    if (input$tabs == 2 & input$procOccSelect == "selpts") {
       latlng <- c(input$map_click$lng, input$map_click$lat)
       # this functionality prevents existing map click from being added to new polygon
       if (values$polyErase) {
@@ -233,6 +234,13 @@ shinyServer(function(input, output, session) {
       proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon, 
                                  radius = 5, color = 'red', 
                                  fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
+    }
+
+    if (input$tabs == 2) {
+      proxy %>% clearMarkers()
+      proxy %>% clearShapes()
+      proxy %>% clearImages()
+      
       # draw all user-drawn polygons and color according to colorBrewer
       if (!is.null(values$drawPolys)) {
         curPolys <- values$drawPolys@polygons
@@ -244,22 +252,17 @@ shinyServer(function(input, output, session) {
                                 group = 'tab1', weight=3, color=colors[i])   
         }        
       }
-
+      
       if (!is.null(values$ptsSel)) {
         proxy %>% addCircleMarkers(data = values$ptsSel, lat = ~lat, lng = ~lon, 
                                    radius = 5, color = 'red', 
                                    fill = TRUE, fillColor = 'yellow', 
                                    weight = 2, popup = ~pop, fillOpacity=1)
         proxy %>% addLegend("bottomright", colors = c('red','yellow'), 
-                  title = "GBIF Records", labels = c('original', 'selected'),
-                  opacity = 1, layerId = 1)
+                            title = "GBIF Records", labels = c('original', 'selected'),
+                            opacity = 1, layerId = 1)
       }
-    }
-
-    if (input$tabs == 2) {
-      proxy %>% clearMarkers()
-      proxy %>% clearShapes()
-      proxy %>% clearImages()
+      
       if (!is.null(values$prethinned)) {
         lati <- values$prethinned[,3]
         longi <- values$prethinned[,2]
