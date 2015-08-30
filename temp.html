@@ -130,13 +130,23 @@ library(repmis)</code></pre>
 <pre class="r"><code> ptsSel &lt;- gbifoccs[ptseln, ]
  df &lt;- ptsSel</code></pre>
 <p>Thin distance:</p>
-<pre class="r"><code>thinDist &lt;- 10</code></pre>
+<pre class="r"><code>thinDist &lt;- 20</code></pre>
 <p>Thin occurrence records:</p>
 <pre class="r"><code>output &lt;- thin(df, &quot;lat&quot;, &quot;lon&quot;, &quot;name&quot;, thin.par = thinDist, reps = 100, locs.thinned.list.return = TRUE, write.files = FALSE, verbose = FALSE)</code></pre>
 <p>Change df to thinned data:</p>
 <pre class="r"><code> maxThin &lt;- which(sapply(output, nrow) == max(sapply(output, nrow)))
  maxThin &lt;- output[[ifelse(length(maxThin) &gt; 1, maxThin[1], maxThin)]]
  df &lt;- df[as.numeric(rownames(maxThin)), ]</code></pre>
+<p>Resolution of worldclim data:</p>
+<pre class="r"><code>pred &lt;- '10'</code></pre>
+<p>Donwload environmental data</p>
+<pre class="r"><code>pred &lt;- getData(name = &quot;worldclim&quot;, var = &quot;bio&quot;, res = pred)</code></pre>
+<p>Extract environmental values</p>
+<pre class="r"><code>locs.vals &lt;- extract(pred[[1]], df[, 2:3])</code></pre>
+<p>Remove occurrence without environmental data:</p>
+<pre class="r"><code>df &lt;- df[!is.na(locs.vals), ]</code></pre>
+<pre class="r"><code>locs.vals</code></pre>
+<pre><code>##  [1] 179 183 154 181 201 219 204 180 153 125 148 248 118 100 166</code></pre>
 </div>
 
 

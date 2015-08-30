@@ -101,7 +101,7 @@ Subset with selected points:
 
 Thin distance:
 ```{r}
-thinDist <- 10
+thinDist <- 20
 ```
 
 Thin occurrence records:
@@ -116,3 +116,29 @@ Change df to thinned data:
  df <- df[as.numeric(rownames(maxThin)), ]
 
 ```
+
+Resolution of worldclim data:
+```{r}
+pred <- '10'
+```
+
+Donwload environmental data
+```{r, warning = FALSE, message = FALSE}
+pred <- getData(name = "worldclim", var = "bio", res = pred)
+```
+
+Extract environmental values
+```{r, warning = FALSE, message = FALSE}
+locs.vals <- extract(pred[[1]], df[, 2:3])
+```
+
+Remove occurrence without environmental data:
+```{r, warning = FALSE, message = FALSE}
+df <- df[!is.na(locs.vals), ]
+```
+
+
+```{r}
+locs.vals
+```
+
