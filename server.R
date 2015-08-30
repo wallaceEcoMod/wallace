@@ -522,8 +522,6 @@ shinyServer(function(input, output, session) {
     if (input$partSelect == 'jack') {group.data <- get.jackknife(occs, values$bg.coords)}
     if (input$partSelect == 'random') {group.data <- get.randomkfold(occs, values$bg.coords, input$kfolds)}
     values$modParams <- list(occ.pts=occs, bg.pts=values$bg.coords, occ.grp=group.data[[1]], bg.grp=group.data[[2]])
-    print(group.data[[1]])
-    print(max(group.data[[1]]))
     #newColors <- brewer.pal(max(group.data[[1]]), 'Accent')
 #     values$df$parts <- factor(group.data[[1]])
 #     newColors <- colorFactor(rainbow(max(group.data[[1]])), values$df$parts)
@@ -539,6 +537,35 @@ shinyServer(function(input, output, session) {
   # run ENMeval via user inputs
   observeEvent(input$goEval, {
     
+    if (input$modSelect == "Bioclim") {
+      e <- BioClim_eval(values$modParams$occ.pts, values$modParams$bg.pts, 
+                        values$modParams$occ.grp, values$modParams$bg.grp,
+                        values$predMsk)
+      
+      occVals <- extract(e$predictions, values$modParams$occ.pts)
+      values$mtps <- min(occVals)
+      if (length(occVals) < 10) {
+        n90 <- floor(length(occVals) * 0.9)
+      } else {
+        n90 <- ceiling(length(occVals) * 0.9)
+      }
+      values$p10s <- rev(sort(occVals))[n90]
+      
+      # make datatable of results df
+      output$evalTbl <- DT::renderDataTable({DT::datatable(round(e$results, digits=3))})
+      output$evalPlot <- renderPlot(plot(e$models, a = input$bc1, b = input$bc2, p = input$bcProb))
+      writeLog(paste("* Bioclim ran successfully and output evaluation results."))
+      print('A')
+      # a tabset within tab 4 to organize the Bioclim outputs
+      output$evalTabs <- renderUI({
+        tabsetPanel(id = "bcTabs", 
+                    tabPanel("Results Table", DT::dataTableOutput('evalTbl'), value = 1),
+                    tabPanel("Bioclim Plot", plotOutput('evalPlot', width = 600), value = 2)
+          )
+      })
+    }
+    print('B')
+    
     if (input$modSelect == "Maxent") {
       rms <- seq(input$rms[1], input$rms[2], input$rmsBy)
       progress <- shiny::Progress$new()
@@ -553,53 +580,58 @@ shinyServer(function(input, output, session) {
                        RMvalues = rms, fc = input$fcs, method = 'user', occ.grp = values$modParams$occ.grp, 
                        bg.grp = values$modParams$bg.grp, updateProgress = updateProgress)
       values$eval <- e  
+      
+      occVals <- extract(e@predictions, values$modParams$occ.pts)
+      values$mtps <- apply(occVals, MARGIN = 2, min)
+      if (nrow(occVals) < 10) {
+        n90 <- floor(nrow(occVals) * 0.9)
+      } else {
+        n90 <- ceiling(nrow(occVals) * 0.9)
+      }
+      values$p10s <- apply(occVals, MARGIN = 2, function(x) rev(sort(x))[n90])
+      
+      # make datatable of results df
+      output$evalTbl <- DT::renderDataTable({DT::datatable(cbind(e@results[,1:3], round(e@results[,4:15], digits=3)))})
+      writeLog(paste("* ENMeval ran successfully and output evaluation results for", nrow(e@results), "models."))
+      
+      # plotting functionality for ENMeval graphs
+      output$evalPlot <- renderPlot({
+        par(mfrow=c(3,2))
+        fc <- length(unique(e@results$features))
+        col <- rainbow(fc)
+        rm <- length(unique(e@results$rm))
+        plot(rep(1, times=fc), 1:fc, ylim=c(.5,fc+1), xlim=c(0,3), axes=F, ylab='', xlab='', cex=2, pch=21, bg=col)
+        segments(rep(.8, times=fc), 1:fc, rep(1.2, times=fc), 1:fc, lwd=1, col=col)
+        points(rep(1, times=fc), 1:fc, ylim=c(-1,fc+2), cex=2, pch=21, bg=col)
+        text(x=rep(1.3, times=fc), y=1:fc, labels=unique(e@results$features), adj=0)
+        text(x=1, y=fc+1, labels="Feature Classes", adj=.20, cex=1.3, font=2)
+        eval.plot(e@results, legend=FALSE, value="delta.AICc")
+        eval.plot(e@results, legend=FALSE, value="Mean.AUC", variance="Var.AUC")
+        eval.plot(e@results, legend=FALSE, value="Mean.AUC.DIFF", variance="Var.AUC.DIFF")
+        eval.plot(e@results, legend=FALSE, value="Mean.ORmin", variance="Var.ORmin")
+        eval.plot(e@results, legend=FALSE, value="Mean.OR10", variance="Var.OR10")
+      })
+    
+      # a tabset within tab 4 to organize the enmEval outputs
+      output$evalTabs <- renderUI({
+        tabsetPanel(tabPanel("Results Table", DT::dataTableOutput('evalTbl')),
+                    tabPanel("Evaluation Graphs", plotOutput('evalPlot', width = 600))
+        )
+      })
     }
     
     
     # get mtp and p10 for all models (as output is raw we can't get this from the model results table)
     # this code is mostly pulled with modifications from ENMeval -- thanks Bob!
-    occVals <- extract(values$eval@predictions, occs)
-    values$mtps <- apply(occVals, MARGIN = 2, min)
-    if (nrow(occVals) < 10) {
-      n90 <- floor(nrow(occVals) * 0.9)
-    } else {
-      n90 <- ceiling(nrow(occVals) * 0.9)
-    }
-    values$p10s <- apply(occVals, MARGIN = 2, function(x) rev(sort(x))[n90])
+    
+    print('C')
     
     # render table of ENMeval results
     # code to do fixed columns -- problem is it makes the page selection disappear and you
     # can't seem to pan around the table to see the other rows... likely a bug
     # (extensions=list(FixedColumns=list(leftColumns=2)), options=list(dom='t', scrollX=TRUE, scrollCollapse=TRUE))
-    output$evalTbl <- DT::renderDataTable({DT::datatable(cbind(e@results[,1:3], round(e@results[,4:15], digits=3)))})
-    
-    if (!is.null(values$eval@results)) {
-      writeLog(paste("* ENMeval ran successfully and output results for", nrow(values$eval@results), "models."))
       
-      # plotting functionality for ENMeval graphs
-      output$evalPlot <- renderPlot({
-        par(mfrow=c(3,2))
-        fc <- length(unique(values$eval@results$features))
-        col <- rainbow(fc)
-        rm <- length(unique(values$eval@results$rm))
-        plot(rep(1, times=fc), 1:fc, ylim=c(.5,fc+1), xlim=c(0,3), axes=F, ylab='', xlab='', cex=2, pch=21, bg=col)
-        segments(rep(.8, times=fc), 1:fc, rep(1.2, times=fc), 1:fc, lwd=1, col=col)
-        points(rep(1, times=fc), 1:fc, ylim=c(-1,fc+2), cex=2, pch=21, bg=col)
-        text(x=rep(1.3, times=fc), y=1:fc, labels=unique(values$eval@results$features), adj=0)
-        text(x=1, y=fc+1, labels="Feature Classes", adj=.20, cex=1.3, font=2)
-        eval.plot(values$eval@results, legend=FALSE, value="delta.AICc")
-        eval.plot(values$eval@results, legend=FALSE, value="Mean.AUC", variance="Var.AUC")
-        eval.plot(values$eval@results, legend=FALSE, value="Mean.AUC.DIFF", variance="Var.AUC.DIFF")
-        eval.plot(values$eval@results, legend=FALSE, value="Mean.ORmin", variance="Var.ORmin")
-        eval.plot(values$eval@results, legend=FALSE, value="Mean.OR10", variance="Var.OR10")
-      })
-    }
-    # a tabset within tab 4 to organize the enmEval outputs
-    output$evalTabs <- renderUI({
-      tabsetPanel(tabPanel("Results Table", DT::dataTableOutput('evalTbl')),
-                  tabPanel("Evaluation Graphs", plotOutput('evalPlot', width = 600))
-      )
-    })
+
   })
   
   # handle downloads for ENMeval results table csv
