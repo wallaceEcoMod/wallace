@@ -86,7 +86,7 @@ shinyServer(function(input, output, session) {
         results <- fixcols(cols, results),
         locs.in <- results$data[!is.na(results$data[,3]),][,cols],
         locs <- remDups(locs.in),
-        names(locs)[2:3] <- c('lon', 'lat'), 
+        names(locs)[2:3] <- c('lon', 'lat'),
         locs$origID <- row.names(locs)),
         "Occurrence table changes:")
 
@@ -448,7 +448,7 @@ shinyServer(function(input, output, session) {
   output$downloadThincsv <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$gbifoccs), "_thinned_gbifCleaned.csv")},
     content = function(file) {
-      write.csv(values$df, file)
+      write.csv(values$df, file, row.names = FALSE)
     }
   )
 
@@ -491,13 +491,13 @@ shinyServer(function(input, output, session) {
       sinkSub("## Process Environmental Data")}
   })
 
-  # functionality for downloading .asc files from dropbox
-  observeEvent(input$dbAscGet, {
-    dbAsc <- source_DropboxData(input$dbAscFname, input$dbAscKey)
-    dims <- strsplit(input$dbAscDims, split=',')[[1]]
-    dbRas <- raster(dbAsc, crs=input$dbAscCRS, xmn=dims[1], xmx=dims[2],
-                    ymn=dims[3], ymx=dims[4])
-  })
+  #   # functionality for downloading .asc files from dropbox
+  #   observeEvent(input$dbAscGet, {
+  #     dbAsc <- source_DropboxData(input$dbAscFname, input$dbAscKey)
+  #     dims <- strsplit(input$dbAscDims, split=',')[[1]]
+  #     dbRas <- raster(dbAsc, crs=input$dbAscCRS, xmn=dims[1], xmx=dims[2],
+  #                     ymn=dims[3], ymx=dims[4])
+  #   })
 
   # this is necessary because the above is not observeEvent, and thus for some
   # reason when values$log is modified within observe, there's an infinite loop
@@ -706,28 +706,17 @@ shinyServer(function(input, output, session) {
                                radius = 5, color = 'red', fill = TRUE,
                                fillColor = newColors[group.data[[1]]], weight = 2, popup = ~pop, fillOpacity = 1)
   })
-  
-  # handle download for thinned records csv
-  output$downloadPart <- downloadHandler(
-    filename = function() {paste0(nameAbbr(values$gbifoccs), "_partitioned_occs.csv")},
-    content = function(file) {
-      spName <- values$df[1,1]
-      bg.bind <- cbind(rep(spName, nrow(values$bg.coords)), values$bg.coords)
-      dfbg.bind <-rbind(values$df, bg.bind)
-      all.bind <- cbind(dfbg.bind, rbind(values$modParams$occ.grp, values$modParams$bg.grp))
-      write.csv(all.bind, file)
-    }
-  )
 
-  # handle download for thinned records csv
+  # handle download for partitioned occurrence records csv
   output$downloadPart <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$gbifoccs), "_partitioned_occs.csv")},
     content = function(file) {
-      spName <- values$df[1,1]
-      bg.bind <- cbind(rep(spName, nrow(values$bg.coords)), values$bg.coords)
-      dfbg.bind <-rbind(values$df, bg.bind)
-      all.bind <- cbind(dfbg.bind, rbind(values$modParams$occ.grp, values$modParams$bg.grp))
-      write.csv(all.bind, file)
+      bg.bind <- cbind(rep('background', nrow(values$bg.coords)), values$bg.coords)
+      names(bg.bind) <- c('name', 'lon', 'lat')
+      dfbg.bind <-rbind(values$df[,1:3], bg.bind)
+      all.bind <- cbind(dfbg.bind, c(values$modParams$occ.grp, values$modParams$bg.grp))
+      names(all.bind)[4] <- "partitionID"
+      write.csv(all.bind, file, row.names = FALSE)
     }
   )
 
@@ -853,7 +842,7 @@ shinyServer(function(input, output, session) {
   output$downloadEvalcsv <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$gbifoccs), "_enmeval_results.csv")},
     content = function(file) {
-      write.csv(values$evalTbl, file)
+      write.csv(values$evalTbl, file, row.names = FALSE)
     }
   )
 
@@ -865,6 +854,25 @@ shinyServer(function(input, output, session) {
     values$rdyPlot <- 'rdy'
     selectInput("predSelServer", label = "Choose a model",
                 choices = predNameList)
+  })
+
+  observe({
+    if (input$predForm == '' | is.null(values$pred)) return()
+    if (input$predForm == 2) {
+      if (is.null(values$predsLog)) {
+        isolate({
+          # generate logistic outputs for all raw outputs
+          makeLog <- function(x) predict(x, values$pred, args=c('outputformat=logistic'))
+          print(values$log)
+          values$log <- isolate(paste(values$log, 'Generating logistic predictions...', sep='<br>'))  # add text to log
+          print(values$log)
+          values$predsLog <- stack(sapply(values$eval@models, FUN=makeLog))
+          logTime <- c(1,1,1)
+          values$log <- isolate(paste(values$log, paste0('Logistic predictions complete in ',
+                                                         logTime[3], '.'), sep='<br>'))  # add text to log
+        })
+      }
+    }
   })
 
   # set predCur based on user selection of threshold
