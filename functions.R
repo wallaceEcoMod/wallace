@@ -111,3 +111,18 @@ addCSVpts <- function(df) {
   df <- rbind(df, inFile.occs)
   df <- remDups(df)
 }
+
+
+# Fix columns
+fixcols <- function(cols, results) {
+  colsadd <- cols[!(cols %in% colnames(results$data))]
+  n <- length(colsadd)
+
+  if (n > 0) {
+    for(i in 1:n) {
+      results$data <- cbind(results$data, NA)
+      colnames(results$data)[ncol(results$data)] <- colsadd[i]
+    }
+  }
+  return(results)
+}

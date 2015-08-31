@@ -81,19 +81,19 @@ shinyServer(function(input, output, session) {
 
     if (results$meta$count != 0) {
       sinkRmdmult(c(
-        cols <- c('name','decimalLongitude','decimalLatitude', 'country', 'stateProvince',
+      cols <- c('name','decimalLongitude','decimalLatitude', 'country', 'stateProvince',
                   'locality', 'elevation', 'basisOfRecord'),
+      results <- fixcols(cols, results),
       locs.in <- results$data[!is.na(results$data[,3]),][,cols],
       locs <- remDups(locs.in),
       names(locs)[2:3] <- c('lon', 'lat'),
       locs$origID <- row.names(locs)),
       "Occurrence table changes:")
 
-      sinkFalse("gbifoccs <- NULL", "Create the null object:")
 
       locs$pop <- unlist(apply(locs, 1, popUpContent))
       sinkRmdmult(c(
-      values$gbifoccs <- rbind(values$gbifoccs, locs),
+      values$gbifoccs <- locs,
       values$gbifoccs <- remDups(values$gbifoccs),
       values$df <- values$gbifoccs),
       "Adjusting table values:")
@@ -121,7 +121,7 @@ shinyServer(function(input, output, session) {
   observe({
     if (is.null(values$df)) return()
     # render the GBIF records data table
-    output$occTbl <- DT::renderDataTable({DT::datatable(values$df[,1:8],
+    output$occTbl <- DT::renderDataTable({DT::datatable(values$df[1:8],
                                                         options = list(
                                                           autoWidth = TRUE,
                                                           columnDefs = list(list(width = '40%', targets = 6)),
@@ -767,9 +767,9 @@ shinyServer(function(input, output, session) {
       sinkFalse("e <- ENMevaluate(modParams$occ.pts, predMsk, bg.coords = modParams$bg.pts,RMvalues = rms, fc = fcs, method = 'user', occ.grp = modParams$occ.grp, bg.grp = modParams$bg.grp)",
       "Evaluate maxent model results:")
 
-      sinkRmd(
+      sinkRmdmult(c(
         values$evalTbl <- e@results,
-        values$evalPreds <- e@predictions,
+        values$evalPreds <- e@predictions),
         "Define the object e as eval:")
 
       sinkRmd(
@@ -870,16 +870,16 @@ shinyServer(function(input, output, session) {
         dev.off()
       } else {
         res <- writeRaster(values$predCur, file, format = input$predFileType, overwrite = TRUE)
-        file.rename(res@file@name, file)        
+        file.rename(res@file@name, file)
       }
     }
   )
-  
+
   output$downloadMD <- downloadHandler(
     filename = function() {paste0("wallace-session-", Sys.Date(), ".Rmd")},
     content = function(file) {
       out <- 'temp.Rmd'
-      file.copy(out, file) # move pdf to file for downloading      
+      file.copy(out, file) # move pdf to file for downloading
     }
   )
 })
