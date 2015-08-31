@@ -694,20 +694,29 @@ shinyServer(function(input, output, session) {
 
   # run ENMeval via user inputs
   observeEvent(input$goEval, {
-
+    sinkSub("## Build and Evaluate Niche Model")
     if (input$modSelect == "Bioclim") {
+      sinkRmdmult(c(
       e <- BioClim_eval(values$modParams$occ.pts, values$modParams$bg.pts,
                         values$modParams$occ.grp, values$modParams$bg.grp,
-                        values$predMsk)
+                        values$predMsk),
+      occVals <- extract(e$predictions, values$modParams$occ.pts),
+      values$mtps <- min(occVals)),
+      "Build BioClim models:")
 
-      occVals <- extract(e$predictions, values$modParams$occ.pts)
-      values$mtps <- min(occVals)
       if (length(occVals) < 10) {
-        n90 <- floor(length(occVals) * 0.9)
+        sinkRmd(
+        n90 <- floor(length(occVals) * 0.9),
+        "Define the number of 10% higher values:")
       } else {
-        n90 <- ceiling(length(occVals) * 0.9)
+        sinkRmd(
+        n90 <- ceiling(length(occVals) * 0.9),
+        "Define the number of 10% higher values:")
       }
-      values$p10s <- rev(sort(occVals))[n90]
+
+      sinkRmd(
+      values$p10s <- rev(sort(occVals))[n90],
+      "Apply 10% threshold prediction:")
 
       # make datatable of results df
       output$evalTbl <- DT::renderDataTable({DT::datatable(round(e$results, digits=3))})
@@ -723,7 +732,12 @@ shinyServer(function(input, output, session) {
     }
 
     if (input$modSelect == "Maxent") {
-      rms <- seq(input$rms[1], input$rms[2], input$rmsBy)
+      sinkRmdob(input$rms, "Define regularization multipliers (RM) values (penalty against complexity):")
+      sinkRmdob(input$rmsBy, "Define RM steps:")
+      sinkRmdob(input$fcs, "Define feature classes (flexibility of modeled response):")
+      sinkRmd(
+      rms <- seq(input$rms[1], input$rms[2], input$rmsBy),
+      "Sequence the RM steps:")
       progress <- shiny::Progress$new()
       progress$set(message = "Evaluating ENMs...", value = 0)
       on.exit(progress$close())
@@ -731,20 +745,35 @@ shinyServer(function(input, output, session) {
       updateProgress <- function(value = NULL, detail = NULL) {
         progress$inc(amount = 1/n, detail = detail)
       }
-
       e <- ENMevaluate(values$modParams$occ.pts, values$predMsk, bg.coords = values$modParams$bg.pts,
                        RMvalues = rms, fc = input$fcs, method = 'user', occ.grp = values$modParams$occ.grp,
                        bg.grp = values$modParams$bg.grp, updateProgress = updateProgress)
-      values$eval <- e
 
-      occVals <- extract(e@predictions, values$modParams$occ.pts)
-      values$mtps <- apply(occVals, MARGIN = 2, min)
+      sinkFalse("e <- ENMevaluate(modParams$occ.pts, predMsk, bg.coords = modParams$bg.pts,RMvalues = rms, fc = fcs, method = 'user', occ.grp = modParams$occ.grp, bg.grp = modParams$bg.grp)",
+      "Evaluate maxent model results:")
+
+      sinkRmd(
+        values$eval <- e,
+        "Define the object e as eval:")
+
+      sinkRmd(
+      occVals <- extract(e@predictions, values$modParams$occ.pts),
+      "Prediction values:")
+      sinkRmd(
+      values$mtps <- apply(occVals, MARGIN = 2, min),
+      "Minimun Training Presence (mtp) threshold:")
       if (nrow(occVals) < 10) {
-        n90 <- floor(nrow(occVals) * 0.9)
+        sinkRmd(
+        n90 <- floor(nrow(occVals) * 0.9),
+        "Define the number of 10% higher values:")
       } else {
-        n90 <- ceiling(nrow(occVals) * 0.9)
+        sinkRmd(
+        n90 <- ceiling(nrow(occVals) * 0.9),
+        "Define the number of 10% higher values:")
       }
-      values$p10s <- apply(occVals, MARGIN = 2, function(x) rev(sort(x))[n90])
+      sinkRmd(
+      values$p10s <- apply(occVals, MARGIN = 2, function(x) rev(sort(x))[n90]),
+      "Apply 10% threshold prediction:")
 
       # make datatable of results df
       output$evalTbl <- DT::renderDataTable({DT::datatable(cbind(e@results[,1:3], round(e@results[,4:15], digits=3)))})
