@@ -299,7 +299,7 @@ shinyServer(function(input, output, session) {
       if (input$procOccSelect == "selpts") {
         if (is.null(values$prethinned)) {
           proxy %>% clearMarkers()
-          print('prethin null')
+#           print('prethin null')
           proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon,
                                      radius = 5, color = 'red',
                                      fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
@@ -320,7 +320,7 @@ shinyServer(function(input, output, session) {
           }
         } else {
           proxy %>% clearMarkers()
-          print('prethin not null')
+#           print('prethin not null')
           proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon,
                                      radius = 5, color = 'red',
                                      fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
@@ -620,8 +620,8 @@ shinyServer(function(input, output, session) {
   })
 
   observe({
-    print(input$spSelect)
-    print(input$nspSelect)
+#     print(input$spSelect)
+#     print(input$nspSelect)
     if (!is.null(input$partSelect)) {
       if (input$partSelect == 'nsp') {
         updateRadioButtons(session, 'partSelect2', choices = list("jackknife" = "jack", "randomkfold" = "random"))
@@ -716,8 +716,8 @@ shinyServer(function(input, output, session) {
       values$evalTbl <- e$results,
       values$evalPreds <- e$predictions,
       occVals <- extract(e$predictions, values$modParams$occ.pts),
-      values$mtps <- min(occVals),
-      "Build BioClim models:"))
+      values$mtps <- min(occVals)),
+      "Build BioClim models:")
 
       if (length(occVals) < 10) {
         sinkRmd(
@@ -765,7 +765,7 @@ shinyServer(function(input, output, session) {
                        bg.grp = values$modParams$bg.grp, updateProgress = updateProgress)
 
       sinkFalse("e <- ENMevaluate(modParams$occ.pts, predMsk, bg.coords = modParams$bg.pts,RMvalues = rms, fc = fcs, method = 'user', occ.grp = modParams$occ.grp, bg.grp = modParams$bg.grp)",
-      "Evaluate maxent model results:")
+      "Evaluate Maxent model results:")
 
       sinkRmdmult(c(
         values$evalTbl <- e@results,
