@@ -309,7 +309,8 @@ shinyUI(pageWithSidebar(title,
                                                                        a("documentation", href="https://cran.r-project.org/web/packages/raster/raster.pdf", target = "_blank")
                                                       ),
                                                       HTML('<hr>'),
-                                                      downloadLink('downloadMD', 'Download History in Markdown')
+                                                      downloadLink('downloadMD', 'Download History in Markdown'),
+                                                      includeMarkdown("www/downloadmarkdown.Rmd")
                                      ),
                                      conditionalPanel("input.tabs == 8",
                                                       h4("About")
