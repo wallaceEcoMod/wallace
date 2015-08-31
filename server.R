@@ -632,7 +632,11 @@ shinyServer(function(input, output, session) {
       e <- BioClim_eval(values$modParams$occ.pts, values$modParams$bg.pts,
                         values$modParams$occ.grp, values$modParams$bg.grp,
                         values$predMsk)
+      values$evalTbl <- e$results
+      values$evalPreds <- e$predictions
 
+      # get mtp and p10 for all models (as output is raw we can't get this from the model results table)
+      # this code is mostly pulled with modifications from ENMeval -- thanks Bob!
       occVals <- extract(e$predictions, values$modParams$occ.pts)
       values$mtps <- min(occVals)
       if (length(occVals) < 10) {
@@ -668,8 +672,11 @@ shinyServer(function(input, output, session) {
       e <- ENMevaluate(values$modParams$occ.pts, values$predMsk, bg.coords = values$modParams$bg.pts,
                        RMvalues = rms, fc = input$fcs, method = 'user', occ.grp = values$modParams$occ.grp,
                        bg.grp = values$modParams$bg.grp, updateProgress = updateProgress)
-      values$eval <- e
+      values$evalTbl <- e@results
+      values$evalPreds <- e@predictions
 
+      # get mtp and p10 for all models (as output is raw we can't get this from the model results table)
+      # this code is mostly pulled with modifications from ENMeval -- thanks Bob!
       occVals <- extract(e@predictions, values$modParams$occ.pts)
       values$mtps <- apply(occVals, MARGIN = 2, min)
       if (nrow(occVals) < 10) {
@@ -709,31 +716,20 @@ shinyServer(function(input, output, session) {
       })
     }
 
-
-    # get mtp and p10 for all models (as output is raw we can't get this from the model results table)
-    # this code is mostly pulled with modifications from ENMeval -- thanks Bob!
-
-
-    # render table of ENMeval results
-    # code to do fixed columns -- problem is it makes the page selection disappear and you
-    # can't seem to pan around the table to see the other rows... likely a bug
-    # (extensions=list(FixedColumns=list(leftColumns=2)), options=list(dom='t', scrollX=TRUE, scrollCollapse=TRUE))
-
-
   })
 
   # handle downloads for ENMeval results table csv
   output$downloadEvalcsv <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$gbifoccs), "_enmeval_results.csv")},
     content = function(file) {
-      write.csv(values$eval@results, file)
+      write.csv(values$evalTbl, file)
     }
   )
 
   # generates user selection of rasters to plot dynamically after they are created
   output$predSel <- renderUI({
-    if (is.null(values$eval)) return()
-    n <- names(values$eval@predictions)
+    if (is.null(values$evalPreds)) return()
+    n <- names(values$evalPreds)
     predNameList <- setNames(as.list(seq(1, length(n))), n)
     values$rdyPlot <- 'rdy'
     selectInput("predSelServer", label = "Choose a model",
@@ -742,7 +738,7 @@ shinyServer(function(input, output, session) {
 
   # set predCur based on user selection of threshold
   observeEvent(input$plotPred, {
-    selRas <- values$eval@predictions[[as.numeric(input$predSelServer)]]
+    selRas <- values$evalPreds[[as.numeric(input$predSelServer)]]
     values$rasName <- names(selRas)
     if (input$predThresh == 'raw') {
       values$predCur <- selRas
@@ -755,12 +751,22 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  # handle download for rasters, as TIFF
+  # handle download for rasters, with file type as user choice
   output$downloadPred <- downloadHandler(
-    filename = function() {paste0(values$rasName, "_", input$predThresh, "_pred.tif")},
+    filename = function() {
+      ext <- ifelse(input$predFileType == 'raster', 'grd',
+             ifelse(input$predFileType == 'ascii', 'asc',
+                    ifelse(input$predFileType == 'GTiff', 'tif', 'png')))
+      paste0(values$rasName, "_", input$predThresh, "_pred.", ext)},
     content = function(file) {
-      res <- writeRaster(values$predCur, file, format = input$predFileType, overwrite = TRUE)
-      file.rename(res@file@name, file)
+      if (input$predFileType == 'png') {
+        png(file)
+        image(values$predCur)
+        dev.off()
+      } else {
+        res <- writeRaster(values$predCur, file, format = input$predFileType, overwrite = TRUE)
+        file.rename(res@file@name, file)        
+      }
     }
   )
 })
