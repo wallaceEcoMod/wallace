@@ -2,4 +2,6 @@
 title: "tab7content"
 output: html_document
 ---
+<p align="justify">
 View the prediction rasters. You can download them individually and import into a GIS for further analysis.
+</p>

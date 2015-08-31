@@ -2,4 +2,6 @@
 title: "downloadmarkdown"
 output: html_document
 ---
+<p align="justify">
 Here you can download the history of Wallace actions in an R Markdown file including the code description. This file allows Wallace to keep the reproducibility characteristics of R, by registering and commenting all analysis steps.
+</p>
