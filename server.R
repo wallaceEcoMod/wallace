@@ -491,13 +491,13 @@ shinyServer(function(input, output, session) {
       sinkSub("## Process Environmental Data")}
   })
 
-  #   # functionality for downloading .asc files from dropbox
-  #   observeEvent(input$dbAscGet, {
-  #     dbAsc <- source_DropboxData(input$dbAscFname, input$dbAscKey)
-  #     dims <- strsplit(input$dbAscDims, split=',')[[1]]
-  #     dbRas <- raster(dbAsc, crs=input$dbAscCRS, xmn=dims[1], xmx=dims[2],
-  #                     ymn=dims[3], ymx=dims[4])
-  #   })
+#   # functionality for downloading .asc files from dropbox
+#   observeEvent(input$dbAscGet, {
+#     dbAsc <- source_DropboxData(input$dbAscFname, input$dbAscKey)
+#     dims <- strsplit(input$dbAscDims, split=',')[[1]]
+#     dbRas <- raster(dbAsc, crs=input$dbAscCRS, xmn=dims[1], xmx=dims[2],
+#                     ymn=dims[3], ymx=dims[4])
+#   })
 
   # this is necessary because the above is not observeEvent, and thus for some
   # reason when values$log is modified within observe, there's an infinite loop
@@ -706,7 +706,6 @@ shinyServer(function(input, output, session) {
                                radius = 5, color = 'red', fill = TRUE,
                                fillColor = newColors[group.data[[1]]], weight = 2, popup = ~pop, fillOpacity = 1)
   })
-
   # handle download for partitioned occurrence records csv
   output$downloadPart <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$gbifoccs), "_partitioned_occs.csv")},
@@ -854,6 +853,25 @@ shinyServer(function(input, output, session) {
     values$rdyPlot <- 'rdy'
     selectInput("predSelServer", label = "Choose a model",
                 choices = predNameList)
+  })
+
+  observe({
+    if (input$predForm == '' | is.null(values$pred)) return()
+    if (input$predForm == 2) {
+      if (is.null(values$predsLog)) {
+        isolate({
+          # generate logistic outputs for all raw outputs
+          makeLog <- function(x) predict(x, values$pred, args=c('outputformat=logistic'))
+          print(values$log)
+          values$log <- isolate(paste(values$log, 'Generating logistic predictions...', sep='<br>'))  # add text to log
+          print(values$log)
+          values$predsLog <- stack(sapply(values$eval@models, FUN=makeLog))
+          logTime <- c(1,1,1)
+          values$log <- isolate(paste(values$log, paste0('Logistic predictions complete in ',
+                                                         logTime[3], '.'), sep='<br>'))  # add text to log
+        })
+      }
+    }
   })
 
   observe({
