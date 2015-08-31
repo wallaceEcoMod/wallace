@@ -874,4 +874,12 @@ shinyServer(function(input, output, session) {
       }
     }
   )
+  
+  output$downloadMD <- downloadHandler(
+    filename = function() {paste0("wallace-session-", Sys.Date(), ".Rmd")},
+    content = function(file) {
+      out <- 'temp.Rmd'
+      file.copy(out, file) # move pdf to file for downloading      
+    }
+  )
 })
