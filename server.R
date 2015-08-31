@@ -634,7 +634,11 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$goPart, {
-    if (is.null(input$partSelect)) return()
+    if (is.null(input$partSelect) | is.null(values$predMsk)) {
+      if(!is.null(input$partSelect)) {writeLog("* Mask the environmental variables first... (section 4)")}
+      return()
+    }
+
     # if user kfold, get groups and assign occs and backg from inFile,
     # and if not, make backg pts and assign user kfold groups to NULL
     sinkSub("## Partition Occurrence Data")
