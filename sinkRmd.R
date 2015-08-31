@@ -13,7 +13,7 @@ sinkRmdTitle <- function(title = "Code description") {
   cat("\n\n## About")
   cat("\n\nThis is an R Markdown document. Here all R code history used in the web app Wallace is registered. With this document users can track their own analysis and recreate it in R itself.")
   cat("\nMarkdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents (for more details on using R Markdown see <http://rmarkdown.rstudio.com>).")
-  cat("\n\n## Packages instalation")
+  cat("\n\n## Packages installation")
   cat("\n\nWallace makes use of the following R packages, before start, install them:")
   cat("\n```{r, eval = FALSE}\n")
   cat("install.packages(devtools)\n")
