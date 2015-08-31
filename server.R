@@ -521,7 +521,7 @@ shinyServer(function(input, output, session) {
 
   # background extents
   observe({
-    if (is.null(input$backgSelect) | is.null(values$pred)) return()
+    if (is.null(input$backgSelect) | is.null(values$pred) | is.null(input$backgBuf)| is.na(input$backgBuf)) return()
     # generate background extent
     if (input$backgSelect == 'bb') {
       sinkRmdob(input$backgBuf, "Define the buffer size of the background:")
