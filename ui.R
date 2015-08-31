@@ -20,8 +20,8 @@ library(DT)
 # }
 
 title <- HTML('<span style="font-size:25pt">WALLACE beta v0.1:</span>
-<span style="font-size:15pt">Harnessing Digital Biodiversity Data for Predictive Modeling, fueled by R</span><br>
-<span style="font-size:10pt">Developers: Jamie M. Kass, Matthew Aiello-Lammens, Bruno Vilela, Robert Muscarella, Robert P. Anderson</span><br><br>')
+              <span style="font-size:15pt">Harnessing Digital Biodiversity Data for Predictive Modeling, fueled by R</span><br>
+              <span style="font-size:10pt">Developers: Jamie M. Kass, Matthew Aiello-Lammens, Bruno Vilela, Robert Muscarella, Robert P. Anderson</span><br><br>')
 
 # Define UI for application
 shinyUI(pageWithSidebar(title,
@@ -95,7 +95,7 @@ shinyUI(pageWithSidebar(title,
                                                                        a("CRAN", href = "http://cran.r-project.org/web/packages/spThin/index.html", target = "_blank"),
                                                                        " | ",
                                                                        a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/ecog.01132/abstract", target = "_blank")
-                                                      )
+                                                                       )
                                      ),
                                      conditionalPanel("input.tabs == 3",
                                                       h4("Obtain Environmental Data"),
@@ -116,7 +116,7 @@ shinyUI(pageWithSidebar(title,
                                                                                                   "5 arcmin WorldClim bio1-19" = 5,
                                                                                                   "10 arcmin WorldClim bio1-19" = 10,
                                                                                                   "User input (not functional)" = 'user')),
-                                                                                                  #"Upload from Dropbox" = 'db'))
+                                                                       #"Upload from Dropbox" = 'db'))
                                                                        HTML('<hr>')
                                                       ),
                                                       conditionalPanel("input.envSelect == 'Climond'",
@@ -135,11 +135,11 @@ shinyUI(pageWithSidebar(title,
                                                                        " | ",
                                                                        a("Worldclim", href="http://worldclim.org", target="_blank")
                                                       )
-#                                                       conditionalPanel("input.pred == 'db'",
-#                                                                        textInput("dbAscFname", "File name"),
-#                                                                        textInput("dbAscKey", "Dropbox Key"),
-#                                                                        textInput("dbAscCRS", "Coordinate System",value='+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0'),
-#                                                                        textInput("dbAscDims", "Dimensions"))
+                                                      #                                                       conditionalPanel("input.pred == 'db'",
+                                                      #                                                                        textInput("dbAscFname", "File name"),
+                                                      #                                                                        textInput("dbAscKey", "Dropbox Key"),
+                                                      #                                                                        textInput("dbAscCRS", "Coordinate System",value='+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0'),
+                                                      #                                                                        textInput("dbAscDims", "Dimensions"))
                                      ),
                                      conditionalPanel("input.tabs == 4",
                                                       h4("Process Environmental Data"),
@@ -163,7 +163,7 @@ shinyUI(pageWithSidebar(title,
                                                                                     choices = list("Bounding box" = 'bb', "Minimum convex polygon" = 'mcp',
                                                                                                    "User-specified shapefile" = 'user'),
                                                                                     selected = '')
-                                                      ),
+                                                                       ),
                                                       conditionalPanel("input.envProcSelect == 'user'",
                                                                        #  shinyFilesButton('userBackg', label='Upload Shapefile', title='Please select a file', multiple=TRUE)),
                                                                        fileInput("userBackg", label = "Upload Shapefile",
@@ -216,8 +216,8 @@ shinyUI(pageWithSidebar(title,
                                                                        uiOutput('occgrpSel'),
                                                                        uiOutput('bggrpSel')),
                                                       conditionalPanel("input.partSelect != null",
-                                                                       #downloadButton('downloadThincsv', "Download Occurrence CSV")),
                                                                        actionButton("goPart", "Partition"),
+                                                                       downloadButton('downloadPart', "Download Partitioned Occurrence CSV"),
                                                                        HTML('<hr>')),
                                                       includeMarkdown("www/tab5content.Rmd"),
                                                       conditionalPanel("input.partSelect != null",
@@ -227,7 +227,7 @@ shinyUI(pageWithSidebar(title,
                                                                        a("CRAN", href = "http://cran.r-project.org/web/packages/ENMeval/index.html", target = "_blank"),
                                                                        " | ",
                                                                        a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12261/abstract", target = "_blank")
-                                                      )
+                                                                       )
                                      ),
                                      conditionalPanel("input.tabs == 6",
                                                       h4("Build and Evaluate Niche Model"),
@@ -250,9 +250,10 @@ shinyUI(pageWithSidebar(title,
                                                                                         numericInput("bc1", "Axis 1", value = 1, min = 1, max = 19),
                                                                                         numericInput("bc2", "Axis 2", value = 2, min = 1, max = 19),
                                                                                         selectInput('bcProb', label = "Set threshold",
-                                                                                                    choices = list("90%" = 0.1, "95%" = 0.05,
-                                                                                                                   "98.5%" = 0.025))
-                                                                       ),
+                                                                                                    choices = list("90%" = 0.9, "95%" = 0.95, "100%" = 1),
+                                                                                                    selected = "90%")
+                                                                       )
+                                                      ),
                                                       conditionalPanel("input.modSelect == 'Maxent'",
                                                                        checkboxGroupInput("fcs", label = "Select feature classes (flexibility of modeled response)",
                                                                                           choices = list("L" = "L", "LQ" = "LQ", "H" = "H",
@@ -273,7 +274,7 @@ shinyUI(pageWithSidebar(title,
                                                                        a("CRAN", href = "http://cran.r-project.org/web/packages/ENMeval/index.html", target = "_blank"),
                                                                        " | ",
                                                                        a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12261/abstract", target = "_blank")
-                                                      )
+                                                                       )
                                      ),
                                      conditionalPanel("input.tabs == 7",
                                                       h4("Visualize Model Results"),
@@ -309,11 +310,11 @@ shinyUI(pageWithSidebar(title,
                                                                        a("CRAN", href = "http://cran.r-project.org/web/packages/raster/index.html", target = "_blank"),
                                                                        " | ",
                                                                        a("documentation", href="https://cran.r-project.org/web/packages/raster/raster.pdf", target = "_blank")
-                                                      ),
+                                                                       ),
                                                       HTML('<hr>'),
                                                       downloadButton('downloadMD', 'Download History in R Markdown'),
                                                       includeMarkdown("www/downloadmarkdown.Rmd")
-                                     ),
+                                                      ),
                                      conditionalPanel("input.tabs == 8",
                                                       h4("About")
                                      )

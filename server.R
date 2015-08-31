@@ -620,8 +620,6 @@ shinyServer(function(input, output, session) {
   })
 
   observe({
-    #     print(input$spSelect)
-    #     print(input$nspSelect)
     if (!is.null(input$partSelect)) {
       if (input$partSelect == 'nsp') {
         updateRadioButtons(session, 'partSelect2', choices = list("jackknife" = "jack", "randomkfold" = "random"))
@@ -708,6 +706,18 @@ shinyServer(function(input, output, session) {
                                radius = 5, color = 'red', fill = TRUE,
                                fillColor = newColors[group.data[[1]]], weight = 2, popup = ~pop, fillOpacity = 1)
   })
+
+  # handle download for thinned records csv
+  output$downloadPart <- downloadHandler(
+    filename = function() {paste0(nameAbbr(values$gbifoccs), "_partitioned_occs.csv")},
+    content = function(file) {
+      spName <- values$df[1,1]
+      bg.bind <- cbind(rep(spName, nrow(values$bg.coords)), values$bg.coords)
+      dfbg.bind <-rbind(values$df, bg.bind)
+      all.bind <- cbind(dfbg.bind, rbind(values$modParams$occ.grp, values$modParams$bg.grp))
+      write.csv(all.bind, file)
+    }
+  )
 
   # run ENMeval via user inputs
   observeEvent(input$goEval, {
