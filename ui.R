@@ -298,6 +298,7 @@ shinyUI(pageWithSidebar(title,
                                                                        downloadButton('downloadPred', "Download Current Prediction"),
                                                                        HTML('<hr>')
                                                       ),
+                                                      downloadLink('downloadMD', 'Download History in Markdown'),
                                                       includeMarkdown("www/tab7content.Rmd"),
                                                       conditionalPanel("input.visSelect == 'map'",
                                                                        span("raster", id = "rpkg"), "references", br(),
