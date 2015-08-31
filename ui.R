@@ -249,7 +249,9 @@ shinyUI(pageWithSidebar(title,
                                                                        conditionalPanel("input.bcTabs == 2",
                                                                                         numericInput("bc1", "Axis 1", value = 1, min = 1, max = 19),
                                                                                         numericInput("bc2", "Axis 2", value = 2, min = 1, max = 19),
-                                                                                        sliderInput("bcProb", "Prob", min = 0, max = 1, value = 0.75))
+                                                                                        selectInput('bcProb', label = "Set threshold",
+                                                                                                    choices = list("90%" = 0.1, "95%" = 0.05,
+                                                                                                                   "98.5%" = 0.025))
                                                                        ),
                                                       conditionalPanel("input.modSelect == 'Maxent'",
                                                                        checkboxGroupInput("fcs", label = "Select feature classes (flexibility of modeled response)",
