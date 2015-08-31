@@ -132,7 +132,11 @@ shinyServer(function(input, output, session) {
   # functionality for input of user CSV
   observe({
     if (is.null(input$userCSV)) return()
-    inFile <- read.csv(input$userCSV$datapath, header = TRUE)
+    sinkRmdTitle()
+    sinkRmdob(input$userCSV$datapath, "User .csv path with occurrence data:")
+    sinkRmd(
+    inFile <- read.csv(input$userCSV$datapath, header = TRUE),
+    "Load users occurrence data:")
     if (all(names(inFile) %in% c('species', 'longitude', 'latitude'))) {
       writeLog('* ERROR: Please input CSV file with columns "species", "longitude", "latitude".')
       return()
@@ -146,22 +150,31 @@ shinyServer(function(input, output, session) {
       selectInput('bggrp', 'Background Group Field', names(inFile))
     })
     # subset to only occs, not backg, and just fields that match df
-    values$spname <- inFile[1,1]
-    inFile.occs <- inFile[inFile[,1] == values$spname,]
-    inFile.occs <- inFile.occs[,c('species', 'longitude', 'latitude')]
+    sinkRmdmult(c(
+    values$spname <- inFile[1,1],
+    inFile.occs <- inFile[inFile[,1] == values$spname,],
+    inFile.occs <- inFile.occs[,c('species', 'longitude', 'latitude')]),
+    "Subset to only occs and just fields that match df:")
+
     if (!("basisOfRecord" %in% names(inFile.occs))) {
-      inFile.occs$basisOfRecord <- NA
+      sinkRmd(
+      inFile.occs$basisOfRecord <- NA,
+      "If basis of record do not exist, set to NA:")
     }
-    inFile.occs$origID <- row.names(inFile.occs)
+    sinkRmd(
+    inFile.occs$origID <- row.names(inFile.occs),
+    "Match Ids:")
     inFile.occs$pop <- unlist(apply(inFile.occs, 1, popUpContent))
     values$inFileOccs
-    # bind new csv occs to existing ones in df and gbifoccs (without duplicates)
-    addCSVpts <- function(df) {
-      df <- rbind(df, inFile.occs)
-      df <- remDups(df)
-    }
+
+    sinkFalse("gbifoccs <- NULL", "Create a NULL gbifoccs object:")
+    sinkFalse("gbifoccs <- addCSVpts(gbifoccs)", "Add the occurrences:")
+    sinkFalse("df <- NULL", "Create a NULL gbifoccs object:")
+    sinkFalse("df <- addCSVpts(df)", "Add the occurrences:")
+
     values$gbifoccs <- isolate(addCSVpts(values$gbifoccs))
     values$df <- isolate(addCSVpts(values$df))
+
     # this makes an infinite loop. not sure why...
     #     x <- paste0("User input ", input$userCSV$name, " with [", nrow(values$df), "[ records.")
     #     values$log <- paste(values$log, x, sep='<br>')
@@ -190,7 +203,7 @@ shinyServer(function(input, output, session) {
   output$downloadGBIFcsv <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$df), "_gbifCleaned.csv")},
     content = function(file) {
-      write.csv(values$gbifOrig, file, row.names=FALSE)
+      write.csv(values$gbifOrig$data, file, row.names=FALSE)
     }
   )
 
