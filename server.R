@@ -416,7 +416,7 @@ shinyServer(function(input, output, session) {
   # map thinned records when Thin button is pressed
   observeEvent(input$goThin, {
     if (is.null(values$df)) {
-      writeLog("* Obtain the species occurrence record first")
+      writeLog("* Warning: Obtain the species occurrence record first")
       return()
     }
     withProgress(message = "Spatially Thinning Records...", {
@@ -635,7 +635,7 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$goPart, {
     if (is.null(input$partSelect) | is.null(values$predMsk)) {
-      if(!is.null(input$partSelect)) {writeLog("* Mask the environmental variables first... (section 4)")}
+      if(!is.null(input$partSelect)) {writeLog("* Warning: Mask the environmental variables first... (section 4)")}
       return()
     }
 
