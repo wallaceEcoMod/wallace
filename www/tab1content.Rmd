@@ -2,8 +2,10 @@
 title: "tab1Acontent"
 output: html_document
 ---
+<p align="justify">
 The first step is to download occurrence data (e.g. from GBIF; duplicate records are removed). After acquiring these points, it is useful to examine them on a map.
 
 Such datasets can contain errors; as a preliminary method of data-cleaning, here the user can specify records to be removed. Additionally, the user can download the records as a CSV file.
 
 Future versions will allow the user to download occurrence records from other databases, as well as upload their own occurrence records as an alternate option.
+</p>

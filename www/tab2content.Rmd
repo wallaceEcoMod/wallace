@@ -2,4 +2,6 @@
 title: "tab2content"
 output: html_document
 ---
+<p align="justify">
 Datasets of occurrence records typically suffer from the effects of biased sampling across geography. spThin implements one way to reduce the effects of such biases, by spatial thinning that removes occurrence records less than a user-specified distance from other records. The user can download the thinned records as a CSV file. This step is optional.
+</p>
