@@ -208,6 +208,22 @@ shinyServer(function(input, output, session) {
       write.csv(values$gbifOrig$data, file, row.names=FALSE)
     }
   )
+  
+  # governs point removal behavior and modifies tables in "values"
+  observeEvent(input$remove, {
+    if (!is.null(values$ptsSel)) {
+      writeLog('NOTICE: Remove localities by ID before selecting with polygons. Press
+               "Reset Localities" to start over.')
+      return()}
+    isolate({
+      rows <- as.numeric(rownames(values$df))
+      remo <- which(input$remLoc == rows)
+      if(length(remo) > 0) {
+        values$df <- values$df[-remo, ]
+        # values$gbifoccs <- values$gbifoccs[-remo, ]
+        }
+    })
+  })
 
   # functionality for drawing polygons on map
   observe({
@@ -237,11 +253,14 @@ shinyServer(function(input, output, session) {
     values$ptsSel <- NULL
     values$drawPolys <- NULL
     values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
-    x <- paste('* Erased polygons, dataset is now back to', nrow(values$gbifoccs), 'records.')
+    x <- paste('* RESET: localities dataset is now back to', nrow(values$gbifoccs), 'records.')
     isolate(writeLog(x))
     if (!is.null(values$gbifoccs)) {
       values$df <- values$gbifoccs
     }
+    lati <- values$df[,3]
+    longi <- values$df[,2]
+    proxy %>% fitBounds(min(longi-1), min(lati-1), max(longi+1), max(lati+1))
   })
 
   # select points intersecting drawn polygons (replace values$df)
@@ -291,7 +310,7 @@ shinyServer(function(input, output, session) {
       if (input$procOccSelect == "selpts") {
         if (is.null(values$prethinned)) {
           proxy %>% clearMarkers()
-          proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon,
+          proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon,
                                      radius = 5, color = 'red',
                                      fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
           if (!is.null(values$ptsSel)) {
@@ -305,7 +324,7 @@ shinyServer(function(input, output, session) {
           } else {
             proxy %>% clearMarkers()
             proxy %>% clearShapes()
-            proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon,
+            proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon,
                                        radius = 5, color = 'red',
                                        fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
           }
