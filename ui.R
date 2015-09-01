@@ -353,8 +353,9 @@ shinyUI(pageWithSidebar(title,
                           conditionalPanel("input.tabs == 8",
                                            fluidPage(titlePanel(h4("Wallace was created by an international team of ecologists:")),
                                                      fluidRow(
-                                                       column(4, includeMarkdown("www/tab8Acontent.Rmd")),
-                                                       column(4, includeMarkdown("www/tab8Bcontent.Rmd"))
+                                                       column(2, includeMarkdown("www/tab8Acontent.Rmd")),
+                                                       column(3, includeMarkdown("www/tab8Ccontent.Rmd")),
+                                                       column(5, includeMarkdown("www/tab8Bcontent.Rmd"))
                                                      )
                                            )
                           )
