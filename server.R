@@ -83,7 +83,8 @@ shinyServer(function(input, output, session) {
 
     if (results$meta$count != 0) {
       sinkRmdmult(c(
-        cols <- c('name','decimalLongitude','decimalLatitude', 'country', 'stateProvince',
+        cols <- c('name','decimalLongitude','decimalLatitude',
+                  'country', 'stateProvince',
                   'locality', 'elevation', 'basisOfRecord'),
         results <- fixcols(cols, results),
         locs.in <- results$data[!is.na(results$data[,3]),][,cols],
@@ -804,7 +805,7 @@ shinyServer(function(input, output, session) {
                        RMvalues = rms, fc = input$fcs, method = 'user', occ.grp = values$modParams$occ.grp,
                        bg.grp = values$modParams$bg.grp, updateProgress = updateProgress)
 
-      sinkFalse(paste0("e <- ENMevaluate(modParams$occ.pts, predsMsk, bg.coords = modParams$bg.pts",
+      sinkFalse(paste0("e <- ENMevaluate(modParams$occ.pts, predsMsk, bg.coords = modParams$bg.pts,",
                        " RMvalues = rms, fc = fcs, method = 'user', occ.grp = modParams$occ.grp,",
                         " bg.grp = modParams$bg.grp)"),
                 "Evaluate Maxent model results:")

@@ -6,13 +6,6 @@ sinkRmdTitle <- function(title = "Code description") {
   sink(file = "temp.Rmd")
   cat("---\n")
   cat(paste("title:", paste("\'", title, "\'", sep ="")))
-  cat("\noutput:")
-  cat("\n html_document:")
-  cat("\n  toc: true")
-  cat("\n pdf_document:")
-  cat("\n  toc: true")
-  cat("\n word_document:")
-  cat("\n  toc: true")
   cat("\n---")
   cat("\n\n## About")
   cat("\n\nThis is an R Markdown document (more information on http://rmarkdown.rstudio.com/). Here all R code history used in the web app Wallace is registered. With this document users can track their own analysis and recreate it in R itself.")
@@ -55,6 +48,9 @@ sinkRmd <- function(x, comment) {
   call.line[1:2] <- call.line[2:1]
   call.line <- gsub("input\\$", "", call.line)
   call.line <- gsub("values\\$", "", call.line)
+  if (sum(nchar(call.line)) > 80) {
+    call.line[3] <- (gsub(", ", ",\n   ", call.line[3]))
+  }
   sink(file = "temp.Rmd", append = TRUE)
   cat("\n\n")
   cat(comment)
@@ -73,6 +69,11 @@ sinkRmdmult <- function(x, comment) {
   call.line <- gsub("input\\$", "", call.line)
   call.line <- gsub("values\\$", "", call.line)
   rmdprint <- paste0(call.line, "\n")
+  for(i in 1:length(rmdprint)) {
+    if (sum(nchar(rmdprint[i])) > 80) {
+      rmdprint[i] <- (gsub(", ", ",\n     ", rmdprint[i]))
+    }
+  }
   sink(file = "temp.Rmd", append = TRUE)
   cat("\n\n")
   cat(comment, sep = "")
