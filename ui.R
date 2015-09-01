@@ -70,7 +70,11 @@ shinyUI(pageWithSidebar(title,
                                                                    selected = ''),
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.procOccSelect == 'selpts'",
+                                                                       numericInput("remLoc",  label="Enter the record ID to be removed", value = 0),
+                                                                       actionButton("remove", "Remove Locality"),
+                                                                       br(), br(),
                                                                        'In this module, only selected points are used in proceeding analyses.
+                                                                       Either remove by record ID, or select points to keep with a polygon.
                                                                        CLICK on the map to draw a polygon, then press "Select Points" to select
                                                                        the points it overlaps. You can then draw another polygon and select other
                                                                        points, and repeat this process until all the points you want to include in
@@ -347,8 +351,11 @@ shinyUI(pageWithSidebar(title,
                                                     div(id = "wallaceLog", class = "scrollbox", htmlOutput("log")))
                             ),
                             column(3,
-                                   conditionalPanel("input.tabs == 2 && input.procOccSelect == 'selpts'", actionButton("erasePoly", "Erase Polygons"), br(), br(),
-                                                    actionButton("selectPoly", "Select Points"))
+                                   conditionalPanel("input.tabs == 2 && input.procOccSelect == 'selpts'", 
+                                                    br(),
+                                                    actionButton("selectPoly", "Select Localities"),
+                                                    br(), br(),
+                                                    actionButton("erasePoly", "Reset Localities"))
                             )
                           ),
                           br(),
