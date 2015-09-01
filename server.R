@@ -598,14 +598,14 @@ shinyServer(function(input, output, session) {
     })
     isolate(writeLog(paste0('* Environmental rasters masked by ', values$bbTxt, '.')))
   })
-  
+
   # handle download for masked predictors, with file type as user choice
   output$downloadMskPreds <- downloadHandler(
     filename = function() {
       'mskBioPreds.zip'},
     content = function(file) {
       tmpdir <- tempdir()
-      writeRaster(values$predsMsk, file.path(tmpdir, 'mskBio'), bylayer = TRUE, 
+      writeRaster(values$predsMsk, file.path(tmpdir, 'mskBio'), bylayer = TRUE,
                   format = input$mskPredsFileType, overwrite = TRUE)
       nr <- nlayers(values$predsMsk)
       ext <- ifelse(input$mskPredsFileType == 'raster', 'grd',
@@ -782,7 +782,9 @@ shinyServer(function(input, output, session) {
                        RMvalues = rms, fc = input$fcs, method = 'user', occ.grp = values$modParams$occ.grp,
                        bg.grp = values$modParams$bg.grp, updateProgress = updateProgress)
 
-      sinkFalse("e <- ENMevaluate(modParams$occ.pts, predsMsk, bg.coords = modParams$bg.pts,RMvalues = rms, fc = fcs, method = 'user', occ.grp = modParams$occ.grp, bg.grp = modParams$bg.grp)",
+      sinkFalse(paste0("e <- ENMevaluate(modParams$occ.pts, predsMsk, bg.coords = modParams$bg.pts,
+                       RMvalues = rms, fc = fcs, method = 'user', occ.grp = modParams$occ.grp,"
+                        " bg.grp = modParams$bg.grp)"),
                 "Evaluate Maxent model results:")
 
       sinkRmdmult(c(
@@ -840,7 +842,7 @@ shinyServer(function(input, output, session) {
       write.csv(values$evalTbl, file, row.names = FALSE)
     }
   )
-  
+
   # handle downloads for ENMeval plots png
   output$downloadEvalPlots <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$gbifoccs), "_enmeval_plots.png")},
@@ -893,7 +895,7 @@ shinyServer(function(input, output, session) {
         p10 <- values$p10sRaw[as.numeric(input$predSelServer)]
         values$predCur <- selRas > p10
       } else {
-        values$predCur <- selRas        
+        values$predCur <- selRas
       }
     } else if (input$predForm == 'log') {
       selRas <- values$evalPredsLog[[as.numeric(input$predSelServer)]]
@@ -906,11 +908,11 @@ shinyServer(function(input, output, session) {
         p10 <- values$p10sLog[as.numeric(input$predSelServer)]
         values$predCur <- selRas > p10
       } else {
-        values$predCur <- selRas        
+        values$predCur <- selRas
       }
     }
     values$rasName <- names(selRas)
-    
+
     if (!is.null(values$predCur)) {
       if (input$predThresh == 'mtp' | input$predThresh == 'p10') {
         pal <- c('gray', 'blue')
@@ -918,7 +920,7 @@ shinyServer(function(input, output, session) {
                             title = "Thresholded Suitability", labels = c(0, 1),
                             opacity = 1, layerId = 1)
       } else {
-        
+
         pal <- colorNumeric(c('yellow', 'green', 'blue'), rasVals, na.color='transparent')
         proxy %>% addLegend("bottomright", pal = pal, title = "Predicted Suitability",
                             values = rasVals, layerId = 1)
@@ -959,7 +961,7 @@ shinyServer(function(input, output, session) {
       if (input$mdType == 'PDF') {
         rmarkdown::render(out, "pdf_document")
       } else {
-        file.copy(out, file)  
+        file.copy(out, file)
       }
     }
   )
