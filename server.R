@@ -284,22 +284,11 @@ shinyServer(function(input, output, session) {
     }
 
     if (input$tabs == 2) {
-      # proxy %>% clearMarkers()
-      # proxy %>% clearShapes()
       proxy %>% clearImages()
-
-      #       proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon,
-      #                                  radius = 5, color = 'red',
-      #                                  fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
-      #       proxy %>% addLegend("bottomright", colors = c('red'),
-      #                           title = "GBIF Records", labels = c('current'),
-      #                           opacity = 1, layerId = 1)
-
       if (is.null(input$procOccSelect)) return()
       if (input$procOccSelect == "selpts") {
         if (is.null(values$prethinned)) {
           proxy %>% clearMarkers()
-          #           print('prethin null')
           proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon,
                                      radius = 5, color = 'red',
                                      fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
@@ -462,7 +451,7 @@ shinyServer(function(input, output, session) {
         sinkSub("## Obtain Environmental Data")
         sinkRmdob(input$pred, "Resolution of worldclim data:")
         sinkRmd(
-          values$pred <- getData(name = "worldclim", var = "bio", res = input$pred),
+          values$preds <- getData(name = "worldclim", var = "bio", res = input$pred),
           "Donwload environmental data")
       })
       proxy %>% addLegend("topright", colors = c(),
@@ -471,7 +460,7 @@ shinyServer(function(input, output, session) {
       isolate(writeLog(paste("* Environmental predictors: WorldClim bio1-19 at", input$pred, " arcmin resolution.")))
       withProgress(message = "Processing...", {
         sinkRmd(
-          locs.vals <- extract(values$pred[[1]], values$df[,2:3]),
+          locs.vals <- extract(values$preds[[1]], values$df[,2:3]),
           "Extract environmental values to check for NA:")
 
         if (sum(is.na(locs.vals)) > 0) {
@@ -521,15 +510,19 @@ shinyServer(function(input, output, session) {
 
   # background extents
   observe({
-    if (is.null(input$backgSelect) | is.null(values$pred) | is.null(input$backgBuf)| is.na(input$backgBuf)) return()
+    if (is.null(input$backgSelect) | is.null(values$preds) | is.null(input$backgBuf)| is.na(input$backgBuf)) return()
+    if (nrow(values$df) <= 2) {
+      isolate(writeLog("ERROR: Too few points (<2) to create a background polygon."))
+      return()
+    }
     # generate background extent
     if (input$backgSelect == 'bb') {
       sinkRmdob(input$backgBuf, "Define the buffer size of the background:")
       sinkRmdmult(c(
-        xmin <- min(values$df$lon) - (input$backgBuf + res(values$pred)[1]),
-        xmax <- max(values$df$lon) + (input$backgBuf + res(values$pred)[1]),
-        ymin <- min(values$df$lat) - (input$backgBuf + res(values$pred)[1]),
-        ymax <- max(values$df$lat) + (input$backgBuf + res(values$pred)[1]),
+        xmin <- min(values$df$lon) - (input$backgBuf + res(values$preds)[1]),
+        xmax <- max(values$df$lon) + (input$backgBuf + res(values$preds)[1]),
+        ymin <- min(values$df$lat) - (input$backgBuf + res(values$preds)[1]),
+        ymax <- max(values$df$lat) + (input$backgBuf + res(values$preds)[1]),
         bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin), ncol=2),
         values$backgExt <- SpatialPolygons(list(Polygons(list(Polygon(bb)), 1))),
         values$bbTxt <- 'bounding box'),
@@ -539,7 +532,7 @@ shinyServer(function(input, output, session) {
       sinkRmdob(input$backgBuf, "Define the buffer size of the background:")
       sinkRmdmult(c(
         xy_mcp <- mcp(values$df[,2:3]),
-        xy_mcp <- gBuffer(xy_mcp, width = input$backgBuf + res(values$pred)[1]),
+        xy_mcp <- gBuffer(xy_mcp, width = input$backgBuf + res(values$preds)[1]),
         values$backgExt <- xy_mcp,
         bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords,
         values$bbTxt <- 'minimum convex polygon'),
@@ -574,7 +567,7 @@ shinyServer(function(input, output, session) {
 
         sinkRmdmult(c(
           shp <- SpatialPolygons(list(Polygons(list(Polygon(bb)), 1))),
-          shp <- gBuffer(shp, width = input$backgBuf + res(values$pred)[1]),
+          shp <- gBuffer(shp, width = input$backgBuf + res(values$preds)[1]),
           values$backgExt <- shp,
           bb <- shp@polygons[[1]]@Polygons[[1]]@coords),
           "Generate the user-defined background plus the buffer:")
@@ -592,7 +585,7 @@ shinyServer(function(input, output, session) {
           "Read the shapefile for the background:")
 
         sinkRmdmult(c(
-          poly <- gBuffer(poly, width = input$backgBuf + res(values$pred)[1]),
+          poly <- gBuffer(poly, width = input$backgBuf + res(values$preds)[1]),
           values$backgExt <- poly,
           bb <- poly@polygons[[1]]@Polygons[[1]]@coords),
           "Generate the user-defined background plus the buffer:")
@@ -612,12 +605,38 @@ shinyServer(function(input, output, session) {
     # clip and mask rasters based on study region
     withProgress(message = "Processing environmental rasters...", {
       sinkRmdmult(c(
-        predCrop <- crop(values$pred, values$backgExt),
-        values$predMsk <- mask(predCrop, values$backgExt)),
+        predCrop <- crop(values$preds, values$backgExt),
+        values$predsMsk <- mask(predCrop, values$backgExt)),
         "Mask environmental variables by the background:")
     })
     isolate(writeLog(paste0('* Environmental rasters masked by ', values$bbTxt, '.')))
   })
+  
+  # handle download for masked predictors, with file type as user choice
+  output$downloadMskPreds <- downloadHandler(
+    filename = function() {
+      'mskBioPreds.zip'},
+    content = function(file) {
+      # curWD <- getwd()
+      tmpdir <- tempdir()
+      # setwd(tmpdir)
+      writeRaster(values$predsMsk, file.path(tmpdir, 'mskBio'), bylayer = TRUE, 
+                  format = input$mskPredsFileType, overwrite = TRUE)
+      print(x)
+      # setwd(curWD)
+      nr <- nlayers(values$predsMsk)
+      ext <- ifelse(input$mskPredsFileType == 'raster', 'grd',
+                    ifelse(input$mskPredsFileType == 'ascii', 'asc',
+                           ifelse(input$mskPredsFileType == 'GTiff', 'tif', 'png')))
+      fs <- file.path(tmpdir, paste0(rep('mskBio_', nr), 1:nr, '.', ext))
+      print(fs)
+      if (ext == 'grd') {
+        fs <- c(fs, file.path(tmpdir, paste0(rep('mskBio_', nr), 1:nr, '.gri')))
+      }
+      zip(zipfile=file, files=fs, extras = '-j')
+    },
+    contentType = "application/zip"
+  )
 
   observe({
     if (!is.null(input$partSelect)) {
@@ -632,7 +651,7 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$goPart, {
-    if (is.null(input$partSelect) | is.null(values$predMsk)) {
+    if (is.null(input$partSelect) | is.null(values$predsMsk)) {
       if(!is.null(input$partSelect)) {writeLog("* Warning: Mask the environmental variables first... (section 4)")}
       return()
     }
@@ -657,7 +676,7 @@ shinyServer(function(input, output, session) {
       if (is.null(values$bg.coords)) {
         withProgress(message = "Generating background points...", {
           sinkRmdmult(c(
-            bg.coords <- randomPoints(values$predMsk, 10000),
+            bg.coords <- randomPoints(values$predsMsk, 10000),
             values$bg.coords <- as.data.frame(bg.coords)),
             "Generate background occurrences:")
         })
@@ -672,13 +691,13 @@ shinyServer(function(input, output, session) {
     if (input$partSelect2 == 'cb1') {
       sinkRmdob(input$aggFact, "Define the aggregation factor:")
       sinkRmd(
-        group.data <- get.checkerboard1(occs, values$predMsk, values$bg.coords, input$aggFact),
+        group.data <- get.checkerboard1(occs, values$predsMsk, values$bg.coords, input$aggFact),
         paste("Data partition by", input$partSelect2, "method:"))
     }
     if (input$partSelect2 == 'cb2') {
       sinkRmdob(input$aggFact, "Define the aggregation factor:")
       sinkRmd(
-        group.data <- get.checkerboard2(occs, values$predMsk, values$bg.coords, input$aggFact),
+        group.data <- get.checkerboard2(occs, values$predsMsk, values$bg.coords, input$aggFact),
         paste("Data partition by", input$partSelect2, "method:"))
     }
     if (input$partSelect2 == 'jack') {
@@ -726,7 +745,7 @@ shinyServer(function(input, output, session) {
       sinkRmdmult(c(
         e <- BioClim_eval(values$modParams$occ.pts, values$modParams$bg.pts,
                           values$modParams$occ.grp, values$modParams$bg.grp,
-                          values$predMsk),
+                          values$predsMsk),
         values$evalTbl <- e$results,
         values$evalPreds <- e$predictions,
         occVals <- extract(e$predictions, values$modParams$occ.pts),
@@ -774,11 +793,11 @@ shinyServer(function(input, output, session) {
       updateProgress <- function(value = NULL, detail = NULL) {
         progress$inc(amount = 1/n, detail = detail)
       }
-      e <- ENMevaluate(values$modParams$occ.pts, values$predMsk, bg.coords = values$modParams$bg.pts,
+      e <- ENMevaluate(values$modParams$occ.pts, values$predsMsk, bg.coords = values$modParams$bg.pts,
                        RMvalues = rms, fc = input$fcs, method = 'user', occ.grp = values$modParams$occ.grp,
                        bg.grp = values$modParams$bg.grp, updateProgress = updateProgress)
 
-      sinkFalse("e <- ENMevaluate(modParams$occ.pts, predMsk, bg.coords = modParams$bg.pts,RMvalues = rms, fc = fcs, method = 'user', occ.grp = modParams$occ.grp, bg.grp = modParams$bg.grp)",
+      sinkFalse("e <- ENMevaluate(modParams$occ.pts, predsMsk, bg.coords = modParams$bg.pts,RMvalues = rms, fc = fcs, method = 'user', occ.grp = modParams$occ.grp, bg.grp = modParams$bg.grp)",
                 "Evaluate Maxent model results:")
 
       sinkRmdmult(c(
@@ -856,12 +875,12 @@ shinyServer(function(input, output, session) {
   })
 
   observe({
-    if (input$predForm == '' | is.null(values$pred)) return()
+    if (input$predForm == '' | is.null(values$preds)) return()
     if (input$predForm == 2) {
       if (is.null(values$predsLog)) {
         isolate({
           # generate logistic outputs for all raw outputs
-          makeLog <- function(x) predict(x, values$pred, args=c('outputformat=logistic'))
+          makeLog <- function(x) predict(x, values$preds, args=c('outputformat=logistic'))
           print(values$log)
           values$log <- isolate(paste(values$log, 'Generating logistic predictions...', sep='<br>'))  # add text to log
           print(values$log)
@@ -875,12 +894,12 @@ shinyServer(function(input, output, session) {
   })
 
   observe({
-    if (input$predForm == '' | is.null(values$pred)) return()
+    if (input$predForm == '' | is.null(values$preds)) return()
     if (input$predForm == 2) {
       if (is.null(values$predsLog)) {
         isolate({
           # generate logistic outputs for all raw outputs
-          makeLog <- function(x) predict(x, values$pred, args=c('outputformat=logistic'))
+          makeLog <- function(x) predict(x, values$preds, args=c('outputformat=logistic'))
           print(values$log)
           values$log <- isolate(paste(values$log, 'Generating logistic predictions...', sep='<br>'))  # add text to log
           print(values$log)
