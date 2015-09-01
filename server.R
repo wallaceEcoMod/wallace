@@ -386,21 +386,6 @@ shinyServer(function(input, output, session) {
       proxy %>% addLegend("bottomright", colors = c('black'),
                           title = "GBIF Records", labels = c('current'),
                           opacity = 1, layerId = 1)
-
-      if (!is.null(values$predCur)) {
-        if (input$predThresh == 'mtp' | input$predThresh == 'p10') {
-          pal <- c('gray', 'blue')
-          proxy %>% addLegend("bottomright", colors = pal,
-                              title = "Thresholded Suitability", labels = c(0, 1),
-                              opacity = 1, layerId = 1)
-        } else {
-          r <- values(values$predCur)
-          pal <- colorNumeric(c('yellow', 'green', 'blue'), r, na.color='transparent')
-          proxy %>% addLegend("bottomright", pal = pal, title = "Predicted Suitability",
-                              values = r, layerId = 1)
-        }
-        proxy %>% addRasterImage(values$predCur, colors = pal, opacity = 0.8)
-      }
     }
   })
 
@@ -439,7 +424,7 @@ shinyServer(function(input, output, session) {
   output$downloadThincsv <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$gbifoccs), "_thinned_gbifCleaned.csv")},
     content = function(file) {
-      write.csv(values$df, file, row.names = FALSE)
+      write.csv(values$df[,1:8], file, row.names = FALSE)
     }
   )
 
@@ -619,13 +604,9 @@ shinyServer(function(input, output, session) {
     filename = function() {
       'mskBioPreds.zip'},
     content = function(file) {
-      # curWD <- getwd()
       tmpdir <- tempdir()
-      # setwd(tmpdir)
       writeRaster(values$predsMsk, file.path(tmpdir, 'mskBio'), bylayer = TRUE, 
                   format = input$mskPredsFileType, overwrite = TRUE)
-      print(x)
-      # setwd(curWD)
       nr <- nlayers(values$predsMsk)
       ext <- ifelse(input$mskPredsFileType == 'raster', 'grd',
                     ifelse(input$mskPredsFileType == 'ascii', 'asc',
@@ -742,6 +723,7 @@ shinyServer(function(input, output, session) {
 
   # run ENMeval via user inputs
   observeEvent(input$goEval, {
+    values$predsLog <- NULL  # reset predsLog if models are rerun
     sinkSub("## Build and Evaluate Niche Model")
     if (input$modSelect == "Bioclim") {
       sinkRmdmult(c(
@@ -749,6 +731,7 @@ shinyServer(function(input, output, session) {
                           values$modParams$occ.grp, values$modParams$bg.grp,
                           values$predsMsk),
         values$evalTbl <- e$results,
+        values$evalMods <- e$models,
         values$evalPreds <- e$predictions,
         occVals <- extract(e$predictions, values$modParams$occ.pts),
         values$mtps <- min(occVals)),
@@ -804,26 +787,33 @@ shinyServer(function(input, output, session) {
 
       sinkRmdmult(c(
         values$evalTbl <- e@results,
-        values$evalPreds <- e@predictions),
+        values$evalMods <- e@models,
+        values$evalPreds <- e@predictions.raw,
+        values$evalPredsLog <- e@predictions.log),
         "Define the object e as eval:")
 
-      sinkRmd(
-        occVals <- extract(e@predictions, values$modParams$occ.pts),
+      sinkRmd(c(
+        occValsRaw <- extract(e@predictions.raw, values$modParams$occ.pts),
+        occValsLog <- extract(e@predictions.log, values$modParams$occ.pts)),
         "Prediction values:")
-      sinkRmd(
-        values$mtps <- apply(occVals, MARGIN = 2, min),
-        "Minimun Training Presence (mtp) threshold:")
-      if (nrow(occVals) < 10) {
-        sinkRmd(
-          n90 <- floor(nrow(occVals) * 0.9),
+      sinkRmd(c(
+        values$mtpsRaw <- apply(occValsRaw, MARGIN = 2, min),
+        values$mtpsLog <- apply(occValsLog, MARGIN = 2, min)),
+        "Minimum Training Presence (MTP) threshold:")
+      if (nrow(occValsRaw) < 10) {
+        sinkRmd(c(
+          n90Raw <- floor(nrow(occValsRaw) * 0.9),
+          n90Log <- floor(nrow(occValsLog) * 0.9)),
           "Define the number of 10% higher values:")
       } else {
-        sinkRmd(
-          n90 <- ceiling(nrow(occVals) * 0.9),
+        sinkRmd(c(
+          n90Raw <- ceiling(nrow(occValsRaw) * 0.9),
+          n90Log <- ceiling(nrow(occValsLog) * 0.9)),
           "Define the number of 10% higher values:")
       }
-      sinkRmd(
-        values$p10s <- apply(occVals, MARGIN = 2, function(x) rev(sort(x))[n90]),
+      sinkRmd(c(
+        values$p10sRaw <- apply(occValsRaw, MARGIN = 2, function(x) rev(sort(x))[n90Raw]),
+        values$p10sLog <- apply(occValsLog, MARGIN = 2, function(x) rev(sort(x))[n90Log])),
         "Apply 10% threshold prediction:")
 
       # make datatable of results df
@@ -871,56 +861,69 @@ shinyServer(function(input, output, session) {
                 choices = predNameList)
   })
 
-  observe({
-    if (input$predForm == '' | is.null(values$preds)) return()
-    if (input$predForm == 2) {
-      if (is.null(values$predsLog)) {
-        isolate({
-          # generate logistic outputs for all raw outputs
-          makeLog <- function(x) predict(x, values$preds, args=c('outputformat=logistic'))
-          print(values$log)
-          values$log <- isolate(paste(values$log, 'Generating logistic predictions...', sep='<br>'))  # add text to log
-          print(values$log)
-          values$predsLog <- stack(sapply(values$eval@models, FUN=makeLog))
-          logTime <- c(1,1,1)
-          values$log <- isolate(paste(values$log, paste0('Logistic predictions complete in ',
-                                                         logTime[3], '.'), sep='<br>'))  # add text to log
-        })
-      }
-    }
-  })
-
-  observe({
-    if (input$predForm == '' | is.null(values$preds)) return()
-    if (input$predForm == 2) {
-      if (is.null(values$predsLog)) {
-        isolate({
-          # generate logistic outputs for all raw outputs
-          makeLog <- function(x) predict(x, values$preds, args=c('outputformat=logistic'))
-          print(values$log)
-          values$log <- isolate(paste(values$log, 'Generating logistic predictions...', sep='<br>'))  # add text to log
-          print(values$log)
-          values$predsLog <- stack(sapply(values$eval@models, FUN=makeLog))
-          logTime <- c(1,1,1)
-          values$log <- isolate(paste(values$log, paste0('Logistic predictions complete in ',
-                                                         logTime[3], '.'), sep='<br>'))  # add text to log
-        })
-      }
-    }
-  })
+#   observe({
+#     if (input$predForm == '' | is.null(values$preds)) return()
+#     if (input$predForm == 2) {
+#       if (is.null(values$predsLog)) {
+#         isolate({
+#           # generate logistic outputs for all raw outputs
+#           makeLog <- function(x) predict(x, values$preds, args=c('outputformat=logistic'))
+#           print(values$log)
+#           values$log <- isolate(paste(values$log, 'Generating logistic predictions...', sep='<br>'))  # add text to log
+#           print(values$log)
+#           values$predsLog <- stack(sapply(values$evalMods, FUN=makeLog))
+#           logTime <- c(1,1,1)
+#           values$log <- isolate(paste(values$log, paste0('Logistic predictions complete in ',
+#                                                          logTime[3], '.'), sep='<br>'))  # add text to log
+#         })
+#       }
+#     }
+#   })
 
   # set predCur based on user selection of threshold
   observeEvent(input$plotPred, {
-    selRas <- values$evalPreds[[as.numeric(input$predSelServer)]]
+    if (input$predForm == 'raw') {
+      selRas <- values$evalPreds[[as.numeric(input$predSelServer)]]
+      rasVals <- getValues(selRas)
+      rasVals <- rasVals[!is.na(rasVals)]
+      if (input$predThresh == 'mtp') {
+        mtp <- values$mtpsRaw[as.numeric(input$predSelServer)]
+        values$predCur <- selRas > mtp
+      } else if (input$predThresh == 'p10') {
+        p10 <- values$p10sRaw[as.numeric(input$predSelServer)]
+        values$predCur <- selRas > p10
+      } else {
+        values$predCur <- selRas        
+      }
+    } else if (input$predForm == 'log') {
+      selRas <- values$evalPredsLog[[as.numeric(input$predSelServer)]]
+      rasVals <- c(getValues(selRas), 0, 1)
+      rasVals <- rasVals[!is.na(rasVals)]
+      if (input$predThresh == 'mtp') {
+        mtp <- values$mtpsLog[as.numeric(input$predSelServer)]
+        values$predCur <- selRas > mtp
+      } else if (input$predThresh == 'p10') {
+        p10 <- values$p10sLog[as.numeric(input$predSelServer)]
+        values$predCur <- selRas > p10
+      } else {
+        values$predCur <- selRas        
+      }
+    }
     values$rasName <- names(selRas)
-    if (input$predThresh == 'raw') {
-      values$predCur <- selRas
-    } else if (input$predThresh == 'mtp') {
-      mtp <- values$mtps[as.numeric(input$predSelServer)]
-      values$predCur <- selRas > mtp
-    } else if (input$predThresh == 'p10') {
-      p10 <- values$p10s[as.numeric(input$predSelServer)]
-      values$predCur <- selRas > p10
+    
+    if (!is.null(values$predCur)) {
+      if (input$predThresh == 'mtp' | input$predThresh == 'p10') {
+        pal <- c('gray', 'blue')
+        proxy %>% addLegend("bottomright", colors = pal,
+                            title = "Thresholded Suitability", labels = c(0, 1),
+                            opacity = 1, layerId = 1)
+      } else {
+        
+        pal <- colorNumeric(c('yellow', 'green', 'blue'), rasVals, na.color='transparent')
+        proxy %>% addLegend("bottomright", pal = pal, title = "Predicted Suitability",
+                            values = rasVals, layerId = 1)
+      }
+      proxy %>% addRasterImage(values$predCur, colors = pal, opacity = 0.8)
     }
   })
 
@@ -930,7 +933,7 @@ shinyServer(function(input, output, session) {
       ext <- ifelse(input$predFileType == 'raster', 'grd',
                     ifelse(input$predFileType == 'ascii', 'asc',
                            ifelse(input$predFileType == 'GTiff', 'tif', 'png')))
-      paste0(values$rasName, "_", input$predThresh, "_pred.", ext)},
+      paste0(values$rasName, "_", input$predForm, "_", input$predThresh, "_pred.", ext)},
     content = function(file) {
       if (input$predFileType == 'png') {
         png(file)
