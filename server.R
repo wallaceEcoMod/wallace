@@ -612,7 +612,6 @@ shinyServer(function(input, output, session) {
                     ifelse(input$mskPredsFileType == 'ascii', 'asc',
                            ifelse(input$mskPredsFileType == 'GTiff', 'tif', 'png')))
       fs <- file.path(tmpdir, paste0(rep('mskBio_', nr), 1:nr, '.', ext))
-      print(fs)
       if (ext == 'grd') {
         fs <- c(fs, file.path(tmpdir, paste0(rep('mskBio_', nr), 1:nr, '.gri')))
       }
@@ -932,7 +931,7 @@ shinyServer(function(input, output, session) {
   # handle download for rasters, with file type as user choice
   output$downloadPred <- downloadHandler(
     filename = function() {
-      ext <- ifelse(input$predFileType == 'raster', 'grd',
+      ext <- ifelse(input$predFileType == 'raster', 'zip',
                     ifelse(input$predFileType == 'ascii', 'asc',
                            ifelse(input$predFileType == 'GTiff', 'tif', 'png')))
       paste0(values$rasName, "_", input$predForm, "_", input$predThresh, "_pred.", ext)},
@@ -941,9 +940,15 @@ shinyServer(function(input, output, session) {
         png(file)
         image(values$predCur)
         dev.off()
+      } else if (input$predFileType == 'raster') {
+        fileName <- paste0(values$rasName, "_", input$predForm, "_", input$predThresh, "_pred")
+        tmpdir <- tempdir()
+        writeRaster(values$predCur, file.path(tmpdir, fileName), format = input$predFileType, overwrite = TRUE)
+        fs <- file.path(tmpdir, paste0(fileName, c('.grd', '.gri')))
+        zip(zipfile=file, files=fs, extras = '-j')
       } else {
         res <- writeRaster(values$predCur, file, format = input$predFileType, overwrite = TRUE)
-        file.rename(res@file@name, file)
+        file.rename(res@file@name, file)        
       }
     }
   )
