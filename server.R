@@ -829,27 +829,12 @@ shinyServer(function(input, output, session) {
       writeLog(paste("* ENMeval ran successfully and output evaluation results for", nrow(e@results), "models."))
 
       # plotting functionality for ENMeval graphs
-      output$evalPlot <- renderPlot({
-        par(mfrow=c(3,2))
-        fc <- length(unique(e@results$features))
-        col <- rainbow(fc)
-        rm <- length(unique(e@results$rm))
-        plot(rep(1, times=fc), 1:fc, ylim=c(.5,fc+1), xlim=c(0,3), axes=F, ylab='', xlab='', cex=2, pch=21, bg=col)
-        segments(rep(.8, times=fc), 1:fc, rep(1.2, times=fc), 1:fc, lwd=1, col=col)
-        points(rep(1, times=fc), 1:fc, ylim=c(-1,fc+2), cex=2, pch=21, bg=col)
-        text(x=rep(1.3, times=fc), y=1:fc, labels=unique(e@results$features), adj=0)
-        text(x=1, y=fc+1, labels="Feature Classes", adj=.20, cex=1.3, font=2)
-        eval.plot(e@results, legend=FALSE, value="delta.AICc")
-        eval.plot(e@results, legend=FALSE, value="Mean.AUC", variance="Var.AUC")
-        eval.plot(e@results, legend=FALSE, value="Mean.AUC.DIFF", variance="Var.AUC.DIFF")
-        eval.plot(e@results, legend=FALSE, value="Mean.ORmin", variance="Var.ORmin")
-        eval.plot(e@results, legend=FALSE, value="Mean.OR10", variance="Var.OR10")
-      })
+      output$evalPlot <- renderPlot(evalPlots(values$evalTbl))
 
       # a tabset within tab 4 to organize the enmEval outputs
       output$evalTabs <- renderUI({
         tabsetPanel(tabPanel("Results Table", DT::dataTableOutput('evalTbl')),
-                    tabPanel("Evaluation Graphs", plotOutput('evalPlot', width = 600))
+                    tabPanel("Evaluation Plots", plotOutput('evalPlot', width = 600))
         )
       })
     }
@@ -861,6 +846,16 @@ shinyServer(function(input, output, session) {
     filename = function() {paste0(nameAbbr(values$gbifoccs), "_enmeval_results.csv")},
     content = function(file) {
       write.csv(values$evalTbl, file, row.names = FALSE)
+    }
+  )
+  
+  # handle downloads for ENMeval plots png
+  output$downloadEvalPlots <- downloadHandler(
+    filename = function() {paste0(nameAbbr(values$gbifoccs), "_enmeval_plots.png")},
+    content = function(file) {
+      png(file)
+      evalPlots(values$evalTbl)
+      dev.off()
     }
   )
 
