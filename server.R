@@ -817,26 +817,26 @@ shinyServer(function(input, output, session) {
         values$evalPredsLog <- e@predictions.log),
         "Define the object e as eval:")
 
-      sinkRmd(c(
+      sinkRmdmult(c(
         occValsRaw <- extract(e@predictions.raw, values$modParams$occ.pts),
         occValsLog <- extract(e@predictions.log, values$modParams$occ.pts)),
         "Prediction values:")
-      sinkRmd(c(
+      sinkRmdmult(c(
         values$mtpsRaw <- apply(occValsRaw, MARGIN = 2, min),
         values$mtpsLog <- apply(occValsLog, MARGIN = 2, min)),
         "Minimum Training Presence (MTP) threshold:")
       if (nrow(occValsRaw) < 10) {
-        sinkRmd(c(
+        sinkRmdmult(c(
           n90Raw <- floor(nrow(occValsRaw) * 0.9),
           n90Log <- floor(nrow(occValsLog) * 0.9)),
           "Define the number of 10% higher values:")
       } else {
-        sinkRmd(c(
+        sinkRmdmult(c(
           n90Raw <- ceiling(nrow(occValsRaw) * 0.9),
           n90Log <- ceiling(nrow(occValsLog) * 0.9)),
           "Define the number of 10% higher values:")
       }
-      sinkRmd(c(
+      sinkRmdmult(c(
         values$p10sRaw <- apply(occValsRaw, MARGIN = 2, function(x) rev(sort(x))[n90Raw]),
         values$p10sLog <- apply(occValsLog, MARGIN = 2, function(x) rev(sort(x))[n90Log])),
         "Apply 10% threshold prediction:")
