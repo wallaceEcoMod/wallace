@@ -9,6 +9,8 @@ sinkRmdTitle <- function(title = "Code description") {
   cat("\noutput:")
   cat("\n html_document:")
   cat("\n  toc: true")
+  cat("\n pdf_document:")
+  cat("\n  toc: true")
   cat("\n---")
   cat("\n\n## About")
   cat("\n\nThis is an R Markdown document. Here all R code history used in the web app Wallace is registered. With this document users can track their own analysis and recreate it in R itself.")
