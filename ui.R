@@ -320,7 +320,7 @@ shinyUI(pageWithSidebar(title,
                                                                        ),
                                                       HTML('<hr>'),
                                                       selectInput('mdType', label = "R Markdown Download Type",
-                                                                  choices = list("Rmd", "PDF")),
+                                                                  choices = list("Rmd", "PDF", "HTML", "Word")),
                                                       downloadButton('downloadMD', 'Download History in R Markdown'),
                                                       includeMarkdown("www/downloadmarkdown.Rmd")
                                                       ),
