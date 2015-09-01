@@ -352,7 +352,7 @@ shinyUI(pageWithSidebar(title,
                             )
                           ),
                           br(),
-                          conditionalPanel("input.tabs != 6 && input.tabs != 8", leafletOutput("map", height=600)),
+                          conditionalPanel("input.tabs != 0 && input.tabs != 6 && input.tabs != 8", leafletOutput("map", height=600)),
                           br(),
                           conditionalPanel("input.tabs != 0 && input.tabs != 6 && input.tabs != 8", DT::dataTableOutput('occTbl')),
                           conditionalPanel("input.tabs == 6", uiOutput('evalTabs')),
