@@ -984,9 +984,9 @@ shinyServer(function(input, output, session) {
           input$mdType,
           PDF = pdf_document(), HTML = html_document(), Word = word_document()
         ))
-      } else {
-        file.copy(out, file)
       }
+        file.copy(out, file)
+
     }
   )
   })
