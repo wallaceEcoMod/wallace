@@ -782,8 +782,8 @@ shinyServer(function(input, output, session) {
                        RMvalues = rms, fc = input$fcs, method = 'user', occ.grp = values$modParams$occ.grp,
                        bg.grp = values$modParams$bg.grp, updateProgress = updateProgress)
 
-      sinkFalse(paste0("e <- ENMevaluate(modParams$occ.pts, predsMsk, bg.coords = modParams$bg.pts,
-                       RMvalues = rms, fc = fcs, method = 'user', occ.grp = modParams$occ.grp,"
+      sinkFalse(paste0("e <- ENMevaluate(modParams$occ.pts, predsMsk, bg.coords = modParams$bg.pts",
+                       " RMvalues = rms, fc = fcs, method = 'user', occ.grp = modParams$occ.grp,",
                         " bg.grp = modParams$bg.grp)"),
                 "Evaluate Maxent model results:")
 
@@ -950,16 +950,16 @@ shinyServer(function(input, output, session) {
 
   output$downloadMD <- downloadHandler(
     filename = function() {
-      if (input$mdType == 'Rmd') {
-        ext <- 'Rmd'
-      } else if (input$mdType == 'PDF') {
-        ext <- 'pdf'
-      }
-      paste0("wallace-session-", Sys.Date(), ".", ext)},
+      paste0("wallace-session-", Sys.Date(), ".", switch(
+        input$mdType, Rmd = 'Rmd', PDF = 'pdf', HTML = 'html', Word = 'docx'
+      ))},
     content = function(file) {
       out <- 'temp.Rmd'
-      if (input$mdType == 'PDF') {
-        rmarkdown::render(out, "pdf_document")
+      if (input$mdType != 'Rmd') {
+        out <- rmarkdown::render(out, switch(
+          input$mdType,
+          PDF = pdf_document(), HTML = html_document(), Word = word_document()
+        ))
       } else {
         file.copy(out, file)
       }
