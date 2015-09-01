@@ -659,17 +659,17 @@ shinyServer(function(input, output, session) {
     # if user kfold, get groups and assign occs and backg from inFile,
     # and if not, make backg pts and assign user kfold groups to NULL
     sinkSub("## Partition Occurrence Data")
-    if (input$partSelect == 'user') {
-      sinkRmdmult(c(
-        occs <- values$inFile[values$inFile[,1] == values$spname,],
-        bg.coords <- values$inFile[values$inFile[,1] != values$spname,],
-        group.data <- list(),
-        group.data[[1]] <- as.numeric(occs[,input$occ.grp]),
-        group.data[[2]] <- as.numeric(backg_pts[,input$bg.grp]),
-        occs <- occs[,2:3],
-        values$bg.coords <- backg_pts[,2:3]),
-        "User defined background partition:")
-    } else {
+#     if (input$partSelect == 'user') {
+#       sinkRmdmult(c(
+#         occs <- values$inFile[values$inFile[,1] == values$spname,],
+#         bg.coords <- values$inFile[values$inFile[,1] != values$spname,],
+#         group.data <- list(),
+#         group.data[[1]] <- as.numeric(occs[,input$occ.grp]),
+#         group.data[[2]] <- as.numeric(backg_pts[,input$bg.grp]),
+#         occs <- occs[,2:3],
+#         values$bg.coords <- backg_pts[,2:3]),
+#         "User defined background partition:")
+#     } else {
       sinkRmd(
         occs <- values$df[,2:3],
         "Occurrence records:")
@@ -680,8 +680,8 @@ shinyServer(function(input, output, session) {
             values$bg.coords <- as.data.frame(bg.coords)),
             "Generate background occurrences:")
         })
+      # }
       }
-    }
 
     if (input$partSelect2 == 'block') {
       sinkRmd(
