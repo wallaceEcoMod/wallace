@@ -1,5 +1,5 @@
 # check package dependencies, and download if necessary
-list.of.packages <- c("shiny", "leaflet", "ggplot2", "maps", "RColorBrewer", "rgdal",
+list.of.packages <- c("shiny", "leaflet", "ggplot2", "maps", "RColorBrewer", "rgdal", "rmarkdown",
                       "spThin", "colorRamps", "dismo", "rgeos", "XML", "repmis", "Rcpp", "RCurl", "curl")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
@@ -10,6 +10,7 @@ if (!require('devtools')) install.packages('devtools')
 if (!require('leaflet')) devtools::install_github('rstudio/leaflet')
 # for exp version of ENMeval with special updateProgress param for shiny
 #install_github("bobmuscarella/ENMeval@edits")
+#devtools::install_git("git://github.com/rstudio/rmark...")
 if (!require("DT")) devtools::install_github("rstudio/DT")
 
 # load libraries
@@ -26,6 +27,7 @@ library(ggplot2)
 library(RColorBrewer)
 library(leaflet)
 library(repmis)
+library(rmarkdown)
 
 source("functions.R")
 source("sinkRmd.R")
@@ -942,10 +944,20 @@ shinyServer(function(input, output, session) {
   )
 
   output$downloadMD <- downloadHandler(
-    filename = function() {paste0("wallace-session-", Sys.Date(), ".Rmd")},
+    filename = function() {
+      if (input$mdType == 'Rmd') {
+        ext <- 'Rmd'
+      } else if (input$mdType == 'PDF') {
+        ext <- 'pdf'
+      }
+      paste0("wallace-session-", Sys.Date(), ".", ext)},
     content = function(file) {
       out <- 'temp.Rmd'
-      file.copy(out, file) # move pdf to file for downloading
+      if (input$mdType == 'PDF') {
+        rmarkdown::render(out, "pdf_document")
+      } else {
+        file.copy(out, file)  
+      }
     }
   )
   })
