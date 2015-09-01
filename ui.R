@@ -71,8 +71,8 @@ shinyUI(pageWithSidebar(title,
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.procOccSelect == 'selpts'",
                                                                        'In this module, only selected points are used in proceeding analyses.
-                                                                       Click on the map to draw a polygon, then press "Select Points" to select
-                                                                       the overlapping points. You can then draw another polygon and select other
+                                                                       CLICK on the map to draw a polygon, then press "Select Points" to select
+                                                                       the points it overlaps. You can then draw another polygon and select other
                                                                        points, and repeat this process until all the points you want to include in
                                                                        the analysis are selected. If you want to reset, just press "Erase Polygons".',
                                                                        HTML('<hr>')),
@@ -293,9 +293,10 @@ shinyUI(pageWithSidebar(title,
                                                                        br(), br(),
                                                                        uiOutput("predSel"),
                                                                        selectInput('predForm', label = "Prediction output",
-                                                                                   choices = list("Choose output" = "", "raw" = 1, "logistic" = 2)),
+                                                                                   choices = list("raw" = 'raw', "logistic" = 'log'),
+                                                                                   selected = 'raw'),
                                                                        selectInput('predThresh', label = "Set threshold",
-                                                                                   choices = list("No threshold" = 'raw',
+                                                                                   choices = list("No threshold" = 'noThresh',
                                                                                                   "MTP" = 'mtp', "10%" = 'p10'),
                                                                                    selected = ''),
                                                                        br(),
