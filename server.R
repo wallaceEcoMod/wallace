@@ -956,11 +956,12 @@ shinyServer(function(input, output, session) {
                             opacity = 1, layerId = 1)
       } else {
 
-        pal <- colorNumeric(c('yellow', 'green', 'blue'), rasVals, na.color='transparent')
+        pal <- colorNumeric(c("#fff5f0", "#fb6a4a", "#67000d"), rasVals, na.color='transparent')
         proxy %>% addLegend("bottomright", pal = pal, title = "Predicted Suitability",
                             values = rasVals, layerId = 1)
       }
-      proxy %>% addRasterImage(values$predCur, colors = pal, opacity = 1)
+
+      proxy %>% addRasterImage(values$predCur, colors = pal, opacity = 0.5)
     }
   })
 
