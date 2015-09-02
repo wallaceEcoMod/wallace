@@ -218,9 +218,10 @@ shinyServer(function(input, output, session) {
     isolate({
       rows <- as.numeric(rownames(values$df))
       remo <- which(input$remLoc == rows)
-      if(length(remo) > 0) {
+      if (length(remo) > 0) {
+        values$removed <- values$df[remo, ]
         values$df <- values$df[-remo, ]
-        # values$gbifoccs <- values$gbifoccs[-remo, ]
+        values$gbifoccs <- values$gbifoccs[-remo, ]
         }
     })
   })
@@ -256,6 +257,7 @@ shinyServer(function(input, output, session) {
     x <- paste('* RESET: localities dataset is now back to', nrow(values$gbifoccs), 'records.')
     isolate(writeLog(x))
     if (!is.null(values$gbifoccs)) {
+      values$gbifoccs <- rbind(values$gbifoccs, values$removed)
       values$df <- values$gbifoccs
     }
     lati <- values$df[,3]
@@ -279,16 +281,16 @@ shinyServer(function(input, output, session) {
     }
     ptseln <- as.numeric(which(!(is.na(over(pts, values$drawPolys)))))
 
-    sinkRmdob(ptseln, "Selected points with the polygon:")
+    sinkRmdob(ptseln, "Selected localities with the polygon:")
 
     sinkRmdmult(c(
       ptsSel <- values$gbifoccs[ptseln, ],
       values$df <- ptsSel),
-      "Subset with selected points:")
+      "Subset with selected localities:")
 
     values$drawPolyCoords <- NULL
     values$ptsSel <- ptsSel
-    isolate(writeLog(paste('* Selected', nrow(values$df), 'points.')))
+    isolate(writeLog(paste('* Selected', nrow(values$df), 'localities.')))
   })
 
   # behavior for plotting points and their colors based on which tab is active
@@ -310,7 +312,7 @@ shinyServer(function(input, output, session) {
       if (input$procOccSelect == "selpts") {
         if (is.null(values$prethinned)) {
           proxy %>% clearMarkers()
-          proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon,
+          proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon,
                                      radius = 5, color = 'red',
                                      fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
           if (!is.null(values$ptsSel)) {
@@ -434,7 +436,7 @@ shinyServer(function(input, output, session) {
         thinned.inFile <- values$inFile[as.numeric(rownames(output[[1]])),]
       }
     })
-    writeLog(paste('* Total records thinned to [', nrow(values$df), '] points.'))
+    writeLog(paste('* Total records thinned to [', nrow(values$df), '] localities.'))
     # render the thinned records data table
     output$occTbl <- DT::renderDataTable({DT::datatable(values$df[,1:4])})
   })
@@ -455,13 +457,13 @@ shinyServer(function(input, output, session) {
       ## Check if predictor path exists. If not, use the dismo function getData()
       withProgress(message = "Downloading WorldClim data...", {
         sinkSub("## Obtain Environmental Data")
-        sinkRmdob(input$pred, "Resolution of worldclim data:")
+        sinkRmdob(input$pred, "Resolution of worldClim data:")
         sinkRmd(
           values$preds <- getData(name = "worldclim", var = "bio", res = input$pred),
           "Donwload environmental data")
       })
       proxy %>% addLegend("topright", colors = c(),
-                          title = "Predictors: Worldclim bio 1-19", labels = c(),
+                          title = "Predictors: WorldClim bio 1-19", labels = c(),
                           opacity = 1, layerId = 2)
       isolate(writeLog(paste("* Environmental predictors: WorldClim bio1-19 at", input$pred, " arcmin resolution.")))
       withProgress(message = "Processing...", {
@@ -518,7 +520,7 @@ shinyServer(function(input, output, session) {
   observe({
     if (is.null(input$backgSelect) | is.null(values$preds) | is.null(input$backgBuf)| is.na(input$backgBuf)) return()
     if (nrow(values$df) <= 2) {
-      isolate(writeLog("ERROR: Too few points (<2) to create a background polygon."))
+      isolate(writeLog("ERROR: Too few localities (<2) to create a background polygon."))
       return()
     }
     # generate background extent
@@ -609,13 +611,13 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$goBackgMask, {
     # clip and mask rasters based on study region
-    withProgress(message = "Processing environmental rasters...", {
+    withProgress(message = "Processing environmental data...", {
       sinkRmdmult(c(
         predCrop <- crop(values$preds, values$backgExt),
         values$predsMsk <- mask(predCrop, values$backgExt)),
         "Mask environmental variables by the background:")
     })
-    isolate(writeLog(paste0('* Environmental rasters masked by ', values$bbTxt, '.')))
+    isolate(writeLog(paste0('* Environmental data masked by ', values$bbTxt, '.')))
   })
 
   # handle download for masked predictors, with file type as user choice
@@ -642,18 +644,18 @@ shinyServer(function(input, output, session) {
   observe({
     if (!is.null(input$partSelect)) {
       if (input$partSelect == 'nsp') {
-        updateRadioButtons(session, 'partSelect2', choices = list("jackknife" = "jack", "randomkfold" = "random"))
+        updateRadioButtons(session, 'partSelect2', choices = list("Jackknife (k = n)" = "jack", "Random k-fold" = "random"))
       } else if (input$partSelect == 'sp') {
-        updateRadioButtons(session, 'partSelect2', choices = list("block" = "block",
-                                                                  "checkerboard1" = "cb1",
-                                                                  "checkerboard2" = "cb2"))
+        updateRadioButtons(session, 'partSelect2', choices = list("block (k = 4)" = "block",
+                                                                  "checkerboard1 (k = 2)" = "cb1",
+                                                                  "checkerboard2 (k = 4)" = "cb2"))
       }
     }
   })
 
   observeEvent(input$goPart, {
-    if (is.null(input$partSelect) | is.null(values$predsMsk)) {
-      if(!is.null(input$partSelect)) {writeLog("* Warning: Mask the environmental variables first... (section 4)")}
+    if (is.null(values$predsMsk)) {
+      writeLog("* WARNING: Mask the environmental variables first in 4) Process Env Data.")
       return()
     }
 
@@ -741,19 +743,28 @@ shinyServer(function(input, output, session) {
 
   # run ENMeval via user inputs
   observeEvent(input$goEval, {
+    if (is.null(values$predsMsk)) {
+      writeLog("* WARNING: Mask the environmental variables first in 4) Process Env Data.")
+      return()
+    }
+    if (is.null(values$modParams)) {
+      writeLog("* WARNING: Partition your localities first in 5) Partition Occurrence Data")
+      return()
+    }
     values$predsLog <- NULL  # reset predsLog if models are rerun
     sinkSub("## Build and Evaluate Niche Model")
-    if (input$modSelect == "Bioclim") {
+    if (input$modSelect == "BIOCLIM") {
       sinkRmdmult(c(
         e <- BioClim_eval(values$modParams$occ.pts, values$modParams$bg.pts,
                           values$modParams$occ.grp, values$modParams$bg.grp,
                           values$predsMsk),
         values$evalTbl <- e$results,
         values$evalMods <- e$models,
+        names(e@predictions) <- "Classic BIOCLIM",
         values$evalPreds <- e$predictions,
         occVals <- extract(e$predictions, values$modParams$occ.pts),
         values$mtps <- min(occVals)),
-        "Build BioClim models:")
+        "Build BIOCLIM models:")
 
       if (length(occVals) < 10) {
         sinkRmd(
@@ -767,17 +778,18 @@ shinyServer(function(input, output, session) {
 
       sinkRmd(
         values$p10s <- rev(sort(occVals))[n90],
-        "Apply 10% threshold prediction:")
+        "Apply 10% Training Omission threshold:")
 
       # make datatable of results df
       output$evalTbl <- DT::renderDataTable({DT::datatable(round(e$results, digits=3))})
-      output$evalPlot <- renderPlot(plot(e$models, a = input$bc1, b = input$bc2, p = input$bcProb))
-      writeLog(paste("* Bioclim ran successfully and output evaluation results."))
+#       bcProbs <- switch(input$bcProb, "90%" = 0.9, "95%" = 0.95, "100%" = 1)
+#       output$evalPlot <- renderPlot(plot(e$models, a = input$bc1, b = input$bc2, p = bcProbs))
+      writeLog(paste("* BIOCLIM ran successfully and output evaluation results."))
       # a tabset within tab 4 to organize the Bioclim outputs
       output$evalTabs <- renderUI({
         tabsetPanel(id = "bcTabs",
-                    tabPanel("Results Table", DT::dataTableOutput('evalTbl'), value = 1),
-                    tabPanel("Bioclim Plot", plotOutput('evalPlot', width = 600), value = 2)
+                    tabPanel("Results Table", DT::dataTableOutput('evalTbl'), value = 1)
+                    # tabPanel("BIOCLIM Plot", plotOutput('evalPlot', width = 600), value = 2)
         )
       })
     }
@@ -819,7 +831,7 @@ shinyServer(function(input, output, session) {
       sinkRmd(c(
         values$mtpsRaw <- apply(occValsRaw, MARGIN = 2, min),
         values$mtpsLog <- apply(occValsLog, MARGIN = 2, min)),
-        "Minimum Training Presence (MTP) threshold:")
+        "Minimum Training Omission (ORmin) threshold:")
       if (nrow(occValsRaw) < 10) {
         sinkRmd(c(
           n90Raw <- floor(nrow(occValsRaw) * 0.9),
@@ -838,7 +850,7 @@ shinyServer(function(input, output, session) {
 
       # make datatable of results df
       output$evalTbl <- DT::renderDataTable({DT::datatable(cbind(e@results[,1:3], round(e@results[,4:15], digits=3)))})
-      writeLog(paste("* ENMeval ran successfully and output evaluation results for", nrow(e@results), "models."))
+      writeLog(paste("* Maxent ran successfully and output evaluation results for", nrow(e@results), "models."))
 
       # plotting functionality for ENMeval graphs
       output$evalPlot <- renderPlot(evalPlots(values$evalTbl))
@@ -943,7 +955,7 @@ shinyServer(function(input, output, session) {
         proxy %>% addLegend("bottomright", pal = pal, title = "Predicted Suitability",
                             values = rasVals, layerId = 1)
       }
-      proxy %>% addRasterImage(values$predCur, colors = pal, opacity = 0.8)
+      proxy %>% addRasterImage(values$predCur, colors = pal, opacity = 1)
     }
   })
 
