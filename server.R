@@ -118,7 +118,7 @@ shinyServer(function(input, output, session) {
                    Duplicated records removed [', nrow(locs.in) - nrow(locs), "]: Remaining records [", nrow(locs), "].")
       }}}}
       writeLog(x)
-      }
+    }
   })
 
   observe({
@@ -220,14 +220,14 @@ shinyServer(function(input, output, session) {
     isolate({
       sinkRmdob(input$remLoc, "Occurrence point ID to be removed:")
       sinkRmdmult(c(
-      rows <- as.numeric(rownames(values$df)),
-      remo <- which(input$remLoc == rows),
-      if(length(remo) > 0) {
-        values$removed <- values$df[remo, ]
-        values$df <- values$df[-remo, ]
-        values$gbifoccs <- values$gbifoccs[-remo, ]
+        rows <- as.numeric(rownames(values$df)),
+        remo <- which(input$remLoc == rows),
+        if(length(remo) > 0) {
+          values$removed <- values$df[remo, ]
+          values$df <- values$df[-remo, ]
+          values$gbifoccs <- values$gbifoccs[-remo, ]
         }),
-      "Remove selected user selected points by ID:")
+        "Remove selected user selected points by ID:")
     })
   })
 
@@ -493,13 +493,13 @@ shinyServer(function(input, output, session) {
       sinkSub("## Process Environmental Data")}
   })
 
-#   # functionality for downloading .asc files from dropbox
-#   observeEvent(input$dbAscGet, {
-#     dbAsc <- source_DropboxData(input$dbAscFname, input$dbAscKey)
-#     dims <- strsplit(input$dbAscDims, split=',')[[1]]
-#     dbRas <- raster(dbAsc, crs=input$dbAscCRS, xmn=dims[1], xmx=dims[2],
-#                     ymn=dims[3], ymx=dims[4])
-#   })
+  #   # functionality for downloading .asc files from dropbox
+  #   observeEvent(input$dbAscGet, {
+  #     dbAsc <- source_DropboxData(input$dbAscFname, input$dbAscKey)
+  #     dims <- strsplit(input$dbAscDims, split=',')[[1]]
+  #     dbRas <- raster(dbAsc, crs=input$dbAscCRS, xmn=dims[1], xmx=dims[2],
+  #                     ymn=dims[3], ymx=dims[4])
+  #   })
 
   # this is necessary because the above is not observeEvent, and thus for some
   # reason when values$log is modified within observe, there's an infinite loop
@@ -667,29 +667,29 @@ shinyServer(function(input, output, session) {
     # if user kfold, get groups and assign occs and backg from inFile,
     # and if not, make backg pts and assign user kfold groups to NULL
     sinkSub("## Partition Occurrence Data")
-#     if (input$partSelect == 'user') {
-#       sinkRmdmult(c(
-#         occs <- values$inFile[values$inFile[,1] == values$spname,],
-#         bg.coords <- values$inFile[values$inFile[,1] != values$spname,],
-#         group.data <- list(),
-#         group.data[[1]] <- as.numeric(occs[,input$occ.grp]),
-#         group.data[[2]] <- as.numeric(backg_pts[,input$bg.grp]),
-#         occs <- occs[,2:3],
-#         values$bg.coords <- backg_pts[,2:3]),
-#         "User defined background partition:")
-#     } else {
-      sinkRmd(
-        occs <- values$df[,2:3],
-        "Occurrence records:")
-      if (is.null(values$bg.coords)) {
-        withProgress(message = "Generating background points...", {
-          sinkRmdmult(c(
-            bg.coords <- randomPoints(values$predsMsk, 10000),
-            values$bg.coords <- as.data.frame(bg.coords)),
-            "Generate background occurrences:")
-        })
+    #     if (input$partSelect == 'user') {
+    #       sinkRmdmult(c(
+    #         occs <- values$inFile[values$inFile[,1] == values$spname,],
+    #         bg.coords <- values$inFile[values$inFile[,1] != values$spname,],
+    #         group.data <- list(),
+    #         group.data[[1]] <- as.numeric(occs[,input$occ.grp]),
+    #         group.data[[2]] <- as.numeric(backg_pts[,input$bg.grp]),
+    #         occs <- occs[,2:3],
+    #         values$bg.coords <- backg_pts[,2:3]),
+    #         "User defined background partition:")
+    #     } else {
+    sinkRmd(
+      occs <- values$df[,2:3],
+      "Occurrence records:")
+    if (is.null(values$bg.coords)) {
+      withProgress(message = "Generating background points...", {
+        sinkRmdmult(c(
+          bg.coords <- randomPoints(values$predsMsk, 10000),
+          values$bg.coords <- as.data.frame(bg.coords)),
+          "Generate background occurrences:")
+      })
       # }
-      }
+    }
 
     if (input$partSelect2 == 'block') {
       sinkRmd(
@@ -787,8 +787,8 @@ shinyServer(function(input, output, session) {
 
       # make datatable of results df
       output$evalTbl <- DT::renderDataTable({DT::datatable(round(e$results, digits=3))})
-#       bcProbs <- switch(input$bcProb, "90%" = 0.9, "95%" = 0.95, "100%" = 1)
-#       output$evalPlot <- renderPlot(plot(e$models, a = input$bc1, b = input$bc2, p = bcProbs))
+      #       bcProbs <- switch(input$bcProb, "90%" = 0.9, "95%" = 0.95, "100%" = 1)
+      #       output$evalPlot <- renderPlot(plot(e$models, a = input$bc1, b = input$bc2, p = bcProbs))
       writeLog(paste("* BIOCLIM ran successfully and output evaluation results."))
       # a tabset within tab 4 to organize the Bioclim outputs
       output$evalTabs <- renderUI({
@@ -813,13 +813,14 @@ shinyServer(function(input, output, session) {
       updateProgress <- function(value = NULL, detail = NULL) {
         progress$inc(amount = 1/n, detail = detail)
       }
+      print('Z')
       e <- ENMevaluate(values$modParams$occ.pts, values$predsMsk, bg.coords = values$modParams$bg.pts,
                        RMvalues = rms, fc = input$fcs, method = 'user', occ.grp = values$modParams$occ.grp,
                        bg.grp = values$modParams$bg.grp, updateProgress = updateProgress)
 
       sinkFalse(paste0("e <- ENMevaluate(modParams$occ.pts, predsMsk, bg.coords = modParams$bg.pts,\n    ",
                        " RMvalues = rms, fc = fcs, method = 'user', occ.grp = modParams$occ.grp,\n    ",
-                        " bg.grp = modParams$bg.grp)"),
+                       " bg.grp = modParams$bg.grp)"),
                 "Evaluate Maxent model results:")
 
       sinkRmdmult(c(
@@ -830,28 +831,26 @@ shinyServer(function(input, output, session) {
         "Define the object e as eval:")
 
       sinkRmdmult(c(
-        occValsRaw <- extract(e@predictions.raw, values$modParams$occ.pts),
-        occValsLog <- extract(e@predictions.log, values$modParams$occ.pts)),
+        occVals <- extract(e@predictions.raw, values$modParams$occ.pts)),
         "Prediction values:")
-      sinkRmdmult(c(
-        values$mtpsRaw <- apply(occValsRaw, MARGIN = 2, min),
-        values$mtpsLog <- apply(occValsLog, MARGIN = 2, min)),
+      print('D')
+      sinkRmdmult(
+        values$mtps <- apply(occVals, MARGIN = 2, min),
         "Minimum Training Omission (ORmin) threshold:")
-      if (nrow(occValsRaw) < 10) {
-        sinkRmdmult(c(
-          n90Raw <- floor(nrow(occValsRaw) * 0.9),
-          n90Log <- floor(nrow(occValsLog) * 0.9)),
+      if (nrow(occVals) < 10) {
+        sinkRmdmult(
+          n90 <- floor(nrow(occVals) * 0.9),
           "Define the number of 10% higher values:")
       } else {
-        sinkRmdmult(c(
-          n90Raw <- ceiling(nrow(occValsRaw) * 0.9),
-          n90Log <- ceiling(nrow(occValsLog) * 0.9)),
+        sinkRmdmult(
+          n90 <- ceiling(nrow(occVals) * 0.9),
           "Define the number of 10% higher values:")
       }
-      sinkRmdmult(c(
-        values$p10sRaw <- apply(occValsRaw, MARGIN = 2, function(x) rev(sort(x))[n90Raw]),
-        values$p10sLog <- apply(occValsLog, MARGIN = 2, function(x) rev(sort(x))[n90Log])),
+      print('E')
+      sinkRmdmult(
+        values$p10s <- apply(occVals, MARGIN = 2, function(x) rev(sort(x))[n90]),
         "Apply 10% threshold prediction:")
+      print('F')
 
       # make datatable of results df
       output$evalTbl <- DT::renderDataTable({DT::datatable(cbind(e@results[,1:3], round(e@results[,4:15], digits=3)))})
@@ -898,53 +897,45 @@ shinyServer(function(input, output, session) {
                 choices = predNameList)
   })
 
-#   observe({
-#     if (input$predForm == '' | is.null(values$preds)) return()
-#     if (input$predForm == 2) {
-#       if (is.null(values$predsLog)) {
-#         isolate({
-#           # generate logistic outputs for all raw outputs
-#           makeLog <- function(x) predict(x, values$preds, args=c('outputformat=logistic'))
-#           print(values$log)
-#           values$log <- isolate(paste(values$log, 'Generating logistic predictions...', sep='<br>'))  # add text to log
-#           print(values$log)
-#           values$predsLog <- stack(sapply(values$evalMods, FUN=makeLog))
-#           logTime <- c(1,1,1)
-#           values$log <- isolate(paste(values$log, paste0('Logistic predictions complete in ',
-#                                                          logTime[3], '.'), sep='<br>'))  # add text to log
-#         })
-#       }
-#     }
-#   })
+  #   observe({
+  #     if (input$predForm == '' | is.null(values$preds)) return()
+  #     if (input$predForm == 2) {
+  #       if (is.null(values$predsLog)) {
+  #         isolate({
+  #           # generate logistic outputs for all raw outputs
+  #           makeLog <- function(x) predict(x, values$preds, args=c('outputformat=logistic'))
+  #           print(values$log)
+  #           values$log <- isolate(paste(values$log, 'Generating logistic predictions...', sep='<br>'))  # add text to log
+  #           print(values$log)
+  #           values$predsLog <- stack(sapply(values$evalMods, FUN=makeLog))
+  #           logTime <- c(1,1,1)
+  #           values$log <- isolate(paste(values$log, paste0('Logistic predictions complete in ',
+  #                                                          logTime[3], '.'), sep='<br>'))  # add text to log
+  #         })
+  #       }
+  #     }
+  #   })
 
   # set predCur based on user selection of threshold
   observeEvent(input$plotPred, {
+    selRasRaw <- values$evalPreds[[as.numeric(input$predSelServer)]]
+    selRasLog <- values$evalPredsLog[[as.numeric(input$predSelServer)]]
     if (input$predForm == 'raw') {
-      selRas <- values$evalPreds[[as.numeric(input$predSelServer)]]
-      rasVals <- getValues(selRas)
-      rasVals <- rasVals[!is.na(rasVals)]
-      if (input$predThresh == 'mtp') {
-        mtp <- values$mtpsRaw[as.numeric(input$predSelServer)]
-        values$predCur <- selRas > mtp
-      } else if (input$predThresh == 'p10') {
-        p10 <- values$p10sRaw[as.numeric(input$predSelServer)]
-        values$predCur <- selRas > p10
-      } else {
-        values$predCur <- selRas
-      }
+      selRas <- selRasRaw
     } else if (input$predForm == 'log') {
-      selRas <- values$evalPredsLog[[as.numeric(input$predSelServer)]]
-      rasVals <- c(getValues(selRas), 0, 1)
-      rasVals <- rasVals[!is.na(rasVals)]
-      if (input$predThresh == 'mtp') {
-        mtp <- values$mtpsLog[as.numeric(input$predSelServer)]
-        values$predCur <- selRas > mtp
-      } else if (input$predThresh == 'p10') {
-        p10 <- values$p10sLog[as.numeric(input$predSelServer)]
-        values$predCur <- selRas > p10
-      } else {
-        values$predCur <- selRas
-      }
+      selRas <- selRasLog
+    }
+    rasVals <- getValues(selRas)
+    rasVals <- rasVals[!is.na(rasVals)]
+
+    if (input$predThresh == 'mtp') {
+      mtp <- values$mtps[as.numeric(input$predSelServer)]
+      values$predCur <- selRasRaw > mtp
+    } else if (input$predThresh == 'p10') {
+      p10 <- values$p10s[as.numeric(input$predSelServer)]
+      values$predCur <- selRasRaw > p10
+    } else {
+      values$predCur <- selRas
     }
     values$rasName <- names(selRas)
 
@@ -957,6 +948,7 @@ shinyServer(function(input, output, session) {
       } else {
 
         pal <- colorNumeric(c("#fff5f0", "#fb6a4a", "#67000d"), rasVals, na.color='transparent')
+
         proxy %>% addLegend("bottomright", pal = pal, title = "Predicted Suitability",
                             values = rasVals, layerId = 1)
       }
@@ -1003,8 +995,8 @@ shinyServer(function(input, output, session) {
           PDF = pdf_document(), HTML = html_document(), Word = word_document()
         ))
       }
-        file.copy(out, file)
+      file.copy(out, file)
 
     }
   )
-  })
+})
