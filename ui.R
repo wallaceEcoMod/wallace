@@ -57,7 +57,7 @@ shinyUI(pageWithSidebar(title,
                                                                        includeMarkdown("www/tab1_user.Rmd"),
                                                                        HTML('<hr>'),
                                                                        fileInput("userCSV", label = "Upload Occurrence CSV")),
-                                                      "The output of this step is a CSV file with rows of localities, and columns containing species, 
+                                                      "The output of this step is a CSV file with rows of localities, and columns containing species,
                                                       longitude, and latitude (as well as any other fields provided by GBIF or the user.",
                                                       conditionalPanel("input.dbSelect == 'GBIF'",
                                                                        HTML('<hr>'),
@@ -67,7 +67,7 @@ shinyUI(pageWithSidebar(title,
                                                                        " | ",
                                                                        a("documentation", href = "http://www.gbif.org/resource/81747", target = "_blank")
                                                       )
-                                     ),
+                                                      ),
                                      conditionalPanel("input.tabs == 2",
                                                       h4("Process Occurrence Data"),
                                                       radioButtons("procOccSelect", "Modules Available:",
@@ -95,8 +95,7 @@ shinyUI(pageWithSidebar(title,
                                                                        downloadButton('downloadThincsv', "Download Occurrence CSV"),
                                                                        HTML('<hr>')
                                                       ),
-                                                      "Input data flow into this step from Step 1. Step 2 provides a CSV file with the same characteristics: 
-                                                      rows of localities, with the first three columns being species, longitude, and latitude.",
+                                                      includeMarkdown("www/tab2_input.Rmd"),
                                                       conditionalPanel("input.procOccSelect == 'spthin'",
                                                                        HTML('<hr>'),
                                                                        span("spThin", id = "rpkg"), "references", br(),
@@ -196,9 +195,9 @@ shinyUI(pageWithSidebar(title,
                                                                                    choices = list("GRD" = 'raster', "ASCII" = 'ascii', "GeoTIFF" = 'GTiff')),
                                                                        downloadButton('downloadMskPreds', "Download Clipped Env Data"),
                                                                        HTML('<hr>')),
-                                                      "Input flows into this step from Step 3. Step 4 provides clipped grids that can be savede in the 
-                                                      same formats: GRD, GEOTIFF, or ASCII files. Additionally (for clipping the grids in this step), 
-                                                      the user may provide a file delimiting the study region via a shapefile or through a CSV that 
+                                                      "Input flows into this step from Step 3. Step 4 provides clipped grids that can be savede in the
+                                                      same formats: GRD, GEOTIFF, or ASCII files. Additionally (for clipping the grids in this step),
+                                                      the user may provide a file delimiting the study region via a shapefile or through a CSV that
                                                       contains the vertices of a polygon.",
                                                       conditionalPanel("input.envProcSelect == 'backg'",
                                                                        HTML('<hr>'),
@@ -234,16 +233,16 @@ shinyUI(pageWithSidebar(title,
                                                                        span('via', id="pkgDes"),
                                                                        span('ENMeval', id="rpkg"),
                                                                        span('package: Automated Runs and Evaluations of Ecological Niche Models', id="pkgDes"),
-                                                      conditionalPanel("input.partSelect == 'sp'",
-                                                                       br(),
-                                                                       includeMarkdown("www/tab5_sp.Rmd"),
-                                                                       HTML('<hr>')),
-                                                      conditionalPanel("input.partSelect == 'nsp'",
-                                                                       br(),
-                                                                       includeMarkdown("www/tab5_nsp.Rmd"),
-                                                                       HTML('<hr>')),
-                                                      radioButtons("partSelect2", "Modules Available:",
-                                                                   choices = list("Choose"), selected = '')),
+                                                                       conditionalPanel("input.partSelect == 'sp'",
+                                                                                        br(),
+                                                                                        includeMarkdown("www/tab5_sp.Rmd"),
+                                                                                        HTML('<hr>')),
+                                                                       conditionalPanel("input.partSelect == 'nsp'",
+                                                                                        br(),
+                                                                                        includeMarkdown("www/tab5_nsp.Rmd"),
+                                                                                        HTML('<hr>')),
+                                                                       radioButtons("partSelect2", "Modules Available:",
+                                                                                    choices = list("Choose"), selected = '')),
                                                       conditionalPanel("input.partSelect == 'sp' & (input.partSelect2 == 'cb1' | input.partSelect2 == 'cb2')",
                                                                        numericInput("aggFact", label = "Aggregation Factor", value = 2, min = 2)),
                                                       conditionalPanel("input.partSelect2 == 'random'",
@@ -256,11 +255,7 @@ shinyUI(pageWithSidebar(title,
                                                                        actionButton("goPart", "Partition"), br(), br(),
                                                                        downloadButton('downloadPart', "Download Partitioned Data CSV"),
                                                                        HTML('<hr>')),
-                                                      'Occurrence data flow into this step from Step 2. Environmental data are also necessary, 
-                                                      entering from Step 4. The output is a CSV file (occurrence localities for training and for 
-                                                      testing, as well as “background” pixels from the study region) with: rows of localities, 
-                                                      and the first three columns indicating species, longitude, latitude, and partition identifier. 
-                                                      For background pixels, the species identifier is “background.”',
+                                                      includeMarkdown("www/tab5content.Rmd"),
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.partSelect == 'sp' || input.partSelect == 'nsp'",
                                                                        span("ENMeval", id = "rpkg"), "references", br(),
@@ -271,7 +266,7 @@ shinyUI(pageWithSidebar(title,
                                                                        a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12261/abstract", target = "_blank"),
                                                                        HTML('<hr>'),
                                                                        includeMarkdown("www/tab5_both_refs.Rmd")
-                                                      )
+                                                                       )
                                      ),
                                      conditionalPanel("input.tabs == 6",
                                                       h4("Build and Evaluate Niche Model"),
@@ -289,19 +284,19 @@ shinyUI(pageWithSidebar(title,
                                                                        span('ENMeval', id="rpkg"),
                                                                        span('and', id="pkgDes"),
                                                                        span('dismo', id="rpkg"),
-                                                                       span('packages: Automated Runs and Evaluations of Ecological Niche Models | 
+                                                                       span('packages: Automated Runs and Evaluations of Ecological Niche Models |
                                                                             Species Distribution Modeling', id="pkgDes")),
                                                       conditionalPanel("input.modSelect == 'BIOCLIM'",
                                                                        br(),
                                                                        includeMarkdown("www/tab6_bc.Rmd"),
                                                                        HTML('<hr>')
-                                                      # conditionalPanel("input.bcTabs == 2",
-                                                      #   numericInput("bc1", "Axis 1", value = 1, min = 1, max = 19),
-                                                      #   numericInput("bc2", "Axis 2", value = 2, min = 1, max = 19),
-                                                      #   selectInput('bcProb', label = "Set threshold",
-                                                      #   choices = list("90%" = 0.9, "95%" = 0.95, "100%" = 1),
-                                                      #   selected = 0.9)
-                                                      # )
+                                                                       # conditionalPanel("input.bcTabs == 2",
+                                                                       #   numericInput("bc1", "Axis 1", value = 1, min = 1, max = 19),
+                                                                       #   numericInput("bc2", "Axis 2", value = 2, min = 1, max = 19),
+                                                                       #   selectInput('bcProb', label = "Set threshold",
+                                                                       #   choices = list("90%" = 0.9, "95%" = 0.95, "100%" = 1),
+                                                                       #   selected = 0.9)
+                                                                       # )
                                                       ),
                                                       conditionalPanel("input.modSelect == 'Maxent'",
                                                                        br(),
@@ -319,8 +314,8 @@ shinyUI(pageWithSidebar(title,
                                                                        downloadButton('downloadEvalcsv', "Download Results CSV"), br(), br(),
                                                                        downloadButton('downloadEvalPlots', "Download Plots PNG"),
                                                                        HTML('<hr>')),
-                                                      'The input data (both occurrence data and environmental data) flow into this step from earlier steps 
-                                                      (typically Steps 4 and 5). For output, this step yields a CSV file of the table of evaluation statistics, 
+                                                      'The input data (both occurrence data and environmental data) flow into this step from earlier steps
+                                                      (typically Steps 4 and 5). For output, this step yields a CSV file of the table of evaluation statistics,
                                                       as well as (for Maxent) a PNG file containing graphs for the evaluation metrics.',
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.modSelect == 'BIOCLIM' || input.modSelect == 'Maxent'",
@@ -335,7 +330,7 @@ shinyUI(pageWithSidebar(title,
                                                                        a("CRAN", href = "http://cran.r-project.org/web/packages/dismo/index.html", target = "_blank"),
                                                                        " | ",
                                                                        a("documentation", href="https://cran.r-project.org/web/packages/dismo/dismo.pdf", target = "_blank")
-                                                      ),
+                                                                       ),
                                                       conditionalPanel("input.modSelect == 'BIOCLIM'",
                                                                        HTML('<hr>'),
                                                                        includeMarkdown("www/tab6_bc_refs.Rmd")
@@ -344,7 +339,7 @@ shinyUI(pageWithSidebar(title,
                                                                        HTML('<hr>'),
                                                                        includeMarkdown("www/tab6_maxent_refs.Rmd")
                                                       )
-                                     ),
+                                                                       ),
                                      conditionalPanel("input.tabs == 7",
                                                       h4("Visualize Model Results"),
                                                       radioButtons("visSelect", "Modules Available:",
@@ -376,7 +371,7 @@ shinyUI(pageWithSidebar(title,
                                                                        downloadButton('downloadPred', "Download Displayed Prediction"),
                                                                        HTML('<hr>')
                                                       ),
-                                                      'For input, this step pulls from the output of Step 6. For output, it provides a GRD, GEOTIFF, 
+                                                      'For input, this step pulls from the output of Step 6. For output, it provides a GRD, GEOTIFF,
                                                       or ASCII grid file (or PNG image) of the suitability prediction across the study region.',
                                                       conditionalPanel("input.visSelect == 'map'",
                                                                        HTML('<hr>'),
@@ -389,68 +384,68 @@ shinyUI(pageWithSidebar(title,
                                                                        a("documentation", href="https://cran.r-project.org/web/packages/raster/raster.pdf", target = "_blank"),
                                                                        HTML('<hr>'),
                                                                        includeMarkdown("www/tab7_pred_refs.Rmd")
-                                                      )
-                                     ),
+                                                                       )
+                                                      ),
                                      conditionalPanel("input.tabs == 8",
                                                       h4("Download Code History Markdown File")
-                                                      ),
+                                     ),
                                      conditionalPanel("input.tabs == 9",
                                                       h4("About")
                                      )
-                        ),
+                                     ),
                         mainPanel(width = 7,
-                          tabsetPanel(id = "tabs",
-                                      tabPanel("Introduction", value=0),
-                                      tabPanel("1) Obtain Occ Data", value=1),
-                                      tabPanel("2) Process Occ Data", value=2),
-                                      tabPanel("3) Obtain Env Data", value=3),
-                                      tabPanel("4) Process Env Data", value=4),
-                                      tabPanel("5) Partition Occ Data", value=5),
-                                      tabPanel("6) Build Niche Model", value=6),
-                                      tabPanel("7) Visualize Results", value=7),
-                                      tabPanel("Download Code History", value=8),
-                                      tabPanel("About", value=9)
-                          ),
-                          fluidRow(
-                            column(9,
-                                   conditionalPanel("input.tabs != 0 && input.tabs != 8 && input.tabs != 9",
-                                                    "LOG",
-                                                    div(id = "wallaceLog", class = "scrollbox", htmlOutput("log")))
-                            ),
-                            column(3,
-                                   conditionalPanel("input.tabs == 2 && input.procOccSelect == 'selpts'",
-                                                    br(),
-                                                    actionButton("selectPoly", "Select With Polygon"),
-                                                    br(), br(),
-                                                    actionButton("erasePoly", "Reset Localities"))
-                            )
-                          ),
-                          br(),
-                          conditionalPanel("input.tabs != 0 && input.tabs != 6 && input.tabs != 8 && input.tabs != 9", leafletOutput("map", height=500)),
-                          br(),
-                          conditionalPanel("input.tabs != 0 && input.tabs != 6 && input.tabs != 8 && input.tabs != 9", DT::dataTableOutput('occTbl')),
-                          conditionalPanel("input.tabs == 6", uiOutput('evalTabs')),
-                          conditionalPanel("input.tabs == 8",
-                                           column(8,
-                                                  selectInput('mdType', label = "R Markdown Download Type",
-                                                              choices = list("Rmd", "PDF", "HTML", "Word")),
-                                                  downloadButton('downloadMD', 'Download History in R Markdown'), br(), br(),
-                                                  includeMarkdown("www/tab8_mdtext.Rmd")
-                                           )
-                          ),
-                          conditionalPanel("input.tabs == 0",
-                                           column(11,
-                                                  includeMarkdown("www/intro.Rmd")
-                                           )
-                          ),
-                          conditionalPanel("input.tabs == 9",
-                                           fluidPage(titlePanel(h4("Wallace was created by an international team of ecologists:")),
-                                                     fluidRow(
-                                                       column(2, includeMarkdown("www/tab9Acontent.Rmd")),
-                                                       column(3, includeMarkdown("www/tab9Ccontent.Rmd")),
-                                                       column(5, includeMarkdown("www/tab9Bcontent.Rmd"))
-                                                     )
-                                           )
-                          )
+                                  tabsetPanel(id = "tabs",
+                                              tabPanel("Introduction", value=0),
+                                              tabPanel("1) Obtain Occ Data", value=1),
+                                              tabPanel("2) Process Occ Data", value=2),
+                                              tabPanel("3) Obtain Env Data", value=3),
+                                              tabPanel("4) Process Env Data", value=4),
+                                              tabPanel("5) Partition Occ Data", value=5),
+                                              tabPanel("6) Build Niche Model", value=6),
+                                              tabPanel("7) Visualize Results", value=7),
+                                              tabPanel("Download Code History", value=8),
+                                              tabPanel("About", value=9)
+                                  ),
+                                  fluidRow(
+                                    column(9,
+                                           conditionalPanel("input.tabs != 0 && input.tabs != 8 && input.tabs != 9",
+                                                            "LOG",
+                                                            div(id = "wallaceLog", class = "scrollbox", htmlOutput("log")))
+                                    ),
+                                    column(3,
+                                           conditionalPanel("input.tabs == 2 && input.procOccSelect == 'selpts'",
+                                                            br(),
+                                                            actionButton("selectPoly", "Select With Polygon"),
+                                                            br(), br(),
+                                                            actionButton("erasePoly", "Reset Localities"))
+                                    )
+                                  ),
+                                  br(),
+                                  conditionalPanel("input.tabs != 0 && input.tabs != 6 && input.tabs != 8 && input.tabs != 9", leafletOutput("map", height=500)),
+                                  br(),
+                                  conditionalPanel("input.tabs != 0 && input.tabs != 6 && input.tabs != 8 && input.tabs != 9", DT::dataTableOutput('occTbl')),
+                                  conditionalPanel("input.tabs == 6", uiOutput('evalTabs')),
+                                  conditionalPanel("input.tabs == 8",
+                                                   column(8,
+                                                          selectInput('mdType', label = "R Markdown Download Type",
+                                                                      choices = list("Rmd", "PDF", "HTML", "Word")),
+                                                          downloadButton('downloadMD', 'Download History in R Markdown'), br(), br(),
+                                                          includeMarkdown("www/tab8_mdtext.Rmd")
+                                                   )
+                                  ),
+                                  conditionalPanel("input.tabs == 0",
+                                                   column(11,
+                                                          includeMarkdown("www/intro.Rmd")
+                                                   )
+                                  ),
+                                  conditionalPanel("input.tabs == 9",
+                                                   fluidPage(titlePanel(h4("Wallace was created by an international team of ecologists:")),
+                                                             fluidRow(
+                                                               column(2, includeMarkdown("www/tab9Acontent.Rmd")),
+                                                               column(3, includeMarkdown("www/tab9Ccontent.Rmd")),
+                                                               column(5, includeMarkdown("www/tab9Bcontent.Rmd"))
+                                                             )
+                                                   )
+                                  )
                         )
-))
+                        ))
