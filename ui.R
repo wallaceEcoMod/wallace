@@ -29,7 +29,7 @@ shinyUI(pageWithSidebar(title,
                                      includeCSS("styles.css"),
                                      includeScript("scroll.js"),
                                      conditionalPanel("input.tabs == 0",
-                                                      includeMarkdown("www/tab0content.Rmd")
+                                                      "Introduction"
                                      ),
                                      conditionalPanel("input.tabs == 1",
                                                       h4("Obtain Occurrence Data"),
@@ -436,6 +436,11 @@ shinyUI(pageWithSidebar(title,
                                                               choices = list("Rmd", "PDF", "HTML", "Word")),
                                                   downloadButton('downloadMD', 'Download History in R Markdown'), br(), br(),
                                                   includeMarkdown("www/tab8_mdtext.Rmd")
+                                           )
+                          ),
+                          conditionalPanel("input.tabs == 0",
+                                           column(11,
+                                                  includeMarkdown("www/intro.Rmd")
                                            )
                           ),
                           conditionalPanel("input.tabs == 9",
