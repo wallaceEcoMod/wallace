@@ -5,19 +5,19 @@ output: html_document
 <p align="justify">
 Jamie M. Kass is a coauthor of ENMeval and a PhD student at CUNY Graduate Center and City College of New York. He is currently supported by a CUNY Science Scholarship.
 </p>
-
+<br></br>
 <p align="justify">
 Matthew Aiello-Lammens is the lead author of spThin and a post-doctoral researcher at University of Connecticut. He is currently supported by NSF DEB-1046328.
 </p>
-
+<br></br>
 <p align="justify">
 Bruno Vilela is a coauthor of spThin and a PhD student at the Federal University of Goiás (Brazil) and the University of Alcalá (Spain). He is currently supported by a CAPES grant for doctoral studies.
 </p>
-
+<br></br>
 <p align="justify">
 Robert Muscarella is the lead author of ENMeval and a post-doctoral researcher at Aarhus University (Denmark). He is currently supported by NSF DEB-1311367 and NSF DBI-1401312.
 </p>
-
+<br></br>
 <p align="justify">
 Robert P. Anderson is a coauthor of spThin and ENMeval, and a Professor of Biology at City College of New York CUNY. This work was supported by NSF DEB-1119915.
 </p>
