@@ -53,3 +53,10 @@ hr {
   font-size:9pt; 
   font-style:italic;
 }
+.shiny-progress .bar {
+  background-color:#FF0000;
+  opacity:0.8;
+}
+.shiny-progress .progress {
+  height:7px;
+}
