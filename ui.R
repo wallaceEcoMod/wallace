@@ -46,7 +46,7 @@ shinyUI(pageWithSidebar(title,
                                                                        br(),
                                                                        checkboxInput('togMD1', "Hide / Display Guidance Text", value = TRUE),
                                                                        conditionalPanel("input.togMD1",
-                                                                                        includeMarkdown("www/tab1_gbif.Rmd") 
+                                                                                        includeMarkdown("www/tab1_gbif.Rmd")
                                                                        ),
                                                                        HTML('<hr>'),
                                                                        textInput("gbifName", label = "Enter scientific name of species (format: genus species)"),
@@ -62,8 +62,8 @@ shinyUI(pageWithSidebar(title,
                                                                        HTML('<hr>'),
                                                                        fileInput("userCSV", label = "Upload Occurrence CSV"),
                                                                        HTML('<hr>')),
-                                                      
-                                                      "The output of this step is a CSV file with rows of localities, and columns containing species, 
+
+                                                      "The output of this step is a CSV file with rows of localities, and columns containing species,
                                                       longitude, and latitude (as well as any other fields provided by GBIF or the user.",
                                                       conditionalPanel("input.dbSelect == 'GBIF'",
                                                                        HTML('<hr>'),
@@ -99,7 +99,7 @@ shinyUI(pageWithSidebar(title,
                                                                        checkboxInput('togMD2B', "Hide / Display Guidance Text", value = TRUE),
                                                                        conditionalPanel("input.togMD2B",
                                                                                         includeMarkdown("www/tab2_spthin.Rmd")
-                                                                       ),                                                                       
+                                                                       ),
                                                                        HTML('<hr>'),
                                                                        numericInput("thinDist", label = "Thinning distance (km)", value = 0),
                                                                        actionButton("goThin", "Thin Localities"),
@@ -180,7 +180,7 @@ shinyUI(pageWithSidebar(title,
                                                                    choices = list("Select Study Region" = "backg",
                                                                                   "Change Resolution (not functional)"),
                                                                    selected = ''),
-                                                      
+
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.envProcSelect == 'backg'",
                                                                        div('Module: Select Study Region', id="mod"),
@@ -233,7 +233,7 @@ shinyUI(pageWithSidebar(title,
                                                                        HTML('<hr>'),
                                                                        includeMarkdown("www/tab4_backg_refs.Rmd")
                                                       )
-                                                      
+
                                      ),
                                      conditionalPanel("input.tabs == 5",
                                                       h4("Partition Occurrence Data"),
@@ -388,7 +388,7 @@ shinyUI(pageWithSidebar(title,
                                                                        conditionalPanel("input.modSelect == 'Maxent'",
                                                                                         selectInput('predForm', label = "Prediction output",
                                                                                                     choices = list("raw" = 'raw', "logistic" = 'log'),
-                                                                                                    selected = 'raw')
+                                                                                                    selected = 'log')
                                                                        ),
                                                                        selectInput('predThresh', label = "Set threshold",
                                                                                    choices = list("No threshold" = 'noThresh',
