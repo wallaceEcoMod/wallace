@@ -1,0 +1,25 @@
+---
+title: "tab6_maxent_refs"
+output: html_document
+---
+<p>
+<div style="font-size:9pt;font-weight:bold">References</div><p>
+<div style="font-size:9pt;font-style:italic">
+Booth T.H., Nix H.A., Busby J.R., Hutchinson M.F. 2014. BIOCLIM: The first species distribution modelling package, its early applications and relevance to most current MaxEnt studies. Diversity and Distributions. 20:1–9.<p><br>
+
+Chang W., Cheng J., Allaire J. J., Xie Y., McPherson J. 2015. shiny: Web Application Framework for R. R package version 0.12.2. URL: http://CRAN.R-project.org/package=shiny<p>
+
+Elith J., Leathwick J.R. 2009. Species distribution models: ecological explanation and prediction across space and time. Annual Review of Ecology, Evolution, and Systematics. 40:677–697.<p>
+
+Franklin J. 2010. Mapping species distributions: spatial inference and prediction. Cambridge: Cambridge University Press.<p>
+
+Guisan A., Thuiller W. 2005. Predicting species distribution: offering more than simple habitat models. Ecology Letters. 8:993–1009.<p>
+
+Guisan A., Zimmermann N.E. 2000. Predictive habitat distribution models in ecology. Ecological Modelling. 135:147–186.<p>
+
+Peterson A.T., Soberón J., Pearson R.G., Anderson R.P., Martinez-Meyer E., Nakamura M., Araújo M.B. 2011. Ecological niches and geographic distributions. Princeton, New Jersey: Monographs in Population Biology, 49. Princeton University Press.<p>
+
+Phillips S.J., Anderson R.P., Schapire R.E. 2006. Maximum entropy modeling of species geographic distributions. Ecological Modelling. 190:231–259.<p>
+
+R Core Team (2015). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. URL: http://www.R-project.org/.<p>
+</div>
