@@ -2,7 +2,7 @@
 title: "tab2_spthin_refs"
 output: html_document
 ---
-<p>
+<p align="justify">
 <div style="font-size:9pt;font-weight:bold">References</div><p>
 <div style="font-size:9pt;font-style:italic">
 Aiello-Lammens M.E., Boria R.A., Radosavljevic A., Vilela B., Anderson R.P. 2015. spThin: an R package for spatial thinning of species occurrence records for use in ecological niche models. Ecography. 38:541–545.<p><br>

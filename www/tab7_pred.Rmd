@@ -3,7 +3,10 @@ title: "tab7_pred"
 output: html_document
 ---
 **BACKGROUND**  
+<p align="justify">
 A niche/distributional model represents a mathematical estimate (based on known occurrence localities) of the relationship between the environment and suitability for the species, and it can be used to predict relative suitability across the study region. Whereas the probability of occurrence for a species cannot be estimated without absence information (or additional assumptions; (Hastie and Fithian 2013), various niche/distributional modeling techniques provide binary or continuous representations of suitability.  
-
-**IMPLEMENTATION**  
+</p>
+**IMPLEMENTATION**
+<p align="justify">
 This module allows the user to visualize the prediction grid/s made in Step 6. As implemented here through dismo, BIOCLIM yields a continuous prediction, with higher values indicating conditions closer to the core of the species’ observed niche space (based on percentiles of occurrence in environmental space). Similarly, Maxent provides two continuous outputs reflecting relative suitability: the raw values (normalized so that the values for the background pixels sum to 1) and the logistic rescaling (which ranges from 0 to 1; Phillips and Dudík 2009?). The raw output only provides information relevant to a given study region. In contrast, and subject to critical assumptions regarding the species’ prevalence, the logistic output can be compared across species and across regions/time periods (Hastie and Fithian 2013). This module also allows the user to obtain a binary prediction (suitable vs. unsuitable) by applying a threshold based on the level of omission of training localities (minimum = 0% training omission; or 10% training omission). The user can download each prediction grid (e.g., for Maxent, each particular feature class/regularization multiplier combination), in either continuous or binary forms, for example to load into an external GIS program for further analysis. A future module could include visualization of the multivariate environmental space (for BIOCLIM) or modeled response curves to individual variables (Maxent).  
+</p>
