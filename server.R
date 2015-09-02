@@ -834,15 +834,15 @@ shinyServer(function(input, output, session) {
         occVals <- extract(e@predictions.raw, values$modParams$occ.pts)),
         "Prediction values:")
       print('D')
-      sinkRmdmult(
+      sinkRmd(
         values$mtps <- apply(occVals, MARGIN = 2, min),
         "Minimum Training Omission (ORmin) threshold:")
       if (nrow(occVals) < 10) {
-        sinkRmdmult(
+        sinkRmd(
           n90 <- floor(nrow(occVals) * 0.9),
           "Define the number of 10% higher values:")
       } else {
-        sinkRmdmult(
+        sinkRmd(
           n90 <- ceiling(nrow(occVals) * 0.9),
           "Define the number of 10% higher values:")
       }
@@ -920,9 +920,9 @@ shinyServer(function(input, output, session) {
   observeEvent(input$plotPred, {
     selRasRaw <- values$evalPreds[[as.numeric(input$predSelServer)]]
     selRasLog <- values$evalPredsLog[[as.numeric(input$predSelServer)]]
-    if (input$predForm == 'raw') {
+    if (input$predForm == 'raw' | is.null(selRasLog)) {
       selRas <- selRasRaw
-    } else if (input$predForm == 'log') {
+    } else if (input$predForm == 'log' & !is.null(selRasLog)) {
       selRas <- selRasLog
     }
     rasVals <- getValues(selRas)
@@ -953,7 +953,7 @@ shinyServer(function(input, output, session) {
                             values = rasVals, layerId = 1)
       }
 
-      proxy %>% addRasterImage(values$predCur, colors = pal, opacity = 0.5)
+      proxy %>% addRasterImage(values$predCur, colors = pal, opacity = 0.7)
     }
   })
 
