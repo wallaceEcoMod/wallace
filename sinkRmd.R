@@ -6,17 +6,11 @@ sinkRmdTitle <- function(title = "Code description") {
   sink(file = "temp.Rmd")
   cat("---\n")
   cat(paste("title:", paste("\'", title, "\'", sep ="")))
-  cat("\noutput:")
-  cat("\n html_document:")
-  cat("\n  toc: true")
-  cat("\n pdf_document:")
-  cat("\n  toc: true")
   cat("\n---")
   cat("\n\n## About")
-  cat("\n\nThis is an R Markdown document. Here all R code history used in the web app Wallace is registered. With this document users can track their own analysis and recreate it in R itself.")
-  cat("\nMarkdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents (for more details on using R Markdown see <http://rmarkdown.rstudio.com>).")
+  cat("\n\nThis is an R Markdown document (more information on http://rmarkdown.rstudio.com/). Here all R code history used in the web app Wallace is registered. With this document users can track their own analysis and recreate it in R itself.")
   cat("\n\n## Packages installation")
-  cat("\n\nWallace makes use of the following R packages, before start, install them:")
+  cat("\n\nWallace uses the following R packages that need to be installed before starting:")
   cat("\n```{r, eval = FALSE}\n")
   cat("install.packages(devtools)\n")
   cat("install.packages(rgbif)\n")
@@ -38,7 +32,8 @@ sinkRmdTitle <- function(title = "Code description") {
   cat("library(rgeos)\n")
   cat("library(repmis)")
   cat("\n```")
-  cat("\n\nWallace also includes some functions developed to help the package integrations and some additional small functionalities, for this reason it is necessary to load the file `functions.R` which can be found in Wallace's github page(https://github.com/ndimhypervol/wallace). Download the file and place it in your workdirectory(use `getwd()` to check where is it), after you can load it:")
+  cat("\n\nWallace also includes several functions developed to help integrate different packages and
+some additional small functionalities.  For this reason, it is necessary to load the file 'functions.R', which can be found on Wallace's GitHub page (https://github.com/ndimhypervol/wallace). Download the file, place it in your working directory ( use `getwd()`), and then load it:")
   cat("\n```{r}\n")
   cat("source('functions.R')")
   cat("\n```")
@@ -53,6 +48,9 @@ sinkRmd <- function(x, comment) {
   call.line[1:2] <- call.line[2:1]
   call.line <- gsub("input\\$", "", call.line)
   call.line <- gsub("values\\$", "", call.line)
+  if (sum(nchar(call.line)) > 80) {
+    call.line[3] <- (gsub(", ", ",\n   ", call.line[3]))
+  }
   sink(file = "temp.Rmd", append = TRUE)
   cat("\n\n")
   cat(comment)
@@ -71,10 +69,15 @@ sinkRmdmult <- function(x, comment) {
   call.line <- gsub("input\\$", "", call.line)
   call.line <- gsub("values\\$", "", call.line)
   rmdprint <- paste0(call.line, "\n")
+  for(i in 1:length(rmdprint)) {
+    if (sum(nchar(rmdprint[i])) > 80) {
+      rmdprint[i] <- (gsub(", ", ",\n     ", rmdprint[i]))
+    }
+  }
   sink(file = "temp.Rmd", append = TRUE)
   cat("\n\n")
   cat(comment, sep = "")
-  cat("\n```{r, warning = FALSE, message = FALSE, fig.keep = 'none', results = 'hide'}\n ")
+  cat("\n```{r, warning = FALSE, message = FALSE, results = 'hide'}\n ")
   cat(rmdprint)
   cat("\n```")
   sink()
@@ -109,7 +112,7 @@ sinkFalse <- function(x, comment) {
   sink(file = "temp.Rmd", append = TRUE)
   cat("\n\n")
   cat(comment, sep = "")
-  cat("\n```{r, warning = FALSE, message = FALSE, fig.keep = 'none', results = 'hide'}\n")
+  cat("\n```{r, warning = FALSE, message = FALSE, results = 'hide'}\n")
   cat(x)
   cat("\n```")
   sink()

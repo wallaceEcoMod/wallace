@@ -56,25 +56,25 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goName, {
 
     # rmd code begin
-    sinkRmdTitle()
+    sinkRmdTitle(paste("Code description for Wallace session", Sys.Date()))
     sinkRmdob(
       input$gbifName,
       paste("## Obtain Occurrence Data",
             "\n\nThe analysis will be done for the following species:"))
     sinkRmdob(
       input$occurrences,
-      "The search of occurrences will be limited to:")
+      "The search of occurrences will be limited to the user-specified number of records:")
     # rmd code end
 
     writeLog("...Searching GBIF...")
     sinkRmd(
       results <- occ_search(scientificName = input$gbifName, limit = input$occurrences,
                             hasCoordinate = TRUE),
-      "Apply the function to obtain the gbif records for the selected species:")
+      "The following command obtains occurrence records of the selected species from GBIF:")
 
     sinkRmd(
       values$gbifOrig <- results,
-      "Rename the results:")
+      "Rename the results (Wallace internal needs):")
 
     # Control species not found
     if (results$meta$count == 0) {
@@ -83,14 +83,15 @@ shinyServer(function(input, output, session) {
 
     if (results$meta$count != 0) {
       sinkRmdmult(c(
-        cols <- c('name','decimalLongitude','decimalLatitude', 'country', 'stateProvince',
+        cols <- c('name','decimalLongitude','decimalLatitude',
+                  'country', 'stateProvince',
                   'locality', 'elevation', 'basisOfRecord'),
         results <- fixcols(cols, results),
         locs.in <- results$data[!is.na(results$data[,3]),][,cols],
         locs <- remDups(locs.in),
         names(locs)[2:3] <- c('lon', 'lat'),
         locs$origID <- row.names(locs)),
-        "Occurrence table changes:")
+        "Change the named of the occurrence record table:")
 
 
       locs$pop <- unlist(apply(locs, 1, popUpContent))
@@ -98,7 +99,7 @@ shinyServer(function(input, output, session) {
         values$gbifoccs <- locs,
         values$gbifoccs <- remDups(values$gbifoccs),
         values$df <- values$gbifoccs),
-        "Adjusting table values:")
+        "Adjust the formatting of the results table:")
 
       sinkSub("## Process Occurrence Data")
 
@@ -134,7 +135,7 @@ shinyServer(function(input, output, session) {
   # functionality for input of user CSV
   observe({
     if (is.null(input$userCSV)) return()
-    sinkRmdTitle()
+    sinkRmdTitle(paste("Code description for Wallace session", Sys.Date()))
     sinkRmdob(input$userCSV$datapath, "User .csv path with occurrence data:")
     sinkRmd(
       inFile <- read.csv(input$userCSV$datapath, header = TRUE),
@@ -173,6 +174,7 @@ shinyServer(function(input, output, session) {
     sinkFalse("gbifoccs <- addCSVpts(gbifoccs)", "Add the occurrences:")
     sinkFalse("df <- NULL", "Create a NULL gbifoccs object:")
     sinkFalse("df <- addCSVpts(df)", "Add the occurrences:")
+    sinkSub("## Process Occurrence Data")
 
     values$gbifoccs <- isolate(addCSVpts(values$gbifoccs))
     values$df <- isolate(addCSVpts(values$df))
@@ -208,7 +210,7 @@ shinyServer(function(input, output, session) {
       write.csv(values$gbifOrig$data, file, row.names=FALSE)
     }
   )
-  
+
   # governs point removal behavior and modifies tables in "values"
   observeEvent(input$remove, {
     if (!is.null(values$ptsSel)) {
@@ -216,13 +218,16 @@ shinyServer(function(input, output, session) {
                "Reset Localities" to start over.')
       return()}
     isolate({
-      rows <- as.numeric(rownames(values$df))
-      remo <- which(input$remLoc == rows)
-      if (length(remo) > 0) {
+      sinkRmdob(input$remLoc, "Occurrence point ID to be removed:")
+      sinkRmdmult(c(
+      rows <- as.numeric(rownames(values$df)),
+      remo <- which(input$remLoc == rows),
+      if(length(remo) > 0) {
         values$removed <- values$df[remo, ]
         values$df <- values$df[-remo, ]
         values$gbifoccs <- values$gbifoccs[-remo, ]
-        }
+        }),
+      "Remove selected user selected points by ID:")
     })
   })
 
@@ -457,7 +462,7 @@ shinyServer(function(input, output, session) {
       ## Check if predictor path exists. If not, use the dismo function getData()
       withProgress(message = "Downloading WorldClim data...", {
         sinkSub("## Obtain Environmental Data")
-        sinkRmdob(input$pred, "Resolution of worldClim data:")
+        sinkRmdob(input$pred, "User-selected resolution of WorldClim (http://www.worldclim.org/) data to use:")
         sinkRmd(
           values$preds <- getData(name = "worldclim", var = "bio", res = input$pred),
           "Donwload environmental data")
@@ -477,7 +482,7 @@ shinyServer(function(input, output, session) {
         }
         sinkRmd(
           values$df <- values$df[!is.na(locs.vals),],
-          "Remove occurrence records without environmental data:")
+          "Remove occurrence records that have NA for environmental data")
 
         if (!is.null(values$inFile)) {
           sinkRmd(
@@ -615,7 +620,7 @@ shinyServer(function(input, output, session) {
       sinkRmdmult(c(
         predCrop <- crop(values$preds, values$backgExt),
         values$predsMsk <- mask(predCrop, values$backgExt)),
-        "Mask environmental variables by the background:")
+        paste0("Mask environmental variables by ", values$bbTxt, ":"))
     })
     isolate(writeLog(paste0('* Environmental data masked by ', values$bbTxt, '.')))
   })
@@ -795,9 +800,9 @@ shinyServer(function(input, output, session) {
     }
 
     if (input$modSelect == "Maxent") {
-      sinkRmdob(input$rms, "Define regularization multipliers (RM) values (penalty against complexity):")
+      sinkRmdob(input$rms, "Define regularization multiplier (RM) values:")
       sinkRmdob(input$rmsBy, "Define RM steps:")
-      sinkRmdob(input$fcs, "Define feature classes (flexibility of modeled response):")
+      sinkRmdob(input$fcs, "Define feature classes:")
       sinkRmd(
         rms <- seq(input$rms[1], input$rms[2], input$rmsBy),
         "Sequence the RM steps:")
@@ -812,8 +817,8 @@ shinyServer(function(input, output, session) {
                        RMvalues = rms, fc = input$fcs, method = 'user', occ.grp = values$modParams$occ.grp,
                        bg.grp = values$modParams$bg.grp, updateProgress = updateProgress)
 
-      sinkFalse(paste0("e <- ENMevaluate(modParams$occ.pts, predsMsk, bg.coords = modParams$bg.pts",
-                       " RMvalues = rms, fc = fcs, method = 'user', occ.grp = modParams$occ.grp,",
+      sinkFalse(paste0("e <- ENMevaluate(modParams$occ.pts, predsMsk, bg.coords = modParams$bg.pts,\n    ",
+                       " RMvalues = rms, fc = fcs, method = 'user', occ.grp = modParams$occ.grp,\n    ",
                         " bg.grp = modParams$bg.grp)"),
                 "Evaluate Maxent model results:")
 
@@ -824,26 +829,26 @@ shinyServer(function(input, output, session) {
         values$evalPredsLog <- e@predictions.log),
         "Define the object e as eval:")
 
-      sinkRmd(c(
+      sinkRmdmult(c(
         occValsRaw <- extract(e@predictions.raw, values$modParams$occ.pts),
         occValsLog <- extract(e@predictions.log, values$modParams$occ.pts)),
         "Prediction values:")
-      sinkRmd(c(
+      sinkRmdmult(c(
         values$mtpsRaw <- apply(occValsRaw, MARGIN = 2, min),
         values$mtpsLog <- apply(occValsLog, MARGIN = 2, min)),
         "Minimum Training Omission (ORmin) threshold:")
       if (nrow(occValsRaw) < 10) {
-        sinkRmd(c(
+        sinkRmdmult(c(
           n90Raw <- floor(nrow(occValsRaw) * 0.9),
           n90Log <- floor(nrow(occValsLog) * 0.9)),
           "Define the number of 10% higher values:")
       } else {
-        sinkRmd(c(
+        sinkRmdmult(c(
           n90Raw <- ceiling(nrow(occValsRaw) * 0.9),
           n90Log <- ceiling(nrow(occValsLog) * 0.9)),
           "Define the number of 10% higher values:")
       }
-      sinkRmd(c(
+      sinkRmdmult(c(
         values$p10sRaw <- apply(occValsRaw, MARGIN = 2, function(x) rev(sort(x))[n90Raw]),
         values$p10sLog <- apply(occValsLog, MARGIN = 2, function(x) rev(sort(x))[n90Log])),
         "Apply 10% threshold prediction:")
@@ -979,7 +984,7 @@ shinyServer(function(input, output, session) {
         zip(zipfile=file, files=fs, extras = '-j')
       } else {
         res <- writeRaster(values$predCur, file, format = input$predFileType, overwrite = TRUE)
-        file.rename(res@file@name, file)        
+        file.rename(res@file@name, file)
       }
     }
   )
