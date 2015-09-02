@@ -765,7 +765,7 @@ shinyServer(function(input, output, session) {
                           values$predsMsk),
         values$evalTbl <- e$results,
         values$evalMods <- e$models,
-        names(e@predictions) <- "Classic BIOCLIM",
+        names(e$predictions) <- "Classic BIOCLIM",
         values$evalPreds <- e$predictions,
         occVals <- extract(e$predictions, values$modParams$occ.pts),
         values$mtps <- min(occVals)),
@@ -813,6 +813,7 @@ shinyServer(function(input, output, session) {
       updateProgress <- function(value = NULL, detail = NULL) {
         progress$inc(amount = 1/n, detail = detail)
       }
+      print('Z')
       e <- ENMevaluate(values$modParams$occ.pts, values$predsMsk, bg.coords = values$modParams$bg.pts,
                        RMvalues = rms, fc = input$fcs, method = 'user', occ.grp = values$modParams$occ.grp,
                        bg.grp = values$modParams$bg.grp, updateProgress = updateProgress)
@@ -830,28 +831,26 @@ shinyServer(function(input, output, session) {
         "Define the object e as eval:")
 
       sinkRmdmult(c(
-        occValsRaw <- extract(e@predictions.raw, values$modParams$occ.pts),
-        occValsLog <- extract(e@predictions.log, values$modParams$occ.pts)),
+        occVals <- extract(e@predictions.raw, values$modParams$occ.pts)),
         "Prediction values:")
-      sinkRmdmult(c(
-        values$mtpsRaw <- apply(occValsRaw, MARGIN = 2, min),
-        values$mtpsLog <- apply(occValsLog, MARGIN = 2, min)),
+      print('D')
+      sinkRmdmult(
+        values$mtps <- apply(occVals, MARGIN = 2, min),
         "Minimum Training Omission (ORmin) threshold:")
-      if (nrow(occValsRaw) < 10) {
-        sinkRmdmult(c(
-          n90Raw <- floor(nrow(occValsRaw) * 0.9),
-          n90Log <- floor(nrow(occValsLog) * 0.9)),
+      if (nrow(occVals) < 10) {
+        sinkRmdmult(
+          n90 <- floor(nrow(occVals) * 0.9),
           "Define the number of 10% higher values:")
       } else {
-        sinkRmdmult(c(
-          n90Raw <- ceiling(nrow(occValsRaw) * 0.9),
-          n90Log <- ceiling(nrow(occValsLog) * 0.9)),
+        sinkRmdmult(
+          n90 <- ceiling(nrow(occVals) * 0.9),
           "Define the number of 10% higher values:")
       }
-      sinkRmdmult(c(
-        values$p10sRaw <- apply(occValsRaw, MARGIN = 2, function(x) rev(sort(x))[n90Raw]),
-        values$p10sLog <- apply(occValsLog, MARGIN = 2, function(x) rev(sort(x))[n90Log])),
+      print('E')
+      sinkRmdmult(
+        values$p10s <- apply(occVals, MARGIN = 2, function(x) rev(sort(x))[n90]),
         "Apply 10% threshold prediction:")
+      print('F')
 
       # make datatable of results df
       output$evalTbl <- DT::renderDataTable({DT::datatable(cbind(e@results[,1:3], round(e@results[,4:15], digits=3)))})
@@ -919,32 +918,24 @@ shinyServer(function(input, output, session) {
 
   # set predCur based on user selection of threshold
   observeEvent(input$plotPred, {
+    selRasRaw <- values$evalPreds[[as.numeric(input$predSelServer)]]
+    selRasLog <- values$evalPredsLog[[as.numeric(input$predSelServer)]]
     if (input$predForm == 'raw') {
-      selRas <- values$evalPreds[[as.numeric(input$predSelServer)]]
-      rasVals <- getValues(selRas)
-      rasVals <- rasVals[!is.na(rasVals)]
-      if (input$predThresh == 'mtp') {
-        mtp <- values$mtpsRaw[as.numeric(input$predSelServer)]
-        values$predCur <- selRas > mtp
-      } else if (input$predThresh == 'p10') {
-        p10 <- values$p10sRaw[as.numeric(input$predSelServer)]
-        values$predCur <- selRas > p10
-      } else {
-        values$predCur <- selRas
-      }
+      selRas <- selRasRaw
     } else if (input$predForm == 'log') {
-      selRas <- values$evalPredsLog[[as.numeric(input$predSelServer)]]
-      rasVals <- c(getValues(selRas), 0, 1)
-      rasVals <- rasVals[!is.na(rasVals)]
-      if (input$predThresh == 'mtp') {
-        mtp <- values$mtpsLog[as.numeric(input$predSelServer)]
-        values$predCur <- selRas > mtp
-      } else if (input$predThresh == 'p10') {
-        p10 <- values$p10sLog[as.numeric(input$predSelServer)]
-        values$predCur <- selRas > p10
-      } else {
-        values$predCur <- selRas
-      }
+      selRas <- selRasLog
+    }
+    rasVals <- getValues(selRas)
+    rasVals <- rasVals[!is.na(rasVals)]    
+    
+    if (input$predThresh == 'mtp') {
+      mtp <- values$mtps[as.numeric(input$predSelServer)]
+      values$predCur <- selRasRaw > mtp
+    } else if (input$predThresh == 'p10') {
+      p10 <- values$p10s[as.numeric(input$predSelServer)]
+      values$predCur <- selRasRaw > p10
+    } else {
+      values$predCur <- selRas
     }
     values$rasName <- names(selRas)
 

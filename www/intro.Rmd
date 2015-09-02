@@ -18,34 +18,6 @@ At each step of Wallace, we provide guidance for the user, both regarding data-r
 
 Wallace currently allows users to harness GBIF data and build niche/distributional models with the techniques BIOCLIM and Maxent. Depending on the goals of the study (and the natural history of the species), the particular input predictor variables and relevant study regions will vary. However, two common data needs remain constant: 1) georeferenced occurrence records of the study species; and 2) raster grids of predictor variables (e.g., climate or land-cover). Here, we concentrate on implementations of BIOCLIM and Maxent (Phillips et al. 2006; Booth et al. 2014). Both use data regarding the species’ presence (i.e., without information on absence or non-detection). Maxent also requires a sample of “background” pixels that characterize the environments available in the study region, but BIOCLIM does not. Although Wallace now models one species at a time, relatively minor modifications would allow for batch processing of multiple species. Later expansion is ripe for inclusion of other techniques for building these kinds of models, as well as approaches for presence–absence modeling and occupancy modeling (which uses repeated samples at the same site). Ultimately, we hope that other researchers will add important additional downstream analyses that use the output of niche/distributional models, such as conservation planning tools and macroecological analyses.  
 
-
-At present, Wallace includes the following steps and modules, as well as the opportunity to download a commented and executable history of the analyses run in a given session:  
-
-**STEP 1**: *Obtain Occurrence Data*  
-Options: GBIF; user-specified  
-
-**STEP 2:** *Process Occurrence Data*  
-Options: Select Localities; Spatial Thin  
-
-**STEP 3:** *Obtain Environmental Data*  
-Options: WorldClim  
-
-**STEP 4:** *Process Environmental Data*  
-Options: Select Study Region (including user-specified)  
-
-**STEP 5:** *Partition Occurrence Data*  
-Options: Non-spatial Partition; or Spatial Partition  
-
-**STEP 6:** *Build and Evaluate Niche Model*  
-Options: BIOCLIM; Maxent  
-
-**STEP 7:** *Visualize Model Results*  
-Options: Map Prediction  
-
-**Download Code History**  
-
-**About**  
-
 We dedicate this software to Alfred Russel Wallace, the co-discoverer of evolution by natural selection and the founder of the field of biogeography.  
 
 <p>
