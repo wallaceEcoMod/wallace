@@ -1,7 +1,0 @@
----
-title: "tab6content"
-output: html_document
----
-<p align="justify">
-The output of niche/distribution models varies greatly depending on model settings, in particular those affecting the level of model complexity. This step automates the tedious building of a suite of candidate models with differing limitations on complexity. Furthermore, it quantifies their performance on test records. These metrics can aid the user in selecting optimal settings.
-</p>

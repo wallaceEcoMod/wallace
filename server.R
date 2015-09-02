@@ -651,9 +651,9 @@ shinyServer(function(input, output, session) {
       if (input$partSelect == 'nsp') {
         updateRadioButtons(session, 'partSelect2', choices = list("Jackknife (k = n)" = "jack", "Random k-fold" = "random"))
       } else if (input$partSelect == 'sp') {
-        updateRadioButtons(session, 'partSelect2', choices = list("block (k = 4)" = "block",
-                                                                  "checkerboard1 (k = 2)" = "cb1",
-                                                                  "checkerboard2 (k = 4)" = "cb2"))
+        updateRadioButtons(session, 'partSelect2', choices = list("Block (k = 4)" = "block",
+                                                                  "Checkerboard 1 (k = 2)" = "cb1",
+                                                                  "Checkerboard 2 (k = 4)" = "cb2"))
       }
     }
   })

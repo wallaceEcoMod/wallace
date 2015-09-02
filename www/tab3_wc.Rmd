@@ -1,0 +1,10 @@
+---
+title: "tab3content"
+output: html_document
+---
+**BACKGROUND**  
+For modeling a species’ environmental requirements, the user must choose which predictor variables to use. These data are typically in the form of raster grids. For models aiming to characterize the species’ requirements and the areas suitable for it (and for transfer across space and time), predictor variables should be plausible environmental determinants of the species’ range limits, or likely correlated with them (Austin 2002; Anderson 2013). The WorldClim project provides bioclimatic variables for the Earth’s land surfaces for all continents except Antarctica. Monthly data from weather stations were spatially extrapolated using elevation as a covariate; then, 19 derived bioclimatic variables were generated, reflecting various apects of temperature and precipitation (Hijmans et al. 2005).  
+
+**IMPLEMENTATION**  
+The Module “WorldClim” relies on the dismo R package to download environmental variables from the WorldClim website. Currently, these variables are made available at 3 resolutions. The first time a user selects a particular resolution on a given server or local computer, Wallace downloads the 19 variables from www.worldclim.org; upon subsequent uses, it uses the files previously archived. Future versions could include alternative sets of environmental variables. Addition of variables for marine environments or past time periods (for analyses with fossil occurrence records) would be especially useful.  
+

@@ -1,5 +1,5 @@
 ---
-title: "tab8Ccontent"
+title: "tab9Ccontent"
 output: html_document
 ---
 
@@ -24,7 +24,7 @@ output: html_document
 <br></br>
 <br></br>
 <br></br>
+<br></br>
 
-<img src="gc_logo.jpg" height="140" style="PADDING-TOP: 70px; PADDING-RIGHT: 5px; PADDING-RIGHT: 5px;" align = "left">
-<img src="city_logo.jpg" width="100" style="PADDING-TOP: 75px; PADDING-RIGHT: 5px; " align = "left">
-
+<img src="gc_logo.jpg" height="70" style="PADDING-RIGHT: 5px; PADDING-RIGHT: 5px;" align = "left">
+<img src="city_logo.jpg" width="100" style="PADDING-TOP: 5px; PADDING-RIGHT: 5px; " align = "left">
