@@ -3,7 +3,10 @@ title: "tab6_bc"
 output: html_document
 ---
 **BACKGROUND**  
+<p align="justify">
 BIOCLIM is one of the simplest techniques for estimating a species’ niche and potential distribution. It delimits an environmental envelope (the n-dimensional hypervolume of Hutchinson; Booth et al. 2014), with one dimension for each environmental variable. In this conceptualization, the species’ tolerances (upper and lower limits based on observed localities) are characterized independently for each axis.  
- 
-**IMPLEMENTATION**  
+</p>
+**IMPLEMENTATION**
+<p align="justify">
 Wallace makes BIOCLIM models using custom code modified from the R package ENMeval (Muscarella et al. 2014) as well as the dismo R package. Although other options could be added in the future (such as trimming percentiles of the tails of each variable), the current (classical) implementation considers the full observed range for each variable.  
+</p>
