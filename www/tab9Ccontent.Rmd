@@ -10,7 +10,7 @@ output: html_document
 <br></br>
 <br></br>
 
-<img src="UConn_logo.tiff" height="75" style="PADDING-TOP: 20px; PADDING-RIGHT: 5px; " align = "left">
+<img src="UConn_logo.jpg" height="75" style="PADDING-TOP: 20px; PADDING-RIGHT: 5px; " align = "left">
 <br></br>
 <br></br>
 
