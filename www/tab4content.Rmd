@@ -1,7 +1,0 @@
----
-title: "tab4content"
-output: html_document
----
-<p align="justify">
-For Maxent and many other niche/distribution modeling approaches, selection of a study region is critical because it defines the pixels whose environmental values are compared with those of the pixels holding occurrence records of the species (Anderson & Raza 2010; Barve et al. 2011). As one way to do so, the user can choose a bounding box or minimum convex polygon around the occurrence records, as well as buffer distance for either.
-</p>

@@ -1,0 +1,9 @@
+---
+title: "tab4content"
+output: html_document
+---
+**BACKGROUND**  
+For many niche/distribution modeling approaches (including Maxent; see Step 6), selection of a study region is critical because it defines the grid cells (of absence, pseudoabsence, or background information; Anderson 2013): p. 14) whose environmental values are compared with those of the cells that hold occurrence localities of the species. Various principles for selecting a study region have been set forth in the literature. Some emphasize the geographic or environmental domain over which to build the model, whereas others suggest identification of areas where the species is likely to be at environmental equilibrium with the predictor variables (Anderson and Raza 2010; Barve et al. 2011; Anderson 2013).  
+
+**IMPLEMENTATION**  
+Module “Select Study Region” provides two simple ways to delimit a study region, or accepts a user-specified polygon. Here, the user can choose either a bounding box or a minimum convex polygon around the localities, as well as a buffer distance. Wallace then clips the environmental grids. This module relies on custom code as well as important functions from the R packages rgeos and sp.  
