@@ -660,7 +660,7 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$goPart, {
     if (is.null(values$predsMsk)) {
-      writeLog("* WARNING: Mask the environmental variables first in 4) Process Env Data.")
+      writeLog("* WARNING: Clip the environmental variables by the background polygon first in 4) Process Env Data.")
       return()
     }
 
@@ -765,7 +765,7 @@ shinyServer(function(input, output, session) {
                           values$predsMsk),
         values$evalTbl <- e$results,
         values$evalMods <- e$models,
-        names(e@predictions) <- "Classic BIOCLIM",
+        names(e$predictions) <- "Classic BIOCLIM",
         values$evalPreds <- e$predictions,
         occVals <- extract(e$predictions, values$modParams$occ.pts),
         values$mtps <- min(occVals)),
