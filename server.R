@@ -377,14 +377,14 @@ shinyServer(function(input, output, session) {
           longi <- values$prethinned[,2]
           proxy %>% fitBounds(min(longi-1), min(lati-1), max(longi+1), max(lati+1))
           proxy %>% addCircleMarkers(data = values$prethinned, lat = ~latitude, lng = ~longitude,
-                                     radius = 5, color = 'red',
-                                     fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
+                                     radius = 5, color = 'red', fillOpacity = 0.8,
+                                     fill = TRUE, fillColor = 'blue', weight = 2, popup = ~pop)
           proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
                                      radius = 5, color = 'red',
-                                     fill = TRUE, fillColor = 'blue',
+                                     fill = TRUE, fillColor = 'red',
                                      fillOpacity = 0.8, weight = 2, popup = ~pop)
           proxy %>% addLegend("topright", colors = c('red', 'blue'),
-                              title = "GBIF Records", labels = c('removed', 'retained'),
+                              title = "GBIF Records", labels = c('retained', 'removed'),
                               opacity = 1, layerId = 1)
         }
       }
@@ -700,38 +700,43 @@ shinyServer(function(input, output, session) {
     }
 
     if (input$partSelect2 == 'block') {
+      pt <- 'block'
       sinkRmd(
         group.data <- get.block(occs, values$bg.coords),
-        paste("Data partition by", input$partSelect2, "method:"))
+        paste("Data partition by block method:"))
     }
     if (input$partSelect2 == 'cb1') {
+      pt <- "checkerboard 1"
       sinkRmdob(input$aggFact, "Define the aggregation factor:")
       sinkRmd(
         group.data <- get.checkerboard1(occs, values$predsMsk, values$bg.coords, input$aggFact),
-        paste("Data partition by", input$partSelect2, "method:"))
+        paste("Data partition by checkerboard 1 method:"))
     }
     if (input$partSelect2 == 'cb2') {
+      pt <- "checkerboard 2"
       sinkRmdob(input$aggFact, "Define the aggregation factor:")
       sinkRmd(
         group.data <- get.checkerboard2(occs, values$predsMsk, values$bg.coords, input$aggFact),
-        paste("Data partition by", input$partSelect2, "method:"))
+        paste("Data partition by checkerboard 2 method:"))
     }
     if (input$partSelect2 == 'jack') {
+      pt <- "jackknife"
       sinkRmd(
         group.data <- get.jackknife(occs, values$bg.coords),
-        paste("Data partition by", input$partSelect2, "method:"))
+        paste("Data partition by jackknife method:"))
     }
     if (input$partSelect2 == 'random') {
+      pt <- paste0("random k-fold (k = ", input$kfolds, ")")
       sinkRmdob(input$kfolds, "Define the number of folds:")
       sinkRmd(
         group.data <- get.randomkfold(occs, values$bg.coords, input$kfolds),
-        paste("Data partition by", input$partSelect2, "method:"))
+        paste("Data partition by random k-fold method:"))
     }
 
     sinkRmd(
       values$modParams <- list(occ.pts=occs, bg.pts=values$bg.coords, occ.grp=group.data[[1]], bg.grp=group.data[[2]]),
       "Define modelling parameters:")
-    writeLog(paste("* Data partition by", input$partSelect2, "method."))
+    writeLog(paste("* Data partition by", pt, "method."))
     #newColors <- brewer.pal(max(group.data[[1]]), 'Accent')
     #     values$df$parts <- factor(group.data[[1]])
     #     newColors <- colorFactor(rainbow(max(group.data[[1]])), values$df$parts)
