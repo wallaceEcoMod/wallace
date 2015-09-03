@@ -926,14 +926,16 @@ shinyServer(function(input, output, session) {
 
   # set predCur based on user selection of threshold
   observeEvent(input$plotPred, {
+    proxy %>% removeImage('r1')  # remove current raster
     selRasRaw <- values$evalPreds[[as.numeric(input$predSelServer)]]
     selRasLog <- values$evalPredsLog[[as.numeric(input$predSelServer)]]
     if (input$predForm == 'raw' | is.null(selRasLog)) {
       selRas <- selRasRaw
+      rasVals <- getValues(selRas)
     } else if (input$predForm == 'log' & !is.null(selRasLog)) {
       selRas <- selRasLog
+      rasVals <- c(getValues(selRas), 0, 1)  # set to 0-1 scale
     }
-    rasVals <- getValues(selRas)
     rasVals <- rasVals[!is.na(rasVals)]
 
     if (input$predThresh == 'mtp') {
@@ -961,7 +963,7 @@ shinyServer(function(input, output, session) {
                             values = rasVals, layerId = 1)
       }
 
-      proxy %>% addRasterImage(values$predCur, colors = pal, opacity = 0.7)
+      proxy %>% addRasterImage(values$predCur, colors = pal, opacity = 0.7, layerId = 'r1')
     }
   })
 
