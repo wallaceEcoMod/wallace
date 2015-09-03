@@ -54,6 +54,7 @@ shinyServer(function(input, output, session) {
 
   # query GBIF based on user input, remove duplicate records
   observeEvent(input$goName, {
+    if (input$gbifName == "") return()
 
     # rmd code begin
     sinkRmdTitle(paste("Code description for Wallace session", Sys.Date()))
@@ -119,6 +120,10 @@ shinyServer(function(input, output, session) {
                    Duplicated records removed [', nrow(locs.in) - nrow(locs), "]: Remaining records [", nrow(locs), "].")
       }}}}
       writeLog(x)
+      
+      output$gbifDnld <- renderUI({
+        downloadButton('downloadGBIFcsv', "Download Occurrence CSV")
+      })
     }
   })
 
@@ -146,13 +151,13 @@ shinyServer(function(input, output, session) {
       return()
     }
     values$inFile <- inFile
-    # make dynamic field selections for ui user-defined kfold groups
-    output$occgrpSel <- renderUI({
-      selectInput('occgrp', 'Occurrence Group Field', names(inFile))
-    })
-    output$bggrpSel <- renderUI({
-      selectInput('bggrp', 'Background Group Field', names(inFile))
-    })
+#     # make dynamic field selections for ui user-defined kfold groups
+#     output$occgrpSel <- renderUI({
+#       selectInput('occgrp', 'Occurrence Group Field', names(inFile))
+#     })
+#     output$bggrpSel <- renderUI({
+#       selectInput('bggrp', 'Background Group Field', names(inFile))
+#     })
     # subset to only occs, not backg, and just fields that match df
     sinkRmdmult(c(
       values$spname <- inFile[1,1],
@@ -221,18 +226,23 @@ shinyServer(function(input, output, session) {
       writeLog('NOTICE: Remove localities by ID before selecting with polygons. Press
                "Reset Localities" to start over.')
       return()}
+    
     isolate({
-      sinkRmdob(input$remLoc, "Occurrence point ID to be removed:")
+      numTest <- input$remLoc %in% row.names(values$df)
+      sinkRmdob(input$remLoc, "Occurrence locality ID to be removed:")
       sinkRmdmult(c(
         rows <- as.numeric(rownames(values$df)),
         remo <- which(input$remLoc == rows),
-        if(length(remo) > 0) {
+        if (length(remo) > 0) {
           values$removed <- values$df[remo, ]
           values$df <- values$df[-remo, ]
           values$gbifoccs <- values$gbifoccs[-remo, ]
         }),
-        "Remove selected user selected points by ID:")
-      writeLog(paste0("* Removed locality with ID = ", input$remLoc, "."))
+        "Remove user-selected locality by ID:")
+      
+      if (numTest) {
+        writeLog(paste0("* Removed locality with ID = ", input$remLoc, "."))
+      }
     })
   })
 
