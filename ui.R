@@ -11,6 +11,14 @@ library(shinyapps)
 library(leaflet)
 library(DT)
 
+actionButton <- function(inputId, label, btn.style = "" , css.class = "") {
+  if ( btn.style %in% c("primary","info","success","warning","danger","inverse","link")) {
+    btn.css.class <- paste("btn",btn.style,sep="-")
+  } else btn.css.class = ""
+  
+  tags$button(id=inputId, type="button", class=paste("btn action-button",btn.css.class,css.class,collapse=" "), label)
+}
+
 # function to make two small input boxes next to each other
 # textInputRow<-function (inputId, label, value = "")
 # {
@@ -50,7 +58,7 @@ shinyUI(pageWithSidebar(title,
                                                                        ),
                                                                        HTML('<hr>'),
                                                                        textInput("gbifName", label = "Enter scientific name of species (format: genus species)"),
-                                                                       actionButton("goName", "Search GBIF"),
+                                                                       actionButton("goName", "Search GBIF", btn.style = 'primary'),
                                                                        br(), br(),
                                                                        sliderInput("occurrences", "Maximum number of occurrences:", min = 1, max = 500, value = 20),
                                                                        br(),
@@ -89,7 +97,7 @@ shinyUI(pageWithSidebar(title,
                                                                        ),
                                                                        HTML('<hr>'),
                                                                        numericInput("remLoc",  label="Enter the record ID to be removed", value = 0),
-                                                                       actionButton("remove", "Remove Locality"),
+                                                                       actionButton("remove", "Remove Locality", btn.style = 'warning'),
                                                                        HTML('<hr>')),
                                                       conditionalPanel("input.procOccSelect == 'spthin'",
                                                                        div('Module: Spatial Thin', id="mod"),
@@ -102,7 +110,7 @@ shinyUI(pageWithSidebar(title,
                                                                        ),
                                                                        HTML('<hr>'),
                                                                        numericInput("thinDist", label = "Thinning distance (km)", value = 0),
-                                                                       actionButton("goThin", "Thin Localities"),
+                                                                       actionButton("goThin", "Thin Localities", btn.style = 'info'),
                                                                        br(), br(),
                                                                        downloadButton('downloadThincsv', "Download Occurrence CSV"),
                                                                        HTML('<hr>')
@@ -208,12 +216,12 @@ shinyUI(pageWithSidebar(title,
                                                       conditionalPanel("input.envProcSelect == 'backg' && (input.backgSelect == 'bb' || input.backgSelect == 'mcp')",
                                                                        numericInput("backgBuf", label = "Study region buffer distance (degree)", value = 0)),
                                                       conditionalPanel("input.envProcSelect == 'backg'",
-                                                                       actionButton("goBackgMask", "Clip Env Data by Polygon (MANDATORY)"), br(), br(),
+                                                                       actionButton("goBackgMask", "Clip Env Data by Polygon", btn.style = 'primary'), br(), br(),
                                                                        selectInput('mskPredsFileType', label = "Select File Type",
                                                                                    choices = list("GRD" = 'raster', "ASCII" = 'ascii', "GeoTIFF" = 'GTiff')),
                                                                        downloadButton('downloadMskPreds', "Download Clipped Env Data"),
                                                                        HTML('<hr>')),
-                                                      "Input flows into this step from Step 3. Step 4 provides clipped grids that can be savede in the
+                                                      "Input flows into this step from Step 3. Step 4 provides clipped grids that can be saved in the
                                                       same formats: GRD, GEOTIFF, or ASCII files. Additionally (for clipping the grids in this step),
                                                       the user may provide a file delimiting the study region via a shapefile or through a CSV that
                                                       contains the vertices of a polygon.",
@@ -274,7 +282,7 @@ shinyUI(pageWithSidebar(title,
                                                       #   uiOutput('occgrpSel'),
                                                       #   uiOutput('bggrpSel')),
                                                       conditionalPanel("input.partSelect == 'sp' || input.partSelect == 'nsp'",
-                                                                       actionButton("goPart", "Partition"), br(), br(),
+                                                                       actionButton("goPart", "Partition", btn.style = 'primary'), br(), br(),
                                                                        downloadButton('downloadPart', "Download Partitioned Data CSV"),
                                                                        HTML('<hr>')),
                                                       includeMarkdown("www/tab5content.Rmd"),
@@ -336,7 +344,7 @@ shinyUI(pageWithSidebar(title,
                                                                        numericInput("rmsBy", label = "RM step value", value = 1)
                                                       ),
                                                       conditionalPanel("input.modSelect == 'BIOCLIM' || input.modSelect == 'Maxent'",
-                                                                       actionButton("goEval", "Build & Evaluate Models"), br(), br(),
+                                                                       actionButton("goEval", "Build & Evaluate Models", btn.style = 'primary'), br(), br(),
                                                                        downloadButton('downloadEvalcsv', "Download Results CSV"), br(), br(),
                                                                        conditionalPanel("input.modSelect == 'Maxent'",
                                                                                         downloadButton('downloadEvalPlots', "Download Plots PNG")),
@@ -394,7 +402,7 @@ shinyUI(pageWithSidebar(title,
                                                                                    choices = list("No threshold" = 'noThresh',
                                                                                                   "ORmin" = 'mtp', "OR10" = 'p10'),
                                                                                    selected = ''),
-                                                                       actionButton("plotPred", "Plot Prediction"),
+                                                                       actionButton("plotPred", "Plot Prediction", btn.style = 'info'),
                                                                        br(), br(),
                                                                        selectInput('predFileType', label = "Select File Type",
                                                                                    choices = list("GRD" = 'raster', "ASCII" = 'ascii', "GeoTIFF" = 'GTiff',
@@ -446,9 +454,9 @@ shinyUI(pageWithSidebar(title,
                                     column(3,
                                            conditionalPanel("input.tabs == 2 && input.procOccSelect == 'selpts'",
                                                             br(),
-                                                            actionButton("selectPoly", "Select With Polygon"),
+                                                            actionButton("selectPoly", "Select With Polygon", btn.style = 'warning'),
                                                             br(), br(),
-                                                            actionButton("erasePoly", "Reset Localities"))
+                                                            actionButton("erasePoly", "Reset Localities", btn.style = 'warning'))
                                     )
                                   ),
                                   br(),
