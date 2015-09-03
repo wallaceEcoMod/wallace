@@ -60,7 +60,7 @@ shinyServer(function(input, output, session) {
     sinkRmdob(
       input$gbifName,
       paste("## Obtain Occurrence Data",
-            "\n\nThe analysis will be done for the following species:"))
+            "\n\nRecord of analysis for:"))
     sinkRmdob(
       input$occurrences,
       "The search of occurrences will be limited to the user-specified number of records:")
@@ -84,14 +84,14 @@ shinyServer(function(input, output, session) {
     if (results$meta$count != 0) {
       sinkRmdmult(c(
         cols <- c('name','decimalLongitude','decimalLatitude',
-                  'country', 'stateProvince',
+                  'institutionCode','country', 'stateProvince',
                   'locality', 'elevation', 'basisOfRecord'),
         results <- fixcols(cols, results),
         locs.in <- results$data[!is.na(results$data[,3]),][,cols],
         locs <- remDups(locs.in),
         names(locs)[2:3] <- c('lon', 'lat'),
         locs$origID <- row.names(locs)),
-        "Change the named of the occurrence record table:")
+        "Change the name of the occurrence record table:")
       
       
       locs$pop <- unlist(apply(locs, 1, popUpContent))
@@ -136,10 +136,10 @@ shinyServer(function(input, output, session) {
   observe({
     if (is.null(input$userCSV)) return()
     sinkRmdTitle(paste("Code description for Wallace session", Sys.Date()))
-    sinkRmdob(input$userCSV$datapath, "User .csv path with occurrence data:")
+    sinkRmdob(input$userCSV$datapath, "User CSV path with occurrence data:")
     sinkRmd(
       inFile <- read.csv(input$userCSV$datapath, header = TRUE),
-      "Load users occurrence data:")
+      "Load user's occurrence data:")
     if (all(names(inFile) %in% c('species', 'longitude', 'latitude'))) {
       writeLog('* ERROR: Please input CSV file with columns "species", "longitude", "latitude".')
       return()
