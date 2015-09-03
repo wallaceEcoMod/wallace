@@ -128,7 +128,7 @@ shinyServer(function(input, output, session) {
     output$occTbl <- DT::renderDataTable({DT::datatable(values$df[, -which(names(values$df) %in% c('origID', 'pop'))],
                                                         options = list(
                                                           autoWidth = TRUE,
-                                                          columnDefs = list(list(width = '40%', targets = 6)),
+                                                          columnDefs = list(list(width = '40%', targets = 7)),
                                                           scrollX=TRUE, scrollY=400
                                                         ))})
   })
@@ -232,6 +232,7 @@ shinyServer(function(input, output, session) {
           values$gbifoccs <- values$gbifoccs[-remo, ]
         }),
         "Remove selected user selected points by ID:")
+      writeLog(paste0("* Removed locality with ID = ", input$remLoc, "."))
     })
   })
 
@@ -428,7 +429,7 @@ shinyServer(function(input, output, session) {
     withProgress(message = "Spatially Thinning Records...", {
       sinkRmdob(input$thinDist, "Thin distance:")
       sinkRmd(
-        output <- thin(values$df, 'lat', 'lon', 'name', thin.par = input$thinDist,
+        output <- thin(values$df, 'latitude', 'longitude', 'species', thin.par = input$thinDist,
                        reps = 100, locs.thinned.list.return = TRUE, write.files = FALSE,
                        verbose = FALSE),
         "Thin occurrence records:"
@@ -539,10 +540,10 @@ shinyServer(function(input, output, session) {
     if (input$backgSelect == 'bb') {
       sinkRmdob(input$backgBuf, "Define the buffer size of the background:")
       sinkRmdmult(c(
-        xmin <- min(values$df$lon) - (input$backgBuf + res(values$preds)[1]),
-        xmax <- max(values$df$lon) + (input$backgBuf + res(values$preds)[1]),
-        ymin <- min(values$df$lat) - (input$backgBuf + res(values$preds)[1]),
-        ymax <- max(values$df$lat) + (input$backgBuf + res(values$preds)[1]),
+        xmin <- min(values$df$longitude) - (input$backgBuf + res(values$preds)[1]),
+        xmax <- max(values$df$longitude) + (input$backgBuf + res(values$preds)[1]),
+        ymin <- min(values$df$latitude) - (input$backgBuf + res(values$preds)[1]),
+        ymax <- max(values$df$latitude) + (input$backgBuf + res(values$preds)[1]),
         bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin), ncol=2),
         values$backgExt <- SpatialPolygons(list(Polygons(list(Polygon(bb)), 1))),
         values$bbTxt <- 'bounding box'),
@@ -746,7 +747,7 @@ shinyServer(function(input, output, session) {
     filename = function() {paste0(nameAbbr(values$gbifoccs), "_partitioned_occs.csv")},
     content = function(file) {
       bg.bind <- cbind(rep('background', nrow(values$bg.coords)), values$bg.coords)
-      names(bg.bind) <- c('name', 'lon', 'lat')
+      names(bg.bind) <- c('species', 'longitude', 'latitude')
       dfbg.bind <-rbind(values$df[,1:3], bg.bind)
       all.bind <- cbind(dfbg.bind, c(values$modParams$occ.grp, values$modParams$bg.grp))
       names(all.bind)[4] <- "partitionID"
