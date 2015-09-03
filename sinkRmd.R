@@ -8,15 +8,16 @@ sinkRmdTitle <- function(title = "Code description") {
   cat(paste("title:", paste("\'", title, "\'", sep ="")))
   cat("\n---")
   cat("\n\n## About")
-  cat("\n\nThis is an R Markdown document (more information on http://rmarkdown.rstudio.com/). Here all R code history used in the web app Wallace is registered. With this document users can track their own analysis and recreate it in R itself.")
-  cat("\n\n## Packages installation")
+  cat("\n\nThis is an R Markdown document (more information on http://rmarkdown.rstudio.com/). 
+      Here all R code history from the Wallace session is recorded and annotated. 
+      With this document, users can track their own analysis and reproduce it by running the code.")
+  cat("\n\n## Package installation")
   cat("\n\nWallace uses the following R packages that need to be installed before starting:")
   cat("\n```{r, eval = FALSE}\n")
   cat("install.packages(devtools)\n")
   cat("install.packages(rgbif)\n")
   cat("install.packages(maptools)\n")
   cat("install.packages(spThin)\n")
-  cat("install.packages(ENMeval)\n")
   cat("install.packages(dismo)\n")
   cat("install.packages(rgeos)\n")
   cat("install.packages(repmis)\n")
@@ -28,14 +29,19 @@ sinkRmdTitle <- function(title = "Code description") {
   cat("library(rgbif)\n")
   cat("library(maptools)\n")
   cat("library(spThin)\n")
-  cat("library(ENMeval)\n")
   cat("library(dismo)\n")
   cat("library(rgeos)\n")
   cat("library(repmis)\n")
   cat("library(maps)")
   cat("\n```")
+  cat("\n\nNow install and load a development version of ENMeval and load it:")
+  cat('install_github("bobmuscarella/ENMeval@edits")\n')
+  cat("library(ENMeval)\n")  
+  
   cat("\n\nWallace also includes several functions developed to help integrate different packages and
-some additional small functionalities.  For this reason, it is necessary to load the file 'functions.R', which can be found on Wallace's GitHub page (https://github.com/ndimhypervol/wallace). Download the file, place it in your working directory ( use `getwd()`), and then load it:")
+      some additional functionality. For this reason, it is necessary to load the file 'functions.R', 
+      which can be found on Wallace's GitHub page (https://github.com/ndimhypervol/wallace). 
+      Download the file, place it in your working directory (use `getwd()`), and then load it:")
   cat("\n```{r}\n")
   cat("source('functions.R')")
   cat("\n```")
