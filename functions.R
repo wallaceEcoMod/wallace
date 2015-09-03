@@ -142,3 +142,13 @@ fixcols <- function(cols, results) {
   }
   return(results)
 }
+
+
+# Normalize function for raw predctions
+normalize <- function(x) {
+  valores <- values(x)
+  pos <- which(!is.na(valores))
+  valores[pos] <- (valores[pos] - min(valores[pos])) / (max(valores[pos]) - min(valores[pos]))
+  values(x) <- valores
+  return(x)
+}
