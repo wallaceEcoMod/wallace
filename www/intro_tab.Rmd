@@ -2,8 +2,7 @@
 title: "intro_tab"
 output: html_document
 ---
-Wallace includes the steps and modules below, as well as the opportunity to download a commented and executable history of the analyses run in a given session. In each step, function buttons are color-coded as follows: <span style="color:mediumblue;font-weight:bold">NECESSARY</span> (necessary to do for analysis to proceed), 
-<span style="color:deepskyblue;font-weight:bold">OPTIONAL</span> (not necessary, but user may choose to do this).
+Wallace includes the following steps and modules, as well as the opportunity to download a commented and executable history of the analyses run in a given session:  
 
 **STEP 1**: *Obtain Occurrence Data*  
 Options: GBIF; user-specified  

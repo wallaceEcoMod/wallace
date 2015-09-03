@@ -39,6 +39,7 @@ shinyServer(function(input, output, session) {
   # disable download buttons
   shinyjs::disable("downloadGBIFcsv")
   shinyjs::disable("downloadThincsv")
+  shinyjs::disable("predDnld")
   shinyjs::disable("downloadMskPreds")
   shinyjs::disable("downloadPart")
   shinyjs::disable("downloadEvalcsv")
@@ -397,12 +398,12 @@ shinyServer(function(input, output, session) {
           longi <- values$prethinned[,2]
           proxy %>% fitBounds(min(longi-1), min(lati-1), max(longi+1), max(lati+1))
           proxy %>% addCircleMarkers(data = values$prethinned, lat = ~latitude, lng = ~longitude,
-                                     radius = 5, color = 'red', fillOpacity = 0.8,
+                                     radius = 5, color = 'red', fillOpacity = 1,
                                      fill = TRUE, fillColor = 'blue', weight = 2, popup = ~pop)
           proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
                                      radius = 5, color = 'red',
                                      fill = TRUE, fillColor = 'red',
-                                     fillOpacity = 0.8, weight = 2, popup = ~pop)
+                                     fillOpacity = 1, weight = 2, popup = ~pop)
           proxy %>% addLegend("topright", colors = c('red', 'blue'),
                               title = "GBIF Records", labels = c('retained', 'removed'),
                               opacity = 1, layerId = 1)
@@ -486,11 +487,11 @@ shinyServer(function(input, output, session) {
       write.csv(values$df[,1:9], file, row.names = FALSE)
     }
   )
+  
+  observe({if (input$pred != "") shinyjs::enable("predDnld")})
 
   # download predictor variables
   observeEvent(input$predDnld, {
-    ## Check if predictor path exists. If not, use the dismo function getData()
-    if (input$pred == "" || input$pred == 'user') return()
     if (!is.null(values$df)) {
 #       sinkFalse(paste0("map(interior = FALSE)\n",
 #                        "points(df$lon, df$lat, col = 'red', bg = 'blue', pch = 21, cex = 1)"),
@@ -857,7 +858,6 @@ shinyServer(function(input, output, session) {
       updateProgress <- function(value = NULL, detail = NULL) {
         progress$inc(amount = 1/n, detail = detail)
       }
-      print('Z')
       e <- ENMevaluate(values$modParams$occ.pts, values$predsMsk, bg.coords = values$modParams$bg.pts,
                        RMvalues = rms, fc = input$fcs, method = 'user', occ.grp = values$modParams$occ.grp,
                        bg.grp = values$modParams$bg.grp, updateProgress = updateProgress)
@@ -877,7 +877,6 @@ shinyServer(function(input, output, session) {
       sinkRmdmult(c(
         occVals <- extract(e@predictions.raw, values$modParams$occ.pts)),
         "Prediction values:")
-      print('D')
       sinkRmd(
         values$mtps <- apply(occVals, MARGIN = 2, min),
         "Minimum Training Omission (ORmin) threshold:")
@@ -890,11 +889,9 @@ shinyServer(function(input, output, session) {
           n90 <- ceiling(nrow(occVals) * 0.9),
           "Define the number of 10% higher values:")
       }
-      print('E')
       sinkRmd(
         values$p10s <- apply(occVals, MARGIN = 2, function(x) rev(sort(x))[n90]),
         "Apply 10% threshold prediction:")
-      print('F')
 
       # make datatable of results df
       output$evalTbl <- DT::renderDataTable({DT::datatable(cbind(e@results[,1:3], round(e@results[,4:15], digits=3)))})
