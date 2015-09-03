@@ -100,6 +100,9 @@ shinyServer(function(input, output, session) {
         values$gbifoccs <- remDups(values$gbifoccs),
         values$df <- values$gbifoccs),
         "Adjust the formatting of the results table:")
+#       sinkFalse(paste0("map(interior = FALSE)\n",
+#                       "points(df$lon, df$lat, col = 'red', bg = 'blue', pch = 21, cex = 1)"),
+#                 "Plot the occurrence data:")
 
       sinkSub("## Process Occurrence Data")
 
@@ -174,6 +177,9 @@ shinyServer(function(input, output, session) {
     sinkFalse("gbifoccs <- addCSVpts(gbifoccs)", "Add the occurrences:")
     sinkFalse("df <- NULL", "Create a NULL gbifoccs object:")
     sinkFalse("df <- addCSVpts(df)", "Add the occurrences:")
+#     sinkFalse(paste0("map(interior = FALSE)\n",
+#                     "points(df$lon, df$lat, col = 'red', bg = 'blue', pch = 21, cex = 1)"),
+#               "Plot the occurrence data:")
     sinkSub("## Process Occurrence Data")
 
     values$gbifoccs <- isolate(addCSVpts(values$gbifoccs))
@@ -459,6 +465,9 @@ shinyServer(function(input, output, session) {
     ## Check if predictor path exists. If not, use the dismo function getData()
     if (input$pred == "" || input$pred == 'user') return()
     if (!is.null(values$df)) {
+#       sinkFalse(paste0("map(interior = FALSE)\n",
+#                        "points(df$lon, df$lat, col = 'red', bg = 'blue', pch = 21, cex = 1)"),
+#                 "Plot the occurrence data after occurrences processing:")
       ## Check if predictor path exists. If not, use the dismo function getData()
       withProgress(message = "Downloading WorldClim data...", {
         sinkSub("## Obtain Environmental Data")
@@ -723,6 +732,7 @@ shinyServer(function(input, output, session) {
     sinkRmd(
       values$modParams <- list(occ.pts=occs, bg.pts=values$bg.coords, occ.grp=group.data[[1]], bg.grp=group.data[[2]]),
       "Define modelling parameters:")
+    writeLog(paste("Data partition by", input$partSelect2, "method."))
     #newColors <- brewer.pal(max(group.data[[1]]), 'Accent')
     #     values$df$parts <- factor(group.data[[1]])
     #     newColors <- colorFactor(rainbow(max(group.data[[1]])), values$df$parts)
