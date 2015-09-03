@@ -97,7 +97,7 @@ shinyUI(pageWithSidebar(title,
                                                                        ),
                                                                        HTML('<hr>'),
                                                                        numericInput("remLoc",  label="Enter the record ID to be removed", value = 0),
-                                                                       actionButton("remove", "Remove Locality", btn.style = 'warning'),
+                                                                       actionButton("remove", "Remove Locality", btn.style = 'info'),
                                                                        HTML('<hr>')),
                                                       conditionalPanel("input.procOccSelect == 'spthin'",
                                                                        div('Module: Spatial Thin', id="mod"),
@@ -151,6 +151,7 @@ shinyUI(pageWithSidebar(title,
                                                                                                   "2.5 arcmin WorldClim bio1-19" = 2.5,
                                                                                                   "5 arcmin WorldClim bio1-19" = 5,
                                                                                                   "10 arcmin WorldClim bio1-19" = 10)),
+                                                                       actionButton("predDnld", "Download Env Data", btn.style = 'primary'),
                                                                        #"Upload from Dropbox" = 'db'))
                                                                        HTML('<hr>')
                                                       ),
@@ -454,15 +455,17 @@ shinyUI(pageWithSidebar(title,
                                     column(3,
                                            conditionalPanel("input.tabs == 2 && input.procOccSelect == 'selpts'",
                                                             br(),
-                                                            actionButton("selectPoly", "Select With Polygon", btn.style = 'warning'),
+                                                            actionButton("selectPoly", "Select With Polygon", btn.style = 'info'),
                                                             br(), br(),
-                                                            actionButton("erasePoly", "Reset Localities", btn.style = 'warning'))
+                                                            actionButton("erasePoly", "Reset Localities", btn.style = 'info'))
                                     )
                                   ),
                                   br(),
-                                  conditionalPanel("input.tabs != 0 && input.tabs != 6 && input.tabs != 8 && input.tabs != 9", leafletOutput("map", height=500)),
+                                  conditionalPanel("input.tabs != 0 && input.tabs != 6 && 
+                                                   input.tabs != 8 && input.tabs != 9", leafletOutput("map", height=500)),
                                   br(),
-                                  conditionalPanel("input.tabs != 0 && input.tabs != 6 && input.tabs != 8 && input.tabs != 9", DT::dataTableOutput('occTbl')),
+                                  conditionalPanel("input.tabs != 0 && input.tabs != 6 && input.tabs != 7 && 
+                                                   input.tabs != 8 && input.tabs != 9", DT::dataTableOutput('occTbl')),
                                   conditionalPanel("input.tabs == 6", uiOutput('evalTabs')),
                                   conditionalPanel("input.tabs == 8",
                                                    column(8,
