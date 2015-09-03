@@ -870,7 +870,7 @@ shinyServer(function(input, output, session) {
       sinkRmdmult(c(
         values$evalTbl <- e@results,
         values$evalMods <- e@models,
-        values$evalPreds <- normalize(e@predictions.raw),
+        values$evalPreds <- e@predictions.raw,
         values$evalPredsLog <- e@predictions.log),
         "Define the object e as eval:")
 
