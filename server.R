@@ -330,7 +330,7 @@ shinyServer(function(input, output, session) {
                                        radius = 5, color = 'red',
                                        fill = TRUE, fillColor = 'yellow',
                                        weight = 2, popup = ~pop, fillOpacity=1)
-            proxy %>% addLegend("bottomright", colors = c('red','yellow'),
+            proxy %>% addLegend("topright", colors = c('red','yellow'),
                                 title = "GBIF Records", labels = c('original', 'selected'),
                                 opacity = 1, layerId = 1)
           } else {
@@ -383,8 +383,8 @@ shinyServer(function(input, output, session) {
                                      radius = 5, color = 'red',
                                      fill = TRUE, fillColor = 'blue',
                                      fillOpacity = 0.8, weight = 2, popup = ~pop)
-          proxy %>% addLegend("bottomright", colors = c('red', 'blue'),
-                              title = "GBIF Records", labels = c('thinned', 'current'),
+          proxy %>% addLegend("topright", colors = c('red', 'blue'),
+                              title = "GBIF Records", labels = c('removed', 'retained'),
                               opacity = 1, layerId = 1)
         }
       }
@@ -397,8 +397,8 @@ shinyServer(function(input, output, session) {
       proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
                                  radius = 5, color = 'red',
                                  fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
-      proxy %>% addLegend("bottomright", colors = c('red'),
-                          title = "GBIF Records", labels = c('current'),
+      proxy %>% addLegend("topright", colors = c('red'),
+                          title = "GBIF Records", labels = c('retained'),
                           opacity = 1, layerId = 1)
       if (!is.null(values$bb) & input$tabs == 4) {
         proxy %>% addPolygons(lng=values$bb[,1], lat=values$bb[,2], layerId="backext",
@@ -414,8 +414,8 @@ shinyServer(function(input, output, session) {
       proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
                                  radius = 5, color = 'black',
                                  fill = TRUE, weight = 4, popup = ~pop)
-      proxy %>% addLegend("bottomright", colors = c('black'),
-                          title = "GBIF Records", labels = c('current'),
+      proxy %>% addLegend("topright", colors = c('black'),
+                          title = "GBIF Records", labels = c('retained'),
                           opacity = 1, layerId = 1)
     }
   })
@@ -475,7 +475,7 @@ shinyServer(function(input, output, session) {
           values$preds <- getData(name = "worldclim", var = "bio", res = input$pred),
           "Donwload environmental data")
       })
-      proxy %>% addLegend("topright", colors = c(),
+      proxy %>% addLegend("topleft", colors = c(),
                           title = "Predictors: WorldClim bio 1-19", labels = c(),
                           opacity = 1, layerId = 2)
       isolate(writeLog(paste("* Environmental predictors: WorldClim bio1-19 at", input$pred, " arcmin resolution.")))
@@ -953,14 +953,14 @@ shinyServer(function(input, output, session) {
     if (!is.null(values$predCur)) {
       if (input$predThresh == 'mtp' | input$predThresh == 'p10') {
         pal <- c('gray', 'blue')
-        proxy %>% addLegend("bottomright", colors = pal,
+        proxy %>% addLegend("topright", colors = pal,
                             title = "Thresholded Suitability", labels = c(0, 1),
                             opacity = 1, layerId = 1)
       } else {
 
         pal <- colorNumeric(c("#fff5f0", "#fb6a4a", "#67000d"), rasVals, na.color='transparent')
 
-        proxy %>% addLegend("bottomright", pal = pal, title = "Predicted Suitability",
+        proxy %>% addLegend("topright", pal = pal, title = "Predicted Suitability",
                             values = rasVals, layerId = 1)
       }
 
