@@ -423,7 +423,7 @@ shinyServer(function(input, output, session) {
   # map thinned records when Thin button is pressed
   observeEvent(input$goThin, {
     if (is.null(values$df)) {
-      writeLog("* Warning: Obtain the species occurrence record first")
+      writeLog("* WARNING: Obtain the species occurrence record first")
       return()
     }
     withProgress(message = "Spatially Thinning Records...", {
@@ -460,7 +460,7 @@ shinyServer(function(input, output, session) {
   )
 
   # download predictor variables
-  observe({
+  observeEvent(input$predDnld, {
     ## Check if predictor path exists. If not, use the dismo function getData()
     if (input$pred == "" || input$pred == 'user') return()
     if (!is.null(values$df)) {
@@ -731,7 +731,7 @@ shinyServer(function(input, output, session) {
     sinkRmd(
       values$modParams <- list(occ.pts=occs, bg.pts=values$bg.coords, occ.grp=group.data[[1]], bg.grp=group.data[[2]]),
       "Define modelling parameters:")
-    writeLog(paste("Data partition by", input$partSelect2, "method."))
+    writeLog(paste("* Data partition by", input$partSelect2, "method."))
     #newColors <- brewer.pal(max(group.data[[1]]), 'Accent')
     #     values$df$parts <- factor(group.data[[1]])
     #     newColors <- colorFactor(rainbow(max(group.data[[1]])), values$df$parts)
