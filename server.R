@@ -352,7 +352,6 @@ shinyServer(function(input, output, session) {
           }
         } else {
           proxy %>% clearMarkers()
-          #           print('prethin not null')
           proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
                                      radius = 5, color = 'red',
                                      fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
@@ -433,7 +432,11 @@ shinyServer(function(input, output, session) {
   # map thinned records when Thin button is pressed
   observeEvent(input$goThin, {
     if (is.null(values$df)) {
-      writeLog("* WARNING: Obtain the species occurrence record first")
+      writeLog("* WARNING: Obtain the species occurrence record first.")
+      return()
+    }
+    if (input$thinDist <= 0) {
+      writeLog("* WARNING: Assign positive distance to thinning parameter.")
       return()
     }
     withProgress(message = "Spatially Thinning Records...", {
@@ -459,6 +462,9 @@ shinyServer(function(input, output, session) {
     writeLog(paste('* Total records thinned to [', nrow(values$df), '] localities.'))
     # render the thinned records data table
     output$occTbl <- DT::renderDataTable({DT::datatable(values$df[,1:4])})
+    output$thinDnld <- renderUI({
+      downloadButton('downloadThincsv', "Download Thinned Occurrence CSV")
+    })
   })
 
   # handle download for thinned records csv
