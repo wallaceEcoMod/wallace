@@ -89,7 +89,7 @@ shinyServer(function(input, output, session) {
         results <- fixcols(cols, results),
         locs.in <- results$data[!is.na(results$data[,3]),][,cols],
         locs <- remDups(locs.in),
-        names(locs)[2:3] <- c('lon', 'lat'),
+        names(locs)[1:3] <- c('species','longitude', 'latitude'),
         locs$origID <- row.names(locs)),
         "Change the name of the occurrence record table:")
       locs$pop <- unlist(apply(locs, 1, popUpContent))
@@ -122,7 +122,7 @@ shinyServer(function(input, output, session) {
   observe({
     if (is.null(values$df)) return()
     # render the GBIF records data table
-    output$occTbl <- DT::renderDataTable({DT::datatable(values$df[1:8],
+    output$occTbl <- DT::renderDataTable({DT::datatable(values$df[, -which(names(values$df) %in% c('origID', 'pop'))],
                                                         options = list(
                                                           autoWidth = TRUE,
                                                           columnDefs = list(list(width = '40%', targets = 6)),
@@ -196,7 +196,7 @@ shinyServer(function(input, output, session) {
     #                      UNKNOWN_EVIDENCE=4, FOSSIL_SPECIMEN=5, MACHINE_OBSERVATION=6,
     #                      LIVING_SPECIMEN=7, LITERATURE_OCCURRENCE=8, MATERIAL_SAMPLE=9)
     #     values$gbifoccs$basisNum <- unlist(iconList[values$gbifoccs$basisOfRecord])
-    #     proxy %>% addMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon,
+    #     proxy %>% addMarkers(data = values$gbifoccs, lat = ~latitude, lng = ~longitude,
     #                          layerId = as.numeric(rownames(values$gbifoccs)),
     #                          icon = ~icons(occIcons[basisNum]))
   })
@@ -304,7 +304,7 @@ shinyServer(function(input, output, session) {
       proxy %>% clearMarkers()
       proxy %>% clearShapes()
       proxy %>% clearImages()
-      proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon,
+      proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~latitude, lng = ~longitude,
                                  radius = 5, color = 'red',
                                  fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
     }
@@ -315,11 +315,11 @@ shinyServer(function(input, output, session) {
       if (input$procOccSelect == "selpts") {
         if (is.null(values$prethinned)) {
           proxy %>% clearMarkers()
-          proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~lat, lng = ~lon,
+          proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~latitude, lng = ~longitude,
                                      radius = 5, color = 'red',
                                      fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
           if (!is.null(values$ptsSel)) {
-            proxy %>% addCircleMarkers(data = values$ptsSel, lat = ~lat, lng = ~lon,
+            proxy %>% addCircleMarkers(data = values$ptsSel, lat = ~latitude, lng = ~longitude,
                                        radius = 5, color = 'red',
                                        fill = TRUE, fillColor = 'yellow',
                                        weight = 2, popup = ~pop, fillOpacity=1)
@@ -329,14 +329,14 @@ shinyServer(function(input, output, session) {
           } else {
             proxy %>% clearMarkers()
             proxy %>% clearShapes()
-            proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon,
+            proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
                                        radius = 5, color = 'red',
                                        fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
           }
         } else {
           proxy %>% clearMarkers()
           #           print('prethin not null')
-          proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon,
+          proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
                                      radius = 5, color = 'red',
                                      fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
         }
@@ -361,7 +361,7 @@ shinyServer(function(input, output, session) {
         lati <- values$df[,3]
         longi <- values$df[,2]
         proxy %>% fitBounds(min(longi-1), min(lati-1), max(longi+1), max(lati+1))
-        proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon,
+        proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
                                    radius = 5, color = 'red',
                                    fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
         if (!is.null(values$prethinned)) {
@@ -369,10 +369,10 @@ shinyServer(function(input, output, session) {
           lati <- values$prethinned[,3]
           longi <- values$prethinned[,2]
           proxy %>% fitBounds(min(longi-1), min(lati-1), max(longi+1), max(lati+1))
-          proxy %>% addCircleMarkers(data = values$prethinned, lat = ~lat, lng = ~lon,
+          proxy %>% addCircleMarkers(data = values$prethinned, lat = ~latitude, lng = ~longitude,
                                      radius = 5, color = 'red',
                                      fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
-          proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon,
+          proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
                                      radius = 5, color = 'red',
                                      fill = TRUE, fillColor = 'blue',
                                      fillOpacity = 0.8, weight = 2, popup = ~pop)
@@ -387,7 +387,7 @@ shinyServer(function(input, output, session) {
       proxy %>% clearMarkers()
       proxy %>% clearShapes()
       proxy %>% clearImages()
-      proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon,
+      proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
                                  radius = 5, color = 'red',
                                  fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
       proxy %>% addLegend("bottomright", colors = c('red'),
@@ -404,7 +404,7 @@ shinyServer(function(input, output, session) {
       proxy %>% clearMarkers()
       proxy %>% clearShapes()
       proxy %>% clearImages()
-      proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon,
+      proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
                                  radius = 5, color = 'black',
                                  fill = TRUE, weight = 4, popup = ~pop)
       proxy %>% addLegend("bottomright", colors = c('black'),
@@ -448,7 +448,7 @@ shinyServer(function(input, output, session) {
   output$downloadThincsv <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$gbifoccs), "_thinned_gbifCleaned.csv")},
     content = function(file) {
-      write.csv(values$df[,1:8], file, row.names = FALSE)
+      write.csv(values$df[,1:9], file, row.names = FALSE)
     }
   )
 
@@ -727,7 +727,7 @@ shinyServer(function(input, output, session) {
     #     fillColor = ~newColors(parts)
     newColors <- gsub("FF$", "", rainbow(max(group.data[[1]])))
     #newColors <- sample(colors(), max(group.data[[1]]))
-    proxy %>% addCircleMarkers(data = values$df, lat = ~lat, lng = ~lon,
+    proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
                                radius = 5, color = 'red', fill = TRUE,
                                fillColor = newColors[group.data[[1]]], weight = 2, popup = ~pop, fillOpacity = 1)
   })
