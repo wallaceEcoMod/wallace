@@ -1,5 +1,5 @@
 # check package dependencies, and download if necessary
-list.of.packages <- c("shiny", "leaflet", "ggplot2", "maps", "RColorBrewer", "rgdal", "rmarkdown",
+list.of.packages <- c("shiny", "ggplot2", "maps", "RColorBrewer", "rgdal", "rmarkdown", "shinyjs",
                       "spThin", "colorRamps", "dismo", "rgeos", "XML", "repmis", "Rcpp", "RCurl", "curl")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
@@ -23,6 +23,7 @@ library(ENMeval)
 library(dismo)
 library(rgeos)
 library(ggplot2)
+library(shinyjs)
 # library(shinyFiles)
 library(RColorBrewer)
 library(leaflet)
@@ -35,6 +36,15 @@ source("sinkRmd.R")
 #devtools::install_github("jcheng5/rasterfaster")
 
 shinyServer(function(input, output, session) {
+  # disable download buttons
+  shinyjs::disable("downloadGBIFcsv")
+  shinyjs::disable("downloadThincsv")
+  shinyjs::disable("downloadMskPreds")
+  shinyjs::disable("downloadPart")
+  shinyjs::disable("downloadEvalcsv")
+  shinyjs::disable("downloadEvalPlots")
+  shinyjs::disable("downloadPred")
+  
   # make list to carry data used by multiple reactive functions
   values <- reactiveValues(polyID=0, polyErase=FALSE, log=c())
 
@@ -120,10 +130,11 @@ shinyServer(function(input, output, session) {
                    Duplicated records removed [', nrow(locs.in) - nrow(locs), "]: Remaining records [", nrow(locs), "].")
       }}}}
       writeLog(x)
+      shinyjs::enable("downloadGBIFcsv")
       
-      output$gbifDnld <- renderUI({
-        downloadButton('downloadGBIFcsv', "Download Occurrence CSV")
-      })
+#       output$gbifDnld <- renderUI({
+#         downloadButton('downloadGBIFcsv', "Download Occurrence CSV")
+#       })
     }
   })
 
@@ -462,9 +473,10 @@ shinyServer(function(input, output, session) {
     writeLog(paste('* Total records thinned to [', nrow(values$df), '] localities.'))
     # render the thinned records data table
     output$occTbl <- DT::renderDataTable({DT::datatable(values$df[,1:4])})
-    output$thinDnld <- renderUI({
-      downloadButton('downloadThincsv', "Download Thinned Occurrence CSV")
-    })
+    shinyjs::enable("downloadThincsv")
+#     output$thinDnld <- renderUI({
+#       downloadButton('downloadThincsv', "Download Thinned Occurrence CSV")
+#     })
   })
 
   # handle download for thinned records csv
@@ -646,6 +658,7 @@ shinyServer(function(input, output, session) {
         values$predsMsk <- mask(predCrop, values$backgExt)),
         paste0("Mask environmental variables by ", values$bbTxt, ":"))
     })
+    shinyjs::enable("downloadMskPreds")
     isolate(writeLog(paste0('* Environmental data masked by ', values$bbTxt, '.')))
   })
 
@@ -753,6 +766,7 @@ shinyServer(function(input, output, session) {
       values$modParams <- list(occ.pts=occs, bg.pts=values$bg.coords, occ.grp=group.data[[1]], bg.grp=group.data[[2]]),
       "Define modelling parameters:")
     writeLog(paste("* Data partition by", pt, "method."))
+    shinyjs::enable("downloadPart")
     #newColors <- brewer.pal(max(group.data[[1]]), 'Accent')
     #     values$df$parts <- factor(group.data[[1]])
     #     newColors <- colorFactor(rainbow(max(group.data[[1]])), values$df$parts)
@@ -885,6 +899,7 @@ shinyServer(function(input, output, session) {
       # make datatable of results df
       output$evalTbl <- DT::renderDataTable({DT::datatable(cbind(e@results[,1:3], round(e@results[,4:15], digits=3)))})
       writeLog(paste("* Maxent ran successfully and output evaluation results for", nrow(e@results), "models."))
+      shinyjs::enable("downloadEvalcsv")
 
       # plotting functionality for ENMeval graphs
       output$evalPlot <- renderPlot(evalPlots(values$evalTbl))
@@ -895,6 +910,7 @@ shinyServer(function(input, output, session) {
                     tabPanel("Evaluation Plots", plotOutput('evalPlot', width = 600))
         )
       })
+      shinyjs::enable("downloadEvalPlots")
     }
 
   })
@@ -970,6 +986,7 @@ shinyServer(function(input, output, session) {
       values$predCur <- selRas
     }
     values$rasName <- names(selRas)
+    shinyjs::enable("downloadPred")
 
     if (!is.null(values$predCur)) {
       if (input$predThresh == 'mtp' | input$predThresh == 'p10') {
@@ -978,9 +995,7 @@ shinyServer(function(input, output, session) {
                             title = "Thresholded Suitability", labels = c(0, 1),
                             opacity = 1, layerId = 1)
       } else {
-
         pal <- colorNumeric(c("#fff5f0", "#fb6a4a", "#67000d"), rasVals, na.color='transparent')
-
         proxy %>% addLegend("topright", pal = pal, title = "Predicted Suitability",
                             values = rasVals, layerId = 1)
       }

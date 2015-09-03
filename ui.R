@@ -1,5 +1,7 @@
 if (!require("shiny"))
   install.packages("shiny")
+if (!require("shinyjs"))
+  install.packages("shinyjs")
 if (!require("devtools"))
   install.packages("devtools")
 if (!require('shinyapps')) devtools::install_github("rstudio/shinyapps")
@@ -8,6 +10,7 @@ if (!require("DT")) devtools::install_github("rstudio/DT")
 
 library(shiny)
 library(shinyapps)
+library(shinyjs)
 library(leaflet)
 library(DT)
 
@@ -33,7 +36,7 @@ title <- HTML('&nbsp;&nbsp;<span style="font-size:25pt">WALLACE beta v0.2:</span
 
 # Define UI for application
 shinyUI(pageWithSidebar(title,
-                        sidebarPanel(width = 5,
+                        sidebarPanel(width = 5, shinyjs::useShinyjs(),
                                      includeCSS("styles.css"),
                                      includeScript("scroll.js"),
                                      conditionalPanel("input.tabs == 0",
@@ -61,9 +64,9 @@ shinyUI(pageWithSidebar(title,
                                                                        actionButton("goName", "Search GBIF", btn.style = 'primary'),
                                                                        br(), br(),
                                                                        sliderInput("occurrences", "Maximum number of occurrences:", min = 1, max = 500, value = 20),
-                                                                       br(),
-                                                                       uiOutput('gbifDnld'),
-                                                                       # downloadButton('downloadGBIFcsv', "Download Occurrence CSV"),
+#                                                                        br(),
+#                                                                        uiOutput('gbifDnld'),
+                                                                       downloadButton('downloadGBIFcsv', "Download Occurrence CSV"),
                                                                        HTML('<hr>')
                                                       ),
                                                       conditionalPanel("input.dbSelect == 'user'",
@@ -112,8 +115,10 @@ shinyUI(pageWithSidebar(title,
                                                                        HTML('<hr>'),
                                                                        numericInput("thinDist", label = "Thinning distance (km)", value = 0),
                                                                        actionButton("goThin", "Thin Localities", btn.style = 'info'),
-                                                                       br(), 
-                                                                       uiOutput('thinDnld'),
+                                                                       br(), br(),
+                                                                       downloadButton('downloadThincsv', "Download Thinned Occurrence CSV"),
+#                                                                        br(), 
+#                                                                        uiOutput('thinDnld'),
                                                                        HTML('<hr>')
                                                       ),
                                                       includeMarkdown("www/tab2_input.Rmd"),
