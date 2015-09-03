@@ -847,7 +847,7 @@ shinyServer(function(input, output, session) {
           "Define the number of 10% higher values:")
       }
       print('E')
-      sinkRmdmult(
+      sinkRmd(
         values$p10s <- apply(occVals, MARGIN = 2, function(x) rev(sort(x))[n90]),
         "Apply 10% threshold prediction:")
       print('F')
