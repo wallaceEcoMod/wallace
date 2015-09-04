@@ -37,10 +37,7 @@ sinkRmdTitle <- function(title = "Code description") {
   cat('install_github("bobmuscarella/ENMeval@edits")\n')
   cat("library(ENMeval)\n")
   cat("\n```")
-  cat("\n\nWallace also includes several functions developed to help integrate different packages and
-      some additional functionality. For this reason, it is necessary to load the file 'functions.R',
-      which can be found on Wallace's GitHub page (https://github.com/ndimhypervol/wallace).
-      Download the file, place it in your working directory (use `getwd()`), and then load it:")
+  cat("\n\nWallace also includes several functions developed to help integrate different packages and some additional functionality. For this reason, it is necessary to load the file 'functions.R', which can be found on Wallace's GitHub page (https://github.com/ndimhypervol/wallace). Download the file, place it in your working directory (use `getwd()`), and then load it:")
   cat("\n```{r}\n")
   cat("source('functions.R')")
   cat("\n```")
