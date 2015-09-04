@@ -1,5 +1,5 @@
 # check package dependencies, and download if necessary
-list.of.packages <- c("shiny", "maps", "RColorBrewer", "rgdal", "rmarkdown", "shinyjs", "rgbif", "devtools",
+list.of.packages <- c("shiny", "maps", "RColorBrewer", "rmarkdown", "shinyjs", "rgbif", "devtools",
                       "spThin", "colorRamps", "dismo", "rgeos", "XML", "repmis", "Rcpp", "RCurl", "curl")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if (length(new.packages)) install.packages(new.packages)
@@ -604,13 +604,12 @@ shinyServer(function(input, output, session) {
         pathdir <- dirname(inPath),
         pathfile <- basename(inPath)),
         "Adjust path and names to load the study extent:")
-
       # get extensions of all input files
       sinkRmd(
         exts <- sapply(strsplit(names, '\\.'), FUN=function(x) x[2]),
         "Get extensions of all input files:")
 
-      if (length(exts) == 1 & exts == 'csv') {
+      if (exts == 'csv') {
 
         sinkRmdob(input$backgBuf, "Define the buffer size of the study extent:")
 
@@ -619,30 +618,36 @@ shinyServer(function(input, output, session) {
           "Read the shapefile for the study extent:")
 
         sinkRmdmult(c(
-          shp <- SpatialPolygons(list(Polygons(list(Polygon(bb)), 1))),
+          shp <- SpatialPolygons(list(Polygons(list(Polygon(shp)), 1))),
           shp <- gBuffer(shp, width = input$backgBuf + res(values$preds)[1]),
           values$backgExt <- shp,
           bb <- shp@polygons[[1]]@Polygons[[1]]@coords),
           "Generate the user-defined study extent plus the buffer:")
-
-      } else if (length(exts) > 1 & 'shp' %in% exts) {
-        # rename temp files to their original names - nice hack for inputting shapefiles in shiny
-        sinkRmdob(input$backgBuf, "Define the buffer size of the study extent:")
-
-        sinkRmdmult(c(
-          file.rename(inPath, file.path(pathdir, names)),
-          # get index of .shp
-          i <- which(exts == 'shp'),
-          # read in shapefile and extract coords
-          poly <- readOGR(pathdir[i], strsplit(names[i], '\\.')[[1]][1])),
-          "Read the shapefile for the study extent:")
-
-        sinkRmdmult(c(
-          poly <- gBuffer(poly, width = input$backgBuf + res(values$preds)[1]),
-          values$backgExt <- poly,
-          bb <- poly@polygons[[1]]@Polygons[[1]]@coords),
-          "Generate the user-defined study extent plus the buffer:")
+      } else {
+        isolate(writeLog("* WARNING: Please enter a CSV file of vertex coordinates for user-specified polygon."))
+        return()
       }
+
+#       } else if (exts == 'shp') {
+#         # rename temp files to their original names - nice hack for inputting shapefiles in shiny
+#         sinkRmdob(input$backgBuf, "Define the buffer size of the study extent:")
+# 
+#         sinkRmdmult(c(
+#           file.rename(inPath, file.path(pathdir, names)),
+#           # get index of .shp
+#           i <- which(exts == 'shp'),
+#           # read in shapefile and extract coords
+#           # poly <- readOGR(pathdir[i], strsplit(names[i], '\\.')[[1]][1])),
+#           poly <- readShapePoly(file.path(pathdir[i], strsplit(names[i], '\\.')[[1]][1]))),
+#           "Read the shapefile for the study extent:")
+#         
+# 
+#         sinkRmdmult(c(
+#           poly <- gBuffer(poly, width = input$backgBuf + res(values$preds)[1]),
+#           values$backgExt <- poly,
+#           bb <- poly@polygons[[1]]@Polygons[[1]]@coords),
+#           "Generate the user-defined study extent plus the buffer:")
+#       }
       values$bbTxt <- 'user-defined'
     }
     isolate(writeLog(paste0("* Study extent: ", values$bbTxt, ".")))
