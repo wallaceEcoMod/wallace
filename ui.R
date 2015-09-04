@@ -101,7 +101,7 @@ shinyUI(pageWithSidebar(title,
                                                                                         includeMarkdown("www/tab2_selpts.Rmd")
                                                                        ),
                                                                        HTML('<hr>'),
-                                                                       numericInput("remLoc",  label="Enter the record ID to be removed", value = 0),
+                                                                       numericInput("remLoc", label="Enter the record ID to be removed", value = 0),
                                                                        actionButton("remove", "Remove Locality"),
                                                                        HTML('<hr>')),
                                                       conditionalPanel("input.procOccSelect == 'spthin'",
