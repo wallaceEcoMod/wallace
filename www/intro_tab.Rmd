@@ -2,8 +2,9 @@
 title: "intro_tab"
 output: html_document
 ---
+<p align="justify">
 Wallace includes the following steps and modules, as well as the opportunity to download a commented and executable history of the analyses run in a given session:  
-
+</p>
 **STEP 1**: *Obtain Occurrence Data*  
 Options: GBIF; user-specified  
 
