@@ -829,6 +829,7 @@ shinyServer(function(input, output, session) {
       #       bcProbs <- switch(input$bcProb, "90%" = 0.9, "95%" = 0.95, "100%" = 1)
       #       output$evalPlot <- renderPlot(plot(e$models, a = input$bc1, b = input$bc2, p = bcProbs))
       writeLog(paste("* BIOCLIM ran successfully and output evaluation results."))
+      shinyjs::enable("downloadEvalcsv")
       # a tabset within tab 4 to organize the Bioclim outputs
       output$evalTabs <- renderUI({
         tabsetPanel(id = "bcTabs",
