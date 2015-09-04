@@ -26,7 +26,7 @@ library(repmis)
 library(rmarkdown)
 
 source("functions.R")
-source("sinkRmd.R")
+
 
 #devtools::install_github("jcheng5/rasterfaster")
 
@@ -40,7 +40,7 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("downloadEvalcsv")
   shinyjs::disable("downloadEvalPlots")
   shinyjs::disable("downloadPred")
-  
+
   # make list to carry data used by multiple reactive functions
   values <- reactiveValues(polyID=0, polyErase=FALSE, log=c())
 
@@ -63,6 +63,7 @@ shinyServer(function(input, output, session) {
     if (input$gbifName == "") return()
 
     # rmd code begin
+    source("sinkRmd.R")
     sinkRmdTitle(paste("Code history for Wallace session", Sys.Date()))
     sinkRmdob(
       input$gbifName,
@@ -127,7 +128,7 @@ shinyServer(function(input, output, session) {
       }}}}
       writeLog(x)
       shinyjs::enable("downloadGBIFcsv")
-      
+
 #       output$gbifDnld <- renderUI({
 #         downloadButton('downloadGBIFcsv', "Download Occurrence CSV")
 #       })
@@ -148,8 +149,9 @@ shinyServer(function(input, output, session) {
   # functionality for input of user CSV
   observe({
     if (is.null(input$userCSV)) return()
+    source("sinkRmd_evalFalse.R")
     sinkRmdTitle(paste("Code description for Wallace session", Sys.Date()))
-    sinkRmdob(input$userCSV$datapath, "User CSV path with occurrence data:")
+    sinkRmdob(input$userCSV$datapath, "User CSV path with occurrence data (change to the path of the file in your computer):")
     sinkRmd(
       inFile <- read.csv(input$userCSV$datapath, header = TRUE),
       "Load user's occurrence data:")
@@ -233,7 +235,7 @@ shinyServer(function(input, output, session) {
       writeLog('NOTICE: Remove localities by ID before selecting with polygons. Press
                "Reset Localities" to start over.')
       return()}
-    
+
     isolate({
       numTest <- input$remLoc %in% row.names(values$df)
       sinkRmdob(input$remLoc, "Occurrence locality ID to be removed:")
@@ -246,7 +248,7 @@ shinyServer(function(input, output, session) {
           values$gbifoccs <- values$gbifoccs[-remo, ]
         }),
         "Remove user-selected locality by ID:")
-      
+
       if (numTest) {
         writeLog(paste0("* Removed locality with ID = ", input$remLoc, "."))
       }
@@ -482,7 +484,7 @@ shinyServer(function(input, output, session) {
       write.csv(values$df[,1:9], file, row.names = FALSE)
     }
   )
-  
+
   observe({if (input$pred != "") shinyjs::enable("predDnld")})
 
   # download predictor variables
@@ -583,12 +585,13 @@ shinyServer(function(input, output, session) {
         values$bbTxt <- 'minimum convex polygon'),
         "Generate the minimum convex polygon study extent:")
     } else if (input$backgSelect == 'user') {
+      source("sinkRmd_evalFalse.R")
       if (is.null(input$userBackg)) return()
       #       file <- shinyFileChoose(input, 'userBackg', root=c(root='.'))
       #       path <- input$userBackg$datapath
       sinkFalse("userBackg <- NULL", "Define user study extent:")
       sinkRmdob(input$userBackg$name, "User study extent name:")
-      sinkRmdob(input$userBackg$datapath, "User study extent path:")
+      sinkRmdob(input$userBackg$datapath, "User study extent path (change to the path of the file in your computer):")
 
       sinkRmdmult(c(
         names <- input$userBackg$name,
@@ -647,6 +650,11 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$goBackgMask, {
+    if(is.null(values$preds)) {
+      writeLog("* Obatin the environmetal data first...")
+      return()
+    }
+    if(!is.null(values$preds)) {
     # clip and mask rasters based on study region
     withProgress(message = "Processing environmental data...", {
       sinkRmdmult(c(
@@ -656,6 +664,7 @@ shinyServer(function(input, output, session) {
     })
     shinyjs::enable("downloadMskPreds")
     isolate(writeLog(paste0('* Environmental data masked by ', values$bbTxt, '.')))
+    }
   })
 
   # handle download for masked predictors, with file type as user choice
