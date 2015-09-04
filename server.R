@@ -651,7 +651,7 @@ shinyServer(function(input, output, session) {
 
   observeEvent(input$goBackgMask, {
     if(is.null(values$preds)) {
-      writeLog("* Obatin the environmetal data first...")
+      writeLog("* Obtain the environmental data first...")
       return()
     }
     if(!is.null(values$preds)) {
