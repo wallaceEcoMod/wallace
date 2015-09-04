@@ -40,7 +40,7 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("downloadEvalcsv")
   shinyjs::disable("downloadEvalPlots")
   shinyjs::disable("downloadPred")
-  
+
   # make list to carry data used by multiple reactive functions
   values <- reactiveValues(polyID=0, polyErase=FALSE, log=c())
 
@@ -127,7 +127,7 @@ shinyServer(function(input, output, session) {
       }}}}
       writeLog(x)
       shinyjs::enable("downloadGBIFcsv")
-      
+
 #       output$gbifDnld <- renderUI({
 #         downloadButton('downloadGBIFcsv', "Download Occurrence CSV")
 #       })
@@ -233,7 +233,7 @@ shinyServer(function(input, output, session) {
       writeLog('NOTICE: Remove localities by ID before selecting with polygons. Press
                "Reset Localities" to start over.')
       return()}
-    
+
     isolate({
       numTest <- input$remLoc %in% row.names(values$df)
       sinkRmdob(input$remLoc, "Occurrence locality ID to be removed:")
@@ -246,7 +246,7 @@ shinyServer(function(input, output, session) {
           values$gbifoccs <- values$gbifoccs[-remo, ]
         }),
         "Remove user-selected locality by ID:")
-      
+
       if (numTest) {
         writeLog(paste0("* Removed locality with ID = ", input$remLoc, "."))
       }
@@ -482,7 +482,7 @@ shinyServer(function(input, output, session) {
       write.csv(values$df[,1:9], file, row.names = FALSE)
     }
   )
-  
+
   observe({if (input$pred != "") shinyjs::enable("predDnld")})
 
   # download predictor variables
@@ -647,6 +647,11 @@ shinyServer(function(input, output, session) {
   })
 
   observeEvent(input$goBackgMask, {
+    if(is.null(values$preds)) {
+      writeLog("* Obatin the environmetal data first...")
+      return()
+    }
+    if(!is.null(values$preds)) {
     # clip and mask rasters based on study region
     withProgress(message = "Processing environmental data...", {
       sinkRmdmult(c(
@@ -656,6 +661,7 @@ shinyServer(function(input, output, session) {
     })
     shinyjs::enable("downloadMskPreds")
     isolate(writeLog(paste0('* Environmental data masked by ', values$bbTxt, '.')))
+    }
   })
 
   # handle download for masked predictors, with file type as user choice
