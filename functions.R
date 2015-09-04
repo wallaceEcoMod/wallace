@@ -44,8 +44,8 @@ popUpContent <- function(x) {
   as.character(tagList(
     tags$strong(paste("ID:", x['origID'])),
     tags$br(),
-    tags$strong(paste("Latitude:", x['lat'])),
-    tags$strong(paste("Longitude:", x['lon']))
+    tags$strong(paste("Latitude:", x['latitude'])),
+    tags$strong(paste("Longitude:", x['longitude']))
   ))
 }
 
