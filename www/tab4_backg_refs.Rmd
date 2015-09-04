@@ -1,0 +1,13 @@
+---
+title: "tab4_backg_refs"
+output: html_document
+---
+<p>
+<div style="font-size:9pt;font-weight:bold">References</div><p>
+<div style="font-size:9pt;font-style:italic">
+Anderson R.P., Raza A. 2010. The effect of the extent of the study region on GIS models of species geographic distributions and estimates of niche evolution: preliminary tests with montane rodents (genus Nephelomys) in Venezuela. Journal of Biogeography. 37:1378–1393.<p><br>
+
+Anderson R.P. 2013. A framework for using niche models to estimate impacts of climate change on species distributions. Annals of the New York Academy of Sciences. 1297:8–28.<p>
+
+Barve N., Barve V., Jiménez-Valverde A., Lira-Noriega A., Maher S.P., Peterson A.T., Soberón J., Villalobos F. 2011. The crucial role of the accessible area in ecological niche modeling and species distribution modeling. Ecological Modelling. 222:1810–1819.<p>
+</div>
