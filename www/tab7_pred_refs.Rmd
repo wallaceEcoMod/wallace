@@ -1,0 +1,9 @@
+---
+title: "tab6_maxent_refs"
+output: html_document
+---
+<p>
+<div style="font-size:9pt;font-weight:bold">References</div><p>
+<div style="font-size:9pt;font-style:italic">
+Hastie T., Fithian W. 2013. Inference from presence-only data; the ongoing controversy. Ecography. 36:864–867.<p>
+</div>
