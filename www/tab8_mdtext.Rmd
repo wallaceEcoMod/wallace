@@ -1,0 +1,7 @@
+---
+title: "downloadmarkdown"
+output: html_document
+---
+<p align="justify">
+Using the R package rmarkdown, Wallace allows the user to download the history of actions (and underlying code) run in the current session of Wallace. This includes the formats RMD, PDF, HTML, or DOC. The RMD format is an executable R code file that will reproduce the analysis.
+</p>

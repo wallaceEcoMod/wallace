@@ -1,313 +1,505 @@
 if (!require("shiny"))
   install.packages("shiny")
+if (!require("shinyjs"))
+  install.packages("shinyjs")
 if (!require("devtools"))
   install.packages("devtools")
 if (!require('shinyapps')) devtools::install_github("rstudio/shinyapps")
 if (!require('leaflet')) devtools::install_github("rstudio/leaflet")
+if (!require("DT")) devtools::install_github("rstudio/DT")
 
 library(shiny)
 library(shinyapps)
+library(shinyjs)
 library(leaflet)
+library(DT)
 
-#"Harnessing Digital Biodiversity Data via a GUI interface fueled by R"
-title <- HTML(paste0(span("WALLACE beta v0.1: ", style = "font-size:16pt"), 
-              span("Harnessing Digital Biodiversity Data for Predictive Modeling, fueled by R", 
-                   style = "font-size:10pt"), "  |  ", 
-              span("Developers: Jamie M. Kass, Matthew Aiello-Lammens, Bruno Vilela, 
-              Robert Muscarella, Robert P. Anderson", style = "font-size:7pt")))
-# Define UI for application that draws a histogram
-shinyUI(navbarPage(title, id = "conditionedPanels",
-                   tabPanel("1) Download / Plot / Clean Occurrence Data",
-                            sidebarLayout(
-                              sidebarPanel(
-                                span(strong("rgbif"), style = "color:purple; font-size:18pt"), br(),
-                                span(em("Interface to the Global Biodiversity Information Facility API"), style = "font-size:10pt"), br(),
-                                span(em("Developers of rgbif: Scott Chamberlain, Karthik Ram, Vijay Barve, Dan Mcglinn"), style = "font-size:10pt"), br(),
-                                span(em("Other packages used: ggplot2"), style = "color:gray; font-size:8pt"), br(),
-                                a("CRAN homepage", href = "http://cran.r-project.org/web/packages/rgbif/index.html", target="_blank"),
-                                br(),
-                                a("rgbif documentation @ GBIF", href = "http://www.gbif.org/resource/81747", target="_blank"),
-                                br(), br(),
-                                "The first step is to download occurrence data (e.g. from GBIF; duplicate 
-                                records are removed). After acquiring these points, it is useful to examine 
-                                them on a map.",
-                                br(),
-                                br(),
-                                "Such datasets can contain errors; as a preliminary method of data-cleaning, 
-                                here the user can specify records to be removed. Additionally, the user can 
-                                download the records as a CSV file.",
-                                br(), br(),
-                                "Future versions will allow the user to download occurrence records from other 
-                                databases, as well as upload their own occurrence records as an alternate option.",
-                                br(), br(),
-                                #span(em("<Not currently functional>"), style = "color:gray; font-size:10pt"),
-                                radioButtons("unusedDBselect", "Select Occurrence Data Source", 
-                                             choices = list("GBIF via rgbif", "eBird via rebird (not functional)", 
-                                                            "user input (not functional)"),
-                                             selected = "GBIF via rgbif"),
-                                br(), 
-                                textInput("gbifName", label = "Enter scientific name of species (format: genus species)", value = ''),
-                                actionButton("goName", "Submit name"),
-                                br(), br(),
-                                sliderInput("occurrences", "Maximum number of occurrences:", min = 1, max = 500, value = 250),
-                                br(), 
-                                numericInput("num",  label="Enter the record ID to be removed", value = 0),
-                                actionButton("remove", "Remove"),
-                                br(), br(),
-                                downloadButton('downloadGBIFcsv', "Download Occurrence CSV")
-                              ),
-                              mainPanel(
-                                br(),
-                                conditionalPanel("input.goName", textOutput('GBIFtxt')),
-                                br(),
-                              leafletMap(
-                                "map", "100%", 600,
-                                initialTileLayer = "//{s}.tiles.mapbox.com/v3/jcheng.map-5ebohr46/{z}/{x}/{y}.png",
-                                initialTileLayerAttribution = HTML('Maps by <a href="http://www.mapbox.com/">Mapbox</a>'),
-                                options=list(
-                                  center = c(0, 0),
-                                  zoom = 2,
-                                  minZoom  = 1,
-                                  maxZoom = 12
-                                  )
-                                ),
-                              br(),
-                              tableOutput('gbifOccTbl')
-                              )
-                            )
-                   ),
-                   tabPanel("2) Process Occurrence Data",
-                            sidebarLayout(
-                              sidebarPanel(
-                                span(strong("spThin"), style = "color:purple; font-size:18pt"), br(),
-                                span(em("Spatial Thinning of Species Occurrence Records"), style = "font-size:10pt"), br(),
-                                #span(em("Developers of spThin:"), style = "font-size:10pt"), br(),
-                                span(em("Links to"), a("software note", href = "http://onlinelibrary.wiley.com/doi/10.1111/ecog.01132/abstract", target="_blank"), "and",
-                                     a("CRAN", href = "http://cran.r-project.org/web/packages/spThin/index.html", target="_blank"), style = "font-size:10pt"), br(),
-                                span("Citation:  Aiello-Lammens, M. E., Boria, R. A., Radosavljevic, A., Vilela, B. 
-                                     and Anderson, R. P. (2015; Early View), spThin: an R package for spatial thinning of species 
-                                     occurrence records for use in ecological niche models.", 
-                                     style = "font-size:9pt"), br(),
-                                span(em("Other packages used: ggplot2"), style = "color:gray; font-size:8pt"),
-                                br(), br(),
-                                "Datasets of occurrence records typically suffer from the effects of biased sampling 
-                                across geography. spThin implements one way to reduce the effects of such biases, by 
-                                spatial thinning that removes occurrence records less than a user-specified distance 
-                                from other records. The user can download the thinned records as a CSV file. This step 
-                                is optional.",
-                                br(), br(),
-                                numericInput("thinDist", label = "Thinning distance (km)", value = 0),
-                                actionButton("goThin", "Run spThin"),
-                                br(), br(),
-                                downloadButton('downloadThincsv', "Download Thinned Occurrence CSV")
-                              ),
-                              mainPanel(
-                                br(),
-                                conditionalPanel("input.goThin", textOutput('thinText')),
-                                br(),
-                             leafletMap(
-                                  "map2", "100%", 600,
-                                  initialTileLayer = "//{s}.tiles.mapbox.com/v3/jcheng.map-5ebohr46/{z}/{x}/{y}.png",
-                                  initialTileLayerAttribution = HTML('Maps by <a href="http://www.mapbox.com/">Mapbox</a>'),
-                                  options=list(
-                                    center = c(0, 0),
-                                    zoom = 2,
-                                    minZoom  = 1,
-                                    maxZoom = 12
-                                  )
-                                ),
-                                tableOutput('thinOccTbl')
-                              )
-                            )
+# for colored action buttons
+# actionButton <- function(inputId, label, btn.style = "" , css.class = "") {
+#   if ( btn.style %in% c("primary","info","success","warning","danger","inverse","link")) {
+#     btn.css.class <- paste("btn",btn.style,sep="-")
+#   } else btn.css.class = ""
+#   
+#   tags$button(id=inputId, type="button", class=paste("btn action-button",btn.css.class,css.class,collapse=" "), label)
+# }
 
-                   ),
-                   tabPanel("3) Choose Environmental Variables",
-                            sidebarLayout(
-                              sidebarPanel(
-                                span(em("Packages used: ggplot2, sp, rgeos"), style = "color:gray; font-size:8pt"), 
-                                br(), br(),
-                                "The user then chooses which environmental variables to use as
-                                predictors. These data are in raster form.
-                                For this demonstration, WorldClim bioclimatic variables are made available at 3 
-                                resolutions. For Maxent and many other niche/distribution modeling approaches, 
-                                selection of a study region is critical because it defines the pixels whose 
-                                environmental values are compared with those of the pixels holding occurrence 
-                                records of the species (Anderson & Raza 2010; Barve et al. 2011). As one way to do so, the user can choose a 
-                                bounding box or minimum convex polygon around the occurrence records, as well as 
-                                buffer distance for either.", 
-                                br(),
-                                br(),
-                                "Future versions will include other sets of environmental variables, as well as 
-                                allow users to upload their own sets of environmental variables and designate a 
-                                shapefile indicating a custom study region.", 
-                                br(), br(),
-                                a("Worldclim homepage", href = "http://worldclim.org", target="_blank"),
-                                br(), br(),
-                                radioButtons("unusedRasterselect", "Select Environmental Data Source", 
-                                             choices = list("WorldClim", "Climond (not functional)", "PRISM (not functional)", 
-                                                            "user-specified (not functional)"),
-                                             selected = "WorldClim"),
-                                br(),
-                                selectInput("pred", label = "Choose environmental data resolution",
-                                            choices = list("Choose resolution" = "",  
-                                                           "2.5 arcmin WorldClim bio1-19" = 2.5, 
-                                                           "5 arcmin WorldClim bio1-19" = 5, 
-                                                           "10 arcmin WorldClim bio1-19" = 10)),
-                                conditionalPanel("input.pred == 'user'",
-                                                 textInput("userPred", "Enter path to directory")),
-                                selectInput("backg", label = "Study region selection",
-                                            choices = list("Choose option" = "", "Bounding box" = 'bb', 
-                                                           "Minimum convex polygon" = 'mcp',
-                                                           "User-specified shapefile (not functional)")),
-                                numericInput("backgBuf", label = "Study region buffer distance (degree)", value = 0),
-                                span("References:", style = "font-size:9pt"), br(),
-                                span("Anderson, R.P. & A. Raza. (2010). The effect of the extent 
-                                     of the study region on GIS models of species geographic 
-                                     distributions and estimates of niche evolution: 
-                                     preliminary tests with montane rodents (genus Nephelomys) 
-                                     in Venezuela. Journal of Biogeography, 37: 1378–1393.", style = "font-size:9pt"), br(),
-                                span("Barve, N., V. Barve, A. Jiménez-Valverde, A. Lira-Noriega, 
-                                      S.P. Maher, A.T. Peterson, J. Soberón & F. Villalobos. 
-                                      (2011), The crucial role of the accessible area in 
-                                      ecological niche modeling and species distribution 
-                                      modeling. Ecological Modeling, 222: 1810–1819.", style = "font-size:9pt")
-                              ),
-                              mainPanel(
-                                br(),
-                                conditionalPanel("input.pred != ''", uiOutput('predTxt1')),
-                                conditionalPanel("input.pred == 'user'", uiOutput('predTxt2')),
-                                br(),
-                                leafletMap(
-                                  "map3", "100%", 600,
-                                  initialTileLayer = "//{s}.tiles.mapbox.com/v3/jcheng.map-5ebohr46/{z}/{x}/{y}.png",
-                                  initialTileLayerAttribution = HTML('Maps by <a href="http://www.mapbox.com/">Mapbox</a>'),
-                                  options=list(
-                                    center = c(0, 0),
-                                    zoom = 2,
-                                    minZoom  = 1,
-                                    maxZoom = 12
+# function to make two small input boxes next to each other
+# textInputRow<-function (inputId, label, value = "")
+# {
+#   div(style="display:inline-block",
+#       tags$label(label, `for` = inputId),
+#       tags$input(id = inputId, type = "text", value = value,class="input-small"))
+# }
+
+title <- HTML('&nbsp;&nbsp;<span style="font-size:25pt">WALLACE beta v0.2:</span>
+              &nbsp;<span style="font-size:15pt">An R-based Modular Web App to Harness Biodiversity Data for Spatial Modeling</span><br>
+              &nbsp;&nbsp;<span style="font-size:10pt">Developers: Jamie M. Kass, Matthew Aiello-Lammens, Bruno Vilela, Robert Muscarella, Robert P. Anderson</span><br><br>')
+
+# Define UI for application
+shinyUI(pageWithSidebar(title,
+                        sidebarPanel(width = 5, shinyjs::useShinyjs(),
+                                     includeCSS("styles.css"),
+                                     includeScript("scroll.js"),
+                                     conditionalPanel("input.tabs == 0",
+                                                      h4("Introduction"),
+                                                      includeMarkdown("www/intro_tab.Rmd")
+                                     ),
+                                     conditionalPanel("input.tabs == 1",
+                                                      h4("Obtain Occurrence Data"),
+                                                      radioButtons("dbSelect", "Modules Available:",
+                                                                   choices = list("GBIF", "eBird (not functional)", "User-specified" = 'user'),
+                                                                   selected = ''),
+                                                      HTML('<hr>'),
+                                                      conditionalPanel("input.dbSelect == 'GBIF'",
+                                                                       div('Module: GBIF', id="mod"),
+                                                                       span('via', id="pkgDes"),
+                                                                       span('rgbif', id="rpkg"),
+                                                                       span('package: Interface to the Global Biodiversity Information Facility API', id="pkgDes"),
+                                                                       br(),
+                                                                       checkboxInput('togMD1', "Hide / Display Guidance Text", value = TRUE),
+                                                                       conditionalPanel("input.togMD1",
+                                                                                        includeMarkdown("www/tab1_gbif.Rmd")
+                                                                       ),
+                                                                       HTML('<hr>'),
+                                                                       textInput("gbifName", label = "Enter scientific name of species (format: genus species)"),
+                                                                       actionButton("goName", "Search GBIF"),
+                                                                       br(), br(),
+                                                                       sliderInput("occurrences", "Maximum number of occurrences:", min = 1, max = 500, value = 20),
+#                                                                        br(),
+#                                                                        uiOutput('gbifDnld'),
+                                                                       downloadButton('downloadGBIFcsv', "Download Occurrence CSV"),
+                                                                       HTML('<hr>')
+                                                      ),
+                                                      conditionalPanel("input.dbSelect == 'user'",
+                                                                       includeMarkdown("www/tab1_user.Rmd"),
+                                                                       HTML('<hr>'),
+                                                                       fileInput("userCSV", label = "Upload Occurrence CSV"),
+                                                                       HTML('<hr>')),
+
+                                                      "The output of this step is a CSV file with rows of localities, and columns containing species,
+                                                      longitude, and latitude (as well as any other fields provided by GBIF or the user.",
+                                                      conditionalPanel("input.dbSelect == 'GBIF'",
+                                                                       HTML('<hr>'),
+                                                                       span("rgbif", id = "rpkg"), "references", br(),
+                                                                       div('Developers: Scott Chamberlain, Karthik Ram, Vijay Barve, Dan Mcglinn', id="pkgDes"),
+                                                                       a("CRAN", href = "http://cran.r-project.org/web/packages/rgbif/index.html", target = "_blank"),
+                                                                       " | ",
+                                                                       a("documentation", href = "https://cran.r-project.org/web/packages/rgbif/rgbif.pdf", target = "_blank")
+                                                      )
+                                     ),
+                                     conditionalPanel("input.tabs == 2",
+                                                      h4("Process Occurrence Data"),
+                                                      radioButtons("procOccSelect", "Modules Available:",
+                                                                   choices = list("Select Localities" = 'selpts',
+                                                                                  "Spatial Thin" = 'spthin',
+                                                                                  "Environmental Thin (not functional)"),
+                                                                   selected = ''),
+                                                      HTML('<hr>'),
+                                                      conditionalPanel("input.procOccSelect == 'selpts'",
+                                                                       checkboxInput('togMD2A', "Hide / Display Guidance Text", value = TRUE),
+                                                                       conditionalPanel("input.togMD2A",
+                                                                                        includeMarkdown("www/tab2_selpts.Rmd")
+                                                                       ),
+                                                                       HTML('<hr>'),
+                                                                       numericInput("remLoc",  label="Enter the record ID to be removed", value = 0),
+                                                                       actionButton("remove", "Remove Locality"),
+                                                                       HTML('<hr>')),
+                                                      conditionalPanel("input.procOccSelect == 'spthin'",
+                                                                       div('Module: Spatial Thin', id="mod"),
+                                                                       span('via', id="pkgDes"),
+                                                                       span('spThin', id="rpkg"),
+                                                                       span('package: Spatial Thinning of Species Occurrence Records', id="pkgDes"), br(),
+                                                                       checkboxInput('togMD2B', "Hide / Display Guidance Text", value = TRUE),
+                                                                       conditionalPanel("input.togMD2B",
+                                                                                        includeMarkdown("www/tab2_spthin.Rmd")
+                                                                       ),
+                                                                       HTML('<hr>'),
+                                                                       numericInput("thinDist", label = "Thinning distance (km)", value = 0),
+                                                                       actionButton("goThin", "Thin Localities"),
+                                                                       br(), br(),
+                                                                       downloadButton('downloadThincsv', "Download Thinned Occurrence CSV"),
+#                                                                        br(), 
+#                                                                        uiOutput('thinDnld'),
+                                                                       HTML('<hr>')
+                                                      ),
+                                                      includeMarkdown("www/tab2_input.Rmd"),
+                                                      conditionalPanel("input.procOccSelect == 'spthin'",
+                                                                       HTML('<hr>'),
+                                                                       span("spThin", id = "rpkg"), "references", br(),
+                                                                       div('Developers:  Matthew E. Aiello-Lammens, Rob A. Boria, Alex Radosavljevic, Bruno Vilela,
+                                                                           Robert P. Anderson', id="pkgDes"),
+                                                                       a("CRAN", href = "http://cran.r-project.org/web/packages/spThin/index.html", target = "_blank"),
+                                                                       " | ",
+                                                                       a("documentation", href="https://cran.r-project.org/web/packages/spThin/spThin.pdf", target = "_blank"),
+                                                                       " | ",
+                                                                       a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/ecog.01132/abstract", target = "_blank"),
+                                                                       HTML('<hr>'),
+                                                                       includeMarkdown("www/tab2_spthin_refs.Rmd")
+                                                      )
+                                     ),
+                                     conditionalPanel("input.tabs == 3",
+                                                      h4("Obtain Environmental Data"),
+                                                      radioButtons("envSelect", "Modules Available:",
+                                                                   choices = list("WorldClim", "CliMond (not functional)" = 'Climond', "PRISM (not functional)" = "PRISM",
+                                                                                  "MARSPEC (not functional)" = "MARSPEC", "User-specified (not functional)" = "user"),
+                                                                   selected = ''),
+                                                      HTML('<hr>'),
+                                                      conditionalPanel("input.envSelect == 'WorldClim'",
+                                                                       div('Module: WorldClim', id="mod"),
+                                                                       span('via', id="pkgDes"),
+                                                                       span('dismo', id="rpkg"),
+                                                                       span('package: Species Distribution Modeling', id="pkgDes"),
+                                                                       br(),
+                                                                       checkboxInput('togMD3', "Hide / Display Guidance Text", value = TRUE),
+                                                                       conditionalPanel("input.togMD3",
+                                                                                        includeMarkdown("www/tab3_wc.Rmd")
+                                                                       ),
+                                                                       HTML('<hr>'),
+                                                                       selectInput("pred", label = "Choose environmental data resolution",
+                                                                                   choices = list("Choose resolution" = "",
+                                                                                                  "2.5 arcmin WorldClim bio1-19" = 2.5,
+                                                                                                  "5 arcmin WorldClim bio1-19" = 5,
+                                                                                                  "10 arcmin WorldClim bio1-19" = 10)),
+                                                                       actionButton("predDnld", "Download Env Data"),
+                                                                       #"Upload from Dropbox" = 'db'))
+                                                                       HTML('<hr>')
+                                                      ),
+                                                      conditionalPanel("input.envSelect == 'Climond'",
+                                                                       a("Climond website", href = "https://www.climond.org/", target = "_blank"), HTML('<hr>')),
+                                                      conditionalPanel("input.envSelect == 'MARSPEC'",
+                                                                       a("MARSPEC website", href = "http://www.marspec.org/Home.html", target = "_blank"), HTML('<hr>')),
+                                                      conditionalPanel("input.envSelect == 'PRISM'",
+                                                                       a("PRISM website", href = "http://www.prism.oregonstate.edu/", target = "_blank"), HTML('<hr>')),
+                                                      conditionalPanel("input.envSelect == 'user'",
+                                                                       includeMarkdown("www/tab3_user.Rmd"),
+                                                                       HTML('<hr>')),
+                                                      "For input, this step allows GRD, GEOTIFF, or ASCII formats.",
+                                                      conditionalPanel("input.envSelect == 'WorldClim'",
+                                                                       HTML('<hr>'),
+                                                                       span("dismo", id = "rpkg"), "references", br(),
+                                                                       div('Developers:  Robert J. Hijmans, Steven Phillips, John Leathwick, Jane Elith', id="pkgDes"),
+                                                                       a("CRAN", href = "http://cran.r-project.org/web/packages/dismo/index.html", target = "_blank"),
+                                                                       " | ",
+                                                                       a("documentation", href="https://cran.r-project.org/web/packages/dismo/dismo.pdf", target = "_blank"),
+                                                                       " | ",
+                                                                       a("WorldClim", href="http://worldclim.org", target="_blank"),
+                                                                       HTML('<hr>'),
+                                                                       includeMarkdown("www/tab3_wc_refs.Rmd")
+                                                      )
+                                                      # conditionalPanel("input.pred == 'db'",
+                                                      #   textInput("dbAscFname", "File name"),
+                                                      #   textInput("dbAscKey", "Dropbox Key"),
+                                                      #   textInput("dbAscCRS", "Coordinate System",value='+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0'),
+                                                      #   textInput("dbAscDims", "Dimensions"))
+                                     ),
+                                     conditionalPanel("input.tabs == 4",
+                                                      h4("Process Environmental Data"),
+                                                      radioButtons("envProcSelect", "Modules Available:",
+                                                                   choices = list("Select Study Region" = "backg",
+                                                                                  "Change Resolution (not functional)"),
+                                                                   selected = ''),
+
+                                                      HTML('<hr>'),
+                                                      conditionalPanel("input.envProcSelect == 'backg'",
+                                                                       div('Module: Select Study Region', id="mod"),
+                                                                       span('via', id="pkgDes"),
+                                                                       span('sp', id="rpkg"),
+                                                                       span('and', id="pkgDes"),
+                                                                       span('rgeos', id="rpkg"),
+                                                                       span('packages: Title Classes and Methods for Spatial Data |
+                                                                            Interface to Geometry Engine - Open Source (GEOS)', id="pkgDes"),
+                                                                       br(),
+                                                                       checkboxInput('togMD4', "Hide / Display Guidance Text", value = TRUE),
+                                                                       conditionalPanel("input.togMD4",
+                                                                                        includeMarkdown("www/tab4_backg.Rmd")
+                                                                       ),
+                                                                       HTML('<hr>'),
+                                                                       radioButtons("backgSelect", "Background Extents:",
+                                                                                    choices = list("Bounding box" = 'bb', "Minimum convex polygon" = 'mcp',
+                                                                                                   "User-specified polygon" = 'user'),
+                                                                                    selected = '')
+                                                      ),
+                                                      conditionalPanel("input.backgSelect == 'user'",
+                                                                       #  shinyFilesButton('userBackg', label='Upload Shapefile', title='Please select a file', multiple=TRUE)),
+                                                                       fileInput("userBackg", label = "Upload Polygon (.csv)",
+                                                                                 accept=c(".csv"), multiple=TRUE)),
+                                                      conditionalPanel("input.envProcSelect == 'backg' && (input.backgSelect == 'bb' || input.backgSelect == 'mcp')",
+                                                                       numericInput("backgBuf", label = "Study region buffer distance (degree)", value = 0)),
+                                                      conditionalPanel("input.envProcSelect == 'backg'",
+                                                                       actionButton("goBackgMask", "Clip Env Data by Polygon"), br(), br(),
+                                                                       selectInput('mskPredsFileType', label = "Select File Type",
+                                                                                   choices = list("GRD" = 'raster', "ASCII" = 'ascii', "GeoTIFF" = 'GTiff')),
+                                                                       downloadButton('downloadMskPreds', "Download Clipped Env Data"),
+                                                                       HTML('<hr>')),
+                                                      "Input flows into this step from Step 3. Step 4 provides clipped grids that can be saved in the
+                                                      same formats: GRD, GEOTIFF, or ASCII files. Additionally (for clipping the grids in this step),
+                                                      the user may provide a file delimiting the study region via a CSV that contains the vertices of a polygon.",
+                                                      conditionalPanel("input.envProcSelect == 'backg'",
+                                                                       HTML('<hr>'),
+                                                                       span("sp", id = "rpkg"), "references", br(),
+                                                                       div('Developers:  Edzer Pebesma, Roger Bivand, Barry Rowlingson, Virgilio Gomez-Rubio,
+                                                                           Robert Hijmans, Michael Sumner, Don MacQueen, Jim Lemon, Josh O\'Brien', id="pkgDes"),
+                                                                       a("CRAN", href = "http://cran.r-project.org/web/packages/sp/index.html", target = "_blank"),
+                                                                       " | ",
+                                                                       a("documentation", href="https://cran.r-project.org/web/packages/sp/sp.pdf", target = "_blank"),
+                                                                       p(), span("rgeos", id = "rpkg"), "references", br(),
+                                                                       div('rgeos Developers:  Roger Bivand, Colin Rundel, Edzer Pebesma, Karl Ove Hufthammer', id="pkgDes"),
+                                                                       a("CRAN", href = "http://cran.r-project.org/web/packages/rgeos/index.html", target = "_blank"),
+                                                                       " | ",
+                                                                       a("documentation", href="https://cran.r-project.org/web/packages/rgeos/rgeos.pdf", target = "_blank"),
+                                                                       HTML('<hr>'),
+                                                                       includeMarkdown("www/tab4_backg_refs.Rmd")
+                                                      )
+
+                                     ),
+                                     conditionalPanel("input.tabs == 5",
+                                                      h4("Partition Occurrence Data"),
+                                                      radioButtons("partSelect", "Options Available:",
+                                                                   choices = list("Non-spatial Partition" = 'nsp',
+                                                                                  "Spatial Partition" = 'sp',
+                                                                                  "User-specified (not functional)"),
+                                                                   selected = ''),
+                                                      HTML('<hr>'),
+                                                      conditionalPanel("input.partSelect == 'sp'",
+                                                                       div('Module: Spatial Partition', id="mod")),
+                                                      conditionalPanel("input.partSelect == 'nsp'",
+                                                                       div('Module: Non-spatial Partition', id="mod")),
+                                                      conditionalPanel("input.partSelect == 'sp' || input.partSelect == 'nsp'",
+                                                                       span('via', id="pkgDes"),
+                                                                       span('ENMeval', id="rpkg"),
+                                                                       span('package: Automated Runs and Evaluations of Ecological Niche Models', id="pkgDes"),
+                                                                       conditionalPanel("input.partSelect == 'sp'",
+                                                                                        checkboxInput('togMD5A', "Hide / Display Guidance Text", value = TRUE),
+                                                                                        conditionalPanel("input.togMD5A",
+                                                                                                         includeMarkdown("www/tab5_sp.Rmd")
+                                                                                        ),
+                                                                                        HTML('<hr>')),
+                                                                       conditionalPanel("input.partSelect == 'nsp'",
+                                                                                        checkboxInput('togMD5B', "Hide / Display Guidance Text", value = TRUE),
+                                                                                        conditionalPanel("input.togMD5B",
+                                                                                                         includeMarkdown("www/tab5_nsp.Rmd")
+                                                                                        ),
+                                                                                        HTML('<hr>')),
+                                                                       radioButtons("partSelect2", "Modules Available:",
+                                                                                    choices = list("Choose"), selected = '')),
+                                                      conditionalPanel("input.partSelect == 'sp' & (input.partSelect2 == 'cb1' | input.partSelect2 == 'cb2')",
+                                                                       numericInput("aggFact", label = "Aggregation Factor", value = 2, min = 2)),
+                                                      conditionalPanel("input.partSelect2 == 'random'",
+                                                                       numericInput("kfolds", label = "Number of Folds", value = 2, min = 2)),
+                                                      # conditionalPanel("input.partSelect == 'user'",
+                                                      #   br(), br(),
+                                                      #   uiOutput('occgrpSel'),
+                                                      #   uiOutput('bggrpSel')),
+                                                      conditionalPanel("input.partSelect == 'sp' || input.partSelect == 'nsp'",
+                                                                       actionButton("goPart", "Partition"), br(), br(),
+                                                                       downloadButton('downloadPart', "Download Partitioned Data CSV"),
+                                                                       HTML('<hr>')),
+                                                      includeMarkdown("www/tab5content.Rmd"),
+                                                      HTML('<hr>'),
+                                                      conditionalPanel("input.partSelect == 'sp' || input.partSelect == 'nsp'",
+                                                                       span("ENMeval", id = "rpkg"), "references", br(),
+                                                                       div('Developers:  Robert Muscarella, Peter J. Galante, Mariano Soley-Guardia, Robert A. Boria,
+                                                                           Jamie M. Kass, Maria Uriarte, Robert P. Anderson', id="pkgDes"),
+                                                                       a("CRAN", href = "http://cran.r-project.org/web/packages/ENMeval/index.html", target = "_blank"),
+                                                                       " | ",
+                                                                       a("documentation", href="https://cran.r-project.org/web/packages/ENMeval/ENMeval.pdf", target = "_blank"),
+                                                                       " | ",
+                                                                       a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12261/abstract", target = "_blank"),
+                                                                       HTML('<hr>'),
+                                                                       includeMarkdown("www/tab5_both_refs.Rmd")
+                                                      )
+                                     ),
+                                     conditionalPanel("input.tabs == 6",
+                                                      h4("Build and Evaluate Niche Model"),
+                                                      radioButtons("modSelect", "Modules Available:",
+                                                                   choices = list("BIOCLIM", "Maxent", "GAM (not functional)",
+                                                                                  "Boosted Regression Trees (not functional)"),
+                                                                   selected = ''),
+                                                      HTML('<hr>'),
+                                                      conditionalPanel("input.modSelect == 'Maxent'",
+                                                                       div('Module: Maxent', id="mod")),
+                                                      conditionalPanel("input.modSelect == 'BIOCLIM'",
+                                                                       div('Module: BIOCLIM', id="mod")),
+                                                      conditionalPanel("input.modSelect == 'BIOCLIM' || input.modSelect == 'Maxent'",
+                                                                       span('via', id="pkgDes"),
+                                                                       span('ENMeval', id="rpkg"),
+                                                                       span('and', id="pkgDes"),
+                                                                       span('dismo', id="rpkg"),
+                                                                       span('packages: Automated Runs and Evaluations of Ecological Niche Models |
+                                                                            Species Distribution Modeling', id="pkgDes")),
+                                                      conditionalPanel("input.modSelect == 'BIOCLIM'",
+                                                                       checkboxInput('togMD6A', "Hide / Display Guidance Text", value = TRUE),
+                                                                       conditionalPanel("input.togMD6A",
+                                                                                        includeMarkdown("www/tab6_bc.Rmd")
+                                                                       ),
+                                                                       HTML('<hr>')
+                                                                       # conditionalPanel("input.bcTabs == 2",
+                                                                       #   numericInput("bc1", "Axis 1", value = 1, min = 1, max = 19),
+                                                                       #   numericInput("bc2", "Axis 2", value = 2, min = 1, max = 19),
+                                                                       #   selectInput('bcProb', label = "Set threshold",
+                                                                       #   choices = list("90%" = 0.9, "95%" = 0.95, "100%" = 1),
+                                                                       #   selected = 0.9)
+                                                                       # )
+                                                      ),
+                                                      conditionalPanel("input.modSelect == 'Maxent'",
+                                                                       checkboxInput('togMD6B', "Hide / Display Guidance Text", value = TRUE),
+                                                                       conditionalPanel("input.togMD6B",
+                                                                                        includeMarkdown("www/tab6_maxent.Rmd")
+                                                                       ),
+                                                                       HTML('<hr>'),
+                                                                       checkboxGroupInput("fcs", label = "Select feature classes (flexibility of modeled response)",
+                                                                                          choices = list("L" = "L", "LQ" = "LQ", "H" = "H",
+                                                                                                         "LQH" = "LQH", "LQHP" = "LQHP", "LQHPT" = "LQHPT")),
+                                                                       sliderInput("rms", label = "Select regularization multipliers (penalty against complexity)",
+                                                                                   min = 0, max = 10, value = c(1, 5)),
+                                                                       numericInput("rmsBy", label = "RM step value", value = 1)
+                                                      ),
+                                                      conditionalPanel("input.modSelect == 'BIOCLIM' || input.modSelect == 'Maxent'",
+                                                                       actionButton("goEval", "Build & Evaluate Models"), br(), br(),
+                                                                       downloadButton('downloadEvalcsv', "Download Results CSV"), br(), br(),
+                                                                       conditionalPanel("input.modSelect == 'Maxent'",
+                                                                                        downloadButton('downloadEvalPlots', "Download Plots PNG")),
+                                                                       HTML('<hr>')),
+                                                      'The input data (both occurrence data and environmental data) flow into this step from earlier steps
+                                                      (typically Steps 4 and 5). For output, this step yields a CSV file of the table of evaluation statistics,
+                                                      as well as (for Maxent) a PNG file containing graphs for the evaluation metrics.',
+                                                      conditionalPanel("input.modSelect == 'BIOCLIM' || input.modSelect == 'Maxent'",
+                                                                       HTML('<hr>'),
+                                                                       span("ENMeval", id = "rpkg"), "references", br(),
+                                                                       div('Developers:  Robert Muscarella, Peter J. Galante, Mariano Soley-Guardia, Robert A. Boria,
+                                                                           Jamie M. Kass, Maria Uriarte, Robert P. Anderson', id="pkgDes"),
+                                                                       a("CRAN", href = "http://cran.r-project.org/web/packages/ENMeval/index.html", target = "_blank"),
+                                                                       " | ",
+                                                                       a("documentation", href="https://cran.r-project.org/web/packages/ENMeval/ENMeval.pdf", target = "_blank"),
+                                                                       " | ",
+                                                                       a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12261/abstract", target = "_blank"), br(),
+                                                                       p(), span("dismo", id = "rpkg"), "references", br(),
+                                                                       div('Developers:  Robert J. Hijmans, Steven Phillips, John Leathwick, Jane Elith', id="pkgDes"),
+                                                                       a("CRAN", href = "http://cran.r-project.org/web/packages/dismo/index.html", target = "_blank"),
+                                                                       " | ",
+                                                                       a("documentation", href="https://cran.r-project.org/web/packages/dismo/dismo.pdf", target = "_blank")
+                                                      ),
+                                                      conditionalPanel("input.modSelect == 'BIOCLIM'",
+                                                                       HTML('<hr>'),
+                                                                       includeMarkdown("www/tab6_bc_refs.Rmd")
+                                                      ),
+                                                      conditionalPanel("input.modSelect == 'Maxent'",
+                                                                       HTML('<hr>'),
+                                                                       includeMarkdown("www/tab6_maxent_refs.Rmd")
+                                                      )
+                                     ),
+                                     conditionalPanel("input.tabs == 7",
+                                                      h4("Visualize Model Results"),
+                                                      radioButtons("visSelect", "Modules Available:",
+                                                                   choices = list("Map Prediction" = 'map', "Plot Response Curves (not functional)"),
+                                                                   selected = ''),
+                                                      HTML('<hr>'),
+                                                      conditionalPanel("input.visSelect == 'map'",
+                                                                       div('Module: Map Prediction', id="mod"),
+                                                                       span('via', id="pkgDes"),
+                                                                       span('raster', id="rpkg"),
+                                                                       span('package: Geographic Data Analysis and Modeling', id="pkgDes"),
+                                                                       br(),
+                                                                       checkboxInput('togMD7', "Hide / Display Guidance Text", value = TRUE),
+                                                                       conditionalPanel("input.togMD7",
+                                                                                        includeMarkdown("www/tab7_pred.Rmd")
+                                                                       ),
+                                                                       HTML('<hr>'),
+                                                                       uiOutput("predSel"),
+                                                                       conditionalPanel("input.modSelect == 'Maxent'",
+                                                                                        selectInput('predForm', label = "Prediction output",
+                                                                                                    choices = list("raw" = 'raw', "logistic" = 'log'),
+                                                                                                    selected = 'log')
+                                                                       ),
+                                                                       selectInput('predThresh', label = "Set threshold",
+                                                                                   choices = list("No threshold" = 'noThresh',
+                                                                                                  "ORmin" = 'mtp', "OR10" = 'p10'),
+                                                                                   selected = ''),
+                                                                       actionButton("plotPred", "Plot Prediction"),
+                                                                       br(), br(),
+                                                                       selectInput('predFileType', label = "Select File Type",
+                                                                                   choices = list("GRD" = 'raster', "ASCII" = 'ascii', "GeoTIFF" = 'GTiff',
+                                                                                                  "PNG" = "png")),
+                                                                       downloadButton('downloadPred', "Download Displayed Prediction"),
+                                                                       HTML('<hr>')
+                                                      ),
+                                                      'For input, this step pulls from the output of Step 6. For output, it provides a GRD, GEOTIFF,
+                                                      or ASCII grid file (or PNG image) of the suitability prediction across the study region.',
+                                                      conditionalPanel("input.visSelect == 'map'",
+                                                                       HTML('<hr>'),
+                                                                       span("raster", id = "rpkg"), "references", br(),
+                                                                       div('Developers:  Robert J. Hijmans, Jacob van Etten, Joe Cheng, Matteo Mattiuzzi,
+                                                                           Michael Sumner, Jonathan A. Greenberg, Oscar Perpinan Lamigueiro, Andrew Bevan,
+                                                                           Etienne B. Racine, Ashton Shortridge', id="pkgDes"),
+                                                                       a("CRAN", href = "http://cran.r-project.org/web/packages/raster/index.html", target = "_blank"),
+                                                                       " | ",
+                                                                       a("documentation", href="https://cran.r-project.org/web/packages/raster/raster.pdf", target = "_blank"),
+                                                                       HTML('<hr>'),
+                                                                       includeMarkdown("www/tab7_pred_refs.Rmd")
+                                                      )
+                                     ),
+                                     conditionalPanel("input.tabs == 8",
+                                                      h4("Download Code History Markdown File")
+                                     ),
+                                     conditionalPanel("input.tabs == 9",
+                                                      h4("About")
+                                     )
+                        ),
+                        mainPanel(width = 7,
+                                  tabsetPanel(id = "tabs",
+                                              tabPanel("Introduction", value=0),
+                                              tabPanel("1) Obtain Occ Data", value=1),
+                                              tabPanel("2) Process Occ Data", value=2),
+                                              tabPanel("3) Obtain Env Data", value=3),
+                                              tabPanel("4) Process Env Data", value=4),
+                                              tabPanel("5) Partition Occ Data", value=5),
+                                              tabPanel("6) Build Niche Model", value=6),
+                                              tabPanel("7) Visualize Results", value=7),
+                                              tabPanel("Download Code History", value=8),
+                                              tabPanel("About", value=9)
+                                  ),
+                                  fluidRow(
+                                    column(9,
+                                           conditionalPanel("input.tabs != 0 && input.tabs != 8 && input.tabs != 9",
+                                                            "LOG",
+                                                            div(id = "wallaceLog", class = "scrollbox", htmlOutput("log")))
+                                    ),
+                                    column(3,
+                                           conditionalPanel("input.tabs == 2 && input.procOccSelect == 'selpts'",
+                                                            br(),
+                                                            actionButton("selectPoly", "Select With Polygon"),
+                                                            br(), br(),
+                                                            actionButton("erasePoly", "Reset Localities"))
+                                    )
+                                  ),
+                                  br(),
+                                  conditionalPanel("input.tabs != 0 && input.tabs != 6 && 
+                                                   input.tabs != 8 && input.tabs != 9", leafletOutput("map", height=500)),
+                                  br(),
+                                  conditionalPanel("input.tabs != 0 && input.tabs != 6 && input.tabs != 7 && 
+                                                   input.tabs != 8 && input.tabs != 9", DT::dataTableOutput('occTbl')),
+                                  conditionalPanel("input.tabs == 6", uiOutput('evalTabs')),
+                                  conditionalPanel("input.tabs == 8",
+                                                   column(8,
+                                                          selectInput('mdType', label = "R Markdown Download Type",
+                                                                      choices = list("Rmd", "PDF", "HTML", "Word")),
+                                                          downloadButton('downloadMD', 'Download History in R Markdown'), br(), br(),
+                                                          includeMarkdown("www/tab8_mdtext.Rmd")
+                                                   )
+                                  ),
+                                  conditionalPanel("input.tabs == 0",
+                                                   column(11,
+                                                          includeMarkdown("www/intro.Rmd")
+                                                   )
+                                  ),
+                                  conditionalPanel("input.tabs == 9",
+                                                   fluidPage(titlePanel(h4("Wallace was created by an international team of ecologists:")),
+                                                             fluidRow(
+                                                               column(2, includeMarkdown("www/tab9Acontent.Rmd")),
+                                                               column(3, includeMarkdown("www/tab9Ccontent.Rmd")),
+                                                               column(5, includeMarkdown("www/tab9Bcontent.Rmd"))
+                                                             )
+                                                   )
                                   )
-                                )                             
-                              )
-                            )
-                   ),
-                   tabPanel("4) Build & Evaluate Niche / Distribution Models",
-                            sidebarLayout(
-                              sidebarPanel(
-                                span(strong("ENMeval"), style = "color:purple; font-size:18pt"), br(),
-                                span(em("Automated Runs and Evaluations of Ecological Niche Models"), style = "font-size:10pt"), br(),
-                                #span(em("Developers of ENMeval:"), style = "font-size:10pt"), br(),
-                                span(em("Links to"), a("software note", href = "http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12261/abstract", target="_blank"), "and",
-                                a("CRAN", href = "http://cran.r-project.org/web/packages/ENMeval/index.html", target="_blank"), style = "font-size:10pt"), br(),
-                                span("Citation:  Muscarella, R., Galante, P. J., Soley-Guardia, M., Boria, R. A., Kass, J. M., 
-                                     Uriarte, M., Anderson, R. P. (2014), ENMeval: An R package for conducting spatially 
-                                     independent evaluations and estimating optimal model complexity for Maxent ecological 
-                                     niche models. Methods in Ecology and Evolution, 5: 1198–1205.", 
-                                     style = "font-size:9pt"), br(),
-                                span(em("Other packages used: ggplot2, raster, dismo"), style = "color:gray; font-size:8pt"), br(),
-                                br(),
-                                "The output of niche/distribution models varies greatly depending on model settings, 
-                                in particular those affecting the level of model complexity. This step automates the 
-                                tedious building of a suite of candidate models with differing limitations on complexity. 
-                                Furthermore, it quantifies their performance on test records. These metrics can aid the
-                                user in selecting optimal settings.",
-                                br(),
-                                br(),
-                                "Future versions will include other options for partitioning occurrence data. 
-                                Furthermore, future development of ENMeval or similar packages could provide similar 
-                                implementations with other algorithms.",
-                                br(), br(),
-                                radioButtons("unusedAlgselect", "Select Algorithm", 
-                                             choices = list("Maxent", "Boosted Regression Trees (not functional)", 
-                                                            "Random Forest (not functional)", "GAM (not functional)"),
-                                             selected = "Maxent"),
-                                br(),
-                                checkboxGroupInput("fcs", label = "Select feature classes (flexibility of modeled response)", 
-                                                   choices = list("L" = "L", "LQ" = "LQ", "H" = "H",
-                                                                  "LQH" = "LQH", "LQHP" = "LQHP", "LQHPT" = "LQHPT")
-                                ),
-                                sliderInput("rms", label = "Select regularization multipliers (penalty against complexity)",
-                                            min = 0, max = 10, value = c(1, 5)),
-                                numericInput("rmsBy", label = "RM step value", value = 1),
-                                selectInput("method", label = "Occurrence record partitioning method",
-                                            choices = list("Choose method" = "",
-                                                           "jackknife" = "jackknife", 
-                                                           "block" = "block",
-                                                           "checkerboard1" = "checkerboard1", 
-                                                           "checkerboard2" = "checkerboard2",
-                                                           "randomkfold (not functional)" = "randomkfold",
-                                                           "user-specified (not functional)" = "user")),
-                                actionButton("goEval", "Run ENMeval"),
-                                br(),
-                                br(),
-                                downloadButton('downloadEvalcsv', "Download ENMeval Results CSV")
-                              ),
-                              mainPanel(
-                                conditionalPanel("input.goEval", textOutput('evalTxt')),
-                                tableOutput('evalTbl'),
-                                conditionalPanel("input.goEval", plotOutput('evalPlot', width = 600))
-                              )
-                            )
-                   ),
-                   tabPanel("5) View Predictions",
-                            sidebarLayout(
-                              sidebarPanel(
-                                span(em("Packages used: raster"), style = "color:gray; font-size:8pt"), br(),
-                                br(),
-                                "View the prediction rasters. You can download them individually and
-                                import into a GIS for further analysis.",
-                                br(), br(),
-                                uiOutput("predSel"),
-                                checkboxInput("plotpoints", label = "Plot occurrence points", value = FALSE),
-                                br(),
-                                downloadButton('downloadPred', "Download Current Prediction Raster")
-                              ),
-                              mainPanel(
-                                textOutput('test1'),
-                                plotOutput('plotPred', width = 600)
-                              )
-                            )
-                   ),
-                   tabPanel("ABOUT",
-                            fluidPage(titlePanel(h4("Wallace was created by an international team of ecologists:")),
-                              fluidRow(
-                                column(4,
-                                       img(src = 'img/jamie.jpg', height=100, hspace = 10, align = 'left'),
-                                       img(src = 'img/gc_logo.jpg', height=100, hspace = 5),
-                                       img(src = 'img/city_logo.jpg', height=50), 
-                                       br(), br(),
-                                       img(src = 'img/matt.jpg', height=100, hspace = 10),
-                                       img(src = 'img/UConn_logo.tiff', width=100),
-                                       br(), br(),
-                                       img(src = 'img/bruno.jpg', height=100, hspace = 10),
-                                       img(src = 'img/ufg.jpg', width=100, hspace = 5), 
-                                       img(src = 'img/uah.jpg', width=140),
-                                       br(), br(),
-                                       img(src = 'img/bob.jpg', height=100, hspace = 10),
-                                       img(src = 'img/aarhus.jpg', height=50), 
-                                       br(), br(),
-                                       img(src = 'img/rob.jpg', height=100, hspace = 10),
-                                       img(src = 'img/city_logo.jpg', height=50, hspace = 5),
-                                       img(src = 'img/gc_logo.jpg', height=100)
-                                ),
-                                column(4,
-                                       h5("Jamie M. Kass is a coauthor of ENMeval and a PhD student at CUNY Graduate Center and City College of New York. He
-                                          is currently supported by a CUNY Science Scholarship.", align = 'left'),
-                                       br(), br(), br(),
-                                       h5("Matthew Aiello-Lammens is the lead author of spThin and a post-doctoral researcher at University of Connecticut.
-                                          He is currently supported by NSF DEB-1046328.", align = 'left'),
-                                       br(), br(), br(),
-                                       h5("Bruno Vilela is a coauthor of spThin and a PhD student at the Federal University of Goiás (Brazil) and in 
-                                          Ecology, Conservation and Restoration of Ecosystems at the University of Alcalá (Spain). He is currently
-                                          supported by a CAPES grant for doctoral studies.", align = 'left'),
-                                       br(), br(), br(),
-                                       h5("Robert Muscarella is the lead author of ENMeval and a post-doctoral researcher at Aarhus University (Denmark). 
-                                          He is currently supported by NSF DEB-1311367 and NSF DBI-1401312.", align = 'left'),
-                                       br(), br(), br(),
-                                       h5("Robert P. Anderson is a coauthor of spThin and ENMeval, and a Professor of Biology at City College of New York CUNY. This work was
-                                          supported by NSF DEB-1119915.", align = 'left')
-                                       )
-                              )
-                            )
-                   )
+                        )
 ))
