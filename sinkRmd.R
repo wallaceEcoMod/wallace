@@ -33,7 +33,7 @@ sinkRmdTitle <- function(title = "Code description") {
   cat("library(maps)")
   cat("\n```")
   cat("\n\nNow install and load a development version of ENMeval and load it:")
-  cat("\n```{r, message = FALSE}\n")
+  cat("\n```{r, message = FALSE, warnings = FALSE}\n")
   cat('install_github("bobmuscarella/ENMeval@edits")\n')
   cat("library(ENMeval)\n")
   cat("\n```")
