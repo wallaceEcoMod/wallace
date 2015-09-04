@@ -6,7 +6,7 @@ if (length(new.packages)) install.packages(new.packages)
 # use devtools to install leaflet and new unreleased version of ENMeval from github
 if (!require('leaflet')) devtools::install_github('rstudio/leaflet')
 # for exp version of ENMeval with special updateProgress param for shiny
-install_github("bobmuscarella/ENMeval@edits")
+#install_github("bobmuscarella/ENMeval@edits")
 if (!require("DT")) devtools::install_github("rstudio/DT")
 
 # load libraries
@@ -182,9 +182,12 @@ shinyServer(function(input, output, session) {
     sinkRmd(
       inFile.occs$origID <- row.names(inFile.occs),
       "Match IDs:")
+    
     inFile.occs$pop <- unlist(apply(inFile.occs, 1, popUpContent))
-    values$inFileOccs
-
+    addCSVpts <- function(df) {
+      df <- rbind(df, inFile.occs)
+      df <- remDups(df)
+    }
     sinkFalse("gbifoccs <- NULL", "Set gbifoccs to NULL:")
     sinkFalse("gbifoccs <- addCSVpts(gbifoccs)", "Add the occurrences:")
     sinkFalse("df <- NULL", "Set df to NULL:")
@@ -196,7 +199,6 @@ shinyServer(function(input, output, session) {
 
     values$gbifoccs <- isolate(addCSVpts(values$gbifoccs))
     values$df <- isolate(addCSVpts(values$df))
-
     # this makes an infinite loop. not sure why...
     #     x <- paste0("User input ", input$userCSV$name, " with [", nrow(values$df), "[ records.")
     #     values$log <- paste(values$log, x, sep='<br>')
@@ -609,7 +611,7 @@ shinyServer(function(input, output, session) {
 
         sinkRmdob(input$backgBuf, "Define the buffer size of the study extent:")
 
-        sinkRmdt(
+        sinkRmd(
           shp <- read.csv(inPath, header = TRUE),
           "Read the shapefile for the study extent:")
 
