@@ -135,17 +135,6 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  observe({
-    if (is.null(values$df)) return()
-    # render the GBIF records data table
-    output$occTbl <- DT::renderDataTable({DT::datatable(values$df[, -which(names(values$df) %in% c('origID', 'pop'))],
-                                                        options = list(
-                                                          autoWidth = TRUE,
-                                                          columnDefs = list(list(width = '40%', targets = 7)),
-                                                          scrollX=TRUE, scrollY=400
-                                                        ))})
-  })
-
   # functionality for input of user CSV
   observe({
     if (is.null(input$userCSV)) return()
@@ -199,6 +188,7 @@ shinyServer(function(input, output, session) {
 
     values$gbifoccs <- isolate(addCSVpts(values$gbifoccs))
     values$df <- isolate(addCSVpts(values$df))
+    isolate(writeLog("* User-specified CSV input."))
     # this makes an infinite loop. not sure why...
     #     x <- paste0("User input ", input$userCSV$name, " with [", nrow(values$df), "[ records.")
     #     values$log <- paste(values$log, x, sep='<br>')
@@ -221,6 +211,19 @@ shinyServer(function(input, output, session) {
     #     proxy %>% addMarkers(data = values$gbifoccs, lat = ~latitude, lng = ~longitude,
     #                          layerId = as.numeric(rownames(values$gbifoccs)),
     #                          icon = ~icons(occIcons[basisNum]))
+  })
+  
+  observe({
+    if (is.null(values$df)) return()
+    if (length(names(values$df)) >= 7) {
+      options <- list(autoWidth = TRUE, columnDefs = list(list(width = '40%', targets = 7)),
+        scrollX=TRUE, scrollY=400)
+    } else {
+      options <- list()
+    }
+    # render the GBIF records data table
+    output$occTbl <- DT::renderDataTable({DT::datatable(values$df[, -which(names(values$df) %in% c('origID', 'pop'))],
+                                                        options = options)})
   })
 
   # handle downloading of GBIF csv
