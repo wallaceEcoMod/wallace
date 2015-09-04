@@ -151,7 +151,7 @@ shinyServer(function(input, output, session) {
     if (is.null(input$userCSV)) return()
     source("sinkRmd_evalFalse.R")
     sinkRmdTitle(paste("Code description for Wallace session", Sys.Date()))
-    sinkRmdob(input$userCSV$datapath, "User CSV path with occurrence data:")
+    sinkRmdob(input$userCSV$datapath, "User CSV path with occurrence data (change to the path of the file in your computer):")
     sinkRmd(
       inFile <- read.csv(input$userCSV$datapath, header = TRUE),
       "Load user's occurrence data:")
@@ -591,7 +591,7 @@ shinyServer(function(input, output, session) {
       #       path <- input$userBackg$datapath
       sinkFalse("userBackg <- NULL", "Define user study extent:")
       sinkRmdob(input$userBackg$name, "User study extent name:")
-      sinkRmdob(input$userBackg$datapath, "User study extent path:")
+      sinkRmdob(input$userBackg$datapath, "User study extent path (change to the path of the file in your computer):")
 
       sinkRmdmult(c(
         names <- input$userBackg$name,
