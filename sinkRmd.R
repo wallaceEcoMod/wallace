@@ -8,9 +8,7 @@ sinkRmdTitle <- function(title = "Code description") {
   cat(paste("title:", paste("\'", title, "\'", sep ="")))
   cat("\n---")
   cat("\n\n## About")
-  cat("\n\nThis is an R Markdown document (more information on http://rmarkdown.rstudio.com/).
-      Here all R code history from the Wallace session is recorded and annotated.
-      With this document, users can track their own analysis and reproduce it by running the code.")
+  cat("\n\nThis is an R Markdown document (more information on http://rmarkdown.rstudio.com/). Here all R code history from the Wallace session is recorded and annotated. With this document, users can track their own analysis and reproduce it by running the code.")
   cat("\n\n## Package installation")
   cat("\n\nWallace uses the following R packages that need to be installed before starting:")
   cat("\n```{r, eval = FALSE}\n")
