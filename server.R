@@ -26,7 +26,7 @@ library(repmis)
 library(rmarkdown)
 
 source("functions.R")
-source("sinkRmd.R")
+
 
 #devtools::install_github("jcheng5/rasterfaster")
 
@@ -63,6 +63,7 @@ shinyServer(function(input, output, session) {
     if (input$gbifName == "") return()
 
     # rmd code begin
+    source("sinkRmd.R")
     sinkRmdTitle(paste("Code history for Wallace session", Sys.Date()))
     sinkRmdob(
       input$gbifName,
@@ -148,6 +149,7 @@ shinyServer(function(input, output, session) {
   # functionality for input of user CSV
   observe({
     if (is.null(input$userCSV)) return()
+    source("sinkRmd_evalFalse.R")
     sinkRmdTitle(paste("Code description for Wallace session", Sys.Date()))
     sinkRmdob(input$userCSV$datapath, "User CSV path with occurrence data:")
     sinkRmd(
@@ -583,6 +585,7 @@ shinyServer(function(input, output, session) {
         values$bbTxt <- 'minimum convex polygon'),
         "Generate the minimum convex polygon study extent:")
     } else if (input$backgSelect == 'user') {
+      source("sinkRmd_evalFalse.R")
       if (is.null(input$userBackg)) return()
       #       file <- shinyFileChoose(input, 'userBackg', root=c(root='.'))
       #       path <- input$userBackg$datapath
