@@ -1,0 +1,11 @@
+---
+title: "tab9Acontent"
+output: html_document
+---
+
+<img src="jamie.jpg" width="100" align="left">
+<img src="matt.jpg" width="100" align="left" style="PADDING-TOP: 15px;">
+<img src="bruno.jpg" width="100" align="left" style="PADDING-TOP: 15px;">
+<img src="bob.jpg" width="100" align="left" style="PADDING-TOP: 15px;">
+<img src="rob.jpg" width="100" align="left" style="PADDING-TOP: 15px;">
+
