@@ -8,8 +8,8 @@ sinkRmdTitle <- function(title = "Code description") {
   cat(paste("title:", paste("\'", title, "\'", sep ="")))
   cat("\n---")
   cat("\n\n## About")
-  cat("\n\nThis is an R Markdown document (more information on http://rmarkdown.rstudio.com/). 
-      Here all R code history from the Wallace session is recorded and annotated. 
+  cat("\n\nThis is an R Markdown document (more information on http://rmarkdown.rstudio.com/).
+      Here all R code history from the Wallace session is recorded and annotated.
       With this document, users can track their own analysis and reproduce it by running the code.")
   cat("\n\n## Package installation")
   cat("\n\nWallace uses the following R packages that need to be installed before starting:")
@@ -35,12 +35,13 @@ sinkRmdTitle <- function(title = "Code description") {
   cat("library(maps)")
   cat("\n```")
   cat("\n\nNow install and load a development version of ENMeval and load it:")
+  cat("\n```{r, message = FALSE}\n")
   cat('install_github("bobmuscarella/ENMeval@edits")\n')
-  cat("library(ENMeval)\n")  
-  
+  cat("library(ENMeval)\n")
+  cat("\n```")
   cat("\n\nWallace also includes several functions developed to help integrate different packages and
-      some additional functionality. For this reason, it is necessary to load the file 'functions.R', 
-      which can be found on Wallace's GitHub page (https://github.com/ndimhypervol/wallace). 
+      some additional functionality. For this reason, it is necessary to load the file 'functions.R',
+      which can be found on Wallace's GitHub page (https://github.com/ndimhypervol/wallace).
       Download the file, place it in your working directory (use `getwd()`), and then load it:")
   cat("\n```{r}\n")
   cat("source('functions.R')")
