@@ -1,0 +1,4 @@
+**User-specified**
+<p align="justify">
+Alternatively, the user may upload a CSV file of occurrence data to use in the analysis, such as processed files previously downloaded via Wallace. Such a file must contain rows of localities, and the first three columns should be “species”, “longitude”, and “latitude” (in that order, with those names).  
+</p>

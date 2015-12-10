@@ -1,0 +1,10 @@
+**BACKGROUND**  
+<p align="justify">
+Full evaluation of the performance of a niche/distributional model requires partitioning the occurrence localities into two categories: 1) those used to make the model; and 2) others that are withheld for evaluating it (often called “training” vs. “testing,” or “calibration” vs. “evaluation” datasets; (Guisan and Zimmermann 2000; Peterson et al. 2011). Various evaluation statistics exist for assessing model performance, and most are based on the ability to predict the withheld localities. In contrast, some, such as the Akaike Information Criterion (AIC), take into account how well the model explains the training localities, as well as how complex it is (e.g., how many parameters are in the model; (Warren and Seifert 2011).</p>
+<p align="justify">
+Two fundamentally different ways exist to partition occurrence localities: non-spatially (randomly) and spatially. Non-spatial partitions are useful when no sampling bias exists and when the model will not be used for transfer across space or time (or when too few localities exist to implement spatial partitions). In contrast, spatial partitions have important advantages when sampling bias is known or suspected, and when the application will require transfer across space and/or time.  
+</p>
+**IMPLEMENTATION**
+<p align="justify">
+Module “Spatial Partition” implements functionalities from the R package ENMeval to partition the occurrence localities into training and testing datasets (using development version v0.1.2, available on Github). The user can choose one of three means of spatial partitioning: the block, checkerboard1, or checkerboard2 options. These partitions have k = either 2 or 4 folds/groups. For each option in this module, the number of datasets produced is equal to k, with each dataset having both training and testing localities.  
+</p>

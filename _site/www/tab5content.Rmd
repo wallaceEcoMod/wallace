@@ -1,0 +1,3 @@
+<p align="justify">
+'Occurrence data flow into this step from Step 2. Environmental data are also necessary, entering from Step 4. The output is a CSV file (occurrence localities for training and fortesting, as well as “background” pixels from the study region) with: rows of localities, and the first three columns indicating species, longitude, latitude, and partition identifier. For background pixels, the species identifier is “background.”'
+</p>
