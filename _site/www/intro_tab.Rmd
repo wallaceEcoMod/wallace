@@ -1,0 +1,25 @@
+<p align="justify">
+Wallace includes the following steps and modules, as well as the opportunity to download a commented and executable history of the analyses run in a given session:  
+</p>
+**STEP 1**: *Obtain Occurrence Data*  
+Options: GBIF; user-specified  
+
+**STEP 2:** *Process Occurrence Data*  
+Options: Select Localities; Spatial Thin  
+
+**STEP 3:** *Obtain Environmental Data*  
+Options: WorldClim  
+
+**STEP 4:** *Process Environmental Data*  
+Options: Select Study Region (including user-specified)  
+
+**STEP 5:** *Partition Occurrence Data*  
+Options: Non-spatial Partition; or Spatial Partition  
+
+**STEP 6:** *Build and Evaluate Niche Model*  
+Options: BIOCLIM; Maxent  
+
+**STEP 7:** *Visualize Model Results*  
+Options: Map Prediction  
+
+**Download Code History**  
