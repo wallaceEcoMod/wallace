@@ -41,3 +41,5 @@ Wallace also includes several functions developed to help integrate different pa
 ```{r, eval = FALSE}
 source('functions.R')
 ```
+###Obtain Occurrence Data
+Record of analysis for `r input$gbifName`. The search for occurrences was limited to `r input$occurrences` records.
