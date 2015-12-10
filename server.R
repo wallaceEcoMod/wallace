@@ -6,7 +6,7 @@ if (length(new.packages)) install.packages(new.packages)
 # use devtools to install leaflet and new unreleased version of ENMeval from github
 if (!require('leaflet')) devtools::install_github('rstudio/leaflet')
 # for exp version of ENMeval with special updateProgress param for shiny
-#install_github("bobmuscarella/ENMeval@edits")
+#install_github("bobmuscarella/ENMeval@ENMeval_v0.1.2")
 if (!require("DT")) devtools::install_github("rstudio/DT")
 
 # load libraries
@@ -40,6 +40,8 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("downloadEvalcsv")
   shinyjs::disable("downloadEvalPlots")
   shinyjs::disable("downloadPred")
+  
+  source("sinkRmd.R")
 
   # make list to carry data used by multiple reactive functions
   values <- reactiveValues(polyID=0, polyErase=FALSE, log=c())
@@ -61,18 +63,6 @@ shinyServer(function(input, output, session) {
   # query GBIF based on user input, remove duplicate records
   observeEvent(input$goName, {
     if (input$gbifName == "") return()
-
-    # rmd code begin
-    source("sinkRmd.R")
-    sinkRmdTitle(paste("Code history for Wallace session", Sys.Date()))
-    sinkRmdob(
-      input$gbifName,
-      paste("## Obtain Occurrence Data",
-            "\n\nRecord of analysis for:"))
-    sinkRmdob(
-      input$occurrences,
-      "The search for occurrences will be limited to the user-specified number of records:")
-    # rmd code end
 
     writeLog("...Searching GBIF...")
     sinkRmd(
@@ -1046,15 +1036,22 @@ shinyServer(function(input, output, session) {
         input$mdType, Rmd = 'Rmd', PDF = 'pdf', HTML = 'html', Word = 'docx'
       ))},
     content = function(file) {
-      out <- 'temp.Rmd'
-      if (input$mdType != 'Rmd') {
-        out <- rmarkdown::render(out, switch(
+      src <- normalizePath('userReport.Rmd')
+      # temporarily switch to the temp dir, in case you do not have write
+      # permission to the current working directory
+      owd <- setwd(tempdir())
+      on.exit(setwd(owd))
+      file.copy(src, 'userReport.Rmd')
+      
+      if (input$mdType == 'Rmd') {
+        out <- 'userReport.Rmd'
+      } else {
+        out <- rmarkdown::render('userReport.Rmd', switch(
           input$mdType,
           PDF = pdf_document(), HTML = html_document(), Word = word_document()
         ))
-      }
-      file.copy(out, file)
-
+      } 
+      file.rename(out, file)
     }
   )
 })
