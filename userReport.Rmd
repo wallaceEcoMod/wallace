@@ -4,13 +4,17 @@ author: "Jamie M. Kass"
 date: "May 3rd, 2014"
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(eval=FALSE)
+```
+
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
 This is an R Markdown document (for more information see <http://rmarkdown.rstudio.com>). Here all R code history from the Wallace session is recorded and annotated. With this document, users can track the analyses completed in their session and reproduce them by running this file in RStudio.
 
 ###Package installation
 Wallace uses the following R packages that need to be installed before starting:
-```{r, eval = FALSE}
+```{r}
 install.packages(devtools)
 install.packages(rgbif)
 install.packages(maptools)
@@ -21,7 +25,7 @@ install.packages(repmis)
 install.packages(maps)
 ```
 Once installed, load them:
-```{r, eval = FALSE, message = FALSE}
+```{r, message = FALSE}
 library(devtools)
 library(rgbif)
 library(maptools)
@@ -33,13 +37,20 @@ library(maps)
 ```
 
 Now install and load a development version of ENMeval and load it:
-```{r, eval = FALSE, message = FALSE, warnings = FALSE}
+```{r, message = FALSE, warnings = FALSE}
 install_github("bobmuscarella/ENMeval@edits")
 library(ENMeval)
 ```
 Wallace also includes several functions developed to help integrate different packages and some additional functionality. For this reason, it is necessary to load the file 'functions.R', which can be found on Wallace's GitHub page (https://github.com/ndimhypervol/wallace). Download the file, place it in your working directory (use `getwd()`), and then load it:
-```{r, eval = FALSE}
+```{r}
 source('functions.R')
 ```
+
 ###Obtain Occurrence Data
-Record of analysis for `r input$gbifName`. The search for occurrences was limited to `r input$occurrences` records.
+Record of analysis for *`r makeCap(input$gbifName)`*. The search for occurrences was limited to `r input$occurrences` records.
+Obtain occurrence records of the selected species from GBIF:
+```{r}
+results <- occ_search(scientificName = input$gbifName, limit = input$occurrences,
+                          hasCoordinate = TRUE)
+```
+
