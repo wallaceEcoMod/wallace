@@ -40,8 +40,9 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("downloadEvalcsv")
   shinyjs::disable("downloadEvalPlots")
   shinyjs::disable("downloadPred")
-  
+
   source("sinkRmd.R")
+  makeCap <- function(x) paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)))
 
   # make list to carry data used by multiple reactive functions
   values <- reactiveValues(polyID=0, polyErase=FALSE, log=c())
@@ -65,10 +66,8 @@ shinyServer(function(input, output, session) {
     if (input$gbifName == "") return()
 
     writeLog("...Searching GBIF...")
-    sinkRmd(
-      results <- occ_search(scientificName = input$gbifName, limit = input$occurrences,
-                            hasCoordinate = TRUE),
-      "The following command obtains occurrence records of the selected species from GBIF:")
+    results <- occ_search(scientificName = input$gbifName, limit = input$occurrences,
+                          hasCoordinate = TRUE)
 
     sinkRmd(
       values$gbifOrig <- results,
@@ -161,7 +160,7 @@ shinyServer(function(input, output, session) {
     sinkRmd(
       inFile.occs$origID <- row.names(inFile.occs),
       "Match IDs:")
-    
+
     inFile.occs$pop <- unlist(apply(inFile.occs, 1, popUpContent))
     addCSVpts <- function(df) {
       df <- rbind(df, inFile.occs)
@@ -202,7 +201,7 @@ shinyServer(function(input, output, session) {
     #                          layerId = as.numeric(rownames(values$gbifoccs)),
     #                          icon = ~icons(occIcons[basisNum]))
   })
-  
+
   observe({
     if (is.null(values$df)) return()
     if (length(names(values$df)) >= 7) {
@@ -621,7 +620,7 @@ shinyServer(function(input, output, session) {
 #       } else if (exts == 'shp') {
 #         # rename temp files to their original names - nice hack for inputting shapefiles in shiny
 #         sinkRmdob(input$backgBuf, "Define the buffer size of the study extent:")
-# 
+#
 #         sinkRmdmult(c(
 #           file.rename(inPath, file.path(pathdir, names)),
 #           # get index of .shp
@@ -630,8 +629,8 @@ shinyServer(function(input, output, session) {
 #           # poly <- readOGR(pathdir[i], strsplit(names[i], '\\.')[[1]][1])),
 #           poly <- readShapePoly(file.path(pathdir[i], strsplit(names[i], '\\.')[[1]][1]))),
 #           "Read the shapefile for the study extent:")
-#         
-# 
+#
+#
 #         sinkRmdmult(c(
 #           poly <- gBuffer(poly, width = input$backgBuf + res(values$preds)[1]),
 #           values$backgExt <- poly,
@@ -1042,7 +1041,7 @@ shinyServer(function(input, output, session) {
       owd <- setwd(tempdir())
       on.exit(setwd(owd))
       file.copy(src, 'userReport.Rmd')
-      
+
       if (input$mdType == 'Rmd') {
         out <- 'userReport.Rmd'
       } else {
@@ -1050,7 +1049,7 @@ shinyServer(function(input, output, session) {
           input$mdType,
           PDF = pdf_document(), HTML = html_document(), Word = word_document()
         ))
-      } 
+      }
       file.rename(out, file)
     }
   )
