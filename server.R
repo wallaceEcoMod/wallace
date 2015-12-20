@@ -42,7 +42,9 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("downloadPred")
 
   source("sinkRmd.R")
+  ## functions for text formatting in userReport.Rmd
   makeCap <- function(x) paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)))
+  getGBIFname <- function() deparse(substitute(input$gbifName))
 
   # make list to carry data used by multiple reactive functions
   values <- reactiveValues(polyID=0, polyErase=FALSE, log=c())
@@ -69,9 +71,11 @@ shinyServer(function(input, output, session) {
     results <- occ_search(scientificName = input$gbifName, limit = input$occurrences,
                           hasCoordinate = TRUE)
 
-    sinkRmd(
-      values$gbifOrig <- results,
-      "Rename the results (Wallace internal needs):")
+## I don't think we need this anymore... gbifOrig only appears in csvDownload, which is
+## is not necessary for user Rmd
+#     sinkRmd(
+#       values$gbifOrig <- results,
+#       "Rename the results (Wallace internal needs):")
 
     # Control species not found
     if (results$meta$count == 0) {
@@ -79,27 +83,23 @@ shinyServer(function(input, output, session) {
     }
 
     if (results$meta$count != 0) {
-      sinkRmdmult(c(
-        cols <- c('name','decimalLongitude','decimalLatitude',
-                  'institutionCode','country', 'stateProvince',
-                  'locality', 'elevation', 'basisOfRecord'),
-        results <- fixcols(cols, results),
-        locs.in <- results$data[!is.na(results$data[,3]),][,cols],
-        locs <- remDups(locs.in),
-        names(locs)[1:3] <- c('species','longitude', 'latitude'),
-        locs$origID <- row.names(locs)),
-        "Change the name of the occurrence record table:")
+      cols <- c('name','decimalLongitude','decimalLatitude',
+                'institutionCode','country', 'stateProvince',
+                'locality', 'elevation', 'basisOfRecord')
+      results <- fixcols(cols, results)
+      locs.in <- results$data[!is.na(results$data[,3]),][,cols]
+      locs <- remDups(locs.in)
+      names(locs)[1:3] <- c('species','longitude', 'latitude')
+      locs$origID <- row.names(locs)
       locs$pop <- unlist(apply(locs, 1, popUpContent))
-      sinkRmdmult(c(
-        values$gbifoccs <- locs,
-        values$gbifoccs <- remDups(values$gbifoccs),
-        values$df <- values$gbifoccs),
-        "Adjust the formatting of the results table:")
+      # add locs to values list and copy
+      values$gbifoccs <- locs
+      values$gbifoccs <- remDups(values$gbifoccs)
+      values$df <- values$gbifoccs
 #       sinkFalse(paste0("map(interior = FALSE)\n",
 #                       "points(df$lon, df$lat, col = 'red', bg = 'blue', pch = 21, cex = 1)"),
 #                 "Plot the occurrence data:")
 
-      sinkSub("## Process Occurrence Data")
 
       inName <- isolate(input$gbifName)
       nameSplit <- length(unlist(strsplit(inName, " ")))
@@ -126,57 +126,42 @@ shinyServer(function(input, output, session) {
 
   # functionality for input of user CSV
   observe({
-    if (is.null(input$userCSV)) return()
-    source("sinkRmd_evalFalse.R")
-    sinkRmdTitle(paste("Code description for Wallace session", Sys.Date()))
-    sinkRmdob(input$userCSV$datapath, "User CSV path with occurrence data (change to the path of the file in your computer):")
-    sinkRmd(
-      inFile <- read.csv(input$userCSV$datapath, header = TRUE),
-      "Load user's occurrence data:")
-    if (all(names(inFile) %in% c('species', 'longitude', 'latitude'))) {
+    if (is.null(input$userCSV)) return()  # exit if userCSV not specifed
+    inFile <- read.csv(input$userCSV$datapath, header = TRUE)  # read user csv
+    if (all(names(inFile) %in% c('species', 'longitude', 'latitude'))) {  # throw error if these columns are not included
       writeLog('* ERROR: Please input CSV file with columns "species", "longitude", "latitude".')
       return()
     }
-    values$inFile <- inFile
-#     # make dynamic field selections for ui user-defined kfold groups
+    values$inFile <- inFile  # store original table in values list
+    
+#     # IN DEV: make dynamic field selections for ui user-defined kfold groups
 #     output$occgrpSel <- renderUI({
 #       selectInput('occgrp', 'Occurrence Group Field', names(inFile))
 #     })
 #     output$bggrpSel <- renderUI({
 #       selectInput('bggrp', 'Background Group Field', names(inFile))
 #     })
+    
     # subset to only occs, not backg, and just fields that match df
-    sinkRmdmult(c(
-      values$spname <- inFile[1,1],
-      inFile.occs <- inFile[inFile[,1] == values$spname,],
-      inFile.occs <- inFile.occs[,c('species', 'longitude', 'latitude')]),
-      "Subset to only occurrences (not background), and just fields that match df:")
-
-    if (!("basisOfRecord" %in% names(inFile.occs))) {
-      sinkRmd(
-        inFile.occs$basisOfRecord <- NA,
-        "If basis of record does not exist, set to NA:")
+    values$spname <- inFile[1,1]  # get species name
+    inFile.occs <- inFile[inFile[,1] == values$spname,]  # limit to records with this name
+    for (col in c("institutionCode", "country", "stateProvince", 
+                  "locality", "elevation", "basisOfRecord")) {  # add all cols to match gbifoccs if not already there
+      if (!(col %in% names(inFile.occs))) inFile.occs[,col] <- NA
     }
-    sinkRmd(
-      inFile.occs$origID <- row.names(inFile.occs),
-      "Match IDs:")
+    
+    inFile.occs$origID <- row.names(inFile.occs)  # add col for IDs
+    inFile.occs$pop <- unlist(apply(inFile.occs, 1, popUpContent))  # add col for map marker popup text
 
-    inFile.occs$pop <- unlist(apply(inFile.occs, 1, popUpContent))
-    addCSVpts <- function(df) {
-      df <- rbind(df, inFile.occs)
-      df <- remDups(df)
-    }
-    sinkFalse("gbifoccs <- NULL", "Set gbifoccs to NULL:")
-    sinkFalse("gbifoccs <- addCSVpts(gbifoccs)", "Add the occurrences:")
-    sinkFalse("df <- NULL", "Set df to NULL:")
-    sinkFalse("df <- addCSVpts(df)", "Add the occurrences:")
-#     sinkFalse(paste0("map(interior = FALSE)\n",
-#                     "points(df$lon, df$lat, col = 'red', bg = 'blue', pch = 21, cex = 1)"),
-#               "Plot the occurrence data:")
-    sinkSub("## Process Occurrence Data")
-
-    values$gbifoccs <- isolate(addCSVpts(values$gbifoccs))
-    values$df <- isolate(addCSVpts(values$df))
+    # add user locs to existing gbifoccs and df, and remove duplicate records
+    values$gbifoccs <- isolate({
+      values$gbifoccs <- rbind(values$gbifoccs, inFile.occs)
+      values$gbifoccs <- remDups(values$gbifoccs)
+    })
+    values$df <- isolate({
+      values$df <- rbind(values$df, inFile.occs)
+      values$df <- remDups(values$df)
+    })
     isolate(writeLog("* User-specified CSV input."))
     # this makes an infinite loop. not sure why...
     #     x <- paste0("User input ", input$userCSV$name, " with [", nrow(values$df), "[ records.")
