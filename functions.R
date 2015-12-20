@@ -123,7 +123,7 @@ evalPlots <- function(results) {
 }
 
 # Bind csv and occ records
-addCSVpts <- function(df) {
+addCSVpts <- function(df, inFile.occs) {
   df <- rbind(df, inFile.occs)
   df <- remDups(df)
 }
@@ -131,11 +131,12 @@ addCSVpts <- function(df) {
 
 # Fix columns
 fixcols <- function(cols, results) {
-  colsadd <- cols[!(cols %in% colnames(results$data))]
-  n <- length(colsadd)
+  colsadd <- cols[!(cols %in% colnames(results$data))]  # find colNames not included in results$data
+  n <- length(colsadd)  # number of colNames not included
 
+  # if there are colNames not included, add a new named col filled with NAs
   if (n > 0) {
-    for(i in 1:n) {
+    for (i in 1:n) {
       results$data <- cbind(results$data, NA)
       colnames(results$data)[ncol(results$data)] <- colsadd[i]
     }

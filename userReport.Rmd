@@ -1,30 +1,21 @@
 ---
 title: Wallace Session `r Sys.Date()`
+runtime: shiny
 author: "Jamie M. Kass"
 date: "May 3rd, 2014"
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(eval=FALSE)
-```
+#```{r setup, include=FALSE}
+#knitr::opts_chunk$set(eval=FALSE)
+#```
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
 This is an R Markdown document (for more information see <http://rmarkdown.rstudio.com>). Here all R code history from the Wallace session is recorded and annotated. With this document, users can track the analyses completed in their session and reproduce them by running this file in RStudio.
 
 ###Package installation
-Wallace uses the following R packages that need to be installed before starting:
-```{r}
-install.packages(devtools)
-install.packages(rgbif)
-install.packages(maptools)
-install.packages(spThin)
-install.packages(dismo)
-install.packages(rgeos)
-install.packages(repmis)
-install.packages(maps)
-```
-Once installed, load them:
+
+Wallace uses the following R packages that must be installed before starting. Once installed, load them:
 ```{r, message = FALSE}
 library(devtools)
 library(rgbif)
@@ -34,23 +25,59 @@ library(dismo)
 library(rgeos)
 library(repmis)
 library(maps)
-```
-
-Now install and load a development version of ENMeval and load it:
-```{r, message = FALSE, warnings = FALSE}
-install_github("bobmuscarella/ENMeval@edits")
 library(ENMeval)
 ```
+
 Wallace also includes several functions developed to help integrate different packages and some additional functionality. For this reason, it is necessary to load the file 'functions.R', which can be found on Wallace's GitHub page (https://github.com/ndimhypervol/wallace). Download the file, place it in your working directory (use `getwd()`), and then load it:
-```{r}
-source('functions.R')
+```{r loadFunctions}
+source('/Users/musasabi/Documents/github/wallace/functions.R')
 ```
 
 ###Obtain Occurrence Data
-Record of analysis for *`r makeCap(input$gbifName)`*. The search for occurrences was limited to `r input$occurrences` records.
-Obtain occurrence records of the selected species from GBIF:
-```{r}
-results <- occ_search(scientificName = input$gbifName, limit = input$occurrences,
-                          hasCoordinate = TRUE)
+```{r, echo = FALSE}
+eval_gbif <- input$gbifName != ""
 ```
+
+```{r gbifoccs}
+gbifoccs <- NULL  # make empty gbifoccs to fill when GBIF or user input are called
+```
+
+`r if (eval_gbif) {paste0("Record of analysis for ", makeCap(input$gbifName), ". The search for occurrences was limited to ", input$occurrences, " records. Obtain occurrence records of the selected species from GBIF:")}`
+
+```{r occSearch, include = eval_gbif, eval = eval_gbif}
+results <- occ_search(scientificName = input$gbifName, limit = input$occurrences, hasCoordinate = TRUE)
+```
+
+`r if (eval_gbif) {"Check if all the needed columns were returned in the rgbif call, and if some are missing, add them to results$data."}`
+
+```{r occTblEdits, include = eval_gbif, eval = eval_gbif}
+cols <- c('name','decimalLongitude','decimalLatitude',
+                'institutionCode','country', 'stateProvince',
+                'locality', 'elevation', 'basisOfRecord')
+results <- fixcols(cols, results)
+locs.in <- results$data[!is.na(results$data[,3]),][,cols]  # if latitude is NA, remove the row
+locs.in <- remDups(locs.in)  # remove rows with duplicate coordinates
+gbifoccs <- rbind(gbifoccs, locs.in)  # add these locs to gbifoccs
+names(gbifoccs)[1:3] <- c('species','longitude', 'latitude')  # rename these rows
+gbifoccs$origID <- row.names(gbifoccs)  # create an ID column
+```
+
+```{r, echo = FALSE}
+eval_userCSV <- !is.null(input$userCSV) 
+```
+
+`r if (eval_userCSV) {"User CSV path with occurrence data (change to the path of the file in your computer):"}`
+`r if (eval_userCSV) {inFile <- read.csv(input$userCSV$datapath, header = TRUE)  # load occurrence data}`
+
+```{r, include = eval_userCSV, eval = eval_userCSV}
+spname <- inFile[1,1]  # get species name
+inFile.occs <- inFile[inFile[,1] == spname,]  # limit to records with this name
+for (col in c("institutionCode", "country", "stateProvince", "locality", "elevation", "basisOfRecord")) {  # add all cols to match gbifoccs if not already there
+  if (!(col %in% names(inFile.occs))) inFile.occs[,col] <- NA
+}
+inFile.occs$origID <- row.names(inFile.occs)  # add col for IDs
+gbifoccs <- rbind(gbifoccs, inFile.occs)  # add the CSV points to existing gbifoccs
+gbifoccs <- remDups(gbifoccs)  # remove duplicate records
+```
+###Process Occurrence Data
 

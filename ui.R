@@ -57,7 +57,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                        span('rgbif', id="rpkg"),
                                                                        span('package: Interface to the Global Biodiversity Information Facility API', id="pkgDes"),
                                                                        br(),
-                                                                       checkboxInput('togMD1', "Hide / Display Guidance Text", value = TRUE),
+                                                                       checkboxInput('togMD1', "Hide / Display Guidance Text", value = FALSE),
                                                                        conditionalPanel("input.togMD1",
                                                                                         includeMarkdown("www/tab1_gbif.Rmd")
                                                                        ),
