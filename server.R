@@ -62,6 +62,10 @@ shinyServer(function(input, output, session) {
 
   # make map proxy to make further changes to existing map
   proxy <- leafletProxy("map")
+  
+  #########################
+  ### STEP 1 FUNCTIONALITY
+  #########################
 
   # query GBIF based on user input, remove duplicate records
   observeEvent(input$goName, {
@@ -167,7 +171,31 @@ shinyServer(function(input, output, session) {
     #     x <- paste0("User input ", input$userCSV$name, " with [", nrow(values$df), "[ records.")
     #     values$log <- paste(values$log, x, sep='<br>')
   })
-
+  
+  # render the GBIF records data table
+  observe({
+    if (is.null(values$df)) return()
+    if (length(names(values$df)) >= 7) {
+      options <- list(autoWidth = TRUE, columnDefs = list(list(width = '40%', targets = 7)),
+                      scrollX=TRUE, scrollY=400)
+    } else {
+      options <- list()
+    }
+    output$occTbl <- DT::renderDataTable({DT::datatable(values$df[, -which(names(values$df) %in% c('origID', 'pop'))], options = options)})
+  })
+  
+  # handle downloading of GBIF csv
+  output$downloadGBIFcsv <- downloadHandler(
+    filename = function() {paste0(nameAbbr(values$df), "_gbifCleaned.csv")},
+    content = function(file) {
+      write.csv(values$gbifOrig$data, file, row.names=FALSE)
+    }
+  )
+  
+  #########################
+  ### MAPPING FUNCTIONALITY
+  #########################
+  
   # map gbif occs
   observeEvent(input$goName, {
     if (is.null(values$gbifoccs)) {return()}
@@ -186,27 +214,6 @@ shinyServer(function(input, output, session) {
     #                          layerId = as.numeric(rownames(values$gbifoccs)),
     #                          icon = ~icons(occIcons[basisNum]))
   })
-
-  observe({
-    if (is.null(values$df)) return()
-    if (length(names(values$df)) >= 7) {
-      options <- list(autoWidth = TRUE, columnDefs = list(list(width = '40%', targets = 7)),
-        scrollX=TRUE, scrollY=400)
-    } else {
-      options <- list()
-    }
-    # render the GBIF records data table
-    output$occTbl <- DT::renderDataTable({DT::datatable(values$df[, -which(names(values$df) %in% c('origID', 'pop'))],
-                                                        options = options)})
-  })
-
-  # handle downloading of GBIF csv
-  output$downloadGBIFcsv <- downloadHandler(
-    filename = function() {paste0(nameAbbr(values$df), "_gbifCleaned.csv")},
-    content = function(file) {
-      write.csv(values$gbifOrig$data, file, row.names=FALSE)
-    }
-  )
 
   # governs point removal behavior and modifies tables in "values"
   observeEvent(input$remove, {
@@ -416,9 +423,14 @@ shinyServer(function(input, output, session) {
                           opacity = 1, layerId = 1)
     }
   })
+  
+  #########################
+  ### STEP 2 FUNCTIONALITY
+  #########################
 
   # map thinned records when Thin button is pressed
   observeEvent(input$goThin, {
+    # warnings
     if (is.null(values$df)) {
       writeLog("* WARNING: Obtain species occurrence localities first in Step 1.")
       return()
@@ -427,7 +439,7 @@ shinyServer(function(input, output, session) {
       writeLog("* WARNING: Assign positive distance to thinning parameter.")
       return()
     }
-    withProgress(message = "Spatially Thinning Localities...", {
+    withProgress(message = "Spatially Thinning Localities...", {  # start progress bar
       sinkRmdob(input$thinDist, "Thin distance:")
       sinkRmd(
         output <- thin(values$df, 'latitude', 'longitude', 'species', thin.par = input$thinDist,
