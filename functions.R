@@ -105,7 +105,7 @@ BioClim_eval <- function (occs, bg.pts, occ.grp, bg.grp, env) {
   return(list(models=full.mod, results=stats, predictions=stack(pred)))
 }
 
-evalPlots <- function(results) {
+evalPlots <- function(results, sel) {
   par(mfrow=c(3,2))
   fc <- length(unique(results$features))
   col <- rainbow(fc)
@@ -115,11 +115,11 @@ evalPlots <- function(results) {
   points(rep(1, times=fc), 1:fc, ylim=c(-1,fc+2), cex=2, pch=21, bg=col)
   text(x=rep(1.3, times=fc), y=1:fc, labels=unique(results$features), adj=0)
   text(x=1, y=fc+1, labels="Feature Classes", adj=.20, cex=1.3, font=2)
-  eval.plot(results, legend=FALSE, value="delta.AICc")
-  eval.plot(results, legend=FALSE, value="Mean.AUC", variance="Var.AUC")
-  eval.plot(results, legend=FALSE, value="Mean.AUC.DIFF", variance="Var.AUC.DIFF")
-  eval.plot(results, legend=FALSE, value="Mean.ORmin", variance="Var.ORmin")
-  eval.plot(results, legend=FALSE, value="Mean.OR10", variance="Var.OR10")
+  if (sel == 'delta.AICc') eval.plot(results, legend=FALSE, value="delta.AICc")
+  if (sel == 'mean.AUC') eval.plot(results, legend=FALSE, value="Mean.AUC", variance="Var.AUC")
+  if (sel == 'mean.AUC.DIFF') eval.plot(results, legend=FALSE, value="Mean.AUC.DIFF", variance="Var.AUC.DIFF")
+  if (sel == 'mean.ORmin') eval.plot(results, legend=FALSE, value="Mean.ORmin", variance="Var.ORmin")
+  if (sel == 'mean.OR10') eval.plot(results, legend=FALSE, value="Mean.OR10", variance="Var.OR10")
 }
 
 # Bind csv and occ records
