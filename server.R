@@ -909,7 +909,7 @@ shinyServer(function(input, output, session) {
       shinyjs::enable("downloadEvalcsv")
 
       # plotting functionality for ENMeval graphs
-      output$mxEvalPlot <- renderPlot(evalPlots(values$evalTbl, input$mxEvalSel))
+      output$mxEvalPlot <- renderPlot(evalPlot(values$evalTbl, input$mxEvalSel))
 
       shinyjs::enable("downloadEvalPlots")
     }
@@ -929,7 +929,7 @@ shinyServer(function(input, output, session) {
     filename = function() {paste0(nameAbbr(values$gbifoccs), "_enmeval_plots.png")},
     content = function(file) {
       png(file)
-      evalPlots(values$evalTbl)
+      evalPlot(values$evalTbl)
       dev.off()
     }
   )
