@@ -44,12 +44,15 @@ source('/Users/musasabi/Documents/github/wallace/functions.R')
 ```{r, echo = FALSE}
 gbif <- input$gbifName != ""
 csv <- !is.null(input$userCSV)
+thin <- input$goThin
+preds <- input$pred != ""
+backg <- !is.null(input$backgSelect)
 ```
+<!-- This needs to work for userCSV too -->
+Record of analysis for *`r makeCap(input$gbifName)`*.
 
-Record of analysis for *`r makeCap(input$gbifName)`*. 
-
-```{r gbifoccs}
-gbifoccs <- NULL  # make empty gbifoccs to fill when GBIF or user input are called
+```{r occs}
+occs <- NULL  # make empty occs to fill when GBIF or user input are called
 ```
 
 ```{asis, echo = gbif}
@@ -71,9 +74,9 @@ cols <- c('name','decimalLongitude','decimalLatitude',
 results <- fixcols(cols, results)
 locs.in <- results$data[!is.na(results$data[,3]),][,cols]  # if latitude is NA, remove the row
 locs.in <- remDups(locs.in)  # remove rows with duplicate coordinates
-gbifoccs <- rbind(gbifoccs, locs.in)  # add these locs to gbifoccs
-names(gbifoccs)[1:3] <- c('species','longitude', 'latitude')  # rename these rows
-gbifoccs$origID <- row.names(gbifoccs)  # create an ID column
+occs <- rbind(occs, locs.in)  # add these locs to occs
+names(occs)[1:3] <- c('species','longitude', 'latitude')  # rename these rows
+occs$origID <- row.names(occs)  # create an ID column
 ```
 
 ```{asis, echo = csv}
@@ -87,13 +90,100 @@ inFile <- read.csv(input$userCSV$datapath, header = TRUE)  # load occurrence dat
 ```{r clean, echo = csv, eval = csv}
 spname <- inFile[1,1]  # get species name
 inFile.occs <- inFile[inFile[,1] == spname,]  # limit to records with this name
-for (col in c("institutionCode", "country", "stateProvince", "locality", "elevation", "basisOfRecord")) {  # add all cols to match gbifoccs if not already there
+for (col in c("institutionCode", "country", "stateProvince", "locality", "elevation", "basisOfRecord")) {  # add all cols to match occs if not already there
   if (!(col %in% names(inFile.occs))) inFile.occs[,col] <- NA
 }
 inFile.occs$origID <- row.names(inFile.occs)  # add col for IDs
-gbifoccs <- rbind(gbifoccs, inFile.occs)  # add the CSV points to existing gbifoccs
-gbifoccs <- remDups(gbifoccs)  # remove duplicate records
+occs <- rbind(occs, inFile.occs)  # add the CSV points to existing occs
+occs <- remDups(occs)  # remove duplicate records
 ```
 
+```{asis, echo = thin | mapSel}
 ###Process Occurrence Data
+```
 
+```{asis, echo = thin}
+Spatial thinning selected. Thin distance selected is `r input$thinDist` m.
+```
+
+```{r doThin, echo = thin, eval = thin}
+output <- thin(values$df, 'latitude', 'longitude', 'species', thin.par = input$thinDist, reps = 100, locs.thinned.list.return = TRUE, write.files = FALSE, verbose = FALSE)
+```
+
+```{asis, echo = thin}
+Since spThin did 100 iterations, there are 100 different variations of how it thinned your occurrence localities. As there is a stochastic element in the algorithm, some iterations may include more localities than the others, and we need to make sure we maximize the number of localities we proceed with.
+```
+
+```{r, echo = thin, eval = thin}
+maxThin <- which(sapply(output, nrow) == max(sapply(output, nrow)))  # find the iteration that returns the max number of occurrences
+maxThin <- output[[ifelse(length(maxThin) > 1, maxThin[1], maxThin)]]  # if there's more than one max, pick the first one
+occs <- occs[as.numeric(rownames(maxThin)),]  # subset occs to match only thinned occs
+```
+
+```{asis, echo = preds, eval = preds}
+###Obtain Environmental Data
+Using WorldClim (http://www.worldclim.org/) bioclim dataset at resolution of `r input$pred` arcmin.
+```
+
+```{r getPreds, message = FALSE, eval = preds, echo = preds}
+preds <- getData(name = "worldclim", var = "bio", res = input$pred)
+locs.vals <- extract(values$preds[[1]], occs[,2:3])  # extract environmental values at occ grid cells
+occs <- occs[!is.na(locs.vals), ]  # remove occs without environmental values from inFile
+```
+
+```{r, include = FALSE}
+backgSwitch <- switch(input$backgSelect, 'bb'='Bounding Box', 'mcp'='Minimum Convex Polygon', 'user'='User-defined')
+```
+
+```{asis, echo = backg, eval = backg}
+###Process Environmental Data
+Background selection technique chosen as `r backgSwitch`.
+Buffer size of the study extent polygon defined as `r input$backgBuf` km.
+```
+
+```{r, echo = input$backgSelect == 'bb', eval = input$backgSelect == 'bb'}
+xmin <- min(values$df$longitude) - (input$backgBuf + res(values$preds)[1])
+xmax <- max(values$df$longitude) + (input$backgBuf + res(values$preds)[1])
+ymin <- min(values$df$latitude) - (input$backgBuf + res(values$preds)[1])
+ymax <- max(values$df$latitude) + (input$backgBuf + res(values$preds)[1])
+bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin), ncol=2)
+backgExt <- SpatialPolygons(list(Polygons(list(Polygon(bb)), 1)))
+```
+
+```{r, echo = input$backgSelect == 'mcp', eval = input$backgSelect == 'mcp'}
+xy_mcp <- mcp(values$df[,2:3])
+bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
+backgExt <- gBuffer(xy_mcp, width = input$backgBuf + res(values$preds)[1])
+```
+
+```{asis, echo = input$backgSelect == 'user', eval = input$backgSelect == 'user'}
+User study extent name is `r input$userBackg$name`. User study extent path is `r input$userBackg$datapath`. Adjust path and names to load the study extent:
+```
+
+```{r, echo = input$backgSelect == 'user', eval = input$backgSelect == 'user'}
+names <- input$userBackg$name
+inPath <- input$userBackg$datapath
+pathdir <- dirname(inPath)
+pathfile <- basename(inPath)
+shp <- read.csv(inPath, header = TRUE)  # read csv with coordinates for polygon
+```
+
+```{asis, echo = backg}
+Generate the user-defined study extent plus the buffer:
+```
+
+```{r, echo = input$backgSelect == 'user', eval = input$backgSelect == 'user'}
+shp <- SpatialPolygons(list(Polygons(list(Polygon(shp)), 1)))
+shp <- gBuffer(shp, width = input$backgBuf + res(values$preds)[1])
+values$backgExt <- shp
+bb <- shp@polygons[[1]]@Polygons[[1]]@coords
+```
+
+```{asis, echo = backg}
+Mask environmental variables by `r backgSwitch`:
+```
+
+```{r, echo = backg, eval = backg}
+predCrop <- crop(values$preds, backgExt)
+predsMsk <- mask(predCrop, backgExt)
+```

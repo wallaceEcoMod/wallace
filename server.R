@@ -444,21 +444,14 @@ shinyServer(function(input, output, session) {
       return()
     }
     withProgress(message = "Spatially Thinning Localities...", {  # start progress bar
-      sinkRmdob(input$thinDist, "Thin distance:")
-      sinkRmd(
-        output <- thin(values$df, 'latitude', 'longitude', 'species', thin.par = input$thinDist,
-                       reps = 100, locs.thinned.list.return = TRUE, write.files = FALSE,
-                       verbose = FALSE),
-        "Thin occurrence localities:"
-      )
+      output <- thin(values$df, 'latitude', 'longitude', 'species', thin.par = input$thinDist,
+                     reps = 100, locs.thinned.list.return = TRUE, write.files = FALSE,
+                     verbose = FALSE)
       values$prethinned <- values$df
       # pull thinned dataset with max records, not just the first in the list
-      sinkRmdmult(c(
-        maxThin <- which(sapply(output, nrow) == max(sapply(output, nrow))),
-        maxThin <- output[[ifelse(length(maxThin) > 1, maxThin[1], maxThin)]],  # if more than one max, pick first
-        values$df <- values$df[as.numeric(rownames(maxThin)),]),
-        "Change df to thinned data:"
-      )
+      maxThin <- which(sapply(output, nrow) == max(sapply(output, nrow)))
+      maxThin <- output[[ifelse(length(maxThin) > 1, maxThin[1], maxThin)]]  # if more than one max, pick first
+      values$df <- values$df[as.numeric(rownames(maxThin)),]
       if (!is.null(values$inFile)) {
         thinned.inFile <- values$inFile[as.numeric(rownames(output[[1]])),]
       }
@@ -480,6 +473,10 @@ shinyServer(function(input, output, session) {
     }
   )
 
+  #########################
+  ### STEP 3 FUNCTIONALITY
+  #########################
+  
   observe({if (input$pred != "") shinyjs::enable("predDnld")})
 
   # download predictor variables
@@ -490,20 +487,14 @@ shinyServer(function(input, output, session) {
 #                 "Plot the occurrence data after occurrences processing:")
       ## Check if predictor path exists. If not, use the dismo function getData()
       withProgress(message = "Downloading WorldClim data...", {
-        sinkSub("## Obtain Environmental Data")
-        sinkRmdob(input$pred, "User-selected resolution of WorldClim (http://www.worldclim.org/) data to use:")
-        sinkRmd(
-          values$preds <- getData(name = "worldclim", var = "bio", res = input$pred),
-          "Donwload environmental data")
+        values$preds <- getData(name = "worldclim", var = "bio", res = input$pred)
       })
       proxy %>% addLegend("topleft", colors = c(),
                           title = "Predictors: WorldClim bio 1-19", labels = c(),
                           opacity = 1, layerId = 2)
       isolate(writeLog(paste("* Environmental predictors: WorldClim bio1-19 at", input$pred, " arcmin resolution.")))
       withProgress(message = "Processing...", {
-        sinkRmd(
-          locs.vals <- extract(values$preds[[1]], values$df[,2:3]),
-          "Extract environmental values to check for NA:")
+        locs.vals <- extract(values$preds[[1]], values$df[,2:3])
 
         if (sum(is.na(locs.vals)) > 0) {
           isolate(writeLog(paste0("* Removed records without environmental values with IDs: ",
@@ -514,12 +505,10 @@ shinyServer(function(input, output, session) {
           "Remove occurrence localities without environmental values")
 
         if (!is.null(values$inFile)) {
-          sinkRmd(
-            values$inFile <- values$inFile[!is.na(locs.vals), ],
-            "Remove occurrence localities without environmental values from inFile:")
+          values$inFile <- values$inFile[!is.na(locs.vals), ]
         }
       })
-      sinkSub("## Process Environmental Data")}
+    }
   })
 
   #   # functionality for downloading .asc files from dropbox
@@ -550,6 +539,10 @@ shinyServer(function(input, output, session) {
   #     })
   #   })
 
+  #########################
+  ### STEP 4 FUNCTIONALITY
+  #########################
+  
   # background extents
   observe({
     if (is.null(input$backgSelect) | is.null(values$preds) | is.null(input$backgBuf)| is.na(input$backgBuf)) return()
@@ -559,60 +552,40 @@ shinyServer(function(input, output, session) {
     }
     # generate background extent
     if (input$backgSelect == 'bb') {
-      sinkRmdob(input$backgBuf, "Define the buffer size of the study extent polygon:")
-      sinkRmdmult(c(
-        xmin <- min(values$df$longitude) - (input$backgBuf + res(values$preds)[1]),
-        xmax <- max(values$df$longitude) + (input$backgBuf + res(values$preds)[1]),
-        ymin <- min(values$df$latitude) - (input$backgBuf + res(values$preds)[1]),
-        ymax <- max(values$df$latitude) + (input$backgBuf + res(values$preds)[1]),
-        bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin), ncol=2),
-        values$backgExt <- SpatialPolygons(list(Polygons(list(Polygon(bb)), 1))),
-        values$bbTxt <- 'bounding box'),
-        "Generate the bounding box study extent:")
-
+      xmin <- min(values$df$longitude) - (input$backgBuf + res(values$preds)[1])
+      xmax <- max(values$df$longitude) + (input$backgBuf + res(values$preds)[1])
+      ymin <- min(values$df$latitude) - (input$backgBuf + res(values$preds)[1])
+      ymax <- max(values$df$latitude) + (input$backgBuf + res(values$preds)[1])
+      bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin), ncol=2)
+      values$backgExt <- SpatialPolygons(list(Polygons(list(Polygon(bb)), 1)))
+      values$bbTxt <- 'bounding box'
     } else if (input$backgSelect == 'mcp') {
-      sinkRmdob(input$backgBuf, "Define the buffer size of the study extent polygon:")
-      sinkRmdmult(c(
-        xy_mcp <- mcp(values$df[,2:3]),
-        xy_mcp <- gBuffer(xy_mcp, width = input$backgBuf + res(values$preds)[1]),
-        values$backgExt <- xy_mcp,
-        bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords,
-        values$bbTxt <- 'minimum convex polygon'),
-        "Generate the minimum convex polygon study extent:")
+      xy_mcp <- mcp(values$df[,2:3])
+      xy_mcp <- gBuffer(xy_mcp, width = input$backgBuf + res(values$preds)[1])
+      values$backgExt <- xy_mcp
+      bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
+      values$bbTxt <- 'minimum convex polygon'
     } else if (input$backgSelect == 'user') {
       source("sinkRmd_evalFalse.R")
       if (is.null(input$userBackg)) return()
       #       file <- shinyFileChoose(input, 'userBackg', root=c(root='.'))
       #       path <- input$userBackg$datapath
       sinkFalse("userBackg <- NULL", "Define user study extent:")
-      sinkRmdob(input$userBackg$name, "User study extent name:")
-      sinkRmdob(input$userBackg$datapath, "User study extent path (change to the path of the file in your computer):")
-
-      sinkRmdmult(c(
-        names <- input$userBackg$name,
-        inPath <- input$userBackg$datapath,
-        pathdir <- dirname(inPath),
-        pathfile <- basename(inPath)),
-        "Adjust path and names to load the study extent:")
+      
+      names <- input$userBackg$name
+      inPath <- input$userBackg$datapath
+      pathdir <- dirname(inPath)
+      pathfile <- basename(inPath)
       # get extensions of all input files
-      sinkRmd(
-        exts <- sapply(strsplit(names, '\\.'), FUN=function(x) x[2]),
-        "Get extensions of all input files:")
+      exts <- sapply(strsplit(names, '\\.'), FUN=function(x) x[2])
 
       if (exts == 'csv') {
+        shp <- read.csv(inPath, header = TRUE)
 
-        sinkRmdob(input$backgBuf, "Define the buffer size of the study extent:")
-
-        sinkRmd(
-          shp <- read.csv(inPath, header = TRUE),
-          "Read the shapefile for the study extent:")
-
-        sinkRmdmult(c(
-          shp <- SpatialPolygons(list(Polygons(list(Polygon(shp)), 1))),
-          shp <- gBuffer(shp, width = input$backgBuf + res(values$preds)[1]),
-          values$backgExt <- shp,
-          bb <- shp@polygons[[1]]@Polygons[[1]]@coords),
-          "Generate the user-defined study extent plus the buffer:")
+        shp <- SpatialPolygons(list(Polygons(list(Polygon(shp)), 1)))
+        shp <- gBuffer(shp, width = input$backgBuf + res(values$preds)[1])
+        values$backgExt <- shp
+        bb <- shp@polygons[[1]]@Polygons[[1]]@coords
       } else {
         isolate(writeLog("* WARNING: Please enter a CSV file of vertex coordinates for user-specified polygon."))
         return()
@@ -649,18 +622,18 @@ shinyServer(function(input, output, session) {
                           options= list(weight=10, col="red"))
   })
 
+  
+  ## mask out environmental predictors by background extent
   observeEvent(input$goBackgMask, {
-    if(is.null(values$preds)) {
+    if (is.null(values$preds)) {
       writeLog("* Obtain the environmental data first...")
       return()
     }
-    if(!is.null(values$preds)) {
+    if (!is.null(values$preds)) {
     # clip and mask rasters based on study region
     withProgress(message = "Processing environmental data...", {
-      sinkRmdmult(c(
-        predCrop <- crop(values$preds, values$backgExt),
-        values$predsMsk <- mask(predCrop, values$backgExt)),
-        paste0("Mask environmental variables by ", values$bbTxt, ":"))
+      predCrop <- crop(values$preds, values$backgExt)
+      values$predsMsk <- mask(predCrop, values$backgExt)
     })
     shinyjs::enable("downloadMskPreds")
     isolate(writeLog(paste0('* Environmental data masked by ', values$bbTxt, '.')))
@@ -687,6 +660,10 @@ shinyServer(function(input, output, session) {
     contentType = "application/zip"
   )
 
+  #########################
+  ### STEP 5 FUNCTIONALITY
+  #########################
+  
   observe({
     if (!is.null(input$partSelect)) {
       if (input$partSelect == 'nsp') {
@@ -1026,7 +1003,7 @@ shinyServer(function(input, output, session) {
         input$mdType, Rmd = 'Rmd', PDF = 'pdf', HTML = 'html', Word = 'docx'
       ))},
     content = function(file) {
-      src <- normalizePath('md/userReport.Rmd')
+      src <- normalizePath('userReport.Rmd')
       # temporarily switch to the temp dir, in case you do not have write
       # permission to the current working directory
       owd <- setwd(tempdir())
