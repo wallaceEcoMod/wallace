@@ -802,6 +802,8 @@ shinyServer(function(input, output, session) {
     }
     values$predsLog <- NULL  # reset predsLog if models are rerun
     sinkSub("## Build and Evaluate Niche Model")
+    
+    # BIOCLIM functionality
     if (input$modSelect == "BIOCLIM") {
       sinkRmdmult(c(
         e <- BioClim_eval(values$modParams$occ.pts, values$modParams$bg.pts,
@@ -831,19 +833,13 @@ shinyServer(function(input, output, session) {
 
       # make datatable of results df
       output$evalTbl <- DT::renderDataTable({DT::datatable(round(e$results, digits=3))})
-      #       bcProbs <- switch(input$bcProb, "90%" = 0.9, "95%" = 0.95, "100%" = 1)
-      #       output$evalPlot <- renderPlot(plot(e$models, a = input$bc1, b = input$bc2, p = bcProbs))
+      output$bcEnvelPlot <- renderPlot(plot(e$models, a = input$bc1, b = input$bc2, p = input$bcProb))
+      
       writeLog(paste("* BIOCLIM ran successfully and output evaluation results."))
       shinyjs::enable("downloadEvalcsv")
-      # a tabset within tab 4 to organize the Bioclim outputs
-      output$evalTabs <- renderUI({
-        tabsetPanel(id = "bcTabs",
-                    tabPanel("Results Table", DT::dataTableOutput('evalTbl'), value = 1)
-                    # tabPanel("BIOCLIM Plot", plotOutput('evalPlot', width = 600), value = 2)
-        )
-      })
     }
 
+    # Maxent functionality
     if (input$modSelect == "Maxent") {
       sinkRmdob(input$rms, "Define regularization multiplier (RM) values:")
       sinkRmdob(input$rmsBy, "Define RM step value:")
@@ -899,14 +895,8 @@ shinyServer(function(input, output, session) {
       shinyjs::enable("downloadEvalcsv")
 
       # plotting functionality for ENMeval graphs
-      output$evalPlot <- renderPlot(evalPlots(values$evalTbl))
+      output$mxEvalPlot <- renderPlot(evalPlot(values$evalTbl, input$mxEvalSel))
 
-      # a tabset within tab 4 to organize the enmEval outputs
-      output$evalTabs <- renderUI({
-        tabsetPanel(tabPanel("Results Table", DT::dataTableOutput('evalTbl')),
-                    tabPanel("Evaluation Plots", plotOutput('evalPlot', width = 600))
-        )
-      })
       shinyjs::enable("downloadEvalPlots")
     }
 
@@ -925,7 +915,7 @@ shinyServer(function(input, output, session) {
     filename = function() {paste0(nameAbbr(values$gbifoccs), "_enmeval_plots.png")},
     content = function(file) {
       png(file)
-      evalPlots(values$evalTbl)
+      evalPlot(values$evalTbl)
       dev.off()
     }
   )
