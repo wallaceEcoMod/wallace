@@ -160,7 +160,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                                    choices = list("Choose resolution" = "",
                                                                                                   "2.5 arcmin WorldClim bio1-19" = 2.5,
                                                                                                   "5 arcmin WorldClim bio1-19" = 5,
-                                                                                                  "10 arcmin WorldClim bio1-19" = 10), selected = 10),
+                                                                                                  "10 arcmin WorldClim bio1-19" = 10)),
                                                                        actionButton("predDnld", "Download Env Data"),
                                                                        HTML('<hr>')
                                                       ),
@@ -214,8 +214,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                        HTML('<hr>'),
                                                                        radioButtons("backgSelect", "Background Extents:",
                                                                                     choices = list("Bounding box" = 'bb', "Minimum convex polygon" = 'mcp',
-                                                                                                   "User-specified polygon" = 'user'),
-                                                                                    selected = 'bb')
+                                                                                                   "User-specified polygon" = 'user'), selected = "")
                                                       ),
                                                       conditionalPanel("input.backgSelect == 'user'",
                                                                        #  shinyFilesButton('userBackg', label='Upload Shapefile', title='Please select a file', multiple=TRUE)),
