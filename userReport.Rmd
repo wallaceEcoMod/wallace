@@ -5,9 +5,16 @@ author: "Jamie M. Kass"
 date: "May 3rd, 2014"
 ---
 
-#```{r setup, include=FALSE}
-#knitr::opts_chunk$set(eval=FALSE)
-#```
+<!-- ```{r setup, include=FALSE}
+knitr::opts_chunk$set(eval=FALSE)
+``` -->
+
+```{r setup, include=FALSE}
+library(knitr)
+knit_engines$set(asis = function(options) {
+  if (options$echo && options$eval) knit_child(text = options$code)
+})
+```
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
@@ -35,22 +42,29 @@ source('/Users/musasabi/Documents/github/wallace/functions.R')
 
 ###Obtain Occurrence Data
 ```{r, echo = FALSE}
-eval_gbif <- input$gbifName != ""
+gbif <- input$gbifName != ""
+csv <- !is.null(input$userCSV)
 ```
+
+Record of analysis for *`r makeCap(input$gbifName)`*. 
 
 ```{r gbifoccs}
 gbifoccs <- NULL  # make empty gbifoccs to fill when GBIF or user input are called
 ```
 
-`r if (eval_gbif) {paste0("Record of analysis for ", makeCap(input$gbifName), ". The search for occurrences was limited to ", input$occurrences, " records. Obtain occurrence records of the selected species from GBIF:")}`
+```{asis, echo = gbif}
+The search for occurrences was limited to `r input$occurrences` records. Obtain occurrence records of the selected species from GBIF:
+```
 
-```{r occSearch, include = eval_gbif, eval = eval_gbif}
+```{r occSearch, eval = gbif, echo = gbif}
 results <- occ_search(scientificName = input$gbifName, limit = input$occurrences, hasCoordinate = TRUE)
 ```
 
-`r if (eval_gbif) {"Check if all the needed columns were returned in the rgbif call, and if some are missing, add them to results$data."}`
+```{asis, echo = gbif}
+Check if all the needed columns were returned in the rgbif call, and if some are missing, add them to results$data.
+```
 
-```{r occTblEdits, include = eval_gbif, eval = eval_gbif}
+```{r occTblEdits, echo = gbif, eval = gbif}
 cols <- c('name','decimalLongitude','decimalLatitude',
                 'institutionCode','country', 'stateProvince',
                 'locality', 'elevation', 'basisOfRecord')
@@ -62,14 +76,15 @@ names(gbifoccs)[1:3] <- c('species','longitude', 'latitude')  # rename these row
 gbifoccs$origID <- row.names(gbifoccs)  # create an ID column
 ```
 
-```{r, echo = FALSE}
-eval_userCSV <- !is.null(input$userCSV) 
+```{asis, echo = csv}
+User CSV path with occurrence data (change to the path of the file in your computer):
 ```
 
-`r if (eval_userCSV) {"User CSV path with occurrence data (change to the path of the file in your computer):"}`
-`r if (eval_userCSV) {inFile <- read.csv(input$userCSV$datapath, header = TRUE)  # load occurrence data}`
+```{r input, echo = csv, eval = csv}
+inFile <- read.csv(input$userCSV$datapath, header = TRUE)  # load occurrence data
+```
 
-```{r, include = eval_userCSV, eval = eval_userCSV}
+```{r clean, echo = csv, eval = csv}
 spname <- inFile[1,1]  # get species name
 inFile.occs <- inFile[inFile[,1] == spname,]  # limit to records with this name
 for (col in c("institutionCode", "country", "stateProvince", "locality", "elevation", "basisOfRecord")) {  # add all cols to match gbifoccs if not already there
@@ -79,5 +94,6 @@ inFile.occs$origID <- row.names(inFile.occs)  # add col for IDs
 gbifoccs <- rbind(gbifoccs, inFile.occs)  # add the CSV points to existing gbifoccs
 gbifoccs <- remDups(gbifoccs)  # remove duplicate records
 ```
+
 ###Process Occurrence Data
 
