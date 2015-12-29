@@ -41,6 +41,10 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("downloadEvalPlots")
   shinyjs::disable("downloadPred")
 
+  #########################
+  ### INITIALIZE
+  #########################
+  
   source("sinkRmd.R")
   ## functions for text formatting in userReport.Rmd
   makeCap <- function(x) paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)))
@@ -1022,7 +1026,7 @@ shinyServer(function(input, output, session) {
         input$mdType, Rmd = 'Rmd', PDF = 'pdf', HTML = 'html', Word = 'docx'
       ))},
     content = function(file) {
-      src <- normalizePath('userReport.Rmd')
+      src <- normalizePath('md/userReport.Rmd')
       # temporarily switch to the temp dir, in case you do not have write
       # permission to the current working directory
       owd <- setwd(tempdir())
