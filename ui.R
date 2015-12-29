@@ -49,7 +49,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                       h4("Obtain Occurrence Data"),
                                                       radioButtons("dbSelect", "Modules Available:",
                                                                    choices = list("GBIF", "eBird (not functional)", "User-specified" = 'user'),
-                                                                   selected = ''),
+                                                                   selected = 'GBIF'),
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.dbSelect == 'GBIF'",
                                                                        div('Module: GBIF', id="mod"),
@@ -62,7 +62,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                                         includeMarkdown("www/tab1_gbif.Rmd")
                                                                        ),
                                                                        HTML('<hr>'),
-                                                                       textInput("gbifName", label = "Enter scientific name of species (format: genus species)"),
+                                                                       textInput("gbifName", label = "Enter scientific name of species (format: genus species)", value = 'tremarctos ornatus'),
                                                                        actionButton("goName", "Search GBIF"),
                                                                        br(), br(),
                                                                        sliderInput("occurrences", "Maximum number of occurrences:", min = 1, max = 500, value = 20),
@@ -97,7 +97,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                    selected = ''),
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.procOccSelect == 'selpts'",
-                                                                       checkboxInput('togMD2A', "Hide / Display Guidance Text", value = TRUE),
+                                                                       checkboxInput('togMD2A', "Hide / Display Guidance Text", value = FALSE),
                                                                        conditionalPanel("input.togMD2A",
                                                                                         includeMarkdown("www/tab2_selpts.Rmd")
                                                                        ),
@@ -110,7 +110,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                        span('via', id="pkgDes"),
                                                                        span('spThin', id="rpkg"),
                                                                        span('package: Spatial Thinning of Species Occurrence Records', id="pkgDes"), br(),
-                                                                       checkboxInput('togMD2B', "Hide / Display Guidance Text", value = TRUE),
+                                                                       checkboxInput('togMD2B', "Hide / Display Guidance Text", value = FALSE),
                                                                        conditionalPanel("input.togMD2B",
                                                                                         includeMarkdown("www/tab2_spthin.Rmd")
                                                                        ),
@@ -143,7 +143,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                       radioButtons("envSelect", "Modules Available:",
                                                                    choices = list("WorldClim", "CliMond (not functional)" = 'Climond', "PRISM (not functional)" = "PRISM",
                                                                                   "MARSPEC (not functional)" = "MARSPEC", "User-specified (not functional)" = "user"),
-                                                                   selected = ''),
+                                                                   selected = 'WorldClim'),
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.envSelect == 'WorldClim'",
                                                                        div('Module: WorldClim', id="mod"),
@@ -151,7 +151,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                        span('dismo', id="rpkg"),
                                                                        span('package: Species Distribution Modeling', id="pkgDes"),
                                                                        br(),
-                                                                       checkboxInput('togMD3', "Hide / Display Guidance Text", value = TRUE),
+                                                                       checkboxInput('togMD3', "Hide / Display Guidance Text", value = FALSE),
                                                                        conditionalPanel("input.togMD3",
                                                                                         includeMarkdown("www/tab3_wc.Rmd")
                                                                        ),
@@ -160,9 +160,8 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                                    choices = list("Choose resolution" = "",
                                                                                                   "2.5 arcmin WorldClim bio1-19" = 2.5,
                                                                                                   "5 arcmin WorldClim bio1-19" = 5,
-                                                                                                  "10 arcmin WorldClim bio1-19" = 10)),
+                                                                                                  "10 arcmin WorldClim bio1-19" = 10), selected = 10),
                                                                        actionButton("predDnld", "Download Env Data"),
-                                                                       #"Upload from Dropbox" = 'db'))
                                                                        HTML('<hr>')
                                                       ),
                                                       conditionalPanel("input.envSelect == 'Climond'",
@@ -174,9 +173,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                       conditionalPanel("input.envSelect == 'user'",
                                                                        includeMarkdown("www/tab3_user.Rmd"),
                                                                        HTML('<hr>')),
-                                                      "For input, this step allows GRD, GEOTIFF, or ASCII formats.",
                                                       conditionalPanel("input.envSelect == 'WorldClim'",
-                                                                       HTML('<hr>'),
                                                                        span("dismo", id = "rpkg"), "references", br(),
                                                                        div('Developers:  Robert J. Hijmans, Steven Phillips, John Leathwick, Jane Elith', id="pkgDes"),
                                                                        a("CRAN", href = "http://cran.r-project.org/web/packages/dismo/index.html", target = "_blank"),
@@ -198,7 +195,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                       radioButtons("envProcSelect", "Modules Available:",
                                                                    choices = list("Select Study Region" = "backg",
                                                                                   "Change Resolution (not functional)"),
-                                                                   selected = ''),
+                                                                   selected = 'backg'),
 
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.envProcSelect == 'backg'",
@@ -210,7 +207,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                        span('packages: Title Classes and Methods for Spatial Data |
                                                                             Interface to Geometry Engine - Open Source (GEOS)', id="pkgDes"),
                                                                        br(),
-                                                                       checkboxInput('togMD4', "Hide / Display Guidance Text", value = TRUE),
+                                                                       checkboxInput('togMD4', "Hide / Display Guidance Text", value = FALSE),
                                                                        conditionalPanel("input.togMD4",
                                                                                         includeMarkdown("www/tab4_backg.Rmd")
                                                                        ),
@@ -218,7 +215,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                        radioButtons("backgSelect", "Background Extents:",
                                                                                     choices = list("Bounding box" = 'bb', "Minimum convex polygon" = 'mcp',
                                                                                                    "User-specified polygon" = 'user'),
-                                                                                    selected = '')
+                                                                                    selected = 'bb')
                                                       ),
                                                       conditionalPanel("input.backgSelect == 'user'",
                                                                        #  shinyFilesButton('userBackg', label='Upload Shapefile', title='Please select a file', multiple=TRUE)),
@@ -270,13 +267,13 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                        span('ENMeval', id="rpkg"),
                                                                        span('package: Automated Runs and Evaluations of Ecological Niche Models', id="pkgDes"),
                                                                        conditionalPanel("input.partSelect == 'sp'",
-                                                                                        checkboxInput('togMD5A', "Hide / Display Guidance Text", value = TRUE),
+                                                                                        checkboxInput('togMD5A', "Hide / Display Guidance Text", value = FALSE),
                                                                                         conditionalPanel("input.togMD5A",
                                                                                                          includeMarkdown("www/tab5_sp.Rmd")
                                                                                         ),
                                                                                         HTML('<hr>')),
                                                                        conditionalPanel("input.partSelect == 'nsp'",
-                                                                                        checkboxInput('togMD5B', "Hide / Display Guidance Text", value = TRUE),
+                                                                                        checkboxInput('togMD5B', "Hide / Display Guidance Text", value = FALSE),
                                                                                         conditionalPanel("input.togMD5B",
                                                                                                          includeMarkdown("www/tab5_nsp.Rmd")
                                                                                         ),
@@ -329,21 +326,14 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                        span('packages: Automated Runs and Evaluations of Ecological Niche Models |
                                                                             Species Distribution Modeling', id="pkgDes")),
                                                       conditionalPanel("input.modSelect == 'BIOCLIM'",
-                                                                       checkboxInput('togMD6A', "Hide / Display Guidance Text", value = TRUE),
+                                                                       checkboxInput('togMD6A', "Hide / Display Guidance Text", value = FALSE),
                                                                        conditionalPanel("input.togMD6A",
                                                                                         includeMarkdown("www/tab6_bc.Rmd")
                                                                        ),
                                                                        HTML('<hr>')
-                                                                       # conditionalPanel("input.bcTabs == 2",
-                                                                       #   numericInput("bc1", "Axis 1", value = 1, min = 1, max = 19),
-                                                                       #   numericInput("bc2", "Axis 2", value = 2, min = 1, max = 19),
-                                                                       #   selectInput('bcProb', label = "Set threshold",
-                                                                       #   choices = list("90%" = 0.9, "95%" = 0.95, "100%" = 1),
-                                                                       #   selected = 0.9)
-                                                                       # )
                                                       ),
                                                       conditionalPanel("input.modSelect == 'Maxent'",
-                                                                       checkboxInput('togMD6B', "Hide / Display Guidance Text", value = TRUE),
+                                                                       checkboxInput('togMD6B', "Hide / Display Guidance Text", value = FALSE),
                                                                        conditionalPanel("input.togMD6B",
                                                                                         includeMarkdown("www/tab6_maxent.Rmd")
                                                                        ),
@@ -358,8 +348,6 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                       conditionalPanel("input.modSelect == 'BIOCLIM' || input.modSelect == 'Maxent'",
                                                                        actionButton("goEval", "Build & Evaluate Models"), br(), br(),
                                                                        downloadButton('downloadEvalcsv', "Download Results CSV"), br(), br(),
-                                                                       conditionalPanel("input.modSelect == 'Maxent'",
-                                                                                        downloadButton('downloadEvalPlots', "Download Plots PNG")),
                                                                        HTML('<hr>')),
                                                       'The input data (both occurrence data and environmental data) flow into this step from earlier steps
                                                       (typically Steps 4 and 5). For output, this step yields a CSV file of the table of evaluation statistics,
@@ -392,7 +380,8 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                      conditionalPanel("input.tabs == 7",
                                                       h4("Visualize Model Results"),
                                                       radioButtons("visSelect", "Modules Available:",
-                                                                   choices = list("Map Prediction" = 'map', "Plot Response Curves (not functional)"),
+                                                                   choices = list("Map Prediction" = 'map', "Plot Response Curves" = 'response',
+                                                                                  "BIOCLIM Envelope Plots" = 'bcEnvel', "Maxent Evaluation Plots" = 'mxEval'),
                                                                    selected = ''),
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.visSelect == 'map'",
@@ -401,7 +390,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                        span('raster', id="rpkg"),
                                                                        span('package: Geographic Data Analysis and Modeling', id="pkgDes"),
                                                                        br(),
-                                                                       checkboxInput('togMD7', "Hide / Display Guidance Text", value = TRUE),
+                                                                       checkboxInput('togMD7', "Hide / Display Guidance Text", value = FALSE),
                                                                        conditionalPanel("input.togMD7",
                                                                                         includeMarkdown("www/tab7_pred.Rmd")
                                                                        ),
@@ -423,6 +412,18 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                                                   "PNG" = "png")),
                                                                        downloadButton('downloadPred', "Download Displayed Prediction"),
                                                                        HTML('<hr>')
+                                                      ),
+                                                      conditionalPanel("input.visSelect == 'bcEnvel'",
+                                                                       numericInput("bc1", "Axis 1", value = 1, min = 1, max = 19),
+                                                                       numericInput("bc2", "Axis 2", value = 2, min = 1, max = 19),
+                                                                       numericInput("bcProb", "Set threshold", value = 0.9, min = 0.75, max = 1, step = 0.05)
+                                                      ),
+                                                      conditionalPanel("input.visSelect == 'mxEval'",
+                                                                       selectInput('mxEvalSel', label = "Select Evaluation Plot",
+                                                                                   choices = list("mean AUC" = 'Mean.AUC', "mean AUC DIFF" = 'Mean.AUC.DIFF', "mean OR MIN" = 'Mean.ORmin', 
+                                                                                                  "mean OR 10%" = 'Mean.OR10', "delta AICc" = 'delta.AICc'),
+                                                                                   selected = 'Mean.AUC'),
+                                                                       downloadButton('downloadEvalPlots', "Download All Evaluation Plots")
                                                       ),
                                                       'For input, this step pulls from the output of Step 6. For output, it provides a GRD, GEOTIFF,
                                                       or ASCII grid file (or PNG image) of the suitability prediction across the study region.',
@@ -474,12 +475,15 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                     )
                                   ),
                                   br(),
-                                  conditionalPanel("input.tabs != 0 && input.tabs != 6 && 
-                                                   input.tabs != 8 && input.tabs != 9", leafletOutput("map", height=500)),
+                                  conditionalPanel("input.tabs == 1 || input.tabs == 2 || input.tabs == 3 || input.tabs == 4 || input.tabs == 5
+                                                   || (input.tabs == 7 && input.visSelect == 'map')", 
+                                                   leafletOutput("map", height=500)),
                                   br(),
                                   conditionalPanel("input.tabs != 0 && input.tabs != 6 && input.tabs != 7 && 
                                                    input.tabs != 8 && input.tabs != 9", DT::dataTableOutput('occTbl')),
-                                  conditionalPanel("input.tabs == 6", uiOutput('evalTabs')),
+                                  conditionalPanel("input.tabs == 6", dataTableOutput('evalTbl')),
+                                  conditionalPanel("input.tabs == 7 && input.visSelect == 'bcEnvel'", imageOutput('bcEnvelPlot')),
+                                  conditionalPanel("input.tabs == 7 && input.visSelect == 'mxEval'", imageOutput('mxEvalPlot')),
                                   conditionalPanel("input.tabs == 8",
                                                    column(8,
                                                           selectInput('mdType', label = "R Markdown Download Type",
