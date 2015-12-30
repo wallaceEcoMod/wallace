@@ -45,9 +45,6 @@ shinyServer(function(input, output, session) {
   ### INITIALIZE
   #########################
   
-  observe(print(input$goPart == 0))
-  
-  source("sinkRmd.R")
   ## functions for text formatting in userReport.Rmd
   makeCap <- function(x) paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)))
   getGBIFname <- function() deparse(substitute(input$gbifName))
@@ -288,8 +285,8 @@ shinyServer(function(input, output, session) {
 
   # select points intersecting drawn polygons (replace values$df)
   observeEvent(input$selectPoly, {
-    values$prethinned <- NULL  # resets prethinned to avoid it plotting if select pts -> spThin -> select pts -> spThin
-    values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
+    values$prethinned <- NULL  # resets prethinned to avoid it plotting if sequence is: select pts -> spThin -> select pts -> spThin
+    values$polyErase <- TRUE  # turn on to signal to prevent the use of an existing map click
     values$polyID <- values$polyID + 1
     if (is.null(values$gbifoccs)) return()
     if (is.null(values$drawPolyCoords)) return()
@@ -300,14 +297,11 @@ shinyServer(function(input, output, session) {
     } else {
       values$drawPolys <- spRbind(values$drawPolys, newPoly)
     }
-    ptseln <- as.numeric(which(!(is.na(over(pts, values$drawPolys)))))
+    values$ptSeln <- as.numeric(which(!(is.na(over(pts, values$drawPolys)))))  # selected locs with polygon
 
-    sinkRmdob(ptseln, "Selected localities with polygon:")
-
-    sinkRmdmult(c(
-      ptsSel <- values$gbifoccs[ptseln, ],
-      values$df <- ptsSel),
-      "Subset with selected localities:")
+    # Subset with selected locs
+    ptsSel <- values$gbifoccs[values$ptSeln, ]
+    values$df <- ptsSel
 
     values$drawPolyCoords <- NULL
     values$ptsSel <- ptsSel
@@ -502,9 +496,7 @@ shinyServer(function(input, output, session) {
           isolate(writeLog(paste0("* Removed records without environmental values with IDs: ",
                                   paste(row.names(values$df[is.na(locs.vals),]), collapse=', '), ".")))
         }
-        sinkRmd(
-          values$df <- values$df[!is.na(locs.vals),],
-          "Remove occurrence localities without environmental values")
+        values$df <- values$df[!is.na(locs.vals),]  # remove locs without environmental values
 
         if (!is.null(values$inFile)) {
           values$inFile <- values$inFile[!is.na(locs.vals), ]
@@ -568,11 +560,9 @@ shinyServer(function(input, output, session) {
       bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
       values$bbTxt <- 'minimum convex polygon'
     } else if (input$backgSelect == 'user') {
-      source("sinkRmd_evalFalse.R")
       if (is.null(input$userBackg)) return()
       #       file <- shinyFileChoose(input, 'userBackg', root=c(root='.'))
       #       path <- input$userBackg$datapath
-      sinkFalse("userBackg <- NULL", "Define user study extent:")
       
       names <- input$userBackg$name
       inPath <- input$userBackg$datapath
@@ -784,15 +774,17 @@ shinyServer(function(input, output, session) {
         names(e$predictions) <- "Classic_BIOCLIM"
         values$evalPreds <- e$predictions
         occVals <- extract(e$predictions, values$modParams$occ.pts)
-        values$mtps <- min(occVals)
-
-      if (length(occVals) < 10) {
+        
+        values$mtps <- min(occVals)  # apply minimum training presence threshold
+        
+        # Define 10% training presence threshold
+        if (length(occVals) < 10) {  # if less than 10 occ values, find 90% of total and round down
           n90 <- floor(length(occVals) * 0.9)
-      } else {
+        } else {  # if greater than or equal to 10 occ values, round up
           n90 <- ceiling(length(occVals) * 0.9)
-      }
+        }
 
-        values$p10s <- rev(sort(occVals))[n90]
+        values$p10s <- rev(sort(occVals))[n90]  # apply 10% training presence threshold
 
       # make datatable of results df
       output$evalTbl <- DT::renderDataTable({DT::datatable(round(e$results, digits=3))})
@@ -824,18 +816,15 @@ shinyServer(function(input, output, session) {
 
       occVals <- extract(e@predictions.raw, values$modParams$occ.pts)
 
-      values$mtps <- apply(occVals, MARGIN = 2, min)
+      values$mtps <- apply(occVals, MARGIN = 2, min)  # apply minimum training presence threshold over all models
         
-      if (nrow(occVals) < 10) {
-        sinkRmd(
-          n90 <- floor(nrow(occVals) * 0.9),
-          "Define the number of 10% higher values:")
-      } else {
-        sinkRmd(
-          n90 <- ceiling(nrow(occVals) * 0.9),
-          "Define the number of 10% higher values:")
+      # Define 10% training presence threshold
+      if (nrow(occVals) < 10) {  # if less than 10 occ values, find 90% of total and round down
+        n90 <- floor(nrow(occVals) * 0.9)
+      } else {  # if greater than or equal to 10 occ values, round up
+        n90 <- ceiling(nrow(occVals) * 0.9)
       }
-      values$p10s <- apply(occVals, MARGIN = 2, function(x) rev(sort(x))[n90])
+      values$p10s <- apply(occVals, MARGIN = 2, function(x) rev(sort(x))[n90])  # apply 10% training presence threshold over all models
 
       # make datatable of results df
       output$evalTbl <- DT::renderDataTable({DT::datatable(cbind(e@results[,1:3], round(e@results[,4:15], digits=3)))})

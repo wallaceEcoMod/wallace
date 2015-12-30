@@ -62,7 +62,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                                         includeMarkdown("www/tab1_gbif.Rmd")
                                                                        ),
                                                                        HTML('<hr>'),
-                                                                       textInput("gbifName", label = "Enter scientific name of species (format: genus species)"),
+                                                                       textInput("gbifName", label = "Enter scientific name of species (format: genus species)", value = 'tremarctos ornatus'),
                                                                        actionButton("goName", "Search GBIF"),
                                                                        br(), br(),
                                                                        sliderInput("occurrences", "Maximum number of occurrences:", min = 1, max = 500, value = 20),
