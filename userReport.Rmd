@@ -41,8 +41,8 @@ source('/Users/musasabi/Documents/github/wallace/functions.R')
 ```{r, echo = FALSE}
 gbif <- input$gbifName != ""
 csv <- !is.null(input$userCSV)
-mapSel <- TRUE
 remLoc <- !is.null(values$removedAll)
+drawPoly <- !is.null(values$ptSeln)
 thin <- input$goThin != 0
 yesPreds <- input$pred != ""
 backg <- !is.null(input$backgSelect)
@@ -113,7 +113,7 @@ occs <- remDups(occs)  # remove duplicate records
 
 <!-- STEP 2 -->
 
-```{asis, echo = thin | mapSel}
+```{asis, echo = thin | remLoc | drawPoly}
 ###Process Occurrence Data
 ```
 
@@ -125,6 +125,14 @@ Remove the following occurrence localities: `r values$removedAll`.
 rows <- as.numeric(rownames(occs))  # get row names
 remo <- which(values$removedAll %in% rows)  # find which row names correspond to user selection for removal
 occs <- occs[-remo, ]  # remove the selected rows
+```
+
+```{asis, echo = drawPoly, eval = drawPoly}
+You drew a polygon. It was stunning, a real work of modern art. Have you thought of a career change? These occurrence localities were selected: `r values$ptSeln`.
+```
+
+```{r, echo = drawPoly, eval = drawPoly}
+occs <- occs[values$ptSeln, ]  # subset occs by selected rows
 ```
 
 ```{asis, echo = thin}
