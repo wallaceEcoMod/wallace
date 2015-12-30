@@ -78,6 +78,7 @@ shinyServer(function(input, output, session) {
     if (input$gbifName == "") return()
 
     writeLog("...Searching GBIF...")
+    values$spname <- input$gbifName  # record species name
     results <- occ_search(scientificName = input$gbifName, limit = input$occurrences,
                           hasCoordinate = TRUE)
 
@@ -230,16 +231,15 @@ shinyServer(function(input, output, session) {
 
     isolate({
       numTest <- input$remLoc %in% row.names(values$df)
-      sinkRmdob(input$remLoc, "Occurrence locality ID to be removed:")
-      sinkRmdmult(c(
-        rows <- as.numeric(rownames(values$df)),
-        remo <- which(input$remLoc == rows),
-        if (length(remo) > 0) {
-          values$removed <- values$df[remo, ]
-          values$df <- values$df[-remo, ]
-          values$gbifoccs <- values$gbifoccs[-remo, ]
-        }),
-        "Remove user-selected locality by ID:")
+      rows <- as.numeric(rownames(values$df))  # get row names
+      remo <- which(input$remLoc == rows)  # find which row name corresponds to user selection for removal
+      # Remove the offending row
+      if (length(remo) > 0) {
+        values$removed <- values$df[remo, ]
+        values$removedAll <- c(values$removedAll, rownames(values$removed))  # keep vector of all removed pts
+        values$df <- values$df[-remo, ]
+        values$gbifoccs <- values$gbifoccs[-remo, ]
+      }
 
       if (numTest) {
         writeLog(paste0("* Removed locality with ID = ", input$remLoc, "."))
