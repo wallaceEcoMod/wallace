@@ -42,6 +42,7 @@ source('/Users/musasabi/Documents/github/wallace/functions.R')
 gbif <- input$gbifName != ""
 csv <- !is.null(input$userCSV)
 mapSel <- TRUE
+remLoc <- !is.null(values$removedAll)
 thin <- input$goThin != 0
 yesPreds <- input$pred != ""
 backg <- !is.null(input$backgSelect)
@@ -58,8 +59,8 @@ model <- input$goEval != 0
 isBC <- if (model) input$modSelect == 'BIOCLIM' else FALSE
 isMX <- if (model) input$modSelect == 'Maxent' else FALSE
 ```
-<!-- This needs to work for userCSV too -->
-Record of analysis for *`r makeCap(input$gbifName)`*.
+
+Record of analysis for *`r makeCap(values$spname)`*.
 
 <!-- STEP 1 -->
 
@@ -114,6 +115,16 @@ occs <- remDups(occs)  # remove duplicate records
 
 ```{asis, echo = thin | mapSel}
 ###Process Occurrence Data
+```
+
+```{asis, echo = remLoc, eval = remLoc}
+Remove the following occurrence localities: `r values$removedAll`.
+```
+
+```{r, echo = remLoc, eval = remLoc}
+rows <- as.numeric(rownames(occs))  # get row names
+remo <- which(values$removedAll %in% rows)  # find which row names correspond to user selection for removal
+occs <- occs[-remo, ]  # remove the selected rows
 ```
 
 ```{asis, echo = thin}
