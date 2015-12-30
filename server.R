@@ -45,6 +45,8 @@ shinyServer(function(input, output, session) {
   ### INITIALIZE
   #########################
   
+  observe(print(input$goPart == 0))
+  
   source("sinkRmd.R")
   ## functions for text formatting in userReport.Rmd
   makeCap <- function(x) paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)))
@@ -684,7 +686,6 @@ shinyServer(function(input, output, session) {
 
     # if user kfold, get groups and assign occs and backg from inFile,
     # and if not, make backg pts and assign user kfold groups to NULL
-    sinkSub("## Partition Occurrence Data")
     #     if (input$partSelect == 'user') {
     #       sinkRmdmult(c(
     #         occs <- values$inFile[values$inFile[,1] == values$spname,],
@@ -696,56 +697,42 @@ shinyServer(function(input, output, session) {
     #         values$bg.coords <- backg_pts[,2:3]),
     #         "User defined background partition:")
     #     } else {
-    sinkRmd(
-      occs <- values$df[,2:3],
-      "Occurrence localities:")
+    occs <- values$df[,2:3]
     if (is.null(values$bg.coords)) {
       withProgress(message = "Generating background points...", {
-        sinkRmdmult(c(
-          bg.coords <- randomPoints(values$predsMsk, 10000),
-          values$bg.coords <- as.data.frame(bg.coords)),
-          "Generate background points:")
+        bg.coords <- randomPoints(values$predsMsk, 10000)
+        values$bg.coords <- as.data.frame(bg.coords)
       })
       # }
     }
 
     if (input$partSelect2 == 'block') {
       pt <- 'block'
-      sinkRmd(
-        group.data <- get.block(occs, values$bg.coords),
-        paste("Data partition by block method:"))
+      group.data <- get.block(occs, values$bg.coords)
+      paste("Data partition by block method:")
     }
     if (input$partSelect2 == 'cb1') {
       pt <- "checkerboard 1"
-      sinkRmdob(input$aggFact, "Define the aggregation factor:")
-      sinkRmd(
-        group.data <- get.checkerboard1(occs, values$predsMsk, values$bg.coords, input$aggFact),
-        paste("Data partition by checkerboard 1 method:"))
+      group.data <- get.checkerboard1(occs, values$predsMsk, values$bg.coords, input$aggFact)
+      paste("Data partition by checkerboard 1 method:")
     }
     if (input$partSelect2 == 'cb2') {
       pt <- "checkerboard 2"
-      sinkRmdob(input$aggFact, "Define the aggregation factor:")
-      sinkRmd(
-        group.data <- get.checkerboard2(occs, values$predsMsk, values$bg.coords, input$aggFact),
-        paste("Data partition by checkerboard 2 method:"))
+      group.data <- get.checkerboard2(occs, values$predsMsk, values$bg.coords, input$aggFact)
+      paste("Data partition by checkerboard 2 method:")
     }
     if (input$partSelect2 == 'jack') {
       pt <- "jackknife"
-      sinkRmd(
-        group.data <- get.jackknife(occs, values$bg.coords),
-        paste("Data partition by jackknife method:"))
+      group.data <- get.jackknife(occs, values$bg.coords)
+      paste("Data partition by jackknife method:")
     }
     if (input$partSelect2 == 'random') {
       pt <- paste0("random k-fold (k = ", input$kfolds, ")")
-      sinkRmdob(input$kfolds, "Define the number of folds:")
-      sinkRmd(
-        group.data <- get.randomkfold(occs, values$bg.coords, input$kfolds),
-        paste("Data partition by", paste0("random k-fold (k = ", input$kfolds, ")"), ":"))
+      group.data <- get.randomkfold(occs, values$bg.coords, input$kfolds)
+      paste("Data partition by", paste0("random k-fold (k = ", input$kfolds, ")"), ":")
     }
 
-    sinkRmd(
-      values$modParams <- list(occ.pts=occs, bg.pts=values$bg.coords, occ.grp=group.data[[1]], bg.grp=group.data[[2]]),
-      "Define modeling parameters:")
+    values$modParams <- list(occ.pts=occs, bg.pts=values$bg.coords, occ.grp=group.data[[1]], bg.grp=group.data[[2]])
     writeLog(paste("* Data partition by", pt, "method."))
     shinyjs::enable("downloadPart")
     #newColors <- brewer.pal(max(group.data[[1]]), 'Accent')
@@ -771,6 +758,10 @@ shinyServer(function(input, output, session) {
     }
   )
 
+  #########################
+  ### STEP 6 FUNCTIONALITY
+  #########################
+  
   # run ENMeval via user inputs
   observeEvent(input$goEval, {
     if (is.null(values$predsMsk)) {
@@ -782,35 +773,26 @@ shinyServer(function(input, output, session) {
       return()
     }
     values$predsLog <- NULL  # reset predsLog if models are rerun
-    sinkSub("## Build and Evaluate Niche Model")
     
     # BIOCLIM functionality
     if (input$modSelect == "BIOCLIM") {
-      sinkRmdmult(c(
         e <- BioClim_eval(values$modParams$occ.pts, values$modParams$bg.pts,
                           values$modParams$occ.grp, values$modParams$bg.grp,
-                          values$predsMsk),
-        values$evalTbl <- e$results,
-        values$evalMods <- e$models,
-        names(e$predictions) <- "Classic_BIOCLIM",
-        values$evalPreds <- e$predictions,
-        occVals <- extract(e$predictions, values$modParams$occ.pts),
-        values$mtps <- min(occVals)),
-        "Build BIOCLIM models:")
+                          values$predsMsk)
+        values$evalTbl <- e$results
+        values$evalMods <- e$models
+        names(e$predictions) <- "Classic_BIOCLIM"
+        values$evalPreds <- e$predictions
+        occVals <- extract(e$predictions, values$modParams$occ.pts)
+        values$mtps <- min(occVals)
 
       if (length(occVals) < 10) {
-        sinkRmd(
-          n90 <- floor(length(occVals) * 0.9),
-          "Define the number of 10% higher values:")
+          n90 <- floor(length(occVals) * 0.9)
       } else {
-        sinkRmd(
-          n90 <- ceiling(length(occVals) * 0.9),
-          "Define the number of 10% higher values:")
+          n90 <- ceiling(length(occVals) * 0.9)
       }
 
-      sinkRmd(
-        values$p10s <- rev(sort(occVals))[n90],
-        "Apply 10% Training Omission threshold:")
+        values$p10s <- rev(sort(occVals))[n90]
 
       # make datatable of results df
       output$evalTbl <- DT::renderDataTable({DT::datatable(round(e$results, digits=3))})
@@ -822,12 +804,7 @@ shinyServer(function(input, output, session) {
 
     # Maxent functionality
     if (input$modSelect == "Maxent") {
-      sinkRmdob(input$rms, "Define regularization multiplier (RM) values:")
-      sinkRmdob(input$rmsBy, "Define RM step value:")
-      sinkRmdob(input$fcs, "Define feature classes:")
-      sinkRmd(
-        rms <- seq(input$rms[1], input$rms[2], input$rmsBy),
-        "Define the vector of RMs to input:")
+      rms <- seq(input$rms[1], input$rms[2], input$rmsBy)  # define the vector of RMs to input
       progress <- shiny::Progress$new()
       progress$set(message = "Evaluating ENMs...", value = 0)
       on.exit(progress$close())
@@ -839,24 +816,16 @@ shinyServer(function(input, output, session) {
                        RMvalues = rms, fc = input$fcs, method = 'user', occ.grp = values$modParams$occ.grp,
                        bg.grp = values$modParams$bg.grp, updateProgress = updateProgress)
 
-      sinkFalse(paste0("e <- ENMevaluate(modParams$occ.pts, predsMsk, bg.coords = modParams$bg.pts,\n    ",
-                       " RMvalues = rms, fc = fcs, method = 'user', occ.grp = modParams$occ.grp,\n    ",
-                       " bg.grp = modParams$bg.grp)"),
-                "Evaluate Maxent model results:")
+      # Load the ENMeval results into the values list
+      values$evalTbl <- e@results
+      values$evalMods <- e@models
+      values$evalPreds <- e@predictions.raw
+      values$evalPredsLog <- e@predictions.log
 
-      sinkRmdmult(c(
-        values$evalTbl <- e@results,
-        values$evalMods <- e@models,
-        values$evalPreds <- e@predictions.raw,
-        values$evalPredsLog <- e@predictions.log),
-        "Load the ENMeval results into the values list:")
+      occVals <- extract(e@predictions.raw, values$modParams$occ.pts)
 
-      sinkRmdmult(c(
-        occVals <- extract(e@predictions.raw, values$modParams$occ.pts)),
-        "Prediction values:")
-      sinkRmd(
-        values$mtps <- apply(occVals, MARGIN = 2, min),
-        "Minimum Training Omission (ORmin) threshold:")
+      values$mtps <- apply(occVals, MARGIN = 2, min)
+        
       if (nrow(occVals) < 10) {
         sinkRmd(
           n90 <- floor(nrow(occVals) * 0.9),
@@ -866,9 +835,7 @@ shinyServer(function(input, output, session) {
           n90 <- ceiling(nrow(occVals) * 0.9),
           "Define the number of 10% higher values:")
       }
-      sinkRmd(
-        values$p10s <- apply(occVals, MARGIN = 2, function(x) rev(sort(x))[n90]),
-        "Apply 10% threshold prediction:")
+      values$p10s <- apply(occVals, MARGIN = 2, function(x) rev(sort(x))[n90])
 
       # make datatable of results df
       output$evalTbl <- DT::renderDataTable({DT::datatable(cbind(e@results[,1:3], round(e@results[,4:15], digits=3)))})
@@ -911,25 +878,10 @@ shinyServer(function(input, output, session) {
                 choices = predNameList)
   })
 
-  #   observe({
-  #     if (input$predForm == '' | is.null(values$preds)) return()
-  #     if (input$predForm == 2) {
-  #       if (is.null(values$predsLog)) {
-  #         isolate({
-  #           # generate logistic outputs for all raw outputs
-  #           makeLog <- function(x) predict(x, values$preds, args=c('outputformat=logistic'))
-  #           print(values$log)
-  #           values$log <- isolate(paste(values$log, 'Generating logistic predictions...', sep='<br>'))  # add text to log
-  #           print(values$log)
-  #           values$predsLog <- stack(sapply(values$evalMods, FUN=makeLog))
-  #           logTime <- c(1,1,1)
-  #           values$log <- isolate(paste(values$log, paste0('Logistic predictions complete in ',
-  #                                                          logTime[3], '.'), sep='<br>'))  # add text to log
-  #         })
-  #       }
-  #     }
-  #   })
-
+  #########################
+  ### STEP 7 FUNCTIONALITY
+  #########################
+  
   # set predCur based on user selection of threshold
   observeEvent(input$plotPred, {
     proxy %>% removeImage('r1')  # remove current raster
