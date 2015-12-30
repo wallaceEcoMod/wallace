@@ -5,15 +5,12 @@ author: "Jamie M. Kass"
 date: "May 3rd, 2014"
 ---
 
-<!-- ```{r setup, include=FALSE}
-knitr::opts_chunk$set(eval=FALSE)
-``` -->
-
 ```{r setup, include=FALSE}
 library(knitr)
 knit_engines$set(asis = function(options) {
   if (options$echo && options$eval) knit_child(text = options$code)
 })
+knitr::opts_chunk$set(message = FALSE)
 ```
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
@@ -23,7 +20,7 @@ This is an R Markdown document (for more information see <http://rmarkdown.rstud
 ###Package installation
 
 Wallace uses the following R packages that must be installed before starting. Once installed, load them:
-```{r, message = FALSE}
+```{r}
 library(devtools)
 library(rgbif)
 library(maptools)
@@ -44,12 +41,27 @@ source('/Users/musasabi/Documents/github/wallace/functions.R')
 ```{r, echo = FALSE}
 gbif <- input$gbifName != ""
 csv <- !is.null(input$userCSV)
-thin <- input$goThin
-preds <- input$pred != ""
+mapSel <- TRUE
+thin <- input$goThin != 0
+yesPreds <- input$pred != ""
 backg <- !is.null(input$backgSelect)
+isBB <- if (backg) input$backgSelect == 'bb' else FALSE
+isMCP <- if (backg) input$backgSelect == 'mcp' else FALSE
+isUserBG <- if (backg) input$backgSelect == 'user' else FALSE
+part <- input$goPart != 0
+isBlock <- if (part) input$partSelect2 == 'block' else FALSE
+isCB1 <- if (part) input$partSelect2 == 'cb1' else FALSE
+isCB2 <- if (part) input$partSelect2 == 'cb2' else FALSE
+isJack <- if (part) input$partSelect2 == 'jack' else FALSE
+isRandom <- if (part) input$partSelect2 == 'random' else FALSE
+model <- input$goEval != 0
+isBC <- if (model) input$modSelect == 'BIOCLIM' else FALSE
+isMX <- if (model) input$modSelect == 'Maxent' else FALSE
 ```
 <!-- This needs to work for userCSV too -->
 Record of analysis for *`r makeCap(input$gbifName)`*.
+
+<!-- STEP 1 -->
 
 ```{r occs}
 occs <- NULL  # make empty occs to fill when GBIF or user input are called
@@ -98,6 +110,8 @@ occs <- rbind(occs, inFile.occs)  # add the CSV points to existing occs
 occs <- remDups(occs)  # remove duplicate records
 ```
 
+<!-- STEP 2 -->
+
 ```{asis, echo = thin | mapSel}
 ###Process Occurrence Data
 ```
@@ -107,7 +121,7 @@ Spatial thinning selected. Thin distance selected is `r input$thinDist` m.
 ```
 
 ```{r doThin, echo = thin, eval = thin}
-output <- thin(values$df, 'latitude', 'longitude', 'species', thin.par = input$thinDist, reps = 100, locs.thinned.list.return = TRUE, write.files = FALSE, verbose = FALSE)
+output <- thin(occs, 'latitude', 'longitude', 'species', thin.par = input$thinDist, reps = 100, locs.thinned.list.return = TRUE, write.files = FALSE, verbose = FALSE)
 ```
 
 ```{asis, echo = thin}
@@ -120,18 +134,22 @@ maxThin <- output[[ifelse(length(maxThin) > 1, maxThin[1], maxThin)]]  # if ther
 occs <- occs[as.numeric(rownames(maxThin)),]  # subset occs to match only thinned occs
 ```
 
-```{asis, echo = preds, eval = preds}
+<!-- STEP 3 -->
+
+```{asis, echo = yesPreds, eval = yesPreds}
 ###Obtain Environmental Data
 Using WorldClim (http://www.worldclim.org/) bioclim dataset at resolution of `r input$pred` arcmin.
 ```
 
-```{r getPreds, message = FALSE, eval = preds, echo = preds}
+```{r getPreds, eval = yesPreds, echo = yesPreds}
 preds <- getData(name = "worldclim", var = "bio", res = input$pred)
-locs.vals <- extract(values$preds[[1]], occs[,2:3])  # extract environmental values at occ grid cells
+locs.vals <- extract(preds[[1]], occs[,2:3])  # extract environmental values at occ grid cells
 occs <- occs[!is.na(locs.vals), ]  # remove occs without environmental values from inFile
 ```
 
-```{r, include = FALSE}
+<!-- STEP 4 -->
+
+```{r, include = FALSE, eval = backg}
 backgSwitch <- switch(input$backgSelect, 'bb'='Bounding Box', 'mcp'='Minimum Convex Polygon', 'user'='User-defined')
 ```
 
@@ -141,26 +159,26 @@ Background selection technique chosen as `r backgSwitch`.
 Buffer size of the study extent polygon defined as `r input$backgBuf` km.
 ```
 
-```{r, echo = input$backgSelect == 'bb', eval = input$backgSelect == 'bb'}
-xmin <- min(values$df$longitude) - (input$backgBuf + res(values$preds)[1])
-xmax <- max(values$df$longitude) + (input$backgBuf + res(values$preds)[1])
-ymin <- min(values$df$latitude) - (input$backgBuf + res(values$preds)[1])
-ymax <- max(values$df$latitude) + (input$backgBuf + res(values$preds)[1])
+```{r, echo = isBB, eval = isBB}
+xmin <- min(occs$longitude) - (input$backgBuf + res(preds)[1])
+xmax <- max(occs$longitude) + (input$backgBuf + res(preds)[1])
+ymin <- min(occs$latitude) - (input$backgBuf + res(preds)[1])
+ymax <- max(occs$latitude) + (input$backgBuf + res(preds)[1])
 bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin), ncol=2)
 backgExt <- SpatialPolygons(list(Polygons(list(Polygon(bb)), 1)))
 ```
 
-```{r, echo = input$backgSelect == 'mcp', eval = input$backgSelect == 'mcp'}
-xy_mcp <- mcp(values$df[,2:3])
+```{r, echo = isMCP, eval = isMCP}
+xy_mcp <- mcp(occs[,2:3])
 bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
-backgExt <- gBuffer(xy_mcp, width = input$backgBuf + res(values$preds)[1])
+backgExt <- gBuffer(xy_mcp, width = input$backgBuf + res(preds)[1])
 ```
 
-```{asis, echo = input$backgSelect == 'user', eval = input$backgSelect == 'user'}
+```{asis, echo = isUserBG, eval = isUserBG}
 User study extent name is `r input$userBackg$name`. User study extent path is `r input$userBackg$datapath`. Adjust path and names to load the study extent:
 ```
 
-```{r, echo = input$backgSelect == 'user', eval = input$backgSelect == 'user'}
+```{r, echo = isUserBG, eval = isUserBG}
 names <- input$userBackg$name
 inPath <- input$userBackg$datapath
 pathdir <- dirname(inPath)
@@ -172,10 +190,10 @@ shp <- read.csv(inPath, header = TRUE)  # read csv with coordinates for polygon
 Generate the user-defined study extent plus the buffer:
 ```
 
-```{r, echo = input$backgSelect == 'user', eval = input$backgSelect == 'user'}
+```{r, echo = isUserBG, eval = isUserBG}
 shp <- SpatialPolygons(list(Polygons(list(Polygon(shp)), 1)))
-shp <- gBuffer(shp, width = input$backgBuf + res(values$preds)[1])
-values$backgExt <- shp
+shp <- gBuffer(shp, width = input$backgBuf + res(preds)[1])
+backgExt <- shp
 bb <- shp@polygons[[1]]@Polygons[[1]]@coords
 ```
 
@@ -184,6 +202,97 @@ Mask environmental variables by `r backgSwitch`:
 ```
 
 ```{r, echo = backg, eval = backg}
-predCrop <- crop(values$preds, backgExt)
+predCrop <- crop(preds, backgExt)
 predsMsk <- mask(predCrop, backgExt)
+```
+
+<!-- STEP 5 -->
+
+```{asis, echo = part}
+## Partition Occurrence Data
+SOME TEXT
+```
+
+```{r, echo = part, eval = part}
+occs.locs <- occs[,2:3]
+bg.coords <- randomPoints(predsMsk, 10000)  # generate 10,000 background points
+bg.coords <- as.data.frame(bg.coords)  # get the matrix output into a data.frame
+```
+
+```{r, include = FALSE, eval = part}
+partSwitch <- switch(input$partSelect2, 'block'='Block', 'cb1'='Checkerboard 1', 'cb2'='Checkerboard 2', 'jack'='Jackknife', 'random'='Random')
+```
+
+```{asis, echo = part, eval = part}
+Data partition by `r partSwitch` method.
+```
+
+```{r, echo = isBlock, eval = isBlock}
+group.data <- get.block(occ=occs.locs, bg.coords=bg.coords)
+```
+
+```{r, echo = isCB1, eval = isCB1}
+group.data <- get.checkerboard1(occ=occs.locs, env=predsMsk, bg.coords=bg.coords, aggregation.factor=input$aggFact)
+```
+
+```{r, echo = isCB2, eval = isCB2}
+group.data <- get.checkerboard2(occ=occs.locs, env=predsMsk, bg.coords=bg.coords, aggregation.factor=input$aggFact)
+```
+
+```{r, echo = isJack, eval = isJack}
+group.data <- get.jackknife(occ=occs.locs, bg.coords=bg.coords)
+```
+
+```{r, echo = isRandom, eval = isRandom}
+group.data <- get.randomkfold(occ=occs.locs, bg.coords=bg.coords, kfolds=input$kfolds)
+```
+
+```{asis, echo = part}
+Define modeling parameters:
+```
+
+```{r, echo = part, eval = part}
+modParams <- list(occ.pts=occs.locs, bg.pts=bg.coords, occ.grp=group.data[[1]], bg.grp=group.data[[2]])
+```
+
+<!-- STEP 6 -->
+
+```{asis, echo = model, eval = model}
+## Build and Evaluate Niche Model
+`r input$modSelect` model selected.
+```
+
+```{r, echo = isBC, eval = isBC}
+e <- BioClim_eval(modParams$occ.pts, modParams$bg.pts, modParams$occ.grp, modParams$bg.grp, predsMsk)
+evalTbl <- e$results
+evalMods <- e$models
+names(e$predictions) <- "Classic_BIOCLIM"
+evalPreds <- e$predictions
+occVals <- extract(e$predictions, modParams$occ.pts)  # get predicted values for occ grid cells
+mtps <- min(occVals)  # apply minimum training presence threshold
+# Define 10% training presence threshold
+if (length(occVals) < 10) {  # if less than 10 occ values, find 90% of total and round down
+  n90 <- floor(length(occVals) * 0.9)
+} else {  # if greater than or equal to 10 occ values, round up
+  n90 <- ceiling(length(occVals) * 0.9)
+}
+p10s <- rev(sort(occVals))[n90]  # apply 10% training presence threshold
+```
+
+```{r, echo = isMX, eval = isMX, hide = TRUE}
+rms <- seq(input$rms[1], input$rms[2], input$rmsBy)  # define the vector of RMs to input
+e <- ENMevaluate(modParams$occ.pts, predsMsk, bg.coords=modParams$bg.pts, RMvalues=rms, fc=input$fcs, method='user', occ.grp=modParams$occ.grp, bg.grp=modParams$bg.grp)
+evalTbl <- e@results
+evalMods <- e@models
+evalPreds <- e@predictions.raw
+evalPredsLog <- e@predictions.log
+occVals <- extract(e@predictions.raw, modParams$occ.pts)  # get predicted values for occ grid cells
+mtps <- apply(occVals, MARGIN = 2, min)  # apply minimum training presence threshold over all models
+# Define 10% training presence threshold
+if (length(occVals) < 10) {  # if less than 10 occ values, find 90% of total and round down
+  n90 <- floor(length(occVals) * 0.9)
+} else {  # if greater than or equal to 10 occ values, round up
+  n90 <- ceiling(length(occVals) * 0.9)
+}
+p10s <- apply(occVals, MARGIN = 2, function(x) rev(sort(x))[n90])  # apply 10% training presence threshold over all models
 ```
