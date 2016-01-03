@@ -48,7 +48,11 @@ shinyServer(function(input, output, session) {
   ## functions for text formatting in userReport.Rmd
   makeCap <- function(x) paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)))
   getGBIFname <- function() deparse(substitute(input$gbifName))
-
+  printVecAsis <- function(x) {
+    ifelse(length(x) == 1, x, 
+           ifelse(is.character(x), paste0("c(", paste(sapply(x, function(a) paste0("\'",a,"\'")), collapse=", "), ")"),
+                  paste0("c(", paste(x, collapse=", "), ")")))}
+           
   # make list to carry data used by multiple reactive functions
   values <- reactiveValues(polyID=0, polyErase=FALSE, log=c())
 
@@ -950,15 +954,21 @@ shinyServer(function(input, output, session) {
       owd <- setwd(tempdir())
       on.exit(setwd(owd))
       file.copy(src, 'userReport.Rmd')
-
-      if (input$mdType == 'Rmd') {
-        out <- 'userReport.Rmd'
-      } else {
-        out <- rmarkdown::render('userReport.Rmd', switch(
+      exp <- knit_expand('userReport.Rmd', gbifName=input$gbifName, occurrences=input$occurrences, thinDist=input$thinDist,
+                         occsCSV=input$userCSV$datapath, occsRemoved=printVecAsis(values$removedAll), occsSel=printVecAsis(values$ptSeln),
+                         predsRes=input$pred, backgSel=input$backgSelect, backgBuf=input$backgBuf, userBGname=input$userBackg$name,
+                         userBGpath=input$userBackg$datapath, partSel=input$partSelect2, aggFact=input$aggFact, kfoldsSel=input$kfolds, 
+                         modSel=input$modSelect, rmsSel1=input$rms[1], rmsSel2=input$rms[2], rmsBy=input$rmsBy, fcsSel=printVecAsis(input$fcs))
+      writeLines(exp, 'userReport2.Rmd')
+      
+      # if (input$mdType == 'Rmd') {
+        # out <- render_markdown('userReport2.Rmd')
+      # } else {
+        out <- rmarkdown::render('userReport2.Rmd', switch(
           input$mdType,
-          PDF = pdf_document(), HTML = html_document(), Word = word_document()
+          PDF = pdf_document(), HTML = html_document(), Word = word_document(), Rmd = md_document(variant="markdown_github")
         ))
-      }
+      # }
       file.rename(out, file)
     }
   )
