@@ -1,8 +1,7 @@
 ---
 title: Wallace Session `r Sys.Date()`
-runtime: shiny
+output: html_document
 author: "Jamie M. Kass"
-date: "May 3rd, 2014"
 ---
 
 ```{r setup, include=FALSE}
@@ -10,7 +9,7 @@ library(knitr)
 knit_engines$set(asis = function(options) {
   if (options$echo && options$eval) knit_child(text = options$code)
 })
-knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 ```
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
@@ -38,7 +37,7 @@ source('/Users/musasabi/Documents/github/wallace/functions.R')
 ```
 
 ###Obtain Occurrence Data
-```{r, echo = FALSE}
+```{r, echo = FALSE, include = FALSE}
 gbif <- input$gbifName != ""
 csv <- !is.null(input$userCSV)
 remLoc <- !is.null(values$removedAll)
@@ -46,18 +45,18 @@ drawPoly <- !is.null(values$ptSeln)
 thin <- input$goThin != 0
 yesPreds <- input$pred != ""
 backg <- !is.null(input$backgSelect)
-isBB <- if (backg) input$backgSelect == 'bb' else FALSE
-isMCP <- if (backg) input$backgSelect == 'mcp' else FALSE
-isUserBG <- if (backg) input$backgSelect == 'user' else FALSE
+isBB <- input$backgSelect == 'bb'
+isMCP <- input$backgSelect == 'mcp'
+isUserBG <- input$backgSelect == 'user'
 part <- input$goPart != 0
-isBlock <- if (part) input$partSelect2 == 'block' else FALSE
-isCB1 <- if (part) input$partSelect2 == 'cb1' else FALSE
-isCB2 <- if (part) input$partSelect2 == 'cb2' else FALSE
-isJack <- if (part) input$partSelect2 == 'jack' else FALSE
-isRandom <- if (part) input$partSelect2 == 'random' else FALSE
+isBlock <- input$partSelect2 == 'block'
+isCB1 <- input$partSelect2 == 'cb1'
+isCB2 <- input$partSelect2 == 'cb2'
+isJack <- input$partSelect2 == 'jack'
+isRandom <- input$partSelect2 == 'random'
 model <- input$goEval != 0
-isBC <- if (model) input$modSelect == 'BIOCLIM' else FALSE
-isMX <- if (model) input$modSelect == 'Maxent' else FALSE
+isBC <- input$modSelect == 'BIOCLIM'
+isMX <- input$modSelect == 'Maxent'
 ```
 
 Record of analysis for *`r makeCap(values$spname)`*.
@@ -68,19 +67,19 @@ Record of analysis for *`r makeCap(values$spname)`*.
 occs <- NULL  # make empty occs to fill when GBIF or user input are called
 ```
 
-```{asis, echo = gbif}
-The search for occurrences was limited to `r input$occurrences` records. Obtain occurrence records of the selected species from GBIF:
+```{asis, echo = gbif, include = gbif}
+The search for occurrences was limited to `r {{occurrences}}` records. Obtain occurrence records of the selected species from GBIF:
 ```
 
-```{r occSearch, eval = gbif, echo = gbif}
-results <- occ_search(scientificName = input$gbifName, limit = input$occurrences, hasCoordinate = TRUE)
+```{r occSearch, eval = gbif, echo = gbif, include = gbif}
+results <- occ_search(scientificName = "{{gbifName}}", limit = {{occurrences}}, hasCoordinate = TRUE)
 ```
 
-```{asis, echo = gbif}
+```{asis, echo = gbif, include = gbif}
 Check if all the needed columns were returned in the rgbif call, and if some are missing, add them to results$data.
 ```
 
-```{r occTblEdits, echo = gbif, eval = gbif}
+```{r occTblEdits, echo = gbif, eval = gbif, include = gbif}
 cols <- c('name','decimalLongitude','decimalLatitude',
                 'institutionCode','country', 'stateProvince',
                 'locality', 'elevation', 'basisOfRecord')
@@ -97,7 +96,7 @@ User CSV path with occurrence data (change to the path of the file in your compu
 ```
 
 ```{r input, echo = csv, eval = csv}
-inFile <- read.csv(input$userCSV$datapath, header = TRUE)  # load occurrence data
+inFile <- read.csv("{{occsCSV}}", header = TRUE)  # load occurrence data
 ```
 
 ```{r clean, echo = csv, eval = csv}
@@ -113,41 +112,41 @@ occs <- remDups(occs)  # remove duplicate records
 
 <!-- STEP 2 -->
 
-```{asis, echo = thin | remLoc | drawPoly}
+```{asis, echo = thin | remLoc | drawPoly, include = drawPoly}
 ###Process Occurrence Data
 ```
 
-```{asis, echo = remLoc, eval = remLoc}
-Remove the following occurrence localities: `r values$removedAll`.
+```{asis, echo = remLoc, eval = remLoc, include = remLoc}
+Remove the following occurrence localities: `r {{occsRemoved}}`.
 ```
 
-```{r, echo = remLoc, eval = remLoc}
+```{r, echo = remLoc, eval = remLoc, include = remLoc}
 rows <- as.numeric(rownames(occs))  # get row names
-remo <- which(values$removedAll %in% rows)  # find which row names correspond to user selection for removal
+remo <- which({{occsRemoved}} %in% rows)  # find which row names correspond to user selection for removal
 occs <- occs[-remo, ]  # remove the selected rows
 ```
 
-```{asis, echo = drawPoly, eval = drawPoly}
-You drew a polygon. It was stunning, a real work of modern art. Have you thought of a career change? These occurrence localities were selected: `r values$ptSeln`.
+```{asis, echo = drawPoly, eval = drawPoly, include = drawPoly}
+You drew a polygon. It was stunning, a real work of modern art. Have you thought of a career change? You selected `r length({{occsSel}})` of `r nrow(occs)` total occurrence localities.
 ```
 
-```{r, echo = drawPoly, eval = drawPoly}
-occs <- occs[values$ptSeln, ]  # subset occs by selected rows
+```{r, echo = drawPoly, eval = drawPoly, include = drawPoly}
+occs <- occs[{{occsSel}}, ]  # subset occs by selected rows
 ```
 
-```{asis, echo = thin}
-Spatial thinning selected. Thin distance selected is `r input$thinDist` m.
+```{asis, echo = thin, include = thin}
+Spatial thinning selected. Thin distance selected is `r {{thinDist}}` m.
 ```
 
-```{r doThin, echo = thin, eval = thin}
-output <- thin(occs, 'latitude', 'longitude', 'species', thin.par = input$thinDist, reps = 100, locs.thinned.list.return = TRUE, write.files = FALSE, verbose = FALSE)
+```{r doThin, echo = thin, eval = thin, include = thin}
+output <- thin(occs, 'latitude', 'longitude', 'species', thin.par = {{thinDist}}, reps = 100, locs.thinned.list.return = TRUE, write.files = FALSE, verbose = FALSE)
 ```
 
-```{asis, echo = thin}
+```{asis, echo = thin, include = thin}
 Since spThin did 100 iterations, there are 100 different variations of how it thinned your occurrence localities. As there is a stochastic element in the algorithm, some iterations may include more localities than the others, and we need to make sure we maximize the number of localities we proceed with.
 ```
 
-```{r, echo = thin, eval = thin}
+```{r, echo = thin, eval = thin, include = thin}
 maxThin <- which(sapply(output, nrow) == max(sapply(output, nrow)))  # find the iteration that returns the max number of occurrences
 maxThin <- output[[ifelse(length(maxThin) > 1, maxThin[1], maxThin)]]  # if there's more than one max, pick the first one
 occs <- occs[as.numeric(rownames(maxThin)),]  # subset occs to match only thinned occs
@@ -155,13 +154,13 @@ occs <- occs[as.numeric(rownames(maxThin)),]  # subset occs to match only thinne
 
 <!-- STEP 3 -->
 
-```{asis, echo = yesPreds, eval = yesPreds}
+```{asis, echo = yesPreds, eval = yesPreds, include = yesPreds}
 ###Obtain Environmental Data
-Using WorldClim (http://www.worldclim.org/) bioclim dataset at resolution of `r input$pred` arcmin.
+Using WorldClim (http://www.worldclim.org/) bioclim dataset at resolution of `r {{predsRes}}` arcmin.
 ```
 
-```{r getPreds, eval = yesPreds, echo = yesPreds}
-preds <- getData(name = "worldclim", var = "bio", res = input$pred)
+```{r getPreds, eval = yesPreds, echo = yesPreds, include = yesPreds}
+preds <- getData(name = "worldclim", var = "bio", res = {{predsRes}})
 locs.vals <- extract(preds[[1]], occs[,2:3])  # extract environmental values at occ grid cells
 occs <- occs[!is.na(locs.vals), ]  # remove occs without environmental values from inFile
 ```
@@ -169,119 +168,115 @@ occs <- occs[!is.na(locs.vals), ]  # remove occs without environmental values fr
 <!-- STEP 4 -->
 
 ```{r, include = FALSE, eval = backg}
-backgSwitch <- switch(input$backgSelect, 'bb'='Bounding Box', 'mcp'='Minimum Convex Polygon', 'user'='User-defined')
+backgSwitch <- switch("{{backgSel}}", 'bb'='Bounding Box', 'mcp'='Minimum Convex Polygon', 'user'='User-defined')
 ```
 
-```{asis, echo = backg, eval = backg}
+```{asis, echo = backg, eval = backg, include = backg}
 ###Process Environmental Data
 Background selection technique chosen as `r backgSwitch`.
-Buffer size of the study extent polygon defined as `r input$backgBuf` km.
+Buffer size of the study extent polygon defined as `r {{backgBuf}}` km.
 ```
 
-```{r, echo = isBB, eval = isBB}
-xmin <- min(occs$longitude) - (input$backgBuf + res(preds)[1])
-xmax <- max(occs$longitude) + (input$backgBuf + res(preds)[1])
-ymin <- min(occs$latitude) - (input$backgBuf + res(preds)[1])
-ymax <- max(occs$latitude) + (input$backgBuf + res(preds)[1])
+```{r, echo = isBB, eval = isBB, include = isBB}
+xmin <- min(occs$longitude) - ({{backgBuf}} + res(preds)[1])
+xmax <- max(occs$longitude) + ({{backgBuf}} + res(preds)[1])
+ymin <- min(occs$latitude) - ({{backgBuf}} + res(preds)[1])
+ymax <- max(occs$latitude) + ({{backgBuf}} + res(preds)[1])
 bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin), ncol=2)
 backgExt <- SpatialPolygons(list(Polygons(list(Polygon(bb)), 1)))
 ```
 
-```{r, echo = isMCP, eval = isMCP}
+```{r, echo = isMCP, eval = isMCP, include = isMCP}
 xy_mcp <- mcp(occs[,2:3])
 bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
-backgExt <- gBuffer(xy_mcp, width = input$backgBuf + res(preds)[1])
+backgExt <- gBuffer(xy_mcp, width = {{backgBuf}} + res(preds)[1])
 ```
 
-```{asis, echo = isUserBG, eval = isUserBG}
-User study extent name is `r input$userBackg$name`. User study extent path is `r input$userBackg$datapath`. Adjust path and names to load the study extent:
+```{asis, echo = isUserBG, eval = isUserBG, include = isUserBG}
+User study extent name is `r "{{userBGname}}"`. User study extent path is `r "{{userBGpath}}"`.
 ```
 
-```{r, echo = isUserBG, eval = isUserBG}
-names <- input$userBackg$name
-inPath <- input$userBackg$datapath
-pathdir <- dirname(inPath)
-pathfile <- basename(inPath)
-shp <- read.csv(inPath, header = TRUE)  # read csv with coordinates for polygon
+```{r, echo = isUserBG, eval = isUserBG, include = isUserBG}
+shp <- read.csv("{{userBGpath}}", header = TRUE)  # read csv with coordinates for polygon
 ```
 
-```{asis, echo = backg}
+```{asis, echo = backg, include = backg}
 Generate the user-defined study extent plus the buffer:
 ```
 
-```{r, echo = isUserBG, eval = isUserBG}
+```{r, echo = isUserBG, eval = isUserBG, include = isUserBG}
 shp <- SpatialPolygons(list(Polygons(list(Polygon(shp)), 1)))
-shp <- gBuffer(shp, width = input$backgBuf + res(preds)[1])
+shp <- gBuffer(shp, width = {{backgBuf}} + res(preds)[1])
 backgExt <- shp
 bb <- shp@polygons[[1]]@Polygons[[1]]@coords
 ```
 
-```{asis, echo = backg}
+```{asis, echo = backg, include = backg}
 Mask environmental variables by `r backgSwitch`:
 ```
 
-```{r, echo = backg, eval = backg}
+```{r, echo = backg, eval = backg, include = backg}
 predCrop <- crop(preds, backgExt)
 predsMsk <- mask(predCrop, backgExt)
 ```
 
 <!-- STEP 5 -->
 
-```{asis, echo = part}
+```{asis, echo = part, include = part}
 ## Partition Occurrence Data
 SOME TEXT
 ```
 
-```{r, echo = part, eval = part}
+```{r, echo = part, eval = part, include = part}
 occs.locs <- occs[,2:3]
 bg.coords <- randomPoints(predsMsk, 10000)  # generate 10,000 background points
 bg.coords <- as.data.frame(bg.coords)  # get the matrix output into a data.frame
 ```
 
 ```{r, include = FALSE, eval = part}
-partSwitch <- switch(input$partSelect2, 'block'='Block', 'cb1'='Checkerboard 1', 'cb2'='Checkerboard 2', 'jack'='Jackknife', 'random'='Random')
+partSwitch <- switch("{{partSel}}", 'block'='Block', 'cb1'='Checkerboard 1', 'cb2'='Checkerboard 2', 'jack'='Jackknife', 'random'='Random')
 ```
 
-```{asis, echo = part, eval = part}
+```{asis, echo = part, eval = part, include = part}
 Data partition by `r partSwitch` method.
 ```
 
-```{r, echo = isBlock, eval = isBlock}
+```{r, echo = isBlock, eval = isBlock, include = isBlock}
 group.data <- get.block(occ=occs.locs, bg.coords=bg.coords)
 ```
 
-```{r, echo = isCB1, eval = isCB1}
-group.data <- get.checkerboard1(occ=occs.locs, env=predsMsk, bg.coords=bg.coords, aggregation.factor=input$aggFact)
+```{r, echo = isCB1, eval = isCB1, include = isCB1}
+group.data <- get.checkerboard1(occ=occs.locs, env=predsMsk, bg.coords=bg.coords, aggregation.factor={{aggFact}})
 ```
 
-```{r, echo = isCB2, eval = isCB2}
-group.data <- get.checkerboard2(occ=occs.locs, env=predsMsk, bg.coords=bg.coords, aggregation.factor=input$aggFact)
+```{r, echo = isCB2, eval = isCB2, include = isCB2}
+group.data <- get.checkerboard2(occ=occs.locs, env=predsMsk, bg.coords=bg.coords, aggregation.factor={{aggFact}})
 ```
 
-```{r, echo = isJack, eval = isJack}
+```{r, echo = isJack, eval = isJack, include = isJack}
 group.data <- get.jackknife(occ=occs.locs, bg.coords=bg.coords)
 ```
 
-```{r, echo = isRandom, eval = isRandom}
-group.data <- get.randomkfold(occ=occs.locs, bg.coords=bg.coords, kfolds=input$kfolds)
+```{r, echo = isRandom, eval = isRandom, include = isRandom}
+group.data <- get.randomkfold(occ=occs.locs, bg.coords=bg.coords, kfolds={{kfoldsSel}})
 ```
 
-```{asis, echo = part}
+```{asis, echo = part, include = part}
 Define modeling parameters:
 ```
 
-```{r, echo = part, eval = part}
+```{r, echo = part, eval = part, include = part}
 modParams <- list(occ.pts=occs.locs, bg.pts=bg.coords, occ.grp=group.data[[1]], bg.grp=group.data[[2]])
 ```
 
 <!-- STEP 6 -->
 
-```{asis, echo = model, eval = model}
+```{asis, echo = model, eval = model, include = model}
 ## Build and Evaluate Niche Model
-`r input$modSelect` model selected.
+`r "{{modSel}}"` model selected.
 ```
 
-```{r, echo = isBC, eval = isBC}
+```{r, echo = isBC, eval = isBC, include = isBC}
 e <- BioClim_eval(modParams$occ.pts, modParams$bg.pts, modParams$occ.grp, modParams$bg.grp, predsMsk)
 evalTbl <- e$results
 evalMods <- e$models
@@ -298,9 +293,9 @@ if (length(occVals) < 10) {  # if less than 10 occ values, find 90% of total and
 p10s <- rev(sort(occVals))[n90]  # apply 10% training presence threshold
 ```
 
-```{r, echo = isMX, eval = isMX, hide = TRUE}
-rms <- seq(input$rms[1], input$rms[2], input$rmsBy)  # define the vector of RMs to input
-e <- ENMevaluate(modParams$occ.pts, predsMsk, bg.coords=modParams$bg.pts, RMvalues=rms, fc=input$fcs, method='user', occ.grp=modParams$occ.grp, bg.grp=modParams$bg.grp)
+```{r, echo = isMX, eval = isMX, results = 'hide'}
+rms <- seq({{rmsSel1}}, {{rmsSel2}}, {{rmsBy}})  # define the vector of RMs to input
+e <- ENMevaluate(modParams$occ.pts, predsMsk, bg.coords=modParams$bg.pts, RMvalues=rms, fc={{fcsSel}}, method='user', occ.grp=modParams$occ.grp, bg.grp=modParams$bg.grp)
 evalTbl <- e@results
 evalMods <- e@models
 evalPreds <- e@predictions.raw
