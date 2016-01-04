@@ -186,11 +186,26 @@ fixcols <- function(cols, results) {
 }
 
 
-# Normalize function for raw predctions
+# Normalize function for raw predictions
 normalize <- function(x) {
   valores <- values(x)
   pos <- which(!is.na(valores))
   valores[pos] <- (valores[pos] - min(valores[pos])) / (max(valores[pos]) - min(valores[pos]))
   values(x) <- valores
   return(x)
+}
+
+# make data.frame of lambdas vector from Maxent model object
+lambdasDF <- function(mx) {
+  lambdas <- mx@lambdas[1:(length(mx@lambdas)-4)]
+  data.frame(var=sapply(lambdas, FUN=function(x) strsplit(x, ',')[[1]][1]),
+             coef=sapply(lambdas, FUN=function(x) as.numeric(strsplit(x, ',')[[1]][2])),
+             min=sapply(lambdas, FUN=function(x) as.numeric(strsplit(x, ',')[[1]][3])),
+             max=sapply(lambdas, FUN=function(x) as.numeric(strsplit(x, ',')[[1]][4])),
+             row.names=1:length(lambdas))
+}
+## NEED FUNCTION TO PULL OUT ONLY NON-REDUNDANT NON-ZERO PREDS (MADE IT FOR PETE)
+mxNonzeroPreds <- function(mx) {
+  x <- lambdasDF(mx)
+  which(x$coef != 0)  # return which predictor values do not have coefficient of zero
 }

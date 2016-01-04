@@ -862,14 +862,38 @@ shinyServer(function(input, output, session) {
   )
 
   # generates user selection of rasters to plot dynamically after they are created
-  output$predSel <- renderUI({
+  output$predictionSel1 <- renderUI({
     if (is.null(values$evalPreds)) return()
     n <- names(values$evalPreds)
     predNameList <- setNames(as.list(seq(1, length(n))), n)
     values$rdyPlot <- 'rdy'
-    selectInput("predSelServer", label = "Choose a model",
+    selectInput("predictionSel1", label = "Choose a model",
                 choices = predNameList)
   })
+  
+  # copy of above for response curve model selection
+  output$predictionSel2 <- renderUI({
+    if (is.null(values$evalPreds)) return()
+    n <- names(values$evalPreds)
+    predNameList <- setNames(as.list(n), n)
+    selectInput("predictionSel2", label = "Choose a model",
+                choices = predNameList, selected = predNameList[[1]])
+  })
+  
+  # generates list of predictor variables with non-zero coeffs for currently selected model
+  output$respCurvSel <- renderUI({
+    if (is.null(values$evalPreds)) return()
+    values$curMod <- values$evalMods[[which(as.character(values$evalTbl[, 1]) == input$predictionSel2)]]
+    nonZeroPreds <- mxNonzeroPreds(values$curMod)
+    nonZeroPredNames <- names(values$predsMsk[[nonZeroPreds]])
+    predVarNameList <- setNames(as.list(nonZeroPredNames), nonZeroPredNames)
+    values$rdyRespCurv <- 'rdy'
+    selectInput("predVarSel", label = "Choose a predictor variable",
+                choices = predVarNameList, selected = predVarNameList[[1]])
+  })
+  
+  observe(print(paste("predictionSel2:", input$predictionSel2)))
+  observe(print(values$evalTbl[,1]))
 
   #########################
   ### STEP 7 FUNCTIONALITY
@@ -878,8 +902,8 @@ shinyServer(function(input, output, session) {
   # set predCur based on user selection of threshold
   observeEvent(input$plotPred, {
     proxy %>% removeImage('r1')  # remove current raster
-    selRasRaw <- values$evalPreds[[as.numeric(input$predSelServer)]]
-    selRasLog <- values$evalPredsLog[[as.numeric(input$predSelServer)]]
+    selRasRaw <- values$evalPreds[[as.numeric(input$predictionSel1)]]
+    selRasLog <- values$evalPredsLog[[as.numeric(input$predictionSel1)]]
     if (input$predForm == 'raw' | is.null(selRasLog)) {
       selRas <- selRasRaw
       rasVals <- getValues(selRas)
@@ -890,10 +914,10 @@ shinyServer(function(input, output, session) {
     rasVals <- rasVals[!is.na(rasVals)]
 
     if (input$predThresh == 'mtp') {
-      mtp <- values$mtps[as.numeric(input$predSelServer)]
+      mtp <- values$mtps[as.numeric(input$predictionSel1)]
       values$predCur <- selRasRaw > mtp
     } else if (input$predThresh == 'p10') {
-      p10 <- values$p10s[as.numeric(input$predSelServer)]
+      p10 <- values$p10s[as.numeric(input$predictionSel1)]
       values$predCur <- selRasRaw > p10
     } else {
       values$predCur <- selRas
@@ -916,7 +940,14 @@ shinyServer(function(input, output, session) {
       proxy %>% addRasterImage(values$predCur, colors = pal, opacity = 0.7, layerId = 'r1')
     }
   })
-
+  
+  observe({
+    if (is.null(input$visSelect)) return()
+    if (input$visSelect != 'response') return()
+    if (is.null(values$curMod)) return()
+    output$respCurv <- renderPlot(response(values$curMod, var = input$predictionSel2))
+  })
+  
   # handle download for rasters, with file type as user choice
   output$downloadPred <- downloadHandler(
     filename = function() {
@@ -963,6 +994,7 @@ shinyServer(function(input, output, session) {
       
       # if (input$mdType == 'Rmd') {
         # out <- render_markdown('userReport2.Rmd')
+        # FIND AND REPLACE ALL ``` r with ``` {r} ???
       # } else {
         out <- rmarkdown::render('userReport2.Rmd', switch(
           input$mdType,
