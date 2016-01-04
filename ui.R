@@ -394,7 +394,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                                         includeMarkdown("www/tab7_pred.Rmd")
                                                                        ),
                                                                        HTML('<hr>'),
-                                                                       uiOutput("predSel"),
+                                                                       uiOutput("predictionSel1"),
                                                                        conditionalPanel("input.modSelect == 'Maxent'",
                                                                                         selectInput('predForm', label = "Prediction output",
                                                                                                     choices = list("raw" = 'raw', "logistic" = 'log'),
@@ -411,6 +411,10 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                                                   "PNG" = "png")),
                                                                        downloadButton('downloadPred', "Download Displayed Prediction"),
                                                                        HTML('<hr>')
+                                                      ),
+                                                      conditionalPanel("input.visSelect == 'response'",
+                                                                       uiOutput("predictionSel2"),
+                                                                       uiOutput("respCurvSel")
                                                       ),
                                                       conditionalPanel("input.visSelect == 'bcEnvel'",
                                                                        numericInput("bc1", "Axis 1", value = 1, min = 1, max = 19),
@@ -481,6 +485,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                   conditionalPanel("input.tabs != 0 && input.tabs != 6 && input.tabs != 7 && 
                                                    input.tabs != 8 && input.tabs != 9", DT::dataTableOutput('occTbl')),
                                   conditionalPanel("input.tabs == 6", dataTableOutput('evalTbl')),
+                                  conditionalPanel("input.tabs == 7 && input.visSelect == 'response'", imageOutput('respCurv')),
                                   conditionalPanel("input.tabs == 7 && input.visSelect == 'bcEnvel'", imageOutput('bcEnvelPlot')),
                                   conditionalPanel("input.tabs == 7 && input.visSelect == 'mxEval'", imageOutput('mxEvalPlot')),
                                   conditionalPanel("input.tabs == 8",
