@@ -45,18 +45,18 @@ drawPoly <- !is.null(values$ptSeln)
 thin <- input$goThin != 0
 yesPreds <- input$pred != ""
 backg <- !is.null(input$backgSelect)
-isBB <- input$backgSelect == 'bb'
-isMCP <- input$backgSelect == 'mcp'
-isUserBG <- input$backgSelect == 'user'
+isBB <- if (!is.null(input$backgSelect)) input$backgSelect == 'bb' else FALSE
+isMCP <- if (!is.null(input$backgSelect)) input$backgSelect == 'mcp' else FALSE
+isUserBG <- if (!is.null(input$backgSelect)) input$backgSelect == 'user' else FALSE
 part <- input$goPart != 0
-isBlock <- input$partSelect2 == 'block'
-isCB1 <- input$partSelect2 == 'cb1'
-isCB2 <- input$partSelect2 == 'cb2'
-isJack <- input$partSelect2 == 'jack'
-isRandom <- input$partSelect2 == 'random'
+isBlock <- if (!is.null(input$partSelect2)) input$partSelect2 == 'block' else FALSE
+isCB1 <- if (!is.null(input$partSelect2)) input$partSelect2 == 'cb1' else FALSE
+isCB2 <- if (!is.null(input$partSelect2)) input$partSelect2 == 'cb2' else FALSE
+isJack <- if (!is.null(input$partSelect2)) input$partSelect2 == 'jack' else FALSE
+isRandom <- if (!is.null(input$partSelect2)) input$partSelect2 == 'random' else FALSE
 model <- input$goEval != 0
-isBC <- input$modSelect == 'BIOCLIM'
-isMX <- input$modSelect == 'Maxent'
+isBC <- if (!is.null(input$modSelect)) input$modSelect == 'BIOCLIM' else FALSE
+isMX <- if (!is.null(input$modSelect)) input$modSelect == 'Maxent' else FALSE
 ```
 
 Record of analysis for *`r makeCap(values$spname)`*.
