@@ -992,15 +992,16 @@ shinyServer(function(input, output, session) {
                          modSel=input$modSelect, rmsSel1=input$rms[1], rmsSel2=input$rms[2], rmsBy=input$rmsBy, fcsSel=printVecAsis(input$fcs))
       writeLines(exp, 'userReport2.Rmd')
       
-      # if (input$mdType == 'Rmd') {
-        # out <- render_markdown('userReport2.Rmd')
-        # FIND AND REPLACE ALL ``` r with ``` {r} ???
-      # } else {
+      if (input$mdType == 'Rmd') {
+        out <- render('userReport2.Rmd', md_document(variant="markdown_github"))
+        writeLines(gsub('``` r', '```{r}', readLines(out)), 'userReport3.Rmd')
+        out <- 'userReport3.Rmd'
+      } else {
         out <- rmarkdown::render('userReport2.Rmd', switch(
           input$mdType,
-          PDF = pdf_document(), HTML = html_document(), Word = word_document(), Rmd = md_document(variant="markdown_github")
+          PDF = pdf_document(), HTML = html_document(), Word = word_document()
         ))
-      # }
+      }
       file.rename(out, file)
     }
   )
