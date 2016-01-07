@@ -885,9 +885,10 @@ shinyServer(function(input, output, session) {
     values$curMod <- values$evalMods[[which(as.character(values$evalTbl[, 1]) == input$predictionSel2)]]
     nonZeroPreds <- mxNonzeroPreds(values$curMod)  # need function from pete's ms
     nonZeroPredNames <- names(values$predsMsk[[nonZeroPreds]])
+    nonZeroPredNames <- nonZeroPredNames[order(as.integer(sub('bio', '', nonZeroPredNames)))]  # order by name
     predVarNameList <- setNames(as.list(nonZeroPredNames), nonZeroPredNames)
-    selectInput("predVarSel", label = "Choose a predictor variable",
-                choices = predVarNameList, selected = predVarNameList[[1]])
+    radioButtons("predVarSel", "Choose a predictor variable:",
+                 choices = predVarNameList, selected = predVarNameList[[1]])
   })
   
   # output$respCurv <- renderPlot(respCurv(values$curMod, values$predsMsk, input$predVarSel))
