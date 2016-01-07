@@ -866,7 +866,6 @@ shinyServer(function(input, output, session) {
     if (is.null(values$evalPreds)) return()
     n <- names(values$evalPreds)
     predNameList <- setNames(as.list(seq(1, length(n))), n)
-    values$rdyPlot <- 'rdy'
     selectInput("predictionSel1", label = "Choose a model",
                 choices = predNameList)
   })
@@ -881,20 +880,27 @@ shinyServer(function(input, output, session) {
   })
   
   # generates list of predictor variables with non-zero coeffs for currently selected model
-  output$respCurvSel <- renderUI({
+  output$predVarSel <- renderUI({
     if (is.null(values$evalPreds)) return()
     values$curMod <- values$evalMods[[which(as.character(values$evalTbl[, 1]) == input$predictionSel2)]]
-    nonZeroPreds <- mxNonzeroPreds(values$curMod)
+    nonZeroPreds <- mxNonzeroPreds(values$curMod)  # need function from pete's ms
     nonZeroPredNames <- names(values$predsMsk[[nonZeroPreds]])
     predVarNameList <- setNames(as.list(nonZeroPredNames), nonZeroPredNames)
-    values$rdyRespCurv <- 'rdy'
     selectInput("predVarSel", label = "Choose a predictor variable",
                 choices = predVarNameList, selected = predVarNameList[[1]])
   })
   
-  observe(print(paste("predictionSel2:", input$predictionSel2)))
-  observe(print(values$evalTbl[,1]))
-
+  # output$respCurv <- renderPlot(respCurv(values$curMod, values$predsMsk, input$predVarSel))
+  
+  # observe(print(values$predsMsk[[input$predVarSel]]))
+  
+  observe({
+    if (is.null(input$visSelect)) return()
+    if (input$visSelect != 'response') return()
+    if (is.null(values$curMod)) return()
+    output$respCurv <- renderPlot(response(values$curMod, var = input$predVarSel))
+  })
+  
   #########################
   ### STEP 7 FUNCTIONALITY
   #########################
@@ -939,13 +945,6 @@ shinyServer(function(input, output, session) {
 
       proxy %>% addRasterImage(values$predCur, colors = pal, opacity = 0.7, layerId = 'r1')
     }
-  })
-  
-  observe({
-    if (is.null(input$visSelect)) return()
-    if (input$visSelect != 'response') return()
-    if (is.null(values$curMod)) return()
-    output$respCurv <- renderPlot(response(values$curMod, var = input$predictionSel2))
   })
   
   # handle download for rasters, with file type as user choice
