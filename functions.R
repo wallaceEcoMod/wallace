@@ -204,8 +204,27 @@ lambdasDF <- function(mx) {
              max=sapply(lambdas, FUN=function(x) as.numeric(strsplit(x, ',')[[1]][4])),
              row.names=1:length(lambdas))
 }
-## NEED FUNCTION TO PULL OUT ONLY NON-REDUNDANT NON-ZERO PREDS (MADE IT FOR PETE)
+## pulls out all non-zero, non-redundant (removes hinge/product/threshold) predictor names
 mxNonzeroPreds <- function(mx) {
   x <- lambdasDF(mx)
-  which(x$coef != 0)  # return which predictor values do not have coefficient of zero
+  #remove any rows that have a zero lambdas value (Second column)
+  x <- x[(x[,2] != 0),]
+  #remove any rows that have duplicate "var"s (hinges, quadratics)
+  x <- unique(sub("\\^\\S*", "", x[,1]))
+  x <- unique(sub("\\`", "", x))
+  x <- unique(sub("\\'", "", x))
+  x <- unique(sub("\\=\\S*", "", x))
+  x <- unique(sub("\\(", "", x))
+}
+
+respCurv <- function(mod, vars, i) {
+  vals <- mod@presence[, i]
+  varsAvgs <- cellStats(vars, mean)
+  varsAvgsDF <- data.frame(sapply(as.list(varsAvgs), function(x) rep(x, length(vals))))  # df of raster means with row no. = no. of vals
+  varsAvgsDF[, i] <- vals
+  varSeq <- range(vars[[i]]@data@min, vars[[i]]@data@max)
+  pred <- predict(mod, varsAvgsDF)
+  plot(x = vals, y = pred, xlim = range(vals), ylim = 0:1, lwd = 2, col = 'red', type='l', ylab = 'predicted value', xlab = names(vars[[i]]))
+  #points(x = vals, y = pred, lwd = 2)
+  #graphics::text(x = vals, y = pred, labels = row.names(mod@presence), pos = 3, offset = 1)
 }
