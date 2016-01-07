@@ -62,10 +62,10 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                                         includeMarkdown("www/tab1_gbif.Rmd")
                                                                        ),
                                                                        HTML('<hr>'),
-                                                                       textInput("gbifName", label = "Enter scientific name of species (format: genus species)", value = 'tremarctos ornatus'),
+                                                                       textInput("gbifName", label = "Enter scientific name of species (format: genus species)", value = 'heteromys anomalus'),
                                                                        actionButton("goName", "Search GBIF"),
                                                                        br(), br(),
-                                                                       sliderInput("occurrences", "Maximum number of occurrences:", min = 1, max = 500, value = 20),
+                                                                       sliderInput("occurrences", "Maximum number of occurrences:", min = 1, max = 500, value = 12),
 #                                                                        br(),
 #                                                                        uiOutput('gbifDnld'),
                                                                        downloadButton('downloadGBIFcsv', "Download Occurrence CSV"),
@@ -94,7 +94,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                    choices = list("Select Localities" = 'selpts',
                                                                                   "Spatial Thin" = 'spthin',
                                                                                   "Environmental Thin (not functional)"),
-                                                                   selected = ''),
+                                                                   selected = 'selpts'),
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.procOccSelect == 'selpts'",
                                                                        checkboxInput('togMD2A', "Hide / Display Guidance Text", value = FALSE),
@@ -214,7 +214,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                        HTML('<hr>'),
                                                                        radioButtons("backgSelect", "Background Extents:",
                                                                                     choices = list("Bounding box" = 'bb', "Minimum convex polygon" = 'mcp',
-                                                                                                   "User-specified polygon" = 'user'), selected = "")
+                                                                                                   "User-specified polygon" = 'user'), selected = "bb")
                                                       ),
                                                       conditionalPanel("input.backgSelect == 'user'",
                                                                        #  shinyFilesButton('userBackg', label='Upload Shapefile', title='Please select a file', multiple=TRUE)),
@@ -255,7 +255,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                    choices = list("Non-spatial Partition" = 'nsp',
                                                                                   "Spatial Partition" = 'sp',
                                                                                   "User-specified (not functional)"),
-                                                                   selected = ''),
+                                                                   selected = 'sp'),
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.partSelect == 'sp'",
                                                                        div('Module: Spatial Partition', id="mod")),
@@ -311,7 +311,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                       radioButtons("modSelect", "Modules Available:",
                                                                    choices = list("BIOCLIM", "Maxent", "GAM (not functional)",
                                                                                   "Boosted Regression Trees (not functional)"),
-                                                                   selected = ''),
+                                                                   selected = 'Maxent'),
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.modSelect == 'Maxent'",
                                                                        div('Module: Maxent', id="mod")),
@@ -414,7 +414,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                       ),
                                                       conditionalPanel("input.visSelect == 'response'",
                                                                        uiOutput("predictionSel2"),
-                                                                       uiOutput("respCurvSel")
+                                                                       uiOutput("predVarSel")
                                                       ),
                                                       conditionalPanel("input.visSelect == 'bcEnvel'",
                                                                        numericInput("bc1", "Axis 1", value = 1, min = 1, max = 19),
