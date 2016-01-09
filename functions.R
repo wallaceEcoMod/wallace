@@ -217,14 +217,25 @@ mxNonzeroPreds <- function(mx) {
   x <- unique(sub("\\(", "", x))
 }
 
-respCurv <- function(mod, vars, i) {
-  vals <- mod@presence[, i]
-  varsAvgs <- cellStats(vars, mean)
-  varsAvgsDF <- data.frame(sapply(as.list(varsAvgs), function(x) rep(x, length(vals))))  # df of raster means with row no. = no. of vals
-  varsAvgsDF[, i] <- vals
-  varSeq <- range(vars[[i]]@data@min, vars[[i]]@data@max)
-  pred <- predict(mod, varsAvgsDF)
-  plot(x = vals, y = pred, xlim = range(vals), ylim = 0:1, lwd = 2, col = 'red', type='l', ylab = 'predicted value', xlab = names(vars[[i]]))
-  #points(x = vals, y = pred, lwd = 2)
-  #graphics::text(x = vals, y = pred, labels = row.names(mod@presence), pos = 3, offset = 1)
+respCurv <- function(mod, i) {
+  v <- rbind(mod@presence, mod@absence)
+  v.nr <- nrow(v)
+  vi <- v[, i]
+  vi.r <- range(vi)
+  expand <- 10
+  xlm <- 25
+  vi.rx <- seq(vi.r[1]-expand, vi.r[2]+expand, length.out=xlm)
+  mm <- v[rep(1:v.nr, xlm), ]
+  mm[, i] <- rep(vi.rx, v.nr)
+  mm[, -i] <- rep(colMeans(mm[,-i]), each=nrow(mm))
+  p <- predict(mod, mm)
+  plot(cbind(vi.rx, p[1:xlm]), type='l', ylim=0:1, col = 'red', lwd = 2,
+       ylab = 'predicted value', xlab = names(v)[i])
+  pres.r <- range(mod@presence[, i])
+  abline(v = pres.r[1], col='blue')  # vertical blue lines indicate min and max of presence vals
+  abline(v = pres.r[2], col='blue')
+  abs.r <- range(mod@absence[, i])
+  abline(v = abs.r[1], col='green') # vertical green lines indicate min and max of background vals
+  abline(v = abs.r[2], col='green')
+    #graphics::text(x = vals, y = pred, labels = row.names(mod@presence), pos = 3, offset = 1)
 }
