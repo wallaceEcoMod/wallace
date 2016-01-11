@@ -27,6 +27,20 @@ library(rmarkdown)
 
 source("functions.R")
 
+# make list to carry data used by multiple reactive functions
+values <- reactiveValues(polyID=0, polyErase=FALSE, log=c())
+
+# add text to log
+writeLog <- function(x) {
+  values$log <- paste(values$log, x, sep='<br>')
+}
+## functions for text formatting in userReport.Rmd
+makeCap <- function(x) paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)))
+getGBIFname <- function() deparse(substitute(input$gbifName))
+printVecAsis <- function(x) {
+  ifelse(length(x) == 1, x, 
+         ifelse(is.character(x), paste0("c(", paste(sapply(x, function(a) paste0("\'",a,"\'")), collapse=", "), ")"),
+                paste0("c(", paste(x, collapse=", "), ")")))}
 
 #devtools::install_github("jcheng5/rasterfaster")
 
@@ -40,28 +54,18 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("downloadEvalcsv")
   shinyjs::disable("downloadEvalPlots")
   shinyjs::disable("downloadPred")
-
+  
+  # load modules
+  for (f in list.files('./modules')) {
+    source(file.path('modules', f), local=TRUE)
+  }
+  
   #########################
   ### INITIALIZE
   #########################
-  
-  ## functions for text formatting in userReport.Rmd
-  makeCap <- function(x) paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)))
-  getGBIFname <- function() deparse(substitute(input$gbifName))
-  printVecAsis <- function(x) {
-    ifelse(length(x) == 1, x, 
-           ifelse(is.character(x), paste0("c(", paste(sapply(x, function(a) paste0("\'",a,"\'")), collapse=", "), ")"),
-                  paste0("c(", paste(x, collapse=", "), ")")))}
            
-  # make list to carry data used by multiple reactive functions
-  values <- reactiveValues(polyID=0, polyErase=FALSE, log=c())
-
   output$log <- renderUI({tags$div(id='logHeader',
                                    tags$div(id='logContent', HTML(paste0(values$log, "<br>", collapse = ""))))})
-  # add text to log
-  writeLog <- function(x) {
-    values$log <- paste(values$log, x, sep='<br>')
-  }
 
   # create map
   map <- leaflet() %>% addTiles() %>% setView(0, 0, zoom = 2)
@@ -74,110 +78,17 @@ shinyServer(function(input, output, session) {
   ### STEP 1 FUNCTIONALITY
   #########################
 
-  # query GBIF based on user input, remove duplicate records
+  # module GBIF
   observeEvent(input$goName, {
     if (input$gbifName == "") return()
-
-    writeLog("...Searching GBIF...")
-    values$spname <- input$gbifName  # record species name
-    results <- occ_search(scientificName = input$gbifName, limit = input$occurrences,
-                          hasCoordinate = TRUE)
-
-## I don't think we need this anymore... gbifOrig only appears in csvDownload, which is
-## is not necessary for user Rmd
-#     sinkRmd(
-#       values$gbifOrig <- results,
-#       "Rename the results (Wallace internal needs):")
-
-    # Control species not found
-    if (results$meta$count == 0) {
-      writeLog(paste('* No records found for ', input$gbifName, ". Please check the spelling."))
-    }
-
-    if (results$meta$count != 0) {
-      cols <- c('name','decimalLongitude','decimalLatitude',
-                'institutionCode','country', 'stateProvince',
-                'locality', 'elevation', 'basisOfRecord')
-      results <- fixcols(cols, results)
-      locs.in <- results$data[!is.na(results$data[,3]),][,cols]
-      locs <- remDups(locs.in)
-      names(locs)[1:3] <- c('species','longitude', 'latitude')
-      locs$origID <- row.names(locs)
-      locs$pop <- unlist(apply(locs, 1, popUpContent))
-      # add locs to values list and copy
-      values$gbifoccs <- locs
-      values$gbifoccs <- remDups(values$gbifoccs)
-      values$df <- values$gbifoccs
-#       sinkFalse(paste0("map(interior = FALSE)\n",
-#                       "points(df$lon, df$lat, col = 'red', bg = 'blue', pch = 21, cex = 1)"),
-#                 "Plot the occurrence data:")
-
-
-      inName <- isolate(input$gbifName)
-      nameSplit <- length(unlist(strsplit(inName, " ")))
-
-      if (nameSplit == 1 && !is.null(locs)) {
-        x <- paste("* Please input both genus and species names. More than one species with this genus was found.")
-      } else {if (nameSplit == 1 && is.null(locs)) {
-        x <- paste("* Please input both genus and species names.")
-      } else {if (nameSplit != 1 && is.null(locs)) {
-        x <- paste0('* No records found for ', inName, ". Please check the spelling.")
-      } else {if (nameSplit != 1 && !is.null(locs)) {
-        x <- paste('* Total GBIF records for', values$gbifoccs[1,1], 'returned [', nrow(locs.in),
-                   '] out of [', results$meta$count, '] total (limit 500).
-                   Duplicated records removed [', nrow(locs.in) - nrow(locs), "]: Remaining records [", nrow(locs), "].")
-      }}}}
-      writeLog(x)
-      shinyjs::enable("downloadGBIFcsv")
-
-#       output$gbifDnld <- renderUI({
-#         downloadButton('downloadGBIFcsv', "Download Occurrence CSV")
-#       })
-    }
+    comp1_gbifOcc(input$gbifName, input$gbifNum)
+    shinyjs::enable("downloadGBIFcsv")
   })
 
-  # functionality for input of user CSV
+  # module userOccs
   observe({
     if (is.null(input$userCSV)) return()  # exit if userCSV not specifed
-    inFile <- read.csv(input$userCSV$datapath, header = TRUE)  # read user csv
-    if (all(names(inFile) %in% c('species', 'longitude', 'latitude'))) {  # throw error if these columns are not included
-      writeLog('* ERROR: Please input CSV file with columns "species", "longitude", "latitude".')
-      return()
-    }
-    values$inFile <- inFile  # store original table in values list
-    
-#     # IN DEV: make dynamic field selections for ui user-defined kfold groups
-#     output$occgrpSel <- renderUI({
-#       selectInput('occgrp', 'Occurrence Group Field', names(inFile))
-#     })
-#     output$bggrpSel <- renderUI({
-#       selectInput('bggrp', 'Background Group Field', names(inFile))
-#     })
-    
-    # subset to only occs, not backg, and just fields that match df
-    values$spname <- inFile[1,1]  # get species name
-    inFile.occs <- inFile[inFile[,1] == values$spname,]  # limit to records with this name
-    for (col in c("institutionCode", "country", "stateProvince", 
-                  "locality", "elevation", "basisOfRecord")) {  # add all cols to match gbifoccs if not already there
-      if (!(col %in% names(inFile.occs))) inFile.occs[,col] <- NA
-    }
-    
-    inFile.occs$origID <- row.names(inFile.occs)  # add col for IDs
-    inFile.occs$pop <- unlist(apply(inFile.occs, 1, popUpContent))  # add col for map marker popup text
-
-    # add user locs to existing gbifoccs and df, and remove duplicate records
-    values$gbifoccs <- isolate({
-      values$gbifoccs <- rbind(values$gbifoccs, inFile.occs)
-      values$gbifoccs <- remDups(values$gbifoccs)
-    })
-    values$df <- isolate({
-      values$df <- rbind(values$df, inFile.occs)
-      values$df <- remDups(values$df)
-    })
-    isolate(writeLog("* User-specified CSV input."))
-    # this makes an infinite loop. not sure why...
-    #     x <- paste0("User input ", input$userCSV$name, " with [", nrow(values$df), "[ records.")
-    #     values$log <- paste(values$log, x, sep='<br>')
+    comp1_mod_userOcc(input$userCSV$datapath)
   })
   
   # render the GBIF records data table
@@ -210,7 +121,8 @@ shinyServer(function(input, output, session) {
     proxy %>% clearShapes()
     lati <- values$gbifoccs[,3]
     longi <- values$gbifoccs[,2]
-    proxy %>% fitBounds(min(longi), min(lati), max(longi), max(lati))
+    z <- smartZoom(longi, lati)
+    proxy %>% fitBounds(z[1], z[2], z[3], z[4])
 
     # this section makes letter icons for occs based on basisOfRecord
     #     occIcons <- makeOccIcons()
@@ -226,26 +138,9 @@ shinyServer(function(input, output, session) {
   # governs point removal behavior and modifies tables in "values"
   observeEvent(input$remove, {
     if (!is.null(values$ptsSel)) {
-      writeLog('NOTICE: Remove localities by ID before selecting with polygons. Press
-               "Reset Localities" to start over.')
+      writeLog('NOTICE: Remove localities by ID before selecting with polygons. Press "Reset Localities" to start over.')
       return()}
-
-    isolate({
-      numTest <- input$remLoc %in% row.names(values$df)
-      rows <- as.numeric(rownames(values$df))  # get row names
-      remo <- which(input$remLoc == rows)  # find which row name corresponds to user selection for removal
-      # Remove the offending row
-      if (length(remo) > 0) {
-        values$removed <- values$df[remo, ]
-        values$removedAll <- c(values$removedAll, rownames(values$removed))  # keep vector of all removed pts
-        values$df <- values$df[-remo, ]
-        values$gbifoccs <- values$gbifoccs[-remo, ]
-      }
-
-      if (numTest) {
-        writeLog(paste0("* Removed locality with ID = ", input$remLoc, "."))
-      }
-    })
+    comp2_selLocMap_remLocs(input$remLoc)
   })
 
   # functionality for drawing polygons on map
@@ -284,32 +179,13 @@ shinyServer(function(input, output, session) {
     }
     lati <- values$df[,3]
     longi <- values$df[,2]
-    proxy %>% fitBounds(min(longi-1), min(lati-1), max(longi+1), max(lati+1))
+    z <- smartZoom(longi, lati)
+    proxy %>% fitBounds(z[1], z[2], z[3], z[4])
   })
 
   # select points intersecting drawn polygons (replace values$df)
   observeEvent(input$selectPoly, {
-    values$prethinned <- NULL  # resets prethinned to avoid it plotting if sequence is: select pts -> spThin -> select pts -> spThin
-    values$polyErase <- TRUE  # turn on to signal to prevent the use of an existing map click
-    values$polyID <- values$polyID + 1
-    if (is.null(values$gbifoccs)) return()
-    if (is.null(values$drawPolyCoords)) return()
-    pts <- SpatialPoints(values$gbifoccs[,2:3])
-    newPoly <- SpatialPolygons(list(Polygons(list(Polygon(values$drawPolyCoords)), ID=values$polyID)))
-    if (is.null(values$drawPolys)) {
-      values$drawPolys <- newPoly
-    } else {
-      values$drawPolys <- spRbind(values$drawPolys, newPoly)
-    }
-    values$ptSeln <- as.numeric(which(!(is.na(over(pts, values$drawPolys)))))  # selected locs with polygon
-
-    # Subset with selected locs
-    ptsSel <- values$gbifoccs[values$ptSeln, ]
-    values$df <- ptsSel
-
-    values$drawPolyCoords <- NULL
-    values$ptsSel <- ptsSel
-    isolate(writeLog(paste('* Selected', nrow(values$df), 'localities.')))
+    comp2_selLocMap_selIntLocs()
   })
 
   # behavior for plotting points and their colors based on which tab is active
@@ -375,7 +251,8 @@ shinyServer(function(input, output, session) {
         proxy %>% clearImages()
         lati <- values$df[,3]
         longi <- values$df[,2]
-        proxy %>% fitBounds(min(longi-1), min(lati-1), max(longi+1), max(lati+1))
+        z <- smartZoom(longi, lati)
+        proxy %>% fitBounds(z[1], z[2], z[3], z[4])
         proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
                                    radius = 5, color = 'red',
                                    fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
@@ -383,7 +260,9 @@ shinyServer(function(input, output, session) {
           values$drawPolys <- NULL
           lati <- values$prethinned[,3]
           longi <- values$prethinned[,2]
-          proxy %>% fitBounds(min(longi-1), min(lati-1), max(longi+1), max(lati+1))
+          
+          z <- smartZoom(longi, lati)
+          proxy %>% fitBounds(z[1], z[2], z[3], z[4])
           proxy %>% addCircleMarkers(data = values$prethinned, lat = ~latitude, lng = ~longitude,
                                      radius = 5, color = 'red', fillOpacity = 1,
                                      fill = TRUE, fillColor = 'blue', weight = 2, popup = ~pop)
@@ -432,37 +311,10 @@ shinyServer(function(input, output, session) {
   ### STEP 2 FUNCTIONALITY
   #########################
 
-  # map thinned records when Thin button is pressed
+  # module Spatial Thin
   observeEvent(input$goThin, {
-    # warnings
-    if (is.null(values$df)) {
-      writeLog("* WARNING: Obtain species occurrence localities first in Step 1.")
-      return()
-    }
-    if (input$thinDist <= 0) {
-      writeLog("* WARNING: Assign positive distance to thinning parameter.")
-      return()
-    }
-    withProgress(message = "Spatially Thinning Localities...", {  # start progress bar
-      output <- thin(values$df, 'latitude', 'longitude', 'species', thin.par = input$thinDist,
-                     reps = 100, locs.thinned.list.return = TRUE, write.files = FALSE,
-                     verbose = FALSE)
-      values$prethinned <- values$df
-      # pull thinned dataset with max records, not just the first in the list
-      maxThin <- which(sapply(output, nrow) == max(sapply(output, nrow)))
-      maxThin <- output[[ifelse(length(maxThin) > 1, maxThin[1], maxThin)]]  # if more than one max, pick first
-      values$df <- values$df[as.numeric(rownames(maxThin)),]
-      if (!is.null(values$inFile)) {
-        thinned.inFile <- values$inFile[as.numeric(rownames(output[[1]])),]
-      }
-    })
-    writeLog(paste('* Total records thinned to [', nrow(values$df), '] localities.'))
-    # render the thinned records data table
-    output$occTbl <- DT::renderDataTable({DT::datatable(values$df[,1:4])})
+    comp2_spThin(input$thinDist)
     shinyjs::enable("downloadThincsv")
-#     output$thinDnld <- renderUI({
-#       downloadButton('downloadThincsv', "Download Thinned Occurrence CSV")
-#     })
   })
 
   # handle download for thinned records csv
@@ -477,55 +329,14 @@ shinyServer(function(input, output, session) {
   ### STEP 3 FUNCTIONALITY
   #########################
   
-  observe({if (input$pred != "") shinyjs::enable("predDnld")})
+  observe({if (input$bcRes != "") shinyjs::enable("predDnld")})
 
-  # download predictor variables
+  # module WorldClim
   observeEvent(input$predDnld, {
     if (!is.null(values$df)) {
-#       sinkFalse(paste0("map(interior = FALSE)\n",
-#                        "points(df$lon, df$lat, col = 'red', bg = 'blue', pch = 21, cex = 1)"),
-#                 "Plot the occurrence data after occurrences processing:")
-      ## Check if predictor path exists. If not, use the dismo function getData()
-      withProgress(message = "Downloading WorldClim data...", {
-        values$preds <- getData(name = "worldclim", var = "bio", res = input$pred)
-      })
-      proxy %>% addLegend("topleft", colors = c(),
-                          title = "Predictors: WorldClim bio 1-19", labels = c(),
-                          opacity = 1, layerId = 2)
-      isolate(writeLog(paste("* Environmental predictors: WorldClim bio1-19 at", input$pred, " arcmin resolution.")))
-      withProgress(message = "Processing...", {
-        locs.vals <- extract(values$preds[[1]], values$df[,2:3])
-
-        if (sum(is.na(locs.vals)) > 0) {
-          isolate(writeLog(paste0("* Removed records without environmental values with IDs: ",
-                                  paste(row.names(values$df[is.na(locs.vals),]), collapse=', '), ".")))
-        }
-        values$df <- values$df[!is.na(locs.vals),]  # remove locs without environmental values
-
-        if (!is.null(values$inFile)) {
-          values$inFile <- values$inFile[!is.na(locs.vals), ]
-        }
-      })
+      comp3_bioclim(input$bcRes)
     }
   })
-
-  #   # functionality for downloading .asc files from dropbox
-  #   observeEvent(input$dbAscGet, {
-  #     dbAsc <- source_DropboxData(input$dbAscFname, input$dbAscKey)
-  #     dims <- strsplit(input$dbAscDims, split=',')[[1]]
-  #     dbRas <- raster(dbAsc, crs=input$dbAscCRS, xmn=dims[1], xmx=dims[2],
-  #                     ymn=dims[3], ymx=dims[4])
-  #   })
-
-  # this is necessary because the above is not observeEvent, and thus for some
-  # reason when values$log is modified within observe, there's an infinite loop
-  observe({
-    if (!is.null(values$predTxt)) {
-      writeLog(values$predTxt)
-      values$predTxt <- NULL
-    }
-  })
-
 
   # future user input functionality for rasters
   #   output$predTxt2 <- renderUI({
@@ -541,99 +352,22 @@ shinyServer(function(input, output, session) {
   ### STEP 4 FUNCTIONALITY
   #########################
   
-  # background extents
+  # module Select Study Region - set buffer, extent shape
   observe({
-    if (is.null(input$backgSelect) | is.null(values$preds) | is.null(input$backgBuf)| is.na(input$backgBuf)) return()
-    if (nrow(values$df) <= 2) {
-      isolate(writeLog("ERROR: Too few localities (<2) to create a background polygon."))
-      return()
-    }
-    # generate background extent
-    if (input$backgSelect == 'bb') {
-      xmin <- min(values$df$longitude) - (input$backgBuf + res(values$preds)[1])
-      xmax <- max(values$df$longitude) + (input$backgBuf + res(values$preds)[1])
-      ymin <- min(values$df$latitude) - (input$backgBuf + res(values$preds)[1])
-      ymax <- max(values$df$latitude) + (input$backgBuf + res(values$preds)[1])
-      bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin), ncol=2)
-      values$backgExt <- SpatialPolygons(list(Polygons(list(Polygon(bb)), 1)))
-      values$bbTxt <- 'bounding box'
-    } else if (input$backgSelect == 'mcp') {
-      xy_mcp <- mcp(values$df[,2:3])
-      xy_mcp <- gBuffer(xy_mcp, width = input$backgBuf + res(values$preds)[1])
-      values$backgExt <- xy_mcp
-      bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
-      values$bbTxt <- 'minimum convex polygon'
-    } else if (input$backgSelect == 'user') {
-      if (is.null(input$userBackg)) return()
-      #       file <- shinyFileChoose(input, 'userBackg', root=c(root='.'))
-      #       path <- input$userBackg$datapath
-      
-      names <- input$userBackg$name
-      inPath <- input$userBackg$datapath
-      pathdir <- dirname(inPath)
-      pathfile <- basename(inPath)
-      # get extensions of all input files
-      exts <- sapply(strsplit(names, '\\.'), FUN=function(x) x[2])
-
-      if (exts == 'csv') {
-        shp <- read.csv(inPath, header = TRUE)
-
-        shp <- SpatialPolygons(list(Polygons(list(Polygon(shp)), 1)))
-        shp <- gBuffer(shp, width = input$backgBuf + res(values$preds)[1])
-        values$backgExt <- shp
-        bb <- shp@polygons[[1]]@Polygons[[1]]@coords
-      } else {
-        isolate(writeLog("* WARNING: Please enter a CSV file of vertex coordinates for user-specified polygon."))
-        return()
-      }
-
-#       } else if (exts == 'shp') {
-#         # rename temp files to their original names - nice hack for inputting shapefiles in shiny
-#         sinkRmdob(input$backgBuf, "Define the buffer size of the study extent:")
-#
-#         sinkRmdmult(c(
-#           file.rename(inPath, file.path(pathdir, names)),
-#           # get index of .shp
-#           i <- which(exts == 'shp'),
-#           # read in shapefile and extract coords
-#           # poly <- readOGR(pathdir[i], strsplit(names[i], '\\.')[[1]][1])),
-#           poly <- readShapePoly(file.path(pathdir[i], strsplit(names[i], '\\.')[[1]][1]))),
-#           "Read the shapefile for the study extent:")
-#
-#
-#         sinkRmdmult(c(
-#           poly <- gBuffer(poly, width = input$backgBuf + res(values$preds)[1]),
-#           values$backgExt <- poly,
-#           bb <- poly@polygons[[1]]@Polygons[[1]]@coords),
-#           "Generate the user-defined study extent plus the buffer:")
-#       }
-      values$bbTxt <- 'user-defined'
-    }
-    isolate(writeLog(paste0("* Study extent: ", values$bbTxt, ".")))
-    isolate(writeLog(paste('* Study extent buffered by', input$backgBuf, 'degrees.')))
-
-    values$bb <- bb
-    proxy %>% fitBounds(max(bb[,1]), max(bb[,2]), min(bb[,1]), min(bb[,2]))
-    proxy %>% addPolygons(lng=bb[,1], lat=bb[,2], layerId="backext",
-                          options= list(weight=10, col="red"))
+    print(input$backgBuf)
+    if (is.null(input$backgSelect) | is.null(values$preds) | is.na(input$backgBuf)) return()
+    comp4_studyReg(input$backgBuf, input$backgSelect)
   })
 
-  
-  ## mask out environmental predictors by background extent
+  # module Select Study Region - mask out environmental predictors by background extent
   observeEvent(input$goBackgMask, {
     if (is.null(values$preds)) {
       writeLog("* Obtain the environmental data first...")
       return()
     }
-    if (!is.null(values$preds)) {
-    # clip and mask rasters based on study region
-    withProgress(message = "Processing environmental data...", {
-      predCrop <- crop(values$preds, values$backgExt)
-      values$predsMsk <- mask(predCrop, values$backgExt)
-    })
+    if (is.null(values$preds)) return()
+    comp4_mskStudyReg()
     shinyjs::enable("downloadMskPreds")
-    isolate(writeLog(paste0('* Environmental data masked by ', values$bbTxt, '.')))
-    }
   })
 
   # handle download for masked predictors, with file type as user choice
@@ -660,6 +394,7 @@ shinyServer(function(input, output, session) {
   ### STEP 5 FUNCTIONALITY
   #########################
   
+  # update child radio buttons for selection of either spatial or non-spatial partitions
   observe({
     if (!is.null(input$partSelect)) {
       if (input$partSelect == 'nsp') {
@@ -677,67 +412,8 @@ shinyServer(function(input, output, session) {
       writeLog("* WARNING: Clip the environmental variables by the study extent polygon first in Step 4.")
       return()
     }
-
-    # if user kfold, get groups and assign occs and backg from inFile,
-    # and if not, make backg pts and assign user kfold groups to NULL
-    #     if (input$partSelect == 'user') {
-    #       sinkRmdmult(c(
-    #         occs <- values$inFile[values$inFile[,1] == values$spname,],
-    #         bg.coords <- values$inFile[values$inFile[,1] != values$spname,],
-    #         group.data <- list(),
-    #         group.data[[1]] <- as.numeric(occs[,input$occ.grp]),
-    #         group.data[[2]] <- as.numeric(backg_pts[,input$bg.grp]),
-    #         occs <- occs[,2:3],
-    #         values$bg.coords <- backg_pts[,2:3]),
-    #         "User defined background partition:")
-    #     } else {
-    occs <- values$df[,2:3]
-    if (is.null(values$bg.coords)) {
-      withProgress(message = "Generating background points...", {
-        bg.coords <- randomPoints(values$predsMsk, 10000)
-        values$bg.coords <- as.data.frame(bg.coords)
-      })
-      # }
-    }
-
-    if (input$partSelect2 == 'block') {
-      pt <- 'block'
-      group.data <- get.block(occs, values$bg.coords)
-      paste("Data partition by block method:")
-    }
-    if (input$partSelect2 == 'cb1') {
-      pt <- "checkerboard 1"
-      group.data <- get.checkerboard1(occs, values$predsMsk, values$bg.coords, input$aggFact)
-      paste("Data partition by checkerboard 1 method:")
-    }
-    if (input$partSelect2 == 'cb2') {
-      pt <- "checkerboard 2"
-      group.data <- get.checkerboard2(occs, values$predsMsk, values$bg.coords, input$aggFact)
-      paste("Data partition by checkerboard 2 method:")
-    }
-    if (input$partSelect2 == 'jack') {
-      pt <- "jackknife"
-      group.data <- get.jackknife(occs, values$bg.coords)
-      paste("Data partition by jackknife method:")
-    }
-    if (input$partSelect2 == 'random') {
-      pt <- paste0("random k-fold (k = ", input$kfolds, ")")
-      group.data <- get.randomkfold(occs, values$bg.coords, input$kfolds)
-      paste("Data partition by", paste0("random k-fold (k = ", input$kfolds, ")"), ":")
-    }
-
-    values$modParams <- list(occ.pts=occs, bg.pts=values$bg.coords, occ.grp=group.data[[1]], bg.grp=group.data[[2]])
-    writeLog(paste("* Data partition by", pt, "method."))
+    comp5_setPartitions(input$partSelect2, input$kfolds, input$aggFact, proxy)
     shinyjs::enable("downloadPart")
-    #newColors <- brewer.pal(max(group.data[[1]]), 'Accent')
-    #     values$df$parts <- factor(group.data[[1]])
-    #     newColors <- colorFactor(rainbow(max(group.data[[1]])), values$df$parts)
-    #     fillColor = ~newColors(parts)
-    newColors <- gsub("FF$", "", rainbow(max(group.data[[1]])))
-    #newColors <- sample(colors(), max(group.data[[1]]))
-    proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
-                               radius = 5, color = 'red', fill = TRUE,
-                               fillColor = newColors[group.data[[1]]], weight = 2, popup = ~pop, fillOpacity = 1)
   })
   # handle download for partitioned occurrence records csv
   output$downloadPart <- downloadHandler(
@@ -768,79 +444,20 @@ shinyServer(function(input, output, session) {
     }
     values$predsLog <- NULL  # reset predsLog if models are rerun
     
-    # BIOCLIM functionality
+    # Module BIOCLIM
     if (input$modSelect == "BIOCLIM") {
-        e <- BioClim_eval(values$modParams$occ.pts, values$modParams$bg.pts,
-                          values$modParams$occ.grp, values$modParams$bg.grp,
-                          values$predsMsk)
-        values$evalTbl <- e$results
-        values$evalMods <- e$models
-        names(e$predictions) <- "Classic_BIOCLIM"
-        values$evalPreds <- e$predictions
-        occVals <- extract(e$predictions, values$modParams$occ.pts)
-        
-        values$mtps <- min(occVals)  # apply minimum training presence threshold
-        
-        # Define 10% training presence threshold
-        if (length(occVals) < 10) {  # if less than 10 occ values, find 90% of total and round down
-          n90 <- floor(length(occVals) * 0.9)
-        } else {  # if greater than or equal to 10 occ values, round up
-          n90 <- ceiling(length(occVals) * 0.9)
-        }
-
-        values$p10s <- rev(sort(occVals))[n90]  # apply 10% training presence threshold
-
-      # make datatable of results df
-      output$evalTbl <- DT::renderDataTable({DT::datatable(round(e$results, digits=3))})
-      output$bcEnvelPlot <- renderPlot(plot(e$models, a = input$bc1, b = input$bc2, p = input$bcProb))
-      
-      writeLog(paste("* BIOCLIM ran successfully and output evaluation results."))
-      shinyjs::enable("downloadEvalcsv")
+      comp6_bioclimMod()
+      # Module BIOCLIM Envelope Plots
+      output$bcEnvelPlot <- renderPlot(plot(values$evalMods, a = input$bc1, b = input$bc2, p = input$bcProb))
     }
-
-    # Maxent functionality
-    if (input$modSelect == "Maxent") {
-      rms <- seq(input$rms[1], input$rms[2], input$rmsBy)  # define the vector of RMs to input
-      progress <- shiny::Progress$new()
-      progress$set(message = "Evaluating ENMs...", value = 0)
-      on.exit(progress$close())
-      n <- length(rms) * length(input$fcs)
-      updateProgress <- function(value = NULL, detail = NULL) {
-        progress$inc(amount = 1/n, detail = detail)
-      }
-      e <- ENMevaluate(values$modParams$occ.pts, values$predsMsk, bg.coords = values$modParams$bg.pts,
-                       RMvalues = rms, fc = input$fcs, method = 'user', occ.grp = values$modParams$occ.grp,
-                       bg.grp = values$modParams$bg.grp, updateProgress = updateProgress)
-
-      # Load the ENMeval results into the values list
-      values$evalTbl <- e@results
-      values$evalMods <- e@models
-      values$evalPreds <- e@predictions.raw
-      values$evalPredsLog <- e@predictions.log
-
-      occVals <- extract(e@predictions.raw, values$modParams$occ.pts)
-
-      values$mtps <- apply(occVals, MARGIN = 2, min)  # apply minimum training presence threshold over all models
-        
-      # Define 10% training presence threshold
-      if (nrow(occVals) < 10) {  # if less than 10 occ values, find 90% of total and round down
-        n90 <- floor(nrow(occVals) * 0.9)
-      } else {  # if greater than or equal to 10 occ values, round up
-        n90 <- ceiling(nrow(occVals) * 0.9)
-      }
-      values$p10s <- apply(occVals, MARGIN = 2, function(x) rev(sort(x))[n90])  # apply 10% training presence threshold over all models
-
-      # make datatable of results df
-      output$evalTbl <- DT::renderDataTable({DT::datatable(cbind(e@results[,1:3], round(e@results[,4:15], digits=3)))})
-      writeLog(paste("* Maxent ran successfully and output evaluation results for", nrow(e@results), "models."))
-      shinyjs::enable("downloadEvalcsv")
-
-      # plotting functionality for ENMeval graphs
-      output$mxEvalPlot <- renderPlot(evalPlot(values$evalTbl, input$mxEvalSel))
-
-      shinyjs::enable("downloadEvalPlots")
-    }
-
+    # Module Maxent
+     else if (input$modSelect == "Maxent") {
+       comp6_maxentMod(input$rms, input$fcs)
+       # Module Maxent Evaluation Plots: plotting functionality for ENMeval graphs
+       output$mxEvalPlot <- renderPlot(evalPlot(values$evalTbl, input$mxEvalSel))
+       shinyjs::enable("downloadEvalPlots")
+     }
+    shinyjs::enable("downloadEvalcsv")
   })
 
   # handle downloads for ENMeval results table csv
@@ -851,6 +468,10 @@ shinyServer(function(input, output, session) {
     }
   )
 
+  #########################
+  ### STEP 7 FUNCTIONALITY
+  #########################
+  
   # handle downloads for ENMeval plots png
   output$downloadEvalPlots <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$gbifoccs), "_enmeval_plots.png")},
@@ -891,10 +512,7 @@ shinyServer(function(input, output, session) {
                  choices = predVarNameList, selected = predVarNameList[[1]])
   })
   
-  # output$respCurv <- renderPlot(respCurv(values$curMod, values$predsMsk, input$predVarSel))
-  
-  # observe(print(values$predsMsk[[input$predVarSel]]))
-  
+  # Module Response Curves
   observe({
     if (is.null(input$visSelect)) return()
     if (input$visSelect != 'response') return()
@@ -902,50 +520,9 @@ shinyServer(function(input, output, session) {
     output$respCurv <- renderPlot(response(values$curMod, var = input$predVarSel))
   })
   
-  #########################
-  ### STEP 7 FUNCTIONALITY
-  #########################
-  
   # set predCur based on user selection of threshold
   observeEvent(input$plotPred, {
-    proxy %>% removeImage('r1')  # remove current raster
-    selRasRaw <- values$evalPreds[[as.numeric(input$predictionSel1)]]
-    selRasLog <- values$evalPredsLog[[as.numeric(input$predictionSel1)]]
-    if (input$predForm == 'raw' | is.null(selRasLog)) {
-      selRas <- selRasRaw
-      rasVals <- getValues(selRas)
-    } else if (input$predForm == 'log' & !is.null(selRasLog)) {
-      selRas <- selRasLog
-      rasVals <- c(getValues(selRas), 0, 1)  # set to 0-1 scale
-    }
-    rasVals <- rasVals[!is.na(rasVals)]
-
-    if (input$predThresh == 'mtp') {
-      mtp <- values$mtps[as.numeric(input$predictionSel1)]
-      values$predCur <- selRasRaw > mtp
-    } else if (input$predThresh == 'p10') {
-      p10 <- values$p10s[as.numeric(input$predictionSel1)]
-      values$predCur <- selRasRaw > p10
-    } else {
-      values$predCur <- selRas
-    }
-    values$rasName <- names(selRas)
-    shinyjs::enable("downloadPred")
-
-    if (!is.null(values$predCur)) {
-      if (input$predThresh == 'mtp' | input$predThresh == 'p10') {
-        pal <- c('gray', 'blue')
-        proxy %>% addLegend("topright", colors = pal,
-                            title = "Thresholded Suitability", labels = c(0, 1),
-                            opacity = 1, layerId = 1)
-      } else {
-        pal <- colorNumeric(c("#fff5f0", "#fb6a4a", "#67000d"), rasVals, na.color='transparent')
-        proxy %>% addLegend("topright", pal = pal, title = "Predicted Suitability",
-                            values = rasVals, layerId = 1)
-      }
-
-      proxy %>% addRasterImage(values$predCur, colors = pal, opacity = 0.7, layerId = 'r1')
-    }
+    comp7_mapPred(input$predictionSel1, input$predForm, input$predThresh, proxy)
   })
   
   # handle download for rasters, with file type as user choice
@@ -985,9 +562,9 @@ shinyServer(function(input, output, session) {
       owd <- setwd(tempdir())
       on.exit(setwd(owd))
       file.copy(src, 'userReport.Rmd')
-      exp <- knit_expand('userReport.Rmd', gbifName=input$gbifName, occurrences=input$occurrences, thinDist=input$thinDist,
+      exp <- knit_expand('userReport.Rmd', gbifName=input$gbifName, occurrences=input$gbifNum, thinDist=input$thinDist,
                          occsCSV=input$userCSV$datapath, occsRemoved=printVecAsis(values$removedAll), occsSel=printVecAsis(values$ptSeln),
-                         predsRes=input$pred, backgSel=input$backgSelect, backgBuf=input$backgBuf, userBGname=input$userBackg$name,
+                         predsRes=input$bcRes, backgSel=input$backgSelect, backgBuf=input$backgBuf, userBGname=input$userBackg$name,
                          userBGpath=input$userBackg$datapath, partSel=input$partSelect2, aggFact=input$aggFact, kfoldsSel=input$kfolds, 
                          modSel=input$modSelect, rmsSel1=input$rms[1], rmsSel2=input$rms[2], rmsBy=input$rmsBy, fcsSel=printVecAsis(input$fcs))
       writeLines(exp, 'userReport2.Rmd')

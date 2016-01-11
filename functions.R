@@ -2,6 +2,15 @@
 ## Define functions
 ## -------------------------------------------------------------------- ##
 
+# zooms appropriately for any extent
+smartZoom <- function(longi, lati) {
+  lg.diff <- abs(max(longi) - min(longi))
+  lt.diff <- abs(max(lati) - min(lati))
+  if (lg.diff > 1) lg.diff <- 1
+  if (lt.diff > 1) lt.diff <- 1
+  c(min(longi-lg.diff), min(lati-lt.diff), max(longi+lg.diff), max(lati+lt.diff))
+}
+
 # for naming files
 nameAbbr <- function(spname) {
   namespl <- strsplit(tolower(spname[1,1]), " ")
@@ -217,7 +226,7 @@ mxNonzeroPreds <- function(mx) {
   x <- unique(sub("\\(", "", x))
 }
 
-respCurv <- function(mod, i) {
+respCurv <- function(mod, i) {  # copied mostly from dismo
   v <- rbind(mod@presence, mod@absence)
   v.nr <- nrow(v)
   vi <- v[, i]

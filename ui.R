@@ -65,7 +65,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                        textInput("gbifName", label = "Enter scientific name of species (format: genus species)", value = 'heteromys anomalus'),
                                                                        actionButton("goName", "Search GBIF"),
                                                                        br(), br(),
-                                                                       sliderInput("occurrences", "Maximum number of occurrences:", min = 1, max = 500, value = 12),
+                                                                       sliderInput("gbifNum", "Maximum number of occurrences:", min = 1, max = 500, value = 12),
 #                                                                        br(),
 #                                                                        uiOutput('gbifDnld'),
                                                                        downloadButton('downloadGBIFcsv', "Download Occurrence CSV"),
@@ -97,6 +97,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                    selected = 'selpts'),
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.procOccSelect == 'selpts'",
+                                                                       div('Module: Select By Polygon', id="mod"),
                                                                        checkboxInput('togMD2A', "Hide / Display Guidance Text", value = FALSE),
                                                                        conditionalPanel("input.togMD2A",
                                                                                         includeMarkdown("www/tab2_selpts.Rmd")
@@ -156,7 +157,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                                         includeMarkdown("www/tab3_wc.Rmd")
                                                                        ),
                                                                        HTML('<hr>'),
-                                                                       selectInput("pred", label = "Choose environmental data resolution",
+                                                                       selectInput("bcRes", label = "Choose environmental data resolution",
                                                                                    choices = list("Choose resolution" = "",
                                                                                                   "2.5 arcmin WorldClim bio1-19" = 2.5,
                                                                                                   "5 arcmin WorldClim bio1-19" = 5,
@@ -184,11 +185,6 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                        HTML('<hr>'),
                                                                        includeMarkdown("www/tab3_wc_refs.Rmd")
                                                       )
-                                                      # conditionalPanel("input.pred == 'db'",
-                                                      #   textInput("dbAscFname", "File name"),
-                                                      #   textInput("dbAscKey", "Dropbox Key"),
-                                                      #   textInput("dbAscCRS", "Coordinate System",value='+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0'),
-                                                      #   textInput("dbAscDims", "Dimensions"))
                                      ),
                                      conditionalPanel("input.tabs == 4",
                                                       h4("Process Environmental Data"),
