@@ -64,6 +64,8 @@ shinyServer(function(input, output, session) {
   ### INITIALIZE
   #########################
            
+  observe(print(input$tabs))
+  
   output$log <- renderUI({tags$div(id='logHeader',
                                    tags$div(id='logContent', HTML(paste0(values$log, "<br>", collapse = ""))))})
 
