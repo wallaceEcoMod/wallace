@@ -437,12 +437,19 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                        a("documentation", href="https://cran.r-project.org/web/packages/raster/raster.pdf", target = "_blank"),
                                                                        HTML('<hr>'),
                                                                        includeMarkdown("www/tab7_pred_refs.Rmd")
-                                                      )
+                                                                       )
                                      ),
-                                     conditionalPanel("input.tabs == 8",
+                                                      conditionalPanel("input.tabs == 8",
+                                                                       h4("Project Niche Model"),
+                                                                       radioButtons("projSelect", "Modules Available:",
+                                                                                    choices = list("Project to New Area" = 'pjArea', "Project to New Time" = 'pjTime'),
+                                                                                    selected = ''),
+                                                                       HTML('<hr>')
+                                                      ),
+                                     conditionalPanel("input.tabs == 'rmd'",
                                                       h4("Download Code History Markdown File")
                                      ),
-                                     conditionalPanel("input.tabs == 9",
+                                     conditionalPanel("input.tabs == 'about'",
                                                       h4("About")
                                      )
                         ),
@@ -456,12 +463,13 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                               tabPanel("5) Partition Occ Data", value=5),
                                               tabPanel("6) Build Niche Model", value=6),
                                               tabPanel("7) Visualize Results", value=7),
-                                              tabPanel("Download Code History", value=8),
-                                              tabPanel("About", value=9)
+                                              tabPanel("8) Project Niche Model", value=8),
+                                              tabPanel("Download Code History", value='rmd'),
+                                              tabPanel("About", value='about')
                                   ),
                                   fluidRow(
                                     column(9,
-                                           conditionalPanel("input.tabs != 0 && input.tabs != 8 && input.tabs != 9",
+                                           conditionalPanel("input.tabs != 0 && input.tabs != 'rmd' && input.tabs != 'about'",
                                                             "LOG",
                                                             div(id = "wallaceLog", class = "scrollbox", htmlOutput("log")))
                                     ),
@@ -475,16 +483,16 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                   ),
                                   br(),
                                   conditionalPanel("input.tabs == 1 || input.tabs == 2 || input.tabs == 3 || input.tabs == 4 || input.tabs == 5
-                                                   || (input.tabs == 7 && input.visSelect == 'map')", 
+                                                   || (input.tabs == 7 && input.visSelect == 'map') || input.tabs == 8", 
                                                    leafletOutput("map", height=500)),
                                   br(),
-                                  conditionalPanel("input.tabs != 0 && input.tabs != 6 && input.tabs != 7 && 
-                                                   input.tabs != 8 && input.tabs != 9", DT::dataTableOutput('occTbl')),
+                                  conditionalPanel("input.tabs != 0 && input.tabs != 6 && input.tabs != 7 && input.tabs != 8 &&
+                                                   input.tabs != 'rmd' && input.tabs != 'about'", DT::dataTableOutput('occTbl')),
                                   conditionalPanel("input.tabs == 6", dataTableOutput('evalTbl')),
                                   conditionalPanel("input.tabs == 7 && input.visSelect == 'response'", imageOutput('respCurv')),
                                   conditionalPanel("input.tabs == 7 && input.visSelect == 'bcEnvel'", imageOutput('bcEnvelPlot')),
                                   conditionalPanel("input.tabs == 7 && input.visSelect == 'mxEval'", imageOutput('mxEvalPlot')),
-                                  conditionalPanel("input.tabs == 8",
+                                  conditionalPanel("input.tabs == 'rmd'",
                                                    column(8,
                                                           selectInput('mdType', label = "R Markdown Download Type",
                                                                       choices = list("Rmd", "PDF", "HTML", "Word")),
@@ -497,7 +505,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                           includeMarkdown("www/intro.Rmd")
                                                    )
                                   ),
-                                  conditionalPanel("input.tabs == 9",
+                                  conditionalPanel("input.tabs == 'about'",
                                                    fluidPage(titlePanel(h4("Wallace was created by an international team of ecologists:")),
                                                              fluidRow(
                                                                column(2, includeMarkdown("www/tab9Acontent.Rmd")),
