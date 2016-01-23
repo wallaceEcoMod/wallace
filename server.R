@@ -407,6 +407,7 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  # module Set Partitions
   observeEvent(input$goPart, {
     if (is.null(values$predsMsk)) {
       writeLog("* WARNING: Clip the environmental variables by the study extent polygon first in Step 4.")
@@ -415,6 +416,7 @@ shinyServer(function(input, output, session) {
     comp5_setPartitions(input$partSelect2, input$kfolds, input$aggFact, proxy)
     shinyjs::enable("downloadPart")
   })
+  
   # handle download for partitioned occurrence records csv
   output$downloadPart <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$gbifoccs), "_partitioned_occs.csv")},
@@ -432,7 +434,7 @@ shinyServer(function(input, output, session) {
   ### STEP 6 FUNCTIONALITY
   #########################
   
-  # run ENMeval via user inputs
+  # niche model selection and warnings
   observeEvent(input$goEval, {
     if (is.null(values$predsMsk)) {
       writeLog("* WARNING: Mask the environmental variables first in Step 4.")
@@ -447,13 +449,13 @@ shinyServer(function(input, output, session) {
     # Module BIOCLIM
     if (input$modSelect == "BIOCLIM") {
       comp6_bioclimMod()
-      # Module BIOCLIM Envelope Plots
+      # Module BIOCLIM Envelope Plots (for component 7)
       output$bcEnvelPlot <- renderPlot(plot(values$evalMods, a = input$bc1, b = input$bc2, p = input$bcProb))
     }
     # Module Maxent
      else if (input$modSelect == "Maxent") {
        comp6_maxentMod(input$rms, input$fcs)
-       # Module Maxent Evaluation Plots: plotting functionality for ENMeval graphs
+       # Module Maxent Evaluation Plots (for component 7): ENMeval graphs
        output$mxEvalPlot <- renderPlot(evalPlot(values$evalTbl, input$mxEvalSel))
        shinyjs::enable("downloadEvalPlots")
      }
@@ -471,16 +473,6 @@ shinyServer(function(input, output, session) {
   #########################
   ### STEP 7 FUNCTIONALITY
   #########################
-  
-  # handle downloads for ENMeval plots png
-  output$downloadEvalPlots <- downloadHandler(
-    filename = function() {paste0(nameAbbr(values$gbifoccs), "_enmeval_plots.png")},
-    content = function(file) {
-      png(file)
-      evalPlot(values$evalTbl)
-      dev.off()
-    }
-  )
 
   # generates user selection of rasters to plot dynamically after they are created
   output$predictionSel1 <- renderUI({
@@ -512,6 +504,16 @@ shinyServer(function(input, output, session) {
                  choices = predVarNameList, selected = predVarNameList[[1]])
   })
   
+  # handle downloads for ENMeval plots png
+  output$downloadEvalPlots <- downloadHandler(
+    filename = function() {paste0(nameAbbr(values$gbifoccs), "_enmeval_plots.png")},
+    content = function(file) {
+      png(file)
+      evalPlot(values$evalTbl)
+      dev.off()
+    }
+  )
+  
   # Module Response Curves
   observe({
     if (is.null(input$visSelect)) return()
@@ -520,7 +522,7 @@ shinyServer(function(input, output, session) {
     output$respCurv <- renderPlot(response(values$curMod, var = input$predVarSel))
   })
   
-  # set predCur based on user selection of threshold
+  # Module Plot Prediction
   observeEvent(input$plotPred, {
     comp7_mapPred(input$predictionSel1, input$predForm, input$predThresh, proxy)
   })
@@ -550,6 +552,7 @@ shinyServer(function(input, output, session) {
     }
   )
 
+  # handler for R Markdown download
   output$downloadMD <- downloadHandler(
     filename = function() {
       paste0("wallace-session-", Sys.Date(), ".", switch(
