@@ -35,6 +35,13 @@ comp2_selLocMap_selIntLocs <- function() {
   }
   
   values$ptSeln <- as.numeric(which(!(is.na(over(pts, values$drawPolys)))))  # select pts overlapping (intersecting) with polygon(s)
+  if (length(values$ptSeln) == 0) {
+    values$drawPolys <- NULL
+    values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
+    values$drawPolyCoordsSelLocs <- NULL
+    proxy %>% clearShapes()
+    return()
+  }
   
   # Subset with selected locs
   ptsSel <- values$gbifoccs[values$ptSeln, ]
