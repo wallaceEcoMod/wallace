@@ -135,31 +135,6 @@ shinyServer(function(input, output, session) {
     #                          icon = ~icons(occIcons[basisNum]))
   })
 
-  # governs point removal behavior and modifies tables in "values"
-  observeEvent(input$remove, {
-    if (!is.null(values$ptsSel)) {
-      writeLog('NOTICE: Remove localities by ID before selecting with polygons. Press "Reset Localities" to start over.')
-      return()}
-    comp2_selLocMap_remLocs(input$remLoc)
-  })
-
-  # erase select localities polygon with button click
-  observeEvent(input$erasePolySelLocs, {
-    values$ptsSel <- NULL
-    values$drawPolys <- NULL
-    values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
-    x <- paste('* RESET: localities dataset is now back to', nrow(values$gbifoccs), 'records.')
-    isolate(writeLog(x))
-    if (!is.null(values$gbifoccs)) {
-      values$gbifoccs <- rbind(values$gbifoccs, values$removed)
-      values$df <- values$gbifoccs
-    }
-    lati <- values$df[,3]
-    longi <- values$df[,2]
-    z <- smartZoom(longi, lati)
-    proxy %>% fitBounds(z[1], z[2], z[3], z[4])
-  })
-
   # behavior for plotting points and their colors based on which tab is active
   observe({
     if (is.null(values$df)) return()
@@ -181,7 +156,7 @@ shinyServer(function(input, output, session) {
                                 title = "GBIF Records", labels = c('original', 'selected'),
                                 opacity = 1, layerId = 1)
           } else {
-            map_plotLocs(values$df)
+            map_plotLocs(values$df, clearShapes=FALSE)
           }
         } else {
           map_plotLocs(values$df, clearShapes=FALSE)
@@ -276,6 +251,33 @@ shinyServer(function(input, output, session) {
   # Module Select Localities: select points intersecting drawn polygons (replace values$df)
   observeEvent(input$selectPoly, {
     comp2_selLocMap_selIntLocs()
+  })
+  
+  # governs point removal behavior and modifies tables in "values"
+  observeEvent(input$remove, {
+    if (!is.null(values$ptsSel)) {
+      writeLog('NOTICE: Remove localities by ID before selecting with polygons. Press "Reset Localities" to start over.')
+      return()
+      }
+    comp2_selLocMap_remLocs(input$remLoc)
+  })
+  
+  # erase select localities polygon with button click
+  observeEvent(input$erasePolySelLocs, {
+    values$ptsSel <- NULL
+    values$drawPolys <- NULL
+    values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
+    proxy %>% clearShapes()
+    x <- paste('* RESET: localities dataset is now back to', nrow(values$gbifoccs), 'records.')
+    isolate(writeLog(x))
+    if (!is.null(values$gbifoccs)) {
+      values$gbifoccs <- rbind(values$gbifoccs, values$removed)
+      values$df <- values$gbifoccs
+    }
+    lati <- values$df[,3]
+    longi <- values$df[,2]
+    z <- smartZoom(longi, lati)
+    proxy %>% fitBounds(z[1], z[2], z[3], z[4])
   })
   
   # Module Spatial Thin
