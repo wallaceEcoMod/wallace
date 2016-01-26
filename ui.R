@@ -66,8 +66,8 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                        actionButton("goName", "Search GBIF"),
                                                                        br(), br(),
                                                                        sliderInput("gbifNum", "Maximum number of occurrences:", min = 1, max = 500, value = 12),
-#                                                                        br(),
-#                                                                        uiOutput('gbifDnld'),
+                                                                       #br(),
+                                                                       #uiOutput('gbifDnld'),
                                                                        downloadButton('downloadGBIFcsv', "Download Occurrence CSV"),
                                                                        HTML('<hr>')
                                                       ),
@@ -76,7 +76,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                        HTML('<hr>'),
                                                                        fileInput("userCSV", label = "Upload Occurrence CSV"),
                                                                        HTML('<hr>')),
-
+                                                      
                                                       "The output of this step is a CSV file with rows of localities, and columns containing species,
                                                       longitude, and latitude (as well as any other fields provided by GBIF or the user.",
                                                       conditionalPanel("input.dbSelect == 'GBIF'",
@@ -90,13 +90,13 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                      ),
                                      conditionalPanel("input.tabs == 2",
                                                       h4("Process Occurrence Data"),
-                                                      radioButtons("procOccSelect", "Modules Available:",
+                                                      radioButtons("procOccSel", "Modules Available:",
                                                                    choices = list("Select Localities" = 'selpts',
                                                                                   "Spatial Thin" = 'spthin',
                                                                                   "Environmental Thin (not functional)"),
                                                                    selected = 'selpts'),
                                                       HTML('<hr>'),
-                                                      conditionalPanel("input.procOccSelect == 'selpts'",
+                                                      conditionalPanel("input.procOccSel == 'selpts'",
                                                                        div('Module: Select By Polygon', id="mod"),
                                                                        checkboxInput('togMD2A', "Hide / Display Guidance Text", value = FALSE),
                                                                        conditionalPanel("input.togMD2A",
@@ -105,8 +105,13 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                        HTML('<hr>'),
                                                                        numericInput("remLoc", label="Enter the record ID to be removed", value = 0),
                                                                        actionButton("remove", "Remove Locality"),
+                                                                       br(), br(),
+                                                                       actionButton("selectPoly", "Select With Polygon"),
+                                                                       br(), br(),
+                                                                       actionButton("erasePolySelLocs", "Reset Localities"),
+                                                                       br(),
                                                                        HTML('<hr>')),
-                                                      conditionalPanel("input.procOccSelect == 'spthin'",
+                                                      conditionalPanel("input.procOccSel == 'spthin'",
                                                                        div('Module: Spatial Thin', id="mod"),
                                                                        span('via', id="pkgDes"),
                                                                        span('spThin', id="rpkg"),
@@ -120,12 +125,12 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                        actionButton("goThin", "Thin Localities"),
                                                                        br(), br(),
                                                                        downloadButton('downloadThincsv', "Download Thinned Occurrence CSV"),
-#                                                                        br(), 
-#                                                                        uiOutput('thinDnld'),
+                                                                       #br(), 
+                                                                       #uiOutput('thinDnld'),
                                                                        HTML('<hr>')
                                                       ),
                                                       includeMarkdown("www/tab2_input.Rmd"),
-                                                      conditionalPanel("input.procOccSelect == 'spthin'",
+                                                      conditionalPanel("input.procOccSel == 'spthin'",
                                                                        HTML('<hr>'),
                                                                        span("spThin", id = "rpkg"), "references", br(),
                                                                        div('Developers:  Matthew E. Aiello-Lammens, Rob A. Boria, Alex Radosavljevic, Bruno Vilela,
@@ -192,7 +197,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                    choices = list("Select Study Region" = "backg",
                                                                                   "Change Resolution (not functional)"),
                                                                    selected = 'backg'),
-
+                                                      
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.envProcSelect == 'backg'",
                                                                        div('Module: Select Study Region', id="mod"),
@@ -243,7 +248,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                        HTML('<hr>'),
                                                                        includeMarkdown("www/tab4_backg_refs.Rmd")
                                                       )
-
+                                                      
                                      ),
                                      conditionalPanel("input.tabs == 5",
                                                       h4("Partition Occurrence Data"),
@@ -437,15 +442,20 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                        a("documentation", href="https://cran.r-project.org/web/packages/raster/raster.pdf", target = "_blank"),
                                                                        HTML('<hr>'),
                                                                        includeMarkdown("www/tab7_pred_refs.Rmd")
-                                                                       )
+                                                      )
                                      ),
-                                                      conditionalPanel("input.tabs == 8",
-                                                                       h4("Project Niche Model"),
-                                                                       radioButtons("projSelect", "Modules Available:",
-                                                                                    choices = list("Project to New Area" = 'pjArea', "Project to New Time" = 'pjTime'),
-                                                                                    selected = ''),
-                                                                       HTML('<hr>')
-                                                      ),
+                                     conditionalPanel("input.tabs == 8",
+                                                      h4("Project Niche Model"),
+                                                      radioButtons("projSelect", "Modules Available:",
+                                                                   choices = list("Project to New Area" = 'pjArea', "Project to New Time" = 'pjTime'),
+                                                                   selected = ''),
+                                                      br(),
+                                                      actionButton("projExtSel", "Select Projection Extent"),
+                                                      br(), br(),
+                                                      actionButton("erasePolyProjExt", "Reset Projection Extent"),
+                                                      br(),
+                                                      HTML('<hr>')
+                                     ),
                                      conditionalPanel("input.tabs == 'rmd'",
                                                       h4("Download Code History Markdown File")
                                      ),
@@ -467,20 +477,9 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                               tabPanel("Download Code History", value='rmd'),
                                               tabPanel("About", value='about')
                                   ),
-                                  fluidRow(
-                                    column(9,
-                                           conditionalPanel("input.tabs != 0 && input.tabs != 'rmd' && input.tabs != 'about'",
-                                                            "LOG",
-                                                            div(id = "wallaceLog", class = "scrollbox", htmlOutput("log")))
-                                    ),
-                                    column(3,
-                                           conditionalPanel("input.tabs == 2 && input.procOccSelect == 'selpts'",
-                                                            br(),
-                                                            actionButton("selectPoly", "Select With Polygon"),
-                                                            br(), br(),
-                                                            actionButton("erasePoly", "Reset Localities"))
-                                    )
-                                  ),
+                                  conditionalPanel("input.tabs != 0 && input.tabs != 'rmd' && input.tabs != 'about'",
+                                                   "LOG",
+                                                   div(id = "wallaceLog", class = "scrollbox", htmlOutput("log"))),
                                   br(),
                                   conditionalPanel("input.tabs == 1 || input.tabs == 2 || input.tabs == 3 || input.tabs == 4 || input.tabs == 5
                                                    || (input.tabs == 7 && input.visSelect == 'map') || input.tabs == 8", 
