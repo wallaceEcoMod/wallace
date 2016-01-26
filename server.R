@@ -64,8 +64,6 @@ shinyServer(function(input, output, session) {
   ### INITIALIZE
   #########################
            
-  observe(print(input$tabs))
-  
   output$log <- renderUI({tags$div(id='logHeader',
                                    tags$div(id='logContent', HTML(paste0(values$log, "<br>", collapse = ""))))})
 
@@ -77,7 +75,7 @@ shinyServer(function(input, output, session) {
   proxy <- leafletProxy("map")
   
   #########################
-  ### STEP 1 FUNCTIONALITY
+  ### COMPONENT 1 FUNCTIONALITY
   #########################
 
   # module GBIF
@@ -145,31 +143,8 @@ shinyServer(function(input, output, session) {
     comp2_selLocMap_remLocs(input$remLoc)
   })
 
-  # functionality for drawing polygons on map
-  observe({
-    if (is.null(input$procOccSelect)) return()
-    if (input$tabs == 2 & input$procOccSelect == "selpts") {
-      latlng <- c(input$map_click$lng, input$map_click$lat)
-      # this functionality prevents existing map click from being added to new polygon
-      if (values$polyErase) {
-        if (identical(latlng, values$mapClick)) {
-          return()
-        } else {
-          values$polyErase <- FALSE
-        }
-      }
-      if (is.null(input$map_click)) return()
-      values$mapClick <- latlng
-      values$drawPolyCoords <- isolate(rbind(values$drawPolyCoords, latlng))
-      proxy %>% removeShape("drawPoly")
-      proxy %>% addPolygons(values$drawPolyCoords[,1], values$drawPolyCoords[,2],
-                            layerId='drawPoly', fill=FALSE, weight=3, color='green')
-    }
-  })
-
-  # erase poly with button click
-  observeEvent(input$erasePoly, {
-    values$drawPolyCoords <- NULL
+  # erase select localities polygon with button click
+  observeEvent(input$erasePolySelLocs, {
     values$ptsSel <- NULL
     values$drawPolys <- NULL
     values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
@@ -185,33 +160,18 @@ shinyServer(function(input, output, session) {
     proxy %>% fitBounds(z[1], z[2], z[3], z[4])
   })
 
-  # select points intersecting drawn polygons (replace values$df)
-  observeEvent(input$selectPoly, {
-    comp2_selLocMap_selIntLocs()
-  })
-
   # behavior for plotting points and their colors based on which tab is active
   observe({
     if (is.null(values$df)) return()
-
-    if (input$tabs == 1) {
-      proxy %>% clearMarkers()
-      proxy %>% clearShapes()
-      proxy %>% clearImages()
-      proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~latitude, lng = ~longitude,
-                                 radius = 5, color = 'red',
-                                 fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
+    if (input$tabs == 1) {  # if tab1, just plot occurrence localities
+      map_plotLocs(values$gbifoccs)
     }
 
-    if (input$tabs == 2) {
-      proxy %>% clearImages()
-      if (is.null(input$procOccSelect)) return()
-      if (input$procOccSelect == "selpts") {
+    if (input$tabs == 2) {  # if tab2
+      if (is.null(input$procOccSel)) return()
+      if (input$procOccSel == "selpts") {  #  and Module Select Localities, make selected pts yellow and add legend
         if (is.null(values$prethinned)) {
-          proxy %>% clearMarkers()
-          proxy %>% addCircleMarkers(data = values$gbifoccs, lat = ~latitude, lng = ~longitude,
-                                     radius = 5, color = 'red',
-                                     fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
+          map_plotLocs(values$gbifoccs, clearShapes=FALSE)
           if (!is.null(values$ptsSel)) {
             proxy %>% addCircleMarkers(data = values$ptsSel, lat = ~latitude, lng = ~longitude,
                                        radius = 5, color = 'red',
@@ -221,17 +181,10 @@ shinyServer(function(input, output, session) {
                                 title = "GBIF Records", labels = c('original', 'selected'),
                                 opacity = 1, layerId = 1)
           } else {
-            proxy %>% clearMarkers()
-            proxy %>% clearShapes()
-            proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
-                                       radius = 5, color = 'red',
-                                       fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
+            map_plotLocs(values$df)
           }
         } else {
-          proxy %>% clearMarkers()
-          proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
-                                     radius = 5, color = 'red',
-                                     fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
+          map_plotLocs(values$df, clearShapes=FALSE)
         }
 
         # draw all user-drawn polygons and color according to colorBrewer
@@ -247,7 +200,7 @@ shinyServer(function(input, output, session) {
         }
       }
 
-      if (input$procOccSelect == "spthin") {
+      if (input$procOccSel == "spthin") {
         proxy %>% clearMarkers()
         proxy %>% clearShapes()
         proxy %>% clearImages()
@@ -310,10 +263,22 @@ shinyServer(function(input, output, session) {
   })
   
   #########################
-  ### STEP 2 FUNCTIONALITY
+  ### COMPONENT 2 FUNCTIONALITY
   #########################
 
-  # module Spatial Thin
+  # functionality for drawing polygons on map
+  observe({
+    if (input$tabs == 2 && input$procOccSel == "selpts") {
+      map_drawPolys(input$map_click, component = 2)
+    }
+  })
+  
+  # Module Select Localities: select points intersecting drawn polygons (replace values$df)
+  observeEvent(input$selectPoly, {
+    comp2_selLocMap_selIntLocs()
+  })
+  
+  # Module Spatial Thin
   observeEvent(input$goThin, {
     comp2_spThin(input$thinDist)
     shinyjs::enable("downloadThincsv")
@@ -328,7 +293,7 @@ shinyServer(function(input, output, session) {
   )
 
   #########################
-  ### STEP 3 FUNCTIONALITY
+  ### COMPONENT 3 FUNCTIONALITY
   #########################
   
   observe({if (input$bcRes != "") shinyjs::enable("predDnld")})
@@ -351,7 +316,7 @@ shinyServer(function(input, output, session) {
   #   })
 
   #########################
-  ### STEP 4 FUNCTIONALITY
+  ### COMPONENT 4 FUNCTIONALITY
   #########################
   
   # module Select Study Region - set buffer, extent shape
@@ -393,7 +358,7 @@ shinyServer(function(input, output, session) {
   )
 
   #########################
-  ### STEP 5 FUNCTIONALITY
+  ### COMPONENT 5 FUNCTIONALITY
   #########################
   
   # update child radio buttons for selection of either spatial or non-spatial partitions
@@ -412,7 +377,7 @@ shinyServer(function(input, output, session) {
   # module Set Partitions
   observeEvent(input$goPart, {
     if (is.null(values$predsMsk)) {
-      writeLog("* WARNING: Clip the environmental variables by the study extent polygon first in Step 4.")
+      writeLog("* WARNING: Clip the environmental variables by the study extent polygon first in COMPONENT 4.")
       return()
     }
     comp5_setPartitions(input$partSelect2, input$kfolds, input$aggFact, proxy)
@@ -433,17 +398,17 @@ shinyServer(function(input, output, session) {
   )
 
   #########################
-  ### STEP 6 FUNCTIONALITY
+  ### COMPONENT 6 FUNCTIONALITY
   #########################
   
   # niche model selection and warnings
   observeEvent(input$goEval, {
     if (is.null(values$predsMsk)) {
-      writeLog("* WARNING: Mask the environmental variables first in Step 4.")
+      writeLog("* WARNING: Mask the environmental variables first in COMPONENT 4.")
       return()
     }
     if (is.null(values$modParams)) {
-      writeLog("* WARNING: Partition your localities first in Step 5.")
+      writeLog("* WARNING: Partition your localities first in COMPONENT 5.")
       return()
     }
     values$predsLog <- NULL  # reset predsLog if models are rerun
@@ -473,7 +438,7 @@ shinyServer(function(input, output, session) {
   )
 
   #########################
-  ### STEP 7 FUNCTIONALITY
+  ### COMPONENT 7 FUNCTIONALITY
   #########################
 
   # generates user selection of rasters to plot dynamically after they are created
@@ -553,6 +518,33 @@ shinyServer(function(input, output, session) {
       }
     }
   )
+  
+  #########################
+  ### COMPONENT 8 FUNCTIONALITY
+  #########################
+  
+  # functionality for drawing polygons on map
+  observe({
+    if (input$tabs == 8) {
+      map_drawPolys(input$map_click, component = 8)
+    }
+  })
+  
+  # erase select localities polygon with button click
+  observeEvent(input$erasePolyProjExt, {
+    values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
+    values$projExtPoly <- NULL
+    proxy %>% removeShape("drawPolyProjExt")
+    writeLog('* RESET PROJECTION EXTENT')
+
+  })
+  
+  # Module Select Localities: select points intersecting drawn polygons (replace values$df)
+  observeEvent(input$projExtSel, {
+    comp8_selProjArea()
+  })
+  
+  observe(print(values$projAreaExt))
 
   # handler for R Markdown download
   output$downloadMD <- downloadHandler(
