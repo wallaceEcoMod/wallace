@@ -27,12 +27,12 @@ map_drawPolys <- function(mapClick, component) {
   
 }
 
-map_plotLocs <- function(locs, clearMarkers=TRUE, clearShapes=TRUE, clearImages=TRUE) {
+map_plotLocs <- function(locs, clearMarkers=TRUE, clearShapes=TRUE, clearImages=TRUE, fillColor='red') {
   if (clearMarkers) proxy %>% clearMarkers()
   if (clearShapes) proxy %>% clearShapes()
   if (clearImages) proxy %>% clearImages()
   proxy %>% addCircleMarkers(data = locs, lat = ~latitude, lng = ~longitude,
                              radius = 5, color = 'red',
-                             fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
+                             fill = TRUE, fillColor = fillColor, weight = 2, popup = ~pop)
 }
 

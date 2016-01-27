@@ -176,16 +176,11 @@ shinyServer(function(input, output, session) {
       }
 
       if (input$procOccSel == "spthin") {
-        proxy %>% clearMarkers()
-        proxy %>% clearShapes()
-        proxy %>% clearImages()
         lati <- values$df[,3]
         longi <- values$df[,2]
         z <- smartZoom(longi, lati)
         proxy %>% fitBounds(z[1], z[2], z[3], z[4])
-        proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
-                                   radius = 5, color = 'red',
-                                   fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
+        map_plotLocs(values$df)
         if (!is.null(values$prethinned)) {
           values$drawPolys <- NULL
           lati <- values$prethinned[,3]
@@ -196,10 +191,7 @@ shinyServer(function(input, output, session) {
           proxy %>% addCircleMarkers(data = values$prethinned, lat = ~latitude, lng = ~longitude,
                                      radius = 5, color = 'red', fillOpacity = 1,
                                      fill = TRUE, fillColor = 'blue', weight = 2, popup = ~pop)
-          proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
-                                     radius = 5, color = 'red',
-                                     fill = TRUE, fillColor = 'red',
-                                     fillOpacity = 1, weight = 2, popup = ~pop)
+          map_plotLocs(values$df)
           proxy %>% addLegend("topright", colors = c('red', 'blue'),
                               title = "GBIF Records", labels = c('retained', 'removed'),
                               opacity = 1, layerId = 1)
@@ -540,6 +532,9 @@ shinyServer(function(input, output, session) {
     writeLog('* RESET PROJECTION EXTENT')
 
   })
+  
+  observe({
+    if (!is.null(values$drawPolyCoordsProjExt)) print(round(values$drawPolyCoordsProjExt, digits = 2))})
   
   # Module Select Localities: select points intersecting drawn polygons (replace values$df)
   observeEvent(input$projExtSel, {
