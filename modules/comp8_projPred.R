@@ -1,17 +1,19 @@
 comp8_selProjArea <- function() {
   if (is.null(values$df)) return()
+  if (is.null(values$drawPolyCoordsProjExt)) return()
+  if (nrow(values$drawPolyCoordsProjExt) < 3) {
+    writeLog("! Please define a shape with at least 3 sides.")
+    return()
+  }
   values$polyErase <- TRUE  # turn on to signal to prevent the use of an existing map click
   values$polyID <- values$polyID + 1
   
   values$projExtPoly <- SpatialPolygons(list(Polygons(list(Polygon(values$drawPolyCoordsProjExt)), ID=values$polyID)))  # create new polygon from coords
   
-  values$projExt <- extent(values$projExtPoly)
-  x <- round(values$projExt, digits = 2)
+  x <- round(values$drawPolyCoordsProjExt, digits = 2)  # round all coords to 2 decimal digits
+  coordsChar <- paste(apply(x, 1, function(b) paste0('(',paste(b, collapse=', '),')')), collapse=', ')  # concatanate coords to a single character
   values$drawPolyCoordsProjExt <- NULL
-  isolate(writeLog(paste0('* Defined projection extent to xmin: ', x@xmin, ', xmax: ', x@xmax, 
-                          ', ymin: ', x@ymin, ', ymax: ', x@ymax, '.')))
-  
-
+  isolate(writeLog(paste0('* Defined projection extent to: ', coordsChar)))
 }
 
 
