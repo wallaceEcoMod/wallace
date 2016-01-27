@@ -28,15 +28,15 @@ comp2_selLocMap_selIntLocs <- function() {
   pts <- SpatialPoints(values$df[,2:3])  # make pts spatial object
   
   newPoly <- SpatialPolygons(list(Polygons(list(Polygon(values$drawPolyCoordsSelLocs)), ID=values$polyID)))  # create new polygon from coords
-  if (is.null(values$drawPolys)) {  # if there are no polygons, draw the new one, otherwise draw the new plus all the old ones
-    values$drawPolys <- newPoly
+  if (is.null(values$drawPolysSelLocs)) {  # if there are no polygons, draw the new one, otherwise draw the new plus all the old ones
+    values$drawPolysSelLocs <- newPoly  # this is passed to mapFuncs to fill the selected polygons
   } else {
-    values$drawPolys <- spRbind(values$drawPolys, newPoly)
+    values$drawPolysSelLocs <- spRbind(values$drawPolysSelLocs, newPoly)
   }
   
-  values$ptSeln <- as.numeric(which(!(is.na(over(pts, values$drawPolys)))))  # select pts overlapping (intersecting) with polygon(s)
+  values$ptSeln <- as.numeric(which(!(is.na(over(pts, values$drawPolysSelLocs)))))  # select pts overlapping (intersecting) with polygon(s)
   if (length(values$ptSeln) == 0) {
-    values$drawPolys <- NULL
+    values$drawPolysSelLocs <- NULL
     values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
     values$drawPolyCoordsSelLocs <- NULL
     proxy %>% clearShapes()
