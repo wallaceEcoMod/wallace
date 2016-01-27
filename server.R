@@ -538,7 +538,6 @@ shinyServer(function(input, output, session) {
     proxy %>% removeShape("drawPolyProjExt")
     proxy %>% removeShape('projExtPolySel')
     writeLog('* RESET PROJECTION EXTENT')
-
   })
   
   observe({

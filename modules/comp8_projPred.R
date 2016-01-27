@@ -1,7 +1,8 @@
 comp8_selProjArea <- function() {
   if (is.null(values$df)) return()
   if (is.null(values$drawPolyCoordsProjExt)) return()
-  if (nrow(unique(values$drawPolyCoordsProjExt)) < 3) {
+  values$drawPolyCoordsProjExt <- unique(values$drawPolyCoordsProjExt)  # remove phantom first row after reset
+  if (nrow(values$drawPolyCoordsProjExt) < 3) {
     writeLog("! Please define a shape with at least 3 sides.")
     return()
   }
