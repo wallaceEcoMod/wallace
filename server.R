@@ -163,8 +163,8 @@ shinyServer(function(input, output, session) {
         }
 
         # draw all user-drawn polygons and color according to colorBrewer
-        if (!is.null(values$drawPolys)) {
-          curPolys <- values$drawPolys@polygons
+        if (!is.null(values$drawPolysSelLocs)) {
+          curPolys <- values$drawPolysSelLocs@polygons
           numPolys <- length(curPolys)
           colors <- brewer.pal(numPolys, 'Accent')
           for (i in numPolys) {
@@ -182,7 +182,7 @@ shinyServer(function(input, output, session) {
         proxy %>% fitBounds(z[1], z[2], z[3], z[4])
         map_plotLocs(values$df)
         if (!is.null(values$prethinned)) {
-          values$drawPolys <- NULL
+          values$drawPolysSelLocs <- NULL
           lati <- values$prethinned[,3]
           longi <- values$prethinned[,2]
           
@@ -227,6 +227,13 @@ shinyServer(function(input, output, session) {
                           title = "GBIF Records", labels = c('retained'),
                           opacity = 1, layerId = 1)
     }
+    
+    if (input$tabs == 8) {
+      if (!is.null(values$projExtPoly)) {
+        coords <- values$projExtPoly@polygons[[1]]@Polygons[[1]]@coords
+        proxy %>% addPolygons(coords[,1], coords[,2], weight=3, color='red', layerId='projExtPolySel')
+      }
+    }
   })
   
   #########################
@@ -257,7 +264,7 @@ shinyServer(function(input, output, session) {
   # erase select localities polygon with button click
   observeEvent(input$erasePolySelLocs, {
     values$ptsSel <- NULL
-    values$drawPolys <- NULL
+    values$drawPolysSelLocs <- NULL
     values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
     proxy %>% clearShapes()
     x <- paste('* RESET: localities dataset is now back to', nrow(values$gbifoccs), 'records.')
@@ -315,7 +322,6 @@ shinyServer(function(input, output, session) {
   
   # module Select Study Region - set buffer, extent shape
   observe({
-    print(input$backgBuf)
     if (is.null(input$backgSelect) | is.null(values$preds) | is.na(input$backgBuf)) return()
     comp4_studyReg(input$backgBuf, input$backgSelect)
   })
@@ -528,20 +534,23 @@ shinyServer(function(input, output, session) {
   observeEvent(input$erasePolyProjExt, {
     values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
     values$projExtPoly <- NULL
+    values$drawPolyCoordsProjExt <- NULL
     proxy %>% removeShape("drawPolyProjExt")
+    proxy %>% removeShape('projExtPolySel')
     writeLog('* RESET PROJECTION EXTENT')
 
   })
   
   observe({
-    if (!is.null(values$drawPolyCoordsProjExt)) print(round(values$drawPolyCoordsProjExt, digits = 2))})
+    print(values$drawPolyCoordsSelLocs)
+    print(values$drawPolyCoordsProjExt)
+  })
   
   # Module Select Localities: select points intersecting drawn polygons (replace values$df)
   observeEvent(input$projExtSel, {
     comp8_selProjArea()
   })
   
-  observe(print(values$projAreaExt))
 
   # handler for R Markdown download
   output$downloadMD <- downloadHandler(
