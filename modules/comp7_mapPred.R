@@ -1,7 +1,7 @@
-comp7_mapPred <- function(predictionSel1, predForm, predThresh, proxy) {
+comp7_mapPred <- function(modelSel1, predForm, predThresh, proxy) {
   proxy %>% removeImage('r1')  # remove current raster
-  selRasRaw <- values$evalPreds[[as.numeric(predictionSel1)]]
-  selRasLog <- values$evalPredsLog[[as.numeric(predictionSel1)]]
+  selRasRaw <- values$evalPreds[[as.numeric(modelSel1)]]
+  selRasLog <- values$evalPredsLog[[as.numeric(modelSel1)]]
   if (predForm == 'raw' | is.null(selRasLog)) {
     selRas <- selRasRaw
     rasVals <- getValues(selRas)
@@ -12,10 +12,10 @@ comp7_mapPred <- function(predictionSel1, predForm, predThresh, proxy) {
   rasVals <- rasVals[!is.na(rasVals)]
   
   if (predThresh == 'mtp') {
-    mtp <- values$mtps[as.numeric(predictionSel1)]
+    mtp <- values$mtps[as.numeric(modelSel1)]
     values$predCur <- selRasRaw > mtp
   } else if (predThresh == 'p10') {
-    p10 <- values$p10s[as.numeric(predictionSel1)]
+    p10 <- values$p10s[as.numeric(modelSel1)]
     values$predCur <- selRasRaw > p10
   } else {
     values$predCur <- selRas

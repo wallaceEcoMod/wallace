@@ -442,27 +442,27 @@ shinyServer(function(input, output, session) {
   #########################
 
   # generates user selection of rasters to plot dynamically after they are created
-  output$predictionSel1 <- renderUI({
+  output$modelSel1 <- renderUI({
     if (is.null(values$evalPreds)) return()
     n <- names(values$evalPreds)
     predNameList <- setNames(as.list(seq(1, length(n))), n)
-    selectInput("predictionSel1", label = "Choose a model",
+    selectInput("modelSel1", label = "Choose a model",
                 choices = predNameList)
   })
   
-  # copy of above for response curve model selection
-  output$predictionSel2 <- renderUI({
+  # copy for response curve model selection
+  output$modelSel2 <- renderUI({
     if (is.null(values$evalPreds)) return()
     n <- names(values$evalPreds)
     predNameList <- setNames(as.list(n), n)
-    selectInput("predictionSel2", label = "Choose a model",
+    selectInput("modelSel2", label = "Choose a model",
                 choices = predNameList, selected = predNameList[[1]])
   })
   
   # generates list of predictor variables with non-zero coeffs for currently selected model
   output$predVarSel <- renderUI({
     if (is.null(values$evalPreds)) return()
-    values$curMod <- values$evalMods[[which(as.character(values$evalTbl[, 1]) == input$predictionSel2)]]
+    values$curMod <- values$evalMods[[which(as.character(values$evalTbl[, 1]) == input$modelSel2)]]
     nonZeroPreds <- mxNonzeroPreds(values$curMod)  # need function from pete's ms
     nonZeroPredNames <- names(values$predsMsk[[nonZeroPreds]])
     nonZeroPredNames <- nonZeroPredNames[order(as.integer(sub('bio', '', nonZeroPredNames)))]  # order by name
@@ -491,7 +491,7 @@ shinyServer(function(input, output, session) {
   
   # Module Plot Prediction
   observeEvent(input$plotPred, {
-    comp7_mapPred(input$predictionSel1, input$predForm, input$predThresh, proxy)
+    comp7_mapPred(input$modelSel1, input$predForm, input$predThresh, proxy)
   })
   
   # handle download for rasters, with file type as user choice
@@ -537,17 +537,27 @@ shinyServer(function(input, output, session) {
     values$drawPolyCoordsProjExt <- NULL
     proxy %>% removeShape("drawPolyProjExt")
     proxy %>% removeShape('projExtPolySel')
+    proxy %>% removeImage('r2')
     writeLog('* RESET PROJECTION EXTENT')
   })
   
-  observe({
-    print(values$drawPolyCoordsSelLocs)
-    print(values$drawPolyCoordsProjExt)
+  # copy for response curve model selection
+  output$modelSel3 <- renderUI({
+    if (is.null(values$evalPreds)) return()
+    n <- names(values$evalPreds)
+    predNameList <- setNames(as.list(seq(1, length(n))), n)
+    selectInput("modelSel3", label = "Choose a model",
+                choices = predNameList)
   })
   
   # Module Select Localities: select points intersecting drawn polygons (replace values$df)
   observeEvent(input$projExtSel, {
-    comp8_selProjArea()
+    comp8_selProjExt()
+  })
+  
+  observeEvent(input$goPjArea, {
+    writeLog('* PROJECTING to new area.')
+    comp8_pjModel(input$modelSel3, values$preds)
   })
   
 
