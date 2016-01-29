@@ -166,7 +166,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                                    choices = list("Choose resolution" = "",
                                                                                                   "2.5 arcmin WorldClim bio1-19" = 2.5,
                                                                                                   "5 arcmin WorldClim bio1-19" = 5,
-                                                                                                  "10 arcmin WorldClim bio1-19" = 10)),
+                                                                                                  "10 arcmin WorldClim bio1-19" = 10), selected=10),
                                                                        actionButton("predDnld", "Download Env Data"),
                                                                        HTML('<hr>')
                                                       ),
@@ -215,7 +215,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                        HTML('<hr>'),
                                                                        radioButtons("backgSelect", "Background Extents:",
                                                                                     choices = list("Bounding box" = 'bb', "Minimum convex polygon" = 'mcp',
-                                                                                                   "User-specified polygon" = 'user'), selected = "bb")
+                                                                                                   "User-specified polygon" = 'user'), selected = "mcp")
                                                       ),
                                                       conditionalPanel("input.backgSelect == 'user'",
                                                                        #  shinyFilesButton('userBackg', label='Upload Shapefile', title='Please select a file', multiple=TRUE)),
@@ -340,9 +340,9 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                        HTML('<hr>'),
                                                                        checkboxGroupInput("fcs", label = "Select feature classes (flexibility of modeled response)",
                                                                                           choices = list("L" = "L", "LQ" = "LQ", "H" = "H",
-                                                                                                         "LQH" = "LQH", "LQHP" = "LQHP", "LQHPT" = "LQHPT")),
+                                                                                                         "LQH" = "LQH", "LQHP" = "LQHP", "LQHPT" = "LQHPT"), selected="L"),
                                                                        sliderInput("rms", label = "Select regularization multipliers (penalty against complexity)",
-                                                                                   min = 0, max = 10, value = c(1, 5)),
+                                                                                   min = 0, max = 10, value = c(1, 2)),
                                                                        numericInput("rmsBy", label = "RM step value", value = 1)
                                                       ),
                                                       conditionalPanel("input.modSelect == 'BIOCLIM' || input.modSelect == 'Maxent'",
@@ -395,7 +395,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                                         includeMarkdown("www/tab7_pred.Rmd")
                                                                        ),
                                                                        HTML('<hr>'),
-                                                                       uiOutput("predictionSel1"),
+                                                                       uiOutput("modelSel1"),
                                                                        conditionalPanel("input.modSelect == 'Maxent'",
                                                                                         selectInput('predForm', label = "Prediction output",
                                                                                                     choices = list("raw" = 'raw', "logistic" = 'log'),
@@ -414,7 +414,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                        HTML('<hr>')
                                                       ),
                                                       conditionalPanel("input.visSelect == 'response'",
-                                                                       uiOutput("predictionSel2"),
+                                                                       uiOutput("modelSel2"),
                                                                        uiOutput("predVarSel")
                                                       ),
                                                       conditionalPanel("input.visSelect == 'bcEnvel'",
@@ -449,12 +449,15 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                       radioButtons("projSelect", "Modules Available:",
                                                                    choices = list("Project to New Area" = 'pjArea', "Project to New Time" = 'pjTime'),
                                                                    selected = ''),
-                                                      br(),
+                                                      HTML('<hr>'),
+                                                      uiOutput("modelSel3"),
                                                       actionButton("projExtSel", "Select Projection Extent"),
                                                       br(), br(),
                                                       actionButton("erasePolyProjExt", "Reset Projection Extent"),
                                                       br(),
-                                                      HTML('<hr>')
+                                                      HTML('<hr>'),
+                                                      conditionalPanel("input.projSelect == 'pjArea'",
+                                                                       actionButton("goPjArea", "Project to Current Extent"))
                                      ),
                                      conditionalPanel("input.tabs == 'rmd'",
                                                       h4("Download Code History Markdown File")
