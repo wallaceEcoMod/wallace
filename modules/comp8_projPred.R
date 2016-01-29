@@ -1,4 +1,4 @@
-comp8_selProjArea <- function() {
+comp8_selProjExt <- function() {
   if (is.null(values$df)) return()
   if (is.null(values$drawPolyCoordsProjExt)) return()
   values$drawPolyCoordsProjExt <- unique(values$drawPolyCoordsProjExt)  # remove phantom first row after reset
@@ -17,6 +17,18 @@ comp8_selProjArea <- function() {
   isolate(writeLog(paste0('* Defined projection extent to: ', coordsChar)))
 }
 
+comp8_pjModel <- function(modelSel, preds) {
+  if (is.null(values$projExtPoly)) return()
+  curMod <- values$evalMods[[as.numeric(modelSel)]]
+  newMskPreds <- crop(preds, values$projExtPoly)
+  newMskPreds <- mask(newMskPreds, values$projExtPoly)
+  values$pj <- predict(curMod, newMskPreds)
+  rasVals <- getValues(values$pj)
+  pal <- colorNumeric(c("#fff5f0", "#fb6a4a", "#67000d"), rasVals, na.color='transparent')
+  proxy %>% addLegend("topright", pal = pal, title = "Predicted Suitability",
+                      values = rasVals, layerId = 2)
+  proxy %>% addRasterImage(values$pj, colors = pal, opacity = 0.7, layerId = 'r2')
+}
 
 comp7_mapPred <- function(predictionSel1, predForm, predThresh, proxy) {
   proxy %>% removeImage('r1')  # remove current raster
