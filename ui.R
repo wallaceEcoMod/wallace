@@ -68,7 +68,7 @@ shinyUI(pageWithSidebar(headerPanel("", tags$head(tags$img(src="wallace_logo1.pn
                                                                        sliderInput("gbifNum", "Maximum number of occurrences:", min = 1, max = 500, value = 12),
                                                                        #br(),
                                                                        #uiOutput('gbifDnld'),
-                                                                       downloadButton('downloadGBIFcsv', "Download Occurrence CSV"),
+                                                                       downloadButton('downloadOrigOccs', "Download Occurrence CSV"),
                                                                        HTML('<hr>')
                                                       ),
                                                       conditionalPanel("input.dbSelect == 'user'",
