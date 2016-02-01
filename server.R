@@ -46,7 +46,7 @@ printVecAsis <- function(x) {
 
 shinyServer(function(input, output, session) {
   # disable download buttons
-  shinyjs::disable("downloadGBIFcsv")
+  shinyjs::disable("downloadOrigOccs")
   shinyjs::disable("downloadThincsv")
   shinyjs::disable("predDnld")
   shinyjs::disable("downloadMskPreds")
@@ -81,14 +81,14 @@ shinyServer(function(input, output, session) {
   # module GBIF
   observeEvent(input$goName, {
     if (input$gbifName == "") return()
-    comp1_gbifOcc(input$gbifName, input$gbifNum)
-    shinyjs::enable("downloadGBIFcsv")
+    getGbifOccs(input$gbifName, input$gbifNum)
+    shinyjs::enable("downloadOrigOccs")
   })
 
   # module userOccs
   observe({
     if (is.null(input$userCSV)) return()  # exit if userCSV not specifed
-    comp1_mod_userOcc(input$userCSV$datapath)
+    getUserOccs(input$userCSV$datapath)
   })
   
   # render the GBIF records data table
@@ -104,7 +104,7 @@ shinyServer(function(input, output, session) {
   })
   
   # handle downloading of GBIF csv
-  output$downloadGBIFcsv <- downloadHandler(
+  output$downloadOrigOccs <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$df), "_gbifCleaned.csv")},
     content = function(file) {
       write.csv(values$gbifOrig$data, file, row.names=FALSE)
@@ -115,65 +115,15 @@ shinyServer(function(input, output, session) {
   ### MAPPING FUNCTIONALITY
   #########################
   
-  # map gbif occs
-  observeEvent(input$goName, {
-    if (is.null(values$gbifoccs)) {return()}
-    proxy %>% clearShapes()
-    lati <- values$gbifoccs[,3]
-    longi <- values$gbifoccs[,2]
-    z <- smartZoom(longi, lati)
-    proxy %>% fitBounds(z[1], z[2], z[3], z[4])
-
-    # this section makes letter icons for occs based on basisOfRecord
-    #     occIcons <- makeOccIcons()
-    #     iconList <- list(HUMAN_OBSERVATION=1, OBSERVATION=2, PRESERVED_SPECIMEN=3,
-    #                      UNKNOWN_EVIDENCE=4, FOSSIL_SPECIMEN=5, MACHINE_OBSERVATION=6,
-    #                      LIVING_SPECIMEN=7, LITERATURE_OCCURRENCE=8, MATERIAL_SAMPLE=9)
-    #     values$gbifoccs$basisNum <- unlist(iconList[values$gbifoccs$basisOfRecord])
-    #     proxy %>% addMarkers(data = values$gbifoccs, lat = ~latitude, lng = ~longitude,
-    #                          layerId = as.numeric(rownames(values$gbifoccs)),
-    #                          icon = ~icons(occIcons[basisNum]))
-  })
-
   # behavior for plotting points and their colors based on which tab is active
   observe({
     if (is.null(values$df)) return()
-    if (input$tabs == 1) {  # if tab1, just plot occurrence localities
-      map_plotLocs(values$gbifoccs)
-    }
+#     if (input$tabs == 1) {  # if tab1, just plot occurrence localities
+#       map_plotLocs(values$origOccs)
+#     }
 
     if (input$tabs == 2) {  # if tab2
       if (is.null(input$procOccSel)) return()
-      if (input$procOccSel == "selpts") {  #  and Module Select Localities, make selected pts yellow and add legend
-        if (is.null(values$prethinned)) {
-          map_plotLocs(values$gbifoccs, clearShapes=FALSE)
-          if (!is.null(values$ptsSel)) {
-            proxy %>% addCircleMarkers(data = values$ptsSel, lat = ~latitude, lng = ~longitude,
-                                       radius = 5, color = 'red',
-                                       fill = TRUE, fillColor = 'yellow',
-                                       weight = 2, popup = ~pop, fillOpacity=1)
-            proxy %>% addLegend("topright", colors = c('red','yellow'),
-                                title = "GBIF Records", labels = c('original', 'selected'),
-                                opacity = 1, layerId = 1)
-          } else {
-            map_plotLocs(values$df, clearShapes=FALSE)
-          }
-        } else {
-          map_plotLocs(values$df, clearShapes=FALSE)
-        }
-
-        # draw all user-drawn polygons and color according to colorBrewer
-        if (!is.null(values$drawPolysSelLocs)) {
-          curPolys <- values$drawPolysSelLocs@polygons
-          numPolys <- length(curPolys)
-          colors <- brewer.pal(numPolys, 'Accent')
-          for (i in numPolys) {
-            curPoly <- curPolys[i][[1]]@Polygons[[1]]@coords
-            proxy %>% addPolygons(curPoly[,1], curPoly[,2],
-                                  weight=3, color=colors[i])
-          }
-        }
-      }
 
       if (input$procOccSel == "spthin") {
         lati <- values$df[,3]
@@ -182,7 +132,7 @@ shinyServer(function(input, output, session) {
         proxy %>% fitBounds(z[1], z[2], z[3], z[4])
         map_plotLocs(values$df)
         if (!is.null(values$prethinned)) {
-          values$drawPolysSelLocs <- NULL
+          values$poly1 <- NULL
           lati <- values$prethinned[,3]
           longi <- values$prethinned[,2]
           
@@ -243,7 +193,33 @@ shinyServer(function(input, output, session) {
   # functionality for drawing polygons on map
   observe({
     if (input$tabs == 2 && input$procOccSel == "selpts") {
-      map_drawPolys(input$map_click, component = 2)
+      if (is.null(input$map_click)) return()
+      lonlat <- c(input$map_click$lng, input$map_click$lat)
+      
+      if (values$polyErase) {
+        if (identical(lonlat, values$mapClick)) return()
+        values$polyErase <- FALSE
+      }
+      
+      values$mapClick <- lonlat
+      values$polyPts1 <- isolate(rbind(values$polyPts1, lonlat))
+      proxy %>% removeShape("poly1")
+      proxy %>% addPolygons(values$polyPts1[,1], values$polyPts1[,2],
+                            layerId='poly1', fill=FALSE, weight=3, color='green')
+    }
+  })
+  
+  # plots all polygons used for selection and fills them with ColorBrewer colors
+  observe({
+    if (!is.null(values$poly1)) {
+      curPolys <- values$poly1@polygons
+      numPolys <- length(curPolys)
+      colors <- brewer.pal(numPolys, 'Accent')
+      for (i in numPolys) {
+        curPoly <- curPolys[i][[1]]@Polygons[[1]]@coords
+        proxy %>% addPolygons(curPoly[,1], curPoly[,2],
+                              weight=3, color=colors[i])
+      }
     }
   })
   
@@ -264,14 +240,16 @@ shinyServer(function(input, output, session) {
   # erase select localities polygon with button click
   observeEvent(input$erasePolySelLocs, {
     values$ptsSel <- NULL
-    values$drawPolysSelLocs <- NULL
+    values$polyPts1 <- NULL
+    values$poly1 <- NULL
     values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
     proxy %>% clearShapes()
-    x <- paste('* RESET: localities dataset is now back to', nrow(values$gbifoccs), 'records.')
+    map_plotLocs(values$origOccs)
+    x <- paste('* RESET: localities dataset is now back to', nrow(values$origOccs), 'records.')
     isolate(writeLog(x))
-    if (!is.null(values$gbifoccs)) {
-      values$gbifoccs <- rbind(values$gbifoccs, values$removed)
-      values$df <- values$gbifoccs
+    if (!is.null(values$origOccs)) {
+      values$origOccs <- rbind(values$origOccs, values$removed)
+      values$df <- values$origOccs
     }
     lati <- values$df[,3]
     longi <- values$df[,2]
@@ -287,7 +265,7 @@ shinyServer(function(input, output, session) {
 
   # handle download for thinned records csv
   output$downloadThincsv <- downloadHandler(
-    filename = function() {paste0(nameAbbr(values$gbifoccs), "_thinned_gbifCleaned.csv")},
+    filename = function() {paste0(nameAbbr(values$origOccs), "_thinned_gbifCleaned.csv")},
     content = function(file) {
       write.csv(values$df[,1:9], file, row.names = FALSE)
     }
@@ -386,7 +364,7 @@ shinyServer(function(input, output, session) {
   
   # handle download for partitioned occurrence records csv
   output$downloadPart <- downloadHandler(
-    filename = function() {paste0(nameAbbr(values$gbifoccs), "_partitioned_occs.csv")},
+    filename = function() {paste0(nameAbbr(values$origOccs), "_partitioned_occs.csv")},
     content = function(file) {
       bg.bind <- cbind(rep('background', nrow(values$bg.coords)), values$bg.coords)
       names(bg.bind) <- c('species', 'longitude', 'latitude')
@@ -431,7 +409,7 @@ shinyServer(function(input, output, session) {
 
   # handle downloads for ENMeval results table csv
   output$downloadEvalcsv <- downloadHandler(
-    filename = function() {paste0(nameAbbr(values$gbifoccs), "_enmeval_results.csv")},
+    filename = function() {paste0(nameAbbr(values$origOccs), "_enmeval_results.csv")},
     content = function(file) {
       write.csv(values$evalTbl, file, row.names = FALSE)
     }
@@ -473,7 +451,7 @@ shinyServer(function(input, output, session) {
   
   # handle downloads for ENMeval plots png
   output$downloadEvalPlots <- downloadHandler(
-    filename = function() {paste0(nameAbbr(values$gbifoccs), "_enmeval_plots.png")},
+    filename = function() {paste0(nameAbbr(values$origOccs), "_enmeval_plots.png")},
     content = function(file) {
       png(file)
       evalPlot(values$evalTbl)
