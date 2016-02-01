@@ -1,6 +1,6 @@
 source("functions.R")
 
-comp2_selLocMap_remLocs <- function(remLoc) {
+remSelLocs <- function(remLoc) {
   isolate({
     numTest <- remLoc %in% row.names(values$df)
     rows <- as.numeric(rownames(values$df))  # get row names
@@ -19,7 +19,7 @@ comp2_selLocMap_remLocs <- function(remLoc) {
   })
 }
 
-comp2_selLocMap_selIntLocs <- function() {
+polySelLocs <- function() {
   if (is.null(values$origOccs)) return()
   values$prethinned <- NULL  # resets prethinned to avoid it plotting if sequence is: select pts -> spThin -> select pts -> spThin
   values$polyErase <- TRUE  # turn on to signal to prevent the use of an existing map click
@@ -54,4 +54,43 @@ comp2_selLocMap_selIntLocs <- function() {
   values$polyPts1 <- NULL
   values$ptsSel <- ptsSel
   isolate(writeLog(paste('* Selected', nrow(values$df), 'localities.')))
+}
+
+thinOccs <- function(thinDist) {
+  if (is.null(values$df)) {
+    writeLog("* WARNING: Obtain species occurrence localities first in Step 1.")
+    return()
+  }
+  lati <- values$df[,3]
+  longi <- values$df[,2]
+  z <- smartZoom(longi, lati)
+  proxy %>% fitBounds(z[1], z[2], z[3], z[4])
+  
+  if (input$thinDist <= 0) {
+    writeLog("* WARNING: Assign positive distance to thinning parameter.")
+    return()
+  }
+  withProgress(message = "Spatially Thinning Localities...", {  # start progress bar
+    output <- thin(values$df, 'latitude', 'longitude', 'species', thin.par = thinDist,
+                   reps = 100, locs.thinned.list.return = TRUE, write.files = FALSE,
+                   verbose = FALSE)
+    values$prethinned <- values$df
+    # pull thinned dataset with max records, not just the first in the list
+    maxThin <- which(sapply(output, nrow) == max(sapply(output, nrow)))
+    maxThin <- output[[ifelse(length(maxThin) > 1, maxThin[1], maxThin)]]  # if more than one max, pick first
+    values$df <- values$df[as.numeric(rownames(maxThin)),]
+    if (!is.null(values$inFile)) {
+      thinned.inFile <- values$inFile[as.numeric(rownames(output[[1]])),]
+    }
+  })
+  
+  map_plotLocs(values$prethinned, fillColor='blue', fillOpacity=1, clearShapes=FALSE)
+  map_plotLocs(values$df, fillOpacity=1, clearShapes=FALSE, clearMarkers=FALSE)
+  proxy %>% addLegend("topright", colors = c('red', 'blue'),
+                      title = "GBIF Records", labels = c('retained', 'removed'),
+                      opacity = 1, layerId = 1)
+  
+  writeLog(paste('* Total records thinned to [', nrow(values$df), '] localities.'))
+  # render the thinned records data table
+  output$occTbl <- DT::renderDataTable({DT::datatable(values$df[,1:4])})
 }
