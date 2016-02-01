@@ -504,17 +504,29 @@ shinyServer(function(input, output, session) {
   # functionality for drawing polygons on map
   observe({
     if (input$tabs == 8) {
-      map_drawPolys(input$map_click, component = 8)
+      if (is.null(input$map_click)) return()
+      lonlat <- c(input$map_click$lng, input$map_click$lat)
+      
+      if (values$polyErase) {
+        if (identical(lonlat, values$mapClick)) return()
+        values$polyErase <- FALSE
+      }
+      
+      values$mapClick <- lonlat
+      values$polyPts2 <- isolate(rbind(values$polyPts2, lonlat))
+      proxy %>% removeShape("poly2")
+      proxy %>% addPolygons(values$polyPts2[,1], values$polyPts2[,2],
+                            layerId='poly2', fill=FALSE, weight=4, color='red')
     }
   })
   
   # erase select localities polygon with button click
   observeEvent(input$erasePolyProjExt, {
     values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
-    values$projExtPoly <- NULL
-    values$drawPolyCoordsProjExt <- NULL
-    proxy %>% removeShape("drawPolyProjExt")
-    proxy %>% removeShape('projExtPolySel')
+    values$poly2 <- NULL
+    values$polyPts2 <- NULL
+    proxy %>% removeShape("poly2")
+    proxy %>% removeShape('poly2Sel')
     proxy %>% removeImage('r2')
     writeLog('* RESET PROJECTION EXTENT')
   })
@@ -529,7 +541,7 @@ shinyServer(function(input, output, session) {
   })
   
   # Module Select Localities: select points intersecting drawn polygons (replace values$df)
-  observeEvent(input$projExtSel, {
+  observeEvent(input$poly2Sel, {
     comp8_selProjExt()
   })
   
