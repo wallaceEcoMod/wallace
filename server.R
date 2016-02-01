@@ -118,36 +118,6 @@ shinyServer(function(input, output, session) {
   # behavior for plotting points and their colors based on which tab is active
   observe({
     if (is.null(values$df)) return()
-#     if (input$tabs == 1) {  # if tab1, just plot occurrence localities
-#       map_plotLocs(values$origOccs)
-#     }
-
-    if (input$tabs == 2) {  # if tab2
-      if (is.null(input$procOccSel)) return()
-
-      if (input$procOccSel == "spthin") {
-        lati <- values$df[,3]
-        longi <- values$df[,2]
-        z <- smartZoom(longi, lati)
-        proxy %>% fitBounds(z[1], z[2], z[3], z[4])
-        map_plotLocs(values$df)
-        if (!is.null(values$prethinned)) {
-          values$poly1 <- NULL
-          lati <- values$prethinned[,3]
-          longi <- values$prethinned[,2]
-          
-          z <- smartZoom(longi, lati)
-          proxy %>% fitBounds(z[1], z[2], z[3], z[4])
-          proxy %>% addCircleMarkers(data = values$prethinned, lat = ~latitude, lng = ~longitude,
-                                     radius = 5, color = 'red', fillOpacity = 1,
-                                     fill = TRUE, fillColor = 'blue', weight = 2, popup = ~pop)
-          map_plotLocs(values$df)
-          proxy %>% addLegend("topright", colors = c('red', 'blue'),
-                              title = "GBIF Records", labels = c('retained', 'removed'),
-                              opacity = 1, layerId = 1)
-        }
-      }
-    }
 
     if (input$tabs == 3 | input$tabs == 4 | input$tabs == 5) {
       proxy %>% clearMarkers()
@@ -225,7 +195,7 @@ shinyServer(function(input, output, session) {
   
   # Module Select Localities: select points intersecting drawn polygons (replace values$df)
   observeEvent(input$selectPoly, {
-    comp2_selLocMap_selIntLocs()
+    polySelLocs()
   })
   
   # governs point removal behavior and modifies tables in "values"
@@ -234,7 +204,7 @@ shinyServer(function(input, output, session) {
       writeLog('NOTICE: Remove localities by ID before selecting with polygons. Press "Reset Localities" to start over.')
       return()
       }
-    comp2_selLocMap_remLocs(input$remLoc)
+    remSelLocs(input$remLoc)
   })
   
   # erase select localities polygon with button click
@@ -259,7 +229,7 @@ shinyServer(function(input, output, session) {
   
   # Module Spatial Thin
   observeEvent(input$goThin, {
-    comp2_spThin(input$thinDist)
+    thinOccs(input$thinDist)
     shinyjs::enable("downloadThincsv")
   })
 
