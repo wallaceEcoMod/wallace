@@ -29,5 +29,6 @@ comp8_pjModel <- function(modelSel, preds) {
   pal <- colorNumeric(c("#fff5f0", "#fb6a4a", "#67000d"), rasVals, na.color='transparent')
   proxy %>% addLegend("topright", pal = pal, title = "Predicted Suitability",
                       values = rasVals, layerId = 2)
+  proxy %>% removeShape('poly2Sel')
   proxy %>% addRasterImage(values$pj, colors = pal, opacity = 0.7, layerId = 'r2')
 }

@@ -113,51 +113,6 @@ shinyServer(function(input, output, session) {
   )
   
   #########################
-  ### MAPPING FUNCTIONALITY
-  #########################
-  
-  # behavior for plotting points and their colors based on which tab is active
-#   observe({
-#     if (is.null(values$df)) return()
-# 
-#     if (input$tabs == 3 | input$tabs == 4 | input$tabs == 5) {
-#       proxy %>% clearMarkers()
-#       proxy %>% clearShapes()
-#       proxy %>% clearImages()
-#       proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
-#                                  radius = 5, color = 'red',
-#                                  fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
-#       proxy %>% addLegend("topright", colors = c('red'),
-#                           title = "GBIF Records", labels = c('retained'),
-#                           opacity = 1, layerId = 1)
-#       if (!is.null(values$bb) & input$tabs == 4) {
-#         proxy %>% addPolygons(lng=values$bb[,1], lat=values$bb[,2], layerId="backext",
-#                               options= list(weight=10, col="red"))
-#       }
-#     }
-# 
-#     # erase raster if user goes to other tabs, puts it back when return to tab 5
-#     if (input$tabs == 7) {
-#       proxy %>% clearMarkers()
-#       proxy %>% clearShapes()
-#       proxy %>% clearImages()
-#       proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
-#                                  radius = 5, color = 'black',
-#                                  fill = TRUE, weight = 4, popup = ~pop)
-#       proxy %>% addLegend("topright", colors = c('black'),
-#                           title = "GBIF Records", labels = c('retained'),
-#                           opacity = 1, layerId = 1)
-#     }
-#     
-#     if (input$tabs == 8) {
-#       if (!is.null(values$projExtPoly)) {
-#         coords <- values$projExtPoly@polygons[[1]]@Polygons[[1]]@coords
-#         proxy %>% addPolygons(coords[,1], coords[,2], weight=3, color='red', layerId='projExtPolySel')
-#       }
-#     }
-#   })
-  
-  #########################
   ### COMPONENT 2 FUNCTIONALITY
   #########################
 
@@ -495,6 +450,10 @@ shinyServer(function(input, output, session) {
   # functionality for drawing polygons on map
   observe({
     if (input$tabs == 8) {
+      map_plotLocs(values$df, fillColor='black', fillOpacity=0.8, clearShapes=FALSE)
+      proxy %>% addLegend("topright", colors = c('black'),
+                          title = "GBIF Records", labels = c('retained'),
+                          opacity = 1, layerId = 1)   
       if (is.null(input$map_click)) return()
       lonlat <- c(input$map_click$lng, input$map_click$lat)
       
