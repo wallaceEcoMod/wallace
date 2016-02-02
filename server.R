@@ -28,7 +28,8 @@ library(rmarkdown)
 source("functions.R")
 
 # make list to carry data used by multiple reactive functions
-values <- reactiveValues(polyID=0, polyErase=FALSE, log=c())
+brk <- paste(rep('------', 10), collapse='')
+values <- reactiveValues(polyID=0, polyErase=FALSE, log=c(paste('***WELCOME TO WALLACE***', brk, 'Please find messages for the user in this log window.', brk, sep='<br>')))
 
 # add text to log
 writeLog <- function(x) {
@@ -116,45 +117,45 @@ shinyServer(function(input, output, session) {
   #########################
   
   # behavior for plotting points and their colors based on which tab is active
-  observe({
-    if (is.null(values$df)) return()
-
-    if (input$tabs == 3 | input$tabs == 4 | input$tabs == 5) {
-      proxy %>% clearMarkers()
-      proxy %>% clearShapes()
-      proxy %>% clearImages()
-      proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
-                                 radius = 5, color = 'red',
-                                 fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
-      proxy %>% addLegend("topright", colors = c('red'),
-                          title = "GBIF Records", labels = c('retained'),
-                          opacity = 1, layerId = 1)
-      if (!is.null(values$bb) & input$tabs == 4) {
-        proxy %>% addPolygons(lng=values$bb[,1], lat=values$bb[,2], layerId="backext",
-                              options= list(weight=10, col="red"))
-      }
-    }
-
-    # erase raster if user goes to other tabs, puts it back when return to tab 5
-    if (input$tabs == 7) {
-      proxy %>% clearMarkers()
-      proxy %>% clearShapes()
-      proxy %>% clearImages()
-      proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
-                                 radius = 5, color = 'black',
-                                 fill = TRUE, weight = 4, popup = ~pop)
-      proxy %>% addLegend("topright", colors = c('black'),
-                          title = "GBIF Records", labels = c('retained'),
-                          opacity = 1, layerId = 1)
-    }
-    
-    if (input$tabs == 8) {
-      if (!is.null(values$projExtPoly)) {
-        coords <- values$projExtPoly@polygons[[1]]@Polygons[[1]]@coords
-        proxy %>% addPolygons(coords[,1], coords[,2], weight=3, color='red', layerId='projExtPolySel')
-      }
-    }
-  })
+#   observe({
+#     if (is.null(values$df)) return()
+# 
+#     if (input$tabs == 3 | input$tabs == 4 | input$tabs == 5) {
+#       proxy %>% clearMarkers()
+#       proxy %>% clearShapes()
+#       proxy %>% clearImages()
+#       proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
+#                                  radius = 5, color = 'red',
+#                                  fill = TRUE, fillColor = 'red', weight = 2, popup = ~pop)
+#       proxy %>% addLegend("topright", colors = c('red'),
+#                           title = "GBIF Records", labels = c('retained'),
+#                           opacity = 1, layerId = 1)
+#       if (!is.null(values$bb) & input$tabs == 4) {
+#         proxy %>% addPolygons(lng=values$bb[,1], lat=values$bb[,2], layerId="backext",
+#                               options= list(weight=10, col="red"))
+#       }
+#     }
+# 
+#     # erase raster if user goes to other tabs, puts it back when return to tab 5
+#     if (input$tabs == 7) {
+#       proxy %>% clearMarkers()
+#       proxy %>% clearShapes()
+#       proxy %>% clearImages()
+#       proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
+#                                  radius = 5, color = 'black',
+#                                  fill = TRUE, weight = 4, popup = ~pop)
+#       proxy %>% addLegend("topright", colors = c('black'),
+#                           title = "GBIF Records", labels = c('retained'),
+#                           opacity = 1, layerId = 1)
+#     }
+#     
+#     if (input$tabs == 8) {
+#       if (!is.null(values$projExtPoly)) {
+#         coords <- values$projExtPoly@polygons[[1]]@Polygons[[1]]@coords
+#         proxy %>% addPolygons(coords[,1], coords[,2], weight=3, color='red', layerId='projExtPolySel')
+#       }
+#     }
+#   })
   
   #########################
   ### COMPONENT 2 FUNCTIONALITY
@@ -247,6 +248,11 @@ shinyServer(function(input, output, session) {
   
   observe({if (input$bcRes != "") shinyjs::enable("predDnld")})
 
+  observe({
+    if (is.null(values$df)) return()
+    if (input$tabs == 3) map_plotLocs(values$df)
+  })
+  
   # module WorldClim
   observeEvent(input$predDnld, {
     if (!is.null(values$df)) {
@@ -270,8 +276,8 @@ shinyServer(function(input, output, session) {
   
   # module Select Study Region - set buffer, extent shape
   observe({
-    if (is.null(input$backgSelect) | is.null(values$preds) | is.na(input$backgBuf)) return()
-    comp4_studyReg(input$backgBuf, input$backgSelect)
+    if (is.null(values$preds)) return()
+    if (input$tabs == 4) comp4_studyReg(input$backgBuf, input$backgSelect)
   })
 
   # module Select Study Region - mask out environmental predictors by background extent
@@ -308,6 +314,11 @@ shinyServer(function(input, output, session) {
   #########################
   ### COMPONENT 5 FUNCTIONALITY
   #########################
+  
+  observe({
+    if (is.null(values$df)) return()
+    if (input$tabs == 5) map_plotLocs(values$df)
+  })
   
   # update child radio buttons for selection of either spatial or non-spatial partitions
   observe({
@@ -388,7 +399,17 @@ shinyServer(function(input, output, session) {
   #########################
   ### COMPONENT 7 FUNCTIONALITY
   #########################
-
+  
+  observe({
+    if (is.null(values$df)) return()
+    if (input$tabs == 7) {
+      map_plotLocs(values$df, fillColor='black', fillOpacity=0.8)
+      proxy %>% addLegend("topright", colors = c('black'),
+                          title = "GBIF Records", labels = c('retained'),
+                          opacity = 1, layerId = 1)    
+    }
+  })
+  
   # generates user selection of rasters to plot dynamically after they are created
   output$modelSel1 <- renderUI({
     if (is.null(values$evalPreds)) return()

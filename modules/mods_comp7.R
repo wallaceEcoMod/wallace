@@ -1,4 +1,9 @@
 comp7_mapPred <- function(modelSel1, predForm, predThresh, proxy) {
+  if (is.null(values$evalPreds)) {
+    writeLog("! Please run a model before plotting predictions.")
+    return()
+  }
+    
   proxy %>% removeImage('r1')  # remove current raster
   selRasRaw <- values$evalPreds[[as.numeric(modelSel1)]]
   selRasLog <- values$evalPredsLog[[as.numeric(modelSel1)]]
