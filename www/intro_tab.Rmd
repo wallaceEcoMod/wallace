@@ -3,27 +3,38 @@ title: "intro_tab"
 output: html_document
 ---
 <p align="justify">
-Wallace includes the following steps and modules, as well as the opportunity to download a commented and executable history of the analyses run in a given session:  
+Wallace includes the following components and modules, as well as the opportunity to download a commented and executable history of the analyses run in a given session:  
 </p>
-**STEP 1**: *Obtain Occurrence Data*  
-Options: GBIF; user-specified  
+**1**: *Obtain Occurrence Data*  
+-GBIF  
+-User-specified  
 
-**STEP 2:** *Process Occurrence Data*  
-Options: Select Localities; Spatial Thin  
+**2:** *Process Occurrence Data*  
+-Select Localities  
+-Spatial Thin  
 
-**STEP 3:** *Obtain Environmental Data*  
-Options: WorldClim  
+**3:** *Obtain Environmental Data*  
+-WorldClim  
 
-**STEP 4:** *Process Environmental Data*  
-Options: Select Study Region (including user-specified)  
+**4:** *Process Environmental Data*  
+-Select Study Region
 
-**STEP 5:** *Partition Occurrence Data*  
-Options: Non-spatial Partition; or Spatial Partition  
+**5:** *Partition Occurrence Data*  
+-Non-spatial Partition  
+-Spatial Partition  
 
-**STEP 6:** *Build and Evaluate Niche Model*  
-Options: BIOCLIM; Maxent  
+**6:** *Build and Evaluate Niche Model*  
+-BIOCLIM  
+-Maxent  
 
-**STEP 7:** *Visualize Model Results*  
-Options: Map Prediction  
+**7:** *Visualize Model Results*  
+-Map Prediction  
+-Plot Response Curves  
+-BIOCLIM Envelope Plot  
+-Maxent Evaluation Plots
+
+**8:** *Project Model*  
+-Project to New Area  
+-Project to New Time
 
 **Download Code History**  
