@@ -40,17 +40,17 @@ useShinyjs()
 
 # Define UI for application
 shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
-                   title="www/wallace_logo1.png",
-                   tabPanel("Introduction", value=0),
-                   tabPanel("1) Obtain Occ Data", value=1),
-                   tabPanel("2) Process Occ Data", value=2),
-                   tabPanel("3) Obtain Env Data", value=3),
-                   tabPanel("4) Process Env Data", value=4),
-                   tabPanel("5) Partition Occ Data", value=5),
-                   tabPanel("6) Build Niche Model", value=6),
-                   tabPanel("7) Visualize Results", value=7),
-                   tabPanel("8) Project Niche Model", value=8),
-                   tabPanel("Download Code History", value='rmd'),
+                   title='Wallace',
+                   tabPanel("Intro", value=0),
+                   tabPanel("1 Get Occs", value=1),
+                   tabPanel("2 Clean Occs", value=2),
+                   tabPanel("3 Get Env", value=3),
+                   tabPanel("4 Study Extent", value=4),
+                   tabPanel("5 Partition Occs", value=5),
+                   tabPanel("6 Model", value=6),
+                   tabPanel("7 Visualize", value=7),
+                   tabPanel("8 Project", value=8),
+                   tabPanel("History", value='rmd'),
                    tabPanel("About", value='about'),
                    
                    fluidRow(column(4,
@@ -462,18 +462,17 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                              HTML('<hr>'),
                                                              conditionalPanel("input.projSelect == 'pjArea'",
                                                                               actionButton("goPjArea", "Project to Current Extent"))
-                                            ),
-                                            conditionalPanel("input.tabs == 'rmd'",
-                                                             h4("Download Code History Markdown File")
-                                            ),
-                                            conditionalPanel("input.tabs == 'about'",
-                                                             h4("About")
+#                                             ),
+#                                             conditionalPanel("input.tabs == 'rmd'",
+#                                                              h4("Download Code History Markdown File")
+#                                             ),
+#                                             conditionalPanel("input.tabs == 'about'",
+#                                                              h4("About")
                                             )
                                           )
                      ),
                      column(8,
                             conditionalPanel("input.tabs != 0 && input.tabs != 'rmd' && input.tabs != 'about'",
-                                             "LOG",
                                              div(id = "wallaceLog", class = "scrollbox", htmlOutput("log"))),
                             br(),
                             conditionalPanel("input.tabs == 1 || input.tabs == 2 || input.tabs == 3 || input.tabs == 4 || input.tabs == 5
