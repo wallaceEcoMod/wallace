@@ -28,7 +28,7 @@ library(rmarkdown)
 source("functions.R")
 
 # make list to carry data used by multiple reactive functions
-brk <- paste(rep('------', 10), collapse='')
+brk <- paste(rep('------', 14), collapse='')
 values <- reactiveValues(polyID=0, polyErase=FALSE, log=c(paste('***WELCOME TO WALLACE***', brk, 'Please find messages for the user in this log window.', brk, sep='<br>')))
 
 # add text to log

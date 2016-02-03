@@ -1,3 +1,7 @@
+.panel-title {
+  color: green;
+}
+
 #controls {
   /* Appearance */
   background-color: white;
