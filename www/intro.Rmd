@@ -2,7 +2,6 @@
 title: "intro"
 output: html_document
 ---
-
 **What is “Wallace” and why?**  
 <p align="justify">
 Welcome to “Wallace: An R-based Modular Web App to Harness Biodiversity Data for Spatial Modeling (ver. beta0.2).” Wallace is a web application designed to facilitate spatial biodiversity research, currently concentrating on modeling niches and distributions using occurrence datasets and environmental predictor variables. These analyses, often termed ecological niche models, species distribution models, or bioclimatic envelope models, provide an estimate of the species’ response to environmental conditions, as well as a map indicating the areas suitable for it (its potential geographic distribution. This research area has grown tremendously over the past two decades, with applications to many academic disciplines, as well as to pressing environmental issues such as conservation biology, invasive species, zoonotic diseases, and climate-change impacts (Elith and Leathwick 2009; Franklin 2010; Peterson et al. 2011).</p>
