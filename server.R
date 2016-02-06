@@ -104,11 +104,11 @@ shinyServer(function(input, output, session) {
     output$occTbl <- DT::renderDataTable({DT::datatable(values$df[, -which(names(values$df) %in% c('origID', 'pop'))], options = options)})
   })
   
-  # handle downloading of GBIF csv
+  # handle downloading of original GBIF records after cleaning
   output$downloadOrigOccs <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$df), "_gbifCleaned.csv")},
     content = function(file) {
-      write.csv(values$gbifOrig$data, file, row.names=FALSE)
+      write.csv(values$gbifOrig, file, row.names=FALSE)
     }
   )
   
