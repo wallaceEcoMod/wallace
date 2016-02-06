@@ -16,9 +16,12 @@ getGbifOccs <- function(spName, occNum) {
               'institutionCode','country', 'stateProvince',
               'locality', 'elevation', 'basisOfRecord')
     results <- fixcols(cols, results)
-    locs.in <- results$data[!is.na(results$data[,3]),][,cols]
+    locs.in <- results$data[!is.na(results$data[,3]),]
     locs <- remDups(locs.in)
-    names(locs)[1:3] <- c('species','longitude', 'latitude')
+    values$gbifOrig <- locs
+    locs <- locs[,cols]  # limit to above columns
+
+    names(locs)[1:3] <- c('species','longitude', 'latitude')    
     locs$origID <- row.names(locs)
     locs$pop <- unlist(apply(locs, 1, popUpContent))
     # add locs to values list and copy
