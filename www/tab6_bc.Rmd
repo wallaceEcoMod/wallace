@@ -8,5 +8,5 @@ BIOCLIM is one of the simplest techniques for estimating a species’ niche and 
 </p>
 **IMPLEMENTATION**
 <p align="justify">
-Wallace makes BIOCLIM models using custom code modified from the R package ENMeval (Muscarella et al. 2014) as well as the dismo R package. Although other options could be added in the future (such as trimming percentiles of the tails of each variable), the current (classical) implementation considers the full observed range for each variable.  
+Wallace makes BIOCLIM models using the dismo R package, and evaluates them with custom code modified from the R package ENMeval (Muscarella et al. 2014). The user can view the bioclimatic envelope in 2 dimensions in the Visualization component. Although other options could be added in the future (such as trimming percentiles of the tails of each variable), the current (classical) implementation considers the full observed range for each variable.  
 </p>
