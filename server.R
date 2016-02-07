@@ -315,6 +315,9 @@ shinyServer(function(input, output, session) {
   ### COMPONENT 6 FUNCTIONALITY
   #########################
   
+  observe(print(input$bc1))
+  observe(print(input$bc2))
+  
   # niche model selection and warnings
   observeEvent(input$goEval, {
     if (is.null(values$predsMsk)) {
@@ -331,7 +334,7 @@ shinyServer(function(input, output, session) {
     if (input$modSelect == "BIOCLIM") {
       comp6_bioclimMod()
       # Module BIOCLIM Envelope Plots (for component 7)
-      output$bcEnvelPlot <- renderPlot(plot(values$evalMods, a = input$bc1, b = input$bc2, p = input$bcProb))
+      output$bcEnvelPlot <- renderPlot(plot(values$evalMods[[1]], a = input$bc1, b = input$bc2, p = input$bcProb))
     }
     # Module Maxent
      else if (input$modSelect == "Maxent") {

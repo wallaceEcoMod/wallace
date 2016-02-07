@@ -333,6 +333,9 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                               conditionalPanel("input.togMD6A",
                                                                                                includeMarkdown("www/tab6_bc.Rmd")
                                                                               ),
+                                                                              "BIOCLIM models are built and evaluated using the partitions assigned in the previous component.
+                                                                              The rows in the results table refer to evaluation statistics calculated, and the 'Bin' columns 
+                                                                              refer to the different partitions.",
                                                                               HTML('<hr>')
                                                              ),
                                                              conditionalPanel("input.modSelect == 'Maxent'",
@@ -421,6 +424,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                               uiOutput("predVarSel")
                                                              ),
                                                              conditionalPanel("input.visSelect == 'bcEnvel'",
+                                                                              "Pick a bioclimatic variable number for each axis",
                                                                               numericInput("bc1", "Axis 1", value = 1, min = 1, max = 19),
                                                                               numericInput("bc2", "Axis 2", value = 2, min = 1, max = 19),
                                                                               numericInput("bcProb", "Set threshold", value = 0.9, min = 0.75, max = 1, step = 0.05)
