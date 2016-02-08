@@ -36,3 +36,9 @@ comp8_pjModel <- function(modelSel, preds) {
   proxy %>% removeShape('poly2Sel')
   proxy %>% addRasterImage(values$pj, colors = pal, opacity = 0.7, layerId = 'r2')
 }
+
+comp8_mess <- function(preds) {
+  occVals <- extract(preds, c(values$df$longitude, values$df$latitude))
+  values$ms <- mess(values$pj, occVals)
+  proxy %>% addRasterImage(values$ms, opacity = 0.7, layerId = 'ms')
+}
