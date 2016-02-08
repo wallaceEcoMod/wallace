@@ -448,6 +448,7 @@ shinyServer(function(input, output, session) {
   # functionality for drawing polygons on map
   observe({
     if (input$tabs == 8) {
+      if (!is.null(values$poly2)) return()  # if sel pj ext poly selected, don't allow more drawing
       if (is.null(values$df)) return()
       map_plotLocs(values$df, fillColor='black', fillOpacity=0.8, clearShapes=FALSE)
       proxy %>% addLegend("topright", colors = c('black'),
