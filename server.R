@@ -271,6 +271,16 @@ shinyServer(function(input, output, session) {
   #########################
   
   observe({
+    if (input$partSelect == 'nsp') {
+      updateSelectInput(session, "partSelect2", choices=list("None selected" = '',
+                                                             "Jackknife (k = n)" = "jack", 
+                                                             "Random k-fold" = "random"))  
+    } else if (input$partSelect == 'sp') {
+      updateSelectInput(session, "partSelect2", choices=list("None selected" = '',
+                                                             "Block (k = 4)" = "block",
+                                                             "Checkerboard 1 (k = 2)" = "cb1",
+                                                             "Checkerboard 2 (k = 4)" = "cb2"))
+    }
     if (is.null(values$df)) return()
     if (input$tabs == 5) map_plotLocs(values$df)
   })
@@ -487,6 +497,11 @@ shinyServer(function(input, output, session) {
     comp8_pjModel(input$modelSel3, values$preds)
   })
   
+  observeEvent(input$goMESS, {
+    comp8_mess(values$preds)
+  })
+  
+  observe(print(input$partSelect2))
 
   # handler for R Markdown download
   output$downloadMD <- downloadHandler(
@@ -504,7 +519,7 @@ shinyServer(function(input, output, session) {
       exp <- knit_expand('userReport.Rmd', gbifName=input$gbifName, occurrences=input$gbifNum, thinDist=input$thinDist,
                          occsCSV=input$userCSV$datapath, occsRemoved=printVecAsis(values$removedAll), occsSel=printVecAsis(values$ptSeln),
                          predsRes=input$bcRes, backgSel=input$backgSelect, backgBuf=input$backgBuf, userBGname=input$userBackg$name,
-                         userBGpath=input$userBackg$datapath, partSel=input$partSelect2, aggFact=input$aggFact, kfoldsSel=input$kfolds, 
+                         userBGpath=input$userBackg$datapath, partSel=values$partSelect2, aggFact=input$aggFact, kfoldsSel=input$kfolds, 
                          modSel=input$modSelect, rmsSel1=input$rms[1], rmsSel2=input$rms[2], rmsBy=input$rmsBy, fcsSel=printVecAsis(input$fcs))
       writeLines(exp, 'userReport2.Rmd')
       
