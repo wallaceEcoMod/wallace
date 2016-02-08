@@ -469,17 +469,20 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  # erase select localities polygon with button click
+  # erase current projection extent
   observeEvent(input$erasePolyProjExt, {
     values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
-    values$poly2 <- NULL
-    values$polyPts2 <- NULL
+    values$poly2 <- NULL  # erase current pj ext polygon
+    values$pjMskPreds <- NULL  # erase current proj ext pred clips
+    values$pjArea <- NULL
+    values$mess <- NULL
+    # values$polyPts2 <- NULL
     proxy %>% clearShapes()
     proxy %>% clearImages()
     writeLog('* RESET PROJECTION EXTENT')
   })
   
-  # copy for response curve model selection
+  # model selection for component 8
   output$modelSel3 <- renderUI({
     if (is.null(values$evalPreds)) return()
     n <- names(values$evalPreds)
@@ -490,17 +493,16 @@ shinyServer(function(input, output, session) {
   
   # Module Select Localities: select points intersecting drawn polygons (replace values$df)
   observeEvent(input$poly2Sel, {
-    comp8_selProjExt()
+    comp8_selProjExt(input$modelSel3, values$preds)
+  })
+
+  # project new area or MESS map, depending on radio button selection  
+  observe({
+    if (!is.null(values$pjArea) && input$pjExtType == 'pjArea') isolate(comp8_pjModel())
+    if (!is.null(values$mess) && input$pjExtType == 'mess') isolate(comp8_mess())
   })
   
-  observeEvent(input$goPjCur, {
-    comp8_pjModel(input$modelSel3, values$preds)
-  })
-  
-  observeEvent(input$goMESS, {
-    comp8_mess(values$preds)
-  })
-  
+  # Download current projected extent
   output$downloadPj <- downloadHandler(
     filename = function() {
       ext <- ifelse(input$pjFileType == 'raster', 'zip',
