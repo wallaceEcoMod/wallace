@@ -1,4 +1,5 @@
 comp3_bioclim <- function(bcRes) {
+  if (bcRes == "") return()
   # getData() downloads bioclim variables unless they exist in directory, then just loads them
   withProgress(message = "Downloading WorldClim data...", {
     values$preds <- getData(name = "worldclim", var = "bio", res = bcRes)
