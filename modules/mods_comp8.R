@@ -1,4 +1,4 @@
-comp8_selProjExt <- function() {
+comp8_selProjExt <- function(modelSel, preds) {
   if (is.null(values$df)) return()
   if (is.null(values$polyPts2)) return()
 
@@ -11,12 +11,18 @@ comp8_selProjExt <- function() {
   values$polyID <- values$polyID + 1
   
   values$poly2 <- SpatialPolygons(list(Polygons(list(Polygon(values$polyPts2)), ID=values$polyID)))  # create new polygon from coords
-  proxy %>% addPolygons(values$polyPts2[,1], values$polyPts2[,2], weight=3, color='red', layerId='poly2Sel')
+  proxy %>% addPolygons(values$polyPts2[,1], values$polyPts2[,2], weight=3, fill=FALSE, color='red', layerId='poly2Sel')
   
-  preds <- values$preds  # this will need to change if implement project to diff time
-  
-  values$pjMskPreds <- crop(preds, values$poly2)
-  values$pjMskPreds <- mask(values$pjMskPreds, values$poly2)
+  withProgress(message = "Clipping environmental data to current extent...", {
+    msk <- crop(preds, values$poly2)
+    msk <- mask(msk, values$poly2)
+    curMod <- values$evalMods[[as.numeric(modelSel)]]
+    values$pjArea <- predict(curMod, msk)
+    occVals <- extract(msk, cbind(values$df$longitude, values$df$latitude))
+    values$mess <- mess(msk, occVals)
+    values$mess[is.infinite(values$mess)] <- 9999
+    values$pjMskPreds <- msk
+  })
   
   x <- round(values$polyPts2, digits = 2)  # round all coords to 2 decimal digits
   coordsChar <- paste(apply(x, 1, function(b) paste0('(',paste(b, collapse=', '),')')), collapse=', ')  # concatanate coords to a single character
@@ -24,43 +30,25 @@ comp8_selProjExt <- function() {
   isolate(writeLog(paste0('* Defined projection extent to: ', coordsChar)))
 }
 
-comp8_pjModel <- function(modelSel, preds) {
-  if (is.null(values$poly2)) {
-    writeLog('! Please select the projection extent.')
-    return()
-  }
-  if (is.null(values$rasName)) {
-    writeLog("! Please select a model in component 7 first.")
-    return()
-  }
+comp8_pjModel <- function() {
   writeLog('* PROJECTING to new area.')
-  curMod <- values$evalMods[[as.numeric(modelSel)]]
-  
-  values$pj <- predict(curMod, values$pjMskPreds)
-  rasVals <- getValues(values$pj)
-  pal <- colorNumeric(c("#fff5f0", "#fb6a4a", "#67000d"), rasVals, na.color='transparent')
-  proxy %>% addLegend("topright", pal = pal, title = "Predicted Suitability",
-                      values = rasVals, layerId = 2)
-  proxy %>% removeShape('poly2Sel')
-  proxy %>% clearImages()
-  proxy %>% addRasterImage(values$pj, colors = pal, opacity = 0.7, layerId = 'r2')
+  rasVals <- getValues(values$pjArea)
+  # pal <- colorNumeric(c("#fff5f0", "#fb6a4a", "#67000d"), rasVals, na.color='transparent')
+  # proxy %>% addLegend("topright", pal = pal, title = "Predicted Suitability",
+                      # values = rasVals, layerId = 2)
+  # proxy %>% removeShape('poly2Sel')
+  # proxy %>% clearImages()
+  proxy %>% addRasterImage(values$pjArea, opacity = 0.7, layerId = 'r2')
 }
 
-comp8_mess <- function(preds) {
-  if (is.null(values$poly2)) {
-    writeLog('! Please select the projection extent.')
-    return()
-  }
+comp8_mess <- function() {
   writeLog('* Generating MESS map.')
-  occVals <- extract(values$pjMskPreds, cbind(values$df$longitude, values$df$latitude))
-  values$pj <- mess(values$pjMskPreds, occVals)
-  values$pj[is.infinite(values$pj)] <- 9999
-  print(values(values$pj))
-  proxy %>% clearShapes()
-  proxy %>% clearImages()
-  rasVals <- getValues(values$pj)
-  pal <- colorNumeric(c("#fff5f0", "#fb6a4a", "#67000d"), rasVals, na.color='transparent')
-  proxy %>% addLegend("topright", pal = pal, title = "MESS Values",
-                      values = rasVals, layerId = 2)
-  proxy %>% addRasterImage(values$pj, opacity = 0.7, layerId = 'ms')
+
+  # proxy %>% clearShapes()
+  # proxy %>% clearImages()
+  rasVals <- getValues(values$mess)
+  # pal <- colorNumeric(c("#fff5f0", "#fb6a4a", "#67000d"), rasVals, na.color='transparent')
+  # proxy %>% addLegend("topright", pal = pal, title = "MESS Values",
+                      # values = rasVals, layerId = 2)
+  proxy %>% addRasterImage(values$mess, opacity = 0.7, layerId = 'ms')
 }
