@@ -275,19 +275,6 @@ shinyServer(function(input, output, session) {
     if (input$tabs == 5) map_plotLocs(values$df)
   })
   
-  # update child radio buttons for selection of either spatial or non-spatial partitions
-  observe({
-    if (!is.null(input$partSelect)) {
-      if (input$partSelect == 'nsp') {
-        updateRadioButtons(session, 'partSelect2', choices = list("Jackknife (k = n)" = "jack", "Random k-fold" = "random"))
-      } else if (input$partSelect == 'sp') {
-        updateRadioButtons(session, 'partSelect2', choices = list("Block (k = 4)" = "block",
-                                                                  "Checkerboard 1 (k = 2)" = "cb1",
-                                                                  "Checkerboard 2 (k = 4)" = "cb2"))
-      }
-    }
-  })
-
   # module Set Partitions
   observeEvent(input$goPart, {
     if (is.null(values$predsMsk)) {
@@ -314,9 +301,6 @@ shinyServer(function(input, output, session) {
   #########################
   ### COMPONENT 6 FUNCTIONALITY
   #########################
-  
-  observe(print(input$bc1))
-  observe(print(input$bc2))
   
   # niche model selection and warnings
   observeEvent(input$goEval, {
@@ -500,7 +484,6 @@ shinyServer(function(input, output, session) {
   })
   
   observeEvent(input$goPjArea, {
-    writeLog('* PROJECTING to new area.')
     comp8_pjModel(input$modelSel3, values$preds)
   })
   
