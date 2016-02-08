@@ -20,7 +20,11 @@ comp8_selProjExt <- function() {
 }
 
 comp8_pjModel <- function(modelSel, preds) {
-  if (is.null(values$poly2)) return()
+  if (is.null(values$poly2)) {
+    writeLog('! Please select the projection extent.')
+    return()
+  }
+  writeLog('* PROJECTING to new area.')
   curMod <- values$evalMods[[as.numeric(modelSel)]]
   newMskPreds <- crop(preds, values$poly2)
   newMskPreds <- mask(newMskPreds, values$poly2)

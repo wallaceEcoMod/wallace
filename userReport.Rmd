@@ -43,20 +43,20 @@ csv <- !is.null(input$userCSV)
 remLoc <- !is.null(values$removedAll)
 drawPoly <- !is.null(values$ptSeln)
 thin <- input$goThin != 0
-yesPreds <- input$pred != ""
+yesPreds <- input$bcRes != ""
 backg <- !is.null(input$backgSelect)
 isBB <- if (!is.null(input$backgSelect)) input$backgSelect == 'bb' else FALSE
 isMCP <- if (!is.null(input$backgSelect)) input$backgSelect == 'mcp' else FALSE
 isUserBG <- if (!is.null(input$backgSelect)) input$backgSelect == 'user' else FALSE
 part <- input$goPart != 0
-isBlock <- if (!is.null(input$partSelect2)) input$partSelect2 == 'block' else FALSE
-isCB1 <- if (!is.null(input$partSelect2)) input$partSelect2 == 'cb1' else FALSE
-isCB2 <- if (!is.null(input$partSelect2)) input$partSelect2 == 'cb2' else FALSE
-isJack <- if (!is.null(input$partSelect2)) input$partSelect2 == 'jack' else FALSE
-isRandom <- if (!is.null(input$partSelect2)) input$partSelect2 == 'random' else FALSE
+isBlock <- if (input$partSelect2 != "") input$partSelect2 == 'block' else FALSE
+isCB1 <- if (input$partSelect2 != "") input$partSelect2 == 'cb1' else FALSE
+isCB2 <- if (input$partSelect2 != "") input$partSelect2 == 'cb2' else FALSE
+isJack <- if (input$partSelect2 != "") input$partSelect2 == 'jack' else FALSE
+isRandom <- if (input$partSelect2 != "") input$partSelect2 == 'random' else FALSE
 model <- input$goEval != 0
-isBC <- if (!is.null(input$modSelect)) input$modSelect == 'BIOCLIM' else FALSE
-isMX <- if (!is.null(input$modSelect)) input$modSelect == 'Maxent' else FALSE
+isBC <- if (!is.null(values$evalMods)) input$modSelect == 'BIOCLIM' else FALSE
+isMX <- if (!is.null(values$evalMods)) input$modSelect == 'Maxent' else FALSE
 ```
 
 Record of analysis for *`r makeCap(values$spname)`*.

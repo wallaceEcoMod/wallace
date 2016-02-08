@@ -1,14 +1,13 @@
-if (!require("shiny"))
-  install.packages("shiny")
-if (!require("shinyjs"))
-  install.packages("shinyjs")
-if (!require("devtools"))
-  install.packages("devtools")
+if (!require("shiny")) install.packages("shiny")
+if (!require("shinyjs")) install.packages("shinyjs")
+if (!require("devtools")) install.packages("devtools")
+if (!require("shinythemes")) install.packages("shinythemes")
 if (!require('shinyapps')) devtools::install_github("rstudio/shinyapps")
 if (!require('leaflet')) devtools::install_github("rstudio/leaflet")
 if (!require("DT")) devtools::install_github("rstudio/DT")
 
 library(shiny)
+library(shinythemes)
 library(shinyapps)
 library(shinyjs)
 library(leaflet)
@@ -277,14 +276,24 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                                                checkboxInput('togMD5A', "Hide / Display Guidance Text", value = FALSE),
                                                                                                conditionalPanel("input.togMD5A",
                                                                                                                 includeMarkdown("www/tab5_sp.Rmd")),
-                                                                                               HTML('<hr>')),
+                                                                                               HTML('<hr>'),
+                                                                                               selectInput("partSelect2", "Modules Available", 
+                                                                                                           choices = list("None selected" = '',
+                                                                                                                          "Block (k = 4)" = "block",
+                                                                                                                          "Checkerboard 1 (k = 2)" = "cb1",
+                                                                                                                          "Checkerboard 2 (k = 4)" = "cb2"), selected = '')
+                                                                                               ),
                                                                               conditionalPanel("input.partSelect == 'nsp'",
                                                                                                checkboxInput('togMD5B', "Hide / Display Guidance Text", value = FALSE),
                                                                                                conditionalPanel("input.togMD5B",
                                                                                                                 includeMarkdown("www/tab5_nsp.Rmd")),
-                                                                                               HTML('<hr>')),
-                                                                              radioButtons("partSelect2", "Modules Available:",
-                                                                                           choices = list("Choose"), selected = '')),
+                                                                                               HTML('<hr>'),
+                                                                                               selectInput("partSelect2", "Modules Available:",
+                                                                                                           choices = list("None selected" = '',
+                                                                                                                          "Jackknife (k = n)" = "jack", 
+                                                                                                                          "Random k-fold" = "random"), selected = '')
+                                                                                               )
+                                                                              ),
                                                              conditionalPanel("input.partSelect == 'sp' & (input.partSelect2 == 'cb1' | input.partSelect2 == 'cb2')",
                                                                               numericInput("aggFact", label = "Aggregation Factor", value = 2, min = 2)),
                                                              conditionalPanel("input.partSelect2 == 'random'",
