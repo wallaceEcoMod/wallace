@@ -54,12 +54,13 @@ comp8_mess <- function(preds) {
   writeLog('* Generating MESS map.')
   occVals <- extract(values$pjMskPreds, cbind(values$df$longitude, values$df$latitude))
   values$pj <- mess(values$pjMskPreds, occVals)
-  print(values$pj)
+  values$pj[is.infinite(values$pj)] <- 9999
+  print(values(values$pj))
   proxy %>% clearShapes()
   proxy %>% clearImages()
   rasVals <- getValues(values$pj)
   pal <- colorNumeric(c("#fff5f0", "#fb6a4a", "#67000d"), rasVals, na.color='transparent')
   proxy %>% addLegend("topright", pal = pal, title = "MESS Values",
                       values = rasVals, layerId = 2)
-  proxy %>% addRasterImage(values$pj, colors = pal, opacity = 0.7, layerId = 'ms')
+  proxy %>% addRasterImage(values$pj, opacity = 0.7, layerId = 'ms')
 }
