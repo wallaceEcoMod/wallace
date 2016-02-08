@@ -55,6 +55,7 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("downloadEvalcsv")
   shinyjs::disable("downloadEvalPlots")
   shinyjs::disable("downloadPred")
+  shinyjs::disable("downloadPj")
   
   # load modules
   for (f in list.files('./modules')) {
@@ -473,9 +474,8 @@ shinyServer(function(input, output, session) {
     values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
     values$poly2 <- NULL
     values$polyPts2 <- NULL
-    proxy %>% removeShape("poly2")
-    proxy %>% removeShape('poly2Sel')
-    proxy %>% removeImage('r2')
+    proxy %>% clearShapes()
+    proxy %>% clearImages()
     writeLog('* RESET PROJECTION EXTENT')
   })
   
@@ -493,7 +493,7 @@ shinyServer(function(input, output, session) {
     comp8_selProjExt()
   })
   
-  observeEvent(input$goPjArea, {
+  observeEvent(input$goPjCur, {
     comp8_pjModel(input$modelSel3, values$preds)
   })
   
@@ -501,7 +501,33 @@ shinyServer(function(input, output, session) {
     comp8_mess(values$preds)
   })
   
-  observe(print(input$partSelect2))
+  output$downloadPj <- downloadHandler(
+    filename = function() {
+      ext <- ifelse(input$pjFileType == 'raster', 'zip',
+                    ifelse(input$pjFileType == 'ascii', 'asc',
+                           ifelse(input$pjFileType == 'GTiff', 'tif', 'png')))
+      paste0(values$rasName, "_", input$predForm, "_", input$predThresh, "_pj.", ext)},
+    content = function(file) {
+      if (input$pjFileType == 'png') {
+        png(file)
+        image(values$pj)
+        dev.off()
+      } else if (input$pjFileType == 'raster') {
+        fileName <- paste0(values$rasName, "_", input$predForm, "_", input$predThresh, "_pj")
+        tmpdir <- tempdir()
+        writeRaster(values$pj, file.path(tmpdir, fileName), format = input$pjFileType, overwrite = TRUE)
+        fs <- file.path(tmpdir, paste0(fileName, c('.grd', '.gri')))
+        zip(zipfile=file, files=fs, extras = '-j')
+      } else {
+        res <- writeRaster(values$pj, file, format = input$pjFileType, overwrite = TRUE)
+        file.rename(res@file@name, file)
+      }
+    }
+  )
+  
+  #########################
+  ### MARKDOWN FUNCTIONALITY
+  #########################
 
   # handler for R Markdown download
   output$downloadMD <- downloadHandler(
