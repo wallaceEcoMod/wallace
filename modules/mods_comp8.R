@@ -30,7 +30,7 @@ comp8_selProjExt <- function(modelSel, preds) {
   isolate(writeLog(paste0('* Defined projection extent to: ', coordsChar)))
 }
 
-comp8_pjModel <- function() {
+comp8_pjCurExt <- function() {
   writeLog('* PROJECTING to new area.')
   rasVals <- getValues(values$pjArea)
   # pal <- colorNumeric(c("#fff5f0", "#fb6a4a", "#67000d"), rasVals, na.color='transparent')
