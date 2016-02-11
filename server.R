@@ -492,11 +492,21 @@ shinyServer(function(input, output, session) {
                 choices = predNameList)
   })
   
-  # Module Select Localities: select points intersecting drawn polygons (replace values$df)
+  # select projection extent
   observeEvent(input$poly2Sel, {
     comp8_selProjExt(input$modelSel3, values$preds)
   })
 
+  # Module Project to Extent
+  observeEvent(input$goPjCur, {
+    comp8_pjCurExt()
+  })
+  
+  # Module MESS
+  observeEvent(input$goMESS, {
+    comp8_mess()
+  })
+  
   # project new area or MESS map, depending on radio button selection  
   observe({
     if (!is.null(values$pjArea) && input$pjExtType == 'pjArea') isolate(comp8_pjModel())

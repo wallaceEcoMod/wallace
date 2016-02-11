@@ -1,12 +1,12 @@
 ---
-title: "tab7_respCurves"
+title: "tab7_pred"
 output: html_document
 ---
 **BACKGROUND**  
 <p align="justify">
-Response curves background.
+Prediction background. 
 </p>
 **IMPLEMENTATION**
 <p align="justify">
-Response curves implementation.  
+Prediction implementation.
 </p>
