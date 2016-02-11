@@ -2,6 +2,7 @@
 ## Define functions
 ## -------------------------------------------------------------------- ##
 
+
 # zooms appropriately for any extent
 smartZoom <- function(longi, lati) {
   lg.diff <- abs(max(longi) - min(longi))
