@@ -507,11 +507,11 @@ shinyServer(function(input, output, session) {
     comp8_mess()
   })
   
-  # project new area or MESS map, depending on radio button selection  
-  observe({
-    if (!is.null(values$pjArea) && input$pjExtType == 'pjArea') isolate(comp8_pjModel())
-    if (!is.null(values$mess) && input$pjExtType == 'mess') isolate(comp8_mess())
-  })
+#   # project new area or MESS map, depending on radio button selection  
+#   observe({
+#     if (!is.null(values$pjArea) && input$pjExtType == 'pjArea') isolate(comp8_pjModel())
+#     if (!is.null(values$mess) && input$pjExtType == 'mess') isolate(comp8_mess())
+#   })
   
   # Download current projected extent
   output$downloadPj <- downloadHandler(
