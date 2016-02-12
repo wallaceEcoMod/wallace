@@ -31,6 +31,10 @@ comp8_selProjExt <- function(modelSel, preds) {
 }
 
 comp8_pjCurExt <- function() {
+  if (is.null(values$pjMskPreds)) {
+    writeLog('! SELECT projection extent first.')
+    return()
+  }
   writeLog('* PROJECTING to new area.')
   rasVals <- getValues(values$pjArea)
   # pal <- colorNumeric(c("#fff5f0", "#fb6a4a", "#67000d"), rasVals, na.color='transparent')
@@ -38,10 +42,14 @@ comp8_pjCurExt <- function() {
                       # values = rasVals, layerId = 2)
   # proxy %>% removeShape('poly2Sel')
   # proxy %>% clearImages()
-  proxy %>% addRasterImage(values$pjArea, opacity = 0.7, layerId = 'r2')
+  proxy %>% addRasterImage(values$pjArea, layerId = 'r2')
 }
 
 comp8_mess <- function() {
+  if (is.null(values$pjMskPreds)) {
+    writeLog('! SELECT projection extent first.')
+    return()
+  }
   writeLog('* Generating MESS map.')
 
   # proxy %>% clearShapes()
@@ -50,5 +58,5 @@ comp8_mess <- function() {
   # pal <- colorNumeric(c("#fff5f0", "#fb6a4a", "#67000d"), rasVals, na.color='transparent')
   # proxy %>% addLegend("topright", pal = pal, title = "MESS Values",
                       # values = rasVals, layerId = 2)
-  proxy %>% addRasterImage(values$mess, opacity = 0.7, layerId = 'ms')
+  proxy %>% addRasterImage(values$mess, layerId = 'ms')
 }
