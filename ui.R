@@ -331,9 +331,6 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                               conditionalPanel("input.togMD6A",
                                                                                                includeMarkdown("www/tab6_bc.Rmd")
                                                                               ),
-                                                                              "BIOCLIM models are built and evaluated using the partitions assigned in the previous component.
-                                                                              The rows in the results table refer to evaluation statistics calculated, and the 'Bin' columns 
-                                                                              refer to the different partitions.",
                                                                               HTML('<hr>')
                                                              ),
                                                              conditionalPanel("input.modSelect == 'Maxent'",
@@ -351,11 +348,8 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                              ),
                                                              conditionalPanel("input.modSelect == 'BIOCLIM' || input.modSelect == 'Maxent'",
                                                                               actionButton("goEval", "Build & Evaluate Models"), br(), br(),
-                                                                              downloadButton('downloadEvalcsv', "Download Results CSV"), br(), br(),
-                                                                              HTML('<hr>')),
-                                                             'The input data (both occurrence data and environmental data) flow into this step from earlier steps
-                                                             (typically Steps 4 and 5). For output, this step yields a CSV file of the table of evaluation statistics,
-                                                             as well as (for Maxent) a PNG file containing graphs for the evaluation metrics.',
+                                                                              downloadButton('downloadEvalcsv', "Download Results CSV")
+                                                             ),
                                                              conditionalPanel("input.modSelect == 'BIOCLIM' || input.modSelect == 'Maxent'",
                                                                               HTML('<hr>'),
                                                                               span("ENMeval", id = "rpkg"), "references", br(),
