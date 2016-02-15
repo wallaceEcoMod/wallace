@@ -30,6 +30,7 @@ source("functions.R")
 # make list to carry data used by multiple reactive functions
 brk <- paste(rep('------', 14), collapse='')
 values <- reactiveValues(polyID=0, polyErase=FALSE, log=c(paste('***WELCOME TO WALLACE***', brk, 'Please find messages for the user in this log window.', brk, sep='<br>')))
+gtext <- reactiveValues()
 
 # add text to log
 writeLog <- function(x) {
@@ -62,10 +63,17 @@ shinyServer(function(input, output, session) {
     source(file.path('modules', f), local=TRUE)
   }
   
+  # UI for guidance text collapse bar
+  output$gtextOut <- renderUI({
+    includeMarkdown(gtext$cur)
+  })
+  
   #########################
   ### INITIALIZE
   #########################
            
+  observe(print(gtext$cur))
+  
   output$log <- renderUI({tags$div(id='logHeader',
                                    tags$div(id='logContent', HTML(paste0(values$log, "<br>", collapse = ""))))})
 
@@ -80,6 +88,14 @@ shinyServer(function(input, output, session) {
   ### COMPONENT 1 FUNCTIONALITY
   #########################
 
+  # guidance text behavior
+  observe({
+    if (input$tabs == 1) {
+      if (input$dbSelect == 'GBIF') gtext$cur <- "www/tab1_gbif.Rmd"
+      if (input$dbSelect == 'user') gtext$cur <- "www/tab1_user.Rmd"
+    }
+  })
+  
   # module GBIF
   observeEvent(input$goName, {
     if (input$gbifName == "") return()
@@ -537,6 +553,7 @@ shinyServer(function(input, output, session) {
       }
     }
   )
+
   
   #########################
   ### MARKDOWN FUNCTIONALITY
