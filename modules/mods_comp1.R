@@ -1,5 +1,15 @@
 source("functions.R")
 
+gbifBG <- function(){print("The first step is to download occurrence data if the researcher does not 
+already have a dataset for the species of interest. We are interested in obtaining data 
+that document the presence of a species at particular points in space and time, along with 
+other useful metadata data fields when available. Over the past two decades, the worldwide 
+biodiversity informatics community has achieved remarkable progress, with many millions of 
+occurrence records now available on the internet aggregated via various portals, including 
+a substantial subset of records with assigned georeferences (e.g., latitude/longitude 
+coordinates). These records include digitized data from natural history museums and herbaria, 
+as well as newer data sources, including citizen-science initiatives leveraging mobile technologies.")}
+
 getGbifOccs <- function(spName, occNum) {
   # query GBIF based on user input, remove duplicate records
   writeLog("...Searching GBIF...")
