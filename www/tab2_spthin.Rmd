@@ -10,3 +10,23 @@ In addition to the possibility of errors regarding identification and georeferen
 <p align="justify">
 The Module “Spatial Thinning” implements the R package spThin, which removes localities less than a user-specified geographic distance from other localities (Aiello-Lammens et al. 2015). If run with sufficient (independent) repetitions, spThin will produce at least one dataset that retains the maximal number of localities possible while satisfying the constraint of the minimum distance between them. This distance is user-specified and typically is set by expert opinion. Alternatively, it could be determined empirically for a given dataset through experiments that examine various distances and select the one that performs the best in independent evaluations (Boria et al. 2014). As implemented here, spThin is run for 100 repetitions and returns one thinned dataset with the maximum retained number of localities.  
 </p>
+
+<p align="justify">
+<div style="font-size:9pt;font-weight:bold">References</div><p>
+<div style="font-size:9pt;font-style:italic">
+Aiello-Lammens M.E., Boria R.A., Radosavljevic A., Vilela B., Anderson R.P. 2015. spThin: an R package for spatial thinning of species occurrence records for use in ecological niche models. Ecography. 38:541–545.<p><br>
+
+Anderson R.P. 2003. Real vs. artefactual absences in species distributions: tests for Oryzomys albigularis (Rodentia: Muridae) in Venezuela. Journal of Biogeography. 30:591–605.<p>
+
+Boria R.A., Olson L.E., Goodman S.M., Anderson R.P. 2014. Spatial filtering to reduce sampling bias can improve the performance of ecological niche models. Ecological Modelling. 275:73–77.<p>
+
+Kadmon R., Farber O., Danin A. 2004. Effect of roadside bias on the accuracy of predictive maps produced by bioclimatic models. Ecological Applications. 14:401–413.<p>
+
+Phillips S.J., Dudík M., Elith J., Graham C.H., Lehmann A., Leathwick J., Ferrier S. 2009. Sample selection bias and presence-only distribution models: implications for background and pseudo-absence data. Ecological Applications. 19:181–197.<p>
+
+Reddy S., Dávalos L.M. 2003. Geographic sampling bias and its implications for conservation priorities in Africa. 30:1719–1727.<p>
+
+Varela S., Anderson R.P., García-Valdés R., Fernández-González F. 2014. Environmental filters reduce the effects of sampling bias and improve predictions of ecological niche models. Ecography. 37:1084–1091.<p>
+
+Veloz S.D. 2009. Spatially autocorrelated sampling falsely inflates measures of accuracy for presence-only niche models. Journal of Biogeography. 36:2290–2299.<p>
+</div>

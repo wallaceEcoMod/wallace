@@ -91,8 +91,8 @@ shinyServer(function(input, output, session) {
   # guidance text behavior
   observe({
     if (input$tabs == 1) {
-      if (input$dbSelect == 'GBIF') gtext$cur <- "www/tab1_gbif.Rmd"
-      if (input$dbSelect == 'user') gtext$cur <- "www/tab1_user.Rmd"
+      if (input$occSel == 'GBIF') gtext$cur <- "www/tab1_gbif.Rmd"
+      if (input$occSel == 'user') gtext$cur <- "www/tab1_user.Rmd"
     }
   })
   
@@ -132,6 +132,14 @@ shinyServer(function(input, output, session) {
   #########################
   ### COMPONENT 2 FUNCTIONALITY
   #########################
+  
+  # guidance text
+  observe({
+    if (input$tabs == 2) {
+      if (input$procOccSel == 'selpts') gtext$cur <- "www/tab2_selpts.Rmd"
+      if (input$procOccSel == 'spthin') gtext$cur <- "www/tab2_spthin.Rmd"
+    }
+  })
 
   # functionality for drawing polygons on map
   observe({
@@ -218,6 +226,14 @@ shinyServer(function(input, output, session) {
   ### COMPONENT 3 FUNCTIONALITY
   #########################
   
+  # guidance text
+  observe({
+    if (input$tabs == 3) {
+      if (input$envSel == 'WorldClim') gtext$cur <- "www/tab3_worldclim.Rmd"
+    }
+  })
+  
+  # enable download button
   observe({if (input$bcRes != "") shinyjs::enable("predDnld")})
 
   observe({
@@ -245,6 +261,13 @@ shinyServer(function(input, output, session) {
   #########################
   ### COMPONENT 4 FUNCTIONALITY
   #########################
+  
+  # guidance text
+  observe({
+    if (input$tabs == 4) {
+      if (input$envProcSel == 'backg') gtext$cur <- "www/tab4_backg.Rmd"
+    }
+  })
   
   # module Select Study Region - set buffer, extent shape
   observe({
@@ -287,13 +310,21 @@ shinyServer(function(input, output, session) {
   ### COMPONENT 5 FUNCTIONALITY
   #########################
   
+  # guidance text
   observe({
-    if (input$partSelect == 'nsp') {
-      updateSelectInput(session, "partSelect2", choices=list("None selected" = '',
+    if (input$tabs == 5) {
+      if (input$partSel == 'nsp') gtext$cur <- "www/tab5_nsp.Rmd"
+      if (input$partSel == 'sp') gtext$cur <- "www/tab5_sp.Rmd"
+    }
+  })
+  
+  observe({
+    if (input$partSel == 'nsp') {
+      updateSelectInput(session, "partSel2", choices=list("None selected" = '',
                                                              "Jackknife (k = n)" = "jack", 
                                                              "Random k-fold" = "random"))  
-    } else if (input$partSelect == 'sp') {
-      updateSelectInput(session, "partSelect2", choices=list("None selected" = '',
+    } else if (input$partSel == 'sp') {
+      updateSelectInput(session, "partSel2", choices=list("None selected" = '',
                                                              "Block (k = 4)" = "block",
                                                              "Checkerboard 1 (k = 2)" = "cb1",
                                                              "Checkerboard 2 (k = 4)" = "cb2"))
@@ -308,7 +339,7 @@ shinyServer(function(input, output, session) {
       writeLog("* WARNING: Clip the environmental variables by the study extent polygon first in COMPONENT 4.")
       return()
     }
-    comp5_setPartitions(input$partSelect2, input$kfolds, input$aggFact, proxy)
+    comp5_setPartitions(input$partSel2, input$kfolds, input$aggFact, proxy)
     shinyjs::enable("downloadPart")
   })
   
@@ -328,6 +359,14 @@ shinyServer(function(input, output, session) {
   #########################
   ### COMPONENT 6 FUNCTIONALITY
   #########################
+  
+  # guidance text
+  observe({
+    if (input$tabs == 6) {
+      if (input$modSel == 'BIOCLIM') gtext$cur <- "www/tab6_bc.Rmd"
+      if (input$modSel == 'Maxent') gtext$cur <- "www/tab6_maxent.Rmd"
+    }
+  })
   
   # niche model selection and warnings
   observeEvent(input$goEval, {
@@ -368,6 +407,16 @@ shinyServer(function(input, output, session) {
   #########################
   ### COMPONENT 7 FUNCTIONALITY
   #########################
+  
+  # guidance text
+  observe({
+    if (input$tabs == 7) {
+      if (input$visSel == 'map') gtext$cur <- "www/tab7_map.Rmd"
+      if (input$visSel == 'response') gtext$cur <- "www/tab7_respCurves.Rmd"
+      if (input$visSel == 'bcEnvel') gtext$cur <- "www/tab7_bcPlots.Rmd"
+      if (input$visSel == 'mxEval') gtext$cur <- "www/tab7_mxEvalPlots.Rmd"
+    }
+  })
   
   observe({
     if (is.null(values$df)) return()
@@ -421,8 +470,8 @@ shinyServer(function(input, output, session) {
   
   # Module Response Curves
   observe({
-    if (is.null(input$visSelect)) return()
-    if (input$visSelect != 'response') return()
+    if (is.null(input$visSel)) return()
+    if (input$visSel != 'response') return()
     if (is.null(values$curMod)) return()
     output$respCurv <- renderPlot(response(values$curMod, var = input$predVarSel))
   })
@@ -460,6 +509,14 @@ shinyServer(function(input, output, session) {
   #########################
   ### COMPONENT 8 FUNCTIONALITY
   #########################
+  
+  # guidance text
+  observe({
+    if (input$tabs == 8) {
+      if (input$projSel == 'pjCur') gtext$cur <- "www/tab8_pjcur.Rmd"
+      if (input$projSel == 'mess') gtext$cur <- "www/tab8_mess.Rmd"
+    }
+  })
   
   # functionality for drawing polygons on map
   observe({
@@ -574,9 +631,9 @@ shinyServer(function(input, output, session) {
       file.copy(src, 'userReport.Rmd')
       exp <- knit_expand('userReport.Rmd', gbifName=input$gbifName, occurrences=input$gbifNum, thinDist=input$thinDist,
                          occsCSV=input$userCSV$datapath, occsRemoved=printVecAsis(values$removedAll), occsSel=printVecAsis(values$ptSeln),
-                         predsRes=input$bcRes, backgSel=input$backgSelect, backgBuf=input$backgBuf, userBGname=input$userBackg$name,
-                         userBGpath=input$userBackg$datapath, partSel=values$partSelect2, aggFact=input$aggFact, kfoldsSel=input$kfolds, 
-                         modSel=input$modSelect, rmsSel1=input$rms[1], rmsSel2=input$rms[2], rmsBy=input$rmsBy, fcsSel=printVecAsis(input$fcs))
+                         predsRes=input$bcRes, backgSel=input$backgSel, backgBuf=input$backgBuf, userBGname=input$userBackg$name,
+                         userBGpath=input$userBackg$datapath, partSel=values$partSel2, aggFact=input$aggFact, kfoldsSel=input$kfolds, 
+                         modSel=input$modSel, rmsSel1=input$rms[1], rmsSel2=input$rms[2], rmsBy=input$rmsBy, fcsSel=printVecAsis(input$fcs))
       writeLines(exp, 'userReport2.Rmd')
       
       if (input$mdType == 'Rmd') {

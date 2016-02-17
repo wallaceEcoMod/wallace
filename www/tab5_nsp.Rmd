@@ -12,3 +12,13 @@ Two fundamentally different ways exist to partition occurrence localities: non-s
 <p align="justify">
 Module “Non-spatial Partition” implements functionalities from the R package ENMeval to partition the occurrence localities into training and testing datasets (using development version v0.1.2, available on Github). These partitions are either via a jackknife procedure (for small sample sizes, where the number of groups, k = n = the number of localities) or random k-folds (here, with k = 4 “folds,” or groups), which is suggested for larger sample sizes. For each option in this module, the number of datasets produced is equal to k, with each dataset having both training and testing localities.  
 </p>
+
+<p>
+<div style="font-size:9pt;font-weight:bold">References</div><p>
+<div style="font-size:9pt;font-style:italic">
+Guisan A., Zimmermann N.E. 2000. Predictive habitat distribution models in ecology. Ecological Modelling. 135:147–186.<p><br>
+
+Peterson A.T., Soberón J., Pearson R.G., Anderson R.P., Martinez-Meyer E., Nakamura M., Araújo M.B. 2011. Ecological niches and geographic distributions. Princeton, New Jersey: Monographs in Population Biology, 49. Princeton University Press.<p>
+
+Warren D.L., Seifert S.N. 2011. Ecological niche modeling in Maxent: the importance of model complexity and the performance of model selection criteria. Ecological Applications. 21:335–342.<p>
+</div>
