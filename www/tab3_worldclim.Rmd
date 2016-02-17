@@ -11,3 +11,14 @@ For modeling a species’ environmental requirements, the user must choose which
 <p align="justify">
 The Module “WorldClim” relies on the dismo R package to download environmental variables from the WorldClim website. Currently, these variables are made available at 3 resolutions. The first time a user selects a particular resolution on a given server or local computer, Wallace downloads the 19 variables from www.worldclim.org; upon subsequent uses, it uses the files previously archived. Future versions could include alternative sets of environmental variables. Addition of variables for marine environments or past time periods (for analyses with fossil occurrence records) would be especially useful.  
 </p>
+
+<p align="justify">
+<div style="font-size:9pt;font-weight:bold">References</div><p>
+<div style="font-size:9pt;font-style:italic">
+Anderson R.P. 2013. A framework for using niche models to estimate impacts of climate change on species distributions. Annals of the New York Academy of Sciences. 1297:8–28.<p><br>
+
+Austin M.P. 2002. Spatial prediction of species distribution: an interface between ecological theory and statistical modelling. Ecological Modelling. 157:101–118.<p>
+
+Hijmans, R. J., Cameron, S. E., Parra, J. L., Jones, P. G., & Jarvis, A. 2005. Very high resolution interpolated climate surfaces for global land areas. International Journal of Climatology. 25:1965-1978.<p>
+
+</div>

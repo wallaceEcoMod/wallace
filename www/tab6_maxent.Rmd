@@ -10,4 +10,19 @@ In addition to varying greatly among algorithms or modeling approaches (e.g., BI
 <p align="justify">
 This module uses the R packages ENMeval and dismo to build and evaluate Maxent niche/distributional models across a wide range of model settings (Muscarella et al. 2014). It automates two workflows: 1) building a suite of candidate models with differing limitations on complexity; and 2) quantifying their performance. Regarding the first, it makes models with various combinations of feature classes (e.g., linear, quadratic, hinge) and regularization multipliers (higher values provide stronger penalties for parameters included in the model, and hence they tend to lead to simpler models, with fewer variables included in the final model). The field remains far from any consensus regarding model evaluation and estimation of optimal model complexity (especially for presence-background datasets like those used in Maxent). Nevertheless, the evaluation metrics provided here can aid the user in selecting optimal settings (Radosavljevic & Anderson 2014). The input data (both occurrence data and environmental data) flow into this step from earlier steps (typically Steps 4 and 5). For output, this step yields a CSV file of the table of evaluation statistics.'
 </p>
-</p>
+
+<p>
+<div style="font-size:9pt;font-weight:bold">References</div><p>
+<div style="font-size:9pt;font-style:italic">
+Elith J., Graham C.H., Anderson R.P., Dudík M., Ferrier S., Guisan A., Hijmans R.J., Huettmann F., Leathwick J.R., Leahmann A., Li J., Lohmann L.G., Loiselle B.A., Manion G., Moritz C., Nakamura M., Nakazawa Y., Overton J.M., Peterson A.T., Phillips S.J., Richardson K.S., Scachetti-Pereira R., Schapire R.E., Soberón J., Williams S., Wisz M.S., Zimmermann N.E. 2006. Novel methods improve prediction of species’ distributions from occurrence data. Ecography. 29:129–151.<p><br>
+
+Elith J., Kearney M., Phillips S. 2010. The art of modelling range-shifting species. Methods in Ecology and Evolution. 1:330–342.<p>
+
+Merow C., Smith M.J., Silander J.A. 2013. A practical guide to MaxEnt for modeling species’ distributions: What it does, and why inputs and settings matter. Ecography. 36:1058–1069.<p>
+
+Muscarella R., Galante P.J., Soley-Guardia M., Boria R.A., Kass J.M., Uriarte M., Anderson R.P. 2014. ENMeval: An R package for conducting spatially independent evaluations and estimating optimal model complexity for Maxent ecological niche models. Methods in Ecology and Evolution. 5:1198–1205.<p>
+
+Radosavljevic A., Anderson R.P. 2014. Making better Maxent models of species distributions: complexity, overfitting and evaluation. Journal of Biogeography. 41:629–643.<p>
+
+Shcheglovitova M., Anderson R.P. 2013. Estimating optimal complexity for ecological niche models: a jackknife approach for species with small sample sizes. Ecological Modelling. 269:9–17.<p>
+</div>
