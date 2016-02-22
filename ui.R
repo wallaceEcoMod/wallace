@@ -425,7 +425,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                    )
                    ),
                    column(8,
-                          bsCollapse(id = 'guidanceText', bsCollapsePanel('Guidance Text', uiOutput('gtextOut'))),
+                          bsCollapse(id = 'guidanceText', bsCollapsePanel('Expand Guidance Text', uiOutput('gtextOut'))),
                           conditionalPanel("input.tabs != 0 && input.tabs != 'rmd' && input.tabs != 'about'",
                                            div(id = "wallaceLog", class = "scrollbox", htmlOutput("log"))),
                           br(),

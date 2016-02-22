@@ -18,7 +18,8 @@ comp8_selProjExt <- function(modelSel, preds) {
     msk <- mask(msk, values$poly2)
     curMod <- values$evalMods[[as.numeric(modelSel)]]
     values$pjArea <- predict(curMod, msk)
-    occVals <- extract(msk, cbind(values$df$longitude, values$df$latitude))
+    occVals <- extract(preds, cbind(values$df$longitude, values$df$latitude))
+    print(occVals)
     values$mess <- mess(msk, occVals)
     values$mess[is.infinite(values$mess)] <- 9999
     values$pjMskPreds <- msk
@@ -42,6 +43,8 @@ comp8_pjCurExt <- function() {
                       # values = rasVals, layerId = 2)
   # proxy %>% removeShape('poly2Sel')
   # proxy %>% clearImages()
+  rasVals <- na.omit(rasVals)
+  #pal <- colorNumeric(c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c"), rasVals, na.color='transparent')
   proxy %>% addRasterImage(values$pjArea, layerId = 'r2')
 }
 
@@ -55,6 +58,7 @@ comp8_mess <- function() {
   # proxy %>% clearShapes()
   # proxy %>% clearImages()
   rasVals <- getValues(values$mess)
+  rasVals <- na.omit(rasVals)
   # pal <- colorNumeric(c("#fff5f0", "#fb6a4a", "#67000d"), rasVals, na.color='transparent')
   # proxy %>% addLegend("topright", pal = pal, title = "MESS Values",
                       # values = rasVals, layerId = 2)
