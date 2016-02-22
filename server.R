@@ -272,7 +272,7 @@ shinyServer(function(input, output, session) {
   # module Select Study Region - set buffer, extent shape
   observe({
     if (is.null(values$preds)) return()
-    if (input$tabs == 4) comp4_studyReg(input$backgBuf, input$backgSelect)
+    if (input$tabs == 4) comp4_studyReg(input$backgBuf, input$backgSel)
   })
 
   # module Select Study Region - mask out environmental predictors by background extent
@@ -381,13 +381,13 @@ shinyServer(function(input, output, session) {
     values$predsLog <- NULL  # reset predsLog if models are rerun
     
     # Module BIOCLIM
-    if (input$modSelect == "BIOCLIM") {
+    if (input$modSel == "BIOCLIM") {
       comp6_bioclimMod()
       # Module BIOCLIM Envelope Plots (for component 7)
       output$bcEnvelPlot <- renderPlot(plot(values$evalMods[[1]], a = input$bc1, b = input$bc2, p = input$bcProb))
     }
     # Module Maxent
-     else if (input$modSelect == "Maxent") {
+     else if (input$modSel == "Maxent") {
        comp6_maxentMod(input$rms, input$fcs)
        # Module Maxent Evaluation Plots (for component 7): ENMeval graphs
        output$mxEvalPlot <- renderPlot(evalPlot(values$evalTbl, input$mxEvalSel))
