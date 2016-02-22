@@ -35,7 +35,7 @@ comp7_mapPred <- function(modelSel1, predForm, predThresh, proxy) {
                           title = "Thresholded Suitability", labels = c(0, 1),
                           opacity = 1, layerId = 1)
     } else {
-      pal <- colorNumeric(c("#fff5f0", "#fb6a4a", "#67000d"), rasVals, na.color='transparent')
+      pal <- colorNumeric(c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c"), rasVals, na.color='transparent')
       proxy %>% addLegend("topright", pal = pal, title = "Predicted Suitability",
                           values = rasVals, layerId = 1)
     }
