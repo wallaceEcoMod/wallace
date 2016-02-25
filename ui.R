@@ -300,6 +300,8 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                      checkboxGroupInput("fcs", label = "Select feature classes (flexibility of modeled response)",
                                                                                         choices = list("L" = "L", "LQ" = "LQ", "H" = "H",
                                                                                                        "LQH" = "LQH", "LQHP" = "LQHP", "LQHPT" = "LQHPT")),
+                                                                     bsTooltip("fcs", "Helpful feature class information",
+                                                                               "right", options = list(container = "body")),
                                                                      sliderInput("rms", label = "Select regularization multipliers (penalty against complexity)",
                                                                                  min = 0, max = 10, value = c(1, 2)),
                                                                      numericInput("rmsBy", label = "RM step value", value = 1)
