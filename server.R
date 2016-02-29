@@ -40,7 +40,7 @@ writeLog <- function(x) {
 makeCap <- function(x) paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)))
 getGBIFname <- function() deparse(substitute(input$gbifName))
 printVecAsis <- function(x) {
-  ifelse(length(x) == 1, x, 
+  ifelse(length(x) == 1, x,
          ifelse(is.character(x), paste0("c(", paste(sapply(x, function(a) paste0("\'",a,"\'")), collapse=", "), ")"),
                 paste0("c(", paste(x, collapse=", "), ")")))}
 
@@ -57,23 +57,23 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("downloadEvalPlots")
   shinyjs::disable("downloadPred")
   shinyjs::disable("downloadPj")
-  
+
   # load modules
   for (f in list.files('./modules')) {
     source(file.path('modules', f), local=TRUE)
   }
-  
+
   # UI for guidance text collapse bar
   output$gtextOut <- renderUI({
     includeMarkdown(gtext$cur)
   })
-  
+
   #########################
   ### INITIALIZE
   #########################
-           
+
   observe(print(gtext$cur))
-  
+
   output$log <- renderUI({tags$div(id='logHeader',
                                    tags$div(id='logContent', HTML(paste0(values$log, "<br>", collapse = ""))))})
 
@@ -83,7 +83,7 @@ shinyServer(function(input, output, session) {
 
   # make map proxy to make further changes to existing map
   proxy <- leafletProxy("map")
-  
+
   #########################
   ### COMPONENT 1 FUNCTIONALITY
   #########################
@@ -95,7 +95,7 @@ shinyServer(function(input, output, session) {
       if (input$occSel == 'user') gtext$cur <- "www/tab1_user.Rmd"
     }
   })
-  
+
   # module GBIF
   observeEvent(input$goName, {
     if (input$gbifName == "") return()
@@ -108,7 +108,7 @@ shinyServer(function(input, output, session) {
     if (is.null(input$userCSV)) return()  # exit if userCSV not specifed
     getUserOccs(input$userCSV$datapath)
   })
-  
+
   # render the GBIF records data table
   observe({
     if (is.null(values$df)) return()
@@ -120,7 +120,7 @@ shinyServer(function(input, output, session) {
     }
     output$occTbl <- DT::renderDataTable({DT::datatable(values$df[, -which(names(values$df) %in% c('origID', 'pop'))], options = options)})
   })
-  
+
   # handle downloading of original GBIF records after cleaning
   output$downloadOrigOccs <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$df), "_gbifCleaned.csv")},
@@ -128,11 +128,11 @@ shinyServer(function(input, output, session) {
       write.csv(values$gbifOrig, file, row.names=FALSE)
     }
   )
-  
+
   #########################
   ### COMPONENT 2 FUNCTIONALITY
   #########################
-  
+
   # guidance text
   observe({
     if (input$tabs == 2) {
@@ -146,12 +146,12 @@ shinyServer(function(input, output, session) {
     if (input$tabs == 2 && input$procOccSel == "selpts") {
       if (is.null(input$map_click)) return()
       lonlat <- c(input$map_click$lng, input$map_click$lat)
-      
+
       if (values$polyErase) {
         if (identical(lonlat, values$mapClick)) return()
         values$polyErase <- FALSE
       }
-      
+
       values$mapClick <- lonlat
       values$polyPts1 <- isolate(rbind(values$polyPts1, lonlat))
       proxy %>% removeShape("poly1")
@@ -159,7 +159,7 @@ shinyServer(function(input, output, session) {
                             layerId='poly1', fill=FALSE, weight=3, color='green')
     }
   })
-  
+
   # plots all polygons used for selection and fills them with ColorBrewer colors
   observe({
     if (!is.null(values$poly1)) {
@@ -173,12 +173,12 @@ shinyServer(function(input, output, session) {
       }
     }
   })
-  
+
   # Module Select Localities: select points intersecting drawn polygons (replace values$df)
   observeEvent(input$selectPoly, {
     polySelLocs()
   })
-  
+
   # governs point removal behavior and modifies tables in "values"
   observeEvent(input$remove, {
     if (!is.null(values$ptsSel)) {
@@ -187,7 +187,7 @@ shinyServer(function(input, output, session) {
       }
     remSelLocs(input$remLoc)
   })
-  
+
   # erase select localities polygon with button click
   observeEvent(input$erasePolySelLocs, {
     values$ptsSel <- NULL
@@ -207,7 +207,7 @@ shinyServer(function(input, output, session) {
     z <- smartZoom(longi, lati)
     proxy %>% fitBounds(z[1], z[2], z[3], z[4])
   })
-  
+
   # Module Spatial Thin
   observeEvent(input$goThin, {
     thinOccs(input$thinDist)
@@ -225,14 +225,14 @@ shinyServer(function(input, output, session) {
   #########################
   ### COMPONENT 3 FUNCTIONALITY
   #########################
-  
+
   # guidance text
   observe({
     if (input$tabs == 3) {
       if (input$envSel == 'WorldClim') gtext$cur <- "www/tab3_worldclim.Rmd"
     }
   })
-  
+
   # enable download button
   observe({if (input$bcRes != "") shinyjs::enable("predDnld")})
 
@@ -240,7 +240,7 @@ shinyServer(function(input, output, session) {
     if (is.null(values$df)) return()
     if (input$tabs == 3) map_plotLocs(values$df)
   })
-  
+
   # module WorldClim
   observeEvent(input$predDnld, {
     if (!is.null(values$df)) {
@@ -261,14 +261,14 @@ shinyServer(function(input, output, session) {
   #########################
   ### COMPONENT 4 FUNCTIONALITY
   #########################
-  
+
   # guidance text
   observe({
     if (input$tabs == 4) {
       if (input$envProcSel == 'backg') gtext$cur <- "www/tab4_backg.Rmd"
     }
   })
-  
+
   # module Select Study Region - set buffer, extent shape
   observe({
     if (is.null(values$preds)) return()
@@ -309,7 +309,7 @@ shinyServer(function(input, output, session) {
   #########################
   ### COMPONENT 5 FUNCTIONALITY
   #########################
-  
+
   # guidance text
   observe({
     if (input$tabs == 5) {
@@ -317,12 +317,12 @@ shinyServer(function(input, output, session) {
       if (input$partSel == 'sp') gtext$cur <- "www/tab5_sp.Rmd"
     }
   })
-  
+
   observe({
     if (input$partSel == 'nsp') {
       updateSelectInput(session, "partSel2", choices=list("None selected" = '',
-                                                             "Jackknife (k = n)" = "jack", 
-                                                             "Random k-fold" = "random"))  
+                                                             "Jackknife (k = n)" = "jack",
+                                                             "Random k-fold" = "random"))
     } else if (input$partSel == 'sp') {
       updateSelectInput(session, "partSel2", choices=list("None selected" = '',
                                                              "Block (k = 4)" = "block",
@@ -332,7 +332,7 @@ shinyServer(function(input, output, session) {
     if (is.null(values$df)) return()
     if (input$tabs == 5) map_plotLocs(values$df)
   })
-  
+
   # module Set Partitions
   observeEvent(input$goPart, {
     if (is.null(values$predsMsk)) {
@@ -342,7 +342,7 @@ shinyServer(function(input, output, session) {
     comp5_setPartitions(input$partSel2, input$kfolds, input$aggFact, proxy)
     shinyjs::enable("downloadPart")
   })
-  
+
   # handle download for partitioned occurrence records csv
   output$downloadPart <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$origOccs), "_partitioned_occs.csv")},
@@ -359,7 +359,7 @@ shinyServer(function(input, output, session) {
   #########################
   ### COMPONENT 6 FUNCTIONALITY
   #########################
-  
+
   # guidance text
   observe({
     if (input$tabs == 6) {
@@ -367,7 +367,7 @@ shinyServer(function(input, output, session) {
       if (input$modSel == 'Maxent') gtext$cur <- "www/tab6_maxent.Rmd"
     }
   })
-  
+
   # niche model selection and warnings
   observeEvent(input$goEval, {
     if (is.null(values$predsMsk)) {
@@ -379,7 +379,7 @@ shinyServer(function(input, output, session) {
       return()
     }
     values$predsLog <- NULL  # reset predsLog if models are rerun
-    
+
     # Module BIOCLIM
     if (input$modSel == "BIOCLIM") {
       comp6_bioclimMod()
@@ -407,7 +407,7 @@ shinyServer(function(input, output, session) {
   #########################
   ### COMPONENT 7 FUNCTIONALITY
   #########################
-  
+
   # guidance text
   observe({
     if (input$tabs == 7) {
@@ -417,17 +417,17 @@ shinyServer(function(input, output, session) {
       if (input$visSel == 'mxEval') gtext$cur <- "www/tab7_mxEvalPlots.Rmd"
     }
   })
-  
+
   observe({
     if (is.null(values$df)) return()
     if (input$tabs == 7) {
       map_plotLocs(values$df, fillColor='black', fillOpacity=0.8)
       proxy %>% addLegend("topright", colors = c('black'),
                           title = "GBIF Records", labels = c('retained'),
-                          opacity = 1, layerId = 1)    
+                          opacity = 1, layerId = 1)
     }
   })
-  
+
   # generates user selection of rasters to plot dynamically after they are created
   output$modelSel1 <- renderUI({
     if (is.null(values$evalPreds)) return()
@@ -436,7 +436,7 @@ shinyServer(function(input, output, session) {
     selectInput("modelSel1", label = "Choose a model",
                 choices = predNameList)
   })
-  
+
   # copy for response curve model selection
   output$modelSel2 <- renderUI({
     if (is.null(values$evalPreds)) return()
@@ -445,19 +445,28 @@ shinyServer(function(input, output, session) {
     selectInput("modelSel2", label = "Choose a model",
                 choices = predNameList, selected = predNameList[[1]])
   })
-  
+
   # generates list of predictor variables with non-zero coeffs for currently selected model
   output$predVarSel <- renderUI({
     if (is.null(values$evalPreds)) return()
-    values$curMod <- values$evalMods[[which(as.character(values$evalTbl[, 1]) == input$modelSel2)]]
-    nonZeroPreds <- mxNonzeroPreds(values$curMod)  # need function from pete's ms
-    nonZeroPredNames <- names(values$predsMsk[[nonZeroPreds]])
-    nonZeroPredNames <- nonZeroPredNames[order(as.integer(sub('bio', '', nonZeroPredNames)))]  # order by name
-    predVarNameList <- setNames(as.list(nonZeroPredNames), nonZeroPredNames)
+
+
+      if(input$modSel == "Maxent"){
+        values$curMod <- values$evalMods[[which(as.character(values$evalTbl[, 1]) == input$modelSel2)]]
+        nonZeroPreds <- mxNonzeroPreds(values$curMod)  # need function from pete's ms
+        nonZeroPredNames <- names(values$predsMsk[[nonZeroPreds]])
+        nonZeroPredNames <- nonZeroPredNames[order(as.integer(sub('bio', '', nonZeroPredNames)))]  # order by name
+        predVarNameList <- setNames(as.list(nonZeroPredNames), nonZeroPredNames)
+      } else {
+        values$curMod <- values$evalMods[[1]]
+        predVarNameList <- names(values$curMod@presence)
+      }
+
     radioButtons("predVarSel", "Choose a predictor variable:",
                  choices = predVarNameList, selected = predVarNameList[[1]])
+
   })
-  
+
   # handle downloads for ENMeval plots png
   output$downloadEvalPlots <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$origOccs), "_enmeval_plots.png")},
@@ -467,20 +476,20 @@ shinyServer(function(input, output, session) {
       dev.off()
     }
   )
-  
+
   # Module Response Curves
   observe({
     if (is.null(input$visSel)) return()
     if (input$visSel != 'response') return()
     if (is.null(values$curMod)) return()
-    output$respCurv <- renderPlot(response(values$curMod, var = input$predVarSel))
+      output$respCurv <- renderPlot(response(values$curMod, var = input$predVarSel))
   })
-  
+
   # Module Plot Prediction
   observeEvent(input$plotPred, {
     comp7_mapPred(input$modelSel1, input$predForm, input$predThresh, proxy)
   })
-  
+
   # handle download for rasters, with file type as user choice
   output$downloadPred <- downloadHandler(
     filename = function() {
@@ -505,11 +514,11 @@ shinyServer(function(input, output, session) {
       }
     }
   )
-  
+
   #########################
   ### COMPONENT 8 FUNCTIONALITY
   #########################
-  
+
   # guidance text
   observe({
     if (input$tabs == 8) {
@@ -517,7 +526,7 @@ shinyServer(function(input, output, session) {
       if (input$projSel == 'mess') gtext$cur <- "www/tab8_mess.Rmd"
     }
   })
-  
+
   # functionality for drawing polygons on map
   observe({
     if (input$tabs == 8) {
@@ -526,15 +535,15 @@ shinyServer(function(input, output, session) {
       map_plotLocs(values$df, fillColor='black', fillOpacity=0.8, clearShapes=FALSE)
       proxy %>% addLegend("topright", colors = c('black'),
                           title = "GBIF Records", labels = c('retained'),
-                          opacity = 1, layerId = 1)   
+                          opacity = 1, layerId = 1)
       if (is.null(input$map_click)) return()
       lonlat <- c(input$map_click$lng, input$map_click$lat)
-      
+
       if (values$polyErase) {
         if (identical(lonlat, values$mapClick)) return()
         values$polyErase <- FALSE
       }
-      
+
       values$mapClick <- lonlat
       values$polyPts2 <- isolate(rbind(values$polyPts2, lonlat))
       proxy %>% removeShape("poly2")
@@ -542,7 +551,7 @@ shinyServer(function(input, output, session) {
                             layerId='poly2', fill=FALSE, weight=4, color='red')
     }
   })
-  
+
   # erase current projection extent
   observeEvent(input$erasePolyProjExt, {
     values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
@@ -555,7 +564,7 @@ shinyServer(function(input, output, session) {
     proxy %>% clearImages()
     writeLog('* RESET PROJECTION EXTENT')
   })
-  
+
   # model selection for component 8
   output$modelSel3 <- renderUI({
     if (is.null(values$evalPreds)) return()
@@ -564,7 +573,7 @@ shinyServer(function(input, output, session) {
     selectInput("modelSel3", label = "Choose a model",
                 choices = predNameList)
   })
-  
+
   # select projection extent
   observeEvent(input$poly2Sel, {
     comp8_selProjExt(input$modelSel3, values$preds)
@@ -574,18 +583,18 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goPjCur, {
     comp8_pjCurExt()
   })
-  
+
   # Module MESS
   observeEvent(input$goMESS, {
     comp8_mess()
   })
-  
-#   # project new area or MESS map, depending on radio button selection  
+
+#   # project new area or MESS map, depending on radio button selection
 #   observe({
 #     if (!is.null(values$pjArea) && input$pjExtType == 'pjArea') isolate(comp8_pjModel())
 #     if (!is.null(values$mess) && input$pjExtType == 'mess') isolate(comp8_mess())
 #   })
-  
+
   # Download current projected extent
   output$downloadPj <- downloadHandler(
     filename = function() {
@@ -611,7 +620,7 @@ shinyServer(function(input, output, session) {
     }
   )
 
-  
+
   #########################
   ### MARKDOWN FUNCTIONALITY
   #########################
@@ -632,10 +641,10 @@ shinyServer(function(input, output, session) {
       exp <- knit_expand('userReport.Rmd', gbifName=input$gbifName, occurrences=input$gbifNum, thinDist=input$thinDist,
                          occsCSV=input$userCSV$datapath, occsRemoved=printVecAsis(values$removedAll), occsSel=printVecAsis(values$ptSeln),
                          predsRes=input$bcRes, backgSel=input$backgSel, backgBuf=input$backgBuf, userBGname=input$userBackg$name,
-                         userBGpath=input$userBackg$datapath, partSel=values$partSel2, aggFact=input$aggFact, kfoldsSel=input$kfolds, 
+                         userBGpath=input$userBackg$datapath, partSel=values$partSel2, aggFact=input$aggFact, kfoldsSel=input$kfolds,
                          modSel=input$modSel, rmsSel1=input$rms[1], rmsSel2=input$rms[2], rmsBy=input$rmsBy, fcsSel=printVecAsis(input$fcs))
       writeLines(exp, 'userReport2.Rmd')
-      
+
       if (input$mdType == 'Rmd') {
         out <- render('userReport2.Rmd', md_document(variant="markdown_github"))
         writeLines(gsub('``` r', '```{r}', readLines(out)), 'userReport3.Rmd')
