@@ -10,6 +10,10 @@ In addition to the possibility of errors regarding identification and georeferen
 <p align="justify">
 The Module “Spatial Thinning” implements the R package spThin, which removes localities less than a user-specified geographic distance from other localities (Aiello-Lammens et al. 2015). If run with sufficient (independent) repetitions, spThin will produce at least one dataset that retains the maximal number of localities possible while satisfying the constraint of the minimum distance between them. This distance is user-specified and typically is set by expert opinion. Alternatively, it could be determined empirically for a given dataset through experiments that examine various distances and select the one that performs the best in independent evaluations (Boria et al. 2014). As implemented here, spThin is run for 100 repetitions and returns one thinned dataset with the maximum retained number of localities.  
 </p>
+<p align="justify">
+The output of this component is a CSV file with rows of localities, and columns containing species,
+longitude, and latitude.
+</p>
 
 <p align="justify">
 <div style="font-size:9pt;font-weight:bold">References</div><p>
