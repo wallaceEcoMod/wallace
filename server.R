@@ -339,8 +339,14 @@ shinyServer(function(input, output, session) {
       writeLog("* WARNING: Clip the environmental variables by the study extent polygon first in COMPONENT 4.")
       return()
     }
+    if (input$partSel2 == "") {
+      writeLog("* Select one of the modules available first...")
+      return()
+    }
     comp5_setPartitions(input$partSel2, input$kfolds, input$aggFact, proxy)
     shinyjs::enable("downloadPart")
+
+
   })
 
   # handle download for partitioned occurrence records csv
