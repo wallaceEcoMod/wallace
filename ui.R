@@ -23,7 +23,7 @@ useShinyjs()
 #   if ( btn.style %in% c("primary","info","success","warning","danger","inverse","link")) {
 #     btn.css.class <- paste("btn",btn.style,sep="-")
 #   } else btn.css.class = ""
-#   
+#
 #   tags$button(id=inputId, type="button", class=paste("btn action-button",btn.css.class,css.class,collapse=" "), label)
 # }
 
@@ -56,7 +56,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                    tabPanel("8 Project", value=8),
                    tabPanel("History", value='rmd'),
                    tabPanel("About", value='about'),
-                   
+
                    fluidRow(column(4,
                                    wellPanel(
                                      includeCSS("styles.css"),
@@ -125,9 +125,9 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                      actionButton("goThin", "Thin Localities"),
                                                                      br(), br(),
                                                                      downloadButton('downloadThincsv', "Download Thinned Occurrence CSV")
-                                                                     #br(), 
+                                                                     #br(),
                                                                      #uiOutput('thinDnld'),
-                                                                     
+
                                                     ),
                                                     conditionalPanel("input.procOccSel == 'spthin'",
                                                                      HTML('<hr>'),
@@ -181,7 +181,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                     h4("Process Environmental Data"),
                                                     radioButtons("envProcSel", "Modules Available:",
                                                                  choices = list("Select Study Region" = "backg")),
-                                                    
+
                                                     HTML('<hr>'),
                                                     conditionalPanel("input.envProcSel == 'backg'",
                                                                      div('Module: Select Study Region', id="mod"),
@@ -225,7 +225,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                      " | ",
                                                                      a("documentation", href="https://cran.r-project.org/web/packages/rgeos/rgeos.pdf", target = "_blank")
                                                     )
-                                                    
+
                                    ),
                                    conditionalPanel("input.tabs == 5",
                                                     h4("Partition Occurrence Data"),
@@ -369,7 +369,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                     ),
                                                     conditionalPanel("input.visSel == 'mxEval'",
                                                                      selectInput('mxEvalSel', label = "Select Evaluation Plot",
-                                                                                 choices = list("mean AUC" = 'Mean.AUC', "mean AUC DIFF" = 'Mean.AUC.DIFF', "mean OR MIN" = 'Mean.ORmin', 
+                                                                                 choices = list("mean AUC" = 'Mean.AUC', "mean AUC DIFF" = 'Mean.AUC.DIFF', "mean OR MIN" = 'Mean.ORmin',
                                                                                                 "mean OR 10%" = 'Mean.OR10', "delta AICc" = 'delta.AICc'),
                                                                                  selected = 'Mean.AUC'),
                                                                      downloadButton('downloadEvalPlots', "Download All Evaluation Plots")
@@ -411,7 +411,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                      actionButton('goMESS', "View MESS for Current Extent")
                                                     ),
                                                     br(), br(),
-                                                    #                                                              radioButtons('pjExtType', 'Select Current Display', 
+                                                    #                                                              radioButtons('pjExtType', 'Select Current Display',
                                                     #                                                                           choices = list("Project to Area" = 'pjArea', "View MESS" = 'mess')),
                                                     selectInput('pjFileType', label = "Select File Type",
                                                                 choices = list("GRD" = 'raster', "ASCII" = 'ascii', "GeoTIFF" = 'GTiff',
@@ -426,15 +426,15 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                            div(id = "wallaceLog", class = "scrollbox", htmlOutput("log"))),
                           br(),
                           conditionalPanel("input.tabs == 1 || input.tabs == 2 || input.tabs == 3 || input.tabs == 4 || input.tabs == 5
-                                                    || (input.tabs == 7 && input.visSel == 'map') || input.tabs == 8", 
+                                                    || (input.tabs == 7 && input.visSel == 'map') || input.tabs == 8",
                                            leafletOutput("map", height=500)),
                           br(),
                           conditionalPanel("input.tabs != 0 && input.tabs != 6 && input.tabs != 7 && input.tabs != 8 &&
                                                     input.tabs != 'rmd' && input.tabs != 'about'", DT::dataTableOutput('occTbl')),
                           conditionalPanel("input.tabs == 6", dataTableOutput('evalTbl')),
                           conditionalPanel("input.tabs == 7 && input.visSel == 'response'", imageOutput('respCurv')),
-                          conditionalPanel("input.tabs == 7 && input.visSel == 'bcEnvel'", imageOutput('bcEnvelPlot')),
-                          conditionalPanel("input.tabs == 7 && input.visSel == 'mxEval'", imageOutput('mxEvalPlot')),
+                          conditionalPanel("input.tabs == 7 && input.visSel == 'bcEnvel' && input.modSel == 'BIOCLIM'", imageOutput('bcEnvelPlot')),
+                          conditionalPanel("input.tabs == 7 && input.visSel == 'mxEval'  && input.modSel == 'Maxent'", imageOutput('mxEvalPlot')),
                           conditionalPanel("input.tabs == 'rmd'",
                                            column(8,
                                                   selectInput('mdType', label = "R Markdown Download Type",
