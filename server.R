@@ -424,6 +424,7 @@ shinyServer(function(input, output, session) {
   })
 
   observe({
+    print(input$mxEvalSel)
     if (is.null(values$df)) return()
     if (input$tabs == 7) {
       map_plotLocs(values$df, fillColor='black', fillOpacity=0.8)
@@ -458,7 +459,7 @@ shinyServer(function(input, output, session) {
 
       if(input$modSel == "Maxent"){
         values$curMod <- values$evalMods[[which(as.character(values$evalTbl[, 1]) == input$modelSel2)]]
-        nonZeroPreds <- mxNonzeroPreds(values$curMod)  # need function from pete's ms
+        nonZeroPreds <- mxNonzeroPreds(values$curMod)
         nonZeroPredNames <- names(values$predsMsk[[nonZeroPreds]])
         nonZeroPredNames <- nonZeroPredNames[order(as.integer(sub('bio', '', nonZeroPredNames)))]  # order by name
         predVarNameList <- setNames(as.list(nonZeroPredNames), nonZeroPredNames)
