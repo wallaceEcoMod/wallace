@@ -316,6 +316,8 @@ shinyServer(function(input, output, session) {
       if (input$partSel == 'sp') gtext$cur <- "www/tab5_sp.Rmd"
     }
   })
+  
+  observe(print(values$partSel2))
 
   observe({
     if (input$partSel == 'nsp') {
@@ -342,7 +344,8 @@ shinyServer(function(input, output, session) {
       writeLog("* Select one of the modules available first...")
       return()
     }
-    comp5_setPartitions(input$partSel2, input$kfolds, input$aggFact, proxy)
+    values$partSel2 <- input$partSel2  # save it to values or else it disappears
+    comp5_setPartitions(values$partSel2, input$kfolds, input$aggFact, proxy)
     shinyjs::enable("downloadPart")
 
 
