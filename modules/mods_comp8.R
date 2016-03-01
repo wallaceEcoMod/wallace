@@ -20,7 +20,6 @@ comp8_selProjExt <- function() {
   
   x <- round(values$polyPts2, digits = 2)  # round all coords to 2 decimal digits
   coordsChar <- paste(apply(x, 1, function(b) paste0('(',paste(b, collapse=', '),')')), collapse=', ')  # concatanate coords to a single character
-  # values$polyPts2 <- NULL
   isolate(writeLog(paste0('* Defined projection extent to: ', coordsChar)))
 }
 
@@ -32,16 +31,14 @@ comp8_pjCurExt <- function(modelSel, predForm) {
   writeLog('* PROJECTING to new area.')
   curMod <- values$evalMods[[as.numeric(modelSel)]]
   values$pjArea <- predict(curMod, values$projMsk)
+  rasVals <- values$pjArea@data@values
   
-  if (predForm == 'raw') {
-    rasVals <- values$pjArea@data@values
-  } else if (predForm == 'log') {
+  if (predForm == 'log') {
     rasVals <- c(values$pjArea@data@values, 0, 1)  # set to 0-1 scale
   }
   rasVals <- rasVals[!is.na(rasVals)]
-  
 
-  # proxy %>% removeShape('poly2Sel')
+  proxy %>% removeShape('poly2Sel')
   # proxy %>% clearImages()
   rasVals <- na.omit(rasVals)
   pal <- colorNumeric(c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c"), rasVals, na.color='transparent')
@@ -50,20 +47,22 @@ comp8_pjCurExt <- function(modelSel, predForm) {
   proxy %>% addRasterImage(values$pjArea, colors = pal, layerId = 'r2')
 }
 
-comp8_mess <- function() {
-  if (is.null(values$projMsk)) {
-    writeLog('! SELECT projection extent first.')
-    return()
-  }
-  writeLog('* Generating MESS map.')
-  occVals <- extract(values$preds, cbind(values$df$longitude, values$df$latitude))
-  values$mess <- mess(values$projMsk, occVals)
-  # proxy %>% clearShapes()
-  # proxy %>% clearImages()
-  rasVals <- values$mess@data@values
-  rasVals <- na.omit(rasVals)
-  # pal <- colorNumeric(c("#fff5f0", "#fb6a4a", "#67000d"), rasVals, na.color='transparent')
-  # proxy %>% addLegend("topright", pal = pal, title = "MESS Values",
-                      # values = rasVals, layerId = 2)
-  proxy %>% addRasterImage(values$mess, layerId = 'ms')
-}
+# comp8_mess <- function() {
+#   if (is.null(values$projMsk)) {
+#     writeLog('! SELECT projection extent first.')
+#     return()
+#   }
+#   writeLog('* Generating MESS map.')
+#   occVals <- extract(values$preds, cbind(values$df$longitude, values$df$latitude))
+#   values$mess <- mess(values$projMsk, occVals)
+#   # proxy %>% clearShapes()
+#   # proxy %>% clearImages()
+#   rasVals <- values$mess@data@values
+#   rasVals <- na.omit(rasVals)
+#   rasVals[is.infinite(rasVals)] <- 
+# 
+#   # pal <- colorNumeric(c("#fff5f0", "#fb6a4a", "#67000d"), rasVals, na.color='transparent')
+#   # proxy %>% addLegend("topright", pal = pal, title = "MESS Values",
+#                       # values = rasVals, layerId = 2)
+#   proxy %>% addRasterImage(values$mess, layerId = 'ms')
+# }
