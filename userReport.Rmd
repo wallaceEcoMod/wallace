@@ -48,11 +48,11 @@ isBB <- if (backg) input$backgSel == 'bb' else FALSE
 isMCP <- if (backg) input$backgSel == 'mcp' else FALSE
 isUserBG <- if (backg) input$backgSel == 'user' else FALSE
 part <- input$goPart != 0
-isBlock <- if (input$partSel2 != "") input$partSel2 == 'block' else FALSE
-isCB1 <- if (input$partSel2 != "") input$partSel2 == 'cb1' else FALSE
-isCB2 <- if (input$partSel2 != "") input$partSel2 == 'cb2' else FALSE
-isJack <- if (input$partSel2 != "") input$partSel2 == 'jack' else FALSE
-isRandom <- if (input$partSel2 != "") input$partSel2 == 'random' else FALSE
+isBlock <- if (!is.null(values$partSel2)) values$partSel2 == 'block' else FALSE
+isCB1 <- if (!is.null(values$partSel2)) values$partSel2 == 'cb1' else FALSE
+isCB2 <- if (!is.null(values$partSel2)) values$partSel2 == 'cb2' else FALSE
+isJack <- if (!is.null(values$partSel2)) values$partSel2 == 'jack' else FALSE
+isRandom <- if (!is.null(values$partSel2)) values$partSel2 == 'random' else FALSE
 model <- input$goEval != 0
 isBC <- if (!is.null(values$evalMods)) input$modSel == 'BIOCLIM' else FALSE
 isMX <- if (!is.null(values$evalMods)) input$modSel == 'Maxent' else FALSE
@@ -221,7 +221,7 @@ predsMsk <- mask(predCrop, backgExt)
 
 ```{asis, echo = part, include = part}
 ### Partition Occurrence Data
-SOME TEXT
+Here, occurrence data is partitioned for cross-validation.
 ```
 
 ```{r, echo = part, eval = part, include = part}
