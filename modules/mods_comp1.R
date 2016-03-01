@@ -78,7 +78,7 @@ getUserOccs <- function(csvPath) {
   #     })
   
   # subset to only occs, not backg, and just fields that match df
-  values$spname <- inFile$species[1]  # get species name
+  values$spname <- as.character(inFile$species[1])  # get species name
   inFile.occs <- inFile[inFile[,1] == values$spname,]  # limit to records with this name
   for (col in c("institutionCode", "country", "stateProvince", 
                 "locality", "elevation", "basisOfRecord")) {  # add all cols to match origOccs if not already there

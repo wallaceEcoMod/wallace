@@ -94,11 +94,12 @@ shinyServer(function(input, output, session) {
       if (input$occSel == 'user') gtext$cur <- "www/tab1_user.Rmd"
     }
   })
-
+  
   # module GBIF
   observeEvent(input$goName, {
     if (input$gbifName == "") return()
     getGbifOccs(input$gbifName, input$gbifNum)
+    print(values$spname)
     shinyjs::enable("downloadOrigOccs")
   })
 
@@ -106,6 +107,7 @@ shinyServer(function(input, output, session) {
   observe({
     if (is.null(input$userCSV)) return()  # exit if userCSV not specifed
     getUserOccs(input$userCSV$datapath)
+    print(values$spname)
   })
 
   # render the GBIF records data table
@@ -317,8 +319,6 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  observe(print(values$partSel2))
-
   observe({
     if (input$partSel == 'nsp') {
       updateSelectInput(session, "partSel2", choices=list("None selected" = '',
