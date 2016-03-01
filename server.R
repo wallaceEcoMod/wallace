@@ -561,10 +561,10 @@ shinyServer(function(input, output, session) {
   observeEvent(input$erasePolyProjExt, {
     values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
     values$poly2 <- NULL  # erase current pj ext polygon
-    values$pjMskPreds <- NULL  # erase current proj ext pred clips
+    values$projMsk <- NULL  # erase current proj ext pred clips
     values$pjArea <- NULL
     values$mess <- NULL
-    # values$polyPts2 <- NULL
+    values$polyPts2 <- NULL
     proxy %>% clearShapes()
     proxy %>% clearImages()
     writeLog('* RESET PROJECTION EXTENT')
@@ -593,12 +593,6 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goMESS, {
     comp8_mess()
   })
-
-#   # project new area or MESS map, depending on radio button selection
-#   observe({
-#     if (!is.null(values$pjArea) && input$pjExtType == 'pjArea') isolate(comp8_pjModel())
-#     if (!is.null(values$mess) && input$pjExtType == 'mess') isolate(comp8_mess())
-#   })
 
   # Download current projected extent
   output$downloadPj <- downloadHandler(
