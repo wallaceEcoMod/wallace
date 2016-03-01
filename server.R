@@ -424,7 +424,6 @@ shinyServer(function(input, output, session) {
   })
 
   observe({
-    print(input$mxEvalSel)
     if (is.null(values$df)) return()
     if (input$tabs == 7) {
       map_plotLocs(values$df, fillColor='black', fillOpacity=0.8)
