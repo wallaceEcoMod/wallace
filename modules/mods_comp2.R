@@ -12,7 +12,7 @@ remSelLocs <- function(remLoc) {
       values$df <- values$df[-remo, ]
       values$origOccs <- values$origOccs[-remo, ]
     }
-    
+
     if (numTest) {
       writeLog(paste0("* Removed locality with ID = ", remLoc, "."))
     }
@@ -26,14 +26,14 @@ polySelLocs <- function() {
   values$polyID <- values$polyID + 1
   if (is.null(values$polyPts1)) return()
   pts <- SpatialPoints(values$df[,2:3])  # make pts spatial object
-  
+
   newPoly <- SpatialPolygons(list(Polygons(list(Polygon(values$polyPts1)), ID=values$polyID)))  # create new polygon from coords
   if (is.null(values$poly1)) {  # if there are no polygons, draw the new one, otherwise draw the new plus all the old ones
     values$poly1 <- newPoly  # this is passed to mapFuncs to fill the selected polygons
   } else {
     values$poly1 <- spRbind(values$poly1, newPoly)
   }
-  
+
   values$ptSeln <- as.numeric(which(!(is.na(over(pts, values$poly1)))))  # select pts overlapping (intersecting) with polygon(s)
   if (length(values$ptSeln) == 0) {
     values$poly1 <- NULL
@@ -42,7 +42,7 @@ polySelLocs <- function() {
     proxy %>% clearShapes()
     return()
   }
-  
+
   # Subset with selected locs
   ptsSel <- values$origOccs[values$ptSeln, ]
   map_plotLocs(ptsSel, fillColor='yellow', fillOpacity=1, clearShapes=FALSE)
@@ -50,7 +50,7 @@ polySelLocs <- function() {
                       title = "GBIF Records", labels = c('original', 'selected'),
                       opacity = 1, layerId = 1)
   values$df <- ptsSel
-  
+
   values$polyPts1 <- NULL
   values$ptsSel <- ptsSel
   isolate(writeLog(paste('* Selected', nrow(values$df), 'localities.')))
@@ -65,7 +65,7 @@ thinOccs <- function(thinDist) {
   longi <- values$df[,2]
   z <- smartZoom(longi, lati)
   proxy %>% fitBounds(z[1], z[2], z[3], z[4])
-  
+
   if (input$thinDist <= 0) {
     writeLog("* WARNING: Assign positive distance to thinning parameter.")
     return()
@@ -83,13 +83,13 @@ thinOccs <- function(thinDist) {
       thinned.inFile <- values$inFile[as.numeric(rownames(output[[1]])),]
     }
   })
-  
+
   map_plotLocs(values$prethinned, fillColor='blue', fillOpacity=1, clearShapes=FALSE)
   map_plotLocs(values$df, fillOpacity=1, clearShapes=FALSE, clearMarkers=FALSE)
   proxy %>% addLegend("topright", colors = c('red', 'blue'),
                       title = "GBIF Records", labels = c('retained', 'removed'),
                       opacity = 1, layerId = 1)
-  
+  values$origOccs <- values$df
   writeLog(paste('* Total records thinned to [', nrow(values$df), '] localities.'))
   # render the thinned records data table
   output$occTbl <- DT::renderDataTable({DT::datatable(values$df[,1:4])})
