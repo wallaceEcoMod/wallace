@@ -124,6 +124,8 @@ evalPlot <- function(res, value) {
   
   if (value != "delta.AICc") {
     variance <- paste0('Var', strsplit(value, split='Mean')[[1]][2])
+  } else {
+    variance <- NULL
   }
   
   y <- res[,value]
@@ -144,7 +146,7 @@ evalPlot <- function(res, value) {
   for (j in 1:length(unique(res$features))){
     s <- ((fc*rm)-fc+j)
     points(res$rm[seq(j, s, fc)], y[seq(j, s, fc)], type="l", col=col[j])
-    if(!is.null(variance)){
+    if (!is.null(variance)) {
       arrows(res$rm[seq(j, s, fc)], 
              y[seq(j, s, fc)] + v[seq(j, s, fc)], 
              res$rm[seq(j, s, fc)], 
