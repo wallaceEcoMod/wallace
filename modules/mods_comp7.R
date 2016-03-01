@@ -9,10 +9,10 @@ comp7_mapPred <- function(modelSel1, predForm, predThresh, proxy) {
   selRasLog <- values$evalPredsLog[[as.numeric(modelSel1)]]
   if (predForm == 'raw' | is.null(selRasLog)) {
     selRas <- selRasRaw
-    rasVals <- getValues(selRas)
+    rasVals <- selRas@data@values
   } else if (predForm == 'log' & !is.null(selRasLog)) {
     selRas <- selRasLog
-    rasVals <- c(getValues(selRas), 0, 1)  # set to 0-1 scale
+    rasVals <- c(selRas@data@values, 0, 1)  # set to 0-1 scale
   }
   rasVals <- rasVals[!is.na(rasVals)]
   
