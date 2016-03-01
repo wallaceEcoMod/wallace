@@ -303,7 +303,8 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                      numericInput("rmsBy", label = "RM step value", value = 1)
                                                     ),
                                                     conditionalPanel("input.modSel == 'BIOCLIM' || input.modSel == 'Maxent'",
-                                                                     actionButton("goEval", "Build & Evaluate Models"), br(), br(),
+                                                                     strong("Build and evaluate models"), br(),
+                                                                     actionButton("goEval", "Run Models"), br(), br(),
                                                                      downloadButton('downloadEvalcsv', "Download Results CSV")
                                                     ),
                                                     conditionalPanel("input.modSel == 'BIOCLIM' || input.modSel == 'Maxent'",
