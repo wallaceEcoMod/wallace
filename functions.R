@@ -121,23 +121,23 @@ evalPlot <- function(res, value) {
   col <- rainbow(fc)
   rm <- length(unique(res$rm))
   xlab <- "Regularization Multiplier"
-  
+
   if (value != "delta.AICc") {
     variance <- paste0('Var', strsplit(value, split='Mean')[[1]][2])
   } else {
     variance <- NULL
   }
-  
+
   y <- res[,value]
 
   if (value != "delta.AICc") {
     v <- res[,variance]
-    ylim <- c(min(y-v), max(y+v))  
+    ylim <- c(min(y-v), max(y+v))
   } else {
     ylim <- c(min(y, na.rm=TRUE), max(y, na.rm=TRUE))
   }
-  
-  
+
+
   plot(res$rm, y, col='white', ylim=ylim, ylab=value, xlab=xlab, axes=F, cex.lab=1.5)
   if (value=="delta.AICc") abline(h=2, lty=3)
   axis(1, at= unique(res$rm))
@@ -147,9 +147,9 @@ evalPlot <- function(res, value) {
     s <- ((fc*rm)-fc+j)
     points(res$rm[seq(j, s, fc)], y[seq(j, s, fc)], type="l", col=col[j])
     if (!is.null(variance)) {
-      arrows(res$rm[seq(j, s, fc)], 
-             y[seq(j, s, fc)] + v[seq(j, s, fc)], 
-             res$rm[seq(j, s, fc)], 
+      arrows(res$rm[seq(j, s, fc)],
+             y[seq(j, s, fc)] + v[seq(j, s, fc)],
+             res$rm[seq(j, s, fc)],
              y[seq(j, s, fc)] - v[seq(j, s, fc)],
              code=3, length=.05, angle=90, col=col[j])
     }
@@ -250,4 +250,13 @@ respCurv <- function(mod, i) {  # copied mostly from dismo
   abline(v = abs.r[1], col='green') # vertical green lines indicate min and max of background vals
   abline(v = abs.r[2], col='green')
     #graphics::text(x = vals, y = pred, labels = row.names(mod@presence), pos = 3, offset = 1)
+}
+
+# Reset values
+resetV <- function(x) {
+  namesV <- names(x)[-(1:2)]
+  for(i in namesV){
+    x[[i]] <- NULL
+  }
+  x
 }
