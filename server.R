@@ -8,6 +8,7 @@ if (!require('leaflet')) devtools::install_github('rstudio/leaflet')
 # for exp version of ENMeval with special updateProgress param for shiny
 #install_github("bobmuscarella/ENMeval@ENMeval_v0.1.2")
 if (!require("DT")) devtools::install_github("rstudio/DT")
+#options(shiny.error=browser)  # for debugging
 
 # load libraries
 library(devtools)
@@ -72,8 +73,6 @@ shinyServer(function(input, output, session) {
   ### INITIALIZE
   #########################
            
-  observe(print(gtext$cur))
-  
   output$log <- renderUI({tags$div(id='logHeader',
                                    tags$div(id='logContent', HTML(paste0(values$log, "<br>", collapse = ""))))})
 
@@ -567,12 +566,12 @@ shinyServer(function(input, output, session) {
   
   # select projection extent
   observeEvent(input$poly2Sel, {
-    comp8_selProjExt(input$modelSel3, values$preds)
+    comp8_selProjExt()
   })
 
   # Module Project to Extent
   observeEvent(input$goPjCur, {
-    comp8_pjCurExt()
+    comp8_pjCurExt(input$modelSel3, input$predForm)
   })
   
   # Module MESS
