@@ -589,10 +589,10 @@ shinyServer(function(input, output, session) {
     comp8_pjCurExt(input$modelSel3, input$predForm)
   })
 
-  # Module MESS
-  observeEvent(input$goMESS, {
-    comp8_mess()
-  })
+#   # Module MESS
+#   observeEvent(input$goMESS, {
+#     comp8_mess()
+#   })
 
   # Download current projected extent
   output$downloadPj <- downloadHandler(
