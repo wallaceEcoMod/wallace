@@ -36,7 +36,6 @@ Wallace also includes several functions developed to help integrate different pa
 source('/Users/musasabi/Documents/github/wallace/functions.R')
 ```
 
-###Obtain Occurrence Data
 ```{r, echo = FALSE, include = FALSE}
 gbif <- input$gbifName != ""
 csv <- !is.null(input$userCSV)
@@ -44,24 +43,26 @@ remLoc <- !is.null(values$removedAll)
 drawPoly <- !is.null(values$ptSeln)
 thin <- input$goThin != 0
 yesPreds <- input$bcRes != ""
-backg <- !is.null(input$backgSelect)
-isBB <- if (!is.null(input$backgSelect)) input$backgSelect == 'bb' else FALSE
-isMCP <- if (!is.null(input$backgSelect)) input$backgSelect == 'mcp' else FALSE
-isUserBG <- if (!is.null(input$backgSelect)) input$backgSelect == 'user' else FALSE
+backg <- !is.null(values$backgExt)
+isBB <- if (backg) input$backgSel == 'bb' else FALSE
+isMCP <- if (backg) input$backgSel == 'mcp' else FALSE
+isUserBG <- if (backg) input$backgSel == 'user' else FALSE
 part <- input$goPart != 0
-isBlock <- if (input$partSelect2 != "") input$partSelect2 == 'block' else FALSE
-isCB1 <- if (input$partSelect2 != "") input$partSelect2 == 'cb1' else FALSE
-isCB2 <- if (input$partSelect2 != "") input$partSelect2 == 'cb2' else FALSE
-isJack <- if (input$partSelect2 != "") input$partSelect2 == 'jack' else FALSE
-isRandom <- if (input$partSelect2 != "") input$partSelect2 == 'random' else FALSE
+isBlock <- if (input$partSel2 != "") input$partSel2 == 'block' else FALSE
+isCB1 <- if (input$partSel2 != "") input$partSel2 == 'cb1' else FALSE
+isCB2 <- if (input$partSel2 != "") input$partSel2 == 'cb2' else FALSE
+isJack <- if (input$partSel2 != "") input$partSel2 == 'jack' else FALSE
+isRandom <- if (input$partSel2 != "") input$partSel2 == 'random' else FALSE
 model <- input$goEval != 0
-isBC <- if (!is.null(values$evalMods)) input$modSelect == 'BIOCLIM' else FALSE
-isMX <- if (!is.null(values$evalMods)) input$modSelect == 'Maxent' else FALSE
+isBC <- if (!is.null(values$evalMods)) input$modSel == 'BIOCLIM' else FALSE
+isMX <- if (!is.null(values$evalMods)) input$modSel == 'Maxent' else FALSE
 ```
 
 Record of analysis for *`r makeCap(values$spname)`*.
 
-<!-- STEP 1 -->
+```{asis, echo = gbif, include = gbif}
+### Obtain Occurrence Data
+```
 
 ```{r occs}
 occs <- NULL  # make empty occs to fill when GBIF or user input are called
@@ -110,10 +111,9 @@ occs <- rbind(occs, inFile.occs)  # add the CSV points to existing occs
 occs <- remDups(occs)  # remove duplicate records
 ```
 
-<!-- STEP 2 -->
 
 ```{asis, echo = thin | remLoc | drawPoly, include = drawPoly}
-###Process Occurrence Data
+### Process Occurrence Data
 ```
 
 ```{asis, echo = remLoc, eval = remLoc, include = remLoc}
@@ -152,10 +152,9 @@ maxThin <- output[[ifelse(length(maxThin) > 1, maxThin[1], maxThin)]]  # if ther
 occs <- occs[as.numeric(rownames(maxThin)),]  # subset occs to match only thinned occs
 ```
 
-<!-- STEP 3 -->
 
 ```{asis, echo = yesPreds, eval = yesPreds, include = yesPreds}
-###Obtain Environmental Data
+### Obtain Environmental Data
 Using WorldClim (http://www.worldclim.org/) bioclim dataset at resolution of `r {{predsRes}}` arcmin.
 ```
 
@@ -165,14 +164,13 @@ locs.vals <- extract(preds[[1]], occs[,2:3])  # extract environmental values at 
 occs <- occs[!is.na(locs.vals), ]  # remove occs without environmental values from inFile
 ```
 
-<!-- STEP 4 -->
 
 ```{r, include = FALSE, eval = backg}
 backgSwitch <- switch("{{backgSel}}", 'bb'='Bounding Box', 'mcp'='Minimum Convex Polygon', 'user'='User-defined')
 ```
 
 ```{asis, echo = backg, eval = backg, include = backg}
-###Process Environmental Data
+### Process Environmental Data
 Background selection technique chosen as `r backgSwitch`.
 Buffer size of the study extent polygon defined as `r {{backgBuf}}` km.
 ```
@@ -220,10 +218,9 @@ predCrop <- crop(preds, backgExt)
 predsMsk <- mask(predCrop, backgExt)
 ```
 
-<!-- STEP 5 -->
 
 ```{asis, echo = part, include = part}
-## Partition Occurrence Data
+### Partition Occurrence Data
 SOME TEXT
 ```
 
@@ -269,10 +266,9 @@ Define modeling parameters:
 modParams <- list(occ.pts=occs.locs, bg.pts=bg.coords, occ.grp=group.data[[1]], bg.grp=group.data[[2]])
 ```
 
-<!-- STEP 6 -->
 
 ```{asis, echo = model, eval = model, include = model}
-## Build and Evaluate Niche Model
+### Build and Evaluate Niche Model
 `r "{{modSel}}"` model selected.
 ```
 
