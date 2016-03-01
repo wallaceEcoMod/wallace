@@ -94,18 +94,19 @@ shinyServer(function(input, output, session) {
       if (input$occSel == 'user') gtext$cur <- "www/tab1_user.Rmd"
     }
   })
-  
+
   # module GBIF
   observeEvent(input$goName, {
     if (input$gbifName == "") return()
+    isolate(resetV(values))
     getGbifOccs(input$gbifName, input$gbifNum)
-    print(values$spname)
     shinyjs::enable("downloadOrigOccs")
   })
 
   # module userOccs
   observe({
     if (is.null(input$userCSV)) return()  # exit if userCSV not specifed
+    isolate(resetV(values))
     getUserOccs(input$userCSV$datapath)
     print(values$spname)
   })
@@ -318,7 +319,7 @@ shinyServer(function(input, output, session) {
       if (input$partSel == 'sp') gtext$cur <- "www/tab5_sp.Rmd"
     }
   })
-  
+
   observe({
     if (input$partSel == 'nsp') {
       updateSelectInput(session, "partSel2", choices=list("None selected" = '',
