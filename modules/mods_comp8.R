@@ -8,7 +8,7 @@ comp8_selProjExt <- function() {
     return()
   }
   values$polyErase <- TRUE  # turn on to signal to prevent the use of an existing map click
-  values$polyID <-  1
+  values$polyID <- values$polyID + 1
   
   values$poly2 <- SpatialPolygons(list(Polygons(list(Polygon(values$polyPts2)), ID=values$polyID)))  # create new polygon from coords
   proxy %>% addPolygons(values$polyPts2[,1], values$polyPts2[,2], weight=3, fill=FALSE, color='red', layerId='poly2Sel')
@@ -63,6 +63,6 @@ comp8_pjCurExt <- function(modelSel, predForm, modelSel2) {
 # 
 #   # pal <- colorNumeric(c("#fff5f0", "#fb6a4a", "#67000d"), rasVals, na.color='transparent')
 #   # proxy %>% addLegend("topright", pal = pal, title = "MESS Values",
-#                       # values = rasVals, layerId = 1)
+#                       # values = rasVals, layerId = values$polyID + 1)
 #   proxy %>% addRasterImage(values$mess, layerId = 'ms')
 # }
