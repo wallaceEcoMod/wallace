@@ -16,6 +16,8 @@ remSelLocs <- function(remLoc) {
     if (numTest) {
       writeLog(paste0("* Removed locality with ID = ", remLoc, "."))
     }
+    zoom2Occs()
+    map_plotLocs(values$origOccs)
   })
 }
 
