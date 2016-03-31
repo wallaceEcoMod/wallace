@@ -1,6 +1,7 @@
 # check package dependencies, and download if necessary
 list.of.packages <- c("shiny", "maps", "RColorBrewer", "rmarkdown", "shinyjs", "rgbif", "devtools",
-                      "spThin", "colorRamps", "dismo", "rgeos", "XML", "repmis", "Rcpp", "RCurl", "curl")
+                      "spThin", "colorRamps", "dismo", "rgeos", "XML", "repmis", "Rcpp", "RCurl", "curl",
+                      "maptools", "rgdal", "rJava")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if (length(new.packages)) install.packages(new.packages)
 # use devtools to install leaflet and new unreleased version of ENMeval from github
@@ -25,6 +26,8 @@ library(RColorBrewer)
 library(leaflet)
 library(repmis)
 library(rmarkdown)
+library(rgdal)
+
 
 source("functions.R")
 
@@ -388,6 +391,7 @@ shinyServer(function(input, output, session) {
       return()
     }
     values$predsLog <- NULL  # reset predsLog if models are rerun
+    values$modSel <- input$modSel 
 
     # Module BIOCLIM
     if (input$modSel == "BIOCLIM") {
@@ -431,6 +435,7 @@ shinyServer(function(input, output, session) {
     if (is.null(values$df)) return()
     if (input$tabs == 7) {
       map_plotLocs(values$df, fillColor='black', fillOpacity=0.8)
+      proxy %>% clearImages()
       proxy %>% addLegend("topright", colors = c('black'),
                           title = "GBIF Records", labels = c('retained'),
                           opacity = 1, layerId = 1)
@@ -541,12 +546,14 @@ shinyServer(function(input, output, session) {
     if (input$tabs == 8) {
       if (!is.null(values$poly2)) return()  # if sel pj ext poly selected, don't allow more drawing
       if (is.null(values$df)) return()
+      proxy %>% clearImages()
       map_plotLocs(values$df, fillColor='black', fillOpacity=0.8, clearShapes=FALSE)
       proxy %>% addLegend("topright", colors = c('black'),
                           title = "GBIF Records", labels = c('retained'),
                           opacity = 1, layerId = 1)
       if (is.null(input$map_click)) return()
       lonlat <- c(input$map_click$lng, input$map_click$lat)
+     
 
       if (values$polyErase) {
         if (identical(lonlat, values$mapClick)) return()
@@ -571,6 +578,10 @@ shinyServer(function(input, output, session) {
     values$polyPts2 <- NULL
     proxy %>% clearShapes()
     proxy %>% clearImages()
+    proxy %>% addLegend("topright", colors = c('black'),
+                        title = "GBIF Records", labels = c('retained'),
+                        opacity = 1, layerId = 1)
+
     writeLog('* RESET PROJECTION EXTENT')
   })
 
@@ -590,7 +601,7 @@ shinyServer(function(input, output, session) {
 
   # Module Project to Extent
   observeEvent(input$goPjCur, {
-    comp8_pjCurExt(input$modelSel3, input$predForm)
+    comp8_pjCurExt(input$modelSel3, input$predForm, values$modSel)
   })
 
 #   # Module MESS
@@ -608,16 +619,16 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       if (input$pjFileType == 'png') {
         png(file)
-        image(values$pj)
+        image(values$pjArea)
         dev.off()
       } else if (input$pjFileType == 'raster') {
         fileName <- paste0(values$rasName, "_", input$predForm, "_", input$predThresh, "_pj")
         tmpdir <- tempdir()
-        writeRaster(values$pj, file.path(tmpdir, fileName), format = input$pjFileType, overwrite = TRUE)
+        writeRaster(values$pjArea, file.path(tmpdir, fileName), format = input$pjFileType, overwrite = TRUE)
         fs <- file.path(tmpdir, paste0(fileName, c('.grd', '.gri')))
         zip(zipfile=file, files=fs, extras = '-j')
       } else {
-        res <- writeRaster(values$pj, file, format = input$pjFileType, overwrite = TRUE)
+        res <- writeRaster(values$pjArea, file, format = input$pjFileType, overwrite = TRUE)
         file.rename(res@file@name, file)
       }
     }
