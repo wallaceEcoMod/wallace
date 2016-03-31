@@ -1,7 +1,7 @@
 comp8_selProjExt <- function() {
   if (is.null(values$df)) return()
   if (is.null(values$polyPts2)) return()
-
+  
   values$polyPts2 <- unique(values$polyPts2)  # remove phantom first row after reset
   if (nrow(values$polyPts2) < 3) {
     writeLog("! Please define a shape with at least 3 sides.")
@@ -37,13 +37,13 @@ comp8_pjCurExt <- function(modelSel, predForm, modelSel2) {
     rasVals <- c(values$pjArea@data@values, 0, 1)  # set to 0-1 scale
   }
   rasVals <- rasVals[!is.na(rasVals)]
-
+  
   proxy %>% removeShape('poly2Sel')
   # proxy %>% clearImages()
   rasVals <- na.omit(rasVals)
   pal <- colorNumeric(c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c"), rasVals, na.color='transparent')
   proxy %>% addLegend("topright", pal = pal, title = "Predicted Suitability",
-  values = rasVals, layerId = 1)
+                      values = rasVals, layerId = 1)
   proxy %>% addRasterImage(values$pjArea, colors = pal, layerId = 'r2')
 }
 

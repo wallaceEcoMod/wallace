@@ -56,7 +56,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                    tabPanel("8 Project", value=8),
                    tabPanel("History", value='rmd'),
                    tabPanel("About", value='about'),
-
+                   
                    fluidRow(column(4,
                                    wellPanel(
                                      includeCSS("styles.css"),
@@ -127,19 +127,19 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                        downloadButton('downloadThincsv', "Download Thinned Occurrence CSV")
                                                                        #br(),
                                                                        #uiOutput('thinDnld'),
-
+                                                                       
                                                       ),
                                                       conditionalPanel("input.procOccSel == 'spthin'",
                                                                        HTML('<hr>'),
                                                                        span("spThin", id = "rpkg"), "references", br(),
                                                                        div('Developers:  Matthew E. Aiello-Lammens, Rob A. Boria, Alex Radosavljevic, Bruno Vilela,
-                                                                                  Robert P. Anderson', id="pkgDes"),
+                                                                           Robert P. Anderson', id="pkgDes"),
                                                                        a("CRAN", href = "http://cran.r-project.org/web/packages/spThin/index.html", target = "_blank"),
                                                                        " | ",
                                                                        a("documentation", href="https://cran.r-project.org/web/packages/spThin/spThin.pdf", target = "_blank"),
                                                                        " | ",
                                                                        a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/ecog.01132/abstract", target = "_blank")
-                                                      )
+                                                                       )
                                      ),
                                      conditionalPanel("input.tabs == 3",
                                                       h4("Obtain Environmental Data"),
@@ -181,7 +181,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                       h4("Process Environmental Data"),
                                                       radioButtons("envProcSel", "Modules Available:",
                                                                    choices = list("Select Study Region" = "backg")),
-
+                                                      
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.envProcSel == 'backg'",
                                                                        div('Module: Select Study Region', id="mod"),
@@ -190,12 +190,12 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                        span('and', id="pkgDes"),
                                                                        span('rgeos', id="rpkg"),
                                                                        span('packages: Title Classes and Methods for Spatial Data |
-                                                                                   Interface to Geometry Engine - Open Source (GEOS)', id="pkgDes"),
+                                                                            Interface to Geometry Engine - Open Source (GEOS)', id="pkgDes"),
                                                                        HTML('<hr>'),
                                                                        radioButtons("backgSel", "Background Extents:",
                                                                                     choices = list("Bounding box" = 'bb', "Minimum convex polygon" = 'mcp',
                                                                                                    "User-specified polygon" = 'user'))
-                                                      ),
+                                                                       ),
                                                       conditionalPanel("input.backgSel == 'user'",
                                                                        #  shinyFilesButton('userBackg', label='Upload Shapefile', title='Please select a file', multiple=TRUE)),
                                                                        fileInput("userBackg", label = "Upload Polygon (.csv)",
@@ -209,13 +209,13 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                        downloadButton('downloadMskPreds', "Download Clipped Env Data"),
                                                                        HTML('<hr>')),
                                                       "Input flows into this step from Step 3. Step 4 provides clipped grids that can be saved in the
-                                                             same formats: GRD, GEOTIFF, or ASCII files. Additionally (for clipping the grids in this step),
-                                                             the user may provide a file delimiting the study region via a CSV that contains the vertices of a polygon.",
+                                                      same formats: GRD, GEOTIFF, or ASCII files. Additionally (for clipping the grids in this step),
+                                                      the user may provide a file delimiting the study region via a CSV that contains the vertices of a polygon.",
                                                       conditionalPanel("input.envProcSel == 'backg'",
                                                                        HTML('<hr>'),
                                                                        span("sp", id = "rpkg"), "references", br(),
                                                                        div('Developers:  Edzer Pebesma, Roger Bivand, Barry Rowlingson, Virgilio Gomez-Rubio,
-                                                                                  Robert Hijmans, Michael Sumner, Don MacQueen, Jim Lemon, Josh O\'Brien', id="pkgDes"),
+                                                                           Robert Hijmans, Michael Sumner, Don MacQueen, Jim Lemon, Josh O\'Brien', id="pkgDes"),
                                                                        a("CRAN", href = "http://cran.r-project.org/web/packages/sp/index.html", target = "_blank"),
                                                                        " | ",
                                                                        a("documentation", href="https://cran.r-project.org/web/packages/sp/sp.pdf", target = "_blank"),
@@ -225,7 +225,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                        " | ",
                                                                        a("documentation", href="https://cran.r-project.org/web/packages/rgeos/rgeos.pdf", target = "_blank")
                                                       )
-
+                                                      
                                      ),
                                      conditionalPanel("input.tabs == 5",
                                                       h4("Partition Occurrence Data"),
@@ -262,13 +262,13 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                       conditionalPanel("input.partSel == 'sp' || input.partSel == 'nsp'",
                                                                        span("ENMeval", id = "rpkg"), "references", br(),
                                                                        div('Developers:  Robert Muscarella, Peter J. Galante, Mariano Soley-Guardia, Robert A. Boria,
-                                                                                  Jamie M. Kass, Maria Uriarte, Robert P. Anderson', id="pkgDes"),
+                                                                           Jamie M. Kass, Maria Uriarte, Robert P. Anderson', id="pkgDes"),
                                                                        a("CRAN", href = "http://cran.r-project.org/web/packages/ENMeval/index.html", target = "_blank"),
                                                                        " | ",
                                                                        a("documentation", href="https://cran.r-project.org/web/packages/ENMeval/ENMeval.pdf", target = "_blank"),
                                                                        " | ",
                                                                        a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12261/abstract", target = "_blank")
-                                                      )
+                                                                       )
                                      ),
                                      conditionalPanel("input.tabs == 6",
                                                       h4("Build and Evaluate Niche Model"),
@@ -285,7 +285,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                        span('and', id="pkgDes"),
                                                                        span('dismo', id="rpkg"),
                                                                        span('packages: Automated Runs and Evaluations of Ecological Niche Models |
-                                                                                   Species Distribution Modeling', id="pkgDes")),
+                                                                            Species Distribution Modeling', id="pkgDes")),
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.modSel == 'Maxent'",
                                                                        checkboxInput('togMD6B', "Hide / Display Guidance Text", value = FALSE),
@@ -311,7 +311,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                        HTML('<hr>'),
                                                                        span("ENMeval", id = "rpkg"), "references", br(),
                                                                        div('Developers:  Robert Muscarella, Peter J. Galante, Mariano Soley-Guardia, Robert A. Boria,
-                                                                                  Jamie M. Kass, Maria Uriarte, Robert P. Anderson', id="pkgDes"),
+                                                                           Jamie M. Kass, Maria Uriarte, Robert P. Anderson', id="pkgDes"),
                                                                        a("CRAN", href = "http://cran.r-project.org/web/packages/ENMeval/index.html", target = "_blank"),
                                                                        " | ",
                                                                        a("documentation", href="https://cran.r-project.org/web/packages/ENMeval/ENMeval.pdf", target = "_blank"),
@@ -322,8 +322,8 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                        a("CRAN", href = "http://cran.r-project.org/web/packages/dismo/index.html", target = "_blank"),
                                                                        " | ",
                                                                        a("documentation", href="https://cran.r-project.org/web/packages/dismo/dismo.pdf", target = "_blank")
-                                                      )
-                                     ),
+                                                                       )
+                                                                       ),
                                      conditionalPanel("input.tabs == 7",
                                                       h4("Visualize Model Results"),
                                                       radioButtons("visSel", "Modules Available:",
@@ -424,45 +424,45 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                                  "PNG" = "png")),
                                                       downloadButton('downloadPj', "Download Displayed Grid")
                                      )
+                   )
+),
+column(8,
+       bsCollapse(id = 'guidanceText', bsCollapsePanel('Expand Guidance Text', uiOutput('gtextOut'))),
+       conditionalPanel("input.tabs != 0 && input.tabs != 'rmd' && input.tabs != 'about'",
+                        div(id = "wallaceLog", class = "scrollbox", htmlOutput("log"))),
+       br(),
+       conditionalPanel("input.tabs == 1 || input.tabs == 2 || input.tabs == 3 || input.tabs == 4 || input.tabs == 5
+                        || (input.tabs == 7 && input.visSel == 'map') || input.tabs == 8",
+                        leafletOutput("map", height=500)),
+       br(),
+       conditionalPanel("input.tabs != 0 && input.tabs != 6 && input.tabs != 7 && input.tabs != 8 &&
+                        input.tabs != 'rmd' && input.tabs != 'about'", DT::dataTableOutput('occTbl')),
+       conditionalPanel("input.tabs == 6", dataTableOutput('evalTbl')),
+       conditionalPanel("input.tabs == 7 && input.visSel == 'response'", imageOutput('respCurv')),
+       conditionalPanel("input.tabs == 7 && input.visSel == 'bcEnvel' && input.modSel == 'BIOCLIM'", imageOutput('bcEnvelPlot')),
+       conditionalPanel("input.tabs == 7 && input.visSel == 'mxEval'  && input.modSel == 'Maxent'", imageOutput('mxEvalPlot')),
+       conditionalPanel("input.tabs == 'rmd'",
+                        column(8,
+                               selectInput('mdType', label = "R Markdown Download Type",
+                                           choices = list("Rmd", "PDF", "HTML", "Word")),
+                               downloadButton('downloadMD', 'Download History in R Markdown'), br(), br(),
+                               includeMarkdown("www/tab9_mdtext.Rmd")
+                        )
+       ),
+       conditionalPanel("input.tabs == 0",
+                        column(11,
+                               includeMarkdown("www/intro.Rmd")
+                        )
+       ),
+       conditionalPanel("input.tabs == 'about'",
+                        fluidPage(titlePanel(h4("Wallace was created by an international team of ecologists:")),
+                                  fluidRow(
+                                    column(2, includeMarkdown("www/tab10Acontent.Rmd")),
+                                    column(3, includeMarkdown("www/tab10Ccontent.Rmd")),
+                                    column(5, includeMarkdown("www/tab10Bcontent.Rmd"))
+                                  )
+                        )
+       )
+       )
                                    )
-                   ),
-                   column(8,
-                          bsCollapse(id = 'guidanceText', bsCollapsePanel('Expand Guidance Text', uiOutput('gtextOut'))),
-                          conditionalPanel("input.tabs != 0 && input.tabs != 'rmd' && input.tabs != 'about'",
-                                           div(id = "wallaceLog", class = "scrollbox", htmlOutput("log"))),
-                          br(),
-                          conditionalPanel("input.tabs == 1 || input.tabs == 2 || input.tabs == 3 || input.tabs == 4 || input.tabs == 5
-                                                    || (input.tabs == 7 && input.visSel == 'map') || input.tabs == 8",
-                                           leafletOutput("map", height=500)),
-                          br(),
-                          conditionalPanel("input.tabs != 0 && input.tabs != 6 && input.tabs != 7 && input.tabs != 8 &&
-                                                    input.tabs != 'rmd' && input.tabs != 'about'", DT::dataTableOutput('occTbl')),
-                          conditionalPanel("input.tabs == 6", dataTableOutput('evalTbl')),
-                          conditionalPanel("input.tabs == 7 && input.visSel == 'response'", imageOutput('respCurv')),
-                          conditionalPanel("input.tabs == 7 && input.visSel == 'bcEnvel' && input.modSel == 'BIOCLIM'", imageOutput('bcEnvelPlot')),
-                          conditionalPanel("input.tabs == 7 && input.visSel == 'mxEval'  && input.modSel == 'Maxent'", imageOutput('mxEvalPlot')),
-                          conditionalPanel("input.tabs == 'rmd'",
-                                           column(8,
-                                                  selectInput('mdType', label = "R Markdown Download Type",
-                                                              choices = list("Rmd", "PDF", "HTML", "Word")),
-                                                  downloadButton('downloadMD', 'Download History in R Markdown'), br(), br(),
-                                                  includeMarkdown("www/tab9_mdtext.Rmd")
-                                           )
-                          ),
-                          conditionalPanel("input.tabs == 0",
-                                           column(11,
-                                                  includeMarkdown("www/intro.Rmd")
-                                           )
-                          ),
-                          conditionalPanel("input.tabs == 'about'",
-                                           fluidPage(titlePanel(h4("Wallace was created by an international team of ecologists:")),
-                                                     fluidRow(
-                                                       column(2, includeMarkdown("www/tab10Acontent.Rmd")),
-                                                       column(3, includeMarkdown("www/tab10Ccontent.Rmd")),
-                                                       column(5, includeMarkdown("www/tab10Bcontent.Rmd"))
-                                                     )
-                                           )
-                          )
-                   )
-                   )
 ))
