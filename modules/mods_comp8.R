@@ -8,7 +8,7 @@ comp8_selProjExt <- function() {
     return()
   }
   values$polyErase <- TRUE  # turn on to signal to prevent the use of an existing map click
-  values$polyID <- values$polyID + 1
+  values$polyID <-  1
   
   values$poly2 <- SpatialPolygons(list(Polygons(list(Polygon(values$polyPts2)), ID=values$polyID)))  # create new polygon from coords
   proxy %>% addPolygons(values$polyPts2[,1], values$polyPts2[,2], weight=3, fill=FALSE, color='red', layerId='poly2Sel')
@@ -23,9 +23,9 @@ comp8_selProjExt <- function() {
   isolate(writeLog(paste0('* Defined projection extent to: ', coordsChar)))
 }
 
-comp8_pjCurExt <- function(modelSel, predForm) {
+comp8_pjCurExt <- function(modelSel, predForm, modelSel2) {
   if (is.null(values$projMsk)) {
-    writeLog('! SELECT projection extent first.')
+    writeLog('* SELECT projection extent first.')
     return()
   }
   writeLog('* PROJECTING to new area.')
@@ -33,7 +33,7 @@ comp8_pjCurExt <- function(modelSel, predForm) {
   values$pjArea <- predict(curMod, values$projMsk)
   rasVals <- values$pjArea@data@values
   
-  if (predForm == 'log') {
+  if (predForm == 'log' & modelSel2 == "Maxent") {
     rasVals <- c(values$pjArea@data@values, 0, 1)  # set to 0-1 scale
   }
   rasVals <- rasVals[!is.na(rasVals)]
@@ -43,7 +43,7 @@ comp8_pjCurExt <- function(modelSel, predForm) {
   rasVals <- na.omit(rasVals)
   pal <- colorNumeric(c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c"), rasVals, na.color='transparent')
   proxy %>% addLegend("topright", pal = pal, title = "Predicted Suitability",
-  values = rasVals, layerId = 2)
+  values = rasVals, layerId = 1)
   proxy %>% addRasterImage(values$pjArea, colors = pal, layerId = 'r2')
 }
 
@@ -63,6 +63,6 @@ comp8_pjCurExt <- function(modelSel, predForm) {
 # 
 #   # pal <- colorNumeric(c("#fff5f0", "#fb6a4a", "#67000d"), rasVals, na.color='transparent')
 #   # proxy %>% addLegend("topright", pal = pal, title = "MESS Values",
-#                       # values = rasVals, layerId = 2)
+#                       # values = rasVals, layerId = 1)
 #   proxy %>% addRasterImage(values$mess, layerId = 'ms')
 # }
