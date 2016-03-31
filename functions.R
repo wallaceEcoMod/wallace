@@ -254,9 +254,14 @@ respCurv <- function(mod, i) {  # copied mostly from dismo
 
 # Reset values
 resetV <- function(x) {
+  
   namesV <- names(x)[-(1:2)]
   for(i in namesV){
     x[[i]] <- NULL
   }
-  x
+  brk <- paste(rep('------', 14), collapse='')
+  x$polyID <- 0
+  x$polyErase <- FALSE
+  x$log <- c(paste('***WELCOME TO WALLACE***', brk, 
+                'Please find messages for the user in this log window.', brk, sep='<br>'))
 }
