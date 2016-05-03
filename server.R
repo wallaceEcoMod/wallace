@@ -78,6 +78,7 @@ shinyServer(function(input, output, session) {
 
   output$log <- renderUI({tags$div(id='logHeader',
                                    tags$div(id='logContent', HTML(paste0(values$log, "<br>", collapse = ""))))})
+  curWD <- getwd()
 
   # create map
   map <- leaflet() %>% addTiles() %>% setView(0, 0, zoom = 2)
@@ -652,7 +653,7 @@ shinyServer(function(input, output, session) {
       owd <- setwd(tempdir())
       on.exit(setwd(owd))
       file.copy(src, 'userReport.Rmd')
-      exp <- knit_expand('userReport.Rmd', gbifName=input$gbifName, occurrences=input$gbifNum, thinDist=input$thinDist,
+      exp <- knit_expand('userReport.Rmd', curWD=curWD, gbifName=input$gbifName, occurrences=input$gbifNum, thinDist=input$thinDist,
                          occsCSV=input$userCSV$datapath, occsRemoved=printVecAsis(values$removedAll), occsSel=printVecAsis(values$ptSeln),
                          predsRes=input$bcRes, backgSel=input$backgSel, backgBuf=input$backgBuf, userBGname=input$userBackg$name,
                          userBGpath=input$userBackg$datapath, partSel=values$partSel2, aggFact=input$aggFact, kfoldsSel=input$kfolds,
