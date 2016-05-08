@@ -44,9 +44,23 @@ writeLog <- function(x) {
 makeCap <- function(x) paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)))
 getGBIFname <- function() deparse(substitute(input$gbifName))
 printVecAsis <- function(x) {
-  ifelse(length(x) == 1, x,
-         ifelse(is.character(x), paste0("c(", paste(sapply(x, function(a) paste0("\'",a,"\'")), collapse=", "), ")"),
-                paste0("c(", paste(x, collapse=", "), ")")))}
+  if (is.character(x)) {
+    if (length(x) == 1) {
+      return(paste0("\'", x, "\'"))
+    } else {
+      return(paste0("c(", paste(sapply(x, function(a) paste0("\'", a, "\'")), collapse=", "), ")"))
+    }
+  } else {
+    if (length(x) == 1) {
+      return(x)
+    } else {
+      return(paste0("c(", paste(x, collapse=", "), ")"))
+    }
+  }
+}
+  # ifelse(length(x) == 1, x,
+  #        ifelse(is.character(x), paste0("c(", paste(sapply(x, function(a) paste0("\'",a,"\'")), collapse=", "), ")"),
+  #               paste0("c(", paste(x, collapse=", "), ")")))}
 
 #devtools::install_github("jcheng5/rasterfaster")
 
