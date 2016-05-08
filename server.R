@@ -449,11 +449,7 @@ shinyServer(function(input, output, session) {
   observe({
     if (is.null(values$df)) return()
     if (input$tabs == 7) {
-      map_plotLocs(values$df, fillColor='black', fillOpacity=0.8)
-      proxy %>% clearImages()
-      proxy %>% addLegend("topright", colors = c('black'),
-                          title = "GBIF Records", labels = c('retained'),
-                          opacity = 1, layerId = 1)
+      map_plotLocs(values$df)
     }
   })
 
@@ -561,11 +557,7 @@ shinyServer(function(input, output, session) {
     if (input$tabs == 8) {
       if (!is.null(values$poly2)) return()  # if sel pj ext poly selected, don't allow more drawing
       if (is.null(values$df)) return()
-      proxy %>% clearImages()
-      map_plotLocs(values$df, fillColor='black', fillOpacity=0.8, clearShapes=FALSE)
-      proxy %>% addLegend("topright", colors = c('black'),
-                          title = "GBIF Records", labels = c('retained'),
-                          opacity = 1, layerId = 1)
+      map_plotLocs(values$df)
       if (is.null(input$map_click)) return()
       lonlat <- c(input$map_click$lng, input$map_click$lat)
      
