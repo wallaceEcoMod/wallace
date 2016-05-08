@@ -33,13 +33,13 @@ comp7_mapPred <- function(modelSel1, predForm, predThresh, proxy) {
       pal <- c('gray', 'blue')
       proxy %>% addLegend("topright", colors = pal,
                           title = "Thresholded Suitability", labels = c(0, 1),
-                          opacity = 1, layerId = 1)
+                          opacity = 1, layerId = 'comp7legend')
     } else {
       pal <- colorNumeric(c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c"), rasVals, na.color='transparent')
+      values$leg1 <- list(rasVals=rasVals, pal=pal)
       proxy %>% addLegend("topright", pal = pal, title = "Predicted Suitability",
-                          values = rasVals, layerId = 1)
+                          values = rasVals, layerId = 'r1Legend')
     }
-    
-    proxy %>% addRasterImage(values$predCur, colors = pal, opacity = 0.7, layerId = 'r1')
+    proxy %>% addRasterImage(values$predCur, colors = pal, opacity = 0.7, group = 'r1', layerId = 'r1')
   }
 }
