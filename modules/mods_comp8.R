@@ -42,9 +42,10 @@ comp8_pjCurExt <- function(modelSel, predForm, modelSel2) {
   # proxy %>% clearImages()
   rasVals <- na.omit(rasVals)
   pal <- colorNumeric(c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c"), rasVals, na.color='transparent')
+  values$leg2 <- list(rasVals=rasVals, pal=pal)
   proxy %>% addLegend("topright", pal = pal, title = "Predicted Suitability",
-                      values = rasVals, layerId = 1)
-  proxy %>% addRasterImage(values$pjArea, colors = pal, layerId = 'r2')
+                      values = rasVals, layerId = 'r2Legend')
+  proxy %>% addRasterImage(values$pjArea, colors = pal, group = 'r2', layerId = 'r2')
 }
 
 # comp8_mess <- function() {
