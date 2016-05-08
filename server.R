@@ -33,7 +33,8 @@ source("functions.R")
 
 # make list to carry data used by multiple reactive functions
 brk <- paste(rep('------', 14), collapse='')
-values <- reactiveValues(polyID=0, polyErase=FALSE, log=c(paste('***WELCOME TO WALLACE***', brk, 'Please find messages for the user in this log window.', brk, sep='<br>')))
+logInit <- c(paste('***WELCOME TO WALLACE***', brk, 'Please find messages for the user in this log window.', brk, sep='<br>'))
+values <- reactiveValues(polyID=0, polyErase=FALSE, log=logInit)
 gtext <- reactiveValues()
 
 # add text to log
@@ -449,7 +450,14 @@ shinyServer(function(input, output, session) {
   observe({
     if (is.null(values$df)) return()
     if (input$tabs == 7) {
-      map_plotLocs(values$df)
+      map_plotLocs(values$df, clearImages=FALSE)
+      proxy %>% removeControl('r2Legend')
+      if (!is.null(values$leg1)) {
+        proxy %>% addLegend("topright", pal = values$leg1$pal, title = "Predicted Suitability",
+                            values = values$leg1$rasVals, layerId = 'r1Legend')
+      }
+      proxy %>% showGroup('r1')
+      proxy %>% hideGroup('r2')
     }
   })
 
@@ -555,13 +563,19 @@ shinyServer(function(input, output, session) {
   # functionality for drawing polygons on map
   observe({
     if (input$tabs == 8) {
-      if (!is.null(values$poly2)) return()  # if sel pj ext poly selected, don't allow more drawing
       if (is.null(values$df)) return()
-      map_plotLocs(values$df)
+      map_plotLocs(values$df, clearImages=FALSE)
+      proxy %>% removeControl('r1Legend')
+      if (!is.null(values$leg2)) {
+        proxy %>% addLegend("topright", pal = values$leg2$pal, title = "Predicted Suitability",
+                            values = values$leg2$rasVals, layerId = 'r2Legend')
+      }
+      proxy %>% showGroup('r2')
+      proxy %>% hideGroup('r1')
+      if (!is.null(values$poly2)) return()  # if sel pj ext poly selected, don't allow more drawing
       if (is.null(input$map_click)) return()
       lonlat <- c(input$map_click$lng, input$map_click$lat)
      
-
       if (values$polyErase) {
         if (identical(lonlat, values$mapClick)) return()
         values$polyErase <- FALSE
@@ -584,10 +598,8 @@ shinyServer(function(input, output, session) {
     values$mess <- NULL
     values$polyPts2 <- NULL
     proxy %>% clearShapes()
-    proxy %>% clearImages()
-    proxy %>% addLegend("topright", colors = c('black'),
-                        title = "GBIF Records", labels = c('retained'),
-                        opacity = 1, layerId = 1)
+    proxy %>% removeImage('r2')
+    proxy %>% removeControl('r2Legend')
 
     writeLog('* RESET PROJECTION EXTENT')
   })
