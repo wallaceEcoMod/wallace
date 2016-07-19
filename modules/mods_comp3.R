@@ -4,9 +4,9 @@ comp3_bioclim <- function(bcRes) {
   withProgress(message = "Downloading WorldClim data...", {
     values$preds <- getData(name = "worldclim", var = "bio", res = bcRes)
   })
-  proxy %>% addLegend("topleft", colors = c(),
-                      title = "Predictors: WorldClim bio 1-19", labels = c(),
-                      opacity = 1, layerId = 2)
+  # proxy %>% addLegend("topleft", colors = c(),
+  #                     title = "Predictors: WorldClim bio 1-19", labels = c(),
+  #                     opacity = 1, layerId = 2)
   isolate(writeLog(paste("* Environmental predictors: WorldClim bio1-19 at", bcRes, " arcmin resolution.")))
   withProgress(message = "Processing...", {
     locs.vals <- extract(values$preds[[1]], values$df[,2:3])

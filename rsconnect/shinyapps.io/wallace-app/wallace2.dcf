@@ -1,0 +1,9 @@
+name: wallace2
+account: wallace-app
+server: shinyapps.io
+appId: 111416
+bundleId: 492406
+url: https://wallace-app.shinyapps.io/wallace2/
+when: 1467205569.49918
+asMultiple: FALSE
+asStatic: FALSE

@@ -1,5 +1,0 @@
-**User-specified**  
-<p align="justify">
-Although not currently functional, we anticipate the future capability for users to provide a set of raster grids for their analysis.  
-</p>
-
