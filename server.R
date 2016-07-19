@@ -1,13 +1,13 @@
 # check package dependencies, and download if necessary
 list.of.packages <- c("shiny", "maps", "RColorBrewer", "rmarkdown", "shinyjs", "rgbif", "devtools",
                       "spThin", "colorRamps", "dismo", "rgeos", "XML", "repmis", "Rcpp", "RCurl", "curl",
-                      "maptools", "rgdal", "rJava")
+                      "maptools", "rgdal", "rJava", "devtools")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if (length(new.packages)) install.packages(new.packages)
 # use devtools to install leaflet and new unreleased version of ENMeval from github
 if (!require('leaflet')) devtools::install_github('rstudio/leaflet')
 # for exp version of ENMeval with special updateProgress param for shiny
-#install_github("bobmuscarella/ENMeval@ENMeval_v0.1.2")
+install_github("bobmuscarella/ENMeval@ENMeval_v0.1.2")
 if (!require("DT")) devtools::install_github("rstudio/DT")
 #options(shiny.error=browser)  # for debugging
 
@@ -88,7 +88,7 @@ shinyServer(function(input, output, session) {
   })
 
   #########################
-  ### INITIALIZE
+  ### INITIALIZE ####
   #########################
 
   output$log <- renderUI({tags$div(id='logHeader',
@@ -103,7 +103,7 @@ shinyServer(function(input, output, session) {
   proxy <- leafletProxy("map")
 
   #########################
-  ### COMPONENT 1 FUNCTIONALITY
+  ### COMPONENT 1 FUNCTIONALITY ####
   #########################
 
   # guidance text behavior
@@ -151,7 +151,7 @@ shinyServer(function(input, output, session) {
   )
 
   #########################
-  ### COMPONENT 2 FUNCTIONALITY
+  ### COMPONENT 2 FUNCTIONALITY ####
   #########################
 
   # guidance text
@@ -251,6 +251,8 @@ shinyServer(function(input, output, session) {
   observe({
     if (input$tabs == 3) {
       if (input$envSel == 'WorldClim') gtext$cur <- "www/tab3_worldclim.Rmd"
+      proxy %>% removeControl('selLegend')
+      proxy %>% removeControl('thinLegend')
     }
   })
 
@@ -557,6 +559,7 @@ shinyServer(function(input, output, session) {
     if (input$tabs == 8) {
       if (input$projSel == 'pjCur') gtext$cur <- "www/tab8_pjcur.Rmd"
       if (input$projSel == 'mess') gtext$cur <- "www/tab8_mess.Rmd"
+      proxy %>% removeControl('threshLegend')
     }
   })
 

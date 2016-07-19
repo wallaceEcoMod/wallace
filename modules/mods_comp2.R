@@ -50,7 +50,7 @@ polySelLocs <- function() {
   map_plotLocs(ptsSel, fillColor='yellow', fillOpacity=1, clearShapes=FALSE)
   proxy %>% addLegend("topright", colors = c('red','yellow'),
                       title = "GBIF Records", labels = c('original', 'selected'),
-                      opacity = 1, layerId = 1)
+                      opacity = 1, layerId = 'selLegend')
   values$df <- ptsSel
 
   values$polyPts1 <- NULL
@@ -90,7 +90,7 @@ thinOccs <- function(thinDist) {
   map_plotLocs(values$df, fillOpacity=1, clearShapes=FALSE, clearMarkers=FALSE)
   proxy %>% addLegend("topright", colors = c('red', 'blue'),
                       title = "GBIF Records", labels = c('retained', 'removed'),
-                      opacity = 1, layerId = 1)
+                      opacity = 1, layerId = 'thinLegend')
   values$origOccs <- values$df
   writeLog(paste('* Total records thinned to [', nrow(values$df), '] localities.'))
   # render the thinned records data table

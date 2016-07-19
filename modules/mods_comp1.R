@@ -52,7 +52,7 @@ getGbifOccs <- function(spName, occNum) {
       x <- paste0('* No records found for ', inName, ". Please check the spelling.")
     } else {if (nameSplit != 1 && !is.null(locs)) {
       x <- paste('* Total GBIF records for', values$origOccs[1,1], 'returned [', nrow(locs.in),
-                 '] out of [', results$meta$count, '] total (limit 500).
+                 '] out of [', results$meta$count, '] total (limit ', occNum, '). 
                    Duplicated records removed [', nrow(locs.in) - nrow(locs), "]: Remaining records [", nrow(locs), "].")
     }}}}
     writeLog(x)
