@@ -1,12 +1,12 @@
 ---
-title: "tab7_respCurves"
+title: "tab8_pjArea"
 output: html_document
 ---
 **BACKGROUND**  
 <p align="justify">
-Response curves background.
+PJAREA
 </p>
 **IMPLEMENTATION**
 <p align="justify">
-Response curves implementation.  
+PJAREA
 </p>
