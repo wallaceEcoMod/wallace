@@ -7,7 +7,7 @@ if (length(new.packages)) install.packages(new.packages)
 # use devtools to install leaflet and new unreleased version of ENMeval from github
 if (!require('leaflet')) devtools::install_github('rstudio/leaflet')
 # for exp version of ENMeval with special updateProgress param for shiny
-install_github("bobmuscarella/ENMeval@ENMeval_v0.1.2")
+#install_github("bobmuscarella/ENMeval@ENMeval_v0.1.2")
 if (!require("DT")) devtools::install_github("rstudio/DT")
 #options(shiny.error=browser)  # for debugging
 
@@ -28,7 +28,6 @@ library(repmis)
 library(rmarkdown)
 library(rgdal)
 
-
 source("functions.R")
 
 # make list to carry data used by multiple reactive functions
@@ -41,6 +40,7 @@ gtext <- reactiveValues()
 writeLog <- function(x) {
   values$log <- paste(values$log, x, sep='<br>')
 }
+
 ## functions for text formatting in userReport.Rmd
 makeCap <- function(x) paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)))
 getGBIFname <- function() deparse(substitute(input$gbifName))
