@@ -62,8 +62,12 @@ getGbifOccs <- function(spName, occNum) {
 }
 
 getUserOccs <- function(csvPath) {
-  inFile <- read.csv(csvPath, header = TRUE)  # read user csv
-  if (!all(c('species', 'longitude', 'latitude') %in% names(inFile))) {  # throw error if these columns are not included
+  inFile <- try(read.csv(csvPath, header = TRUE), silent=TRUE)  # read user csv
+  if (class(inFile) == "try-error") {
+    isolate(writeLog('* ERROR: The file could not be loaded (check the file requirements)'))
+    return()
+    }
+  if (!all(c('species', 'longitude', 'latitude') %in% names(inFile))) {
     isolate(writeLog('* ERROR: Please input CSV file with columns "species", "longitude", "latitude".'))
     return()
   }
