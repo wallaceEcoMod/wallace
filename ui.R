@@ -64,6 +64,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                      conditionalPanel("input.tabs == 0", h4("Introduction"),
                                                       includeMarkdown("www/intro_tab.Rmd")
                                      ),
+# tab 1 ####
                                      conditionalPanel("input.tabs == 1",
                                                       h4("Obtain Occurrence Data"),
                                                       radioButtons("occSel", "Modules Available:",
@@ -100,6 +101,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                        a("documentation", href = "https://cran.r-project.org/web/packages/rgbif/rgbif.pdf", target = "_blank")
                                                       )
                                      ),
+# tab 2 ####
                                      conditionalPanel("input.tabs == 2",
                                                       h4("Process Occurrence Data"),
                                                       radioButtons("procOccSel", "Modules Available:",
@@ -139,6 +141,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                        a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/ecog.01132/abstract", target = "_blank")
                                                                        )
                                      ),
+# tab 3 ####
                                      conditionalPanel("input.tabs == 3",
                                                       h4("Obtain Environmental Data"),
                                                       radioButtons("envSel", "Modules Available:",
@@ -150,8 +153,8 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                        span('dismo', id="rpkg"),
                                                                        span('package: Species Distribution Modeling', id="pkgDes"),
                                                                        HTML('<hr>'),
-                                                                       selectInput("bcRes", label = "Choose environmental data resolution",
-                                                                                   choices = list("Choose resolution" = "",
+                                                                       selectInput("bcRes", label = "Select environmental data resolution",
+                                                                                   choices = list("Select resolution" = "",
                                                                                                   "2.5 arcmin WorldClim bio1-19" = 2.5,
                                                                                                   "5 arcmin WorldClim bio1-19" = 5,
                                                                                                   "10 arcmin WorldClim bio1-19" = 10)),
@@ -175,6 +178,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                        a("WorldClim", href="http://worldclim.org", target="_blank")
                                                       )
                                      ),
+# tab 4 ####
                                      conditionalPanel("input.tabs == 4",
                                                       h4("Process Environmental Data"),
                                                       radioButtons("envProcSel", "Modules Available:",
@@ -225,6 +229,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                       )
                                                       
                                      ),
+# tab 5 ####
                                      conditionalPanel("input.tabs == 5",
                                                       h4("Partition Occurrence Data"),
                                                       radioButtons("partSel", "Options Available:",
@@ -268,6 +273,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                        a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12261/abstract", target = "_blank")
                                                                        )
                                      ),
+# tab 6 ####
                                      conditionalPanel("input.tabs == 6",
                                                       h4("Build and Evaluate Niche Model"),
                                                       radioButtons("enmSel", "Modules Available:",
@@ -320,7 +326,8 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                        " | ",
                                                                        a("documentation", href="https://cran.r-project.org/web/packages/dismo/dismo.pdf", target = "_blank")
                                                                        )
-                                                                       ),
+                                     ),
+# tab 7 ####
                                      conditionalPanel("input.tabs == 7",
                                                       h4("Visualize Model Results"),
                                                       radioButtons("visSel", "Modules Available:",
@@ -385,6 +392,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                        a("documentation", href="https://cran.r-project.org/web/packages/dismo/dismo.pdf", target = "_blank")
                                                       )
                                      ),
+# tab 8 ####
                                      conditionalPanel("input.tabs == 8",
                                                       h4("Project Niche Model"),
                                                       radioButtons("projSel", "Modules Available:",
@@ -412,6 +420,20 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                        actionButton('goPjArea', "Project")
                                                       ),
                                                       conditionalPanel("input.projSel == 'pjTime'",
+                                                                       selectInput("selTime", label = "Select time period",
+                                                                                   choices = list("Select period" = "",
+                                                                                                  "Last Glacial Maximum (~22,000 years ago)" = 'lgm',
+                                                                                                  "Mid Holocene (~7000 years ago)" = 'mid',
+                                                                                                  "2050" = '2050',
+                                                                                                  "2070" = '2070')),
+                                                                       conditionalPanel("input.selTime == '2050' || input.selTime == '2070'",
+                                                                                        selectInput('selRCP', label = "Select RCP",
+                                                                                                    choices = list("Select RCP" = "",
+                                                                                                                   'RCP2.6' = 'rcp26',
+                                                                                                                   'RCP4.5' = 'rcp45',
+                                                                                                                   'RCP6.0' = 'rcp60',
+                                                                                                                   'RCP8.5' = 'rcp85'))),
+                                                                       HTML('<hr>'),
                                                                        strong("Project to new time (current extent)"), br(), br(),
                                                                        actionButton('goPjTime', "Project")
                                                       ),
