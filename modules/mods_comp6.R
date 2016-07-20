@@ -33,6 +33,13 @@ comp6_maxentMod <- function(rms, fcs) {
   updateProgress <- function(value = NULL, detail = NULL) {
     progress$inc(amount = 1/n, detail = detail)
   }
+  
+  jar <- paste(system.file(package="dismo"), "/java/maxent.jar", sep='')
+  if (!file.exists(jar)) {
+    writeLog(paste('! file missing:\n', jar, '\nPlease download it here: http://www.cs.princeton.edu/~schapire/maxent/'))
+    return()
+  }
+  
   e <- ENMevaluate(values$modParams$occ.pts, values$predsMsk, bg.coords = values$modParams$bg.pts,
                    RMvalues = rms, fc = fcs, method = 'user', occ.grp = values$modParams$occ.grp,
                    bg.grp = values$modParams$bg.grp, updateProgress = updateProgress)
