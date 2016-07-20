@@ -236,8 +236,8 @@ shinyServer(function(input, output, session) {
   })
 
   # handle download for thinned records csv
-  output$downloadThincsv <- downloadHandler(
-    filename = function() {paste0(nameAbbr(values$origOccs), "_thinned_gbifCleaned.csv")},
+  output$dlProcOccCsv <- downloadHandler(
+    filename = function() {paste0(nameAbbr(values$origOccs), "_procOccs.csv")},
     content = function(file) {
       write.csv(values$df[,1:9], file, row.names = FALSE)
     }

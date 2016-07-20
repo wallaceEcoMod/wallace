@@ -122,13 +122,11 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                        span('package: Spatial Thinning of Species Occurrence Records', id="pkgDes"),
                                                                        HTML('<hr>'),
                                                                        numericInput("thinDist", label = "Thinning distance (km)", value = 0),
-                                                                       actionButton("goThin", "Thin Localities"),
-                                                                       br(), br(),
-                                                                       downloadButton('downloadThincsv', "Download Thinned Occurrence CSV")
-                                                                       #br(),
-                                                                       #uiOutput('thinDnld'),
+                                                                       actionButton("goThin", "Thin Localities")
                                                                        
                                                       ),
+                                                      HTML('<hr>'),
+                                                      downloadButton('dlProcOccCsv', "Download Processed Occurrence CSV"),
                                                       conditionalPanel("input.procOccSel == 'spthin'",
                                                                        HTML('<hr>'),
                                                                        span("spThin", id = "rpkg"), "references", br(),
