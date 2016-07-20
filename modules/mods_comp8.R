@@ -23,7 +23,7 @@ comp8_selProjExt <- function() {
   isolate(writeLog(paste0('* Defined projection extent to: ', coordsChar)))
 }
 
-comp8_pjCurExt <- function(modelSel, predForm, modelSel2) {
+comp8_pjArea <- function(modelSel, predForm, enmSel) {
   if (is.null(values$projMsk)) {
     writeLog('* SELECT projection extent first.')
     return()
@@ -33,7 +33,32 @@ comp8_pjCurExt <- function(modelSel, predForm, modelSel2) {
   values$pjArea <- predict(curMod, values$projMsk)
   rasVals <- values$pjArea@data@values
   
-  if (predForm == 'log' & modelSel2 == "Maxent") {
+  if (predForm == 'log' & enmSel == "Maxent") {
+    rasVals <- c(values$pjArea@data@values, 0, 1)  # set to 0-1 scale
+  }
+  rasVals <- rasVals[!is.na(rasVals)]
+  
+  proxy %>% removeShape('poly2Sel')
+  # proxy %>% clearImages()
+  rasVals <- na.omit(rasVals)
+  pal <- colorNumeric(c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c"), rasVals, na.color='transparent')
+  values$leg2 <- list(rasVals=rasVals, pal=pal)
+  proxy %>% addLegend("topright", pal = pal, title = "Predicted Suitability",
+                      values = rasVals, layerId = 'r2Legend')
+  proxy %>% addRasterImage(values$pjArea, colors = pal, group = 'r2', layerId = 'r2')
+}
+
+comp8_pjTime <- function(modelSel, predForm, enmSel) {
+  if (is.null(values$projMsk)) {
+    writeLog('* SELECT projection extent first.')
+    return()
+  }
+  writeLog('* PROJECTING to new area.')
+  curMod <- values$evalMods[[as.numeric(modelSel)]]
+  values$pjArea <- predict(curMod, values$projMsk)
+  rasVals <- values$pjArea@data@values
+  
+  if (predForm == 'log' & enmSel == "Maxent") {
     rasVals <- c(values$pjArea@data@values, 0, 1)  # set to 0-1 scale
   }
   rasVals <- rasVals[!is.na(rasVals)]

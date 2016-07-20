@@ -87,9 +87,9 @@ shinyServer(function(input, output, session) {
     includeMarkdown(gtext$cur)
   })
 
-  #########################
-  ### INITIALIZE ####
-  #########################
+#########################
+### INITIALIZE ####
+#########################
 
   output$log <- renderUI({tags$div(id='logHeader',
                                    tags$div(id='logContent', HTML(paste0(values$log, "<br>", collapse = ""))))})
@@ -102,9 +102,9 @@ shinyServer(function(input, output, session) {
   # make map proxy to make further changes to existing map
   proxy <- leafletProxy("map")
 
-  #########################
-  ### COMPONENT 1 FUNCTIONALITY ####
-  #########################
+#########################
+### COMPONENT 1 FUNCTIONALITY ####
+#########################
 
   # guidance text behavior
   observe({
@@ -150,9 +150,9 @@ shinyServer(function(input, output, session) {
     }
   )
 
-  #########################
-  ### COMPONENT 2 FUNCTIONALITY ####
-  #########################
+#########################
+### COMPONENT 2 FUNCTIONALITY ####
+#########################
 
   # guidance text
   observe({
@@ -243,9 +243,9 @@ shinyServer(function(input, output, session) {
     }
   )
 
-  #########################
-  ### COMPONENT 3 FUNCTIONALITY
-  #########################
+#########################
+### COMPONENT 3 FUNCTIONALITY ####
+#########################
 
   # guidance text
   observe({
@@ -281,9 +281,9 @@ shinyServer(function(input, output, session) {
   #     })
   #   })
 
-  #########################
-  ### COMPONENT 4 FUNCTIONALITY
-  #########################
+#########################
+### COMPONENT 4 FUNCTIONALITY ####
+#########################
 
   # guidance text
   observe({
@@ -329,9 +329,9 @@ shinyServer(function(input, output, session) {
     contentType = "application/zip"
   )
 
-  #########################
-  ### COMPONENT 5 FUNCTIONALITY
-  #########################
+#########################
+### COMPONENT 5 FUNCTIONALITY ####
+#########################
 
   # guidance text
   observe({
@@ -386,15 +386,15 @@ shinyServer(function(input, output, session) {
     }
   )
 
-  #########################
-  ### COMPONENT 6 FUNCTIONALITY
-  #########################
+#########################
+### COMPONENT 6 FUNCTIONALITY ####
+#########################
 
   # guidance text
   observe({
     if (input$tabs == 6) {
-      if (input$modSel == 'BIOCLIM') gtext$cur <- "www/tab6_bc.Rmd"
-      if (input$modSel == 'Maxent') gtext$cur <- "www/tab6_maxent.Rmd"
+      if (input$enmSel == 'BIOCLIM') gtext$cur <- "www/tab6_bc.Rmd"
+      if (input$enmSel == 'Maxent') gtext$cur <- "www/tab6_maxent.Rmd"
     }
   })
 
@@ -409,16 +409,16 @@ shinyServer(function(input, output, session) {
       return()
     }
     values$predsLog <- NULL  # reset predsLog if models are rerun
-    values$modSel <- input$modSel 
+    values$enmSel <- input$enmSel 
 
     # Module BIOCLIM
-    if (input$modSel == "BIOCLIM") {
+    if (input$enmSel == "BIOCLIM") {
       comp6_bioclimMod()
       # Module BIOCLIM Envelope Plots (for component 7)
       output$bcEnvelPlot <- renderPlot(plot(values$evalMods[[1]], a = input$bc1, b = input$bc2, p = input$bcProb))
     }
     # Module Maxent
-     else if (input$modSel == "Maxent") {
+     else if (input$enmSel == "Maxent") {
        comp6_maxentMod(input$rms, input$fcs)
        # Module Maxent Evaluation Plots (for component 7): ENMeval graphs
        output$mxEvalPlot <- renderPlot(evalPlot(values$evalTbl, input$mxEvalSel))
@@ -435,9 +435,9 @@ shinyServer(function(input, output, session) {
     }
   )
 
-  #########################
-  ### COMPONENT 7 FUNCTIONALITY
-  #########################
+#########################
+### COMPONENT 7 FUNCTIONALITY ####
+#########################
 
   # guidance text
   observe({
@@ -485,8 +485,7 @@ shinyServer(function(input, output, session) {
   output$predVarSel <- renderUI({
     if (is.null(values$evalPreds)) return()
 
-
-      if(input$modSel == "Maxent"){
+      if(input$enmSel == "Maxent"){
         values$curMod <- values$evalMods[[which(as.character(values$evalTbl[, 1]) == input$modelSel2)]]
         nonZeroPreds <- mxNonzeroPreds(values$curMod)
         nonZeroPredNames <- names(values$predsMsk[[nonZeroPreds]])
@@ -550,14 +549,15 @@ shinyServer(function(input, output, session) {
     }
   )
 
-  #########################
-  ### COMPONENT 8 FUNCTIONALITY
-  #########################
+#########################
+### COMPONENT 8 FUNCTIONALITY ####
+#########################
 
   # guidance text
   observe({
     if (input$tabs == 8) {
-      if (input$projSel == 'pjCur') gtext$cur <- "www/tab8_pjcur.Rmd"
+      if (input$projSel == 'pjArea') gtext$cur <- "www/tab8_pjarea.Rmd"
+      if (input$projSel == 'pjTime') gtext$cur <- "www/tab8_pjtime.Rmd"
       if (input$projSel == 'mess') gtext$cur <- "www/tab8_mess.Rmd"
       proxy %>% removeControl('threshLegend')
     }
@@ -621,9 +621,14 @@ shinyServer(function(input, output, session) {
     comp8_selProjExt()
   })
 
-  # Module Project to Extent
-  observeEvent(input$goPjCur, {
-    comp8_pjCurExt(input$modelSel3, input$predForm, values$modSel)
+  # Module Project to New Area
+  observeEvent(input$goPjArea, {
+    comp8_pjArea(input$modelSel3, input$predForm, values$enmSel)
+  })
+  
+  # Module Project to New Time
+  observeEvent(input$goPjTime, {
+    comp8_pjTime(input$modelSel3, input$predForm, values$enmSel)
   })
 
 #   # Module MESS
@@ -658,7 +663,7 @@ shinyServer(function(input, output, session) {
 
 
   #########################
-  ### MARKDOWN FUNCTIONALITY
+  ### MARKDOWN FUNCTIONALITY ####
   #########################
 
   # handler for R Markdown download
@@ -678,7 +683,7 @@ shinyServer(function(input, output, session) {
                          occsCSV=input$userCSV$datapath, occsRemoved=printVecAsis(values$removedAll), occsSel=printVecAsis(values$ptSeln),
                          predsRes=input$bcRes, backgSel=input$backgSel, backgBuf=input$backgBuf, userBGname=input$userBackg$name,
                          userBGpath=input$userBackg$datapath, partSel=values$partSel2, aggFact=input$aggFact, kfoldsSel=input$kfolds,
-                         modSel=input$modSel, rmsSel1=input$rms[1], rmsSel2=input$rms[2], rmsBy=input$rmsBy, fcsSel=printVecAsis(input$fcs))
+                         enmSel=input$enmSel, rmsSel1=input$rms[1], rmsSel2=input$rms[2], rmsBy=input$rmsBy, fcsSel=printVecAsis(input$fcs))
       writeLines(exp, 'userReport2.Rmd')
 
       if (input$mdType == 'Rmd') {
