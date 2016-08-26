@@ -48,12 +48,16 @@ comp8_pjArea <- function(modelSel, predForm, enmSel) {
   proxy %>% addRasterImage(values$pjArea, colors = pal, group = 'r2', layerId = 'r2')
 }
 
-comp8_pjTime <- function(modelSel, predForm, enmSel) {
+comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, bcRCP, bcMod, bcYr) {
   if (is.null(values$projMsk)) {
     writeLog('* SELECT projection extent first.')
     return()
   }
-  writeLog('* PROJECTING to new area.')
+  withProgress(message = "Retrieving WorldClim data...", {
+    values$projBC <- getData(name = "worldclim", var = "bio", res = bcRes, 
+                            rcp = bcRCP, model = bcMod, year = bcYr)
+  })
+  writeLog('* PROJECTING to new time.')
   curMod <- values$evalMods[[as.numeric(modelSel)]]
   values$pjArea <- predict(curMod, values$projMsk)
   rasVals <- values$pjArea@data@values
