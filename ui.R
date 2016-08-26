@@ -394,7 +394,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                      ),
 # tab 8 ####
                                      conditionalPanel("input.tabs == 8",
-                                                      h4("Project Niche Model"),
+                                                      h4("Project Model"),
                                                       radioButtons("projSel", "Modules Available:",
                                                                    choices = list("Project to New Area" = 'pjArea',
                                                                                   "Project to New Time" = 'pjTime'),
