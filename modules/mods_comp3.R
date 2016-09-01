@@ -2,7 +2,7 @@ comp3_bioclim <- function(bcRes) {
   if (bcRes == "") return()
   # getData() downloads bioclim variables unless they exist in directory, then just loads them
   withProgress(message = "Retrieving WorldClim data...", {
-    values$preds <- getData(name = "worldclim", var = "bio", res = bcRes)
+    values$preds <- raster::getData(name = "worldclim", var = "bio", res = bcRes)
   })
   # proxy %>% addLegend("topleft", colors = c(),
   #                     title = "Predictors: WorldClim bio 1-19", labels = c(),
