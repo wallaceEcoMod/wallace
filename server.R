@@ -165,6 +165,8 @@ shinyServer(function(input, output, session) {
     if (input$tabs == 2) {
       if (input$procOccSel == 'selpts') gtext$cur <- "www/tab2_selpts.Rmd"
       if (input$procOccSel == 'spthin') gtext$cur <- "www/tab2_spthin.Rmd"
+      proxy %>% addControl('selLegend')
+      proxy %>% addControl('thinLegend')
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
     }
@@ -223,8 +225,7 @@ shinyServer(function(input, output, session) {
     values$polyPts1 <- NULL
     values$poly1 <- NULL
     values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
-    proxy %>% clearShapes()
-    map_plotLocs(values$origOccs)
+    proxy %>% clearShapes() %>% map_plotLocs(values$origOccs)
     x <- paste('* RESET: localities dataset is now back to', nrow(values$origOccs), 'records.')
     isolate(writeLog(x))
     if (!is.null(values$origOccs)) {

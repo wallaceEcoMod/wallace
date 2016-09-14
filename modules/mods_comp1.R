@@ -37,9 +37,6 @@ getGbifOccs <- function(spName, occNum) {
     # add locs to values list and copy
     values$origOccs <- locs
     values$df <- values$origOccs
-    #       sinkFalse(paste0("map(interior = FALSE)\n",
-    #                       "points(df$lon, df$lat, col = 'red', bg = 'blue', pch = 21, cex = 1)"),
-    #                 "Plot the occurrence data:")
     
     inName <- isolate(spName)
     nameSplit <- length(unlist(strsplit(inName, " ")))
@@ -57,11 +54,15 @@ getGbifOccs <- function(spName, occNum) {
     }}}}
     writeLog(x)
   }
+  
+  # MAPPING
+  
   zoom2Occs()
   proxy %>% addCircleMarkers(data = values$origOccs, lat = ~latitude, lng = ~longitude,
-                             radius = 5, color = 'red', 
-                             fillColor = 'red', fillOpacity = 0.2, 
-                             weight = 2, popup = ~pop, layerId = 'origOccs')
+                             radius = 5, color = 'red', fillColor = 'red',
+                             fillOpacity = 0.2, weight = 2, popup = ~pop,
+                             layerId = 'origOccs', group = 'comp1')
+
 }
 
 getUserOccs <- function(csvPath) {

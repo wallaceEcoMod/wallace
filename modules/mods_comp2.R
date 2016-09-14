@@ -85,9 +85,18 @@ thinOccs <- function(thinDist) {
       thinned.inFile <- values$inFile[as.numeric(rownames(output[[1]])),]
     }
   })
-
-  map_plotLocs(values$prethinned, fillColor='blue', fillOpacity=1, clearShapes=FALSE)
-  map_plotLocs(values$df, fillOpacity=1, clearShapes=FALSE, clearMarkers=FALSE)
+  
+  # MAPPING
+  proxy %>% addCircleMarkers(values$prethinned, ~latitude, ~longitude,
+                             radius = 5, color = 'red', fillColor = 'blue', 
+                             fillOpacity = 1, weight = 2, popup = ~pop, 
+                             layerId = 'thinned', group = 'comp2')
+  proxy %>% addCircleMarkers(values$df, ~latitude, ~longitude,
+                             radius = 5, color = 'red', fillColor = 'red', 
+                             fillOpacity = 1, weight = 2, popup = ~pop, 
+                             layerId = 'retained', group = 'comp2')
+  # map_plotLocs(values$prethinned, fillColor='blue', fillOpacity=1, clearShapes=FALSE)
+  # map_plotLocs(values$df, fillOpacity=1, clearShapes=FALSE, clearMarkers=FALSE)
   proxy %>% addLegend("topright", colors = c('red', 'blue'),
                       title = "GBIF Records", labels = c('retained', 'removed'),
                       opacity = 1, layerId = 'thinLegend')
