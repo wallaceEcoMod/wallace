@@ -115,6 +115,8 @@ shinyServer(function(input, output, session) {
     if (input$tabs == 1) {
       if (input$occSel == 'GBIF') gtext$cur <- "www/tab1_gbif.Rmd"
       if (input$occSel == 'user') gtext$cur <- "www/tab1_user.Rmd"
+      # switch to Map tab
+      updateTabsetPanel(session, 'main', selected = 'Map')
     }
   })
 
@@ -163,6 +165,8 @@ shinyServer(function(input, output, session) {
     if (input$tabs == 2) {
       if (input$procOccSel == 'selpts') gtext$cur <- "www/tab2_selpts.Rmd"
       if (input$procOccSel == 'spthin') gtext$cur <- "www/tab2_spthin.Rmd"
+      # switch to Map tab
+      updateTabsetPanel(session, 'main', selected = 'Map')
     }
   })
 
@@ -255,6 +259,8 @@ shinyServer(function(input, output, session) {
   observe({
     if (input$tabs == 3) {
       if (input$envSel == 'WorldClim') gtext$cur <- "www/tab3_worldclim.Rmd"
+      # switch to Map tab
+      updateTabsetPanel(session, 'main', selected = 'Map')
       proxy %>% removeControl('selLegend')
       proxy %>% removeControl('thinLegend')
     }
@@ -293,6 +299,8 @@ shinyServer(function(input, output, session) {
   observe({
     if (input$tabs == 4) {
       if (input$envProcSel == 'backg') gtext$cur <- "www/tab4_backg.Rmd"
+      # switch to Map tab
+      updateTabsetPanel(session, 'main', selected = 'Map')
     }
   })
 
@@ -342,6 +350,8 @@ shinyServer(function(input, output, session) {
     if (input$tabs == 5) {
       if (input$partSel == 'nsp') gtext$cur <- "www/tab5_nsp.Rmd"
       if (input$partSel == 'sp') gtext$cur <- "www/tab5_sp.Rmd"
+      # switch to Map tab
+      updateTabsetPanel(session, 'main', selected = 'Map')
     }
   })
 
@@ -452,6 +462,8 @@ shinyServer(function(input, output, session) {
       if (input$visSel == 'response') gtext$cur <- "www/tab7_respCurves.Rmd"
       if (input$visSel == 'bcEnvel') gtext$cur <- "www/tab7_bcPlots.Rmd"
       if (input$visSel == 'mxEval') gtext$cur <- "www/tab7_mxEvalPlots.Rmd"
+      # switch to Map tab
+      updateTabsetPanel(session, 'main', selected = 'Map')
     }
   })
 
