@@ -428,6 +428,8 @@ shinyServer(function(input, output, session) {
        output$mxEvalPlot <- renderPlot(evalPlot(values$evalTbl, input$mxEvalSel))
        shinyjs::enable("downloadEvalPlots")
      }
+    # switch to Results tab
+    updateTabsetPanel(session, 'main', selected = 'Results')
     shinyjs::enable("downloadEvalcsv")
   })
 
@@ -521,11 +523,15 @@ shinyServer(function(input, output, session) {
     if (input$visSel != 'response') return()
     if (is.null(values$curMod)) return()
       output$respCurv <- renderPlot(response(values$curMod, var = input$predVarSel))
+      # switch to Results tab
+      updateTabsetPanel(session, 'main', selected = 'Results')
   })
 
   # Module Plot Prediction
   observeEvent(input$plotPred, {
     comp7_mapPred(input$modelSel1, input$predForm, input$predThresh, proxy)
+    # switch to Results tab
+    updateTabsetPanel(session, 'main', selected = 'Map')
   })
 
   # handle download for rasters, with file type as user choice

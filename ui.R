@@ -453,7 +453,7 @@ column(8,
                         div(id = "wallaceLog", class = "scrollbox", htmlOutput("log"))),
        br(),
        conditionalPanel("input.tabs != 'rmd' & input.tabs != 0 & input.tabs != 'about'",
-                        tabsetPanel(
+                        tabsetPanel(id = 'main',
                           tabPanel('Map', leafletOutput("map", height=500)),
                           tabPanel('Occs Tbl', DT::dataTableOutput('occTbl')),
                           tabPanel('Results', conditionalPanel("input.tabs == 6", dataTableOutput('evalTbl')),
