@@ -58,7 +58,10 @@ getGbifOccs <- function(spName, occNum) {
     writeLog(x)
   }
   zoom2Occs()
-  map_plotLocs(values$origOccs)
+  proxy %>% addCircleMarkers(data = values$origOccs, lat = ~latitude, lng = ~longitude,
+                             radius = 5, color = 'red', 
+                             fillColor = 'red', fillOpacity = 0.2, 
+                             weight = 2, popup = ~pop, layerId = 'origOccs')
 }
 
 getUserOccs <- function(csvPath) {
