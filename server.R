@@ -7,8 +7,8 @@ if (length(new.packages)) install.packages(new.packages)
 # use devtools to install leaflet and new unreleased version of ENMeval from github
 if (!require('leaflet')) devtools::install_github('rstudio/leaflet')
 # for exp version of ENMeval with special updateProgress param for shiny
-#install_github("bobmuscarella/ENMeval@ENMeval_v0.1.2")
-if (!require("DT")) devtools::install_github("rstudio/DT")
+install_github("bobmuscarella/ENMeval@ENMeval_v0.1.2")
+#if (!require("DT")) devtools::install_github("rstudio/DT")
 #options(shiny.error=browser)  # for debugging
 
 # load libraries
