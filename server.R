@@ -117,6 +117,9 @@ shinyServer(function(input, output, session) {
       if (input$occSel == 'user') gtext$cur <- "www/tab1_user.Rmd"
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
+      # map controls
+      proxy %>% showGroup('comp1') %>% hideGroup('comp2') %>% 
+        removeControl('thinLegend') %>% clearImages()
     }
   })
 
@@ -163,12 +166,25 @@ shinyServer(function(input, output, session) {
   # guidance text
   observe({
     if (input$tabs == 2) {
-      if (input$procOccSel == 'selpts') gtext$cur <- "www/tab2_selpts.Rmd"
-      if (input$procOccSel == 'spthin') gtext$cur <- "www/tab2_spthin.Rmd"
-      proxy %>% addControl('selLegend')
-      proxy %>% addControl('thinLegend')
+      if (input$procOccSel == 'selpts') {
+        gtext$cur <- "www/tab2_selpts.Rmd"
+        proxy %>% addLegend("topright", colors = c('red','yellow'),
+                            title = "GBIF Records", labels = c('original', 'selected'),
+                            opacity = 1, layerId = 'selLegend') %>%
+          removeControl('thinLegend') %>% clearImages()
+        
+      }
+      if (input$procOccSel == 'spthin') {
+        gtext$cur <- "www/tab2_spthin.Rmd"
+        proxy %>% addLegend("topright", colors = c('red', 'blue'),
+                            title = "GBIF Records", labels = c('retained', 'removed'),
+                            opacity = 1, layerId = 'thinLegend') %>%
+          removeControl('selLegend') %>% clearImages()
+      }
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
+      # map controls
+      proxy %>% showGroup('comp2')
     }
   })
 
@@ -225,7 +241,10 @@ shinyServer(function(input, output, session) {
     values$polyPts1 <- NULL
     values$poly1 <- NULL
     values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
-    proxy %>% clearShapes() %>% map_plotLocs(values$origOccs)
+    proxy %>% clearMarkers() %>% clearShapes() %>%
+      addCircleMarkers(data = values$origOccs, lat = ~latitude, lng = ~longitude,
+                       radius = 5, color = 'red', fillColor = 'red',
+                       fillOpacity = 0.2, weight = 2, popup = ~pop, group = 'comp2')
     x <- paste('* RESET: localities dataset is now back to', nrow(values$origOccs), 'records.')
     isolate(writeLog(x))
     if (!is.null(values$origOccs)) {
@@ -262,18 +281,17 @@ shinyServer(function(input, output, session) {
       if (input$envSel == 'WorldClim') gtext$cur <- "www/tab3_worldclim.Rmd"
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
-      proxy %>% removeControl('selLegend')
-      proxy %>% removeControl('thinLegend')
+      proxy %>% removeControl('selLegend') %>% 
+        removeControl('thinLegend') %>% hideGroup('comp1') %>% 
+        hideGroup('comp2') %>% clearImages() %>% 
+        addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
+                         radius = 5, color = 'red', fillColor = 'red',
+                         fillOpacity = 0.2, weight = 2, popup = ~pop, group = 'df')
     }
   })
 
   # enable download button
   observe({if (input$bcRes != "") shinyjs::enable("predDnld")})
-
-  observe({
-    if (is.null(values$df)) return()
-    if (input$tabs == 3) map_plotLocs(values$df)
-  })
 
   # module WorldClim
   observeEvent(input$predDnld, {
@@ -367,8 +385,6 @@ shinyServer(function(input, output, session) {
                                                              "Checkerboard 1 (k = 2)" = "cb1",
                                                              "Checkerboard 2 (k = 4)" = "cb2"))
     }
-    if (is.null(values$df)) return()
-    if (input$tabs == 5) map_plotLocs(values$df)
   })
 
   # module Set Partitions
@@ -471,7 +487,6 @@ shinyServer(function(input, output, session) {
   observe({
     if (is.null(values$df)) return()
     if (input$tabs == 7) {
-      map_plotLocs(values$df, clearImages=FALSE)
       proxy %>% removeControl('r2Legend')
       if (!is.null(values$leg1)) {
         proxy %>% addLegend("topright", pal = values$leg1$pal, title = "Predicted Suitability",
@@ -590,7 +605,6 @@ shinyServer(function(input, output, session) {
   observe({
     if (input$tabs == 8) {
       if (is.null(values$df)) return()
-      map_plotLocs(values$df, clearImages=FALSE)
       proxy %>% removeControl('r1Legend')
       if (!is.null(values$leg2)) {
         proxy %>% addLegend("topright", pal = values$leg2$pal, title = "Predicted Suitability",
