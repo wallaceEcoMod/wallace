@@ -56,13 +56,7 @@ getGbifOccs <- function(spName, occNum) {
   }
   
   # MAPPING
-  
-  zoom2Occs()
-  proxy %>% addCircleMarkers(data = values$origOccs, lat = ~latitude, lng = ~longitude,
-                             radius = 5, color = 'red', fillColor = 'red',
-                             fillOpacity = 0.2, weight = 2, popup = ~pop,
-                             group = 'comp1')
-
+  proxy %>% zoom2Occs(values$origOccs) %>% map_plotLocs(values$origOccs)
 }
 
 getUserOccs <- function(csvPath) {
@@ -109,25 +103,7 @@ getUserOccs <- function(csvPath) {
   # this makes an infinite loop. not sure why...
   #     x <- paste0("User input ", input$userCSV$name, " with [", nrow(values$df), "[ records.")
   #     values$log <- paste(values$log, x, sep='<br>')
-  zoom2Occs()
-  map_plotLocs(values$origOccs)
-}
 
-zoom2Occs <- function() {
-  if (is.null(values$origOccs)) {return()}
-  proxy %>% clearShapes()
-  lati <- values$origOccs[,3]
-  longi <- values$origOccs[,2]
-  z <- smartZoom(longi, lati)
-  proxy %>% fitBounds(z[1], z[2], z[3], z[4])
-  
-  # this section makes letter icons for occs based on basisOfRecord
-  #     occIcons <- makeOccIcons()
-  #     iconList <- list(HUMAN_OBSERVATION=1, OBSERVATION=2, PRESERVED_SPECIMEN=3,
-  #                      UNKNOWN_EVIDENCE=4, FOSSIL_SPECIMEN=5, MACHINE_OBSERVATION=6,
-  #                      LIVING_SPECIMEN=7, LITERATURE_OCCURRENCE=8, MATERIAL_SAMPLE=9)
-  #     values$origOccs$basisNum <- unlist(iconList[values$origOccs$basisOfRecord])
-  #     proxy %>% addMarkers(data = values$origOccs, lat = ~latitude, lng = ~longitude,
-  #                          layerId = as.numeric(rownames(values$origOccs)),
-  #                          icon = ~icons(occIcons[basisNum]))
+  # MAPPING
+  proxy %>% zoom2Occs(values$origOccs) %>% map_plotLocs(values$origOccs)
 }

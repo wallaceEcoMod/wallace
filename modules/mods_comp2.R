@@ -16,11 +16,8 @@ remSelLocs <- function(remLoc) {
     if (numTest) {
       writeLog(paste0("* Removed locality with ID = ", remLoc, "."))
     }
-    zoom2Occs()
-    proxy %>% addCircleMarkers(data = values$origOccs, lat = ~latitude, lng = ~longitude,
-                               radius = 5, color = 'red', fillColor = 'red',
-                               fillOpacity = 0.2, weight = 2, popup = ~pop,
-                               group = 'comp2')
+    
+    proxy %>% zoom2Occs(values$origOccs) %>% map_plotLocs(values$origOccs)
   })
 }
 
@@ -50,10 +47,7 @@ polySelLocs <- function() {
 
   # Subset with selected locs
   ptsSel <- values$origOccs[values$ptSeln, ]
-  proxy %>% addCircleMarkers(data = ptsSel, lat = ~latitude, lng = ~longitude,
-                             radius = 5, color = 'red', fillColor = 'yellow',
-                             fillOpacity = 1, weight = 2, popup = ~pop,
-                             group = 'comp2')
+  proxy %>% map_plotLocs(ptsSel, fillColor='yellow', fillOpacity=1, clearShapes=FALSE)
   values$df <- ptsSel
 
   values$polyPts1 <- NULL
@@ -89,7 +83,7 @@ thinOccs <- function(thinDist) {
     }
   })
   
-  # MAPPING
+  # MAPPING - blue pts for remove, red pts for keep
   proxy %>% addCircleMarkers(data = values$prethinned, lat = ~latitude, lng = ~longitude,
                              radius = 5, color = 'red', fillColor = 'blue', 
                              fillOpacity = 1, weight = 2, popup = ~pop, 
@@ -99,11 +93,6 @@ thinOccs <- function(thinDist) {
                              fillOpacity = 1, weight = 2, popup = ~pop, 
                              group = 'comp2')
   
-  proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
-                             radius = 5, color = 'red', fillColor = 'red',
-                             fillOpacity = 0.2, weight = 2, popup = ~pop, 
-                             group = 'df') %>% hideGroup('df')
-
   values$origOccs <- values$df
   writeLog(paste('* Total records thinned to [', nrow(values$df), '] localities.'))
   # render the thinned records data table

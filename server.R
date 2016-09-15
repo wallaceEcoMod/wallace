@@ -117,9 +117,7 @@ shinyServer(function(input, output, session) {
       if (input$occSel == 'user') gtext$cur <- "www/tab1_user.Rmd"
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
-      # map controls
-      proxy %>% showGroup('comp1') %>% hideGroup(c('comp2', 'comp5', 'df')) %>% 
-        clearControls() %>% clearImages() %>% clearShapes()
+      proxy %>% clearControls()
     }
   })
 
@@ -136,7 +134,6 @@ shinyServer(function(input, output, session) {
     if (is.null(input$userCSV)) return()  # exit if userCSV not specifed
     isolate(resetV(values))
     getUserOccs(input$userCSV$datapath)
-    print(values$spname)
   })
 
   # render the GBIF records data table
@@ -183,8 +180,6 @@ shinyServer(function(input, output, session) {
       }
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
-      # map controls
-      proxy %>% showGroup('comp2') %>% hideGroup(c('comp5'))
     }
   })
 
@@ -241,10 +236,7 @@ shinyServer(function(input, output, session) {
     values$polyPts1 <- NULL
     values$poly1 <- NULL
     values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
-    proxy %>% clearMarkers() %>% clearShapes() %>%
-      addCircleMarkers(data = values$origOccs, lat = ~latitude, lng = ~longitude,
-                       radius = 5, color = 'red', fillColor = 'red',
-                       fillOpacity = 0.2, weight = 2, popup = ~pop, group = 'comp2')
+    proxy %>% clearMarkers() %>% clearShapes() %>% map_plotLocs(values$origOccs)
     x <- paste('* RESET: localities dataset is now back to', nrow(values$origOccs), 'records.')
     isolate(writeLog(x))
     if (!is.null(values$origOccs)) {
@@ -271,8 +263,6 @@ shinyServer(function(input, output, session) {
     }
   )
   
-  observe(print(values$df))
-
 #########################
 ### COMPONENT 3 ####
 #########################
@@ -283,8 +273,8 @@ shinyServer(function(input, output, session) {
       if (input$envSel == 'WorldClim') gtext$cur <- "www/tab3_worldclim.Rmd"
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
-      # map controls
-      proxy %>% clearControls() %>% clearImages() %>% clearShapes() %>% hideGroup(c('comp1', 'comp2', 'comp5')) %>% showGroup('df')
+      if (!is.null(values$df)) proxy %>% map_plotLocs(values$df)
+      proxy %>% clearControls()
     }
   })
 
@@ -318,8 +308,8 @@ shinyServer(function(input, output, session) {
       if (input$envProcSel == 'backg') gtext$cur <- "www/tab4_backg.Rmd"
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
-      proxy %>% showGroup('df') %>% clearControls() %>% clearImages() %>% 
-        clearShapes() %>% hideGroup(c('comp1', 'comp2', 'comp5'))
+      if (!is.null(values$df)) proxy %>% map_plotLocs(values$df)
+      proxy %>% clearControls()
     }
   })
 
@@ -370,8 +360,7 @@ shinyServer(function(input, output, session) {
       if (input$partSel == 'sp') gtext$cur <- "www/tab5_sp.Rmd"
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
-      proxy  %>% clearControls() %>% clearImages() %>%
-        clearShapes() %>% hideGroup(c('comp1', 'comp2')) %>% showGroup('df')
+      proxy  %>% clearControls() %>% clearShapes()
     }
   })
 
@@ -427,8 +416,8 @@ shinyServer(function(input, output, session) {
     if (input$tabs == 6) {
       if (input$enmSel == 'BIOCLIM') gtext$cur <- "www/tab6_bc.Rmd"
       if (input$enmSel == 'Maxent') gtext$cur <- "www/tab6_maxent.Rmd"
-      proxy %>% clearControls() %>% clearImages() %>% 
-        clearShapes() %>% hideGroup(c('comp1', 'comp2', 'comp5')) %>% showGroup('df')
+      if (!is.null(values$df)) proxy %>% map_plotLocs(values$df)
+      proxy %>% clearControls()
     }
   })
 
@@ -448,14 +437,10 @@ shinyServer(function(input, output, session) {
     # Module BIOCLIM
     if (input$enmSel == "BIOCLIM") {
       comp6_bioclimMod()
-      # Module BIOCLIM Envelope Plots (for component 7)
-      output$bcEnvelPlot <- renderPlot(plot(values$evalMods[[1]], a = input$bc1, b = input$bc2, p = input$bcProb))
     }
     # Module Maxent
      else if (input$enmSel == "Maxent") {
        comp6_maxentMod(input$rms, input$fcs)
-       # Module Maxent Evaluation Plots (for component 7): ENMeval graphs
-       output$mxEvalPlot <- renderPlot(evalPlot(values$evalTbl, input$mxEvalSel))
        shinyjs::enable("downloadEvalPlots")
      }
     # switch to Results tab
@@ -478,14 +463,18 @@ shinyServer(function(input, output, session) {
   # guidance text
   observe({
     if (input$tabs == 7) {
-      if (input$visSel == 'map') gtext$cur <- "www/tab7_map.Rmd"
+      if (input$visSel == 'map') {
+        gtext$cur <- "www/tab7_map.Rmd"
+        updateTabsetPanel(session, 'main', selected = 'Map')
+      } else {
+        updateTabsetPanel(session, 'main', selected = 'Results')
+      }
       if (input$visSel == 'response') gtext$cur <- "www/tab7_respCurves.Rmd"
       if (input$visSel == 'bcEnvel') gtext$cur <- "www/tab7_bcPlots.Rmd"
       if (input$visSel == 'mxEval') gtext$cur <- "www/tab7_mxEvalPlots.Rmd"
       # switch to Map tab
-      updateTabsetPanel(session, 'main', selected = 'Map')
-      proxy %>% removeControl('threshLegend') %>% removeControl('selLegend') %>% clearImages() %>% 
-        clearShapes() %>% hideGroup(c('comp1', 'comp2', 'comp5')) %>% showGroup('df')
+      
+      if (!is.null(values$df)) proxy %>% map_plotLocs(values$df, clearImages=FALSE)
     }
   })
 
@@ -566,6 +555,12 @@ shinyServer(function(input, output, session) {
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Map')
   })
+  
+  # Module BIOCLIM Envelope Plots (for component 7)
+  output$bcEnvelPlot <- renderPlot(plot(values$evalMods[[1]], a = input$bc1, b = input$bc2, p = input$bcProb))
+  
+  # Module Maxent Evaluation Plots (for component 7): ENMeval graphs
+  output$mxEvalPlot <- renderPlot(evalPlot(values$evalTbl, input$mxEvalSel))
 
   # handle download for rasters, with file type as user choice
   output$downloadPred <- downloadHandler(
@@ -605,8 +600,8 @@ shinyServer(function(input, output, session) {
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
       # map controls
-      proxy %>% clearControls() %>% clearImages() %>% 
-        clearShapes() %>% hideGroup(c('comp2', 'comp5')) %>% showGroup('df')
+      proxy %>% clearControls()
+      if (!is.null(values$df)) proxy %>% map_plotLocs(values$df, clearImages=FALSE)
     }
   })
 
