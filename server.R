@@ -107,7 +107,7 @@ shinyServer(function(input, output, session) {
   proxy <- leafletProxy("map")
 
 #########################
-### COMPONENT 1 FUNCTIONALITY ####
+### COMPONENT 1 ####
 #########################
 
   # guidance text behavior
@@ -119,7 +119,7 @@ shinyServer(function(input, output, session) {
       updateTabsetPanel(session, 'main', selected = 'Map')
       # map controls
       proxy %>% showGroup('comp1') %>% hideGroup('comp2') %>% 
-        removeControl('thinLegend') %>% clearImages()
+        removeControl(c('thinLegend', 'selLegend')) %>% clearImages() %>% clearShapes()
     }
   })
 
@@ -160,7 +160,7 @@ shinyServer(function(input, output, session) {
   )
 
 #########################
-### COMPONENT 2 FUNCTIONALITY ####
+### COMPONENT 2 ####
 #########################
 
   # guidance text
@@ -171,7 +171,7 @@ shinyServer(function(input, output, session) {
         proxy %>% addLegend("topright", colors = c('red','yellow'),
                             title = "GBIF Records", labels = c('original', 'selected'),
                             opacity = 1, layerId = 'selLegend') %>%
-          removeControl('thinLegend') %>% clearImages()
+          removeControl('thinLegend') %>% clearImages() %>% clearShapes()
         
       }
       if (input$procOccSel == 'spthin') {
@@ -272,7 +272,7 @@ shinyServer(function(input, output, session) {
   )
 
 #########################
-### COMPONENT 3 FUNCTIONALITY ####
+### COMPONENT 3 ####
 #########################
 
   # guidance text
@@ -282,8 +282,8 @@ shinyServer(function(input, output, session) {
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
       proxy %>% removeControl('selLegend') %>% 
-        removeControl('thinLegend') %>% hideGroup('comp1') %>% 
-        hideGroup('comp2') %>% clearImages() %>% 
+        removeControl(c('thinLegend', 'selLegend')) %>% hideGroup('comp1') %>% 
+        hideGroup('comp2') %>% clearImages() %>% clearShapes() %>%
         addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
                          radius = 5, color = 'red', fillColor = 'red',
                          fillOpacity = 0.2, weight = 2, popup = ~pop, group = 'df')
@@ -311,7 +311,7 @@ shinyServer(function(input, output, session) {
   #   })
 
 #########################
-### COMPONENT 4 FUNCTIONALITY ####
+### COMPONENT 4 ####
 #########################
 
   # guidance text
@@ -320,6 +320,8 @@ shinyServer(function(input, output, session) {
       if (input$envProcSel == 'backg') gtext$cur <- "www/tab4_backg.Rmd"
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
+      proxy %>% removeControl(c('threshLegend', 'selLegend')) %>% clearImages() %>% 
+        clearShapes()
     }
   })
 
@@ -335,7 +337,6 @@ shinyServer(function(input, output, session) {
       writeLog("* Obtain the environmental data first...")
       return()
     }
-    if (is.null(values$preds)) return()
     comp4_mskStudyReg()
     shinyjs::enable("downloadMskPreds")
   })
@@ -361,7 +362,7 @@ shinyServer(function(input, output, session) {
   )
 
 #########################
-### COMPONENT 5 FUNCTIONALITY ####
+### COMPONENT 5 ####
 #########################
 
   # guidance text
@@ -371,6 +372,8 @@ shinyServer(function(input, output, session) {
       if (input$partSel == 'sp') gtext$cur <- "www/tab5_sp.Rmd"
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
+      proxy %>% removeControl(c('threshLegend', 'selLegend')) %>% clearImages() %>% 
+        clearShapes()
     }
   })
 
@@ -418,7 +421,7 @@ shinyServer(function(input, output, session) {
   )
 
 #########################
-### COMPONENT 6 FUNCTIONALITY ####
+### COMPONENT 6 ####
 #########################
 
   # guidance text
@@ -426,6 +429,8 @@ shinyServer(function(input, output, session) {
     if (input$tabs == 6) {
       if (input$enmSel == 'BIOCLIM') gtext$cur <- "www/tab6_bc.Rmd"
       if (input$enmSel == 'Maxent') gtext$cur <- "www/tab6_maxent.Rmd"
+      proxy %>% removeControl(c('threshLegend', 'selLegend')) %>% clearImages() %>% 
+        clearShapes()
     }
   })
 
@@ -469,7 +474,7 @@ shinyServer(function(input, output, session) {
   )
 
 #########################
-### COMPONENT 7 FUNCTIONALITY ####
+### COMPONENT 7 ####
 #########################
 
   # guidance text
@@ -481,6 +486,8 @@ shinyServer(function(input, output, session) {
       if (input$visSel == 'mxEval') gtext$cur <- "www/tab7_mxEvalPlots.Rmd"
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
+      proxy %>% removeControl(c('threshLegend', 'selLegend')) %>% clearImages() %>% 
+        clearShapes()
     }
   })
 
@@ -588,7 +595,7 @@ shinyServer(function(input, output, session) {
   )
 
 #########################
-### COMPONENT 8 FUNCTIONALITY ####
+### COMPONENT 8 ####
 #########################
 
   # guidance text
@@ -597,7 +604,8 @@ shinyServer(function(input, output, session) {
       if (input$projSel == 'pjArea') gtext$cur <- "www/tab8_pjarea.Rmd"
       if (input$projSel == 'pjTime') gtext$cur <- "www/tab8_pjtime.Rmd"
       if (input$projSel == 'mess') gtext$cur <- "www/tab8_mess.Rmd"
-      proxy %>% removeControl('threshLegend')
+      proxy %>% removeControl(c('threshLegend', 'selLegend')) %>% clearImages() %>% 
+        clearShapes()
     }
   })
 
