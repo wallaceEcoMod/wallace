@@ -118,8 +118,8 @@ shinyServer(function(input, output, session) {
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
       # map controls
-      proxy %>% showGroup('comp1') %>% hideGroup('comp2') %>% 
-        removeControl(c('thinLegend', 'selLegend')) %>% clearImages() %>% clearShapes()
+      proxy %>% showGroup('comp1') %>% hideGroup(c('comp2', 'comp5', 'df')) %>% 
+        clearControls() %>% clearImages() %>% clearShapes()
     }
   })
 
@@ -179,12 +179,12 @@ shinyServer(function(input, output, session) {
         proxy %>% addLegend("topright", colors = c('red', 'blue'),
                             title = "GBIF Records", labels = c('retained', 'removed'),
                             opacity = 1, layerId = 'thinLegend') %>%
-          removeControl('selLegend') %>% clearImages()
+          removeControl('selLegend') %>% clearImages() %>% clearShapes()
       }
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
       # map controls
-      proxy %>% showGroup('comp2')
+      proxy %>% showGroup('comp2') %>% hideGroup(c('comp5'))
     }
   })
 
@@ -281,12 +281,18 @@ shinyServer(function(input, output, session) {
       if (input$envSel == 'WorldClim') gtext$cur <- "www/tab3_worldclim.Rmd"
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
-      proxy %>% removeControl('selLegend') %>% 
-        removeControl(c('thinLegend', 'selLegend')) %>% hideGroup('comp1') %>% 
-        hideGroup('comp2') %>% clearImages() %>% clearShapes() %>%
-        addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
-                         radius = 5, color = 'red', fillColor = 'red',
-                         fillOpacity = 0.2, weight = 2, popup = ~pop, group = 'df')
+      proxy %>% clearControls() %>% clearImages() %>% clearShapes()
+      if (!is.null(values$df)) {
+        print('df not null')
+        ids <- paste0('df', 1:nrow(values$df))
+        proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
+                           radius = 5, color = 'red', fillColor = 'red',
+                           fillOpacity = 0.2, weight = 2, popup = ~pop, 
+                           layerId = ids, group = 'df') %>% hideGroup(c('comp2', 'comp5'))
+      } else {
+        print('df null')
+        proxy %>% showGroup('comp1')
+      }
     }
   })
 
@@ -320,8 +326,8 @@ shinyServer(function(input, output, session) {
       if (input$envProcSel == 'backg') gtext$cur <- "www/tab4_backg.Rmd"
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
-      proxy %>% removeControl(c('threshLegend', 'selLegend')) %>% clearImages() %>% 
-        clearShapes()
+      proxy %>% showGroup('df') %>% clearControls() %>% clearImages() %>% 
+        clearShapes() %>% hideGroup(c('comp1', 'comp2', 'comp5'))
     }
   })
 
@@ -372,8 +378,8 @@ shinyServer(function(input, output, session) {
       if (input$partSel == 'sp') gtext$cur <- "www/tab5_sp.Rmd"
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
-      proxy %>% removeControl(c('threshLegend', 'selLegend')) %>% clearImages() %>% 
-        clearShapes()
+      proxy %>% showGroup('df') %>% clearControls() %>% clearImages() %>% 
+        clearShapes() %>% hideGroup(c('comp1', 'comp2', 'comp5'))
     }
   })
 
@@ -429,8 +435,8 @@ shinyServer(function(input, output, session) {
     if (input$tabs == 6) {
       if (input$enmSel == 'BIOCLIM') gtext$cur <- "www/tab6_bc.Rmd"
       if (input$enmSel == 'Maxent') gtext$cur <- "www/tab6_maxent.Rmd"
-      proxy %>% removeControl(c('threshLegend', 'selLegend')) %>% clearImages() %>% 
-        clearShapes()
+      proxy %>% clearControls() %>% clearImages() %>% 
+        clearShapes() %>% hideGroup(c('comp1', 'comp2', 'comp5')) %>% showGroup('df')
     }
   })
 
@@ -486,8 +492,8 @@ shinyServer(function(input, output, session) {
       if (input$visSel == 'mxEval') gtext$cur <- "www/tab7_mxEvalPlots.Rmd"
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
-      proxy %>% removeControl(c('threshLegend', 'selLegend')) %>% clearImages() %>% 
-        clearShapes()
+      proxy %>% removeControl('threshLegend') %>% removeControl('selLegend') %>% clearImages() %>% 
+        clearShapes() %>% hideGroup(c('comp1', 'comp2', 'comp5')) %>% showGroup('df')
     }
   })
 
@@ -602,10 +608,10 @@ shinyServer(function(input, output, session) {
   observe({
     if (input$tabs == 8) {
       if (input$projSel == 'pjArea') gtext$cur <- "www/tab8_pjarea.Rmd"
-      if (input$projSel == 'pjTime') gtext$cur <- "www/tab8_pjtime.Rmd"
+      # if (input$projSel == 'pjTime') gtext$cur <- "www/tab8_pjtime.Rmd"
       if (input$projSel == 'mess') gtext$cur <- "www/tab8_mess.Rmd"
       proxy %>% removeControl(c('threshLegend', 'selLegend')) %>% clearImages() %>% 
-        clearShapes()
+        clearShapes() %>% hideGroup(c('comp1', 'comp2', 'comp5')) %>% showGroup('df')
     }
   })
 
