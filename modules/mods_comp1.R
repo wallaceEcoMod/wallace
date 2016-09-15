@@ -27,7 +27,7 @@ getGbifOccs <- function(spName, occNum) {
               'locality', 'elevation', 'basisOfRecord')
     results <- fixcols(cols, results)
     locs.in <- results$data[!is.na(results$data[,3]),]
-    locs <- remDups(locs.in)
+    locs <- as.data.frame(remDups(locs.in))
     values$gbifOrig <- locs
     locs <- locs[,cols]  # limit to above columns
 

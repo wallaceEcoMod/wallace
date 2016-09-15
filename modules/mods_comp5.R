@@ -4,6 +4,7 @@ comp5_setPartitions <- function(partSelect2, kfolds, aggFact, proxy) {
     withProgress(message = "Generating background points...", {
       bg.coords <- randomPoints(values$predsMsk, 10000)
       values$bg.coords <- as.data.frame(bg.coords)
+      
     })
   }
   if (partSelect2 == 'block') {
