@@ -273,8 +273,9 @@ shinyServer(function(input, output, session) {
       if (input$envSel == 'WorldClim') gtext$cur <- "www/tab3_worldclim.Rmd"
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
+      # plot pts
       if (!is.null(values$df)) proxy %>% map_plotLocs(values$df)
-      proxy %>% clearControls()
+      proxy %>% clearControls() %>% clearShapes()
     }
   })
 
@@ -308,6 +309,7 @@ shinyServer(function(input, output, session) {
       if (input$envProcSel == 'backg') gtext$cur <- "www/tab4_backg.Rmd"
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
+      # plot pts
       if (!is.null(values$df)) proxy %>% map_plotLocs(values$df)
       proxy %>% clearControls()
     }
@@ -360,6 +362,8 @@ shinyServer(function(input, output, session) {
       if (input$partSel == 'sp') gtext$cur <- "www/tab5_sp.Rmd"
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
+      # plot pts
+      if (!is.null(values$df)) proxy %>% map_plotLocs(values$df)
       proxy  %>% clearControls() %>% clearShapes()
     }
   })
@@ -416,8 +420,9 @@ shinyServer(function(input, output, session) {
     if (input$tabs == 6) {
       if (input$enmSel == 'BIOCLIM') gtext$cur <- "www/tab6_bc.Rmd"
       if (input$enmSel == 'Maxent') gtext$cur <- "www/tab6_maxent.Rmd"
+      # plots pts
       if (!is.null(values$df)) proxy %>% map_plotLocs(values$df)
-      proxy %>% clearControls()
+      proxy %>% clearControls() %>% clearShapes()
     }
   })
 
@@ -472,9 +477,9 @@ shinyServer(function(input, output, session) {
       if (input$visSel == 'response') gtext$cur <- "www/tab7_respCurves.Rmd"
       if (input$visSel == 'bcEnvel') gtext$cur <- "www/tab7_bcPlots.Rmd"
       if (input$visSel == 'mxEval') gtext$cur <- "www/tab7_mxEvalPlots.Rmd"
-      # switch to Map tab
-      
+      # plot pts
       if (!is.null(values$df)) proxy %>% map_plotLocs(values$df, clearImages=FALSE)
+      proxy %>% clearControls() %>% clearShapes()
     }
   })
 
@@ -599,9 +604,9 @@ shinyServer(function(input, output, session) {
       if (input$projSel == 'mess') gtext$cur <- "www/tab8_mess.Rmd"
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
-      # map controls
-      proxy %>% clearControls()
+      # plot pts
       if (!is.null(values$df)) proxy %>% map_plotLocs(values$df, clearImages=FALSE)
+      proxy %>% clearControls() %>% clearShapes()
     }
   })
 
