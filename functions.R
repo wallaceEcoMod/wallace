@@ -2,6 +2,35 @@
 ## Define functions
 ## -------------------------------------------------------------------- ##
 
+# mapping controls
+map_plotLocs <- function(map, locs, clearMarkers=TRUE, clearShapes=TRUE, clearImages=TRUE, fillColor='red', fillOpacity=0.2) {
+  if (clearMarkers) map %>% clearMarkers()
+  if (clearShapes) map %>% clearShapes()
+  if (clearImages) map %>% clearImages()
+  map %>% addCircleMarkers(data = locs, lat = ~latitude, lng = ~longitude,
+                           radius = 5, color = 'red', fill = TRUE, 
+                           fillColor = fillColor, fillOpacity = fillOpacity, 
+                           weight = 2, popup = ~pop)
+}
+
+# zoom to occ pts
+zoom2Occs <- function(map, occs) {
+  map %>% clearShapes()
+  lati <- occs[,3]
+  longi <- occs[,2]
+  z <- smartZoom(longi, lati)
+  map %>% fitBounds(z[1], z[2], z[3], z[4])
+  
+  # this section makes letter icons for occs based on basisOfRecord
+  #     occIcons <- makeOccIcons()
+  #     iconList <- list(HUMAN_OBSERVATION=1, OBSERVATION=2, PRESERVED_SPECIMEN=3,
+  #                      UNKNOWN_EVIDENCE=4, FOSSIL_SPECIMEN=5, MACHINE_OBSERVATION=6,
+  #                      LIVING_SPECIMEN=7, LITERATURE_OCCURRENCE=8, MATERIAL_SAMPLE=9)
+  #     values$origOccs$basisNum <- unlist(iconList[values$origOccs$basisOfRecord])
+  #     proxy %>% addMarkers(data = values$origOccs, lat = ~latitude, lng = ~longitude,
+  #                          layerId = as.numeric(rownames(values$origOccs)),
+  #                          icon = ~icons(occIcons[basisNum]))
+}
 
 # zooms appropriately for any extent
 smartZoom <- function(longi, lati) {
