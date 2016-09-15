@@ -270,6 +270,8 @@ shinyServer(function(input, output, session) {
       write.csv(values$df[,1:9], file, row.names = FALSE)
     }
   )
+  
+  observe(print(values$df))
 
 #########################
 ### COMPONENT 3 ####
@@ -281,18 +283,8 @@ shinyServer(function(input, output, session) {
       if (input$envSel == 'WorldClim') gtext$cur <- "www/tab3_worldclim.Rmd"
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
-      proxy %>% clearControls() %>% clearImages() %>% clearShapes()
-      if (!is.null(values$df)) {
-        print('df not null')
-        ids <- paste0('df', 1:nrow(values$df))
-        proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
-                           radius = 5, color = 'red', fillColor = 'red',
-                           fillOpacity = 0.2, weight = 2, popup = ~pop, 
-                           layerId = ids, group = 'df') %>% hideGroup(c('comp2', 'comp5'))
-      } else {
-        print('df null')
-        proxy %>% showGroup('comp1')
-      }
+      # map controls
+      proxy %>% clearControls() %>% clearImages() %>% clearShapes() %>% hideGroup(c('comp1', 'comp2', 'comp5')) %>% showGroup('df')
     }
   })
 
@@ -378,8 +370,8 @@ shinyServer(function(input, output, session) {
       if (input$partSel == 'sp') gtext$cur <- "www/tab5_sp.Rmd"
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
-      proxy %>% showGroup('df') %>% clearControls() %>% clearImages() %>% 
-        clearShapes() %>% hideGroup(c('comp1', 'comp2', 'comp5'))
+      proxy  %>% clearControls() %>% clearImages() %>%
+        clearShapes() %>% hideGroup(c('comp1', 'comp2')) %>% showGroup('df')
     }
   })
 
@@ -610,8 +602,11 @@ shinyServer(function(input, output, session) {
       if (input$projSel == 'pjArea') gtext$cur <- "www/tab8_pjarea.Rmd"
       # if (input$projSel == 'pjTime') gtext$cur <- "www/tab8_pjtime.Rmd"
       if (input$projSel == 'mess') gtext$cur <- "www/tab8_mess.Rmd"
-      proxy %>% removeControl(c('threshLegend', 'selLegend')) %>% clearImages() %>% 
-        clearShapes() %>% hideGroup(c('comp1', 'comp2', 'comp5')) %>% showGroup('df')
+      # switch to Map tab
+      updateTabsetPanel(session, 'main', selected = 'Map')
+      # map controls
+      proxy %>% clearControls() %>% clearImages() %>% 
+        clearShapes() %>% hideGroup(c('comp2', 'comp5')) %>% showGroup('df')
     }
   })
 
