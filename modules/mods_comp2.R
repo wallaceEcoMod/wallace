@@ -17,7 +17,10 @@ remSelLocs <- function(remLoc) {
       writeLog(paste0("* Removed locality with ID = ", remLoc, "."))
     }
     zoom2Occs()
-    map_plotLocs(values$origOccs)
+    proxy %>% addCircleMarkers(data = values$origOccs, lat = ~latitude, lng = ~longitude,
+                               radius = 5, color = 'red', fillColor = 'red',
+                               fillOpacity = 0.2, weight = 2, popup = ~pop,
+                               group = 'comp2')
   })
 }
 
@@ -47,10 +50,10 @@ polySelLocs <- function() {
 
   # Subset with selected locs
   ptsSel <- values$origOccs[values$ptSeln, ]
-  map_plotLocs(ptsSel, fillColor='yellow', fillOpacity=1, clearShapes=FALSE)
-  proxy %>% addLegend("topright", colors = c('red','yellow'),
-                      title = "GBIF Records", labels = c('original', 'selected'),
-                      opacity = 1, layerId = 'selLegend')
+  proxy %>% addCircleMarkers(data = ptsSel, lat = ~latitude, lng = ~longitude,
+                             radius = 5, color = 'red', fillColor = 'yellow',
+                             fillOpacity = 1, weight = 2, popup = ~pop,
+                             group = 'comp2')
   values$df <- ptsSel
 
   values$polyPts1 <- NULL
@@ -87,19 +90,15 @@ thinOccs <- function(thinDist) {
   })
   
   # MAPPING
-  proxy %>% addCircleMarkers(values$prethinned, ~latitude, ~longitude,
+  proxy %>% addCircleMarkers(data = values$prethinned, lat = ~latitude, lng = ~longitude,
                              radius = 5, color = 'red', fillColor = 'blue', 
                              fillOpacity = 1, weight = 2, popup = ~pop, 
-                             layerId = 'thinned', group = 'comp2')
-  proxy %>% addCircleMarkers(values$df, ~latitude, ~longitude,
+                             group = 'comp2')
+  proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
                              radius = 5, color = 'red', fillColor = 'red', 
                              fillOpacity = 1, weight = 2, popup = ~pop, 
-                             layerId = 'retained', group = 'comp2')
-  # map_plotLocs(values$prethinned, fillColor='blue', fillOpacity=1, clearShapes=FALSE)
-  # map_plotLocs(values$df, fillOpacity=1, clearShapes=FALSE, clearMarkers=FALSE)
-  proxy %>% addLegend("topright", colors = c('red', 'blue'),
-                      title = "GBIF Records", labels = c('retained', 'removed'),
-                      opacity = 1, layerId = 'thinLegend')
+                             group = 'comp2')
+
   values$origOccs <- values$df
   writeLog(paste('* Total records thinned to [', nrow(values$df), '] localities.'))
   # render the thinned records data table

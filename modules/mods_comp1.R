@@ -61,7 +61,7 @@ getGbifOccs <- function(spName, occNum) {
   proxy %>% addCircleMarkers(data = values$origOccs, lat = ~latitude, lng = ~longitude,
                              radius = 5, color = 'red', fillColor = 'red',
                              fillOpacity = 0.2, weight = 2, popup = ~pop,
-                             layerId = 'origOccs', group = 'comp1')
+                             group = 'comp1')
 
 }
 
