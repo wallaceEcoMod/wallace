@@ -1,12 +1,6 @@
 comp5_setPartitions <- function(partSelect2, kfolds, aggFact, proxy) {
   occs <- values$df[,2:3]
-  if (is.null(values$bg.coords)) {
-    withProgress(message = "Generating background points...", {
-      bg.coords <- randomPoints(values$predsMsk, 10000)
-      values$bg.coords <- as.data.frame(bg.coords)
-      
-    })
-  }
+
   if (partSelect2 == 'block') {
     pt <- 'block'
     group.data <- get.block(occs, values$bg.coords)
@@ -41,8 +35,8 @@ comp5_setPartitions <- function(partSelect2, kfolds, aggFact, proxy) {
   newColors <- gsub("FF$", "", rainbow(max(group.data[[1]])))  # colors for partition symbology
   #newColors <- sample(colors(), max(group.data[[1]]))
   proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
-                             radius = 5, color = 'red', fill = TRUE,
-                             fillColor = newColors[group.data[[1]]], weight = 2, popup = ~pop, fillOpacity = 1)
+                             radius = 5, color = 'red', fill = TRUE, fillColor = newColors[group.data[[1]]], 
+                             weight = 2, popup = ~pop, fillOpacity = 1, group = 'comp5')
 }
 
 # comp5_userPartitions <- function(partSelect, occ.grp, bg.grp) {

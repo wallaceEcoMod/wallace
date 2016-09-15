@@ -81,4 +81,12 @@ comp4_mskStudyReg <- function() {
     values$predsMsk <- mask(predCrop, values$backgExt)
   })
   isolate(writeLog(paste0('* Environmental data masked by ', values$bbTxt, '.')))
+  
+  if (is.null(values$bg.coords)) {
+    withProgress(message = "Generating background points...", {
+      bg.coords <- randomPoints(values$predsMsk, 10000)
+      values$bg.coords <- as.data.frame(bg.coords)
+    })
+    isolate(writeLog(paste0('* Random background points sampled (N = 10,000).')))
+  }
 }

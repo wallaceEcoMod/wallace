@@ -98,6 +98,11 @@ thinOccs <- function(thinDist) {
                              radius = 5, color = 'red', fillColor = 'red', 
                              fillOpacity = 1, weight = 2, popup = ~pop, 
                              group = 'comp2')
+  
+  proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
+                             radius = 5, color = 'red', fillColor = 'red',
+                             fillOpacity = 0.2, weight = 2, popup = ~pop, 
+                             group = 'df') %>% hideGroup('df')
 
   values$origOccs <- values$df
   writeLog(paste('* Total records thinned to [', nrow(values$df), '] localities.'))
