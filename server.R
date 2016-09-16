@@ -678,10 +678,10 @@ shinyServer(function(input, output, session) {
                  input$bcRes, input$selRCP, bcMod, bcYr)
   })
 
-#   # Module MESS
-#   observeEvent(input$goMESS, {
-#     comp8_mess()
-#   })
+  # Module MESS
+  observeEvent(input$goMESS, {
+    comp8_mess()
+  })
 
   # Download current projected extent
   output$downloadPj <- downloadHandler(

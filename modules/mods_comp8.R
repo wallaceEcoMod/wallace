@@ -84,15 +84,24 @@ comp8_mess <- function() {
   }
   writeLog('* Generating MESS map.')
   occVals <- extract(values$preds, cbind(values$df$longitude, values$df$latitude))
-  values$mess <- mess(values$projMsk, occVals)
+  values$mess <- suppressWarnings(mess(values$projMsk, occVals))
   # proxy %>% clearShapes()
   # proxy %>% clearImages()
   rasVals <- values$mess@data@values
   rasVals <- na.omit(rasVals)
-  rasVals[is.infinite(rasVals)] <-
+  if (sum(is.infinite(rasVals)) > 0) {
+    # find max after removing infinite values
+    x <- rasVals
+    x[is.infinite(x)] <- 0
+    rasValsMax <- max(x)
+  }
+  # set infinite values to max
+  rasVals[is.infinite(rasVals)] <- rasValsMax
+  values$mess[is.infinite(values$mess)] <- rasValsMax
 
-  # pal <- colorNumeric(c("#fff5f0", "#fb6a4a", "#67000d"), rasVals, na.color='transparent')
-  # proxy %>% addLegend("topright", pal = pal, title = "MESS Values",
-                      # values = rasVals, layerId = values$polyID + 1)
-  proxy %>% addRasterImage(values$mess, layerId = 'ms')
+  pal <- colorNumeric(brewer.pal(n=11, name='Spectral'), rasVals, na.color='transparent')
+  
+  proxy %>% addLegend("topright", pal=pal, title = "MESS Values",
+                      values = rasVals, layerId = 'mess')
+  proxy %>% addRasterImage(values$mess, layerId = 'mess')
 }
