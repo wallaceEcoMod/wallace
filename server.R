@@ -110,6 +110,12 @@ shinyServer(function(input, output, session) {
 ### COMPONENT 1 ####
 #########################
 
+  observe({
+    print('PRINT DF')
+    print(nrow(values$df))
+    print(row.names(values$df))
+    print(values$log)})
+  
   # guidance text behavior
   observe({
     if (input$tabs == 1) {
@@ -120,7 +126,7 @@ shinyServer(function(input, output, session) {
       proxy %>% clearControls()
     }
   })
-
+  
   # module GBIF
   observeEvent(input$goName, {
     if (input$gbifName == "") return()
@@ -132,6 +138,7 @@ shinyServer(function(input, output, session) {
   # module userOccs
   observe({
     if (is.null(input$userCSV)) return()  # exit if userCSV not specifed
+    print('THINNING')
     isolate(resetV(values))
     getUserOccs(input$userCSV$datapath)
   })
