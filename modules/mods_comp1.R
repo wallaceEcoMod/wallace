@@ -95,7 +95,7 @@ getUserOccs <- function(csvPath) {
     values$origOccs <- rbind(values$origOccs, inFile.occs)
     values$origOccs <- remDups(values$origOccs)
   })
-  values$df <- isolate({
+  isolate({
     values$df <- rbind(values$df, inFile.occs)
     values$df <- remDups(values$df)
   })
