@@ -745,7 +745,7 @@ shinyServer(function(input, output, session) {
       } else {
         out <- rmarkdown::render('userReport2.Rmd', switch(
           input$mdType,
-          PDF = pdf_document(), HTML = html_document(), Word = word_document()
+          PDF = pdf_document(latex_engine='xelatex'), HTML = html_document(), Word = word_document()
         ))
       }
       file.rename(out, file)
