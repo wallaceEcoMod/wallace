@@ -36,7 +36,7 @@ getGbifOccs <- function(spName, occNum) {
     locs$pop <- unlist(apply(locs, 1, popUpContent))
     # add locs to values list and copy
     values$origOccs <- locs
-    values$df <- values$origOccs
+    values$df <- rbind(values$df, values$origOccs)
     
     inName <- isolate(spName)
     nameSplit <- length(unlist(strsplit(inName, " ")))
@@ -56,7 +56,7 @@ getGbifOccs <- function(spName, occNum) {
   }
   
   # MAPPING
-  proxy %>% zoom2Occs(values$origOccs) %>% map_plotLocs(values$origOccs)
+  proxy %>% zoom2Occs(values$df) %>% map_plotLocs(values$df)
 }
 
 getUserOccs <- function(csvPath) {
@@ -91,7 +91,7 @@ getUserOccs <- function(csvPath) {
   inFile.occs$pop <- unlist(apply(inFile.occs, 1, popUpContent))  # add col for map marker popup text
   
   # add user locs to existing origOccs and df, and remove duplicate records
-  values$origOccs <- isolate({
+  isolate({
     values$origOccs <- rbind(values$origOccs, inFile.occs)
     values$origOccs <- remDups(values$origOccs)
   })
@@ -105,5 +105,5 @@ getUserOccs <- function(csvPath) {
   #     values$log <- paste(values$log, x, sep='<br>')
 
   # MAPPING
-  proxy %>% zoom2Occs(values$origOccs) %>% map_plotLocs(values$origOccs)
+  proxy %>% zoom2Occs(values$df) %>% map_plotLocs(values$df)
 }
