@@ -130,7 +130,6 @@ shinyServer(function(input, output, session) {
   # module GBIF
   observeEvent(input$goName, {
     if (input$gbifName == "") return()
-    isolate(resetV(values))
     getGbifOccs(input$gbifName, input$gbifNum)
     shinyjs::enable("downloadOrigOccs")
   })
@@ -139,8 +138,7 @@ shinyServer(function(input, output, session) {
   observe({
     if (is.null(input$userCSV)) return()  # exit if userCSV not specifed
     print('THINNING')
-    isolate(resetV(values))
-    getUserOccs(input$userCSV$datapath)
+    isolate({getUserOccs(input$userCSV$datapath)})
   })
 
   # render the GBIF records data table
