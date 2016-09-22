@@ -54,8 +54,8 @@ isCB2 <- if (!is.null(values$partSel2)) values$partSel2 == 'cb2' else FALSE
 isJack <- if (!is.null(values$partSel2)) values$partSel2 == 'jack' else FALSE
 isRandom <- if (!is.null(values$partSel2)) values$partSel2 == 'random' else FALSE
 model <- input$goEval != 0
-isBC <- if (!is.null(values$evalMods)) input$modSel == 'BIOCLIM' else FALSE
-isMX <- if (!is.null(values$evalMods)) input$modSel == 'Maxent' else FALSE
+isBC <- if (!is.null(values$evalMods)) input$enmSel == 'BIOCLIM' else FALSE
+isMX <- if (!is.null(values$evalMods)) input$enmSel == 'Maxent' else FALSE
 ```
 
 Record of analysis for *`r makeCap(values$spname)`*.
@@ -269,7 +269,7 @@ modParams <- list(occ.pts=occs.locs, bg.pts=bg.coords, occ.grp=group.data[[1]], 
 
 ```{asis, echo = model, eval = model, include = model}
 ### Build and Evaluate Niche Model
-`r "{{modSel}}"` model selected.
+`r "{{enmSel}}"` model selected.
 ```
 
 ```{r, echo = isBC, eval = isBC, include = isBC}
