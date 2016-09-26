@@ -67,8 +67,6 @@ printVecAsis <- function(x) {
   #        ifelse(is.character(x), paste0("c(", paste(sapply(x, function(a) paste0("\'",a,"\'")), collapse=", "), ")"),
   #               paste0("c(", paste(x, collapse=", "), ")")))}
 
-#devtools::install_github("jcheng5/rasterfaster")
-
 shinyServer(function(input, output, session) {
   # disable download buttons
   shinyjs::disable("downloadOrigOccs")
