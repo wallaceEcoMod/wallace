@@ -67,6 +67,8 @@ printVecAsis <- function(x) {
   #        ifelse(is.character(x), paste0("c(", paste(sapply(x, function(a) paste0("\'",a,"\'")), collapse=", "), ")"),
   #               paste0("c(", paste(x, collapse=", "), ")")))}
 
+options(shiny.maxRequestSize=5000*1024^2)
+
 shinyServer(function(input, output, session) {
   # disable download buttons
   shinyjs::disable("downloadOrigOccs")
@@ -281,9 +283,14 @@ shinyServer(function(input, output, session) {
   # module WorldClim
   observeEvent(input$predDnld, {
     if (!is.null(values$df)) {
-      comp3_bioclim(input$bcRes)
+      comp3_bioclim(input$bcRes, input$bcLat, input$bcLon)
     }
   })
+  
+  # observeEvent(input$userPreds, {
+  #   validate(need(input$userPreds, message = FALSE))
+  #   comp3_userPreds(input$userPreds) 
+  # })
 
   # future user input functionality for rasters
   #   output$predTxt2 <- renderUI({
