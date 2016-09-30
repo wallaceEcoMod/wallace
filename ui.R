@@ -450,7 +450,6 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                    )
 ),
 column(8,
-       bsCollapse(id = 'guidanceText', bsCollapsePanel('Expand Guidance Text', uiOutput('gtextOut'))),
        conditionalPanel("input.tabs != 0 && input.tabs != 'rmd' && input.tabs != 'about'",
                         div(id = "wallaceLog", class = "scrollbox", htmlOutput("log"))),
        br(),
@@ -464,7 +463,8 @@ column(8,
                                    conditionalPanel("input.tabs == 7 && input.visSel == 'bcEnvel' && input.enmSel == 'BIOCLIM'", 
                                                     imageOutput('bcEnvelPlot')),
                                    conditionalPanel("input.tabs == 7 && input.visSel == 'mxEval'  && input.enmSel == 'Maxent'", 
-                                                    imageOutput('mxEvalPlot')))
+                                                    imageOutput('mxEvalPlot'))),
+                          tabPanel('Guidance', uiOutput('gtextOut'))
                         )
        ),
        conditionalPanel("input.tabs == 'rmd'",
