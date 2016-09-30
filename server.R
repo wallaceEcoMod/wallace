@@ -88,7 +88,10 @@ shinyServer(function(input, output, session) {
 
   # UI for guidance text collapse bar
   output$gtextOut <- renderUI({
-    includeMarkdown(gtext$cur)
+    tagList(
+      br(),
+      includeMarkdown(gtext$cur) 
+    )
   })
 
 #########################
