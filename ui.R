@@ -46,16 +46,15 @@ useShinyjs()
 shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                    title='Wallace',
                    tabPanel("Intro", value=0),
-                   tabPanel("1 Get Occs", value=1),
+                   tabPanel("1 Occ Data", value=1),
                    tabPanel("2 Process Occs", value=2),
-                   tabPanel("3 Get Env", value=3),
+                   tabPanel("3 Env Data", value=3),
                    tabPanel("4 Study Extent", value=4),
                    tabPanel("5 Partition Occs", value=5),
                    tabPanel("6 Model", value=6),
                    tabPanel("7 Visualize", value=7),
                    tabPanel("8 Project", value=8),
-                   tabPanel("History", value='rmd'),
-                   tabPanel("About", value='about'),
+                   tabPanel("Analysis Code", value='rmd'),
                    
                    fluidRow(column(4,
                                    wellPanel(
@@ -450,10 +449,10 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                    )
 ),
 column(8,
-       conditionalPanel("input.tabs != 0 && input.tabs != 'rmd' && input.tabs != 'about'",
+       conditionalPanel("input.tabs != 0 && input.tabs != 'rmd'",
                         div(id = "wallaceLog", class = "scrollbox", htmlOutput("log"))),
        br(),
-       conditionalPanel("input.tabs != 'rmd' & input.tabs != 0 & input.tabs != 'about'",
+       conditionalPanel("input.tabs != 'rmd' & input.tabs != 0",
                         tabsetPanel(id = 'main',
                           tabPanel('Map', leafletOutput("map", height=500)),
                           tabPanel('Occs Tbl', DT::dataTableOutput('occTbl')),
@@ -476,19 +475,18 @@ column(8,
                         )
        ),
        conditionalPanel("input.tabs == 0",
-                        column(11,
-                               includeMarkdown("www/intro.Rmd")
-                        )
-       ),
-       conditionalPanel("input.tabs == 'about'",
-                        fluidPage(titlePanel(h4("Wallace was created by an international team of ecologists:")),
-                                  fluidRow(
-                                    column(2, includeMarkdown("www/tab10Acontent.Rmd")),
-                                    column(3, includeMarkdown("www/tab10Ccontent.Rmd")),
-                                    column(5, includeMarkdown("www/tab10Bcontent.Rmd"))
-                                  )
-                        )
-       )
-       )
+                        tabsetPanel(id = 'introTabs',
+                          tabPanel('Intro', includeMarkdown("www/intro.Rmd")),
+                          tabPanel('About',
+                                   h4("Wallace was created by an international team of ecologists:"),
+                                   fluidRow(
+                                     column(2, includeMarkdown("www/tab10Acontent.Rmd")),
+                                     column(3, includeMarkdown("www/tab10Ccontent.Rmd")),
+                                     column(5, includeMarkdown("www/tab10Bcontent.Rmd"))
                                    )
+                          )
+                        )  
+       )
+)
+                   )
 ))
