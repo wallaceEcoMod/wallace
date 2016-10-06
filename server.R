@@ -735,7 +735,7 @@ shinyServer(function(input, output, session) {
       csvDataPathFix <- gsub('\\\\', '/', input$userCSV$datapath)
       exp <- knit_expand('userReport.Rmd', curWD=curWD, gbifName=input$gbifName, occurrences=input$gbifNum, thinDist=input$thinDist,
                          occsCSV=csvDataPathFix, occsRemoved=printVecAsis(values$removedAll), occsSel=printVecAsis(values$ptSeln),
-                         predsRes=input$bcRes, backgSel=input$backgSel, backgBuf=input$backgBuf, userBGname=input$userBackg$name,
+                         predsRes=input$bcRes, bcLat=input$bcLat, bcLon=input$bcLon, backgSel=input$backgSel, backgBuf=input$backgBuf, userBGname=input$userBackg$name,
                          userBGpath=input$userBackg$datapath, partSel=values$partSel2, aggFact=input$aggFact, kfoldsSel=input$kfolds,
                          enmSel=input$enmSel, rmsSel1=input$rms[1], rmsSel2=input$rms[2], rmsBy=input$rmsBy, fcsSel=printVecAsis(input$fcs))
       writeLines(exp, 'userReport2.Rmd')
