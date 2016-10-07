@@ -2,6 +2,13 @@
 ## Define functions
 ## -------------------------------------------------------------------- ##
 
+# return the map center given the bounds
+mapCenter <- function(bounds) {
+  map_center <- c((bounds$west + bounds$east) / 2, (bounds$north + bounds$south) / 2)
+  map_center <- round(map_center, digits=3)
+  return(map_center)
+}
+
 # mapping controls
 map_plotLocs <- function(map, locs, clearMarkers=TRUE, clearShapes=TRUE, clearImages=TRUE, fillColor='red', fillOpacity=0.2) {
   if (clearMarkers) map %>% clearMarkers()

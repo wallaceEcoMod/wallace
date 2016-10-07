@@ -159,8 +159,9 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                                                   "5 arcmin" = 5,
                                                                                                   "10 arcmin" = 10)),
                                                                        conditionalPanel('input.bcRes == 0.5', 
-                                                                                        strong("Coordinate input for 30 arcsec"),
-                                                                                        p(numericInput('bcLat', "Latitude", 0), numericInput('bcLon', "Longitude", 0))
+                                                                                        strong("Using map center coordinates as reference for tile download."),
+                                                                                        textOutput('ctrLatLon'), br()
+                                                                                        # p(numericInput('bcLat', "Latitude", 0), numericInput('bcLon', "Longitude", 0))
                                                                                         ),
                                                                        actionButton("predDnld", "Download Env Data"),
                                                                        # fileInput(inputId = "userPreds", label = "Input predictor rasters", multiple = TRUE),
