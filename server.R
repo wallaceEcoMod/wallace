@@ -279,6 +279,13 @@ shinyServer(function(input, output, session) {
       proxy %>% clearControls() %>% clearShapes()
     }
   })
+  
+  # map center coordinates for 30 arcsec download
+  observe({
+    mapCntr <- mapCenter(input$map_bounds)
+    values$mapCntr <- mapCntr
+    output$ctrLatLon <- renderText({paste('Using map center', paste(mapCntr, collapse=', '))})    
+  })
 
   # enable download button
   observe({if (input$bcRes != "") shinyjs::enable("predDnld")})
@@ -286,7 +293,7 @@ shinyServer(function(input, output, session) {
   # module WorldClim
   observeEvent(input$predDnld, {
     if (!is.null(values$df)) {
-      comp3_bioclim(input$bcRes, input$bcLat, input$bcLon)
+      comp3_bioclim(input$bcRes)
     }
   })
   
