@@ -47,7 +47,7 @@ writeLog <- function(x) {
 
 ## functions for text formatting in userReport.Rmd
 makeCap <- function(x) paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)))
-getGBIFname <- function() deparse(substitute(input$gbifName))
+getSpName <- function() deparse(substitute(input$spName))
 printVecAsis <- function(x) {
   if (is.character(x)) {
     if (length(x) == 1) {
@@ -71,7 +71,7 @@ options(shiny.maxRequestSize=5000*1024^2)
 
 shinyServer(function(input, output, session) {
   # disable download buttons
-  shinyjs::disable("downloadOrigOccs")
+  shinyjs::disable("dlDbOccs")
   shinyjs::disable("downloadThincsv")
   shinyjs::disable("predDnld")
   shinyjs::disable("downloadMskPreds")
@@ -126,9 +126,9 @@ shinyServer(function(input, output, session) {
   
   # module GBIF
   observeEvent(input$goName, {
-    if (input$gbifName == "") return()
-    getGbifOccs(input$gbifName, input$gbifNum)
-    shinyjs::enable("downloadOrigOccs")
+    if (input$spName == "") return()
+    getDbOccs(input$spName, input$occNum)
+    shinyjs::enable("dlDbOccs")
   })
 
   # module userOccs
@@ -150,7 +150,7 @@ shinyServer(function(input, output, session) {
   })
 
   # handle downloading of original GBIF records after cleaning
-  output$downloadOrigOccs <- downloadHandler(
+  output$dlDbOccs <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$df), "_gbifCleaned.csv")},
     content = function(file) {
       write.csv(values$gbifOrig, file, row.names=FALSE)
@@ -740,7 +740,7 @@ shinyServer(function(input, output, session) {
       on.exit(setwd(owd))
       file.copy(src, 'userReport.Rmd')
       csvDataPathFix <- gsub('\\\\', '/', input$userCSV$datapath)
-      exp <- knit_expand('userReport.Rmd', curWD=curWD, gbifName=input$gbifName, occurrences=input$gbifNum, thinDist=input$thinDist,
+      exp <- knit_expand('userReport.Rmd', curWD=curWD, spName=input$spName, occurrences=input$occNum, thinDist=input$thinDist,
                          occsCSV=csvDataPathFix, occsRemoved=printVecAsis(values$removedAll), occsSel=printVecAsis(values$ptSeln),
                          predsRes=input$bcRes, bcLat=input$bcLat, bcLon=input$bcLon, backgSel=input$backgSel, backgBuf=input$backgBuf, userBGname=input$userBackg$name,
                          userBGpath=input$userBackg$datapath, partSel=values$partSel2, aggFact=input$aggFact, kfoldsSel=input$kfolds,
