@@ -10,54 +10,145 @@ a substantial subset of records with assigned georeferences (e.g., latitude/long
 coordinates). These records include digitized data from natural history museums and herbaria, 
 as well as newer data sources, including citizen-science initiatives leveraging mobile technologies.")}
 
-getGbifOccs <- function(spName, occNum) {
-  # query GBIF based on user input, remove duplicate records
-  writeLog("...Searching GBIF...")
-  values$spname <- spName  # record species name
-  results <- occ_search(scientificName = spName, limit = occNum, hasCoordinate = TRUE)
-  
-  # Control species not found
-  if (results$meta$count == 0) {
-    writeLog(paste('* No records found for ', spName, ". Please check the spelling."))
-  }
-  
-  if (results$meta$count != 0) {
-    cols <- c('name','decimalLongitude','decimalLatitude',
-              'institutionCode','country', 'stateProvince',
-              'locality', 'elevation', 'basisOfRecord')
-    results <- fixcols(cols, results)
-    locs.in <- results$data[!is.na(results$data[,3]),]
-    locs <- as.data.frame(remDups(locs.in))
-    values$gbifOrig <- locs
-    locs <- locs[,cols]  # limit to above columns
+getDbOccs <- function(spName, occNum) {
 
-    names(locs)[1:3] <- c('species','longitude', 'latitude')    
-    locs$origID <- row.names(locs)
-    locs$pop <- unlist(apply(locs, 1, popUpContent))
-    # add locs to values list and copy
-    values$origOccs <- locs
-    values$df <- rbind(values$df, values$origOccs)
+    writeLog(paste("... Searching", input$occDb, "..."))
+    query <- occ(input$spName, input$occDb, limit=input$occNum, has_coords=TRUE)
+    # dbOccsList <- list()
+    # for (db in input$occDb) {
+    dbOccs <- query[[input$occDb]]$data[[formatSpName(input$spName)]]
+    if (nrow(dbOccs) == 0) {
+      writeLog(paste("No records found in", input$occDb, "for", input$spName, "."))
+      return()
+    }
+    dbOccs <- as.data.frame(dbOccs)
+    names(dbOccs)[which(names(dbOccs) == 'name')] <- 'species'
+    if (input$occDb == 'vertnet') {
+      names(dbOccs)[which(names(dbOccs) == 'institutioncode')] <- 'institutionCode'
+      names(dbOccs)[which(names(dbOccs) == 'stateprovince')] <- 'stateProvince'
+      names(dbOccs)[which(names(dbOccs) == 'basisofrecord')] <- 'basisOfRecord'
+      names(dbOccs)[which(names(dbOccs) == 'maximumelevationinmeters')] <- 'elevation'
+    }
+    if (input$occDb == 'bison') {
+      names(dbOccs)[which(names(dbOccs) == 'scientificName')] <- 'species'
+      names(dbOccs)[which(names(dbOccs) == 'calculatedState')] <- 'stateProvince'
+      names(dbOccs)[which(names(dbOccs) == 'verbatimElevation')] <- 'elevation'
+    }
+    # if species not found, print message to log box
+    if (query[[input$occDb]]$meta$found == 0) {
+      writeLog(paste('* No records found for ', input$spName, ". Please check the spelling."))
+    } else {
+      # if species has positive number records remove duplicate records (reactive gbifOrig), and
+      # select columns of interest and add columns for click query (reactive gbifSel)
+      dbOccs %>% remDups()
+      values$origOccs <- dbOccs
+      values$dbMod <- input$occDb
+      dbOccs <- dbOccs[c("species", "longitude", "latitude","year", "institutionCode", "country", "stateProvince", 
+                         "locality", "elevation", "basisOfRecord")]
+      dbOccs$longitude <- as.numeric(dbOccs$longitude)
+      dbOccs$latitude <- as.numeric(dbOccs$latitude)
+    }
     
-    inName <- isolate(spName)
-    nameSplit <- length(unlist(strsplit(inName, " ")))
+    dbOccs$origID <- row.names(dbOccs)
+    dbOccs$pop <- unlist(apply(dbOccs, 1, popUpContent))
+    values$df <- dbOccs
     
-    if (nameSplit == 1 && !is.null(locs)) {
-      x <- paste("* Please input both genus and species names. More than one species with this genus was found.")
-    } else {if (nameSplit == 1 && is.null(locs)) {
-      x <- paste("* Please input both genus and species names.")
-    } else {if (nameSplit != 1 && is.null(locs)) {
-      x <- paste0('* No records found for ', inName, ". Please check the spelling.")
-    } else {if (nameSplit != 1 && !is.null(locs)) {
-      x <- paste('* Total GBIF records for', values$origOccs[1,1], 'returned [', nrow(locs.in),
-                 '] out of [', results$meta$count, '] total (limit ', occNum, '). 
-                   Duplicated records removed [', nrow(locs.in) - nrow(locs), "]: Remaining records [", nrow(locs), "].")
-    }}}}
-    writeLog(x)
-  }
-  
-  # MAPPING
-  proxy %>% zoom2Occs(values$df) %>% map_plotLocs(values$df)
+    # figure out how many separate names (components of scientific name) were entered
+    nameSplit <- length(unlist(strsplit(input$spName, " ")))
+    # if only one name entered and nothing returned, throw error
+    # if only one name entered and records returned, throw warning to enter both names
+    if (nameSplit == 1) {
+      if (is.null(dbOccs)) {
+        addLog <- paste("* Please input both genus and species names.")
+      } else {
+        addLog <- paste("* Please input both genus and species names. 
+                        More than one species with this genus was found.")        
+      }
+      }
+    # If more than one name entered and nothing returned, throw message and warning about spelling.
+    # If more than one name entered and records returned, great! Send metadata message.
+    if (nameSplit > 1) {
+      if (is.null(dbOccs)) {
+        addLog <- paste0('* No records found for ', input$spName, ". Please check the spelling.")
+      } else {
+        origRows <- nrow(query[[input$occDb]]$data[[formatSpName(input$spName)]])
+        totRows <- query[[input$occDb]]$meta$found
+        remainRows <- nrow(dbOccs)
+        dupsRemoved <- origRows - remainRows
+        addLog <- paste('* Total', input$occDb, 'records for', input$spName, 'returned [', origRows,
+                        '] out of [', totRows, '] total (limit ', input$occNum, ').
+                        Duplicated records removed [', dupsRemoved, "]: Remaining records [", remainRows, "].")
+      }
+      # }
+      writeLog(addLog)
+      # functionality for concatenating multiple db calls
+      # add current dbOccs to the list
+      #   dbOccsList[[db]] <- dbOccs
+      # }
+      # # rbind all the data frames together into one
+      # dbOccsConcat <- do.call("rbind", dbOccsList)
+      # if (length(input$occDb) > 1) {
+      #   concat.orig <- nrow(dbOccsConcat)
+      #   # remove records with duplicate coordinates
+      #   dbOccsConcat <- dbOccsConcat[!duplicated(dbOccsConcat[,c('longitude', 'latitude')]),]
+      #   concat.dupsRem <- nrow(dbOccsConcat)
+      #   dupsRemNum <- concat.orig - concat.dupsRem
+      #   writeLog(paste("Concatenated", paste(input$occDb, collapse=' and '), "."))
+      #   if (dupsRemNum > 0) {
+      #     writeLog(paste("Duplicated records removed [", dupsRemNum, "]: Remaining records [", concat.dupsRem, "]."))
+      #   }      
+    }
+    # MAPPING
+    proxy %>% zoom2Occs(values$df) %>% map_plotLocs(values$df)
 }
+#   
+#   # query database based on user input, remove duplicate records
+#   writeLog(paste("... Searching", input$occDb, "..."))
+#   values$spname <- spName  # record species name
+#   results <- occ_search(scientificName = spName, limit = occNum, hasCoordinate = TRUE)
+#   
+#   # Control species not found
+#   if (results$meta$count == 0) {
+#     writeLog(paste('* No records found for ', spName, ". Please check the spelling."))
+#   }
+#   
+#   if (results$meta$count != 0) {
+#     cols <- c('name','decimalLongitude','decimalLatitude',
+#               'institutionCode','country', 'stateProvince',
+#               'locality', 'elevation', 'basisOfRecord')
+#     results <- fixcols(cols, results)
+#     locs.in <- results$data[!is.na(results$data[,3]),]
+#     locs <- as.data.frame(remDups(locs.in))
+#     values$gbifOrig <- locs
+#     locs <- locs[,cols]  # limit to above columns
+# 
+#     names(locs)[1:3] <- c('species','longitude', 'latitude')    
+#     locs$origID <- row.names(locs)
+#     locs$pop <- unlist(apply(locs, 1, popUpContent))
+#     # add locs to values list and copy
+#     values$origOccs <- locs
+#     values$df <- rbind(values$df, values$origOccs)
+#     
+#     inName <- isolate(spName)
+#     nameSplit <- length(unlist(strsplit(inName, " ")))
+#     
+#     if (nameSplit == 1 && !is.null(locs)) {
+#       x <- paste("* Please input both genus and species names. More than one species with this genus was found.")
+#     } else {if (nameSplit == 1 && is.null(locs)) {
+#       x <- paste("* Please input both genus and species names.")
+#     } else {if (nameSplit != 1 && is.null(locs)) {
+#       x <- paste0('* No records found for ', inName, ". Please check the spelling.")
+#     } else {if (nameSplit != 1 && !is.null(locs)) {
+#       x <- paste('* Total GBIF records for', values$origOccs[1,1], 'returned [', nrow(locs.in),
+#                  '] out of [', results$meta$count, '] total (limit ', occNum, '). 
+#                    Duplicated records removed [', nrow(locs.in) - nrow(locs), "]: Remaining records [", nrow(locs), "].")
+#     }}}}
+#     writeLog(x)
+#   }
+#   
+#   # MAPPING
+#   proxy %>% zoom2Occs(values$df) %>% map_plotLocs(values$df)
+# }
 
 getUserOccs <- function(csvPath) {
   inFile <- try(read.csv(csvPath, header = TRUE), silent=TRUE)  # read user csv
