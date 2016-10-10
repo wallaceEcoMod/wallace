@@ -21,7 +21,7 @@ This is an R Markdown document (for more information see <http://rmarkdown.rstud
 Wallace uses the following R packages that must be installed before starting. Once installed, load them:
 ```{r}
 library(devtools)
-library(rgbif)
+library(spocc)
 library(maptools)
 library(spThin)
 library(dismo)
@@ -37,7 +37,7 @@ source(file.path("{{curWD}}", 'functions.R'))
 ```
 
 ```{r, echo = FALSE, include = FALSE}
-gbif <- input$gbifName != ""
+occ <- input$spName != ""
 csv <- !is.null(input$userCSV)
 remLoc <- !is.null(values$removedAll)
 drawPoly <- !is.null(values$ptSeln)
@@ -60,27 +60,27 @@ isMX <- if (!is.null(values$evalMods)) input$enmSel == 'Maxent' else FALSE
 
 Record of analysis for *`r makeCap(values$spname)`*.
 
-```{asis, echo = gbif, include = gbif}
+```{asis, echo = occ, include = occ}
 ### Obtain Occurrence Data
 ```
 
 ```{r occs}
-occs <- NULL  # make empty occs to fill when GBIF or user input are called
+occs <- NULL  # make empty occs to fill when db or user input are called
 ```
 
-```{asis, echo = gbif, include = gbif}
-The search for occurrences was limited to `r {{occurrences}}` records. Obtain occurrence records of the selected species from GBIF:
+```{asis, echo = occ, include = occ}
+The search for occurrences was limited to `r {{occurrences}}` records. Obtain occurrence records of the selected species from the database:
 ```
 
-```{r occSearch, eval = gbif, echo = gbif, include = gbif}
-results <- occ_search(scientificName = "{{gbifName}}", limit = {{occurrences}}, hasCoordinate = TRUE)
+```{r occSearch, eval = occ, echo = occ, include = occ}
+results <- occ_search(scientificName = "{{spName}}", limit = {{occurrences}}, hasCoordinate = TRUE)
 ```
 
-```{asis, echo = gbif, include = gbif}
-Check if all the needed columns were returned in the rgbif call, and if some are missing, add them to results$data.
+```{asis, echo = occ, include = occ}
+Check if all the needed columns were returned in the spocc call, and if some are missing, add them to results$data.
 ```
 
-```{r occTblEdits, echo = gbif, eval = gbif, include = gbif}
+```{r occTblEdits, echo = occ, eval = occ, include = occ}
 cols <- c('name','decimalLongitude','decimalLatitude',
                 'institutionCode','country', 'stateProvince',
                 'locality', 'elevation', 'basisOfRecord')
