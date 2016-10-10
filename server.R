@@ -1,5 +1,5 @@
 # check package dependencies, and download if necessary
-list.of.packages <- c("shiny", "maps", "RColorBrewer", "rmarkdown", "shinyjs", "rgbif", "devtools",
+list.of.packages <- c("shiny", "spocc", "maps", "RColorBrewer", "rmarkdown", "shinyjs", "rgbif", "devtools",
                       "spThin", "colorRamps", "dismo", "rgeos", "XML", "repmis", "Rcpp", "RCurl", "curl",
                       "maptools", "rgdal", "rJava", "devtools")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
@@ -17,6 +17,7 @@ if (!require('ENMeval')) {
 
 # load libraries
 library(devtools)
+library(spocc)
 library(shiny)
 library(rgbif)
 library(maptools)
@@ -167,7 +168,7 @@ shinyServer(function(input, output, session) {
       if (input$procOccSel == 'selpts') {
         gtext$cur <- "www/tab2_selpts.Rmd"
         proxy %>% addLegend("topright", colors = c('red','yellow'),
-                            title = "GBIF Records", labels = c('original', 'selected'),
+                            title = "Occ Records", labels = c('original', 'selected'),
                             opacity = 1, layerId = 'selLegend') %>%
           removeControl('thinLegend') %>% clearImages() %>% clearShapes()
         
@@ -175,7 +176,7 @@ shinyServer(function(input, output, session) {
       if (input$procOccSel == 'spthin') {
         gtext$cur <- "www/tab2_spthin.Rmd"
         proxy %>% addLegend("topright", colors = c('red', 'blue'),
-                            title = "GBIF Records", labels = c('retained', 'removed'),
+                            title = "Occ Records", labels = c('retained', 'removed'),
                             opacity = 1, layerId = 'thinLegend') %>%
           removeControl('selLegend') %>% clearImages() %>% clearShapes()
       }

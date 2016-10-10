@@ -1,15 +1,5 @@
 source("functions.R")
 
-gbifBG <- function(){print("The first step is to download occurrence data if the researcher does not 
-already have a dataset for the species of interest. We are interested in obtaining data 
-that document the presence of a species at particular points in space and time, along with 
-other useful metadata data fields when available. Over the past two decades, the worldwide 
-biodiversity informatics community has achieved remarkable progress, with many millions of 
-occurrence records now available on the internet aggregated via various portals, including 
-a substantial subset of records with assigned georeferences (e.g., latitude/longitude 
-coordinates). These records include digitized data from natural history museums and herbaria, 
-as well as newer data sources, including citizen-science initiatives leveraging mobile technologies.")}
-
 getDbOccs <- function(spName, occNum) {
 
     writeLog(paste("... Searching", input$occDb, "..."))
@@ -41,17 +31,20 @@ getDbOccs <- function(spName, occNum) {
       # if species has positive number records remove duplicate records (reactive gbifOrig), and
       # select columns of interest and add columns for click query (reactive gbifSel)
       dbOccs %>% remDups()
-      values$origOccs <- dbOccs
       values$dbMod <- input$occDb
-      dbOccs <- dbOccs[c("species", "longitude", "latitude","year", "institutionCode", "country", "stateProvince", 
-                         "locality", "elevation", "basisOfRecord")]
       dbOccs$longitude <- as.numeric(dbOccs$longitude)
       dbOccs$latitude <- as.numeric(dbOccs$latitude)
+      dbOccs$origID <- row.names(dbOccs)
+      dbOccs$pop <- unlist(apply(dbOccs, 1, popUpContent))
+      values$origOccs <- dbOccs
+      # check to see if columns of interest are in dbOccs, and then subset
+      cols <- c("species", "longitude", "latitude","year", "institutionCode", "country", "stateProvince", 
+                "locality", "elevation", "basisOfRecord")
+      colsInDbOccs <- cols %in% names(dbOccs)
+      cols <- cols[colsInDbOccs]
+      dbOccs <- dbOccs[c(cols, "origID", "pop")]
+      values$df <- dbOccs
     }
-    
-    dbOccs$origID <- row.names(dbOccs)
-    dbOccs$pop <- unlist(apply(dbOccs, 1, popUpContent))
-    values$df <- dbOccs
     
     # figure out how many separate names (components of scientific name) were entered
     nameSplit <- length(unlist(strsplit(input$spName, " ")))

@@ -47,7 +47,7 @@ polySelLocs <- function() {
 
   # Subset with selected locs
   ptsSel <- values$origOccs[values$ptSeln, ]
-  proxy %>% map_plotLocs(ptsSel, fillColor='yellow', fillOpacity=1, clearShapes=FALSE)
+  proxy %>% map_plotLocs(ptsSel, fillColor='yellow', fillOpacity=1, clearShapes=FALSE, clearMarkers=FALSE)
   values$df <- ptsSel
 
   values$polyPts1 <- NULL
