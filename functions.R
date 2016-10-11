@@ -56,6 +56,8 @@ nameAbbr <- function(spname) {
   return(fullNameAbbr)
 }
 
+formatSpName <- function(spName) paste(strsplit(spName, split=' ')[[1]], collapse='_')
+
 # make a minimum convex polygon as SpatialPolygons object
 mcp <- function (xy) {
   xy <- as.data.frame(coordinates(xy))
