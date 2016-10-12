@@ -1,5 +1,5 @@
 ---
-title: "tab2_selpts"
+title: "comp2_selectLocs"
 output: html_document
 ---
 **BACKGROUND**  

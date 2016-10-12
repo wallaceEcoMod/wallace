@@ -61,7 +61,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                      includeCSS("styles.css"),
                                      includeScript("scroll.js"),
                                      conditionalPanel("input.tabs == 0", h4("Introduction"),
-                                                      includeMarkdown("www/intro_tab.Rmd")
+                                                      includeMarkdown("guidance/text_intro_tab.Rmd")
                                      ),
 # tab 1 ####
                                      conditionalPanel("input.tabs == 1",
@@ -77,7 +77,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                        span('package: Interface to Species Occurrence Data Sources', id="pkgDes"),
                                                                        br(),
                                                                        #                                                                        conditionalPanel("input.togMD1",
-                                                                       #                                                                                         includeMarkdown("www/tab1_gbif.Rmd")
+                                                                       #                                                                                         includeMarkdown("guidance/tab1_gbif.Rmd")
                                                                        HTML('<hr>'),
                                                                        radioButtons("occDb", "Choose Database:",
                                                                                     choices = list("GBIF" = 'gbif',
@@ -93,8 +93,6 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                        HTML('<hr>')
                                                       ),
                                                       conditionalPanel("input.occSel == 'user'",
-                                                                       includeMarkdown("www/tab1_user.Rmd"),
-                                                                       HTML('<hr>'),
                                                                        fileInput("userCSV", label = "Upload Occurrence CSV")),
                                                       conditionalPanel("input.occSel == 'db'",
                                                                        span("spocc", id = "rpkg"), "references", br(),
@@ -263,7 +261,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                        actionButton("goPart", "Partition"), br(), br(),
                                                                        downloadButton('downloadPart', "Download Partitioned Data CSV"),
                                                                        HTML('<hr>')),
-                                                      includeMarkdown("www/tab5content.Rmd"),
+                                                      includeMarkdown("guidance/tab5content.Rmd"),
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.partSel == 'sp' || input.partSel == 'nsp'",
                                                                        span("ENMeval", id = "rpkg"), "references", br(),
@@ -477,18 +475,18 @@ column(8,
                                selectInput('mdType', label = "R Markdown Download Type",
                                            choices = list("Rmd", "PDF", "HTML", "Word")),
                                downloadButton('downloadMD', 'Download History in R Markdown'), br(), br(),
-                               includeMarkdown("www/tab9_mdtext.Rmd")
+                               includeMarkdown("guidance/text_analysisCode.Rmd")
                         )
        ),
        conditionalPanel("input.tabs == 0",
                         tabsetPanel(id = 'introTabs',
-                          tabPanel('Intro', includeMarkdown("www/intro.Rmd")),
+                          tabPanel('Intro', includeMarkdown("guidance/text_intro.Rmd")),
                           tabPanel('About',
                                    h4("Wallace was created by an international team of ecologists:"),
                                    fluidRow(
-                                     column(2, includeMarkdown("www/tab10Acontent.Rmd")),
-                                     column(3, includeMarkdown("www/tab10Ccontent.Rmd")),
-                                     column(5, includeMarkdown("www/tab10Bcontent.Rmd"))
+                                     column(2, includeMarkdown("guidance/text_about1.Rmd")),
+                                     column(3, includeMarkdown("guidance/text_about2.Rmd")),
+                                     column(5, includeMarkdown("guidance/text_about3.Rmd"))
                                    )
                           )
                         )  

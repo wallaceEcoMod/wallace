@@ -1,5 +1,5 @@
 ---
-title: "tab2_spthin"
+title: "comp2_spatialThin"
 output: html_document
 ---
 **BACKGROUND**
