@@ -106,11 +106,15 @@ shinyServer(function(input, output, session) {
   curWD <- getwd()
 
   # create map
-  map <- leaflet() %>% addTiles() %>% setView(0, 0, zoom = 2)
+  map <- leaflet() %>% setView(0, 0, zoom = 2) %>% addProviderTiles('Esri.WorldTopoMap')
   output$map <- renderLeaflet(map)
 
   # make map proxy to make further changes to existing map
   proxy <- leafletProxy("map")
+  observe({
+    proxy %>% addProviderTiles(input$bmap)
+  })
+  
 
 #########################
 ### COMPONENT 1 ####
