@@ -119,10 +119,11 @@ shinyServer(function(input, output, session) {
   # guidance text behavior
   observe({
     if (input$tabs == 1) {
-      if (input$occSel == 'GBIF') gtext$cur_mod <- "www/tab1_gbif.Rmd"
-      if (input$occSel == 'user') gtext$cur_mod <- "www/tab1_user.Rmd"
+      gtext$cur_comp <- "guidance/gtext_comp1.Rmd"
+      if (input$occSel == 'db') gtext$cur_mod <- "guidance/gtext_comp1_dbOccs.Rmd"
+      if (input$occSel == 'user') gtext$cur_mod <- "guidance/gtext_comp1_userOccs.Rmd"
       # switch to Map tab
-      updateTabsetPanel(session, 'main', selected = 'Map')
+      # updateTabsetPanel(session, 'main', selected = 'Map')
       proxy %>% clearControls()
     }
   })
@@ -167,8 +168,9 @@ shinyServer(function(input, output, session) {
   # guidance text
   observe({
     if (input$tabs == 2) {
+      gtext$cur_comp <- "guidance/gtext_comp2.Rmd"
       if (input$procOccSel == 'selpts') {
-        gtext$cur_mod <- "www/tab2_selpts.Rmd"
+        gtext$cur_mod <- "guidance/gtext_comp2_selectLocs.Rmd"
         proxy %>% addLegend("topright", colors = c('red','yellow'),
                             title = "Occ Records", labels = c('original', 'selected'),
                             opacity = 1, layerId = 'selLegend') %>%
@@ -176,7 +178,7 @@ shinyServer(function(input, output, session) {
         
       }
       if (input$procOccSel == 'spthin') {
-        gtext$cur_mod <- "www/tab2_spthin.Rmd"
+        gtext$cur_mod <- "guidance/gtext_comp2_spatialThin.Rmd"
         proxy %>% addLegend("topright", colors = c('red', 'blue'),
                             title = "Occ Records", labels = c('retained', 'removed'),
                             opacity = 1, layerId = 'thinLegend') %>%
@@ -274,7 +276,8 @@ shinyServer(function(input, output, session) {
   # guidance text
   observe({
     if (input$tabs == 3) {
-      if (input$envSel == 'WorldClim') gtext$cur_mod <- "www/tab3_worldclim.Rmd"
+      gtext$cur_comp <- "guidance/gtext_comp3.Rmd"
+      if (input$envSel == 'WorldClim') gtext$cur_mod <- "guidance/gtext_comp3_worldclim.Rmd"
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
       # plot pts
@@ -322,7 +325,7 @@ shinyServer(function(input, output, session) {
   # guidance text
   observe({
     if (input$tabs == 4) {
-      if (input$envProcSel == 'backg') gtext$cur_mod <- "www/tab4_backg.Rmd"
+      if (input$envProcSel == 'backg') gtext$cur_mod <- "guidance/tab4_backg.Rmd"
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
       # plot pts
@@ -374,8 +377,8 @@ shinyServer(function(input, output, session) {
   # guidance text
   observe({
     if (input$tabs == 5) {
-      if (input$partSel == 'nsp') gtext$cur_mod <- "www/tab5_nsp.Rmd"
-      if (input$partSel == 'sp') gtext$cur_mod <- "www/tab5_sp.Rmd"
+      if (input$partSel == 'nsp') gtext$cur_mod <- "guidance/tab5_nsp.Rmd"
+      if (input$partSel == 'sp') gtext$cur_mod <- "guidance/tab5_sp.Rmd"
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
       # plot pts
@@ -434,8 +437,8 @@ shinyServer(function(input, output, session) {
   # guidance text
   observe({
     if (input$tabs == 6) {
-      if (input$enmSel == 'BIOCLIM') gtext$cur_mod <- "www/tab6_bc.Rmd"
-      if (input$enmSel == 'Maxent') gtext$cur_mod <- "www/tab6_maxent.Rmd"
+      if (input$enmSel == 'BIOCLIM') gtext$cur_mod <- "guidance/tab6_bc.Rmd"
+      if (input$enmSel == 'Maxent') gtext$cur_mod <- "guidance/tab6_maxent.Rmd"
       # plots pts
       if (!is.null(values$df)) proxy %>% map_plotLocs(values$df)
       proxy %>% clearControls() %>% clearShapes()
@@ -485,14 +488,14 @@ shinyServer(function(input, output, session) {
   observe({
     if (input$tabs == 7) {
       if (input$visSel == 'map') {
-        gtext$cur_mod <- "www/tab7_map.Rmd"
+        gtext$cur_mod <- "guidance/tab7_map.Rmd"
         updateTabsetPanel(session, 'main', selected = 'Map')
       } else {
         updateTabsetPanel(session, 'main', selected = 'Results')
       }
-      if (input$visSel == 'response') gtext$cur_mod <- "www/tab7_respCurves.Rmd"
-      if (input$visSel == 'bcEnvel') gtext$cur_mod <- "www/tab7_bcPlots.Rmd"
-      if (input$visSel == 'mxEval') gtext$cur_mod <- "www/tab7_mxEvalPlots.Rmd"
+      if (input$visSel == 'response') gtext$cur_mod <- "guidance/tab7_respCurves.Rmd"
+      if (input$visSel == 'bcEnvel') gtext$cur_mod <- "guidance/tab7_bcPlots.Rmd"
+      if (input$visSel == 'mxEval') gtext$cur_mod <- "guidance/tab7_mxEvalPlots.Rmd"
       # plot pts
       if (!is.null(values$df)) proxy %>% map_plotLocs(values$df, clearImages=FALSE)
       proxy %>% clearControls() %>% clearShapes()
@@ -615,9 +618,9 @@ shinyServer(function(input, output, session) {
   # guidance text
   observe({
     if (input$tabs == 8) {
-      if (input$projSel == 'pjArea') gtext$cur_mod <- "www/tab8_pjarea.Rmd"
-      # if (input$projSel == 'pjTime') gtext$cur_mod <- "www/tab8_pjtime.Rmd"
-      if (input$projSel == 'mess') gtext$cur_mod <- "www/tab8_mess.Rmd"
+      if (input$projSel == 'pjArea') gtext$cur_mod <- "guidance/tab8_pjarea.Rmd"
+      # if (input$projSel == 'pjTime') gtext$cur_mod <- "guidance/tab8_pjtime.Rmd"
+      if (input$projSel == 'mess') gtext$cur_mod <- "guidance/tab8_mess.Rmd"
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
       # plot pts
