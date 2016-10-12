@@ -459,7 +459,7 @@ column(8,
        br(),
        conditionalPanel("input.tabs != 'rmd' & input.tabs != 0",
                         tabsetPanel(id = 'main',
-                          tabPanel('Map', leafletOutput("map", height=500)),
+                          tabPanel('Map', leafletOutput("map", height=600)),
                           tabPanel('Occs Tbl', DT::dataTableOutput('occTbl')),
                           tabPanel('Results', conditionalPanel("input.tabs == 6", dataTableOutput('evalTbl')),
                                    conditionalPanel("input.tabs == 7 && input.visSel == 'response'", 
@@ -468,7 +468,8 @@ column(8,
                                                     imageOutput('bcEnvelPlot')),
                                    conditionalPanel("input.tabs == 7 && input.visSel == 'mxEval'  && input.enmSel == 'Maxent'", 
                                                     imageOutput('mxEvalPlot'))),
-                          tabPanel('Guidance', uiOutput('gtextOut'))
+                          tabPanel('Component Guidance', uiOutput('gtext_comp')),
+                          tabPanel('Module Guidance', uiOutput('gtext_mod'))
                         )
        ),
        conditionalPanel("input.tabs == 'rmd'",
