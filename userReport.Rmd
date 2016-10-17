@@ -37,6 +37,7 @@ source(file.path("{{curWD}}", 'functions.R'))
 ```{r, echo = FALSE, include = FALSE}
 occ <- input$spName != ""
 csv <- !is.null(input$userCSV)
+occ.csv <- occ | csv
 remLoc <- !is.null(values$removedAll)
 drawPoly <- !is.null(values$ptSeln)
 thin <- input$goThin != 0
@@ -56,14 +57,10 @@ isBC <- if (!is.null(values$evalMods)) input$enmSel == 'BIOCLIM' else FALSE
 isMX <- if (!is.null(values$evalMods)) input$enmSel == 'Maxent' else FALSE
 ```
 
-Record of analysis for *`r makeCap(values$spname)`*.
+Record of analysis for *`r values$spName`*.
 
-```{asis, echo = occ, include = occ}
+```{asis, echo = occ.csv, include = occ.csv}
 ### Obtain Occurrence Data
-```
-
-```{r occs}
-occs <- NULL  # make empty occs to fill when db or user input are called
 ```
 
 ```{asis, echo = occ, include = occ}
@@ -75,18 +72,15 @@ results <- occ_search(scientificName = "{{spName}}", limit = {{occurrences}}, ha
 ```
 
 ```{asis, echo = occ, include = occ}
-Check if all the needed columns were returned in the spocc call, and if some are missing, add them to results$data.
+Check if all the needed columns were returned in the `spocc` call, and if some are missing, add them to `results$data`.
 ```
 
 ```{r occTblEdits, echo = occ, eval = occ, include = occ}
-cols <- c('name','decimalLongitude','decimalLatitude',
-                'institutionCode','country', 'stateProvince',
+cols <- c('name','decimalLongitude','decimalLatitude', 'institutionCode','country', 'stateProvince',
                 'locality', 'elevation', 'basisOfRecord')
 results <- fixcols(cols, results)
-locs.in <- results$data[!is.na(results$data[,3]),][,cols]  # if latitude is NA, remove the row
-locs.in <- remDups(locs.in)  # remove rows with duplicate coordinates
-occs <- rbind(occs, locs.in)  # add these locs to occs
-names(occs)[1:3] <- c('species','longitude', 'latitude')  # rename these rows
+locs.in <- results$data[!is.na(results$data[, 'latitude']),][,cols]  # if latitude is NA, remove the row
+occs <- remDups(locs.in)  # remove rows with duplicate coordinates
 occs$origID <- row.names(occs)  # create an ID column
 ```
 
@@ -99,13 +93,7 @@ inFile <- read.csv("{{occsCSV}}", header = TRUE)  # load occurrence data
 ```
 
 ```{r clean, echo = csv, eval = csv}
-spname <- inFile[1,1]  # get species name
-inFile.occs <- inFile[inFile[,1] == spname,]  # limit to records with this name
-for (col in c("institutionCode", "country", "stateProvince", "locality", "elevation", "basisOfRecord")) {  # add all cols to match occs if not already there
-  if (!(col %in% names(inFile.occs))) inFile.occs[,col] <- NA
-}
-inFile.occs$origID <- row.names(inFile.occs)  # add col for IDs
-occs <- rbind(occs, inFile.occs)  # add the CSV points to existing occs
+inFile$origID <- row.names(inFile.occs)  # add col for IDs
 occs <- remDups(occs)  # remove duplicate records
 ```
 

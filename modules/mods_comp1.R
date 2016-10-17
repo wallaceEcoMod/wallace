@@ -4,6 +4,8 @@ getDbOccs <- function(spName, occNum) {
 
     writeLog(paste("... Searching", input$occDb, "..."))
     query <- occ(input$spName, input$occDb, limit=input$occNum, has_coords=TRUE)
+    # record spName in values
+    values$spname <- input$spName
     # dbOccsList <- list()
     # for (db in input$occDb) {
     dbOccs <- query[[input$occDb]]$data[[formatSpName(input$spName)]]
@@ -94,100 +96,79 @@ getDbOccs <- function(spName, occNum) {
     # MAPPING
     proxy %>% zoom2Occs(values$df) %>% map_plotLocs(values$df)
 }
-#   
-#   # query database based on user input, remove duplicate records
-#   writeLog(paste("... Searching", input$occDb, "..."))
-#   values$spname <- spName  # record species name
-#   results <- occ_search(scientificName = spName, limit = occNum, hasCoordinate = TRUE)
-#   
-#   # Control species not found
-#   if (results$meta$count == 0) {
-#     writeLog(paste('* No records found for ', spName, ". Please check the spelling."))
-#   }
-#   
-#   if (results$meta$count != 0) {
-#     cols <- c('name','decimalLongitude','decimalLatitude',
-#               'institutionCode','country', 'stateProvince',
-#               'locality', 'elevation', 'basisOfRecord')
-#     results <- fixcols(cols, results)
-#     locs.in <- results$data[!is.na(results$data[,3]),]
-#     locs <- as.data.frame(remDups(locs.in))
-#     values$gbifOrig <- locs
-#     locs <- locs[,cols]  # limit to above columns
+
+getUserOccs <- function(userCSV) {
+  if (is.null(userCSV)) return()
+  validate(need(userCSV, message = FALSE))
+  csv <- read.csv(userCSV$datapath)
+  if (!all(c('species', 'longitude', 'latitude') %in% names(csv))) {
+    isolate({writeLog('* ERROR: Please input CSV file with columns "species", "longitude", "latitude".')})
+  }
+  isolate({writeLog(paste("* User-specified CSV file", userCSV$name, "was uploaded."))})
+  # subset to only occs, not backg, and just fields that match df
+  spName <- as.character(csv$species[1])  # get species name
+  userOccs <- csv[csv[,1] == spName,]  # limit to records with this name
+  # for (col in c("institutionCode", "country", "stateProvince", 
+  #               "locality", "elevation", "basisOfRecord")) {  # add all cols to match origOccs if not already there
+  #   if (!(col %in% names(userOccs))) userOccs[,col] <- NA
+  # }
+  
+  userOccs$origID <- row.names(userOccs)  # add col for IDs
+  userOccs$pop <- unlist(apply(userOccs, 1, popUpContent))  # add col for map marker popup text
+  values$df <- userOccs
+  values$origOccs <- userOccs
+  
+  # MAPPING
+  proxy %>% zoom2Occs(values$df) %>% map_plotLocs(values$df)
+  
+  isolate({writeLog("* User-specified CSV input.")}) 
+}
 # 
-#     names(locs)[1:3] <- c('species','longitude', 'latitude')    
-#     locs$origID <- row.names(locs)
-#     locs$pop <- unlist(apply(locs, 1, popUpContent))
-#     # add locs to values list and copy
-#     values$origOccs <- locs
-#     values$df <- rbind(values$df, values$origOccs)
-#     
-#     inName <- isolate(spName)
-#     nameSplit <- length(unlist(strsplit(inName, " ")))
-#     
-#     if (nameSplit == 1 && !is.null(locs)) {
-#       x <- paste("* Please input both genus and species names. More than one species with this genus was found.")
-#     } else {if (nameSplit == 1 && is.null(locs)) {
-#       x <- paste("* Please input both genus and species names.")
-#     } else {if (nameSplit != 1 && is.null(locs)) {
-#       x <- paste0('* No records found for ', inName, ". Please check the spelling.")
-#     } else {if (nameSplit != 1 && !is.null(locs)) {
-#       x <- paste('* Total GBIF records for', values$origOccs[1,1], 'returned [', nrow(locs.in),
-#                  '] out of [', results$meta$count, '] total (limit ', occNum, '). 
-#                    Duplicated records removed [', nrow(locs.in) - nrow(locs), "]: Remaining records [", nrow(locs), "].")
-#     }}}}
-#     writeLog(x)
+# 
+#   inFile <- try(read.csv(csvPath, header = TRUE), silent=TRUE)  # read user csv
+#   if (class(inFile) == "try-error") {
+#     isolate(writeLog('* ERROR: The file could not be loaded (check the file requirements)'))
+#     return()
+#     }
+#   if (!all(c('species', 'longitude', 'latitude') %in% names(inFile))) {
+#     isolate(writeLog('* ERROR: Please input CSV file with columns "species", "longitude", "latitude".'))
+#     return()
 #   }
+#   values$inFile <- inFile  # store original table in values list
 #   
+#   #     # IN DEV: make dynamic field selections for ui user-defined kfold groups
+#   #     output$occgrpSel <- renderUI({
+#   #       selectInput('occgrp', 'Occurrence Group Field', names(inFile))
+#   #     })
+#   #     output$bggrpSel <- renderUI({
+#   #       selectInput('bggrp', 'Background Group Field', names(inFile))
+#   #     })
+#   
+#   # subset to only occs, not backg, and just fields that match df
+#   values$spname <- as.character(inFile$species[1])  # get species name
+#   inFile.occs <- inFile[inFile[,1] == values$spname,]  # limit to records with this name
+#   # for (col in c("institutionCode", "country", "stateProvince", 
+#   #               "locality", "elevation", "basisOfRecord")) {  # add all cols to match origOccs if not already there
+#   #   if (!(col %in% names(inFile.occs))) inFile.occs[,col] <- NA
+#   # }
+#   
+#   inFile.occs$origID <- row.names(inFile.occs)  # add col for IDs
+#   inFile.occs$pop <- unlist(apply(inFile.occs, 1, popUpContent))  # add col for map marker popup text
+#   
+#   # add user locs to existing origOccs and df, and remove duplicate records
+#   isolate({
+#     values$origOccs <- rbind(values$origOccs, inFile.occs)
+#     values$origOccs <- remDups(values$origOccs)
+#   })
+#   isolate({
+#     values$df <- rbind(values$df, inFile.occs)
+#     values$df <- remDups(values$df)
+#   })
+#   isolate(writeLog("* User-specified CSV input."))
+#   # this makes an infinite loop. not sure why...
+#   #     x <- paste0("User input ", input$userCSV$name, " with [", nrow(values$df), "[ records.")
+#   #     values$log <- paste(values$log, x, sep='<br>')
+# 
 #   # MAPPING
 #   proxy %>% zoom2Occs(values$df) %>% map_plotLocs(values$df)
 # }
-
-getUserOccs <- function(csvPath) {
-  inFile <- try(read.csv(csvPath, header = TRUE), silent=TRUE)  # read user csv
-  if (class(inFile) == "try-error") {
-    isolate(writeLog('* ERROR: The file could not be loaded (check the file requirements)'))
-    return()
-    }
-  if (!all(c('species', 'longitude', 'latitude') %in% names(inFile))) {
-    isolate(writeLog('* ERROR: Please input CSV file with columns "species", "longitude", "latitude".'))
-    return()
-  }
-  values$inFile <- inFile  # store original table in values list
-  
-  #     # IN DEV: make dynamic field selections for ui user-defined kfold groups
-  #     output$occgrpSel <- renderUI({
-  #       selectInput('occgrp', 'Occurrence Group Field', names(inFile))
-  #     })
-  #     output$bggrpSel <- renderUI({
-  #       selectInput('bggrp', 'Background Group Field', names(inFile))
-  #     })
-  
-  # subset to only occs, not backg, and just fields that match df
-  values$spname <- as.character(inFile$species[1])  # get species name
-  inFile.occs <- inFile[inFile[,1] == values$spname,]  # limit to records with this name
-  for (col in c("institutionCode", "country", "stateProvince", 
-                "locality", "elevation", "basisOfRecord")) {  # add all cols to match origOccs if not already there
-    if (!(col %in% names(inFile.occs))) inFile.occs[,col] <- NA
-  }
-  
-  inFile.occs$origID <- row.names(inFile.occs)  # add col for IDs
-  inFile.occs$pop <- unlist(apply(inFile.occs, 1, popUpContent))  # add col for map marker popup text
-  
-  # add user locs to existing origOccs and df, and remove duplicate records
-  isolate({
-    values$origOccs <- rbind(values$origOccs, inFile.occs)
-    values$origOccs <- remDups(values$origOccs)
-  })
-  isolate({
-    values$df <- rbind(values$df, inFile.occs)
-    values$df <- remDups(values$df)
-  })
-  isolate(writeLog("* User-specified CSV input."))
-  # this makes an infinite loop. not sure why...
-  #     x <- paste0("User input ", input$userCSV$name, " with [", nrow(values$df), "[ records.")
-  #     values$log <- paste(values$log, x, sep='<br>')
-
-  # MAPPING
-  proxy %>% zoom2Occs(values$df) %>% map_plotLocs(values$df)
-}

@@ -142,7 +142,7 @@ shinyServer(function(input, output, session) {
   # module userOccs
   observe({
     if (is.null(input$userCSV)) return()  # exit if userCSV not specifed
-    isolate({getUserOccs(input$userCSV$datapath)})
+    isolate({getUserOccs(input$userCSV)})
   })
 
   # render the GBIF records data table
