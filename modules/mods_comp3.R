@@ -16,6 +16,11 @@ comp3_bioclim <- function(bcRes) {
   withProgress(message = "Processing...", {
     locs.vals <- extract(values$preds[[1]], values$df[,2:3])
     
+    if (sum(is.na(locs.vals)) == nrow(locs.vals)) {
+      isolate(writeLog(paste0("* All records removed -- all occurrences may be marine -- please redo with more occurrences on land.")))
+      return()
+    }
+    
     if (sum(is.na(locs.vals)) > 0) {
       isolate(writeLog(paste0("* Removed records without environmental values with IDs: ",
                               paste(row.names(values$df[is.na(locs.vals),]), collapse=', '), ".")))
