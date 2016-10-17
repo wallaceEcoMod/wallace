@@ -1,0 +1,8 @@
+---
+title: "comp1"
+output: html_document
+---
+**ORIENTATION**  
+<p align="justify">
+The first step to a niche/distributional modeling analysis is acquiring species occurrence records. 
+</p>
