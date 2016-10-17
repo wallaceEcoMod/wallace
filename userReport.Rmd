@@ -11,9 +11,9 @@ knit_engines$set(asis = function(options) {
 knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 ```
 
-This is an R Markdown document (for more information see <http://rmarkdown.rstudio.com>). Here all R code history from the Wallace session is recorded and annotated. With this document, users can track the analyses completed in their session and reproduce them by running this file in RStudio.
+Please find below the R code history from your *Wallace* session. You can reproduce your session results by running the .Rmd file in RStudio (for more information see <http://rmarkdown.rstudio.com>).
 
-###Package installation
+### Package installation
 
 Wallace uses the following R packages that must be installed and loaded before starting.
 ```{r}
@@ -28,7 +28,7 @@ library(maps)
 library(ENMeval)
 ```
 
-Wallace also includes several functions developed to help integrate different packages and some additional functionality. For this reason, it is necessary to load the file 'functions.R', which can be found on Wallace's GitHub page (https://github.com/ndimhypervol/wallace). Download the file, place it in your working directory (use `getwd()`), and then load it:
+Wallace also includes several functions developed to help integrate different packages and some additional functionality. For this reason, it is necessary to load the file 'functions.R', which can be found on Wallace's GitHub page (https://github.com/wallaceEcoMod/wallace). Download the file, place it in your working directory (find this with `getwd()`), and then load it:
 ```{r loadFunctions}
 source(file.path("{{curWD}}", 'functions.R'))
 ```
@@ -56,7 +56,7 @@ isBC <- if (!is.null(values$evalMods)) input$enmSel == 'BIOCLIM' else FALSE
 isMX <- if (!is.null(values$evalMods)) input$enmSel == 'Maxent' else FALSE
 ```
 
-Record of analysis for *`r values$spName`*.
+## Record of analysis for *`r values$spName`*.
 
 ```{asis, echo = occ.csv, include = occ.csv}
 ### Obtain Occurrence Data
@@ -124,7 +124,7 @@ occs <- occs[as.numeric(rownames(maxThin)),]  # subset occs to match only thinne
 
 ```{asis, echo = yesPreds, eval = yesPreds, include = yesPreds}
 ### Obtain Environmental Data
-Using WorldClim (http://www.worldclim.org/) bioclim dataset at resolution of `r {{predsRes}}` arcmin.
+Using WorldClim (http://www.worldclim.org/) bioclimatic dataset at resolution of `r {{predsRes}}` arcmin.
 ```
 
 ```{r getPreds, eval = yesPreds, echo = yesPreds, include = yesPreds}
