@@ -6,6 +6,8 @@ getDbOccs <- function(spName, occNum) {
     query <- occ(input$spName, input$occDb, limit=input$occNum, has_coords=TRUE)
     # record spName in values
     values$spname <- input$spName
+    # create tag to signal db search
+    values$mod_db <- TRUE
     # dbOccsList <- list()
     # for (db in input$occDb) {
     dbOccs <- query[[input$occDb]]$data[[formatSpName(input$spName)]]
@@ -107,6 +109,8 @@ getUserOccs <- function(userCSV) {
   isolate({writeLog(paste("* User-specified CSV file", userCSV$name, "was uploaded."))})
   # subset to only occs, not backg, and just fields that match df
   spName <- as.character(csv$species[1])  # get species name
+  # record species name
+  values$spName <- spName
   userOccs <- csv[csv[,1] == spName,]  # limit to records with this name
   # for (col in c("institutionCode", "country", "stateProvince", 
   #               "locality", "elevation", "basisOfRecord")) {  # add all cols to match origOccs if not already there

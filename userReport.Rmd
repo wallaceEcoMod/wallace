@@ -1,7 +1,6 @@
 ---
 title: Wallace Session `r Sys.Date()`
 output: html_document
-author: "Jamie M. Kass"
 ---
 
 ```{r setup, include=FALSE}
@@ -35,11 +34,11 @@ source(file.path("{{curWD}}", 'functions.R'))
 ```
 
 ```{r, echo = FALSE, include = FALSE}
-occ <- input$spName != ""
+occ <- values$mod_db
 csv <- !is.null(input$userCSV)
 occ.csv <- occ | csv
 remLoc <- !is.null(values$removedAll)
-drawPoly <- !is.null(values$ptSeln)
+drawPoly <- !is.null(values$ptSel)
 thin <- input$goThin != 0
 yesPreds <- input$bcRes != ""
 backg <- !is.null(values$backgExt)
@@ -64,24 +63,12 @@ Record of analysis for *`r values$spName`*.
 ```
 
 ```{asis, echo = occ, include = occ}
-The search for occurrences was limited to `r {{occurrences}}` records. Obtain occurrence records of the selected species from the database:
+The search for occurrences was limited to `r {{occNum}}` records. Obtain occurrence records of the selected species from the database:
 ```
 
 ```{r occSearch, eval = occ, echo = occ, include = occ}
-results <- occ_search(scientificName = "{{spName}}", limit = {{occurrences}}, hasCoordinate = TRUE)
-```
-
-```{asis, echo = occ, include = occ}
-Check if all the needed columns were returned in the `spocc` call, and if some are missing, add them to `results$data`.
-```
-
-```{r occTblEdits, echo = occ, eval = occ, include = occ}
-cols <- c('name','decimalLongitude','decimalLatitude', 'institutionCode','country', 'stateProvince',
-                'locality', 'elevation', 'basisOfRecord')
-results <- fixcols(cols, results)
-locs.in <- results$data[!is.na(results$data[, 'latitude']),][,cols]  # if latitude is NA, remove the row
-occs <- remDups(locs.in)  # remove rows with duplicate coordinates
-occs$origID <- row.names(occs)  # create an ID column
+results <- occ(query = "{{spName}}", from = "{{dbName}}", limit = {{occNum}}, has_coords = TRUE)
+occs <- remDups(results$data)  # remove rows with duplicate coordinates
 ```
 
 ```{asis, echo = csv}
@@ -90,13 +77,8 @@ User CSV path with occurrence data (change to the path of the file in your compu
 
 ```{r input, echo = csv, eval = csv}
 inFile <- read.csv("{{occsCSV}}", header = TRUE)  # load occurrence data
+occs <- remDups(inFile)  # remove duplicate records
 ```
-
-```{r clean, echo = csv, eval = csv}
-inFile$origID <- row.names(inFile.occs)  # add col for IDs
-occs <- remDups(occs)  # remove duplicate records
-```
-
 
 ```{asis, echo = thin | remLoc | drawPoly, include = drawPoly}
 ### Process Occurrence Data
@@ -113,7 +95,7 @@ occs <- occs[-remo, ]  # remove the selected rows
 ```
 
 ```{asis, echo = drawPoly, eval = drawPoly, include = drawPoly}
-You drew a polygon. It was stunning, a real work of modern art. Have you thought of a career change? You selected `r length({{occsSel}})` of `r nrow(occs)` total occurrence localities.
+You chose `r length({{occsSel}})` of `r nrow(occs)` total occurrence localities via polygon selection to keep in the analysis.
 ```
 
 ```{r, echo = drawPoly, eval = drawPoly, include = drawPoly}
