@@ -2,9 +2,8 @@ source("functions.R")
 
 remSelLocs <- function(remLoc) {
   isolate({
-    numTest <- remLoc %in% row.names(values$df)
-    rows <- as.numeric(rownames(values$df))  # get row names
-    remo <- which(remLoc == rows)  # find which row name corresponds to user selection for removal
+    numTest <- remLoc %in% values$df$origID
+    remo <- which(remLoc == values$df$origID)  # find which row name corresponds to user selection for removal
     # Remove the offending row
     if (length(remo) > 0) {
       values$removed <- values$df[remo, ]
@@ -36,8 +35,8 @@ polySelLocs <- function() {
     values$poly1 <- spRbind(values$poly1, newPoly)
   }
 
-  values$ptSeln <- as.numeric(which(!(is.na(over(pts, values$poly1)))))  # select pts overlapping (intersecting) with polygon(s)
-  if (length(values$ptSeln) == 0) {
+  ptSelIndex <- as.numeric(which(!(is.na(over(pts, values$poly1)))))  # select pts overlapping (intersecting) with polygon(s)
+  if (length(ptSelIndex) == 0) {
     values$poly1 <- NULL
     values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
     values$polyPts1 <- NULL
@@ -46,7 +45,9 @@ polySelLocs <- function() {
   }
 
   # Subset with selected locs
-  ptsSel <- values$origOccs[values$ptSeln, ]
+  ptsSel <- values$origOccs[ptSelIndex, ]
+  # Record ID of selected points
+  values$ptSel <- ptsSel$origID
   proxy %>% map_plotLocs(ptsSel, fillColor='yellow', fillOpacity=1, clearShapes=FALSE, clearMarkers=FALSE)
   values$df <- ptsSel
 

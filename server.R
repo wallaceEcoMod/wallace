@@ -38,7 +38,7 @@ source("functions.R")
 # make list to carry data used by multiple reactive functions
 brk <- paste(rep('------', 14), collapse='')
 logInit <- c(paste('***WELCOME TO WALLACE***', brk, 'Please find messages for the user in this log window.', brk, sep='<br>'))
-values <- reactiveValues(polyID=0, polyErase=FALSE, log=logInit)
+values <- reactiveValues(polyID=0, polyErase=FALSE, log=logInit, mod_db=FALSE)
 gtext <- reactiveValues()
 
 # add text to log
@@ -750,8 +750,8 @@ shinyServer(function(input, output, session) {
       on.exit(setwd(owd))
       file.copy(src, 'userReport.Rmd')
       csvDataPathFix <- gsub('\\\\', '/', input$userCSV$datapath)
-      exp <- knit_expand('userReport.Rmd', curWD=curWD, spName=input$spName, occurrences=input$occNum, thinDist=input$thinDist,
-                         occsCSV=csvDataPathFix, occsRemoved=printVecAsis(values$removedAll), occsSel=printVecAsis(values$ptSeln),
+      exp <- knit_expand('userReport.Rmd', curWD=curWD, spName=input$spName, dbName=input$occDb, occNum=input$occNum, thinDist=input$thinDist,
+                         occsCSV=csvDataPathFix, occsRemoved=printVecAsis(values$removedAll), occsSel=printVecAsis(values$ptSel),
                          predsRes=input$bcRes, bcLat=input$bcLat, bcLon=input$bcLon, backgSel=input$backgSel, backgBuf=input$backgBuf, userBGname=input$userBackg$name,
                          userBGpath=input$userBackg$datapath, partSel=values$partSel2, aggFact=input$aggFact, kfoldsSel=input$kfolds,
                          enmSel=input$enmSel, rmsSel1=input$rms[1], rmsSel2=input$rms[2], rmsBy=input$rmsBy, fcsSel=printVecAsis(input$fcs))
