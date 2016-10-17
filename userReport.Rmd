@@ -12,13 +12,11 @@ knit_engines$set(asis = function(options) {
 knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 ```
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
 This is an R Markdown document (for more information see <http://rmarkdown.rstudio.com>). Here all R code history from the Wallace session is recorded and annotated. With this document, users can track the analyses completed in their session and reproduce them by running this file in RStudio.
 
 ###Package installation
 
-Wallace uses the following R packages that must be installed before starting. Once installed, load them:
+Wallace uses the following R packages that must be installed and loaded before starting.
 ```{r}
 library(devtools)
 library(spocc)
