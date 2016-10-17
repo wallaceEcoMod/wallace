@@ -2,7 +2,15 @@
 title: "comp1"
 output: html_document
 ---
-**ORIENTATION**  
-<p align="justify">
-The first step to a niche/distributional modeling analysis is acquiring species occurrence records. 
-</p>
+
+### **Component: Obtain Occurrence Records**
+
+**ORIENTATION**
+
+Niche/distributional modeling analyses require georefernced occurrence records for the species (e.g., with latitude/longitude). Component **Obtain Occurrence Records** concerns data on the *presence* of the species (i.e., not any information on its absence or non-detection; Anderson 2012; Peterson et al. 2011, Chapter 5). *Wallace* currently allows users either to: 1) harness occurrrence records from selected online biodiversity databases (Module ***Query Database***); or 2) upload their own datasets (Module ***User Occurrence***).
+
+**REFERENCES**
+
+Anderson, R. P. (2012), Harnessing the world's biodiversity data: promise and peril in ecological niche modeling of species distributions. *Annals of the New York Academy of Sciences*, 1260: 66–80.
+
+Peterson A.T., Soberón J., Pearson R.G., Anderson R.P., Martinez-Meyer E., Nakamura M., & Araújo M.B. (2011). Ecological niches and geographic distributions. Princeton, New Jersey: Monographs in Population Biology, 49. Princeton University Press.

@@ -3,11 +3,20 @@ title: "comp1_dbOccs"
 output: html_document
 ---
 
+### **Module:** ***Query Database*** 
 
 **BACKGROUND**  
 
-Over the past two decades, the worldwide biodiversity informatics community has achieved remarkable progress, with many millions of species occurrence records now available online through various databases, including a substantial subset of records with assigned georeferences (e.g., latitude/longitude coordinates). These data document the presence of a species at particular points in space and time, along with other useful metadata fields when available (e.g. data source, elevation, etc.). The origin of much of this data is digitized collections from natural history museums and herbaria, although newer data sources such as mobile technology leveraged by citizen science initiatives are growing contributors as well.
+Over the past two decades, the worldwide biodiversity informatics community has achieved remarkable progress, with many millions of species occurrence records now available online through various databases--including a substantial subset of records with assigned georeferences (e.g., latitude/longitude coordinates; Samy et al. 2013, Peterson et al. 2015). These data document the presence of a species at particular points in space and time, along with other useful metadata fields when available (e.g., institution, specimen/observation number, elevation, etc.). The origin of much of this information is digitized collections from natural history museums and herbaria, although newer data sources such as citizen-science initiatives are growing contributors as well (Sullivan et al. 2009).
 
 **IMPLEMENTATION** 
 
-The R package `spocc` provides *streamlined* access to many species occurrence databases, some of which aggregate data from myriad providers. Users can choose between three of the largest databases: <a href="http://www.gbif.org" target="_blank">GBIF</a>, <a href="http://www.vertnet.org" target="_blank">VertNet</a>, and <a href="https://bison.usgs.gov" target="_blank">BISON</a>. Records downloaded are restricted to those with georeferences, and records with duplicate coordinates are removed. This is because we are interested in independent occurrences, not indicators of abundance. The database query returns a data table that display several key fields, and users can download a .csv file of these records with all the original fields provided.
+The R package `spocc` provides *streamlined* access to many species occurrence databases, some of which aggregate data from myriad providers. In Module ***Query Database*** users can choose between three of the largest databases: <a href="http://www.gbif.org" target="_blank">GBIF</a>, <a href="http://www.vertnet.org" target="_blank">VertNet</a>, and <a href="https://bison.usgs.gov" target="_blank">BISON</a>. Note that currently the user must choose only one of these databases, and any later download overwrites previous ones. The resulting table includes several key fields: JAMIE LIST THEM. The records downloaded are restricted to those with georeferences. The table displays all such records (and allows their download), but records with exact duplicate coordinates are removed for visualizaion and use in downstream components of *Wallace*. Users can download a .csv file with all the original fields provided.
+
+**REFERENCES**
+
+Peterson, A. T., Soberón, J., & Krishtalka, L. (2015). A global perspective on decadal challenges and priorities in biodiversity informatics. *BMC Ecology*, 15(1), 15.
+
+Samy, G., Chavan, V., Ariño, A. H., Otegui, J., Hobern, D., Sood, R., & Robles, E. (2013). Content assessment of the primary biodiversity data published through GBIF network: status, challenges and potentials. *Biodiversity Informatics*, 8(2).
+
+Sullivan, B. L., Wood, C. L., Iliff, M. J., Bonney, R. E., Fink, D., & Kelling, S. (2009). eBird: A citizen-based bird observation network in the biological sciences. *Biological Conservation*, 142(10), 2282-2292.
