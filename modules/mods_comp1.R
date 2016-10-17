@@ -5,7 +5,7 @@ getDbOccs <- function(spName, occNum) {
     writeLog(paste("... Searching", input$occDb, "..."))
     query <- occ(input$spName, input$occDb, limit=input$occNum, has_coords=TRUE)
     # record spName in values
-    values$spname <- input$spName
+    values$spName <- input$spName
     # create tag to signal db search
     values$mod_db <- TRUE
     # dbOccsList <- list()

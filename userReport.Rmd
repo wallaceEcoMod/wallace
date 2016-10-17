@@ -68,7 +68,8 @@ The search for occurrences was limited to `r {{occNum}}` records. Obtain occurre
 
 ```{r occSearch, eval = occ, echo = occ, include = occ}
 results <- occ(query = "{{spName}}", from = "{{dbName}}", limit = {{occNum}}, has_coords = TRUE)
-occs <- remDups(results$data)  # remove rows with duplicate coordinates
+results.data <- results[["{{dbName}}"]]$data[[formatSpName("{{spName}}")]]
+occs <- remDups(results.data)  # remove rows with duplicate coordinates
 ```
 
 ```{asis, echo = csv}
@@ -128,7 +129,7 @@ Using WorldClim (http://www.worldclim.org/) bioclim dataset at resolution of `r 
 
 ```{r getPreds, eval = yesPreds, echo = yesPreds, include = yesPreds}
 preds <- getData(name = "worldclim", var = "bio", res = {{predsRes}}, lat = {{bcLat}}, lon = {{bcLon}})
-locs.vals <- extract(preds[[1]], occs[,2:3])  # extract environmental values at occ grid cells
+locs.vals <- extract(preds[[1]], occs[, c('longitude', 'latitude')])  # extract environmental values at occ grid cells
 occs <- occs[!is.na(locs.vals), ]  # remove occs without environmental values from inFile
 ```
 
