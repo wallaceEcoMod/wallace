@@ -1,5 +1,5 @@
 # check package dependencies, and download if necessary
-list.of.packages <- c("shiny", "spocc", "maps", "RColorBrewer", "rmarkdown", "shinyjs", "rgbif", "devtools",
+list.of.packages <- c("shiny", "spocc", "munsell", "maps", "RColorBrewer", "rmarkdown", "shinyjs", "rgbif", "devtools",
                       "spThin", "colorRamps", "dismo", "rgeos", "XML", "repmis", "Rcpp", "RCurl", "curl",
                       "maptools", "rgdal", "rJava", "devtools")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
