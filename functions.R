@@ -150,7 +150,7 @@ BioClim_eval <- function (occs, bg.pts, occ.grp, bg.grp, env) {
   rownames(stats) <- c("AUC.DIFF", "AUC.TEST","OR10","ORmin")
 
   # THIS FORMAT FOR RETURNED DATA ATTEMPTS TO MATCH WHAT HAPPENS IN WALLACE ALREADY FOR ENMEVAL.
-  return(list(models=full.mod, results=stats, predictions=stack(pred)))
+  return(list(models=list(full.mod), results=stats, predictions=stack(pred)))
 }
 
 # plot ENMeval stats based on user selection ("value")

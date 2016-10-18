@@ -30,6 +30,8 @@ comp8_pjArea <- function(modelSel, predForm, enmSel) {
   }
   writeLog('* PROJECTING to new area.')
   curMod <- values$evalMods[[as.numeric(modelSel)]]
+  print(modelSel)
+  print(as.numeric(modelSel))
   values$pjArea <- predict(curMod, values$projMsk)
   rasVals <- values$pjArea@data@values
   
