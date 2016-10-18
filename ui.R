@@ -129,7 +129,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                        
                                                       ),
                                                       HTML('<hr>'),
-                                                      downloadButton('dlProcOccCsv', "Download Processed Occurrence CSV"),
+                                                      downloadButton('dlProcOccCsv', "Download Processed Occs"),
                                                       conditionalPanel("input.procOccSel == 'spthin'",
                                                                        HTML('<hr>'),
                                                                        span("spThin", id = "rpkg"), "references", br(),

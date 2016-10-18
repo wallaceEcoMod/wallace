@@ -2,7 +2,13 @@
 title: "comp3"
 output: html_document
 ---
+
 **ORIENTATION**
-<p align="justify">
-Example Text.
-</p>
+
+When building a species niche model, the user must choose which variables to employ to associate with the localities. These variables are typically in the form of raster grids and often based on climate, topography, or land cover/use. For models aiming to characterize the species’ requirements and the areas suitable for it (and for transfer across space and time), these predictor variables should be plausible environmental determinants of the species’ range limits, or likely correlated with them (Austin 2002; Anderson 2013). 
+
+**REFERENCES**
+
+Anderson R.P. 2013. A framework for using niche models to estimate impacts of climate change on species distributions. *Annals of the New York Academy of Sciences*. 1297:8–28.
+
+Austin M.P. 2002. Spatial prediction of species distribution: an interface between ecological theory and statistical modelling. *Ecological Modelling*. 157:101–118.

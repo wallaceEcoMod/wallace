@@ -3,7 +3,7 @@ title: "comp1_dbOccs"
 output: html_document
 ---
 
-### **Module:** ***Query Database*** 
+### **Module:** ***Query Database***
 
 **BACKGROUND**  
 
