@@ -47,7 +47,7 @@ polySelLocs <- function() {
   # Subset with selected locs
   ptsSel <- values$origOccs[ptSelIndex, ]
   # Record ID of selected points
-  values$ptSel <- ptsSel$origID
+  values$ptSel <- as.numeric(ptsSel$origID)
   proxy %>% map_plotLocs(ptsSel, fillColor='yellow', fillOpacity=1, clearShapes=FALSE, clearMarkers=FALSE)
   values$df <- ptsSel
 
@@ -71,7 +71,7 @@ thinOccs <- function(thinDist) {
     return()
   }
   withProgress(message = "Spatially Thinning Localities...", {  # start progress bar
-    output <- thin(values$df, 'latitude', 'longitude', 'species', thin.par = thinDist,
+    output <- thin(values$df, 'latitude', 'longitude', 'name', thin.par = thinDist,
                    reps = 100, locs.thinned.list.return = TRUE, write.files = FALSE,
                    verbose = FALSE)
     values$prethinned <- values$df
