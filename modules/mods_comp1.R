@@ -16,7 +16,6 @@ getDbOccs <- function(spName, occNum) {
       return()
     }
     dbOccs <- as.data.frame(dbOccs)
-    names(dbOccs)[which(names(dbOccs) == 'name')] <- 'species'
     if (input$occDb == 'vertnet') {
       names(dbOccs)[which(names(dbOccs) == 'institutioncode')] <- 'institutionCode'
       names(dbOccs)[which(names(dbOccs) == 'stateprovince')] <- 'stateProvince'
@@ -24,7 +23,7 @@ getDbOccs <- function(spName, occNum) {
       names(dbOccs)[which(names(dbOccs) == 'maximumelevationinmeters')] <- 'elevation'
     }
     if (input$occDb == 'bison') {
-      names(dbOccs)[which(names(dbOccs) == 'scientificName')] <- 'species'
+      names(dbOccs)[which(names(dbOccs) == 'scientificName')] <- 'name'
       names(dbOccs)[which(names(dbOccs) == 'calculatedState')] <- 'stateProvince'
       names(dbOccs)[which(names(dbOccs) == 'verbatimElevation')] <- 'elevation'
     }
@@ -42,7 +41,7 @@ getDbOccs <- function(spName, occNum) {
       dbOccs$pop <- unlist(apply(dbOccs, 1, popUpContent))
       values$origOccs <- dbOccs
       # check to see if columns of interest are in dbOccs, and then subset
-      cols <- c("species", "longitude", "latitude","year", "institutionCode", "country", "stateProvince", 
+      cols <- c("name", "longitude", "latitude","year", "institutionCode", "country", "stateProvince", 
                 "locality", "elevation", "basisOfRecord")
       colsInDbOccs <- cols %in% names(dbOccs)
       cols <- cols[colsInDbOccs]
@@ -103,12 +102,12 @@ getUserOccs <- function(userCSV) {
   if (is.null(userCSV)) return()
   validate(need(userCSV, message = FALSE))
   csv <- read.csv(userCSV$datapath)
-  if (!all(c('species', 'longitude', 'latitude') %in% names(csv))) {
-    isolate({writeLog('* ERROR: Please input CSV file with columns "species", "longitude", "latitude".')})
+  if (!all(c('name', 'longitude', 'latitude') %in% names(csv))) {
+    isolate({writeLog('* ERROR: Please input CSV file with columns "name", "longitude", "latitude".')})
   }
   isolate({writeLog(paste("* User-specified CSV file", userCSV$name, "was uploaded."))})
   # subset to only occs, not backg, and just fields that match df
-  spName <- as.character(csv$species[1])  # get species name
+  spName <- as.character(csv$name[1])  # get species name
   # record species name
   values$spName <- spName
   userOccs <- csv[csv[,1] == spName,]  # limit to records with this name
