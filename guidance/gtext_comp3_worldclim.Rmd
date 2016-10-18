@@ -2,23 +2,17 @@
 title: "comp3_worldclim"
 output: html_document
 ---
+
+### **Module:** ***WorldClim***
+
 **BACKGROUND**
-<p align="justify">
-For modeling a species’ environmental requirements, the user must choose which predictor variables to use. These data are typically in the form of raster grids. For models aiming to characterize the species’ requirements and the areas suitable for it (and for transfer across space and time), predictor variables should be plausible environmental determinants of the species’ range limits, or likely correlated with them (Austin 2002; Anderson 2013). The WorldClim project provides bioclimatic variables for the Earth’s land surfaces for all continents except Antarctica. Monthly data from weather stations were spatially extrapolated using elevation as a covariate; then, 19 derived bioclimatic variables were generated, reflecting various apects of temperature and precipitation (Hijmans et al. 2005).  
-</p>
+
+The WorldClim project provides bioclimatic variables for the Earth’s land surfaces for all continents except Antarctica. Monthly data from weather stations were spatially extrapolated using elevation as a covariate and 19 bioclimatic variables were derived, reflecting various apects of temperature and precipitation (Hijmans et al. 2005). More details can be found at the WorldClim <a href="http://www.worldclim.org" target="_blank">website</a>.
 
 **IMPLEMENTATION**
-<p align="justify">
-The Module “WorldClim” relies on the dismo R package to download environmental variables from the WorldClim website. Currently, these variables are made available at 3 resolutions. The first time a user selects a particular resolution on a given server or local computer, Wallace downloads the 19 variables from www.worldclim.org; upon subsequent uses, it uses the files previously archived. Future versions could include alternative sets of environmental variables. Addition of variables for marine environments or past time periods (for analyses with fossil occurrence records) would be especially useful.  
-</p>
 
-<p align="justify">
-<div style="font-size:9pt;font-weight:bold">References</div><p>
-<div style="font-size:9pt;font-style:italic">
-Anderson R.P. 2013. A framework for using niche models to estimate impacts of climate change on species distributions. Annals of the New York Academy of Sciences. 1297:8–28.<p><br>
+The Module “WorldClim” relies on the R package `dismo` to download bioclimatic variables from the WorldClim server. *Wallace* makes all four resolutions of the data available (10 arcmin, 5 arcmin, 2.5 arcmin, and 30 arcsec). When running *Wallace* locally, the dataset is downloaded which might take some time, but upon subsequent uses *Wallace* will simply use the files previously downloaded.
 
-Austin M.P. 2002. Spatial prediction of species distribution: an interface between ecological theory and statistical modelling. Ecological Modelling. 157:101–118.<p>
+**REFERENCES**
 
-Hijmans, R. J., Cameron, S. E., Parra, J. L., Jones, P. G., & Jarvis, A. 2005. Very high resolution interpolated climate surfaces for global land areas. International Journal of Climatology. 25:1965-1978.<p>
-
-</div>
+Hijmans, R. J., Cameron, S. E., Parra, J. L., Jones, P. G., & Jarvis, A. 2005. Very high resolution interpolated climate surfaces for global land areas. *International Journal of Climatology*. 25:1965-1978.
