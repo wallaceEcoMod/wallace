@@ -750,11 +750,15 @@ shinyServer(function(input, output, session) {
       on.exit(setwd(owd))
       file.copy(src, 'userReport.Rmd')
       csvDataPathFix <- gsub('\\\\', '/', input$userCSV$datapath)
+      projAreaX <- round(values$polyPts2[,1], digits=4)
+      projAreaY <- round(values$polyPts2[,2], digits=4)
+      modSel <- as.numeric(input$modelSel3)
       exp <- knit_expand('userReport.Rmd', curWD=curWD, spName=input$spName, dbName=input$occDb, occNum=input$occNum, thinDist=input$thinDist,
                          occsCSV=csvDataPathFix, occsRemoved=printVecAsis(values$removedAll), occsSel=printVecAsis(values$ptSel),
                          predsRes=input$bcRes, bcLat=input$bcLat, bcLon=input$bcLon, backgSel=input$backgSel, backgBuf=input$backgBuf, userBGname=input$userBackg$name,
                          userBGpath=input$userBackg$datapath, partSel=values$partSel2, aggFact=input$aggFact, kfoldsSel=input$kfolds,
-                         enmSel=input$enmSel, rmsSel1=input$rms[1], rmsSel2=input$rms[2], rmsBy=input$rmsBy, fcsSel=printVecAsis(input$fcs))
+                         enmSel=input$enmSel, rmsSel1=input$rms[1], rmsSel2=input$rms[2], rmsBy=input$rmsBy, fcsSel=printVecAsis(input$fcs),
+                         projAreaX=printVecAsis(projAreaX), projAreaY=printVecAsis(projAreaY), modSel=modSel)
       writeLines(exp, 'userReport2.Rmd')
 
       if (input$mdType == 'Rmd') {

@@ -3,7 +3,7 @@ comp6_bioclimMod <- function() {
                     values$modParams$occ.grp, values$modParams$bg.grp,
                     values$predsMsk)
   values$evalTbl <- e$results
-  values$evalMods <- list(e$models)
+  values$evalMods <- e$models
   names(e$predictions) <- "Classic_BIOCLIM"
   values$evalPreds <- e$predictions
   occVals <- extract(e$predictions, values$modParams$occ.pts)

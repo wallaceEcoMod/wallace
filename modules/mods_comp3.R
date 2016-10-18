@@ -14,10 +14,11 @@ comp3_bioclim <- function(bcRes) {
   #                     opacity = 1, layerId = 2)
   isolate(writeLog(paste("* Environmental predictors: WorldClim bio1-19 at", bcRes, " arcmin resolution.")))
   withProgress(message = "Processing...", {
-    locs.vals <- extract(values$preds[[1]], values$df[,2:3])
+    locs.vals <- extract(values$preds[[1]], values$df[, c('longitude', 'latitude')])
+    print(locs.vals)
     
-    if (sum(is.na(locs.vals)) == nrow(locs.vals)) {
-      isolate(writeLog(paste0("* All records removed -- all occurrences may be marine -- please redo with more occurrences on land.")))
+    if (sum(is.na(locs.vals)) == length(locs.vals)) {
+      writeLog(paste0("* All records removed -- all occurrences may be marine -- please redo with more occurrences on land."))
       return()
     }
     
