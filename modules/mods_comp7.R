@@ -1,12 +1,12 @@
-comp7_mapPred <- function(modelSel1, predForm, predThresh, proxy) {
+comp7_mapPred <- function(modelSelPlotStudyExt, predForm, predThresh, proxy) {
   if (is.null(values$evalPreds)) {
     writeLog("! Please run a model before plotting predictions.")
     return()
   }
     
   proxy %>% removeImage('r1')  # remove current raster
-  selRasRaw <- values$evalPreds[[as.numeric(modelSel1)]]
-  selRasLog <- values$evalPredsLog[[as.numeric(modelSel1)]]
+  selRasRaw <- values$evalPreds[[as.numeric(modelSelPlotStudyExt)]]
+  selRasLog <- values$evalPredsLog[[as.numeric(modelSelPlotStudyExt)]]
   if (predForm == 'raw' | is.null(selRasLog)) {
     selRas <- selRasRaw
     rasVals <- selRas@data@values
@@ -17,10 +17,10 @@ comp7_mapPred <- function(modelSel1, predForm, predThresh, proxy) {
   rasVals <- rasVals[!is.na(rasVals)]
   
   if (predThresh == 'mtp') {
-    mtp <- values$mtps[as.numeric(modelSel1)]
+    mtp <- values$mtps[as.numeric(modelSelPlotStudyExt)]
     values$predCur <- selRasRaw > mtp
   } else if (predThresh == 'p10') {
-    p10 <- values$p10s[as.numeric(modelSel1)]
+    p10 <- values$p10s[as.numeric(modelSelPlotStudyExt)]
     values$predCur <- selRasRaw > p10
   } else {
     values$predCur <- selRas
