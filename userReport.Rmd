@@ -64,7 +64,7 @@ isMX <- if (!is.null(values$evalMods)) input$enmSel == 'Maxent' else FALSE
 mapPred <- !is.null(values$goMapPred)
 respCurv <- !is.null(values$respCurvParams)
 bcEnvelPlot <- !is.null(values$bcEnvelPlot)
-mxEvalPlot <- !is.null(values$mxEvalPlot)
+mxEvalPlot <- !is.null(input$mxEvalSel)
 isViz <- mapPred | respCurv | bcEnvelPlot | mxEvalPlot
 # comp8
 projArea <- !is.null(values$projMsk)
@@ -297,6 +297,10 @@ You chose to view visualizations of your modeling analysis results.
 
 ```{r, echo = respCurv, eval = respCurv, include = respCurv}
 dismo::response(evalMods[[{{respCurvParamsMod}}]], var = "{{respCurvParamsVar}}")
+```
+
+```{r, echo = mxEvalPlot, eval = mxEvalPlot, include = mxEvalPlot}
+eval.plot(evalTbl, value = "{{mxEvalPlotVal}}")
 ```
 
 ```{asis, echo = projArea}
