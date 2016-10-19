@@ -541,13 +541,15 @@ shinyServer(function(input, output, session) {
     if (is.null(values$evalPreds)) return()
 
       if(input$enmSel == "Maxent"){
-        values$curMod <- values$evalMods[[which(as.character(values$evalTbl[, 1]) == input$modelSelRespCurv)]]
+        values$curModNum <- which(as.character(values$evalTbl[, 1]) == input$modelSelRespCurv)
+        values$curMod <- values$evalMods[[values$curModNum]]
         nonZeroPreds <- mxNonzeroPreds(values$curMod)
         nonZeroPredNames <- names(values$predsMsk[[nonZeroPreds]])
         nonZeroPredNames <- nonZeroPredNames[order(as.integer(sub('bio', '', nonZeroPredNames)))]  # order by name
         predVarNameList <- setNames(as.list(nonZeroPredNames), nonZeroPredNames)
       } else {
-        values$curMod <- values$evalMods[[1]]
+        values$curModNum <- 1
+        values$curMod <- values$evalMods[[values$curModNum]]
         predVarNameList <- names(values$curMod@presence)
       }
 
@@ -566,16 +568,6 @@ shinyServer(function(input, output, session) {
     }
   )
 
-  # Module Response Curves
-  observe({
-    if (is.null(input$visSel)) return()
-    if (input$visSel != 'response') return()
-    if (is.null(values$curMod)) return()
-      output$respCurv <- renderPlot(response(values$curMod, var = input$predVarSel))
-      # switch to Results tab
-      updateTabsetPanel(session, 'main', selected = 'Results')
-  })
-
   # Module Plot Prediction
   observeEvent(input$plotPred, {
     comp7_mapPred(input$modelSelPlotStudyExt, input$predForm, input$predThresh, proxy)
@@ -583,11 +575,29 @@ shinyServer(function(input, output, session) {
     updateTabsetPanel(session, 'main', selected = 'Map')
   })
   
+  # Module Response Curves
+  observe({
+    if (is.null(input$visSel)) return()
+    if (input$visSel != 'response') return()
+    if (is.null(values$curMod)) return()
+    output$respCurv <- renderPlot(response(values$curMod, var = input$predVarSel))
+    values$respCurvParams <- list(mod=values$curModNum, var=input$predVarSel)
+    print(values$respCurvParams)
+    # switch to Results tab
+    updateTabsetPanel(session, 'main', selected = 'Results')
+  })
+  
   # Module BIOCLIM Envelope Plots (for component 7)
-  output$bcEnvelPlot <- renderPlot(plot(values$evalMods[[1]], a = input$bc1, b = input$bc2, p = input$bcProb))
+  output$bcEnvelPlot <- renderPlot({
+    values$bcEnvelPlot <- TRUE
+    plot(values$evalMods[[1]], a = input$bc1, b = input$bc2, p = input$bcProb)
+    })
   
   # Module Maxent Evaluation Plots (for component 7): ENMeval graphs
-  output$mxEvalPlot <- renderPlot(evalPlot(values$evalTbl, input$mxEvalSel))
+  output$mxEvalPlot <- renderPlot({
+    values$mxEvalPlot <- TRUE 
+    evalPlot(values$evalTbl, input$mxEvalSel)
+    })
 
   # handle download for rasters, with file type as user choice
   output$downloadPred <- downloadHandler(
@@ -755,6 +765,7 @@ shinyServer(function(input, output, session) {
                          predsRes=input$bcRes, bcLat=input$bcLat, bcLon=input$bcLon, backgSel=input$backgSel, backgBuf=input$backgBuf, userBGname=input$userBackg$name,
                          userBGpath=input$userBackg$datapath, partSel=values$partSel2, aggFact=input$aggFact, kfoldsSel=input$kfolds,
                          enmSel=input$enmSel, rmsSel1=input$rms[1], rmsSel2=input$rms[2], rmsBy=input$rmsBy, fcsSel=printVecAsis(input$fcs),
+                         mapPred=values$goMapPred, respCurvParamsMod=values$respCurvParams[[1]], respCurvParamsVar=values$respCurvParams[[2]], bcEnvelPlot=values$bcEnvelPlot, mxEvalPlot=values$mxEvalPlot,
                          projAreaX=projAreaX, projAreaY=projAreaY, modSel=modSel)
       writeLines(exp, 'userReport2.Rmd')
 
