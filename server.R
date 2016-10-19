@@ -1,6 +1,6 @@
 # check package dependencies, and download if necessary
-list.of.packages <- c("shiny", "spocc", "munsell", "maps", "RColorBrewer", "rmarkdown", "shinyjs", "rgbif", "devtools",
-                      "spThin", "colorRamps", "dismo", "rgeos", "XML", "repmis", "Rcpp", "RCurl", "curl",
+list.of.packages <- c("shiny", "spocc", "munsell", "maps", "RColorBrewer", "rmarkdown", "shinyjs", "devtools",
+                      "spThin", "colorRamps", "dismo", "rgeos", "XML", "Rcpp", "RCurl", "curl",
                       "maptools", "rgdal", "rJava", "devtools")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if (length(new.packages)) install.packages(new.packages)
@@ -12,14 +12,12 @@ if (!require('ENMeval')) {
 } else {
   if (packageVersion('ENMeval') != '0.1.2') install_github("bobmuscarella/ENMeval@ENMeval_v0.1.2")
 }
-#if (!require("DT")) devtools::install_github("rstudio/DT")
 #options(shiny.error=browser)  # for debugging
 
 # load libraries
 library(devtools)
 library(spocc)
 library(shiny)
-library(rgbif)
 library(maptools)
 library(spThin)
 library(ENMeval)
@@ -29,7 +27,6 @@ library(ggplot2)
 library(shinyjs)
 library(RColorBrewer)
 library(leaflet)
-library(repmis)
 library(rmarkdown)
 library(rgdal)
 
@@ -519,30 +516,32 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  # function to make selectable list of model names
+  modelSel <- function(inputName, resp=FALSE) {
+    renderUI({
+      if (is.null(values$evalPreds)) return()
+      n <- names(values$evalPreds)
+      if (!resp) {
+        predNameList <- setNames(as.list(seq(1, length(n))), n)  
+      } else {
+        predNameList <- setNames(as.list(n), n)  
+      }
+      selectInput(inputName, label = "Choose a model",
+                  choices = predNameList, selected = predNameList[[1]])
+    })
+  }
+  
   # generates user selection of rasters to plot dynamically after they are created
-  output$modelSel1 <- renderUI({
-    if (is.null(values$evalPreds)) return()
-    n <- names(values$evalPreds)
-    predNameList <- setNames(as.list(seq(1, length(n))), n)
-    selectInput("modelSel1", label = "Choose a model",
-                choices = predNameList)
-  })
-
-  # copy for response curve model selection
-  output$modelSel2 <- renderUI({
-    if (is.null(values$evalPreds)) return()
-    n <- names(values$evalPreds)
-    predNameList <- setNames(as.list(n), n)
-    selectInput("modelSel2", label = "Choose a model",
-                choices = predNameList, selected = predNameList[[1]])
-  })
-
+  output$modelSelPlotStudyExt <- modelSel("modelSelPlotStudyExt")
+  # model list for response curve model selection
+  output$modelSelRespCurv <- modelSel("modelSelRespCurv", resp=TRUE)
+  
   # generates list of predictor variables with non-zero coeffs for currently selected model
   output$predVarSel <- renderUI({
     if (is.null(values$evalPreds)) return()
 
       if(input$enmSel == "Maxent"){
-        values$curMod <- values$evalMods[[which(as.character(values$evalTbl[, 1]) == input$modelSel2)]]
+        values$curMod <- values$evalMods[[which(as.character(values$evalTbl[, 1]) == input$modelSelRespCurv)]]
         nonZeroPreds <- mxNonzeroPreds(values$curMod)
         nonZeroPredNames <- names(values$predsMsk[[nonZeroPreds]])
         nonZeroPredNames <- nonZeroPredNames[order(as.integer(sub('bio', '', nonZeroPredNames)))]  # order by name
@@ -579,7 +578,7 @@ shinyServer(function(input, output, session) {
 
   # Module Plot Prediction
   observeEvent(input$plotPred, {
-    comp7_mapPred(input$modelSel1, input$predForm, input$predThresh, proxy)
+    comp7_mapPred(input$modelSelPlotStudyExt, input$predForm, input$predThresh, proxy)
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Map')
   })
@@ -675,15 +674,9 @@ shinyServer(function(input, output, session) {
 
     writeLog('* RESET PROJECTION EXTENT')
   })
-
-  # model selection for component 8
-  output$modelSel3 <- renderUI({
-    if (is.null(values$evalPreds)) return()
-    n <- names(values$evalPreds)
-    predNameList <- setNames(as.list(seq(1, length(n))), n)
-    selectInput("modelSel3", label = "Choose a model",
-                choices = predNameList)
-  })
+  
+  # model list for comp8
+  output$modelSelProj <- modelSel("modelSelProj")
 
   # select projection extent
   observeEvent(input$poly2Sel, {
@@ -692,12 +685,12 @@ shinyServer(function(input, output, session) {
 
   # Module Project to New Area
   observeEvent(input$goPjArea, {
-    comp8_pjArea(input$modelSel3, input$predForm, values$enmSel)
+    comp8_pjArea(input$modelSelProj, input$predForm, values$enmSel)
   })
   
   # Module Project to New Time
   observeEvent(input$goPjTime, {
-    comp8_pjTime(input$modelSel3, input$predForm, values$enmSel,
+    comp8_pjTime(input$modelSelProj, input$predForm, values$enmSel,
                  input$bcRes, input$selRCP, bcMod, bcYr)
   })
 
@@ -756,7 +749,7 @@ shinyServer(function(input, output, session) {
       } else {
         projAreaX <- projAreaY <- NA
       }
-      modSel <- as.numeric(input$modelSel3)
+      modSel <- as.numeric(input$modelSelProj)
       exp <- knit_expand('userReport.Rmd', curWD=curWD, spName=input$spName, dbName=input$occDb, occNum=input$occNum, thinDist=input$thinDist,
                          occsCSV=csvDataPathFix, occsRemoved=printVecAsis(values$removedAll), occsSel=printVecAsis(values$ptSel),
                          predsRes=input$bcRes, bcLat=input$bcLat, bcLon=input$bcLon, backgSel=input$backgSel, backgBuf=input$backgBuf, userBGname=input$userBackg$name,
