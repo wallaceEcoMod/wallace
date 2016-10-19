@@ -4,6 +4,7 @@ comp7_mapPred <- function(modelSelPlotStudyExt, predForm, predThresh, proxy) {
     return()
   }
     
+  values$goMapPred <- TRUE
   proxy %>% removeImage('r1')  # remove current raster
   selRasRaw <- values$evalPreds[[as.numeric(modelSelPlotStudyExt)]]
   selRasLog <- values$evalPredsLog[[as.numeric(modelSelPlotStudyExt)]]

@@ -34,26 +34,39 @@ source(file.path("{{curWD}}", 'functions.R'))
 ```
 
 ```{r, echo = FALSE, include = FALSE}
+# comp1
 occ <- values$mod_db
 csv <- !is.null(input$userCSV)
 occ.csv <- occ | csv
+# comp2
 remLoc <- !is.null(values$removedAll)
 drawPoly <- !is.null(values$ptSel)
 thin <- input$goThin != 0
+# comp3
 yesPreds <- input$bcRes != ""
+# comp4
 backg <- !is.null(values$backgExt)
 isBB <- if (backg) input$backgSel == 'bb' else FALSE
 isMCP <- if (backg) input$backgSel == 'mcp' else FALSE
 isUserBG <- if (backg) input$backgSel == 'user' else FALSE
+# comp5
 part <- input$goPart != 0
 isBlock <- if (!is.null(values$partSel2)) values$partSel2 == 'block' else FALSE
 isCB1 <- if (!is.null(values$partSel2)) values$partSel2 == 'cb1' else FALSE
 isCB2 <- if (!is.null(values$partSel2)) values$partSel2 == 'cb2' else FALSE
 isJack <- if (!is.null(values$partSel2)) values$partSel2 == 'jack' else FALSE
 isRandom <- if (!is.null(values$partSel2)) values$partSel2 == 'random' else FALSE
+# comp6
 model <- input$goEval != 0
 isBC <- if (!is.null(values$evalMods)) input$enmSel == 'BIOCLIM' else FALSE
 isMX <- if (!is.null(values$evalMods)) input$enmSel == 'Maxent' else FALSE
+# comp7
+mapPred <- !is.null(values$goMapPred)
+respCurv <- !is.null(values$respCurvParams)
+bcEnvelPlot <- !is.null(values$bcEnvelPlot)
+mxEvalPlot <- !is.null(values$mxEvalPlot)
+isViz <- mapPred | respCurv | bcEnvelPlot | mxEvalPlot
+# comp8
 projArea <- !is.null(values$projMsk)
 ```
 
@@ -277,12 +290,21 @@ if (length(occVals) < 10) {  # if less than 10 occ values, find 90% of total and
 p10s <- apply(occVals, MARGIN = 2, function(x) rev(sort(x))[n90])  # apply 10% training presence threshold over all models
 ```
 
-```{asis, echo = projArea, eval = projArea, include = projArea}
+```{asis, echo = isViz, include = isViz}
+### Visualize Niche Model
+You chose to view visualizations of your modeling analysis results.
+```
+
+```{r, echo = respCurv, eval = respCurv, include = respCurv}
+dismo::response(evalMods[[{{respCurvParamsMod}}]], var = "{{respCurvParamsVar}}")
+```
+
+```{asis, echo = projArea}
 ### Project Niche Model
 You selected to project your model to a new geographic area. First define a polygon with the coordinates you chose, then crop and mask your predictor rasters. Finally, predict suitability values for these new raster cells based on the model you selected.
 ```
 
-```{r, echo = projArea, eval = projArea, include=projArea}
+```{r, echo = projArea, eval = projArea, include = projArea}
 projAreaDf <- data.frame(x = {{projAreaX}}, y = {{projAreaY}})
 projAreaPoly <- SpatialPolygons(list(Polygons(list(Polygon(projAreaDf)), ID=1)))
 
