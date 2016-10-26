@@ -713,14 +713,13 @@ shinyServer(function(input, output, session) {
                          "HG", "HE", "IN", "IP", "MI", "MR", "MC", "MP", "MG", "NO")
     }
     names(selGCMchoices) <- GCMnames[selGCMchoices]
-    selGCMchoices <- list(c("Select GCM" = "", selGCMchoices))
+    selGCMchoices <- as.list(c("Select GCM" = "", selGCMchoices))
+    output$selGCM <- renderUI({
+      selectInput("selGCM", label = "Select global circulation model", choices = selGCMchoices)
+    })
   })
   
-  output$selGCM <- renderUI({
-    selectInput("selGCM", label = "Select time period",
-                choices = selGCMchoices)
-                               
-  })
+
   
   # Module Project to New Time
   observeEvent(input$goPjTime, {
