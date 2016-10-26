@@ -698,10 +698,34 @@ shinyServer(function(input, output, session) {
     comp8_pjArea(input$modelSelProj, input$predForm, values$enmSel)
   })
   
+  observe({
+    GCMnames <- c(AC="ACCESS1-0", BC="BCC-CSM1-1", CC="CCSM4", CE="CESM1-CAM5-1-FV2",
+                  CN="CNRM-CM5", GF="GFDL-CM3", GD="GFDL-ESM2G", GS="GISS-E2-R",
+                  HD="HadGEM2-AO", HG="HadGEM2-CC", HE="HadGEM2-ES", IN="INMCM4",
+                  IP="IPSL-CM5A-LR", ME="MPI-ESM-P", MI="MIROC-ESM-CHEM", MR="MIROC-ESM", 
+                  MC="MIROC5", MP="MPI-ESM-LR", MG="MRI-CGCM3", NO="NorESM1-M")
+    if (input$selTime == 'lgm') {
+      selGCMchoices <- c('CC', 'MR', 'MC')
+    } else if (input$selTime == 'mid') {
+      selGCMchoices <- c("BC", "CC", "CE", "CN", "HG", "IP", "MR", "ME", "MG")
+    } else {
+      selGCMchoices <- c("AC", "BC", "CC", "CE", "CN", "GF", "GD", "GS", "HD", 
+                         "HG", "HE", "IN", "IP", "MI", "MR", "MC", "MP", "MG", "NO")
+    }
+    names(selGCMchoices) <- GCMnames[selGCMchoices]
+    selGCMchoices <- list(c("Select GCM" = "", selGCMchoices))
+  })
+  
+  output$selGCM <- renderUI({
+    selectInput("selGCM", label = "Select time period",
+                choices = selGCMchoices)
+                               
+  })
+  
   # Module Project to New Time
   observeEvent(input$goPjTime, {
     comp8_pjTime(input$modelSelProj, input$predForm, values$enmSel,
-                 input$bcRes, input$selRCP, bcMod, bcYr)
+                 input$bcRes, input$selTime, input$selRCP)
   })
 
   # Module MESS
