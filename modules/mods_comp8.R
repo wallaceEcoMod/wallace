@@ -13,11 +13,6 @@ comp8_selProjExt <- function() {
   values$poly2 <- SpatialPolygons(list(Polygons(list(Polygon(values$polyPts2)), ID=values$polyID)))  # create new polygon from coords
   proxy %>% addPolygons(values$polyPts2[,1], values$polyPts2[,2], weight=3, fill=FALSE, color='red', layerId='poly2Sel')
   
-  withProgress(message = "Clipping environmental data to current extent...", {
-    msk <- crop(values$preds, values$poly2)
-    values$projMsk <- mask(msk, values$poly2)
-  })
-  
   x <- round(values$polyPts2, digits = 2)  # round all coords to 2 decimal digits
   coordsChar <- paste(apply(x, 1, function(b) paste0('(',paste(b, collapse=', '),')')), collapse=', ')  # concatanate coords to a single character
   isolate(writeLog(paste0('* Defined projection extent to: ', coordsChar)))
@@ -28,6 +23,12 @@ comp8_pjCurExt <- function(modelSel, predForm, modelSel2) {
     writeLog('* SELECT projection extent first.')
     return()
   }
+  
+  withProgress(message = "Clipping environmental data to current extent...", {
+    msk <- crop(values$preds, values$poly2)
+    values$projMsk <- mask(msk, values$poly2)
+  })
+  
   writeLog('* PROJECTING to new area.')
   curMod <- values$evalMods[[as.numeric(modelSel)]]
   values$pjArea <- predict(curMod, values$projMsk)
