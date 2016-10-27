@@ -70,12 +70,11 @@ comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, selRCP, selGCM, selT
   withProgress(message = "Clipping environmental data to current extent...", {
     msk <- crop(values$projTimeVars, values$poly2)
     values$projTimeMsk <- mask(msk, values$poly2)
+    names(values$projTimeMsk) <- names(values$preds)  # make names same as original predictors
   })    
   
   writeLog('* PROJECTING to new time.')
   curMod <- values$evalMods[[as.numeric(modelSel)]]
-  print(curMod)
-  writeRaster(values$projTimeMsk, '/Users/musasabi/Downloads/projtime.tif')
   values$pjTime <- predict(curMod, values$projTimeMsk)
   rasVals <- values(values$pjTime)
 
