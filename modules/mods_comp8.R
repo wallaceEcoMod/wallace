@@ -82,11 +82,14 @@ comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, selRCP, selGCM, selT
     rasVals <- c(values$pjTime@data@values, 0, 1)  # set to 0-1 scale
   }
   rasVals <- rasVals[!is.na(rasVals)]
+  rasMax <- max(rasVals)
+  rasMin <- min(rasVals)
+  rng <- rasMin:rasMax
+  rng.rev <- rev(rng)
 
   proxy %>% removeShape('poly2Sel')
   # proxy %>% clearImages()
-  rasVals <- na.omit(rasVals)
-  pal <- colorNumeric(c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c"), rasVals, na.color='transparent')
+  pal <- colorNumeric(c("#d7191c","#fdae61","#ffffbf","#abd9e9", "#2c7bb6"), rng, na.color='transparent')
   values$leg2 <- list(rasVals=rasVals, pal=pal)
   proxy %>% addLegend("topright", pal = pal, title = "Predicted Suitability",
                       values = rasVals, layerId = 'r2Legend')
