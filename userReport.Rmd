@@ -64,7 +64,7 @@ isMX <- if (!is.null(values$evalMods)) input$enmSel == 'Maxent' else FALSE
 mapPred <- !is.null(values$goMapPred)
 respCurv <- !is.null(values$respCurvParams)
 bcEnvelPlot <- !is.null(values$bcEnvelPlot)
-mxEvalPlot <- !is.null(input$mxEvalSel)
+mxEvalPlot <- input$mxEvalSel != ""
 isViz <- mapPred | respCurv | bcEnvelPlot | mxEvalPlot
 # comp8
 projArea <- !is.null(values$projMsk)

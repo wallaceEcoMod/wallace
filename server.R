@@ -720,11 +720,12 @@ shinyServer(function(input, output, session) {
   })
   
 
+  observe({print(input$mxEvalSel)})
   
   # Module Project to New Time
   observeEvent(input$goPjTime, {
-    comp8_pjTime(input$modelSelProj, input$predForm, values$enmSel,
-                 input$bcRes, input$selTime, input$selRCP)
+    comp8_pjTime(input$modelSelProj, input$predForm, values$enmSel, input$bcRes, input$selRCP, 
+                 input$selGCM, input$selTime)
   })
 
   # Module MESS
