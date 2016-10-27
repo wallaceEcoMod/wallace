@@ -17,7 +17,7 @@ comp8_selProjExt <- function() {
     msk <- crop(values$preds, values$poly2)
     values$projMsk <- mask(msk, values$poly2)
   })
-  
+
   x <- round(values$polyPts2, digits = 2)  # round all coords to 2 decimal digits
   coordsChar <- paste(apply(x, 1, function(b) paste0('(',paste(b, collapse=', '),')')), collapse=', ')  # concatanate coords to a single character
   isolate(writeLog(paste0('* Defined projection extent to: ', coordsChar)))
