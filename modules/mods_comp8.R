@@ -13,27 +13,28 @@ comp8_selProjExt <- function() {
   values$poly2 <- SpatialPolygons(list(Polygons(list(Polygon(values$polyPts2)), ID=values$polyID)))  # create new polygon from coords
   proxy %>% addPolygons(values$polyPts2[,1], values$polyPts2[,2], weight=3, fill=FALSE, color='red', layerId='poly2Sel')
   
-  withProgress(message = "Clipping environmental data to current extent...", {
-    msk <- crop(values$preds, values$poly2)
-    values$projMsk <- mask(msk, values$poly2)
-  })
-  
   x <- round(values$polyPts2, digits = 2)  # round all coords to 2 decimal digits
   coordsChar <- paste(apply(x, 1, function(b) paste0('(',paste(b, collapse=', '),')')), collapse=', ')  # concatanate coords to a single character
   isolate(writeLog(paste0('* Defined projection extent to: ', coordsChar)))
 }
 
 comp8_pjArea <- function(modelSel, predForm, enmSel) {
-  if (is.null(values$projMsk)) {
+  if (is.null(values$poly2)) {
     writeLog('* SELECT projection extent first.')
     return()
   }
+  
+  if (is.null(values$projMsk)) {
+    withProgress(message = "Clipping environmental data to current extent...", {
+      msk <- crop(values$preds, values$poly2)
+      values$projMsk <- mask(msk, values$poly2)
+    })    
+  }
+  
   writeLog('* PROJECTING to new area.')
   curMod <- values$evalMods[[as.numeric(modelSel)]]
-  print(modelSel)
-  print(as.numeric(modelSel))
   values$pjArea <- predict(curMod, values$projMsk)
-  rasVals <- values$pjArea@data@values
+  rasVals <- values(values$pjArea)
   
   if (predForm == 'log' & enmSel == "Maxent") {
     rasVals <- c(values$pjArea@data@values, 0, 1)  # set to 0-1 scale
@@ -50,8 +51,8 @@ comp8_pjArea <- function(modelSel, predForm, enmSel) {
   proxy %>% addRasterImage(values$pjArea, colors = pal, group = 'r2', layerId = 'r2')
 }
 
-comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, bcRCP, selTime) {
-  if (is.null(values$projMsk)) {
+comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, selRCP, selGCM, selTime) {
+  if (is.null(values$poly2)) {
     writeLog('* SELECT projection extent first.')
     return()
   }
@@ -61,17 +62,25 @@ comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, bcRCP, selTime) {
     return()
   }
   
-  withProgress(message = paste("Retrieving WorldClim data for", selTime, bcRCP, "..."), {
-    values$projBC <- getData(name = , var = "bio", res = bcRes,
-                            rcp = bcRCP, model = bcMod, year = bcYr)
+  withProgress(message = paste("Retrieving WorldClim data for", selTime, selRCP, "..."), {
+    values$projTimeVars <- getData('CMIP5', var = "bio", res = bcRes,
+                            rcp = selRCP, model = selGCM, year = selTime)
   })
+  
+  withProgress(message = "Clipping environmental data to current extent...", {
+    msk <- crop(values$projTimeVars, values$poly2)
+    values$projTimeMsk <- mask(msk, values$poly2)
+  })    
+  
   writeLog('* PROJECTING to new time.')
   curMod <- values$evalMods[[as.numeric(modelSel)]]
-  values$pjArea <- predict(curMod, values$projMsk)
-  rasVals <- values$pjArea@data@values
+  print(curMod)
+  writeRaster(values$projTimeMsk, '/Users/musasabi/Downloads/projtime.tif')
+  values$pjTime <- predict(curMod, values$projTimeMsk)
+  rasVals <- values(values$pjTime)
 
   if (predForm == 'log' & enmSel == "Maxent") {
-    rasVals <- c(values$pjArea@data@values, 0, 1)  # set to 0-1 scale
+    rasVals <- c(values$pjTime@data@values, 0, 1)  # set to 0-1 scale
   }
   rasVals <- rasVals[!is.na(rasVals)]
 
@@ -82,7 +91,7 @@ comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, bcRCP, selTime) {
   values$leg2 <- list(rasVals=rasVals, pal=pal)
   proxy %>% addLegend("topright", pal = pal, title = "Predicted Suitability",
                       values = rasVals, layerId = 'r2Legend')
-  proxy %>% addRasterImage(values$pjArea, colors = pal, group = 'r2', layerId = 'r2')
+  proxy %>% addRasterImage(values$pjTime, colors = pal, group = 'r2', layerId = 'r2')
 }
 
 comp8_mess <- function() {
