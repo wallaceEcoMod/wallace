@@ -2,6 +2,18 @@
 ## Define functions
 ## -------------------------------------------------------------------- ##
 
+rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+
+reverseLabels <- function(..., reverse_order = FALSE) { 
+  if (reverse_order) { 
+    function(type = "numeric", cuts){ 
+      cuts <- sort(cuts, decreasing = TRUE)
+    } 
+  } else {
+    labelFormat(...)
+  }
+}
+
 # return the map center given the bounds
 mapCenter <- function(bounds) {
   map_center <- c((bounds$west + bounds$east) / 2, (bounds$north + bounds$south) / 2)

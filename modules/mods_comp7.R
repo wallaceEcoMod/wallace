@@ -36,11 +36,12 @@ comp7_mapPred <- function(modelSelPlotStudyExt, predForm, predThresh, proxy) {
                           title = "Thresholded Suitability", labels = c(0, 1),
                           opacity = 1, layerId = 'threshLegend')
     } else {
-      pal <- colorNumeric(c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c"), rasVals, na.color='transparent')
-      values$leg1 <- list(rasVals=rasVals, pal=pal)
-      proxy %>% addLegend("topright", pal = pal, title = "Predicted Suitability",
-                          values = rasVals, layerId = 'r1Legend')
+      legPal <- colorNumeric(rev(rasCols), rasVals, na.color='transparent')
+      rasPal <- colorNumeric(rasCols, rasVals, na.color='transparent')
+      # values$leg1 <- list(rasVals=rasVals, pal=pal)
+      proxy %>% addLegend("topright", pal = legPal, title = "Predicted SEuitability",
+                          values = rasVals, layerId = 'r1Legend', labFormat = reverseLabels(2, reverse_order=TRUE))
     }
-    proxy %>% addRasterImage(values$predCur, colors = pal, opacity = 0.7, group = 'r1', layerId = 'r1')
+    proxy %>% addRasterImage(values$predCur, colors = rasPal, opacity = 0.7, group = 'r1', layerId = 'r1')
   }
 }

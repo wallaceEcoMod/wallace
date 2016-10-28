@@ -44,11 +44,13 @@ comp8_pjArea <- function(modelSel, predForm, enmSel) {
   proxy %>% removeShape('poly2Sel')
   # proxy %>% clearImages()
   rasVals <- na.omit(rasVals)
-  pal <- colorNumeric(c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c"), rasVals, na.color='transparent')
-  values$leg2 <- list(rasVals=rasVals, pal=pal)
-  proxy %>% addLegend("topright", pal = pal, title = "Predicted Suitability",
-                      values = rasVals, layerId = 'r2Legend')
-  proxy %>% addRasterImage(values$pjArea, colors = pal, group = 'r2', layerId = 'r2')
+  legPal <- colorNumeric(rev(rasCols), rasVals, na.color='transparent')
+  rasPal <- colorNumeric(rasCols, rasVals, na.color='transparent')
+  # values$leg2 <- list(rasVals=rasVals, pal=pal)
+  
+  proxy %>% addLegend("topright", pal = legPal, title = "Predicted SEuitability",
+                      values = rasVals, layerId = 'r2Legend', labFormat = reverseLabels(reverse_order=TRUE))
+  proxy %>% addRasterImage(values$pjArea, colors = rasPal, group = 'r2', layerId = 'r2')
 }
 
 comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, selRCP, selGCM, selTime) {
@@ -89,11 +91,12 @@ comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, selRCP, selGCM, selT
 
   proxy %>% removeShape('poly2Sel')
   # proxy %>% clearImages()
-  pal <- colorNumeric(c("#d7191c","#fdae61","#ffffbf","#abd9e9", "#2c7bb6"), rng, na.color='transparent')
-  values$leg2 <- list(rasVals=rasVals, pal=pal)
-  proxy %>% addLegend("topright", pal = pal, title = "Predicted Suitability",
-                      values = rasVals, layerId = 'r2Legend')
-  proxy %>% addRasterImage(values$pjTime, colors = pal, group = 'r2', layerId = 'r2')
+  legPal <- colorNumeric(rev(rasCols), rng, na.color='transparent')
+  rasPal <- colorNumeric(rasCols, rng, na.color='transparent')
+  # values$leg2 <- list(rasVals=rasVals, pal=pal)
+  proxy %>% addLegend("topright", pal = legPal, title = "Predicted Suitability",
+                      values = rasVals, layerId = 'r2Legend', labFormat = reverseLabels())
+  proxy %>% addRasterImage(values$pjTime, colors = rasPal, group = 'r2', layerId = 'r2')
 }
 
 comp8_mess <- function() {

@@ -507,10 +507,10 @@ shinyServer(function(input, output, session) {
     if (is.null(values$df)) return()
     if (input$tabs == 7) {
       proxy %>% removeControl('r2Legend')
-      if (!is.null(values$leg1)) {
-        proxy %>% addLegend("topright", pal = values$leg1$pal, title = "Predicted Suitability",
-                            values = values$leg1$rasVals, layerId = 'r1Legend')
-      }
+      # if (!is.null(values$leg1)) {
+      #   proxy %>% addLegend("topright", pal = values$leg1$pal, title = "Predicted Suitability",
+      #                       values = values$leg1$rasVals, layerId = 'r1Legend', labFormat = reverseLabels(reverse_order=TRUE))
+      # }
       proxy %>% showGroup('r1')
       proxy %>% hideGroup('r2')
     }
@@ -647,10 +647,10 @@ shinyServer(function(input, output, session) {
     if (input$tabs == 8) {
       if (is.null(values$df)) return()
       proxy %>% removeControl('r1Legend')
-      if (!is.null(values$leg2)) {
-        proxy %>% addLegend("topright", pal = values$leg2$pal, title = "Predicted Suitability",
-                            values = values$leg2$rasVals, layerId = 'r2Legend')
-      }
+      # if (!is.null(values$leg2)) {
+      #   proxy %>% addLegend("topright", pal = values$leg2$pal, title = "Predicted Suitability",
+      #                       values = values$leg2$rasVals, layerId = 'r2Legend', labFormat = reverseLabels(reverse_order=TRUE))
+      # }
       proxy %>% showGroup('r2')
       proxy %>% hideGroup('r1')
       if (!is.null(values$poly2)) return()  # if sel pj ext poly selected, don't allow more drawing
