@@ -104,6 +104,7 @@ getUserOccs <- function(userCSV) {
   csv <- read.csv(userCSV$datapath)
   if (!all(c('name', 'longitude', 'latitude') %in% names(csv))) {
     isolate({writeLog('* ERROR: Please input CSV file with columns "name", "longitude", "latitude".')})
+    return()
   }
   isolate({writeLog(paste("* User-specified CSV file", userCSV$name, "was uploaded."))})
   # subset to only occs, not backg, and just fields that match df
