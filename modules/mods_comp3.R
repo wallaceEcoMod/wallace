@@ -14,8 +14,8 @@ comp3_bioclim <- function(bcRes) {
   #                     opacity = 1, layerId = 2)
   isolate(writeLog(paste("* Environmental predictors: WorldClim bio1-19 at", bcRes, " arcmin resolution.")))
   withProgress(message = "Processing...", {
+    print(names(values$df))
     locs.vals <- extract(values$preds[[1]], values$df[, c('longitude', 'latitude')])
-    print(locs.vals)
     
     if (sum(is.na(locs.vals)) == length(locs.vals)) {
       writeLog(paste0("* All records removed -- all occurrences may be marine -- please redo with more occurrences on land."))

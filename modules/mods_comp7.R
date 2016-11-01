@@ -31,8 +31,8 @@ comp7_mapPred <- function(modelSelPlotStudyExt, predForm, predThresh, proxy) {
   
   if (!is.null(values$predCur)) {
     if (predThresh == 'mtp' | predThresh == 'p10') {
-      pal <- c('gray', 'blue')
-      proxy %>% addLegend("topright", colors = pal,
+      rasPal <- c('gray', 'blue')
+      proxy %>% addLegend("topright", colors = rasPal,
                           title = "Thresholded Suitability", labels = c(0, 1),
                           opacity = 1, layerId = 'threshLegend')
     } else {
