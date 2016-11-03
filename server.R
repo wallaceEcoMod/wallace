@@ -582,7 +582,6 @@ shinyServer(function(input, output, session) {
     if (is.null(values$curMod)) return()
     output$respCurv <- renderPlot(response(values$curMod, var = input$predVarSel))
     values$respCurvParams <- list(mod=values$curModNum, var=input$predVarSel)
-    print(values$respCurvParams)
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
   })
@@ -718,9 +717,6 @@ shinyServer(function(input, output, session) {
       selectInput("selGCM", label = "Select global circulation model", choices = selGCMchoices)
     })
   })
-  
-
-  observe({print(input$mxEvalSel)})
   
   # Module Project to New Time
   observeEvent(input$goPjTime, {
