@@ -1,101 +1,109 @@
 source("functions.R")
 
 getDbOccs <- function(spName, occNum) {
-
-    writeLog(paste("... Searching", input$occDb, "..."))
-    query <- occ(input$spName, input$occDb, limit=input$occNum, has_coords=TRUE)
-    # record spName in values
-    values$spName <- input$spName
-    # create tag to signal db search
-    values$mod_db <- TRUE
-    # dbOccsList <- list()
-    # for (db in input$occDb) {
-    dbOccs <- query[[input$occDb]]$data[[formatSpName(input$spName)]]
-    if (nrow(dbOccs) == 0) {
-      writeLog(paste("No records found in", input$occDb, "for", input$spName, "."))
-      return()
-    }
-    dbOccs <- as.data.frame(dbOccs)
-    if (input$occDb == 'vertnet') {
-      names(dbOccs)[which(names(dbOccs) == 'institutioncode')] <- 'institutionCode'
-      names(dbOccs)[which(names(dbOccs) == 'stateprovince')] <- 'stateProvince'
-      names(dbOccs)[which(names(dbOccs) == 'basisofrecord')] <- 'basisOfRecord'
-      names(dbOccs)[which(names(dbOccs) == 'maximumelevationinmeters')] <- 'elevation'
-    }
-    if (input$occDb == 'bison') {
-      names(dbOccs)[which(names(dbOccs) == 'scientificName')] <- 'name'
-      names(dbOccs)[which(names(dbOccs) == 'calculatedState')] <- 'stateProvince'
-      names(dbOccs)[which(names(dbOccs) == 'verbatimElevation')] <- 'elevation'
-    }
-    # if species not found, print message to log box
-    if (query[[input$occDb]]$meta$found == 0) {
-      writeLog(paste('* No records found for ', input$spName, ". Please check the spelling."))
-    } else {
-      # if species has positive number records remove duplicate records (reactive gbifOrig), and
-      # select columns of interest and add columns for click query (reactive gbifSel)
-      dbOccs %>% remDups()
-      values$dbMod <- input$occDb
-      dbOccs$longitude <- as.numeric(dbOccs$longitude)
-      dbOccs$latitude <- as.numeric(dbOccs$latitude)
-      dbOccs$origID <- row.names(dbOccs)
-      dbOccs$pop <- unlist(apply(dbOccs, 1, popUpContent))
-      values$origOccs <- dbOccs
-      # check to see if columns of interest are in dbOccs, and then subset
-      cols <- c("name", "longitude", "latitude","year", "institutionCode", "country", "stateProvince", 
-                "locality", "elevation", "basisOfRecord")
-      colsInDbOccs <- cols %in% names(dbOccs)
-      cols <- cols[colsInDbOccs]
-      dbOccs <- dbOccs[c(cols, "origID", "pop")]
-      values$df <- dbOccs
-    }
-    
-    # figure out how many separate names (components of scientific name) were entered
-    nameSplit <- length(unlist(strsplit(input$spName, " ")))
-    # if only one name entered and nothing returned, throw error
-    # if only one name entered and records returned, throw warning to enter both names
-    if (nameSplit == 1) {
-      if (is.null(dbOccs)) {
-        addLog <- paste("* Please input both genus and species names.")
-      } else {
-        addLog <- paste("* Please input both genus and species names. 
-                        More than one species with this genus was found.")        
-      }
-      }
-    # If more than one name entered and nothing returned, throw message and warning about spelling.
-    # If more than one name entered and records returned, great! Send metadata message.
-    if (nameSplit > 1) {
-      if (is.null(dbOccs)) {
-        addLog <- paste0('* No records found for ', input$spName, ". Please check the spelling.")
-      } else {
-        origRows <- nrow(query[[input$occDb]]$data[[formatSpName(input$spName)]])
-        totRows <- query[[input$occDb]]$meta$found
-        remainRows <- nrow(dbOccs)
-        dupsRemoved <- origRows - remainRows
-        addLog <- paste('* Total', input$occDb, 'records for', input$spName, 'returned [', origRows,
-                        '] out of [', totRows, '] total (limit ', input$occNum, ').
-                        Duplicated records removed [', dupsRemoved, "]: Remaining records [", remainRows, "].")
-      }
-      # }
-      writeLog(addLog)
-      # functionality for concatenating multiple db calls
-      # add current dbOccs to the list
-      #   dbOccsList[[db]] <- dbOccs
-      # }
-      # # rbind all the data frames together into one
-      # dbOccsConcat <- do.call("rbind", dbOccsList)
-      # if (length(input$occDb) > 1) {
-      #   concat.orig <- nrow(dbOccsConcat)
-      #   # remove records with duplicate coordinates
-      #   dbOccsConcat <- dbOccsConcat[!duplicated(dbOccsConcat[,c('longitude', 'latitude')]),]
-      #   concat.dupsRem <- nrow(dbOccsConcat)
-      #   dupsRemNum <- concat.orig - concat.dupsRem
-      #   writeLog(paste("Concatenated", paste(input$occDb, collapse=' and '), "."))
-      #   if (dupsRemNum > 0) {
-      #     writeLog(paste("Duplicated records removed [", dupsRemNum, "]: Remaining records [", concat.dupsRem, "]."))
-      #   }      
-    }
-    # MAPPING
-    proxy %>% zoom2Occs(values$df) %>% map_plotLocs(values$df)
+  
+  # figure out how many separate names (components of scientific name) were entered
+  nameSplit <- length(unlist(strsplit(input$spName, " ")))
+  # if two names not entered, throw error and return
+  if (nameSplit != 2) {
+    writeLog("* Please input both genus and species names.")
+    return()
+  }
+  
+  writeLog(paste("... Searching", input$occDb, "..."))
+  # query database
+  query <- occ(input$spName, input$occDb, limit=input$occNum)
+  
+  # if species not found, print message to log box and return
+  if (query[[input$occDb]]$meta$found == 0) {
+    writeLog(paste('* No records found for ', input$spName, ". Please check the spelling."))
+    return()
+  }
+  
+  # record spName and dbMod in values
+  values$spName <- input$spName
+  values$dbMod <- input$occDb
+  # create tag to signal db search
+  values$mod_db <- TRUE
+  # extract occurrence tibble
+  dbOccs.orig <- query[[input$occDb]]$data[[formatSpName(input$spName)]]
+  
+  # store dbOccs.orig in values list
+  values$df.orig <- dbOccs.orig
+  
+  # get number of original rows
+  dbOccs.orig.nrows <- nrow(dbOccs.orig)
+  # get total number of records found in database
+  totRows <- query[[input$occDb]]$meta$found
+  
+  # subset to just records with latitude and longitude
+  dbOccs <- dbOccs.orig %>% filter(!is.na(latitude) & !is.na(longitude))
+  if (nrow(dbOccs) == 0) {
+    writeLog(paste("No records with coordinates found in", input$occDb, "for", input$spName, "."))
+    return()
+  }
+  
+  # standardize column names
+  if (input$occDb == 'vertnet') {
+    dbOccs <- dbOccs %>%
+      rename(institutioncode = institutionCode) %>%
+      rename(stateprovince = stateProvince) %>%
+      rename(basisofrecord = basisOfRecord) %>%
+      rename(maximumelevationinmeters = elevation)
+  }
+  # standardize column names
+  if (input$occDb == 'bison') {
+    dbOccs <- dbOccs %>%
+      rename(scientificName = name) %>%
+      rename(calculatedState = stateProvince) %>%
+      rename(verbatimElevation = elevation)
+  }
+  
+  # remove duplicate records
+  dbOccsWithDups.nrows <- nrow(dbOccs)
+  dbOccs %>% remDups()
+  dbOccsNoDups.nrows <- nrow(dbOccs)
+  # make sure the class is numeric for coordinates
+  dbOccs$longitude <- as.numeric(dbOccs$longitude)
+  dbOccs$latitude <- as.numeric(dbOccs$latitude)
+  
+  values$origOccs <- dbOccs
+  # subset by key columns and make id and popup columns
+  cols <- c("name", "longitude", "latitude","year", "institutionCode", "country", "stateProvince", 
+            "locality", "elevation", "basisOfRecord")
+  print(dbOccs)
+  dbOccs <- dbOccs %>% 
+    dplyr::select(one_of(cols)) %>%
+    mutate(origID = row.names(dbOccs)) %>%  # make new column for ID
+    mutate(pop = unlist(apply(dbOccs, 1, popUpContent)))  # make new column for leaflet marker popup content
+  
+  # store dbOccs in values list
+  values$df <- dbOccs
+  
+  noCoordsRemoved <- dbOccs.orig.nrows - dbOccsWithDups.nrows
+  dupsRemoved <- dbOccsWithDups.nrows - dbOccsNoDups.nrows
+  writeLog(paste('* Total', input$occDb, 'records for', input$spName, 'returned [', dbOccs.orig.nrows,
+                 '] out of [', totRows, '] total (limit ', input$occNum, '). 
+                  Records without coordinates removed [', noCoordsRemoved, ']. 
+                  Duplicated records removed [', dupsRemoved, ']. Remaining records [', dbOccsNoDups.nrows, '].'))
+    # functionality for concatenating multiple db calls
+    # add current dbOccs to the list
+    #   dbOccsList[[db]] <- dbOccs
+    # }
+    # # rbind all the data frames together into one
+    # dbOccsConcat <- do.call("rbind", dbOccsList)
+    # if (length(input$occDb) > 1) {
+    #   concat.orig <- nrow(dbOccsConcat)
+    #   # remove records with duplicate coordinates
+    #   dbOccsConcat <- dbOccsConcat[!duplicated(dbOccsConcat[,c('longitude', 'latitude')]),]
+    #   concat.dupsRem <- nrow(dbOccsConcat)
+    #   dupsRemNum <- concat.orig - concat.dupsRem
+    #   writeLog(paste("Concatenated", paste(input$occDb, collapse=' and '), "."))
+    #   if (dupsRemNum > 0) {
+    #     writeLog(paste("Duplicated records removed [", dupsRemNum, "]: Remaining records [", concat.dupsRem, "]."))
+    #   }      
+  # MAPPING
+  proxy %>% zoom2Occs(values$df) %>% map_plotLocs(values$df)
 }
 
 getUserOccs <- function(userCSV) {

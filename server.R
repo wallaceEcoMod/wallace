@@ -156,9 +156,9 @@ shinyServer(function(input, output, session) {
 
   # handle downloading of original GBIF records after cleaning
   output$dlDbOccs <- downloadHandler(
-    filename = function() {paste0(nameAbbr(values$df), "_gbifCleaned.csv")},
+    filename = function() {paste0(nameAbbr(values$df.orig), '_', input$occDb, ".csv")},
     content = function(file) {
-      write.csv(values$gbifOrig, file, row.names=FALSE)
+      write.csv(values$df.orig, file, row.names=FALSE)
     }
   )
 
