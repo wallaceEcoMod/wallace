@@ -1,0 +1,21 @@
+---
+title: "comp5"
+output: html_document
+---
+
+### **Component: Partition Occurrence Data**
+
+**ORIENTATION**
+
+Evaluating the accuracy of predictive models usually necessitates testing it on independent data. One widely-used technique, cross-validation, involves partitioning the full dataset into groups, then iteratively building a model using all groups but one and testing on the left-out group. A benefit of this technique is that we can average the evaluation statistics we collect per iteration and use these averages to help us determine model fit, then finally build a full model that includes all the data. Occurrence data is partitioned into two categories: 1) those used to make the model (a.k.a. “training” or “calibration”) ; and 2) others that are withheld for evaluating it (a.k.a. “testing” or “evaluation” data) (Guisan and Zimmermann 2000; Peterson et al. 2011). Various evaluation statistics exist for assessing model performance, and most are based on the ability to predict the withheld localities. In contrast, others such as the Akaike Information Criterion (AIC) rate models on how well they explain the training localities, and add penalties for complexity (e.g., how many parameters are in the model; Warren and Seifert 2011).
+
+There are myriad ways to partition data for niche/distributional models, but they can be split into two main categories: spatial and non-spatial. Non-spatial partitions are useful when no sampling bias exists and when the model will not be used for transfer across space or time (or when too few localities exist to implement spatial partitions). In contrast, spatial partitions have important advantages when sampling bias is known or suspected, and when the application will require transfer across space and/or time.  
+
+**REFERENCES**
+
+Guisan A., Zimmermann N.E. 2000. Predictive habitat distribution models in ecology. *Ecological Modelling*. 135:147–186.
+
+Peterson A. T., Soberón J., Pearson R. G., Anderson R. P., Martinez-Meyer E., Nakamura M., Araújo M. B. (2011). Evaluating Model Performance and Significance. In: Ecological niches and geographic distributions. Princeton, New Jersey: Monographs in Population Biology, 49. Princeton University Press.
+
+Warren, D. L., & Seifert, S. N. 2011. Ecological niche modeling in Maxent: the importance of model complexity and the performance of model selection criteria. *Ecological Applications*, 21:335–342.
+

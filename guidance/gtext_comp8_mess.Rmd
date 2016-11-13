@@ -1,0 +1,14 @@
+---
+title: "tab7_respCurves"
+output: html_document
+---
+
+### **Module:** ***Multidimensional Env. Similarity Surface***
+
+**BACKGROUND**  
+
+When applying a niche/distributional model to new conditions, the new region/space frequently contains environmental conditions different than those where it was made (‘non-analog conditions.’ Realistic use of such projections requires detecting any non-analog conditions and assessing the degree to which extrapolation in environmental space affects the prediction (Anderson 2013). Multivariate environmental similarity surfaces constitute one way to address these issues (Elith/Phillips/Kearney paper, right??).
+
+**IMPLEMENTATION** 
+
+Users begin by selecting a model. In the case of BIOCLIM, there is only one choice, whereas depending on the `ENMeval` settings set in Component **Model**, there may be many choices for Maxent. Users then draw a polygon on the map to delineate the MESS area. Once the polygon has been drawn, users can press "Select" to choose this extent, and then "Calculate" to calculate the MESS for the selected extent.

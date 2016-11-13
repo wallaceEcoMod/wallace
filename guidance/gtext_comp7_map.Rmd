@@ -1,0 +1,19 @@
+---
+title: "tab7_pred"
+output: html_document
+---
+
+### **Module:** ***Map Prediction*** 
+
+**BACKGROUND**  
+
+Although a niche/distributional model constitutes a mathematical function of the environmental variables, in general, studies involve using it to make predictions to geographic space (Peterson et al. 2011). Most niche/distribution modeling algorithms provide a continuous output, which can be converted to a binary prediction by applying a threshold (above which the prediction is considered sufficiently strong to indicate suitability or presence). This is often known as a “potential distribution”, as it indicates potential range limits for the study species.
+
+**IMPLEMENTATION**
+
+To view model predictions over the study extent, users first choose a model. In the case of BIOCLIM, there is only one choice, whereas depending on the `ENMeval` settings set in Component **Model**, there may be many choices for Maxent. Users then choose whether or not to set a threshold to convert the continuous prediction to a binary prediction (0's and 1's), which can be interpreted as habitat / non-habitat (with strong caveats, Yackulic et al. 2012). After a selection is made, users can press the "Plot prediction" to view the prediction on the map, and also download the prediction raster as .grd, .asc, .tif, or .png.
+
+**BIBLIOGRAPHY**
+
+Peterson A. T., Soberón J., Pearson R. G., Anderson R. P., Martinez-Meyer E., Nakamura M., Araújo M. B. (2011). Modeling Ecological Niches, and Niches and Geographic Distributions. In: Ecological niches and geographic distributions. Princeton, New Jersey: Monographs in Population Biology, 49. Princeton University Press.
+

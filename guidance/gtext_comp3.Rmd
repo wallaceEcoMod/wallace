@@ -5,10 +5,12 @@ output: html_document
 
 **ORIENTATION**
 
-When building a species niche model, the user must choose which variables to employ to associate with the localities. These variables are typically in the form of raster grids and often based on climate, topography, or land cover/use. For models aiming to characterize the species’ requirements and the areas suitable for it (and for transfer across space and time), these predictor variables should be plausible environmental determinants of the species’ range limits, or likely correlated with them (Austin 2002; Anderson 2013). 
+In order to model the relationship between species occurrences and the environment, in addition to the occurrence data just collected and processed, algorithms for niche/distributional modeling require environmental predictor variables. Component **Obtain Environmental Data** allows users to harness these variables from sources on the Internet in the form of raster grids. In recent times, a number of global-scale databases of climate data have emerged (Hijmans et al. 2005, Kriticos et al. 2012, Sbrocco and Barber 2013). Currently, *Wallace* offers access to present-day averaged climate data from the WorldClim dataset, which has global coverage of terrestrial areas (Module ***WorldClim***). We envision that future releases will offer other climate datasets with different variables (e.g. CliMond), temporal resolution (e.g PRISM), and biome focus (e.g. MARSPEC), and also allow upload of user-provided sets of environmental grids.
 
 **REFERENCES**
 
-Anderson R.P. 2013. A framework for using niche models to estimate impacts of climate change on species distributions. *Annals of the New York Academy of Sciences*. 1297:8–28.
+Hijmans, R. J., Cameron, S. E., Parra, J. L., Jones, P. G., & Jarvis, A. (2005). Very high resolution interpolated climate surfaces for global land areas. *International Journal of Climatology*, 25(15), 1965-1978.
 
-Austin M.P. 2002. Spatial prediction of species distribution: an interface between ecological theory and statistical modelling. *Ecological Modelling*. 157:101–118.
+Kriticos, D. J., Webber, B. L., Leriche, A., Ota, N., Macadam, I., Bathols, J., & Scott, J. K. (2012). CliMond: global high‐resolution historical and future scenario climate surfaces for bioclimatic modelling. *Methods in Ecology and Evolution*, 3(1), 53-64.
+
+Sbrocco, E. J., & Barber, P. H. (2013). MARSPEC: ocean climate layers for marine spatial ecology. *Ecology*, 94(4), 979-979.

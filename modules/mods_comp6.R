@@ -6,7 +6,7 @@ comp6_bioclimMod <- function() {
   values$evalMods <- e$models
   names(e$predictions) <- "Classic_BIOCLIM"
   values$evalPreds <- e$predictions
-  occVals <- extract(e$predictions, values$modParams$occ.pts)
+  occVals <- raster::extract(e$predictions, values$modParams$occ.pts)
   
   values$mtps <- min(occVals)  # apply minimum training presence threshold
   
@@ -50,7 +50,7 @@ comp6_maxentMod <- function(rms, fcs) {
   values$evalPreds <- e@predictions.raw
   values$evalPredsLog <- e@predictions.log
   
-  occVals <- extract(e@predictions.raw, values$modParams$occ.pts)
+  occVals <- raster::extract(e@predictions.raw, values$modParams$occ.pts)
   
   values$mtps <- apply(occVals, MARGIN = 2, min)  # apply minimum training presence threshold over all models
   

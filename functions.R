@@ -139,8 +139,8 @@ BioClim_eval <- function (occs, bg.pts, occ.grp, bg.grp, env) {
 
     # GET PREDICTED VALUES AT OCCURRENCES FOR OMISSION RATE STATS
     train.pred <- predict(env, mod)
-    p.train <- extract(train.pred, train.pts)
-    p.test <- extract(train.pred, test.pts)
+    p.train <- raster::extract(train.pred, train.pts)
+    p.test <- raster::extract(train.pred, test.pts)
 
     # FIND THRESHOLD FOR OR10
     if (nrow(train.pts) < 10) {
