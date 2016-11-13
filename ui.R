@@ -361,8 +361,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                        selectInput('predFileType', label = "Select File Type",
                                                                                    choices = list("GRD" = 'raster', "ASCII" = 'ascii', "GeoTIFF" = 'GTiff',
                                                                                                   "PNG" = "png")),
-                                                                       downloadButton('downloadPred', "Download Displayed Prediction"),
-                                                                       HTML('<hr>')
+                                                                       downloadButton('downloadPred', "Download Displayed Prediction")
                                                       ),
                                                       conditionalPanel("input.visSel == 'response'",
                                                                        uiOutput("modelSelRespCurv"),
@@ -380,7 +379,6 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                                                   "mean OR 10%" = 'Mean.OR10', "delta AICc" = 'delta.AICc')),
                                                                        downloadButton('downloadEvalPlots', "Download All Evaluation Plots")
                                                       ),
-                                                      HTML('<p align="justify"> For input, this step pulls from the output of Step 6. For output, it provides a GRD, GEOTIFF, or ASCII grid file (or PNG image) of the suitability prediction across the study region.</p>'),
                                                       conditionalPanel("input.visSel == 'map'",
                                                                        HTML('<hr>'),
                                                                        span("dismo", id = "rpkg"), "references", br(),

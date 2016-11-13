@@ -592,6 +592,7 @@ shinyServer(function(input, output, session) {
   
   # Module BIOCLIM Envelope Plots (for component 7)
   output$bcEnvelPlot <- renderPlot({
+    validate(need(values$evalMods[[1]], message = FALSE))
     values$bcEnvelPlot <- TRUE
     plot(values$evalMods[[1]], a = input$bc1, b = input$bc2, p = input$bcProb)
     })
