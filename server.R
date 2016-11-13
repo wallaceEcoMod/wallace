@@ -595,7 +595,7 @@ shinyServer(function(input, output, session) {
     })
   
   # handle downloads for BIOCLIM env plots png
-  output$downloadEnvPlots <- downloadHandler(
+  output$downloadEnvPlot <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$origOccs), "_envelope_plot.png")},
     content = function(file) {
       png(file)
@@ -605,11 +605,21 @@ shinyServer(function(input, output, session) {
   )
   
   # handle downloads for ENMeval plots png
-  output$downloadEvalPlots <- downloadHandler(
-    filename = function() {paste0(nameAbbr(values$origOccs), "_enmeval_plots.png")},
+  output$downloadEvalPlot <- downloadHandler(
+    filename = function() {paste0(nameAbbr(values$origOccs), "_enmeval_plot.png")},
     content = function(file) {
       png(file)
       evalPlot(values$evalTbl, input$mxEvalSel)
+      dev.off()
+    }
+  )
+  
+  # handle downloads for response curve plot
+  output$downloadRespPlot <- downloadHandler(
+    filename = function() {paste0(nameAbbr(values$origOccs), "_response_plot.png")},
+    content = function(file) {
+      png(file)
+      response(values$curMod, var = input$predVarSel)
       dev.off()
     }
   )

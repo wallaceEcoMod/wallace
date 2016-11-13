@@ -365,19 +365,21 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                       ),
                                                       conditionalPanel("input.visSel == 'response'",
                                                                        uiOutput("modelSelRespCurv"),
-                                                                       uiOutput("predVarSel")
+                                                                       uiOutput("predVarSel"),
+                                                                       downloadButton('downloadRespPlot', "Download Response Plot")
                                                       ),
                                                       conditionalPanel("input.visSel == 'bcEnvel'",
                                                                        "Pick a bioclimatic variable number for each axis",
                                                                        numericInput("bc1", "Axis 1", value = 1, min = 1, max = 19),
                                                                        numericInput("bc2", "Axis 2", value = 2, min = 1, max = 19),
-                                                                       numericInput("bcProb", "Set threshold", value = 0.9, min = 0.75, max = 1, step = 0.05)
+                                                                       numericInput("bcProb", "Set threshold", value = 0.9, min = 0.75, max = 1, step = 0.05),
+                                                                       downloadButton('downloadEnvPlot', "Download Envelope Plot")
                                                       ),
                                                       conditionalPanel("input.visSel == 'mxEval'",
                                                                        selectInput('mxEvalSel', label = "Select Evaluation Plot",
                                                                                    choices = list("Select Stat..." = '', "mean AUC" = 'Mean.AUC', "mean AUC DIFF" = 'Mean.AUC.DIFF', "mean OR MIN" = 'Mean.ORmin',
                                                                                                   "mean OR 10%" = 'Mean.OR10', "delta AICc" = 'delta.AICc')),
-                                                                       downloadButton('downloadEvalPlots', "Download All Evaluation Plots")
+                                                                       downloadButton('downloadEvalPlot', "Download Current Evaluation Plot")
                                                       ),
                                                       conditionalPanel("input.visSel == 'map'",
                                                                        HTML('<hr>'),
