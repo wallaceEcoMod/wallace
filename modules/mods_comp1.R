@@ -73,7 +73,7 @@ getDbOccs <- function(spName, occNum) {
             "locality", "elevation", "basisOfRecord")
   print(dbOccs)
   dbOccs <- dbOccs %>% 
-    dplyr::select(one_of(cols)) %>%
+    select(one_of(cols)) %>%
     mutate(origID = row.names(dbOccs)) %>%  # make new column for ID
     mutate(pop = unlist(apply(dbOccs, 1, popUpContent)))  # make new column for leaflet marker popup content
   

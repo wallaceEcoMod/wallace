@@ -1,6 +1,6 @@
 # check package dependencies, and download if necessary
 list.of.packages <- c("shiny", "spocc", "munsell", "maps", "RColorBrewer", "rmarkdown", "shinyjs", "devtools",
-                      "spThin", "colorRamps", "dismo", "rgeos", "XML", "Rcpp", "RCurl", "curl",
+                      "dplyr","spThin", "colorRamps", "dismo", "rgeos", "XML", "Rcpp", "RCurl", "curl",
                       "maptools", "rgdal", "rJava", "devtools")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if (length(new.packages)) install.packages(new.packages)
@@ -16,6 +16,7 @@ if (!require('ENMeval')) {
 
 # load libraries
 library(devtools)
+library(dplyr)
 library(spocc)
 library(shiny)
 library(maptools)
@@ -562,16 +563,6 @@ shinyServer(function(input, output, session) {
 
   })
 
-  # handle downloads for ENMeval plots png
-  output$downloadEvalPlots <- downloadHandler(
-    filename = function() {paste0(nameAbbr(values$origOccs), "_enmeval_plots.png")},
-    content = function(file) {
-      png(file)
-      evalPlot(values$evalTbl)
-      dev.off()
-    }
-  )
-
   # Module Plot Prediction
   observeEvent(input$plotPred, {
     comp7_mapPred(input$modelSelPlotStudyExt, input$predForm, input$predThresh, proxy)
@@ -590,18 +581,38 @@ shinyServer(function(input, output, session) {
     updateTabsetPanel(session, 'main', selected = 'Results')
   })
   
-  # Module BIOCLIM Envelope Plots (for component 7)
+  # Module BIOCLIM Envelope Plots
   output$bcEnvelPlot <- renderPlot({
     validate(need(values$evalMods[[1]], message = FALSE))
     values$bcEnvelPlot <- TRUE
     plot(values$evalMods[[1]], a = input$bc1, b = input$bc2, p = input$bcProb)
     })
   
-  # Module Maxent Evaluation Plots (for component 7): ENMeval graphs
+  # Module Maxent Evaluation Plots
   output$mxEvalPlot <- renderPlot({
     values$mxEvalPlot <- TRUE 
     evalPlot(values$evalTbl, input$mxEvalSel)
     })
+  
+  # handle downloads for BIOCLIM env plots png
+  output$downloadEnvPlots <- downloadHandler(
+    filename = function() {paste0(nameAbbr(values$origOccs), "_envelope_plot.png")},
+    content = function(file) {
+      png(file)
+      plot(values$evalMods[[1]], a = input$bc1, b = input$bc2, p = input$bcProb)
+      dev.off()
+    }
+  )
+  
+  # handle downloads for ENMeval plots png
+  output$downloadEvalPlots <- downloadHandler(
+    filename = function() {paste0(nameAbbr(values$origOccs), "_enmeval_plots.png")},
+    content = function(file) {
+      png(file)
+      evalPlot(values$evalTbl, input$mxEvalSel)
+      dev.off()
+    }
+  )
 
   # handle download for rasters, with file type as user choice
   output$downloadPred <- downloadHandler(
@@ -791,7 +802,8 @@ shinyServer(function(input, output, session) {
                          predsRes=input$bcRes, bcLat=input$bcLat, bcLon=input$bcLon, backgSel=input$backgSel, backgBuf=input$backgBuf, userBGname=input$userBackg$name,
                          userBGpath=input$userBackg$datapath, partSel=values$partSel2, aggFact=input$aggFact, kfoldsSel=input$kfolds,
                          enmSel=input$enmSel, rmsSel1=input$rms[1], rmsSel2=input$rms[2], rmsBy=input$rmsBy, fcsSel=printVecAsis(input$fcs),
-                         mapPred=values$goMapPred, respCurvParamsMod=values$respCurvParams[[1]], respCurvParamsVar=values$respCurvParams[[2]], bcEnvelPlot=values$bcEnvelPlot, mxEvalPlotVal=input$mxEvalSel,
+                         mapPred=values$goMapPred, respCurvParamsMod=values$respCurvParams[[1]], respCurvParamsVar=values$respCurvParams[[2]], bcEnvelPlot=values$bcEnvelPlot, 
+                         bcPlot1=input$bc1, bcPlot2=input$bc2, bcPlotP=input$bcProb, mxEvalPlot=values$mxEvalPlot, mxEvalPlotSel=input$mxEvalSel,
                          projAreaX=projAreaX, projAreaY=projAreaY, modSel=modSel)
       writeLines(exp, 'userReport2.Rmd')
 
