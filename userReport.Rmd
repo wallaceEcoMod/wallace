@@ -68,6 +68,8 @@ mxEvalPlot <- !is.null(values$mxEvalPlot)
 isViz <- mapPred | respCurv | bcEnvelPlot | mxEvalPlot
 # comp8
 projArea <- !is.null(values$projMsk)
+projTime <- !is.null(values$projTimeMsk)
+projAny <- projArea | projTime
 ```
 
 ## Record of analysis for *`r values$spName`*.
@@ -307,19 +309,46 @@ plot(evalMods[[1]], a = {{bcPlot1}}, b = {{bcPlot2}}, p = {{bcPlotP}})
 eval.plot(evalTbl, value = "{{mxEvalPlotSel}}")
 ```
 
-```{asis, echo = projArea}
+```{asis, echo = projAny}
 ### Project Niche Model
-You selected to project your model to a new geographic area. First define a polygon with the coordinates you chose, then crop and mask your predictor rasters. Finally, predict suitability values for these new raster cells based on the model you selected.
+You selected to project your model. First define a polygon with the coordinates you chose, then crop and mask your predictor rasters. Finally, predict suitability values for these new raster cells based on the model you selected.
+```
+
+```{r, echo = projAny, eval = projAny, include = projAny}
+projCoords <- data.frame(x = {{projAreaX}}, y = {{projAreaY}})
+projPoly <- SpatialPolygons(list(Polygons(list(Polygon(projCoords)), ID=1)))
+
+# Select your model from the evalMods list
+modSel <- evalMods[[{{modSel}}]]
+```
+
+```{asis, echo = projArea}
+### Project Niche Model to New Extent
+Now use crop and mask the predictor variables by projPoly, and use the predict() function to predict the values for the new extent based on the model selected.
 ```
 
 ```{r, echo = projArea, eval = projArea, include = projArea}
-projAreaDf <- data.frame(x = {{projAreaX}}, y = {{projAreaY}})
-projAreaPoly <- SpatialPolygons(list(Polygons(list(Polygon(projAreaDf)), ID=1)))
+predsProj <- crop(preds, projPoly)
+predsMsk <- mask(predsProj, projPoly)
 
-predsPjAreaCrop <- crop(preds, projAreaPoly)
-predsPjAreaMsk <- mask(predsPjAreaCrop, projAreaPoly)
+newExtProj <- predict(modSel, predsMsk)
+plot(newExtProj)
+```
 
-modSel <- evalMods[[{{modSel}}]]
-pjArea <- predict(modSel, predsPjAreaMsk)
+```{asis, echo = projTime}
+### Project Niche Model to New Time
+Now download the future climate variables chosen with *Wallace*, crop and mask them by projPoly, and use the predict() function to predict the values for the new time based on the model selected.
+```
+
+```{r, echo = projTime, eval = projTime, include = projTime}
+predsFuture <- getData("CMIP5", var = "bio", res = {{predsRes}}, rcp = {{selRCP}}, model = "{{selGCM}}", year = {{selTime}})
+
+predsProj <- crop(predsFuture, projPoly)
+predsMsk <- mask(predsProj, projPoly)
+
+# rename future climate variable names
+names(predsMsk) <- names(preds)
+futureProj <- predict(modSel, predsMsk)
+plot(futureProj)
 ```
 

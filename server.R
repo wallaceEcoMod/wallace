@@ -814,7 +814,7 @@ shinyServer(function(input, output, session) {
                          enmSel=input$enmSel, rmsSel1=input$rms[1], rmsSel2=input$rms[2], rmsBy=input$rmsBy, fcsSel=printVecAsis(input$fcs),
                          mapPred=values$goMapPred, respCurvParamsMod=values$respCurvParams[[1]], respCurvParamsVar=values$respCurvParams[[2]], bcEnvelPlot=values$bcEnvelPlot, 
                          bcPlot1=input$bc1, bcPlot2=input$bc2, bcPlotP=input$bcProb, mxEvalPlot=values$mxEvalPlot, mxEvalPlotSel=input$mxEvalSel,
-                         projAreaX=projAreaX, projAreaY=projAreaY, modSel=modSel)
+                         projAreaX=projAreaX, projAreaY=projAreaY, modSel=modSel, selRCP=input$selRCP, selGCM=input$selGCM, selTime=input$selTime)
       writeLines(exp, 'userReport2.Rmd')
 
       if (input$mdType == 'Rmd') {

@@ -60,7 +60,7 @@ comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, selRCP, selGCM, selT
   }
   
   if (bcRes == 0.5) {
-    writeLog('* Project to New Time only available with resolutions >30 arc seconds.')
+    writeLog('* Project to New Time currently only available with resolutions >30 arc seconds.')
     return()
   }
   
