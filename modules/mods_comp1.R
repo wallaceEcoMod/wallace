@@ -67,7 +67,6 @@ getDbOccs <- function(spName, occNum) {
   dbOccs$longitude <- as.numeric(dbOccs$longitude)
   dbOccs$latitude <- as.numeric(dbOccs$latitude)
   
-  values$origOccs <- dbOccs
   # subset by key columns and make id and popup columns
   cols <- c("name", "longitude", "latitude","year", "institutionCode", "country", "stateProvince", 
             "locality", "elevation", "basisOfRecord")
@@ -79,6 +78,7 @@ getDbOccs <- function(spName, occNum) {
   
   # store dbOccs in values list
   values$df <- dbOccs
+  values$origOccs <- dbOccs
   
   noCoordsRemoved <- dbOccs.orig.nrows - dbOccsWithDups.nrows
   dupsRemoved <- dbOccsWithDups.nrows - dbOccsNoDups.nrows

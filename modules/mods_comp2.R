@@ -48,6 +48,7 @@ polySelLocs <- function() {
   ptsSel <- values$origOccs[ptSelIndex, ]
   # Record ID of selected points
   values$ptSel <- as.numeric(ptsSel$origID)
+  print(ptsSel)
   proxy %>% map_plotLocs(ptsSel, fillColor='yellow', fillOpacity=1, clearShapes=FALSE, clearMarkers=FALSE)
   values$df <- ptsSel
 
