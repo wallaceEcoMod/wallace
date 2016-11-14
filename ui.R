@@ -116,7 +116,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                        HTML('<hr>'),
                                                                        strong("Map functions: select points overlapping with polygon"), br(),
                                                                        "*draw polygon by clicking on map", br(), br(),
-                                                                       p(actionButton("selectPoly", "Select Points"), actionButton("erasePolySelLocs", "Reset Selection"))
+                                                                       actionButton("selectPoly", "Select Points")
                                                       ),
                                                       conditionalPanel("input.procOccSel == 'spthin'",
                                                                        div('Module: Spatial Thin', id="mod"),
@@ -127,7 +127,8 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                        numericInput("thinDist", label = "Thinning distance (km)", value = 0),
                                                                        actionButton("goThin", "Thin Localities")
                                                                        
-                                                      ),
+                                                      ), br(),
+                                                      actionButton("erasePolySelLocs", "Reset Points"),
                                                       HTML('<hr>'),
                                                       downloadButton('dlProcOccCsv', "Download Processed Occs"),
                                                       conditionalPanel("input.procOccSel == 'spthin'",

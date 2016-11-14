@@ -94,7 +94,7 @@ thinOccs <- function(thinDist) {
                              fillOpacity = 1, weight = 2, popup = ~pop, 
                              group = 'comp2')
   
-  values$origOccs <- values$df
+  # values$origOccs <- values$df
   writeLog(paste('* Total records thinned to [', nrow(values$df), '] localities.'))
   # render the thinned records data table
   output$occTbl <- DT::renderDataTable({DT::datatable(values$df[,1:4])})
