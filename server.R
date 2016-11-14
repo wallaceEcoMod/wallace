@@ -177,7 +177,12 @@ shinyServer(function(input, output, session) {
                             title = "Occ Records", labels = c('original', 'selected'),
                             opacity = 1, layerId = 'selLegend') %>%
           removeControl('thinLegend') %>% clearImages() %>% clearShapes()
-        
+        if (!is.null(values$ptsSel)) {
+          proxy %>% 
+            map_plotLocs(values$origOccs) %>%
+            map_plotLocs(values$ptsSel, fillColor='yellow', fillOpacity=1, clearShapes=FALSE, clearMarkers=FALSE) %>%
+            zoom2Occs(values$origOccs)
+        }
       }
       if (input$procOccSel == 'spthin') {
         gtext$cur_mod <- "guidance/gtext_comp2_spatialThin.Rmd"
@@ -185,6 +190,20 @@ shinyServer(function(input, output, session) {
                             title = "Occ Records", labels = c('retained', 'removed'),
                             opacity = 1, layerId = 'thinLegend') %>%
           removeControl('selLegend') %>% clearImages() %>% clearShapes()
+        if (!is.null(values$ptsSel)) {
+          proxy %>% map_plotLocs(values$ptsSel)
+          if (!is.null(values$prethinned)) {
+            proxy %>% addCircleMarkers(data = values$prethinned, lat = ~latitude, lng = ~longitude,
+                                       radius = 5, color = 'red', fillColor = 'blue', 
+                                       fillOpacity = 1, weight = 2, popup = ~pop, 
+                                       group = 'comp2') %>%
+              addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
+                               radius = 5, color = 'red', fillColor = 'red', 
+                               fillOpacity = 1, weight = 2, popup = ~pop, 
+                               group = 'comp2') %>%
+              zoom2Occs(values$prethinned)
+          }
+        }
       }
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
