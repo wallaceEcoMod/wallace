@@ -251,9 +251,9 @@ shinyServer(function(input, output, session) {
       values$origOccs <- rbind(values$origOccs, values$removed)
       values$df <- values$origOccs
     }
-    lati <- values$df[,3]
-    longi <- values$df[,2]
-    z <- smartZoom(longi, lati)
+    lat <- values$df[,3]
+    lon <- values$df[,2]
+    z <- smartZoom(lon, lat)
     proxy %>% fitBounds(z[1], z[2], z[3], z[4])
   })
 
@@ -265,7 +265,7 @@ shinyServer(function(input, output, session) {
 
   # handle download for thinned records csv
   output$dlProcOccCsv <- downloadHandler(
-    filename = function() {paste0(nameAbbr(values$origOccs), "_procOccs.csv")},
+    filename = function() {paste0(nameAbbr(values$df), "_procOccs.csv")},
     content = function(file) {
       write.csv(values$df[,1:9], file, row.names = FALSE)
     }
