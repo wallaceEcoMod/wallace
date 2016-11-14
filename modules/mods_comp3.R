@@ -3,8 +3,9 @@ comp3_bioclim <- function(bcRes) {
   # getData() downloads bioclim variables unless they exist in directory, then just loads them
   withProgress(message = "Retrieving WorldClim data...", {
     if (bcRes == 0.5) {
-      print(values$mapCntr)
-      values$preds <- raster::getData(name = "worldclim", var = "bio", res = bcRes, lon = values$mapCntr[1], lat = values$mapCntr[2])
+      values$bcLat <- values$mapCntr[2]
+      values$bcLon <- values$mapCntr[1]
+      values$preds <- raster::getData(name = "worldclim", var = "bio", res = bcRes, lon = input$bcLon, lat = input$bcLat)
     } else {
       values$preds <- raster::getData(name = "worldclim", var = "bio", res = bcRes)
     }

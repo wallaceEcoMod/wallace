@@ -163,7 +163,6 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                        conditionalPanel('input.bcRes == 0.5', 
                                                                                         strong("Using map center coordinates as reference for tile download."),
                                                                                         textOutput('ctrLatLon'), br()
-                                                                                        # p(numericInput('bcLat', "Latitude", 0), numericInput('bcLon', "Longitude", 0))
                                                                                         ),
                                                                        actionButton("predDnld", "Download Env Data"),
                                                                        # fileInput(inputId = "userPreds", label = "Input predictor rasters", multiple = TRUE),
