@@ -63,6 +63,10 @@ comp6_maxentMod <- function(rms, fcs) {
   values$p10s <- apply(occVals, MARGIN = 2, function(x) rev(sort(x))[n90])  # apply 10% training presence threshold over all models
   
   # make datatable of results df
-  output$evalTbl <- DT::renderDataTable({DT::datatable(cbind(e@results[,1:3], round(e@results[,4:15], digits=3)))})
+  res <- e@results %>% rename(avg.test.AUC = Mean.AUC, var.test.AUC = Var.AUC, avg.diff.AUC = Mean.AUC.DIFF, 
+                        var.diff.AUC = Var.AUC.DIFF, avg.test.or10pct = Mean.OR10, var.test.or10pct = Var.OR10, 
+                        avg.test.orMTP = Mean.ORmin, var.test.orMTP = Var.ORmin, parameters = nparm) %>%
+    select(-nparam)
+  output$evalTbl <- DT::renderDataTable({DT::datatable(cbind(res[,1:3], round(res[,4:15], digits=3)))})
   writeLog(paste("* Maxent ran successfully and output evaluation results for", nrow(e@results), "models."))
 }
