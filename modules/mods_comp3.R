@@ -5,7 +5,7 @@ comp3_bioclim <- function(bcRes) {
     if (bcRes == 0.5) {
       values$bcLat <- values$mapCntr[2]
       values$bcLon <- values$mapCntr[1]
-      values$preds <- raster::getData(name = "worldclim", var = "bio", res = bcRes, lon = input$bcLon, lat = input$bcLat)
+      values$preds <- raster::getData(name = "worldclim", var = "bio", res = bcRes, lon = values$bcLon, lat = values$bcLat)
     } else {
       values$preds <- raster::getData(name = "worldclim", var = "bio", res = bcRes)
     }
