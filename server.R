@@ -259,6 +259,7 @@ shinyServer(function(input, output, session) {
 
   # erase select localities polygon with button click
   observeEvent(input$erasePolySelLocs, {
+    validate(need(values$origOccs, message = FALSE))
     values$ptsSel <- NULL
     values$polyPts1 <- NULL
     values$poly1 <- NULL

@@ -64,8 +64,8 @@ comp6_maxentMod <- function(rms, fcs) {
   
   # make datatable of results df
   res <- e@results %>% rename(avg.test.AUC = Mean.AUC, var.test.AUC = Var.AUC, avg.diff.AUC = Mean.AUC.DIFF, 
-                        var.diff.AUC = Var.AUC.DIFF, avg.test.or10pct = Mean.OR10, var.test.or10pct = Var.OR10, 
-                        avg.test.orMTP = Mean.ORmin, var.test.orMTP = Var.ORmin, parameters = nparm) %>%
+                        var.diff.AUC = Var.AUC.DIFF, avg.test.orMTP = Mean.ORmin, var.test.orMTP = Var.ORmin,
+                        avg.test.or10pct = Mean.OR10, var.test.or10pct = Var.OR10, parameters = nparm) %>%
     select(-nparam)
   output$evalTbl <- DT::renderDataTable({DT::datatable(cbind(res[,1:3], round(res[,4:15], digits=3)))})
   writeLog(paste("* Maxent ran successfully and output evaluation results for", nrow(e@results), "models."))

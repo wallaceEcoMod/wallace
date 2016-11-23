@@ -64,6 +64,15 @@ comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, selRCP, selGCM, selT
     return()
   }
   
+  gcms <- c('AC', 'BC', 'CC', 'CE', 'CN', 'GF', 'GD', 'GS', 'HD', 'HG', 'HE', 'IN', 'IP', 'MI', 'MR', 'MC', 'MP', 'MG', 'NO')
+  rcps <- c(26, 45, 60, 85)
+  m <- matrix(c(0,1,1,0,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,0,0,1,0,1,1,1,0,0,1,1,1,1,0,1,1,1,1,1,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1), ncol=4)
+  i <- m[which(selGCM == gcms), which(selRCP == rcps)]
+  if (!i) {
+    writeLog('* WARNING: This combination of model and rcp is not available. Please make a different selection.')
+    return()
+  }
+  
   withProgress(message = paste("Retrieving WorldClim data for", selTime, selRCP, "..."), {
     values$projTimeVars <- getData('CMIP5', var = "bio", res = bcRes,
                             rcp = selRCP, model = selGCM, year = selTime)
