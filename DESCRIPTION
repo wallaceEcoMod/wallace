@@ -31,4 +31,5 @@ Depends: R (>= 3.3.2),
     V8,
     data.table,
     lubridate,
-    stringr
+    stringr,
+    stringi
