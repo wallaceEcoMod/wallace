@@ -39,5 +39,6 @@ Depends: R (>= 3.3.2),
     mapproj,
     maps,
     DBI,
-    assertthat
+    assertthat,
+    tibble
 RoxygenNote: 5.0.1
