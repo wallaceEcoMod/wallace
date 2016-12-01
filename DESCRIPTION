@@ -8,8 +8,7 @@ License: GNU GPL 3.0
 Encoding: UTF-8
 LazyData: true
 Depends:
-    R (>= 3.3.2)
-Imports:
+    R (>= 3.3.2),
     shiny,
     shinyjs,
     shinyBS,
@@ -25,5 +24,6 @@ Imports:
     ENMeval,
     leaflet,
     DT,
-    shinythemes
+    shinythemes,
+    magrittr
 RoxygenNote: 5.0.1

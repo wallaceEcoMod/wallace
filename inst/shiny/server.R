@@ -1,7 +1,7 @@
 #' @import shiny
 #' @import dismo
-
-devtools::load_all()
+#' @import leaflet
+#' @importFrom magrittr "%>%"
 
 # make list to carry data used by multiple reactive functions
 brk <- paste(rep('------', 14), collapse='')
