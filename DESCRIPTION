@@ -40,5 +40,6 @@ Depends: R (>= 3.3.2),
     maps,
     DBI,
     assertthat,
-    tibble
+    tibble,
+    ggplot2
 RoxygenNote: 5.0.1
