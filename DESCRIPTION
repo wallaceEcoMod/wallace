@@ -46,5 +46,6 @@ Depends: R (>= 3.3.2),
     scales,
     munsell,
     colorspace,
-    plyr
+    plyr,
+    lazyeval
 RoxygenNote: 5.0.1
