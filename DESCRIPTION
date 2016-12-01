@@ -36,5 +36,6 @@ Depends: R (>= 3.3.2),
     stringr,
     stringi,
     rbison,
-    mapproj
+    mapproj,
+    maps
 RoxygenNote: 5.0.1
