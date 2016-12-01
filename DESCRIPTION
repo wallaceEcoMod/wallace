@@ -38,5 +38,6 @@ Depends: R (>= 3.3.2),
     rbison,
     mapproj,
     maps,
-    DBI
+    DBI,
+    assertthat
 RoxygenNote: 5.0.1
