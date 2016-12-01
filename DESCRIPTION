@@ -28,4 +28,5 @@ Depends: R (>= 3.3.2),
     httpuv,
     xtable,
     miniUI,
-    V8
+    V8,
+    data.table
