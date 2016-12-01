@@ -25,4 +25,5 @@ Depends: R (>= 3.3.2),
     shinythemes,
     htmltools,
     Rcpp,
-    httpuv
+    httpuv,
+    xtable
