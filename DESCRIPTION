@@ -30,4 +30,5 @@ Depends: R (>= 3.3.2),
     miniUI,
     V8,
     data.table,
-    lubridate
+    lubridate,
+    stringr
