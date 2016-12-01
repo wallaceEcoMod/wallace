@@ -22,4 +22,5 @@ Depends: R (>= 3.3.2),
     ENMeval,
     leaflet,
     DT,
-    shinythemes
+    shinythemes,
+    htmltools
