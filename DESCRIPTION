@@ -48,5 +48,6 @@ Depends: R (>= 3.3.2),
     colorspace,
     plyr,
     lazyeval,
-    sp
+    sp,
+    rebird
 RoxygenNote: 5.0.1
