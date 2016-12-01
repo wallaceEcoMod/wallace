@@ -1,12 +1,15 @@
 Package: wallace
-Title: A Flexible Platform for Reproducible Modeling of Species Niches and Distributions
+Title: A Flexible Platform for Reproducible Modeling of Species Niches and
+    Distributions
 Version: 1.0.0.0000
 Authors@R: person("Jamie M.", "Kass", email = "jkass@gradcenter.cuny.edu", role = c("aut", "cre"))
 Description: UNDER DEV
 License: GNU GPL 3.0
 Encoding: UTF-8
 LazyData: true
-Depends: R (>= 3.3.2),
+Depends:
+    R (>= 3.3.2)
+Imports:
     shiny,
     shinyjs,
     shinyBS,
@@ -22,14 +25,5 @@ Depends: R (>= 3.3.2),
     ENMeval,
     leaflet,
     DT,
-    shinythemes,
-    htmltools,
-    Rcpp,
-    httpuv,
-    xtable,
-    miniUI,
-    V8,
-    data.table,
-    lubridate,
-    stringr,
-    stringi
+    shinythemes
+RoxygenNote: 5.0.1

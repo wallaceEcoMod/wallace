@@ -1,5 +1,5 @@
 
-useShinyjs()
+shinyjs::useShinyjs()
 
 # for colored action buttons
 # actionButton <- function(inputId, label, btn.style = "" , css.class = "") {

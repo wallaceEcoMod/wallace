@@ -1,3 +1,6 @@
+#' @import shiny
+#' @import dismo
+
 devtools::load_all()
 
 # make list to carry data used by multiple reactive functions
