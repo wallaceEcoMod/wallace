@@ -50,5 +50,6 @@ Depends: R (>= 3.3.2),
     lazyeval,
     sp,
     rebird,
-    rgbif
+    rgbif,
+    geoaxe
 RoxygenNote: 5.0.1
