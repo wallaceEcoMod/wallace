@@ -37,5 +37,6 @@ Depends: R (>= 3.3.2),
     stringi,
     rbison,
     mapproj,
-    maps
+    maps,
+    DBI
 RoxygenNote: 5.0.1
