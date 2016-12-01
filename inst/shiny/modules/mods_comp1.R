@@ -44,17 +44,18 @@ getDbOccs <- function(spName, occNum) {
   # standardize column names
   if (input$occDb == 'vertnet') {
     dbOccs <- dbOccs %>%
-      rename(institutioncode = institutionCode) %>%
-      rename(stateprovince = stateProvince) %>%
-      rename(basisofrecord = basisOfRecord) %>%
-      rename(maximumelevationinmeters = elevation)
+      dplyr::rename(institutionCode = institutioncode) %>%
+      dplyr::rename(stateProvince = stateprovince) %>%
+      dplyr::rename(basisOfRecord = basisofrecord) %>%
+      dplyr::rename(elevation = maximumelevationinmeters)
   }
   # standardize column names
   if (input$occDb == 'bison') {
     dbOccs <- dbOccs %>%
-      rename(scientificName = name) %>%
-      rename(calculatedState = stateProvince) %>%
-      rename(verbatimElevation = elevation)
+      dplyr::rename(country = countryCode) %>%
+      dplyr::rename(institutionCode = ownerInstitutionCollectionCode) %>%
+      dplyr::rename(locality = calculatedCounty) %>%
+      dplyr::mutate(elevation = NULL)
   }
 
   # remove duplicate records
@@ -68,11 +69,10 @@ getDbOccs <- function(spName, occNum) {
   # subset by key columns and make id and popup columns
   cols <- c("name", "longitude", "latitude","year", "institutionCode", "country", "stateProvince",
             "locality", "elevation", "basisOfRecord")
-  print(dbOccs)
   dbOccs <- dbOccs %>%
-    select(one_of(cols)) %>%
-    mutate(origID = row.names(dbOccs)) %>%  # make new column for ID
-    mutate(pop = unlist(apply(dbOccs, 1, popUpContent)))  # make new column for leaflet marker popup content
+    dplyr::select(one_of(cols)) %>%
+    dplyr::mutate(origID = row.names(dbOccs)) %>%  # make new column for ID
+    dplyr::mutate(pop = unlist(apply(dbOccs, 1, popUpContent)))  # make new column for leaflet marker popup content
 
   # store dbOccs in values list
   values$df <- dbOccs
