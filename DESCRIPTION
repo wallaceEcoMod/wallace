@@ -49,5 +49,6 @@ Depends: R (>= 3.3.2),
     plyr,
     lazyeval,
     sp,
-    rebird
+    rebird,
+    rgbif
 RoxygenNote: 5.0.1
