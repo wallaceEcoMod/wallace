@@ -64,6 +64,7 @@ comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, selRCP, selGCM, selT
     return()
   }
   
+  # code taken from dismo getData() function to catch if user is trying to download a missing combo of gcm / rcp
   gcms <- c('AC', 'BC', 'CC', 'CE', 'CN', 'GF', 'GD', 'GS', 'HD', 'HG', 'HE', 'IN', 'IP', 'MI', 'MR', 'MC', 'MP', 'MG', 'NO')
   rcps <- c(26, 45, 60, 85)
   m <- matrix(c(0,1,1,0,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,0,0,1,0,1,1,1,0,0,1,1,1,1,0,1,1,1,1,1,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1), ncol=4)
