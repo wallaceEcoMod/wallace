@@ -24,5 +24,16 @@ Depends: R (>= 3.3.2),
     leaflet,
     DT,
     shinythemes,
-    magrittr
+    magrittr,
+    htmltools,
+    Rcpp,
+    httpuv,
+    xtable,
+    miniUI,
+    V8,
+    data.table,
+    lubridate,
+    stringr,
+    stringi,
+    rbison
 RoxygenNote: 5.0.1
