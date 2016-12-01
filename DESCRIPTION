@@ -7,7 +7,8 @@ Description: UNDER DEV
 License: GNU GPL 3.0
 Encoding: UTF-8
 LazyData: true
-Depends: R (>= 3.3.2),
+Depends: R (>= 3.3.2)
+Imports: 
     shiny,
     shinyjs,
     shinyBS,
@@ -23,35 +24,5 @@ Depends: R (>= 3.3.2),
     ENMeval,
     leaflet,
     DT,
-    shinythemes,
-    magrittr,
-    htmltools,
-    Rcpp,
-    httpuv,
-    xtable,
-    miniUI,
-    V8,
-    data.table,
-    lubridate,
-    stringr,
-    stringi,
-    rbison,
-    mapproj,
-    maps,
-    DBI,
-    assertthat,
-    tibble,
-    ggplot2,
-    gtable,
-    scales,
-    munsell,
-    colorspace,
-    plyr,
-    lazyeval,
-    sp,
-    rebird,
-    rgbif,
-    geoaxe,
-    oai,
-    xml2
+    shinythemes
 RoxygenNote: 5.0.1
