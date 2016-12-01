@@ -41,5 +41,6 @@ Depends: R (>= 3.3.2),
     DBI,
     assertthat,
     tibble,
-    ggplot2
+    ggplot2,
+    gtable
 RoxygenNote: 5.0.1
