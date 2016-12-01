@@ -52,5 +52,6 @@ Depends: R (>= 3.3.2),
     rebird,
     rgbif,
     geoaxe,
-    oai
+    oai,
+    xml2
 RoxygenNote: 5.0.1
