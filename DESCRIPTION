@@ -44,5 +44,6 @@ Depends: R (>= 3.3.2),
     ggplot2,
     gtable,
     scales,
-    munsell
+    munsell,
+    colorspace
 RoxygenNote: 5.0.1
