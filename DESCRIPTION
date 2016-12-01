@@ -23,4 +23,5 @@ Depends: R (>= 3.3.2),
     leaflet,
     DT,
     shinythemes,
-    htmltools
+    htmltools,
+    Rcpp
