@@ -27,4 +27,5 @@ Depends: R (>= 3.3.2),
     Rcpp,
     httpuv,
     xtable,
-    miniUI
+    miniUI,
+    V8
