@@ -42,5 +42,6 @@ Depends: R (>= 3.3.2),
     assertthat,
     tibble,
     ggplot2,
-    gtable
+    gtable,
+    scales
 RoxygenNote: 5.0.1
