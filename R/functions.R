@@ -4,11 +4,11 @@
 
 rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 
-reverseLabels <- function(..., reverse_order = FALSE) { 
-  if (reverse_order) { 
-    function(type = "numeric", cuts){ 
+reverseLabels <- function(..., reverse_order = FALSE) {
+  if (reverse_order) {
+    function(type = "numeric", cuts){
       cuts <- sort(cuts, decreasing = TRUE)
-    } 
+    }
   } else {
     labelFormat(...)
   }
@@ -27,8 +27,8 @@ map_plotLocs <- function(map, locs, clearMarkers=TRUE, clearShapes=TRUE, clearIm
   if (clearShapes) map %>% clearShapes()
   if (clearImages) map %>% clearImages()
   map %>% addCircleMarkers(data = locs, lat = ~latitude, lng = ~longitude,
-                           radius = 5, color = 'red', fill = TRUE, 
-                           fillColor = fillColor, fillOpacity = fillOpacity, 
+                           radius = 5, color = 'red', fill = TRUE,
+                           fillColor = fillColor, fillOpacity = fillOpacity,
                            weight = 2, popup = ~pop)
 }
 
@@ -39,7 +39,7 @@ zoom2Occs <- function(map, occs) {
   longi <- occs[,2]
   z <- smartZoom(longi, lati)
   map %>% fitBounds(z[1], z[2], z[3], z[4])
-  
+
   # this section makes letter icons for occs based on basisOfRecord
   #     occIcons <- makeOccIcons()
   #     iconList <- list(HUMAN_OBSERVATION=1, OBSERVATION=2, PRESERVED_SPECIMEN=3,
@@ -304,7 +304,7 @@ respCurv <- function(mod, i) {  # copied mostly from dismo
 
 # Reset values
 resetV <- function(x) {
-  
+
   namesV <- names(x)[-(1:2)]
   for(i in namesV){
     x[[i]] <- NULL
@@ -312,6 +312,6 @@ resetV <- function(x) {
   brk <- paste(rep('------', 14), collapse='')
   x$polyID <- 0
   x$polyErase <- FALSE
-  x$log <- c(paste('***WELCOME TO WALLACE***', brk, 
+  x$log <- c(paste('***WELCOME TO WALLACE***', brk,
                 'Please find messages for the user in this log window.', brk, sep='<br>'))
 }

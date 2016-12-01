@@ -1,33 +1,7 @@
-# Mac OS files
-.DS_Store
-
-# History files
-.Rhistory
-.Rapp.history
-
-# Example code in package build process
-*-Ex.R
-
-# RStudio files
-.Rproj.user/
-
-# produced vignettes
-vignettes/*.html
-vignettes/*.pdf
-
-# spThin files
-spatial_thin_log.txt
-
-# worldclim files
-wc*
-
-# r proj files
-.Rproj.user
-.RData
-
-# .rmd files
-temp*
-
-#
-KeepNA
-keepInteger
+^.*\.Rproj$         # Automatically added by RStudio,
+^\.Rproj\.user$     # used for temporary files. 
+^README\.Rmd$       # An Rmarkdown file used to generate README.md
+^cran-comments\.md$ # Comments for CRAN submission
+^NEWS\.md$          # A news file written in Markdown
+^\.travis\.yml$     # Used for continuous integration testing with travis
+\.DS_Store$	    # for macs

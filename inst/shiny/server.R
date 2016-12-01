@@ -1,37 +1,4 @@
-# check package dependencies, and download if necessary
-list.of.packages <- c("shiny", "spocc", "munsell", "maps", "RColorBrewer", "rmarkdown", "shinyjs", "devtools",
-                      "dplyr","spThin", "colorRamps", "dismo", "rgeos", "XML", "Rcpp", "RCurl", "curl",
-                      "maptools", "rgdal", "rJava", "devtools")
-new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-if (length(new.packages)) install.packages(new.packages)
-# use devtools to install leaflet and new unreleased version of ENMeval from github
-if (!require('leaflet')) devtools::install_github('rstudio/leaflet')
-# for exp version of ENMeval with special updateProgress param for shiny
-if (!require('ENMeval')) {
-  install_github("bobmuscarella/ENMeval@ENMeval_v0.1.2")
-} else {
-  if (packageVersion('ENMeval') != '0.1.2') install_github("bobmuscarella/ENMeval@ENMeval_v0.1.2")
-}
-#options(shiny.error=browser)  # for debugging
-
-# load libraries
-library(devtools)
-library(dplyr)
-library(spocc)
-library(shiny)
-library(maptools)
-library(spThin)
-library(ENMeval)
-library(dismo)
-library(rgeos)
-library(ggplot2)
-library(shinyjs)
-library(RColorBrewer)
-library(leaflet)
-library(rmarkdown)
-library(rgdal)
-
-source("functions.R")
+devtools::load_all()
 
 # make list to carry data used by multiple reactive functions
 brk <- paste(rep('------', 14), collapse='')
@@ -84,12 +51,12 @@ shinyServer(function(input, output, session) {
   for (f in list.files('./modules')) {
     source(file.path('modules', f), local=TRUE)
   }
-  
+
   # UI for component guidance text
   output$gtext_comp <- renderUI({
     includeMarkdown(gtext$cur_comp)
   })
-  
+
   # UI for module guidance text
   output$gtext_mod <- renderUI({
     includeMarkdown(gtext$cur_mod)
@@ -112,7 +79,7 @@ shinyServer(function(input, output, session) {
   observe({
     proxy %>% addProviderTiles(input$bmap)
   })
-  
+
 
 #########################
 ### COMPONENT 1 ####
@@ -129,7 +96,7 @@ shinyServer(function(input, output, session) {
       proxy %>% clearControls()
     }
   })
-  
+
   # module GBIF
   observeEvent(input$goName, {
     if (input$spName == "") return()
@@ -178,7 +145,7 @@ shinyServer(function(input, output, session) {
                             opacity = 1, layerId = 'selLegend') %>%
           removeControl('thinLegend') %>% clearImages() %>% clearShapes()
         if (!is.null(values$ptsSel)) {
-          proxy %>% 
+          proxy %>%
             map_plotLocs(values$origOccs) %>%
             map_plotLocs(values$ptsSel, fillColor='yellow', fillOpacity=1, clearShapes=FALSE, clearMarkers=FALSE) %>%
             zoom2Occs(values$origOccs)
@@ -194,12 +161,12 @@ shinyServer(function(input, output, session) {
           proxy %>% map_plotLocs(values$ptsSel)
           if (!is.null(values$prethinned)) {
             proxy %>% addCircleMarkers(data = values$prethinned, lat = ~latitude, lng = ~longitude,
-                                       radius = 5, color = 'red', fillColor = 'blue', 
-                                       fillOpacity = 1, weight = 2, popup = ~pop, 
+                                       radius = 5, color = 'red', fillColor = 'blue',
+                                       fillOpacity = 1, weight = 2, popup = ~pop,
                                        group = 'comp2') %>%
               addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
-                               radius = 5, color = 'red', fillColor = 'red', 
-                               fillOpacity = 1, weight = 2, popup = ~pop, 
+                               radius = 5, color = 'red', fillColor = 'red',
+                               fillOpacity = 1, weight = 2, popup = ~pop,
                                group = 'comp2') %>%
               zoom2Occs(values$prethinned)
           }
@@ -290,7 +257,7 @@ shinyServer(function(input, output, session) {
       write.csv(values$df[,1:9], file, row.names = FALSE)
     }
   )
-  
+
 #########################
 ### COMPONENT 3 ####
 #########################
@@ -307,12 +274,12 @@ shinyServer(function(input, output, session) {
       proxy %>% clearControls() %>% clearShapes()
     }
   })
-  
+
   # map center coordinates for 30 arcsec download
   observe({
     mapCntr <- mapCenter(input$map_bounds)
     values$mapCntr <- mapCntr
-    output$ctrLatLon <- renderText({paste('Using map center', paste(mapCntr, collapse=', '))})    
+    output$ctrLatLon <- renderText({paste('Using map center', paste(mapCntr, collapse=', '))})
   })
 
   # enable download button
@@ -324,10 +291,10 @@ shinyServer(function(input, output, session) {
       comp3_bioclim(input$bcRes)
     }
   })
-  
+
   # observeEvent(input$userPreds, {
   #   validate(need(input$userPreds, message = FALSE))
-  #   comp3_userPreds(input$userPreds) 
+  #   comp3_userPreds(input$userPreds)
   # })
 
   # future user input functionality for rasters
@@ -481,7 +448,7 @@ shinyServer(function(input, output, session) {
       return()
     }
     values$predsLog <- NULL  # reset predsLog if models are rerun
-    values$enmSel <- input$enmSel 
+    values$enmSel <- input$enmSel
 
     # Module BIOCLIM
     if (input$enmSel == "BIOCLIM") {
@@ -547,20 +514,20 @@ shinyServer(function(input, output, session) {
       if (is.null(values$evalPreds)) return()
       n <- names(values$evalPreds)
       if (!resp) {
-        predNameList <- setNames(as.list(seq(1, length(n))), n)  
+        predNameList <- setNames(as.list(seq(1, length(n))), n)
       } else {
-        predNameList <- setNames(as.list(n), n)  
+        predNameList <- setNames(as.list(n), n)
       }
       selectInput(inputName, label = "Choose a model",
                   choices = predNameList, selected = predNameList[[1]])
     })
   }
-  
+
   # generates user selection of rasters to plot dynamically after they are created
   output$modelSelPlotStudyExt <- modelSel("modelSelPlotStudyExt")
   # model list for response curve model selection
   output$modelSelRespCurv <- modelSel("modelSelRespCurv", resp=TRUE)
-  
+
   # generates list of predictor variables with non-zero coeffs for currently selected model
   output$predVarSel <- renderUI({
     if (is.null(values$evalPreds)) return()
@@ -589,7 +556,7 @@ shinyServer(function(input, output, session) {
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Map')
   })
-  
+
   # Module Response Curves
   observe({
     if (is.null(input$visSel)) return()
@@ -600,20 +567,20 @@ shinyServer(function(input, output, session) {
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
   })
-  
+
   # Module BIOCLIM Envelope Plots
   output$bcEnvelPlot <- renderPlot({
     validate(need(values$evalMods[[1]], message = FALSE))
     values$bcEnvelPlot <- TRUE
     plot(values$evalMods[[1]], a = input$bc1, b = input$bc2, p = input$bcProb)
     })
-  
+
   # Module Maxent Evaluation Plots
   output$mxEvalPlot <- renderPlot({
-    values$mxEvalPlot <- TRUE 
+    values$mxEvalPlot <- TRUE
     evalPlot(values$evalTbl, input$mxEvalSel)
     })
-  
+
   # handle downloads for BIOCLIM env plots png
   output$downloadEnvPlot <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$origOccs), "_envelope_plot.png")},
@@ -623,7 +590,7 @@ shinyServer(function(input, output, session) {
       dev.off()
     }
   )
-  
+
   # handle downloads for ENMeval plots png
   output$downloadEvalPlot <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$origOccs), "_enmeval_plot.png")},
@@ -633,7 +600,7 @@ shinyServer(function(input, output, session) {
       dev.off()
     }
   )
-  
+
   # handle downloads for response curve plot
   output$downloadRespPlot <- downloadHandler(
     filename = function() {paste0(nameAbbr(values$origOccs), "_response_plot.png")},
@@ -702,7 +669,7 @@ shinyServer(function(input, output, session) {
       if (!is.null(values$poly2)) return()  # if sel pj ext poly selected, don't allow more drawing
       if (is.null(input$map_click)) return()
       lonlat <- c(input$map_click$lng, input$map_click$lat)
-     
+
       if (values$polyErase) {
         if (identical(lonlat, values$mapClick)) return()
         values$polyErase <- FALSE
@@ -730,7 +697,7 @@ shinyServer(function(input, output, session) {
 
     writeLog('* RESET PROJECTION EXTENT')
   })
-  
+
   # model list for comp8
   output$modelSelProj <- modelSel("modelSelProj")
 
@@ -743,19 +710,19 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goPjArea, {
     comp8_pjArea(input$modelSelProj, input$predForm, values$enmSel)
   })
-  
+
   observe({
     GCMnames <- c(AC="ACCESS1-0", BC="BCC-CSM1-1", CC="CCSM4", CE="CESM1-CAM5-1-FV2",
                   CN="CNRM-CM5", GF="GFDL-CM3", GD="GFDL-ESM2G", GS="GISS-E2-R",
                   HD="HadGEM2-AO", HG="HadGEM2-CC", HE="HadGEM2-ES", IN="INMCM4",
-                  IP="IPSL-CM5A-LR", ME="MPI-ESM-P", MI="MIROC-ESM-CHEM", MR="MIROC-ESM", 
+                  IP="IPSL-CM5A-LR", ME="MPI-ESM-P", MI="MIROC-ESM-CHEM", MR="MIROC-ESM",
                   MC="MIROC5", MP="MPI-ESM-LR", MG="MRI-CGCM3", NO="NorESM1-M")
     if (input$selTime == 'lgm') {
       selGCMchoices <- c('CC', 'MR', 'MC')
     } else if (input$selTime == 'mid') {
       selGCMchoices <- c("BC", "CC", "CE", "CN", "HG", "IP", "MR", "ME", "MG")
     } else {
-      selGCMchoices <- c("AC", "BC", "CC", "CE", "CN", "GF", "GD", "GS", "HD", 
+      selGCMchoices <- c("AC", "BC", "CC", "CE", "CN", "GF", "GD", "GS", "HD",
                          "HG", "HE", "IN", "IP", "MI", "MR", "MC", "MP", "MG", "NO")
     }
     names(selGCMchoices) <- GCMnames[selGCMchoices]
@@ -764,10 +731,10 @@ shinyServer(function(input, output, session) {
       selectInput("selGCM", label = "Select global circulation model", choices = selGCMchoices)
     })
   })
-  
+
   # Module Project to New Time
   observeEvent(input$goPjTime, {
-    comp8_pjTime(input$modelSelProj, input$predForm, values$enmSel, input$bcRes, input$selRCP, 
+    comp8_pjTime(input$modelSelProj, input$predForm, values$enmSel, input$bcRes, input$selRCP,
                  input$selGCM, input$selTime)
   })
 
@@ -832,7 +799,7 @@ shinyServer(function(input, output, session) {
                          predsRes=input$bcRes, bcLat=values$bcLat, bcLon=values$bcLon, backgSel=input$backgSel, backgBuf=input$backgBuf, userBGname=input$userBackg$name,
                          userBGpath=input$userBackg$datapath, partSel=values$partSel2, aggFact=input$aggFact, kfoldsSel=input$kfolds,
                          enmSel=input$enmSel, rmsSel1=input$rms[1], rmsSel2=input$rms[2], rmsBy=input$rmsBy, fcsSel=printVecAsis(input$fcs),
-                         mapPred=values$goMapPred, respCurvParamsMod=values$respCurvParams[[1]], respCurvParamsVar=values$respCurvParams[[2]], bcEnvelPlot=values$bcEnvelPlot, 
+                         mapPred=values$goMapPred, respCurvParamsMod=values$respCurvParams[[1]], respCurvParamsVar=values$respCurvParams[[2]], bcEnvelPlot=values$bcEnvelPlot,
                          bcPlot1=input$bc1, bcPlot2=input$bc2, bcPlotP=input$bcProb, mxEvalPlot=values$mxEvalPlot, mxEvalPlotSel=input$mxEvalSel,
                          projAreaX=projAreaX, projAreaY=projAreaY, modSel=modSel, selRCP=input$selRCP, selGCM=input$selGCM, selTime=input$selTime)
       writeLines(exp, 'userReport2.Rmd')

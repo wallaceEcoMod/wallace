@@ -1,20 +1,3 @@
-if (!require("shiny")) install.packages("shiny")
-if (!require("shinyjs")) install.packages("shinyjs")
-if (!require("devtools")) install.packages("devtools")
-if (!require("shinythemes")) install.packages("shinythemes")
-if (!require('shinyapps')) devtools::install_github("rstudio/shinyapps")
-if (!require('leaflet')) devtools::install_github("rstudio/leaflet")
-if (!require("DT")) devtools::install_github("rstudio/DT")
-if (!require("shinyBS")) install.packages("shinyBS")
-
-library(shiny)
-library(shinythemes)
-library(shinyBS)
-library(shinyapps)
-library(shinyjs)
-library(leaflet)
-library(DT)
-source("functions.R")
 
 useShinyjs()
 
@@ -55,13 +38,13 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                    tabPanel("7 Visualize", value=7),
                    tabPanel("8 Project", value=8),
                    tabPanel("Analysis Code", value='rmd'),
-                   
+
                    fluidRow(column(4,
                                    wellPanel(
-                                     includeCSS("styles.css"),
-                                     includeScript("scroll.js"),
+                                     includeCSS(system.file("css", "styles.css", package = "wallace")),
+                                     includeScript(system.file("js", "scroll.js", package = "wallace")),
                                      conditionalPanel("input.tabs == 0", h4("Introduction"),
-                                                      includeMarkdown("guidance/text_intro_tab.Rmd")
+                                                      includeMarkdown(system.file("Rmd", "text_intro_tab.Rmd", package = "wallace"))
                                      ),
 # tab 1 ####
                                      conditionalPanel("input.tabs == 1",
@@ -132,7 +115,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                                  'The minimum distance between occurrence locations (nearest neighbor distance) in km for resulting thinned dataset. Ideally based on species biology (e.g., home-range size).',
                                                                                  placement = 'right', options = list(container = "body")),
                                                                        actionButton("goThin", "Thin Localities")
-                                                                       
+
                                                       ), br(),
                                                       actionButton("erasePolySelLocs", "Reset Points"),
                                                       HTML('<hr>'),
@@ -170,7 +153,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                        bsPopover('bcRes', title = 'Tip',
                                                                                  'Approximate lengths at equator: 10 arcmin = ~20 km, 5 arcmin = ~10 km, 2.5 arcmin = ~5 km, 30 arcsec = ~1 km. Exact length varies based on latitudinal position.',
                                                                                  placement = 'right', options = list(container = "body")),
-                                                                       conditionalPanel('input.bcRes == 0.5', 
+                                                                       conditionalPanel('input.bcRes == 0.5',
                                                                                         strong("Using map center coordinates as reference for tile download."),
                                                                                         textOutput('ctrLatLon'), br()
                                                                                         ),
@@ -193,7 +176,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                       h4("Process Environmental Data"),
                                                       radioButtons("envProcSel", "Modules Available:",
                                                                    choices = list("Select Study Region" = "backg")),
-                                                      
+
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.envProcSel == 'backg'",
                                                                        div('Module: Select Study Region', id="mod"),
@@ -240,7 +223,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                                        " | ",
                                                                        a("documentation", href="https://cran.r-project.org/web/packages/rgeos/rgeos.pdf", target = "_blank")
                                                       )
-                                                      
+
                                      ),
 # tab 5 ####
                                      conditionalPanel("input.tabs == 5",
@@ -306,7 +289,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                                       conditionalPanel("input.enmSel == 'Maxent'",
                                                                        checkboxGroupInput("fcs", label = "Select feature classes (flexibility of modeled response)",
                                                                                           choices = list("L (Linear)" = "L", "LQ (Linear/Quadratic)" = "LQ", "H (Hinge)" = "H",
-                                                                                                         "LQH (Linear/Quadratic/Hinge)" = "LQH", "LQHP (Linear/Quadratic/Hinge/Product)" = "LQHP", 
+                                                                                                         "LQH (Linear/Quadratic/Hinge)" = "LQH", "LQHP (Linear/Quadratic/Hinge/Product)" = "LQHP",
                                                                                                          "LQHPT (Linear/Quadratic/Hinge/Threshold)" = "LQHPT")),
                                                                        bsPopover('fcs', title = 'Tip',
                                                                                  'Feature combinations to be explored. Features are constructed using different relationships within and among the environmental predictors, and are used to constrain the computed probability distribution. In short, more features = more potential model complexity.',
@@ -347,7 +330,7 @@ shinyUI(navbarPage(theme=shinytheme('united'), id='tabs', collapsible=TRUE,
                                      conditionalPanel("input.tabs == 7",
                                                       h4("Visualize Model Results"),
                                                       radioButtons("visSel", "Modules Available:",
-                                                                   choices = list("BIOCLIM Envelope Plots" = 'bcEnvel', 
+                                                                   choices = list("BIOCLIM Envelope Plots" = 'bcEnvel',
                                                                                   "Maxent Evaluation Plots" = 'mxEval',
                                                                                   "Plot Response Curves" = 'response',
                                                                                   "Map Prediction" = 'map')),
@@ -484,11 +467,11 @@ column(8,
        conditionalPanel("input.tabs != 0 && input.tabs != 'rmd'",
                         div(id = "wallaceLog", class = "scrollbox", htmlOutput("log")),
        absolutePanel(top = 70, right = 20, width = 150, draggable = TRUE,
-                     selectInput("bmap", "Change Base Map", choices = c('ESRI Topo'="Esri.WorldTopoMap", 
+                     selectInput("bmap", "Change Base Map", choices = c('ESRI Topo'="Esri.WorldTopoMap",
                                                                         'Stamen Terrain'="Stamen.Terrain",
                                                                         'Open Topo'="OpenTopoMap",
                                                                         'ESRI Imagery'="Esri.WorldImagery",
-                                                                        'ESRI Nat Geo'='Esri.NatGeoWorldMap'), 
+                                                                        'ESRI Nat Geo'='Esri.NatGeoWorldMap'),
                                  selected = "Esri.WorldTopoMap"))
        ),
        br(),
@@ -497,11 +480,11 @@ column(8,
                           tabPanel('Map', leafletOutput("map", height=600)),
                           tabPanel('Occs Tbl', DT::dataTableOutput('occTbl')),
                           tabPanel('Results', conditionalPanel("input.tabs == 6", dataTableOutput('evalTbl')),
-                                   conditionalPanel("input.tabs == 7 && input.visSel == 'response'", 
+                                   conditionalPanel("input.tabs == 7 && input.visSel == 'response'",
                                                     imageOutput('respCurv')),
-                                   conditionalPanel("input.tabs == 7 && input.visSel == 'bcEnvel' && input.enmSel == 'BIOCLIM'", 
+                                   conditionalPanel("input.tabs == 7 && input.visSel == 'bcEnvel' && input.enmSel == 'BIOCLIM'",
                                                     imageOutput('bcEnvelPlot')),
-                                   conditionalPanel("input.tabs == 7 && input.visSel == 'mxEval'  && input.enmSel == 'Maxent'", 
+                                   conditionalPanel("input.tabs == 7 && input.visSel == 'mxEval'  && input.enmSel == 'Maxent'",
                                                     imageOutput('mxEvalPlot'))),
                           tabPanel('Component Guidance', uiOutput('gtext_comp')),
                           tabPanel('Module Guidance', uiOutput('gtext_mod'))
@@ -512,21 +495,21 @@ column(8,
                                selectInput('mdType', label = "R Markdown Download Type",
                                            choices = list("Rmd", "PDF", "HTML", "Word")),
                                downloadButton('downloadMD', 'Download History in R Markdown'), br(), br(),
-                               includeMarkdown("guidance/text_analysisCode.Rmd")
+                               includeMarkdown(system.file("Rmd", "text_analysisCode.Rmd", package = "wallace"))
                         )
        ),
        conditionalPanel("input.tabs == 0",
                         tabsetPanel(id = 'introTabs',
-                          tabPanel('Intro', includeMarkdown("guidance/text_intro.Rmd")),
+                          tabPanel('Intro', includeMarkdown(system.file("Rmd", "text_intro.Rmd", package = "wallace"))),
                           tabPanel('About',
                                    h4("Wallace was created by an international team of ecologists:"),
                                    fluidRow(
-                                     column(2, includeMarkdown("guidance/text_about1.Rmd")),
-                                     column(3, includeMarkdown("guidance/text_about2.Rmd")),
-                                     column(5, includeMarkdown("guidance/text_about3.Rmd"))
+                                     column(2, includeMarkdown(system.file("Rmd", "text_about1.Rmd", package = "wallace"))),
+                                     column(3, includeMarkdown(system.file("Rmd", "text_about2.Rmd", package = "wallace"))),
+                                     column(5, includeMarkdown(system.file("Rmd", "text_about3.Rmd", package = "wallace")))
                                    )
                           )
-                        )  
+                        )
        )
 )
                    )

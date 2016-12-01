@@ -1,5 +1,3 @@
-source("functions.R")
-
 remSelLocs <- function(remLoc) {
   isolate({
     numTest <- remLoc %in% values$df$origID
@@ -15,7 +13,7 @@ remSelLocs <- function(remLoc) {
     if (numTest) {
       writeLog(paste0("* Removed locality with ID = ", remLoc, "."))
     }
-    
+
     proxy %>% zoom2Occs(values$origOccs) %>% map_plotLocs(values$origOccs)
   })
 }
@@ -83,17 +81,17 @@ thinOccs <- function(thinDist) {
       thinned.inFile <- values$inFile[as.numeric(rownames(output[[1]])),]
     }
   })
-  
+
   # MAPPING - blue pts for remove, red pts for keep
   proxy %>% addCircleMarkers(data = values$prethinned, lat = ~latitude, lng = ~longitude,
-                             radius = 5, color = 'red', fillColor = 'blue', 
-                             fillOpacity = 1, weight = 2, popup = ~pop, 
+                             radius = 5, color = 'red', fillColor = 'blue',
+                             fillOpacity = 1, weight = 2, popup = ~pop,
                              group = 'comp2')
   proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
-                             radius = 5, color = 'red', fillColor = 'red', 
-                             fillOpacity = 1, weight = 2, popup = ~pop, 
+                             radius = 5, color = 'red', fillColor = 'red',
+                             fillOpacity = 1, weight = 2, popup = ~pop,
                              group = 'comp2')
-  
+
   # values$origOccs <- values$df
   writeLog(paste('* Total records thinned to [', nrow(values$df), '] localities.'))
   # render the thinned records data table
