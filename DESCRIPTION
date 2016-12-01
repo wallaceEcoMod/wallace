@@ -43,5 +43,6 @@ Depends: R (>= 3.3.2),
     tibble,
     ggplot2,
     gtable,
-    scales
+    scales,
+    munsell
 RoxygenNote: 5.0.1
