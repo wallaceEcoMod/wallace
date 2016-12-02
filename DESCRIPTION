@@ -10,12 +10,12 @@ Depends:
     R (>= 3.2.4),
     shiny,
     leaflet,
-    DT
+    DT,
+    scales (>= 0.4.1)
 Imports:
     shinyjs,
     shinyBS,
     spocc,
-    scales (>= 0.4.1),
     RColorBrewer,
     rmarkdown,
     dplyr,
