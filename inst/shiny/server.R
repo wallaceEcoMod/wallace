@@ -1,7 +1,5 @@
 #' @importFrom magrittr "%>%"
 
-devtools::load_all()
-
 # make list to carry data used by multiple reactive functions
 brk <- paste(rep('------', 14), collapse='')
 logInit <- c(paste('***WELCOME TO WALLACE***', brk, 'Please find messages for the user in this log window.', brk, sep='<br>'))
