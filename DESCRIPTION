@@ -9,7 +9,6 @@ LazyData: true
 Depends: 
     R (>= 3.2.4),
     shiny (>= 0.14.2),
-    leaflet (>= 1.0.2),
     DT (>= 0.2)
 Imports:
     shinyjs,
@@ -26,4 +25,5 @@ Imports:
     raster,
     ENMeval,
     shinythemes
+Remotes: rstudio/leaflet
 RoxygenNote: 5.0.1
