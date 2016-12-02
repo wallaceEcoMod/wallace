@@ -24,16 +24,16 @@ polySelLocs <- function() {
   values$polyErase <- TRUE  # turn on to signal to prevent the use of an existing map click
   values$polyID <- values$polyID + 1
   if (is.null(values$polyPts1)) return()
-  pts <- SpatialPoints(values$df[,2:3])  # make pts spatial object
+  pts <- sp::SpatialPoints(values$df[,2:3])  # make pts spatial object
 
-  newPoly <- SpatialPolygons(list(Polygons(list(Polygon(values$polyPts1)), ID=values$polyID)))  # create new polygon from coords
+  newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(values$polyPts1)), ID=values$polyID)))  # create new polygon from coords
   if (is.null(values$poly1)) {  # if there are no polygons, draw the new one, otherwise draw the new plus all the old ones
     values$poly1 <- newPoly  # this is passed to mapFuncs to fill the selected polygons
   } else {
-    values$poly1 <- spRbind(values$poly1, newPoly)
+    values$poly1 <- maptools::spRbind(values$poly1, newPoly)
   }
 
-  ptSelIndex <- as.numeric(which(!(is.na(over(pts, values$poly1)))))  # select pts overlapping (intersecting) with polygon(s)
+  ptSelIndex <- as.numeric(which(!(is.na(sp::over(pts, values$poly1)))))  # select pts overlapping (intersecting) with polygon(s)
   if (length(ptSelIndex) == 0) {
     values$poly1 <- NULL
     values$polyErase <- TRUE  # turn on to signal to prevent use existing map click

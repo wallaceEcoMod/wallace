@@ -10,7 +10,7 @@ getDbOccs <- function(spName, occNum) {
 
   writeLog(paste("... Searching", input$occDb, "..."))
   # query database
-  query <- occ(input$spName, input$occDb, limit=input$occNum)
+  query <- spocc::occ(input$spName, input$occDb, limit=input$occNum)
 
   # if species not found, print message to log box and return
   if (query[[input$occDb]]$meta$found == 0) {
@@ -35,7 +35,7 @@ getDbOccs <- function(spName, occNum) {
   totRows <- query[[input$occDb]]$meta$found
 
   # subset to just records with latitude and longitude
-  dbOccs <- dbOccs.orig %>% filter(!is.na(latitude) & !is.na(longitude))
+  dbOccs <- dbOccs.orig %>% dplyr::filter(!is.na(latitude) & !is.na(longitude))
   if (nrow(dbOccs) == 0) {
     writeLog(paste("No records with coordinates found in", input$occDb, "for", input$spName, "."))
     return()
@@ -70,7 +70,7 @@ getDbOccs <- function(spName, occNum) {
   cols <- c("name", "longitude", "latitude","year", "institutionCode", "country", "stateProvince",
             "locality", "elevation", "basisOfRecord")
   dbOccs <- dbOccs %>%
-    dplyr::select(one_of(cols)) %>%
+    dplyr::select(dplyr::one_of(cols)) %>%
     dplyr::mutate(origID = row.names(dbOccs)) %>%  # make new column for ID
     dplyr::mutate(pop = unlist(apply(dbOccs, 1, popUpContent)))  # make new column for leaflet marker popup content
 

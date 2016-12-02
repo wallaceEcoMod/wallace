@@ -1,5 +1,7 @@
 #' @importFrom magrittr "%>%"
 
+devtools::load_all()
+
 # make list to carry data used by multiple reactive functions
 brk <- paste(rep('------', 14), collapse='')
 logInit <- c(paste('***WELCOME TO WALLACE***', brk, 'Please find messages for the user in this log window.', brk, sep='<br>'))
@@ -47,10 +49,10 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("downloadPred")
   shinyjs::disable("downloadPj")
 
-  # # load modules
-  # for (f in list.files('./modules')) {
-  #   source(file.path('modules', f), local=TRUE)
-  # }
+  # load modules
+  for (f in list.files('./modules')) {
+    source(file.path('modules', f), local=TRUE)
+  }
 
   # UI for component guidance text
   output$gtext_comp <- renderUI({
@@ -201,7 +203,7 @@ shinyServer(function(input, output, session) {
     if (!is.null(values$poly1)) {
       curPolys <- values$poly1@polygons
       numPolys <- length(curPolys)
-      colors <- brewer.pal(numPolys, 'Accent')
+      colors <- RColorBrewer::brewer.pal(numPolys, 'Accent')
       for (i in numPolys) {
         curPoly <- curPolys[i][[1]]@Polygons[[1]]@coords
         proxy %>% addPolygons(curPoly[,1], curPoly[,2],

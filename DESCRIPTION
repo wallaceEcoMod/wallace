@@ -10,7 +10,8 @@ Depends:
     R (>= 3.3.2),
     shiny,
     leaflet,
-    DT,
+    DT
+Imports:
     shinyjs,
     shinyBS,
     spocc,
@@ -19,6 +20,7 @@ Depends:
     dplyr,
     spThin,
     rgeos,
+    maptools,
     rgdal,
     dismo,
     raster,
