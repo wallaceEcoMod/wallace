@@ -14,6 +14,7 @@ reverseLabels <- function(..., reverse_order = FALSE) {
   }
 }
 
+#' @export
 # return the map center given the bounds
 mapCenter <- function(bounds) {
   map_center <- c((bounds$west + bounds$east) / 2, (bounds$north + bounds$south) / 2)
