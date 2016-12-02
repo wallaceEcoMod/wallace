@@ -205,7 +205,7 @@ shinyServer(function(input, output, session) {
     if (!is.null(values$poly1)) {
       curPolys <- values$poly1@polygons
       numPolys <- length(curPolys)
-      colors <- RColorBrewer::brewer.pal(numPolys, 'Accent')
+      colors <- RColorBrewer::brewer.pal(numPolys, 'Set1')
       for (i in 1:numPolys) {
         curPoly <- curPolys[i][[1]]@Polygons[[1]]@coords
         proxy %>% addPolygons(curPoly[,1], curPoly[,2], weight=3, color=colors[i])
