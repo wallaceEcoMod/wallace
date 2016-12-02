@@ -1,6 +1,3 @@
-#' @import shiny
-#' @import dismo
-#' @import leaflet
 #' @importFrom magrittr "%>%"
 
 # make list to carry data used by multiple reactive functions
@@ -50,10 +47,10 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("downloadPred")
   shinyjs::disable("downloadPj")
 
-  # load modules
-  for (f in list.files('./modules')) {
-    source(file.path('modules', f), local=TRUE)
-  }
+  # # load modules
+  # for (f in list.files('./modules')) {
+  #   source(file.path('modules', f), local=TRUE)
+  # }
 
   # UI for component guidance text
   output$gtext_comp <- renderUI({

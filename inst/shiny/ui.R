@@ -1,31 +1,5 @@
-#' @import shiny
-#' @import leaflet
 
 shinyjs::useShinyjs()
-
-# for colored action buttons
-# actionButton <- function(inputId, label, btn.style = "" , css.class = "") {
-#   if ( btn.style %in% c("primary","info","success","warning","danger","inverse","link")) {
-#     btn.css.class <- paste("btn",btn.style,sep="-")
-#   } else btn.css.class = ""
-#
-#   tags$button(id=inputId, type="button", class=paste("btn action-button",btn.css.class,css.class,collapse=" "), label)
-# }
-
-# function to make two small input boxes next to each other
-# textInputRow<-function (inputId, label, value = "")
-# {
-#   div(style="display:inline-block",
-#       tags$label(label, `for` = inputId),
-#       tags$input(id = inputId, type = "text", value = value,class="input-small"))
-# }
-
-# title <- HTML('&nbsp;&nbsp;<span style="font-size:25pt">WALLACE beta v0.2:</span>
-#               &nbsp;<span style="font-size:15pt">An R-based Modular Web App to Harness Biodiversity Data for Spatial Modeling</span><br>
-#               &nbsp;&nbsp;<span style="font-size:10pt">Developers: Jamie M. Kass, Matthew Aiello-Lammens, Bruno Vilela, Robert Muscarella, Robert P. Anderson</span><br><br>'
-#               )
-
-
 
 # Define UI for application
 shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsible=TRUE,
