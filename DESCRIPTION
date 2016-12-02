@@ -15,6 +15,7 @@ Imports:
     shinyjs,
     shinyBS,
     spocc,
+    scales (>=0.4-1),
     RColorBrewer,
     rmarkdown,
     dplyr,
