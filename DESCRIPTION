@@ -10,8 +10,7 @@ Depends:
     R (>= 3.2.4),
     shiny,
     leaflet,
-    DT,
-    scales (>= 0.4.1)
+    DT
 Imports:
     shinyjs,
     shinyBS,

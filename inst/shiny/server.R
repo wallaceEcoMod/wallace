@@ -1,5 +1,7 @@
 #' @importFrom magrittr "%>%"
 
+source(system.file("R", 'functions.R', package = "wallace"))
+
 # make list to carry data used by multiple reactive functions
 brk <- paste(rep('------', 14), collapse='')
 logInit <- c(paste('***WELCOME TO WALLACE***', brk, 'Please find messages for the user in this log window.', brk, sep='<br>'))
@@ -279,7 +281,6 @@ shinyServer(function(input, output, session) {
   # map center coordinates for 30 arcsec download
   observe({
     mapCntr <- mapCenter(input$map_bounds)
-    print(mapCntr)
     values$mapCntr <- mapCntr
     output$ctrLatLon <- renderText({paste('Using map center', paste(mapCntr, collapse=', '))})
   })
