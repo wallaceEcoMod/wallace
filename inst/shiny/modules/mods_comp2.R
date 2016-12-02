@@ -24,16 +24,28 @@ polySelLocs <- function() {
   values$polyErase <- TRUE  # turn on to signal to prevent the use of an existing map click
   values$polyID <- values$polyID + 1
   if (is.null(values$polyPts1)) return()
-  pts <- sp::SpatialPoints(values$df[,2:3])  # make pts spatial object
+
+  # make spatial pts object of original occs and preserve origID
+  pts <- sp::SpatialPointsDataFrame(values$origOccs[,2:3], data=values$origOccs['origID'])
 
   newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(values$polyPts1)), ID=values$polyID)))  # create new polygon from coords
-  if (is.null(values$poly1)) {  # if there are no polygons, draw the new one, otherwise draw the new plus all the old ones
-    values$poly1 <- newPoly  # this is passed to mapFuncs to fill the selected polygons
+
+  # reset polyPts1
+  values$polyPts1 <- NULL
+
+  # if there are no polygons, draw the new one, otherwise draw the new plus all the old ones (bind them together)
+  if (is.null(values$poly1)) {
+    values$poly1 <- newPoly
   } else {
     values$poly1 <- maptools::spRbind(values$poly1, newPoly)
   }
 
-  ptSelIndex <- as.numeric(which(!(is.na(sp::over(pts, values$poly1)))))  # select pts overlapping (intersecting) with polygon(s)
+  # select pts overlapping (intersecting) with polygon(s) and get the indices of selected pts
+  intersect <- sp::over(pts, values$poly1)
+  ptSelIndex <- as.numeric(which(!(is.na(intersect))))
+  print(ptSelIndex)
+
+  # if no pts selected, erase polys and exit function
   if (length(ptSelIndex) == 0) {
     values$poly1 <- NULL
     values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
@@ -42,15 +54,17 @@ polySelLocs <- function() {
     return()
   }
 
-  # Subset with selected locs
-  ptsSel <- values$origOccs[ptSelIndex, ]
-  # Record ID of selected points
-  values$ptSel <- as.numeric(ptsSel$origID)
-  proxy %>% map_plotLocs(ptsSel, fillColor='yellow', fillOpacity=1, clearShapes=FALSE, clearMarkers=FALSE)
-  values$df <- ptsSel
+  # record ID of selected points
+  selIDs <- as.numeric(pts[ptSelIndex,]$origID)
+  values$ptSelID <- selIDs
+  print(selIDs)
 
-  values$polyPts1 <- NULL
-  values$ptsSel <- ptsSel
+  # subset df with selected locs and record the selected points
+  values$df <- values$ptsSel <- values$origOccs[selIDs, ]
+
+  # # plot all
+  # proxy %>% map_plotLocs(values$df, fillColor='yellow', fillOpacity=1, clearShapes=FALSE, clearMarkers=FALSE)
+
   isolate(writeLog(paste('* Selected', nrow(values$df), 'localities.')))
 }
 

@@ -140,12 +140,14 @@ shinyServer(function(input, output, session) {
   observe({
     if (input$tabs == 2) {
       gtext$cur_comp <- "guidance/gtext_comp2.Rmd"
+      # if Module: Select Points, populate guidance text and select legend
       if (input$procOccSel == 'selpts') {
         gtext$cur_mod <- "guidance/gtext_comp2_selectLocs.Rmd"
         proxy %>% addLegend("topright", colors = c('red','yellow'),
                             title = "Occ Records", labels = c('original', 'selected'),
                             opacity = 1, layerId = 'selLegend') %>%
           removeControl('thinLegend') %>% clearImages() %>% clearShapes()
+        # if points are already selected, plot the original occs in red and the selected ones with yellow fill
         if (!is.null(values$ptsSel)) {
           proxy %>%
             map_plotLocs(values$origOccs) %>%
@@ -797,7 +799,7 @@ shinyServer(function(input, output, session) {
       }
       modSel <- as.numeric(input$modelSelProj)
       exp <- knit_expand('userReport.Rmd', curWD=curWD, spName=input$spName, dbName=input$occDb, occNum=input$occNum, thinDist=input$thinDist,
-                         occsCSV=csvDataPathFix, occsRemoved=printVecAsis(values$removedAll), occsSel=printVecAsis(values$ptSel),
+                         occsCSV=csvDataPathFix, occsRemoved=printVecAsis(values$removedAll), occsSel=printVecAsis(values$ptSelID),
                          predsRes=input$bcRes, bcLat=values$bcLat, bcLon=values$bcLon, backgSel=input$backgSel, backgBuf=input$backgBuf, userBGname=input$userBackg$name,
                          userBGpath=input$userBackg$datapath, partSel=values$partSel2, aggFact=input$aggFact, kfoldsSel=input$kfolds,
                          enmSel=input$enmSel, rmsSel1=input$rms[1], rmsSel2=input$rms[2], rmsBy=input$rmsBy, fcsSel=printVecAsis(input$fcs),

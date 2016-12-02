@@ -74,9 +74,8 @@ getDbOccs <- function(spName, occNum) {
     dplyr::mutate(origID = row.names(dbOccs)) %>%  # make new column for ID
     dplyr::mutate(pop = unlist(apply(dbOccs, 1, popUpContent)))  # make new column for leaflet marker popup content
 
-  # store dbOccs in values list
-  values$df <- dbOccs
-  values$origOccs <- dbOccs
+  # origOccs is the unmodified occs, to preserve in comp2 when points are modified
+  values$df <- values$origOccs <- dbOccs
 
   noCoordsRemoved <- dbOccs.orig.nrows - dbOccsWithDups.nrows
   dupsRemoved <- dbOccsWithDups.nrows - dbOccsNoDups.nrows
@@ -125,8 +124,9 @@ getUserOccs <- function(userCSV) {
 
   userOccs$origID <- row.names(userOccs)  # add col for IDs
   userOccs$pop <- unlist(apply(userOccs, 1, popUpContent))  # add col for map marker popup text
-  values$df <- userOccs
-  values$origOccs <- userOccs
+
+  # origOccs is the unmodified occs, to preserve in comp2 when points are modified
+  values$df <- values$origOccs <- userOccs
 
   # MAPPING
   proxy %>% zoom2Occs(values$df) %>% map_plotLocs(values$df)
