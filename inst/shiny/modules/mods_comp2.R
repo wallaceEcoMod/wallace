@@ -81,7 +81,7 @@ thinOccs <- function(thinDist) {
     return()
   }
   withProgress(message = "Spatially Thinning Localities...", {  # start progress bar
-    output <- thin(values$df, 'latitude', 'longitude', 'name', thin.par = thinDist,
+    output <- spThin::thin(values$df, 'latitude', 'longitude', 'name', thin.par = thinDist,
                    reps = 100, locs.thinned.list.return = TRUE, write.files = FALSE,
                    verbose = FALSE)
     values$prethinned <- values$df

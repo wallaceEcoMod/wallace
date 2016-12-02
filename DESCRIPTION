@@ -7,7 +7,7 @@ License: GNU GPL 3.0
 Encoding: UTF-8
 LazyData: true
 Depends: 
-    R (>= 3.3.2),
+    R (>= 3.2.4),
     shiny,
     leaflet,
     DT
