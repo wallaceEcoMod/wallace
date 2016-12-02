@@ -1,6 +1,6 @@
 #' @importFrom magrittr "%>%"
 
-source(system.file("R", 'functions.R', package = "wallace"))
+source(system.file('functions.R', package = "wallace"))
 
 # make list to carry data used by multiple reactive functions
 brk <- paste(rep('------', 14), collapse='')
