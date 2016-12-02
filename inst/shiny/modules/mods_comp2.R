@@ -43,7 +43,6 @@ polySelLocs <- function() {
   # select pts overlapping (intersecting) with polygon(s) and get the indices of selected pts
   intersect <- sp::over(pts, values$poly1)
   ptSelIndex <- as.numeric(which(!(is.na(intersect))))
-  print(ptSelIndex)
 
   # if no pts selected, erase polys and exit function
   if (length(ptSelIndex) == 0) {
@@ -57,7 +56,6 @@ polySelLocs <- function() {
   # record ID of selected points
   selIDs <- as.numeric(pts[ptSelIndex,]$origID)
   values$ptSelID <- selIDs
-  print(selIDs)
 
   # subset df with selected locs and record the selected points
   values$df <- values$ptsSel <- values$origOccs[selIDs, ]

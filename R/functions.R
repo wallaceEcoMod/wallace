@@ -34,7 +34,7 @@ map_plotLocs <- function(map, locs, clearMarkers=TRUE, clearShapes=TRUE, clearIm
 
 # zoom to occ pts
 zoom2Occs <- function(map, occs) {
-  map %>% clearShapes()
+  # map %>% clearShapes()
   lati <- occs[,3]
   longi <- occs[,2]
   z <- smartZoom(longi, lati)

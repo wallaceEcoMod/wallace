@@ -146,11 +146,11 @@ shinyServer(function(input, output, session) {
         proxy %>% addLegend("topright", colors = c('red','yellow'),
                             title = "Occ Records", labels = c('original', 'selected'),
                             opacity = 1, layerId = 'selLegend') %>%
-          removeControl('thinLegend') %>% clearImages() %>% clearShapes()
+          removeControl('thinLegend') %>% clearImages()
         # if points are already selected, plot the original occs in red and the selected ones with yellow fill
         if (!is.null(values$ptsSel)) {
           proxy %>%
-            map_plotLocs(values$origOccs) %>%
+            map_plotLocs(values$origOccs, clearShapes=FALSE) %>%
             map_plotLocs(values$ptsSel, fillColor='yellow', fillOpacity=1, clearShapes=FALSE, clearMarkers=FALSE) %>%
             zoom2Occs(values$origOccs)
         }
@@ -206,10 +206,9 @@ shinyServer(function(input, output, session) {
       curPolys <- values$poly1@polygons
       numPolys <- length(curPolys)
       colors <- RColorBrewer::brewer.pal(numPolys, 'Accent')
-      for (i in numPolys) {
+      for (i in 1:numPolys) {
         curPoly <- curPolys[i][[1]]@Polygons[[1]]@coords
-        proxy %>% addPolygons(curPoly[,1], curPoly[,2],
-                              weight=3, color=colors[i])
+        proxy %>% addPolygons(curPoly[,1], curPoly[,2], weight=3, color=colors[i])
       }
     }
   })
