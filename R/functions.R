@@ -112,8 +112,8 @@ popUpContent <- function(x) {
 BioClim_eval <- function (occs, bg.pts, occ.grp, bg.grp, env) {
 
   # RUN FULL DATA MODEL
-  full.mod <- bioclim(env, occs)
-  pred <- predict(env, full.mod)
+  full.mod <- dismo::bioclim(env, occs)
+  pred <- dismo::predict(env, full.mod)
 
   # CREATE HOLDERS FOR RESULTS
   AUC.TEST <- double()
@@ -130,15 +130,15 @@ BioClim_eval <- function (occs, bg.pts, occ.grp, bg.grp, env) {
     test.pts <- occs[occ.grp == k, ]
     train.pts <- occs[occ.grp != k, ]
     backg.pts <- bg.pts[bg.grp != k, ]
-    mod <- bioclim(env, train.pts)
+    mod <- dismo::bioclim(env, train.pts)
 
     # GET AUC METRICS
-    AUC.TEST[k] <- evaluate(p=test.pts, a=backg.pts, mod=mod, x=env)@auc
-    AUC.TRAIN <- evaluate(p=train.pts, a=backg.pts, mod=mod, x=env)@auc
+    AUC.TEST[k] <- dismo::evaluate(p=test.pts, a=backg.pts, mod=mod, x=env)@auc
+    AUC.TRAIN <- dismo::evaluate(p=train.pts, a=backg.pts, mod=mod, x=env)@auc
     AUC.DIFF[k] <- max(0, AUC.TRAIN - AUC.TEST[k])
 
     # GET PREDICTED VALUES AT OCCURRENCES FOR OMISSION RATE STATS
-    train.pred <- predict(env, mod)
+    train.pred <- dismo::predict(env, mod)
     p.train <- raster::extract(train.pred, train.pts)
     p.test <- raster::extract(train.pred, test.pts)
 
@@ -157,12 +157,12 @@ BioClim_eval <- function (occs, bg.pts, occ.grp, bg.grp, env) {
 
   # COMPILE AND SUMMARIZE RESULTS
   stats <- as.data.frame(rbind(AUC.DIFF, AUC.TEST, OR10, ORmin))
-  stats <- cbind(apply(stats, 1, mean), corrected.var(stats, nk), stats)
+  stats <- cbind(apply(stats, 1, mean), ENMeval::corrected.var(stats, nk), stats)
   colnames(stats) <- c("Mean", "Variance", paste("Bin", 1:nk))
   rownames(stats) <- c("AUC.DIFF", "AUC.TEST","OR10","ORmin")
 
   # THIS FORMAT FOR RETURNED DATA ATTEMPTS TO MATCH WHAT HAPPENS IN WALLACE ALREADY FOR ENMEVAL.
-  return(list(models=list(full.mod), results=stats, predictions=stack(pred)))
+  return(list(models=list(full.mod), results=stats, predictions=raster::stack(pred)))
 }
 
 # plot ENMeval stats based on user selection ("value")
@@ -218,11 +218,48 @@ evalPlots <- function(results) {
   points(rep(1, times=fc), 1:fc, ylim=c(-1,fc+2), cex=2, pch=21, bg=col)
   text(x=rep(1.3, times=fc), y=1:fc, labels=unique(results$features), adj=0)
   text(x=1, y=fc+1, labels="Feature Classes", adj=.20, cex=1.3, font=2)
-  eval.plot(results, legend=FALSE, value="delta.AICc")
-  eval.plot(results, legend=FALSE, value="Mean.AUC", variance="Var.AUC")
-  eval.plot(results, legend=FALSE, value="Mean.AUC.DIFF", variance="Var.AUC.DIFF")
-  eval.plot(results, legend=FALSE, value="Mean.ORmin", variance="Var.ORmin")
-  eval.plot(results, legend=FALSE, value="Mean.OR10", variance="Var.OR10")
+  ENMeval::eval.plot(results, legend=FALSE, value="delta.AICc")
+  ENMeval::eval.plot(results, legend=FALSE, value="Mean.AUC", variance="Var.AUC")
+  ENMeval::eval.plot(results, legend=FALSE, value="Mean.AUC.DIFF", variance="Var.AUC.DIFF")
+  ENMeval::eval.plot(results, legend=FALSE, value="Mean.ORmin", variance="Var.ORmin")
+  ENMeval::eval.plot(results, legend=FALSE, value="Mean.OR10", variance="Var.OR10")
+}
+
+# borrowed from the plot method for bioclim in dismo v.1.1-1
+bc.plot <- function(x, a=1, b=2, p=0.9, ...) {
+
+  d <- x@presence
+
+  myquantile <- function(x, p) {
+    p <- min(1, max(0, p))
+    x <- sort(as.vector(stats::na.omit(x)))
+    if (p == 0) return(x[1])
+    if (p == 1) return(x[length(x)])
+    i = (length(x)-1) * p + 1
+    ti <- trunc(i)
+    below = x[ti]
+    above = x[ti+1]
+    below + (above-below)*(i-ti)
+  }
+
+  p <- min(1,  max(0, p))
+  if (p > 0.5) p <- 1 - p
+  p <- p / 2
+  prd <- dismo::predict(x, d)
+  i <- prd > p & prd < (1-p)
+  plot(d[,a], d[,b], xlab=colnames(d)[a], ylab=colnames(d)[b], cex=0)
+  type=6
+  x1 <- quantile(d[,a], probs=p, type=type)
+  x2 <- quantile(d[,a], probs=1-p, type=type)
+  y1 <- quantile(d[,b], probs=p, type=type)
+  y2 <- quantile(d[,b], probs=1-p, type=type)
+  #		x1 <- myquantile(x[,a], p)
+  #		x2 <- myquantile(x[,a], 1-p)
+  #		y1 <- myquantile(x[,b], p)
+  #		y2 <- myquantile(x[,b], 1-p)
+  polygon(rbind(c(x1,y1), c(x1,y2), c(x2,y2), c(x2,y1), c(x1,y1)), border='blue', lwd=2)
+  points(d[i,a], d[i,b], xlab=colnames(x)[a], ylab=colnames(x)[b], col='green' )
+  points(d[!i,a], d[!i,b], col='red', pch=3)
 }
 
 # Bind csv and occ records

@@ -281,6 +281,7 @@ shinyServer(function(input, output, session) {
   # map center coordinates for 30 arcsec download
   observe({
     mapCntr <- mapCenter(input$map_bounds)
+    print(mapCntr)
     values$mapCntr <- mapCntr
     output$ctrLatLon <- renderText({paste('Using map center', paste(mapCntr, collapse=', '))})
   })
@@ -575,7 +576,7 @@ shinyServer(function(input, output, session) {
   output$bcEnvelPlot <- renderPlot({
     validate(need(values$evalMods[[1]], message = FALSE))
     values$bcEnvelPlot <- TRUE
-    plot(values$evalMods[[1]], a = input$bc1, b = input$bc2, p = input$bcProb)
+    bc.plot(values$evalMods[[1]], a = input$bc1, b = input$bc2, p = input$bcProb)
     })
 
   # Module Maxent Evaluation Plots
@@ -797,7 +798,7 @@ shinyServer(function(input, output, session) {
         projAreaX <- projAreaY <- NA
       }
       modSel <- as.numeric(input$modelSelProj)
-      exp <- knit_expand('userReport.Rmd', curWD=curWD, spName=input$spName, dbName=input$occDb, occNum=input$occNum, thinDist=input$thinDist,
+      exp <- knitr::knit_expand(system.file("Rmd", 'userReport.Rmd', package = "wallace"), curWD=curWD, spName=input$spName, dbName=input$occDb, occNum=input$occNum, thinDist=input$thinDist,
                          occsCSV=csvDataPathFix, occsRemoved=printVecAsis(values$removedAll), occsSel=printVecAsis(values$ptSelID),
                          predsRes=input$bcRes, bcLat=values$bcLat, bcLon=values$bcLon, backgSel=input$backgSel, backgBuf=input$backgBuf, userBGname=input$userBackg$name,
                          userBGpath=input$userBackg$datapath, partSel=values$partSel2, aggFact=input$aggFact, kfoldsSel=input$kfolds,
@@ -808,13 +809,13 @@ shinyServer(function(input, output, session) {
       writeLines(exp, 'userReport2.Rmd')
 
       if (input$mdType == 'Rmd') {
-        out <- render('userReport2.Rmd', md_document(variant="markdown_github"))
+        out <- rmarkdown::render('userReport2.Rmd', rmarkdown::md_document(variant="markdown_github"))
         writeLines(gsub('``` r', '```{r}', readLines(out)), 'userReport3.Rmd')
         out <- 'userReport3.Rmd'
       } else {
         out <- rmarkdown::render('userReport2.Rmd', switch(
           input$mdType,
-          PDF = pdf_document(latex_engine='xelatex'), HTML = html_document(), Word = word_document()
+          PDF = rmarkdown::pdf_document(latex_engine='xelatex'), HTML = html_document(), Word = word_document()
         ))
       }
       file.rename(out, file)

@@ -3,30 +3,30 @@ comp5_setPartitions <- function(partSelect2, kfolds, aggFact, proxy) {
 
   if (partSelect2 == 'block') {
     pt <- 'block'
-    group.data <- get.block(occs, values$bg.coords)
+    group.data <- ENMeval::get.block(occs, values$bg.coords)
     writeLog("* Data partition by block method.")
   }
   if (partSelect2 == 'cb1') {
     pt <- "checkerboard 1"
-    group.data <- get.checkerboard1(occs, values$predsMsk, values$bg.coords, aggFact)
+    group.data <- ENMeval::get.checkerboard1(occs, values$predsMsk, values$bg.coords, aggFact)
     writeLog("* Data partition by checkerboard 1 method.")
   }
   if (partSelect2 == 'cb2') {
     pt <- "checkerboard 2"
-    group.data <- get.checkerboard2(occs, values$predsMsk, values$bg.coords, aggFact)
+    group.data <- ENMeval::get.checkerboard2(occs, values$predsMsk, values$bg.coords, aggFact)
     writeLog("* Data partition by checkerboard 2 method.")
   }
   if (partSelect2 == 'jack') {
     pt <- "jackknife"
-    group.data <- get.jackknife(occs, values$bg.coords)
+    group.data <- ENMeval::get.jackknife(occs, values$bg.coords)
     writeLog("* Data partition by jackknife method.")
   }
   if (partSelect2 == 'random') {
     pt <- paste0("random k-fold (k = ", kfolds, ")")
-    group.data <- get.randomkfold(occs, values$bg.coords, kfolds)
+    group.data <- ENMeval::get.randomkfold(occs, values$bg.coords, kfolds)
     writeLog(paste("* Data partition by", paste0("random k-fold (k = ", kfolds, ")"), ":"))
   }
-  
+
   values$modParams <- list(occ.pts=occs, bg.pts=values$bg.coords, occ.grp=group.data[[1]], bg.grp=group.data[[2]])
   #newColors <- brewer.pal(max(group.data[[1]]), 'Accent')
   #     values$df$parts <- factor(group.data[[1]])
@@ -35,7 +35,7 @@ comp5_setPartitions <- function(partSelect2, kfolds, aggFact, proxy) {
   newColors <- gsub("FF$", "", rainbow(max(group.data[[1]])))  # colors for partition symbology
   #newColors <- sample(colors(), max(group.data[[1]]))
   proxy %>% addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
-                             radius = 5, color = 'red', fill = TRUE, fillColor = newColors[group.data[[1]]], 
+                             radius = 5, color = 'red', fill = TRUE, fillColor = newColors[group.data[[1]]],
                              weight = 2, popup = ~pop, fillOpacity = 1, group = 'comp5')
 }
 
