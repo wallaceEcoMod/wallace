@@ -13,7 +13,7 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                    tabPanel("6 Model", value=6),
                    tabPanel("7 Visualize", value=7),
                    tabPanel("8 Project", value=8),
-                   tabPanel("Analysis Code", value='rmd'),
+                   tabPanel("Session Code", value='rmd'),
 
                    fluidRow(column(4,
                                    wellPanel(
@@ -22,7 +22,7 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                                      conditionalPanel("input.tabs == 0", h4("Introduction"),
                                                       includeMarkdown(system.file("Rmd", "text_intro_tab.Rmd", package = "wallace"))
                                      ),
-# tab 1 ####
+                                     # tab 1 ####
                                      conditionalPanel("input.tabs == 1",
                                                       h4("Obtain Occurrence Data"),
                                                       radioButtons("occSel", "Modules Available:",
@@ -47,8 +47,8 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                                                                        br(), br(),
                                                                        sliderInput("occNum", "Maximum number of occurrences:", min = 1, max = 3000, value = 50),
                                                                        shinyBS::bsPopover('occNum', title = 'Tip',
-                                                                                 'Maximum number of occurrences recovered from databases. Downloaded records are not ordered randomly, and are consistently sorted with the most recent collection dates on top.',
-                                                                                 placement = 'right', options = list(container = "body")),
+                                                                                          'Maximum number of occurrences recovered from databases. Downloaded records are not ordered randomly, and are consistently sorted with the most recent collection dates on top.',
+                                                                                          placement = 'right', options = list(container = "body")),
                                                                        #br(),
                                                                        #uiOutput('gbifDnld'),
                                                                        downloadButton('dlDbOccs', "Download DB Occurrences"),
@@ -64,7 +64,7 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                                                                        a("documentation", href = "https://cran.r-project.org/web/packages/spocc/spocc.pdf", target = "_blank")
                                                       )
                                      ),
-# tab 2 ####
+                                     # tab 2 ####
                                      conditionalPanel("input.tabs == 2",
                                                       h4("Process Occurrence Data"),
                                                       radioButtons("procOccSel", "Modules Available:",
@@ -88,8 +88,8 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                                                                        HTML('<hr>'),
                                                                        numericInput("thinDist", label = "Thinning distance (km)", value = 0),
                                                                        shinyBS::bsPopover('thinDist', title = 'Tip',
-                                                                                 'The minimum distance between occurrence locations (nearest neighbor distance) in km for resulting thinned dataset. Ideally based on species biology (e.g., home-range size).',
-                                                                                 placement = 'right', options = list(container = "body")),
+                                                                                          'The minimum distance between occurrence locations (nearest neighbor distance) in km for resulting thinned dataset. Ideally based on species biology (e.g., home-range size).',
+                                                                                          placement = 'right', options = list(container = "body")),
                                                                        actionButton("goThin", "Thin Localities")
 
                                                       ), br(),
@@ -106,9 +106,9 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                                                                        a("documentation", href="https://cran.r-project.org/web/packages/spThin/spThin.pdf", target = "_blank"),
                                                                        " | ",
                                                                        a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/ecog.01132/abstract", target = "_blank")
-                                                                       )
+                                                      )
                                      ),
-# tab 3 ####
+                                     # tab 3 ####
                                      conditionalPanel("input.tabs == 3",
                                                       h4("Obtain Environmental Data"),
                                                       radioButtons("envSel", "Modules Available:",
@@ -127,12 +127,12 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                                                                                                   "5 arcmin" = 5,
                                                                                                   "10 arcmin" = 10)),
                                                                        shinyBS::bsPopover('bcRes', title = 'Tip',
-                                                                                 'Approximate lengths at equator: 10 arcmin = ~20 km, 5 arcmin = ~10 km, 2.5 arcmin = ~5 km, 30 arcsec = ~1 km. Exact length varies based on latitudinal position.',
-                                                                                 placement = 'right', options = list(container = "body")),
+                                                                                          'Approximate lengths at equator: 10 arcmin = ~20 km, 5 arcmin = ~10 km, 2.5 arcmin = ~5 km, 30 arcsec = ~1 km. Exact length varies based on latitudinal position.',
+                                                                                          placement = 'right', options = list(container = "body")),
                                                                        conditionalPanel('input.bcRes == 0.5',
                                                                                         strong("Using map center coordinates as reference for tile download."),
                                                                                         textOutput('ctrLatLon'), br()
-                                                                                        ),
+                                                                       ),
                                                                        actionButton("predDnld", "Download Env Data"),
                                                                        # fileInput(inputId = "userPreds", label = "Input predictor rasters", multiple = TRUE),
                                                                        HTML('<hr>')
@@ -147,7 +147,7 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                                                                        a("WorldClim", href="http://worldclim.org", target="_blank")
                                                       )
                                      ),
-# tab 4 ####
+                                     # tab 4 ####
                                      conditionalPanel("input.tabs == 4",
                                                       h4("Process Environmental Data"),
                                                       radioButtons("envProcSel", "Modules Available:",
@@ -166,7 +166,7 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                                                                        radioButtons("backgSel", "Background Extents:",
                                                                                     choices = list("Bounding box" = 'bb', "Minimum convex polygon" = 'mcp',
                                                                                                    "User-specified polygon" = 'user'))
-                                                                       ),
+                                                      ),
                                                       conditionalPanel("input.backgSel == 'user'",
                                                                        #  shinyFilesButton('userBackg', label='Upload Shapefile', title='Please select a file', multiple=TRUE)),
                                                                        fileInput("userBackg", label = "Upload Polygon (.csv)",
@@ -174,19 +174,15 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                                                       conditionalPanel("input.envProcSel == 'backg' && (input.backgSel == 'bb' || input.backgSel == 'mcp')",
                                                                        numericInput("backgBuf", label = "Study region buffer distance (degree)", value = 0, min = 0, step = 0.5),
                                                                        shinyBS::bsPopover('backgBuf', title = 'Tip',
-                                                                                 'Buffer area in degrees (1 degree = ~111 km). Exact length varies based on latitudinal position.',
-                                                                                 placement = 'right', options = list(container = "body"))),
+                                                                                          'Buffer area in degrees (1 degree = ~111 km). Exact length varies based on latitudinal position.',
+                                                                                          placement = 'right', options = list(container = "body"))),
                                                       conditionalPanel("input.envProcSel == 'backg'",
                                                                        actionButton("goBackgMask", "Clip Env Data by Polygon"), br(), br(),
                                                                        selectInput('mskPredsFileType', label = "Select File Type",
                                                                                    choices = list("GRD" = 'raster', "ASCII" = 'ascii', "GeoTIFF" = 'GTiff')),
                                                                        downloadButton('downloadMskPreds', "Download Clipped Env Data"),
                                                                        HTML('<hr>')),
-                                                      "Input flows into this step from Step 3. Step 4 provides clipped grids that can be saved in the
-                                                      same formats: GRD, GEOTIFF, or ASCII files. Additionally (for clipping the grids in this step),
-                                                      the user may provide a file delimiting the study region via a CSV that contains the vertices of a polygon.",
                                                       conditionalPanel("input.envProcSel == 'backg'",
-                                                                       HTML('<hr>'),
                                                                        span("sp", id = "rpkg"), "references", br(),
                                                                        div('Developers:  Edzer Pebesma, Roger Bivand, Barry Rowlingson, Virgilio Gomez-Rubio,
                                                                            Robert Hijmans, Michael Sumner, Don MacQueen, Jim Lemon, Josh O\'Brien', id="pkgDes"),
@@ -201,7 +197,7 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                                                       )
 
                                      ),
-# tab 5 ####
+                                     # tab 5 ####
                                      conditionalPanel("input.tabs == 5",
                                                       h4("Partition Occurrence Data"),
                                                       radioButtons("partSel", "Modules Available:",
@@ -231,7 +227,7 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                                                       conditionalPanel("input.partSel == 'sp' || input.partSel == 'nsp'",
                                                                        actionButton("goPart", "Partition"), br(), br(),
                                                                        downloadButton('downloadPart', "Download Partitioned Data CSV")
-                                                                       ),
+                                                      ),
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.partSel == 'sp' || input.partSel == 'nsp'",
                                                                        span("ENMeval", id = "rpkg"), "references", br(),
@@ -242,9 +238,9 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                                                                        a("documentation", href="https://cran.r-project.org/web/packages/ENMeval/ENMeval.pdf", target = "_blank"),
                                                                        " | ",
                                                                        a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12261/abstract", target = "_blank")
-                                                                       )
+                                                      )
                                      ),
-# tab 6 ####
+                                     # tab 6 ####
                                      conditionalPanel("input.tabs == 6",
                                                       h4("Build and Evaluate Niche Model"),
                                                       radioButtons("enmSel", "Modules Available:",
@@ -268,17 +264,17 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                                                                                                          "LQH (Linear/Quadratic/Hinge)" = "LQH", "LQHP (Linear/Quadratic/Hinge/Product)" = "LQHP",
                                                                                                          "LQHPT (Linear/Quadratic/Hinge/Threshold)" = "LQHPT")),
                                                                        shinyBS::bsPopover('fcs', title = 'Tip',
-                                                                                 'Feature combinations to be explored. Features are constructed using different relationships within and among the environmental predictors, and are used to constrain the computed probability distribution. In short, more features = more potential model complexity.',
-                                                                                 placement = 'right', options = list(container = "body")),
+                                                                                          'Feature combinations to be explored. Features are constructed using different relationships within and among the environmental predictors, and are used to constrain the computed probability distribution. In short, more features = more potential model complexity.',
+                                                                                          placement = 'right', options = list(container = "body")),
                                                                        sliderInput("rms", label = "Select regularization multipliers (penalty against complexity)",
                                                                                    min = 0, max = 10, value = c(1, 2)),
                                                                        shinyBS::bsPopover('rms', title = 'Tip',
-                                                                                 'Range of regularization multipliers to explore. Greater values of the regularization multiplier lead to increased penalty against overly complex and/or overfit models. A value of 0 results in no regularization.',
-                                                                                 placement = 'right', options = list(container = "body")),
+                                                                                          'Range of regularization multipliers to explore. Greater values of the regularization multiplier lead to increased penalty against overly complex and/or overfit models. A value of 0 results in no regularization.',
+                                                                                          placement = 'right', options = list(container = "body")),
                                                                        numericInput("rmsBy", label = "RM step value", value = 1),
                                                                        shinyBS::bsPopover('rmsBy', title = 'Tip',
-                                                                                 'Value used to step through regularization multiplier range (e.g. range of 1-3 with step 0.5 results in [1, 1.5, 2, 2.5, 3]).',
-                                                                                 placement = 'right', options = list(container = "body"))
+                                                                                          'Value used to step through regularization multiplier range (e.g. range of 1-3 with step 0.5 results in [1, 1.5, 2, 2.5, 3]).',
+                                                                                          placement = 'right', options = list(container = "body"))
                                                       ),
                                                       conditionalPanel("input.enmSel == 'BIOCLIM' || input.enmSel == 'Maxent'",
                                                                        strong("Build and evaluate models"), br(),
@@ -300,9 +296,9 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                                                                        a("CRAN", href = "http://cran.r-project.org/web/packages/dismo/index.html", target = "_blank"),
                                                                        " | ",
                                                                        a("documentation", href="https://cran.r-project.org/web/packages/dismo/dismo.pdf", target = "_blank")
-                                                                       )
+                                                      )
                                      ),
-# tab 7 ####
+                                     # tab 7 ####
                                      conditionalPanel("input.tabs == 7",
                                                       h4("Visualize Model Results"),
                                                       radioButtons("visSel", "Modules Available:",
@@ -331,16 +327,16 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                                                                                                     choices = list("raw" = 'raw', "logistic" = 'log'),
                                                                                                     selected = 'log'),
                                                                                         shinyBS::bsPopover('predForm', title = 'Tip',
-                                                                                                  'Briefly, raw is "relative occurrence rate" where sum of pixel values is 1, and logistic is interpreted as "probability of presence" where raw values are converted to a value between 0 and 1, with the main assumption that species prevalence is 0.5 (see guidance).',
-                                                                                                  placement = 'right', options = list(container = "body"))
+                                                                                                           'Briefly, raw is "relative occurrence rate" where sum of pixel values is 1, and logistic is interpreted as "probability of presence" where raw values are converted to a value between 0 and 1, with the main assumption that species prevalence is 0.5 (see guidance).',
+                                                                                                           placement = 'right', options = list(container = "body"))
                                                                        ),
                                                                        selectInput('predThresh', label = "Set threshold",
                                                                                    choices = list("No threshold" = 'noThresh',
                                                                                                   "MTP" = 'mtp', "10%" = 'p10'),
                                                                                    selected = ''),
                                                                        shinyBS::bsPopover('predThresh', title = 'Tip',
-                                                                                 'Create binary map of predicted presence/absence assuming all values above threshold value represent presence. Also can be interpreted as a "potential distribution" (see guidance).',
-                                                                                 placement = 'right', options = list(container = "body")),
+                                                                                          'Create binary map of predicted presence/absence assuming all values above threshold value represent presence. Also can be interpreted as a "potential distribution" (see guidance).',
+                                                                                          placement = 'right', options = list(container = "body")),
                                                                        actionButton("plotPred", "Plot Prediction"),
                                                                        br(), br(),
                                                                        selectInput('predFileType', label = "Select File Type",
@@ -375,14 +371,14 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                                                                        a("documentation", href="https://cran.r-project.org/web/packages/dismo/dismo.pdf", target = "_blank")
                                                       )
                                      ),
-# tab 8 ####
+                                     # tab 8 ####
                                      conditionalPanel("input.tabs == 8",
                                                       h4("Project Model"),
                                                       radioButtons("projSel", "Modules Available:",
                                                                    choices = list("Project to New Extent" = 'pjArea',
                                                                                   "Project to New Time" = 'pjTime',
-                                                                                  "Multivariate Environmental Similarity Surface" = 'mess'),
-                                                                                  # "Project to New Time" = 'pjTime')
+                                                                                  "Calculate Environmental Similarity" = 'mess'),
+                                                                   # "Project to New Time" = 'pjTime')
                                                                    selected = 'pjArea'),
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.projSel == 'pjArea'",
@@ -390,7 +386,7 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                                                       # conditionalPanel("input.projSel == 'pjTime'",
                                                       #                  div('Module: Project to New Time', id="mod")),
                                                       conditionalPanel("input.projSel == 'mess'",
-                                                                       div('Module: Multivariate Environmental Similarity Surface', id="mod")),
+                                                                       div('Module: Calculate Environmental Similarity', id="mod")),
                                                       span('via', id="pkgDes"),
                                                       span('dismo', id="rpkg"),
                                                       span('package: Automated Runs and Evaluations of Ecological Niche Models', id="pkgDes"),
@@ -436,57 +432,67 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                                                                   choices = list("GRD" = 'raster', "ASCII" = 'ascii', "GeoTIFF" = 'GTiff',
                                                                                  "PNG" = "png")),
                                                       downloadButton('downloadPj', "Download Displayed Grid")
+                                     ),
+                                     # session code ####
+                                     conditionalPanel("input.tabs == 'rmd'",
+                                                      h4("Download Session Code"),
+                                                      HTML('<hr>'),
+                                                      span('via', id="pkgDes"),
+                                                      span('rmarkdown', id="rpkg"),
+                                                      span('and', id="pkgDes"),
+                                                      span('knitr', id="rpkg"),
+                                                      span('packages: Dynamic Documents for R |
+                      A General-Purpose Package for Dynamic Report', id="pkgDes"),
+                                                      HTML('<hr>'),
+                                                      selectInput('mdType', label = "R Markdown Download Type",
+                                                                  choices = list("Rmd", "PDF", "HTML", "Word")),
+                                                      downloadButton('downloadMD', 'Download Session Code')
                                      )
-                   )
-),
-column(8,
-       conditionalPanel("input.tabs != 0 && input.tabs != 'rmd'",
-                        div(id = "wallaceLog", class = "scrollbox", htmlOutput("log")),
-       absolutePanel(top = 70, right = 20, width = 150, draggable = TRUE,
-                     selectInput("bmap", "Change Base Map", choices = c('ESRI Topo'="Esri.WorldTopoMap",
-                                                                        'Stamen Terrain'="Stamen.Terrain",
-                                                                        'Open Topo'="OpenTopoMap",
-                                                                        'ESRI Imagery'="Esri.WorldImagery",
-                                                                        'ESRI Nat Geo'='Esri.NatGeoWorldMap'),
-                                 selected = "Esri.WorldTopoMap"))
-       ),
-       br(),
-       conditionalPanel("input.tabs != 'rmd' & input.tabs != 0",
-                        tabsetPanel(id = 'main',
-                          tabPanel('Map', leaflet::leafletOutput("map", height=600)),
-                          tabPanel('Occs Tbl', DT::dataTableOutput('occTbl')),
-                          tabPanel('Results', conditionalPanel("input.tabs == 6", dataTableOutput('evalTbl')),
-                                   conditionalPanel("input.tabs == 7 && input.visSel == 'response'",
-                                                    imageOutput('respCurv')),
-                                   conditionalPanel("input.tabs == 7 && input.visSel == 'bcEnvel' && input.enmSel == 'BIOCLIM'",
-                                                    imageOutput('bcEnvelPlot')),
-                                   conditionalPanel("input.tabs == 7 && input.visSel == 'mxEval'  && input.enmSel == 'Maxent'",
-                                                    imageOutput('mxEvalPlot'))),
-                          tabPanel('Component Guidance', uiOutput('gtext_comp')),
-                          tabPanel('Module Guidance', uiOutput('gtext_mod'))
-                        )
-       ),
-       conditionalPanel("input.tabs == 'rmd'",
-                        column(8,
-                               selectInput('mdType', label = "R Markdown Download Type",
-                                           choices = list("Rmd", "PDF", "HTML", "Word")),
-                               downloadButton('downloadMD', 'Download History in R Markdown'), br(), br(),
-                               includeMarkdown(system.file("Rmd", "text_analysisCode.Rmd", package = "wallace"))
-                        )
-       ),
-       conditionalPanel("input.tabs == 0",
-                        tabsetPanel(id = 'introTabs',
-                          tabPanel('Intro', includeMarkdown(system.file("Rmd", "text_intro.Rmd", package = "wallace"))),
-                          tabPanel('About',
-                                   h4("Wallace was created by an international team of ecologists:"),
-                                   fluidRow(
-                                     column(2, includeMarkdown(system.file("Rmd", "text_about1.Rmd", package = "wallace"))),
-                                     column(3, includeMarkdown(system.file("Rmd", "text_about2.Rmd", package = "wallace"))),
-                                     column(5, includeMarkdown(system.file("Rmd", "text_about3.Rmd", package = "wallace")))
                                    )
+                   ),
+                   column(8,
+                          conditionalPanel("input.tabs != 0 && input.tabs != 'rmd'",
+                                           div(id = "wallaceLog", class = "scrollbox", htmlOutput("log")),
+                                           absolutePanel(top = 70, right = 20, width = 150, draggable = TRUE,
+                                                         selectInput("bmap", "Change Base Map", choices = c('ESRI Topo'="Esri.WorldTopoMap",
+                                                                                                            'Stamen Terrain'="Stamen.Terrain",
+                                                                                                            'Open Topo'="OpenTopoMap",
+                                                                                                            'ESRI Imagery'="Esri.WorldImagery",
+                                                                                                            'ESRI Nat Geo'='Esri.NatGeoWorldMap'),
+                                                                     selected = "Esri.WorldTopoMap"))
+                          ),
+                          br(),
+                          conditionalPanel("input.tabs != 'rmd' & input.tabs != 0",
+                                           tabsetPanel(id = 'main',
+                                                       tabPanel('Map', leaflet::leafletOutput("map", height=600)),
+                                                       tabPanel('Occs Tbl', DT::dataTableOutput('occTbl')),
+                                                       tabPanel('Results', conditionalPanel("input.tabs == 6", dataTableOutput('evalTbl')),
+                                                                conditionalPanel("input.tabs == 7 && input.visSel == 'response'",
+                                                                                 imageOutput('respCurv')),
+                                                                conditionalPanel("input.tabs == 7 && input.visSel == 'bcEnvel' && input.enmSel == 'BIOCLIM'",
+                                                                                 imageOutput('bcEnvelPlot')),
+                                                                conditionalPanel("input.tabs == 7 && input.visSel == 'mxEval'  && input.enmSel == 'Maxent'",
+                                                                                 imageOutput('mxEvalPlot'))),
+                                                       tabPanel('Component Guidance', uiOutput('gtext_comp')),
+                                                       tabPanel('Module Guidance', uiOutput('gtext_mod'))
+                                           )
+                          ),
+                          conditionalPanel("input.tabs == 'rmd'",
+                                           column(8,
+                                                  includeMarkdown(system.file("Rmd", "text_sessionCode.Rmd", package = "wallace"))
+                                           )
+                          ),
+                          conditionalPanel("input.tabs == 0",
+                                           tabsetPanel(id = 'introTabs',
+                                                       tabPanel('Intro', includeMarkdown(system.file("Rmd", "text_intro.Rmd", package = "wallace"))),
+                                                       tabPanel('About',
+                                                                h4("Wallace was created by an international team of ecologists:"),
+                                                                fluidRow(
+                                                                  includeMarkdown(system.file("Rmd", "text_about.Rmd", package = "wallace"))
+                                                                )
+                                                       )
+                                           )
                           )
-                        )
-       )
-)
+                   )
                    )
 ))

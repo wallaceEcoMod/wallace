@@ -1,0 +1,24 @@
+---
+title: "about"
+output: html_document
+---
+
+<img src="img/jamie.jpg" alt="jamie" style="width: 100px;"/>
+
+[Jamie M. Kass](https://www.researchgate.net/profile/Jamie_Kass) (lead developer) is a coauthor of ENMeval and a PhD candidate at CUNY Graduate Center and City College of New York. He is currently supported by a CUNY Science Scholarship, a CUNY Graduate Center Provost Digital Innovation Grant, and NSF FAIN-1650241.
+
+<img src="img/bruno.png" alt="bruno" style="width: 100px;"/>
+
+[Bruno Vilela](https://www.researchgate.net/profile/Bruno_Vilela3) (co-developer) is a coauthor of spThin and a post-doctoral researcher at Washington University in St. Louis. He is currently supported by ...
+
+<img src="img/matt.png" alt="matt" style="width: 100px;"/>
+
+[Matthew Aiello-Lammens](https://www.researchgate.net/profile/Matthew_Aiello-Lammens) (co-developer) is the lead author of spThin and Assistant Professor of Biology at Pace University.
+
+<img src="img/bob.png" alt="bob" style="width: 100px;"/>
+
+[Robert Muscarella](https://www.researchgate.net/profile/Robert_Muscarella) (co-developer) is the lead author of ENMeval and a NSF post-doctoral fellow at Aarhus University in Denmark. He is currently supported by NSF DEB-1311367 and NSF DBI-1401312.
+
+<img src="img/rob.png" alt="rob" style="width: 100px;"/>
+
+[Robert P. Anderson](https://www.researchgate.net/profile/Robert_Anderson7) (co-developer) is a coauthor of spThin and ENMeval, and a Professor of Biology at City College of New York CUNY. This work was supported by NSF DEB-1119915.
