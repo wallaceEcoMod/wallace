@@ -5,3 +5,6 @@
 ^NEWS\.md$          # A news file written in Markdown
 ^\.travis\.yml$     # Used for continuous integration testing with travis
 \.DS_Store$	    # for macs
+spatial_thin_log.txt    # spThin files
+wc*    # worldclim files
+cmip5*    # worldclim files
