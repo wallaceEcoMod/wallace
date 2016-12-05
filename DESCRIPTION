@@ -1,0 +1,29 @@
+Package: wallace
+Title: Modular Platform for Reproducible Modeling of Species Niches and Distributions
+Version: 1.0.0.0000
+Authors@R: person("Jamie M.", "Kass", email = "jkass@gradcenter.cuny.edu", role = c("aut", "cre"))
+Description: UNDER DEV
+License: GNU GPL 3.0
+Encoding: UTF-8
+LazyData: true
+Depends: 
+    R (>= 3.2.4),
+    shiny (>= 0.14.2),
+    DT (>= 0.2)
+Imports:
+    shinyjs,
+    shinyBS,
+    spocc (>= 0.5.4),
+    RColorBrewer,
+    rmarkdown,
+    dplyr,
+    spThin,
+    rgeos,
+    maptools,
+    rgdal,
+    dismo,
+    raster,
+    ENMeval,
+    shinythemes
+Remotes: rstudio/leaflet
+RoxygenNote: 5.0.1

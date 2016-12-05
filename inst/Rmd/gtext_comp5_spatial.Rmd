@@ -1,0 +1,14 @@
+---
+title: "tab5_spatial"
+output: html_document
+---
+
+### **Module:** ***Non-spatial Partition***
+
+**BACKGROUND**
+
+UNDER CONSTRUCTION
+
+**IMPLEMENTATION**
+
+Module ***Spatial Partition*** implements functionalities from the R package `ENMeval` to partition the occurrence localities into training and testing datasets (using development version v0.1.2, available on Github). The user can choose one of three means of spatial partitioning: the block, checkerboard1, or checkerboard2 options. These partitions have k = either 2 or 4 folds/groups. For each option in this module, the number of datasets produced is equal to k, with each dataset having both training and testing localities.

@@ -1,0 +1,20 @@
+---
+title: "comp6_bioclim"
+output: html_document
+---
+
+### **Module:** ***BIOCLIM***
+
+**BACKGROUND**
+
+BIOCLIM is one of the simplest techniques for estimating a species’ niche and potential distribution. It delimits an environmental envelope (the *n*-dimensional hypervolume of Hutchinson; Booth et al. 2014), with one dimension for each environmental variable. In this conceptualization, the species’ tolerances (upper and lower limits based on observed localities) are characterized independently for each axis.  
+
+**IMPLEMENTATION**
+
+Wallace makes BIOCLIM models using the R package `dismo`, and evaluates them with custom code modified from the R package `ENMeval` (Muscarella et al. 2014). The user can view the bioclimatic envelope in 2 dimensions in Component **Visualize Model Results**. *Wallace* offers the classical implementation, which considers the full observed range for each variable, although other options are possible (such as trimming percentiles of the tails of each variable). BIOCLIM models are built and evaluated using the partitions assigned in Component **Partition Occurrence Data**. The rows in the results table refer to evaluation statistics calculated, and the 'Bin' columns refer to the different partitions. For output, this step yields a .csv file of the table of evaluation statistics.
+
+**REFERENCES** 
+
+Booth T.H., Nix H.A., Busby J.R., Hutchinson M.F. 2014. BIOCLIM: The first species distribution modelling package, its early applications and relevance to most current MaxEnt studies. *Diversity and Distributions*. 20:1–9.
+
+Muscarella R., Galante P.J., Soley-Guardia M., Boria R.A., Kass J.M., Uriarte M., Anderson R.P. 2014. ENMeval: An R package for conducting spatially independent evaluations and estimating optimal model complexity for Maxent ecological niche models. *Methods in Ecology and Evolution*. 5:1198–1205.

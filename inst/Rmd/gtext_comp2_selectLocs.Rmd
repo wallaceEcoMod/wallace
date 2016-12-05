@@ -1,0 +1,16 @@
+---
+title: "comp2_selectLocs"
+output: html_document
+---
+
+### **Module:** ***Select Localities***
+
+**BACKGROUND**  
+
+Despite their great utility, aggregated biodiversity occurrence datasets typically contain errors both in identification and in georeferencing. Many, but not all, such errors can be spotted by simple visual inspection of the localities plotted on a map. If, for example, a species is only known from high elevation forest, and a few localities from an online database download are in a lowland forest, they may be suspicious and lead you to exclude them from the analysis. This module can also be used to narrow the analysis on a subset of available records.
+
+**IMPLEMENTATION**
+
+Module ***Select Localities*** allows users to select which localities to retain on the map by either drawing a polygon, or by specifying the ID of localities to remove. The R package `leaflet` provides map functionality, and the polygon drawing tool was implemented with custom code that leverages functions from this package.
+
+To draw a polygon, \***click**\* on the map to place vertices, then press "Select With Polygon" to select the localities that overlap. You can then draw another polygon and select other groups of localities, and repeat this process until all the localities you want to include in the analysis are selected. If you want to reset, just press "Reset Points". Users can download a .csv file of the subsetted localities.

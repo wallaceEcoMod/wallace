@@ -1,0 +1,18 @@
+---
+title: "comp8"
+output: html_document
+---
+
+### **Component: Project Model**
+
+**ORIENTATION**
+
+Frequently, research questions require the application (or “projection”) of a model to a geographic region or time period different from those used to build it (e.g., for studies of invasive species or the effects of climate change; Williams and Jackson 2007, Fitzpatrick and Hargrove 2009). Component **Project model** allows certain functionalities for each of these uses, as well as means for assessing issues regarding environmental conditions not found in the space and time where the model was built (non-analog environments). *Wallace* currently allows users to project a model to: 1) another region (Module ***Project to New Extent***); or 2) another time [(Module ***Project to New Time***). Furthermore, *Wallace* provides information summarizing the degree to which the environment in the projection region/time differs from that used to build the model (Module ***Projection Environmental Similarity***). [Note, Rob wonders if it would be better to have a broader name for this module, like ] Only one projection can be displayed at a time, and Module ***Projection Environmental Similarity*** can only be run after a projection has been made.
+
+**REFERENCES**
+
+Fitzpatrick, M. C., & Hargrove, W. W. (2009). The projection of species distribution models and the problem of non-analog climate. *Biodiversity and Conservation*, 18(8), 2255-2261.
+
+Williams, J. W., & Jackson, S. T. (2007). Novel climates, no‐analog communities, and ecological surprises. *Frontiers in Ecology and the Environment*, 5(9), 475-482.
+
+

@@ -20,6 +20,7 @@ spatial_thin_log.txt
 
 # worldclim files
 wc*
+cmip5
 
 # r proj files
 .Rproj.user

@@ -1,0 +1,15 @@
+---
+title: "tab7_respCurves"
+output: html_document
+---
+
+### **Module:** ***Plot Response Curves*** 
+	
+**BACKGROUND**  
+
+Maxent constitutes an additive model, where the estimated suitability represents the sum of contributions of entities termed ‘features’ (environmental variables or functions thereof; e.g. quadratic, hinge; Phillips et al. 2006). Hence, the relationship between suitability and individual environmental variables (taking into account the availability of environments in the study rgion) can be expressed as plots commonly termed ‘response curves’ (Elith/Graham paper). 
+
+**IMPLEMENTATION** 
+
+To view model response curves, users first choose a model. In the case of BIOCLIM, there is only one choice, whereas depending on the `ENMeval` settings set in Component **Model**, there may be many choices for Maxent. Users then choose a predictor variable to view its response curve. For BIOCLIM, all predictor variables will be listed, as all are used in the model, whereas for Maxent, which performs internal variable selection, the listed variables are only the ones retained by the model selected.
+

@@ -1,0 +1,16 @@
+---
+title: "comp6"
+output: html_document
+---
+
+### **Component: Model**
+
+Many approaches and algorithms exist for building models of species niches/distributions (Elith et al. 2006). Component **Model** uses input from earlier components to build models using either presence-only or presence-background techniques (and associated environmental information). *Wallace* currently allows users to build models using either: 1) the presence-only approach BIOCLIM (Module ***BIOCLIM***); or 2) the presence-background algorithm Maxent (Module ***Maxent***). If run in sequence, the current results will overwrite the previous model.  We envision that in future releases this component will grow substantially, with the addition of new modules implementing other modeling techniques.
+
+**REFERENCES**
+
+Elith, J., Graham, C. H., Anderson, R. P., Dudık, M., Ferrier, S., Guisan, A., … Zimmermann, N. E. 2006. Novel methods improve prediction of species’ distributions from occurrence data. Ecography, 2:129–151.
+
+Guisan A., Thuiller W. 2005. Predicting species distribution: offering more than simple habitat models. Ecology Letters. 8:993–1009.
+
+

@@ -1,0 +1,41 @@
+---
+title: "intro_tab"
+output: html_document
+---
+
+Wallace includes the following components and modules, as well as the opportunity to download a commented and executable history of the analyses run in a given session:  
+
+**1**: *Obtain Occurrence Data*  
+-Query Database  
+-User-specified  
+
+**2:** *Process Occurrence Data*  
+-Select Localities  
+-Spatial Thin  
+
+**3:** *Obtain Environmental Data*  
+-WorldClim  
+
+**4:** *Process Environmental Data*  
+-Select Study Region
+
+**5:** *Partition Occurrence Data*  
+-Non-spatial Partition  
+-Spatial Partition  
+
+**6:** *Build and Evaluate Niche Model*  
+-BIOCLIM  
+-Maxent  
+
+**7:** *Visualize Model Results*  
+-BIOCLIM Envelope Plot  
+-Maxent Evaluation Plots
+-Plot Response Curves 
+-Map Prediction  
+
+**8:** *Project Model*  
+-Project to New Area  
+-Project to New Time
+-Calculate Environmental Similarity
+
+**Download Session Code**  

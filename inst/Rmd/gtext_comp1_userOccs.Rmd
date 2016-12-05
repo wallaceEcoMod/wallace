@@ -1,0 +1,13 @@
+---
+title: "comp1_userOccs"
+output: html_document
+---
+
+### **Module:** ***User-specified Occurrences*** 
+
+**BACKGROUND**  
+
+A user can upload data documenting the presence of a species at particular points in space and time, along with assigned georeferences (i.e., latitude/longitude coordinates). Other useful metadata fields when available (e.g., institution, specimen/observation number, elevation, etc.). 
+
+**IMPLEMENTATION** 
+The user may upload a .csv file of occurrence records to use in the analysis, such as processed versions of files previously downloaded via *Wallace*. Such a file must contain rows of localities, and the first three columns should be “species”, “longitude”, and “latitude” (in that order, with those names).

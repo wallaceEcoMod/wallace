@@ -1,0 +1,26 @@
+---
+title: "tab4_background"
+output: html_document
+---
+
+### **Module:** ***Select Study Region***
+
+**BACKGROUND**
+
+For many niche/distribution modeling approaches (including Maxent; see Step 6), selection of a study region is critical because it defines the extent of grid cells that will used to sample pseudoabsence or background points (Anderson 2013). The predictor variable values at these points are compared with those for the species' occurrence localities. Various principles for selecting a study region have been set forth in the literature. Some emphasize the geographic or environmental domain over which to build the model, whereas others suggest identification of areas where the species is likely to be at environmental equilibrium with the predictor variables (Anderson and Raza 2010, Barve et al. 2011, Saupe et al. 2012, Anderson 2013). A good summary for reference can be found in Merow et al. (2013).
+
+**IMPLEMENTATION** 
+
+Module “Select Study Region” provides two simple ways to delimit a study region, or accepts a user-specified polygon. Here, the user can choose either a bounding box or a minimum convex polygon around the localities, as well as a buffer distance. Wallace then clips the environmental grids. This module relies on custom code as well as important functions from the R packages rgeos and sp.  
+
+**REFERENCES** 
+
+Anderson R.P., Raza A. 2010. The effect of the extent of the study region on GIS models of species geographic distributions and estimates of niche evolution: preliminary tests with montane rodents (genus Nephelomys) in Venezuela. *Journal of Biogeography*. 37:1378–1393.
+
+Anderson R.P. 2013. A framework for using niche models to estimate impacts of climate change on species distributions. *Annals of the New York Academy of Sciences*. 1297:8–28.
+
+Barve N., Barve V., Jiménez-Valverde A., Lira-Noriega A., Maher S.P., Peterson A.T., Soberón J., Villalobos F. 2011. The crucial role of the accessible area in ecological niche modeling and species distribution modeling. *Ecological Modelling*. 222:1810–1819.
+
+Merow, C., Smith, M. J., & Silander, J. A. (2013). A practical guide to MaxEnt for modeling species’ distributions: what it does, and why inputs and settings matter. *Ecography*, 36:1058–1069.
+
+Saupe, E. E., Barve, V., Myers, C. E., Soberón, J., Barve, N., Hensz, C. M., ... & Lira-Noriega, A. (2012). Variation in niche and distribution model performance: the need for a priori assessment of key causal factors. *Ecological Modelling*, 237, 11-22.

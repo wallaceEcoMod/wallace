@@ -1,0 +1,16 @@
+---
+title: "comp3"
+output: html_document
+---
+
+**ORIENTATION**
+
+In order to model the relationship between species occurrences and the environment, in addition to the occurrence data just collected and processed, algorithms for niche/distributional modeling require environmental predictor variables. Component **Obtain Environmental Data** allows users to harness these variables from sources on the Internet in the form of raster grids. In recent times, a number of global-scale databases of climate data have emerged (Hijmans et al. 2005, Kriticos et al. 2012, Sbrocco and Barber 2013). Currently, *Wallace* offers access to present-day averaged climate data from the WorldClim dataset, which has global coverage of terrestrial areas (Module ***WorldClim***). We envision that future releases will offer other climate datasets with different variables (e.g. CliMond), temporal resolution (e.g PRISM), and biome focus (e.g. MARSPEC), and also allow upload of user-provided sets of environmental grids.
+
+**REFERENCES**
+
+Hijmans, R. J., Cameron, S. E., Parra, J. L., Jones, P. G., & Jarvis, A. (2005). Very high resolution interpolated climate surfaces for global land areas. *International Journal of Climatology*, 25(15), 1965-1978.
+
+Kriticos, D. J., Webber, B. L., Leriche, A., Ota, N., Macadam, I., Bathols, J., & Scott, J. K. (2012). CliMond: global high‐resolution historical and future scenario climate surfaces for bioclimatic modelling. *Methods in Ecology and Evolution*, 3(1), 53-64.
+
+Sbrocco, E. J., & Barber, P. H. (2013). MARSPEC: ocean climate layers for marine spatial ecology. *Ecology*, 94(4), 979-979.

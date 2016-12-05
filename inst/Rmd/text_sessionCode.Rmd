@@ -1,0 +1,8 @@
+---
+title: "sessionCode"
+output: html_document
+---
+
+Using the R package `rmarkdown`, Wallace allows the user to download the history of actions (and underlying code) run in the current session of Wallace. This includes the formats .Rmd (R Markdown), .pdf, .html, or .doc. The .Rmd format is an executable R script file that will reproduce the analysis if run in an R session. This file is composed of plain text and R code "chunks".
+
+Extended functionality for R Markdown files exists in RStudio. Simply open the .Rmd in RStudio, click on "Run" in the upper-right corner, and run chunk by chunk or all at once. To learn more details, check out the RStudio [tutorial](http://rmarkdown.rstudio.com/lesson-1.html).

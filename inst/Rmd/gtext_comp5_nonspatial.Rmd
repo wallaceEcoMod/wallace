@@ -1,0 +1,14 @@
+---
+title: "tab5_nonspatial"
+output: html_document
+---
+
+### **Module:** ***Non-spatial Partition***
+
+**BACKGROUND**
+
+UNDER CONSTRUCTION
+
+**IMPLEMENTATION**
+
+Module ***Non-spatial Partition*** implements functionalities from the R package `ENMeval` to partition the occurrence localities into training and testing datasets (using development version v0.1.2, available on Github). These partitions are either via a jackknife procedure (for small sample sizes, where the number of groups, k = n = the number of localities) or random k-folds (here, with k = 4 “folds,” or groups), which is suggested for larger sample sizes. For each option in this module, the number of datasets produced is equal to k, with each dataset having both training and testing localities.
