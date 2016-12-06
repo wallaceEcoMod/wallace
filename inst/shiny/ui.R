@@ -1,3 +1,5 @@
+#' @imports shiny
+#'
 
 shinyjs::useShinyjs()
 
@@ -26,7 +28,7 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                                      conditionalPanel("input.tabs == 1",
                                                       h4("Obtain Occurrence Data"),
                                                       radioButtons("occSel", "Modules Available:",
-                                                                   choices = list("Query DB" = 'db', "User-specified" = 'user'),
+                                                                   choices = list("Query Database" = 'db', "User-specified Occurrences" = 'user'),
                                                                    selected = 'db'),
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.occSel == 'db'",
@@ -55,6 +57,8 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                                                                        HTML('<hr>')
                                                       ),
                                                       conditionalPanel("input.occSel == 'user'",
+                                                                       div('Module: User-specified Occurrences', id="mod"),
+                                                                       HTML('<hr>'),
                                                                        fileInput("userCSV", label = "Upload Occurrence CSV")),
                                                       conditionalPanel("input.occSel == 'db'",
                                                                        span("spocc", id = "rpkg"), "references", br(),
@@ -68,11 +72,11 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                                      conditionalPanel("input.tabs == 2",
                                                       h4("Process Occurrence Data"),
                                                       radioButtons("procOccSel", "Modules Available:",
-                                                                   choices = list("Select Localities" = 'selpts',
+                                                                   choices = list("Select with Polygon" = 'selpts',
                                                                                   "Spatial Thin" = 'spthin')),
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.procOccSel == 'selpts'",
-                                                                       div('Module: Select By Polygon', id="mod"),
+                                                                       div('Module: Select with Polygon', id="mod"),
                                                                        numericInput("remLoc", label="Enter the record ID to be removed", value = 0),
                                                                        actionButton("remove", "Remove Locality"),
                                                                        HTML('<hr>'),
@@ -466,7 +470,7 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                                            tabsetPanel(id = 'main',
                                                        tabPanel('Map', leaflet::leafletOutput("map", height=600)),
                                                        tabPanel('Occs Tbl', DT::dataTableOutput('occTbl')),
-                                                       tabPanel('Results', conditionalPanel("input.tabs == 6", dataTableOutput('evalTbl')),
+                                                       tabPanel('Results', conditionalPanel("input.tabs == 6", DT::dataTableOutput('evalTbl')),
                                                                 conditionalPanel("input.tabs == 7 && input.visSel == 'response'",
                                                                                  imageOutput('respCurv')),
                                                                 conditionalPanel("input.tabs == 7 && input.visSel == 'bcEnvel' && input.enmSel == 'BIOCLIM'",

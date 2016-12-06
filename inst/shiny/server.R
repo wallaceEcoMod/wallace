@@ -1,4 +1,3 @@
-#' @importFrom magrittr "%>%"
 
 source("funcs/functions.R", local = TRUE)
 

@@ -3,7 +3,7 @@ title: "comp2_selectLocs"
 output: html_document
 ---
 
-### **Module:** ***Select Localities***
+### **Module:** ***Select with Polygon***
 
 **BACKGROUND**  
 
