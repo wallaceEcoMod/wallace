@@ -11,7 +11,7 @@
     # load devtools
     library(devtools)
     # install wallace from github
-    install_github("wallaceEcoMod/wallace@pkg")
+    install_github("wallaceEcoMod/wallace")
     # load wallace
     library(wallace)
     # run the user interface
