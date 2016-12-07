@@ -1,4 +1,4 @@
-#' @import shiny
+#' @import shiny leaflet
 #' @importFrom magrittr "%>%"
 #' @export
 wallace <- function(){
