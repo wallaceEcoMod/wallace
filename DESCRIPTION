@@ -9,7 +9,8 @@ LazyData: true
 Depends: 
     R (>= 3.2.4),
     shiny (>= 0.14.2),
-    DT (>= 0.2)
+    DT (>= 0.2),
+    leaflet (>= 1.0.1)
 Imports:
     shinyjs,
     shinyBS,
