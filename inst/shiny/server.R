@@ -581,6 +581,7 @@ shinyServer(function(input, output, session) {
 
   # Module Maxent Evaluation Plots
   output$mxEvalPlot <- renderPlot({
+    if (input$mxEvalSel == '') return()
     values$mxEvalPlot <- TRUE
     evalPlot(values$evalTbl, input$mxEvalSel)
     })
