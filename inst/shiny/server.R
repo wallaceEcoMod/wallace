@@ -344,6 +344,18 @@ shinyServer(function(input, output, session) {
     shinyjs::enable("downloadMskPreds")
   })
 
+  writeZip <- function(x, file, filename, format, ...) {
+    if (format=="ESRI Shapefile") {
+      writeOGR(x, "./", filename, format, overwrite_layer=T, check_exists=T)
+    } else {
+      writeRaster(x, filename, format, bylayer=F, overwrite=T, ...)
+    }
+    f <- list.files(pattern=paste0(strsplit(filename, ".", fixed=T)[[1]][1], ".*"))
+    zip(paste0(filename, ".zip"), f, flags="-9Xjm", zip="zip")
+    file.copy(paste0(filename, ".zip"), file)
+    file.remove(paste0(filename, ".zip"))
+  }
+
   # handle download for masked predictors, with file type as user choice
   output$downloadMskPreds <- downloadHandler(
     filename = function() {'mskBioPreds.zip'},
@@ -360,6 +372,7 @@ shinyServer(function(input, output, session) {
         fs <- c(fs, file.path(tmpdir, paste0(rep('mskBio_', nr), 1:nr, '.gri')))
       }
       zip(zipfile=file, files=fs, extras = '-j')
+      if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
     },
     contentType = "application/zip"
   )
