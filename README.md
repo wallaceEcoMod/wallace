@@ -6,6 +6,10 @@
 
 *Wallace* can be installed via Github by executing the following R code. If you are using a Windows machine, please download and install [RTools](https://cran.r-project.org/bin/windows/Rtools/) before installing the `devtools` package.
 
+***IMPORTANT 1***: Before attempting to install *Wallace*, please make sure you have installed the latest versions of both R and RStudio.
+
+***IMPORTANT 2***: *Wallace* uses the package `rJava`, which requires that the version of Java on your computer (32-bit or 64-bit) match that of the R you are using. For example, if you are running 64-bit R, please make sure your Java is also 64-bit, or else `rJava` will be unable to load.
+
     # if you do not have devtools installed, install it first
     install.packages(devtools)
     # load devtools
