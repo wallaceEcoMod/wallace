@@ -7,7 +7,8 @@ output: html_document
 
 **BACKGROUND**  
 
-A user can upload data documenting the presence of a species at particular points in space and time, along with assigned georeferences (i.e., latitude/longitude coordinates). Other useful metadata fields when available (e.g., institution, specimen/observation number, elevation, etc.). 
+Users may want to use species occurrence data that they have compiled themselves in the *Wallace* analysis. Such data must have assigned georeferences in decimal degrees (i.e., latitude/longitude coordinates).
 
 **IMPLEMENTATION** 
-The user may upload a .csv file of occurrence records to use in the analysis, such as processed versions of files previously downloaded via *Wallace*. Such a file must contain rows of localities, and the first three columns should be “species”, “longitude”, and “latitude” (in that order, with those names).
+
+Users may upload a .csv file of occurrence records with rows of localities, and the first three fields must be named “species”, “longitude”, and “latitude” (in that order, with those names). Other fields can appear after these mandatory fields, but they are not used in the analysis.

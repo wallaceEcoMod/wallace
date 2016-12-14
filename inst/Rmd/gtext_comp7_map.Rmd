@@ -7,13 +7,20 @@ output: html_document
 
 **BACKGROUND**  
 
-Although a niche/distributional model constitutes a mathematical function of the environmental variables, in general, studies involve using it to make predictions to geographic space (Peterson et al. 2011). Most niche/distribution modeling algorithms provide a continuous output, which can be converted to a binary prediction by applying a threshold (above which the prediction is considered sufficiently strong to indicate suitability or presence). This is often known as a “potential distribution”, as it indicates potential range limits for the study species.
+Although a niche/distributional model constitutes a mathematical function of the environmental variables, most studies involve using it to make predictions in geographic space (Peterson et al. 2011). Most niche/distribution modeling algorithms provide a continuous output, which can be converted to a binary prediction by applying a threshold. Above this value, the prediction is considered strong enough to indicate sufficient suitability for the species to be present.
 
-**IMPLEMENTATION**
+**IMPLEMENTATION** 
 
-To view model predictions over the study extent, users first choose a model. In the case of BIOCLIM, there is only one choice, whereas depending on the `ENMeval` settings set in Component **Model**, there may be many choices for Maxent. Users then choose whether or not to set a threshold to convert the continuous prediction to a binary prediction (0's and 1's), which can be interpreted as habitat / non-habitat (with strong caveats, Yackulic et al. 2012). After a selection is made, users can press the "Plot prediction" to view the prediction on the map, and also download the prediction raster as .grd, .asc, .tif, or .png.
+This module relies on functionality for model prediction grids from the R package `dismo`.
 
-**BIBLIOGRAPHY**
+Users must first choose a model. Depending on the `ENMeval` settings selected in Component **Model**, there may be multiple choices for Maxent. *Wallace* calculates model output based on the predictor variable values for each cell and plots the prediction on the map. Two Maxent model output scales are available for viewing in *Wallace*: “raw” and “logistic”. The “raw” values sum to 1 across the entire study extent and represent the relative occurrence rate (*not* probability of presence; see Merow et al. 2013). The “logistic” transformation of the “raw” values range from 0 to 1 and approximate probability of presence (with strong caveats that include assumptions about prevalence; see Yackulic et al. 2012 and Merow et al. 2013). 
 
-Peterson A. T., Soberón J., Pearson R. G., Anderson R. P., Martinez-Meyer E., Nakamura M., Araújo M. B. (2011). Modeling Ecological Niches, and Niches and Geographic Distributions. In: Ecological niches and geographic distributions. Princeton, New Jersey: Monographs in Population Biology, 49. Princeton University Press.
+Users may then choose a thresholding rule to convert the continuous prediction to a binary one (0s and 1s), which can be interpreted as presence/absence or suitable/unsuitable. After the model and threshold selections are made, the prediction can be plotted on the map. Users can download the prediction as either raster grid types for analysis (.grd and .asc), or as an image file (.png).
 
+**REFERENCES**
+
+Peterson A. T., Soberón J., Pearson R. G., Anderson R. P., Martinez-Meyer E., Nakamura M., Araújo M. B. (2011). Modeling Ecological Niches, and Niches and Geographic Distributions. In: Ecological Niches and Geographic Distributions. Princeton, New Jersey: Monographs in Population Biology, 49. Princeton University Press.
+
+Merow C., Smith M.J., Silander J.A. (2013). A practical guide to MaxEnt for modeling species’ distributions: What it does, and why inputs and settings matter. *Ecography*. 36: 1058-1069.
+
+Yackulic, C. B., Chandler, R., Zipkin, E. F., Royle, J. A., Nichols, J. D., Campbell Grant, E. H., & Veran, S. (2013). Presence‐only modelling using MAXENT: when can we trust the inferences?. *Methods in Ecology and Evolution*. 4: 236-243.

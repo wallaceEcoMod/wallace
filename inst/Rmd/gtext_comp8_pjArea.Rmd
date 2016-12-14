@@ -7,12 +7,16 @@ output: html_document
 
 **BACKGROUND**  
 
-In simple terms, applying or “projecting” a niche/distributional model to a time period or region different from the study extent constitutes a simple model prediction on the predictor values, as long as these values are available for the new projection extent / time. In reality, however, researchers should be cognizant of many possible pitfalls, including non-analog conditions (e.g., requiring extrapolation in environmental space), dispersal barriers, and heterogeneity in the effects of biotic interactors (Anderson 2013).
+In simple terms, applying or “projecting” a niche/distributional model to a region or time period different from the ones used to make the model involves making a prediction based on the model and the new values of the predictor variables, as long as these values are available for the original region and time period. In reality, however, researchers should be cognizant of many possible pitfalls, including non-analog conditions (e.g., requiring extrapolation in environmental space) and heterogeneity in the effects of species interactions (Fitzpatrick and Hargrove 2009; Anderson 2013).
 
 **IMPLEMENTATION** 
 
-Users begin by selecting a model. In the case of BIOCLIM, there is only one choice, whereas depending on the `ENMeval` settings set in Component **Model**, there may be many choices for Maxent. Users then draw a polygon on the map to delineate the model prediction area. Once the polygon has been drawn, users can press "Select" to choose this extent, and then "Project" to project the model onto the predictor values of the selected extent.
+This module relies on functionality for model prediction grids from the R package `dismo`.
+
+Users must first select a model. Depending on the `ENMeval` settings selected in Component **Model**, there may be multiple choices for Maxent. Users then draw a polygon on the map to delineate the area desired for the new prediction. Once the polygon has been drawn, "Select" chooses this extent for all projection operations. "Project" calculates the modeled response for the predictor variable values for each cell of the selected extent and plots the prediction on the map. Users can download the prediction as either raster grid types for analysis (.grd and .asc), or as an image file (.png).
 
 **REFERENCES**
 
-Anderson R.P. 2013. A framework for using niche models to estimate impacts of climate change on species distributions. *Annals of the New York Academy of Sciences*. 1297:8–28.
+Anderson R.P. (2013). A framework for using niche models to estimate impacts of climate change on species distributions. *Annals of the New York Academy of Sciences*. 1297: 8-28.
+
+Fitzpatrick, M. C., & Hargrove, W. W. (2009). The projection of species distribution models and the problem of non-analog climate. *Biodiversity and Conservation* 18: 2255-2261.
