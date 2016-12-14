@@ -26,5 +26,7 @@ Depends:
     ENMeval,
     shinythemes,
     magrittr
-Remotes: rstudio/leaflet
+Remotes: 
+    rstudio/leaflet,
+    bobmuscarella/ENMeval@ENMeval_v0.1.2
 RoxygenNote: 5.0.1
