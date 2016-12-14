@@ -4,11 +4,14 @@
 
 *Wallace* is a modular platform for reproducible modeling of species niches and distributions, written in R. The application guides users through a complete analysis, from the acquisition of data to visualizing model predictions on an interactive map, thus bundling complex workflows into a single, streamlined interface.
 
-*Wallace* can be installed via Github by executing the following R code. If you are using a Windows machine, please download and install [RTools](https://cran.r-project.org/bin/windows/Rtools/) before installing the `devtools` package.
+*Wallace* can be installed via Github by executing the following R code. 
 
 ***IMPORTANT 1***: Before attempting to install *Wallace*, please make sure you have installed the latest versions of both R and RStudio.
 
 ***IMPORTANT 2***: *Wallace* uses the package `rJava`, which requires that the version of Java on your computer (32-bit or 64-bit) match that of the R you are using. For example, if you are running 64-bit R, please make sure your Java is also 64-bit, or else `rJava` will be unable to load.
+
+***ATTENTION WINDOWS USERS***: If you are using a Windows machine, please download and install [RTools](https://cran.r-project.org/bin/windows/Rtools/) before installing the `devtools` package. After you install RTools, please make sure you add "C:\Rtools\bin" to your PATH variable (instructions [here](http://stackoverflow.com/questions/29129681/create-zip-file-error-running-command-had-status-127)). Also, when using `devtools` on Windows machines, there is a known [bug](https://github.com/hadley/devtools/issues/1298) that sometimes results in the inability to download all package dependencies. If this happens to you, please run the file "wallace_pkgs.R" in the main directory of the package to install the packages you need from CRAN, and the dependencies should be downloaded too.
+
 
     # if you do not have devtools installed, install it first
     install.packages(devtools)
@@ -21,4 +24,4 @@
     # run the user interface
     wallace()
 
-When using `devtools` on Windows machines, there is a known [bug](https://github.com/hadley/devtools/issues/1298) that sometimes results in the inability to download all package dependencies. If this happens to you, please manually install any packages that cause package build errors, then reinstall `wallace`.
+
