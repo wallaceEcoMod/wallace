@@ -37,6 +37,8 @@ zoom2Occs <- function(map, occs) {
   # map %>% clearShapes()
   lati <- occs[,3]
   longi <- occs[,2]
+  print(lati)
+  print(longi)
   z <- smartZoom(longi, lati)
   map %>% fitBounds(z[1], z[2], z[3], z[4])
 

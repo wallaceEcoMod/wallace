@@ -111,12 +111,23 @@ getUserOccs <- function(userCSV) {
     isolate({writeLog('* ERROR: Please input CSV file with columns "name", "longitude", "latitude".')})
     return()
   }
-  isolate({writeLog(paste("* User-specified CSV file", userCSV$name, "was uploaded."))})
+
   # subset to only occs, not backg, and just fields that match df
   spName <- as.character(csv$name[1])  # get species name
   # record species name
   values$spName <- spName
   userOccs <- csv[csv[,1] == spName,]  # limit to records with this name
+
+  # subset to just records with latitude and longitude
+  userOccs <- userOccs %>% dplyr::filter(!is.na(latitude) & !is.na(longitude))
+  if (nrow(userOccs) == 0) {
+    writeLog(paste("No records with coordinates found in", userCSV$name, "for", spName, "."))
+    return()
+  }
+
+  isolate({writeLog(paste("* User-specified CSV file", userCSV$name, "with total of", nrow(userOccs),
+                          "records with coordinates was uploaded."))})
+
   # for (col in c("institutionCode", "country", "stateProvince",
   #               "locality", "elevation", "basisOfRecord")) {  # add all cols to match origOccs if not already there
   #   if (!(col %in% names(userOccs))) userOccs[,col] <- NA
@@ -130,6 +141,4 @@ getUserOccs <- function(userCSV) {
 
   # MAPPING
   proxy %>% zoom2Occs(values$df) %>% map_plotLocs(values$df)
-
-  isolate({writeLog("* User-specified CSV input.")})
 }
