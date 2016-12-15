@@ -10,18 +10,18 @@
 
 ***IMPORTANT 2***: *Wallace* uses the package `rJava`, which requires that the version of Java on your computer (32-bit or 64-bit) match that of the R you are using. For example, if you are running 64-bit R, please make sure your Java is also 64-bit, or else `rJava` will be unable to load.
 
-***ATTENTION WINDOWS USERS***: If you are using a Windows machine, please download and install [RTools](https://cran.r-project.org/bin/windows/Rtools/) before installing the `devtools` package. After you install RTools, please make sure you add "C:\Rtools\bin" to your PATH variable (instructions [here](http://stackoverflow.com/questions/29129681/create-zip-file-error-running-command-had-status-127)). Also, when using `devtools` on Windows machines, there is a known [bug](https://github.com/hadley/devtools/issues/1298) that sometimes results in the inability to download all package dependencies. If this happens to you, please run the file "wallace_pkgs.R" in the main directory of the package to install the packages you need from CRAN, and the dependencies should be downloaded too.
+***ATTENTION WINDOWS USERS***: If you are using a Windows machine, please download and install [RTools](https://cran.r-project.org/bin/windows/Rtools/) before installing the `devtools` package. After you install RTools, please make sure you add "C:\Rtools\bin" to your PATH variable (instructions [here](http://stackoverflow.com/questions/29129681/create-zip-file-error-running-command-had-status-127)). Also, when using `devtools` on Windows machines, there is a known [bug](https://github.com/hadley/devtools/issues/1298) that sometimes results in the inability to download all package dependencies. If this happens to you, please run the file "wallace_pkgs.R" in the main directory of the package to install the packages and their dependencies directly from CRAN, and then run the code below.
 
-
-    # if you do not have devtools installed, install it first
-    install.packages(devtools)
-    # load devtools
-    library(devtools)
-    # install wallace from github
-    install_github("wallaceEcoMod/wallace")
-    # load wallace
-    library(wallace)
-    # run the user interface
-    wallace()
-
+```R
+# if you do not have devtools installed, install it first
+install.packages(devtools)
+# load devtools
+library(devtools)
+# install wallace from github
+install_github("wallaceEcoMod/wallace")
+# load wallace
+library(wallace)
+# run the user interface
+wallace()
+```
 
