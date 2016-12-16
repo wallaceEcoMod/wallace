@@ -13,7 +13,7 @@ As mentioned above in **Component: Model**, like many niche/distribution modelin
 
 This module relies on plotting functionality from R package `ENMeval`.
 
-Users can select which evaluation metric plot to view in the "Results" tab. Different feature classes are symbolized by color, regularization multipliers are labeled on the x-axis, and the value of the evaluation metric is labeled on the y-axis. Users can download the currently displayed Maxent evaluation plot as an image file (.png).
+Users can select which evaluation metric plot to view in the "Results" tab. Different feature classes are symbolized by color, regularization multipliers are labeled on the x-axis, and the value of the evaluation metric is labeled on the y-axis. Variance is displayed in the error bars. Users can download the currently displayed Maxent evaluation plot as an image file (.png).
 
 **REFERENCES**
 
