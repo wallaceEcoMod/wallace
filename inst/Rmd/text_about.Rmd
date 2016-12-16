@@ -21,4 +21,4 @@ output: html_document
 
 <img src="img/rob.png" alt="rob" style="width: 100px;"/>
 
-<a href="https://www.researchgate.net/profile/Robert_Anderson7" target="_blank">Robert P. Anderson</a> (co-developer) is a coauthor of spThin and ENMeval, and a Professor of Biology at City College of New York, CUNY. He was supported by the National Science Foundation Divisionsof Biological Infrastructure and Environmental Biology (DBI-1650241 and DEB-1119915).
+<a href="https://www.researchgate.net/profile/Robert_Anderson7" target="_blank">Robert P. Anderson</a> (co-developer) is a coauthor of spThin and ENMeval, and a Professor of Biology at City College of New York, CUNY. He was supported by the National Science Foundation Divisions of Biological Infrastructure and Environmental Biology (DBI-1650241 and DEB-1119915).

@@ -72,7 +72,7 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                                      conditionalPanel("input.tabs == 2",
                                                       h4("Process Occurrence Data"),
                                                       radioButtons("procOccSel", "Modules Available:",
-                                                                   choices = list("Select with Polygon" = 'selpts',
+                                                                   choices = list("Select Localities" = 'selpts',
                                                                                   "Spatial Thin" = 'spthin')),
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.procOccSel == 'selpts'",
