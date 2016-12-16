@@ -504,7 +504,10 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                                                        tabPanel('About',
                                                                 h4("Wallace was created by an international team of ecologists:"),
                                                                 fluidRow(
-                                                                  includeMarkdown(system.file("Rmd", "text_about.Rmd", package = "wallace"))
+                                                                  column(8,
+                                                                         includeMarkdown(system.file("Rmd", "text_about.Rmd", package = "wallace"))
+                                                                         )
+
                                                                 )
                                                        )
                                            )
