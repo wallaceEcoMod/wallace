@@ -71,8 +71,8 @@ getDbOccs <- function(spName, occNum) {
             "locality", "elevation", "basisOfRecord")
   dbOccs <- dbOccs %>%
     dplyr::select(dplyr::one_of(cols)) %>%
-    dplyr::mutate(origID = row.names(dbOccs)) %>%  # make new column for ID
-    dplyr::mutate(pop = unlist(apply(dbOccs, 1, popUpContent)))  # make new column for leaflet marker popup content
+    dplyr::mutate(origID = row.names(dbOccs))  # make new column for ID
+  dbOccs <- dbOccs %>% dplyr::mutate(pop = unlist(apply(dbOccs, 1, popUpContent)))  # make new column for leaflet marker popup content
 
   # origOccs is the unmodified occs, to preserve in comp2 when points are modified
   values$df <- values$origOccs <- dbOccs

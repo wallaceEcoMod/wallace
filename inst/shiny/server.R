@@ -53,8 +53,6 @@ shinyServer(function(input, output, session) {
     source(file.path('modules', f), local=TRUE)
   }
 
-  print(system.file('img','jamie.jpg', package = 'wallace'))
-
   # UI for component guidance text
   output$gtext_comp <- renderUI({
     shiny::includeMarkdown(system.file('Rmd', gtext$cur_comp, package='wallace'))
@@ -350,7 +348,6 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       tmpdir <- tempdir()
       setwd(tempdir())
-      print(tempdir())
 
       writeRaster(values$predsMsk, file.path(tmpdir, 'mskBio'), bylayer = TRUE,
                   format = input$mskPredsFileType, overwrite = TRUE)
