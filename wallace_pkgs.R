@@ -10,5 +10,6 @@ install.packages('spThin')
 install.packages('ENMeval')
 install.packages('repmis')
 
-install_github('wallaceEcoMod/wallace')
-install_github('bobmuscarella/ENMeval@ENMeval_v0.1.2')
+install.packages('devtools')
+devtools::install_github('wallaceEcoMod/wallace')
+# install_github('bobmuscarella/ENMeval@ENMeval_v0.1.2')
