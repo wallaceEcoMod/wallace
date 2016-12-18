@@ -15,6 +15,7 @@ getDbOccs <- function(spName, occNum) {
   # if species not found, print message to log box and return
   if (query[[input$occDb]]$meta$found == 0) {
     writeLog(paste('* No records found for ', input$spName, ". Please check the spelling."))
+    values$df <- NULL  # reset df
     return()
   }
 
