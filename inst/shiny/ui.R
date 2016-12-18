@@ -1,16 +1,16 @@
 #' @imports shiny
 #'
 
-shinyjs::useShinyjs()
-
 # Define UI for application
-shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsible=TRUE,
+shinyUI(tagList(
+  shinyjs::useShinyjs(),
+  navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsible=TRUE,
                    title='Wallace',
                    tabPanel("Intro", value=0),
                    tabPanel("1 Occ Data", value=1),
                    tabPanel("2 Process Occs", value=2),
                    tabPanel("3 Env Data", value=3),
-                   tabPanel("4 Study Extent", value=4),
+                   tabPanel("4 Process Envs", value=4),
                    tabPanel("5 Partition Occs", value=5),
                    tabPanel("6 Model", value=6),
                    tabPanel("7 Visualize", value=7),
@@ -378,14 +378,12 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                                                                                                   "mean OR 10%" = 'Mean.OR10', "delta AICc" = 'delta.AICc')),
                                                                        downloadButton('downloadEvalPlot', "Download Current Evaluation Plot")
                                                       ),
-                                                      conditionalPanel("input.visSel == 'map'",
-                                                                       HTML('<hr>'),
-                                                                       span("dismo", id = "rpkg"), "references", br(),
-                                                                       div('Developers:  Robert J. Hijmans, Steven Phillips, John Leathwick, Jane Elith', id="pkgDes"),
-                                                                       a("CRAN", href = "http://cran.r-project.org/web/packages/dismo/index.html", target = "_blank"),
-                                                                       " | ",
-                                                                       a("documentation", href="https://cran.r-project.org/web/packages/dismo/dismo.pdf", target = "_blank")
-                                                      )
+                                                      HTML('<hr>'),
+                                                      span("dismo", id = "rpkg"), "references", br(),
+                                                      div('Developers:  Robert J. Hijmans, Steven Phillips, John Leathwick, Jane Elith', id="pkgDes"),
+                                                      a("CRAN", href = "http://cran.r-project.org/web/packages/dismo/index.html", target = "_blank"),
+                                                      " | ",
+                                                      a("documentation", href="https://cran.r-project.org/web/packages/dismo/dismo.pdf", target = "_blank")
                                      ),
                                      # tab 8 ####
                                      conditionalPanel("input.tabs == 8",
@@ -438,10 +436,6 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                                                                        HTML('<hr>'),
                                                                        strong("Project to new time (current extent)"), br(), br(),
                                                                        actionButton('goPjTime', "Project")
-                                                      ),
-                                                      conditionalPanel("input.projSel == 'mess'",
-                                                                       strong("View MESS for current extent"), br(), br(),
-                                                                       actionButton('goMESS', "Run")
                                                       ),
                                                       br(), br(),
                                                       selectInput('pjFileType', label = "Select File Type",
@@ -514,4 +508,4 @@ shinyUI(navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsib
                           )
                    )
                    )
-))
+)))

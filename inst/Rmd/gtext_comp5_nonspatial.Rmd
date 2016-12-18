@@ -13,7 +13,7 @@ Non-spatial partitions are useful when no sampling bias exists and when the mode
 
 This module implements functionalities from the R package `ENMeval` to partition the occurrence localities into training and testing datasets. 
 
-These non-spatial partitions are either via a: 1) jackknife procedure where each occurrence record is put into a unique group (*k* equals the number of localities; technically an n - 1 jackknife), which is appropriate for small sample sizes (Pearson et al. 2007, Shcheglovitova and Anderson, 2013); or 2) random *k*-fold, where localities are randomly assigned to a group (the number of groups, *k*,  is user-defined), an approach suggested for larger sample sizes. For more details about these partitioning methods, see Muscarella et al. (2014). Users can download a .csv that includes all the localities retained thus far with an extra column for partition group.
+These non-spatial partitions are either via a: 1) jackknife procedure where each occurrence record is put into a unique group (*k* equals the number of localities; technically an n - 1 jackknife), which is appropriate for small sample sizes (Pearson et al. 2007, Shcheglovitova and Anderson, 2013); or 2) random *k*-fold, where localities are randomly assigned to a group (the number of groups, *k*,  is user-defined), an approach suggested for larger sample sizes. For more details about these partitioning methods, see Muscarella et al. (2014). Users can download a .csv that includes all the localities retained thus far with an extra column for partition group, plus all the background points sampled in Component **Process Environmental Data** (partition value = 0).
 
 **REFERENCES**
 

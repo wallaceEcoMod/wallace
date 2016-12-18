@@ -39,7 +39,7 @@ options(shiny.maxRequestSize=5000*1024^2)
 shinyServer(function(input, output, session) {
   # disable download buttons
   shinyjs::disable("dlDbOccs")
-  shinyjs::disable("downloadThincsv")
+  shinyjs::disable("dlProcOccCsv")
   shinyjs::disable("predDnld")
   shinyjs::disable("downloadMskPreds")
   shinyjs::disable("downloadPart")
@@ -102,11 +102,12 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goName, {
     if (input$spName == "") return()
     getDbOccs(input$spName, input$occNum)
-    shinyjs::enable("dlDbOccs")
+    if (!is.null(values$df)) {shinyjs::enable("dlDbOccs")}
   })
 
   # module userOccs
   observe({
+    print(values$df)
     if (is.null(input$userCSV)) return()  # exit if userCSV not specifed
     isolate({getUserOccs(input$userCSV)})
   })
@@ -249,7 +250,7 @@ shinyServer(function(input, output, session) {
   # Module Spatial Thin
   observeEvent(input$goThin, {
     thinOccs(input$thinDist)
-    shinyjs::enable("downloadThincsv")
+    shinyjs::enable("dlProcOccCsv")
   })
 
   # handle download for thinned records csv
