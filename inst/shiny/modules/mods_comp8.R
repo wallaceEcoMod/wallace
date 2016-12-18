@@ -48,7 +48,7 @@ comp8_pjArea <- function(modelSel, predForm, enmSel) {
   rasPal <- colorNumeric(rasCols, rasVals, na.color='transparent')
   # values$leg2 <- list(rasVals=rasVals, pal=pal)
 
-  proxy %>% addLegend("topright", pal = legPal, title = "Predicted SEuitability",
+  proxy %>% addLegend("topright", pal = legPal, title = "Predicted Suitability",
                       values = rasVals, layerId = 'r2Legend', labFormat = reverseLabels(reverse_order=TRUE))
   proxy %>% addRasterImage(values$pjArea, colors = rasPal, group = 'r2', layerId = 'r2')
 }

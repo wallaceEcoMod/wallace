@@ -13,7 +13,7 @@ BIOCLIM is one of the simplest techniques for estimating a species’ niche and 
 
 This model uses the R package `dismo` to build BIOCLIM models, and evaluates them with custom code modified from the R package `ENMeval` (Muscarella et al. 2014). 
 
-*Wallace* offers the BIOCLIM implementation available in `dismo`. BIOCLIM models are built and evaluated using the partitions assigned in Component **Partition Occurrence Data**. The rows in the results table correspond to evaluation statistics calculated, and the “Bin” columns refer to the different partitions. Users can download a .csv file of the evaluation statistics table. Further, the model  results can be viewed graphically in Component **Visualize Model Results**.
+*Wallace* offers the BIOCLIM implementation available in `dismo`. BIOCLIM models are built and evaluated using the partitions assigned in Component **Partition Occurrence Data**. The rows in the results table correspond to evaluation statistics calculated, and the “Bin” columns refer to the different partitions. Users can download a .csv file of the evaluation statistics table. Further, the model results can be viewed graphically in Component **Visualize Model Results** with Module ***BIOCLIM Envelope Plots***.
 
 **REFERENCES** 
 

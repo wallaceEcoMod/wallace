@@ -458,10 +458,17 @@ shinyServer(function(input, output, session) {
     # Module BIOCLIM
     if (input$enmSel == "BIOCLIM") {
       comp6_bioclimMod()
+      updateRadioButtons(session, 'visSel', "Modules Available:",
+                         choices = list("BIOCLIM Envelope Plots" = 'bcEnvel',
+                                        "Map Prediction" = 'map'))
     }
     # Module Maxent
      else if (input$enmSel == "Maxent") {
        comp6_maxentMod(input$rms, input$fcs)
+       updateRadioButtons(session, 'visSel', "Modules Available:",
+                          choices = list("Maxent Evaluation Plots" = 'mxEval',
+                                         "Plot Response Curves" = 'response',
+                                         "Map Prediction" = 'map'))
        shinyjs::enable("downloadEvalPlots")
      }
     # switch to Results tab
