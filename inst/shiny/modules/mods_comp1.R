@@ -16,6 +16,7 @@ getDbOccs <- function(spName, occNum) {
   if (query[[input$occDb]]$meta$found == 0) {
     writeLog(paste('* No records found for ', input$spName, ". Please check the spelling."))
     values$df <- NULL  # reset df
+    shinyjs::disable("dlDbOccs")
     return()
   }
 
