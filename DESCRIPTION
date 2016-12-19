@@ -29,5 +29,4 @@ Depends:
 Remotes: 
     rstudio/leaflet,
     bobmuscarella/ENMeval@ENMeval_v0.1.2
-    ndimhypervol/dismo
 RoxygenNote: 5.0.1
