@@ -239,16 +239,13 @@ shinyServer(function(input, output, session) {
     values$poly1 <- NULL
     values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
     proxy %>% clearMarkers() %>% clearShapes() %>% map_plotLocs(values$origOccs)
-    x <- paste('* RESET: localities dataset is now back to', nrow(values$origOccs), 'records.')
-    isolate(writeLog(x))
     if (!is.null(values$origOccs)) {
       values$origOccs <- rbind(values$origOccs, values$removed)
       values$df <- values$origOccs
+      x <- paste('* RESET: localities dataset is now back to', nrow(values$origOccs), 'records.')
+      isolate(writeLog(x))
     }
-    lat <- values$df[,3]
-    lon <- values$df[,2]
-    z <- smartZoom(lon, lat)
-    proxy %>% fitBounds(z[1], z[2], z[3], z[4])
+    proxy %>% zoom2Occs(values$origOccs) %>% map_plotLocs(values$origOccs)
   })
 
   # Module Spatial Thin

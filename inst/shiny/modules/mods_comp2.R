@@ -4,14 +4,15 @@ remSelLocs <- function(remLoc) {
     remo <- which(remLoc == values$df$origID)  # find which row name corresponds to user selection for removal
     # Remove the offending row
     if (length(remo) > 0) {
-      values$removed <- values$df[remo, ]
+      values$removed <- rbind(values$removed, values$df[remo, ])
       values$removedAll <- c(values$removedAll, rownames(values$removed))  # keep vector of all removed pts
       values$df <- values$df[-remo, ]
       values$origOccs <- values$origOccs[-remo, ]
     }
+    print(values$removed)
 
     if (numTest) {
-      writeLog(paste0("* Removed locality with ID = ", remLoc, "."))
+      writeLog(paste0("* Removed locality with ID = ", remLoc, ". Localities data has n = ", nrow(values$df), " records."))
     }
 
     proxy %>% zoom2Occs(values$origOccs) %>% map_plotLocs(values$origOccs)
