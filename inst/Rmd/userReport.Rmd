@@ -11,28 +11,6 @@ knit_engines$set(asis = function(options) {
 knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 ```
 
-Please find below the R code history from your *Wallace* session. You can reproduce your session results by running the .Rmd file in RStudio (for more information see <http://rmarkdown.rstudio.com>).
-
-### Package installation
-
-Wallace uses the following R packages that must be installed and loaded before starting.
-```{r}
-library(devtools)
-library(spocc)
-library(maptools)
-library(spThin)
-library(dismo)
-library(rgeos)
-library(repmis)
-library(maps)
-library(ENMeval)
-```
-
-Wallace also includes several functions developed to help integrate different packages and some additional functionality. For this reason, it is necessary to load the file 'functions.R', which can be found on Wallace's GitHub page (https://github.com/wallaceEcoMod/wallace). Download the file, place it in your working directory (find this with `getwd()`), and then load it:
-```{r loadFunctions}
-# source(file.path("{{curWD}}", 'functions.R'))
-```
-
 ```{r, echo = FALSE, include = FALSE}
 # comp1
 occ <- values$mod_db
@@ -73,14 +51,38 @@ projAny <- projArea | projTime
 mess <- !is.null(values$mess)
 ```
 
-## Record of analysis for *`r values$spName`*.
+Please find below the R code history from your *Wallace* session. You can reproduce your session results by running the .Rmd file in RStudio (for more information see <http://rmarkdown.rstudio.com>).
+
+### Package installation
+
+Wallace uses the following R packages that must be installed and loaded before starting.
+```{r}
+library(devtools)
+library(spocc)
+library(maptools)
+library(spThin)
+library(dismo)
+library(rgeos)
+library(repmis)
+library(maps)
+devtools::install_github('bobmuscarella/ENMeval@ENMeval_v0.1.2')
+library(ENMeval)
+```
+
+Wallace also includes several functions developed to help integrate different packages and some additional functionality. For this reason, it is necessary to load the file `functions.R`, The function `system.file()` finds this script, and `source()` loads it.
+
+```{r loadFunctions}
+source(system.file('inst/shiny/funcs', 'functions.R', package = 'wallace'))
+```
+
+## Record of analysis for *`r "{{spName}}"`*.
 
 ```{asis, echo = occ.csv, include = occ.csv}
 ### Obtain Occurrence Data
 ```
 
 ```{asis, echo = occ, include = occ}
-The search for occurrences was limited to `r {{occNum}}` records. Obtain occurrence records of the selected species from the database:
+The search for occurrences was limited to `r {{occNum}}` records. Obtain occurrence records of the selected species from the `r "{{dbName}}"` database.
 ```
 
 ```{r occSearch, eval = occ, echo = occ, include = occ}

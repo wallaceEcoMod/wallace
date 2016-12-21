@@ -724,6 +724,9 @@ shinyServer(function(input, output, session) {
   # Module Project to New Area
   observeEvent(input$goPjArea, {
     comp8_pjArea(input$modelSelProj, input$predForm, values$enmSel)
+    shinyjs::enable("downloadPj")
+    values$dlRas <- values$pjArea
+    values$pjName <- paste0(values$rasName, "_", input$predForm, "_pj")
   })
 
   observe({
@@ -751,11 +754,18 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goPjTime, {
     comp8_pjTime(input$modelSelProj, input$predForm, values$enmSel, input$bcRes, input$selRCP,
                  input$selGCM, input$selTime)
+    shinyjs::enable("downloadPj")
+    values$dlRas <- values$pjTime
+    values$pjName <- paste0(values$rasName, "_", input$predForm, "_pj_",
+                            input$selRCP, "_", input$selGCM, "_", input$selTime)
   })
 
   # Module MESS
   observeEvent(input$goMESS, {
     comp8_mess()
+    shinyjs::enable("downloadPj")
+    values$dlRas <- values$mess
+    values$pjName <- paste0(values$rasName, "_", input$predForm, "_mess")
   })
 
   # Download current projected extent
@@ -764,16 +774,16 @@ shinyServer(function(input, output, session) {
       ext <- ifelse(input$pjFileType == 'raster', 'zip',
                     ifelse(input$pjFileType == 'ascii', 'asc',
                            ifelse(input$pjFileType == 'GTiff', 'tif', 'png')))
-      paste0(values$rasName, "_", input$predForm, "_", input$predThresh, "_pj.", ext)},
+      paste0(values$pjName, '.', ext)},
     content = function(file) {
       if (input$pjFileType == 'png') {
         png(file)
-        image(values$pjArea)
+        image(values$dlRas)
         dev.off()
       } else if (input$pjFileType == 'raster') {
-        fileName <- paste0(values$rasName, "_", input$predForm, "_", input$predThresh, "_pj")
+        fileName <- values$pjName
         tmpdir <- tempdir()
-        writeRaster(values$pjArea, file.path(tmpdir, fileName), format = input$pjFileType, overwrite = TRUE)
+        writeRaster(values$dlRas, file.path(tmpdir, fileName), format = input$pjFileType, overwrite = TRUE)
         fs <- file.path(tmpdir, paste0(fileName, c('.grd', '.gri')))
         zip(zipfile=file, files=fs, extras = '-j')
       } else {
