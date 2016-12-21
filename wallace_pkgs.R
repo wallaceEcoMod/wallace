@@ -10,7 +10,3 @@ install.packages('spThin')
 install.packages('ENMeval')
 install.packages('repmis')
 install.packages('xtable')
-
-install.packages('devtools')
-devtools::install_github('wallaceEcoMod/wallace')
-install_github('bobmuscarella/ENMeval@ENMeval_v0.1.2')
