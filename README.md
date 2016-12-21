@@ -19,10 +19,8 @@ Once this is complete, please run the following code to install.
 ```R
 # if you do not have devtools installed, install it first
 install.packages(devtools)
-# load devtools
-library(devtools)
 # install wallace from github
-install_github("wallaceEcoMod/wallace")
+devtools::install_github("wallaceEcoMod/wallace")
 # load wallace
 library(wallace)
 # run the user interface
