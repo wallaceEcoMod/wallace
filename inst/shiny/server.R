@@ -215,8 +215,6 @@ shinyServer(function(input, output, session) {
   # Module Select Localities: select points intersecting drawn polygons (replace values$df)
   observeEvent(input$selectPoly, {
     polySelLocs()
-    print(values$df, n=50)
-    print("BLARG")
     shinyjs::enable("dlProcOccCsv")
   })
 
@@ -227,7 +225,6 @@ shinyServer(function(input, output, session) {
       return()
       }
     remSelLocs(input$remLoc)
-    print(values$df, n=50)
     shinyjs::enable("dlProcOccCsv")
   })
 
@@ -239,6 +236,7 @@ shinyServer(function(input, output, session) {
     values$poly1 <- NULL
     values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
     if (!is.null(values$origOccs)) {
+      # if locs were removed, put them back in values$origOccs and turn off values$removed
       if (!is.null(values$removed)) {
         values$origOccs <- rbind(values$origOccs, values$removed)
         values$removed <- NULL

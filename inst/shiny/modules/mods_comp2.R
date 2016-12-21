@@ -58,8 +58,11 @@ polySelLocs <- function() {
   values$ptSelID <- selIDs
 
   # subset df with selected locs and record the selected points
-  values$df <- values$ptsSel <- values$origOccs[selIDs, ]
-  values$df <- na.omit(values$df)  # remove phantom NA rows (just problem on Windows?)
+  values$ptsSel <- rbind(values$ptsSel, values$origOccs[which(values$origOccs$origID %in% selIDs), ])
+  values$ptsSel <- values$ptsSel[!duplicated(values$ptsSel$origID),]  # remove rows with duplicate ID
+  values$ptsSel <- values$ptsSel[!is.na(values$ptsSel$latitude),]  # remove phantom NA rows (just problem on Windows?)
+
+  values$df <- values$ptsSel
 
   # # plot all
   # proxy %>% map_plotLocs(values$df, fillColor='yellow', fillOpacity=1, clearShapes=FALSE, clearMarkers=FALSE)
