@@ -9,7 +9,6 @@ remSelLocs <- function(remLoc) {
       values$df <- values$df[-remo, ]
       values$origOccs <- values$origOccs[-remo, ]
     }
-    print(values$removed)
 
     if (numTest) {
       writeLog(paste0("* Removed locality with ID = ", remLoc, ". Localities data has n = ", nrow(values$df), " records."))

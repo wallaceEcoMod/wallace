@@ -238,9 +238,11 @@ shinyServer(function(input, output, session) {
     values$polyPts1 <- NULL
     values$poly1 <- NULL
     values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
-    proxy %>% clearMarkers() %>% clearShapes() %>% map_plotLocs(values$origOccs)
     if (!is.null(values$origOccs)) {
-      values$origOccs <- rbind(values$origOccs, values$removed)
+      if (!is.null(values$removed)) {
+        values$origOccs <- rbind(values$origOccs, values$removed)
+        values$removed <- NULL
+      }
       values$df <- values$origOccs
       x <- paste('* RESET: localities dataset is now back to', nrow(values$origOccs), 'records.')
       isolate(writeLog(x))
