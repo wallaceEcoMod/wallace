@@ -107,7 +107,6 @@ shinyServer(function(input, output, session) {
 
   # module userOccs
   observe({
-    print(values$df)
     if (is.null(input$userCSV)) return()  # exit if userCSV not specifed
     isolate({getUserOccs(input$userCSV)})
   })
@@ -216,6 +215,9 @@ shinyServer(function(input, output, session) {
   # Module Select Localities: select points intersecting drawn polygons (replace values$df)
   observeEvent(input$selectPoly, {
     polySelLocs()
+    print(values$df, n=50)
+    print("BLARG")
+    shinyjs::enable("dlProcOccCsv")
   })
 
   # governs point removal behavior and modifies tables in "values"
@@ -225,6 +227,8 @@ shinyServer(function(input, output, session) {
       return()
       }
     remSelLocs(input$remLoc)
+    print(values$df, n=50)
+    shinyjs::enable("dlProcOccCsv")
   })
 
   # erase select localities polygon with button click

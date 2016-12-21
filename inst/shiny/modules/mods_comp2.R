@@ -59,6 +59,7 @@ polySelLocs <- function() {
 
   # subset df with selected locs and record the selected points
   values$df <- values$ptsSel <- values$origOccs[selIDs, ]
+  values$df <- na.omit(values$df)  # remove phantom NA rows (just problem on Windows?)
 
   # # plot all
   # proxy %>% map_plotLocs(values$df, fillColor='yellow', fillOpacity=1, clearShapes=FALSE, clearMarkers=FALSE)
