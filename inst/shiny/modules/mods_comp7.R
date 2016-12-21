@@ -1,9 +1,9 @@
 comp7_mapPred <- function(modelSelPlotStudyExt, predForm, predThresh, proxy) {
   if (is.null(values$evalPreds)) {
-    writeLog("! Please run a model before plotting predictions.")
+    writeLog('<font color="red"><b>! ERROR</b></font> : Run a model before plotting predictions.')
     return()
   }
-    
+
   values$goMapPred <- TRUE
   proxy %>% removeImage('r1')  # remove current raster
   selRasRaw <- values$evalPreds[[as.numeric(modelSelPlotStudyExt)]]
@@ -16,7 +16,7 @@ comp7_mapPred <- function(modelSelPlotStudyExt, predForm, predThresh, proxy) {
     rasVals <- c(selRas@data@values, 0, 1)  # set to 0-1 scale
   }
   rasVals <- rasVals[!is.na(rasVals)]
-  
+
   if (predThresh == 'mtp') {
     mtp <- values$mtps[as.numeric(modelSelPlotStudyExt)]
     values$predCur <- selRasRaw > mtp
@@ -28,7 +28,7 @@ comp7_mapPred <- function(modelSelPlotStudyExt, predForm, predThresh, proxy) {
   }
   values$rasName <- names(selRas)
   shinyjs::enable("downloadPred")
-  
+
   if (!is.null(values$predCur)) {
     if (predThresh == 'mtp' | predThresh == 'p10') {
       rasPal <- c('gray', 'blue')

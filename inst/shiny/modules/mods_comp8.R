@@ -4,7 +4,7 @@ comp8_selProjExt <- function() {
 
   values$polyPts2 <- unique(values$polyPts2)  # remove phantom first row after reset
   if (nrow(values$polyPts2) < 3) {
-    writeLog("! Please define a shape with at least 3 sides.")
+    writeLog('<font color="red"><b>! ERROR</b></font> : Please define a shape with at least 3 sides.')
     return()
   }
   values$polyErase <- TRUE  # turn on to signal to prevent the use of an existing map click
@@ -15,12 +15,12 @@ comp8_selProjExt <- function() {
 
   x <- round(values$polyPts2, digits = 2)  # round all coords to 2 decimal digits
   coordsChar <- paste(apply(x, 1, function(b) paste0('(',paste(b, collapse=', '),')')), collapse=', ')  # concatanate coords to a single character
-  isolate(writeLog(paste0('* Defined projection extent to: ', coordsChar)))
+  isolate(writeLog(paste0('> Defined projection extent to: ', coordsChar)))
 }
 
 comp8_pjArea <- function(modelSel, predForm, enmSel) {
   if (is.null(values$poly2)) {
-    writeLog('* SELECT projection extent first.')
+    writeLog('<font color="red"><b>! ERROR</b></font> : Select projection extent first.')
     return()
   }
 
@@ -31,7 +31,7 @@ comp8_pjArea <- function(modelSel, predForm, enmSel) {
     })
   }
 
-  writeLog('* PROJECTING to new area.')
+  writeLog('> PROJECTING to new area.')
   curMod <- values$evalMods[[as.numeric(modelSel)]]
   values$pjArea <- dismo::predict(curMod, values$projMsk)
   rasVals <- raster::values(values$pjArea)
@@ -55,12 +55,12 @@ comp8_pjArea <- function(modelSel, predForm, enmSel) {
 
 comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, selRCP, selGCM, selTime) {
   if (is.null(values$poly2)) {
-    writeLog('* SELECT projection extent first.')
+    writeLog('<font color="red"><b>! ERROR</b></font> : Select projection extent first.')
     return()
   }
 
   if (bcRes == 0.5) {
-    writeLog('* Project to New Time currently only available with resolutions >30 arc seconds.')
+    writeLog('<font color="red"><b>! ERROR</b></font> : Project to New Time currently only available with resolutions >30 arc seconds.')
     return()
   }
 
@@ -70,7 +70,7 @@ comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, selRCP, selGCM, selT
   m <- matrix(c(0,1,1,0,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,0,0,1,0,1,1,1,0,0,1,1,1,1,0,1,1,1,1,1,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1), ncol=4)
   i <- m[which(selGCM == gcms), which(selRCP == rcps)]
   if (!i) {
-    writeLog('* WARNING: This combination of model and rcp is not available. Please make a different selection.')
+    writeLog('<font color="red"><b>! ERROR</b></font> : This combination of model and rcp is not available. Please make a different selection.')
     return()
   }
 
@@ -85,7 +85,7 @@ comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, selRCP, selGCM, selT
     names(values$projTimeMsk) <- names(values$preds)  # make names same as original predictors
   })
 
-  writeLog('* PROJECTING to new time.')
+  writeLog('> PROJECTING to new time.')
   curMod <- values$evalMods[[as.numeric(modelSel)]]
   values$pjTime <- dismo::predict(curMod, values$projTimeMsk)
   rasVals <- raster::values(values$pjTime)
@@ -111,10 +111,10 @@ comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, selRCP, selGCM, selT
 
 comp8_mess <- function() {
   if (is.null(values$projMsk)) {
-    writeLog('! SELECT projection extent first.')
+    writeLog('<font color="red"><b>! ERROR</b></font> : Select projection extent first.')
     return()
   }
-  writeLog('* Generating MESS map.')
+  writeLog('> Generating MESS map.')
   occVals <- raster::extract(values$preds, cbind(values$df$longitude, values$df$latitude))
   values$mess <- suppressWarnings(dismo::mess(values$projMsk, occVals))
   # proxy %>% clearShapes()

@@ -21,7 +21,7 @@ comp6_bioclimMod <- function() {
 
   # make datatable of results df
   output$evalTbl <- DT::renderDataTable({DT::datatable(round(e$results, digits=3))})
-  writeLog(paste("* BIOCLIM ran successfully and output evaluation results."))
+  writeLog(paste("> BIOCLIM ran successfully and output evaluation results."))
 }
 
 comp6_maxentMod <- function(rms, fcs) {
@@ -36,7 +36,7 @@ comp6_maxentMod <- function(rms, fcs) {
 
   jar <- paste(system.file(package="dismo"), "/java/maxent.jar", sep='')
   if (!file.exists(jar)) {
-    writeLog(paste('! file missing:\n', jar, '\nPlease download it here: http://www.cs.princeton.edu/~schapire/maxent/'))
+    writeLog(paste('<font color="red"><b>! ERROR</b></font> : File missing:\n', jar, '\nPlease download it here and copy to directory above: http://www.cs.princeton.edu/~schapire/maxent/'))
     return()
   }
 
@@ -68,5 +68,5 @@ comp6_maxentMod <- function(rms, fcs) {
                                      avg.test.or10pct = Mean.OR10, var.test.or10pct = Var.OR10, parameters = nparm) %>%
     dplyr::select(-nparam)
   output$evalTbl <- DT::renderDataTable({DT::datatable(cbind(res[,1:3], round(res[,4:15], digits=3)))})
-  writeLog(paste("* Maxent ran successfully and output evaluation results for", nrow(e@results), "models."))
+  writeLog(paste("> Maxent ran successfully and output evaluation results for", nrow(e@results), "models."))
 }

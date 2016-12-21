@@ -11,7 +11,7 @@ remSelLocs <- function(remLoc) {
     }
 
     if (numTest) {
-      writeLog(paste0("* Removed locality with ID = ", remLoc, ". Localities data has n = ", nrow(values$df), " records."))
+      writeLog(paste0("> Removed locality with ID = ", remLoc, ". Localities data has n = ", nrow(values$df), " records."))
     }
 
     proxy %>% zoom2Occs(values$origOccs) %>% map_plotLocs(values$origOccs)
@@ -67,12 +67,12 @@ polySelLocs <- function() {
   # # plot all
   # proxy %>% map_plotLocs(values$df, fillColor='yellow', fillOpacity=1, clearShapes=FALSE, clearMarkers=FALSE)
 
-  isolate(writeLog(paste('* Selected', nrow(values$df), 'localities.')))
+  isolate(writeLog(paste('> Selected', nrow(values$df), 'localities.')))
 }
 
 thinOccs <- function(thinDist) {
   if (is.null(values$df)) {
-    writeLog("* WARNING: Obtain species occurrence localities first in Step 1.")
+    writeLog('<font color="orange"><b>! WARNING</b></font> : Obtain species occurrence localities first in Step 1.')
     return()
   }
   lati <- values$df[,3]
@@ -81,7 +81,7 @@ thinOccs <- function(thinDist) {
   proxy %>% fitBounds(z[1], z[2], z[3], z[4])
 
   if (input$thinDist <= 0) {
-    writeLog("* WARNING: Assign positive distance to thinning parameter.")
+    writeLog('<font color="orange"><b>! WARNING</b></font> : Assign positive distance to thinning parameter.')
     return()
   }
   withProgress(message = "Spatially Thinning Localities...", {  # start progress bar
@@ -109,7 +109,7 @@ thinOccs <- function(thinDist) {
                              group = 'comp2')
 
   # values$origOccs <- values$df
-  writeLog(paste('* Total records thinned to [', nrow(values$df), '] localities.'))
+  writeLog(paste('> Total records thinned to [', nrow(values$df), '] localities.'))
   # render the thinned records data table
   output$occTbl <- DT::renderDataTable({DT::datatable(values$df[,1:4])})
 }

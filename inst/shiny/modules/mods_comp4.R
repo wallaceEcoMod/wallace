@@ -1,6 +1,6 @@
 comp4_studyReg <- function(buf, backgSel) {
   if (nrow(values$df) <= 2) {
-    isolate(writeLog("ERROR: Too few localities (<2) to create a background polygon."))
+    isolate(writeLog('<font color="red"><b>! ERROR</b></font> : Too few localities (<2) to create a background polygon.'))
     return()
   }
   # generate background extent - one grid cell is added to perimeter of each shape
@@ -39,7 +39,7 @@ comp4_studyReg <- function(buf, backgSel) {
       values$backgExt <- shp
       bb <- shp@polygons[[1]]@Polygons[[1]]@coords
     } else {
-      isolate(writeLog("* WARNING: Please enter a CSV file of vertex coordinates for user-specified polygon."))
+      isolate(writeLog('<font color="orange"><b>! WARNING</b></font> : Please enter a CSV file of vertex coordinates for user-specified polygon.'))
       return()
     }
 
@@ -65,8 +65,8 @@ comp4_studyReg <- function(buf, backgSel) {
     #       }
     values$bbTxt <- 'user-defined'
   }
-  isolate(writeLog(paste0("* Study extent: ", values$bbTxt, ".")))
-  isolate(writeLog(paste('* Study extent buffered by', buf, 'degrees.')))
+  isolate(writeLog(paste0("> Study extent: ", values$bbTxt, ".")))
+  isolate(writeLog(paste('> Study extent buffered by', buf, 'degrees.')))
 
   values$bb <- bb
   proxy %>% fitBounds(max(bb[,1]), max(bb[,2]), min(bb[,1]), min(bb[,2]))
@@ -80,13 +80,13 @@ comp4_mskStudyReg <- function() {
     predCrop <- raster::crop(values$preds, values$backgExt)
     values$predsMsk <- raster::mask(predCrop, values$backgExt)
   })
-  isolate(writeLog(paste0('* Environmental data masked by ', values$bbTxt, '.')))
+  isolate(writeLog(paste0('> Environmental data masked by ', values$bbTxt, '.')))
 
   if (is.null(values$bg.coords)) {
     withProgress(message = "Generating background points...", {
       bg.coords <- dismo::randomPoints(values$predsMsk, 10000)
       values$bg.coords <- as.data.frame(bg.coords)
     })
-    isolate(writeLog(paste0('* Random background points sampled (N = 10,000).')))
+    isolate(writeLog(paste0('> Random background points sampled (n = 10,000).')))
   }
 }

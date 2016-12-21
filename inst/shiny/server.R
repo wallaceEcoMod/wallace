@@ -221,7 +221,7 @@ shinyServer(function(input, output, session) {
   # governs point removal behavior and modifies tables in "values"
   observeEvent(input$remove, {
     if (!is.null(values$ptsSel)) {
-      writeLog('NOTICE: Remove localities by ID before selecting with polygons. Press "Reset Localities" to start over.')
+      writeLog('<font color="red"><b>! ERROR</b></font> : Remove localities by ID before selecting with polygons. Press "Reset Localities" to start over.')
       return()
       }
     remSelLocs(input$remLoc)
@@ -242,7 +242,7 @@ shinyServer(function(input, output, session) {
         values$removed <- NULL
       }
       values$df <- values$origOccs
-      x <- paste('* RESET: localities dataset is now back to', nrow(values$origOccs), 'records.')
+      x <- paste('> RESET localities dataset back to', nrow(values$origOccs), 'records.')
       isolate(writeLog(x))
     }
     proxy %>% zoom2Occs(values$origOccs) %>% map_plotLocs(values$origOccs)
@@ -337,7 +337,7 @@ shinyServer(function(input, output, session) {
   # module Select Study Region - mask out environmental predictors by background extent
   observeEvent(input$goBackgMask, {
     if (is.null(values$preds)) {
-      writeLog("* Obtain the environmental data first...")
+      writeLog('<font color="red"><b>! ERROR</b></font> : Obtain environmental data first...')
       return()
     }
     comp4_mskStudyReg()
@@ -401,11 +401,11 @@ shinyServer(function(input, output, session) {
   # module Set Partitions
   observeEvent(input$goPart, {
     if (is.null(values$predsMsk)) {
-      writeLog("* WARNING: Clip the environmental variables by the study extent polygon first in COMPONENT 4.")
+      writeLog('<font color="red"><b>! ERROR</b></font> : Clip the environmental variables by the study extent polygon first in COMPONENT 4.')
       return()
     }
     if (input$partSel2 == "") {
-      writeLog("* Select one of the modules available first...")
+      writeLog('<font color="red"><b>! ERROR</b></font> : Select one of the modules available first...')
       return()
     }
     values$partSel2 <- input$partSel2  # save it to values or else it disappears
@@ -447,11 +447,11 @@ shinyServer(function(input, output, session) {
   # niche model selection and warnings
   observeEvent(input$goEval, {
     if (is.null(values$predsMsk)) {
-      writeLog("* WARNING: Mask the environmental variables first in COMPONENT 4.")
+      writeLog('<font color="red"><b>! ERROR</b></font> : Mask the environmental variables first in COMPONENT 4.')
       return()
     }
     if (is.null(values$modParams)) {
-      writeLog("* WARNING: Partition your localities first in COMPONENT 5.")
+      writeLog('<font color="red"><b>! ERROR</b></font> : Partition your localities first in COMPONENT 5.')
       return()
     }
     values$predsLog <- NULL  # reset predsLog if models are rerun
@@ -710,7 +710,7 @@ shinyServer(function(input, output, session) {
     proxy %>% removeImage('r2')
     proxy %>% removeControl('r2Legend')
 
-    writeLog('* RESET PROJECTION EXTENT')
+    writeLog('> RESET projection extent.')
   })
 
   # model list for comp8

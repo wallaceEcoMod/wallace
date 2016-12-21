@@ -4,7 +4,7 @@ getDbOccs <- function(spName, occNum) {
   nameSplit <- length(unlist(strsplit(input$spName, " ")))
   # if two names not entered, throw error and return
   if (nameSplit != 2) {
-    writeLog("* Please input both genus and species names.")
+    writeLog('<font color="red"><b>! ERROR</b></font> : Please input both genus and species names.')
     return()
   }
 
@@ -14,7 +14,7 @@ getDbOccs <- function(spName, occNum) {
 
   # if species not found, print message to log box and return
   if (query[[input$occDb]]$meta$found == 0) {
-    writeLog(paste('* No records found for ', input$spName, ". Please check the spelling."))
+    writeLog(paste('! No records found for ', input$spName, ". Please check the spelling."))
     values$df <- NULL  # reset df
     shinyjs::disable("dlDbOccs")
     return()
@@ -39,7 +39,7 @@ getDbOccs <- function(spName, occNum) {
   # subset to just records with latitude and longitude
   dbOccs <- dbOccs.orig %>% dplyr::filter(!is.na(latitude) & !is.na(longitude))
   if (nrow(dbOccs) == 0) {
-    writeLog(paste("No records with coordinates found in", input$occDb, "for", input$spName, "."))
+    writeLog(paste('<font color="orange"><b>! WARNING</b></font> : No records with coordinates found in', input$occDb, "for", input$spName, "."))
     return()
   }
 
@@ -81,7 +81,7 @@ getDbOccs <- function(spName, occNum) {
 
   noCoordsRemoved <- dbOccs.orig.nrows - dbOccsWithDups.nrows
   dupsRemoved <- dbOccsWithDups.nrows - dbOccsNoDups.nrows
-  writeLog(paste('* Total', input$occDb, 'records for', input$spName, 'returned [', dbOccs.orig.nrows,
+  writeLog(paste('> Total', input$occDb, 'records for', input$spName, 'returned [', dbOccs.orig.nrows,
                  '] out of [', totRows, '] total (limit ', input$occNum, ').
                   Records without coordinates removed [', noCoordsRemoved, '].
                   Duplicated records removed [', dupsRemoved, ']. Remaining records [', dbOccsNoDups.nrows, '].'))
@@ -110,7 +110,7 @@ getUserOccs <- function(userCSV) {
   validate(need(userCSV, message = FALSE))
   csv <- read.csv(userCSV$datapath)
   if (!all(c('name', 'longitude', 'latitude') %in% names(csv))) {
-    isolate({writeLog('* ERROR: Please input CSV file with columns "name", "longitude", "latitude".')})
+    isolate({writeLog('<font color="red"><b>! ERROR</b></font> : Please input CSV file with columns "name", "longitude", "latitude".')})
     return()
   }
 
@@ -123,11 +123,11 @@ getUserOccs <- function(userCSV) {
   # subset to just records with latitude and longitude
   userOccs <- userOccs %>% dplyr::filter(!is.na(latitude) & !is.na(longitude))
   if (nrow(userOccs) == 0) {
-    writeLog(paste("No records with coordinates found in", userCSV$name, "for", spName, "."))
+    writeLog(paste('<font color="orange"><b>! WARNING</b></font> : No records with coordinates found in', userCSV$name, "for", spName, "."))
     return()
   }
 
-  isolate({writeLog(paste("* User-specified CSV file", userCSV$name, "with total of", nrow(userOccs),
+  isolate({writeLog(paste("> User-specified CSV file", userCSV$name, "with total of", nrow(userOccs),
                           "records with coordinates was uploaded."))})
 
   # for (col in c("institutionCode", "country", "stateProvince",
