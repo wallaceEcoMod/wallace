@@ -49,7 +49,7 @@ shinyUI(tagList(
                                                                        br(), br(),
                                                                        sliderInput("occNum", "Maximum number of occurrences:", min = 1, max = 3000, value = 50),
                                                                        shinyBS::bsPopover('occNum', title = 'Tip',
-                                                                                          'Maximum number of occurrences recovered from databases. Downloaded records are not ordered randomly, and are consistently sorted with the most recent collection dates on top.',
+                                                                                          'Maximum number of occurrences recovered from databases. Downloaded records are not sorted randomly: rows are always consistent between downloads.',
                                                                                           placement = 'right', options = list(container = "body")),
                                                                        #br(),
                                                                        #uiOutput('gbifDnld'),
