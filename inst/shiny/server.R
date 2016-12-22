@@ -573,6 +573,11 @@ shinyServer(function(input, output, session) {
     comp7_mapPred(input$modelSelPlotStudyExt, input$predForm, input$predThresh, proxy)
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Map')
+    if (input$enmSel == "Maxent") {
+      values$mapPredName <- paste0(values$rasName, "_", input$predForm, "_", input$predThresh, "_pred")
+    } else if (input$enmSel == "BIOCLIM") {
+      values$mapPredName <- paste0(values$rasName, "_", input$predThresh, "_pred")
+    }
   })
 
   # Module Response Curves
@@ -636,14 +641,14 @@ shinyServer(function(input, output, session) {
       ext <- ifelse(input$predFileType == 'raster', 'zip',
                     ifelse(input$predFileType == 'ascii', 'asc',
                            ifelse(input$predFileType == 'GTiff', 'tif', 'png')))
-      paste0(values$rasName, "_", input$predForm, "_", input$predThresh, "_pred.", ext)},
+      paste0(values$mapPredName, '.', ext)},
     content = function(file) {
       if (input$predFileType == 'png') {
         png(file)
         image(values$predCur)
         dev.off()
       } else if (input$predFileType == 'raster') {
-        fileName <- paste0(values$rasName, "_", input$predForm, "_", input$predThresh, "_pred")
+        fileName <- values$mapPredName
         tmpdir <- tempdir()
         writeRaster(values$predCur, file.path(tmpdir, fileName), format = input$predFileType, overwrite = TRUE)
         fs <- file.path(tmpdir, paste0(fileName, c('.grd', '.gri')))
@@ -730,7 +735,11 @@ shinyServer(function(input, output, session) {
     comp8_pjArea(input$modelSelProj, input$predForm, values$enmSel)
     shinyjs::enable("downloadPj")
     values$dlRas <- values$pjArea
-    values$pjName <- paste0(values$rasName, "_", input$predForm, "_pj")
+    if (input$enmSel == "Maxent") {
+      values$pjName <- paste0(values$rasName, "_", input$predForm, "_pj")
+    } else if (input$enmSel == "BIOCLIM") {
+      values$pjName <- paste0(values$rasName, "_", input$predForm, "_pj")
+    }
   })
 
   observe({
@@ -760,8 +769,13 @@ shinyServer(function(input, output, session) {
                  input$selGCM, input$selTime)
     shinyjs::enable("downloadPj")
     values$dlRas <- values$pjTime
-    values$pjName <- paste0(values$rasName, "_", input$predForm, "_pj_",
-                            input$selRCP, "_", input$selGCM, "_", input$selTime)
+    if (input$enmSel == "Maxent") {
+      values$pjName <- paste0(values$rasName, "_", input$predForm, "_pj_",
+                              input$selTime, "_", input$selGCM, "_", input$selRCP)
+    } else if (input$enmSel == "BIOCLIM") {
+      values$pjName <- paste0(values$rasName, "_pj_",
+                              input$selTime, "_", input$selGCM, "_", input$selRCP)
+    }
   })
 
   # Module MESS
@@ -769,7 +783,11 @@ shinyServer(function(input, output, session) {
     comp8_mess()
     shinyjs::enable("downloadPj")
     values$dlRas <- values$mess
-    values$pjName <- paste0(values$rasName, "_", input$predForm, "_mess")
+    if (input$enmSel == "Maxent") {
+      values$pjName <- paste0(values$rasName, "_", input$predForm, "_mess")
+    } else if (input$enmSel == "BIOCLIM") {
+      values$pjName <- paste0(values$rasName, "_mess")
+    }
   })
 
   # Download current projected extent
