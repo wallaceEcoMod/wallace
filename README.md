@@ -9,7 +9,7 @@
 1. Before installing, to ensure a smooth Wallace experience, please make sure you have installed the latest versions of both R and RStudio.
 
 2. ***WINDOWS USERS***: 
- 2. If you are using a Windows machine, please download and install [RTools](https://cran.r-project.org/bin/windows/Rtools/) before installing the `devtools` package. After you install RTools, please make sure you add "C:\Rtools\bin" to your PATH variable (instructions <a href="http://stackoverflow.com/a/29480538/1274346" target="_blank">here</a>). 
+ 2. If you are using a Windows machine, please download and install <a href="https://cran.r-project.org/bin/windows/Rtools/" target="_blank">RTools</a> before installing the `devtools` package. After you install RTools, please make sure you add "C:\Rtools\bin" to your PATH variable (instructions <a href="http://stackoverflow.com/a/29480538/1274346" target="_blank">here</a>). 
   2. When using `devtools` on Windows machines, there is a known <a href="https://github.com/hadley/devtools/issues/1298" target="_blank">bug</a> that sometimes results in the inability to download all package dependencies. If this happens to you, please run the file "wallace_pkgs.R" in the main directory of the package to install the packages and their dependencies directly from CRAN, and then run the code below.
    2. If PDF downloading of session code is not working for you, please follow <a href="https://github.com/rstudio/shiny-examples/issues/34" target="_blank">these</a> instructions to install Miktex and set up the PATH variable, then restart your computer and give it another shot.
 
