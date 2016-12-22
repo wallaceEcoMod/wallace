@@ -51,7 +51,13 @@ projAny <- projArea | projTime
 mess <- !is.null(values$mess)
 ```
 
-Please find below the R code history from your *Wallace* session. You can reproduce your session results by running the .Rmd file in RStudio (for more information see <http://rmarkdown.rstudio.com>).
+Please find below the R code history from your *Wallace* session. 
+
+You can reproduce your session results by running this R Markdown file in RStudio. 
+
+Each code block is called a "chunk", and you can run them either one-by-one or all at once by choosing an option in the "Run" menu at the top-right corner of the "Source" pane in RStudio. 
+
+For more detailed information see <http://rmarkdown.rstudio.com>).
 
 ### Package installation
 
