@@ -11,7 +11,7 @@ knit_engines$set(asis = function(options) {
 knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 ```
 
-```{r, echo = FALSE, include = FALSE}
+```{r vars, echo = FALSE, include = FALSE}
 # comp1
 occ <- values$mod_db
 csv <- !is.null(input$userCSV)
@@ -56,7 +56,7 @@ Please find below the R code history from your *Wallace* session. You can reprod
 ### Package installation
 
 Wallace uses the following R packages that must be installed and loaded before starting.
-```{r}
+```{r loadPkgs}
 library(devtools)
 library(spocc)
 library(maptools)
@@ -72,7 +72,7 @@ library(ENMeval)
 Wallace also includes several functions developed to help integrate different packages and some additional functionality. For this reason, it is necessary to load the file `functions.R`, The function `system.file()` finds this script, and `source()` loads it.
 
 ```{r loadFunctions}
-source(system.file('inst/shiny/funcs', 'functions.R', package = 'wallace'))
+source(system.file('shiny/funcs', 'functions.R', package = 'wallace'))
 ```
 
 ## Record of analysis for *`r "{{spName}}"`*.
@@ -95,7 +95,7 @@ occs <- remDups(results.data)  # remove rows with duplicate coordinates
 User CSV path with occurrence data (change to the path of the file in your computer):
 ```
 
-```{r input, echo = csv, eval = csv}
+```{r occInput, echo = csv, eval = csv}
 inFile <- read.csv("{{occsCSV}}", header = TRUE)  # load occurrence data
 occs <- remDups(inFile)  # remove duplicate records
 ```
@@ -108,7 +108,7 @@ occs <- remDups(inFile)  # remove duplicate records
 Remove the following occurrence localities: `r {{occsRemoved}}`.
 ```
 
-```{r, echo = remLoc, eval = remLoc, include = remLoc}
+```{r remLocs, echo = remLoc, eval = remLoc, include = remLoc}
 rows <- as.numeric(rownames(occs))  # get row names
 remo <- which({{occsRemoved}} %in% rows)  # find which row names correspond to user selection for removal
 occs <- occs[-remo, ]  # remove the selected rows
@@ -118,7 +118,7 @@ occs <- occs[-remo, ]  # remove the selected rows
 You chose `r length({{occsSel}})` of `r nrow(occs)` total occurrence localities via polygon selection to keep in the analysis.
 ```
 
-```{r, echo = drawPoly, eval = drawPoly, include = drawPoly}
+```{r remLocs2, echo = drawPoly, eval = drawPoly, include = drawPoly}
 occs <- occs[{{occsSel}}, ]  # subset occs by selected rows
 ```
 
@@ -134,12 +134,11 @@ output <- spThin::thin(occs, 'latitude', 'longitude', 'name', thin.par = {{thinD
 Since spThin did 100 iterations, there are 100 different variations of how it thinned your occurrence localities. As there is a stochastic element in the algorithm, some iterations may include more localities than the others, and we need to make sure we maximize the number of localities we proceed with.
 ```
 
-```{r, echo = thin, eval = thin, include = thin}
+```{r doThin2, echo = thin, eval = thin, include = thin}
 maxThin <- which(sapply(output, nrow) == max(sapply(output, nrow)))  # find the iteration that returns the max number of occurrences
 maxThin <- output[[ifelse(length(maxThin) > 1, maxThin[1], maxThin)]]  # if there's more than one max, pick the first one
 occs <- occs[as.numeric(rownames(maxThin)),]  # subset occs to match only thinned occs
 ```
-
 
 ```{asis, echo = yesPreds, eval = yesPreds, include = yesPreds}
 ### Obtain Environmental Data
@@ -153,7 +152,7 @@ occs <- occs[!is.na(locs.vals), ]  # remove occs without environmental values fr
 ```
 
 
-```{r, include = FALSE, eval = backg}
+```{r switch, include = FALSE, eval = backg}
 backgSwitch <- switch("{{backgSel}}", 'bb'='Bounding Box', 'mcp'='Minimum Convex Polygon', 'user'='User-defined')
 ```
 
@@ -163,7 +162,7 @@ Background selection technique chosen as `r backgSwitch`.
 Buffer size of the study extent polygon defined as `r {{backgBuf}}` km.
 ```
 
-```{r, echo = isBB, eval = isBB, include = isBB}
+```{r backgBuf, echo = isBB, eval = isBB, include = isBB}
 xmin <- min(occs$longitude) - ({{backgBuf}} + res(preds)[1])
 xmax <- max(occs$longitude) + ({{backgBuf}} + res(preds)[1])
 ymin <- min(occs$latitude) - ({{backgBuf}} + res(preds)[1])
@@ -172,7 +171,7 @@ bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin), ncol
 backgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(bb)), 1)))
 ```
 
-```{r, echo = isMCP, eval = isMCP, include = isMCP}
+```{r backgBuf2, echo = isMCP, eval = isMCP, include = isMCP}
 xy_mcp <- mcp(occs[,2:3])
 bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
 backgExt <- rgeos::gBuffer(xy_mcp, width = {{backgBuf}} + res(preds)[1])
@@ -355,7 +354,7 @@ futureProj <- dismo::predict(modSel, predsMsk)
 plot(futureProj)
 ```
 
-```{asis, echo = projTime}
+```{asis, echo = mess}
 ### Calculate Environmental Similarity
 To visualize the environmental difference between the occurrence localities and your selected projection extent, calculate a multidimensional environmental similarity surface (MESS). High negative values mean great difference, whereas high positive values mean great similarity. Interpreting the projected suitability for areas with high negative values should be done with extreme caution, as they are outside the environmental range of the occurrence localities.
 ```

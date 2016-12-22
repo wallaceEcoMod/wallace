@@ -7,6 +7,8 @@ comp3_bioclim <- function(bcRes) {
       values$bcLon <- values$mapCntr[1]
       values$preds <- raster::getData(name = "worldclim", var = "bio", res = bcRes, lon = values$bcLon, lat = values$bcLat)
     } else {
+      values$bcLat <- NULL
+      values$bcLon <- NULL
       values$preds <- raster::getData(name = "worldclim", var = "bio", res = bcRes)
     }
   })

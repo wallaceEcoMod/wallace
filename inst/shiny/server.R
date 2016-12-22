@@ -53,6 +53,10 @@ shinyServer(function(input, output, session) {
     source(file.path('modules', f), local=TRUE)
   }
 
+  observe({
+    print(input$bcRes != "")
+  })
+
   # UI for component guidance text
   output$gtext_comp <- renderUI({
     shiny::includeMarkdown(system.file('Rmd', gtext$cur_comp, package='wallace'))
