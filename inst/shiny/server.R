@@ -53,10 +53,6 @@ shinyServer(function(input, output, session) {
     source(file.path('modules', f), local=TRUE)
   }
 
-  observe({
-    print(input$bcRes != "")
-  })
-
   # UI for component guidance text
   output$gtext_comp <- renderUI({
     shiny::includeMarkdown(system.file('Rmd', gtext$cur_comp, package='wallace'))
@@ -66,6 +62,8 @@ shinyServer(function(input, output, session) {
   output$gtext_mod <- renderUI({
     shiny::includeMarkdown(system.file('Rmd', gtext$cur_mod, package='wallace'))
   })
+
+  observe({print(!is.null(values$mess))})
 
 #########################
 ### INITIALIZE ####
@@ -245,6 +243,9 @@ shinyServer(function(input, output, session) {
         values$origOccs <- rbind(values$origOccs, values$removed)
         values$removed <- NULL
       }
+      # also reset removedAll
+      values$removedAll <- NULL
+      # and reset df
       values$df <- values$origOccs
       x <- paste('> RESET localities dataset back to', nrow(values$origOccs), 'records.')
       isolate(writeLog(x))

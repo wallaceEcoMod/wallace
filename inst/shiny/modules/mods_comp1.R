@@ -27,6 +27,9 @@ getDbOccs <- function(spName, occNum) {
   values$mod_db <- TRUE
   # extract occurrence tibble
   dbOccs.orig <- query[[input$occDb]]$data[[formatSpName(input$spName)]]
+  # make sure latitude and longitude are numeric (sometimes they aren't)
+  dbOccs.orig$latitude <- as.numeric(dbOccs.orig$latitude)
+  dbOccs.orig$longitude <- as.numeric(dbOccs.orig$longitude)
 
   # store dbOccs.orig in values list
   values$df.orig <- dbOccs.orig

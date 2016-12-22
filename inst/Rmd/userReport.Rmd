@@ -18,7 +18,7 @@ csv <- !is.null(input$userCSV)
 occ.csv <- occ | csv
 # comp2
 remLoc <- !is.null(values$removedAll)
-drawPoly <- !is.null(values$ptSel)
+drawPoly <- !is.null(values$ptsSel)
 thin <- input$goThin != 0
 # comp3
 yesPreds <- input$bcRes != ""
@@ -95,6 +95,11 @@ The search for occurrences was limited to `r {{occNum}}` records. Obtain occurre
 results <- spocc::occ(query = "{{spName}}", from = "{{dbName}}", limit = {{occNum}}, has_coords = TRUE)
 results.data <- results[["{{dbName}}"]]$data[[formatSpName("{{spName}}")]]
 occs <- remDups(results.data)  # remove rows with duplicate coordinates
+# make sure latitude and longitude are numeric (sometimes they aren't)
+occs$latitude <- as.numeric(occs$latitude)
+occs$longitude <- as.numeric(occs$longitude)
+# give all records a unique ID
+occs$origID <- row.names(occs)
 ```
 
 ```{asis, echo = csv}
@@ -115,8 +120,7 @@ Remove the following occurrence localities: `r {{occsRemoved}}`.
 ```
 
 ```{r remLocs, echo = remLoc, eval = remLoc, include = remLoc}
-rows <- as.numeric(rownames(occs))  # get row names
-remo <- which({{occsRemoved}} %in% rows)  # find which row names correspond to user selection for removal
+remo <- which(occs$origID %in% {{occsRemoved}})  # find row numbers that match IDs to be removed
 occs <- occs[-remo, ]  # remove the selected rows
 ```
 
@@ -366,7 +370,9 @@ To visualize the environmental difference between the occurrence localities and 
 ```
 
 ```{r projMESS, echo = mess, eval = mess, include = mess}
-occVals <- raster::extract(predsMsk, occs.locs)
+# extract environmental values from occurrence localities -- these were the values that went into the model
+occVals <- raster::extract(preds, occs.locs)
+# compare these values with the projection extent (predsMsk)
 occVals.mess <- dismo::mess(predsMsk, occVals)
 plot(occVals.mess)
 ```
