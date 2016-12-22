@@ -15,7 +15,10 @@
 3. ***WINDOWS USERS***: 
  3. If you are using a Windows machine, please download and install <a href="https://cran.r-project.org/bin/windows/Rtools/" target="_blank">RTools</a> before installing the `devtools` package. After you install RTools, please make sure you add "C:\Rtools\bin" to your PATH variable (instructions <a href="http://stackoverflow.com/a/29480538/1274346" target="_blank">here</a>). 
   3. When using `devtools` on Windows machines, there is a known <a href="https://github.com/hadley/devtools/issues/1298" target="_blank">bug</a> that sometimes results in the inability to download all package dependencies. If this happens to you, please run the file "wallace_pkgs.R" in the main directory of the package to install the packages and their dependencies directly from CRAN, and then run the code below.
-   3. If PDF downloading of session code is not working for you, please follow <a href="https://github.com/rstudio/shiny-examples/issues/34" target="_blank">these</a> instructions to install Miktex and set up the PATH variable, then restart your computer and give it another shot.
+   3. If PDF downloading of session code is not working for you, please follow the following instructions, taken from <a href="https://github.com/rstudio/shiny-examples/issues/34" target="_blank">here</a>:
+     - Step 1: Download and Install MiKTeX from http://miktex.org/2.9/setup
+     - Step 2: Run `Sys.getenv("PATH")` in R studio. This command returns the path where Rstudio is trying to find pdflatex.exe. In Windows (64-bit), it should return "C:\Program Files\MiKTeX 2.9\miktex\bin\x64\pdflatex.exe". If pdflatex.exe is not located in this location Rstudio gives this error code 41.
+     - Step 3: To set this path variable run: `Sys.setenv(PATH=paste(Sys.getenv("PATH"),"C:/Program Files/MiKTeX 2.9/miktex/bin/x64/",sep=";"))`.
 
 The following code will install the package `wallace` and run the user interface.
 
