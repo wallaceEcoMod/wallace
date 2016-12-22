@@ -441,7 +441,13 @@ shinyUI(tagList(
                                                       selectInput('pjFileType', label = "Select File Type",
                                                                   choices = list("GRD" = 'raster', "ASCII" = 'ascii', "GeoTIFF" = 'GTiff',
                                                                                  "PNG" = "png")),
-                                                      downloadButton('downloadPj', "Download Displayed Grid")
+                                                      downloadButton('downloadPj', "Download Displayed Grid"),
+                                                      HTML('<hr>'),
+                                                      span("dismo", id = "rpkg"), "references", br(),
+                                                      div('Developers:  Robert J. Hijmans, Steven Phillips, John Leathwick, Jane Elith', id="pkgDes"),
+                                                      a("CRAN", href = "http://cran.r-project.org/web/packages/dismo/index.html", target = "_blank"),
+                                                      " | ",
+                                                      a("documentation", href="https://cran.r-project.org/web/packages/dismo/dismo.pdf", target = "_blank")
                                      ),
                                      # session code ####
                                      conditionalPanel("input.tabs == 'rmd'",
@@ -451,12 +457,22 @@ shinyUI(tagList(
                                                       span('rmarkdown', id="rpkg"),
                                                       span('and', id="pkgDes"),
                                                       span('knitr', id="rpkg"),
-                                                      span('packages: Dynamic Documents for R |
-                      A General-Purpose Package for Dynamic Report', id="pkgDes"),
+                                                      span('packages: Dynamic Documents for R | A General-Purpose Package for Dynamic Report', id="pkgDes"),
                                                       HTML('<hr>'),
                                                       selectInput('mdType', label = "R Markdown Download Type",
                                                                   choices = list("Rmd", "PDF", "HTML", "Word")),
-                                                      downloadButton('downloadMD', 'Download Session Code')
+                                                      downloadButton('downloadMD', 'Download Session Code'),
+                                                      HTML('<hr>'),
+                                                      span("rmarkdown", id = "rpkg"), "references", br(),
+                                                      div('Developers:  JJ Allaire, Joe Cheng, Yihui Xie, Jonathan McPherson, Winston Chang, Jeff Allen, Hadley Wickham, Aron Atkins, Rob Hyndman', id="pkgDes"),
+                                                      a("CRAN", href = "http://cran.r-project.org/web/packages/rmarkdown/index.html", target = "_blank"),
+                                                      " | ",
+                                                      a("documentation", href="https://cran.r-project.org/web/packages/rmarkdown/rmarkdown.pdf", target = "_blank"),
+                                                      p(), span("knitr", id = "rpkg"), "references", br(),
+                                                      div('Developers:  Yihui Xie', id="pkgDes"),
+                                                      a("CRAN", href = "http://cran.r-project.org/web/packages/knitr/index.html", target = "_blank"),
+                                                      " | ",
+                                                      a("documentation", href="https://cran.r-project.org/web/packages/knitr/knitr.pdf", target = "_blank")
                                      )
                                    )
                    ),
