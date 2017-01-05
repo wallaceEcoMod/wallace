@@ -42,15 +42,20 @@ comp6_maxentMod <- function(rms, fcs) {
 
   e <- ENMeval::ENMevaluate(values$modParams$occ.pts, values$predsMsk, bg.coords = values$modParams$bg.pts,
                    RMvalues = rms, fc = fcs, method = 'user', occ.grp = values$modParams$occ.grp,
-                   bg.grp = values$modParams$bg.grp, updateProgress = updateProgress)
+                   bg.grp = values$modParams$bg.grp, progbar = FALSE, updateProgress = updateProgress)
 
   # Load the ENMeval results into the values list
   values$evalTbl <- e@results
   values$evalMods <- e@models
-  values$evalPreds <- e@predictions.raw
-  values$evalPredsLog <- e@predictions.log
+  values$evalPreds <- e@predictions
 
-  occVals <- raster::extract(e@predictions.raw, values$modParams$occ.pts)
+  # Generate logistic predictions for each model
+  withProgress(message = "Generating logistic predictions...", {
+    logPreds <- sapply(e@models, function(x) predict(x, values$predsMsk))
+    values$evalPredsLog <- stack(logPreds)
+  })
+
+  occVals <- raster::extract(e@predictions, values$modParams$occ.pts)
 
   values$mtps <- apply(occVals, MARGIN = 2, min)  # apply minimum training presence threshold over all models
 
@@ -65,8 +70,7 @@ comp6_maxentMod <- function(rms, fcs) {
   # make datatable of results df
   res <- e@results %>% dplyr::rename(avg.test.AUC = Mean.AUC, var.test.AUC = Var.AUC, avg.diff.AUC = Mean.AUC.DIFF,
                                      var.diff.AUC = Var.AUC.DIFF, avg.test.orMTP = Mean.ORmin, var.test.orMTP = Var.ORmin,
-                                     avg.test.or10pct = Mean.OR10, var.test.or10pct = Var.OR10, parameters = nparm) %>%
-    dplyr::select(-nparam)
+                                     avg.test.or10pct = Mean.OR10, var.test.or10pct = Var.OR10, parameters = nparam)
   output$evalTbl <- DT::renderDataTable({DT::datatable(cbind(res[,1:3], round(res[,4:15], digits=3)))})
   writeLog(paste("> Maxent ran successfully and output evaluation results for", nrow(e@results), "models."))
 }
