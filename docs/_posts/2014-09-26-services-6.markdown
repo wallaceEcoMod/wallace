@@ -1,0 +1,8 @@
+---
+layout: default
+img: phones.png
+category: Services
+title: Reproducible
+description: |
+---
+The code for the user session can be downloaded as an R Markdown file that can be run like a script to reproduce the analysis. This code can also be downloaded as PDF, HTML, or Microsoft Word file.
