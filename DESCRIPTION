@@ -25,7 +25,8 @@ Depends:
     raster,
     ENMeval,
     shinythemes,
-    magrittr
+    magrittr,
+    repmis
 Remotes: 
     rstudio/leaflet,
     bobmuscarella/ENMeval@Edits_on_v0.2.1
