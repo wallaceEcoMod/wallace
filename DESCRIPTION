@@ -28,5 +28,5 @@ Depends:
     magrittr
 Remotes: 
     rstudio/leaflet,
-    bobmuscarella/ENMeval@ENMeval_v0.1.2
+    bobmuscarella/ENMeval@Edits_on_v0.2.1
 RoxygenNote: 5.0.1
