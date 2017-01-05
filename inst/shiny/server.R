@@ -63,8 +63,6 @@ shinyServer(function(input, output, session) {
     shiny::includeMarkdown(system.file('Rmd', gtext$cur_mod, package='wallace'))
   })
 
-  observe({print(!is.null(values$mess))})
-
 #########################
 ### INITIALIZE ####
 #########################

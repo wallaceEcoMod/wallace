@@ -44,7 +44,7 @@ shinyUI(tagList(
                                                                                     choices = list("GBIF" = 'gbif',
                                                                                                    "VertNet" = 'vertnet',
                                                                                                    "BISON" = 'bison')),
-                                                                       textInput("spName", label = "Enter scientific name (format: Genus species)", value = 'Cryptotis mexicana'),
+                                                                       textInput("spName", label = "Enter species scientific name", placeholder = 'format: Genus species'),
                                                                        actionButton("goName", "Search Database"),
                                                                        br(), br(),
                                                                        sliderInput("occNum", "Maximum number of occurrences:", min = 1, max = 3000, value = 50),
