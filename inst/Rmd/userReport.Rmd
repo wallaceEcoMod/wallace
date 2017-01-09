@@ -291,9 +291,11 @@ rms <- seq({{rmsSel1}}, {{rmsSel2}}, {{rmsBy}})  # define the vector of RMs to i
 e <- ENMeval::ENMevaluate(modParams$occ.pts, predsBackgMsk, bg.coords=modParams$bg.pts, RMvalues=rms, fc={{fcsSel}}, method='user', occ.grp=modParams$occ.grp, bg.grp=modParams$bg.grp)
 evalTbl <- e@results
 evalMods <- e@models
-evalPreds <- e@predictions.raw
-evalPredsLog <- e@predictions.log
-occVals <- raster::extract(e@predictions.raw, modParams$occ.pts)  # get predicted values for occ grid cells
+evalPreds <- e@predictions  # raw predictions
+
+evalPredsLog <- stack(sapply(e@models, function(x) predict(x, predsBackgMsk)))  # logistic predictions
+
+occVals <- raster::extract(e@predictions, modParams$occ.pts)  # get predicted values for occ grid cells
 mtps <- apply(occVals, MARGIN = 2, min)  # apply minimum training presence threshold over all models
 # Define 10% training presence threshold
 if (length(occVals) < 10) {  # if less than 10 occ values, find 90% of total and round down
