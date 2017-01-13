@@ -19,8 +19,14 @@
      - Step 2: Run `Sys.getenv("PATH")` in R studio. This command returns the path where Rstudio is trying to find pdflatex.exe. In Windows (64-bit), it should return "C:\Program Files\MiKTeX 2.9\miktex\bin\x64\pdflatex.exe". If pdflatex.exe is not located in this location Rstudio gives this error code 41.
      - Step 3: To set this path variable run: `Sys.setenv(PATH=paste(Sys.getenv("PATH"),"C:/Program Files/MiKTeX 2.9/miktex/bin/x64/",sep=";"))`.
 
-The following code will install the package `wallace` and run the user interface.
+Because of issues with `install_github()`, please install Wallace locally this way:
+1. Download the zip file from the repository page.
+2. Unzip and open the wallace.Rproj file in RStudio.
+3. In the right-hand pane, click Build, then Build & Reload.
+4. Type `wallace()` in the console and press Enter.
 
+~~The following code will install the package `wallace` and run the user interface.~~
+!BELOW NO LONGER WORKS.
 ```R
 # if you do not have devtools installed, install it first
 install.packages("devtools")
