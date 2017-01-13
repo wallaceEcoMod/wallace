@@ -20,10 +20,10 @@
      - Step 3: To set this path variable run: `Sys.setenv(PATH=paste(Sys.getenv("PATH"),"C:/Program Files/MiKTeX 2.9/miktex/bin/x64/",sep=";"))`.
 
 Because of issues with `install_github()`, please install Wallace locally this way:
-1. Download the zip file from the repository page.
-2. Unzip and open the wallace.Rproj file in RStudio.
-3. In the right-hand pane, click Build, then Build & Reload.
-4. Type `wallace()` in the console and press Enter.
+ 1. Download the zip file from the repository page.
+ 2. Unzip and open the wallace.Rproj file in RStudio.
+ 3. In the right-hand pane, click Build, then Build & Reload.
+ 4. Type `wallace()` in the console and press Enter.
 
 ~~The following code will install the package `wallace` and run the user interface.~~
 !BELOW NO LONGER WORKS.
