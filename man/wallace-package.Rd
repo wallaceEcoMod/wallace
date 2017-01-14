@@ -10,24 +10,24 @@ Wallace Intro Text
 }
 \details{
 \tabular{ll}{
-Package: \tab lestR\cr
+Package: \tab wallace\cr
 Type: \tab Package\cr
-Version: \tab 2.6\cr
-Date: \tab 2015-06-01\cr
-License: \tab GPL-2\cr
+Version: \tab 1.0.0\cr
+Date: \tab 2017-01-14\cr
+License: \tab GPL-3\cr
 }
 }
 \author{
 \strong{Jamie M. Kass}\cr
+(email: \email{jkass@gradcenter.cuny.edu};
+Website: \url{http://ndimhypervol.github.io/})
+
+\strong{Bruno Vilela}\cr
 (email: \email{bvilela@wustl.edu};
 Website: \url{http://bvilela.weebly.com/})
-
-\strong{Fabricio Villalobos}\cr
-(email: \email{fabricio.villalobos@gmail.com};
-Website: \url{https://sites.google.com/site/fabriciovillalobos/})
 }
 \references{
-Vilela, B., & Villalobos, F. (2015). wallace: a new R package for data handling and analysis in macroecology. Methods in Ecology and Evolution.
+Kass, J. M., Vilela, B., & Anderson, R. P. (2017).
 }
 \keyword{package}
 
