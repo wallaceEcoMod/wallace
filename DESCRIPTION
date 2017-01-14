@@ -2,7 +2,7 @@ Package: wallace
 Title: Modular Platform for Reproducible Modeling of Species Niches and Distributions
 Version: 1.0.0.0000
 Authors@R: person("Jamie M.", "Kass", email = "jkass@gradcenter.cuny.edu", role = c("aut", "cre"))
-Description: UNDER DEV
+Description: Wallace is a modular platform for reproducible modeling of species niches and distributions. The application guides users through a complete analysis, from the acquisition of data to visualizing model predictions on an interactive map, thus bundling complex workflows into a single, streamlined interface.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
@@ -18,6 +18,7 @@ Depends:
     rmarkdown,
     dplyr,
     spThin,
+    ENMeval,
     rgeos,
     maptools,
     rgdal,
@@ -28,6 +29,5 @@ Depends:
     magrittr,
     repmis
 Remotes: 
-    rstudio/leaflet,
-    bobmuscarella/ENMeval@Edits_on_v0.2.1
+    rstudio/leaflet
 RoxygenNote: 5.0.1

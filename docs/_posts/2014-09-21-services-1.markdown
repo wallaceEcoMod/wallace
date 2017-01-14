@@ -1,8 +1,0 @@
----
-layout: default
-img: ipad.png
-category: Services
-title: Open Source
-description: |
----
-*Wallace*'s code is free to use and modify (GPL 3.0), and it gives users access to some of the largest public online biodiversity databases.

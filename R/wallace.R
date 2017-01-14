@@ -1,5 +1,9 @@
-#' @import shiny leaflet
-#' @importFrom magrittr "%>%"
+#'Run Wallace Application
+#'
+#'
+#'
+#'
+#'
 #' @export
 wallace <- function(){
   app_path <- system.file("shiny", package = "wallace")

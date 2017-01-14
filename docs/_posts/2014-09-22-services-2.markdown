@@ -1,8 +1,0 @@
----
-layout: default
-img: dog.png
-category: Services
-title: Expandible
-description: |
----
-*Wallace* is a modular application, where each module is a methodological option in the analysis. Users can author and contribute their own modules.
