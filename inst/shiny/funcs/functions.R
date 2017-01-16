@@ -72,11 +72,11 @@ formatSpName <- function(spName) paste(strsplit(spName, split=' ')[[1]], collaps
 
 # make a minimum convex polygon as SpatialPolygons object
 mcp <- function (xy) {
-  xy <- as.data.frame(coordinates(xy))
+  xy <- as.data.frame(sp::coordinates(xy))
   coords.t <- chull(xy[, 1], xy[, 2])
   xy.bord <- xy[coords.t, ]
   xy.bord <- rbind(xy.bord[nrow(xy.bord), ], xy.bord)
-  return(SpatialPolygons(list(Polygons(list(Polygon(as.matrix(xy.bord))), 1))))
+  return(sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(as.matrix(xy.bord))), 1))))
 }
 
 remDups <- function(df) {

@@ -51,8 +51,8 @@ comp6_maxentMod <- function(rms, fcs) {
 
   # Generate logistic predictions for each model
   withProgress(message = "Generating logistic predictions...", {
-    logPreds <- sapply(e@models, function(x) predict(x, values$predsMsk))
-    values$evalPredsLog <- stack(logPreds)
+    logPreds <- sapply(e@models, function(x) dismo::predict(x, values$predsMsk))
+    values$evalPredsLog <- raster::stack(logPreds)
   })
 
   occVals <- raster::extract(e@predictions, values$modParams$occ.pts)

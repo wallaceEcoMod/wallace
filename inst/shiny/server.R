@@ -584,7 +584,7 @@ shinyServer(function(input, output, session) {
     if (is.null(input$visSel)) return()
     if (input$visSel != 'response') return()
     if (is.null(values$curMod)) return()
-    output$respCurv <- renderPlot(response(values$curMod, var = input$predVarSel))
+    output$respCurv <- renderPlot(dismo::response(values$curMod, var = input$predVarSel))
     values$respCurvParams <- list(mod=values$curModNum, var=input$predVarSel)
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')

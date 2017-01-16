@@ -24,6 +24,9 @@ comp8_pjArea <- function(modelSel, predForm, enmSel) {
     return()
   }
 
+  # reset pjTime
+  values$pjTime <- NULL
+
   if (is.null(values$projMsk)) {
     withProgress(message = "Clipping environmental data to current extent...", {
       msk <- raster::crop(values$preds, values$poly2)
@@ -64,6 +67,9 @@ comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, selRCP, selGCM, selT
     return()
   }
 
+  # reset pjArea
+  values$pjArea <- NULL
+
   # code taken from dismo getData() function to catch if user is trying to download a missing combo of gcm / rcp
   gcms <- c('AC', 'BC', 'CC', 'CE', 'CN', 'GF', 'GD', 'GS', 'HD', 'HG', 'HE', 'IN', 'IP', 'MI', 'MR', 'MC', 'MP', 'MG', 'NO')
   rcps <- c(26, 45, 60, 85)
@@ -81,14 +87,15 @@ comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, selRCP, selGCM, selT
 
   withProgress(message = "Clipping environmental data to current extent...", {
     msk <- raster::crop(values$projTimeVars, values$poly2)
-    values$projTimeMsk <- raster::mask(msk, values$poly2)
-    names(values$projTimeMsk) <- names(values$preds)  # make names same as original predictors
+    values$projMsk <- raster::mask(msk, values$poly2)
+    names(values$projMsk) <- names(values$preds)  # make names same as original predictors
   })
 
-  writeLog('> PROJECTING to new time.')
-  curMod <- values$evalMods[[as.numeric(modelSel)]]
-  values$pjTime <- dismo::predict(curMod, values$projTimeMsk)
-  rasVals <- raster::values(values$pjTime)
+  withProgress(message = paste("Projecting to", selTime, "for GCM", selGCM, "under RCP", as.character(selRCP/10.0), "..."), {
+    curMod <- values$evalMods[[as.numeric(modelSel)]]
+    values$pjTime <- dismo::predict(curMod, values$projMsk)
+    rasVals <- raster::values(values$pjTime)
+  })
 
   if (predForm == 'log' & enmSel == "Maxent") {
     rasVals <- c(values$pjTime@data@values, 0, 1)  # set to 0-1 scale
@@ -110,13 +117,29 @@ comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, selRCP, selGCM, selT
 }
 
 comp8_mess <- function() {
-  if (is.null(values$projMsk)) {
+  if (is.null(values$poly2)) {
     writeLog('<font color="red"><b>! ERROR</b></font> : Select projection extent first.')
     return()
   }
-  writeLog('> Generating MESS map.')
-  occVals <- raster::extract(values$preds, cbind(values$df$longitude, values$df$latitude))
-  values$mess <- suppressWarnings(dismo::mess(values$projMsk, occVals))
+
+  if (is.null(values$projMsk)) {
+    withProgress(message = "Clipping environmental data to current extent...", {
+      msk <- raster::crop(values$preds, values$poly2)
+      values$projMsk <- raster::mask(msk, values$poly2)
+    })
+  }
+
+  if (is.null(values$pjTime)) {
+    period <- 'present'
+  } else if (is.null(values$pjArea)) {
+    period <- paste(selTime, "for GCM", selGCM, "under RCP", as.character(selRCP/10.0))
+  }
+
+  withProgress(message = paste("Generating MESS map for", period, "..."), {
+    occVals <- raster::extract(values$preds, cbind(values$df$longitude, values$df$latitude))
+    values$mess <- suppressWarnings(dismo::mess(values$projMsk, occVals))
+  })
+
   # proxy %>% clearShapes()
   # proxy %>% clearImages()
   rasVals <- values$mess@data@values
@@ -131,7 +154,7 @@ comp8_mess <- function() {
   rasVals[is.infinite(rasVals)] <- rasValsMax
   values$mess[is.infinite(values$mess)] <- rasValsMax
 
-  pal <- colorNumeric(brewer.pal(n=11, name='Spectral'), rasVals, na.color='transparent')
+  pal <- colorNumeric(RColorBrewer::brewer.pal(n=11, name='Spectral'), rasVals, na.color='transparent')
 
   proxy %>% addLegend("topright", pal=pal, title = "MESS Values",
                       values = rasVals, layerId = 'mess')
