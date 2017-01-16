@@ -27,12 +27,10 @@ comp8_pjArea <- function(modelSel, predForm, enmSel) {
   # reset pjTime
   values$pjTime <- NULL
 
-  if (is.null(values$projMsk)) {
-    withProgress(message = "Clipping environmental data to current extent...", {
-      msk <- raster::crop(values$preds, values$poly2)
-      values$projMsk <- raster::mask(msk, values$poly2)
-    })
-  }
+  withProgress(message = "Clipping environmental data to current extent...", {
+    msk <- raster::crop(values$preds, values$poly2)
+    values$projMsk <- raster::mask(msk, values$poly2)
+  })
 
   writeLog('> PROJECTING to new area.')
   curMod <- values$evalMods[[as.numeric(modelSel)]]
@@ -44,8 +42,8 @@ comp8_pjArea <- function(modelSel, predForm, enmSel) {
   }
   rasVals <- rasVals[!is.na(rasVals)]
 
-  proxy %>% removeShape('poly2Sel')
-  # proxy %>% clearImages()
+  # proxy %>% removeShape('poly2Sel')
+  proxy %>% clearImages()
   rasVals <- na.omit(rasVals)
   legPal <- colorNumeric(rev(rasCols), rasVals, na.color='transparent')
   rasPal <- colorNumeric(rasCols, rasVals, na.color='transparent')
@@ -76,7 +74,7 @@ comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, selRCP, selGCM, selT
   m <- matrix(c(0,1,1,0,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,0,0,1,0,1,1,1,0,0,1,1,1,1,0,1,1,1,1,1,0,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1), ncol=4)
   i <- m[which(selGCM == gcms), which(selRCP == rcps)]
   if (!i) {
-    writeLog('<font color="red"><b>! ERROR</b></font> : This combination of model and rcp is not available. Please make a different selection.')
+    writeLog('<font color="red"><b>! ERROR</b></font> : This combination of GCM and RCP is not available. Please make a different selection.')
     return()
   }
 
@@ -91,10 +89,12 @@ comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, selRCP, selGCM, selT
     names(values$projMsk) <- names(values$preds)  # make names same as original predictors
   })
 
-  withProgress(message = paste("Projecting to", selTime, "for GCM", selGCM, "under RCP", as.character(selRCP/10.0), "..."), {
+  withProgress(message = ("Projecting to new time..."), {
     curMod <- values$evalMods[[as.numeric(modelSel)]]
     values$pjTime <- dismo::predict(curMod, values$projMsk)
     rasVals <- raster::values(values$pjTime)
+    values$projTimeMessage <- paste0(paste0('20', selTime), " for GCM ", GCMlookup[selGCM], " under RCP ", as.numeric(selRCP)/10.0, ".")
+    writeLog(paste("> Projected to", values$projTimeMessage))
   })
 
   if (predForm == 'log' & enmSel == "Maxent") {
@@ -106,8 +106,8 @@ comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, selRCP, selGCM, selT
   rng <- rasMin:rasMax
   rng.rev <- rev(rng)
 
-  proxy %>% removeShape('poly2Sel')
-  # proxy %>% clearImages()
+  # proxy %>% removeShape('poly2Sel')
+  proxy %>% clearImages()
   legPal <- colorNumeric(rev(rasCols), rng, na.color='transparent')
   rasPal <- colorNumeric(rasCols, rng, na.color='transparent')
   # values$leg2 <- list(rasVals=rasVals, pal=pal)
@@ -123,40 +123,50 @@ comp8_mess <- function() {
   }
 
   if (is.null(values$projMsk)) {
-    withProgress(message = "Clipping environmental data to current extent...", {
-      msk <- raster::crop(values$preds, values$poly2)
-      values$projMsk <- raster::mask(msk, values$poly2)
-    })
+    writeLog('<font color="red"><b>! ERROR</b></font> : Project to new area or time first.')
+    return()
   }
 
-  if (is.null(values$pjTime)) {
-    period <- 'present'
-  } else if (is.null(values$pjArea)) {
-    period <- paste(selTime, "for GCM", selGCM, "under RCP", as.character(selRCP/10.0))
-  }
-
-  withProgress(message = paste("Generating MESS map for", period, "..."), {
+  withProgress(message = "Generating MESS map...", {
     occVals <- raster::extract(values$preds, cbind(values$df$longitude, values$df$latitude))
     values$mess <- suppressWarnings(dismo::mess(values$projMsk, occVals))
+    if (is.null(values$pjTime)) {
+      writeLog("> Generated MESS map for present.")
+    } else if (is.null(values$pjArea)) {
+      writeLog(paste("> Generated MESS map for", values$projTimeMessage))
+    }
   })
 
   # proxy %>% clearShapes()
   # proxy %>% clearImages()
   rasVals <- values$mess@data@values
   rasVals <- na.omit(rasVals)
-  if (sum(is.infinite(rasVals)) > 0) {
-    # find max after removing infinite values
-    x <- rasVals
-    x[is.infinite(x)] <- 0
-    rasValsMax <- max(x)
-  }
+  # if (sum(is.infinite(rasVals)) > 0) {
+  #   # find max after removing infinite values
+  #   x <- rasVals
+  #   x[is.infinite(x)] <- 0
+  #   rasValsMax <- max(x)
+  # }
   # set infinite values to max
-  rasVals[is.infinite(rasVals)] <- rasValsMax
-  values$mess[is.infinite(values$mess)] <- rasValsMax
+  rasVals[is.infinite(rasVals)] <- NA
+  values$mess[is.infinite(values$mess)] <- NA
 
-  pal <- colorNumeric(RColorBrewer::brewer.pal(n=11, name='Spectral'), rasVals, na.color='transparent')
+  proxy %>% clearImages()
+
+  ## custom label format function
+  myLabelFormat = function(..., reverse_order = FALSE){
+    if(reverse_order){
+      function(type = "numeric", cuts){
+        cuts <- sort(cuts, decreasing = T)
+      }
+    }else{
+      labelFormat(...)
+    }
+  }
+
+  pal <- colorNumeric(rev(RColorBrewer::brewer.pal(n=11, name='Spectral')), rasVals, na.color='transparent')
 
   proxy %>% addLegend("topright", pal=pal, title = "MESS Values",
-                      values = rasVals, layerId = 'mess')
+                      values = rasVals, layerId = 'mess', labFormat = myLabelFormat(reverse_order = T))
   proxy %>% addRasterImage(values$mess, layerId = 'mess')
 }

@@ -408,8 +408,8 @@ shinyUI(tagList(
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.projSel == 'pjArea'",
                                                                        div('Module: Project to New Extent', id="mod")),
-                                                      # conditionalPanel("input.projSel == 'pjTime'",
-                                                      #                  div('Module: Project to New Time', id="mod")),
+                                                      conditionalPanel("input.projSel == 'pjTime'",
+                                                                       div('Module: Project to New Time', id="mod")),
                                                       conditionalPanel("input.projSel == 'mess'",
                                                                        div('Module: Calculate Environmental Similarity', id="mod")),
                                                       span('via', id="pkgDes"),
@@ -423,11 +423,11 @@ shinyUI(tagList(
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.projSel == 'pjArea'",
                                                                        strong("Project model to current extent"), br(), br(),
-                                                                       actionButton('goPjArea', "Project")
+                                                                       actionButton('goPjArea', "Project to New Area")
                                                       ),
                                                       conditionalPanel("input.projSel == 'mess'",
                                                                        strong("Calculate MESS for current extent"), br(), br(),
-                                                                       actionButton('goMESS', "Calculate")
+                                                                       actionButton('goMESS', "Calculate MESS")
                                                       ),
                                                       conditionalPanel("input.projSel == 'pjTime'",
                                                                        selectInput("selTime", label = "Select time period",
@@ -445,8 +445,8 @@ shinyUI(tagList(
                                                                                                   '6.0' = 60,
                                                                                                   '8.5' = 85)),
                                                                        HTML('<hr>'),
-                                                                       strong("Project to new time (current extent)"), br(), br(),
-                                                                       actionButton('goPjTime', "Project")
+                                                                       strong("Project model to new time for current extent"), br(), br(),
+                                                                       actionButton('goPjTime', "Project to New Time")
                                                       ),
                                                       br(), br(),
                                                       selectInput('pjFileType', label = "Select File Type",
