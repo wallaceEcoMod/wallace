@@ -3,7 +3,6 @@
 #'
 #'
 #'
-#'
 #' @export
 run_wallace <- function(){
   app_path <- system.file("shiny", package = "wallace")

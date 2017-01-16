@@ -25,7 +25,6 @@
 #' }
 #'
 #' @references Kass, J. M., Vilela, B., & Anderson, R. P. (2017).
-#' @import shiny leaflet shinyjs shinyBS DT RColorBrewer rmarkdown dplyr spThin dismo ENMeval rgeos maptools rgdal raster shinythemes repmis
+#' @import shiny leaflet
 #' @importFrom magrittr "%>%"
-#' @importFrom spocc "occ"
 NULL
