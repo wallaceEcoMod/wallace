@@ -71,7 +71,6 @@ library(dismo)
 library(rgeos)
 library(repmis)
 library(maps)
-devtools::install_github('bobmuscarella/ENMeval@Edits_on_v0.2.1')
 library(ENMeval)
 ```
 
