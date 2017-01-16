@@ -25,6 +25,11 @@ comp6_bioclimMod <- function() {
 }
 
 comp6_maxentMod <- function(rms, fcs) {
+  if (is.null(input$fcs)) {
+    writeLog('<font color="red"><b>! ERROR</b></font> : Select feature classes first.')
+    return()
+  }
+
   rms <- seq(input$rms[1], input$rms[2], input$rmsBy)  # define the vector of RMs to input
   progress <- shiny::Progress$new()
   progress$set(message = "Evaluating ENMs...", value = 0)
