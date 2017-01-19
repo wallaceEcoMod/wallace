@@ -20,6 +20,17 @@ reverseLabels <- function(..., reverse_order = FALSE) {
   }
 }
 
+## custom label format function
+myLabelFormat = function(..., reverse_order = FALSE){
+  if(reverse_order){
+    function(type = "numeric", cuts){
+      cuts <- sort(cuts, decreasing = T)
+    }
+  }else{
+    labelFormat(...)
+  }
+}
+
 # return the map center given the bounds
 mapCenter <- function(bounds) {
   map_center <- c((bounds$west + bounds$east) / 2, (bounds$north + bounds$south) / 2)
@@ -28,10 +39,9 @@ mapCenter <- function(bounds) {
 }
 
 # mapping controls
-map_plotLocs <- function(map, locs, clearMarkers=TRUE, clearShapes=TRUE, clearImages=TRUE, fillColor='red', fillOpacity=0.2) {
+map_plotLocs <- function(map, locs, clearMarkers=TRUE, fillColor='red', fillOpacity=0.2) {
+  if (is.null(locs)) return(map)
   if (clearMarkers) map %>% clearMarkers()
-  if (clearShapes) map %>% clearShapes()
-  if (clearImages) map %>% clearImages()
   map %>% addCircleMarkers(data = locs, lat = ~latitude, lng = ~longitude,
                            radius = 5, color = 'red', fill = TRUE,
                            fillColor = fillColor, fillOpacity = fillOpacity,

@@ -67,7 +67,7 @@ polySelLocs <- function() {
   values$df <- values$ptsSel
 
   # # plot all
-  # proxy %>% map_plotLocs(values$df, fillColor='yellow', fillOpacity=1, clearShapes=FALSE, clearMarkers=FALSE)
+  # proxy %>% map_plotLocs(values$df, fillColor='yellow', fillOpacity=1, clearMarkers=FALSE)
 
   isolate(writeLog(paste('> Selected', nrow(values$df), 'localities.')))
 }

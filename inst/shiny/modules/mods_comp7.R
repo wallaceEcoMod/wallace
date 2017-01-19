@@ -4,8 +4,9 @@ comp7_mapPred <- function(modelSelPlotStudyExt, predForm, predThresh, proxy) {
     return()
   }
 
+  values$predCurThresh <- predThresh
   values$goMapPred <- TRUE
-  proxy %>% removeImage('r1')  # remove current raster
+  proxy %>% removeImage('r1ID')  # remove current raster
   selRasRaw <- values$evalPreds[[as.numeric(modelSelPlotStudyExt)]]
   selRasLog <- values$evalPredsLog[[as.numeric(modelSelPlotStudyExt)]]
   if (predForm == 'raw' | is.null(selRasLog)) {
@@ -15,7 +16,7 @@ comp7_mapPred <- function(modelSelPlotStudyExt, predForm, predThresh, proxy) {
     selRas <- selRasLog
     rasVals <- c(selRas@data@values, 0, 1)  # set to 0-1 scale
   }
-  rasVals <- rasVals[!is.na(rasVals)]
+  values$rasValsArea <- rasVals[!is.na(rasVals)]
 
   if (predThresh == 'mtp') {
     mtp <- values$mtps[as.numeric(modelSelPlotStudyExt)]
@@ -31,22 +32,21 @@ comp7_mapPred <- function(modelSelPlotStudyExt, predForm, predThresh, proxy) {
 
   if (!is.null(values$predCur)) {
     if (predThresh == 'mtp' | predThresh == 'p10') {
-      rasPal <- c('gray', 'blue')
+      values$rasPalArea <- c('gray', 'blue')
       proxy %>%
-        clearControls() %>%
-        addLegend("topright", colors = rasPal,
+        removeControl('r1LegCon') %>%
+        addLegend("topright", colors = values$rasPalArea,
                   title = "Thresholded Suitability", labels = c(0, 1),
-                  opacity = 1, layerId = 'threshLegend')
+                  opacity = 1, layerId = 'r1LegThr')
     } else {
-      legPal <- colorNumeric(rev(rasCols), rasVals, na.color='transparent')
-      rasPal <- colorNumeric(rasCols, rasVals, na.color='transparent')
-      # values$leg1 <- list(rasVals=rasVals, pal=pal)
+      values$legPalArea <- colorNumeric(rev(rasCols), values$rasValsArea, na.color='transparent')
+      values$rasPalArea <- colorNumeric(rasCols, values$rasValsArea, na.color='transparent')
       proxy %>%
-        clearControls() %>%
-        addLegend("topright", pal = legPal, title = "Predicted Suitability",
-                  values = rasVals, layerId = 'r1Legend',
+        removeControl('r1LegThr') %>%
+        addLegend("topright", pal = values$legPalArea, title = "Predicted Suitability",
+                  values = values$rasValsArea, layerId = 'r1LegCon',
                   labFormat = reverseLabels(2, reverse_order=TRUE))
     }
-    proxy %>% addRasterImage(values$predCur, colors = rasPal, opacity = 0.7, group = 'r1', layerId = 'r1')
+    proxy %>% addRasterImage(values$predCur, colors = values$rasPalArea, opacity = 0.7, group = 'r1', layerId = 'r1ID')
   }
 }

@@ -11,7 +11,7 @@ comp8_selProjExt <- function() {
   values$polyID <- values$polyID + 1
 
   values$poly2 <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(values$polyPts2)), ID=values$polyID)))  # create new polygon from coords
-  proxy %>% addPolygons(values$polyPts2[,1], values$polyPts2[,2], weight=3, fill=FALSE, color='red', layerId='poly2Sel')
+  proxy %>% addPolygons(values$polyPts2[,1], values$polyPts2[,2], weight=3, fill=FALSE, color='red', group='projPoly', layerId='projPolyID')
 
   x <- round(values$polyPts2, digits = 2)  # round all coords to 2 decimal digits
   coordsChar <- paste(apply(x, 1, function(b) paste0('(',paste(b, collapse=', '),')')), collapse=', ')  # concatanate coords to a single character
@@ -44,17 +44,18 @@ comp8_pjArea <- function(modelSel, predForm, enmSel) {
   rasVals <- rasVals[!is.na(rasVals)]
 
   # proxy %>% removeShape('poly2Sel')
-  proxy %>% clearImages()
-  rasVals <- na.omit(rasVals)
-  legPal <- colorNumeric(rev(rasCols), rasVals, na.color='transparent')
-  rasPal <- colorNumeric(rasCols, rasVals, na.color='transparent')
+  values$rasValsArea <- na.omit(rasVals)
+  values$legPalArea <- colorNumeric(rev(rasCols), rasVals, na.color='transparent')
+  values$rasPalArea <- colorNumeric(rasCols, rasVals, na.color='transparent')
   # values$leg2 <- list(rasVals=rasVals, pal=pal)
 
   proxy %>%
-    clearControls() %>%
-    addLegend("topright", pal = legPal, title = "Predicted Suitability",
-              values = rasVals, layerId = 'r2Legend', labFormat = reverseLabels(reverse_order=TRUE)) %>%
-    addRasterImage(values$pjArea, colors = rasPal, group = 'r2', layerId = 'r2')
+    hideGroup(c('r2Time', 'r2MESS')) %>%
+    removeControl('r2LegTime') %>% removeControl('r2LegMESS') %>%
+    addLegend("topright", pal = values$legPalArea, title = "Predicted Suitability",
+              values = values$rasValsArea, labFormat = reverseLabels(reverse_order=TRUE),
+              layerId = 'r2LegArea') %>%
+    addRasterImage(values$pjArea, colors = values$rasPalArea, group = 'r2Area', layerId = 'r2AreaID')
 }
 
 comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, selRCP, selGCM, selTime) {
@@ -67,9 +68,6 @@ comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, selRCP, selGCM, selT
     writeLog('<font color="red"><b>! ERROR</b></font> : Project to New Time currently only available with resolutions >30 arc seconds.')
     return()
   }
-
-  # reset pjArea
-  values$pjArea <- NULL
 
   # code taken from dismo getData() function to catch if user is trying to download a missing combo of gcm / rcp
   gcms <- c('AC', 'BC', 'CC', 'CE', 'CN', 'GF', 'GD', 'GS', 'HD', 'HG', 'HE', 'IN', 'IP', 'MI', 'MR', 'MC', 'MP', 'MG', 'NO')
@@ -104,19 +102,19 @@ comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, selRCP, selGCM, selT
   if (predForm == 'log' & enmSel == "Maxent") {
     rasVals <- c(values$pjTime@data@values, 0, 1)  # set to 0-1 scale
   }
-  rasVals <- rasVals[!is.na(rasVals)]
-  rng <- c(min(rasVals), max(rasVals))
+  values$rasValsTime <- rasVals[!is.na(rasVals)]
+  rng <- c(min(values$rasValsTime), max(values$rasValsTime))
 
-  proxy %>% clearImages()
-  legPal <- colorNumeric(rev(rasCols), rng, na.color='transparent')
-  rasPal <- colorNumeric(rasCols, rng, na.color='transparent')
+  values$legPalTime <- colorNumeric(rev(rasCols), rng, na.color='transparent')
+  values$rasPalTime <- colorNumeric(rasCols, rng, na.color='transparent')
 
   proxy %>%
-    clearControls() %>%
-    addLegend("topright", pal = legPal, title = "Predicted Suitability",
-                      values = rasVals, layerId = 'r2Legend',
-              labFormat = reverseLabels(reverse_order=TRUE)) %>%
-    addRasterImage(values$pjTime, colors = rasPal, group = 'r2', layerId = 'r2')
+    hideGroup(c('r2Area', 'r2MESS')) %>%
+    removeControl('r2LegArea') %>% removeControl('r2LegMESS') %>%
+    addLegend("topright", pal = values$legPalTime, title = "Predicted Suitability",
+              values = values$rasValsTime, labFormat = reverseLabels(reverse_order=TRUE),
+              layerId = 'r2LegTime') %>%
+    addRasterImage(values$pjTime, colors = values$rasPalTime, group = 'r2Time', layerId = 'r2TimeID')
 }
 
 comp8_mess <- function() {
@@ -140,10 +138,8 @@ comp8_mess <- function() {
     }
   })
 
-  # proxy %>% clearShapes()
-  # proxy %>% clearImages()
   rasVals <- values$mess@data@values
-  rasVals <- na.omit(rasVals)
+  values$rasValsMESS <- na.omit(rasVals)
   # if (sum(is.infinite(rasVals)) > 0) {
   #   # find max after removing infinite values
   #   x <- rasVals
@@ -151,27 +147,16 @@ comp8_mess <- function() {
   #   rasValsMax <- max(x)
   # }
   # set infinite values to max
-  rasVals[is.infinite(rasVals)] <- NA
+  values$rasValsMESS[is.infinite(values$rasValsMESS)] <- NA
   values$mess[is.infinite(values$mess)] <- NA
 
-  proxy %>% clearImages()
-
-  ## custom label format function
-  myLabelFormat = function(..., reverse_order = FALSE){
-    if(reverse_order){
-      function(type = "numeric", cuts){
-        cuts <- sort(cuts, decreasing = T)
-      }
-    }else{
-      labelFormat(...)
-    }
-  }
-
-  pal <- colorNumeric(rev(RColorBrewer::brewer.pal(n=11, name='Spectral')), rasVals, na.color='transparent')
+  values$legPalMESS <- colorNumeric(rev(RColorBrewer::brewer.pal(n=11, name='Spectral')), values$rasValsMESS, na.color='transparent')
 
   proxy %>%
-    clearControls() %>%
-    addLegend("topright", pal=pal, title = "MESS Values",
-              values = rasVals, layerId = 'mess', labFormat = myLabelFormat(reverse_order = T)) %>%
-    addRasterImage(values$mess, layerId = 'mess')
+    hideGroup(c('r2Area', 'r2Time')) %>%
+    removeControl('r2LegArea') %>% removeControl('r2LegTime') %>%
+    addLegend("topright", pal=values$legPalMESS, title = "MESS Values",
+              values = values$rasValsMESS, labFormat = myLabelFormat(reverse_order = TRUE),
+              layerId = 'r2LegMESS') %>%
+    addRasterImage(values$mess, group='r2MESS', layerId = 'r2MESSID')
 }

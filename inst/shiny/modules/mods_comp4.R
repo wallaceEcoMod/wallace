@@ -72,7 +72,7 @@ comp4_studyReg <- function(buf, backgSel) {
   proxy %>%
     fitBounds(max(bb[,1]), max(bb[,2]), min(bb[,1]), min(bb[,2])) %>%
     addPolygons(lng=bb[,1], lat=bb[,2], layerId="backext",
-                        weight=10, col="red")
+                        weight=10, col="red", group='backgPoly')
 }
 
 comp4_mskStudyReg <- function() {
