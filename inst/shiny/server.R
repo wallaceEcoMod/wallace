@@ -756,6 +756,7 @@ shinyServer(function(input, output, session) {
     }
   })
 
+  # ui for select GCM (NOTE: lgm and mid not functional yet)
   observe({
     if (input$selTime == 'lgm') {
       selGCMchoices <- c('CC', 'MR', 'MC')

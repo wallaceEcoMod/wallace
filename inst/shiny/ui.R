@@ -502,7 +502,7 @@ shinyUI(tagList(
                    column(8,
                           conditionalPanel("input.tabs != 0 && input.tabs != 'rmd'",
                                            div(id = "wallaceLog", class = "scrollbox", htmlOutput("log")),
-                                           absolutePanel(top = 70, right = 20, width = 150, draggable = TRUE,
+                                           absolutePanel(top = -10, right = 20, width = 150, draggable = TRUE,
                                                          selectInput("bmap", "Change Base Map", choices = c('ESRI Topo'="Esri.WorldTopoMap",
                                                                                                             'Stamen Terrain'="Stamen.Terrain",
                                                                                                             'Open Topo'="OpenTopoMap",

@@ -40,13 +40,13 @@ isBC <- if (!is.null(values$evalMods)) input$enmSel == 'BIOCLIM' else FALSE
 isMX <- if (!is.null(values$evalMods)) input$enmSel == 'Maxent' else FALSE
 # comp7
 mapPred <- !is.null(values$goMapPred)
-respCurv <- !is.null(values$respCurvParams)
-bcEnvelPlot <- !is.null(values$bcEnvelPlot)
-mxEvalPlot <- !is.null(values$mxEvalPlot)
+respCurv <- !is.null(values$respCurvParams) & isMX
+bcEnvelPlot <- !is.null(values$bcEnvelPlot) & isBC
+mxEvalPlot <- !is.null(values$mxEvalPlot) & isMX
 isViz <- mapPred | respCurv | bcEnvelPlot | mxEvalPlot
 # comp8
 projArea <- !is.null(values$projMsk)
-projTime <- !is.null(values$projTimeMsk)
+projTime <- !is.null(values$projTimeVars)
 projAny <- projArea | projTime
 mess <- !is.null(values$mess)
 ```

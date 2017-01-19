@@ -92,6 +92,7 @@ comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, selRCP, selGCM, selT
   withProgress(message = ("Projecting to new time..."), {
     curMod <- values$evalMods[[as.numeric(modelSel)]]
     values$pjTime <- dismo::predict(curMod, values$projMsk)
+    print(values$pjTime)
     rasVals <- raster::values(values$pjTime)
     values$projTimeMessage <- paste0(paste0('20', selTime), " for GCM ", GCMlookup[selGCM], " under RCP ", as.numeric(selRCP)/10.0, ".")
     writeLog(paste("> Projected to", values$projTimeMessage))
@@ -101,19 +102,18 @@ comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, selRCP, selGCM, selT
     rasVals <- c(values$pjTime@data@values, 0, 1)  # set to 0-1 scale
   }
   rasVals <- rasVals[!is.na(rasVals)]
-  rasMax <- max(rasVals)
-  rasMin <- min(rasVals)
-  rng <- rasMin:rasMax
-  rng.rev <- rev(rng)
+  rng <- c(min(rasVals), max(rasVals))
 
   # proxy %>% removeShape('poly2Sel')
   proxy %>% clearImages()
   legPal <- colorNumeric(rev(rasCols), rng, na.color='transparent')
   rasPal <- colorNumeric(rasCols, rng, na.color='transparent')
   # values$leg2 <- list(rasVals=rasVals, pal=pal)
-  proxy %>% addLegend("topright", pal = legPal, title = "Predicted Suitability",
-                      values = rasVals, layerId = 'r2Legend', labFormat = reverseLabels(reverse_order=TRUE))
-  proxy %>% addRasterImage(values$pjTime, colors = rasPal, group = 'r2', layerId = 'r2')
+  proxy %>%
+    addLegend("topright", pal = legPal, title = "Predicted Suitability",
+                      values = rasVals, layerId = 'r2Legend',
+              labFormat = reverseLabels(reverse_order=TRUE)) %>%
+    addRasterImage(values$pjTime, colors = rasPal, group = 'r2', layerId = 'r2')
 }
 
 comp8_mess <- function() {

@@ -4,7 +4,7 @@ comp6_bioclimMod <- function() {
                     values$predsMsk)
   values$evalTbl <- e$results
   values$evalMods <- e$models
-  names(e$predictions) <- "Classic_BIOCLIM"
+  names(e$predictions) <- "BIOCLIM"
   values$evalPreds <- e$predictions
   occVals <- raster::extract(e$predictions, values$modParams$occ.pts)
 
