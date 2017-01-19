@@ -112,7 +112,7 @@ comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, selRCP, selGCM, selT
   rasPal <- colorNumeric(rasCols, rng, na.color='transparent')
   # values$leg2 <- list(rasVals=rasVals, pal=pal)
   proxy %>% addLegend("topright", pal = legPal, title = "Predicted Suitability",
-                      values = rasVals, layerId = 'r2Legend', labFormat = reverseLabels())
+                      values = rasVals, layerId = 'r2Legend', labFormat = reverseLabels(reverse_order=TRUE))
   proxy %>% addRasterImage(values$pjTime, colors = rasPal, group = 'r2', layerId = 'r2')
 }
 

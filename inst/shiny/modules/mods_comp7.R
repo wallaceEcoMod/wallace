@@ -32,15 +32,20 @@ comp7_mapPred <- function(modelSelPlotStudyExt, predForm, predThresh, proxy) {
   if (!is.null(values$predCur)) {
     if (predThresh == 'mtp' | predThresh == 'p10') {
       rasPal <- c('gray', 'blue')
-      proxy %>% addLegend("topright", colors = rasPal,
-                          title = "Thresholded Suitability", labels = c(0, 1),
-                          opacity = 1, layerId = 'threshLegend')
+      proxy %>%
+        clearControls() %>%
+        addLegend("topright", colors = rasPal,
+                  title = "Thresholded Suitability", labels = c(0, 1),
+                  opacity = 1, layerId = 'threshLegend')
     } else {
       legPal <- colorNumeric(rev(rasCols), rasVals, na.color='transparent')
       rasPal <- colorNumeric(rasCols, rasVals, na.color='transparent')
       # values$leg1 <- list(rasVals=rasVals, pal=pal)
-      proxy %>% addLegend("topright", pal = legPal, title = "Predicted SEuitability",
-                          values = rasVals, layerId = 'r1Legend', labFormat = reverseLabels(2, reverse_order=TRUE))
+      proxy %>%
+        clearControls() %>%
+        addLegend("topright", pal = legPal, title = "Predicted Suitability",
+                  values = rasVals, layerId = 'r1Legend',
+                  labFormat = reverseLabels(2, reverse_order=TRUE))
     }
     proxy %>% addRasterImage(values$predCur, colors = rasPal, opacity = 0.7, group = 'r1', layerId = 'r1')
   }

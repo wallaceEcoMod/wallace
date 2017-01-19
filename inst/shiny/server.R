@@ -139,14 +139,16 @@ shinyServer(function(input, output, session) {
   observe({
     if (input$tabs == 2) {
       gtext$cur_comp <- "gtext_comp2.Rmd"
-      # if Module: Select Points, populate guidance text and select legend
+      # remove study extent polygon from comp4 if it's there
+      proxy %>% removeShape('backext')
+      # if Module: Select Localities, populate guidance text and select legend
       if (input$procOccSel == 'selpts') {
         gtext$cur_mod <- "gtext_comp2_selectLocs.Rmd"
         proxy %>% addLegend("topright", colors = c('red','yellow'),
                             title = "Occ Records", labels = c('original', 'selected'),
                             opacity = 1, layerId = 'selLegend') %>%
           removeControl('thinLegend') %>% clearImages()
-        # if points are already selected, plot the original occs in red and the selected ones with yellow fill
+        # if localities are already selected, plot the original occs in red and the selected ones with yellow fill
         if (!is.null(values$ptsSel)) {
           proxy %>%
             map_plotLocs(values$origOccs, clearShapes=FALSE) %>%
@@ -161,7 +163,7 @@ shinyServer(function(input, output, session) {
                             opacity = 1, layerId = 'thinLegend') %>%
           removeControl('selLegend') %>% clearImages() %>% clearShapes()
         if (!is.null(values$ptsSel)) {
-          proxy %>% map_plotLocs(values$ptsSel)
+          proxy %>% map_plotLocs(values$ptsSel) %>% zoom2Occs(values$ptsSel)
           if (!is.null(values$prethinned)) {
             proxy %>% addCircleMarkers(data = values$prethinned, lat = ~latitude, lng = ~longitude,
                                        radius = 5, color = 'red', fillColor = 'blue',
@@ -212,13 +214,13 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  # Module Select Localities: select points intersecting drawn polygons (replace values$df)
+  # Module Select Localities: select localities intersecting drawn polygons (replace values$df)
   observeEvent(input$selectPoly, {
     polySelLocs()
     shinyjs::enable("dlProcOccCsv")
   })
 
-  # governs point removal behavior and modifies tables in "values"
+  # governs locality removal behavior and modifies tables in "values"
   observeEvent(input$remove, {
     if (!is.null(values$ptsSel)) {
       writeLog('<font color="red"><b>! ERROR</b></font> : Remove localities by ID before selecting with polygons. Press "Reset Localities" to start over.')
@@ -322,6 +324,16 @@ shinyServer(function(input, output, session) {
   observe({
     if (input$tabs == 4) {
       gtext$cur_comp <- "gtext_comp4.Rmd"
+      # print(values$bb)
+      # # if comp4, replot the polygon for study extent
+      # if (!is.null(values$bb)) {
+      #   values$bb <- bb
+      #   proxy %>%
+      #     removeShape('backext') %>%
+      #     fitBounds(max(bb[,1]), max(bb[,2]), min(bb[,1]), min(bb[,2])) %>%
+      #     addPolygons(lng=bb[,1], lat=bb[,2], layerId="backext",
+      #                 weight=10, col="red")
+      # }
       if (input$envProcSel == 'backg') gtext$cur_mod <- "gtext_comp4_backg.Rmd"
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
@@ -444,6 +456,9 @@ shinyServer(function(input, output, session) {
       # plots pts
       if (!is.null(values$df)) proxy %>% map_plotLocs(values$df)
       proxy %>% clearControls() %>% clearShapes()
+
+      # switch to Results tab
+      updateTabsetPanel(session, 'main', selected = 'Results')
     }
   })
 
@@ -483,7 +498,7 @@ shinyServer(function(input, output, session) {
 
   # handle downloads for ENMeval results table csv
   output$downloadEvalcsv <- downloadHandler(
-    filename = function() {paste0(nameAbbr(values$origOccs), "_enmeval_results.csv")},
+    filename = function() {paste0(nameAbbr(values$origOccs), "_", input$enmSel, "_results.csv")},
     content = function(file) {
       write.csv(values$evalTbl, file, row.names = FALSE)
     }

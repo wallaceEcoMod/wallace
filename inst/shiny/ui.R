@@ -44,15 +44,17 @@ shinyUI(tagList(
                                                                                                    "VertNet" = 'vertnet',
                                                                                                    "BISON" = 'bison')),
                                                                        textInput("spName", label = "Enter species scientific name", placeholder = 'format: Genus species'),
+                                                                       shinyBS::bsPopover('spName', title = 'Tip',
+                                                                                          'Examples: Felis catus, Canis lupus, Nyctereutes procyonoides',
+                                                                                          placement = 'right', options = list(container = "body")),
                                                                        actionButton("goName", "Search Database"),
                                                                        br(), br(),
                                                                        sliderInput("occNum", "Maximum number of occurrences:", min = 1, max = 3000, value = 50),
                                                                        shinyBS::bsPopover('occNum', title = 'Tip',
                                                                                           'Maximum number of occurrences recovered from databases. Downloaded records are not sorted randomly: rows are always consistent between downloads.',
                                                                                           placement = 'right', options = list(container = "body")),
-                                                                       #br(),
-                                                                       #uiOutput('gbifDnld'),
-                                                                       downloadButton('dlDbOccs', "Download DB Occurrences"),
+                                                                       strong("Download database occurrence localities (.csv)"), br(), br(),
+                                                                       downloadButton('dlDbOccs', "Download"),
                                                                        HTML('<hr>')
                                                       ),
                                                       conditionalPanel("input.occSel == 'user'",
@@ -83,9 +85,10 @@ shinyUI(tagList(
                                                                        numericInput("remLoc", label="Enter the record ID to be removed", value = 0),
                                                                        actionButton("remove", "Remove Locality"),
                                                                        HTML('<hr>'),
-                                                                       strong("Map functions: select points overlapping with polygon"), br(),
-                                                                       "*draw polygon by clicking on map", br(), br(),
-                                                                       actionButton("selectPoly", "Select Points")
+                                                                       strong("Select localities on map that overlap with polygon"), br(),
+                                                                       "* NOTE: draw polygon by clicking on map", br(), br(),
+                                                                       actionButton("selectPoly", "Select Localities"), br(), br(),
+                                                                       strong("Reset to original localities and erase polygon"), br(), br()
                                                       ),
                                                       conditionalPanel("input.procOccSel == 'spthin'",
                                                                        div('Module: Spatial Thin', id="mod"),
@@ -97,12 +100,14 @@ shinyUI(tagList(
                                                                        shinyBS::bsPopover('thinDist', title = 'Tip',
                                                                                           'The minimum distance between occurrence locations (nearest neighbor distance) in km for resulting thinned dataset. Ideally based on species biology (e.g., home-range size).',
                                                                                           placement = 'right', options = list(container = "body")),
-                                                                       actionButton("goThin", "Thin Localities")
+                                                                       actionButton("goThin", "Thin Localities"), br(), br(),
+                                                                       strong("Reset to original localities"), br(), br()
 
-                                                      ), br(),
-                                                      actionButton("erasePolySelLocs", "Reset Points"),
+                                                      ),
+                                                      actionButton("erasePolySelLocs", "Reset"),
                                                       HTML('<hr>'),
-                                                      downloadButton('dlProcOccCsv', "Download Processed Occs"),
+                                                      strong("Download processed occurrence localities (.csv)"), br(), br(),
+                                                      downloadButton('dlProcOccCsv', "Download"),
                                                       conditionalPanel("input.procOccSel == 'selpts'",
                                                                        HTML('<hr>'),
                                                                        span("leaflet", id = "rpkg"), "references", br(),
@@ -195,7 +200,8 @@ shinyUI(tagList(
                                                                        actionButton("goBackgMask", "Clip Env Data by Polygon"), br(), br(),
                                                                        selectInput('mskPredsFileType', label = "Select File Type",
                                                                                    choices = list("GRD" = 'raster', "ASCII" = 'ascii', "GeoTIFF" = 'GTiff')),
-                                                                       downloadButton('downloadMskPreds', "Download Clipped Env Data"),
+                                                                       strong("Download masked environmental predictors"), br(), br(),
+                                                                       downloadButton('downloadMskPreds', "Download"),
                                                                        HTML('<hr>')),
                                                       conditionalPanel("input.envProcSel == 'backg'",
                                                                        span("sp", id = "rpkg"), "references", br(),
@@ -241,7 +247,8 @@ shinyUI(tagList(
                                                       #   uiOutput('bggrpSel')),
                                                       conditionalPanel("input.partSel == 'sp' || input.partSel == 'nsp'",
                                                                        actionButton("goPart", "Partition"), br(), br(),
-                                                                       downloadButton('downloadPart', "Download Partitioned Data CSV")
+                                                                       strong("Download occurrence and background localities with partition values (.csv)"), br(), br(),
+                                                                       downloadButton('downloadPart', "Download")
                                                       ),
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.partSel == 'sp' || input.partSel == 'nsp'",
@@ -292,9 +299,10 @@ shinyUI(tagList(
                                                                                           placement = 'right', options = list(container = "body"))
                                                       ),
                                                       conditionalPanel("input.enmSel == 'BIOCLIM' || input.enmSel == 'Maxent'",
-                                                                       strong("Build and evaluate models"), br(),
+                                                                       strong("Build and evaluate models"), br(), br(),
                                                                        actionButton("goEval", "Run Models"), br(), br(),
-                                                                       downloadButton('downloadEvalcsv', "Download Results CSV")
+                                                                       strong("Download model results (.csv)"), br(), br(),
+                                                                       downloadButton('downloadEvalcsv', "Download")
                                                       ),
                                                       conditionalPanel("input.enmSel == 'BIOCLIM' || input.enmSel == 'Maxent'",
                                                                        HTML('<hr>'),
@@ -350,7 +358,7 @@ shinyUI(tagList(
                                                                        ),
                                                                        selectInput('predThresh', label = "Set threshold",
                                                                                    choices = list("No threshold" = 'noThresh',
-                                                                                                  "MTP" = 'mtp', "10%" = 'p10'),
+                                                                                                  "Minimum Training Presence" = 'mtp', "10 Percentile Training Presence" = 'p10'),
                                                                                    selected = ''),
                                                                        shinyBS::bsPopover('predThresh', title = 'Tip',
                                                                                           'Create binary map of predicted presence/absence assuming all values above threshold value represent presence. Also can be interpreted as a "potential distribution" (see guidance).',
@@ -360,25 +368,29 @@ shinyUI(tagList(
                                                                        selectInput('predFileType', label = "Select File Type",
                                                                                    choices = list("GRD" = 'raster', "ASCII" = 'ascii', "GeoTIFF" = 'GTiff',
                                                                                                   "PNG" = "png")),
-                                                                       downloadButton('downloadPred', "Download Displayed Prediction")
+                                                                       strong("Download displayed raster"), br(), br(),
+                                                                       downloadButton('downloadPred', "Download")
                                                       ),
                                                       conditionalPanel("input.visSel == 'response'",
                                                                        uiOutput("modelSelRespCurv"),
                                                                        uiOutput("predVarSel"),
-                                                                       downloadButton('downloadRespPlot', "Download Response Plot")
+                                                                       strong("Download response plot (.png)"), br(), br(),
+                                                                       downloadButton('downloadRespPlot', "Download")
                                                       ),
                                                       conditionalPanel("input.visSel == 'bcEnvel'",
                                                                        "Pick a bioclimatic variable number for each axis",
                                                                        numericInput("bc1", "Axis 1", value = 1, min = 1, max = 19),
                                                                        numericInput("bc2", "Axis 2", value = 2, min = 1, max = 19),
                                                                        numericInput("bcProb", "Set threshold", value = 0.9, min = 0.75, max = 1, step = 0.05),
-                                                                       downloadButton('downloadEnvPlot', "Download Envelope Plot")
+                                                                       strong("Download envelope plot (.png)"), br(), br(),
+                                                                       downloadButton('downloadEnvPlot', "Download")
                                                       ),
                                                       conditionalPanel("input.visSel == 'mxEval'",
                                                                        selectInput('mxEvalSel', label = "Select Evaluation Plot",
                                                                                    choices = list("Select Stat..." = '', "mean AUC" = 'Mean.AUC', "mean AUC DIFF" = 'Mean.AUC.DIFF', "mean OR MIN" = 'Mean.ORmin',
                                                                                                   "mean OR 10%" = 'Mean.OR10', "delta AICc" = 'delta.AICc')),
-                                                                       downloadButton('downloadEvalPlot', "Download Current Evaluation Plot")
+                                                                       strong("Download displayed evaluation plot (.png)"), br(), br(),
+                                                                       downloadButton('downloadEvalPlot', "Download")
                                                       ),
                                                       HTML('<hr>'),
                                                       span("ENMeval", id = "rpkg"), "references", br(),
@@ -416,13 +428,13 @@ shinyUI(tagList(
                                                       span('package: Automated Runs and Evaluations of Ecological Niche Models', id="pkgDes"),
                                                       HTML('<hr>'),
                                                       uiOutput("modelSelProj"),
-                                                      strong("Map functions: draw projection extent"), br(),
-                                                      "*draw polygon by clicking on map", br(), br(),
+                                                      strong("Select projection extent with polygon | reset and erase polygon "), br(),
+                                                      "* NOTE: draw polygon by clicking on map", br(), br(),
                                                       p(actionButton("poly2Sel", "Select"), actionButton("erasePolyProjExt", "Reset")),
                                                       HTML('<hr>'),
                                                       conditionalPanel("input.projSel == 'pjArea'",
                                                                        strong("Project model to current extent"), br(), br(),
-                                                                       actionButton('goPjArea', "Project to New Area")
+                                                                       actionButton('goPjArea', "Project")
                                                       ),
                                                       conditionalPanel("input.projSel == 'mess'",
                                                                        strong("Calculate MESS for current extent"), br(), br(),
@@ -445,13 +457,14 @@ shinyUI(tagList(
                                                                                                   '8.5' = 85)),
                                                                        HTML('<hr>'),
                                                                        strong("Project model to new time for current extent"), br(), br(),
-                                                                       actionButton('goPjTime', "Project to New Time")
+                                                                       actionButton('goPjTime', "Project")
                                                       ),
                                                       br(), br(),
                                                       selectInput('pjFileType', label = "Select File Type",
                                                                   choices = list("GRD" = 'raster', "ASCII" = 'ascii', "GeoTIFF" = 'GTiff',
                                                                                  "PNG" = "png")),
-                                                      downloadButton('downloadPj', "Download Displayed Grid"),
+                                                      strong("Download displayed raster"), br(), br(),
+                                                      downloadButton('downloadPj', "Download"),
                                                       HTML('<hr>'),
                                                       span("dismo", id = "rpkg"), "references", br(),
                                                       div('Developers:  Robert J. Hijmans, Steven Phillips, John Leathwick, Jane Elith', id="pkgDes"),

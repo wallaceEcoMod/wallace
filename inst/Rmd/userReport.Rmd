@@ -115,7 +115,7 @@ occs <- remDups(inFile)  # remove duplicate records
 ```
 
 ```{asis, echo = remLoc, eval = remLoc, include = remLoc}
-Remove the following occurrence localities: `r {{occsRemoved}}`.
+Remove the occurrence localities with the following IDs: `r {{occsRemoved}}`.
 ```
 
 ```{r remLocs, echo = remLoc, eval = remLoc, include = remLoc}
@@ -206,24 +206,20 @@ bb <- shp@polygons[[1]]@Polygons[[1]]@coords
 ```
 
 ```{asis, echo = backg, include = backg}
-Mask environmental variables by `r backgSwitch`:
+Mask environmental variables by `r backgSwitch`, and take a random sample of background values from the study extent. As the sample is random, your results may be different than those in the session. If there seems to be too much variability in these background samples, try increasing the number from 10,000 to something higher (e.g. 50,000 or 100,000). The better your background sample, the less variability you'll have between runs.
 ```
 
 ```{r predsMask, echo = backg, eval = backg, include = backg}
 predsBackgCrop <- raster::crop(preds, backgExt)
 predsBackgMsk <- raster::mask(predsBackgCrop, backgExt)
+occs.locs <- occs[,2:3]
+bg.coords <- dismo::randomPoints(predsBackgMsk, 10000)  # generate 10,000 background points
+bg.coords <- as.data.frame(bg.coords)  # get the matrix output into a data.frame
 ```
-
 
 ```{asis, echo = part, include = part}
 ### Partition Occurrence Data
 Here, occurrence data is partitioned for cross-validation.
-```
-
-```{r backgPts, echo = part, eval = part, include = part}
-occs.locs <- occs[,2:3]
-bg.coords <- dismo::randomPoints(predsBackgMsk, 10000)  # generate 10,000 background points
-bg.coords <- as.data.frame(bg.coords)  # get the matrix output into a data.frame
 ```
 
 ```{r switch2, include = FALSE, eval = part}

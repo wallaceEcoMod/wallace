@@ -1,7 +1,9 @@
 getDbOccs <- function(spName, occNum) {
 
+  # trim whitespace (blank spaces) from species name
+  spName <- trimws(input$spName)
   # figure out how many separate names (components of scientific name) were entered
-  nameSplit <- length(unlist(strsplit(input$spName, " ")))
+  nameSplit <- length(unlist(strsplit(spName, " ")))
   # if two names not entered, throw error and return
   if (nameSplit != 2) {
     writeLog('<font color="red"><b>! ERROR</b></font> : Please input both genus and species names.')
@@ -10,23 +12,23 @@ getDbOccs <- function(spName, occNum) {
 
   writeLog(paste("... Searching", input$occDb, "..."))
   # query database
-  query <- spocc::occ(input$spName, input$occDb, limit=input$occNum)
+  query <- spocc::occ(spName, input$occDb, limit=input$occNum)
 
   # if species not found, print message to log box and return
   if (query[[input$occDb]]$meta$found == 0) {
-    writeLog(paste('! No records found for ', input$spName, ". Please check the spelling."))
+    writeLog(paste('! No records found for ', spName, ". Please check the spelling."))
     values$df <- NULL  # reset df
     shinyjs::disable("dlDbOccs")
     return()
   }
 
   # record spName and dbMod in values
-  values$spName <- input$spName
+  values$spName <- spName
   values$dbMod <- input$occDb
   # create tag to signal db search
   values$mod_db <- TRUE
   # extract occurrence tibble
-  dbOccs.orig <- query[[input$occDb]]$data[[formatSpName(input$spName)]]
+  dbOccs.orig <- query[[input$occDb]]$data[[formatSpName(spName)]]
   # make sure latitude and longitude are numeric (sometimes they aren't)
   dbOccs.orig$latitude <- as.numeric(dbOccs.orig$latitude)
   dbOccs.orig$longitude <- as.numeric(dbOccs.orig$longitude)
@@ -42,7 +44,7 @@ getDbOccs <- function(spName, occNum) {
   # subset to just records with latitude and longitude
   dbOccs <- dbOccs.orig %>% dplyr::filter(!is.na(latitude) & !is.na(longitude))
   if (nrow(dbOccs) == 0) {
-    writeLog(paste('<font color="orange"><b>! WARNING</b></font> : No records with coordinates found in', input$occDb, "for", input$spName, "."))
+    writeLog(paste('<font color="orange"><b>! WARNING</b></font> : No records with coordinates found in', input$occDb, "for", spName, "."))
     return()
   }
 
@@ -84,7 +86,7 @@ getDbOccs <- function(spName, occNum) {
 
   noCoordsRemoved <- dbOccs.orig.nrows - dbOccsWithDups.nrows
   dupsRemoved <- dbOccsWithDups.nrows - dbOccsNoDups.nrows
-  writeLog(paste('> Total', input$occDb, 'records for', input$spName, 'returned [', dbOccs.orig.nrows,
+  writeLog(paste('> Total', input$occDb, 'records for', spName, 'returned [', dbOccs.orig.nrows,
                  '] out of [', totRows, '] total (limit ', input$occNum, ').
                   Records without coordinates removed [', noCoordsRemoved, '].
                   Duplicated records removed [', dupsRemoved, ']. Remaining records [', dbOccsNoDups.nrows, '].'))
@@ -119,6 +121,8 @@ getUserOccs <- function(userCSV) {
 
   # subset to only occs, not backg, and just fields that match df
   spName <- as.character(csv$name[1])  # get species name
+  # trim whitespace (blank spaces) from species name
+  spName <- trimws(spName)
   # record species name
   values$spName <- spName
   userOccs <- csv[csv[,1] == spName,]  # limit to records with this name

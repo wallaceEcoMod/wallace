@@ -2,11 +2,23 @@
 % Please edit documentation in R/run_wallace.R
 \name{run_wallace}
 \alias{run_wallace}
-\title{Run Wallace Application}
+\title{Run \emph{Wallace} Application}
 \usage{
 run_wallace()
 }
 \description{
-Run Wallace Application
+This function runs the \emph{Wallace} application in the user's default web browser.
+}
+\note{
+Please see the official website (\url{https://wallaceecomod.github.io/}) for more details. If you have questions about the application, please participate in the \href{https://groups.google.com/forum/#!forum/wallaceecomod}{Google Group}, or email the team directly: \url{wallaceEcoMod@gmail.com}.
+}
+\examples{
+\dontrun{
+run_wallace()
+}
+
+}
+\author{
+Jamie M. Kass
 }
 
