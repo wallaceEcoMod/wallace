@@ -3,9 +3,11 @@ title: "about"
 output: html_document
 ---
 
+#### *Wallace* was created by an international team of ecologists:
+
 <img src="img/jamie.jpg" alt="jamie" style="width: 100px;"/>
 
-<a href="https://www.researchgate.net/profile/Jamie_Kass" target="_blank">Jamie M. Kass</a> (lead developer) is a coauthor of ENMeval and a PhD candidate at CUNY Graduate Center and City College of New York. He was supported by a CUNY Science Scholarship, a CUNY Graduate Center Provost Digital Innovation Grant, and the National Science Foundation Division of Biological Infrastructure (DBI-1650241).
+<a href="https://www.researchgate.net/profile/Jamie_Kass" target="_blank">Jamie M. Kass</a> (lead developer) is a coauthor of ENMeval and currently a PhD candidate at CUNY Graduate Center and City College of New York. He was supported by a CUNY Science Scholarship, a CUNY Graduate Center Provost Digital Innovation Grant, and the National Science Foundation Division of Biological Infrastructure (DBI-1650241).
 
 <img src="img/bruno.png" alt="bruno" style="width: 100px;"/>
 
@@ -13,7 +15,7 @@ output: html_document
 
 <img src="img/matt.png" alt="matt" style="width: 100px;"/>
 
-<a href="https://www.researchgate.net/profile/Matthew_Aiello-Lammens" target="_blank">Matthew Aiello-Lammens</a> (co-developer) is the lead author of spThin and currently Assistant Professor of Biology at Pace University. He was supported by the National Science Foundation Dimensions of Biodiversity program (DEB-1046328).
+<a href="https://www.researchgate.net/profile/Matthew_Aiello-Lammens" target="_blank">Matthew Aiello-Lammens</a> (co-developer) is the lead author of spThin and Assistant Professor of Biology at Pace University. He was supported by the National Science Foundation Dimensions of Biodiversity program (DEB-1046328).
 
 <img src="img/bob.png" alt="bob" style="width: 100px;"/>
 
@@ -21,4 +23,4 @@ output: html_document
 
 <img src="img/rob.png" alt="rob" style="width: 100px;"/>
 
-<a href="https://www.researchgate.net/profile/Robert_Anderson7" target="_blank">Robert P. Anderson</a> (co-developer) is a coauthor of spThin and ENMeval, and a Professor of Biology at City College of New York, CUNY. He was supported by the National Science Foundation Divisions of Biological Infrastructure and Environmental Biology (DBI-1650241 and DEB-1119915).
+<a href="https://www.researchgate.net/profile/Robert_Anderson7" target="_blank">Robert P. Anderson</a> (co-developer) is a coauthor of spThin and ENMeval, and Professor of Biology at City College of New York, CUNY. He was supported by the National Science Foundation Divisions of Biological Infrastructure and Environmental Biology (DBI-1650241 and DEB-1119915).

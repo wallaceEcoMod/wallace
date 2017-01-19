@@ -34,6 +34,7 @@ comp8_pjArea <- function(modelSel, predForm, enmSel) {
 
   writeLog('> PROJECTING to new area.')
   curMod <- values$evalMods[[as.numeric(modelSel)]]
+  values$rasName <- names(values$evalPreds[[as.numeric(modelSel)]])
   values$pjArea <- dismo::predict(curMod, values$projMsk)
   rasVals <- raster::values(values$pjArea)
 
@@ -49,9 +50,11 @@ comp8_pjArea <- function(modelSel, predForm, enmSel) {
   rasPal <- colorNumeric(rasCols, rasVals, na.color='transparent')
   # values$leg2 <- list(rasVals=rasVals, pal=pal)
 
-  proxy %>% addLegend("topright", pal = legPal, title = "Predicted Suitability",
-                      values = rasVals, layerId = 'r2Legend', labFormat = reverseLabels(reverse_order=TRUE))
-  proxy %>% addRasterImage(values$pjArea, colors = rasPal, group = 'r2', layerId = 'r2')
+  proxy %>%
+    clearControls() %>%
+    addLegend("topright", pal = legPal, title = "Predicted Suitability",
+              values = rasVals, layerId = 'r2Legend', labFormat = reverseLabels(reverse_order=TRUE)) %>%
+    addRasterImage(values$pjArea, colors = rasPal, group = 'r2', layerId = 'r2')
 }
 
 comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, selRCP, selGCM, selTime) {
@@ -91,8 +94,8 @@ comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, selRCP, selGCM, selT
 
   withProgress(message = ("Projecting to new time..."), {
     curMod <- values$evalMods[[as.numeric(modelSel)]]
+    values$rasName <- names(values$evalPreds[[as.numeric(modelSel)]])
     values$pjTime <- dismo::predict(curMod, values$projMsk)
-    print(values$pjTime)
     rasVals <- raster::values(values$pjTime)
     values$projTimeMessage <- paste0(paste0('20', selTime), " for GCM ", GCMlookup[selGCM], " under RCP ", as.numeric(selRCP)/10.0, ".")
     writeLog(paste("> Projected to", values$projTimeMessage))
@@ -104,12 +107,12 @@ comp8_pjTime <- function(modelSel, predForm, enmSel, bcRes, selRCP, selGCM, selT
   rasVals <- rasVals[!is.na(rasVals)]
   rng <- c(min(rasVals), max(rasVals))
 
-  # proxy %>% removeShape('poly2Sel')
   proxy %>% clearImages()
   legPal <- colorNumeric(rev(rasCols), rng, na.color='transparent')
   rasPal <- colorNumeric(rasCols, rng, na.color='transparent')
-  # values$leg2 <- list(rasVals=rasVals, pal=pal)
+
   proxy %>%
+    clearControls() %>%
     addLegend("topright", pal = legPal, title = "Predicted Suitability",
                       values = rasVals, layerId = 'r2Legend',
               labFormat = reverseLabels(reverse_order=TRUE)) %>%
@@ -166,7 +169,9 @@ comp8_mess <- function() {
 
   pal <- colorNumeric(rev(RColorBrewer::brewer.pal(n=11, name='Spectral')), rasVals, na.color='transparent')
 
-  proxy %>% addLegend("topright", pal=pal, title = "MESS Values",
-                      values = rasVals, layerId = 'mess', labFormat = myLabelFormat(reverse_order = T))
-  proxy %>% addRasterImage(values$mess, layerId = 'mess')
+  proxy %>%
+    clearControls() %>%
+    addLegend("topright", pal=pal, title = "MESS Values",
+              values = rasVals, layerId = 'mess', labFormat = myLabelFormat(reverse_order = T)) %>%
+    addRasterImage(values$mess, layerId = 'mess')
 }

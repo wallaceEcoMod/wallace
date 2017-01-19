@@ -3,7 +3,9 @@ title: "intro_tab"
 output: html_document
 ---
 
-Wallace includes the following components and modules, as well as the opportunity to download a commented and executable history of the analyses run in a given session:  
+#### WORKFLOW
+
+*Wallace* (v0.6.2) currently includes the following components and modules:  
 
 **1**: *Obtain Occurrence Data*  
 -Query Database  
@@ -29,13 +31,13 @@ Wallace includes the following components and modules, as well as the opportunit
 
 **7:** *Visualize Model Results*  
 -BIOCLIM Envelope Plot  
--Maxent Evaluation Plots
--Plot Response Curves 
+-Maxent Evaluation Plots  
+-Plot Response Curves  
 -Map Prediction  
 
 **8:** *Project Model*  
 -Project to New Area  
--Project to New Time
--Calculate Environmental Similarity
+-Project to New Time  
+-Calculate Environmental Similarity  
 
 **Download Session Code**  

@@ -689,7 +689,12 @@ shinyServer(function(input, output, session) {
       updateTabsetPanel(session, 'main', selected = 'Map')
       # plot pts
       if (!is.null(values$df)) proxy %>% map_plotLocs(values$df, clearImages=FALSE)
-      proxy %>% clearControls() %>% clearShapes()
+      if (!is.null(values$pjName)) {
+        # proxy %>% clearControls() %>% clearShapes()
+        proxy %>% clearShapes()
+      } else {
+        proxy %>% clearShapes()
+      }
     }
   })
 
@@ -729,9 +734,10 @@ shinyServer(function(input, output, session) {
     values$pjArea <- NULL
     values$mess <- NULL
     values$polyPts2 <- NULL
-    proxy %>% clearShapes()
-    proxy %>% removeImage('r2')
-    proxy %>% removeControl('r2Legend')
+    proxy %>%
+      clearControls() %>%
+      clearShapes() %>%
+      removeImage('r2')
 
     writeLog('> RESET projection extent.')
   })
@@ -746,13 +752,14 @@ shinyServer(function(input, output, session) {
 
   # Module Project to New Area
   observeEvent(input$goPjArea, {
+    values$projType <- 'area'
     comp8_pjArea(input$modelSelProj, input$predForm, values$enmSel)
     shinyjs::enable("downloadPj")
     values$dlRas <- values$pjArea
     if (input$enmSel == "Maxent") {
       values$pjName <- paste0(values$rasName, "_", input$predForm, "_pj")
     } else if (input$enmSel == "BIOCLIM") {
-      values$pjName <- paste0(values$rasName, "_", input$predForm, "_pj")
+      values$pjName <- paste0(values$rasName, "_pj")
     }
   })
 
@@ -775,6 +782,7 @@ shinyServer(function(input, output, session) {
 
   # Module Project to New Time
   observeEvent(input$goPjTime, {
+    values$projType <- 'time'
     comp8_pjTime(input$modelSelProj, input$predForm, values$enmSel, input$bcRes, input$selRCP,
                  input$selGCM, input$selTime)
     shinyjs::enable("downloadPj")
@@ -793,11 +801,10 @@ shinyServer(function(input, output, session) {
     comp8_mess()
     shinyjs::enable("downloadPj")
     values$dlRas <- values$mess
-    if (input$enmSel == "Maxent") {
-      values$pjName <- paste0(values$rasName, "_", input$predForm, "_mess")
-    } else if (input$enmSel == "BIOCLIM") {
       values$pjName <- paste0(values$rasName, "_mess")
-    }
+      if (values$projType == 'time') {
+        values$pjName <- paste0(values$pjName, "_", input$selTime, "_", input$selGCM, "_", input$selRCP)
+      }
   })
 
   # Download current projected extent

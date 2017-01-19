@@ -20,7 +20,7 @@ shinyUI(tagList(
                                    wellPanel(
                                      includeCSS(system.file("css", "styles.css", package = "wallace")),
                                      includeScript(system.file("js", "scroll.js", package = "wallace")),
-                                     conditionalPanel("input.tabs == 0", h4("Introduction"),
+                                     conditionalPanel("input.tabs == 0",
                                                       includeMarkdown(system.file("Rmd", "text_intro_tab.Rmd", package = "wallace"))
                                      ),
                                      # tab 1 ####
@@ -189,7 +189,7 @@ shinyUI(tagList(
                                                       ),
                                                       conditionalPanel("input.backgSel == 'user'",
                                                                        #  shinyFilesButton('userBackg', label='Upload Shapefile', title='Please select a file', multiple=TRUE)),
-                                                                       fileInput("userBackg", label = "Upload Polygon (.csv)",
+                                                                       fileInput("userBackg", label = 'Upload polygon with field order: longitude, latitude (.csv)',
                                                                                  accept=c(".csv"), multiple=TRUE)),
                                                       conditionalPanel("input.envProcSel == 'backg' && (input.backgSel == 'bb' || input.backgSel == 'mcp')",
                                                                        numericInput("backgBuf", label = "Study region buffer distance (degree)", value = 0, min = 0, step = 0.5),
@@ -197,7 +197,8 @@ shinyUI(tagList(
                                                                                           'Buffer area in degrees (1 degree = ~111 km). Exact length varies based on latitudinal position.',
                                                                                           placement = 'right', options = list(container = "body"))),
                                                       conditionalPanel("input.envProcSel == 'backg'",
-                                                                       actionButton("goBackgMask", "Clip Env Data by Polygon"), br(), br(),
+                                                                       strong('Mask environmental predictor rasters by polygon'), br(), br(),
+                                                                       actionButton("goBackgMask", "Mask"), br(), br(),
                                                                        selectInput('mskPredsFileType', label = "Select File Type",
                                                                                    choices = list("GRD" = 'raster', "ASCII" = 'ascii', "GeoTIFF" = 'GTiff')),
                                                                        strong("Download masked environmental predictors"), br(), br(),
@@ -535,7 +536,6 @@ shinyUI(tagList(
                                            tabsetPanel(id = 'introTabs',
                                                        tabPanel('Intro', includeMarkdown(system.file("Rmd", "text_intro.Rmd", package = "wallace"))),
                                                        tabPanel('About',
-                                                                h4("Wallace was created by an international team of ecologists:"),
                                                                 fluidRow(
                                                                   column(8,
                                                                          includeMarkdown(system.file("Rmd", "text_about.Rmd", package = "wallace"))
