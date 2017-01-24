@@ -9,19 +9,19 @@
 #' @title \emph{Wallace}: A modular platform for reproducible ecological modeling
 #' @author \strong{Jamie M. Kass}\cr
 #' (email: \email{jkass@@gradcenter.cuny.edu};
-#' Website: \url{http://ndimhypervol.github.io/})
+#' Website: \url{https://ndimhypervol.github.io/})
 #' @author \strong{Bruno Vilela}\cr
 #' (email: \email{bvilela@@wustl.edu};
-#' Website: \url{http://bvilela.weebly.com/})
+#' Website: \url{https://bvilela.weebly.com/})
 #' @author \strong{Matthew E. Aeillo-Lammens}\cr
 #' (email: \email{matt.lammens@@gmail.com};
 #' Website: \url{https://mlammens.github.io/})
 #' @author \strong{Robert Muscarella}\cr
 #' (email: \email{bob.muscarella@@gmail.com};
-#' Website: \url{http://bobmuscarella.weebly.com/})
+#' Website: \url{https://bobmuscarella.weebly.com/})
 #' @author \strong{Robert P. Anderson}\cr
 #' (email: \email{randerson@@ccny.cuny.edu};
-#' Website: \url{http://www.andersonlab.ccny.cuny.edu/})
+#' Website: \url{https://www.andersonlab.ccny.cuny.edu/})
 #'
 #' @keywords package
 #'
