@@ -250,6 +250,7 @@ shinyServer(function(input, output, session) {
     values$polyPts1 <- NULL
     values$poly1 <- NULL
     values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
+    proxy %>% clearShapes()
     if (!is.null(values$origOccs)) {
       # if locs were removed, put them back in values$origOccs and turn off values$removed
       if (!is.null(values$removed)) {
