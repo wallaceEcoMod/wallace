@@ -16,7 +16,10 @@ remSelLocs <- function(remLocID) {
 
     writeLog(paste0("> Removed locality with ID = ", remLocID, ". Localities data has n = ", nrow(values$df), " records."))
 
-    proxy %>% zoom2Occs(values$origOccs) %>% map_plotLocs(values$origOccs)
+    proxy %>% 
+      clearMarkers() %>% 
+      map_plotLocs(values$origOccs) %>%
+      zoom2Occs(values$origOccs)
   })
 }
 
@@ -67,7 +70,7 @@ polySelLocs <- function() {
   values$df <- values$ptsSel
 
   # # plot all
-  # proxy %>% map_plotLocs(values$df, fillColor='yellow', fillOpacity=1, clearMarkers=FALSE)
+  # proxy %>% map_plotLocs(values$df, fillColor='yellow', fillOpacity=1)
 
   isolate(writeLog(paste('> Selected', nrow(values$df), 'localities.')))
 }
@@ -77,10 +80,7 @@ thinOccs <- function(thinDist) {
     writeLog('<font color="orange"><b>! WARNING</b></font> : Obtain species occurrence localities first in Step 1.')
     return()
   }
-  lati <- values$df[,3]
-  longi <- values$df[,2]
-  z <- smartZoom(longi, lati)
-  proxy %>% fitBounds(z[1], z[2], z[3], z[4])
+  proxy %>% zoom2Occs(values$df)
 
   if (input$thinDist <= 0) {
     writeLog('<font color="orange"><b>! WARNING</b></font> : Assign positive distance to thinning parameter.')

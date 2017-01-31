@@ -95,7 +95,9 @@ shinyServer(function(input, output, session) {
       # switch to Map tab
       # updateTabsetPanel(session, 'main', selected = 'Map')
       # map shape behavior
-      proxy %>% map_plotLocs(values$df) %>%
+      proxy %>% 
+        clearMarkers() %>%
+        map_plotLocs(values$df) %>%
         hideGroup(c('r1', 'selPoly', 'backgPoly', 'projPoly', 'r2Area', 'r2Time', 'r2MESS')) %>%
         removeControl('selLeg') %>% removeControl('thinLeg') %>% removeControl('r1LegCon') %>%
         removeControl('r1LegThr') %>% removeControl('r2LegArea') %>% removeControl('r2LegTime') %>%
@@ -158,8 +160,9 @@ shinyServer(function(input, output, session) {
         # if localities are already selected, plot the original occs in red and the selected ones with yellow fill
         if (!is.null(values$ptsSel)) {
           proxy %>%
+            clearMarkers() %>%
             map_plotLocs(values$origOccs) %>%
-            map_plotLocs(values$ptsSel, fillColor='yellow', fillOpacity=1, clearMarkers=FALSE) %>%
+            map_plotLocs(values$ptsSel, fillColor='yellow', fillOpacity=1) %>%
             zoom2Occs(values$origOccs)
         }
       }
@@ -171,7 +174,10 @@ shinyServer(function(input, output, session) {
           removeControl('selLeg') %>%
           hideGroup('selPoly')
         if (!is.null(values$ptsSel)) {
-          proxy %>% map_plotLocs(values$ptsSel) %>% zoom2Occs(values$ptsSel)
+          proxy %>% 
+            clearMarkers() %>%
+            map_plotLocs(values$ptsSel) %>% 
+            zoom2Occs(values$ptsSel)
           if (!is.null(values$prethinned)) {
             proxy %>% addCircleMarkers(data = values$prethinned, lat = ~latitude, lng = ~longitude,
                                        radius = 5, color = 'red', fillColor = 'blue',
@@ -264,7 +270,10 @@ shinyServer(function(input, output, session) {
       x <- paste('> RESET localities dataset back to', nrow(values$origOccs), 'records.')
       isolate(writeLog(x))
     }
-    proxy %>% zoom2Occs(values$origOccs) %>% map_plotLocs(values$origOccs)
+    proxy %>% 
+      clearMarkers() %>%
+      map_plotLocs(values$origOccs) %>%
+      zoom2Occs(values$origOccs)
   })
 
   # Module Spatial Thin
@@ -293,9 +302,13 @@ shinyServer(function(input, output, session) {
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
       # plot pts
-      if (!is.null(values$df)) proxy %>% map_plotLocs(values$df)
+      if (!is.null(values$df)) proxy %>% 
+        clearMarkers() %>%
+        map_plotLocs(values$df)
       # map shape behavior
-      proxy %>% map_plotLocs(values$df) %>%
+      proxy %>% 
+        clearMarkers() %>%
+        map_plotLocs(values$df) %>%
         hideGroup(c('r1', 'r1LegThr', 'selPoly', 'backgPoly', 'projPoly', 'r2Area', 'r2Time', 'r2MESS')) %>%
         removeControl('selLeg') %>% removeControl('thinLeg') %>% removeControl('r1LegCon') %>%
         removeControl('r1LegThr') %>% removeControl('r2LegArea') %>% removeControl('r2LegTime') %>%
@@ -356,9 +369,13 @@ shinyServer(function(input, output, session) {
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
       # plot pts
-      if (!is.null(values$df)) proxy %>% map_plotLocs(values$df)
+      if (!is.null(values$df)) proxy %>% 
+        clearMarkers() %>%
+        map_plotLocs(values$df)
       # map shape behavior
-      proxy %>% map_plotLocs(values$df) %>%
+      proxy %>% 
+        clearMarkers() %>%
+        map_plotLocs(values$df) %>%
         showGroup('backgPoly') %>%
         hideGroup(c('r1', 'selPoly', 'projPoly', 'r2Area', 'r2Time', 'r2MESS')) %>%
         removeControl('selLeg') %>% removeControl('thinLeg') %>% removeControl('r1LegCon') %>%
@@ -419,7 +436,9 @@ shinyServer(function(input, output, session) {
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
       # plot pts
-      if (!is.null(values$df)) proxy %>% map_plotLocs(values$df)
+      if (!is.null(values$df)) proxy %>% 
+        clearMarkers() %>%
+        map_plotLocs(values$df)
       # map shape behavior
       proxy %>%
         hideGroup(c('r1', 'selPoly', 'backgPoly', 'projPoly', 'r2Area', 'r2Time', 'r2MESS')) %>%
@@ -427,7 +446,9 @@ shinyServer(function(input, output, session) {
         removeControl('r1LegThr') %>% removeControl('r2LegArea') %>% removeControl('r2LegTime') %>%
         removeControl('r2LegMESS')
       if (!is.null(values$partFill)) {
-        proxy %>% map_plotLocs(values$df, fillColor = values$partFill, fillOpacity = 1)
+        proxy %>% 
+          clearMarkers() %>%
+          map_plotLocs(values$df, fillColor = values$partFill, fillOpacity = 1)
       }
     }
   })
@@ -486,9 +507,13 @@ shinyServer(function(input, output, session) {
       if (input$enmSel == 'BIOCLIM') gtext$cur_mod <- "gtext_comp6_bioclim.Rmd"
       if (input$enmSel == 'Maxent') gtext$cur_mod <- "gtext_comp6_maxent.Rmd"
       # plots pts
-      if (!is.null(values$df)) proxy %>% map_plotLocs(values$df)
+      if (!is.null(values$df)) proxy %>% 
+          clearMarkers() %>%
+          map_plotLocs(values$df)
       # map shape behavior
-      proxy %>% map_plotLocs(values$df) %>%
+      proxy %>% 
+        clearMarkers() %>%
+        map_plotLocs(values$df) %>%
         hideGroup(c('r1', 'selPoly', 'backgPoly', 'projPoly', 'r2Area', 'r2Time', 'r2MESS')) %>%
         removeControl('selLeg') %>% removeControl('thinLeg') %>% removeControl('r1LegCon') %>%
         removeControl('r1LegThr') %>% removeControl('r2LegArea') %>% removeControl('r2LegTime') %>%
@@ -559,9 +584,13 @@ shinyServer(function(input, output, session) {
       if (input$visSel == 'bcEnvel') gtext$cur_mod <- "gtext_comp7_bcPlots.Rmd"
       if (input$visSel == 'mxEval') gtext$cur_mod <- "gtext_comp7_mxEvalPlots.Rmd"
       # plot pts
-      if (!is.null(values$df)) proxy %>% map_plotLocs(values$df)
+      if (!is.null(values$df)) proxy %>% 
+          clearMarkers() %>%
+          map_plotLocs(values$df)
       # map shape behavior
-      proxy %>% map_plotLocs(values$df) %>%
+      proxy %>% 
+        clearMarkers() %>%
+        map_plotLocs(values$df) %>%
         showGroup('r1') %>%
         hideGroup(c('selPoly', 'backgPoly', 'projPoly', 'r2Area', 'r2Time', 'r2MESS')) %>%
         removeControl('selLeg') %>% removeControl('thinLeg') %>% removeControl('r2LegArea') %>%
@@ -745,7 +774,9 @@ shinyServer(function(input, output, session) {
           hideGroup(c('r2Time', 'r2MESS')) %>%
           removeControl('r2LegTime') %>% removeControl('r2LegMESS')
         if (!is.null(values$pjArea)) {
-          proxy %>% map_plotLocs(values$df) %>%
+          proxy %>% 
+            clearMarkers() %>%
+            map_plotLocs(values$df) %>%
             addLegend("topright", pal = values$legPalArea, title = "Predicted Suitability",
                       values = values$rasValsArea, labFormat = reverseLabels(reverse_order=TRUE),
                       layerId = 'r2LegArea') %>%
@@ -785,7 +816,9 @@ shinyServer(function(input, output, session) {
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
       # plot pts
-      if (!is.null(values$df)) proxy %>% map_plotLocs(values$df)
+      if (!is.null(values$df)) proxy %>% 
+        clearMarkers() %>%
+        map_plotLocs(values$df)
 
       # map shape behavior
       proxy %>%
@@ -939,6 +972,8 @@ shinyServer(function(input, output, session) {
   ### MARKDOWN FUNCTIONALITY ####
   #########################
 
+  observe({print(file.path(getwd(),input$userCSV$name))})
+  
   # handler for R Markdown download
   output$downloadMD <- downloadHandler(
     filename = function() {
@@ -952,7 +987,6 @@ shinyServer(function(input, output, session) {
       owd <- setwd(tempdir())
       on.exit(setwd(owd))
       file.copy(src, 'userReport.Rmd')
-      csvDataPathFix <- gsub('\\\\', '/', input$userCSV$datapath)
       if (!is.null(values$polyPts2)) {
         projAreaX <- printVecAsis(round(values$polyPts2[,1], digits=4))
         projAreaY <- printVecAsis(round(values$polyPts2[,2], digits=4))
@@ -960,8 +994,8 @@ shinyServer(function(input, output, session) {
         projAreaX <- projAreaY <- NA
       }
       modSel <- as.numeric(input$modelSelProj)
-      exp <- knitr::knit_expand(system.file("Rmd", 'userReport.Rmd', package = "wallace"), curWD=curWD, spName=input$spName, dbName=input$occDb, occNum=input$occNum, thinDist=input$thinDist,
-                         occsCSV=csvDataPathFix, occsRemoved=printVecAsis(values$removedAll), occsSel=printVecAsis(values$ptSelID),
+      exp <- knitr::knit_expand(system.file("Rmd", 'userReport.Rmd', package = "wallace"), curWD=curWD, spName=values$spName, dbName=input$occDb, occNum=input$occNum, thinDist=input$thinDist,
+                         occsCSV=input$userCSV$name, occsRemoved=printVecAsis(values$removedAll), occsSel=printVecAsis(values$ptSelID),
                          predsRes=input$bcRes, bcLat=values$bcLat, bcLon=values$bcLon, backgSel=input$backgSel, backgBuf=input$backgBuf, userBGname=input$userBackg$name,
                          userBGpath=input$userBackg$datapath, partSel=values$partSel2, aggFact=input$aggFact, kfoldsSel=input$kfolds,
                          enmSel=input$enmSel, rmsSel1=input$rms[1], rmsSel2=input$rms[2], rmsBy=input$rmsBy, fcsSel=printVecAsis(input$fcs),

@@ -39,9 +39,8 @@ mapCenter <- function(bounds) {
 }
 
 # mapping controls
-map_plotLocs <- function(map, locs, clearMarkers=TRUE, fillColor='red', fillOpacity=0.2) {
+map_plotLocs <- function(map, locs, fillColor='red', fillOpacity=0.2) {
   if (is.null(locs)) return(map)
-  if (clearMarkers) map %>% clearMarkers()
   map %>% addCircleMarkers(data = locs, lat = ~latitude, lng = ~longitude,
                            radius = 5, color = 'red', fill = TRUE,
                            fillColor = fillColor, fillOpacity = fillOpacity,

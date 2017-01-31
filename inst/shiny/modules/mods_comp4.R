@@ -70,9 +70,9 @@ comp4_studyReg <- function(buf, backgSel) {
 
   values$bb <- bb
   proxy %>%
-    fitBounds(max(bb[,1]), max(bb[,2]), min(bb[,1]), min(bb[,2])) %>%
     addPolygons(lng=bb[,1], lat=bb[,2], layerId="backext",
-                        weight=10, col="red", group='backgPoly')
+                        weight=10, color="red", group='backgPoly') %>%
+    fitBounds(max(bb[,1]), max(bb[,2]), min(bb[,1]), min(bb[,2]))
 }
 
 comp4_mskStudyReg <- function() {

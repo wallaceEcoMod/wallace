@@ -82,7 +82,7 @@ source(system.file('shiny/funcs', 'functions.R', package = 'wallace'))
 
 ## Record of analysis for *`r "{{spName}}"`*.
 
-```{asis, echo = occ.csv, include = occ.csv}
+```{asis, echo = occ.csv, eval = occ.csv, include = occ.csv}
 ### Obtain Occurrence Data
 ```
 
@@ -101,8 +101,8 @@ occs$longitude <- as.numeric(occs$longitude)
 occs$origID <- row.names(occs)
 ```
 
-```{asis, echo = csv}
-User CSV path with occurrence data (change to the path of the file in your computer):
+```{asis, echo = csv, eval = csv, include = csv}
+User CSV path with occurrence data. If the CSV file is not in the current workspace, change to the correct file path (e.g. "/Users/darwin/Documents/occs.csv").
 ```
 
 ```{r occInput, echo = csv}
@@ -110,7 +110,7 @@ inFile <- read.csv("{{occsCSV}}", header = TRUE)  # load occurrence data
 occs <- remDups(inFile)  # remove duplicate records
 ```
 
-```{asis, echo = thin | remLoc | drawPoly, include = drawPoly}
+```{asis, echo = thin | remLoc | drawPoly, eval = drawPoly, include = drawPoly}
 ### Process Occurrence Data
 ```
 
@@ -131,7 +131,7 @@ You chose `r length({{occsSel}})` total occurrence localities via polygon select
 occs <- occs[{{occsSel}}, ]  # subset occs by selected rows
 ```
 
-```{asis, echo = thin, include = thin}
+```{asis, echo = thin, eval = thin, include = thin}
 Spatial thinning selected. Thin distance selected is `r {{thinDist}}` m.
 ```
 
@@ -139,7 +139,7 @@ Spatial thinning selected. Thin distance selected is `r {{thinDist}}` m.
 output <- spThin::thin(occs, 'latitude', 'longitude', 'name', thin.par = {{thinDist}}, reps = 100, locs.thinned.list.return = TRUE, write.files = FALSE, verbose = FALSE)
 ```
 
-```{asis, echo = thin, include = thin}
+```{asis, echo = thin, eval = thin, include = thin}
 Since spThin did 100 iterations, there are 100 different variations of how it thinned your occurrence localities. As there is a stochastic element in the algorithm, some iterations may include more localities than the others, and we need to make sure we maximize the number of localities we proceed with.
 ```
 
@@ -194,7 +194,7 @@ User study extent name is `r "{{userBGname}}"`. User study extent path is `r "{{
 shp <- read.csv("{{userBGpath}}", header = TRUE)  # read csv with coordinates for polygon
 ```
 
-```{asis, echo = backg, include = backg}
+```{asis, echo = backg, eval = backg, include = backg}
 Generate the user-defined study extent plus the buffer:
 ```
 
@@ -205,7 +205,7 @@ backgExt <- shp
 bb <- shp@polygons[[1]]@Polygons[[1]]@coords
 ```
 
-```{asis, echo = backg, include = backg}
+```{asis, echo = backg, eval = backg, include = backg}
 Mask environmental variables by `r backgSwitch`, and take a random sample of background values from the study extent. As the sample is random, your results may be different than those in the session. If there seems to be too much variability in these background samples, try increasing the number from 10,000 to something higher (e.g. 50,000 or 100,000). The better your background sample, the less variability you'll have between runs.
 ```
 
@@ -217,7 +217,7 @@ bg.coords <- dismo::randomPoints(predsBackgMsk, 10000)  # generate 10,000 backgr
 bg.coords <- as.data.frame(bg.coords)  # get the matrix output into a data.frame
 ```
 
-```{asis, echo = part, include = part}
+```{asis, echo = part, eval = part, include = part}
 ### Partition Occurrence Data
 Here, occurrence data is partitioned for cross-validation.
 ```
@@ -301,7 +301,7 @@ if (length(occVals) < 10) {  # if less than 10 occ values, find 90% of total and
 p10s <- apply(occVals, MARGIN = 2, function(x) rev(sort(x))[n90])  # apply 10% training presence threshold over all models
 ```
 
-```{asis, echo = isViz, include = isViz}
+```{asis, echo = isViz, eval = isViz, include = isViz}
 ### Visualize Niche Model
 You chose to view visualizations of your modeling analysis results.
 ```
@@ -318,7 +318,7 @@ plot(evalMods[[1]], a = {{bcPlot1}}, b = {{bcPlot2}}, p = {{bcPlotP}})
 ENMeval::eval.plot(evalTbl, value = "{{mxEvalPlotSel}}")
 ```
 
-```{asis, echo = projAny}
+```{asis, echo = projAny, eval = projAny, include = projAny}
 ### Project Niche Model
 You selected to project your model. First define a polygon with the coordinates you chose, then crop and mask your predictor rasters. Finally, predict suitability values for these new raster cells based on the model you selected.
 ```
@@ -331,7 +331,7 @@ projPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(projCoords)),
 modSel <- evalMods[[{{modSel}}]]
 ```
 
-```{asis, echo = projArea}
+```{asis, echo = projArea, eval = projArea, include = projArea}
 ### Project Niche Model to New Extent
 Now use crop and mask the predictor variables by projPoly, and use the predict() function to predict the values for the new extent based on the model selected.
 ```
@@ -344,7 +344,7 @@ newExtProj <- dismo::predict(modSel, predsMsk)
 plot(newExtProj)
 ```
 
-```{asis, echo = projTime}
+```{asis, echo = projTime, eval = projTime, include = projTime}
 ### Project Niche Model to New Time
 Now download the future climate variables chosen with *Wallace*, crop and mask them by projPoly, and use the predict() function to predict the values for the new time based on the model selected.
 ```
@@ -361,7 +361,7 @@ futureProj <- dismo::predict(modSel, predsMsk)
 plot(futureProj)
 ```
 
-```{asis, echo = mess}
+```{asis, echo = mess, eval = mess, include = mess}
 ### Calculate Environmental Similarity
 To visualize the environmental difference between the occurrence localities and your selected projection extent, calculate a multidimensional environmental similarity surface (MESS). High negative values mean great difference, whereas high positive values mean great similarity. Interpreting the projected suitability for areas with high negative values should be done with extreme caution, as they are outside the environmental range of the occurrence localities.
 ```

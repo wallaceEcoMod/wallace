@@ -35,7 +35,9 @@ comp5_setPartitions <- function(partSelect2, kfolds, aggFact, proxy) {
   newColors <- gsub("FF$", "", rainbow(max(group.data[[1]])))  # colors for partition symbology
   values$partFill <- newColors[group.data[[1]]]
   #newColors <- sample(colors(), max(group.data[[1]]))
-  proxy %>% map_plotLocs(values$df, fillColor = values$partFill, fillOpacity = 1)
+  proxy %>% 
+    clearMarkers() %>% 
+    map_plotLocs(values$df, fillColor = values$partFill, fillOpacity = 1)
     # addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
     #                          radius = 5, color = 'red', fill = TRUE, fillColor = values$partFill,
     #                          weight = 2, popup = ~pop, fillOpacity = 1, group = 'comp5')

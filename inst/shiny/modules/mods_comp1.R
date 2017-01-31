@@ -107,7 +107,10 @@ getDbOccs <- function(spName, occNum) {
     #     writeLog(paste("Duplicated records removed [", dupsRemNum, "]: Remaining records [", concat.dupsRem, "]."))
     #   }
   # MAPPING
-  proxy %>% zoom2Occs(values$df) %>% map_plotLocs(values$df)
+  proxy %>% 
+    clearMarkers() %>% 
+    map_plotLocs(values$df) %>% 
+    zoom2Occs(values$df)
 }
 
 getUserOccs <- function(userCSV) {
@@ -125,7 +128,10 @@ getUserOccs <- function(userCSV) {
   spName <- trimws(spName)
   # record species name
   values$spName <- spName
-  userOccs <- csv[csv[,1] == spName,]  # limit to records with this name
+  # create tag to signal no db search
+  values$mod_db <- FALSE
+  # limit to records with this name
+  userOccs <- csv[csv[,1] == spName,]  
 
   # subset to just records with latitude and longitude
   userOccs <- userOccs %>% dplyr::filter(!is.na(latitude) & !is.na(longitude))
@@ -149,5 +155,8 @@ getUserOccs <- function(userCSV) {
   values$df <- values$origOccs <- userOccs
 
   # MAPPING
-  proxy %>% zoom2Occs(values$df) %>% map_plotLocs(values$df)
+  proxy %>% 
+    clearMarkers() %>% 
+    map_plotLocs(values$df) %>%
+    zoom2Occs(values$df)
 }
