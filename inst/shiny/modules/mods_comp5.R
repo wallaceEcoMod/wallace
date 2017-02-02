@@ -1,4 +1,14 @@
 comp5_setPartitions <- function(partSelect2, kfolds, aggFact, proxy) {
+  
+  if (!require('rJava')) {
+    writeLog('<font color="red"><b>! ERROR</b></font> : Package rJava cannot load. 
+             Please download the latest version of Java, and make sure it is the 
+             correct version (e.g. 64-bit if you have a 64-bit system). After the
+             download, try "library(rJava)". If it loads properly, restart Wallace
+             and try again.')
+    return()
+  }
+  
   occs <- values$df[,2:3]
 
   if (partSelect2 == 'block') {

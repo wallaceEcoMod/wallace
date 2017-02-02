@@ -25,6 +25,20 @@ comp6_bioclimMod <- function() {
 }
 
 comp6_maxentMod <- function(rms, fcs) {
+  
+  if (!require('rJava')) {
+    jar <- paste(system.file(package="dismo"), "/java/maxent.jar", sep='')
+    writeLog('<font color="red"><b>! ERROR</b></font> : Package rJava cannot load. 
+             Please download the latest version of Java, and make sure it is the 
+             correct version (e.g. 64-bit if you have a 64-bit system). After the
+             download, try "library(rJava)". If it loads properly, restart Wallace
+             and try again.')
+    writeLog(paste('* To use Maxent, also make sure you download maxent.jar from 
+                   http://www.cs.princeton.edu/~schapire/maxent/ and place it here:
+                   ', jar))
+    return()
+  }
+  
   if (is.null(input$fcs)) {
     writeLog('<font color="red"><b>! ERROR</b></font> : Select feature classes first.')
     return()
@@ -41,7 +55,7 @@ comp6_maxentMod <- function(rms, fcs) {
 
   jar <- paste(system.file(package="dismo"), "/java/maxent.jar", sep='')
   if (!file.exists(jar)) {
-    writeLog(paste('<font color="red"><b>! ERROR</b></font> : File missing:\n', jar, '\nPlease download it here and copy to directory above: http://www.cs.princeton.edu/~schapire/maxent/'))
+    writeLog(paste('<font color="red"><b>! ERROR</b></font> : File maxent.jar missing:\n', jar, '\nPlease download it from http://www.cs.princeton.edu/~schapire/maxent/ and copy to directory above.'))
     return()
   }
 

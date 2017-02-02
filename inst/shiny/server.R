@@ -972,8 +972,6 @@ shinyServer(function(input, output, session) {
   ### MARKDOWN FUNCTIONALITY ####
   #########################
 
-  observe({print(file.path(getwd(),input$userCSV$name))})
-  
   # handler for R Markdown download
   output$downloadMD <- downloadHandler(
     filename = function() {
