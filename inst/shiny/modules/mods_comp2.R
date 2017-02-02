@@ -10,7 +10,6 @@ remSelLocs <- function(remLocID) {
     # Remove the offending row
     values$removed <- rbind(values$removed, values$df[remo, ])
     values$removedAll <- c(values$removedAll, values$df[remo,]$origID)  # keep vector of all removed pts
-    print(values$removedAll)
     values$df <- values$df[-remo, ]
     values$origOccs <- values$origOccs[-remo, ]
 
