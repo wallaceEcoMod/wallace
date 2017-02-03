@@ -14,7 +14,7 @@ Author: Jamie M. Kass [aut, cre],
     Robert P. Anderson [aut]
 Maintainer: Jamie M. Kass <jkass@gradcenter.cuny.edu>
 Depends:
-    R (>= 3.2.4),
+    R (>= 3.2.1),
     shiny (>= 0.14.2),
     leaflet (>= 1.0.1)
 Imports:
