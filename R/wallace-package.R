@@ -28,12 +28,12 @@
 #' @details \tabular{ll}{
 #' Package: \tab wallace\cr
 #' Type: \tab Package\cr
-#' Version: \tab 0.6.1\cr
-#' Date: \tab 2017-01-14\cr
+#' Version: \tab 0.6.3\cr
+#' Date: \tab 2017-02-02\cr
 #' License: \tab GNU 3.0\cr
 #' }
 #'
-#' @references Kass J.M., Vilela B., Aeillo-Lammens M.E., Muscarella R., and Anderson R.P. (2017) \emph{Wallace}: A modular platform for reproducible ecological modeling. Version 0.6.1.
+#' @references Kass J.M., Vilela B., Aeillo-Lammens M.E., Muscarella R., and Anderson R.P. (2017) \emph{Wallace}: A modular platform for reproducible ecological modeling. Version 0.6.3.
 #' @import shiny leaflet
 #' @importFrom magrittr "%>%"
 NULL
