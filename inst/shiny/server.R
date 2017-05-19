@@ -407,7 +407,7 @@ shinyServer(function(input, output, session) {
       tmpdir <- tempdir()
       setwd(tempdir())
 
-      writeRaster(values$predsMsk, file.path(tmpdir, 'mskBio'), bylayer = TRUE,
+      raster::writeRaster(values$predsMsk, file.path(tmpdir, 'mskBio'), bylayer = TRUE,
                   format = input$mskPredsFileType, overwrite = TRUE)
       nr <- nlayers(values$predsMsk)
       ext <- ifelse(input$mskPredsFileType == 'raster', 'grd',
@@ -748,11 +748,11 @@ shinyServer(function(input, output, session) {
       } else if (input$predFileType == 'raster') {
         fileName <- values$mapPredName
         tmpdir <- tempdir()
-        writeRaster(values$predCur, file.path(tmpdir, fileName), format = input$predFileType, overwrite = TRUE)
+        raster::writeRaster(values$predCur, file.path(tmpdir, fileName), format = input$predFileType, overwrite = TRUE)
         fs <- file.path(tmpdir, paste0(fileName, c('.grd', '.gri')))
         zip(zipfile=file, files=fs, extras = '-j')
       } else {
-        res <- writeRaster(values$predCur, file, format = input$predFileType, overwrite = TRUE)
+        res <- raster::writeRaster(values$predCur, file, format = input$predFileType, overwrite = TRUE)
         file.rename(res@file@name, file)
       }
     }
@@ -957,11 +957,11 @@ shinyServer(function(input, output, session) {
       } else if (input$pjFileType == 'raster') {
         fileName <- values$pjName
         tmpdir <- tempdir()
-        writeRaster(values$dlRas, file.path(tmpdir, fileName), format = input$pjFileType, overwrite = TRUE)
+        raster::writeRaster(values$dlRas, file.path(tmpdir, fileName), format = input$pjFileType, overwrite = TRUE)
         fs <- file.path(tmpdir, paste0(fileName, c('.grd', '.gri')))
         zip(zipfile=file, files=fs, extras = '-j')
       } else {
-        res <- writeRaster(values$dlRas, file, format = input$pjFileType, overwrite = TRUE)
+        res <- raster::writeRaster(values$dlRas, file, format = input$pjFileType, overwrite = TRUE)
         file.rename(res@file@name, file)
       }
     }
