@@ -11,4 +11,4 @@ Users may want to use species occurrence data that they have compiled themselves
 
 **IMPLEMENTATION** 
 
-Users may upload a .csv file of occurrence records with rows of localities, and the first three fields must be named “species”, “longitude”, and “latitude” (in that order, with those names). Other fields can appear after these mandatory fields, but they are not used in the analysis.
+Users may upload a .csv file of occurrence records with rows of localities, and the first three fields must be named “name”, “longitude”, and “latitude” (in that order, with those names). Other fields can appear after these mandatory fields, but they are not used in the analysis.
