@@ -1,3 +1,8 @@
+# wallace 0.6.4
+- Added explicit package references to writeRaster() calls. Should work now without loading `raster` package first.
+- Fixed reference to required field names in component 1 User Occurrences module guidance text. Now reads "names" instead of "species" as first field.
+- Added checks for appropriate fields for VertNet and BISON, as not all downloads include all fields. Should avoid erroring due to missing fields now.
+
 # wallace 0.6.3
 - Added `repmis` and `rgdal` to package dependencies.
 - Turned off evaluation of chunk that loads packages in userReport.Rmd.
