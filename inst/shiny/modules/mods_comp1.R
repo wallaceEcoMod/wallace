@@ -50,6 +50,10 @@ getDbOccs <- function(spName, occNum) {
 
   # standardize column names
   if (input$occDb == 'vertnet') {
+    fields <- c('institutioncode', 'stateprovince', 'basisofrecord', 'maximumelevationinmeters')
+    for (i in fields) {
+      if (!(i %in% names(dbOccs))) dbOccs[i] <- NA
+    }
     dbOccs <- dbOccs %>%
       dplyr::rename(institutionCode = institutioncode) %>%
       dplyr::rename(stateProvince = stateprovince) %>%
@@ -58,11 +62,14 @@ getDbOccs <- function(spName, occNum) {
   }
   # standardize column names
   if (input$occDb == 'bison') {
+    fields <- c('countryCode', 'ownerInstitutionCollectionCode', 'calculatedCounty', 'elevation')
+    for (i in fields) {
+      if (!(i %in% names(dbOccs))) dbOccs[i] <- NA
+    }
     dbOccs <- dbOccs %>%
       dplyr::rename(country = countryCode) %>%
       dplyr::rename(institutionCode = ownerInstitutionCollectionCode) %>%
-      dplyr::rename(locality = calculatedCounty) %>%
-      dplyr::mutate(elevation = NULL)
+      dplyr::rename(locality = calculatedCounty)
   }
 
   # remove duplicate records
