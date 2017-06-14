@@ -1,4 +1,3 @@
-
 source("funcs/functions.R", local = TRUE)
 
 # make list to carry data used by multiple reactive functions
@@ -72,13 +71,13 @@ shinyServer(function(input, output, session) {
   curWD <- getwd()
 
   # create map
-  map <- leaflet() %>% setView(0, 0, zoom = 2) %>% addProviderTiles('Esri.WorldTopoMap')
-  output$map <- renderLeaflet(map)
+  m <- leaflet() %>% setView(0, 0, zoom = 2) %>% addProviderTiles('Esri.WorldTopoMap')
+  output$m <- renderLeaflet(m)
 
   # make map proxy to make further changes to existing map
-  proxy <- leafletProxy("map")
+  map <- leafletProxy("map")
   observe({
-    proxy %>% addProviderTiles(input$bmap)
+    map %>% addProviderTiles(input$bmap)
   })
 
 
@@ -105,12 +104,30 @@ shinyServer(function(input, output, session) {
 
     }
   })
+  
+  # component 1 reactives
+  
+  spName <- reactive({
+    validate(need(input$spName, message = FALSE))
+    spName <- trimws(input$spName)
+    return(spName)
+  })
 
+  dbOccs <- callModule(queryDB, 'c1_queryDB', map, spName)
+  
   # module GBIF
   observeEvent(input$goName, {
-    if (input$spName == "") return()
-    getDbOccs(input$spName, input$occNum)
-    if (!is.null(values$df)) {shinyjs::enable("dlDbOccs")}
+    # TABLE
+    options <- list(autoWidth = TRUE, columnDefs = list(list(width = '40%', targets = 7)),
+                    scrollX=TRUE, scrollY=400)
+    output$occTbl <- DT::renderDataTable(
+      dbOccs() %>% dplyr::select(-origID, -pop), options = options
+    )
+    # MAPPING
+    map %>% 
+      clearMarkers() %>% 
+      map_plotLocs(dbOccs()) %>% 
+      zoom2Occs(dbOccs())
   })
 
   # module userOccs

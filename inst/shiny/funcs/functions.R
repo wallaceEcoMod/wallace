@@ -2,6 +2,25 @@
 ## Define functions
 ## -------------------------------------------------------------------- ##
 
+uiTop <- function(modName, modPkg, pkgDes, modInsert) {
+  list(div(paste('Module:',modName), id="mod"),
+       # span('via', id="pkgDes"),
+       span(modPkg, id="rpkg"),
+       span(paste(':', pkgDes), id="pkgDes"),
+       br(),
+       HTML('<hr>'))
+}
+
+uiBottom <- function(modName, authors) {
+  list(HTML('<hr>'),
+       span(modName, id = "rpkg"), "references", br(),
+       div(paste('Developers:', authors), id="pkgDes"),
+       a("CRAN", href = file.path("http://cran.r-project.org/web/packages", modName, "index.html"), target = "_blank"),
+       " | ",
+       a("documentation", href = file.path("https://cran.r-project.org/web/packages", modName, paste0(modName, ".pdf")), target = "_blank")
+  )
+}
+
 GCMlookup <- c(AC="ACCESS1-0", BC="BCC-CSM1-1", CC="CCSM4", CE="CESM1-CAM5-1-FV2",
               CN="CNRM-CM5", GF="GFDL-CM3", GD="GFDL-ESM2G", GS="GISS-E2-R",
               HD="HadGEM2-AO", HG="HadGEM2-CC", HE="HadGEM2-ES", IN="INMCM4",
@@ -94,10 +113,10 @@ mcp <- function (xy) {
   return(sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(as.matrix(xy.bord))), 1))))
 }
 
-remDups <- function(df) {
-  dups <- duplicated(df)
-  df <- df[!dups,]
-}
+# remDups <- function(df) {
+#   dups <- duplicated(df)
+#   df <- df[!dups,]
+# }
 
 makeOccIcons <- function(width = 10, height = 10, ...) {
   occIcons <- c('H', 'O', 'P', 'U', 'F', 'M', 'I', 'L', 'A', 'X')
