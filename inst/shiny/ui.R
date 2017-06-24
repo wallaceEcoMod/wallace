@@ -1,4 +1,8 @@
-
+source("funcs/functions.R", local = TRUE)
+# load modules
+for (f in list.files('./modules')) {
+  source(file.path('modules', f), local=TRUE)
+}
 
 # Define UI for application
 shinyUI(tagList(
@@ -33,8 +37,7 @@ shinyUI(tagList(
                                                       conditionalPanel("input.occSel == 'db'",
                                                                        uiTop('Query Database', 'spocc', 'Interface to Species Occurrence Data Sources'),
                                                                        queryDB_UI('c1_queryDB'),
-                                                                       actionButton("goName", "Search Database"),
-                                                                       br(), br(),
+                                                                       actionButton("goDbOccs", "Search Database"),
                                                                        strong("Download database occurrence localities (.csv)"), br(), br(),
                                                                        downloadButton('dlDbOccs', "Download DB Occurrences"),
                                                                        uiBottom('spocc', "Scott Chamberlain, Karthik Ram, Ted Hart")

@@ -19,24 +19,27 @@ queryDB_UI <- function(id) {
   )
 }
 
-queryDB <- function(input, output, session, spName, map) {
+queryDB <- function(input, output, session, logs) {
   
-  # figure out how many separate names (components of scientific name) were entered
-  nameSplit <- length(unlist(strsplit(spName(), " ")))
-  # if two names not entered, throw error and return
-  if (nameSplit != 2) {
-    writeLog('<font color="red"><b>! ERROR</b></font> : Please input both genus and species names.')
-    return()
-  }
+  spName <- reactive({spName <- trimws(input$spName)})
   
   query <- reactive({
+    req(input$spName)
+    # figure out how many separate names (components of scientific name) were entered
+    nameSplit <- length(unlist(strsplit(spName(), " ")))
+    # if two names not entered, throw error and return
+    if (nameSplit != 2) {
+      logs %>% writeLog('<font color="red"><b>! ERROR</b></font> : Please input both genus and species names.')
+      return()
+    }
+    
     # query database
     q <- spocc::occ(spName(), input$occDb, limit=input$occNum)
     
     # if species not found, print message to log box and return
     if (q[[input$occDb]]$meta$found == 0) {
-      writeLog(paste('<font color="red"><b>! ERROR</b></font> : No records found for ', 
-                     spName(), ". Please check the spelling."))
+      logs %>% writeLog('<font color="red"><b>! ERROR</b></font> : No records found for ', 
+                     spName(), ". Please check the spelling.")
       shinyjs::disable("dlDbOccs")
       return()
     }
@@ -46,34 +49,37 @@ queryDB <- function(input, output, session, spName, map) {
   })
   
   dbOccs <- reactive({
+    req(query())
     # extract occurrence tibble
     occs <- query()[[input$occDb]]$data[[formatSpName(spName())]]
     # make sure latitude and longitude are numeric (sometimes they aren't)
     occs$latitude <- as.numeric(occs$latitude)
     occs$longitude <- as.numeric(occs$longitude)
-    
     return(occs)
   })
   
   dbOccs.coords <- reactive({
+    req(dbOccs())
     # subset to just records with latitude and longitude
     occs <- dbOccs() %>% dplyr::filter(!is.na(latitude) & !is.na(longitude))
     if (nrow(occs) == 0) {
-      writeLog(paste('<font color="orange"><b>! WARNING</b></font> : No records with coordinates found in', input$occDb, "for", spName, "."))
+      logs %>% writeLog('<font color="orange"><b>! WARNING</b></font> : No records with coordinates found in', input$occDb, "for", spName(), ".")
       return()
     }
     return(occs)
   })
   
   dbOccs.remDups <- reactive({
+    req(dbOccs.coords())
     occs <- dbOccs.coords()
-    occs.dups <- duplicated(occs[[c('longitude', 'latitude')]])
+    occs.dups <- duplicated(occs %>% dplyr::select(longitude, latitude))
     occs <- occs[!occs.dups,]
     
     return(occs)
   })
   
   dbOccs.stdCols <- reactive({
+    req(dbOccs.remDups())
     occs <- dbOccs.remDups()
     # standardize VertNet column names
     if (input$occDb == 'vertnet') {
@@ -104,6 +110,7 @@ queryDB <- function(input, output, session, spName, map) {
   })
   
   dbOccs.out <- reactive({
+    req(dbOccs.stdCols())
     occs <- dbOccs.stdCols()
     
     # subset by key columns and make id and popup columns
@@ -120,14 +127,14 @@ queryDB <- function(input, output, session, spName, map) {
     
     noCoordsRem <- nrow(dbOccs()) - nrow(dbOccs.coords())
     dupsRem <- nrow(dbOccs.coords()) - nrow(dbOccs.remDups())
-    writeLog(paste('> Total', input$occDb, 'records for', spName(), 'returned [', nrow(dbOccs()),
+    logs %>% writeLog('> Total', input$occDb, 'records for', spName(), 'returned [', nrow(dbOccs()),
                    '] out of [', totRows, '] total (limit ', input$occNum, ').
                    Records without coordinates removed [', noCoordsRem, '].
-                   Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].'))
+                   Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')
     
     return(occs)
   })
-
+  
   return(dbOccs.out)
 }
 

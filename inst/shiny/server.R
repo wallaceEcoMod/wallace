@@ -4,11 +4,14 @@ source("funcs/functions.R", local = TRUE)
 brk <- paste(rep('------', 14), collapse='')
 logInit <- c(paste('***WELCOME TO WALLACE***', brk, 'Please find messages for the user in this log window.', brk, sep='<br>'))
 values <- reactiveValues(df=NULL, polyID=0, polyErase=FALSE, log=logInit, mod_db=FALSE, projType='', curPredThresh='')
+logs <- reactiveValues(entries=logInit)
 gtext <- reactiveValues()
 
 # add text to log
-writeLog <- function(x) {
-  values$log <- paste(values$log, x, sep='<br>')
+writeLog <- function(logs, ...) {
+  args <- list(...)
+  newEntries <- paste(args)
+  logs$entries <- paste(logs$entries, newEntries, sep='<br>')
 }
 
 ## functions for text formatting in userReport.Rmd
@@ -67,12 +70,12 @@ shinyServer(function(input, output, session) {
 #########################
 
   output$log <- renderUI({tags$div(id='logHeader',
-                                   tags$div(id='logContent', HTML(paste0(values$log, "<br>", collapse = ""))))})
+                                   tags$div(id='logContent', HTML(paste0(logs$entries, "<br>", collapse = ""))))})
   curWD <- getwd()
 
   # create map
   m <- leaflet() %>% setView(0, 0, zoom = 2) %>% addProviderTiles('Esri.WorldTopoMap')
-  output$m <- renderLeaflet(m)
+  output$map <- renderLeaflet(m)
 
   # make map proxy to make further changes to existing map
   map <- leafletProxy("map")
@@ -80,7 +83,7 @@ shinyServer(function(input, output, session) {
     map %>% addProviderTiles(input$bmap)
   })
 
-
+  
 #########################
 ### COMPONENT 1 ####
 #########################
@@ -93,43 +96,48 @@ shinyServer(function(input, output, session) {
       if (input$occSel == 'user') gtext$cur_mod <- "gtext_comp1_userOccs.Rmd"
       # switch to Map tab
       # updateTabsetPanel(session, 'main', selected = 'Map')
-      # map shape behavior
-      proxy %>% 
-        clearMarkers() %>%
-        map_plotLocs(values$df) %>%
-        hideGroup(c('r1', 'selPoly', 'backgPoly', 'projPoly', 'r2Area', 'r2Time', 'r2MESS')) %>%
-        removeControl('selLeg') %>% removeControl('thinLeg') %>% removeControl('r1LegCon') %>%
-        removeControl('r1LegThr') %>% removeControl('r2LegArea') %>% removeControl('r2LegTime') %>%
-        removeControl('r2LegMESS')
+      # # map shape behavior
+      # map %>% 
+      #   clearMarkers() %>%
+      #   map_plotLocs(values$df) %>%
+      #   hideGroup(c('r1', 'selPoly', 'backgPoly', 'projPoly', 'r2Area', 'r2Time', 'r2MESS')) %>%
+      #   removeControl('selLeg') %>% removeControl('thinLeg') %>% removeControl('r1LegCon') %>%
+      #   removeControl('r1LegThr') %>% removeControl('r2LegArea') %>% removeControl('r2LegTime') %>%
+      #   removeControl('r2LegMESS')
 
     }
   })
   
   # component 1 reactives
   
-  spName <- reactive({
-    validate(need(input$spName, message = FALSE))
-    spName <- trimws(input$spName)
-    return(spName)
-  })
 
-  dbOccs <- callModule(queryDB, 'c1_queryDB', map, spName)
   
   # module GBIF
-  observeEvent(input$goName, {
-    # TABLE
-    options <- list(autoWidth = TRUE, columnDefs = list(list(width = '40%', targets = 7)),
-                    scrollX=TRUE, scrollY=400)
-    output$occTbl <- DT::renderDataTable(
-      dbOccs() %>% dplyr::select(-origID, -pop), options = options
-    )
-    # MAPPING
-    map %>% 
-      clearMarkers() %>% 
-      map_plotLocs(dbOccs()) %>% 
+  dbOccs.call <- callModule(queryDB, 'c1_queryDB', logs)
+  
+  dbOccs <- eventReactive(input$goDbOccs, dbOccs.call())
+  observe(print(dbOccs()))
+  
+
+  # TABLE
+  options <- list(autoWidth = TRUE, columnDefs = list(list(width = '40%', targets = 7)),
+                  scrollX=TRUE, scrollY=400)
+  output$occTbl <- DT::renderDataTable(dbOccs() %>% dplyr::select(-origID, -pop), 
+                                       options = options)
+  # MAPPING
+  observe({
+    map %>%
+      clearMarkers() %>%
+      map_plotLocs(dbOccs()) %>%
       zoom2Occs(dbOccs())
   })
+  
+  
+  
 
+
+  
+    
   # module userOccs
   observe({
     if (is.null(input$userCSV)) return()  # exit if userCSV not specifed
