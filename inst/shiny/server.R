@@ -10,8 +10,8 @@ gtext <- reactiveValues()
 # add text to log
 writeLog <- function(logs, ...) {
   args <- list(...)
-  newEntries <- paste(args)
-  logs$entries <- paste(logs$entries, newEntries, sep='<br>')
+  newEntries <- paste(args, collapse = ' ')
+  logs$entries <- paste(logs$entries, newEntries, sep = '<br>')
 }
 
 ## functions for text formatting in userReport.Rmd
