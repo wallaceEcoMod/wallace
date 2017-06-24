@@ -37,7 +37,7 @@ shinyUI(tagList(
                                                       conditionalPanel("input.occSel == 'db'",
                                                                        uiTop('Query Database', 'spocc', 'Interface to Species Occurrence Data Sources'),
                                                                        queryDB_UI('c1_queryDB'),
-                                                                       actionButton("goDbOccs", "Search Database"),
+                                                                       actionButton("goDbOccs", "Query Database"),
                                                                        strong("Download database occurrence localities (.csv)"), br(), br(),
                                                                        downloadButton('dlDbOccs', "Download DB Occurrences"),
                                                                        uiBottom('spocc', "Scott Chamberlain, Karthik Ram, Ted Hart")
@@ -45,7 +45,9 @@ shinyUI(tagList(
                                                       conditionalPanel("input.occSel == 'user'",
                                                                        div('Module: User-specified Occurrences', id="mod"),
                                                                        HTML('<hr>'),
-                                                                       fileInput("userCSV", label = "Upload Occurrence CSV"))
+                                                                       userOccs_UI('c1_userOccs'),
+                                                                       actionButton("goUserOccs", "Load Occurrences")
+                                                                       )
                                      ),
                                      # tab 2 ####
                                      conditionalPanel("input.tabs == 2",

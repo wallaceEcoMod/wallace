@@ -141,53 +141,6 @@ queryDB <- function(input, output, session, logs) {
 }
 
 
-getUserOccs <- function(userCSV) {
-  if (is.null(userCSV)) return()
-  validate(need(userCSV, message = FALSE))
-  csv <- read.csv(userCSV$datapath)
-  if (!all(c('name', 'longitude', 'latitude') %in% names(csv))) {
-    isolate({writeLog('<font color="red"><b>! ERROR</b></font> : Please input CSV file with columns "name", "longitude", "latitude".')})
-    return()
-  }
-
-  # subset to only occs, not backg, and just fields that match df
-  spName <- as.character(csv$name[1])  # get species name
-  # trim whitespace (blank spaces) from species name
-  spName <- trimws(spName)
-  # record species name
-  values$spName <- spName
-  # create tag to signal no db search
-  values$mod_db <- FALSE
-  # limit to records with this name
-  userOccs <- csv[csv[,1] == spName,]  
-
-  # subset to just records with latitude and longitude
-  userOccs <- userOccs %>% dplyr::filter(!is.na(latitude) & !is.na(longitude))
-  if (nrow(userOccs) == 0) {
-    writeLog(paste('<font color="orange"><b>! WARNING</b></font> : No records with coordinates found in', userCSV$name, "for", spName, "."))
-    return()
-  }
-
-  isolate({writeLog(paste("> User-specified CSV file", userCSV$name, "with total of", nrow(userOccs),
-                          "records with coordinates was uploaded."))})
-
-  # for (col in c("institutionCode", "country", "stateProvince",
-  #               "locality", "elevation", "basisOfRecord")) {  # add all cols to match origOccs if not already there
-  #   if (!(col %in% names(userOccs))) userOccs[,col] <- NA
-  # }
-
-  userOccs$origID <- row.names(userOccs)  # add col for IDs
-  userOccs$pop <- unlist(apply(userOccs, 1, popUpContent))  # add col for map marker popup text
-
-  # origOccs is the unmodified occs, to preserve in comp2 when points are modified
-  values$df <- values$origOccs <- userOccs
-
-  # MAPPING
-  map %>% 
-    clearMarkers() %>% 
-    map_plotLocs(values$df) %>%
-    zoom2Occs(values$df)
-}
 
 # functionality for concatenating multiple db calls
 # add current dbOccs to the list

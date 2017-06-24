@@ -2,7 +2,8 @@ source("funcs/functions.R", local = TRUE)
 
 # make list to carry data used by multiple reactive functions
 brk <- paste(rep('------', 14), collapse='')
-logInit <- c(paste('***WELCOME TO WALLACE***', brk, 'Please find messages for the user in this log window.', brk, sep='<br>'))
+logInit <- c(paste('***WELCOME TO WALLACE***', brk, 
+                   'Please find messages for the user in this log window.', brk, sep='<br>'))
 values <- reactiveValues(df=NULL, polyID=0, polyErase=FALSE, log=logInit, mod_db=FALSE, projType='', curPredThresh='')
 logs <- reactiveValues(entries=logInit)
 gtext <- reactiveValues()
@@ -13,28 +14,6 @@ writeLog <- function(logs, ...) {
   newEntries <- paste(args, collapse = ' ')
   logs$entries <- paste(logs$entries, newEntries, sep = '<br>')
 }
-
-## functions for text formatting in userReport.Rmd
-makeCap <- function(x) paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)))
-getSpName <- function() deparse(substitute(input$spName))
-printVecAsis <- function(x) {
-  if (is.character(x)) {
-    if (length(x) == 1) {
-      return(paste0("\'", x, "\'"))
-    } else {
-      return(paste0("c(", paste(sapply(x, function(a) paste0("\'", a, "\'")), collapse=", "), ")"))
-    }
-  } else {
-    if (length(x) == 1) {
-      return(x)
-    } else {
-      return(paste0("c(", paste(x, collapse=", "), ")"))
-    }
-  }
-}
-  # ifelse(length(x) == 1, x,
-  #        ifelse(is.character(x), paste0("c(", paste(sapply(x, function(a) paste0("\'",a,"\'")), collapse=", "), ")"),
-  #               paste0("c(", paste(x, collapse=", "), ")")))}
 
 options(shiny.maxRequestSize=5000*1024^2)
 
@@ -112,12 +91,15 @@ shinyServer(function(input, output, session) {
   
 
   
-  # module GBIF
+  # module Query Database
   dbOccs.call <- callModule(queryDB, 'c1_queryDB', logs)
   
   dbOccs <- eventReactive(input$goDbOccs, dbOccs.call())
-  observe(print(dbOccs()))
+
+  # module User Occurrence Data
+  userOccs.call <- callModule(userOccs, 'c1_queryDB', logs)
   
+  uoccs <- eventReactive(input$goUserOccs, userOccs.call())  
 
   # TABLE
   options <- list(autoWidth = TRUE, columnDefs = list(list(width = '40%', targets = 7)),
