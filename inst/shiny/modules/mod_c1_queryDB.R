@@ -34,7 +34,9 @@ queryDB <- function(input, output, session, logs) {
     }
     
     # query database
-    q <- spocc::occ(spName(), input$occDb, limit=input$occNum)
+    withProgress(message = paste("Querying", input$occDb, "..."), {
+      q <- spocc::occ(spName(), input$occDb, limit=input$occNum)
+    })
     
     # if species not found, print message to log box and return
     if (q[[input$occDb]]$meta$found == 0) {
