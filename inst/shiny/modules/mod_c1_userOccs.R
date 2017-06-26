@@ -6,45 +6,43 @@ userOccs_UI <- function(id) {
   )
 }
 
-userOccs <- function(input, output, session, logs) {
-  
-  spName <- reactive({
-    spName.in <- as.character(csv$name[1])
-    return(trimws(spName.in))
-    })
+userOccs <- function(input, output, session, logs, dfs) {
   
   readOccsCSV <- reactive({
     req(input$userCSV)
     
-    csv <- read.csv(userCSV$datapath)
+    csv <- read.csv(input$userCSV$datapath)
+    
+    spName <- trimws(as.character(csv$name[1]))
     
     if (!all(c('name', 'longitude', 'latitude') %in% names(csv))) {
-      writeLog('<font color="red"><b>! ERROR</b></font> : Please input CSV file with columns "name", "longitude", "latitude".')
+      logs %>% writeLog('<font color="red"><b>! ERROR</b></font> : Please input CSV file with columns "name", "longitude", "latitude".')
       return()
     }
     
     
     # subset to just records with first species name, and non-NA latitude and longitude
-    uoccs <- uoccs %>% 
-      dplyr::filter(name == spName())
+    uoccs <- csv %>% 
+      dplyr::filter(name == spName) %>%
       dplyr::filter(!is.na(latitude) & !is.na(longitude))
       
     if (nrow(uoccs) == 0) {
-      writeLog('<font color="orange"><b>! WARNING</b></font> : No records with coordinates found in', userCSV$name, "for", spName, ".")
+      logs %>% writeLog('<font color="orange"><b>! WARNING</b></font> : No records with coordinates found in', input$userCSV$name, "for", spName, ".")
       return()
     }
     
-    writeLog("> User-specified CSV file", userCSV$name, "with total of", nrow(uoccs),
+    logs %>% writeLog("> User-specified CSV file", input$userCSV$name, "with total of", nrow(uoccs),
                             "records with coordinates was uploaded.")
     
-    # for (col in c("institutionCode", "country", "stateProvince",
-    #               "locality", "elevation", "basisOfRecord")) {  # add all cols to match origOccs if not already there
-    #   if (!(col %in% names(userOccs))) userOccs[,col] <- NA
-    # }
+    for (col in c("year", "institutionCode", "country", "stateProvince",
+                  "locality", "elevation", "basisOfRecord")) {  # add all cols to match origOccs if not already there
+      if (!(col %in% names(uoccs))) uoccs[,col] <- NA
+    }
     
     uoccs$origID <- row.names(uoccs)  # add col for IDs
     uoccs$pop <- unlist(apply(uoccs, 1, popUpContent))  # add col for map marker popup text
     
+    occs(uoccs)
     return(uoccs)
   })
   

@@ -19,7 +19,7 @@ queryDB_UI <- function(id) {
   )
 }
 
-queryDB <- function(input, output, session, logs) {
+queryDB <- function(input, output, session, logs, dfs) {
   
   spName <- reactive({spName <- trimws(input$spName)})
   
@@ -53,43 +53,46 @@ queryDB <- function(input, output, session, logs) {
   dbOccs <- reactive({
     req(query())
     # extract occurrence tibble
-    occs <- query()[[input$occDb]]$data[[formatSpName(spName())]]
+    recs <- query()[[input$occDb]]$data[[formatSpName(spName())]]
     # make sure latitude and longitude are numeric (sometimes they aren't)
-    occs$latitude <- as.numeric(occs$latitude)
-    occs$longitude <- as.numeric(occs$longitude)
-    return(occs)
+    recs$latitude <- as.numeric(recs$latitude)
+    recs$longitude <- as.numeric(recs$longitude)
+    
+    occs.orig(recs)
+    
+    return(recs)
   })
   
   dbOccs.coords <- reactive({
     req(dbOccs())
     # subset to just records with latitude and longitude
-    occs <- dbOccs() %>% dplyr::filter(!is.na(latitude) & !is.na(longitude))
-    if (nrow(occs) == 0) {
+    recs <- dbOccs() %>% dplyr::filter(!is.na(latitude) & !is.na(longitude))
+    if (nrow(recs) == 0) {
       logs %>% writeLog('<font color="orange"><b>! WARNING</b></font> : No records with coordinates found in', input$occDb, "for", spName(), ".")
       return()
     }
-    return(occs)
+    return(recs)
   })
   
   dbOccs.remDups <- reactive({
     req(dbOccs.coords())
-    occs <- dbOccs.coords()
-    occs.dups <- duplicated(occs %>% dplyr::select(longitude, latitude))
-    occs <- occs[!occs.dups,]
+    recs <- dbOccs.coords()
+    recs.dups <- duplicated(recs %>% dplyr::select(longitude, latitude))
+    recs <- recs[!recs.dups,]
     
-    return(occs)
+    return(recs)
   })
   
   dbOccs.stdCols <- reactive({
     req(dbOccs.remDups())
-    occs <- dbOccs.remDups()
+    recs <- dbOccs.remDups()
     # standardize VertNet column names
     if (input$occDb == 'vertnet') {
       fields <- c('institutioncode', 'stateprovince', 'basisofrecord', 'maximumelevationinmeters')
       for (i in fields) {
-        if (!(i %in% names(occs))) occs[i] <- NA
+        if (!(i %in% names(recs))) recs[i] <- NA
       }
-      occs <- occs %>%
+      recs <- recs %>%
         dplyr::rename(institutionCode = institutioncode) %>%
         dplyr::rename(stateProvince = stateprovince) %>%
         dplyr::rename(basisOfRecord = basisofrecord) %>%
@@ -100,29 +103,34 @@ queryDB <- function(input, output, session, logs) {
     if (input$occDb == 'bison') {
       fields <- c('countryCode', 'ownerInstitutionCollectionCode', 'calculatedCounty', 'elevation')
       for (i in fields) {
-        if (!(i %in% names(occs))) occs[i] <- NA
+        if (!(i %in% names(recs))) recs[i] <- NA
       }
-      occs <- occs %>%
+      recs <- recs %>%
         dplyr::rename(country = countryCode) %>%
         dplyr::rename(institutionCode = ownerInstitutionCollectionCode) %>%
         dplyr::rename(locality = calculatedCounty)
     }
     
-    return(occs)
+    return(recs)
   })
   
   dbOccs.out <- reactive({
     req(dbOccs.stdCols())
-    occs <- dbOccs.stdCols()
+    recs <- dbOccs.stdCols()
+    
+    for (col in c("year", "institutionCode", "country", "stateProvince",
+                  "locality", "elevation", "basisOfRecord")) {  # add all cols to match origOccs if not already there
+      if (!(col %in% names(recs))) recs[,col] <- NA
+    }
     
     # subset by key columns and make id and popup columns
     cols <- c("name", "longitude", "latitude","year", "institutionCode", "country", "stateProvince",
               "locality", "elevation", "basisOfRecord")
-    occs <- occs %>%
+    recs <- recs %>%
       dplyr::select(dplyr::one_of(cols)) %>%
-      dplyr::mutate(origID = row.names(occs))  # make new column for ID
+      dplyr::mutate(origID = row.names(recs))  # make new column for ID
     
-    occs <- occs %>% dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent)))  # make new column for leaflet marker popup content
+    recs <- recs %>% dplyr::mutate(pop = unlist(apply(recs, 1, popUpContent)))  # make new column for leaflet marker popup content
     
     # get total number of records found in database
     totRows <- query()[[input$occDb]]$meta$found
@@ -132,8 +140,9 @@ queryDB <- function(input, output, session, logs) {
     logs %>% writeLog('> Total', input$occDb, 'records for', spName(), 'returned [', nrow(dbOccs()),
                    '] out of [', totRows, '] total (limit ', input$occNum, ').
                    Records without coordinates removed [', noCoordsRem, '].
-                   Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')
+                   Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(recs), '].')
     
+    occs(recs)
     return(occs)
   })
   

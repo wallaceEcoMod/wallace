@@ -88,61 +88,42 @@ shinyServer(function(input, output, session) {
   })
   
   # component 1 reactives
-  
-
+  occs.orig <- reactiveVal()
+  occs <- reactiveVal()
   
   # module Query Database
-  dbOccs.call <- callModule(queryDB, 'c1_queryDB', logs)
+  dbOccs.call <- callModule(queryDB, 'c1_queryDB', logs, occs)
   
-  dbOccs <- eventReactive(input$goDbOccs, dbOccs.call())
+  observeEvent(input$goDbOccs, {
+    dbOccs.call()
+    map %>%
+      clearMarkers() %>%
+      map_plotLocs(occs()) %>%
+      zoom2Occs(occs())
+    shinyjs::enable("dlDbOccs")
+    })
 
   # module User Occurrence Data
-  userOccs.call <- callModule(userOccs, 'c1_queryDB', logs)
+  userOccs.call <- callModule(userOccs, 'c1_userOccs', logs, occs)
   
-  uoccs <- eventReactive(input$goUserOccs, userOccs.call())  
-
+  observeEvent(input$goUserOccs, {
+    userOccs.call()
+    map %>%
+      clearMarkers() %>%
+      map_plotLocs(occs()) %>%
+      zoom2Occs(occs())
+    }) 
+      
   # TABLE
   options <- list(autoWidth = TRUE, columnDefs = list(list(width = '40%', targets = 7)),
                   scrollX=TRUE, scrollY=400)
-  output$occTbl <- DT::renderDataTable(dbOccs() %>% dplyr::select(-origID, -pop), 
-                                       options = options)
-  # MAPPING
-  observe({
-    map %>%
-      clearMarkers() %>%
-      map_plotLocs(dbOccs()) %>%
-      zoom2Occs(dbOccs())
-  })
-  
-  
-  
-
-
-  
-    
-  # module userOccs
-  observe({
-    if (is.null(input$userCSV)) return()  # exit if userCSV not specifed
-    isolate({getUserOccs(input$userCSV)})
-  })
-
-  # render the GBIF records data table
-  observe({
-    if (is.null(values$df)) return()
-    if (length(names(values$df)) >= 7) {
-      options <- list(autoWidth = TRUE, columnDefs = list(list(width = '40%', targets = 7)),
-                      scrollX=TRUE, scrollY=400)
-    } else {
-      options <- list()
-    }
-    output$occTbl <- DT::renderDataTable({DT::datatable(values$df[, -which(names(values$df) %in% c('origID', 'pop'))], options = options)})
-  })
+  output$occTbl <- DT::renderDataTable(occs() %>% dplyr::select(-origID, -pop))
 
   # handle downloading of original GBIF records after cleaning
   output$dlDbOccs <- downloadHandler(
-    filename = function() {paste0(nameAbbr(values$df.orig), '_', input$occDb, ".csv")},
+    filename = function() {paste0(nameAbbr(occs.orig()$name[1]), '_', input$occDb, ".csv")},
     content = function(file) {
-      write.csv(values$df.orig, file, row.names=FALSE)
+      write.csv(occs.orig(), file, row.names=FALSE)
     }
   )
 
