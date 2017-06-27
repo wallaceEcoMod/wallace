@@ -71,18 +71,12 @@ shinyUI(tagList(
                                                                        strong("Reset to original localities and erase polygon"), br(), br()
                                                       ),
                                                       conditionalPanel("input.procOccSel == 'spthin'",
-                                                                       div('Module: Spatial Thin', id="mod"),
-                                                                       span('via', id="pkgDes"),
-                                                                       span('spThin', id="rpkg"),
-                                                                       span('package: Spatial Thinning of Species Occurrence Records', id="pkgDes"),
-                                                                       HTML('<hr>'),
-                                                                       numericInput("thinDist", label = "Thinning distance (km)", value = 0),
-                                                                       shinyBS::bsPopover('thinDist', title = 'Tip',
-                                                                                          'The minimum distance between occurrence locations (nearest neighbor distance) in km for resulting thinned dataset. Ideally based on species biology (e.g., home-range size).',
-                                                                                          placement = 'right', options = list(container = "body")),
-                                                                       actionButton("goThin", "Thin Localities"), br(), br(),
-                                                                       strong("Reset to original localities"), br(), br()
-
+                                                                       uiTop('Spatial Thin', 'spThin', 'Spatial Thinning of Species Occurrence Records'),
+                                                                       thinOccs_UI('c2_thinOccs'),
+                                                                       actionButton("goThin", "Thin Occurrences"), br(), br(),
+                                                                       uiBottom('spThin', "Matthew E. Aiello-Lammens, Rob A. Boria, 
+                                                                                          Alex Radosavljevic, Bruno Vilela, Robert P. Anderson"),
+                                                                       " | ", a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/ecog.01132/abstract", target = "_blank")
                                                       ),
                                                       actionButton("erasePolySelLocs", "Reset"),
                                                       HTML('<hr>'),
@@ -95,17 +89,6 @@ shinyUI(tagList(
                                                                        a("CRAN", href = "http://cran.r-project.org/web/packages/leaflet/index.html", target = "_blank"),
                                                                        " | ",
                                                                        a("documentation", href="https://cran.r-project.org/web/packages/leaflet/leaflet.pdf", target = "_blank")
-                                                      ),
-                                                      conditionalPanel("input.procOccSel == 'spthin'",
-                                                                       HTML('<hr>'),
-                                                                       span("spThin", id = "rpkg"), "references", br(),
-                                                                       div('Developers:  Matthew E. Aiello-Lammens, Rob A. Boria, Alex Radosavljevic, Bruno Vilela,
-                                                                           Robert P. Anderson', id="pkgDes"),
-                                                                       a("CRAN", href = "http://cran.r-project.org/web/packages/spThin/index.html", target = "_blank"),
-                                                                       " | ",
-                                                                       a("documentation", href="https://cran.r-project.org/web/packages/spThin/spThin.pdf", target = "_blank"),
-                                                                       " | ",
-                                                                       a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/ecog.01132/abstract", target = "_blank")
                                                       )
                                      ),
                                      # tab 3 ####

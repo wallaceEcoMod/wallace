@@ -19,7 +19,7 @@ queryDB_UI <- function(id) {
   )
 }
 
-queryDB <- function(input, output, session, logs, dfs) {
+queryDB <- function(input, output, session, logs, occs, archivedOccs) {
   
   spName <- reactive({spName <- trimws(input$spName)})
   
@@ -58,7 +58,7 @@ queryDB <- function(input, output, session, logs, dfs) {
     recs$latitude <- as.numeric(recs$latitude)
     recs$longitude <- as.numeric(recs$longitude)
     
-    occs.orig(recs)
+    archivedOccs$db <- recs
     
     return(recs)
   })
@@ -142,6 +142,7 @@ queryDB <- function(input, output, session, logs, dfs) {
                    Records without coordinates removed [', noCoordsRem, '].
                    Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(recs), '].')
     
+    archivedOccs$input <- recs
     occs(recs)
     return(occs)
   })

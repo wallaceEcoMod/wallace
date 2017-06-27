@@ -6,7 +6,7 @@ userOccs_UI <- function(id) {
   )
 }
 
-userOccs <- function(input, output, session, logs, dfs) {
+userOccs <- function(input, output, session, logs, occs) {
   
   readOccsCSV <- reactive({
     req(input$userCSV)
@@ -42,6 +42,7 @@ userOccs <- function(input, output, session, logs, dfs) {
     uoccs$origID <- row.names(uoccs)  # add col for IDs
     uoccs$pop <- unlist(apply(uoccs, 1, popUpContent))  # add col for map marker popup text
     
+    archivedOccs$input <- uoccs
     occs(uoccs)
     return(uoccs)
   })

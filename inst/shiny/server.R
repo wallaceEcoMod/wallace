@@ -88,11 +88,11 @@ shinyServer(function(input, output, session) {
   })
   
   # component 1 reactives
-  occs.orig <- reactiveVal()
+  archivedOccs <- reactiveValues()
   occs <- reactiveVal()
   
   # module Query Database
-  dbOccs.call <- callModule(queryDB, 'c1_queryDB', logs, occs)
+  dbOccs.call <- callModule(queryDB, 'c1_queryDB', logs, occs, archivedOccs)
   
   observeEvent(input$goDbOccs, {
     dbOccs.call()
@@ -101,7 +101,7 @@ shinyServer(function(input, output, session) {
       map_plotLocs(occs()) %>%
       zoom2Occs(occs())
     shinyjs::enable("dlDbOccs")
-    })
+  })
 
   # module User Occurrence Data
   userOccs.call <- callModule(userOccs, 'c1_userOccs', logs, occs)
@@ -112,7 +112,7 @@ shinyServer(function(input, output, session) {
       clearMarkers() %>%
       map_plotLocs(occs()) %>%
       zoom2Occs(occs())
-    }) 
+  })
       
   # TABLE
   options <- list(autoWidth = TRUE, columnDefs = list(list(width = '40%', targets = 7)),
@@ -132,151 +132,165 @@ shinyServer(function(input, output, session) {
 #########################
 
   # guidance text
-  observe({
-    if (input$tabs == 2) {
-      gtext$cur_comp <- "gtext_comp2.Rmd"
-
-      # if Module: Select Localities, populate guidance text and select legend
-      if (input$procOccSel == 'selpts') {
-        gtext$cur_mod <- "gtext_comp2_selectLocs.Rmd"
-        proxy %>%
-          showGroup('selPoly') %>%
-          removeControl('thinLeg') %>%
-          addLegend("topright", colors = c('red','yellow'),
-                            title = "Occ Records", labels = c('original', 'selected'),
-                            opacity = 1, layerId = 'selLeg')
-        # if localities are already selected, plot the original occs in red and the selected ones with yellow fill
-        if (!is.null(values$ptsSel)) {
-          proxy %>%
-            clearMarkers() %>%
-            map_plotLocs(values$origOccs) %>%
-            map_plotLocs(values$ptsSel, fillColor='yellow', fillOpacity=1) %>%
-            zoom2Occs(values$origOccs)
-        }
-      }
-      if (input$procOccSel == 'spthin') {
-        gtext$cur_mod <- "gtext_comp2_spatialThin.Rmd"
-        proxy %>% addLegend("topright", colors = c('red', 'blue'),
-                            title = "Occ Records", labels = c('retained', 'removed'),
-                            opacity = 1, layerId = 'thinLeg') %>%
-          removeControl('selLeg') %>%
-          hideGroup('selPoly')
-        if (!is.null(values$ptsSel)) {
-          proxy %>% 
-            clearMarkers() %>%
-            map_plotLocs(values$ptsSel) %>% 
-            zoom2Occs(values$ptsSel)
-          if (!is.null(values$prethinned)) {
-            proxy %>% addCircleMarkers(data = values$prethinned, lat = ~latitude, lng = ~longitude,
-                                       radius = 5, color = 'red', fillColor = 'blue',
-                                       fillOpacity = 1, weight = 2, popup = ~pop,
-                                       group = 'comp2') %>%
-              addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
-                               radius = 5, color = 'red', fillColor = 'red',
-                               fillOpacity = 1, weight = 2, popup = ~pop,
-                               group = 'comp2') %>%
-              zoom2Occs(values$prethinned)
-          }
-        }
-      }
-      # switch to Map tab
-      updateTabsetPanel(session, 'main', selected = 'Map')
-      # map shape behavior
-      proxy %>%
-        hideGroup(c('r1', 'backgPoly', 'projPoly', 'r2Area', 'r2Time', 'r2MESS')) %>%
-        removeControl('r1LegCon') %>% removeControl('r1LegThr') %>% removeControl('r2LegArea') %>%
-        removeControl('r2LegTime') %>% removeControl('r2LegMESS')
-    }
-  })
-
-  # functionality for drawing polygons on map
-  observe({
-    if (input$tabs == 2 && input$procOccSel == "selpts") {
-      if (is.null(input$map_click)) return()
-      lonlat <- c(input$map_click$lng, input$map_click$lat)
-
-      if (values$polyErase) {
-        if (identical(lonlat, values$mapClick)) return()
-        values$polyErase <- FALSE
-      }
-
-      values$mapClick <- lonlat
-      values$polyPts1 <- isolate(rbind(values$polyPts1, lonlat))
-      proxy %>% removeShape("poly1")
-      proxy %>% addPolygons(values$polyPts1[,1], values$polyPts1[,2],
-                            layerId='poly1', fill=FALSE, weight=3, color='green', group='selPoly')
-    }
-  })
-
-  # plots all polygons used for selection and fills them with ColorBrewer colors
-  observe({
-    if (!is.null(values$poly1)) {
-      curPolys <- values$poly1@polygons
-      numPolys <- length(curPolys)
-      colors <- RColorBrewer::brewer.pal(numPolys, 'Set1')
-      for (i in 1:numPolys) {
-        curPoly <- curPolys[i][[1]]@Polygons[[1]]@coords
-        proxy %>% addPolygons(curPoly[,1], curPoly[,2], weight=3, color=colors[i], group = 'selPoly')
-      }
-    }
-  })
-
-  # Module Select Localities: select localities intersecting drawn polygons (replace values$df)
-  observeEvent(input$selectPoly, {
-    polySelLocs()
-    shinyjs::enable("dlProcOccCsv")
-  })
-
-  # governs locality removal behavior and modifies tables in "values"
-  observeEvent(input$remove, {
-    if (!is.null(values$ptsSel)) {
-      writeLog('<font color="red"><b>! ERROR</b></font> : Remove localities by ID before selecting with polygons. Press "Reset Localities" to start over.')
-      return()
-      }
-    remSelLocs(input$remLoc)
-    shinyjs::enable("dlProcOccCsv")
-  })
-
-  # erase select localities polygon with button click
-  observeEvent(input$erasePolySelLocs, {
-    validate(need(values$origOccs, message = FALSE))
-    values$ptsSel <- NULL
-    values$polyPts1 <- NULL
-    values$poly1 <- NULL
-    values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
-    proxy %>% clearShapes()
-    if (!is.null(values$origOccs)) {
-      # if locs were removed, put them back in values$origOccs and turn off values$removed
-      if (!is.null(values$removed)) {
-        values$origOccs <- rbind(values$origOccs, values$removed)
-        values$removed <- NULL
-      }
-      # also reset removedAll
-      values$removedAll <- NULL
-      # and reset df
-      values$df <- values$origOccs
-      x <- paste('> RESET localities dataset back to', nrow(values$origOccs), 'records.')
-      isolate(writeLog(x))
-    }
-    proxy %>% 
-      clearMarkers() %>%
-      map_plotLocs(values$origOccs) %>%
-      zoom2Occs(values$origOccs)
-  })
-
-  # Module Spatial Thin
+  # observe({
+  #   if (input$tabs == 2) {
+  #     gtext$cur_comp <- "gtext_comp2.Rmd"
+  # 
+  #     # if Module: Select Localities, populate guidance text and select legend
+  #     if (input$procOccSel == 'selpts') {
+  #       gtext$cur_mod <- "gtext_comp2_selectLocs.Rmd"
+  #       proxy %>%
+  #         showGroup('selPoly') %>%
+  #         removeControl('thinLeg') %>%
+  #         addLegend("topright", colors = c('red','yellow'),
+  #                           title = "Occ Records", labels = c('original', 'selected'),
+  #                           opacity = 1, layerId = 'selLeg')
+  #       # if localities are already selected, plot the original occs in red and the selected ones with yellow fill
+  #       if (!is.null(values$ptsSel)) {
+  #         proxy %>%
+  #           clearMarkers() %>%
+  #           map_plotLocs(values$origOccs) %>%
+  #           map_plotLocs(values$ptsSel, fillColor='yellow', fillOpacity=1) %>%
+  #           zoom2Occs(values$origOccs)
+  #       }
+  #     }
+  #     # if (input$procOccSel == 'spthin') {
+  #     #   gtext$cur_mod <- "gtext_comp2_spatialThin.Rmd"
+  #     #   proxy %>% addLegend("topright", colors = c('red', 'blue'),
+  #     #                       title = "Occ Records", labels = c('retained', 'removed'),
+  #     #                       opacity = 1, layerId = 'thinLeg') %>%
+  #     #     removeControl('selLeg') %>%
+  #     #     hideGroup('selPoly')
+  #     #   if (!is.null(values$ptsSel)) {
+  #     #     proxy %>% 
+  #     #       clearMarkers() %>%
+  #     #       map_plotLocs(values$ptsSel) %>% 
+  #     #       zoom2Occs(values$ptsSel)
+  #     #     if (!is.null(values$prethinned)) {
+  #     #       proxy %>% addCircleMarkers(data = values$prethinned, lat = ~latitude, lng = ~longitude,
+  #     #                                  radius = 5, color = 'red', fillColor = 'blue',
+  #     #                                  fillOpacity = 1, weight = 2, popup = ~pop,
+  #     #                                  group = 'comp2') %>%
+  #     #         addCircleMarkers(data = values$df, lat = ~latitude, lng = ~longitude,
+  #     #                          radius = 5, color = 'red', fillColor = 'red',
+  #     #                          fillOpacity = 1, weight = 2, popup = ~pop,
+  #     #                          group = 'comp2') %>%
+  #     #         zoom2Occs(values$prethinned)
+  #     #     }
+  #     #   }
+  #     # }
+  #     # switch to Map tab
+  #     updateTabsetPanel(session, 'main', selected = 'Map')
+  #     # map shape behavior
+  #     proxy %>%
+  #       hideGroup(c('r1', 'backgPoly', 'projPoly', 'r2Area', 'r2Time', 'r2MESS')) %>%
+  #       removeControl('r1LegCon') %>% removeControl('r1LegThr') %>% removeControl('r2LegArea') %>%
+  #       removeControl('r2LegTime') %>% removeControl('r2LegMESS')
+  #   }
+  # })
+  
+  # module Spatial Thin
+  thinOccs.call <- callModule(thinOccs, 'c2_thinOccs', logs, occs)
+  
   observeEvent(input$goThin, {
-    thinOccs(input$thinDist)
+    thinOccs.call()
+    # MAPPING - blue pts for remove, red pts for keep
+    map %>% 
+      addCircleMarkers(data = archivedOccs$input, lat = ~latitude, lng = ~longitude,
+                       radius = 5, color = 'red', fillColor = 'blue',
+                       fillOpacity = 1, weight = 2, popup = ~pop,
+                       group = 'comp2') %>%
+      addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
+                       radius = 5, color = 'red', fillColor = 'red',
+                       fillOpacity = 1, weight = 2, popup = ~pop,
+                       group = 'comp2')
     shinyjs::enable("dlProcOccCsv")
   })
+  
+  
 
-  # handle download for thinned records csv
-  output$dlProcOccCsv <- downloadHandler(
-    filename = function() {paste0(nameAbbr(values$df), "_procOccs.csv")},
-    content = function(file) {
-      write.csv(values$df[,1:9], file, row.names = FALSE)
-    }
-  )
+  # # functionality for drawing polygons on map
+  # observe({
+  #   if (input$tabs == 2 && input$procOccSel == "selpts") {
+  #     if (is.null(input$map_click)) return()
+  #     lonlat <- c(input$map_click$lng, input$map_click$lat)
+  # 
+  #     if (values$polyErase) {
+  #       if (identical(lonlat, values$mapClick)) return()
+  #       values$polyErase <- FALSE
+  #     }
+  # 
+  #     values$mapClick <- lonlat
+  #     values$polyPts1 <- isolate(rbind(values$polyPts1, lonlat))
+  #     proxy %>% removeShape("poly1")
+  #     proxy %>% addPolygons(values$polyPts1[,1], values$polyPts1[,2],
+  #                           layerId='poly1', fill=FALSE, weight=3, color='green', group='selPoly')
+  #   }
+  # })
+  # 
+  # # plots all polygons used for selection and fills them with ColorBrewer colors
+  # observe({
+  #   if (!is.null(values$poly1)) {
+  #     curPolys <- values$poly1@polygons
+  #     numPolys <- length(curPolys)
+  #     colors <- RColorBrewer::brewer.pal(numPolys, 'Set1')
+  #     for (i in 1:numPolys) {
+  #       curPoly <- curPolys[i][[1]]@Polygons[[1]]@coords
+  #       proxy %>% addPolygons(curPoly[,1], curPoly[,2], weight=3, color=colors[i], group = 'selPoly')
+  #     }
+  #   }
+  # })
+  # 
+  # # Module Select Localities: select localities intersecting drawn polygons (replace values$df)
+  # observeEvent(input$selectPoly, {
+  #   polySelLocs()
+  #   shinyjs::enable("dlProcOccCsv")
+  # })
+  # 
+  # # governs locality removal behavior and modifies tables in "values"
+  # observeEvent(input$remove, {
+  #   if (!is.null(values$ptsSel)) {
+  #     writeLog('<font color="red"><b>! ERROR</b></font> : Remove localities by ID before selecting with polygons. Press "Reset Localities" to start over.')
+  #     return()
+  #     }
+  #   remSelLocs(input$remLoc)
+  #   shinyjs::enable("dlProcOccCsv")
+  # })
+  # 
+  # # erase select localities polygon with button click
+  # observeEvent(input$erasePolySelLocs, {
+  #   validate(need(values$origOccs, message = FALSE))
+  #   values$ptsSel <- NULL
+  #   values$polyPts1 <- NULL
+  #   values$poly1 <- NULL
+  #   values$polyErase <- TRUE  # turn on to signal to prevent use existing map click
+  #   proxy %>% clearShapes()
+  #   if (!is.null(values$origOccs)) {
+  #     # if locs were removed, put them back in values$origOccs and turn off values$removed
+  #     if (!is.null(values$removed)) {
+  #       values$origOccs <- rbind(values$origOccs, values$removed)
+  #       values$removed <- NULL
+  #     }
+  #     # also reset removedAll
+  #     values$removedAll <- NULL
+  #     # and reset df
+  #     values$df <- values$origOccs
+  #     x <- paste('> RESET localities dataset back to', nrow(values$origOccs), 'records.')
+  #     isolate(writeLog(x))
+  #   }
+  #   proxy %>% 
+  #     clearMarkers() %>%
+  #     map_plotLocs(values$origOccs) %>%
+  #     zoom2Occs(values$origOccs)
+  # })
+  # 
+  # # handle download for thinned records csv
+  # output$dlProcOccCsv <- downloadHandler(
+  #   filename = function() {paste0(nameAbbr(values$df), "_procOccs.csv")},
+  #   content = function(file) {
+  #     write.csv(values$df[,1:9], file, row.names = FALSE)
+  #   }
+  # )
 
 #########################
 ### COMPONENT 3 ####
