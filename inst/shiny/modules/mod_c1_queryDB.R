@@ -19,9 +19,9 @@ queryDB_UI <- function(id) {
   )
 }
 
-queryDB <- function(input, output, session, logs, occs, archivedOccs) {
+queryDB <- function(input, output, session, logs, occs, spName) {
   
-  spName <- reactive({spName <- trimws(input$spName)})
+  spName <- reactive({trimws(input$spName)})
   
   query <- reactive({
     req(input$spName)
@@ -50,7 +50,7 @@ queryDB <- function(input, output, session, logs, occs, archivedOccs) {
     return(q)
   })
   
-  dbOccs <- reactive({
+  dbOccs.tbl <- reactive({
     req(query())
     # extract occurrence tibble
     recs <- query()[[input$occDb]]$data[[formatSpName(spName())]]
@@ -58,15 +58,15 @@ queryDB <- function(input, output, session, logs, occs, archivedOccs) {
     recs$latitude <- as.numeric(recs$latitude)
     recs$longitude <- as.numeric(recs$longitude)
     
-    archivedOccs$db <- recs
+    occsOrigDnld(recs)
     
     return(recs)
   })
   
   dbOccs.coords <- reactive({
-    req(dbOccs())
+    req(dbOccs.tbl())
     # subset to just records with latitude and longitude
-    recs <- dbOccs() %>% dplyr::filter(!is.na(latitude) & !is.na(longitude))
+    recs <- dbOccs.tbl() %>% dplyr::filter(!is.na(latitude) & !is.na(longitude))
     if (nrow(recs) == 0) {
       logs %>% writeLog('<font color="orange"><b>! WARNING</b></font> : No records with coordinates found in', input$occDb, "for", spName(), ".")
       return()
@@ -135,16 +135,15 @@ queryDB <- function(input, output, session, logs, occs, archivedOccs) {
     # get total number of records found in database
     totRows <- query()[[input$occDb]]$meta$found
     
-    noCoordsRem <- nrow(dbOccs()) - nrow(dbOccs.coords())
+    noCoordsRem <- nrow(dbOccs.tbl()) - nrow(dbOccs.coords())
     dupsRem <- nrow(dbOccs.coords()) - nrow(dbOccs.remDups())
-    logs %>% writeLog('> Total', input$occDb, 'records for', spName(), 'returned [', nrow(dbOccs()),
+    logs %>% writeLog('> Total', input$occDb, 'records for', spName(), 'returned [', nrow(dbOccs.tbl()),
                    '] out of [', totRows, '] total (limit ', input$occNum, ').
                    Records without coordinates removed [', noCoordsRem, '].
                    Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(recs), '].')
     
-    archivedOccs$input <- recs
     occs(recs)
-    return(occs)
+    return(recs)
   })
   
   return(dbOccs.out)

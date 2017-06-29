@@ -96,7 +96,7 @@ smartZoom <- function(longi, lati) {
 
 # for naming files
 nameAbbr <- function(spname) {
-  namespl <- strsplit(tolower(spname[1,1]), " ")
+  namespl <- strsplit(tolower(spname), " ")
   genusAbbr <- substring(namespl[[1]][1], 1, 1)
   fullNameAbbr <- paste0(genusAbbr, "_", namespl[[1]][2])
   return(fullNameAbbr)

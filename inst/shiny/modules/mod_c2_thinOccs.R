@@ -28,13 +28,16 @@ thinOccs <- function(input, output, session, logs, occs) {
       # pull thinned dataset with max records, not just the first in the list
       maxThin <- which(sapply(output, nrow) == max(sapply(output, nrow)))
       maxThin <- output[[ifelse(length(maxThin) > 1, maxThin[1], maxThin)]]  # if more than one max, pick first
-      occs() <- occs()[as.numeric(rownames(maxThin)),]
+      occs.thin <- occs()[as.numeric(rownames(maxThin)),]
       # if (!is.null(values$inFile)) {
       #   thinned.inFile <- values$inFile[as.numeric(rownames(output[[1]])),]
       # }
     })
     
     logs %>% writeLog('> Total records thinned to [', nrow(occs()), '] localities.')
+    
+    occs(occs.thin)
+    return(occs.thin)
   })
 
   return(doThin)

@@ -42,7 +42,6 @@ userOccs <- function(input, output, session, logs, occs) {
     uoccs$origID <- row.names(uoccs)  # add col for IDs
     uoccs$pop <- unlist(apply(uoccs, 1, popUpContent))  # add col for map marker popup text
     
-    archivedOccs$input <- uoccs
     occs(uoccs)
     return(uoccs)
   })

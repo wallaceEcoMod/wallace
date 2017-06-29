@@ -88,14 +88,17 @@ shinyServer(function(input, output, session) {
   })
   
   # component 1 reactives
-  archivedOccs <- reactiveValues()
-  occs <- reactiveVal()
+  occs <- reactiveVal()  # occs for analysis that get updated throughout 
+  occsOrigDnld <- reactiveVal() # original database query table for user download
   
   # module Query Database
-  dbOccs.call <- callModule(queryDB, 'c1_queryDB', logs, occs, archivedOccs)
+  dbOccs.call <- callModule(queryDB, 'c1_queryDB', logs, occs)
+  
+  dbOccs <- eventReactive(input$goDbOccs, dbOccs.call())
+  spName <- reactive(dbOccs()$name[1])
   
   observeEvent(input$goDbOccs, {
-    dbOccs.call()
+    dbOccs()
     map %>%
       clearMarkers() %>%
       map_plotLocs(occs()) %>%
@@ -106,8 +109,12 @@ shinyServer(function(input, output, session) {
   # module User Occurrence Data
   userOccs.call <- callModule(userOccs, 'c1_userOccs', logs, occs)
   
+  userOccs <- eventReactive(input$goUserOccs, userOccs.call())
+  
+  # observe(print(nameAbbr(occsOrigDnld()$name[1])))
+  
   observeEvent(input$goUserOccs, {
-    userOccs.call()
+    userOccs()
     map %>%
       clearMarkers() %>%
       map_plotLocs(occs()) %>%
@@ -121,9 +128,9 @@ shinyServer(function(input, output, session) {
 
   # handle downloading of original GBIF records after cleaning
   output$dlDbOccs <- downloadHandler(
-    filename = function() {paste0(nameAbbr(occs.orig()$name[1]), '_', input$occDb, ".csv")},
+    filename = function() {paste0(nameAbbr(spName()), '_', input$occDb, ".csv")},
     content = function(file) {
-      write.csv(occs.orig(), file, row.names=FALSE)
+      write.csv(occsOrigDnld(), file, row.names=FALSE)
     }
   )
 
@@ -192,11 +199,13 @@ shinyServer(function(input, output, session) {
   # module Spatial Thin
   thinOccs.call <- callModule(thinOccs, 'c2_thinOccs', logs, occs)
   
+  thinOccs <- eventReactive(input$goUserOccs, thinOccs.call())
+  
   observeEvent(input$goThin, {
-    thinOccs.call()
+    thinOccs()
     # MAPPING - blue pts for remove, red pts for keep
     map %>% 
-      addCircleMarkers(data = archivedOccs$input, lat = ~latitude, lng = ~longitude,
+      addCircleMarkers(data = dbOccs(), lat = ~latitude, lng = ~longitude,
                        radius = 5, color = 'red', fillColor = 'blue',
                        fillOpacity = 1, weight = 2, popup = ~pop,
                        group = 'comp2') %>%
