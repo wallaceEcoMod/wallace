@@ -199,9 +199,9 @@ shinyServer(function(input, output, session) {
   # module Spatial Thin
   thinOccs.call <- callModule(thinOccs, 'c2_thinOccs', logs, occs)
   
-  thinOccs <- eventReactive(input$goUserOccs, thinOccs.call())
+  thinOccs <- eventReactive(input$goThinOccs, thinOccs.call())
   
-  observeEvent(input$goThin, {
+  observeEvent(input$goThinOccs, {
     thinOccs()
     # MAPPING - blue pts for remove, red pts for keep
     map %>% 

@@ -73,7 +73,7 @@ shinyUI(tagList(
                                                       conditionalPanel("input.procOccSel == 'spthin'",
                                                                        uiTop('Spatial Thin', 'spThin', 'Spatial Thinning of Species Occurrence Records'),
                                                                        thinOccs_UI('c2_thinOccs'),
-                                                                       actionButton("goThin", "Thin Occurrences"), br(), br(),
+                                                                       actionButton("goThinOccs", "Thin Occurrences"), br(), br(),
                                                                        uiBottom('spThin', "Matthew E. Aiello-Lammens, Rob A. Boria, 
                                                                                           Alex Radosavljevic, Bruno Vilela, Robert P. Anderson"),
                                                                        " | ", a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/ecog.01132/abstract", target = "_blank")
