@@ -60,6 +60,8 @@ queryDB <- function(input, output, session, logs, occs, spName) {
     
     occsOrigDnld(recs)
     
+    recs <- recs %>% dplyr::mutate(origID = row.names(recs))  # make new column for original ID
+    
     return(recs)
   })
   
@@ -125,12 +127,10 @@ queryDB <- function(input, output, session, logs, occs, spName) {
     
     # subset by key columns and make id and popup columns
     cols <- c("name", "longitude", "latitude","year", "institutionCode", "country", "stateProvince",
-              "locality", "elevation", "basisOfRecord")
+              "locality", "elevation", "basisOfRecord", "origID")
     recs <- recs %>%
       dplyr::select(dplyr::one_of(cols)) %>%
-      dplyr::mutate(origID = row.names(recs))  # make new column for ID
-    
-    recs <- recs %>% dplyr::mutate(pop = unlist(apply(recs, 1, popUpContent)))  # make new column for leaflet marker popup content
+      dplyr::mutate(pop = unlist(apply(recs, 1, popUpContent)))  # make new column for leaflet marker popup content
     
     # get total number of records found in database
     totRows <- query()[[input$occDb]]$meta$found
