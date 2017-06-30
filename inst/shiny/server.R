@@ -212,7 +212,10 @@ shinyServer(function(input, output, session) {
       addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                        radius = 5, color = 'red', fillColor = 'red',
                        fillOpacity = 1, weight = 2, popup = ~pop,
-                       group = 'comp2')
+                       group = 'comp2') %>%
+      addLegend("topright", colors = c('red', 'blue'),
+                title = "Occ Records", labels = c('retained', 'removed'),
+                opacity = 1, layerId = 'thinLeg')
     shinyjs::enable("dlProcOccCsv")
   })
   
@@ -293,13 +296,13 @@ shinyServer(function(input, output, session) {
   #     zoom2Occs(values$origOccs)
   # })
   # 
-  # # handle download for thinned records csv
-  # output$dlProcOccCsv <- downloadHandler(
-  #   filename = function() {paste0(nameAbbr(values$df), "_procOccs.csv")},
-  #   content = function(file) {
-  #     write.csv(values$df[,1:9], file, row.names = FALSE)
-  #   }
-  # )
+  # handle download for thinned records csv
+  output$dlProcOccCsv <- downloadHandler(
+    filename = function() {paste0(nameAbbr(values$df), "_procOccs.csv")},
+    content = function(file) {
+      write.csv(values$df[,1:9], file, row.names = FALSE)
+    }
+  )
 
 #########################
 ### COMPONENT 3 ####
