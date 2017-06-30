@@ -6,7 +6,7 @@ userOccs_UI <- function(id) {
   )
 }
 
-userOccs <- function(input, output, session, logs, occs) {
+userOccs_MOD <- function(input, output, session, logs, occs) {
   
   readOccsCSV <- reactive({
     req(input$userCSV)

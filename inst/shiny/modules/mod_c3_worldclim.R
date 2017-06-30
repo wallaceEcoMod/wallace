@@ -14,33 +14,18 @@ wcBioclims_UI <- function(id) {
   )
 }
 
-wcBioclims <- function(input, output, session, logs, occs) {
-
-  doThin <- reactive({
-    if (input$thinDist <= 0) {
-      logs %>% writeLog('<font color="orange"><b>! WARNING</b></font> : Assign positive distance to thinning parameter.')
-      return()
-    }
-    
-    withProgress(message = "Spatially Thinning Localities...", {  # start progress bar
-      output <- spThin::thin(occs(), 'latitude', 'longitude', 'name', thin.par = input$thinDist,
-                             reps = 100, locs.thinned.list.return = TRUE, write.files = FALSE,
-                             verbose = FALSE)
-      
-      # pull thinned dataset with max records, not just the first in the list
-      maxThin <- which(sapply(output, nrow) == max(sapply(output, nrow)))
-      maxThin <- output[[ifelse(length(maxThin) > 1, maxThin[1], maxThin)]]  # if more than one max, pick first
-      occs.thin <- occs()[as.numeric(rownames(maxThin)),]
-      # if (!is.null(values$inFile)) {
-      #   thinned.inFile <- values$inFile[as.numeric(rownames(output[[1]])),]
-      # }
+wcBioclims_MOD <- function(input, output, session, logs, occs, mapCntr) {
+  reactive({
+    withProgress(message = "Retrieving WorldClim data...", {
+      if (input$bcRes == 0.5) {
+        envs <- raster::getData(name = "worldclim", var = "bio", res = input$bcRes, lon = mapCntr()[1], lat = mapCntr()[2])
+      } else {
+        envs <- raster::getData(name = "worldclim", var = "bio", res = input$bcRes)
+      }
     })
     
-    logs %>% writeLog('> Total records thinned to [', nrow(occs.thin), '] localities.')
+    logs %>% writeLog("> Environmental predictors: WorldClim bio1-19 at", input$bcRes, " arcmin resolution.")
     
-    occs(occs.thin)
-    return(occs.thin)
+    return(envs)
   })
-
-  return(doThin)
 }

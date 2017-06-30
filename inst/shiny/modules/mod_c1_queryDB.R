@@ -19,7 +19,7 @@ queryDB_UI <- function(id) {
   )
 }
 
-queryDB <- function(input, output, session, logs, occs, spName) {
+queryDB_MOD <- function(input, output, session, logs, occs, spName) {
   
   spName <- reactive({trimws(input$spName)})
   

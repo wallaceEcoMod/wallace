@@ -12,7 +12,7 @@ thinOccs_UI <- function(id) {
   )
 }
 
-thinOccs <- function(input, output, session, logs, occs) {
+thinOccs_MOD <- function(input, output, session, logs, occs) {
 
   doThin <- reactive({
     if (input$thinDist <= 0) {

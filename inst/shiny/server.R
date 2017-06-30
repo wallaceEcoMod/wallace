@@ -92,7 +92,7 @@ shinyServer(function(input, output, session) {
   occsOrigDnld <- reactiveVal() # original database query table for user download
   
   # module Query Database
-  dbOccs.call <- callModule(queryDB, 'c1_queryDB', logs, occs)
+  dbOccs.call <- callModule(queryDB_MOD, 'c1_queryDB', logs, occs)
   
   dbOccs <- eventReactive(input$goDbOccs, dbOccs.call())
   spName <- reactive(dbOccs()$name[1])
@@ -107,7 +107,7 @@ shinyServer(function(input, output, session) {
   })
 
   # module User Occurrence Data
-  userOccs.call <- callModule(userOccs, 'c1_userOccs', logs, occs)
+  userOccs.call <- callModule(userOccs_MOD, 'c1_userOccs', logs, occs)
   
   userOccs <- eventReactive(input$goUserOccs, userOccs.call())
   
@@ -197,7 +197,7 @@ shinyServer(function(input, output, session) {
   # })
   
   # module Spatial Thin
-  thinOccs.call <- callModule(thinOccs, 'c2_thinOccs', logs, occs)
+  thinOccs.call <- callModule(thinOccs_MOD, 'c2_thinOccs', logs, occs)
   
   thinOccs <- eventReactive(input$goThinOccs, thinOccs.call())
   
@@ -342,13 +342,37 @@ shinyServer(function(input, output, session) {
 
   # enable download button
   # shinyjs::enable("predDnld")
-
-  # module WorldClim
-  observeEvent(input$predDnld, {
-    if (!is.null(values$df)) {
-      comp3_bioclim(input$bcRes)
-    }
+  
+  # module Spatial Thin
+  wcBioclims.call <- callModule(wcBioclims_MOD, 'c3_wcBioclims', logs, occs, mapCntr)
+  
+  wcBioclims <- eventReactive(input$goEnvData, {
+    wcBioclims.call()
+    })
+  
+  observeEvent(input$goEnvData, {
+    occs(remEnvsValsNA(wcBioclims, occs))
   })
+  
+  remEnvsValsNA <- function(envs, occs) {
+    withProgress(message = "Processing...", {
+      occsVals <- raster::extract(envs(), occs()[c('longitude', 'latitude')])
+      
+      if (sum(is.na(occsVals)) == length(occsVals)) {
+        logs %>% writeLog('<font color="red"><b>! ERROR</b></font> : No localities overlay with environmental predictors. 
+                          All localities may be marine -- please redo with terrestrial occurrences.')
+        return()
+      }
+      
+      occsEnvsVals <- occs()[!is.na(occsVals),]
+      
+      if (sum(is.na(occsVals)) > 0) {
+        logs %>% writeLog("! WARNING: Removed records without environmental values with origIDs: ",
+                                paste(occsEnvsVals$origID, collapse=', '), ".")
+      }
+      return(occsEnvsVals)
+    })
+  }
 
   # observeEvent(input$userPreds, {
   #   validate(need(input$userPreds, message = FALSE))
