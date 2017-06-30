@@ -312,36 +312,36 @@ shinyServer(function(input, output, session) {
 #########################
 
   # guidance text
-  observe({
-    if (input$tabs == 3) {
-      gtext$cur_comp <- "gtext_comp3.Rmd"
-      if (input$envSel == 'WorldClim') gtext$cur_mod <- "gtext_comp3_worldclim.Rmd"
-      # switch to Map tab
-      updateTabsetPanel(session, 'main', selected = 'Map')
-      # plot pts
-      if (!is.null(values$df)) proxy %>% 
-        clearMarkers() %>%
-        map_plotLocs(values$df)
-      # map shape behavior
-      proxy %>% 
-        clearMarkers() %>%
-        map_plotLocs(values$df) %>%
-        hideGroup(c('r1', 'r1LegThr', 'selPoly', 'backgPoly', 'projPoly', 'r2Area', 'r2Time', 'r2MESS')) %>%
-        removeControl('selLeg') %>% removeControl('thinLeg') %>% removeControl('r1LegCon') %>%
-        removeControl('r1LegThr') %>% removeControl('r2LegArea') %>% removeControl('r2LegTime') %>%
-        removeControl('r2LegMESS')
-    }
-  })
+  # observe({
+  #   if (input$tabs == 3) {
+  #     gtext$cur_comp <- "gtext_comp3.Rmd"
+  #     if (input$envSel == 'WorldClim') gtext$cur_mod <- "gtext_comp3_worldclim.Rmd"
+  #     # switch to Map tab
+  #     updateTabsetPanel(session, 'main', selected = 'Map')
+  #     # plot pts
+  #     if (!is.null(values$df)) proxy %>% 
+  #       clearMarkers() %>%
+  #       map_plotLocs(values$df)
+  #     # map shape behavior
+  #     proxy %>% 
+  #       clearMarkers() %>%
+  #       map_plotLocs(values$df) %>%
+  #       hideGroup(c('r1', 'r1LegThr', 'selPoly', 'backgPoly', 'projPoly', 'r2Area', 'r2Time', 'r2MESS')) %>%
+  #       removeControl('selLeg') %>% removeControl('thinLeg') %>% removeControl('r1LegCon') %>%
+  #       removeControl('r1LegThr') %>% removeControl('r2LegArea') %>% removeControl('r2LegTime') %>%
+  #       removeControl('r2LegMESS')
+  #   }
+  # })
 
   # map center coordinates for 30 arcsec download
+  mapCntr <- reactive(mapCenter(input$map_bounds))
+  
   observe({
-    mapCntr <- mapCenter(input$map_bounds)
-    values$mapCntr <- mapCntr
-    output$ctrLatLon <- renderText({paste('Using map center', paste(mapCntr, collapse=', '))})
+    output$ctrLatLon <- renderText({paste('Using map center', paste(mapCntr(), collapse=', '))})
   })
 
   # enable download button
-  observe({if (input$bcRes != "") shinyjs::enable("predDnld")})
+  # shinyjs::enable("predDnld")
 
   # module WorldClim
   observeEvent(input$predDnld, {
