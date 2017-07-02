@@ -314,9 +314,7 @@ shinyServer(function(input, output, session) {
   observe({
     if (input$tabs == 3) {
       gtext$cur_comp <- "gtext_comp3.Rmd"
-      if (input$envSel == 'WorldClim') gtext$cur_mod <- "gtext_comp3_worldclim.Rmd"
-      # switch to Results tab
-      updateTabsetPanel(session, 'main', selected = 'Results')
+      if (input$envSel == 'wcbc') gtext$cur_mod <- "gtext_comp3_worldclim.Rmd"
   #     # plot pts
   #     if (!is.null(values$df)) proxy %>% 
   #       clearMarkers() %>%
@@ -344,13 +342,25 @@ shinyServer(function(input, output, session) {
   
   # reactive value to hold environmental predictor variables
   envs <- reactiveVal()
+  observe(print(envs()))
   
-  # module WorldClim
-  wcBioclims.call <- callModule(wcBioclims_MOD, 'c3_wcBioclims', logs, occs, mapCntr, envs)
+  # module WorldClim Bioclims
+  wcBioclims.call <- callModule(wcBioclims_MOD, 'c3_wcBioclims', logs, mapCntr, envs)
   
   observeEvent(input$goEnvData, {
     occs.naEnvRem <- remEnvsValsNA(wcBioclims.call(), occs)
     occs(occs.naEnvRem)
+    # switch to Results tab
+    updateTabsetPanel(session, 'main', selected = 'Results')
+  })
+  
+  userEnvs.call <- callModule(userEnvs_MOD, 'c3_userEnvs', logs, envs)
+  
+  observeEvent(input$goUserEnvs, {
+    occs.naEnvRem <- remEnvsValsNA(userEnvs.call(), occs)
+    occs(occs.naEnvRem)
+    # switch to Results tab
+    updateTabsetPanel(session, 'main', selected = 'Results')
   })
   
   remEnvsValsNA <- function(envs, occs) {
@@ -375,8 +385,10 @@ shinyServer(function(input, output, session) {
   
   output$envsTbl <- DT::renderDataTable({
     req(envs())
-    mins <- sapply(envs()@layers, function(x) x@data@min)
-    maxs <- sapply(envs()@layers, function(x) x@data@max)
+    # mins <- sapply(envs()@layers, function(x) x@data@min)
+    # maxs <- sapply(envs()@layers, function(x) x@data@max)
+    mins <- cellStats(envs(), stat = min)
+    maxs <- cellStats(envs(), stat = max)
     DT::datatable(data.frame(name=names(envs()), min=mins, max=maxs), 
                   rownames = FALSE, options = list(pageLength = raster::nlayers(envs())))
   })

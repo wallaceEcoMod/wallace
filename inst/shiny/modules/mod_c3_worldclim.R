@@ -14,7 +14,7 @@ wcBioclims_UI <- function(id) {
   )
 }
 
-wcBioclims_MOD <- function(input, output, session, logs, occs, mapCntr, envs) {
+wcBioclims_MOD <- function(input, output, session, logs, mapCntr, envs) {
   reactive({
     withProgress(message = "Retrieving WorldClim data...", {
       if (input$bcRes == 0.5) {

@@ -95,9 +95,10 @@ shinyUI(tagList(
                                      conditionalPanel("input.tabs == 3",
                                                       h4("Obtain Environmental Data"),
                                                       radioButtons("envSel", "Modules Available:",
-                                                                   choices = list("WorldClim")),
+                                                                   choices = list("WorldClim Bioclims" = 'wcbc',
+                                                                                  "User" = 'user')),
                                                       HTML('<hr>'),
-                                                      conditionalPanel("input.envSel == 'WorldClim'",
+                                                      conditionalPanel("input.envSel == 'wcbc'",
                                                                        uiTop('WorldClim', 'raster', 'Geographic Data Analysis and Modeling'),
                                                                        wcBioclims_UI("c3_wcBioclims"),
                                                                        strong("Using map center coordinates as reference for tile download."),
@@ -107,7 +108,12 @@ shinyUI(tagList(
                                                                                  Michael Sumner, Jonathan A. Greenberg, Oscar Perpinan Lamigueriro, Andrew Bevan, 
                                                                                  Etienne B. Racine, Ashton Shortridge"),
                                                                        " | ", a("WorldClim", href="http://worldclim.org", target="_blank")
-                                                                       # fileInput(inputId = "userPreds", label = "Input predictor rasters", multiple = TRUE),
+                                                      ),
+                                                      conditionalPanel("input.envSel == 'user'",
+                                                                       div('Module: User-specified Environmental Predictors', id="mod"),
+                                                                       HTML('<hr>'),
+                                                                       userEnvs_UI('c3_userEnvs'),
+                                                                       actionButton('goUserEnvs', 'Load Rasters')
                                                       )
                                      ),
                                      # tab 4 ####
