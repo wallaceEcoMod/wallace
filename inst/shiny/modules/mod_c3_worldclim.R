@@ -14,18 +14,19 @@ wcBioclims_UI <- function(id) {
   )
 }
 
-wcBioclims_MOD <- function(input, output, session, logs, occs, mapCntr) {
+wcBioclims_MOD <- function(input, output, session, logs, occs, mapCntr, envs) {
   reactive({
     withProgress(message = "Retrieving WorldClim data...", {
       if (input$bcRes == 0.5) {
-        envs <- raster::getData(name = "worldclim", var = "bio", res = input$bcRes, lon = mapCntr()[1], lat = mapCntr()[2])
+        wcbc <- raster::getData(name = "worldclim", var = "bio", res = input$bcRes, lon = mapCntr()[1], lat = mapCntr()[2])
       } else {
-        envs <- raster::getData(name = "worldclim", var = "bio", res = input$bcRes)
+        wcbc <- raster::getData(name = "worldclim", var = "bio", res = input$bcRes)
       }
     })
     
     logs %>% writeLog("> Environmental predictors: WorldClim bio1-19 at", input$bcRes, " arcmin resolution.")
     
-    return(envs)
+    # load into envs
+    envs(wcbc)
   })
 }

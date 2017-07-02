@@ -139,13 +139,12 @@ shinyServer(function(input, output, session) {
 #########################
 
   # guidance text
-  # observe({
-  #   if (input$tabs == 2) {
-  #     gtext$cur_comp <- "gtext_comp2.Rmd"
-  # 
-  #     # if Module: Select Localities, populate guidance text and select legend
-  #     if (input$procOccSel == 'selpts') {
-  #       gtext$cur_mod <- "gtext_comp2_selectLocs.Rmd"
+  observe({
+    if (input$tabs == 2) {
+      gtext$cur_comp <- "gtext_comp2.Rmd"
+      # if Module: Select Localities, populate guidance text and select legend
+      if (input$procOccSel == 'selpts') {
+        gtext$cur_mod <- "gtext_comp2_selectLocs.Rmd"
   #       proxy %>%
   #         showGroup('selPoly') %>%
   #         removeControl('thinLeg') %>%
@@ -160,9 +159,9 @@ shinyServer(function(input, output, session) {
   #           map_plotLocs(values$ptsSel, fillColor='yellow', fillOpacity=1) %>%
   #           zoom2Occs(values$origOccs)
   #       }
-  #     }
-  #     # if (input$procOccSel == 'spthin') {
-  #     #   gtext$cur_mod <- "gtext_comp2_spatialThin.Rmd"
+      }
+      if (input$procOccSel == 'spthin') {
+        gtext$cur_mod <- "gtext_comp2_spatialThin.Rmd"
   #     #   proxy %>% addLegend("topright", colors = c('red', 'blue'),
   #     #                       title = "Occ Records", labels = c('retained', 'removed'),
   #     #                       opacity = 1, layerId = 'thinLeg') %>%
@@ -185,7 +184,7 @@ shinyServer(function(input, output, session) {
   #     #         zoom2Occs(values$prethinned)
   #     #     }
   #     #   }
-  #     # }
+      }
   #     # switch to Map tab
   #     updateTabsetPanel(session, 'main', selected = 'Map')
   #     # map shape behavior
@@ -193,8 +192,8 @@ shinyServer(function(input, output, session) {
   #       hideGroup(c('r1', 'backgPoly', 'projPoly', 'r2Area', 'r2Time', 'r2MESS')) %>%
   #       removeControl('r1LegCon') %>% removeControl('r1LegThr') %>% removeControl('r2LegArea') %>%
   #       removeControl('r2LegTime') %>% removeControl('r2LegMESS')
-  #   }
-  # })
+    }
+  })
   
   # module Spatial Thin
   thinOccs.call <- callModule(thinOccs_MOD, 'c2_thinOccs', logs, occs)
@@ -312,12 +311,12 @@ shinyServer(function(input, output, session) {
 #########################
 
   # guidance text
-  # observe({
-  #   if (input$tabs == 3) {
-  #     gtext$cur_comp <- "gtext_comp3.Rmd"
-  #     if (input$envSel == 'WorldClim') gtext$cur_mod <- "gtext_comp3_worldclim.Rmd"
-  #     # switch to Map tab
-  #     updateTabsetPanel(session, 'main', selected = 'Map')
+  observe({
+    if (input$tabs == 3) {
+      gtext$cur_comp <- "gtext_comp3.Rmd"
+      if (input$envSel == 'WorldClim') gtext$cur_mod <- "gtext_comp3_worldclim.Rmd"
+      # switch to Results tab
+      updateTabsetPanel(session, 'main', selected = 'Results')
   #     # plot pts
   #     if (!is.null(values$df)) proxy %>% 
   #       clearMarkers() %>%
@@ -330,8 +329,8 @@ shinyServer(function(input, output, session) {
   #       removeControl('selLeg') %>% removeControl('thinLeg') %>% removeControl('r1LegCon') %>%
   #       removeControl('r1LegThr') %>% removeControl('r2LegArea') %>% removeControl('r2LegTime') %>%
   #       removeControl('r2LegMESS')
-  #   }
-  # })
+    }
+  })
 
   # map center coordinates for 30 arcsec download
   mapCntr <- reactive(mapCenter(input$map_bounds))
@@ -341,17 +340,17 @@ shinyServer(function(input, output, session) {
   })
 
   # enable download button
-  # shinyjs::enable("predDnld")
+  shinyjs::enable("predDnld")
   
-  # module Spatial Thin
-  wcBioclims.call <- callModule(wcBioclims_MOD, 'c3_wcBioclims', logs, occs, mapCntr)
+  # reactive value to hold environmental predictor variables
+  envs <- reactiveVal()
   
-  wcBioclims <- eventReactive(input$goEnvData, {
-    wcBioclims.call()
-    })
+  # module WorldClim
+  wcBioclims.call <- callModule(wcBioclims_MOD, 'c3_wcBioclims', logs, occs, mapCntr, envs)
   
   observeEvent(input$goEnvData, {
-    occs(remEnvsValsNA(wcBioclims, occs))
+    occs.naEnvRem <- remEnvsValsNA(wcBioclims.call(), occs)
+    occs(occs.naEnvRem)
   })
   
   remEnvsValsNA <- function(envs, occs) {
@@ -373,7 +372,15 @@ shinyServer(function(input, output, session) {
       return(occsEnvsVals)
     })
   }
-
+  
+  output$envsTbl <- DT::renderDataTable({
+    req(envs())
+    mins <- sapply(envs()@layers, function(x) x@data@min)
+    maxs <- sapply(envs()@layers, function(x) x@data@max)
+    DT::datatable(data.frame(name=names(envs()), min=mins, max=maxs), 
+                  rownames = FALSE, options = list(pageLength = raster::nlayers(envs())))
+  })
+  
   # observeEvent(input$userPreds, {
   #   validate(need(input$userPreds, message = FALSE))
   #   comp3_userPreds(input$userPreds)
