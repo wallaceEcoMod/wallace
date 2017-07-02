@@ -466,7 +466,7 @@ shinyUI(tagList(
                                                        tabPanel('Map', leaflet::leafletOutput("map", height=600)),
                                                        tabPanel('Occs Tbl', DT::dataTableOutput('occTbl')),
                                                        tabPanel('Results', 
-                                                                conditionalPanel("input.tabs == 3", DT::dataTableOutput('envsTbl')),
+                                                                conditionalPanel("input.tabs == 3", verbatimTextOutput('envsPrint')),
                                                                 conditionalPanel("input.tabs == 6", DT::dataTableOutput('evalTbl')),
                                                                 conditionalPanel("input.tabs == 7 && input.visSel == 'response'",
                                                                                  imageOutput('respCurv')),

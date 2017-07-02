@@ -359,6 +359,8 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goUserEnvs, {
     occs.naEnvRem <- remEnvsValsNA(userEnvs.call(), occs)
     occs(occs.naEnvRem)
+    print(envs())
+    print(envs()@layers)
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
   })
@@ -383,14 +385,16 @@ shinyServer(function(input, output, session) {
     })
   }
   
-  output$envsTbl <- DT::renderDataTable({
+  output$envsPrint <- renderPrint({
     req(envs())
+    envs()
     # mins <- sapply(envs()@layers, function(x) x@data@min)
     # maxs <- sapply(envs()@layers, function(x) x@data@max)
-    mins <- cellStats(envs(), stat = min)
-    maxs <- cellStats(envs(), stat = max)
-    DT::datatable(data.frame(name=names(envs()), min=mins, max=maxs), 
-                  rownames = FALSE, options = list(pageLength = raster::nlayers(envs())))
+    # names <- sapply(strsplit(names(envs()), '[.]'), function(x) x[-2])
+    # mins <- round(cellStats(envs(), stat = min), digits = 3)
+    # maxs <- round(cellStats(envs(), stat = max), digits = 3)
+    # DT::datatable(data.frame(name=names, min=mins, max=maxs), 
+    #               rownames = FALSE, options = list(pageLength = raster::nlayers(envs())))
   })
   
   # observeEvent(input$userPreds, {

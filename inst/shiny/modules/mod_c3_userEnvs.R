@@ -9,7 +9,7 @@ userEnvs_UI <- function(id) {
 userEnvs_MOD <- function(input, output, session, logs, envs) {
   reactive({
       withProgress(message = "Reading in rasters...", {
-        uenvs <- stack(input$userEnvs$datapath)
+        uenvs <- raster::stack(input$userEnvs$datapath)
         names(uenvs) <- input$userEnvs$name
       })
     
@@ -17,8 +17,5 @@ userEnvs_MOD <- function(input, output, session, logs, envs) {
     
     # load into envs
     envs(uenvs)
-    
-    print(cellStats(envs(), stat = min))
-    print(cellStats(envs(), stat = max))
   })
 }
