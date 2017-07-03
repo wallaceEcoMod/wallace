@@ -111,8 +111,6 @@ shinyServer(function(input, output, session) {
   
   userOccs <- eventReactive(input$goUserOccs, userOccs.call())
   
-  # observe(print(nameAbbr(occsOrigDnld()$name[1])))
-  
   observeEvent(input$goUserOccs, {
     userOccs()
     map %>%
@@ -333,12 +331,9 @@ shinyServer(function(input, output, session) {
   # map center coordinates for 30 arcsec download
   mapCntr <- reactive(mapCenter(input$map_bounds))
   
-  observe({
-    output$ctrLatLon <- renderText({paste('Using map center', paste(mapCntr(), collapse=', '))})
-  })
-
-  # enable download button
-  shinyjs::enable("predDnld")
+  output$ctrLatLon <- renderText({
+    paste('Using map center', paste(mapCntr(), collapse=', '))
+    })
   
   # reactive value to hold environmental predictor variables
   envs <- reactiveVal()
@@ -352,6 +347,8 @@ shinyServer(function(input, output, session) {
     occs(occs.naEnvRem)
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
+    # enable download button
+    shinyjs::enable("predDnld")
   })
   
   userEnvs.call <- callModule(userEnvs_MOD, 'c3_userEnvs', logs, envs)
@@ -359,8 +356,6 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goUserEnvs, {
     occs.naEnvRem <- remEnvsValsNA(userEnvs.call(), occs)
     occs(occs.naEnvRem)
-    print(envs())
-    print(envs()@layers)
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
   })
@@ -396,21 +391,6 @@ shinyServer(function(input, output, session) {
     # DT::datatable(data.frame(name=names, min=mins, max=maxs), 
     #               rownames = FALSE, options = list(pageLength = raster::nlayers(envs())))
   })
-  
-  # observeEvent(input$userPreds, {
-  #   validate(need(input$userPreds, message = FALSE))
-  #   comp3_userPreds(input$userPreds)
-  # })
-
-  # future user input functionality for rasters
-  #   output$predTxt2 <- renderUI({
-  #     if (input$userPred == "") return()
-  #     isolate({
-  #       files <- file.path(input$userPred, list.files(input$userPred))
-  #       values$pred <- stack(files)
-  #       paste("Using user-provided environmental data.")
-  #     })
-  #   })
 
 #########################
 ### COMPONENT 4 ####
@@ -433,36 +413,58 @@ shinyServer(function(input, output, session) {
       # switch to Map tab
       updateTabsetPanel(session, 'main', selected = 'Map')
       # plot pts
-      if (!is.null(values$df)) proxy %>% 
-        clearMarkers() %>%
-        map_plotLocs(values$df)
-      # map shape behavior
-      proxy %>% 
-        clearMarkers() %>%
-        map_plotLocs(values$df) %>%
-        showGroup('backgPoly') %>%
-        hideGroup(c('r1', 'selPoly', 'projPoly', 'r2Area', 'r2Time', 'r2MESS')) %>%
-        removeControl('selLeg') %>% removeControl('thinLeg') %>% removeControl('r1LegCon') %>%
-        removeControl('r1LegThr') %>% removeControl('r2LegArea') %>% removeControl('r2LegTime') %>%
-        removeControl('r2LegMESS')
+      # if (!is.null(values$df)) proxy %>% 
+      #   clearMarkers() %>%
+      #   map_plotLocs(values$df)
+      # # map shape behavior
+      # proxy %>% 
+      #   clearMarkers() %>%
+      #   map_plotLocs(values$df) %>%
+      #   showGroup('backgPoly') %>%
+      #   hideGroup(c('r1', 'selPoly', 'projPoly', 'r2Area', 'r2Time', 'r2MESS')) %>%
+      #   removeControl('selLeg') %>% removeControl('thinLeg') %>% removeControl('r1LegCon') %>%
+      #   removeControl('r1LegThr') %>% removeControl('r2LegArea') %>% removeControl('r2LegTime') %>%
+      #   removeControl('r2LegMESS')
     }
   })
-
-  # module Select Study Region - set buffer, extent shape
+  
+  bgSelect.call <- callModule(bgSelect_MOD, 'c4_bgSelect', logs, occs, envs)
+  
   observe({
-    if (is.null(values$preds)) return()
-    if (input$tabs == 4) comp4_studyReg(input$backgBuf, input$backgSel)
+    bgExt <- bgSelect.call()
+    if (input$bgBuf > 0) {
+      bgExt <- rgeos::gBuffer(bgExt(), width = input$bgBuf)
+      writeLog('> Study extent buffered by', input$bgBuf, 'degrees.')
+    }
   })
-
-  # module Select Study Region - mask out environmental predictors by background extent
-  observeEvent(input$goBackgMask, {
-    if (is.null(values$preds)) {
+  
+  bgPts <- eventReactive(input$goBgMask, {
+    if (is.null(bgExt())) {
       writeLog('<font color="red"><b>! ERROR</b></font> : Obtain environmental data first...')
       return()
     }
-    comp4_mskStudyReg()
+    # mask envs by background extent
+    withProgress(message = "Processing environmental data...", {
+      bgCrop <- raster::crop(envs(), bgExt())
+      bgMask <- raster::mask(bgCrop, bgExt())
+    })
+    logs %>% writeLog('> Environmental data masked.')
+    # sample random background points
+    withProgress(message = "Generating background points...", {
+      bgXY <- dismo::randomPoints(bgMask, 10000)
+    })
+    logs %>% writeLog('> Random background points sampled (n = 10,000).')
     shinyjs::enable("downloadMskPreds")
+    return(bgXY)
   })
+  
+  
+    
+    # map %>%
+    #   addPolygons(lng=bb[,1], lat=bb[,2], layerId="backext",
+    #               weight=10, color="red", group='backgPoly') %>%
+    #   fitBounds(max(bb[,1]), max(bb[,2]), min(bb[,1]), min(bb[,2]))
+
 
   # handle download for masked predictors, with file type as user choice
   output$downloadMskPreds <- downloadHandler(
