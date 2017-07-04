@@ -337,13 +337,14 @@ shinyServer(function(input, output, session) {
   
   # reactive value to hold environmental predictor variables
   envs <- reactiveVal()
-  observe(print(envs()))
   
   # module WorldClim Bioclims
   wcBioclims.call <- callModule(wcBioclims_MOD, 'c3_wcBioclims', logs, mapCntr, envs)
   
   observeEvent(input$goEnvData, {
-    occs.naEnvRem <- remEnvsValsNA(wcBioclims.call(), occs)
+    # load into envs
+    envs(wcBioclims.call())
+    occs.naEnvRem <- remEnvsValsNA(envs, occs)
     occs(occs.naEnvRem)
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
@@ -354,7 +355,8 @@ shinyServer(function(input, output, session) {
   userEnvs.call <- callModule(userEnvs_MOD, 'c3_userEnvs', logs, envs)
   
   observeEvent(input$goUserEnvs, {
-    occs.naEnvRem <- remEnvsValsNA(userEnvs.call(), occs)
+    envs(userEnvs.call())
+    occs.naEnvRem <- remEnvsValsNA(envs, occs)
     occs(occs.naEnvRem)
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
@@ -363,20 +365,22 @@ shinyServer(function(input, output, session) {
   remEnvsValsNA <- function(envs, occs) {
     withProgress(message = "Processing...", {
       occsVals <- raster::extract(envs(), occs()[c('longitude', 'latitude')])
+      na.rowNums <- which(rowSums(is.na(occsVals)) > 1)
       
-      if (sum(is.na(occsVals)) == length(occsVals)) {
+      if (length(na.rowNums) == length(occsVals)) {
         logs %>% writeLog('<font color="red"><b>! ERROR</b></font> : No localities overlay with environmental predictors. 
                           All localities may be marine -- please redo with terrestrial occurrences.')
         return()
       }
       
-      occsEnvsVals <- occs()[!is.na(occsVals),]
-      
-      if (sum(is.na(occsVals)) > 0) {
+      if (length(na.rowNums) > 0) {
+        occs.notNA <- occs()[-na.rowNums,]
         logs %>% writeLog("! WARNING: Removed records without environmental values with origIDs: ",
-                                paste(occsEnvsVals$origID, collapse=', '), ".")
+                                paste(occs()[na.rowNums,]$origID, collapse=', '), ".")
+        return(occs.notNA)
       }
-      return(occsEnvsVals)
+      
+      return(occs())
     })
   }
   
@@ -430,13 +434,14 @@ shinyServer(function(input, output, session) {
   
   bgSelect.call <- callModule(bgSelect_MOD, 'c4_bgSelect', logs, occs, envs)
   
-  observe({
-    bgExt <- bgSelect.call()
-    if (input$bgBuf > 0) {
-      bgExt <- rgeos::gBuffer(bgExt(), width = input$bgBuf)
-      writeLog('> Study extent buffered by', input$bgBuf, 'degrees.')
-    }
+  bgSelect <- eventReactive(input$goBgSel, bgSelect.call())
+  
+  observeEvent(input$goBgSel, {
+    bgSelect()
+    # MAPPING
   })
+    
+    
   
   bgPts <- eventReactive(input$goBgMask, {
     if (is.null(bgExt())) {

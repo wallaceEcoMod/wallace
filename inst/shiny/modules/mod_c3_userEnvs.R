@@ -15,7 +15,6 @@ userEnvs_MOD <- function(input, output, session, logs, envs) {
     
     logs %>% writeLog("> Environmental predictors: User input.")
     
-    # load into envs
-    envs(uenvs)
+    return(uenvs)
   })
 }

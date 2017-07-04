@@ -3,12 +3,19 @@ bgSelect_UI <- function(id) {
   ns <- NS(id)
   tagList(
     radioButtons(ns("backgSel"), "Background Extents:",
-                 choices = list("Bounding box" = 'bb', "Minimum convex polygon" = 'mcp'))
+                 choices = list("Bounding box" = 'bb', "Minimum convex polygon" = 'mcp')),
+    numericInput(ns("bgBuf"), label = "Study region buffer distance (degree)", value = 0, min = 0, step = 0.5),
+    shinyBS::bsPopover(ns("bgBuf"), title = 'Tip',
+                       'Buffer area in degrees (1 degree = ~111 km). Exact length varies based on latitudinal position.',
+                       placement = 'right', options = list(container = "body"))
   )
 }
 
 bgSelect_MOD <- function(input, output, session, logs, occs, envs) {
   reactive({
+    req(occs())
+    req(envs())
+    print(occs())
     if (nrow(occs()) <= 2) {
       logs %>% writeLog('<font color="red"><b>! ERROR</b></font> : 
                         Too few localities (<2) to create a background polygon.')
@@ -30,6 +37,11 @@ bgSelect_MOD <- function(input, output, session, logs, occs, envs) {
       bgExt <- mcp(occs()[,2:3])
       # bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
       logs %>% writeLog("> Study extent: minimum convex polygon.")
+    }
+    
+    if (input$bgBuf > 0) {
+      bgExt <- rgeos::gBuffer(bgExt, width = input$bgBuf)
+      logs %>% writeLog('> Study extent buffered by', input$bgBuf, 'degrees.')
     }
     
     return(bgExt)

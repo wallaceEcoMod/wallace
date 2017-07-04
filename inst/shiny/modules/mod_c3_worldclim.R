@@ -26,7 +26,6 @@ wcBioclims_MOD <- function(input, output, session, logs, mapCntr, envs) {
     
     logs %>% writeLog("> Environmental predictors: WorldClim bio1-19 at", input$bcRes, " arcmin resolution.")
     
-    # load into envs
-    envs(wcbc)
+    return(wcbc)
   })
 }
