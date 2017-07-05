@@ -127,9 +127,9 @@ shinyServer(function(input, output, session) {
     }
   )
 
-#########################
+######################## #
 ### COMPONENT 2 ####
-#########################
+######################## #
   
   # module Spatial Thin
   thinOccs.call <- callModule(thinOccs_MOD, 'c2_thinOccs', logs, occs)
@@ -164,9 +164,9 @@ shinyServer(function(input, output, session) {
     }
   )
 
-#########################
+######################## #
 ### COMPONENT 3 ####
-#########################
+######################## #
 
   # map center coordinates for 30 arcsec download
   mapCntr <- reactive(mapCenter(input$map_bounds))
@@ -236,21 +236,23 @@ shinyServer(function(input, output, session) {
     #               rownames = FALSE, options = list(pageLength = raster::nlayers(envs())))
   })
 
-#########################
+######################## #
 ### COMPONENT 4 ####
-#########################
+######################## #
 
   bgSelect.call <- callModule(bgSelect_MOD, 'c4_bgSelect', logs, occs, envs)
   
   bgSelect <- eventReactive(input$goBgSel, bgSelect.call())
   
   observeEvent(input$goBgSel, {
-    bgSelect()
-    # MAPPING
+    shp <- bgSelect()
+    coords <- shp@polygons[[1]]@Polygons[[1]]@coords
+    map %>%
+      addPolygons(lng=coords[,1], lat=coords[,2], layerId="backext",
+                  weight=10, color="red", group='backgPoly') %>%
+      fitBounds(max(coords[,1]), max(coords[,2]), min(coords[,1]), min(coords[,2]))
   })
     
-    
-  
   bgPts <- eventReactive(input$goBgMask, {
     if (is.null(bgExt())) {
       writeLog('<font color="red"><b>! ERROR</b></font> : Obtain environmental data first...')
@@ -273,10 +275,6 @@ shinyServer(function(input, output, session) {
   
   
     
-    # map %>%
-    #   addPolygons(lng=bb[,1], lat=bb[,2], layerId="backext",
-    #               weight=10, color="red", group='backgPoly') %>%
-    #   fitBounds(max(bb[,1]), max(bb[,2]), min(bb[,1]), min(bb[,2]))
 
 
   # handle download for masked predictors, with file type as user choice
