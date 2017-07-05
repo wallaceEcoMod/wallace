@@ -1,18 +1,7 @@
 source("funcs/functions.R", local = TRUE)
 
-# make list to carry data used by multiple reactive functions
-brk <- paste(rep('------', 14), collapse='')
-logInit <- c(paste('***WELCOME TO WALLACE***', brk, 
-                   'Please find messages for the user in this log window.', brk, sep='<br>'))
-logs <- reactiveValues(entries=logInit)
+logs <- reactiveValues(entries=logInit())
 gtext <- reactiveValues()
-
-# add text to log
-writeLog <- function(logs, ...) {
-  args <- list(...)
-  newEntries <- paste(args, collapse = ' ')
-  logs$entries <- paste(logs$entries, newEntries, sep = '<br>')
-}
 
 options(shiny.maxRequestSize=5000*1024^2)
 
