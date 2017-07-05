@@ -35,7 +35,9 @@ shinyUI(tagList(
                                                              selected = 'db'),
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.occSel == 'db'",
-                                                                 uiTop('Query Database', 'spocc', 'Interface to Species Occurrence Data Sources'),
+                                                                 div(paste('Module: Query Database'), id="mod"),
+                                                                 uiTop('spocc', 'Interface to Species Occurrence Data Sources'),
+                                                                 HTML('<hr>'),
                                                                  queryDB_UI('c1_queryDB'),
                                                                  actionButton("goDbOccs", "Query Database"),
                                                                  strong("Download database occurrence localities (.csv)"), br(), br(),
@@ -58,7 +60,9 @@ shinyUI(tagList(
                                                 HTML('<hr>'),
                                                 # placeholder for select on map
                                                 conditionalPanel("input.procOccSel == 'spthin'",
-                                                                 uiTop('Spatial Thin', 'spThin', 'Spatial Thinning of Species Occurrence Records'),
+                                                                 div(paste('Module: Spatial Thin'), id="mod"),
+                                                                 uiTop('spThin', 'Spatial Thinning of Species Occurrence Records'),
+                                                                 HTML('<hr>'),
                                                                  thinOccs_UI('c2_thinOccs'),
                                                                  actionButton("goThinOccs", "Thin Occurrences"), br(), br(),
                                                                  uiBottom('spThin', "Matthew E. Aiello-Lammens, Rob A. Boria, 
@@ -78,7 +82,9 @@ shinyUI(tagList(
                                                                             "User" = 'user')),
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.envSel == 'wcbc'",
-                                                                 uiTop('WorldClim', 'raster', 'Geographic Data Analysis and Modeling'),
+                                                                 div(paste('Module: WorldClim Bioclims'), id="mod"),
+                                                                 uiTop('raster', 'Geographic Data Analysis and Modeling'),
+                                                                 HTML('<hr>'),
                                                                  wcBioclims_UI("c3_wcBioclims"),
                                                                  strong("Using map center coordinates as reference for tile download."),
                                                                  textOutput('ctrLatLon'), br(),
@@ -104,8 +110,10 @@ shinyUI(tagList(
                                                 
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.envProcSel == 'bgSel'",
-                                                                 uiTop('Select Study Region', 'sp | rgeos', 'Title Classes and Methods for Spatial Data |
-                                                                            Interface to Geometry Engine - Open Source (GEOS)'),
+                                                                 div(paste('Module: Select Study Region'), id="mod"),
+                                                                 uiTop('sp', 'Title Classes and Methods for Spatial Data'),
+                                                                 uiTop('rgeos', 'Interface to Geometry Engine - Open Source (GEOS)'),
+                                                                 HTML('<hr>'),
                                                                  bgSelect_UI('c4_bgSelect'),
                                                                  actionButton("goBgSel", "Choose"),
                                                                  strong('Mask environmental predictor rasters by polygon'), br(), br(),
@@ -114,23 +122,10 @@ shinyUI(tagList(
                                                                              choices = list("GRD" = 'raster', "ASCII" = 'ascii', "GeoTIFF" = 'GTiff')),
                                                                  strong("Download masked environmental predictors"), br(), br(),
                                                                  downloadButton('downloadMskPreds', "Download"),
-                                                                 uiBottom('spThin', "Matthew E. Aiello-Lammens, Rob A. Boria, 
-                                                                                Alex Radosavljevic, Bruno Vilela, Robert P. Anderson")
-                                                ),
-                                                conditionalPanel("input.envProcSel == 'backg'",
-                                                                 span("sp", id = "rpkg"), "references", br(),
-                                                                 div('Developers:  Edzer Pebesma, Roger Bivand, Barry Rowlingson, Virgilio Gomez-Rubio,
-                                                                           Robert Hijmans, Michael Sumner, Don MacQueen, Jim Lemon, Josh O\'Brien', id="pkgDes"),
-                                                                 a("CRAN", href = "http://cran.r-project.org/web/packages/sp/index.html", target = "_blank"),
-                                                                 " | ",
-                                                                 a("documentation", href="https://cran.r-project.org/web/packages/sp/sp.pdf", target = "_blank"),
-                                                                 p(), span("rgeos", id = "rpkg"), "references", br(),
-                                                                 div('rgeos Developers:  Roger Bivand, Colin Rundel, Edzer Pebesma, Karl Ove Hufthammer', id="pkgDes"),
-                                                                 a("CRAN", href = "http://cran.r-project.org/web/packages/rgeos/index.html", target = "_blank"),
-                                                                 " | ",
-                                                                 a("documentation", href="https://cran.r-project.org/web/packages/rgeos/rgeos.pdf", target = "_blank")
+                                                                 uiBottom('sp', "Edzer Pebesma, Roger Bivand, Barry Rowlingson, Virgilio Gomez-Rubio,
+                                                                           Robert Hijmans, Michael Sumner, Don MacQueen, Jim Lemon, Josh O\'Brien"),
+                                                                 uiBottom('rgeos', "Roger Bivand, Colin Rundel, Edzer Pebesma, Karl Ove Hufthammer")
                                                 )
-                                                
                                )
                              )
              ),

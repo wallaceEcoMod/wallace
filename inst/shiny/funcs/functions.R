@@ -6,13 +6,10 @@
 # UI ####
 ####################### #
 
-uiTop <- function(modName, modPkg, pkgDes, modInsert) {
-  list(div(paste('Module:',modName), id="mod"),
-       # span('via', id="pkgDes"),
-       span(modPkg, id="rpkg"),
+uiTop <- function(modPkg, pkgDes, modInsert) {
+  list(span(modPkg, id="rpkg"),
        span(paste(':', pkgDes), id="pkgDes"),
-       br(),
-       HTML('<hr>'))
+       br())
 }
 
 uiBottom <- function(modName, authors) {
