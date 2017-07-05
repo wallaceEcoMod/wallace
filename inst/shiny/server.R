@@ -36,33 +36,51 @@ shinyServer(function(input, output, session) {
 ### INITIALIZE ####
 #########################
 
-  output$log <- renderUI({tags$div(id='logHeader',
-                                   tags$div(id='logContent', HTML(paste0(logs$entries, "<br>", collapse = ""))))})
-  curWD <- getwd()
+  output$log <- renderUI({tags$div(id='logHeader', tags$div(id='logContent', 
+                                            HTML(paste0(logs$entries, "<br>", collapse = ""))))})
 
   # create map
   m <- leaflet() %>% setView(0, 0, zoom = 2) %>% addProviderTiles('Esri.WorldTopoMap')
   output$map <- renderLeaflet(m)
 
-  # make map proxy to make further changes to existing map
+  # create map proxy to make further changes to existing map
   map <- leafletProxy("map")
-  observe({
-    map %>% addProviderTiles(input$bmap)
-  })
-
   
-#########################
-### COMPONENT 1 ####
-#########################
+  # initialize provider tile option
+  observe({map %>% addProviderTiles(input$bmap)})
 
-  # guidance text behavior
+  ######################## #
+  ### GUIDANCE TEXT ####
+  ######################## #
+    
+  # guidance text and tab behavior
   observe({
     if (input$tabs == 1) {
       gtext$cur_comp <- 'gtext_comp1.Rmd'
       if (input$occSel == 'db') gtext$cur_mod <- "gtext_comp1_dbOccs.Rmd"
       if (input$occSel == 'user') gtext$cur_mod <- "gtext_comp1_userOccs.Rmd"
     }
+    if (input$tabs == 2) {
+      gtext$cur_comp <- "gtext_comp2.Rmd"
+      # if Module: Select Localities, populate guidance text and select legend
+      if (input$procOccSel == 'selpts') gtext$cur_mod <- "gtext_comp2_selectLocs.Rmd"
+      if (input$procOccSel == 'spthin') gtext$cur_mod <- "gtext_comp2_spatialThin.Rmd"
+    }
+    if (input$tabs == 3) {
+      gtext$cur_comp <- "gtext_comp3.Rmd"
+      if (input$envSel == 'wcbc') gtext$cur_mod <- "gtext_comp3_worldclim.Rmd"
+    }
+    if (input$tabs == 4) {
+      gtext$cur_comp <- "gtext_comp4.Rmd"
+      if (input$envProcSel == 'backg') gtext$cur_mod <- "gtext_comp4_backg.Rmd"
+      # switch to Map tab
+      updateTabsetPanel(session, 'main', selected = 'Map')
+    }
   })
+  
+######################## #
+### COMPONENT 1 ####
+######################## #
   
   # component 1 reactives
   occs <- reactiveVal()  # occs for analysis that get updated throughout 
@@ -112,20 +130,6 @@ shinyServer(function(input, output, session) {
 #########################
 ### COMPONENT 2 ####
 #########################
-
-  # guidance text
-  observe({
-    if (input$tabs == 2) {
-      gtext$cur_comp <- "gtext_comp2.Rmd"
-      # if Module: Select Localities, populate guidance text and select legend
-      if (input$procOccSel == 'selpts') {
-        gtext$cur_mod <- "gtext_comp2_selectLocs.Rmd"
-      }
-      if (input$procOccSel == 'spthin') {
-        gtext$cur_mod <- "gtext_comp2_spatialThin.Rmd"
-      }
-    }
-  })
   
   # module Spatial Thin
   thinOccs.call <- callModule(thinOccs_MOD, 'c2_thinOccs', logs, occs)
@@ -163,14 +167,6 @@ shinyServer(function(input, output, session) {
 #########################
 ### COMPONENT 3 ####
 #########################
-
-  # guidance text
-  observe({
-    if (input$tabs == 3) {
-      gtext$cur_comp <- "gtext_comp3.Rmd"
-      if (input$envSel == 'wcbc') gtext$cur_mod <- "gtext_comp3_worldclim.Rmd"
-    }
-  })
 
   # map center coordinates for 30 arcsec download
   mapCntr <- reactive(mapCenter(input$map_bounds))
@@ -244,16 +240,6 @@ shinyServer(function(input, output, session) {
 ### COMPONENT 4 ####
 #########################
 
-  # guidance text
-  observe({
-    if (input$tabs == 4) {
-      gtext$cur_comp <- "gtext_comp4.Rmd"
-      if (input$envProcSel == 'backg') gtext$cur_mod <- "gtext_comp4_backg.Rmd"
-      # switch to Map tab
-      updateTabsetPanel(session, 'main', selected = 'Map')
-    }
-  })
-  
   bgSelect.call <- callModule(bgSelect_MOD, 'c4_bgSelect', logs, occs, envs)
   
   bgSelect <- eventReactive(input$goBgSel, bgSelect.call())
