@@ -42,6 +42,7 @@ shinyUI(tagList(
                                                                  actionButton("goDbOccs", "Query Database"),
                                                                  strong("Download database occurrence localities (.csv)"), br(), br(),
                                                                  downloadButton('dlDbOccs', "Download DB Occurrences"),
+                                                                 HTML('<hr>'),
                                                                  uiBottom('spocc', "Scott Chamberlain, Karthik Ram, Ted Hart")
                                                 ),
                                                 conditionalPanel("input.occSel == 'user'",
@@ -65,6 +66,7 @@ shinyUI(tagList(
                                                                  HTML('<hr>'),
                                                                  thinOccs_UI('c2_thinOccs'),
                                                                  actionButton("goThinOccs", "Thin Occurrences"), br(), br(),
+                                                                 HTML('<hr>'),
                                                                  uiBottom('spThin', "Matthew E. Aiello-Lammens, Rob A. Boria, 
                                                                                           Alex Radosavljevic, Bruno Vilela, Robert P. Anderson"),
                                                                  " | ", a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/ecog.01132/abstract", target = "_blank")
@@ -89,6 +91,7 @@ shinyUI(tagList(
                                                                  strong("Using map center coordinates as reference for tile download."),
                                                                  textOutput('ctrLatLon'), br(),
                                                                  actionButton("goEnvData", "Download Env Data"),
+                                                                 HTML('<hr>'),
                                                                  uiBottom('raster', "Robert J. Hijmans, Jacob van Etten, Joe Cheng, Matteo Mattiuzzu, 
                                                                                  Michael Sumner, Jonathan A. Greenberg, Oscar Perpinan Lamigueriro, Andrew Bevan, 
                                                                                  Etienne B. Racine, Ashton Shortridge"),
@@ -122,8 +125,9 @@ shinyUI(tagList(
                                                                              choices = list("GRD" = 'raster', "ASCII" = 'ascii', "GeoTIFF" = 'GTiff')),
                                                                  strong("Download masked environmental predictors"), br(), br(),
                                                                  downloadButton('downloadMskPreds', "Download"),
+                                                                 HTML('<hr>'),
                                                                  uiBottom('sp', "Edzer Pebesma, Roger Bivand, Barry Rowlingson, Virgilio Gomez-Rubio,
-                                                                           Robert Hijmans, Michael Sumner, Don MacQueen, Jim Lemon, Josh O\'Brien"),
+                                                                           Robert Hijmans, Michael Sumner, Don MacQueen, Jim Lemon, Josh O\'Brien"), br(),
                                                                  uiBottom('rgeos', "Roger Bivand, Colin Rundel, Edzer Pebesma, Karl Ove Hufthammer")
                                                 )
                                )

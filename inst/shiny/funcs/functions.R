@@ -13,8 +13,7 @@ uiTop <- function(modPkg, pkgDes, modInsert) {
 }
 
 uiBottom <- function(modName, authors) {
-  list(HTML('<hr>'),
-       span(modName, id = "rpkg"), "references", br(),
+  list(span(modName, id = "rpkg"), "references", br(),
        div(paste('Developers:', authors), id="pkgDes"),
        a("CRAN", href = file.path("http://cran.r-project.org/web/packages", modName, "index.html"), target = "_blank"),
        " | ",
