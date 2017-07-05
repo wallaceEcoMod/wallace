@@ -29,7 +29,7 @@ queryDB_MOD <- function(input, output, session, logs, occs, spName) {
     nameSplit <- length(unlist(strsplit(spName(), " ")))
     # if two names not entered, throw error and return
     if (nameSplit != 2) {
-      logs %>% writeLog('<font color="red"><b>! ERROR</b></font> : Please input both genus and species names.')
+      logs %>% writeLog(type = 'error', 'Please input both genus and species names.')
       return()
     }
     
@@ -40,7 +40,7 @@ queryDB_MOD <- function(input, output, session, logs, occs, spName) {
     
     # if species not found, print message to log box and return
     if (q[[input$occDb]]$meta$found == 0) {
-      logs %>% writeLog('<font color="red"><b>! ERROR</b></font> : No records found for ', 
+      logs %>% writeLog(type = 'error', 'No records found for ', 
                      spName(), ". Please check the spelling.")
       shinyjs::disable("dlDbOccs")
       return()
@@ -70,7 +70,8 @@ queryDB_MOD <- function(input, output, session, logs, occs, spName) {
     # subset to just records with latitude and longitude
     recs <- dbOccs.tbl() %>% dplyr::filter(!is.na(latitude) & !is.na(longitude))
     if (nrow(recs) == 0) {
-      logs %>% writeLog('<font color="orange"><b>! WARNING</b></font> : No records with coordinates found in', input$occDb, "for", spName(), ".")
+      logs %>% writeLog(type = 'warning', 'No records with coordinates found in', 
+                        input$occDb, "for", spName(), ".")
       return()
     }
     return(recs)
@@ -137,7 +138,7 @@ queryDB_MOD <- function(input, output, session, logs, occs, spName) {
     
     noCoordsRem <- nrow(dbOccs.tbl()) - nrow(dbOccs.coords())
     dupsRem <- nrow(dbOccs.coords()) - nrow(dbOccs.remDups())
-    logs %>% writeLog('> Total', input$occDb, 'records for', spName(), 'returned [', nrow(dbOccs.tbl()),
+    logs %>% writeLog('Total', input$occDb, 'records for', spName(), 'returned [', nrow(dbOccs.tbl()),
                    '] out of [', totRows, '] total (limit ', input$occNum, ').
                    Records without coordinates removed [', noCoordsRem, '].
                    Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(recs), '].')

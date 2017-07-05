@@ -16,7 +16,7 @@ thinOccs_MOD <- function(input, output, session, logs, occs) {
 
   doThin <- reactive({
     if (input$thinDist <= 0) {
-      logs %>% writeLog('<font color="orange"><b>! WARNING</b></font> : Assign positive distance to thinning parameter.')
+      logs %>% writeLog(type = "warning", 'Assign positive distance to thinning parameter.')
       return()
     }
     
@@ -34,7 +34,7 @@ thinOccs_MOD <- function(input, output, session, logs, occs) {
       # }
     })
     
-    logs %>% writeLog('> Total records thinned to [', nrow(occs.thin), '] localities.')
+    logs %>% writeLog('Total records thinned to [', nrow(occs.thin), '] localities.')
     
     occs(occs.thin)
     return(occs.thin)

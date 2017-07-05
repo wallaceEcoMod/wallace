@@ -202,28 +202,6 @@ shinyServer(function(input, output, session) {
     updateTabsetPanel(session, 'main', selected = 'Results')
   })
   
-  remEnvsValsNA <- function(envs, occs) {
-    withProgress(message = "Processing...", {
-      occsVals <- raster::extract(envs(), occs()[c('longitude', 'latitude')])
-      na.rowNums <- which(rowSums(is.na(occsVals)) > 1)
-      
-      if (length(na.rowNums) == length(occsVals)) {
-        logs %>% writeLog('<font color="red"><b>! ERROR</b></font> : No localities overlay with environmental predictors. 
-                          All localities may be marine -- please redo with terrestrial occurrences.')
-        return()
-      }
-      
-      if (length(na.rowNums) > 0) {
-        occs.notNA <- occs()[-na.rowNums,]
-        logs %>% writeLog("! WARNING: Removed records without environmental values with origIDs: ",
-                                paste(occs()[na.rowNums,]$origID, collapse=', '), ".")
-        return(occs.notNA)
-      }
-      
-      return(occs())
-    })
-  }
-  
   output$envsPrint <- renderPrint({
     req(envs())
     envs()
@@ -242,10 +220,10 @@ shinyServer(function(input, output, session) {
 
   bgSelect.call <- callModule(bgSelect_MOD, 'c4_bgSelect', logs, occs, envs)
   
-  bgSelect <- eventReactive(input$goBgSel, bgSelect.call())
+  bgExt <- eventReactive(input$goBgSel, bgSelect.call())
   
   observeEvent(input$goBgSel, {
-    shp <- bgSelect()
+    shp <- bgExt()
     coords <- shp@polygons[[1]]@Polygons[[1]]@coords
     map %>%
       addPolygons(lng=coords[,1], lat=coords[,2], layerId="backext",
@@ -255,7 +233,7 @@ shinyServer(function(input, output, session) {
     
   bgPts <- eventReactive(input$goBgMask, {
     if (is.null(bgExt())) {
-      writeLog('<font color="red"><b>! ERROR</b></font> : Obtain environmental data first...')
+      writeLog(type = 'error', 'Obtain environmental data first...')
       return()
     }
     # mask envs by background extent
@@ -263,12 +241,12 @@ shinyServer(function(input, output, session) {
       bgCrop <- raster::crop(envs(), bgExt())
       bgMask <- raster::mask(bgCrop, bgExt())
     })
-    logs %>% writeLog('> Environmental data masked.')
+    logs %>% writeLog('Environmental data masked.')
     # sample random background points
     withProgress(message = "Generating background points...", {
       bgXY <- dismo::randomPoints(bgMask, 10000)
     })
-    logs %>% writeLog('> Random background points sampled (n = 10,000).')
+    logs %>% writeLog('Random background points sampled (n = 10,000).')
     shinyjs::enable("downloadMskPreds")
     return(bgXY)
   })

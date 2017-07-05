@@ -34,8 +34,16 @@ logInit <- function() {
 }
 
 # add text to log
-writeLog <- function(logs, ...) {
-  args <- list(...)
+writeLog <- function(logs, ..., type = 'default') {
+  if (type == "default") {
+    pre <- "> "
+  } else if (type == 'error') {
+    pre <- '<font color="red"><b>! ERROR</b></font> : '
+  } else if (type == 'warning') {
+    pre <- '<font color="orange"><b>! WARNING</b></font> : '
+  }
+  
+  args <- list(pre, ...)
   newEntries <- paste(args, collapse = ' ')
   logs$entries <- paste(logs$entries, newEntries, sep = '<br>')
 }
@@ -126,6 +134,32 @@ popUpContent <- function(x) {
     tags$strong(paste("Longitude:", x['longitude']))
   ))
 }
+
+####################### #
+# COMP 3 ####
+####################### #
+
+remEnvsValsNA <- function(envs, occs) {
+  withProgress(message = "Processing...", {
+    occsVals <- raster::extract(envs(), occs()[c('longitude', 'latitude')])
+    na.rowNums <- which(rowSums(is.na(occsVals)) > 1)
+    
+    if (length(na.rowNums) == length(occsVals)) {
+      logs %>% writeLog('<font color="red"><b>! ERROR</b></font> : No localities overlay with environmental predictors. 
+                        All localities may be marine -- please redo with terrestrial occurrences.')
+      return()
+    }
+    
+    if (length(na.rowNums) > 0) {
+      occs.notNA <- occs()[-na.rowNums,]
+      logs %>% writeLog("! WARNING: Removed records without environmental values with origIDs: ",
+                        paste(occs()[na.rowNums,]$origID, collapse=', '), ".")
+      return(occs.notNA)
+    }
+    
+    return(occs())
+  })
+  }
 
 ####################### #
 # COMP 4 ####

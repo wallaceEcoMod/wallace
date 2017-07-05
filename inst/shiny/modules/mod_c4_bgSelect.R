@@ -15,10 +15,9 @@ bgSelect_MOD <- function(input, output, session, logs, occs, envs) {
   reactive({
     req(occs())
     req(envs())
-    print(occs())
+
     if (nrow(occs()) <= 2) {
-      logs %>% writeLog('<font color="red"><b>! ERROR</b></font> : 
-                        Too few localities (<2) to create a background polygon.')
+      logs %>% writeLog(type = 'error', 'Too few localities (<2) to create a background polygon.')
       return()
     }
     # generate background extent - one grid cell is added to perimeter of each shape
@@ -32,16 +31,16 @@ bgSelect_MOD <- function(input, output, session, logs, occs, envs) {
       ymax <- max(lat)
       bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin), ncol=2)
       bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(bb)), 1)))
-      logs %>% writeLog("> Study extent: bounding box.")
+      logs %>% writeLog("Study extent: bounding box.")
     } else if (input$backgSel == 'mcp') {
       bgExt <- mcp(occs()[,2:3])
       # bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
-      logs %>% writeLog("> Study extent: minimum convex polygon.")
+      logs %>% writeLog("Study extent: minimum convex polygon.")
     }
     
     if (input$bgBuf > 0) {
       bgExt <- rgeos::gBuffer(bgExt, width = input$bgBuf)
-      logs %>% writeLog('> Study extent buffered by', input$bgBuf, 'degrees.')
+      logs %>% writeLog('Study extent buffered by', input$bgBuf, 'degrees.')
     }
     
     return(bgExt)
