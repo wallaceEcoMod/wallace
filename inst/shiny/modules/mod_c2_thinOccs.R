@@ -36,7 +36,6 @@ thinOccs_MOD <- function(input, output, session, logs, occs) {
     
     logs %>% writeLog('Total records thinned to [', nrow(occs.thin), '] localities.')
     
-    occs(occs.thin)
     return(occs.thin)
   })
 

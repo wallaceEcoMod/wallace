@@ -87,13 +87,13 @@ shinyServer(function(input, output, session) {
   occsOrigDnld <- reactiveVal() # original database query table for user download
   
   # module Query Database
-  dbOccs.call <- callModule(queryDB_MOD, 'c1_queryDB', logs, occs)
+  dbOccs <- callModule(queryDB_MOD, 'c1_queryDB', logs)
   
-  dbOccs <- eventReactive(input$goDbOccs, dbOccs.call())
-  spName <- reactive(dbOccs()$name[1])
+  # dbOccs <- eventReactive(input$goDbOccs, dbOccs.call())
+  spName <- reactive(as.character(occs()$name[1]))
   
   observeEvent(input$goDbOccs, {
-    dbOccs()
+    occs(dbOccs())
     map %>%
       clearMarkers() %>%
       map_plotLocs(occs()) %>%
@@ -102,16 +102,17 @@ shinyServer(function(input, output, session) {
   })
 
   # module User Occurrence Data
-  userOccs.call <- callModule(userOccs_MOD, 'c1_userOccs', logs, occs)
+  userOccs <- callModule(userOccs_MOD, 'c1_userOccs', logs)
   
-  userOccs <- eventReactive(input$goUserOccs, userOccs.call())
+  # userOccs <- eventReactive(input$goUserOccs, userOccs.call())
   
   observeEvent(input$goUserOccs, {
-    userOccs()
+    occs(userOccs())
     map %>%
       clearMarkers() %>%
       map_plotLocs(occs()) %>%
       zoom2Occs(occs())
+    shinyjs::disable("dlDbOccs")
   })
       
   # TABLE
@@ -132,12 +133,12 @@ shinyServer(function(input, output, session) {
 ######################## #
   
   # module Spatial Thin
-  thinOccs.call <- callModule(thinOccs_MOD, 'c2_thinOccs', logs, occs)
+  thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs', logs, occs)
   
-  thinOccs <- eventReactive(input$goThinOccs, thinOccs.call())
+  # thinOccs <- eventReactive(input$goThinOccs, thinOccs.call())
   
   observeEvent(input$goThinOccs, {
-    thinOccs()
+    occs(thinOccs())
     # MAPPING - blue pts for remove, red pts for keep
     map %>% 
       addCircleMarkers(data = dbOccs(), lat = ~latitude, lng = ~longitude,

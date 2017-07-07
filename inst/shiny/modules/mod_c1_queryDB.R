@@ -19,7 +19,7 @@ queryDB_UI <- function(id) {
   )
 }
 
-queryDB_MOD <- function(input, output, session, logs, occs, spName) {
+queryDB_MOD <- function(input, output, session, logs) {
   
   spName <- reactive({trimws(input$spName)})
   
@@ -143,7 +143,6 @@ queryDB_MOD <- function(input, output, session, logs, occs, spName) {
                    Records without coordinates removed [', noCoordsRem, '].
                    Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(recs), '].')
     
-    occs(recs)
     return(recs)
   })
   
