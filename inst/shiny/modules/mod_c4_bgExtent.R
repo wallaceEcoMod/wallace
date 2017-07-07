@@ -1,5 +1,5 @@
 
-bgSelect_UI <- function(id) {
+bgExtent_UI <- function(id) {
   ns <- NS(id)
   tagList(
     radioButtons(ns("backgSel"), "Background Extents:",
@@ -11,11 +11,10 @@ bgSelect_UI <- function(id) {
   )
 }
 
-bgSelect_MOD <- function(input, output, session, logs, occs, envs) {
-  reactive({
+bgExtent_MOD <- function(input, output, session, logs, occs) {
+  bgExtent <- reactive({
     req(occs())
-    req(envs())
-
+    
     if (nrow(occs()) <= 2) {
       logs %>% writeLog(type = 'error', 'Too few localities (<2) to create a background polygon.')
       return()
@@ -45,4 +44,5 @@ bgSelect_MOD <- function(input, output, session, logs, occs, envs) {
     
     return(bgExt)
   })
+  return(bgExtent)
 }

@@ -104,8 +104,6 @@ shinyServer(function(input, output, session) {
   # module User Occurrence Data
   userOccs <- callModule(userOccs_MOD, 'c1_userOccs', logs)
   
-  # userOccs <- eventReactive(input$goUserOccs, userOccs.call())
-  
   observeEvent(input$goUserOccs, {
     occs(userOccs())
     map %>%
@@ -122,7 +120,7 @@ shinyServer(function(input, output, session) {
 
   # handle downloading of original GBIF records after cleaning
   output$dlDbOccs <- downloadHandler(
-    filename = function() {paste0(nameAbbr(spName()), '_', input$occDb, ".csv")},
+    filename = function() {paste0(formatSpName(spName()), '_', input$occDb, ".csv")},
     content = function(file) {
       write.csv(occsOrigDnld(), file, row.names=FALSE)
     }
@@ -134,8 +132,6 @@ shinyServer(function(input, output, session) {
   
   # module Spatial Thin
   thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs', logs, occs)
-  
-  # thinOccs <- eventReactive(input$goThinOccs, thinOccs.call())
   
   observeEvent(input$goThinOccs, {
     occs(thinOccs())
@@ -157,7 +153,7 @@ shinyServer(function(input, output, session) {
   
   # handle download for thinned records csv
   output$dlProcOccCsv <- downloadHandler(
-    filename = function() {paste0(nameAbbr(spName()), "_procOccs.csv")},
+    filename = function() {paste0(formatSpName(spName()), "_procOccs.csv")},
     content = function(file) {
       thinned_rowNums <- as.numeric(thinOccs()$origID)
       origThinned <- occsOrigDnld()[thinned_rowNums,]
@@ -180,11 +176,11 @@ shinyServer(function(input, output, session) {
   envs <- reactiveVal()
   
   # module WorldClim Bioclims
-  wcBioclims.call <- callModule(wcBioclims_MOD, 'c3_wcBioclims', logs, mapCntr, envs)
+  wcBioclims <- callModule(wcBioclims_MOD, 'c3_wcBioclims', logs, mapCntr)
   
   observeEvent(input$goEnvData, {
     # load into envs
-    envs(wcBioclims.call())
+    envs(wcBioclims())
     occs.naEnvRem <- remEnvsValsNA(envs, occs)
     occs(occs.naEnvRem)
     # switch to Results tab
@@ -193,10 +189,10 @@ shinyServer(function(input, output, session) {
     shinyjs::enable("predDnld")
   })
   
-  userEnvs.call <- callModule(userEnvs_MOD, 'c3_userEnvs', logs, envs)
+  userEnvs <- callModule(userEnvs_MOD, 'c3_userEnvs', logs)
   
   observeEvent(input$goUserEnvs, {
-    envs(userEnvs.call())
+    envs(userEnvs())
     occs.naEnvRem <- remEnvsValsNA(envs, occs)
     occs(occs.naEnvRem)
     # switch to Results tab
@@ -219,12 +215,10 @@ shinyServer(function(input, output, session) {
 ### COMPONENT 4 ####
 ######################## #
 
-  bgSelect.call <- callModule(bgSelect_MOD, 'c4_bgSelect', logs, occs, envs)
+  bgExtent <- callModule(bgExtent_MOD, 'c4_bgExtent', logs, occs)
   
-  bgExt <- eventReactive(input$goBgSel, bgSelect.call())
-  
-  observeEvent(input$goBgSel, {
-    shp <- bgExt()
+  observeEvent(input$goBgExt, {
+    shp <- bgExtent()
     coords <- shp@polygons[[1]]@Polygons[[1]]@coords
     map %>%
       addPolygons(lng=coords[,1], lat=coords[,2], layerId="backext",
@@ -232,31 +226,13 @@ shinyServer(function(input, output, session) {
       fitBounds(max(coords[,1]), max(coords[,2]), min(coords[,1]), min(coords[,2]))
   })
     
-  bg <- eventReactive(input$goBgMask, {
-    if (is.null(bgExt())) {
-      writeLog(type = 'error', 'Obtain environmental data first...')
-      return()
-    }
-    # mask envs by background extent
-    withProgress(message = "Processing environmental data...", {
-      bgCrop <- raster::crop(envs(), bgExt())
-      bgMask <- raster::mask(bgCrop, bgExt())
-    })
-    logs %>% writeLog('Environmental data masked.')
-    # sample random background points
-    withProgress(message = "Generating background points...", {
-      bgXY <- dismo::randomPoints(bgMask, 10000)
-    })
-    logs %>% writeLog('Random background points sampled (n = 10,000).')
-    shinyjs::enable("downloadMskPreds")
-    return(list(msk = bgMask, pts = bgXY))
-  })
+  bgMsk <- reactiveVal()
   
-  observeEvent(input$goBgMask, bg())
+  observeEvent(input$goBgMask, {
+    bgMsk(bgMskAndSamplePts(envs(), bgExtent()))
+  })
+
     
-
-  observe(print(bg()$msk))
-
   # handle download for masked predictors, with file type as user choice
   output$dlMskPreds <- downloadHandler(
     filename = function() {'mskPreds.zip'},
