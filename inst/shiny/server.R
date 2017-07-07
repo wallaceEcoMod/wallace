@@ -231,7 +231,7 @@ shinyServer(function(input, output, session) {
       fitBounds(max(coords[,1]), max(coords[,2]), min(coords[,1]), min(coords[,2]))
   })
     
-  bgPts <- eventReactive(input$goBgMask, {
+  bg <- eventReactive(input$goBgMask, {
     if (is.null(bgExt())) {
       writeLog(type = 'error', 'Obtain environmental data first...')
       return()
@@ -248,34 +248,36 @@ shinyServer(function(input, output, session) {
     })
     logs %>% writeLog('Random background points sampled (n = 10,000).')
     shinyjs::enable("downloadMskPreds")
-    return(bgXY)
+    return(list(msk = bgMask, pts = bgXY))
   })
   
-  
+  observeEvent(input$goBgMask, bg())
     
 
+  observe(print(bg()$msk))
 
   # handle download for masked predictors, with file type as user choice
-  # output$downloadMskPreds <- downloadHandler(
-  #   filename = function() {'mskBioPreds.zip'},
-  #   content = function(file) {
-  #     tmpdir <- tempdir()
-  #     setwd(tempdir())
-  # 
-  #     raster::writeRaster(values$predsMsk, file.path(tmpdir, 'mskBio'), bylayer = TRUE,
-  #                 format = input$mskPredsFileType, overwrite = TRUE)
-  #     nr <- nlayers(values$predsMsk)
-  #     ext <- ifelse(input$mskPredsFileType == 'raster', 'grd',
-  #                   ifelse(input$mskPredsFileType == 'ascii', 'asc',
-  #                          ifelse(input$mskPredsFileType == 'GTiff', 'tif', 'png')))
-  #     fs <- paste0(rep('mskBio_', nr), 1:nr, '.', ext)
-  #     if (ext == 'grd') {
-  #       fs <- c(fs, paste0(rep('mskBio_', nr), 1:nr, '.gri'))
-  #     }
-  #     zip(zipfile=file, files=fs)
-  #     if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
-  #   },
-  #   contentType = "application/zip"
-  # )
-
+  output$dlMskPreds <- downloadHandler(
+    filename = function() {'mskPreds.zip'},
+    content = function(file) {
+      tmpdir <- tempdir()
+      setwd(tempdir())
+      type <- input$mskPredsFileType
+      nm <- names(bg()$msk)
+      
+      raster::writeRaster(bg()$msk, file.path(tmpdir, 'msk'), bylayer = TRUE,
+                  suffix = nm, format = type, overwrite = TRUE)
+      ext <- ifelse(type == 'raster', 'grd',
+                    ifelse(type == 'ascii', 'asc',
+                           ifelse(type == 'GTiff', 'tif', 'png')))
+      
+      fs <- paste0('msk_', nm, '.', ext)
+      if (ext == 'grd') {
+        fs <- c(fs, paste0('msk_', nm, '.gri'))
+      }
+      zip(zipfile=file, files=fs)
+      if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
+    },
+    contentType = "application/zip"
+  )
 })

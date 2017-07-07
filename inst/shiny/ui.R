@@ -124,7 +124,7 @@ shinyUI(tagList(
                                                                  selectInput('mskPredsFileType', label = "Select File Type",
                                                                              choices = list("GRD" = 'raster', "ASCII" = 'ascii', "GeoTIFF" = 'GTiff')),
                                                                  strong("Download masked environmental predictors"), br(), br(),
-                                                                 downloadButton('downloadMskPreds', "Download"),
+                                                                 downloadButton('dlMskPreds', "Download"),
                                                                  HTML('<hr>'),
                                                                  uiBottom('sp', "Edzer Pebesma, Roger Bivand, Barry Rowlingson, Virgilio Gomez-Rubio,
                                                                            Robert Hijmans, Michael Sumner, Don MacQueen, Jim Lemon, Josh O\'Brien"), br(),
