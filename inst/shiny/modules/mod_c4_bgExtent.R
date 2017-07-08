@@ -12,7 +12,7 @@ bgExtent_UI <- function(id) {
 }
 
 bgExtent_MOD <- function(input, output, session, logs, occs) {
-  bgExtent <- reactive({
+  reactive({
     req(occs())
     
     if (nrow(occs()) <= 2) {
@@ -44,5 +44,4 @@ bgExtent_MOD <- function(input, output, session, logs, occs) {
     
     return(bgExt)
   })
-  return(bgExtent)
 }

@@ -215,21 +215,23 @@ shinyServer(function(input, output, session) {
 ### COMPONENT 4 ####
 ######################## #
 
-  bgExtent <- callModule(bgExtent_MOD, 'c4_bgExtent', logs, occs)
+  bgExt <- callModule(bgExtent_MOD, 'c4_bgExtent', logs, occs)
   
   observeEvent(input$goBgExt, {
-    shp <- bgExtent()
+    shp <- bgExt()
     coords <- shp@polygons[[1]]@Polygons[[1]]@coords
     map %>%
       addPolygons(lng=coords[,1], lat=coords[,2], layerId="backext",
                   weight=10, color="red", group='backgPoly') %>%
       fitBounds(max(coords[,1]), max(coords[,2]), min(coords[,1]), min(coords[,2]))
   })
-    
-  bgMsk <- reactiveVal()
+  
+  bgMskPts <- callModule(bgMskAndSamplePts_MOD, 'c4_bgMskAndSamplePts', logs, envs, bgExt)
   
   observeEvent(input$goBgMask, {
-    bgMsk(bgMskAndSamplePts(envs(), bgExtent()))
+    bgMskPts()
+    # bgMsk <- bgMskPts()$msk
+    # bgPts <- bgMskPts()$pts
   })
 
     
@@ -240,9 +242,9 @@ shinyServer(function(input, output, session) {
       tmpdir <- tempdir()
       setwd(tempdir())
       type <- input$mskPredsFileType
-      nm <- names(bg()$msk)
+      nm <- names(bgMskPts()$msk)
       
-      raster::writeRaster(bg()$msk, file.path(tmpdir, 'msk'), bylayer = TRUE,
+      raster::writeRaster(bgMskPts()$msk, file.path(tmpdir, 'msk'), bylayer = TRUE,
                   suffix = nm, format = type, overwrite = TRUE)
       ext <- ifelse(type == 'raster', 'grd',
                     ifelse(type == 'ascii', 'asc',

@@ -45,7 +45,7 @@ writeLog <- function(logs, ..., type = 'default') {
   
   args <- list(pre, ...)
   newEntries <- paste(args, collapse = ' ')
-  logs$entries <- paste(logs$entries, newEntries, sep = '<br>')
+  isolate({logs$entries <- paste(logs$entries, newEntries, sep = '<br>')})
 }
 
 ####################### #
@@ -172,26 +172,6 @@ mcp <- function (xy) {
   xy.bord <- xy[coords.t, ]
   xy.bord <- rbind(xy.bord[nrow(xy.bord), ], xy.bord)
   return(sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(as.matrix(xy.bord))), 1))))
-}
-
-bgMskAndSamplePts <- function(envs, bgExt) {
-  if (is.null(envs)) {
-    writeLog(type = 'error', 'Obtain environmental data first...')
-    return()
-  }
-  # mask envs by background extent
-  withProgress(message = "Processing environmental data...", {
-    bgCrop <- raster::crop(envs, bgExt)
-    bgMask <- raster::mask(bgCrop, bgExt)
-  })
-  logs %>% writeLog('Environmental data masked.')
-  # sample random background points
-  withProgress(message = "Generating background points...", {
-    bgXY <- dismo::randomPoints(bgMask, 10000)
-  })
-  logs %>% writeLog('Random background points sampled (n = 10,000).')
-  shinyjs::enable("downloadMskPreds")
-  return(list(msk = bgMask, pts = bgXY))
 }
 
 ####################### #
