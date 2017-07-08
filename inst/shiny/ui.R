@@ -130,7 +130,10 @@ shinyUI(tagList(
                                                                  uiBottom('sp', "Edzer Pebesma, Roger Bivand, Barry Rowlingson, Virgilio Gomez-Rubio,
                                                                            Robert Hijmans, Michael Sumner, Don MacQueen, Jim Lemon, Josh O\'Brien"), br(),
                                                                  uiBottom('rgeos', "Roger Bivand, Colin Rundel, Edzer Pebesma, Karl Ove Hufthammer")
-                                                )
+                                                ),
+                                                conditionalPanel("input.envProcSel == 'bgUser'",
+                                                                 userBgExtent_UI('c4_userBgExtent')
+                                                                 )
                                )
                              )
              ),
