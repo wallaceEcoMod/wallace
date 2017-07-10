@@ -55,6 +55,7 @@ shinyServer(function(input, output, session) {
     
   # guidance text and tab behavior
   observe({
+    print(input$tabs)
     if (input$tabs == 1) {
       gtext$cur_comp <- 'gtext_comp1.Rmd'
       if (input$occSel == 'db') gtext$cur_mod <- "gtext_comp1_dbOccs.Rmd"
@@ -116,7 +117,10 @@ shinyServer(function(input, output, session) {
   # TABLE
   options <- list(autoWidth = TRUE, columnDefs = list(list(width = '40%', targets = 7)),
                   scrollX=TRUE, scrollY=400)
-  output$occTbl <- DT::renderDataTable(occs() %>% dplyr::select(-origID, -pop))
+  output$occTbl <- DT::renderDataTable({
+    req(occs())
+    occs() %>% dplyr::select(-origID, -pop)
+  })
 
   # handle downloading of original GBIF records after cleaning
   output$dlDbOccs <- downloadHandler(
@@ -243,6 +247,8 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goBgMask, {
     bgMskPts()
+    print(bgMskPts()$msk)
+    print(bgMskPts()$ptss)
     # bgMsk <- bgMskPts()$msk
     # bgPts <- bgMskPts()$pts
   })
@@ -254,7 +260,7 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       tmpdir <- tempdir()
       setwd(tempdir())
-      type <- input$mskPredsFileType
+      type <- input$bgMskFileType
       nm <- names(bgMskPts()$msk)
       
       raster::writeRaster(bgMskPts()$msk, file.path(tmpdir, 'msk'), bylayer = TRUE,

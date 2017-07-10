@@ -14,10 +14,10 @@ shinyUI(tagList(
              tabPanel("2 Process Occs", value=2),
              tabPanel("3 Env Data", value=3),
              tabPanel("4 Process Envs", value=4),
-             tabPanel("5 Partition Occs", value=5),
-             tabPanel("6 Model", value=6),
-             tabPanel("7 Visualize", value=7),
-             tabPanel("8 Project", value=8),
+             # tabPanel("5 Partition Occs", value=5),
+             # tabPanel("6 Model", value=6),
+             # tabPanel("7 Visualize", value=7),
+             # tabPanel("8 Project", value=8),
              tabPanel("Session Code", value='rmd'),
              
              fluidRow(column(4,
@@ -118,13 +118,12 @@ shinyUI(tagList(
                                                                  uiTop('rgeos', 'Interface to Geometry Engine - Open Source (GEOS)'),
                                                                  HTML('<hr>'),
                                                                  bgExtent_UI('c4_bgExtent'),
-                                                                 actionButton("goBgExt", "Choose")
-                                                ),
+                                                                 actionButton("goBgExt", "Choose")),
                                                 conditionalPanel("input.envProcSel == 'bgUser'",
                                                                  div(paste('Module: User-specified Study Region'), id="mod"),
                                                                  userBgExtent_UI('c4_userBgExtent'),
                                                                  actionButton("goUserBg", "Load")),
-                                                conditionalPanel("input.envProcSel == 'bgSel' || input.envProcSel == 'bgUser",
+                                                conditionalPanel("input.envProcSel == 'bgSel' | input.envProcSel == 'bgUser",
                                                                  HTML('<hr>'),
                                                                  strong('Mask environmental predictor rasters by polygon'), br(), br(),
                                                                  bgMskAndSamplePts_UI('c4_bgMskAndSamplePts'),
@@ -142,14 +141,15 @@ shinyUI(tagList(
                              )
              ),
              column(8,
-                    conditionalPanel("input.tabs != 0 && input.tabs != 'rmd'",
+                    conditionalPanel("input.tabs != 0 & input.tabs != 'rmd'",
                                      div(id = "wallaceLog", class = "scrollbox", htmlOutput("log")),
                                      absolutePanel(top = -10, right = 20, width = 150, draggable = TRUE,
-                                                   selectInput("bmap", "Change Base Map", choices = c('ESRI Topo'="Esri.WorldTopoMap",
-                                                                                                      'Stamen Terrain'="Stamen.Terrain",
-                                                                                                      'Open Topo'="OpenTopoMap",
-                                                                                                      'ESRI Imagery'="Esri.WorldImagery",
-                                                                                                      'ESRI Nat Geo'='Esri.NatGeoWorldMap'),
+                                                   selectInput("bmap", "Change Base Map", 
+                                                               choices = c('ESRI Topo'="Esri.WorldTopoMap",
+                                                                           'Stamen Terrain'="Stamen.Terrain",
+                                                                           'Open Topo'="OpenTopoMap",
+                                                                           'ESRI Imagery'="Esri.WorldImagery",
+                                                                           'ESRI Nat Geo'='Esri.NatGeoWorldMap'),
                                                                selected = "Esri.WorldTopoMap"))
                     ),
                     br(),
@@ -158,36 +158,36 @@ shinyUI(tagList(
                                                  tabPanel('Map', leaflet::leafletOutput("map", height=600)),
                                                  tabPanel('Occs Tbl', DT::dataTableOutput('occTbl')),
                                                  tabPanel('Results', 
-                                                          conditionalPanel("input.tabs == 3", verbatimTextOutput('envsPrint')),
-                                                          conditionalPanel("input.tabs == 6", DT::dataTableOutput('evalTbl')),
-                                                          conditionalPanel("input.tabs == 7 && input.visSel == 'response'",
-                                                                           imageOutput('respCurv')),
-                                                          conditionalPanel("input.tabs == 7 && input.visSel == 'bcEnvel' && input.enmSel == 'BIOCLIM'",
-                                                                           imageOutput('bcEnvelPlot')),
-                                                          conditionalPanel("input.tabs == 7 && input.visSel == 'mxEval'  && input.enmSel == 'Maxent'",
-                                                                           imageOutput('mxEvalPlot'))),
+                                                          conditionalPanel("input.tabs == 3", verbatimTextOutput('envsPrint'))
+                                                          # conditionalPanel("input.tabs == 6", DT::dataTableOutput('evalTbl')),
+                                                          # conditionalPanel("input.tabs == 7 && input.visSel == 'response'",
+                                                          # imageOutput('respCurv')),
+                                                          # conditionalPanel("input.tabs == 7 && input.visSel == 'bcEnvel' && input.enmSel == 'BIOCLIM'",
+                                                          # imageOutput('bcEnvelPlot')),
+                                                          # conditionalPanel("input.tabs == 7 && input.visSel == 'mxEval'  && input.enmSel == 'Maxent'",
+                                                          # imageOutput('mxEvalPlot'))),
+                                                 ),
                                                  tabPanel('Component Guidance', uiOutput('gtext_comp')),
                                                  tabPanel('Module Guidance', uiOutput('gtext_mod'))
                                      )
                     ),
-                    conditionalPanel("input.tabs == 'rmd'",
-                                     column(8,
-                                            includeMarkdown(system.file("Rmd", "text_sessionCode.Rmd", package = "wallace"))
-                                     )
-                    ),
-                    conditionalPanel("input.tabs == 0",
+                    # conditionalPanel("input.tabs == 'rmd'",
+                    #                  column(8,
+                    #                         includeMarkdown(system.file("Rmd", "text_sessionCode.Rmd", package = "wallace"))
+                    #                  )
+                    # ),
+                    conditionalPanel("input.tabs == 10",
                                      tabsetPanel(id = 'introTabs',
                                                  tabPanel('Intro', includeMarkdown(system.file("Rmd", "text_intro.Rmd", package = "wallace"))),
                                                  tabPanel('About',
                                                           fluidRow(
-                                                            column(8,
-                                                                   includeMarkdown(system.file("Rmd", "text_about.Rmd", package = "wallace"))
+                                                            column(8, includeMarkdown(system.file("Rmd", "text_about.Rmd", package = "wallace"))
                                                             )
-                                                            
                                                           )
                                                  )
                                      )
                     )
              )
              )
-  )))
+  )
+))
