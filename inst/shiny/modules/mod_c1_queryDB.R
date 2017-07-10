@@ -6,7 +6,7 @@ queryDB_UI <- function(id) {
                  choices = list("GBIF" = 'gbif',
                                 "VertNet" = 'vertnet',
                                 "BISON" = 'bison')),
-    textInput(ns("spName"), label = "Enter species scientific name", placeholder = 'format: Genus species'),
+    textInput(ns("spName"), label = "Enter species scientific name", placeholder = 'format: Genus species', value = 'Puma concolor'),
     shinyBS::bsPopover(ns('spName'), title = 'Tip',
                        'Examples: Felis catus, Canis lupus, Nyctereutes procyonoides',
                        placement = 'right', options = list(container = "body")),

@@ -118,7 +118,14 @@ shinyUI(tagList(
                                                                  uiTop('rgeos', 'Interface to Geometry Engine - Open Source (GEOS)'),
                                                                  HTML('<hr>'),
                                                                  bgExtent_UI('c4_bgExtent'),
-                                                                 actionButton("goBgExt", "Choose"),
+                                                                 actionButton("goBgExt", "Choose")
+                                                ),
+                                                conditionalPanel("input.envProcSel == 'bgUser'",
+                                                                 div(paste('Module: User-specified Study Region'), id="mod"),
+                                                                 userBgExtent_UI('c4_userBgExtent'),
+                                                                 actionButton("goUserBg", "Load")),
+                                                conditionalPanel("input.envProcSel == 'bgSel' || input.envProcSel == 'bgUser",
+                                                                 HTML('<hr>'),
                                                                  strong('Mask environmental predictor rasters by polygon'), br(), br(),
                                                                  bgMskAndSamplePts_UI('c4_bgMskAndSamplePts'),
                                                                  actionButton("goBgMask", "Run"), br(), br(),
@@ -128,12 +135,9 @@ shinyUI(tagList(
                                                                  downloadButton('dlMskPreds', "Download"),
                                                                  HTML('<hr>'),
                                                                  uiBottom('sp', "Edzer Pebesma, Roger Bivand, Barry Rowlingson, Virgilio Gomez-Rubio,
-                                                                           Robert Hijmans, Michael Sumner, Don MacQueen, Jim Lemon, Josh O\'Brien"), br(),
-                                                                 uiBottom('rgeos', "Roger Bivand, Colin Rundel, Edzer Pebesma, Karl Ove Hufthammer")
-                                                ),
-                                                conditionalPanel("input.envProcSel == 'bgUser'",
-                                                                 userBgExtent_UI('c4_userBgExtent')
-                                                                 )
+                                                                          Robert Hijmans, Michael Sumner, Don MacQueen, Jim Lemon, Josh O\'Brien"), br(),
+                                                                 uiBottom('rgeos', "Roger Bivand, Colin Rundel, Edzer Pebesma, Karl Ove Hufthammer"))
+                                                
                                )
                              )
              ),

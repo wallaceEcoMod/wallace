@@ -3,20 +3,20 @@ userBgExtent_UI <- function(id) {
   ns <- NS(id)
   tagList(
     fileInput(ns("userBgShp"), label = 'Upload polygon with field order: longitude, latitude (.csv)',
-              accept=c(".csv"), multiple=TRUE),
-    numericInput("userBgBuf", label = "Study region buffer distance (degree)", value = 0, min = 0, step = 0.5),
+              accept=c(".csv")),
+    numericInput(ns("userBgBuf"), label = "Study region buffer distance (degree)", value = 0, min = 0, step = 0.5),
     shinyBS::bsPopover('userBgBuf', title = 'Tip',
                        'Buffer area in degrees (1 degree = ~111 km). Exact length varies based on latitudinal position.',
                        placement = 'right', options = list(container = "body"))
   )
 }
 
-userBgExtent_MOD <- function(input, output, session, logs, occs, envs) {
+userBgExtent_MOD <- function(input, output, session, logs, occs) {
   reactive({
     
     #       file <- shinyFileChoose(input, 'userBgShp', root=c(root='.'))
     #       path <- input$userBgShp$datapath
-    
+    print(input$userBgShp)
     names <- input$userBgShp$name
     inPath <- input$userBgShp$datapath
     pathdir <- dirname(inPath)
@@ -28,7 +28,6 @@ userBgExtent_MOD <- function(input, output, session, logs, occs, envs) {
       f <- read.csv(inPath, header = TRUE)
       
       bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(f)), 1)))
-      bgExt <- rgeos::gBuffer(bgExt, width = input$bgBuf)
     } else {
       logs %>% writeLog(type = 'warning', 'Please enter a CSV file of vertex coordinates.')
       return()
@@ -55,8 +54,14 @@ userBgExtent_MOD <- function(input, output, session, logs, occs, envs) {
     #           "Generate the user-defined study extent plus the buffer:")
     #       }
     
+    bufWid <- input$userBgBuf
+    print(bufWid)
+    if (bufWid > 0) {
+      bgExt <- rgeos::gBuffer(bgExt, width = bufWid)
+    }
+    
     logs %>% writeLog("Study extent: user-defined polygon.")
-    logs %>% writeLog('Study extent buffered by', input$userBgBuf, 'degrees.')
+    logs %>% writeLog('Study extent buffered by', bufWid, 'degrees.')
     
     return(bgExt)
   })

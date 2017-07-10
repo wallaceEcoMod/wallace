@@ -181,8 +181,8 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goEnvData, {
     # load into envs
     envs(wcBioclims())
-    occs.naEnvRem <- remEnvsValsNA(envs, occs)
-    occs(occs.naEnvRem)
+    # occs.naEnvRem <- remEnvsValsNA(envs, occs)
+    # occs(occs.naEnvRem)
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     # enable download button
@@ -215,18 +215,31 @@ shinyServer(function(input, output, session) {
 ### COMPONENT 4 ####
 ######################## #
 
+  bgShp <- reactiveVal()
+  
   bgExt <- callModule(bgExtent_MOD, 'c4_bgExtent', logs, occs)
   
   observeEvent(input$goBgExt, {
-    shp <- bgExt()
-    coords <- shp@polygons[[1]]@Polygons[[1]]@coords
+    bgShp(bgExt())
+    coords <- bgShp()@polygons[[1]]@Polygons[[1]]@coords
     map %>%
-      addPolygons(lng=coords[,1], lat=coords[,2], layerId="backext",
-                  weight=10, color="red", group='backgPoly') %>%
+      addPolygons(lng=coords[,1], lat=coords[,2], layerId="bg",
+                  weight=10, color="red", group='bgShp') %>%
       fitBounds(max(coords[,1]), max(coords[,2]), min(coords[,1]), min(coords[,2]))
   })
   
-  bgMskPts <- callModule(bgMskAndSamplePts_MOD, 'c4_bgMskAndSamplePts', logs, envs, bgExt)
+  userBg <- callModule(userBgExtent_MOD, 'c4_userBgExtent', logs, occs)
+  
+  observeEvent(input$goUserBg, {
+    bgShp(userBg())
+    coords <- bgShp()@polygons[[1]]@Polygons[[1]]@coords
+    map %>%
+      addPolygons(lng=coords[,1], lat=coords[,2], layerId="bg",
+                  weight=10, color="red", group='bgShp') %>%
+      fitBounds(max(coords[,1]), max(coords[,2]), min(coords[,1]), min(coords[,2]))
+  })
+  
+  bgMskPts <- callModule(bgMskAndSamplePts_MOD, 'c4_bgMskAndSamplePts', logs, envs, bgShp)
   
   observeEvent(input$goBgMask, {
     bgMskPts()

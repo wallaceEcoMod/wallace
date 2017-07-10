@@ -6,7 +6,8 @@ bgMskAndSamplePts_UI <- function(id) {
   )
 }
 
-bgMskAndSamplePts_MOD <- function(input, output, session, logs, envs, bgExt) {
+bgMskAndSamplePts_MOD <- function(input, output, session, logs, envs, bgShp) {
+  req(bgShp)
   reactive({
     if (is.null(envs())) {
       writeLog(type = 'error', 'Obtain environmental data first...')
@@ -15,8 +16,8 @@ bgMskAndSamplePts_MOD <- function(input, output, session, logs, envs, bgExt) {
     
     # mask envs by background extent
     withProgress(message = "Processing environmental data...", {
-      bgCrop <- raster::crop(envs(), bgExt())
-      bgMask <- raster::mask(bgCrop, bgExt())
+      bgCrop <- raster::crop(envs(), bgShp())
+      bgMask <- raster::mask(bgCrop, bgShp())
     })
     logs %>% writeLog('Environmental data masked.')
     # sample random background points
