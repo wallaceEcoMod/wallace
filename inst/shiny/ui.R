@@ -123,7 +123,7 @@ shinyUI(tagList(
                                                                  div(paste('Module: User-specified Study Region'), id="mod"),
                                                                  userBgExtent_UI('c4_userBgExtent'),
                                                                  actionButton("goUserBg", "Load")),
-                                                conditionalPanel("input.envProcSel == 'bgSel' | input.envProcSel == 'bgUser",
+                                                conditionalPanel("input.envProcSel == 'bgSel' | input.envProcSel == 'bgUser'",
                                                                  HTML('<hr>'),
                                                                  strong('Mask environmental predictor rasters by polygon'), br(), br(),
                                                                  bgMskAndSamplePts_UI('c4_bgMskAndSamplePts'),
@@ -136,7 +136,7 @@ shinyUI(tagList(
                                                                  uiBottom('sp', "Edzer Pebesma, Roger Bivand, Barry Rowlingson, Virgilio Gomez-Rubio,
                                                                           Robert Hijmans, Michael Sumner, Don MacQueen, Jim Lemon, Josh O\'Brien"), br(),
                                                                  uiBottom('rgeos', "Roger Bivand, Colin Rundel, Edzer Pebesma, Karl Ove Hufthammer"))
-                                                
+
                                )
                              )
              ),
@@ -171,12 +171,12 @@ shinyUI(tagList(
                                                  tabPanel('Module Guidance', uiOutput('gtext_mod'))
                                      )
                     ),
-                    # conditionalPanel("input.tabs == 'rmd'",
-                    #                  column(8,
-                    #                         includeMarkdown(system.file("Rmd", "text_sessionCode.Rmd", package = "wallace"))
-                    #                  )
-                    # ),
-                    conditionalPanel("input.tabs == 10",
+                    conditionalPanel("input.tabs == 'rmd'",
+                                     column(8,
+                                            includeMarkdown(system.file("Rmd", "text_sessionCode.Rmd", package = "wallace"))
+                                     )
+                    ),
+                    conditionalPanel("input.tabs == 0",
                                      tabsetPanel(id = 'introTabs',
                                                  tabPanel('Intro', includeMarkdown(system.file("Rmd", "text_intro.Rmd", package = "wallace"))),
                                                  tabPanel('About',
