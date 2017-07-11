@@ -22,9 +22,14 @@ bgMskAndSamplePts_MOD <- function(input, output, session, logs, envs, bgShp) {
     logs %>% writeLog('Environmental data masked.')
     # sample random background points
     withProgress(message = "Generating background points...", {
+      rvals <- raster::getValues(bgMask)
+      num.vals <- sum(!is.na(rvals))
+      print(num.vals)
+      pct <- round((input$bgPtsNum / num.vals) * 100, digits = 2)
       bgXY <- dismo::randomPoints(bgMask, input$bgPtsNum)
     })
-    logs %>% writeLog('Random background points sampled (n = 10,000).')
+    logs %>% writeLog('Random background points sampled (n =', input$bgPtsNum, 
+                      ':', pct, '% of cells with values).')
     shinyjs::enable("downloadMskPreds")
     return(list(msk = bgMask, pts = bgXY))
   })

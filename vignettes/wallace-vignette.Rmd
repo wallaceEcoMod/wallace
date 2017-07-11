@@ -31,7 +31,7 @@ As mentioned above, `wallace` was written using the web application development 
 
 All the relevant code is in **inst/shiny**. The user interface and server code are in separate scripts, **ui.R** and **server.R**. The behavior of the user interface is governed by **ui.R**, and the analysis code is run by **server.R**. Additional functions used throughout are stored in **/funcs/functions.R**. Modules are all separate scripts, and are stored in **/modules**. Modules have the following naming convention: *mod_cNUMBER_NICKNAME*, where the module called "Query Database" for component 1 is named *mod_c1_queryDB*.
 
-Each component has a set of radio buttons that allow users to choose between modules. Within **ui.R**, you can find each component organized this way:
+Each component has a set of radio buttons that allow users to choose between modules. What follows are conditional panels that will display each module if it is selected. Within **ui.R**, you can find each component organized this way:
 
 ```{r}
 conditionalPanel("input.tabs == 1",
