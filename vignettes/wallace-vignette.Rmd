@@ -1,0 +1,62 @@
+---
+title: "Wallace Vignette: Authoring Modules"
+author: "Jamie M. Kass"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{wallace Vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+  ---
+  
+  ```{r setup, echo = FALSE, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(collapse=TRUE, message=FALSE, warning=FALSE, comment="#>")
+```
+
+- [Introduction](#intro)
+- [Structure of `wallace`](#structure)
+
+
+
+## Introduction {#intro}
+
+[`wallace`](https://cran.r-project.org/package=wallace) is a `shiny` application that allows users to build and evaluate models of species niches and distributions from scratch using a point-and-click interface. The application features an interactive map and dynamic plots and tables. Data for the models can be download from online databases or uploaded by the user, and most results can be downloaded, including the option to save R code that can reproduce your analysis. 
+
+This vignette focuses on perhaps the most important characteristic of `wallace`--its modularity. The analysis is broken down into components that proceed sequentially, and options within each component are called modules. `wallace` comes with some modules built in, but users can author their own to increase the application's functionality. Some users may have a different preferred way of approaching some part of the analysis, and by authoring a module they can share this method with the user community. In this vignette, we explain how to put a module together, but first we delve briefly into how `wallace` is structured.
+
+## Structure of `wallace`
+
+As mentioned above, `wallace` was written using the web application development package `shiny`. It is highly recommended you go through the `shiny` [tutorial](http://shiny.rstudio.com/tutorial/) and the `shiny` module [info page](https://shiny.rstudio.com/articles/modules.html) before proceeding in order to understand the basics.
+
+All the relevant code is in **inst/shiny**. The user interface and server code are in separate scripts, **ui.R** and **server.R**. The behavior of the user interface is governed by **ui.R**, and the analysis code is run by **server.R**. Additional functions used throughout are stored in **/funcs/functions.R**. Modules are all separate scripts, and are stored in **/modules**. Modules have the following naming convention: *mod_cNUMBER_NICKNAME*, where the module called "Query Database" for component 1 is named *mod_c1_queryDB*.
+
+Each component has a set of radio buttons that allow users to choose between modules. Within **ui.R**, you can find each component organized this way:
+
+```{r}
+conditionalPanel("input.tabs == 1",
+                 h4("Obtain Occurrence Data"),
+                 radioButtons("occSel", "Modules Available:",
+                              choices = list("Query Database" = 'db', "User-specified Occurrences" = 'user'),
+                              selected = 'db'),
+                 HTML('<hr>'),
+                 conditionalPanel("input.occSel == 'db'",
+                                  div(paste('Module: Query Database'), id="mod"),
+                                  uiTop('spocc', 'Interface to Species Occurrence Data Sources'),
+                                  HTML('<hr>'),
+                                  queryDB_UI('c1_queryDB'),
+                                  actionButton("goDbOccs", "Query Database"),
+                                  strong("Download database occurrence localities (.csv)"), br(), br(),
+                                  downloadButton('dlDbOccs', "Download DB Occurrences"),
+                                  HTML('<hr>'),
+                                  uiBottom('spocc', "Scott Chamberlain, Karthik Ram, Ted Hart")
+                 ),
+                 conditionalPanel("input.occSel == 'user'",
+                                  div('Module: User-specified Occurrences', id="mod"),
+                                  HTML('<hr>'),
+                                  userOccs_UI('c1_userOccs'),
+                                  actionButton("goUserOccs", "Load Occurrences")
+                 )
+),
+```
+

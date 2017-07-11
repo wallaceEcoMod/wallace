@@ -168,10 +168,10 @@ Buffer size of the study extent polygon defined as `r {{backgBuf}}` km.
 ```
 
 ```{r backgBuf, echo = isBB, include = isBB}
-xmin <- min(occs$longitude) - ({{backgBuf}} + res(preds)[1])
-xmax <- max(occs$longitude) + ({{backgBuf}} + res(preds)[1])
-ymin <- min(occs$latitude) - ({{backgBuf}} + res(preds)[1])
-ymax <- max(occs$latitude) + ({{backgBuf}} + res(preds)[1])
+xmin <- min(occs$longitude) - ({{backgBuf}} + raster::(preds)[1])
+xmax <- max(occs$longitude) + ({{backgBuf}} + raster::(preds)[1])
+ymin <- min(occs$latitude) - ({{backgBuf}} + raster::(preds)[1])
+ymax <- max(occs$latitude) + ({{backgBuf}} + raster::(preds)[1])
 bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin), ncol=2)
 backgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(bb)), 1)))
 ```
@@ -179,7 +179,7 @@ backgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(bb)), 1)))
 ```{r backgBuf2, echo = isMCP, include = isMCP}
 xy_mcp <- mcp(occs[,2:3])
 bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
-backgExt <- rgeos::gBuffer(xy_mcp, width = {{backgBuf}} + res(preds)[1])
+backgExt <- rgeos::gBuffer(xy_mcp, width = {{backgBuf}} + raster::(preds)[1])
 ```
 
 ```{asis, echo = isUserBG, eval = isUserBG, include = isUserBG}
@@ -196,7 +196,7 @@ Generate the user-defined study extent plus the buffer:
 
 ```{r userBackgPoly2, echo = isUserBG, include = isUserBG}
 shp <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(shp)), 1)))
-shp <- rgeos::gBuffer(shp, width = {{backgBuf}} + res(preds)[1])
+shp <- rgeos::gBuffer(shp, width = {{backgBuf}} + raster::(preds)[1])
 backgExt <- shp
 bb <- shp@polygons[[1]]@Polygons[[1]]@coords
 ```
