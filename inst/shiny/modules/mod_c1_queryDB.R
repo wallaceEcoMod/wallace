@@ -10,7 +10,7 @@ queryDB_UI <- function(id) {
     shinyBS::bsPopover(ns('spName'), title = 'Tip',
                        'Examples: Felis catus, Canis lupus, Nyctereutes procyonoides',
                        placement = 'right', options = list(container = "body")),
-    sliderInput(ns("occNum"), "Maximum number of occurrences:", min = 1, max = 500, value = 50),
+    sliderInput(ns("occNum"), "Maximum number of occurrences:", min = 1, max = 500, value = 10),
     shinyBS::bsPopover(ns('occNum'), title = 'Tip',
                        'Maximum number of occurrences recovered from databases. 
                        Downloaded records are not sorted randomly: rows are 

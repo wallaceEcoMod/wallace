@@ -24,7 +24,6 @@ bgMskAndSamplePts_MOD <- function(input, output, session, logs, envs, bgShp) {
     withProgress(message = "Generating background points...", {
       rvals <- raster::getValues(bgMask)
       num.vals <- sum(!is.na(rvals))
-      print(num.vals)
       pct <- round((input$bgPtsNum / num.vals) * 100, digits = 2)
       bgXY <- dismo::randomPoints(bgMask, input$bgPtsNum)
     })

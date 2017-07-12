@@ -14,7 +14,7 @@ shinyUI(tagList(
              tabPanel("2 Process Occs", value=2),
              tabPanel("3 Env Data", value=3),
              tabPanel("4 Process Envs", value=4),
-             # tabPanel("5 Partition Occs", value=5),
+             tabPanel("5 Partition Occs", value=5),
              # tabPanel("6 Model", value=6),
              # tabPanel("7 Visualize", value=7),
              # tabPanel("8 Project", value=8),
@@ -136,7 +136,30 @@ shinyUI(tagList(
                                                                  uiBottom('sp', "Edzer Pebesma, Roger Bivand, Barry Rowlingson, Virgilio Gomez-Rubio,
                                                                           Robert Hijmans, Michael Sumner, Don MacQueen, Jim Lemon, Josh O\'Brien"), br(),
                                                                  uiBottom('rgeos', "Roger Bivand, Colin Rundel, Edzer Pebesma, Karl Ove Hufthammer"))
-
+                                                
+                               ),
+                               conditionalPanel("input.tabs == 5",
+                                                h4("Partition Occurrence Data"),
+                                                radioButtons("partSel", "Modules Available:",
+                                                             choices = list("Non-spatial Partition" = 'nsp',
+                                                                            "Spatial Partition" = 'sp')),
+                                                HTML('<hr>'),
+                                                # conditionalPanel("input.partSel == 'sp'",
+                                                #                  div('Module: Spatial Partition', id="mod"),
+                                                #                  uiTop('ENMeval', 'Automated Runs and Evaluations of Ecological Niche Models'),
+                                                #                  HTML('<hr>')),
+                                                #                  partSpat_UI('c5_partSpat')),
+                                                conditionalPanel("input.partSel == 'nsp'",
+                                                                 div('Module: Non-spatial Partition', id="mod"),
+                                                                 uiTop('ENMeval', 'Automated Runs and Evaluations of Ecological Niche Models'),
+                                                                 HTML('<hr>'),
+                                                                 partNonSpat_UI('c5_partNonSpat')),
+                                                actionButton("goPart", "Partition"), br(), br(),
+                                                strong("Download occurrence and background localities with partition values (.csv)"), br(), br(),
+                                                downloadButton('downloadPart', "Download"),
+                                                uiBottom('ENMeval', 'Robert Muscarella, Peter J. Galante, Mariano Soley-Guardia, Robert A. Boria,
+                                                                           Jamie M. Kass, Maria Uriarte, Robert P. Anderson'),
+                                                " | ", a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12261/abstract", target = "_blank")
                                )
                              )
              ),

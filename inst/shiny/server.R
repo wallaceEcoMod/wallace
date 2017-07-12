@@ -16,46 +16,45 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("downloadEvalPlots")
   shinyjs::disable("downloadPred")
   shinyjs::disable("downloadPj")
-
+  
   # load modules
   for (f in list.files('./modules')) {
     source(file.path('modules', f), local=TRUE)
   }
-
+  
   # UI for component guidance text
   output$gtext_comp <- renderUI({
     shiny::includeMarkdown(system.file('Rmd', gtext$cur_comp, package='wallace'))
   })
-
+  
   # UI for module guidance text
   output$gtext_mod <- renderUI({
     shiny::includeMarkdown(system.file('Rmd', gtext$cur_mod, package='wallace'))
   })
-
-#########################
-### INITIALIZE ####
-#########################
-
+  
+  #########################
+  ### INITIALIZE ####
+  #########################
+  
   output$log <- renderUI({tags$div(id='logHeader', tags$div(id='logContent', 
-                                            HTML(paste0(logs$entries, "<br>", collapse = ""))))})
-
+                                                            HTML(paste0(logs$entries, "<br>", collapse = ""))))})
+  
   # create map
   m <- leaflet() %>% setView(0, 0, zoom = 2) %>% addProviderTiles('Esri.WorldTopoMap')
   output$map <- renderLeaflet(m)
-
+  
   # create map proxy to make further changes to existing map
   map <- leafletProxy("map")
   
   # initialize provider tile option
   observe({map %>% addProviderTiles(input$bmap)})
-
+  
   ######################## #
   ### GUIDANCE TEXT ####
   ######################## #
-    
+  
   # guidance text and tab behavior
   observe({
-    print(input$tabs)
     if (input$tabs == 1) {
       gtext$cur_comp <- 'gtext_comp1.Rmd'
       if (input$occSel == 'db') gtext$cur_mod <- "gtext_comp1_dbOccs.Rmd"
@@ -79,9 +78,9 @@ shinyServer(function(input, output, session) {
     }
   })
   
-######################## #
-### COMPONENT 1 ####
-######################## #
+  ######################## #
+  ### COMPONENT 1 ####
+  ######################## #
   
   # component 1 reactives
   occs <- reactiveVal()  # occs for analysis that get updated throughout 
@@ -101,7 +100,7 @@ shinyServer(function(input, output, session) {
       zoom2Occs(occs())
     shinyjs::enable("dlDbOccs")
   })
-
+  
   # module User Occurrence Data
   userOccs <- callModule(userOccs_MOD, 'c1_userOccs', logs)
   
@@ -113,7 +112,7 @@ shinyServer(function(input, output, session) {
       zoom2Occs(occs())
     shinyjs::disable("dlDbOccs")
   })
-      
+  
   # TABLE
   options <- list(autoWidth = TRUE, columnDefs = list(list(width = '40%', targets = 7)),
                   scrollX=TRUE, scrollY=400)
@@ -121,7 +120,7 @@ shinyServer(function(input, output, session) {
     req(occs())
     occs() %>% dplyr::select(-origID, -pop)
   })
-
+  
   # handle downloading of original GBIF records after cleaning
   output$dlDbOccs <- downloadHandler(
     filename = function() {paste0(formatSpName(spName()), '_', input$occDb, ".csv")},
@@ -129,10 +128,10 @@ shinyServer(function(input, output, session) {
       write.csv(occsOrigDnld(), file, row.names=FALSE)
     }
   )
-
-######################## #
-### COMPONENT 2 ####
-######################## #
+  
+  ######################## #
+  ### COMPONENT 2 ####
+  ######################## #
   
   # module Spatial Thin
   thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs', logs, occs)
@@ -164,17 +163,17 @@ shinyServer(function(input, output, session) {
       write.csv(origThinned, file, row.names = FALSE)
     }
   )
-
-######################## #
-### COMPONENT 3 ####
-######################## #
-
+  
+  ######################## #
+  ### COMPONENT 3 ####
+  ######################## #
+  
   # map center coordinates for 30 arcsec download
   mapCntr <- reactive(mapCenter(input$map_bounds))
   
   output$ctrLatLon <- renderText({
     paste('Using map center', paste(mapCntr(), collapse=', '))
-    })
+  })
   
   # reactive value to hold environmental predictor variables
   envs <- reactiveVal()
@@ -214,11 +213,11 @@ shinyServer(function(input, output, session) {
     # DT::datatable(data.frame(name=names, min=mins, max=maxs), 
     #               rownames = FALSE, options = list(pageLength = raster::nlayers(envs())))
   })
-
-######################## #
-### COMPONENT 4 ####
-######################## #
-
+  
+  ######################## #
+  ### COMPONENT 4 ####
+  ######################## #
+  
   bgShp <- reactiveVal()
   
   bgExt <- callModule(bgExtent_MOD, 'c4_bgExtent', logs, occs)
@@ -243,17 +242,17 @@ shinyServer(function(input, output, session) {
       fitBounds(max(coords[,1]), max(coords[,2]), min(coords[,1]), min(coords[,2]))
   })
   
-  bgMskPts <- callModule(bgMskAndSamplePts_MOD, 'c4_bgMskAndSamplePts', logs, envs, bgShp)
+  bgPts <- reactiveVal()
+  bgMsk <- reactiveVal()
   
   observeEvent(input$goBgMask, {
-    bgMskPts()
-    print(bgMskPts()$msk)
-    print(bgMskPts()$ptss)
-    # bgMsk <- bgMskPts()$msk
-    # bgPts <- bgMskPts()$pts
+    bgMskPts.call <- callModule(bgMskAndSamplePts_MOD, 'c4_bgMskAndSamplePts', logs, envs, bgShp)
+    bgMskPts <- bgMskPts.call()
+    bgMsk(bgMskPts$msk)
+    bgPts(bgMskPts$pts)
   })
-
-    
+  
+  
   # handle download for masked predictors, with file type as user choice
   output$dlMskPreds <- downloadHandler(
     filename = function() {'mskPreds.zip'},
@@ -264,7 +263,7 @@ shinyServer(function(input, output, session) {
       nm <- names(bgMskPts()$msk)
       
       raster::writeRaster(bgMskPts()$msk, file.path(tmpdir, 'msk'), bylayer = TRUE,
-                  suffix = nm, format = type, overwrite = TRUE)
+                          suffix = nm, format = type, overwrite = TRUE)
       ext <- ifelse(type == 'raster', 'grd',
                     ifelse(type == 'ascii', 'asc',
                            ifelse(type == 'GTiff', 'tif', 'png')))
@@ -278,4 +277,24 @@ shinyServer(function(input, output, session) {
     },
     contentType = "application/zip"
   )
+  
+  
+  ######################## #
+  ### COMPONENT 5 ####
+  ######################## #
+  
+  grp <- reactiveValues()
+  
+  observeEvent(input$goPart, {
+    partNsp <- callModule(partNonSpat_MOD, 'c5_partNonSpat', logs, occs, bgPts)
+    grp$occ <- partNsp()[[1]]
+    grp$bg <- partNsp()[[2]]
+    # colors for partition symbology
+    newColors <- gsub("FF$", "", rainbow(max(grp$occ)))  
+    partsFill <- newColors[grp$occ]
+    map %>%
+      clearMarkers() %>%
+      map_plotLocs(occs(), fillColor = partsFill, fillOpacity = 1) %>%
+      zoom2Occs(occs())
+  })
 })
