@@ -18,6 +18,7 @@ wcBioclims_UI <- function(id) {
 
 wcBioclims_MOD <- function(input, output, session, logs, mapCntr, envs) {
   reactive({
+    req(input$bcRes)
     withProgress(message = "Retrieving WorldClim data...", {
       if (input$bcRes == 0.5) {
         wcbc <- raster::getData(name = "worldclim", var = "bio", res = input$bcRes, 

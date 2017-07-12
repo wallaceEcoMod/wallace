@@ -11,7 +11,7 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("dlProcOccCsv")
   shinyjs::disable("predDnld")
   shinyjs::disable("downloadMskPreds")
-  shinyjs::disable("downloadPart")
+  shinyjs::disable("dlPart")
   shinyjs::disable("downloadEvalcsv")
   shinyjs::disable("downloadEvalPlots")
   shinyjs::disable("downloadPred")
@@ -287,29 +287,46 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goPartNsp, {
     partNsp <- callModule(partNsp_MOD, 'c5_partNsp', logs, occs, bgPts)
-    grp$occ <- partNsp()[[1]]
+    grp$occs <- partNsp()[[1]]
     grp$bg <- partNsp()[[2]]
     # colors for partition symbology
-    newColors <- gsub("FF$", "", rainbow(max(grp$occ)))  
-    partsFill <- newColors[grp$occ]
+    newColors <- gsub("FF$", "", rainbow(max(grp$occs)))  
+    partsFill <- newColors[grp$occs]
     map %>%
       clearMarkers() %>%
       map_plotLocs(occs(), fillColor = partsFill, fillOpacity = 1) %>%
       zoom2Occs(occs())
+    shinyjs::enable("dlPart")
   })
   
   observeEvent(input$goPartSp, {
     partSp <- callModule(partSp_MOD, 'c5_partSp', logs, occs, bgPts, bgMsk)
-    grp$occ <- partSp()[[1]]
+    grp$occs <- partSp()[[1]]
     grp$bg <- partSp()[[2]]
     # colors for partition symbology
-    newColors <- gsub("FF$", "", rainbow(max(grp$occ)))  
-    partsFill <- newColors[grp$occ]
+    newColors <- gsub("FF$", "", rainbow(max(grp$occs)))  
+    partsFill <- newColors[grp$occs]
     map %>%
       clearMarkers() %>%
       map_plotLocs(occs(), fillColor = partsFill, fillOpacity = 1) %>%
       zoom2Occs(occs())
+    shinyjs::enable("dlPart")
   })
+  
+  # handle download for partitioned occurrence records csv
+  output$dlPart <- downloadHandler(
+    filename = function() paste0(spName(), "_partitioned_occs.csv"),
+    content = function(file) {
+      bg.bind <- data.frame(rep('background', nrow(bgPts())), bgPts())
+      print(head(bg.bind))
+      print(names(bg.bind))
+      names(bg.bind) <- c('name', 'longitude', 'latitude')
+      occs.bg.bind <-rbind(occs()[,1:3], bg.bind)
+      all.bind <- cbind(occs.bg.bind, c(grp$occs, grp$bg))
+      names(all.bind)[4] <- "group"
+      write.csv(all.bind, file, row.names = FALSE)
+    }
+  )
   
   ######################### #
   ### COMPONENT 6: MODEL ####

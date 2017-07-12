@@ -39,7 +39,7 @@ shinyUI(tagList(
                                                                  uiTop('spocc', 'Interface to Species Occurrence Data Sources'),
                                                                  HTML('<hr>'),
                                                                  queryDB_UI('c1_queryDB'),
-                                                                 actionButton("goDbOccs", "Query Database"),
+                                                                 actionButton("goDbOccs", "Query Database"), br(), br(),
                                                                  strong("Download database occurrence localities (.csv)"), br(), br(),
                                                                  downloadButton('dlDbOccs', "Download DB Occurrences"),
                                                                  HTML('<hr>'),
@@ -158,7 +158,8 @@ shinyUI(tagList(
                                                                  actionButton("goPartNsp", "Partition")),
                                                 
                                                 strong("Download occurrence and background localities with partition values (.csv)"), br(), br(),
-                                                downloadButton('downloadPart', "Download"),
+                                                downloadButton('dlPart', "Download"),
+                                                HTML('<hr>'),
                                                 uiBottom('ENMeval', 'Robert Muscarella, Peter J. Galante, Mariano Soley-Guardia, Robert A. Boria,
                                                                            Jamie M. Kass, Maria Uriarte, Robert P. Anderson'),
                                                 " | ", a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12261/abstract", target = "_blank")
