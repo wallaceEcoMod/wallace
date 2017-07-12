@@ -4,7 +4,8 @@ partNsp_UI <- function(id) {
   tagList(
     selectInput(ns("partNspSel"), "Options Available:",
                 choices = list("None selected" = '', "Jackknife (k = n)" = "jack",
-                               "Random k-fold" = "rand")),
+                               "Random k-fold" = "rand"),
+                selected='rand'),
     numericInput(ns("kfolds"), label = "Number of Folds", value = 2, min = 2)
   )
 }

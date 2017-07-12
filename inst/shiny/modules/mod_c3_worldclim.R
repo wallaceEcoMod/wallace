@@ -7,7 +7,8 @@ wcBioclims_UI <- function(id) {
                                "30 arcsec" = 0.5,
                                "2.5 arcmin" = 2.5,
                                "5 arcmin" = 5,
-                               "10 arcmin" = 10)),
+                               "10 arcmin" = 10),
+                selected=10),
     shinyBS::bsPopover(ns('bcRes'), title = 'Tip',
                        'Approximate lengths at equator: 10 arcmin = ~20 km, 
                        5 arcmin = ~10 km, 2.5 arcmin = ~5 km, 30 arcsec = ~1 km. 

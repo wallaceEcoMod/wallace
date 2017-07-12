@@ -332,4 +332,25 @@ shinyServer(function(input, output, session) {
   ### COMPONENT 6: MODEL ####
   ######################### #
   
+  mod <- reactiveVal()
+  
+  jar <- paste(system.file(package="dismo"), "/java/maxent.jar", sep='')
+  output$maxentJar <- renderUI(HTML(paste('To use Maxent, make sure you download <b>maxent.jar</b> from the
+                                       <a href "http://biodiversityinformatics.amnh.org/open_source/maxent/">AMNH Maxent webpage</a>
+                                       and place it in this directory:<br><i>', jar, '</i>')))
+  
+  mod.maxent <- callModule(maxent_MOD, 'c6_maxent', logs, occs, bgPts, bgMsk)
+  
+  observeEvent(input$goMaxent, {
+    mod(mod.maxent())
+    res <- mod()@results
+    # make datatable of results df
+    res <- res %>% dplyr::rename(avg.test.AUC = Mean.AUC, var.test.AUC = Var.AUC, 
+                                 avg.diff.AUC = Mean.AUC.DIFF, var.diff.AUC = Var.AUC.DIFF, 
+                                 avg.test.orMTP = Mean.ORmin, var.test.orMTP = Var.ORmin,
+                                 avg.test.or10pct = Mean.OR10, var.test.or10pct = Var.OR10, 
+                                 parameters = nparam)
+    output$evalTbl <- DT::renderDataTable(cbind(res[,1:3], round(res[,4:15], digits=3)))
+  })
+  
 })

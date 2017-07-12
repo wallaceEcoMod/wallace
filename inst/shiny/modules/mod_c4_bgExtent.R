@@ -3,7 +3,8 @@ bgExtent_UI <- function(id) {
   ns <- NS(id)
   tagList(
     radioButtons(ns("backgSel"), "Background Extents:",
-                 choices = list("Bounding box" = 'bb', "Minimum convex polygon" = 'mcp')),
+                 choices = list("Bounding box" = 'bb', "Minimum convex polygon" = 'mcp'),
+                 selected='mcp'),
     numericInput(ns("bgBuf"), label = "Study region buffer distance (degree)", value = 0, min = 0, step = 0.5),
     shinyBS::bsPopover(ns("bgBuf"), title = 'Tip',
                        'Buffer area in degrees (1 degree = ~111 km). Exact length varies based on latitudinal position.',
