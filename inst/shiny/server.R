@@ -32,9 +32,9 @@ shinyServer(function(input, output, session) {
     shiny::includeMarkdown(system.file('Rmd', gtext$cur_mod, package='wallace'))
   })
   
-  #########################
+  ####################### #
   ### INITIALIZE ####
-  #########################
+  ####################### #
   
   output$log <- renderUI({tags$div(id='logHeader', tags$div(id='logContent', 
                                                             HTML(paste0(logs$entries, "<br>", collapse = ""))))})
@@ -78,9 +78,9 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  ######################## #
-  ### COMPONENT 1 ####
-  ######################## #
+  ########################################## #
+  ### COMPONENT 1: OBTAIN OCCURRENCE DATA ####
+  ########################################## #
   
   # component 1 reactives
   occs <- reactiveVal()  # occs for analysis that get updated throughout 
@@ -129,9 +129,9 @@ shinyServer(function(input, output, session) {
     }
   )
   
-  ######################## #
-  ### COMPONENT 2 ####
-  ######################## #
+  ########################################### #
+  ### COMPONENT 2: PROCESS OCCURRENCE DATA ####
+  ########################################### #
   
   # module Spatial Thin
   thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs', logs, occs)
@@ -164,9 +164,9 @@ shinyServer(function(input, output, session) {
     }
   )
   
-  ######################## #
-  ### COMPONENT 3 ####
-  ######################## #
+  ############################################# #
+  ### COMPONENT 3: OBTAIN ENVIRONMENTAL DATA ####
+  ############################################# #
   
   # map center coordinates for 30 arcsec download
   mapCntr <- reactive(mapCenter(input$map_bounds))
@@ -214,9 +214,9 @@ shinyServer(function(input, output, session) {
     #               rownames = FALSE, options = list(pageLength = raster::nlayers(envs())))
   })
   
-  ######################## #
-  ### COMPONENT 4 ####
-  ######################## #
+  ############################################## #
+  ### COMPONENT 4: PROCESS ENVIRONMENTAL DATA ####
+  ############################################## #
   
   bgShp <- reactiveVal()
   
@@ -279,9 +279,9 @@ shinyServer(function(input, output, session) {
   )
   
   
-  ######################## #
-  ### COMPONENT 5 ####
-  ######################## #
+  ############################################# #
+  ### COMPONENT 5: PARTITION OCCURRENCE DATA ####
+  ############################################# #
   
   grp <- reactiveValues()
   
@@ -310,4 +310,9 @@ shinyServer(function(input, output, session) {
       map_plotLocs(occs(), fillColor = partsFill, fillOpacity = 1) %>%
       zoom2Occs(occs())
   })
+  
+  ######################### #
+  ### COMPONENT 6: MODEL ####
+  ######################### #
+  
 })
