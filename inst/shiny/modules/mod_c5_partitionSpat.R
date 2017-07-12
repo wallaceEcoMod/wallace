@@ -1,67 +1,38 @@
 
-partSpat_UI <- function(id) {
+partSp_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    selectInput("partSel2", "Options Available:",
+    selectInput(ns("partSpSel"), "Options Available:",
                 choices = list("None selected" = '',
-                               "")),
-    
-    conditionalPanel("input.partSel == 'sp' & (input.partSel2 == 'cb1' | input.partSel2 == 'cb2')",
-                     numericInput("aggFact", label = "Aggregation Factor", value = 2, min = 2))
+                               "Block (k = 4)" = "block",
+                               "Checkerboard 1 (k = 2)" = "cb1",
+                               "Checkerboard 2 (k = 4)" = "cb2")),
+    numericInput(ns("aggFact"), label = "Aggregation Factor", value = 2, min = 2)
   )
 }
 
-partSpat_MOD <- function(input, output, session, logs, occs) {
+partSp_MOD <- function(input, output, session, logs, occs, bgPts, bgMsk) {
   reactive({
     req(occs())
+    req(bgPts())
     
-    if (!require('rJava')) {
-      writeLog('<font color="red"><b>! ERROR</b></font> : Package rJava cannot load. 
-               Please download the latest version of Java, and make sure it is the 
-               correct version (e.g. 64-bit if you have a 64-bit system). After the
-               download, try "library(rJava)". If it loads properly, restart Wallace
-               and try again.')
-      return()
-    }
-    
-    occs <- values$df[,2:3]
-    
-    if (partSelect2 == 'block') {
-      pt <- 'block'
-      group.data <- ENMeval::get.block(occs, values$bg.coords)
-      writeLog("> Data partition by block method.")
-    }
-    if (partSelect2 == 'cb1') {
-      pt <- "checkerboard 1"
-      group.data <- ENMeval::get.checkerboard1(occs, values$predsMsk, values$bg.coords, aggFact)
-      writeLog("> Data partition by checkerboard 1 method.")
-    }
-    if (partSelect2 == 'cb2') {
-      pt <- "checkerboard 2"
-      group.data <- ENMeval::get.checkerboard2(occs, values$predsMsk, values$bg.coords, aggFact)
-      writeLog("> Data partition by checkerboard 2 method.")
-    }
-    if (partSelect2 == 'jack') {
-      pt <- "jackknife"
-      group.data <- ENMeval::get.jackknife(occs, values$bg.coords)
-      writeLog("> Data partition by jackknife method.")
-    }
-    if (partSelect2 == 'random') {
-      pt <- paste0("random k-fold (k = ", kfolds, ")")
-      group.data <- ENMeval::get.randomkfold(occs, values$bg.coords, kfolds)
-      writeLog(paste("> Data partition by", paste0("random k-fold (k = ", kfolds, ")"), ":"))
+    occs.xy <- occs() %>% dplyr::select(longitude, latitude)
+
+    if (input$partSpSel == 'block') {
+      group.data <- ENMeval::get.block(occs.xy, bgPts())
+      logs %>% writeLog("Occurrences partitioned by block method.")
+    } else if (input$partSpSel == 'cb1') {
+      withProgress(message = "Aggregating rasters...", {
+        group.data <- ENMeval::get.checkerboard1(occs.xy, bgMsk(), bgPts(), input$aggFact)
+        logs %>% writeLog("Occurrences partitioned by checkerboard 1 method.")
+      })
+    } else if (input$partSpSel == 'cb2') {
+      withProgress(message = "Aggregating rasters...", {
+        group.data <- ENMeval::get.checkerboard2(occs.xy, bgMsk(), bgPts(), input$aggFact)
+        logs %>% writeLog("Occurrences partitioned by checkerboard 2 method.")
+      })
     }
     
-    values$modParams <- list(occ.pts=occs, bg.pts=values$bg.coords, occ.grp=group.data[[1]], bg.grp=group.data[[2]])
-    #newColors <- brewer.pal(max(group.data[[1]]), 'Accent')
-    #     values$df$parts <- factor(group.data[[1]])
-    #     newColors <- colorFactor(rainbow(max(group.data[[1]])), values$df$parts)
-    #     fillColor = ~newColors(parts)
-    newColors <- gsub("FF$", "", rainbow(max(group.data[[1]])))  # colors for partition symbology
-    values$partFill <- newColors[group.data[[1]]]
-    #newColors <- sample(colors(), max(group.data[[1]]))
-    proxy %>% 
-      clearMarkers() %>% 
-      map_plotLocs(values$df, fillColor = values$partFill, fillOpacity = 1)
+    return(group.data)
   })
 }

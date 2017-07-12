@@ -260,9 +260,9 @@ shinyServer(function(input, output, session) {
       tmpdir <- tempdir()
       setwd(tempdir())
       type <- input$bgMskFileType
-      nm <- names(bgMskPts()$msk)
+      nm <- names(bgMsk())
       
-      raster::writeRaster(bgMskPts()$msk, file.path(tmpdir, 'msk'), bylayer = TRUE,
+      raster::writeRaster(bgMsk(), file.path(tmpdir, 'msk'), bylayer = TRUE,
                           suffix = nm, format = type, overwrite = TRUE)
       ext <- ifelse(type == 'raster', 'grd',
                     ifelse(type == 'ascii', 'asc',
@@ -285,10 +285,23 @@ shinyServer(function(input, output, session) {
   
   grp <- reactiveValues()
   
-  observeEvent(input$goPart, {
-    partNsp <- callModule(partNonSpat_MOD, 'c5_partNonSpat', logs, occs, bgPts)
+  observeEvent(input$goPartNsp, {
+    partNsp <- callModule(partNsp_MOD, 'c5_partNsp', logs, occs, bgPts)
     grp$occ <- partNsp()[[1]]
     grp$bg <- partNsp()[[2]]
+    # colors for partition symbology
+    newColors <- gsub("FF$", "", rainbow(max(grp$occ)))  
+    partsFill <- newColors[grp$occ]
+    map %>%
+      clearMarkers() %>%
+      map_plotLocs(occs(), fillColor = partsFill, fillOpacity = 1) %>%
+      zoom2Occs(occs())
+  })
+  
+  observeEvent(input$goPartSp, {
+    partSp <- callModule(partSp_MOD, 'c5_partSp', logs, occs, bgPts, bgMsk)
+    grp$occ <- partSp()[[1]]
+    grp$bg <- partSp()[[2]]
     # colors for partition symbology
     newColors <- gsub("FF$", "", rainbow(max(grp$occ)))  
     partsFill <- newColors[grp$occ]
