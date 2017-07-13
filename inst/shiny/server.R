@@ -336,7 +336,7 @@ shinyServer(function(input, output, session) {
                                  avg.test.orMTP = Mean.ORmin, var.test.orMTP = Var.ORmin,
                                  avg.test.or10pct = Mean.OR10, var.test.or10pct = Var.OR10, 
                                  parameters = nparam)
-    output$evalTbl <- DT::renderDataTable(cbind(res[,1:3], round(res[,4:15], digits=3)))
+    output$evalTbl <- DT::renderDataTable(cbind(res[,1:3], round(res[,4:16], digits=3)))
   })
   
   # mod.bioclim <- callModule(bioclim_MOD, 'c6_bioclim')
