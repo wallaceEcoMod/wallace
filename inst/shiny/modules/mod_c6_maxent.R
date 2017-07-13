@@ -23,7 +23,7 @@ maxent_UI <- function(id) {
 
 maxent_MOD <- function(input, output, session, rvs) {
   reactive({
-    req(rvs$occs, rvs$bgPts, rvs$bgMsk)
+    req(input$fcs, rvs$occs, rvs$bgPts, rvs$bgMsk, rvs$occsGrp, rvs$bgGrp)
 
     if (!require('rJava')) {
       rvs %>% writeLog(type = "error", 'Package rJava cannot load. 

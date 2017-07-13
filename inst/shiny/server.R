@@ -337,10 +337,18 @@ shinyServer(function(input, output, session) {
                                  avg.test.or10pct = Mean.OR10, var.test.or10pct = Var.OR10, 
                                  parameters = nparam)
     output$evalTbl <- DT::renderDataTable(cbind(res[,1:3], round(res[,4:16], digits=3)))
+    # switch to Results tab
+    updateTabsetPanel(session, 'main', selected = 'Results')
   })
   
-  # mod.bioclim <- callModule(bioclim_MOD, 'c6_bioclim')
+  mod.bioclim <- callModule(bioclim_MOD, 'c6_bioclim', rvs)
   
-  # observeEvent()
+  observeEvent(input$goBioclim, {
+    rvs$mods <- mod.bioclim()
+    res <- rvs$mods$results
+    output$evalTbl <- DT::renderDataTable(round(res, digits=3))
+    # switch to Results tab
+    updateTabsetPanel(session, 'main', selected = 'Results')
+  })
   
 })

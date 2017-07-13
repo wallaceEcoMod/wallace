@@ -186,7 +186,8 @@ shinyUI(tagList(
                                                                  div('Module: BIOCLIM', id="mod"),
                                                                  uiTop('ENMeval', 'Automated Runs and Evaluations of Ecological Niche Models'),
                                                                  uiTop('dismo', 'Species Distribution Modeling'),
-                                                                 # bioclim_UI(),
+                                                                 HTML('<hr>'),
+                                                                 bioclim_UI('c6_bioclim'),
                                                                  actionButton('goBioclim', 'Run')),
                                                 
                                                 # strong("Download occurrence and background localities with partition values (.csv)"), br(), br(),
