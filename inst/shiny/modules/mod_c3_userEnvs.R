@@ -6,14 +6,15 @@ userEnvs_UI <- function(id) {
   )
 }
 
-userEnvs_MOD <- function(input, output, session, logs, envs) {
+userEnvs_MOD <- function(input, output, session, rvs) {
   reactive({
+    req(input$userEnvs)
       withProgress(message = "Reading in rasters...", {
         uenvs <- raster::stack(input$userEnvs$datapath)
         names(uenvs) <- input$userEnvs$name
       })
     
-    logs %>% writeLog("> Environmental predictors: User input.")
+    rvs %>% writeLog("> Environmental predictors: User input.")
     
     return(uenvs)
   })

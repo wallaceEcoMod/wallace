@@ -74,7 +74,7 @@ shinyUI(tagList(
                                                 actionButton("erasePolySelLocs", "Reset"),
                                                 HTML('<hr>'),
                                                 strong("Download processed occurrence localities (.csv)"), br(), br(),
-                                                downloadButton('dlProcOccCsv', "Download")
+                                                downloadButton('dlProcOccs', "Download")
                                ),
                                # tab 3 ####
                                conditionalPanel("input.tabs == 3",
@@ -90,19 +90,23 @@ shinyUI(tagList(
                                                                  wcBioclims_UI("c3_wcBioclims"),
                                                                  strong("Using map center coordinates as reference for tile download."),
                                                                  textOutput('ctrLatLon'), br(),
-                                                                 actionButton("goEnvData", "Download Env Data"),
-                                                                 HTML('<hr>'),
-                                                                 uiBottom('raster', "Robert J. Hijmans, Jacob van Etten, Joe Cheng, Matteo Mattiuzzu, 
-                                                                                 Michael Sumner, Jonathan A. Greenberg, Oscar Perpinan Lamigueriro, Andrew Bevan, 
-                                                                                 Etienne B. Racine, Ashton Shortridge"),
-                                                                 " | ", a("WorldClim", href="http://worldclim.org", target="_blank")
+                                                                 actionButton("goEnvData", "Load Env Data")
                                                 ),
                                                 conditionalPanel("input.envSel == 'user'",
                                                                  div('Module: User-specified Environmental Predictors', id="mod"),
                                                                  HTML('<hr>'),
                                                                  userEnvs_UI('c3_userEnvs'),
-                                                                 actionButton('goUserEnvs', 'Load Rasters')
-                                                )
+                                                                 actionButton('goUserEnvs', 'Load Env Data')
+                                                ),
+                                                # br(), br(),
+                                                # strong("Download environmental predictors"), br(), br(),
+                                                # downloadButton('dlEnvs', "Download"),
+                                                HTML('<hr>'),
+                                                uiBottom('raster', "Robert J. Hijmans, Jacob van Etten, Joe Cheng, Matteo Mattiuzzu, 
+                                                         Michael Sumner, Jonathan A. Greenberg, Oscar Perpinan Lamigueriro, Andrew Bevan, 
+                                                         Etienne B. Racine, Ashton Shortridge"),
+                                                " | ", a("WorldClim", href="http://worldclim.org", target="_blank")
+                                                
                                ),
                                # tab 4 ####
                                conditionalPanel("input.tabs == 4",
@@ -131,7 +135,7 @@ shinyUI(tagList(
                                                                  selectInput('bgMskFileType', label = "Select File Type",
                                                                              choices = list("GRD" = 'raster', "ASCII" = 'ascii', "GeoTIFF" = 'GTiff')),
                                                                  strong("Download masked environmental predictors"), br(), br(),
-                                                                 downloadButton('dlMskPreds', "Download"),
+                                                                 downloadButton('dlMskEnvs', "Download"),
                                                                  HTML('<hr>'),
                                                                  uiBottom('sp', "Edzer Pebesma, Roger Bivand, Barry Rowlingson, Virgilio Gomez-Rubio,
                                                                           Robert Hijmans, Michael Sumner, Don MacQueen, Jim Lemon, Josh O\'Brien"), br(),

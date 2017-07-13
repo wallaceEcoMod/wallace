@@ -34,7 +34,7 @@ logInit <- function() {
 }
 
 # add text to log
-writeLog <- function(logs, ..., type = 'default') {
+writeLog <- function(mp, ..., type = 'default') {
   if (type == "default") {
     pre <- "> "
   } else if (type == 'error') {
@@ -45,7 +45,7 @@ writeLog <- function(logs, ..., type = 'default') {
   
   args <- list(pre, ...)
   newEntries <- paste(args, collapse = ' ')
-  isolate({logs$entries <- paste(logs$entries, newEntries, sep = '<br>')})
+  isolate({mp$logs <- paste(mp$logs, newEntries, sep = '<br>')})
 }
 
 ####################### #
@@ -139,9 +139,9 @@ popUpContent <- function(x) {
 # COMP 3 ####
 ####################### #
 
-remEnvsValsNA <- function(envs, occs) {
+remEnvsValsNA <- function(rvs) {
   withProgress(message = "Processing...", {
-    occsVals <- raster::extract(envs(), occs()[c('longitude', 'latitude')])
+    occsVals <- raster::extract(rvs$envs, rvs$occs[c('longitude', 'latitude')])
     na.rowNums <- which(rowSums(is.na(occsVals)) > 1)
     
     if (length(na.rowNums) == length(occsVals)) {
@@ -151,13 +151,13 @@ remEnvsValsNA <- function(envs, occs) {
     }
     
     if (length(na.rowNums) > 0) {
-      occs.notNA <- occs()[-na.rowNums,]
+      occs.notNA <- rvs$occs[-na.rowNums,]
       logs %>% writeLog("! WARNING: Removed records without environmental values with origIDs: ",
-                        paste(occs()[na.rowNums,]$origID, collapse=', '), ".")
+                        paste(rvs$occs[na.rowNums,]$origID, collapse=', '), ".")
       return(occs.notNA)
     }
     
-    return(occs())
+    return(rvs$occs)
   })
   }
 

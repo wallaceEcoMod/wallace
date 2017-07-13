@@ -12,35 +12,35 @@ bgExtent_UI <- function(id) {
   )
 }
 
-bgExtent_MOD <- function(input, output, session, logs, occs) {
+bgExtent_MOD <- function(input, output, session, rvs) {
   reactive({
-    req(occs())
+    req(rvs$occs)
     
-    if (nrow(occs()) <= 2) {
-      logs %>% writeLog(type = 'error', 'Too few localities (<2) to create a background polygon.')
+    if (nrow(rvs$occs) <= 2) {
+      rvs %>% writeLog(type = 'error', 'Too few localities (<2) to create a background polygon.')
       return()
     }
     # generate background extent - one grid cell is added to perimeter of each shape
     # to ensure cells of points on border are included
     if (input$backgSel == 'bb') {
-      lon <- occs()$longitude
-      lat <- occs()$latitude
+      lon <- rvs$occs$longitude
+      lat <- rvs$occs$latitude
       xmin <- min(lon)
       xmax <- max(lon)
       ymin <- min(lat)
       ymax <- max(lat)
       bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin), ncol=2)
       bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(bb)), 1)))
-      logs %>% writeLog("Study extent: bounding box.")
+      rvs %>% writeLog("Study extent: bounding box.")
     } else if (input$backgSel == 'mcp') {
-      bgExt <- mcp(occs()[,2:3])
+      bgExt <- mcp(rvs$occs[,2:3])
       # bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
-      logs %>% writeLog("Study extent: minimum convex polygon.")
+      rvs %>% writeLog("Study extent: minimum convex polygon.")
     }
     
     if (input$bgBuf > 0) {
       bgExt <- rgeos::gBuffer(bgExt, width = input$bgBuf)
-      logs %>% writeLog('Study extent buffered by', input$bgBuf, 'degrees.')
+      rvs %>% writeLog('Study extent buffered by', input$bgBuf, 'degrees.')
     }
     
     return(bgExt)

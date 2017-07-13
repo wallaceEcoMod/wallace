@@ -21,12 +21,12 @@ maxent_UI <- function(id) {
   )
 }
 
-maxent_MOD <- function(input, output, session, logs, occs, bgPts, bgMsk) {
+maxent_MOD <- function(input, output, session, rvs) {
   reactive({
-    req(occs(), bgPts(), bgMsk())
+    req(rvs$occs, rvs$bgPts, rvs$bgMsk)
 
     if (!require('rJava')) {
-      logs %>% writeLog(type = "error", 'Package rJava cannot load. 
+      rvs %>% writeLog(type = "error", 'Package rJava cannot load. 
                Please download the latest version of Java, and make sure it is the 
                correct version (e.g. 64-bit for a 64-bit system). After installing, 
                try "library(rJava)". If it loads properly, restart Wallace and try again.')
@@ -34,7 +34,7 @@ maxent_MOD <- function(input, output, session, logs, occs, bgPts, bgMsk) {
     }
     
     if (is.null(input$fcs)) {
-      logs %>% writeLog(type = 'error', 'Select feature classes first.')
+      rvs %>% writeLog(type = 'error', 'Select feature classes first.')
       return()
     }
     
@@ -51,22 +51,22 @@ maxent_MOD <- function(input, output, session, logs, occs, bgPts, bgMsk) {
     
     jar <- paste(system.file(package="dismo"), "/java/maxent.jar", sep='')
     if (!file.exists(jar)) {
-      logs %>% writeLog(type = 'error', 'File maxent.jar missing. 
+      rvs %>% writeLog(type = 'error', 'File maxent.jar missing. 
                      Please see directions to download and copy to directory on the toolbar.')
       return()
     }
     
-    occs.xy <- occs() %>% dplyr::select(longitude, latitude)
+    occs.xy <- rvs$occs %>% dplyr::select(longitude, latitude)
     
-    e <- ENMeval::ENMevaluate(occs.xy, bgMsk(), bg.coords = bgPts(),
+    e <- ENMeval::ENMevaluate(occs.xy, rvs$bgMsk, bg.coords = rvs$bgPts,
                               RMvalues = rms, fc = input$fcs, method = 'user', 
-                              occ.grp = grp$occs,
-                              bg.grp = grp$bg, progbar = FALSE, 
+                              occ.grp = rvs$occsGrp,
+                              bg.grp = rvs$bgGrp, progbar = FALSE, 
                               updateProgress = updateProgress)
     
     # Generate logistic predictions for each model
     withProgress(message = "Generating logistic predictions...", {
-      logPredsList <- sapply(e@models, function(x) dismo::predict(x, bgMsk()))
+      logPredsList <- sapply(e@models, function(x) dismo::predict(x, rvs$bgMsk))
       logPreds <- raster::stack(logPredsList)
       names(logPreds) <- names(e@predictions)
     })
@@ -83,7 +83,7 @@ maxent_MOD <- function(input, output, session, logs, occs, bgPts, bgMsk) {
     # }
     # values$p10s <- apply(occVals, MARGIN = 2, function(x) rev(sort(x))[n90])  # apply 10% training presence threshold over all models
     
-    logs %>% writeLog("Maxent ran successfully and output evaluation results for", nrow(e@results), "models.")
+    rvs %>% writeLog("Maxent ran successfully and output evaluation results for", nrow(e@results), "models.")
       
     return(e)
   })

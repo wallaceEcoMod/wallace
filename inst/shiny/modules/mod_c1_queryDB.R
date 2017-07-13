@@ -19,7 +19,7 @@ queryDB_UI <- function(id) {
   )
 }
 
-queryDB_MOD <- function(input, output, session, logs) {
+queryDB_MOD <- function(input, output, session, rvs) {
   
   spName <- reactive({trimws(input$spName)})
   
@@ -29,7 +29,7 @@ queryDB_MOD <- function(input, output, session, logs) {
     nameSplit <- length(unlist(strsplit(spName(), " ")))
     # if two names not entered, throw error and return
     if (nameSplit != 2) {
-      logs %>% writeLog(type = 'error', 'Please input both genus and species names.')
+      rvs %>% writeLog(type = 'error', 'Please input both genus and species names.')
       return()
     }
     
@@ -40,7 +40,7 @@ queryDB_MOD <- function(input, output, session, logs) {
     
     # if species not found, print message to log box and return
     if (q[[input$occDb]]$meta$found == 0) {
-      logs %>% writeLog(type = 'error', 'No records found for ', 
+      rvs %>% writeLog(type = 'error', 'No records found for ', 
                      spName(), ". Please check the spelling.")
       shinyjs::disable("dlDbOccs")
       return()
@@ -58,7 +58,7 @@ queryDB_MOD <- function(input, output, session, logs) {
     recs$latitude <- as.numeric(recs$latitude)
     recs$longitude <- as.numeric(recs$longitude)
     
-    occsOrigDnld(recs)
+    rvs$occsOrig <- recs
     
     recs <- recs %>% dplyr::mutate(origID = row.names(recs))  # make new column for original ID
     
@@ -70,7 +70,7 @@ queryDB_MOD <- function(input, output, session, logs) {
     # subset to just records with latitude and longitude
     recs <- dbOccs.tbl() %>% dplyr::filter(!is.na(latitude) & !is.na(longitude))
     if (nrow(recs) == 0) {
-      logs %>% writeLog(type = 'warning', 'No records with coordinates found in', 
+      rvs %>% writeLog(type = 'warning', 'No records with coordinates found in', 
                         input$occDb, "for", spName(), ".")
       return()
     }
@@ -138,7 +138,7 @@ queryDB_MOD <- function(input, output, session, logs) {
     
     noCoordsRem <- nrow(dbOccs.tbl()) - nrow(dbOccs.coords())
     dupsRem <- nrow(dbOccs.coords()) - nrow(dbOccs.remDups())
-    logs %>% writeLog('Total', input$occDb, 'records for', spName(), 'returned [', nrow(dbOccs.tbl()),
+    rvs %>% writeLog('Total', input$occDb, 'records for', spName(), 'returned [', nrow(dbOccs.tbl()),
                    '] out of [', totRows, '] total (limit ', input$occNum, ').
                    Records without coordinates removed [', noCoordsRem, '].
                    Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(recs), '].')

@@ -11,7 +11,7 @@ userBgExtent_UI <- function(id) {
   )
 }
 
-userBgExtent_MOD <- function(input, output, session, logs, occs) {
+userBgExtent_MOD <- function(input, output, session, rvs) {
   userBgShp <- reactive({
     names <- input$userBgShp$name
     inPath <- input$userBgShp$datapath
@@ -31,10 +31,10 @@ userBgExtent_MOD <- function(input, output, session, logs, occs) {
       # read in shapefile and extract coords
       bgExt <- readOGR(pathdir[i], strsplit(names[i], '\\.')[[1]][1])
     } else {
-      logs %>% writeLog(type = 'warning', 'Please enter either a CSV file of vertex coordinates or shapefile.')
+      rvs %>% writeLog(type = 'warning', 'Please enter either a CSV file of vertex coordinates or shapefile.')
       return()
     }
-    logs %>% writeLog("Study extent: user-defined polygon.")
+    rvs %>% writeLog("Study extent: user-defined polygon.")
     return(bgExt)
   })
   
@@ -42,7 +42,7 @@ userBgExtent_MOD <- function(input, output, session, logs, occs) {
     bufWid <- input$userBgBuf
     if (bufWid > 0) {
       bgExt <- rgeos::gBuffer(userBgShp(), width = bufWid)
-      logs %>% writeLog('Study extent buffered by', bufWid, 'degrees.')
+      rvs %>% writeLog('Study extent buffered by', bufWid, 'degrees.')
     } else {
       bgExt <- userBgShp()
     }

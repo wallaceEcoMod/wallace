@@ -10,19 +10,18 @@ partNsp_UI <- function(id) {
   )
 }
 
-partNsp_MOD <- function(input, output, session, logs, occs, bgPts) {
+partNsp_MOD <- function(input, output, session, rvs, occs, bgPts) {
   reactive({
-    req(occs())
-    req(bgPts())
+    req(rvs$occs, rvs$bgPts)
 
-    occs.xy <- occs() %>% dplyr::select(longitude, latitude)
+    occs.xy <- rvs$occs %>% dplyr::select(longitude, latitude)
 
     if (input$partNspSel == 'jack') {
-      group.data <- ENMeval::get.jackknife(occs.xy, bgPts())
-      logs %>% writeLog("Occurrences partitioned by jackknife method.")
+      group.data <- ENMeval::get.jackknife(occs.xy, rvs$bgPts)
+      rvs %>% writeLog("Occurrences partitioned by jackknife method.")
     } else if (input$partNspSel == 'rand') {
-      group.data <- ENMeval::get.randomkfold(occs.xy, bgPts(), input$kfolds)
-      logs %>% writeLog("Occurrences partitioned by random k-fold (k = ", input$kfolds, ").")
+      group.data <- ENMeval::get.randomkfold(occs.xy, rvs$bgPts, input$kfolds)
+      rvs %>% writeLog("Occurrences partitioned by random k-fold (k = ", input$kfolds, ").")
     }
       
     return(group.data)

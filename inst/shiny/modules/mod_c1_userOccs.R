@@ -6,7 +6,7 @@ userOccs_UI <- function(id) {
   )
 }
 
-userOccs_MOD <- function(input, output, session, logs) {
+userOccs_MOD <- function(input, output, session, rvs) {
   
   readOccsCSV <- reactive({
     req(input$userCSV)
@@ -16,7 +16,7 @@ userOccs_MOD <- function(input, output, session, logs) {
     spName <- trimws(as.character(csv$name[1]))
     
     if (!all(c('name', 'longitude', 'latitude') %in% names(csv))) {
-      logs %>% writeLog(type = "error", 'Please input CSV file with columns 
+      rvs %>% writeLog(type = "error", 'Please input CSV file with columns 
                         "name", "longitude", "latitude".')
       return()
     }
@@ -28,12 +28,12 @@ userOccs_MOD <- function(input, output, session, logs) {
       dplyr::filter(!is.na(latitude) & !is.na(longitude))
       
     if (nrow(uoccs) == 0) {
-      logs %>% writeLog(type = 'warning', 'No records with coordinates found in', 
+      rvs %>% writeLog(type = 'warning', 'No records with coordinates found in', 
                         input$userCSV$name, "for", spName, ".")
       return()
     }
     
-    logs %>% writeLog("User-specified CSV file", input$userCSV$name, "with total of", 
+    rvs %>% writeLog("User-specified CSV file", input$userCSV$name, "with total of", 
                       nrow(uoccs), "records with coordinates was uploaded.")
     
     for (col in c("year", "institutionCode", "country", "stateProvince",

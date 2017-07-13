@@ -11,25 +11,24 @@ partSp_UI <- function(id) {
   )
 }
 
-partSp_MOD <- function(input, output, session, logs, occs, bgPts, bgMsk) {
+partSp_MOD <- function(input, output, session, rvs) {
   reactive({
-    req(occs())
-    req(bgPts())
+    req(rvs$occs, rvs$bgPts, rvs$bgMsk)
     
-    occs.xy <- occs() %>% dplyr::select(longitude, latitude)
+    occs.xy <- rvs$occs %>% dplyr::select(longitude, latitude)
 
     if (input$partSpSel == 'block') {
-      group.data <- ENMeval::get.block(occs.xy, bgPts())
-      logs %>% writeLog("Occurrences partitioned by block method.")
+      group.data <- ENMeval::get.block(occs.xy, rvs$bgPts)
+      rvs %>% writeLog("Occurrences partitioned by block method.")
     } else if (input$partSpSel == 'cb1') {
       withProgress(message = "Aggregating rasters...", {
-        group.data <- ENMeval::get.checkerboard1(occs.xy, bgMsk(), bgPts(), input$aggFact)
-        logs %>% writeLog("Occurrences partitioned by checkerboard 1 method.")
+        group.data <- ENMeval::get.checkerboard1(occs.xy, rvs$bgMsk, rvs$bgPts, input$aggFact)
+        rvs %>% writeLog("Occurrences partitioned by checkerboard 1 method.")
       })
     } else if (input$partSpSel == 'cb2') {
       withProgress(message = "Aggregating rasters...", {
-        group.data <- ENMeval::get.checkerboard2(occs.xy, bgMsk(), bgPts(), input$aggFact)
-        logs %>% writeLog("Occurrences partitioned by checkerboard 2 method.")
+        group.data <- ENMeval::get.checkerboard2(occs.xy, rvs$bgMsk, rvs$bgPts, input$aggFact)
+        rvs %>% writeLog("Occurrences partitioned by checkerboard 2 method.")
       })
     }
     

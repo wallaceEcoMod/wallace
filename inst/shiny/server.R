@@ -1,21 +1,24 @@
 source("funcs/functions.R", local = TRUE)
 
-logs <- reactiveValues(entries=logInit())
-gtext <- reactiveValues()
-
 options(shiny.maxRequestSize=5000*1024^2)
 
 shinyServer(function(input, output, session) {
   # disable download buttons
   shinyjs::disable("dlDbOccs")
-  shinyjs::disable("dlProcOccCsv")
-  shinyjs::disable("predDnld")
-  shinyjs::disable("downloadMskPreds")
+  shinyjs::disable("dlProcOccs")
+  # shinyjs::disable("dlEnvs")
+  shinyjs::disable("dlMskEnvs")
   shinyjs::disable("dlPart")
   shinyjs::disable("downloadEvalcsv")
   shinyjs::disable("downloadEvalPlots")
   shinyjs::disable("downloadPred")
   shinyjs::disable("downloadPj")
+  
+  # initialize module parameters list
+  rvs <- reactiveValues(logs = logInit(), occs = NULL, occsOrig = NULL, envs = NULL,
+                        bgMsk = NULL, bgPts = NULL, grp = NULL)
+  # logs <- reactiveValues(entries=logInit())
+  gtext <- reactiveValues()
   
   # load modules
   for (f in list.files('./modules')) {
@@ -37,7 +40,7 @@ shinyServer(function(input, output, session) {
   ####################### #
   
   output$log <- renderUI({tags$div(id='logHeader', tags$div(id='logContent', 
-                                                            HTML(paste0(logs$entries, "<br>", collapse = ""))))})
+                                                            HTML(paste0(rvs$logs, "<br>", collapse = ""))))})
   
   # create map
   m <- leaflet() %>% setView(0, 0, zoom = 2) %>% addProviderTiles('Esri.WorldTopoMap')
@@ -82,34 +85,30 @@ shinyServer(function(input, output, session) {
   ### COMPONENT 1: OBTAIN OCCURRENCE DATA ####
   ########################################## #
   
-  # component 1 reactives
-  occs <- reactiveVal()  # occs for analysis that get updated throughout 
-  occsOrigDnld <- reactiveVal() # original database query table for user download
-  
   # module Query Database
-  dbOccs <- callModule(queryDB_MOD, 'c1_queryDB', logs)
+  dbOccs <- callModule(queryDB_MOD, 'c1_queryDB', rvs)
   
   # dbOccs <- eventReactive(input$goDbOccs, dbOccs.call())
-  spName <- reactive(as.character(occs()$name[1]))
+  spName <- reactive(as.character(rvs$occs$name[1]))
   
   observeEvent(input$goDbOccs, {
-    occs(dbOccs())
+    rvs$occs <- dbOccs()
     map %>%
       clearMarkers() %>%
-      map_plotLocs(occs()) %>%
-      zoom2Occs(occs())
+      map_plotLocs(rvs$occs) %>%
+      zoom2Occs(rvs$occs)
     shinyjs::enable("dlDbOccs")
   })
   
   # module User Occurrence Data
-  userOccs <- callModule(userOccs_MOD, 'c1_userOccs', logs)
+  userOccs <- callModule(userOccs_MOD, 'c1_userOccs', rvs)
   
   observeEvent(input$goUserOccs, {
-    occs(userOccs())
+    rvs$occs <- userOccs()
     map %>%
       clearMarkers() %>%
-      map_plotLocs(occs()) %>%
-      zoom2Occs(occs())
+      map_plotLocs(rvs$occs) %>%
+      zoom2Occs(rvs$occs)
     shinyjs::disable("dlDbOccs")
   })
   
@@ -117,15 +116,15 @@ shinyServer(function(input, output, session) {
   options <- list(autoWidth = TRUE, columnDefs = list(list(width = '40%', targets = 7)),
                   scrollX=TRUE, scrollY=400)
   output$occTbl <- DT::renderDataTable({
-    req(occs())
-    occs() %>% dplyr::select(-origID, -pop)
+    req(rvs$occs)
+    rvs$occs %>% dplyr::select(-origID, -pop)
   })
   
   # handle downloading of original GBIF records after cleaning
   output$dlDbOccs <- downloadHandler(
     filename = function() {paste0(formatSpName(spName()), '_', input$occDb, ".csv")},
     content = function(file) {
-      write.csv(occsOrigDnld(), file, row.names=FALSE)
+      write.csv(rvs$occsOrig, file, row.names=FALSE)
     }
   )
   
@@ -134,32 +133,32 @@ shinyServer(function(input, output, session) {
   ########################################### #
   
   # module Spatial Thin
-  thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs', logs, occs)
+  thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs', rvs)
   
   observeEvent(input$goThinOccs, {
-    occs(thinOccs())
+    rvs$occs <- thinOccs()
     # MAPPING - blue pts for remove, red pts for keep
     map %>% 
       addCircleMarkers(data = dbOccs(), lat = ~latitude, lng = ~longitude,
                        radius = 5, color = 'red', fillColor = 'blue',
                        fillOpacity = 1, weight = 2, popup = ~pop,
                        group = 'comp2') %>%
-      addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
+      addCircleMarkers(data = rvs$occs, lat = ~latitude, lng = ~longitude,
                        radius = 5, color = 'red', fillColor = 'red',
                        fillOpacity = 1, weight = 2, popup = ~pop,
                        group = 'comp2') %>%
       addLegend("topright", colors = c('red', 'blue'),
                 title = "Occ Records", labels = c('retained', 'removed'),
                 opacity = 1, layerId = 'thinLeg')
-    shinyjs::enable("dlProcOccCsv")
+    shinyjs::enable("dlProcOccs")
   })
   
   # handle download for thinned records csv
-  output$dlProcOccCsv <- downloadHandler(
+  output$dlProcOccs <- downloadHandler(
     filename = function() {paste0(formatSpName(spName()), "_procOccs.csv")},
     content = function(file) {
       thinned_rowNums <- as.numeric(thinOccs()$origID)
-      origThinned <- occsOrigDnld()[thinned_rowNums,]
+      origThinned <- rvs$occsOrig[thinned_rowNums,]
       write.csv(origThinned, file, row.names = FALSE)
     }
   )
@@ -175,36 +174,32 @@ shinyServer(function(input, output, session) {
     paste('Using map center', paste(mapCntr(), collapse=', '))
   })
   
-  # reactive value to hold environmental predictor variables
-  envs <- reactiveVal()
-  
   # module WorldClim Bioclims
-  wcBioclims <- callModule(wcBioclims_MOD, 'c3_wcBioclims', logs, mapCntr)
+  wcBioclims <- callModule(wcBioclims_MOD, 'c3_wcBioclims', rvs)
   
   observeEvent(input$goEnvData, {
     # load into envs
-    envs(wcBioclims())
+    rvs$envs <- wcBioclims()
     # occs.naEnvRem <- remEnvsValsNA(envs, occs)
     # occs(occs.naEnvRem)
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     # enable download button
-    shinyjs::enable("predDnld")
+    # shinyjs::enable("dlEnvs")
   })
   
-  userEnvs <- callModule(userEnvs_MOD, 'c3_userEnvs', logs)
+  userEnvs <- callModule(userEnvs_MOD, 'c3_userEnvs', rvs)
   
   observeEvent(input$goUserEnvs, {
-    envs(userEnvs())
-    occs.naEnvRem <- remEnvsValsNA(envs, occs)
-    occs(occs.naEnvRem)
+    rvs$envs <- userEnvs()
+    rvs$occs <- remEnvsValsNA(rvs)
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
   })
   
   output$envsPrint <- renderPrint({
-    req(envs())
-    envs()
+    req(rvs$envs)
+    rvs$envs
     # mins <- sapply(envs()@layers, function(x) x@data@min)
     # maxs <- sapply(envs()@layers, function(x) x@data@max)
     # names <- sapply(strsplit(names(envs()), '[.]'), function(x) x[-2])
@@ -218,51 +213,46 @@ shinyServer(function(input, output, session) {
   ### COMPONENT 4: PROCESS ENVIRONMENTAL DATA ####
   ############################################## #
   
-  bgShp <- reactiveVal()
-  
-  bgExt <- callModule(bgExtent_MOD, 'c4_bgExtent', logs, occs)
+  bgExt <- callModule(bgExtent_MOD, 'c4_bgExtent', rvs)
   
   observeEvent(input$goBgExt, {
-    bgShp(bgExt())
-    coords <- bgShp()@polygons[[1]]@Polygons[[1]]@coords
+    rvs$bgShp <- bgExt()
+    coords <- rvs$bgShp@polygons[[1]]@Polygons[[1]]@coords
     map %>%
       addPolygons(lng=coords[,1], lat=coords[,2], layerId="bg",
                   weight=10, color="red", group='bgShp') %>%
       fitBounds(max(coords[,1]), max(coords[,2]), min(coords[,1]), min(coords[,2]))
   })
   
-  userBg <- callModule(userBgExtent_MOD, 'c4_userBgExtent', logs, occs)
+  userBg <- callModule(userBgExtent_MOD, 'c4_userBgExtent', rvs)
   
   observeEvent(input$goUserBg, {
-    bgShp(userBg())
-    coords <- bgShp()@polygons[[1]]@Polygons[[1]]@coords
+    rvs$bgShp <- userBg()
+    coords <- rvs$bgShp@polygons[[1]]@Polygons[[1]]@coords
     map %>%
       addPolygons(lng=coords[,1], lat=coords[,2], layerId="bg",
                   weight=10, color="red", group='bgShp') %>%
       fitBounds(max(coords[,1]), max(coords[,2]), min(coords[,1]), min(coords[,2]))
   })
   
-  bgPts <- reactiveVal()
-  bgMsk <- reactiveVal()
-  
   observeEvent(input$goBgMask, {
-    bgMskPts.call <- callModule(bgMskAndSamplePts_MOD, 'c4_bgMskAndSamplePts', logs, envs, bgShp)
+    bgMskPts.call <- callModule(bgMskAndSamplePts_MOD, 'c4_bgMskAndSamplePts', rvs)
     bgMskPts <- bgMskPts.call()
-    bgMsk(bgMskPts$msk)
-    bgPts(bgMskPts$pts)
+    rvs$bgMsk <- bgMskPts$msk
+    rvs$bgPts <- bgMskPts$pts
   })
   
   
   # handle download for masked predictors, with file type as user choice
-  output$dlMskPreds <- downloadHandler(
+  output$dlMskEnvs <- downloadHandler(
     filename = function() {'mskPreds.zip'},
     content = function(file) {
       tmpdir <- tempdir()
       setwd(tempdir())
       type <- input$bgMskFileType
-      nm <- names(bgMsk())
+      nm <- names(rvs$bgMsk)
       
-      raster::writeRaster(bgMsk(), file.path(tmpdir, 'msk'), bylayer = TRUE,
+      raster::writeRaster(rvs$bgMsk, file.path(tmpdir, 'msk'), bylayer = TRUE,
                           suffix = nm, format = type, overwrite = TRUE)
       ext <- ifelse(type == 'raster', 'grd',
                     ifelse(type == 'ascii', 'asc',
@@ -283,33 +273,31 @@ shinyServer(function(input, output, session) {
   ### COMPONENT 5: PARTITION OCCURRENCE DATA ####
   ############################################# #
   
-  grp <- reactiveValues()
-  
   observeEvent(input$goPartNsp, {
-    partNsp <- callModule(partNsp_MOD, 'c5_partNsp', logs, occs, bgPts)
-    grp$occs <- partNsp()[[1]]
-    grp$bg <- partNsp()[[2]]
+    partNsp <- callModule(partNsp_MOD, 'c5_partNsp', rvs)
+    rvs$occsGrp <- partNsp()[[1]]
+    rvs$bgGrp <- partNsp()[[2]]
     # colors for partition symbology
-    newColors <- gsub("FF$", "", rainbow(max(grp$occs)))  
-    partsFill <- newColors[grp$occs]
+    newColors <- gsub("FF$", "", rainbow(max(rvs$occsGrp)))  
+    partsFill <- newColors[rvs$occsGrp]
     map %>%
       clearMarkers() %>%
-      map_plotLocs(occs(), fillColor = partsFill, fillOpacity = 1) %>%
-      zoom2Occs(occs())
+      map_plotLocs(rvs$occs, fillColor = partsFill, fillOpacity = 1) %>%
+      zoom2Occs(rvs$occs)
     shinyjs::enable("dlPart")
   })
   
   observeEvent(input$goPartSp, {
-    partSp <- callModule(partSp_MOD, 'c5_partSp', logs, occs, bgPts, bgMsk)
-    grp$occs <- partSp()[[1]]
-    grp$bg <- partSp()[[2]]
+    partSp <- callModule(partSp_MOD, 'c5_partSp', rvs)
+    rvs$occsGrp <- partSp()[[1]]
+    rvs$bgGrp <- partSp()[[2]]
     # colors for partition symbology
-    newColors <- gsub("FF$", "", rainbow(max(grp$occs)))  
-    partsFill <- newColors[grp$occs]
+    newColors <- gsub("FF$", "", rainbow(max(rvs$occsGrp)))  
+    partsFill <- newColors[rvs$occsGrp]
     map %>%
       clearMarkers() %>%
-      map_plotLocs(occs(), fillColor = partsFill, fillOpacity = 1) %>%
-      zoom2Occs(occs())
+      map_plotLocs(rvs$occs, fillColor = partsFill, fillOpacity = 1) %>%
+      zoom2Occs(rvs$occs)
     shinyjs::enable("dlPart")
   })
   
@@ -317,12 +305,12 @@ shinyServer(function(input, output, session) {
   output$dlPart <- downloadHandler(
     filename = function() paste0(spName(), "_partitioned_occs.csv"),
     content = function(file) {
-      bg.bind <- data.frame(rep('background', nrow(bgPts())), bgPts())
+      bg.bind <- data.frame(rep('background', nrow(rvs$bgPts)), rvs$bgPts)
       print(head(bg.bind))
       print(names(bg.bind))
       names(bg.bind) <- c('name', 'longitude', 'latitude')
-      occs.bg.bind <-rbind(occs()[,1:3], bg.bind)
-      all.bind <- cbind(occs.bg.bind, c(grp$occs, grp$bg))
+      occs.bg.bind <-rbind(rvs$occs[,1:3], bg.bind)
+      all.bind <- cbind(occs.bg.bind, c(rvs$occsGrp, rvs$bgGrp))
       names(all.bind)[4] <- "group"
       write.csv(all.bind, file, row.names = FALSE)
     }
@@ -332,18 +320,16 @@ shinyServer(function(input, output, session) {
   ### COMPONENT 6: MODEL ####
   ######################### #
   
-  mod <- reactiveVal()
-  
   jar <- paste(system.file(package="dismo"), "/java/maxent.jar", sep='')
   output$maxentJar <- renderUI(HTML(paste('To use Maxent, make sure you download <b>maxent.jar</b> from the
                                        <a href "http://biodiversityinformatics.amnh.org/open_source/maxent/">AMNH Maxent webpage</a>
                                        and place it in this directory:<br><i>', jar, '</i>')))
   
-  mod.maxent <- callModule(maxent_MOD, 'c6_maxent', logs, occs, bgPts, bgMsk)
+  mod.maxent <- callModule(maxent_MOD, 'c6_maxent', rvs)
   
   observeEvent(input$goMaxent, {
-    mod(mod.maxent())
-    res <- mod()@results
+    rvs$mods <- mod.maxent()
+    res <- rvs$mods@results
     # make datatable of results df
     res <- res %>% dplyr::rename(avg.test.AUC = Mean.AUC, var.test.AUC = Var.AUC, 
                                  avg.diff.AUC = Mean.AUC.DIFF, var.diff.AUC = Var.AUC.DIFF, 
@@ -352,5 +338,9 @@ shinyServer(function(input, output, session) {
                                  parameters = nparam)
     output$evalTbl <- DT::renderDataTable(cbind(res[,1:3], round(res[,4:15], digits=3)))
   })
+  
+  # mod.bioclim <- callModule(bioclim_MOD, 'c6_bioclim')
+  
+  # observeEvent()
   
 })
