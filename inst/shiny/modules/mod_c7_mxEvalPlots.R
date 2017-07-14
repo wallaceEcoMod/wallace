@@ -1,5 +1,5 @@
 
-maxent_UI <- function(id) {
+mxEvalPlots_UI <- function(id) {
   ns <- NS(id)
   tagList(
     checkboxGroupInput(ns("fcs"), label = "Select feature classes (flexibility of modeled response)",
@@ -21,10 +21,10 @@ maxent_UI <- function(id) {
   )
 }
 
-maxent_MOD <- function(input, output, session, rvs) {
+mxEvalPlots_MOD <- function(input, output, session, rvs) {
   reactive({
     req(input$fcs, rvs$occs, rvs$bgPts, rvs$bgMsk, rvs$occsGrp, rvs$bgGrp)
-    
+
     if (!require('rJava')) {
       rvs %>% writeLog(type = "error", 'Package rJava cannot load. 
                Please download the latest version of Java, and make sure it is the 
@@ -64,18 +64,27 @@ maxent_MOD <- function(input, output, session, rvs) {
                               bg.grp = rvs$bgGrp, progbar = FALSE, 
                               updateProgress = updateProgress)
     
-    # generate logistic predictions for each model
+    # Generate logistic predictions for each model
     withProgress(message = "Generating logistic predictions...", {
       logPredsList <- sapply(e@models, function(x) dismo::predict(x, rvs$bgMsk))
       logPreds <- raster::stack(logPredsList)
       names(logPreds) <- names(e@predictions)
     })
     
-    # extract the suitability values for all occurrences
-    modOccVals <- raster::extract(e@predictions, occs.xy)
+    # occVals <- raster::extract(e@predictions, occs.xy)
+    # 
+    # values$mtps <- apply(occVals, MARGIN = 2, min)  # apply minimum training presence threshold over all models
+    # 
+    # # Define 10% training presence threshold
+    # if (nrow(occVals) < 10) {  # if less than 10 occ values, find 90% of total and round down
+    #   n90 <- floor(nrow(occVals) * 0.9)
+    # } else {  # if greater than or equal to 10 occ values, round up
+    #   n90 <- ceiling(nrow(occVals) * 0.9)
+    # }
+    # values$p10s <- apply(occVals, MARGIN = 2, function(x) rev(sort(x))[n90])  # apply 10% training presence threshold over all models
     
     rvs %>% writeLog("Maxent ran successfully and output evaluation results for", nrow(e@results), "models.")
-    
-    return(list(e, logPreds, modOccVals))
+      
+    return(e)
   })
 }

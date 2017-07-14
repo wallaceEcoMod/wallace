@@ -146,6 +146,7 @@ queryDB_MOD <- function(input, output, session, rvs) {
     return(recs)
   })
   
+  
   return(dbOccs.out)
 }
 

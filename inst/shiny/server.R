@@ -11,12 +11,27 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("dlPart")
   shinyjs::disable("downloadEvalcsv")
   shinyjs::disable("downloadEvalPlots")
-  shinyjs::disable("downloadPred")
+  shinyjs::disable("dlPreds")
   shinyjs::disable("downloadPj")
   
   # initialize module parameters list
   rvs <- reactiveValues(logs = logInit(), occs = NULL, occsOrig = NULL, envs = NULL,
-                        bgMsk = NULL, bgPts = NULL, grp = NULL)
+                        bgMsk = NULL, bgPts = NULL, grp = NULL, mods = NULL, 
+                        modPreds = NULL, modRes = NULL, modSel = NULL, modPredsLog = NULL,
+                        modOccVals = NULL)
+  
+  observeEvent(input$load, {
+    f <- read.csv('/Users/musasabi/Downloads/Puma concolor_partitioned_occs(1).csv')
+    rvs$occs <- f %>% dplyr::filter(name != 'background')
+    rvs$occsGrp <- rvs$occs$group
+    rvs$bgPts <- f %>% dplyr::filter(name == 'background')
+    rvs$bgGrp <- rvs$bgPts$group
+    rvs$bgPts <- rvs$bgPts %>% dplyr::select(longitude, latitude)
+    rvs$bgMsk <- stack(list.files('/Users/musasabi/Downloads/mskPreds(4)', 'gri$', full.names = TRUE))  
+    print('HACKING DONE')
+  })
+  
+  
   # logs <- reactiveValues(entries=logInit())
   gtext <- reactiveValues()
   
@@ -240,12 +255,13 @@ shinyServer(function(input, output, session) {
     bgMskPts <- bgMskPts.call()
     rvs$bgMsk <- bgMskPts$msk
     rvs$bgPts <- bgMskPts$pts
+    shinyjs::enable('dlMskEnvs')
   })
   
   
   # handle download for masked predictors, with file type as user choice
   output$dlMskEnvs <- downloadHandler(
-    filename = function() {'mskPreds.zip'},
+    filename = function() {'mskEnvs.zip'},
     content = function(file) {
       tmpdir <- tempdir()
       setwd(tempdir())
@@ -328,15 +344,21 @@ shinyServer(function(input, output, session) {
   mod.maxent <- callModule(maxent_MOD, 'c6_maxent', rvs)
   
   observeEvent(input$goMaxent, {
-    rvs$mods <- mod.maxent()
-    res <- rvs$mods@results
-    # make datatable of results df
-    res <- res %>% dplyr::rename(avg.test.AUC = Mean.AUC, var.test.AUC = Var.AUC, 
-                                 avg.diff.AUC = Mean.AUC.DIFF, var.diff.AUC = Var.AUC.DIFF, 
-                                 avg.test.orMTP = Mean.ORmin, var.test.orMTP = Var.ORmin,
-                                 avg.test.or10pct = Mean.OR10, var.test.or10pct = Var.OR10, 
-                                 parameters = nparam)
-    output$evalTbl <- DT::renderDataTable(cbind(res[,1:3], round(res[,4:16], digits=3)))
+    # unpack everything
+    mod.maxent.call <- mod.maxent()
+    e <- mod.maxent.call[[1]]
+    rvs$mods <- e@models
+    rvs$modPreds <- e@predictions
+    rvs$modRes <- e@results
+    rvs$modPredsLog <- mod.maxent.call[[2]]
+    rvs$modOccVals <- mod.maxent.call[[3]]
+    # rename results table fields
+    rvs$modRes <- rvs$modRes %>% dplyr::rename(avg.test.AUC = Mean.AUC, var.test.AUC = Var.AUC,
+                                               avg.diff.AUC = Mean.AUC.DIFF, var.diff.AUC = Var.AUC.DIFF,
+                                               avg.test.orMTP = Mean.ORmin, var.test.orMTP = Var.ORmin,
+                                               avg.test.or10pct = Mean.OR10, var.test.or10pct = Var.OR10,
+                                               parameters = nparam)
+    output$evalTbl <- DT::renderDataTable(cbind(rvs$modRes[,1:3], round(rvs$modRes[,4:16], digits=3)))
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
   })
@@ -344,11 +366,89 @@ shinyServer(function(input, output, session) {
   mod.bioclim <- callModule(bioclim_MOD, 'c6_bioclim', rvs)
   
   observeEvent(input$goBioclim, {
-    rvs$mods <- mod.bioclim()
-    res <- rvs$mods$results
-    output$evalTbl <- DT::renderDataTable(round(res, digits=3))
+    e <- mod.bioclim()
+    rvs$mods <- e$models
+    rvs$modPreds <- e$predictions
+    rvs$modRes <- e$results
+    rvs$modOccVals <- e$occVals
+    output$evalTbl <- DT::renderDataTable(round(rvs$modRes, digits=3))
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
   })
+  
+  ########################################### #
+  ### COMPONENT 7: VISUALIZE MODEL RESULTS ####
+  ########################################### #
+  
+  # ui that populates with the names of models that were run
+  output$modSelUI <- renderUI({
+    req(rvs$modPreds)
+    n <- names(rvs$modPreds)
+    print(rvs$modPreds)
+    predNameList <- setNames(as.list(n), n)
+    selectInput('modSel', label = "Choose a model",
+                choices = predNameList, selected = predNameList[[1]])
+  })
+  
+  # always update the selected model in rvs
+  observe({
+    rvs$modSel <- input$modSel
+  })
+  
+  mapPreds <- callModule(mapPreds_MOD, 'c7_mapPreds', rvs, map)
+  
+  observeEvent(input$goMapPreds, {
+    mapPreds.call <- mapPreds()
+    req(mapPreds.call)
+    rvs$predCur <- mapPreds.call[[1]]
+    predCurVals <- mapPreds.call[[2]]
+    predType <- mapPreds.call[[3]]
+    updateTabsetPanel(session, 'main', selected = 'Map')
+    
+    # MAPPING
+    if (rvs$predThresh != 'noThresh') {
+      rasPal <- c('gray', 'blue')
+      map %>% addLegend("topright", colors = c('gray', 'blue'),
+                  title = "Thresholded Suitability", labels = c(0, 1),
+                  opacity = 1, layerId = 'r1LegThr')
+    } else {
+      rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+      nonNAvals <- predCurVals[!is.na(predCurVals)]
+      print(nonNAvals)
+      legendPal <- colorNumeric(rev(rasCols), nonNAvals, na.color='transparent')
+      rasPal <- colorNumeric(rasCols, nonNAvals, na.color='transparent')
+      map %>% addLegend("topright", pal = legendPal, title = "Predicted Suitability",
+                  values = nonNAvals, layerId = 'r1LegCon',
+                  labFormat = reverseLabels(2, reverse_order=TRUE))
+    }
+    map %>% addRasterImage(rvs$predCur, colors = rasPal, opacity = 0.7, 
+                           group = 'r1', layerId = 'r1ID')
+    shinyjs::enable("dlPreds")
+  })
+  
+  
+  output$dlPreds <- downloadHandler(
+    filename = function() {
+      ext <- ifelse(input$predFileType == 'raster', 'zip',
+                    ifelse(input$predFileType == 'ascii', 'asc',
+                           ifelse(input$predFileType == 'GTiff', 'tif', 'png')))
+      paste0(names(rvs$predCur), '.', ext)},
+    content = function(file) {
+      if (input$predFileType == 'png') {
+        png(file)
+        image(rvs$predCur)
+        dev.off()
+      } else if (input$predFileType == 'raster') {
+        fileName <- names(rvs$predCur)
+        tmpdir <- tempdir()
+        raster::writeRaster(rvs$predCur, file.path(tmpdir, fileName), format = input$predFileType, overwrite = TRUE)
+        fs <- file.path(tmpdir, paste0(fileName, c('.grd', '.gri')))
+        zip(zipfile=file, files=fs, extras = '-j')
+      } else {
+        r <- raster::writeRaster(rvs$predCur, file, format = input$predFileType, overwrite = TRUE)
+        file.rename(r@file@name, file)
+      }
+    }
+  )
   
 })

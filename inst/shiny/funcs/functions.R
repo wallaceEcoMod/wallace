@@ -183,6 +183,8 @@ BioClim_eval <- function (occs, bg.pts, occ.grp, bg.grp, env) {
   # RUN FULL DATA MODEL
   full.mod <- dismo::bioclim(env, occs)
   pred <- dismo::predict(env, full.mod)
+  occPredVals <- matrix(dismo::predict(full.mod, full.mod@presence))
+  colnames(occPredVals) <- 'BIOCLIM'
 
   # CREATE HOLDERS FOR RESULTS
   AUC.TEST <- double()
@@ -231,7 +233,24 @@ BioClim_eval <- function (occs, bg.pts, occ.grp, bg.grp, env) {
   rownames(stats) <- c("AUC.DIFF", "AUC.TEST","OR10","ORmin")
 
   # THIS FORMAT FOR RETURNED DATA ATTEMPTS TO MATCH WHAT HAPPENS IN WALLACE ALREADY FOR ENMEVAL.
-  return(list(models=list(full.mod), results=stats, predictions=raster::stack(pred)))
+  return(list(models=list(full.mod), results=stats, 
+              predictions=raster::stack(pred), occVals=occPredVals))
+}
+
+thresh <- function(modOccVals, type) {
+  if (type == 'mtp') {
+    # apply minimum training presence threshold
+    x <- min(modOccVals)
+  } else if (type == 'p10') {
+    # Define 10% training presence threshold
+    if (length(modOccVals) < 10) {  # if less than 10 occ values, find 90% of total and round down
+      n90 <- floor(length(modOccVals) * 0.9)
+    } else {  # if greater than or equal to 10 occ values, round up
+      n90 <- ceiling(length(modOccVals) * 0.9)
+    }
+    x <- rev(sort(modOccVals))[n90]  # apply 10% training presence threshold over all models
+  }
+  return(x)
 }
 
 ####################### #
@@ -435,8 +454,6 @@ GCMlookup <- c(AC="ACCESS1-0", BC="BCC-CSM1-1", CC="CCSM4", CE="CESM1-CAM5-1-FV2
                HD="HadGEM2-AO", HG="HadGEM2-CC", HE="HadGEM2-ES", IN="INMCM4",
                IP="IPSL-CM5A-LR", ME="MPI-ESM-P", MI="MIROC-ESM-CHEM", MR="MIROC-ESM",
                MC="MIROC5", MP="MPI-ESM-LR", MG="MRI-CGCM3", NO="NorESM1-M")
-
-rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 
 reverseLabels <- function(..., reverse_order = FALSE) {
   if (reverse_order) {
