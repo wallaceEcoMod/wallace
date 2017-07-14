@@ -384,7 +384,6 @@ shinyServer(function(input, output, session) {
   output$modSelUI <- renderUI({
     req(rvs$modPreds)
     n <- names(rvs$modPreds)
-    print(rvs$modPreds)
     predNameList <- setNames(as.list(n), n)
     selectInput('modSel', label = "Choose a model",
                 choices = predNameList, selected = predNameList[[1]])
@@ -414,7 +413,6 @@ shinyServer(function(input, output, session) {
     } else {
       rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
       nonNAvals <- predCurVals[!is.na(predCurVals)]
-      print(nonNAvals)
       legendPal <- colorNumeric(rev(rasCols), nonNAvals, na.color='transparent')
       rasPal <- colorNumeric(rasCols, nonNAvals, na.color='transparent')
       map %>% addLegend("topright", pal = legendPal, title = "Predicted Suitability",
