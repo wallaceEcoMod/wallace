@@ -238,6 +238,8 @@ BioClim_eval <- function (occs, bg.pts, occ.grp, bg.grp, env) {
 }
 
 thresh <- function(modOccVals, type) {
+  # remove all NA
+  modOccVals <- na.omit(modOccVals)
   if (type == 'mtp') {
     # apply minimum training presence threshold
     x <- min(modOccVals)

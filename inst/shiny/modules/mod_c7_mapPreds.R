@@ -35,8 +35,6 @@ mapPreds_MOD <- function(input, output, session, rvs, map) {
     
     if (input$predType == 'raw') {
       selRas <- rvs$modPreds[[rvs$modSel]]
-      print(rvs$modPreds)
-      print(selRas)
       rasVals <- raster::values(selRas)
     } else if (input$predType == 'log') {
       if (is.null(rvs$modPredsLog)) {
@@ -50,12 +48,14 @@ mapPreds_MOD <- function(input, output, session, rvs, map) {
     
     if (input$predThresh != 'noThresh') {
       occValsSel <- rvs$modOccVals[,rvs$modSel]
+      print(occValsSel)
       x <- thresh(occValsSel, input$predThresh)
+      print(x)
       selRas <- selRas > x
+      print(selRas)
     }
     
     rvs$predThresh <- input$predThresh
-    print(selRas)
     return(list(selRas, rasVals, reactive(input$predType)))
   })
 }
