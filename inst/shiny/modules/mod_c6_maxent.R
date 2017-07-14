@@ -73,7 +73,6 @@ maxent_MOD <- function(input, output, session, rvs) {
     
     # extract the suitability values for all occurrences
     modOccVals <- raster::extract(e@predictions, occs.xy)
-    print(modOccVals)
     rvs %>% writeLog("Maxent ran successfully and output evaluation results for", nrow(e@results), "models.")
     
     return(list(e, logPreds, modOccVals))

@@ -424,7 +424,6 @@ shinyServer(function(input, output, session) {
     shinyjs::enable("dlPreds")
   })
   
-  
   output$dlPreds <- downloadHandler(
     filename = function() {
       ext <- ifelse(input$predFileType == 'raster', 'zip',
