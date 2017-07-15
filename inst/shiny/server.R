@@ -203,6 +203,7 @@ shinyServer(function(input, output, session) {
     # shinyjs::enable("dlEnvs")
   })
   
+  # module User-defined Environmental Predictors
   userEnvs <- callModule(userEnvs_MOD, 'c3_userEnvs', rvs)
   
   observeEvent(input$goUserEnvs, {
@@ -228,6 +229,7 @@ shinyServer(function(input, output, session) {
   ### COMPONENT 4: PROCESS ENVIRONMENTAL DATA ####
   ############################################## #
   
+  # module Background Extent
   bgExt <- callModule(bgExtent_MOD, 'c4_bgExtent', rvs)
   
   observeEvent(input$goBgExt, {
@@ -239,6 +241,7 @@ shinyServer(function(input, output, session) {
       fitBounds(max(coords[,1]), max(coords[,2]), min(coords[,1]), min(coords[,2]))
   })
   
+  # module User-defined Background Extent
   userBg <- callModule(userBgExtent_MOD, 'c4_userBgExtent', rvs)
   
   observeEvent(input$goUserBg, {
@@ -250,6 +253,7 @@ shinyServer(function(input, output, session) {
       fitBounds(max(coords[,1]), max(coords[,2]), min(coords[,1]), min(coords[,2]))
   })
   
+  # module Background Mask and Sample Points
   observeEvent(input$goBgMask, {
     bgMskPts.call <- callModule(bgMskAndSamplePts_MOD, 'c4_bgMskAndSamplePts', rvs)
     bgMskPts <- bgMskPts.call()
@@ -289,6 +293,7 @@ shinyServer(function(input, output, session) {
   ### COMPONENT 5: PARTITION OCCURRENCE DATA ####
   ############################################# #
   
+  # module Non-spatial Occurrence Partitions
   observeEvent(input$goPartNsp, {
     partNsp <- callModule(partNsp_MOD, 'c5_partNsp', rvs)
     rvs$occsGrp <- partNsp()[[1]]
@@ -303,6 +308,7 @@ shinyServer(function(input, output, session) {
     shinyjs::enable("dlPart")
   })
   
+  # module Spatial Occurrence Partitions
   observeEvent(input$goPartSp, {
     partSp <- callModule(partSp_MOD, 'c5_partSp', rvs)
     rvs$occsGrp <- partSp()[[1]]
@@ -317,7 +323,7 @@ shinyServer(function(input, output, session) {
     shinyjs::enable("dlPart")
   })
   
-  # handle download for partitioned occurrence records csv
+  # download for partitioned occurrence records csv
   output$dlPart <- downloadHandler(
     filename = function() paste0(spName(), "_partitioned_occs.csv"),
     content = function(file) {
@@ -341,6 +347,7 @@ shinyServer(function(input, output, session) {
                                        <a href "http://biodiversityinformatics.amnh.org/open_source/maxent/">AMNH Maxent webpage</a>
                                        and place it in this directory:<br><i>', jar, '</i>')))
   
+  # module Maxent
   mod.maxent <- callModule(maxent_MOD, 'c6_maxent', rvs)
   
   observeEvent(input$goMaxent, {
@@ -363,6 +370,7 @@ shinyServer(function(input, output, session) {
     updateTabsetPanel(session, 'main', selected = 'Results')
   })
   
+  # module BIOCLIM
   mod.bioclim <- callModule(bioclim_MOD, 'c6_bioclim', rvs)
   
   observeEvent(input$goBioclim, {
@@ -394,6 +402,27 @@ shinyServer(function(input, output, session) {
     rvs$modSel <- input$modSel
   })
   
+  # module BIOCLIM plots
+  bcPlots <- callModule(bcPlots_MOD, 'c7_bcPlots', rvs)
+  
+  output$bcEnvelPlot <- renderPlot({
+    x <- bcPlots()
+    print(x$p)
+    bc.plot(rvs$mods[[1]], a = x$a, b = x$b, p = x$p)
+  })
+  
+  # handle downloads for BIOCLIM env plots png
+  output$dlBcPlot <- downloadHandler(
+    filename = function() {paste0(spName(), "_bc_plot.png")},
+    content = function(file) {
+      png(file)
+      x <- bcPlots()
+      bc.plot(rvs$mods[[1]], a = x$a, b = x$b, p = x$p)
+      dev.off()
+    }
+  )
+  
+  # module Map Prediction (restricted to background extent)
   mapPreds <- callModule(mapPreds_MOD, 'c7_mapPreds', rvs, map)
   
   observeEvent(input$goMapPreds, {
@@ -424,6 +453,7 @@ shinyServer(function(input, output, session) {
     shinyjs::enable("dlPreds")
   })
   
+  # download for model predictions (restricted to background extent)
   output$dlPreds <- downloadHandler(
     filename = function() {
       ext <- ifelse(input$predFileType == 'raster', 'zip',

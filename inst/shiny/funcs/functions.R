@@ -356,38 +356,6 @@ bc.plot <- function(x, a=1, b=2, p=0.9, ...) {
   points(d[!i,a], d[!i,b], col='red', pch=3)
 }
 
-# # Bind csv and occ records
-# addCSVpts <- function(df, inFile.occs) {
-#   df <- rbind(df, inFile.occs)
-#   df <- remDups(df)
-# }
-
-
-# # Fix columns
-# fixcols <- function(cols, results) {
-#   colsadd <- cols[!(cols %in% colnames(results$data))]  # find colNames not included in results$data
-#   n <- length(colsadd)  # number of colNames not included
-# 
-#   # if there are colNames not included, add a new named col filled with NAs
-#   if (n > 0) {
-#     for (i in 1:n) {
-#       results$data <- cbind(results$data, NA)
-#       colnames(results$data)[ncol(results$data)] <- colsadd[i]
-#     }
-#   }
-#   return(results)
-# }
-
-
-# # Normalize function for raw predictions
-# normalize <- function(x) {
-#   valores <- values(x)
-#   pos <- which(!is.na(valores))
-#   valores[pos] <- (valores[pos] - min(valores[pos])) / (max(valores[pos]) - min(valores[pos]))
-#   values(x) <- valores
-#   return(x)
-# }
-
 # make data.frame of lambdas vector from Maxent model object
 lambdasDF <- function(mx) {
   lambdas <- mx@lambdas[1:(length(mx@lambdas)-4)]
@@ -432,20 +400,6 @@ respCurv <- function(mod, i) {  # copied mostly from dismo
   abline(v = abs.r[2], col='green')
     #graphics::text(x = vals, y = pred, labels = row.names(mod@presence), pos = 3, offset = 1)
 }
-
-# Reset values
-# resetV <- function(x) {
-# 
-#   namesV <- names(x)[-(1:2)]
-#   for(i in namesV){
-#     x[[i]] <- NULL
-#   }
-#   brk <- paste(rep('------', 14), collapse='')
-#   x$polyID <- 0
-#   x$polyErase <- FALSE
-#   x$log <- c(paste('***WELCOME TO WALLACE***', brk,
-#                 'Please find messages for the user in this log window.', brk, sep='<br>'))
-# }
 
 ####################### #
 # COMP 8 ####

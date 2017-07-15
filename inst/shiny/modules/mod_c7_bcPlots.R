@@ -11,10 +11,7 @@ bcPlots_UI <- function(id) {
 
 bcPlots_MOD <- function(input, output, session, rvs) {
   reactive({
-    req(input$fcs, rvs$occs, rvs$bgPts, rvs$bgMsk, rvs$occsGrp, rvs$bgGrp)
-
-    validate(need(values$evalMods[[1]], message = FALSE))
-    values$bcEnvelPlot <- TRUE
-    bc.plot(values$evalMods[[1]], a = input$bc1, b = input$bc2, p = input$bcProb)
+    req(rvs$mods)
+    return(list(a = input$bc1, b = input$bc2, p = input$bcProb))
   })
 }
