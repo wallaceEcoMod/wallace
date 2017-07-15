@@ -407,7 +407,6 @@ shinyServer(function(input, output, session) {
   
   output$bcEnvelPlot <- renderPlot({
     x <- bcPlots()
-    print(x$p)
     bc.plot(rvs$mods[[1]], a = x$a, b = x$b, p = x$p)
   })
   

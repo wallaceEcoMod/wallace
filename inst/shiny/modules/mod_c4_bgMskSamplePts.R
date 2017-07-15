@@ -7,10 +7,10 @@ bgMskAndSamplePts_UI <- function(id) {
 }
 
 bgMskAndSamplePts_MOD <- function(input, output, session, rvs) {
-  req(rvs$envs, rvs$bgShp)
+  req(rvs$bgShp)
   reactive({
     if (is.null(rvs$envs)) {
-      writeLog(type = 'error', 'Obtain environmental data first...')
+      rvs %>% writeLog(type = 'error', 'Obtain environmental data first...')
       return()
     }
     
