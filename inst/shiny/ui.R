@@ -230,7 +230,6 @@ shinyUI(tagList(
                                                                  uiTop('ENMeval', 'Automated Runs and Evaluations of Ecological Niche Models'),
                                                                  uiTop('dismo', 'Species Distribution Modeling'),
                                                                  HTML('<hr>'),
-                                                                 uiOutput("modSelUI"),
                                                                  mapPreds_UI('c7_mapPreds'),
                                                                  actionButton("goMapPreds", "Plot"), br(), br(),
                                                                  selectInput('predFileType', label = "Select File Type",
@@ -286,7 +285,9 @@ shinyUI(tagList(
                                                                            'Open Topo'="OpenTopoMap",
                                                                            'ESRI Imagery'="Esri.WorldImagery",
                                                                            'ESRI Nat Geo'='Esri.NatGeoWorldMap'),
-                                                               selected = "Esri.WorldTopoMap"))
+                                                               selected = "Esri.WorldTopoMap")),
+                                     absolutePanel(top = 60, right = 20, width = 150, draggable = TRUE,
+                                                   uiOutput("modSelUI"))
                     ),
                     br(),
                     conditionalPanel("input.tabs != 'rmd' & input.tabs != 0",

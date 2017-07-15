@@ -162,7 +162,7 @@ shinyServer(function(input, output, session) {
                        radius = 5, color = 'red', fillColor = 'red',
                        fillOpacity = 1, weight = 2, popup = ~pop,
                        group = 'comp2') %>%
-      addLegend("topright", colors = c('red', 'blue'),
+      addLegend("bottomright", colors = c('red', 'blue'),
                 title = "Occ Records", labels = c('retained', 'removed'),
                 opacity = 1, layerId = 'thinLeg')
     shinyjs::enable("dlProcOccs")
@@ -407,7 +407,7 @@ shinyServer(function(input, output, session) {
     # MAPPING
     if (rvs$predThresh != 'noThresh') {
       rasPal <- c('gray', 'blue')
-      map %>% addLegend("topright", colors = c('gray', 'blue'),
+      map %>% addLegend("bottomright", colors = c('gray', 'blue'),
                   title = "Thresholded Suitability", labels = c(0, 1),
                   opacity = 1, layerId = 'r1LegThr')
     } else {
@@ -415,7 +415,7 @@ shinyServer(function(input, output, session) {
       nonNAvals <- predCurVals[!is.na(predCurVals)]
       legendPal <- colorNumeric(rev(rasCols), nonNAvals, na.color='transparent')
       rasPal <- colorNumeric(rasCols, nonNAvals, na.color='transparent')
-      map %>% addLegend("topright", pal = legendPal, title = "Predicted Suitability",
+      map %>% addLegend("bottomright", pal = legendPal, title = "Predicted Suitability",
                   values = nonNAvals, layerId = 'r1LegCon',
                   labFormat = reverseLabels(2, reverse_order=TRUE))
     }

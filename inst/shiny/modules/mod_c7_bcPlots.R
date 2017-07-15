@@ -2,22 +2,10 @@
 bcPlots_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    checkboxGroupInput(ns("fcs"), label = "Select feature classes (flexibility of modeled response)",
-                       choices = list("L (Linear)" = "L", "LQ (Linear/Quadratic)" = "LQ", "H (Hinge)" = "H",
-                                      "LQH (Linear/Quadratic/Hinge)" = "LQH", "LQHP (Linear/Quadratic/Hinge/Product)" = "LQHP",
-                                      "LQHPT (Linear/Quadratic/Hinge/Threshold)" = "LQHPT")),
-    shinyBS::bsPopover(ns("fcs"), title = 'Tip',
-                       'Feature combinations to be explored. Features are constructed using different relationships within and among the environmental predictors, and are used to constrain the computed probability distribution. In short, more features = more potential model complexity.',
-                       placement = 'right', options = list(container = "body")),
-    sliderInput(ns("rms"), label = "Select regularization multipliers (penalty against complexity)",
-                min = 0, max = 10, value = c(1, 2)),
-    shinyBS::bsPopover(ns("rms"), title = 'Tip',
-                       'Range of regularization multipliers to explore. Greater values of the regularization multiplier lead to increased penalty against overly complex and/or overfit models. A value of 0 results in no regularization.',
-                       placement = 'right', options = list(container = "body")),
-    numericInput(ns("rmsStep"), label = "RM step value", value = 1),
-    shinyBS::bsPopover(ns("rmsStep"), title = 'Tip',
-                       'Value used to step through regularization multiplier range (e.g. range of 1-3 with step 0.5 results in [1, 1.5, 2, 2.5, 3]).',
-                       placement = 'right', options = list(container = "body"))
+    "Pick a bioclimatic variable number for each axis",
+    numericInput(ns("bc1"), "Axis 1", value = 1, min = 1, max = 19),
+    numericInput(ns("bc2"), "Axis 2", value = 2, min = 1, max = 19),
+    numericInput(ns("bcProb"), "Set threshold", value = 0.9, min = 0.75, max = 1, step = 0.05)
   )
 }
 
@@ -25,66 +13,8 @@ bcPlots_MOD <- function(input, output, session, rvs) {
   reactive({
     req(input$fcs, rvs$occs, rvs$bgPts, rvs$bgMsk, rvs$occsGrp, rvs$bgGrp)
 
-    if (!require('rJava')) {
-      rvs %>% writeLog(type = "error", 'Package rJava cannot load. 
-               Please download the latest version of Java, and make sure it is the 
-               correct version (e.g. 64-bit for a 64-bit system). After installing, 
-               try "library(rJava)". If it loads properly, restart Wallace and try again.')
-      return()
-    }
-    
-    if (is.null(input$fcs)) {
-      rvs %>% writeLog(type = 'error', 'Select feature classes first.')
-      return()
-    }
-    
-    # define the vector of RMs to input
-    rms <- seq(input$rms[1], input$rms[2], input$rmsStep)  
-    # create the Progress Bar object for ENMeval
-    progress <- shiny::Progress$new()
-    progress$set(message = "Evaluating ENMs...", value = 0)
-    on.exit(progress$close())
-    n <- length(rms) * length(input$fcs)
-    updateProgress <- function(value = NULL, detail = NULL) {
-      progress$inc(amount = 1/n, detail = detail)
-    }
-    
-    jar <- paste(system.file(package="dismo"), "/java/maxent.jar", sep='')
-    if (!file.exists(jar)) {
-      rvs %>% writeLog(type = 'error', 'File maxent.jar missing. 
-                     Please see directions to download and copy to directory on the toolbar.')
-      return()
-    }
-    
-    occs.xy <- rvs$occs %>% dplyr::select(longitude, latitude)
-    
-    e <- ENMeval::ENMevaluate(occs.xy, rvs$bgMsk, bg.coords = rvs$bgPts,
-                              RMvalues = rms, fc = input$fcs, method = 'user', 
-                              occ.grp = rvs$occsGrp,
-                              bg.grp = rvs$bgGrp, progbar = FALSE, 
-                              updateProgress = updateProgress)
-    
-    # Generate logistic predictions for each model
-    withProgress(message = "Generating logistic predictions...", {
-      logPredsList <- sapply(e@models, function(x) dismo::predict(x, rvs$bgMsk))
-      logPreds <- raster::stack(logPredsList)
-      names(logPreds) <- names(e@predictions)
-    })
-    
-    # occVals <- raster::extract(e@predictions, occs.xy)
-    # 
-    # values$mtps <- apply(occVals, MARGIN = 2, min)  # apply minimum training presence threshold over all models
-    # 
-    # # Define 10% training presence threshold
-    # if (nrow(occVals) < 10) {  # if less than 10 occ values, find 90% of total and round down
-    #   n90 <- floor(nrow(occVals) * 0.9)
-    # } else {  # if greater than or equal to 10 occ values, round up
-    #   n90 <- ceiling(nrow(occVals) * 0.9)
-    # }
-    # values$p10s <- apply(occVals, MARGIN = 2, function(x) rev(sort(x))[n90])  # apply 10% training presence threshold over all models
-    
-    rvs %>% writeLog("Maxent ran successfully and output evaluation results for", nrow(e@results), "models.")
-      
-    return(e)
+    validate(need(values$evalMods[[1]], message = FALSE))
+    values$bcEnvelPlot <- TRUE
+    bc.plot(values$evalMods[[1]], a = input$bc1, b = input$bc2, p = input$bcProb)
   })
 }
