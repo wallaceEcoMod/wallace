@@ -401,20 +401,10 @@ shinyServer(function(input, output, session) {
   bcPlots <- callModule(bcPlots_MOD, 'c7_bcPlots', rvs)
   
   output$bcEnvelPlot <- renderPlot({
-    x <- bcPlots()
-    bc.plot(rvs$mods[[1]], a = x$a, b = x$b, p = x$p)
+    bcPlots()
   })
   
-  # handle downloads for BIOCLIM Plots png
-  output$dlBcPlot <- downloadHandler(
-    filename = function() {paste0(spName(), "_bc_plot.png")},
-    content = function(file) {
-      png(file)
-      x <- bcPlots()
-      bc.plot(rvs$mods[[1]], a = x$a, b = x$b, p = x$p)
-      dev.off()
-    }
-  )
+  
   
   # module Maxent Evaluation Plots
   mxEvalPlots <- callModule(mxEvalPlots_MOD, 'c7_mxEvalPlots', rvs)
@@ -423,16 +413,7 @@ shinyServer(function(input, output, session) {
     mxEvalPlots()
   })
   
-  # handle downloads for Maxent Evaluation Plots png
-  output$dlMxEvalPlot <- downloadHandler(
-    filename = function() {paste0(spName(), "_maxent_eval_plot.png")},
-    content = function(file) {
-      png(file)
-      x <- mxEvalPlots()
-      evalPlot(res$modRes, input$mxEvalSel)
-      dev.off()
-    }
-  )
+  
   
   # module Map Prediction (restricted to background extent)
   mapPreds <- callModule(mapPreds_MOD, 'c7_mapPreds', rvs, map)
