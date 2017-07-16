@@ -359,12 +359,7 @@ shinyServer(function(input, output, session) {
     rvs$modRes <- e@results
     rvs$modPredsLog <- mod.maxent.call[[2]]
     rvs$modOccVals <- mod.maxent.call[[3]]
-    # rename results table fields
-    rvs$modRes <- rvs$modRes %>% dplyr::rename(avg.test.AUC = Mean.AUC, var.test.AUC = Var.AUC,
-                                               avg.diff.AUC = Mean.AUC.DIFF, var.diff.AUC = Var.AUC.DIFF,
-                                               avg.test.orMTP = Mean.ORmin, var.test.orMTP = Var.ORmin,
-                                               avg.test.or10pct = Mean.OR10, var.test.or10pct = Var.OR10,
-                                               parameters = nparam)
+
     output$evalTbl <- DT::renderDataTable(cbind(rvs$modRes[,1:3], round(rvs$modRes[,4:16], digits=3)))
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
@@ -402,7 +397,7 @@ shinyServer(function(input, output, session) {
     rvs$modSel <- input$modSel
   })
   
-  # module BIOCLIM plots
+  # module BIOCLIM Plots
   bcPlots <- callModule(bcPlots_MOD, 'c7_bcPlots', rvs)
   
   output$bcEnvelPlot <- renderPlot({
@@ -410,13 +405,31 @@ shinyServer(function(input, output, session) {
     bc.plot(rvs$mods[[1]], a = x$a, b = x$b, p = x$p)
   })
   
-  # handle downloads for BIOCLIM env plots png
+  # handle downloads for BIOCLIM Plots png
   output$dlBcPlot <- downloadHandler(
     filename = function() {paste0(spName(), "_bc_plot.png")},
     content = function(file) {
       png(file)
       x <- bcPlots()
       bc.plot(rvs$mods[[1]], a = x$a, b = x$b, p = x$p)
+      dev.off()
+    }
+  )
+  
+  # module Maxent Evaluation Plots
+  mxEvalPlots <- callModule(mxEvalPlots_MOD, 'c7_mxEvalPlots', rvs)
+  
+  output$mxEvalPlots <- renderPlot({
+    mxEvalPlots()
+  })
+  
+  # handle downloads for Maxent Evaluation Plots png
+  output$dlMxEvalPlot <- downloadHandler(
+    filename = function() {paste0(spName(), "_maxent_eval_plot.png")},
+    content = function(file) {
+      png(file)
+      x <- mxEvalPlots()
+      evalPlot(res$modRes, input$mxEvalSel)
       dev.off()
     }
   )

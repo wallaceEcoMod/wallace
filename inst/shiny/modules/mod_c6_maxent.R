@@ -64,6 +64,13 @@ maxent_MOD <- function(input, output, session, rvs) {
                               bg.grp = rvs$bgGrp, progbar = FALSE, 
                               updateProgress = updateProgress)
     
+    # rename results table fields
+    e@results <- e@results %>% dplyr::rename(avg.test.AUC = Mean.AUC, var.test.AUC = Var.AUC,
+                                               avg.diff.AUC = Mean.AUC.DIFF, var.diff.AUC = Var.AUC.DIFF,
+                                               avg.test.orMTP = Mean.ORmin, var.test.orMTP = Var.ORmin,
+                                               avg.test.or10pct = Mean.OR10, var.test.or10pct = Var.OR10,
+                                               parameters = nparam)
+    
     # generate logistic predictions for each model
     withProgress(message = "Generating logistic predictions...", {
       logPredsList <- sapply(e@models, function(x) dismo::predict(x, rvs$bgMsk))

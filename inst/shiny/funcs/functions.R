@@ -267,7 +267,7 @@ evalPlot <- function(res, value) {
   xlab <- "Regularization Multiplier"
 
   if (value != "delta.AICc") {
-    variance <- paste0('Var', strsplit(value, split='Mean')[[1]][2])
+    variance <- gsub('avg', 'var', value)
   } else {
     variance <- NULL
   }
@@ -276,7 +276,8 @@ evalPlot <- function(res, value) {
 
   if (value != "delta.AICc") {
     v <- res[,variance]
-    ylim <- c(min(y-v), max(y+v))
+    # ylim <- c(min(y-v), max(y+v))
+    ylim <- c(0, 1)
   } else {
     ylim <- c(min(y, na.rm=TRUE), max(y, na.rm=TRUE))
   }

@@ -219,8 +219,10 @@ shinyUI(tagList(
                                                                  div('Module: Maxent Evaluation Plots', id="mod"),
                                                                  uiTop('ENMeval', 'Automated Runs and Evaluations of Ecological Niche Models'),
                                                                  uiTop('dismo', 'Species Distribution Modeling'),
-                                                                 HTML('<hr>')),
-                                                                 # mxEvalPlots_UI('c7_mxEvalPlots')),
+                                                                 HTML('<hr>'),
+                                                                 mxEvalPlots_UI('c7_mxEvalPlots'),
+                                                                 strong("Download Maxent evaluation plot (.png)"), br(), br(),
+                                                                 downloadButton('dlMxEvalPlot', "Download")),
                                                 conditionalPanel("input.visSel == 'response'",
                                                                  div('Module: Response Curves', id="mod"),
                                                                  uiTop('ENMeval', 'Automated Runs and Evaluations of Ecological Niche Models'),
@@ -245,13 +247,6 @@ shinyUI(tagList(
                                                                  uiOutput("predVarSel"),
                                                                  strong("Download response plot (.png)"), br(), br(),
                                                                  downloadButton('downloadRespPlot', "Download")
-                                                ),
-                                                conditionalPanel("input.visSel == 'mxEval'",
-                                                                 selectInput('mxEvalSel', label = "Select Evaluation Plot",
-                                                                             choices = list("Select Stat..." = '', "mean AUC" = 'Mean.AUC', "mean AUC DIFF" = 'Mean.AUC.DIFF', "mean OR MIN" = 'Mean.ORmin',
-                                                                                            "mean OR 10%" = 'Mean.OR10', "delta AICc" = 'delta.AICc')),
-                                                                 strong("Download displayed evaluation plot (.png)"), br(), br(),
-                                                                 downloadButton('downloadEvalPlot', "Download")
                                                 ),
                                                 HTML('<hr>'),
                                                 span("ENMeval", id = "rpkg"), "references", br(),
@@ -294,9 +289,9 @@ shinyUI(tagList(
                                                           # conditionalPanel("input.tabs == 7 && input.visSel == 'response'",
                                                           # imageOutput('respCurv')),
                                                           conditionalPanel("input.tabs == 7 && input.visSel == 'bcEnvel' && input.enmSel == 'BIOCLIM'",
-                                                                           imageOutput('bcEnvelPlot'))
-                                                          # conditionalPanel("input.tabs == 7 && input.visSel == 'mxEval'  && input.enmSel == 'Maxent'",
-                                                          # imageOutput('mxEvalPlot'))),
+                                                                           imageOutput('bcEnvelPlot')),
+                                                          conditionalPanel("input.tabs == 7 && input.visSel == 'mxEval'  && input.enmSel == 'Maxent'",
+                                                                           imageOutput('mxEvalPlots'))
                                                  ),
                                                  tabPanel('Component Guidance', uiOutput('gtext_comp')),
                                                  tabPanel('Module Guidance', uiOutput('gtext_mod'))
