@@ -20,7 +20,6 @@ mxEvalPlots_MOD <- function(input, output, session, rvs) {
       filename = function() {paste0(spName(), "_maxent_eval_plot.png")},
       content = function(file) {
         png(file)
-        x <- mxEvalPlots()
         evalPlot(rvs$modRes, input$mxEvalSel)
         dev.off()
       }

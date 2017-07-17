@@ -27,7 +27,7 @@ shinyServer(function(input, output, session) {
     rvs$bgPts <- f %>% dplyr::filter(name == 'background')
     rvs$bgGrp <- rvs$bgPts$group
     rvs$bgPts <- rvs$bgPts %>% dplyr::select(longitude, latitude)
-    rvs$bgMsk <- stack(list.files('/Users/musasabi/Downloads/mskPreds(4)', 'gri$', full.names = TRUE))  
+    rvs$bgMsk <- raster::stack(list.files('/Users/musasabi/Downloads/mskEnvs', 'gri$', full.names = TRUE))  
     print('HACKING DONE')
   })
   
@@ -354,6 +354,7 @@ shinyServer(function(input, output, session) {
     # unpack everything
     mod.maxent.call <- mod.maxent()
     e <- mod.maxent.call[[1]]
+    rvs$enmSel <- 'maxent'  # record the enm selected
     rvs$mods <- e@models
     rvs$modPreds <- e@predictions
     rvs$modRes <- e@results
@@ -370,6 +371,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goBioclim, {
     e <- mod.bioclim()
+    rvs$enmSel <- 'bioclim'  # record the enm selected
     rvs$mods <- e$models
     rvs$modPreds <- e$predictions
     rvs$modRes <- e$results
@@ -387,14 +389,34 @@ shinyServer(function(input, output, session) {
   output$modSelUI <- renderUI({
     req(rvs$modPreds)
     n <- names(rvs$modPreds)
-    predNameList <- setNames(as.list(n), n)
-    selectInput('modSel', label = "Choose a model",
-                choices = predNameList, selected = predNameList[[1]])
+    modsNameList <- setNames(as.list(n), n)
+    selectInput('modSel', label = "Current model",
+                choices = modsNameList, selected = modsNameList[[1]])
   })
   
-  # always update the selected model in rvs
+  # ui that populates with the names of environmental predictors used
+  output$envSelUI <- renderUI({
+    req(rvs$modPreds)
+    # for Maxent, only display the environmental predictors with non-zero beta coefficients
+    # from the lambdas file (the predictors that were not removed via regularization)
+    if (rvs$enmSel == "maxent") {
+      modCur <- rvs$mods[[rvs$modSel]]
+      nonZeroEnvs <- mxNonzeroPreds(modCur)
+      envsNames <- names(rvs$bgMsk[[nonZeroEnvs]])
+    } else {
+      envsNames <- names(rvs$bgMsk)
+    }
+    envsNamesList <- setNames(as.list(envsNames), envsNames)
+    selectInput("envSel", "Current Env Variable",
+                 choices = envsNamesList, selected = envsNamesList[[1]])
+  })
+  
+  # always update the selected model and environmental predictor in rvs
   observe({
     rvs$modSel <- input$modSel
+    rvs$envSel <- input$envSel
+    print(rvs$modSel)
+    print(rvs$envSel)
   })
   
   # module BIOCLIM Plots
@@ -404,8 +426,6 @@ shinyServer(function(input, output, session) {
     bcPlots()
   })
   
-  
-  
   # module Maxent Evaluation Plots
   mxEvalPlots <- callModule(mxEvalPlots_MOD, 'c7_mxEvalPlots', rvs)
   
@@ -413,7 +433,12 @@ shinyServer(function(input, output, session) {
     mxEvalPlots()
   })
   
+  # module Response Curve Plots
+  respPlots <- callModule(respPlots_MOD, 'c7_respPlots', rvs)
   
+  output$respPlots <- renderPlot({
+    respPlots()
+  })
   
   # module Map Prediction (restricted to background extent)
   mapPreds <- callModule(mapPreds_MOD, 'c7_mapPreds', rvs, map)

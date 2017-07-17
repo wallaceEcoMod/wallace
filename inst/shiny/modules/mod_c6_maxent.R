@@ -64,6 +64,8 @@ maxent_MOD <- function(input, output, session, rvs) {
                               bg.grp = rvs$bgGrp, progbar = FALSE, 
                               updateProgress = updateProgress)
     
+    names(e@models) <- e@results$settings
+    
     # rename results table fields
     e@results <- e@results %>% dplyr::rename(avg.test.AUC = Mean.AUC, var.test.AUC = Var.AUC,
                                                avg.diff.AUC = Mean.AUC.DIFF, var.diff.AUC = Var.AUC.DIFF,
