@@ -128,7 +128,7 @@ smartZoom <- function(longi, lati) {
 
 popUpContent <- function(x) {
   as.character(tagList(
-    tags$strong(paste("ID:", x['origID'])),
+    tags$strong(paste("ID:", x['occID'])),
     tags$br(),
     tags$strong(paste("Latitude:", x['latitude'])),
     tags$strong(paste("Longitude:", x['longitude']))
@@ -152,8 +152,8 @@ remEnvsValsNA <- function(rvs) {
     
     if (length(na.rowNums) > 0) {
       occs.notNA <- rvs$occs[-na.rowNums,]
-      logs %>% writeLog("! WARNING: Removed records without environmental values with origIDs: ",
-                        paste(rvs$occs[na.rowNums,]$origID, collapse=', '), ".")
+      logs %>% writeLog("! WARNING: Removed records without environmental values with occIDs: ",
+                        paste(rvs$occs[na.rowNums,]$occID, collapse=', '), ".")
       return(occs.notNA)
     }
     

@@ -86,7 +86,7 @@ shinyServer(function(input, output, session) {
     }
     if (input$tabs == 3) {
       gtext$cur_comp <- "gtext_comp3.Rmd"
-      if (input$envSel == 'wcbc') gtext$cur_mod <- "gtext_comp3_worldclim.Rmd"
+      if (input$envDataSel == 'wcbc') gtext$cur_mod <- "gtext_comp3_worldclim.Rmd"
     }
     if (input$tabs == 4) {
       gtext$cur_comp <- "gtext_comp4.Rmd"
@@ -147,11 +147,42 @@ shinyServer(function(input, output, session) {
   ### COMPONENT 2: PROCESS OCCURRENCE DATA ####
   ########################################### #
   
-  # module Remove Occurrence By ID
+  # module Remove Occurrences By ID
   remByID <- callModule(removeByID_MOD, 'c2_removeByID', rvs)
   
   observeEvent(input$goRemoveByID, {
     remByID()
+    map %>%
+      clearMarkers() %>%
+      map_plotLocs(rvs$occs) %>%
+      zoom2Occs(rvs$occs)
+  })
+  
+  # module Select Occurrences on Map
+  selOccs <- callModule(selectOccs_MOD, 'c2_selOccs', rvs, map)
+  
+  observe({
+    if (input$tabs == 2 & input$procOccSel == 'selOccs') {
+      map %>%
+        leaflet.extras::addDrawToolbar(
+          targetGroup='draw',
+          polylineOptions = FALSE,
+          rectangleOptions = FALSE,
+          circleOptions = FALSE,
+          markerOptions = FALSE,
+          editOptions = leaflet.extras::editToolbarOptions())
+    } else {
+      map %>% leaflet.extras::removeDrawToolbar()
+    }
+    
+    req(input$map_draw_new_feature)
+    coords <- unlist(input$map_draw_new_feature$geometry$coordinates)
+    xy <- matrix(c(coords[c(TRUE,FALSE)], coords[c(FALSE,TRUE)]), ncol=2)
+    rvs$selOccsPolyXY <- xy
+  })
+  
+  observeEvent(input$goSelectOccs, {
+    selOccs()
     map %>%
       clearMarkers() %>%
       map_plotLocs(rvs$occs) %>%

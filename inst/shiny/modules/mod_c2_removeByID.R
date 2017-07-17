@@ -10,7 +10,7 @@ removeByID_MOD <- function(input, output, session, rvs) {
   
   reactive({
     req(rvs$occs)
-    print('GO')
+    
     if (!(input$removeID %in% rvs$occs$occID)) {
       rvs %>% writeLog(type = 'error','Entered ID not found.')
       return()
