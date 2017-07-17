@@ -364,6 +364,10 @@ shinyServer(function(input, output, session) {
     output$evalTbl <- DT::renderDataTable(cbind(rvs$modRes[,1:3], round(rvs$modRes[,4:16], digits=3)))
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
+    updateRadioButtons(session, "visSel", 
+                       choices = list("Maxent Evaluation Plots" = 'mxEval',
+                                      "Plot Response Curves" = 'response',
+                                      "Map Prediction" = 'map'))
   })
   
   # module BIOCLIM
@@ -379,6 +383,9 @@ shinyServer(function(input, output, session) {
     output$evalTbl <- DT::renderDataTable(round(rvs$modRes, digits=3))
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
+    updateRadioButtons(session, "visSel", 
+                       choices = list("BIOCLIM Envelope Plots" = 'bcEnvel',
+                                      "Map Prediction" = 'map'))
   })
   
   ########################################### #
@@ -437,6 +444,7 @@ shinyServer(function(input, output, session) {
   respPlots <- callModule(respPlots_MOD, 'c7_respPlots', rvs)
   
   output$respPlots <- renderPlot({
+    req(rvs$enmSel == 'maxent')
     respPlots()
   })
   
