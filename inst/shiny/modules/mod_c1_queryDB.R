@@ -60,7 +60,7 @@ queryDB_MOD <- function(input, output, session, rvs) {
     
     rvs$occsOrig <- recs
     
-    recs <- recs %>% dplyr::mutate(origID = row.names(recs))  # make new column for original ID
+    recs <- recs %>% dplyr::mutate(occID = row.names(recs))  # make new column for original ID
     
     return(recs)
   })
@@ -128,7 +128,7 @@ queryDB_MOD <- function(input, output, session, rvs) {
     
     # subset by key columns and make id and popup columns
     cols <- c("name", "longitude", "latitude","year", "institutionCode", "country", "stateProvince",
-              "locality", "elevation", "basisOfRecord", "origID")
+              "locality", "elevation", "basisOfRecord", "occID")
     recs <- recs %>%
       dplyr::select(dplyr::one_of(cols)) %>%
       dplyr::mutate(pop = unlist(apply(recs, 1, popUpContent)))  # make new column for leaflet marker popup content

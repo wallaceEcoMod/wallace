@@ -132,8 +132,8 @@ shinyServer(function(input, output, session) {
                   scrollX=TRUE, scrollY=400)
   output$occTbl <- DT::renderDataTable({
     req(rvs$occs)
-    rvs$occs %>% dplyr::select(-origID, -pop)
-  })
+    rvs$occs %>% dplyr::select(name, occID, longitude:basisOfRecord)
+  }, rownames = FALSE)
   
   # handle downloading of original GBIF records after cleaning
   output$dlDbOccs <- downloadHandler(
@@ -146,6 +146,17 @@ shinyServer(function(input, output, session) {
   ########################################### #
   ### COMPONENT 2: PROCESS OCCURRENCE DATA ####
   ########################################### #
+  
+  # module Remove Occurrence By ID
+  remByID <- callModule(removeByID_MOD, 'c2_removeByID', rvs)
+  
+  observeEvent(input$goRemoveByID, {
+    remByID()
+    map %>%
+      clearMarkers() %>%
+      map_plotLocs(rvs$occs) %>%
+      zoom2Occs(rvs$occs)
+  })
   
   # module Spatial Thin
   thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs', rvs)
@@ -172,7 +183,7 @@ shinyServer(function(input, output, session) {
   output$dlProcOccs <- downloadHandler(
     filename = function() {paste0(formatSpName(spName()), "_procOccs.csv")},
     content = function(file) {
-      thinned_rowNums <- as.numeric(thinOccs()$origID)
+      thinned_rowNums <- as.numeric(thinOccs()$occID)
       origThinned <- rvs$occsOrig[thinned_rowNums,]
       write.csv(origThinned, file, row.names = FALSE)
     }
@@ -328,8 +339,6 @@ shinyServer(function(input, output, session) {
     filename = function() paste0(spName(), "_partitioned_occs.csv"),
     content = function(file) {
       bg.bind <- data.frame(rep('background', nrow(rvs$bgPts)), rvs$bgPts)
-      print(head(bg.bind))
-      print(names(bg.bind))
       names(bg.bind) <- c('name', 'longitude', 'latitude')
       occs.bg.bind <-rbind(rvs$occs[,1:3], bg.bind)
       all.bind <- cbind(occs.bg.bind, c(rvs$occsGrp, rvs$bgGrp))
@@ -422,8 +431,6 @@ shinyServer(function(input, output, session) {
   observe({
     rvs$modSel <- input$modSel
     rvs$envSel <- input$envSel
-    print(rvs$modSel)
-    print(rvs$envSel)
   })
   
   # module BIOCLIM Plots
