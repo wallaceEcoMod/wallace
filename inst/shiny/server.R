@@ -137,7 +137,7 @@ shinyServer(function(input, output, session) {
   
   # handle downloading of original GBIF records after cleaning
   output$dlDbOccs <- downloadHandler(
-    filename = function() {paste0(formatSpName(spName()), '_', input$occDb, ".csv")},
+    filename = function() {paste0(formatSpName(spName()), '_original_', input$occDb, ".csv")},
     content = function(file) {
       write.csv(rvs$occsOrig, file, row.names=FALSE)
     }
@@ -212,11 +212,11 @@ shinyServer(function(input, output, session) {
   
   # handle download for thinned records csv
   output$dlProcOccs <- downloadHandler(
-    filename = function() {paste0(formatSpName(spName()), "_procOccs.csv")},
+    filename = function() {paste0(formatSpName(spName()), "_processed_occs.csv")},
     content = function(file) {
-      thinned_rowNums <- as.numeric(thinOccs()$occID)
-      origThinned <- rvs$occsOrig[thinned_rowNums,]
-      write.csv(origThinned, file, row.names = FALSE)
+      # thinned_rowNums <- as.numeric(thinOccs()$occID)
+      # origThinned <- rvs$occsOrig[thinned_rowNums,]
+      write.csv(rvs$occs, file, row.names = FALSE)
     }
   )
   
