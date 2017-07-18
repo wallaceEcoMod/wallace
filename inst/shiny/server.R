@@ -115,6 +115,11 @@ shinyServer(function(input, output, session) {
     shinyjs::enable("dlDbOccs")
   })
   
+  observe({
+    print(dbOccs())
+    print(userOccs())
+  })
+  
   # module User Occurrence Data
   userOccs <- callModule(userOccs_MOD, 'c1_userOccs', rvs)
   
@@ -137,7 +142,7 @@ shinyServer(function(input, output, session) {
   
   # handle downloading of original GBIF records after cleaning
   output$dlDbOccs <- downloadHandler(
-    filename = function() {paste0(formatSpName(spName()), '_original_', input$occDb, ".csv")},
+    filename = function() {paste0(formatSpName(spName()), '_original_', rvs$occDB, ".csv")},
     content = function(file) {
       write.csv(rvs$occsOrig, file, row.names=FALSE)
     }
@@ -162,6 +167,7 @@ shinyServer(function(input, output, session) {
   selOccs <- callModule(selectOccs_MOD, 'c2_selOccs', rvs, map)
   
   observe({
+    print(input$map_draw_new_feature)
     if (input$tabs == 2 & input$procOccSel == 'selOccs') {
       map %>%
         leaflet.extras::addDrawToolbar(
@@ -178,7 +184,9 @@ shinyServer(function(input, output, session) {
     req(input$map_draw_new_feature)
     coords <- unlist(input$map_draw_new_feature$geometry$coordinates)
     xy <- matrix(c(coords[c(TRUE,FALSE)], coords[c(FALSE,TRUE)]), ncol=2)
+    id <- input$map_draw_new_feature$properties$`_leaflet_id`
     rvs$selOccsPolyXY <- xy
+    rvs$selOccsPolyID <- id
   })
   
   observeEvent(input$goSelectOccs, {
@@ -186,7 +194,15 @@ shinyServer(function(input, output, session) {
     map %>%
       clearMarkers() %>%
       map_plotLocs(rvs$occs) %>%
-      zoom2Occs(rvs$occs)
+      zoom2Occs(rvs$occs) %>%
+      leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
+      leaflet.extras::addDrawToolbar(
+        targetGroup='draw',
+        polylineOptions = FALSE,
+        rectangleOptions = FALSE,
+        circleOptions = FALSE,
+        markerOptions = FALSE,
+        editOptions = leaflet.extras::editToolbarOptions())
   })
   
   # module Spatial Thin
@@ -219,6 +235,20 @@ shinyServer(function(input, output, session) {
       write.csv(rvs$occs, file, row.names = FALSE)
     }
   )
+  
+  # Reset Occs button functionality
+  observeEvent(input$goResetOccs, {
+    if (!is.null(rvs$occDB)) {
+      rvs$occs <- dbOccs()  
+    } else {
+      rvs$occs <- userOccs()
+    }
+    rvs %>% writeLog("Reset occurrences.")
+    map %>%
+      clearMarkers() %>%
+      map_plotLocs(rvs$occs) %>%
+      zoom2Occs(rvs$occs)
+  })
   
   ############################################# #
   ### COMPONENT 3: OBTAIN ENVIRONMENTAL DATA ####

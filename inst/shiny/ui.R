@@ -66,9 +66,7 @@ shinyUI(tagList(
                                                                  uiTop('leaflet.extras', "Extra functionality for 'leaflet' Package"),
                                                                  HTML('<hr>'),
                                                                  selectOccs_UI('c2_selectOccs'),
-                                                                 actionButton("goSelectOccs", "Select"), br(), br(),
-                                                                 strong("Reset to original localities and erase polygon"), br(), br(),
-                                                                 uiBottom('leaflet.extras', 'Bhaskar Karambelkar, Bangyou Zheng')
+                                                                 actionButton("goSelectOccs", "Select")
                                                 ),
                                                 conditionalPanel("input.procOccSel == 'remID'",
                                                                  removeByID_UI('c2_removeByID'),
@@ -80,16 +78,22 @@ shinyUI(tagList(
                                                                  uiTop('spThin', 'Spatial Thinning of Species Occurrence Records'),
                                                                  HTML('<hr>'),
                                                                  thinOccs_UI('c2_thinOccs'),
-                                                                 actionButton("goThinOccs", "Thin Occurrences"), br(), br(),
+                                                                 actionButton("goThinOccs", "Thin Occurrences")
+                                                ),
+                                                HTML('<hr>'),
+                                                strong("Reset to original occurrences"), br(), br(),
+                                                actionButton("goResetOccs", "Reset"),
+                                                HTML('<hr>'),
+                                                strong("Download processed occurrence localities (.csv)"), br(), br(),
+                                                downloadButton('dlProcOccs', "Download"),
+                                                conditionalPanel("input.procOccSel == 'selOccs'",
+                                                                 HTML('<hr>'),
+                                                                 uiBottom('leaflet.extras', 'Bhaskar Karambelkar, Bangyou Zheng')),
+                                                conditionalPanel("input.procOccSel == 'spthin'",
                                                                  HTML('<hr>'),
                                                                  uiBottom('spThin', "Matthew E. Aiello-Lammens, Rob A. Boria, 
                                                                                           Alex Radosavljevic, Bruno Vilela, Robert P. Anderson"),
-                                                                 " | ", a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/ecog.01132/abstract", target = "_blank")
-                                                ),
-                                                actionButton("erasePolySelLocs", "Reset"),
-                                                HTML('<hr>'),
-                                                strong("Download processed occurrence localities (.csv)"), br(), br(),
-                                                downloadButton('dlProcOccs', "Download")
+                                                                 " | ", a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/ecog.01132/abstract", target = "_blank"))
                                ),
                                # tab 3 ####
                                conditionalPanel("input.tabs == 3",

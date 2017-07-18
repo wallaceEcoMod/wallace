@@ -11,6 +11,9 @@ userOccs_MOD <- function(input, output, session, rvs) {
   readOccsCSV <- reactive({
     req(input$userCSV)
     
+    # make occDB record NULL to keep track of where occurrences are coming from
+    rvs$occDB <- NULL
+    
     csv <- read.csv(input$userCSV$datapath)
     
     spName <- trimws(as.character(csv$name[1]))
