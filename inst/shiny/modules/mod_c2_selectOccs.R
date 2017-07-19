@@ -5,26 +5,26 @@ selectOccs_UI <- function(id) {
   )
 }
 
-selectOccs_MOD <- function(input, output, session, rvs, map) {
+selectOccs_MOD <- function(input, output, session, rvs) {
   
   reactive({
     req(rvs$occs, rvs$selOccsPolyXY)
     
-    # make spatial pts object of original occs and preserve origID
-    pts <- sp::SpatialPointsDataFrame(rvs$occs[,2:3], data=rvs$occs['occID'])
+    occs.xy <- rvs$occs[c('longitude', 'latitude')]
     
-    newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(rvs$selOccsPolyXY)), ID=1)))  # create new polygon from coords
+    # make spatial pts object of original occs and preserve origID
+    pts <- sp::SpatialPointsDataFrame(occs.xy, data=rvs$occs['occID'])
+    
+    newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(rvs$selOccsPolyXY)), ID=rvs$selOccsPolyID)))  # create new polygon from coords
     
     intersect <- sp::over(pts, newPoly)
     ptSelIndex <- as.numeric(which(!(is.na(intersect))))
     
     selIDs <- as.numeric(pts[ptSelIndex,]$occID)
     
-    removedIDs <- rvs$occs$occID[selIDs]
+    rvs$occs <- rvs$occs[ptSelIndex,]
     
-    rvs$occs <- rvs$occs[selIDs,]
-    
-    rvs %>% writeLog("Removed occurrence with ID = ", removedIDs, 
+    rvs %>% writeLog("Keeping only occurrences with occID = ", selIDs, 
                      ". Updated data has n = ", nrow(rvs$occs), " records.")
   })
 }

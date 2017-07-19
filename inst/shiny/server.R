@@ -108,6 +108,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goDbOccs, {
     rvs$occs <- dbOccs()
+    rvs$occsPreProc <- rvs$occs
     map %>%
       clearMarkers() %>%
       map_plotLocs(rvs$occs) %>%
@@ -115,16 +116,12 @@ shinyServer(function(input, output, session) {
     shinyjs::enable("dlDbOccs")
   })
   
-  observe({
-    print(dbOccs())
-    print(userOccs())
-  })
-  
   # module User Occurrence Data
   userOccs <- callModule(userOccs_MOD, 'c1_userOccs', rvs)
   
   observeEvent(input$goUserOccs, {
     rvs$occs <- userOccs()
+    rvs$occsPreProc <- rvs$occs
     map %>%
       clearMarkers() %>%
       map_plotLocs(rvs$occs) %>%
@@ -164,10 +161,9 @@ shinyServer(function(input, output, session) {
   })
   
   # module Select Occurrences on Map
-  selOccs <- callModule(selectOccs_MOD, 'c2_selOccs', rvs, map)
+  selOccs <- callModule(selectOccs_MOD, 'c2_selOccs', rvs)
   
   observe({
-    print(input$map_draw_new_feature)
     if (input$tabs == 2 & input$procOccSel == 'selOccs') {
       map %>%
         leaflet.extras::addDrawToolbar(
@@ -178,7 +174,7 @@ shinyServer(function(input, output, session) {
           markerOptions = FALSE,
           editOptions = leaflet.extras::editToolbarOptions())
     } else {
-      map %>% leaflet.extras::removeDrawToolbar()
+      map %>% leaflet.extras::removeDrawToolbar(clearFeatures = TRUE)
     }
     
     req(input$map_draw_new_feature)
@@ -187,10 +183,12 @@ shinyServer(function(input, output, session) {
     id <- input$map_draw_new_feature$properties$`_leaflet_id`
     rvs$selOccsPolyXY <- xy
     rvs$selOccsPolyID <- id
+    print(id)
   })
   
   observeEvent(input$goSelectOccs, {
     selOccs()
+    print(rvs$occs)
     map %>%
       clearMarkers() %>%
       map_plotLocs(rvs$occs) %>%
@@ -238,11 +236,7 @@ shinyServer(function(input, output, session) {
   
   # Reset Occs button functionality
   observeEvent(input$goResetOccs, {
-    if (!is.null(rvs$occDB)) {
-      rvs$occs <- dbOccs()  
-    } else {
-      rvs$occs <- userOccs()
-    }
+    rvs$occs <- rvs$occsPreProc  
     rvs %>% writeLog("Reset occurrences.")
     map %>%
       clearMarkers() %>%
