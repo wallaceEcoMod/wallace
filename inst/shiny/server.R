@@ -183,12 +183,10 @@ shinyServer(function(input, output, session) {
     id <- input$map_draw_new_feature$properties$`_leaflet_id`
     rvs$selOccsPolyXY <- xy
     rvs$selOccsPolyID <- id
-    print(id)
   })
   
   observeEvent(input$goSelectOccs, {
     selOccs()
-    print(rvs$occs)
     map %>%
       clearMarkers() %>%
       map_plotLocs(rvs$occs) %>%
