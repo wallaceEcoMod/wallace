@@ -34,9 +34,11 @@ mapPreds_MOD <- function(input, output, session, rvs, map) {
     }
     
     # initially pick raw prediction (if Maxent)
-    selRas <- rvs$modPreds[[rvs$modSel]]
-    names(selRas) <- paste0(rvs$modSel, '_raw')
-    rasVals <- raster::values(selRas)
+    predSel <- rvs$modPreds[[rvs$modSel]]
+    names(predSel) <- paste0(rvs$modSel, '_raw')
+    rasVals <- raster::values(predSel)
+    # remove NAs
+    rasVals <- rasVals[!is.na(rasVals)]
     
     # generate binary prediction based on selected thresholding rule 
     # (same for raw and logistic Maxent predictions because they scale the same)
@@ -44,8 +46,8 @@ mapPreds_MOD <- function(input, output, session, rvs, map) {
       occValsSel <- rvs$modOccVals[,rvs$modSel]
       x <- thresh(occValsSel, input$predThresh)
       # revent to raw prediction
-      selRas <- selRas > x
-      names(selRas) <- paste0(rvs$modSel, '_thresh_', input$predThresh)
+      predSel <- predSel > x
+      names(predSel) <- paste0(rvs$modSel, '_thresh_', input$predThresh)
     }
     
     # if no threshold selected and type is log, plot Maxent logisitic prediction
@@ -55,13 +57,14 @@ mapPreds_MOD <- function(input, output, session, rvs, map) {
                          These are only applicable for Maxent models.')
         return()
       }
-      selRas <- rvs$modPredsLog[[rvs$modSel]]
-      names(selRas) <- paste0(rvs$modSel, '_log')
-      rasVals <- c(raster::values(selRas), 0, 1)  # set to 0-1 scale
+      predSel <- rvs$modPredsLog[[rvs$modSel]]
+      names(predSel) <- paste0(rvs$modSel, '_log')
+      rasVals <- c(rasVals, 0, 1)  # set to 0-1 scale
     }
     
     rvs$predThresh <- input$predThresh
-    print(names(selRas))
-    return(list(selRas, rasVals, reactive(input$predType)))
+    rvs$predType <- input$predType
+    
+    return(list(predSel, rasVals))
   })
 }

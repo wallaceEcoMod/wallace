@@ -13,8 +13,6 @@ bioclim_MOD <- function(input, output, session, rvs) {
     
     e <- BioClim_eval(occs.xy, rvs$bgPts, rvs$occsGrp, rvs$bgGrp, rvs$bgMsk)
 
-    names(e$predictions) <- "BIOCLIM"
-
     # occVals <- raster::extract(e$predictions, values$modParams$occ.pts)
     # 
     # values$mtps <- min(occVals)  # apply minimum training presence threshold

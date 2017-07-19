@@ -27,6 +27,7 @@ shinyServer(function(input, output, session) {
     rvs$bgPts <- f %>% dplyr::filter(name == 'background')
     rvs$bgGrp <- rvs$bgPts$group
     rvs$bgPts <- rvs$bgPts %>% dplyr::select(longitude, latitude)
+    rvs$envs <- raster::stack(list.files('/Users/musasabi/Documents/github/wallace/inst/shiny/wc10', 'bil$', full.names=TRUE))
     rvs$bgMsk <- raster::stack(list.files('/Users/musasabi/Downloads/mskEnvs', 'gri$', full.names = TRUE))  
     print('HACKING DONE')
   })
@@ -40,6 +41,14 @@ shinyServer(function(input, output, session) {
     source(file.path('modules', f), local=TRUE)
   }
   
+  # initialize log window
+  output$log <- renderUI({tags$div(id='logHeader', tags$div(id='logContent', 
+                                                            HTML(paste0(rvs$logs, "<br>", collapse = ""))))})
+  
+  ######################## #
+  ### GUIDANCE TEXT ####
+  ######################## #
+  
   # UI for component guidance text
   output$gtext_comp <- renderUI({
     shiny::includeMarkdown(system.file('Rmd', gtext$cur_comp, package='wallace'))
@@ -50,12 +59,59 @@ shinyServer(function(input, output, session) {
     shiny::includeMarkdown(system.file('Rmd', gtext$cur_mod, package='wallace'))
   })
   
-  ####################### #
-  ### INITIALIZE ####
-  ####################### #
+  # guidance text and tab behavior
+  observe({
+    if (input$tabs == 1) {
+      updateTabsetPanel(session, 'main', selected = 'Map')
+      gtext$cur_comp <- 'gtext_comp1.Rmd'
+      if (input$occSel == 'db') gtext$cur_mod <- "gtext_comp1_dbOccs.Rmd"
+      if (input$occSel == 'user') gtext$cur_mod <- "gtext_comp1_userOccs.Rmd"
+    }
+    if (input$tabs == 2) {
+      updateTabsetPanel(session, 'main', selected = 'Map')
+      gtext$cur_comp <- "gtext_comp2.Rmd"
+      # if Module: Select Localities, populate guidance text and select legend
+      if (input$procOccSel == 'selOccs') gtext$cur_mod <- "gtext_comp2_selectLocs.Rmd"
+      if (input$procOccSel == 'spthin') gtext$cur_mod <- "gtext_comp2_spatialThin.Rmd"
+    }
+    if (input$tabs == 3) {
+      gtext$cur_comp <- "gtext_comp3.Rmd"
+      if (input$envDataSel == 'wcbc') gtext$cur_mod <- "gtext_comp3_worldclim.Rmd"
+    }
+    if (input$tabs == 4) {
+      gtext$cur_comp <- "gtext_comp4.Rmd"
+      gtext$cur_mod <- "gtext_comp4_backg.Rmd"
+      
+    }
+    if (input$tabs == 5) {
+      gtext$cur_comp <- "gtext_comp5.Rmd"
+      if (input$partSel == 'sp') gtext$cur_mod <- "gtext_comp5_spatial.Rmd"
+      if (input$partSel == 'nsp') gtext$cur_mod <- "gtext_comp5_nonspatial.Rmd"
+    }
+    if (input$tabs == 6) {
+      gtext$cur_comp <- "gtext_comp6.Rmd"
+      if (input$enmSel == 'BIOCLIM') gtext$cur_mod <- "gtext_comp6_bioclim.Rmd"
+      if (input$enmSel == 'Maxent') gtext$cur_mod <- "gtext_comp6_maxent.Rmd"
+    }
+    if (input$tabs == 7) {
+      gtext$cur_comp <- "gtext_comp7.Rmd"
+      if (input$visSel == 'bcPlots') gtext$cur_mod <- "gtext_comp7_bcPlots.Rmd"
+      if (input$visSel == 'map') gtext$cur_mod <- "gtext_comp7_map.Rmd"
+      if (input$visSel == 'mxEval') gtext$cur_mod <- "gtext_comp7_mxEvalPlots.Rmd"
+      if (input$visSel == 'response') gtext$cur_mod <- "gtext_comp7_respCurves.Rmd"
+    }
+    if (input$tabs == 8) {
+      updateTabsetPanel(session, 'main', selected = 'Map')
+      gtext$cur_comp <- "gtext_comp8.Rmd"
+      if (input$projSel == 'projArea') gtext$cur_mod <- "gtext_comp8_pjArea.Rmd"
+      if (input$projSel == 'projTime') gtext$cur_mod <- "gtext_comp8_pjTime.Rmd"
+      if (input$projSel == 'mess') gtext$cur_mod <- "gtext_comp8_mess.Rmd"
+    }
+  })
   
-  output$log <- renderUI({tags$div(id='logHeader', tags$div(id='logContent', 
-                                                            HTML(paste0(rvs$logs, "<br>", collapse = ""))))})
+  ######################## #
+  ### MAPPING ####
+  ######################## #
   
   # create map
   m <- leaflet() %>% setView(0, 0, zoom = 2) %>% addProviderTiles('Esri.WorldTopoMap')
@@ -67,33 +123,27 @@ shinyServer(function(input, output, session) {
   # initialize provider tile option
   observe({map %>% addProviderTiles(input$bmap)})
   
-  ######################## #
-  ### GUIDANCE TEXT ####
-  ######################## #
-  
-  # guidance text and tab behavior
+  # initialize draw toolbar for c2_selectOccs and c8
   observe({
-    if (input$tabs == 1) {
-      gtext$cur_comp <- 'gtext_comp1.Rmd'
-      if (input$occSel == 'db') gtext$cur_mod <- "gtext_comp1_dbOccs.Rmd"
-      if (input$occSel == 'user') gtext$cur_mod <- "gtext_comp1_userOccs.Rmd"
+    if ((input$tabs == 2 & input$procOccSel == 'selOccs') | input$tabs == 8) {
+      map %>%
+        leaflet.extras::addDrawToolbar(
+          targetGroup='draw',
+          polylineOptions = FALSE,
+          rectangleOptions = FALSE,
+          circleOptions = FALSE,
+          markerOptions = FALSE,
+          editOptions = leaflet.extras::editToolbarOptions())
+    } else {
+      map %>% leaflet.extras::removeDrawToolbar(clearFeatures = TRUE)
     }
-    if (input$tabs == 2) {
-      gtext$cur_comp <- "gtext_comp2.Rmd"
-      # if Module: Select Localities, populate guidance text and select legend
-      if (input$procOccSel == 'selpts') gtext$cur_mod <- "gtext_comp2_selectLocs.Rmd"
-      if (input$procOccSel == 'spthin') gtext$cur_mod <- "gtext_comp2_spatialThin.Rmd"
-    }
-    if (input$tabs == 3) {
-      gtext$cur_comp <- "gtext_comp3.Rmd"
-      if (input$envDataSel == 'wcbc') gtext$cur_mod <- "gtext_comp3_worldclim.Rmd"
-    }
-    if (input$tabs == 4) {
-      gtext$cur_comp <- "gtext_comp4.Rmd"
-      if (input$envProcSel == 'backg') gtext$cur_mod <- "gtext_comp4_backg.Rmd"
-      # switch to Map tab
-      updateTabsetPanel(session, 'main', selected = 'Map')
-    }
+    
+    req(input$map_draw_new_feature)
+    coords <- unlist(input$map_draw_new_feature$geometry$coordinates)
+    xy <- matrix(c(coords[c(TRUE,FALSE)], coords[c(FALSE,TRUE)]), ncol=2)
+    id <- input$map_draw_new_feature$properties$`_leaflet_id`
+    rvs$polyXY <- xy
+    rvs$polyID <- id
   })
   
   ########################################## #
@@ -103,7 +153,6 @@ shinyServer(function(input, output, session) {
   # module Query Database
   dbOccs <- callModule(queryDB_MOD, 'c1_queryDB', rvs)
   
-  # dbOccs <- eventReactive(input$goDbOccs, dbOccs.call())
   spName <- reactive(as.character(rvs$occs$name[1]))
   
   observeEvent(input$goDbOccs, {
@@ -162,28 +211,6 @@ shinyServer(function(input, output, session) {
   
   # module Select Occurrences on Map
   selOccs <- callModule(selectOccs_MOD, 'c2_selOccs', rvs)
-  
-  observe({
-    if (input$tabs == 2 & input$procOccSel == 'selOccs') {
-      map %>%
-        leaflet.extras::addDrawToolbar(
-          targetGroup='draw',
-          polylineOptions = FALSE,
-          rectangleOptions = FALSE,
-          circleOptions = FALSE,
-          markerOptions = FALSE,
-          editOptions = leaflet.extras::editToolbarOptions())
-    } else {
-      map %>% leaflet.extras::removeDrawToolbar(clearFeatures = TRUE)
-    }
-    
-    req(input$map_draw_new_feature)
-    coords <- unlist(input$map_draw_new_feature$geometry$coordinates)
-    xy <- matrix(c(coords[c(TRUE,FALSE)], coords[c(FALSE,TRUE)]), ncol=2)
-    id <- input$map_draw_new_feature$properties$`_leaflet_id`
-    rvs$selOccsPolyXY <- xy
-    rvs$selOccsPolyID <- id
-  })
   
   observeEvent(input$goSelectOccs, {
     selOccs()
@@ -259,8 +286,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goEnvData, {
     # load into envs
     rvs$envs <- wcBioclims()
-    # occs.naEnvRem <- remEnvsValsNA(envs, occs)
-    # occs(occs.naEnvRem)
+    rvs$occs <- remEnvsValsNA(rvs)
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     # enable download button
@@ -516,7 +542,6 @@ shinyServer(function(input, output, session) {
     req(mapPreds.call)
     rvs$predCur <- mapPreds.call[[1]]
     predCurVals <- mapPreds.call[[2]]
-    predType <- mapPreds.call[[3]]
     updateTabsetPanel(session, 'main', selected = 'Map')
     
     # MAPPING
@@ -527,11 +552,10 @@ shinyServer(function(input, output, session) {
                   opacity = 1, layerId = 'r1LegThr')
     } else {
       rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-      nonNAvals <- predCurVals[!is.na(predCurVals)]
-      legendPal <- colorNumeric(rev(rasCols), nonNAvals, na.color='transparent')
-      rasPal <- colorNumeric(rasCols, nonNAvals, na.color='transparent')
+      legendPal <- colorNumeric(rev(rasCols), predCurVals, na.color='transparent')
+      rasPal <- colorNumeric(rasCols, predCurVals, na.color='transparent')
       map %>% addLegend("bottomright", pal = legendPal, title = "Predicted Suitability",
-                  values = nonNAvals, layerId = 'r1LegCon',
+                  values = predCurVals, layerId = 'r1LegCon',
                   labFormat = reverseLabels(2, reverse_order=TRUE))
     }
     map %>% addRasterImage(rvs$predCur, colors = rasPal, opacity = 0.7, 
@@ -564,4 +588,36 @@ shinyServer(function(input, output, session) {
     }
   )
   
+  ########################################### #
+  ### COMPONENT 8: PROJECT MODEL ####
+  ########################################### #
+  
+  # module Project Area
+  projArea <- callModule(projArea_MOD, 'c8_projArea', rvs)
+  
+  observeEvent(input$goProjectArea, {
+    projArea.call <- projArea()
+    # unpack
+    rvs$projCur <- projArea.call[[1]]
+    projCurVals <- projArea.call[[2]]
+    
+    rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+    legendPal <- colorNumeric(rev(rasCols), projCurVals, na.color='transparent')
+    rasPal <- colorNumeric(rasCols, projCurVals, na.color='transparent')
+    map %>% addLegend("bottomright", pal = legendPal, title = "Predicted Suitability",
+                      values = projCurVals, layerId = 'r1LegCon',
+                      labFormat = reverseLabels(2, reverse_order=TRUE))
+    map %>% addRasterImage(rvs$projCur, colors = rasPal, opacity = 0.7, 
+                           group = 'r2', layerId = 'r2ID')
+    shinyjs::enable("dlProj")
+    
+    map %>%
+      leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
+      leaflet.extras::addDrawToolbar(
+        targetGroup='draw',
+        polylineOptions = FALSE,
+        polygonOptions = FALSE,
+        circleOptions = FALSE,
+        markerOptions = FALSE)
+  })
 })

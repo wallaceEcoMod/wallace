@@ -233,10 +233,13 @@ BioClim_eval <- function (occs, bg.pts, occ.grp, bg.grp, env) {
   stats <- cbind(apply(stats, 1, mean), ENMeval::corrected.var(stats, nk), stats)
   colnames(stats) <- c("Mean", "Variance", paste("Bin", 1:nk))
   rownames(stats) <- c("AUC.DIFF", "AUC.TEST","OR10","ORmin")
+  
+  preds <- raster::stack(pred)
+  names(preds) <- "BIOCLIM"
 
   # THIS FORMAT FOR RETURNED DATA ATTEMPTS TO MATCH WHAT HAPPENS IN WALLACE ALREADY FOR ENMEVAL.
-  return(list(models=list(full.mod), results=stats, 
-              predictions=raster::stack(pred), occVals=occPredVals))
+  return(list(models=list(BIOCLIM=full.mod), results=stats, 
+              predictions=preds, occVals=occPredVals))
 }
 
 thresh <- function(modOccVals, type) {
