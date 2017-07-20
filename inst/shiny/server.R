@@ -79,6 +79,7 @@ shinyServer(function(input, output, session) {
       if (input$envDataSel == 'wcbc') gtext$cur_mod <- "gtext_comp3_worldclim.Rmd"
     }
     if (input$tabs == 4) {
+      updateTabsetPanel(session, 'main', selected = 'Map')
       gtext$cur_comp <- "gtext_comp4.Rmd"
       gtext$cur_mod <- "gtext_comp4_backg.Rmd"
       
@@ -132,8 +133,7 @@ shinyServer(function(input, output, session) {
           polylineOptions = FALSE,
           rectangleOptions = FALSE,
           circleOptions = FALSE,
-          markerOptions = FALSE,
-          editOptions = leaflet.extras::editToolbarOptions())
+          markerOptions = FALSE)
     } else {
       map %>% leaflet.extras::removeDrawToolbar(clearFeatures = TRUE)
     }
@@ -322,13 +322,15 @@ shinyServer(function(input, output, session) {
   # module Background Extent
   bgExt <- callModule(bgExtent_MOD, 'c4_bgExtent', rvs)
   
+  bgShpXY <- reactive(rvs$bgShp@polygons[[1]]@Polygons[[1]]@coords)
+  
   observeEvent(input$goBgExt, {
     rvs$bgShp <- bgExt()
-    coords <- rvs$bgShp@polygons[[1]]@Polygons[[1]]@coords
+    
     map %>%
-      addPolygons(lng=coords[,1], lat=coords[,2], layerId="bg",
+      addPolygons(lng=bgShpXY()[,1], lat=bgShpXY()[,2], layerId="bg",
                   weight=10, color="red", group='bgShp') %>%
-      fitBounds(max(coords[,1]), max(coords[,2]), min(coords[,1]), min(coords[,2]))
+      fitBounds(max(bgShpXY()[,1]), max(bgShpXY()[,2]), min(bgShpXY()[,1]), min(bgShpXY()[,2]))
   })
   
   # module User-defined Background Extent
@@ -558,8 +560,12 @@ shinyServer(function(input, output, session) {
                   values = predCurVals, layerId = 'r1LegCon',
                   labFormat = reverseLabels(2, reverse_order=TRUE))
     }
-    map %>% addRasterImage(rvs$predCur, colors = rasPal, opacity = 0.7, 
-                           group = 'r1', layerId = 'r1ID')
+    map %>% 
+      clearImages() %>% clearShapes() %>%
+      addRasterImage(rvs$predCur, colors = rasPal, opacity = 0.7, 
+                           group = 'c7', layerId = 'r1ID') %>%
+      addPolygons(lng=bgShpXY()[,1], lat=bgShpXY()[,2], layerId="bgExt", fill = FALSE,
+                  weight=8, color="red", group='c7')
     shinyjs::enable("dlPreds")
   })
   
@@ -604,11 +610,16 @@ shinyServer(function(input, output, session) {
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
     legendPal <- colorNumeric(rev(rasCols), projCurVals, na.color='transparent')
     rasPal <- colorNumeric(rasCols, projCurVals, na.color='transparent')
+    
     map %>% addLegend("bottomright", pal = legendPal, title = "Predicted Suitability",
                       values = projCurVals, layerId = 'r1LegCon',
                       labFormat = reverseLabels(2, reverse_order=TRUE))
     map %>% addRasterImage(rvs$projCur, colors = rasPal, opacity = 0.7, 
-                           group = 'r2', layerId = 'r2ID')
+                           group = 'r2', layerId = 'r2ID') %>%
+      addPolygons(lng=bgShpXY()[,1], lat=bgShpXY()[,2], layerId="bgExt", fill = FALSE,
+                  weight=8, color="red", group='c8') %>%
+      addPolygons(lng=rvs$polyXY[,1], lat=rvs$polyXY[,2], layerId="projExt", fill = FALSE,
+                  weight=8, color="green", group='c8')
     shinyjs::enable("dlProj")
     
     map %>%
@@ -616,7 +627,7 @@ shinyServer(function(input, output, session) {
       leaflet.extras::addDrawToolbar(
         targetGroup='draw',
         polylineOptions = FALSE,
-        polygonOptions = FALSE,
+        rectangleOptions = FALSE,
         circleOptions = FALSE,
         markerOptions = FALSE)
   })

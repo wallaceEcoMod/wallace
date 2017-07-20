@@ -13,8 +13,9 @@ projArea_MOD <- function(input, output, session, rvs) {
     newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(rvs$polyXY)), ID=rvs$polyID)))  
     
     # concatanate coords to a single character
-    coordsChar <- paste(apply(rvs$polyXY, 1, function(b) paste0('(',paste(b, collapse=', '),')')), collapse=', ')  
-    rvs %>% writeLog('Defined projection extent to:', coordsChar)
+    xy.round <- round(rvs$polyXY, digits = 2)
+    coordsChar <- paste(apply(xy.round, 1, function(b) paste0('(',paste(b, collapse=', '),')')), collapse=', ')  
+    rvs %>% writeLog('New projection for model', rvs$modSel, 'with extent coordinates:', coordsChar)
     
     withProgress(message = "Masking environmental grids to projection extent...", {
       projMsk <- raster::crop(rvs$envs, newPoly)
