@@ -609,7 +609,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goProjectArea, {
     rvs$projCur <- projArea()
     rvs$projCurVals <- rasVals(rvs$projCur, rvs$predType)
-    print(rvs$projCurVals)
+    rvs$projType <- 'area'
     
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
     legendPal <- colorNumeric(rev(rasCols), c(rvs$predCurVals, rvs$projCurVals), na.color='transparent')
@@ -642,6 +642,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goProjectTime, {
     rvs$projCur <- projTime()
     rvs$projCurVals <- rasVals(rvs$projCur, rvs$predType)
+    rvs$projType <- 'time'
     
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
     legendPal <- colorNumeric(rev(rasCols), c(rvs$predCurVals, rvs$projCurVals), na.color='transparent')
@@ -667,4 +668,17 @@ shinyServer(function(input, output, session) {
         circleOptions = FALSE,
         markerOptions = FALSE)
   })
+  
+  # module Environmental Similarity
+  envSimilarity <- callModule(envSimilarity_MOD, 'c8_envSimilarity', rvs)
+  
+  observeEvent(input$goEnvSimilarity, {
+    rvs$mess <- envSimilarity()
+    # set infinite values to NA
+    rvs$mess[is.infinite(rvs$mess)] <- NA
+    # extract values
+    rvs$messVals <- rasVals(rvs$mess)
+    
+  
+    })
 })

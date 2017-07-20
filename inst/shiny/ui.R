@@ -284,9 +284,9 @@ shinyUI(tagList(
                                                                div('Module: Calculate Environmental Similarity', id="mod"),
                                                                uiTop('dismo', 'Species Distribution Modeling'),
                                                                HTML('<hr>'),
-                                                               # envSim_UI(),
+                                                               envSimilarity_UI(),
                                                                strong("Calculate MESS for current extent"), br(), br(),
-                                                               actionButton('goMESS', "Calculate MESS")),
+                                                               actionButton('goEnvSimilarity', "Calculate MESS")),
                                               
                                               selectInput('pjFileType', label = "Select File Type",
                                                           choices = list("GRD" = 'raster', "ASCII" = 'ascii', "GeoTIFF" = 'GTiff',

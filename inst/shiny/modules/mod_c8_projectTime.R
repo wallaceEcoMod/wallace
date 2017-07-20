@@ -18,6 +18,7 @@ projectTime_UI <- function(id) {
 }
 
 projectTime_MOD <- function(input, output, session, rvs) {
+  req(rvs$envs, rvs$mods, rvs$predCur, rvs$polyXY)
   
   output$selGCMui <- renderUI({
     ns <- session$ns
@@ -91,8 +92,9 @@ projectTime_MOD <- function(input, output, session, rvs) {
     withProgress(message = ("Projecting to new time..."), {
       modProjTime <- dismo::predict(modCur, pjtMsk)
       rvs %>% writeLog("Projected to", paste0('20', input$selTime), 
-                       " for GCM ", GCMlookup[input$selGCM], 
-                       " under RCP ", as.numeric(input$selRCP)/10.0, ".")
+                       "for GCM", GCMlookup[input$selGCM], 
+                       "under RCP", as.numeric(input$selRCP)/10.0, ".")
+      rvs$pjTimePar <- list(time=input$selTime, gcm=input$selectGCM, rcp=input$selRCP)
     })
     
     return(modProjTime)
