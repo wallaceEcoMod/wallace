@@ -407,6 +407,14 @@ respCurv <- function(mod, i) {  # copied mostly from dismo
     #graphics::text(x = vals, y = pred, labels = row.names(mod@presence), pos = 3, offset = 1)
 }
 
+rasVals <- function(r, type='raw') {
+  v <- raster::values(r)
+  # remove NAs
+  v <- v[!is.na(v)]
+  if (type == 'log') v <- c(v, 0, 1)  # set to 0-1 scale
+  return(v)
+}
+
 ####################### #
 # COMP 8 ####
 ####################### #

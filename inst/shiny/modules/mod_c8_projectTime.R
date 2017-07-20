@@ -8,7 +8,6 @@ projectTime_UI <- function(id) {
                                "2050" = 50,
                                "2070" = 70)),
     uiOutput(ns('selGCMui')),
-    # conditionalPanel("input.selTime == 50 || input.selTime == 70",
     selectInput(ns('selRCP'), label = "Select RCP",
                 choices = list("Select RCP" = "",
                                '2.6' = 26,
@@ -33,68 +32,70 @@ projectTime_MOD <- function(input, output, session, rvs) {
       gcms <- c("BC", "CC", "CE", "CN", "HG", "IP", "MR", "ME", "MG")
     } else {
       gcms <- c("AC", "BC", "CC", "CE", "CN", "GF", "GD", "GS", "HD",
-                         "HG", "HE", "IN", "IP", "MI", "MR", "MC", "MP", "MG", "NO")
+                "HG", "HE", "IN", "IP", "MI", "MR", "MC", "MP", "MG", "NO")
     }
     names(gcms) <- GCMlookup[gcms]
     gcms <- as.list(c("Select GCM" = "", gcms))
-    selectInput("selGCM", label = "Select global circulation model", choices = gcms)
+    selectInput(ns("selGCM"), label = "Select global circulation model", choices = gcms)
   })
   
-  reactive({
+  pjTime <- reactive({
     req(rvs$envs, rvs$mods, rvs$predCur)
     
     if (is.null(rvs$polyXY)) {
       rvs %>% writeLog(type = 'error', 'Select projection extent first.')
       return()
     }
-    
-    if (res(rvs$envs)[1] < 0.01) {
+    envsRes <- raster::res(rvs$envs)[1]
+    if (envsRes < 0.01) {
       rvs %>% writeLog(type = 'error', 'Project to New Time currently only available with resolutions >30 arc seconds.')
       return()
     }
     
-    # code taken from dismo getData() function to catch if user is trying to download a missing combo of gcm / rcp
+    # code taken from dismo getData() function to catch if user is trying to 
+    # download a missing combo of gcm / rcp
     gcms <- c('AC', 'BC', 'CC', 'CE', 'CN', 'GF', 'GD', 'GS', 'HD', 'HG', 'HE', 
               'IN', 'IP', 'MI', 'MR', 'MC', 'MP', 'MG', 'NO')
     rcps <- c(26, 45, 60, 85)
     m <- matrix(c(0,1,1,0,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
                   1,1,1,1,1,1,1,0,1,1,0,0,1,0,1,1,1,0,0,1,1,1,1,0,1,1,1,1,1,0,1,
                   0,1,1,1,1,1,1,1,1,1,1,1,1,1), ncol=4)
-    i <- m[which(selGCM == gcms), which(selRCP == rcps)]
+    i <- m[which(input$selGCM == gcms), which(input$selRCP == rcps)]
     if (!i) {
-      writeLog('<font color="red"><b>! ERROR</b></font> : This combination of GCM and RCP is not available. Please make a different selection.')
+      rvs %>% writeLog(type = 'error', 'This combination of GCM and RCP is not 
+                       available. Please make a different selection.')
       return()
     }
     
-    withProgress(message = paste("Retrieving WorldClim data for", selTime, selRCP, "..."), {
-      values$projTimeVars <- raster::getData('CMIP5', var = "bio", res = bcRes,
-                                             rcp = selRCP, model = selGCM, year = selTime)
+    withProgress(message = paste("Retrieving WorldClim data for", input$selTime, input$selRCP, "..."), {
+      projTimeEnvs <- raster::getData('CMIP5', var = "bio", res = envsRes * 60,
+                                      rcp = input$selRCP, model = input$selGCM, year = input$selTime)
     })
+    
+    # create new spatial polygon from coordinates
+    newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(rvs$polyXY)), ID=rvs$polyID)))  
+    
+    # concatanate coords to a single character
+    xy.round <- round(rvs$polyXY, digits = 2)
+    coordsChar <- paste(apply(xy.round, 1, function(b) paste0('(',paste(b, collapse=', '),')')), collapse=', ')  
+    rvs %>% writeLog('New time projection for model', rvs$modSel, 'with extent coordinates:', coordsChar)
     
     withProgress(message = "Clipping environmental data to current extent...", {
-      msk <- raster::crop(values$projTimeVars, values$poly2)
-      values$projMsk <- raster::mask(msk, values$poly2)
-      names(values$projMsk) <- names(values$preds)  # make names same as original predictors
+      pjtMsk <- raster::crop(projTimeEnvs, newPoly)
+      pjtMsk <- raster::mask(pjtMsk, newPoly)
+      names(pjtMsk) <- names(rvs$envs)  # make names same as original predictors
     })
+    
+    modCur <- rvs$mods[[rvs$modSel]]
     
     withProgress(message = ("Projecting to new time..."), {
-      curMod <- values$evalMods[[as.numeric(modelSel)]]
-      values$rasName <- names(values$evalPreds[[as.numeric(modelSel)]])
-      values$pjTime <- dismo::predict(curMod, values$projMsk)
-      rasVals <- raster::values(values$pjTime)
-      values$projTimeMessage <- paste0(paste0('20', selTime), " for GCM ", GCMlookup[selGCM], " under RCP ", as.numeric(selRCP)/10.0, ".")
-      writeLog(paste("> Projected to", values$projTimeMessage))
+      modProjTime <- dismo::predict(modCur, pjtMsk)
+      rvs %>% writeLog("Projected to", paste0('20', input$selTime), 
+                       " for GCM ", GCMlookup[input$selGCM], 
+                       " under RCP ", as.numeric(input$selRCP)/10.0, ".")
     })
     
-    if (predForm == 'log' & enmSel == "Maxent") {
-      rasVals <- c(values$pjTime@data@values, 0, 1)  # set to 0-1 scale
-    }
-    values$rasValsTime <- rasVals[!is.na(rasVals)]
-    rng <- c(min(values$rasValsTime), max(values$rasValsTime))
-    
-    values$legPalTime <- colorNumeric(rev(rasCols), rng, na.color='transparent')
-    values$rasPalTime <- colorNumeric(rasCols, rng, na.color='transparent')
-    
-    
+    return(modProjTime)
   })
+  return(pjTime)
 }

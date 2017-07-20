@@ -1,11 +1,11 @@
-projArea_UI <- function(id) {
+projectArea_UI <- function(id) {
   ns <- NS(id)
   tagList(
     
   )
 }
 
-projArea_MOD <- function(input, output, session, rvs) {
+projectArea_MOD <- function(input, output, session, rvs) {
   reactive({
     req(rvs$envs, rvs$mods, rvs$predCur, rvs$polyXY)
     
@@ -15,28 +15,20 @@ projArea_MOD <- function(input, output, session, rvs) {
     # concatanate coords to a single character
     xy.round <- round(rvs$polyXY, digits = 2)
     coordsChar <- paste(apply(xy.round, 1, function(b) paste0('(',paste(b, collapse=', '),')')), collapse=', ')  
-    rvs %>% writeLog('New projection for model', rvs$modSel, 'with extent coordinates:', coordsChar)
+    rvs %>% writeLog('New area projection for model', rvs$modSel, 'with extent coordinates:', coordsChar)
     
     withProgress(message = "Masking environmental grids to projection extent...", {
       projMsk <- raster::crop(rvs$envs, newPoly)
       projMsk <- raster::mask(projMsk, newPoly)
-      print(projMsk)
     })
     
-    withProgress('Projecting model to extent...')
-    print(rvs$mods)
     modCur <- rvs$mods[[rvs$modSel]]
     
-    # values$rasName <- names(values$evalPreds[[as.numeric(modelSel)]])
-    modProjArea <- dismo::predict(modCur, projMsk)
-    modProjArea.vals <- raster::values(modProjArea)
+    withProgress(message = 'Projecting model to new area...', {
+      # values$rasName <- names(values$evalPreds[[as.numeric(modelSel)]])
+      modProjArea <- dismo::predict(modCur, projMsk)
+    })
     
-    if (rvs$predType == 'log') {
-      modProjArea.vals <- c(modProjArea.vals, 0, 1)  # set to 0-1 scale
-    }
-    # remove NAs
-    rasVals <- modProjArea.vals[!is.na(modProjArea.vals)]
-    
-    return(list(modProjArea, rasVals))
+    return(modProjArea)
   })
 }

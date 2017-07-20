@@ -26,6 +26,7 @@ shinyServer(function(input, output, session) {
     rvs$occsGrp <- rvs$occs$group
     rvs$bgPts <- f %>% dplyr::filter(name == 'background')
     rvs$bgGrp <- rvs$bgPts$group
+    rvs$bgShp <- rgdal::readOGR('/Users/musasabi/Downloads', 'mcp')
     rvs$bgPts <- rvs$bgPts %>% dplyr::select(longitude, latitude)
     rvs$envs <- raster::stack(list.files('/Users/musasabi/Documents/github/wallace/inst/shiny/wc10', 'bil$', full.names=TRUE))
     rvs$bgMsk <- raster::stack(list.files('/Users/musasabi/Downloads/mskEnvs', 'gri$', full.names = TRUE))  
@@ -340,6 +341,7 @@ shinyServer(function(input, output, session) {
     rvs$bgShp <- userBg()
     coords <- rvs$bgShp@polygons[[1]]@Polygons[[1]]@coords
     map %>%
+      clearShapes() %>%
       addPolygons(lng=coords[,1], lat=coords[,2], layerId="bg",
                   weight=10, color="red", group='bgShp') %>%
       fitBounds(max(coords[,1]), max(coords[,2]), min(coords[,1]), min(coords[,2]))
@@ -538,10 +540,8 @@ shinyServer(function(input, output, session) {
   mapPreds <- callModule(mapPreds_MOD, 'c7_mapPreds', rvs, map)
   
   observeEvent(input$goMapPreds, {
-    mapPreds.call <- mapPreds()
-    req(mapPreds.call)
-    rvs$predCur <- mapPreds.call[[1]]
-    rvs$predCurVals <- mapPreds.call[[2]]
+    rvs$predCur <- mapPreds()
+    rvs$predCurVals <- rasVals(rvs$predCur, rvs$predType)
     updateTabsetPanel(session, 'main', selected = 'Map')
     
     # MAPPING
@@ -595,13 +595,11 @@ shinyServer(function(input, output, session) {
   ########################################### #
   
   # module Project to New Area
-  projArea <- callModule(projArea_MOD, 'c8_projArea', rvs)
+  projArea <- callModule(projectArea_MOD, 'c8_projectArea', rvs)
   
   observeEvent(input$goProjectArea, {
-    projArea.call <- projArea()
-    # unpack
-    rvs$projCur <- projArea.call[[1]]
-    rvs$projCurVals <- projArea.call[[2]]
+    rvs$projCur <- projArea()
+    rvs$projCurVals <- rasVals(rvs$projCur, rvs$predType)
     
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
     legendPal <- colorNumeric(rev(rasCols), c(rvs$predCurVals, rvs$projCurVals), na.color='transparent')
@@ -609,8 +607,8 @@ shinyServer(function(input, output, session) {
     
     map %>% addLegend("bottomright", pal = legendPal, title = "Predicted Suitability",
                       values = c(rvs$predCurVals, rvs$projCurVals), layerId = 'leg',
-                      labFormat = reverseLabels(2, reverse_order=TRUE))
-    map %>% addRasterImage(rvs$projCur, colors = rasPal, opacity = 0.7, 
+                      labFormat = reverseLabels(2, reverse_order=TRUE)) %>%
+      addRasterImage(rvs$projCur, colors = rasPal, opacity = 0.7, 
                            group = 'r2', layerId = 'r2ID') %>%
       addPolygons(lng=bgShpXY()[,1], lat=bgShpXY()[,2], layerId="bgExt", fill = FALSE,
                   weight=8, color="red", group='c8') %>%
@@ -629,5 +627,34 @@ shinyServer(function(input, output, session) {
   })
   
   # module Project to New Time
+  projTime <- callModule(projectTime_MOD, 'c8_projectTime', rvs)
   
+  observeEvent(input$goProjectTime, {
+    rvs$projCur <- projTime()
+    rvs$projCurVals <- rasVals(rvs$projCur, rvs$predType)
+    
+    rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+    legendPal <- colorNumeric(rev(rasCols), c(rvs$predCurVals, rvs$projCurVals), na.color='transparent')
+    rasPal <- colorNumeric(rasCols, rvs$projCurVals, na.color='transparent')
+    
+    map %>% addLegend("bottomright", pal = legendPal, title = "Predicted Suitability",
+                      values = c(rvs$predCurVals, rvs$projCurVals), layerId = 'leg',
+                      labFormat = reverseLabels(2, reverse_order=TRUE)) %>%
+      addRasterImage(rvs$projCur, colors = rasPal, opacity = 0.7, 
+                     group = 'r2', layerId = 'r2ID') %>%
+      addPolygons(lng=bgShpXY()[,1], lat=bgShpXY()[,2], layerId="bgExt", fill = FALSE,
+                  weight=8, color="red", group='c8') %>%
+      addPolygons(lng=rvs$polyXY[,1], lat=rvs$polyXY[,2], layerId="projExt", fill = FALSE,
+                  weight=8, color="green", group='c8')
+    shinyjs::enable("dlProj")
+    
+    map %>%
+      leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
+      leaflet.extras::addDrawToolbar(
+        targetGroup='draw',
+        polylineOptions = FALSE,
+        rectangleOptions = FALSE,
+        circleOptions = FALSE,
+        markerOptions = FALSE)
+  })
 })
