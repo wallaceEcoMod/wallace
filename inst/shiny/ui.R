@@ -211,7 +211,7 @@ shinyUI(tagList(
                                                 HTML('<hr>'),
                                                 uiBottom('ENMeval', 'Robert Muscarella, Peter J. Galante, Mariano Soley-Guardia, Robert A. Boria,
                                                          Jamie M. Kass, Maria Uriarte, Robert P. Anderson'),
-                                                " | ", a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12261/abstract", target = "_blank"),
+                                                " | ", a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12261/abstract", target = "_blank"), br(),
                                                 uiBottom('dismo', 'Robert J. Hijmans, Steven Phillips, John Leathwick, Jane Elith')
                                ),
                                conditionalPanel("input.tabs == 7", 
@@ -255,7 +255,7 @@ shinyUI(tagList(
                                                 HTML('<hr>'),
                                                 uiBottom('ENMeval', 'Robert Muscarella, Peter J. Galante, Mariano Soley-Guardia, Robert A. Boria,
                                                          Jamie M. Kass, Maria Uriarte, Robert P. Anderson'),
-                                                " | ", a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12261/abstract", target = "_blank"),
+                                                " | ", a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12261/abstract", target = "_blank"), br(),
                                                 uiBottom('dismo', 'Robert J. Hijmans, Steven Phillips, John Leathwick, Jane Elith')
                              ),
                              conditionalPanel("input.tabs == 8",
@@ -277,7 +277,7 @@ shinyUI(tagList(
                                                                div('Module: Project to New Time', id="mod"),
                                                                uiTop('dismo', 'Species Distribution Modeling'),
                                                                HTML('<hr>'),
-                                                               # projectTime_UI(),
+                                                               projectTime_UI(),
                                                                strong("Project model to new time for current extent"), br(), br(),
                                                                actionButton('goProjectTime', "Project")),
                                               conditionalPanel("input.projSel == 'mess'",

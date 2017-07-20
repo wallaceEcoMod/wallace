@@ -7,7 +7,7 @@ projArea_UI <- function(id) {
 
 projArea_MOD <- function(input, output, session, rvs) {
   reactive({
-    req(rvs$envs, rvs$mods, rvs$predCur)
+    req(rvs$envs, rvs$mods, rvs$predCur, rvs$polyXY)
     
     # create new spatial polygon from coordinates
     newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(rvs$polyXY)), ID=rvs$polyID)))  

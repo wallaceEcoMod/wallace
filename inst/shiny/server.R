@@ -245,7 +245,7 @@ shinyServer(function(input, output, session) {
                        group = 'comp2') %>%
       addLegend("bottomright", colors = c('red', 'blue'),
                 title = "Occ Records", labels = c('retained', 'removed'),
-                opacity = 1, layerId = 'thinLeg')
+                opacity = 1, layerId = 'leg')
     shinyjs::enable("dlProcOccs")
   })
   
@@ -363,12 +363,10 @@ shinyServer(function(input, output, session) {
       setwd(tempdir())
       type <- input$bgMskFileType
       nm <- names(rvs$bgMsk)
-      
+       
       raster::writeRaster(rvs$bgMsk, file.path(tmpdir, 'msk'), bylayer = TRUE,
                           suffix = nm, format = type, overwrite = TRUE)
-      ext <- ifelse(type == 'raster', 'grd',
-                    ifelse(type == 'ascii', 'asc',
-                           ifelse(type == 'GTiff', 'tif', 'png')))
+      ext <- switch(type, raster = 'grd', ascii = 'asc', GTiff = 'tif')
       
       fs <- paste0('msk_', nm, '.', ext)
       if (ext == 'grd') {
@@ -474,7 +472,7 @@ shinyServer(function(input, output, session) {
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     updateRadioButtons(session, "visSel", 
-                       choices = list("BIOCLIM Envelope Plots" = 'bcEnvel',
+                       choices = list("BIOCLIM Envelope Plots" = 'bcPlots',
                                       "Map Prediction" = 'map'))
   })
   
@@ -543,7 +541,7 @@ shinyServer(function(input, output, session) {
     mapPreds.call <- mapPreds()
     req(mapPreds.call)
     rvs$predCur <- mapPreds.call[[1]]
-    predCurVals <- mapPreds.call[[2]]
+    rvs$predCurVals <- mapPreds.call[[2]]
     updateTabsetPanel(session, 'main', selected = 'Map')
     
     # MAPPING
@@ -551,13 +549,13 @@ shinyServer(function(input, output, session) {
       rasPal <- c('gray', 'blue')
       map %>% addLegend("bottomright", colors = c('gray', 'blue'),
                   title = "Thresholded Suitability", labels = c(0, 1),
-                  opacity = 1, layerId = 'r1LegThr')
+                  opacity = 1, layerId = 'leg')
     } else {
       rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-      legendPal <- colorNumeric(rev(rasCols), predCurVals, na.color='transparent')
-      rasPal <- colorNumeric(rasCols, predCurVals, na.color='transparent')
+      legendPal <- colorNumeric(rev(rasCols), rvs$predCurVals, na.color='transparent')
+      rasPal <- colorNumeric(rasCols, rvs$predCurVals, na.color='transparent')
       map %>% addLegend("bottomright", pal = legendPal, title = "Predicted Suitability",
-                  values = predCurVals, layerId = 'r1LegCon',
+                  values = rvs$predCurVals, layerId = 'leg',
                   labFormat = reverseLabels(2, reverse_order=TRUE))
     }
     map %>% 
@@ -572,14 +570,12 @@ shinyServer(function(input, output, session) {
   # download for model predictions (restricted to background extent)
   output$dlPreds <- downloadHandler(
     filename = function() {
-      ext <- ifelse(input$predFileType == 'raster', 'zip',
-                    ifelse(input$predFileType == 'ascii', 'asc',
-                           ifelse(input$predFileType == 'GTiff', 'tif', 'png')))
+      ext <- switch(input$predFileType, raster = 'grd', ascii = 'asc', GTiff = 'tif', PNG = 'png')
       paste0(names(rvs$predCur), '.', ext)},
     content = function(file) {
       if (input$predFileType == 'png') {
         png(file)
-        image(rvs$predCur)
+        raster::image(rvs$predCur)
         dev.off()
       } else if (input$predFileType == 'raster') {
         fileName <- names(rvs$predCur)
@@ -598,21 +594,21 @@ shinyServer(function(input, output, session) {
   ### COMPONENT 8: PROJECT MODEL ####
   ########################################### #
   
-  # module Project Area
+  # module Project to New Area
   projArea <- callModule(projArea_MOD, 'c8_projArea', rvs)
   
   observeEvent(input$goProjectArea, {
     projArea.call <- projArea()
     # unpack
     rvs$projCur <- projArea.call[[1]]
-    projCurVals <- projArea.call[[2]]
+    rvs$projCurVals <- projArea.call[[2]]
     
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-    legendPal <- colorNumeric(rev(rasCols), projCurVals, na.color='transparent')
-    rasPal <- colorNumeric(rasCols, projCurVals, na.color='transparent')
+    legendPal <- colorNumeric(rev(rasCols), c(rvs$predCurVals, rvs$projCurVals), na.color='transparent')
+    rasPal <- colorNumeric(rasCols, rvs$projCurVals, na.color='transparent')
     
     map %>% addLegend("bottomright", pal = legendPal, title = "Predicted Suitability",
-                      values = projCurVals, layerId = 'r1LegCon',
+                      values = c(rvs$predCurVals, rvs$projCurVals), layerId = 'leg',
                       labFormat = reverseLabels(2, reverse_order=TRUE))
     map %>% addRasterImage(rvs$projCur, colors = rasPal, opacity = 0.7, 
                            group = 'r2', layerId = 'r2ID') %>%
@@ -631,4 +627,7 @@ shinyServer(function(input, output, session) {
         circleOptions = FALSE,
         markerOptions = FALSE)
   })
+  
+  # module Project to New Time
+  
 })
