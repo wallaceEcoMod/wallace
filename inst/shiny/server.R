@@ -23,6 +23,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$load, {
     f <- read.csv('/Users/musasabi/Downloads/Puma concolor_partitioned_occs(1).csv')
     rvs$occs <- f %>% dplyr::filter(name != 'background')
+    rvs$occs$pop <- unlist(apply(rvs$occs, 1, popUpContent))
     rvs$occsGrp <- rvs$occs$group
     rvs$bgPts <- f %>% dplyr::filter(name == 'background')
     rvs$bgGrp <- rvs$bgPts$group
@@ -161,6 +162,8 @@ shinyServer(function(input, output, session) {
     rvs$occsPreProc <- rvs$occs
     map %>%
       clearMarkers() %>%
+      clearShapes() %>%
+      clearImages() %>%
       map_plotLocs(rvs$occs) %>%
       zoom2Occs(rvs$occs)
     shinyjs::enable("dlDbOccs")
@@ -174,6 +177,8 @@ shinyServer(function(input, output, session) {
     rvs$occsPreProc <- rvs$occs
     map %>%
       clearMarkers() %>%
+      clearShapes() %>%
+      clearImages() %>%
       map_plotLocs(rvs$occs) %>%
       zoom2Occs(rvs$occs)
     shinyjs::disable("dlDbOccs")
@@ -330,7 +335,7 @@ shinyServer(function(input, output, session) {
     
     map %>%
       addPolygons(lng=bgShpXY()[,1], lat=bgShpXY()[,2], layerId="bg",
-                  weight=10, color="red", group='bgShp') %>%
+                  weight=4, color="red", group='bgShp') %>%
       fitBounds(max(bgShpXY()[,1]), max(bgShpXY()[,2]), min(bgShpXY()[,1]), min(bgShpXY()[,2]))
   })
   
@@ -343,7 +348,7 @@ shinyServer(function(input, output, session) {
     map %>%
       clearShapes() %>%
       addPolygons(lng=coords[,1], lat=coords[,2], layerId="bg",
-                  weight=10, color="red", group='bgShp') %>%
+                  weight=4, color="red", group='bgShp') %>%
       fitBounds(max(coords[,1]), max(coords[,2]), min(coords[,1]), min(coords[,2]))
   })
   
@@ -542,6 +547,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goMapPreds, {
     rvs$predCur <- mapPreds()
     rvs$predCurVals <- rasVals(rvs$predCur, rvs$predType)
+    print(rvs$predCurVals)
     updateTabsetPanel(session, 'main', selected = 'Map')
     
     # MAPPING
@@ -559,11 +565,14 @@ shinyServer(function(input, output, session) {
                   labFormat = reverseLabels(2, reverse_order=TRUE))
     }
     map %>% 
-      clearImages() %>% clearShapes() %>%
+      clearMarkers() %>%
+      clearImages() %>% 
+      clearShapes() %>%
+      map_plotLocs(rvs$occs) %>%
       addRasterImage(rvs$predCur, colors = rasPal, opacity = 0.7, 
                            group = 'c7', layerId = 'r1ID') %>%
       addPolygons(lng=bgShpXY()[,1], lat=bgShpXY()[,2], layerId="bgExt", fill = FALSE,
-                  weight=8, color="red", group='c7')
+                  weight=4, color="red", group='c7')
     shinyjs::enable("dlPreds")
   })
   
@@ -600,10 +609,11 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goProjectArea, {
     rvs$projCur <- projArea()
     rvs$projCurVals <- rasVals(rvs$projCur, rvs$predType)
+    print(rvs$projCurVals)
     
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
     legendPal <- colorNumeric(rev(rasCols), c(rvs$predCurVals, rvs$projCurVals), na.color='transparent')
-    rasPal <- colorNumeric(rasCols, rvs$projCurVals, na.color='transparent')
+    rasPal <- colorNumeric(rasCols, c(rvs$predCurVals, rvs$projCurVals), na.color='transparent')
     
     map %>% addLegend("bottomright", pal = legendPal, title = "Predicted Suitability",
                       values = c(rvs$predCurVals, rvs$projCurVals), layerId = 'leg',
@@ -611,9 +621,9 @@ shinyServer(function(input, output, session) {
       addRasterImage(rvs$projCur, colors = rasPal, opacity = 0.7, 
                            group = 'r2', layerId = 'r2ID') %>%
       addPolygons(lng=bgShpXY()[,1], lat=bgShpXY()[,2], layerId="bgExt", fill = FALSE,
-                  weight=8, color="red", group='c8') %>%
+                  weight=4, color="red", group='c8') %>%
       addPolygons(lng=rvs$polyXY[,1], lat=rvs$polyXY[,2], layerId="projExt", fill = FALSE,
-                  weight=8, color="green", group='c8')
+                  weight=4, color="green", group='c8')
     shinyjs::enable("dlProj")
     
     map %>%
@@ -635,7 +645,7 @@ shinyServer(function(input, output, session) {
     
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
     legendPal <- colorNumeric(rev(rasCols), c(rvs$predCurVals, rvs$projCurVals), na.color='transparent')
-    rasPal <- colorNumeric(rasCols, rvs$projCurVals, na.color='transparent')
+    rasPal <- colorNumeric(rasCols, c(rvs$predCurVals, rvs$projCurVals), na.color='transparent')
     
     map %>% addLegend("bottomright", pal = legendPal, title = "Predicted Suitability",
                       values = c(rvs$predCurVals, rvs$projCurVals), layerId = 'leg',
@@ -643,9 +653,9 @@ shinyServer(function(input, output, session) {
       addRasterImage(rvs$projCur, colors = rasPal, opacity = 0.7, 
                      group = 'r2', layerId = 'r2ID') %>%
       addPolygons(lng=bgShpXY()[,1], lat=bgShpXY()[,2], layerId="bgExt", fill = FALSE,
-                  weight=8, color="red", group='c8') %>%
+                  weight=4, color="red", group='c8') %>%
       addPolygons(lng=rvs$polyXY[,1], lat=rvs$polyXY[,2], layerId="projExt", fill = FALSE,
-                  weight=8, color="green", group='c8')
+                  weight=4, color="green", group='c8')
     shinyjs::enable("dlProj")
     
     map %>%
