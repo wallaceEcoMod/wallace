@@ -18,7 +18,6 @@ projectTime_UI <- function(id) {
 }
 
 projectTime_MOD <- function(input, output, session, rvs) {
-  req(rvs$envs, rvs$mods, rvs$predCur, rvs$polyXY)
   
   output$selGCMui <- renderUI({
     ns <- session$ns
@@ -40,7 +39,7 @@ projectTime_MOD <- function(input, output, session, rvs) {
     selectInput(ns("selGCM"), label = "Select global circulation model", choices = gcms)
   })
   
-  pjTime <- reactive({
+  reactive({
     req(rvs$envs, rvs$mods, rvs$predCur)
     
     if (is.null(rvs$polyXY)) {
@@ -99,5 +98,4 @@ projectTime_MOD <- function(input, output, session, rvs) {
     
     return(modProjTime)
   })
-  return(pjTime)
 }

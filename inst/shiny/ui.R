@@ -284,7 +284,7 @@ shinyUI(tagList(
                                                                div('Module: Calculate Environmental Similarity', id="mod"),
                                                                uiTop('dismo', 'Species Distribution Modeling'),
                                                                HTML('<hr>'),
-                                                               envSimilarity_UI(),
+                                                               envSimilarity_UI('c8_envSimilarity'),
                                                                strong("Calculate MESS for current extent"), br(), br(),
                                                                actionButton('goEnvSimilarity', "Calculate MESS")),
                                               
