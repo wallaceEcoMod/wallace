@@ -24,7 +24,7 @@ envSimilarity_MOD <- function(input, output, session, rvs) {
     
     withProgress(message = "Generating MESS map...", {
       occVals <- raster::extract(rvs$envs, occs.xy)
-      pjMESS <- suppressWarnings(dismo::mess(rvs$projCur, occVals))
+      pjMESS <- suppressWarnings(dismo::mess(rvs$projMsk, occVals))
       if (rvs$projType == 'area') {
         rvs %>% writeLog("Generated MESS map for present.")
       } else if (rvs$projType == 'time') {

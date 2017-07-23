@@ -608,7 +608,10 @@ shinyServer(function(input, output, session) {
   projArea <- callModule(projectArea_MOD, 'c8_projectArea', rvs)
   
   observeEvent(input$goProjectArea, {
-    rvs$projCur <- projArea()
+    projArea.call <- projArea()
+    # unpack
+    rvs$projMsk <- projArea.call[[1]]
+    rvs$projCur <- projArea.call[[2]]
     rvs$projCurVals <- rasVals(rvs$projCur, rvs$predType)
     rvs$projType <- 'area'
     
@@ -645,7 +648,10 @@ shinyServer(function(input, output, session) {
   projTime <- callModule(projectTime_MOD, 'c8_projectTime', rvs)
   
   observeEvent(input$goProjectTime, {
-    rvs$projCur <- projTime()
+    projTime.call <- projTime()
+    # unpack
+    rvs$projMsk <- projTime.call[[1]]
+    rvs$projCur <- projTime.call[[2]]
     rvs$projCurVals <- rasVals(rvs$projCur, rvs$predType)
     rvs$projType <- 'time'
     
@@ -688,10 +694,12 @@ shinyServer(function(input, output, session) {
     # extract values
     rvs$messVals <- rasVals(rvs$mess)
     
-    rasCols <- rev(RColorBrewer::brewer.pal(n=11, name='Spectral'))
-    legendPalPj <- colorNumeric(rev(rasCols), c(rvs$predCurVals, rvs$projCurVals), na.color='transparent')
-    legendPalMESS <- colorNumeric(rasCols, rvs$messVals, na.color='transparent')
-    rasPal <- colorNumeric(rasCols, rvs$messVals, na.color='transparent')
+    rasColsPj <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+    rasColsMESS <- RColorBrewer::brewer.pal(n=11, name='Reds')
+    legendPalPj <- colorNumeric(rev(rasColsPj), c(rvs$predCurVals, rvs$projCurVals), na.color='transparent')
+    legendPalMESS <- colorNumeric(rasColsMESS, rvs$messVals, na.color='transparent')
+    rasPalPj <- colorNumeric(rasColsPj, c(rvs$predCurVals, rvs$projCurVals), na.color='transparent')
+    rasPalMESS <- colorNumeric(rasColsMESS, rvs$messVals, na.color='transparent')
     
     map %>% 
       clearMarkers() %>% clearImages() %>% clearShapes() %>%
@@ -699,11 +707,11 @@ shinyServer(function(input, output, session) {
                 values = c(rvs$predCurVals, rvs$projCurVals), layerId = 'leg',
                 labFormat = reverseLabels(2, reverse_order=TRUE)) %>%
       addLegend("topright", pal=legendPalMESS, title = "MESS Values",
-                values = rvs$messVals, labFormat = myLabelFormat(reverse_order = TRUE),
+                values = rvs$messVals, labFormat = reverseLabels(2, reverse_order=TRUE),
                 layerId = 'leg2') %>%
-      addRasterImage(rvs$predCur, colors = rasPal, opacity = 0.7, 
+      addRasterImage(rvs$predCur, colors = rasPalPj, opacity = 0.7, 
                      group = 'c7', layerId = 'r1ID') %>%
-      addRasterImage(rvs$mess, colors = rasPal, opacity = 0.7, 
+      addRasterImage(rvs$mess, colors = rasPalMESS, opacity = 0.7, 
                      group = 'c8', layerId = 'r2ID') %>%
       addPolygons(lng=bgShpXY()[,1], lat=bgShpXY()[,2], layerId="bgExt", fill = FALSE,
                   weight=4, color="red", group='c8') %>%

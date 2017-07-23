@@ -93,9 +93,9 @@ projectTime_MOD <- function(input, output, session, rvs) {
       rvs %>% writeLog("Projected to", paste0('20', input$selTime), 
                        "for GCM", GCMlookup[input$selGCM], 
                        "under RCP", as.numeric(input$selRCP)/10.0, ".")
-      rvs$pjTimePar <- list(time=input$selTime, gcm=input$selectGCM, rcp=input$selRCP)
+      rvs$pjTimePar <- list(time=input$selTime, gcm=input$selGCM, rcp=input$selRCP)
     })
     
-    return(modProjTime)
+    return(list(pjMsk=pjtMsk, pjPred=modProjTime))
   })
 }

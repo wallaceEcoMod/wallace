@@ -29,6 +29,6 @@ projectArea_MOD <- function(input, output, session, rvs) {
       modProjArea <- dismo::predict(modCur, projMsk)
     })
     
-    return(modProjArea)
+    return(list(pjMsk=projMsk, pjPred=modProjArea))
   })
 }
