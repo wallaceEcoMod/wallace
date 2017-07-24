@@ -13,6 +13,9 @@ userBgExtent_UI <- function(id) {
 
 userBgExtent_MOD <- function(input, output, session, rvs) {
   userBgShp <- reactive({
+    req(input$userBgShp)
+    
+    print(input$userBgShp)
     names <- input$userBgShp$name
     inPath <- input$userBgShp$datapath
     pathdir <- dirname(inPath)
@@ -25,13 +28,18 @@ userBgExtent_MOD <- function(input, output, session, rvs) {
       
       bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(f)), 1)))
     } else if ('shp' %in% exts) {
+      print(length(exts))
+      if (length(exts) < 3) {
+        rvs %>% writeLog(type = 'error', 'If entering a shapefile, please select all the following files: .shp, .shx, and .dbf.')
+        return()
+      }
       file.rename(inPath, file.path(pathdir, names))
       # get index of .shp
       i <- which(exts == 'shp')
       # read in shapefile and extract coords
-      bgExt <- readOGR(pathdir[i], strsplit(names[i], '\\.')[[1]][1])
+      bgExt <- rgdal::readOGR(pathdir[i], strsplit(names[i], '\\.')[[1]][1])
     } else {
-      rvs %>% writeLog(type = 'warning', 'Please enter either a CSV file of vertex coordinates or shapefile.')
+      rvs %>% writeLog(type = 'error', 'Please enter either a CSV file of vertex coordinates or shapefile (.shp, .dbf, and .shx).')
       return()
     }
     rvs %>% writeLog("Study extent: user-defined polygon.")
@@ -39,6 +47,8 @@ userBgExtent_MOD <- function(input, output, session, rvs) {
   })
   
   bufBg <- reactive({
+    req(userBgShp())
+    
     bufWid <- input$userBgBuf
     if (bufWid > 0) {
       bgExt <- rgeos::gBuffer(userBgShp(), width = bufWid)

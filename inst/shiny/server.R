@@ -347,6 +347,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goUserBg, {
     rvs$bgShp <- userBg()
+    req(rvs$bgShp)
     coords <- rvs$bgShp@polygons[[1]]@Polygons[[1]]@coords
     map %>%
       clearShapes() %>%
