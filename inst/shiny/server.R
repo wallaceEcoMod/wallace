@@ -11,8 +11,8 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("dlPart")
   shinyjs::disable("downloadEvalcsv")
   shinyjs::disable("downloadEvalPlots")
-  shinyjs::disable("dlPreds")
-  shinyjs::disable("downloadPj")
+  shinyjs::disable("dlPred")
+  shinyjs::disable("dlProj")
   
   # initialize module parameters list
   rvs <- reactiveValues(logs = logInit(), occs = NULL, occsOrig = NULL, envs = NULL,
@@ -551,7 +551,6 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goMapPreds, {
     rvs$predCur <- mapPreds()
     rvs$predCurVals <- rasVals(rvs$predCur, rvs$predType)
-    print(rvs$predCurVals)
     updateTabsetPanel(session, 'main', selected = 'Map')
     
     # MAPPING
@@ -575,11 +574,11 @@ shinyServer(function(input, output, session) {
                      group = 'c7', layerId = 'r1ID') %>%
       addPolygons(lng=bgShpXY()[,1], lat=bgShpXY()[,2], layerId="bgExt", fill = FALSE,
                   weight=4, color="red", group='c7')
-    shinyjs::enable("dlPreds")
+    shinyjs::enable("dlPred")
   })
   
   # download for model predictions (restricted to background extent)
-  output$dlPreds <- downloadHandler(
+  output$dlPred <- downloadHandler(
     filename = function() {
       ext <- switch(input$predFileType, raster = 'grd', ascii = 'asc', GTiff = 'tif', PNG = 'png')
       paste0(names(rvs$predCur), '.', ext)},
@@ -721,4 +720,27 @@ shinyServer(function(input, output, session) {
     shinyjs::enable("dlProj")
     
   })
+  
+  # download for model predictions (restricted to background extent)
+  output$dlProj <- downloadHandler(
+    filename = function() {
+      ext <- switch(input$projFileType, raster = 'grd', ascii = 'asc', GTiff = 'tif', PNG = 'png')
+      paste0(names(rvs$projCur), '.', ext)},
+    content = function(file) {
+      if (input$projFileType == 'png') {
+        png(file)
+        raster::image(rvs$projCur)
+        dev.off()
+      } else if (input$projFileType == 'raster') {
+        fileName <- names(rvs$projCur)
+        tmpdir <- tempdir()
+        raster::writeRaster(rvs$projCur, file.path(tmpdir, fileName), format = input$projFileType, overwrite = TRUE)
+        fs <- file.path(tmpdir, paste0(fileName, c('.grd', '.gri')))
+        zip(zipfile=file, files=fs, extras = '-j')
+      } else {
+        r <- raster::writeRaster(rvs$projCur, file, format = input$projFileType, overwrite = TRUE)
+        file.rename(r@file@name, file)
+      }
+    }
+  )
 })

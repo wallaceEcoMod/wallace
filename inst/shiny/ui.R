@@ -251,7 +251,7 @@ shinyUI(tagList(
                                                                              choices = list("GRD" = 'raster', "ASCII" = 'ascii', 
                                                                                             "GeoTIFF" = 'GTiff', "PNG" = "png")),
                                                                  strong("Download displayed raster"), br(), br(),
-                                                                 downloadButton('dlPreds', "Download")),
+                                                                 downloadButton('dlPred', "Download")),
                                                 HTML('<hr>'),
                                                 uiBottom('ENMeval', 'Robert Muscarella, Peter J. Galante, Mariano Soley-Guardia, Robert A. Boria,
                                                          Jamie M. Kass, Maria Uriarte, Robert P. Anderson'),
@@ -288,7 +288,7 @@ shinyUI(tagList(
                                                                strong("Calculate MESS for current extent"), br(), br(),
                                                                actionButton('goEnvSimilarity', "Calculate MESS")),
                                               
-                                              selectInput('pjFileType', label = "Select File Type",
+                                              selectInput('projFileType', label = "Select File Type",
                                                           choices = list("GRD" = 'raster', "ASCII" = 'ascii', "GeoTIFF" = 'GTiff',
                                                                          "PNG" = "png")),
                                               strong("Download displayed raster"), br(), br(),
