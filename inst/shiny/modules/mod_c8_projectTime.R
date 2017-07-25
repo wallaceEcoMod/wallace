@@ -42,7 +42,7 @@ projectTime_MOD <- function(input, output, session, rvs) {
   reactive({
     req(rvs$envs, rvs$mods, rvs$predCur)
     
-    if (is.null(rvs$polyXY)) {
+    if (is.null(rvs$polyPjXY)) {
       rvs %>% writeLog(type = 'error', 'Select projection extent first.')
       return()
     }
@@ -73,10 +73,10 @@ projectTime_MOD <- function(input, output, session, rvs) {
     })
     
     # create new spatial polygon from coordinates
-    newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(rvs$polyXY)), ID=rvs$polyID)))  
+    newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(rvs$polyPjXY)), ID=rvs$polyPjID)))  
     
     # concatanate coords to a single character
-    xy.round <- round(rvs$polyXY, digits = 2)
+    xy.round <- round(rvs$polyPjXY, digits = 2)
     coordsChar <- paste(apply(xy.round, 1, function(b) paste0('(',paste(b, collapse=', '),')')), collapse=', ')  
     rvs %>% writeLog('New time projection for model', rvs$modSel, 'with extent coordinates:', coordsChar)
     

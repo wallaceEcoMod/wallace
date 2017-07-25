@@ -10,7 +10,7 @@ envSimilarity_MOD <- function(input, output, session, rvs) {
   reactive({
     req(rvs$envs, rvs$mods, rvs$predCur)
     
-    if (is.null(rvs$polyXY)) {
+    if (is.null(rvs$polyPjXY)) {
       rvs %>% writeLog(type = 'error', 'Select projection extent first.')
       return()
     }

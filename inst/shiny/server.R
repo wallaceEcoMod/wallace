@@ -147,8 +147,15 @@ shinyServer(function(input, output, session) {
     coords <- unlist(input$map_draw_new_feature$geometry$coordinates)
     xy <- matrix(c(coords[c(TRUE,FALSE)], coords[c(FALSE,TRUE)]), ncol=2)
     id <- input$map_draw_new_feature$properties$`_leaflet_id`
-    rvs$polyXY <- xy
-    rvs$polyID <- id
+    if (input$tabs == 2 & input$procOccSel == 'selOccs') {
+      rvs$polySelXY <- xy
+      rvs$polySelID <- id
+    } else if (input$tabs == 8) {
+      rvs$polyPjXY <- xy
+      rvs$polyPjID <- id  
+    }
+    print(rvs$polySelXY)
+    print(rvs$polyPjXY)
   })
   
   ########################################## #
@@ -630,7 +637,7 @@ shinyServer(function(input, output, session) {
                      group = 'c8', layerId = 'r2ID') %>%
       addPolygons(lng=bgShpXY()[,1], lat=bgShpXY()[,2], layerId="bgExt", fill = FALSE,
                   weight=4, color="red", group='c8') %>%
-      addPolygons(lng=rvs$polyXY[,1], lat=rvs$polyXY[,2], layerId="projExt", fill = FALSE,
+      addPolygons(lng=rvs$polyPjXY[,1], lat=rvs$polyPjXY[,2], layerId="projExt", fill = FALSE,
                   weight=4, color="green", group='c8')
     shinyjs::enable("dlProj")
     
@@ -670,7 +677,7 @@ shinyServer(function(input, output, session) {
                      group = 'c8', layerId = 'r2ID') %>%
       addPolygons(lng=bgShpXY()[,1], lat=bgShpXY()[,2], layerId="bgExt", fill = FALSE,
                   weight=4, color="red", group='c8') %>%
-      addPolygons(lng=rvs$polyXY[,1], lat=rvs$polyXY[,2], layerId="projExt", fill = FALSE,
+      addPolygons(lng=rvs$polyPjXY[,1], lat=rvs$polyPjXY[,2], layerId="projExt", fill = FALSE,
                   weight=4, color="green", group='c8')
     shinyjs::enable("dlProj")
     
@@ -715,7 +722,7 @@ shinyServer(function(input, output, session) {
                      group = 'c8', layerId = 'r2ID') %>%
       addPolygons(lng=bgShpXY()[,1], lat=bgShpXY()[,2], layerId="bgExt", fill = FALSE,
                   weight=4, color="red", group='c8') %>%
-      addPolygons(lng=rvs$polyXY[,1], lat=rvs$polyXY[,2], layerId="projExt", fill = FALSE,
+      addPolygons(lng=rvs$polyPjXY[,1], lat=rvs$polyPjXY[,2], layerId="projExt", fill = FALSE,
                   weight=4, color="green", group='c8')
     shinyjs::enable("dlProj")
     
@@ -741,6 +748,57 @@ shinyServer(function(input, output, session) {
         r <- raster::writeRaster(rvs$projCur, file, format = input$projFileType, overwrite = TRUE)
         file.rename(r@file@name, file)
       }
+    }
+  )
+  
+  ########################################### #
+  ### MARKDOWN FUNCTIONALITY ####
+  ########################################### #
+  
+  # handler for R Markdown download
+  output$dlRMD <- downloadHandler(
+    filename = function() {
+      paste0("wallace-session-", Sys.Date(), ".", switch(
+        input$mdType, Rmd = 'Rmd', PDF = 'pdf', HTML = 'html', Word = 'docx'
+      ))},
+    content = function(file) {
+      # not active unless at least occurrences have been down/uploaded
+      req(rvs$occs)
+      
+      src <- normalizePath('userReport.Rmd')
+      # temporarily switch to the temp dir, in case you do not have write
+      # permission to the current working directory
+      owd <- setwd(tempdir())
+      on.exit(setwd(owd))
+      file.copy(src, 'userReport.Rmd')
+      if (!is.null(rvs$polyXY)) {
+        polyX.print <- printVecAsis(round(rvs$polyXY[,1], digits=4))
+        polyY.print <- printVecAsis(round(rvs$polyXY[,2], digits=4))
+      } else {
+        polyX.print <- polyY.print <- NA
+      }
+      modSel <- as.numeric(input$modelSelProj)
+      exp <- knitr::knit_expand(system.file("Rmd", 'userReport.Rmd', package = "wallace"), curWD=curWD, spName=values$spName, dbName=input$occDb, occNum=input$occNum, thinDist=input$thinDist,
+                                occsCSV=input$userCSV$name, occsRemoved=printVecAsis(values$removedAll), occsSel=printVecAsis(values$ptSelID),
+                                predsRes=input$bcRes, bcLat=values$bcLat, bcLon=values$bcLon, backgSel=input$backgSel, backgBuf=input$backgBuf, userBGname=input$userBackg$name,
+                                userBGpath=input$userBackg$datapath, partSel=values$partSel2, aggFact=input$aggFact, kfoldsSel=input$kfolds,
+                                enmSel=input$enmSel, rmsSel1=input$rms[1], rmsSel2=input$rms[2], rmsBy=input$rmsBy, fcsSel=printVecAsis(input$fcs),
+                                mapPred=values$goMapPred, respCurvParamsMod=values$respCurvParams[[1]], respCurvParamsVar=values$respCurvParams[[2]], bcEnvelPlot=values$bcEnvelPlot,
+                                bcPlot1=input$bc1, bcPlot2=input$bc2, bcPlotP=input$bcProb, mxEvalPlot=values$mxEvalPlot, mxEvalPlotSel=input$mxEvalSel,
+                                polyX.print=polyX.print, polyY.print=polyY.print, modSel=modSel, selRCP=input$selRCP, selGCM=input$selGCM, selTime=input$selTime)
+      writeLines(exp, 'userReport2.Rmd')
+      
+      if (input$mdType == 'Rmd') {
+        out <- rmarkdown::render('userReport2.Rmd', rmarkdown::md_document(variant="markdown_github"))
+        writeLines(gsub('``` r', '```{r}', readLines(out)), 'userReport3.Rmd')
+        out <- 'userReport3.Rmd'
+      } else {
+        out <- rmarkdown::render('userReport2.Rmd', switch(
+          input$mdType,
+          PDF = rmarkdown::pdf_document(latex_engine='xelatex'), HTML = html_document(), Word = word_document()
+        ))
+      }
+      file.rename(out, file)
     }
   )
 })

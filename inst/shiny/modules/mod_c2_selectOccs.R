@@ -8,14 +8,14 @@ selectOccs_UI <- function(id) {
 selectOccs_MOD <- function(input, output, session, rvs) {
   
   reactive({
-    req(rvs$occs, rvs$polyXY)
+    req(rvs$occs, rvs$polySelXY)
     
     occs.xy <- rvs$occs[c('longitude', 'latitude')]
     
     # make spatial pts object of original occs and preserve origID
     pts <- sp::SpatialPointsDataFrame(occs.xy, data=rvs$occs['occID'])
     
-    newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(rvs$polyXY)), ID=rvs$polyID)))  # create new polygon from coords
+    newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(rvs$polySelXY)), ID=rvs$polySelID)))  # create new polygon from coords
     
     intersect <- sp::over(pts, newPoly)
     ptSelIndex <- as.numeric(which(!(is.na(intersect))))

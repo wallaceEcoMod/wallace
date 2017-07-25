@@ -295,6 +295,21 @@ shinyUI(tagList(
                                               downloadButton('dlProj', "Download"),
                                               HTML('<hr>'),
                                               uiBottom('dismo', 'Robert J. Hijmans, Steven Phillips, John Leathwick, Jane Elith')
+                             ),
+                             # session code ####
+                             conditionalPanel("input.tabs == 'rmd'",
+                                              h4("Download Session Code"),
+                                              HTML('<hr>'),
+                                              uiTop('rmarkdown', 'Dynamic Documents for R'),
+                                              uiTop('knitr', 'A General-Purpose Package for Dynamic Report Generation in R'),
+                                              HTML('<hr>'),
+                                              selectInput('rmdFileType', label = "File Type",
+                                                          choices = list("Rmd", "PDF", "HTML", "Word")),
+                                              downloadButton('dlRMD', 'Download Session Code'),
+                                              HTML('<hr>'),
+                                              uiBottom('rmarkdown', 'JJ Allaire, Joe Cheng, Yihui Xie, Jonathan McPherson, 
+                                                       Winston Chang, Jeff Allen, Hadley Wickham, Aron Atkins, Rob Hyndman, Ruben Arslan'), br(), br(),
+                                              uiBottom('knitr', 'Yihui Xie')
                              )
              )),
              column(8,

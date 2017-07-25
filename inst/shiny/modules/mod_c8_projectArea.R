@@ -8,12 +8,13 @@ projectArea_UI <- function(id) {
 projectArea_MOD <- function(input, output, session, rvs) {
   
   reactive({
-    req(rvs$envs, rvs$mods, rvs$predCur, rvs$polyXY)
+    req(rvs$envs, rvs$mods, rvs$predCur, rvs$polyPjXY)
     # create new spatial polygon from coordinates
-    newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(rvs$polyXY)), ID=rvs$polyID)))  
+    newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(rvs$polyPjXY)), ID=rvs$polyPjID)))  
     
     # concatanate coords to a single character
-    xy.round <- round(rvs$polyXY, digits = 2)
+    xy.round <- round(rvs$polyPjXY, digits = 2)
+    xy.round <- xy.round[-nrow(xy.round),]  # remove last point that completes polygon
     coordsChar <- paste(apply(xy.round, 1, function(b) paste0('(',paste(b, collapse=', '),')')), collapse=', ')  
     rvs %>% writeLog('New area projection for model', rvs$modSel, 'with extent coordinates:', coordsChar)
     
