@@ -26,8 +26,9 @@ queryDB_MOD <- function(input, output, session, rvs) {
   query <- reactive({
     req(input$spName)
     
-    # record which database
+    # record for later (RMD, etc.)
     rvs$occDB <- input$occDB
+    rvs$occNum <- input$occNum
     
     # figure out how many separate names (components of scientific name) were entered
     nameSplit <- length(unlist(strsplit(spName(), " ")))

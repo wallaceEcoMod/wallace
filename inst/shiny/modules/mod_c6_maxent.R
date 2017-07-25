@@ -38,6 +38,11 @@ maxent_MOD <- function(input, output, session, rvs) {
       return()
     }
     
+    # record for RMD
+    rvs$fcs <- input$fcs
+    rvs$rms <- input$rms
+    rvs$rmsStep <- input$rmsStep
+    
     # define the vector of RMs to input
     rms <- seq(input$rms[1], input$rms[2], input$rmsStep)  
     # create the Progress Bar object for ENMeval

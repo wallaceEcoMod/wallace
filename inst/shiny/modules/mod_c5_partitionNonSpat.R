@@ -13,6 +13,10 @@ partNsp_UI <- function(id) {
 partNsp_MOD <- function(input, output, session, rvs, occs, bgPts) {
   reactive({
     req(rvs$occs, rvs$bgPts)
+    
+    # record for RMD
+    rvs$partSel <- input$partNspSel
+    rvs$kfolds <- input$kfolds
 
     occs.xy <- rvs$occs %>% dplyr::select(longitude, latitude)
 

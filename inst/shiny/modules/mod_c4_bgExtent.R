@@ -2,7 +2,7 @@
 bgExtent_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    radioButtons(ns("backgSel"), "Background Extents:",
+    radioButtons(ns("bgSel"), "Background Extents:",
                  choices = list("Bounding box" = 'bb', "Minimum convex polygon" = 'mcp'),
                  selected='mcp'),
     numericInput(ns("bgBuf"), label = "Study region buffer distance (degree)", value = 0, min = 0, step = 0.5),
@@ -20,9 +20,14 @@ bgExtent_MOD <- function(input, output, session, rvs) {
       rvs %>% writeLog(type = 'error', 'Too few localities (<2) to create a background polygon.')
       return()
     }
+    
+    # record for RMD
+    rvs$bgSel <- input$bgSel
+    rvs$bgBuf <- input$bgBuf
+    
     # generate background extent - one grid cell is added to perimeter of each shape
     # to ensure cells of points on border are included
-    if (input$backgSel == 'bb') {
+    if (input$bgSel == 'bb') {
       lon <- rvs$occs$longitude
       lat <- rvs$occs$latitude
       xmin <- min(lon)
@@ -32,7 +37,7 @@ bgExtent_MOD <- function(input, output, session, rvs) {
       bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin), ncol=2)
       bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(bb)), 1)))
       rvs %>% writeLog("Study extent: bounding box.")
-    } else if (input$backgSel == 'mcp') {
+    } else if (input$bgSel == 'mcp') {
       bgExt <- mcp(rvs$occs[,2:3])
       # bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
       rvs %>% writeLog("Study extent: minimum convex polygon.")

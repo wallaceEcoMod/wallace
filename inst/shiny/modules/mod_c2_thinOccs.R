@@ -15,10 +15,15 @@ thinOccs_UI <- function(id) {
 thinOccs_MOD <- function(input, output, session, rvs) {
 
   doThin <- reactive({
+    req(rvs$occs)
+    
     if (input$thinDist <= 0) {
-      rvs %>% writeLog(type = "warning", 'Assign positive distance to thinning parameter.')
+      rvs %>% writeLog(type = "error", 'Assign positive distance to thinning parameter.')
       return()
     }
+    
+    # record for RMD
+    rvs$thinDist <- input$thinDist
     
     withProgress(message = "Spatially Thinning Localities...", {  # start progress bar
       output <- spThin::thin(rvs$occs, 'latitude', 'longitude', 'name', thin.par = input$thinDist,

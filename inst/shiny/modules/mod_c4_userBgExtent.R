@@ -15,7 +15,10 @@ userBgExtent_MOD <- function(input, output, session, rvs) {
   userBgShp <- reactive({
     req(input$userBgShp)
     
-    print(input$userBgShp)
+    # record for RMD
+    rvs$userBgShp <- input$userBgShp
+    rvs$bgBuf <- input$userBgBuf
+    
     names <- input$userBgShp$name
     inPath <- input$userBgShp$datapath
     pathdir <- dirname(inPath)

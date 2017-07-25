@@ -34,6 +34,8 @@ shinyServer(function(input, output, session) {
     print('HACKING DONE')
   })
   
+  # for RMD
+  curWD <- getwd()
   
   # logs <- reactiveValues(entries=logInit())
   gtext <- reactiveValues()
@@ -771,21 +773,40 @@ shinyServer(function(input, output, session) {
       owd <- setwd(tempdir())
       on.exit(setwd(owd))
       file.copy(src, 'userReport.Rmd')
-      if (!is.null(rvs$polyXY)) {
-        polyX.print <- printVecAsis(round(rvs$polyXY[,1], digits=4))
-        polyY.print <- printVecAsis(round(rvs$polyXY[,2], digits=4))
-      } else {
-        polyX.print <- polyY.print <- NA
+      # convert removed occIDs to characters of vectors
+      if (!is.null(rvs$removedIDs)) {
+        occsRem <- printVecAsis(values$removedAll)  
       }
-      modSel <- as.numeric(input$modelSelProj)
-      exp <- knitr::knit_expand(system.file("Rmd", 'userReport.Rmd', package = "wallace"), curWD=curWD, spName=values$spName, dbName=input$occDb, occNum=input$occNum, thinDist=input$thinDist,
-                                occsCSV=input$userCSV$name, occsRemoved=printVecAsis(values$removedAll), occsSel=printVecAsis(values$ptSelID),
-                                predsRes=input$bcRes, bcLat=values$bcLat, bcLon=values$bcLon, backgSel=input$backgSel, backgBuf=input$backgBuf, userBGname=input$userBackg$name,
-                                userBGpath=input$userBackg$datapath, partSel=values$partSel2, aggFact=input$aggFact, kfoldsSel=input$kfolds,
-                                enmSel=input$enmSel, rmsSel1=input$rms[1], rmsSel2=input$rms[2], rmsBy=input$rmsBy, fcsSel=printVecAsis(input$fcs),
-                                mapPred=values$goMapPred, respCurvParamsMod=values$respCurvParams[[1]], respCurvParamsVar=values$respCurvParams[[2]], bcEnvelPlot=values$bcEnvelPlot,
-                                bcPlot1=input$bc1, bcPlot2=input$bc2, bcPlotP=input$bcProb, mxEvalPlot=values$mxEvalPlot, mxEvalPlotSel=input$mxEvalSel,
-                                polyX.print=polyX.print, polyY.print=polyY.print, modSel=modSel, selRCP=input$selRCP, selGCM=input$selGCM, selTime=input$selTime)
+      # convert polygon coordinates to characters of vectors
+      if (!is.null(rvs$polySelXY)) {
+        polySelX <- printVecAsis(round(rvs$polySelXY[,1], digits=4))
+        polySelY <- printVecAsis(round(rvs$polySelXY[,2], digits=4))
+      } else {
+        polySelX <- polySelY <- NULL
+      }
+      if (!is.null(rvs$polyPjXY)) {
+        polyPjX <- printVecAsis(round(rvs$polyPjXY[,1], digits=4))
+        polyPjY <- printVecAsis(round(rvs$polyPjXY[,2], digits=4))
+      } else {
+        polyPjX <- polyPjY <- NULL
+      }
+      
+      exp <- knitr::knit_expand(system.file("Rmd", 'userReport.Rmd', package = "wallace"), 
+                                curWD=curWD, spName=spName(), 
+                                dbName=rvs$occDb, occNum=rvs$occNum, occsCSV=rvs$userCSV$name,  # comp 1
+                                thinDist=rvs$thinDist, occsRemoved=occsRem, occsSelX=polySelX, occsSelY=polySelY,  # comp 2
+                                bcRes=rvs$bcRes, bcLat=rvs$bcLat, bcLon=rvs$bcLon,  # comp 3
+                                bgSel=rvs$bgSel, bgBuf=rvs$bgBuf, userBGname=rvs$userBgShp$name, userBGpath=rvs$userBgShp$datapath,  # comp 4
+                                partSel=rvs$partSel, kfolds=rvs$kfolds, aggFact=rvs$aggFact,  # comp 5
+                                enmSel=input$enmSel, rms1=rvs$rms[1], rms2=rvs$rms[2], rmsStep=rvs$rmsStep, fcs=printVecAsis(rvs$fcs),  # comp 6
+                                mapPred=values$goMapPred, 
+                                respCurvParamsMod=values$respCurvParams[[1]], 
+                                respCurvParamsVar=values$respCurvParams[[2]], 
+                                bcEnvelPlot=values$bcEnvelPlot, bcPlot1=input$bc1, 
+                                bcPlot2=input$bc2, bcPlotP=input$bcProb, mxEvalPlot=values$mxEvalPlot, 
+                                mxEvalPlotSel=input$mxEvalSel, polyX.print=polyX.print, 
+                                polyY.print=polyY.print, modSel=input$modSelUI, 
+                                selRCP=input$selRCP, selGCM=input$selGCM, selTime=input$selTime)
       writeLines(exp, 'userReport2.Rmd')
       
       if (input$mdType == 'Rmd') {

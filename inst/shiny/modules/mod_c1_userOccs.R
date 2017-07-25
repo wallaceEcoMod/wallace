@@ -13,6 +13,8 @@ userOccs_MOD <- function(input, output, session, rvs) {
     
     # make occDB record NULL to keep track of where occurrences are coming from
     rvs$occDB <- NULL
+    # record for RMD
+    rvs$userCSV <- input$userCSV
     
     csv <- read.csv(input$userCSV$datapath)
     
