@@ -799,9 +799,7 @@ shinyServer(function(input, output, session) {
                                 bgSel=rvs$bgSel, bgBuf=rvs$bgBuf, userBGname=rvs$userBgShp$name, userBGpath=rvs$userBgShp$datapath,  # comp 4
                                 partSel=rvs$partSel, kfolds=rvs$kfolds, aggFact=rvs$aggFact,  # comp 5
                                 enmSel=input$enmSel, rms1=rvs$rms[1], rms2=rvs$rms[2], rmsStep=rvs$rmsStep, fcs=printVecAsis(rvs$fcs),  # comp 6
-                                mapPred=values$goMapPred, 
-                                respCurvParamsMod=values$respCurvParams[[1]], 
-                                respCurvParamsVar=values$respCurvParams[[2]], 
+                                mapPred=rvs$predCur, modSel=rvs$modSel, envSel=rvs$envSel, 
                                 bcEnvelPlot=values$bcEnvelPlot, bcPlot1=input$bc1, 
                                 bcPlot2=input$bc2, bcPlotP=input$bcProb, mxEvalPlot=values$mxEvalPlot, 
                                 mxEvalPlotSel=input$mxEvalSel, polyX.print=polyX.print, 

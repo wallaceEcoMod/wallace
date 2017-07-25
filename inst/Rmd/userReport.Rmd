@@ -303,7 +303,7 @@ You chose to view visualizations of your modeling analysis results.
 ```
 
 ```{r respCurv, echo = respCurv, include = respCurv}
-dismo::response(evalMods[[{{respCurvParamsMod}}]], var = "{{respCurvParamsVar}}")
+dismo::response(evalMods[["{{modSel}}"]], var = "{{envSel}}")
 ```
 
 ```{r bcPlot, echo = bcEnvelPlot, include = bcEnvelPlot}
