@@ -42,6 +42,9 @@ projectTime_MOD <- function(input, output, session, rvs) {
   reactive({
     req(rvs$envs, rvs$mods, rvs$predCur)
     
+    # record for RMD
+    rvs$pjTimePar <- list(rcp=input$selRCP, gcm=input$selGCM, year=input$selTime)
+    
     if (is.null(rvs$polyPjXY)) {
       rvs %>% writeLog(type = 'error', 'Select projection extent first.')
       return()

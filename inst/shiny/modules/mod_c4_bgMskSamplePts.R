@@ -2,7 +2,7 @@
 bgMskAndSamplePts_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    numericInput(ns("bgPtsNum"), label = "No. of background points to sample", value = 10000, min = 0, step = 1)
+    numericInput(ns("bgPtsNum"), label = "No. of background points to sample", value = 10000, min = 1, step = 1)
   )
 }
 
@@ -13,6 +13,9 @@ bgMskAndSamplePts_MOD <- function(input, output, session, rvs) {
       rvs %>% writeLog(type = 'error', 'Obtain environmental data first...')
       return()
     }
+    
+    # record for RMD
+    rvs$bgPtsNum <- input$bgPtsNum
     
     # mask envs by background extent
     withProgress(message = "Processing environmental data...", {

@@ -16,6 +16,9 @@ bcPlots_MOD <- function(input, output, session, rvs) {
   reactive({
     req(rvs$mods)
     
+    # record for RMD
+    rvs$bcPlotsPar <- list(bc1=input$bc1, bc2=input$bc2, p=input$bcProb)
+    
     # handle downloads for BIOCLIM Plots png
     output$dlBcPlot <- downloadHandler(
       filename = function() {paste0(spName(), "_bc_plot.png")},

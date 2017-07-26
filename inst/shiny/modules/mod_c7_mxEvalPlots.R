@@ -14,6 +14,9 @@ mxEvalPlots_UI <- function(id) {
 mxEvalPlots_MOD <- function(input, output, session, rvs) {
   reactive({
     req(input$mxEvalSel, rvs$mods)
+    
+    # record for RMD
+    rvs$mxEvalSel <- input$mxEvalSel
 
     # handle downloads for Maxent Evaluation Plots png
     output$dlMxEvalPlot <- downloadHandler(

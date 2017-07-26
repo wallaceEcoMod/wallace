@@ -172,6 +172,8 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goDbOccs, {
     rvs$occs <- dbOccs()
     rvs$occsPreProc <- rvs$occs
+    # record for RMD
+    rvs$comp1 <- 'db'
     map %>%
       clearMarkers() %>%
       clearShapes() %>%
@@ -187,6 +189,8 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goUserOccs, {
     rvs$occs <- userOccs()
     rvs$occsPreProc <- rvs$occs
+    # record for RMD
+    rvs$comp1 <- 'csv'
     map %>%
       clearMarkers() %>%
       clearShapes() %>%
@@ -221,6 +225,8 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goRemoveByID, {
     remByID()
+    # record for RMD
+    rvs$comp2 <- c(rvs$comp2, 'rem')
     map %>%
       clearMarkers() %>%
       map_plotLocs(rvs$occs) %>%
@@ -232,6 +238,8 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goSelectOccs, {
     selOccs()
+    # record for RMD
+    rvs$comp2 <- c(rvs$comp2, 'sel')
     map %>%
       clearMarkers() %>%
       map_plotLocs(rvs$occs) %>%
@@ -251,6 +259,8 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goThinOccs, {
     rvs$occs <- thinOccs()
+    # record for RMD
+    rvs$comp2 <- c(rvs$comp2, 'thin')
     # MAPPING - blue pts for remove, red pts for keep
     map %>% 
       addCircleMarkers(data = dbOccs(), lat = ~latitude, lng = ~longitude,
@@ -280,6 +290,8 @@ shinyServer(function(input, output, session) {
   # Reset Occs button functionality
   observeEvent(input$goResetOccs, {
     rvs$occs <- rvs$occsPreProc  
+    # reset for RMD
+    rvs$comp2 <- NULL
     rvs %>% writeLog("Reset occurrences.")
     map %>%
       clearMarkers() %>%
@@ -304,6 +316,9 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goEnvData, {
     # load into envs
     rvs$envs <- wcBioclims()
+    # record for RMD
+    rvs$comp3 <- 'bc'
+    # remove occurrences with NA values for variables
     rvs$occs <- remEnvsValsNA(rvs)
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
@@ -316,6 +331,9 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goUserEnvs, {
     rvs$envs <- userEnvs()
+    # record for RMD
+    rvs$comp3 <- 'user'
+    # remove occurrences with NA values for variables
     rvs$occs <- remEnvsValsNA(rvs)
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
@@ -344,7 +362,6 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goBgExt, {
     rvs$bgShp <- bgExt()
-    
     map %>%
       addPolygons(lng=bgShpXY()[,1], lat=bgShpXY()[,2], layerId="bg",
                   weight=4, color="red", group='bgShp') %>%
@@ -373,7 +390,6 @@ shinyServer(function(input, output, session) {
     rvs$bgPts <- bgMskPts$pts
     shinyjs::enable('dlMskEnvs')
   })
-  
   
   # handle download for masked predictors, with file type as user choice
   output$dlMskEnvs <- downloadHandler(
@@ -795,16 +811,12 @@ shinyServer(function(input, output, session) {
                                 curWD=curWD, spName=spName(), 
                                 dbName=rvs$occDb, occNum=rvs$occNum, occsCSV=rvs$userCSV$name,  # comp 1
                                 thinDist=rvs$thinDist, occsRemoved=occsRem, occsSelX=polySelX, occsSelY=polySelY,  # comp 2
-                                bcRes=rvs$bcRes, bcLat=rvs$bcLat, bcLon=rvs$bcLon,  # comp 3
-                                bgSel=rvs$bgSel, bgBuf=rvs$bgBuf, userBGname=rvs$userBgShp$name, userBGpath=rvs$userBgShp$datapath,  # comp 4
+                                bcRes=rvs$bcRes, bcLat=rvs$bcLat, bcLon=rvs$bcLon, userEnvsPath=rvs$userEnvsPath, # comp 3
+                                bgSel=rvs$bgSel, bgBuf=rvs$bgBuf, bgUserCSVpath=rvs$userBgShp$datapath, bgUserCSVname=rvs$userBgShp$name, bgUserShpPath=rvs$bgUserShpPar$dsn, bgUserShpName=rvs$bgUserShpPar$layer, bgPtsNum=rvs$bgPtsNum, # comp 4
                                 partSel=rvs$partSel, kfolds=rvs$kfolds, aggFact=rvs$aggFact,  # comp 5
                                 enmSel=input$enmSel, rms1=rvs$rms[1], rms2=rvs$rms[2], rmsStep=rvs$rmsStep, fcs=printVecAsis(rvs$fcs),  # comp 6
-                                mapPred=rvs$predCur, modSel=rvs$modSel, envSel=rvs$envSel, 
-                                bcEnvelPlot=values$bcEnvelPlot, bcPlot1=input$bc1, 
-                                bcPlot2=input$bc2, bcPlotP=input$bcProb, mxEvalPlot=values$mxEvalPlot, 
-                                mxEvalPlotSel=input$mxEvalSel, polyX.print=polyX.print, 
-                                polyY.print=polyY.print, modSel=input$modSelUI, 
-                                selRCP=input$selRCP, selGCM=input$selGCM, selTime=input$selTime)
+                                mapPred=rvs$predCur, modSel=rvs$modSel, envSel=rvs$envSel, bcPlot1=rvs$bcPlotsPar$bc1, bcPlot2=rvs$bcPlotsPar$bc2, bcPlotP=rvs$bcPlotsPar$p, mxEvalSel=rvs$mxEvalSel,    # comp 7 
+                                occsPjX=polyPjX, occsPjY=polyPjY, pjRCP=rvs$pjTimePar$rcp, pjGCM=rvs$rvs$pjTimePar$gcm, pjYear=rvs$rvs$pjTimePar$year)    # comp 8
       writeLines(exp, 'userReport2.Rmd')
       
       if (input$mdType == 'Rmd') {

@@ -16,7 +16,6 @@ userBgExtent_MOD <- function(input, output, session, rvs) {
     req(input$userBgShp)
     
     # record for RMD
-    rvs$userBgShp <- input$userBgShp
     rvs$bgBuf <- input$userBgBuf
     
     names <- input$userBgShp$name
@@ -27,11 +26,13 @@ userBgExtent_MOD <- function(input, output, session, rvs) {
     exts <- sapply(strsplit(names, '\\.'), FUN=function(x) x[2])
     
     if (length(exts) == 1 & exts == 'csv') {
+      # record for RMD
+      rvs$bgUser <- 'csv'
+      rvs$bgUserCSVPath <- inPath
       f <- read.csv(inPath, header = TRUE)
       
       bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(f)), 1)))
     } else if ('shp' %in% exts) {
-      print(length(exts))
       if (length(exts) < 3) {
         rvs %>% writeLog(type = 'error', 'If entering a shapefile, please select all the following files: .shp, .shx, and .dbf.')
         return()
@@ -39,8 +40,12 @@ userBgExtent_MOD <- function(input, output, session, rvs) {
       file.rename(inPath, file.path(pathdir, names))
       # get index of .shp
       i <- which(exts == 'shp')
+      shpName <- strsplit(names[i], '\\.')[[1]][1]
+      # record for RMD
+      rvs$bgUser <- 'shp'
+      rvs$bgUserShpPar <- list(dsn=pathdir[i], layer=shpName)
       # read in shapefile and extract coords
-      bgExt <- rgdal::readOGR(pathdir[i], strsplit(names[i], '\\.')[[1]][1])
+      bgExt <- rgdal::readOGR(pathdir[i], shpName)
     } else {
       rvs %>% writeLog(type = 'error', 'Please enter either a CSV file of vertex coordinates or shapefile (.shp, .dbf, and .shx).')
       return()

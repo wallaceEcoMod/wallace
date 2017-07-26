@@ -9,10 +9,14 @@ userEnvs_UI <- function(id) {
 userEnvs_MOD <- function(input, output, session, rvs) {
   reactive({
     req(input$userEnvs)
-      withProgress(message = "Reading in rasters...", {
-        uenvs <- raster::stack(input$userEnvs$datapath)
-        names(uenvs) <- input$userEnvs$name
-      })
+    
+    # record for RMD
+    rvs$userEnvsPath <- input$userEnvs$datapath
+    
+    withProgress(message = "Reading in rasters...", {
+      uenvs <- raster::stack(input$userEnvs$datapath)
+      names(uenvs) <- input$userEnvs$name
+    })
     
     rvs %>% writeLog("> Environmental predictors: User input.")
     
