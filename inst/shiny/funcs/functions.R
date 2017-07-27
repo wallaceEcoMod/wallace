@@ -372,7 +372,7 @@ lambdasDF <- function(mx) {
              row.names=1:length(lambdas))
 }
 ## pulls out all non-zero, non-redundant (removes hinge/product/threshold) predictor names
-mxNonzeroPreds <- function(mx) {
+mxNonzeroCoefs <- function(mx) {
   x <- lambdasDF(mx)
   #remove any rows that have a zero lambdas value (Second column)
   x <- x[(x[,2] != 0),]

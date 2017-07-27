@@ -532,8 +532,9 @@ shinyServer(function(input, output, session) {
     # from the lambdas file (the predictors that were not removed via regularization)
     if (rvs$enmSel == "maxent") {
       modCur <- rvs$mods[[rvs$modSel]]
-      nonZeroEnvs <- mxNonzeroPreds(modCur)
-      envsNames <- names(rvs$bgMsk[[nonZeroEnvs]])
+      nonZeroCoefs <- mxNonzeroCoefs(modCur)
+      envsNames <- names(rvs$bgMsk[[nonZeroCoefs]])
+      rvs$mxNonZeroCoefs <- envsNames
     } else {
       envsNames <- names(rvs$bgMsk)
     }
@@ -812,11 +813,17 @@ shinyServer(function(input, output, session) {
                                 dbName=rvs$occDb, occNum=rvs$occNum, occsCSV=rvs$userCSV$name,  # comp 1
                                 thinDist=rvs$thinDist, occsRemoved=occsRem, occsSelX=polySelX, occsSelY=polySelY,  # comp 2
                                 bcRes=rvs$bcRes, bcLat=rvs$bcLat, bcLon=rvs$bcLon, userEnvsPath=rvs$userEnvsPath, # comp 3
-                                bgSel=rvs$bgSel, bgBuf=rvs$bgBuf, bgUserCSVpath=rvs$userBgShp$datapath, bgUserCSVname=rvs$userBgShp$name, bgUserShpPath=rvs$bgUserShpPar$dsn, bgUserShpName=rvs$bgUserShpPar$layer, bgPtsNum=rvs$bgPtsNum, # comp 4
+                                bgSel=rvs$bgSel, bgBuf=rvs$bgBuf, bgUserCSVpath=rvs$userBgShp$datapath,  # comp 4
+                                bgUserCSVname=rvs$userBgShp$name, bgUserShpPath=rvs$bgUserShpPar$dsn,  # comp 4 
+                                bgUserShpName=rvs$bgUserShpPar$layer, bgPtsNum=rvs$bgPtsNum, # comp 4
                                 partSel=rvs$partSel, kfolds=rvs$kfolds, aggFact=rvs$aggFact,  # comp 5
-                                enmSel=input$enmSel, rms1=rvs$rms[1], rms2=rvs$rms[2], rmsStep=rvs$rmsStep, fcs=printVecAsis(rvs$fcs),  # comp 6
-                                mapPred=rvs$predCur, modSel=rvs$modSel, envSel=rvs$envSel, bcPlot1=rvs$bcPlotsPar$bc1, bcPlot2=rvs$bcPlotsPar$bc2, bcPlotP=rvs$bcPlotsPar$p, mxEvalSel=rvs$mxEvalSel,    # comp 7 
-                                occsPjX=polyPjX, occsPjY=polyPjY, pjRCP=rvs$pjTimePar$rcp, pjGCM=rvs$rvs$pjTimePar$gcm, pjYear=rvs$rvs$pjTimePar$year)    # comp 8
+                                enmSel=input$enmSel, rms1=rvs$rms[1], rms2=rvs$rms[2], rmsStep=rvs$rmsStep, # comp 6
+                                fcs=printVecAsis(rvs$fcs),  # comp 6
+                                modSel=rvs$modSel, mxNonZeroCoefs=printVecAsis(rvs$mxNonZeroCoefs), envSel=rvs$envSel,  # comp 7
+                                bcPlot1=rvs$bcPlotsPar$bc1, bcPlot2=rvs$bcPlotsPar$bc2, bcPlotP=rvs$bcPlotsPar$p,  # comp 7
+                                mxEvalSel=rvs$mxEvalSel, predType=rvs$predType, predThresh=rvs$predThresh, # comp 7 
+                                occsPjX=polyPjX, occsPjY=polyPjY, pjRCP=rvs$pjTimePar$rcp, pjGCM=rvs$rvs$pjTimePar$gcm,  # comp 8
+                                pjYear=rvs$rvs$pjTimePar$year)  # comp 8
       writeLines(exp, 'userReport2.Rmd')
       
       if (input$mdType == 'Rmd') {

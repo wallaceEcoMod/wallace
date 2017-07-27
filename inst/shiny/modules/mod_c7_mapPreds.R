@@ -33,6 +33,10 @@ mapPreds_MOD <- function(input, output, session, rvs, map) {
       return()
     }
     
+    # record for RMD
+    rvs$predType <- input$predType
+    rvs$predThresh <- input$predThresh
+    
     # initially pick raw prediction (if Maxent)
     predSel <- rvs$modPreds[[rvs$modSel]]
     names(predSel) <- paste0(rvs$modSel, '_raw')
