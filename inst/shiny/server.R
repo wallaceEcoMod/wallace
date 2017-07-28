@@ -156,8 +156,6 @@ shinyServer(function(input, output, session) {
       rvs$polyPjXY <- xy
       rvs$polyPjID <- id  
     }
-    print(rvs$polySelXY)
-    print(rvs$polyPjXY)
   })
   
   ########################################## #
@@ -778,7 +776,7 @@ shinyServer(function(input, output, session) {
   output$dlRMD <- downloadHandler(
     filename = function() {
       paste0("wallace-session-", Sys.Date(), ".", switch(
-        input$mdType, Rmd = 'Rmd', PDF = 'pdf', HTML = 'html', Word = 'docx'
+        input$rmdFileType, Rmd = 'Rmd', PDF = 'pdf', HTML = 'html', Word = 'docx'
       ))},
     content = function(file) {
       # not active unless at least occurrences have been down/uploaded
@@ -811,7 +809,7 @@ shinyServer(function(input, output, session) {
       exp <- knitr::knit_expand(system.file("Rmd", 'userReport.Rmd', package = "wallace"), 
                                 curWD=curWD, spName=spName(), 
                                 dbName=rvs$occDb, occNum=rvs$occNum, occsCSV=rvs$userCSV$name,  # comp 1
-                                thinDist=rvs$thinDist, occsRemoved=occsRem, occsSelX=polySelX, occsSelY=polySelY,  # comp 2
+                                thinDist=rvs$thinDist, occsRemoved=rvs$occsRem, occsSelX=polySelX, occsSelY=polySelY,  # comp 2
                                 bcRes=rvs$bcRes, bcLat=rvs$bcLat, bcLon=rvs$bcLon, userEnvsPath=rvs$userEnvsPath, # comp 3
                                 bgSel=rvs$bgSel, bgBuf=rvs$bgBuf, bgUserCSVpath=rvs$userBgShp$datapath,  # comp 4
                                 bgUserCSVname=rvs$userBgShp$name, bgUserShpPath=rvs$bgUserShpPar$dsn,  # comp 4 
@@ -826,13 +824,13 @@ shinyServer(function(input, output, session) {
                                 pjYear=rvs$rvs$pjTimePar$year)  # comp 8
       writeLines(exp, 'userReport2.Rmd')
       
-      if (input$mdType == 'Rmd') {
+      if (input$rmdFileType == 'Rmd') {
         out <- rmarkdown::render('userReport2.Rmd', rmarkdown::md_document(variant="markdown_github"))
         writeLines(gsub('``` r', '```{r}', readLines(out)), 'userReport3.Rmd')
         out <- 'userReport3.Rmd'
       } else {
         out <- rmarkdown::render('userReport2.Rmd', switch(
-          input$mdType,
+          input$rmdFileType,
           PDF = rmarkdown::pdf_document(latex_engine='xelatex'), HTML = html_document(), Word = word_document()
         ))
       }

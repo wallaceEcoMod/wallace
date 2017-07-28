@@ -31,6 +31,7 @@ bg.mcp <- rvs$bgSel == 'mcp'
 bg.ptbuf <- rvs$bgSel == 'ptbuf'
 bg.userCSV <- rvs$bgUser == 'csv'
 bg.userShp <- rvs$bgUser == 'shp'
+bg.user <- bg.userShp | bg.userCSV
 bg.bufWid <- rvs$bgBuf > 0
 bg.any <- bg.bb | bg.mcp | bg.ptbuf | bg.user
 # comp5
@@ -47,7 +48,9 @@ mod.any <- mod.bioclim | mod.maxent
 # comp7
 viz.pred.mtp <- rvs$predThresh == 'mtp'
 viz.pred.p10 <- rvs$predThresh == 'p10'
-viz.pred.noThresh <- !(viz.pred.mtp | viz.pred.p10)
+viz.pred.raw <- rvs$predType == 'raw'
+viz.pred.log <- rvs$predType == 'log'
+viz.pred.cll <- rvs$predType == 'cll'
 # comp8
 pj.area <- rvs$pjType == 'area'
 pj.time <- rvs$pjType == 'time'
@@ -129,11 +132,16 @@ occs <- occs[-remo, ]  # remove the selected rows
 ```
 
 ```{asis, echo = poccs.sel, eval = poccs.sel, include = poccs.sel}
-You chose `r length({{occsSel}})` total occurrence localities via polygon selection to keep in the analysis.
+The following code recreates the polygon used to select occurrences to keep in the analysis.
 ```
 
-```{r remLocs2, echo = poccs.sel, include = poccs.sel}
-occs <- occs[{{occsSel}}, ]  # subset occs by selected rows
+```{r occsSelect, echo = poccs.sel, include = poccs.sel}
+occs.xy <- occs[,2:3]
+selCoords <- data.frame(x = {{occsSelX}}, y = {{occsSelY}})
+selPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)), ID=1)))
+intersect <- sp::over(occs.xy, selPoly)
+intersect.rowNums <- as.numeric(which(!(is.na(intersect))))
+occs <- occs[intersect.rowNums, ]
 ```
 
 ```{asis, echo = poccs.thin, eval = poccs.thin, include = poccs.thin}
@@ -300,12 +308,6 @@ evalTbl <- e$results
 evalMods <- e$models
 names(e$predictions) <- "BIOCLIM"
 evalPreds <- e$predictions
-# get predicted values for occurrence grid cells 
-occVals <- raster::extract(e$predictions, occs.xy)  
-# define minimum training presence threshold
-mtp <- thresh(occVals, 'mtp')  
-# define 10% training presence threshold
-p10 <- thresh(occVals, 'p10')
 ```
 
 ```{r maxent, echo = mod.maxent, include = mod.maxent, results = 'hide'}
@@ -318,15 +320,6 @@ e <- ENMeval::ENMevaluate(occs.xy, predsBgMsk, bg.coords=bg.xy, RMvalues=rms, fc
 evalTbl <- e@results
 evalMods <- e@models
 evalPreds <- e@predictions
-# generate logistic predictions
-evalPredsLog <- stack(sapply(e@models, function(x) predict(x, predsBgMsk)))
-
-# get predicted values for occurrence grid cells
-occVals <- raster::extract(e@predictions, occs.xy)
-# define minimum training presence threshold
-mtp <- thresh(occVals, 'mtp')  
-# define 10% training presence threshold
-p10 <- thresh(occVals, 'p10')
 ```
 
 ```{asis, echo = mod.any, eval = mod.any, include = mod.any}
@@ -352,6 +345,44 @@ ENMeval::eval.plot(evalTbl, value = "{{mxEvalSel}}")
 ```{r mapPred, echo = viz.pred, include = viz.pred}
 # Select your model from the models list
 m <- evalMods[["{{modSel}}"]]
+```
+
+```{r, echo = viz.pred.raw, include = viz.pred.raw}
+# generate logistic prediction
+p <- evalPreds[["{{modSel}}"]]
+```
+
+```{r, echo = viz.pred.log, include = viz.pred.log}
+# generate logistic prediction
+p <- predict(m, predsBgMsk, args=c("outputformat=logistic"))
+```
+
+```{r, echo = viz.pred.cll, include = viz.pred.cll}
+# generate cloglog prediction
+p <- predict(m, predsBgMsk, args=c("outputformat=cloglog"))
+```
+
+```{r, echo = viz.pred.mtp, include = viz.pred.mtp}
+# get predicted values for occurrence grid cells
+occVals <- raster::extract(p, occs.xy)
+# define minimum training presence threshold
+x <- thresh(occVals, 'mtp')
+# threshold model prediction
+p <- p > x
+```
+
+```{r, echo = viz.pred.p10, include = viz.pred.p10}
+# get predicted values for occurrence grid cells
+occVals <- raster::extract(p, occs.xy)
+# define 10% training presence threshold
+x <- thresh(occVals, 'p10')
+# threshold model prediction
+p <- p > x
+```
+
+```{r, echo = mod.any, include = mod.any}
+# plot the model prediction
+plot(p)
 ```
 
 ```{asis, echo = pj.any, eval = pj.any, include = pj.any}
@@ -383,7 +414,7 @@ Now download the future climate variables chosen with *Wallace*, crop and mask t
 ```
 
 ```{r projTime, echo = projTime, include = projTime}
-envsFuture <- raster::getData("CMIP5", var = "bio", res = {{bcRes}}, rcp = {{selRCP}}, model = "{{selGCM}}", year = {{selTime}})
+envsFuture <- raster::getData("CMIP5", var = "bio", res = {{bcRes}}, rcp = {{pjRCP}}, model = "{{pjGCM}}", year = {{pjYear}})
 
 envsProj <- raster::crop(envsFuture, projPoly)
 envsMsk <- raster::mask(envsProj, projPoly)
