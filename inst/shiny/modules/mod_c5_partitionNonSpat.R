@@ -15,7 +15,7 @@ partNsp_MOD <- function(input, output, session, rvs, occs, bgPts) {
     req(rvs$occs, rvs$bgPts)
     
     # record for RMD
-    rvs$partSel <- input$partNspSel
+    rvs$comp5 <- input$partNspSel
     rvs$kfolds <- input$kfolds
 
     occs.xy <- rvs$occs %>% dplyr::select(longitude, latitude)

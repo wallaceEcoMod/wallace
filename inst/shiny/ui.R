@@ -39,10 +39,10 @@ shinyUI(tagList(
                                                                  div(paste('Module: Query Database'), id="mod"),
                                                                  uiTop('spocc', 'Interface to Species Occurrence Data Sources'),
                                                                  HTML('<hr>'),
-                                                                 queryDB_UI('c1_queryDB'),
+                                                                 queryDb_UI('c1_queryDb'),
                                                                  actionButton("goDbOccs", "Query Database"), br(), br(),
                                                                  strong("Download database occurrence localities (.csv)"), br(), br(),
-                                                                 downloadButton('dlDbOccs', "Download DB Occurrences"),
+                                                                 downloadButton('dlDbOccs', "Download Db Occurrences"),
                                                                  HTML('<hr>'),
                                                                  uiBottom('spocc', "Scott Chamberlain, Karthik Ram, Ted Hart")
                                                 ),

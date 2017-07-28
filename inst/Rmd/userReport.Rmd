@@ -26,35 +26,36 @@ env.bc <- rvs$comp3 == 'bc'
 env.user <- rvs$comp3 == 'user'
 env.any <- env.bc | env.user
 # comp4
-bg.bb <- rvs$bgSel == 'bb'
-bg.mcp <- rvs$bgSel == 'mcp'
-bg.ptbuf <- rvs$bgSel == 'ptbuf'
-bg.userCSV <- rvs$bgUser == 'csv'
-bg.userShp <- rvs$bgUser == 'shp'
+bg.bb <- rvs$comp4.shp == 'bb'
+bg.mcp <- rvs$comp4.shp == 'mcp'
+bg.ptbuf <- rvs$comp4.shp == 'ptbuf'
+bg.userCSV <- rvs$comp4.shp == 'csv'
+bg.userShp <- rvs$comp4.shp == 'shp'
 bg.user <- bg.userShp | bg.userCSV
-bg.bufWid <- rvs$bgBuf > 0
-bg.any <- bg.bb | bg.mcp | bg.ptbuf | bg.user
+bg.any <- rvs$comp4.shp != ''
+bg.bufWid <- rvs$comp4.buf > 0
 # comp5
-part.block <- rvs$partSel == 'block'
-part.cb1 <- rvs$partSel == 'cb1'
-part.cb2 <- rvs$partSel == 'cb2'
-part.jack <- rvs$partSel == 'jack'
-part.rand <- rvs$partSel == 'rand'
-part.any <- part.block | part.cb1 | part.cb2 | part.jack | part.rand
+part.block <- rvs$comp5 == 'block'
+part.cb1 <- rvs$comp5 == 'cb1'
+part.cb2 <- rvs$comp5 == 'cb2'
+part.jack <- rvs$comp5 == 'jack'
+part.rand <- rvs$comp5 == 'rand'
+part.any <- rvs$comp5 != ''
 # comp6
-mod.bioclim <- rvs$enmSel == 'bc'
-mod.maxent <- rvs$enmSel == 'maxent'
+mod.bioclim <- rvs$comp6 == 'bc'
+mod.maxent <- rvs$comp6 == 'maxent'
 mod.any <- mod.bioclim | mod.maxent
 # comp7
-viz.pred.mtp <- rvs$predThresh == 'mtp'
-viz.pred.p10 <- rvs$predThresh == 'p10'
-viz.pred.raw <- rvs$predType == 'raw'
-viz.pred.log <- rvs$predType == 'log'
-viz.pred.cll <- rvs$predType == 'cll'
+viz.pred.mtp <- rvs$comp7.thr == 'mtp'
+viz.pred.p10 <- rvs$comp7.thr == 'p10'
+viz.pred.raw <- rvs$comp7.type == 'raw'
+viz.pred.log <- rvs$comp7.type == 'log'
+viz.pred.cll <- rvs$comp7.type == 'cll'
 # comp8
-pj.area <- rvs$pjType == 'area'
-pj.time <- rvs$pjType == 'time'
-pj.mess <- !is.null(rvs$mess)
+pj.area <- rvs$comp8.pj == 'area'
+pj.time <- rvs$comp8.pj == 'time'
+pj.mess <- rvs$comp8.esim == 'mess'
+pj.any <- pj.area | pj.time | pj.mess
 ```
 
 Please find below the R code history from your *Wallace* session. 
@@ -252,7 +253,7 @@ bg.xy <- as.data.frame(bg.xy)  # get the matrix output into a data.frame
 ```
 
 
-```{r partSwitch, include = FALSE, eval = part}
+```{r partSwitch, include = FALSE, eval = part.any}
 partSwitch <- switch("{{partSel}}", 'block'='Block', 'cb1'='Checkerboard 1', 'cb2'='Checkerboard 2', 'jack'='Jackknife', 'random'='Random')
 ```
 
@@ -342,7 +343,7 @@ plot(evalMods[[1]], a = {{bcPlot1}}, b = {{bcPlot2}}, p = {{bcPlotP}})
 ENMeval::eval.plot(evalTbl, value = "{{mxEvalSel}}")
 ```
 
-```{r mapPred, echo = viz.pred, include = viz.pred}
+```{r mapPred, echo = mod.any, include = mod.any}
 # Select your model from the models list
 m <- evalMods[["{{modSel}}"]]
 ```
@@ -395,12 +396,12 @@ projCoords <- data.frame(x = {{occsPjX}}, y = {{occsPjX}})
 projPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(projCoords)), ID=1)))
 ```
 
-```{asis, echo = projArea, eval = projArea, include = projArea}
+```{asis, echo = pj.area, eval = pj.area, include = pj.area}
 ### Project Niche Model to New Extent
 Now use crop and mask the predictor variables by projPoly, and use the predict() function to predict the values for the new extent based on the model selected.
 ```
 
-```{r projArea, echo = projArea, include = projArea}
+```{r projArea, echo = pj.area, include = pj.area}
 predsProj <- raster::crop(envs, projPoly)
 predsMsk <- raster::mask(envsProj, projPoly)
 
@@ -408,12 +409,12 @@ newExtProj <- dismo::predict(modSel, envsMsk)
 plot(newExtProj)
 ```
 
-```{asis, echo = projTime, eval = projTime, include = projTime}
+```{asis, echo = pj.time, eval = pj.time, include = pj.time}
 ### Project Niche Model to New Time
 Now download the future climate variables chosen with *Wallace*, crop and mask them by projPoly, and use the predict() function to predict the values for the new time based on the model selected.
 ```
 
-```{r projTime, echo = projTime, include = projTime}
+```{r projTime, echo = pj.time, include = pj.time}
 envsFuture <- raster::getData("CMIP5", var = "bio", res = {{bcRes}}, rcp = {{pjRCP}}, model = "{{pjGCM}}", year = {{pjYear}})
 
 envsProj <- raster::crop(envsFuture, projPoly)
@@ -425,12 +426,12 @@ futureProj <- dismo::predict(modSel, envsMsk)
 plot(futureProj)
 ```
 
-```{asis, echo = mess, eval = mess, include = mess}
+```{asis, echo = pj.mess, eval = pj.mess, include = pj.mess}
 ### Calculate Environmental Similarity
 To visualize the environmental difference between the occurrence localities and your selected projection extent, calculate a multidimensional environmental similarity surface (MESS). High negative values mean great difference, whereas high positive values mean great similarity. Interpreting the projected suitability for areas with high negative values should be done with extreme caution, as they are outside the environmental range of the occurrence localities.
 ```
 
-```{r projMESS, echo = mess, include = mess}
+```{r projMESS, echo = pj.mess, include = pj.mess}
 # extract environmental values from occurrence localities -- these were the values that went into the model
 occVals <- raster::extract(envs, occs.xy)
 # compare these values with the projection extent (envsMsk)

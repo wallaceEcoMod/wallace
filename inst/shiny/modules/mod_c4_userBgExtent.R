@@ -16,7 +16,7 @@ userBgExtent_MOD <- function(input, output, session, rvs) {
     req(input$userBgShp)
     
     # record for RMD
-    rvs$bgBuf <- input$userBgBuf
+    rvs$comp4.buf <- input$userBgBuf
     
     names <- input$userBgShp$name
     inPath <- input$userBgShp$datapath
@@ -27,7 +27,7 @@ userBgExtent_MOD <- function(input, output, session, rvs) {
     
     if (length(exts) == 1 & exts == 'csv') {
       # record for RMD
-      rvs$bgUser <- 'csv'
+      rvs$comp4.shp <- 'csv'
       rvs$bgUserCSVPath <- inPath
       f <- read.csv(inPath, header = TRUE)
       
@@ -42,7 +42,7 @@ userBgExtent_MOD <- function(input, output, session, rvs) {
       i <- which(exts == 'shp')
       shpName <- strsplit(names[i], '\\.')[[1]][1]
       # record for RMD
-      rvs$bgUser <- 'shp'
+      rvs$comp4.shp <- 'shp'
       rvs$bgUserShpPar <- list(dsn=pathdir[i], layer=shpName)
       # read in shapefile and extract coords
       bgExt <- rgdal::readOGR(pathdir[i], shpName)

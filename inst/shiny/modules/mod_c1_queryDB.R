@@ -1,5 +1,5 @@
 
-queryDB_UI <- function(id) {
+queryDb_UI <- function(id) {
   ns <- NS(id)
   tagList(
     radioButtons(ns("occDb"), "Choose Database:",
@@ -19,7 +19,7 @@ queryDB_UI <- function(id) {
   )
 }
 
-queryDB_MOD <- function(input, output, session, rvs) {
+queryDb_MOD <- function(input, output, session, rvs) {
   
   spName <- reactive({trimws(input$spName)})
   
@@ -27,7 +27,7 @@ queryDB_MOD <- function(input, output, session, rvs) {
     req(input$spName)
     
     # record for later (RMD, etc.)
-    rvs$occDB <- input$occDB
+    rvs$occDb <- input$occDb
     rvs$occNum <- input$occNum
     
     # figure out how many separate names (components of scientific name) were entered

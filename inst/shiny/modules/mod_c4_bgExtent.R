@@ -23,8 +23,8 @@ bgExtent_MOD <- function(input, output, session, rvs) {
     }
     
     # record for RMD
-    rvs$bgSel <- input$bgSel
-    rvs$bgBuf <- input$bgBuf
+    rvs$comp4.shp <- input$bgSel
+    rvs$comp4.buf <- input$bgBuf
     
     # generate background extent - one grid cell is added to perimeter of each shape
     # to ensure cells of points on border are included

@@ -15,10 +15,8 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("dlProj")
   
   # initialize module parameters list
-  rvs <- reactiveValues(logs = logInit(), occs = NULL, occsOrig = NULL, envs = NULL,
-                        bgMsk = NULL, bgPts = NULL, grp = NULL, mods = NULL, 
-                        modPreds = NULL, modRes = NULL, modSel = NULL, modPredsLog = NULL,
-                        modOccVals = NULL)
+  rvs <- reactiveValues(logs = logInit(), comp1='', comp2='', comp3='', comp4.shp='', comp4.buf=0,
+                        comp5='', comp6='', comp7.thr='', comp7.type='', comp8.pj='', comp8.esim='')
   
   observeEvent(input$load, {
     f <- read.csv('/Users/musasabi/Downloads/Puma concolor_partitioned_occs(1).csv')
@@ -163,7 +161,7 @@ shinyServer(function(input, output, session) {
   ########################################## #
   
   # module Query Database
-  dbOccs <- callModule(queryDB_MOD, 'c1_queryDB', rvs)
+  dbOccs <- callModule(queryDb_MOD, 'c1_queryDb', rvs)
   
   spName <- reactive(as.character(rvs$occs$name[1]))
   
@@ -208,7 +206,7 @@ shinyServer(function(input, output, session) {
   
   # handle downloading of original GBIF records after cleaning
   output$dlDbOccs <- downloadHandler(
-    filename = function() {paste0(formatSpName(spName()), '_original_', rvs$occDB, ".csv")},
+    filename = function() {paste0(formatSpName(spName()), '_original_', rvs$occDb, ".csv")},
     content = function(file) {
       write.csv(rvs$occsOrig, file, row.names=FALSE)
     }
@@ -476,7 +474,7 @@ shinyServer(function(input, output, session) {
     # unpack everything
     mod.maxent.call <- mod.maxent()
     e <- mod.maxent.call[[1]]
-    rvs$enmSel <- 'maxent'  # record the enm selected
+    rvs$comp6 <- 'maxent'  # record the enm selected
     rvs$mods <- e@models
     rvs$modPreds <- e@predictions
     rvs$modRes <- e@results
@@ -497,7 +495,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goBioclim, {
     e <- mod.bioclim()
-    rvs$enmSel <- 'bioclim'  # record the enm selected
+    rvs$comp6 <- 'bioclim'  # record the enm selected
     rvs$mods <- e$models
     rvs$modPreds <- e$predictions
     rvs$modRes <- e$results
@@ -528,7 +526,7 @@ shinyServer(function(input, output, session) {
     req(rvs$modPreds)
     # for Maxent, only display the environmental predictors with non-zero beta coefficients
     # from the lambdas file (the predictors that were not removed via regularization)
-    if (rvs$enmSel == "maxent") {
+    if (rvs$comp6 == "maxent") {
       modCur <- rvs$mods[[rvs$modSel]]
       nonZeroCoefs <- mxNonzeroCoefs(modCur)
       envsNames <- names(rvs$bgMsk[[nonZeroCoefs]])
@@ -565,7 +563,7 @@ shinyServer(function(input, output, session) {
   respPlots <- callModule(respPlots_MOD, 'c7_respPlots', rvs)
   
   output$respPlots <- renderPlot({
-    req(rvs$enmSel == 'maxent')
+    req(rvs$comp6 == 'maxent')
     respPlots()
   })
   
@@ -637,7 +635,7 @@ shinyServer(function(input, output, session) {
     rvs$projMsk <- projArea.call[[1]]
     rvs$projCur <- projArea.call[[2]]
     rvs$projCurVals <- rasVals(rvs$projCur, rvs$predType)
-    rvs$projType <- 'area'
+    rvs$comp8.pj <- 'area'
     
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
     legendPal <- colorNumeric(rev(rasCols), c(rvs$predCurVals, rvs$projCurVals), na.color='transparent')
@@ -677,7 +675,7 @@ shinyServer(function(input, output, session) {
     rvs$projMsk <- projTime.call[[1]]
     rvs$projCur <- projTime.call[[2]]
     rvs$projCurVals <- rasVals(rvs$projCur, rvs$predType)
-    rvs$projType <- 'time'
+    rvs$comp8.pj <- 'time'
     
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
     legendPal <- colorNumeric(rev(rasCols), c(rvs$predCurVals, rvs$projCurVals), na.color='transparent')
@@ -713,6 +711,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goEnvSimilarity, {
     rvs$mess <- envSimilarity()
+    rvs$comp8.esim <- 'mess'
     # set infinite values to NA
     rvs$mess[is.infinite(rvs$mess)] <- NA
     # extract values
