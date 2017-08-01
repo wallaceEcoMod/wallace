@@ -565,6 +565,7 @@ shinyServer(function(input, output, session) {
   output$respPlots <- renderPlot({
     req(rvs$comp6 == 'maxent')
     respPlots()
+    updateTabsetPanel(session, 'main', selected = 'Results')
   })
   
   # module Map Prediction (restricted to background extent)
