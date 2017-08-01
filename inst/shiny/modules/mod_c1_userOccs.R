@@ -46,7 +46,7 @@ userOccs_MOD <- function(input, output, session, rvs) {
       if (!(col %in% names(uoccs))) uoccs[,col] <- NA
     }
     
-    uoccs$origID <- row.names(uoccs)  # add col for IDs
+    uoccs$occID <- row.names(uoccs)  # add col for IDs
     uoccs$pop <- unlist(apply(uoccs, 1, popUpContent))  # add col for map marker popup text
     
     return(uoccs)
