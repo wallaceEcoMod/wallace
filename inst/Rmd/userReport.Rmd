@@ -42,7 +42,7 @@ part.jack <- rvs$comp5 == 'jack'
 part.rand <- rvs$comp5 == 'rand'
 part.any <- rvs$comp5 != ''
 # comp6
-mod.bioclim <- rvs$comp6 == 'bc'
+mod.bioclim <- rvs$comp6 == 'bioclim'
 mod.maxent <- rvs$comp6 == 'maxent'
 mod.any <- mod.bioclim | mod.maxent
 # comp7
@@ -51,6 +51,10 @@ viz.pred.p10 <- rvs$comp7.thr == 'p10'
 viz.pred.raw <- rvs$comp7.type == 'raw'
 viz.pred.log <- rvs$comp7.type == 'log'
 viz.pred.cll <- rvs$comp7.type == 'cll'
+viz.mapPred <- rvs$comp7.mapPred == TRUE
+viz.mxEval <- !is.null(rvs$mxEvalSel)
+viz.bcPlot <- !is.null(rvs$bcPlotsPar)
+viz.resp <- rvs$comp7.resp == TRUE
 # comp8
 pj.area <- rvs$comp8.pj == 'area'
 pj.time <- rvs$comp8.pj == 'time'
@@ -323,33 +327,33 @@ evalMods <- e@models
 evalPreds <- e@predictions
 ```
 
-```{asis, echo = mod.any, eval = mod.any, include = mod.any}
+```{asis, echo = viz.any, eval = viz.any, include = viz.any}
 ### Visualize Niche Model
 Below are some visualizations of your modeling analysis results.
 ```
 
-```{r respCurv, echo = mod.maxent, include = mod.maxent}
+```{r respCurv, echo = viz.resp, include = viz.resp}
 # view response curves for environmental variables with non-zero coefficients
 dismo::response(evalMods[["{{modSel}}"]], var = {{mxNonZeroCoefs}})
 ```
 
-```{r bcPlot, echo = mod.bioclim, include = mod.bioclim}
+```{r bcPlot, echo = viz.bcPlot, include = viz.bcPlot}
 # view BIOCLIM envelope plot
-plot(evalMods[[1]], a = {{bcPlot1}}, b = {{bcPlot2}}, p = {{bcPlotP}})
+plot(evalMods[['BIOCLIM']], a = {{bcPlot1}}, b = {{bcPlot2}}, p = {{bcPlotP}})
 ```
 
-```{r evalPlot, echo = mod.maxent, include = mod.maxent}
+```{r evalPlot, echo = viz.mxEval, include = viz.mxEval}
 # view ENMeval results
 ENMeval::eval.plot(evalTbl, value = "{{mxEvalSel}}")
 ```
 
-```{r mapPred, echo = mod.any, include = mod.any}
+```{r mapPred, echo = viz.mapPred, include = viz.mapPred}
 # Select your model from the models list
 m <- evalMods[["{{modSel}}"]]
 ```
 
 ```{r, echo = viz.pred.raw, include = viz.pred.raw}
-# generate logistic prediction
+# generate raw prediction
 p <- evalPreds[["{{modSel}}"]]
 ```
 
@@ -381,7 +385,7 @@ x <- thresh(occVals, 'p10')
 p <- p > x
 ```
 
-```{r, echo = mod.any, include = mod.any}
+```{r, echo = viz.mapPred, include = viz.mapPred}
 # plot the model prediction
 plot(p)
 ```

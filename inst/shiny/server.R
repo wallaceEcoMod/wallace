@@ -16,7 +16,8 @@ shinyServer(function(input, output, session) {
   
   # initialize module parameters list
   rvs <- reactiveValues(logs = logInit(), comp1='', comp2='', comp3='', comp4.shp='', comp4.buf=0,
-                        comp5='', comp6='', comp7.thr='', comp7.type='', comp8.pj='', comp8.esim='')
+                        comp5='', comp6='', comp7.mapPred = FALSE, rvs$comp7.resp = FALSE, 
+                        comp7.thr='', comp7.type='', comp8.pj='', comp8.esim='')
   
   observeEvent(input$load, {
     f <- read.csv('/Users/musasabi/Downloads/Puma concolor_partitioned_occs(1).csv')
@@ -565,6 +566,7 @@ shinyServer(function(input, output, session) {
   output$respPlots <- renderPlot({
     req(rvs$comp6 == 'maxent')
     respPlots()
+    rvs$comp7.resp <- TRUE
     updateTabsetPanel(session, 'main', selected = 'Results')
   })
   
@@ -572,6 +574,7 @@ shinyServer(function(input, output, session) {
   mapPreds <- callModule(mapPreds_MOD, 'c7_mapPreds', rvs, map)
   
   observeEvent(input$goMapPreds, {
+    rvs$comp7.mapPred <- TRUE
     rvs$predCur <- mapPreds()
     rvs$predCurVals <- rasVals(rvs$predCur, rvs$predType)
     updateTabsetPanel(session, 'main', selected = 'Map')
@@ -811,15 +814,15 @@ shinyServer(function(input, output, session) {
                                 dbName=rvs$occDb, occNum=rvs$occNum, occsCSV=rvs$userCSV$name,  # comp 1
                                 thinDist=rvs$thinDist, occsRemoved=rvs$occsRem, occsSelX=polySelX, occsSelY=polySelY,  # comp 2
                                 bcRes=rvs$bcRes, bcLat=rvs$bcLat, bcLon=rvs$bcLon, userEnvsPath=rvs$userEnvsPath, # comp 3
-                                bgSel=rvs$bgSel, bgBuf=rvs$bgBuf, bgUserCSVpath=rvs$userBgShp$datapath,  # comp 4
+                                bgSel=rvs$comp4.shp, bgBuf=rvs$comp4.buf, bgUserCSVpath=rvs$userBgShp$datapath,  # comp 4
                                 bgUserCSVname=rvs$userBgShp$name, bgUserShpPath=rvs$bgUserShpPar$dsn,  # comp 4 
                                 bgUserShpName=rvs$bgUserShpPar$layer, bgPtsNum=rvs$bgPtsNum, # comp 4
                                 partSel=rvs$partSel, kfolds=rvs$kfolds, aggFact=rvs$aggFact,  # comp 5
-                                enmSel=input$enmSel, rms1=rvs$rms[1], rms2=rvs$rms[2], rmsStep=rvs$rmsStep, # comp 6
+                                enmSel=rvs$comp6, rms1=rvs$rms[1], rms2=rvs$rms[2], rmsStep=rvs$rmsStep, # comp 6
                                 fcs=printVecAsis(rvs$fcs),  # comp 6
                                 modSel=rvs$modSel, mxNonZeroCoefs=printVecAsis(rvs$mxNonZeroCoefs), envSel=rvs$envSel,  # comp 7
                                 bcPlot1=rvs$bcPlotsPar$bc1, bcPlot2=rvs$bcPlotsPar$bc2, bcPlotP=rvs$bcPlotsPar$p,  # comp 7
-                                mxEvalSel=rvs$mxEvalSel, predType=rvs$predType, predThresh=rvs$predThresh, # comp 7 
+                                mxEvalSel=rvs$mxEvalSel, predType=rvs$comp7.type, predThresh=rvs$comp7.thr, # comp 7 
                                 occsPjX=polyPjX, occsPjY=polyPjY, pjRCP=rvs$pjTimePar$rcp, pjGCM=rvs$rvs$pjTimePar$gcm,  # comp 8
                                 pjYear=rvs$rvs$pjTimePar$year)  # comp 8
       writeLines(exp, 'userReport2.Rmd')

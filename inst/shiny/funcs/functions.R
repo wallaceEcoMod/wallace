@@ -62,6 +62,10 @@ nameAbbr <- function(spname) {
 
 formatSpName <- function(spName) paste(strsplit(spName, split=' ')[[1]], collapse='_')
 
+fileNameNoExt <- function(f) {
+  sub(pattern = "(.*)\\..*$", replacement = "\\1", f)
+}
+
 ####################### #
 # MAPPING ####
 ####################### #

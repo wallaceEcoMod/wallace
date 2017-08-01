@@ -12,10 +12,11 @@ userEnvs_MOD <- function(input, output, session, rvs) {
     
     # record for RMD
     rvs$userEnvsPath <- input$userEnvs$datapath
+    print(input$userEnvs)
     
     withProgress(message = "Reading in rasters...", {
       uenvs <- raster::stack(input$userEnvs$datapath)
-      names(uenvs) <- input$userEnvs$name
+      names(uenvs) <- fileNameNoExt(input$userEnvs$name)
     })
     
     rvs %>% writeLog("> Environmental predictors: User input.")

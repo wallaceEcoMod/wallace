@@ -34,8 +34,8 @@ mapPreds_MOD <- function(input, output, session, rvs, map) {
     }
     
     # record for RMD
-    rvs$predType <- input$predType
-    rvs$predThresh <- input$predThresh
+    rvs$comp7.type <- input$predType
+    rvs$comp7.thr <- input$predThresh
     
     # initially pick raw prediction (if Maxent)
     predSel <- rvs$modPreds[[rvs$modSel]]
