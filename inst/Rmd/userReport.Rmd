@@ -189,7 +189,11 @@ occs <- occs[!is.na(locs.vals), ]
 ```
 
 ```{r getEnvUser, echo = env.user, include = env.user}
-envs <- raster::stack("{{userEnvsPath}}")
+# provide the path to the folder that contains the rasters
+# NOTE: no other files but the rasters should be present
+d <- ''
+d.files <- list.files(full.names = TRUE)
+envs <- raster::stack(d.files)
 ```
 
 
