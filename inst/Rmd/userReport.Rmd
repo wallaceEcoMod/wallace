@@ -51,10 +51,11 @@ viz.pred.p10 <- rvs$comp7.thr == 'p10'
 viz.pred.raw <- rvs$comp7.type == 'raw'
 viz.pred.log <- rvs$comp7.type == 'log'
 viz.pred.cll <- rvs$comp7.type == 'cll'
-viz.mapPred <- rvs$comp7.mapPred == TRUE
-viz.mxEval <- !is.null(rvs$mxEvalSel)
-viz.bcPlot <- !is.null(rvs$bcPlotsPar)
-viz.resp <- rvs$comp7.resp == TRUE
+viz.pred <- 'map' %in% rvs$comp7
+viz.mxEval <- 'mxEval' %in% rvs$comp7
+viz.bcPlot <- 'bcPlot' %in% rvs$comp7
+viz.resp <- 'resp' %in% rvs$comp7
+viz.any <- rvs$comp7 != ''
 # comp8
 pj.area <- rvs$comp8.pj == 'area'
 pj.time <- rvs$comp8.pj == 'time'
@@ -347,7 +348,7 @@ plot(evalMods[['BIOCLIM']], a = {{bcPlot1}}, b = {{bcPlot2}}, p = {{bcPlotP}})
 ENMeval::eval.plot(evalTbl, value = "{{mxEvalSel}}")
 ```
 
-```{r mapPred, echo = viz.mapPred, include = viz.mapPred}
+```{r mapPred, echo = viz.pred, include = viz.pred}
 # Select your model from the models list
 m <- evalMods[["{{modSel}}"]]
 ```
@@ -385,7 +386,7 @@ x <- thresh(occVals, 'p10')
 p <- p > x
 ```
 
-```{r, echo = viz.mapPred, include = viz.mapPred}
+```{r, echo = viz.pred, include = viz.pred}
 # plot the model prediction
 plot(p)
 ```

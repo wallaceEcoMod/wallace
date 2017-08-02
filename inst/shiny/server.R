@@ -16,8 +16,7 @@ shinyServer(function(input, output, session) {
   
   # initialize module parameters list
   rvs <- reactiveValues(logs = logInit(), comp1='', comp2='', comp3='', comp4.shp='', comp4.buf=0,
-                        comp5='', comp6='', comp7.mapPred = FALSE, rvs$comp7.resp = FALSE, 
-                        comp7.thr='', comp7.type='', comp8.pj='', comp8.esim='')
+                        comp5='', comp6='', comp7.thr='', comp7.type='', comp7='', comp8.pj='', comp8.esim='')
   
   observeEvent(input$load, {
     f <- read.csv('/Users/musasabi/Downloads/Puma concolor_partitioned_occs(1).csv')
@@ -551,6 +550,8 @@ shinyServer(function(input, output, session) {
   
   output$bcEnvelPlot <- renderPlot({
     bcPlots()
+    # record for RMD
+    rvs$comp7 <- isolate(c(rvs$comp7, 'bcPlot'))
   })
   
   # module Maxent Evaluation Plots
@@ -558,6 +559,9 @@ shinyServer(function(input, output, session) {
   
   output$mxEvalPlots <- renderPlot({
     mxEvalPlots()
+    # record for RMD
+    rvs$comp7 <- isolate(c(rvs$comp7, 'mxEval'))
+    updateTabsetPanel(session, 'main', selected = 'Results')
   })
   
   # module Response Curve Plots
@@ -566,7 +570,8 @@ shinyServer(function(input, output, session) {
   output$respPlots <- renderPlot({
     req(rvs$comp6 == 'maxent')
     respPlots()
-    rvs$comp7.resp <- TRUE
+    # record for RMD
+    rvs$comp7 <- isolate(c(rvs$comp7, 'resp'))
     updateTabsetPanel(session, 'main', selected = 'Results')
   })
   
@@ -574,8 +579,9 @@ shinyServer(function(input, output, session) {
   mapPreds <- callModule(mapPreds_MOD, 'c7_mapPreds', rvs, map)
   
   observeEvent(input$goMapPreds, {
-    rvs$comp7.mapPred <- TRUE
     rvs$predCur <- mapPreds()
+    # record for RMD
+    rvs$comp7 <- c(rvs$comp7, 'map')
     rvs$predCurVals <- rasVals(rvs$predCur, rvs$predType)
     updateTabsetPanel(session, 'main', selected = 'Map')
     
@@ -770,6 +776,8 @@ shinyServer(function(input, output, session) {
       }
     }
   )
+  
+  observe(print(rvs$comp7))
   
   ########################################### #
   ### MARKDOWN FUNCTIONALITY ####
