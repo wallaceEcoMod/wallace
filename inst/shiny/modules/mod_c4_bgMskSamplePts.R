@@ -7,10 +7,10 @@ bgMskAndSamplePts_UI <- function(id) {
 }
 
 bgMskAndSamplePts_MOD <- function(input, output, session, rvs) {
-  req(rvs$bgShp)
   reactive({
-    if (is.null(rvs$envs)) {
-      rvs %>% writeLog(type = 'error', 'Obtain environmental data first...')
+    if (is.null(rvs$bgShp)) {
+      rvs %>% writeLog(type = 'error', "Before sampling background points, 
+                       define the background extent.")
       return()
     }
     

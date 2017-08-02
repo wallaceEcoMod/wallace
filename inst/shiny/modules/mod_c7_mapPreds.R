@@ -24,18 +24,17 @@ mapPreds_UI <- function(id) {
   )
 }
 
-mapPreds_MOD <- function(input, output, session, rvs, map) {
+mapPreds_MOD <- function(input, output, session, rvs) {
   reactive({
-    # req(rvs$modOccVals)
-    
-    if (is.null(rvs$modPreds)) {
-      rvs %>% writeLog(type = 'error', 'Run a model before plotting predictions.')
+    if (is.null(rvs$mods)) {
+      rvs %>% writeLog(type = 'error', "Models must first be run in component 6.")
       return()
     }
     
     # record for RMD
     rvs$comp7.type <- input$predType
     rvs$comp7.thr <- input$predThresh
+    rvs$comp7 <- c(rvs$comp7, 'map')
     
     # initially pick raw prediction (if Maxent)
     predSel <- rvs$modPreds[[rvs$modSel]]

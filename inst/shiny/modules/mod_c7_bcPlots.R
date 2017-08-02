@@ -14,10 +14,14 @@ bcPlots_UI <- function(id) {
 bcPlots_MOD <- function(input, output, session, rvs) {
   
   reactive({
-    req(rvs$mods)
+    if (is.null(rvs$mods)) {
+      rvs %>% writeLog(type = 'error', "Models must first be run in component 6.")
+      return()
+    }
     
     # record for RMD
     rvs$bcPlotsPar <- list(bc1=input$bc1, bc2=input$bc2, p=input$bcProb)
+    rvs$comp7 <- isolate(c(rvs$comp7, 'bcPlot'))
     
     # handle downloads for BIOCLIM Plots png
     output$dlBcPlot <- downloadHandler(

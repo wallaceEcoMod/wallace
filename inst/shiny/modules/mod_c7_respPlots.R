@@ -9,8 +9,14 @@ respPlots_UI <- function(id) {
 
 respPlots_MOD <- function(input, output, session, rvs) {
   reactive({
-    req(rvs$mods)
+    if (is.null(rvs$mods)) {
+      rvs %>% writeLog(type = 'error', "Models must first be run in component 6.")
+      return()
+    }
 
+    # record for RMD
+    rvs$comp7 <- isolate(c(rvs$comp7, 'resp'))
+    
     modCur <- rvs$mods[[rvs$modSel]]
     
     # handle downloads for Maxent Evaluation Plots png

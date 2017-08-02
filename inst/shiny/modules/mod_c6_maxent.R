@@ -23,13 +23,22 @@ maxent_UI <- function(id) {
 
 maxent_MOD <- function(input, output, session, rvs) {
   reactive({
-    req(input$fcs, rvs$occs, rvs$bgPts, rvs$bgMsk, rvs$occsGrp, rvs$bgGrp)
-    
+    if (is.null(rvs$occsGrp)) {
+      rvs %>% writeLog(type = 'error', "Before building a model, partition 
+                       occurrences in component 5.")
+      return()
+    }
+    if (is.null(input$fcs)) {
+      rvs %>% writeLog(type = 'error', "No feature classes selected.")
+      return()
+    }
     if (!require('rJava')) {
       rvs %>% writeLog(type = "error", 'Package rJava cannot load. 
                Please download the latest version of Java, and make sure it is the 
                correct version (e.g. 64-bit for a 64-bit system). After installing, 
-               try "library(rJava)". If it loads properly, restart Wallace and try again.')
+               try "library(rJava)". If it loads properly, restart Wallace and try again.
+               If it does not, please consult www.github.com/wallaceecomod/wallace for
+               more tips on getting rJava to work.')
       return()
     }
     

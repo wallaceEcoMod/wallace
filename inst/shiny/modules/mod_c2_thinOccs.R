@@ -15,7 +15,11 @@ thinOccs_UI <- function(id) {
 thinOccs_MOD <- function(input, output, session, rvs) {
 
   doThin <- reactive({
-    req(rvs$occs)
+    if (is.null(rvs$occs)) {
+      rvs %>% writeLog(type = 'error', "Before processing occurrences, 
+                       obtain the data in component 1.")
+      return()
+    }
     
     if (input$thinDist <= 0) {
       rvs %>% writeLog(type = "error", 'Assign positive distance to thinning parameter.')

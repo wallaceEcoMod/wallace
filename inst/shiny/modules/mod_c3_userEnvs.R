@@ -8,11 +8,18 @@ userEnvs_UI <- function(id) {
 
 userEnvs_MOD <- function(input, output, session, rvs) {
   reactive({
-    req(input$userEnvs)
+    if (is.null(rvs$occs)) {
+      rvs %>% writeLog(type = 'error', "Before obtaining environmental variables, 
+                       obtain occurrence data in component 1.")
+      return()
+    }
+    if (is.null(input$userEnvs)) {
+      rvs %>% writeLog(type = 'error', "Raster files not uploaded.")
+      return()
+    }
     
     # record for RMD
     rvs$userEnvsPath <- input$userEnvs$datapath
-    print(input$userEnvs)
     
     withProgress(message = "Reading in rasters...", {
       uenvs <- raster::stack(input$userEnvs$datapath)

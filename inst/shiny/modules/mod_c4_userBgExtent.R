@@ -13,7 +13,15 @@ userBgExtent_UI <- function(id) {
 
 userBgExtent_MOD <- function(input, output, session, rvs) {
   userBgShp <- reactive({
-    req(input$userBgShp)
+    if (is.null(rvs$envs)) {
+      rvs %>% writeLog(type = 'error', 'Environmental variables missing. Obtain them
+                       in component 3.')
+      return()
+    }
+    if (is.null(input$userBgShp)) {
+      rvs %>% writeLog(type = 'error', 'Background extent files not uploaded.')
+      return()
+    }
     
     # record for RMD
     rvs$comp4.buf <- input$userBgBuf

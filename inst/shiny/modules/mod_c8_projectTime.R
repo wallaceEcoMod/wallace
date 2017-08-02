@@ -40,7 +40,17 @@ projectTime_MOD <- function(input, output, session, rvs) {
   })
   
   reactive({
-    req(rvs$envs, rvs$mods, rvs$predCur)
+    if (is.null(rvs$predCur)) {
+      rvs %>% writeLog(type = 'error', 'Calculate a model prediction in component 7 
+                       before projecting.')
+      return()
+    }
+    if (is.null(rvs$polyPjXY)) {
+      rvs %>% writeLog(type = 'error', "The polygon has not been drawn and finished. 
+                       Please use the draw toolbar on the left-hand of the map to complete
+                       the polygon.")
+      return()
+    }
     
     # record for RMD
     rvs$pjTimePar <- list(rcp=input$selRCP, gcm=input$selGCM, year=input$selTime)

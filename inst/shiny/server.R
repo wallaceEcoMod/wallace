@@ -255,6 +255,8 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goThinOccs, {
     rvs$occs <- thinOccs()
+    # stop if no occurrence data
+    req(rvs$occs)
     # record for RMD
     rvs$comp2 <- c(rvs$comp2, 'thin')
     # MAPPING - blue pts for remove, red pts for keep
@@ -312,6 +314,8 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goEnvData, {
     # load into envs
     rvs$envs <- wcBioclims()
+    # stop if no occurrence data
+    req(rvs$occs)
     # record for RMD
     rvs$comp3 <- 'bc'
     # remove occurrences with NA values for variables
@@ -327,6 +331,8 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goUserEnvs, {
     rvs$envs <- userEnvs()
+    # stop if no occurrence data
+    req(rvs$occs)
     # record for RMD
     rvs$comp3 <- 'user'
     # remove occurrences with NA values for variables
@@ -370,6 +376,8 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goBgExt, {
     rvs$bgShp <- bgExt()
+    # stop if no environmental variables
+    req(rvs$envs)
     map %>% clearShapes()
     for (shp in bgShpXY()) {
       map %>%
@@ -385,6 +393,8 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goUserBg, {
     rvs$bgShp <- userBg()
+    # stop if no environmental variables
+    req(rvs$envs)
     req(rvs$bgShp)
     coords <- rvs$bgShp@polygons[[1]]@Polygons[[1]]@coords
     map %>%
@@ -398,6 +408,8 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goBgMask, {
     bgMskPts.call <- callModule(bgMskAndSamplePts_MOD, 'c4_bgMskAndSamplePts', rvs)
     bgMskPts <- bgMskPts.call()
+    # stop if no background shape
+    req(rvs$bgShp)
     rvs$bgMsk <- bgMskPts$msk
     rvs$bgPts <- bgMskPts$pts
     shinyjs::enable('dlMskEnvs')
@@ -433,9 +445,12 @@ shinyServer(function(input, output, session) {
   
   # module Non-spatial Occurrence Partitions
   observeEvent(input$goPartNsp, {
-    partNsp <- callModule(partNsp_MOD, 'c5_partNsp', rvs)
-    rvs$occsGrp <- partNsp()[[1]]
-    rvs$bgGrp <- partNsp()[[2]]
+    partNsp.call <- callModule(partNsp_MOD, 'c5_partNsp', rvs)
+    partNsp <- partNsp.call()
+    # stop if no background mask
+    req(rvs$bgMsk)
+    rvs$occsGrp <- partNsp[[1]]
+    rvs$bgGrp <- partNsp[[2]]
     # colors for partition symbology
     newColors <- gsub("FF$", "", rainbow(max(rvs$occsGrp)))  
     partsFill <- newColors[rvs$occsGrp]
@@ -448,9 +463,12 @@ shinyServer(function(input, output, session) {
   
   # module Spatial Occurrence Partitions
   observeEvent(input$goPartSp, {
-    partSp <- callModule(partSp_MOD, 'c5_partSp', rvs)
-    rvs$occsGrp <- partSp()[[1]]
-    rvs$bgGrp <- partSp()[[2]]
+    partSp.call <- callModule(partSp_MOD, 'c5_partSp', rvs)
+    partSp <- partSp.call()
+    # stop if no background mask
+    req(rvs$bgMsk)
+    rvs$occsGrp <- partSp[[1]]
+    rvs$bgGrp <- partSp[[2]]
     # colors for partition symbology
     newColors <- gsub("FF$", "", rainbow(max(rvs$occsGrp)))  
     partsFill <- newColors[rvs$occsGrp]
@@ -489,6 +507,8 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goMaxent, {
     # unpack everything
     mod.maxent.call <- mod.maxent()
+    # stop if no occurrence partition group
+    req(rvs$occGrp)
     e <- mod.maxent.call[[1]]
     rvs$comp6 <- 'maxent'  # record the enm selected
     rvs$mods <- e@models
@@ -511,6 +531,8 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goBioclim, {
     e <- mod.bioclim()
+    # stop if no occurrence partition group
+    req(rvs$occGrp)
     rvs$comp6 <- 'bioclim'  # record the enm selected
     rvs$mods <- e$models
     rvs$modPreds <- e$predictions
@@ -543,8 +565,6 @@ shinyServer(function(input, output, session) {
     # for Maxent, only display the environmental predictors with non-zero beta coefficients
     # from the lambdas file (the predictors that were not removed via regularization)
     if (rvs$comp6 == "maxent") {
-      print(rvs$mods)
-      print(rvs$modSel)
       modCur <- rvs$mods[[rvs$modSel]]
       nonZeroCoefs <- mxNonzeroCoefs(modCur)
       envsNames <- names(rvs$bgMsk[[nonZeroCoefs]])
@@ -568,8 +588,6 @@ shinyServer(function(input, output, session) {
   
   output$bcEnvelPlot <- renderPlot({
     bcPlots()
-    # record for RMD
-    rvs$comp7 <- isolate(c(rvs$comp7, 'bcPlot'))
   })
   
   # module Maxent Evaluation Plots
@@ -577,8 +595,6 @@ shinyServer(function(input, output, session) {
   
   output$mxEvalPlots <- renderPlot({
     mxEvalPlots()
-    # record for RMD
-    rvs$comp7 <- isolate(c(rvs$comp7, 'mxEval'))
     updateTabsetPanel(session, 'main', selected = 'Results')
   })
   
@@ -586,21 +602,18 @@ shinyServer(function(input, output, session) {
   respPlots <- callModule(respPlots_MOD, 'c7_respPlots', rvs)
   
   output$respPlots <- renderPlot({
-    req(rvs$comp6 == 'maxent')
     respPlots()
-    # record for RMD
-    rvs$comp7 <- isolate(c(rvs$comp7, 'resp'))
     updateTabsetPanel(session, 'main', selected = 'Results')
   })
   
   # module Map Prediction (restricted to background extent)
-  mapPreds <- callModule(mapPreds_MOD, 'c7_mapPreds', rvs, map)
+  mapPreds <- callModule(mapPreds_MOD, 'c7_mapPreds', rvs)
   
   observeEvent(input$goMapPreds, {
     rvs$predCur <- mapPreds()
-    # record for RMD
-    rvs$comp7 <- c(rvs$comp7, 'map')
-    rvs$predCurVals <- rasVals(rvs$predCur, rvs$predType)
+    # stop if no models
+    req(rvs$mods)
+    rvs$predCurVals <- getVals(rvs$predCur, rvs$predType)
     updateTabsetPanel(session, 'main', selected = 'Map')
     
     # MAPPING
@@ -662,10 +675,12 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goProjectArea, {
     projArea.call <- projArea()
+    # stop if no model prediction
+    req(rvs$predCur)
     # unpack
     rvs$projMsk <- projArea.call[[1]]
     rvs$projCur <- projArea.call[[2]]
-    rvs$projCurVals <- rasVals(rvs$projCur, rvs$predType)
+    rvs$projCurVals <- getVals(rvs$projCur, rvs$predType)
     rvs$comp8.pj <- 'area'
     
     rasVals <- c(rvs$predCurVals, rvs$projCurVals)
@@ -682,10 +697,12 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goProjectTime, {
     projTime.call <- projTime()
+    # stop if no model prediction
+    req(rvs$predCur)
     # unpack
     rvs$projMsk <- projTime.call[[1]]
     rvs$projCur <- projTime.call[[2]]
-    rvs$projCurVals <- rasVals(rvs$projCur, rvs$predType)
+    rvs$projCurVals <- getVals(rvs$projCur, rvs$predType)
     rvs$comp8.pj <- 'time'
     
     rasVals <- c(rvs$predCurVals, rvs$projCurVals)
@@ -702,43 +719,19 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goEnvSimilarity, {
     rvs$mess <- envSimilarity()
+    # stop if no model projection
+    req(rvs$projCur)
     rvs$comp8.esim <- 'mess'
     # set infinite values to NA
     rvs$mess[is.infinite(rvs$mess)] <- NA
     # extract values
-    rvs$messVals <- rasVals(rvs$mess)
+    rvs$messVals <- getVals(rvs$mess)
     
     rasVals <- rvs$messVals
     rasCols <- RColorBrewer::brewer.pal(n=11, name='Reds')
     map %>% removeImage('r2ID')
     comp8_map(rvs$mess, rasVals, rasCols, "MESS Values", clearImg = FALSE)
     
-    rasColsPj <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-    rasColsMESS <- RColorBrewer::brewer.pal(n=11, name='Reds')
-    legendPalPj <- colorNumeric(rev(rasColsPj), c(rvs$predCurVals, rvs$projCurVals), na.color='transparent')
-    legendPalMESS <- colorNumeric(rasColsMESS, rvs$messVals, na.color='transparent')
-    rasPalPj <- colorNumeric(rasColsPj, c(rvs$predCurVals, rvs$projCurVals), na.color='transparent')
-    rasPalMESS <- colorNumeric(rasColsMESS, rvs$messVals, na.color='transparent')
-    
-    map %>% 
-      clearMarkers() %>% clearImages() %>% clearShapes() %>%
-      addLegend("bottomright", pal = legendPalPj, title = "Predicted Suitability",
-                values = c(rvs$predCurVals, rvs$projCurVals), layerId = 'leg',
-                labFormat = reverseLabels(2, reverse_order=TRUE)) %>%
-      addLegend("topright", pal=legendPalMESS, title = "MESS Values",
-                values = rvs$messVals, labFormat = reverseLabels(2, reverse_order=TRUE),
-                layerId = 'leg2') %>%
-      addRasterImage(rvs$predCur, colors = rasPalPj, opacity = 0.7, 
-                     group = 'c7', layerId = 'r1ID') %>%
-      addRasterImage(rvs$mess, colors = rasPalMESS, opacity = 0.7, 
-                     group = 'c8', layerId = 'r2ID') %>%
-      addPolygons(lng=rvs$polyPjXY[,1], lat=rvs$polyPjXY[,2], layerId="projExt", fill = FALSE,
-                  weight=4, color="green", group='c8')
-    for (shp in bgShpXY()) {
-      map %>%
-        addPolygons(lng=shp[,1], lat=shp[,2], fill = FALSE,
-                    weight=4, color="red", group='c8')  
-    }
     shinyjs::enable("dlProj")
     
   })
@@ -776,63 +769,6 @@ shinyServer(function(input, output, session) {
       paste0("wallace-session-", Sys.Date(), ".", switch(
         input$rmdFileType, Rmd = 'Rmd', PDF = 'pdf', HTML = 'html', Word = 'docx'
       ))},
-    content = function(file) {
-      # not active unless at least occurrences have been down/uploaded
-      req(rvs$occs)
-      
-      src <- normalizePath('userReport.Rmd')
-      # temporarily switch to the temp dir, in case you do not have write
-      # permission to the current working directory
-      owd <- setwd(tempdir())
-      on.exit(setwd(owd))
-      file.copy(src, 'userReport.Rmd')
-      # convert removed occIDs to characters of vectors
-      if (!is.null(rvs$removedIDs)) {
-        occsRem <- printVecAsis(values$removedAll)  
-      }
-      # convert polygon coordinates to characters of vectors
-      if (!is.null(rvs$polySelXY)) {
-        polySelX <- printVecAsis(round(rvs$polySelXY[,1], digits=4))
-        polySelY <- printVecAsis(round(rvs$polySelXY[,2], digits=4))
-      } else {
-        polySelX <- polySelY <- NULL
-      }
-      if (!is.null(rvs$polyPjXY)) {
-        polyPjX <- printVecAsis(round(rvs$polyPjXY[,1], digits=4))
-        polyPjY <- printVecAsis(round(rvs$polyPjXY[,2], digits=4))
-      } else {
-        polyPjX <- polyPjY <- NULL
-      }
-      
-      exp <- knitr::knit_expand(system.file("Rmd", 'userReport.Rmd', package = "wallace"), 
-                                curWD=curWD, spName=spName(), 
-                                dbName=rvs$occDb, occNum=rvs$occNum, occsCSV=rvs$userCSV$name,  # comp 1
-                                thinDist=rvs$thinDist, occsRemoved=rvs$occsRem, occsSelX=polySelX, occsSelY=polySelY,  # comp 2
-                                bcRes=rvs$bcRes, bcLat=rvs$bcLat, bcLon=rvs$bcLon, userEnvsPath=rvs$userEnvsPath, # comp 3
-                                bgSel=rvs$comp4.shp, bgBuf=rvs$comp4.buf, bgUserCSVpath=rvs$userBgShp$datapath,  # comp 4
-                                bgUserCSVname=rvs$userBgShp$name, bgUserShpPath=rvs$bgUserShpPar$dsn,  # comp 4 
-                                bgUserShpName=rvs$bgUserShpPar$layer, bgPtsNum=rvs$bgPtsNum, # comp 4
-                                partSel=rvs$partSel, kfolds=rvs$kfolds, aggFact=rvs$aggFact,  # comp 5
-                                enmSel=rvs$comp6, rms1=rvs$rms[1], rms2=rvs$rms[2], rmsStep=rvs$rmsStep, # comp 6
-                                fcs=printVecAsis(rvs$fcs),  # comp 6
-                                modSel=rvs$modSel, mxNonZeroCoefs=printVecAsis(rvs$mxNonZeroCoefs), envSel=rvs$envSel,  # comp 7
-                                bcPlot1=rvs$bcPlotsPar$bc1, bcPlot2=rvs$bcPlotsPar$bc2, bcPlotP=rvs$bcPlotsPar$p,  # comp 7
-                                mxEvalSel=rvs$mxEvalSel, predType=rvs$comp7.type, predThresh=rvs$comp7.thr, # comp 7 
-                                occsPjX=polyPjX, occsPjY=polyPjY, pjRCP=rvs$pjTimePar$rcp, pjGCM=rvs$rvs$pjTimePar$gcm,  # comp 8
-                                pjYear=rvs$rvs$pjTimePar$year)  # comp 8
-      writeLines(exp, 'userReport2.Rmd')
-      
-      if (input$rmdFileType == 'Rmd') {
-        out <- rmarkdown::render('userReport2.Rmd', rmarkdown::md_document(variant="markdown_github"))
-        writeLines(gsub('``` r', '```{r}', readLines(out)), 'userReport3.Rmd')
-        out <- 'userReport3.Rmd'
-      } else {
-        out <- rmarkdown::render('userReport2.Rmd', switch(
-          input$rmdFileType,
-          PDF = rmarkdown::pdf_document(latex_engine='xelatex'), HTML = html_document(), Word = word_document()
-        ))
-      }
-      file.rename(out, file)
-    }
+    content = mdContent
   )
 })

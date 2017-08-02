@@ -10,13 +10,14 @@ envSimilarity_MOD <- function(input, output, session, rvs) {
   reactive({
     req(rvs$envs, rvs$mods, rvs$predCur)
     
-    if (is.null(rvs$polyPjXY)) {
-      rvs %>% writeLog(type = 'error', 'Select projection extent first.')
-      return()
-    }
-    
     if (is.null(rvs$projCur)) {
       rvs %>% writeLog(type = 'error', 'Project to new area or time first.')
+      return()
+    }
+    if (is.null(rvs$polyPjXY)) {
+      rvs %>% writeLog(type = 'error', "The polygon has not been drawn and finished. 
+                       Please use the draw toolbar on the left-hand of the map to complete
+                       the polygon.")
       return()
     }
     

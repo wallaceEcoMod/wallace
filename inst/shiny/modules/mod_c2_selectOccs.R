@@ -8,7 +8,17 @@ selectOccs_UI <- function(id) {
 selectOccs_MOD <- function(input, output, session, rvs) {
   
   reactive({
-    req(rvs$occs, rvs$polySelXY)
+    if (is.null(rvs$occs)) {
+      rvs %>% writeLog(type = 'error', "Before processing occurrences, 
+                       obtain the data in component 1.")
+      return()
+    }
+    if (is.null(rvs$polySelXY)) {
+      rvs %>% writeLog(type = 'error', "The polygon has not been drawn and finished. 
+                       Please use the draw toolbar on the left-hand of the map to complete
+                       the polygon.")
+      return()
+    }
     
     occs.xy <- rvs$occs[c('longitude', 'latitude')]
     

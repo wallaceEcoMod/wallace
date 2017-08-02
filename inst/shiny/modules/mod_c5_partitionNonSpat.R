@@ -12,7 +12,12 @@ partNsp_UI <- function(id) {
 
 partNsp_MOD <- function(input, output, session, rvs, occs, bgPts) {
   reactive({
-    req(rvs$occs, rvs$bgPts)
+    if (is.null(rvs$bgMsk)) {
+      print('YES')
+      rvs %>% writeLog(type = 'error', "Before partitioning occurrences, 
+                       mask your environmental variables by your background extent.")
+      return()
+    }
     
     # record for RMD
     rvs$comp5 <- input$partNspSel

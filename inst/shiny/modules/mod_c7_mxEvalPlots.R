@@ -13,10 +13,18 @@ mxEvalPlots_UI <- function(id) {
 
 mxEvalPlots_MOD <- function(input, output, session, rvs) {
   reactive({
-    req(input$mxEvalSel, rvs$mods)
+    if (is.null(rvs$mods)) {
+      rvs %>% writeLog(type = 'error', "Models must first be run in component 6.")
+      return()
+    }
+    if (is.null(input$mxEvalSel)) {
+      rvs %>% writeLog(type = 'error', "No statistic selected for plotting.")
+      return()
+    }
     
     # record for RMD
     rvs$mxEvalSel <- input$mxEvalSel
+    rvs$comp7 <- isolate(c(rvs$comp7, 'mxEval'))
 
     # handle downloads for Maxent Evaluation Plots png
     output$dlMxEvalPlot <- downloadHandler(

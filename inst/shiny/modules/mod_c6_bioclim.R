@@ -7,7 +7,11 @@ bioclim_UI <- function(id) {
 
 bioclim_MOD <- function(input, output, session, rvs) {
   reactive({
-    req(rvs$occs, rvs$bgPts, rvs$bgMsk, rvs$occsGrp, rvs$bgGrp)
+    if (is.null(rvs$occsGrp)) {
+      rvs %>% writeLog(type = 'error', "Before building a model, partition 
+                       occurrences in component 5.")
+      return()
+    }
 
     occs.xy <- rvs$occs %>% dplyr::select(longitude, latitude)
     

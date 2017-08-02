@@ -15,8 +15,11 @@ bgExtent_UI <- function(id) {
 
 bgExtent_MOD <- function(input, output, session, rvs) {
   reactive({
-    req(rvs$occs)
-    
+    if (is.null(rvs$envs)) {
+      rvs %>% writeLog(type = 'error', "Before defining the background extent, 
+                       obtain environmental data in component 3.")
+      return()
+    }
     if (nrow(rvs$occs) <= 2) {
       rvs %>% writeLog(type = 'error', 'Too few localities (<2) to create a background polygon.')
       return()
@@ -50,10 +53,8 @@ bgExtent_MOD <- function(input, output, session, rvs) {
         rvs %>% writeLog(type = 'error', 'Change buffer distance to positive or negative value.')
         return()
       }
-      print(occs.sp)
       bgExt <- rgeos::gBuffer(occs.sp, width = input$bgBuf)
       msg <- "Study extent: buffered points."
-      print(bgExt)
     }
     
     if (input$bgBuf > 0) {

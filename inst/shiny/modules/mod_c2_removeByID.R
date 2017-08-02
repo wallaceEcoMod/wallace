@@ -7,9 +7,12 @@ removeByID_UI <- function(id) {
 }
 
 removeByID_MOD <- function(input, output, session, rvs) {
-  
   reactive({
-    req(rvs$occs)
+    if (is.null(rvs$occs)) {
+      rvs %>% writeLog(type = 'error', "Before processing occurrences, 
+                       obtain the data in component 1.")
+      return()
+    }
     
     if (!(input$removeID %in% rvs$occs$occID)) {
       rvs %>% writeLog(type = 'error','Entered ID not found.')
