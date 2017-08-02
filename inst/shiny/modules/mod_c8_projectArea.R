@@ -8,7 +8,13 @@ projectArea_UI <- function(id) {
 projectArea_MOD <- function(input, output, session, rvs) {
   
   reactive({
-    req(rvs$envs, rvs$mods, rvs$predCur, rvs$polyPjXY)
+    req(rvs$envs, rvs$mods, rvs$polyPjXY)
+    
+    if (is.null(rvs$predCur)) {
+      rvs %>% writeLog(type = 'error', 'Calculate a model prediction before projecting.')
+      return()
+    }
+    
     # create new spatial polygon from coordinates
     newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(rvs$polyPjXY)), ID=rvs$polyPjID)))  
     

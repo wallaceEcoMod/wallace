@@ -331,6 +331,10 @@ shinyServer(function(input, output, session) {
     rvs$comp3 <- 'user'
     # remove occurrences with NA values for variables
     rvs$occs <- remEnvsValsNA(rvs)
+    # make project to new time module unavailable for user envs
+    updateRadioButtons(session, "projSel", 
+                       choices = list("Project to New Extent" = 'projArea',
+                                      "Calculate Environmental Similarity" = 'mess'))
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
   })
