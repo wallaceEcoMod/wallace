@@ -358,14 +358,26 @@ shinyServer(function(input, output, session) {
   # module Background Extent
   bgExt <- callModule(bgExtent_MOD, 'c4_bgExtent', rvs)
   
-  bgShpXY <- reactive(rvs$bgShp@polygons[[1]]@Polygons[[1]]@coords)
+  bgShpXY <- reactive({
+    polys <- rvs$bgShp@polygons[[1]]@Polygons
+    if (length(polys) == 1) {
+      xy <- list(rvs$bgShp@polygons[[1]]@Polygons[[1]]@coords)
+    } else {
+     xy <- sapply(polys, function(x) x@coords)
+    }
+    return(xy)
+    })
   
   observeEvent(input$goBgExt, {
     rvs$bgShp <- bgExt()
-    map %>%
-      addPolygons(lng=bgShpXY()[,1], lat=bgShpXY()[,2], layerId="bg",
-                  weight=4, color="red", group='bgShp') %>%
-      fitBounds(max(bgShpXY()[,1]), max(bgShpXY()[,2]), min(bgShpXY()[,1]), min(bgShpXY()[,2]))
+    map %>% clearShapes()
+    for (shp in bgShpXY()) {
+      map %>%
+        addPolygons(lng=shp[,1], lat=shp[,2],
+                    weight=4, color="red", group='bgShp')  
+    }
+     map %>%
+      fitBounds(rvs$bgShp@bbox[1], rvs$bgShp@bbox[2], rvs$bgShp@bbox[3], rvs$bgShp@bbox[4])
   })
   
   # module User-defined Background Extent
@@ -531,6 +543,8 @@ shinyServer(function(input, output, session) {
     # for Maxent, only display the environmental predictors with non-zero beta coefficients
     # from the lambdas file (the predictors that were not removed via regularization)
     if (rvs$comp6 == "maxent") {
+      print(rvs$mods)
+      print(rvs$modSel)
       modCur <- rvs$mods[[rvs$modSel]]
       nonZeroCoefs <- mxNonzeroCoefs(modCur)
       envsNames <- names(rvs$bgMsk[[nonZeroCoefs]])
@@ -607,9 +621,12 @@ shinyServer(function(input, output, session) {
       clearMarkers() %>% clearImages() %>% clearShapes() %>%
       map_plotLocs(rvs$occs) %>%
       addRasterImage(rvs$predCur, colors = rasPal, opacity = 0.7, 
-                     group = 'c7', layerId = 'r1ID') %>%
-      addPolygons(lng=bgShpXY()[,1], lat=bgShpXY()[,2], layerId="bgExt", fill = FALSE,
-                  weight=4, color="red", group='c7')
+                     group = 'c7', layerId = 'r1ID')
+    for (shp in bgShpXY()) {
+      map %>%
+        addPolygons(lng=shp[,1], lat=shp[,2], fill = FALSE,
+                    weight=4, color="red", group='c7')  
+    }
     shinyjs::enable("dlPred")
   })
   
@@ -651,33 +668,13 @@ shinyServer(function(input, output, session) {
     rvs$projCurVals <- rasVals(rvs$projCur, rvs$predType)
     rvs$comp8.pj <- 'area'
     
+    rasVals <- c(rvs$predCurVals, rvs$projCurVals)
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-    legendPal <- colorNumeric(rev(rasCols), c(rvs$predCurVals, rvs$projCurVals), na.color='transparent')
-    rasPal <- colorNumeric(rasCols, c(rvs$predCurVals, rvs$projCurVals), na.color='transparent')
+    comp8_map(rvs$projCur, rasVals, rasCols, "Predicted Suitability")
     
-    map %>% 
-      clearMarkers() %>% clearImages() %>% clearShapes() %>%
-      addLegend("bottomright", pal = legendPal, title = "Predicted Suitability",
-                values = c(rvs$predCurVals, rvs$projCurVals), layerId = 'leg',
-                labFormat = reverseLabels(2, reverse_order=TRUE)) %>%
-      addRasterImage(rvs$predCur, colors = rasPal, opacity = 0.7, 
-                     group = 'c7', layerId = 'r1ID') %>%
-      addRasterImage(rvs$projCur, colors = rasPal, opacity = 0.7, 
-                     group = 'c8', layerId = 'r2ID') %>%
-      addPolygons(lng=bgShpXY()[,1], lat=bgShpXY()[,2], layerId="bgExt", fill = FALSE,
-                  weight=4, color="red", group='c8') %>%
-      addPolygons(lng=rvs$polyPjXY[,1], lat=rvs$polyPjXY[,2], layerId="projExt", fill = FALSE,
-                  weight=4, color="green", group='c8')
+    drawToolbarRefresh()
+    
     shinyjs::enable("dlProj")
-    
-    map %>%
-      leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
-      leaflet.extras::addDrawToolbar(
-        targetGroup='draw',
-        polylineOptions = FALSE,
-        rectangleOptions = FALSE,
-        circleOptions = FALSE,
-        markerOptions = FALSE)
   })
   
   # module Project to New Time
@@ -691,33 +688,13 @@ shinyServer(function(input, output, session) {
     rvs$projCurVals <- rasVals(rvs$projCur, rvs$predType)
     rvs$comp8.pj <- 'time'
     
+    rasVals <- c(rvs$predCurVals, rvs$projCurVals)
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-    legendPal <- colorNumeric(rev(rasCols), c(rvs$predCurVals, rvs$projCurVals), na.color='transparent')
-    rasPal <- colorNumeric(rasCols, c(rvs$predCurVals, rvs$projCurVals), na.color='transparent')
+    comp8_map(rvs$projCur, rasVals, rasCols, "Predicted Suitability")
     
-    map %>% 
-      clearMarkers() %>% clearImages() %>% clearShapes() %>%
-      addLegend("bottomright", pal = legendPal, title = "Predicted Suitability",
-                values = c(rvs$predCurVals, rvs$projCurVals), layerId = 'leg',
-                labFormat = reverseLabels(2, reverse_order=TRUE)) %>%
-      addRasterImage(rvs$predCur, colors = rasPal, opacity = 0.7, 
-                     group = 'c7', layerId = 'r1ID') %>%
-      addRasterImage(rvs$projCur, colors = rasPal, opacity = 0.7, 
-                     group = 'c8', layerId = 'r2ID') %>%
-      addPolygons(lng=bgShpXY()[,1], lat=bgShpXY()[,2], layerId="bgExt", fill = FALSE,
-                  weight=4, color="red", group='c8') %>%
-      addPolygons(lng=rvs$polyPjXY[,1], lat=rvs$polyPjXY[,2], layerId="projExt", fill = FALSE,
-                  weight=4, color="green", group='c8')
+    drawToolbarRefresh()
+    
     shinyjs::enable("dlProj")
-    
-    map %>%
-      leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
-      leaflet.extras::addDrawToolbar(
-        targetGroup='draw',
-        polylineOptions = FALSE,
-        rectangleOptions = FALSE,
-        circleOptions = FALSE,
-        markerOptions = FALSE)
   })
   
   # module Environmental Similarity
@@ -730,6 +707,11 @@ shinyServer(function(input, output, session) {
     rvs$mess[is.infinite(rvs$mess)] <- NA
     # extract values
     rvs$messVals <- rasVals(rvs$mess)
+    
+    rasVals <- rvs$messVals
+    rasCols <- RColorBrewer::brewer.pal(n=11, name='Reds')
+    map %>% removeImage('r2ID')
+    comp8_map(rvs$mess, rasVals, rasCols, "MESS Values", clearImg = FALSE)
     
     rasColsPj <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
     rasColsMESS <- RColorBrewer::brewer.pal(n=11, name='Reds')
@@ -750,10 +732,13 @@ shinyServer(function(input, output, session) {
                      group = 'c7', layerId = 'r1ID') %>%
       addRasterImage(rvs$mess, colors = rasPalMESS, opacity = 0.7, 
                      group = 'c8', layerId = 'r2ID') %>%
-      addPolygons(lng=bgShpXY()[,1], lat=bgShpXY()[,2], layerId="bgExt", fill = FALSE,
-                  weight=4, color="red", group='c8') %>%
       addPolygons(lng=rvs$polyPjXY[,1], lat=rvs$polyPjXY[,2], layerId="projExt", fill = FALSE,
                   weight=4, color="green", group='c8')
+    for (shp in bgShpXY()) {
+      map %>%
+        addPolygons(lng=shp[,1], lat=shp[,2], fill = FALSE,
+                    weight=4, color="red", group='c8')  
+    }
     shinyjs::enable("dlProj")
     
   })
@@ -780,8 +765,6 @@ shinyServer(function(input, output, session) {
       }
     }
   )
-  
-  observe(print(rvs$comp7))
   
   ########################################### #
   ### MARKDOWN FUNCTIONALITY ####

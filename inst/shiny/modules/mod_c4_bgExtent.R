@@ -6,7 +6,7 @@ bgExtent_UI <- function(id) {
                  choices = list("Bounding box" = 'bb', "Minimum convex polygon" = 'mcp',
                                 "Buffered points" = 'ptbuf'),
                  selected='bb'),
-    numericInput(ns("bgBuf"), label = "Study region buffer distance (degree)", value = 0, min = 0, step = 0.5),
+    numericInput(ns("bgBuf"), label = "Study region buffer distance (degree)", value = 0.5, min = 0, step = 0.5),
     shinyBS::bsPopover(ns("bgBuf"), title = 'Tip',
                        'Buffer area in degrees (1 degree = ~111 km). Exact length varies based on latitudinal position.',
                        placement = 'right', options = list(container = "body"))
@@ -26,27 +26,39 @@ bgExtent_MOD <- function(input, output, session, rvs) {
     rvs$comp4.shp <- input$bgSel
     rvs$comp4.buf <- input$bgBuf
     
+    # extract just coordinates
+    occs.xy <- rvs$occs[c('longitude', 'latitude')]
+    # make spatial pts object of original occs and preserve origID
+    occs.sp <- sp::SpatialPointsDataFrame(occs.xy, data=rvs$occs['occID'])
+    
     # generate background extent - one grid cell is added to perimeter of each shape
     # to ensure cells of points on border are included
     if (input$bgSel == 'bb') {
-      lon <- rvs$occs$longitude
-      lat <- rvs$occs$latitude
-      xmin <- min(lon)
-      xmax <- max(lon)
-      ymin <- min(lat)
-      ymax <- max(lat)
+      xmin <- occs.sp@bbox[1]
+      xmax <- occs.sp@bbox[3]
+      ymin <- occs.sp@bbox[2]
+      ymax <- occs.sp@bbox[4]
       bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin), ncol=2)
       bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(bb)), 1)))
-      rvs %>% writeLog("Study extent: bounding box.")
+      msg <- "Study extent: bounding box."
     } else if (input$bgSel == 'mcp') {
-      bgExt <- mcp(rvs$occs[,2:3])
+      bgExt <- mcp(occs.xy)
       # bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
-      rvs %>% writeLog("Study extent: minimum convex polygon.")
+      msg <- "Study extent: minimum convex polygon."
+    } else if (input$bgSel == 'ptbuf') {
+      if (input$bgBuf == 0) {
+        rvs %>% writeLog(type = 'error', 'Change buffer distance to positive or negative value.')
+        return()
+      }
+      print(occs.sp)
+      bgExt <- rgeos::gBuffer(occs.sp, width = input$bgBuf)
+      msg <- "Study extent: buffered points."
+      print(bgExt)
     }
     
     if (input$bgBuf > 0) {
       bgExt <- rgeos::gBuffer(bgExt, width = input$bgBuf)
-      rvs %>% writeLog('Study extent buffered by', input$bgBuf, 'degrees.')
+      rvs %>% writeLog(msg, 'Study extent buffered by', input$bgBuf, 'degrees.')
     }
     
     return(bgExt)

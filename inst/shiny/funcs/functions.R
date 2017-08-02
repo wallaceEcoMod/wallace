@@ -439,6 +439,41 @@ reverseLabels <- function(..., reverse_order = FALSE) {
   }
 }
 
+comp8_map <- function(pjRas, rasVals, rasCols, legTitle, clearImg = TRUE) {
+  rasPal <- colorNumeric(rasCols, rasVals, na.color='transparent')
+  legPal <- colorNumeric(rev(rasCols), rasVals, na.color='transparent')
+  
+  if (clearImg == TRUE) map %>% clearImages()
+  
+  map %>% 
+    clearMarkers() %>% clearShapes() %>%
+    addLegend("bottomright", pal = legPal, title = legTitle,
+              values = rasVals, layerId = 'leg',
+              labFormat = reverseLabels(2, reverse_order=TRUE)) %>%
+    addRasterImage(rvs$predCur, colors = rasPal, opacity = 0.7, 
+                   group = 'c7', layerId = 'r1ID') %>%
+    addRasterImage(pjRas, colors = rasPal, opacity = 0.7, 
+                   group = 'c7', layerId = 'r2ID') %>%
+    addPolygons(lng=rvs$polyPjXY[,1], lat=rvs$polyPjXY[,2], layerId="projExt", fill = FALSE,
+                weight=4, color="green", group='c8')
+  for (shp in bgShpXY()) {
+    map %>%
+      addPolygons(lng=shp[,1], lat=shp[,2], fill = FALSE,
+                  weight=4, color="red", group='c8')  
+  }
+}
+
+drawToolbarRefresh <- function() {
+  map %>%
+    leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
+    leaflet.extras::addDrawToolbar(
+      targetGroup='draw',
+      polylineOptions = FALSE,
+      rectangleOptions = FALSE,
+      circleOptions = FALSE,
+      markerOptions = FALSE)
+}
+
 ####################### #
 # SESSION CODE ####
 ####################### #
