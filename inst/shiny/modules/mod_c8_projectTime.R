@@ -102,7 +102,8 @@ projectTime_MOD <- function(input, output, session, rvs) {
     modCur <- rvs$mods[[rvs$modSel]]
     
     withProgress(message = ("Projecting to new time..."), {
-      modProjTime <- dismo::predict(modCur, pjtMsk)
+      pargs <- paste0("outputformat=", rvs$comp7.type)
+      modProjTime <- dismo::predict(modCur, pjtMsk, args = pargs)
       rvs %>% writeLog("Projected to", paste0('20', input$selTime), 
                        "for GCM", GCMlookup[input$selGCM], 
                        "under RCP", as.numeric(input$selRCP)/10.0, ".")

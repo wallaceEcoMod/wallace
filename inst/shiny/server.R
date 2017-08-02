@@ -508,14 +508,14 @@ shinyServer(function(input, output, session) {
     # unpack everything
     mod.maxent.call <- mod.maxent()
     # stop if no occurrence partition group
-    req(rvs$occGrp)
+    req(rvs$occsGrp)
     e <- mod.maxent.call[[1]]
     rvs$comp6 <- 'maxent'  # record the enm selected
     rvs$mods <- e@models
     rvs$modPreds <- e@predictions
     rvs$modRes <- e@results
-    rvs$modPredsLog <- mod.maxent.call[[2]]
-    rvs$modOccVals <- mod.maxent.call[[3]]
+    rvs$modOccVals <- mod.maxent.call[[2]]
+    x <- callModule(mapPreds_MOD, 'c7_mapPreds', rvs)
     
     output$evalTbl <- DT::renderDataTable(cbind(rvs$modRes[,1:3], round(rvs$modRes[,4:16], digits=3)))
     # switch to Results tab
@@ -532,7 +532,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goBioclim, {
     e <- mod.bioclim()
     # stop if no occurrence partition group
-    req(rvs$occGrp)
+    req(rvs$occsGrp)
     rvs$comp6 <- 'bioclim'  # record the enm selected
     rvs$mods <- e$models
     rvs$modPreds <- e$predictions
@@ -606,21 +606,24 @@ shinyServer(function(input, output, session) {
     updateTabsetPanel(session, 'main', selected = 'Results')
   })
   
-  # module Map Prediction (restricted to background extent)
-  mapPreds <- callModule(mapPreds_MOD, 'c7_mapPreds', rvs)
-  
   observeEvent(input$goMapPreds, {
+    if (rvs$comp6 == 'maxent') {
+      # module Map Prediction (restricted to background extent)
+      mapPreds <- callModule(mapPredsMaxent_MOD, 'c7_mapPredsMaxent', rvs)
+    } else {
+      mapPreds <- callModule(mapPreds_MOD, 'c7_mapPreds', rvs)
+    }
     rvs$predCur <- mapPreds()
     # stop if no models
     req(rvs$mods)
-    rvs$predCurVals <- getVals(rvs$predCur, rvs$predType)
+    rvs$predCurVals <- getVals(rvs$predCur, rvs$comp7.type)
     updateTabsetPanel(session, 'main', selected = 'Map')
     
     # MAPPING
-    if (rvs$predThresh != 'noThresh') {
+    if (rvs$comp7.thr != 'noThresh') {
       rasPal <- c('gray', 'blue')
       map %>% addLegend("bottomright", colors = c('gray', 'blue'),
-                        title = "Thresholded Suitability", labels = c(0, 1),
+                        title = "Thresholded Suitability", labels = c("predicted absence", "predicted presence"),
                         opacity = 1, layerId = 'leg')
     } else {
       rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
@@ -680,7 +683,7 @@ shinyServer(function(input, output, session) {
     # unpack
     rvs$projMsk <- projArea.call[[1]]
     rvs$projCur <- projArea.call[[2]]
-    rvs$projCurVals <- getVals(rvs$projCur, rvs$predType)
+    rvs$projCurVals <- getVals(rvs$projCur, rvs$comp7.type)
     rvs$comp8.pj <- 'area'
     
     rasVals <- c(rvs$predCurVals, rvs$projCurVals)
@@ -702,7 +705,7 @@ shinyServer(function(input, output, session) {
     # unpack
     rvs$projMsk <- projTime.call[[1]]
     rvs$projCur <- projTime.call[[2]]
-    rvs$projCurVals <- getVals(rvs$projCur, rvs$predType)
+    rvs$projCurVals <- getVals(rvs$projCur, rvs$comp7.type)
     rvs$comp8.pj <- 'time'
     
     rasVals <- c(rvs$predCurVals, rvs$projCurVals)

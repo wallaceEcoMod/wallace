@@ -87,17 +87,10 @@ maxent_MOD <- function(input, output, session, rvs) {
                                                avg.test.or10pct = Mean.OR10, var.test.or10pct = Var.OR10,
                                                parameters = nparam)
     
-    # generate logistic predictions for each model
-    withProgress(message = "Generating logistic predictions...", {
-      logPredsList <- sapply(e@models, function(x) dismo::predict(x, rvs$bgMsk))
-      logPreds <- raster::stack(logPredsList)
-      names(logPreds) <- names(e@predictions)
-    })
-    
     # extract the suitability values for all occurrences
     modOccVals <- raster::extract(e@predictions, occs.xy)
     rvs %>% writeLog("Maxent ran successfully and output evaluation results for", nrow(e@results), "models.")
     
-    return(list(e, logPreds, modOccVals))
+    return(list(e, modOccVals))
   })
 }

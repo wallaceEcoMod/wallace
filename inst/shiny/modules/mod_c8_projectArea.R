@@ -37,8 +37,8 @@ projectArea_MOD <- function(input, output, session, rvs) {
     modCur <- rvs$mods[[rvs$modSel]]
     
     withProgress(message = 'Projecting model to new area...', {
-      # values$rasName <- names(values$evalPreds[[as.numeric(modelSel)]])
-      modProjArea <- dismo::predict(modCur, projMsk)
+      pargs <- paste0("outputformat=", rvs$comp7.type)
+      modProjArea <- dismo::predict(modCur, projMsk, args = pargs)
     })
     
     return(list(pjMsk=projMsk, pjPred=modProjArea))
