@@ -614,6 +614,7 @@ shinyServer(function(input, output, session) {
       mapPreds <- callModule(mapPreds_MOD, 'c7_mapPreds', rvs)
     }
     rvs$predCur <- mapPreds()
+    print(rvs$predCur)
     # stop if no models
     req(rvs$mods)
     rvs$predCurVals <- getVals(rvs$predCur, rvs$comp7.type)

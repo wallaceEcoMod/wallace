@@ -415,7 +415,7 @@ getVals <- function(r, type='raw') {
   v <- raster::values(r)
   # remove NAs
   v <- v[!is.na(v)]
-  if (type == 'log') v <- c(v, 0, 1)  # set to 0-1 scale
+  if (type == 'logistic' | type == 'cloglog') v <- c(v, 0, 1)  # set to 0-1 scale
   return(v)
 }
 
