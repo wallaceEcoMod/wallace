@@ -172,12 +172,29 @@ remEnvsValsNA <- function(rvs) {
 ####################### #
 
 # make a minimum convex polygon as SpatialPolygons object
-mcp <- function (xy) {
+mcp <- function(xy) {
   xy <- as.data.frame(sp::coordinates(xy))
   coords.t <- chull(xy[, 1], xy[, 2])
   xy.bord <- xy[coords.t, ]
   xy.bord <- rbind(xy.bord[nrow(xy.bord), ], xy.bord)
   return(sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(as.matrix(xy.bord))), 1))))
+}
+
+####################### #
+# COMP 5 ####
+####################### #
+
+comp5_map <- function(map, occs, occsGrp) {
+  # colors for partition symbology
+  newColors <- gsub("FF$", "", rainbow(max(occsGrp)))  
+  partsFill <- newColors[occsGrp]
+  map %>%
+    clearMarkers() %>%
+    map_plotLocs(occs, fillColor = partsFill, fillOpacity = 1) %>%
+    addLegend("bottomright", colors = newColors,
+              title = "Partition Groups", labels = sort(unique(occsGrp)),
+              opacity = 1, layerId = 'leg') %>%
+    zoom2Occs(occs)
 }
 
 ####################### #
@@ -439,7 +456,7 @@ reverseLabels <- function(..., reverse_order = FALSE) {
   }
 }
 
-comp8_map <- function(pjRas, rasVals, rasCols, legTitle, clearImg = TRUE) {
+comp8_map <- function(map, pjRas, rasVals, rasCols, legTitle, clearImg = TRUE) {
   rasPal <- colorNumeric(rasCols, rasVals, na.color='transparent')
   legPal <- colorNumeric(rev(rasCols), rasVals, na.color='transparent')
   

@@ -451,13 +451,7 @@ shinyServer(function(input, output, session) {
     req(rvs$bgMsk)
     rvs$occsGrp <- partNsp[[1]]
     rvs$bgGrp <- partNsp[[2]]
-    # colors for partition symbology
-    newColors <- gsub("FF$", "", rainbow(max(rvs$occsGrp)))  
-    partsFill <- newColors[rvs$occsGrp]
-    map %>%
-      clearMarkers() %>%
-      map_plotLocs(rvs$occs, fillColor = partsFill, fillOpacity = 1) %>%
-      zoom2Occs(rvs$occs)
+    map %>% comp5_map(rvs$occs, rvs$occsGrp)
     shinyjs::enable("dlPart")
   })
   
@@ -469,13 +463,7 @@ shinyServer(function(input, output, session) {
     req(rvs$bgMsk)
     rvs$occsGrp <- partSp[[1]]
     rvs$bgGrp <- partSp[[2]]
-    # colors for partition symbology
-    newColors <- gsub("FF$", "", rainbow(max(rvs$occsGrp)))  
-    partsFill <- newColors[rvs$occsGrp]
-    map %>%
-      clearMarkers() %>%
-      map_plotLocs(rvs$occs, fillColor = partsFill, fillOpacity = 1) %>%
-      zoom2Occs(rvs$occs)
+    map %>% comp5_map(rvs$occs, rvs$occsGrp)
     shinyjs::enable("dlPart")
   })
   
@@ -699,7 +687,7 @@ shinyServer(function(input, output, session) {
     
     rasVals <- c(rvs$predCurVals, rvs$projCurVals)
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-    comp8_map(rvs$projCur, rasVals, rasCols, "Predicted Suitability")
+    map %>% comp8_map(rvs$projCur, rasVals, rasCols, "Predicted Suitability")
     
     drawToolbarRefresh()
     
@@ -721,7 +709,7 @@ shinyServer(function(input, output, session) {
     
     rasVals <- c(rvs$predCurVals, rvs$projCurVals)
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-    comp8_map(rvs$projCur, rasVals, rasCols, "Predicted Suitability")
+    map %>% comp8_map(rvs$projCur, rasVals, rasCols, "Predicted Suitability")
     
     drawToolbarRefresh()
     
@@ -744,7 +732,7 @@ shinyServer(function(input, output, session) {
     rasVals <- rvs$messVals
     rasCols <- RColorBrewer::brewer.pal(n=11, name='Reds')
     map %>% removeImage('r2ID')
-    comp8_map(rvs$mess, rasVals, rasCols, "MESS Values", clearImg = FALSE)
+    map %>% comp8_map(rvs$mess, rasVals, rasCols, "MESS Values", clearImg = FALSE)
     
     shinyjs::enable("dlProj")
     
