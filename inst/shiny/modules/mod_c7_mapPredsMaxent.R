@@ -45,7 +45,6 @@ mapPredsMaxent_MOD <- function(input, output, session, rvs) {
     if (input$predThresh == 'noThresh') {
       # argument for predict function
       pargs <- paste0("outputformat=", rvs$comp7.type)
-      print(pargs)
       if (input$predType == 'logistic') {
         # Generate logistic predictions for each model
         if (is.null(rvs$modPredsLog)) {

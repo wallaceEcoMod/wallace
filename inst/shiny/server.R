@@ -514,12 +514,23 @@ shinyServer(function(input, output, session) {
     rvs$mods <- e@models
     rvs$modPreds <- e@predictions
     rvs$modRes <- e@results
+    print(rvs$modRes)
     rvs$modOccVals <- mod.maxent.call[[2]]
     x <- callModule(mapPreds_MOD, 'c7_mapPreds', rvs)
     
-    output$evalTbl <- DT::renderDataTable(cbind(rvs$modRes[,1:3], round(rvs$modRes[,4:16], digits=3)))
+    ncols <- ncol(rvs$modRes)
+    modRes.round <- cbind(rvs$modRes[,1:3], round(rvs$modRes[,4:ncols], digits=3))
+    nBinsCols <- ncols - 16
+    output$evalTbl <- DT::renderDataTable(modRes.round[,1:16], 
+                                          options = list(scrollX = TRUE,
+                                                         sDom  = '<"top">rt<"bottom">'))
+    output$evalTblBins <- DT::renderDataTable(modRes.round[,17:(nBinsCols+16)], 
+                                              options = list(scrollX = TRUE,
+                                                             sDom  = '<"top">rt<"bottom">'))
+    
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
+    # customize visualizations for maxent
     updateRadioButtons(session, "visSel", 
                        choices = list("Maxent Evaluation Plots" = 'mxEval',
                                       "Plot Response Curves" = 'response',
@@ -614,7 +625,6 @@ shinyServer(function(input, output, session) {
       mapPreds <- callModule(mapPreds_MOD, 'c7_mapPreds', rvs)
     }
     rvs$predCur <- mapPreds()
-    print(rvs$predCur)
     # stop if no models
     req(rvs$mods)
     rvs$predCurVals <- getVals(rvs$predCur, rvs$comp7.type)

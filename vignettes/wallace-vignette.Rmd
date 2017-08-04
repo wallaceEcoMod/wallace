@@ -23,7 +23,9 @@ knitr::opts_chunk$set(collapse=TRUE, message=FALSE, warning=FALSE, comment="#>")
 
 [`wallace`](https://cran.r-project.org/package=wallace) is a `shiny` application that allows users to build and evaluate models of species niches and distributions from scratch using a point-and-click interface. The application features an interactive map and dynamic plots and tables. Data for the models can be download from online databases or uploaded by the user, and most results can be downloaded, including the option to save R code that can reproduce your analysis. 
 
-This vignette focuses on perhaps the most important characteristic of `wallace`--its modularity. The analysis is broken down into components that proceed sequentially, and options within each component are called modules. `wallace` comes with some modules built in, but users can author their own to increase the application's functionality. Some users may have a different preferred way of approaching some part of the analysis, and by authoring a module they can share this method with the user community. In this vignette, we explain how to put a module together, but first we delve briefly into how `wallace` is structured.
+This vignette walks the user through the process of building a new module. Researchers who want to share their techniques with the user community can build a module and submit it via a pull request on Github. 
+
+The analysis is broken down into components that proceed sequentially, and options within each component are called modules. `wallace` comes with some modules built in, but users can author their own to increase the application's functionality. Some users may have a different preferred way of approaching some part of the analysis, and by authoring a module they can share this method with the user community. In this vignette, we explain how to put a module together, but first we delve briefly into how `wallace` is structured.
 
 ## Structure of `wallace`
 

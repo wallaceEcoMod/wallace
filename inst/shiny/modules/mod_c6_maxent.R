@@ -17,7 +17,8 @@ maxent_UI <- function(id) {
     numericInput(ns("rmsStep"), label = "RM step value", value = 1),
     shinyBS::bsPopover(ns("rmsStep"), title = 'Tip',
                        'Value used to step through regularization multiplier range (e.g. range of 1-3 with step 0.5 results in [1, 1.5, 2, 2.5, 3]).',
-                       placement = 'right', options = list(container = "body"))
+                       placement = 'right', options = list(container = "body")),
+    checkboxInput(ns('clamp'), label = 'Clamp predictions?')
   )
 }
 
@@ -51,6 +52,7 @@ maxent_MOD <- function(input, output, session, rvs) {
     rvs$fcs <- input$fcs
     rvs$rms <- input$rms
     rvs$rmsStep <- input$rmsStep
+    rvs$clamp <- input$clamp
     
     # define the vector of RMs to input
     rms <- seq(input$rms[1], input$rms[2], input$rmsStep)  
@@ -74,9 +76,9 @@ maxent_MOD <- function(input, output, session, rvs) {
     
     e <- ENMeval::ENMevaluate(occs.xy, rvs$bgMsk, bg.coords = rvs$bgPts,
                               RMvalues = rms, fc = input$fcs, method = 'user', 
-                              occ.grp = rvs$occsGrp,
-                              bg.grp = rvs$bgGrp, progbar = FALSE, 
-                              updateProgress = updateProgress)
+                              occ.grp = rvs$occsGrp, bg.grp = rvs$bgGrp, 
+                              clamp = input$clamp, bin.output = TRUE,
+                              progbar = FALSE, updateProgress = updateProgress)
     
     names(e@models) <- e@results$settings
     
