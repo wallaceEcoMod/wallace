@@ -1,3 +1,13 @@
+# wallace 0.9
+- So many changes we skipped a couple of versions.
+- Biggest change: reprogrammed most of the software to integrate shiny modules. Now each module is a separate script in /inst/shiny/modules that contains both UI and server logic. This should make authorship and integration of new modules much easier.
+- Second biggest change: integrated leaflet draw toolbar functionality from leaflet.extras package, which replaces the previous code to draw and internally record polygons in comps 2 and 7. The code is much cleaner now and easier to make edits to.
+- By popular demand, added user-input environmental variables module. This is a work in progress, so please report bugs to Issues on Github.
+- Added buffer by points feature for background extent module (comp4).
+- Added cloglog output option for Maxent (updated for Maxent version 3.4x) in map prediction module (comp7).
+- Partition occurrences modules (comp5) now plot on the map with a legend showing the partition group per color.
+- Maxent models now show the evaluation statistics for all partition groups (ENMevaluate() option bin.output=TRUE) -- the partition group numbers correspond to the comp5 legend.
+
 # wallace 0.6.4
 - Added explicit package references to writeRaster() calls. Should work now without loading `raster` package first.
 - Fixed reference to required field names in component 1 User Occurrences module guidance text. Now reads "names" instead of "species" as first field.
