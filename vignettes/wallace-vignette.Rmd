@@ -11,7 +11,7 @@ vignette: >
   
   ```{r setup, echo = FALSE, include=FALSE}
 library(knitr)
-knitr::opts_chunk$set(collapse=TRUE, message=FALSE, warning=FALSE, comment="#>")
+knitr::opts_chunk$set(collapse=TRUE, message=FALSE, eval = FALSE, warning=FALSE, comment="#>")
 ```
 
 - [Introduction](#intro)
@@ -19,13 +19,22 @@ knitr::opts_chunk$set(collapse=TRUE, message=FALSE, warning=FALSE, comment="#>")
 
 
 
-## Introduction {#intro}
+# Introduction {#intro}
 
-[`wallace`](https://cran.r-project.org/package=wallace) is a `shiny` application that allows users to build and evaluate models of species niches and distributions from scratch using a point-and-click interface. The application features an interactive map and dynamic plots and tables. Data for the models can be download from online databases or uploaded by the user, and most results can be downloaded, including the option to save R code that can reproduce your analysis. 
+[*Wallace*](https://wallaceecomod.github.io/) is a `shiny` application that allows users to build and evaluate models of species niches and distributions from scratch using a point-and-click interface (link to [CRAN](https://cran.r-project.org/package=wallace))). The application features an interactive map and dynamic plots and tables. Data for the models can be download from online databases or uploaded by the user, and most results can be downloaded, including the option to save R code that can reproduce your analysis. 
 
-This vignette walks the user through the process of building a new module. Researchers who want to share their techniques with the user community can build a module and submit it via a pull request on Github. 
+This vignette walks the user through the process of building a new module (explained below). Researchers who want to share their techniques with the user community can build a module and submit it via a pull request to the [*Wallace* Github page](https://github.com/wallaceEcoMod/wallace). 
 
-The analysis is broken down into components that proceed sequentially, and options within each component are called modules. `wallace` comes with some modules built in, but users can author their own to increase the application's functionality. Some users may have a different preferred way of approaching some part of the analysis, and by authoring a module they can share this method with the user community. In this vignette, we explain how to put a module together, but first we delve briefly into how `wallace` is structured.
+### Components {#components}
+
+In *Wallace*, "components" are steps of a species distribution/niche modeling analysis. These components were decided upon by the development team, but by no means are exhaustive -- we envision more may be added in the future. There are currently 8 components that proceed sequentially:
+
+1: Obtain Occurrence Data **->** 2: Process Occurrence Data **->** 3: Obtain Environmental Data **->** 4: Process Environmental Data **->** 5: Partition Occurrence Data **->** 6: Model **->** 7: Visualize Model Results **->** 8: Project Model
+
+### Modules {#modules}
+
+Within components, there are "modules", which represent options for each analysis step. For example, within component 6 "Model", the modules represent different distribution/niche model choices. *Wallace* comes with built-in modules, but users can build their own modules to extend the app's functionality. Some users may have a different preferred way of approaching some part of the analysis, and by authoring a module they can share this method with the user community.
+
 
 ## Structure of `wallace`
 

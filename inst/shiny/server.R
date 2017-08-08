@@ -201,7 +201,9 @@ shinyServer(function(input, output, session) {
                   scrollX=TRUE, scrollY=400)
   output$occTbl <- DT::renderDataTable({
     req(rvs$occs)
-    rvs$occs %>% dplyr::select(name, occID, longitude:basisOfRecord)
+    occsDT <- rvs$occs %>% dplyr::mutate(longitude = round(as.numeric(longitude), digits = 2),
+                                  latitude = round(as.numeric(latitude), digits = 2))
+    occsDT %>% dplyr::select(name, occID, longitude:basisOfRecord)
   }, rownames = FALSE)
   
   # handle downloading of original GBIF records after cleaning
