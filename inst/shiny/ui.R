@@ -112,7 +112,7 @@ shinyUI(tagList(
                                                                  actionButton("goEnvData", "Load Env Data")
                                                 ),
                                                 conditionalPanel("input.envDataSel == 'user'",
-                                                                 div('Module: User-specified Environmental Predictors', id="mod"),
+                                                                 div('Module: User-specified Environmental Data', id="mod"),
                                                                  HTML('<hr>'),
                                                                  userEnvs_UI('c3_userEnvs'),
                                                                  actionButton('goUserEnvs', 'Load Env Data')

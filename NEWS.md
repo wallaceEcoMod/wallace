@@ -6,6 +6,7 @@
 - Added cloglog output option for Maxent (updated for Maxent version 3.4x) in map prediction module (comp7).
 - Partition occurrences modules (comp5) now plot on the map with a legend showing the partition group per color.
 - Maxent models now show the evaluation statistics for all partition groups (ENMevaluate() option bin.output=TRUE) -- the partition group numbers correspond to the comp5 legend.
+- Updated guidance text.
 
 # wallace 0.6.4
 - Added explicit package references to writeRaster() calls. Should work now without loading `raster` package first.

@@ -79,11 +79,13 @@ shinyServer(function(input, output, session) {
     if (input$tabs == 3) {
       gtext$cur_comp <- "gtext_comp3.Rmd"
       if (input$envDataSel == 'wcbc') gtext$cur_mod <- "gtext_comp3_worldclim.Rmd"
+      if (input$envDataSel == 'user') gtext$cur_mod <- "gtext_comp3_userEnvs.Rmd"
     }
     if (input$tabs == 4) {
       updateTabsetPanel(session, 'main', selected = 'Map')
       gtext$cur_comp <- "gtext_comp4.Rmd"
-      gtext$cur_mod <- "gtext_comp4_backg.Rmd"
+      if (input$envProcSel == 'bgSel') gtext$cur_mod <- "gtext_comp4_backg.Rmd"
+      if (input$envProcSel == 'bgUser') gtext$cur_mod <- "gtext_comp4_userBg.Rmd"
       
     }
     if (input$tabs == 5) {

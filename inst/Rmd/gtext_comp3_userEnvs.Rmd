@@ -1,0 +1,14 @@
+---
+title: "comp3_userEnvs"
+output: html_document
+---
+
+### **Module:** ***User-specified Environmental Data***
+
+**BACKGROUND**
+
+Users may want to use environmental data that they have compiled themselves for use in the *Wallace* analysis.
+
+**IMPLEMENTATION**
+
+Users may upload one or more raster files, which must be in one of the following formats: xxx. Additionally, all rasters must have the same extent and resolution (cell size).
