@@ -26,6 +26,7 @@ userBgExtent_MOD <- function(input, output, session, rvs) {
     # record for RMD
     rvs$comp4.buf <- input$userBgBuf
     
+    print(input$userBgShp)
     names <- input$userBgShp$name
     inPath <- input$userBgShp$datapath
     pathdir <- dirname(inPath)
@@ -42,7 +43,7 @@ userBgExtent_MOD <- function(input, output, session, rvs) {
       bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(f)), 1)))
     } else if ('shp' %in% exts) {
       if (length(exts) < 3) {
-        rvs %>% writeLog(type = 'error', 'If entering a shapefile, please select all the following files: .shp, .shx, and .dbf.')
+        rvs %>% writeLog(type = 'error', 'If entering a shapefile, please select all the following files: .shp, .shx, .dbf.')
         return()
       }
       file.rename(inPath, file.path(pathdir, names))
@@ -55,7 +56,7 @@ userBgExtent_MOD <- function(input, output, session, rvs) {
       # read in shapefile and extract coords
       bgExt <- rgdal::readOGR(pathdir[i], shpName)
     } else {
-      rvs %>% writeLog(type = 'error', 'Please enter either a CSV file of vertex coordinates or shapefile (.shp, .dbf, and .shx).')
+      rvs %>% writeLog(type = 'error', 'Please enter either a CSV file of vertex coordinates or shapefile (.shp, .shx, .dbf).')
       return()
     }
     rvs %>% writeLog("Study extent: user-defined polygon.")

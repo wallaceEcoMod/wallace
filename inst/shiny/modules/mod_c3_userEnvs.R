@@ -19,7 +19,7 @@ userEnvs_MOD <- function(input, output, session, rvs) {
     }
     
     # record for RMD
-    rvs$userEnvsPath <- input$userEnvs$datapath
+    rvs$userEnvs <- input$userEnvs
     
     withProgress(message = "Reading in rasters...", {
       uenvs <- raster::stack(input$userEnvs$datapath)
