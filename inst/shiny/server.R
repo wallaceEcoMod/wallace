@@ -398,16 +398,15 @@ shinyServer(function(input, output, session) {
     # stop if no environmental variables
     req(rvs$envs)
     req(rvs$bgShp)
-    numPolys <- rvs$bgShp@polygons[[1]]@Polygons
-    if (numPolys > 1) {
-      
-    }
     coords <- rvs$bgShp@polygons[[1]]@Polygons[[1]]@coords
+    map %>% clearShapes()
+    for (shp in bgShpXY()) {
+      map %>%
+        addPolygons(lng=shp[,1], lat=shp[,2],
+                    weight=4, color="red", group='bgShp')  
+    }
     map %>%
-      clearShapes() %>%
-      addPolygons(lng=coords[,1], lat=coords[,2], layerId="bg",
-                  weight=4, color="red", group='bgShp') %>%
-      fitBounds(max(coords[,1]), max(coords[,2]), min(coords[,1]), min(coords[,2]))
+      fitBounds(rvs$bgShp@bbox[1], rvs$bgShp@bbox[2], rvs$bgShp@bbox[3], rvs$bgShp@bbox[4])
   })
   
   # module Background Mask and Sample Points

@@ -259,9 +259,11 @@ bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(shp)), 1)))
 User study extent name is `r "{{bgUserShpName}}"`. User study extent path is `r "{{bgUserShpPath}}"`. Read in the .csv file and generate a Spatial Polygon object.
 ```
 
-```{r bgUserShp, echo = bg.userCSV, include = bg.userCSV}
+```{r bg.userShp, echo = bg.userShp, include = bg.userShp}
+# NOTE: provide the path to the folder that contains the shapefile
+d.bg <- ''
 # read csv with coordinates for polygon
-bgExt <- rgdal::readOGR("{{bgUserShpPath}}", "{{bgUserShpName}}")
+bgExt <- rgdal::readOGR(d.bg, "{{bgUserShpName}}")
 ```
 
 ```{asis, echo = bg.bufWid, eval = bg.bufWid, include = bg.bufWid}
