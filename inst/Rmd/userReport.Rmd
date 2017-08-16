@@ -164,7 +164,7 @@ occs <- occs[intersect.rowNums, ]
 ```
 
 ```{asis, echo = poccs.thin, eval = poccs.thin, include = poccs.thin}
-Spatial thinning selected. Thin distance selected is `r {{thinDist}}` m.
+Spatial thinning selected. Thin distance selected is `r {{thinDist}}` km.
 ```
 
 ```{r doThin, echo = poccs.thin, include = poccs.thin}
