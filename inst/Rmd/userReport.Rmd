@@ -13,42 +13,54 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE, eval = FALSE)
 
 ```{r vars, echo = FALSE, include = FALSE, eval = TRUE}
 # comp1
-occ <- values$mod_db
-csv <- !is.null(input$userCSV)
-occ.csv <- occ | csv
+occs.db <- rvs$comp1 == 'db'
+occs.csv <- rvs$comp1 == 'csv'
+occs.any <- occs.db | occs.db
 # comp2
-remLoc <- !is.null(values$removedAll)
-drawPoly <- !is.null(values$ptsSel)
-thin <- input$goThin != 0
+poccs.rem <- 'rem' %in% rvs$comp2
+poccs.sel <- 'sel' %in% rvs$comp2
+poccs.thin <- 'thin' %in% rvs$comp2
+poccs.any <- poccs.rem | poccs.sel | poccs.thin
 # comp3
-yesPreds <- input$bcRes != ""
+env.bc <- rvs$comp3 == 'bc'
+env.user <- rvs$comp3 == 'user'
+env.any <- env.bc | env.user
 # comp4
-backg <- !is.null(values$backgExt)
-isBB <- if (backg) input$backgSel == 'bb' else FALSE
-isMCP <- if (backg) input$backgSel == 'mcp' else FALSE
-isUserBG <- if (backg) input$backgSel == 'user' else FALSE
+bg.bb <- rvs$comp4.shp == 'bb'
+bg.mcp <- rvs$comp4.shp == 'mcp'
+bg.ptbuf <- rvs$comp4.shp == 'ptbuf'
+bg.userCSV <- rvs$comp4.shp == 'csv'
+bg.userShp <- rvs$comp4.shp == 'shp'
+bg.user <- bg.userShp | bg.userCSV
+bg.any <- rvs$comp4.shp != ''
+bg.bufWid <- rvs$comp4.buf > 0 & bg.ptbuf == FALSE
 # comp5
-part <- input$goPart != 0
-isBlock <- if (!is.null(values$partSel2)) values$partSel2 == 'block' else FALSE
-isCB1 <- if (!is.null(values$partSel2)) values$partSel2 == 'cb1' else FALSE
-isCB2 <- if (!is.null(values$partSel2)) values$partSel2 == 'cb2' else FALSE
-isJack <- if (!is.null(values$partSel2)) values$partSel2 == 'jack' else FALSE
-isRandom <- if (!is.null(values$partSel2)) values$partSel2 == 'random' else FALSE
+part.block <- rvs$comp5 == 'block'
+part.cb1 <- rvs$comp5 == 'cb1'
+part.cb2 <- rvs$comp5 == 'cb2'
+part.jack <- rvs$comp5 == 'jack'
+part.rand <- rvs$comp5 == 'rand'
+part.any <- rvs$comp5 != ''
 # comp6
-model <- input$goEval != 0
-isBC <- if (!is.null(values$evalMods)) input$enmSel == 'BIOCLIM' else FALSE
-isMX <- if (!is.null(values$evalMods)) input$enmSel == 'Maxent' else FALSE
+mod.bioclim <- rvs$comp6 == 'bioclim'
+mod.maxent <- rvs$comp6 == 'maxent'
+mod.any <- mod.bioclim | mod.maxent
 # comp7
-mapPred <- !is.null(values$goMapPred)
-respCurv <- !is.null(values$respCurvParams) & isMX
-bcEnvelPlot <- !is.null(values$bcEnvelPlot) & isBC
-mxEvalPlot <- !is.null(values$mxEvalPlot) & isMX
-isViz <- mapPred | respCurv | bcEnvelPlot | mxEvalPlot
+viz.pred.mtp <- rvs$comp7.thr == 'mtp'
+viz.pred.p10 <- rvs$comp7.thr == 'p10'
+viz.pred.raw <- rvs$comp7.type == 'raw'
+viz.pred.log <- rvs$comp7.type == 'log'
+viz.pred.cll <- rvs$comp7.type == 'cll'
+viz.pred <- 'map' %in% rvs$comp7
+viz.mxEval <- 'mxEval' %in% rvs$comp7
+viz.bcPlot <- 'bcPlot' %in% rvs$comp7
+viz.resp <- 'resp' %in% rvs$comp7
+viz.any <- rvs$comp7 != ''
 # comp8
-projArea <- !is.null(values$projMsk)
-projTime <- !is.null(values$projTimeVars)
-projAny <- projArea | projTime
-mess <- !is.null(values$mess)
+pj.area <- rvs$comp8.pj == 'area'
+pj.time <- rvs$comp8.pj == 'time'
+pj.mess <- rvs$comp8.esim == 'mess'
+pj.any <- pj.area | pj.time | pj.mess
 ```
 
 Please find below the R code history from your *Wallace* session. 
@@ -78,294 +90,388 @@ source(system.file('shiny/funcs', 'functions.R', package = 'wallace'))
 
 ## Record of analysis for *`r "{{spName}}"`*.
 
-```{asis, echo = occ.csv, eval = occ.csv, include = occ.csv}
+```{asis, echo = occs.any, eval = occs.any, include = occs.any}
 ### Obtain Occurrence Data
 ```
 
-```{asis, echo = occ, eval = occ, include = occ}
+```{asis, echo = occs.db, eval = occs.db, include = occs.db}
 The search for occurrences was limited to `r {{occNum}}` records. Obtain occurrence records of the selected species from the `r "{{dbName}}"` database.
 ```
 
-```{r occSearch, echo = occ, include = occ}
+```{r occSearch, echo = occs.db, include = occs.db}
+# query selected database for occurrence records
 results <- spocc::occ(query = "{{spName}}", from = "{{dbName}}", limit = {{occNum}}, has_coords = TRUE)
+# retrieve data table from spocc object
 results.data <- results[["{{dbName}}"]]$data[[formatSpName("{{spName}}")]]
-occs <- remDups(results.data)  # remove rows with duplicate coordinates
-# make sure latitude and longitude are numeric (sometimes they aren't)
+# remove rows with duplicate coordinates
+occs.dups <- duplicated(results.data[c('longitude', 'latitude')])
+occs <- results.data[!occs.dups,]
+# make sure latitude and longitude are numeric (sometimes they are characters)
 occs$latitude <- as.numeric(occs$latitude)
 occs$longitude <- as.numeric(occs$longitude)
 # give all records a unique ID
-occs$origID <- row.names(occs)
+occs$occID <- row.names(occs)
+# extract occurrence coordinates
+occs.xy <- occs[c('longitude', 'latitude')]
 ```
 
-```{asis, echo = csv, eval = csv, include = csv}
+```{asis, echo = occs.csv, eval = occs.csv, include = occs.csv}
 User CSV path with occurrence data. If the CSV file is not in the current workspace, change to the correct file path (e.g. "/Users/darwin/Documents/occs.csv").
 ```
 
-```{r occInput, echo = csv}
-inFile <- read.csv("{{occsCSV}}", header = TRUE)  # load occurrence data
-occs <- remDups(inFile)  # remove duplicate records
+```{r occInput, echo = occs.csv}
+# NOTE: provide the path to the folder that contains the rasters
+d.occs <- ''
+# create path to user occurrences csv file
+userOccs.path <- file.path(d.occs, "{{occsCSV}}")
+# read in csv
+userOccs.csv <- read.csv(userOccs.path, header = TRUE)
+# remove rows with duplicate coordinates
+occs.dups <- duplicated(userOccs.csv[c('longitude', 'latitude')])
+occs <- userOccs.csv[!occs.dups,]
+# extract occurrence coordinates
+occs.xy <- occs[c('longitude', 'latitude')]
 ```
 
-```{asis, echo = thin | remLoc | drawPoly, eval = drawPoly, include = drawPoly}
+
+
+
+```{asis, echo = poccs.any, eval = poccs.any, include = poccs.any}
 ### Process Occurrence Data
 ```
 
-```{asis, echo = remLoc, eval = remLoc, include = remLoc}
+```{asis, echo = poccs.rem, eval = poccs.rem, include = poccs.rem}
 Remove the occurrence localities with the following IDs: `r {{occsRemoved}}`.
 ```
 
-```{r remLocs, echo = remLoc, include = remLoc}
-remo <- which(occs$origID %in% {{occsRemoved}})  # find row numbers that match IDs to be removed
-occs <- occs[-remo, ]  # remove the selected rows
+```{r poccs.rem, echo = poccs.rem, include = poccs.rem}
+# find row numbers that match IDs to be removed
+occs.rem <- which(occs$occID %in% {{occsRemoved}})
+# remove the selected rows
+occs <- occs[-occs.rem, ]  
 ```
 
-```{asis, echo = drawPoly, eval = drawPoly, include = drawPoly}
-You chose `r length({{occsSel}})` total occurrence localities via polygon selection to keep in the analysis.
+```{asis, echo = poccs.sel, eval = poccs.sel, include = poccs.sel}
+The following code recreates the polygon used to select occurrences to keep in the analysis.
 ```
 
-```{r remLocs2, echo = drawPoly, include = drawPoly}
-occs <- occs[{{occsSel}}, ]  # subset occs by selected rows
+```{r occsSelect, echo = poccs.sel, include = poccs.sel}
+selCoords <- data.frame(x = {{occsSelX}}, y = {{occsSelY}})
+selPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)), ID=1)))
+intersect <- sp::over(occs.xy, selPoly)
+intersect.rowNums <- as.numeric(which(!(is.na(intersect))))
+occs <- occs[intersect.rowNums, ]
 ```
 
-```{asis, echo = thin, eval = thin, include = thin}
-Spatial thinning selected. Thin distance selected is `r {{thinDist}}` m.
+```{asis, echo = poccs.thin, eval = poccs.thin, include = poccs.thin}
+Spatial thinning selected. Thin distance selected is `r {{thinDist}}` km.
 ```
 
-```{r doThin, echo = thin, include = thin}
+```{r doThin, echo = poccs.thin, include = poccs.thin}
 output <- spThin::thin(occs, 'latitude', 'longitude', 'name', thin.par = {{thinDist}}, reps = 100, locs.thinned.list.return = TRUE, write.files = FALSE, verbose = FALSE)
 ```
 
-```{asis, echo = thin, eval = thin, include = thin}
+```{asis, echo = poccs.thin, eval = poccs.thin, include = poccs.thin}
 Since spThin did 100 iterations, there are 100 different variations of how it thinned your occurrence localities. As there is a stochastic element in the algorithm, some iterations may include more localities than the others, and we need to make sure we maximize the number of localities we proceed with.
 ```
 
-```{r doThin2, echo = thin, include = thin}
-maxThin <- which(sapply(output, nrow) == max(sapply(output, nrow)))  # find the iteration that returns the max number of occurrences
-maxThin <- output[[ifelse(length(maxThin) > 1, maxThin[1], maxThin)]]  # if there's more than one max, pick the first one
-occs <- occs[as.numeric(rownames(maxThin)),]  # subset occs to match only thinned occs
+```{r doThin2, echo = poccs.thin, include = poccs.thin}
+# find the iteration that returns the max number of occurrences
+maxThin <- which(sapply(output, nrow) == max(sapply(output, nrow)))
+# if there's more than one max, pick the first one
+maxThin <- output[[ifelse(length(maxThin) > 1, maxThin[1], maxThin)]]  
+# subset occs to match only thinned occs
+occs <- occs[as.numeric(rownames(maxThin)),]  
 ```
 
-```{asis, echo = yesPreds, eval = yesPreds, include = yesPreds}
+
+
+
+```{asis, echo = env.any, eval = env.any, include = env.any}
 ### Obtain Environmental Data
-Using WorldClim (http://www.worldclim.org/) bioclimatic dataset at resolution of `r {{predsRes}}` arcmin.
 ```
 
-```{r getPreds, echo = yesPreds, include = yesPreds}
-preds <- raster::getData(name = "worldclim", var = "bio", res = {{predsRes}}, lat = {{bcLat}}, lon = {{bcLon}})
-locs.vals <- raster::extract(preds[[1]], occs[, c('longitude', 'latitude')])  # extract environmental values at occ grid cells
-occs <- occs[!is.na(locs.vals), ]  # remove occs without environmental values from inFile
+``` {asis, echo = env.bc, eval = env.bc, include = env.bc}
+Using WorldClim (http://www.worldclim.org/) bioclimatic dataset at resolution of `r {{bcRes}}` arcmin.
+```
+
+```{r getEnvBC, echo = env.bc, include = env.bc}
+# get WorldClim bioclimatic variable rasters
+envs <- raster::getData(name = "worldclim", var = "bio", res = {{bcRes}}, lat = {{bcLat}}, lon = {{bcLon}})
+# extract environmental values at occ grid cells
+locs.vals <- raster::extract(envs[[1]], occs[, c('longitude', 'latitude')])
+# remove occs without environmental values
+occs <- occs[!is.na(locs.vals), ]  
+```
+
+```{r getEnvUser, echo = env.user, include = env.user}
+# NOTE: provide the path to the folder that contains the rasters
+d.envs <- ''
+# create paths to the raster files
+userRas.paths <- file.path(d.envs, {{userEnvs}})
+# make a RasterStack out of the raster files
+envs <- raster::stack(userRas.paths)
 ```
 
 
-```{r switch, include = FALSE, eval = backg}
-backgSwitch <- switch("{{backgSel}}", 'bb'='Bounding Box', 'mcp'='Minimum Convex Polygon', 'user'='User-defined')
+
+
+```{r bgSwitch, include = FALSE, eval = bg.any}
+bgType <- switch("{{bgSel}}", 'bb'='Bounding Box', 'mcp'='Minimum Convex Polygon',   
+                'ptsbuf'='Buffered Points',  'user'='User-defined')
 ```
 
-```{asis, echo = backg, eval = backg, include = backg}
+```{asis, echo = bg.any, eval = bg.any, include = bg.any}
 ### Process Environmental Data
-Background selection technique chosen as `r backgSwitch`.
-Buffer size of the study extent polygon defined as `r {{backgBuf}}` km.
+Background selection technique chosen as `r bgType`.
 ```
 
-```{r backgBuf, echo = isBB, include = isBB}
-xmin <- min(occs$longitude) - ({{backgBuf}} + res(preds)[1])
-xmax <- max(occs$longitude) + ({{backgBuf}} + res(preds)[1])
-ymin <- min(occs$latitude) - ({{backgBuf}} + res(preds)[1])
-ymax <- max(occs$latitude) + ({{backgBuf}} + res(preds)[1])
+```{r bgBB, echo = bg.bb, include = bg.bb}
+xmin <- min(occs$longitude)
+xmax <- max(occs$longitude)
+ymin <- min(occs$latitude)
+ymax <- max(occs$latitude)
 bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin), ncol=2)
-backgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(bb)), 1)))
+bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(bb)), 1)))
 ```
 
-```{r backgBuf2, echo = isMCP, include = isMCP}
-xy_mcp <- mcp(occs[,2:3])
-bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
-backgExt <- rgeos::gBuffer(xy_mcp, width = {{backgBuf}} + res(preds)[1])
+```{r bgMCP, echo = bg.mcp, include = bg.mcp}
+bgExt <- mcp(occs.xy)
 ```
 
-```{asis, echo = isUserBG, eval = isUserBG, include = isUserBG}
-User study extent name is `r "{{userBGname}}"`. User study extent path is `r "{{userBGpath}}"`.
+```{r bgPtBufs, echo = bg.ptbuf, include = bg.ptbuf}
+# make SpatialPoints object for buffering
+occs.sp <- sp::SpatialPoints(occs.xy)
+bgExt <- rgeos::gBuffer(occs.sp, width = {{bgBuf}})
 ```
 
-```{r userBackgPoly, echo = isUserBG, include = isUserBG}
-shp <- read.csv("{{userBGpath}}", header = TRUE)  # read csv with coordinates for polygon
+```{asis, echo = bg.userCSV, eval = bg.userCSV, include = bg.userCSV}
+User study extent name is `r "{{bgUserCSVname}}"`. User study extent path is `r "{{bgUserCSVpath}}"`. Read in the .csv file and generate a Spatial Polygon object.
 ```
 
-```{asis, echo = backg, eval = backg, include = backg}
-Generate the user-defined study extent plus the buffer:
+```{r bgUserCSV, echo = bg.userCSV, include = bg.userCSV}
+# read csv with coordinates for polygon
+shp <- read.csv("{{bgUserCSVpath}}", header = TRUE)
+bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(shp)), 1)))
 ```
 
-```{r userBackgPoly2, echo = isUserBG, include = isUserBG}
-shp <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(shp)), 1)))
-shp <- rgeos::gBuffer(shp, width = {{backgBuf}} + res(preds)[1])
-backgExt <- shp
-bb <- shp@polygons[[1]]@Polygons[[1]]@coords
+```{asis, echo = bg.userShp, eval = bg.userShp, include = bg.userShp}
+User study extent name is `r "{{bgUserShpName}}"`. User study extent path is `r "{{bgUserShpPath}}"`. Read in the .csv file and generate a Spatial Polygon object.
 ```
 
-```{asis, echo = backg, eval = backg, include = backg}
-Mask environmental variables by `r backgSwitch`, and take a random sample of background values from the study extent. As the sample is random, your results may be different than those in the session. If there seems to be too much variability in these background samples, try increasing the number from 10,000 to something higher (e.g. 50,000 or 100,000). The better your background sample, the less variability you'll have between runs.
+```{r bg.userShp, echo = bg.userShp, include = bg.userShp}
+# NOTE: provide the path to the folder that contains the shapefile
+d.bg <- ''
+# read csv with coordinates for polygon
+bgExt <- rgdal::readOGR(d.bg, "{{bgUserShpName}}")
 ```
 
-```{r predsMask, echo = backg, include = backg}
-predsBackgCrop <- raster::crop(preds, backgExt)
-predsBackgMsk <- raster::mask(predsBackgCrop, backgExt)
-occs.locs <- occs[,2:3]
-bg.coords <- dismo::randomPoints(predsBackgMsk, 10000)  # generate 10,000 background points
-bg.coords <- as.data.frame(bg.coords)  # get the matrix output into a data.frame
+```{asis, echo = bg.bufWid, eval = bg.bufWid, include = bg.bufWid}
+Buffer size of the study extent polygon defined as `r {{bgBuf}}` km.
 ```
 
-```{asis, echo = part, eval = part, include = part}
-### Partition Occurrence Data
-Here, occurrence data is partitioned for cross-validation.
+```{r bgBufWid, echo = bg.bufWid, include = bg.bufWid}
+bgExt <- rgeos::gBuffer(bgExt, width = {{bgBuf}})
 ```
 
-```{r switch2, include = FALSE, eval = part}
+```{asis, echo = bg.any, eval = bg.any, include = bg.any}
+Mask environmental variables by `r bgType`, and take a random sample of background values from the study extent. As the sample is random, your results may be different than those in the session. If there seems to be too much variability in these background samples, try increasing the number from 10,000 to something higher (e.g. 50,000 or 100,000). The better your background sample, the less variability you'll have between runs.
+```
+
+```{r envsMask, echo = bg.any, include = bg.any}
+# crop the environmental rasters by the background extent shape
+envsBgCrop <- raster::crop(envs, bgExt)
+# mask the background extent shape from the cropped raster
+envsBgMsk <- raster::mask(envsBgCrop, bgExt)
+# sample random background points
+bg.xy <- dismo::randomPoints(envsBgMsk, {{bgPtsNum}})
+# convert matrix output to data frame
+bg.xy <- as.data.frame(bg.xy)  
+```
+
+
+```{r partSwitch, include = FALSE, eval = part.any}
 partSwitch <- switch("{{partSel}}", 'block'='Block', 'cb1'='Checkerboard 1', 'cb2'='Checkerboard 2', 'jack'='Jackknife', 'random'='Random')
 ```
 
-```{asis, echo = part, eval = part, include = part}
-Data partition by `r partSwitch` method.
+```{asis, echo = part.any, eval = part.any, include = part.any}
+### Partition Occurrence Data
+Occurrence data is now partitioned for cross-validation, a method that iteratively builds a model on all but one group and evaluates that model on the left-out group. 
+
+For example, if the data is partitioned into 3 groups A, B, and C, a model is first built with groups A and B and is evaluated on C. This is repeated by building a model with B and C and evaluating on A, and so on until all combinations are done. 
+
+Cross-validation operates under the assumption that the groups are independent of each other, which may or may not be a safe assumption for your dataset. Spatial partitioning is one way to ensure more independence between groups.
+
+You selected to partition your occurrence data by the `r partSwitch` method.
 ```
 
-```{r blockGrp, echo = isBlock, include = isBlock}
-group.data <- ENMeval::get.block(occ=occs.locs, bg.coords=bg.coords)
+```{r blockGrp, echo = part.block, include = part.block}
+group.data <- ENMeval::get.block(occ=occs.xy, bg.coords=bg.xy)
 ```
 
-```{r check1Grp, echo = isCB1, include = isCB1}
-group.data <- ENMeval::get.checkerboard1(occ=occs.locs, env=predsBackgMsk, bg.coords=bg.coords, aggregation.factor={{aggFact}})
+```{r check1Grp, echo = part.cb1, include = part.cb1}
+group.data <- ENMeval::get.checkerboard1(occ=occs.xy, env=envsBgMsk, bg.coords=bg.xy, aggregation.factor={{aggFact}})
 ```
 
-```{r check2Grp, echo = isCB2, include = isCB2}
-group.data <- ENMeval::get.checkerboard2(occ=occs.locs, env=predsBackgMsk, bg.coords=bg.coords, aggregation.factor={{aggFact}})
+```{r check2Grp, echo = part.cb2, include = part.cb2}
+group.data <- ENMeval::get.checkerboard2(occ=occs.xy, env=envsBgMsk, bg.coords=bg.xy, aggregation.factor={{aggFact}})
 ```
 
-```{r jackGrp, echo = isJack, include = isJack}
-group.data <- ENMeval::get.jackknife(occ=occs.locs, bg.coords=bg.coords)
+```{r jackGrp, echo = part.jack, include = part.jack}
+group.data <- ENMeval::get.jackknife(occ=occs.xy, bg.coords=bg.xy)
 ```
 
-```{r randGrp, echo = isRandom, include = isRandom}
-group.data <- ENMeval::get.randomkfold(occ=occs.locs, bg.coords=bg.coords, kfolds={{kfoldsSel}})
+```{r randGrp, echo = part.rand, include = part.rand}
+group.data <- ENMeval::get.randomkfold(occ=occs.xy, bg.coords=bg.xy, kfolds={{kfolds}})
 ```
 
-```{asis, echo = part, include = part}
-Define modeling parameters:
+```{r  echo = part.any, include = part.any}
+# pull out the occurrence and background partition group numbers from the list
+occs.grp <- group.data[[1]]
+bg.grp <- group.data[[2]]
 ```
 
-```{r params, echo = part, include = part}
-modParams <- list(occ.pts=occs.locs, bg.pts=bg.coords, occ.grp=group.data[[1]], bg.grp=group.data[[2]])
-```
 
 
-```{asis, echo = model, eval = model, include = model}
+
+```{asis, echo = mod.any, eval = mod.any, include = mod.any}
 ### Build and Evaluate Niche Model
 `r "{{enmSel}}"` model selected.
 ```
 
-```{r bioclim, echo = isBC, include = isBC}
-e <- BioClim_eval(modParams$occ.pts, modParams$bg.pts, modParams$occ.grp, modParams$bg.grp, predsBackgMsk)
+```{r bioclim, echo = mod.bioclim, include = mod.bioclim}
+e <- BioClim_eval(occs.xy, bg.xy, occs.grp, bg.grp, envsBgMsk)
+# unpack the results data frame and list of models
 evalTbl <- e$results
 evalMods <- e$models
-names(e$predictions) <- "Classic_BIOCLIM"
+names(e$predictions) <- "BIOCLIM"
 evalPreds <- e$predictions
-occVals <- raster::extract(e$predictions, modParams$occ.pts)  # get predicted values for occ grid cells
-mtps <- min(occVals)  # apply minimum training presence threshold
-# Define 10% training presence threshold
-if (length(occVals) < 10) {  # if less than 10 occ values, find 90% of total and round down
-  n90 <- floor(length(occVals) * 0.9)
-} else {  # if greater than or equal to 10 occ values, round up
-  n90 <- ceiling(length(occVals) * 0.9)
-}
-p10s <- rev(sort(occVals))[n90]  # apply 10% training presence threshold
 ```
 
-```{r maxent, echo = isMX, results = 'hide'}
-rms <- seq({{rmsSel1}}, {{rmsSel2}}, {{rmsBy}})  # define the vector of RMs to input
-e <- ENMeval::ENMevaluate(modParams$occ.pts, predsBackgMsk, bg.coords=modParams$bg.pts, RMvalues=rms, fc={{fcsSel}}, method='user', occ.grp=modParams$occ.grp, bg.grp=modParams$bg.grp)
+```{r maxent, echo = mod.maxent, include = mod.maxent, results = 'hide'}
+# define the vector of regularization multipliers to test
+rms <- seq({{rms1}}, {{rms2}}, {{rmsStep}})
+# iterate model building over all chosen parameter settings
+e <- ENMeval::ENMevaluate(occs.xy, predsBgMsk, bg.coords=bg.xy, RMvalues=rms, fc={{fcs}}, method='user', occs.grp, bg.grp)
+
+# unpack the results data frame, the list of models, and the RasterStack of raw predictions
 evalTbl <- e@results
 evalMods <- e@models
-evalPreds <- e@predictions  # raw predictions
-
-evalPredsLog <- stack(sapply(e@models, function(x) predict(x, predsBackgMsk)))  # logistic predictions
-
-occVals <- raster::extract(e@predictions, modParams$occ.pts)  # get predicted values for occ grid cells
-mtps <- apply(occVals, MARGIN = 2, min)  # apply minimum training presence threshold over all models
-# Define 10% training presence threshold
-if (length(occVals) < 10) {  # if less than 10 occ values, find 90% of total and round down
-  n90 <- floor(length(occVals) * 0.9)
-} else {  # if greater than or equal to 10 occ values, round up
-  n90 <- ceiling(length(occVals) * 0.9)
-}
-p10s <- apply(occVals, MARGIN = 2, function(x) rev(sort(x))[n90])  # apply 10% training presence threshold over all models
+evalPreds <- e@predictions
 ```
 
-```{asis, echo = isViz, eval = isViz, include = isViz}
+```{asis, echo = viz.any, eval = viz.any, include = viz.any}
 ### Visualize Niche Model
-You chose to view visualizations of your modeling analysis results.
+Below are some visualizations of your modeling analysis results.
 ```
 
-```{r respCurv, echo = respCurv, include = respCurv}
-dismo::response(evalMods[[{{respCurvParamsMod}}]], var = "{{respCurvParamsVar}}")
+```{r respCurv, echo = viz.resp, include = viz.resp}
+# view response curves for environmental variables with non-zero coefficients
+dismo::response(evalMods[["{{modSel}}"]], var = {{mxNonZeroCoefs}})
 ```
 
-```{r bcPlot, echo = bcEnvelPlot, include = bcEnvelPlot}
-plot(evalMods[[1]], a = {{bcPlot1}}, b = {{bcPlot2}}, p = {{bcPlotP}})
+```{r bcPlot, echo = viz.bcPlot, include = viz.bcPlot}
+# view BIOCLIM envelope plot
+plot(evalMods[['BIOCLIM']], a = {{bcPlot1}}, b = {{bcPlot2}}, p = {{bcPlotP}})
 ```
 
-```{r evalPlot, echo = mxEvalPlot, include = mxEvalPlot}
-ENMeval::eval.plot(evalTbl, value = "{{mxEvalPlotSel}}")
+```{r evalPlot, echo = viz.mxEval, include = viz.mxEval}
+# view ENMeval results
+ENMeval::eval.plot(evalTbl, value = "{{mxEvalSel}}")
 ```
 
-```{asis, echo = projAny, eval = projAny, include = projAny}
+```{r mapPred, echo = viz.pred, include = viz.pred}
+# Select your model from the models list
+m <- evalMods[["{{modSel}}"]]
+```
+
+```{r, echo = viz.pred.raw, include = viz.pred.raw}
+# generate raw prediction
+p <- evalPreds[["{{modSel}}"]]
+```
+
+```{r, echo = viz.pred.log, include = viz.pred.log}
+# generate logistic prediction
+p <- dismo::predict(m, predsBgMsk, args=c("outputformat=logistic"))
+```
+
+```{r, echo = viz.pred.cll, include = viz.pred.cll}
+# generate cloglog prediction
+p <- dismo::predict(m, predsBgMsk, args=c("outputformat=cloglog"))
+```
+
+```{r, echo = viz.pred.mtp, include = viz.pred.mtp}
+# get predicted values for occurrence grid cells
+occVals <- raster::extract(p, occs.xy)
+# define minimum training presence threshold
+x <- thresh(occVals, 'mtp')
+# threshold model prediction
+p <- p > x
+```
+
+```{r, echo = viz.pred.p10, include = viz.pred.p10}
+# get predicted values for occurrence grid cells
+occVals <- raster::extract(p, occs.xy)
+# define 10% training presence threshold
+x <- thresh(occVals, 'p10')
+# threshold model prediction
+p <- p > x
+```
+
+```{r, echo = viz.pred, include = viz.pred}
+# plot the model prediction
+plot(p)
+```
+
+```{asis, echo = pj.any, eval = pj.any, include = pj.any}
 ### Project Niche Model
 You selected to project your model. First define a polygon with the coordinates you chose, then crop and mask your predictor rasters. Finally, predict suitability values for these new raster cells based on the model you selected.
 ```
 
-```{r projSel, echo = projAny, include = projAny}
-projCoords <- data.frame(x = {{projAreaX}}, y = {{projAreaY}})
+```{r projSel, echo = pj.any, include = pj.any}
+projCoords <- data.frame(x = {{occsPjX}}, y = {{occsPjX}})
 projPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(projCoords)), ID=1)))
-
-# Select your model from the evalMods list
-modSel <- evalMods[[{{modSel}}]]
 ```
 
-```{asis, echo = projArea, eval = projArea, include = projArea}
+```{asis, echo = pj.area, eval = pj.area, include = pj.area}
 ### Project Niche Model to New Extent
 Now use crop and mask the predictor variables by projPoly, and use the predict() function to predict the values for the new extent based on the model selected.
 ```
 
-```{r projArea, echo = projArea, include = projArea}
-predsProj <- raster::crop(preds, projPoly)
-predsMsk <- raster::mask(predsProj, projPoly)
+```{r projArea, echo = pj.area, include = pj.area}
+predsProj <- raster::crop(envs, projPoly)
+predsMsk <- raster::mask(envsProj, projPoly)
 
-newExtProj <- dismo::predict(modSel, predsMsk)
+newExtProj <- dismo::predict(modSel, envsMsk)
 plot(newExtProj)
 ```
 
-```{asis, echo = projTime, eval = projTime, include = projTime}
+```{asis, echo = pj.time, eval = pj.time, include = pj.time}
 ### Project Niche Model to New Time
 Now download the future climate variables chosen with *Wallace*, crop and mask them by projPoly, and use the predict() function to predict the values for the new time based on the model selected.
 ```
 
-```{r projTime, echo = projTime, include = projTime}
-predsFuture <- raster::getData("CMIP5", var = "bio", res = {{predsRes}}, rcp = {{selRCP}}, model = "{{selGCM}}", year = {{selTime}})
+```{r projTime, echo = pj.time, include = pj.time}
+envsFuture <- raster::getData("CMIP5", var = "bio", res = {{bcRes}}, rcp = {{pjRCP}}, model = "{{pjGCM}}", year = {{pjYear}})
 
-predsProj <- raster::crop(predsFuture, projPoly)
-predsMsk <- raster::mask(predsProj, projPoly)
+envsProj <- raster::crop(envsFuture, projPoly)
+envsMsk <- raster::mask(envsProj, projPoly)
 
 # rename future climate variable names
-names(predsMsk) <- names(preds)
-futureProj <- dismo::predict(modSel, predsMsk)
+names(envsMsk) <- names(envs)
+futureProj <- dismo::predict(modSel, envsMsk)
 plot(futureProj)
 ```
 
-```{asis, echo = mess, eval = mess, include = mess}
+```{asis, echo = pj.mess, eval = pj.mess, include = pj.mess}
 ### Calculate Environmental Similarity
 To visualize the environmental difference between the occurrence localities and your selected projection extent, calculate a multidimensional environmental similarity surface (MESS). High negative values mean great difference, whereas high positive values mean great similarity. Interpreting the projected suitability for areas with high negative values should be done with extreme caution, as they are outside the environmental range of the occurrence localities.
 ```
 
-```{r projMESS, echo = mess, include = mess}
+```{r projMESS, echo = pj.mess, include = pj.mess}
 # extract environmental values from occurrence localities -- these were the values that went into the model
-occVals <- raster::extract(preds, occs.locs)
-# compare these values with the projection extent (predsMsk)
-occVals.mess <- dismo::mess(predsMsk, occVals)
+occVals <- raster::extract(envs, occs.xy)
+# compare these values with the projection extent (envsMsk)
+occVals.mess <- dismo::mess(envsMsk, occVals)
 plot(occVals.mess)
 ```

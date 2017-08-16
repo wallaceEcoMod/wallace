@@ -21,7 +21,7 @@
 }
 .scrollbox {
   height:100px;
-  width:550px;
+  width:450px;
   padding:5px;
   overflow:auto;
   border:1px solid green;

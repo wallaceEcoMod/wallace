@@ -2,34 +2,73 @@
 ## Define functions
 ## -------------------------------------------------------------------- ##
 
-GCMlookup <- c(AC="ACCESS1-0", BC="BCC-CSM1-1", CC="CCSM4", CE="CESM1-CAM5-1-FV2",
-              CN="CNRM-CM5", GF="GFDL-CM3", GD="GFDL-ESM2G", GS="GISS-E2-R",
-              HD="HadGEM2-AO", HG="HadGEM2-CC", HE="HadGEM2-ES", IN="INMCM4",
-              IP="IPSL-CM5A-LR", ME="MPI-ESM-P", MI="MIROC-ESM-CHEM", MR="MIROC-ESM",
-              MC="MIROC5", MP="MPI-ESM-LR", MG="MRI-CGCM3", NO="NorESM1-M")
+####################### #
+# UI ####
+####################### #
 
-rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-
-reverseLabels <- function(..., reverse_order = FALSE) {
-  if (reverse_order) {
-    function(type = "numeric", cuts) {
-      cuts <- sort(cuts, decreasing = TRUE)
-    }
-  } else {
-    labelFormat(...)
-  }
+uiTop <- function(modPkg, pkgDes, modInsert) {
+  list(span(modPkg, id="rpkg"),
+       span(paste(':', pkgDes), id="pkgDes"),
+       br())
 }
 
-## custom label format function
-myLabelFormat = function(..., reverse_order = FALSE){
-  if(reverse_order){
-    function(type = "numeric", cuts){
-      cuts <- sort(cuts, decreasing = T)
-    }
-  }else{
-    labelFormat(...)
-  }
+uiBottom <- function(modName, authors) {
+  list(span(modName, id = "rpkg"), "references", br(),
+       div(paste('Developers:', authors), id="pkgDes"),
+       a("CRAN", href = file.path("http://cran.r-project.org/web/packages", modName, "index.html"), target = "_blank"),
+       " | ",
+       a("documentation", href = file.path("https://cran.r-project.org/web/packages", modName, paste0(modName, ".pdf")), target = "_blank")
+  )
 }
+
+####################### #
+# LOG WINDOW ####
+####################### #
+
+# initialize log window text
+logInit <- function() {
+  intro <- '***WELCOME TO WALLACE***'
+  brk <- paste(rep('------', 14), collapse='')
+  expl <- 'Please find messages for the user in this log window.'
+  return(c(paste(intro, brk, expl, brk, sep='<br>')))
+}
+
+# add text to log
+writeLog <- function(mp, ..., type = 'default') {
+  if (type == "default") {
+    pre <- "> "
+  } else if (type == 'error') {
+    pre <- '<font color="red"><b>! ERROR</b></font> : '
+  } else if (type == 'warning') {
+    pre <- '<font color="orange"><b>! WARNING</b></font> : '
+  }
+  
+  args <- list(pre, ...)
+  newEntries <- paste(args, collapse = ' ')
+  isolate({mp$logs <- paste(mp$logs, newEntries, sep = '<br>')})
+}
+
+####################### #
+# MISC ####
+####################### #
+
+# for naming files
+nameAbbr <- function(spname) {
+  namespl <- strsplit(tolower(spname), " ")
+  genusAbbr <- substring(namespl[[1]][1], 1, 1)
+  fullNameAbbr <- paste0(genusAbbr, "_", namespl[[1]][2])
+  return(fullNameAbbr)
+}
+
+formatSpName <- function(spName) paste(strsplit(spName, split=' ')[[1]], collapse='_')
+
+fileNameNoExt <- function(f) {
+  sub(pattern = "(.*)\\..*$", replacement = "\\1", f)
+}
+
+####################### #
+# MAPPING ####
+####################### #
 
 # return the map center given the bounds
 mapCenter <- function(bounds) {
@@ -55,15 +94,31 @@ zoom2Occs <- function(map, occs) {
   z <- smartZoom(longi, lati)
   map %>% fitBounds(z[1], z[2], z[3], z[4])
 
-  # this section makes letter icons for occs based on basisOfRecord
-  #     occIcons <- makeOccIcons()
-  #     iconList <- list(HUMAN_OBSERVATION=1, OBSERVATION=2, PRESERVED_SPECIMEN=3,
-  #                      UNKNOWN_EVIDENCE=4, FOSSIL_SPECIMEN=5, MACHINE_OBSERVATION=6,
-  #                      LIVING_SPECIMEN=7, LITERATURE_OCCURRENCE=8, MATERIAL_SAMPLE=9)
-  #     values$origOccs$basisNum <- unlist(iconList[values$origOccs$basisOfRecord])
-  #     proxy %>% addMarkers(data = values$origOccs, lat = ~latitude, lng = ~longitude,
-  #                          layerId = as.numeric(rownames(values$origOccs)),
-  #                          icon = ~icons(occIcons[basisNum]))
+  
+  ## this section makes letter icons for occs based on basisOfRecord
+  # makeOccIcons <- function(width = 10, height = 10, ...) {
+  #   occIcons <- c('H', 'O', 'P', 'U', 'F', 'M', 'I', 'L', 'A', 'X')
+  #   files <- character(9)
+  #   # create a sequence of png images
+  #   for (i in 1:9) {
+  #     f <- tempfile(fileext = '.png')
+  #     png(f, width = width, height = height, bg = 'transparent')
+  #     par(mar = c(0, 0, 0, 0))
+  #     plot.new()
+  #     points(.5, .5, pch = occIcons[i], cex = min(width, height) / 8, col='red', ...)
+  #     dev.off()
+  #     files[i] <- f
+  #   }
+  #   files
+  # }
+  # occIcons <- makeOccIcons()
+  # iconList <- list(HUMAN_OBSERVATION=1, OBSERVATION=2, PRESERVED_SPECIMEN=3,
+  #                  UNKNOWN_EVIDENCE=4, FOSSIL_SPECIMEN=5, MACHINE_OBSERVATION=6,
+  #                  LIVING_SPECIMEN=7, LITERATURE_OCCURRENCE=8, MATERIAL_SAMPLE=9)
+  # values$origOccs$basisNum <- unlist(iconList[values$origOccs$basisOfRecord])
+  # proxy %>% addMarkers(data = values$origOccs, lat = ~latitude, lng = ~longitude,
+  #                      layerId = as.numeric(rownames(values$origOccs)),
+  #                      icon = ~icons(occIcons[basisNum]))
 }
 
 # zooms appropriately for any extent
@@ -75,18 +130,49 @@ smartZoom <- function(longi, lati) {
   c(min(longi-lg.diff), min(lati-lt.diff), max(longi+lg.diff), max(lati+lt.diff))
 }
 
-# for naming files
-nameAbbr <- function(spname) {
-  namespl <- strsplit(tolower(spname[1,1]), " ")
-  genusAbbr <- substring(namespl[[1]][1], 1, 1)
-  fullNameAbbr <- paste0(genusAbbr, "_", namespl[[1]][2])
-  return(fullNameAbbr)
+popUpContent <- function(x) {
+  lat <- round(as.numeric(x['latitude']), digits = 2)
+  lon <- round(as.numeric(x['longitude']), digits = 2)
+  as.character(tagList(
+    tags$strong(paste("occID:", x['occID'])),
+    tags$br(),
+    tags$strong(paste("Latitude:", lat)),
+    tags$strong(paste("Longitude:", lon))
+  ))
 }
 
-formatSpName <- function(spName) paste(strsplit(spName, split=' ')[[1]], collapse='_')
+####################### #
+# COMP 3 ####
+####################### #
+
+remEnvsValsNA <- function(rvs) {
+  withProgress(message = "Processing...", {
+    occsVals <- raster::extract(rvs$envs, rvs$occs[c('longitude', 'latitude')])
+    na.rowNums <- which(rowSums(is.na(occsVals)) > 1)
+    
+    if (length(na.rowNums) == length(occsVals)) {
+      logs %>% writeLog('<font color="red"><b>! ERROR</b></font> : No localities overlay with environmental predictors. 
+                        All localities may be marine -- please redo with terrestrial occurrences.')
+      return()
+    }
+    
+    if (length(na.rowNums) > 0) {
+      occs.notNA <- rvs$occs[-na.rowNums,]
+      logs %>% writeLog("! WARNING: Removed records without environmental values with occIDs: ",
+                        paste(rvs$occs[na.rowNums,]$occID, collapse=', '), ".")
+      return(occs.notNA)
+    }
+    
+    return(rvs$occs)
+  })
+  }
+
+####################### #
+# COMP 4 ####
+####################### #
 
 # make a minimum convex polygon as SpatialPolygons object
-mcp <- function (xy) {
+mcp <- function(xy) {
   xy <- as.data.frame(sp::coordinates(xy))
   coords.t <- chull(xy[, 1], xy[, 2])
   xy.bord <- xy[coords.t, ]
@@ -94,41 +180,34 @@ mcp <- function (xy) {
   return(sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(as.matrix(xy.bord))), 1))))
 }
 
-remDups <- function(df) {
-  dups <- duplicated(df)
-  df <- df[!dups,]
+####################### #
+# COMP 5 ####
+####################### #
+
+comp5_map <- function(map, occs, occsGrp) {
+  # colors for partition symbology
+  newColors <- gsub("FF$", "", rainbow(max(occsGrp)))  
+  partsFill <- newColors[occsGrp]
+  map %>%
+    clearMarkers() %>%
+    map_plotLocs(occs, fillColor = partsFill, fillOpacity = 1) %>%
+    addLegend("bottomright", colors = newColors,
+              title = "Partition Groups", labels = sort(unique(occsGrp)),
+              opacity = 1, layerId = 'leg') %>%
+    zoom2Occs(occs)
 }
 
-makeOccIcons <- function(width = 10, height = 10, ...) {
-  occIcons <- c('H', 'O', 'P', 'U', 'F', 'M', 'I', 'L', 'A', 'X')
-  files <- character(9)
-  # create a sequence of png images
-  for (i in 1:9) {
-    f <- tempfile(fileext = '.png')
-    png(f, width = width, height = height, bg = 'transparent')
-    par(mar = c(0, 0, 0, 0))
-    plot.new()
-    points(.5, .5, pch = occIcons[i], cex = min(width, height) / 8, col='red', ...)
-    dev.off()
-    files[i] <- f
-  }
-  files
-}
-
-popUpContent <- function(x) {
-  as.character(tagList(
-    tags$strong(paste("ID:", x['origID'])),
-    tags$br(),
-    tags$strong(paste("Latitude:", x['latitude'])),
-    tags$strong(paste("Longitude:", x['longitude']))
-  ))
-}
+####################### #
+# COMP 6 ####
+####################### #
 
 BioClim_eval <- function (occs, bg.pts, occ.grp, bg.grp, env) {
 
   # RUN FULL DATA MODEL
   full.mod <- dismo::bioclim(env, occs)
   pred <- dismo::predict(env, full.mod)
+  occPredVals <- matrix(dismo::predict(full.mod, full.mod@presence))
+  colnames(occPredVals) <- 'BIOCLIM'
 
   # CREATE HOLDERS FOR RESULTS
   AUC.TEST <- double()
@@ -175,10 +254,36 @@ BioClim_eval <- function (occs, bg.pts, occ.grp, bg.grp, env) {
   stats <- cbind(apply(stats, 1, mean), ENMeval::corrected.var(stats, nk), stats)
   colnames(stats) <- c("Mean", "Variance", paste("Bin", 1:nk))
   rownames(stats) <- c("AUC.DIFF", "AUC.TEST","OR10","ORmin")
+  
+  preds <- raster::stack(pred)
+  names(preds) <- "BIOCLIM"
 
   # THIS FORMAT FOR RETURNED DATA ATTEMPTS TO MATCH WHAT HAPPENS IN WALLACE ALREADY FOR ENMEVAL.
-  return(list(models=list(full.mod), results=stats, predictions=raster::stack(pred)))
+  return(list(models=list(BIOCLIM=full.mod), results=stats, 
+              predictions=preds, occVals=occPredVals))
 }
+
+thresh <- function(modOccVals, type) {
+  # remove all NA
+  modOccVals <- na.omit(modOccVals)
+  if (type == 'mtp') {
+    # apply minimum training presence threshold
+    x <- min(modOccVals)
+  } else if (type == 'p10') {
+    # Define 10% training presence threshold
+    if (length(modOccVals) < 10) {  # if less than 10 occ values, find 90% of total and round down
+      n90 <- floor(length(modOccVals) * 0.9)
+    } else {  # if greater than or equal to 10 occ values, round up
+      n90 <- ceiling(length(modOccVals) * 0.9)
+    }
+    x <- rev(sort(modOccVals))[n90]  # apply 10% training presence threshold over all models
+  }
+  return(x)
+}
+
+####################### #
+# COMP 7 ####
+####################### #
 
 # plot ENMeval stats based on user selection ("value")
 evalPlot <- function(res, value) {
@@ -188,7 +293,7 @@ evalPlot <- function(res, value) {
   xlab <- "Regularization Multiplier"
 
   if (value != "delta.AICc") {
-    variance <- paste0('Var', strsplit(value, split='Mean')[[1]][2])
+    variance <- gsub('avg', 'var', value)
   } else {
     variance <- NULL
   }
@@ -197,7 +302,8 @@ evalPlot <- function(res, value) {
 
   if (value != "delta.AICc") {
     v <- res[,variance]
-    ylim <- c(min(y-v), max(y+v))
+    # ylim <- c(min(y-v), max(y+v))
+    ylim <- c(0, 1)
   } else {
     ylim <- c(min(y, na.rm=TRUE), max(y, na.rm=TRUE))
   }
@@ -277,38 +383,6 @@ bc.plot <- function(x, a=1, b=2, p=0.9, ...) {
   points(d[!i,a], d[!i,b], col='red', pch=3)
 }
 
-# Bind csv and occ records
-addCSVpts <- function(df, inFile.occs) {
-  df <- rbind(df, inFile.occs)
-  df <- remDups(df)
-}
-
-
-# Fix columns
-fixcols <- function(cols, results) {
-  colsadd <- cols[!(cols %in% colnames(results$data))]  # find colNames not included in results$data
-  n <- length(colsadd)  # number of colNames not included
-
-  # if there are colNames not included, add a new named col filled with NAs
-  if (n > 0) {
-    for (i in 1:n) {
-      results$data <- cbind(results$data, NA)
-      colnames(results$data)[ncol(results$data)] <- colsadd[i]
-    }
-  }
-  return(results)
-}
-
-
-# Normalize function for raw predictions
-normalize <- function(x) {
-  valores <- values(x)
-  pos <- which(!is.na(valores))
-  valores[pos] <- (valores[pos] - min(valores[pos])) / (max(valores[pos]) - min(valores[pos]))
-  values(x) <- valores
-  return(x)
-}
-
 # make data.frame of lambdas vector from Maxent model object
 lambdasDF <- function(mx) {
   lambdas <- mx@lambdas[1:(length(mx@lambdas)-4)]
@@ -319,7 +393,7 @@ lambdasDF <- function(mx) {
              row.names=1:length(lambdas))
 }
 ## pulls out all non-zero, non-redundant (removes hinge/product/threshold) predictor names
-mxNonzeroPreds <- function(mx) {
+mxNonzeroCoefs <- function(mx) {
   x <- lambdasDF(mx)
   #remove any rows that have a zero lambdas value (Second column)
   x <- x[(x[,2] != 0),]
@@ -354,16 +428,87 @@ respCurv <- function(mod, i) {  # copied mostly from dismo
     #graphics::text(x = vals, y = pred, labels = row.names(mod@presence), pos = 3, offset = 1)
 }
 
-# Reset values
-resetV <- function(x) {
+getVals <- function(r, type='raw') {
+  v <- raster::values(r)
+  # remove NAs
+  v <- v[!is.na(v)]
+  if (type == 'logistic' | type == 'cloglog') v <- c(v, 0, 1)  # set to 0-1 scale
+  return(v)
+}
 
-  namesV <- names(x)[-(1:2)]
-  for(i in namesV){
-    x[[i]] <- NULL
+####################### #
+# COMP 8 ####
+####################### #
+
+GCMlookup <- c(AC="ACCESS1-0", BC="BCC-CSM1-1", CC="CCSM4", CE="CESM1-CAM5-1-FV2",
+               CN="CNRM-CM5", GF="GFDL-CM3", GD="GFDL-ESM2G", GS="GISS-E2-R",
+               HD="HadGEM2-AO", HG="HadGEM2-CC", HE="HadGEM2-ES", IN="INMCM4",
+               IP="IPSL-CM5A-LR", ME="MPI-ESM-P", MI="MIROC-ESM-CHEM", MR="MIROC-ESM",
+               MC="MIROC5", MP="MPI-ESM-LR", MG="MRI-CGCM3", NO="NorESM1-M")
+
+reverseLabels <- function(..., reverse_order = FALSE) {
+  if (reverse_order) {
+    function(type = "numeric", cuts) {
+      cuts <- sort(cuts, decreasing = TRUE)
+    }
+  } else {
+    labelFormat(...)
   }
-  brk <- paste(rep('------', 14), collapse='')
-  x$polyID <- 0
-  x$polyErase <- FALSE
-  x$log <- c(paste('***WELCOME TO WALLACE***', brk,
-                'Please find messages for the user in this log window.', brk, sep='<br>'))
+}
+
+comp8_map <- function(map, pjRas, rasVals, rasCols, legTitle, clearImg = TRUE) {
+  rasPal <- colorNumeric(rasCols, rasVals, na.color='transparent')
+  legPal <- colorNumeric(rev(rasCols), rasVals, na.color='transparent')
+  
+  if (clearImg == TRUE) map %>% clearImages()
+  
+  map %>% 
+    clearMarkers() %>% clearShapes() %>%
+    addLegend("bottomright", pal = legPal, title = legTitle,
+              values = rasVals, layerId = 'leg',
+              labFormat = reverseLabels(2, reverse_order=TRUE)) %>%
+    addRasterImage(rvs$predCur, colors = rasPal, opacity = 0.7, 
+                   group = 'c7', layerId = 'r1ID') %>%
+    addRasterImage(pjRas, colors = rasPal, opacity = 0.7, 
+                   group = 'c7', layerId = 'r2ID') %>%
+    addPolygons(lng=rvs$polyPjXY[,1], lat=rvs$polyPjXY[,2], layerId="projExt", fill = FALSE,
+                weight=4, color="green", group='c8')
+  for (shp in bgShpXY()) {
+    map %>%
+      addPolygons(lng=shp[,1], lat=shp[,2], fill = FALSE,
+                  weight=4, color="red", group='c8')  
+  }
+}
+
+drawToolbarRefresh <- function() {
+  map %>%
+    leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
+    leaflet.extras::addDrawToolbar(
+      targetGroup='draw',
+      polylineOptions = FALSE,
+      rectangleOptions = FALSE,
+      circleOptions = FALSE,
+      markerOptions = FALSE)
+}
+
+####################### #
+# SESSION CODE ####
+####################### #
+
+makeCap <- function(x) paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)))
+getSpName <- function() deparse(substitute(input$spName))
+printVecAsis <- function(x) {
+  if (is.character(x)) {
+    if (length(x) == 1) {
+      return(paste0("\'", x, "\'"))
+    } else {
+      return(paste0("c(", paste(sapply(x, function(a) paste0("\'", a, "\'")), collapse=", "), ")"))
+    }
+  } else {
+    if (length(x) == 1) {
+      return(x)
+    } else {
+      return(paste0("c(", paste(x, collapse=", "), ")"))
+    }
+  }
 }

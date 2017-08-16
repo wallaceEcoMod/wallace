@@ -7,7 +7,9 @@ output: html_document
 
 **ORIENTATION**
 
-In addition to occurrence data, algorithms for niche/distributional modeling require environmental predictor variables (Franklin 2010 chap. 5, Peterson et al. 2011 chap. 6). Component **Obtain Environmental Data** allows users to obtain these variables from online sources in the form of raster grids. In recent years, a number of global databases of climate data have emerged (Hijmans et al. 2005, Kriticos et al. 2012, Sbrocco and Barber 2013, Karger et al. 2016). Currently, *Wallace* offers access to present-day averaged climate data from the WorldClim dataset, which has near-global coverage of terrestrial areas (Module ***WorldClim***). We envision that future releases will offer other terrestrial climate datasets (with different interpolation methodologies, e.g. CHELSA; or with different variables, e.g. CliMond); marine climate datasets (e.g. MARSPEC); vegetation, land cover, and land use data. We also plan to implement the ability to upload user-provided environmental grids in a later release.
+In addition to occurrence data, algorithms for niche/distributional modeling require environmental predictor variables (Franklin 2010 chap. 5, Peterson et al. 2011 chap. 6). Component **Obtain Environmental Data** allows users to obtain these variables from online sources in the form of raster grids. In recent years, a number of global databases of climate data have emerged (Hijmans et al. 2005, Kriticos et al. 2012, Sbrocco and Barber 2013, Karger et al. 2016). Currently, *Wallace* provides two options for environmental data. First, it offers access to present-day averaged climate data from the WorldClim dataset, which has near-global coverage of terrestrial areas (Module ***WorldClim***). Second, users may alternatively upload environmental raster grids (Module ***User-Specified Environmental Data***).
+
+We envision that future releases will offer other terrestrial climate datasets (with different interpolation methodologies, e.g. CHELSA; or with different variables, e.g. CliMond); marine climate datasets (e.g. MARSPEC); vegetation, land cover, and land use data. 
 
 **REFERENCES**
 
