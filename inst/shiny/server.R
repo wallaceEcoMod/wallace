@@ -386,7 +386,7 @@ shinyServer(function(input, output, session) {
     for (shp in bgShpXY()) {
       map %>%
         addPolygons(lng=shp[,1], lat=shp[,2],
-                    weight=4, color="red", group='bgShp')  
+                    weight=4, color="gray", group='bgShp')  
     }
      map %>%
       fitBounds(rvs$bgShp@bbox[1], rvs$bgShp@bbox[2], rvs$bgShp@bbox[3], rvs$bgShp@bbox[4])
@@ -405,7 +405,7 @@ shinyServer(function(input, output, session) {
     for (shp in bgShpXY()) {
       map %>%
         addPolygons(lng=shp[,1], lat=shp[,2],
-                    weight=4, color="red", group='bgShp')  
+                    weight=4, color="gray", group='bgShp')  
     }
     map %>%
       fitBounds(rvs$bgShp@bbox[1], rvs$bgShp@bbox[2], rvs$bgShp@bbox[3], rvs$bgShp@bbox[4])
