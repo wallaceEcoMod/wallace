@@ -32,13 +32,13 @@ partSp_MOD <- function(input, output, session, rvs) {
       withProgress(message = "Aggregating rasters...", {
         group.data <- ENMeval::get.checkerboard1(occs.xy, rvs$bgMsk, rvs$bgPts, input$aggFact)
         rvs %>% writeLog(paste0("Occurrences partitioned by checkerboard 1 method with 
-                         aggregation factor", input$aggFact, "."))
+                         aggregation factor ", input$aggFact, "."))
       })
     } else if (input$partSpSel == 'cb2') {
       withProgress(message = "Aggregating rasters...", {
         group.data <- ENMeval::get.checkerboard2(occs.xy, rvs$bgMsk, rvs$bgPts, input$aggFact)
         rvs %>% writeLog(paste0("Occurrences partitioned by checkerboard 2 method with 
-                         aggregation factor", input$aggFact, "."))
+                         aggregation factor ", input$aggFact, "."))
       })
     }
     
