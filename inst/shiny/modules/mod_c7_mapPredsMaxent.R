@@ -33,25 +33,25 @@ mapPredsMaxent_MOD <- function(input, output, session, rvs) {
     
     if (input$predType == 'logistic') {
       # Generate logistic predictions for each model
-      if (is.null(rvs$modPredsLog)) {
+      if (rvs$modPredsMaxent$logistic)) {
         withProgress(message = "Generating logistic predictions...", {
           logPredsList <- sapply(rvs$mods, function(x) dismo::predict(x, rvs$bgMsk, args=pargs))
-          rvs$modPredsLog <- raster::stack(logPredsList)
-          names(rvs$modPredsLog) <- names(rvs$modPreds)
-        })  
+          rvs$modPredsMaxent$logistic <- raster::stack(logPredsList)
+          names(rvs$modPredsMaxent$logistic) <- names(rvs$modPreds)
+        })
       }
       predSel <- rvs$modPredsLog[[rvs$modSel]]
       names(predSel) <- paste0(rvs$modSel, '_log')
     } else if (input$predType == 'cloglog') {
       # Generate cloglog predictions for each model
-      if (is.null(rvs$modPredsCLL)) {
+      if (is.null(rvs$modPredsMaxent$cloglog)) {
         withProgress(message = "Generating cloglog predictions...", {
           cllPredsList <- sapply(rvs$mods, function(x) dismo::predict(x, rvs$bgMsk, args=pargs))
-          rvs$modPredsCLL <- raster::stack(cllPredsList)
-          names(rvs$modPredsCLL) <- names(rvs$modPreds)
+          rvs$modPredsMaxent$cloglog <- raster::stack(cllPredsList)
+          names(rvs$modPredsMaxent$cloglog) <- names(rvs$modPreds)
         })  
       }
-      predSel <- rvs$modPredsCLL[[rvs$modSel]]
+      predSel <- rvs$modPredsMaxent$cloglog[[rvs$modSel]]
       names(predSel) <- paste0(rvs$modSel, '_cll')
     }
     

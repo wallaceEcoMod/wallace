@@ -507,6 +507,9 @@ shinyServer(function(input, output, session) {
     rvs$comp6 <- 'maxent'  # record the enm selected
     rvs$mods <- e@models
     rvs$modPreds <- e@predictions
+    # make an empty list to hold any other Maxent output type rasters
+    # generated in component 8
+    rvs$modPredsMaxent <- list()
     rvs$modRes <- e@results
     x <- callModule(mapPreds_MOD, 'c7_mapPreds', rvs)
     
@@ -684,9 +687,9 @@ shinyServer(function(input, output, session) {
     
     rasVals <- c(rvs$predCurVals, rvs$projCurVals)
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-    map %>% comp8_map(rvs$projCur, rasVals, rasCols, "Predicted Suitability")
+    map %>% comp8_map(rvs, bgShpXY, rasVals, rasCols, "Predicted Suitability", 'rProj')
     
-    drawToolbarRefresh()
+    map %>% drawToolbarRefresh()
     
     shinyjs::enable("dlProj")
   })
@@ -706,9 +709,9 @@ shinyServer(function(input, output, session) {
     
     rasVals <- c(rvs$predCurVals, rvs$projCurVals)
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-    map %>% comp8_map(rvs$projCur, rasVals, rasCols, "Predicted Suitability")
+    map %>% comp8_map(rvs$projCur, rasVals, rasCols, "Predicted Suitability", "rProj")
     
-    drawToolbarRefresh()
+    map %>% drawToolbarRefresh()
     
     shinyjs::enable("dlProj")
   })
@@ -729,7 +732,7 @@ shinyServer(function(input, output, session) {
     rasVals <- rvs$messVals
     rasCols <- RColorBrewer::brewer.pal(n=11, name='Reds')
     map %>% removeImage('r2ID')
-    map %>% comp8_map(rvs$mess, rasVals, rasCols, "MESS Values", clearImg = FALSE)
+    map %>% comp8_map(rvs$mess, rasVals, rasCols, "MESS Values")
     
     shinyjs::enable("dlProj")
     

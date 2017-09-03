@@ -456,23 +456,30 @@ reverseLabels <- function(..., reverse_order = FALSE) {
   }
 }
 
-comp8_map <- function(map, pjRas, rasVals, rasCols, legTitle, clearImg = TRUE) {
-  rasPal <- colorNumeric(rasCols, rasVals, na.color='transparent')
-  legPal <- colorNumeric(rev(rasCols), rasVals, na.color='transparent')
+comp8_map <- function(map, rvs, bgShpXY, rasVals, rasCols, legTitle, clearID = NULL) {
   
-  if (clearImg == TRUE) map %>% clearImages()
-  
+  # if thresholded, plot with two colors
+  if (grepl('thresh', names(rvs$projCur))) {
+    rasPal <- c('gray', 'blue')
+    map %>% addLegend("bottomright", colors = c('gray', 'blue'),
+                      title = "Thresholded Suitability", labels = c("predicted absence", "predicted presence"),
+                      opacity = 1, layerId = 'leg')
+  } else {
+    rasPal <- colorNumeric(rasCols, rasVals, na.color='transparent')
+    legPal <- colorNumeric(rev(rasCols), rasVals, na.color='transparent')
+    map %>% addLegend("bottomright", pal = legPal, title = legTitle,
+                      values = rasVals, layerId = 'leg',
+                      labFormat = reverseLabels(2, reverse_order=TRUE))
+  }
   map %>% 
-    clearMarkers() %>% clearShapes() %>%
-    addLegend("bottomright", pal = legPal, title = legTitle,
-              values = rasVals, layerId = 'leg',
-              labFormat = reverseLabels(2, reverse_order=TRUE)) %>%
-    addRasterImage(rvs$predCur, colors = rasPal, opacity = 0.7, 
-                   group = 'c7', layerId = 'r1ID') %>%
-    addRasterImage(pjRas, colors = rasPal, opacity = 0.7, 
-                   group = 'c7', layerId = 'r2ID') %>%
+    clearMarkers() %>% 
+    clearShapes() %>%
+    removeImage(clearID) %>%
+    addRasterImage(rvs$projCur, colors = rasPal, opacity = 0.7, 
+                        group = 'c7', layerId = 'rProj') %>%
     addPolygons(lng=rvs$polyPjXY[,1], lat=rvs$polyPjXY[,2], layerId="projExt", fill = FALSE,
                 weight=4, color="green", group='c8')
+  
   for (shp in bgShpXY()) {
     map %>%
       addPolygons(lng=shp[,1], lat=shp[,2], fill = FALSE,
@@ -480,7 +487,7 @@ comp8_map <- function(map, pjRas, rasVals, rasCols, legTitle, clearImg = TRUE) {
   }
 }
 
-drawToolbarRefresh <- function() {
+drawToolbarRefresh <- function(map) {
   map %>%
     leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
     leaflet.extras::addDrawToolbar(

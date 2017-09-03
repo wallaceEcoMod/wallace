@@ -14,7 +14,7 @@ threshPred_UI <- function(id) {
   )
 }
 
-threshPred_MOD <- function(input, output, session, pred) {
+threshPred_MOD <- function(input, output, session, pred, proj = FALSE) {
   reactive({
     # record for RMD
     rvs$comp7.thr <- input$predThresh
@@ -28,9 +28,11 @@ threshPred_MOD <- function(input, output, session, pred) {
       # find predicted values for occurrences for selected model
       # extract the suitability values for all occurrences
       occs.xy <- rvs$occs[c('longitude', 'latitude')]
-      occPredVals <- raster::extract(pred, occs.xy)
+      predCur <- rvs$modPreds[[rvs$modSel]]
+      # determine the threshold based on the current, not projected, prediction
+      occPredVals <- raster::extract(predCur, occs.xy)
       # get the chosen threshold value
-      x <- thresh(occPredVals, input$predThresh)
+      x <- thresh(occPredVals, input$predThresh)  
       # threshold model prediction
       pred <- pred > x
       # rename
