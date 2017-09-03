@@ -2,15 +2,12 @@
 mapPredsMaxent_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    selectInput(ns('predType'), label = "Prediction output",
+    radioButtons(ns('predType'), label = "Prediction output",
                 choices = list("raw", "logistic", "cloglog"),
                 selected = "raw"),
     shinyBS::bsPopover(ns('predType'), title = 'Tip',
-                       'Briefly, raw is "relative occurrence rate" where sum of 
-                       pixel values is 1, and logistic is interpreted as "probability 
-                       of presence" where raw values are converted to a value between 
-                       0 and 1, with the main assumption that species prevalence is 0.5 
-                       (see guidance).',
+                       'Please see guidance for an explanation of different
+                       Maxent output types.',
                        placement = 'right', options = list(container = "body")),
     threshPred_UI(ns('threshPred'))
   )
