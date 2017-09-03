@@ -145,10 +145,8 @@ Remove the occurrence localities with the following IDs: `r {{occsRemoved}}`.
 ```
 
 ```{r poccs.rem, echo = poccs.rem, include = poccs.rem}
-# find row numbers that match IDs to be removed
-occs.rem <- which(occs$occID %in% {{occsRemoved}})
-# remove the selected rows
-occs <- occs[-occs.rem, ]  
+# remove the rows that match the occIDs selected
+occs <- occs %>% filter(!(occID %in% {{occsRemoved}}))
 ```
 
 ```{asis, echo = poccs.sel, eval = poccs.sel, include = poccs.sel}
