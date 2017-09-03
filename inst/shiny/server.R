@@ -507,9 +507,6 @@ shinyServer(function(input, output, session) {
     rvs$comp6 <- 'maxent'  # record the enm selected
     rvs$mods <- e@models
     rvs$modPreds <- e@predictions
-    # make an empty list to hold any other Maxent output type rasters
-    # generated in component 8
-    rvs$modPredsMaxent <- list()
     rvs$modRes <- e@results
     x <- callModule(mapPreds_MOD, 'c7_mapPreds', rvs)
     

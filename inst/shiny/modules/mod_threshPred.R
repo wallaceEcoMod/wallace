@@ -28,7 +28,15 @@ threshPred_MOD <- function(input, output, session, pred, proj = FALSE) {
       # find predicted values for occurrences for selected model
       # extract the suitability values for all occurrences
       occs.xy <- rvs$occs[c('longitude', 'latitude')]
-      predCur <- rvs$modPreds[[rvs$modSel]]
+      
+      if (rvs$comp7.type == 'logistic') {
+        predCur <- rvs$modPredsLog[[rvs$modSel]]
+      } else if (rvs$comp7.type == 'cloglog') {
+        predCur <- rvs$modPredsCLL[[rvs$modSel]]  
+      } else {
+        predCur <- rvs$modPreds[[rvs$modSel]]  
+      }
+      
       # determine the threshold based on the current, not projected, prediction
       occPredVals <- raster::extract(predCur, occs.xy)
       # get the chosen threshold value
