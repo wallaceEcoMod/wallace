@@ -26,13 +26,17 @@ threshPred_MOD <- function(input, output, session, pred) {
     # (same for all Maxent prediction types because they scale the same)
     if (input$predThresh != 'noThresh') {
       # find predicted values for occurrences for selected model
-      occValsSel <- rvs$modOccVals[,rvs$modSel]
+      # extract the suitability values for all occurrences
+      occs.xy <- rvs$occs[c('longitude', 'latitude')]
+      occPredVals <- raster::extract(pred, occs.xy)
       # get the chosen threshold value
-      x <- thresh(occValsSel, input$predThresh)
+      x <- thresh(occPredVals, input$predThresh)
       # threshold model prediction
       pred <- pred > x
       # rename
       names(pred) <- paste0(rvs$modSel, '_thresh_', input$predThresh)
+      rvs %>% writeLog(input$predThresh, 'threshold selected: value =', 
+                       round(x, digits = 3), '.')
     }
     
     return(pred)

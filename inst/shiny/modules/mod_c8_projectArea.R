@@ -1,7 +1,7 @@
 projectArea_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    mapPreds_UI(ns("thresh"))
+    threshPred_UI(ns('threshPred'))
   )
 }
 
@@ -39,8 +39,12 @@ projectArea_MOD <- function(input, output, session, rvs) {
     withProgress(message = 'Projecting model to new area...', {
       pargs <- paste0("outputformat=", rvs$comp7.type)
       modProjArea <- dismo::predict(modCur, projMsk, args = pargs)
+      # generate binary prediction based on selected thresholding rule 
+      # (same for all Maxent prediction types because they scale the same)
+      modProjArea.thr.call <- callModule(threshPred_MOD, "threshPred", modProjArea)
+      modProjArea.thr <- modProjArea.thr.call()
     })
     
-    return(list(pjMsk=projMsk, pjPred=modProjArea))
+    return(list(pjMsk=projMsk, pjPred=modProjArea.thr))
   })
 }

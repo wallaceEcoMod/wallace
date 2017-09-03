@@ -500,17 +500,14 @@ shinyServer(function(input, output, session) {
   mod.maxent <- callModule(maxent_MOD, 'c6_maxent', rvs)
   
   observeEvent(input$goMaxent, {
-    # unpack everything
-    mod.maxent.call <- mod.maxent()
     # stop if no occurrence partition group
     req(rvs$occsGrp)
-    e <- mod.maxent.call[[1]]
+    # get model evaluations
+    e <- mod.maxent()
     rvs$comp6 <- 'maxent'  # record the enm selected
     rvs$mods <- e@models
     rvs$modPreds <- e@predictions
     rvs$modRes <- e@results
-    print(rvs$modRes)
-    rvs$modOccVals <- mod.maxent.call[[2]]
     x <- callModule(mapPreds_MOD, 'c7_mapPreds', rvs)
     
     ncols <- ncol(rvs$modRes)
@@ -543,7 +540,6 @@ shinyServer(function(input, output, session) {
     rvs$mods <- e$models
     rvs$modPreds <- e$predictions
     rvs$modRes <- e$results
-    rvs$modOccVals <- e$occVals
     output$evalTbl <- DT::renderDataTable(round(rvs$modRes, digits=3))
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
