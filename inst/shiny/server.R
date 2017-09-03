@@ -590,25 +590,19 @@ shinyServer(function(input, output, session) {
   })
   
   # module BIOCLIM Plots
-  bcPlots <- callModule(bcPlots_MOD, 'c7_bcPlots', rvs)
-  
   output$bcEnvelPlot <- renderPlot({
-    bcPlots()
+    callModule(bcPlots_MOD, 'c7_bcPlots', rvs)
   })
   
   # module Maxent Evaluation Plots
-  mxEvalPlots <- callModule(mxEvalPlots_MOD, 'c7_mxEvalPlots', rvs)
-  
   output$mxEvalPlots <- renderPlot({
-    mxEvalPlots()
+    callModule(mxEvalPlots_MOD, 'c7_mxEvalPlots', rvs)
     updateTabsetPanel(session, 'main', selected = 'Results')
   })
   
   # module Response Curve Plots
-  respPlots <- callModule(respPlots_MOD, 'c7_respPlots', rvs)
-  
   output$respPlots <- renderPlot({
-    respPlots()
+    callModule(respPlots_MOD, 'c7_respPlots', rvs)
     updateTabsetPanel(session, 'main', selected = 'Results')
   })
   

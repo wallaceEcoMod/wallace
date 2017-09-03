@@ -30,11 +30,11 @@ threshPred_MOD <- function(input, output, session, pred) {
       # get the chosen threshold value
       x <- thresh(occValsSel, input$predThresh)
       # threshold model prediction
-      pred.thresh <- pred > x
+      pred <- pred > x
       # rename
-      names(pred.thresh) <- paste0(rvs$modSel, '_thresh_', input$predThresh)
+      names(pred) <- paste0(rvs$modSel, '_thresh_', input$predThresh)
     }
     
-    return(pred.thresh)
+    return(pred)
   })
 }

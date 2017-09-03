@@ -21,8 +21,8 @@ mapPreds_MOD <- function(input, output, session, rvs) {
     
     # generate binary prediction based on selected thresholding rule 
     # (same for all Maxent prediction types because they scale the same)
-    predSel.thr <- callModule(threshPred_MOD, "threshPred", predSel)
-    
+    predSel.thr.call <- callModule(threshPred_MOD, "threshPred", predSel)
+    predSel.thr <- predSel.thr.call()
     return(predSel.thr)
   })
 }
