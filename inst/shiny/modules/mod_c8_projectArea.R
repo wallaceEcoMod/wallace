@@ -1,7 +1,7 @@
 projectArea_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    
+    mapPreds_UI(ns("thresh"))
   )
 }
 

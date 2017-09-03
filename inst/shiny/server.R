@@ -612,9 +612,9 @@ shinyServer(function(input, output, session) {
     updateTabsetPanel(session, 'main', selected = 'Results')
   })
   
+  # module Map Prediction (restricted to background extent)
   observeEvent(input$goMapPreds, {
     if (rvs$comp6 == 'maxent') {
-      # module Map Prediction (restricted to background extent)
       mapPreds <- callModule(mapPredsMaxent_MOD, 'c7_mapPredsMaxent', rvs)
     } else {
       mapPreds <- callModule(mapPreds_MOD, 'c7_mapPreds', rvs)
