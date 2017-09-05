@@ -812,9 +812,9 @@ shinyServer(function(input, output, session) {
                                 fcs=printVecAsis(rvs$fcs),  # comp 6
                                 modSel=rvs$modSel, mxNonZeroCoefs=printVecAsis(rvs$mxNonZeroCoefs), envSel=rvs$envSel,  # comp 7
                                 bcPlot1=rvs$bcPlotsPar$bc1, bcPlot2=rvs$bcPlotsPar$bc2, bcPlotP=rvs$bcPlotsPar$p,  # comp 7
-                                mxEvalSel=rvs$mxEvalSel, predType=rvs$comp7.type, predThresh=rvs$comp7.thr, # comp 7 
+                                mxEvalSel=rvs$mxEvalSel, predType=rvs$comp7.type, comp7.thresh=rvs$comp7.thr, # comp 7 
                                 occsPjX=polyPjX, occsPjY=polyPjY, pjRCP=rvs$pjTimePar$rcp, pjGCM=rvs$rvs$pjTimePar$gcm,  # comp 8
-                                pjYear=rvs$rvs$pjTimePar$year)  # comp 8
+                                pjYear=rvs$rvs$pjTimePar$year, comp8.thresh=rvs$comp8.thr)  # comp 8
       writeLines(exp, 'userReport2.Rmd')
       
       if (input$rmdFileType == 'Rmd') {

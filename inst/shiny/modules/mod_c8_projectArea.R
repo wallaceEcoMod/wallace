@@ -41,10 +41,12 @@ projectArea_MOD <- function(input, output, session, rvs) {
       modProjArea <- dismo::predict(modCur, projMsk, args = pargs)
       # generate binary prediction based on selected thresholding rule 
       # (same for all Maxent prediction types because they scale the same)
-      modProjArea.thr.call <- callModule(threshPred_MOD, "threshPred", modProjArea, proj = TRUE)
+      modProjArea.thr.call <- callModule(threshPred_MOD, "threshPred", modProjArea)
       modProjArea.thr <- modProjArea.thr.call()
+      pjPred <- modProjArea.thr$pred
+      rvs$comp8.thr <- modProjArea.thr$thresh
     })
     
-    return(list(pjMsk=projMsk, pjPred=modProjArea.thr))
+    return(list(pjMsk=projMsk, pjPred=pjPred))
   })
 }

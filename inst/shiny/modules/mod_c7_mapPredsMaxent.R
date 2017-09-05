@@ -59,7 +59,9 @@ mapPredsMaxent_MOD <- function(input, output, session, rvs) {
     # (same for all Maxent prediction types because they scale the same)
     predSel.thr.call <- callModule(threshPred_MOD, "threshPred", predSel)
     predSel.thr <- predSel.thr.call()
+    pjPred <- predSel.thr$pred
+    rvs$comp7.thr <- predSel.thr$thresh
     
-    return(predSel.thr)
+    return(pjPred)
   })
 }

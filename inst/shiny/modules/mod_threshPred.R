@@ -14,14 +14,8 @@ threshPred_UI <- function(id) {
   )
 }
 
-threshPred_MOD <- function(input, output, session, pred, proj = FALSE) {
+threshPred_MOD <- function(input, output, session, pred) {
   reactive({
-    # record for RMD
-    rvs$comp7.thr <- input$predThresh
-    
-    # pick the prediction that matches the model selected
-    # predSel <- rvs$modPreds[[rvs$modSel]]
-    
     # generate binary prediction based on selected thresholding rule 
     # (same for all Maxent prediction types because they scale the same)
     if (input$predThresh != 'noThresh') {
@@ -41,6 +35,7 @@ threshPred_MOD <- function(input, output, session, pred, proj = FALSE) {
       occPredVals <- raster::extract(predCur, occs.xy)
       # get the chosen threshold value
       x <- thresh(occPredVals, input$predThresh)  
+      print(x)
       # threshold model prediction
       pred <- pred > x
       # rename
@@ -49,6 +44,6 @@ threshPred_MOD <- function(input, output, session, pred, proj = FALSE) {
                        round(x, digits = 3), '.')
     }
     
-    return(pred)
+    return(list(thresh=input$predThresh, pred=pred))
   })
 }

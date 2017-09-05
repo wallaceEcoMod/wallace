@@ -46,7 +46,7 @@ mod.bioclim <- rvs$comp6 == 'bioclim'
 mod.maxent <- rvs$comp6 == 'maxent'
 mod.any <- mod.bioclim | mod.maxent
 # comp7
-viz.pred.mtp <- rvs$comp7.thr == 'mtp'
+viz.pred.thr <- !(is.null(rvs$comp7.thr))
 viz.pred.p10 <- rvs$comp7.thr == 'p10'
 viz.pred.raw <- rvs$comp7.type == 'raw'
 viz.pred.log <- rvs$comp7.type == 'logistic'
@@ -60,6 +60,7 @@ viz.any <- rvs$comp7 != ''
 pj.area <- rvs$comp8.pj == 'area'
 pj.time <- rvs$comp8.pj == 'time'
 pj.mess <- rvs$comp8.esim == 'mess'
+pj.thr <- !(is.null(rvs$comp8.thr))
 pj.any <- pj.area | pj.time | pj.mess
 ```
 
@@ -380,45 +381,36 @@ ENMeval::eval.plot(evalTbl, value = "{{mxEvalSel}}")
 
 ```{r mapPred, echo = viz.pred, include = viz.pred}
 # Select your model from the models list
-m <- evalMods[["{{modSel}}"]]
+mod <- evalMods[["{{modSel}}"]]
 ```
 
 ```{r, echo = viz.pred.raw, include = viz.pred.raw}
 # generate raw prediction
-p <- evalPreds[["{{modSel}}"]]
+pred <- evalPreds[["{{modSel}}"]]
 ```
 
 ```{r, echo = viz.pred.log, include = viz.pred.log}
 # generate logistic prediction
-p <- dismo::predict(m, predsBgMsk, args=c("outputformat=logistic"))
+pred <- dismo::predict(mod, predsBgMsk, args=c("outputformat=logistic"))
 ```
 
 ```{r, echo = viz.pred.cll, include = viz.pred.cll}
 # generate cloglog prediction
-p <- dismo::predict(m, predsBgMsk, args=c("outputformat=cloglog"))
+pred <- dismo::predict(mod, predsBgMsk, args=c("outputformat=cloglog"))
 ```
 
-```{r, echo = viz.pred.mtp, include = viz.pred.mtp}
+```{r, echo = viz.pred.thr, include = viz.pred.thr}
 # get predicted values for occurrence grid cells
-occVals <- raster::extract(p, occs.xy)
+occPredVals <- raster::extract(pred, occs.xy)
 # define minimum training presence threshold
-x <- thresh(occVals, 'mtp')
+thr <- thresh(occPredVals, "{{comp7.thresh}}")
 # threshold model prediction
-p <- p > x
-```
-
-```{r, echo = viz.pred.p10, include = viz.pred.p10}
-# get predicted values for occurrence grid cells
-occVals <- raster::extract(p, occs.xy)
-# define 10% training presence threshold
-x <- thresh(occVals, 'p10')
-# threshold model prediction
-p <- p > x
+pred <- pred > thr
 ```
 
 ```{r, echo = viz.pred, include = viz.pred}
 # plot the model prediction
-plot(p)
+plot(pred)
 ```
 
 ```{asis, echo = pj.any, eval = pj.any, include = pj.any}
@@ -438,10 +430,9 @@ Now use crop and mask the predictor variables by projPoly, and use the predict()
 
 ```{r projArea, echo = pj.area, include = pj.area}
 predsProj <- raster::crop(envs, projPoly)
-predsMsk <- raster::mask(envsProj, projPoly)
+predsProj <- raster::mask(predsProj, projPoly)
 
-newExtProj <- dismo::predict(modSel, envsMsk)
-plot(newExtProj)
+proj <- dismo::predict(modSel, predsProj)
 ```
 
 ```{asis, echo = pj.time, eval = pj.time, include = pj.time}
@@ -452,13 +443,26 @@ Now download the future climate variables chosen with *Wallace*, crop and mask t
 ```{r projTime, echo = pj.time, include = pj.time}
 envsFuture <- raster::getData("CMIP5", var = "bio", res = {{bcRes}}, rcp = {{pjRCP}}, model = "{{pjGCM}}", year = {{pjYear}})
 
-envsProj <- raster::crop(envsFuture, projPoly)
-envsMsk <- raster::mask(envsProj, projPoly)
+predsProj <- raster::crop(envsFuture, projPoly)
+predsProj <- raster::mask(predsProj, projPoly)
 
 # rename future climate variable names
 names(envsMsk) <- names(envs)
-futureProj <- dismo::predict(modSel, envsMsk)
-plot(futureProj)
+proj <- dismo::predict(modSel, predsProj)
+```
+
+```{r, echo = pj.thr, include = pj.thr}
+# get predicted values for occurrence grid cells
+occPredVals <- raster::extract(pred, occs.xy)
+# define minimum training presence threshold
+thr <- thresh(occPredVals, "{{comp8.thresh}}")
+# threshold model prediction
+proj <- proj > thr
+```
+
+```{r, echo = pj.any, include = pj.any}
+# plot the model prediction
+plot(proj)
 ```
 
 ```{asis, echo = pj.mess, eval = pj.mess, include = pj.mess}
@@ -468,8 +472,8 @@ To visualize the environmental difference between the occurrence localities and 
 
 ```{r projMESS, echo = pj.mess, include = pj.mess}
 # extract environmental values from occurrence localities -- these were the values that went into the model
-occVals <- raster::extract(envs, occs.xy)
+occEnvVals <- raster::extract(envs, occs.xy)
 # compare these values with the projection extent (envsMsk)
-occVals.mess <- dismo::mess(envsMsk, occVals)
-plot(occVals.mess)
+proj.mess <- dismo::mess(predsProj, occEnvVals)
+plot(proj.mess)
 ```

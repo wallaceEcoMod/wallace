@@ -22,7 +22,9 @@ mapPreds_MOD <- function(input, output, session, rvs) {
     # generate binary prediction based on selected thresholding rule 
     predSel.thr.call <- callModule(threshPred_MOD, "threshPred", predSel)
     predSel.thr <- predSel.thr.call()
+    pjPred <- predSel.thr$pred
+    rvs$comp7.thr <- predSel.thr$thresh
 
-    return(predSel.thr)
+    return(pjPred)
   })
 }
