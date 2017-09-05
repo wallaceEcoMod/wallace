@@ -783,7 +783,7 @@ shinyServer(function(input, output, session) {
       file.copy(src, 'userReport.Rmd')
       # convert removed occIDs to characters of vectors
       if (!is.null(rvs$removedIDs)) {
-        occsRem <- printVecAsis(values$removedAll)  
+        rvs$occsRem <- printVecAsis(rvs$removedIDs)  
       }
       # convert polygon coordinates to characters of vectors
       if (!is.null(rvs$polySelXY)) {

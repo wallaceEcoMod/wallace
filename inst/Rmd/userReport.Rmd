@@ -49,8 +49,8 @@ mod.any <- mod.bioclim | mod.maxent
 viz.pred.mtp <- rvs$comp7.thr == 'mtp'
 viz.pred.p10 <- rvs$comp7.thr == 'p10'
 viz.pred.raw <- rvs$comp7.type == 'raw'
-viz.pred.log <- rvs$comp7.type == 'log'
-viz.pred.cll <- rvs$comp7.type == 'cll'
+viz.pred.log <- rvs$comp7.type == 'logistic'
+viz.pred.cll <- rvs$comp7.type == 'cloglog'
 viz.pred <- 'map' %in% rvs$comp7
 viz.mxEval <- 'mxEval' %in% rvs$comp7
 viz.bcPlot <- 'bcPlot' %in% rvs$comp7
