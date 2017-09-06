@@ -89,10 +89,8 @@ maxent_MOD <- function(input, output, session, rvs) {
                                                avg.test.or10pct = Mean.OR10, var.test.or10pct = Var.OR10,
                                                parameters = nparam)
     
-    # extract the suitability values for all occurrences
-    modOccVals <- raster::extract(e@predictions, occs.xy)
     rvs %>% writeLog("Maxent ran successfully and output evaluation results for", nrow(e@results), "models.")
     
-    return(list(e, modOccVals))
+    return(e)
   })
 }

@@ -5,7 +5,8 @@ mxEvalPlots_UI <- function(id) {
     selectInput(ns('mxEvalSel'), label = "Select Evaluation Plot",
                 choices = list("Select Stat..." = '', "average AUC test" = 'avg.test.AUC', 
                                "average AUC diff" = 'avg.diff.AUC', "average OR mtp" = 'avg.test.orMTP',
-                               "average OR 10%" = 'avg.test.or10pct', "delta AICc" = 'delta.AICc')),
+                               "average OR 10%" = 'avg.test.or10pct', "delta AICc" = 'delta.AICc'), 
+                selected = 'avg.test.AUC'),
     strong("Download Maxent evaluation plot (.png)"), br(), br(),
     downloadButton(ns('dlMxEvalPlot'), "Download")
   )

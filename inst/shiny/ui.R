@@ -25,7 +25,7 @@ shinyUI(tagList(
                                includeCSS(system.file("css", "styles.css", package = "wallace")),
                                includeScript(system.file("js", "scroll.js", package = "wallace")),
                                conditionalPanel("input.tabs == 0",
-                                                # actionButton('load', 'HACK'),
+                                                actionButton('load', 'HACK'),
                                                 includeMarkdown(system.file("Rmd", "text_intro_tab.Rmd", package = "wallace"))
                                ),
                                # tab 1 ####
@@ -271,9 +271,9 @@ shinyUI(tagList(
                                                                div('Module: Project to New Extent', id="mod"),
                                                                uiTop('dismo', 'Species Distribution Modeling'),
                                                                HTML('<hr>'),
-                                                               projectArea_UI('c8_projectArea'),
                                                                strong("Project model to current extent"), br(), br(),
-                                                               actionButton('goProjectArea', "Project")),
+                                                               actionButton('goProjectArea', "Project"), br(), br(),
+                                                               projectArea_UI('c8_projectArea')),
                                               conditionalPanel("input.projSel == 'projTime'",
                                                                div('Module: Project to New Time', id="mod"),
                                                                uiTop('dismo', 'Species Distribution Modeling'),

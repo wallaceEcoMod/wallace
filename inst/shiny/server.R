@@ -500,17 +500,14 @@ shinyServer(function(input, output, session) {
   mod.maxent <- callModule(maxent_MOD, 'c6_maxent', rvs)
   
   observeEvent(input$goMaxent, {
-    # unpack everything
-    mod.maxent.call <- mod.maxent()
     # stop if no occurrence partition group
     req(rvs$occsGrp)
-    e <- mod.maxent.call[[1]]
+    # get model evaluations
+    e <- mod.maxent()
     rvs$comp6 <- 'maxent'  # record the enm selected
     rvs$mods <- e@models
     rvs$modPreds <- e@predictions
     rvs$modRes <- e@results
-    print(rvs$modRes)
-    rvs$modOccVals <- mod.maxent.call[[2]]
     x <- callModule(mapPreds_MOD, 'c7_mapPreds', rvs)
     
     ncols <- ncol(rvs$modRes)
@@ -543,7 +540,6 @@ shinyServer(function(input, output, session) {
     rvs$mods <- e$models
     rvs$modPreds <- e$predictions
     rvs$modRes <- e$results
-    rvs$modOccVals <- e$occVals
     output$evalTbl <- DT::renderDataTable(round(rvs$modRes, digits=3))
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
@@ -591,14 +587,12 @@ shinyServer(function(input, output, session) {
   
   # module BIOCLIM Plots
   bcPlots <- callModule(bcPlots_MOD, 'c7_bcPlots', rvs)
-  
   output$bcEnvelPlot <- renderPlot({
     bcPlots()
   })
   
   # module Maxent Evaluation Plots
   mxEvalPlots <- callModule(mxEvalPlots_MOD, 'c7_mxEvalPlots', rvs)
-  
   output$mxEvalPlots <- renderPlot({
     mxEvalPlots()
     updateTabsetPanel(session, 'main', selected = 'Results')
@@ -606,15 +600,14 @@ shinyServer(function(input, output, session) {
   
   # module Response Curve Plots
   respPlots <- callModule(respPlots_MOD, 'c7_respPlots', rvs)
-  
   output$respPlots <- renderPlot({
     respPlots()
     updateTabsetPanel(session, 'main', selected = 'Results')
   })
   
+  # module Map Prediction (restricted to background extent)
   observeEvent(input$goMapPreds, {
     if (rvs$comp6 == 'maxent') {
-      # module Map Prediction (restricted to background extent)
       mapPreds <- callModule(mapPredsMaxent_MOD, 'c7_mapPredsMaxent', rvs)
     } else {
       mapPreds <- callModule(mapPreds_MOD, 'c7_mapPreds', rvs)
@@ -694,9 +687,9 @@ shinyServer(function(input, output, session) {
     
     rasVals <- c(rvs$predCurVals, rvs$projCurVals)
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-    map %>% comp8_map(rvs$projCur, rasVals, rasCols, "Predicted Suitability")
+    map %>% comp8_map(rvs, bgShpXY, rasVals, rasCols, "Predicted Suitability", 'rProj')
     
-    drawToolbarRefresh()
+    map %>% drawToolbarRefresh()
     
     shinyjs::enable("dlProj")
   })
@@ -716,9 +709,9 @@ shinyServer(function(input, output, session) {
     
     rasVals <- c(rvs$predCurVals, rvs$projCurVals)
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-    map %>% comp8_map(rvs$projCur, rasVals, rasCols, "Predicted Suitability")
+    map %>% comp8_map(rvs$projCur, rasVals, rasCols, "Predicted Suitability", "rProj")
     
-    drawToolbarRefresh()
+    map %>% drawToolbarRefresh()
     
     shinyjs::enable("dlProj")
   })
@@ -739,7 +732,7 @@ shinyServer(function(input, output, session) {
     rasVals <- rvs$messVals
     rasCols <- RColorBrewer::brewer.pal(n=11, name='Reds')
     map %>% removeImage('r2ID')
-    map %>% comp8_map(rvs$mess, rasVals, rasCols, "MESS Values", clearImg = FALSE)
+    map %>% comp8_map(rvs$mess, rasVals, rasCols, "MESS Values")
     
     shinyjs::enable("dlProj")
     
@@ -790,7 +783,7 @@ shinyServer(function(input, output, session) {
       file.copy(src, 'userReport.Rmd')
       # convert removed occIDs to characters of vectors
       if (!is.null(rvs$removedIDs)) {
-        occsRem <- printVecAsis(values$removedAll)  
+        rvs$occsRem <- printVecAsis(rvs$removedIDs)  
       }
       # convert polygon coordinates to characters of vectors
       if (!is.null(rvs$polySelXY)) {
@@ -819,9 +812,9 @@ shinyServer(function(input, output, session) {
                                 fcs=printVecAsis(rvs$fcs),  # comp 6
                                 modSel=rvs$modSel, mxNonZeroCoefs=printVecAsis(rvs$mxNonZeroCoefs), envSel=rvs$envSel,  # comp 7
                                 bcPlot1=rvs$bcPlotsPar$bc1, bcPlot2=rvs$bcPlotsPar$bc2, bcPlotP=rvs$bcPlotsPar$p,  # comp 7
-                                mxEvalSel=rvs$mxEvalSel, predType=rvs$comp7.type, predThresh=rvs$comp7.thr, # comp 7 
+                                mxEvalSel=rvs$mxEvalSel, predType=rvs$comp7.type, comp7.thresh=rvs$comp7.thr, # comp 7 
                                 occsPjX=polyPjX, occsPjY=polyPjY, pjRCP=rvs$pjTimePar$rcp, pjGCM=rvs$rvs$pjTimePar$gcm,  # comp 8
-                                pjYear=rvs$rvs$pjTimePar$year)  # comp 8
+                                pjYear=rvs$rvs$pjTimePar$year, comp8.thresh=rvs$comp8.thr)  # comp 8
       writeLines(exp, 'userReport2.Rmd')
       
       if (input$rmdFileType == 'Rmd') {
