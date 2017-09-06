@@ -687,7 +687,8 @@ shinyServer(function(input, output, session) {
     
     rasVals <- c(rvs$predCurVals, rvs$projCurVals)
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-    map %>% comp8_map(rvs, bgShpXY, rasVals, rasCols, "Predicted Suitability", 'rProj')
+    map %>% comp8_map(rvs$projCur, rvs$polyPjXY, bgShpXY, rasVals, 
+                      rasCols, "Predicted Suitability", 'rProj')
     
     map %>% drawToolbarRefresh()
     
@@ -709,7 +710,8 @@ shinyServer(function(input, output, session) {
     
     rasVals <- c(rvs$predCurVals, rvs$projCurVals)
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-    map %>% comp8_map(rvs$projCur, rasVals, rasCols, "Predicted Suitability", "rProj")
+    map %>% comp8_map(rvs$projCur, rvs$polyPjXY, bgShpXY, rasVals, 
+                      rasCols, "Predicted Suitability", 'rProj')
     
     map %>% drawToolbarRefresh()
     
@@ -732,7 +734,7 @@ shinyServer(function(input, output, session) {
     rasVals <- rvs$messVals
     rasCols <- RColorBrewer::brewer.pal(n=11, name='Reds')
     map %>% removeImage('r2ID')
-    map %>% comp8_map(rvs$mess, rasVals, rasCols, "MESS Values")
+    map %>% comp8_map(rvs$mess, rvs$polyPjXY, bgShpXY, rasVals, rasCols, "MESS Values")
     
     shinyjs::enable("dlProj")
     

@@ -5,13 +5,13 @@ library(RSelenium)
 library(testthat)
 
 # Connect to the app (open another rstudio and run_wallace())
-remDr <- remoteDriver(port=5556)
+remDr <- remoteDriver()
 remDr$open(silent = TRUE)
-appURL <- "http://127.0.0.1:5556"
+appURL <- "http://127.0.0.1:6030"
 
 # Here if the app contains the correct tabs and their respective names.
 test_that("Tabs are present", {  
-  remDr$navigate()
+  remDr$navigate(appURL)
   webElems <- remDr$findElements("id", "tabs")
   appCtrlLabels <- sapply(webElems, function(x){x$getElementText()})
   appCtrlLabels <- unlist(strsplit(appCtrlLabels[[1]], "\n"))

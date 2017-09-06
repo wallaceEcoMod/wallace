@@ -456,10 +456,11 @@ reverseLabels <- function(..., reverse_order = FALSE) {
   }
 }
 
-comp8_map <- function(map, rvs, bgShpXY, rasVals, rasCols, legTitle, clearID = NULL) {
+comp8_map <- function(map, ras, polyXY, bgShpXY, rasVals, rasCols, 
+                      legTitle, clearID = NULL) {
   
   # if thresholded, plot with two colors
-  if (grepl('thresh', names(rvs$projCur))) {
+  if (grepl('thresh', names(ras))) {
     rasPal <- c('gray', 'blue')
     map %>% addLegend("bottomright", colors = c('gray', 'blue'),
                       title = "Thresholded Suitability", labels = c("predicted absence", "predicted presence"),
@@ -475,9 +476,9 @@ comp8_map <- function(map, rvs, bgShpXY, rasVals, rasCols, legTitle, clearID = N
     clearMarkers() %>% 
     clearShapes() %>%
     removeImage(clearID) %>%
-    addRasterImage(rvs$projCur, colors = rasPal, opacity = 0.7, 
+    addRasterImage(ras, colors = rasPal, opacity = 0.7, 
                         group = 'c7', layerId = 'rProj') %>%
-    addPolygons(lng=rvs$polyPjXY[,1], lat=rvs$polyPjXY[,2], layerId="projExt", fill = FALSE,
+    addPolygons(lng=polyXY[,1], lat=polyXY[,2], layerId="projExt", fill = FALSE,
                 weight=4, color="green", group='c8')
   
   for (shp in bgShpXY()) {

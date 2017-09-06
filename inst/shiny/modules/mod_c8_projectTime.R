@@ -13,7 +13,8 @@ projectTime_UI <- function(id) {
                                '2.6' = 26,
                                '4.5' = 45,
                                '6.0' = 60,
-                               '8.5' = 85))
+                               '8.5' = 85)),
+    threshPred_UI(ns('threshPred'))
   )
 }
 
@@ -104,6 +105,10 @@ projectTime_MOD <- function(input, output, session, rvs) {
     withProgress(message = ("Projecting to new time..."), {
       pargs <- paste0("outputformat=", rvs$comp7.type)
       modProjTime <- dismo::predict(modCur, pjtMsk, args = pargs)
+      modProjTime.thr.call <- callModule(threshPred_MOD, "threshPred", modProjTime)
+      modProjTime.thr <- modProjTime.thr.call()
+      pjPred <- modProjTime.thr$pred
+      rvs$comp8.thr <- modProjTime.thr$thresh
       rvs %>% writeLog("Projected to", paste0('20', input$selTime), 
                        "for GCM", GCMlookup[input$selGCM], 
                        "under RCP", as.numeric(input$selRCP)/10.0, ".")
