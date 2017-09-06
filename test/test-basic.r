@@ -7,9 +7,9 @@ library(RSelenium)
 library(testthat)
 
 # Connect to the app (open another rstudio and run_wallace())
-remDr <- remoteDriver()
+remDr <- remoteDriver(port=5556)
 remDr$open(silent = TRUE)
-appURL <- "http://127.0.0.1:6268"
+appURL <- "http://127.0.0.1:5556"
 
 # Here we test if the app opens and matches the title to Wallace
 test_that("can connect to app", {  
