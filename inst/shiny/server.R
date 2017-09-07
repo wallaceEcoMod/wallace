@@ -733,13 +733,12 @@ shinyServer(function(input, output, session) {
     
     rasVals <- rvs$messVals
     rasCols <- RColorBrewer::brewer.pal(n=11, name='Reds')
-    map %>% removeImage('r2ID')
     map %>% comp8_map(rvs$mess, rvs$polyPjXY, bgShpXY, rasVals, rasCols, "MESS Values")
     
     shinyjs::enable("dlProj")
   })
   
-  # Reset Occs button functionality
+  # Reset Projection Extent button functionality
   observeEvent(input$goResetProj, {
     map %>%
       removeShape("projExt") %>%
