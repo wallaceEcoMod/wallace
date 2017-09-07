@@ -737,7 +737,14 @@ shinyServer(function(input, output, session) {
     map %>% comp8_map(rvs$mess, rvs$polyPjXY, bgShpXY, rasVals, rasCols, "MESS Values")
     
     shinyjs::enable("dlProj")
-    
+  })
+  
+  # Reset Occs button functionality
+  observeEvent(input$goResetProj, {
+    map %>%
+      removeShape("projExt") %>%
+      removeImage("rProj")
+    rvs %>% writeLog("Reset projection extent.")
   })
   
   # download for model predictions (restricted to background extent)
