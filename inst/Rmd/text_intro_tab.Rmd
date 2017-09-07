@@ -9,18 +9,19 @@ output: html_document
 
 **1**: *Obtain Occurrence Data*  
 -Query Database  
--User-specified Occurrence Data
+-User-specified
 
 **2:** *Process Occurrence Data*  
 -Select Localities  
 -Spatial Thin  
 
 **3:** *Obtain Environmental Data*  
--WorldClim
--User-specified Environmental Data
+-WorldClim  
+-User-specified 
 
 **4:** *Process Environmental Data*  
--Select Study Region
+-Select Study Region  
+-User-specified 
 
 **5:** *Partition Occurrence Data*  
 -Non-spatial Partition  
