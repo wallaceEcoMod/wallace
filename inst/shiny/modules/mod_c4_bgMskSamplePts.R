@@ -2,7 +2,7 @@
 bgMskAndSamplePts_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    numericInput(ns("bgPtsNum"), label = "No. of background points to sample", value = 10000, min = 1, step = 1)
+    numericInput(ns("bgPtsNum"), label = "No. of background points", value = 10000, min = 1, step = 1)
   )
 }
 

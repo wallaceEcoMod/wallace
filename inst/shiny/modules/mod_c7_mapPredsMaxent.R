@@ -4,7 +4,7 @@ mapPredsMaxent_UI <- function(id) {
   tagList(
     tags$div(title='Please see guidance for an explanation of different Maxent output types.',
              radioButtons(ns('predType'), label = "Prediction output",
-                choices = list("raw", "logistic", "cloglog"), selected = "raw")),
+                choices = list("raw", "logistic", "cloglog"), selected = "raw", inline = TRUE)),
     threshPred_UI(ns('threshPred'))
   )
 }
