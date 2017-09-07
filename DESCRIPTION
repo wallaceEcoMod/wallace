@@ -22,7 +22,6 @@ Depends:
 Imports:
     DT (>= 0.2),
     shinyjs,
-    shinyBS,
     spocc (>= 0.5.4),
     RColorBrewer,
     rmarkdown,

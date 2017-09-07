@@ -5,17 +5,11 @@ queryDb_UI <- function(id) {
     radioButtons(ns("occDb"), "Choose Database:",
                  choices = list("GBIF" = 'gbif',
                                 "VertNet" = 'vertnet',
-                                "BISON" = 'bison')),
-    textInput(ns("spName"), label = "Enter species scientific name", placeholder = 'format: Genus species', value = 'Puma concolor'),
-    shinyBS::bsPopover(ns('spName'), title = 'Tip',
-                       'Examples: Felis catus, Canis lupus, Nyctereutes procyonoides',
-                       placement = 'right', options = list(container = "body")),
-    sliderInput(ns("occNum"), "Maximum number of occurrences:", min = 1, max = 500, value = 10),
-    shinyBS::bsPopover(ns('occNum'), title = 'Tip',
-                       'Maximum number of occurrences recovered from databases. 
-                       Downloaded records are not sorted randomly: rows are 
-                       always consistent between downloads.',
-                       placement = 'right', options = list(container = "body"))
+                                "BISON" = 'bison'), inline = TRUE),
+    tags$div(title='Examples: Felis catus, Canis lupus, Nyctereutes procyonoides',
+             textInput(ns("spName"), label = "Enter species scientific name", placeholder = 'format: Genus species', value = 'Puma concolor')),
+    tags$div(title='Maximum number of occurrences recovered from databases. Downloaded records are not sorted randomly: rows are always consistent between downloads.',
+             sliderInput(ns("occNum"), "Maximum number of occurrences", min = 1, max = 500, value = 10))
   )
 }
 

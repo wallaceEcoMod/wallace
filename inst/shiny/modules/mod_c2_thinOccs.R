@@ -2,13 +2,8 @@
 thinOccs_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    numericInput(ns("thinDist"), label = "Thinning distance (km)", value = 0),
-    shinyBS::bsPopover(ns('thinDist'), title = 'Tip',
-                       'The minimum distance between occurrence locations 
-                       (nearest neighbor distance) in km for resulting thinned 
-                       dataset. Ideally based on species biology 
-                       (e.g., home-range size).',
-                       placement = 'right', options = list(container = "body"))
+    tags$div(title='The minimum distance between occurrence locations (nearest neighbor distance) in km for resulting thinned dataset. Ideally based on species biology (e.g., home-range size).',
+             numericInput(ns("thinDist"), label = "Thinning distance (km)", value = 0))
   )
 }
 

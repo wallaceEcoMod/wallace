@@ -2,13 +2,9 @@
 mapPredsMaxent_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    radioButtons(ns('predType'), label = "Prediction output",
-                choices = list("raw", "logistic", "cloglog"),
-                selected = "raw"),
-    shinyBS::bsPopover(ns('predType'), title = 'Tip',
-                       'Please see guidance for an explanation of different
-                       Maxent output types.',
-                       placement = 'right', options = list(container = "body")),
+    tags$div(title='Please see guidance for an explanation of different Maxent output types.',
+             radioButtons(ns('predType'), label = "Prediction output",
+                choices = list("raw", "logistic", "cloglog"), selected = "raw")),
     threshPred_UI(ns('threshPred'))
   )
 }

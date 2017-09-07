@@ -2,15 +2,11 @@
 threshPred_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    selectInput(ns('predThresh'), label = "Set threshold",
+    tags$div(title='Create binary map of predicted presence/absence assuming all values above threshold value represent presence. Also can be interpreted as a "potential distribution" (see guidance).',
+             selectInput(ns('predThresh'), label = "Set threshold",
                 choices = list("No threshold" = 'noThresh',
                                "Minimum Training Presence" = 'mtp', 
-                               "10 Percentile Training Presence" = 'p10')),
-    shinyBS::bsPopover(ns('predThresh'), title = 'Tip',
-                       'Create binary map of predicted presence/absence assuming 
-                       all values above threshold value represent presence. Also 
-                       can be interpreted as a "potential distribution" (see guidance).',
-                       placement = 'right', options = list(container = "body"))
+                               "10 Percentile Training Presence" = 'p10')))
   )
 }
 

@@ -616,6 +616,7 @@ shinyServer(function(input, output, session) {
     # stop if no models
     req(rvs$mods)
     rvs$predCurVals <- getVals(rvs$predCur, rvs$comp7.type)
+    print(unique(rvs$predCurVals))
     updateTabsetPanel(session, 'main', selected = 'Map')
     
     # MAPPING
