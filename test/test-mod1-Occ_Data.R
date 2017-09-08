@@ -9,15 +9,16 @@ remDr <- remoteDriver(port=5556) # use the right address by running code in test
 remDr$open(silent = TRUE)
 appURL <- "http://127.0.0.1:5556" # use the right address by running code in test/run_wallace.r
 
+# move to Module 1
+remDr$navigate(appURL)
+webElems <- remDr$findElements("css selector", ".nav a")
+appTabLabels <- sapply(webElems, function(x){x$getElementText()})
+comp2Tab <- webElems[[which(appTabLabels == "1 Occ Data")]]  
+# appCtrlLabels <- unlist(strsplit(appCtrlLabels[[1]], "\n"))
+comp2Tab$clickElement()
+
 # Here if the app contains the correct tabs and their respective names.
 test_that("Module 1 Buttons Click", {  
-  # move to Module 1
-  remDr$navigate(appURL)
-  webElems <- remDr$findElements("css selector", ".nav a")
-  appTabLabels <- sapply(webElems, function(x){x$getElementText()})
-  comp2Tab <- webElems[[which(appTabLabels == "1 Occ Data")]]  
-  # appCtrlLabels <- unlist(strsplit(appCtrlLabels[[1]], "\n"))
-  comp2Tab$clickElement()
  
   # click gbif button
   field <- comp2Tab$findChildElement(value = "//input[@type='radio' and @value='gbif']")
@@ -78,6 +79,16 @@ test_that("Module 1 Buttons Click", {
 #   #field1 <- field$findChildElement(value = "//input[@type='spName' and @value='']")
 # })
 
+# test_that("Module 1 slider slides", {  
+#   webElem <- remDr$findElement("css selector", "#reqcontrols input#range + .jslider")
+#   sliderDim <- webElem$getElementSize()
+#   
+#   remDr$mouseMoveToLocation(webElement = webElems[[x]])
+#   remDr$buttondown()
+#   remDr$mouseMoveToLocation(x = as.integer(pxToMoveSldr[x]), y = -1L)#, webElement = webElems[[x]])
+#   remDr$buttonup()
+#   
+# })
 
 #webElem <- remDr$findElement("css selector")
 
