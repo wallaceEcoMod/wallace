@@ -1,0 +1,50 @@
+---
+title: "intro"
+output: html_document
+---
+
+### **What is *Wallace* and why?**  
+
+Welcome to *Wallace*, a flexible platform for reproducible ecological modeling, built for community expansion (ver. beta 0.6.4). *Wallace* is an application designed to facilitate spatial biodiversity research, and currently concentrates on modeling niches and distributions using species occurrence datasets and environmental predictor variables. These analyses, often termed ecological niche models, species distribution models, or bioclimatic envelope models, provide an estimate of the species’ response to environmental conditions, and can be used to generate maps indicating suitable areas for the species (i.e. its potential geographic distribution). This research area has grown tremendously over the past two decades, with applications to many academic disciplines, as well as to pressing environmental issues such as conservation biology, invasive species, zoonotic diseases, and climate-change impacts (Elith and Leathwick 2009; Franklin 2010; Peterson et al. 2011).
+
+### ***Wallace* is written in R**  
+
+*Wallace* is written in `R`, an open-source statistical computing language. Ecologists and other scientists working on studies of biodiversity and the environment have produced myriad useful packages in `R` that other researchers can use freely and customize (R Core Team 2017). In turn, some of those packages also run external programs written in other programming languages. As a result, `R` users can perform an amazing variety of spatial, ecological, and evolutionary analyses. Taken together, this innovation and flexibility have revolutionized how biodiversity studies are undertaken, both yielding new tools and providing a "glue" to link various applications into seamless workflows.
+
+### ***Wallace* is a `shiny` app**
+
+The interface for *Wallace* was constructed using the `R` package `shiny`, which enables the production of interactive web apps (Chang et al. 2017) *Wallace* uses `shiny` in an innovative way to bundle key `R` packages related to the analysis into an uncluttered and easily navigable interface. *Wallace* can be served as a web app, but also run locally on either a Mac or PC. Overall, our vision is to make `R` tools for spatial biodiversity research more accessible to a broader user group, while providing researchers the means to integrate their tools into *Wallace* and incentive for them to develop new `R` packages that could reach more users. As a useful first demonstration, *Wallace* offers opportunities (and guidance) to build state-of-the-art niche/distributional models, including a variety of ways to deal with biased occurrence data. Ultimately, fuller implementation of key `R` packages in *Wallace* will provide the user with additional options, but in this release we concentrate on those that are most commonly used in the field.
+
+### ***Wallace*'s unique features**
+
+In *Wallace*, we provide the structure for customizing a given research project, documenting it, and expanding it in the future. It contains various "modules", each of which corresponds to a particular step of the analysis. This allows future addition of other modules to provide: 1) alternative functionalities for a given process implemented here; and 2) functionalities for processes not currently considered. At several stages, users can upload their own data and save the results. Additionally, as a key element of scientific reproducibility, *Wallace* uses the `R` package `rmarkdown` to write a file with all of the executed code for a given run, providing both documentation of the analysis and a means for reproducing it. To allow for display and processing in external software platforms, we offer a few standard input and output formats (e.g., CSV for occurrence data; GRD, GEOTIFF, or ASCII for raster grids; PNG for images).
+
+### ***Wallace* and building niche/distribution models**
+
+At each step of *Wallace*, we provide guidance for the user, both regarding data-related issues and the analyses. Overall, the young fields of biodiversity informatics and niche/distributional modeling exist in states of rapid advancement. Because of this, standard practices for most analyses do not yet exist, and the particular tools used change frequently. Nevertheless, many key issues regarding data quality are clear, and many general guidelines for modeling niches and distributions are established in the scientific literature (Guisan and Zimmermann 2000; Guisan and Thuiller 2005; Franklin 2010; Peterson et al. 2011). Therefore, for each step, we attempt to provide succinct orientation and warnings for the user, laying out important principles (that are likely to remain relevant) and providing references to scientific papers holding further details.
+
+*Wallace* currently allows users to build niche/distributional models with the techniques BIOCLIM and Maxent. Depending on the goals of the study (and the natural history of the species), the particular input predictor variables and relevant study regions will vary. However, two common data needs remain constant: 1) georeferenced occurrence records of the study species; and 2) raster grids of predictor variables (e.g., climate or land-cover). Here, we concentrate on implementations of BIOCLIM and Maxent (Phillips et al. 2006; Booth et al. 2014). Both use data regarding the species’ presence (i.e., without information on absence or non-detection). Maxent also requires a sample of "background" pixels that characterize the environments available in the study region, but BIOCLIM does not. Although *Wallace* now models one species at a time, relatively minor modifications would allow for batch processing of multiple species. Later expansion is ripe for inclusion of other techniques for building these kinds of models, as well as approaches for presence–absence modeling and occupancy modeling (which uses repeated samples at the same site). Ultimately, we hope that other researchers will add important additional downstream analyses that use the output of niche/distributional models, such as conservation planning tools and macroecological analyses.
+
+**ACKNOWLEDGMENTS**
+
+We dedicate this software to Alfred Russel Wallace, the co-discoverer of evolution by natural selection and the founder of the field of biogeography.
+
+**REFERENCES**
+
+Booth T.H., Nix H.A., Busby J.R., Hutchinson M.F. (2014). BIOCLIM: The first species distribution modelling package, its early applications and relevance to most current MaxEnt studies. *Diversity and Distributions*. 20: 1–9.
+
+Chang W., Cheng J., Allaire J. J., Xie Y., McPherson J. (2017). shiny: Web Application Framework for R. R package version 0.12.2. URL: http://CRAN.R-project.org/package=shiny
+
+Elith J., Leathwick J.R. (2009). Species distribution models: ecological explanation and prediction across space and time. *Annual Review of Ecology, Evolution, and Systematics*. 40: 677–697.
+
+Franklin J. (2010). Mapping species distributions: spatial inference and prediction. Cambridge: Cambridge University Press.
+
+Guisan A., Thuiller W. (2005). Predicting species distribution: offering more than simple habitat models. *Ecology Letters*. 8: 993–1009.
+
+Guisan A., Zimmermann N.E. (2000). Predictive habitat distribution models in ecology. *Ecological Modelling*. 135: 147–186.
+
+Peterson A.T., Soberón J., Pearson R.G., Anderson R.P., Martinez-Meyer E., Nakamura M., Araújo M.B. (2011). Ecological niches and geographic distributions. Princeton, New Jersey: Monographs in Population Biology, 49. Princeton University Press.
+
+Phillips S.J., Anderson R.P., Schapire R.E. (2006). Maximum entropy modeling of species geographic distributions. Ecological Modelling. 190: 231–259.
+
+R Core Team (2017). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. URL: http://www.R-project.org/
