@@ -16,7 +16,7 @@ shinyServer(function(input, output, session) {
   
   # initialize module parameters list
   rvs <- reactiveValues(logs = logInit(), comp1='', comp2='', comp3='', comp4.shp='', comp4.buf=0,
-                        comp5='', comp6='', comp7.thr='', comp7.type='', comp7='', comp8.pj='', comp8.esim='')
+                        comp5='', comp6='', comp7.type='', comp7='', comp8.pj='', comp8.esim='')
   
   observeEvent(input$load, {
     f <- read.csv('/Users/musasabi/Downloads/Puma concolor_partitioned_occs(1).csv')
@@ -807,12 +807,14 @@ shinyServer(function(input, output, session) {
       } else {
         polyPjX <- polyPjY <- NULL
       }
+      bcSels <- printVecAsis(rvs$bcSels)
       
       exp <- knitr::knit_expand(system.file("Rmd", 'userReport.Rmd', package = "wallace"), 
                                 curWD=curWD, spName=spName(), 
                                 dbName=rvs$occDb, occNum=rvs$occNum, occsCSV=rvs$userCSV$name,  # comp 1
                                 thinDist=rvs$thinDist, occsRemoved=rvs$occsRem, occsSelX=polySelX, occsSelY=polySelY,  # comp 2
-                                bcRes=rvs$bcRes, bcLat=rvs$bcLat, bcLon=rvs$bcLon, userEnvs=printVecAsis(rvs$userEnvs$name), # comp 3
+                                bcRes=rvs$bcRes, bcLat=rvs$bcLat, bcLon=rvs$bcLon, # comp 3
+                                userEnvs=printVecAsis(rvs$userEnvs$name), bcSels=bcSels, # comp 3
                                 bgSel=rvs$comp4.shp, bgBuf=rvs$comp4.buf, bgUserCSVpath=rvs$userBgShp$datapath,  # comp 4
                                 bgUserCSVname=rvs$userBgShp$name, bgUserShpPath=rvs$bgUserShpPar$dsn,  # comp 4 
                                 bgUserShpName=rvs$bgUserShpPar$layer, bgPtsNum=rvs$bgPtsNum, # comp 4

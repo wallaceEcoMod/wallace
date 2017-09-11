@@ -8,8 +8,13 @@ wcBioclims_UI <- function(id) {
                                "30 arcsec" = 0.5,
                                "2.5 arcmin" = 2.5,
                                "5 arcmin" = 5,
-                               "10 arcmin" = 10),
-                selected=10))
+                               "10 arcmin" = 10))),
+    checkboxInput(ns("bcSelChoice"), label = "Specify variables to use in analysis?"),
+    conditionalPanel(paste0("input['", ns("bcSelChoice"), "']"),
+                     checkboxGroupInput(ns("bcSels"), label = "Select",
+                                        choices = setNames(as.list(paste0('bio', 1:19)), paste0('bio', 1:19)), 
+                                        inline=TRUE, selected = paste0('bio', 1:19)))
+    
   )
 }
 
@@ -27,6 +32,7 @@ wcBioclims_MOD <- function(input, output, session, logs, mapCntr, envs) {
     
     # record for RMD
     rvs$bcRes <- input$bcRes
+    rvs$bcSels <- input$bcSels
     
     withProgress(message = "Retrieving WorldClim data...", {
       if (input$bcRes == 0.5) {
@@ -36,11 +42,17 @@ wcBioclims_MOD <- function(input, output, session, logs, mapCntr, envs) {
         rvs$bcLat <- mapCntr()[2]
       } else {
         wcbc <- raster::getData(name = "worldclim", var = "bio", res = input$bcRes)
+        wcbc <- wcbc[[input$bcSels]]
       }
     })
     
-    logs %>% writeLog("Environmental predictors: WorldClim bio1-19 at", 
-                      input$bcRes, " arcmin resolution.")
+    if (raster::nlayers(wcbc) == 19) {
+      bcSels <- 'bio1-19'
+    } else {
+      bcSels <- paste(names(wcbc), collapse = ", ")
+    }
+    logs %>% writeLog("Environmental predictors: WorldClim bioclimatic variables",
+                      bcSels, "at", input$bcRes, " arcmin resolution.")
     
     return(wcbc)
   })

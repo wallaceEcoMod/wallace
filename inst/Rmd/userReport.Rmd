@@ -197,6 +197,8 @@ Using WorldClim (http://www.worldclim.org/) bioclimatic dataset at resolution of
 ```{r getEnvBC, echo = env.bc, include = env.bc}
 # get WorldClim bioclimatic variable rasters
 envs <- raster::getData(name = "worldclim", var = "bio", res = {{bcRes}}, lat = {{bcLat}}, lon = {{bcLon}})
+# subset by those variables selected
+envs <- envs[[{{bcSels}}]]
 # extract environmental values at occ grid cells
 locs.vals <- raster::extract(envs[[1]], occs[, c('longitude', 'latitude')])
 # remove occs without environmental values
