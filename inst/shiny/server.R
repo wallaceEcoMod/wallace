@@ -519,6 +519,7 @@ shinyServer(function(input, output, session) {
     output$evalTblBins <- DT::renderDataTable(modRes.round[,17:(nBinsCols+16)], 
                                               options = list(scrollX = TRUE,
                                                              sDom  = '<"top">rt<"bottom">'))
+    shinyjs::show(id = "evalTblBins")
     
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
@@ -546,6 +547,7 @@ shinyServer(function(input, output, session) {
     updateRadioButtons(session, "visSel", 
                        choices = list("BIOCLIM Envelope Plots" = 'bcPlots',
                                       "Map Prediction" = 'map'))
+    shinyjs::hide(id = "evalTblBins")
   })
   
   ########################################### #

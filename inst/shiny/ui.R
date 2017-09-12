@@ -25,7 +25,7 @@ shinyUI(tagList(
                                includeCSS(system.file("css", "styles.css", package = "wallace")),
                                includeScript(system.file("js", "scroll.js", package = "wallace")),
                                conditionalPanel("input.tabs == 0",
-                                                # actionButton('load', 'HACK'),
+                                                actionButton('load', 'HACK'),
                                                 includeMarkdown(system.file("Rmd", "text_intro_tab.Rmd", package = "wallace"))
                                ),
                                # tab 1 ####
@@ -343,8 +343,7 @@ shinyUI(tagList(
                                                  tabPanel('Occs Tbl', DT::dataTableOutput('occTbl')),
                                                  tabPanel('Results', 
                                                           conditionalPanel("input.tabs == 3", verbatimTextOutput('envsPrint')),
-                                                          conditionalPanel("input.tabs == 6", 
-                                                                           DT::dataTableOutput('evalTbl'), br(),
+                                                          conditionalPanel("input.tabs == 6", DT::dataTableOutput('evalTbl'), br(), 
                                                                            DT::dataTableOutput('evalTblBins')),
                                                           conditionalPanel("input.tabs == 7 && input.visSel == 'response'",
                                                                            imageOutput('respPlots')),
