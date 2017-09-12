@@ -3,7 +3,7 @@ title: "comp2_selectLocs"
 output: html_document
 ---
 
-### **Module:** ***Select Localities***
+### **Module:** ***Select Occurrences On Map***
 
 **BACKGROUND**  
 
@@ -13,7 +13,7 @@ Despite their great utility, aggregated biodiversity occurrence datasets typical
 
 The R package `leaflet` provides map functionality to this module, and the polygon drawing tool was implemented with custom code that leverages `leaflet` functions. Future versions of *Wallace* may use the `leaflet` drawing toolbar, which has not yet been integrated into the R package (as of  November 2016).
 
-This module allows users to select which localities to retain on the map either by specifying the ID of localities to *remove* or drawing a polygon to specify which to *retain*. “Remove Locality” deletes a locality based on record ID from the occurrence dataset used for analysis. Record IDs, along with some other information, can be viewed by clicking on points on the map. 
+This module allows users to select which localities to retain on the map either by specifying the ID of localities to *remove* or drawing a polygon to specify which to *retain*. “Remove Locality” deletes a locality based on record ID from the occurrence dataset used for analysis. Record IDs, along with some other information, can be viewed by clicking on points on the map.
 
 To select multiple points to retain, users can draw a polygon on the map. "Select with Polygon" chooses localities that fall within (i.e. overlap with) the polygon. Users can then draw other polygons to select other groups of localities. This process can be repeated until all the desired localities are selected. Users are also able to reset the occurrence dataset back to the original localities. Finally, users can download a .csv file of the localities.
 
