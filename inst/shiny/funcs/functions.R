@@ -185,6 +185,7 @@ mcp <- function(xy) {
 ####################### #
 
 comp5_map <- function(map, occs, occsGrp) {
+  if (is.null(occsGrp)) return()
   # colors for partition symbology
   newColors <- gsub("FF$", "", rainbow(max(occsGrp)))  
   partsFill <- newColors[occsGrp]

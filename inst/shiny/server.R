@@ -64,16 +64,17 @@ shinyServer(function(input, output, session) {
   # guidance text and tab behavior
   observe({
     if (input$tabs == 1) {
-      updateTabsetPanel(session, 'main', selected = 'Map')
+      # updateTabsetPanel(session, 'main', selected = 'Map')
       gtext$cur_comp <- 'gtext_comp1.Rmd'
       if (input$occSel == 'db') gtext$cur_mod <- "gtext_comp1_dbOccs.Rmd"
       if (input$occSel == 'user') gtext$cur_mod <- "gtext_comp1_userOccs.Rmd"
     }
     if (input$tabs == 2) {
-      updateTabsetPanel(session, 'main', selected = 'Map')
+      # updateTabsetPanel(session, 'main', selected = 'Map')
       gtext$cur_comp <- "gtext_comp2.Rmd"
       # if Module: Select Localities, populate guidance text and select legend
-      if (input$procOccSel == 'selOccs') gtext$cur_mod <- "gtext_comp2_selectLocs.Rmd"
+      if (input$procOccSel == 'selOccs') gtext$cur_mod <- "gtext_comp2_selectOccsOnMap.Rmd"
+      if (input$procOccSel == 'remID') gtext$cur_mod <- "gtext_comp2_removeByID.Rmd"
       if (input$procOccSel == 'spthin') gtext$cur_mod <- "gtext_comp2_spatialThin.Rmd"
     }
     if (input$tabs == 3) {
@@ -82,7 +83,7 @@ shinyServer(function(input, output, session) {
       if (input$envDataSel == 'user') gtext$cur_mod <- "gtext_comp3_userEnvs.Rmd"
     }
     if (input$tabs == 4) {
-      updateTabsetPanel(session, 'main', selected = 'Map')
+      # updateTabsetPanel(session, 'main', selected = 'Map')
       gtext$cur_comp <- "gtext_comp4.Rmd"
       if (input$envProcSel == 'bgSel') gtext$cur_mod <- "gtext_comp4_backg.Rmd"
       if (input$envProcSel == 'bgUser') gtext$cur_mod <- "gtext_comp4_userBg.Rmd"
@@ -109,7 +110,7 @@ shinyServer(function(input, output, session) {
       if (input$visSel == 'response') gtext$cur_mod <- "gtext_comp7_respCurves.Rmd"
     }
     if (input$tabs == 8) {
-      updateTabsetPanel(session, 'main', selected = 'Map')
+      # updateTabsetPanel(session, 'main', selected = 'Map')
       gtext$cur_comp <- "gtext_comp8.Rmd"
       if (input$projSel == 'projArea') gtext$cur_mod <- "gtext_comp8_pjArea.Rmd"
       if (input$projSel == 'projTime') gtext$cur_mod <- "gtext_comp8_pjTime.Rmd"
@@ -224,7 +225,7 @@ shinyServer(function(input, output, session) {
   remByID <- callModule(removeByID_MOD, 'c2_removeByID', rvs)
   
   observeEvent(input$goRemoveByID, {
-    remByID()
+    rvs$occs <- remByID()
     # record for RMD
     rvs$comp2 <- c(rvs$comp2, 'rem')
     map %>%
@@ -237,7 +238,7 @@ shinyServer(function(input, output, session) {
   selOccs <- callModule(selectOccs_MOD, 'c2_selOccs', rvs)
   
   observeEvent(input$goSelectOccs, {
-    selOccs()
+    rvs$occs <- selOccs()
     # record for RMD
     rvs$comp2 <- c(rvs$comp2, 'sel')
     map %>%
@@ -258,6 +259,7 @@ shinyServer(function(input, output, session) {
   thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs', rvs)
   
   observeEvent(input$goThinOccs, {
+    occsPreThin <- rvs$occs
     rvs$occs <- thinOccs()
     # stop if no occurrence data
     req(rvs$occs)
@@ -265,7 +267,7 @@ shinyServer(function(input, output, session) {
     rvs$comp2 <- c(rvs$comp2, 'thin')
     # MAPPING - blue pts for remove, red pts for keep
     map %>% 
-      addCircleMarkers(data = dbOccs(), lat = ~latitude, lng = ~longitude,
+      addCircleMarkers(data = occsPreThin, lat = ~latitude, lng = ~longitude,
                        radius = 5, color = 'red', fillColor = 'blue',
                        fillOpacity = 1, weight = 2, popup = ~pop,
                        group = 'comp2') %>%
@@ -519,6 +521,7 @@ shinyServer(function(input, output, session) {
     output$evalTblBins <- DT::renderDataTable(modRes.round[,17:(nBinsCols+16)], 
                                               options = list(scrollX = TRUE,
                                                              sDom  = '<"top">rt<"bottom">'))
+    shinyjs::show(id = "evalTblBins")
     
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
@@ -546,6 +549,7 @@ shinyServer(function(input, output, session) {
     updateRadioButtons(session, "visSel", 
                        choices = list("BIOCLIM Envelope Plots" = 'bcPlots',
                                       "Map Prediction" = 'map'))
+    shinyjs::hide(id = "evalTblBins")
   })
   
   ########################################### #

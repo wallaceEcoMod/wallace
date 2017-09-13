@@ -25,7 +25,7 @@ shinyUI(tagList(
                                includeCSS(system.file("css", "styles.css", package = "wallace")),
                                includeScript(system.file("js", "scroll.js", package = "wallace")),
                                conditionalPanel("input.tabs == 0",
-                                                # actionButton('load', 'HACK'),
+                                                actionButton('load', 'HACK'),
                                                 includeMarkdown(system.file("Rmd", "text_intro_tab.Rmd", package = "wallace"))
                                ),
                                # tab 1 ####
@@ -58,12 +58,12 @@ shinyUI(tagList(
                                conditionalPanel("input.tabs == 2",
                                                 h4("Process Occurrence Data"),
                                                 radioButtons("procOccSel", "Modules Available:",
-                                                             choices = list("Select Occurrences on Map" = 'selOccs',
-                                                                            "Remove Occurrences by ID" = 'remID',
+                                                             choices = list("Select Occurrences On Map" = 'selOccs',
+                                                                            "Remove Occurrences By ID" = 'remID',
                                                                             "Spatial Thin" = 'spthin')),
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.procOccSel == 'selOccs'",
-                                                                 div('Module: Select with Polygon', id="mod"),
+                                                                 div('Module: Select Occurrences On Map', id="mod"),
                                                                  uiTop('leaflet.extras', "Extra functionality for 'leaflet' Package"),
                                                                  HTML('<hr>'),
                                                                  selectOccs_UI('c2_selectOccs'),
@@ -71,6 +71,8 @@ shinyUI(tagList(
                                                                  actionButton("goSelectOccs", "Select Occurrences")
                                                 ),
                                                 conditionalPanel("input.procOccSel == 'remID'",
+                                                                 div('Module: Remove Occurrences By ID', id="mod"),
+                                                                 HTML('<hr>'),
                                                                  removeByID_UI('c2_removeByID'),
                                                                  actionButton("goRemoveByID", "Remove Occurrence")
                                                 ),
@@ -341,8 +343,7 @@ shinyUI(tagList(
                                                  tabPanel('Occs Tbl', DT::dataTableOutput('occTbl')),
                                                  tabPanel('Results', 
                                                           conditionalPanel("input.tabs == 3", verbatimTextOutput('envsPrint')),
-                                                          conditionalPanel("input.tabs == 6", 
-                                                                           DT::dataTableOutput('evalTbl'), br(),
+                                                          conditionalPanel("input.tabs == 6", DT::dataTableOutput('evalTbl'), br(), 
                                                                            DT::dataTableOutput('evalTblBins')),
                                                           conditionalPanel("input.tabs == 7 && input.visSel == 'response'",
                                                                            imageOutput('respPlots')),
