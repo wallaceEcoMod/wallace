@@ -73,7 +73,8 @@ shinyServer(function(input, output, session) {
       updateTabsetPanel(session, 'main', selected = 'Map')
       gtext$cur_comp <- "gtext_comp2.Rmd"
       # if Module: Select Localities, populate guidance text and select legend
-      if (input$procOccSel == 'selOccs') gtext$cur_mod <- "gtext_comp2_selectLocs.Rmd"
+      if (input$procOccSel == 'selOccs') gtext$cur_mod <- "gtext_comp2_selectOccsOnMap.Rmd"
+      if (input$procOccSel == 'remID') gtext$cur_mod <- "gtext_comp2_removeByID.Rmd"
       if (input$procOccSel == 'spthin') gtext$cur_mod <- "gtext_comp2_spatialThin.Rmd"
     }
     if (input$tabs == 3) {
