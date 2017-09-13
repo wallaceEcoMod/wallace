@@ -22,11 +22,12 @@ removeByID_MOD <- function(input, output, session, rvs) {
     # find row number relating to ID
     i <- which(input$removeID == rvs$occs$occID)  # find which row name corresponds to user selection for removal
     # remove the row
-    rvs$occs <- rvs$occs[-i,]
+    occs.remID <- rvs$occs[-i,]
     # record all removed ids
     rvs$removedIDs <- c(rvs$removedIDs, input$removeID)
     
     rvs %>% writeLog("Removed occurrence with ID = ", input$removeID, 
                      ". Updated data has n = ", nrow(rvs$occs), " records.")
+    return(occs.remID)
   })
 }

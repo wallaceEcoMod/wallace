@@ -225,7 +225,7 @@ shinyServer(function(input, output, session) {
   remByID <- callModule(removeByID_MOD, 'c2_removeByID', rvs)
   
   observeEvent(input$goRemoveByID, {
-    remByID()
+    rvs$occs <- remByID()
     # record for RMD
     rvs$comp2 <- c(rvs$comp2, 'rem')
     map %>%
@@ -238,7 +238,7 @@ shinyServer(function(input, output, session) {
   selOccs <- callModule(selectOccs_MOD, 'c2_selOccs', rvs)
   
   observeEvent(input$goSelectOccs, {
-    selOccs()
+    rvs$occs <- selOccs()
     # record for RMD
     rvs$comp2 <- c(rvs$comp2, 'sel')
     map %>%
@@ -259,6 +259,7 @@ shinyServer(function(input, output, session) {
   thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs', rvs)
   
   observeEvent(input$goThinOccs, {
+    occsPreThin <- rvs$occs
     rvs$occs <- thinOccs()
     # stop if no occurrence data
     req(rvs$occs)
@@ -266,7 +267,7 @@ shinyServer(function(input, output, session) {
     rvs$comp2 <- c(rvs$comp2, 'thin')
     # MAPPING - blue pts for remove, red pts for keep
     map %>% 
-      addCircleMarkers(data = dbOccs(), lat = ~latitude, lng = ~longitude,
+      addCircleMarkers(data = occsPreThin, lat = ~latitude, lng = ~longitude,
                        radius = 5, color = 'red', fillColor = 'blue',
                        fillOpacity = 1, weight = 2, popup = ~pop,
                        group = 'comp2') %>%
