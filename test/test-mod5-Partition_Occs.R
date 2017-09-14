@@ -5,7 +5,7 @@ library(RSelenium)
 library(testthat)
 
 # Connect to the app (open another rstudio and run_wallace())
-remDr <- remoteDriver(port=5556) # use the right address by running code in test/run_wallace.r
+remDr <- remoteDriver() # use the right address by running code in test/run_wallace.r
 remDr$open(silent = TRUE)
 appURL <- "http://127.0.0.1:5556" # use the right address by running code in test/run_wallace.r
 

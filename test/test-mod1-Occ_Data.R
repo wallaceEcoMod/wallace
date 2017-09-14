@@ -8,7 +8,8 @@ library(testthat)
 # Connect to the app (open another rstudio and run_wallace())
 # NOTE: use the right address by running code in test/run_wallace.r
 # !!!!!!!!!!! leave this as port = 5556 ! unless that port doesn't work for you, then suggest another. or are we not supposed to set a port when others test? if that's the case do we really have to manually set it for development?
-remDr <- remoteDriver(port=5556) 
+#remDr <- remoteDriver(port=5556) ## MIGHT BREAK THINGS
+remDr <- remoteDriver() 
 remDr$open(silent = TRUE)
 appURL <- "http://127.0.0.1:5556"
 
@@ -16,7 +17,7 @@ appURL <- "http://127.0.0.1:5556"
 # move to Component 1
 remDr$navigate(appURL)
 # necessary for waiting for db query to load
-remDr$setImplicitWaitTimeout(milliseconds = 10000)
+remDr$setImplicitWaitTimeout(milliseconds = 100000)
 compTabs <- remDr$findElements("css selector", ".nav a")
 compTabLabels <- sapply(compTabs, function(x){x$getElementText()})
 comp1Tab <- compTabs[[which(compTabLabels == "1 Occ Data")]]  
