@@ -11,7 +11,7 @@ library(testthat)
 #remDr <- remoteDriver(port=5556) ## MIGHT BREAK THINGS
 remDr <- remoteDriver() 
 remDr$open(silent = TRUE)
-appURL <- "http://127.0.0.1:5556"
+appURL <- "http://127.0.0.1:4444"
 
 
 # move to Component 1
@@ -60,22 +60,11 @@ test_that("Component 1 Module Query Database: Buttons", {
 })
 
 test_that("Component 1 Module Query Database: Slider", {
-  # CM - this line doesn't work for me; can't find this element and also cant find it when searching for the string in ui.R. here's the error (and the help website it suggests is useless)
-  # Selenium message:Unable to locate element: //input[@id='c1_queryDb-occNum']
-  # For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
-  # Build info: version: '3.4.0', revision: 'unknown', time: 'unknown'
-  # System info: host: 'CORYs-MacBook-Pro.local', ip: 'fe80:0:0:0:c50:e4d9:989a:f8f3%en0', os.name: 'Mac OS X', os.arch: 'x86_64', os.version: '10.12.6', java.version: '1.8.0_144'
-  # Driver info: org.openqa.selenium.firefox.FirefoxDriver
-  # Capabilities [{moz:profile=/var/folders/_3/kr0fjz7s55v5bfw8bmqwhld00000gn/T/rust_mozprofile.FkxP54rBs3ms, rotatable=false, timeouts={implicit=0.0, pageLoad=300000.0, script=30000.0}, pageLoadStrategy=normal, platform=ANY, specificationLevel=0.0, moz:accessibilityChecks=false, acceptInsecureCerts=false, browserVersion=55.0.3, platformVersion=16.7.0, moz:processID=10759.0, browserName=firefox, javascriptEnabled=true, platformName=darwin}]
-  # Session ID: c53e5716-3b47-864c-bc50-3137487f4b0c
-  # *** Element info: {Using=xpath, value=//input[@id='c1_queryDb-occNum']}
   
-  # Error: 	 Summary: NoSuchElement
-  # Detail: An element could not be located on the page using the given search parameters.
-  # class: org.openqa.selenium.NoSuchElementException
-  # Further Details: run errorDetails method
-  
-  slider <- comp1Tab$findChildElement(value = "//input[@id='c1_queryDb-occNum']")
+  #slider <- comp1Tab$findChildElement(value = "//input[@id='c1_queryDb-occNum']")
+  # this is what i would've thought would work - what's hte 'c1_queryDb-' part do?
+  # from line 314 of source code viewed in firefox
+  slider <- comp1Tab$findChildElement(value = "//input[@id='occNum' and @class='js-range-slider']")
   sliderDim <- slider$getElementSize()
   expect_equal(sliderDim$width, 4)
   expect_equal(sliderDim$height, 4)
@@ -93,19 +82,6 @@ test_that("Component 1 Module Query Database: Check DB Query", {
   field$sendKeysToElement(list("Puma concolor"))
   # find button and click
   # CM: can't find this element, but i do see it on line 43 of ui.r, so seems like i should. here's the error:
-  # Selenium message:Unable to locate element: //button[@id='goDbOccs']
-  # For documentation on this error, please visit: http://seleniumhq.org/exceptions/no_such_element.html
-  # Build info: version: '3.4.0', revision: 'unknown', time: 'unknown'
-  # System info: host: 'CORYs-MacBook-Pro.local', ip: 'fe80:0:0:0:c50:e4d9:989a:f8f3%en0', os.name: 'Mac OS X', os.arch: 'x86_64', os.version: '10.12.6', java.version: '1.8.0_144'
-  # Driver info: org.openqa.selenium.firefox.FirefoxDriver
-  # Capabilities [{moz:profile=/var/folders/_3/kr0fjz7s55v5bfw8bmqwhld00000gn/T/rust_mozprofile.FkxP54rBs3ms, rotatable=false, timeouts={implicit=0.0, pageLoad=300000.0, script=30000.0}, pageLoadStrategy=normal, platform=ANY, specificationLevel=0.0, moz:accessibilityChecks=false, acceptInsecureCerts=false, browserVersion=55.0.3, platformVersion=16.7.0, moz:processID=10759.0, browserName=firefox, javascriptEnabled=true, platformName=darwin}]
-  # Session ID: c53e5716-3b47-864c-bc50-3137487f4b0c
-  # *** Element info: {Using=xpath, value=//button[@id='goDbOccs']}
-  # 
-  # Error: 	 Summary: NoSuchElement
-  # Detail: An element could not be located on the page using the given search parameters.
-  # class: org.openqa.selenium.NoSuchElementException
-  # Further Details: run errorDetails method
   button <- comp1Tab$findChildElement(value = "//button[@id='goDbOccs']")
   button$clickElement()
   # click occsTbl tab
