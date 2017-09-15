@@ -6,13 +6,9 @@ library(testthat)
 # test_dir('/Users/musasabi/Documents/github/wallace/test', filter = 'mod1', reporter = "Tap")
 
 # Connect to the app (open another rstudio and run_wallace())
-# NOTE: use the right address by running code in test/run_wallace.r
-# !!!!!!!!!!! leave this as port = 5556 ! unless that port doesn't work for you, then suggest another. or are we not supposed to set a port when others test? if that's the case do we really have to manually set it for development?
-#remDr <- remoteDriver(port=5556) ## MIGHT BREAK THINGS
 remDr <- remoteDriver() 
 remDr$open(silent = TRUE)
 appURL <- "http://127.0.0.1:4444"
-
 
 # move to Component 1
 remDr$navigate(appURL)
@@ -61,10 +57,10 @@ test_that("Component 1 Module Query Database: Buttons", {
 
 test_that("Component 1 Module Query Database: Slider", {
   
-  #slider <- comp1Tab$findChildElement(value = "//input[@id='c1_queryDb-occNum']")
+  slider <- comp1Tab$findChildElement(value = "//input[@id='c1_queryDb-occNum']")
   # this is what i would've thought would work - what's hte 'c1_queryDb-' part do?
   # from line 314 of source code viewed in firefox
-  slider <- comp1Tab$findChildElement(value = "//input[@id='occNum' and @class='js-range-slider']")
+  #slider <- comp1Tab$findChildElement(value = "//input[@id='occNum' and @class='js-range-slider']")
   sliderDim <- slider$getElementSize()
   expect_equal(sliderDim$width, 4)
   expect_equal(sliderDim$height, 4)
