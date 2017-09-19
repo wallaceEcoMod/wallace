@@ -8,7 +8,7 @@ library(testthat)
 # Connect to the app (open another rstudio and run_wallace())
 remDr <- remoteDriver() 
 remDr$open(silent = TRUE)
-appURL <- "http://127.0.0.1:4444"
+appURL <- "http://127.0.0.1:5556"
 
 # move to Component 1
 remDr$navigate(appURL)
@@ -24,35 +24,37 @@ resultsTabs <- remDr$findElements("css selector", ".nav a")
 resultsTabLabels <- sapply(resultsTabs, function(x){x$getElementText()})
 occsTblTab <- resultsTabs[[which(resultsTabLabels == "Occs Tbl")]]  
 
-
 # Here if the app contains the correct tabs and their respective names.
 test_that("Component 1 Module Query Database: Buttons", {  
   # click gbif button
-  field <- comp1Tab$findChildElement(value = "//input[@type='radio' and @value='gbif']")
-  initState <- field$isElementSelected()[[1]]
-  field$clickElement()
-  changeState <- field$isElementSelected()[[1]]
+  field.gbif <- comp1Tab$findChildElement(value = "//input[@type='radio' and @value='gbif']")
+  initState <- field.gbif$isElementSelected()[[1]]
+  field.gbif$clickElement()
+  changeState <- field.gbif$isElementSelected()[[1]]
   expect_is(initState, "logical")  
   expect_is(changeState, "logical")  
   expect_true(initState == changeState)  
   
   # click Vertnet button
-  field <- comp1Tab$findChildElement(value = "//input[@type='radio' and @value='vertnet']")
-  initState <- field$isElementSelected()[[1]]
-  field$clickElement()
-  changeState <- field$isElementSelected()[[1]]
+  field.vnet <- comp1Tab$findChildElement(value = "//input[@type='radio' and @value='vertnet']")
+  initState <- field.vnet$isElementSelected()[[1]]
+  field.vnet$clickElement()
+  changeState <- field.vnet$isElementSelected()[[1]]
   expect_is(initState, "logical")  
   expect_is(changeState, "logical")  
   expect_false(initState == changeState)  
   
   #click BISON button (isn't this database defunded?)
-  field <- comp1Tab$findChildElement(value = "//input[@type='radio' and @value='bison']")
-  initState <- field$isElementSelected()[[1]]
-  field$clickElement()
-  changeState <- field$isElementSelected()[[1]]
+  field.bison <- comp1Tab$findChildElement(value = "//input[@type='radio' and @value='bison']")
+  initState <- field.bison$isElementSelected()[[1]]
+  field.bison$clickElement()
+  changeState <- field.bison$isElementSelected()[[1]]
   expect_is(initState, "logical")  
   expect_is(changeState, "logical")  
   expect_false(initState == changeState)  
+  
+  # switch back to gbif
+  field.gbif$clickElement()
 })
 
 test_that("Component 1 Module Query Database: Slider", {
@@ -76,18 +78,30 @@ test_that("Component 1 Module Query Database: Check DB Query", {
   field$clickElement()
   # write text
   field$sendKeysToElement(list("Puma concolor"))
-  # find button and click
-  # CM: can't find this element, but i do see it on line 43 of ui.r, so seems like i should. here's the error:
+  # find button and click to search for occs
   button <- comp1Tab$findChildElement(value = "//button[@id='goDbOccs']")
   button$clickElement()
+  
+  # check log box
+  Sys.sleep(10)
+  logContent <- remDr$findElement(using = "id", value = 'logContent')
+  logText <- logContent$getElementText()
+  logTextLines <- strsplit(logText[[1]], split = '\n')[[1]]
+  occSearchLine <- strsplit(logTextLines[5], split = ' ')[[1]]
+  nums <- occSearchLine[grep('[0-9]', occSearchLine)]
+  expect_equal(as.numeric(nums[1]), 100)
+  
   # click occsTbl tab
   occsTblTab$clickElement()
   # find data table
   # NOTE: finding elements (plural) does not error when none exist
   occsTbl <- occsTblTab$findChildElements(value = '//table')
   # check if the table's there
-  # CM: can't find this element
   expect_true(occsTbl[[1]]$isElementDisplayed()[[1]])
+})
+
+test_that("Component 1 Module Query Database: Check Log Box", {
+  
 })
 
 test_that("Component 1 Module User-specified: Buttons", {
