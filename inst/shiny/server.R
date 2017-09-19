@@ -64,13 +64,13 @@ shinyServer(function(input, output, session) {
   # guidance text and tab behavior
   observe({
     if (input$tabs == 1) {
-      # updateTabsetPanel(session, 'main', selected = 'Map')
+      updateTabsetPanel(session, 'main', selected = 'Map')
       gtext$cur_comp <- 'gtext_comp1.Rmd'
       if (input$occSel == 'db') gtext$cur_mod <- "gtext_comp1_dbOccs.Rmd"
       if (input$occSel == 'user') gtext$cur_mod <- "gtext_comp1_userOccs.Rmd"
     }
     if (input$tabs == 2) {
-      # updateTabsetPanel(session, 'main', selected = 'Map')
+      updateTabsetPanel(session, 'main', selected = 'Map')
       gtext$cur_comp <- "gtext_comp2.Rmd"
       # if Module: Select Localities, populate guidance text and select legend
       if (input$procOccSel == 'selOccs') gtext$cur_mod <- "gtext_comp2_selectOccsOnMap.Rmd"
@@ -78,28 +78,32 @@ shinyServer(function(input, output, session) {
       if (input$procOccSel == 'spthin') gtext$cur_mod <- "gtext_comp2_spatialThin.Rmd"
     }
     if (input$tabs == 3) {
+      updateTabsetPanel(session, 'main', selected = 'Results')
       gtext$cur_comp <- "gtext_comp3.Rmd"
       if (input$envDataSel == 'wcbc') gtext$cur_mod <- "gtext_comp3_worldclim.Rmd"
       if (input$envDataSel == 'user') gtext$cur_mod <- "gtext_comp3_userEnvs.Rmd"
     }
     if (input$tabs == 4) {
-      # updateTabsetPanel(session, 'main', selected = 'Map')
+      updateTabsetPanel(session, 'main', selected = 'Map')
       gtext$cur_comp <- "gtext_comp4.Rmd"
       if (input$envProcSel == 'bgSel') gtext$cur_mod <- "gtext_comp4_backg.Rmd"
       if (input$envProcSel == 'bgUser') gtext$cur_mod <- "gtext_comp4_userBg.Rmd"
       
     }
     if (input$tabs == 5) {
+      updateTabsetPanel(session, 'main', selected = 'Map')
       gtext$cur_comp <- "gtext_comp5.Rmd"
       if (input$partSel == 'sp') gtext$cur_mod <- "gtext_comp5_spatial.Rmd"
       if (input$partSel == 'nsp') gtext$cur_mod <- "gtext_comp5_nonspatial.Rmd"
     }
     if (input$tabs == 6) {
+      updateTabsetPanel(session, 'main', selected = 'Results')
       gtext$cur_comp <- "gtext_comp6.Rmd"
       if (input$enmSel == 'BIOCLIM') gtext$cur_mod <- "gtext_comp6_bioclim.Rmd"
       if (input$enmSel == 'Maxent') gtext$cur_mod <- "gtext_comp6_maxent.Rmd"
     }
     if (input$tabs == 7) {
+      updateTabsetPanel(session, 'main', selected = 'Map')
       gtext$cur_comp <- "gtext_comp7.Rmd"
       if (input$visSel == 'bcPlots') gtext$cur_mod <- "gtext_comp7_bcPlots.Rmd"
       if (input$visSel == 'map') {
@@ -110,7 +114,7 @@ shinyServer(function(input, output, session) {
       if (input$visSel == 'response') gtext$cur_mod <- "gtext_comp7_respCurves.Rmd"
     }
     if (input$tabs == 8) {
-      # updateTabsetPanel(session, 'main', selected = 'Map')
+      updateTabsetPanel(session, 'main', selected = 'Map')
       gtext$cur_comp <- "gtext_comp8.Rmd"
       if (input$projSel == 'projArea') gtext$cur_mod <- "gtext_comp8_pjArea.Rmd"
       if (input$projSel == 'projTime') gtext$cur_mod <- "gtext_comp8_pjTime.Rmd"
