@@ -51,6 +51,17 @@ hr {
   font-size:18pt; 
   font-weight:bold;
 }
+#step {
+  color:red;
+  font-weight:bold;
+  display:inline;
+  font-size:14pt;
+}
+#stepText {
+  font-style:italic;
+  display:inline;
+  font-size:14pt;
+}
 #pkgDes {
   font-size:10pt; 
   font-style:italic;

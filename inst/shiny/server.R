@@ -103,15 +103,16 @@ shinyServer(function(input, output, session) {
       if (input$enmSel == 'Maxent') gtext$cur_mod <- "gtext_comp6_maxent.Rmd"
     }
     if (input$tabs == 7) {
-      updateTabsetPanel(session, 'main', selected = 'Map')
       gtext$cur_comp <- "gtext_comp7.Rmd"
-      if (input$visSel == 'bcPlots') gtext$cur_mod <- "gtext_comp7_bcPlots.Rmd"
       if (input$visSel == 'map') {
         updateTabsetPanel(session, 'main', selected = 'Map')
         gtext$cur_mod <- "gtext_comp7_map.Rmd"
+      } else {
+        updateTabsetPanel(session, 'main', selected = 'Results')
+        if (input$visSel == 'bcPlots') gtext$cur_mod <- "gtext_comp7_bcPlots.Rmd"
+        if (input$visSel == 'mxEval') gtext$cur_mod <- "gtext_comp7_mxEvalPlots.Rmd"
+        if (input$visSel == 'response') gtext$cur_mod <- "gtext_comp7_respCurves.Rmd"
       }
-      if (input$visSel == 'mxEval') gtext$cur_mod <- "gtext_comp7_mxEvalPlots.Rmd"
-      if (input$visSel == 'response') gtext$cur_mod <- "gtext_comp7_respCurves.Rmd"
     }
     if (input$tabs == 8) {
       updateTabsetPanel(session, 'main', selected = 'Map')
@@ -624,7 +625,6 @@ shinyServer(function(input, output, session) {
     # stop if no models
     req(rvs$mods)
     rvs$predCurVals <- getVals(rvs$predCur, rvs$comp7.type)
-    print(unique(rvs$predCurVals))
     updateTabsetPanel(session, 'main', selected = 'Map')
     
     # MAPPING

@@ -114,7 +114,6 @@ projectTime_MOD <- function(input, output, session, rvs) {
                        "under RCP", as.numeric(input$selRCP)/10.0, ".")
       rvs$pjTimePar <- list(time=input$selTime, gcm=input$selGCM, rcp=input$selRCP)
     })
-    print(pjPred)
     
     return(list(pjMsk=pjtMsk, pjPred=pjPred))
   })

@@ -24,7 +24,6 @@ userBgExtent_MOD <- function(input, output, session, rvs) {
     # record for RMD
     rvs$comp4.buf <- input$userBgBuf
     
-    print(input$userBgShp)
     names <- input$userBgShp$name
     inPath <- input$userBgShp$datapath
     pathdir <- dirname(inPath)

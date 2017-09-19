@@ -31,7 +31,6 @@ threshPred_MOD <- function(input, output, session, pred) {
       occPredVals <- raster::extract(predCur, occs.xy)
       # get the chosen threshold value
       x <- thresh(occPredVals, input$predThresh)  
-      print(x)
       # threshold model prediction
       pred <- pred > x
       # rename

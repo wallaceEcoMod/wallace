@@ -28,7 +28,7 @@ shinyUI(tagList(
                                                 # actionButton('load', 'HACK'),
                                                 includeMarkdown(system.file("Rmd", "text_intro_tab.Rmd", package = "wallace"))
                                ),
-                               # tab 1 ####
+                               # COMPONENT 1 ####
                                conditionalPanel("input.tabs == 1",
                                                 h4("Obtain Occurrence Data"),
                                                 radioButtons("occSel", "Modules Available:",
@@ -36,7 +36,7 @@ shinyUI(tagList(
                                                              selected = 'db'),
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.occSel == 'db'",
-                                                                 div(paste('Module: Query Database'), id="mod"),
+                                                                 div('Module: Query Database', id="mod"),
                                                                  uiTop('spocc', 'Interface to Species Occurrence Data Sources'),
                                                                  HTML('<hr>'),
                                                                  queryDb_UI('c1_queryDb'),
@@ -53,10 +53,10 @@ shinyUI(tagList(
                                                                  userOccs_UI('c1_userOccs'),
                                                                  actionButton("goUserOccs", "Load Occurrences"),
                                                                  HTML('<hr>'),
-                                                                 div(paste('Module Developers:', 'Jamie M. Kass, Bruno Vilela, Robert P. Anderson'), id="pkgDes")
+                                                                 div('Module Developers: Jamie M. Kass, Bruno Vilela, Robert P. Anderson', id="pkgDes")
                                                 )
                                ),
-                               # tab 2 ####
+                               # COMPONENT 2 ####
                                conditionalPanel("input.tabs == 2",
                                                 h4("Process Occurrence Data"),
                                                 radioButtons("procOccSel", "Modules Available:",
@@ -80,7 +80,7 @@ shinyUI(tagList(
                                                 ),
                                                 # placeholder for select on map
                                                 conditionalPanel("input.procOccSel == 'spthin'",
-                                                                 div(paste('Module: Spatial Thin'), id="mod"),
+                                                                 div('Module: Spatial Thin', id="mod"),
                                                                  uiTop('spThin', 'Spatial Thinning of Species Occurrence Records'),
                                                                  HTML('<hr>'),
                                                                  thinOccs_UI('c2_thinOccs'),
@@ -100,7 +100,7 @@ shinyUI(tagList(
                                                                                           Alex Radosavljevic, Bruno Vilela, Robert P. Anderson"),
                                                                  " | ", a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/ecog.01132/abstract", target = "_blank"))
                                ),
-                               # tab 3 ####
+                               # COMPONENT 3 ####
                                conditionalPanel("input.tabs == 3",
                                                 h4("Obtain Environmental Data"),
                                                 radioButtons("envDataSel", "Modules Available:",
@@ -108,7 +108,7 @@ shinyUI(tagList(
                                                                             "User-specified" = 'user')),
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.envDataSel == 'wcbc'",
-                                                                 div(paste('Module: WorldClim Bioclims'), id="mod"),
+                                                                 div('Module: WorldClim Bioclims', id="mod"),
                                                                  uiTop('raster', 'Geographic Data Analysis and Modeling'),
                                                                  HTML('<hr>'),
                                                                  wcBioclims_UI("c3_wcBioclims"),
@@ -132,7 +132,7 @@ shinyUI(tagList(
                                                 " | ", a("WorldClim", href="http://worldclim.org", target="_blank")
                                                 
                                ),
-                               # tab 4 ####
+                               # COMPONENT 4 ####
                                conditionalPanel("input.tabs == 4",
                                                 h4("Process Environmental Data"),
                                                 radioButtons("envProcSel", "Modules Available:",
@@ -141,21 +141,24 @@ shinyUI(tagList(
                                                 
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.envProcSel == 'bgSel'",
-                                                                 div(paste('Module: Select Study Region'), id="mod"),
+                                                                 div('Module: Select Study Region', id="mod"),
                                                                  uiTop('sp', 'Title Classes and Methods for Spatial Data'),
                                                                  uiTop('rgeos', 'Interface to Geometry Engine - Open Source (GEOS)'),
                                                                  HTML('<hr>'),
+                                                                 div("Step 1:", id="step"), div("Choose Background Extent", id="stepText"), br(), br(),
                                                                  bgExtent_UI('c4_bgExtent'),
-                                                                 actionButton("goBgExt", "Choose Background Extent")),
+                                                                 actionButton("goBgExt", "Select")),
                                                 conditionalPanel("input.envProcSel == 'bgUser'",
-                                                                 div(paste('Module: User-specified Study Region'), id="mod"),
+                                                                 div('Module: User-specified Study Region', id="mod"),
+                                                                 div("Step 1:", id="step"), div("Choose Background Extent", id="stepText"), br(), br(),
                                                                  userBgExtent_UI('c4_userBgExtent'),
                                                                  actionButton("goUserBg", "Load")),
                                                 conditionalPanel("input.envProcSel == 'bgSel' | input.envProcSel == 'bgUser'",
                                                                  HTML('<hr>'),
+                                                                 div("Step 2:", id="step"), div("Sample Background Points", id="stepText"), br(), br(),
                                                                  strong('Mask predictor rasters by background extent and sample background points'), br(), br(),
                                                                  bgMskAndSamplePts_UI('c4_bgMskAndSamplePts'),
-                                                                 actionButton("goBgMask", "Sample Background Points"), br(), br(),
+                                                                 actionButton("goBgMask", "Process"), br(), br(),
                                                                  HTML('<hr>'),
                                                                  selectInput('bgMskFileType', label = "Select download file type",
                                                                              choices = list("GRD" = 'raster', "ASCII" = 'ascii', "GeoTIFF" = 'GTiff')),
@@ -167,6 +170,7 @@ shinyUI(tagList(
                                                                  uiBottom(NULL, 'rgeos', "Roger Bivand, Colin Rundel, Edzer Pebesma, Karl Ove Hufthammer"))
                                                 
                                ),
+                               # COMPONENT 5 ####
                                conditionalPanel("input.tabs == 5",
                                                 h4("Partition Occurrence Data"),
                                                 radioButtons("partSel", "Modules Available:",
@@ -193,6 +197,7 @@ shinyUI(tagList(
                                                                            Jamie M. Kass, Maria Uriarte, Robert P. Anderson'),
                                                 " | ", a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12261/abstract", target = "_blank")
                                ),
+                               # COMPONENT 6 ####
                                conditionalPanel("input.tabs == 6",
                                                 h4("Build and Evaluate Niche Model"),
                                                 radioButtons("enmSel", "Modules Available:",
@@ -220,6 +225,7 @@ shinyUI(tagList(
                                                 " | ", a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12261/abstract", target = "_blank"), br(),
                                                 uiBottom(NULL, 'dismo', 'Robert J. Hijmans, Steven Phillips, John Leathwick, Jane Elith')
                                ),
+                               # COMPONENT 7 ####
                                conditionalPanel("input.tabs == 7", 
                                                 h4("Visualize Model Results"),
                                                 radioButtons("visSel", "Modules Available:",
@@ -265,116 +271,121 @@ shinyUI(tagList(
                                                          Jamie M. Kass, Maria Uriarte, Robert P. Anderson'),
                                                 " | ", a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12261/abstract", target = "_blank"), br(),
                                                 uiBottom(NULL, 'dismo', 'Robert J. Hijmans, Steven Phillips, John Leathwick, Jane Elith')
-                             ),
-                             conditionalPanel("input.tabs == 8",
-                                              h4("Project Model"),
-                                              radioButtons("projSel", "Modules Available:",
-                                                           choices = list("Project to New Extent" = 'projArea',
-                                                                          "Project to New Time" = 'projTime',
-                                                                          "Calculate Environmental Similarity" = 'mess'),
-                                                           selected = 'projArea'),
-                                              HTML('<hr>'),
-                                              conditionalPanel("input.projSel == 'projArea'",
-                                                               div('Module: Project to New Extent', id="mod"),
-                                                               uiTop('dismo', 'Species Distribution Modeling'),
-                                                               HTML('<hr>'),
-                                                               strong("Project model to current extent"), br(), br(),
-                                                               actionButton('goProjectArea', "Project"), br(), br(),
-                                                               projectArea_UI('c8_projectArea')),
-                                              conditionalPanel("input.projSel == 'projTime'",
-                                                               div('Module: Project to New Time', id="mod"),
-                                                               uiTop('dismo', 'Species Distribution Modeling'),
-                                                               HTML('<hr>'),
-                                                               projectTime_UI('c8_projectTime'),
-                                                               strong("Project model to new time for current extent"), br(), br(),
-                                                               actionButton('goProjectTime', "Project")),
-                                              conditionalPanel("input.projSel == 'mess'",
-                                                               div('Module: Calculate Environmental Similarity', id="mod"),
-                                                               uiTop('dismo', 'Species Distribution Modeling'),
-                                                               HTML('<hr>'),
-                                                               envSimilarity_UI('c8_envSimilarity'),
-                                                               strong("Calculate MESS for current extent"), br(), br(),
-                                                               actionButton('goEnvSimilarity', "Calculate MESS")),
-                                              strong("Reset projection extent"), br(), br(),
-                                              actionButton("goResetProj", "Reset"),
-                                              HTML('<hr>'),
-                                              selectInput('projFileType', label = "Select download file type",
-                                                          choices = list("GRD" = 'raster', "ASCII" = 'ascii', "GeoTIFF" = 'GTiff',
-                                                                         "PNG" = "png")),
-                                              strong("Download displayed raster"), br(), br(),
-                                              downloadButton('dlProj', "Download"),
-                                              HTML('<hr>'),
-                                              uiBottom("Jamie M. Kass, Bruno Vilela, Robert P. Anderson", 'dismo', 'Robert J. Hijmans, Steven Phillips, John Leathwick, Jane Elith')
-                             ),
-                             # session code ####
-                             conditionalPanel("input.tabs == 'rmd'",
-                                              h4("Download Session Code"),
-                                              HTML('<hr>'),
-                                              uiTop('rmarkdown', 'Dynamic Documents for R'),
-                                              uiTop('knitr', 'A General-Purpose Package for Dynamic Report Generation in R'),
-                                              HTML('<hr>'),
-                                              selectInput('rmdFileType', label = "Select download file type",
-                                                          choices = list("Rmd", "PDF", "HTML", "Word")),
-                                              downloadButton('dlRMD', 'Download Session Code'),
-                                              HTML('<hr>'),
-                                              uiBottom("Jamie M. Kass, Bruno Vilela, Robert P. Anderson", 'rmarkdown', 'JJ Allaire, Joe Cheng, Yihui Xie, Jonathan McPherson, 
+                               ),
+                               # COMPONENT 8 ####
+                               conditionalPanel("input.tabs == 8",
+                                                h4("Project Model"),
+                                                radioButtons("projSel", "Modules Available:",
+                                                             choices = list("Project to New Extent" = 'projArea',
+                                                                            "Project to New Time" = 'projTime',
+                                                                            "Calculate Environmental Similarity" = 'mess'),
+                                                             selected = 'projArea'),
+                                                HTML('<hr>'),
+                                                conditionalPanel("input.projSel == 'projArea'",
+                                                                 div('Module: Project to New Extent', id="mod"),
+                                                                 uiTop('dismo', 'Species Distribution Modeling'),
+                                                                 HTML('<hr>'),
+                                                                 strong("Project model to current extent"), br(), br(),
+                                                                 actionButton('goProjectArea', "Project"), br(), br(),
+                                                                 projectArea_UI('c8_projectArea')),
+                                                conditionalPanel("input.projSel == 'projTime'",
+                                                                 div('Module: Project to New Time', id="mod"),
+                                                                 uiTop('dismo', 'Species Distribution Modeling'),
+                                                                 HTML('<hr>'),
+                                                                 projectTime_UI('c8_projectTime'),
+                                                                 strong("Project model to new time for current extent"), br(), br(),
+                                                                 actionButton('goProjectTime', "Project")),
+                                                conditionalPanel("input.projSel == 'mess'",
+                                                                 div('Module: Calculate Environmental Similarity', id="mod"),
+                                                                 uiTop('dismo', 'Species Distribution Modeling'),
+                                                                 HTML('<hr>'),
+                                                                 envSimilarity_UI('c8_envSimilarity'),
+                                                                 strong("Calculate MESS for current extent"), br(), br(),
+                                                                 actionButton('goEnvSimilarity', "Calculate MESS")),
+                                                strong("Reset projection extent"), br(), br(),
+                                                actionButton("goResetProj", "Reset"),
+                                                HTML('<hr>'),
+                                                selectInput('projFileType', label = "Select download file type",
+                                                            choices = list("GRD" = 'raster', "ASCII" = 'ascii', "GeoTIFF" = 'GTiff',
+                                                                           "PNG" = "png")),
+                                                strong("Download displayed raster"), br(), br(),
+                                                downloadButton('dlProj', "Download"),
+                                                HTML('<hr>'),
+                                                uiBottom("Jamie M. Kass, Bruno Vilela, Robert P. Anderson", 'dismo', 'Robert J. Hijmans, Steven Phillips, John Leathwick, Jane Elith')
+                               ),
+                               # SESSION CODE ####
+                               conditionalPanel("input.tabs == 'rmd'",
+                                                h4("Download Session Code"),
+                                                HTML('<hr>'),
+                                                uiTop('rmarkdown', 'Dynamic Documents for R'),
+                                                uiTop('knitr', 'A General-Purpose Package for Dynamic Report Generation in R'),
+                                                HTML('<hr>'),
+                                                selectInput('rmdFileType', label = "Select download file type",
+                                                            choices = list("Rmd", "PDF", "HTML", "Word")),
+                                                downloadButton('dlRMD', 'Download Session Code'),
+                                                HTML('<hr>'),
+                                                uiBottom("Jamie M. Kass, Bruno Vilela, Robert P. Anderson", 'rmarkdown', 'JJ Allaire, Joe Cheng, Yihui Xie, Jonathan McPherson, 
                                                        Winston Chang, Jeff Allen, Hadley Wickham, Aron Atkins, Rob Hyndman, Ruben Arslan'), br(),
-                                              uiBottom(NULL, 'knitr', 'Yihui Xie')
-                             )
-             )),
-             column(8,
-                    conditionalPanel("input.tabs != 0 & input.tabs != 'rmd'",
-                                     div(id = "wallaceLog", class = "scrollbox", htmlOutput("log")),
-                                     absolutePanel(top = -10, right = 20, width = 150, draggable = TRUE,
-                                                   selectInput("bmap", "Change Base Map", 
-                                                               choices = c('ESRI Topo'="Esri.WorldTopoMap",
-                                                                           'Stamen Terrain'="Stamen.Terrain",
-                                                                           'Open Topo'="OpenTopoMap",
-                                                                           'ESRI Imagery'="Esri.WorldImagery",
-                                                                           'ESRI Nat Geo'='Esri.NatGeoWorldMap'),
-                                                               selected = "Esri.WorldTopoMap")),
-                                     absolutePanel(top = 60, right = 20, width = 150, draggable = TRUE,
-                                                   uiOutput("modSelUI")),
-                                     absolutePanel(top = 60, right = 180, width = 150, draggable = TRUE,
-                                                   uiOutput("envSelUI"))
-                    ),
-                    br(),
-                    conditionalPanel("input.tabs != 'rmd' & input.tabs != 0",
-                                     tabsetPanel(id = 'main',
-                                                 tabPanel('Map', leaflet::leafletOutput("map", height=600)),
-                                                 tabPanel('Occs Tbl', DT::dataTableOutput('occTbl')),
-                                                 tabPanel('Results', 
-                                                          conditionalPanel("input.tabs == 3", verbatimTextOutput('envsPrint')),
-                                                          conditionalPanel("input.tabs == 6", DT::dataTableOutput('evalTbl'), br(), 
-                                                                           DT::dataTableOutput('evalTblBins')),
-                                                          conditionalPanel("input.tabs == 7 && input.visSel == 'response'",
-                                                                           imageOutput('respPlots')),
-                                                          conditionalPanel("input.tabs == 7 && input.visSel == 'bcPlots' && input.enmSel == 'BIOCLIM'",
-                                                                           imageOutput('bcEnvelPlot')),
-                                                          conditionalPanel("input.tabs == 7 && input.visSel == 'mxEval'  && input.enmSel == 'Maxent'",
-                                                                           imageOutput('mxEvalPlots'))
-                                                 ),
-                                                 tabPanel('Component Guidance', uiOutput('gtext_comp')),
-                                                 tabPanel('Module Guidance', uiOutput('gtext_mod'))
-                                     )
-                    ),
-                    conditionalPanel("input.tabs == 'rmd'",
-                                     column(8,
-                                            includeMarkdown(system.file("Rmd", "text_sessionCode.Rmd", package = "wallace"))
-                                     )
-                    ),
-                    conditionalPanel("input.tabs == 0",
-                                     tabsetPanel(id = 'introTabs',
-                                                 tabPanel('Intro', includeMarkdown(system.file("Rmd", "text_intro.Rmd", package = "wallace"))),
-                                                 tabPanel('About',
-                                                          fluidRow(
-                                                            column(8, includeMarkdown(system.file("Rmd", "text_about.Rmd", package = "wallace"))
-                                                            )
+                                                uiBottom(NULL, 'knitr', 'Yihui Xie')
+                               )
+                             )),
+                      # RESULTS WINDOW ####
+                      column(8,
+                             conditionalPanel("input.tabs != 0 & input.tabs != 'rmd'",
+                                              div(id = "wallaceLog", class = "scrollbox", htmlOutput("log")),
+                                              absolutePanel(top = -10, right = 20, width = 150, draggable = TRUE,
+                                                            selectInput("bmap", "Change Base Map", 
+                                                                        choices = c('ESRI Topo'="Esri.WorldTopoMap",
+                                                                                    'Stamen Terrain'="Stamen.Terrain",
+                                                                                    'Open Topo'="OpenTopoMap",
+                                                                                    'ESRI Imagery'="Esri.WorldImagery",
+                                                                                    'ESRI Nat Geo'='Esri.NatGeoWorldMap'),
+                                                                        selected = "Esri.WorldTopoMap")),
+                                              absolutePanel(top = 60, right = 20, width = 150, draggable = TRUE,
+                                                            uiOutput("modSelUI")),
+                                              absolutePanel(top = 60, right = 180, width = 150, draggable = TRUE,
+                                                            uiOutput("envSelUI"))
+                             ),
+                             br(),
+                             conditionalPanel("input.tabs != 'rmd' & input.tabs != 0",
+                                              tabsetPanel(id = 'main',
+                                                          tabPanel('Map', leaflet::leafletOutput("map", height=600)),
+                                                          tabPanel('Occs Tbl', DT::dataTableOutput('occTbl')),
+                                                          tabPanel('Results', 
+                                                                   conditionalPanel("input.tabs == 3", verbatimTextOutput('envsPrint')),
+                                                                   conditionalPanel("input.tabs == 6", 
+                                                                                    "Full model and partition bin average evaluation statistics", br(),
+                                                                                    DT::dataTableOutput('evalTbl'), br(), 
+                                                                                    "Individual partition bin evaluation statistics", br(),
+                                                                                    DT::dataTableOutput('evalTblBins')),
+                                                                   conditionalPanel("input.tabs == 7 && input.visSel == 'response'",
+                                                                                    imageOutput('respPlots')),
+                                                                   conditionalPanel("input.tabs == 7 && input.visSel == 'bcPlots' && input.enmSel == 'BIOCLIM'",
+                                                                                    imageOutput('bcEnvelPlot')),
+                                                                   conditionalPanel("input.tabs == 7 && input.visSel == 'mxEval'  && input.enmSel == 'Maxent'",
+                                                                                    imageOutput('mxEvalPlots'))
+                                                          ),
+                                                          tabPanel('Component Guidance', uiOutput('gtext_comp')),
+                                                          tabPanel('Module Guidance', uiOutput('gtext_mod'))
+                                              )
+                             ),
+                             conditionalPanel("input.tabs == 'rmd'",
+                                              column(8,
+                                                     includeMarkdown(system.file("Rmd", "text_sessionCode.Rmd", package = "wallace"))
+                                              )
+                             ),
+                             conditionalPanel("input.tabs == 0",
+                                              tabsetPanel(id = 'introTabs',
+                                                          tabPanel('Intro', includeMarkdown(system.file("Rmd", "text_intro.Rmd", package = "wallace"))),
+                                                          tabPanel('About',
+                                                                   fluidRow(
+                                                                     column(8, includeMarkdown(system.file("Rmd", "text_about.Rmd", package = "wallace"))
+                                                                     )
+                                                                   )
                                                           )
-                                                 )
-                                     )
-                    )
-             )
+                                              )
+                             )
+                      )
              )
   )
 ))
