@@ -6,19 +6,28 @@
 # UI ####
 ####################### #
 
-uiTop <- function(modPkg, pkgDes, modInsert) {
+uiTop <- function(modPkg, pkgDes) {
   list(span(modPkg, id="rpkg"),
        span(paste(':', pkgDes), id="pkgDes"),
        br())
 }
 
-uiBottom <- function(modName, authors) {
-  list(span(modName, id = "rpkg"), "references", br(),
-       div(paste('Developers:', authors), id="pkgDes"),
-       a("CRAN", href = file.path("http://cran.r-project.org/web/packages", modName, "index.html"), target = "_blank"),
-       " | ",
-       a("documentation", href = file.path("https://cran.r-project.org/web/packages", modName, paste0(modName, ".pdf")), target = "_blank")
-  )
+uiBottom <- function(modAuthors, pkgName, pkgAuthors) {
+  if (is.null(modAuthors)) {
+    list(span(pkgName, id = "rpkg"), "references", br(),
+         div(paste('Package Developers:', pkgAuthors), id="pkgDes"),
+         a("CRAN", href = file.path("http://cran.r-project.org/web/packages", pkgName, "index.html"), target = "_blank"),
+         " | ",
+         a("documentation", href = file.path("https://cran.r-project.org/web/packages", pkgName, paste0(pkgName, ".pdf")), target = "_blank"))
+  } else {
+    list(div(paste('Module Developers:', modAuthors), id="pkgDes"),
+         span(pkgName, id = "rpkg"), "references", br(),
+         div(paste('Package Developers:', pkgAuthors), id="pkgDes"),
+         a("CRAN", href = file.path("http://cran.r-project.org/web/packages", pkgName, "index.html"), target = "_blank"),
+         " | ",
+         a("documentation", href = file.path("https://cran.r-project.org/web/packages", pkgName, paste0(pkgName, ".pdf")), target = "_blank")
+    )  
+  }
 }
 
 ####################### #
@@ -93,7 +102,7 @@ zoom2Occs <- function(map, occs) {
   longi <- occs[,2]
   z <- smartZoom(longi, lati)
   map %>% fitBounds(z[1], z[2], z[3], z[4])
-
+  
   
   ## this section makes letter icons for occs based on basisOfRecord
   # makeOccIcons <- function(width = 10, height = 10, ...) {
@@ -165,7 +174,7 @@ remEnvsValsNA <- function(rvs) {
     
     return(rvs$occs)
   })
-  }
+}
 
 ####################### #
 # COMP 4 ####
@@ -203,53 +212,53 @@ comp5_map <- function(map, occs, occsGrp) {
 ####################### #
 
 BioClim_eval <- function (occs, bg.pts, occ.grp, bg.grp, env) {
-
+  
   # RUN FULL DATA MODEL
   full.mod <- dismo::bioclim(env, occs)
   pred <- dismo::predict(env, full.mod)
   occPredVals <- matrix(dismo::predict(full.mod, full.mod@presence))
   colnames(occPredVals) <- 'BIOCLIM'
-
+  
   # CREATE HOLDERS FOR RESULTS
   AUC.TEST <- double()
   AUC.DIFF <- double()
   OR10 <- double()
   ORmin <- double()
-
+  
   # SET NUMBER OF TEST BINS
   nk <- length(unique(occ.grp))
-
+  
   for (k in 1:nk) {
-
+    
     # SPLIT TEST AND TRAIN DATA
     test.pts <- occs[occ.grp == k, ]
     train.pts <- occs[occ.grp != k, ]
     backg.pts <- bg.pts[bg.grp != k, ]
     mod <- dismo::bioclim(env, train.pts)
-
+    
     # GET AUC METRICS
     AUC.TEST[k] <- dismo::evaluate(p=test.pts, a=backg.pts, mod=mod, x=env)@auc
     AUC.TRAIN <- dismo::evaluate(p=train.pts, a=backg.pts, mod=mod, x=env)@auc
     AUC.DIFF[k] <- max(0, AUC.TRAIN - AUC.TEST[k])
-
+    
     # GET PREDICTED VALUES AT OCCURRENCES FOR OMISSION RATE STATS
     train.pred <- dismo::predict(env, mod)
     p.train <- raster::extract(train.pred, train.pts)
     p.test <- raster::extract(train.pred, test.pts)
-
+    
     # FIND THRESHOLD FOR OR10
     if (nrow(train.pts) < 10) {
       n90 <- floor(nrow(train.pts) * 0.9)
     } else {
       n90 <- ceiling(nrow(train.pts) * 0.9)
     }
-
+    
     # GET OMISSION RATE STATS
     train.thr.10 <- rev(sort(p.train))[n90]
     OR10[k] <- mean(p.test < train.thr.10)
     ORmin[k] <- mean(p.test < min(p.train))
   }
-
+  
   # COMPILE AND SUMMARIZE RESULTS
   stats <- as.data.frame(rbind(AUC.DIFF, AUC.TEST, OR10, ORmin))
   stats <- cbind(apply(stats, 1, mean), ENMeval::corrected.var(stats, nk), stats)
@@ -258,7 +267,7 @@ BioClim_eval <- function (occs, bg.pts, occ.grp, bg.grp, env) {
   
   preds <- raster::stack(pred)
   names(preds) <- "BIOCLIM"
-
+  
   # THIS FORMAT FOR RETURNED DATA ATTEMPTS TO MATCH WHAT HAPPENS IN WALLACE ALREADY FOR ENMEVAL.
   return(list(models=list(BIOCLIM=full.mod), results=stats, 
               predictions=preds, occVals=occPredVals))
@@ -292,15 +301,15 @@ evalPlot <- function(res, value) {
   col <- rainbow(fc)
   rm <- length(unique(res$rm))
   xlab <- "Regularization Multiplier"
-
+  
   if (value != "delta.AICc") {
     variance <- gsub('avg', 'var', value)
   } else {
     variance <- NULL
   }
-
+  
   y <- res[,value]
-
+  
   if (value != "delta.AICc") {
     v <- res[,variance]
     # ylim <- c(min(y-v), max(y+v))
@@ -308,8 +317,8 @@ evalPlot <- function(res, value) {
   } else {
     ylim <- c(min(y, na.rm=TRUE), max(y, na.rm=TRUE))
   }
-
-
+  
+  
   plot(res$rm, y, col='white', ylim=ylim, ylab=value, xlab=xlab, axes=F, cex.lab=1.5)
   if (value=="delta.AICc") abline(h=2, lty=3)
   axis(1, at= unique(res$rm))
@@ -349,9 +358,9 @@ evalPlots <- function(results) {
 
 # borrowed from the plot method for bioclim in dismo v.1.1-1
 bc.plot <- function(x, a=1, b=2, p=0.9, ...) {
-
+  
   d <- x@presence
-
+  
   myquantile <- function(x, p) {
     p <- min(1, max(0, p))
     x <- sort(as.vector(stats::na.omit(x)))
@@ -363,7 +372,7 @@ bc.plot <- function(x, a=1, b=2, p=0.9, ...) {
     above = x[ti+1]
     below + (above-below)*(i-ti)
   }
-
+  
   p <- min(1,  max(0, p))
   if (p > 0.5) p <- 1 - p
   p <- p / 2
@@ -426,7 +435,7 @@ respCurv <- function(mod, i) {  # copied mostly from dismo
   abs.r <- range(mod@absence[, i])
   abline(v = abs.r[1], col='green') # vertical green lines indicate min and max of background vals
   abline(v = abs.r[2], col='green')
-    #graphics::text(x = vals, y = pred, labels = row.names(mod@presence), pos = 3, offset = 1)
+  #graphics::text(x = vals, y = pred, labels = row.names(mod@presence), pos = 3, offset = 1)
 }
 
 getVals <- function(r, type='raw') {
@@ -478,7 +487,7 @@ comp8_map <- function(map, ras, polyXY, bgShpXY, rasVals, rasCols,
     clearShapes() %>%
     removeImage(clearID) %>%
     addRasterImage(ras, colors = rasPal, opacity = 0.7, 
-                        group = 'c7', layerId = 'rProj') %>%
+                   group = 'c7', layerId = 'rProj') %>%
     addPolygons(lng=polyXY[,1], lat=polyXY[,2], layerId="projExt", fill = FALSE,
                 weight=4, color="green", group='c8')
   

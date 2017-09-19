@@ -25,7 +25,7 @@ shinyUI(tagList(
                                includeCSS(system.file("css", "styles.css", package = "wallace")),
                                includeScript(system.file("js", "scroll.js", package = "wallace")),
                                conditionalPanel("input.tabs == 0",
-                                                actionButton('load', 'HACK'),
+                                                # actionButton('load', 'HACK'),
                                                 includeMarkdown(system.file("Rmd", "text_intro_tab.Rmd", package = "wallace"))
                                ),
                                # tab 1 ####
@@ -45,13 +45,15 @@ shinyUI(tagList(
                                                                  strong("Download database occurrence localities (.csv)"), br(), br(),
                                                                  downloadButton('dlDbOccs', "Download"),
                                                                  HTML('<hr>'),
-                                                                 uiBottom('spocc', "Scott Chamberlain, Karthik Ram, Ted Hart")
+                                                                 uiBottom("Jamie M. Kass, Bruno Vilela, Robert P. Anderson", 'spocc', "Scott Chamberlain, Karthik Ram, Ted Hart")
                                                 ),
                                                 conditionalPanel("input.occSel == 'user'",
                                                                  div('Module: User-specified Occurrences', id="mod"),
                                                                  HTML('<hr>'),
                                                                  userOccs_UI('c1_userOccs'),
-                                                                 actionButton("goUserOccs", "Load Occurrences")
+                                                                 actionButton("goUserOccs", "Load Occurrences"),
+                                                                 HTML('<hr>'),
+                                                                 div(paste('Module Developers:', 'Jamie M. Kass, Bruno Vilela, Robert P. Anderson'), id="pkgDes")
                                                 )
                                ),
                                # tab 2 ####
@@ -91,10 +93,10 @@ shinyUI(tagList(
                                                 downloadButton('dlProcOccs', "Download"),
                                                 conditionalPanel("input.procOccSel == 'selOccs'",
                                                                  HTML('<hr>'),
-                                                                 uiBottom('leaflet.extras', 'Bhaskar Karambelkar, Bangyou Zheng')),
+                                                                 uiBottom("Jamie M. Kass, Robert P. Anderson", 'leaflet.extras', 'Bhaskar Karambelkar, Bangyou Zheng')),
                                                 conditionalPanel("input.procOccSel == 'spthin'",
                                                                  HTML('<hr>'),
-                                                                 uiBottom('spThin', "Matthew E. Aiello-Lammens, Rob A. Boria, 
+                                                                 uiBottom("Jamie M. Kass, Matthew E. Aiello-Lammens, Robert P. Anderson", 'spThin', "Matthew E. Aiello-Lammens, Rob A. Boria, 
                                                                                           Alex Radosavljevic, Bruno Vilela, Robert P. Anderson"),
                                                                  " | ", a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/ecog.01132/abstract", target = "_blank"))
                                ),
@@ -124,7 +126,7 @@ shinyUI(tagList(
                                                 # strong("Download environmental predictors"), br(), br(),
                                                 # downloadButton('dlEnvs', "Download"),
                                                 HTML('<hr>'),
-                                                uiBottom('raster', "Robert J. Hijmans, Jacob van Etten, Joe Cheng, Matteo Mattiuzzu, 
+                                                uiBottom("Jamie M. Kass, Robert P. Anderson", 'raster', "Robert J. Hijmans, Jacob van Etten, Joe Cheng, Matteo Mattiuzzu, 
                                                          Michael Sumner, Jonathan A. Greenberg, Oscar Perpinan Lamigueriro, Andrew Bevan, 
                                                          Etienne B. Racine, Ashton Shortridge"),
                                                 " | ", a("WorldClim", href="http://worldclim.org", target="_blank")
@@ -160,9 +162,9 @@ shinyUI(tagList(
                                                                  strong("Download predictor rasters masked to background extent"), br(), br(),
                                                                  downloadButton('dlMskEnvs', "Download"),
                                                                  HTML('<hr>'),
-                                                                 uiBottom('sp', "Edzer Pebesma, Roger Bivand, Barry Rowlingson, Virgilio Gomez-Rubio,
+                                                                 uiBottom("Jamie M. Kass, Bruno Vilela, Robert P. Anderson", 'sp', "Edzer Pebesma, Roger Bivand, Barry Rowlingson, Virgilio Gomez-Rubio,
                                                                           Robert Hijmans, Michael Sumner, Don MacQueen, Jim Lemon, Josh O\'Brien"), br(),
-                                                                 uiBottom('rgeos', "Roger Bivand, Colin Rundel, Edzer Pebesma, Karl Ove Hufthammer"))
+                                                                 uiBottom(NULL, 'rgeos', "Roger Bivand, Colin Rundel, Edzer Pebesma, Karl Ove Hufthammer"))
                                                 
                                ),
                                conditionalPanel("input.tabs == 5",
@@ -187,7 +189,7 @@ shinyUI(tagList(
                                                 strong("Download occurrence and background localities with partition values (.csv)"), br(), br(),
                                                 downloadButton('dlPart', "Download"),
                                                 HTML('<hr>'),
-                                                uiBottom('ENMeval', 'Robert Muscarella, Peter J. Galante, Mariano Soley-Guardia, Robert A. Boria,
+                                                uiBottom("Jamie M. Kass, Bruno Vilela, Robert P. Anderson", 'ENMeval', 'Robert Muscarella, Peter J. Galante, Mariano Soley-Guardia, Robert A. Boria,
                                                                            Jamie M. Kass, Maria Uriarte, Robert P. Anderson'),
                                                 " | ", a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12261/abstract", target = "_blank")
                                ),
@@ -213,10 +215,10 @@ shinyUI(tagList(
                                                                  bioclim_UI('c6_bioclim'),
                                                                  actionButton('goBioclim', 'Run')),
                                                 HTML('<hr>'),
-                                                uiBottom('ENMeval', 'Robert Muscarella, Peter J. Galante, Mariano Soley-Guardia, Robert A. Boria,
+                                                uiBottom("Jamie M. Kass, Robert Muscarella, Bruno Vilela, Robert P. Anderson", 'ENMeval', 'Robert Muscarella, Peter J. Galante, Mariano Soley-Guardia, Robert A. Boria,
                                                          Jamie M. Kass, Maria Uriarte, Robert P. Anderson'),
                                                 " | ", a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12261/abstract", target = "_blank"), br(),
-                                                uiBottom('dismo', 'Robert J. Hijmans, Steven Phillips, John Leathwick, Jane Elith')
+                                                uiBottom(NULL, 'dismo', 'Robert J. Hijmans, Steven Phillips, John Leathwick, Jane Elith')
                                ),
                                conditionalPanel("input.tabs == 7", 
                                                 h4("Visualize Model Results"),
@@ -259,10 +261,10 @@ shinyUI(tagList(
                                                                  strong("Download displayed raster"), br(), br(),
                                                                  downloadButton('dlPred', "Download")),
                                                 HTML('<hr>'),
-                                                uiBottom('ENMeval', 'Robert Muscarella, Peter J. Galante, Mariano Soley-Guardia, Robert A. Boria,
+                                                uiBottom("Jamie M. Kass, Bruno Vilela, Robert P. Anderson", 'ENMeval', 'Robert Muscarella, Peter J. Galante, Mariano Soley-Guardia, Robert A. Boria,
                                                          Jamie M. Kass, Maria Uriarte, Robert P. Anderson'),
                                                 " | ", a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12261/abstract", target = "_blank"), br(),
-                                                uiBottom('dismo', 'Robert J. Hijmans, Steven Phillips, John Leathwick, Jane Elith')
+                                                uiBottom(NULL, 'dismo', 'Robert J. Hijmans, Steven Phillips, John Leathwick, Jane Elith')
                              ),
                              conditionalPanel("input.tabs == 8",
                                               h4("Project Model"),
@@ -302,7 +304,7 @@ shinyUI(tagList(
                                               strong("Download displayed raster"), br(), br(),
                                               downloadButton('dlProj', "Download"),
                                               HTML('<hr>'),
-                                              uiBottom('dismo', 'Robert J. Hijmans, Steven Phillips, John Leathwick, Jane Elith')
+                                              uiBottom("Jamie M. Kass, Bruno Vilela, Robert P. Anderson", 'dismo', 'Robert J. Hijmans, Steven Phillips, John Leathwick, Jane Elith')
                              ),
                              # session code ####
                              conditionalPanel("input.tabs == 'rmd'",
@@ -315,9 +317,9 @@ shinyUI(tagList(
                                                           choices = list("Rmd", "PDF", "HTML", "Word")),
                                               downloadButton('dlRMD', 'Download Session Code'),
                                               HTML('<hr>'),
-                                              uiBottom('rmarkdown', 'JJ Allaire, Joe Cheng, Yihui Xie, Jonathan McPherson, 
-                                                       Winston Chang, Jeff Allen, Hadley Wickham, Aron Atkins, Rob Hyndman, Ruben Arslan'), br(), br(),
-                                              uiBottom('knitr', 'Yihui Xie')
+                                              uiBottom("Jamie M. Kass, Bruno Vilela, Robert P. Anderson", 'rmarkdown', 'JJ Allaire, Joe Cheng, Yihui Xie, Jonathan McPherson, 
+                                                       Winston Chang, Jeff Allen, Hadley Wickham, Aron Atkins, Rob Hyndman, Ruben Arslan'), br(),
+                                              uiBottom(NULL, 'knitr', 'Yihui Xie')
                              )
              )),
              column(8,
