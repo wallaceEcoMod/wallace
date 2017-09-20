@@ -520,6 +520,16 @@ shinyServer(function(input, output, session) {
     ncols <- ncol(rvs$modRes)
     modRes.round <- cbind(rvs$modRes[,1:3], round(rvs$modRes[,4:ncols], digits=3))
     nBinsCols <- ncols - 16
+    # render both full model and partition avg datatable, and individual partition datatable
+    output$evalTbls <- renderUI({
+      tagList(
+        br(),
+        div("Full model and partition bin average evaluation statistics", id="stepText"), br(), br(),
+        DT::dataTableOutput('evalTbl'), br(), 
+        div("Individual partition bin evaluation statistics", id="stepText"), br(), br(),
+        DT::dataTableOutput('evalTblBins')  
+      )
+    })
     output$evalTbl <- DT::renderDataTable(modRes.round[,1:16], 
                                           options = list(scrollX = TRUE,
                                                          sDom  = '<"top">rt<"bottom">'))
@@ -548,7 +558,15 @@ shinyServer(function(input, output, session) {
     rvs$mods <- e$models
     rvs$modPreds <- e$predictions
     rvs$modRes <- e$results
-    output$evalTbl <- DT::renderDataTable(round(rvs$modRes, digits=3))
+    output$evalTbls <- renderUI({
+      tagList(
+        br(), 
+        div("Full model, partition bin average and individual evaluation statistics", id="stepText"), br(), br(),
+        DT::dataTableOutput('evalTbl')
+      )
+    })
+    output$evalTbl <- DT::renderDataTable(round(rvs$modRes, digits=3), options = list(scrollX = TRUE,
+                                                                                      sDom  = '<"top">rt<"bottom">'))
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     updateRadioButtons(session, "visSel", 
