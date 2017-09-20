@@ -155,7 +155,7 @@ popUpContent <- function(x) {
 ####################### #
 
 remEnvsValsNA <- function(rvs) {
-  withProgress(message = "Processing...", {
+  withProgress(message = "Checking for points with NA values...", {
     occsVals <- raster::extract(rvs$envs, rvs$occs[c('longitude', 'latitude')])
     na.rowNums <- which(rowSums(is.na(occsVals)) > 1)
     
