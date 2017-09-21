@@ -1,4 +1,4 @@
-context("module_1_Occ_Data")
+context("component_1_Occ_Data")
 
 # Load the package
 library(RSelenium)
@@ -19,10 +19,6 @@ compTabLabels <- sapply(compTabs, function(x){x$getElementText()})
 comp1Tab <- compTabs[[which(compTabLabels == "1 Occ Data")]]  
 # appCtrlLabels <- unlist(strsplit(appCtrlLabels[[1]], "\n"))
 comp1Tab$clickElement()
-
-resultsTabs <- remDr$findElements("css selector", ".nav a")
-resultsTabLabels <- sapply(resultsTabs, function(x){x$getElementText()})
-occsTblTab <- resultsTabs[[which(resultsTabLabels == "Occs Tbl")]]  
 
 # Here if the app contains the correct tabs and their respective names.
 test_that("Component 1 Module Query Database: Buttons", {  
@@ -70,38 +66,6 @@ test_that("Component 1 Module Query Database: Slider", {
   # https://stackoverflow.com/questions/29065334/rselenium-not-able-to-run-example-code
   # sliderButton <- comp1Tab$findChildElement(value = "//span[@class='irs-slider single']")
   # remDr$mouseMoveToLocation(webElement = sliderButton)
-})
-
-test_that("Component 1 Module Query Database: Check DB Query", {
-  # find textInput field and click
-  field <- comp1Tab$findChildElement(value = "//input[@type='text']")
-  field$clickElement()
-  # write text
-  field$sendKeysToElement(list("Puma concolor"))
-  # find button and click to search for occs
-  button <- comp1Tab$findChildElement(value = "//button[@id='goDbOccs']")
-  button$clickElement()
-  
-  # check log box
-  Sys.sleep(10)
-  logContent <- remDr$findElement(using = "id", value = 'logContent')
-  logText <- logContent$getElementText()
-  logTextLines <- strsplit(logText[[1]], split = '\n')[[1]]
-  occSearchLine <- strsplit(logTextLines[5], split = ' ')[[1]]
-  nums <- occSearchLine[grep('[0-9]', occSearchLine)]
-  expect_equal(as.numeric(nums[1]), 100)
-  
-  # click occsTbl tab
-  occsTblTab$clickElement()
-  # find data table
-  # NOTE: finding elements (plural) does not error when none exist
-  occsTbl <- occsTblTab$findChildElements(value = '//table')
-  # check if the table's there
-  expect_true(occsTbl[[1]]$isElementDisplayed()[[1]])
-})
-
-test_that("Component 1 Module Query Database: Check Log Box", {
-  
 })
 
 test_that("Component 1 Module User-specified: Buttons", {

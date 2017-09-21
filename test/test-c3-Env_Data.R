@@ -1,5 +1,5 @@
 
-context("module_3_Env_Data")
+context("component_3_Env_Data")
 
 # Load the package
 library(RSelenium)
@@ -17,26 +17,14 @@ remDr$navigate(appURL)
 remDr$setImplicitWaitTimeout(milliseconds = 100000)
 compTabs <- remDr$findElements("css selector", ".nav a")
 compTabLabels <- sapply(compTabs, function(x){x$getElementText()})
-comp1Tab <- compTabs[[which(compTabLabels == "1 Occ Data")]]
-
-Sys.sleep(10)
-comp1Tab$clickElement()
-field <- comp1Tab$findChildElement(value = "//input[@type='text']")
-field$clickElement()
-# write text
-field$sendKeysToElement(list("Puma concolor"))
-# find button and click to search for occs
-button <- comp1Tab$findChildElement(value = "//button[@id='goDbOccs']")
-button$clickElement()
 ####################################
 
-Sys.sleep(10)
-# Move to Module 3
+# Move to Component 3
 comp3Tab <- compTabs[[which(compTabLabels == "3 Env Data")]]    
 comp3Tab$clickElement()
 
 
-test_that("Module 3 Buttons Click", {  
+test_that("Component 3 Module Worldclim Buttons Click", {  
   #skip_on_cran()
   # Initial state is WorldClim Bioclims
   field.wcbc <- comp3Tab$findChildElement(value = "//input[@type='radio' and @value='wcbc']")
@@ -62,7 +50,7 @@ test_that("Module 3 Buttons Click", {
 }) 
 
 
-test_that("Module 3 select resolution", {  
+test_that("Component 3 Module Worldclim select resolution", {  
   #skip_on_cran()
   drop.menu <- comp3Tab$findChildElement(value = "//div[@class='selectize-control shinyjs-resettable single']")
   
@@ -92,10 +80,10 @@ test_that("Module 3 select resolution", {
   select_resol(res = "'0.5'")
   select_resol("'2.5'")
   select_resol("'5'")
-  select_resol("'10'", delete = FALSE) # Let the 10min selected for the next tests
+  select_resol("'10'", delete = FALSE) # Leave the 10min selected for the next tests
 })
 
-test_that("Module 3 specify variables", {  
+test_that("Component 3 Module Worldclim specify variables", {  
   #skip_on_cran()
   # Check the box
   check.spec <- comp3Tab$findChildElement(value = "//input[@id='c3_wcBioclims-bcSelChoice']")
@@ -111,24 +99,6 @@ test_that("Module 3 specify variables", {
   check.vars$clickElement()
   expect_false(check.vars$isElementSelected()[[1]])
   }
-  # Let some selected to test the download 
-  for (bio in 1:3) {
-    check.vars <- check.spec$findChildElement(
-      value = paste0("//input[@name='c3_wcBioclims-bcSels' and @value='bio", bio, "']"))
-    check.vars$clickElement()
-  }
-})
-
-test_that("Module 3 test download", {
-  #skip_on_cran()
-  load.env.data <- comp3Tab$findChildElement(value = "//button[@id='goEnvData']")  
-  load.env.data$clickElement()
-  Sys.sleep(10)
-  logContent <- remDr$findElement(using = "id", value = 'logContent')
-  logText <- strsplit(logContent$getElementText()[[1]], "\n")[[1]]
-  logText <- logText[length(logText)]
-  expect_equal(logText, 
-               "> Environmental predictors: WorldClim bioclimatic variables bio1, bio2, bio3 at 10 arcmin resolution.")
 })
 
 # Close the connection

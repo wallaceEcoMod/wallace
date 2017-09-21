@@ -1,4 +1,4 @@
-context("module_4_Process_Env")
+context("component_4_Process_Env")
 
 # Load the package
 library(RSelenium)

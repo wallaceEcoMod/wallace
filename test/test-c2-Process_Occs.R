@@ -1,5 +1,5 @@
 
-context("module_2_Proccess_Occs")
+context("component_2_Proccess_Occs")
 
 # Load the package
 library(RSelenium)

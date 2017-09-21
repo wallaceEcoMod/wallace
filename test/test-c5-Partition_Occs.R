@@ -1,4 +1,4 @@
-context("module_5_Partition_Occs")
+context("component_5_Partition_Occs")
 
 # Load the package
 library(RSelenium)
