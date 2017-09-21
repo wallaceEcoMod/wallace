@@ -97,8 +97,12 @@ test_that("Component 4 step 2 test", {
 
 test_that("Component 4 select download file type", {  
   #skip_on_cran()
-  drop.menu <- comp4Tab$findChildElement(value = "//div[@class='selectize-input items full has-options has-items']")
-
+  
+  # This path change once it is clicked (has-options and full change position)
+  path <- "//div[@class='selectize-input items full has-options has-items']"
+  
+  drop.menu <- comp4Tab$findChildElement(value = path)
+  
   # Test if we can select all resolutions 
   select_resol <- function(res = "'ascii'") {
     drop.menu$clickElement()
