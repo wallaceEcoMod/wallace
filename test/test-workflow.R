@@ -30,6 +30,7 @@ occsTblTab <- resultsTabs[[which(resultsTabLabels == "Occs Tbl")]]
 
 
 test_that("Component 1 Module Query Database: Check DB Query", {
+  Sys.sleep(10)
   # select GBIF radio button (for some reason the default selection does not register if you don't click it first)
   field.gbif <- comp1Tab$findChildElement(value = "//input[@type='radio' and @value='gbif']")
   initState <- field.gbif$isElementSelected()[[1]]
@@ -93,6 +94,33 @@ test_that("Component 3 Module Worldclim: Test Download", {
   logText <- logText[length(logText)]
   expect_equal(logText, 
                "> Environmental predictors: WorldClim bioclimatic variables bio1, bio2, bio3 at 10 arcmin resolution.")
+})
+
+
+test_that("Component 4: Test mask and random background points", {
+  
+  comp4Tab <- compTabs[[which(compTabLabels == "4 Process Envs")]]  
+  comp4Tab$clickElement()
+  
+  select.button <- comp4Tab$findChildElement(value = "//button[@id='goBgExt']")
+  select.button$clickElement()
+  
+  process.button <- comp4Tab$findChildElement(value = "//button[@id='goBgMask']")
+  process.button$clickElement()
+
+  # Check the logs to see if everything 
+  Sys.sleep(20)
+  logContent <- remDr$findElement(using = "id", value = 'logContent')
+  logText <- strsplit(logContent$getElementText()[[1]], "\n")[[1]]
+  logText1 <- logText[length(logText) - 2]
+  logText2 <- logText[length(logText) - 1]
+  logText3 <- logText[length(logText)]
+  expect_equal(logText1, 
+               "> Study extent: bounding box. Study extent buffered by 0.5 degrees.")
+  expect_equal(logText2, 
+               "> Environmental data masked.")
+  expect_equal(logText3, 
+               "> Random background points sampled (n = 10000 : 4.71 % of cells with values).")
 })
 
 # Close the connection
