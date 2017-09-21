@@ -17,8 +17,9 @@ remDr$navigate(appURL)
 remDr$setImplicitWaitTimeout(milliseconds = 100000)
 compTabs <- remDr$findElements("css selector", ".nav a")
 compTabLabels <- sapply(compTabs, function(x){x$getElementText()})
-comp1Tab <- compTabs[[which(compTabLabels == "1 Occ Data")]]  
-# appCtrlLabels <- unlist(strsplit(appCtrlLabels[[1]], "\n"))
+comp1Tab <- compTabs[[which(compTabLabels == "1 Occ Data")]]
+
+Sys.sleep(10)
 comp1Tab$clickElement()
 field <- comp1Tab$findChildElement(value = "//input[@type='text']")
 field$clickElement()
@@ -29,12 +30,14 @@ button <- comp1Tab$findChildElement(value = "//button[@id='goDbOccs']")
 button$clickElement()
 ####################################
 
+Sys.sleep(10)
 # Move to Module 3
 comp3Tab <- compTabs[[which(compTabLabels == "3 Env Data")]]    
 comp3Tab$clickElement()
 
 
 test_that("Module 3 Buttons Click", {  
+  #skip_on_cran()
   # Initial state is WorldClim Bioclims
   field.wcbc <- comp3Tab$findChildElement(value = "//input[@type='radio' and @value='wcbc']")
   initState <- field.wcbc$isElementSelected()[[1]]
@@ -60,7 +63,7 @@ test_that("Module 3 Buttons Click", {
 
 
 test_that("Module 3 select resolution", {  
-  
+  #skip_on_cran()
   drop.menu <- comp3Tab$findChildElement(value = "//div[@class='selectize-control shinyjs-resettable single']")
   
   # Test if we can select all resolutions 
@@ -93,6 +96,7 @@ test_that("Module 3 select resolution", {
 })
 
 test_that("Module 3 specify variables", {  
+  #skip_on_cran()
   # Check the box
   check.spec <- comp3Tab$findChildElement(value = "//input[@id='c3_wcBioclims-bcSelChoice']")
   expect_false(check.spec$isElementSelected()[[1]])
@@ -116,8 +120,10 @@ test_that("Module 3 specify variables", {
 })
 
 test_that("Module 3 test download", {
+  #skip_on_cran()
   load.env.data <- comp3Tab$findChildElement(value = "//button[@id='goEnvData']")  
   load.env.data$clickElement()
+  Sys.sleep(10)
   logContent <- remDr$findElement(using = "id", value = 'logContent')
   logText <- strsplit(logContent$getElementText()[[1]], "\n")[[1]]
   logText <- logText[length(logText)]
