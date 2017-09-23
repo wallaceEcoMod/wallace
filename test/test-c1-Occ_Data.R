@@ -54,18 +54,10 @@ test_that("Component 1 Module Query Database: Buttons", {
 })
 
 test_that("Component 1 Module Query Database: Slider", {
-  
   slider <- comp1Tab$findChildElement(value = "//input[@id='c1_queryDb-occNum']")
-  # this is what i would've thought would work - what's hte 'c1_queryDb-' part do?
-  # from line 314 of source code viewed in firefox
-  #slider <- comp1Tab$findChildElement(value = "//input[@id='occNum' and @class='js-range-slider']")
   sliderDim <- slider$getElementSize()
   expect_equal(sliderDim$width, 4)
   expect_equal(sliderDim$height, 4)
-  # this is not working for some reason, probably bc of link below
-  # https://stackoverflow.com/questions/29065334/rselenium-not-able-to-run-example-code
-  # sliderButton <- comp1Tab$findChildElement(value = "//span[@class='irs-slider single']")
-  # remDr$mouseMoveToLocation(webElement = sliderButton)
 })
 
 test_that("Component 1 Module User-specified: Buttons", {
