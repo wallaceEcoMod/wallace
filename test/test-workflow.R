@@ -22,6 +22,8 @@ compTabLabels <- sapply(compTabs, function(x){x$getElementText()})
 comp1Tab <- compTabs[[which(compTabLabels == "1 Occ Data")]] 
 comp3Tab <- compTabs[[which(compTabLabels == "3 Env Data")]]
 comp4Tab <- compTabs[[which(compTabLabels == "4 Process Envs")]]  
+comp5Tab <- compTabs[[which(compTabLabels == "5 Partition Occs")]]
+comp6Tab <- compTabs[[which(compTabLabels == "6 Model")]]  
 
 # click component 1 tab
 comp1Tab$clickElement()
@@ -32,6 +34,11 @@ resultsTabLabels <- sapply(resultsTabs, function(x){x$getElementText()})
 # find different particular results tabs
 occsTblTab <- resultsTabs[[which(resultsTabLabels == "Occs Tbl")]]  
 
+logTextLines <- function() {
+  logContent <- remDr$findElement(using = "id", value = 'logContent')
+  logText <- strsplit(logContent$getElementText()[[1]], "\n")[[1]]
+  return(logText)
+}
 
 test_that("C1 Module Query Database: DB Query Returns Specified Number of Records", {
   Sys.sleep(10)
@@ -50,18 +57,14 @@ test_that("C1 Module Query Database: DB Query Returns Specified Number of Record
   Sys.sleep(10)
   
   # read current text in log box
-  logContent <- remDr$findElement(using = "id", value = 'logContent')
-  logText <- logContent$getElementText()
-  logTextLines <- strsplit(logText[[1]], split = '\n')[[1]]
-  occSearchLine <- strsplit(logTextLines[5], split = ' ')[[1]]
+  logText <- logTextLines()
+  logText <- logText[length(logText)]
   # make sure Wallace found 100 records in GBIF
-  nums <- occSearchLine[grep('[0-9]', occSearchLine)]
+  nums <- occSearchLine[grep('[0-9]', logText)]
   expect_equal(as.numeric(nums[1]), 100)
 })
   
 test_that("C1 Module Query Database: DB Query Generates Data Table", {
-  # click occsTbl tab
-  occsTblTab$clickElement()
   # find data table
   # NOTE: finding elements (plural) does not error when none exist
   occsTbl <- occsTblTab$findChildElements(value = '//table')
@@ -94,44 +97,90 @@ test_that("C3 Module Worldclim: Downloads Specified Bioclim Rasters", {
   Sys.sleep(10)
   
   # read current text in log box
-  logContent <- remDr$findElement(using = "id", value = 'logContent')
-  logText <- strsplit(logContent$getElementText()[[1]], "\n")[[1]]
+  logText <- logTextLines()
   logText <- logText[length(logText)]
-  expect_equal(logText, 
-               "> Environmental predictors: WorldClim bioclimatic variables bio1, bio2, bio3 at 10 arcmin resolution.")
+  expect_equal(logText, "> Environmental predictors: WorldClim bioclimatic variables bio1, bio2, bio3 at 10 arcmin resolution.")
 })
 
 
-test_that("C4: Background Mask Polygon Generated", {
+test_that("C4 Module Select Study Region: Background Mask Polygon Generated", {
+  # switch to comp4 tab
   comp4Tab$clickElement()
   
   select.button <- comp4Tab$findChildElement(value = "//button[@id='goBgExt']")
   select.button$clickElement()
   # read log box
   Sys.sleep(5)
-  logContent <- remDr$findElement(using = "id", value = 'logContent')
-  logText <- strsplit(logContent$getElementText()[[1]], "\n")[[1]]
+  logText <- logTextLines()
   logText <- logText[length(logText)]
   expect_equal(logText, "> Study extent: bounding box. Study extent buffered by 0.5 degrees.")
 })
 
-test_that("C4: Rasters Clipped and Masked", {
+test_that("C4 Module Select Study Region: Rasters Clipped and Masked", {
   process.button <- comp4Tab$findChildElement(value = "//button[@id='goBgMask']")
   process.button$clickElement()
 
   # read log box 
   Sys.sleep(15)
-  logContent <- remDr$findElement(using = "id", value = 'logContent')
-  logText <- strsplit(logContent$getElementText()[[1]], "\n")[[1]]
+  logText <- logTextLines()
   logText <- logText[length(logText) - 1]
   expect_equal(logText, "> Environmental data masked.")
 })
 
-test_that("C4: Background Points Generated", {
-  logContent <- remDr$findElement(using = "id", value = 'logContent')
-  logText <- strsplit(logContent$getElementText()[[1]], "\n")[[1]]
+test_that("C4 Module Select Study Region: Background Points Generated", {
+  logText <- logTextLines()
   logText <- logText[length(logText)]
   expect_equal(logText, "> Random background points sampled (n = 10000 : 4.71 % of cells with values).")
 })
+
+test_that("C5 Module Non-spatial partition: Random k-fold Partitions", {
+  # switch to comp5 tab
+  comp5Tab$clickElement()
+  
+  nFoldsField <- comp5Tab$findChildElement(value = "//input[@id='c5_partNsp-kfolds']")
+  nFoldsField$clickElement()
+  nFoldsField$clearElement()
+  nFoldsField$sendKeysToElement(list('3'))
+  partitionButton <- comp1Tab$findChildElement(value = "//button[@type='button' and @id='goPartNsp']")
+  partitionButton$clickElement()
+  
+  # read log box
+  logText <- logTextLines()
+  logText <- logText[length(logText)]
+  expect_equal(logText, "> Occurrences partitioned by random k-fold (k = 3 ).")
+})
+
+test_that("Comp 6 Run Maxent", {
+  # switch to comp6 tab
+  comp6Tab$clickElement()
+  
+  # click Maxent
+  field <- comp6Tab$findChildElement(value = "//input[@type='radio' and @value='Maxent']")
+  field$clickElement()
+  
+  # select linear features
+  linear <- comp6Tab$findChildElement(value = "//input[@name='c6_maxent-fcs' and @value='L']")
+  linear$clickElement()
+  
+  # enter 0.5 for regularization multiplier
+  rmsField <- comp6Tab$findChildElement(value = "//input[@id='c6_maxent-rmsStep']")
+  rmsField$clickElement()
+  rmsField$clearElement()
+  rmsField$sendKeysToElement(list('0.5'))
+  
+  maxentButton <- comp6Tab$findChildElement(value = "//button[@type='button' and @id='goMaxent']")
+  maxentButton$clickElement()
+  
+  logText <- logTextLines()
+  logText <- logText[length(logText)]
+  expect_equal(logText, "> Maxent ran successfully and output evaluation results for 3 models.")
+  # not sure how to grab the text to be sure that the value is 
+  # could try grabbing the Results Table instead
+  #resultsTable=comp6Tab$findChildElement(value = "//div[@href='#tab-4286-3']")
+  
+  
+})
+
+
 # Close the connection
 remDr$close()
