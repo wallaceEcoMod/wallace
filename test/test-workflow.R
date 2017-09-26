@@ -3,6 +3,7 @@ context("module_1_Occ_Data")
 # Load the package
 library(RSelenium)
 library(testthat)
+library(XML)
 # test_dir('/Users/musasabi/Documents/github/wallace/test', filter = 'mod1', reporter = "Tap")
 
 # Connect to the app (open another rstudio and run_wallace())
@@ -33,6 +34,7 @@ resultsTabs <- remDr$findElements("css selector", ".nav a")
 resultsTabLabels <- sapply(resultsTabs, function(x){x$getElementText()})
 # find different particular results tabs
 occsTblTab <- resultsTabs[[which(resultsTabLabels == "Occs Tbl")]]  
+resultsTblTab <- resultsTabs[[which(resultsTabLabels == "Results")]]  
 
 logTextLines <- function() {
   logContent <- remDr$findElement(using = "id", value = 'logContent')
@@ -150,7 +152,7 @@ test_that("C5 Module Non-spatial partition: Random k-fold Partitions", {
   expect_equal(logText, "> Occurrences partitioned by random k-fold (k = 3 ).")
 })
 
-test_that("Comp 6 Run Maxent", {
+test_that("C6 Module Maxent: Maxent Runs", {
   # switch to comp6 tab
   comp6Tab$clickElement()
   
@@ -174,13 +176,13 @@ test_that("Comp 6 Run Maxent", {
   logText <- logTextLines()
   logText <- logText[length(logText)]
   expect_equal(logText, "> Maxent ran successfully and output evaluation results for 3 models.")
-  # not sure how to grab the text to be sure that the value is 
-  # could try grabbing the Results Table instead
-  #resultsTable=comp6Tab$findChildElement(value = "//div[@href='#tab-4286-3']")
-  
-  
 })
 
-
+test_that("C6 Module Maxent: Maxent Populates Data Table", {
+  resTbl.elem <- remDr$findElement(using = 'id', value = "evalTbl")
+  htmlTxt <- resTbl.elem$getElementAttribute("outerHTML")[[1]]
+  resTbl <- readHTMLTable(htmlTxt, header=TRUE, as.data.frame=TRUE)
+  expect_equal(resTbl$DataTables_Table_1$settings, factor(c('L_1', 'L_1.5', 'L_2')))
+})
 # Close the connection
 remDr$close()
