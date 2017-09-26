@@ -18,8 +18,12 @@ remDr$navigate(appURL)
 compTabs <- remDr$findElements("css selector", ".nav a")
 compTabLabels <- sapply(compTabs, function(x){x$getElementText()})
 
-# find component 1 tab and click
-comp1Tab <- compTabs[[which(compTabLabels == "1 Occ Data")]]  
+# find all component tabs and click
+comp1Tab <- compTabs[[which(compTabLabels == "1 Occ Data")]] 
+comp3Tab <- compTabs[[which(compTabLabels == "3 Env Data")]]
+comp4Tab <- compTabs[[which(compTabLabels == "4 Process Envs")]]  
+
+# click component 1 tab
 comp1Tab$clickElement()
 
 # find results tabs and labels in results window
@@ -29,7 +33,7 @@ resultsTabLabels <- sapply(resultsTabs, function(x){x$getElementText()})
 occsTblTab <- resultsTabs[[which(resultsTabLabels == "Occs Tbl")]]  
 
 
-test_that("Component 1 Module Query Database: Check DB Query", {
+test_that("C1 Module Query Database: DB Query Returns Specified Number of Records", {
   Sys.sleep(10)
   # select GBIF radio button (for some reason the default selection does not register if you don't click it first)
   field.gbif <- comp1Tab$findChildElement(value = "//input[@type='radio' and @value='gbif']")
@@ -53,7 +57,9 @@ test_that("Component 1 Module Query Database: Check DB Query", {
   # make sure Wallace found 100 records in GBIF
   nums <- occSearchLine[grep('[0-9]', occSearchLine)]
   expect_equal(as.numeric(nums[1]), 100)
+})
   
+test_that("C1 Module Query Database: DB Query Generates Data Table", {
   # click occsTbl tab
   occsTblTab$clickElement()
   # find data table
@@ -63,9 +69,8 @@ test_that("Component 1 Module Query Database: Check DB Query", {
   expect_true(occsTbl[[1]]$isElementDisplayed()[[1]])
 })
 
-test_that("Component 3 Module Worldclim: Test Download", {
+test_that("C3 Module Worldclim: Downloads Specified Bioclim Rasters", {
   # Move to Component 3
-  comp3Tab <- compTabs[[which(compTabLabels == "3 Env Data")]]    
   comp3Tab$clickElement()
   
   # find and click dropdown menu for resolution
@@ -97,31 +102,36 @@ test_that("Component 3 Module Worldclim: Test Download", {
 })
 
 
-test_that("Component 4: Test mask and random background points", {
-  
-  comp4Tab <- compTabs[[which(compTabLabels == "4 Process Envs")]]  
+test_that("C4: Background Mask Polygon Generated", {
   comp4Tab$clickElement()
   
   select.button <- comp4Tab$findChildElement(value = "//button[@id='goBgExt']")
   select.button$clickElement()
-  
+  # read log box
+  Sys.sleep(5)
+  logContent <- remDr$findElement(using = "id", value = 'logContent')
+  logText <- strsplit(logContent$getElementText()[[1]], "\n")[[1]]
+  logText <- logText[length(logText)]
+  expect_equal(logText, "> Study extent: bounding box. Study extent buffered by 0.5 degrees.")
+})
+
+test_that("C4: Rasters Clipped and Masked", {
   process.button <- comp4Tab$findChildElement(value = "//button[@id='goBgMask']")
   process.button$clickElement()
 
-  # Check the logs to see if everything 
-  Sys.sleep(20)
+  # read log box 
+  Sys.sleep(15)
   logContent <- remDr$findElement(using = "id", value = 'logContent')
   logText <- strsplit(logContent$getElementText()[[1]], "\n")[[1]]
-  logText1 <- logText[length(logText) - 2]
-  logText2 <- logText[length(logText) - 1]
-  logText3 <- logText[length(logText)]
-  expect_equal(logText1, 
-               "> Study extent: bounding box. Study extent buffered by 0.5 degrees.")
-  expect_equal(logText2, 
-               "> Environmental data masked.")
-  expect_equal(logText3, 
-               "> Random background points sampled (n = 10000 : 4.71 % of cells with values).")
+  logText <- logText[length(logText) - 1]
+  expect_equal(logText, "> Environmental data masked.")
 })
 
+test_that("C4: Background Points Generated", {
+  logContent <- remDr$findElement(using = "id", value = 'logContent')
+  logText <- strsplit(logContent$getElementText()[[1]], "\n")[[1]]
+  logText <- logText[length(logText)]
+  expect_equal(logText, "> Random background points sampled (n = 10000 : 4.71 % of cells with values).")
+})
 # Close the connection
 remDr$close()
