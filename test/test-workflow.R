@@ -21,10 +21,13 @@ compTabLabels <- sapply(compTabs, function(x){x$getElementText()})
 
 # find all component tabs and click
 comp1Tab <- compTabs[[which(compTabLabels == "1 Occ Data")]] 
+comp2Tab <- compTabs[[which(compTabLabels == "2 Process Occs")]]
 comp3Tab <- compTabs[[which(compTabLabels == "3 Env Data")]]
 comp4Tab <- compTabs[[which(compTabLabels == "4 Process Envs")]]  
 comp5Tab <- compTabs[[which(compTabLabels == "5 Partition Occs")]]
-comp6Tab <- compTabs[[which(compTabLabels == "6 Model")]]  
+comp6Tab <- compTabs[[which(compTabLabels == "6 Model")]]
+comp7Tab <- compTabs[[which(compTabLabels == "7 Visualize")]]
+comp8Tab <- compTabs[[which(compTabLabels == "8 Project")]]
 
 # click component 1 tab
 comp1Tab$clickElement()
@@ -66,12 +69,15 @@ test_that("C1 Module Query Database: DB Query Returns Specified Number of Record
   expect_equal(as.numeric(nums[1]), 100)
 })
   
-test_that("C1 Module Query Database: DB Query Generates Data Table", {
-  # find data table
-  # NOTE: finding elements (plural) does not error when none exist
-  occsTbl <- occsTblTab$findChildElements(value = '//table')
-  # check if the table's there
-  expect_true(occsTbl[[1]]$isElementDisplayed()[[1]])
+test_that("C1 Module Query Database: DB Query Populates Data Table", {
+  occsTblTab$clickElement()
+  # find occurrence data table
+  occTbl.elem <- remDr$findElement(using = 'id', value = "occTbl")
+  # read table
+  htmlTxt <- occTbl.elem$getElementAttribute("outerHTML")[[1]]
+  occTbl <- XML::readHTMLTable(htmlTxt, header=TRUE, as.data.frame=TRUE)
+  # test that species name appears in first row
+  expect_equal(occTbl$DataTables_Table_0$name[1], factor('Puma concolor'))
 })
 
 test_that("C3 Module Worldclim: Downloads Specified Bioclim Rasters", {
@@ -181,7 +187,7 @@ test_that("C6 Module Maxent: Maxent Runs", {
 test_that("C6 Module Maxent: Maxent Populates Data Table", {
   resTbl.elem <- remDr$findElement(using = 'id', value = "evalTbl")
   htmlTxt <- resTbl.elem$getElementAttribute("outerHTML")[[1]]
-  resTbl <- readHTMLTable(htmlTxt, header=TRUE, as.data.frame=TRUE)
+  resTbl <- XML::readHTMLTable(htmlTxt, header=TRUE, as.data.frame=TRUE)
   expect_equal(resTbl$DataTables_Table_1$settings, factor(c('L_1', 'L_1.5', 'L_2')))
 })
 # Close the connection
