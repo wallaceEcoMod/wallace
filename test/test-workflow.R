@@ -158,10 +158,29 @@ test_that("C5 Module Non-spatial partition: Random k-fold Partitions", {
   expect_equal(logText, "> Occurrences partitioned by random k-fold (k = 3 ).")
 })
 
-test_that("C6 Module Maxent: Maxent Runs", {
+test_that("C6 Module BIOCLIM: BIOCLIM Runs", {
   # switch to comp6 tab
   comp6Tab$clickElement()
   
+  field.bc <- comp6Tab$findChildElement(value = "//input[@type='radio' and @value='BIOCLIM']")
+  field.bc$clickElement()
+  
+  button.goBioclim <- remDr$findElement(using = 'id', value = 'goBioclim')
+  button.goBioclim$clickElement()
+  
+  logText <- logTextLines()
+  logText <- logText[length(logText)]
+  expect_equal(logText, "> BIOCLIM ran successfully and output evaluation results.")
+})
+
+test_that("C6 Module BIOCLIM: BIOCLIM Populates Data Table", {
+  resTbl.elem <- remDr$findElement(using = 'id', value = "evalTbl")
+  htmlTxt <- resTbl.elem$getElementAttribute("outerHTML")[[1]]
+  resTbl <- XML::readHTMLTable(htmlTxt, header=TRUE, as.data.frame=TRUE)
+  expect_equal(resTbl[[2]][,1], factor(c('test.AUC', 'diff.AUC', 'test.orMTP', 'test.or10pct')))
+})
+
+test_that("C6 Module Maxent: Maxent Runs", {
   # click Maxent
   field <- comp6Tab$findChildElement(value = "//input[@type='radio' and @value='Maxent']")
   field$clickElement()
@@ -190,5 +209,29 @@ test_that("C6 Module Maxent: Maxent Populates Data Table", {
   resTbl <- XML::readHTMLTable(htmlTxt, header=TRUE, as.data.frame=TRUE)
   expect_equal(resTbl$DataTables_Table_1$settings, factor(c('L_1', 'L_1.5', 'L_2')))
 })
+
+test_that("C7 Module Maxent Evaluation Plots: Evaluation Plot Generates", {
+  # switch to comp7
+  comp7Tab$clickElement()
+  
+  evalPlots <- remDr$findElement(using = 'id', value = 'mxEvalPlots')
+  expect_true(evalPlots$isElementDisplayed()[[1]])
+})
+
+test_that("C7 Module Plot Response Curves: Response Curves Generate", {
+  field.resp <- comp7Tab$findChildElement(value = "//input[@type='radio' and @value='response']")
+  field.resp$clickElement()
+  respPlots <- remDr$findElement(using = 'id', value = 'respPlots')
+  expect_true(respPlots$isElementDisplayed()[[1]])
+})
+
+test_that("C7 Module Map Prediction: ", {
+  field.map <- comp7Tab$findChildElement(value = "//input[@type='radio' and @value='map']")
+  field.map$clickElement()
+  button.mapPreds <- remDr$findElement(using = 'id', value = 'goMapPreds')
+  button.mapPreds$clickElement()
+  # NEED TO READ LOG, BUT CURRENTLY NOTHING PRINTED FOR MAP
+})
+
 # Close the connection
 remDr$close()
