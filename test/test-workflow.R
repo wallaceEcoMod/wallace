@@ -131,7 +131,7 @@ test_that("C4 Module Select Study Region: Rasters Clipped and Masked", {
   process.button$clickElement()
 
   # read log box 
-  Sys.sleep(15)
+  Sys.sleep(30)
   logText <- logTextLines()
   logText <- logText[length(logText) - 1]
   expect_equal(logText, "> Environmental data masked.")
@@ -142,9 +142,18 @@ test_that("C4 Module Select Study Region: Background Points Generated", {
   logText <- logText[length(logText)]
   expect_equal(logText, "> Random background points sampled (n = 10000 : 4.71 % of cells with values).")
 })
-
-# CM: it breaks in this test with 
-                                           
+           
+# CM: getting this error consistently which seems to be in the actual kfold code
+# Warning: Error in if: missing value where TRUE/FALSE needed
+# Stack trace (innermost first):
+#   80: singlefold
+# 79: kfold
+# 78: ENMeval::get.randomkfold
+# 77: <reactive> [modules/mod_c5_partitionNonSpat.R#32]
+#                 66: partNsp.call
+#                 65: observeEventHandler [/Library/Frameworks/R.framework/Versions/3.3/Resources/library/wallace/shiny/server.R#458]
+#                                          1: shiny::runApp
+                                
 test_that("C5 Module Non-spatial partition: Random k-fold Partitions", {
   # switch to comp5 tab
   comp5Tab$clickElement()
@@ -159,6 +168,7 @@ test_that("C5 Module Non-spatial partition: Random k-fold Partitions", {
   # read log box
   logText <- logTextLines()
   logText <- logText[length(logText)]
+  Sys.sleep(10)
   expect_equal(logText, "> Occurrences partitioned by random k-fold (k = 3 ).")
 })
 
@@ -172,6 +182,7 @@ test_that("C6 Module BIOCLIM: BIOCLIM Runs", {
   button.goBioclim <- remDr$findElement(using = 'id', value = 'goBioclim')
   button.goBioclim$clickElement()
   
+  Sys.sleep(10)
   logText <- logTextLines()
   logText <- logText[length(logText)]
   expect_equal(logText, "> BIOCLIM ran successfully and output evaluation results.")
@@ -182,6 +193,7 @@ test_that("C6 Module BIOCLIM: BIOCLIM Populates Data Table", {
   htmlTxt <- resTbl.elem$getElementAttribute("outerHTML")[[1]]
   resTbl <- XML::readHTMLTable(htmlTxt, header=TRUE, as.data.frame=TRUE)
   expect_equal(resTbl[[2]][,1], factor(c('test.AUC', 'diff.AUC', 'test.orMTP', 'test.or10pct')))
+  # CM gets: Error in resTbl[[2]] : subscript out of bounds
 })
 
 test_that("C6 Module Maxent: Maxent Runs", {
@@ -202,6 +214,7 @@ test_that("C6 Module Maxent: Maxent Runs", {
   maxentButton <- comp6Tab$findChildElement(value = "//button[@type='button' and @id='goMaxent']")
   maxentButton$clickElement()
   
+  Sys.sleep(10)
   logText <- logTextLines()
   logText <- logText[length(logText)]
   expect_equal(logText, "> Maxent ran successfully and output evaluation results for 3 models.")
@@ -212,6 +225,7 @@ test_that("C6 Module Maxent: Maxent Populates Data Table", {
   htmlTxt <- resTbl.elem$getElementAttribute("outerHTML")[[1]]
   resTbl <- XML::readHTMLTable(htmlTxt, header=TRUE, as.data.frame=TRUE)
   expect_equal(resTbl$DataTables_Table_1$settings, factor(c('L_1', 'L_1.5', 'L_2')))
+  # CM: for me, this has the names $DataTables_Table_3 instead of $DataTables_Table_1. is that dyanmically generated or any reason it would differ on our machines? maybe just reference it as resTbl[[2]]$settings?
 })
 
 test_that("C7 Module Maxent Evaluation Plots: Evaluation Plot Generates", {
@@ -234,8 +248,49 @@ test_that("C7 Module Map Prediction: ", {
   field.map$clickElement()
   button.mapPreds <- remDr$findElement(using = 'id', value = 'goMapPreds')
   button.mapPreds$clickElement()
+  field.logistic <- comp7Tab$findChildElement(value = "//input[@type='radio' and  @value='logistic']")
+  field.logistic$clickElement()
+  plot.button=comp7Tab$findChildElement(value = "//button[@id='goMapPreds']")
+  plot.button$clickElement()
   # NEED TO READ LOG, BUT CURRENTLY NOTHING PRINTED FOR MAP
+  logText <- logTextLines()
+  logText <- logText[length(logText)]
+  expect_equal(logText, "> Maxent ran successfully and output evaluation results for 3 models.")
+  #CM: well, its working at least, but with no printout, i think we just move on and build a test that relies on this having worked. I left this in there because if some error were to happen, it'd print something else so at least with this we know an error didn't print to the log.
+  
 })
 
+test_that("C8 Projection: ", {
+  # switch to comp8
+  comp8Tab$clickElement()
+  
+  # project to new time
+  projectTime <- comp8Tab$findChildElement(value = "//input[@type='radio' and @value='projTime']")
+  projectTime$clickElement()
+  
+  ## CM: JAMIE START HERE
+  wc.select <- comp8Tab$findChildElement(value = "//div[@class='selectize-control shinyjs-resettable single']")
+  time.select <- comp8Tab$findChildElement(value = "//div[@id='c8_projectTime-selTime']")
+  ## End here
+
+ #  gcm.select <- comp8Tab$findChildElement(value = "//div[@class='selectize-input items not-full has-options']")
+ #  gcm.select <- comp8Tab$findChildElement(value = "//input[@placeholder='Select GCM']")
+ #  <input autocomplete="off" tabindex="" placeholder="Select GCM" style="width: 77px;" type="text">
+ # 
+ #  time.select$clickElement()
+ #  time2050 <- comp8Tab$findChildElement(value = paste0("//div[@data-value='10' and @class='option']"))
+ # # <div class="selectize-input items not-full has-options" style=""><input autocomplete="off" tabindex="" placeholder="Select period" style="width: 88px; opacity: 1; position: relative; left: 0px;" type="text"></div>
+ #    
+ #  time <- comp8Tab$findChildElement(value = paste0("//div[@data-value='50' and @class='selectize-input items has-options full has-items']"))
+ #  time$clickElement()  
+ #  
+ #  # test mess
+ #  mess <- comp8Tab$findChildElement(value = "//input[@type='radio' and @value='mess']")
+ #  mess$clickElement()
+ #  mess.button=comp8Tab$findChildElement(value = "//button[@id='goEnvSimilarity']")
+ #  mess.button$clickElement()
+  
+  
+})
 # Close the connection
 remDr$close()
