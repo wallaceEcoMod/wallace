@@ -65,7 +65,9 @@ test_that("C1 Module Query Database: DB Query Returns Specified Number of Record
   logText <- logTextLines()
   logText <- logText[length(logText)]
   # make sure Wallace found 100 records in GBIF
-  nums <- occSearchLine[grep('[0-9]', logText)]
+  #CM:  occSearchLine wasn't defined so i tried something else
+  #nums <- occSearchLine[grep('[0-9]', logText)]
+  nums=substr(strsplit(logText,"> Total gbif records for Puma concolor returned [ ",fixed=T)[[1]][2],1,3)
   expect_equal(as.numeric(nums[1]), 100)
 })
   
@@ -141,6 +143,8 @@ test_that("C4 Module Select Study Region: Background Points Generated", {
   expect_equal(logText, "> Random background points sampled (n = 10000 : 4.71 % of cells with values).")
 })
 
+# CM: it breaks in this test with 
+                                           
 test_that("C5 Module Non-spatial partition: Random k-fold Partitions", {
   # switch to comp5 tab
   comp5Tab$clickElement()
