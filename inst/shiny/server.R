@@ -515,7 +515,7 @@ shinyServer(function(input, output, session) {
     rvs$mods <- e@models
     rvs$modPreds <- e@predictions
     rvs$modRes <- e@results
-    x <- callModule(mapPreds_MOD, 'c7_mapPreds', rvs)
+    # x <- callModule(mapPreds_MOD, 'c7_mapPreds', rvs)
     
     ncols <- ncol(rvs$modRes)
     modRes.round <- cbind(rvs$modRes[,1:3], round(rvs$modRes[,4:ncols], digits=3))

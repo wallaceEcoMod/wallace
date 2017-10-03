@@ -54,6 +54,11 @@ wcBioclims_MOD <- function(input, output, session, logs, mapCntr, envs) {
     logs %>% writeLog("Environmental predictors: WorldClim bioclimatic variables",
                       bcSels, "at", input$bcRes, " arcmin resolution.")
     
+    # change names if bio01 is bio1, and so forth
+    i <- grep('bio[0-9]$', names(wcbc))
+    names(wcbc)[i] <- paste('bio', sapply(strsplit(names(wcbc)[i], 'bio'), 
+                                          function(x) x[2]), sep='0')
+    
     return(wcbc)
   })
 }
