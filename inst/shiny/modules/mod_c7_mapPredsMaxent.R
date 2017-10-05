@@ -58,6 +58,9 @@ mapPredsMaxent_MOD <- function(input, output, session, rvs) {
     pjPred <- predSel.thr$pred
     rvs$comp7.thr <- predSel.thr$thresh
     
+    # write to log box
+    rvs %>% writeLog("Maxent", input$predType, "model prediction plotted.")
+    
     return(pjPred)
   })
 }

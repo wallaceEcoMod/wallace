@@ -1,4 +1,4 @@
-context("module_1_Occ_Data")
+context("test-workflow")
 
 # Load the package
 library(RSelenium)
@@ -7,7 +7,8 @@ library(XML)
 # test_dir('/Users/musasabi/Documents/github/wallace/test', filter = 'mod1', reporter = "Tap")
 
 # Connect to the app (open another rstudio and run_wallace())
-remDr <- remoteDriver() 
+browser <- "chrome"
+remDr <- remoteDriver(browserName = browser) 
 remDr$open(silent = TRUE)
 appURL <- "http://127.0.0.1:5556"
 
@@ -195,7 +196,28 @@ test_that("C6 Module BIOCLIM: BIOCLIM Populates Data Table", {
   # CM gets: Error in resTbl[[2]] : subscript out of bounds
 })
 
+test_that("C7 Module BIOCLIM ENvelope Plot: Envelope Plot Displays", {
+  # switch to comp7
+  comp7Tab$clickElement()
+  
+  envelPlot <- remDr$findElement(using = 'id', value = 'bcEnvelPlot')
+  expect_true(envelPlot$isElementDisplayed()[[1]])
+})
+
+test_that("C7 Module Map Prediction: BIOCLIM Map Plots", {
+  field.map <- comp7Tab$findChildElement(value = "//input[@type='radio' and @value='map']")
+  field.map$clickElement()
+  button.mapPreds <- remDr$findElement(using = 'id', value = 'goMapPreds')
+  button.mapPreds$clickElement()
+  logText <- logTextLines()
+  logText <- logText[length(logText)]
+  expect_equal(logText, "> BIOCLIM model prediction plotted.")
+})
+
 test_that("C6 Module Maxent: Maxent Runs", {
+  # switch back to comp6 tab
+  comp6Tab$clickElement()
+  
   # click Maxent
   field <- comp6Tab$findChildElement(value = "//input[@type='radio' and @value='Maxent']")
   field$clickElement()
@@ -211,6 +233,7 @@ test_that("C6 Module Maxent: Maxent Runs", {
   rmsField$sendKeysToElement(list('0.5'))
   
   maxentButton <- comp6Tab$findChildElement(value = "//button[@type='button' and @id='goMaxent']")
+  # in case Java crashes because "JVM is not running", restart all RStudio sessions and redo, which should fix issue -- not clear why this happens
   maxentButton$clickElement()
   
   Sys.sleep(20)
@@ -226,7 +249,7 @@ test_that("C6 Module Maxent: Maxent Populates Data Table", {
   expect_equal(resTbl[[2]]$settings, factor(c('L_1', 'L_1.5', 'L_2')))
 })
 
-test_that("C7 Module Maxent Evaluation Plots: Evaluation Plot Generates", {
+test_that("C7 Module Maxent Evaluation Plots: Evaluation Plot Displays", {
   # switch to comp7
   comp7Tab$clickElement()
   
@@ -234,61 +257,110 @@ test_that("C7 Module Maxent Evaluation Plots: Evaluation Plot Generates", {
   expect_true(evalPlots$isElementDisplayed()[[1]])
 })
 
-test_that("C7 Module Plot Response Curves: Response Curves Generate", {
+test_that("C7 Module Plot Response Curves: Response Curves Display", {
   field.resp <- comp7Tab$findChildElement(value = "//input[@type='radio' and @value='response']")
   field.resp$clickElement()
   respPlots <- remDr$findElement(using = 'id', value = 'respPlots')
   expect_true(respPlots$isElementDisplayed()[[1]])
 })
 
-# test_that("C7 Module Map Prediction: ", {
-#   field.map <- comp7Tab$findChildElement(value = "//input[@type='radio' and @value='map']")
-#   field.map$clickElement()
-#   button.mapPreds <- remDr$findElement(using = 'id', value = 'goMapPreds')
-#   button.mapPreds$clickElement()
-#   field.logistic <- comp7Tab$findChildElement(value = "//input[@type='radio' and  @value='logistic']")
-#   field.logistic$clickElement()
-#   plot.button=comp7Tab$findChildElement(value = "//button[@id='goMapPreds']")
-#   plot.button$clickElement()
-#   # NEED TO READ LOG, BUT CURRENTLY NOTHING PRINTED FOR MAP
-#   logText <- logTextLines()
-#   logText <- logText[length(logText)]
-#   expect_equal(logText, "> Maxent ran successfully and output evaluation results for 3 models.")
-#   #CM: well, its working at least, but with no printout, i think we just move on and build a test that relies on this having worked. I left this in there because if some error were to happen, it'd print something else so at least with this we know an error didn't print to the log.
-#   
-# })
-# 
-# test_that("C8 Projection: ", {
-#   # switch to comp8
-#   comp8Tab$clickElement()
-#   
-#   # project to new time
-#   projectTime <- comp8Tab$findChildElement(value = "//input[@type='radio' and @value='projTime']")
-#   projectTime$clickElement()
-#   
-#   ## CM: JAMIE START HERE
-#   wc.select <- comp8Tab$findChildElement(value = "//div[@class='selectize-control shinyjs-resettable single']")
-#   time.select <- comp8Tab$findChildElement(value = "//div[@id='c8_projectTime-selTime']")
-#   ## End here
-# 
-#  #  gcm.select <- comp8Tab$findChildElement(value = "//div[@class='selectize-input items not-full has-options']")
-#  #  gcm.select <- comp8Tab$findChildElement(value = "//input[@placeholder='Select GCM']")
-#  #  <input autocomplete="off" tabindex="" placeholder="Select GCM" style="width: 77px;" type="text">
-#  # 
-#  #  time.select$clickElement()
-#  #  time2050 <- comp8Tab$findChildElement(value = paste0("//div[@data-value='10' and @class='option']"))
-#  # # <div class="selectize-input items not-full has-options" style=""><input autocomplete="off" tabindex="" placeholder="Select period" style="width: 88px; opacity: 1; position: relative; left: 0px;" type="text"></div>
-#  #    
-#  #  time <- comp8Tab$findChildElement(value = paste0("//div[@data-value='50' and @class='selectize-input items has-options full has-items']"))
-#  #  time$clickElement()  
-#  #  
-#  #  # test mess
-#  #  mess <- comp8Tab$findChildElement(value = "//input[@type='radio' and @value='mess']")
-#  #  mess$clickElement()
-#  #  mess.button=comp8Tab$findChildElement(value = "//button[@id='goEnvSimilarity']")
-#  #  mess.button$clickElement()
-#   
-#   
-# })
+test_that("C7 Module Map Prediction: Maxent Maps Plot", {
+  field.map <- comp7Tab$findChildElement(value = "//input[@type='radio' and @value='map']")
+  field.map$clickElement()
+  button.mapPreds <- remDr$findElement(using = 'id', value = 'goMapPreds')
+  button.mapPreds$clickElement()
+  logText <- logTextLines()
+  logText <- logText[length(logText)]
+  expect_equal(logText, "> Maxent raw model prediction plotted.")
+  
+  field.logistic <- comp7Tab$findChildElement(value = "//input[@type='radio' and  @value='logistic']")
+  field.logistic$clickElement()
+  plot.button=comp7Tab$findChildElement(value = "//button[@id='goMapPreds']")
+  plot.button$clickElement()
+  logText <- logTextLines()
+  logText <- logText[length(logText)]
+  expect_equal(logText, "> Maxent logistic model prediction plotted.")
+  
+  field.cloglog <- comp7Tab$findChildElement(value = "//input[@type='radio' and  @value='cloglog']")
+  field.cloglog$clickElement()
+  plot.button=comp7Tab$findChildElement(value = "//button[@id='goMapPreds']")
+  plot.button$clickElement()
+  logText <- logTextLines()
+  logText <- logText[length(logText)]
+  expect_equal(logText, "> Maxent cloglog model prediction plotted.")
+})
+
+# NOTE: mouse move functions only work in Chrome, and error in Firefox
+# thus, these tests can currently only be performed on Chrome
+test_that("C8 Module Project to New Extent: Projection Plots", {
+  # switch to comp8
+  comp8Tab$clickElement()
+  
+  leaflet.draw <- remDr$findElement(using = 'class', value = 'leaflet-draw-draw-polygon')
+  leaflet.draw$clickElement()
+  
+  leaflet.actions <- remDr$findElement(using = 'class', value = 'leaflet-draw-actions')
+  
+  map.window <- remDr$findElement(using = 'id', value = 'map')
+  
+  if (browser == 'chrome') {
+    remDr$mouseMoveToLocation(webElement = map.window)
+    remDr$mouseMoveToLocation(110, 0)
+    remDr$click()
+    remDr$mouseMoveToLocation(0, 50)
+    remDr$click()
+    remDr$mouseMoveToLocation(50, 0)
+    remDr$click()
+    remDr$mouseMoveToLocation(0, -50)
+    remDr$click()
+    remDr$mouseMoveToLocation(webElement = leaflet.draw)
+    remDr$mouseMoveToLocation(20, 0)
+    remDr$click()
+    
+    button.projArea <- remDr$findElement(using = 'id', value = 'goProjectArea')
+    button.projArea$clickElement()
+    
+    logText <- logTextLines()
+    logText <- logText[length(logText)]
+    logText <- strsplit(logText, ':')[[1]][1]
+    expect_equal(logText, "> New area projection for model L_1 with extent coordinates")  
+  } 
+})
+
+test_that("C8 Module Project to New Time: Projection Plots", {
+  
+  # project to new time
+  projectTime <- comp8Tab$findChildElement(value = "//input[@type='radio' and @value='projTime']")
+  projectTime$clickElement()
+
+  ## CM: JAMIE START HERE
+  wc.select <- remDr$findElement(value = "//div[@class='selectize-input items has-options full has-items']")
+  wc.select$clickElement()
+  
+  select.time <- remDr$findElement(using = 'css selector', value = "#c8_projectTime-selTime")
+  
+  # JMK: can't figure out how to click these select boxes
+  
+  ## End here
+
+ #  gcm.select <- comp8Tab$findChildElement(value = "//div[@class='selectize-input items not-full has-options']")
+ #  gcm.select <- comp8Tab$findChildElement(value = "//input[@placeholder='Select GCM']")
+ #  <input autocomplete="off" tabindex="" placeholder="Select GCM" style="width: 77px;" type="text">
+ #
+ #  time.select$clickElement()
+ #  time2050 <- comp8Tab$findChildElement(value = paste0("//div[@data-value='10' and @class='option']"))
+ # # <div class="selectize-input items not-full has-options" style=""><input autocomplete="off" tabindex="" placeholder="Select period" style="width: 88px; opacity: 1; position: relative; left: 0px;" type="text"></div>
+ #
+ #  time <- comp8Tab$findChildElement(value = paste0("//div[@data-value='50' and @class='selectize-input items has-options full has-items']"))
+ #  time$clickElement()
+ #
+ #  # test mess
+ #  mess <- comp8Tab$findChildElement(value = "//input[@type='radio' and @value='mess']")
+ #  mess$clickElement()
+ #  mess.button=comp8Tab$findChildElement(value = "//button[@id='goEnvSimilarity']")
+ #  mess.button$clickElement()
+
+
+})
 # Close the connection
 remDr$close()

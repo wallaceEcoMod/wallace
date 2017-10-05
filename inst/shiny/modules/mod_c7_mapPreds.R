@@ -24,6 +24,9 @@ mapPreds_MOD <- function(input, output, session, rvs) {
     predSel.thr <- predSel.thr.call()
     pjPred <- predSel.thr$pred
     rvs$comp7.thr <- predSel.thr$thresh
+    
+    # write to log box
+    rvs %>% writeLog("BIOCLIM model prediction plotted.")
 
     return(pjPred)
   })
