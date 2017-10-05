@@ -299,8 +299,6 @@ test_that("C8 Module Project to New Extent: Projection Plots", {
   leaflet.draw <- remDr$findElement(using = 'class', value = 'leaflet-draw-draw-polygon')
   leaflet.draw$clickElement()
   
-  leaflet.actions <- remDr$findElement(using = 'class', value = 'leaflet-draw-actions')
-  
   map.window <- remDr$findElement(using = 'id', value = 'map')
   
   if (browser == 'chrome') {
@@ -319,6 +317,7 @@ test_that("C8 Module Project to New Extent: Projection Plots", {
     
     button.projArea <- remDr$findElement(using = 'id', value = 'goProjectArea')
     button.projArea$clickElement()
+    Sys.sleep(10)
     
     logText <- logTextLines()
     logText <- logText[length(logText)]
@@ -333,13 +332,29 @@ test_that("C8 Module Project to New Time: Projection Plots", {
   projectTime <- comp8Tab$findChildElement(value = "//input[@type='radio' and @value='projTime']")
   projectTime$clickElement()
 
-  ## CM: JAMIE START HERE
-  wc.select <- remDr$findElement(value = "//div[@class='selectize-input items has-options full has-items']")
-  wc.select$clickElement()
+  # select.time <- remDr$findElement("css", "#c8_projectTime-selTime")
+  # select.time$clickElement()
   
-  select.time <- remDr$findElement(using = 'css selector', value = "#c8_projectTime-selTime")
+  select.time <- remDr$findElement(value='//*[@class="form-group shiny-input-container"]')
+  select.time2 <- select.time$findChildElement(value='//*[@class="selectize-control shinyjs-resettable single"]')
   
-  # JMK: can't figure out how to click these select boxes
+  select.time2$isElementDisplayed()
+  select.time$clickElement()
+  sel2050 <- remDr$findElement(value='//*[@id="tab-1219-11"]/div[1]/div/div[9]/div[3]/div[2]/div/div/div[2]/div/div[1]')
+  sel2050$clickElement()
+
+    select.gcm <- remDr$findElement(value='//*[@id="c8_projectTime-selGCMui"]/div/div/div/div[1]')
+  select.gcm$clickElement()
+  selCCSM <- remDr$findElement(value='//*[@id="c8_projectTime-selGCMui"]/div/div/div/div[2]/div/div[3]')
+  selCCSM$clickElement()
+  
+  select.rcp <- remDr$findElement(value='//*[@id="tab-1219-11"]/div[1]/div/div[9]/div[3]/div[4]/div/div/div[1]')
+  select.rcp$clickElement()
+  sel8.5 <- remDr$findElement(value='//*[@id="tab-1219-11"]/div[1]/div/div[9]/div[3]/div[4]/div/div/div[2]/div/div[4]')
+  sel8.5$clickElement()
+  
+  button.projTime <- remDr$findElement(using = 'id', value = 'goProjectTime')
+  button.projTime$clickElement()
   
   ## End here
 
