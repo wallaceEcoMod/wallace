@@ -65,9 +65,8 @@ test_that("C1 Module Query Database: DB Query Returns Specified Number of Record
   logText <- logTextLines()
   logText <- logText[length(logText)]
   # make sure Wallace found 100 records in GBIF
-  #CM:  occSearchLine wasn't defined so i tried something else
-  #nums <- occSearchLine[grep('[0-9]', logText)]
-  nums=substr(strsplit(logText,"> Total gbif records for Puma concolor returned [ ",fixed=T)[[1]][2],1,3)
+  logText_split <- strsplit(logText, ' ')[[1]]
+  nums <- logText_split[grep('[0-9]', logText_split)]
   expect_equal(as.numeric(nums[1]), 100)
 })
   
@@ -214,7 +213,7 @@ test_that("C6 Module Maxent: Maxent Runs", {
   maxentButton <- comp6Tab$findChildElement(value = "//button[@type='button' and @id='goMaxent']")
   maxentButton$clickElement()
   
-  Sys.sleep(10)
+  Sys.sleep(20)
   logText <- logTextLines()
   logText <- logText[length(logText)]
   expect_equal(logText, "> Maxent ran successfully and output evaluation results for 3 models.")
@@ -224,8 +223,7 @@ test_that("C6 Module Maxent: Maxent Populates Data Table", {
   resTbl.elem <- remDr$findElement(using = 'id', value = "evalTbl")
   htmlTxt <- resTbl.elem$getElementAttribute("outerHTML")[[1]]
   resTbl <- XML::readHTMLTable(htmlTxt, header=TRUE, as.data.frame=TRUE)
-  expect_equal(resTbl$DataTables_Table_1$settings, factor(c('L_1', 'L_1.5', 'L_2')))
-  # CM: for me, this has the names $DataTables_Table_3 instead of $DataTables_Table_1. is that dyanmically generated or any reason it would differ on our machines? maybe just reference it as resTbl[[2]]$settings?
+  expect_equal(resTbl[[2]]$settings, factor(c('L_1', 'L_1.5', 'L_2')))
 })
 
 test_that("C7 Module Maxent Evaluation Plots: Evaluation Plot Generates", {
@@ -243,54 +241,54 @@ test_that("C7 Module Plot Response Curves: Response Curves Generate", {
   expect_true(respPlots$isElementDisplayed()[[1]])
 })
 
-test_that("C7 Module Map Prediction: ", {
-  field.map <- comp7Tab$findChildElement(value = "//input[@type='radio' and @value='map']")
-  field.map$clickElement()
-  button.mapPreds <- remDr$findElement(using = 'id', value = 'goMapPreds')
-  button.mapPreds$clickElement()
-  field.logistic <- comp7Tab$findChildElement(value = "//input[@type='radio' and  @value='logistic']")
-  field.logistic$clickElement()
-  plot.button=comp7Tab$findChildElement(value = "//button[@id='goMapPreds']")
-  plot.button$clickElement()
-  # NEED TO READ LOG, BUT CURRENTLY NOTHING PRINTED FOR MAP
-  logText <- logTextLines()
-  logText <- logText[length(logText)]
-  expect_equal(logText, "> Maxent ran successfully and output evaluation results for 3 models.")
-  #CM: well, its working at least, but with no printout, i think we just move on and build a test that relies on this having worked. I left this in there because if some error were to happen, it'd print something else so at least with this we know an error didn't print to the log.
-  
-})
-
-test_that("C8 Projection: ", {
-  # switch to comp8
-  comp8Tab$clickElement()
-  
-  # project to new time
-  projectTime <- comp8Tab$findChildElement(value = "//input[@type='radio' and @value='projTime']")
-  projectTime$clickElement()
-  
-  ## CM: JAMIE START HERE
-  wc.select <- comp8Tab$findChildElement(value = "//div[@class='selectize-control shinyjs-resettable single']")
-  time.select <- comp8Tab$findChildElement(value = "//div[@id='c8_projectTime-selTime']")
-  ## End here
-
- #  gcm.select <- comp8Tab$findChildElement(value = "//div[@class='selectize-input items not-full has-options']")
- #  gcm.select <- comp8Tab$findChildElement(value = "//input[@placeholder='Select GCM']")
- #  <input autocomplete="off" tabindex="" placeholder="Select GCM" style="width: 77px;" type="text">
- # 
- #  time.select$clickElement()
- #  time2050 <- comp8Tab$findChildElement(value = paste0("//div[@data-value='10' and @class='option']"))
- # # <div class="selectize-input items not-full has-options" style=""><input autocomplete="off" tabindex="" placeholder="Select period" style="width: 88px; opacity: 1; position: relative; left: 0px;" type="text"></div>
- #    
- #  time <- comp8Tab$findChildElement(value = paste0("//div[@data-value='50' and @class='selectize-input items has-options full has-items']"))
- #  time$clickElement()  
- #  
- #  # test mess
- #  mess <- comp8Tab$findChildElement(value = "//input[@type='radio' and @value='mess']")
- #  mess$clickElement()
- #  mess.button=comp8Tab$findChildElement(value = "//button[@id='goEnvSimilarity']")
- #  mess.button$clickElement()
-  
-  
-})
+# test_that("C7 Module Map Prediction: ", {
+#   field.map <- comp7Tab$findChildElement(value = "//input[@type='radio' and @value='map']")
+#   field.map$clickElement()
+#   button.mapPreds <- remDr$findElement(using = 'id', value = 'goMapPreds')
+#   button.mapPreds$clickElement()
+#   field.logistic <- comp7Tab$findChildElement(value = "//input[@type='radio' and  @value='logistic']")
+#   field.logistic$clickElement()
+#   plot.button=comp7Tab$findChildElement(value = "//button[@id='goMapPreds']")
+#   plot.button$clickElement()
+#   # NEED TO READ LOG, BUT CURRENTLY NOTHING PRINTED FOR MAP
+#   logText <- logTextLines()
+#   logText <- logText[length(logText)]
+#   expect_equal(logText, "> Maxent ran successfully and output evaluation results for 3 models.")
+#   #CM: well, its working at least, but with no printout, i think we just move on and build a test that relies on this having worked. I left this in there because if some error were to happen, it'd print something else so at least with this we know an error didn't print to the log.
+#   
+# })
+# 
+# test_that("C8 Projection: ", {
+#   # switch to comp8
+#   comp8Tab$clickElement()
+#   
+#   # project to new time
+#   projectTime <- comp8Tab$findChildElement(value = "//input[@type='radio' and @value='projTime']")
+#   projectTime$clickElement()
+#   
+#   ## CM: JAMIE START HERE
+#   wc.select <- comp8Tab$findChildElement(value = "//div[@class='selectize-control shinyjs-resettable single']")
+#   time.select <- comp8Tab$findChildElement(value = "//div[@id='c8_projectTime-selTime']")
+#   ## End here
+# 
+#  #  gcm.select <- comp8Tab$findChildElement(value = "//div[@class='selectize-input items not-full has-options']")
+#  #  gcm.select <- comp8Tab$findChildElement(value = "//input[@placeholder='Select GCM']")
+#  #  <input autocomplete="off" tabindex="" placeholder="Select GCM" style="width: 77px;" type="text">
+#  # 
+#  #  time.select$clickElement()
+#  #  time2050 <- comp8Tab$findChildElement(value = paste0("//div[@data-value='10' and @class='option']"))
+#  # # <div class="selectize-input items not-full has-options" style=""><input autocomplete="off" tabindex="" placeholder="Select period" style="width: 88px; opacity: 1; position: relative; left: 0px;" type="text"></div>
+#  #    
+#  #  time <- comp8Tab$findChildElement(value = paste0("//div[@data-value='50' and @class='selectize-input items has-options full has-items']"))
+#  #  time$clickElement()  
+#  #  
+#  #  # test mess
+#  #  mess <- comp8Tab$findChildElement(value = "//input[@type='radio' and @value='mess']")
+#  #  mess$clickElement()
+#  #  mess.button=comp8Tab$findChildElement(value = "//button[@id='goEnvSimilarity']")
+#  #  mess.button$clickElement()
+#   
+#   
+# })
 # Close the connection
 remDr$close()
