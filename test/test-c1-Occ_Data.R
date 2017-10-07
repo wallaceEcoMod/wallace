@@ -1,9 +1,9 @@
 context("component_1_Occ_Data")
+# test_dir('/Users/musasabi/Documents/github/wallace/test', filter = 'c1', reporter = "Tap")
 
 # Load the package
 library(RSelenium)
 library(testthat)
-# test_dir('/Users/musasabi/Documents/github/wallace/test', filter = 'mod1', reporter = "Tap")
 
 # Connect to the app (open another rstudio and run_wallace())
 remDr <- remoteDriver() 
@@ -13,7 +13,6 @@ appURL <- "http://127.0.0.1:5556"
 # move to Component 1
 remDr$navigate(appURL)
 # necessary for waiting for db query to load
-remDr$setImplicitWaitTimeout(milliseconds = 100000)
 compTabs <- remDr$findElements("css selector", ".nav a")
 compTabLabels <- sapply(compTabs, function(x){x$getElementText()})
 comp1Tab <- compTabs[[which(compTabLabels == "1 Occ Data")]]  
@@ -27,8 +26,6 @@ test_that("Component 1 Module Query Database: Radio Buttons", {
   initState <- field.gbif$isElementSelected()[[1]]
   field.gbif$clickElement()
   changeState <- field.gbif$isElementSelected()[[1]]
-  expect_is(initState, "logical")  
-  expect_is(changeState, "logical")  
   expect_true(initState == changeState)  
   
   # click Vertnet radio button
@@ -36,8 +33,6 @@ test_that("Component 1 Module Query Database: Radio Buttons", {
   initState <- field.vnet$isElementSelected()[[1]]
   field.vnet$clickElement()
   changeState <- field.vnet$isElementSelected()[[1]]
-  expect_is(initState, "logical")  
-  expect_is(changeState, "logical")  
   expect_false(initState == changeState)  
   
   #click BISON radio button
@@ -45,12 +40,19 @@ test_that("Component 1 Module Query Database: Radio Buttons", {
   initState <- field.bison$isElementSelected()[[1]]
   field.bison$clickElement()
   changeState <- field.bison$isElementSelected()[[1]]
-  expect_is(initState, "logical")  
-  expect_is(changeState, "logical")  
   expect_false(initState == changeState)  
   
   # switch back to gbif
   field.gbif$clickElement()
+})
+
+test_that("Component 1 Module Query Database: Text Input", {
+  field <- remDr$findElement('id', "c1_queryDb-spName")
+  field$clickElement()
+  field$clearElement()
+  field$sendKeysToElement(list("Tremarctos ornatus"))
+  val <- field$getElementAttribute('value')[[1]]
+  expect_equal(val, "Tremarctos ornatus")
 })
 
 test_that("Component 1 Module Query Database: Slider", {
@@ -60,25 +62,24 @@ test_that("Component 1 Module Query Database: Slider", {
   expect_equal(sliderDim$height, 4)
 })
 
+test_that("Component 1 Module Query Database: Buttons", {
+  button <- remDr$findElement('id', "goDbOccs")
+  expect_true(button$isElementDisplayed()[[1]])
+  
+  button <- remDr$findElement('id', "dlDbOccs")
+  expect_true(button$isElementDisplayed()[[1]])
+})
+
+test_that("Component 1 Module User-specified: Input", {
+  field.userOccs <- comp1Tab$findChildElement(value = "//input[@type='radio' and @value='user']")
+  field.userOccs$clickElement()
+  input <- remDr$findElement('class', 'input-group')
+  expect_true(input$isElementDisplayed()[[1]])
+})
+
 test_that("Component 1 Module User-specified: Buttons", {
-  #click User points button 
-  field <- comp1Tab$findChildElement(value = "//input[@type='radio' and @value='user']")
-  initState <- field$isElementSelected()[[1]]
-  field$clickElement()
-  
-  field <- comp1Tab$findChildElement(value = "//input[@id='c1_userOccs-userCSV']")
-  initState <- field$isElementSelected()[[1]]
-  field$clickElement()
-  changeState <- field$isElementSelected()[[1]]
-  expect_is(initState, "logical")
-  expect_is(changeState, "logical")
-  
-  field <- comp1Tab$findChildElement(value = "//button[@type='button' and @id='goUserOccs']")
-  initState <- field$isElementSelected()[[1]]
-  field$clickElement()
-  changeState <- field$isElementSelected()[[1]]
-  expect_is(initState, "logical")
-  expect_is(changeState, "logical")
+  button <- remDr$findElement('id', "goUserOccs")
+  expect_true(button$isElementDisplayed()[[1]])
 })
 
 # Close the connection
