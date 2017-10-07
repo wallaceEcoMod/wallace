@@ -21,8 +21,8 @@ comp1Tab <- compTabs[[which(compTabLabels == "1 Occ Data")]]
 comp1Tab$clickElement()
 
 # Here if the app contains the correct tabs and their respective names.
-test_that("Component 1 Module Query Database: Buttons", {  
-  # click gbif button
+test_that("Component 1 Module Query Database: Radio Buttons", {  
+  # click gbif radio button
   field.gbif <- comp1Tab$findChildElement(value = "//input[@type='radio' and @value='gbif']")
   initState <- field.gbif$isElementSelected()[[1]]
   field.gbif$clickElement()
@@ -31,7 +31,7 @@ test_that("Component 1 Module Query Database: Buttons", {
   expect_is(changeState, "logical")  
   expect_true(initState == changeState)  
   
-  # click Vertnet button
+  # click Vertnet radio button
   field.vnet <- comp1Tab$findChildElement(value = "//input[@type='radio' and @value='vertnet']")
   initState <- field.vnet$isElementSelected()[[1]]
   field.vnet$clickElement()
@@ -40,7 +40,7 @@ test_that("Component 1 Module Query Database: Buttons", {
   expect_is(changeState, "logical")  
   expect_false(initState == changeState)  
   
-  #click BISON button (isn't this database defunded?)
+  #click BISON radio button
   field.bison <- comp1Tab$findChildElement(value = "//input[@type='radio' and @value='bison']")
   initState <- field.bison$isElementSelected()[[1]]
   field.bison$clickElement()
@@ -72,8 +72,6 @@ test_that("Component 1 Module User-specified: Buttons", {
   changeState <- field$isElementSelected()[[1]]
   expect_is(initState, "logical")
   expect_is(changeState, "logical")
-  # don't think the states should be different, so maybe not necessary here
-  # expect_false(initState == changeState)
   
   field <- comp1Tab$findChildElement(value = "//button[@type='button' and @id='goUserOccs']")
   initState <- field$isElementSelected()[[1]]

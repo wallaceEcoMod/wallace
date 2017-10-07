@@ -1,5 +1,6 @@
 
 context("component_2_Proccess_Occs")
+# test_dir('/Users/musasabi/Documents/github/wallace/test', filter = 'c2', reporter = "Tap")
 
 # Load the package
 library(RSelenium)
@@ -10,7 +11,7 @@ remDr <- remoteDriver() # use the right address by running code in test/run_wall
 remDr$open(silent = TRUE)
 appURL <- "http://127.0.0.1:5556" # use the right address by running code in test/run_wallace.r
 
-# move to Module 2
+# move to Component 2
 remDr$navigate(appURL)
 webElems <- remDr$findElements("css selector", ".nav a")
 appTabLabels <- sapply(webElems, function(x){x$getElementText()})
@@ -18,59 +19,80 @@ comp2Tab <- webElems[[which(appTabLabels == "2 Process Occs")]]
 # appCtrlLabels <- unlist(strsplit(appCtrlLabels[[1]], "\n"))
 comp2Tab$clickElement()
 
-
-# NOT DONE - can figure out how to get a list of buttons
-# test_that("Module 2 Buttons are Present", {  
-#   field <- comp2Tab$findChildElement(value = "//input[@class='btn btn-default action-button']")
-# })
-
-# test_that("Module 2 thinning controls are present", {  
-#   field <- comp2Tab$findChildElement(value = "//input[@type='radio' and @value='selpts']")
-#   field$clickElement()
-#   webElems <- remDr$findElements(value = "//input[@class='button'")
-#   
-#   (webElems <- field$findElements(value = "//input[@type='number' and @id='thinDist']"))
-#   (appCtrlLabels <- sapply(webElems, function(x){x$getElementText()}))
-#   # expect_equal(appCtrlLabels[[1]], "Select controls required:")  
-#   # expect_equal(appCtrlLabels[[2]], "selectInput")  
-#   # expect_equal(appCtrlLabels[[3]], "numericInput")  
-#   # expect_equal(appCtrlLabels[[4]], "dateRangeInput")  
-#   # expect_equal(appCtrlLabels[[5]], "sliderInput")  
-# })
-
-# Here if the app contains the correct tabs and their respective names.
-test_that("Module 2 Buttons Click", {  
+test_that("Component 2: Radio Buttons", {  
   
-  field <- comp2Tab$findChildElement(value = "//input[@type='radio' and @value='spthin']")
-  initState <- field$isElementSelected()[[1]]
-  field$clickElement()
-  changeState <- field$isElementSelected()[[1]]
+  # click Remove by ID radio button
+  field.remID <- comp2Tab$findChildElement(value = "//input[@type='radio' and @value='remID']")
+  initState <- field.remID$isElementSelected()[[1]]
+  field.remID$clickElement()
+  changeState <- field.remID$isElementSelected()[[1]]
   expect_is(initState, "logical")
   expect_is(changeState, "logical")
   expect_false(initState == changeState)
   
-  field <- comp2Tab$findChildElement(value = "//input[@type='radio' and @value='selpts']")
-  initState <- field$isElementSelected()[[1]]
-  field$clickElement()
-  changeState <- field$isElementSelected()[[1]]
+  # click Spatial Thin radio button
+  field.spthin <- comp2Tab$findChildElement(value = "//input[@type='radio' and @value='spthin']")
+  initState <- field.spthin$isElementSelected()[[1]]
+  field.spthin$clickElement()
+  changeState <- field.spthin$isElementSelected()[[1]]
   expect_is(initState, "logical")
   expect_is(changeState, "logical")
   expect_false(initState == changeState)
   
-  # subTitles <- sapply(webElem, function(x){x$getElementText()})
-  # subTitles <- sapply(webElem, function(x){x$getElementText()})
-   
+  # click Select Occs radio button
+  field.selOccs <- comp2Tab$findChildElement(value = "//input[@type='radio' and @value='selOccs']")
+  initState <- field.selOccs$isElementSelected()[[1]]
+  field.selOccs$clickElement()
+  changeState <- field.selOccs$isElementSelected()[[1]]
+  expect_is(initState, "logical")
+  expect_is(changeState, "logical")
+  expect_false(initState == changeState)
 })
 
+test_that("Component 2 Module Select Occurrences on Map: Buttons", {  
+  button <- remDr$findElement('id', "goSelectOccs")
+  expect_true(button$isElementDisplayed()[[1]])
+  
+  button <- remDr$findElement('id', "goResetOccs")
+  expect_true(button$isElementDisplayed()[[1]])
+  
+  button <- remDr$findElement('id', "dlProcOccs")
+  expect_true(button$isElementDisplayed()[[1]])
+})
 
-#webElem <- remDr$findElement("css selector")
+test_that("Component 2 Remove Occurrences by ID: Buttons", {
+  # switch to remID
+  field.remID <- comp2Tab$findChildElement(value = "//input[@type='radio' and @value='remID']")
+  field.remID$clickElement()
+  button <- remDr$findElement('id', "goRemoveByID")
+  expect_true(button$isElementDisplayed()[[1]])
+})
 
-#webElems <- remDr$findElements("id", "tabs")
-#remDr$mouseMoveToLocation(webElement = webElems[[1]])
+test_that("Component 2 Remove Occurrences by ID: Numeric Input", {
+  field <- remDr$findElement('id', "c2_removeByID-removeID")
+  field$clickElement()
+  field$clearElement()
+  field$sendKeysToElement(list("10"))
+  val <- field$getElementAttribute('value')[[1]]
+  expect_equal(val, "10")
+})
+  
+test_that("Component 2 Spatial Thin: Buttons", {
+  # switch to spthin
+  field.spthin <- comp2Tab$findChildElement(value = "//input[@type='radio' and @value='spthin']")
+  field.spthin$clickElement()
+  button <- remDr$findElement('id', "goThinOccs")
+  expect_true(button$isElementDisplayed()[[1]])
+})
 
-
-#initState <- webElems$isElementSelected()[[1]]
-
+test_that("Component 2 Spatial Thin: Numeric Input", {
+  field <- remDr$findElement('id', "c2_thinOccs-thinDist")
+  field$clickElement()
+  field$clearElement()
+  field$sendKeysToElement(list("10"))
+  val <- field$getElementAttribute('value')[[1]]
+  expect_equal(val, "10")
+})
 
 # Close the connection
 remDr$close()
