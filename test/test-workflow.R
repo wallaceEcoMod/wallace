@@ -41,6 +41,7 @@ Sys.sleep(1)
 # find different particular results tabs
 occsTblTab <- resultsTabs[[which(resultsTabLabels == "Occs Tbl")]]  
 resultsTblTab <- resultsTabs[[which(resultsTabLabels == "Results")]]  
+mapTab <- resultsTabs[[which(resultsTabLabels == "Map")]]  
 
 logTextLines <- function() {
   logContent <- remDr$findElement(using = "id", value = 'logContent')
@@ -86,7 +87,7 @@ test_that("C1 Module Query Database: DB Query Populates Data Table", {
 })
 
 
-test_that("C2 Module Spatial Thin: Spatially thin occurent locations", {
+test_that("C2 Module Spatial Thin: Spatially thin occurence locations", {
   # Move to Compenent 2
   comp2Tab$clickElement()
   
@@ -116,7 +117,61 @@ test_that("C2 Module Spatial Thin: Spatially thin occurent locations", {
   logText_split <- strsplit(logText, ' ')[[1]]
   nums <- logText_split[grep('[0-9]', logText_split)]
   expect_lt(as.numeric(nums[1]), 100)
+})
+
+
+test_that("C2 Module Select Occurences on Map: Choose occurence locations by polygon", {
+  # Move to Compenent 2
+  comp2Tab$clickElement()
   
+  # select Select Occurences on Map radio button 
+  field.selOccs <- comp2Tab$findChildElement(value = "//input[@type='radio' and @value='selOccs']")
+  initState <- field.selOccs$isElementSelected()[[1]]
+  field.selOccs$clickElement()
+
+  # select Map Results tab
+  mapTab$clickElement()
+  Sys.sleep(5)
+  
+  # select button to draw polygon
+  leaflet.draw <- remDr$findElement(using = 'class', value = 'leaflet-draw-draw-polygon')
+  leaflet.draw$clickElement()
+  
+  # define the map window
+  map.window <- remDr$findElement(using = 'id', value = 'map')
+  
+  if (browser == 'chrome') {
+    remDr$mouseMoveToLocation(webElement = map.window)
+    remDr$mouseMoveToLocation(-100, -200)
+    remDr$click()
+    remDr$mouseMoveToLocation(0, 150)
+    remDr$click()
+    remDr$mouseMoveToLocation(100, 0)
+    remDr$click()
+    remDr$mouseMoveToLocation(0, -150)
+    remDr$click()
+    remDr$mouseMoveToLocation(webElement = leaflet.draw)
+    remDr$mouseMoveToLocation(20, 0)
+    remDr$click()
+  }
+    
+  # select the button to Select Occurrences
+  button.selOccs <- remDr$findElement(using = 'id', value = 'goSelectOccs')
+  button.selOccs$clickElement()
+  Sys.sleep(5)
+  
+  # read current text in log box
+  logText <- logTextLines()
+  logText <- logText[length(logText)]
+  
+  # Get the number of records after thinning. This should be less than 100
+  logText_split <- strsplit(logText, ' ')[[1]]
+  # Remove entries before "Updated"
+  logText_split_shrt <- logText_split[which(logText_split == "Updated"):length(logText_split)]
+  nums <- logText_split_shrt[grep('[0-9]', logText_split_shrt)]
+  
+  # test that the number of points selected are fewer than the original number
+  expect_lt(as.numeric(nums[1]), 100)
 })
 
 
