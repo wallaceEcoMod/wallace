@@ -4,7 +4,7 @@ context("test-workflow")
 library(RSelenium)
 library(testthat)
 library(XML)
-# test_dir('/Users/musasabi/Documents/github/wallace/test', filter = 'mod1', reporter = "Tap")
+# test_dir('/Users/musasabi/Documents/github/wallace/test', filter = 'workflow', reporter = "Tap")
 
 # Connect to the app (open another rstudio and run_wallace())
 browser <- "chrome"
@@ -32,6 +32,7 @@ comp8Tab <- compTabs[[which(compTabLabels == "8 Project")]]
 
 # click component 1 tab
 comp1Tab$clickElement()
+Sys.sleep(5)
 
 # find results tabs and labels in results window
 resultsTabs <- remDr$findElements("css selector", ".nav a")
@@ -47,7 +48,6 @@ logTextLines <- function() {
 }
 
 test_that("C1 Module Query Database: DB Query Returns Specified Number of Records", {
-  Sys.sleep(10)
   # select GBIF radio button (for some reason the default selection does not register if you don't click it first)
   field.gbif <- comp1Tab$findChildElement(value = "//input[@type='radio' and @value='gbif']")
   initState <- field.gbif$isElementSelected()[[1]]
@@ -73,6 +73,7 @@ test_that("C1 Module Query Database: DB Query Returns Specified Number of Record
   
 test_that("C1 Module Query Database: DB Query Populates Data Table", {
   occsTblTab$clickElement()
+  Sys.sleep(5)
   # find occurrence data table
   occTbl.elem <- remDr$findElement(using = 'id', value = "occTbl")
   # read table
@@ -164,11 +165,11 @@ test_that("C5 Module Non-spatial partition: Random k-fold Partitions", {
   nFoldsField$sendKeysToElement(list('3'))
   partitionButton <- comp1Tab$findChildElement(value = "//button[@type='button' and @id='goPartNsp']")
   partitionButton$clickElement()
+  Sys.sleep(5)
   
   # read log box
   logText <- logTextLines()
   logText <- logText[length(logText)]
-  Sys.sleep(10)
   expect_equal(logText, "> Occurrences partitioned by random k-fold (k = 3 ).")
 })
 
@@ -196,7 +197,7 @@ test_that("C6 Module BIOCLIM: BIOCLIM Populates Data Table", {
   # CM gets: Error in resTbl[[2]] : subscript out of bounds
 })
 
-test_that("C7 Module BIOCLIM ENvelope Plot: Envelope Plot Displays", {
+test_that("C7 Module BIOCLIM Envelope Plot: Envelope Plot Displays", {
   # switch to comp7
   comp7Tab$clickElement()
   
@@ -209,6 +210,8 @@ test_that("C7 Module Map Prediction: BIOCLIM Map Plots", {
   field.map$clickElement()
   button.mapPreds <- remDr$findElement(using = 'id', value = 'goMapPreds')
   button.mapPreds$clickElement()
+  Sys.sleep(5)
+  
   logText <- logTextLines()
   logText <- logText[length(logText)]
   expect_equal(logText, "> BIOCLIM model prediction plotted.")
@@ -269,6 +272,8 @@ test_that("C7 Module Map Prediction: Maxent Maps Plot", {
   field.map$clickElement()
   button.mapPreds <- remDr$findElement(using = 'id', value = 'goMapPreds')
   button.mapPreds$clickElement()
+  Sys.sleep(5)
+  
   logText <- logTextLines()
   logText <- logText[length(logText)]
   expect_equal(logText, "> Maxent raw model prediction plotted.")
@@ -277,6 +282,8 @@ test_that("C7 Module Map Prediction: Maxent Maps Plot", {
   field.logistic$clickElement()
   plot.button=comp7Tab$findChildElement(value = "//button[@id='goMapPreds']")
   plot.button$clickElement()
+  Sys.sleep(5)
+  
   logText <- logTextLines()
   logText <- logText[length(logText)]
   expect_equal(logText, "> Maxent logistic model prediction plotted.")
@@ -285,6 +292,8 @@ test_that("C7 Module Map Prediction: Maxent Maps Plot", {
   field.cloglog$clickElement()
   plot.button=comp7Tab$findChildElement(value = "//button[@id='goMapPreds']")
   plot.button$clickElement()
+  Sys.sleep(5)
+  
   logText <- logTextLines()
   logText <- logText[length(logText)]
   expect_equal(logText, "> Maxent cloglog model prediction plotted.")
