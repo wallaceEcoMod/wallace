@@ -1,4 +1,3 @@
-
 context("component_3_Env_Data")
 
 # Load the package
@@ -10,30 +9,21 @@ remDr <- remoteDriver()
 remDr$open(silent = TRUE)
 appURL <- "http://127.0.0.1:5556"
 
-### Making the component 1 ###
-# move to Component 1
 remDr$navigate(appURL)
-# necessary for waiting for db query to load
-remDr$setImplicitWaitTimeout(milliseconds = 100000)
 compTabs <- remDr$findElements("css selector", ".nav a")
-compTabLabels <- sapply(compTabs, function(x){x$getElementText()})
-####################################
-
+compTabLabels <- sapply(compTabs, function(x) x$getElementText())
 # Move to Component 3
 comp3Tab <- compTabs[[which(compTabLabels == "3 Env Data")]]    
 comp3Tab$clickElement()
 
-
-test_that("Component 3 Module Worldclim Buttons Click", {  
-  #skip_on_cran()
-  # Initial state is WorldClim Bioclims
+test_that("Component 3 Module Worldclim: Radio Buttons", {  
   field.wcbc <- comp3Tab$findChildElement(value = "//input[@type='radio' and @value='wcbc']")
   initState <- field.wcbc$isElementSelected()[[1]]
   field.wcbc$clickElement()
   changeState <- field.wcbc$isElementSelected()[[1]]
   expect_is(initState, "logical")  
   expect_is(changeState, "logical")  
-  expect_true(initState == changeState)  
+  expect_true(initState == changeState)
   
   # Click User-specified
   field.user <- comp3Tab$findChildElement(value = "//input[@type='radio' and @value='user' and @name='envDataSel']")
@@ -46,11 +36,14 @@ test_that("Component 3 Module Worldclim Buttons Click", {
   
   # Return
   field.wcbc$clickElement()
-  
 }) 
 
+test_that("Component 3 Module Worldclim: Radio Buttons", {  
+  button <- remDr$findElement('id', "goEnvData")
+  expect_true(button$isElementDisplayed()[[1]])
+})
 
-test_that("Component 3 Module Worldclim select resolution", {  
+test_that("Component 3 Module Worldclim: Select", {  
   #skip_on_cran()
   drop.menu <- comp3Tab$findChildElement(value = "//div[@class='selectize-control shinyjs-resettable single']")
   
@@ -83,7 +76,7 @@ test_that("Component 3 Module Worldclim select resolution", {
   select_resol("'10'", delete = FALSE) # Leave the 10min selected for the next tests
 })
 
-test_that("Component 3 Module Worldclim specify variables", {  
+test_that("Component 3 Module Worldclim: Checkboxes", {  
   #skip_on_cran()
   # Check the box
   check.spec <- comp3Tab$findChildElement(value = "//input[@id='c3_wcBioclims-bcSelChoice']")

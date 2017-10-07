@@ -10,13 +10,11 @@ remDr <- remoteDriver()
 remDr$open(silent = TRUE)
 appURL <- "http://127.0.0.1:5556"
 
-# move to Component 1
 remDr$navigate(appURL)
-# necessary for waiting for db query to load
 compTabs <- remDr$findElements("css selector", ".nav a")
-compTabLabels <- sapply(compTabs, function(x){x$getElementText()})
+compTabLabels <- sapply(compTabs, function(x) x$getElementText())
+# Move to Component 3
 comp1Tab <- compTabs[[which(compTabLabels == "1 Occ Data")]]  
-# appCtrlLabels <- unlist(strsplit(appCtrlLabels[[1]], "\n"))
 comp1Tab$clickElement()
 
 # Here if the app contains the correct tabs and their respective names.

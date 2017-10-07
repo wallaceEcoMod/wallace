@@ -9,14 +9,13 @@ library(testthat)
 # Connect to the app (open another rstudio and run_wallace())
 remDr <- remoteDriver() # use the right address by running code in test/run_wallace.r
 remDr$open(silent = TRUE)
-appURL <- "http://127.0.0.1:5556" # use the right address by running code in test/run_wallace.r
+appURL <- "http://127.0.0.1:5556"
 
 # move to Component 2
 remDr$navigate(appURL)
-webElems <- remDr$findElements("css selector", ".nav a")
-appTabLabels <- sapply(webElems, function(x){x$getElementText()})
-comp2Tab <- webElems[[which(appTabLabels == "2 Process Occs")]]  
-# appCtrlLabels <- unlist(strsplit(appCtrlLabels[[1]], "\n"))
+compTabs <- remDr$findElements("css selector", ".nav a")
+compTabLabels <- sapply(compTabs, function(x) x$getElementText())
+comp2Tab <- webElems[[which(compTabLabels == "2 Process Occs")]]  
 comp2Tab$clickElement()
 
 test_that("Component 2: Radio Buttons", {  
