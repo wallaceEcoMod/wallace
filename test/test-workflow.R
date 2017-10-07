@@ -85,6 +85,41 @@ test_that("C1 Module Query Database: DB Query Populates Data Table", {
   expect_equal(occTbl$DataTables_Table_0$name[1], factor('Puma concolor'))
 })
 
+
+test_that("C2 Module Spatial Thin: Spatially thin occurent locations", {
+  # Move to Compenent 2
+  comp2Tab$clickElement()
+  
+  # select Spatial Thin radio button 
+  field.spthin <- comp2Tab$findChildElement(value = "//input[@type='radio' and @value='spthin']")
+  initState <- field.spthin$isElementSelected()[[1]]
+  field.spthin$clickElement()
+  
+  # find textInput field for Thinning distance and click
+  #db.search <- comp2Tab$findChildElement(value = "//input[@type='numeric']")
+  db.search <- comp2Tab$findChildElement(value = "//input[@id='c2_thinOccs-thinDist']")
+  db.search$clickElement()
+  
+  # write a thinning distance
+  db.search$sendKeysToElement(list("10"))
+  
+  # find button and click to thin occs
+  db.button <- comp2Tab$findChildElement(value = "//button[@id='goThinOccs']")
+  db.button$clickElement()
+  Sys.sleep(10)
+  
+  # read current text in log box
+  logText <- logTextLines()
+  logText <- logText[length(logText)]
+
+  # Get the number of records after thinning. This should be less than 100
+  logText_split <- strsplit(logText, ' ')[[1]]
+  nums <- logText_split[grep('[0-9]', logText_split)]
+  expect_lt(as.numeric(nums[1]), 100)
+  
+})
+
+
 test_that("C3 Module Worldclim: Downloads Specified Bioclim Rasters", {
   # Move to Component 3
   comp3Tab$clickElement()
