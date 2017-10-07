@@ -37,6 +37,7 @@ Sys.sleep(5)
 # find results tabs and labels in results window
 resultsTabs <- remDr$findElements("css selector", ".nav a")
 resultsTabLabels <- sapply(resultsTabs, function(x){x$getElementText()})
+Sys.sleep(1)
 # find different particular results tabs
 occsTblTab <- resultsTabs[[which(resultsTabLabels == "Occs Tbl")]]  
 resultsTblTab <- resultsTabs[[which(resultsTabLabels == "Results")]]  
@@ -70,7 +71,8 @@ test_that("C1 Module Query Database: DB Query Returns Specified Number of Record
   nums <- logText_split[grep('[0-9]', logText_split)]
   expect_equal(as.numeric(nums[1]), 100)
 })
-  
+
+# CM: some times this fails the first time i run it and then rerunning is fine. not clear if we need a Sys.sleep() but doesn't seem like anything should be slow...
 test_that("C1 Module Query Database: DB Query Populates Data Table", {
   occsTblTab$clickElement()
   Sys.sleep(5)
@@ -91,6 +93,7 @@ test_that("C3 Module Worldclim: Downloads Specified Bioclim Rasters", {
   wc.select <- comp3Tab$findChildElement(value = "//div[@class='selectize-control shinyjs-resettable single']")
   wc.select$clickElement()
   res10m <- comp3Tab$findChildElement(value = paste0("//div[@data-value='10' and @class='option']"))
+  #CM: In chrome,this click isn't working. it worked fine in firefox...
   res10m$clickElement()
   
   #skip_on_cran()
@@ -105,7 +108,7 @@ test_that("C3 Module Worldclim: Downloads Specified Bioclim Rasters", {
   }
   wc.button <- comp3Tab$findChildElement(value = "//button[@id='goEnvData']")  
   wc.button$clickElement()
-  Sys.sleep(10)
+  Sys.sleep(15)
   
   # read current text in log box
   logText <- logTextLines()
