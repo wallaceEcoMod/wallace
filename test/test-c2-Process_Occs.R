@@ -19,7 +19,6 @@ comp2Tab <- webElems[[which(compTabLabels == "2 Process Occs")]]
 comp2Tab$clickElement()
 
 test_that("Component 2: Radio Buttons", {  
-  
   # click Remove by ID radio button
   field.remID <- comp2Tab$findChildElement(value = "//input[@type='radio' and @value='remID']")
   initState <- field.remID$isElementSelected()[[1]]
