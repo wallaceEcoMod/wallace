@@ -4,6 +4,7 @@ context("component_1_Occ_Data")
 # Load the package
 library(RSelenium)
 library(testthat)
+source('test-functions.R')
 
 # Connect to the app (open another rstudio and run_wallace())
 remDr <- remoteDriver() 
@@ -21,24 +22,15 @@ comp1Tab$clickElement()
 test_that("Component 1 Module Query Database: Radio Buttons", {  
   # click gbif radio button
   field.gbif <- comp1Tab$findChildElement(value = "//input[@type='radio' and @value='gbif']")
-  initState <- field.gbif$isElementSelected()[[1]]
-  field.gbif$clickElement()
-  changeState <- field.gbif$isElementSelected()[[1]]
-  expect_true(initState == changeState)  
+  clickButton(field.gbif)
   
   # click Vertnet radio button
   field.vnet <- comp1Tab$findChildElement(value = "//input[@type='radio' and @value='vertnet']")
-  initState <- field.vnet$isElementSelected()[[1]]
-  field.vnet$clickElement()
-  changeState <- field.vnet$isElementSelected()[[1]]
-  expect_false(initState == changeState)  
+  clickButton(field.vnet)
   
   #click BISON radio button
   field.bison <- comp1Tab$findChildElement(value = "//input[@type='radio' and @value='bison']")
-  initState <- field.bison$isElementSelected()[[1]]
-  field.bison$clickElement()
-  changeState <- field.bison$isElementSelected()[[1]]
-  expect_false(initState == changeState)  
+  clickButton(field.bison)
   
   # switch back to gbif
   field.gbif$clickElement()

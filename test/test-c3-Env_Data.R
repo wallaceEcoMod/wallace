@@ -1,8 +1,10 @@
 context("component_3_Env_Data")
+# test_dir('/Users/musasabi/Documents/github/wallace/test', filter = 'c3', reporter = "Tap")
 
 # Load the package
 library(RSelenium)
 library(testthat)
+source('test-functions.R')
 
 # Connect to the app (open another rstudio and run_wallace())
 remDr <- remoteDriver() 
@@ -18,27 +20,17 @@ comp3Tab$clickElement()
 
 test_that("Component 3 Module Worldclim: Radio Buttons", {  
   field.wcbc <- comp3Tab$findChildElement(value = "//input[@type='radio' and @value='wcbc']")
-  initState <- field.wcbc$isElementSelected()[[1]]
-  field.wcbc$clickElement()
-  changeState <- field.wcbc$isElementSelected()[[1]]
-  expect_is(initState, "logical")  
-  expect_is(changeState, "logical")  
-  expect_true(initState == changeState)
+  clickButton(field.wcbc)
   
   # Click User-specified
   field.user <- comp3Tab$findChildElement(value = "//input[@type='radio' and @value='user' and @name='envDataSel']")
-  initState <- field.user$isElementSelected()[[1]]
-  field.user$clickElement()
-  changeState <- field.user$isElementSelected()[[1]]
-  expect_is(initState, "logical")  
-  expect_is(changeState, "logical")  
-  expect_false(initState == changeState)  
+  clickButton(field.user)
   
   # Return
   field.wcbc$clickElement()
 }) 
 
-test_that("Component 3 Module Worldclim: Radio Buttons", {  
+test_that("Component 3 Module Worldclim: Buttons", {  
   button <- remDr$findElement('id', "goEnvData")
   expect_true(button$isElementDisplayed()[[1]])
 })
