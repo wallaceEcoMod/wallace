@@ -41,7 +41,6 @@ Sys.sleep(1)
 # find different particular results tabs
 occsTblTab <- resultsTabs[[which(resultsTabLabels == "Occs Tbl")]]  
 resultsTblTab <- resultsTabs[[which(resultsTabLabels == "Results")]]  
-mapTab <- resultsTabs[[which(resultsTabLabels == "Map")]]  
 
 logTextLines <- function() {
   logContent <- remDr$findElement(using = "id", value = 'logContent')
@@ -401,15 +400,20 @@ test_that("C8 Module Project to New Extent: Projection Plots", {
     remDr$mouseMoveToLocation(webElement = map.window)
     remDr$mouseMoveToLocation(110, 0)
     remDr$click()
+    Sys.sleep(1)
     remDr$mouseMoveToLocation(0, 50)
     remDr$click()
+    Sys.sleep(1)
     remDr$mouseMoveToLocation(50, 0)
     remDr$click()
+    Sys.sleep(1)
     remDr$mouseMoveToLocation(0, -50)
     remDr$click()
+    Sys.sleep(1)
     remDr$mouseMoveToLocation(webElement = leaflet.draw)
     remDr$mouseMoveToLocation(20, 0)
     remDr$click()
+    Sys.sleep(1)
     
     button.projArea <- remDr$findElement(using = 'id', value = 'goProjectArea')
     button.projArea$clickElement()
@@ -428,26 +432,24 @@ test_that("C8 Module Project to New Time: Projection Plots", {
   projectTime <- comp8Tab$findChildElement(value = "//input[@type='radio' and @value='projTime']")
   projectTime$clickElement()
 
-  # select.time <- remDr$findElement("css", "#c8_projectTime-selTime")
-  # select.time$clickElement()
-  
-  select.time <- remDr$findElement(value='//*[@class="form-group shiny-input-container"]')
-  select.time2 <- select.time$findChildElement(value='//*[@class="selectize-control shinyjs-resettable single"]')
-  
-  select.time2$isElementDisplayed()
+  # select ids that are "not full"
+  path <- "//input[@placeholder='Select period']"
+  select.time <- remDr$findElement(value = path)
   select.time$clickElement()
-  sel2050 <- remDr$findElement(value='//*[@id="tab-1219-11"]/div[1]/div/div[9]/div[3]/div[2]/div/div/div[2]/div/div[1]')
-  sel2050$clickElement()
-
-    select.gcm <- remDr$findElement(value='//*[@id="c8_projectTime-selGCMui"]/div/div/div/div[1]')
-  select.gcm$clickElement()
-  selCCSM <- remDr$findElement(value='//*[@id="c8_projectTime-selGCMui"]/div/div/div/div[2]/div/div[3]')
-  selCCSM$clickElement()
+  yr2070 <- comp8Tab$findChildElement(value = paste0("//div[@data-value='70' and @class='option']"))
+  yr2070$clickElement()
   
-  select.rcp <- remDr$findElement(value='//*[@id="tab-1219-11"]/div[1]/div/div[9]/div[3]/div[4]/div/div/div[1]')
+  path <- "//input[@placeholder='Select GCM']"
+  select.gcm <- remDr$findElement(value = path)
+  select.gcm$clickElement()
+  gcmCCSM <- comp8Tab$findChildElement(value = paste0("//div[@data-value='CC' and @class='option']"))
+  gcmCCSM$clickElement()
+  
+  path <- "//input[@placeholder='Select RCP']"
+  select.rcp <- remDr$findElement(value = path)
   select.rcp$clickElement()
-  sel8.5 <- remDr$findElement(value='//*[@id="tab-1219-11"]/div[1]/div/div[9]/div[3]/div[4]/div/div/div[2]/div/div[4]')
-  sel8.5$clickElement()
+  rcp85 <- comp8Tab$findChildElement(value = paste0("//div[@data-value='85' and @class='option']"))
+  rcp85$clickElement()
   
   button.projTime <- remDr$findElement(using = 'id', value = 'goProjectTime')
   button.projTime$clickElement()

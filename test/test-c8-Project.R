@@ -80,30 +80,39 @@ test_that("Component 8 Module Project to New Time: Selects", {
   # LIKELY BC WE GENERATE MULTIPLE ONES, BUT WHEN USING getElementAttribute(),
   # NOTHING IS UNIQUE BETWEEN THEM, SO IMPOSSIBLE TO SELECT WHICH
   
-  select.time <- drop.menus.notFull[[which(selects.notFull.ids == "c8_projectTime-selTime")]]
+  path <- "//input[@placeholder='Select period']"
+  select.time <- remDr$findElement(value = path)
   select.time$clickElement()
   selectDropdownOption(comp8Tab, "'70'")
+  path <- "//div[@data-value='70']"
+  select.time <- remDr$findElement(value = path)
   select.time$clickElement()
   selectDropdownOption(comp8Tab, "'50'")
   
-  select.rcp <- drop.menus.notFull[[5]]
-  select.rcp$clickElement()
-  rcps <- c("'45'", "'26'", "'60'", "'85'")
-  for (i in rcps) {
-    selectDropdownOption(comp8Tab, i)
-    select.rcp$clickElement()
-  }
-  select.rcp$clickElement()
-  
-  select.gcm <- drop.menus.notFull[[3]]
+  path <- "//input[@placeholder='Select GCM']"
+  select.gcm <- remDr$findElement(value = path)
   select.gcm$clickElement()
   gcms <- c("'BC'","'AC'","'CC'","'CE'","'CN'","'GF'","'GD'","'GS'","'HD'","'HG'",
             "'HE'","'IN'","'IP'","'MI'","'MR'","'MC'","'MP'","'MG'","'NO'")
   for (i in gcms) {
     selectDropdownOption(comp8Tab, i)
+    path <- paste0("//div[@data-value=", i, "]")
+    select.gcm <- remDr$findElement(value = path)
     select.gcm$clickElement()
   }
   select.gcm$clickElement()
+  
+  path <- "//input[@placeholder='Select RCP']"
+  select.rcp <- remDr$findElement(value = path)
+  select.rcp$clickElement()
+  rcps <- c("'45'", "'26'", "'60'", "'85'")
+  for (i in rcps) {
+    selectDropdownOption(comp8Tab, i)
+    path <- paste0("//div[@data-value=", i, "]")
+    select.rcp <- remDr$findElement(value = path)
+    select.rcp$clickElement()
+  }
+  select.rcp$clickElement()
 })
 
 test_that("Component 8 Calculate Environmental Similarity: Buttons", {
