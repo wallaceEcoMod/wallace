@@ -1,0 +1,5 @@
+language: r
+r_packages: 
+  - RSelenium
+  - testthat
+  - XML

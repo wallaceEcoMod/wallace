@@ -1,4 +1,6 @@
 context("test-workflow")
+skip_on_travis()
+# skip_on_cran()
 
 # Load the package
 library(RSelenium)
@@ -232,7 +234,7 @@ test_that("C4 Module Select Study Region: Rasters Clipped and Masked", {
 test_that("C4 Module Select Study Region: Background Points Generated", {
   logText <- logTextLines()
   logText <- logText[length(logText)]
-  expect_equal(logText, "> Random background points sampled (n = 10000 : 4.71 % of cells with values).")
+  expect_equal(logText, "> Random background points sampled (n = 10000 : 17 % of cells with values).")
 })
                                 
 test_that("C5 Module Non-spatial partition: Random k-fold Partitions", {
@@ -421,7 +423,6 @@ test_that("C8 Module Project to New Extent: Projection Plots", {
 })
 
 test_that("C8 Module Project to New Time: Projection Plots", {
-  
   # project to new time
   projectTime <- comp8Tab$findChildElement(value = "//input[@type='radio' and @value='projTime']")
   projectTime$clickElement()
@@ -447,23 +448,24 @@ test_that("C8 Module Project to New Time: Projection Plots", {
   
   button.projTime <- remDr$findElement(using = 'id', value = 'goProjectTime')
   button.projTime$clickElement()
+  Sys.sleep(5)
   
   logText <- logTextLines()
   logText <- logText[length(logText)]
-  expect_equal(logText, "Projected to 2070 for GCM CCSM under RCP 8.5.")
+  expect_equal(logText, "> Projected to 2070 for GCM CCSM4 under RCP 8.5 .")
 })
 
-
-  ## End here
-
- #
- #  # test mess
- #  mess <- comp8Tab$findChildElement(value = "//input[@type='radio' and @value='mess']")
- #  mess$clickElement()
- #  mess.button=comp8Tab$findChildElement(value = "//button[@id='goEnvSimilarity']")
- #  mess.button$clickElement()
-
-
+test_that("C8 Module Calculate Environmental Similarity", {
+   mess <- comp8Tab$findChildElement(value = "//input[@type='radio' and @value='mess']")
+   mess$clickElement()
+   mess.button=comp8Tab$findChildElement(value = "//button[@id='goEnvSimilarity']")
+   mess.button$clickElement()
+   Sys.sleep(5)
+   
+   logText <- logTextLines()
+   logText <- logText[length(logText)]
+   expect_equal(logText, "> Generated MESS map for 2070 for GCM CCSM4 under RCP 8.5 .")
 })
+   
 # Close the connection
 remDr$close()
