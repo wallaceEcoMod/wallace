@@ -137,15 +137,20 @@ test_that("C2 Module Select Occurences on Map: Choose occurence locations by pol
     remDr$mouseMoveToLocation(webElement = map.window)
     remDr$mouseMoveToLocation(-100, -200)
     remDr$click()
+    Sys.sleep(2)
     remDr$mouseMoveToLocation(0, 150)
     remDr$click()
+    Sys.sleep(2)
     remDr$mouseMoveToLocation(100, 0)
     remDr$click()
+    Sys.sleep(2)
     remDr$mouseMoveToLocation(0, -150)
     remDr$click()
+    Sys.sleep(2)
     remDr$mouseMoveToLocation(webElement = leaflet.draw)
     remDr$mouseMoveToLocation(20, 0)
     remDr$click()
+    Sys.sleep(2)
   }
     
   # select the button to Select Occurrences
@@ -229,17 +234,6 @@ test_that("C4 Module Select Study Region: Background Points Generated", {
   logText <- logText[length(logText)]
   expect_equal(logText, "> Random background points sampled (n = 10000 : 4.71 % of cells with values).")
 })
-           
-# CM: getting this error consistently which seems to be in the actual kfold code
-# Warning: Error in if: missing value where TRUE/FALSE needed
-# Stack trace (innermost first):
-#   80: singlefold
-# 79: kfold
-# 78: ENMeval::get.randomkfold
-# 77: <reactive> [modules/mod_c5_partitionNonSpat.R#32]
-#                 66: partNsp.call
-#                 65: observeEventHandler [/Library/Frameworks/R.framework/Versions/3.3/Resources/library/wallace/shiny/server.R#458]
-#                                          1: shiny::runApp
                                 
 test_that("C5 Module Non-spatial partition: Random k-fold Partitions", {
   # switch to comp5 tab
@@ -454,18 +448,14 @@ test_that("C8 Module Project to New Time: Projection Plots", {
   button.projTime <- remDr$findElement(using = 'id', value = 'goProjectTime')
   button.projTime$clickElement()
   
+  logText <- logTextLines()
+  logText <- logText[length(logText)]
+  expect_equal(logText, "Projected to 2070 for GCM CCSM under RCP 8.5.")
+})
+
+
   ## End here
 
- #  gcm.select <- comp8Tab$findChildElement(value = "//div[@class='selectize-input items not-full has-options']")
- #  gcm.select <- comp8Tab$findChildElement(value = "//input[@placeholder='Select GCM']")
- #  <input autocomplete="off" tabindex="" placeholder="Select GCM" style="width: 77px;" type="text">
- #
- #  time.select$clickElement()
- #  time2050 <- comp8Tab$findChildElement(value = paste0("//div[@data-value='10' and @class='option']"))
- # # <div class="selectize-input items not-full has-options" style=""><input autocomplete="off" tabindex="" placeholder="Select period" style="width: 88px; opacity: 1; position: relative; left: 0px;" type="text"></div>
- #
- #  time <- comp8Tab$findChildElement(value = paste0("//div[@data-value='50' and @class='selectize-input items has-options full has-items']"))
- #  time$clickElement()
  #
  #  # test mess
  #  mess <- comp8Tab$findChildElement(value = "//input[@type='radio' and @value='mess']")
