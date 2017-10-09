@@ -15,7 +15,7 @@ appURL <- "http://127.0.0.1:5556"
 remDr$navigate(appURL)
 compTabs <- remDr$findElements("css selector", ".nav a")
 compTabLabels <- sapply(compTabs, function(x) x$getElementText())
-comp2Tab <- webElems[[which(compTabLabels == "2 Process Occs")]]  
+comp2Tab <- compTabs[[which(compTabLabels == "2 Process Occs")]]  
 comp2Tab$clickElement()
 
 test_that("Component 2: Radio Buttons", {  
