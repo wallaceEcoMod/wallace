@@ -11,7 +11,7 @@ clickButton <- function(webElem) {
 # test that select dropdown choices are correctly selected 
 # for dropdowns with the initial "data-value" class "option"
 selectDropdownOption <- function(tab, dataValue) {
-  cElem <- tab$findChildElement(value = paste0("//div[@data-value=", dataValue, "and @class='option']"))
+  cElem <- tab$findChildElement(value = paste0("//div[@data-value=", dataValue, " and @class='option']"))
   initState <- cElem$isElementSelected()[[1]]
   expect_false(initState)
   cElem$clickElement()

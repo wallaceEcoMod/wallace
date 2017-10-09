@@ -63,7 +63,7 @@ test_that("Component 7 BIOCLIM Envelope Plots: Inputs", {
   numInputTest(input.bcProb, c("0.9","0.95","1","0.8"))
 })
 
-test_that("Component 7 BIOCLIM Envelope Plots: Download Button", { 
+test_that("Component 7 BIOCLIM Envelope Plots: Buttons", { 
   button <- remDr$findElement('id', "c7_bcPlots-dlBcPlot")
   expect_true(button$isElementDisplayed()[[1]])
 })
@@ -75,12 +75,12 @@ test_that("Component 7 Maxent Evaluation Plots: Select", {
   selectDropdownItem(comp7Tab, "'avg.test.AUC'", dataValues)
 })
 
-test_that("Component 7 Maxent Evaluation Plots: Download Button", { 
+test_that("Component 7 Maxent Evaluation Plots: Buttons", { 
   button <- remDr$findElement('id', "c7_mxEvalPlots-dlMxEvalPlot")
   expect_true(button$isElementDisplayed()[[1]])
 })
 
-test_that("Component 7 Plot Response Curves: Download Button", { 
+test_that("Component 7 Plot Response Curves: Buttons", { 
   field.resp$clickElement()
   button <- remDr$findElement('id', "c7_respPlots-dlRespPlot")
   expect_true(button$isElementDisplayed()[[1]])
@@ -97,7 +97,7 @@ test_that("Component 7 Map Prediction: Select", {
   selectDropdownItem(comp7Tab, "'noThresh'", dataValues)
 })
 
-test_that("Component 7 Map Prediction: Download Button", { 
+test_that("Component 7 Map Prediction: Buttons", { 
   button <- remDr$findElement('id', "goMapPreds")
   expect_true(button$isElementDisplayed()[[1]])
   button <- remDr$findElement('id', "dlPred")
