@@ -35,7 +35,7 @@ selectOccs_MOD <- function(input, output, session, rvs) {
     occs.sel <- rvs$occs[ptSelIndex,]
     
     rvs %>% writeLog("Keeping only occurrences with occID = ", selIDs, 
-                     ". Updated data has n = ", nrow(rvs$occs), " records.")
+                     ". Updated data has n = ", nrow(occs.sel), " records.")
     return(occs.sel)
   })
 }
