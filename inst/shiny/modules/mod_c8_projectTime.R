@@ -84,8 +84,10 @@ projectTime_MOD <- function(input, output, session, rvs) {
     withProgress(message = paste("Retrieving WorldClim data for", input$selTime, input$selRCP, "..."), {
       projTimeEnvs <- raster::getData('CMIP5', var = "bio", res = envsRes * 60,
                                       rcp = input$selRCP, model = input$selGCM, year = input$selTime)
+      names(projTimeEnvs) <- paste0('bio', c(paste0('0',1:9), 10:19))
       # in case user subsetted bioclims
       projTimeEnvs <- projTimeEnvs[[rvs$bcSels]]
+      print(projTimeEnvs)
     })
     
     # create new spatial polygon from coordinates
@@ -99,7 +101,6 @@ projectTime_MOD <- function(input, output, session, rvs) {
     withProgress(message = "Clipping environmental data to current extent...", {
       pjtMsk <- raster::crop(projTimeEnvs, newPoly)
       pjtMsk <- raster::mask(pjtMsk, newPoly)
-      names(pjtMsk) <- names(rvs$envs)  # make names same as original predictors
       print(pjtMsk)
     })
     

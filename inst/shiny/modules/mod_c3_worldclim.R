@@ -56,8 +56,9 @@ wcBioclims_MOD <- function(input, output, session, logs, mapCntr, envs) {
     
     # change names if bio01 is bio1, and so forth
     i <- grep('bio[0-9]$', names(wcbc))
-    names(wcbc)[i] <- paste('bio', sapply(strsplit(names(wcbc)[i], 'bio'), 
-                                          function(x) x[2]), sep='0')
+    editNames <- paste('bio', sapply(strsplit(names(wcbc)[i], 'bio'), function(x) x[2]), sep='0')
+    names(wcbc)[i] <- editNames
+    rvs$bcSels[i] <- editNames
     
     return(wcbc)
   })
