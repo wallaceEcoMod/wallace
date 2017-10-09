@@ -84,11 +84,11 @@ test_that("Component 4 Module Select Study Region: Input Download", {
   
   drop.menu <- comp4Tab$findChildElement(value = path)
   drop.menu$clickElement()
-  selectDropdown(comp4Tab, "'ascii'")
+  selectDropdownOption(comp4Tab, "'ascii'")
   drop.menu$clickElement()
-  selectDropdown(comp4Tab, "'raster'")
+  selectDropdownOption(comp4Tab, "'raster'")
   drop.menu$clickElement()
-  selectDropdown(comp4Tab, "'GTiff'")
+  selectDropdownOption(comp4Tab, "'GTiff'")
 })
 
 test_that("Component 4 Module User_specified Study Region: Input", {
