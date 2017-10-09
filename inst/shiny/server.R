@@ -258,6 +258,7 @@ shinyServer(function(input, output, session) {
         circleOptions = FALSE,
         markerOptions = FALSE,
         editOptions = leaflet.extras::editToolbarOptions())
+    shinyjs::enable("dlProcOccs")
   })
   
   # module Spatial Thin
