@@ -98,15 +98,16 @@ test_that("C2 Module Spatial Thin: Spatially thin occurence locations", {
   
   # find textInput field for Thinning distance and click
   #db.search <- comp2Tab$findChildElement(value = "//input[@type='numeric']")
-  db.search <- comp2Tab$findChildElement(value = "//input[@id='c2_thinOccs-thinDist']")
-  db.search$clickElement()
+  button.thinDist <- comp2Tab$findChildElement(value = "//input[@id='c2_thinOccs-thinDist']")
+  button.thinDist$clickElement()
   
   # write a thinning distance
-  db.search$sendKeysToElement(list("10"))
+  button.thinDist$clearElement()
+  button.thinDist$sendKeysToElement(list("10"))
   
   # find button and click to thin occs
-  db.button <- comp2Tab$findChildElement(value = "//button[@id='goThinOccs']")
-  db.button$clickElement()
+  button.thin <- comp2Tab$findChildElement(value = "//button[@id='goThinOccs']")
+  button.thin$clickElement()
   Sys.sleep(10)
   
   # read current text in log box
@@ -121,18 +122,11 @@ test_that("C2 Module Spatial Thin: Spatially thin occurence locations", {
 
 
 test_that("C2 Module Select Occurences on Map: Choose occurence locations by polygon", {
-  # Move to Compenent 2
-  comp2Tab$clickElement()
-  
   # select Select Occurences on Map radio button 
   field.selOccs <- comp2Tab$findChildElement(value = "//input[@type='radio' and @value='selOccs']")
   initState <- field.selOccs$isElementSelected()[[1]]
   field.selOccs$clickElement()
 
-  # select Map Results tab
-  mapTab$clickElement()
-  Sys.sleep(5)
-  
   # select button to draw polygon
   leaflet.draw <- remDr$findElement(using = 'class', value = 'leaflet-draw-draw-polygon')
   leaflet.draw$clickElement()
