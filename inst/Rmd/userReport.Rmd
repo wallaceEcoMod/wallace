@@ -353,7 +353,7 @@ evalPreds <- e$predictions
 # define the vector of regularization multipliers to test
 rms <- seq({{rms1}}, {{rms2}}, {{rmsStep}})
 # iterate model building over all chosen parameter settings
-e <- ENMeval::ENMevaluate(occs.xy, predsBgMsk, bg.coords=bg.xy, RMvalues=rms, fc={{fcs}}, method='user', occs.grp, bg.grp)
+e <- ENMeval::ENMevaluate(occs.xy, envsBgMsk, bg.coords=bg.xy, RMvalues=rms, fc={{fcs}}, method='user', occs.grp, bg.grp)
 
 # unpack the results data frame, the list of models, and the RasterStack of raw predictions
 evalTbl <- e@results
@@ -393,12 +393,12 @@ pred <- evalPreds[["{{modSel}}"]]
 
 ```{r, echo = viz.pred.log, include = viz.pred.log}
 # generate logistic prediction
-pred <- dismo::predict(mod, predsBgMsk, args=c("outputformat=logistic"))
+pred <- dismo::predict(mod, envsBgMsk, args=c("outputformat=logistic"))
 ```
 
 ```{r, echo = viz.pred.cll, include = viz.pred.cll}
 # generate cloglog prediction
-pred <- dismo::predict(mod, predsBgMsk, args=c("outputformat=cloglog"))
+pred <- dismo::predict(mod, envsBgMsk, args=c("outputformat=cloglog"))
 ```
 
 ```{r, echo = viz.pred.thr, include = viz.pred.thr}
