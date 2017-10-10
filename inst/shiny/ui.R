@@ -25,7 +25,7 @@ shinyUI(tagList(
                                includeCSS(system.file("css", "styles.css", package = "wallace")),
                                includeScript(system.file("js", "scroll.js", package = "wallace")),
                                conditionalPanel("input.tabs == 0",
-                                                actionButton('load', 'HACK'),
+                                                # actionButton('load', 'HACK'),
                                                 includeMarkdown(system.file("Rmd", "text_intro_tab.Rmd", package = "wallace"))
                                ),
                                # COMPONENT 1 ####
