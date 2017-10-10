@@ -434,7 +434,7 @@ Now use crop and mask the predictor variables by projPoly, and use the predict()
 predsProj <- raster::crop(envs, projPoly)
 predsProj <- raster::mask(predsProj, projPoly)
 
-proj <- dismo::predict(modSel, predsProj)
+proj <- dismo::predict(mod, predsProj)
 ```
 
 ```{asis, echo = pj.time, eval = pj.time, include = pj.time}
@@ -450,7 +450,7 @@ predsProj <- raster::mask(predsProj, projPoly)
 
 # rename future climate variable names
 names(envsMsk) <- names(envs)
-proj <- dismo::predict(modSel, predsProj)
+proj <- dismo::predict(mod, predsProj)
 ```
 
 ```{r, echo = pj.thr, include = pj.thr}
