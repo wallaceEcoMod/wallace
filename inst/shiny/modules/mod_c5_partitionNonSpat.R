@@ -4,8 +4,7 @@ partNsp_UI <- function(id) {
   tagList(
     selectInput(ns("partNspSel"), "Options Available:",
                 choices = list("None selected" = '', "Jackknife (k = n)" = "jack",
-                               "Random k-fold" = "rand"),
-                selected='rand'),
+                               "Random k-fold" = "rand")),
     numericInput(ns("kfolds"), label = "Number of Folds", value = 2, min = 2)
   )
 }
@@ -15,6 +14,10 @@ partNsp_MOD <- function(input, output, session, rvs, occs, bgPts) {
     if (is.null(rvs$bgMsk)) {
       rvs %>% writeLog(type = 'error', "Before partitioning occurrences, 
                        mask your environmental variables by your background extent.")
+      return()
+    }
+    if (input$partNspSel == '') {
+      rvs %>% writeLog(type = 'error', "Please select a partitioning option.")
       return()
     }
     

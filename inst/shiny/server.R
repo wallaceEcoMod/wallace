@@ -328,6 +328,7 @@ shinyServer(function(input, output, session) {
     rvs$envs <- wcBioclims()
     # stop if no occurrence data
     req(rvs$occs)
+    req(rvs$envs)
     # record for RMD
     rvs$comp3 <- 'bc'
     # remove occurrences with NA values for variables

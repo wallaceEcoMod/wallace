@@ -18,6 +18,10 @@ partSp_MOD <- function(input, output, session, rvs) {
                        mask your environmental variables by your background extent.")
       return()
     }
+    if (input$partSpSel == '') {
+      rvs %>% writeLog(type = 'error', "Please select a partitioning option.")
+      return()
+    }
     if (input$partSpSel == 'cb1' | input$partSpSel == 'cb2') {
       if (is.na(input$aggFact) | input$aggFact <= 1) {
         rvs %>% writeLog(type = 'error', "Please specify a positive aggregation 
