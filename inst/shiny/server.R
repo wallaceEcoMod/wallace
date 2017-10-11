@@ -861,10 +861,12 @@ shinyServer(function(input, output, session) {
         writeLines(gsub('``` r', '```{r}', readLines(out)), 'userReport3.Rmd')
         out <- 'userReport3.Rmd'
       } else {
-        out <- rmarkdown::render('userReport2.Rmd', switch(
-          input$rmdFileType,
-          PDF = rmarkdown::pdf_document(latex_engine='xelatex'), HTML = html_document(), Word = word_document()
-        ))
+        out <- rmarkdown::render('userReport2.Rmd', 
+                                 switch(input$rmdFileType,
+                                        PDF = rmarkdown::pdf_document(latex_engine='xelatex'), 
+                                        HTML = rmarkdown::html_document(), 
+                                        Word = rmarkdown::word_document())
+                                 )
       }
       file.rename(out, file)
     }
