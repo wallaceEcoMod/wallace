@@ -1,5 +1,11 @@
 language: r
+
 r_packages: 
   - RSelenium
   - testthat
   - XML
+
+matrix:
+  exclude:
+  - os: osx
+    r: devel
