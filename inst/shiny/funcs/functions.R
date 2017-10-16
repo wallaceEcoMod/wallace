@@ -160,14 +160,14 @@ remEnvsValsNA <- function(rvs) {
     na.rowNums <- which(rowSums(is.na(occsVals)) > 1)
     
     if (length(na.rowNums) == length(occsVals)) {
-      logs %>% writeLog('<font color="red"><b>! ERROR</b></font> : No localities overlay with environmental predictors. 
+      rvs %>% writeLog(type = 'error', 'No localities overlay with environmental predictors. 
                         All localities may be marine -- please redo with terrestrial occurrences.')
       return()
     }
     
     if (length(na.rowNums) > 0) {
       occs.notNA <- rvs$occs[-na.rowNums,]
-      logs %>% writeLog("! WARNING: Removed records without environmental values with occIDs: ",
+      rvs %>% writeLog(type = 'warning', 'Removed records without environmental values with occIDs: "',
                         paste(rvs$occs[na.rowNums,]$occID, collapse=', '), ".")
       return(occs.notNA)
     }
