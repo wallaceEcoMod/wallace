@@ -14,9 +14,9 @@ selectOccs_MOD <- function(input, output, session, rvs) {
       return()
     }
     if (is.null(rvs$polySelXY)) {
-      rvs %>% writeLog(type = 'error', "The polygon has not been drawn and finished. 
-                       Please use the draw toolbar on the left-hand of the map to complete
-                       the polygon.")
+      rvs %>% writeLog(type = 'error', 'The polygon has not been finished. Please 
+                                        press "Finish" on the map toolbar, then 
+                                        the "Select Occurrences" button.')
       return()
     }
     
