@@ -17,6 +17,16 @@ This module uses the R packages `ENMeval` and `dismo` to build and evaluate Maxe
 
 It automates two workflows: 1) building a suite of candidate models with differing constraints on complexity; and 2) quantifying their performance. Regarding the first, it makes models with various combinations of feature classes and regularization multipliers. The field remains far from any consensus regarding model evaluation and estimation of optimal model complexity (especially for presence-background datasets like those used in Maxent). Nevertheless, the particular evaluation metrics provided here (see Component **Model** guidance) can aid the user in selecting optimal settings (Radosavljevic & Anderson 2014). Users can download a .csv file of the evaluation statistics table. Further, the evaluation results can be viewed graphically in Component **Visualize Model Results** with Module ***Maxent Evaluation Plots***, and response curves for each variable can be viewed with Module ***Plot Response Curves***. 
 
+**TROUBLESHOOTING**
+
+If you receive this error in the R console:
+
+<font color='red'>Warning: Error in rJava::.jarray: java.lang.OutOfMemoryError: Java heap space</font>
+
+Start a new R session to ensure `rJava` is not loaded, then run the following in the R console, replacing the number "8000" with any arbitrarily high number if "8000" still results in an error. This will allocate more memory to Java and allow it to proceed.
+
+`options(java.parameters = "-Xmx8000m")`
+
 **REFERENCES**
 
 Elith J., Graham C.H., Anderson R.P., Dudík M., Ferrier S., Guisan A., Hijmans R.J., Huettmann F., Leathwick J.R., Leahmann A., Li J., Lohmann L.G., Loiselle B.A., Manion G., Moritz C., Nakamura M., Nakazawa Y., Overton J.M., Peterson A.T., Phillips S.J., Richardson K.S., Scachetti-Pereira R., Schapire R.E., Soberón J., Williams S., Wisz M.S., Zimmermann N.E. 2006. Novel methods improve prediction of species’ distributions from occurrence data. *Ecography*. 29:129-151.
