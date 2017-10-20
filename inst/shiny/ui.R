@@ -161,7 +161,7 @@ shinyUI(tagList(
                                                                  div("Step 2:", id="step"), div("Sample Background Points", id="stepText"), br(), br(),
                                                                  strong('Mask predictor rasters by background extent and sample background points'), br(), br(),
                                                                  bgMskAndSamplePts_UI('c4_bgMskAndSamplePts'),
-                                                                 actionButton("goBgMask", "Process"), br(), br(),
+                                                                 actionButton("goBgMask", "Sample"), br(), br(),
                                                                  HTML('<hr>'),
                                                                  selectInput('bgMskFileType', label = "Select download file type",
                                                                              choices = list("GRD" = 'raster', "ASCII" = 'ascii', "GeoTIFF" = 'GTiff')),
