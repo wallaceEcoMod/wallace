@@ -513,6 +513,8 @@ shinyServer(function(input, output, session) {
     req(rvs$occsGrp)
     # get model evaluations
     e <- mod.maxent()
+    # if e is NULL, let the c6_maxent module throw the proper error and stop
+    req(e)
     rvs$comp6 <- 'maxent'  # record the enm selected
     rvs$mods <- e@models
     rvs$modPreds <- e@predictions

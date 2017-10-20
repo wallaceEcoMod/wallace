@@ -20,7 +20,6 @@ wcBioclims_UI <- function(id) {
 
 wcBioclims_MOD <- function(input, output, session, logs, mapCntr, envs) {
   reactive({
-    print(input$bcRes)
     if (is.null(rvs$occs)) {
       rvs %>% writeLog(type = 'error', "Before obtaining environmental variables, 
                        obtain occurrence data in component 1.")
