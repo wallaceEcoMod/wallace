@@ -49,4 +49,4 @@ Although the recommended way to install is through CRAN, if you are trying to in
  1. Download the zip file from the repository page.
  2. Unzip and open the wallace.Rproj file in RStudio.
  3. In the right-hand pane, click Build, then Build & Reload.
- 4. Type `wallace()` in the console and press Enter.
+ 4. Type `run_wallace()` in the console and press Enter.
