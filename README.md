@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/wallaceEcoMod/wallace.svg?branch=master)](https://travis-ci.org/wallaceEcoMod/wallace)
+[![Build Status](https://travis-ci.org/wallaceEcoMod/wallace.svg?branch=master)](https://travis-ci.org/wallaceEcoMod/wallace) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![CRAN version](http://www.r-pkg.org/badges/version/wallace)](http://www.r-pkg.org/badges/version/wallace) [![downloads](http://cranlogs.r-pkg.org/badges/grand-total/wallace)](http://cranlogs.r-pkg.org/badges/grand-total/wallace)
 
 # Wallace (v0.7)
 
