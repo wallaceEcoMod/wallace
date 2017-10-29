@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/wallaceEcoMod/wallace.svg?branch=master)
+
 # Wallace (v0.7)
 
 *Wallace* is a modular platform for reproducible modeling of species niches and distributions, written in R. The application guides users through a complete analysis, from the acquisition of data to visualizing model predictions on an interactive map, thus bundling complex workflows into a single, streamlined interface.
