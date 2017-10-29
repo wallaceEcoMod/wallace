@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/wallaceEcoMod/wallace.svg?branch=master)](https://travis-ci.org/wallaceEcoMod/wallace.svg?branch=master)
+[![Build Status](https://travis-ci.org/wallaceEcoMod/wallace.svg?branch=master)](https://travis-ci.org/wallaceEcoMod/wallace)
 
 # Wallace (v0.7)
 
