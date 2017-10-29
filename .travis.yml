@@ -4,3 +4,11 @@ r_packages:
   - RSelenium
   - testthat
   - XML
+
+sudo: false
+cache: packages
+addons:
+  apt:
+    packages:
+      - libgdal-dev
+      - libproj-dev
