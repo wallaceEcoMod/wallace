@@ -12,7 +12,7 @@ uiTop <- function(modPkg, pkgDes) {
        br())
 }
 
-uiBottom <- function(modAuthors, pkgName, pkgAuthors) {
+uiBottom <- function(modAuthors=NULL, pkgName=NULL, pkgAuthors) {
   if (is.null(modAuthors)) {
     list(span(pkgName, id = "rpkg"), "references", br(),
          div(paste('Package Developers:', pkgAuthors), id="pkgDes"),
@@ -20,13 +20,17 @@ uiBottom <- function(modAuthors, pkgName, pkgAuthors) {
          " | ",
          a("documentation", href = file.path("https://cran.r-project.org/web/packages", pkgName, paste0(pkgName, ".pdf")), target = "_blank"))
   } else {
-    list(div(paste('Module Developers:', modAuthors), id="pkgDes"),
-         span(pkgName, id = "rpkg"), "references", br(),
-         div(paste('Package Developers:', pkgAuthors), id="pkgDes"),
-         a("CRAN", href = file.path("http://cran.r-project.org/web/packages", pkgName, "index.html"), target = "_blank"),
-         " | ",
-         a("documentation", href = file.path("https://cran.r-project.org/web/packages", pkgName, paste0(pkgName, ".pdf")), target = "_blank")
-    )  
+    if (is.null(pkgName)) {
+      list(div(paste('Module Developers:', modAuthors), id="pkgDes"))
+    } else {
+      list(div(paste('Module Developers:', modAuthors), id="pkgDes"),
+           span(pkgName, id = "rpkg"), "references", br(),
+           div(paste('Package Developers:', pkgAuthors), id="pkgDes"),
+           a("CRAN", href = file.path("http://cran.r-project.org/web/packages", pkgName, "index.html"), target = "_blank"),
+           " | ",
+           a("documentation", href = file.path("https://cran.r-project.org/web/packages", pkgName, paste0(pkgName, ".pdf")), target = "_blank")
+      )
+    }
   }
 }
 
