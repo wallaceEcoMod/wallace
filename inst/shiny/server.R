@@ -174,7 +174,7 @@ shinyServer(function(input, output, session) {
   spName <- reactive(as.character(rvs$occs$name[1]))
   
   observeEvent(input$goDbOccs, {
-    rvs$occs <- dbOccs()
+    rvs$occs <- dbOccs()$occs
     rvs$occsPreProc <- rvs$occs
     # record for RMD
     rvs$comp1 <- 'db'

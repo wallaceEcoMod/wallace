@@ -73,8 +73,6 @@ nameAbbr <- function(spname) {
   return(fullNameAbbr)
 }
 
-formatSpName <- function(spName) paste(strsplit(spName, split=' ')[[1]], collapse='_')
-
 fileNameNoExt <- function(f) {
   sub(pattern = "(.*)\\..*$", replacement = "\\1", f)
 }
@@ -141,17 +139,6 @@ smartZoom <- function(longi, lati) {
   if (lg.diff > 1) lg.diff <- 1
   if (lt.diff > 1) lt.diff <- 1
   c(min(longi-lg.diff), min(lati-lt.diff), max(longi+lg.diff), max(lati+lt.diff))
-}
-
-popUpContent <- function(x) {
-  lat <- round(as.numeric(x['latitude']), digits = 2)
-  lon <- round(as.numeric(x['longitude']), digits = 2)
-  as.character(tagList(
-    tags$strong(paste("occID:", x['occID'])),
-    tags$br(),
-    tags$strong(paste("Latitude:", lat)),
-    tags$strong(paste("Longitude:", lon))
-  ))
 }
 
 ####################### #
