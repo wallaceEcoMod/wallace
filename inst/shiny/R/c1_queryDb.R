@@ -1,3 +1,20 @@
+#' Query online database for species occurrence records.
+#'
+#' \code{queryDb} returns a formatted tibble of species occurrences with a selection of appropriate fields.
+#'
+#' This function is called by the module mod_c1_queryDb to query a database for
+#' species occurrence records, subset to only those records with coordinates,
+#' remove records with duplicate coordinates, and select some columns with fields
+#' appropriate to studies in biogeography.
+#'
+#' @param spName species Latin name, with format "Genus species"
+#' @param occDb biodiversity database to query; current choices are "gbif", 
+#' "vertnet", and "bison"
+#' @param occNum maximum number of occurrence records to return
+#' @return formatted tibble of species occurrence records 
+#'
+#' @examples
+#' queryDb(spName = "Tremarctos ornatus", occDb = "gbif", occNum = 100)
 
 c1_queryDb <- function(spName, occDb, occNum, rvs) {
   spName <- trimws(spName)
