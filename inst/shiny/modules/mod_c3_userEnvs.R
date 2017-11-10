@@ -9,12 +9,12 @@ userEnvs_UI <- function(id) {
 userEnvs_MOD <- function(input, output, session, rvs) {
   reactive({
     if (is.null(rvs$occs)) {
-      rvs %>% writeLog(type = 'error', "Before obtaining environmental variables, 
+      logs %>% writeLog(type = 'error', "Before obtaining environmental variables, 
                        obtain occurrence data in component 1.")
       return()
     }
     if (is.null(input$userEnvs)) {
-      rvs %>% writeLog(type = 'error', "Raster files not uploaded.")
+      logs %>% writeLog(type = 'error', "Raster files not uploaded.")
       return()
     }
     
@@ -26,7 +26,7 @@ userEnvs_MOD <- function(input, output, session, rvs) {
       names(uenvs) <- fileNameNoExt(input$userEnvs$name)
     })
     
-    rvs %>% writeLog("> Environmental predictors: User input.")
+    logs %>% writeLog("> Environmental predictors: User input.")
     
     return(uenvs)
   })

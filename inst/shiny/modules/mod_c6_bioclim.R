@@ -8,7 +8,7 @@ bioclim_UI <- function(id) {
 bioclim_MOD <- function(input, output, session, rvs) {
   reactive({
     if (is.null(rvs$occsGrp)) {
-      rvs %>% writeLog(type = 'error', "Before building a model, partition 
+      logs %>% writeLog(type = 'error', "Before building a model, partition 
                        occurrences in component 5.")
       return()
     }
@@ -30,7 +30,7 @@ bioclim_MOD <- function(input, output, session, rvs) {
     # 
     # values$p10s <- rev(sort(occVals))[n90]  # apply 10% training presence threshold
     
-    rvs %>% writeLog("BIOCLIM ran successfully and output evaluation results.")
+    logs %>% writeLog("BIOCLIM ran successfully and output evaluation results.")
       
     return(e)
   })

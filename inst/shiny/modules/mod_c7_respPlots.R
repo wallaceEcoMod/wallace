@@ -10,7 +10,7 @@ respPlots_UI <- function(id) {
 respPlots_MOD <- function(input, output, session, rvs) {
   reactive({
     if (is.null(rvs$mods)) {
-      rvs %>% writeLog(type = 'error', "Models must first be run in component 6.")
+      logs %>% writeLog(type = 'error', "Models must first be run in component 6.")
       return()
     }
 

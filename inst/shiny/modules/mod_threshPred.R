@@ -35,7 +35,7 @@ threshPred_MOD <- function(input, output, session, pred) {
       pred <- pred > x
       # rename
       names(pred) <- paste0(rvs$modSel, '_thresh_', input$predThresh)
-      rvs %>% writeLog(input$predThresh, 'threshold selected: value =', 
+      logs %>% writeLog(input$predThresh, 'threshold selected: value =', 
                        round(x, digits = 3), '.')
     }
     

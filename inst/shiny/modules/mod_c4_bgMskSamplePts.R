@@ -9,7 +9,7 @@ bgMskAndSamplePts_UI <- function(id) {
 bgMskAndSamplePts_MOD <- function(input, output, session, rvs) {
   reactive({
     if (is.null(rvs$bgShp)) {
-      rvs %>% writeLog(type = 'error', "Before sampling background points, 
+      logs %>% writeLog(type = 'error', "Before sampling background points, 
                        define the background extent.")
       return()
     }
@@ -22,7 +22,7 @@ bgMskAndSamplePts_MOD <- function(input, output, session, rvs) {
       bgCrop <- raster::crop(rvs$envs, rvs$bgShp)
       bgMask <- raster::mask(bgCrop, rvs$bgShp)
     })
-    rvs %>% writeLog('Environmental data masked.')
+    logs %>% writeLog('Environmental data masked.')
     # sample random background points
     withProgress(message = "Generating background points...", {
       rvals <- raster::getValues(bgMask)
@@ -30,7 +30,7 @@ bgMskAndSamplePts_MOD <- function(input, output, session, rvs) {
       pct <- round((input$bgPtsNum / num.vals) * 100, digits = 2)
       bgXY <- dismo::randomPoints(bgMask, input$bgPtsNum)
     })
-    rvs %>% writeLog('Random background points sampled (n =', input$bgPtsNum, 
+    logs %>% writeLog('Random background points sampled (n =', input$bgPtsNum, 
                       ':', pct, '% of cells with values).')
     shinyjs::enable("downloadMskPreds")
     return(list(msk = bgMask, pts = bgXY))

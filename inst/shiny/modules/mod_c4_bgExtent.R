@@ -15,12 +15,12 @@ bgExtent_UI <- function(id) {
 bgExtent_MOD <- function(input, output, session, rvs) {
   reactive({
     if (is.null(rvs$envs)) {
-      rvs %>% writeLog(type = 'error', "Before defining the background extent, 
+      logs %>% writeLog(type = 'error', "Before defining the background extent, 
                        obtain environmental data in component 3.")
       return()
     }
     if (nrow(rvs$occs) <= 2) {
-      rvs %>% writeLog(type = 'error', 'Too few localities (<2) to create a background polygon.')
+      logs %>% writeLog(type = 'error', 'Too few localities (<2) to create a background polygon.')
       return()
     }
     
@@ -49,7 +49,7 @@ bgExtent_MOD <- function(input, output, session, rvs) {
       msg <- "Study extent: minimum convex polygon."
     } else if (input$bgSel == 'ptbuf') {
       if (input$bgBuf == 0) {
-        rvs %>% writeLog(type = 'error', 'Change buffer distance to positive or negative value.')
+        logs %>% writeLog(type = 'error', 'Change buffer distance to positive or negative value.')
         return()
       }
       bgExt <- rgeos::gBuffer(occs.sp, width = input$bgBuf)
@@ -58,7 +58,7 @@ bgExtent_MOD <- function(input, output, session, rvs) {
     
     if (input$bgBuf > 0) {
       bgExt <- rgeos::gBuffer(bgExt, width = input$bgBuf)
-      rvs %>% writeLog(msg, 'Study extent buffered by', input$bgBuf, 'degrees.')
+      logs %>% writeLog(msg, 'Study extent buffered by', input$bgBuf, 'degrees.')
     }
     
     return(bgExt)

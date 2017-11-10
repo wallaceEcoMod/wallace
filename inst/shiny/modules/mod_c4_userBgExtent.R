@@ -12,12 +12,12 @@ userBgExtent_UI <- function(id) {
 userBgExtent_MOD <- function(input, output, session, rvs) {
   userBgShp <- reactive({
     if (is.null(rvs$envs)) {
-      rvs %>% writeLog(type = 'error', 'Environmental variables missing. Obtain them
+      logs %>% writeLog(type = 'error', 'Environmental variables missing. Obtain them
                        in component 3.')
       return()
     }
     if (is.null(input$userBgShp)) {
-      rvs %>% writeLog(type = 'error', 'Background extent files not uploaded.')
+      logs %>% writeLog(type = 'error', 'Background extent files not uploaded.')
       return()
     }
     
@@ -40,7 +40,7 @@ userBgExtent_MOD <- function(input, output, session, rvs) {
       bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(f)), 1)))
     } else if ('shp' %in% exts) {
       if (length(exts) < 3) {
-        rvs %>% writeLog(type = 'error', 'If entering a shapefile, please select all the following files: .shp, .shx, .dbf.')
+        logs %>% writeLog(type = 'error', 'If entering a shapefile, please select all the following files: .shp, .shx, .dbf.')
         return()
       }
       file.rename(inPath, file.path(pathdir, names))
@@ -53,10 +53,10 @@ userBgExtent_MOD <- function(input, output, session, rvs) {
       # read in shapefile and extract coords
       bgExt <- rgdal::readOGR(pathdir[i], shpName)
     } else {
-      rvs %>% writeLog(type = 'error', 'Please enter either a CSV file of vertex coordinates or shapefile (.shp, .shx, .dbf).')
+      logs %>% writeLog(type = 'error', 'Please enter either a CSV file of vertex coordinates or shapefile (.shp, .shx, .dbf).')
       return()
     }
-    rvs %>% writeLog("Study extent: user-defined polygon.")
+    logs %>% writeLog("Study extent: user-defined polygon.")
     return(bgExt)
   })
   
@@ -66,7 +66,7 @@ userBgExtent_MOD <- function(input, output, session, rvs) {
     bufWid <- input$userBgBuf
     if (bufWid > 0) {
       bgExt <- rgeos::gBuffer(userBgShp(), width = bufWid)
-      rvs %>% writeLog('Study extent buffered by', bufWid, 'degrees.')
+      logs %>% writeLog('Study extent buffered by', bufWid, 'degrees.')
     } else {
       bgExt <- userBgShp()
     }

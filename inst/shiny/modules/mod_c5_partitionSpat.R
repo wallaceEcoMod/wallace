@@ -14,17 +14,17 @@ partSp_UI <- function(id) {
 partSp_MOD <- function(input, output, session, rvs) {
   reactive({
     if (is.null(rvs$bgMsk)) {
-      rvs %>% writeLog(type = 'error', "Before partitioning occurrences, 
+      logs %>% writeLog(type = 'error', "Before partitioning occurrences, 
                        mask your environmental variables by your background extent.")
       return()
     }
     if (input$partSpSel == '') {
-      rvs %>% writeLog(type = 'error', "Please select a partitioning option.")
+      logs %>% writeLog(type = 'error', "Please select a partitioning option.")
       return()
     }
     if (input$partSpSel == 'cb1' | input$partSpSel == 'cb2') {
       if (is.na(input$aggFact) | input$aggFact <= 1) {
-        rvs %>% writeLog(type = 'error', "Please specify a positive aggregation 
+        logs %>% writeLog(type = 'error', "Please specify a positive aggregation 
                          factor greater than 1.")
         return()
       }
@@ -37,17 +37,17 @@ partSp_MOD <- function(input, output, session, rvs) {
 
     if (input$partSpSel == 'block') {
       group.data <- ENMeval::get.block(occs.xy, rvs$bgPts)
-      rvs %>% writeLog("Occurrences partitioned by block method.")
+      logs %>% writeLog("Occurrences partitioned by block method.")
     } else if (input$partSpSel == 'cb1') {
       withProgress(message = "Aggregating rasters...", {
         group.data <- ENMeval::get.checkerboard1(occs.xy, rvs$bgMsk, rvs$bgPts, input$aggFact)
-        rvs %>% writeLog(paste0("Occurrences partitioned by checkerboard 1 method with 
+        logs %>% writeLog(paste0("Occurrences partitioned by checkerboard 1 method with 
                          aggregation factor ", input$aggFact, "."))
       })
     } else if (input$partSpSel == 'cb2') {
       withProgress(message = "Aggregating rasters...", {
         group.data <- ENMeval::get.checkerboard2(occs.xy, rvs$bgMsk, rvs$bgPts, input$aggFact)
-        rvs %>% writeLog(paste0("Occurrences partitioned by checkerboard 2 method with 
+        logs %>% writeLog(paste0("Occurrences partitioned by checkerboard 2 method with 
                          aggregation factor ", input$aggFact, "."))
       })
     }

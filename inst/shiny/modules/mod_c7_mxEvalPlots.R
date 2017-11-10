@@ -16,11 +16,11 @@ mxEvalPlots_UI <- function(id) {
 mxEvalPlots_MOD <- function(input, output, session, rvs) {
   reactive({
     if (is.null(rvs$mods)) {
-      rvs %>% writeLog(type = 'error', "Models must first be run in component 6.")
+      logs %>% writeLog(type = 'error', "Models must first be run in component 6.")
       return()
     }
     if (is.null(input$mxEvalSel)) {
-      rvs %>% writeLog(type = 'error', "No statistic selected for plotting.")
+      logs %>% writeLog(type = 'error', "No statistic selected for plotting.")
       return()
     }
     

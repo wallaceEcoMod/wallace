@@ -12,7 +12,7 @@ mapPredsMaxent_UI <- function(id) {
 mapPredsMaxent_MOD <- function(input, output, session, rvs) {
   reactive({
     if (is.null(rvs$mods)) {
-      rvs %>% writeLog(type = 'error', "Models must first be run in component 6.")
+      logs %>% writeLog(type = 'error', "Models must first be run in component 6.")
       return()
     }
     
@@ -59,7 +59,7 @@ mapPredsMaxent_MOD <- function(input, output, session, rvs) {
     rvs$comp7.thr <- predSel.thr$thresh
     
     # write to log box
-    rvs %>% writeLog("Maxent", input$predType, "model prediction plotted.")
+    logs %>% writeLog("Maxent", input$predType, "model prediction plotted.")
     
     return(pjPred)
   })

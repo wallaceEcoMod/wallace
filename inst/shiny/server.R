@@ -309,7 +309,7 @@ shinyServer(function(input, output, session) {
     rvs$occs <- rvs$occsPreProc  
     # reset for RMD
     rvs$comp2 <- NULL
-    rvs %>% writeLog("Reset occurrences.")
+    logs %>% writeLog("Reset occurrences.")
     map %>%
       clearMarkers() %>%
       map_plotLocs(rvs$occs) %>%
@@ -781,7 +781,7 @@ shinyServer(function(input, output, session) {
     map %>%
       removeShape("projExt") %>%
       removeImage("rProj")
-    rvs %>% writeLog("Reset projection extent.")
+    logs %>% writeLog("Reset projection extent.")
   })
   
   # download for model predictions (restricted to background extent)

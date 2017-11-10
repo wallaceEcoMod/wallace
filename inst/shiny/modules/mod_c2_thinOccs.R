@@ -11,13 +11,13 @@ thinOccs_MOD <- function(input, output, session, rvs) {
 
   doThin <- reactive({
     if (is.null(rvs$occs)) {
-      rvs %>% writeLog(type = 'error', "Before processing occurrences, 
+      logs %>% writeLog(type = 'error', "Before processing occurrences, 
                        obtain the data in component 1.")
       return()
     }
     
     if (input$thinDist <= 0) {
-      rvs %>% writeLog(type = "error", 'Assign positive distance to thinning parameter.')
+      logs %>% writeLog(type = "error", 'Assign positive distance to thinning parameter.')
       return()
     }
     
@@ -38,7 +38,7 @@ thinOccs_MOD <- function(input, output, session, rvs) {
       # }
     })
     
-    rvs %>% writeLog('Total records thinned to [', nrow(occs.thin), '] localities.')
+    logs %>% writeLog('Total records thinned to [', nrow(occs.thin), '] localities.')
     
     return(occs.thin)
   })

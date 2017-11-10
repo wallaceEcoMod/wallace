@@ -21,7 +21,7 @@ userOccs_MOD <- function(input, output, session, rvs) {
     spName <- trimws(as.character(csv$name[1]))
     
     if (!all(c('name', 'longitude', 'latitude') %in% names(csv))) {
-      rvs %>% writeLog(type = "error", 'Please input CSV file with columns 
+      logs %>% writeLog(type = "error", 'Please input CSV file with columns 
                         "name", "longitude", "latitude".')
       return()
     }
@@ -33,12 +33,12 @@ userOccs_MOD <- function(input, output, session, rvs) {
       dplyr::filter(!is.na(latitude) & !is.na(longitude))
       
     if (nrow(uoccs) == 0) {
-      rvs %>% writeLog(type = 'warning', 'No records with coordinates found in', 
+      logs %>% writeLog(type = 'warning', 'No records with coordinates found in', 
                         input$userCSV$name, "for", spName, ".")
       return()
     }
     
-    rvs %>% writeLog("User-specified CSV file", input$userCSV$name, "with total of", 
+    logs %>% writeLog("User-specified CSV file", input$userCSV$name, "with total of", 
                       nrow(uoccs), "records with coordinates was uploaded.")
     
     for (col in c("year", "institutionCode", "country", "stateProvince",

@@ -58,7 +58,7 @@ writeLog <- function(logs, ..., type = 'default') {
   
   args <- list(pre, ...)
   newEntries <- paste(args, collapse = ' ')
-  paste(logs(), newEntries, sep = '<br>')
+  logs(paste(logs(), newEntries, sep = '<br>'))
 }
 
 ####################### #
@@ -151,14 +151,14 @@ remEnvsValsNA <- function(rvs) {
     na.rowNums <- which(rowSums(is.na(occsVals)) > 1)
     
     if (length(na.rowNums) == length(occsVals)) {
-      rvs %>% writeLog(type = 'error', 'No localities overlay with environmental predictors. 
+      logs %>% writeLog(type = 'error', 'No localities overlay with environmental predictors. 
                         All localities may be marine -- please redo with terrestrial occurrences.')
       return()
     }
     
     if (length(na.rowNums) > 0) {
       occs.notNA <- rvs$occs[-na.rowNums,]
-      rvs %>% writeLog(type = 'warning', 'Removed records without environmental values with occIDs: "',
+      logs %>% writeLog(type = 'warning', 'Removed records without environmental values with occIDs: "',
                         paste(rvs$occs[na.rowNums,]$occID, collapse=', '), ".")
       return(occs.notNA)
     }

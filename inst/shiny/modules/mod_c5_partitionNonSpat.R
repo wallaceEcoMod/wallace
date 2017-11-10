@@ -12,12 +12,12 @@ partNsp_UI <- function(id) {
 partNsp_MOD <- function(input, output, session, rvs, occs, bgPts) {
   reactive({
     if (is.null(rvs$bgMsk)) {
-      rvs %>% writeLog(type = 'error', "Before partitioning occurrences, 
+      logs %>% writeLog(type = 'error', "Before partitioning occurrences, 
                        mask your environmental variables by your background extent.")
       return()
     }
     if (input$partNspSel == '') {
-      rvs %>% writeLog(type = 'error', "Please select a partitioning option.")
+      logs %>% writeLog(type = 'error', "Please select a partitioning option.")
       return()
     }
     
@@ -29,10 +29,10 @@ partNsp_MOD <- function(input, output, session, rvs, occs, bgPts) {
 
     if (input$partNspSel == 'jack') {
       group.data <- ENMeval::get.jackknife(occs.xy, rvs$bgPts)
-      rvs %>% writeLog("Occurrences partitioned by jackknife method.")
+      logs %>% writeLog("Occurrences partitioned by jackknife method.")
     } else if (input$partNspSel == 'rand') {
       group.data <- ENMeval::get.randomkfold(occs.xy, rvs$bgPts, input$kfolds)
-      rvs %>% writeLog("Occurrences partitioned by random k-fold (k = ", input$kfolds, ").")
+      logs %>% writeLog("Occurrences partitioned by random k-fold (k = ", input$kfolds, ").")
     }
       
     return(group.data)

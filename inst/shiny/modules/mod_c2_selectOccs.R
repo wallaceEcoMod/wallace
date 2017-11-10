@@ -9,12 +9,12 @@ selectOccs_MOD <- function(input, output, session, rvs) {
   
   reactive({
     if (is.null(rvs$occs)) {
-      rvs %>% writeLog(type = 'error', "Before processing occurrences, 
+      logs %>% writeLog(type = 'error', "Before processing occurrences, 
                        obtain the data in component 1.")
       return()
     }
     if (is.null(rvs$polySelXY)) {
-      rvs %>% writeLog(type = 'error', 'The polygon has not been finished. Please 
+      logs %>% writeLog(type = 'error', 'The polygon has not been finished. Please 
                                         press "Finish" on the map toolbar, then 
                                         the "Select Occurrences" button.')
       return()
@@ -34,7 +34,7 @@ selectOccs_MOD <- function(input, output, session, rvs) {
     
     occs.sel <- rvs$occs[ptSelIndex,]
     
-    rvs %>% writeLog("Keeping only occurrences with occID = ", selIDs, 
+    logs %>% writeLog("Keeping only occurrences with occID = ", selIDs, 
                      ". Updated data has n = ", nrow(occs.sel), " records.")
     return(occs.sel)
   })

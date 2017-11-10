@@ -21,16 +21,16 @@ maxent_UI <- function(id) {
 maxent_MOD <- function(input, output, session, rvs) {
   reactive({
     if (is.null(rvs$occsGrp)) {
-      rvs %>% writeLog(type = 'error', "Before building a model, partition 
+      logs %>% writeLog(type = 'error', "Before building a model, partition 
                        occurrences in component 5.")
       return()
     }
     if (is.null(input$fcs)) {
-      rvs %>% writeLog(type = 'error', "No feature classes selected.")
+      logs %>% writeLog(type = 'error', "No feature classes selected.")
       return()
     }
     if (!require('rJava')) {
-      rvs %>% writeLog(type = "error", 'Package rJava cannot load. 
+      logs %>% writeLog(type = "error", 'Package rJava cannot load. 
                Please download the latest version of Java, and make sure it is the 
                correct version (e.g. 64-bit for a 64-bit system). After installing, 
                try "library(rJava)". If it loads properly, restart Wallace and try again.
@@ -40,7 +40,7 @@ maxent_MOD <- function(input, output, session, rvs) {
     }
     
     if (is.null(input$fcs)) {
-      rvs %>% writeLog(type = 'error', 'Select feature classes first.')
+      logs %>% writeLog(type = 'error', 'Select feature classes first.')
       return()
     }
     
@@ -63,7 +63,7 @@ maxent_MOD <- function(input, output, session, rvs) {
     
     jar <- paste(system.file(package="dismo"), "/java/maxent.jar", sep='')
     if (!file.exists(jar)) {
-      rvs %>% writeLog(type = 'error', 'File maxent.jar missing. 
+      logs %>% writeLog(type = 'error', 'File maxent.jar missing. 
                      Please see directions to download and copy to directory on the toolbar.')
       return()
     }
@@ -85,7 +85,7 @@ maxent_MOD <- function(input, output, session, rvs) {
                                                avg.test.or10pct = Mean.OR10, var.test.or10pct = Var.OR10,
                                                parameters = nparam)
     
-    rvs %>% writeLog("Maxent ran successfully and output evaluation results for", nrow(e@results), "models.")
+    logs %>% writeLog("Maxent ran successfully and output evaluation results for", nrow(e@results), "models.")
     
     return(e)
   })

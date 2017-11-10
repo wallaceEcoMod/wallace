@@ -9,13 +9,13 @@ removeByID_UI <- function(id) {
 removeByID_MOD <- function(input, output, session, rvs) {
   reactive({
     if (is.null(rvs$occs)) {
-      rvs %>% writeLog(type = 'error', "Before processing occurrences, 
+      logs %>% writeLog(type = 'error', "Before processing occurrences, 
                        obtain the data in component 1.")
       return()
     }
     
     if (!(input$removeID %in% rvs$occs$occID)) {
-      rvs %>% writeLog(type = 'error','Entered ID not found.')
+      logs %>% writeLog(type = 'error','Entered ID not found.')
       return()
     }
     
@@ -26,7 +26,7 @@ removeByID_MOD <- function(input, output, session, rvs) {
     # record all removed ids
     rvs$removedIDs <- c(rvs$removedIDs, input$removeID)
     
-    rvs %>% writeLog("Removed occurrence with ID = ", input$removeID, 
+    logs %>% writeLog("Removed occurrence with ID = ", input$removeID, 
                      ". Updated data has n = ", nrow(rvs$occs), " records.")
     return(occs.remID)
   })
