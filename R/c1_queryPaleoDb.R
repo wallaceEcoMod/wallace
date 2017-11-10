@@ -1,4 +1,3 @@
-
 #' c1_queryPaleoDb
 #' 
 #' \code{c1_queryPaleoDb} returns species occurrences
@@ -20,14 +19,14 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, rvs) {
   nameSplit <- length(unlist(strsplit(spName, " ")))
   # if two names not entered, throw error and return
   if (nameSplit != 2) {
-    rvs %>% writeLog(type = 'error', 'Please input both genus and species names.')
+    logs %>% writeLog(type = 'error', 'Please input both genus and species names.')
     return()
   }
   
   
   if (occDb=="PaleobioDB"){
     if (timeInterval == "LGM") {
-      rvs %>% writeLog(type = 'error', 'PaleobioDB does not have separate LGM records. You can donwload Holocene records only')
+      logs %>% writeLog(type = 'error', 'PaleobioDB does not have separate LGM records. You can donwload Holocene records only')
       return()
     }
     # query database
@@ -38,17 +37,9 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, rvs) {
     
   }
   
-#  if (occDb=="neotoma"){
-#   # query database
-#    withProgress(message = paste("Querying", occDb, "..."), {
-#      q <- paleobioDB::pbdb_occurrences(taxon_name=spName, limit=occNum, vocab="pbdb",  
-#                                        max_ma= 0.02)
-#    })
-#  }
-  
-  
+
   if (class (q) == "try-error"){
-    rvs %>% writeLog(type = 'error', 'No records found for ', spName, ". Please check the spelling.") 
+    logs %>% writeLog(type = 'error', 'No records found for ', spName, ". Please check the spelling.") 
   } else {
    
     # get total number of records found in database 
@@ -67,7 +58,7 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, rvs) {
   # subset to just records with latitude and longitude
   occsXY<-  occsOrig [!is.na ( occsOrig$longitude) & !is.na ( occsOrig$latitude), ]
   if (nrow(occsXY) == 0) {
-    rvs %>% writeLog(type = 'warning', 'No records with coordinates found in', occDb, "for", spName, ".")
+    logs %>% writeLog(type = 'warning', 'No records with coordinates found in', occDb, "for", spName, ".")
   }
   
   dups <- duplicated(occsXY[,c('longitude','latitude')])
@@ -79,16 +70,26 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, rvs) {
   occs <- occs %>% dplyr::select(dplyr::one_of(cols)) %>%
     dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent)))  # make new column for leaflet marker popup content
   
+  }
+  
+  
+if (occDb=="neotoma"){
+# query database
+withProgress(message = paste("Querying", occDb, "..."), {
+q <- paleobioDB::pbdb_occurrences(taxon_name=spName, limit=occNum, vocab="pbdb",  
+  max_ma= 0.02)
+ })
+  
+}
+  
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
   
   dupsRem <- nrow(occsXY) - nrow(occs)
-  rvs %>% writeLog('Total', occDb, 'records for', spName, 'returned [', nrow(occsOrig),
-                   '] out of [', totRows, '] total (limit ', occNum, ').
+  logs %>% writeLog('Total', occDb, 'records for', spName, 'returned [', nrow(occsOrig),
+                    '] out of [', totRows, '] total (limit ', occNum, ').
                    Records without coordinates removed [', noCoordsRem, '].
                    Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')
-  
-  return(list(occsOrig=occsOrig, occsXY=occsXY, occs=occs))
-  }
+  return(list(occsOrig=occsOrig, occsXY=occsXY, occs=occs)) 
 }
 
 

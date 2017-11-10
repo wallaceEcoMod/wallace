@@ -8,9 +8,11 @@ queryDb_UI <- function(id) {
                  choices = list("Last Glacial Maximum" = 'LGM',
                                 "Holocene" = 'Holo'), inline = TRUE),
     tags$div(title='Examples: Canis lupus, Crocuta crocuta',
-             textInput(ns("spName"), label = "Enter species scientific name", placeholder = 'format: Genus species')),
+             textInput(ns("spName"), label = "Enter species scientific name", 
+                       placeholder = 'format: Genus species')),
     tags$div(title='Maximum number of occurrences recovered from databases. Downloaded records are not sorted randomly: rows are always consistent between downloads.',
-             sliderInput(ns("occNum"), "Set maximum number of occurrences", min = 1, max = 500, value = 100))
+             sliderInput(ns("occNum"), "Set maximum number of occurrences", 
+                         min = 1, max = 500, value = 100))
   )
 }
 
