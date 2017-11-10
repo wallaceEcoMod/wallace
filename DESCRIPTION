@@ -41,4 +41,4 @@ Description: The 'shiny' application Wallace is a modular platform for reproduci
 License: GPL-3
 URL: https://wallaceEcoMod.github.io
 Encoding: UTF-8
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

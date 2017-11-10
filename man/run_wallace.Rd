@@ -21,4 +21,3 @@ run_wallace()
 \author{
 Jamie M. Kass
 }
-

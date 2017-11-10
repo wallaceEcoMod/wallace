@@ -1,4 +1,10 @@
-source("funcs/functions.R", local = TRUE)
+wd <- getwd()
+source("funcs/functions.R")
+setwd("..")
+setwd("..")
+modFuncs <- list.files(path="R", pattern="^c", full.names=TRUE)
+sapply(modFuncs, source)
+setwd(wd)
 
 options(shiny.maxRequestSize=5000*1024^2)
 
@@ -15,8 +21,9 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("dlProj")
   
   # initialize module parameters list
-  rvs <- reactiveValues(logs = logInit(), comp1='', comp2='', comp3='', comp4.shp='', comp4.buf=0,
+  rvs <- reactiveValues(comp1='', comp2='', comp3='', comp4.shp='', comp4.buf=0,
                         comp5='', comp6='', comp7.type='', comp7='', comp8.pj='', comp8.esim='')
+  logs <- reactiveVal(logInit())
   
   observeEvent(input$load, {
     f <- read.csv('/Users/musasabi/Downloads/Puma concolor_partitioned_occs(1).csv')
@@ -45,7 +52,7 @@ shinyServer(function(input, output, session) {
   
   # initialize log window
   output$log <- renderUI({tags$div(id='logHeader', tags$div(id='logContent', 
-                                                            HTML(paste0(rvs$logs, "<br>", collapse = ""))))})
+                                                            HTML(paste0(logs(), "<br>", collapse = ""))))})
   
   ######################## #
   ### GUIDANCE TEXT ####

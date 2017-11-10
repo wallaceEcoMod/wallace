@@ -16,13 +16,13 @@
 #' @examples
 #' queryDb(spName = "Tremarctos ornatus", occDb = "gbif", occNum = 100)
 
-c1_queryDb <- function(spName, occDb, occNum, rvs) {
+c1_queryDb <- function(spName, occDb, occNum, logs) {
   spName <- trimws(spName)
   # figure out how many separate names (components of scientific name) were entered
   nameSplit <- length(unlist(strsplit(spName, " ")))
   # if two names not entered, throw error and return
   if (nameSplit != 2) {
-    rvs %>% writeLog(type = 'error', 'Please input both genus and species names.')
+    logs %>% writeLog(type = 'error', 'Please input both genus and species names.')
     return()
   }
   
@@ -36,7 +36,7 @@ c1_queryDb <- function(spName, occDb, occNum, rvs) {
   
   # if species not found, print message to log box and return
   if (q[[occDb]]$meta$found == 0) {
-    rvs %>% writeLog(type = 'error', 'No records found for ', spName, ". Please check the spelling.")
+    logs %>% writeLog(type = 'error', 'No records found for ', spName, ". Please check the spelling.")
   }
   # extract occurrence tibble
   occsOrig <- q[[occDb]]$data[[formatSpName(spName)]]
@@ -50,7 +50,7 @@ c1_queryDb <- function(spName, occDb, occNum, rvs) {
   # subset to just records with latitude and longitude
   occsXY <- occsOrig[!is.na(occsOrig$latitude) & !is.na(occsOrig$longitude),]
   if (nrow(occsXY) == 0) {
-    rvs %>% writeLog(type = 'warning', 'No records with coordinates found in', occDb, "for", spName, ".")
+    logs %>% writeLog(type = 'warning', 'No records with coordinates found in', occDb, "for", spName, ".")
   }
   
   dups <- duplicated(occsXY[,c('longitude','latitude')])
@@ -89,7 +89,7 @@ c1_queryDb <- function(spName, occDb, occNum, rvs) {
   
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
   dupsRem <- nrow(occsXY) - nrow(occs)
-  rvs %>% writeLog('Total', occDb, 'records for', spName, 'returned [', nrow(occsOrig),
+  logs %>% writeLog('Total', occDb, 'records for', spName, 'returned [', nrow(occsOrig),
                    '] out of [', totRows, '] total (limit ', occNum, ').
                    Records without coordinates removed [', noCoordsRem, '].
                    Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')

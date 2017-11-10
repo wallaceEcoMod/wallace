@@ -47,7 +47,7 @@ logInit <- function() {
 }
 
 # add text to log
-writeLog <- function(mp, ..., type = 'default') {
+writeLog <- function(logs, ..., type = 'default') {
   if (type == "default") {
     pre <- "> "
   } else if (type == 'error') {
@@ -58,7 +58,7 @@ writeLog <- function(mp, ..., type = 'default') {
   
   args <- list(pre, ...)
   newEntries <- paste(args, collapse = ' ')
-  isolate({mp$logs <- paste(mp$logs, newEntries, sep = '<br>')})
+  paste(logs(), newEntries, sep = '<br>')
 }
 
 ####################### #

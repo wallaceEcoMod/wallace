@@ -1,4 +1,3 @@
-source("R/c1_queryDb.R", chdir = TRUE)
 
 queryDb_UI <- function(id) {
   ns <- NS(id)
@@ -16,6 +15,6 @@ queryDb_UI <- function(id) {
 
 queryDb_MOD <- function(input, output, session, rvs) {
   reactive({
-    c1_queryDb(input$spName, input$occDb, input$occNum, rvs)
+    c1_queryDb(input$spName, input$occDb, input$occNum, logs)
   })
 }
