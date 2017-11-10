@@ -100,8 +100,8 @@ map_plotLocs <- function(map, locs, fillColor='red', fillOpacity=0.2) {
 # zoom to occ pts
 zoom2Occs <- function(map, occs) {
   # map %>% clearShapes()
-  lati <- occs[,3]
-  longi <- occs[,2]
+  lati <- occs["latitude"]
+  longi <- occs["longitude"]
   z <- smartZoom(longi, lati)
   map %>% fitBounds(z[1], z[2], z[3], z[4])
   

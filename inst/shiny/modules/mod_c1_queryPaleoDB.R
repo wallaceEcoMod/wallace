@@ -1,4 +1,4 @@
-queryDb_UI <- function(id) {
+queryPaleoDb_UI <- function(id) {
   ns <- NS(id)
   tagList(
     radioButtons(ns("occDb"), "Choose Database",
@@ -14,8 +14,8 @@ queryDb_UI <- function(id) {
   )
 }
 
-queryDb_MOD <- function(input, output, session, rvs) {
+queryPaleoDb_MOD <- function(input, output, session, rvs) {
   reactive({
-    c1_queryPaleoDb(input$spName, input$occDb, input$occNum, input$timeInterval, rvs)
+    c1_queryPaleoDb(input$spName, input$occDb, input$occNum, input$timeInterval, logs)
   })
 }

@@ -1,6 +1,6 @@
 #' Query online database for species occurrence records.
 #'
-#' \code{queryDb} returns a formatted tibble of species occurrences with a selection of appropriate fields.
+#' \code{c1_queryDb} returns a formatted tibble of species occurrences with a selection of appropriate fields.
 #'
 #' This function is called by the module mod_c1_queryDb to query a database for
 #' species occurrence records, subset to only those records with coordinates,
@@ -14,12 +14,13 @@
 #' @return formatted tibble of species occurrence records 
 #'
 #' @examples
-#' queryDb(spName = "Tremarctos ornatus", occDb = "gbif", occNum = 100)
+#' c1_queryDb(spName = "Tremarctos ornatus", occDb = "gbif", occNum = 100)
 
 c1_queryDb <- function(spName, occDb, occNum, logs) {
   spName <- trimws(spName)
   # figure out how many separate names (components of scientific name) were entered
   nameSplit <- length(unlist(strsplit(spName, " ")))
+  print(nameSplit)
   # if two names not entered, throw error and return
   if (nameSplit != 2) {
     logs %>% writeLog(type = 'error', 'Please input both genus and species names.')
@@ -56,13 +57,15 @@ c1_queryDb <- function(spName, occDb, occNum, logs) {
   dups <- duplicated(occsXY[,c('longitude','latitude')])
   occs <- occsXY[!dups,]
   
+  occs <- occs %>% rename(taxon_name = name, institution_code = institutionCode, state_province = stateProvince, record_type = basisOfRecord)
+  
   # standardize VertNet column names
   if (occDb == 'vertnet') {
     fields <- c('institutioncode', 'stateprovince', 'basisofrecord', 'maximumelevationinmeters')
     for (i in fields) {
       if (!(i %in% names(occs))) occs[i] <- NA
     }
-    occs <- occs %>% dplyr::rename(institutionCode = institutioncode, stateProvince = stateprovince, basisOfRecord = basisofrecord, elevation = maximumelevationinmeters)
+    occs <- occs %>% dplyr::rename(institution_code = institutioncode, state_province = stateprovince, record_type = basisofrecord, elevation = maximumelevationinmeters)
   }
   
   # standardize BISON column names
@@ -71,17 +74,17 @@ c1_queryDb <- function(spName, occDb, occNum, logs) {
     for (i in fields) {
       if (!(i %in% names(occs))) occs[i] <- NA
     }
-    occs <- occs %>% dplyr::rename(country = countryCode, institutionCode = ownerInstitutionCollectionCode, locality = calculatedCounty)
+    occs <- occs %>% dplyr::rename(country = countryCode, institution_code = ownerInstitutionCollectionCode, locality = calculatedCounty)
   }
   
-  for (col in c("year", "institutionCode", "country", "stateProvince",
-                "locality", "elevation", "basisOfRecord")) {  # add all cols to match origOccs if not already there
+  for (col in c("year", "institution_code", "country", "state_province",
+                "locality", "elevation", "record_type")) {  # add all cols to match origOccs if not already there
     if (!(col %in% names(occs))) occs[,col] <- NA
   }
   
   # subset by key columns and make id and popup columns
-  cols <- c("name", "longitude", "latitude","year", "institutionCode", "country", "stateProvince",
-            "locality", "elevation", "basisOfRecord", "occID")
+  cols <- c("taxon_name", "longitude", "latitude","year", "institution_code", "country", "state_province",
+            "locality", "elevation", "record_type", "occID")
   occs <- occs %>% dplyr::select(dplyr::one_of(cols)) %>%
     dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent)))  # make new column for leaflet marker popup content
   
