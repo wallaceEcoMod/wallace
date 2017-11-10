@@ -65,8 +65,8 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, rvs) {
   occs <- occsXY[!dups,]
  
   # subset by key columns and make id and popup columns
-  cols <- c("occID", "taxon_name", "longitude", "latitude","time_interval", "collection_no", "country", 
-            "collection_no", "record_type")
+  cols <- c("taxon_name", "longitude", "latitude","time_interval", "collection_no", "country", 
+            "collection_no", "record_type", "occID")
   occs <- occs %>% dplyr::select(dplyr::one_of(cols)) %>%
     dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent)))  # make new column for leaflet marker popup content
   
@@ -91,7 +91,6 @@ q <- paleobioDB::pbdb_occurrences(taxon_name=spName, limit=occNum, vocab="pbdb",
                    Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')
   return(list(occsOrig=occsOrig, occsXY=occsXY, occs=occs)) 
 }
-
 
 popUpContent <- function(x) {
   lat <- round(as.numeric(x['latitude']), digits = 2)

@@ -11,6 +11,7 @@ options(shiny.maxRequestSize=5000*1024^2)
 shinyServer(function(input, output, session) {
   # disable download buttons
   shinyjs::disable("dlDbOccs")
+  shinyjs::disable("dlPaleoDbOccs")
   shinyjs::disable("dlProcOccs")
   # shinyjs::disable("dlEnvs")
   shinyjs::disable("dlMskEnvs")
@@ -175,7 +176,7 @@ shinyServer(function(input, output, session) {
   ### COMPONENT 1: OBTAIN OCCURRENCE DATA ####
   ########################################## #
   
-  # module Query Database
+  # module Query Database (Present)
   dbOccs <- callModule(queryDb_MOD, 'c1_queryDb', rvs)
   
   spName <- reactive(as.character(rvs$occs$name[1]))
@@ -192,6 +193,26 @@ shinyServer(function(input, output, session) {
       map_plotLocs(rvs$occs) %>%
       zoom2Occs(rvs$occs)
     shinyjs::enable("dlDbOccs")
+  })
+  
+  # module Query Database (Paleo)
+  dbPaleoOccs <- callModule(queryPaleoDb_MOD, 'c1_queryPaleoDb', rvs)
+  
+  spName <- reactive(as.character(rvs$occs$name[1]))
+  
+  observeEvent(input$goPaleoDbOccs, {
+    rvs$occs <- dbPaleoOccs()$occs
+    rvs$occsPreProc <- rvs$occs
+    # record for RMD
+    rvs$comp1 <- 'db'
+    print(rvs$occs)
+    map %>%
+      clearMarkers() %>%
+      clearShapes() %>%
+      clearImages() %>%
+      map_plotLocs(rvs$occs) %>%
+      zoom2Occs(rvs$occs)
+    shinyjs::enable("dlPaleoDbOccs")
   })
   
   # module User Occurrence Data
@@ -218,7 +239,7 @@ shinyServer(function(input, output, session) {
     req(rvs$occs)
     occsDT <- rvs$occs %>% dplyr::mutate(longitude = round(as.numeric(longitude), digits = 2),
                                   latitude = round(as.numeric(latitude), digits = 2))
-    occsDT %>% dplyr::select(name, occID, longitude:basisOfRecord)
+    occsDT %>% dplyr::select(taxon_name, occID, longitude:record_type)
   }, rownames = FALSE)
   
   # handle downloading of original GBIF records after cleaning
