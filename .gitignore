@@ -1,6 +1,9 @@
 # Mac OS files
 .DS_Store
 
+# HTML files
+.html
+
 # History files
 .Rhistory
 .Rapp.history
