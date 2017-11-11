@@ -48,6 +48,7 @@ logInit <- function() {
 
 # add text to log
 writeLog <- function(logs, ..., type = 'default') {
+  if (is.null(logs)) return()
   if (type == "default") {
     pre <- "> "
   } else if (type == 'error') {

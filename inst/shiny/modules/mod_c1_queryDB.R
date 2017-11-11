@@ -15,6 +15,19 @@ queryDb_UI <- function(id) {
 
 queryDb_MOD <- function(input, output, session) {
   reactive({
-    c1_queryDb(input$spName, input$occDb, input$occNum, logs, map)
+    c1_queryDb_out <- c1_queryDb(input$spName, input$occDb, input$occNum, logs, shiny=TRUE)
+    occs <- c1_queryDb_out$occs
+    ########################################
+    # MAPPING ####
+    ########################################
+    
+    map %>%
+      clearMarkers() %>%
+      clearShapes() %>%
+      clearImages() %>%
+      addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, radius = 5, 
+                       color = 'red', fill = TRUE, fillColor = 'red', 
+                       fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
+      zoom2Occs(occs)
   })
 }

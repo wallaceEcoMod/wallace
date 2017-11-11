@@ -16,11 +16,11 @@
 #' @examples
 #' c1_queryDb(spName = "Tremarctos ornatus", occDb = "gbif", occNum = 100)
 
-c1_queryDb <- function(spName, occDb, occNum, logs, map) {
+c1_queryDb <- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
+  
   spName <- trimws(spName)
   # figure out how many separate names (components of scientific name) were entered
   nameSplit <- length(unlist(strsplit(spName, " ")))
-  print(nameSplit)
   # if two names not entered, throw error and return
   if (nameSplit != 2) {
     logs %>% writeLog(type = 'error', 'Please input both genus and species names.')
@@ -28,9 +28,14 @@ c1_queryDb <- function(spName, occDb, occNum, logs, map) {
   }
   
   # query database
-  withProgress(message = paste("Querying", occDb, "..."), {
+  if (shiny == TRUE) {
+    withProgress(message = paste("Querying", occDb, "..."), {
+      q <- spocc::occ(spName, occDb, limit=occNum)
+    })  
+  } else {
     q <- spocc::occ(spName, occDb, limit=occNum)
-  })
+  }
+  
   
   # get total number of records found in database
   totRows <- q[[occDb]]$meta$found
@@ -86,23 +91,11 @@ c1_queryDb <- function(spName, occDb, occNum, logs, map) {
   
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
   dupsRem <- nrow(occsXY) - nrow(occs)
+  
   logs %>% writeLog('Total', occDb, 'records for', spName, 'returned [', nrow(occsOrig),
                     '] out of [', totRows, '] total (limit ', occNum, ').
                     Records without coordinates removed [', noCoordsRem, '].
                     Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')
-  
-  ########################################
-  # MAPPING ####
-  ########################################
-  
-  map %>%
-    clearMarkers() %>%
-    clearShapes() %>%
-    clearImages() %>%
-    addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, radius = 5, 
-                     color = 'red', fill = TRUE, fillColor = 'red', 
-                     fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
-    zoom2Occs(occs)
   
   return(list(occsOrig=occsOrig, occsXY=occsXY, occs=occs))
 }
