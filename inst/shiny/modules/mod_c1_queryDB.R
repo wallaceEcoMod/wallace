@@ -13,8 +13,8 @@ queryDb_UI <- function(id) {
   )
 }
 
-queryDb_MOD <- function(input, output, session, rvs) {
+queryDb_MOD <- function(input, output, session) {
   reactive({
-    c1_queryDb(input$spName, input$occDb, input$occNum, logs)
+    c1_queryDb(input$spName, input$occDb, input$occNum, logs, map)
   })
 }

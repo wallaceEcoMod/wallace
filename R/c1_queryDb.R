@@ -16,7 +16,7 @@
 #' @examples
 #' c1_queryDb(spName = "Tremarctos ornatus", occDb = "gbif", occNum = 100)
 
-c1_queryDb <- function(spName, occDb, occNum, logs) {
+c1_queryDb <- function(spName, occDb, occNum, logs, map) {
   spName <- trimws(spName)
   # figure out how many separate names (components of scientific name) were entered
   nameSplit <- length(unlist(strsplit(spName, " ")))
@@ -56,15 +56,14 @@ c1_queryDb <- function(spName, occDb, occNum, logs) {
   
   dups <- duplicated(occsXY[,c('longitude','latitude')])
   occs <- occsXY[!dups,]
-  
-  occs <- occs %>% rename(taxon_name = name, institution_code = institutionCode, state_province = stateProvince, record_type = basisOfRecord)
+  fields <- c('institutionCode', 'stateProvince', 'basisOfRecord')
+  for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
+  occs <- occs %>% dplyr::rename(taxon_name = name, institution_code = institutionCode, state_province = stateProvince, record_type = basisOfRecord)
   
   # standardize VertNet column names
   if (occDb == 'vertnet') {
     fields <- c('institutioncode', 'stateprovince', 'basisofrecord', 'maximumelevationinmeters')
-    for (i in fields) {
-      if (!(i %in% names(occs))) occs[i] <- NA
-    }
+    for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
     occs <- occs %>% dplyr::rename(institution_code = institutioncode, state_province = stateprovince, record_type = basisofrecord, elevation = maximumelevationinmeters)
   }
   
@@ -94,6 +93,17 @@ c1_queryDb <- function(spName, occDb, occNum, logs) {
            '] out of [', totRows, '] total (limit ', occNum, ').
                    Records without coordinates removed [', noCoordsRem, '].
                    Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')
+  
+  # MAPPING
+  map %>%
+    clearMarkers() %>%
+    clearShapes() %>%
+    clearImages() %>%
+    addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude,
+                     radius = 5, color = 'red', fill = TRUE,
+                     fillColor = 'red', fillOpacity = 0.2,
+                     weight = 2, popup = ~pop) %>%
+    zoom2Occs(occs)
   
   return(list(occsOrig=occsOrig, occsXY=occsXY, occs=occs))
 }

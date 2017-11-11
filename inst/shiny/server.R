@@ -177,7 +177,7 @@ shinyServer(function(input, output, session) {
   ########################################## #
   
   # module Query Database (Present)
-  dbOccs <- callModule(queryDb_MOD, 'c1_queryDb', rvs)
+  dbOccs <- callModule(queryDb_MOD, 'c1_queryDb')
   
   spName <- reactive(as.character(rvs$occs$name[1]))
   
@@ -186,12 +186,7 @@ shinyServer(function(input, output, session) {
     rvs$occsPreProc <- rvs$occs
     # record for RMD
     rvs$comp1 <- 'db'
-    map %>%
-      clearMarkers() %>%
-      clearShapes() %>%
-      clearImages() %>%
-      map_plotLocs(rvs$occs) %>%
-      zoom2Occs(rvs$occs)
+    
     shinyjs::enable("dlDbOccs")
   })
   
