@@ -56,53 +56,52 @@ c1_queryDb <- function(spName, occDb, occNum, logs, map) {
   
   dups <- duplicated(occsXY[,c('longitude','latitude')])
   occs <- occsXY[!dups,]
-  fields <- c('institutionCode', 'stateProvince', 'basisOfRecord')
-  for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
-  occs <- occs %>% dplyr::rename(taxon_name = name, institution_code = institutionCode, state_province = stateProvince, record_type = basisOfRecord)
   
-  # standardize VertNet column names
-  if (occDb == 'vertnet') {
+  if (occDb == 'gbif') {
+    fields <- c('institutionCode', 'stateProvince', 'basisOfRecord', "country", 
+                "locality", "elevation")
+    for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
+    occs <- occs %>% dplyr::rename(taxon_name = name, 
+                                   institution_code = institutionCode, 
+                                   state_province = stateProvince, 
+                                   record_type = basisOfRecord)  
+    # standardize VertNet column names
+  } else if (occDb == 'vertnet') {
     fields <- c('institutioncode', 'stateprovince', 'basisofrecord', 'maximumelevationinmeters')
     for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
     occs <- occs %>% dplyr::rename(institution_code = institutioncode, state_province = stateprovince, record_type = basisofrecord, elevation = maximumelevationinmeters)
-  }
-  
-  # standardize BISON column names
-  if (occDb == 'bison') {
+    # standardize BISON column names
+  } else if (occDb == 'bison') {
     fields <- c('countryCode', 'ownerInstitutionCollectionCode', 'calculatedCounty', 'elevation')
-    for (i in fields) {
-      if (!(i %in% names(occs))) occs[i] <- NA
-    }
+    for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
     occs <- occs %>% dplyr::rename(country = countryCode, institution_code = ownerInstitutionCollectionCode, locality = calculatedCounty)
-  }
-  
-  for (col in c("year", "institution_code", "country", "state_province",
-                "locality", "elevation", "record_type")) {  # add all cols to match origOccs if not already there
-    if (!(col %in% names(occs))) occs[,col] <- NA
   }
   
   # subset by key columns and make id and popup columns
   cols <- c("taxon_name", "longitude", "latitude","year", "institution_code", "country", "state_province",
             "locality", "elevation", "record_type", "occID")
-  occs <- occs %>% dplyr::select(dplyr::one_of(cols)) %>%
+  occs <- occs %>% 
+    dplyr::select(dplyr::one_of(cols)) %>%
     dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent)))  # make new column for leaflet marker popup content
   
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
   dupsRem <- nrow(occsXY) - nrow(occs)
   logs %>% writeLog('Total', occDb, 'records for', spName, 'returned [', nrow(occsOrig),
-           '] out of [', totRows, '] total (limit ', occNum, ').
-                   Records without coordinates removed [', noCoordsRem, '].
-                   Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')
+                    '] out of [', totRows, '] total (limit ', occNum, ').
+                    Records without coordinates removed [', noCoordsRem, '].
+                    Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')
   
-  # MAPPING
+  ########################################
+  # MAPPING ####
+  ########################################
+  
   map %>%
     clearMarkers() %>%
     clearShapes() %>%
     clearImages() %>%
-    addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude,
-                     radius = 5, color = 'red', fill = TRUE,
-                     fillColor = 'red', fillOpacity = 0.2,
-                     weight = 2, popup = ~pop) %>%
+    addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, radius = 5, 
+                     color = 'red', fill = TRUE, fillColor = 'red', 
+                     fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
     zoom2Occs(occs)
   
   return(list(occsOrig=occsOrig, occsXY=occsXY, occs=occs))
