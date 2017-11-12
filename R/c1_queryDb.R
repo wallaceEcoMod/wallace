@@ -97,7 +97,7 @@ c1_queryDb <- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
                     Records without coordinates removed [', noCoordsRem, '].
                     Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')
   
-  return(list(occsOrig=occsOrig, occsXY=occsXY, occs=occs))
+  return(occs)
 }
 
 formatSpName <- function(spName) paste(strsplit(spName, split=' ')[[1]], collapse='_')

@@ -1,5 +1,7 @@
 wd <- getwd()
+# load general functions
 source("funcs/functions.R")
+# load module functions
 setwd("..")
 setwd("..")
 modFuncs <- list.files(path="R", pattern="^c", full.names=TRUE)
@@ -22,6 +24,7 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("dlProj")
   
   # initialize module parameters list
+  rmdVals <- reactiveValues()
   rvs <- reactiveValues(comp1='', comp2='', comp3='', comp4.shp='', comp4.buf=0,
                         comp5='', comp6='', comp7.type='', comp7='', comp8.pj='', comp8.esim='')
   logs <- reactiveVal(logInit())
@@ -47,9 +50,7 @@ shinyServer(function(input, output, session) {
   gtext <- reactiveValues()
   
   # load modules
-  for (f in list.files('./modules')) {
-    source(file.path('modules', f), local=TRUE)
-  }
+  for (f in list.files('./modules')) source(file.path('modules', f), local=TRUE)
   
   # initialize log window
   output$log <- renderUI({tags$div(id='logHeader', tags$div(id='logContent', 
@@ -177,21 +178,18 @@ shinyServer(function(input, output, session) {
   ########################################## #
   
   # module Query Database (Present)
-  dbOccs <- callModule(queryDb_MOD, 'c1_queryDb')
+  dbOccs <- callModule(queryDb_MOD, 'c1_queryDb_uiID')
   
   spName <- reactive(as.character(rvs$occs$name[1]))
   
   observeEvent(input$goDbOccs, {
-    rvs$occs <- dbOccs()$occs
+    rvs$occs <- dbOccs()
     rvs$occsPreProc <- rvs$occs
-    # record for RMD
-    rvs$comp1 <- 'db'
-    
     shinyjs::enable("dlDbOccs")
   })
   
   # module Query Database (Paleo)
-  dbPaleoOccs <- callModule(queryPaleoDb_MOD, 'c1_queryPaleoDb', rvs)
+  dbPaleoOccs <- callModule(queryPaleoDb_MOD, 'c1_queryPaleoDb_uiID', rvs)
   
   spName <- reactive(as.character(rvs$occs$name[1]))
   
@@ -863,8 +861,8 @@ shinyServer(function(input, output, session) {
       bcSels <- printVecAsis(rvs$bcSels)
       
       exp <- knitr::knit_expand(system.file("Rmd", 'userReport.Rmd', package = "wallace"), 
-                                curWD=curWD, spName=spName(), 
-                                dbName=rvs$occDb, occNum=rvs$occNum, occsCSV=rvs$userCSV$name,  # comp 1
+                                curWD=curWD, spName=rmdVals$spName, 
+                                occDb=rmdVals$occDb, occNum=rmdVals$occNum, occsCSV=rvs$userCSV$name,  # comp 1
                                 thinDist=rvs$thinDist, occsRemoved=rvs$occsRem, occsSelX=polySelX, occsSelY=polySelY,  # comp 2
                                 bcRes=rvs$bcRes, bcLat=rvs$bcLat, bcLon=rvs$bcLon, # comp 3
                                 userEnvs=printVecAsis(rvs$userEnvs$name), bcSels=bcSels, # comp 3
