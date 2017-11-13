@@ -1,32 +1,30 @@
 #' c3_ecoClimate
 #' 
 #' download ecoClimate variables. see www.ecoclimate.org
+#' For EcoClimate the resolution is fixed to 0.5 degrees  
 #' 
-#' @param bcRes numeric resolution of the climatic layers
+#' @param bcAOGCM name of the Atmospheric and Oceanic Global Circulation Model. 
+#' Options are: "CCSM", "CNRM", "MIROC", "COSMOS", "FGOALS", "GISS", "IPSL","MRI", "MPI"
+#' @param bcScenario select the temporal scenario that you want to download. 
+#' Options are: "LGM" (Last Glacial Maximum, 21,000 years ago), "Holo" ()
 #' @param bcSelChoice boolean TRUE/FALSE TRUE=user selects the variables
 #' @param bcSels list of boolean data. selected variables
 #' @param rvs monster list 
 #' 
 #' 
-#' 
 
-c3_ecoClimate<- function (bcRes, bcSelChoice, bcSels, rvs){
+c3_ecoClimate<- function (bcAOGCM, bcScenario, bcSelChoice, bcSels, rvs){
 
 if (is.null(rvs$occs)) {
   rvs %>% writeLog(type = 'error', "Before obtaining environmental variables, 
                    obtain occurrence data in component 1.")
   return()
 }
-if (input$bcRes == '') {
-  rvs %>% writeLog(type = 'error', 'Select a raster resolution.')
-  return()
-}
 
 # record for RMD
-rvs$bcRes <- input$bcRes
 rvs$bcSels <- input$bcSels
 
-withProgress(message = "Retrieving WorldClim data...", {
+withProgress(message = "Retrieving ecoClimate data...", {
   if (input$bcRes == 0.5) {
     wcbc <- raster::getData(name = "worldclim", var = "bio", res = input$bcRes, 
                             lon = mapCntr()[1], lat = mapCntr()[2])
