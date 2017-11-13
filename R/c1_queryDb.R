@@ -16,11 +16,11 @@
 #' @examples
 #' c1_queryDb(spName = "Tremarctos ornatus", occDb = "gbif", occNum = 100)
 
-c1_queryDb <- function(spName, occDb, occNum, logs) {
+c1_queryDb <- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
+  
   spName <- trimws(spName)
   # figure out how many separate names (components of scientific name) were entered
   nameSplit <- length(unlist(strsplit(spName, " ")))
-  print(nameSplit)
   # if two names not entered, throw error and return
   if (nameSplit != 2) {
     logs %>% writeLog(type = 'error', 'Please input both genus and species names.')
@@ -28,9 +28,14 @@ c1_queryDb <- function(spName, occDb, occNum, logs) {
   }
   
   # query database
-  withProgress(message = paste("Querying", occDb, "..."), {
+  if (shiny == TRUE) {
+    withProgress(message = paste("Querying", occDb, "..."), {
+      q <- spocc::occ(spName, occDb, limit=occNum)
+    })  
+  } else {
     q <- spocc::occ(spName, occDb, limit=occNum)
-  })
+  }
+  
   
   # get total number of records found in database
   totRows <- q[[occDb]]$meta$found
@@ -57,45 +62,42 @@ c1_queryDb <- function(spName, occDb, occNum, logs) {
   dups <- duplicated(occsXY[,c('longitude','latitude')])
   occs <- occsXY[!dups,]
   
-  occs <- occs %>% rename(taxon_name = name, institution_code = institutionCode, state_province = stateProvince, record_type = basisOfRecord)
-  
-  # standardize VertNet column names
-  if (occDb == 'vertnet') {
+  if (occDb == 'gbif') {
+    fields <- c('institutionCode', 'stateProvince', 'basisOfRecord', "country", 
+                "locality", "elevation")
+    for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
+    occs <- occs %>% dplyr::rename(taxon_name = name, 
+                                   institution_code = institutionCode, 
+                                   state_province = stateProvince, 
+                                   record_type = basisOfRecord)  
+    # standardize VertNet column names
+  } else if (occDb == 'vertnet') {
     fields <- c('institutioncode', 'stateprovince', 'basisofrecord', 'maximumelevationinmeters')
-    for (i in fields) {
-      if (!(i %in% names(occs))) occs[i] <- NA
-    }
+    for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
     occs <- occs %>% dplyr::rename(institution_code = institutioncode, state_province = stateprovince, record_type = basisofrecord, elevation = maximumelevationinmeters)
-  }
-  
-  # standardize BISON column names
-  if (occDb == 'bison') {
+    # standardize BISON column names
+  } else if (occDb == 'bison') {
     fields <- c('countryCode', 'ownerInstitutionCollectionCode', 'calculatedCounty', 'elevation')
-    for (i in fields) {
-      if (!(i %in% names(occs))) occs[i] <- NA
-    }
+    for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
     occs <- occs %>% dplyr::rename(country = countryCode, institution_code = ownerInstitutionCollectionCode, locality = calculatedCounty)
-  }
-  
-  for (col in c("year", "institution_code", "country", "state_province",
-                "locality", "elevation", "record_type")) {  # add all cols to match origOccs if not already there
-    if (!(col %in% names(occs))) occs[,col] <- NA
   }
   
   # subset by key columns and make id and popup columns
   cols <- c("taxon_name", "longitude", "latitude","year", "institution_code", "country", "state_province",
             "locality", "elevation", "record_type", "occID")
-  occs <- occs %>% dplyr::select(dplyr::one_of(cols)) %>%
+  occs <- occs %>% 
+    dplyr::select(dplyr::one_of(cols)) %>%
     dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent)))  # make new column for leaflet marker popup content
   
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
   dupsRem <- nrow(occsXY) - nrow(occs)
-  logs %>% writeLog('Total', occDb, 'records for', spName, 'returned [', nrow(occsOrig),
-           '] out of [', totRows, '] total (limit ', occNum, ').
-                   Records without coordinates removed [', noCoordsRem, '].
-                   Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')
   
-  return(list(occsOrig=occsOrig, occsXY=occsXY, occs=occs))
+  logs %>% writeLog('Total', occDb, 'records for', spName, 'returned [', nrow(occsOrig),
+                    '] out of [', totRows, '] total (limit ', occNum, ').
+                    Records without coordinates removed [', noCoordsRem, '].
+                    Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')
+  
+  return(occs)
 }
 
 formatSpName <- function(spName) paste(strsplit(spName, split=' ')[[1]], collapse='_')

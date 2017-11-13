@@ -13,9 +13,9 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE, eval = FALSE)
 
 ```{r vars, echo = FALSE, include = FALSE, eval = TRUE}
 # comp1
-occs.db <- rvs$comp1 == 'db'
-occs.csv <- rvs$comp1 == 'csv'
-occs.any <- occs.db | occs.db
+occs.db <- !is.null({{occDb}})
+occs.user <- rvs$comp1 == 'csv'
+occs.any <- occs.db | occs.user
 # comp2
 poccs.rem <- 'rem' %in% rvs$comp2
 poccs.sel <- 'sel' %in% rvs$comp2
@@ -96,14 +96,14 @@ source(system.file('shiny/funcs', 'functions.R', package = 'wallace'))
 ```
 
 ```{asis, echo = occs.db, eval = occs.db, include = occs.db}
-The search for occurrences was limited to `r {{occNum}}` records. Obtain occurrence records of the selected species from the `r "{{dbName}}"` database.
+The search for occurrences was limited to `r {{occNum}}` records. Obtain occurrence records of the selected species from the `r "{{occDb}}"` database.
 ```
 
 ```{r occSearch, echo = occs.db, include = occs.db}
 # query selected database for occurrence records
-results <- spocc::occ(query = "{{spName}}", from = "{{dbName}}", limit = {{occNum}}, has_coords = TRUE)
+results <- spocc::occ(query = "{{spName}}", from = "{{occDb}}", limit = {{occNum}}, has_coords = TRUE)
 # retrieve data table from spocc object
-results.data <- results[["{{dbName}}"]]$data[[formatSpName("{{spName}}")]]
+results.data <- results[["{{occDb}}"]]$data[[formatSpName("{{spName}}")]]
 # remove rows with duplicate coordinates
 occs.dups <- duplicated(results.data[c('longitude', 'latitude')])
 occs <- results.data[!occs.dups,]
@@ -116,20 +116,20 @@ occs$occID <- row.names(occs)
 occs.xy <- occs[c('longitude', 'latitude')]
 ```
 
-```{asis, echo = occs.csv, eval = occs.csv, include = occs.csv}
-User CSV path with occurrence data. If the CSV file is not in the current workspace, change to the correct file path (e.g. "/Users/darwin/Documents/occs.csv").
+```{asis, echo = occs.user, eval = occs.user, include = occs.user}
+User CSV path with occurrence data. If the CSV file is not in the current workspace, change to the correct file path (e.g. "/Users/darwin/Documents/occs.user").
 ```
 
-```{r occInput, echo = occs.csv}
+```{r occInput, echo = occs.user}
 # NOTE: provide the path to the folder that contains the rasters
 d.occs <- ''
 # create path to user occurrences csv file
 userOccs.path <- file.path(d.occs, "{{occsCSV}}")
 # read in csv
-userOccs.csv <- read.csv(userOccs.path, header = TRUE)
+useroccs.user <- read.csv(userOccs.path, header = TRUE)
 # remove rows with duplicate coordinates
-occs.dups <- duplicated(userOccs.csv[c('longitude', 'latitude')])
-occs <- userOccs.csv[!occs.dups,]
+occs.dups <- duplicated(useroccs.user[c('longitude', 'latitude')])
+occs <- useroccs.user[!occs.dups,]
 # extract occurrence coordinates
 occs.xy <- occs[c('longitude', 'latitude')]
 ```
