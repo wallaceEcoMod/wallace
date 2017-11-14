@@ -73,26 +73,22 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, rvs) {
   }
   
   
-  
-if (occDb=="neotoma"){
-  if (timeInterval == "LGM") {
+#if (occDb=="neotoma"){
+#  if (timeInterval == "LGM") {
 # query database
-withProgress(message = paste("Querying", occDb, "..."), {
-q <- neotoma::get_dataset(taxonname= spName, 
-                              ageold = 25000, ageyoung=15000)
-
+#withProgress(message = paste("Querying", occDb, "..."), {
+#q <- neotoma::get_dataset(taxonname= spName, 
+#                             ageold = 25000, ageyoung=15000)
+#q <- neotoma::get_dataset(datasettype="pollen", ageold = 25000,
+#                          ageyoung=15000) %>% neotoma::get_download() %>% neotoma::compile_taxa('P25') %>% neotoma::compile_downloads() %>% filter(ageyoung < 25000 & ageold > 15000)
 ## hacer el objeto de salida! busca las columnas que te molan
-str (q[[1]][[1]])
-str (q[[1]][[2]])
-
-
-
-
-str (q)
-qq<- data.frame (q)
- })
+#str (q[[1]][[1]])
+#str (q[[1]][[2]])
+# })
+#
 }
   
+
 if (timeInterval == "Holo") {
       # query database
       withProgress(message = paste("Querying", occDb, "..."), {

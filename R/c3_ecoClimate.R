@@ -13,6 +13,9 @@
 #' 
 #' 
 
+
+library (repmis)
+
 c3_ecoClimate<- function (bcAOGCM, bcScenario, bcSelChoice, bcSels, rvs){
 
 if (is.null(rvs$occs)) {
@@ -24,17 +27,23 @@ if (is.null(rvs$occs)) {
 # record for RMD
 rvs$bcSels <- input$bcSels
 
-withProgress(message = "Retrieving ecoClimate data...", {
-  if (input$bcRes == 0.5) {
+withProgress (message = "Retrieving ecoClimate data...", {
+if (input$bcAOGCM == "CCSM") {
+
+
+
+
     wcbc <- raster::getData(name = "worldclim", var = "bio", res = input$bcRes, 
                             lon = mapCntr()[1], lat = mapCntr()[2])
+    
     rvs$bcLon <- mapCntr()[1]
     rvs$bcLat <- mapCntr()[2]
-  } else {
-    wcbc <- raster::getData(name = "worldclim", var = "bio", res = input$bcRes)
-    wcbc <- wcbc[[input$bcSels]]
-  }
+    
+}
 })
+
+
+
 
 if (raster::nlayers(wcbc) == 19) {
   bcSels <- 'bio1-19'
