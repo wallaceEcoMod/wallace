@@ -24,92 +24,84 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, rvs) {
   }
   
   
-  if (occDb=="PaleobioDB"){
+  if (occDb == "PaleobioDB") {
     if (timeInterval == "LGM") {
       logs %>% writeLog(type = 'error', 'PaleobioDB does not have separate LGM records. You can donwload Holocene records only')
       return()
     }
     # query database
     withProgress(message = paste("Querying", occDb, "..."), {
-      q <- try (paleobioDB::pbdb_occurrences(taxon_name=spName, limit=occNum, vocab="pbdb",  
-                                        max_ma= 0.02, show=c("coords", "bin", "loc")), silent =TRUE)
+      occsOrig <- try(paleobioDB::pbdb_occurrences(taxon_name=spName, limit=occNum, vocab="pbdb",  
+                                             max_ma= 0.02, show=c("coords", "bin", "loc")), silent =TRUE)
     })
     
   }
   
-
-  if (class (q) == "try-error"){
+  
+  if (class(occsOrig) == "try-error") {
     logs %>% writeLog(type = 'error', 'No records found for ', spName, ". Please check the spelling.") 
   } else {
-   
     # get total number of records found in database 
-  totRows <- nrow (q)
-  # extract occurrence tibble
-  names (q) [names (q)=="lng"]<- "longitude"
-  names (q) [names (q)=="lat"]<- "latitude"
-  names (q) [names (q)=="early_interval"]<- "time_interval"
-  names (q) [names (q)=="cc"]<- "country"
-  
-  occsOrig <- q
-  # make new column for original ID
-  occsOrig$occID <- 1: nrow(occsOrig)
-  
-  
-  # subset to just records with latitude and longitude
-  occsXY<-  occsOrig [!is.na ( occsOrig$longitude) & !is.na ( occsOrig$latitude), ]
-  if (nrow(occsXY) == 0) {
-    logs %>% writeLog(type = 'warning', 'No records with coordinates found in', occDb, "for", spName, ".")
+    totRows <- nrow(occsOrig)
+    # extract occurrence tibble
+    names(occsOrig)[names(occsOrig) == "lng"] <- "longitude"
+    names(occsOrig)[names(occsOrig) == "lat"] <- "latitude"
+    names(occsOrig)[names(occsOrig) == "early_interval"] <- "time_interval"
+    names(occsOrig)[names(occsOrig) == "cc"] <- "country"
+    
+    # make new column for original ID
+    occsOrig$occID <- 1: nrow(occsOrig)
+    
+    # subset to just records with latitude and longitude
+    occsXY <-  occsOrig[!is.na(occsOrig$longitude) & !is.na(occsOrig$latitude),]
+    if (nrow(occsXY) == 0) {
+      logs %>% writeLog(type = 'warning', 'No records with coordinates found in', occDb, "for", spName, ".")
+    }
+    
+    dups <- duplicated(occsXY[,c('longitude','latitude')])
+    occs <- occsXY[!dups,]
+    
+    # subset by key columns and make id and popup columns
+    cols <- c("taxon_name", "longitude", "latitude","time_interval", "collection_no", "country", 
+              "collection_no", "record_type", "occID")
+    occs <- occs %>% dplyr::select(dplyr::one_of(cols)) %>%
+      dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent)))  # make new column for leaflet marker popup content
+    
   }
   
-  dups <- duplicated(occsXY[,c('longitude','latitude')])
-  occs <- occsXY[!dups,]
- 
-  # subset by key columns and make id and popup columns
-  cols <- c("taxon_name", "longitude", "latitude","time_interval", "collection_no", "country", 
-            "collection_no", "record_type", "occID")
-  occs <- occs %>% dplyr::select(dplyr::one_of(cols)) %>%
-    dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent)))  # make new column for leaflet marker popup content
   
+  # if (occDb=="neotoma"){
+  #   if (timeInterval == "LGM") {
+  #     query database
+  #     withProgress(message = paste("Querying", occDb, "..."), {
+  #       q <- neotoma::get_dataset(taxonname= spName,
+  #                                 ageold = 25000, ageyoung=15000)
+  #       q <- neotoma::get_dataset(datasettype="pollen", ageold = 25000,
+  #                                 ageyoung=15000) %>% neotoma::get_download() %>% neotoma::compile_taxa('P25') %>% neotoma::compile_downloads() %>% filter(ageyoung < 25000 & ageold > 15000)
+  #       # hacer el objeto de salida! busca las columnas que te molan
+  #       str (q[[1]][[1]])
+  #       str (q[[1]][[2]])
+  #     })
+  #   }
+  # }
+  
+  
+  if (timeInterval == "Holo") {
+    # query database
+    withProgress(message = paste("Querying", occDb, "..."), {
+      q <- paleobioDB::pbdb_occurrences(taxon_name=spName, limit=occNum, vocab="pbdb",  
+                                        max_ma= 0.02)
+      
+      datasets <- neotoma::get_dataset(taxonname= , 
+                                       ageold = 20000, ageyoung=10000)
+      
+      #  Returns 20 records (as of 04/04/2013), get the dataset for all records:
+      pollen.records <- neotoma::get_download(t8kyr.datasets)
+      
+      #  Standardize the taxonomies for the different records using the WS64 taxonomy.
+      compiled.sites <- neotoma::compile_taxa(pollen.records, list.name='WS64')
+    })
   }
-  
-  
-#if (occDb=="neotoma"){
-#  if (timeInterval == "LGM") {
-# query database
-#withProgress(message = paste("Querying", occDb, "..."), {
-#q <- neotoma::get_dataset(taxonname= spName, 
-#                             ageold = 25000, ageyoung=15000)
-#q <- neotoma::get_dataset(datasettype="pollen", ageold = 25000,
-#                          ageyoung=15000) %>% neotoma::get_download() %>% neotoma::compile_taxa('P25') %>% neotoma::compile_downloads() %>% filter(ageyoung < 25000 & ageold > 15000)
-## hacer el objeto de salida! busca las columnas que te molan
-#str (q[[1]][[1]])
-#str (q[[1]][[2]])
-# })
-#
-}
-  
-
-if (timeInterval == "Holo") {
-      # query database
-      withProgress(message = paste("Querying", occDb, "..."), {
-        q <- paleobioDB::pbdb_occurrences(taxon_name=spName, limit=occNum, vocab="pbdb",  
-                                          max_ma= 0.02)
-        
-        datasets <- neotoma::get_dataset(taxonname= , 
-                                         ageold = 20000, ageyoung=10000)
-        
-        #  Returns 20 records (as of 04/04/2013), get the dataset for all records:
-        pollen.records <- neotoma::get_download(t8kyr.datasets)
-        
-        #  Standardize the taxonomies for the different records using the WS64 taxonomy.
-        compiled.sites <- neotoma::compile_taxa(pollen.records, list.name='WS64')
-})
-}
-  
-  
-  
-  
-}
   
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
   
