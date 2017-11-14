@@ -100,8 +100,6 @@ c1_queryDb <- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
   return(occs)
 }
 
-formatSpName <- function(spName) paste(strsplit(spName, split=' ')[[1]], collapse='_')
-
 popUpContent <- function(x) {
   lat <- round(as.numeric(x['latitude']), digits = 2)
   lon <- round(as.numeric(x['longitude']), digits = 2)

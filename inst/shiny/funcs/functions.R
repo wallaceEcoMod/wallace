@@ -66,6 +66,8 @@ writeLog <- function(logs, ..., type = 'default') {
 # MISC ####
 ####################### #
 
+formatSpName <- function(spName) paste(strsplit(spName, split=' ')[[1]], collapse='_')
+
 # for naming files
 nameAbbr <- function(spname) {
   namespl <- strsplit(tolower(spname), " ")

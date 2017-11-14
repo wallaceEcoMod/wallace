@@ -18,10 +18,10 @@ queryDb_MOD <- function(input, output, session) {
     # FUNCTION CALL ####
     occs <- c1_queryDb(input$spName, input$occDb, input$occNum, logs, shiny=TRUE)
     
-    # LOAD RMDVALS ####
-    rmdVals$occDb <- input$occDb
-    rmdVals$spName <- input$spName
-    rmdVals$occNum <- input$occNum
+    # LOAD vals ####
+    vals$occDb <- input$occDb
+    vals$spName <- input$spName
+    vals$occNum <- input$occNum
     
     # MAPPING ####
     map %>%

@@ -24,7 +24,7 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("dlProj")
   
   # initialize module parameters list
-  rmdVals <- reactiveValues()
+  vals <- reactiveValues()
   rvs <- reactiveValues(comp1='', comp2='', comp3='', comp4.shp='', comp4.buf=0,
                         comp5='', comp6='', comp7.type='', comp7='', comp8.pj='', comp8.esim='')
   logs <- reactiveVal(logInit())
@@ -97,7 +97,6 @@ shinyServer(function(input, output, session) {
       gtext$cur_comp <- "gtext_comp4.Rmd"
       if (input$envProcSel == 'bgSel') gtext$cur_mod <- "gtext_comp4_backg.Rmd"
       if (input$envProcSel == 'bgUser') gtext$cur_mod <- "gtext_comp4_userBg.Rmd"
-      
     }
     if (input$tabs == 5) {
       updateTabsetPanel(session, 'main', selected = 'Map')
@@ -191,20 +190,9 @@ shinyServer(function(input, output, session) {
   # module Query Database (Paleo)
   dbPaleoOccs <- callModule(queryPaleoDb_MOD, 'c1_queryPaleoDb_uiID', rvs)
   
-  spName <- reactive(as.character(rvs$occs$name[1]))
-  
   observeEvent(input$goPaleoDbOccs, {
-    rvs$occs <- dbPaleoOccs()$occs
+    rvs$occs <- dbPaleoOccs()
     rvs$occsPreProc <- rvs$occs
-    # record for RMD
-    rvs$comp1 <- 'db'
-    print(rvs$occs)
-    map %>%
-      clearMarkers() %>%
-      clearShapes() %>%
-      clearImages() %>%
-      map_plotLocs(rvs$occs) %>%
-      zoom2Occs(rvs$occs)
     shinyjs::enable("dlPaleoDbOccs")
   })
   
@@ -237,7 +225,7 @@ shinyServer(function(input, output, session) {
   
   # handle downloading of original GBIF records after cleaning
   output$dlDbOccs <- downloadHandler(
-    filename = function() {paste0(formatSpName(spName()), '_original_', rvs$occDb, ".csv")},
+    filename = function() {paste0(formatSpName(vals$spName), '_original_', rvs$occDb, ".csv")},
     content = function(file) {
       write.csv(rvs$occsOrig, file, row.names=FALSE)
     }
@@ -310,7 +298,7 @@ shinyServer(function(input, output, session) {
   
   # handle download for thinned records csv
   output$dlProcOccs <- downloadHandler(
-    filename = function() {paste0(formatSpName(spName()), "_processed_occs.csv")},
+    filename = function() {paste0(formatSpName(vals$spName), "_processed_occs.csv")},
     content = function(file) {
       # thinned_rowNums <- as.numeric(thinOccs()$occID)
       # origThinned <- rvs$occsOrig[thinned_rowNums,]
@@ -506,7 +494,7 @@ shinyServer(function(input, output, session) {
   
   # download for partitioned occurrence records csv
   output$dlPart <- downloadHandler(
-    filename = function() paste0(spName(), "_partitioned_occs.csv"),
+    filename = function() paste0(vals$spName, "_partitioned_occs.csv"),
     content = function(file) {
       bg.bind <- data.frame(rep('background', nrow(rvs$bgPts)), rvs$bgPts)
       names(bg.bind) <- c('name', 'longitude', 'latitude')
@@ -861,8 +849,8 @@ shinyServer(function(input, output, session) {
       bcSels <- printVecAsis(rvs$bcSels)
       
       exp <- knitr::knit_expand(system.file("Rmd", 'userReport.Rmd', package = "wallace"), 
-                                curWD=curWD, spName=rmdVals$spName, 
-                                occDb=rmdVals$occDb, occNum=rmdVals$occNum, occsCSV=rvs$userCSV$name,  # comp 1
+                                curWD=curWD, spName=vals$spName, 
+                                occDb=vals$occDb, occNum=vals$occNum, occsCSV=rvs$userCSV$name,  # comp 1
                                 thinDist=rvs$thinDist, occsRemoved=rvs$occsRem, occsSelX=polySelX, occsSelY=polySelY,  # comp 2
                                 bcRes=rvs$bcRes, bcLat=rvs$bcLat, bcLon=rvs$bcLon, # comp 3
                                 userEnvs=printVecAsis(rvs$userEnvs$name), bcSels=bcSels, # comp 3
