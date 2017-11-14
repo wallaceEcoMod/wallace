@@ -24,10 +24,12 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, logs = NULL, sh
   }
   
   if (occDb == "PaleobioDB") {
+    print(timeInterval)
     if (timeInterval == "LGM") {
       logs %>% writeLog(type = 'error', 'PaleobioDB does not have separate LGM records. You can only download Holocene records.')
       return()
     } else if (timeInterval == "Holo") {
+      print(2)
       # query database
       if (shiny == TRUE) {
         withProgress(message = paste("Querying", occDb, "..."), {

@@ -18,6 +18,8 @@ queryDb_MOD <- function(input, output, session) {
     # FUNCTION CALL ####
     occs <- c1_queryDb(input$spName, input$occDb, input$occNum, logs, shiny=TRUE)
     
+    if (is.null(occs)) return()
+    
     # LOAD vals ####
     vals$occDb <- input$occDb
     vals$spName <- input$spName
