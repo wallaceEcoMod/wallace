@@ -180,8 +180,6 @@ shinyServer(function(input, output, session) {
   # module Query Database (Present)
   dbOccs <- callModule(queryDb_MOD, 'c1_queryDb_uiID')
   
-  spName <- reactive(as.character(rvs$occs$name[1]))
-  
   observeEvent(input$goDbOccs, {
     rvs$occs <- dbOccs()
     rvs$occsPreProc <- rvs$occs
@@ -189,7 +187,7 @@ shinyServer(function(input, output, session) {
   })
   
   # module Query Database (Paleo)
-  dbPaleoOccs <- callModule(queryPaleoDb_MOD, 'c1_queryPaleoDb_uiID', rvs)
+  dbPaleoOccs <- callModule(queryPaleoDb_MOD, 'c1_queryPaleoDb_uiID')
   
   observeEvent(input$goPaleoDbOccs, {
     rvs$occs <- dbPaleoOccs()

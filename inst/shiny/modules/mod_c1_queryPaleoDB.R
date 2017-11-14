@@ -16,8 +16,29 @@ queryPaleoDb_UI <- function(id) {
   )
 }
 
-queryPaleoDb_MOD <- function(input, output, session, rvs) {
+queryPaleoDb_MOD <- function(input, output, session) {
   reactive({
-    c1_queryPaleoDb(input$spName, input$occDb, input$occNum, input$timeInterval, logs)
+    # FUNCTION CALL ####
+    occs <- c1_queryPaleoDb(input$spName, input$occDb, input$occNum, input$timeInterval, logs, shiny=TRUE)
+    
+    if (is.null(occs)) return()
+    
+    # LOAD vals ####
+    vals$occDb <- input$occDb
+    vals$spName <- input$spName
+    vals$occNum <- input$occNum
+    
+    # MAPPING ####
+    map %>%
+      clearMarkers() %>%
+      clearShapes() %>%
+      clearImages() %>%
+      addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, radius = 5, 
+                       color = 'red', fill = TRUE, fillColor = 'red', 
+                       fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
+      zoom2Occs(occs)
+    
+    # RETURN ####
+    return(occs)
   })
 }

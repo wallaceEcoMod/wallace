@@ -13,7 +13,7 @@
 #' 
 #' 
 
-c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, rvs) {
+c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, logs = NULL, shiny = FALSE) {
   spName <- trimws(spName)
   # figure out how many separate names (components of scientific name) were entered
   nameSplit <- length(unlist(strsplit(spName, " ")))
@@ -24,67 +24,73 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, rvs) {
   }
   
   if (occDb == "PaleobioDB") {
+    print(timeInterval)
     if (timeInterval == "LGM") {
-      logs %>% writeLog(type = 'error', 'PaleobioDB does not have separate LGM records. You can donwload Holocene records only')
+      logs %>% writeLog(type = 'error', 'PaleobioDB does not have separate LGM records. You can only download Holocene records.')
       return()
+    } else if (timeInterval == "Holo") {
+      print(2)
+      # query database
+      if (shiny == TRUE) {
+        withProgress(message = paste("Querying", occDb, "..."), {
+          occsOrig <- try(paleobioDB::pbdb_occurrences(taxon_name=spName, limit=occNum, vocab="pbdb",  
+                                                       max_ma= 0.02, show=c("coords", "bin", "loc")), silent =TRUE)
+        })
+      } else {
+        occsOrig <- try(paleobioDB::pbdb_occurrences(taxon_name=spName, limit=occNum, vocab="pbdb",  
+                                                     max_ma= 0.02, show=c("coords", "bin", "loc")), silent =TRUE)
+      }  
     }
-    # query database
-    withProgress(message = paste("Querying", occDb, "..."), {
-      occsOrig <- try(paleobioDB::pbdb_occurrences(taxon_name=spName, limit=occNum, vocab="pbdb",  
-                                                   max_ma= 0.02, show=c("coords", "bin", "loc")), silent =TRUE)
-    })
-    
+  } else if (occDb == "Neotoma") {
+    #   if (timeInterval == "LGM") {
+    #     query database
+    #     withProgress(message = paste("Querying", occDb, "..."), {
+    #       q <- neotoma::get_dataset(taxonname= spName,
+    #                                 ageold = 25000, ageyoung=15000)
+    #       q <- neotoma::get_dataset(datasettype="pollen", ageold = 25000,
+    #                                 ageyoung=15000) %>% neotoma::get_download() %>% neotoma::compile_taxa('P25') %>% neotoma::compile_downloads() %>% filter(ageyoung < 25000 & ageold > 15000)
+    #       # hacer el objeto de salida! busca las columnas que te molan
+    #       str (q[[1]][[1]])
+    #       str (q[[1]][[2]])
+    #     })
+    #   }
+    # }
+  } else {
+    return()
   }
   
   if (class(occsOrig) == "try-error") {
     logs %>% writeLog(type = 'error', 'No records found for ', spName, ". Please check the spelling.") 
-  } else {
-    # get total number of records found in database 
-    totRows <- nrow(occsOrig)
-    # extract occurrence tibble
-    names(occsOrig)[names(occsOrig) == "lng"] <- "longitude"
-    names(occsOrig)[names(occsOrig) == "lat"] <- "latitude"
-    names(occsOrig)[names(occsOrig) == "early_interval"] <- "time_interval"
-    names(occsOrig)[names(occsOrig) == "cc"] <- "country"
-    
-    # make new column for original ID
-    occsOrig$occID <- 1: nrow(occsOrig)
-    
-    # subset to just records with latitude and longitude
-    occsXY <-  occsOrig[!is.na(occsOrig$longitude) & !is.na(occsOrig$latitude),]
-    if (nrow(occsXY) == 0) {
-      logs %>% writeLog(type = 'warning', 'No records with coordinates found in', occDb, "for", spName, ".")
-    }
-    
-    dups <- duplicated(occsXY[,c('longitude','latitude')])
-    occs <- occsXY[!dups,]
-    
-    # subset by key columns and make id and popup columns
-    cols <- c("taxon_name", "longitude", "latitude","time_interval", "collection_no", "country", 
-              "collection_no", "record_type", "occID")
-    occs <- occs %>% dplyr::select(dplyr::one_of(cols)) %>%
-      dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent)))  # make new column for leaflet marker popup content
-    
+    return()
   }
   
+
+  # get total number of records found in database 
+  totRows <- nrow(occsOrig)
+  # extract occurrence tibble
+  names(occsOrig)[names(occsOrig) == "lng"] <- "longitude"
+  names(occsOrig)[names(occsOrig) == "lat"] <- "latitude"
+  names(occsOrig)[names(occsOrig) == "early_interval"] <- "time_interval"
+  names(occsOrig)[names(occsOrig) == "cc"] <- "country"
   
+  # make new column for original ID
+  occsOrig$occID <- 1: nrow(occsOrig)
   
+  # subset to just records with latitude and longitude
+  occsXY <-  occsOrig[!is.na(occsOrig$longitude) & !is.na(occsOrig$latitude),]
+  if (nrow(occsXY) == 0) {
+    logs %>% writeLog(type = 'warning', 'No records with coordinates found in', occDb, "for", spName, ".")
+  }
+
   
-  # if (occDb=="neotoma") {
-  #   if (timeInterval == "LGM") {
-  #     query database
-  #     withProgress(message = paste("Querying", occDb, "..."), {
-  #       q <- neotoma::get_dataset(taxonname= spName,
-  #                                 ageold = 25000, ageyoung=15000)
-  #       q <- neotoma::get_dataset(datasettype="pollen", ageold = 25000,
-  #                                 ageyoung=15000) %>% neotoma::get_download() %>% neotoma::compile_taxa('P25') %>% neotoma::compile_downloads() %>% filter(ageyoung < 25000 & ageold > 15000)
-  #       # hacer el objeto de salida! busca las columnas que te molan
-  #       str (q[[1]][[1]])
-  #       str (q[[1]][[2]])
-  #     })
-  #   }
-  # }
- 
+  dups <- duplicated(occsXY[,c('longitude','latitude')])
+  occs <- occsXY[!dups,]
+  
+  # subset by key columns and make id and popup columns
+  cols <- c("taxon_name", "longitude", "latitude","time_interval", "collection_no", "country", 
+            "collection_no", "record_type", "occID")
+  occs <- occs %>% dplyr::select(dplyr::one_of(cols)) %>%
+    dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent)))  # make new column for leaflet marker popup content
   
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
   

@@ -48,7 +48,20 @@ logInit <- function() {
 
 # add text to log
 writeLog <- function(logs, ..., type = 'default') {
-  if (is.null(logs)) return()
+  if (is.null(logs)) {
+    if (type == "default") {
+      pre <- "> "
+    } else if (type == 'error') {
+      pre <- 'ERROR: '
+    } else if (type == 'warning') {
+      pre <- 'WARNING: '
+    }  
+    args <- list(pre, ...)
+    newEntries <- paste(args, collapse = ' ')
+    message(newEntries)
+    return()
+  }
+  
   if (type == "default") {
     pre <- "> "
   } else if (type == 'error') {
