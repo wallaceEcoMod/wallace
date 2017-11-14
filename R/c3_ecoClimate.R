@@ -16,7 +16,7 @@
 
 library (repmis)
 
-c3_ecoClimate<- function (bcAOGCM, bcScenario, bcSelChoice, bcSels, rvs){
+c3_ecoClimate<- function (bcAOGCM, bcScenario, bcSelChoice=FALSE, bcSels, rvs){
 
 if (is.null(rvs$occs)) {
   rvs %>% writeLog(type = 'error', "Before obtaining environmental variables, 

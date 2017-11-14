@@ -67,6 +67,15 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, rvs) {
     
   }
   
+  if (timeInterval == "Holo") {
+    # query database
+    withProgress(message = paste("Querying", occDb, "..."), {
+      q <- paleobioDB::pbdb_occurrences(taxon_name=spName, limit=occNum, vocab="pbdb",  
+                                        max_ma= 0.02)
+     
+    })
+  }
+  
   
   # if (occDb=="neotoma") {
   #   if (timeInterval == "LGM") {
@@ -82,24 +91,7 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, rvs) {
   #     })
   #   }
   # }
-  
-  if (timeInterval == "Holo") {
-    # query database
-    withProgress(message = paste("Querying", occDb, "..."), {
-      q <- paleobioDB::pbdb_occurrences(taxon_name=spName, limit=occNum, vocab="pbdb",  
-                                        max_ma= 0.02)
-      # if (occDb=="neotoma") {
-      #   datasets <- neotoma::get_dataset(taxonname= ,
-      #                                    ageold = 20000, ageyoung=10000)
-      #   
-      #   #  Returns 20 records (as of 04/04/2013), get the dataset for all records:
-      #   pollen.records <- neotoma::get_download(t8kyr.datasets)
-      #   
-      #   #  Standardize the taxonomies for the different records using the WS64 taxonomy.
-      #   compiled.sites <- neotoma::compile_taxa(pollen.records, list.name='WS64')
-      # }
-    })
-  }
+ 
   
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
   
