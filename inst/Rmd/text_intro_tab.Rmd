@@ -17,6 +17,7 @@ output: html_document
 
 **3:** *Obtain Environmental Data*  
 -WorldClim  
+-EcoClimate
 -User-specified 
 
 **4:** *Process Environmental Data*  
