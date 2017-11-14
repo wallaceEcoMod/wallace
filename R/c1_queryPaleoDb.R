@@ -67,14 +67,7 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, rvs) {
     
   }
   
-  if (timeInterval == "Holo") {
-    # query database
-    withProgress(message = paste("Querying", occDb, "..."), {
-      q <- paleobioDB::pbdb_occurrences(taxon_name=spName, limit=occNum, vocab="pbdb",  
-                                        max_ma= 0.02)
-     
-    })
-  }
+  
   
   
   # if (occDb=="neotoma") {
@@ -102,6 +95,8 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, rvs) {
                    Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')
   return(occs)
 }
+
+
 
 popUpContent <- function(x) {
   lat <- round(as.numeric(x['latitude']), digits = 2)

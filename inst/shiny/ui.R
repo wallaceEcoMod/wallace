@@ -125,6 +125,7 @@ shinyUI(tagList(
                                                 h4("Obtain Environmental Data"),
                                                 radioButtons("envDataSel", "Modules Available:",
                                                              choices = list("WorldClim Bioclims" = 'wcbc',
+                                                                            "ecoClimate"= 'ecoClimatelayers',
                                                                             "User-specified" = 'user')),
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.envDataSel == 'wcbc'",
@@ -134,6 +135,14 @@ shinyUI(tagList(
                                                                  wcBioclims_UI("c3_wcBioclims"),
                                                                  strong("Using map center coordinates as reference for tile download."),
                                                                  textOutput('ctrLatLon'), br(),
+                                                                 actionButton("goEnvData", "Load Env Data")
+                                                ),
+                                                conditionalPanel("input.envDataSel == 'ecoClimatelayers'",
+                                                                 div('Module: ecoClimate', id="mod"),
+                                                                 uiTop('raster', 'Geographic Data Analysis and Modeling'),
+                                                                 HTML('<hr>'),
+                                                                 ecoClimate_UI("c3_ecoClimate"),
+                                                                 strong("ecoClimate layers have a resolution of 0.5 degrees"),
                                                                  actionButton("goEnvData", "Load Env Data")
                                                 ),
                                                 conditionalPanel("input.envDataSel == 'user'",

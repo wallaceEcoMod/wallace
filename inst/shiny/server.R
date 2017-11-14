@@ -90,6 +90,7 @@ shinyServer(function(input, output, session) {
       updateTabsetPanel(session, 'main', selected = 'Results')
       gtext$cur_comp <- "gtext_comp3.Rmd"
       if (input$envDataSel == 'wcbc') gtext$cur_mod <- "gtext_comp3_worldclim.Rmd"
+      if (input$envDataSel == 'ecoClimatelayers') gtext$cur_mod <- "gtext_comp3_ecoClimate.Rmd"
       if (input$envDataSel == 'user') gtext$cur_mod <- "gtext_comp3_userEnvs.Rmd"
     }
     if (input$tabs == 4) {
@@ -347,6 +348,29 @@ shinyServer(function(input, output, session) {
     # enable download button
     # shinyjs::enable("dlEnvs")
   })
+  
+  
+  # module ecoClimate
+  ecoClimatelayers <- callModule(ecoClimate_MOD, 'c3_ecoClimate', rvs)
+  
+  observeEvent(input$goEnvData, {
+    # load into envs
+    rvs$envs <- ecoClimatelayers()
+    # stop if no occurrence data
+    req(rvs$occs)
+    req(rvs$envs)
+    # record for RMD
+    rvs$comp3 <- 'bc'
+    # remove occurrences with NA values for variables
+    rvs$occs <- remEnvsValsNA(rvs)
+    # switch to Results tab
+    updateTabsetPanel(session, 'main', selected = 'Results')
+    # enable download button
+    # shinyjs::enable("dlEnvs")
+  })
+  
+  
+  
   
   # module User-defined Environmental Predictors
   userEnvs <- callModule(userEnvs_MOD, 'c3_userEnvs', rvs)
