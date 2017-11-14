@@ -23,7 +23,6 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, rvs) {
     return()
   }
   
-  
   if (occDb == "PaleobioDB") {
     if (timeInterval == "LGM") {
       logs %>% writeLog(type = 'error', 'PaleobioDB does not have separate LGM records. You can donwload Holocene records only')
@@ -32,11 +31,10 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, rvs) {
     # query database
     withProgress(message = paste("Querying", occDb, "..."), {
       occsOrig <- try(paleobioDB::pbdb_occurrences(taxon_name=spName, limit=occNum, vocab="pbdb",  
-                                             max_ma= 0.02, show=c("coords", "bin", "loc")), silent =TRUE)
+                                                   max_ma= 0.02, show=c("coords", "bin", "loc")), silent =TRUE)
     })
     
   }
-  
   
   if (class(occsOrig) == "try-error") {
     logs %>% writeLog(type = 'error', 'No records found for ', spName, ". Please check the spelling.") 
@@ -107,8 +105,8 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, rvs) {
   
   dupsRem <- nrow(occsXY) - nrow(occs)
   logs %>% writeLog('Total', occDb, 'records for', spName, 'returned [', nrow(occsOrig),
-                    '] out of [', totRows, '] total (limit ', occNum, ').
-                   Records without coordinates removed [', noCoordsRem, '].
+                    '] out of [', totRows, '] total (limit ', occNum, ').',
+                    'Records without coordinates removed [', noCoordsRem, '].
                    Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')
   return(list(occsOrig=occsOrig, occsXY=occsXY, occs=occs)) 
 }
