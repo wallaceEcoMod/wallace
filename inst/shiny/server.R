@@ -181,8 +181,8 @@ shinyServer(function(input, output, session) {
   dbOccs <- callModule(queryDb_MOD, 'c1_queryDb_uiID')
   
   observeEvent(input$goDbOccs, {
-    rvs$occs <- dbOccs()
-    rvs$occsPreProc <- rvs$occs
+    vals$occs <- dbOccs()
+    vals$occsPreProc <- vals$occs
     shinyjs::enable("dlDbOccs")
   })
   
@@ -190,13 +190,13 @@ shinyServer(function(input, output, session) {
   dbPaleoOccs <- callModule(queryPaleoDb_MOD, 'c1_queryPaleoDb_uiID')
   
   observeEvent(input$goPaleoDbOccs, {
-    rvs$occs <- dbPaleoOccs()
-    rvs$occsPreProc <- rvs$occs
+    vals$occs <- dbPaleoOccs()
+    vals$occsPreProc <- vals$occs
     shinyjs::enable("dlPaleoDbOccs")
   })
   
   # module User Occurrence Data
-  userOccs <- callModule(userOccs_MOD, 'c1_userOccs', rvs)
+  userOccs <- callModule(userOccs_MOD, 'c1_userOccs')
   
   observeEvent(input$goUserOccs, {
     rvs$occs <- userOccs()
@@ -333,14 +333,14 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goEnvData, {
     # load into envs
-    rvs$envs <- wcBioclims()
+    vals$envs <- wcBioclims()
     # stop if no occurrence data
-    req(rvs$occs)
-    req(rvs$envs)
+    req(vals$occs)
+    req(vals$envs)
     # record for RMD
-    rvs$comp3 <- 'bc'
+    vals$comp3 <- 'bc'
     # remove occurrences with NA values for variables
-    rvs$occs <- remEnvsValsNA(rvs)
+    vals$occs <- remEnvsValsNA(vals)
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     # enable download button
@@ -349,18 +349,18 @@ shinyServer(function(input, output, session) {
   
   
   # module ecoClimate
-  ecoClimatelayers <- callModule(ecoClimate_MOD, 'c3_ecoClimate', rvs)
+  ecoClimatelayers <- callModule(ecoClimate_MOD, 'c3_ecoClimate_uiID')
   
-  observeEvent(input$goEnvData, {
+  observeEvent(input$goEcoClimData, {
     # load into envs
-    rvs$envs <- ecoClimatelayers()
+    vals$envs <- ecoClimatelayers()
     # stop if no occurrence data
-    req(rvs$occs)
-    req(rvs$envs)
+    req(vals$occs)
+    req(vals$envs)
     # record for RMD
-    rvs$comp3 <- 'bc'
+    vals$envsType <- 'ecoClimate'
     # remove occurrences with NA values for variables
-    rvs$occs <- remEnvsValsNA(rvs)
+    vals$occs <- remEnvsValsNA(vals)
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     # enable download button
@@ -371,16 +371,16 @@ shinyServer(function(input, output, session) {
   
   
   # module User-defined Environmental Predictors
-  userEnvs <- callModule(userEnvs_MOD, 'c3_userEnvs', rvs)
+  userEnvs <- callModule(userEnvs_MOD, 'c3_userEnvs', vals)
   
   observeEvent(input$goUserEnvs, {
-    rvs$envs <- userEnvs()
+    vals$envs <- userEnvs()
     # stop if no occurrence data
-    req(rvs$occs)
+    req(vals$occs)
     # record for RMD
-    rvs$comp3 <- 'user'
+    vals$comp3 <- 'user'
     # remove occurrences with NA values for variables
-    rvs$occs <- remEnvsValsNA(rvs)
+    vals$occs <- remEnvsValsNA(vals)
     # make project to new time module unavailable for user envs
     updateRadioButtons(session, "projSel", 
                        choices = list("Project to New Extent" = 'projArea',
@@ -390,8 +390,8 @@ shinyServer(function(input, output, session) {
   })
   
   output$envsPrint <- renderPrint({
-    req(rvs$envs)
-    rvs$envs
+    req(vals$envs)
+    vals$envs
     # mins <- sapply(envs()@layers, function(x) x@data@min)
     # maxs <- sapply(envs()@layers, function(x) x@data@max)
     # names <- sapply(strsplit(names(envs()), '[.]'), function(x) x[-2])

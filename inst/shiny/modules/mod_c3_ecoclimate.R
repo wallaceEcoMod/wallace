@@ -34,7 +34,7 @@ ecoClimate_UI <- function(id) {
   )
 }
 
-ecoClimate_MOD <- function(input, output, session, logs, mapCntr, envs) {
+ecoClimate_MOD <- function(input, output, session, logs) {
   reactive({
     
     if (is.null(vals$occs)) {
@@ -42,6 +42,10 @@ ecoClimate_MOD <- function(input, output, session, logs, mapCntr, envs) {
                         obtain occurrence data in component 1.")
       return()
     }
+    
+    # record for RMD
+    ## what is bcSels. people can tun this? or is it already pre-defined?
+    rvs$bcSels <- input$bcSels
     
     c3_ecoClimate(input$bcAOGCM, input$bcScenario, input$bcSelChoice, input$bcSels, logs, shiny=TRUE)
   })

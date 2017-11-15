@@ -13,31 +13,30 @@
 #' 
 #' 
 
-c3_ecoClimate<- function (bcAOGCM, bcScenario, bcSelChoice=FALSE, bcSels, 
+c3_ecoClimate <- function (bcAOGCM, bcScenario, bcSelChoice=FALSE, bcSels, 
                           logs=NULL, shiny=FALSE){
-
-# record for RMD
-## what is bcSels. people can tun this? or is it already pre-defined?
-rvs$bcSels <- input$bcSels
-
-withProgress (message = "Retrieving ecoClimate data...", {
-  ecoClimatelayers<- ecoClimate_getdata (AOGCM=bcAOGCM, Baseline="Modern", Scenario=bcScenario)
-}
-)
-
-if (bcSelChoice== TRUE){
-# I assume that if bcSelChoise is TRUE, then bcSels exist and it is a vector of characters, bio1, bio2, etc.
-x <- gregexpr("[0-9]+", bcSels)  # Numbers with any number of digits
-x2 <- as.numeric(unlist(regmatches(bcSels, x)))
-
-ecoClimatelayers<- ecoClimate_select (ecoClimatelayers, Sels=sels)
-
-logs %>% writeLog("Environmental predictors: ecoClimate bioclimatic variables",
-                  bcSels, "at 0.5 degree resolution.")
-
-}
-return(ecoClimatelayers)
-
+  
+  if (shiny == TRUE) {
+    withProgress(message = "Retrieving ecoClimate data...", {
+      ecoClimatelayers <- ecoClimate_getdata(AOGCM=bcAOGCM, Baseline="Modern", Scenario=bcScenario)
+    })
+  } else {
+    ecoClimatelayers<- ecoClimate_getdata(AOGCM=bcAOGCM, Baseline="Modern", Scenario=bcScenario)
+  }
+  
+  if (bcSelChoice== TRUE){
+    # I assume that if bcSelChoise is TRUE, then bcSels exist and it is a vector of characters, bio1, bio2, etc.
+    x <- gregexpr("[0-9]+", bcSels)  # Numbers with any number of digits
+    x2 <- as.numeric(unlist(regmatches(bcSels, x)))
+    
+    ecoClimatelayers<- ecoClimate_select (ecoClimatelayers, Sels=sels)
+    
+    logs %>% writeLog("Environmental predictors: ecoClimate bioclimatic variables",
+                      bcSels, "at 0.5 degree resolution.")
+    
+  }
+  return(ecoClimatelayers)
+  
 }
 
 

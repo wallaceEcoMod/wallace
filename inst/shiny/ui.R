@@ -141,9 +141,9 @@ shinyUI(tagList(
                                                                  div('Module: ecoClimate', id="mod"),
                                                                  uiTop('raster', 'Geographic Data Analysis and Modeling'),
                                                                  HTML('<hr>'),
-                                                                 ecoClimate_UI("c3_ecoClimate"),
+                                                                 ecoClimate_UI("c3_ecoClimate_uiID"),
                                                                  strong("ecoClimate layers have a resolution of 0.5 degrees"),
-                                                                 actionButton("goEnvData", "Load Env Data")
+                                                                 actionButton("goEcoClimData", "Load Env Data")
                                                 ),
                                                 conditionalPanel("input.envDataSel == 'user'",
                                                                  div('Module: User-specified Environmental Data', id="mod"),
