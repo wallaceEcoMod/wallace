@@ -1,10 +1,18 @@
 projectTime_UI <- function(id) {
   ns <- NS(id)
   tagList(
+    # aliases are different for ecoclimate temporal scenarios. e.g. "lgm" is "LGM". 
+    # "mid" is "Holo"
+    # "2.6" is "Future 2.6"
+    # "4.5" is "Future 4.5"
+    # "6" is "Future 6"
+    # "8.5" is "Future 8.5"
+    
+    
     selectInput(ns("selTime"), label = "Select time period",
                 choices = list("Select period" = "",
                                # "Last Glacial Maximum (~22,000 years ago)" = 'lgm',
-                               # "Mid Holocene (~7000 years ago)" = 'mid',
+                               # "Mid Holocene (~6000 years ago)" = 'mid',
                                "2050" = 50,
                                "2070" = 70)),
     uiOutput(ns('selGCMui')),
