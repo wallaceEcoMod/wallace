@@ -27,6 +27,7 @@ queryPaleoDb_MOD <- function(input, output, session) {
     vals$occDb <- input$occDb
     vals$spName <- input$spName
     vals$occNum <- input$occNum
+    vals$timeInterval <- input$timeInterval
     
     # MAPPING ####
     map %>%

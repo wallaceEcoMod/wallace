@@ -24,6 +24,7 @@ queryDb_MOD <- function(input, output, session) {
     vals$occDb <- input$occDb
     vals$spName <- input$spName
     vals$occNum <- input$occNum
+    vals$timeInterval<- "Present"
     
     # MAPPING ####
     map %>%
