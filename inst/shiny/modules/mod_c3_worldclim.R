@@ -33,6 +33,7 @@ wcBioclims_MOD <- function(input, output, session, logs, mapCntr, envs) {
     # record for RMD
     rvs$bcRes <- input$bcRes
     rvs$bcSels <- input$bcSels
+    print(rvs$bcSels)
     
     withProgress(message = "Retrieving WorldClim data...", {
       if (input$bcRes == 0.5) {
