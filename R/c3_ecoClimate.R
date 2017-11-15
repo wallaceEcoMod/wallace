@@ -3,6 +3,7 @@
 #' download ecoClimate variables. see www.ecoclimate.org
 #' For EcoClimate the resolution is fixed to 0.5 degrees  
 #' 
+#' 
 #' @param bcAOGCM name of the Atmospheric and Oceanic Global Circulation Model. 
 #' Options are: "CCSM", "CNRM", "MIROC", "FGOALS", "GISS", "IPSL","MRI", "MPI"
 #' @param bcScenario select the temporal scenario that you want to download. 
@@ -21,14 +22,16 @@ c3_ecoClimate<- function (bcAOGCM, bcScenario, bcSelChoice=FALSE, bcSels,
 rvs$bcSels <- input$bcSels
 
 withProgress (message = "Retrieving ecoClimate data...", {
-  ecoClimatelayers<- ecoClimate_getdata (AOGCM=bcAOGCM, Baseline="Modern", Scenario=bcScenario)
+  ecoClimatelayers<- ecoClimate_getdata (AOGCM=bcAOGCM, 
+                                         Baseline="Modern", 
+                                         Scenario=bcScenario)
 }
 )
 
 if (bcSelChoice== TRUE){
 # I assume that if bcSelChoise is TRUE, then bcSels exist and it is a vector of characters, bio1, bio2, etc.
-x <- gregexpr("[0-9]+", bcSels)  # Numbers with any number of digits
-x2 <- as.numeric(unlist(regmatches(bcSels, x)))
+x <- gregexpr ("[0-9]+", bcSels)  # Numbers with any number of digits
+x2 <- as.numeric (unlist(regmatches(bcSels, x)))
 
 ecoClimatelayers<- ecoClimate_select (ecoClimatelayers, Sels=sels)
 

@@ -16,7 +16,7 @@ ecoClimate_UI <- function(id) {
                                               ))),
     tags$div(title='Select Temporal Scenario',
              selectInput(ns("bcScenario"), label = "Select the temporal scenario",
-                         choices = list("Select AOGCMs" = "",
+                         choices = list("Select Temporal Scenario" = "",
                                         "Last Glacial Maximum" = "LGM",
                                         "Holocene"="Holo", 
                                         "Present"="Present", 
