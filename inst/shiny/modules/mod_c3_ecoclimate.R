@@ -36,6 +36,13 @@ ecoClimate_UI <- function(id) {
 
 ecoClimate_MOD <- function(input, output, session, logs, mapCntr, envs) {
   reactive({
-    c3_ecoClimate(input$bcAOGCM, input$bcScenario, input$bcSelChoice, input$bcSels, rvs)
+    
+    if (is.null(vals$occs)) {
+      logs %>% writeLog(type = 'error', "Before obtaining environmental variables, 
+                        obtain occurrence data in component 1.")
+      return()
+    }
+    
+    c3_ecoClimate(input$bcAOGCM, input$bcScenario, input$bcSelChoice, input$bcSels, logs, shiny=TRUE)
   })
 }

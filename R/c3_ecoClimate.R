@@ -13,16 +13,11 @@
 #' 
 #' 
 
-c3_ecoClimate<- function (bcAOGCM, bcScenario, bcSelChoice=FALSE, bcSels, rvs){
-
-if (is.null(rvs$occs)) {
-  rvs %>% writeLog(type = 'error', "Before obtaining environmental variables, 
-                   obtain occurrence data in component 1.")
-  return()
-}
+c3_ecoClimate<- function (bcAOGCM, bcScenario, bcSelChoice=FALSE, bcSels, 
+                          logs=NULL, shiny=FALSE){
 
 # record for RMD
-  ## what is bcSels. people can tun this? or is it already pre-defined?
+## what is bcSels. people can tun this? or is it already pre-defined?
 rvs$bcSels <- input$bcSels
 
 withProgress (message = "Retrieving ecoClimate data...", {
@@ -31,8 +26,11 @@ withProgress (message = "Retrieving ecoClimate data...", {
 )
 
 if (bcSelChoice== TRUE){
+# I assume that if bcSelChoise is TRUE, then bcSels exist and it is a vector of characters, bio1, bio2, etc.
+x <- gregexpr("[0-9]+", bcSels)  # Numbers with any number of digits
+x2 <- as.numeric(unlist(regmatches(bcSels, x)))
 
-ecoClimatelayers<- ecoClimate_select (ecoClimatelayers, Sels=bcSels)
+ecoClimatelayers<- ecoClimate_select (ecoClimatelayers, Sels=sels)
 
 logs %>% writeLog("Environmental predictors: ecoClimate bioclimatic variables",
                   bcSels, "at 0.5 degree resolution.")
