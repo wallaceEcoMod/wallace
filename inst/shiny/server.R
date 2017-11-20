@@ -141,12 +141,7 @@ shinyServer(function(input, output, session) {
   observe({
     if ((input$tabs == 2 & input$procOccSel == 'selOccs') | input$tabs == 8) {
       map %>%
-        leaflet.extras::addDrawToolbar(
-          targetGroup='draw',
-          polylineOptions = FALSE,
-          rectangleOptions = FALSE,
-          circleOptions = FALSE,
-          markerOptions = FALSE)
+        drawToolbarRefresh()
     } else {
       map %>% leaflet.extras::removeDrawToolbar(clearFeatures = TRUE)
     }
@@ -154,6 +149,7 @@ shinyServer(function(input, output, session) {
     req(input$map_draw_new_feature)
     coords <- unlist(input$map_draw_new_feature$geometry$coordinates)
     xy <- matrix(c(coords[c(TRUE,FALSE)], coords[c(FALSE,TRUE)]), ncol=2)
+    print(xy)
     id <- input$map_draw_new_feature$properties$`_leaflet_id`
     if (input$tabs == 2 & input$procOccSel == 'selOccs') {
       rvs$polySelXY <- xy
@@ -210,7 +206,7 @@ shinyServer(function(input, output, session) {
   output$occTbl <- DT::renderDataTable({
     req(rvs$occs)
     occsDT <- rvs$occs %>% dplyr::mutate(longitude = round(as.numeric(longitude), digits = 2),
-                                  latitude = round(as.numeric(latitude), digits = 2))
+                                         latitude = round(as.numeric(latitude), digits = 2))
     occsDT %>% dplyr::select(name, occID, longitude:basisOfRecord)
   }, rownames = FALSE)
   
@@ -250,14 +246,7 @@ shinyServer(function(input, output, session) {
       clearMarkers() %>%
       map_plotLocs(rvs$occs) %>%
       zoom2Occs(rvs$occs) %>%
-      leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
-      leaflet.extras::addDrawToolbar(
-        targetGroup='draw',
-        polylineOptions = FALSE,
-        rectangleOptions = FALSE,
-        circleOptions = FALSE,
-        markerOptions = FALSE,
-        editOptions = leaflet.extras::editToolbarOptions())
+      drawToolbarRefresh()
     shinyjs::enable("dlProcOccs")
   })
   
@@ -382,10 +371,10 @@ shinyServer(function(input, output, session) {
     if (length(polys) == 1) {
       xy <- list(rvs$bgShp@polygons[[1]]@Polygons[[1]]@coords)
     } else {
-     xy <- sapply(polys, function(x) x@coords)
+      xy <- sapply(polys, function(x) x@coords)
     }
     return(xy)
-    })
+  })
   
   observeEvent(input$goBgExt, {
     rvs$bgShp <- bgExt()
@@ -397,7 +386,7 @@ shinyServer(function(input, output, session) {
         addPolygons(lng=shp[,1], lat=shp[,2],
                     weight=4, color="gray", group='bgShp')  
     }
-     map %>%
+    map %>%
       fitBounds(rvs$bgShp@bbox[1], rvs$bgShp@bbox[2], rvs$bgShp@bbox[3], rvs$bgShp@bbox[4])
   })
   
@@ -502,8 +491,8 @@ shinyServer(function(input, output, session) {
   
   jar <- paste(system.file(package="dismo"), "/java/maxent.jar", sep='')
   output$maxentJar <- renderUI(HTML(paste("To use Maxent, make sure you download,", strong("maxent.jar"), "from the",
-                                       a("AMNH Maxent webpage", href="http://biodiversityinformatics.amnh.org/open_source/maxent/", target="_blank"),
-                                       "and place it in this directory:", br(), em(jar))))
+                                          a("AMNH Maxent webpage", href="http://biodiversityinformatics.amnh.org/open_source/maxent/", target="_blank"),
+                                          "and place it in this directory:", br(), em(jar))))
   
   # module Maxent
   mod.maxent <- callModule(maxent_MOD, 'c6_maxent', rvs)
@@ -730,6 +719,7 @@ shinyServer(function(input, output, session) {
   projTime <- callModule(projectTime_MOD, 'c8_projectTime', rvs)
   
   observeEvent(input$goProjectTime, {
+    # if (rvs$polyPjXY == rvs$polySelXY) rvs$polyPjXY <- NULL
     projTime.call <- projTime()
     # stop if no model prediction
     req(rvs$predCur)
@@ -838,7 +828,7 @@ shinyServer(function(input, output, session) {
         polyPjX <- polyPjY <- NULL
       }
       bcSels <- printVecAsis(rvs$bcSels)
-      
+      print(rvs$pjTimePar)
       exp <- knitr::knit_expand(system.file("Rmd", 'userReport.Rmd', package = "wallace"), 
                                 curWD=curWD, spName=spName(), 
                                 dbName=rvs$occDb, occNum=rvs$occNum, occsCSV=rvs$userCSV$name,  # comp 1
@@ -854,8 +844,8 @@ shinyServer(function(input, output, session) {
                                 modSel=rvs$modSel, mxNonZeroCoefs=printVecAsis(rvs$mxNonZeroCoefs), envSel=rvs$envSel,  # comp 7
                                 bcPlot1=rvs$bcPlotsPar$bc1, bcPlot2=rvs$bcPlotsPar$bc2, bcPlotP=rvs$bcPlotsPar$p,  # comp 7
                                 mxEvalSel=rvs$mxEvalSel, predType=rvs$comp7.type, comp7.thresh=rvs$comp7.thr, # comp 7 
-                                occsPjX=polyPjX, occsPjY=polyPjY, pjRCP=rvs$pjTimePar$rcp, pjGCM=rvs$rvs$pjTimePar$gcm,  # comp 8
-                                pjYear=rvs$rvs$pjTimePar$year, comp8.thresh=rvs$comp8.thr)  # comp 8
+                                occsPjX=polyPjX, occsPjY=polyPjY, pjRCP=rvs$pjTimePar$rcp, pjGCM=rvs$pjTimePar$gcm,  # comp 8
+                                pjYear=rvs$pjTimePar$year, comp8.thresh=rvs$comp8.thr)  # comp 8
       writeLines(exp, 'userReport2.Rmd')
       
       if (input$rmdFileType == 'Rmd') {
@@ -868,7 +858,7 @@ shinyServer(function(input, output, session) {
                                         PDF = rmarkdown::pdf_document(latex_engine='xelatex'), 
                                         HTML = rmarkdown::html_document(), 
                                         Word = rmarkdown::word_document())
-                                 )
+        )
       }
       file.rename(out, file)
     }

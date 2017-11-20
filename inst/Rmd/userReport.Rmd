@@ -337,7 +337,7 @@ bg.grp <- group.data[[2]]
 
 ```{asis, echo = mod.any, eval = mod.any, include = mod.any}
 ### Build and Evaluate Niche Model
-`r "{{enmSel}}"` model selected.
+You selected the `r "{{enmSel}}"` model.
 ```
 
 ```{r bioclim, echo = mod.bioclim, include = mod.bioclim}

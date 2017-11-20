@@ -207,8 +207,7 @@ comp5_map <- function(map, occs, occsGrp) {
     map_plotLocs(occs, fillColor = partsFill, fillOpacity = 1) %>%
     addLegend("bottomright", colors = newColors,
               title = "Partition Groups", labels = sort(unique(occsGrp)),
-              opacity = 1, layerId = 'leg') %>%
-    zoom2Occs(occs)
+              opacity = 1, layerId = 'leg')
 }
 
 ####################### #
