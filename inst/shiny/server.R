@@ -367,9 +367,6 @@ shinyServer(function(input, output, session) {
     # shinyjs::enable("dlEnvs")
   })
   
-  
-  
-  
   # module User-defined Environmental Predictors
   userEnvs <- callModule(userEnvs_MOD, 'c3_userEnvs', vals)
   
