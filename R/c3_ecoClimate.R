@@ -3,6 +3,7 @@
 #' download ecoClimate variables. see www.ecoclimate.org
 #' For EcoClimate the resolution is fixed to 0.5 degrees  
 #' 
+#' 
 #' @param bcAOGCM name of the Atmospheric and Oceanic Global Circulation Model. 
 #' Options are: "CCSM", "CNRM", "MIROC", "FGOALS", "GISS", "IPSL","MRI", "MPI"
 #' @param bcScenario select the temporal scenario that you want to download. 
@@ -15,7 +16,7 @@
 
 c3_ecoClimate <- function (bcAOGCM, bcScenario, bcSelChoice=FALSE, bcSels, 
                           logs=NULL, shiny=FALSE){
-  
+
   if (shiny == TRUE) {
     withProgress(message = "Retrieving ecoClimate data...", {
       ecoClimatelayers <- ecoClimate_getdata(AOGCM=bcAOGCM, Baseline="Modern", Scenario=bcScenario)
@@ -36,7 +37,7 @@ c3_ecoClimate <- function (bcAOGCM, bcScenario, bcSelChoice=FALSE, bcSels,
     
   }
   return(ecoClimatelayers)
-  
+
 }
 
 
