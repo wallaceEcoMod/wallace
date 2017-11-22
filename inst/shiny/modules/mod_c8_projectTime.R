@@ -46,7 +46,7 @@ projectTime_MOD <- function(input, output, session, rvs) {
                        before projecting.')
       return()
     }
-    if (is.null(rvs$polyPjXY)) {
+    if (is.null(rvs$polyPjXY) | identical(rvs$polySelXY, rvs$polyPjXY)) {
       rvs %>% writeLog(type = 'error', "The polygon has not been drawn and finished. 
                        Please use the draw toolbar on the left-hand of the map to complete
                        the polygon.")

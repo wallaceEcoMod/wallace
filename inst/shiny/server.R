@@ -140,8 +140,7 @@ shinyServer(function(input, output, session) {
   # initialize draw toolbar for c2_selectOccs and c8
   observe({
     if ((input$tabs == 2 & input$procOccSel == 'selOccs') | input$tabs == 8) {
-      map %>%
-        drawToolbarRefresh()
+      map %>% drawToolbarRefresh()
     } else {
       map %>% leaflet.extras::removeDrawToolbar(clearFeatures = TRUE)
     }
@@ -149,7 +148,7 @@ shinyServer(function(input, output, session) {
     req(input$map_draw_new_feature)
     coords <- unlist(input$map_draw_new_feature$geometry$coordinates)
     xy <- matrix(c(coords[c(TRUE,FALSE)], coords[c(FALSE,TRUE)]), ncol=2)
-    print(xy)
+    print(rvs$polyPjXY)
     id <- input$map_draw_new_feature$properties$`_leaflet_id`
     if (input$tabs == 2 & input$procOccSel == 'selOccs') {
       rvs$polySelXY <- xy
@@ -719,13 +718,13 @@ shinyServer(function(input, output, session) {
   projTime <- callModule(projectTime_MOD, 'c8_projectTime', rvs)
   
   observeEvent(input$goProjectTime, {
-    # if (rvs$polyPjXY == rvs$polySelXY) rvs$polyPjXY <- NULL
     projTime.call <- projTime()
     # stop if no model prediction
     req(rvs$predCur)
     # unpack
     rvs$projMsk <- projTime.call[[1]]
     rvs$projCur <- projTime.call[[2]]
+    req(rvs$projCur)
     rvs$projCurVals <- getVals(rvs$projCur, rvs$comp7.type)
     rvs$comp8.pj <- 'time'
     
