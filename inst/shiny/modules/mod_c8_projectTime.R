@@ -87,7 +87,6 @@ projectTime_MOD <- function(input, output, session, rvs) {
       names(projTimeEnvs) <- paste0('bio', c(paste0('0',1:9), 10:19))
       # in case user subsetted bioclims
       projTimeEnvs <- projTimeEnvs[[rvs$bcSels]]
-      print(projTimeEnvs)
     })
     
     # create new spatial polygon from coordinates
@@ -101,7 +100,6 @@ projectTime_MOD <- function(input, output, session, rvs) {
     withProgress(message = "Clipping environmental data to current extent...", {
       pjtMsk <- raster::crop(projTimeEnvs, newPoly)
       pjtMsk <- raster::mask(pjtMsk, newPoly)
-      print(pjtMsk)
     })
     
     modCur <- rvs$mods[[rvs$modSel]]
@@ -116,7 +114,6 @@ projectTime_MOD <- function(input, output, session, rvs) {
       rvs %>% writeLog("Projected to", paste0('20', input$selTime), 
                        "for GCM", GCMlookup[input$selGCM], 
                        "under RCP", as.numeric(input$selRCP)/10.0, ".")
-      rvs$pjTimePar <- list(time=input$selTime, gcm=input$selGCM, rcp=input$selRCP)
     })
     
     return(list(pjMsk=pjtMsk, pjPred=pjPred))

@@ -148,7 +148,6 @@ shinyServer(function(input, output, session) {
     req(input$map_draw_new_feature)
     coords <- unlist(input$map_draw_new_feature$geometry$coordinates)
     xy <- matrix(c(coords[c(TRUE,FALSE)], coords[c(FALSE,TRUE)]), ncol=2)
-    print(rvs$polyPjXY)
     id <- input$map_draw_new_feature$properties$`_leaflet_id`
     if (input$tabs == 2 & input$procOccSel == 'selOccs') {
       rvs$polySelXY <- xy
