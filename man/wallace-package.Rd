@@ -2,8 +2,8 @@
 % Please edit documentation in R/wallace-package.R
 \docType{package}
 \name{wallace-package}
-\alias{wallace}
 \alias{wallace-package}
+\alias{wallace}
 \title{\emph{Wallace}: A modular platform for reproducible ecological modeling}
 \description{
 \emph{Wallace} is a \code{shiny} app that guides users through a complete species niche/distributional modeling analysis, from the acquisition of species occurrence and environmental data to visualizing model predictions on an interactive map (\code{rleaflet}), thus bundling complex workflows into a single, streamlined GUI interface. New functionality, in the form of modules, can be added to \emph{Wallace} via contributions from the user community. In addition, executable session code (R Markdown format) can be downloaded to share with others or use as supplementary information for scientific papers and reports. The application is run via the function \code{\link{run_wallace}}.
@@ -14,10 +14,13 @@ Please see the official website (\url{https://wallaceecomod.github.io/}) for mor
 \tabular{ll}{
 Package: \tab wallace\cr
 Type: \tab Package\cr
-Version: \tab 0.7\cr
-Date: \tab 2017-08-31\cr
+Version: \tab 1.0\cr
+Date: \tab 2017-11-23\cr
 License: \tab GNU 3.0\cr
 }
+}
+\references{
+Kass J.M., Vilela B., Aeillo-Lammens M.E., Muscarella R., Merow C., and Anderson R.P. (2017) \emph{Wallace}: A modular platform for reproducible ecological modeling. Version 1.0.
 }
 \author{
 \strong{Jamie M. Kass}\cr
@@ -35,17 +38,12 @@ Website: \url{https://mlammens.github.io/})
 \strong{Robert Muscarella}\cr
 (email: \email{bob.muscarella@gmail.com};
 Website: \url{https://bobmuscarella.weebly.com/})
-
-\strong{Cory Merow}\cr
-(email: \email{corymerow@gmail.com};
+#' @author \strong{Cory Merow}\cr
+(email: \email{cory.merow@gmail.com};
 Website: \url{https://cmerow.github.io/})
 
 \strong{Robert P. Anderson}\cr
 (email: \email{randerson@ccny.cuny.edu};
 Website: \url{https://www.andersonlab.ccny.cuny.edu/})
 }
-\references{
-Kass J.M., Vilela B., Aeillo-Lammens M.E., Muscarella R., Merow C., and Anderson R.P. (2017) \emph{Wallace}: A modular platform for reproducible ecological modeling. Version 0.7.
-}
 \keyword{package}
-

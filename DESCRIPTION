@@ -1,6 +1,6 @@
 Package: wallace
-Version: 0.7
-Date: 2017-08-31
+Version: 1.0
+Date: 2017-11-23
 Title: A Modular Platform for Reproducible Modeling of Species Niches and Distributions
 Authors@R: c(person("Jamie M.", "Kass", email = "jkass@gradcenter.cuny.edu", role = c("aut", "cre")), 
 	person("Bruno", "Vilela", email = "bvilela@wustl.edu", role = "aut"), 
@@ -24,7 +24,6 @@ Imports:
     shinyjs,
     spocc (>= 0.5.4),
     RColorBrewer,
-    rmarkdown,
     dplyr,
     spThin,
     ENMeval,
@@ -40,4 +39,7 @@ Description: The 'shiny' application Wallace is a modular platform for reproduci
 License: GPL-3
 URL: https://wallaceEcoMod.github.io
 Encoding: UTF-8
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
+Suggests: knitr,
+    rmarkdown
+VignetteBuilder: knitr

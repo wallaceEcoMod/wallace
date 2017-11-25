@@ -826,7 +826,6 @@ shinyServer(function(input, output, session) {
         polyPjX <- polyPjY <- NULL
       }
       bcSels <- printVecAsis(rvs$bcSels)
-      print(rvs$pjTimePar)
       exp <- knitr::knit_expand(system.file("Rmd", 'userReport.Rmd', package = "wallace"), 
                                 curWD=curWD, spName=spName(), 
                                 dbName=rvs$occDb, occNum=rvs$occNum, occsCSV=rvs$userCSV$name,  # comp 1
