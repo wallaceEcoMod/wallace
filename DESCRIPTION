@@ -41,5 +41,7 @@ URL: https://wallaceEcoMod.github.io
 Encoding: UTF-8
 RoxygenNote: 6.0.1
 Suggests: knitr,
-    rmarkdown
+    rmarkdown,
+    testthat,
+    RSelenium
 VignetteBuilder: knitr
