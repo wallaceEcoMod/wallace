@@ -1,12 +1,13 @@
 Package: wallace
-Version: 1.0.0
+Version: 1.0.1
 Date: 2017-11-23
-Title: A Modular Platform for Reproducible Modeling of Species Niches and Distributions
-Authors@R: c(person("Jamie M.", "Kass", email = "jkass@gradcenter.cuny.edu", role = c("aut", "cre")), 
-	person("Bruno", "Vilela", email = "bvilela@wustl.edu", role = "aut"), 
-	person("Matthew E.", "Aiello-Lammens", email = "matt.lammens@gmail.com", role = "aut"), 
+Title: A Modular Platform for Reproducible Modeling of Species Niches
+        and Distributions
+Authors@R: c(person("Jamie M.", "Kass", email = "jkass@gradcenter.cuny.edu", role = c("aut", "cre")),
+	person("Bruno", "Vilela", email = "bvilela@wustl.edu", role = "aut"),
+	person("Matthew E.", "Aiello-Lammens", email = "matt.lammens@gmail.com", role = "aut"),
 	person("Robert", "Muscarella", email = "bob.muscarella@gmail.com", role = "aut"),
-	person("Cory", "Merow", email = "corymerow@gmail.com", role = "aut"), 
+	person("Cory", "Merow", email = "corymerow@gmail.com", role = "aut"),
 	person("Robert P.", "Anderson", email = "randerson@ccny.cuny.edu", role = "aut"))
 Author: Jamie M. Kass [aut, cre],
     Bruno Vilela [aut],
@@ -15,33 +16,16 @@ Author: Jamie M. Kass [aut, cre],
     Cory Merow [aut],
     Robert P. Anderson [aut]
 Maintainer: Jamie M. Kass <jkass@gradcenter.cuny.edu>
-Depends:
-    R (>= 3.2.1),
-    shiny (>= 0.14.2),
-    leaflet (>= 1.0.1)
-Imports:
-    DT (>= 0.2),
-    shinyjs,
-    spocc (>= 0.5.4),
-    RColorBrewer,
-    dplyr,
-    spThin,
-    ENMeval,
-    rgeos,
-    maptools,
-    dismo,
-    raster,
-    shinythemes,
-    magrittr,
-    rgdal,
-    leaflet.extras
-Description: The 'shiny' application Wallace is a modular platform for reproducible modeling of species niches and distributions. Wallace guides users through a complete analysis, from the acquisition of species occurrence and environmental data to visualizing model predictions on an interactive map, thus bundling complex workflows into a single, streamlined interface.
+Depends: R (>= 3.2.1), shiny (>= 0.14.2), leaflet (>= 1.0.1)
+Imports: DT (>= 0.2), shinyjs, spocc (>= 0.5.4), RColorBrewer, dplyr,
+        spThin, ENMeval, rgeos, maptools, dismo, raster, shinythemes,
+        magrittr, rgdal, leaflet.extras
+Description: The 'shiny' application 'wallace' is a modular platform for reproducible modeling of species niches and distributions. 'wallace' guides users through a complete analysis, from the acquisition of species occurrence and environmental data to visualizing model predictions on an interactive map, thus bundling complex workflows into a single, streamlined interface.
 License: GPL-3
 URL: https://wallaceEcoMod.github.io
 Encoding: UTF-8
 RoxygenNote: 6.0.1
-Suggests: knitr,
-    rmarkdown,
-    testthat,
-    RSelenium
+Suggests: knitr, rmarkdown, testthat, RSelenium
 VignetteBuilder: knitr
+NeedsCompilation: no
+Packaged: 2017-11-29 05:26:31 UTC; musasabi
