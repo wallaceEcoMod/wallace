@@ -28,7 +28,7 @@ shinyServer(function(input, output, session) {
   rvs <- reactiveValues(comp1='', comp2='', comp3='', comp4.shp='', comp4.buf=0,
                         comp5='', comp6='', comp7.type='', comp7='', comp8.pj='', comp8.esim='')
   logs <- reactiveVal(logInit())
-  rmm <- rangeModelMetadataTemplate()
+  rmm <- reactiveValues(metadata=rangeModelMetadataTemplate())
   
   observeEvent(input$load, {
     f <- read.csv('/Users/musasabi/Downloads/Puma concolor_partitioned_occs(1).csv')
@@ -183,6 +183,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goDbOccs, {
     vals$occs <- dbOccs()
+    print(rmm$metadata$data$occurrence)
     vals$occsPreProc <- vals$occs
     shinyjs::enable("dlDbOccs")
   })
@@ -911,6 +912,6 @@ shinyServer(function(input, output, session) {
       paste0("wallace-session-", Sys.Date(), ".csv")
              },
     content = function(file) {
-      rmmToCSV(rmm)
+      rmmToCSV(rmm$metadata, filename = file)
   })
 })
