@@ -357,6 +357,8 @@ shinyUI(tagList(
                                                             choices = list("Rmd", "PDF", "HTML", "Word")),
                                                 downloadButton('dlRMD', 'Download Session Code'),
                                                 HTML('<hr>'),
+                                                downloadButton('dlRMM', 'Download Metadata'),
+                                                HTML('<hr>'),
                                                 uiBottom("Jamie M. Kass, Bruno Vilela, Robert P. Anderson", 'rmarkdown', 'JJ Allaire, Joe Cheng, Yihui Xie, Jonathan McPherson, 
                                                        Winston Chang, Jeff Allen, Hadley Wickham, Aron Atkins, Rob Hyndman, Ruben Arslan'), br(),
                                                 uiBottom(NULL, 'knitr', 'Yihui Xie')

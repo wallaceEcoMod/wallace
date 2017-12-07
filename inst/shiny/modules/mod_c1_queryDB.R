@@ -26,6 +26,11 @@ queryDb_MOD <- function(input, output, session) {
     vals$occNum <- input$occNum
     vals$timeInterval<- "Present"
     
+    # METADATA ####
+    rmm$data$occurrence$taxaVector <- vals$spName
+    rmm$data$occurrence$occurrenceDataType <- "presence only"
+    rmm$data$occurrence$presenceSampleSize <- nrow(occs)
+    
     # MAPPING ####
     map %>%
       clearMarkers() %>%

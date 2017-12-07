@@ -28,6 +28,7 @@ shinyServer(function(input, output, session) {
   rvs <- reactiveValues(comp1='', comp2='', comp3='', comp4.shp='', comp4.buf=0,
                         comp5='', comp6='', comp7.type='', comp7='', comp8.pj='', comp8.esim='')
   logs <- reactiveVal(logInit())
+  rmm <- rangeModelMetadataTemplate()
   
   observeEvent(input$load, {
     f <- read.csv('/Users/musasabi/Downloads/Puma concolor_partitioned_occs(1).csv')
@@ -901,4 +902,15 @@ shinyServer(function(input, output, session) {
       file.rename(out, file)
     }
   )
+  
+  ###############################
+  ### METADATA FUNCTIONALITY ####
+  
+  output$dlRMM <- downloadHandler(
+    filename = function() {
+      paste0("wallace-session-", Sys.Date(), ".csv")
+             },
+    content = function(file) {
+      rmmToCSV(rmm)
+  })
 })
