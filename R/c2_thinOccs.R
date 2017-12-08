@@ -10,9 +10,6 @@ c2_thinOccs <- function(occs, thinDist, logs=NULL, shiny=FALSE) {
     return()
   }
   
-  # record for RMD
-  thinDist <- thinDist
-  
   # query database
   if (shiny == TRUE) {
     withProgress(message = "Spatially Thinning Localities...", {  # start progress bar
