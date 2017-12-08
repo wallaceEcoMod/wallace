@@ -7,7 +7,7 @@ thinOccs_UI <- function(id) {
   )
 }
 
-thinOccs_MOD <- function(input, output, session, rvs) {
+thinOccs_MOD <- function(input, output, session) {
   reactive({
     # FUNCTION CALL ####
     occs.thin <- c2_thinOccs(input$occs, input$thinDist, logs, shiny=TRUE)
