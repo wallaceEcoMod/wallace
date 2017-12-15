@@ -2,7 +2,8 @@
 respPlots_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    strong("Download response plot (.png)"), br(), br(),
+    strong("Download response plot (.png)"), br(),
+    checkboxInput(ns('dlRespPlotAll'), "All response plots?"),
     downloadButton(ns('dlRespPlot'), "Download")
   )
 }
@@ -19,12 +20,16 @@ respPlots_MOD <- function(input, output, session, rvs) {
     
     modCur <- rvs$mods[[rvs$modSel]]
     
-    # handle downloads for Maxent Evaluation Plots png
+    # handle downloads for Response Plots png
     output$dlRespPlot <- downloadHandler(
       filename = function() {paste0(spName(), "_", rvs$envSel, "_response.png")},
       content = function(file) {
         png(file)
-        dismo::response(modCur, var = rvs$envSel)
+        if (input$dlRespPlotAll == TRUE) {
+          dismo::response(modCur)
+        } else {
+          dismo::response(modCur, var = rvs$envSel)  
+        }
         dev.off()
       }
     )
