@@ -28,3 +28,4 @@ RoxygenNote: 6.0.1
 Suggests: knitr, rmarkdown, testthat, RSelenium
 NeedsCompilation: no
 Packaged: 2017-11-29 05:26:31 UTC; musasabi
+VignetteBuilder: knitr
