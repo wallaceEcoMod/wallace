@@ -1,5 +1,5 @@
 Package: wallace
-Version: 1.0.1
+Version: 1.0.2
 Date: 2017-11-23
 Title: A Modular Platform for Reproducible Modeling of Species Niches
         and Distributions
@@ -26,6 +26,5 @@ URL: https://wallaceEcoMod.github.io
 Encoding: UTF-8
 RoxygenNote: 6.0.1
 Suggests: knitr, rmarkdown, testthat, RSelenium
-VignetteBuilder: knitr
 NeedsCompilation: no
 Packaged: 2017-11-29 05:26:31 UTC; musasabi

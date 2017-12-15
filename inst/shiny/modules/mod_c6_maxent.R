@@ -63,8 +63,10 @@ maxent_MOD <- function(input, output, session, rvs) {
     
     jar <- paste(system.file(package="dismo"), "/java/maxent.jar", sep='')
     if (!file.exists(jar)) {
-      rvs %>% writeLog(type = 'error', 'File maxent.jar missing. 
-                     Please see directions to download and copy to directory on the toolbar.')
+      txt <- HTML(paste("To use Maxent, make sure you download,", strong("maxent.jar"), "from the",
+                 a("AMNH Maxent webpage", href="http://biodiversityinformatics.amnh.org/open_source/maxent/", target="_blank"),
+                 "and place it in this directory:", br(), em(jar)))
+      rvs %>% writeLog(type = 'error', txt)
       return()
     }
     

@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/wallaceEcoMod/wallace.svg?branch=master)](https://travis-ci.org/wallaceEcoMod/wallace) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![CRAN version](http://www.r-pkg.org/badges/version/wallace)](https://CRAN.R-project.org/package=wallace) [![downloads](http://cranlogs.r-pkg.org/badges/grand-total/wallace?color=orange)](http://cranlogs.r-pkg.org/badges/grand-total/wallace?color=orange)
 
-# Wallace (v1.0.1)
+# Wallace (v1.0.2)
 
 *Wallace* is a modular platform for reproducible modeling of species niches and distributions, written in R. The application guides users through a complete analysis, from the acquisition of data to visualizing model predictions on an interactive map, thus bundling complex workflows into a single, streamlined interface.
 

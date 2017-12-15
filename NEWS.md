@@ -1,3 +1,9 @@
+# wallace 1.0.2
+- Fixed maxent.jar path so it no longer extends outside toolbar.
+
+# wallace 1.0.1
+- Removed button used for development.
+
 # wallace 1.0.0
 - Biggest change: reprogrammed most of the software to integrate shiny modules. Now each module is a separate script in /inst/shiny/modules that contains both UI and server logic. This should make authorship and integration of new modules much easier.
 - Second biggest change: integrated leaflet draw toolbar functionality from leaflet.extras package, which replaces the previous code to draw and internally record polygons in comps 2 and 7. The code is much cleaner now and easier to make edits to.

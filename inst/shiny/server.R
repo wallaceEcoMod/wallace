@@ -486,12 +486,7 @@ shinyServer(function(input, output, session) {
   ######################### #
   ### COMPONENT 6: MODEL ####
   ######################### #
-  
-  jar <- paste(system.file(package="dismo"), "/java/maxent.jar", sep='')
-  output$maxentJar <- renderUI(HTML(paste("To use Maxent, make sure you download,", strong("maxent.jar"), "from the",
-                                          a("AMNH Maxent webpage", href="http://biodiversityinformatics.amnh.org/open_source/maxent/", target="_blank"),
-                                          "and place it in this directory:", br(), em(jar))))
-  
+
   # module Maxent
   mod.maxent <- callModule(maxent_MOD, 'c6_maxent', rvs)
   
