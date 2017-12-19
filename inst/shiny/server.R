@@ -28,7 +28,7 @@ shinyServer(function(input, output, session) {
   rvs <- reactiveValues(comp1='', comp2='', comp3='', comp4.shp='', comp4.buf=0,
                         comp5='', comp6='', comp7.type='', comp7='', comp8.pj='', comp8.esim='')
   logs <- reactiveVal(logInit())
-  rmm <- reactiveValues(metadata=rangeModelMetadataTemplate())
+  rmm <- reactiveValues(metadata=rangeModelMetadata::rangeModelMetadataTemplate())
   
   observeEvent(input$load, {
     f <- read.csv('/Users/musasabi/Downloads/Puma concolor_partitioned_occs(1).csv')

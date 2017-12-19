@@ -43,6 +43,7 @@ c1_queryDb <- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
   # if species not found, print message to log box and return
   if (q[[occDb]]$meta$found == 0) {
     logs %>% writeLog(type = 'error', 'No records found for ', spName, ". Please check the spelling.")
+    return()
   }
   # extract occurrence tibble
   occsOrig <- q[[occDb]]$data[[formatSpName(spName)]]
