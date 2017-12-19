@@ -23,13 +23,25 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("dlPred")
   shinyjs::disable("dlProj")
   
-  # initialize module parameters list
-  vals <- reactiveValues()
-  rvs <- reactiveValues(comp1='', comp2='', comp3='', comp4.shp='', comp4.buf=0,
-                        comp5='', comp6='', comp7.type='', comp7='', comp8.pj='', comp8.esim='')
-  logs <- reactiveVal(logInit())
-  rmm <- reactiveValues(metadata=rangeModelMetadata::rangeModelMetadataTemplate())
+  ################################
+  # Initialize Reactive Lists ####
+  ################################
   
+  # reactiveValues list for objects that get modified and reused throughout analysis
+  vals <- reactiveValues()
+  # reactiveValues list for values that are needed for building the RMD
+  rmd <- reactiveValues(c1 = list(), c2 = list(), c3 = list(), c4 = list(),
+                        c5 = list(), c6 = list(), c7 = list(), c8 = list())
+  # reactiveValues list for values that are needed for composing the metadata
+  rmm <- reactiveValues(metadata=rangeModelMetadata::rangeModelMetadataTemplate())
+  # reactiveValues list for holding the current guidance text
+  gtext <- reactiveValues()
+  # single reactive value for log vector
+  logs <- reactiveVal(logInit())
+  # legacy
+  rvs <- reactiveValues()
+  
+  # FOR DEVELOPMENT
   observeEvent(input$load, {
     f <- read.csv('/Users/musasabi/Downloads/Puma concolor_partitioned_occs(1).csv')
     rvs$occs <- f %>% dplyr::filter(name != 'background')
@@ -46,9 +58,6 @@ shinyServer(function(input, output, session) {
   
   # for RMD
   curWD <- getwd()
-  
-  # logs <- reactiveValues(entries=logInit())
-  gtext <- reactiveValues()
   
   # load modules
   for (f in list.files('./modules')) source(file.path('modules', f), local=TRUE)
@@ -175,7 +184,7 @@ shinyServer(function(input, output, session) {
   })
   
   ########################################## #
-  ### COMPONENT 1: OBTAIN OCCURRENCE DATA ####
+  # COMPONENT 1: OBTAIN OCCURRENCE DATA ####
   ########################################## #
   
   # module Query Database (Present)
@@ -183,7 +192,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goDbOccs, {
     vals$occs <- dbOccs()
-    vals$occsPreProc <- vals$occs
+    vals$occsOrig <- vals$occs
     shinyjs::enable("dlDbOccs")
   })
   
@@ -192,7 +201,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goPaleoDbOccs, {
     vals$occs <- dbPaleoOccs()
-    vals$occsPreProc <- vals$occs
+    vals$occsOrig <- vals$occs
     shinyjs::enable("dlPaleoDbOccs")
   })
   
@@ -200,8 +209,8 @@ shinyServer(function(input, output, session) {
   userOccs <- callModule(userOccs_MOD, 'c1_userOccs')
   
   observeEvent(input$goUserOccs, {
-    rvs$occs <- userOccs()
-    rvs$occsPreProc <- rvs$occs
+    vals$occs <- userOccs()
+    vals$occsOrig <- rvs$occs
     # record for RMD
     rvs$comp1 <- 'csv'
     map %>%
@@ -217,17 +226,17 @@ shinyServer(function(input, output, session) {
   options <- list(autoWidth = TRUE, columnDefs = list(list(width = '40%', targets = 7)),
                   scrollX=TRUE, scrollY=400)
   output$occTbl <- DT::renderDataTable({
-    req(rvs$occs)
-    occsDT <- rvs$occs %>% dplyr::mutate(longitude = round(as.numeric(longitude), digits = 2),
+    req(vals$occs)
+    occsDT <- vals$occs %>% dplyr::mutate(longitude = round(as.numeric(longitude), digits = 2),
                                   latitude = round(as.numeric(latitude), digits = 2))
     occsDT %>% dplyr::select(taxon_name, occID, longitude:record_type)
   }, rownames = FALSE)
   
   # handle downloading of original GBIF records after cleaning
   output$dlDbOccs <- downloadHandler(
-    filename = function() {paste0(formatSpName(vals$spName), '_original_', rvs$occDb, ".csv")},
+    filename = function() {paste0(formatSpName(vals$spName), '_original_', rmd$occDb, ".csv")},
     content = function(file) {
-      write.csv(rvs$occsOrig, file, row.names=FALSE)
+      write.csv(vals$occsOrig, file, row.names=FALSE)
     }
   )
   
@@ -236,16 +245,10 @@ shinyServer(function(input, output, session) {
   ########################################### #
   
   # module Remove Occurrences By ID
-  remByID <- callModule(removeByID_MOD, 'c2_removeByID', rvs)
+  remByID <- callModule(removeByID_MOD, 'c2_removeByID')
   
   observeEvent(input$goRemoveByID, {
-    rvs$occs <- remByID()
-    # record for RMD
-    rvs$comp2 <- c(rvs$comp2, 'rem')
-    map %>%
-      clearMarkers() %>%
-      map_plotLocs(rvs$occs) %>%
-      zoom2Occs(rvs$occs)
+    vals$occs <- remByID()
   })
   
   # module Select Occurrences on Map
@@ -288,14 +291,14 @@ shinyServer(function(input, output, session) {
     filename = function() {paste0(formatSpName(vals$spName), "_processed_occs.csv")},
     content = function(file) {
       # thinned_rowNums <- as.numeric(thinOccs()$occID)
-      # origThinned <- rvs$occsOrig[thinned_rowNums,]
+      # origThinned <- vals$occsOrig[thinned_rowNums,]
       write.csv(rvs$occs, file, row.names = FALSE)
     }
   )
   
   # Reset Occs button functionality
   observeEvent(input$goResetOccs, {
-    rvs$occs <- rvs$occsPreProc  
+    rvs$occs <- vals$occsOrig  
     # reset for RMD
     rvs$comp2 <- NULL
     logs %>% writeLog("Reset occurrences.")

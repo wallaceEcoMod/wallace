@@ -15,7 +15,7 @@ thinOccs_MOD <- function(input, output, session) {
     if (is.null(occs.thin)) return()
     
     # LOAD vals ####
-    vals$thinDist <- input$thinDist
+    rmd$c2$thinDist <- input$thinDist
     
     # METADATA ####
     #

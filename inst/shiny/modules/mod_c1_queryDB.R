@@ -20,14 +20,14 @@ queryDb_MOD <- function(input, output, session) {
     
     if (is.null(occs)) return()
     
-    # LOAD vals ####
-    vals$occDb <- input$occDb
-    vals$spName <- input$spName
-    vals$occNum <- input$occNum
-    vals$timeInterval<- "Present"
+    # RMD VALUES ####
+    rmd$c1$occDb <- input$occDb
+    rmd$c1$spName <- input$spName
+    rmd$c1$occNum <- input$occNum
+    rmd$c1$timeInterval<- "Present"
     
     # METADATA ####
-    rmm$metadata$data$occurrence$taxaVector <- vals$spName
+    rmm$metadata$data$occurrence$taxaVector <- input$spName
     rmm$metadata$data$occurrence$occurrenceDataType <- "presence only"
     rmm$metadata$data$occurrence$presenceSampleSize <- nrow(occs)
     

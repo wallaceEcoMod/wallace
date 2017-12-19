@@ -6,28 +6,26 @@ removeByID_UI <- function(id) {
   )
 }
 
-removeByID_MOD <- function(input, output, session, rvs) {
+removeByID_MOD <- function(input, output, session) {
   reactive({
-    if (is.null(rvs$occs)) {
-      logs %>% writeLog(type = 'error', "Before processing occurrences, 
-                       obtain the data in component 1.")
-      return()
-    }
+    # FUNCTION CALL ####
+    occs.rem <- c2_removeByID(vals$occs, input$removeID, logs, shiny = TRUE)
     
-    if (!(input$removeID %in% rvs$occs$occID)) {
-      logs %>% writeLog(type = 'error','Entered ID not found.')
-      return()
-    }
+    if (is.null(occs.rem)) return()
     
-    # find row number relating to ID
-    i <- which(input$removeID == rvs$occs$occID)  # find which row name corresponds to user selection for removal
-    # remove the row
-    occs.remID <- rvs$occs[-i,]
-    # record all removed ids
-    rvs$removedIDs <- c(rvs$removedIDs, input$removeID)
+    # RMD VALUES ####
+    # add to vector of IDs removed
+    rmd$c2$removedIDs <- c(rmd$c2$removedIDs, input$removeID)
     
-    logs %>% writeLog("Removed occurrence with ID = ", input$removeID, 
-                     ". Updated data has n = ", nrow(rvs$occs), " records.")
-    return(occs.remID)
+    # METADATA ####
+    #
+    
+    # MAPPING - blue pts for remove, red pts for keep
+    map %>%
+      clearMarkers() %>%
+      map_plotLocs(occs.rem) %>%
+      zoom2Occs(occs.rem)
+    
+    return(occs.rem)
   })
 }
