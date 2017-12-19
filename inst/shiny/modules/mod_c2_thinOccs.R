@@ -10,16 +10,30 @@ thinOccs_UI <- function(id) {
 thinOccs_MOD <- function(input, output, session) {
   reactive({
     # FUNCTION CALL ####
-    occs.thin <- c2_thinOccs(input$occs, input$thinDist, logs, shiny=TRUE)
+    occs.thin <- c2_thinOccs(vals$occs, input$thinDist, logs, shiny=TRUE)
     
     if (is.null(occs.thin)) return()
     
     # LOAD vals ####
-    vals$occs <- input$occs
     vals$thinDist <- input$thinDist
     
     # METADATA ####
     #
+    
+    # MAPPING - blue pts for remove, red pts for keep
+    map %>% 
+      addCircleMarkers(data = vals$occs, lat = ~latitude, lng = ~longitude,
+                       radius = 5, color = 'red', fillColor = 'blue',
+                       fillOpacity = 1, weight = 2, popup = ~pop,
+                       group = 'comp2') %>%
+      addCircleMarkers(data = occs.thin, lat = ~latitude, lng = ~longitude,
+                       radius = 5, color = 'red', fillColor = 'red',
+                       fillOpacity = 1, weight = 2, popup = ~pop,
+                       group = 'comp2') %>%
+      addLegend("bottomright", colors = c('red', 'blue'),
+                title = "Occ Records", labels = c('retained', 'removed'),
+                opacity = 1, layerId = 'leg')
+    
     return(occs.thin)
   })
 }

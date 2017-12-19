@@ -183,7 +183,6 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goDbOccs, {
     vals$occs <- dbOccs()
-    print(rmm$metadata$data$occurrence)
     vals$occsPreProc <- vals$occs
     shinyjs::enable("dlDbOccs")
   })
@@ -272,28 +271,15 @@ shinyServer(function(input, output, session) {
   })
   
   # module Spatial Thin
-  thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs', rvs)
+  thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs')
   
   observeEvent(input$goThinOccs, {
-    occsPreThin <- rvs$occs
-    rvs$occs <- thinOccs()
+    vals$occs <- thinOccs()
     # stop if no occurrence data
     req(rvs$occs)
     # record for RMD
     rvs$comp2 <- c(rvs$comp2, 'thin')
-    # MAPPING - blue pts for remove, red pts for keep
-    map %>% 
-      addCircleMarkers(data = occsPreThin, lat = ~latitude, lng = ~longitude,
-                       radius = 5, color = 'red', fillColor = 'blue',
-                       fillOpacity = 1, weight = 2, popup = ~pop,
-                       group = 'comp2') %>%
-      addCircleMarkers(data = rvs$occs, lat = ~latitude, lng = ~longitude,
-                       radius = 5, color = 'red', fillColor = 'red',
-                       fillOpacity = 1, weight = 2, popup = ~pop,
-                       group = 'comp2') %>%
-      addLegend("bottomright", colors = c('red', 'blue'),
-                title = "Occ Records", labels = c('retained', 'removed'),
-                opacity = 1, layerId = 'leg')
+    
     shinyjs::enable("dlProcOccs")
   })
   
