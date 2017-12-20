@@ -7,50 +7,33 @@ userOccs_UI <- function(id) {
 }
 
 userOccs_MOD <- function(input, output, session, rvs) {
-  
-  readOccsCSV <- reactive({
-    req(input$userCSV)
+  reactive({
+    # FUNCTION CALL ####
+    occs <- c1_userOccs(input$userCSV$datapath, input$userCSV$name, logs, shiny=TRUE)
     
-    # make occDB record NULL to keep track of where occurrences are coming from
-    rvs$occDB <- NULL
-    # record for RMD
-    rvs$userCSV <- input$userCSV
+    if (is.null(occs)) return()
     
-    csv <- read.csv(input$userCSV$datapath)
+    # RMD VALUES ####
+    rmd$c1$userCSV <- input$userCSV
+    rmd$c1$spName <- occs$taxon_name[1]
+    # rmd$c1$timeInterval<- "Present"
     
-    spName <- trimws(as.character(csv$name[1]))
+    # METADATA ####
+    rmm$metadata$data$occurrence$taxaVector <- occs$taxon_name[1]
+    rmm$metadata$data$occurrence$occurrenceDataType <- "presence only"
+    rmm$metadata$data$occurrence$presenceSampleSize <- nrow(occs)
     
-    if (!all(c('name', 'longitude', 'latitude') %in% names(csv))) {
-      logs %>% writeLog(type = "error", 'Please input CSV file with columns 
-                        "name", "longitude", "latitude".')
-      return()
-    }
+    # MAPPING ####
+    map %>%
+      clearMarkers() %>%
+      clearShapes() %>%
+      clearImages() %>%
+      addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, radius = 5, 
+                       color = 'red', fill = TRUE, fillColor = 'red', 
+                       fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
+      zoom2Occs(occs)
     
-    
-    # subset to just records with first species name, and non-NA latitude and longitude
-    uoccs <- csv %>% 
-      dplyr::filter(name == spName) %>%
-      dplyr::filter(!is.na(latitude) & !is.na(longitude))
-      
-    if (nrow(uoccs) == 0) {
-      logs %>% writeLog(type = 'warning', 'No records with coordinates found in', 
-                        input$userCSV$name, "for", spName, ".")
-      return()
-    }
-    
-    logs %>% writeLog("User-specified CSV file", input$userCSV$name, "with total of", 
-                      nrow(uoccs), "records with coordinates was uploaded.")
-    
-    for (col in c("year", "institutionCode", "country", "stateProvince",
-                  "locality", "elevation", "basisOfRecord")) {  # add all cols to match origOccs if not already there
-      if (!(col %in% names(uoccs))) uoccs[,col] <- NA
-    }
-    
-    uoccs$occID <- row.names(uoccs)  # add col for IDs
-    uoccs$pop <- unlist(apply(uoccs, 1, popUpContent))  # add col for map marker popup text
-    
-    return(uoccs)
+    # RETURN ####
+    return(occs)
   })
-  
-  return(readOccsCSV)
 }

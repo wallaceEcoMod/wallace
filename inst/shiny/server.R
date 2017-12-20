@@ -1,11 +1,9 @@
 wd <- getwd()
-# load general functions
-source("funcs/functions.R")
-# load module functions
+# load module and helper functions
 setwd("..")
 setwd("..")
-modFuncs <- list.files(path="R", pattern="^c", full.names=TRUE)
-sapply(modFuncs, source)
+funcs <- list.files(path="R", pattern="^c|^helper", full.names=TRUE)
+sapply(funcs, source)
 setwd(wd)
 
 options(shiny.maxRequestSize=5000*1024^2)
@@ -63,8 +61,9 @@ shinyServer(function(input, output, session) {
   for (f in list.files('./modules')) source(file.path('modules', f), local=TRUE)
   
   # initialize log window
-  output$log <- renderUI({tags$div(id='logHeader', tags$div(id='logContent', 
-                                                            HTML(paste0(logs(), "<br>", collapse = ""))))})
+  output$log <- renderUI({tags$div(id='logHeader', 
+                                   tags$div(id='logContent', 
+                                            HTML(paste0(logs(), "<br>", collapse = ""))))})
   
   ######################## #
   ### GUIDANCE TEXT ####
@@ -206,19 +205,11 @@ shinyServer(function(input, output, session) {
   })
   
   # module User Occurrence Data
-  userOccs <- callModule(userOccs_MOD, 'c1_userOccs')
+  userOccs <- callModule(userOccs_MOD, 'c1_userOccs_uiID')
   
   observeEvent(input$goUserOccs, {
     vals$occs <- userOccs()
-    vals$occsOrig <- rvs$occs
-    # record for RMD
-    rvs$comp1 <- 'csv'
-    map %>%
-      clearMarkers() %>%
-      clearShapes() %>%
-      clearImages() %>%
-      map_plotLocs(rvs$occs) %>%
-      zoom2Occs(rvs$occs)
+    vals$occsOrig <- vals$occs
     shinyjs::disable("dlDbOccs")
   })
   

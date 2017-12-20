@@ -66,7 +66,7 @@ shinyUI(tagList(
                                                 conditionalPanel("input.occSel == 'user'",
                                                                  div('Module: User-specified Occurrences', id="mod"),
                                                                  HTML('<hr>'),
-                                                                 userOccs_UI('c1_userOccs'),
+                                                                 userOccs_UI('c1_userOccs_uiID'),
                                                                  actionButton("goUserOccs", "Load Occurrences"),
                                                                  HTML('<hr>'),
                                                                  div('Module Developers: Jamie M. Kass, Bruno Vilela, Robert P. Anderson', id="pkgDes")

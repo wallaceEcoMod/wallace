@@ -70,7 +70,7 @@ c1_queryDb <- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
     occs <- occs %>% dplyr::rename(taxon_name = name, 
                                    institution_code = institutionCode, 
                                    state_province = stateProvince, 
-                                   record_type = basisOfRecord)  
+                                   record_type = basisOfRecord)
     # standardize VertNet column names
   } else if (occDb == 'vertnet') {
     fields <- c('institutioncode', 'stateprovince', 'basisofrecord', 'maximumelevationinmeters')
@@ -99,15 +99,4 @@ c1_queryDb <- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
                     Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')
   
   return(occs)
-}
-
-popUpContent <- function(x) {
-  lat <- round(as.numeric(x['latitude']), digits = 2)
-  lon <- round(as.numeric(x['longitude']), digits = 2)
-  as.character(tagList(
-    tags$strong(paste("occID:", x['occID'])),
-    tags$br(),
-    tags$strong(paste("Latitude:", lat)),
-    tags$strong(paste("Longitude:", lon))
-  ))
 }
