@@ -218,14 +218,14 @@ shinyServer(function(input, output, session) {
                   scrollX=TRUE, scrollY=400)
   output$occTbl <- DT::renderDataTable({
     req(vals$occs)
-    occsDT <- vals$occs %>% dplyr::mutate(longitude = round(as.numeric(longitude), digits = 2),
-                                  latitude = round(as.numeric(latitude), digits = 2))
-    occsDT %>% dplyr::select(taxon_name, occID, longitude:record_type)
+    vals$occs %>% dplyr::mutate(longitude = round(as.numeric(longitude), digits = 2),
+                                latitude = round(as.numeric(latitude), digits = 2)) %>% 
+                  dplyr::select(taxon_name, occID, longitude:record_type)
   }, rownames = FALSE)
   
   # handle downloading of original GBIF records after cleaning
   output$dlDbOccs <- downloadHandler(
-    filename = function() {paste0(formatSpName(vals$spName), '_original_', rmd$occDb, ".csv")},
+    filename = function() {paste0(formatSpName(vals$occs$taxon_name[1]), '_original_', rmd$occDb, ".csv")},
     content = function(file) {
       write.csv(vals$occsOrig, file, row.names=FALSE)
     }
