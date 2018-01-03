@@ -27,10 +27,9 @@ shinyServer(function(input, output, session) {
   ################################
   
   # reactiveValues list for objects that get modified and reused throughout analysis
-  vals <- reactiveValues()
+  spp <- reactiveValues()
   # reactiveValues list for values that are needed for building the RMD
-  rmd <- reactiveValues(c1 = list(), c2 = list(), c3 = list(), c4 = list(),
-                        c5 = list(), c6 = list(), c7 = list(), c8 = list())
+  rmd <- reactiveValues()
   # reactiveValues list for values that are needed for composing the metadata
   rmm <- reactiveValues(metadata=rangeModelMetadata::rangeModelMetadataTemplate())
   # reactiveValues list for holding the current guidance text
@@ -191,10 +190,28 @@ shinyServer(function(input, output, session) {
   dbOccs <- callModule(queryDb_MOD, 'c1_queryDb_uiID')
   
   observeEvent(input$goDbOccs, {
-    vals$occs <- dbOccs()
-    vals$occsOrig <- vals$occs
+    sppDb <- dbOccs()
+    n <- formatSpName(sppDb$taxon_name)
+    # if species name is already in list, overwrite it
+    if(!is.null(spp[[n]])) spp[[n]] <- NULL
+    spp[[n]] <- list(occs = sppDb)
+    spp[[n]]$occsOrig <- sppDb  
+    updateSelectInput(session, "sppSel", selected = n)
     shinyjs::enable("dlDbOccs")
   })
+  
+  # ui that populates with the name of species that were queried
+  output$sppSelUI <- renderUI({
+    req(length(reactiveValuesToList(spp)) > 0)
+    if(length(spp) == 0) return()
+    n <- names(spp)
+    sppNameList <- setNames(as.list(n), n)
+    selectInput('sppSel', label = "Current species",
+                choices = sppNameList)
+  })
+  
+  # keep track of current species
+  curSp <- reactive({input$sppSel})
   
   # module Query Database (Paleo)
   dbPaleoOccs <- callModule(queryPaleoDb_MOD, 'c1_queryPaleoDb_uiID')
@@ -214,12 +231,29 @@ shinyServer(function(input, output, session) {
     shinyjs::disable("dlDbOccs")
   })
   
+  # MAPPING ####
+  observeEvent(input$sppSel, {
+    req(length(reactiveValuesToList(spp)) > 0)
+    if(input$tabs == 1) {
+      occs <- spp[[curSp()]]$occs
+      map %>%
+        clearMarkers() %>%
+        clearShapes() %>%
+        clearImages() %>%
+        addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, radius = 5, 
+                         color = 'red', fill = TRUE, fillColor = 'red', 
+                         fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
+        zoom2Occs(occs) 
+    }
+  })
+  
+  
   # TABLE
   options <- list(autoWidth = TRUE, columnDefs = list(list(width = '40%', targets = 7)),
                   scrollX=TRUE, scrollY=400)
   output$occTbl <- DT::renderDataTable({
-    req(vals$occs)
-    vals$occs %>% dplyr::mutate(longitude = round(as.numeric(longitude), digits = 2),
+    req(length(reactiveValuesToList(spp)) > 0)
+    spp[[curSp()]]$occs %>% dplyr::mutate(longitude = round(as.numeric(longitude), digits = 2),
                                 latitude = round(as.numeric(latitude), digits = 2)) %>% 
                   dplyr::select(taxon_name, occID, longitude:record_type)
   }, rownames = FALSE)

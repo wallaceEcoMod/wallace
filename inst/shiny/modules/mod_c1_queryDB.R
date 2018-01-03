@@ -21,25 +21,16 @@ queryDb_MOD <- function(input, output, session) {
     if (is.null(occs)) return()
     
     # RMD VALUES ####
-    rmd$c1$occDb <- input$occDb
-    rmd$c1$spName <- input$spName
-    rmd$c1$occNum <- input$occNum
-    rmd$c1$timeInterval<- "Present"
+    c1 <- list()
+    c1$occDb <- input$occDb
+    c1$occNum <- input$occNum
+    c1$timeInterval<- "Present"
+    rmd[[input$spName]] <- c1
     
     # METADATA ####
-    rmm$metadata$data$occurrence$taxaVector <- input$spName
-    rmm$metadata$data$occurrence$occurrenceDataType <- "presence only"
-    rmm$metadata$data$occurrence$presenceSampleSize <- nrow(occs)
-    
-    # MAPPING ####
-    map %>%
-      clearMarkers() %>%
-      clearShapes() %>%
-      clearImages() %>%
-      addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, radius = 5, 
-                       color = 'red', fill = TRUE, fillColor = 'red', 
-                       fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
-      zoom2Occs(occs)
+    # rmm$metadata$data$occurrence$taxaVector <- input$spName
+    # rmm$metadata$data$occurrence$occurrenceDataType <- "presence only"
+    # rmm$metadata$data$occurrence$presenceSampleSize <- nrow(occs)
     
     # RETURN ####
     return(occs)
