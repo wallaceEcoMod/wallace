@@ -1,3 +1,4 @@
+source("funcs/functions.R")
 wd <- getwd()
 # load module and helper functions
 setwd("..")
