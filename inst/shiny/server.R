@@ -28,16 +28,16 @@ shinyServer(function(input, output, session) {
   
   # reactiveValues list for objects that get modified and reused throughout analysis
   spp <- reactiveValues()
-  # reactiveValues list for values that are needed for building the RMD
-  rmd <- reactiveValues()
   # reactiveValues list for values that are needed for composing the metadata
-  rmm <- reactiveValues(metadata=rangeModelMetadata::rangeModelMetadataTemplate())
+  # rmm <- reactiveValues(metadata=rangeModelMetadata::rangeModelMetadataTemplate())
   # reactiveValues list for holding the current guidance text
   gtext <- reactiveValues()
   # single reactive value for log vector
   logs <- reactiveVal(logInit())
   # legacy
   rvs <- reactiveValues()
+  # legacy
+  rmd <- reactiveValues()
   
   # FOR DEVELOPMENT
   observeEvent(input$load, {
@@ -190,14 +190,9 @@ shinyServer(function(input, output, session) {
   dbOccs <- callModule(queryDb_MOD, 'c1_queryDb_uiID')
   
   observeEvent(input$goDbOccs, {
-    sppDb <- dbOccs()
-    n <- formatSpName(sppDb$taxon_name)
-    # if species name is already in list, overwrite it
-    if(!is.null(spp[[n]])) spp[[n]] <- NULL
-    spp[[n]] <- list(occs = sppDb)
-    spp[[n]]$occsOrig <- sppDb  
-    updateSelectInput(session, "sppSel", selected = n)
+    dbOccs()
     shinyjs::enable("dlDbOccs")
+    print(reactiveValuesToList(spp))
   })
   
   # ui that populates with the name of species that were queried
