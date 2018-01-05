@@ -186,7 +186,7 @@ shinyServer(function(input, output, session) {
   # COMPONENT 1: OBTAIN OCCURRENCE DATA ####
   ########################################## #
   
-  # module Query Database (Present)
+  # module Query Database (Present
   dbOccs <- callModule(queryDb_MOD, 'c1_queryDb_uiID')
   
   observeEvent(input$goDbOccs, {
