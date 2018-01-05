@@ -16,9 +16,8 @@ c2_removeByID <- function(occs, removeID, logs = NULL, shiny = FALSE) {
   i <- which(removeID == occs$occID)  
   # remove the row
   occs.remID <- occs[-i,]
-  print(occs.remID %>% dplyr::select(longitude, latitude, occID))
   
-  logs %>% writeLog("Removed occurrence with occID = ", removeID, 
+  logs %>% writeLog("Removed occurrence from", occs$taxon_name[1], "with occID = ", removeID, 
                     ". Updated data has n = ", nrow(occs.remID), " records.")
   return(occs.remID)
 }

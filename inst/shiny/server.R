@@ -186,13 +186,15 @@ shinyServer(function(input, output, session) {
   # COMPONENT 1: OBTAIN OCCURRENCE DATA ####
   ########################################## #
   
-  # module Query Database (Present
+  # module Query Database (Present)
   dbOccs <- callModule(queryDb_MOD, 'c1_queryDb_uiID')
   
   observeEvent(input$goDbOccs, {
-    dbOccs()
+    # get species name
+    n <- dbOccs()
+    # UI CONTROLS ####
+    updateSelectInput(session, "sppSel", selected = n)
     shinyjs::enable("dlDbOccs")
-    print(reactiveValuesToList(spp))
   })
   
   # ui that populates with the name of species that were queried
@@ -201,8 +203,7 @@ shinyServer(function(input, output, session) {
     if(length(spp) == 0) return()
     n <- names(spp)
     sppNameList <- setNames(as.list(n), n)
-    selectInput('sppSel', label = "Current species",
-                choices = sppNameList)
+    selectInput('sppSel', label = "Current species", choices = sppNameList)
   })
   
   # keep track of current species
@@ -230,6 +231,17 @@ shinyServer(function(input, output, session) {
   observeEvent(input$sppSel, {
     req(length(reactiveValuesToList(spp)) > 0)
     if(input$tabs == 1) {
+      occs <- spp[[curSp()]]$occsOrig
+      map %>%
+        clearMarkers() %>%
+        clearShapes() %>%
+        clearImages() %>%
+        addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, radius = 5, 
+                         color = 'red', fill = TRUE, fillColor = 'red', 
+                         fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
+        zoom2Occs(occs) 
+    }
+    if(input$tabs == 2) {
       occs <- spp[[curSp()]]$occs
       map %>%
         clearMarkers() %>%
@@ -240,6 +252,7 @@ shinyServer(function(input, output, session) {
                          fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
         zoom2Occs(occs) 
     }
+    
   })
   
   
@@ -247,6 +260,7 @@ shinyServer(function(input, output, session) {
   options <- list(autoWidth = TRUE, columnDefs = list(list(width = '40%', targets = 7)),
                   scrollX=TRUE, scrollY=400)
   output$occTbl <- DT::renderDataTable({
+    # check if spp has species in it
     req(length(reactiveValuesToList(spp)) > 0)
     spp[[curSp()]]$occs %>% dplyr::mutate(longitude = round(as.numeric(longitude), digits = 2),
                                 latitude = round(as.numeric(latitude), digits = 2)) %>% 
@@ -269,7 +283,9 @@ shinyServer(function(input, output, session) {
   remByID <- callModule(removeByID_MOD, 'c2_removeByID')
   
   observeEvent(input$goRemoveByID, {
-    vals$occs <- remByID()
+    remByID()
+    # UI CONTROLS ####
+    updateSelectInput(session, "sppSel", selected = curSp())
   })
   
   # module Select Occurrences on Map

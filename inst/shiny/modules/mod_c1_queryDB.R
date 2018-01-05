@@ -20,23 +20,17 @@ queryDb_MOD <- function(input, output, session) {
     
     if (is.null(occs)) return()
     
-    # load into spp superlist
+    # LOAD INTO SPP ####
     n <- formatSpName(occs$taxon_name)
     # if species name is already in list, overwrite it
     if(!is.null(spp[[n]])) spp[[n]] <- NULL
     spp[[n]] <- list(occs = occs)
     spp[[n]]$occsOrig <- occs
     
-    updateSelectInput(session, "sppSel", selected = n)
-    
     # RMD VALUES ####
-    c1 <- list(occDb = input$occDb, occNum = input$occNum,
-               timeInterval = "Present")
-    if(is.null(spp[[n]]$rmd)) {
-      spp[[n]]$rmd <- list(c1 = c1)  
-    }else{
-      spp[[n]]$rmd <- c(spp[[n]]$rmd, c1)
-    }
+    dbOccsRMD <- list(spName = n, occDb = input$occDb, 
+                      occNum = input$occNum, timeInterval = "Present")
+    spp[[n]]$rmd <- list(c1 = dbOccsRMD)
     
     # METADATA ####
     # rmm$metadata$data$occurrence$taxaVector <- input$spName
@@ -44,6 +38,7 @@ queryDb_MOD <- function(input, output, session) {
     # rmm$metadata$data$occurrence$presenceSampleSize <- nrow(occs)
     
     # RETURN ####
-    return(occs)
+    # output the species name
+    return(n)
   })
 }

@@ -9,16 +9,19 @@ removeByID_UI <- function(id) {
 removeByID_MOD <- function(input, output, session) {
   reactive({
     # FUNCTION CALL ####
-    occs.rem <- c2_removeByID(vals$occs, input$removeID, logs, shiny = TRUE)
-    
+    occs.rem <- c2_removeByID(spp[[curSp()]]$occs, input$removeID, logs, shiny = TRUE)
     if (is.null(occs.rem)) return()
+    
+    # LOAD INTO SPP ####
+    spp[[curSp()]]$occs <- occs.rem
     
     # RMD VALUES ####
     # add to vector of IDs removed
-    rmd$c2$removedIDs <- c(rmd$c2$removedIDs, input$removeID)
-    
-    # METADATA ####
-    #
+    if(is.null(spp[[curSp()]]$rmd$c2)) {
+      spp[[curSp()]]$rmd$c2 <- list(removedIDs = input$removeID)
+    }else{
+      spp[[curSp()]]$rmd$c2$removedIDs <- c(spp[[curSp()]]$rmd$c2$removedIDs, input$removeID)
+    }
     
     # MAPPING - blue pts for remove, red pts for keep
     map %>%
