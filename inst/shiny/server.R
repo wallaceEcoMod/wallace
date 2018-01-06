@@ -200,7 +200,6 @@ shinyServer(function(input, output, session) {
   # ui that populates with the name of species that were queried
   output$sppSelUI <- renderUI({
     req(length(reactiveValuesToList(spp)) > 0)
-    if(length(spp) == 0) return()
     n <- names(spp)
     sppNameList <- setNames(as.list(n), n)
     selectInput('sppSel', label = "Current species", choices = sppNameList)
@@ -222,8 +221,7 @@ shinyServer(function(input, output, session) {
   userOccs <- callModule(userOccs_MOD, 'c1_userOccs_uiID')
   
   observeEvent(input$goUserOccs, {
-    vals$occs <- userOccs()
-    vals$occsOrig <- vals$occs
+    userOccs()
     shinyjs::disable("dlDbOccs")
   })
   

@@ -12,16 +12,12 @@ xx_MOD <- function(input, output, session) {
     
     if (is.null(out)) return()
     
+    # LOAD INTO SPP ####
+    spp[[curSp()]]$xx <- out
+    
     # RMD VALUES ####
-    rmd$cx$xx <- input$xx
-    
-    # METADATA ####
-    #
-    #
-    
-    # MAPPING ####
-    #
-    #
+    xxRMD <- list(xx = xx)
+    spp[[curSp()]]$rmd <- list(cx = xxRMD)
     
     # RETURN ####
     return(out)
