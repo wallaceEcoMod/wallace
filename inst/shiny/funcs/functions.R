@@ -161,9 +161,9 @@ smartZoom <- function(longi, lati) {
 # COMP 3 ####
 ####################### #
 
-remEnvsValsNA <- function(rvs) {
+remEnvsValsNA <- function(occs, envs, logs) {
   withProgress(message = "Checking for points with NA values...", {
-    occsVals <- raster::extract(rvs$envs, rvs$occs[c('longitude', 'latitude')])
+    occsVals <- raster::extract(envs, occs[c('longitude', 'latitude')])
     na.rowNums <- which(rowSums(is.na(occsVals)) > 1)
     
     if (length(na.rowNums) == length(occsVals)) {
@@ -173,13 +173,13 @@ remEnvsValsNA <- function(rvs) {
     }
     
     if (length(na.rowNums) > 0) {
-      occs.notNA <- rvs$occs[-na.rowNums,]
+      occs.notNA <- occs[-na.rowNums,]
       logs %>% writeLog(type = 'warning', 'Removed records without environmental values with occIDs: "',
-                        paste(rvs$occs[na.rowNums,]$occID, collapse=', '), ".")
+                        paste(occs[na.rowNums,]$occID, collapse=', '), ".")
       return(occs.notNA)
     }
     
-    return(rvs$occs)
+    return(occs)
   })
 }
 

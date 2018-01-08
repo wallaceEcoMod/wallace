@@ -94,7 +94,7 @@ shinyUI(tagList(
                                                 conditionalPanel("input.procOccSel == 'remID'",
                                                                  div('Module: Remove Occurrences By ID', id="mod"),
                                                                  HTML('<hr>'),
-                                                                 removeByID_UI('c2_removeByID'),
+                                                                 removeByID_UI('c2_removeByID_uiID'),
                                                                  actionButton("goRemoveByID", "Remove Occurrence")
                                                 ),
                                                 # placeholder for select on map
@@ -102,7 +102,7 @@ shinyUI(tagList(
                                                                  div('Module: Spatial Thin', id="mod"),
                                                                  uiTop('spThin', 'Spatial Thinning of Species Occurrence Records'),
                                                                  HTML('<hr>'),
-                                                                 thinOccs_UI('c2_thinOccs'),
+                                                                 thinOccs_UI('c2_thinOccs_uiID'),
                                                                  actionButton("goThinOccs", "Thin Occurrences")
                                                 ), br(),
                                                 strong("Reset to original occurrences"), br(), br(),
@@ -132,7 +132,7 @@ shinyUI(tagList(
                                                                  div('Module: WorldClim Bioclims', id="mod"),
                                                                  uiTop('raster', 'Geographic Data Analysis and Modeling'),
                                                                  HTML('<hr>'),
-                                                                 wcBioclims_UI("c3_wcBioclims"),
+                                                                 wcBioclims_UI("c3_wcBioclims_uiID"),
                                                                  strong("Using map center coordinates as reference for tile download."),
                                                                  textOutput('ctrLatLon'), br(),
                                                                  actionButton("goEnvData", "Load Env Data")
@@ -148,7 +148,7 @@ shinyUI(tagList(
                                                 conditionalPanel("input.envDataSel == 'user'",
                                                                  div('Module: User-specified Environmental Data', id="mod"),
                                                                  HTML('<hr>'),
-                                                                 userEnvs_UI('c3_userEnvs'),
+                                                                 userEnvs_UI('c3_userEnvs_uiID'),
                                                                  actionButton('goUserEnvs', 'Load Env Data')
                                                 ),
                                                 # br(), br(),

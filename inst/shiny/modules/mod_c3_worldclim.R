@@ -11,56 +11,30 @@ wcBioclims_UI <- function(id) {
                                "10 arcmin" = 10))),
     checkboxInput(ns("bcSelChoice"), label = "Specify variables to use in analysis?"),
     conditionalPanel(paste0("input['", ns("bcSelChoice"), "']"),
-                     checkboxGroupInput(ns("bcSels"), label = "Select",
+                     checkboxGroupInput(ns("bcSel"), label = "Select",
                                         choices = setNames(as.list(paste0('bio', 1:19)), paste0('bio', 1:19)), 
                                         inline=TRUE, selected = paste0('bio', 1:19)))
     
   )
 }
 
-wcBioclims_MOD <- function(input, output, session, logs, mapCntr, envs) {
+wcBioclims_MOD <- function(input, output, session) {
   reactive({
-    if (is.null(rvs$occs)) {
-      logs %>% writeLog(type = 'error', "Before obtaining environmental variables, 
-                       obtain occurrence data in component 1.")
-      return()
-    }
-    if (input$bcRes == '') {
-      logs %>% writeLog(type = 'error', 'Select a raster resolution.')
-      return()
-    }
     
-    # record for RMD
-    rvs$bcRes <- input$bcRes
-    rvs$bcSels <- input$bcSels
-    print(rvs$bcSels)
+    # FUNCTION CALL ####
+    envs <- c3_worldclim(spp[[curSp()]]$occs, input$bcRes, input$bcSelChoice, 
+                         input$bcSel, logs, shiny=TRUE)
     
-    withProgress(message = "Retrieving WorldClim data...", {
-      if (input$bcRes == 0.5) {
-        wcbc <- raster::getData(name = "worldclim", var = "bio", res = input$bcRes, 
-                                lon = mapCntr()[1], lat = mapCntr()[2])
-        rvs$bcLon <- mapCntr()[1]
-        rvs$bcLat <- mapCntr()[2]
-      } else {
-        wcbc <- raster::getData(name = "worldclim", var = "bio", res = input$bcRes)
-        wcbc <- wcbc[[input$bcSels]]
-      }
-    })
+    if (is.null(envs)) return()
     
-    if (raster::nlayers(wcbc) == 19) {
-      bcSels <- 'bio1-19'
-    } else {
-      bcSels <- paste(names(wcbc), collapse = ", ")
-    }
-    logs %>% writeLog("Environmental predictors: WorldClim bioclimatic variables",
-                      bcSels, "at", input$bcRes, " arcmin resolution.")
+    # LOAD INTO SPP ####
+    spp[[curSp()]]$envs <- envs
     
-    # change names if bio01 is bio1, and so forth
-    i <- grep('bio[0-9]$', names(wcbc))
-    editNames <- paste('bio', sapply(strsplit(names(wcbc)[i], 'bio'), function(x) x[2]), sep='0')
-    names(wcbc)[i] <- editNames
-    rvs$bcSels[i] <- editNames
+    # RMD VALUES ####
+    spp[[curSp()]]$rmd$c3 <- list(type = 'worldclim_bioclims', envsRes = input$bcRes, envsSel = input$bcSel)
     
-    return(wcbc)
+    # RETURN ####
+    # output the species name
+    return(envs)
   })
 }

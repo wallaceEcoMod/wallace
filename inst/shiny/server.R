@@ -278,7 +278,7 @@ shinyServer(function(input, output, session) {
   ########################################### #
   
   # module Remove Occurrences By ID
-  remByID <- callModule(removeByID_MOD, 'c2_removeByID')
+  remByID <- callModule(removeByID_MOD, 'c2_removeByID_uiID')
   
   observeEvent(input$goRemoveByID, {
     remByID()
@@ -309,7 +309,7 @@ shinyServer(function(input, output, session) {
   })
   
   # module Spatial Thin
-  thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs')
+  thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs_uiID')
   
   observeEvent(input$goThinOccs, {
     vals$occs <- thinOccs()
@@ -355,24 +355,22 @@ shinyServer(function(input, output, session) {
   })
   
   # module WorldClim Bioclims
-  wcBioclims <- callModule(wcBioclims_MOD, 'c3_wcBioclims', rvs)
+  wcBioclims <- callModule(wcBioclims_MOD, 'c3_wcBioclims_uiID')
   
   observeEvent(input$goEnvData, {
-    # load into envs
-    vals$envs <- wcBioclims()
     # stop if no occurrence data
-    req(vals$occs)
-    req(vals$envs)
-    # record for RMD
-    vals$comp3 <- 'bc'
+    req(spp[[curSp()]]$occs)
+    # load into envs
+    wcBioclims()
     # remove occurrences with NA values for variables
-    vals$occs <- remEnvsValsNA(vals)
+    spp[[curSp()]]$occs <- remEnvsValsNA(spp[[curSp()]]$occs, spp[[curSp()]]$envs, logs)
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
+    # UI CONTROLS ####
+    updateSelectInput(session, "sppSel", selected = curSp())
     # enable download button
     # shinyjs::enable("dlEnvs")
   })
-  
   
   # module ecoClimate
   ecoClimatelayers <- callModule(ecoClimate_MOD, 'c3_ecoClimate_uiID')
@@ -394,7 +392,7 @@ shinyServer(function(input, output, session) {
   })
   
   # module User-defined Environmental Predictors
-  userEnvs <- callModule(userEnvs_MOD, 'c3_userEnvs', vals)
+  userEnvs <- callModule(userEnvs_MOD, 'c3_userEnvs_uiID', vals)
   
   observeEvent(input$goUserEnvs, {
     vals$envs <- userEnvs()
@@ -413,8 +411,8 @@ shinyServer(function(input, output, session) {
   })
   
   output$envsPrint <- renderPrint({
-    req(vals$envs)
-    vals$envs
+    req(spp[[curSp()]]$envs)
+    spp[[curSp()]]$envs
     # mins <- sapply(envs()@layers, function(x) x@data@min)
     # maxs <- sapply(envs()@layers, function(x) x@data@max)
     # names <- sapply(strsplit(names(envs()), '[.]'), function(x) x[-2])
