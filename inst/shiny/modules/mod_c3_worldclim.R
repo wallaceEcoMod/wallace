@@ -24,6 +24,8 @@ wcBioclims_MOD <- function(input, output, session) {
     # FUNCTION CALL ####
     envs <- c3_worldclim(spp[[curSp()]]$occs, input$bcRes, input$bcSelChoice, 
                          input$bcSel, logs, shiny=TRUE)
+    # remove occurrences with NA values for variables
+    spp[[curSp()]]$occs <- remEnvsValsNA(spp[[curSp()]]$occs, envs, logs)
     
     if (is.null(envs)) return()
     

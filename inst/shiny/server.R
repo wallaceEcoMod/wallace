@@ -362,8 +362,6 @@ shinyServer(function(input, output, session) {
     req(spp[[curSp()]]$occs)
     # load into envs
     wcBioclims()
-    # remove occurrences with NA values for variables
-    spp[[curSp()]]$occs <- remEnvsValsNA(spp[[curSp()]]$occs, spp[[curSp()]]$envs, logs)
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     # UI CONTROLS ####
