@@ -182,60 +182,35 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  # MAPPING ####
-  # observeEvent(input$sppSel, {
+  # MAPPING LOGIC ####
   observe({
     req(curSp())
     if(input$tabs == 1) {
       print(curSp())
       occs <- spp[[curSp()]]$occsOrig
       req(occs)
-      map %>%
-        clearMarkers() %>%
-        clearShapes() %>%
-        clearImages() %>%
-        addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, radius = 5, 
-                         color = 'red', fill = TRUE, fillColor = 'red', 
-                         fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
-        zoom2Occs(occs) 
+      map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% 
+        map_occs(occs) %>% zoom2Occs(occs) 
     }
     if(input$tabs == 2) {
       occs <- spp[[curSp()]]$occs
       req(occs)
-      map %>%
-        clearMarkers() %>%
-        clearShapes() %>%
-        clearImages() %>%
-        addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, radius = 5, 
-                         color = 'red', fill = TRUE, fillColor = 'red', 
-                         fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
-        zoom2Occs(occs) 
+      map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% 
+        map_occs(occs) %>% zoom2Occs(occs) 
     }
     if(input$tabs == 4) {
       occs <- spp[[curSp()]]$occs
       bgExt <- spp[[curSp()]]$bgExt
       if(is.null(bgExt)) {
-        map %>%
-          clearMarkers() %>%
-          clearShapes() %>%
-          clearImages() %>%
-          addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, radius = 5, 
-                           color = 'red', fill = TRUE, fillColor = 'red', 
-                           fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
-          zoom2Occs(occs)
+        map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>%
+          map_occs(occs) %>% zoom2Occs(occs)
       }else{
         map %>% clearShapes()
         for (shp in bgShpXY()) {
           map %>%
-            addPolygons(lng=shp[,1], lat=shp[,2],
-                        weight=4, color="gray", group='bgShp')  
+            addPolygons(lng=shp[,1], lat=shp[,2], weight=4, color="gray", group='bgShp')  
         }
-        map %>% 
-          clearMarkers() %>%
-          clearImages() %>%
-          addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, radius = 5, 
-                           color = 'red', fill = TRUE, fillColor = 'red', 
-                           fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
+        map %>% clearMarkers() %>% clearImages() %>% map_occs(occs) %>%
           fitBounds(bgExt@bbox[1], bgExt@bbox[2], bgExt@bbox[3], bgExt@bbox[4])
       }
     }
@@ -458,6 +433,16 @@ shinyServer(function(input, output, session) {
   # module Background Extent
   bgExt <- callModule(bgExtent_MOD, 'c4_bgExtent_uiID')
   
+  observeEvent(input$goBgExt, {
+    # stop if no environmental variables
+    req(spp[[curSp()]]$envs)
+    # initialize module
+    bgExt()
+    # UI CONTROLS 
+    updateSelectInput(session, "sppSel", selected = curSp())
+  })
+  
+  # reactive function to get the coordinates of the current background extent shape
   bgShpXY <- reactive({
     req(spp[[curSp()]]$bgExt)
     polys <- spp[[curSp()]]$bgExt@polygons[[1]]@Polygons
@@ -467,15 +452,6 @@ shinyServer(function(input, output, session) {
       xy <- sapply(polys, function(x) x@coords)
     }
     return(xy)
-  })
-  
-  observeEvent(input$goBgExt, {
-    # stop if no environmental variables
-    req(spp[[curSp()]]$envs)
-    # initialize module
-    bgExt()
-    # UI CONTROLS 
-    updateSelectInput(session, "sppSel", selected = curSp())
   })
   
   # module User-defined Background Extent
@@ -497,14 +473,15 @@ shinyServer(function(input, output, session) {
       fitBounds(rvs$bgShp@bbox[1], rvs$bgShp@bbox[2], rvs$bgShp@bbox[3], rvs$bgShp@bbox[4])
   })
   
+  bgMskPts <- callModule(bgMskAndSamplePts_MOD, 'c4_bgMskAndSamplePts', rvs)
+  
   # module Background Mask and Sample Points
   observeEvent(input$goBgMask, {
-    bgMskPts.call <- callModule(bgMskAndSamplePts_MOD, 'c4_bgMskAndSamplePts', rvs)
-    bgMskPts <- bgMskPts.call()
     # stop if no background shape
-    req(rvs$bgShp)
-    rvs$bgMsk <- bgMskPts$msk
-    rvs$bgPts <- bgMskPts$pts
+    req(spp[[curSp()]]$bgExt)
+    bgMskPts()
+    # UI CONTROLS 
+    updateSelectInput(session, "sppSel", selected = curSp())
     shinyjs::enable('dlMskEnvs')
   })
   
