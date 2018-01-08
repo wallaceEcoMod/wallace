@@ -21,4 +21,4 @@ getWCTiles<-function(occs){
 #plot(mosaic[[1]])
 #points(occs)
 #t2<-Sys.time() 
-#t2-t1 #13.35181 mins
+#t2-t1 # 5 tiles ->24.75397 mins, memory.size = 2786.77
