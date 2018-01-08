@@ -182,6 +182,65 @@ shinyServer(function(input, output, session) {
     }
   })
   
+  # MAPPING ####
+  # observeEvent(input$sppSel, {
+  observe({
+    req(curSp())
+    if(input$tabs == 1) {
+      print(curSp())
+      occs <- spp[[curSp()]]$occsOrig
+      req(occs)
+      map %>%
+        clearMarkers() %>%
+        clearShapes() %>%
+        clearImages() %>%
+        addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, radius = 5, 
+                         color = 'red', fill = TRUE, fillColor = 'red', 
+                         fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
+        zoom2Occs(occs) 
+    }
+    if(input$tabs == 2) {
+      occs <- spp[[curSp()]]$occs
+      req(occs)
+      map %>%
+        clearMarkers() %>%
+        clearShapes() %>%
+        clearImages() %>%
+        addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, radius = 5, 
+                         color = 'red', fill = TRUE, fillColor = 'red', 
+                         fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
+        zoom2Occs(occs) 
+    }
+    if(input$tabs == 4) {
+      occs <- spp[[curSp()]]$occs
+      bgExt <- spp[[curSp()]]$bgExt
+      if(is.null(bgExt)) {
+        map %>%
+          clearMarkers() %>%
+          clearShapes() %>%
+          clearImages() %>%
+          addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, radius = 5, 
+                           color = 'red', fill = TRUE, fillColor = 'red', 
+                           fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
+          zoom2Occs(occs)
+      }else{
+        map %>% clearShapes()
+        for (shp in bgShpXY()) {
+          map %>%
+            addPolygons(lng=shp[,1], lat=shp[,2],
+                        weight=4, color="gray", group='bgShp')  
+        }
+        map %>% 
+          clearMarkers() %>%
+          clearImages() %>%
+          addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, radius = 5, 
+                           color = 'red', fill = TRUE, fillColor = 'red', 
+                           fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
+          fitBounds(bgExt@bbox[1], bgExt@bbox[2], bgExt@bbox[3], bgExt@bbox[4])
+      }
+    }
+  })
+  
   ########################################## #
   # COMPONENT 1: OBTAIN OCCURRENCE DATA ####
   ########################################## #
@@ -192,7 +251,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goDbOccs, {
     # get species name
     n <- dbOccs()
-    # UI CONTROLS ####
+    # UI CONTROLS 
     updateSelectInput(session, "sppSel", selected = n)
     shinyjs::enable("dlDbOccs")
   })
@@ -202,7 +261,8 @@ shinyServer(function(input, output, session) {
     req(length(reactiveValuesToList(spp)) > 0)
     n <- names(spp)
     sppNameList <- setNames(as.list(n), n)
-    selectInput('sppSel', label = "Current species", choices = sppNameList)
+    selectInput('sppSel', label = "Current species", choices = sppNameList,
+                selectize = TRUE)
   })
   
   # keep track of current species
@@ -224,35 +284,6 @@ shinyServer(function(input, output, session) {
     userOccs()
     shinyjs::disable("dlDbOccs")
   })
-  
-  # MAPPING ####
-  observeEvent(input$sppSel, {
-    req(length(reactiveValuesToList(spp)) > 0)
-    if(input$tabs == 1) {
-      occs <- spp[[curSp()]]$occsOrig
-      map %>%
-        clearMarkers() %>%
-        clearShapes() %>%
-        clearImages() %>%
-        addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, radius = 5, 
-                         color = 'red', fill = TRUE, fillColor = 'red', 
-                         fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
-        zoom2Occs(occs) 
-    }
-    if(input$tabs == 2) {
-      occs <- spp[[curSp()]]$occs
-      map %>%
-        clearMarkers() %>%
-        clearShapes() %>%
-        clearImages() %>%
-        addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, radius = 5, 
-                         color = 'red', fill = TRUE, fillColor = 'red', 
-                         fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
-        zoom2Occs(occs) 
-    }
-    
-  })
-  
   
   # TABLE
   options <- list(autoWidth = TRUE, columnDefs = list(list(width = '40%', targets = 7)),
@@ -282,7 +313,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goRemoveByID, {
     remByID()
-    # UI CONTROLS ####
+    # UI CONTROLS 
     updateSelectInput(session, "sppSel", selected = curSp())
   })
   
@@ -364,7 +395,7 @@ shinyServer(function(input, output, session) {
     wcBioclims()
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
-    # UI CONTROLS ####
+    # UI CONTROLS 
     updateSelectInput(session, "sppSel", selected = curSp())
     # enable download button
     # shinyjs::enable("dlEnvs")
@@ -425,30 +456,26 @@ shinyServer(function(input, output, session) {
   ############################################## #
   
   # module Background Extent
-  bgExt <- callModule(bgExtent_MOD, 'c4_bgExtent', rvs)
+  bgExt <- callModule(bgExtent_MOD, 'c4_bgExtent_uiID')
   
   bgShpXY <- reactive({
-    polys <- rvs$bgShp@polygons[[1]]@Polygons
-    if (length(polys) == 1) {
-      xy <- list(rvs$bgShp@polygons[[1]]@Polygons[[1]]@coords)
-    } else {
-     xy <- sapply(polys, function(x) x@coords)
+    req(spp[[curSp()]]$bgExt)
+    polys <- spp[[curSp()]]$bgExt@polygons[[1]]@Polygons
+    if(length(polys) == 1) {
+      xy <- list(polys[[1]]@coords)
+    }else{
+      xy <- sapply(polys, function(x) x@coords)
     }
     return(xy)
-    })
+  })
   
   observeEvent(input$goBgExt, {
-    rvs$bgShp <- bgExt()
     # stop if no environmental variables
-    req(rvs$envs)
-    map %>% clearShapes()
-    for (shp in bgShpXY()) {
-      map %>%
-        addPolygons(lng=shp[,1], lat=shp[,2],
-                    weight=4, color="gray", group='bgShp')  
-    }
-     map %>%
-      fitBounds(rvs$bgShp@bbox[1], rvs$bgShp@bbox[2], rvs$bgShp@bbox[3], rvs$bgShp@bbox[4])
+    req(spp[[curSp()]]$envs)
+    # initialize module
+    bgExt()
+    # UI CONTROLS 
+    updateSelectInput(session, "sppSel", selected = curSp())
   })
   
   # module User-defined Background Extent

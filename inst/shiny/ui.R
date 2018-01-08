@@ -175,7 +175,7 @@ shinyUI(tagList(
                                                                  uiTop('rgeos', 'Interface to Geometry Engine - Open Source (GEOS)'),
                                                                  HTML('<hr>'),
                                                                  div("Step 1:", id="step"), div("Choose Background Extent", id="stepText"), br(), br(),
-                                                                 bgExtent_UI('c4_bgExtent'),
+                                                                 bgExtent_UI('c4_bgExtent_uiID'),
                                                                  actionButton("goBgExt", "Select")),
                                                 conditionalPanel("input.envProcSel == 'bgUser'",
                                                                  div('Module: User-specified Study Region', id="mod"),

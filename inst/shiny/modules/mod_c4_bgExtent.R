@@ -12,55 +12,28 @@ bgExtent_UI <- function(id) {
   )
 }
 
-bgExtent_MOD <- function(input, output, session, rvs) {
+bgExtent_MOD <- function(input, output, session) {
   reactive({
-    if (is.null(rvs$envs)) {
-      logs %>% writeLog(type = 'error', "Before defining the background extent, 
-                       obtain environmental data in component 3.")
-      return()
-    }
-    if (nrow(rvs$occs) <= 2) {
-      logs %>% writeLog(type = 'error', 'Too few localities (<2) to create a background polygon.')
-      return()
-    }
+    # FUNCTION CALL ####
+    sp <- spp[[curSp()]]
+    bgExt <- c4_bgExtent(sp$occs, sp$envs, input$bgSel, input$bgBuf, logs, shiny=TRUE)
     
+    if (is.null(bgExt)) return()
+    
+    # LOAD INTO SPP ####
     # record for RMD
-    rvs$comp4.shp <- input$bgSel
-    rvs$comp4.buf <- input$bgBuf
+    spp[[curSp()]]$bgExt <- bgExt
     
-    # extract just coordinates
-    occs.xy <- rvs$occs[c('longitude', 'latitude')]
-    # make spatial pts object of original occs and preserve origID
-    occs.sp <- sp::SpatialPointsDataFrame(occs.xy, data=rvs$occs['occID'])
-    
-    # generate background extent - one grid cell is added to perimeter of each shape
-    # to ensure cells of points on border are included
-    if (input$bgSel == 'bb') {
-      xmin <- occs.sp@bbox[1]
-      xmax <- occs.sp@bbox[3]
-      ymin <- occs.sp@bbox[2]
-      ymax <- occs.sp@bbox[4]
-      bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin), ncol=2)
-      bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(bb)), 1)))
-      msg <- "Study extent: bounding box."
-    } else if (input$bgSel == 'mcp') {
-      bgExt <- mcp(occs.xy)
-      # bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
-      msg <- "Study extent: minimum convex polygon."
-    } else if (input$bgSel == 'ptbuf') {
-      if (input$bgBuf == 0) {
-        logs %>% writeLog(type = 'error', 'Change buffer distance to positive or negative value.')
-        return()
-      }
-      bgExt <- rgeos::gBuffer(occs.sp, width = input$bgBuf)
-      msg <- "Study extent: buffered points."
+    # RMD VALUES ####
+    x <- list(shp = input$bgSel, buf = input$bgBuf)
+    if(is.null(spp[[curSp()]]$rmd$c4)) {
+      spp[[curSp()]]$rmd$c4 <- x
+    }else{
+      spp[[curSp()]]$rmd$c4 <- c(spp[[curSp()]]$rmd$c4, x)
     }
     
-    if (input$bgBuf > 0) {
-      bgExt <- rgeos::gBuffer(bgExt, width = input$bgBuf)
-      logs %>% writeLog(msg, 'Study extent buffered by', input$bgBuf, 'degrees.')
-    }
-    
-    return(bgExt)
+    # RETURN ####
+    # output the species name
+    # return(bgExt)
   })
 }

@@ -37,6 +37,6 @@ wcBioclims_MOD <- function(input, output, session) {
     
     # RETURN ####
     # output the species name
-    return(envs)
+    # return(envs)
   })
 }
