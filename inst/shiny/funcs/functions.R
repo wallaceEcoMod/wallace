@@ -104,13 +104,11 @@ mapCenter <- function(bounds) {
   return(map_center)
 }
 
-# mapping controls
-map_plotLocs <- function(map, locs, fillColor='red', fillOpacity=0.2) {
-  if (is.null(locs)) return(map)
-  map %>% addCircleMarkers(data = locs, lat = ~latitude, lng = ~longitude,
-                           radius = 5, color = 'red', fill = TRUE,
-                           fillColor = fillColor, fillOpacity = fillOpacity,
-                           weight = 2, popup = ~pop)
+# map occurrences with the Wallace default symbology
+map_occs <- function(map, occs) {
+  map %>% addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, 
+                           radius = 5, color = 'red', fill = TRUE, fillColor = 'red', 
+                           fillOpacity = 0.2, weight = 2, popup = ~pop)
 }
 
 # zoom to occ pts

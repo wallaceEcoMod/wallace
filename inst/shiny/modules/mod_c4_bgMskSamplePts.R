@@ -8,31 +8,27 @@ bgMskAndSamplePts_UI <- function(id) {
 
 bgMskAndSamplePts_MOD <- function(input, output, session, rvs) {
   reactive({
-    if (is.null(rvs$bgShp)) {
-      logs %>% writeLog(type = 'error', "Before sampling background points, 
-                       define the background extent.")
-      return()
+    # FUNCTION CALL ####
+    sp <- spp[[curSp()]]
+    bgMask <- c4_bgMask(sp$envs, sp$bgExt, logs, shiny=TRUE)
+    bgPts <- c4_bgSample(bgMask, input$bgPtsNum, logs, shiny=TRUE)
+    
+    if (is.null(bgMask) | is.null(bgPts)) return()
+    
+    # LOAD INTO SPP ####
+    spp[[curSp()]]$bgMask <- bgMask
+    spp[[curSp()]]$bgPts <- bgPts
+    
+    # RMD VALUES ####
+    x <- list(bgPtsNum = input$bgPtsNum)
+    if(is.null(spp[[curSp()]]$rmd$c4)) {
+      spp[[curSp()]]$rmd$c4 <- x
+    }else{
+      spp[[curSp()]]$rmd$c4 <- c(spp[[curSp()]]$rmd$c4, x)
     }
     
-    # record for RMD
-    rvs$bgPtsNum <- input$bgPtsNum
-    
-    # mask envs by background extent
-    withProgress(message = "Processing environmental data...", {
-      bgCrop <- raster::crop(rvs$envs, rvs$bgShp)
-      bgMask <- raster::mask(bgCrop, rvs$bgShp)
-    })
-    logs %>% writeLog('Environmental data masked.')
-    # sample random background points
-    withProgress(message = "Generating background points...", {
-      rvals <- raster::getValues(bgMask)
-      num.vals <- sum(!is.na(rvals))
-      pct <- round((input$bgPtsNum / num.vals) * 100, digits = 2)
-      bgXY <- dismo::randomPoints(bgMask, input$bgPtsNum)
-    })
-    logs %>% writeLog('Random background points sampled (n =', input$bgPtsNum, 
-                      ':', pct, '% of cells with values).')
-    shinyjs::enable("downloadMskPreds")
-    return(list(msk = bgMask, pts = bgXY))
+    # RETURN ####
+    # output the species name
+    # return(bgExt)
   })
 }
