@@ -9,27 +9,28 @@ shinyUI(tagList(
   shinyjs::useShinyjs(),
   navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsible=TRUE,
              title='Wallace',
-             tabPanel("Intro", value=0),
-             tabPanel("1 Occ Data", value=1),
-             tabPanel("2 Process Occs", value=2),
-             tabPanel("3 Env Data", value=3),
-             tabPanel("4 Process Envs", value=4),
-             tabPanel("5 Partition Occs", value=5),
-             tabPanel("6 Model", value=6),
-             tabPanel("7 Visualize", value=7),
-             tabPanel("8 Project", value=8),
+             tabPanel("Intro", value='intro'),
+             tabPanel("Occ Data", value='occs'),
+             tabPanel("Process Occs", value='poccs'),
+             tabPanel("Env Data", value='envs'),
+             tabPanel("Process Envs", value='penvs'),
+             tabPanel("Env Space", value='espace'),
+             tabPanel("Partition Occs", value='part'),
+             tabPanel("Model", value='model'),
+             tabPanel("Visualize", value='viz'),
+             tabPanel("Project", value='proj'),
              tabPanel("Session Code", value='rmd'),
              
              fluidRow(column(4,
                              wellPanel(
                                includeCSS(system.file("css", "styles.css", package = "wallace")),
                                includeScript(system.file("js", "scroll.js", package = "wallace")),
-                               conditionalPanel("input.tabs == 0",
+                               conditionalPanel("input.tabs == 'intro'",
                                                 # actionButton('load', 'HACK'),
                                                 includeMarkdown(system.file("Rmd", "text_intro_tab.Rmd", package = "wallace"))
                                ),
                                # COMPONENT 1 ####
-                               conditionalPanel("input.tabs == 1",
+                               conditionalPanel("input.tabs == 'occs'",
                                                 h4("Obtain Occurrence Data"),
                                                 radioButtons("occSel", "Modules Available:",
                                                              choices = list("Query Database" = 'db', "User-specified" = 'user'),
@@ -57,7 +58,7 @@ shinyUI(tagList(
                                                 )
                                ),
                                # COMPONENT 2 ####
-                               conditionalPanel("input.tabs == 2",
+                               conditionalPanel("input.tabs == 'poccs'",
                                                 h4("Process Occurrence Data"),
                                                 radioButtons("procOccSel", "Modules Available:",
                                                              choices = list("Select Occurrences On Map" = 'selOccs',
@@ -105,7 +106,7 @@ shinyUI(tagList(
                                                                  " | ", a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/ecog.01132/abstract", target = "_blank"))
                                ),
                                # COMPONENT 3 ####
-                               conditionalPanel("input.tabs == 3",
+                               conditionalPanel("input.tabs == 'envs'",
                                                 h4("Obtain Environmental Data"),
                                                 radioButtons("envDataSel", "Modules Available:",
                                                              choices = list("WorldClim Bioclims" = 'wcbc',
@@ -137,7 +138,7 @@ shinyUI(tagList(
                                                 
                                ),
                                # COMPONENT 4 ####
-                               conditionalPanel("input.tabs == 4",
+                               conditionalPanel("input.tabs == 'penvs'",
                                                 h4("Process Environmental Data"),
                                                 radioButtons("envProcSel", "Modules Available:",
                                                              choices = list("Select Study Region" = "bgSel",
@@ -174,8 +175,40 @@ shinyUI(tagList(
                                                                  uiBottom(NULL, 'rgeos', "Roger Bivand, Colin Rundel, Edzer Pebesma, Karl Ove Hufthammer"))
                                                 
                                ),
+                               # COMPONENT ESPACE ####
+                               conditionalPanel("input.tabs == 'espace'",
+                                                h4("Environmental Space"),
+                                                radioButtons("espaceSel", "Modules Available:",
+                                                             choices = list("Environmental Ordination" = "ord",
+                                                                            "Smoothed Density Grid" = "dgrid",
+                                                                            "Niche Overlap" = "novlp")),
+                                                
+                                                HTML('<hr>'),
+                                                conditionalPanel("input.espaceSel == 'ord'",
+                                                                 div('Module: Environmental Ordination', id="mod"),
+                                                                 uiTop('ade4', 'Analysis of Ecological Data : Exploratory and Euclidean Methods in Environmental Sciences')
+                                                                 # HTML('<hr>'),
+                                                                 # bgExtent_UI('c4_bgExtent'),
+                                                                 # actionButton("goBgExt", "Select")),
+                                                ),
+                                                conditionalPanel("input.espaceSel == 'dgrid'",
+                                                                 div('Module: Smoothed Density Grid', id="mod"),
+                                                                 uiTop('ecospat', 'Spatial Ecology Miscellaneous Methods'),
+                                                                 uiTop('adeHabitatHR', 'Home Range Estimation')
+                                                                 # userBgExtent_UI('c4_userBgExtent'),
+                                                                 # actionButton("goUserBg", "Load")
+                                                                 ),
+                                                conditionalPanel("input.espaceSel == 'novlp'",
+                                                                 div('Module: Niche Overlap', id="mod"),
+                                                                 uiTop('ecospat', 'Spatial Ecology Miscellaneous Methods')
+                                                                 # userBgExtent_UI('c4_userBgExtent'),
+                                                                 # actionButton("goUserBg", "Load")
+                                                )
+                                                
+                                                
+                               ),
                                # COMPONENT 5 ####
-                               conditionalPanel("input.tabs == 5",
+                               conditionalPanel("input.tabs == 'part'",
                                                 h4("Partition Occurrence Data"),
                                                 radioButtons("partSel", "Modules Available:",
                                                              choices = list("Non-spatial Partition" = 'nsp',
@@ -202,7 +235,7 @@ shinyUI(tagList(
                                                 " | ", a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12261/abstract", target = "_blank")
                                ),
                                # COMPONENT 6 ####
-                               conditionalPanel("input.tabs == 6",
+                               conditionalPanel("input.tabs == 'model'",
                                                 h4("Build and Evaluate Niche Model"),
                                                 radioButtons("enmSel", "Modules Available:",
                                                              choices = list("BIOCLIM", "Maxent")),
@@ -232,7 +265,7 @@ shinyUI(tagList(
                                                 uiBottom(NULL, 'dismo', 'Robert J. Hijmans, Steven Phillips, John Leathwick, Jane Elith')
                                ),
                                # COMPONENT 7 ####
-                               conditionalPanel("input.tabs == 7", 
+                               conditionalPanel("input.tabs == 'viz'", 
                                                 h4("Visualize Model Results"),
                                                 radioButtons("visSel", "Modules Available:",
                                                              choices = list("BIOCLIM Envelope Plots" = 'bcPlots',
@@ -281,7 +314,7 @@ shinyUI(tagList(
                                                 uiBottom(NULL, 'dismo', 'Robert J. Hijmans, Steven Phillips, John Leathwick, Jane Elith')
                                ),
                                # COMPONENT 8 ####
-                               conditionalPanel("input.tabs == 8",
+                               conditionalPanel("input.tabs == 'proj'",
                                                 h4("Project Model"),
                                                 radioButtons("projSel", "Modules Available:",
                                                              choices = list("Project to New Extent" = 'projArea',
@@ -360,13 +393,13 @@ shinyUI(tagList(
                                                           tabPanel('Map', leaflet::leafletOutput("map", height=600)),
                                                           tabPanel('Occs Tbl', DT::dataTableOutput('occTbl')),
                                                           tabPanel('Results', 
-                                                                   conditionalPanel("input.tabs == 3", verbatimTextOutput('envsPrint')),
-                                                                   conditionalPanel("input.tabs == 6", uiOutput('evalTbls')),
-                                                                   conditionalPanel("input.tabs == 7 && input.visSel == 'response'",
+                                                                   conditionalPanel("input.tabs == 'envs'", verbatimTextOutput('envsPrint')),
+                                                                   conditionalPanel("input.tabs == 'model'", uiOutput('evalTbls')),
+                                                                   conditionalPanel("input.tabs == 'viz' && input.visSel == 'response'",
                                                                                     imageOutput('respPlots')),
-                                                                   conditionalPanel("input.tabs == 7 && input.visSel == 'bcPlots' && input.enmSel == 'BIOCLIM'",
+                                                                   conditionalPanel("input.tabs == 'viz' && input.visSel == 'bcPlots' && input.enmSel == 'BIOCLIM'",
                                                                                     imageOutput('bcEnvelPlot')),
-                                                                   conditionalPanel("input.tabs == 7 && input.visSel == 'mxEval'  && input.enmSel == 'Maxent'",
+                                                                   conditionalPanel("input.tabs == 'viz' && input.visSel == 'mxEval'  && input.enmSel == 'Maxent'",
                                                                                     imageOutput('mxEvalPlots'))
                                                           ),
                                                           tabPanel('Component Guidance', uiOutput('gtext_comp')),
@@ -378,7 +411,7 @@ shinyUI(tagList(
                                                      includeMarkdown(system.file("Rmd", "text_sessionCode.Rmd", package = "wallace"))
                                               )
                              ),
-                             conditionalPanel("input.tabs == 0",
+                             conditionalPanel("input.tabs == 'intro'",
                                               tabsetPanel(id = 'introTabs',
                                                           tabPanel('Intro', includeMarkdown(system.file("Rmd", "text_intro.Rmd", package = "wallace"))),
                                                           tabPanel('About',
