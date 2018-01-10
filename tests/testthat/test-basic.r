@@ -1,10 +1,10 @@
-# Basic testings (you can build other scripts in the same folder and name different things,
-# like: test module 1)
-context("basic")
-
 # Load the package
 library(RSelenium)
 library(testthat)
+
+# Basic testings (you can build other scripts in the same folder and name different things,
+# like: test module 1)
+context("basic")
 
 # Connect to the app (open another rstudio and run_wallace())
 remDr <- remoteDriver() # use the right address by running code in test/run_wallace.r

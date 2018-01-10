@@ -1,11 +1,12 @@
-context("test-workflow")
-skip_on_travis()
-# skip_on_cran()
-
 # Load the package
 library(RSelenium)
 library(testthat)
 library(XML)
+
+context("test-workflow")
+skip_on_travis()
+skip_on_cran()
+
 # test_dir('/Users/musasabi/Documents/github/wallace/test', filter = 'workflow', reporter = "Tap")
 
 # Connect to the app (open another rstudio and run_wallace())

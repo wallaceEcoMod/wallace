@@ -81,13 +81,13 @@ shinyServer(function(input, output, session) {
   
   # guidance text and tab behavior
   observe({
-    if (input$tabs == 1) {
+    if (input$tabs == 'occs') {
       updateTabsetPanel(session, 'main', selected = 'Map')
       gtext$cur_comp <- 'gtext_comp1.Rmd'
       if (input$occSel == 'db') gtext$cur_mod <- "gtext_comp1_dbOccs.Rmd"
       if (input$occSel == 'user') gtext$cur_mod <- "gtext_comp1_userOccs.Rmd"
     }
-    if (input$tabs == 2) {
+    if (input$tabs == 'poccs') {
       updateTabsetPanel(session, 'main', selected = 'Map')
       gtext$cur_comp <- "gtext_comp2.Rmd"
       # if Module: Select Localities, populate guidance text and select legend
@@ -95,32 +95,32 @@ shinyServer(function(input, output, session) {
       if (input$procOccSel == 'remID') gtext$cur_mod <- "gtext_comp2_removeByID.Rmd"
       if (input$procOccSel == 'spthin') gtext$cur_mod <- "gtext_comp2_spatialThin.Rmd"
     }
-    if (input$tabs == 3) {
+    if (input$tabs == 'envs') {
       updateTabsetPanel(session, 'main', selected = 'Results')
       gtext$cur_comp <- "gtext_comp3.Rmd"
       if (input$envDataSel == 'wcbc') gtext$cur_mod <- "gtext_comp3_worldclim.Rmd"
       if (input$envDataSel == 'ecoClimatelayers') gtext$cur_mod <- "gtext_comp3_ecoClimate.Rmd"
       if (input$envDataSel == 'user') gtext$cur_mod <- "gtext_comp3_userEnvs.Rmd"
     }
-    if (input$tabs == 4) {
+    if (input$tabs == 'penvs') {
       updateTabsetPanel(session, 'main', selected = 'Map')
       gtext$cur_comp <- "gtext_comp4.Rmd"
       if (input$envProcSel == 'bgSel') gtext$cur_mod <- "gtext_comp4_backg.Rmd"
       if (input$envProcSel == 'bgUser') gtext$cur_mod <- "gtext_comp4_userBg.Rmd"
     }
-    if (input$tabs == 5) {
+    if (input$tabs == 'part') {
       updateTabsetPanel(session, 'main', selected = 'Map')
       gtext$cur_comp <- "gtext_comp5.Rmd"
       if (input$partSel == 'sp') gtext$cur_mod <- "gtext_comp5_spatial.Rmd"
       if (input$partSel == 'nsp') gtext$cur_mod <- "gtext_comp5_nonspatial.Rmd"
     }
-    if (input$tabs == 6) {
+    if (input$tabs == 'model') {
       updateTabsetPanel(session, 'main', selected = 'Results')
       gtext$cur_comp <- "gtext_comp6.Rmd"
       if (input$enmSel == 'BIOCLIM') gtext$cur_mod <- "gtext_comp6_bioclim.Rmd"
       if (input$enmSel == 'Maxent') gtext$cur_mod <- "gtext_comp6_maxent.Rmd"
     }
-    if (input$tabs == 7) {
+    if (input$tabs == 'viz') {
       gtext$cur_comp <- "gtext_comp7.Rmd"
       if (input$visSel == 'map') {
         updateTabsetPanel(session, 'main', selected = 'Map')
@@ -132,7 +132,7 @@ shinyServer(function(input, output, session) {
         if (input$visSel == 'response') gtext$cur_mod <- "gtext_comp7_respCurves.Rmd"
       }
     }
-    if (input$tabs == 8) {
+    if (input$tabs == 'proj') {
       updateTabsetPanel(session, 'main', selected = 'Map')
       gtext$cur_comp <- "gtext_comp8.Rmd"
       if (input$projSel == 'projArea') gtext$cur_mod <- "gtext_comp8_pjArea.Rmd"
@@ -157,14 +157,8 @@ shinyServer(function(input, output, session) {
   
   # initialize draw toolbar for c2_selectOccs and c8
   observe({
-    if ((input$tabs == 2 & input$procOccSel == 'selOccs') | input$tabs == 8) {
-      map %>%
-        leaflet.extras::addDrawToolbar(
-          targetGroup='draw',
-          polylineOptions = FALSE,
-          rectangleOptions = FALSE,
-          circleOptions = FALSE,
-          markerOptions = FALSE)
+    if ((input$tabs == 'poccs' & input$procOccSel == 'selOccs') | input$tabs == 'proj') {
+      map %>% drawToolbarRefresh()
     } else {
       map %>% leaflet.extras::removeDrawToolbar(clearFeatures = TRUE)
     }
@@ -173,10 +167,10 @@ shinyServer(function(input, output, session) {
     coords <- unlist(input$map_draw_new_feature$geometry$coordinates)
     xy <- matrix(c(coords[c(TRUE,FALSE)], coords[c(FALSE,TRUE)]), ncol=2)
     id <- input$map_draw_new_feature$properties$`_leaflet_id`
-    if (input$tabs == 2 & input$procOccSel == 'selOccs') {
+    if (input$tabs == 'poccs' & input$procOccSel == 'selOccs') {
       rvs$polySelXY <- xy
       rvs$polySelID <- id
-    } else if (input$tabs == 8) {
+    } else if (input$tabs == 'proj') {
       rvs$polyPjXY <- xy
       rvs$polyPjID <- id  
     }
@@ -303,14 +297,7 @@ shinyServer(function(input, output, session) {
       clearMarkers() %>%
       map_plotLocs(rvs$occs) %>%
       zoom2Occs(rvs$occs) %>%
-      leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
-      leaflet.extras::addDrawToolbar(
-        targetGroup='draw',
-        polylineOptions = FALSE,
-        rectangleOptions = FALSE,
-        circleOptions = FALSE,
-        markerOptions = FALSE,
-        editOptions = leaflet.extras::editToolbarOptions())
+      drawToolbarRefresh()
     shinyjs::enable("dlProcOccs")
   })
   
@@ -553,12 +540,7 @@ shinyServer(function(input, output, session) {
   ######################### #
   ### COMPONENT 6: MODEL ####
   ######################### #
-  
-  jar <- paste(system.file(package="dismo"), "/java/maxent.jar", sep='')
-  output$maxentJar <- renderUI(HTML(paste("To use Maxent, make sure you download,", strong("maxent.jar"), "from the",
-                                       a("AMNH Maxent webpage", href="http://biodiversityinformatics.amnh.org/open_source/maxent/", target="_blank"),
-                                       "and place it in this directory:", br(), em(jar))))
-  
+
   # module Maxent
   mod.maxent <- callModule(maxent_MOD, 'c6_maxent', rvs)
   
@@ -790,6 +772,7 @@ shinyServer(function(input, output, session) {
     # unpack
     rvs$projMsk <- projTime.call[[1]]
     rvs$projCur <- projTime.call[[2]]
+    req(rvs$projCur)
     rvs$projCurVals <- getVals(rvs$projCur, rvs$comp7.type)
     rvs$comp8.pj <- 'time'
     
@@ -892,7 +875,6 @@ shinyServer(function(input, output, session) {
         polyPjX <- polyPjY <- NULL
       }
       bcSels <- printVecAsis(rvs$bcSels)
-      
       exp <- knitr::knit_expand(system.file("Rmd", 'userReport.Rmd', package = "wallace"), 
                                 curWD=curWD, spName=vals$spName, 
                                 occDb=vals$occDb, occNum=vals$occNum, occsCSV=rvs$userCSV$name,  # comp 1
@@ -908,8 +890,8 @@ shinyServer(function(input, output, session) {
                                 modSel=rvs$modSel, mxNonZeroCoefs=printVecAsis(rvs$mxNonZeroCoefs), envSel=rvs$envSel,  # comp 7
                                 bcPlot1=rvs$bcPlotsPar$bc1, bcPlot2=rvs$bcPlotsPar$bc2, bcPlotP=rvs$bcPlotsPar$p,  # comp 7
                                 mxEvalSel=rvs$mxEvalSel, predType=rvs$comp7.type, comp7.thresh=rvs$comp7.thr, # comp 7 
-                                occsPjX=polyPjX, occsPjY=polyPjY, pjRCP=rvs$pjTimePar$rcp, pjGCM=rvs$rvs$pjTimePar$gcm,  # comp 8
-                                pjYear=rvs$rvs$pjTimePar$year, comp8.thresh=rvs$comp8.thr)  # comp 8
+                                occsPjX=polyPjX, occsPjY=polyPjY, pjRCP=rvs$pjTimePar$rcp, pjGCM=rvs$pjTimePar$gcm,  # comp 8
+                                pjYear=rvs$pjTimePar$year, comp8.thresh=rvs$comp8.thr)  # comp 8
       writeLines(exp, 'userReport2.Rmd')
       
       if (input$rmdFileType == 'Rmd') {
@@ -922,7 +904,7 @@ shinyServer(function(input, output, session) {
                                         PDF = rmarkdown::pdf_document(latex_engine='xelatex'), 
                                         HTML = rmarkdown::html_document(), 
                                         Word = rmarkdown::word_document())
-                                 )
+        )
       }
       file.rename(out, file)
     }

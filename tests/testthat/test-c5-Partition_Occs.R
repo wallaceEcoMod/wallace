@@ -1,8 +1,8 @@
-context("component_5_Partition_Occs")
-
 # Load the package
 library(RSelenium)
 library(testthat)
+
+context("component_5_Partition_Occs")
 
 # Connect to the app (open another rstudio and run_wallace())
 remDr <- remoteDriver() 

@@ -36,4 +36,3 @@ cESpace_PCA<- function(bgMask1, bgMask2=NULL, occs1, occs2=NULL, logs=NULL, shin
   return(dudi.pca)
 }
 
-taxon_name
