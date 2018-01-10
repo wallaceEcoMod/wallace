@@ -1,10 +1,10 @@
-context("component_7_Visualize")
-# test_dir('/Users/musasabi/Documents/github/wallace/test', filter = 'c7', reporter = "Tap")
-
 # Load the package
 library(RSelenium)
 library(testthat)
 source('test-functions.R')
+
+context("component_7_Visualize")
+# test_dir('/Users/musasabi/Documents/github/wallace/test', filter = 'c7', reporter = "Tap")
 
 # Connect to the app (open another rstudio and run_wallace())
 remDr <- remoteDriver() 

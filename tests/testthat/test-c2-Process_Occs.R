@@ -1,10 +1,9 @@
-
-context("component_2_Proccess_Occs")
-# test_dir('/Users/musasabi/Documents/github/wallace/test', filter = 'c2', reporter = "Tap")
-
 # Load the package
 library(RSelenium)
 library(testthat)
+
+context("component_2_Proccess_Occs")
+# test_dir('/Users/musasabi/Documents/github/wallace/test', filter = 'c2', reporter = "Tap")
 
 # Connect to the app (open another rstudio and run_wallace())
 remDr <- remoteDriver() # use the right address by running code in test/run_wallace.r

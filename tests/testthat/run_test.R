@@ -1,7 +1,7 @@
-context("Run the code")
-
 library(testthat)
 library(wallace)
+
+context("Run the code")
 
 # Before running, open run_wallace
 test_dir("./test", filter = 'basic', reporter = "Tap") 

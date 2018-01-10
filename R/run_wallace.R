@@ -6,7 +6,7 @@
 #'
 #' @note Please see the official website (\url{https://wallaceecomod.github.io/}) for more details. If you have questions about the application, please participate in the \href{https://groups.google.com/forum/#!forum/wallaceecomod}{Google Group}, or email the team directly: \url{wallaceEcoMod@@gmail.com}.
 #'
-#' @examples \dontrun{
+#' @examples if(interactive()){
 #' run_wallace()
 #' }
 #'

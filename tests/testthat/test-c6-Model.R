@@ -1,9 +1,9 @@
-context("component_6_Model")
-# test_dir('/Users/musasabi/Documents/github/wallace/test', filter = 'c6', reporter = "Tap")
-
 # Load the package
 library(RSelenium)
 library(testthat)
+
+context("component_6_Model")
+# test_dir('/Users/musasabi/Documents/github/wallace/test', filter = 'c6', reporter = "Tap")
 
 # Connect to the app (open another rstudio and run_wallace())
 remDr <- remoteDriver() 

@@ -1,37 +1,35 @@
 # Mac OS files
 .DS_Store
+<<<<<<< HEAD
 
 # HTML files
 .html
 
+=======
+# HTML files
+.html
+>>>>>>> master
 # History files
 .Rhistory
 .Rapp.history
-
 # Example code in package build process
 *-Ex.R
-
 # RStudio files
 .Rproj.user/
-
 # produced vignettes
 vignettes/*.html
 vignettes/*.pdf
-
 # spThin files
 spatial_thin_log.txt
-
 # worldclim files
 wc*
 cmip5
-
 # r proj files
 .Rproj.user
 .RData
-
 # .rmd files
 temp*
-
 #
 KeepNA
 keepInteger
+inst/doc

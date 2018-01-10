@@ -28,11 +28,11 @@ selectOccs_MOD <- function(input, output, session, rvs) {
     newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(rvs$polySelXY)), ID=rvs$polySelID)))  # create new polygon from coords
     
     intersect <- sp::over(pts, newPoly)
-    ptSelIndex <- as.numeric(which(!(is.na(intersect))))
+    ptRemIndex <- as.numeric(which(is.na(intersect)))
     
-    selIDs <- as.numeric(pts[ptSelIndex,]$occID)
+    remIDs <- as.numeric(pts[ptRemIndex,]$occID)
     
-    occs.sel <- rvs$occs[ptSelIndex,]
+    occs.sel <- rvs$occs[-ptRemIndex,]
     
     logs %>% writeLog("Keeping only occurrences with occID = ", selIDs, 
                      ". Updated data has n = ", nrow(occs.sel), " records.")
