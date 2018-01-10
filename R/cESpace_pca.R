@@ -1,1 +1,1 @@
-c_ESpace<- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
+# c_ESpace<- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
