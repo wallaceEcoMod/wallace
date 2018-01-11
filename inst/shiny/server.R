@@ -142,7 +142,7 @@ shinyServer(function(input, output, session) {
   })
   
   ######################## #
-  ### MAPPING ####
+  ### INITIALIZE MAP ####
   ######################## #
   
   # create map
@@ -157,42 +157,44 @@ shinyServer(function(input, output, session) {
   
   # initialize draw toolbar for c2_selectOccs and c8
   observe({
-    if ((input$tabs == 'poccs' & input$procOccSel == 'selOccs') | input$tabs == 'proj') {
-      map %>% drawToolbarRefresh()
-    } else {
-      map %>% leaflet.extras::removeDrawToolbar(clearFeatures = TRUE)
-    }
+    print(curSp())
+
     
-    req(input$map_draw_new_feature)
+    if (input$tabs == 'proj') {
+      spp[[curSp()]]$polyPjXY <- xy
+      spp[[curSp()]]$polyPjID <- id  
+    }
+  })
+  
+  observeEvent(input$map_draw_new_feature, {
+    req(curSp())
     coords <- unlist(input$map_draw_new_feature$geometry$coordinates)
     xy <- matrix(c(coords[c(TRUE,FALSE)], coords[c(FALSE,TRUE)]), ncol=2)
     id <- input$map_draw_new_feature$properties$`_leaflet_id`
-    if (input$tabs == 'poccs' & input$procOccSel == 'selOccs') {
-      rvs$polySelXY <- xy
-      rvs$polySelID <- id
-    } else if (input$tabs == 'proj') {
-      rvs$polyPjXY <- xy
-      rvs$polyPjID <- id  
-    }
+    
+    spp[[curSp()]]$polySelXY <- xy
+    spp[[curSp()]]$polySelID <- id
+    # UI CONTROLS - for some reason, curSp() disappears here unless input is updated
+    updateSelectInput(session, "sppSel", selected = curSp())
   })
   
   # MAPPING LOGIC ####
   observe({
-    req(curSp())
-    if(input$tabs == 1) {
-      print(curSp())
+    # must have one species selected for mapping to be functional
+    req(length(curSp()) == 1)
+    if(input$tabs == 'occs') {
       occs <- spp[[curSp()]]$occsOrig
       req(occs)
       map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% 
         map_occs(occs) %>% zoom2Occs(occs) 
     }
-    if(input$tabs == 2) {
+    if(input$tabs == 'poccs') {
       occs <- spp[[curSp()]]$occs
       req(occs)
       map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% 
-        map_occs(occs) %>% zoom2Occs(occs) 
+        map_occs(occs) %>% zoom2Occs(occs)
     }
-    if(input$tabs == 4) {
+    if(input$tabs == 'penvs') {
       occs <- spp[[curSp()]]$occs
       bgExt <- spp[[curSp()]]$bgExt
       if(is.null(bgExt)) {
@@ -208,10 +210,24 @@ shinyServer(function(input, output, session) {
           fitBounds(bgExt@bbox[1], bgExt@bbox[2], bgExt@bbox[3], bgExt@bbox[4])
       }
     }
+    if(input$tabs == 'proj') {
+      # refresh draw toolbar
+      map %>% leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
+                                             rectangleOptions = FALSE, circleOptions = FALSE, 
+                                             markerOptions = FALSE)
+    }
+    # logic for initializing or removing leaflet draw toolbar
+    if ((input$tabs == 'poccs' & input$procOccSel == 'selOccs') | input$tabs == 'proj') {
+      map %>% leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
+                                             rectangleOptions = FALSE, circleOptions = FALSE, 
+                                             markerOptions = FALSE)
+    } else {
+      map %>% leaflet.extras::removeDrawToolbar(clearFeatures = TRUE)
+    }
   })
   
   ########################################## #
-  # COMPONENT 1: OBTAIN OCCURRENCE DATA ####
+  # COMPONENT: OBTAIN OCCURRENCE DATA ####
   ########################################## #
   
   # module Query Database (Present)
@@ -231,7 +247,7 @@ shinyServer(function(input, output, session) {
     n <- names(spp)
     sppNameList <- setNames(as.list(n), n)
     selectInput('sppSel', label = "Current species", choices = sppNameList,
-                selectize = TRUE)
+                selectize = TRUE, multiple = TRUE)
   })
   
   # keep track of current species
@@ -255,26 +271,27 @@ shinyServer(function(input, output, session) {
   })
   
   # TABLE
-  options <- list(autoWidth = TRUE, columnDefs = list(list(width = '40%', targets = 7)),
+  options <- list(autoWidth = TRUE, 
+                  columnDefs = list(list(width = '40%', targets = 7)),
                   scrollX=TRUE, scrollY=400)
   output$occTbl <- DT::renderDataTable({
     # check if spp has species in it
     req(length(reactiveValuesToList(spp)) > 0)
     spp[[curSp()]]$occs %>% dplyr::mutate(longitude = round(as.numeric(longitude), digits = 2),
                                 latitude = round(as.numeric(latitude), digits = 2)) %>% 
-                  dplyr::select(taxon_name, occID, longitude:record_type)
+                            dplyr::select(taxon_name, occID, longitude:record_type)
   }, rownames = FALSE)
   
   # handle downloading of original GBIF records after cleaning
   output$dlDbOccs <- downloadHandler(
-    filename = function() {paste0(formatSpName(vals$occs$taxon_name[1]), '_original_', rmd$occDb, ".csv")},
+    filename = function() {paste0(formatSpName(spp[[curSp()]]$occs$taxon_name[1]), '_original_', rmd$occDb, ".csv")},
     content = function(file) {
-      write.csv(vals$occsOrig, file, row.names=FALSE)
+      write.csv(spp[[curSp()]]$occsOrig, file, row.names=FALSE)
     }
   )
   
   ########################################### #
-  ### COMPONENT 2: PROCESS OCCURRENCE DATA ####
+  ### COMPONENT: PROCESS OCCURRENCE DATA ####
   ########################################### #
   
   # module Remove Occurrences By ID
@@ -287,17 +304,19 @@ shinyServer(function(input, output, session) {
   })
   
   # module Select Occurrences on Map
-  selOccs <- callModule(selectOccs_MOD, 'c2_selOccs', rvs)
+  selOccs <- callModule(selectOccs_MOD, 'c2_selOccs_uiID')
   
   observeEvent(input$goSelectOccs, {
-    rvs$occs <- selOccs()
+    req(input$map_draw_new_feature)
+    selOccs()
+    map %>% leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
+      leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
+                                           rectangleOptions = FALSE, circleOptions = FALSE, 
+                                           markerOptions = FALSE)
     # record for RMD
     rvs$comp2 <- c(rvs$comp2, 'sel')
-    map %>%
-      clearMarkers() %>%
-      map_plotLocs(rvs$occs) %>%
-      zoom2Occs(rvs$occs) %>%
-      drawToolbarRefresh()
+    # UI CONTROLS 
+    updateSelectInput(session, "sppSel", selected = curSp())
     shinyjs::enable("dlProcOccs")
   })
   
@@ -326,18 +345,18 @@ shinyServer(function(input, output, session) {
   
   # Reset Occs button functionality
   observeEvent(input$goResetOccs, {
-    rvs$occs <- vals$occsOrig  
+    req(curSp())
+    spp[[curSp()]]$occs <- spp[[curSp()]]$occsOrig  
+    print(spp[[curSp()]]$occs)
     # reset for RMD
     rvs$comp2 <- NULL
     logs %>% writeLog("Reset occurrences.")
-    map %>%
-      clearMarkers() %>%
-      map_plotLocs(rvs$occs) %>%
-      zoom2Occs(rvs$occs)
+    # UI CONTROLS 
+    updateSelectInput(session, "sppSel", selected = curSp())
   })
   
   ############################################# #
-  ### COMPONENT 3: OBTAIN ENVIRONMENTAL DATA ####
+  ### COMPONENT: OBTAIN ENVIRONMENTAL DATA ####
   ############################################# #
   
   # map center coordinates for 30 arcsec download
@@ -414,7 +433,7 @@ shinyServer(function(input, output, session) {
   })
   
   ############################################## #
-  ### COMPONENT 4: PROCESS ENVIRONMENTAL DATA ####
+  ### COMPONENT: PROCESS ENVIRONMENTAL DATA ####
   ############################################## #
   
   # module Background Extent
@@ -495,9 +514,14 @@ shinyServer(function(input, output, session) {
     contentType = "application/zip"
   )
   
+  ############################################## #
+  ### COMPONENT: ESPACE ####
+  ############################################## #
+  
+  
   
   ############################################# #
-  ### COMPONENT 5: PARTITION OCCURRENCE DATA ####
+  ### COMPONENT: PARTITION OCCURRENCE DATA ####
   ############################################# #
   
   # module Non-spatial Occurrence Partitions
@@ -538,7 +562,7 @@ shinyServer(function(input, output, session) {
   )
   
   ######################### #
-  ### COMPONENT 6: MODEL ####
+  ### COMPONENT: MODEL ####
   ######################### #
 
   # module Maxent
@@ -616,7 +640,7 @@ shinyServer(function(input, output, session) {
   })
   
   ########################################### #
-  ### COMPONENT 7: VISUALIZE MODEL RESULTS ####
+  ### COMPONENT: VISUALIZE MODEL RESULTS ####
   ########################################### #
   
   # ui that populates with the names of models that were run
@@ -736,7 +760,7 @@ shinyServer(function(input, output, session) {
   )
   
   ########################################### #
-  ### COMPONENT 8: PROJECT MODEL ####
+  ### COMPONENT: PROJECT MODEL ####
   ########################################### #
   
   # module Project to New Area

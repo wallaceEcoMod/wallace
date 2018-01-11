@@ -504,7 +504,6 @@ comp8_map <- function(map, ras, polyXY, bgShpXY, rasVals, rasCols,
 
 drawToolbarRefresh <- function(map) {
   map %>%
-    leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
     leaflet.extras::addDrawToolbar(
       targetGroup='draw',
       polylineOptions = FALSE,

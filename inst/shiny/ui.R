@@ -85,7 +85,7 @@ shinyUI(tagList(
                                                                  div('Module: Select Occurrences On Map', id="mod"),
                                                                  uiTop('leaflet.extras', "Extra functionality for 'leaflet' Package"),
                                                                  HTML('<hr>'),
-                                                                 selectOccs_UI('c2_selectOccs'),
+                                                                 selectOccs_UI('c2_selectOccs_uiID'),
                                                                  strong("Select occurrences intersecting drawn polygon"), br(),
                                                                  "(", HTML("<font color='blue'><b>NOTE</b></font>"), 
                                                                  ': to begin drawing, click hexagon icon on map toolbar, 
@@ -399,7 +399,7 @@ shinyUI(tagList(
                              )),
                       # RESULTS WINDOW ####
                       column(8,
-                             conditionalPanel("input.tabs != 0 & input.tabs != 'rmd'",
+                             conditionalPanel("input.tabs != 'intro' & input.tabs != 'rmd'",
                                               div(id = "wallaceLog", class = "scrollbox", htmlOutput("log")),
                                               absolutePanel(top = 60, right = 20, width = 150, draggable = TRUE,
                                                             uiOutput("sppSelUI")),
@@ -409,7 +409,7 @@ shinyUI(tagList(
                                                             uiOutput("envSelUI"))
                              ),
                              br(),
-                             conditionalPanel("input.tabs != 'rmd' & input.tabs != 0",
+                             conditionalPanel("input.tabs != 'rmd' & input.tabs != 'intro'",
                                               tabsetPanel(id = 'main',
                                                           tabPanel('Map', leaflet::leafletOutput("map", height=600),
                                                                    absolutePanel(top = 160, right = 20, width = 150, draggable = TRUE,

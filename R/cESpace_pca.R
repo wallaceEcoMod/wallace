@@ -5,7 +5,6 @@
 #' @param occs1 table of occurrences with environmental values for sp1
 #' @param occs2 table of occurrences with environmental values for sp2
 
-
 #generate fake input to play with
 #'
 #'occs<-occ(query="Centaurea stoebe")$gbif$data[[1]][,2:3]

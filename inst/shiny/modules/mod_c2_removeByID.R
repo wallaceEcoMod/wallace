@@ -23,12 +23,6 @@ removeByID_MOD <- function(input, output, session) {
       spp[[curSp()]]$rmd$c2$removedIDs <- c(spp[[curSp()]]$rmd$c2$removedIDs, input$removeID)
     }
     
-    # MAPPING - blue pts for remove, red pts for keep
-    map %>%
-      clearMarkers() %>%
-      map_plotLocs(occs.rem) %>%
-      zoom2Occs(occs.rem)
-    
     return(occs.rem)
   })
 }

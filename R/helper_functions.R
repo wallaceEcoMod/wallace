@@ -8,3 +8,14 @@ popUpContent <- function(x) {
     tags$strong(paste("Longitude:", lon))
   ))
 }
+
+drawToolbarGetPolyXY <- function(newFeat) {
+  coords <- unlist(newFeat$geometry$coordinates)
+  xy <- matrix(c(coords[c(TRUE,FALSE)], coords[c(FALSE,TRUE)]), ncol=2)
+  return(xy)
+}
+
+drawToolbarGetPolyID <- function(newFeat) {
+  id <- newFeat$properties$`_leaflet_id`
+  return(id)
+}
