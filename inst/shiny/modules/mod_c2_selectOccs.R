@@ -5,37 +5,24 @@ selectOccs_UI <- function(id) {
   )
 }
 
-selectOccs_MOD <- function(input, output, session, rvs) {
-  
+selectOccs_MOD <- function(input, output, session) {
   reactive({
-    if (is.null(rvs$occs)) {
-      logs %>% writeLog(type = 'error', "Before processing occurrences, 
-                       obtain the data in component 1.")
-      return()
-    }
-    if (is.null(rvs$polySelXY)) {
-      logs %>% writeLog(type = 'error', 'The polygon has not been finished. Please 
-                                        press "Finish" on the map toolbar, then 
-                                        the "Select Occurrences" button.')
-      return()
-    }
+    # FUNCTION CALL ####
+    occs.sel <- c2_selectOccs(spp[[curSp()]]$occs, spp[[curSp()]]$polySelXY,
+                              spp[[curSp()]]$polySelID, logs, shiny = TRUE)
+    if (is.null(occs.sel)) return()
     
-    occs.xy <- rvs$occs[c('longitude', 'latitude')]
+    # LOAD INTO SPP ####
+    spp[[curSp()]]$occs <- occs.sel
     
-    # make spatial pts object of original occs and preserve origID
-    pts <- sp::SpatialPointsDataFrame(occs.xy, data=rvs$occs['occID'])
+    # RMD VALUES ####
+    # add to vector of IDs removed
+    # if(is.null(spp[[curSp()]]$rmd$c2)) {
+    #   spp[[curSp()]]$rmd$c2 <- list(removedIDs = input$removeID)
+    # }else{
+    #   spp[[curSp()]]$rmd$c2$removedIDs <- c(spp[[curSp()]]$rmd$c2$removedIDs, input$removeID)
+    # }
     
-    newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(rvs$polySelXY)), ID=rvs$polySelID)))  # create new polygon from coords
-    
-    intersect <- sp::over(pts, newPoly)
-    ptRemIndex <- as.numeric(which(is.na(intersect)))
-    
-    remIDs <- as.numeric(pts[ptRemIndex,]$occID)
-    
-    occs.sel <- rvs$occs[-ptRemIndex,]
-    
-    logs %>% writeLog("Keeping only occurrences with occID = ", selIDs, 
-                     ". Updated data has n = ", nrow(occs.sel), " records.")
     return(occs.sel)
   })
 }
