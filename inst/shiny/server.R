@@ -28,6 +28,7 @@ shinyServer(function(input, output, session) {
   
   # reactiveValues list for objects that get modified and reused throughout analysis
   spp <- reactiveValues()
+  msp <- reactiveValues()
   # reactiveValues list for values that are needed for composing the metadata
   # rmm <- reactiveValues(metadata=rangeModelMetadata::rangeModelMetadataTemplate())
   # reactiveValues list for holding the current guidance text
@@ -41,16 +42,23 @@ shinyServer(function(input, output, session) {
   
   # FOR DEVELOPMENT
   observeEvent(input$load, {
-    f <- read.csv('/Users/musasabi/Downloads/Puma concolor_partitioned_occs(1).csv')
-    rvs$occs <- f %>% dplyr::filter(name != 'background')
-    rvs$occs$pop <- unlist(apply(rvs$occs, 1, popUpContent))
-    rvs$occsGrp <- rvs$occs$group
-    rvs$bgPts <- f %>% dplyr::filter(name == 'background')
-    rvs$bgGrp <- rvs$bgPts$group
-    rvs$bgShp <- rgdal::readOGR('/Users/musasabi/Downloads', 'mcp')
-    rvs$bgPts <- rvs$bgPts %>% dplyr::select(longitude, latitude)
-    rvs$envs <- raster::stack(list.files('/Users/musasabi/Documents/github/wallace/inst/shiny/wc10', 'bil$', full.names=TRUE))
-    rvs$bgMsk <- raster::stack(list.files('/Users/musasabi/Downloads/mskEnvs', 'gri$', full.names = TRUE))  
+    f <- read.csv('/Users/musasabi/Desktop/shiny_testing/Puma concolor.csv')
+    spp[["Puma_concolor"]]$occs <- f %>% dplyr::filter(name == 'Puma concolor')
+    spp[["Panthera_leo"]]$occs <- f %>% dplyr::filter(name == 'Panthera leo')
+    spp[["Puma_concolor"]]$occs$pop <- unlist(apply(spp[["Puma_concolor"]]$occs, 1, popUpContent))
+    spp[["Panthera_leo"]]$occs$pop <- unlist(apply(spp[["Panthera_leo"]]$occs, 1, popUpContent))
+    # rvs$occsGrp <- rvs$occs$group
+    spp[["Puma_concolor"]]$bgPts <- f %>% dplyr::filter(name == 'background1') %>% dplyr::select(longitude, latitude)
+    spp[["Panthera_leo"]]$bgPts <- f %>% dplyr::filter(name == 'background2') %>% dplyr::select(longitude, latitude)
+    # rvs$bgGrp <- rvs$bgPts$group
+    spp[["Puma_concolor"]]$occs.z <- read.csv('/Users/musasabi/Desktop/shiny_testing/Puma concolor_z.csv')
+    spp[["Panthera_leo"]]$occs.z <- read.csv('/Users/musasabi/Desktop/shiny_testing/Panthera leo_z.csv')
+    spp[["Puma_concolor"]]$bgPts.z <- read.csv('/Users/musasabi/Desktop/shiny_testing/Puma concolor_bz.csv')
+    spp[["Panthera_leo"]]$bgPts.z <- read.csv('/Users/musasabi/Desktop/shiny_testing/Panthera leo_bz.csv')
+    # rvs$bgShp <- rgdal::readOGR('/Users/musasabi/Downloads', 'mcp')
+    spp[["Puma_concolor"]]$envs <- raster::stack(list.files('/Users/musasabi/Documents/github/wallace/inst/shiny/wc10', 'bil$', full.names=TRUE))
+    spp[["Panthera_leo"]]$envs <- raster::stack(list.files('/Users/musasabi/Documents/github/wallace/inst/shiny/wc10', 'bil$', full.names=TRUE))
+    # rvs$bgMsk <- raster::stack(list.files('/Users/musasabi/Downloads/mskEnvs', 'gri$', full.names = TRUE))  
     print('HACKING DONE')
   })
   
@@ -518,14 +526,45 @@ shinyServer(function(input, output, session) {
   ### COMPONENT: ESPACE ####
   ############################################## #
   
+  curMSp <- reactive(paste0(curSp(), collapse = '_'))
+  
+  # module PCA
   pca <- callModule(pca_MOD, 'cEspace_PCA_uiID')
   
   observeEvent(input$goPCA, {
     # stop if no environmental variables
-    req(length(curSp() == 2))
-    req(spp[[curSp()[1]]]$bgMask, spp[[curSp()[2]]]$bgMask)
+    req(length(curSp()) == 2)
+    req(spp[[curSp()[1]]]$bgPts.z, spp[[curSp()[2]]]$bgPts.z)
     # initialize module
     pca()
+    # PLOTS ####
+    output$pcaPlot <- renderPlot({
+      par(mfrow=c(1,2))
+      pca <- msp[[curMSp()]]$pca
+      ade4::s.class(pca$scores[pca$scores$sp==0,1:2], as.factor(pca$scores[pca$scores$sp==0,]$bg),
+                    col=c("blue","red"), cstar = 0, cpoint=0.1)
+      ade4::s.corcircle(pca$co, lab = names(spp[[curSp()[1]]]$envs), full = FALSE, box = TRUE)  
+    })
+    # UI CONTROLS 
+    updateSelectInput(session, "sppSel", selected = curSp())
+  })
+  
+  pca <- callModule(pca_MOD, 'cEspace_PCA_uiID')
+  
+  # module Smoothed Density Grids
+  observeEvent(input$goDensGrid, {
+    # stop if no environmental variables
+    req(length(curSp()) == 2)
+    req(spp[[curSp()[1]]]$bgPts.z, spp[[curSp()[2]]]$bgPts.z)
+    # initialize module
+    pca <- pca()
+    # PLOTS ####
+    output$pcaPlot <- renderPlot({
+      par(mfrow=c(1,2))
+      ade4::s.class(pca$scores[pca$scores$sp==0,1:2], as.factor(pca$scores[pca$scores$sp==0,]$bg),
+                    col=c("blue","red"), cstar = 0, cpoint=0.1)
+      ade4::s.corcircle(pca$co, lab = names(spp[[curSp()[1]]]$envs), full = FALSE, box = TRUE)  
+    })
     # UI CONTROLS 
     updateSelectInput(session, "sppSel", selected = curSp())
   })

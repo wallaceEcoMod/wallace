@@ -16,36 +16,29 @@ pca_MOD <- function(input, output, session) {
     if (is.null(pca)) return()
     
     output$pcaControls <- renderUI({
-      n <- names(spp[[curSp()]]$envs)
+      n <- names(spp[[curSp()[1]]]$envs)
       tagList(
-        conditionalPanel(paste0("input['", "pcaSelChoice", "']"),
-                         checkboxGroupInput("pcaSel", label = "Select",
-                                            choices = setNames(as.list(n), n), 
-                                            inline = TRUE, selected = n)),
+        # conditionalPanel(paste0("input['", "pcaSelChoice", "']"),
+        #                  checkboxGroupInput("pcaSel", label = "Select",
+        #                                     choices = setNames(as.list(n), n), 
+        #                                     inline = TRUE, selected = n)),
         numericInput("pc1", "X-axis Component", value = 1, min = 1, max = length(n)),
         numericInput("pc2", "Y-axis Component", value = 2, min = 1, max = length(n))
       )
     })
     
-    # PLOTS ####
-    output$pcaPlot <- renderPlot({
-      par(mfrow=c(2,1))
-      s.class(scores[sp==0,1:2],as.factor(scores[sp==0,]$bg),col=c("blue","red"),cstar = 0, cpoint=0.1)
-      s.corcircle(pca$co, lab = names(pca$tab), full = FALSE, box = TRUE)  
-    })
+    # LOAD INTO MSP ####
     
-    
-    # LOAD INTO SPP ####
-    spp[[curSp()]]$occs <- occs.rem
+    if(is.null(msp[[curMSp()]])) {
+      msp[[curMSp()]] <- list(pca = pca)
+    }else{
+      msp[[curMSp()]]$pca <- pca
+    }
     
     # RMD VALUES ####
     # add to vector of IDs removed
-    if(is.null(spp[[curSp()]]$rmd$c2)) {
-      spp[[curSp()]]$rmd$c2 <- list(removedIDs = input$removeID)
-    }else{
-      spp[[curSp()]]$rmd$c2$removedIDs <- c(spp[[curSp()]]$rmd$c2$removedIDs, input$removeID)
-    }
     
-    return(occs.rem)
+    
+    return(pca)
   })
 }
