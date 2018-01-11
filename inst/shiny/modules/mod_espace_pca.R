@@ -10,7 +10,8 @@ pca_UI <- function(id) {
 pca_MOD <- function(input, output, session) {
   reactive({
     # FUNCTION CALL ####
-    pca <- cESpace_pca(spp[[curSp()[1]]]$bgPts.z, spp[[curSp()[2]]]$bgPts.z,
+    pca <- cESpace_pca(curSp()[1], curSp()[2],
+                       spp[[curSp()[1]]]$bgPts.z, spp[[curSp()[2]]]$bgPts.z,
                        spp[[curSp()[1]]]$occs.z, spp[[curSp()[2]]]$occs.z, 
                        logs, shiny = TRUE)
     if (is.null(pca)) return()

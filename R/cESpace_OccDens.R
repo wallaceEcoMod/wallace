@@ -3,15 +3,18 @@
 #' @param pca output of pca component
 #' @param spSel species selected (1 or 2)
 
-cESpace_OccDens<- function(pca,spSel, logs=NULL, shiny=FALSE) {
-  bg<-pca[[1]]$bg
-  sp<-pca[[1]]$sp
-  scores.bg12<-pca[[1]][bg>0,1:2]
-  scores.bg<-pca[[1]][bg==spSel,1:2]
-  scores.occs<-pca[[1]][sp==spSel,1:2]
-  z<- ecospat::ecospat.grid.clim.dyn(scores.bg12,scores.bg,scores.occs,100)
-  
-  #plots
-  #ecospat::ecospat.plot.niche(z,paste("species: ",spSel))
-  return(z)
+cESpace_occDens<- function(sp.name1, sp.name2, pca, logs = NULL, shiny = FALSE) {
+  bg <- pca$scores$bg
+  sp <- pca$scores$sp
+  scores.bg12 <- pca$scores[bg != 'bg', 1:2]
+  scores.bg1 <- pca$scores[bg == sp.name1, 1:2]
+  scores.occs1 <- pca$scores[sp == sp.name1, 1:2]
+  scores.bg2 <- pca$scores[bg == sp.name2, 1:2]
+  scores.occs2 <- pca$scores[sp == sp.name2, 1:2]
+  occDens1 <- ecospat::ecospat.grid.clim.dyn(scores.bg12, scores.bg1, scores.occs1, 100)
+  occDens2 <- ecospat::ecospat.grid.clim.dyn(scores.bg12, scores.bg2, scores.occs2, 100)
+  occDens <- list()
+  occDens[[sp.name1]] <- occDens1
+  occDens[[sp.name2]] <- occDens2
+  return(occDens)
 }

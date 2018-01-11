@@ -205,7 +205,7 @@ shinyUI(tagList(
                                                 h4("Environmental Space"),
                                                 radioButtons("espaceSel", "Modules Available:",
                                                              choices = list("Principal Components Analysis" = "pca",
-                                                                            "Smoothed Density Grid" = "dgrid",
+                                                                            "Occurrence Density Grid" = "occDens",
                                                                             "Niche Overlap" = "novlp")),
                                                 
                                                 HTML('<hr>'),
@@ -216,12 +216,12 @@ shinyUI(tagList(
                                                                  pca_UI('cEspace_PCA_uiID'),
                                                                  actionButton("goPCA", "Run")
                                                 ),
-                                                conditionalPanel("input.espaceSel == 'dgrid'",
-                                                                 div('Module: Smoothed Density Grid', id="mod"),
+                                                conditionalPanel("input.espaceSel == 'occDens'",
+                                                                 div('Module: Occurrence Density Grid', id="mod"),
                                                                  uiTop('ecospat', 'Spatial Ecology Miscellaneous Methods'),
-                                                                 uiTop('adeHabitatHR', 'Home Range Estimation')
-                                                                 # userBgExtent_UI('c4_userBgExtent'),
-                                                                 # actionButton("goUserBg", "Load")
+                                                                 uiTop('adeHabitatHR', 'Home Range Estimation'),
+                                                                 occDens_UI('cEspace_occDens_uiID'),
+                                                                 actionButton("goOccDens", "Run")
                                                                  ),
                                                 conditionalPanel("input.espaceSel == 'novlp'",
                                                                  div('Module: Niche Overlap', id="mod"),
@@ -431,7 +431,9 @@ shinyUI(tagList(
                                                                    conditionalPanel("input.tabs == 'viz' && input.visSel == 'mxEval'  && input.enmSel == 'Maxent'",
                                                                                     imageOutput('mxEvalPlots')),
                                                                    conditionalPanel("input.tabs == 'espace' && input.espaceSel == 'pca'",
-                                                                                    imageOutput('pcaPlot'))
+                                                                                    imageOutput('pcaPlot')),
+                                                                   conditionalPanel("input.tabs == 'espace' && input.espaceSel == 'occDens'",
+                                                                                    imageOutput('occDensPlot'))
                                                           ),
                                                           tabPanel('Component Guidance', uiOutput('gtext_comp')),
                                                           tabPanel('Module Guidance', uiOutput('gtext_mod'))

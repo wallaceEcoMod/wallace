@@ -541,29 +541,29 @@ shinyServer(function(input, output, session) {
     output$pcaPlot <- renderPlot({
       par(mfrow=c(1,2))
       pca <- msp[[curMSp()]]$pca
-      ade4::s.class(pca$scores[pca$scores$sp==0,1:2], as.factor(pca$scores[pca$scores$sp==0,]$bg),
-                    col=c("blue","red"), cstar = 0, cpoint=0.1)
+      ade4::s.class(pca$scores[pca$scores$sp == 'bg',1:2], 
+                    as.factor(pca$scores[pca$scores$sp == 'bg',]$bg),
+                    col=c("blue","red"), cstar = 0, cpoint = 0.1)
       ade4::s.corcircle(pca$co, lab = names(spp[[curSp()[1]]]$envs), full = FALSE, box = TRUE)  
     })
     # UI CONTROLS 
+    updateTabsetPanel(session, 'main', selected = 'Results')
     updateSelectInput(session, "sppSel", selected = curSp())
   })
   
-  pca <- callModule(pca_MOD, 'cEspace_PCA_uiID')
+  # module Occurrence Density Grids
+  occDens <- callModule(occDens_MOD, 'cEspace_occDens_uiID')
   
-  # module Smoothed Density Grids
-  observeEvent(input$goDensGrid, {
+  observeEvent(input$goOccDens, {
     # stop if no environmental variables
-    req(length(curSp()) == 2)
-    req(spp[[curSp()[1]]]$bgPts.z, spp[[curSp()[2]]]$bgPts.z)
+    req(msp[[curMSp()]]$pca)
     # initialize module
-    pca <- pca()
+    occDens()
     # PLOTS ####
-    output$pcaPlot <- renderPlot({
+    output$occDensPlot <- renderPlot({
       par(mfrow=c(1,2))
-      ade4::s.class(pca$scores[pca$scores$sp==0,1:2], as.factor(pca$scores[pca$scores$sp==0,]$bg),
-                    col=c("blue","red"), cstar = 0, cpoint=0.1)
-      ade4::s.corcircle(pca$co, lab = names(spp[[curSp()[1]]]$envs), full = FALSE, box = TRUE)  
+      ecospat::ecospat.plot.niche(msp[[curMSp()]]$occDens[[curSp()[1]]], title = curSp()[1])
+      ecospat::ecospat.plot.niche(msp[[curMSp()]]$occDens[[curSp()[2]]], title = curSp()[2])
     })
     # UI CONTROLS 
     updateSelectInput(session, "sppSel", selected = curSp())
