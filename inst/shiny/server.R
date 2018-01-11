@@ -166,6 +166,18 @@ shinyServer(function(input, output, session) {
     }
   })
   
+  observeEvent(input$map_draw_new_feature, {
+    req(curSp())
+    coords <- unlist(input$map_draw_new_feature$geometry$coordinates)
+    xy <- matrix(c(coords[c(TRUE,FALSE)], coords[c(FALSE,TRUE)]), ncol=2)
+    id <- input$map_draw_new_feature$properties$`_leaflet_id`
+    
+    spp[[curSp()]]$polySelXY <- xy
+    spp[[curSp()]]$polySelID <- id
+    # UI CONTROLS - for some reason, curSp() disappears here unless input is updated
+    updateSelectInput(session, "sppSel", selected = curSp())
+  })
+  
   # MAPPING LOGIC ####
   observe({
     # must have one species selected for mapping to be functional
@@ -181,14 +193,6 @@ shinyServer(function(input, output, session) {
       req(occs)
       map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% 
         map_occs(occs) %>% zoom2Occs(occs)
-      # refresh draw toolbar for Select Occurrences module
-      if (input$procOccSel == 'selOccs') {
-        map %>% drawToolbarRefresh()
-        req(input$map_draw_new_feature)
-        print('feat on')
-        # spp[[curSp()]]$polySelXY <- drawToolbarGetPolyXY(input$map_draw_new_feature)
-        # spp[[curSp()]]$polySelID <- drawToolbarGetPolyID(input$map_draw_new_feature)
-      }
     }
     if(input$tabs == 'penvs') {
       occs <- spp[[curSp()]]$occs
@@ -208,11 +212,15 @@ shinyServer(function(input, output, session) {
     }
     if(input$tabs == 'proj') {
       # refresh draw toolbar
-      map %>% drawToolbarRefresh()
+      map %>% leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
+                                             rectangleOptions = FALSE, circleOptions = FALSE, 
+                                             markerOptions = FALSE)
     }
     # logic for initializing or removing leaflet draw toolbar
     if ((input$tabs == 'poccs' & input$procOccSel == 'selOccs') | input$tabs == 'proj') {
-      map %>% drawToolbarRefresh()
+      map %>% leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
+                                             rectangleOptions = FALSE, circleOptions = FALSE, 
+                                             markerOptions = FALSE)
     } else {
       map %>% leaflet.extras::removeDrawToolbar(clearFeatures = TRUE)
     }
@@ -299,9 +307,16 @@ shinyServer(function(input, output, session) {
   selOccs <- callModule(selectOccs_MOD, 'c2_selOccs_uiID')
   
   observeEvent(input$goSelectOccs, {
+    req(input$map_draw_new_feature)
     selOccs()
+    map %>% leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
+      leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
+                                           rectangleOptions = FALSE, circleOptions = FALSE, 
+                                           markerOptions = FALSE)
     # record for RMD
     rvs$comp2 <- c(rvs$comp2, 'sel')
+    # UI CONTROLS 
+    updateSelectInput(session, "sppSel", selected = curSp())
     shinyjs::enable("dlProcOccs")
   })
   
@@ -330,14 +345,14 @@ shinyServer(function(input, output, session) {
   
   # Reset Occs button functionality
   observeEvent(input$goResetOccs, {
-    rvs$occs <- vals$occsOrig  
+    req(curSp())
+    spp[[curSp()]]$occs <- spp[[curSp()]]$occsOrig  
+    print(spp[[curSp()]]$occs)
     # reset for RMD
     rvs$comp2 <- NULL
     logs %>% writeLog("Reset occurrences.")
-    map %>%
-      clearMarkers() %>%
-      map_plotLocs(rvs$occs) %>%
-      zoom2Occs(rvs$occs)
+    # UI CONTROLS 
+    updateSelectInput(session, "sppSel", selected = curSp())
   })
   
   ############################################# #

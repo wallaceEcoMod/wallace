@@ -8,7 +8,6 @@ removeByID_UI <- function(id) {
 
 removeByID_MOD <- function(input, output, session) {
   reactive({
-    print(curSp())
     # FUNCTION CALL ####
     occs.rem <- c2_removeByID(spp[[curSp()]]$occs, input$removeID, logs, shiny = TRUE)
     if (is.null(occs.rem)) return()
