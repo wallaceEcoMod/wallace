@@ -479,7 +479,7 @@ shinyServer(function(input, output, session) {
       fitBounds(rvs$bgShp@bbox[1], rvs$bgShp@bbox[2], rvs$bgShp@bbox[3], rvs$bgShp@bbox[4])
   })
   
-  bgMskPts <- callModule(bgMskAndSamplePts_MOD, 'c4_bgMskAndSamplePts', rvs)
+  bgMskPts <- callModule(bgMskAndSamplePts_MOD, 'c4_bgMskAndSamplePts')
   
   # module Background Mask and Sample Points
   observeEvent(input$goBgMask, {
@@ -518,7 +518,17 @@ shinyServer(function(input, output, session) {
   ### COMPONENT: ESPACE ####
   ############################################## #
   
+  pca <- callModule(pca_MOD, 'cEspace_PCA_uiID')
   
+  observeEvent(input$goPCA, {
+    # stop if no environmental variables
+    req(length(curSp() == 2))
+    req(spp[[curSp()[1]]]$bgMask, spp[[curSp()[2]]]$bgMask)
+    # initialize module
+    pca()
+    # UI CONTROLS 
+    updateSelectInput(session, "sppSel", selected = curSp())
+  })
   
   ############################################# #
   ### COMPONENT: PARTITION OCCURRENCE DATA ####

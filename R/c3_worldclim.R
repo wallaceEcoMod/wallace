@@ -22,7 +22,19 @@ c3_worldclim<- function (occs, bcRes, bcSelChoice, bcSel, logs=NULL, shiny=FALSE
     return()
   }
   
-  withProgress(message = "Retrieving WorldClim data...", {
+  if(shiny == TRUE) {
+    withProgress(message = "Retrieving WorldClim data...", {
+      if (bcRes == 0.5) {
+        wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes, 
+                                lon = mapCntr()[1], lat = mapCntr()[2])
+        # rvs$bcLon <- mapCntr()[1]
+        # rvs$bcLat <- mapCntr()[2]
+      } else {
+        wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes)
+        wcbc <- wcbc[[bcSel]]
+      }
+    })  
+  }else{
     if (bcRes == 0.5) {
       wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes, 
                               lon = mapCntr()[1], lat = mapCntr()[2])
@@ -32,7 +44,8 @@ c3_worldclim<- function (occs, bcRes, bcSelChoice, bcSel, logs=NULL, shiny=FALSE
       wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes)
       wcbc <- wcbc[[bcSel]]
     }
-  })
+  }
+  
   
   if (raster::nlayers(wcbc) == 19) {
     bcSel <- 'bio1-19'

@@ -161,7 +161,8 @@ smartZoom <- function(longi, lati) {
 
 remEnvsValsNA <- function(occs, envs, logs) {
   withProgress(message = "Checking for points with NA values...", {
-    occsVals <- raster::extract(envs, occs[c('longitude', 'latitude')])
+    n <- names(envs)
+    occsVals <- occs[n]
     na.rowNums <- which(rowSums(is.na(occsVals)) > 1)
     
     if (length(na.rowNums) == length(occsVals)) {

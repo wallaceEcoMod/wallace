@@ -204,17 +204,17 @@ shinyUI(tagList(
                                conditionalPanel("input.tabs == 'espace'",
                                                 h4("Environmental Space"),
                                                 radioButtons("espaceSel", "Modules Available:",
-                                                             choices = list("Environmental Ordination" = "ord",
+                                                             choices = list("Principal Components Analysis" = "pca",
                                                                             "Smoothed Density Grid" = "dgrid",
                                                                             "Niche Overlap" = "novlp")),
                                                 
                                                 HTML('<hr>'),
-                                                conditionalPanel("input.espaceSel == 'ord'",
+                                                conditionalPanel("input.espaceSel == 'pca'",
                                                                  div('Module: Environmental Ordination', id="mod"),
-                                                                 uiTop('ade4', 'Analysis of Ecological Data : Exploratory and Euclidean Methods in Environmental Sciences')
-                                                                 # HTML('<hr>'),
-                                                                 # bgExtent_UI('c4_bgExtent'),
-                                                                 # actionButton("goBgExt", "Select")),
+                                                                 uiTop('ade4', 'Analysis of Ecological Data : Exploratory and Euclidean Methods in Environmental Sciences'),
+                                                                 HTML('<hr>'),
+                                                                 pca_UI('cEspace_PCA_uiID'),
+                                                                 actionButton("goPCA", "Run")
                                                 ),
                                                 conditionalPanel("input.espaceSel == 'dgrid'",
                                                                  div('Module: Smoothed Density Grid', id="mod"),
@@ -429,7 +429,9 @@ shinyUI(tagList(
                                                                    conditionalPanel("input.tabs == 'viz' && input.visSel == 'bcPlots' && input.enmSel == 'BIOCLIM'",
                                                                                     imageOutput('bcEnvelPlot')),
                                                                    conditionalPanel("input.tabs == 'viz' && input.visSel == 'mxEval'  && input.enmSel == 'Maxent'",
-                                                                                    imageOutput('mxEvalPlots'))
+                                                                                    imageOutput('mxEvalPlots')),
+                                                                   conditionalPanel("input.tabs == 'espace' && input.espaceSel == 'pca'",
+                                                                                    imageOutput('pcaPlot'))
                                                           ),
                                                           tabPanel('Component Guidance', uiOutput('gtext_comp')),
                                                           tabPanel('Module Guidance', uiOutput('gtext_mod'))

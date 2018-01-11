@@ -19,11 +19,8 @@
   
 cESpace_PCA<- function(bgMask1, bgMask2=NULL, occs1, occs2=NULL, logs=NULL, shiny=FALSE) {
   
-  library(ade4)
-  library(raster)
-  
-  df1<-na.exclude(getValues(bgMask1))
-  if (!is.null(bgMask2)) df2<-na.exclude(getValues(bgMask2))
+  df1<-na.exclude(raster::getValues(bgMask1))
+  if (!is.null(bgMask2)) df2<-na.exclude(raster::getValues(bgMask2))
   
   if (!is.null(bgMask2)){
     
@@ -40,13 +37,9 @@ cESpace_PCA<- function(bgMask1, bgMask2=NULL, occs1, occs2=NULL, logs=NULL, shin
   
   #pca calibration and predicition of scores
   
-  pca <-dudi.pca(data, row.w=bg>0, center = T, scale = T, scannf = F, nf = 2)
+  pca <-ade4::dudi.pca(data, row.w=bg>0, center = T, scale = T, scannf = F, nf = 2)
   
   scores<-cbind(pca$li,sp,bg)
-  
-  # plots
-  #s.class(scores[sp==0,1:2],as.factor(scores[sp==0,]$bg),col=c("blue","red"),cstar = 0, cpoint=0.1)
-  #s.corcircle(pca$co, lab = names(pca$tab), full = FALSE, box = TRUE)
   
   pca<-list(scores,pca$eig,pca$co)
   

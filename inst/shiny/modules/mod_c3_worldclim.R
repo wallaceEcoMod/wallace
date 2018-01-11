@@ -25,6 +25,10 @@ wcBioclims_MOD <- function(input, output, session) {
     envs <- c3_worldclim(spp[[curSp()]]$occs, input$bcRes, input$bcSelChoice, 
                          input$bcSel, logs, shiny=TRUE)
     # remove occurrences with NA values for variables
+    withProgress(message = "Extracting values...", {
+      spp[[curSp()]]$occs.z <- raster::extract(envs, spp[[curSp()]]$occs[c('longitude', 'latitude')])
+    })
+    
     spp[[curSp()]]$occs <- remEnvsValsNA(spp[[curSp()]]$occs, envs, logs)
     
     if (is.null(envs)) return()
