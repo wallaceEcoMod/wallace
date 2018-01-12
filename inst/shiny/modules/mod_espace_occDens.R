@@ -1,16 +1,22 @@
 
-occDens_UI <- function(id) {
+occDens_controlsUI <- function(id) {
   ns <- NS(id)
   tagList(
 
       )
 }
 
+occDens_resultsUI <- function(id) {
+  ns <- NS(id)
+  plotOutput(ns("occDensPlot"))
+}
+
 occDens_MOD <- function(input, output, session) {
   reactive({
     # FUNCTION CALL ####
-    occDens <- cESpace_occDens(curSp()[1], curSp()[2], 
-                               msp[[curMSp()]]$pca, logs, shiny = TRUE)
+    sp1 <- curSp()[1]
+    sp2 <- curSp()[2]
+    occDens <- cESpace_occDens(sp1, sp2, msp[[curMSp()]]$pca, logs, shiny = TRUE)
     if (is.null(occDens)) return()
     
     # LOAD INTO MSP ####
@@ -23,6 +29,12 @@ occDens_MOD <- function(input, output, session) {
     # RMD VALUES ####
     # add to vector of IDs removed
     
+    # PLOTS ####
+    output$occDensPlot <- renderPlot({
+      par(mfrow=c(1,2))
+      ecospat::ecospat.plot.niche(occDens[[sp1]], title = sp1)
+      ecospat::ecospat.plot.niche(occDens[[sp2]], title = sp2)
+    })
     
     return(occDens)
   })

@@ -537,15 +537,6 @@ shinyServer(function(input, output, session) {
     req(spp[[curSp()[1]]]$bgPts.z, spp[[curSp()[2]]]$bgPts.z)
     # initialize module
     pca()
-    # PLOTS ####
-    output$pcaPlot <- renderPlot({
-      par(mfrow=c(1,2))
-      pca <- msp[[curMSp()]]$pca
-      ade4::s.class(pca$scores[pca$scores$sp == 'bg',1:2], 
-                    as.factor(pca$scores[pca$scores$sp == 'bg',]$bg),
-                    col=c("blue","red"), cstar = 0, cpoint = 0.1)
-      ade4::s.corcircle(pca$co, lab = names(spp[[curSp()[1]]]$envs), full = FALSE, box = TRUE)  
-    })
     # UI CONTROLS 
     updateTabsetPanel(session, 'main', selected = 'Results')
     updateSelectInput(session, "sppSel", selected = curSp())
@@ -559,12 +550,18 @@ shinyServer(function(input, output, session) {
     req(msp[[curMSp()]]$pca)
     # initialize module
     occDens()
-    # PLOTS ####
-    output$occDensPlot <- renderPlot({
-      par(mfrow=c(1,2))
-      ecospat::ecospat.plot.niche(msp[[curMSp()]]$occDens[[curSp()[1]]], title = curSp()[1])
-      ecospat::ecospat.plot.niche(msp[[curMSp()]]$occDens[[curSp()[2]]], title = curSp()[2])
-    })
+    # UI CONTROLS 
+    updateSelectInput(session, "sppSel", selected = curSp())
+  })
+  
+  # module Niche Overlap
+  nicheOv <- callModule(nicheOv_MOD, 'cEspace_nicheOv_uiID')
+  
+  observeEvent(input$goNicheOv, {
+    # stop if no environmental variables
+    req(msp[[curMSp()]]$occDens)
+    # initialize module
+    nicheOv()
     # UI CONTROLS 
     updateSelectInput(session, "sppSel", selected = curSp())
   })
