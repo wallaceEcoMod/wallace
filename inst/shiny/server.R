@@ -625,6 +625,8 @@ shinyServer(function(input, output, session) {
     } else {
       mapPreds <- callModule(mapPreds_MOD, 'c7_mapPreds', rvs)
     }
+    # stop if mapPreds is NULL
+    req(mapPreds())
     rvs$predCur <- mapPreds()
     # stop if no models
     req(rvs$mods)

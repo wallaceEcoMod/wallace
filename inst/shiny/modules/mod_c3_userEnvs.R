@@ -26,7 +26,16 @@ userEnvs_MOD <- function(input, output, session, rvs) {
       names(uenvs) <- fileNameNoExt(input$userEnvs$name)
     })
     
-    rvs %>% writeLog("> Environmental predictors: User input.")
+    rvs %>% writeLog("Environmental predictors: User input.")
+    
+    if (is.na(raster::crs(uenvs))) {
+      rvs %>% writeLog(type = "warning", "Input rasters have undefined coordinate 
+                       reference system (CRS). Mapping functionality in components 
+                       Visualize Model Results and Project Model will not work. If 
+                       you wish to map rasters in these components, please define 
+                       their projections and upload again. See guidance text in 
+                       this module for more details.")
+    }
     
     return(uenvs)
   })
