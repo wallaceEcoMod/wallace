@@ -23,7 +23,7 @@ cESpace_pca<- function(sp.name1, sp.name2 = NULL, occs.z1, occs.z2 = NULL,
     bg <- c(rep('sp',nrow(occs.z1)), rep(sp.name1, nrow(bgPts.z1)))
   }
   
-  # pca calibration and predicition of scores
+  # pca calibration and prediction of scores
   
   pca <- ade4::dudi.pca(data, row.w = bg > 0, center = TRUE, scale = TRUE, 
                         scannf = FALSE, nf = 2)

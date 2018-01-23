@@ -533,7 +533,9 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goPCA, {
     # stop if no environmental variables
-    req(length(curSp()) == 2)
+    if(length(curSp()) != 2) {
+      logs %>% writeLog(type = 'error', "Please select two species.")
+    }
     req(spp[[curSp()[1]]]$bgPts.z, spp[[curSp()[2]]]$bgPts.z)
     # initialize module
     pca()

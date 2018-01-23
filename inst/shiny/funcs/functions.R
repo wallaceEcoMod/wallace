@@ -159,10 +159,10 @@ smartZoom <- function(longi, lati) {
 # COMP 3 ####
 ####################### #
 
-remEnvsValsNA <- function(occs, envs, logs) {
+remEnvsValsNA <- function(occs, occs.z, envs, logs) {
   withProgress(message = "Checking for points with NA values...", {
     n <- names(envs)
-    occsVals <- occs[n]
+    occsVals <- occs.z
     na.rowNums <- which(rowSums(is.na(occsVals)) > 1)
     
     if (length(na.rowNums) == length(occsVals)) {

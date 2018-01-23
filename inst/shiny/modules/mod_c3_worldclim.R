@@ -29,7 +29,11 @@ wcBioclims_MOD <- function(input, output, session) {
       spp[[curSp()]]$occs.z <- raster::extract(envs, spp[[curSp()]]$occs[c('longitude', 'latitude')])
     })
     
-    spp[[curSp()]]$occs <- remEnvsValsNA(spp[[curSp()]]$occs, envs, logs)
+    # remove occurrences with NA environmental values
+    spp[[curSp()]]$occs <- remEnvsValsNA(spp[[curSp()]]$occs, spp[[curSp()]]$occs.z, envs, logs)
+    # now remove NA rows from occs.z
+    spp[[curSp()]]$occs.z <- na.exclude(spp[[curSp()]]$occs.z)
+    
     
     if (is.null(envs)) return()
     
