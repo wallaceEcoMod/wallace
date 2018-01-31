@@ -308,7 +308,7 @@ shinyServer(function(input, output, session) {
   })
   
   # module WorldClim Bioclims
-  wcBioclims <- callModule(wcBioclims_MOD, 'c3_wcBioclims', rvs)
+  wcBioclims <- callModule(wcBioclims_MOD, 'c3_wcBioclims', rvs, mapCntr)
   
   observeEvent(input$goEnvData, {
     # load into envs
