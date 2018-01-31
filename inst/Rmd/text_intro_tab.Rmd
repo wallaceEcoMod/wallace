@@ -5,14 +5,15 @@ output: html_document
 
 #### WORKFLOW
 
-*Wallace* (v1.0.2) currently includes the following components and modules:  
+*Wallace* (v1.0.3) currently includes the following components and modules:  
 
 **1**: *Obtain Occurrence Data*  
 -Query Database  
 -User-specified
 
 **2:** *Process Occurrence Data*  
--Select Localities  
+-Select Occurrences on Map
+-Remove Occurrences by ID
 -Spatial Thin  
 
 **3:** *Obtain Environmental Data*  

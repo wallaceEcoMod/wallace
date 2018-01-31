@@ -1,3 +1,8 @@
+# wallace 1.0.3
+- Added error checks for when the coordinate reference system (CRS) of an input user raster is NA, and updated guidance text in the User-specified Environmental Data module with a guide on configuring the CRS of rasters in R.
+- Fixed a bug that prevented downloads of 30 arcsec Worldclim rasters.
+- Updated the intro screen tab module names.
+
 # wallace 1.0.2
 - There is now an option to download all the response curves at once in the same png.
 - Local path to dismo's maxent.jar is now printed inside the log window to avoid failure to word wrap in some browsers.
