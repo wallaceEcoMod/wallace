@@ -16,7 +16,6 @@ Author: Jamie M. Kass [aut, cre],
     Cory Merow [aut],
     Robert P. Anderson [aut]
 Maintainer: Jamie M. Kass <jkass@gradcenter.cuny.edu>
-<<<<<<< HEAD
 Depends:
     R (>= 3.2.1),
     shiny (>= 0.14.2),
@@ -43,21 +42,11 @@ Imports:
     ade4,
     rangeModelMetadata
 Description: The 'shiny' application Wallace is a modular platform for reproducible modeling of species niches and distributions. Wallace guides users through a complete analysis, from the acquisition of species occurrence and environmental data to visualizing model predictions on an interactive map, thus bundling complex workflows into a single, streamlined interface.
-=======
-Depends: R (>= 3.2.1), shiny (>= 0.14.2), leaflet (>= 1.0.1)
-Imports: DT (>= 0.2), shinyjs, spocc (>= 0.5.4), RColorBrewer, dplyr,
-        spThin, ENMeval, rgeos, maptools, dismo, raster, shinythemes,
-        magrittr, rgdal, leaflet.extras
-Description: The 'shiny' application 'wallace' is a modular platform for reproducible modeling of species niches and distributions. 'wallace' guides users through a complete analysis, from the acquisition of species occurrence and environmental data to visualizing model predictions on an interactive map, thus bundling complex workflows into a single, streamlined interface.
->>>>>>> master
 License: GPL-3
 URL: https://wallaceEcoMod.github.io
 Encoding: UTF-8
 RoxygenNote: 6.0.1
-<<<<<<< HEAD
-=======
 Suggests: knitr, rmarkdown, testthat, RSelenium
 NeedsCompilation: no
 Packaged: 2017-11-29 05:26:31 UTC; musasabi
 VignetteBuilder: knitr
->>>>>>> master
