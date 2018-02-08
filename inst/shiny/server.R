@@ -29,8 +29,6 @@ shinyServer(function(input, output, session) {
   # reactiveValues list for objects that get modified and reused throughout analysis
   spp <- reactiveValues()
   msp <- reactiveValues()
-  # reactiveValues list for values that are needed for composing the metadata
-  # rmm <- reactiveValues(metadata=rangeModelMetadata::rangeModelMetadataTemplate())
   # reactiveValues list for holding the current guidance text
   gtext <- reactiveValues()
   # single reactive value for log vector
@@ -196,15 +194,15 @@ shinyServer(function(input, output, session) {
       req(occs)
       map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% 
         map_occs(occs) %>% zoom2Occs(occs) 
+    } else {
+      occs <- spp[[curSp()]]$occs
     }
     if(input$tabs == 'poccs') {
-      occs <- spp[[curSp()]]$occs
       req(occs)
       map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% 
         map_occs(occs) %>% zoom2Occs(occs)
     }
     if(input$tabs == 'penvs') {
-      occs <- spp[[curSp()]]$occs
       bgExt <- spp[[curSp()]]$bgExt
       if(is.null(bgExt)) {
         map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>%
@@ -218,6 +216,18 @@ shinyServer(function(input, output, session) {
         map %>% clearMarkers() %>% clearImages() %>% map_occs(occs) %>%
           fitBounds(bgExt@bbox[1], bgExt@bbox[2], bgExt@bbox[3], bgExt@bbox[4])
       }
+    }
+    if(input$tabs == 'part') {
+      occsGrp <- spp[[curSp()]]$Part$occ.grp
+      # colors for partition symbology
+      newColors <- gsub("FF$", "", rainbow(max(occsGrp)))  
+      partsFill <- newColors[occsGrp]
+      map %>%
+        clearMarkers() %>%
+        map_plotLocs(occs, fillColor = partsFill, fillOpacity = 1) %>%
+        addLegend("bottomright", colors = newColors,
+                  title = "Partition Groups", labels = sort(unique(occsGrp)),
+                  opacity = 1, layerId = 'leg')
     }
     # logic for initializing or removing leaflet draw toolbar
     if ((input$tabs == 'poccs' & input$procOccSel == 'selOccs') | input$tabs == 'proj') {
