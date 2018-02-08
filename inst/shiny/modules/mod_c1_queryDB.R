@@ -24,18 +24,18 @@ queryDb_MOD <- function(input, output, session) {
     n <- formatSpName(occs$taxon_name)
     # if species name is already in list, overwrite it
     if(!is.null(spp[[n]])) spp[[n]] <- NULL
-    spp[[n]] <- list(occs = occs)
-    spp[[n]]$occsOrig <- occs
-    
-    # RMD VALUES ####
-    dbOccsRMD <- list(spName = n, occDb = input$occDb, 
-                      occNum = input$occNum, timeInterval = "Present")
-    spp[[n]]$rmd <- list(c1 = dbOccsRMD)
+    # add two copies of occs dataset -- "occs" will be altered during session,
+    # while "occsOrig" will be preserved in this state
+    # rmm is the range model metadata object
+    spp[[n]] <- list(occurrences = list(occs = occs, occsOrig = occs),
+                     rmm = rangeModelMetadata::rangeModelMetadataTemplate())
     
     # METADATA ####
-    # rmm$metadata$data$occurrence$taxaVector <- input$spName
-    # rmm$metadata$data$occurrence$occurrenceDataType <- "presence only"
-    # rmm$metadata$data$occurrence$presenceSampleSize <- nrow(occs)
+    spp[[n]]$rmm$data$occurrence$taxa <- n
+    spp[[n]]$rmm$data$occurrence$dataType <- "presence only"
+    spp[[n]]$rmm$data$occurrence$presenceSampleSize <- nrow(occs)
+    spp[[n]]$rmm$data$occurrence$sources <- input$occDb
+    spp[[n]]$rmm$code$wallaceSettings$occNum <- input$occNum
     
     # RETURN ####
     # output the species name
