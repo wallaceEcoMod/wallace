@@ -42,7 +42,7 @@ shinyServer(function(input, output, session) {
   
   # FOR DEVELOPMENT
   observeEvent(input$load, {
-    f <- read.csv('/Users/musasabi/Desktop/shiny_testing/Puma concolor.csv')
+    f <- read.csv('example_data/occs_multisp.csv')
     spp[["Puma_concolor"]]$occs <- f %>% dplyr::filter(name == 'Puma concolor')
     spp[["Panthera_leo"]]$occs <- f %>% dplyr::filter(name == 'Panthera leo')
     spp[["Puma_concolor"]]$occs$pop <- unlist(apply(spp[["Puma_concolor"]]$occs, 1, popUpContent))
@@ -165,13 +165,7 @@ shinyServer(function(input, output, session) {
   
   # initialize draw toolbar for c2_selectOccs and c8
   observe({
-    print(curSp())
 
-    
-    if (input$tabs == 'proj') {
-      spp[[curSp()]]$polyPjXY <- xy
-      spp[[curSp()]]$polyPjID <- id  
-    }
   })
   
   observeEvent(input$map_draw_new_feature, {
@@ -180,8 +174,15 @@ shinyServer(function(input, output, session) {
     xy <- matrix(c(coords[c(TRUE,FALSE)], coords[c(FALSE,TRUE)]), ncol=2)
     id <- input$map_draw_new_feature$properties$`_leaflet_id`
     
-    spp[[curSp()]]$polySelXY <- xy
-    spp[[curSp()]]$polySelID <- id
+    if(input$tabs == 'poccs') {
+      spp[[curSp()]]$polySelXY <- xy
+      spp[[curSp()]]$polySelID <- id
+    } 
+    if(input$tabs == 'proj') {
+      spp[[curSp()]]$polyPjXY <- xy
+      spp[[curSp()]]$polyPjID <- id  
+    }
+    
     # UI CONTROLS - for some reason, curSp() disappears here unless input is updated
     updateSelectInput(session, "sppSel", selected = curSp())
   })
@@ -218,12 +219,6 @@ shinyServer(function(input, output, session) {
           fitBounds(bgExt@bbox[1], bgExt@bbox[2], bgExt@bbox[3], bgExt@bbox[4])
       }
     }
-    if(input$tabs == 'proj') {
-      # refresh draw toolbar
-      map %>% leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
-                                             rectangleOptions = FALSE, circleOptions = FALSE, 
-                                             markerOptions = FALSE)
-    }
     # logic for initializing or removing leaflet draw toolbar
     if ((input$tabs == 'poccs' & input$procOccSel == 'selOccs') | input$tabs == 'proj') {
       map %>% leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
@@ -251,11 +246,19 @@ shinyServer(function(input, output, session) {
   
   # ui that populates with the name of species that were queried
   output$sppSelUI <- renderUI({
+    # check that a species is in the list already -- if not, don't proceed
     req(length(reactiveValuesToList(spp)) > 0)
+    # get the species names
     n <- names(spp)
+    # make a named list of their names
     sppNameList <- setNames(as.list(n), n)
-    selectInput('sppSel', label = "Current species", choices = sppNameList,
-                selectize = TRUE, multiple = TRUE)
+    
+    if(!is.null(curSp())) selected <- curSp() else selected <- n[1]
+    if(input$tabs == 'espace') options <- list(maxItems = 2) else options <- list(maxItems = 1)
+    # generate a selectInput ui that lists the available species
+    
+    selectizeInput('sppSel', label = "Current species", choices = sppNameList,
+                multiple = TRUE, selected = selected, options = options)
   })
   
   # keep track of current species
@@ -308,7 +311,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goRemoveByID, {
     remByID()
     # UI CONTROLS 
-    updateSelectInput(session, "sppSel", selected = curSp())
+    # updateSelectInput(session, "sppSel", selected = curSp())
   })
   
   # module Select Occurrences on Map
