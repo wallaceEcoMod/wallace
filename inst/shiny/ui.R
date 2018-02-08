@@ -249,7 +249,7 @@ shinyUI(tagList(
                                                                  div('Module: Non-spatial Partition', id="mod"),
                                                                  uiTop('ENMeval', 'Automated Runs and Evaluations of Ecological Niche Models'),
                                                                  HTML('<hr>'),
-                                                                 partNsp_UI('c5_partNsp'),
+                                                                 partNsp_UI('cParts_partNsp_uiID'),
                                                                  actionButton("goPartNsp", "Partition")),
                                                 HTML('<hr>'),
                                                 strong("Download occurrence and background localities with partition values (.csv)"), br(), br(),

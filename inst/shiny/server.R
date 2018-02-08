@@ -571,19 +571,20 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "sppSel", selected = curSp())
   })
   
-  ############################################# #
-  ### COMPONENT: PARTITION OCCURRENCE DATA ####
-  ############################################# #
+  ################################################## #
+  ### COMPONENT: PARTITION OCCURRENCE DATA [Parts]####
+  ################################################# #
   
   # module Non-spatial Occurrence Partitions
+  partNsp <- callModule(partNsp_MOD, 'cParts_partNsp_uiID')
+  
   observeEvent(input$goPartNsp, {
-    partNsp.call <- callModule(partNsp_MOD, 'c5_partNsp', rvs)
-    partNsp <- partNsp.call()
+    x <- partNsp()
     # stop if no background mask
-    req(rvs$bgMsk)
-    rvs$occsGrp <- partNsp[[1]]
-    rvs$bgGrp <- partNsp[[2]]
-    map %>% comp5_map(rvs$occs, rvs$occsGrp)
+    # req(rvs$bgMsk)
+    # rvs$occsGrp <- partNsp$occ.grp
+    # rvs$bgGrp <- partNsp$bg.grp
+    map %>% comp5_map(rvs$occs, partNsp$occ.grp)
     shinyjs::enable("dlPart")
   })
   

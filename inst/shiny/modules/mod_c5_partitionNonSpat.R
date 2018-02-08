@@ -9,32 +9,21 @@ partNsp_UI <- function(id) {
   )
 }
 
-partNsp_MOD <- function(input, output, session, rvs, occs, bgPts) {
+partNsp_MOD <- function(input, output, session) {
   reactive({
-    if (is.null(rvs$bgMsk)) {
-      logs %>% writeLog(type = 'error', "Before partitioning occurrences, 
-                       mask your environmental variables by your background extent.")
-      return()
-    }
-    if (input$partNspSel == '') {
-      logs %>% writeLog(type = 'error', "Please select a partitioning option.")
-      return()
-    }
     
-    # record for RMD
-    rvs$comp5 <- input$partNspSel
-    rvs$kfolds <- input$kfolds
-
-    occs.xy <- rvs$occs %>% dplyr::select(longitude, latitude)
-
-    if (input$partNspSel == 'jack') {
-      group.data <- ENMeval::get.jackknife(occs.xy, rvs$bgPts)
-      logs %>% writeLog("Occurrences partitioned by jackknife method.")
-    } else if (input$partNspSel == 'rand') {
-      group.data <- ENMeval::get.randomkfold(occs.xy, rvs$bgPts, input$kfolds)
-      logs %>% writeLog("Occurrences partitioned by random k-fold (k = ", input$kfolds, ").")
-    }
-      
-    return(group.data)
+    #### FUNCTION CALL
+    sp <- spp[[curSp()]]
+    partNonSpat <- c5_partitionNonSpat(sp$occs, sp$bgPts, input$partNspSel, input$kfolds, logs, shiny = TRUE)
+    
+    if (is.null(partNonSpat)) return()
+    
+    # LOAD INTO SPP ####
+    spp[[curSp()]]$Parts$occ.grp <- partNonSpat$occ.grp
+    spp[[curSp()]]$Parts$bg.grp <- partNonSpat$bg.grp
+    
+    # RMD VALUES ####
+    spp[[curSp()]]$rmd$c5 <- list(partNspSel = input$partNspSel, kfolds = input$kfolds)
+    
   })
 }
