@@ -140,7 +140,9 @@ shinyServer(function(input, output, session) {
   # initialize draw toolbar for c2_selectOccs and c8
   observe({
     if ((input$tabs == 2 & input$procOccSel == 'selOccs') | input$tabs == 8) {
-      map %>% drawToolbarRefresh()
+      map %>% leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
+                                             rectangleOptions = FALSE, circleOptions = FALSE, 
+                                             markerOptions = FALSE)
     } else {
       map %>% leaflet.extras::removeDrawToolbar(clearFeatures = TRUE)
     }
