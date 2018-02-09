@@ -21,17 +21,16 @@ userOccs_MOD <- function(input, output, session, rvs) {
       }
       # make occsOrig copy
       occsList[[n]]$occsOrig <- occsList[[n]]$occs
-      # RMD VALUES ####
-      dbOccsRMD <- list(spName = n, userCSV = input$userCSV) 
-      occsList[[n]]$rmd <- list(c1 = dbOccsRMD)
+
       # append all new species lists to spp
       spp[[n]] <- occsList[[n]]
     }
     
-    # # METADATA ####
-    # rmm$metadata$data$occurrence$taxaVector <- occs$taxon_name[1]
-    # rmm$metadata$data$occurrence$occurrenceDataType <- "presence only"
-    # rmm$metadata$data$occurrence$presenceSampleSize <- nrow(occs)
+    # METADATA ####
+    spp[[n]]$rmm$data$occurrence$taxa <- occs$taxon_name[1]
+    spp[[n]]$rmm$data$occurrence$dataType <- "presence only"
+    spp[[n]]$rmm$data$occurrence$presenceSampleSize <- nrow(occs)
+    spp[[n]]$rmm$data$occurrence$sources <- "user"
     
     # RETURN ####
     return(occsList)
