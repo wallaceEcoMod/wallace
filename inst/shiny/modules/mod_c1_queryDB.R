@@ -15,7 +15,10 @@ queryDb_UI <- function(id) {
 
 queryDb_MOD <- function(input, output, session, rvs) {
   
-  spName <- reactive({trimws(input$spName)})
+  spName <- reactive({
+    n <- input$spName
+    trimws(paste0(toupper(substring(n, 1, 1)), substring(n, 2, nchar(n))))
+    })
   
   query <- reactive({
     req(input$spName)

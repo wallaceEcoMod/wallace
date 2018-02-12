@@ -22,11 +22,11 @@ shinyUI(tagList(
              
              fluidRow(column(4,
                              wellPanel(
-                               includeCSS(system.file("css", "styles.css", package = "wallace")),
-                               includeScript(system.file("js", "scroll.js", package = "wallace")),
+                               includeCSS("css/styles.css"),
+                               includeScript("js/scroll.js"),
                                conditionalPanel("input.tabs == 0",
                                                 # actionButton('load', 'HACK'),
-                                                includeMarkdown(system.file("Rmd", "text_intro_tab.Rmd", package = "wallace"))
+                                                includeMarkdown("Rmd/text_intro_tab.Rmd")
                                ),
                                # COMPONENT 1 ####
                                conditionalPanel("input.tabs == 1",
@@ -375,15 +375,15 @@ shinyUI(tagList(
                              ),
                              conditionalPanel("input.tabs == 'rmd'",
                                               column(8,
-                                                     includeMarkdown(system.file("Rmd", "text_sessionCode.Rmd", package = "wallace"))
+                                                     includeMarkdown("Rmd/text_sessionCode.Rmd")
                                               )
                              ),
                              conditionalPanel("input.tabs == 0",
                                               tabsetPanel(id = 'introTabs',
-                                                          tabPanel('Intro', includeMarkdown(system.file("Rmd", "text_intro.Rmd", package = "wallace"))),
+                                                          tabPanel('Intro', includeMarkdown("Rmd/text_intro.Rmd")),
                                                           tabPanel('About',
                                                                    fluidRow(
-                                                                     column(8, includeMarkdown(system.file("Rmd", "text_about.Rmd", package = "wallace"))
+                                                                     column(8, includeMarkdown("Rmd/text_about.Rmd")
                                                                      )
                                                                    )
                                                           )

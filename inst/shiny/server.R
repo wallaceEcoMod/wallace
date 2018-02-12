@@ -13,6 +13,7 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("downloadEvalPlots")
   shinyjs::disable("dlPred")
   shinyjs::disable("dlProj")
+  shinyjs::disable("dlRMD")
   
   # initialize module parameters list
   rvs <- reactiveValues(logs = logInit(), comp1='', comp2='', comp3='', comp4.shp='', comp4.buf=0,
@@ -53,12 +54,12 @@ shinyServer(function(input, output, session) {
   
   # UI for component guidance text
   output$gtext_comp <- renderUI({
-    shiny::includeMarkdown(system.file('Rmd', gtext$cur_comp, package='wallace'))
+    shiny::includeMarkdown(file.path('Rmd', gtext$cur_comp))
   })
   
   # UI for module guidance text
   output$gtext_mod <- renderUI({
-    shiny::includeMarkdown(system.file('Rmd', gtext$cur_mod, package='wallace'))
+    shiny::includeMarkdown(file.path('Rmd', gtext$cur_mod))
   })
   
   # guidance text and tab behavior
@@ -181,6 +182,7 @@ shinyServer(function(input, output, session) {
       map_plotLocs(rvs$occs) %>%
       zoom2Occs(rvs$occs)
     shinyjs::enable("dlDbOccs")
+    shinyjs::enable("dlRMD")
   })
   
   # module User Occurrence Data
@@ -798,15 +800,6 @@ shinyServer(function(input, output, session) {
         input$rmdFileType, Rmd = 'Rmd', PDF = 'pdf', HTML = 'html', Word = 'docx'
       ))},
     content = function(file) {
-      # not active unless at least occurrences have been down/uploaded
-      req(rvs$occs)
-      
-      src <- normalizePath('userReport.Rmd')
-      # temporarily switch to the temp dir, in case you do not have write
-      # permission to the current working directory
-      owd <- setwd(tempdir())
-      on.exit(setwd(owd))
-      file.copy(src, 'userReport.Rmd')
       # convert removed occIDs to characters of vectors
       if (!is.null(rvs$removedIDs)) {
         rvs$occsRem <- printVecAsis(rvs$removedIDs)  
@@ -825,7 +818,7 @@ shinyServer(function(input, output, session) {
         polyPjX <- polyPjY <- NULL
       }
       bcSels <- printVecAsis(rvs$bcSels)
-      exp <- knitr::knit_expand(system.file("Rmd", 'userReport.Rmd', package = "wallace"), 
+      exp <- knitr::knit_expand("Rmd/userReport.Rmd", 
                                 curWD=curWD, spName=spName(), 
                                 dbName=rvs$occDb, occNum=rvs$occNum, occsCSV=rvs$userCSV$name,  # comp 1
                                 thinDist=rvs$thinDist, occsRemoved=rvs$occsRem, occsSelX=polySelX, occsSelY=polySelY,  # comp 2
@@ -842,6 +835,10 @@ shinyServer(function(input, output, session) {
                                 mxEvalSel=rvs$mxEvalSel, predType=rvs$comp7.type, comp7.thresh=rvs$comp7.thr, # comp 7 
                                 occsPjX=polyPjX, occsPjY=polyPjY, pjRCP=rvs$pjTimePar$rcp, pjGCM=rvs$pjTimePar$gcm,  # comp 8
                                 pjYear=rvs$pjTimePar$year, comp8.thresh=rvs$comp8.thr)  # comp 8
+      # temporarily switch to the temp dir, in case you do not have write
+      # permission to the current working directory
+      owd <- setwd(tempdir())
+      on.exit(setwd(owd))
       writeLines(exp, 'userReport2.Rmd')
       
       if (input$rmdFileType == 'Rmd') {

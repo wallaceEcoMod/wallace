@@ -1,3 +1,10 @@
+# wallace 1.0.4
+- Fixed the mapped display for the user-drawn polygon in **Module:** ***Select Occurrences On Map*** so that it remains displayed after the Finish button is pressed.
+- Changed all `system.file()` calls to files in the `wallace` package to relative paths, which ensures that in those cases where the user downloads from Github and doesn't have the package installed from CRAN, or the package being developed is not the one installed from CRAN, the correct files can be found. To make this work, the folders `inst/Rmd`, `inst/css`, and `inst/js` have been moved to `inst/shiny`. An exception is the `run_wallace()` function, which retains `system.file()` because it is not in the `inst/shiny` folder. 
+- Fixed the intro tab text formatting and added a bulleted list.
+- Minor changes to simplify code.
+- Added link to DOI of Early View manuscript in MEE.
+
 # wallace 1.0.3
 - Added error checks for when the coordinate reference system (CRS) of an input user raster is NA, and updated guidance text in the User-specified Environmental Data module with a guide on configuring the CRS of rasters in R.
 - Fixed a bug that prevented downloads of 30 arcsec Worldclim rasters.
