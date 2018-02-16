@@ -196,23 +196,6 @@ mcp <- function(xy) {
 }
 
 ####################### #
-# COMP 5 ####
-####################### #
-
-comp5_map <- function(map, occs, occsGrp) {
-  if (is.null(occsGrp)) return()
-  # colors for partition symbology
-  newColors <- gsub("FF$", "", rainbow(max(occsGrp)))  
-  partsFill <- newColors[occsGrp]
-  map %>%
-    clearMarkers() %>%
-    map_plotLocs(occs, fillColor = partsFill, fillOpacity = 1) %>%
-    addLegend("bottomright", colors = newColors,
-              title = "Partition Groups", labels = sort(unique(occsGrp)),
-              opacity = 1, layerId = 'leg')
-}
-
-####################### #
 # COMP 6 ####
 ####################### #
 

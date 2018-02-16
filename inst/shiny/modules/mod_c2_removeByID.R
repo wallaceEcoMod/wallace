@@ -9,11 +9,11 @@ removeByID_UI <- function(id) {
 removeByID_MOD <- function(input, output, session) {
   reactive({
     # FUNCTION CALL ####
-    occs.rem <- c2_removeByID(spp[[curSp()]]$occs, input$removeID, logs, shiny = TRUE)
+    occs.rem <- c2_removeByID(occs(), input$removeID, logs, shiny = TRUE)
     if (is.null(occs.rem)) return()
     
     # LOAD INTO SPP ####
-    spp[[curSp()]]$occs <- occs.rem
+    spp[[curSp()]]$occData$occs <- occs.rem
     
     # RMD VALUES ####
     # add to vector of IDs removed

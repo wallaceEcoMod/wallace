@@ -97,6 +97,5 @@ c1_queryDb <- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
                     '] out of [', totRows, '] total (limit ', occNum, ').
                     Records without coordinates removed [', noCoordsRem, '].
                     Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')
-  
   return(occs)
 }

@@ -23,11 +23,11 @@ shinyUI(tagList(
              
              fluidRow(column(4,
                              wellPanel(
-                               includeCSS(system.file("css", "styles.css", package = "wallace")),
-                               includeScript(system.file("js", "scroll.js", package = "wallace")),
+                               includeCSS("css/styles.css"),
+                               includeScript("js/scroll.js"),
                                conditionalPanel("input.tabs == 'intro'",
-                                                actionButton('load', 'HACK'),
-                                                includeMarkdown(system.file("Rmd", "text_intro_tab.Rmd", package = "wallace"))
+                                                # actionButton('load', 'HACK'),
+                                                includeMarkdown("Rmd/text_intro_tab.Rmd")
                                ),
                                # COMPONENT 1 ####
                                conditionalPanel("input.tabs == 'occs'",
@@ -401,6 +401,8 @@ shinyUI(tagList(
                       column(8,
                              conditionalPanel("input.tabs != 'intro' & input.tabs != 'rmd'",
                                               div(id = "wallaceLog", class = "scrollbox", htmlOutput("log")),
+                                              # this makes the border red, but a line remains on the UI even before the box should appear
+                                              # tags$style("#sppSelUI {border: 2px solid #dd4b39;}"),
                                               absolutePanel(top = 60, right = 20, width = 150, draggable = TRUE,
                                                             uiOutput("sppSelUI")),
                                               absolutePanel(top = 60, right = 100, width = 150, draggable = TRUE,
@@ -443,15 +445,15 @@ shinyUI(tagList(
                              ),
                              conditionalPanel("input.tabs == 'rmd'",
                                               column(8,
-                                                     includeMarkdown(system.file("Rmd", "text_sessionCode.Rmd", package = "wallace"))
+                                                     includeMarkdown("Rmd/text_sessionCode.Rmd")
                                               )
                              ),
                              conditionalPanel("input.tabs == 'intro'",
                                               tabsetPanel(id = 'introTabs',
-                                                          tabPanel('Intro', includeMarkdown(system.file("Rmd", "text_intro.Rmd", package = "wallace"))),
+                                                          tabPanel('Intro', includeMarkdown("Rmd/text_intro.Rmd")),
                                                           tabPanel('About',
                                                                    fluidRow(
-                                                                     column(8, includeMarkdown(system.file("Rmd", "text_about.Rmd", package = "wallace"))
+                                                                     column(8, includeMarkdown("Rmd/text_about.Rmd")
                                                                      )
                                                                    )
                                                           )

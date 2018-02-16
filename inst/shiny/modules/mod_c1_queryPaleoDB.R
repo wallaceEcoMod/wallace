@@ -19,27 +19,31 @@ queryPaleoDb_UI <- function(id) {
 queryPaleoDb_MOD <- function(input, output, session) {
   reactive({
     # FUNCTION CALL ####
-    occs <- c1_queryPaleoDb(input$spName, input$occDb, input$occNum, input$timeInterval, logs, shiny=TRUE)
+    occsTbl <- c1_queryPaleoDb(input$spName, input$occDb, input$occNum, input$timeInterval, logs, shiny=TRUE)
     
-    if (is.null(occs)) return()
+    if (is.null(occsTbl)) return()
     
-    # LOAD vals ####
-    vals$occDb <- input$occDb
-    vals$spName <- input$spName
-    vals$occNum <- input$occNum
-    vals$timeInterval <- input$timeInterval
+    # LOAD INTO SPP ####
+    n <- formatSpName(occsTbl$taxon_name)
+    # if species name is already in list, overwrite it
+    if(!is.null(spp[[n]])) spp[[n]] <- NULL
+    # add two copies of occs dataset -- "occs" will be altered during session,
+    # while "occsOrig" will be preserved in this state
+    # rmm is the range model metadata object
+    spp[[n]] <- list(occData = list(occs = occsTbl, occsOrig = occsTbl),
+                     rmm = rangeModelMetadata::rangeModelMetadataTemplate())
     
-    # MAPPING ####
-    map %>%
-      clearMarkers() %>%
-      clearShapes() %>%
-      clearImages() %>%
-      addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, radius = 5, 
-                       color = 'red', fill = TRUE, fillColor = 'red', 
-                       fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
-      zoom2Occs(occs)
+    # METADATA ####
+    spp[[n]]$rmm$data$occurrence$taxa <- n
+    spp[[n]]$rmm$data$occurrence$dataType <- "presence only"
+    spp[[n]]$rmm$data$occurrence$presenceSampleSize <- nrow(occsTbl)
+    spp[[n]]$rmm$data$occurrence$sources <- input$occDb
+    spp[[n]]$rmm$code$wallaceSettings$occNum <- input$occNum
+    # for now, just put yearMin and yearMax as the time interval?
+    spp[[n]]$rmm$data$occurrence$yearMin <- input$timeInterval
+    spp[[n]]$rmm$data$occurrence$yearMax <- input$timeInterval
     
     # RETURN ####
-    return(occs)
+    return(occsTbl)
   })
 }

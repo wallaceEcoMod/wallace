@@ -11,47 +11,26 @@ partSp_UI <- function(id) {
   )
 }
 
-partSp_MOD <- function(input, output, session, rvs) {
+partSp_MOD <- function(input, output, session) {
   reactive({
-    if (is.null(rvs$bgMsk)) {
+    if (is.null(spp[[curSp()]]$bgMask)) {
       logs %>% writeLog(type = 'error', "Before partitioning occurrences, 
                        mask your environmental variables by your background extent.")
       return()
     }
-    if (input$partSpSel == '') {
-      logs %>% writeLog(type = 'error', "Please select a partitioning option.")
-      return()
-    }
-    if (input$partSpSel == 'cb1' | input$partSpSel == 'cb2') {
-      if (is.na(input$aggFact) | input$aggFact <= 1) {
-        logs %>% writeLog(type = 'error', "Please specify a positive aggregation 
-                         factor greater than 1.")
-        return()
-      }
-    }
-    # record for RMD
-    rvs$comp5 <- input$partSpSel
-    rvs$aggFact <- input$aggFact
     
-    occs.xy <- rvs$occs %>% dplyr::select(longitude, latitude)
-
-    if (input$partSpSel == 'block') {
-      group.data <- ENMeval::get.block(occs.xy, rvs$bgPts)
-      logs %>% writeLog("Occurrences partitioned by block method.")
-    } else if (input$partSpSel == 'cb1') {
-      withProgress(message = "Aggregating rasters...", {
-        group.data <- ENMeval::get.checkerboard1(occs.xy, rvs$bgMsk, rvs$bgPts, input$aggFact)
-        logs %>% writeLog(paste0("Occurrences partitioned by checkerboard 1 method with 
-                         aggregation factor ", input$aggFact, "."))
-      })
-    } else if (input$partSpSel == 'cb2') {
-      withProgress(message = "Aggregating rasters...", {
-        group.data <- ENMeval::get.checkerboard2(occs.xy, rvs$bgMsk, rvs$bgPts, input$aggFact)
-        logs %>% writeLog(paste0("Occurrences partitioned by checkerboard 2 method with 
-                         aggregation factor ", input$aggFact, "."))
-      })
-    }
+    # FUNCTION CALL ####
+    group.data <- c5_partitionOccs(spp[[curSp()]]$occs, spp[[curSp()]]$bgPts, input$partSpSel, 
+                                   bgMsk = spp[[curSp()]]$bgMsk, aggFact = input$aggFact, logs, shiny=TRUE)
     
-    return(group.data)
+    if (is.null(group.data)) return()
+    
+    # LOAD INTO SPP ####
+    spp[[curSp()]]$parts$occ.grp <- group.data$occ.grp
+    spp[[curSp()]]$parts$bg.grp <- group.data$bg.grp
+    
+    # RMD VALUES ####
+    # spp[[curSp()]]$rmd$c5 <- list(partNspSel = input$partNspSel, kfolds = input$kfolds)
+    
   })
 }

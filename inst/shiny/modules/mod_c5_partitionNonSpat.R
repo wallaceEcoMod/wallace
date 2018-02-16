@@ -11,19 +11,24 @@ partNsp_UI <- function(id) {
 
 partNsp_MOD <- function(input, output, session) {
   reactive({
+    if (is.null(spp[[curSp()]]$bgMask)) {
+      logs %>% writeLog(type = 'error', "Before partitioning occurrences, 
+                        mask your environmental variables by your background extent.")
+      return()
+    }
     
     #### FUNCTION CALL
-    sp <- spp[[curSp()]]
-    partNonSpat <- c5_partitionNonSpat(sp$occs, sp$bgPts, input$partNspSel, input$kfolds, logs, shiny = TRUE)
+    group.data <- c5_partitionOccs(spp[[curSp()]]$occs, spp[[curSp()]]$bgPts, input$partSpSel, 
+                                   kfolds = input$kfolds, logs, shiny=TRUE)
     
-    if (is.null(partNonSpat)) return()
+    if (is.null(group.data)) return()
     
     # LOAD INTO SPP ####
-    spp[[curSp()]]$Parts$occ.grp <- partNonSpat$occ.grp
-    spp[[curSp()]]$Parts$bg.grp <- partNonSpat$bg.grp
+    spp[[curSp()]]$parts$occ.grp <- group.data$occ.grp
+    spp[[curSp()]]$parts$bg.grp <- group.data$bg.grp
     
     # RMD VALUES ####
-    spp[[curSp()]]$rmd$c5 <- list(partNspSel = input$partNspSel, kfolds = input$kfolds)
+    # spp[[curSp()]]$rmd$c5 <- list(partNspSel = input$partNspSel, kfolds = input$kfolds)
     
   })
 }

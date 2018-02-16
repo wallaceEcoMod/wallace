@@ -16,29 +16,29 @@ queryDb_UI <- function(id) {
 queryDb_MOD <- function(input, output, session) {
   reactive({
     # FUNCTION CALL ####
-    occs <- c1_queryDb(input$spName, input$occDb, input$occNum, logs, shiny=TRUE)
+    occsTbl <- c1_queryDb(input$spName, input$occDb, input$occNum, logs, shiny=TRUE)
     
-    if (is.null(occs)) return()
+    if (is.null(occsTbl)) return()
     
     # LOAD INTO SPP ####
-    n <- formatSpName(occs$taxon_name)
+    n <- formatSpName(occsTbl$taxon_name)
     # if species name is already in list, overwrite it
     if(!is.null(spp[[n]])) spp[[n]] <- NULL
     # add two copies of occs dataset -- "occs" will be altered during session,
     # while "occsOrig" will be preserved in this state
     # rmm is the range model metadata object
-    spp[[n]] <- list(occurrences = list(occs = occs, occsOrig = occs),
+    spp[[n]] <- list(occData = list(occs = occsTbl, occsOrig = occsTbl),
                      rmm = rangeModelMetadata::rangeModelMetadataTemplate())
     
     # METADATA ####
     spp[[n]]$rmm$data$occurrence$taxa <- n
     spp[[n]]$rmm$data$occurrence$dataType <- "presence only"
-    spp[[n]]$rmm$data$occurrence$presenceSampleSize <- nrow(occs)
+    spp[[n]]$rmm$data$occurrence$presenceSampleSize <- nrow(occsTbl)
     spp[[n]]$rmm$data$occurrence$sources <- input$occDb
     spp[[n]]$rmm$code$wallaceSettings$occNum <- input$occNum
     
     # RETURN ####
-    # output the species name
-    return(n)
+    # output the table
+    return(occsTbl)
   })
 }

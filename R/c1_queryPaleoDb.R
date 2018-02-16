@@ -72,6 +72,7 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, logs = NULL, sh
   names(occsOrig)[names(occsOrig) == "lat"] <- "latitude"
   names(occsOrig)[names(occsOrig) == "early_interval"] <- "time_interval"
   names(occsOrig)[names(occsOrig) == "cc"] <- "country"
+  occsOrig$taxon_name <- as.character(occsOrig$taxon_name)
   
   # make new column for original ID
   occsOrig$occID <- 1: nrow(occsOrig)
@@ -84,33 +85,20 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, logs = NULL, sh
 
   
   dups <- duplicated(occsXY[,c('longitude','latitude')])
-  occs <- occsXY[!dups,]
+  occsTbl <- occsXY[!dups,]
   
   # subset by key columns and make id and popup columns
   cols <- c("taxon_name", "longitude", "latitude","time_interval", "collection_no", "country", 
             "collection_no", "record_type", "occID")
-  occs <- occs %>% dplyr::select(dplyr::one_of(cols)) %>%
-    dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent)))  # make new column for leaflet marker popup content
+  occsTbl <- occsTbl %>% dplyr::select(dplyr::one_of(cols)) %>%
+    dplyr::mutate(pop = unlist(apply(occsTbl, 1, popUpContent)))  # make new column for leaflet marker popup content
   
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
   
-  dupsRem <- nrow(occsXY) - nrow(occs)
+  dupsRem <- nrow(occsXY) - nrow(occsTbl)
   logs %>% writeLog('Total', occDb, 'records for', spName, 'returned [', nrow(occsOrig),
                     '] out of [', totRows, '] total (limit ', occNum, ').',
                     'Records without coordinates removed [', noCoordsRem, '].
-                   Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')
-  return(occs)
-}
-
-
-
-popUpContent <- function(x) {
-  lat <- round(as.numeric(x['latitude']), digits = 2)
-  lon <- round(as.numeric(x['longitude']), digits = 2)
-  as.character(tagList(
-    tags$strong(paste("occID:", x['occID'])),
-    tags$br(),
-    tags$strong(paste("Latitude:", lat)),
-    tags$strong(paste("Longitude:", lon))
-  ))
+                   Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occsTbl), '].')
+  return(occsTbl)
 }

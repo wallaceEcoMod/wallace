@@ -9,9 +9,7 @@ bgMskAndSamplePts_UI <- function(id) {
 bgMskAndSamplePts_MOD <- function(input, output, session, rvs) {
   reactive({
     # FUNCTION CALL ####
-    print('started')
     bgMask <- c4_bgMask(spp[[curSp()]]$occs, spp[[curSp()]]$envs, spp[[curSp()]]$bgExt, logs, shiny=TRUE)
-    print('first one done')
     bgPts <- c4_bgSample(spp[[curSp()]]$occs, bgMask, input$bgPtsNum, logs, shiny=TRUE)
     
     withProgress(message = "Extracting values...", {

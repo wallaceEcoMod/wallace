@@ -161,11 +161,7 @@ shinyServer(function(input, output, session) {
   # initialize provider tile option
   observe({map %>% addProviderTiles(input$bmap)})
   
-  # initialize draw toolbar for c2_selectOccs and c8
-  observe({
-
-  })
-  
+  # logic for recording the attributes of drawn polygon features
   observeEvent(input$map_draw_new_feature, {
     req(curSp())
     coords <- unlist(input$map_draw_new_feature$geometry$coordinates)
@@ -189,32 +185,32 @@ shinyServer(function(input, output, session) {
   observe({
     # must have one species selected for mapping to be functional
     req(length(curSp()) == 1)
+    # map the original occs for Component Obtain Occurrence Data
     if(input$tabs == 'occs') {
-      occs <- spp[[curSp()]]$occsOrig
-      req(occs)
+      req(spp[[curSp()]]$occData)
+      occsOrig <- spp[[curSp()]]$occData$occsOrig
       map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% 
-        map_occs(occs) %>% zoom2Occs(occs) 
-    } else {
-      occs <- spp[[curSp()]]$occs
-    }
+        map_occs(occsOrig) %>% zoom2Occs(occsOrig) 
+    } 
+    # for downstream mapping functionality, require occs
+    req(occs())
+    # map the analysis occs for components downstream of the first
     if(input$tabs == 'poccs') {
-      req(occs)
       map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% 
-        map_occs(occs) %>% zoom2Occs(occs)
+        map_occs(occs()) %>% zoom2Occs(occs())
     }
     if(input$tabs == 'penvs') {
-      bgExt <- spp[[curSp()]]$bgExt
-      if(is.null(bgExt)) {
+      if(is.null(bgExt())) {
         map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>%
-          map_occs(occs) %>% zoom2Occs(occs)
+          map_occs(occs()) %>% zoom2Occs(occs())
       }else{
         map %>% clearShapes()
         for (shp in bgShpXY()) {
           map %>%
             addPolygons(lng=shp[,1], lat=shp[,2], weight=4, color="gray", group='bgShp')  
         }
-        map %>% clearMarkers() %>% clearImages() %>% map_occs(occs) %>%
-          fitBounds(bgExt@bbox[1], bgExt@bbox[2], bgExt@bbox[3], bgExt@bbox[4])
+        map %>% clearMarkers() %>% clearImages() %>% map_occs(occs()) %>%
+          fitBounds(bgExt()@bbox[1], bgExt()@bbox[2], bgExt()@bbox[3], bgExt()@bbox[4])
       }
     }
     if(input$tabs == 'part') {
@@ -247,9 +243,11 @@ shinyServer(function(input, output, session) {
   dbOccs <- callModule(queryDb_MOD, 'c1_queryDb_uiID')
   
   observeEvent(input$goDbOccs, {
-    # get species name
-    n <- dbOccs()
+    # return the occs table
+    occsTbl <- dbOccs()
+    n <- formatSpName(occsTbl$taxon_name)
     # UI CONTROLS 
+    # assign the selected species to the present occ table's taxon name
     updateSelectInput(session, "sppSel", selected = n)
     shinyjs::enable("dlDbOccs")
   })
@@ -272,14 +270,22 @@ shinyServer(function(input, output, session) {
   })
   
   # keep track of current species
-  curSp <- reactive({input$sppSel})
+  curSp <- reactive(input$sppSel)
+  
+  # abbreviation for current species occ data
+  # used for referencing occs, but not assigning them
+  # e.g. someFunc(occs()) is okay, but not occs() <- newOccs
+  # for assignment, use spp[[curSp()]]$occData$occs
+  occs <- reactive(spp[[curSp()]]$occData$occs)
   
   # module Query Database (Paleo)
   dbPaleoOccs <- callModule(queryPaleoDb_MOD, 'c1_queryPaleoDb_uiID')
   
   observeEvent(input$goPaleoDbOccs, {
-    vals$occs <- dbPaleoOccs()
-    vals$occsOrig <- vals$occs
+    occsTbl <- dbPaleoOccs()
+    n <- formatSpName(occsTbl$taxon_name)
+    # assign the selected species to the present occ table's taxon name
+    updateSelectInput(session, "sppSel", selected = n)
     shinyjs::enable("dlPaleoDbOccs")
   })
   
@@ -287,6 +293,8 @@ shinyServer(function(input, output, session) {
   userOccs <- callModule(userOccs_MOD, 'c1_userOccs_uiID')
   
   observeEvent(input$goUserOccs, {
+    # currently not using the sppList for anything, so the output is
+    # not getting assigned to any variable
     userOccs()
     shinyjs::disable("dlDbOccs")
   })
@@ -298,16 +306,17 @@ shinyServer(function(input, output, session) {
   output$occTbl <- DT::renderDataTable({
     # check if spp has species in it
     req(length(reactiveValuesToList(spp)) > 0)
-    spp[[curSp()]]$occs %>% dplyr::mutate(longitude = round(as.numeric(longitude), digits = 2),
+    occs() %>% dplyr::mutate(longitude = round(as.numeric(longitude), digits = 2),
                                 latitude = round(as.numeric(latitude), digits = 2)) %>% 
                             dplyr::select(taxon_name, occID, longitude:record_type)
   }, rownames = FALSE)
   
   # handle downloading of original GBIF records after cleaning
   output$dlDbOccs <- downloadHandler(
-    filename = function() {paste0(formatSpName(spp[[curSp()]]$occs$taxon_name[1]), '_original_', rmd$occDb, ".csv")},
+    filename = function() {paste0(formatSpName(occs()$taxon_name[1]), '_original_', 
+                                  sp()$rmm$data$occurrence$sources, ".csv")},
     content = function(file) {
-      write.csv(spp[[curSp()]]$occsOrig, file, row.names=FALSE)
+      write.csv(sp()$occData$occsOrig, file, row.names=FALSE)
     }
   )
   
@@ -582,31 +591,26 @@ shinyServer(function(input, output, session) {
   })
   
   ################################################## #
-  ### COMPONENT: PARTITION OCCURRENCE DATA [Parts]####
+  ### COMPONENT: PARTITION OCCURRENCE DATA [Parts] ####
   ################################################# #
   
   # module Non-spatial Occurrence Partitions
   partNsp <- callModule(partNsp_MOD, 'cParts_partNsp_uiID')
   
   observeEvent(input$goPartNsp, {
-    x <- partNsp()
-    # stop if no background mask
-    # req(rvs$bgMsk)
-    # rvs$occsGrp <- partNsp$occ.grp
-    # rvs$bgGrp <- partNsp$bg.grp
-    map %>% comp5_map(rvs$occs, partNsp$occ.grp)
+    partNsp()
+    # UI CONTROLS 
+    updateSelectInput(session, "sppSel", selected = curSp())
     shinyjs::enable("dlPart")
   })
   
   # module Spatial Occurrence Partitions
-  observeEvent(input$goPartSp, {
-    partSp.call <- callModule(partSp_MOD, 'c5_partSp', rvs)
-    partSp <- partSp.call()
-    # stop if no background mask
-    req(rvs$bgMsk)
-    rvs$occsGrp <- partSp[[1]]
-    rvs$bgGrp <- partSp[[2]]
-    map %>% comp5_map(rvs$occs, rvs$occsGrp)
+  partSp <- callModule(partSp_MOD, 'cParts_partSp_uiID')
+  
+  observeEvent(input$goPartNsp, {
+    partSp()
+    # UI CONTROLS 
+    updateSelectInput(session, "sppSel", selected = curSp())
     shinyjs::enable("dlPart")
   })
   

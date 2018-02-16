@@ -1,0 +1,78 @@
+c5_partitionOccs <- function(occs, bgPts, method, kfolds=NULL, bgMsk=NULL, aggFact=NULL, logs = NULL, shiny = FALSE) {
+
+  if (method == '') {
+    logs %>% writeLog(type = 'error', "Please select a partitioning option.")
+    return()
+  }
+  
+  occs.xy <- occs %>% dplyr::select(longitude, latitude)
+  
+  if (method == 'jack') {
+    group.data <- ENMeval::get.jackknife(occs.xy, bgPts)
+    logs %>% writeLog("Occurrences partitioned by jackknife method.")
+  }
+  
+  if (method == 'rand') {
+    if(is.null(kfolds)) {
+      logs %>% writeLog(type = 'error', "Please specify a kfold value to use
+                        the random partition function.")
+      return()
+    }
+    if (kfolds < 2) {
+      logs %>% writeLog(type = 'error', "Please specify a kfold value greater than 1.")  
+      return()
+    }
+    
+    group.data <- ENMeval::get.randomkfold(occs.xy, bgPts, kfolds)
+    logs %>% writeLog("Occurrences partitioned by random k-fold (k = ", kfolds, ").")
+  }
+  
+  if (method == 'block') {
+    group.data <- ENMeval::get.block(occs.xy, bgPts)
+    logs %>% writeLog("Occurrences partitioned by block method.")
+  }
+  
+  if (method == 'cb1' | method == 'cb2') {
+    if(is.na(aggFact) | aggFact <= 1) {
+      logs %>% writeLog(type = 'error', "Please specify a positive aggregation 
+                        factor greater than 1.")
+      return()
+    }
+    if(is.null(bgMsk)) {
+      logs %>% writeLog(type = 'error', "Please specify a background mask to use
+                        checkerboard partition functions.")
+      return()
+    }
+    if(is.null(aggFact)) {
+      logs %>% writeLog(type = 'error', "Please specify an aggregation factor to use
+                        checkerboard partition functions.")
+      return()
+    }
+  }
+  
+  if(method == 'cb1') {
+    if(shiny == TRUE) {
+      withProgress(message = "Aggregating rasters...", {
+        group.data <- ENMeval::get.checkerboard1(occs.xy, bgMsk, bgPts, aggFact)
+      })
+    } else {
+      group.data <- ENMeval::get.checkerboard1(occs.xy, bgMsk, bgPts, aggFact)
+    }
+    logs %>% writeLog(paste0("Occurrences partitioned by checkerboard 1 method with 
+                                 aggregation factor ", aggFact, "."))
+  }
+  
+  if(method == 'cb2') {
+    if(shiny == TRUE) {
+      withProgress(message = "Aggregating rasters...", {
+        group.data <- ENMeval::get.checkerboard2(occs.xy, bgMsk, bgPts, aggFact)
+      })
+    } else {
+      group.data <- ENMeval::get.checkerboard2(occs.xy, bgMsk, bgPts, aggFact)
+    }
+    logs %>% writeLog(paste0("Occurrences partitioned by checkerboard 2 method with 
+                             aggregation factor ", aggFact, "."))
+  }
+  
+  return(group.data)
+}
