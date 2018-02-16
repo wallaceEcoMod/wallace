@@ -185,19 +185,34 @@ shinyServer(function(input, output, session) {
   observe({
     # must have one species selected for mapping to be functional
     req(length(curSp()) == 1)
+    req(spp[[curSp()]]$occData)
+    occsOrig <- spp[[curSp()]]$occData$occsOrig
     # map the original occs for Component Obtain Occurrence Data
     if(input$tabs == 'occs') {
-      req(spp[[curSp()]]$occData)
-      occsOrig <- spp[[curSp()]]$occData$occsOrig
       map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% 
-        map_occs(occsOrig) %>% zoom2Occs(occsOrig) 
+        map_occs(occsOrig) %>% zoom2Occs(occsOrig) %>% removeControl('leg')
     } 
     # for downstream mapping functionality, require occs
     req(occs())
     # map the analysis occs for components downstream of the first
     if(input$tabs == 'poccs') {
-      map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% 
-        map_occs(occs()) %>% zoom2Occs(occs())
+      if(input$procOccSel == 'spthin') {
+        # if you've thinned already
+        if(!is.null(spp[[curSp()]]$procOccs$occsThin)) {
+          map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% 
+            map_occs(occsOrig, fillColor = 'blue', fillOpacity = 1) %>%
+            map_occs(occs(), fillOpacity = 1) %>%
+            zoom2Occs(occsOrig) %>%
+            addLegend("bottomright", colors = c('red', 'blue'),
+                      title = "Occ Records", labels = c('retained', 'removed'),
+                      opacity = 1, layerId = 'leg')  
+        } else {
+          # if you haven't thinned
+          map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% 
+            map_occs(occs()) %>% zoom2Occs(occs()) %>% removeControl('leg')
+        }
+        
+      }
     }
     if(input$tabs == 'penvs') {
       if(is.null(bgExt())) {
@@ -278,6 +293,8 @@ shinyServer(function(input, output, session) {
   # for assignment, use spp[[curSp()]]$occData$occs
   occs <- reactive(spp[[curSp()]]$occData$occs)
   
+  rmm <- reactive(spp[[curSp()]]$rmm)
+  
   # module Query Database (Paleo)
   dbPaleoOccs <- callModule(queryPaleoDb_MOD, 'c1_queryPaleoDb_uiID')
   
@@ -330,7 +347,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goRemoveByID, {
     remByID()
     # UI CONTROLS 
-    # updateSelectInput(session, "sppSel", selected = curSp())
+    updateSelectInput(session, "sppSel", selected = curSp())
   })
   
   # module Select Occurrences on Map
@@ -354,12 +371,9 @@ shinyServer(function(input, output, session) {
   thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs_uiID')
   
   observeEvent(input$goThinOccs, {
-    vals$occs <- thinOccs()
-    # stop if no occurrence data
-    req(rvs$occs)
-    # record for RMD
-    rvs$comp2 <- c(rvs$comp2, 'thin')
-    
+    thinOccs()
+    # UI CONTROLS 
+    updateSelectInput(session, "sppSel", selected = curSp())
     shinyjs::enable("dlProcOccs")
   })
   

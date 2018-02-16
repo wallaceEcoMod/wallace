@@ -10,29 +10,17 @@ thinOccs_UI <- function(id) {
 thinOccs_MOD <- function(input, output, session) {
   reactive({
     # FUNCTION CALL ####
-    occs.thin <- c2_thinOccs(vals$occs, input$thinDist, logs, shiny=TRUE)
+    occs.thin <- c2_thinOccs(occs(), input$thinDist, logs, shiny=TRUE)
     
     if (is.null(occs.thin)) return()
     
-    # LOAD vals ####
-    rmd$c2$thinDist <- input$thinDist
+    # LOAD INTO SPP ####
+    spp[[curSp()]]$occData$occs <- occs.thin
+    spp[[curSp()]]$procOccs$occsThin <- occs.thin
     
     # METADATA ####
-    #
-    
-    # MAPPING - blue pts for remove, red pts for keep
-    map %>% 
-      addCircleMarkers(data = vals$occs, lat = ~latitude, lng = ~longitude,
-                       radius = 5, color = 'red', fillColor = 'blue',
-                       fillOpacity = 1, weight = 2, popup = ~pop,
-                       group = 'comp2') %>%
-      addCircleMarkers(data = occs.thin, lat = ~latitude, lng = ~longitude,
-                       radius = 5, color = 'red', fillColor = 'red',
-                       fillOpacity = 1, weight = 2, popup = ~pop,
-                       group = 'comp2') %>%
-      addLegend("bottomright", colors = c('red', 'blue'),
-                title = "Occ Records", labels = c('retained', 'removed'),
-                opacity = 1, layerId = 'leg')
+    # perhaps there should be a thinDist metadata field?
+    spp[[curSp()]]$rmm$code$wallaceSettings$thinDist <- input$thinDist
     
     return(occs.thin)
   })

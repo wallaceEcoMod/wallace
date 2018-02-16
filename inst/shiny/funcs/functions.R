@@ -105,10 +105,10 @@ mapCenter <- function(bounds) {
 }
 
 # map occurrences with the Wallace default symbology
-map_occs <- function(map, occs) {
+map_occs <- function(map, occs, fillColor = 'red', fillOpacity = 0.2) {
   map %>% addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, 
-                           radius = 5, color = 'red', fill = TRUE, fillColor = 'red', 
-                           fillOpacity = 0.2, weight = 2, popup = ~pop)
+                           radius = 5, color = 'red', fill = TRUE, fillColor = fillColor, 
+                           fillOpacity = fillOpacity, weight = 2, popup = ~pop)
 }
 
 # zoom to occ pts

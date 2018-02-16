@@ -15,12 +15,13 @@ removeByID_MOD <- function(input, output, session) {
     # LOAD INTO SPP ####
     spp[[curSp()]]$occData$occs <- occs.rem
     
-    # RMD VALUES ####
-    # add to vector of IDs removed
-    if(is.null(spp[[curSp()]]$rmd$c2)) {
-      spp[[curSp()]]$rmd$c2 <- list(removedIDs = input$removeID)
-    }else{
-      spp[[curSp()]]$rmd$c2$removedIDs <- c(spp[[curSp()]]$rmd$c2$removedIDs, input$removeID)
+    # METADATA ####
+    # if no removeIDs are recorded yet, make a list to record them
+    # if at least one exists, add to the list
+    if(is.null(rmm$code$wallaceSettings$removedIDs)) {
+      spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs <- list(removedIDs = input$removeID)
+    } else {
+      spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs <- c(rmm$code$wallaceSettings$removedIDs, input$removeID)
     }
     
     return(occs.rem)
