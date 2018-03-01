@@ -17,8 +17,9 @@
 #' c1_queryDb(spName = "Tremarctos ornatus", occDb = "gbif", occNum = 100)
 
 c1_queryDb <- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
+  # capitalize genus name if not already, trim whitespace
+  spName <- trimws(paste0(toupper(substring(spName, 1, 1)), substring(spName, 2, nchar(spName))))  
   
-  spName <- trimws(spName)
   # figure out how many separate names (components of scientific name) were entered
   nameSplit <- length(unlist(strsplit(spName, " ")))
   # if two names not entered, throw error and return

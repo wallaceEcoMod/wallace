@@ -360,8 +360,11 @@ shinyServer(function(input, output, session) {
     selOccs()
     map %>% leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
       leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
-                                           rectangleOptions = FALSE, circleOptions = FALSE, 
-                                           markerOptions = FALSE)
+                                     rectangleOptions = FALSE, circleOptions = FALSE, 
+                                     markerOptions = FALSE) %>%
+      clearMarkers() %>% 
+      map_occs(occs()) %>%
+      zoom2Occs(occs())
     # record for RMD
     rvs$comp2 <- c(rvs$comp2, 'sel')
     # UI CONTROLS 
@@ -392,11 +395,13 @@ shinyServer(function(input, output, session) {
   # Reset Occs button functionality
   observeEvent(input$goResetOccs, {
     req(curSp())
-    spp[[curSp()]]$occs <- spp[[curSp()]]$occsOrig  
-    print(spp[[curSp()]]$occs)
-    # reset for RMD
-    rvs$comp2 <- NULL
+    spp[[curSp()]]$occData$occs <- spp[[curSp()]]$occData$occsOrig  
     logs %>% writeLog("Reset occurrences.")
+    # MAPPING
+    map %>%
+      clearMarkers() %>%
+      map_occs(occs()) %>%
+      zoom2Occs(occs())
     # UI CONTROLS 
     updateSelectInput(session, "sppSel", selected = curSp())
   })
