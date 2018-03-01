@@ -67,9 +67,8 @@ shinyServer(function(input, output, session) {
   for (f in list.files('./modules')) source(file.path('modules', f), local=TRUE)
   
   # initialize log window
-  output$log <- renderUI({tags$div(id='logHeader', 
-                                   tags$div(id='logContent', 
-                                            HTML(paste0(logs(), "<br>", collapse = ""))))})
+  txt <- HTML(paste0(logs(), "<br>", collapse = ""))
+  output$log <- renderUI({tags$div(id='logHeader', tags$div(id='logContent', txt))})
   
   ######################## #
   ### GUIDANCE TEXT ####
@@ -199,17 +198,17 @@ shinyServer(function(input, output, session) {
       if(input$procOccSel == 'spthin') {
         # if you've thinned already
         if(!is.null(spp[[curSp()]]$procOccs$occsThin)) {
-          map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% 
+          map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% clearControls() %>%
             map_occs(occsOrig, fillColor = 'blue', fillOpacity = 1) %>%
             map_occs(occs(), fillOpacity = 1) %>%
             zoom2Occs(occsOrig) %>%
             addLegend("bottomright", colors = c('red', 'blue'),
                       title = "Occ Records", labels = c('retained', 'removed'),
-                      opacity = 1, layerId = 'leg')  
+                      opacity = 1)  
         } else {
           # if you haven't thinned
           map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% 
-            map_occs(occs()) %>% zoom2Occs(occs()) %>% removeControl('leg')
+            map_occs(occs()) %>% zoom2Occs(occs()) %>% clearControls()
         }
         
       }
