@@ -68,8 +68,9 @@ shinyServer(function(input, output, session) {
   for (f in list.files('./modules')) source(file.path('modules', f), local=TRUE)
   
   # initialize log window
-  txt <- HTML(paste0(logs(), "<br>", collapse = ""))
-  output$log <- renderUI({tags$div(id='logHeader', tags$div(id='logContent', txt))})
+  output$log <- renderUI({
+    tags$div(id='logHeader', tags$div(id='logContent', HTML(paste0(logs(), "<br>", collapse = ""))))
+    })
   
   ######################## #
   ### GUIDANCE TEXT ####
