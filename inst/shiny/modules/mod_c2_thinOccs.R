@@ -15,6 +15,8 @@ thinOccs_MOD <- function(input, output, session) {
     if (is.null(occs.thin)) return()
     
     # LOAD INTO SPP ####
+    # record present occs before thinning (this may be different from occData$occOrig)
+    spp[[curSp()]]$procOccs$occsPreThin <- spp[[curSp()]]$occs
     spp[[curSp()]]$occs <- occs.thin
     spp[[curSp()]]$procOccs$occsThin <- occs.thin
     

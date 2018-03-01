@@ -29,7 +29,6 @@ shinyServer(function(input, output, session) {
   
   # reactiveValues list for objects that get modified and reused throughout analysis
   spp <- reactiveValues()
-  occs <- reactiveVal()
   msp <- reactiveValues()
   # reactiveValues list for holding the current guidance text
   gtext <- reactiveValues()
@@ -188,11 +187,9 @@ shinyServer(function(input, output, session) {
     # must have one species selected for mapping to be functional
     req(length(curSp()) == 1)
     req(spp[[curSp()]]$occData)
-    occsOrig <- spp[[curSp()]]$occData$occsOrig
     # map the original occs for Component Obtain Occurrence Data
     if(input$tabs == 'occs') {
-      map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% 
-        map_occs(occsOrig) %>% zoom2Occs(occsOrig) %>% removeControl('leg')
+      map %>% map_occs(spp[[curSp()]]$occData$occsOrig)
     } 
     # for downstream mapping functionality, require occs
     req(spp[[curSp()]]$occs)
@@ -201,35 +198,28 @@ shinyServer(function(input, output, session) {
       if(input$procOccSel == 'spthin') {
         # if you've thinned already
         if(!is.null(spp[[curSp()]]$procOccs$occsThin)) {
-          map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% clearControls() %>%
-            map_occs(occsOrig, fillColor = 'blue', fillOpacity = 1) %>%
-            map_occs(spp[[curSp()]]$occs, fillOpacity = 1) %>%
-            zoom2Occs(occsOrig) %>%
-            addLegend("bottomright", colors = c('red', 'blue'),
-                      title = "Occ Records", labels = c('retained', 'removed'),
-                      opacity = 1)  
+          map %>% map_occs(spp[[curSp()]]$procOccs$occsPreThin, fillColor = 'blue', fillOpacity = 1) %>%
+            map_occs(spp[[curSp()]]$occs, fillOpacity = 1, clear = FALSE) %>%
+            addLegend("bottomright", colors = c('red', 'blue'), title = "Occ Records", 
+                      labels = c('retained', 'removed'), opacity = 1)  
         } else {
           # if you haven't thinned
-          map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% 
-            map_occs(spp[[curSp()]]$occs) %>% zoom2Occs(spp[[curSp()]]$occs) %>% clearControls()
+          map %>% map_occs(spp[[curSp()]]$occs)
         }
       } else {
-        map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% 
-          map_occs(spp[[curSp()]]$occs) %>% zoom2Occs(spp[[curSp()]]$occs) %>% clearControls()
+        map %>% map_occs(spp[[curSp()]]$occs)
       }
     }
     if(input$tabs == 'penvs') {
       if(is.null(bgExt())) {
-        map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>%
-          map_occs(spp[[curSp()]]$occs) %>% zoom2Occs(spp[[curSp()]]$occs)
+        map %>% map_occs(spp[[curSp()]]$occs)
       }else{
-        map %>% clearShapes()
+        map %>% map_occs(spp[[curSp()]]$occs)
         for (shp in bgShpXY()) {
           map %>%
             addPolygons(lng=shp[,1], lat=shp[,2], weight=4, color="gray", group='bgShp')  
         }
-        map %>% clearMarkers() %>% clearImages() %>% map_occs(spp[[curSp()]]$occs) %>%
-          fitBounds(bgExt()@bbox[1], bgExt()@bbox[2], bgExt()@bbox[3], bgExt()@bbox[4])
+        map %>% fitBounds(bgExt()@bbox[1], bgExt()@bbox[2], bgExt()@bbox[3], bgExt()@bbox[4])
       }
     }
     if(input$tabs == 'part') {
@@ -238,8 +228,7 @@ shinyServer(function(input, output, session) {
       newColors <- gsub("FF$", "", rainbow(max(occsGrp)))  
       partsFill <- newColors[occsGrp]
       map %>%
-        clearMarkers() %>%
-        map_plotLocs(occs, fillColor = partsFill, fillOpacity = 1) %>%
+        map %>% map_occs(spp[[curSp()]]$occs, fillColor = partsFill, fillOpacity = 1) %>%
         addLegend("bottomright", colors = newColors,
                   title = "Partition Groups", labels = sort(unique(occsGrp)),
                   opacity = 1, layerId = 'leg')
