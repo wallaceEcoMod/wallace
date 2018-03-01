@@ -28,7 +28,7 @@ queryDb_MOD <- function(input, output, session) {
     # add two copies of occs dataset -- "occs" will be altered during session,
     # while "occsOrig" will be preserved in this state
     # rmm is the range model metadata object
-    spp[[n]] <- list(occData = list(occs = occsTbl, occsOrig = occsTbl),
+    spp[[n]] <- list(occs = occsTbl, occData = list(occsOrig = occsTbl),
                      rmm = rangeModelMetadata::rangeModelMetadataTemplate())
     
     # METADATA ####

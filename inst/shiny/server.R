@@ -29,6 +29,7 @@ shinyServer(function(input, output, session) {
   
   # reactiveValues list for objects that get modified and reused throughout analysis
   spp <- reactiveValues()
+  occs <- reactiveVal()
   msp <- reactiveValues()
   # reactiveValues list for holding the current guidance text
   gtext <- reactiveValues()
@@ -194,7 +195,7 @@ shinyServer(function(input, output, session) {
         map_occs(occsOrig) %>% zoom2Occs(occsOrig) %>% removeControl('leg')
     } 
     # for downstream mapping functionality, require occs
-    req(occs())
+    req(spp[[curSp()]]$occs)
     # map the analysis occs for components downstream of the first
     if(input$tabs == 'poccs') {
       if(input$procOccSel == 'spthin') {
@@ -202,7 +203,7 @@ shinyServer(function(input, output, session) {
         if(!is.null(spp[[curSp()]]$procOccs$occsThin)) {
           map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% clearControls() %>%
             map_occs(occsOrig, fillColor = 'blue', fillOpacity = 1) %>%
-            map_occs(occs(), fillOpacity = 1) %>%
+            map_occs(spp[[curSp()]]$occs, fillOpacity = 1) %>%
             zoom2Occs(occsOrig) %>%
             addLegend("bottomright", colors = c('red', 'blue'),
                       title = "Occ Records", labels = c('retained', 'removed'),
@@ -210,22 +211,24 @@ shinyServer(function(input, output, session) {
         } else {
           # if you haven't thinned
           map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% 
-            map_occs(occs()) %>% zoom2Occs(occs()) %>% clearControls()
+            map_occs(spp[[curSp()]]$occs) %>% zoom2Occs(spp[[curSp()]]$occs) %>% clearControls()
         }
-        
+      } else {
+        map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% 
+          map_occs(spp[[curSp()]]$occs) %>% zoom2Occs(spp[[curSp()]]$occs) %>% clearControls()
       }
     }
     if(input$tabs == 'penvs') {
       if(is.null(bgExt())) {
         map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>%
-          map_occs(occs()) %>% zoom2Occs(occs())
+          map_occs(spp[[curSp()]]$occs) %>% zoom2Occs(spp[[curSp()]]$occs)
       }else{
         map %>% clearShapes()
         for (shp in bgShpXY()) {
           map %>%
             addPolygons(lng=shp[,1], lat=shp[,2], weight=4, color="gray", group='bgShp')  
         }
-        map %>% clearMarkers() %>% clearImages() %>% map_occs(occs()) %>%
+        map %>% clearMarkers() %>% clearImages() %>% map_occs(spp[[curSp()]]$occs) %>%
           fitBounds(bgExt()@bbox[1], bgExt()@bbox[2], bgExt()@bbox[3], bgExt()@bbox[4])
       }
     }
@@ -289,14 +292,6 @@ shinyServer(function(input, output, session) {
   # keep track of current species
   curSp <- reactive(input$sppSel)
   
-  # abbreviation for current species occ data
-  # used for referencing occs, but not assigning them
-  # e.g. someFunc(occs()) is okay, but not occs() <- newOccs
-  # for assignment, use spp[[curSp()]]$occData$occs
-  occs <- reactive(spp[[curSp()]]$occData$occs)
-  
-  rmm <- reactive(spp[[curSp()]]$rmm)
-  
   # module Query Database (Paleo)
   dbPaleoOccs <- callModule(queryPaleoDb_MOD, 'c1_queryPaleoDb_uiID')
   
@@ -325,14 +320,14 @@ shinyServer(function(input, output, session) {
   output$occTbl <- DT::renderDataTable({
     # check if spp has species in it
     req(length(reactiveValuesToList(spp)) > 0)
-    occs() %>% dplyr::mutate(longitude = round(as.numeric(longitude), digits = 2),
+    spp[[curSp()]]$occs %>% dplyr::mutate(longitude = round(as.numeric(longitude), digits = 2),
                                 latitude = round(as.numeric(latitude), digits = 2)) %>% 
                             dplyr::select(taxon_name, occID, longitude:record_type)
   }, rownames = FALSE)
   
   # handle downloading of original GBIF records after cleaning
   output$dlDbOccs <- downloadHandler(
-    filename = function() {paste0(formatSpName(occs()$taxon_name[1]), '_original_', 
+    filename = function() {paste0(formatSpName(spp[[curSp()]]$occs$taxon_name[1]), '_original_', 
                                   sp()$rmm$data$occurrence$sources, ".csv")},
     content = function(file) {
       write.csv(sp()$occData$occsOrig, file, row.names=FALSE)
@@ -344,10 +339,10 @@ shinyServer(function(input, output, session) {
   ########################################### #
   
   # module Remove Occurrences By ID
-  remByID <- callModule(removeByID_MOD, 'c2_removeByID_uiID')
+  removeByID <- callModule(removeByID_MOD, 'c2_removeByID_uiID')
   
   observeEvent(input$goRemoveByID, {
-    remByID()
+    removeByID()
     # UI CONTROLS 
     updateSelectInput(session, "sppSel", selected = curSp())
   })
@@ -363,8 +358,8 @@ shinyServer(function(input, output, session) {
                                      rectangleOptions = FALSE, circleOptions = FALSE, 
                                      markerOptions = FALSE) %>%
       clearMarkers() %>% 
-      map_occs(occs()) %>%
-      zoom2Occs(occs())
+      map_occs(spp[[curSp()]]$occs) %>%
+      zoom2Occs(spp[[curSp()]]$occs)
     # record for RMD
     rvs$comp2 <- c(rvs$comp2, 'sel')
     # UI CONTROLS 
@@ -395,13 +390,13 @@ shinyServer(function(input, output, session) {
   # Reset Occs button functionality
   observeEvent(input$goResetOccs, {
     req(curSp())
-    spp[[curSp()]]$occData$occs <- spp[[curSp()]]$occData$occsOrig  
+    spp[[curSp()]]$occs <- spp[[curSp()]]$occData$occsOrig  
     logs %>% writeLog("Reset occurrences.")
     # MAPPING
     map %>%
       clearMarkers() %>%
-      map_occs(occs()) %>%
-      zoom2Occs(occs())
+      map_occs(spp[[curSp()]]$occs) %>%
+      zoom2Occs(spp[[curSp()]]$occs)
     # UI CONTROLS 
     updateSelectInput(session, "sppSel", selected = curSp())
   })
