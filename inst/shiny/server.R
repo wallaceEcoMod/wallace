@@ -23,9 +23,9 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("dlProj")
   shinyjs::disable("dlRMD")
   
-  ################################
-  # Initialize Reactive Lists ####
-  ################################
+  ##################### #
+  # REACTIVE LISTS ####
+  ##################### #
   
   # reactiveValues list for objects that get modified and reused throughout analysis
   spp <- reactiveValues()
@@ -247,9 +247,10 @@ shinyServer(function(input, output, session) {
   # COMPONENT: OBTAIN OCCURRENCE DATA ####
   ########################################## #
   
-  # module Query Database (Present)
+  # # # # # # # # # # # # # # # # # # # #
+  # module Query Database (Present) ####
+  # # # # # # # # # # # # # # # # # # # #
   dbOccs <- callModule(queryDb_MOD, 'c1_queryDb_uiID')
-  
   observeEvent(input$goDbOccs, {
     # return the occs table
     occsTbl <- dbOccs()
@@ -261,29 +262,10 @@ shinyServer(function(input, output, session) {
     shinyjs::enable("dlRMD")
   })
   
-  # ui that populates with the name of species that were queried
-  output$sppSelUI <- renderUI({
-    # check that a species is in the list already -- if not, don't proceed
-    req(length(reactiveValuesToList(spp)) > 0)
-    # get the species names
-    n <- names(spp)
-    # make a named list of their names
-    sppNameList <- setNames(as.list(n), n)
-    
-    if(!is.null(curSp())) selected <- curSp() else selected <- n[1]
-    if(input$tabs == 'espace') options <- list(maxItems = 2) else options <- list(maxItems = 1)
-    # generate a selectInput ui that lists the available species
-    
-    selectizeInput('sppSel', label = "Current species", choices = sppNameList,
-                multiple = TRUE, selected = selected, options = options)
-  })
-  
-  # keep track of current species
-  curSp <- reactive(input$sppSel)
-  
-  # module Query Database (Paleo)
+  # # # # # # # # # # # # # # # # # # # 
+  # module Query Database (Paleo) ####
+  # # # # # # # # # # # # # # # # # # # 
   dbPaleoOccs <- callModule(queryPaleoDb_MOD, 'c1_queryPaleoDb_uiID')
-  
   observeEvent(input$goPaleoDbOccs, {
     occsTbl <- dbPaleoOccs()
     n <- formatSpName(occsTbl$taxon_name)
@@ -292,15 +274,39 @@ shinyServer(function(input, output, session) {
     shinyjs::enable("dlPaleoDbOccs")
   })
   
-  # module User Occurrence Data
+  # # # # # # # # # # # # # # # # # #
+  # module User Occurrence Data ####
+  # # # # # # # # # # # # # # # # # #
   userOccs <- callModule(userOccs_MOD, 'c1_userOccs_uiID')
-  
   observeEvent(input$goUserOccs, {
-    # currently not using the sppList for anything, so the output is
-    # not getting assigned to any variable
+    # output not currently getting used
     userOccs()
     shinyjs::disable("dlDbOccs")
   })
+  
+  # # # # # # # # # # # # # # # # # #
+  # OBTAIN OCCS: other controls ####
+  # # # # # # # # # # # # # # # # # #
+  
+  # ui that populates with the name of species that were queried
+  output$sppSelUI <- renderUI({
+    # check that a species is in the list already -- if not, don't proceed
+    req(length(reactiveValuesToList(spp)) > 0)
+    # get the species names
+    n <- names(spp)
+    # make a named list of their names
+    sppNameList <- setNames(as.list(n), n)
+    # if no current species selected, select the first name
+    if(!is.null(curSp())) selected <- curSp() else selected <- n[1]
+    # if espace component, allow for multiple species selection
+    if(input$tabs == 'espace') options <- list(maxItems = 2) else options <- list(maxItems = 1)
+    # generate a selectInput ui that lists the available species
+    selectizeInput('sppSel', label = "Current species", choices = sppNameList,
+                   multiple = TRUE, selected = selected, options = options)
+  })
+  
+  # shortcut to current species, read from sppSelUI
+  curSp <- reactive(input$sppSel)
   
   # TABLE
   options <- list(autoWidth = TRUE, 
@@ -314,10 +320,12 @@ shinyServer(function(input, output, session) {
                             dplyr::select(taxon_name, occID, longitude:record_type)
   }, rownames = FALSE)
   
-  # handle downloading of original GBIF records after cleaning
+  # DOWNLOAD
   output$dlDbOccs <- downloadHandler(
-    filename = function() {paste0(formatSpName(spp[[curSp()]]$occs$taxon_name[1]), '_original_', 
-                                  sp()$rmm$data$occurrence$sources, ".csv")},
+    filename = function() {
+      n <- formatSpName(spp[[curSp()]]$occs$taxon_name[1])
+      paste0(n, '_original_', spp[[curSp()]]$rmm$data$occurrence$sources, ".csv")
+      },
     content = function(file) {
       write.csv(sp()$occData$occsOrig, file, row.names=FALSE)
     }
@@ -327,21 +335,24 @@ shinyServer(function(input, output, session) {
   ### COMPONENT: PROCESS OCCURRENCE DATA ####
   ########################################### #
   
-  # module Remove Occurrences By ID
+  # # # # # # # # # # # # # # # # # # # #
+  # module Remove Occurrences By ID ####
+  # # # # # # # # # # # # # # # # # # # #
   removeByID <- callModule(removeByID_MOD, 'c2_removeByID_uiID')
-  
   observeEvent(input$goRemoveByID, {
     removeByID()
     # UI CONTROLS 
     updateSelectInput(session, "sppSel", selected = curSp())
   })
   
-  # module Select Occurrences on Map
+  # # # # # # # # # # # # # # # # # # # # #
+  # module Select Occurrences on Map ####
+  # # # # # # # # # # # # # # # # # # # # #
   selOccs <- callModule(selectOccs_MOD, 'c2_selOccs_uiID')
-  
   observeEvent(input$goSelectOccs, {
     req(input$map_draw_new_feature)
     selOccs()
+    # MAPPING
     map %>% leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
       leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
                                      rectangleOptions = FALSE, circleOptions = FALSE, 
@@ -349,16 +360,15 @@ shinyServer(function(input, output, session) {
       clearMarkers() %>% 
       map_occs(spp[[curSp()]]$occs) %>%
       zoom2Occs(spp[[curSp()]]$occs)
-    # record for RMD
-    rvs$comp2 <- c(rvs$comp2, 'sel')
     # UI CONTROLS 
     updateSelectInput(session, "sppSel", selected = curSp())
     shinyjs::enable("dlProcOccs")
   })
   
-  # module Spatial Thin
+  # # # # # # # # # # # # # #
+  # module Spatial Thin ####
+  # # # # # # # # # # # # # # 
   thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs_uiID')
-  
   observeEvent(input$goThinOccs, {
     thinOccs()
     # UI CONTROLS 
@@ -366,17 +376,22 @@ shinyServer(function(input, output, session) {
     shinyjs::enable("dlProcOccs")
   })
   
-  # handle download for thinned records csv
+  # # # # # # # # # # # # # # # # # #
+  # PROCESS OCCS: other controls ####
+  # # # # # # # # # # # # # # # # # #
+  
+  # DOWNLOAD
   output$dlProcOccs <- downloadHandler(
-    filename = function() {paste0(formatSpName(vals$spName), "_processed_occs.csv")},
+    filename = function() {
+      n <- formatSpName(spp[[curSp()]]$occs$taxon_name[1])
+      paste0(n, "_processed_occs.csv")
+      },
     content = function(file) {
-      # thinned_rowNums <- as.numeric(thinOccs()$occID)
-      # origThinned <- vals$occsOrig[thinned_rowNums,]
-      write.csv(rvs$occs, file, row.names = FALSE)
+      write.csv(spp[[curSp()]]$occs, file, row.names = FALSE)
     }
   )
   
-  # Reset Occs button functionality
+  # reset occurrences button functionality
   observeEvent(input$goResetOccs, {
     req(curSp())
     spp[[curSp()]]$occs <- spp[[curSp()]]$occData$occsOrig  
@@ -401,9 +416,10 @@ shinyServer(function(input, output, session) {
     paste('Using map center', paste(mapCntr(), collapse=', '))
   })
   
-  # module WorldClim Bioclims
+  # # # # # # # # # # # # # # # # #
+  # module WorldClim Bioclims ####
+  # # # # # # # # # # # # # # # # #
   wcBioclims <- callModule(wcBioclims_MOD, 'c3_wcBioclims_uiID')
-  
   observeEvent(input$goEnvData, {
     # stop if no occurrence data
     req(spp[[curSp()]]$occs)
@@ -417,9 +433,10 @@ shinyServer(function(input, output, session) {
     # shinyjs::enable("dlEnvs")
   })
   
-  # module ecoClimate
+  # # # # # # # # # # # # # # # # #
+  # module ecoClimate ####
+  # # # # # # # # # # # # # # # # #
   ecoClimatelayers <- callModule(ecoClimate_MOD, 'c3_ecoClimate_uiID')
-  
   observeEvent(input$goEcoClimData, {
     # load into envs
     vals$envs <- ecoClimatelayers()
@@ -436,15 +453,14 @@ shinyServer(function(input, output, session) {
     # shinyjs::enable("dlEnvs")
   })
   
-  # module User-defined Environmental Predictors
+  # # # # # # # # # # # # # # # # # # # # # # # # # # #
+  # module User-defined Environmental Predictors ####
+  # # # # # # # # # # # # # # # # # # # # # # # # # # #
   userEnvs <- callModule(userEnvs_MOD, 'c3_userEnvs_uiID', vals)
-  
   observeEvent(input$goUserEnvs, {
     vals$envs <- userEnvs()
     # stop if no occurrence data
     req(vals$occs)
-    # record for RMD
-    vals$comp3 <- 'user'
     # remove occurrences with NA values for variables
     vals$occs <- remEnvsValsNA(vals)
     # make project to new time module unavailable for user envs
