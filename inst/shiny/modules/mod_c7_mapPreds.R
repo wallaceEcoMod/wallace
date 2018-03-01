@@ -19,6 +19,16 @@ mapPreds_MOD <- function(input, output, session, rvs) {
     # pick the prediction that matches the model selected
     predSel <- rvs$modPreds[[rvs$modSel]]
     
+    if (is.na(raster::crs(predSel))) {
+      rvs %>% writeLog(type = "error", "Model prediction raster has undefined 
+                       coordinate reference system (CRS), and thus cannot be 
+                       mapped. This is likely due to undefined CRS's for input 
+                       rasters. Please see guidance text for module 'User-specified 
+                       Environmental Data' in component 'Obtain Environmental Data' 
+                       for more details.")
+      return()
+    }
+    
     # generate binary prediction based on selected thresholding rule 
     predSel.thr.call <- callModule(threshPred_MOD, "threshPred", predSel)
     predSel.thr <- predSel.thr.call()

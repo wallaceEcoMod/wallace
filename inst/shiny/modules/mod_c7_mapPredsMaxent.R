@@ -24,6 +24,16 @@ mapPredsMaxent_MOD <- function(input, output, session, rvs) {
     predSel <- rvs$modPreds[[rvs$modSel]]
     names(predSel) <- paste0(rvs$modSel, '_raw')
     
+    if (is.na(raster::crs(predSel))) {
+      rvs %>% writeLog(type = "error", "Model prediction raster has undefined 
+                       coordinate reference system (CRS), and thus cannot be 
+                       mapped. This is likely due to undefined CRS's for input 
+                       rasters. Please see guidance text for module 'User-specified 
+                       Environmental Data' in component 'Obtain Environmental Data' 
+                       for more details.")
+      return()
+    }
+    
     # argument for predict function
     pargs <- paste0("outputformat=", rvs$comp7.type)
     

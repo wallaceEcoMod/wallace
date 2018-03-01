@@ -8,7 +8,8 @@ queryDb_UI <- function(id) {
                                 "BISON" = 'bison'), inline = TRUE),
     tags$div(title='Examples: Felis catus, Canis lupus, Nyctereutes procyonoides',
              textInput(ns("spName"), label = "Enter species scientific name", placeholder = 'format: Genus species')),
-    tags$div(title='Maximum number of occurrences recovered from databases. Downloaded records are not sorted randomly: rows are always consistent between downloads.',
+    tags$div(title='Maximum number of occurrences recovered from databases. 
+             Downloaded records are not sorted randomly: rows are always consistent between downloads.',
              sliderInput(ns("occNum"), "Set maximum number of occurrences", min = 1, max = 500, value = 100))
   )
 }

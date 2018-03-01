@@ -17,14 +17,21 @@ knitr::opts_chunk$set(collapse=TRUE, message=FALSE, warning=FALSE, comment="#>")
 ```
 
 # Preface
-This vignette and any others in the `wallace` package will be updated regularly in accordance with ongoing development. This vignette was written for *Wallace* v. 0.6.4, so if you are using a more updated version, some things will be different. We plan to update this vignette soon, and add more in the near future.
+This vignette and any others in the `wallace` package will be updated regularly in accordance with ongoing development. 
 
 # Introduction
-*Wallace* v1.0.0 is an `R`-based GUI application for modeling species niches and distributions, and evaluating the results. We will refer to these models as species distribution models (SDMs), and we will not explain them at length here: the purpose of this vignette is to show users how to use *Wallace*. As you read through, you will be pointed to some sources of detailed info within the application for reference.
+*Wallace* v1.0.4 is an `R`-based GUI application that currently offers functionality for modeling species niches and distributions. We will refer to these models as species distribution models (SDMs), and we will not explain them at length here: the purpose of this vignette is to show users how to use *Wallace*. As you read through, you will be pointed to some sources of detailed info within the application for reference. In the future, *Wallace* will likely include other ecological modeling techniques.
 
-*Wallace* has many qualities which we think make it a good example of next-generation scientific software: it's 1) open, 2) expandible, 3) flexible, 4) interactive, 5) instructive, and 6) reproducible. The application features an pannable/zoomable map and dynamic plots and tables. Data for the models can be download from online databases or uploaded by the user, and most results can be downloaded, including the option to save R code that can reproduce your analysis. For more details, including on SDMs, please see our publication here (will fill this in). 
+*Wallace* has many qualities which we think make it a good example of next-generation scientific software: it is 1) open, 2) expandible, 3) flexible, 4) interactive, 5) instructive, and 6) reproducible. The application features a pannable/zoomable map and dynamic plots and tables. Occurrence and environmental data for modeling can be downloaded from online databases or uploaded by the user. Most analysis results can be downloaded, and there is an option to download R code that can reproduce your analysis. For more details, including on SDMs, please see our [publication](http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12945/full) in Methods in Ecology and Evolution. The citation is below:
 
-The *Wallace* project has a main page [here](https://wallaceecomod.github.io/) that has links to the Google Group, the official [email](mailto:wallaceecomod@gmail.com), the [CRAN page](https://CRAN.R-project.org/package=wallace) hosting the stable version, and the [Github development page](https://github.com/wallaceEcoMod/wallace).
+Kass JM, Vilela B, Aiello-Lammens ME, Muscarella R, Merow C, Anderson RP. Wallace: A flexible platform for reproducible modeling of species niches and distributions built for community expansion. Methods Ecol Evol. 2018;00:1–6. https://doi.org/10.1111/2041-210X.12945
+
+The *Wallace* project's [main page](https://wallaceecomod.github.io/) has some basic information and links, which are listed below: 
+
+- [Google Group](https://groups.google.com/forum/#!forum/wallaceecomod)  
+- official [email](mailto:wallaceecomod@gmail.com)  
+- stable version on [CRAN](https://CRAN.R-project.org/package=wallace)  
+- development versions on [Github](https://github.com/wallaceEcoMod/wallace)  
 
 # Setup
 For `wallace` to work, **you should be using the latest version of R** (or at least later than version 3.2.1). Download for 
