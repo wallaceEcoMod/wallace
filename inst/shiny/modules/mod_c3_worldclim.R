@@ -20,31 +20,37 @@ wcBioclims_UI <- function(id) {
 
 wcBioclims_MOD <- function(input, output, session) {
   reactive({
-    
     # FUNCTION CALL ####
-    envs <- c3_worldclim(spp[[curSp()]]$occs, input$bcRes, input$bcSelChoice, 
-                         input$bcSel, logs, shiny=TRUE)
+    envs <- c3_worldclim(spp[[curSp()]]$occs, 
+                         input$bcRes, 
+                         input$bcSelChoice, 
+                         input$bcSel, 
+                         logs, shiny = TRUE)
+    req(envs)
     # remove occurrences with NA values for variables
     withProgress(message = "Extracting values...", {
-      spp[[curSp()]]$occs.z <- raster::extract(envs, spp[[curSp()]]$occs[c('longitude', 'latitude')])
+      occsEnvsVals <- raster::extract(envs, spp[[curSp()]]$occs[c('longitude', 'latitude')])
     })
-    
     # remove occurrences with NA environmental values
-    spp[[curSp()]]$occs <- remEnvsValsNA(spp[[curSp()]]$occs, spp[[curSp()]]$occs.z, envs, logs)
+    spp[[curSp()]]$occs <- remEnvsValsNA(spp[[curSp()]]$occs, 
+                                         occsEnvsVals, 
+                                         envs, logs)
     # now remove NA rows from occs.z
-    spp[[curSp()]]$occs.z <- na.exclude(spp[[curSp()]]$occs.z)
-    
-    
-    if (is.null(envs)) return()
+    occsEnvsVals <- na.exclude(spp[[curSp()]]$obtainEnvs$occs.envsVals)
     
     # LOAD INTO SPP ####
     spp[[curSp()]]$envs <- envs
+    spp[[curSp()]]$obtainEnvs$occs.envsVals <- occsEnvsVals
     
-    # RMD VALUES ####
-    spp[[curSp()]]$rmd$c3 <- list(type = 'worldclim_bioclims', envsRes = input$bcRes, envsSel = input$bcSel)
+    # METADATA ####
+    spp[[curSp()]]$rmm$data$environment$variableNames <- names(envs)
+    spp[[curSp()]]$rmm$data$environment$yearMin <- 1960
+    spp[[curSp()]]$rmm$data$environment$yearMax <- 1990
+    spp[[curSp()]]$rmm$data$environment$resolution <- paste(input$bcRes, 'arcmin')
+    spp[[curSp()]]$rmm$data$environment$extent <- 'global'
+    spp[[curSp()]]$rmm$data$environment$sources <- 'WorldClim'
     
     # RETURN ####
-    # output the species name
     # return(envs)
   })
 }

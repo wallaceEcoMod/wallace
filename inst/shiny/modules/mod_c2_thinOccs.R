@@ -10,9 +10,10 @@ thinOccs_UI <- function(id) {
 thinOccs_MOD <- function(input, output, session) {
   reactive({
     # FUNCTION CALL ####
-    occs.thin <- c2_thinOccs(spp[[curSp()]]$occs, input$thinDist, logs, shiny=TRUE)
-    
-    if (is.null(occs.thin)) return()
+    occs.thin <- c2_thinOccs(spp[[curSp()]]$occs, 
+                             input$thinDist, 
+                             logs, shiny = TRUE)
+    req(occs.thin)
     
     # LOAD INTO SPP ####
     # record present occs before thinning (this may be different from occData$occOrig)
@@ -22,7 +23,7 @@ thinOccs_MOD <- function(input, output, session) {
     
     # METADATA ####
     # perhaps there should be a thinDist metadata field?
-    spp[[curSp()]]$rmm$code$wallaceSettings$thinDist <- input$thinDist
+    spp[[curSp()]]$rmm$code$wallaceSettings$thinDistKM <- input$thinDist
     
     return(occs.thin)
   })

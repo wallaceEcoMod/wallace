@@ -149,7 +149,7 @@ shinyServer(function(input, output, session) {
   })
   
   ######################## #
-  ### INITIALIZE MAP ####
+  ### MAPPING LOGIC ####
   ######################## #
   
   # create map
@@ -182,7 +182,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "sppSel", selected = curSp())
   })
   
-  # MAPPING LOGIC ####
+  # component-level logic
   observe({
     # must have one species selected for mapping to be functional
     req(length(curSp()) == 1)
@@ -409,13 +409,6 @@ shinyServer(function(input, output, session) {
   ### COMPONENT: OBTAIN ENVIRONMENTAL DATA ####
   ############################################# #
   
-  # map center coordinates for 30 arcsec download
-  mapCntr <- reactive(mapCenter(input$map_bounds))
-  
-  output$ctrLatLon <- renderText({
-    paste('Using map center', paste(mapCntr(), collapse=', '))
-  })
-  
   # # # # # # # # # # # # # # # # #
   # module WorldClim Bioclims ####
   # # # # # # # # # # # # # # # # #
@@ -471,25 +464,37 @@ shinyServer(function(input, output, session) {
     updateTabsetPanel(session, 'main', selected = 'Results')
   })
   
+  # # # # # # # # # # # # # # # # # #
+  # OBTAIN ENVS: other controls ####
+  # # # # # # # # # # # # # # # # # #
+  
+  # map center coordinates for 30 arcsec download
+  mapCntr <- reactive(mapCenter(input$map_bounds))
+  
+  # text showing the current map center
+  output$ctrLatLon <- renderText({
+    paste('Using map center', paste(mapCntr(), collapse=', '))
+  })
+  
+  # CONSOLE PRINT
   output$envsPrint <- renderPrint({
     req(spp[[curSp()]]$envs)
     spp[[curSp()]]$envs
-    # mins <- sapply(envs()@layers, function(x) x@data@min)
-    # maxs <- sapply(envs()@layers, function(x) x@data@max)
-    # names <- sapply(strsplit(names(envs()), '[.]'), function(x) x[-2])
-    # mins <- round(cellStats(envs(), stat = min), digits = 3)
-    # maxs <- round(cellStats(envs(), stat = max), digits = 3)
+    # mins <- sapply(spp[[curSp()]]$envs@layers, function(x) x@data@min)
+    # maxs <- sapply(spp[[curSp()]]$envs@layers, function(x) x@data@max)
+    # names <- sapply(strsplit(names(spp[[curSp()]]$envs), '[.]'), function(x) x[-2])
     # DT::datatable(data.frame(name=names, min=mins, max=maxs), 
-    #               rownames = FALSE, options = list(pageLength = raster::nlayers(envs())))
+    #               rownames = FALSE, options = list(pageLength = raster::nlayers(spp[[curSp()]]$envs)))
   })
   
   ############################################## #
   ### COMPONENT: PROCESS ENVIRONMENTAL DATA ####
   ############################################## #
   
-  # module Background Extent
+  # # # # # # # # # # # # # # # # #
+  # module Background Extent ####
+  # # # # # # # # # # # # # # # # #
   bgExt <- callModule(bgExtent_MOD, 'c4_bgExtent_uiID')
-  
   observeEvent(input$goBgExt, {
     # stop if no environmental variables
     req(spp[[curSp()]]$envs)
@@ -499,26 +504,14 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "sppSel", selected = curSp())
   })
   
-  # reactive function to get the coordinates of the current background extent shape
-  bgShpXY <- reactive({
-    req(spp[[curSp()]]$bgExt)
-    polys <- spp[[curSp()]]$bgExt@polygons[[1]]@Polygons
-    if(length(polys) == 1) {
-      xy <- list(polys[[1]]@coords)
-    }else{
-      xy <- sapply(polys, function(x) x@coords)
-    }
-    return(xy)
-  })
-  
-  # module User-defined Background Extent
+  # # # # # # # # # # # # # # # # # # # # # # # 
+  # module User-defined Background Extent ####
+  # # # # # # # # # # # # # # # # # # # # # # # 
   userBg <- callModule(userBgExtent_MOD, 'c4_userBgExtent', rvs)
-  
   observeEvent(input$goUserBg, {
     rvs$bgShp <- userBg()
     # stop if no environmental variables
-    req(rvs$envs)
-    req(rvs$bgShp)
+    req(rvs$envs, rvs$bgShp)
     coords <- rvs$bgShp@polygons[[1]]@Polygons[[1]]@coords
     map %>% clearShapes()
     for (shp in bgShpXY()) {
@@ -530,9 +523,10 @@ shinyServer(function(input, output, session) {
       fitBounds(rvs$bgShp@bbox[1], rvs$bgShp@bbox[2], rvs$bgShp@bbox[3], rvs$bgShp@bbox[4])
   })
   
+  # # # # # # # # # # # # # # # # # # # # # # # # #
+  # module Background Mask and Sample Points ####
+  # # # # # # # # # # # # # # # # # # # # # # # # #
   bgMskPts <- callModule(bgMskAndSamplePts_MOD, 'c4_bgMskAndSamplePts')
-  
-  # module Background Mask and Sample Points
   observeEvent(input$goBgMask, {
     # stop if no background shape
     req(spp[[curSp()]]$bgExt)
@@ -542,7 +536,23 @@ shinyServer(function(input, output, session) {
     shinyjs::enable('dlMskEnvs')
   })
   
-  # handle download for masked predictors, with file type as user choice
+  # # # # # # # # # # # # # # # # # #
+  # PROCESS ENVS: other controls ####
+  # # # # # # # # # # # # # # # # # #
+  
+  # get the coordinates of the current background extent shape
+  bgShpXY <- reactive({
+    req(spp[[curSp()]]$bgExt)
+    polys <- spp[[curSp()]]$bgExt@polygons[[1]]@Polygons
+    if(length(polys) == 1) {
+      xy <- list(polys[[1]]@coords)
+    }else{
+      xy <- sapply(polys, function(x) x@coords)
+    }
+    return(xy)
+  })
+  
+  # DOWNLOAD
   output$dlMskEnvs <- downloadHandler(
     filename = function() {'mskEnvs.zip'},
     content = function(file) {
@@ -1026,6 +1036,6 @@ shinyServer(function(input, output, session) {
       paste0("wallace-session-", Sys.Date(), ".csv")
              },
     content = function(file) {
-      rmmToCSV(rmm$metadata, filename = file)
+      rangeModelMetadata::rmmToCSV(spp[[curSp()]]$rmm, filename = file)
   })
 })

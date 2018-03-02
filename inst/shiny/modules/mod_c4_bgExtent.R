@@ -15,22 +15,20 @@ bgExtent_UI <- function(id) {
 bgExtent_MOD <- function(input, output, session) {
   reactive({
     # FUNCTION CALL ####
-    sp <- spp[[curSp()]]
-    bgExt <- c4_bgExtent(sp$occs, sp$envs, input$bgSel, input$bgBuf, logs, shiny=TRUE)
+    bgExt <- c4_bgExtent(spp[[curSp()]]$occs, 
+                         spp[[curSp()]]$envs, 
+                         input$bgSel, 
+                         input$bgBuf, 
+                         logs, shiny=TRUE)
     
-    if (is.null(bgExt)) return()
+    req(bgExt)
     
     # LOAD INTO SPP ####
     # record for RMD
-    spp[[curSp()]]$bgExt <- bgExt
+    spp[[curSp()]]$procEnvs$bgExt <- bgExt
     
-    # RMD VALUES ####
-    x <- list(shp = input$bgSel, buf = input$bgBuf)
-    if(is.null(spp[[curSp()]]$rmd$c4)) {
-      spp[[curSp()]]$rmd$c4 <- x
-    }else{
-      spp[[curSp()]]$rmd$c4 <- c(spp[[curSp()]]$rmd$c4, x)
-    }
+    # METADATA ####
+    spp[[curSp()]]$rmm$model$maxent$backgroundSizeRule <- paste0(input$bgSel, ', ', input$bgBuf, ' degree buffer')
     
     # RETURN ####
     # output the species name

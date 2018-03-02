@@ -9,30 +9,27 @@ bgMskAndSamplePts_UI <- function(id) {
 bgMskAndSamplePts_MOD <- function(input, output, session, rvs) {
   reactive({
     # FUNCTION CALL ####
-    print('started')
-    bgMask <- c4_bgMask(spp[[curSp()]]$occs, spp[[curSp()]]$envs, spp[[curSp()]]$bgExt, logs, shiny=TRUE)
-    print('first one done')
-    bgPts <- c4_bgSample(spp[[curSp()]]$occs, bgMask, input$bgPtsNum, logs, shiny=TRUE)
-    
+    bgMask <- c4_bgMask(spp[[curSp()]]$occs, 
+                        spp[[curSp()]]$envs, 
+                        spp[[curSp()]]$bgExt, 
+                        logs, shiny = TRUE)
+    req(bgMask)
+    bgPts <- c4_bgSample(spp[[curSp()]]$occs, 
+                         bgMask, 
+                         input$bgPtsNum, 
+                         logs, shiny = TRUE)
+    req(bgPts)
     withProgress(message = "Extracting values...", {
-      z <- raster::extract(spp[[curSp()]]$envs, bgPts)
+      bgEnvsVals <- raster::extract(spp[[curSp()]]$envs, bgPts)
     })
     
-    
-    if (is.null(bgMask) | is.null(bgPts)) return()
-    
     # LOAD INTO SPP ####
-    spp[[curSp()]]$bgMask <- bgMask
-    spp[[curSp()]]$bgPts <- bgPts
-    spp[[curSp()]]$bgPts.z <- z
+    spp[[curSp()]]$procEnvs$bgMask <- bgMask
+    spp[[curSp()]]$procEnvs$bgPts <- bgPts
+    spp[[curSp()]]$procEnvs$bg.envsVals <- bgEnvsVals
     
     # RMD VALUES ####
-    x <- list(bgPtsNum = input$bgPtsNum)
-    if(is.null(spp[[curSp()]]$rmd$c4)) {
-      spp[[curSp()]]$rmd$c4 <- x
-    }else{
-      spp[[curSp()]]$rmd$c4 <- c(spp[[curSp()]]$rmd$c4, x)
-    }
+    spp[[curSp()]]$rmm$model$maxent$backgroundSizeSet <- input$bgPtsNum
     
     # RETURN ####
     # output the species name
