@@ -211,7 +211,7 @@ shinyServer(function(input, output, session) {
       }
     }
     if(input$tabs == 'penvs') {
-      if(is.null(bgExt())) {
+      if(is.null(spp[[curSp()]]$procEnvs$bgExt)) {
         map %>% map_occs(spp[[curSp()]]$occs)
       }else{
         map %>% map_occs(spp[[curSp()]]$occs)
@@ -219,7 +219,8 @@ shinyServer(function(input, output, session) {
           map %>%
             addPolygons(lng=shp[,1], lat=shp[,2], weight=4, color="gray", group='bgShp')  
         }
-        map %>% fitBounds(bgExt()@bbox[1], bgExt()@bbox[2], bgExt()@bbox[3], bgExt()@bbox[4])
+        bb <- spp[[curSp()]]$procEnvs$bgExt@bbox
+        map %>% fitBounds(bb[1], bb[2], bb[3], bb[4])
       }
     }
     if(input$tabs == 'part') {
@@ -507,11 +508,10 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # # # # # # # # # 
   # module User-defined Background Extent ####
   # # # # # # # # # # # # # # # # # # # # # # # 
-  userBg <- callModule(userBgExtent_MOD, 'c4_userBgExtent', rvs)
+  userBg <- callModule(userBgExtent_MOD, 'c4_userBgExtent')
   observeEvent(input$goUserBg, {
-    rvs$bgShp <- userBg()
+    userBg()
     # stop if no environmental variables
-    req(rvs$envs, rvs$bgShp)
     coords <- rvs$bgShp@polygons[[1]]@Polygons[[1]]@coords
     map %>% clearShapes()
     for (shp in bgShpXY()) {
@@ -529,7 +529,7 @@ shinyServer(function(input, output, session) {
   bgMskPts <- callModule(bgMskAndSamplePts_MOD, 'c4_bgMskAndSamplePts')
   observeEvent(input$goBgMask, {
     # stop if no background shape
-    req(spp[[curSp()]]$bgExt)
+    req(spp[[curSp()]]$procEnvs$bgExt)
     bgMskPts()
     # UI CONTROLS 
     updateSelectInput(session, "sppSel", selected = curSp())
@@ -542,8 +542,8 @@ shinyServer(function(input, output, session) {
   
   # get the coordinates of the current background extent shape
   bgShpXY <- reactive({
-    req(spp[[curSp()]]$bgExt)
-    polys <- spp[[curSp()]]$bgExt@polygons[[1]]@Polygons
+    req(spp[[curSp()]]$procEnvs$bgExt)
+    polys <- spp[[curSp()]]$procEnvs$bgExt@polygons[[1]]@Polygons
     if(length(polys) == 1) {
       xy <- list(polys[[1]]@coords)
     }else{

@@ -16,13 +16,16 @@ userBgExtent_MOD <- function(input, output, session) {
                         in component 3.')
       return()
     }
-    
-    bufBg <- c4_userBgExtent(input$userBgShp$name,
+    # FUNCTION CALL ####
+    userBgExt <- c4_userBgExtent(input$userBgShp$name,
                     input$userBgShp$datapath,
                     input$userBgBuf,
                     logs, shiny = TRUE)
     
-    # METADATA
+    # LOAD INTO SPP ####
+    spp[[curSp()]]$procEnvs$bgExt <- userBgExt
+    
+    # METADATA ####
     # get extensions of all input files
     exts <- sapply(strsplit(userBgShp_name, '\\.'), FUN=function(x) x[2])
     if('csv' %in% exts) {
@@ -36,7 +39,7 @@ userBgExtent_MOD <- function(input, output, session) {
       shpName <- strsplit(userBgShp_name[i], '\\.')[[1]][1]
       rmm$code$wallaceSettings$userBgShpParams <- list(dsn=input$userBgShp$datapath[i], layer=shpName)
     }
+    
+    # return(userBgExt)
   })
-  
-  return(bufBg)
 }

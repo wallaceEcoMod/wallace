@@ -11,7 +11,7 @@ bgMskAndSamplePts_MOD <- function(input, output, session, rvs) {
     # FUNCTION CALL ####
     bgMask <- c4_bgMask(spp[[curSp()]]$occs, 
                         spp[[curSp()]]$envs, 
-                        spp[[curSp()]]$bgExt, 
+                        spp[[curSp()]]$procEnvs$bgExt, 
                         logs, shiny = TRUE)
     req(bgMask)
     bgPts <- c4_bgSample(spp[[curSp()]]$occs, 

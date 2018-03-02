@@ -24,7 +24,6 @@ bgExtent_MOD <- function(input, output, session) {
     req(bgExt)
     
     # LOAD INTO SPP ####
-    # record for RMD
     spp[[curSp()]]$procEnvs$bgExt <- bgExt
     
     # METADATA ####
