@@ -12,7 +12,7 @@ removeByID_MOD <- function(input, output, session) {
     occs.rem <- c2_removeByID(spp[[curSp()]]$occs, 
                               input$removeID, 
                               logs, shiny = TRUE)
-    if (is.null(occs.rem)) return()
+    req(occs.rem)
     
     # LOAD INTO SPP ####
     spp[[curSp()]]$occs <- occs.rem
@@ -21,7 +21,7 @@ removeByID_MOD <- function(input, output, session) {
     # if no removeIDs are recorded yet, make a list to record them
     # if at least one exists, add to the list
     if(is.null(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs)) {
-      spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs <- list(removedIDs = input$removeID)
+      spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs <- input$removeID
     } else {
       spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs <- c(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs, input$removeID)
     }
