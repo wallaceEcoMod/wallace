@@ -579,9 +579,13 @@ shinyServer(function(input, output, session) {
   ### COMPONENT: ESPACE ####
   ############################################## #
   
-  curMSp <- reactive(paste0(curSp(), collapse = '_'))
+  curMSp <- reactive({
+    if(length(curSp()) > 1) paste0(curSp(), collapse = '|')
+  })
   
-  # module PCA
+  # # # # # # # # # # # # # # # # # # # # # # #
+  # module Principle Components Analysis ####
+  # # # # # # # # # # # # # # # # # # # # # # #
   pca <- callModule(pca_MOD, 'cEspace_PCA_uiID')
   
   observeEvent(input$goPCA, {
@@ -589,7 +593,7 @@ shinyServer(function(input, output, session) {
     if(length(curSp()) != 2) {
       logs %>% writeLog(type = 'error', "Please select two species.")
     }
-    req(spp[[curSp()[1]]]$bgPts.z, spp[[curSp()[2]]]$bgPts.z)
+    req(spp[[curSp()[1]]]$procEnvs$bg.envsVals, spp[[curSp()[2]]]$procEnvs$bg.envsVals)
     # initialize module
     pca()
     # UI CONTROLS 
@@ -622,7 +626,7 @@ shinyServer(function(input, output, session) {
   })
   
   ################################################## #
-  ### COMPONENT: PARTITION OCCURRENCE DATA [Parts] ####
+  ### COMPONENT: PARTITION OCCURRENCE DATA ####
   ################################################# #
   
   # module Non-spatial Occurrence Partitions
@@ -709,7 +713,7 @@ shinyServer(function(input, output, session) {
   })
   
   # module BIOCLIM
-  mod.bioclim <- callModule(bioclim_MOD, 'c6_bioclim', rvs)
+  mod.bioclim <- callModule(bioclim_MOD, 'c6_bioclim')
   
   observeEvent(input$goBioclim, {
     e <- mod.bioclim()

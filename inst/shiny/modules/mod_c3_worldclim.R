@@ -29,18 +29,17 @@ wcBioclims_MOD <- function(input, output, session) {
     req(envs)
     # remove occurrences with NA values for variables
     withProgress(message = "Extracting values...", {
-      occsEnvsVals <- raster::extract(envs, spp[[curSp()]]$occs[c('longitude', 'latitude')])
+      occsEnvsVals <- as.data.frame(raster::extract(envs, spp[[curSp()]]$occs[c('longitude', 'latitude')]))
+      names(occsEnvsVals) <- paste0('env_', names(occsEnvsVals))
     })
     # remove occurrences with NA environmental values
     spp[[curSp()]]$occs <- remEnvsValsNA(spp[[curSp()]]$occs, 
                                          occsEnvsVals, 
                                          envs, logs)
-    # now remove NA rows from occs.z
-    occsEnvsVals <- na.exclude(spp[[curSp()]]$obtainEnvs$occs.envsVals)
-    
+
     # LOAD INTO SPP ####
     spp[[curSp()]]$envs <- envs
-    spp[[curSp()]]$obtainEnvs$occs.envsVals <- occsEnvsVals
+    spp[[curSp()]]$occs <- cbind(spp[[curSp()]]$occs, occsEnvsVals)
     
     # METADATA ####
     spp[[curSp()]]$rmm$data$environment$variableNames <- names(envs)

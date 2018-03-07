@@ -17,8 +17,16 @@ pca_MOD <- function(input, output, session) {
     # FUNCTION CALL ####
     sp1 <- curSp()[1]
     sp2 <- curSp()[2]
-    pca <- cESpace_pca(sp1, sp2, spp[[sp1]]$bgPts.z, spp[[sp2]]$bgPts.z,
-                       spp[[sp1]]$occs.z, spp[[sp2]]$occs.z, logs, shiny = TRUE)
+    sp1.bgEnvsVals <- spp[[sp1]]$bg %>% select(contains("env_"))
+    sp2.bgEnvsVals <- spp[[sp2]]$bg %>% select(contains("env_"))
+    sp1.occsEnvsVals <- spp[[sp1]]$occs %>% select(contains("env_"))
+    sp2.occsEnvsVals <- spp[[sp2]]$occs %>% select(contains("env_"))
+    pca <- cESpace_pca(sp1, sp2, 
+                       sp1.bgEnvsVals,
+                       sp2.bgEnvsVals,
+                       sp1.occsEnvsVals, 
+                       sp2.occsEnvsVals,
+                       logs, shiny = TRUE)
     if (is.null(pca)) return()
     
     output$pcaControls <- renderUI({

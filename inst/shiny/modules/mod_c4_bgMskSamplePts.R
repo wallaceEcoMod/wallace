@@ -20,13 +20,13 @@ bgMskAndSamplePts_MOD <- function(input, output, session, rvs) {
                          logs, shiny = TRUE)
     req(bgPts)
     withProgress(message = "Extracting values...", {
-      bgEnvsVals <- raster::extract(spp[[curSp()]]$envs, bgPts)
+      bgEnvsVals <- as.data.frame(raster::extract(spp[[curSp()]]$envs, bgPts))
+      names(bgEnvsVals) <- paste0('env_', names(bgEnvsVals))
     })
     
     # LOAD INTO SPP ####
     spp[[curSp()]]$procEnvs$bgMask <- bgMask
-    spp[[curSp()]]$procEnvs$bgPts <- bgPts
-    spp[[curSp()]]$procEnvs$bg.envsVals <- bgEnvsVals
+    spp[[curSp()]]$bg <- cbind(bgPts, bgEnvsVals)
     
     # RMD VALUES ####
     spp[[curSp()]]$rmm$model$maxent$backgroundSizeSet <- input$bgPtsNum
