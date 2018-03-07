@@ -110,10 +110,10 @@ map_occs <- function(map, occs, fillColor = 'red', fillOpacity = 0.2, clear = TR
     map %>%
       clearMarkers() %>% clearShapes() %>% clearImages() %>% clearControls()  
   }
-   map %>%
+  map %>%
     addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, 
-                           radius = 5, color = 'red', fill = TRUE, fillColor = fillColor, 
-                           fillOpacity = fillOpacity, weight = 2, popup = ~pop) %>%
+                     radius = 5, color = 'red', fill = TRUE, fillColor = fillColor, 
+                     fillOpacity = fillOpacity, weight = 2, popup = ~pop) %>%
     zoom2Occs(occs)
 }
 
@@ -165,13 +165,11 @@ smartZoom <- function(longi, lati) {
 # COMP 3 ####
 ####################### #
 
-remEnvsValsNA <- function(occs, occs.z, envs, logs) {
+remEnvsValsNA <- function(occs, occsEnvsVals, logs) {
   withProgress(message = "Checking for points with NA values...", {
-    n <- names(envs)
-    occsVals <- occs.z
-    na.rowNums <- which(rowSums(is.na(occsVals)) > 1)
+    na.rowNums <- which(rowSums(is.na(occsEnvsVals)) > 1)
     
-    if (length(na.rowNums) == length(occsVals)) {
+    if (length(na.rowNums) == length(occsEnvsVals)) {
       logs %>% writeLog(type = 'error', 'No localities overlay with environmental predictors. 
                         All localities may be marine -- please redo with terrestrial occurrences.')
       return()

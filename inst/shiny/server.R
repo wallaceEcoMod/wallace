@@ -308,6 +308,11 @@ shinyServer(function(input, output, session) {
   
   # shortcut to current species, read from sppSelUI
   curSp <- reactive(input$sppSel)
+  # vector of all species with occurrence data downloaded
+  allSp <- reactive(names(reactiveValuesToList(spp)))
+  
+  observe(print(allSp()))
+  observe(print(sapply(reactiveValuesToList(spp), function(x) names(x$occs))))
   
   # TABLE
   options <- list(autoWidth = TRUE, 
@@ -430,27 +435,27 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # # #
   # module ecoClimate ####
   # # # # # # # # # # # # # # # # #
-  ecoClimatelayers <- callModule(ecoClimate_MOD, 'c3_ecoClimate_uiID')
-  observeEvent(input$goEcoClimData, {
-    # load into envs
-    vals$envs <- ecoClimatelayers()
-    # stop if no occurrence data
-    req(vals$occs)
-    req(vals$envs)
-    # record for RMD
-    vals$envsType <- 'ecoClimate'
-    # remove occurrences with NA values for variables
-    vals$occs <- remEnvsValsNA(vals)
-    # switch to Results tab
-    updateTabsetPanel(session, 'main', selected = 'Results')
-    # enable download button
-    # shinyjs::enable("dlEnvs")
-  })
+  # ecoClimatelayers <- callModule(ecoClimate_MOD, 'c3_ecoClimate_uiID')
+  # observeEvent(input$goEcoClimData, {
+  #   # load into envs
+  #   vals$envs <- ecoClimatelayers()
+  #   # stop if no occurrence data
+  #   req(vals$occs)
+  #   req(vals$envs)
+  #   # record for RMD
+  #   vals$envsType <- 'ecoClimate'
+  #   # remove occurrences with NA values for variables
+  #   vals$occs <- remEnvsValsNA(vals)
+  #   # switch to Results tab
+  #   updateTabsetPanel(session, 'main', selected = 'Results')
+  #   # enable download button
+  #   # shinyjs::enable("dlEnvs")
+  # })
   
   # # # # # # # # # # # # # # # # # # # # # # # # # # #
   # module User-defined Environmental Predictors ####
   # # # # # # # # # # # # # # # # # # # # # # # # # # #
-  userEnvs <- callModule(userEnvs_MOD, 'c3_userEnvs_uiID', vals)
+  userEnvs <- callModule(userEnvs_MOD, 'c3_userEnvs_uiID')
   observeEvent(input$goUserEnvs, {
     vals$envs <- userEnvs()
     # stop if no occurrence data

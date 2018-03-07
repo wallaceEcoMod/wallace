@@ -9,33 +9,27 @@
 #' 
 #' 
 
-c3_worldclim<- function (occs, bcRes, bcSelChoice, bcSel, logs=NULL, shiny=FALSE){
+c3_worldclim<- function (bcRes, bcSelChoice, bcSel, logs=NULL, shiny=FALSE){
   
-  if (is.null(occs)) {
-    logs %>% writeLog(type = 'error', "Before obtaining environmental variables, 
-                   obtain occurrence data in component 1.")
-    return()
-  }
-  
-  if (bcRes == '') {
+  if(bcRes == '') {
     logs %>% writeLog(type = 'error', 'Select a raster resolution.')
     return()
   }
   
   if(shiny == TRUE) {
     withProgress(message = "Retrieving WorldClim data...", {
-      if (bcRes == 0.5) {
+      if(bcRes == 0.5) {
         wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes, 
                                 lon = mapCntr()[1], lat = mapCntr()[2])
         # rvs$bcLon <- mapCntr()[1]
         # rvs$bcLat <- mapCntr()[2]
-      } else {
+      }else{
         wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes)
         wcbc <- wcbc[[bcSel]]
       }
     })  
   }else{
-    if (bcRes == 0.5) {
+    if(bcRes == 0.5) {
       wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes, 
                               lon = mapCntr()[1], lat = mapCntr()[2])
       # rvs$bcLon <- mapCntr()[1]
@@ -52,8 +46,8 @@ c3_worldclim<- function (occs, bcRes, bcSelChoice, bcSel, logs=NULL, shiny=FALSE
   } else {
     bcSel <- paste(names(wcbc), collapse = ", ")
   }
-  logs %>% writeLog(occs$taxon_name[1], ": WorldClim bioclimatic variables",
-                    bcSel, "at", bcRes, " arcmin resolution.")
+  logs %>% writeLog("WorldClim bioclimatic variables", bcSel, "at", 
+                    bcRes, " arcmin resolution.")
   
   # change names if bio01 is bio1, and so forth
   i <- grep('bio[0-9]$', names(wcbc))

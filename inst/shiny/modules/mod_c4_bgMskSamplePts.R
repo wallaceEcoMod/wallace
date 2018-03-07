@@ -26,6 +26,7 @@ bgMskAndSamplePts_MOD <- function(input, output, session, rvs) {
     
     # LOAD INTO SPP ####
     spp[[curSp()]]$procEnvs$bgMask <- bgMask
+    # add columns for env variables beginning with "envs_" to bg tbl
     spp[[curSp()]]$bg <- cbind(bgPts, bgEnvsVals)
     
     # RMD VALUES ####

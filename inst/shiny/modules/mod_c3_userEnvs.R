@@ -6,9 +6,9 @@ userEnvs_UI <- function(id) {
   )
 }
 
-userEnvs_MOD <- function(input, output, session, rvs) {
+userEnvs_MOD <- function(input, output, session) {
   reactive({
-    if (is.null(rvs$occs)) {
+    if (is.null(spp[[curSp()]]$occs)) {
       logs %>% writeLog(type = 'error', "Before obtaining environmental variables, 
                        obtain occurrence data in component 1.")
       return()
@@ -19,7 +19,7 @@ userEnvs_MOD <- function(input, output, session, rvs) {
     }
     
     # record for RMD
-    rvs$userEnvs <- input$userEnvs
+    spp[[curSp()]]$rmm$code$wallaceSettings$userEnvs <- input$userEnvs
     
     withProgress(message = "Reading in rasters...", {
       uenvs <- raster::stack(input$userEnvs$datapath)

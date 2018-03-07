@@ -9,6 +9,7 @@ wcBioclims_UI <- function(id) {
                                "2.5 arcmin" = 2.5,
                                "5 arcmin" = 5,
                                "10 arcmin" = 10))),
+    checkboxInput(ns("bcAllSp"), label = "Use these variables for all species?"),
     checkboxInput(ns("bcSelChoice"), label = "Specify variables to use in analysis?"),
     conditionalPanel(paste0("input['", ns("bcSelChoice"), "']"),
                      checkboxGroupInput(ns("bcSel"), label = "Select",
@@ -20,34 +21,49 @@ wcBioclims_UI <- function(id) {
 
 wcBioclims_MOD <- function(input, output, session) {
   reactive({
+    # ERRORS ####
+    if (is.null(spp[[curSp()]]$occs)) {
+      logs %>% writeLog(type = 'error', "Before obtaining environmental variables, 
+                        obtain occurrence data in component 1.")
+      return()
+    }
+    
     # FUNCTION CALL ####
-    envs <- c3_worldclim(spp[[curSp()]]$occs, 
-                         input$bcRes, 
+    envs <- c3_worldclim(input$bcRes, 
                          input$bcSelChoice, 
                          input$bcSel, 
                          logs, shiny = TRUE)
     req(envs)
-    # remove occurrences with NA values for variables
-    withProgress(message = "Extracting values...", {
-      occsEnvsVals <- as.data.frame(raster::extract(envs, spp[[curSp()]]$occs[c('longitude', 'latitude')]))
-      names(occsEnvsVals) <- paste0('env_', names(occsEnvsVals))
-    })
-    # remove occurrences with NA environmental values
-    spp[[curSp()]]$occs <- remEnvsValsNA(spp[[curSp()]]$occs, 
-                                         occsEnvsVals, 
-                                         envs, logs)
-
-    # LOAD INTO SPP ####
-    spp[[curSp()]]$envs <- envs
-    spp[[curSp()]]$occs <- cbind(spp[[curSp()]]$occs, occsEnvsVals)
     
-    # METADATA ####
-    spp[[curSp()]]$rmm$data$environment$variableNames <- names(envs)
-    spp[[curSp()]]$rmm$data$environment$yearMin <- 1960
-    spp[[curSp()]]$rmm$data$environment$yearMax <- 1990
-    spp[[curSp()]]$rmm$data$environment$resolution <- paste(input$bcRes, 'arcmin')
-    spp[[curSp()]]$rmm$data$environment$extent <- 'global'
-    spp[[curSp()]]$rmm$data$environment$sources <- 'WorldClim'
+    if(input$bcAllSp == TRUE) {
+      spVec <- allSp()
+    }else{
+      spVec <- curSp()
+    }
+    
+    for(i in spVec) {
+      # remove occurrences with NA values for variables
+      withProgress(message = paste0("Extracting values for ", i, "..."), {
+        occsEnvsVals <- as.data.frame(raster::extract(envs, spp[[i]]$occs[c('longitude', 'latitude')]))
+        names(occsEnvsVals) <- paste0('env_', names(occsEnvsVals))
+      })
+      # remove occurrences with NA environmental values
+      spp[[i]]$occs <- remEnvsValsNA(spp[[i]]$occs, occsEnvsVals, logs)
+      
+      # LOAD INTO SPP ####
+      spp[[i]]$envs <- envs
+      # add columns for env variables beginning with "envs_" to occs tbl
+      spp[[i]]$occs <- cbind(spp[[i]]$occs, occsEnvsVals)
+      
+      # METADATA ####
+      spp[[i]]$rmm$data$environment$variableNames <- names(envs)
+      spp[[i]]$rmm$data$environment$yearMin <- 1960
+      spp[[i]]$rmm$data$environment$yearMax <- 1990
+      spp[[i]]$rmm$data$environment$resolution <- paste(input$bcRes, 'arcmin')
+      spp[[i]]$rmm$data$environment$extent <- 'global'
+      spp[[i]]$rmm$data$environment$sources <- 'WorldClim'
+    }
+    
     
     # RETURN ####
     # return(envs)
