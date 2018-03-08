@@ -1,4 +1,5 @@
 c4_bgExtent <- function(occs, envs, bgSel, bgBuf, logs=NULL, shiny=FALSE) {
+  print('func')
   if (is.null(envs)) {
     logs %>% writeLog(type = 'error', "Before defining the background extent, 
                       obtain environmental data in component 3.")

@@ -9,7 +9,7 @@ wcBioclims_UI <- function(id) {
                                "2.5 arcmin" = 2.5,
                                "5 arcmin" = 5,
                                "10 arcmin" = 10))),
-    checkboxInput(ns("bcAllSp"), label = "Use these variables for all species?"),
+    checkboxInput(ns("bcAllSp"), label = "Use these variables for all species?", value = TRUE),
     checkboxInput(ns("bcSelChoice"), label = "Specify variables to use in analysis?"),
     conditionalPanel(paste0("input['", ns("bcSelChoice"), "']"),
                      checkboxGroupInput(ns("bcSel"), label = "Select",
@@ -63,7 +63,6 @@ wcBioclims_MOD <- function(input, output, session) {
       spp[[i]]$rmm$data$environment$extent <- 'global'
       spp[[i]]$rmm$data$environment$sources <- 'WorldClim'
     }
-    
     
     # RETURN ####
     # return(envs)

@@ -29,6 +29,7 @@ shinyServer(function(input, output, session) {
   
   # reactiveValues list for objects that get modified and reused throughout analysis
   spp <- reactiveValues()
+  occsLastQuery <- reactiveVal()
   msp <- reactiveValues()
   # reactiveValues list for holding the current guidance text
   gtext <- reactiveValues()
@@ -87,6 +88,8 @@ shinyServer(function(input, output, session) {
   })
   
   # guidance text and tab behavior
+  tabs <- reactive({input$tabs})
+  
   observe({
     if (input$tabs == 'occs') {
       updateTabsetPanel(session, 'main', selected = 'Map')
@@ -210,19 +213,19 @@ shinyServer(function(input, output, session) {
         map %>% map_occs(spp[[curSp()]]$occs)
       }
     }
-    if(input$tabs == 'penvs') {
-      if(is.null(spp[[curSp()]]$procEnvs$bgExt)) {
-        map %>% map_occs(spp[[curSp()]]$occs)
-      }else{
-        map %>% map_occs(spp[[curSp()]]$occs)
-        for (shp in bgShpXY()) {
-          map %>%
-            addPolygons(lng=shp[,1], lat=shp[,2], weight=4, color="gray", group='bgShp')  
-        }
-        bb <- spp[[curSp()]]$procEnvs$bgExt@bbox
-        map %>% fitBounds(bb[1], bb[2], bb[3], bb[4])
-      }
-    }
+    # if(input$tabs == 'penvs') {
+    #   if(is.null(spp[[curSp()]]$procEnvs$bgExt)) {
+    #     map %>% map_occs(spp[[curSp()]]$occs)
+    #   }else{
+    #     map %>% map_occs(spp[[curSp()]]$occs)
+    #     for (shp in bgShpXY()) {
+    #       map %>%
+    #         addPolygons(lng=shp[,1], lat=shp[,2], weight=4, color="gray", group='bgShp')  
+    #     }
+    #     bb <- spp[[curSp()]]$procEnvs$bgExt@bbox
+    #     map %>% fitBounds(bb[1], bb[2], bb[3], bb[4])
+    #   }
+    # }
     if(input$tabs == 'part') {
       occsGrp <- spp[[curSp()]]$Part$occ.grp
       # colors for partition symbology
@@ -256,7 +259,7 @@ shinyServer(function(input, output, session) {
     # return the occs table
     occsTbl <- dbOccs()
     n <- formatSpName(occsTbl$taxon_name)
-    # UI CONTROLS 
+    # UI CONTROLS
     # assign the selected species to the present occ table's taxon name
     updateSelectInput(session, "sppSel", selected = n)
     shinyjs::enable("dlDbOccs")
@@ -289,7 +292,6 @@ shinyServer(function(input, output, session) {
   # OBTAIN OCCS: other controls ####
   # # # # # # # # # # # # # # # # # #
   
-  # ui that populates with the name of species that were queried
   output$sppSelUI <- renderUI({
     # check that a species is in the list already -- if not, don't proceed
     req(length(reactiveValuesToList(spp)) > 0)
@@ -298,6 +300,7 @@ shinyServer(function(input, output, session) {
     # make a named list of their names
     sppNameList <- setNames(as.list(n), n)
     # if no current species selected, select the first name
+    # NOTE: this line is necessary to retain the selection after selecting different tabs
     if(!is.null(curSp())) selected <- curSp() else selected <- n[1]
     # if espace component, allow for multiple species selection
     if(input$tabs == 'espace') options <- list(maxItems = 2) else options <- list(maxItems = 1)
@@ -311,9 +314,6 @@ shinyServer(function(input, output, session) {
   # vector of all species with occurrence data downloaded
   allSp <- reactive(names(reactiveValuesToList(spp)))
   
-  observe(print(allSp()))
-  observe(print(sapply(reactiveValuesToList(spp), function(x) names(x$occs))))
-  
   # TABLE
   options <- list(autoWidth = TRUE, 
                   columnDefs = list(list(width = '40%', targets = 7)),
@@ -322,8 +322,8 @@ shinyServer(function(input, output, session) {
     # check if spp has species in it
     req(length(reactiveValuesToList(spp)) > 0)
     spp[[curSp()]]$occs %>% dplyr::mutate(longitude = round(as.numeric(longitude), digits = 2),
-                                latitude = round(as.numeric(latitude), digits = 2)) %>% 
-                            dplyr::select(taxon_name, occID, longitude:record_type)
+                                          latitude = round(as.numeric(latitude), digits = 2)) %>% 
+      dplyr::select(taxon_name, occID, longitude:record_type)
   }, rownames = FALSE)
   
   # DOWNLOAD
@@ -333,7 +333,7 @@ shinyServer(function(input, output, session) {
       paste0(n, '_original_', spp[[curSp()]]$rmm$data$occurrence$sources, ".csv")
       },
     content = function(file) {
-      write.csv(sp()$occData$occsOrig, file, row.names=FALSE)
+      write.csv(spp[[curSp()]]$occData$occsOrig, file, row.names=FALSE)
     }
   )
   
@@ -348,7 +348,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goRemoveByID, {
     removeByID()
     # UI CONTROLS 
-    updateSelectInput(session, "sppSel", selected = curSp())
+    # updateSelectInput(session, "sppSel", selected = curSp())
   })
   
   # # # # # # # # # # # # # # # # # # # # #
@@ -367,7 +367,7 @@ shinyServer(function(input, output, session) {
       map_occs(spp[[curSp()]]$occs) %>%
       zoom2Occs(spp[[curSp()]]$occs)
     # UI CONTROLS 
-    updateSelectInput(session, "sppSel", selected = curSp())
+    # updateSelectInput(session, "sppSel", selected = curSp())
     shinyjs::enable("dlProcOccs")
   })
   
@@ -378,7 +378,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goThinOccs, {
     thinOccs()
     # UI CONTROLS 
-    updateSelectInput(session, "sppSel", selected = curSp())
+    # updateSelectInput(session, "sppSel", selected = curSp())
     shinyjs::enable("dlProcOccs")
   })
   
@@ -501,14 +501,15 @@ shinyServer(function(input, output, session) {
   # module Background Extent ####
   # # # # # # # # # # # # # # # # #
   bgExt <- callModule(bgExtent_MOD, 'c4_bgExtent_uiID')
-  observeEvent(input$goBgExt, {
-    # stop if no environmental variables
-    req(spp[[curSp()]]$envs)
-    # initialize module
-    bgExt()
-    # UI CONTROLS 
-    updateSelectInput(session, "sppSel", selected = curSp())
+  observe({
+    if(input$tabs == 'penvs') bgExt()
   })
+  # observeEvent(input$tabs == 'penvs', {
+  #   # initialize module
+  #   bgExt()
+  #   # UI CONTROLS
+  #   # updateSelectInput(session, "sppSel", selected = curSp())
+  # })
   
   # # # # # # # # # # # # # # # # # # # # # # # 
   # module User-defined Background Extent ####
@@ -640,7 +641,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goPartNsp, {
     partNsp()
     # UI CONTROLS 
-    updateSelectInput(session, "sppSel", selected = curSp())
+    # updateSelectInput(session, "sppSel", selected = curSp())
     shinyjs::enable("dlPart")
   })
   
@@ -650,7 +651,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goPartNsp, {
     partSp()
     # UI CONTROLS 
-    updateSelectInput(session, "sppSel", selected = curSp())
+    # updateSelectInput(session, "sppSel", selected = curSp())
     shinyjs::enable("dlPart")
   })
   

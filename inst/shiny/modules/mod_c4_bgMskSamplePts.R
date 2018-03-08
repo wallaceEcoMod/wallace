@@ -6,7 +6,7 @@ bgMskAndSamplePts_UI <- function(id) {
   )
 }
 
-bgMskAndSamplePts_MOD <- function(input, output, session, rvs) {
+bgMskAndSamplePts_MOD <- function(input, output, session) {
   reactive({
     # FUNCTION CALL ####
     bgMask <- c4_bgMask(spp[[curSp()]]$occs, 

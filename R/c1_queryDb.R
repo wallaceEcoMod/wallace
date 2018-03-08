@@ -30,7 +30,7 @@ c1_queryDb <- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
   
   # query database
   if (shiny == TRUE) {
-    withProgress(message = paste("Querying", occDb, "..."), {
+    withProgress(message = paste0("Querying ", occDb, " for ", spName, "..."), {
       q <- spocc::occ(spName, occDb, limit=occNum)
     })  
   } else {

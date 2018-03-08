@@ -1,4 +1,3 @@
-
 queryDb_UI <- function(id) {
   ns <- NS(id)
   tagList(
@@ -37,6 +36,8 @@ queryDb_MOD <- function(input, output, session) {
     spp[[n]]$rmm$data$occurrence$presenceSampleSize <- nrow(occsTbl)
     spp[[n]]$rmm$data$occurrence$sources <- input$occDb
     spp[[n]]$rmm$code$wallaceSettings$occNum <- input$occNum
+    
+    print(spp[[n]]$rmm$data$occurrence)
     
     # RETURN ####
     # output the table
