@@ -10,9 +10,11 @@ c2_thinOccs <- function(occs, thinDist, logs=NULL, shiny=FALSE) {
     return()
   }
   
+  n <- occs$taxon_name[1]
+  
   # query database
   if (shiny == TRUE) {
-    withProgress(message = "Spatially Thinning Localities...", {  # start progress bar
+    withProgress(message = paste0("Spatially thinning for ", n, "..."), {  # start progress bar
       output <- spThin::thin(occs, 'latitude', 'longitude', 'taxon_name', thin.par = thinDist,
                              reps = 100, locs.thinned.list.return = TRUE, write.files = FALSE,
                              verbose = FALSE)
@@ -34,7 +36,7 @@ c2_thinOccs <- function(occs, thinDist, logs=NULL, shiny=FALSE) {
     occs.thin <- occs[as.numeric(rownames(maxThin)),]
   }
   
-  logs %>% writeLog('Total records thinned to [', nrow(occs.thin), '] localities.')
+  logs %>% writeLog('Total records for', n, 'thinned to [', nrow(occs.thin), '] localities.')
   
   return(occs.thin)
 }

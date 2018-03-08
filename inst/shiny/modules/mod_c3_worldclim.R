@@ -9,7 +9,7 @@ wcBioclims_UI <- function(id) {
                                "2.5 arcmin" = 2.5,
                                "5 arcmin" = 5,
                                "10 arcmin" = 10))),
-    checkboxInput(ns("bcAllSp"), label = "Use these variables for all species?", value = TRUE),
+    checkboxInput(ns("bcAllSp"), label = "Batch for all species?", value = TRUE),
     checkboxInput(ns("bcSelChoice"), label = "Specify variables to use in analysis?"),
     conditionalPanel(paste0("input['", ns("bcSelChoice"), "']"),
                      checkboxGroupInput(ns("bcSel"), label = "Select",
