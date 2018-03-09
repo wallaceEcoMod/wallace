@@ -328,7 +328,21 @@ shinyServer(function(input, output, session) {
       dplyr::select(taxon_name, occID, longitude:record_type)
   }, rownames = FALSE)
   
-  # DOWNLOAD
+  # DOWNLOAD: occs 
+  output$dlOccs <- downloadHandler(
+    filename = function() {
+      n <- formatSpName(spp[[curSp()]]$occs$taxon_name[1])
+      paste0(n, ".csv")
+    },
+    content = function(file) {
+      tbl <- spp[[curSp()]]$occs %>% 
+        dplyr::select(-pop) %>% 
+        dplyr::select(taxon_name, occID, dplyr::everything())
+      write.csv(tbl, file, row.names = FALSE)
+    }
+  )
+  
+  # DOWNLOAD: occsOrig
   output$dlDbOccs <- downloadHandler(
     filename = function() {
       n <- formatSpName(spp[[curSp()]]$occs$taxon_name[1])
@@ -387,18 +401,6 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # # # #
   # PROCESS OCCS: other controls ####
   # # # # # # # # # # # # # # # # # #
-  
-  # DOWNLOAD
-  output$dlOccs <- downloadHandler(
-    filename = function() {
-      n <- formatSpName(spp[[curSp()]]$occs$taxon_name[1])
-      paste0(n, ".csv")
-    },
-    content = function(file) {
-      tbl <- spp[[curSp()]]$occs %>% dplyr::select(taxon_name, occID, longitude:record_type)
-      write.csv(tbl, file, row.names = FALSE)
-    }
-  )
   
   # reset occurrences button functionality
   observeEvent(input$goResetOccs, {
@@ -557,7 +559,7 @@ shinyServer(function(input, output, session) {
     return(xy)
   })
   
-  # DOWNLOAD
+  # DOWNLOAD: masked environmental variable rasters
   output$dlMskEnvs <- downloadHandler(
     filename = function() {'mskEnvs.zip'},
     content = function(file) {
@@ -653,19 +655,6 @@ shinyServer(function(input, output, session) {
     # updateSelectInput(session, "sppSel", selected = curSp())
     shinyjs::enable("dlPart")
   })
-  
-  # download for partitioned occurrence records csv
-  output$dlPart <- downloadHandler(
-    filename = function() paste0(vals$spName, "_partitioned_occs.csv"),
-    content = function(file) {
-      bg.bind <- data.frame(rep('background', nrow(rvs$bgPts)), rvs$bgPts)
-      names(bg.bind) <- c('name', 'longitude', 'latitude')
-      occs.bg.bind <-rbind(rvs$occs[,1:3], bg.bind)
-      all.bind <- cbind(occs.bg.bind, c(rvs$occsGrp, rvs$bgGrp))
-      names(all.bind)[4] <- "group"
-      write.csv(all.bind, file, row.names = FALSE)
-    }
-  )
   
   ######################### #
   ### COMPONENT: MODEL ####
