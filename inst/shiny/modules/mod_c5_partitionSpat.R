@@ -20,6 +20,7 @@ partSp_MOD <- function(input, output, session) {
     }
     
     # FUNCTION CALL ####
+    print(input$partSpSel)
     group.data <- c5_partitionOccs(spp[[curSp()]]$occs, 
                                    spp[[curSp()]]$bg, 
                                    input$partSpSel, 

@@ -26,7 +26,7 @@ shinyUI(tagList(
                                includeCSS("css/styles.css"),
                                includeScript("js/scroll.js"),
                                conditionalPanel("input.tabs == 'intro'",
-                                                # actionButton('load', 'HACK'),
+                                                actionButton('load', 'HACK'),
                                                 includeMarkdown("Rmd/text_intro_tab.Rmd")
                                ),
                                # COMPONENT 1 ####
@@ -243,7 +243,7 @@ shinyUI(tagList(
                                                                  div('Module: Spatial Partition', id="mod"),
                                                                  uiTop('ENMeval', 'Automated Runs and Evaluations of Ecological Niche Models'),
                                                                  HTML('<hr>'),
-                                                                 partSp_UI('c5_partSp'),
+                                                                 partSp_UI('cParts_partSp_uiID'),
                                                                  actionButton("goPartSp", "Partition")),
                                                 conditionalPanel("input.partSel == 'nsp'",
                                                                  div('Module: Non-spatial Partition', id="mod"),

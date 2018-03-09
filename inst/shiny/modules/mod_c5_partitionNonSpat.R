@@ -20,7 +20,7 @@ partNsp_MOD <- function(input, output, session) {
     #### FUNCTION CALL
     group.data <- c5_partitionOccs(spp[[curSp()]]$occs, 
                                    spp[[curSp()]]$bg, 
-                                   input$partSpSel, 
+                                   input$partNspSel, 
                                    kfolds = input$kfolds, 
                                    logs, shiny=TRUE)
     req(group.data)
@@ -30,11 +30,11 @@ partNsp_MOD <- function(input, output, session) {
     spp[[curSp()]]$bg$grp <- group.data$bg.grp
     
     # METADATA ####
-    if(input$partSpSel == 'jack') {
+    if(input$partNspSel == 'jack') {
       rmm$model$partition$numberFolds <- nrow(spp[[curSp()]]$occs)
       rmm$model$partition$partitionRule <- 'jackknife'
     }
-    if(input$partSpSel == 'rand') {
+    if(input$partNspSel == 'rand') {
       rmm$model$partition$numberFolds <- input$kfolds
       rmm$model$partition$partitionRule <- 'random k-fold'
     }

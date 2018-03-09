@@ -43,19 +43,21 @@ shinyServer(function(input, output, session) {
   # FOR DEVELOPMENT
   observeEvent(input$load, {
     f <- read.csv('example_data/occs_multisp.csv')
-    spp[["Puma_concolor"]]$occs <- f %>% dplyr::filter(name == 'Puma concolor')
-    spp[["Panthera_leo"]]$occs <- f %>% dplyr::filter(name == 'Panthera leo')
-    spp[["Puma_concolor"]]$occs$pop <- unlist(apply(spp[["Puma_concolor"]]$occs, 1, popUpContent))
-    spp[["Panthera_leo"]]$occs$pop <- unlist(apply(spp[["Panthera_leo"]]$occs, 1, popUpContent))
+    spp[["Puma_concolor"]]$occs <- spp[["Puma_concolor"]]$occData$occsOrig <- f %>% dplyr::filter(taxon_name == 'Puma concolor') %>% dplyr::select(taxon_name,longitude,latitude,occID)
+    spp[["Panthera_leo"]]$occs <- spp[["Panthera_leo"]]$occData$occsOrig <- f %>% dplyr::filter(taxon_name == 'Panthera leo') %>% dplyr::select(taxon_name,longitude,latitude,occID)
+    spp[["Puma_concolor"]]$occs$pop <- spp[["Puma_concolor"]]$occData$occsOrig$pop <- unlist(apply(spp[["Puma_concolor"]]$occs, 1, popUpContent))
+    spp[["Panthera_leo"]]$occs$pop <- spp[["Panthera_leo"]]$occData$occsOrig$pop <- unlist(apply(spp[["Panthera_leo"]]$occs, 1, popUpContent))
     # rvs$occsGrp <- rvs$occs$group
-    spp[["Puma_concolor"]]$bgPts <- f %>% dplyr::filter(name == 'background1') %>% dplyr::select(longitude, latitude)
-    spp[["Panthera_leo"]]$bgPts <- f %>% dplyr::filter(name == 'background2') %>% dplyr::select(longitude, latitude)
+    spp[["Puma_concolor"]]$bg <- f %>% dplyr::filter(taxon_name == 'background1') %>% dplyr::select(longitude, latitude)
+    spp[["Panthera_leo"]]$bg <- f %>% dplyr::filter(taxon_name == 'background2') %>% dplyr::select(longitude, latitude)
     # rvs$bgGrp <- rvs$bgPts$group
-    spp[["Puma_concolor"]]$occs.z <- read.csv('/Users/musasabi/Desktop/shiny_testing/Puma concolor_z.csv')
-    spp[["Panthera_leo"]]$occs.z <- read.csv('/Users/musasabi/Desktop/shiny_testing/Panthera leo_z.csv')
-    spp[["Puma_concolor"]]$bgPts.z <- read.csv('/Users/musasabi/Desktop/shiny_testing/Puma concolor_bz.csv')
-    spp[["Panthera_leo"]]$bgPts.z <- read.csv('/Users/musasabi/Desktop/shiny_testing/Panthera leo_bz.csv')
+    spp[["Puma_concolor"]]$occs <- cbind(spp[["Puma_concolor"]]$occs, read.csv('/Users/musasabi/Desktop/shiny_testing/Puma concolor_z.csv'))
+    spp[["Panthera_leo"]]$occs <- cbind(spp[["Panthera_leo"]]$occs, read.csv('/Users/musasabi/Desktop/shiny_testing/Panthera leo_z.csv'))
+    spp[["Puma_concolor"]]$bg <- cbind(spp[["Puma_concolor"]]$bg, read.csv('/Users/musasabi/Desktop/shiny_testing/Puma concolor_bz.csv'))
+    spp[["Panthera_leo"]]$bg <- cbind(spp[["Panthera_leo"]]$bg, read.csv('/Users/musasabi/Desktop/shiny_testing/Panthera leo_bz.csv'))
     # rvs$bgShp <- rgdal::readOGR('/Users/musasabi/Downloads', 'mcp')
+    spp[["Puma_concolor"]]$procEnvs$bgMask <- raster::stack(list.files('/Users/musasabi/Desktop/shiny_testing/mskEnvs_puma', full.names = TRUE))
+    spp[["Panthera_leo"]]$procEnvs$bgMask <- raster::stack(list.files('/Users/musasabi/Desktop/shiny_testing/mskEnvs_leo', full.names = TRUE))
     spp[["Puma_concolor"]]$envs <- raster::stack(list.files('/Users/musasabi/Documents/github/wallace/inst/shiny/wc10', 'bil$', full.names=TRUE))
     spp[["Panthera_leo"]]$envs <- raster::stack(list.files('/Users/musasabi/Documents/github/wallace/inst/shiny/wc10', 'bil$', full.names=TRUE))
     # rvs$bgMsk <- raster::stack(list.files('/Users/musasabi/Downloads/mskEnvs', 'gri$', full.names = TRUE))  
@@ -187,9 +189,10 @@ shinyServer(function(input, output, session) {
   
   # component-level logic
   observe({
+    print(curSp())
     # must have one species selected and occurrence data
     # for mapping to be functional
-    req(length(curSp()) == 1, spp[[curSp()]]$occData)
+    req(length(curSp()) == 1, spp[[curSp()]]$occs)
     # map the original occs for Component Obtain Occurrence Data
     if(input$tabs == 'occs') {
       map %>% map_occs(spp[[curSp()]]$occData$occsOrig)
@@ -226,13 +229,13 @@ shinyServer(function(input, output, session) {
     #   }
     # }
     if(input$tabs == 'part') {
-      req(spp[[curSp()]]$parts)
-      occsGrp <- spp[[curSp()]]$parts$occ.grp
+      req(spp[[curSp()]]$occs$grp)
+      occsGrp <- spp[[curSp()]]$occs$grp
       # colors for partition symbology
       newColors <- gsub("FF$", "", rainbow(max(occsGrp)))  
       partsFill <- newColors[occsGrp]
       map %>%
-        map %>% map_occs(spp[[curSp()]]$occs, fillColor = partsFill, fillOpacity = 1) %>%
+        map_occs(spp[[curSp()]]$occs, fillColor = partsFill, fillOpacity = 1) %>%
         addLegend("bottomright", colors = newColors,
                   title = "Partition Groups", labels = sort(unique(occsGrp)),
                   opacity = 1, layerId = 'leg')
@@ -560,9 +563,9 @@ shinyServer(function(input, output, session) {
       tmpdir <- tempdir()
       setwd(tempdir())
       type <- input$bgMskFileType
-      nm <- names(rvs$bgMsk)
+      nm <- names(spp[[curSp()]]$envs)
       
-      raster::writeRaster(rvs$bgMsk, file.path(tmpdir, 'msk'), bylayer = TRUE,
+      raster::writeRaster(spp[[curSp()]]$procEnvs$bgMask, file.path(tmpdir, 'msk'), bylayer = TRUE,
                           suffix = nm, format = type, overwrite = TRUE)
       ext <- switch(type, raster = 'grd', ascii = 'asc', GTiff = 'tif')
       
@@ -643,7 +646,7 @@ shinyServer(function(input, output, session) {
   # module Spatial Occurrence Partitions
   partSp <- callModule(partSp_MOD, 'cParts_partSp_uiID')
   
-  observeEvent(input$goPartNsp, {
+  observeEvent(input$goPartSp, {
     partSp()
     # UI CONTROLS 
     # updateSelectInput(session, "sppSel", selected = curSp())
