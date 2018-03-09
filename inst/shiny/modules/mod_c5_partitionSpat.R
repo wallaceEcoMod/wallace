@@ -13,24 +13,39 @@ partSp_UI <- function(id) {
 
 partSp_MOD <- function(input, output, session) {
   reactive({
-    if (is.null(spp[[curSp()]]$bgMask)) {
+    if (is.null(spp[[curSp()]]$procEnvs$bgMask)) {
       logs %>% writeLog(type = 'error', "Before partitioning occurrences, 
                        mask your environmental variables by your background extent.")
       return()
     }
     
     # FUNCTION CALL ####
-    group.data <- c5_partitionOccs(spp[[curSp()]]$occs, spp[[curSp()]]$bgPts, input$partSpSel, 
-                                   bgMsk = spp[[curSp()]]$bgMsk, aggFact = input$aggFact, logs, shiny=TRUE)
-    
-    if (is.null(group.data)) return()
+    group.data <- c5_partitionOccs(spp[[curSp()]]$occs, 
+                                   spp[[curSp()]]$bg, 
+                                   input$partSpSel, 
+                                   bgMsk = spp[[curSp()]]$procEnvs$bgMask, 
+                                   aggFact = input$aggFact, 
+                                   logs, shiny=TRUE)
+    req(group.data)
     
     # LOAD INTO SPP ####
-    spp[[curSp()]]$parts$occ.grp <- group.data$occ.grp
-    spp[[curSp()]]$parts$bg.grp <- group.data$bg.grp
+    spp[[curSp()]]$occs$grp <- group.data$occ.grp
+    spp[[curSp()]]$bg$grp <- group.data$bg.grp
     
-    # RMD VALUES ####
-    # spp[[curSp()]]$rmd$c5 <- list(partNspSel = input$partNspSel, kfolds = input$kfolds)
+    # METADATA ####
+    if(input$partSpSel == 'block') {
+      rmm$model$partition$numberFolds <- 4
+      rmm$model$partition$partitionRule <- 'spatial block'
+    }
+    if(input$partSpSel == 'cb1') {
+      rmm$model$partition$numberFolds <- 2
+      rmm$model$partition$partitionRule <- 'checkerboard'
+    }
+    if(input$partSpSel == 'cb2') {
+      rmm$model$partition$numberFolds <- 4
+      rmm$model$partition$partitionRule <- 'hierarchical checkerboard'
+      rmm$model$partition$notes <- paste('aggregation factor =', input$aggFact)
+    }
     
   })
 }

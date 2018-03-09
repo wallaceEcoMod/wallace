@@ -16,33 +16,28 @@ bgExtent_MOD <- function(input, output, session) {
     
     req(curSp(), spp[[curSp()]]$occs, spp[[curSp()]]$envs)
     
-    # observeEvent(input$bgSel, {
-      # FUNCTION CALL ####
-      bgExt <- c4_bgExtent(spp[[curSp()]]$occs, 
-                           spp[[curSp()]]$envs, 
-                           input$bgSel, 
-                           input$bgBuf, 
-                           logs, shiny=TRUE)  
-      print("observe event")
-      
-      req(bgExt)
-      
-      # LOAD INTO SPP ####
-      spp[[curSp()]]$procEnvs$bgExt <- bgExt
-      
-      # METADATA ####
-      spp[[curSp()]]$rmm$model$maxent$backgroundSizeRule <- paste0(input$bgSel, ', ', input$bgBuf, ' degree buffer')
-      
-      # MAPPING ####
-      map %>% map_occs(spp[[curSp()]]$occs)
-      for (shp in bgShpXY()) {
-        map %>%
-          addPolygons(lng=shp[,1], lat=shp[,2], weight=4, color="gray", group='bgShp')  
-      }
-      bb <- spp[[curSp()]]$procEnvs$bgExt@bbox
-      map %>% fitBounds(bb[1], bb[2], bb[3], bb[4])  
-    # })
+    # FUNCTION CALL ####
+    bgExt <- c4_bgExtent(spp[[curSp()]]$occs, 
+                         spp[[curSp()]]$envs, 
+                         input$bgSel, 
+                         input$bgBuf, 
+                         logs, shiny=TRUE)  
+    req(bgExt)
     
+    # LOAD INTO SPP ####
+    spp[[curSp()]]$procEnvs$bgExt <- bgExt
+    
+    # METADATA ####
+    spp[[curSp()]]$rmm$model$maxent$backgroundSizeRule <- paste0(input$bgSel, ', ', input$bgBuf, ' degree buffer')
+    
+    # MAPPING ####
+    map %>% map_occs(spp[[curSp()]]$occs)
+    for (shp in bgShpXY()) {
+      map %>%
+        addPolygons(lng=shp[,1], lat=shp[,2], weight=4, color="gray", group='bgShp')  
+    }
+    bb <- spp[[curSp()]]$procEnvs$bgExt@bbox
+    map %>% fitBounds(bb[1], bb[2], bb[3], bb[4])  
     
     # RETURN ####
     # output the species name

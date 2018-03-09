@@ -187,26 +187,25 @@ shinyServer(function(input, output, session) {
   
   # component-level logic
   observe({
-    # must have one species selected for mapping to be functional
-    req(length(curSp()) == 1)
-    req(spp[[curSp()]]$occData)
+    # must have one species selected and occurrence data
+    # for mapping to be functional
+    req(length(curSp()) == 1, spp[[curSp()]]$occData)
     # map the original occs for Component Obtain Occurrence Data
     if(input$tabs == 'occs') {
       map %>% map_occs(spp[[curSp()]]$occData$occsOrig)
     } 
-    # for downstream mapping functionality, require occs
-    req(spp[[curSp()]]$occs)
     # map the analysis occs for components downstream of the first
     if(input$tabs == 'poccs') {
       if(input$procOccSel == 'spthin') {
-        # if you've thinned already
+        # if you've thinned already, map thinned points blue
+        # and kept points red
         if(!is.null(spp[[curSp()]]$procOccs$occsThin)) {
           map %>% map_occs(spp[[curSp()]]$procOccs$occsPreThin, fillColor = 'blue', fillOpacity = 1) %>%
             map_occs(spp[[curSp()]]$occs, fillOpacity = 1, clear = FALSE) %>%
             addLegend("bottomright", colors = c('red', 'blue'), title = "Occ Records", 
                       labels = c('retained', 'removed'), opacity = 1)  
         } else {
-          # if you haven't thinned
+          # if you haven't thinned, map all points red
           map %>% map_occs(spp[[curSp()]]$occs)
         }
       } else {
@@ -227,7 +226,8 @@ shinyServer(function(input, output, session) {
     #   }
     # }
     if(input$tabs == 'part') {
-      occsGrp <- spp[[curSp()]]$Part$occ.grp
+      req(spp[[curSp()]]$parts)
+      occsGrp <- spp[[curSp()]]$parts$occ.grp
       # colors for partition symbology
       newColors <- gsub("FF$", "", rainbow(max(occsGrp)))  
       partsFill <- newColors[occsGrp]
@@ -363,7 +363,6 @@ shinyServer(function(input, output, session) {
       leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
                                      rectangleOptions = FALSE, circleOptions = FALSE, 
                                      markerOptions = FALSE) %>%
-      clearMarkers() %>% 
       map_occs(spp[[curSp()]]$occs) %>%
       zoom2Occs(spp[[curSp()]]$occs)
     # UI CONTROLS 
@@ -391,7 +390,7 @@ shinyServer(function(input, output, session) {
     filename = function() {
       n <- formatSpName(spp[[curSp()]]$occs$taxon_name[1])
       paste0(n, "_processed_occs.csv")
-      },
+    },
     content = function(file) {
       write.csv(spp[[curSp()]]$occs, file, row.names = FALSE)
     }
@@ -404,11 +403,10 @@ shinyServer(function(input, output, session) {
     logs %>% writeLog("Reset occurrences.")
     # MAPPING
     map %>%
-      clearMarkers() %>%
       map_occs(spp[[curSp()]]$occs) %>%
       zoom2Occs(spp[[curSp()]]$occs)
     # UI CONTROLS 
-    updateSelectInput(session, "sppSel", selected = curSp())
+    # updateSelectInput(session, "sppSel", selected = curSp())
   })
   
   ############################################# #
@@ -501,15 +499,12 @@ shinyServer(function(input, output, session) {
   # module Background Extent ####
   # # # # # # # # # # # # # # # # #
   bgExt <- callModule(bgExtent_MOD, 'c4_bgExtent_uiID')
-  observe({
-    if(input$tabs == 'penvs') bgExt()
+  observeEvent(input$goBgExt, {
+    # initialize module
+    bgExt()
+    # UI CONTROLS
+    # updateSelectInput(session, "sppSel", selected = curSp())
   })
-  # observeEvent(input$tabs == 'penvs', {
-  #   # initialize module
-  #   bgExt()
-  #   # UI CONTROLS
-  #   # updateSelectInput(session, "sppSel", selected = curSp())
-  # })
   
   # # # # # # # # # # # # # # # # # # # # # # # 
   # module User-defined Background Extent ####
