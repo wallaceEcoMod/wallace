@@ -189,7 +189,6 @@ shinyServer(function(input, output, session) {
   
   # component-level logic
   observe({
-    print(curSp())
     # must have one species selected and occurrence data
     # for mapping to be functional
     req(length(curSp()) == 1, spp[[curSp()]]$occs)
@@ -215,19 +214,21 @@ shinyServer(function(input, output, session) {
         map %>% map_occs(spp[[curSp()]]$occs)
       }
     }
-    # if(input$tabs == 'penvs') {
-    #   if(is.null(spp[[curSp()]]$procEnvs$bgExt)) {
-    #     map %>% map_occs(spp[[curSp()]]$occs)
-    #   }else{
-    #     map %>% map_occs(spp[[curSp()]]$occs)
-    #     for (shp in bgShpXY()) {
-    #       map %>%
-    #         addPolygons(lng=shp[,1], lat=shp[,2], weight=4, color="gray", group='bgShp')  
-    #     }
-    #     bb <- spp[[curSp()]]$procEnvs$bgExt@bbox
-    #     map %>% fitBounds(bb[1], bb[2], bb[3], bb[4])
-    #   }
-    # }
+    if(input$tabs == 'penvs') {
+      # print(bgShpXY())
+      if(is.null(spp[[curSp()]]$procEnvs$bgExt)) {
+        map %>% map_occs(spp[[curSp()]]$occs)
+      }else{
+        map %>% map_occs(spp[[curSp()]]$occs)
+        for (shp in bgShpXY()) {
+          # print(shp)
+          map %>%
+            addPolygons(lng=shp[,1], lat=shp[,2], weight=4, color="gray", group='bgShp')
+        }
+        bb <- spp[[curSp()]]$procEnvs$bgExt@bbox
+        map %>% fitBounds(bb[1], bb[2], bb[3], bb[4])
+      }
+    }
     if(input$tabs == 'part') {
       req(spp[[curSp()]]$occs$grp)
       occsGrp <- spp[[curSp()]]$occs$grp
@@ -551,7 +552,9 @@ shinyServer(function(input, output, session) {
     if(length(polys) == 1) {
       xy <- list(polys[[1]]@coords)
     }else{
-      xy <- sapply(polys, function(x) x@coords)
+      print(polys)
+      xy <- lapply(polys, function(x) x@coords)
+      print(xy)
     }
     return(xy)
   })
