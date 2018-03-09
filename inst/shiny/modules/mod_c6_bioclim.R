@@ -7,17 +7,29 @@ bioclim_UI <- function(id) {
 bioclim_MOD <- function(input, output, session) {
   reactive({
     
+    # ERRORS ####
+    if (is.null(spp[[curSp()]]$occs$grp)) {
+      logs %>% writeLog(type = 'error', "Before building a model, please partition 
+                        occurrences for cross-validation.")
+      return()
+    }
+    
     # FUNCTION CALL ####
-   m.bioclim <- c6_bioclim(spp[[curSp()]]$occs, input$bgPts, input$occsGrp, 
-                           input$bgGrp, input$bgMsk, logs, shiny = TRUE)
+   m.bioclim <- c6_bioclim(spp[[curSp()]]$occs, 
+                           spp[[curSp()]]$bg, 
+                           spp[[curSp()]]$occs$grp, 
+                           spp[[curSp()]]$bg$grp, 
+                           spp[[curSp()]]$procEnvs$bgMask, 
+                           logs, shiny = TRUE)
    
-   if (is.null(m.bioclim)) return()
+   req(m.bioclim)
    
    # LOAD INTO SPP ####
    spp[[curSp()]]$mod <- m.bioclim
    
-   # RMD VALUES ####
-   #spp[[curSp()]]$rmd$c6 <- XXXX
+   # METADATA ####
+   rmm$model$algorithm <- "BIOCLIM"
+   rmm$model$bioclim$notes <- "dismo package implementation"
   })
 }
 # occVals <- raster::extract(e$predictions, values$modParams$occ.pts)

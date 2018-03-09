@@ -608,9 +608,10 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "sppSel", selected = curSp())
   })
   
-  # module Occurrence Density Grids
+  # # # # # # # # # # # # # # # # # # # # 
+  # module Occurrence Density Grids ####
+  # # # # # # # # # # # # # # # # # # # # 
   occDens <- callModule(occDens_MOD, 'cEspace_occDens_uiID')
-  
   observeEvent(input$goOccDens, {
     # stop if no environmental variables
     req(msp[[curMSp()]]$pca)
@@ -620,7 +621,9 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "sppSel", selected = curSp())
   })
   
-  # module Niche Overlap
+  # # # # # # # # # # # # # # # 
+  # module Niche Overlap ####
+  # # # # # # # # # # # # # # # 
   nicheOv <- callModule(nicheOv_MOD, 'cEspace_nicheOv_uiID')
   
   observeEvent(input$goNicheOv, {
@@ -636,9 +639,10 @@ shinyServer(function(input, output, session) {
   ### COMPONENT: PARTITION OCCURRENCE DATA ####
   ################################################# #
   
-  # module Non-spatial Occurrence Partitions
+  # # # # # # # # # # # # # # # # # # # # # # # # #
+  # module Non-spatial Occurrence Partitions ####
+  # # # # # # # # # # # # # # # # # # # # # # # # #
   partNsp <- callModule(partNsp_MOD, 'cParts_partNsp_uiID')
-  
   observeEvent(input$goPartNsp, {
     partNsp()
     # UI CONTROLS 
@@ -646,9 +650,10 @@ shinyServer(function(input, output, session) {
     shinyjs::enable("dlPart")
   })
   
-  # module Spatial Occurrence Partitions
+  # # # # # # # # # # # # # # # # # # # # # # #
+  # module Spatial Occurrence Partitions ####
+  # # # # # # # # # # # # # # # # # # # # # # #
   partSp <- callModule(partSp_MOD, 'cParts_partSp_uiID')
-  
   observeEvent(input$goPartSp, {
     partSp()
     # UI CONTROLS 
@@ -660,7 +665,9 @@ shinyServer(function(input, output, session) {
   ### COMPONENT: MODEL ####
   ######################### #
 
-  # module Maxent
+  # # # # # # # # # # # 
+  # module Maxent ####
+  # # # # # # # # # # # 
   mod.maxent <- callModule(maxent_MOD, 'c6_maxent', rvs)
   
   observeEvent(input$goMaxent, {
@@ -706,17 +713,16 @@ shinyServer(function(input, output, session) {
                                       "Map Prediction" = 'map'))
   })
   
-  # module BIOCLIM
+  # # # # # # # # # # # # 
+  # module BIOCLIM ####
+  # # # # # # # # # # # # 
   mod.bioclim <- callModule(bioclim_MOD, 'c6_bioclim')
   
   observeEvent(input$goBioclim, {
-    e <- mod.bioclim()
-    # stop if no occurrence partition group
-    req(rvs$occsGrp)
-    rvs$comp6 <- 'bioclim'  # record the enm selected
-    rvs$mods <- e$models
-    rvs$modPreds <- e$predictions
-    rvs$modRes <- e$results
+    mod.bioclim()
+    # rvs$mods <- e$models
+    # rvs$modPreds <- e$predictions
+    # rvs$modRes <- e$results
     output$evalTbls <- renderUI({
       tagList(
         br(), 
@@ -724,13 +730,13 @@ shinyServer(function(input, output, session) {
         DT::dataTableOutput('evalTbl')
       )
     })
-    output$evalTbl <- DT::renderDataTable(round(rvs$modRes, digits=3), options = list(scrollX = TRUE,
+    output$evalTbl <- DT::renderDataTable(round(spp[[curSp()]]$mod$results, digits=3), options = list(scrollX = TRUE,
                                                                                       sDom  = '<"top">rt<"bottom">'))
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
-    updateRadioButtons(session, "visSel", 
-                       choices = list("BIOCLIM Envelope Plots" = 'bcPlots',
-                                      "Map Prediction" = 'map'))
+    # update radio buttons for Visualization component
+    updateRadioButtons(session, "visSel", choices = list("BIOCLIM Envelope Plots" = 'bcPlots',
+                                                         "Map Prediction" = 'map'))
     shinyjs::hide(id = "evalTblBins")
   })
   
