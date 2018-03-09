@@ -85,20 +85,20 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, logs = NULL, sh
 
   
   dups <- duplicated(occsXY[,c('longitude','latitude')])
-  occsTbl <- occsXY[!dups,]
+  occs <- occsXY[!dups,]
   
   # subset by key columns and make id and popup columns
   cols <- c("taxon_name", "longitude", "latitude","time_interval", "collection_no", "country", 
             "collection_no", "record_type", "occID")
-  occsTbl <- occsTbl %>% dplyr::select(dplyr::one_of(cols)) %>%
-    dplyr::mutate(pop = unlist(apply(occsTbl, 1, popUpContent)))  # make new column for leaflet marker popup content
+  occs <- occs %>% dplyr::select(dplyr::one_of(cols)) %>%
+    dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent)))  # make new column for leaflet marker popup content
   
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
   
-  dupsRem <- nrow(occsXY) - nrow(occsTbl)
+  dupsRem <- nrow(occsXY) - nrow(occs)
   logs %>% writeLog('Total', occDb, 'records for', spName, 'returned [', nrow(occsOrig),
                     '] out of [', totRows, '] total (limit ', occNum, ').',
                     'Records without coordinates removed [', noCoordsRem, '].
-                   Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occsTbl), '].')
-  return(occsTbl)
+                   Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')
+  return(list(orig=occsOrig, cleaned=occs))
 }

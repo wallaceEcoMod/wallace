@@ -44,11 +44,7 @@ shinyUI(tagList(
                                                                  HTML('<hr>'),
                                                                  queryDb_UI('c1_queryDb_uiID'),
                                                                  actionButton("goDbOccs", "Query Database"), br(), br(),
-                                                                 HTML('<hr>'),
-                                                                 strong("Download database occurrence localities (.csv)"), br(), br(),
-                                                                 downloadButton('dlDbOccs', "Download"),
-                                                                 HTML('<hr>'),
-                                                                 uiBottom("Jamie M. Kass, Bruno Vilela, Robert P. Anderson", 'spocc', "Scott Chamberlain, Karthik Ram, Ted Hart")
+                                                                 HTML('<hr>')
                                                 ),
                                                 conditionalPanel("input.occSel == 'pdb'",
                                                                  div('Module: Query Database (Paleo)', id="mod"),
@@ -57,12 +53,7 @@ shinyUI(tagList(
                                                                  HTML('<hr>'),
                                                                  queryPaleoDb_UI('c1_queryPaleoDb_uiID'),
                                                                  actionButton("goPaleoDbOccs", "Query Database"), br(), br(),
-                                                                 HTML('<hr>'),
-                                                                 strong("Download database occurrence localities (.csv)"), br(), br(),
-                                                                 downloadButton('dlPaleoDbOccs', "Download"),
-                                                                 HTML('<hr>'),
-                                                                 uiBottom("Sara Varela, Jamie Kass", 'paleobioDb', "Sara Varela, Javier González Hernández, Luciano Fabris Sgarbi"),
-                                                                 uiBottom(NULL, 'neotoma', "Simon J. Goring, Gavin L. Simpson, Jeremiah P. Marsicek, Karthik Ram")
+                                                                 HTML('<hr>')
                                                 ),
                                                 conditionalPanel("input.occSel == 'user'",
                                                                  div('Module: User-specified Occurrences', id="mod"),
@@ -71,7 +62,20 @@ shinyUI(tagList(
                                                                  actionButton("goUserOccs", "Load Occurrences"),
                                                                  HTML('<hr>'),
                                                                  div('Module Developers: Jamie M. Kass, Bruno Vilela, Robert P. Anderson', id="pkgDes")
+                                                ),
+                                                conditionalPanel("input.occSel == 'db' | input.occSel == 'pdb'",
+                                                                 strong("Download raw occurrence data"), br(), br(),
+                                                                 downloadButton('dlDbOccs', "Download CSV"),
+                                                                 HTML('<hr>')
+                                                ),
+                                                conditionalPanel("input.occSel == 'db'",
+                                                                 uiBottom("Jamie M. Kass, Bruno Vilela, Robert P. Anderson", 'spocc', "Scott Chamberlain, Karthik Ram, Ted Hart")
+                                                ),
+                                                conditionalPanel("input.occSel == 'pdb'",
+                                                                 uiBottom("Sara Varela, Jamie Kass", 'paleobioDb', "Sara Varela, Javier González Hernández, Luciano Fabris Sgarbi"), br(),
+                                                                 uiBottom(NULL, 'neotoma', "Simon J. Goring, Gavin L. Simpson, Jeremiah P. Marsicek, Karthik Ram")
                                                 )
+                                                
                                ),
                                # COMPONENT 2 ####
                                conditionalPanel("input.tabs == 'poccs'",
@@ -222,7 +226,7 @@ shinyUI(tagList(
                                                                  uiTop('adeHabitatHR', 'Home Range Estimation'),
                                                                  occDens_controlsUI('cEspace_occDens_uiID'),
                                                                  actionButton("goOccDens", "Run")
-                                                                 ),
+                                                ),
                                                 conditionalPanel("input.espaceSel == 'nicheOv'",
                                                                  div('Module: Niche Overlap', id="mod"),
                                                                  uiTop('ecospat', 'Spatial Ecology Miscellaneous Methods'),
@@ -423,7 +427,9 @@ shinyUI(tagList(
                                                                                                          'ESRI Imagery'="Esri.WorldImagery",
                                                                                                          'ESRI Nat Geo'='Esri.NatGeoWorldMap'),
                                                                                              selected = "Esri.WorldTopoMap"))),
-                                                          tabPanel('Occs Tbl', DT::dataTableOutput('occTbl')),
+                                                          tabPanel('Occs Tbl', br(), fluidRow(column(width=4, tags$h4("Download current occurrence data:")), 
+                                                                                              column(width=8, downloadButton('dlOccs', "Download CSV"))), 
+                                                                   br(), DT::dataTableOutput('occTbl')),
                                                           tabPanel('Results', 
                                                                    conditionalPanel("input.tabs == 'envs'", verbatimTextOutput('envsPrint')),
                                                                    conditionalPanel("input.tabs == 'model'", uiOutput('evalTbls')),

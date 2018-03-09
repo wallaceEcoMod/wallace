@@ -194,7 +194,7 @@ shinyServer(function(input, output, session) {
     req(length(curSp()) == 1, spp[[curSp()]]$occs)
     # map the original occs for Component Obtain Occurrence Data
     if(input$tabs == 'occs') {
-      map %>% map_occs(spp[[curSp()]]$occData$occsOrig)
+      map %>% map_occs(spp[[curSp()]]$occData$occsCleaned)
     } 
     # map the analysis occs for components downstream of the first
     if(input$tabs == 'poccs') {
@@ -215,13 +215,11 @@ shinyServer(function(input, output, session) {
       }
     }
     if(input$tabs == 'penvs') {
-      # print(bgShpXY())
       if(is.null(spp[[curSp()]]$procEnvs$bgExt)) {
         map %>% map_occs(spp[[curSp()]]$occs)
       }else{
         map %>% map_occs(spp[[curSp()]]$occs)
         for (shp in bgShpXY()) {
-          # print(shp)
           map %>%
             addPolygons(lng=shp[,1], lat=shp[,2], weight=4, color="gray", group='bgShp')
         }
@@ -334,7 +332,8 @@ shinyServer(function(input, output, session) {
   output$dlDbOccs <- downloadHandler(
     filename = function() {
       n <- formatSpName(spp[[curSp()]]$occs$taxon_name[1])
-      paste0(n, '_original_', spp[[curSp()]]$rmm$data$occurrence$sources, ".csv")
+      source <- spp[[curSp()]]$rmm$data$occurrence$sources
+      paste0(n, "_", source, ".csv")
       },
     content = function(file) {
       write.csv(spp[[curSp()]]$occData$occsOrig, file, row.names=FALSE)
@@ -390,13 +389,14 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # # # #
   
   # DOWNLOAD
-  output$dlProcOccs <- downloadHandler(
+  output$dlOccs <- downloadHandler(
     filename = function() {
       n <- formatSpName(spp[[curSp()]]$occs$taxon_name[1])
-      paste0(n, "_processed_occs.csv")
+      paste0(n, ".csv")
     },
     content = function(file) {
-      write.csv(spp[[curSp()]]$occs, file, row.names = FALSE)
+      tbl <- spp[[curSp()]]$occs %>% dplyr::select(taxon_name, occID, longitude:record_type)
+      write.csv(tbl, file, row.names = FALSE)
     }
   )
   
@@ -552,9 +552,7 @@ shinyServer(function(input, output, session) {
     if(length(polys) == 1) {
       xy <- list(polys[[1]]@coords)
     }else{
-      print(polys)
       xy <- lapply(polys, function(x) x@coords)
-      print(xy)
     }
     return(xy)
   })

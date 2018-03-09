@@ -19,18 +19,24 @@ queryPaleoDb_UI <- function(id) {
 queryPaleoDb_MOD <- function(input, output, session) {
   reactive({
     # FUNCTION CALL ####
-    occsTbl <- c1_queryPaleoDb(input$spName, input$occDb, input$occNum, input$timeInterval, logs, shiny=TRUE)
+    occsTbls <- c1_queryPaleoDb(input$spName, 
+                               input$occDb, 
+                               input$occNum, 
+                               input$timeInterval, 
+                               logs, shiny=TRUE)
     
-    if (is.null(occsTbl)) return()
+    req(occsTbls)
     
     # LOAD INTO SPP ####
-    n <- formatSpName(occsTbl$taxon_name)
+    occsOrig <- occsTbls$orig
+    occs <- occsTbls$cleaned
+    n <- formatSpName(occs$taxon_name)
     # if species name is already in list, overwrite it
     if(!is.null(spp[[n]])) spp[[n]] <- NULL
     # add two copies of occs dataset -- "occs" will be altered during session,
     # while "occsOrig" will be preserved in this state
     # rmm is the range model metadata object
-    spp[[n]] <- list(occs = occsTbl, occData = list(occsOrig = occsTbl),
+    spp[[n]] <- list(occs = occs, occData = list(occsOrig = occsOrig, occsCleaned = occs),
                      rmm = rangeModelMetadata::rangeModelMetadataTemplate())
     
     # METADATA ####
@@ -44,6 +50,6 @@ queryPaleoDb_MOD <- function(input, output, session) {
     spp[[n]]$rmm$data$occurrence$yearMax <- input$timeInterval
     
     # RETURN ####
-    return(occsTbl)
+    return(occs)
   })
 }
