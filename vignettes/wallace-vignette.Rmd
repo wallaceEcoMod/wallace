@@ -17,21 +17,16 @@ knitr::opts_chunk$set(collapse=TRUE, message=FALSE, warning=FALSE, comment="#>")
 ```
 
 # Preface
-This vignette and any others in the `wallace` package will be updated regularly in accordance with ongoing development. 
+This vignette and any others in the `wallace` package will be updated regularly in accordance with ongoing development. This vignette was written for *Wallace* v. 1.0.4, so if you are using a more updated version, some things will be different. We plan to update this vignette periodically.
 
 # Introduction
-*Wallace* v1.0.4 is an `R`-based GUI application that currently offers functionality for modeling species niches and distributions. We will refer to these models as species distribution models (SDMs), and we will not explain them at length here: the purpose of this vignette is to show users how to use *Wallace*. As you read through, you will be pointed to some sources of detailed info within the application for reference. In the future, *Wallace* will likely include other ecological modeling techniques.
+*Wallace* v1.0.4 is an `R`-based GUI application for modeling species niches and distributions, and evaluating the results. We will refer to these models as species distribution models (SDMs), and we will not explain them at length here: the purpose of this vignette is to show users how to use *Wallace*. As you read through, you will be pointed to some sources of detailed info within the application for reference.
 
-*Wallace* has many qualities which we think make it a good example of next-generation scientific software: it is 1) open, 2) expandible, 3) flexible, 4) interactive, 5) instructive, and 6) reproducible. The application features a pannable/zoomable map and dynamic plots and tables. Occurrence and environmental data for modeling can be downloaded from online databases or uploaded by the user. Most analysis results can be downloaded, and there is an option to download R code that can reproduce your analysis. For more details, including on SDMs, please see our [publication](http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12945/full) in Methods in Ecology and Evolution. The citation is below:
+*Wallace* has many qualities which we think make it a good example of next-generation scientific software: it's 1) open, 2) expandible, 3) flexible, 4) interactive, 5) instructive, and 6) reproducible. The application features an pannable/zoomable map and dynamic plots and tables. Data for the models can be download from online databases or uploaded by the user, and most results can be downloaded, including the option to save R code that can reproduce your analysis. For more details, including on SDMs, please see our [publication](http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12945/full) in Methods in Ecology and Evolution. The citation is below: 
 
-Kass JM, Vilela B, Aiello-Lammens ME, Muscarella R, Merow C, Anderson RP. Wallace: A flexible platform for reproducible modeling of species niches and distributions built for community expansion. Methods Ecol Evol. 2018;00:1–6. https://doi.org/10.1111/2041-210X.12945
+Kass JM, Vilela B, Aiello-Lammens ME, Muscarella R, Merow C, Anderson RP. Wallace: A flexible platform for reproducible modeling of species niches and distributions built for community expansion. *Methods Ecol Evol*. 2018;00:1–6. https://doi.org/10.1111/2041-210X.12945
 
-The *Wallace* project's [main page](https://wallaceecomod.github.io/) has some basic information and links, which are listed below: 
-
-- [Google Group](https://groups.google.com/forum/#!forum/wallaceecomod)  
-- official [email](mailto:wallaceecomod@gmail.com)  
-- stable version on [CRAN](https://CRAN.R-project.org/package=wallace)  
-- development versions on [Github](https://github.com/wallaceEcoMod/wallace)  
+The *Wallace* project's [main page](https://wallaceecomod.github.io/) has links to the [Google Group](https://groups.google.com/forum/#!forum/wallaceecomod), the official [email](mailto:wallaceecomod@gmail.com), the [CRAN page](https://CRAN.R-project.org/package=wallace) hosting the stable version, and the [Github development page](https://github.com/wallaceEcoMod/wallace).
 
 # Setup
 For `wallace` to work, **you should be using the latest version of R** (or at least later than version 3.2.1). Download for 
@@ -47,13 +42,13 @@ library(wallace)
 run_wallace() 
 ```
 
-The *Wallace* GUI will open in your web browser and the R command line will be occupied (you only get a prompt back by pushing 'escape'). If you'd like to use your typical R command line, open a terminal window, type `R` to start R, and then run the lines above in that window. This will tie up your terminal window but not your R command line (e.g. RStudio, or the R GUI). **You need to avoid exiting your browser window or closing the R window that initiated *Wallace* or you'll have to start over! Luckily that's pretty fast...** Using the terminal looks like this:  
+The *Wallace* GUI will open in your web browser and the R command line will be occupied (you only get a prompt back by pushing 'escape'). If you'd like to use your typical R command line, open a terminal window, type `R` to start R, and then run the lines above in that window. This will tie up your terminal window but not your R command line (e.g. RStudio, or the R GUI). **You need to avoid exiting your browser window or closing the R window that initiated *Wallace*, or you'll have to start over!** Using the terminal looks like this:  
 
 ```{r, out.width = "600px", echo = FALSE}
 knitr::include_graphics("vignette_img/Wallace_Introb.png")
 ```
 
-Typing `run_wallace()` will load *Wallace* in your web browser. 
+Typing `run_wallace()` will run *Wallace* in your web browser. 
 
 ```{r, out.width = "800px", echo = FALSE}
 knitr::include_graphics("vignette_img/Wallace_Intro.png")
@@ -61,11 +56,11 @@ knitr::include_graphics("vignette_img/Wallace_Intro.png")
 
 # Obtain Occurrence Data
 
-You will notice tabs along the top: these are the "components", which represent discrete steps of the analysis, and we will be stepping sequentially through them. Let's click on the first one, called "Get Occs". On the left side, there is a control window where all the user interface controls are (buttons, text inputs, etc.). You can see we are currently using controls for the "module" called "Query Database". Modules are discrete analysis options within each component, and can be contributed by other researchers. You'll see that another module exists for this component: "User-specified Occurrences". This module lets you upload your own data. Try choosing this module instead by clicking on the radio button to select it, then click back to "Query Database".
+You will notice tabs along the top: these are the *components*, which represent discrete steps of the analysis, and you will be stepping sequentially through them. First, click on **Occ Data**. On the left side, there is a window where all the user interface controls are (buttons, text inputs, etc.). You can see that **module** **_Query Database_** is currently selected. *Modules* are discrete analysis options within each component, and can be contributed by other researchers. You'll see that another module exists for this component: **_User-specified Occurrences_**. This module lets you upload your own occurrence data. Try choosing this module instead and notice that the controls change, then click back to **_Query Database_**.
 
-On the right side is the interaction window, which has tabs repesenting the map, occurrence records table, results window, and guidance text windows for both the component and module levels. At this stage of the analysis, no results exist, and we have no data yet for the table, but you can at least view the guidance text now. This text was written by the developers to prepare users for each component and module both methodologically (what the tools do) and theoretically (why we should use them). The guidance text also references scientific papers from the ecology literature for more detailed reading. Please get into the habit of reading these before undertaking analyses, as they should give you a more solid foundation for moving forward.
+On the right side is the interaction window, which has tabs representing the map, occurrence records table, results window, and guidance text windows for both the component and module levels. At this stage of the analysis, no results exist, and we have no data yet for the table, but you can view the guidance text now. This text was written by the developers to prepare users for each component and module *methodologically* (what the tools do) and *theoretically* (why we should use them). The guidance text also references scientific papers from the ecology literature for more detailed reading. Please get into the habit of consulting these before undertaking analyses, as they should give you a more solid foundation for moving forward.
 
-Let's begin by downloading about 300 records of **Acer rubrum** (red maple) from GBIF. After the download is complete, notice the message in the log window, and click on the table tab to view more information on the records. The fields displayed were selected by the developers as those having most relevance to SDMs. The red arrow shows the button you can press to download a .csv file of these records, which has all the original database fields.
+Begin by downloading 75 records of *Tremarctos ornatus* (spectacled bear) from GBIF. After the download is complete, notice the message in the log window, and click on the table tab to view more information on the records. The developers chose the fields that are displayed based on their general relevance to SDMs. The red arrow shows the button you can press to download a .csv file of these records, which has all the original database fields.
 
 ```{r, out.width = "800px", echo = FALSE}
 knitr::include_graphics("vignette_img/Wallace1a.png")
@@ -75,7 +70,7 @@ knitr::include_graphics("vignette_img/Wallace1a.png")
 knitr::include_graphics("vignette_img/Wallace1b.png")
 ```
 
-Let's also read the component and module guidance text by clicking on their tabs.
+At this stage, it is a good idea to read the component and module guidance text by clicking on their tabs.
 
 ```{r, out.width = "800px", echo = FALSE}
 knitr::include_graphics("vignette_img/Wallace1c.png")
@@ -83,29 +78,39 @@ knitr::include_graphics("vignette_img/Wallace1c.png")
 
 # Process Occurrence Data
 
-Now let's clean the data a bit more in the next component "Process Occs". If we want to model the distribution of *A. rubrum* in the U.S., we can remove that odd point in Europe. Click the point to see its info and then enter the ID at the left to remove it.
+The next component, **Process Occs**, gives you access to some data-cleaning tools. If you want to model the distribution of *T. ornatus* in South America, you can remove the odd points found in other parts of the world. For databases like GBIF that accumulate lots of data from various sources, there are inevitably always some dubious localities that may represent a museum collection instead of a natural occurrence, or simply have incorrect coordinates. Click the point to see its info and then enter the ID in the control window on the left to remove it.
 
 ```{r, out.width = "800px", echo = FALSE}
 knitr::include_graphics("vignette_img/Wallace2a.png")
 ```
 
-The samples may exhibit spatial autocorrelation, which is best to account for in the model or remove before modeling. For example, there might be a cluster of records near cities because these are mostly from iNaturalist (citizen science) and most citizen scientists live near cities. So let's spatially thin the points and make sure they're all at least 10 km from one another. That left us with 163 points for modeling (yours may be different).
+Alternatively, you can select the points you want to use by clicking on the module "Select Occurrences On Map". Click on the polygon icon on the map and draw a polygon around the points you want to select. When you are done, click "finish". Now click "Select Occurrences".
+
+Insert image here
+
+The samples may exhibit spatial autocorrelation, which can lead to bias in the environmental signal. For example, there might be a cluster of records near cities because these are mostly from iNaturalist (citizen science) and most citizen scientists live near cities. You can reduce spatial bias by thinning the points to make sure they're all at least 20 km from one another. That leaves 32 points for modeling (yours may be different).
 
 ```{r, out.width = "800px", echo = FALSE}
 knitr::include_graphics("vignette_img/Wallace2b.png")
 ```
 
+If you zoom in on the map, you will see the points that were removed in blue.
+
+Insert image here.
+
 # Obtain Environmental Data
 
-Now we need some variables for our model. Let's click on the component "Get Env Data". Worldclim is a global climate data base that is very popular because it is easily accessible at fine resolutions. The variables are based on interpolations of weather station data for temperature and precipitation, and the coverage is better for areas with more weather stations (basically, developed countries). The **bioclim** predictors are summaries of temperature and precipitation that have been determined to have some biological significance. They're all listed [here](http://www.worldclim.org/bioclim).
+Next, you will need to obtain climatic variables for your model. Click on the component "Env Data". Worldclim is a global climate database that is very popular because it is easily accessible at fine resolutions. The variables are based on interpolations of weather station data for temperature and precipitation, and the coverage is better for areas with more weather stations (especially in developed countries). The **bioclim** predictors are summaries of temperature and precipitation that have been determined to have some biological significance. They're all listed [here](http://www.worldclim.org/bioclim).
 
-Let's choose the **10 arcmin** bioclimatic variables and press download. The first time you use *Wallace* these data are downloaded to your hard drive; after that they will simply be loaded from this local directory. Finer resolutions will take longer to download. 
+Choose the **10 arcmin** bioclimatic variables and press download. The first time you use *Wallace* these data are downloaded to your hard drive; after that they will simply be loaded from this local directory. Finer resolutions will take longer to download. 
+
+Insert text about clicking on the results tab.
+Insert one more image.
 
 ```{r, out.width = "800px", echo = FALSE}
 knitr::include_graphics("vignette_img/Wallace3a.png")
 ```
 
-Notice that, for us, the log window notes that one point was discarded because environmental data were not available.
 
 # Process Environmental Data
 
@@ -113,11 +118,15 @@ Now we need to choose the study extent for modeling. This simply means we have t
 
 We can explore the different options for delineating the study extent here. Press the **Mask** button to trim the environmental layers to this polygon.
 
+Insert text about Step 2.
+
 ```{r, out.width = "800px", echo = FALSE}
 knitr::include_graphics("vignette_img/Wallace4a.png")
 ```
 
 # Partition occurrences
+
+Random k-fold
 
 In order to check whether you've built a model with strong predictive ability, you theoretically need independent data to validate it. When no independent datasets exist, one solution is to partition your data into subsets that we assume are independent of each other, then sequentially build a model on all the subsets but one and evaluate this model on the left-out subset. This is known as *k*-fold cross validation (where *k* is the total number of subsets), and it is quite prevalent in statistics, especially the field of machine learning. After this sequential modeling building exercise is complete, *Wallace* builds a model using **all** the data and summarizes the statistics for all the partitions.
 
@@ -129,9 +138,15 @@ Below, we show some options for spatial partitioning.
 knitr::include_graphics("vignette_img/Wallace5a.png")
 ```
 
+Insert text about non-spatial partition.Block 4, aggregation factor 2.
+Insert image.
+
+
 Take a moment to scroll through the log window at the top of the screen and review all the steps you've taken so far.
 
 # Model
+
+L, LQ, H and LQH R.M. 1-3 step by .5 no clamping
 
 Let's now finally build a Maxent model. Maxent is a machine learning method that can fit complex (i.e. curvy) functions to patterns in the data. If you construct it with particular settings it can also become very similar to a generalized linear model (GLM). Thus, Maxent can conver a wide spectrum of complexity. For more details, please consult the guidance text.
 
@@ -188,6 +203,8 @@ Below is the response curve for annual temperature range (bio7).
 knitr::include_graphics("vignette_img/Wallace7b.png")
 ```
 
+map prediction is LQ 1.5 cloglog no threshold
+
 We can also map the predictions. At first glance it looks like a good model because the presence points correspond to regions of higher suitability. Also, as we chose a model with relatively good transferability, we can be more confident we have avoiding overfitting to some extent.
 
 ```{r, out.width = "800px", echo = FALSE}
@@ -242,7 +259,7 @@ At the moment we don't have anything built into *Wallace* for post-processing, s
 
 # Improving the model
 
-Let's revisit that uncertain prediction into northern Canada. This issue derived from a poor choice of modeling domain and an overfit model. Try rerunning the analysis by extending the domain to include many locations where the species does not occur (see below) and using a simpler model that includes only linear and quadtratic features.
+Let's revisit that uncertain prediction into northern Canada. This issue derived from a poor choice of modeling domain and an overfit model. Try rerunning the analysis by extending the domain to include many locations where the species does not occur (see below) and using a simpler model that includes only linear and quadratic features.
 
 ```{r, out.width = "800px", echo = FALSE}
 knitr::include_graphics("vignette_img/WallaceNexta.png")
@@ -253,3 +270,5 @@ Here are the improved predictions that avoid prediction in northern Canada.
 ```{r, out.width = "800px", echo = FALSE}
 knitr::include_graphics("vignette_img/WallaceNextb.png")
 ```
+
+
