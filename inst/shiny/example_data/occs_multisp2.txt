@@ -1,0 +1,11 @@
+taxon_name,longitude,latitude,grp, occID
+Puma concolor,-122.097786,37.250961,1,1
+Puma concolor,-81.287934,26.203164,1,2
+Puma concolor,-119.213371,34.341324,2,3
+Puma concolor,-106.591888,23.6819,2,4
+Puma concolor,-116.842413,33.165131,1,5
+Puma concolor,-123.296667,42.925556,2,6
+Puma concolor,-92.890091,15.771558,1,7
+Puma concolor,-106.591857,23.682145,2,8
+Puma concolor,-121.35862,37.112293,1,9
+Puma concolor,-123.010885,38.407448,2,10

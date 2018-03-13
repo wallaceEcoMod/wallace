@@ -21,7 +21,7 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("downloadEvalPlots")
   shinyjs::disable("dlPred")
   shinyjs::disable("dlProj")
-  shinyjs::disable("dlRMD")
+  # shinyjs::disable("dlRMD")
   
   ##################### #
   # REACTIVE LISTS ####
@@ -43,10 +43,10 @@ shinyServer(function(input, output, session) {
   # FOR DEVELOPMENT
   observeEvent(input$load, {
     f <- read.csv('example_data/occs_multisp.csv')
-    spp[["Puma_concolor"]]$occs <- spp[["Puma_concolor"]]$occData$occsOrig <- f %>% dplyr::filter(taxon_name == 'Puma concolor') %>% dplyr::select(taxon_name,longitude,latitude,occID)
-    spp[["Panthera_leo"]]$occs <- spp[["Panthera_leo"]]$occData$occsOrig <- f %>% dplyr::filter(taxon_name == 'Panthera leo') %>% dplyr::select(taxon_name,longitude,latitude,occID)
-    spp[["Puma_concolor"]]$occs$pop <- spp[["Puma_concolor"]]$occData$occsOrig$pop <- unlist(apply(spp[["Puma_concolor"]]$occs, 1, popUpContent))
-    spp[["Panthera_leo"]]$occs$pop <- spp[["Panthera_leo"]]$occData$occsOrig$pop <- unlist(apply(spp[["Panthera_leo"]]$occs, 1, popUpContent))
+    spp[["Puma_concolor"]]$occs <- spp[["Puma_concolor"]]$occData$occsCleaned <- f %>% dplyr::filter(taxon_name == 'Puma concolor') %>% dplyr::select(taxon_name,longitude,latitude,occID)
+    spp[["Panthera_leo"]]$occs <- spp[["Panthera_leo"]]$occData$occsCleaned <- f %>% dplyr::filter(taxon_name == 'Panthera leo') %>% dplyr::select(taxon_name,longitude,latitude,occID)
+    spp[["Puma_concolor"]]$occs$pop <- spp[["Puma_concolor"]]$occData$occsCleaned$pop <- unlist(apply(spp[["Puma_concolor"]]$occs, 1, popUpContent))
+    spp[["Panthera_leo"]]$occs$pop <- spp[["Panthera_leo"]]$occData$occsCleaned$pop <- unlist(apply(spp[["Panthera_leo"]]$occs, 1, popUpContent))
     # rvs$occsGrp <- rvs$occs$group
     spp[["Puma_concolor"]]$bg <- f %>% dplyr::filter(taxon_name == 'background1') %>% dplyr::select(longitude, latitude)
     spp[["Panthera_leo"]]$bg <- f %>% dplyr::filter(taxon_name == 'background2') %>% dplyr::select(longitude, latitude)
@@ -278,6 +278,7 @@ shinyServer(function(input, output, session) {
     # assign the selected species to the present occ table's taxon name
     updateSelectInput(session, "sppSel", selected = n)
     shinyjs::enable("dlPaleoDbOccs")
+    shinyjs::enable("dlRMD")
   })
   
   # # # # # # # # # # # # # # # # # #
@@ -288,6 +289,7 @@ shinyServer(function(input, output, session) {
     # output not currently getting used
     userOccs()
     shinyjs::disable("dlDbOccs")
+    shinyjs::enable("dlRMD")
   })
   
   # # # # # # # # # # # # # # # # # #
@@ -969,47 +971,81 @@ shinyServer(function(input, output, session) {
   ########################################### #
   
   # handler for R Markdown download
+  # output$dlRMD <- downloadHandler(
+  #   filename = function() {
+  #     paste0("wallace-session-", Sys.Date(), ".", switch(
+  #       input$rmdFileType, Rmd = 'Rmd', PDF = 'pdf', HTML = 'html', Word = 'docx'
+  #     ))},
+  #   content = function(file) {
+  #     # convert removed occIDs to characters of vectors
+  #     if (!is.null(rvs$removedIDs)) {
+  #       rvs$occsRem <- printVecAsis(rvs$removedIDs)  
+  #     }
+  #     # convert polygon coordinates to characters of vectors
+  #     if (!is.null(rvs$polySelXY)) {
+  #       polySelX <- printVecAsis(round(rvs$polySelXY[,1], digits=4))
+  #       polySelY <- printVecAsis(round(rvs$polySelXY[,2], digits=4))
+  #     } else {
+  #       polySelX <- polySelY <- NULL
+  #     }
+  #     if (!is.null(rvs$polyPjXY)) {
+  #       polyPjX <- printVecAsis(round(rvs$polyPjXY[,1], digits=4))
+  #       polyPjY <- printVecAsis(round(rvs$polyPjXY[,2], digits=4))
+  #     } else {
+  #       polyPjX <- polyPjY <- NULL
+  #     }
+  #     bcSels <- printVecAsis(rvs$bcSels)
+  #     exp <- knitr::knit_expand("Rmd/userReport.Rmd", 
+  #                               curWD=curWD, spName=spName(), 
+  #                               dbName=rvs$occDb, occNum=rvs$occNum, occsCSV=rvs$userCSV$name,  # comp 1
+  #                               thinDist=rvs$thinDist, occsRemoved=rvs$occsRem, occsSelX=polySelX, occsSelY=polySelY,  # comp 2
+  #                               bcRes=rvs$bcRes, bcLat=rvs$bcLat, bcLon=rvs$bcLon, # comp 3
+  #                               userEnvs=printVecAsis(rvs$userEnvs$name), bcSels=bcSels, # comp 3
+  #                               bgSel=rvs$comp4.shp, bgBuf=rvs$comp4.buf, bgUserCSVpath=rvs$userBgShp$datapath,  # comp 4
+  #                               bgUserCSVname=rvs$userBgShp$name, bgUserShpPath=rvs$bgUserShpPar$dsn,  # comp 4 
+  #                               bgUserShpName=rvs$bgUserShpPar$layer, bgPtsNum=rvs$bgPtsNum, # comp 4
+  #                               partSel=rvs$partSel, kfolds=rvs$kfolds, aggFact=rvs$aggFact,  # comp 5
+  #                               enmSel=rvs$comp6, rms1=rvs$rms[1], rms2=rvs$rms[2], rmsStep=rvs$rmsStep, # comp 6
+  #                               fcs=printVecAsis(rvs$fcs),  # comp 6
+  #                               modSel=rvs$modSel, mxNonZeroCoefs=printVecAsis(rvs$mxNonZeroCoefs), envSel=rvs$envSel,  # comp 7
+  #                               bcPlot1=rvs$bcPlotsPar$bc1, bcPlot2=rvs$bcPlotsPar$bc2, bcPlotP=rvs$bcPlotsPar$p,  # comp 7
+  #                               mxEvalSel=rvs$mxEvalSel, predType=rvs$comp7.type, comp7.thresh=rvs$comp7.thr, # comp 7 
+  #                               occsPjX=polyPjX, occsPjY=polyPjY, pjRCP=rvs$pjTimePar$rcp, pjGCM=rvs$pjTimePar$gcm,  # comp 8
+  #                               pjYear=rvs$pjTimePar$year, comp8.thresh=rvs$comp8.thr)  # comp 8
+  #     # temporarily switch to the temp dir, in case you do not have write
+  #     # permission to the current working directory
+  #     owd <- setwd(tempdir())
+  #     on.exit(setwd(owd))
+  #     writeLines(exp, 'userReport2.Rmd')
+  #     
+  #     if (input$rmdFileType == 'Rmd') {
+  #       out <- rmarkdown::render('userReport2.Rmd', rmarkdown::md_document(variant="markdown_github"))
+  #       writeLines(gsub('``` r', '```{r}', readLines(out)), 'userReport3.Rmd')
+  #       out <- 'userReport3.Rmd'
+  #     } else {
+  #       out <- rmarkdown::render('userReport2.Rmd', 
+  #                                switch(input$rmdFileType,
+  #                                       PDF = rmarkdown::pdf_document(latex_engine='xelatex'), 
+  #                                       HTML = rmarkdown::html_document(), 
+  #                                       Word = rmarkdown::word_document())
+  #       )
+  #     }
+  #     file.rename(out, file)
+  #   }
+  # )
   output$dlRMD <- downloadHandler(
     filename = function() {
       paste0("wallace-session-", Sys.Date(), ".", switch(
         input$rmdFileType, Rmd = 'Rmd', PDF = 'pdf', HTML = 'html', Word = 'docx'
       ))},
     content = function(file) {
-      # convert removed occIDs to characters of vectors
-      if (!is.null(rvs$removedIDs)) {
-        rvs$occsRem <- printVecAsis(rvs$removedIDs)  
-      }
-      # convert polygon coordinates to characters of vectors
-      if (!is.null(rvs$polySelXY)) {
-        polySelX <- printVecAsis(round(rvs$polySelXY[,1], digits=4))
-        polySelY <- printVecAsis(round(rvs$polySelXY[,2], digits=4))
-      } else {
-        polySelX <- polySelY <- NULL
-      }
-      if (!is.null(rvs$polyPjXY)) {
-        polyPjX <- printVecAsis(round(rvs$polyPjXY[,1], digits=4))
-        polyPjY <- printVecAsis(round(rvs$polyPjXY[,2], digits=4))
-      } else {
-        polyPjX <- polyPjY <- NULL
-      }
-      bcSels <- printVecAsis(rvs$bcSels)
+      sp <- spp[[curSp()]]
       exp <- knitr::knit_expand("Rmd/userReport.Rmd", 
-                                curWD=curWD, spName=spName(), 
-                                dbName=rvs$occDb, occNum=rvs$occNum, occsCSV=rvs$userCSV$name,  # comp 1
-                                thinDist=rvs$thinDist, occsRemoved=rvs$occsRem, occsSelX=polySelX, occsSelY=polySelY,  # comp 2
-                                bcRes=rvs$bcRes, bcLat=rvs$bcLat, bcLon=rvs$bcLon, # comp 3
-                                userEnvs=printVecAsis(rvs$userEnvs$name), bcSels=bcSels, # comp 3
-                                bgSel=rvs$comp4.shp, bgBuf=rvs$comp4.buf, bgUserCSVpath=rvs$userBgShp$datapath,  # comp 4
-                                bgUserCSVname=rvs$userBgShp$name, bgUserShpPath=rvs$bgUserShpPar$dsn,  # comp 4 
-                                bgUserShpName=rvs$bgUserShpPar$layer, bgPtsNum=rvs$bgPtsNum, # comp 4
-                                partSel=rvs$partSel, kfolds=rvs$kfolds, aggFact=rvs$aggFact,  # comp 5
-                                enmSel=rvs$comp6, rms1=rvs$rms[1], rms2=rvs$rms[2], rmsStep=rvs$rmsStep, # comp 6
-                                fcs=printVecAsis(rvs$fcs),  # comp 6
-                                modSel=rvs$modSel, mxNonZeroCoefs=printVecAsis(rvs$mxNonZeroCoefs), envSel=rvs$envSel,  # comp 7
-                                bcPlot1=rvs$bcPlotsPar$bc1, bcPlot2=rvs$bcPlotsPar$bc2, bcPlotP=rvs$bcPlotsPar$p,  # comp 7
-                                mxEvalSel=rvs$mxEvalSel, predType=rvs$comp7.type, comp7.thresh=rvs$comp7.thr, # comp 7 
-                                occsPjX=polyPjX, occsPjY=polyPjY, pjRCP=rvs$pjTimePar$rcp, pjGCM=rvs$pjTimePar$gcm,  # comp 8
-                                pjYear=rvs$pjTimePar$year, comp8.thresh=rvs$comp8.thr)  # comp 8
+                                curWD=curWD, 
+                                spName=sp$occs$taxon_name[1], 
+                                occsSource=sp$rmm$data$occurrence$sources,
+                                occsNum=sp$rmm$code$wallaceSettings$occsNum  # comp 1
+                                )  # comp 8
       # temporarily switch to the temp dir, in case you do not have write
       # permission to the current working directory
       owd <- setwd(tempdir())

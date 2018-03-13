@@ -1,7 +1,7 @@
 queryPaleoDb_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    radioButtons(ns("occDb"), "Choose Database",
+    radioButtons(ns("occsDb"), "Choose Database",
                  choices = list("PaleobioDB" = 'PaleobioDB',
                                 "Neotoma" = 'neotoma'), inline = TRUE),
     radioButtons(ns("timeInterval"), "Choose time interval",
@@ -11,7 +11,7 @@ queryPaleoDb_UI <- function(id) {
              textInput(ns("spName"), label = "Enter species scientific name", 
                        placeholder = 'format: Genus species')),
     tags$div(title='Maximum number of occurrences recovered from databases. Downloaded records are not sorted randomly: rows are always consistent between downloads.',
-             sliderInput(ns("occNum"), "Set maximum number of occurrences", 
+             sliderInput(ns("occsNum"), "Set maximum number of occurrences", 
                          min = 1, max = 500, value = 100))
   )
 }
@@ -20,8 +20,8 @@ queryPaleoDb_MOD <- function(input, output, session) {
   reactive({
     # FUNCTION CALL ####
     occsTbls <- c1_queryPaleoDb(input$spName, 
-                               input$occDb, 
-                               input$occNum, 
+                               input$occsDb, 
+                               input$occsNum, 
                                input$timeInterval, 
                                logs, shiny=TRUE)
     
@@ -43,8 +43,8 @@ queryPaleoDb_MOD <- function(input, output, session) {
     spp[[n]]$rmm$data$occurrence$taxa <- n
     spp[[n]]$rmm$data$occurrence$dataType <- "presence only"
     spp[[n]]$rmm$data$occurrence$presenceSampleSize <- nrow(occsTbl)
-    spp[[n]]$rmm$data$occurrence$sources <- input$occDb
-    spp[[n]]$rmm$code$wallaceSettings$occNum <- input$occNum
+    spp[[n]]$rmm$data$occurrence$sources <- input$occsDb
+    spp[[n]]$rmm$code$wallaceSettings$occsNum <- input$occsNum
     # for now, just put yearMin and yearMax as the time interval?
     spp[[n]]$rmm$data$occurrence$yearMin <- input$timeInterval
     spp[[n]]$rmm$data$occurrence$yearMax <- input$timeInterval

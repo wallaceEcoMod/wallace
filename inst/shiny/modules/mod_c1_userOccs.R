@@ -18,7 +18,7 @@ userOccs_MOD <- function(input, output, session) {
     for(n in names(occsList)) {
       occs <- occsList[[n]]$occs
       if(!is.null(spp[[n]])) spp[[n]] <- NULL
-      spp[[n]] <- list(occData = list(occs = occs, occsOrig = occs),
+      spp[[n]] <- list(occs = occs, occData = list(occsCleaned = occs),
                        rmm = rangeModelMetadata::rangeModelMetadataTemplate())
       # METADATA ####
       spp[[n]]$rmm$data$occurrence$taxa <- occs$taxon_name[1]

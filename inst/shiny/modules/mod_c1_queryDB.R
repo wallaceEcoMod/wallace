@@ -1,7 +1,7 @@
 queryDb_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    radioButtons(ns("occDb"), "Choose Database",
+    radioButtons(ns("occsDb"), "Choose Database",
                  choices = list("GBIF" = 'gbif',
                                 "VertNet" = 'vertnet',
                                 "BISON" = 'bison'), inline = TRUE),
@@ -9,7 +9,7 @@ queryDb_UI <- function(id) {
              textInput(ns("spName"), label = "Enter species scientific name", placeholder = 'format: Genus species')),
     tags$div(title='Maximum number of occurrences recovered from databases. 
              Downloaded records are not sorted randomly: rows are always consistent between downloads.',
-             sliderInput(ns("occNum"), "Set maximum number of occurrences", min = 1, max = 500, value = 100))
+             sliderInput(ns("occsNum"), "Set maximum number of occurrences", min = 1, max = 500, value = 100))
   )
 }
 
@@ -17,8 +17,8 @@ queryDb_MOD <- function(input, output, session) {
   reactive({
     # FUNCTION CALL ####
     occsTbls <- c1_queryDb(input$spName, 
-                           input$occDb, 
-                           input$occNum, 
+                           input$occsDb, 
+                           input$occsNum, 
                            logs, shiny=TRUE)
     
     req(occsTbls)
@@ -40,8 +40,8 @@ queryDb_MOD <- function(input, output, session) {
     spp[[n]]$rmm$data$occurrence$taxa <- n
     spp[[n]]$rmm$data$occurrence$dataType <- "presence only"
     spp[[n]]$rmm$data$occurrence$presenceSampleSize <- nrow(occs)
-    spp[[n]]$rmm$data$occurrence$sources <- input$occDb
-    spp[[n]]$rmm$code$wallaceSettings$occNum <- input$occNum
+    spp[[n]]$rmm$data$occurrence$sources <- input$occsDb
+    spp[[n]]$rmm$code$wallaceSettings$occsNum <- input$occsNum
     
     # RETURN ####
     # output the table
