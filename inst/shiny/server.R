@@ -64,9 +64,6 @@ shinyServer(function(input, output, session) {
     print('HACKING DONE')
   })
   
-  # for RMD
-  curWD <- getwd()
-  
   # load modules
   for (f in list.files('./modules')) source(file.path('modules', f), local=TRUE)
   
@@ -89,68 +86,24 @@ shinyServer(function(input, output, session) {
     shiny::includeMarkdown(file.path('Rmd', gtext$cur_mod))
   })
   
-  # guidance text and tab behavior
+  # tab and module-level reactives
   tabs <- reactive({input$tabs})
+  mods <- reactive({
+    if(tabs() == "occs") input$occsSel
+    else if(tabs() == "poccs") input$procOccsSel
+    else if(tabs() == "envs") input$envsSel
+    else if(tabs() == "penvs") input$procEnvsSel
+    else if(tabs() == "espace") input$espaceSel
+    else if(tabs() == "part") input$partSel
+    else if(tabs() == "model") input$modSel
+    else if(tabs() == "vis") input$visSel
+    else if(tabs() == "proj") input$projSel
+  })
   
+  # logic to serve the selected component/module guidance text
   observe({
-    if (input$tabs == 'occs') {
-      updateTabsetPanel(session, 'main', selected = 'Map')
-      gtext$cur_comp <- 'gtext_comp1.Rmd'
-      if (input$occSel == 'db') gtext$cur_mod <- "gtext_comp1_dbOccs.Rmd"
-      if (input$occSel == 'user') gtext$cur_mod <- "gtext_comp1_userOccs.Rmd"
-    }
-    if (input$tabs == 'poccs') {
-      updateTabsetPanel(session, 'main', selected = 'Map')
-      gtext$cur_comp <- "gtext_comp2.Rmd"
-      # if Module: Select Localities, populate guidance text and select legend
-      if (input$procOccSel == 'selOccs') gtext$cur_mod <- "gtext_comp2_selectOccsOnMap.Rmd"
-      if (input$procOccSel == 'remID') gtext$cur_mod <- "gtext_comp2_removeByID.Rmd"
-      if (input$procOccSel == 'spthin') gtext$cur_mod <- "gtext_comp2_spatialThin.Rmd"
-    }
-    if (input$tabs == 'envs') {
-      updateTabsetPanel(session, 'main', selected = 'Results')
-      gtext$cur_comp <- "gtext_comp3.Rmd"
-      if (input$envDataSel == 'wcbc') gtext$cur_mod <- "gtext_comp3_worldclim.Rmd"
-      if (input$envDataSel == 'ecoClimatelayers') gtext$cur_mod <- "gtext_comp3_ecoClimate.Rmd"
-      if (input$envDataSel == 'user') gtext$cur_mod <- "gtext_comp3_userEnvs.Rmd"
-    }
-    if (input$tabs == 'penvs') {
-      updateTabsetPanel(session, 'main', selected = 'Map')
-      gtext$cur_comp <- "gtext_comp4.Rmd"
-      if (input$envProcSel == 'bgSel') gtext$cur_mod <- "gtext_comp4_backg.Rmd"
-      if (input$envProcSel == 'bgUser') gtext$cur_mod <- "gtext_comp4_userBg.Rmd"
-    }
-    if (input$tabs == 'part') {
-      updateTabsetPanel(session, 'main', selected = 'Map')
-      gtext$cur_comp <- "gtext_comp5.Rmd"
-      if (input$partSel == 'sp') gtext$cur_mod <- "gtext_comp5_spatial.Rmd"
-      if (input$partSel == 'nsp') gtext$cur_mod <- "gtext_comp5_nonspatial.Rmd"
-    }
-    if (input$tabs == 'model') {
-      updateTabsetPanel(session, 'main', selected = 'Results')
-      gtext$cur_comp <- "gtext_comp6.Rmd"
-      if (input$enmSel == 'BIOCLIM') gtext$cur_mod <- "gtext_comp6_bioclim.Rmd"
-      if (input$enmSel == 'Maxent') gtext$cur_mod <- "gtext_comp6_maxent.Rmd"
-    }
-    if (input$tabs == 'viz') {
-      gtext$cur_comp <- "gtext_comp7.Rmd"
-      if (input$visSel == 'map') {
-        updateTabsetPanel(session, 'main', selected = 'Map')
-        gtext$cur_mod <- "gtext_comp7_map.Rmd"
-      } else {
-        updateTabsetPanel(session, 'main', selected = 'Results')
-        if (input$visSel == 'bcPlots') gtext$cur_mod <- "gtext_comp7_bcPlots.Rmd"
-        if (input$visSel == 'mxEval') gtext$cur_mod <- "gtext_comp7_mxEvalPlots.Rmd"
-        if (input$visSel == 'response') gtext$cur_mod <- "gtext_comp7_respCurves.Rmd"
-      }
-    }
-    if (input$tabs == 'proj') {
-      updateTabsetPanel(session, 'main', selected = 'Map')
-      gtext$cur_comp <- "gtext_comp8.Rmd"
-      if (input$projSel == 'projArea') gtext$cur_mod <- "gtext_comp8_pjArea.Rmd"
-      if (input$projSel == 'projTime') gtext$cur_mod <- "gtext_comp8_pjTime.Rmd"
-      if (input$projSel == 'mess') gtext$cur_mod <- "gtext_comp8_mess.Rmd"
-    }
+    gtext$cur_comp <- paste0("gtext_", tabs(), ".Rmd")
+    gtext$cur_mod <- paste0("gtext_", tabs(), "_", mods(), ".Rmd")
   })
   
   ######################## #
@@ -198,7 +151,7 @@ shinyServer(function(input, output, session) {
     } 
     # map the analysis occs for components downstream of the first
     if(input$tabs == 'poccs') {
-      if(input$procOccSel == 'spthin') {
+      if(input$procOccsSel == 'spthin') {
         # if you've thinned already, map thinned points blue
         # and kept points red
         if(!is.null(spp[[curSp()]]$procOccs$occsThin)) {
@@ -240,7 +193,7 @@ shinyServer(function(input, output, session) {
                   opacity = 1, layerId = 'leg')
     }
     # logic for initializing or removing leaflet draw toolbar
-    if ((input$tabs == 'poccs' & input$procOccSel == 'selOccs') | input$tabs == 'proj') {
+    if ((input$tabs == 'poccs' & input$procOccsSel == 'selOccs') | input$tabs == 'proj') {
       map %>% leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
                                              rectangleOptions = FALSE, circleOptions = FALSE, 
                                              markerOptions = FALSE)
@@ -747,21 +700,21 @@ shinyServer(function(input, output, session) {
   ########################################### #
   
   # ui that populates with the names of models that were run
-  output$modSelUI <- renderUI({
+  output$curModUI <- renderUI({
     req(rvs$modPreds)
     n <- names(rvs$modPreds)
     modsNameList <- setNames(as.list(n), n)
-    selectInput('modSel', label = "Current model",
+    selectInput('curMod', label = "Current model",
                 choices = modsNameList, selected = modsNameList[[1]])
   })
   
   # ui that populates with the names of environmental predictors used
-  output$envSelUI <- renderUI({
+  output$curEnvUI <- renderUI({
     req(rvs$modPreds)
     # for Maxent, only display the environmental predictors with non-zero beta coefficients
     # from the lambdas file (the predictors that were not removed via regularization)
     if (rvs$comp6 == "maxent") {
-      modCur <- rvs$mods[[rvs$modSel]]
+      modCur <- rvs$mods[[rvs$curMod]]
       nonZeroCoefs <- mxNonzeroCoefs(modCur)
       envsNames <- names(rvs$bgMsk[[nonZeroCoefs]])
       rvs$mxNonZeroCoefs <- envsNames
@@ -769,14 +722,14 @@ shinyServer(function(input, output, session) {
       envsNames <- names(rvs$bgMsk)
     }
     envsNamesList <- setNames(as.list(envsNames), envsNames)
-    selectInput("envSel", "Current Env Variable",
+    selectInput("curEnv", "Current Env Variable",
                 choices = envsNamesList, selected = envsNamesList[[1]])
   })
   
   # always update the selected model and environmental predictor in rvs
   observe({
-    rvs$modSel <- input$modSel
-    rvs$envSel <- input$envSel
+    rvs$curMod <- input$curMod
+    rvs$curEnv <- input$curEnv
   })
   
   # module BIOCLIM Plots
@@ -967,72 +920,10 @@ shinyServer(function(input, output, session) {
   )
   
   ########################################### #
-  ### MARKDOWN FUNCTIONALITY ####
+  ### RMARKDOWN FUNCTIONALITY ####
   ########################################### #
   
   # handler for R Markdown download
-  # output$dlRMD <- downloadHandler(
-  #   filename = function() {
-  #     paste0("wallace-session-", Sys.Date(), ".", switch(
-  #       input$rmdFileType, Rmd = 'Rmd', PDF = 'pdf', HTML = 'html', Word = 'docx'
-  #     ))},
-  #   content = function(file) {
-  #     # convert removed occIDs to characters of vectors
-  #     if (!is.null(rvs$removedIDs)) {
-  #       rvs$occsRem <- printVecAsis(rvs$removedIDs)  
-  #     }
-  #     # convert polygon coordinates to characters of vectors
-  #     if (!is.null(rvs$polySelXY)) {
-  #       polySelX <- printVecAsis(round(rvs$polySelXY[,1], digits=4))
-  #       polySelY <- printVecAsis(round(rvs$polySelXY[,2], digits=4))
-  #     } else {
-  #       polySelX <- polySelY <- NULL
-  #     }
-  #     if (!is.null(rvs$polyPjXY)) {
-  #       polyPjX <- printVecAsis(round(rvs$polyPjXY[,1], digits=4))
-  #       polyPjY <- printVecAsis(round(rvs$polyPjXY[,2], digits=4))
-  #     } else {
-  #       polyPjX <- polyPjY <- NULL
-  #     }
-  #     bcSels <- printVecAsis(rvs$bcSels)
-  #     exp <- knitr::knit_expand("Rmd/userReport.Rmd", 
-  #                               curWD=curWD, spName=spName(), 
-  #                               dbName=rvs$occDb, occNum=rvs$occNum, occsCSV=rvs$userCSV$name,  # comp 1
-  #                               thinDist=rvs$thinDist, occsRemoved=rvs$occsRem, occsSelX=polySelX, occsSelY=polySelY,  # comp 2
-  #                               bcRes=rvs$bcRes, bcLat=rvs$bcLat, bcLon=rvs$bcLon, # comp 3
-  #                               userEnvs=printVecAsis(rvs$userEnvs$name), bcSels=bcSels, # comp 3
-  #                               bgSel=rvs$comp4.shp, bgBuf=rvs$comp4.buf, bgUserCSVpath=rvs$userBgShp$datapath,  # comp 4
-  #                               bgUserCSVname=rvs$userBgShp$name, bgUserShpPath=rvs$bgUserShpPar$dsn,  # comp 4 
-  #                               bgUserShpName=rvs$bgUserShpPar$layer, bgPtsNum=rvs$bgPtsNum, # comp 4
-  #                               partSel=rvs$partSel, kfolds=rvs$kfolds, aggFact=rvs$aggFact,  # comp 5
-  #                               enmSel=rvs$comp6, rms1=rvs$rms[1], rms2=rvs$rms[2], rmsStep=rvs$rmsStep, # comp 6
-  #                               fcs=printVecAsis(rvs$fcs),  # comp 6
-  #                               modSel=rvs$modSel, mxNonZeroCoefs=printVecAsis(rvs$mxNonZeroCoefs), envSel=rvs$envSel,  # comp 7
-  #                               bcPlot1=rvs$bcPlotsPar$bc1, bcPlot2=rvs$bcPlotsPar$bc2, bcPlotP=rvs$bcPlotsPar$p,  # comp 7
-  #                               mxEvalSel=rvs$mxEvalSel, predType=rvs$comp7.type, comp7.thresh=rvs$comp7.thr, # comp 7 
-  #                               occsPjX=polyPjX, occsPjY=polyPjY, pjRCP=rvs$pjTimePar$rcp, pjGCM=rvs$pjTimePar$gcm,  # comp 8
-  #                               pjYear=rvs$pjTimePar$year, comp8.thresh=rvs$comp8.thr)  # comp 8
-  #     # temporarily switch to the temp dir, in case you do not have write
-  #     # permission to the current working directory
-  #     owd <- setwd(tempdir())
-  #     on.exit(setwd(owd))
-  #     writeLines(exp, 'userReport2.Rmd')
-  #     
-  #     if (input$rmdFileType == 'Rmd') {
-  #       out <- rmarkdown::render('userReport2.Rmd', rmarkdown::md_document(variant="markdown_github"))
-  #       writeLines(gsub('``` r', '```{r}', readLines(out)), 'userReport3.Rmd')
-  #       out <- 'userReport3.Rmd'
-  #     } else {
-  #       out <- rmarkdown::render('userReport2.Rmd', 
-  #                                switch(input$rmdFileType,
-  #                                       PDF = rmarkdown::pdf_document(latex_engine='xelatex'), 
-  #                                       HTML = rmarkdown::html_document(), 
-  #                                       Word = rmarkdown::word_document())
-  #       )
-  #     }
-  #     file.rename(out, file)
-  #   }
-  # )
   output$dlRMD <- downloadHandler(
     filename = function() {
       paste0("wallace-session-", Sys.Date(), ".", switch(
@@ -1041,7 +932,6 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       sp <- spp[[curSp()]]
       exp <- knitr::knit_expand("Rmd/userReport.Rmd", 
-                                curWD=curWD, 
                                 spName=sp$occs$taxon_name[1], 
                                 occsSource=sp$rmm$data$occurrence$sources,
                                 occsNum=sp$rmm$code$wallaceSettings$occsNum  # comp 1
@@ -1068,8 +958,9 @@ shinyServer(function(input, output, session) {
     }
   )
   
-  ###############################
+  ################################
   ### METADATA FUNCTIONALITY ####
+  ################################
   
   output$dlRMM <- downloadHandler(
     filename = function() {

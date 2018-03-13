@@ -1,5 +1,5 @@
 ---
-title: "comp1_dbOccs"
+title: "gtext_occs_db"
 output: html_document
 ---
 

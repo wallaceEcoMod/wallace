@@ -18,22 +18,22 @@ respPlots_MOD <- function(input, output, session, rvs) {
     # record for RMD
     rvs$comp7 <- isolate(c(rvs$comp7, 'resp'))
     
-    modCur <- rvs$mods[[rvs$modSel]]
+    modCur <- rvs$mods[[rvs$curMod]]
     
     # handle downloads for Response Plots png
     output$dlRespPlot <- downloadHandler(
-      filename = function() {paste0(spName(), "_", rvs$envSel, "_response.png")},
+      filename = function() {paste0(spName(), "_", rvs$curEnv, "_response.png")},
       content = function(file) {
         png(file)
         if (input$dlRespPlotAll == TRUE) {
           dismo::response(modCur)
         } else {
-          dismo::response(modCur, var = rvs$envSel)  
+          dismo::response(modCur, var = rvs$curEnv)  
         }
         dev.off()
       }
     )
     
-    dismo::response(modCur, var = rvs$envSel)
+    dismo::response(modCur, var = rvs$curEnv)
   })
 }

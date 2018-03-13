@@ -21,8 +21,8 @@ mapPredsMaxent_MOD <- function(input, output, session, rvs) {
     rvs$comp7 <- c(rvs$comp7, 'map')
     
     # initially pick raw prediction
-    predSel <- rvs$modPreds[[rvs$modSel]]
-    names(predSel) <- paste0(rvs$modSel, '_raw')
+    predSel <- rvs$modPreds[[rvs$curMod]]
+    names(predSel) <- paste0(rvs$curMod, '_raw')
     
     if (is.na(raster::crs(predSel))) {
       rvs %>% writeLog(type = "error", "Model prediction raster has undefined 
@@ -46,8 +46,8 @@ mapPredsMaxent_MOD <- function(input, output, session, rvs) {
           names(rvs$modPredsLog) <- names(rvs$modPreds)
         })  
       }
-      predSel <- rvs$modPredsLog[[rvs$modSel]]
-      names(predSel) <- paste0(rvs$modSel, '_log')
+      predSel <- rvs$modPredsLog[[rvs$curMod]]
+      names(predSel) <- paste0(rvs$curMod, '_log')
     } else if (input$predType == 'cloglog') {
       # Generate cloglog predictions for each model
       if (is.null(rvs$modPredsCLL)) {
@@ -57,8 +57,8 @@ mapPredsMaxent_MOD <- function(input, output, session, rvs) {
           names(rvs$modPredsCLL) <- names(rvs$modPreds)
         })  
       }
-      predSel <- rvs$modPredsCLL[[rvs$modSel]]
-      names(predSel) <- paste0(rvs$modSel, '_cll')
+      predSel <- rvs$modPredsCLL[[rvs$curMod]]
+      names(predSel) <- paste0(rvs$curMod, '_cll')
     }
     
     # generate binary prediction based on selected thresholding rule 

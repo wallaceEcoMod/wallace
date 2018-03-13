@@ -27,14 +27,14 @@ projectArea_MOD <- function(input, output, session, rvs) {
     xy.round <- round(rvs$polyPjXY, digits = 2)
     xy.round <- xy.round[-nrow(xy.round),]  # remove last point that completes polygon
     coordsChar <- paste(apply(xy.round, 1, function(b) paste0('(',paste(b, collapse=', '),')')), collapse=', ')  
-    logs %>% writeLog('New area projection for model', rvs$modSel, 'with extent coordinates:', coordsChar)
+    logs %>% writeLog('New area projection for model', rvs$curMod, 'with extent coordinates:', coordsChar)
     
     withProgress(message = "Masking environmental grids to projection extent...", {
       projMsk <- raster::crop(rvs$envs, newPoly)
       projMsk <- raster::mask(projMsk, newPoly)
     })
     
-    modCur <- rvs$mods[[rvs$modSel]]
+    modCur <- rvs$mods[[rvs$curMod]]
     
     withProgress(message = 'Projecting model to new area...', {
       pargs <- paste0("outputformat=", rvs$comp7.type)

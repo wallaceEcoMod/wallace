@@ -103,14 +103,14 @@ projectTime_MOD <- function(input, output, session, rvs) {
     # concatanate coords to a single character
     xy.round <- round(rvs$polyPjXY, digits = 2)
     coordsChar <- paste(apply(xy.round, 1, function(b) paste0('(',paste(b, collapse=', '),')')), collapse=', ')  
-    logs %>% writeLog('New time projection for model', rvs$modSel, 'with extent coordinates:', coordsChar)
+    logs %>% writeLog('New time projection for model', rvs$curMod, 'with extent coordinates:', coordsChar)
     
     withProgress(message = "Clipping environmental data to current extent...", {
       pjtMsk <- raster::crop(projTimeEnvs, newPoly)
       pjtMsk <- raster::mask(pjtMsk, newPoly)
     })
     
-    modCur <- rvs$mods[[rvs$modSel]]
+    modCur <- rvs$mods[[rvs$curMod]]
     
     withProgress(message = ("Projecting to new time..."), {
       pargs <- paste0("outputformat=", rvs$comp7.type)

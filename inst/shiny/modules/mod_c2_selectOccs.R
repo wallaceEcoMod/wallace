@@ -20,7 +20,7 @@ selectOccs_MOD <- function(input, output, session) {
     # METADATA ####
     polyX <- printVecAsis(round(spp[[curSp()]]$polySelXY[,1], digits=4))
     polyY <- printVecAsis(round(spp[[curSp()]]$polySelXY[,2], digits=4))
-    spp[[curSp()]]$rmm$code$wallaceSettings$occSelPolyCoords <- paste0('X: ', polyX, ', Y: ', polyY)
+    spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords <- paste0('X: ', polyX, ', Y: ', polyY)
     
     return(occs.sel)
   })
