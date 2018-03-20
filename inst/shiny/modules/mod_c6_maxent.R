@@ -20,73 +20,17 @@ maxent_UI <- function(id) {
 
 maxent_MOD <- function(input, output, session, rvs) {
   reactive({
-    if (is.null(rvs$occsGrp)) {
-      logs %>% writeLog(type = 'error', "Before building a model, partition 
-                       occurrences in component 5.")
-      return()
-    }
-    if (is.null(input$fcs)) {
-      logs %>% writeLog(type = 'error', "No feature classes selected.")
-      return()
-    }
-    if (!require('rJava')) {
-      logs %>% writeLog(type = "error", 'Package rJava cannot load. 
-               Please download the latest version of Java, and make sure it is the 
-               correct version (e.g. 64-bit for a 64-bit system). After installing, 
-               try "library(rJava)". If it loads properly, restart Wallace and try again.
-               If it does not, please consult www.github.com/wallaceecomod/wallace for
-               more tips on getting rJava to work.')
-      return()
-    }
+    # FUNCTION CALL ####
+    m.maxent <- c6_maxent(spp[[curSp()]]$occs, input$bgPts, input$occsGrp,
+                          input$bgGrp, input$bgMsk, input$rms, input$rmsStep, 
+                          input$fcs, input$clamp, logs, shiny = TRUE)
     
-    if (is.null(input$fcs)) {
-      logs %>% writeLog(type = 'error', 'Select feature classes first.')
-      return()
-    }
+    if (is.null(m.maxent)) return()
     
-    # record for RMD
-    rvs$fcs <- input$fcs
-    rvs$rms <- input$rms
-    rvs$rmsStep <- input$rmsStep
-    rvs$clamp <- input$clamp
+    # LOAD INTO SPP ####
+    spp[[curSp()]]$mod <- m.maxent
     
-    # define the vector of RMs to input
-    rms <- seq(input$rms[1], input$rms[2], input$rmsStep)  
-    # create the Progress Bar object for ENMeval
-    progress <- shiny::Progress$new()
-    progress$set(message = "Evaluating ENMs...", value = 0)
-    on.exit(progress$close())
-    n <- length(rms) * length(input$fcs)
-    updateProgress <- function(value = NULL, detail = NULL) {
-      progress$inc(amount = 1/n, detail = detail)
-    }
-    
-    jar <- paste(system.file(package="dismo"), "/java/maxent.jar", sep='')
-    if (!file.exists(jar)) {
-      logs %>% writeLog(type = 'error', 'File maxent.jar missing. 
-                     Please see directions to download and copy to directory on the toolbar.')
-      return()
-    }
-    
-    occs.xy <- rvs$occs %>% dplyr::select(longitude, latitude)
-    
-    e <- ENMeval::ENMevaluate(occs.xy, rvs$bgMsk, bg.coords = rvs$bgPts,
-                              RMvalues = rms, fc = input$fcs, method = 'user', 
-                              occ.grp = rvs$occsGrp, bg.grp = rvs$bgGrp, 
-                              clamp = input$clamp, bin.output = TRUE,
-                              progbar = FALSE, updateProgress = updateProgress)
-    
-    names(e@models) <- e@results$settings
-    
-    # rename results table fields
-    e@results <- e@results %>% dplyr::rename(avg.test.AUC = Mean.AUC, var.test.AUC = Var.AUC,
-                                               avg.diff.AUC = Mean.AUC.DIFF, var.diff.AUC = Var.AUC.DIFF,
-                                               avg.test.orMTP = Mean.ORmin, var.test.orMTP = Var.ORmin,
-                                               avg.test.or10pct = Mean.OR10, var.test.or10pct = Var.OR10,
-                                               parameters = nparam)
-    
-    logs %>% writeLog("Maxent ran successfully and output evaluation results for", nrow(e@results), "models.")
-    
-    return(e)
+    # RMD VALUES ####
+    #spp[[curSp()]]$rmd$c6 <- XXXX
   })
 }
