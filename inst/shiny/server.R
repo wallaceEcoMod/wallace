@@ -522,10 +522,10 @@ shinyServer(function(input, output, session) {
     })
     output$evalTbl <- DT::renderDataTable(modRes.round[,1:16], 
                                           options = list(scrollX = TRUE,
-                                                         sDom  = '<"top">rt<"bottom">'))
+                                                         sDom  = '<"top">rtp<"bottom">'))
     output$evalTblBins <- DT::renderDataTable(modRes.round[,17:(nBinsCols+16)], 
                                               options = list(scrollX = TRUE,
-                                                             sDom  = '<"top">rt<"bottom">'))
+                                                             sDom  = '<"top">rtp<"bottom">'))
     shinyjs::show(id = "evalTblBins")
     
     # switch to Results tab
@@ -556,7 +556,7 @@ shinyServer(function(input, output, session) {
       )
     })
     output$evalTbl <- DT::renderDataTable(round(rvs$modRes, digits=3), options = list(scrollX = TRUE,
-                                                                                      sDom  = '<"top">rt<"bottom">'))
+                                                                                      sDom  = '<"top">rtp<"bottom">'))
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     updateRadioButtons(session, "visSel", 
