@@ -706,8 +706,14 @@ shinyServer(function(input, output, session) {
     
     rasVals <- c(rvs$predCurVals, rvs$projCurVals)
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-    map %>% comp8_map(rvs$projCur, rvs$polyPjXY, bgShpXY, rasVals, 
-                      rasCols, "Predicted Suitability", 'rProj')
+    rasPal <- colorNumeric(rasCols, rvs$predCurVals, na.color='transparent')
+    
+    map %>% 
+      addRasterImage(rvs$predCur, colors = rasPal, opacity = 0.7, 
+                     group = 'c7', layerId = 'r1ID') %>%
+      comp8_map(rvs$projCur, rvs$polyPjXY, bgShpXY, rasVals, 
+                      rasCols, "Predicted Suitability", 
+                      addID = 'rProjArea', clearID = c('rProjArea', 'rProjTime', 'rProjMESS'))
     
     map %>% drawToolbarRefresh()
     
@@ -731,7 +737,8 @@ shinyServer(function(input, output, session) {
     rasVals <- c(rvs$predCurVals, rvs$projCurVals)
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
     map %>% comp8_map(rvs$projCur, rvs$polyPjXY, bgShpXY, rasVals, 
-                      rasCols, "Predicted Suitability", 'rProj')
+                      rasCols, "Predicted Suitability", 
+                      addID = 'rProjTime', clearID = c('r1ID', 'rProjArea', 'rProjTime', 'rProjMESS'))
     
     map %>% drawToolbarRefresh()
     
@@ -753,7 +760,8 @@ shinyServer(function(input, output, session) {
     
     rasVals <- rvs$messVals
     rasCols <- RColorBrewer::brewer.pal(n=11, name='Reds')
-    map %>% comp8_map(rvs$mess, rvs$polyPjXY, bgShpXY, rasVals, rasCols, "MESS Values")
+    map %>% comp8_map(rvs$mess, rvs$polyPjXY, bgShpXY, rasVals, rasCols, "MESS Values",
+                      addID = 'rProjMESS', clearID = c('r1ID', 'rProjArea', 'rProjTime', 'rProjMESS'))
     
     shinyjs::enable("dlProj")
   })
@@ -762,7 +770,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goResetProj, {
     map %>%
       removeShape("projExt") %>%
-      removeImage("rProj")
+      removeImage(c("rProjArea", "rProjTime", "rProjMESS"))
     rvs %>% writeLog("Reset projection extent.")
   })
   

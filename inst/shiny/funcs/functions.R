@@ -470,7 +470,7 @@ reverseLabels <- function(..., reverse_order = FALSE) {
 }
 
 comp8_map <- function(map, ras, polyXY, bgShpXY, rasVals, rasCols, 
-                      legTitle, clearID = NULL) {
+                      legTitle, addID, clearID = NULL) {
   
   # if thresholded, plot with two colors
   if (grepl('thresh', names(ras))) {
@@ -490,7 +490,7 @@ comp8_map <- function(map, ras, polyXY, bgShpXY, rasVals, rasCols,
     clearShapes() %>%
     removeImage(clearID) %>%
     addRasterImage(ras, colors = rasPal, opacity = 0.7, 
-                   group = 'c7', layerId = 'rProj') %>%
+                   group = 'c7', layerId = addID) %>%
     addPolygons(lng=polyXY[,1], lat=polyXY[,2], layerId="projExt", fill = FALSE,
                 weight=4, color="green", group='c8')
   
