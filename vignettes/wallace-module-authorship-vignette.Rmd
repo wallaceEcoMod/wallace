@@ -1,0 +1,76 @@
+---
+title: "module_authorship_vignette"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## *Wallace* modules
+
+*Wallace* is an R-based, interactive application for reproducible modeling of species niches
+and distributions. The application is also expandible via the addition of new modules, which in *Wallace* are discrete parts of the modeling analysis. This vignette steps through the module authorship process, focusing on the steps involved in adding a module, and also on best practices and some troubleshooting.
+
+## Module structure
+
+This section was written for *Wallace* v1.0.5. There are xx necessary steps to adding a functional module. This example will be for a module that implements a binomial generalized additive model (GAM) for presence-only occurrence data.
+
+1. Write a function that carries out the module's analysis.
+
+```{r}
+model_gam <- function(occs.xy, bg.xy, envs, df) {
+  # make vector of each variable wrapped in the spline function s() with
+  # the assigned degrees of freedom
+  dfs <- paste0("s(", names(envs), ", ", df, ")")
+  # extract the predictor variables values at occurrence and background points
+  occs.vals <- raster::extract(envs, occs.xy)
+  bg.vals <- raster::extract(envs, bg.xy)
+  # rbind them together and make new field for identifying occurrence from background
+  vals <- rbind(occs.z, bg.z)
+  d <- data.frame(pa=c(rep(1, nrow(occs.vals), 
+                       rep(0, nrow(bg.vals)), vals)))
+  # make formula
+  f <- as.formula(paste("pa", paste(dfs, collapse = " + "), sep = " ~ "))
+
+  # run the GAM
+  mod <- gam(f, family = "binomial", data = d)
+
+  # write log
+  writeLog(paste("> GAM ran successfully."))
+  
+  return(mod)
+}
+```
+
+2. Compose a `shiny` module that lays out the UI and server logic for your tool. 
+
+```{r}
+# filename: mod_model_glm.R
+
+# this function details the graphic user interface (UI) logic
+glm_UI <- function() {
+  
+}
+
+# this function details the server logic (calculations, etc.)
+glm_MOD <- function() {
+  
+}
+```
+
+As we improve *Wallace* and release new versions, we always make a big effort to simplify the module authorship process.
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
