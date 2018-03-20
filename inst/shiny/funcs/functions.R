@@ -85,7 +85,7 @@ fileNameNoExt <- function(f) {
 
 # return the map center given the bounds
 mapCenter <- function(bounds) {
-  map_center <- c((bounds$west + bounds$east) / 2, (bounds$north + bounds$south) / 2)
+  map_center <- c(bounds$east - ((bounds$east - bounds$west) / 2), bounds$north - ((bounds$north - bounds$south) / 2))
   map_center <- round(map_center, digits=3)
   return(map_center)
 }
