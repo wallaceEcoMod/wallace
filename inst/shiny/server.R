@@ -692,19 +692,23 @@ shinyServer(function(input, output, session) {
   
   # ui that populates with the names of models that were run
   output$curModUI <- renderUI({
-    req(spp[[curSp()]]$mod)
+    req(length(reactiveValuesToList(spp)) > 0, curSp(),
+        spp[[curSp()]]$mod)
     n <- names(spp[[curSp()]]$mod$models)
     modsNameList <- setNames(as.list(n), n)
     selectInput('curMod', label = "Current model",
                 choices = modsNameList, selected = modsNameList[[1]])
   })
   
-  curMod <- reactive({input$curModUI})
-  observe({if(!is.null(spp[[curSp()]]$mod)) print(names(spp[[curSp()]]$mod))})
+  curMod <- reactive({input$curMod})
+  observe({req(length(reactiveValuesToList(spp)) > 0, curSp(),
+               spp[[curSp()]]$mod) 
+    print(curMod())})
   
   # ui that populates with the names of environmental predictors used
   output$curEnvUI <- renderUI({
-    req(spp[[curSp()]]$mod)
+    req(length(reactiveValuesToList(spp)) > 0, curSp(),
+        spp[[curSp()]]$mod)
     # for Maxent, only display the environmental predictors with non-zero beta coefficients
     # from the lambdas file (the predictors that were not removed via regularization)
     if (spp[[curSp()]]$rmm$model$algorithm == "Maxent") {
