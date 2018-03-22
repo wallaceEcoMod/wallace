@@ -718,7 +718,7 @@ shinyServer(function(input, output, session) {
       envsNames <- names(spp[[curSp()]]$envs)
     }
     envsNamesList <- setNames(as.list(envsNames), envsNames)
-    selectInput("curEnv", "Current Env Variable",
+    selectInput("curEnv", "Current env variable",
                 choices = envsNamesList, selected = envsNamesList[[1]])
   })
   
@@ -727,10 +727,6 @@ shinyServer(function(input, output, session) {
   ########################################### #
   ### COMPONENT: VISUALIZE MODEL RESULTS ####
   ########################################### #
-  
-
-  
-
   
   # always update the selected model and environmental predictor in rvs
   observe({
