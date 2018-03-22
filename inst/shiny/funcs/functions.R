@@ -79,7 +79,15 @@ writeLog <- function(logs, ..., type = 'default') {
 # MISC ####
 ####################### #
 
-formatSpName <- function(spName) paste(strsplit(spName, split=' ')[[1]], collapse='_')
+formatSpName <- function(spName) {
+  spName <- as.character(spName)
+  spl <- strsplit(spName, split=' ')
+  if(length(spl[[1]]) > 1) {
+    paste(spl[[1]], collapse='_')
+  } else {
+    spName
+  }
+}
 
 # for naming files
 nameAbbr <- function(spname) {

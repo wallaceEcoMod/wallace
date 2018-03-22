@@ -43,8 +43,8 @@ shinyServer(function(input, output, session) {
   # FOR DEVELOPMENT
   observeEvent(input$load, {
     f <- read.csv('example_data/occs_multisp.csv')
-    spp[["Puma_concolor"]]$occs <- spp[["Puma_concolor"]]$occData$occsCleaned <- f %>% dplyr::filter(taxon_name == 'Puma concolor') %>% dplyr::select(taxon_name,longitude,latitude,occID)
-    spp[["Panthera_leo"]]$occs <- spp[["Panthera_leo"]]$occData$occsCleaned <- f %>% dplyr::filter(taxon_name == 'Panthera leo') %>% dplyr::select(taxon_name,longitude,latitude,occID)
+    spp[["Puma_concolor"]]$occs <- spp[["Puma_concolor"]]$occData$occsCleaned <- f %>% dplyr::filter(taxon_name == 'Puma concolor') %>% dplyr::select(taxon_name,longitude,latitude,occID) %>% dplyr::mutate(record_type = NA)
+    spp[["Panthera_leo"]]$occs <- spp[["Panthera_leo"]]$occData$occsCleaned <- f %>% dplyr::filter(taxon_name == 'Panthera leo') %>% dplyr::select(taxon_name,longitude,latitude,occID) %>% dplyr::mutate(record_type = NA)
     spp[["Puma_concolor"]]$occs$pop <- spp[["Puma_concolor"]]$occData$occsCleaned$pop <- unlist(apply(spp[["Puma_concolor"]]$occs, 1, popUpContent))
     spp[["Panthera_leo"]]$occs$pop <- spp[["Panthera_leo"]]$occData$occsCleaned$pop <- unlist(apply(spp[["Panthera_leo"]]$occs, 1, popUpContent))
     # rvs$occsGrp <- rvs$occs$group
@@ -182,6 +182,7 @@ shinyServer(function(input, output, session) {
       }
     }
     if(input$tabs == 'part') {
+      updateTabsetPanel(session, 'main', selected = 'Map')
       req(spp[[curSp()]]$occs$grp)
       occsGrp <- spp[[curSp()]]$occs$grp
       # colors for partition symbology
@@ -627,22 +628,11 @@ shinyServer(function(input, output, session) {
   mod.maxent <- callModule(maxent_MOD, 'c6_maxent', rvs)
   
   observeEvent(input$goMaxent, {
-    # stop if no occurrence partition group
-    req(rvs$occsGrp)
-    # get model evaluations
-    e <- mod.maxent()
-    # if e is NULL, let the c6_maxent module throw the proper error and stop
-    req(e)
-    rvs$comp6 <- 'maxent'  # record the enm selected
-    rvs$mods <- e@models
-    rvs$modPreds <- e@predictions
-    rvs$modRes <- e@results
-    # x <- callModule(mapPreds_MOD, 'c7_mapPreds', rvs)
-    
-    ncols <- ncol(rvs$modRes)
-    modRes.round <- cbind(rvs$modRes[,1:3], round(rvs$modRes[,4:ncols], digits=3))
-    nBinsCols <- ncols - 16
-    # render both full model and partition avg datatable, and individual partition datatable
+    mod.maxent()
+    results <- spp[[curSp()]]$mod@results
+    results.round <- cbind(results[,1:3], round(results[,4:ncol(results)], digits=3))
+
+    # full model and partition average evaluation table, and individual partition table
     output$evalTbls <- renderUI({
       tagList(
         br(),
@@ -655,7 +645,7 @@ shinyServer(function(input, output, session) {
     output$evalTbl <- DT::renderDataTable(modRes.round[,1:16], 
                                           options = list(scrollX = TRUE,
                                                          sDom  = '<"top">rtp<"bottom">'))
-    output$evalTblBins <- DT::renderDataTable(modRes.round[,17:(nBinsCols+16)], 
+    output$evalTblBins <- DT::renderDataTable(modRes.round[,17:ncol(results)], 
                                               options = list(scrollX = TRUE,
                                                              sDom  = '<"top">rtp<"bottom">'))
     shinyjs::show(id = "evalTblBins")
@@ -676,9 +666,8 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goBioclim, {
     mod.bioclim()
-    # rvs$mods <- e$models
-    # rvs$modPreds <- e$predictions
-    # rvs$modRes <- e$results
+    # evaluation table (written this way to be compatible with multiple tables, 
+    # e.g. like in the Maxent module)
     output$evalTbls <- renderUI({
       tagList(
         br(), 
@@ -687,8 +676,8 @@ shinyServer(function(input, output, session) {
         DT::dataTableOutput('evalTbl')
       )
     })
-    output$evalTbl <- DT::renderDataTable(round(spp[[curSp()]]$mod$results, digits=3), options = list(scrollX = TRUE,
-                                                                                      sDom  = '<"top">rtp<"bottom">'))
+    output$evalTbl <- DT::renderDataTable(round(spp[[curSp()]]$mod$results, digits=3), 
+                                          options = list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">'))
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     # update radio buttons for Visualization component
