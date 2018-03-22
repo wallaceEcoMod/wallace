@@ -22,9 +22,16 @@ maxent_MOD <- function(input, output, session, rvs) {
   reactive({
     
     # FUNCTION CALL ####
-    m.maxent <- c6_maxent(spp[[curSp()]]$occs, input$bgPts, input$occsGrp,
-                          input$bgGrp, input$bgMsk, input$rms, input$rmsStep, 
-                          input$fcs, input$clamp, logs, shiny = TRUE)
+    m.maxent <- c6_maxent(spp[[curSp()]]$occs, 
+                          spp[[curSp()]]$bg, 
+                          spp[[curSp()]]$occs$grp,
+                          spp[[curSp()]]$bg$grp,
+                          spp[[curSp()]]$procEnvs$bgMask, 
+                          input$rms, 
+                          input$rmsStep, 
+                          input$fcs, 
+                          input$clamp, 
+                          logs, shiny = TRUE)
     req(m.maxent)
     
     # LOAD INTO SPP ####

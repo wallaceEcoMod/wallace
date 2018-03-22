@@ -1,4 +1,4 @@
-c6_maxent  <- function(occs, bgPts, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, 
+c6_maxent  <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, 
                         clamp, logs = NULL, shiny = FALSE) {
   if (is.null(occsGrp)) {
     logs %>% writeLog(type = 'error', "Before building a model, please partition 
@@ -51,8 +51,9 @@ c6_maxent  <- function(occs, bgPts, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
 
   # get just coordinates
   occs.xy <- occs %>% dplyr::select(longitude, latitude)
+  bg.xy <- bg %>% dplyr::select(longitude, latitude)
   
-  e <- ENMeval::ENMevaluate(occs.xy, bgMsk, bg.coords = bgPts,
+  e <- ENMeval::ENMevaluate(occs.xy, bgMsk, bg.coords = bg.xy,
                             RMvalues = rms.interval, fc = fcs, method = 'user', 
                             occ.grp = occsGrp, bg.grp = bgGrp, 
                             clamp = clamp, bin.output = TRUE,

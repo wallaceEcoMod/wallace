@@ -642,10 +642,10 @@ shinyServer(function(input, output, session) {
         DT::dataTableOutput('evalTblBins')  
       )
     })
-    output$evalTbl <- DT::renderDataTable(modRes.round[,1:16], 
+    output$evalTbl <- DT::renderDataTable(results.round[,1:16], 
                                           options = list(scrollX = TRUE,
                                                          sDom  = '<"top">rtp<"bottom">'))
-    output$evalTblBins <- DT::renderDataTable(modRes.round[,17:ncol(results)], 
+    output$evalTblBins <- DT::renderDataTable(results.round[,17:ncol(results)], 
                                               options = list(scrollX = TRUE,
                                                              sDom  = '<"top">rtp<"bottom">'))
     shinyjs::show(id = "evalTblBins")
