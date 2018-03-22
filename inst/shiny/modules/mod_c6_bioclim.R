@@ -1,6 +1,7 @@
 bioclim_UI <- function(id) {
   ns <- NS(id)
   tagList(
+    checkboxInput(ns("bioclimAllSp"), label = "Batch for all species?", value = TRUE)
   )
 }
 
@@ -8,28 +9,36 @@ bioclim_MOD <- function(input, output, session) {
   reactive({
     
     # ERRORS ####
-    if (is.null(spp[[curSp()]]$occs$grp)) {
+    if (is.null(spp[[i]]$occs$grp)) {
       logs %>% writeLog(type = 'error', "Before building a model, please partition 
                         occurrences for cross-validation.")
       return()
     }
     
-    # FUNCTION CALL ####
-   m.bioclim <- c6_bioclim(spp[[curSp()]]$occs, 
-                           spp[[curSp()]]$bg, 
-                           spp[[curSp()]]$occs$grp, 
-                           spp[[curSp()]]$bg$grp, 
-                           spp[[curSp()]]$procEnvs$bgMask, 
-                           logs, shiny = TRUE)
-   
-   req(m.bioclim)
-   
-   # LOAD INTO SPP ####
-   spp[[curSp()]]$mod <- m.bioclim
-   
-   # METADATA ####
-   rmm$model$algorithm <- "BIOCLIM"
-   rmm$model$bioclim$notes <- "dismo package implementation"
+    if(input$bioclimAllSp == TRUE) {
+      spVec <- allSp()
+    }else{
+      spVec <- curSp()
+    }
+    
+    for(i in spVec) {  
+      # FUNCTION CALL ####
+      m.bioclim <- c6_bioclim(spp[[i]]$occs, 
+                              spp[[i]]$bg, 
+                              spp[[i]]$occs$grp, 
+                              spp[[i]]$bg$grp, 
+                              spp[[i]]$procEnvs$bgMask, 
+                              logs, shiny = TRUE)
+      
+      req(m.bioclim)
+      
+      # LOAD INTO SPP ####
+      spp[[i]]$mod <- m.bioclim
+      
+      # METADATA ####
+      spp[[i]]$rmm$model$algorithm <- "BIOCLIM"
+      spp[[i]]$rmm$model$bioclim$notes <- "dismo package implementation"
+    }
   })
 }
 # occVals <- raster::extract(e$predictions, values$modParams$occ.pts)

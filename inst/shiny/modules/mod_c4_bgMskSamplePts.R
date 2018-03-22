@@ -30,7 +30,7 @@ bgMskAndSamplePts_MOD <- function(input, output, session) {
                            input$bgPtsNum, 
                            logs, shiny = TRUE)
       req(bgPts)
-      withProgress(message = "Extracting values...", {
+      withProgress(message = paste0("Extracting background values for ", i, "..."), {
         bgEnvsVals <- as.data.frame(raster::extract(spp[[i]]$envs, bgPts))
         names(bgEnvsVals) <- paste0('env_', names(bgEnvsVals))
       })
@@ -40,7 +40,7 @@ bgMskAndSamplePts_MOD <- function(input, output, session) {
       # add columns for env variables beginning with "envs_" to bg tbl
       spp[[i]]$bg <- cbind(bgPts, bgEnvsVals)
       
-      # RMD VALUES ####
+      # METADATA ####
       spp[[i]]$rmm$model$maxent$backgroundSizeSet <- input$bgPtsNum
     }
   })

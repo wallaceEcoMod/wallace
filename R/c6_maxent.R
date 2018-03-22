@@ -69,8 +69,13 @@ c6_maxent  <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
                                            avg.test.or10pct = Mean.OR10, var.test.or10pct = Var.OR10,
                                            parameters = nparam)
   
-  logs %>% writeLog("Maxent ran successfully and output evaluation results for", 
+  n <- formatSpName(occs$taxon_name[1])
+  logs %>% writeLog("Maxent ran successfully for", n, "and output evaluation results for", 
                     nrow(e@results), "models.")
+  
+  # output ENMeval object in list form to be compatible with other models
+  e <- list(models=e@models, results=e@results, 
+            predictions=e@predictions)
   
   return(e)
   

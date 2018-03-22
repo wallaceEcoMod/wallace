@@ -43,7 +43,7 @@ wcBioclims_MOD <- function(input, output, session) {
     
     for(i in spVec) {
       # remove occurrences with NA values for variables
-      withProgress(message = paste0("Extracting values for ", i, "..."), {
+      withProgress(message = paste0("Extracting occurrence values for ", i, "..."), {
         occsEnvsVals <- as.data.frame(raster::extract(envs, spp[[i]]$occs[c('longitude', 'latitude')]))
         names(occsEnvsVals) <- paste0('env_', names(occsEnvsVals))
       })

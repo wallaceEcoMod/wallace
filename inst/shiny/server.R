@@ -629,7 +629,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goMaxent, {
     mod.maxent()
-    results <- spp[[curSp()]]$mod@results
+    results <- spp[[curSp()]]$mod$results
     results.round <- cbind(results[,1:3], round(results[,4:ncol(results)], digits=3))
 
     # full model and partition average evaluation table, and individual partition table
@@ -686,36 +686,47 @@ shinyServer(function(input, output, session) {
     shinyjs::hide(id = "evalTblBins")
   })
   
-  ########################################### #
-  ### COMPONENT: VISUALIZE MODEL RESULTS ####
-  ########################################### #
+  # # # # # # # # # # # # # # # # # #
+  # MODEL: other controls ####
+  # # # # # # # # # # # # # # # # # #
   
   # ui that populates with the names of models that were run
   output$curModUI <- renderUI({
-    req(rvs$modPreds)
-    n <- names(rvs$modPreds)
+    req(spp[[curSp()]]$mod)
+    n <- names(spp[[curSp()]]$mod$models)
     modsNameList <- setNames(as.list(n), n)
     selectInput('curMod', label = "Current model",
                 choices = modsNameList, selected = modsNameList[[1]])
   })
   
+  curMod <- reactive({input$curModUI})
+  observe({if(!is.null(spp[[curSp()]]$mod)) print(names(spp[[curSp()]]$mod))})
+  
   # ui that populates with the names of environmental predictors used
   output$curEnvUI <- renderUI({
-    req(rvs$modPreds)
+    req(spp[[curSp()]]$mod)
     # for Maxent, only display the environmental predictors with non-zero beta coefficients
     # from the lambdas file (the predictors that were not removed via regularization)
-    if (rvs$comp6 == "maxent") {
-      modCur <- rvs$mods[[rvs$curMod]]
-      nonZeroCoefs <- mxNonzeroCoefs(modCur)
-      envsNames <- names(rvs$bgMsk[[nonZeroCoefs]])
-      rvs$mxNonZeroCoefs <- envsNames
+    if (spp[[curSp()]]$rmm$model$algorithm == "Maxent") {
+      mod <- spp[[curSp()]]$mod$models[[curMod()]]
+      envsNames <- mxNonzeroCoefs(mod)
     } else {
-      envsNames <- names(rvs$bgMsk)
+      envsNames <- names(spp[[curSp()]]$envs)
     }
     envsNamesList <- setNames(as.list(envsNames), envsNames)
     selectInput("curEnv", "Current Env Variable",
                 choices = envsNamesList, selected = envsNamesList[[1]])
   })
+  
+  curEnv <- reactive({input$curEnv})
+  
+  ########################################### #
+  ### COMPONENT: VISUALIZE MODEL RESULTS ####
+  ########################################### #
+  
+
+  
+
   
   # always update the selected model and environmental predictor in rvs
   observe({
