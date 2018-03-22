@@ -6,7 +6,7 @@ c4_bgMask <- function(occs, envs, bgExt, logs=NULL, shiny=FALSE) {
   }
   n <- occs$taxon_name[1]
   # mask envs by background extent
-  withProgress(message = paste0("Masking rasters for", n, "..."), {
+  withProgress(message = paste0("Masking rasters for ", n, "..."), {
     bgCrop <- raster::crop(envs, bgExt)
     bgMask <- raster::mask(bgCrop, bgExt)
   })

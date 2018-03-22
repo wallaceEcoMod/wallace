@@ -168,6 +168,7 @@ shinyServer(function(input, output, session) {
       }
     }
     if(input$tabs == 'penvs') {
+      updateTabsetPanel(session, 'main', selected = 'Map')
       if(is.null(spp[[curSp()]]$procEnvs$bgExt)) {
         map %>% map_occs(spp[[curSp()]]$occs)
       }else{
@@ -653,10 +654,10 @@ shinyServer(function(input, output, session) {
     })
     output$evalTbl <- DT::renderDataTable(modRes.round[,1:16], 
                                           options = list(scrollX = TRUE,
-                                                         sDom  = '<"top">rt<"bottom">'))
+                                                         sDom  = '<"top">rtp<"bottom">'))
     output$evalTblBins <- DT::renderDataTable(modRes.round[,17:(nBinsCols+16)], 
                                               options = list(scrollX = TRUE,
-                                                             sDom  = '<"top">rt<"bottom">'))
+                                                             sDom  = '<"top">rtp<"bottom">'))
     shinyjs::show(id = "evalTblBins")
     
     # switch to Results tab
@@ -681,12 +682,13 @@ shinyServer(function(input, output, session) {
     output$evalTbls <- renderUI({
       tagList(
         br(), 
-        div("Full model, partition bin average and individual evaluation statistics", id="stepText"), br(), br(),
+        div("Full model, partition bin average and individual evaluation statistics", id="stepText"), 
+        br(), br(),
         DT::dataTableOutput('evalTbl')
       )
     })
     output$evalTbl <- DT::renderDataTable(round(spp[[curSp()]]$mod$results, digits=3), options = list(scrollX = TRUE,
-                                                                                      sDom  = '<"top">rt<"bottom">'))
+                                                                                      sDom  = '<"top">rtp<"bottom">'))
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     # update radio buttons for Visualization component

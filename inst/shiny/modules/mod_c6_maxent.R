@@ -20,17 +20,21 @@ maxent_UI <- function(id) {
 
 maxent_MOD <- function(input, output, session, rvs) {
   reactive({
+    
     # FUNCTION CALL ####
     m.maxent <- c6_maxent(spp[[curSp()]]$occs, input$bgPts, input$occsGrp,
                           input$bgGrp, input$bgMsk, input$rms, input$rmsStep, 
                           input$fcs, input$clamp, logs, shiny = TRUE)
-    
-    if (is.null(m.maxent)) return()
+    req(m.maxent)
     
     # LOAD INTO SPP ####
     spp[[curSp()]]$mod <- m.maxent
     
-    # RMD VALUES ####
-    #spp[[curSp()]]$rmd$c6 <- XXXX
+    # METADATA ####
+    rmm$model$algorithm <- "Maxent"
+    rmm$model$maxent$featureSet <- input$fcs
+    rmm$model$maxent$regularizationMultiplierSet <- input$rms
+    rmm$model$maxent$regularizationRule <- paste("increment by", input$rmsStep)
+    rmm$model$maxent$notes <- "dismo package implementation"
   })
 }

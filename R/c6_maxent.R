@@ -1,10 +1,19 @@
 c6_maxent  <- function(occs, bgPts, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, 
                         clamp, logs = NULL, shiny = FALSE) {
   if (is.null(occsGrp)) {
-    logs %>% writeLog(type = 'error', "Before building a model, partition 
-                       occurrences in component 5.")
+    logs %>% writeLog(type = 'error', "Before building a model, please partition 
+                        occurrences for cross-validation.")
     return()
   }
+  
+  # error for no maxent.jar in dismo directory
+  jar <- paste(system.file(package="dismo"), "/java/maxent.jar", sep='')
+  if (!file.exists(jar)) {
+    logs %>% writeLog(type = 'error', 'File maxent.jar missing. Please see directions 
+                      on the toolbar to download and copy to the appropriate directory.')
+    return()
+  }
+  
   if (is.null(fcs)) {
     logs %>% writeLog(type = 'error', "No feature classes selected.")
     return()
@@ -29,7 +38,7 @@ c6_maxent  <- function(occs, bgPts, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
   # create the Progress Bar object for ENMeval
   if (shiny == TRUE) {
     progress <- shiny::Progress$new()
-    progress$set(message = "Evaluating ENMs...", value = 0)
+    progress$set(message = "Building and Evaluating ENMs...", value = 0)
     on.exit(progress$close())
     n <- length(rms.interval) * length(fcs)
     updateProgress <- function(value = NULL, detail = NULL) {
@@ -39,14 +48,8 @@ c6_maxent  <- function(occs, bgPts, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
     n <- length(rms.interval) * length(fcs)
     updateProgress <- FALSE
     }
-  #
-  jar <- paste(system.file(package="dismo"), "/java/maxent.jar", sep='')
-  if (!file.exists(jar)) {
-    logs %>% writeLog(type = 'error', 'File maxent.jar missing. 
-                      Please see directions to download and copy to directory on the toolbar.')
-    return()
-  }
-  #
+
+  # get just coordinates
   occs.xy <- occs %>% dplyr::select(longitude, latitude)
   
   e <- ENMeval::ENMevaluate(occs.xy, bgMsk, bg.coords = bgPts,
@@ -55,6 +58,7 @@ c6_maxent  <- function(occs, bgPts, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
                             clamp = clamp, bin.output = TRUE,
                             progbar = FALSE, updateProgress = updateProgress)
   
+  # name the output models in the model list
   names(e@models) <- e@results$settings
   
   # rename results table fields
@@ -64,7 +68,8 @@ c6_maxent  <- function(occs, bgPts, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
                                            avg.test.or10pct = Mean.OR10, var.test.or10pct = Var.OR10,
                                            parameters = nparam)
   
-  logs %>% writeLog("Maxent ran successfully and output evaluation results for", nrow(e@results), "models.")
+  logs %>% writeLog("Maxent ran successfully and output evaluation results for", 
+                    nrow(e@results), "models.")
   
   return(e)
   
