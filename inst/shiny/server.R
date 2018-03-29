@@ -268,9 +268,9 @@ shinyServer(function(input, output, session) {
                    multiple = TRUE, selected = selected, options = options)
   })
   
-  # shortcut to current species, read from sppSelUI
+  # shortcut to currently selected species, read from sppSelUI
   curSp <- reactive(input$sppSel)
-  # vector of all species with occurrence data downloaded
+  # vector of all species with occurrence data loaded
   allSp <- reactive(names(reactiveValuesToList(spp)))
   
   # TABLE
@@ -691,7 +691,7 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # # # #
   
   # ui that populates with the names of models that were run
-  output$curModUI <- renderUI({
+  output$modSelUI <- renderUI({
     req(length(reactiveValuesToList(spp)) > 0, curSp(),
         spp[[curSp()]]$mod)
     n <- names(spp[[curSp()]]$mod$models)
@@ -700,13 +700,11 @@ shinyServer(function(input, output, session) {
                 choices = modsNameList, selected = modsNameList[[1]])
   })
   
+  # shortcut to currently selected model, read from modSelUI
   curMod <- reactive({input$curMod})
-  observe({req(length(reactiveValuesToList(spp)) > 0, curSp(),
-               spp[[curSp()]]$mod) 
-    print(curMod())})
   
   # ui that populates with the names of environmental predictors used
-  output$curEnvUI <- renderUI({
+  output$envSelUI <- renderUI({
     req(length(reactiveValuesToList(spp)) > 0, curSp(),
         spp[[curSp()]]$mod)
     # for Maxent, only display the environmental predictors with non-zero beta coefficients
@@ -722,17 +720,12 @@ shinyServer(function(input, output, session) {
                 choices = envsNamesList, selected = envsNamesList[[1]])
   })
   
+  # shortcut to currently selected environmental variable, read from envSelUI
   curEnv <- reactive({input$curEnv})
   
   ########################################### #
   ### COMPONENT: VISUALIZE MODEL RESULTS ####
   ########################################### #
-  
-  # always update the selected model and environmental predictor in rvs
-  observe({
-    rvs$curMod <- input$curMod
-    rvs$curEnv <- input$curEnv
-  })
   
   # module BIOCLIM Plots
   bcPlots <- callModule(bcPlots_MOD, 'c7_bcPlots', rvs)

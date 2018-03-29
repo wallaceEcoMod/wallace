@@ -405,9 +405,9 @@ shinyUI(tagList(
                                                             # sppSelUI('sppSel_uiID')),
                                                             uiOutput("sppSelUI")),
                                               absolutePanel(top = 10, right = 200, width = 150, draggable = TRUE,
-                                                            uiOutput("curModUI")),
+                                                            uiOutput("modSelUI")),
                                               absolutePanel(top = 10, right = 20, width = 150, draggable = TRUE,
-                                                            uiOutput("curEnvUI"))
+                                                            uiOutput("envSelUI"))
                              ),
                              br(),
                              conditionalPanel("input.tabs != 'rmd' & input.tabs != 'intro'",
