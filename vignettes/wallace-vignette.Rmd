@@ -15,7 +15,7 @@ vignette: >
 
 ```{r setup, echo = FALSE, include=FALSE}
 library(knitr)
-knitr::opts_chunk$set(collapse=TRUE, message=FALSE, warning=FALSE, comment="#>", 
+knitr::opts_chunk$set(collapse=TRUE, message=FALSE, warning=FALSE, comment="#>",
                       out.width = "800px")
 ```
 
@@ -64,7 +64,7 @@ We'll begin with the "Obtain Occurrence Data" component, but first a little orie
 knitr::include_graphics("vignette_img/0_c_intro.png")
 ```
 
-You will notice tabs along the top of the *Wallace* interface: these are "components", which represent discrete steps of the analysis, and you will be stepping sequentially through them (*1*). First, click on "Occ Data". On the left side, there is a toolbar with all the user interface controls, like buttons, text inputs, etc. (*2*). You can see that the "module" called _**Query Database**_ is currently selected. "Modules" are discrete analysis options within each component, and can be contributed by other researchers. You'll see that another module exists for this component: _**User-specified Occurrences**_. This module lets you upload your own occurrence data. Try choosing this module instead and notice that the toolbar changes, then click back to _**Query Database**_. Within this toolbar, you can find the module name and the `R` packages it uses (*2a*) and the control panel for the selected module (*2b*). 
+You will notice tabs along the top of the *Wallace* interface: these are "components", which represent discrete steps of the analysis, and you will be stepping sequentially through them (*1*). First, click on "Occ Data". On the left side, there is a toolbar with all the user interface controls, like buttons, text inputs, etc. (*2*). You can see that the "module" called _**Query Database**_ is currently selected. "Modules" are discrete analysis options within each component, and can be contributed by other researchers. You'll see that another module exists for this component: _**User-specified Occurrences**_. This module lets you upload your own occurrence data. Try choosing this module instead and notice that the toolbar changes, then click back to _**Query Database**_. Within this toolbar, you can find the module name and the `R` packages it uses (*2a*) and the control panel for the selected module (*2b*).
 
 On the right side is the visualization space (*3*), which has a log window (*3a*) and several tabs, including an interactive map, occurrence records table, results window, and guidance text windows for both the component and module levels (*3b*).
 
@@ -96,41 +96,41 @@ knitr::include_graphics("vignette_img/1_d_occ_data.png")
 
 # Process Occurrence Data
 
-The next component, **Process Occs**, gives you access to some data-cleaning tools. The data you downloaded is raw, and there may be erroneous points. Some basic knowledge of the species range can help us remove the most obvious errors. We see that some occurrence points for *T. ornatus*, a South American species mostly occupying the Andes mountains, fall in California, Japan, and even off the coast of Africa and in the Antarctic. For databases like GBIF that accumulate lots of data from various sources, there are inevitably some dubious localities that may represent a museum collection instead of a natural occurrence, or simply have incorrect coordinates. In order to eliminate these obviously erroneous records, select the points you want to keep for analysis by clicking on the module _**Select Occurrences On Map**_. Click on the polygon icon on the map and draw a polygon around the points found in South America. 
+The next component, **Process Occs**, gives you access to some data-cleaning tools. The data you downloaded is raw, and there may be erroneous points. Some basic knowledge of the species range can help us remove the most obvious errors. We see that some occurrence points for *T. ornatus*, a South American species mostly occupying the Andes mountains, fall in California, Japan, and even off the coast of Africa and in the Antarctic. For databases like GBIF that accumulate lots of data from various sources, there are inevitably some dubious localities that may represent a museum collection instead of a natural occurrence, or simply have incorrect coordinates. In order to eliminate these obviously erroneous records, select the points you want to keep for analysis by clicking on the module _**Select Occurrences On Map**_. Click on the polygon icon on the map and draw a polygon around the points found in South America.
 
 ```{r, out.width = "800px", echo = FALSE}
-knitr::include_graphics("vignette_img/2_a_process_data.png")
+knitr::include_graphics("vignette_img/2_a_process_occs.png")
 ```
 
 When you are done, click "Finish" on the polygon toolbar, then **Select Occurrences**. The map will zoom to the points you've selected.
 
 ```{r, out.width = "800px", echo = FALSE}
-knitr::include_graphics("vignette_img/2_b_process_data.png")
+knitr::include_graphics("vignette_img/2_b_process_occs.png")
 ```
 
 Alternatively, you can also remove occurrences by ID with the module _**Remove Occurrences by ID**_. *Tremarctos ornatus* typically inhabits mid- to high-elevation areas. By zooming in a bit, you can see that some occurrence points are in lowland areas and may have incorrect georeferences. **Note**: for this vignette, we will disregard the possibility that these points represent true lowland sightings of *T. ornatus*, but for the purposes of research, these assumptions should not be made trivially and require investigation. To remove these points, click them to find their unique ID ("occID") and geographic coordinates, then enter the ID and click **Remove Occurrence** to remove it.
 
 ```{r, out.width = "800px", echo = FALSE}
-knitr::include_graphics("vignette_img/2_c_process_data.png")
+knitr::include_graphics("vignette_img/2_c_process_occs.png")
 ```
 
-Even after removing erroneous points, the points you have left may be clustered. This often leads to spatial autocorrelation, which can bias the environmental signal for the occurrence data that the model will try to interpret. For example, there might be clustering of points near cities because the data is mostly from citizen scientists, and most citizen scientists live in and near cities. Or the points can cluster around roads because the field biologists who took the data were cataloging while driving. 
+Even after removing erroneous points, the points you have left may be clustered. This often leads to spatial autocorrelation, which can bias the environmental signal for the occurrence data that the model will try to interpret. For example, there might be clustering of points near cities because the data is mostly from citizen scientists, and most citizen scientists live in and near cities. Or the points can cluster around roads because the field biologists who took the data were cataloging while driving.
 
 Let's click on the module _**Spatial Thin**_. This lets you reduce spatial bias by running a spatial thinning function on the points to make sure they're all a defined distance from one another. We will use 10 km as an example.
 
 ```{r, out.width = "800px", echo = FALSE}
-knitr::include_graphics("vignette_img/2_d_process_data.png")
+knitr::include_graphics("vignette_img/2_d_process_occs.png")
 ```
 
 We are now left with 44 points for our analysis (yours may be different). You can zoom in to see what the function did. Red points were retained, and blue points were removed. You can also download the processed occurrence dataset as .csv by clicking on the **Download** button.
 
 ```{r, out.width = "800px", echo = FALSE}
-knitr::include_graphics("vignette_img/2_e_process_data.png")
+knitr::include_graphics("vignette_img/2_e_process_occs.png")
 ```
 
 # Obtain Environmental Data
 
-Next, you will need to obtain environmental variables for your analysis. The values of the variables are extracted for our occurrence points, and this information is provided to the model. This data is in raster form, which simply means a big grid where each grid cell specifies a value. Rasters can be displayed as surfaces on maps (we'll see this later). 
+Next, you will need to obtain environmental variables for your analysis. The values of the variables are extracted for our occurrence points, and this information is provided to the model. This data is in raster form, which simply means a big grid where each grid cell specifies a value. Rasters can be displayed as surfaces on maps (we'll see this later).
 
 Click on the component "Env Data". The first module, _**WorldClim Bioclims**_, lets you download climatic data from [WorldClim](http://www.worldclim.org/), a global climate database of interpolated climate surfaces derived from weather station data at multiple resolutions. The coverage is better for areas with more weather stations (especially in developed countries), and more uncertainty exists in areas with fewer stations. The [bioclim](http://www.worldclim.org/bioclim) variables are summaries of temperature and precipitation that have been determined to have general biological significance.
 
@@ -156,13 +156,13 @@ knitr::include_graphics("vignette_img/3_c_env_data.png")
 
 Now you will need to choose the study extent for modeling. This will define the region from which "background" points are drawn for model fitting. Background points are meant to sample the total area available to the study species. Methods like Maxent are known as presence-background techniques because they compare the predictor variable values at background points to those at the occurrence points. In making decisions about the study extent, we want to avoid areas the species has historically been unable to move to---for example, regions beyond a barrier like a mountain range or large river that the species cannot traverse. If you include these areas, it may send a false signal to the model that these areas are part of the "background" and thus not suitable. Please see the guidance text for more details.
 
-You can explore the different options for delineating the study extent here. To begin, go to the module _**Select Study Region**_. There are two steps here: 1) choosing the shape of the study extent, and 2) sampling the background points. Under "Step 1", choose "Minimum convex polygon", and set the study region buffer distance to 1 degree. Click the **Select** button to plot this shape on the map. 
+You can explore the different options for delineating the study extent here. To begin, go to the module _**Select Study Region**_. There are two steps here: 1) choosing the shape of the study extent, and 2) sampling the background points. Under "Step 1", choose "Minimum convex polygon", and set the study region buffer distance to 1 degree. Click the **Select** button to plot this shape on the map.
 
 ```{r, out.width = "800px", echo = FALSE}
 knitr::include_graphics("vignette_img/4_a_process_envs.png")
 ```
 
-Next, complete "Step 2", which both masks the rasters by the study extent and samples the background points. Set the number of background points to 10,000 (bigger, more extensive, samples are better), and click the **Sample** button. Notice the progress bar in the bottom-right corner. 
+Next, complete "Step 2", which both masks the rasters by the study extent and samples the background points. Set the number of background points to 10,000 (bigger, more extensive, samples are better), and click the **Sample** button. Notice the progress bar in the bottom-right corner.
 
 ```{r, out.width = "800px", echo = FALSE}
 knitr::include_graphics("vignette_img/4_b_process_envs.png")
@@ -217,9 +217,9 @@ The first time you run this, you may get an error message if the Maxent software
 
 The results appear in two tables of evaluation statistics, allowing comparison of the different models you just built. There should be 9 rows per table: one for each of the feature class / regularization multiplier combinations you selected (the images here will have more). In the first table, statistics from the models built from the 4 occurrence data partition groups are averaged---these are labeled with "test". In the second table, statistics from each of the 4 groups are displayed separately.
 
-How do we choose the "best" model? There is a mountain of literature about this, and there is really no concrete answer. AUC and OR (omission rate) were calculated using our partitions, and AIC was instead calculated using the model prediction of our background extent. Although AIC does not incorporate the cross validation results, it does explicitly penalize model complexity---models with more parameters have a worse AIC score. It's really up to the user to decide, and the guidance text has some references which should help you learn more. 
+How do we choose the "best" model? There is a mountain of literature about this, and there is really no concrete answer. AUC and OR (omission rate) were calculated using our partitions, and AIC was instead calculated using the model prediction of our background extent. Although AIC does not incorporate the cross validation results, it does explicitly penalize model complexity---models with more parameters have a worse AIC score. It's really up to the user to decide, and the guidance text has some references which should help you learn more.
 
-For this vignette, we will use sequential criteria on cross-validation results. First, we will prioritize models that did not omit many of the occurrence points in the predicted range. Sort the results table by "avg.test.or10pct", or the 10 percentile omission rate on testing data (see guidance text for details). In our set of models, the model with the lowest avg.test.or10pct was H_1 (hinge features and regularization multiplier of 1).
+For this vignette, we will use sequential criteria on cross-validation results. First, we will prioritize models that did not omit many of the occurrence points in the predicted range. Sort the results table by "avg.test.or10pct", or the 10 percentile training presence threshold on testing data (see guidance text for details). In our set of models, the model with the lowest avg.test.or10pct was H_1 (hinge features and regularization multiplier of 1).
 
 ```{r, out.width = "800px", echo = FALSE}
 knitr::include_graphics("vignette_img/6_b_model.png")
@@ -243,75 +243,82 @@ In our example, if we had chosen the model with the lowest AICc score, we would 
 
 The module "Maxent Evaluation Plots" enables users to evaluate the performance statistics across models. Below, see how regularization multiplier affects average test omission rate (using 10 percentile training presence threshold.)
 
-7 b visualize.png
 ```{r, out.width = "800px", echo = FALSE}
-knitr::include_graphics("vignette_img/Wallace7a.png")
+knitr::include_graphics("vignette_img/7_a_visualize.png")
 ```
 
-To evaluate whether a model makes biological sense, examine the **response curves** that define how each predictor (x-axis) relates to suitability (y-axis). If you want to see the results for a particular model, you can select it by using the dropdown menu under "current model". Below is one of the response curves for model H_1, mean temperature of the wettest quarter (bio8). The flat portion of the response curve indicates that suitability remains stable at lower values for this variable. Above 200, suitability for *T. ornatus* decreases sharply.  
+We should also examine the **response curves**, which show how the predicted suitability (y-axis) changes based on different values of each variable (x-axis). If you want to see the results for a particular model, you can select it by using the dropdown menu under "Current Model". Below is one of the response curves for model H_1, mean temperature of the wettest quarter (bio8). The flat portion of the response curve indicates that suitability remains stable for lower temperatures, but above 20 degrees C (the WorldClim values are multiplied by 10, so 200 deg C on the x-axis is really 20 deg C), suitability for *T. ornatus* decreases sharply.  
 
-7 visualize curve.png
 ```{r, out.width = "800px", echo = FALSE}
-knitr::include_graphics("vignette_img/Wallace7b.png")
+knitr::include_graphics("vignette_img/7_b_visualize.png")
 ```
 
-You can also visualize model predictions on the map. Predictions of suitability can be continuous (no threshold) or binary (minimum training presence threshold or 10 percentile training presence threshold). Please see the module guidance for information about Maxent model output scales and thresholding rules. Below is the mapped prediction for model H_1, no threshold. At first glance, it looks like a good model because most of the presence points correspond to regions of higher suitability.
+You can also visualize model predictions on the map. Predictions of suitability can be continuous (a range of values) or binary (thresholded to just two values: 0 and 1). Please see the module guidance for information about Maxent model output scales and thresholding rules. Below is the mapped prediction for model H_1, no threshold. 
 
-7 visualize prediction.png
 ```{r, out.width = "800px", echo = FALSE}
-knitr::include_graphics("vignette_img/Wallace7c.png")
+knitr::include_graphics("vignette_img/7_c_visualize.png")
 ```
 
-Below is the mapped prediction of the same model, this time with the threshold set to 10 percentile training presence. This is the stricter of the two thresholding rules. Some of the occurrence records may fall outside the blue areas that represent suitable areas for *T. ornatus*. Try mapping the prediction with the threshold set to minimum training presence instead, and see the difference.
+Below is the mapped prediction of the same model, this time with the threshold set to 10 percentile training presence. This is the stricter of the two thresholding rules currently available. Some of the occurrence points may fall outside the blue areas that represent suitable areas for *T. ornatus*. This thresholded prediction was used to calculate the 10 percentile training presence omission rate from the evaluation statistics. Try mapping the prediction with the threshold set to the less strict minimum training presence instead, and notice the difference.
 
-Insert image here.
-7 Visualize binary.png
+```{r, out.width = "800px", echo = FALSE}
+knitr::include_graphics("vignette_img/7_d_visualize.png")
+```
 
 # Project
 
-Next, you can project the model to new locations (extending the domain) and future climate scenarios (for years 2050 and 2070). "Projecting" simply means plugging in new values to the mathematical model and getting a new response. Think of it like drawing some new range on the response curves and finding the resulting suitability. This could possibly be outside the range seen previously, and the lines would need to be extended (unless clamping is chosen -- see guidance text).
+Next, you can project the model to new locations and future climate scenarios (for years 2050 and 2070). "Projecting" simply means plugging in new values to the model (i.e., those not used for model building) and getting a new response (i.e., suitability predictions for new variable ranges). Think of it like drawing some new range of x-values on the response curves and finding the resulting suitability. 
 
-This is potentially confusing -- didn't the cross validation step do this too? The cross validation with spatial partitioning sequentially forced models to predict to new areas, and the average testing AUC summarized their ability to transfer accurately. However, the final model was built with **all** the data. We are now taking this model and projecting it to predictor variable value ranges that were potentially never used in model training. Thus, these values for different places and times might be completely new to our model, and could be so different that we may be uncertain in the accuracy of our projection. Please see the guidance text for more details.
+This is potentially confusing -- didn't the cross validation step do this too? The cross validation with spatial partitioning sequentially forced models to predict to new areas, and the evaluation statistics summarized their ability to transfer accurately. However, the final model that we used to make the predictions we are currently looking at was built with **all** the data (it did not exclude any partition groups). So the variable ranges associated with all the occurrence points in our dataset were used in the model-building process.
 
-H_1 has a low OR (so it rarely fails to predict known occurrences) and a high average testing AUC (so it should have good transferability). Below, model H_1 has been projected to the year 2070 under a severe climate scenario (representative concentration pathway(RCP) 8.5). Notice that there are several global circulation models (GCMs) to choose from. To project your model, draw a polygon like the one below and click "Finish". Then choose a year, GCM and RCP and click the **Project** button to build the new map. Not all GCMs have data for all available RCPs. If an error message appears in the log window, you may have to try another combination of GCM and RCP. If you mirror the settings below, you can find out how the model H_1 predicts the suitability for *T. ornatus* will look in 2070 under a severe climate change scenario. Note that the suitable area appears to have contracted to a narrower strip, confined to higher elevations in the Andes mountain range. This model can also be visualized as a continuous prediction, or as a binary presence/absence prediction when a threshold is applied.  
+We are now taking this model and projecting it to variable ranges that were potentially never used in model-building. Thus, these values for different places and times might be completely new to our model, and could be so different that we may be uncertain in the accuracy of our projection. Please see the guidance text for details on these "non-analog conditions", and on "clamping" for a way to control how response curves are extended.
+
+H_1 has a low omission rate (so it rarely fails to predict known occurrences) and a high average testing AUC (so it should have good transferability). Below, model H_1 has been projected to the year 2070 under a severe climate scenario: representative concentration pathway (RCP) 8.5. Notice also that there are several global circulation models (GCMs) to choose from---these all represent different efforts to model future climate. We used CCSM4 for this tutorial. See the module guidance text for more on RCPs and GCMs.
+
+To project your model, draw a polygon using the draw toolbar and click "Finish". Then choose a year, GCM and RCP and click the **Project** button to build the new map. The rasters are sourced from the WorldClim database, and not all GCMs have raster data for each RCP. Below is the continuous prediction. For our example, note that the northernmost suitable area in the present seems to be contracted southward, that suitability seems lower overall, and that it also becomes more confined to higher elevations.   
 
 ```{r, out.width = "800px", echo = FALSE}
-knitr::include_graphics("vignette_img/Wallace8a.png")
+knitr::include_graphics("vignette_img/8_a_project.png")
 ```
 
+Below is the projection made binary by the 10 percentile training presence threshold. We can see some of these differences between present and future projection a bit more clearly now.
 
 ```{r, out.width = "800px", echo = FALSE}
-knitr::include_graphics("vignette_img/Wallace8b.png")
-knitr::include_graphics("vignette_img/Wallace8c.png")
-knitr::include_graphics("vignette_img/Wallace8d.png")
+knitr::include_graphics("vignette_img/8_b_project.png")
+```
+
+As we mentioned, there may be areas within our new ranges of values that have high uncertainty because they are very different from the values used in model-building. In order to visualize where these areas are, we can plot a MESS map. MESS stands for (M)ultivariate (E)nvironmental (S)imilarity (S)urface: please see the module guidance text for details. Below is the MESS for our projection. All the darker values correspond to areas similar to those used in model-building, while the lighter ones are much more different. We can see that future climate values at high elevation are similar, whereas those at lower elevations west towards the coast are very different in some places. We may therefore assume that projected suitability in these areas has high uncertainty.
+
+```{r, out.width = "800px", echo = FALSE}
+knitr::include_graphics("vignette_img/8_c_project.png")
 ```
 
 # Extracting the code
 
-A major advantage of *Wallace* compared to other GUI-based software is that you can extract all the code used to run the analysis. This allows you to rerun the analysis session, share it, or modify it. The code can be downloaded in several ways, but the **R Markdown** format, which is a convenient format for combining R code and text, can be run directly in R. For .pdf downloads, some version of TeX is necessary. Please see the text on this page for more details.
+A major advantage of *Wallace* compared to other GUI-based software is that you can extract all the code used to run the analysis. While we were using *Wallace*, lots of `R` code has been running in the background. This option allows you to download a simplified version of all that code in the form of a condensed and notated `R` script. You can use this script to rerun the analysis session, share it, or modify it. The script can be downloaded in several ways, but the **R Markdown** format, which is a convenient format for combining `R` code and text, can be run directly in `R`. For .pdf downloads, some version of TeX is necessary. Please see the text on this page for more details.
 
-To download the code, select Rmd and click Download.
-
-```{r, out.width = "800px", echo = FALSE}
-knitr::include_graphics("vignette_img/Wallace9a.png")
-```
-
-Now, you should have an .Rmd file that contains your complete analysis. Rmd files combine regular text with **code chunks**, shown by the red arrow below. Modules from *Wallace* are indicated as headers denoted by **###**. For a quick reference to Rmd syntax, see [here](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
+To download the script, select Rmd and click Download.
 
 ```{r, out.width = "800px", echo = FALSE}
-knitr::include_graphics("vignette_img/WallaceRMDa.png")
+knitr::include_graphics("vignette_img/rmd_1.png")
 ```
 
-You might want to open a new R window and try running some of this code. Just note that if you close your *Wallace* session you'll lose your progress in the web browser (but your Rmd will be unaffected). If you use RStudio, you can open this Rmd and click **knit** to compile your workflow into a sharable html document.
+Now, you should have an .Rmd file that contains your complete analysis. **R Markdown** files combine regular text with **code chunks**. Modules from *Wallace* are indicated as headers denoted by **###**. For a quick reference to Rmd syntax, see [here](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
 
-Note that you can change anything you like in this code to build upon your workflow. We envision that future versions of *Wallace* will enable you to upload such modified Rmds to *Wallace* to fill in all the options you chose and pick up where you left off in a previous analysis in the GUI.
+```{r, out.width = "800px", echo = FALSE}
+knitr::include_graphics("vignette_img/rmd_2.png")
+```
 
-At the moment we don't have anything built into *Wallace* for post-processing, so you can use R directly to build from the code created above.
+You might want to open a new R window and try running some of this code. Just remember that if you close your *Wallace* session you'll lose your progress in the web browser (but your .Rmd will be unaffected). If you use RStudio, you can open this Rmd and click **knit** to compile your workflow into a sharable html document.
+
+Note that you can change anything you like in this code to build upon your workflow. We envision that future versions of *Wallace* will enable you to upload such modified .Rmds to *Wallace* to fill in all the options you chose and pick up where you left off in a previous analysis in the GUI.
+
+Also, although we don't have anything built into *Wallace* for post-processing models in the present version, you can work in `R` after the session by modifying the .Rmd and build on the analysis. Examples of post-processing are stacking models to get estimates of biodiversity, or comparing models to estimate niche overlap. We are currently working with partners who specialize in this, and future versions of *Wallace* will likely include capabilities to engage in post-processing of models.
 
 
+# Conclusion
 
+Thus ends the *Wallace* vignette. We hope you learned more about the application, its features, and modeling of species distributions and niches in general. We hate to be repetitive, but we highly encourage you to read the guidance text, follow up on the recommended publications, and hopefully let those lead you to other relevant publications that can inform you further. 
 
-
-
-
+Also, please reach out to us by email or through any of the websites mentioned in the Introduction. We'd love to hear your thoughts, opinions, or suggestions on how to make *Wallace* better for all users.
 

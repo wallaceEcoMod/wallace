@@ -574,7 +574,7 @@ shinyServer(function(input, output, session) {
     req(rvs$modPreds)
     n <- names(rvs$modPreds)
     modsNameList <- setNames(as.list(n), n)
-    selectInput('modSel', label = "Current model",
+    selectInput('modSel', label = "Current Model",
                 choices = modsNameList, selected = modsNameList[[1]])
   })
   
