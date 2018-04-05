@@ -16,7 +16,7 @@ vignette: >
 ```{r setup, echo = FALSE, include=FALSE}
 library(knitr)
 knitr::opts_chunk$set(collapse=TRUE, message=FALSE, warning=FALSE, comment="#>",
-                      out.width = "800px")
+                      out.width = "800px", echo = FALSE)
 ```
 
 # Preface
@@ -36,7 +36,7 @@ For `wallace` to work, **you should be using the latest version of R** (or at le
 [Windows](https://cran.r-project.org/bin/windows/base/) or [Mac](https://cran.r-project.org/bin/macosx/).
 
 Let's first install and load *Wallace*. Open R and run the code below. It's the only code you'll have to run to use Wallace.
-```{r, eval = FALSE}
+```{r, eval = FALSE, echo = TRUE}
 # install the package
 install.packages('wallace')
 # load the package
@@ -53,14 +53,14 @@ knitr::include_graphics("vignette_img/0_a_intro.png")
 
 If you'd like to use the `R` console while running *Wallace*, open a terminal window (MacOS/Linux) or command prompt (Windows), initialize `R`, and then run the lines above. An example with Terminal in MacOS is below.
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/0_b_intro.png")
 ```
 
 # Orientation
 We'll begin with the "Obtain Occurrence Data" component, but first a little orientation. Please consult the schematic below showing the different parts of *Wallace*.
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/0_c_intro.png")
 ```
 
@@ -74,23 +74,23 @@ At this stage of the analysis, no results exist, and you have no data yet for th
 
 Begin by clicking on the guidance text first for the component **Obtain Occurrence Data**, and then for the modules. Let's read through these to get a better understanding of what is involved in obtaining occurrence data, and how *Wallace* implements it.
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/1_a_occ_data.png")
 ```
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/1_b_occ_data.png")
 ```
 
 Now that we've educated ourselves, let's proceed to getting our occurrences. As an example, let's download occurrence records for *Tremarctos ornatus* (spectacled bear) from GBIF. This is a species of concern [listed as "vulnerable" by the IUCN](http://www.iucnredlist.org/details/22066/0), and has a range nicely delimited by the Andes mountains. Set the maximum number of occurrences to 200 and click the **Query Database** button. After the download is complete, notice the message in the log window. You searched for 200 records, but only found 66 records with coordinate information (latitude, longitude) that were not duplicates. If you wanted 200 or more records with this information that is crucial for SDMs, you could increase the maximum occurrences you search for and try again.
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/1_c_occ_data.png")
 ```
 
 Now click on the "Occs Tbl" tab to view more information on the records. The developers chose the fields that are displayed based on their general relevance to studies on species ranges. You can click the **Download** button to get a .csv file of these records, which has all the original database fields.
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/1_d_occ_data.png")
 ```
 
@@ -98,19 +98,19 @@ knitr::include_graphics("vignette_img/1_d_occ_data.png")
 
 The next component, **Process Occs**, gives you access to some data-cleaning tools. The data you downloaded is raw, and there may be erroneous points. Some basic knowledge of the species range can help us remove the most obvious errors. We see that some occurrence points for *T. ornatus*, a South American species mostly occupying the Andes mountains, fall in California, Japan, and even off the coast of Africa and in the Antarctic. For databases like GBIF that accumulate lots of data from various sources, there are inevitably some dubious localities that may represent a museum collection instead of a natural occurrence, or simply have incorrect coordinates. In order to eliminate these obviously erroneous records, select the points you want to keep for analysis by clicking on the module _**Select Occurrences On Map**_. Click on the polygon icon on the map and draw a polygon around the points found in South America.
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/2_a_process_occs.png")
 ```
 
 When you are done, click "Finish" on the polygon toolbar, then **Select Occurrences**. The map will zoom to the points you've selected.
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/2_b_process_occs.png")
 ```
 
 Alternatively, you can also remove occurrences by ID with the module _**Remove Occurrences by ID**_. *Tremarctos ornatus* typically inhabits mid- to high-elevation areas. By zooming in a bit, you can see that some occurrence points are in lowland areas and may have incorrect georeferences. **Note**: for this vignette, we will disregard the possibility that these points represent true lowland sightings of *T. ornatus*, but for the purposes of research, these assumptions should not be made trivially and require investigation. To remove these points, click them to find their unique ID ("occID") and geographic coordinates, then enter the ID and click **Remove Occurrence** to remove it.
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/2_c_process_occs.png")
 ```
 
@@ -118,13 +118,13 @@ Even after removing erroneous points, the points you have left may be clustered.
 
 Let's click on the module _**Spatial Thin**_. This lets you reduce spatial bias by running a spatial thinning function on the points to make sure they're all a defined distance from one another. We will use 10 km as an example.
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/2_d_process_occs.png")
 ```
 
 We are now left with 44 points for our analysis (yours may be different). You can zoom in to see what the function did. Red points were retained, and blue points were removed. You can also download the processed occurrence dataset as .csv by clicking on the **Download** button.
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/2_e_process_occs.png")
 ```
 
@@ -136,19 +136,19 @@ Click on the component "Env Data". The first module, _**WorldClim Bioclims**_, l
 
 Choose the **2.5 arcmin** bioclim variable resolution and click the **Load Env Data** button. The first time you use *Wallace* these data are downloaded to your hard drive; after that they will simply be loaded from this local directory. Finer resolutions will take longer to download. The finest resolution data (**30 arcsec**) is served by tile, and thus the tile that corresponds to the map center will be downloaded. In addition to downloading the rasters, *Wallace* will also remove any occurrence points with no environmental values (i.e., points that did not overlap with the rasters). Notice the progress bar in the bottom-right corner.
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/3_a_env_data.png")
 ```
 
 After the rasters have loaded the "Results" tab will display some summary information about them (e.g. resolution, extent, cell number, etc.).
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/3_b_env_data.png")
 ```
 
 Note that you have the option to specify a subset of the total variables to use in the analysis.
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/3_c_env_data.png")
 ```
 
@@ -158,19 +158,19 @@ Now you will need to choose the study extent for modeling. This will define the 
 
 You can explore the different options for delineating the study extent here. To begin, go to the module _**Select Study Region**_. There are two steps here: 1) choosing the shape of the study extent, and 2) sampling the background points. Under "Step 1", choose "Minimum convex polygon", and set the study region buffer distance to 1 degree. Click the **Select** button to plot this shape on the map.
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/4_a_process_envs.png")
 ```
 
 Next, complete "Step 2", which both masks the rasters by the study extent and samples the background points. Set the number of background points to 10,000 (bigger, more extensive, samples are better), and click the **Sample** button. Notice the progress bar in the bottom-right corner.
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/4_b_process_envs.png")
 ```
 
 Click the **Download** button to get a zipped file of the masked rasters.
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/4_c_process_envs.png")
 ```
 
@@ -182,13 +182,13 @@ There's a whole literature on how to best partition data for modeling. One optio
 
 Here's an example of random *k*-fold, which randomly assigns each point to a partition group. Here, *k* = 4.
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/5_a_partition_occs.png")
 ```
 
 Here's an example of spatial blocking, which assigns each point to one of 4 spatially separate partition groups.
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/5_b_partition_occs.png")
 ```
 
@@ -209,7 +209,7 @@ The example images show a more extensive modeling exercise, but in the interest 
 
 The 3 feature class combinations (L, LQ, H) \* 3 regularization multipliers (1, 2, 3) = 9 models. The feature classes H will enable significant complexity in the response, so it takes a bit longer to run than the simpler models.
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/6_a_model.png")
 ```
 
@@ -221,19 +221,19 @@ How do we choose the "best" model? There is a mountain of literature about this,
 
 For this vignette, we will use sequential criteria on cross-validation results. First, we will prioritize models that did not omit many of the occurrence points in the predicted range. Sort the results table by "avg.test.or10pct", or the 10 percentile training presence threshold on testing data (see guidance text for details). In our set of models, the model with the lowest avg.test.or10pct was H_1 (hinge features and regularization multiplier of 1).
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/6_b_model.png")
 ```
 
 If there had been a tie we would have then chosen the model with the highest "avg.test.AUC" (average test AUC), but in this case, model H_1 had the lowest OR. When we examine test AUC for this model, we see it is reasonably high relative to the other models.
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/6_c_model.png")
 ```
 
 You can also find the evaluation statistics for each individual partition in the table below, in comparison to the one above that only lists averages.
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/6_d_model.png")
 ```
 
@@ -243,25 +243,25 @@ In our example, if we had chosen the model with the lowest AICc score, we would 
 
 The module "Maxent Evaluation Plots" enables users to evaluate the performance statistics across models. Below, see how regularization multiplier affects average test omission rate (using 10 percentile training presence threshold.)
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/7_a_visualize.png")
 ```
 
 We should also examine the **response curves**, which show how the predicted suitability (y-axis) changes based on different values of each variable (x-axis). If you want to see the results for a particular model, you can select it by using the dropdown menu under "Current Model". Below is one of the response curves for model H_1, mean temperature of the wettest quarter (bio8). The flat portion of the response curve indicates that suitability remains stable for lower temperatures, but above 20 degrees C (the WorldClim values are multiplied by 10, so 200 deg C on the x-axis is really 20 deg C), suitability for *T. ornatus* decreases sharply.  
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/7_b_visualize.png")
 ```
 
 You can also visualize model predictions on the map. Predictions of suitability can be continuous (a range of values) or binary (thresholded to just two values: 0 and 1). Please see the module guidance for information about Maxent model output scales and thresholding rules. Below is the mapped prediction for model H_1, no threshold. 
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/7_c_visualize.png")
 ```
 
 Below is the mapped prediction of the same model, this time with the threshold set to 10 percentile training presence. This is the stricter of the two thresholding rules currently available. Some of the occurrence points may fall outside the blue areas that represent suitable areas for *T. ornatus*. This thresholded prediction was used to calculate the 10 percentile training presence omission rate from the evaluation statistics. Try mapping the prediction with the threshold set to the less strict minimum training presence instead, and notice the difference.
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/7_d_visualize.png")
 ```
 
@@ -277,19 +277,19 @@ H_1 has a low omission rate (so it rarely fails to predict known occurrences) an
 
 To project your model, draw a polygon using the draw toolbar and click "Finish". Then choose a year, GCM and RCP and click the **Project** button to build the new map. The rasters are sourced from the WorldClim database, and not all GCMs have raster data for each RCP. Below is the continuous prediction. For our example, note that the northernmost suitable area in the present seems to be contracted southward, that suitability seems lower overall, and that it also becomes more confined to higher elevations.   
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/8_a_project.png")
 ```
 
 Below is the projection made binary by the 10 percentile training presence threshold. We can see some of these differences between present and future projection a bit more clearly now.
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/8_b_project.png")
 ```
 
 As we mentioned, there may be areas within our new ranges of values that have high uncertainty because they are very different from the values used in model-building. In order to visualize where these areas are, we can plot a MESS map. MESS stands for (M)ultivariate (E)nvironmental (S)imilarity (S)urface: please see the module guidance text for details. Below is the MESS for our projection. All the darker values correspond to areas similar to those used in model-building, while the lighter ones are much more different. We can see that future climate values at high elevation are similar, whereas those at lower elevations west towards the coast are very different in some places. We may therefore assume that projected suitability in these areas has high uncertainty.
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/8_c_project.png")
 ```
 
@@ -299,13 +299,13 @@ A major advantage of *Wallace* compared to other GUI-based software is that you 
 
 To download the script, select Rmd and click Download.
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/rmd_1.png")
 ```
 
 Now, you should have an .Rmd file that contains your complete analysis. **R Markdown** files combine regular text with **code chunks**. Modules from *Wallace* are indicated as headers denoted by **###**. For a quick reference to Rmd syntax, see [here](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf)
 
-```{r, out.width = "800px", echo = FALSE}
+```{r}
 knitr::include_graphics("vignette_img/rmd_2.png")
 ```
 
