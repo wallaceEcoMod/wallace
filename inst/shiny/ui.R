@@ -397,12 +397,10 @@ shinyUI(tagList(
                                               # this makes the border red, but a line remains on the UI even before the box should appear
                                               # tags$style("#sppSelUI {border: 2px solid #dd4b39;}"),
                                               fixedPanel(top = 50, right = 50, width = 200,
-                                                           # tags$head(
-                                                           #   tags$style(type="text/css", "label{ display: table-cell; text-align: center; vertical-align: middle; } .form-group { display: table-row;}")
-                                                           # ),
-                                                           uiOutput("sppSelUI"),
-                                                           uiOutput("envSelUI"),
-                                                           uiOutput("modSelUI")
+                                                         checkboxInput("batch", label = "Batch for all species?", value = TRUE),
+                                                         uiOutput("sppSelUI"),
+                                                         uiOutput("envSelUI"),
+                                                         uiOutput("modSelUI")
                                               )
                                               
                              ),

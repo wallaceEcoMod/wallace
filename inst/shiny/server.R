@@ -70,7 +70,7 @@ shinyServer(function(input, output, session) {
   # initialize log window
   output$log <- renderUI({
     tags$div(id='logHeader', tags$div(id='logContent', HTML(paste0(logs(), "<br>", collapse = ""))))
-    })
+  })
   
   ######################## #
   ### GUIDANCE TEXT ####
@@ -305,7 +305,7 @@ shinyServer(function(input, output, session) {
       n <- formatSpName(spp[[curSp()]]$occs$taxon_name[1])
       source <- spp[[curSp()]]$rmm$data$occurrence$sources
       paste0(n, "_", source, ".csv")
-      },
+    },
     content = function(file) {
       write.csv(spp[[curSp()]]$occData$occsOrig, file, row.names=FALSE)
     }
@@ -347,13 +347,18 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # #
   # module Spatial Thin ####
   # # # # # # # # # # # # # # 
-  thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs_uiID')
+  
   observeEvent(input$goThinOccs, {
     if(input$batch == TRUE) {
-      for(i in allSp()) thinOccs(sp = i)
+      for(i in allSp()) {
+        thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs_uiID', i)
+        thinOccs()
+      }
     } else {
-      thinOccs(sp = curSp())
+      thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs_uiID', curSp())
+      thinOccs()
     }
+    
     # UI CONTROLS 
     # updateSelectInput(session, "sppSel", selected = curSp())
     shinyjs::enable("dlProcOccs")
@@ -625,7 +630,7 @@ shinyServer(function(input, output, session) {
   ######################### #
   ### COMPONENT: MODEL ####
   ######################### #
-
+  
   # # # # # # # # # # # 
   # module Maxent ####
   # # # # # # # # # # # 
@@ -635,7 +640,7 @@ shinyServer(function(input, output, session) {
     mod.maxent()
     results <- spp[[curSp()]]$mod$results
     results.round <- cbind(results[,1:3], round(results[,4:ncol(results)], digits=3))
-
+    
     # full model and partition average evaluation table, and individual partition table
     output$evalTbls <- renderUI({
       tagList(
@@ -934,7 +939,7 @@ shinyServer(function(input, output, session) {
                                 spName=sp$occs$taxon_name[1], 
                                 occsSource=sp$rmm$data$occurrence$sources,
                                 occsNum=sp$rmm$code$wallaceSettings$occsNum  # comp 1
-                                )  # comp 8
+      )  # comp 8
       # temporarily switch to the temp dir, in case you do not have write
       # permission to the current working directory
       owd <- setwd(tempdir())
@@ -964,8 +969,8 @@ shinyServer(function(input, output, session) {
   output$dlRMM <- downloadHandler(
     filename = function() {
       paste0("wallace-session-", Sys.Date(), ".csv")
-             },
+    },
     content = function(file) {
       rangeModelMetadata::rmmToCSV(spp[[curSp()]]$rmm, filename = file)
-  })
+    })
 })
