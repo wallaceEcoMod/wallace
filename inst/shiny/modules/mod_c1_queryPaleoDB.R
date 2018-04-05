@@ -53,3 +53,8 @@ queryPaleoDb_MOD <- function(input, output, session) {
     return(occs)
   })
 }
+
+queryPaleoDb_INFO <- infoGenerator(modName = "Query Database (Paleo)",
+                                   modAuts = "Sara Varela, Jamie Kass",
+                                   pkgName = c("paleobioDb", "neotoma"))
+

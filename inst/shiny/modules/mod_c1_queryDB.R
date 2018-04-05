@@ -48,3 +48,8 @@ queryDb_MOD <- function(input, output, session) {
     return(occs)
   })
 }
+
+queryDb_INFO <- infoGenerator(modName = "Query Database (Present)",
+                              modAuts = "Jamie M. Kass, Bruno Vilela, Robert P. Anderson",
+                              pkgName = "spocc")
+

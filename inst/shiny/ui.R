@@ -39,29 +39,22 @@ shinyUI(tagList(
                                                              selected = 'db'),
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.occsSel == 'db'",
-                                                                 div('Module: Query Database (Present)', id="mod"),
-                                                                 uiTop('spocc', 'Interface to Species Occurrence Data Sources'),
-                                                                 HTML('<hr>'),
+                                                                 uiTop2(queryDb_INFO),
                                                                  queryDb_UI('c1_queryDb_uiID'),
                                                                  actionButton("goDbOccs", "Query Database"), br(), br(),
                                                                  HTML('<hr>')
                                                 ),
                                                 conditionalPanel("input.occsSel == 'pdb'",
-                                                                 div('Module: Query Database (Paleo)', id="mod"),
-                                                                 uiTop('paleobioDb', 'Download and Process Data from the Paleobiology Database'),
-                                                                 uiTop('neotoma', 'Access to the Neotoma Paleoecological Database Through R'),
-                                                                 HTML('<hr>'),
+                                                                 uiTop2(queryPaleoDb_INFO),
                                                                  queryPaleoDb_UI('c1_queryPaleoDb_uiID'),
                                                                  actionButton("goPaleoDbOccs", "Query Database"), br(), br(),
                                                                  HTML('<hr>')
                                                 ),
                                                 conditionalPanel("input.occsSel == 'user'",
-                                                                 div('Module: User-specified Occurrences', id="mod"),
-                                                                 HTML('<hr>'),
+                                                                 uiTop2(userOccs_INFO),
                                                                  userOccs_UI('c1_userOccs_uiID'),
                                                                  actionButton("goUserOccs", "Load Occurrences"),
-                                                                 HTML('<hr>'),
-                                                                 div('Module Developers: Jamie M. Kass, Bruno Vilela, Robert P. Anderson', id="pkgDes")
+                                                                 HTML('<hr>')
                                                 ),
                                                 conditionalPanel("input.occsSel == 'db' | input.occsSel == 'pdb'",
                                                                  strong("Download raw occurrence data"), br(), br(),
@@ -69,11 +62,13 @@ shinyUI(tagList(
                                                                  HTML('<hr>')
                                                 ),
                                                 conditionalPanel("input.occsSel == 'db'",
-                                                                 uiBottom("Jamie M. Kass, Bruno Vilela, Robert P. Anderson", 'spocc', "Scott Chamberlain, Karthik Ram, Ted Hart")
+                                                                 uiBottom2(queryDb_INFO)
                                                 ),
                                                 conditionalPanel("input.occsSel == 'pdb'",
-                                                                 uiBottom("Sara Varela, Jamie Kass", 'paleobioDb', "Sara Varela, Javier González Hernández, Luciano Fabris Sgarbi"), br(),
-                                                                 uiBottom(NULL, 'neotoma', "Simon J. Goring, Gavin L. Simpson, Jeremiah P. Marsicek, Karthik Ram")
+                                                                 uiBottom2(queryPaleoDb_INFO)
+                                                ),
+                                                conditionalPanel("input.occsSel == 'user'",
+                                                                 uiBottom2(userOccs_INFO)
                                                 )
                                                 
                                ),

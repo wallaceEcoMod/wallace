@@ -31,3 +31,7 @@ userOccs_MOD <- function(input, output, session) {
     return(occsList)
   })
 }
+
+userOccs_INFO <- infoGenerator(modName = "User-specified Occurrences",
+                              modAuts = "Jamie M. Kass, Bruno Vilela, Robert P. Anderson",
+                              pkgName = NULL)
