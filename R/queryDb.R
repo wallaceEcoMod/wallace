@@ -16,7 +16,7 @@
 #' @examples
 #' c1_queryDb(spName = "Tremarctos ornatus", occDb = "gbif", occNum = 100)
 
-c1_queryDb <- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
+queryDb <- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
   # capitalize genus name if not already, trim whitespace
   spName <- trimws(paste0(toupper(substring(spName, 1, 1)), substring(spName, 2, nchar(spName))))  
   

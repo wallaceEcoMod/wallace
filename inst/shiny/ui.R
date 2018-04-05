@@ -396,13 +396,15 @@ shinyUI(tagList(
                                               div(id = "wallaceLog", class = "scrollbox", htmlOutput("log")),
                                               # this makes the border red, but a line remains on the UI even before the box should appear
                                               # tags$style("#sppSelUI {border: 2px solid #dd4b39;}"),
-                                              absolutePanel(top = 10, right = 380, width = 150, draggable = TRUE,
-                                                            # sppSelUI('sppSel_uiID')),
-                                                            uiOutput("sppSelUI")),
-                                              absolutePanel(top = 10, right = 200, width = 150, draggable = TRUE,
-                                                            uiOutput("modSelUI")),
-                                              absolutePanel(top = 10, right = 20, width = 150, draggable = TRUE,
-                                                            uiOutput("envSelUI"))
+                                              fixedPanel(top = 50, right = 50, width = 200,
+                                                           # tags$head(
+                                                           #   tags$style(type="text/css", "label{ display: table-cell; text-align: center; vertical-align: middle; } .form-group { display: table-row;}")
+                                                           # ),
+                                                           uiOutput("sppSelUI"),
+                                                           uiOutput("envSelUI"),
+                                                           uiOutput("modSelUI")
+                                              )
+                                              
                              ),
                              br(),
                              conditionalPanel("input.tabs != 'rmd' & input.tabs != 'intro'",

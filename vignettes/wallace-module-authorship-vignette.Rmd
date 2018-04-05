@@ -1,46 +1,54 @@
 ---
-title: "module_authorship_vignette"
+title: "Wallace Module Authorship Vignette"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 ```
 
 ## *Wallace* modules
 
-*Wallace* is an R-based, interactive application for reproducible ecological modeling. The application is also expandible via the addition of new modules, which in *Wallace* are discrete parts of the modeling analysis. This vignette steps through the module authorship process, focusing on the steps involved in adding a module, and also on best practices and some troubleshooting.
+*Wallace* is an `R`-based, interactive application for reproducible ecological modeling. The application is also expandible via the addition of new modules, which in *Wallace* are discrete parts of the modeling analysis. This vignette steps through the module authorship process, focusing on the steps involved in adding a module, and also on best practices and some troubleshooting.
 
-## Module structure
+## Module structure overview
 
-This section was written for *Wallace* v1.0.5. There are xx necessary steps to adding a functional module. This example will be for a module that implements a generalized additive model (GAM). As *Wallace* currently focuses on models of species niches and distributions, this GAM will be binomial and tailored to presence-only occurrence data, which means that instead of real absence data we'll use background values instead (sometimes referred to "pseudo-absences").
+This section was written for *Wallace* v2.0.0. There are 4 necessary steps to adding a functional module. This example will be for a module that implements a generalized additive model (GAM). As *Wallace* currently focuses on models of species niches and distributions, this GAM will be binomial and tailored to presence-only occurrence data, which means that instead of real absence data we'll use background values instead (sometimes referred to "pseudo-absences").
 
-1. Write a function that carries out the module's analysis. In this case, the function will take the required inputs (coordinates for occurrence and background points, and a RasterStack of environmental predictor variables) and output the fitted model object.
+## Step 1: Write a function
+
+Let's first write a function that carries out the module's analysis. This function takes the following inputs: 
+ 1. occurrence point coordinates
+ 2. background point coordinates
+ 3. occurrence point environmental values
+ 4. background point environmental values
+ 5. degrees of freedom
+
+It outputs the fitted model object.
 
 ```{r}
-model_gam <- function(occs.xy, bg.xy, envs) {
+runGAM <- function(occs.xy, bg.xy, occs.vals, bg.vals, degFr) {
   # make vector of each variable wrapped in the spline function s() with
   # the assigned degrees of freedom
-  dfs <- paste0("s(", names(envs), ", ", df, ")")
-  # extract the predictor variables values at occurrence and background points
-  occs.vals <- raster::extract(envs, occs.xy)
-  bg.vals <- raster::extract(envs, bg.xy)
-  # rbind them together and make new field for identifying occurrence from background
-  vals <- rbind(occs.z, bg.z)
-  d <- data.frame(pa=c(rep(1, nrow(occs.vals), 
-                       rep(0, nrow(bg.vals)), vals)))
+  degFrs <- paste0("s(", names(occs.vals), ", ", degFr, ")")
+  # bind all environmental values together
+  vals <- rbind(occs.vals, bg.vals)
+  # make vector of 1's and 0's for identifying occurrence from background
+  bin <- c(rep(1, nrow(occs.vals)), rep(0, nrow(bg.vals)))
+  # put everything together in a table for modeling
+  d <- data.frame(pa = bin, vals)
   # make formula
-  f <- as.formula(paste("pa", paste(dfs, collapse = " + "), sep = " ~ "))
-
+  f <- as.formula(paste("pa", paste(degFrs, collapse = " + "), sep = " ~ "))
   # run the GAM
   mod <- gam(f, family = "binomial", data = d)
-
-  # write log
-  writeLog(paste("> GAM ran successfully."))
-  
+  # output model object
   return(mod)
 }
 ```
+
+Save this as a script here: `wallace/R/runGAM.R`.
+
+## Step 2: Write a `shiny` module that calls your function
 
 2. Compose a `shiny` module that lays out the UI and server logic for your tool. 
 
@@ -48,15 +56,25 @@ model_gam <- function(occs.xy, bg.xy, envs) {
 # filename: mod_model_glm.R
 
 # this function details the graphic user interface (UI) logic
-gam_UI <- function() {
+runGAM_UI <- function() {
   
 }
 
 # this function details the server logic (calculations, etc.)
-gam_MOD <- function() {
+runGAM_MOD <- function() {
   
 }
+
+runGAM_INFO <- infoGenerator(modName = "Generalized Additive Model",
+                             modAuts = "Johnny Modules, Alfred Russel Wallace",
+                             pkgName = "gam")
 ```
+
+Save this as a script here `wallace/inst/shiny/modules/mod_runGAM.R`.
+
+## Step 3: Modify `ui.R`
+
+## Step 4: Modify `server.R`
 
 As we improve *Wallace* and release new versions, we always make a big effort to simplify the module authorship process.
 

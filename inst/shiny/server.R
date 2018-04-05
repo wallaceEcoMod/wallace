@@ -253,7 +253,7 @@ shinyServer(function(input, output, session) {
   
   output$sppSelUI <- renderUI({
     # check that a species is in the list already -- if not, don't proceed
-    req(length(reactiveValuesToList(spp)) > 0)
+    # req(length(reactiveValuesToList(spp)) > 0)
     # get the species names
     n <- names(spp)
     # make a named list of their names
@@ -264,7 +264,7 @@ shinyServer(function(input, output, session) {
     # if espace component, allow for multiple species selection
     if(input$tabs == 'espace') options <- list(maxItems = 2) else options <- list(maxItems = 1)
     # generate a selectInput ui that lists the available species
-    selectizeInput('sppSel', label = "Current species", choices = sppNameList,
+    selectizeInput('sppSel', label = "Current species:" , choices = sppNameList,
                    multiple = TRUE, selected = selected, options = options)
   })
   
@@ -349,7 +349,11 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # 
   thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs_uiID')
   observeEvent(input$goThinOccs, {
-    thinOccs()
+    if(input$batch == TRUE) {
+      for(i in allSp()) thinOccs(sp = i)
+    } else {
+      thinOccs(sp = curSp())
+    }
     # UI CONTROLS 
     # updateSelectInput(session, "sppSel", selected = curSp())
     shinyjs::enable("dlProcOccs")
