@@ -9,46 +9,25 @@ thinOccs_UI <- function(id) {
   )
 }
 
-thinOccs_MOD <- function(input, output, session, sp) {
+thinOccs_MOD <- function(input, output, session, spIn) {
   reactive({
-    # if(input$spThinAllSp == TRUE) {
-    #   spVec <- allSp()
-    # }else{
-    #   spVec <- curSp()
-    # }
-    # 
-    # for(i in spVec) {
-    #   # FUNCTION CALL ####
-    #   occs.thin <- c2_thinOccs(spp[[i]]$occs, 
-    #                            input$thinDist, 
-    #                            logs, shiny = TRUE)
-    #   req(occs.thin)
-    #   
-    #   # LOAD INTO SPP ####
-    #   # record present occs before thinning (this may be different from occData$occOrig)
-    #   spp[[i]]$procOccs$occsPreThin <- spp[[i]]$occs
-    #   spp[[i]]$occs <- occs.thin
-    #   spp[[i]]$procOccs$occsThin <- occs.thin
-    #   
-    #   # METADATA ####
-    #   # perhaps there should be a thinDist metadata field?
-    #   spp[[i]]$rmm$code$wallaceSettings$thinDistKM <- input$thinDist
-    # }
     
-    # FUNCTION CALL ####
-    occs.thin <- c2_thinOccs(spp[[sp]]$occs,
-                             input$thinDist,
-                             logs, shiny = TRUE)
-    req(occs.thin)
-    
-    # LOAD INTO SPP ####
-    # record present occs before thinning (this may be different from occData$occOrig)
-    spp[[sp]]$procOccs$occsPreThin <- spp[[sp]]$occs
-    spp[[sp]]$occs <- occs.thin
-    spp[[sp]]$procOccs$occsThin <- occs.thin
-    
-    # METADATA ####
-    # perhaps there should be a thinDist metadata field?
-    spp[[sp]]$rmm$code$wallaceSettings$thinDistKM <- input$thinDist
+    for(sp in spIn) {
+      # FUNCTION CALL ####
+      occs.thin <- c2_thinOccs(spp[[sp]]$occs,
+                               input$thinDist,
+                               logs, shiny = TRUE)
+      req(occs.thin)
+      
+      # LOAD INTO SPP ####
+      # record present occs before thinning (this may be different from occData$occOrig)
+      spp[[sp]]$procOccs$occsPreThin <- spp[[sp]]$occs
+      spp[[sp]]$occs <- occs.thin
+      spp[[sp]]$procOccs$occsThin <- occs.thin
+      
+      # METADATA ####
+      # perhaps there should be a thinDist metadata field?
+      spp[[sp]]$rmm$code$wallaceSettings$thinDistKM <- input$thinDist  
+    }
   })
 }

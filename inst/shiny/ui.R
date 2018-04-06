@@ -42,35 +42,24 @@ shinyUI(tagList(
                                                                  uiTop2(queryDb_INFO),
                                                                  queryDb_UI('c1_queryDb_uiID'),
                                                                  actionButton("goDbOccs", "Query Database"), br(), br(),
-                                                                 HTML('<hr>')
-                                                ),
+                                                                 HTML('<hr>')),
                                                 conditionalPanel("input.occsSel == 'pdb'",
                                                                  uiTop2(queryPaleoDb_INFO),
                                                                  queryPaleoDb_UI('c1_queryPaleoDb_uiID'),
                                                                  actionButton("goPaleoDbOccs", "Query Database"), br(), br(),
-                                                                 HTML('<hr>')
-                                                ),
+                                                                 HTML('<hr>')),
                                                 conditionalPanel("input.occsSel == 'user'",
                                                                  uiTop2(userOccs_INFO),
                                                                  userOccs_UI('c1_userOccs_uiID'),
                                                                  actionButton("goUserOccs", "Load Occurrences"),
-                                                                 HTML('<hr>')
-                                                ),
+                                                                 HTML('<hr>')),
                                                 conditionalPanel("input.occsSel == 'db' | input.occsSel == 'pdb'",
                                                                  strong("Download raw occurrence data"), br(), br(),
                                                                  downloadButton('dlDbOccs', "Download CSV"),
-                                                                 HTML('<hr>')
-                                                ),
-                                                conditionalPanel("input.occsSel == 'db'",
-                                                                 uiBottom2(queryDb_INFO)
-                                                ),
-                                                conditionalPanel("input.occsSel == 'pdb'",
-                                                                 uiBottom2(queryPaleoDb_INFO)
-                                                ),
-                                                conditionalPanel("input.occsSel == 'user'",
-                                                                 uiBottom2(userOccs_INFO)
-                                                )
-                                                
+                                                                 HTML('<hr>')),
+                                                conditionalPanel("input.occsSel == 'db'", uiBottom2(queryDb_INFO)),
+                                                conditionalPanel("input.occsSel == 'pdb'", uiBottom2(queryPaleoDb_INFO)),
+                                                conditionalPanel("input.occsSel == 'user'", uiBottom2(userOccs_INFO))
                                ),
                                # COMPONENT 2 ####
                                conditionalPanel("input.tabs == 'poccs'",
@@ -406,7 +395,7 @@ shinyUI(tagList(
                              conditionalPanel("input.tabs != 'rmd' & input.tabs != 'intro'",
                                               tabsetPanel(id = 'main',
                                                           tabPanel('Map', leaflet::leafletOutput("map", height=600),
-                                                                   absolutePanel(top = 240, right = 20, width = 150, draggable = TRUE,
+                                                                   absolutePanel(top = 160, right = 20, width = 150, draggable = TRUE,
                                                                                  selectInput("bmap", "", 
                                                                                              choices = c('ESRI Topo'="Esri.WorldTopoMap",
                                                                                                          'Stamen Terrain'="Stamen.Terrain",

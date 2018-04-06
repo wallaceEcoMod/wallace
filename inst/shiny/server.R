@@ -272,6 +272,8 @@ shinyServer(function(input, output, session) {
   curSp <- reactive(input$sppSel)
   # vector of all species with occurrence data loaded
   allSp <- reactive(names(reactiveValuesToList(spp)))
+  # conditional species input to modules with batch option
+  spIn <- reactive(if(input$batch == TRUE) allSp() else curSp())
   
   # TABLE
   options <- list(autoWidth = TRUE, 
@@ -321,8 +323,6 @@ shinyServer(function(input, output, session) {
   removeByID <- callModule(removeByID_MOD, 'c2_removeByID_uiID')
   observeEvent(input$goRemoveByID, {
     removeByID()
-    # UI CONTROLS 
-    # updateSelectInput(session, "sppSel", selected = curSp())
   })
   
   # # # # # # # # # # # # # # # # # # # # #
@@ -349,18 +349,8 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # 
   
   observeEvent(input$goThinOccs, {
-    if(input$batch == TRUE) {
-      for(i in allSp()) {
-        thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs_uiID', i)
-        thinOccs()
-      }
-    } else {
-      thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs_uiID', curSp())
-      thinOccs()
-    }
-    
-    # UI CONTROLS 
-    # updateSelectInput(session, "sppSel", selected = curSp())
+    thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs_uiID', spIn())
+    thinOccs()
     shinyjs::enable("dlProcOccs")
   })
   
@@ -388,11 +378,8 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # # #
   # module WorldClim Bioclims ####
   # # # # # # # # # # # # # # # # #
-  wcBioclims <- callModule(wcBioclims_MOD, 'c3_wcBioclims_uiID')
   observeEvent(input$goEnvData, {
-    # stop if no occurrence data
-    req(spp[[curSp()]]$occs)
-    # load into envs
+    wcBioclims <- callModule(wcBioclims_MOD, 'c3_wcBioclims_uiID', spIn())
     wcBioclims()
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
@@ -705,7 +692,9 @@ shinyServer(function(input, output, session) {
     #     spp[[curSp()]]$mod)
     if(!is.null(curSp())) {
       if(!is.null(spp[[curSp()]]$mod)) {
-      n <- names(spp[[curSp()]]$mod$models)  
+        n <- names(spp[[curSp()]]$mod$models)  
+      } else {
+        n <- NULL
       }
     } else {
       n <- NULL

@@ -19,7 +19,7 @@ wcBioclims_UI <- function(id) {
   )
 }
 
-wcBioclims_MOD <- function(input, output, session) {
+wcBioclims_MOD <- function(input, output, session, spIn) {
   reactive({
     # ERRORS ####
     if (is.null(spp[[curSp()]]$occs)) {
@@ -35,36 +35,27 @@ wcBioclims_MOD <- function(input, output, session) {
                          logs, shiny = TRUE)
     req(envs)
     
-    if(input$bcAllSp == TRUE) {
-      spVec <- allSp()
-    }else{
-      spVec <- curSp()
-    }
-    
-    for(i in spVec) {
+    for(sp in spIn) {
       # remove occurrences with NA values for variables
-      withProgress(message = paste0("Extracting occurrence values for ", i, "..."), {
-        occsEnvsVals <- as.data.frame(raster::extract(envs, spp[[i]]$occs[c('longitude', 'latitude')]))
+      withProgress(message = paste0("Extracting occurrence values for ", sp, "..."), {
+        occsEnvsVals <- as.data.frame(raster::extract(envs, spp[[sp]]$occs[c('longitude', 'latitude')]))
         names(occsEnvsVals) <- paste0('env_', names(occsEnvsVals))
       })
       # remove occurrences with NA environmental values
-      spp[[i]]$occs <- remEnvsValsNA(spp[[i]]$occs, occsEnvsVals, logs)
+      spp[[sp]]$occs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, logs)
       
       # LOAD INTO SPP ####
-      spp[[i]]$envs <- envs
+      spp[[sp]]$envs <- envs
       # add columns for env variables beginning with "envs_" to occs tbl
-      spp[[i]]$occs <- cbind(spp[[i]]$occs, occsEnvsVals)
+      spp[[sp]]$occs <- cbind(spp[[sp]]$occs, occsEnvsVals)
       
       # METADATA ####
-      spp[[i]]$rmm$data$environment$variableNames <- names(envs)
-      spp[[i]]$rmm$data$environment$yearMin <- 1960
-      spp[[i]]$rmm$data$environment$yearMax <- 1990
-      spp[[i]]$rmm$data$environment$resolution <- paste(input$bcRes, 'arcmin')
-      spp[[i]]$rmm$data$environment$extent <- 'global'
-      spp[[i]]$rmm$data$environment$sources <- 'WorldClim'
+      spp[[sp]]$rmm$data$environment$variableNames <- names(envs)
+      spp[[sp]]$rmm$data$environment$yearMin <- 1960
+      spp[[sp]]$rmm$data$environment$yearMax <- 1990
+      spp[[sp]]$rmm$data$environment$resolution <- paste(input$bcRes, 'arcmin')
+      spp[[sp]]$rmm$data$environment$extent <- 'global'
+      spp[[sp]]$rmm$data$environment$sources <- 'WorldClim'
     }
-    
-    # RETURN ####
-    # return(envs)
   })
 }

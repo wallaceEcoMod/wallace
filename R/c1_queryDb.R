@@ -16,7 +16,7 @@
 #' @examples
 #' c1_queryDb(spName = "Tremarctos ornatus", occDb = "gbif", occNum = 100)
 
-queryDb <- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
+c1_queryDb <- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
   # capitalize genus name if not already, trim whitespace
   spName <- trimws(paste0(toupper(substring(spName, 1, 1)), substring(spName, 2, nchar(spName))))  
   
@@ -100,3 +100,4 @@ queryDb <- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
                     Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')
   return(list(orig = occsOrig, cleaned=occs))
 }
+

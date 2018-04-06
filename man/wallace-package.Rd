@@ -14,22 +14,13 @@ Please see the official website (\url{https://wallaceecomod.github.io/}) for mor
 \tabular{ll}{
 Package: \tab wallace\cr
 Type: \tab Package\cr
-<<<<<<< HEAD
-Version: \tab 0.6.4\cr
-Date: \tab 2017-05-17\cr
-=======
 Version: \tab 1.0.0\cr
 Date: \tab 2017-11-23\cr
->>>>>>> master
 License: \tab GNU 3.0\cr
 }
 }
 \references{
-<<<<<<< HEAD
-Kass J.M., Vilela B., Aeillo-Lammens M.E., Muscarella R., and Anderson R.P. (2017) \emph{Wallace}: A modular platform for reproducible ecological modeling. Version 0.6.4.
-=======
 Kass J.M., Vilela B., Aeillo-Lammens M.E., Muscarella R., Merow C., and Anderson R.P. (2017) \emph{Wallace}: A modular platform for reproducible ecological modeling. Version 1.0.0.
->>>>>>> master
 }
 \author{
 \strong{Jamie M. Kass}\cr
@@ -47,12 +38,10 @@ Website: \url{https://mlammens.github.io/})
 \strong{Robert Muscarella}\cr
 (email: \email{bob.muscarella@gmail.com};
 Website: \url{https://bobmuscarella.weebly.com/})
-<<<<<<< HEAD
-=======
-#' @author \strong{Cory Merow}\cr
+
+\strong{Cory Merow}\cr
 (email: \email{cory.merow@gmail.com};
 Website: \url{https://cmerow.github.io/})
->>>>>>> master
 
 \strong{Robert P. Anderson}\cr
 (email: \email{randerson@ccny.cuny.edu};
