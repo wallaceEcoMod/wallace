@@ -34,17 +34,17 @@ partSp_MOD <- function(input, output, session) {
     
     # METADATA ####
     if(input$partSpSel == 'block') {
-      rmm$model$partition$numberFolds <- 4
-      rmm$model$partition$partitionRule <- 'spatial block'
+      spp[[curSp()]]$rmm$model$partition$numberFolds <- 4
+      spp[[curSp()]]$rmm$model$partition$partitionRule <- 'spatial block'
     }
     if(input$partSpSel == 'cb1') {
-      rmm$model$partition$numberFolds <- 2
-      rmm$model$partition$partitionRule <- 'checkerboard'
+      spp[[curSp()]]$rmm$model$partition$numberFolds <- 2
+      spp[[curSp()]]$rmm$model$partition$partitionRule <- 'checkerboard'
     }
     if(input$partSpSel == 'cb2') {
-      rmm$model$partition$numberFolds <- 4
-      rmm$model$partition$partitionRule <- 'hierarchical checkerboard'
-      rmm$model$partition$notes <- paste('aggregation factor =', input$aggFact)
+      spp[[curSp()]]$rmm$model$partition$numberFolds <- 4
+      spp[[curSp()]]$rmm$model$partition$partitionRule <- 'hierarchical checkerboard'
+      spp[[curSp()]]$rmm$model$partition$notes <- paste('aggregation factor =', input$aggFact)
     }
     
   })

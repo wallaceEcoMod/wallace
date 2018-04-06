@@ -393,22 +393,20 @@ shinyUI(tagList(
                       # RESULTS WINDOW ####
                       column(8,
                              conditionalPanel("input.tabs != 'intro' & input.tabs != 'rmd'",
-                                              div(id = "wallaceLog", class = "scrollbox", htmlOutput("log")),
-                                              # this makes the border red, but a line remains on the UI even before the box should appear
-                                              # tags$style("#sppSelUI {border: 2px solid #dd4b39;}"),
-                                              fixedPanel(top = 50, right = 50, width = 200,
-                                                         checkboxInput("batch", label = "Batch for all species?", value = TRUE),
+                                              fluidRow(column(6, div(id = "wallaceLog", class = "scrollbox", htmlOutput("log"))),
+                                                       column(2, checkboxInput("batch", label = h4(strong("Batch")), value = TRUE, width = '200%')),
+                                                       column(4, fixedPanel(
                                                          uiOutput("sppSelUI"),
                                                          uiOutput("envSelUI"),
-                                                         uiOutput("modSelUI")
+                                                         uiOutput("modSelUI"))
+                                                       )
                                               )
-                                              
                              ),
                              br(),
                              conditionalPanel("input.tabs != 'rmd' & input.tabs != 'intro'",
                                               tabsetPanel(id = 'main',
                                                           tabPanel('Map', leaflet::leafletOutput("map", height=600),
-                                                                   absolutePanel(top = 160, right = 20, width = 150, draggable = TRUE,
+                                                                   absolutePanel(top = 240, right = 20, width = 150, draggable = TRUE,
                                                                                  selectInput("bmap", "", 
                                                                                              choices = c('ESRI Topo'="Esri.WorldTopoMap",
                                                                                                          'Stamen Terrain'="Stamen.Terrain",

@@ -257,14 +257,14 @@ shinyServer(function(input, output, session) {
     # get the species names
     n <- names(spp)
     # make a named list of their names
-    sppNameList <- setNames(as.list(n), n)
+    sppNameList <- c(list("Current species" = ""), setNames(as.list(n), n))
     # if no current species selected, select the first name
     # NOTE: this line is necessary to retain the selection after selecting different tabs
     if(!is.null(curSp())) selected <- curSp() else selected <- n[1]
     # if espace component, allow for multiple species selection
     if(input$tabs == 'espace') options <- list(maxItems = 2) else options <- list(maxItems = 1)
     # generate a selectInput ui that lists the available species
-    selectizeInput('sppSel', label = "Current species:" , choices = sppNameList,
+    selectizeInput('sppSel', label = NULL , choices = sppNameList,
                    multiple = TRUE, selected = selected, options = options)
   })
   
@@ -701,36 +701,48 @@ shinyServer(function(input, output, session) {
   
   # ui that populates with the names of models that were run
   output$modSelUI <- renderUI({
-    req(length(reactiveValuesToList(spp)) > 0, curSp(),
-        spp[[curSp()]]$mod)
-    n <- names(spp[[curSp()]]$mod$models)
-    modsNameList <- setNames(as.list(n), n)
-    selectInput('curMod', label = "Current model",
-                choices = modsNameList, selected = modsNameList[[1]])
+    # req(length(reactiveValuesToList(spp)) > 0, curSp(),
+    #     spp[[curSp()]]$mod)
+    if(!is.null(curSp())) {
+      if(!is.null(spp[[curSp()]]$mod)) {
+      n <- names(spp[[curSp()]]$mod$models)  
+      }
+    } else {
+      n <- NULL
+    }
+    
+    modsNameList <- c(list("Current model" = ""), setNames(as.list(n), n))
+    options <- list(maxItems = 1)
+    selectizeInput('modSel', label = NULL , choices = modsNameList,
+                   multiple = TRUE, selected = n[1], options = options)
   })
   
   # shortcut to currently selected model, read from modSelUI
-  curMod <- reactive({input$curMod})
+  curMod <- reactive({input$modSel})
   
   # ui that populates with the names of environmental predictors used
   output$envSelUI <- renderUI({
-    req(length(reactiveValuesToList(spp)) > 0, curSp(),
-        spp[[curSp()]]$mod)
+    # req(length(reactiveValuesToList(spp)) > 0, curSp(),
+    #     spp[[curSp()]]$mod)
     # for Maxent, only display the environmental predictors with non-zero beta coefficients
     # from the lambdas file (the predictors that were not removed via regularization)
-    if (spp[[curSp()]]$rmm$model$algorithm == "Maxent") {
-      mod <- spp[[curSp()]]$mod$models[[curMod()]]
-      envsNames <- mxNonzeroCoefs(mod)
+    # if (spp[[curSp()]]$rmm$model$algorithm == "Maxent") {
+    #   mod <- spp[[curSp()]]$mod$models[[curMod()]]
+    #   n <- mxNonzeroCoefs(mod)
+    # } else {
+    if(!is.null(curSp())) {
+      n <- names(spp[[curSp()]]$envs)
     } else {
-      envsNames <- names(spp[[curSp()]]$envs)
+      n <- NULL
     }
-    envsNamesList <- setNames(as.list(envsNames), envsNames)
-    selectInput("curEnv", "Current env variable",
-                choices = envsNamesList, selected = envsNamesList[[1]])
+    envsNameList <- c(list("Current variable" = ""), setNames(as.list(n), n))
+    if(input$tabs == 'espace') options <- list(maxItems = 2) else options <- list(maxItems = 1)
+    selectizeInput('envSel', label = NULL , choices = envsNameList,
+                   multiple = TRUE, selected = n[1], options = options)
   })
   
   # shortcut to currently selected environmental variable, read from envSelUI
-  curEnv <- reactive({input$curEnv})
+  curEnv <- reactive({input$envSel})
   
   ########################################### #
   ### COMPONENT: VISUALIZE MODEL RESULTS ####

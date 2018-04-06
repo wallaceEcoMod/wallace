@@ -31,12 +31,12 @@ partNsp_MOD <- function(input, output, session) {
     
     # METADATA ####
     if(input$partNspSel == 'jack') {
-      rmm$model$partition$numberFolds <- nrow(spp[[curSp()]]$occs)
-      rmm$model$partition$partitionRule <- 'jackknife'
+      spp[[curSp()]]$rmm$model$partition$numberFolds <- nrow(spp[[curSp()]]$occs)
+      spp[[curSp()]]$rmm$model$partition$partitionRule <- 'jackknife'
     }
     if(input$partNspSel == 'rand') {
-      rmm$model$partition$numberFolds <- input$kfolds
-      rmm$model$partition$partitionRule <- 'random k-fold'
+      spp[[curSp()]]$rmm$model$partition$numberFolds <- input$kfolds
+      spp[[curSp()]]$rmm$model$partition$partitionRule <- 'random k-fold'
     }
   })
 }
