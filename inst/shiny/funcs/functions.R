@@ -62,7 +62,7 @@ uiBottom2 <- function(mod_INFO) {
   if(!is.null(pkgName)) {
     for(i in 1:length(pkgName)) {
       ls <- c(ls, list(span(pkgName[i], id = "rpkg"), "references", br(),
-                       div(paste('Package Developers:', pkgAuts), id="pkgDes"),
+                       div(paste('Package Developers:', pkgAuts[i]), id="pkgDes"),
                        a("CRAN", href = file.path("http://cran.r-project.org/web/packages", 
                                                   pkgName[i], "index.html"), target = "_blank"), " | ", 
                        a("documentation", href = file.path("https://cran.r-project.org/web/packages", 
