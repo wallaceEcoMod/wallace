@@ -70,9 +70,7 @@ shinyUI(tagList(
                                                                             "Spatial Thin" = 'spthin')),
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.procOccsSel == 'selOccs'",
-                                                                 div('Module: Select Occurrences On Map', id="mod"),
-                                                                 uiTop('leaflet.extras', "Extra functionality for 'leaflet' Package"),
-                                                                 HTML('<hr>'),
+                                                                 uiTop2(selectOccs_INFO),
                                                                  selectOccs_UI('c2_selectOccs_uiID'),
                                                                  strong("Select occurrences intersecting drawn polygon"), br(),
                                                                  "(", HTML("<font color='blue'><b>NOTE</b></font>"), 
@@ -81,30 +79,22 @@ shinyUI(tagList(
                                                                  actionButton("goSelectOccs", "Select Occurrences")
                                                 ),
                                                 conditionalPanel("input.procOccsSel == 'remID'",
-                                                                 div('Module: Remove Occurrences By ID', id="mod"),
-                                                                 HTML('<hr>'),
+                                                                 uiTop2(removeByID_INFO),
                                                                  removeByID_UI('c2_removeByID_uiID'),
                                                                  actionButton("goRemoveByID", "Remove Occurrence")
                                                 ),
                                                 # placeholder for select on map
                                                 conditionalPanel("input.procOccsSel == 'spthin'",
-                                                                 div('Module: Spatial Thin', id="mod"),
-                                                                 uiTop('spThin', 'Spatial Thinning of Species Occurrence Records'),
-                                                                 HTML('<hr>'),
+                                                                 uiTop2(thinOccs_INFO),
                                                                  thinOccs_UI('c2_thinOccs_uiID'),
                                                                  actionButton("goThinOccs", "Thin Occurrences")
                                                 ), br(),
                                                 strong("Reset to original occurrences"), br(), br(),
                                                 actionButton("goResetOccs", "Reset"),
                                                 HTML('<hr>'),
-                                                conditionalPanel("input.procOccsSel == 'selOccs'",
-                                                                 uiBottom("Jamie M. Kass, Robert P. Anderson", 'leaflet.extras', 'Bhaskar Karambelkar, Bangyou Zheng')),
-                                                conditionalPanel("input.procOccsSel == 'remID'",
-                                                                 uiBottom("Jamie M. Kass, Robert P. Anderson")),
-                                                conditionalPanel("input.procOccsSel == 'spthin'",
-                                                                 uiBottom("Jamie M. Kass, Matthew E. Aiello-Lammens, Robert P. Anderson", 'spThin', "Matthew E. Aiello-Lammens, Rob A. Boria, 
-                                                                                          Alex Radosavljevic, Bruno Vilela, Robert P. Anderson"),
-                                                                 " | ", a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/ecog.01132/abstract", target = "_blank"))
+                                                conditionalPanel("input.procOccsSel == 'selOccs'", uiBottom2(selectOccs_INFO)),
+                                                conditionalPanel("input.procOccsSel == 'remID'", uiBottom2(removeByID_INFO)),
+                                                conditionalPanel("input.procOccsSel == 'spthin'", uiBottom2(thinOccs_INFO))
                                ),
                                # COMPONENT 3 ####
                                conditionalPanel("input.tabs == 'envs'",
@@ -382,7 +372,7 @@ shinyUI(tagList(
                       # RESULTS WINDOW ####
                       column(8,
                              conditionalPanel("input.tabs != 'intro' & input.tabs != 'rmd'",
-                                              fluidRow(column(6, div(id = "wallaceLog", class = "scrollbox", htmlOutput("log"))),
+                                              fixedRow(column(6, div(id = "wallaceLog", class = "scrollbox", htmlOutput("log"))),
                                                        column(2, checkboxInput("batch", label = h4(strong("Batch")), value = TRUE, width = '200%')),
                                                        column(4, fixedPanel(
                                                          uiOutput("sppSelUI"),

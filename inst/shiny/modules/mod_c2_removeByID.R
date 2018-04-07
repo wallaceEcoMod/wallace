@@ -29,3 +29,10 @@ removeByID_MOD <- function(input, output, session) {
     return(occs.rem)
   })
 }
+
+removeByID_INFO <- infoGenerator(modName = "Remove Occurrences By ID",
+                                 modAuts = "Jamie M. Kass, Robert P. Anderson",
+                                 pkgName = NULL)
+
+
+

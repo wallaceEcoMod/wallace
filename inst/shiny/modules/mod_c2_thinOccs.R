@@ -31,3 +31,7 @@ thinOccs_MOD <- function(input, output, session, spIn) {
     }
   })
 }
+
+thinOccs_INFO <- infoGenerator(modName = "Spatial Thin",
+                                 modAuts = "Jamie M. Kass, Matthew E. Aiello-Lammens, Robert P. Anderson",
+                                 pkgName = "spThin")

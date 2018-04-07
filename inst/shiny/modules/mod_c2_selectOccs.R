@@ -25,3 +25,7 @@ selectOccs_MOD <- function(input, output, session) {
     return(occs.sel)
   })
 }
+
+selectOccs_INFO <- infoGenerator(modName = "Select Occurrences On Map",
+                              modAuts = "Jamie M. Kass, Robert P. Anderson",
+                              pkgName = "leaflet.extras")
