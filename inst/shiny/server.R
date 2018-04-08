@@ -350,7 +350,7 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # 
   
   observeEvent(input$goThinOccs, {
-    thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs_uiID', spIn())
+    thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs_uiID')
     thinOccs()
     shinyjs::enable("dlProcOccs")
   })
@@ -650,6 +650,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goMaxent, {
     mod.maxent()
+    if(is.null(mod.maxent())) return()
     results <- spp[[curSp()]]$model$results
     results.round <- cbind(results[,1:3], round(results[,4:ncol(results)], digits=3))
     
@@ -687,6 +688,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goBioclim, {
     mod.bioclim()
+    if(is.null(mod.bioclim())) return()
     # evaluation table (written this way to be compatible with multiple tables, 
     # e.g. like in the Maxent module)
     output$evalTbls <- renderUI({
@@ -833,7 +835,7 @@ shinyServer(function(input, output, session) {
     filename = function() {paste0(spName(), "_bc_plot.png")},
     content = function(file) {
       png(file)
-      if()
+      if(module() == "bcPlot") bcPlot()
       dev.off()
     }
   )

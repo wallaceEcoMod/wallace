@@ -274,7 +274,7 @@ shinyUI(tagList(
                                                                  div('Module: BIOCLIM Envelope Plot', id="mod"),
                                                                  uiTop('dismo', 'Species Distribution Modeling'),
                                                                  HTML('<hr>'),
-                                                                 bcPlots_UI('c7_bcPlot')),
+                                                                 bcPlot_UI('c7_bcPlot')),
                                                 conditionalPanel("input.visSel == 'mxEval'",
                                                                  div('Module: Maxent Evaluation Plots', id="mod"),
                                                                  uiTop('ENMeval', 'Automated Runs and Evaluations of Ecological Niche Models'),

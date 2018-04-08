@@ -8,36 +8,30 @@ bioclim_UI <- function(id) {
 bioclim_MOD <- function(input, output, session) {
   reactive({
     
-    # ERRORS ####
-    if (is.null(spp[[i]]$occs$grp)) {
-      logs %>% writeLog(type = 'error', "Before building a model, please partition 
-                        occurrences for cross-validation.")
-      return()
-    }
-    
-    if(input$bioclimAllSp == TRUE) {
-      spVec <- allSp()
-    }else{
-      spVec <- curSp()
-    }
-    
-    for(i in spVec) {  
+    for(sp in spIn()) {
+      # ERRORS ####
+      if (is.null(spp[[sp]]$occs$grp)) {
+        logs %>% writeLog(type = 'error', "Before building a model, please partition 
+                          occurrences for cross-validation for", sp, ".")
+        return()
+      }
+      
       # FUNCTION CALL ####
-      m.bioclim <- c6_bioclim(spp[[i]]$occs, 
-                              spp[[i]]$bg, 
-                              spp[[i]]$occs$grp, 
-                              spp[[i]]$bg$grp, 
-                              spp[[i]]$procEnvs$bgMask, 
+      m.bioclim <- c6_bioclim(spp[[sp]]$occs, 
+                              spp[[sp]]$bg, 
+                              spp[[sp]]$occs$grp, 
+                              spp[[sp]]$bg$grp, 
+                              spp[[sp]]$procEnvs$bgMask, 
                               logs, shiny = TRUE)
       
       req(m.bioclim)
       
       # LOAD INTO SPP ####
-      spp[[i]]$mod <- m.bioclim
+      spp[[sp]]$model <- m.bioclim
       
       # METADATA ####
-      spp[[i]]$rmm$model$algorithm <- "BIOCLIM"
-      spp[[i]]$rmm$model$bioclim$notes <- "dismo package implementation"
+      spp[[sp]]$rmm$model$algorithm <- "BIOCLIM"
+      spp[[sp]]$rmm$model$bioclim$notes <- "dismo package implementation"
     }
   })
 }
