@@ -23,24 +23,25 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("dlProj")
   # shinyjs::disable("dlRMD")
   
-  ##################### #
-  # REACTIVE LISTS ####
-  ##################### #
+  ########################## #
+  # REACTIVE VALUES LISTS ####
+  ########################## #
   
-  # reactiveValues list for objects that get modified and reused throughout analysis
+  # single species list of lists
   spp <- reactiveValues()
-  occsLastQuery <- reactiveVal()
+  # multiple species list of lists: each entity is a species pair list which contains
+  # results of multispecies analyses
   msp <- reactiveValues()
-  # reactiveValues list for holding the current guidance text
+  # list with current guidance text
   gtext <- reactiveValues()
-  # single reactive value for log vector
+  # single reactive value for dynamic log vector
   logs <- reactiveVal(logInit())
   # legacy
   rvs <- reactiveValues()
   # legacy
   rmd <- reactiveValues()
   
-  # FOR DEVELOPMENT
+  # FOR DEVELOPMENT PURPOSES
   observeEvent(input$load, {
     f <- read.csv('example_data/occs_multisp.csv')
     spp[["Puma_concolor"]]$occs <- spp[["Puma_concolor"]]$occData$occsCleaned <- f %>% dplyr::filter(taxon_name == 'Puma concolor') %>% dplyr::select(taxon_name,longitude,latitude,occID) %>% dplyr::mutate(record_type = NA)
@@ -61,7 +62,7 @@ shinyServer(function(input, output, session) {
     spp[["Puma_concolor"]]$envs <- raster::stack(list.files('/Users/musasabi/Documents/github/wallace/inst/shiny/wc10', 'bil$', full.names=TRUE))
     spp[["Panthera_leo"]]$envs <- raster::stack(list.files('/Users/musasabi/Documents/github/wallace/inst/shiny/wc10', 'bil$', full.names=TRUE))
     # rvs$bgMsk <- raster::stack(list.files('/Users/musasabi/Downloads/mskEnvs', 'gri$', full.names = TRUE))  
-    print('HACKING DONE')
+    print('SECRET DATA LOADED')
   })
   
   # load modules
@@ -77,13 +78,13 @@ shinyServer(function(input, output, session) {
   ######################## #
   
   # UI for component guidance text
-  output$gtext_comp <- renderUI({
-    shiny::includeMarkdown(file.path('Rmd', gtext$cur_comp))
+  output$gtext_component <- renderUI({
+    shiny::includeMarkdown(file.path('Rmd', gtext$curComponent))
   })
   
   # UI for module guidance text
-  output$gtext_mod <- renderUI({
-    shiny::includeMarkdown(file.path('Rmd', gtext$cur_mod))
+  output$gtext_module <- renderUI({
+    shiny::includeMarkdown(file.path('Rmd', gtext$curModule))
   })
   
   # tab and module-level reactives
@@ -102,8 +103,8 @@ shinyServer(function(input, output, session) {
   
   # logic to serve the selected component/module guidance text
   observe({
-    gtext$cur_comp <- paste0("gtext_", component(), ".Rmd")
-    gtext$cur_mod <- paste0("gtext_", component(), "_", module(), ".Rmd")
+    gtext$curComponent <- paste0("gtext_", component(), ".Rmd")
+    gtext$curModule <- paste0("gtext_", component(), "_", module(), ".Rmd")
   })
   
   ######################## #

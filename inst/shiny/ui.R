@@ -412,8 +412,8 @@ shinyUI(tagList(
                                                                    conditionalPanel("input.tabs == 'espace' && input.espaceSel == 'nicheOv'",
                                                                                     nicheOv_resultsUI("cEspace_nicheOv_uiID"))
                                                           ),
-                                                          tabPanel('Component Guidance', uiOutput('gtext_comp')),
-                                                          tabPanel('Module Guidance', uiOutput('gtext_mod'))
+                                                          tabPanel('Component Guidance', uiOutput('gtext_component')),
+                                                          tabPanel('Module Guidance', uiOutput('gtext_module'))
                                               )
                              ),
                              conditionalPanel("input.tabs == 'rmd'",
