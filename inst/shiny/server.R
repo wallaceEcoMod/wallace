@@ -87,23 +87,23 @@ shinyServer(function(input, output, session) {
   })
   
   # tab and module-level reactives
-  tabs <- reactive({input$tabs})
-  mods <- reactive({
-    if(tabs() == "occs") input$occsSel
-    else if(tabs() == "poccs") input$procOccsSel
-    else if(tabs() == "envs") input$envsSel
-    else if(tabs() == "penvs") input$procEnvsSel
-    else if(tabs() == "espace") input$espaceSel
-    else if(tabs() == "part") input$partSel
-    else if(tabs() == "model") input$modSel
-    else if(tabs() == "vis") input$visSel
-    else if(tabs() == "proj") input$projSel
+  component <- reactive({input$tabs})
+  module <- reactive({
+    if(component() == "occs") input$occsSel
+    else if(component() == "poccs") input$procOccsSel
+    else if(component() == "envs") input$envsSel
+    else if(component() == "penvs") input$procEnvsSel
+    else if(component() == "espace") input$espaceSel
+    else if(component() == "part") input$partSel
+    else if(component() == "model") input$modelSel
+    else if(component() == "vis") input$visSel
+    else if(component() == "proj") input$projSel
   })
   
   # logic to serve the selected component/module guidance text
   observe({
-    gtext$cur_comp <- paste0("gtext_", tabs(), ".Rmd")
-    gtext$cur_mod <- paste0("gtext_", tabs(), "_", mods(), ".Rmd")
+    gtext$cur_comp <- paste0("gtext_", component(), ".Rmd")
+    gtext$cur_mod <- paste0("gtext_", component(), "_", module(), ".Rmd")
   })
   
   ######################## #
@@ -127,11 +127,11 @@ shinyServer(function(input, output, session) {
     xy <- matrix(c(coords[c(TRUE,FALSE)], coords[c(FALSE,TRUE)]), ncol=2)
     id <- input$map_draw_new_feature$properties$`_leaflet_id`
     
-    if(input$tabs == 'poccs') {
+    if(component() == 'poccs') {
       spp[[curSp()]]$polySelXY <- xy
       spp[[curSp()]]$polySelID <- id
     } 
-    if(input$tabs == 'proj') {
+    if(component() == 'proj') {
       spp[[curSp()]]$polyPjXY <- xy
       spp[[curSp()]]$polyPjID <- id  
     }
@@ -146,12 +146,12 @@ shinyServer(function(input, output, session) {
     # for mapping to be functional
     req(length(curSp()) == 1, spp[[curSp()]]$occs)
     # map the original occs for Component Obtain Occurrence Data
-    if(input$tabs == 'occs') {
+    if(component() == 'occs') {
       map %>% map_occs(spp[[curSp()]]$occData$occsCleaned)
     } 
     # map the analysis occs for components downstream of the first
-    if(input$tabs == 'poccs') {
-      if(input$procOccsSel == 'spthin') {
+    if(component() == 'poccs') {
+      if(module() == 'spthin') {
         # if you've thinned already, map thinned points blue
         # and kept points red
         if(!is.null(spp[[curSp()]]$procOccs$occsThin)) {
@@ -167,7 +167,7 @@ shinyServer(function(input, output, session) {
         map %>% map_occs(spp[[curSp()]]$occs)
       }
     }
-    if(input$tabs == 'penvs') {
+    if(component() == 'penvs') {
       updateTabsetPanel(session, 'main', selected = 'Map')
       if(is.null(spp[[curSp()]]$procEnvs$bgExt)) {
         map %>% map_occs(spp[[curSp()]]$occs)
@@ -181,7 +181,7 @@ shinyServer(function(input, output, session) {
         map %>% fitBounds(bb[1], bb[2], bb[3], bb[4])
       }
     }
-    if(input$tabs == 'part') {
+    if(component() == 'part') {
       updateTabsetPanel(session, 'main', selected = 'Map')
       req(spp[[curSp()]]$occs$grp)
       occsGrp <- spp[[curSp()]]$occs$grp
@@ -195,7 +195,7 @@ shinyServer(function(input, output, session) {
                   opacity = 1, layerId = 'leg')
     }
     # logic for initializing or removing leaflet draw toolbar
-    if ((input$tabs == 'poccs' & input$procOccsSel == 'selOccs') | input$tabs == 'proj') {
+    if ((component() == 'poccs' & module() == 'selOccs') | component() == 'proj') {
       map %>% leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
                                              rectangleOptions = FALSE, circleOptions = FALSE, 
                                              markerOptions = FALSE)
@@ -262,7 +262,7 @@ shinyServer(function(input, output, session) {
     # NOTE: this line is necessary to retain the selection after selecting different tabs
     if(!is.null(curSp())) selected <- curSp() else selected <- n[1]
     # if espace component, allow for multiple species selection
-    if(input$tabs == 'espace') options <- list(maxItems = 2) else options <- list(maxItems = 1)
+    if(component() == 'espace') options <- list(maxItems = 2) else options <- list(maxItems = 1)
     # generate a selectInput ui that lists the available species
     selectizeInput('sppSel', label = NULL , choices = sppNameList,
                    multiple = TRUE, selected = selected, options = options)
@@ -430,6 +430,30 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # # # #
   # OBTAIN ENVS: other controls ####
   # # # # # # # # # # # # # # # # # #
+  
+  # ui that populates with the names of environmental predictors used
+  output$envSelUI <- renderUI({
+    # for Maxent, only display the environmental predictors with non-zero beta coefficients
+    # from the lambdas file (the predictors that were not removed via regularization)
+    # if (spp[[curSp()]]$rmm$model$algorithm == "Maxent") {
+    #   mod <- spp[[curSp()]]$model$models[[curModel()]]
+    #   n <- mxNonzeroCoefs(mod)
+    # } else {
+    
+    # ensure envs entity is within spp
+    if(!is.null(curSp())) {
+      n <- names(spp[[curSp()]]$envs)
+    } else {
+      n <- NULL
+    }
+    envsNameList <- c(list("Current variable" = ""), setNames(as.list(n), n))
+    if(component() == 'espace') options <- list(maxItems = 2) else options <- list(maxItems = 1)
+    selectizeInput('envSel', label = NULL , choices = envsNameList,
+                   multiple = TRUE, selected = n[1], options = options)
+  })
+  
+  # shortcut to currently selected environmental variable, read from envSelUI
+  curEnv <- reactive({input$envSel})
   
   # map center coordinates for 30 arcsec download
   mapCntr <- reactive(mapCenter(input$map_bounds))
@@ -625,7 +649,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goMaxent, {
     mod.maxent()
-    results <- spp[[curSp()]]$mod$results
+    results <- spp[[curSp()]]$model$results
     results.round <- cbind(results[,1:3], round(results[,4:ncol(results)], digits=3))
     
     # full model and partition average evaluation table, and individual partition table
@@ -672,7 +696,7 @@ shinyServer(function(input, output, session) {
         DT::dataTableOutput('evalTbl')
       )
     })
-    output$evalTbl <- DT::renderDataTable(round(spp[[curSp()]]$mod$results, digits=3), 
+    output$evalTbl <- DT::renderDataTable(round(spp[[curSp()]]$model$results, digits=3), 
                                           options = list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">'))
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
@@ -687,12 +711,11 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # # # #
   
   # ui that populates with the names of models that were run
-  output$modSelUI <- renderUI({
-    # req(length(reactiveValuesToList(spp)) > 0, curSp(),
-    #     spp[[curSp()]]$mod)
+  output$modelSelUI <- renderUI({
+    # ensure mod entity is within spp
     if(!is.null(curSp())) {
-      if(!is.null(spp[[curSp()]]$mod)) {
-        n <- names(spp[[curSp()]]$mod$models)  
+      if(!is.null(spp[[curSp()]]$model)) {
+        n <- names(spp[[curSp()]]$model$models)  
       } else {
         n <- NULL
       }
@@ -707,40 +730,18 @@ shinyServer(function(input, output, session) {
   })
   
   # shortcut to currently selected model, read from modSelUI
-  curMod <- reactive({input$modSel})
-  
-  # ui that populates with the names of environmental predictors used
-  output$envSelUI <- renderUI({
-    # req(length(reactiveValuesToList(spp)) > 0, curSp(),
-    #     spp[[curSp()]]$mod)
-    # for Maxent, only display the environmental predictors with non-zero beta coefficients
-    # from the lambdas file (the predictors that were not removed via regularization)
-    # if (spp[[curSp()]]$rmm$model$algorithm == "Maxent") {
-    #   mod <- spp[[curSp()]]$mod$models[[curMod()]]
-    #   n <- mxNonzeroCoefs(mod)
-    # } else {
-    if(!is.null(curSp())) {
-      n <- names(spp[[curSp()]]$envs)
-    } else {
-      n <- NULL
-    }
-    envsNameList <- c(list("Current variable" = ""), setNames(as.list(n), n))
-    if(input$tabs == 'espace') options <- list(maxItems = 2) else options <- list(maxItems = 1)
-    selectizeInput('envSel', label = NULL , choices = envsNameList,
-                   multiple = TRUE, selected = n[1], options = options)
-  })
-  
-  # shortcut to currently selected environmental variable, read from envSelUI
-  curEnv <- reactive({input$envSel})
+  curModel <- reactive({input$modelSel})
   
   ########################################### #
   ### COMPONENT: VISUALIZE MODEL RESULTS ####
   ########################################### #
   
-  # module BIOCLIM Plots
-  bcPlots <- callModule(bcPlots_MOD, 'c7_bcPlots', rvs)
+  # # # # # # # # # # # # 
+  # module BIOCLIM Plots ####
+  # # # # # # # # # # # # 
+  bcPlot <- callModule(bcPlot_MOD, 'c7_bcPlot')
   output$bcEnvelPlot <- renderPlot({
-    bcPlots()
+    bcPlot()
   })
   
   # module Maxent Evaluation Plots
@@ -819,6 +820,20 @@ shinyServer(function(input, output, session) {
         r <- raster::writeRaster(rvs$predCur, file, format = input$predFileType, overwrite = TRUE)
         file.rename(r@file@name, file)
       }
+    }
+  )
+  
+  # # # # # # # # # # # # # # # # # #
+  # VISUALIZE: other controls ####
+  # # # # # # # # # # # # # # # # # #
+  
+  # handle downloads for BIOCLIM Plots png
+  output$dlVizPlot <- downloadHandler(
+    filename = function() {paste0(spName(), "_bc_plot.png")},
+    content = function(file) {
+      png(file)
+      if()
+      dev.off()
     }
   )
   
