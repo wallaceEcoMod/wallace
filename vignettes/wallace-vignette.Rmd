@@ -2,7 +2,7 @@
 title: "Wallace Vignette"
 author:
 - Jamie M. Kass
-- Sarah S. Meenan
+- Sarah I. Meenan
 - Gonzalo Pinilla
 - Cory Merow
 date: "`r Sys.Date()`"
