@@ -49,18 +49,18 @@ shinyServer(function(input, output, session) {
     spp[["Puma_concolor"]]$occs$pop <- spp[["Puma_concolor"]]$occData$occsCleaned$pop <- unlist(apply(spp[["Puma_concolor"]]$occs, 1, popUpContent))
     spp[["Panthera_leo"]]$occs$pop <- spp[["Panthera_leo"]]$occData$occsCleaned$pop <- unlist(apply(spp[["Panthera_leo"]]$occs, 1, popUpContent))
     # rvs$occsGrp <- rvs$occs$group
-    spp[["Puma_concolor"]]$bg <- f %>% dplyr::filter(taxon_name == 'background1') %>% dplyr::select(longitude, latitude)
-    spp[["Panthera_leo"]]$bg <- f %>% dplyr::filter(taxon_name == 'background2') %>% dplyr::select(longitude, latitude)
-    # rvs$bgGrp <- rvs$bgPts$group
-    spp[["Puma_concolor"]]$occs <- cbind(spp[["Puma_concolor"]]$occs, read.csv('/Users/musasabi/Desktop/shiny_testing/Puma concolor_z.csv'))
-    spp[["Panthera_leo"]]$occs <- cbind(spp[["Panthera_leo"]]$occs, read.csv('/Users/musasabi/Desktop/shiny_testing/Panthera leo_z.csv'))
-    spp[["Puma_concolor"]]$bg <- cbind(spp[["Puma_concolor"]]$bg, read.csv('/Users/musasabi/Desktop/shiny_testing/Puma concolor_bz.csv'))
-    spp[["Panthera_leo"]]$bg <- cbind(spp[["Panthera_leo"]]$bg, read.csv('/Users/musasabi/Desktop/shiny_testing/Panthera leo_bz.csv'))
-    # rvs$bgShp <- rgdal::readOGR('/Users/musasabi/Downloads', 'mcp')
-    spp[["Puma_concolor"]]$procEnvs$bgMask <- raster::stack(list.files('/Users/musasabi/Desktop/shiny_testing/mskEnvs_puma', full.names = TRUE))
-    spp[["Panthera_leo"]]$procEnvs$bgMask <- raster::stack(list.files('/Users/musasabi/Desktop/shiny_testing/mskEnvs_leo', full.names = TRUE))
-    spp[["Puma_concolor"]]$envs <- raster::stack(list.files('/Users/musasabi/Documents/github/wallace/inst/shiny/wc10', 'bil$', full.names=TRUE))
-    spp[["Panthera_leo"]]$envs <- raster::stack(list.files('/Users/musasabi/Documents/github/wallace/inst/shiny/wc10', 'bil$', full.names=TRUE))
+    # spp[["Puma_concolor"]]$bg <- f %>% dplyr::filter(taxon_name == 'background1') %>% dplyr::select(longitude, latitude)
+    # spp[["Panthera_leo"]]$bg <- f %>% dplyr::filter(taxon_name == 'background2') %>% dplyr::select(longitude, latitude)
+    # # rvs$bgGrp <- rvs$bgPts$group
+    # spp[["Puma_concolor"]]$occs <- cbind(spp[["Puma_concolor"]]$occs, read.csv('/Users/musasabi/Desktop/shiny_testing/Puma concolor_z.csv'))
+    # spp[["Panthera_leo"]]$occs <- cbind(spp[["Panthera_leo"]]$occs, read.csv('/Users/musasabi/Desktop/shiny_testing/Panthera leo_z.csv'))
+    # spp[["Puma_concolor"]]$bg <- cbind(spp[["Puma_concolor"]]$bg, read.csv('/Users/musasabi/Desktop/shiny_testing/Puma concolor_bz.csv'))
+    # spp[["Panthera_leo"]]$bg <- cbind(spp[["Panthera_leo"]]$bg, read.csv('/Users/musasabi/Desktop/shiny_testing/Panthera leo_bz.csv'))
+    # # rvs$bgShp <- rgdal::readOGR('/Users/musasabi/Downloads', 'mcp')
+    # spp[["Puma_concolor"]]$procEnvs$bgMask <- raster::stack(list.files('/Users/musasabi/Desktop/shiny_testing/mskEnvs_puma', full.names = TRUE))
+    # spp[["Panthera_leo"]]$procEnvs$bgMask <- raster::stack(list.files('/Users/musasabi/Desktop/shiny_testing/mskEnvs_leo', full.names = TRUE))
+    # spp[["Puma_concolor"]]$envs <- raster::stack(list.files('/Users/musasabi/Documents/github/wallace/inst/shiny/wc10', 'bil$', full.names=TRUE))
+    # spp[["Panthera_leo"]]$envs <- raster::stack(list.files('/Users/musasabi/Documents/github/wallace/inst/shiny/wc10', 'bil$', full.names=TRUE))
     # rvs$bgMsk <- raster::stack(list.files('/Users/musasabi/Downloads/mskEnvs', 'gri$', full.names = TRUE))  
     print('SECRET DATA LOADED')
   })
@@ -688,7 +688,9 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goBioclim, {
     mod.bioclim()
-    if(is.null(mod.bioclim())) return()
+    print("YAY1")
+    if(is.null(spp[[curSp()]]$model)) return()
+    print("YAY2")
     # evaluation table (written this way to be compatible with multiple tables, 
     # e.g. like in the Maxent module)
     output$evalTbls <- renderUI({
