@@ -91,7 +91,8 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, logs = NULL, sh
   cols <- c("taxon_name", "longitude", "latitude","time_interval", "collection_no", "country", 
             "collection_no", "record_type", "occID")
   occs <- occs %>% dplyr::select(dplyr::one_of(cols)) %>%
-    dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent)))  # make new column for leaflet marker popup content
+    dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent))) %>% # make new column for leaflet marker popup content
+    dplyr::arrange_(cols)
   
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
   

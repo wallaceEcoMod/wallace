@@ -29,9 +29,9 @@ partSp_MOD <- function(input, output, session) {
     req(group.data)
     
     # LOAD INTO SPP ####
-    spp[[curSp()]]$occs$grp <- group.data$occ.grp
-    spp[[curSp()]]$bg$grp <- group.data$bg.grp
-    
+    spp[[curSp()]]$occs$partition <- group.data$occ.grp
+    spp[[curSp()]]$bg$partition <- group.data$bg.grp
+      
     # METADATA ####
     if(input$partSpSel == 'block') {
       spp[[curSp()]]$rmm$model$partition$numberFolds <- 4

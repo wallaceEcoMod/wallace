@@ -393,8 +393,11 @@ shinyUI(tagList(
                                                                                                          'ESRI Imagery'="Esri.WorldImagery",
                                                                                                          'ESRI Nat Geo'='Esri.NatGeoWorldMap'),
                                                                                              selected = "Esri.WorldTopoMap"))),
-                                                          tabPanel('Occs Tbl', br(), fluidRow(column(width=4, tags$h4("Download current occurrence data:")), 
-                                                                                              column(width=8, downloadButton('dlOccs', "Download CSV"))), 
+                                                          tabPanel('Occs Tbl', br(), fluidRow(column(width=4, tags$h4("Download occurrence data as .csv")), 
+                                                                                              column(width=2, downloadButton('dlOccs', "Download Current")),
+                                                                                              column(width=2,downloadButton('dlAllOccs', "Download All")),
+                                                                                              column(width=4)
+                                                                                              ), 
                                                                    br(), DT::dataTableOutput('occTbl')),
                                                           tabPanel('Results', 
                                                                    conditionalPanel("input.tabs == 'envs'", verbatimTextOutput('envsPrint')),

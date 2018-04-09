@@ -19,8 +19,8 @@ bioclim_MOD <- function(input, output, session) {
       # FUNCTION CALL ####
       m.bioclim <- c6_bioclim(spp[[sp]]$occs, 
                               spp[[sp]]$bg, 
-                              spp[[sp]]$occs$grp, 
-                              spp[[sp]]$bg$grp, 
+                              spp[[sp]]$occs$partition, 
+                              spp[[sp]]$bg$partition, 
                               spp[[sp]]$procEnvs$bgMask, 
                               logs, shiny = TRUE)
       

@@ -65,8 +65,7 @@ c1_queryDb <- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
   occs <- occsXY[!dups,]
   
   if (occDb == 'gbif') {
-    fields <- c('institutionCode', 'stateProvince', 'basisOfRecord', "country", 
-                "locality", "elevation")
+    fields <- c('institutionCode', 'stateProvince', 'basisOfRecord', "country", "locality", "elevation")
     for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
     occs <- occs %>% dplyr::rename(taxon_name = name, 
                                    institution_code = institutionCode, 
@@ -85,11 +84,12 @@ c1_queryDb <- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
   }
   
   # subset by key columns and make id and popup columns
-  cols <- c("taxon_name", "longitude", "latitude","year", "institution_code", "country", "state_province",
-            "locality", "elevation", "record_type", "occID")
+  cols <- c("taxon_name", "longitude", "latitude",  "occID", "year", "institution_code", "country", "state_province",
+            "locality", "elevation", "record_type")
   occs <- occs %>% 
     dplyr::select(dplyr::one_of(cols)) %>%
-    dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent)))  # make new column for leaflet marker popup content
+    dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent))) %>%  # make new column for leaflet marker popup content
+    dplyr::arrange_(cols)
   
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
   dupsRem <- nrow(occsXY) - nrow(occs)

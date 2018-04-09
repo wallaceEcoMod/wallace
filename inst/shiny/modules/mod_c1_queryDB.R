@@ -9,7 +9,7 @@ queryDb_UI <- function(id) {
              textInput(ns("spName"), label = "Enter species scientific name", placeholder = 'format: Genus species')),
     tags$div(title='Maximum number of occurrences recovered from databases. 
              Downloaded records are not sorted randomly: rows are always consistent between downloads.',
-             sliderInput(ns("occsNum"), "Set maximum number of occurrences", min = 1, max = 500, value = 100))
+             numericInput(ns("occsNum"), "Set maximum number of occurrences", value = 100, min = 1))
   )
 }
 

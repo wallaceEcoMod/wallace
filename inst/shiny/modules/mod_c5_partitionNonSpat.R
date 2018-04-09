@@ -28,8 +28,8 @@ partNsp_MOD <- function(input, output, session) {
       req(group.data)
       
       # LOAD INTO SPP ####
-      spp[[sp]]$occs$grp <- group.data$occ.grp
-      spp[[sp]]$bg$grp <- group.data$bg.grp
+      spp[[sp]]$occs$partition <- group.data$occ.grp
+      spp[[sp]]$bg$partition <- group.data$bg.grp
       
       # METADATA ####
       if(input$partNspSel == 'jack') {

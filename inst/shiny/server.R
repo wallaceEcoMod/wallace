@@ -184,8 +184,8 @@ shinyServer(function(input, output, session) {
     }
     if(component() == 'part') {
       updateTabsetPanel(session, 'main', selected = 'Map')
-      req(spp[[curSp()]]$occs$grp)
-      occsGrp <- spp[[curSp()]]$occs$grp
+      req(spp[[curSp()]]$occs$partition)
+      occsGrp <- spp[[curSp()]]$occs$partition
       # colors for partition symbology
       newColors <- gsub("FF$", "", rainbow(max(occsGrp)))  
       partsFill <- newColors[occsGrp]
@@ -285,23 +285,41 @@ shinyServer(function(input, output, session) {
     req(length(reactiveValuesToList(spp)) > 0)
     spp[[curSp()]]$occs %>% dplyr::mutate(longitude = round(as.numeric(longitude), digits = 2),
                                           latitude = round(as.numeric(latitude), digits = 2)) %>% 
-      dplyr::select(taxon_name, occID, longitude:record_type)
+      dplyr::select(-pop)
   }, rownames = FALSE)
   
-  # DOWNLOAD: occs 
+  # DOWNLOAD: current species occurrence data table
   output$dlOccs <- downloadHandler(
     filename = function() {
-      n <- formatSpName(spp[[curSp()]]$occs$taxon_name[1])
-      paste0(n, ".csv")
+      paste0(spName(spp[curSp()]), ".csv")
     },
     content = function(file) {
       tbl <- spp[[curSp()]]$occs %>% 
-        dplyr::select(-pop) %>% 
-        dplyr::select(taxon_name, occID, dplyr::everything())
+        dplyr::select(-pop)
       # if bg values are present, add them to table
       if(!is.null(spp[[curSp()]]$bg)) {
        tbl <- rbind(tbl, spp[[curSp()]]$bg) 
       }
+      write.csv(tbl, file, row.names = FALSE)
+    }
+  )
+  
+  # DOWNLOAD: all species occurrence data table
+  output$dlAllOccs <- downloadHandler(
+    filename = "multispecies.csv",
+    content = function(file) {
+      inTbl <- spp[[curSp()]]$occs %>% dplyr::select(-pop)
+      tbl <- matrix(ncol = ncol(inTbl))
+      colnames(tbl) <- names(inTbl)
+      for(sp in allSp()) {
+        curTbl <- spp[[sp]]$occs %>% dplyr::select(-pop)  
+        # if bg values are present, add them to table
+        if(!is.null(spp[[curSp()]]$bg)) {
+          curTbl <- rbind(curTbl, spp[[curSp()]]$bg) 
+        }
+        tbl <- rbind(tbl, curTbl)
+      }
+      
       write.csv(tbl, file, row.names = FALSE)
     }
   )

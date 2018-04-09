@@ -26,7 +26,7 @@ userOccs_MOD <- function(input, output, session) {
       spp[[n]]$rmm$data$occurrence$presenceSampleSize <- nrow(occs)
       spp[[n]]$rmm$data$occurrence$sources <- "user"
     }
-    
+    print(occsList)
     # RETURN ####
     return(occsList)
   })

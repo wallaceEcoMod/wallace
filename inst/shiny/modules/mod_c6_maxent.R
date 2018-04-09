@@ -32,8 +32,8 @@ maxent_MOD <- function(input, output, session, rvs) {
       # FUNCTION CALL ####
       m.maxent <- c6_maxent(spp[[i]]$occs, 
                             spp[[i]]$bg, 
-                            spp[[i]]$occs$grp,
-                            spp[[i]]$bg$grp,
+                            spp[[i]]$occs$partition,
+                            spp[[i]]$bg$partition,
                             spp[[i]]$procEnvs$bgMask, 
                             input$rms, 
                             input$rmsStep, 
