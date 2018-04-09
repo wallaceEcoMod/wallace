@@ -298,6 +298,10 @@ shinyServer(function(input, output, session) {
       tbl <- spp[[curSp()]]$occs %>% 
         dplyr::select(-pop) %>% 
         dplyr::select(taxon_name, occID, dplyr::everything())
+      # if bg values are present, add them to table
+      if(!is.null(spp[[curSp()]]$bg)) {
+       tbl <- rbind(tbl, spp[[curSp()]]$bg) 
+      }
       write.csv(tbl, file, row.names = FALSE)
     }
   )

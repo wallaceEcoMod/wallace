@@ -38,7 +38,8 @@ bgMskAndSamplePts_MOD <- function(input, output, session) {
       # LOAD INTO SPP ####
       spp[[i]]$procEnvs$bgMask <- bgMask
       # add columns for env variables beginning with "envs_" to bg tbl
-      spp[[i]]$bg <- cbind(bgPts, bgEnvsVals)
+      spp[[i]]$bg <- cbind(taxon_name = "background", occID = NA, bgPts, record_type = NA, bgEnvsVals)
+      print(spp[[i]]$bg)
       
       # METADATA ####
       spp[[i]]$rmm$model$maxent$backgroundSizeSet <- input$bgPtsNum
