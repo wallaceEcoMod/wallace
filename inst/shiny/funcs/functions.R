@@ -106,7 +106,7 @@ writeLog <- function(logs, ..., type = 'default') {
       pre <- 'WARNING: '
     }  
     args <- list(pre, ...)
-    newEntries <- paste(args, collapse = ' ')
+    newEntries <- paste0(args)
     message(newEntries)
     return()
   }
@@ -127,6 +127,18 @@ writeLog <- function(logs, ..., type = 'default') {
 ####################### #
 # MISC ####
 ####################### #
+
+spName <- function(sp) {
+  if(class(sp) == "reactivevalues") {
+    name <- sp$occs$taxon_name[1]
+  }
+  if(class(sp) == "data.frame"){
+    name <- sp$taxon_name[1]
+  }
+  print(name)
+  return(paste(strsplit(as.character(name), "_")[[1]], collapse = " "))  
+  
+}
 
 formatSpName <- function(spName) {
   spName <- as.character(spName)

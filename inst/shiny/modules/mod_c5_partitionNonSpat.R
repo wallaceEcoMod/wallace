@@ -11,32 +11,35 @@ partNsp_UI <- function(id) {
 
 partNsp_MOD <- function(input, output, session) {
   reactive({
-    if (is.null(spp[[curSp()]]$procEnvs$bgMask)) {
-      logs %>% writeLog(type = 'error', "Before partitioning occurrences, 
-                        mask your environmental variables by your background extent.")
-      return()
-    }
     
-    #### FUNCTION CALL
-    group.data <- c5_partitionOccs(spp[[curSp()]]$occs, 
-                                   spp[[curSp()]]$bg, 
-                                   input$partNspSel, 
-                                   kfolds = input$kfolds, 
-                                   logs, shiny=TRUE)
-    req(group.data)
-    
-    # LOAD INTO SPP ####
-    spp[[curSp()]]$occs$grp <- group.data$occ.grp
-    spp[[curSp()]]$bg$grp <- group.data$bg.grp
-    
-    # METADATA ####
-    if(input$partNspSel == 'jack') {
-      spp[[curSp()]]$rmm$model$partition$numberFolds <- nrow(spp[[curSp()]]$occs)
-      spp[[curSp()]]$rmm$model$partition$partitionRule <- 'jackknife'
-    }
-    if(input$partNspSel == 'rand') {
-      spp[[curSp()]]$rmm$model$partition$numberFolds <- input$kfolds
-      spp[[curSp()]]$rmm$model$partition$partitionRule <- 'random k-fold'
+    for(sp in spIn()) {
+      if (is.null(spp[[curSp()]]$procEnvs$bgMask)) {
+        logs %>% writeLog(type = 'error', "Before partitioning occurrences for ", spName(spp[[sp]]), 
+                        ", mask your environmental variables by your background extent.")
+        return()
+      }
+      
+      #### FUNCTION CALL
+      group.data <- c5_partitionOccs(spp[[sp]]$occs, 
+                                     spp[[sp]]$bg, 
+                                     input$partNspSel, 
+                                     kfolds = input$kfolds, 
+                                     logs=logs, shiny=TRUE)
+      req(group.data)
+      
+      # LOAD INTO SPP ####
+      spp[[sp]]$occs$grp <- group.data$occ.grp
+      spp[[sp]]$bg$grp <- group.data$bg.grp
+      
+      # METADATA ####
+      if(input$partNspSel == 'jack') {
+        spp[[sp]]$rmm$model$partition$numberFolds <- nrow(spp[[sp]]$occs)
+        spp[[sp]]$rmm$model$partition$partitionRule <- 'jackknife'
+      }
+      if(input$partNspSel == 'rand') {
+        spp[[sp]]$rmm$model$partition$numberFolds <- input$kfolds
+        spp[[sp]]$rmm$model$partition$partitionRule <- 'random k-fold'
+      }
     }
   })
 }

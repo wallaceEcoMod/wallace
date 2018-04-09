@@ -44,8 +44,8 @@ shinyServer(function(input, output, session) {
   # FOR DEVELOPMENT PURPOSES
   observeEvent(input$load, {
     f <- read.csv('example_data/occs_multisp.csv')
-    spp[["Puma_concolor"]]$occs <- spp[["Puma_concolor"]]$occData$occsCleaned <- f %>% dplyr::filter(taxon_name == 'Puma concolor') %>% dplyr::select(taxon_name,longitude,latitude,occID) %>% dplyr::mutate(record_type = NA)
-    spp[["Panthera_leo"]]$occs <- spp[["Panthera_leo"]]$occData$occsCleaned <- f %>% dplyr::filter(taxon_name == 'Panthera leo') %>% dplyr::select(taxon_name,longitude,latitude,occID) %>% dplyr::mutate(record_type = NA)
+    spp[["Puma_concolor"]]$occs <- spp[["Puma_concolor"]]$occData$occsCleaned <- f %>% dplyr::filter(taxon_name == 'Puma_concolor') %>% dplyr::select(taxon_name,longitude,latitude,occID) %>% dplyr::mutate(record_type = NA)
+    spp[["Panthera_leo"]]$occs <- spp[["Panthera_leo"]]$occData$occsCleaned <- f %>% dplyr::filter(taxon_name == 'Panthera_leo') %>% dplyr::select(taxon_name,longitude,latitude,occID) %>% dplyr::mutate(record_type = NA)
     spp[["Puma_concolor"]]$occs$pop <- spp[["Puma_concolor"]]$occData$occsCleaned$pop <- unlist(apply(spp[["Puma_concolor"]]$occs, 1, popUpContent))
     spp[["Panthera_leo"]]$occs$pop <- spp[["Panthera_leo"]]$occData$occsCleaned$pop <- unlist(apply(spp[["Panthera_leo"]]$occs, 1, popUpContent))
     # rvs$occsGrp <- rvs$occs$group

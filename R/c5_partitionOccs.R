@@ -9,43 +9,43 @@ c5_partitionOccs <- function(occs, bgPts, method, kfolds=NULL, bgMsk=NULL, aggFa
   
   if (method == 'jack') {
     group.data <- ENMeval::get.jackknife(occs.xy, bgPts)
-    logs %>% writeLog("Occurrences partitioned by jackknife method.")
+    logs %>% writeLog("Occurrences partitioned by jackknife method for ", spName(occs), ".")
   }
   
   if (method == 'rand') {
     if(is.null(kfolds)) {
       logs %>% writeLog(type = 'error', "Please specify a kfold value to use
-                        the random partition function.")
+                        the random partition function for ", spName(occs), ".")
       return()
     }
     if (kfolds < 2) {
-      logs %>% writeLog(type = 'error', "Please specify a kfold value greater than 1.")  
+      logs %>% writeLog(type = 'error', "Please specify a kfold value greater than 1 for ", spName(occs), ".")  
       return()
     }
     
     group.data <- ENMeval::get.randomkfold(occs.xy, bgPts, kfolds)
-    logs %>% writeLog("Occurrences partitioned by random k-fold (k = ", kfolds, ").")
+    logs %>% writeLog("Occurrences partitioned by random k-fold (k = ", kfolds, ") for ", spName(occs), ".")
   }
   
   if (method == 'block') {
     group.data <- ENMeval::get.block(occs.xy, bgPts)
-    logs %>% writeLog("Occurrences partitioned by block method.")
+    logs %>% writeLog("Occurrences partitioned by block method for ", spName(occs), ".")
   }
   
   if (method == 'cb1' | method == 'cb2') {
     if(is.na(aggFact) | aggFact <= 1) {
       logs %>% writeLog(type = 'error', "Please specify a positive aggregation 
-                        factor greater than 1.")
+                        factor greater than 1 for ", spName(occs), ".")
       return()
     }
     if(is.null(bgMsk)) {
       logs %>% writeLog(type = 'error', "Please specify a background mask to use
-                        checkerboard partition functions.")
+                        checkerboard partition functions for ", spName(occs), ".")
       return()
     }
     if(is.null(aggFact)) {
       logs %>% writeLog(type = 'error', "Please specify an aggregation factor to use
-                        checkerboard partition functions.")
+                        checkerboard partition functions for ", spName(occs), ".")
       return()
     }
   }
@@ -58,8 +58,8 @@ c5_partitionOccs <- function(occs, bgPts, method, kfolds=NULL, bgMsk=NULL, aggFa
     } else {
       group.data <- ENMeval::get.checkerboard1(occs.xy, bgMsk, bgPts, aggFact)
     }
-    logs %>% writeLog(paste0("Occurrences partitioned by checkerboard 1 method with 
-                                 aggregation factor ", aggFact, "."))
+    logs %>% writeLog("Occurrences partitioned by checkerboard 1 method with 
+                                 aggregation factor ", aggFact, " for ", spName(occs), ".")
   }
   
   if(method == 'cb2') {
@@ -70,8 +70,8 @@ c5_partitionOccs <- function(occs, bgPts, method, kfolds=NULL, bgMsk=NULL, aggFa
     } else {
       group.data <- ENMeval::get.checkerboard2(occs.xy, bgMsk, bgPts, aggFact)
     }
-    logs %>% writeLog(paste0("Occurrences partitioned by checkerboard 2 method with 
-                             aggregation factor ", aggFact, "."))
+    logs %>% writeLog("Occurrences partitioned by checkerboard 2 method with 
+                             aggregation factor ", aggFact, " for ", spName(occs), ".")
   }
   
   return(group.data)
