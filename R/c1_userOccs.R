@@ -15,7 +15,7 @@ c1_userOccs <- function(csvPath, csvName, logs = NULL, shiny = FALSE) {
   spNames <- trimws(as.character(unique(csv[,1])))
   
   # subset to just records with non-NA latitude and longitude
-  occs <- csv %>% dplyr::filter(!is.na(latitude) & !is.na(longitude))
+  occs <- csv %>% dplyr::filter(!is.na(latitude) & !is.na(longitude) & (!grepl("bg_", taxon_name)))
   
   if (nrow(occs) == 0) {
     logs %>% writeLog(type = 'warning', 'No records with coordinates found in ', csvName, ".")
