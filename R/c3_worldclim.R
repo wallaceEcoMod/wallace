@@ -46,7 +46,7 @@ c3_worldclim<- function (bcRes, bcSelChoice, bcSel, logs=NULL, shiny=FALSE){
   } else {
     bcSel <- paste(names(wcbc), collapse = ", ")
   }
-  logs %>% writeLog("WorldClim bioclimatic variables", bcSel, "at", 
+  logs %>% writeLog("WorldClim bioclimatic variables ", bcSel, " at ", 
                     bcRes, " arcmin resolution.")
   
   # change names if bio01 is bio1, and so forth

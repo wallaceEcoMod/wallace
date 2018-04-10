@@ -60,7 +60,7 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, logs = NULL, sh
   }
   
   if (class(occsOrig) == "try-error") {
-    logs %>% writeLog(type = 'error', 'No records found for ', spName, ". Please check the spelling.") 
+    logs %>% writeLog(type = 'error', 'No records found for ', em(spName), ". Please check the spelling.") 
     return()
   }
   
@@ -80,7 +80,7 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, logs = NULL, sh
   # subset to just records with latitude and longitude
   occsXY <-  occsOrig[!is.na(occsOrig$longitude) & !is.na(occsOrig$latitude),]
   if (nrow(occsXY) == 0) {
-    logs %>% writeLog(type = 'warning', 'No records with coordinates found in', occDb, "for", spName, ".")
+    logs %>% writeLog(type = 'warning', 'No records with coordinates found in', occDb, "for", em(spName), ".")
   }
 
   
@@ -97,7 +97,7 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, logs = NULL, sh
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
   
   dupsRem <- nrow(occsXY) - nrow(occs)
-  logs %>% writeLog('Total', occDb, 'records for', spName, 'returned [', nrow(occsOrig),
+  logs %>% writeLog('Total ', occDb, ' records for ', em(spName), ' returned [', nrow(occsOrig),
                     '] out of [', totRows, '] total (limit ', occNum, ').',
                     'Records without coordinates removed [', noCoordsRem, '].
                    Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')

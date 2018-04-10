@@ -25,7 +25,7 @@ c2_selectOccs <- function(occs, polySelXY, polySelID = 1, logs = NULL, shiny = F
     
     occs.sel <- occs[-ptRemIndex,]
     
-    logs %>% writeLog(occs$taxon_name[1], ": Removing occurrences with occID = ", remIDs, 
+    logs %>% writeLog(em(spName(occs)), ": Removing occurrences with occID = ", remIDs, 
                      ". Updated data has n = ", nrow(occs.sel), " records.")
     return(occs.sel)
 }

@@ -1,14 +1,13 @@
 
 
-c1_userOccs <- function(csvPath, logs = NULL, shiny = FALSE) {
+c1_userOccs <- function(csvPath, csvName, logs = NULL, shiny = FALSE) {
   
   # read in csv
   csv <- read.csv(csvPath, header = TRUE)
   
   # check to make sure all column names are correct
   if (!all(c('taxon_name', 'longitude', 'latitude') %in% names(csv))) {
-    logs %>% writeLog(type = "error", 'Please input CSV file with columns 
-                        "taxon_name", "longitude", "latitude".')
+    logs %>% writeLog(type = "error", 'Please input CSV file with columns "taxon_name", "longitude", "latitude".')
     return()
   }
   
@@ -19,7 +18,7 @@ c1_userOccs <- function(csvPath, logs = NULL, shiny = FALSE) {
   occs <- csv %>% dplyr::filter(!is.na(latitude) & !is.na(longitude))
   
   if (nrow(occs) == 0) {
-    logs %>% writeLog(type = 'warning', 'No records with coordinates found in', basename(csvPath), ".")
+    logs %>% writeLog(type = 'warning', 'No records with coordinates found in ', csvName, ".")
     return()
   }
   
@@ -40,8 +39,8 @@ c1_userOccs <- function(csvPath, logs = NULL, shiny = FALSE) {
     occsList[[n]] <- list(occs = x)
   }
   
-  logs %>% writeLog("User-specified CSV file", basename(csvPath), "with total of", 
-                    length(spNames), "species and", nrow(occs), "records 
+  logs %>% writeLog("User-specified CSV file ", csvName, " with total of ", 
+                    length(spNames), " species and ", nrow(occs), " records 
                     with coordinates was uploaded.")
   
   return(occsList)

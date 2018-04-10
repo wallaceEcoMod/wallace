@@ -17,7 +17,7 @@ c2_removeByID <- function(occs, removeID, logs = NULL, shiny = FALSE) {
   # remove the row
   occs.remID <- occs[-i,]
   
-  logs %>% writeLog("Removed occurrence from", occs$taxon_name[1], "with occID = ", removeID, 
+  logs %>% writeLog("Removed occurrence from", em(spName(occs)), "with occID = ", removeID, 
                     ". Updated data has n = ", nrow(occs.remID), " records.")
   return(occs.remID)
 }

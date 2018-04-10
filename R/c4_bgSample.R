@@ -8,8 +8,8 @@ c4_bgSample <- function(occs, bgMask, bgPtsNum, logs=NULL, shiny=FALSE) {
     bgXY <- bgXY %>% as.data.frame() %>% dplyr::select(longitude = x, latitude = y)
     bgXY.num <- nrow(bgXY)
   })
-  logs %>% writeLog(occs$taxon_name[1], ': Random background points sampled (n =', bgPtsNum, 
-                    ',', bgXY.num, 'points generated.')
+  logs %>% writeLog(em(spName(occs)), ': Random background points sampled (n = ', bgPtsNum, 
+                    '), with ', bgXY.num, ' points generated.')
   
   return(bgXY)
 }

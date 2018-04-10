@@ -31,7 +31,7 @@ c4_userBgExtent <- function(userBgShp_name, userBgShp_datapath, userBgBuf) {
   
     if (userBgBuf > 0) {
       bgExt <- rgeos::gBuffer(userBgShp(), width = userBgBuf)
-      logs %>% writeLog('Study extent buffered by', userBgBuf, 'degrees.')
+      logs %>% writeLog('Study extent buffered by ', userBgBuf, ' degrees.')
     }
 
     return(bgExt)

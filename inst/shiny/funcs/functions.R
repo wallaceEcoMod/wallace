@@ -105,8 +105,7 @@ writeLog <- function(logs, ..., type = 'default') {
     } else if (type == 'warning') {
       pre <- 'WARNING: '
     }  
-    args <- list(pre, ...)
-    newEntries <- paste0(args)
+    newEntries <- paste(pre, ..., collapse = "")
     message(newEntries)
     return()
   }
@@ -118,9 +117,7 @@ writeLog <- function(logs, ..., type = 'default') {
   } else if (type == 'warning') {
     pre <- '<font color="orange"><b>! WARNING</b></font> : '
   }
-  
-  args <- list(pre, ...)
-  newEntries <- paste(args, collapse = ' ')
+  newEntries <- paste(pre, ..., collapse = "")
   logs(paste(logs(), newEntries, sep = '<br>'))
 }
 
@@ -129,10 +126,10 @@ writeLog <- function(logs, ..., type = 'default') {
 ####################### #
 
 spName <- function(sp) {
-  if(class(sp) == "reactivevalues") {
+  if(class(sp) == "list") {
     name <- sp$occs$taxon_name[1]
   }
-  if(class(sp) == "data.frame"){
+  if(class(sp) == "data.frame") {
     name <- sp$taxon_name[1]
   }
   print(name)

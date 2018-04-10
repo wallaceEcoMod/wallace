@@ -14,8 +14,8 @@ partSp_UI <- function(id) {
 partSp_MOD <- function(input, output, session) {
   reactive({
     if (is.null(spp[[curSp()]]$procEnvs$bgMask)) {
-      logs %>% writeLog(type = 'error', "Before partitioning occurrences, 
-                       mask your environmental variables by your background extent.")
+      logs %>% writeLog(type = 'error', "Before partitioning occurrences for ", spName(spp[[sp]]),
+                       ", mask your environmental variables by your background extent.")
       return()
     }
     

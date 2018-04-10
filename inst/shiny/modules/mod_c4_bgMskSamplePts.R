@@ -12,38 +12,33 @@ bgMskAndSamplePts_MOD <- function(input, output, session) {
     
     req(spp[[curSp()]]$procEnvs$bgExt)
     
-    if(input$bgMskAllSp == TRUE) {
-      spVec <- allSp()
-    }else{
-      spVec <- curSp()
-    }
-    
-    for(i in spVec) {
+    for(sp in spIn()) {
       # FUNCTION CALL ####
-      bgMask <- c4_bgMask(spp[[i]]$occs, 
-                          spp[[i]]$envs, 
-                          spp[[i]]$procEnvs$bgExt, 
+      bgMask <- c4_bgMask(spp[[sp]]$occs, 
+                          spp[[sp]]$envs, 
+                          spp[[sp]]$procEnvs$bgExt, 
                           logs, shiny = TRUE)
       req(bgMask)
-      bgPts <- c4_bgSample(spp[[i]]$occs, 
+      bgPts <- c4_bgSample(spp[[sp]]$occs, 
                            bgMask, 
                            input$bgPtsNum, 
                            logs, shiny = TRUE)
       req(bgPts)
-      withProgress(message = paste0("Extracting background values for ", i, "..."), {
-        bgEnvsVals <- as.data.frame(raster::extract(spp[[i]]$envs, bgPts))
+      withProgress(message = paste0("Extracting background values for ", spName(spp[[sp]]), "..."), {
+        bgEnvsVals <- as.data.frame(raster::extract(spp[[sp]]$envs, bgPts))
         names(bgEnvsVals) <- paste0('env_', names(bgEnvsVals))
       })
       
       # LOAD INTO SPP ####
-      spp[[i]]$procEnvs$bgMask <- bgMask
+      spp[[sp]]$procEnvs$bgMask <- bgMask
       # add columns for env variables beginning with "envs_" to bg tbl
-      spp[[i]]$bg <- cbind(taxon_name = paste0("bg_", spp[[i]]$occs$taxon_name[1]), occID = NA, 
-                           bgPts, record_type = NA, bgEnvsVals)
-      print(spp[[i]]$bg)
+      spp[[sp]]$bg <- cbind(taxon_name = paste0("bg_", spName(spp[[sp]])), bgPts, 
+                           occID = NA, year = NA, institution_code = NA, country = NA, 
+                           state_province = NA, locality = NA, elevation = NA, 
+                           record_type = NA, bgEnvsVals)
       
       # METADATA ####
-      spp[[i]]$rmm$model$maxent$backgroundSizeSet <- input$bgPtsNum
+      spp[[sp]]$rmm$model$maxent$backgroundSizeSet <- input$bgPtsNum
     }
   })
 }

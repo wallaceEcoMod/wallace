@@ -17,34 +17,28 @@ bgExtent_MOD <- function(input, output, session) {
     
     req(curSp(), spp[[curSp()]]$occs, spp[[curSp()]]$envs)
     
-    if(input$bgExtAllSp == TRUE) {
-      spVec <- allSp()
-    }else{
-      spVec <- curSp()
-    }
-    
-    for(i in spVec) {
+    for(sp in spIn()) {
       # FUNCTION CALL ####
-      bgExt <- c4_bgExtent(spp[[i]]$occs, 
-                           spp[[i]]$envs, 
+      bgExt <- c4_bgExtent(spp[[sp]]$occs, 
+                           spp[[sp]]$envs, 
                            input$bgSel, 
                            input$bgBuf, 
                            logs, shiny=TRUE)  
       req(bgExt)
       
       # LOAD INTO SPP ####
-      spp[[i]]$procEnvs$bgExt <- bgExt
+      spp[[sp]]$procEnvs$bgExt <- bgExt
       
       # METADATA ####
-      spp[[i]]$rmm$model$maxent$backgroundSizeRule <- paste0(input$bgSel, ', ', input$bgBuf, ' degree buffer')
+      spp[[sp]]$rmm$model$maxent$backgroundSizeRule <- paste0(input$bgSel, ', ', input$bgBuf, ' degree buffer')
       
       # # MAPPING ####
-      # map %>% map_occs(spp[[i]]$occs)
+      # map %>% map_occs(spp[[sp]]$occs)
       # for (shp in bgShpXY()) {
       #   map %>%
       #     addPolygons(lng=shp[,1], lat=shp[,2], weight=4, color="gray", group='bgShp')  
       # }
-      # bb <- spp[[i]]$procEnvs$bgExt@bbox
+      # bb <- spp[[sp]]$procEnvs$bgExt@bbox
       # map %>% fitBounds(bb[1], bb[2], bb[3], bb[4])  
     }
   })

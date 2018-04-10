@@ -43,7 +43,7 @@ c1_queryDb <- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
   
   # if species not found, print message to log box and return
   if (q[[occDb]]$meta$found == 0) {
-    logs %>% writeLog(type = 'error', 'No records found for ', spName, ". Please check the spelling.")
+    logs %>% writeLog(type = 'error', 'No records found for ', em(spName), ". Please check the spelling.")
     return()
   }
   # extract occurrence tibble
@@ -58,7 +58,7 @@ c1_queryDb <- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
   # subset to just records with latitude and longitude
   occsXY <- occsOrig[!is.na(occsOrig$latitude) & !is.na(occsOrig$longitude),]
   if (nrow(occsXY) == 0) {
-    logs %>% writeLog(type = 'warning', 'No records with coordinates found in', occDb, "for", spName, ".")
+    logs %>% writeLog(type = 'warning', 'No records with coordinates found in', occDb, "for", em(spName), ".")
   }
   
   dups <- duplicated(occsXY[,c('longitude','latitude')])
@@ -94,7 +94,10 @@ c1_queryDb <- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
   dupsRem <- nrow(occsXY) - nrow(occs)
   
-  logs %>% writeLog('Total', occDb, 'records for', spName, 'returned [', nrow(occsOrig),
+  print(spName)
+  print(em(spName))
+
+  logs %>% writeLog('Total ', occDb, ' records for ', em(spName), ' returned [', nrow(occsOrig),
                     '] out of [', totRows, '] total (limit ', occNum, ').
                     Records without coordinates removed [', noCoordsRem, '].
                     Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')

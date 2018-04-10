@@ -68,8 +68,7 @@ c6_bioclim  <- function(occs, bg, occsGrp, bgGrp, bgMsk, logs = NULL, shiny = FA
   
   e <- BioClim_eval(occs.xy, bg.xy, occsGrp, bgGrp, bgMsk)
 
-  n <- formatSpName(occs$taxon_name[1])
-  logs %>% writeLog("BIOCLIM ran successfully for", n, "and output evaluation results.")
+  logs %>% writeLog("BIOCLIM ran successfully for", em(spName(occs)), "and output evaluation results.")
   
   return(e)
 }

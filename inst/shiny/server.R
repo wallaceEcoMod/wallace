@@ -314,8 +314,8 @@ shinyServer(function(input, output, session) {
       for(sp in allSp()) {
         curTbl <- spp[[sp]]$occs %>% dplyr::select(-pop)  
         # if bg values are present, add them to table
-        if(!is.null(spp[[curSp()]]$bg)) {
-          curTbl <- rbind(curTbl, spp[[curSp()]]$bg) 
+        if(!is.null(spp[[sp]]$bg)) {
+          curTbl <- rbind(curTbl, spp[[sp]]$bg) 
         }
         tbl <- rbind(tbl, curTbl)
       }
@@ -506,9 +506,10 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # # #
   # module Background Extent ####
   # # # # # # # # # # # # # # # # #
-  bgExt <- callModule(bgExtent_MOD, 'c4_bgExtent_uiID')
+  
   observeEvent(input$goBgExt, {
     # initialize module
+    bgExt <- callModule(bgExtent_MOD, 'c4_bgExtent_uiID')
     bgExt()
     # UI CONTROLS
     # updateSelectInput(session, "sppSel", selected = curSp())
@@ -535,10 +536,11 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # # # # # # # # # # #
   # module Background Mask and Sample Points ####
   # # # # # # # # # # # # # # # # # # # # # # # # #
-  bgMskPts <- callModule(bgMskAndSamplePts_MOD, 'c4_bgMskAndSamplePts')
+  
   observeEvent(input$goBgMask, {
     # stop if no background shape
     req(spp[[curSp()]]$procEnvs$bgExt)
+    bgMskPts <- callModule(bgMskAndSamplePts_MOD, 'c4_bgMskAndSamplePts')
     bgMskPts()
     # UI CONTROLS 
     updateSelectInput(session, "sppSel", selected = curSp())
@@ -712,9 +714,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goBioclim, {
     mod.bioclim()
-    print("YAY1")
     if(is.null(spp[[curSp()]]$model)) return()
-    print("YAY2")
     # evaluation table (written this way to be compatible with multiple tables, 
     # e.g. like in the Maxent module)
     output$evalTbls <- renderUI({

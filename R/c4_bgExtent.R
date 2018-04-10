@@ -11,7 +11,7 @@ c4_bgExtent <- function(occs, envs, bgSel, bgBuf, logs=NULL, shiny=FALSE) {
   
   # extract just coordinates
   occs.xy <- occs[c('longitude', 'latitude')]
-  n <- occs$taxon_name[1]
+
   # make spatial pts object of original occs and preserve origID
   occs.sp <- sp::SpatialPointsDataFrame(occs.xy, data=occs['occID'])
   
@@ -24,23 +24,23 @@ c4_bgExtent <- function(occs, envs, bgSel, bgBuf, logs=NULL, shiny=FALSE) {
     ymax <- occs.sp@bbox[4]
     bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin), ncol=2)
     bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(bb)), 1)))
-    msg <- paste(n, "study extent: bounding box,")
+    msg <- paste(em(spName(occs)), " study extent: bounding box,")
   } else if (bgSel == 'mcp') {
     bgExt <- mcp(occs.xy)
     # bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
-    msg <- paste(n, "study extent: minimum convex polygon,")
+    msg <- paste(em(spName(occs)), " study extent: minimum convex polygon,")
   } else if (bgSel == 'ptbuf') {
     if (bgBuf == 0) {
       logs %>% writeLog(type = 'error', 'Change buffer distance to positive or negative value.')
       return()
     }
     bgExt <- rgeos::gBuffer(occs.sp, width = bgBuf)
-    msg <- paste(n, "study extent: buffered points,")
+    msg <- paste(em(spName(occs)), " study extent: buffered points,")
   }
   
   if (bgBuf > 0 & bgSel != 'ptbuf') {
     bgExt <- rgeos::gBuffer(bgExt, width = bgBuf)
-    logs %>% writeLog(msg, bgBuf, 'degree buffer.')
+    logs %>% writeLog(msg, ' with buffer of ', bgBuf, ' degrees.')
   }
   
   return(bgExt)
