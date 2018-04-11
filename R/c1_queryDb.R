@@ -94,9 +94,6 @@ c1_queryDb <- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
   dupsRem <- nrow(occsXY) - nrow(occs)
   
-  print(spName)
-  print(em(spName))
-
   logs %>% writeLog('Total ', occDb, ' records for ', em(spName), ' returned [', nrow(occsOrig),
                     '] out of [', totRows, '] total (limit ', occNum, ').
                     Records without coordinates removed [', noCoordsRem, '].

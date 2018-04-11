@@ -9,10 +9,11 @@ c2_thinOccs <- function(occs, thinDist, logs=NULL, shiny=FALSE) {
     logs %>% writeLog(type = "error", 'Assign positive distance to thinning parameter.')
     return()
   }
-  
+  print(occs)
+  print(class(occs))
   # query database
   if (shiny == TRUE) {
-    withProgress(message = paste0("Spatially thinning for ", spName, "..."), {  # start progress bar
+    withProgress(message = paste0("Spatially thinning for ", spName(occs), "..."), {  # start progress bar
       output <- spThin::thin(occs, 'latitude', 'longitude', 'taxon_name', thin.par = thinDist,
                              reps = 100, locs.thinned.list.return = TRUE, write.files = FALSE,
                              verbose = FALSE)
@@ -26,7 +27,7 @@ c2_thinOccs <- function(occs, thinDist, logs=NULL, shiny=FALSE) {
       # }
     })  
   } else {
-    output <- spThin::thin(occs, 'latitude', 'longitude', 'name', thin.par = thinDist,
+    output <- spThin::thin(occs, 'latitude', 'longitude', 'taxon_name', thin.par = thinDist,
                            reps = 100, locs.thinned.list.return = TRUE, write.files = FALSE,
                            verbose = FALSE)
     maxThin <- which(sapply(output, nrow) == max(sapply(output, nrow)))

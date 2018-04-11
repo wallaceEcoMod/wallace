@@ -22,19 +22,19 @@ maxent_UI <- function(id) {
 maxent_MOD <- function(input, output, session, rvs) {
   reactive({
     
-    if(input$maxentAllSp == TRUE) {
-      spVec <- allSp()
-    }else{
-      spVec <- curSp()
-    }
-    
-    for(i in spVec) {  
+    for(sp in spIn()) {  
+      # ERRORS ####
+      if (is.null(spp[[sp]]$occs$partition)) {
+        logs %>% writeLog(type = 'error', "Before building a model, please partition 
+                          occurrences for cross-validation for", spName(spp[[sp]]), ".")
+        return()
+      }
       # FUNCTION CALL ####
-      m.maxent <- c6_maxent(spp[[i]]$occs, 
-                            spp[[i]]$bg, 
-                            spp[[i]]$occs$partition,
-                            spp[[i]]$bg$partition,
-                            spp[[i]]$procEnvs$bgMask, 
+      m.maxent <- c6_maxent(spp[[sp]]$occs, 
+                            spp[[sp]]$bg, 
+                            spp[[sp]]$occs$partition,
+                            spp[[sp]]$bg$partition,
+                            spp[[sp]]$procEnvs$bgMask, 
                             input$rms, 
                             input$rmsStep, 
                             input$fcs, 
@@ -43,14 +43,14 @@ maxent_MOD <- function(input, output, session, rvs) {
       req(m.maxent)
       
       # LOAD INTO SPP ####
-      spp[[i]]$mod <- m.maxent
+      spp[[sp]]$mod <- m.maxent
       
       # METADATA ####
-      spp[[i]]$rmm$model$algorithm <- "Maxent"
-      spp[[i]]$rmm$model$maxent$featureSet <- input$fcs
-      spp[[i]]$rmm$model$maxent$regularizationMultiplierSet <- input$rms
-      spp[[i]]$rmm$model$maxent$regularizationRule <- paste("increment by", input$rmsStep)
-      spp[[i]]$rmm$model$maxent$notes <- "dismo package implementation"
+      spp[[sp]]$rmm$model$algorithm <- "Maxent"
+      spp[[sp]]$rmm$model$maxent$featureSet <- input$fcs
+      spp[[sp]]$rmm$model$maxent$regularizationMultiplierSet <- input$rms
+      spp[[sp]]$rmm$model$maxent$regularizationRule <- paste("increment by", input$rmsStep)
+      spp[[sp]]$rmm$model$maxent$notes <- "dismo package implementation"
     }
   })
 }

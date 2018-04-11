@@ -14,6 +14,7 @@ thinOccs_MOD <- function(input, output, session) {
     # loop over all species in spIn -- if batch is on, this is all species with data,
     # but if batch is off, spIn is just the current selected species (curSp)
     for(sp in spIn()) {
+      print(sp)
       # FUNCTION CALL ####
       occs.thin <- c2_thinOccs(spp[[sp]]$occs,
                                input$thinDist,

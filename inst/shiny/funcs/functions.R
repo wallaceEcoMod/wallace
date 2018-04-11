@@ -129,12 +129,10 @@ spName <- function(sp) {
   if(class(sp) == "list") {
     name <- sp$occs$taxon_name[1]
   }
-  if(class(sp) == "data.frame") {
+  if("data.frame" %in% class(sp)) {
     name <- sp$taxon_name[1]
   }
-  print(name)
   return(paste(strsplit(as.character(name), "_")[[1]], collapse = " "))  
-  
 }
 
 formatSpName <- function(spName) {

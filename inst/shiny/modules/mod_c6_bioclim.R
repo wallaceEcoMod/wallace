@@ -10,9 +10,9 @@ bioclim_MOD <- function(input, output, session) {
     
     for(sp in spIn()) {
       # ERRORS ####
-      if (is.null(spp[[sp]]$occs$grp)) {
+      if (is.null(spp[[sp]]$occs$partition)) {
         logs %>% writeLog(type = 'error', "Before building a model, please partition 
-                          occurrences for cross-validation for", sp, ".")
+                          occurrences for cross-validation for", spName(spp[[sp]]), ".")
         return()
       }
       
