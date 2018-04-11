@@ -20,7 +20,6 @@ userOccs_MOD <- function(input, output, session) {
       if(!is.null(spp[[n]])) spp[[n]] <- NULL
       spp[[n]] <- list(occs = occs, occData = list(occsCleaned = occs),
                        rmm = rangeModelMetadata::rangeModelMetadataTemplate())
-      print(occsList[[n]]$bg)
       if(!is.null(occsList[[n]]$bg)) spp[[n]]$bg <- occsList[[n]]$bg
       
       # METADATA ####

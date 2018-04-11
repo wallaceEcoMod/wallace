@@ -11,17 +11,14 @@ options(shiny.maxRequestSize=5000*1024^2)
 
 shinyServer(function(input, output, session) {
   # disable download buttons
-  shinyjs::disable("dlDbOccs")
-  shinyjs::disable("dlPaleoDbOccs")
-  shinyjs::disable("dlProcOccs")
+  shinyjs::disable("dlOccs")
   # shinyjs::disable("dlEnvs")
   shinyjs::disable("dlMskEnvs")
-  shinyjs::disable("dlPart")
   shinyjs::disable("downloadEvalcsv")
   shinyjs::disable("downloadEvalPlots")
   shinyjs::disable("dlPred")
   shinyjs::disable("dlProj")
-  # shinyjs::disable("dlRMD")
+  shinyjs::disable("dlRMD")
   
   ########################## #
   # REACTIVE VALUES LISTS ####
@@ -43,11 +40,14 @@ shinyServer(function(input, output, session) {
   
   # FOR DEVELOPMENT PURPOSES
   observeEvent(input$load, {
-    f <- read.csv('example_data/occs_multisp.csv')
-    spp[["Puma_concolor"]]$occs <- spp[["Puma_concolor"]]$occData$occsCleaned <- f 
-    spp[["Panthera_leo"]]$occs <- spp[["Panthera_leo"]]$occData$occsCleaned <- f 
-    spp[["Puma_concolor"]]$occs$pop <- spp[["Puma_concolor"]]$occData$occsCleaned$pop <- unlist(apply(spp[["Puma_concolor"]]$occs, 1, popUpContent))
-    spp[["Panthera_leo"]]$occs$pop <- spp[["Panthera_leo"]]$occData$occsCleaned$pop <- unlist(apply(spp[["Panthera_leo"]]$occs, 1, popUpContent))
+    f <- c1_userOccs('example_data/multispecies.csv', "multispecies.csv")
+    for(n in names(f)) {
+      occs <- f[[n]]$occs
+      if(!is.null(spp[[n]])) spp[[n]] <- NULL
+      spp[[n]] <- list(occs = occs, occData = list(occsCleaned = occs),
+                       rmm = rangeModelMetadata::rangeModelMetadataTemplate())
+      if(!is.null(f[[n]]$bg)) spp[[n]]$bg <- f[[n]]$bg
+    }
     # rvs$occsGrp <- rvs$occs$group
     # spp[["Puma_concolor"]]$bg <- f %>% dplyr::filter(taxon_name == 'background1') %>% dplyr::select(longitude, latitude)
     # spp[["Panthera_leo"]]$bg <- f %>% dplyr::filter(taxon_name == 'background2') %>% dplyr::select(longitude, latitude)
@@ -212,39 +212,39 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # # # # # #
   # module Query Database (Present) ####
   # # # # # # # # # # # # # # # # # # # #
-  dbOccs <- callModule(queryDb_MOD, 'c1_queryDb_uiID')
   observeEvent(input$goDbOccs, {
+    queryDb <- callModule(queryDb_MOD, 'c1_queryDb_uiID')
     # return the occs table
-    occsTbl <- dbOccs()
+    occsTbl <- queryDb()
     n <- formatSpName(occsTbl$taxon_name)
     # UI CONTROLS
     # assign the selected species to the present occ table's taxon name
     updateSelectInput(session, "sppSel", selected = n)
-    shinyjs::enable("dlDbOccs")
+    shinyjs::enable("dlOccs")
     shinyjs::enable("dlRMD")
   })
   
   # # # # # # # # # # # # # # # # # # # 
   # module Query Database (Paleo) ####
   # # # # # # # # # # # # # # # # # # # 
-  dbPaleoOccs <- callModule(queryPaleoDb_MOD, 'c1_queryPaleoDb_uiID')
   observeEvent(input$goPaleoDbOccs, {
-    occsTbl <- dbPaleoOccs()
+    paleoDb <- callModule(queryPaleoDb_MOD, 'c1_queryPaleoDb_uiID')
+    # return the occs table
+    occsTbl <- paleoDb()
     n <- formatSpName(occsTbl$taxon_name)
+    # UI CONTROLS
     # assign the selected species to the present occ table's taxon name
     updateSelectInput(session, "sppSel", selected = n)
-    shinyjs::enable("dlPaleoDbOccs")
+    shinyjs::enable("dlOccs")
     shinyjs::enable("dlRMD")
   })
   
   # # # # # # # # # # # # # # # # # #
   # module User Occurrence Data ####
   # # # # # # # # # # # # # # # # # #
-  userOccs <- callModule(userOccs_MOD, 'c1_userOccs_uiID')
   observeEvent(input$goUserOccs, {
-    # output not currently getting used
+    userOccs <- callModule(userOccs_MOD, 'c1_userOccs_uiID')
     userOccs()
-    print(spp[['Puma_concolor']]$bg)
     shinyjs::disable("dlDbOccs")
     shinyjs::enable("dlRMD")
   })
@@ -278,14 +278,14 @@ shinyServer(function(input, output, session) {
   spIn <- reactive(if(input$batch == TRUE) allSp() else curSp())
   
   # TABLE
-  options <- list(autoWidth = TRUE, 
-                  columnDefs = list(list(width = '40%', targets = 7)),
+  options <- list(autoWidth = TRUE, columnDefs = list(list(width = '40%', targets = 7)),
                   scrollX=TRUE, scrollY=400)
   output$occTbl <- DT::renderDataTable({
     # check if spp has species in it
     req(length(reactiveValuesToList(spp)) > 0)
-    spp[[curSp()]]$occs %>% dplyr::mutate(longitude = round(as.numeric(longitude), digits = 2),
-                                          latitude = round(as.numeric(latitude), digits = 2)) %>% 
+    spp[[curSp()]]$occs %>% 
+      dplyr::mutate(longitude = round(as.numeric(longitude), digits = 2),
+                    latitude = round(as.numeric(latitude), digits = 2)) %>% 
       dplyr::select(-pop)
   }, rownames = FALSE)
   
@@ -346,17 +346,17 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # # # # # #
   # module Remove Occurrences By ID ####
   # # # # # # # # # # # # # # # # # # # #
-  removeByID <- callModule(removeByID_MOD, 'c2_removeByID_uiID')
   observeEvent(input$goRemoveByID, {
+    removeByID <- callModule(removeByID_MOD, 'c2_removeByID_uiID')
     removeByID()
   })
   
   # # # # # # # # # # # # # # # # # # # # #
   # module Select Occurrences on Map ####
   # # # # # # # # # # # # # # # # # # # # #
-  selOccs <- callModule(selectOccs_MOD, 'c2_selOccs_uiID')
   observeEvent(input$goSelectOccs, {
     req(input$map_draw_new_feature)
+    selOccs <- callModule(selectOccs_MOD, 'c2_selOccs_uiID')
     selOccs()
     # MAPPING
     map %>% leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
@@ -438,13 +438,9 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # # # # # # # # # # # # #
   # module User-defined Environmental Predictors ####
   # # # # # # # # # # # # # # # # # # # # # # # # # # #
-  userEnvs <- callModule(userEnvs_MOD, 'c3_userEnvs_uiID')
   observeEvent(input$goUserEnvs, {
-    vals$envs <- userEnvs()
-    # stop if no occurrence data
-    req(vals$occs)
-    # remove occurrences with NA values for variables
-    vals$occs <- remEnvsValsNA(vals)
+    userEnvs <- callModule(userEnvs_MOD, 'c3_userEnvs_uiID')
+    userEnvs()
     # make project to new time module unavailable for user envs
     updateRadioButtons(session, "projSel", 
                        choices = list("Project to New Extent" = 'projArea',
@@ -566,7 +562,7 @@ shinyServer(function(input, output, session) {
   
   # DOWNLOAD: masked environmental variable rasters
   output$dlMskEnvs <- downloadHandler(
-    filename = function() {'mskEnvs.zip'},
+    filename = function() paste0(spName(spp[[curSp()]]), '_mskEnvs.zip'),
     content = function(file) {
       tmpdir <- tempdir()
       setwd(tempdir())

@@ -37,7 +37,7 @@ wcBioclims_MOD <- function(input, output, session, spIn) {
     
     for(sp in spIn) {
       # remove occurrences with NA values for variables
-      withProgress(message = paste0("Extracting occurrence values for ", sp, "..."), {
+      withProgress(message = paste0("Extracting environmental values for occurrences of ", sp, "..."), {
         occsEnvsVals <- as.data.frame(raster::extract(envs, spp[[sp]]$occs[c('longitude', 'latitude')]))
         names(occsEnvsVals) <- paste0('env_', names(occsEnvsVals))
       })
@@ -53,7 +53,7 @@ wcBioclims_MOD <- function(input, output, session, spIn) {
       spp[[sp]]$rmm$data$environment$variableNames <- names(envs)
       spp[[sp]]$rmm$data$environment$yearMin <- 1960
       spp[[sp]]$rmm$data$environment$yearMax <- 1990
-      spp[[sp]]$rmm$data$environment$resolution <- paste(input$bcRes, 'arcmin')
+      spp[[sp]]$rmm$data$environment$resolution <- raster::res(envs)
       spp[[sp]]$rmm$data$environment$extent <- 'global'
       spp[[sp]]$rmm$data$environment$sources <- 'WorldClim'
     }

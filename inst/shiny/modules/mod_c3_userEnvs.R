@@ -8,9 +8,10 @@ userEnvs_UI <- function(id) {
 
 userEnvs_MOD <- function(input, output, session) {
   reactive({
+    # ERRORS ####
     if (is.null(spp[[curSp()]]$occs)) {
       logs %>% writeLog(type = 'error', "Before obtaining environmental variables, 
-                       obtain occurrence data in component 1.")
+                        obtain occurrence data in component 1.")
       return()
     }
     if (is.null(input$userEnvs)) {
@@ -18,25 +19,27 @@ userEnvs_MOD <- function(input, output, session) {
       return()
     }
     
-    # record for RMD
-    spp[[curSp()]]$rmm$code$wallaceSettings$userEnvs <- input$userEnvs
-    
-    withProgress(message = "Reading in rasters...", {
-      uenvs <- raster::stack(input$userEnvs$datapath)
-      names(uenvs) <- fileNameNoExt(input$userEnvs$name)
-    })
-    
-    logs %>% writeLog("Environmental predictors: User input.")
-    
-    if (is.na(raster::crs(uenvs))) {
-      logs %>% writeLog(type = "warning", "Input rasters have undefined coordinate 
-                       reference system (CRS). Mapping functionality in components 
-                       Visualize Model Results and Project Model will not work. If 
-                       you wish to map rasters in these components, please define 
-                       their projections and upload again. See guidance text in 
-                       this module for more details.")
-    }
-    
-    return(uenvs)
+      userEnvs <- c3_userEnvs(rasPath = input$userEnvs$datapath,
+                              rasName = input$userEnvs$name)
+      
+      # remove occurrences with NA values for variables
+      withProgress(message = paste0("Extracting environmental values for occurrences of ", spName(spp[[curSp()]]), "..."), {
+        occsEnvsVals <- as.data.frame(raster::extract(userEnvs, spp[[curSp()]]$occs[c('longitude', 'latitude')]))
+        names(occsEnvsVals) <- paste0('env_', names(occsEnvsVals))
+      })
+      # remove occurrences with NA environmental values
+      spp[[curSp()]]$occs <- remEnvsValsNA(spp[[curSp()]]$occs, occsEnvsVals, logs)
+      
+      # LOAD INTO SPP ####
+      spp[[curSp()]]$envs <- userEnvs
+      # add columns for env variables beginning with "envs_" to occs tbl
+      print(spp[[curSp()]]$occs)
+      print(occsEnvsVals)
+      spp[[curSp()]]$occs <- cbind(spp[[curSp()]]$occs, occsEnvsVals)
+      
+      # METADATA ####
+      spp[[curSp()]]$rmm$data$environment$variableNames <- names(userEnvs)
+      spp[[curSp()]]$rmm$data$environment$resolution <- raster::res(userEnvs)
+      spp[[curSp()]]$rmm$data$environment$sources <- 'user'
   })
 }

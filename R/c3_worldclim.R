@@ -9,7 +9,7 @@
 #' 
 #' 
 
-c3_worldclim<- function (bcRes, bcSelChoice, bcSel, logs=NULL, shiny=FALSE){
+c3_worldclim<- function(bcRes, bcSelChoice, bcSel, logs=NULL, shiny=FALSE){
   
   if(bcRes == '') {
     logs %>% writeLog(type = 'error', 'Select a raster resolution.')
