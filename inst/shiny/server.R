@@ -41,13 +41,25 @@ shinyServer(function(input, output, session) {
   # FOR DEVELOPMENT PURPOSES
   observeEvent(input$load, {
     f <- c1_userOccs('example_data/multispecies.csv', "multispecies.csv")
+    r1 <- c3_userEnvs(list.files('example_data/Meles meles_mskEnvs', full.names = TRUE, pattern = "01|03|05"), c('msk_bio01.tif','msk_bio03.tif','msk_bio05.tif'))
+    r2 <- c3_userEnvs(list.files('example_data/Puma concolor_mskEnvs', full.names = TRUE, pattern = "02|04|06"), c('msk_bio02.tif','msk_bio4.tif','msk_bio06.tif'))
     for(n in names(f)) {
       occs <- f[[n]]$occs
       if(!is.null(spp[[n]])) spp[[n]] <- NULL
       spp[[n]] <- list(occs = occs, occData = list(occsCleaned = occs),
                        rmm = rangeModelMetadata::rangeModelMetadataTemplate())
       if(!is.null(f[[n]]$bg)) spp[[n]]$bg <- f[[n]]$bg
+      if(n == "Meles_meles") r <- r1
+      if(n == "Puma_concolor") r <- r2
+      occsEnvsVals <- as.data.frame(raster::extract(r, spp[[n]]$occs[c('longitude', 'latitude')]))
+      names(occsEnvsVals) <- paste0('env_', names(occsEnvsVals))
+      spp[[n]]$occs <- remEnvsValsNA(spp[[n]]$occs, occsEnvsVals, logs)
+      spp[[n]]$envs <- r
+      # add columns for env variables beginning with "envs_" to occs tbl
+      spp[[n]]$occs <- cbind(spp[[n]]$occs, occsEnvsVals)
     }
+    
+    
     # rvs$occsGrp <- rvs$occs$group
     # spp[["Puma_concolor"]]$bg <- f %>% dplyr::filter(taxon_name == 'background1') %>% dplyr::select(longitude, latitude)
     # spp[["Panthera_leo"]]$bg <- f %>% dplyr::filter(taxon_name == 'background2') %>% dplyr::select(longitude, latitude)
@@ -515,19 +527,9 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # # # # # # # # # 
   # module User-defined Background Extent ####
   # # # # # # # # # # # # # # # # # # # # # # # 
-  userBg <- callModule(userBgExtent_MOD, 'c4_userBgExtent')
   observeEvent(input$goUserBg, {
+    userBg <- callModule(userBgExtent_MOD, 'c4_userBgExtent')
     userBg()
-    # stop if no environmental variables
-    coords <- rvs$bgShp@polygons[[1]]@Polygons[[1]]@coords
-    map %>% clearShapes()
-    for (shp in bgShpXY()) {
-      map %>%
-        addPolygons(lng=shp[,1], lat=shp[,2],
-                    weight=4, color="gray", group='bgShp')  
-    }
-    map %>%
-      fitBounds(rvs$bgShp@bbox[1], rvs$bgShp@bbox[2], rvs$bgShp@bbox[3], rvs$bgShp@bbox[4])
   })
   
   # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -559,6 +561,28 @@ shinyServer(function(input, output, session) {
     }
     return(xy)
   })
+  
+  # DOWNLOAD: masked environmental variable rasters
+  output$dlBgShp <- downloadHandler(
+    filename = function() paste0(spName(spp[[curSp()]]), '_bgShp.zip'),
+    content = function(file) {
+      tmpdir <- tempdir()
+      setwd(tempdir())
+      n <- spName(spp[[curSp()]])
+      
+      rgdal::writeOGR(obj = spp[[curSp()]]$procEnvs$bgExt, 
+                      dsn = tmpdir, 
+                      layer = paste0(n, '_bgShp'), 
+                      driver = "ESRI Shapefile",
+                      overwrite_layer = TRUE)
+      
+      exts <- c('dbf', 'shp', 'shx')
+      fs <- paste0(n, '_bgShp.', exts)
+      zip(zipfile=file, files=fs)
+      if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
+    },
+    contentType = "application/zip"
+  )
   
   # DOWNLOAD: masked environmental variable rasters
   output$dlMskEnvs <- downloadHandler(

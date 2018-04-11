@@ -33,8 +33,6 @@ userEnvs_MOD <- function(input, output, session) {
       # LOAD INTO SPP ####
       spp[[curSp()]]$envs <- userEnvs
       # add columns for env variables beginning with "envs_" to occs tbl
-      print(spp[[curSp()]]$occs)
-      print(occsEnvsVals)
       spp[[curSp()]]$occs <- cbind(spp[[curSp()]]$occs, occsEnvsVals)
       
       # METADATA ####

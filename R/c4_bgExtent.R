@@ -43,5 +43,8 @@ c4_bgExtent <- function(occs, envs, bgSel, bgBuf, logs=NULL, shiny=FALSE) {
     logs %>% writeLog(msg, ' with buffer of ', bgBuf, ' degrees.')
   }
   
+  # make into SP data frame
+  bgExt <- sp::SpatialPolygonsDataFrame(bgExt, data = data.frame(x=1), match.ID = FALSE)
+  
   return(bgExt)
 }
