@@ -55,19 +55,13 @@ shinyServer(function(input, output, session) {
       names(occsEnvsVals) <- paste0('env_', names(occsEnvsVals))
       spp[[n]]$occs <- remEnvsValsNA(spp[[n]]$occs, occsEnvsVals, logs)
       spp[[n]]$envs <- r
+      spp[[n]]$procEnvs$bgMask <- r
       # add columns for env variables beginning with "envs_" to occs tbl
       spp[[n]]$occs <- cbind(spp[[n]]$occs, occsEnvsVals)
     }
     
     
-    # rvs$occsGrp <- rvs$occs$group
-    # spp[["Puma_concolor"]]$bg <- f %>% dplyr::filter(taxon_name == 'background1') %>% dplyr::select(longitude, latitude)
-    # spp[["Panthera_leo"]]$bg <- f %>% dplyr::filter(taxon_name == 'background2') %>% dplyr::select(longitude, latitude)
-    # # rvs$bgGrp <- rvs$bgPts$group
-    # spp[["Puma_concolor"]]$occs <- cbind(spp[["Puma_concolor"]]$occs, read.csv('/Users/musasabi/Desktop/shiny_testing/Puma concolor_z.csv'))
-    # spp[["Panthera_leo"]]$occs <- cbind(spp[["Panthera_leo"]]$occs, read.csv('/Users/musasabi/Desktop/shiny_testing/Panthera leo_z.csv'))
-    # spp[["Puma_concolor"]]$bg <- cbind(spp[["Puma_concolor"]]$bg, read.csv('/Users/musasabi/Desktop/shiny_testing/Puma concolor_bz.csv'))
-    # spp[["Panthera_leo"]]$bg <- cbind(spp[["Panthera_leo"]]$bg, read.csv('/Users/musasabi/Desktop/shiny_testing/Panthera leo_bz.csv'))
+    
     # # rvs$bgShp <- rgdal::readOGR('/Users/musasabi/Downloads', 'mcp')
     # spp[["Puma_concolor"]]$procEnvs$bgMask <- raster::stack(list.files('/Users/musasabi/Desktop/shiny_testing/mskEnvs_puma', full.names = TRUE))
     # spp[["Panthera_leo"]]$procEnvs$bgMask <- raster::stack(list.files('/Users/musasabi/Desktop/shiny_testing/mskEnvs_leo', full.names = TRUE))
