@@ -11,11 +11,12 @@ c1_userOccs <- function(csvPath, csvName, logs = NULL, shiny = FALSE) {
     return()
   }
   
-  # get all species names
-  spNames <- trimws(as.character(unique(csv[,1])))
-  
   # subset to just records with non-NA latitude and longitude
-  occs <- csv %>% dplyr::filter(!is.na(latitude) & !is.na(longitude) & (!grepl("bg_", taxon_name)))
+  csv.xy <- csv %>% dplyr::filter(!is.na(latitude) & !is.na(longitude))
+  
+  # get all species names
+  occs <- csv.xy %>% dplyr::filter(!grepl("bg_", taxon_name))
+  spNames <- trimws(as.character(unique(occs$taxon_name)))
   
   if (nrow(occs) == 0) {
     logs %>% writeLog(type = 'warning', 'No records with coordinates found in ', csvName, ".")
@@ -25,23 +26,31 @@ c1_userOccs <- function(csvPath, csvName, logs = NULL, shiny = FALSE) {
   # put species into a list in the same form as spp
   occsList <- list()
   for (i in spNames) {
-    x <- occs %>% dplyr::filter(taxon_name == i)
-    # add occID field
-    x$occID <- row.names(x)
+    sp.occs <- csv.xy %>% dplyr::filter(taxon_name == i)
+    # add occID field if it doesn't exist
+    if(!("occID" %in% names(sp.occs))) sp.occs$occID <- row.names(sp.occs)
     # add all cols to match dbOccs if not already there
     for (col in c("year", "institution_code", "country", "state_province",
                   "locality", "elevation", "record_type")) {  
-      if (!(col %in% names(x))) x[,col] <- NA
+      if (!(col %in% names(sp.occs))) sp.occs[,col] <- NA
     }
     # add popup field
-    x$pop <- unlist(apply(x, 1, popUpContent))
+    sp.occs$pop <- unlist(apply(sp.occs, 1, popUpContent))
     n <- formatSpName(i)
-    occsList[[n]] <- list(occs = x)
+    occsList[[n]] <- list(occs = sp.occs)
+    
+    logs %>% writeLog("Data for ", em(i), " uploaded from ", csvName, ": ", 
+                      nrow(sp.occs), " occurrence records with coordinates.")
+    
+    # look for background records
+    sp.bg <- csv.xy %>% dplyr::filter(taxon_name == paste0("bg_", i))
+    # if they exist, load them into occsList for the current species
+    if(nrow(sp.bg) > 0) {
+      occsList[[n]]$bg <- sp.bg
+      logs %>% writeLog("Data for ", em(i), " uploaded from ", csvName, ": ", 
+                        nrow(sp.bg), " background records.")
+    }
   }
-  
-  logs %>% writeLog("User-specified CSV file ", csvName, " with total of ", 
-                    length(spNames), " species and ", nrow(occs), " records 
-                    with coordinates was uploaded.")
   
   return(occsList)
 }

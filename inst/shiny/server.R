@@ -244,6 +244,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goUserOccs, {
     # output not currently getting used
     userOccs()
+    print(spp[['Puma_concolor']]$bg)
     shinyjs::disable("dlDbOccs")
     shinyjs::enable("dlRMD")
   })
@@ -291,7 +292,7 @@ shinyServer(function(input, output, session) {
   # DOWNLOAD: current species occurrence data table
   output$dlOccs <- downloadHandler(
     filename = function() {
-      paste0(spName(spp[curSp()]), ".csv")
+      paste0(spName(spp[[curSp()]]), ".csv")
     },
     content = function(file) {
       tbl <- spp[[curSp()]]$occs %>% 
