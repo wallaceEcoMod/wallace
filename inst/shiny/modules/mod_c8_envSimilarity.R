@@ -37,3 +37,7 @@ envSimilarity_MOD <- function(input, output, session, rvs) {
     return(pjMESS)
   })
 }
+
+envSimilarity_INFO <- infoGenerator(modName = "Calculate Environmental Similarity",
+                                    modAuts = "Jamie M. Kass, Bruno Vilela, Robert P. Anderson", 
+                                    pkgName = "dismo")

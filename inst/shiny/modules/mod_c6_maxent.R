@@ -54,3 +54,7 @@ maxent_MOD <- function(input, output, session, rvs) {
     }
   })
 }
+
+maxent_INFO <- infoGenerator(modName = "Maxent",
+                             modAuts = "Jamie M. Kass, Robert Muscarella, Bruno Vilela, Robert P. Anderson",
+                             pkgName = c("ENMeval", "dismo"))

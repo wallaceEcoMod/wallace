@@ -41,3 +41,7 @@ mxEvalPlots_MOD <- function(input, output, session, rvs) {
     evalPlot(rvs$modRes, input$mxEvalSel)
   })
 }
+
+mxEvalPlots_INFO <- infoGenerator(modName = "Maxent Evaluation Plots", 
+                                  modAuts = "Jamie M. Kass, Robert Muscarella, Bruno Vilela, Robert P. Anderson", 
+                                  pkgName = c("ENMeval", "dismo"))

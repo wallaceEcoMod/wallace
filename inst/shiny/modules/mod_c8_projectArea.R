@@ -50,3 +50,7 @@ projectArea_MOD <- function(input, output, session, rvs) {
     return(list(pjMsk=projMsk, pjPred=pjPred))
   })
 }
+
+projectArea_INFO <- infoGenerator(modName = "Project to New Extent",
+                                  modAuts = "Jamie M. Kass, Bruno Vilela, Robert P. Anderson", 
+                                  pkgName = "dismo")

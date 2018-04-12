@@ -30,3 +30,7 @@ bcPlot_MOD <- function(input, output, session, spIn) {
     return(bcPlot)
   })
 }
+
+bcPlot_INFO <- infoGenerator(modName = "BIOCLIM Envelope Plot", 
+                             modAuts = "Jamie M. Kass, Robert Muscarella, Bruno Vilela, Robert P. Anderson", 
+                             pkgName = "dismo")

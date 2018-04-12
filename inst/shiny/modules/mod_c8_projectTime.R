@@ -127,3 +127,7 @@ projectTime_MOD <- function(input, output, session, rvs) {
     return(list(pjMsk=pjtMsk, pjPred=pjPred))
   })
 }
+
+projectTime_INFO <- infoGenerator(modName = "Project to New Time", 
+                                  modAuts = "Jamie M. Kass, Bruno Vilela, Robert P. Anderson", 
+                                  pkgName = "dismo")

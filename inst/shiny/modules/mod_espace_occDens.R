@@ -39,3 +39,7 @@ occDens_MOD <- function(input, output, session) {
     return(occDens)
   })
 }
+
+espace_occDens_INFO <- infoGenerator(modName = "Occurrence Density Grid", 
+                                     modAuts = "Olivier Broennimann, Jamie Kass", 
+                                     pkgName = c("ecospat", "adeHabitatHR"))

@@ -42,3 +42,7 @@ bgMskAndSamplePts_MOD <- function(input, output, session) {
     }
   })
 }
+
+bgMskSamplePts_INFO <- infoGenerator(modName = "Sample Background Points",
+                                     modAuts = "Jamie M. Kass, Bruno Vilela, Robert P. Anderson",
+                                     pkgName = NULL)

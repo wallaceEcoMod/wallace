@@ -74,3 +74,7 @@ mapPredsMaxent_MOD <- function(input, output, session, rvs) {
     return(pjPred)
   })
 }
+
+mapPredsMaxent_INFO <- infoGenerator(modName = "Map Prediction", 
+                                     modAuts = "Jamie M. Kass, Robert Muscarella, Bruno Vilela, Robert P. Anderson", 
+                                     pkgName = "dismo")

@@ -64,3 +64,7 @@ pca_MOD <- function(input, output, session) {
     return(pca)
   })
 }
+
+espace_pca_INFO <- infoGenerator(modName = "Environmental Ordination", 
+                                 modAuts = "Olivier Broennimann, Jamie Kass", 
+                                 pkgName = "ade4")

@@ -37,3 +37,7 @@ respPlots_MOD <- function(input, output, session, rvs) {
     dismo::response(modCur, var = rvs$curEnv)
   })
 }
+
+respPlots_INFO <- infoGenerator(modName = "Response Curves", 
+                                modAuts = "Jamie M. Kass, Robert Muscarella, Bruno Vilela, Robert P. Anderson", 
+                                pkgName = "dismo")

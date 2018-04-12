@@ -41,3 +41,7 @@ userEnvs_MOD <- function(input, output, session) {
       spp[[curSp()]]$rmm$data$environment$sources <- 'user'
   })
 }
+
+userEnvs_INFO <- infoGenerator(modName = "User-specified Environmental Data",
+                               modAuts = "Jamie M. Kass, Robert P. Anderson",
+                               pkgName = NULL)

@@ -43,3 +43,7 @@ partNsp_MOD <- function(input, output, session) {
     }
   })
 }
+
+partitionNonSpat_INFO <- infoGenerator(modName = "Non-spatial Partition",
+                                       modAuts = "Jamie M. Kass, Bruno Vilela, Robert P. Anderson",
+                                       pkgName = "ENMeval")

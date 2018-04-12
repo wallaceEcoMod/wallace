@@ -49,3 +49,7 @@ partSp_MOD <- function(input, output, session) {
     
   })
 }
+
+partitionSpat_INFO <- infoGenerator(modName = "Spatial Partition",
+                                    modAuts = "Jamie M. Kass, Bruno Vilela, Robert P. Anderson",
+                                    pkgName = "ENMeval")

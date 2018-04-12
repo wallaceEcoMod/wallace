@@ -40,3 +40,7 @@ ecoClimate_MOD <- function(input, output, session, logs) {
     c3_ecoClimate(input$bcAOGCM, vals$timeInterval, input$bcSelChoice, input$bcSels, logs, shiny=TRUE)
   })
 }
+
+ecoclimate_INFO <- infoGenerator(modName = "ecoClimate",
+                                 modAuts = "Jamie M. Kass, Robert P. Anderson",
+                                 pkgName = "raster")

@@ -43,3 +43,7 @@ bgExtent_MOD <- function(input, output, session) {
     }
   })
 }
+
+bgExtent_INFO <- infoGenerator(modName = "Select Study Region",
+                               modAuts = "Jamie M. Kass, Bruno Vilela, Robert P. Anderson",
+                               pkgName = c("sp", "rgeos"))

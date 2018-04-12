@@ -35,6 +35,10 @@ bioclim_MOD <- function(input, output, session) {
     }
   })
 }
+
+bioclim_INFO <- infoGenerator(modName = "BIOCLIM",
+                              modAuts = "Jamie M. Kass, Robert Muscarella, Bruno Vilela, Robert P. Anderson",
+                              pkgName = c("ENMeval", "dismo"))
 # occVals <- raster::extract(e$predictions, values$modParams$occ.pts)
 # 
 # values$mtps <- min(occVals)  # apply minimum training presence threshold

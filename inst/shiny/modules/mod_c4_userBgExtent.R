@@ -46,3 +46,7 @@ userBgExtent_MOD <- function(input, output, session) {
     }
   })
 }
+
+userBgExtent_INFO <- infoGenerator(modName = "User-specified Study Region",
+                                   modAuts = "Jamie M. Kass, Bruno Vilela, Robert P. Anderson",
+                                   pkgName = NULL)

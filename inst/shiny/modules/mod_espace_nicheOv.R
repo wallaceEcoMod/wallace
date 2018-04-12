@@ -55,3 +55,5 @@ nicheOv_MOD <- function(input, output, session) {
     return(nicheOv)
   })
 }
+
+espace_nicheOv_INFO <- infoGenerator(modName = "Niche Overlap", modAuts = "Olivier Broennimann, Jamie Kass", pkgName = "ecospat")
