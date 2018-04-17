@@ -1,11 +1,12 @@
-c6_bioclim  <- function(occs, bg, bgMsk, logs = NULL, shiny = FALSE) {
+c6_bioclim  <- function(occs, bg, bgMask, logs = NULL, shiny = FALSE) {
   
   bioclimEval <- function() {
     # RUN FULL DATA MODEL
     occs.xy <- occs %>% dplyr::select(longitude, latitude)
+    # occs.env <- occs %>% dplyr::select(dplyr::starts_with('env_'))
     bg.xy <- bg %>% dplyr::select(longitude, latitude)
-    full.mod <- dismo::bioclim(bgMsk, occs.xy)
-    pred <- dismo::predict(bgMsk, full.mod)
+    full.mod <- dismo::bioclim(bgMask, occs.xy)
+    pred <- dismo::predict(bgMask, full.mod)
     occPredVals <- matrix(dismo::predict(full.mod, full.mod@presence))
     colnames(occPredVals) <- 'BIOCLIM'
     
@@ -24,15 +25,15 @@ c6_bioclim  <- function(occs, bg, bgMsk, logs = NULL, shiny = FALSE) {
       test.pts <- occs.xy[occs$partition == k, ]
       train.pts <- occs.xy[occs$partition != k, ]
       backg.pts <- bg.xy[bg$partition != k, ]
-      mod <- dismo::bioclim(bgMsk, train.pts)
+      mod <- dismo::bioclim(bgMask, train.pts)
       
       # GET AUC METRICS
-      AUC.TEST[k] <- dismo::evaluate(p=test.pts, a=backg.pts, mod=mod, x=bgMsk)@auc
-      AUC.TRAIN <- dismo::evaluate(p=train.pts, a=backg.pts, mod=mod, x=bgMsk)@auc
+      AUC.TEST[k] <- dismo::evaluate(p=test.pts, a=backg.pts, mod=mod, x=bgMask)@auc
+      AUC.TRAIN <- dismo::evaluate(p=train.pts, a=backg.pts, mod=mod, x=bgMask)@auc
       AUC.DIFF[k] <- max(0, AUC.TRAIN - AUC.TEST[k])
       
       # GET PREDICTED VALUES AT OCCURRENCES FOR OMISSION RATE STATS
-      train.pred <- dismo::predict(bgMsk, mod)
+      train.pred <- dismo::predict(bgMask, mod)
       p.train <- raster::extract(train.pred, train.pts)
       p.test <- raster::extract(train.pred, test.pts)
       

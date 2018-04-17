@@ -40,12 +40,16 @@ shinyServer(function(input, output, session) {
   
   # FOR DEVELOPMENT PURPOSES
   observeEvent(input$load, {
+    # spp[['Puma_concolor']]$occs <- read.csv('Puma_concolor_occs.csv')[,1:12]
+    # spp[['Puma_concolor']]$bg <- read.csv('Puma_concolor_bg.csv')
+    # spp[['Puma_concolor']]$procEnvs$bgMask <- raster::stack(list.files(pattern="tif$", full.names = T))
     f <- c1_userOccs('example_data/multispecies.csv', "multispecies.csv")
     # wc <- raster::stack(list.files('wc10', full.names = TRUE, pattern="bil$"))
     r <- list()
     r[["Meles_meles"]] <- raster::stack(list.files('example_data/Meles meles_mskEnvs', full.names = TRUE))
+    r[["Meles_meles"]] <- raster::brick(r[["Meles_meles"]])
     r[["Puma_concolor"]] <- raster::stack(list.files('example_data/Puma concolor_mskEnvs', full.names = TRUE))
-    
+    r[["Puma_concolor"]] <- raster::brick(r[["Puma_concolor"]]) 
     for(n in c("Meles_meles", "Puma_concolor")) {
       occs <- f[[n]]$occs
       spp[[n]] <- list(occs = occs, occData = list(occsCleaned = occs),
@@ -718,9 +722,9 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # 
   # module BIOCLIM ####
   # # # # # # # # # # # # 
-  mod.bioclim <- callModule(bioclim_MOD, 'c6_bioclim')
-  
   observeEvent(input$goBioclim, {
+    # writeSpp(spp, curSp(), getwd())
+    mod.bioclim <- callModule(bioclim_MOD, 'c6_bioclim')
     mod.bioclim()
     if(is.null(spp[[curSp()]]$model)) return()
     # evaluation table (written this way to be compatible with multiple tables, 

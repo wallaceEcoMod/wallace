@@ -157,6 +157,12 @@ fileNameNoExt <- function(f) {
   sub(pattern = "(.*)\\..*$", replacement = "\\1", f)
 }
 
+writeSpp <- function(spp, sp, dir) {
+  if(!is.null(spp[[sp]]$occs)) write.csv(spp[[sp]]$occs, file.path(dir, paste0(sp, "_occs.csv")))
+  if(!is.null(spp[[sp]]$bg)) write.csv(spp[[sp]]$bg, file.path(dir, paste0(sp, "_bg.csv")))
+  if(!is.null(spp[[sp]]$procEnvs$bgMask)) raster::writeRaster(spp[[sp]]$procEnvs$bgMask, file.path(dir, paste0(sp, "_bgMask.tif")), bylayer = TRUE)
+}
+
 ####################### #
 # MAPPING ####
 ####################### #
