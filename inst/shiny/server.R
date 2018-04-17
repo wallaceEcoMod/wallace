@@ -41,33 +41,28 @@ shinyServer(function(input, output, session) {
   # FOR DEVELOPMENT PURPOSES
   observeEvent(input$load, {
     f <- c1_userOccs('example_data/multispecies.csv', "multispecies.csv")
-    r1 <- c3_userEnvs(list.files('example_data/Meles meles_mskEnvs', full.names = TRUE, pattern = "01|03|05"), c('msk_bio01.tif','msk_bio03.tif','msk_bio05.tif'))
-    r2 <- c3_userEnvs(list.files('example_data/Puma concolor_mskEnvs', full.names = TRUE, pattern = "02|04|06"), c('msk_bio02.tif','msk_bio4.tif','msk_bio06.tif'))
-    for(n in names(f)) {
+    # wc <- raster::stack(list.files('wc10', full.names = TRUE, pattern="bil$"))
+    r <- list()
+    r[["Meles_meles"]] <- raster::stack(list.files('example_data/Meles meles_mskEnvs', full.names = TRUE))
+    r[["Puma_concolor"]] <- raster::stack(list.files('example_data/Puma concolor_mskEnvs', full.names = TRUE))
+    
+    for(n in c("Meles_meles", "Puma_concolor")) {
       occs <- f[[n]]$occs
-      if(!is.null(spp[[n]])) spp[[n]] <- NULL
       spp[[n]] <- list(occs = occs, occData = list(occsCleaned = occs),
                        rmm = rangeModelMetadata::rangeModelMetadataTemplate())
-      if(!is.null(f[[n]]$bg)) spp[[n]]$bg <- f[[n]]$bg
-      if(n == "Meles_meles") r <- r1
-      if(n == "Puma_concolor") r <- r2
-      occsEnvsVals <- as.data.frame(raster::extract(r, spp[[n]]$occs[c('longitude', 'latitude')]))
-      names(occsEnvsVals) <- paste0('env_', names(occsEnvsVals))
-      spp[[n]]$occs <- remEnvsValsNA(spp[[n]]$occs, occsEnvsVals, logs)
-      spp[[n]]$envs <- r
-      spp[[n]]$procEnvs$bgMask <- r
-      # add columns for env variables beginning with "envs_" to occs tbl
-      spp[[n]]$occs <- cbind(spp[[n]]$occs, occsEnvsVals)
+      spp[[n]]$bg <- f[[n]]$bg
+      spp[[n]]$procEnvs <- list()
+      spp[[n]]$procEnvs$bgMask <- r[[n]]
     }
+    # spp$Meles_meles$occs <- f$Meles_meles$occs
+    # spp$Meles_meles$bg <- f$Meles_meles$bg
+    # spp$Meles_meles$procEnvs$bgMask <- r1
+    # spp$Meles_meles$envs <- wc
+    # spp$Puma_concolor$occs <- f$Puma_concolor$occs
+    # spp$Puma_concolor$bg <- f$Puma_concolor$bg 
+    # spp$Puma_concolor$procEnvs$bgMask <- r1
+    # spp$Puma_concolor$envs <- wc
     
-    
-    
-    # # rvs$bgShp <- rgdal::readOGR('/Users/musasabi/Downloads', 'mcp')
-    # spp[["Puma_concolor"]]$procEnvs$bgMask <- raster::stack(list.files('/Users/musasabi/Desktop/shiny_testing/mskEnvs_puma', full.names = TRUE))
-    # spp[["Panthera_leo"]]$procEnvs$bgMask <- raster::stack(list.files('/Users/musasabi/Desktop/shiny_testing/mskEnvs_leo', full.names = TRUE))
-    # spp[["Puma_concolor"]]$envs <- raster::stack(list.files('/Users/musasabi/Documents/github/wallace/inst/shiny/wc10', 'bil$', full.names=TRUE))
-    # spp[["Panthera_leo"]]$envs <- raster::stack(list.files('/Users/musasabi/Documents/github/wallace/inst/shiny/wc10', 'bil$', full.names=TRUE))
-    # rvs$bgMsk <- raster::stack(list.files('/Users/musasabi/Downloads/mskEnvs', 'gri$', full.names = TRUE))  
     print('SECRET DATA LOADED')
   })
   
@@ -96,7 +91,8 @@ shinyServer(function(input, output, session) {
   # tab and module-level reactives
   component <- reactive({input$tabs})
   module <- reactive({
-    if(component() == "occs") input$occsSel
+    if(component() == "intro") "intro"
+    else if(component() == "occs") input$occsSel
     else if(component() == "poccs") input$procOccsSel
     else if(component() == "envs") input$envsSel
     else if(component() == "penvs") input$procEnvsSel
@@ -251,7 +247,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goUserOccs, {
     userOccs <- callModule(userOccs_MOD, 'c1_userOccs_uiID')
     userOccs()
-    shinyjs::disable("dlDbOccs")
+    shinyjs::disable("dlOccs")
     shinyjs::enable("dlRMD")
   })
   
@@ -687,11 +683,11 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # 
   # module Maxent ####
   # # # # # # # # # # # 
-  mod.maxent <- callModule(maxent_MOD, 'c6_maxent', rvs)
+  mod.maxent <- callModule(maxent_MOD, 'c6_maxent')
   
   observeEvent(input$goMaxent, {
     mod.maxent()
-    if(is.null(mod.maxent())) return()
+    req(mod.maxent())
     results <- spp[[curSp()]]$model$results
     results.round <- cbind(results[,1:3], round(results[,4:ncol(results)], digits=3))
     
@@ -705,14 +701,11 @@ shinyServer(function(input, output, session) {
         DT::dataTableOutput('evalTblBins')  
       )
     })
-    output$evalTbl <- DT::renderDataTable(results.round[,1:16], 
-                                          options = list(scrollX = TRUE,
-                                                         sDom  = '<"top">rtp<"bottom">'))
-    output$evalTblBins <- DT::renderDataTable(results.round[,17:ncol(results)], 
-                                              options = list(scrollX = TRUE,
-                                                             sDom  = '<"top">rtp<"bottom">'))
+    sDom <- '<"top">rtp<"bottom">'
+    options <- list(scrollX = TRUE, sDom  = sDom)
+    output$evalTbl <- DT::renderDataTable(results.round[,1:16], options = options)
+    output$evalTblBins <- DT::renderDataTable(results.round[,17:ncol(results)], options = options)
     shinyjs::show(id = "evalTblBins")
-    
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     # customize visualizations for maxent

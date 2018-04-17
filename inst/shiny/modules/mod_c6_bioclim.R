@@ -15,12 +15,12 @@ bioclim_MOD <- function(input, output, session) {
                           occurrences for cross-validation for", spName(spp[[sp]]), ".")
         return()
       }
+      print(sp)
+      print(spp[[sp]]$procEnvs$bgMask)
       
       # FUNCTION CALL ####
       m.bioclim <- c6_bioclim(spp[[sp]]$occs, 
                               spp[[sp]]$bg, 
-                              spp[[sp]]$occs$partition, 
-                              spp[[sp]]$bg$partition, 
                               spp[[sp]]$procEnvs$bgMask, 
                               logs, shiny = TRUE)
       

@@ -19,7 +19,7 @@ maxent_UI <- function(id) {
   )
 }
 
-maxent_MOD <- function(input, output, session, rvs) {
+maxent_MOD <- function(input, output, session) {
   reactive({
     
     for(sp in spIn()) {  
@@ -43,7 +43,7 @@ maxent_MOD <- function(input, output, session, rvs) {
       req(m.maxent)
       
       # LOAD INTO SPP ####
-      spp[[sp]]$mod <- m.maxent
+      spp[[sp]]$model <- m.maxent
       
       # METADATA ####
       spp[[sp]]$rmm$model$algorithm <- "Maxent"
@@ -52,6 +52,8 @@ maxent_MOD <- function(input, output, session, rvs) {
       spp[[sp]]$rmm$model$maxent$regularizationRule <- paste("increment by", input$rmsStep)
       spp[[sp]]$rmm$model$maxent$notes <- "dismo package implementation"
     }
+    
+    
   })
 }
 

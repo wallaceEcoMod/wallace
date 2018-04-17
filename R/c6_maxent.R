@@ -38,7 +38,7 @@ c6_maxent  <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
   # create the Progress Bar object for ENMeval
   if (shiny == TRUE) {
     progress <- shiny::Progress$new()
-    progress$set(message = "Building and Evaluating ENMs...", value = 0)
+    progress$set(message = paste0("Building/Evaluating ENMs for ", spName(occs), "..."), value = 0)
     on.exit(progress$close())
     n <- length(rms.interval) * length(fcs)
     updateProgress <- function(value = NULL, detail = NULL) {

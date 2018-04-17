@@ -142,7 +142,7 @@ shinyUI(tagList(
                                                                  uiTop2(bgExtent_INFO),
                                                                  div("Step 1:", id="step"), div("Choose Background Extent", id="stepText"), br(), br(),
                                                                  bgExtent_UI('c4_bgExtent_uiID'),
-                                                                 actionButton("goBgExt", "Select"),
+                                                                 actionButton("goBgExt", "Select"), br(), br(),
                                                                  strong("Download shapefile of background extent"), br(), br(),
                                                                  downloadButton('dlBgShp', "Download")),
                                                 conditionalPanel("input.procEnvsSel == 'bgUser'",
