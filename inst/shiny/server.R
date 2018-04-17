@@ -687,11 +687,10 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # 
   # module Maxent ####
   # # # # # # # # # # # 
-  mod.maxent <- callModule(maxent_MOD, 'c6_maxent')
-  
   observeEvent(input$goMaxent, {
+    mod.maxent <- callModule(maxent_MOD, 'c6_maxent')
     mod.maxent()
-    req(mod.maxent())
+    
     results <- spp[[curSp()]]$model$results
     results.round <- cbind(results[,1:3], round(results[,4:ncol(results)], digits=3))
     
@@ -702,11 +701,10 @@ shinyServer(function(input, output, session) {
         div("Full model and partition bin average evaluation statistics", id="stepText"), br(), br(),
         DT::dataTableOutput('evalTbl'), br(), 
         div("Individual partition bin evaluation statistics", id="stepText"), br(), br(),
-        DT::dataTableOutput('evalTblBins')  
+        DT::dataTableOutput('evalTblBins')
       )
     })
-    sDom <- '<"top">rtp<"bottom">'
-    options <- list(scrollX = TRUE, sDom  = sDom)
+    options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
     output$evalTbl <- DT::renderDataTable(results.round[,1:16], options = options)
     output$evalTblBins <- DT::renderDataTable(results.round[,17:ncol(results)], options = options)
     shinyjs::show(id = "evalTblBins")
@@ -726,7 +724,7 @@ shinyServer(function(input, output, session) {
     # writeSpp(spp, curSp(), getwd())
     mod.bioclim <- callModule(bioclim_MOD, 'c6_bioclim')
     mod.bioclim()
-    if(is.null(spp[[curSp()]]$model)) return()
+    # if(is.null(spp[[curSp()]]$model)) return()
     # evaluation table (written this way to be compatible with multiple tables, 
     # e.g. like in the Maxent module)
     output$evalTbls <- renderUI({
@@ -737,8 +735,9 @@ shinyServer(function(input, output, session) {
         DT::dataTableOutput('evalTbl')
       )
     })
+    options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
     output$evalTbl <- DT::renderDataTable(round(spp[[curSp()]]$model$results, digits=3), 
-                                          options = list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">'))
+                                          options = options)
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     # update radio buttons for Visualization component
