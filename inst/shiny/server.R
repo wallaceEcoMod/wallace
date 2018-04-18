@@ -691,9 +691,6 @@ shinyServer(function(input, output, session) {
     mod.maxent <- callModule(maxent_MOD, 'c6_maxent')
     mod.maxent()
     
-    results <- spp[[curSp()]]$model$results
-    results.round <- cbind(results[,1:3], round(results[,4:ncol(results)], digits=3))
-    
     # full model and partition average evaluation table, and individual partition table
     output$evalTbls <- renderUI({
       tagList(
@@ -705,6 +702,8 @@ shinyServer(function(input, output, session) {
       )
     })
     options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
+    results <- spp[[curSp()]]$model$results
+    results.round <- cbind(results[,1:3], round(results[,4:ncol(results)], digits=3))
     output$evalTbl <- DT::renderDataTable(results.round[,1:16], options = options)
     output$evalTblBins <- DT::renderDataTable(results.round[,17:ncol(results)], options = options)
     shinyjs::show(id = "evalTblBins")
@@ -736,8 +735,8 @@ shinyServer(function(input, output, session) {
       )
     })
     options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
-    output$evalTbl <- DT::renderDataTable(round(spp[[curSp()]]$model$results, digits=3), 
-                                          options = options)
+    results.round <- round(spp[[curSp()]]$model$results, digits=3)
+    output$evalTbl <- DT::renderDataTable(results.round, options = options)
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     # update radio buttons for Visualization component

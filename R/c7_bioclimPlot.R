@@ -1,5 +1,5 @@
 # modified from the bioclim plot method for bioclim in dismo v.1.1-1 for Wallace
-bc.plot <- function(x, a=1, b=2, p=0.9, ...) {
+bioclimPlot <- function(x, a=1, b=2, p=0.9, ...) {
   
   d <- x@presence
   

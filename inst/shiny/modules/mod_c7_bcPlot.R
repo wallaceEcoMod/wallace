@@ -19,15 +19,13 @@ bcPlot_MOD <- function(input, output, session, spIn) {
     }
     
     # FUNCTION CALL ####
-    bcPlot <- bioclimPlot(spp[[curSp()]]$mod[[curModel()]],
-                  input$bc1,
-                  input$bc2,
-                  input$bcProb)
+    bioclimPlot(spp[[curSp()]]$mod[[curModel()]],
+                input$bc1,
+                input$bc2,
+                input$bcProb)
     
     # METADATA ####
     spp[[curSp()]]$rmm$code$wallaceSettings$bcPlotSettings <- list(bc1=input$bc1, bc2=input$bc2, p=input$bcProb)
-    
-    return(bcPlot)
   })
 }
 
