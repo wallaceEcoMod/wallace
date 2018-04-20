@@ -25,7 +25,6 @@ bgMskAndSamplePts_MOD <- function(input, output, session) {
       req(bgPts)
       withProgress(message = paste0("Extracting background values for ", spName(spp[[sp]]), "..."), {
         bgEnvsVals <- as.data.frame(raster::extract(spp[[sp]]$envs, bgPts))
-        names(bgEnvsVals) <- paste0('env_', names(bgEnvsVals))
       })
       
       # LOAD INTO SPP ####

@@ -17,10 +17,11 @@ pca_MOD <- function(input, output, session) {
     # FUNCTION CALL ####
     sp1 <- curSp()[1]
     sp2 <- curSp()[2]
-    sp1.bgEnvsVals <- spp[[sp1]]$bg %>% select(contains("env_"))
-    sp2.bgEnvsVals <- spp[[sp2]]$bg %>% select(contains("env_"))
-    sp1.occsEnvsVals <- spp[[sp1]]$occs %>% select(contains("env_"))
-    sp2.occsEnvsVals <- spp[[sp2]]$occs %>% select(contains("env_"))
+    envNames <- names(spp[[curSp()]]$envs)
+    sp1.bgEnvsVals <- spp[[sp1]]$bg %>% select(contains())
+    sp2.bgEnvsVals <- spp[[sp2]]$bg %>% select(contains(envNames))
+    sp1.occsEnvsVals <- spp[[sp1]]$occs %>% select(contains(envNames))
+    sp2.occsEnvsVals <- spp[[sp2]]$occs %>% select(contains(envNames))
     pca <- cESpace_pca(sp1, sp2, 
                        sp1.bgEnvsVals,
                        sp2.bgEnvsVals,

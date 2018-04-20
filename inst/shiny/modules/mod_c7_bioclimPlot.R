@@ -1,5 +1,5 @@
 
-bcPlot_UI <- function(id) {
+bioclimPlot_UI <- function(id) {
   ns <- NS(id)
   tagList(
     "Pick a bioclimatic variable number for each axis",
@@ -9,7 +9,7 @@ bcPlot_UI <- function(id) {
   )
 }
 
-bcPlot_MOD <- function(input, output, session, spIn) {
+bioclimPlot_MOD <- function(input, output, session, spIn) {
   
   reactive({
     # ERRORS ####
@@ -19,7 +19,7 @@ bcPlot_MOD <- function(input, output, session, spIn) {
     }
     
     # FUNCTION CALL ####
-    bioclimPlot(spp[[curSp()]]$mod[[curModel()]],
+    makeBioclimPlot(spp[[curSp()]]$modelList$models[[curModel()]],
                 input$bc1,
                 input$bc2,
                 input$bcProb)
@@ -29,6 +29,6 @@ bcPlot_MOD <- function(input, output, session, spIn) {
   })
 }
 
-bcPlot_INFO <- infoGenerator(modName = "BIOCLIM Envelope Plot", 
+bioclimPlot_INFO <- infoGenerator(modName = "BIOCLIM Envelope Plot", 
                              modAuts = "Jamie M. Kass, Robert Muscarella, Bruno Vilela, Robert P. Anderson", 
                              pkgName = "dismo")

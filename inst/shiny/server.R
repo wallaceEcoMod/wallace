@@ -44,19 +44,21 @@ shinyServer(function(input, output, session) {
     # spp[['Puma_concolor']]$bg <- read.csv('Puma_concolor_bg.csv')
     # spp[['Puma_concolor']]$procEnvs$bgMask <- raster::stack(list.files(pattern="tif$", full.names = T))
     f <- c1_userOccs('example_data/multispecies.csv', "multispecies.csv")
-    # wc <- raster::stack(list.files('wc10', full.names = TRUE, pattern="bil$"))
+    wc <- raster::stack(list.files('wc10', full.names = TRUE, pattern="bil$"))
+    wc <- raster::brick(wc)
     r <- list()
-    r[["Meles_meles"]] <- raster::stack(list.files('example_data/Meles meles_mskEnvs', full.names = TRUE))
-    r[["Meles_meles"]] <- raster::brick(r[["Meles_meles"]])
-    r[["Puma_concolor"]] <- raster::stack(list.files('example_data/Puma concolor_mskEnvs', full.names = TRUE))
-    r[["Puma_concolor"]] <- raster::brick(r[["Puma_concolor"]]) 
+    # r[["Meles_meles"]] <- raster::stack(list.files('example_data/Meles meles_mskEnvs', full.names = TRUE))
+    # r[["Meles_meles"]] <- raster::brick(r[["Meles_meles"]])
+    # r[["Puma_concolor"]] <- raster::stack(list.files('example_data/Puma concolor_mskEnvs', full.names = TRUE))
+    # r[["Puma_concolor"]] <- raster::brick(r[["Puma_concolor"]]) 
     for(n in c("Meles_meles", "Puma_concolor")) {
       occs <- f[[n]]$occs
       spp[[n]] <- list(occs = occs, occData = list(occsCleaned = occs),
                        rmm = rangeModelMetadata::rangeModelMetadataTemplate())
+      spp[[n]]$envs <- wc
       spp[[n]]$bg <- f[[n]]$bg
-      spp[[n]]$procEnvs <- list()
-      spp[[n]]$procEnvs$bgMask <- r[[n]]
+      # spp[[n]]$procEnvs <- list()
+      # spp[[n]]$procEnvs$bgMask <- r[[n]]
     }
     # spp$Meles_meles$occs <- f$Meles_meles$occs
     # spp$Meles_meles$bg <- f$Meles_meles$bg
@@ -144,7 +146,7 @@ shinyServer(function(input, output, session) {
     }
     
     # UI CONTROLS - for some reason, curSp() disappears here unless input is updated
-    updateSelectInput(session, "sppSel", selected = curSp())
+    updateSelectInput(session, "curSp", selected = curSp())
   })
   
   # component-level logic
@@ -225,7 +227,7 @@ shinyServer(function(input, output, session) {
     n <- formatSpName(occsTbl$taxon_name)
     # UI CONTROLS
     # assign the selected species to the present occ table's taxon name
-    updateSelectInput(session, "sppSel", selected = n)
+    updateSelectInput(session, "curSp", selected = n)
     shinyjs::enable("dlOccs")
     shinyjs::enable("dlRMD")
   })
@@ -240,7 +242,7 @@ shinyServer(function(input, output, session) {
     n <- formatSpName(occsTbl$taxon_name)
     # UI CONTROLS
     # assign the selected species to the present occ table's taxon name
-    updateSelectInput(session, "sppSel", selected = n)
+    updateSelectInput(session, "curSp", selected = n)
     shinyjs::enable("dlOccs")
     shinyjs::enable("dlRMD")
   })
@@ -259,7 +261,7 @@ shinyServer(function(input, output, session) {
   # OBTAIN OCCS: other controls ####
   # # # # # # # # # # # # # # # # # #
   
-  output$sppSelUI <- renderUI({
+  output$curSpUI <- renderUI({
     # check that a species is in the list already -- if not, don't proceed
     # req(length(reactiveValuesToList(spp)) > 0)
     # get the species names
@@ -272,12 +274,12 @@ shinyServer(function(input, output, session) {
     # if espace component, allow for multiple species selection
     if(component() == 'espace') options <- list(maxItems = 2) else options <- list(maxItems = 1)
     # generate a selectInput ui that lists the available species
-    selectizeInput('sppSel', label = NULL , choices = sppNameList,
+    selectizeInput('curSp', label = NULL , choices = sppNameList,
                    multiple = TRUE, selected = selected, options = options)
   })
   
-  # shortcut to currently selected species, read from sppSelUI
-  curSp <- reactive(input$sppSel)
+  # shortcut to currently selected species, read from curSpUI
+  curSp <- reactive(input$curSp)
   # vector of all species with occurrence data loaded
   allSp <- reactive(names(reactiveValuesToList(spp)))
   # conditional species input to modules with batch option
@@ -372,7 +374,7 @@ shinyServer(function(input, output, session) {
       map_occs(spp[[curSp()]]$occs) %>%
       zoom2Occs(spp[[curSp()]]$occs)
     # UI CONTROLS 
-    # updateSelectInput(session, "sppSel", selected = curSp())
+    # updateSelectInput(session, "curSp", selected = curSp())
     shinyjs::enable("dlProcOccs")
   })
   
@@ -400,7 +402,7 @@ shinyServer(function(input, output, session) {
       map_occs(spp[[curSp()]]$occs) %>%
       zoom2Occs(spp[[curSp()]]$occs)
     # UI CONTROLS 
-    # updateSelectInput(session, "sppSel", selected = curSp())
+    # updateSelectInput(session, "curSp", selected = curSp())
   })
   
   ############################################# #
@@ -416,7 +418,7 @@ shinyServer(function(input, output, session) {
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     # UI CONTROLS 
-    updateSelectInput(session, "sppSel", selected = curSp())
+    updateSelectInput(session, "curSp", selected = curSp())
     # enable download button
     # shinyjs::enable("dlEnvs")
   })
@@ -460,7 +462,7 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # # # #
   
   # ui that populates with the names of environmental predictors used
-  output$envSelUI <- renderUI({
+  output$curEnvUI <- renderUI({
     # for Maxent, only display the environmental predictors with non-zero beta coefficients
     # from the lambdas file (the predictors that were not removed via regularization)
     # if (spp[[curSp()]]$rmm$model$algorithm == "Maxent") {
@@ -469,19 +471,29 @@ shinyServer(function(input, output, session) {
     # } else {
     
     # ensure envs entity is within spp
-    if(!is.null(curSp())) {
-      n <- names(spp[[curSp()]]$envs)
+    req(curSp(), spp[[curSp()]]$envs)
+    if(!is.null(spp[[curSp()]]$envs)) {
+      n <- c(names(spp[[curSp()]]$envs), "ALL")
     } else {
       n <- NULL
     }
     envsNameList <- c(list("Current variable" = ""), setNames(as.list(n), n))
     if(component() == 'espace') options <- list(maxItems = 2) else options <- list(maxItems = 1)
-    selectizeInput('envSel', label = NULL , choices = envsNameList,
+    selectizeInput('curEnv', label = NULL , choices = envsNameList,
                    multiple = TRUE, selected = n[1], options = options)
   })
   
-  # shortcut to currently selected environmental variable, read from envSelUI
-  curEnv <- reactive({input$envSel})
+  # shortcut to currently selected environmental variable, read from curEnvUI
+  curEnv <- reactive({
+    if("ALL" %in% input$curEnv) {
+      return(names(spp[[curSp()]]$envs))
+    } else {
+      return(input$curEnv)  
+    }
+  })
+  observe(print(curEnv()))
+  observe(print(curModel()))
+  observe(if(!is.null(curSp())) print(spp[[curSp()]]$modelList))
   
   # map center coordinates for 30 arcsec download
   mapCntr <- reactive(mapCenter(input$map_bounds))
@@ -515,7 +527,7 @@ shinyServer(function(input, output, session) {
     bgExt <- callModule(bgExtent_MOD, 'c4_bgExtent_uiID')
     bgExt()
     # UI CONTROLS
-    # updateSelectInput(session, "sppSel", selected = curSp())
+    # updateSelectInput(session, "curSp", selected = curSp())
   })
   
   # # # # # # # # # # # # # # # # # # # # # # # 
@@ -536,7 +548,7 @@ shinyServer(function(input, output, session) {
     bgMskPts <- callModule(bgMskAndSamplePts_MOD, 'c4_bgMskAndSamplePts')
     bgMskPts()
     # UI CONTROLS 
-    updateSelectInput(session, "sppSel", selected = curSp())
+    updateSelectInput(session, "curSp", selected = curSp())
     shinyjs::enable('dlMskEnvs')
   })
   
@@ -591,9 +603,9 @@ shinyServer(function(input, output, session) {
                           suffix = nm, format = type, overwrite = TRUE)
       ext <- switch(type, raster = 'grd', ascii = 'asc', GTiff = 'tif')
       
-      fs <- paste0('msk_', nm, '.', ext)
+      fs <- paste0(nm, '.', ext)
       if (ext == 'grd') {
-        fs <- c(fs, paste0('msk_', nm, '.gri'))
+        fs <- c(fs, paste0(nm, '.gri'))
       }
       zip(zipfile=file, files=fs)
       if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
@@ -624,7 +636,7 @@ shinyServer(function(input, output, session) {
     pca()
     # UI CONTROLS 
     updateTabsetPanel(session, 'main', selected = 'Results')
-    updateSelectInput(session, "sppSel", selected = curSp())
+    updateSelectInput(session, "curSp", selected = curSp())
   })
   
   # # # # # # # # # # # # # # # # # # # # 
@@ -637,7 +649,7 @@ shinyServer(function(input, output, session) {
     # initialize module
     occDens()
     # UI CONTROLS 
-    updateSelectInput(session, "sppSel", selected = curSp())
+    updateSelectInput(session, "curSp", selected = curSp())
   })
   
   # # # # # # # # # # # # # # # 
@@ -651,7 +663,7 @@ shinyServer(function(input, output, session) {
     # initialize module
     nicheOv()
     # UI CONTROLS 
-    updateSelectInput(session, "sppSel", selected = curSp())
+    updateSelectInput(session, "curSp", selected = curSp())
   })
   
   ################################################## #
@@ -665,7 +677,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goPartNsp, {
     partNsp()
     # UI CONTROLS 
-    # updateSelectInput(session, "sppSel", selected = curSp())
+    # updateSelectInput(session, "curSp", selected = curSp())
     shinyjs::enable("dlPart")
   })
   
@@ -676,7 +688,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goPartSp, {
     partSp()
     # UI CONTROLS 
-    # updateSelectInput(session, "sppSel", selected = curSp())
+    # updateSelectInput(session, "curSp", selected = curSp())
     shinyjs::enable("dlPart")
   })
   
@@ -702,7 +714,7 @@ shinyServer(function(input, output, session) {
       )
     })
     options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
-    results <- spp[[curSp()]]$model$results
+    results <- spp[[curSp()]]$modelList$results
     results.round <- cbind(results[,1:3], round(results[,4:ncol(results)], digits=3))
     output$evalTbl <- DT::renderDataTable(results.round[,1:16], options = options)
     output$evalTblBins <- DT::renderDataTable(results.round[,17:ncol(results)], options = options)
@@ -735,12 +747,12 @@ shinyServer(function(input, output, session) {
       )
     })
     options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
-    results.round <- round(spp[[curSp()]]$model$results, digits=3)
+    results.round <- round(spp[[curSp()]]$modelList$results, digits=3)
     output$evalTbl <- DT::renderDataTable(results.round, options = options)
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     # update radio buttons for Visualization component
-    updateRadioButtons(session, "visSel", choices = list("BIOCLIM Envelope Plots" = 'bcPlots',
+    updateRadioButtons(session, "visSel", choices = list("BIOCLIM Envelope Plots" = 'bioclimPlot',
                                                          "Map Prediction" = 'map'))
     shinyjs::hide(id = "evalTblBins")
   })
@@ -750,54 +762,57 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # # # #
   
   # ui that populates with the names of models that were run
-  output$modelSelUI <- renderUI({
-    # ensure mod entity is within spp
-    if(!is.null(curSp())) {
-      if(!is.null(spp[[curSp()]]$model)) {
-        n <- names(spp[[curSp()]]$model$models)  
-      } else {
-        n <- NULL
-      }
+  output$curModelUI <- renderUI({
+    # do not display until both current species is selected and it has a model
+    req(curSp(), spp[[curSp()]]$modelList)
+    # if 
+    if(!is.null(spp[[curSp()]]$modelList)) {
+      n <- names(spp[[curSp()]]$modelList$models)  
     } else {
       n <- NULL
     }
     
     modsNameList <- c(list("Current model" = ""), setNames(as.list(n), n))
     options <- list(maxItems = 1)
-    selectizeInput('modSel', label = NULL , choices = modsNameList,
+    selectizeInput('curModel', label = NULL , choices = modsNameList,
                    multiple = TRUE, selected = n[1], options = options)
   })
   
   # shortcut to currently selected model, read from modSelUI
-  curModel <- reactive({input$modelSel})
+  curModel <- reactive({input$curModel})
   
   ########################################### #
   ### COMPONENT: VISUALIZE MODEL RESULTS ####
   ########################################### #
   
-  # # # # # # # # # # # # 
+  # # # # # # # # # # # # # #
   # module BIOCLIM Plots ####
-  # # # # # # # # # # # # 
-  bcPlot <- callModule(bcPlot_MOD, 'c7_bcPlot')
-  output$bcEnvelPlot <- renderPlot({
-    bcPlot()
+  # # # # # # # # # # # # # #
+  bioclimPlot <- callModule(bioclimPlot_MOD, 'c7_bioclimPlot')
+  output$bioclimPlot <- renderPlot({
+    bioclimPlot()
   })
   
+  # # # # # # # # # # # # # # # # #
   # module Maxent Evaluation Plots
-  mxEvalPlots <- callModule(mxEvalPlots_MOD, 'c7_mxEvalPlots', rvs)
-  output$mxEvalPlots <- renderPlot({
-    mxEvalPlots()
-    updateTabsetPanel(session, 'main', selected = 'Results')
+  # # # # # # # # # # # # # # # # #
+  maxentEvalPlot <- callModule(maxentEvalPlot_MOD, 'c7_maxentEvalPlot')
+  output$maxentEvalPlot <- renderPlot({
+    maxentEvalPlot()
   })
   
+  # # # # # # # # # # # # # # # 
   # module Response Curve Plots
-  respPlots <- callModule(respPlots_MOD, 'c7_respPlots', rvs)
-  output$respPlots <- renderPlot({
-    respPlots()
-    updateTabsetPanel(session, 'main', selected = 'Results')
+  # # # # # # # # # # # # # # # 
+  responsePlot <- callModule(responsePlot_MOD, 'c7_responsePlot')
+  output$responsePlot <- renderPlot({
+    responsePlot()
   })
   
-  # module Map Prediction (restricted to background extent)
+  # # # # # # # # # # # # 
+  # module Map Prediction
+  # # # # # # # # # # # # 
+  # MOTE: this prediction is restricted to the background extent
   observeEvent(input$goMapPreds, {
     if (rvs$comp6 == 'maxent') {
       mapPreds <- callModule(mapPredsMaxent_MOD, 'c7_mapPredsMaxent', rvs)
@@ -867,11 +882,25 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # # # #
   
   # handle downloads for BIOCLIM Plots png
-  output$dlVizPlot <- downloadHandler(
-    filename = function() {paste0(spName(), "_bc_plot.png")},
+  output$vizPlot <- downloadHandler(
+    filename = function() {
+      if(module() == "bioclimPlot") {
+        paste0(spName(), "_bioClimPlot.png")
+      } else if(module() == "maxentEvalPlot") {
+        paste0(spName(), "_maxentEvalPlot.png")
+      } else if(module() == "responsePlot") {
+        paste0(spName(), "_responsePlot.png")
+      }
+    },
     content = function(file) {
       png(file)
-      if(module() == "bcPlot") bcPlot()
+      if(module() == "bioclimPlot") {
+        bioclimPlot() 
+      } else if(module() == "maxentEvalPlot") {
+        maxentEvalPlot()
+      } else if(module() == "responsePlot") {
+        responsePlot()
+      }
       dev.off()
     }
   )

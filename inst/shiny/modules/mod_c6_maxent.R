@@ -14,8 +14,7 @@ maxent_UI <- function(id) {
     tags$div(title='Value used to step through regularization multiplier range (e.g. range of 1-3 with step 0.5 results in [1, 1.5, 2, 2.5, 3]).',
              numericInput(ns("rmsStep"), label = "Multiplier step value", value = 1)),
     tags$div(title='If checked, the response will resist extrapolation to environmental values outside those used to build the model. See guidance for details.',
-             checkboxInput(ns('clamp'), label = 'Clamp predictions?')),
-    checkboxInput(ns("maxentAllSp"), label = "Batch for all species?", value = TRUE)
+             checkboxInput(ns('clamp'), label = 'Clamp predictions?'))
   )
 }
 
@@ -43,7 +42,7 @@ maxent_MOD <- function(input, output, session) {
       req(m.maxent)
       
       # LOAD INTO SPP ####
-      spp[[sp]]$model <- m.maxent
+      spp[[sp]]$modelList <- m.maxent
       
       # METADATA ####
       spp[[sp]]$rmm$model$algorithm <- "Maxent"

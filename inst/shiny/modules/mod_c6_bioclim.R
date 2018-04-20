@@ -1,7 +1,6 @@
 bioclim_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    checkboxInput(ns("bioclimAllSp"), label = "Batch for all species?", value = TRUE)
   )
 }
 
@@ -15,8 +14,6 @@ bioclim_MOD <- function(input, output, session) {
                           occurrences for cross-validation for", spName(spp[[sp]]), ".")
         return()
       }
-      print(sp)
-      print(spp[[sp]]$procEnvs$bgMask)
       
       # FUNCTION CALL ####
       m.bioclim <- c6_bioclim(spp[[sp]]$occs, 
@@ -27,7 +24,7 @@ bioclim_MOD <- function(input, output, session) {
       req(m.bioclim)
       
       # LOAD INTO SPP ####
-      spp[[sp]]$model <- m.bioclim
+      spp[[sp]]$modelList <- m.bioclim
       
       # METADATA ####
       spp[[sp]]$rmm$model$algorithm <- "BIOCLIM"
