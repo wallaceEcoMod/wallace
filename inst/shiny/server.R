@@ -1014,6 +1014,8 @@ shinyServer(function(input, output, session) {
   ### RMARKDOWN FUNCTIONALITY ####
   ########################################### #
   
+  observe(print(spp[[curSp()]]$rmm$data$occurrence$sources))
+  
   # handler for R Markdown download
   output$dlRMD <- downloadHandler(
     filename = function() {
@@ -1025,7 +1027,10 @@ shinyServer(function(input, output, session) {
       exp <- knitr::knit_expand("Rmd/userReport.Rmd", 
                                 spName=spName(spp[[curSp()]]), 
                                 occsSource=spp[[curSp()]]$rmm$data$occurrence$sources,
-                                occsNum=spp[[curSp()]]$rmm$code$wallaceSettings$occsNum  # comp 1
+                                occsNum=spp[[curSp()]]$rmm$code$wallaceSettings$occsNum,  # comp 1
+                                occsCSV=spp[[n]]$rmm$code$wallaceSettings$userCSV,
+                                occsRemoved=printVecAsis(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs),
+                                
       )  # comp 8
       # temporarily switch to the temp dir, in case you do not have write
       # permission to the current working directory

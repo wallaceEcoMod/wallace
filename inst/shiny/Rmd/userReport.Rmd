@@ -70,3 +70,69 @@ occs$occID <- row.names(occs)
 # extract occurrence coordinates
 occs.xy <- occs[c('longitude', 'latitude')]
 ```
+
+```{asis, echo = occs.user, eval = occs.user, include = occs.user}
+User CSV path with occurrence data. If the CSV file is not in the current workspace, change to the correct file path (e.g. "/Users/darwin/Documents/occs.user").
+```
+
+```{r occInput, echo = occs.user}
+# NOTE: provide the path to the folder that contains the rasters
+d.occs <- ''
+# create path to user occurrences csv file
+userOccs.path <- file.path(d.occs, "{{occsCSV}}")
+# read in csv
+useroccs.user <- read.csv(userOccs.path, header = TRUE)
+# remove rows with duplicate coordinates
+occs.dups <- duplicated(useroccs.user[c('longitude', 'latitude')])
+occs <- useroccs.user[!occs.dups,]
+# extract occurrence coordinates
+occs.xy <- occs[c('longitude', 'latitude')]
+```
+
+
+```{asis, echo = poccs.any, eval = poccs.any, include = poccs.any}
+### Process Occurrence Data
+```
+
+```{asis, echo = poccs.rem, eval = poccs.rem, include = poccs.rem}
+Remove the occurrence localities with the following IDs: `r {{occsRemoved}}`.
+```
+
+```{r poccs.rem, echo = poccs.rem, include = poccs.rem}
+# remove the rows that match the occIDs selected
+occs <- occs %>% filter(!(occID %in% {{occsRemoved}}))
+```
+
+```{asis, echo = poccs.sel, eval = poccs.sel, include = poccs.sel}
+The following code recreates the polygon used to select occurrences to keep in the analysis.
+```
+
+```{r occsSelect, echo = poccs.sel, include = poccs.sel}
+selCoords <- data.frame(x = {{occsSelX}}, y = {{occsSelY}})
+selPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)), ID=1)))
+intersect <- sp::over(occs.xy, selPoly)
+intersect.rowNums <- as.numeric(which(!(is.na(intersect))))
+occs <- occs[intersect.rowNums, ]
+```
+
+```{asis, echo = poccs.thin, eval = poccs.thin, include = poccs.thin}
+Spatial thinning selected. Thin distance selected is `r {{thinDist}}` km.
+```
+
+```{r doThin, echo = poccs.thin, include = poccs.thin}
+output <- spThin::thin(occs, 'latitude', 'longitude', 'name', thin.par = {{thinDist}}, reps = 100, locs.thinned.list.return = TRUE, write.files = FALSE, verbose = FALSE)
+```
+
+```{asis, echo = poccs.thin, eval = poccs.thin, include = poccs.thin}
+Since spThin did 100 iterations, there are 100 different variations of how it thinned your occurrence localities. As there is a stochastic element in the algorithm, some iterations may include more localities than the others, and we need to make sure we maximize the number of localities we proceed with.
+```
+
+```{r doThin2, echo = poccs.thin, include = poccs.thin}
+# find the iteration that returns the max number of occurrences
+maxThin <- which(sapply(output, nrow) == max(sapply(output, nrow)))
+# if there's more than one max, pick the first one
+maxThin <- output[[ifelse(length(maxThin) > 1, maxThin[1], maxThin)]]  
+# subset occs to match only thinned occs
+occs <- occs[as.numeric(rownames(maxThin)),]  
+```
+

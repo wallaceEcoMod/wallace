@@ -27,6 +27,7 @@ userOccs_MOD <- function(input, output, session) {
       spp[[n]]$rmm$data$occurrence$dataType <- "presence only"
       spp[[n]]$rmm$data$occurrence$presenceSampleSize <- nrow(occs)
       spp[[n]]$rmm$data$occurrence$sources <- "user"
+      spp[[n]]$rmm$code$wallaceSettings$userCSV <- input$userCSV$name
     }
     # RETURN ####
     return(occsList)
