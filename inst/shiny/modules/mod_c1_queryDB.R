@@ -20,6 +20,7 @@ queryDb_MOD <- function(input, output, session) {
                            input$occsDb, 
                            input$occsNum, 
                            logs, shiny=TRUE)
+    print(occsTbls$cleaned$taxon_name)
     
     req(occsTbls)
     

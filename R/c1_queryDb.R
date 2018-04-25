@@ -59,6 +59,7 @@ c1_queryDb <- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
   occsXY <- occsOrig[!is.na(occsOrig$latitude) & !is.na(occsOrig$longitude),]
   if (nrow(occsXY) == 0) {
     logs %>% writeLog(type = 'warning', 'No records with coordinates found in', occDb, "for", em(spName), ".")
+    return()
   }
   
   dups <- duplicated(occsXY[,c('longitude','latitude')])
