@@ -107,7 +107,11 @@ shinyServer(function(input, output, session) {
     else if(component() == "model") input$modelSel
     else if(component() == "vis") input$visSel
     else if(component() == "proj") input$projSel
+    else if(component() == "rmd") ''
   })
+  
+  observe(print(component()))
+  observe(print(module()))
   
   # logic to serve the selected component/module guidance text
   observe({
@@ -204,7 +208,7 @@ shinyServer(function(input, output, session) {
                   opacity = 1, layerId = 'leg')
     }
     # logic for initializing or removing leaflet draw toolbar
-    if ((component() == 'poccs' & module() == 'selOccs') | component() == 'proj') {
+    if((component() == 'poccs' & module() == 'selOccs') | component() == 'proj') {
       map %>% leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
                                              rectangleOptions = FALSE, circleOptions = FALSE, 
                                              markerOptions = FALSE)
@@ -491,8 +495,7 @@ shinyServer(function(input, output, session) {
       return(input$curEnv)  
     }
   })
-  observe(print(curEnv()))
-  observe(print(curModel()))
+
   observe(if(!is.null(curSp())) print(spp[[curSp()]]$modelList))
   
   # map center coordinates for 30 arcsec download
