@@ -1023,9 +1023,9 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       sp <- spp[[curSp()]]
       exp <- knitr::knit_expand("Rmd/userReport.Rmd", 
-                                spName=sp$occs$taxon_name[1], 
-                                occsSource=sp$rmm$data$occurrence$sources,
-                                occsNum=sp$rmm$code$wallaceSettings$occsNum  # comp 1
+                                spName=spName(), 
+                                occsSource=spp[[curSp()]]$rmm$data$occurrence$sources,
+                                occsNum=spp[[curSp()]]$rmm$code$wallaceSettings$occsNum  # comp 1
       )  # comp 8
       # temporarily switch to the temp dir, in case you do not have write
       # permission to the current working directory
