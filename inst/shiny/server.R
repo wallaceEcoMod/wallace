@@ -1023,7 +1023,7 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       sp <- spp[[curSp()]]
       exp <- knitr::knit_expand("Rmd/userReport.Rmd", 
-                                spName=spName(), 
+                                spName=spName(spp[[curSp()]]), 
                                 occsSource=spp[[curSp()]]$rmm$data$occurrence$sources,
                                 occsNum=spp[[curSp()]]$rmm$code$wallaceSettings$occsNum  # comp 1
       )  # comp 8
