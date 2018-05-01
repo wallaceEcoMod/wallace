@@ -47,18 +47,18 @@ shinyServer(function(input, output, session) {
     wc <- raster::stack(list.files('wc10', full.names = TRUE, pattern="bil$"))
     wc <- raster::brick(wc)
     r <- list()
-    # r[["Meles_meles"]] <- raster::stack(list.files('example_data/Meles meles_mskEnvs', full.names = TRUE))
-    # r[["Meles_meles"]] <- raster::brick(r[["Meles_meles"]])
-    # r[["Puma_concolor"]] <- raster::stack(list.files('example_data/Puma concolor_mskEnvs', full.names = TRUE))
-    # r[["Puma_concolor"]] <- raster::brick(r[["Puma_concolor"]]) 
+    r[["Meles_meles"]] <- raster::stack(list.files('example_data/Meles meles_mskEnvs', full.names = TRUE))
+    r[["Meles_meles"]] <- raster::brick(r[["Meles_meles"]])
+    r[["Puma_concolor"]] <- raster::stack(list.files('example_data/Puma concolor_mskEnvs', full.names = TRUE))
+    r[["Puma_concolor"]] <- raster::brick(r[["Puma_concolor"]])
     for(n in c("Meles_meles", "Puma_concolor")) {
       occs <- f[[n]]$occs
       spp[[n]] <- list(occs = occs, occData = list(occsCleaned = occs),
                        rmm = rangeModelMetadata::rangeModelMetadataTemplate())
       spp[[n]]$envs <- wc
       spp[[n]]$bg <- f[[n]]$bg
-      # spp[[n]]$procEnvs <- list()
-      # spp[[n]]$procEnvs$bgMask <- r[[n]]
+      spp[[n]]$procEnvs <- list()
+      spp[[n]]$procEnvs$bgMask <- r[[n]]
     }
     # spp$Meles_meles$occs <- f$Meles_meles$occs
     # spp$Meles_meles$bg <- f$Meles_meles$bg
@@ -109,9 +109,6 @@ shinyServer(function(input, output, session) {
     else if(component() == "proj") input$projSel
     else if(component() == "rmd") ''
   })
-  
-  observe(print(component()))
-  observe(print(module()))
   
   # logic to serve the selected component/module guidance text
   observe({
@@ -496,8 +493,6 @@ shinyServer(function(input, output, session) {
     }
   })
 
-  observe(if(!is.null(curSp())) print(spp[[curSp()]]$modelList))
-  
   # map center coordinates for 30 arcsec download
   mapCntr <- reactive(mapCenter(input$map_bounds))
   
@@ -602,8 +597,8 @@ shinyServer(function(input, output, session) {
       type <- input$bgMskFileType
       nm <- names(spp[[curSp()]]$envs)
       
-      raster::writeRaster(spp[[curSp()]]$procEnvs$bgMask, file.path(tmpdir, 'msk'), bylayer = TRUE,
-                          suffix = nm, format = type, overwrite = TRUE)
+      raster::writeRaster(spp[[curSp()]]$procEnvs$bgMask, nm, bylayer = TRUE, 
+                          format = type, overwrite = TRUE)
       ext <- switch(type, raster = 'grd', ascii = 'asc', GTiff = 'tif')
       
       fs <- paste0(nm, '.', ext)
@@ -705,23 +700,10 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goMaxent, {
     mod.maxent <- callModule(maxent_MOD, 'c6_maxent')
     mod.maxent()
-    
+    # make sure the modelList was entered before proceeding
+    req(spp[[curSp()]]$modelList)
     # full model and partition average evaluation table, and individual partition table
-    output$evalTbls <- renderUI({
-      tagList(
-        br(),
-        div("Full model and partition bin average evaluation statistics", id="stepText"), br(), br(),
-        DT::dataTableOutput('evalTbl'), br(), 
-        div("Individual partition bin evaluation statistics", id="stepText"), br(), br(),
-        DT::dataTableOutput('evalTblBins')
-      )
-    })
-    options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
-    results <- spp[[curSp()]]$modelList$results
-    results.round <- cbind(results[,1:3], round(results[,4:ncol(results)], digits=3))
-    output$evalTbl <- DT::renderDataTable(results.round[,1:16], options = options)
-    output$evalTblBins <- DT::renderDataTable(results.round[,17:ncol(results)], options = options)
-    shinyjs::show(id = "evalTblBins")
+    
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     # customize visualizations for maxent
@@ -735,23 +717,11 @@ shinyServer(function(input, output, session) {
   # module BIOCLIM ####
   # # # # # # # # # # # # 
   observeEvent(input$goBioclim, {
-    # writeSpp(spp, curSp(), getwd())
     mod.bioclim <- callModule(bioclim_MOD, 'c6_bioclim')
     mod.bioclim()
-    # if(is.null(spp[[curSp()]]$model)) return()
-    # evaluation table (written this way to be compatible with multiple tables, 
-    # e.g. like in the Maxent module)
-    output$evalTbls <- renderUI({
-      tagList(
-        br(), 
-        div("Full model, partition bin average and individual evaluation statistics", id="stepText"), 
-        br(), br(),
-        DT::dataTableOutput('evalTbl')
-      )
-    })
-    options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
-    results.round <- round(spp[[curSp()]]$modelList$results, digits=3)
-    output$evalTbl <- DT::renderDataTable(results.round, options = options)
+    # make sure the modelList was entered before proceeding
+    req(spp[[curSp()]]$modelList)
+    
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     # update radio buttons for Visualization component
@@ -783,6 +753,26 @@ shinyServer(function(input, output, session) {
   
   # shortcut to currently selected model, read from modSelUI
   curModel <- reactive({input$curModel})
+  
+  output$evalTbls <- renderUI({
+    options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
+    results <- spp[[curSp()]]$modelList$results
+    if(spp[[curSp()]]$rmm$model$algorithm == "Maxent") {
+      results.round <- cbind(results[,1:3], round(results[,4:16], digits=3))
+      resultsBins.round <- round(results[,17:ncol(results)])
+    } else if (spp[[curSp()]]$rmm$model$algorithm == "BIOCLIM"){
+      results.round <- round(results, digits=3)
+    }
+    output$evalTbl <- DT::renderDataTable(results.round, options = options)
+    output$evalTblBins <- DT::renderDataTable(resultsBins.round, options = options)
+    tagList(
+      br(),
+      div("Evaluation statistics: full model and partition averages", id="stepText"), br(), br(),
+      DT::dataTableOutput('evalTbl'), br(),
+      div("Individual partition bin evaluation statistics", id="stepText"), br(), br(),
+      DT::dataTableOutput('evalTblBins')  
+    )
+  })
   
   ########################################### #
   ### COMPONENT: VISUALIZE MODEL RESULTS ####
@@ -1014,8 +1004,6 @@ shinyServer(function(input, output, session) {
   ### RMARKDOWN FUNCTIONALITY ####
   ########################################### #
   
-  observe(print(spp[[curSp()]]$rmm$data$occurrence$sources))
-  
   # handler for R Markdown download
   output$dlRMD <- downloadHandler(
     filename = function() {
@@ -1029,7 +1017,7 @@ shinyServer(function(input, output, session) {
                                 occsSource=spp[[curSp()]]$rmm$data$occurrence$sources,
                                 occsNum=spp[[curSp()]]$rmm$code$wallaceSettings$occsNum,  # comp 1
                                 occsCSV=spp[[n]]$rmm$code$wallaceSettings$userCSV,
-                                occsRemoved=printVecAsis(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs),
+                                occsRemoved=printVecAsis(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs)
                                 
       )  # comp 8
       # temporarily switch to the temp dir, in case you do not have write

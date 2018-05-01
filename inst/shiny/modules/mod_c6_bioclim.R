@@ -6,10 +6,9 @@ bioclim_UI <- function(id) {
 
 bioclim_MOD <- function(input, output, session) {
   reactive({
-    
     for(sp in spIn()) {
       # ERRORS ####
-      if (is.null(spp[[sp]]$occs$partition)) {
+      if(is.null(spp[[sp]]$occs$partition)) {
         logs %>% writeLog(type = 'error', "Before building a model, please partition 
                           occurrences for cross-validation for", spName(spp[[sp]]), ".")
         return()
