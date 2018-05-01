@@ -62,18 +62,27 @@ c6_maxent  <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
   # name the output models in the model list
   names(e@models) <- e@results$settings
   
+  stats <- e@results[,1:16]
+  statsBins <- e@results[,17:ncol(e@results)]
+  
   # rename results table fields
-  e@results <- e@results %>% dplyr::rename(avg.test.AUC = Mean.AUC, var.test.AUC = Var.AUC,
-                                           avg.diff.AUC = Mean.AUC.DIFF, var.diff.AUC = Var.AUC.DIFF,
-                                           avg.test.orMTP = Mean.ORmin, var.test.orMTP = Var.ORmin,
-                                           avg.test.or10pct = Mean.OR10, var.test.or10pct = Var.OR10,
-                                           parameters = nparam)
+  stats <- stats %>% dplyr::rename(avg.test.AUC = Mean.AUC, var.test.AUC = Var.AUC,
+                                   avg.diff.AUC = Mean.AUC.DIFF, var.diff.AUC = Var.AUC.DIFF,
+                                   avg.test.orMTP = Mean.ORmin, var.test.orMTP = Var.ORmin,
+                                   avg.test.or10pct = Mean.OR10, var.test.or10pct = Var.OR10,
+                                   parameters = nparam)
+  # rename bin column names
+  colnames(statsBins) <- gsub("(.*)_bin\\.([0-9])", "Bin\\2_\\1", colnames(statsBins))
+  colnames(statsBins) <- gsub("AUC$", "test.AUC", colnames(statsBins))
+  colnames(statsBins) <- gsub("AUC.DIFF", "diff.AUC", colnames(statsBins))
+  colnames(statsBins) <- gsub("OR10", "or10pct", colnames(statsBins))
+  colnames(statsBins) <- gsub("ORmin", "orMTP", colnames(statsBins))
   
   logs %>% writeLog("Maxent ran successfully for", em(spName(occs)), "and output evaluation results for", 
                     nrow(e@results), "models.")
   
   # output ENMeval object in list form to be compatible with other models
-  e <- list(models=e@models, results=e@results, predictions=e@predictions)
+  e <- list(models=e@models, results=stats, results.bins=statsBins, predictions=e@predictions)
   
   return(e)
   

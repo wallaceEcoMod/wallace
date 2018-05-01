@@ -757,14 +757,14 @@ shinyServer(function(input, output, session) {
   output$evalTbls <- renderUI({
     options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
     results <- spp[[curSp()]]$modelList$results
+    results.bins <- spp[[curSp()]]$modelList$results.bins
     if(spp[[curSp()]]$rmm$model$algorithm == "Maxent") {
       results.round <- cbind(results[,1:3], round(results[,4:16], digits=3))
-      resultsBins.round <- round(results[,17:ncol(results)])
     } else if (spp[[curSp()]]$rmm$model$algorithm == "BIOCLIM"){
       results.round <- round(results, digits=3)
     }
     output$evalTbl <- DT::renderDataTable(results.round, options = options)
-    output$evalTblBins <- DT::renderDataTable(resultsBins.round, options = options)
+    output$evalTblBins <- DT::renderDataTable(round(results.bins, digits=3), options = options)
     tagList(
       br(),
       div("Evaluation statistics: full model and partition averages", id="stepText"), br(), br(),

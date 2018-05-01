@@ -51,16 +51,26 @@ c6_bioclim  <- function(occs, bg, bgMask, logs = NULL, shiny = FALSE) {
     }
     
     # COMPILE AND SUMMARIZE RESULTS
-    stats <- as.data.frame(rbind(AUC.TEST, AUC.DIFF, ORmin, OR10))
-    stats <- cbind(apply(stats, 1, mean), ENMeval::corrected.var(stats, nk), stats)
-    colnames(stats) <- c("Mean", "Variance", paste("Bin", 1:nk))
-    rownames(stats) <- c("test.AUC", "diff.AUC","test.orMTP","test.or10pct")
+    statsBins <- as.data.frame(rbind(AUC.TEST, AUC.DIFF, ORmin, OR10))
+    statsBinsVar <- ENMeval::corrected.var(statsBins, nk)
+    statsBinsAvg <- apply(statsBins, 1, mean)
+    
+    statsBins <- t(statsBins)
+    row.names(statsBins) <- paste0("Bin", 1:nk)
+    colnames(statsBins) <- c("test.AUC", "diff.AUC", "test.orMTP", "test.or10pct")
+    
+    stats <- t(data.frame(c(rbind(statsBinsAvg, statsBinsVar))))
+    row.names(stats) <- "BIOCLIM"
+    colnames(stats) <- c("avg.test.AUC", "var.test.AUC",
+                             "avg.diff.AUC", "var.diff.AUC",
+                             "avg.test.orMTP", "var.test.orMTP",
+                             "avg.test.or10pct", "var.test.or10pct")
     
     preds <- raster::stack(pred)
     names(preds) <- "BIOCLIM"
     
     # THIS FORMAT FOR RETURNED DATA ATTEMPTS TO MATCH WHAT HAPPENS IN WALLACE ALREADY FOR ENMEVAL.
-    return(list(models=list(BIOCLIM=full.mod), results=stats, predictions=preds, occVals=occPredVals))
+    return(list(models=list(BIOCLIM=full.mod), results=stats, results.bins=statsBins, predictions=preds, occVals=occPredVals))
   }
   
   if(shiny == TRUE) {
