@@ -365,7 +365,7 @@ shinyUI(tagList(
                                                                                     imageOutput('responsePlot')),
                                                                    conditionalPanel("input.tabs == 'vis' && input.visSel == 'bioclimPlot' && input.modelSel == 'BIOCLIM'",
                                                                                     imageOutput('bioclimPlot')),
-                                                                   conditionalPanel("input.tabs == 'vis' && input.visSel == 'maxentEval'  && input.modelSel == 'Maxent'",
+                                                                   conditionalPanel("input.tabs == 'vis' && input.visSel == 'maxentEval' && input.modelSel == 'Maxent'",
                                                                                     imageOutput('maxentEvalPlot')),
                                                                    conditionalPanel("input.tabs == 'espace' && input.espaceSel == 'pca'",
                                                                                     pca_resultsUI("cEspace_PCA_uiID")),

@@ -12,22 +12,19 @@ maxentEvalPlot_UI <- function(id) {
 
 maxentEvalPlot_MOD <- function(input, output, session) {
   reactive({
+    print('reactive run')
     # ERRORS ####
-    if (is.null(spp[[curSp()]]$modelList)) {
-      logs %>% writeLog(type = 'error', "Models must first be run in component Model.")
-      return()
-    }
     if (is.null(input$maxentEvalSel)) {
       logs %>% writeLog(type = 'error', "Please choose a statistic to plot.")
       return()
     }
     
     # FUNCTION CALL ####
-    makeMaxentEvalPlot(spp[[curSp()]]$modelList$results, 
-                   input$maxentEvalSel)
+    makeMaxentEvalPlot(spp[[curSp()]]$modelList$results, input$maxentEvalSel)
     
     # METADATA ####
     spp[[curSp()]]$rmm$code$wallaceSettings$maxentEvalPlotSel <- input$maxentEvalSel
+    print("reactive finished")
   })
 }
 

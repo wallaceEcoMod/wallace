@@ -63,7 +63,7 @@ c6_maxent  <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
   names(e@models) <- e@results$settings
   
   stats <- e@results[,1:16]
-  statsBins <- e@results[,17:ncol(e@results)]
+  statsBins <- e@results[,c(1, 17:ncol(e@results))]
   
   # rename results table fields
   stats <- stats %>% dplyr::rename(avg.test.AUC = Mean.AUC, var.test.AUC = Var.AUC,

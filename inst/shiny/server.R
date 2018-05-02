@@ -59,6 +59,7 @@ shinyServer(function(input, output, session) {
       spp[[n]]$bg <- f[[n]]$bg
       spp[[n]]$procEnvs <- list()
       spp[[n]]$procEnvs$bgMask <- r[[n]]
+      print(spp[[n]]$envs)
     }
     # spp$Meles_meles$occs <- f$Meles_meles$occs
     # spp$Meles_meles$bg <- f$Meles_meles$bg
@@ -708,7 +709,7 @@ shinyServer(function(input, output, session) {
     updateTabsetPanel(session, 'main', selected = 'Results')
     # customize visualizations for maxent
     updateRadioButtons(session, "visSel", 
-                       choices = list("Maxent Evaluation Plots" = 'mxEval',
+                       choices = list("Maxent Evaluation Plots" = 'maxentEval',
                                       "Plot Response Curves" = 'response',
                                       "Map Prediction" = 'map'))
   })
@@ -727,7 +728,6 @@ shinyServer(function(input, output, session) {
     # update radio buttons for Visualization component
     updateRadioButtons(session, "visSel", choices = list("BIOCLIM Envelope Plots" = 'bioclimPlot',
                                                          "Map Prediction" = 'map'))
-    shinyjs::hide(id = "evalTblBins")
   })
   
   # # # # # # # # # # # # # # # # # #
@@ -760,11 +760,13 @@ shinyServer(function(input, output, session) {
     results.bins <- spp[[curSp()]]$modelList$results.bins
     if(spp[[curSp()]]$rmm$model$algorithm == "Maxent") {
       results.round <- cbind(results[,1:3], round(results[,4:16], digits=3))
+      results.bins.round <- cbind(results.bins[,1], round(results.bins[,-1], digits=3))
     } else if (spp[[curSp()]]$rmm$model$algorithm == "BIOCLIM"){
       results.round <- round(results, digits=3)
+      results.bins.round <- spp[[curSp()]]$modelList$results.bins
     }
     output$evalTbl <- DT::renderDataTable(results.round, options = options)
-    output$evalTblBins <- DT::renderDataTable(round(results.bins, digits=3), options = options)
+    output$evalTblBins <- DT::renderDataTable(results.bins.round, options = options)
     tagList(
       br(),
       div("Evaluation statistics: full model and partition averages", id="stepText"), br(), br(),
@@ -783,6 +785,8 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # #
   bioclimPlot <- callModule(bioclimPlot_MOD, 'c7_bioclimPlot')
   output$bioclimPlot <- renderPlot({
+    # do not plot if missing models
+    req(curSp(), spp[[curSp()]]$modelList)
     bioclimPlot()
   })
   
@@ -791,6 +795,10 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # # #
   maxentEvalPlot <- callModule(maxentEvalPlot_MOD, 'c7_maxentEvalPlot')
   output$maxentEvalPlot <- renderPlot({
+    print('test1')
+    # do not plot if missing models
+    req(curSp(), spp[[curSp()]]$modelList)
+    print('test2')
     maxentEvalPlot()
   })
   
@@ -799,6 +807,8 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # 
   responsePlot <- callModule(responsePlot_MOD, 'c7_responsePlot')
   output$responsePlot <- renderPlot({
+    # do not plot if missing models
+    req(curSp(), spp[[curSp()]]$modelList)
     responsePlot()
   })
   

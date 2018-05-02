@@ -12,12 +12,6 @@ bioclimPlot_UI <- function(id) {
 bioclimPlot_MOD <- function(input, output, session, spIn) {
   
   reactive({
-    # ERRORS ####
-    if (is.null(spp[[curSp()]]$model)) {
-      logs %>% writeLog(type = 'error', "Models must first be run in component Model.")
-      return()
-    }
-    
     # FUNCTION CALL ####
     makeBioclimPlot(spp[[curSp()]]$modelList$models[[curModel()]],
                 input$bc1,
