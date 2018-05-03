@@ -23,7 +23,7 @@ queryPaleoDb_MOD <- function(input, output, session) {
                                input$occsDb, 
                                input$occsNum, 
                                input$timeInterval, 
-                               logs, shiny=TRUE)
+                               logs)
     
     req(occsTbls)
     

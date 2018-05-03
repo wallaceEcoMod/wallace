@@ -18,7 +18,7 @@ bioclim_MOD <- function(input, output, session) {
       m.bioclim <- c6_bioclim(spp[[sp]]$occs, 
                               spp[[sp]]$bg, 
                               spp[[sp]]$procEnvs$bgMask, 
-                              logs, shiny = TRUE)
+                              logs)
       
       req(m.bioclim)
       

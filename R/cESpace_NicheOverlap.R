@@ -4,7 +4,7 @@
 #' @param z2 ecospat niche object for species 2 from cESpace_OccDens
 
 cESpace_nicheOv <- function(z1, z2, iter = 100, equivalency = FALSE, similarity = TRUE, 
-                            logs = NULL, shiny = FALSE) {
+                            shinyLogs = NULL) {
   nicheOv <- list()
   
   # Schoener's D
@@ -16,23 +16,15 @@ cESpace_nicheOv <- function(z1, z2, iter = 100, equivalency = FALSE, similarity 
   
   #niche tests
   if(equivalency) {
-    if(shiny == TRUE) {
-      withProgress(message = "Calculating niche equivalency...", {
-        nicheOv$equiv <- ecospat::ecospat.niche.equivalency.test(z1, z2, iter, alternative = "greater")
-      })
-      }else{
-        nicheOv$equiv <- ecospat::ecospat.niche.equivalency.test(z1, z2, iter, alternative = "greater")
-      }
+    smartProgress(shinyLogs, message = "Calculating niche equivalency...", {
+      nicheOv$equiv <- ecospat::ecospat.niche.equivalency.test(z1, z2, iter, alternative = "greater")
+    })
   }
   
   if(similarity) {
-    if(shiny == TRUE) {
-      withProgress(message = "Calculating niche similarity", {
-        nicheOv$simil <- ecospat::ecospat.niche.similarity.test(z1, z2, iter, alternative = "greater", rand.type = 1)
-      })
-    }else{
+    smartProgress(shinyLogs, message = "Calculating niche similarity", {
       nicheOv$simil <- ecospat::ecospat.niche.similarity.test(z1, z2, iter, alternative = "greater", rand.type = 1)
-    }
+    })
   }
   
   return(nicheOv)

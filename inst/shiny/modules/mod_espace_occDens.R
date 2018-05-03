@@ -16,7 +16,7 @@ occDens_MOD <- function(input, output, session) {
     # FUNCTION CALL ####
     sp1 <- curSp()[1]
     sp2 <- curSp()[2]
-    occDens <- cESpace_occDens(sp1, sp2, msp[[curMSp()]]$pca, logs, shiny = TRUE)
+    occDens <- cESpace_occDens(sp1, sp2, msp[[curMSp()]]$pca, logs)
     if (is.null(occDens)) return()
     
     # LOAD INTO MSP ####

@@ -15,16 +15,12 @@
 #' 
 
 c3_ecoClimate <- function (bcAOGCM, bcScenario, bcSelChoice=FALSE, bcSels, 
-                          logs=NULL, shiny=FALSE){
+                          shinyLogs=NULL){
 
-  if (shiny == TRUE) {
-    withProgress(message = "Retrieving ecoClimate data...", {
-      ecoClimatelayers <- ecoClimate_getdata(AOGCM=bcAOGCM, Baseline="Modern", Scenario=bcScenario)
-    })
-  } else {
-    ecoClimatelayers<- ecoClimate_getdata(AOGCM=bcAOGCM, Baseline="Modern", Scenario=bcScenario)
-  }
-  
+  smartProgress(shinyLogs, message = "Retrieving ecoClimate data...", {
+    ecoClimatelayers <- ecoClimate_getdata(AOGCM=bcAOGCM, Baseline="Modern", Scenario=bcScenario)
+  })
+
   if (bcSelChoice== TRUE){
     # I assume that if bcSelChoise is TRUE, then bcSels exist and it is a vector of characters, bio1, bio2, etc.
     x <- gregexpr("[0-9]+", bcSels)  # Numbers with any number of digits
@@ -32,7 +28,7 @@ c3_ecoClimate <- function (bcAOGCM, bcScenario, bcSelChoice=FALSE, bcSels,
     
     ecoClimatelayers<- ecoClimate_select (ecoClimatelayers, Sels=sels)
     
-    logs %>% writeLog("Environmental predictors: ecoClimate bioclimatic variables",
+    shinyLogs %>% writeLog("Environmental predictors: ecoClimate bioclimatic variables",
                       bcSels, "at 0.5 degree resolution.")
     
   }

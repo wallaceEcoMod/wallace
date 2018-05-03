@@ -9,44 +9,31 @@
 #' 
 #' 
 
-c3_worldclim<- function(bcRes, bcSelChoice, bcSel, logs=NULL, shiny=FALSE){
+c3_worldclim<- function(bcRes, bcSelChoice, bcSel, shinyLogs=NULL){
   
   if(bcRes == '') {
-    logs %>% writeLog(type = 'error', 'Select a raster resolution.')
+    shinyLogs %>% writeLog(type = 'error', 'Select a raster resolution.')
     return()
   }
   
-  if(shiny == TRUE) {
-    withProgress(message = "Retrieving WorldClim data...", {
-      if(bcRes == 0.5) {
-        wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes, 
-                                lon = mapCntr()[1], lat = mapCntr()[2])
-        # rvs$bcLon <- mapCntr()[1]
-        # rvs$bcLat <- mapCntr()[2]
-      }else{
-        wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes)
-        wcbc <- wcbc[[bcSel]]
-      }
-    })  
-  }else{
+  smartProgress(shinyLogs, message = "Retrieving WorldClim data...", {
     if(bcRes == 0.5) {
       wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes, 
                               lon = mapCntr()[1], lat = mapCntr()[2])
       # rvs$bcLon <- mapCntr()[1]
       # rvs$bcLat <- mapCntr()[2]
-    } else {
+    }else{
       wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes)
       wcbc <- wcbc[[bcSel]]
     }
-  }
-  
+  }) 
   
   if (raster::nlayers(wcbc) == 19) {
     bcSel <- 'bio1-19'
   } else {
     bcSel <- paste(names(wcbc), collapse = ", ")
   }
-  logs %>% writeLog("WorldClim bioclimatic variables ", bcSel, " at ", 
+  shinyLogs %>% writeLog("WorldClim bioclimatic variables ", bcSel, " at ", 
                     bcRes, " arcmin resolution.")
   
   # change names if bio01 is bio1, and so forth

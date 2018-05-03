@@ -24,7 +24,7 @@ partNsp_MOD <- function(input, output, session) {
                                      spp[[sp]]$bg, 
                                      input$partNspSel, 
                                      kfolds = input$kfolds, 
-                                     logs=logs, shiny=TRUE)
+                                     logs=logs)
       req(group.data)
       
       # LOAD INTO SPP ####

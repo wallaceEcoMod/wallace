@@ -25,7 +25,7 @@ userBgExtent_MOD <- function(input, output, session) {
     userBgExt <- c4_userBgExtent(input$userBgShp$datapath,
                                  input$userBgShp$name,
                                  input$userBgBuf,
-                                 logs, shiny = TRUE)
+                                 logs)
     
     # LOAD INTO SPP ####
     spp[[curSp()]]$procEnvs$bgExt <- userBgExt
