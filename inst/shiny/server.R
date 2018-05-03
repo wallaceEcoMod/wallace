@@ -760,7 +760,7 @@ shinyServer(function(input, output, session) {
     results.bins <- spp[[curSp()]]$modelList$results.bins
     if(spp[[curSp()]]$rmm$model$algorithm == "Maxent") {
       results.round <- cbind(results[,1:3], round(results[,4:16], digits=3))
-      results.bins.round <- cbind(results.bins[,1], round(results.bins[,-1], digits=3))
+      results.bins.round <- cbind(settings=results[,1], round(results.bins, digits=3))
     } else if (spp[[curSp()]]$rmm$model$algorithm == "BIOCLIM"){
       results.round <- round(results, digits=3)
       results.bins.round <- spp[[curSp()]]$modelList$results.bins
@@ -775,6 +775,22 @@ shinyServer(function(input, output, session) {
       DT::dataTableOutput('evalTblBins')  
     )
   })
+  
+  # download for partitioned occurrence records csv
+  output$dlEvalTbl <- downloadHandler(
+    filename = function() {
+      if(spp[[curSp()]]$rmm$model$algorithm == "BIOCLIM") {
+        paste0(curSp(), "_bioclim_evalTbl.csv")  
+      } else if(spp[[curSp()]]$rmm$model$algorithm == "Maxent") {
+        paste0(curSp(), "_maxent_evalTbl.csv")  
+      }
+    },
+    content = function(file) {
+      evalTbl <- cbind(spp[[curSp()]]$modelList$results, spp[[curSp()]]$modelList$results.bins)
+      write.csv(evalTbl, file, row.names = FALSE)
+    }
+  )
+  
   
   ########################################### #
   ### COMPONENT: VISUALIZE MODEL RESULTS ####

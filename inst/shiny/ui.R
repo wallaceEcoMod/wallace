@@ -232,6 +232,8 @@ shinyUI(tagList(
                                                                  bioclim_UI('c6_bioclim'),
                                                                  actionButton('goBioclim', 'Run')),
                                                 HTML('<hr>'),
+                                                downloadButton('dlEvalTbl', "Download CSV"),
+                                                HTML('<hr>'),
                                                 conditionalPanel("input.modelSel == 'Maxent'", uiBottom2(maxent_INFO)),
                                                 conditionalPanel("input.modelSel == 'BIOCLIM'", uiBottom2(bioclim_INFO))
                                ),

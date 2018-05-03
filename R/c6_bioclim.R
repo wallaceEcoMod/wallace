@@ -55,9 +55,10 @@ c6_bioclim  <- function(occs, bg, bgMask, logs = NULL, shiny = FALSE) {
     statsBinsVar <- ENMeval::corrected.var(statsBins, nk)
     statsBinsAvg <- apply(statsBins, 1, mean)
     
-    statsBins <- t(statsBins)
-    row.names(statsBins) <- paste0("Bin", 1:nk)
-    colnames(statsBins) <- c("test.AUC", "diff.AUC", "test.orMTP", "test.or10pct")
+    statsBins <- data.frame(t(statsBins[,1]), t(statsBins[,2]))
+    bins <- sort(rep(paste0("Bin", 1:nk), 4))
+    colnames(statsBins) <- paste0(bins, c("_test.AUC", "_diff.AUC", "_test.orMTP", "_test.or10pct"))
+    row.names(statsBins) <- "BIOCLIM"
     
     stats <- t(data.frame(c(rbind(statsBinsAvg, statsBinsVar))))
     row.names(stats) <- "BIOCLIM"
