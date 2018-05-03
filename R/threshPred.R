@@ -16,30 +16,24 @@ getThresh <- function(occPredVals, thresh) {
   return(x)
 }
 
-threshPred  <- function(occs, results, modSel, thresh, predType, shinyLogs = NULL) {
+threshPred  <- function(occs, results, predSel, thresh, predType, shinyLogs = NULL) {
   if (thresh != 'noThresh') {
     # find predicted values for occurrences for selected model
     # extract the suitability values for all occurrences
     occs.xy <- occs[c('longitude', 'latitude')]
-    
-    if(predType == 'logistic') {
-      predCur <- results$predictionsLog[[modSel]]
-    } else if(predType == 'cloglog') {
-      predCur <- results$predictionsCLL[[modSel]]  
-    } else {
-      predCur <- results$predictions[[modSel]]  
-    }
     
     # determine the threshold based on the current, not projected, prediction
     occPredVals <- raster::extract(predCur, occs.xy)
     # get the chosen threshold value
     x <- getThresh(occPredVals, thresh)  
     # threshold model prediction
-    pred <- pred > x
+    threshPred <- predSel > x
     # rename
-    names(pred) <- paste0(modSel, '_thresh_', thresh)
-    shinyLogs %>% writeLog(thresh, 'threshold selected: value =', round(x, digits = 3), '.')
+    names(threshPred) <- paste0(modSel, '_thresh_', thresh)
+    shinyLogs %>% writeLog(thresh, 'threshold selected for', predType, ': ', round(x, digits = 3), '.')
+  } else {
+    threshPred <- predCur
   }
   
-  return(list(thresh=thresh, pred=pred))
+  return(threshPred)
 }

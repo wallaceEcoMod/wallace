@@ -9,15 +9,13 @@ threshPred_UI <- function(id) {
   )
 }
 
-threshPred_MOD <- function(input, output, session) {
+threshPred_MOD <- function(input, output, session, predSel) {
   reactive({
     # generate binary prediction based on selected thresholding rule 
     # (same for all Maxent prediction types because they scale the same)
-    threshPred(spp[[curSp()]]$occs, 
-               spp[[curSp()]]$results, 
-               curModel(), 
-               input$predThresh, 
-               curPredType(),
-               shinyLogs)
+    threshPred(occs(), results(), predSel, input$predThresh, rmm()$output$prediction$notes, shinyLogs)
+    
+    # METADATA
+    spp[[curSp()]]$rmm$output$prediction$thresholdRule <- input$predThresh
   })
 }

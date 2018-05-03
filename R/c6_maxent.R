@@ -62,7 +62,7 @@ c6_maxent  <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
   # name the output models in the model list
   names(e@models) <- e@results$settings
   # get the values of the prediction for each occ point
-  occPredVals <- extract(e@predictions, occs.xy)
+  occPredVals <- raster::extract(e@predictions, occs.xy)
   
   stats <- e@results[,1:16]
   statsBins <- e@results[,17:ncol(e@results)]

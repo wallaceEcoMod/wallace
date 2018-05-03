@@ -64,7 +64,6 @@ shinyServer(function(input, output, session) {
       spp[[n]]$bg <- f[[n]]$bg
       spp[[n]]$procEnvs <- list()
       spp[[n]]$procEnvs$bgMask <- r[[n]]
-      print(spp[[n]]$envs)
     }
     # spp$Meles_meles$occs <- f$Meles_meles$occs
     # spp$Meles_meles$bg <- f$Meles_meles$bg
@@ -185,7 +184,7 @@ shinyServer(function(input, output, session) {
     }
     if(component() == 'penvs') {
       updateTabsetPanel(session, 'main', selected = 'Map')
-      if(is.null(spp[[curSp()]]$procEnvs$bgExt)) {
+      if(is.null(bgExt())) {
         map %>% map_occs(occs())
       }else{
         map %>% map_occs(occs())
@@ -193,7 +192,7 @@ shinyServer(function(input, output, session) {
           map %>%
             addPolygons(lng=shp[,1], lat=shp[,2], weight=4, color="gray", group='bgShp')
         }
-        bb <- spp[[curSp()]]$procEnvs$bgExt@bbox
+        bb <- bgExt()@bbox
         map %>% fitBounds(bb[1], bb[2], bb[3], bb[4])
       }
     }
@@ -209,6 +208,36 @@ shinyServer(function(input, output, session) {
         addLegend("bottomright", colors = newColors,
                   title = "Partition Groups", labels = sort(unique(occsGrp)),
                   opacity = 1, layerId = 'leg')
+    }
+    
+    if(component() == 'viz') {
+      if(module() == 'mapPreds') {
+        mapPredVals <- spp[[curSp()]]$visualization$mapPredVals
+        # MAPPING
+        if (rmm()$output$prediction$thresholdRule != 'noThresh') {
+          rasPal <- c('gray', 'blue')
+          map %>% addLegend("bottomright", colors = c('gray', 'blue'),
+                            title = "Thresholded Suitability", labels = c("predicted absence", "predicted presence"),
+                            opacity = 1, layerId = 'leg')
+        } else {
+          rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+          legendPal <- colorNumeric(rev(rasCols), mapPredVals, na.color='transparent')
+          rasPal <- colorNumeric(rasCols, mapPredVals, na.color='transparent')
+          map %>% addLegend("bottomright", pal = legendPal, title = "Predicted Suitability",
+                            values = mapPredVals, layerId = 'leg',
+                            labFormat = reverseLabels(2, reverse_order=TRUE))
+        }
+        map %>% 
+          clearMarkers() %>% clearImages() %>% clearShapes() %>%
+          map_occs(occs()) %>%
+          addRasterImage(mapPred(), colors = rasPal, opacity = 0.7, 
+                         group = 'c7', layerId = 'r1ID')
+        for (shp in bgShpXY()) {
+          map %>%
+            addPolygons(lng=shp[,1], lat=shp[,2], fill = FALSE,
+                        weight=4, color="red", group='c7')  
+        }
+      }
     }
     # logic for initializing or removing leaflet draw toolbar
     if((component() == 'poccs' & module() == 'selOccs') | component() == 'proj') {
@@ -294,6 +323,8 @@ shinyServer(function(input, output, session) {
   
   # convenience function for occurrence table for current species
   occs <- reactive(spp[[curSp()]]$occs)
+  # convenience function for metadata list for current species
+  rmm <- reactive(spp[[curSp()]]$rmm)
 
   # TABLE
   # options <- list(autoWidth = TRUE, columnDefs = list(list(width = '40%', targets = 7)),
@@ -349,7 +380,7 @@ shinyServer(function(input, output, session) {
   output$dlDbOccs <- downloadHandler(
     filename = function() {
       n <- formatSpName(occs()$taxon_name[1])
-      source <- spp[[curSp()]]$rmm$data$occurrence$sources
+      source <- rmm()$data$occurrence$sources
       paste0(n, "_", source, ".csv")
     },
     content = function(file) {
@@ -475,7 +506,7 @@ shinyServer(function(input, output, session) {
   output$curEnvUI <- renderUI({
     # for Maxent, only display the environmental predictors with non-zero beta coefficients
     # from the lambdas file (the predictors that were not removed via regularization)
-    # if (spp[[curSp()]]$rmm$model$algorithm == "Maxent") {
+    # if (rmm()$model$algorithm == "Maxent") {
     #   mod <- spp[[curSp()]]$model$models[[curModel()]]
     #   n <- mxNonzeroCoefs(mod)
     # } else {
@@ -554,7 +585,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goBgMask, {
     # stop if no background shape
-    req(spp[[curSp()]]$procEnvs$bgExt)
+    req(bgExt())
     bgMskPts <- callModule(bgMskAndSamplePts_MOD, 'c4_bgMskAndSamplePts')
     bgMskPts()
     # UI CONTROLS 
@@ -568,13 +599,15 @@ shinyServer(function(input, output, session) {
   
   # convenience function for background points table for current species
   bg <- reactive(spp[[curSp()]]$bg)
-  # convenience function for environmental variable rasters masekd to background for current species
+  # convenience function for background polygon for current species
+  bgExt <- reactive(spp[[curSp()]]$procEnvs$bgExt)
+  # convenience function for environmental variable rasters masked to background for current species
   bgMask <- reactive(spp[[curSp()]]$procEnvs$bgMask)
   
   # get the coordinates of the current background extent shape
   bgShpXY <- reactive({
-    req(spp[[curSp()]]$procEnvs$bgExt)
-    polys <- spp[[curSp()]]$procEnvs$bgExt@polygons[[1]]@Polygons
+    req(bgExt())
+    polys <- bgExt()@polygons[[1]]@Polygons
     if(length(polys) == 1) {
       xy <- list(polys[[1]]@coords)
     }else{
@@ -591,7 +624,7 @@ shinyServer(function(input, output, session) {
       setwd(tempdir())
       n <- spName(spp[[curSp()]])
       
-      rgdal::writeOGR(obj = spp[[curSp()]]$procEnvs$bgExt, 
+      rgdal::writeOGR(obj = bgExt(), 
                       dsn = tmpdir, 
                       layer = paste0(n, '_bgShp'), 
                       driver = "ESRI Shapefile",
@@ -718,7 +751,7 @@ shinyServer(function(input, output, session) {
     mod.maxent <- callModule(maxent_MOD, 'c6_maxent')
     mod.maxent()
     # make sure the results were entered before proceeding
-    req(spp[[curSp()]]$results)
+    req(results())
     # full model and partition average evaluation table, and individual partition table
     
     # switch to Results tab
@@ -737,7 +770,7 @@ shinyServer(function(input, output, session) {
     mod.bioclim <- callModule(bioclim_MOD, 'c6_bioclim')
     mod.bioclim()
     # make sure the results were entered before proceeding
-    req(spp[[curSp()]]$results)
+    req(results())
     
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
@@ -750,13 +783,16 @@ shinyServer(function(input, output, session) {
   # MODEL: other controls ####
   # # # # # # # # # # # # # # # # # #
   
+  # convenience function for modeling results list for current species
+  results <- reactive(spp[[curSp()]]$results)
+  
   # ui that populates with the names of models that were run
   output$curModelUI <- renderUI({
     # do not display until both current species is selected and it has a model
-    req(curSp(), spp[[curSp()]]$results)
+    req(curSp(), results())
     # if 
-    if(!is.null(spp[[curSp()]]$results)) {
-      n <- names(spp[[curSp()]]$results$models)  
+    if(!is.null(results())) {
+      n <- names(results()$models)  
     } else {
       n <- NULL
     }
@@ -772,14 +808,14 @@ shinyServer(function(input, output, session) {
   
   output$evalTbls <- renderUI({
     options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
-    evalTbl <- spp[[curSp()]]$results$evalTbl
-    evalTblBins <- spp[[curSp()]]$results$evalTblBins
-    if(spp[[curSp()]]$rmm$model$algorithm == "Maxent") {
+    evalTbl <- results()$evalTbl
+    evalTblBins <- results()$evalTblBins
+    if(rmm()$model$algorithm == "Maxent") {
       evalTblRound <- cbind(evalTbl[,1:3], round(evalTbl[,4:16], digits=3))
       evalTblBinsRound <- cbind(settings=evalTbl[,1], round(evalTblBins, digits=3))
-    } else if (spp[[curSp()]]$rmm$model$algorithm == "BIOCLIM"){
+    } else if (rmm()$model$algorithm == "BIOCLIM"){
       evalTblRound <- round(evalTbl, digits=3)
-      evalTblBinsRound <- spp[[curSp()]]$results$evalTblBins
+      evalTblBinsRound <- results()$evalTblBins
     }
     output$evalTbl <- DT::renderDataTable(evalTblRound, options = options)
     output$evalTblBins <- DT::renderDataTable(evalTblBinsRound, options = options)
@@ -795,14 +831,14 @@ shinyServer(function(input, output, session) {
   # download for partitioned occurrence records csv
   output$dlEvalTbl <- downloadHandler(
     filename = function() {
-      if(spp[[curSp()]]$rmm$model$algorithm == "BIOCLIM") {
+      if(rmm()$model$algorithm == "BIOCLIM") {
         paste0(curSp(), "_bioclim_evalTbl.csv")  
-      } else if(spp[[curSp()]]$rmm$model$algorithm == "Maxent") {
+      } else if(rmm()$model$algorithm == "Maxent") {
         paste0(curSp(), "_maxent_evalTbl.csv")  
       }
     },
     content = function(file) {
-      evalTbl <- cbind(spp[[curSp()]]$results$evalTbl, spp[[curSp()]]$results$evalTblBins)
+      evalTbl <- cbind(results()$evalTbl, results()$evalTblBins)
       write.csv(evalTbl, file, row.names = FALSE)
     }
   )
@@ -818,7 +854,7 @@ shinyServer(function(input, output, session) {
   bioclimPlot <- callModule(bioclimPlot_MOD, 'c7_bioclimPlot')
   output$bioclimPlot <- renderPlot({
     # do not plot if missing models
-    req(curSp(), spp[[curSp()]]$results)
+    req(curSp(), results())
     bioclimPlot()
   })
   
@@ -828,7 +864,7 @@ shinyServer(function(input, output, session) {
   maxentEvalPlot <- callModule(maxentEvalPlot_MOD, 'c7_maxentEvalPlot')
   output$maxentEvalPlot <- renderPlot({
     # do not plot if missing models
-    req(curSp(), spp[[curSp()]]$results)
+    req(curSp(), results())
     maxentEvalPlot()
   })
   
@@ -838,56 +874,28 @@ shinyServer(function(input, output, session) {
   responsePlot <- callModule(responsePlot_MOD, 'c7_responsePlot')
   output$responsePlot <- renderPlot({
     # do not plot if missing models
-    req(curSp(), spp[[curSp()]]$results)
+    req(curSp(), results())
     responsePlot()
   })
   
-  # # # # # # # # # # # # 
-  # module Map Prediction
-  # # # # # # # # # # # # 
+  # # # # # # # # # # # # # # #
+  # module Map Prediction ####
+  # # # # # # # # # # # # # # #
   # MOTE: this prediction is restricted to the background extent
   observeEvent(input$goMapPreds, {
+    req(results())
     mapPreds <- callModule(mapPreds_MOD, 'c7_mapPreds')
     mapPreds()
-    if (rvs$comp6 == 'maxent') {
-      mapPreds <- callModule(mapPredsMaxent_MOD, 'c7_mapPredsMaxent', rvs)
-    } else {
-      mapPreds <- callModule(mapPreds_MOD, 'c7_mapPreds', rvs)
-    }
-    # stop if mapPreds is NULL
-    req(mapPreds())
-    rvs$predCur <- mapPreds()
-    # stop if no models
-    req(rvs$mods)
-    rvs$predCurVals <- getVals(rvs$predCur, rvs$comp7.type)
+    spp[[curSp()]]$visualization$mapPred
+
     updateTabsetPanel(session, 'main', selected = 'Map')
     
-    # MAPPING
-    if (rvs$comp7.thr != 'noThresh') {
-      rasPal <- c('gray', 'blue')
-      map %>% addLegend("bottomright", colors = c('gray', 'blue'),
-                        title = "Thresholded Suitability", labels = c("predicted absence", "predicted presence"),
-                        opacity = 1, layerId = 'leg')
-    } else {
-      rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-      legendPal <- colorNumeric(rev(rasCols), rvs$predCurVals, na.color='transparent')
-      rasPal <- colorNumeric(rasCols, rvs$predCurVals, na.color='transparent')
-      map %>% addLegend("bottomright", pal = legendPal, title = "Predicted Suitability",
-                        values = rvs$predCurVals, layerId = 'leg',
-                        labFormat = reverseLabels(2, reverse_order=TRUE))
-    }
-    map %>% 
-      clearMarkers() %>% clearImages() %>% clearShapes() %>%
-      map_plotLocs(rvs$occs) %>%
-      addRasterImage(rvs$predCur, colors = rasPal, opacity = 0.7, 
-                     group = 'c7', layerId = 'r1ID')
-    for (shp in bgShpXY()) {
-      map %>%
-        addPolygons(lng=shp[,1], lat=shp[,2], fill = FALSE,
-                    weight=4, color="red", group='c7')  
-    }
+    
     shinyjs::enable("dlPred")
   })
+  
+  # convenience function for mapped model prediction raster for current species
+  mapPred <- reactive(spp[[curSp()]]$visualization$mapPred)
   
   # download for model predictions (restricted to background extent)
   output$dlPred <- downloadHandler(
@@ -957,7 +965,7 @@ shinyServer(function(input, output, session) {
     rvs$projCurVals <- getVals(rvs$projCur, rvs$comp7.type)
     rvs$comp8.pj <- 'area'
     
-    rasVals <- c(rvs$predCurVals, rvs$projCurVals)
+    rasVals <- c(spp[[curSp()]]$visualization$mapPredVals, rvs$projCurVals)
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
     map %>% comp8_map(rvs$projCur, rvs$polyPjXY, bgShpXY, rasVals, 
                       rasCols, "Predicted Suitability", 'rProj')
@@ -981,7 +989,7 @@ shinyServer(function(input, output, session) {
     rvs$projCurVals <- getVals(rvs$projCur, rvs$comp7.type)
     rvs$comp8.pj <- 'time'
     
-    rasVals <- c(rvs$predCurVals, rvs$projCurVals)
+    rasVals <- c(spp[[curSp()]]$visualization$mapPredVals, rvs$projCurVals)
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
     map %>% comp8_map(rvs$projCur, rvs$polyPjXY, bgShpXY, rasVals, 
                       rasCols, "Predicted Suitability", 'rProj')
@@ -1056,10 +1064,10 @@ shinyServer(function(input, output, session) {
       sp <- spp[[curSp()]]
       exp <- knitr::knit_expand("Rmd/userReport.Rmd", 
                                 spName=spName(spp[[curSp()]]), 
-                                occsSource=spp[[curSp()]]$rmm$data$occurrence$sources,
-                                occsNum=spp[[curSp()]]$rmm$code$wallaceSettings$occsNum,  # comp 1
+                                occsSource=rmm()$data$occurrence$sources,
+                                occsNum=rmm()$code$wallaceSettings$occsNum,  # comp 1
                                 occsCSV=spp[[n]]$rmm$code$wallaceSettings$userCSV,
-                                occsRemoved=printVecAsis(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs)
+                                occsRemoved=printVecAsis(rmm()$code$wallaceSettings$removedIDs)
                                 
       )  # comp 8
       # temporarily switch to the temp dir, in case you do not have write
@@ -1093,6 +1101,6 @@ shinyServer(function(input, output, session) {
       paste0("wallace-session-", Sys.Date(), ".csv")
     },
     content = function(file) {
-      rangeModelMetadata::rmmToCSV(spp[[curSp()]]$rmm, filename = file)
+      rangeModelMetadata::rmmToCSV(rmm(), filename = file)
     })
 })

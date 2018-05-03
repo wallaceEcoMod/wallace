@@ -12,40 +12,48 @@ mapPreds_UI <- function(id) {
 
 mapPreds_MOD <- function(input, output, session) {
   reactive({
-    if(is.null(spp[[curSp()]]$results)) {
+    if(is.null(results())) {
       shinyLogs %>% writeLog(type = 'error', "Models must first be run in component 6.")
       return()
     }
     
     # pick the prediction that matches the model selected
-    predSel <- spp[[curSp()]]$results$predictions[[curModel()]]
+    predSel <- results()$predictions[[curModel()]]
     
-    if(spp[[curSp()]]$rmm$model$algorithm == "Maxent") {
-      spp[[curSp()]]$rmm$output$prediction$notes
-    } 
-    
-    
-    
-    if (is.na(raster::crs(predSel))) {
-      rvs %>% writeLog(type = "error", "Model prediction raster has undefined 
-                       coordinate reference system (CRS), and thus cannot be 
-                       mapped. This is likely due to undefined CRS for input 
-                       rasters. Please see guidance text for module 'User-specified 
-                       Environmental Data' in component 'Obtain Environmental Data' 
-                       for more details.")
+    if(is.na(raster::crs(predSel))) {
+      shinyLog %>% writeLog(type = "error", "Model prediction raster has undefined 
+                            coordinate reference system (CRS), and thus cannot be 
+                            mapped. This is likely due to undefined CRS for input 
+                            rasters. Please see guidance text for module 'User-specified 
+                            Environmental Data' in component 'Obtain Environmental Data' 
+                            for more details.")
       return()
     }
     
+    if(rmm()$model$algorithm == "Maxent") {
+      predSel <- maxentPredTransform(results(), bgMask(), input$maxentPredType, shinyLogs)
+      # put transformed predictions into results list
+      spp[[curSp()]]$results[[input$maxentPredType]] <- predSel
+    }
+    
     # generate binary prediction based on selected thresholding rule 
-    predSel.thr.call <- callModule(threshPred_MOD, "threshPred", predSel)
-    predSel.thr <- predSel.thr.call()
-    pjPred <- predSel.thr$pred
-    rvs$comp7.thr <- predSel.thr$thresh
+    # (same for all Maxent prediction types because they scale the same)
+    getThreshPred <- callModule(threshPred_MOD, "threshPred", predSel)
+    threshPred <- getThreshPred()
+    
+    # save to spp
+    spp[[curSp()]]$visualization$mapPred <- threshPred
+    spp[[curSp()]]$visualization$mapPredVals <- getVals(threshPred, input$maxentPredType)
     
     # write to log box
-    logs %>% writeLog("BIOCLIM model prediction plotted.")
-
-    return(pjPred)
+    shinyLogs %>% writeLog(rmm()$model$algorithm, input$predType, "model prediction plotted.")
+    
+    # METADATA
+    if(rmm()$model$algorithm == "Maxent") {
+      spp[[curSp()]]$rmm$output$prediction$notes <- input$maxentPredType
+      
+    }
+    
   })
 }
 

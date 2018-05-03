@@ -9,11 +9,11 @@ bioclimPlot_UI <- function(id) {
   )
 }
 
-bioclimPlot_MOD <- function(input, output, session, spIn) {
+bioclimPlot_MOD <- function(input, output, session) {
   
   reactive({
     # FUNCTION CALL ####
-    makeBioclimPlot(spp[[curSp()]]$modelList$models[[curModel()]],
+    makeBioclimPlot(spp[[curSp()]]$results$models[[curModel()]],
                 input$bc1,
                 input$bc2,
                 input$bcProb)

@@ -23,7 +23,7 @@ bioclim_MOD <- function(input, output, session) {
       req(m.bioclim)
       
       # LOAD INTO SPP ####
-      spp[[sp]]$modelList <- m.bioclim
+      spp[[sp]]$results <- m.bioclim
       
       # METADATA ####
       spp[[sp]]$rmm$model$algorithm <- "BIOCLIM"

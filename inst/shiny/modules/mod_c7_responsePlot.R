@@ -13,7 +13,7 @@ responsePlot_MOD <- function(input, output, session) {
       logs %>% writeLog(type = 'error', "Models must first be run in component Model.")
       return()
     }
-    dismo::response(spp[[curSp()]]$modelList$models[[curModel()]], var = curEnv())
+    dismo::response(spp[[curSp()]]$results$models[[curModel()]], var = curEnv())
   })
 }
 
