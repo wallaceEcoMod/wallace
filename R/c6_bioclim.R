@@ -71,7 +71,7 @@ c6_bioclim  <- function(occs, bg, bgMask, logs = NULL, shiny = FALSE) {
     names(preds) <- "BIOCLIM"
     
     # THIS FORMAT FOR RETURNED DATA ATTEMPTS TO MATCH WHAT HAPPENS IN WALLACE ALREADY FOR ENMEVAL.
-    return(list(models=list(BIOCLIM=full.mod), results=stats, results.bins=statsBins, predictions=preds, occVals=occPredVals))
+    return(list(models=list(BIOCLIM=full.mod), evalTbl=stats, evalTblBins=statsBins, predictions=preds, occPredVals=occPredVals))
   }
   
   if(shiny == TRUE) {
