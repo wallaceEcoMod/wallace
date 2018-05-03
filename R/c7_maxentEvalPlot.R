@@ -1,6 +1,5 @@
 # plot ENMeval stats based on user selection ("value")
 makeMaxentEvalPlot <- function(results, value) {
-  print('func run')
   fc <- length(unique(results$features))
   col <- rainbow(fc)
   rm <- length(unique(results$rm))

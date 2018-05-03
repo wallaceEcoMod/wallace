@@ -12,7 +12,6 @@ maxentEvalPlot_UI <- function(id) {
 
 maxentEvalPlot_MOD <- function(input, output, session) {
   reactive({
-    print('reactive run')
     # ERRORS ####
     if (is.null(input$maxentEvalSel)) {
       logs %>% writeLog(type = 'error', "Please choose a statistic to plot.")
@@ -24,7 +23,6 @@ maxentEvalPlot_MOD <- function(input, output, session) {
     
     # METADATA ####
     spp[[curSp()]]$rmm$code$wallaceSettings$maxentEvalPlotSel <- input$maxentEvalSel
-    print("reactive finished")
   })
 }
 

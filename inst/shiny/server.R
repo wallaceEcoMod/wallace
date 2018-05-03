@@ -288,8 +288,8 @@ shinyServer(function(input, output, session) {
   spIn <- reactive(if(input$batch == TRUE) allSp() else curSp())
   
   # TABLE
-  options <- list(autoWidth = TRUE, columnDefs = list(list(width = '40%', targets = 7)),
-                  scrollX=TRUE, scrollY=400)
+  # options <- list(autoWidth = TRUE, columnDefs = list(list(width = '40%', targets = 7)),
+  #                 scrollX=TRUE, scrollY=400)
   output$occTbl <- DT::renderDataTable({
     # check if spp has species in it
     req(length(reactiveValuesToList(spp)) > 0)
@@ -795,10 +795,8 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # # #
   maxentEvalPlot <- callModule(maxentEvalPlot_MOD, 'c7_maxentEvalPlot')
   output$maxentEvalPlot <- renderPlot({
-    print('test1')
     # do not plot if missing models
     req(curSp(), spp[[curSp()]]$modelList)
-    print('test2')
     maxentEvalPlot()
   })
   
