@@ -284,7 +284,7 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       # thinned_rowNums <- as.numeric(thinOccs()$occID)
       # origThinned <- rvs$occsOrig[thinned_rowNums,]
-      write.csv(rvs$occs, file, row.names = FALSE)
+      write.csv(rvs$occs %>% dplyr::select(-pop), file, row.names = FALSE)
     }
   )
   
