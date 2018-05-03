@@ -2,27 +2,34 @@
 mapPreds_UI <- function(id) {
   ns <- NS(id)
   tagList(
+    threshPred_UI(ns('threshPred')),
+    tags$div(title='Please see guidance for an explanation of different Maxent output types.',
+             radioButtons(ns('maxentPredType'), label = "Prediction output",
+                          choices = list("raw", "logistic", "cloglog"), selected = "raw", inline = TRUE)),
     threshPred_UI(ns('threshPred'))
   )
 }
 
-mapPreds_MOD <- function(input, output, session, rvs) {
+mapPreds_MOD <- function(input, output, session) {
   reactive({
-    if (is.null(rvs$mods)) {
-      logs %>% writeLog(type = 'error', "Models must first be run in component 6.")
+    if(is.null(spp[[curSp()]]$results)) {
+      shinyLogs %>% writeLog(type = 'error', "Models must first be run in component 6.")
       return()
     }
     
-    # record for RMD
-    rvs$comp7 <- c(rvs$comp7, 'map')
-     
     # pick the prediction that matches the model selected
-    predSel <- rvs$modPreds[[rvs$modSel]]
+    predSel <- spp[[curSp()]]$results$predictions[[curModel()]]
+    
+    if(spp[[curSp()]]$rmm$model$algorithm == "Maxent") {
+      spp[[curSp()]]$rmm$output$prediction$notes
+    } 
+    
+    
     
     if (is.na(raster::crs(predSel))) {
       rvs %>% writeLog(type = "error", "Model prediction raster has undefined 
                        coordinate reference system (CRS), and thus cannot be 
-                       mapped. This is likely due to undefined CRS's for input 
+                       mapped. This is likely due to undefined CRS for input 
                        rasters. Please see guidance text for module 'User-specified 
                        Environmental Data' in component 'Obtain Environmental Data' 
                        for more details.")

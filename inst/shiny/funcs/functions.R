@@ -236,23 +236,7 @@ mcp <- function(xy) {
 # COMP 7 ####
 ####################### #
 
-thresh <- function(modOccVals, type) {
-  # remove all NA
-  modOccVals <- na.omit(modOccVals)
-  if (type == 'mtp') {
-    # apply minimum training presence threshold
-    x <- min(modOccVals)
-  } else if (type == 'p10') {
-    # Define 10% training presence threshold
-    if (length(modOccVals) < 10) {  # if less than 10 occ values, find 90% of total and round down
-      n90 <- floor(length(modOccVals) * 0.9)
-    } else {  # if greater than or equal to 10 occ values, round up
-      n90 <- ceiling(length(modOccVals) * 0.9)
-    }
-    x <- rev(sort(modOccVals))[n90]  # apply 10% training presence threshold over all models
-  }
-  return(x)
-}
+
 
 evalPlots <- function(results) {
   par(mfrow=c(3,2))

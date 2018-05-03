@@ -42,7 +42,7 @@ maxent_MOD <- function(input, output, session) {
       req(m.maxent)
       
       # LOAD INTO SPP ####
-      spp[[sp]]$modelList <- m.maxent
+      spp[[sp]]$results <- m.maxent
       
       # METADATA ####
       spp[[sp]]$rmm$model$algorithm <- "Maxent"
