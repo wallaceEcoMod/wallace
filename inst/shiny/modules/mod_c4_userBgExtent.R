@@ -12,7 +12,7 @@ userBgExtent_UI <- function(id) {
 userBgExtent_MOD <- function(input, output, session) {
   reactive({
     # ERRORS ####
-    if (is.null(spp[[curSp()]]$envs)) {
+    if (is.null(envs())) {
       shinyLogs %>% writeLog(type = 'error', 'Environmental variables missing. Obtain them
                         in component 3.')
       return()

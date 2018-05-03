@@ -14,7 +14,7 @@ bgExtent_UI <- function(id) {
 bgExtent_MOD <- function(input, output, session) {
   reactive({
     
-    req(curSp(), spp[[curSp()]]$occs, spp[[curSp()]]$envs)
+    req(curSp(), occs(), envs())
     
     for(sp in spIn()) {
       # FUNCTION CALL ####

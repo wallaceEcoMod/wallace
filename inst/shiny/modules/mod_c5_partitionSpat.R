@@ -13,17 +13,17 @@ partSp_UI <- function(id) {
 
 partSp_MOD <- function(input, output, session) {
   reactive({
-    if (is.null(spp[[curSp()]]$procEnvs$bgMask)) {
+    if (is.null(bgMask())) {
       shinyLogs %>% writeLog(type = 'error', "Before partitioning occurrences for ", spName(spp[[sp]]),
                        ", mask your environmental variables by your background extent.")
       return()
     }
     
     # FUNCTION CALL ####
-    group.data <- c5_partitionOccs(spp[[curSp()]]$occs, 
-                                   spp[[curSp()]]$bg, 
+    group.data <- c5_partitionOccs(occs(), 
+                                   bg(), 
                                    input$partSpSel, 
-                                   bgMsk = spp[[curSp()]]$procEnvs$bgMask, 
+                                   bgMsk = bgMask(), 
                                    aggFact = input$aggFact, 
                                    shinyLogs)
     req(group.data)

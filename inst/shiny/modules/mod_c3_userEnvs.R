@@ -9,7 +9,7 @@ userEnvs_UI <- function(id) {
 userEnvs_MOD <- function(input, output, session) {
   reactive({
     # ERRORS ####
-    if (is.null(spp[[curSp()]]$occs)) {
+    if (is.null(occs())) {
       shinyLogs %>% writeLog(type = 'error', "Before obtaining environmental variables, 
                         obtain occurrence data in component 1.")
       return()
@@ -24,16 +24,16 @@ userEnvs_MOD <- function(input, output, session) {
       
       # remove occurrences with NA values for variables
       withProgress(message = paste0("Extracting environmental values for occurrences of ", spName(spp[[curSp()]]), "..."), {
-        occsEnvsVals <- as.data.frame(raster::extract(userEnvs, spp[[curSp()]]$occs[c('longitude', 'latitude')]))
+        occsEnvsVals <- as.data.frame(raster::extract(userEnvs, occs()[c('longitude', 'latitude')]))
         names(occsEnvsVals) <- paste0('env_', names(occsEnvsVals))
       })
       # remove occurrences with NA environmental values
-      spp[[curSp()]]$occs <- remEnvsValsNA(spp[[curSp()]]$occs, occsEnvsVals, shinyLogs)
+      spp[[curSp()]]$occs <- remEnvsValsNA(occs(), occsEnvsVals, shinyLogs)
       
       # LOAD INTO SPP ####
       spp[[curSp()]]$envs <- userEnvs
       # add columns for env variables beginning with "envs_" to occs tbl
-      spp[[curSp()]]$occs <- cbind(spp[[curSp()]]$occs, occsEnvsVals)
+      spp[[curSp()]]$occs <- cbind(occs(), occsEnvsVals)
       
       # METADATA ####
       spp[[curSp()]]$rmm$data$environment$variableNames <- names(userEnvs)

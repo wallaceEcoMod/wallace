@@ -17,7 +17,7 @@ pca_MOD <- function(input, output, session) {
     # FUNCTION CALL ####
     sp1 <- curSp()[1]
     sp2 <- curSp()[2]
-    envNames <- names(spp[[curSp()]]$envs)
+    envNames <- names(envs())
     sp1.bgEnvsVals <- spp[[sp1]]$bg %>% select(contains())
     sp2.bgEnvsVals <- spp[[sp2]]$bg %>% select(contains(envNames))
     sp1.occsEnvsVals <- spp[[sp1]]$occs %>% select(contains(envNames))

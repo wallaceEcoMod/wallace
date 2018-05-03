@@ -13,7 +13,7 @@ partNsp_MOD <- function(input, output, session) {
   reactive({
     
     for(sp in spIn()) {
-      if (is.null(spp[[curSp()]]$procEnvs$bgMask)) {
+      if (is.null(bgMask())) {
         shinyLogs %>% writeLog(type = 'error', "Before partitioning occurrences for ", spName(spp[[sp]]), 
                         ", mask your environmental variables by your background extent.")
         return()

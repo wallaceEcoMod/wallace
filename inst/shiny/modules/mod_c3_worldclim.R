@@ -21,7 +21,7 @@ wcBioclims_UI <- function(id) {
 wcBioclims_MOD <- function(input, output, session, spIn) {
   reactive({
     # ERRORS ####
-    if (is.null(spp[[curSp()]]$occs)) {
+    if (is.null(occs())) {
       shinyLogs %>% writeLog(type = 'error', "Before obtaining environmental variables, 
                         obtain occurrence data in component 1.")
       return()

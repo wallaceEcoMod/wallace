@@ -9,7 +9,7 @@ bgMskAndSamplePts_UI <- function(id) {
 bgMskAndSamplePts_MOD <- function(input, output, session) {
   reactive({
     
-    req(spp[[curSp()]]$procEnvs$bgExt)
+    req(bgExt())
     
     for(sp in spIn()) {
       # FUNCTION CALL ####

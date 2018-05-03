@@ -13,7 +13,7 @@ responsePlot_MOD <- function(input, output, session) {
       shinyLogs %>% writeLog(type = 'error', "Models must first be run in component Model.")
       return()
     }
-    dismo::response(spp[[curSp()]]$results$models[[curModel()]], var = curEnv())
+    dismo::response(results()$models[[curModel()]], var = curEnv())
   })
 }
 

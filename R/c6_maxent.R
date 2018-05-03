@@ -1,5 +1,5 @@
 c6_maxent  <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, 
-                        clamp, shinyLogs = NULL) {
+                        clamp, shinyLogs = NULL, shiny = FALSE) {
   if (is.null(occsGrp)) {
     shinyLogs %>% writeLog(type = 'error', "Before building a model, please partition 
                         occurrences for cross-validation.")

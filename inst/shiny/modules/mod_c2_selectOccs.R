@@ -8,7 +8,7 @@ selectOccs_UI <- function(id) {
 selectOccs_MOD <- function(input, output, session) {
   reactive({
     # FUNCTION CALL ####
-    occs.sel <- c2_selectOccs(spp[[curSp()]]$occs, 
+    occs.sel <- c2_selectOccs(occs(), 
                               spp[[curSp()]]$polySelXY,
                               spp[[curSp()]]$polySelID, 
                               shinyLogs)
