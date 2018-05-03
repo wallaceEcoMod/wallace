@@ -1,12 +1,11 @@
-
 threshPred_UI <- function(id) {
   ns <- NS(id)
   tagList(
     tags$div(title='Create binary map of predicted presence/absence assuming all values above threshold value represent presence. Also can be interpreted as a "potential distribution" (see guidance).',
              selectInput(ns('predThresh'), label = "Set threshold",
-                choices = list("No threshold" = 'noThresh',
-                               "Minimum Training Presence" = 'mtp', 
-                               "10 Percentile Training Presence" = 'p10')))
+                         choices = list("No threshold" = 'noThresh',
+                                        "Minimum Training Presence" = 'mtp', 
+                                        "10 Percentile Training Presence" = 'p10')))
   )
 }
 
@@ -35,7 +34,7 @@ threshPred_MOD <- function(input, output, session, pred) {
       pred <- pred > x
       # rename
       names(pred) <- paste0(rvs$modSel, '_thresh_', input$predThresh)
-      logs %>% writeLog(input$predThresh, 'threshold selected: value =', 
+      rvs %>% writeLog(input$predThresh, 'threshold selected: value =', 
                        round(x, digits = 3), '.')
     }
     

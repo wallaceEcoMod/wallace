@@ -4,15 +4,17 @@
 \alias{c1_queryDb}
 \title{Query online database for species occurrence records.}
 \usage{
-c1_queryDb(spName, occDb, occNum, logs = NULL, shiny = FALSE)
+c1_queryDb(spName, occDb, occNum, shinyLogs = NULL)
 }
 \arguments{
-\item{spName}{species Latin name, with format "Genus species"}
+\item{spName}{character species Latin name, with format "Genus species"}
 
-\item{occDb}{biodiversity database to query; current choices are "gbif", 
+\item{occDb}{character biodiversity database to query; current choices are "gbif", 
 "vertnet", and "bison"}
 
-\item{occNum}{maximum number of occurrence records to return}
+\item{occNum}{numeric maximum number of occurrence records to return}
+
+\item{shinyLogs}{insert the shinyLogs reactive list here for running in shiny, otherwise leave the default NULL}
 }
 \value{
 formatted tibble of species occurrence records

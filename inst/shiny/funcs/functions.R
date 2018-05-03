@@ -83,43 +83,6 @@ infoGenerator <- function(pkgName, modName , modAuts) {
        pkgTitl = pkgTitl,
        pkgAuts = pkgAuts)
 }
-####################### #
-# LOG WINDOW ####
-####################### #
-
-# initialize log window text
-logInit <- function() {
-  intro <- '***WELCOME TO WALLACE***'
-  brk <- paste(rep('------', 14), collapse='')
-  expl <- 'Please find messages for the user in this log window.'
-  return(c(paste(intro, brk, expl, brk, sep='<br>')))
-}
-
-# add text to log
-writeLog <- function(logs, ..., type = 'default') {
-  if (is.null(logs)) {
-    if (type == "default") {
-      pre <- "> "
-    } else if (type == 'error') {
-      pre <- 'ERROR: '
-    } else if (type == 'warning') {
-      pre <- 'WARNING: '
-    }  
-    newEntries <- paste(pre, ..., collapse = "")
-    message(newEntries)
-    return()
-  }
-  
-  if (type == "default") {
-    pre <- "> "
-  } else if (type == 'error') {
-    pre <- '<font color="red"><b>! ERROR</b></font> : '
-  } else if (type == 'warning') {
-    pre <- '<font color="orange"><b>! WARNING</b></font> : '
-  }
-  newEntries <- paste(pre, ..., collapse = "")
-  logs(paste(logs(), newEntries, sep = '<br>'))
-}
 
 ####################### #
 # MISC ####

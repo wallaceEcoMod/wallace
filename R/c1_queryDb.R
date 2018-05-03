@@ -7,16 +7,17 @@
 #' remove records with duplicate coordinates, and select some columns with fields
 #' appropriate to studies in biogeography.
 #'
-#' @param spName species Latin name, with format "Genus species"
-#' @param occDb biodiversity database to query; current choices are "gbif", 
+#' @param spName character species Latin name, with format "Genus species"
+#' @param occDb character biodiversity database to query; current choices are "gbif", 
 #' "vertnet", and "bison"
-#' @param occNum maximum number of occurrence records to return
+#' @param occNum numeric maximum number of occurrence records to return
+#' @param shinyLogs insert the shinyLogs reactive list here for running in shiny, otherwise leave the default NULL
 #' @return formatted tibble of species occurrence records 
 #'
 #' @examples
 #' c1_queryDb(spName = "Tremarctos ornatus", occDb = "gbif", occNum = 100)
 
-c1_queryDb <- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
+c1_queryDb <- function(spName, occDb, occNum, shinyLogs=NULL) {
   # capitalize genus name if not already, trim whitespace
   spName <- trimws(paste0(toupper(substring(spName, 1, 1)), substring(spName, 2, nchar(spName))))  
   
@@ -27,23 +28,18 @@ c1_queryDb <- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
     logs %>% writeLog(type = 'error', 'Please input both genus and species names.')
     return()
   }
-  
+
   # query database
-  if (shiny == TRUE) {
-    withProgress(message = paste0("Querying ", occDb, " for ", spName, "..."), {
-      q <- spocc::occ(spName, occDb, limit=occNum)
-    })  
-  } else {
+  smartProgress(shinyLogs, message = paste0("Querying ", occDb, " for ", spName, "..."), {
     q <- spocc::occ(spName, occDb, limit=occNum)
-  }
-  
+  })
   
   # get total number of records found in database
   totRows <- q[[occDb]]$meta$found
   
   # if species not found, print message to log box and return
   if (q[[occDb]]$meta$found == 0) {
-    logs %>% writeLog(type = 'error', 'No records found for ', em(spName), ". Please check the spelling.")
+    shinyLogs %>% writeLog(type = 'error', 'No records found for ', em(spName), ". Please check the spelling.")
     return()
   }
   # extract occurrence tibble
@@ -58,7 +54,7 @@ c1_queryDb <- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
   # subset to just records with latitude and longitude
   occsXY <- occsOrig[!is.na(occsOrig$latitude) & !is.na(occsOrig$longitude),]
   if (nrow(occsXY) == 0) {
-    logs %>% writeLog(type = 'warning', 'No records with coordinates found in', occDb, "for", em(spName), ".")
+    shinyLogs %>% writeLog(type = 'warning', 'No records with coordinates found in', occDb, "for", em(spName), ".")
     return()
   }
   
@@ -95,7 +91,7 @@ c1_queryDb <- function(spName, occDb, occNum, logs=NULL, shiny=FALSE) {
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
   dupsRem <- nrow(occsXY) - nrow(occs)
   
-  logs %>% writeLog('Total ', occDb, ' records for ', em(spName), ' returned [', nrow(occsOrig),
+  shinyLogs %>% writeLog('Total ', occDb, ' records for ', em(spName), ' returned [', nrow(occsOrig),
                     '] out of [', totRows, '] total (limit ', occNum, ').
                     Records without coordinates removed [', noCoordsRem, '].
                     Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')

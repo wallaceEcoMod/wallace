@@ -19,7 +19,7 @@ queryDb_MOD <- function(input, output, session) {
     occsTbls <- c1_queryDb(input$spName, 
                            input$occsDb, 
                            input$occsNum, 
-                           logs, shiny=TRUE)
+                           logs)
     req(occsTbls)
     
     # LOAD INTO SPP ####

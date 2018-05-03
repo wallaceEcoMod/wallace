@@ -32,7 +32,11 @@ shinyServer(function(input, output, session) {
   # list with current guidance text
   gtext <- reactiveValues()
   # single reactive value for dynamic log vector
-  logs <- reactiveVal(logInit())
+  intro <- '***WELCOME TO WALLACE***'
+  brk <- paste(rep('------', 14), collapse='')
+  expl <- 'Please find messages for the user in this log window.'
+  logInit <- c(paste(intro, brk, expl, brk, sep='<br>'))
+  shinyLogs <- reactiveVal(logInit)
   # legacy
   rvs <- reactiveValues()
   # legacy
@@ -78,7 +82,7 @@ shinyServer(function(input, output, session) {
   
   # initialize log window
   output$log <- renderUI({
-    tags$div(id='logHeader', tags$div(id='logContent', HTML(paste0(logs(), "<br>", collapse = ""))))
+    tags$div(id='logHeader', tags$div(id='logContent', HTML(paste0(shinyLogs(), "<br>", collapse = ""))))
   })
   
   ######################## #
@@ -398,7 +402,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goResetOccs, {
     req(curSp())
     spp[[curSp()]]$occs <- spp[[curSp()]]$occData$occsOrig  
-    logs %>% writeLog("Reset occurrences.")
+    shinyLogs %>% writeLog("Reset occurrences.")
     # MAPPING
     map %>%
       map_occs(spp[[curSp()]]$occs) %>%
@@ -628,7 +632,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goPCA, {
     # stop if no environmental variables
     if(length(curSp()) != 2) {
-      logs %>% writeLog(type = 'error', "Please select two species.")
+      shinyLogs %>% writeLog(type = 'error', "Please select two species.")
     }
     req(spp[[curSp()[1]]]$procEnvs$bg.envsVals, spp[[curSp()[2]]]$procEnvs$bg.envsVals)
     # initialize module
@@ -998,7 +1002,7 @@ shinyServer(function(input, output, session) {
     map %>%
       removeShape("projExt") %>%
       removeImage("rProj")
-    logs %>% writeLog("Reset projection extent.")
+    shinyLogs %>% writeLog("Reset projection extent.")
   })
   
   # download for model predictions (restricted to background extent)
