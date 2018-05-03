@@ -226,6 +226,8 @@ shinyUI(tagList(
                                                                  bioclim_UI('c6_bioclim'),
                                                                  actionButton('goBioclim', 'Run')),
                                                 HTML('<hr>'),
+                                                downloadButton('dlEvalTbl', "Download CSV"),
+                                                HTML('<hr>'),
                                                 uiBottom("Jamie M. Kass, Robert Muscarella, Bruno Vilela, Robert P. Anderson", 'ENMeval', 'Robert Muscarella, Peter J. Galante, Mariano Soley-Guardia, Robert A. Boria,
                                                          Jamie M. Kass, Maria Uriarte, Robert P. Anderson'),
                                                 " | ", a("software note", href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12261/abstract", target = "_blank"), br(),

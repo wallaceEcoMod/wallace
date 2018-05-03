@@ -565,6 +565,20 @@ shinyServer(function(input, output, session) {
     shinyjs::hide(id = "evalTblBins")
   })
   
+  # download for partitioned occurrence records csv
+  output$dlEvalTbl <- downloadHandler(
+    filename = function() {
+      if (rvs$comp6 == "bioclim") {
+        paste0(spName(), "_bioclim_evalTbl.csv")  
+      } else if (rvs$comp6 == "maxent") {
+        paste0(spName(), "_maxent_evalTbl.csv")  
+      }
+    },
+    content = function(file) {
+      write.csv(rvs$modRes, file, row.names = FALSE)
+    }
+  )
+  
   ########################################### #
   ### COMPONENT 7: VISUALIZE MODEL RESULTS ####
   ########################################### #
