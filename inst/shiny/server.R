@@ -681,7 +681,7 @@ shinyServer(function(input, output, session) {
   # download for model predictions (restricted to background extent)
   output$dlPred <- downloadHandler(
     filename = function() {
-      ext <- switch(input$predFileType, raster = 'grd', ascii = 'asc', GTiff = 'tif', PNG = 'png')
+      ext <- switch(input$predFileType, raster = 'grd', ascii = 'asc', GTiff = 'tif', png = 'png')
       paste0(names(rvs$predCur), '.', ext)},
     content = function(file) {
       if (input$predFileType == 'png') {
