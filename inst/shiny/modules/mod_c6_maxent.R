@@ -24,7 +24,7 @@ maxent_MOD <- function(input, output, session) {
     for(sp in spIn()) {  
       # ERRORS ####
       if (is.null(spp[[sp]]$occs$partition)) {
-        logs %>% writeLog(type = 'error', "Before building a model, please partition 
+        shinyLogs %>% writeLog(type = 'error', "Before building a model, please partition 
                           occurrences for cross-validation for", spName(spp[[sp]]), ".")
         return()
       }
@@ -38,7 +38,7 @@ maxent_MOD <- function(input, output, session) {
                             input$rmsStep, 
                             input$fcs, 
                             input$clamp, 
-                            logs)
+                            shinyLogs)
       req(m.maxent)
       
       # LOAD INTO SPP ####

@@ -16,12 +16,12 @@ bgMskAndSamplePts_MOD <- function(input, output, session) {
       bgMask <- c4_bgMask(spp[[sp]]$occs, 
                           spp[[sp]]$envs, 
                           spp[[sp]]$procEnvs$bgExt, 
-                          logs)
+                          shinyLogs)
       req(bgMask)
       bgPts <- c4_bgSample(spp[[sp]]$occs, 
                            bgMask, 
                            input$bgPtsNum, 
-                           logs)
+                           shinyLogs)
       req(bgPts)
       withProgress(message = paste0("Extracting background values for ", spName(spp[[sp]]), "..."), {
         bgEnvsVals <- as.data.frame(raster::extract(spp[[sp]]$envs, bgPts))

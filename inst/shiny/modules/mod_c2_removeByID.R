@@ -11,7 +11,7 @@ removeByID_MOD <- function(input, output, session) {
     # FUNCTION CALL ####
     occs.rem <- c2_removeByID(spp[[curSp()]]$occs, 
                               input$removeID, 
-                              logs)
+                              shinyLogs)
     req(occs.rem)
     
     # LOAD INTO SPP ####

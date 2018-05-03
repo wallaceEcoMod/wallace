@@ -13,19 +13,19 @@ userBgExtent_MOD <- function(input, output, session) {
   reactive({
     # ERRORS ####
     if (is.null(spp[[curSp()]]$envs)) {
-      logs %>% writeLog(type = 'error', 'Environmental variables missing. Obtain them
+      shinyLogs %>% writeLog(type = 'error', 'Environmental variables missing. Obtain them
                         in component 3.')
       return()
     }
     if (is.null(input$userBgShp)) {
-      logs %>% writeLog(type = 'error', 'Background extent files not uploaded.')
+      shinyLogs %>% writeLog(type = 'error', 'Background extent files not uploaded.')
       return()
     }
     # FUNCTION CALL ####
     userBgExt <- c4_userBgExtent(input$userBgShp$datapath,
                                  input$userBgShp$name,
                                  input$userBgBuf,
-                                 logs)
+                                 shinyLogs)
     
     # LOAD INTO SPP ####
     spp[[curSp()]]$procEnvs$bgExt <- userBgExt

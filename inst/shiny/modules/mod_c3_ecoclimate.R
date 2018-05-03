@@ -24,11 +24,11 @@ ecoClimate_UI <- function(id) {
   )
 }
 
-ecoClimate_MOD <- function(input, output, session, logs) {
+ecoClimate_MOD <- function(input, output, session, shinyLogs) {
   reactive({
     
     if (is.null(vals$occs)) {
-      logs %>% writeLog(type = 'error', "Before obtaining environmental variables, 
+      shinyLogs %>% writeLog(type = 'error', "Before obtaining environmental variables, 
                         obtain occurrence data in component 1.")
       return()
     }
@@ -37,7 +37,7 @@ ecoClimate_MOD <- function(input, output, session, logs) {
     ## what is bcSels. people can tun this? or is it already pre-defined?
     rvs$bcSels <- input$bcSels
     
-    c3_ecoClimate(input$bcAOGCM, vals$timeInterval, input$bcSelChoice, input$bcSels, logs)
+    c3_ecoClimate(input$bcAOGCM, vals$timeInterval, input$bcSelChoice, input$bcSels, shinyLogs)
   })
 }
 

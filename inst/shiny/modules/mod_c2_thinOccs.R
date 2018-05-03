@@ -17,7 +17,7 @@ thinOccs_MOD <- function(input, output, session) {
       # FUNCTION CALL ####
       occs.thin <- c2_thinOccs(spp[[sp]]$occs,
                                input$thinDist,
-                               logs)
+                               shinyLogs)
       req(occs.thin)
       
       # LOAD INTO SPP ####

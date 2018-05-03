@@ -14,7 +14,7 @@ maxentEvalPlot_MOD <- function(input, output, session) {
   reactive({
     # ERRORS ####
     if (is.null(input$maxentEvalSel)) {
-      logs %>% writeLog(type = 'error', "Please choose a statistic to plot.")
+      shinyLogs %>% writeLog(type = 'error', "Please choose a statistic to plot.")
       return()
     }
     

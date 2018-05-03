@@ -14,7 +14,7 @@ partNsp_MOD <- function(input, output, session) {
     
     for(sp in spIn()) {
       if (is.null(spp[[curSp()]]$procEnvs$bgMask)) {
-        logs %>% writeLog(type = 'error', "Before partitioning occurrences for ", spName(spp[[sp]]), 
+        shinyLogs %>% writeLog(type = 'error', "Before partitioning occurrences for ", spName(spp[[sp]]), 
                         ", mask your environmental variables by your background extent.")
         return()
       }
@@ -24,7 +24,7 @@ partNsp_MOD <- function(input, output, session) {
                                      spp[[sp]]$bg, 
                                      input$partNspSel, 
                                      kfolds = input$kfolds, 
-                                     logs=logs)
+                                     shinyLogs)
       req(group.data)
       
       # LOAD INTO SPP ####

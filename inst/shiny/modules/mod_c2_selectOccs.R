@@ -11,7 +11,7 @@ selectOccs_MOD <- function(input, output, session) {
     occs.sel <- c2_selectOccs(spp[[curSp()]]$occs, 
                               spp[[curSp()]]$polySelXY,
                               spp[[curSp()]]$polySelID, 
-                              logs)
+                              shinyLogs)
     req(occs.sel)
     
     # LOAD INTO SPP ####

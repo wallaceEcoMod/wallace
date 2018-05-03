@@ -22,7 +22,7 @@ wcBioclims_MOD <- function(input, output, session, spIn) {
   reactive({
     # ERRORS ####
     if (is.null(spp[[curSp()]]$occs)) {
-      logs %>% writeLog(type = 'error', "Before obtaining environmental variables, 
+      shinyLogs %>% writeLog(type = 'error', "Before obtaining environmental variables, 
                         obtain occurrence data in component 1.")
       return()
     }
@@ -31,7 +31,7 @@ wcBioclims_MOD <- function(input, output, session, spIn) {
     envs <- c3_worldclim(input$bcRes, 
                          input$bcSelChoice, 
                          input$bcSel, 
-                         logs)
+                         shinyLogs)
     req(envs)
     
     for(sp in spIn) {
@@ -40,7 +40,7 @@ wcBioclims_MOD <- function(input, output, session, spIn) {
         occsEnvsVals <- as.data.frame(raster::extract(envs, spp[[sp]]$occs[c('longitude', 'latitude')]))
       })
       # remove occurrences with NA environmental values
-      spp[[sp]]$occs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, logs)
+      spp[[sp]]$occs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, shinyLogs)
       
       # LOAD INTO SPP ####
       spp[[sp]]$envs <- envs

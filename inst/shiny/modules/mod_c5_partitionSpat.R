@@ -14,7 +14,7 @@ partSp_UI <- function(id) {
 partSp_MOD <- function(input, output, session) {
   reactive({
     if (is.null(spp[[curSp()]]$procEnvs$bgMask)) {
-      logs %>% writeLog(type = 'error', "Before partitioning occurrences for ", spName(spp[[sp]]),
+      shinyLogs %>% writeLog(type = 'error', "Before partitioning occurrences for ", spName(spp[[sp]]),
                        ", mask your environmental variables by your background extent.")
       return()
     }
@@ -25,7 +25,7 @@ partSp_MOD <- function(input, output, session) {
                                    input$partSpSel, 
                                    bgMsk = spp[[curSp()]]$procEnvs$bgMask, 
                                    aggFact = input$aggFact, 
-                                   logs)
+                                   shinyLogs)
     req(group.data)
     
     # LOAD INTO SPP ####

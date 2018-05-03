@@ -8,7 +8,7 @@ xx_UI <- function(id) {
 xx_MOD <- function(input, output, session) {
   reactive({
     # FUNCTION CALL ####
-    out <- cx_xx(param1, param2, param3, logs)
+    out <- cx_xx(param1, param2, param3, shinyLogs)
     
     if (is.null(out)) return()
     

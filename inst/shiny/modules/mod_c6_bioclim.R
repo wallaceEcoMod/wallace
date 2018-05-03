@@ -9,7 +9,7 @@ bioclim_MOD <- function(input, output, session) {
     for(sp in spIn()) {
       # ERRORS ####
       if(is.null(spp[[sp]]$occs$partition)) {
-        logs %>% writeLog(type = 'error', "Before building a model, please partition 
+        shinyLogs %>% writeLog(type = 'error', "Before building a model, please partition 
                           occurrences for cross-validation for", spName(spp[[sp]]), ".")
         return()
       }
@@ -18,7 +18,7 @@ bioclim_MOD <- function(input, output, session) {
       m.bioclim <- c6_bioclim(spp[[sp]]$occs, 
                               spp[[sp]]$bg, 
                               spp[[sp]]$procEnvs$bgMask, 
-                              logs)
+                              shinyLogs)
       
       req(m.bioclim)
       

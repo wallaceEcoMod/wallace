@@ -37,7 +37,7 @@ shinyServer(function(input, output, session) {
   expl <- 'Please find messages for the user in this log window.'
   logInit <- c(paste(intro, brk, expl, brk, sep='<br>'))
   shinyLogs <- reactiveVal(logInit)
-  logs <- reactiveVal(logInit)
+  #logs <- reactiveVal(logInit)
   # legacy
   rvs <- reactiveValues()
   # legacy

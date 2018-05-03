@@ -50,12 +50,12 @@ projectTime_MOD <- function(input, output, session, rvs) {
   
   reactive({
     if (is.null(rvs$predCur)) {
-      logs %>% writeLog(type = 'error', 'Calculate a model prediction in component 7 
+      shinyLogs %>% writeLog(type = 'error', 'Calculate a model prediction in component 7 
                        before projecting.')
       return()
     }
     if (is.null(rvs$polyPjXY)) {
-      logs %>% writeLog(type = 'error', "The polygon has not been drawn and finished. 
+      shinyLogs %>% writeLog(type = 'error', "The polygon has not been drawn and finished. 
                        Please use the draw toolbar on the left-hand of the map to complete
                        the polygon.")
       return()
@@ -65,12 +65,12 @@ projectTime_MOD <- function(input, output, session, rvs) {
     rvs$pjTimePar <- list(rcp=input$selRCP, gcm=input$selGCM, year=input$selTime)
     
     if (is.null(rvs$polyPjXY)) {
-      logs %>% writeLog(type = 'error', 'Select projection extent first.')
+      shinyLogs %>% writeLog(type = 'error', 'Select projection extent first.')
       return()
     }
     envsRes <- raster::res(rvs$envs)[1]
     if (envsRes < 0.01) {
-      logs %>% writeLog(type = 'error', 'Project to New Time currently only available with resolutions >30 arc seconds.')
+      shinyLogs %>% writeLog(type = 'error', 'Project to New Time currently only available with resolutions >30 arc seconds.')
       return()
     }
     
@@ -84,7 +84,7 @@ projectTime_MOD <- function(input, output, session, rvs) {
                   0,1,1,1,1,1,1,1,1,1,1,1,1,1), ncol=4)
     i <- m[which(input$selGCM == gcms), which(input$selRCP == rcps)]
     if (!i) {
-      logs %>% writeLog(type = 'error', 'This combination of GCM and RCP is not 
+      shinyLogs %>% writeLog(type = 'error', 'This combination of GCM and RCP is not 
                        available. Please make a different selection.')
       return()
     }
@@ -103,7 +103,7 @@ projectTime_MOD <- function(input, output, session, rvs) {
     # concatanate coords to a single character
     xy.round <- round(rvs$polyPjXY, digits = 2)
     coordsChar <- paste(apply(xy.round, 1, function(b) paste0('(',paste(b, collapse=', '),')')), collapse=', ')  
-    logs %>% writeLog('New time projection for model', rvs$curMod, 'with extent coordinates:', coordsChar)
+    shinyLogs %>% writeLog('New time projection for model', rvs$curMod, 'with extent coordinates:', coordsChar)
     
     withProgress(message = "Clipping environmental data to current extent...", {
       pjtMsk <- raster::crop(projTimeEnvs, newPoly)
@@ -119,7 +119,7 @@ projectTime_MOD <- function(input, output, session, rvs) {
       modProjTime.thr <- modProjTime.thr.call()
       pjPred <- modProjTime.thr$pred
       rvs$comp8.thr <- modProjTime.thr$thresh
-      logs %>% writeLog("Projected to", paste0('20', input$selTime), 
+      shinyLogs %>% writeLog("Projected to", paste0('20', input$selTime), 
                        "for GCM", GCMlookup[input$selGCM], 
                        "under RCP", as.numeric(input$selRCP)/10.0, ".")
     })

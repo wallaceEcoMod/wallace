@@ -27,7 +27,7 @@ pca_MOD <- function(input, output, session) {
                        sp2.bgEnvsVals,
                        sp1.occsEnvsVals, 
                        sp2.occsEnvsVals,
-                       logs)
+                       shinyLogs)
     if (is.null(pca)) return()
     
     output$pcaControls <- renderUI({

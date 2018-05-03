@@ -9,7 +9,7 @@ userOccs_UI <- function(id) {
 userOccs_MOD <- function(input, output, session) {
   reactive({
     # FUNCTION CALL ####
-    occsList <- c1_userOccs(input$userCSV$datapath, input$userCSV$name, logs)
+    occsList <- c1_userOccs(input$userCSV$datapath, input$userCSV$name, shinyLogs)
     
     if (is.null(occsList)) return()
     

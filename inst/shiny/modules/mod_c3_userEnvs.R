@@ -10,12 +10,12 @@ userEnvs_MOD <- function(input, output, session) {
   reactive({
     # ERRORS ####
     if (is.null(spp[[curSp()]]$occs)) {
-      logs %>% writeLog(type = 'error', "Before obtaining environmental variables, 
+      shinyLogs %>% writeLog(type = 'error', "Before obtaining environmental variables, 
                         obtain occurrence data in component 1.")
       return()
     }
     if (is.null(input$userEnvs)) {
-      logs %>% writeLog(type = 'error', "Raster files not uploaded.")
+      shinyLogs %>% writeLog(type = 'error', "Raster files not uploaded.")
       return()
     }
     
@@ -28,7 +28,7 @@ userEnvs_MOD <- function(input, output, session) {
         names(occsEnvsVals) <- paste0('env_', names(occsEnvsVals))
       })
       # remove occurrences with NA environmental values
-      spp[[curSp()]]$occs <- remEnvsValsNA(spp[[curSp()]]$occs, occsEnvsVals, logs)
+      spp[[curSp()]]$occs <- remEnvsValsNA(spp[[curSp()]]$occs, occsEnvsVals, shinyLogs)
       
       # LOAD INTO SPP ####
       spp[[curSp()]]$envs <- userEnvs
