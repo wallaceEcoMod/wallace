@@ -1,14 +1,14 @@
 
 
-c2_removeByID <- function(occs, removeID, logs = NULL, shiny = FALSE) {
+c2_removeByID <- function(occs, removeID, shinyLogs = NULL) {
   if (is.null(occs)) {
-    logs %>% writeLog(type = 'error', "Before processing occurrences, 
+    shinyLogs %>% writeLog(type = 'error', "Before processing occurrences, 
                       obtain the data in component 1.")
     return()
   }
   
   if (!(removeID %in% occs$occID)) {
-    logs %>% writeLog(type = 'error','Entered occID not found.')
+    shinyLogs %>% writeLog(type = 'error','Entered occID not found.')
     return()
   }
   
@@ -17,7 +17,7 @@ c2_removeByID <- function(occs, removeID, logs = NULL, shiny = FALSE) {
   # remove the row
   occs.remID <- occs[-i,]
   
-  logs %>% writeLog("Removed occurrence from", em(spName(occs)), "with occID = ", removeID, 
+  shinyLogs %>% writeLog("Removed occurrence from", em(spName(occs)), "with occID = ", removeID, 
                     ". Updated data has n = ", nrow(occs.remID), " records.")
   return(occs.remID)
 }

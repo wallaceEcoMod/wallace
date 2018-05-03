@@ -6,7 +6,7 @@
 #' @param occs.z2 table of occurrences with environmental values for sp2
 
 cESpace_pca<- function(sp.name1, sp.name2 = NULL, occs.z1, occs.z2 = NULL, 
-                       bgPts.z1, bgPts.z2 = NULL, logs = NULL, shiny = FALSE) {
+                       bgPts.z1, bgPts.z2 = NULL, shinyLogs = NULL) {
   
   if(!is.null(bgPts.z2)) {
     

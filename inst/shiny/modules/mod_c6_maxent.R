@@ -38,7 +38,7 @@ maxent_MOD <- function(input, output, session) {
                             input$rmsStep, 
                             input$fcs, 
                             input$clamp, 
-                            logs, shiny = TRUE)
+                            logs)
       req(m.maxent)
       
       # LOAD INTO SPP ####

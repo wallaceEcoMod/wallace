@@ -1,13 +1,13 @@
 
 
-c1_userOccs <- function(csvPath, csvName, logs = NULL, shiny = FALSE) {
+c1_userOccs <- function(csvPath, csvName, shinyLogs = NULL) {
   
   # read in csv
   csv <- read.csv(csvPath, header = TRUE)
   
   # check to make sure all column names are correct
   if (!all(c('taxon_name', 'longitude', 'latitude') %in% names(csv))) {
-    logs %>% writeLog(type = "error", 'Please input CSV file with columns "taxon_name", "longitude", "latitude".')
+    shinyLogs %>% writeLog(type = "error", 'Please input CSV file with columns "taxon_name", "longitude", "latitude".')
     return()
   }
   
@@ -19,7 +19,7 @@ c1_userOccs <- function(csvPath, csvName, logs = NULL, shiny = FALSE) {
   spNames <- trimws(as.character(unique(occs$taxon_name)))
   
   if (nrow(occs) == 0) {
-    logs %>% writeLog(type = 'warning', 'No records with coordinates found in ', csvName, ".")
+    shinyLogs %>% writeLog(type = 'warning', 'No records with coordinates found in ', csvName, ".")
     return()
   }
   
@@ -39,7 +39,7 @@ c1_userOccs <- function(csvPath, csvName, logs = NULL, shiny = FALSE) {
     n <- formatSpName(i)
     occsList[[n]] <- list(occs = sp.occs)
     
-    logs %>% writeLog("Data for ", em(i), " uploaded from ", csvName, ": ", 
+    shinyLogs %>% writeLog("Data for ", em(i), " uploaded from ", csvName, ": ", 
                       nrow(sp.occs), " occurrence records with coordinates.")
     
     # look for background records
@@ -47,7 +47,7 @@ c1_userOccs <- function(csvPath, csvName, logs = NULL, shiny = FALSE) {
     # if they exist, load them into occsList for the current species
     if(nrow(sp.bg) > 0) {
       occsList[[n]]$bg <- sp.bg
-      logs %>% writeLog("Data for ", em(i), " uploaded from ", csvName, ": ", 
+      shinyLogs %>% writeLog("Data for ", em(i), " uploaded from ", csvName, ": ", 
                         nrow(sp.bg), " background records.")
     }
   }

@@ -21,7 +21,7 @@ nicheOv_MOD <- function(input, output, session) {
     sp2 <- curSp()[2]
     z1 <- msp[[curMSp()]]$occDens[[sp1]]
     z2 <- msp[[curMSp()]]$occDens[[sp2]]
-    nicheOv <- cESpace_nicheOv(z1, z2, logs = logs, shiny = TRUE)
+    nicheOv <- cESpace_nicheOv(z1, z2, logs)
     if (is.null(nicheOv)) return()
     
     # LOAD INTO MSP ####

@@ -13,33 +13,28 @@
 #' 
 #' 
 
-c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, logs = NULL, shiny = FALSE) {
+c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, shinyLogs = NULL) {
   spName <- trimws(spName)
   # figure out how many separate names (components of scientific name) were entered
   nameSplit <- length(unlist(strsplit(spName, " ")))
   # if two names not entered, throw error and return
   if (nameSplit != 2) {
-    logs %>% writeLog(type = 'error', 'Please input both genus and species names.')
+    shinyLogs %>% writeLog(type = 'error', 'Please input both genus and species names.')
     return()
   }
   
   if (occDb == "PaleobioDB") {
    
     if (timeInterval == "LGM") {
-      logs %>% writeLog(type = 'error', 'PaleobioDB does not have separate LGM records. You can only download Holocene records.')
+      shinyLogs %>% writeLog(type = 'error', 'PaleobioDB does not have separate LGM records. You can only download Holocene records.')
       return()
     } else if (timeInterval == "Holo") {
       
       # query database
-      if (shiny == TRUE) {
-        withProgress(message = paste("Querying", occDb, "..."), {
-          occsOrig <- try(paleobioDB::pbdb_occurrences(taxon_name=spName, limit=occNum, vocab="pbdb",  
-                                                       max_ma= 0.02, show=c("coords", "bin", "loc")), silent =TRUE)
-        })
-      } else {
+      smartProgress(shinyLogs, message = paste0("Querying ", occDb, " ..."), {
         occsOrig <- try(paleobioDB::pbdb_occurrences(taxon_name=spName, limit=occNum, vocab="pbdb",  
                                                      max_ma= 0.02, show=c("coords", "bin", "loc")), silent =TRUE)
-      }  
+      })
     }
   }
   
@@ -60,7 +55,7 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, logs = NULL, sh
   }
   
   if (class(occsOrig) == "try-error") {
-    logs %>% writeLog(type = 'error', 'No records found for ', em(spName), ". Please check the spelling.") 
+    shinyLogs %>% writeLog(type = 'error', 'No records found for ', em(spName), ". Please check the spelling.") 
     return()
   }
   
@@ -80,7 +75,7 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, logs = NULL, sh
   # subset to just records with latitude and longitude
   occsXY <-  occsOrig[!is.na(occsOrig$longitude) & !is.na(occsOrig$latitude),]
   if (nrow(occsXY) == 0) {
-    logs %>% writeLog(type = 'warning', 'No records with coordinates found in', occDb, "for", em(spName), ".")
+    shinyLogs %>% writeLog(type = 'warning', 'No records with coordinates found in', occDb, "for", em(spName), ".")
   }
 
   
@@ -97,7 +92,7 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, logs = NULL, sh
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
   
   dupsRem <- nrow(occsXY) - nrow(occs)
-  logs %>% writeLog('Total ', occDb, ' records for ', em(spName), ' returned [', nrow(occsOrig),
+  shinyLogs %>% writeLog('Total ', occDb, ' records for ', em(spName), ' returned [', nrow(occsOrig),
                     '] out of [', totRows, '] total (limit ', occNum, ').',
                     'Records without coordinates removed [', noCoordsRem, '].
                    Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')

@@ -1,10 +1,11 @@
 
-getWCTiles<-function(occs){
+getWCTiles <- function(occs) {
   library(raster)
-  c<-unique(occs%/%30*30+0.000001)
-  x<-list()
-  for (i in 1:nrow(c)){
-    x[[i]]<-getData('worldclim', var='tmin', res=0.5, lon=c[i,1], lat=c[i,2])
+  c <- unique(occs %/% 30)
+  coordTiles <-  data.frame(occs[row.names(c),])
+  x <- list()
+  for (i in 1:nrow(coordTiles)) {
+    x[[i]] <- getData('worldclim', var = 'bio', res = 0.5, lon = coordTiles[i, 1], lat = coordTiles[i, 2])
   }
   y <- do.call(merge, x)
   return(y)

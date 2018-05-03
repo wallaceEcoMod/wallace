@@ -1,4 +1,4 @@
-c6_bioclim  <- function(occs, bg, bgMask, logs = NULL, shiny = FALSE) {
+c6_bioclim  <- function(occs, bg, bgMask, shinyLogs = NULL) {
   
   bioclimEval <- function() {
     # RUN FULL DATA MODEL
@@ -74,15 +74,11 @@ c6_bioclim  <- function(occs, bg, bgMask, logs = NULL, shiny = FALSE) {
     return(list(models=list(BIOCLIM=full.mod), evalTbl=stats, evalTblBins=statsBins, predictions=preds, occPredVals=occPredVals))
   }
   
-  if(shiny == TRUE) {
-    withProgress(message = paste0("Running BIOCLIM for ", spName(occs), "..."), {  # start progress bar
-      e <- bioclimEval()
-    })  
-  } else {
+  smartProgress(shinyLogs, message = paste0("Running BIOCLIM for ", spName(occs), "..."), {  # start progress bar
     e <- bioclimEval()
-  }
+  })
   
-  logs %>% writeLog("BIOCLIM ran successfully for", em(spName(occs)), "and output evaluation results.")
+  shinyLogs %>% writeLog("BIOCLIM ran successfully for", em(spName(occs)), "and output evaluation results.")
   
   return(e)
 }

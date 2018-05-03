@@ -31,7 +31,7 @@ wcBioclims_MOD <- function(input, output, session, spIn) {
     envs <- c3_worldclim(input$bcRes, 
                          input$bcSelChoice, 
                          input$bcSel, 
-                         logs, shiny = TRUE)
+                         logs)
     req(envs)
     
     for(sp in spIn) {

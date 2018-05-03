@@ -25,7 +25,7 @@ partSp_MOD <- function(input, output, session) {
                                    input$partSpSel, 
                                    bgMsk = spp[[curSp()]]$procEnvs$bgMask, 
                                    aggFact = input$aggFact, 
-                                   logs, shiny=TRUE)
+                                   logs)
     req(group.data)
     
     # LOAD INTO SPP ####

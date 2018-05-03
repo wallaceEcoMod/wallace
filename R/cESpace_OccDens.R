@@ -3,7 +3,7 @@
 #' @param pca output of pca component
 #' @param spSel species selected (1 or 2)
 
-cESpace_occDens<- function(sp.name1, sp.name2, pca, logs = NULL, shiny = FALSE) {
+cESpace_occDens<- function(sp.name1, sp.name2, pca, shinyLogs = NULL) {
   bg <- pca$scores$bg
   sp <- pca$scores$sp
   scores.bg12 <- pca$scores[bg != 'bg', 1:2]

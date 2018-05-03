@@ -1,11 +1,11 @@
-c4_bgExtent <- function(occs, envs, bgSel, bgBuf, logs=NULL, shiny=FALSE) {
+c4_bgExtent <- function(occs, envs, bgSel, bgBuf, shinyLogs=NULL) {
   if (is.null(envs)) {
-    logs %>% writeLog(type = 'error', "Before defining the background extent, 
+    shinyLogs %>% writeLog(type = 'error', "Before defining the background extent, 
                       obtain environmental data in component 3.")
     return()
   }
   if (nrow(occs) <= 2) {
-    logs %>% writeLog(type = 'error', 'Too few localities (<2) to create a background polygon.')
+    shinyLogs %>% writeLog(type = 'error', 'Too few localities (<2) to create a background polygon.')
     return()
   }
   
@@ -31,7 +31,7 @@ c4_bgExtent <- function(occs, envs, bgSel, bgBuf, logs=NULL, shiny=FALSE) {
     msg <- paste(em(spName(occs)), " study extent: minimum convex polygon,")
   } else if (bgSel == 'ptbuf') {
     if (bgBuf == 0) {
-      logs %>% writeLog(type = 'error', 'Change buffer distance to positive or negative value.')
+      shinyLogs %>% writeLog(type = 'error', 'Change buffer distance to positive or negative value.')
       return()
     }
     bgExt <- rgeos::gBuffer(occs.sp, width = bgBuf)
@@ -40,7 +40,7 @@ c4_bgExtent <- function(occs, envs, bgSel, bgBuf, logs=NULL, shiny=FALSE) {
   
   if (bgBuf > 0 & bgSel != 'ptbuf') {
     bgExt <- rgeos::gBuffer(bgExt, width = bgBuf)
-    logs %>% writeLog(msg, ' with buffer of ', bgBuf, ' degrees.')
+    shinyLogs %>% writeLog(msg, ' with buffer of ', bgBuf, ' degrees.')
   }
   
   # make into SP data frame

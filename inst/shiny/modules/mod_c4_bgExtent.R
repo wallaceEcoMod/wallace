@@ -22,7 +22,7 @@ bgExtent_MOD <- function(input, output, session) {
                            spp[[sp]]$envs, 
                            input$bgSel, 
                            input$bgBuf, 
-                           logs, shiny=TRUE)  
+                           logs)  
       req(bgExt)
       
       # LOAD INTO SPP ####

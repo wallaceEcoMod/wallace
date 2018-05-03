@@ -1,7 +1,7 @@
 c6_maxent  <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, 
-                        clamp, logs = NULL, shiny = FALSE) {
+                        clamp, shinyLogs = NULL) {
   if (is.null(occsGrp)) {
-    logs %>% writeLog(type = 'error', "Before building a model, please partition 
+    shinyLogs %>% writeLog(type = 'error', "Before building a model, please partition 
                         occurrences for cross-validation.")
     return()
   }
@@ -9,17 +9,17 @@ c6_maxent  <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
   # error for no maxent.jar in dismo directory
   jar <- paste(system.file(package="dismo"), "/java/maxent.jar", sep='')
   if (!file.exists(jar)) {
-    logs %>% writeLog(type = 'error', 'File maxent.jar missing. Please see directions 
+    shinyLogs %>% writeLog(type = 'error', 'File maxent.jar missing. Please see directions 
                       on the toolbar to download and copy to the appropriate directory.')
     return()
   }
   
   if (is.null(fcs)) {
-    logs %>% writeLog(type = 'error', "No feature classes selected.")
+    shinyLogs %>% writeLog(type = 'error', "No feature classes selected.")
     return()
   }
   if (!require('rJava')) {
-    logs %>% writeLog(type = "error", 'Package rJava cannot load. 
+    shinyLogs %>% writeLog(type = "error", 'Package rJava cannot load. 
                Please download the latest version of Java, and make sure it is the 
                correct version (e.g. 64-bit for a 64-bit system). After installing, 
                try "library(rJava)". If it loads properly, restart Wallace and try again.
@@ -29,7 +29,7 @@ c6_maxent  <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
   }
   
   if (is.null(fcs)) {
-    logs %>% writeLog(type = 'error', 'Select feature classes first.')
+    shinyLogs %>% writeLog(type = 'error', 'Select feature classes first.')
     return()
   }
   
@@ -80,7 +80,7 @@ c6_maxent  <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
   colnames(statsBins) <- gsub("OR10", "or10pct", colnames(statsBins))
   colnames(statsBins) <- gsub("ORmin", "orMTP", colnames(statsBins))
   
-  logs %>% writeLog("Maxent ran successfully for", em(spName(occs)), "and output evaluation results for", 
+  shinyLogs %>% writeLog("Maxent ran successfully for", em(spName(occs)), "and output evaluation results for", 
                     nrow(e@results), "models.")
   
   # output ENMeval object in list form to be compatible with other models

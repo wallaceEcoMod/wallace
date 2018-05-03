@@ -37,7 +37,7 @@ ecoClimate_MOD <- function(input, output, session, logs) {
     ## what is bcSels. people can tun this? or is it already pre-defined?
     rvs$bcSels <- input$bcSels
     
-    c3_ecoClimate(input$bcAOGCM, vals$timeInterval, input$bcSelChoice, input$bcSels, logs, shiny=TRUE)
+    c3_ecoClimate(input$bcAOGCM, vals$timeInterval, input$bcSelChoice, input$bcSels, logs)
   })
 }
 
