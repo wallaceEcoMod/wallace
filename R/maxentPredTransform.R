@@ -1,3 +1,5 @@
+#' @export
+
 maxentPredTransform <- function(results, bgMask, predType, shinyLogs = NULL) {
   pargs <- paste0("outputformat=", predType) 
   smartProgress(shinyLogs, message = paste0("Generating ", predType, " predictions..."), {
@@ -5,4 +7,5 @@ maxentPredTransform <- function(results, bgMask, predType, shinyLogs = NULL) {
     transPreds <- raster::stack(transPredsList)
     names(transPreds) <- names(results$predictions)
   })  
+  return(transPreds)
 }

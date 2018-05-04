@@ -16,7 +16,6 @@ mapPreds_MOD <- function(input, output, session) {
       shinyLogs %>% writeLog(type = 'error', "Models must first be run in component 6.")
       return()
     }
-    
     # pick the prediction that matches the model selected
     predSel <- results()$predictions[[curModel()]]
     
@@ -39,11 +38,12 @@ mapPreds_MOD <- function(input, output, session) {
     # generate binary prediction based on selected thresholding rule 
     # (same for all Maxent prediction types because they scale the same)
     getThreshPred <- callModule(threshPred_MOD, "threshPred", predSel)
-    threshPred <- getThreshPred()
+    threshPrediction <- getThreshPred()
+    print(threshPrediction)
     
     # save to spp
-    spp[[curSp()]]$visualization$mapPred <- threshPred
-    spp[[curSp()]]$visualization$mapPredVals <- getVals(threshPred, input$maxentPredType)
+    spp[[curSp()]]$visualization$mapPred <- threshPrediction
+    spp[[curSp()]]$visualization$mapPredVals <- getVals(threshPrediction, input$maxentPredType)
     
     # write to log box
     shinyLogs %>% writeLog(rmm()$model$algorithm, input$predType, "model prediction plotted.")

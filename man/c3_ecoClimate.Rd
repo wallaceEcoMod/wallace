@@ -4,8 +4,8 @@
 \alias{c3_ecoClimate}
 \title{c3_ecoClimate}
 \usage{
-c3_ecoClimate(bcAOGCM, bcScenario, bcSelChoice = FALSE, bcSels, logs = NULL,
-  shiny = FALSE)
+c3_ecoClimate(bcAOGCM, bcScenario, bcSelChoice = FALSE, bcSels,
+  shinyLogs = NULL)
 }
 \arguments{
 \item{bcAOGCM}{name of the Atmospheric and Oceanic Global Circulation Model. 

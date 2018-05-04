@@ -5,7 +5,7 @@
 \title{calibrate a PCA for the background of two selected species}
 \usage{
 cESpace_nicheOv(z1, z2, iter = 100, equivalency = FALSE,
-  similarity = TRUE, logs = NULL, shiny = FALSE)
+  similarity = TRUE, shinyLogs = NULL)
 }
 \arguments{
 \item{z1}{ecospat niche object for species 1 from cESpace_OccDens}

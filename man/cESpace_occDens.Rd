@@ -4,7 +4,7 @@
 \alias{cESpace_occDens}
 \title{calibrate a PCA for the background of two selected species}
 \usage{
-cESpace_occDens(sp.name1, sp.name2, pca, logs = NULL, shiny = FALSE)
+cESpace_occDens(sp.name1, sp.name2, pca, shinyLogs = NULL)
 }
 \arguments{
 \item{pca}{output of pca component}

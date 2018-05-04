@@ -1,3 +1,5 @@
+#' @export
+
 getThresh <- function(occPredVals, thresh) {
   # remove all NA
   occPredVals <- na.omit(occPredVals)
@@ -16,6 +18,8 @@ getThresh <- function(occPredVals, thresh) {
   return(x)
 }
 
+#' @export
+
 threshPred  <- function(occs, results, predSel, thresh, predType, shinyLogs = NULL) {
   if (thresh != 'noThresh') {
     # find predicted values for occurrences for selected model
@@ -32,7 +36,7 @@ threshPred  <- function(occs, results, predSel, thresh, predType, shinyLogs = NU
     names(threshPred) <- paste0(modSel, '_thresh_', thresh)
     shinyLogs %>% writeLog(thresh, 'threshold selected for', predType, ': ', round(x, digits = 3), '.')
   } else {
-    threshPred <- predCur
+    threshPred <- predSel
   }
   
   return(threshPred)

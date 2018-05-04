@@ -2,14 +2,15 @@
 responsePlot_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    
+    'Select an individual environmental variable, or "ALL" for all of them, to see the response curves.'
   )
 }
 
 responsePlot_MOD <- function(input, output, session) {
   reactive({
     # ERRORS ####
-    if (is.null(spp[[curSp()]]$modelList)) {
+    req(curSp())
+    if(is.null(results())) {
       shinyLogs %>% writeLog(type = 'error', "Models must first be run in component Model.")
       return()
     }

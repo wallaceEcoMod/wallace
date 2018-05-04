@@ -2,7 +2,10 @@
 
 export(ecoClimate_getdata)
 export(ecoClimate_select)
+export(getThresh)
+export(maxentPredTransform)
 export(run_wallace)
+export(threshPred)
 import(leaflet)
 import(shiny)
 importFrom(magrittr,"%>%")

@@ -4,8 +4,7 @@
 \alias{c1_queryPaleoDb}
 \title{c1_queryPaleoDb}
 \usage{
-c1_queryPaleoDb(spName, occDb, occNum, timeInterval, logs = NULL,
-  shiny = FALSE)
+c1_queryPaleoDb(spName, occDb, occNum, timeInterval, shinyLogs = NULL)
 }
 \arguments{
 \item{spName}{character species name. For paleobioDb it returns records associated with the specified taxonomic name, including any synonyms.}

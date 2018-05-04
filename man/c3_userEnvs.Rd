@@ -4,7 +4,7 @@
 \alias{c3_userEnvs}
 \title{c3_worldclim}
 \usage{
-c3_userEnvs(rasPath, rasName, logs = NULL, shiny = FALSE)
+c3_userEnvs(rasPath, rasName, shinyLogs = NULL)
 }
 \arguments{
 \item{rasPath}{character of directory to rasters}

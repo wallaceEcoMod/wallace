@@ -210,8 +210,9 @@ shinyServer(function(input, output, session) {
                   opacity = 1, layerId = 'leg')
     }
     
-    if(component() == 'viz') {
+    if(component() == 'vis') {
       if(module() == 'mapPreds') {
+        req(mapPred())
         mapPredVals <- spp[[curSp()]]$visualization$mapPredVals
         # MAPPING
         if (rmm()$output$prediction$thresholdRule != 'noThresh') {
@@ -760,7 +761,7 @@ shinyServer(function(input, output, session) {
     updateRadioButtons(session, "visSel", 
                        choices = list("Maxent Evaluation Plots" = 'maxentEval',
                                       "Plot Response Curves" = 'response',
-                                      "Map Prediction" = 'map'))
+                                      "Map Prediction" = 'mapPreds'))
   })
   
   # # # # # # # # # # # # 
@@ -776,7 +777,7 @@ shinyServer(function(input, output, session) {
     updateTabsetPanel(session, 'main', selected = 'Results')
     # update radio buttons for Visualization component
     updateRadioButtons(session, "visSel", choices = list("BIOCLIM Envelope Plots" = 'bioclimPlot',
-                                                         "Map Prediction" = 'map'))
+                                                         "Map Prediction" = 'mapPreds'))
   })
   
   # # # # # # # # # # # # # # # # # #
@@ -856,7 +857,7 @@ shinyServer(function(input, output, session) {
     # do not plot if missing models
     req(curSp(), results())
     bioclimPlot()
-  })
+  }, width = 700, height = 700)
   
   # # # # # # # # # # # # # # # # #
   # module Maxent Evaluation Plots
@@ -866,7 +867,7 @@ shinyServer(function(input, output, session) {
     # do not plot if missing models
     req(curSp(), results())
     maxentEvalPlot()
-  })
+  }, width = 700, height = 700)
   
   # # # # # # # # # # # # # # # 
   # module Response Curve Plots
@@ -874,16 +875,14 @@ shinyServer(function(input, output, session) {
   responsePlot <- callModule(responsePlot_MOD, 'c7_responsePlot')
   output$responsePlot <- renderPlot({
     # do not plot if missing models
-    req(curSp(), results())
     responsePlot()
-  })
+  }, width = 700, height = 700)
   
   # # # # # # # # # # # # # # #
   # module Map Prediction ####
   # # # # # # # # # # # # # # #
   # MOTE: this prediction is restricted to the background extent
   observeEvent(input$goMapPreds, {
-    req(results())
     mapPreds <- callModule(mapPreds_MOD, 'c7_mapPreds')
     mapPreds()
     spp[[curSp()]]$visualization$mapPred
@@ -895,7 +894,7 @@ shinyServer(function(input, output, session) {
   })
   
   # convenience function for mapped model prediction raster for current species
-  mapPred <- reactive(spp[[curSp()]]$visualization$mapPred)
+  mapPred <- reactive(spp[[curSp()]]$visualization$mapPred[[curModel()]])
   
   # download for model predictions (restricted to background extent)
   output$dlPred <- downloadHandler(

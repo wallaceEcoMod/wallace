@@ -4,7 +4,7 @@
 \alias{c3_worldclim}
 \title{c3_worldclim}
 \usage{
-c3_worldclim(bcRes, bcSelChoice, bcSel, logs = NULL, shiny = FALSE)
+c3_worldclim(bcRes, bcSelChoice, bcSel, shinyLogs = NULL)
 }
 \arguments{
 \item{bcRes}{numeric resolution of the climatic layers}
