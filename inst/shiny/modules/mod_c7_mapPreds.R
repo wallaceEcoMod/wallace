@@ -51,7 +51,6 @@ mapPreds_MOD <- function(input, output, session) {
     # METADATA
     if(rmm()$model$algorithm == "Maxent") {
       spp[[curSp()]]$rmm$output$prediction$notes <- input$maxentPredType
-      
     }
     
   })

@@ -1,5 +1,5 @@
 c6_maxent  <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, 
-                        clamp, shinyLogs = NULL, shiny = FALSE) {
+                        clamp, shinyLogs = NULL) {
   if (is.null(occsGrp)) {
     shinyLogs %>% writeLog(type = 'error', "Before building a model, please partition 
                         occurrences for cross-validation.")
@@ -36,7 +36,7 @@ c6_maxent  <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
   # define the vector of RMs to input
   rms.interval <- seq(rms[1], rms[2], rmsStep)  
   # create the Progress Bar object for ENMeval
-  if (shiny == TRUE) {
+  if (!is.null(shinyLogs)) {
     progress <- shiny::Progress$new()
     progress$set(message = paste0("Building/Evaluating ENMs for ", spName(occs), "..."), value = 0)
     on.exit(progress$close())
