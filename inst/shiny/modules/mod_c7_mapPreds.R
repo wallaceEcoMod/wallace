@@ -39,7 +39,6 @@ mapPreds_MOD <- function(input, output, session) {
     # (same for all Maxent prediction types because they scale the same)
     getThreshPred <- callModule(threshPred_MOD, "threshPred", predSel)
     threshPrediction <- getThreshPred()
-    print(threshPrediction)
     
     # save to spp
     spp[[curSp()]]$visualization$mapPred <- threshPrediction
