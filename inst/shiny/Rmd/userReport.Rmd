@@ -64,7 +64,7 @@ pj.thr <- !(is.null(rvs$comp8.thr))
 pj.any <- pj.area | pj.time | pj.mess
 ```
 
-Please find below the R code history from your *Wallace* v1.0.4 session. 
+Please find below the R code history from your *Wallace* v1.0.5 session. 
 
 You can reproduce your session results by running this R Markdown file in RStudio. 
 

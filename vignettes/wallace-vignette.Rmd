@@ -20,7 +20,7 @@ knitr::opts_chunk$set(collapse=TRUE, message=FALSE, warning=FALSE, comment="#>",
 ```
 
 # Preface
-This vignette was written for *Wallace* v. 1.0.4, so if you are using a more updated version, some things will be different. Additionally, this vignette and any others in the `wallace` package will be updated regularly in accordance with ongoing development.
+This vignette was written for *Wallace* v. 1.0.5, so if you are using a more updated version, some things will be different. Additionally, this vignette and any others in the `wallace` package will be updated regularly in accordance with ongoing development.
 
 # Introduction
 *Wallace* is an `R`-based GUI application for ecological modeling that currently focuses on building, evaluating, and visualizing models of species niches and distributions. We will refer to these models as species distribution models (SDMs), and we will not explain them at length here---as you read through, you will be pointed to some sources of detailed info within the application for reference.

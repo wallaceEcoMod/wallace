@@ -1,3 +1,15 @@
+# wallace 1.0.5
+- A brand new vignette was finally added!
+- Methods in Ecology and Evolution paper published in April -- DOI remains the same.
+- Projections in the Project component no longer overlap with map predictions from the Visualize component.
+- Pagination was added back to the model results table.
+- Enabled download of the model results table as .csv.
+- Removed the pop-up field from the occurrence table for downloads.
+- Fixed a problem with downloading rasters as .png.
+- There is now a check to see that `rgdal` is installed before downloads of rasters are allowed. This turns out to be an issue with `raster` package, as the `rgdal` dependency for this function doesn't seem to be functional.
+- The slider for regularization multipliers is now restricted to a minimum of 0.5, and is able to be set to increments of 0.5. An RM value of 0 caused errors for Hinge models, and it's not clear whether RM of 0 is recommendable for other FCs, so it was removed.
+- In the highly improbable case users select all points in the Select Occs module, the app now does not crash, and instead informs the user to select a subset instead.
+
 # wallace 1.0.4
 - Fixed the mapped display for the user-drawn polygon in **Module:** ***Select Occurrences On Map*** so that it remains displayed after the Finish button is pressed.
 - Changed all `system.file()` calls to files in the `wallace` package to relative paths, which ensures that in those cases where the user downloads from Github and doesn't have the package installed from CRAN, or the package being developed is not the one installed from CRAN, the correct files can be found. To make this work, the folders `inst/Rmd`, `inst/css`, and `inst/js` have been moved to `inst/shiny`. An exception is the `run_wallace()` function, which retains `system.file()` because it is not in the `inst/shiny` folder. 
