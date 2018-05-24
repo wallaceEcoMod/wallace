@@ -10,7 +10,7 @@ maxent_UI <- function(id) {
     strong("Select regularization multipliers "), strong(em("(penalty against complexity)")),
     tags$div(title='Range of regularization multipliers to explore. Greater values of the regularization multiplier lead to increased penalty against overly complex and/or overfit models. A value of 0 results in no regularization.',
              sliderInput(ns("rms"), label = "",
-                         min = 0, max = 10, value = c(1, 2))),
+                         min = 0.5, max = 10, step=0.5, value = c(1, 2))),
     tags$div(title='Value used to step through regularization multiplier range (e.g. range of 1-3 with step 0.5 results in [1, 1.5, 2, 2.5, 3]).',
              numericInput(ns("rmsStep"), label = "Multiplier step value", value = 1)),
     tags$div(title='If checked, the response will resist extrapolation to environmental values outside those used to build the model. See guidance for details.',
