@@ -902,19 +902,23 @@ shinyServer(function(input, output, session) {
       ext <- switch(input$predFileType, raster = 'grd', ascii = 'asc', GTiff = 'tif', PNG = 'png')
       paste0(names(rvs$predCur), '.', ext)},
     content = function(file) {
-      if (input$predFileType == 'png') {
-        png(file)
-        raster::image(rvs$predCur)
-        dev.off()
-      } else if (input$predFileType == 'raster') {
-        fileName <- names(rvs$predCur)
-        tmpdir <- tempdir()
-        raster::writeRaster(rvs$predCur, file.path(tmpdir, fileName), format = input$predFileType, overwrite = TRUE)
-        fs <- file.path(tmpdir, paste0(fileName, c('.grd', '.gri')))
-        zip(zipfile=file, files=fs, extras = '-j')
+      if(require(rgdal)) {
+        if (input$predFileType == 'png') {
+          png(file)
+          raster::image(rvs$predCur)
+          dev.off()
+        } else if (input$predFileType == 'raster') {
+          fileName <- names(rvs$predCur)
+          tmpdir <- tempdir()
+          raster::writeRaster(rvs$predCur, file.path(tmpdir, fileName), format = input$predFileType, overwrite = TRUE)
+          fs <- file.path(tmpdir, paste0(fileName, c('.grd', '.gri')))
+          zip(zipfile=file, files=fs, extras = '-j')
+        } else {
+          r <- raster::writeRaster(rvs$predCur, file, format = input$predFileType, overwrite = TRUE)
+          file.rename(r@file@name, file)
+        }
       } else {
-        r <- raster::writeRaster(rvs$predCur, file, format = input$predFileType, overwrite = TRUE)
-        file.rename(r@file@name, file)
+        shinyLogs %>% writeLog("Please install the rgdal package before downloading rasters.")
       }
     }
   )
@@ -1032,19 +1036,23 @@ shinyServer(function(input, output, session) {
       ext <- switch(input$projFileType, raster = 'grd', ascii = 'asc', GTiff = 'tif', PNG = 'png')
       paste0(names(rvs$projCur), '.', ext)},
     content = function(file) {
-      if (input$projFileType == 'png') {
-        png(file)
-        raster::image(rvs$projCur)
-        dev.off()
-      } else if (input$projFileType == 'raster') {
-        fileName <- names(rvs$projCur)
-        tmpdir <- tempdir()
-        raster::writeRaster(rvs$projCur, file.path(tmpdir, fileName), format = input$projFileType, overwrite = TRUE)
-        fs <- file.path(tmpdir, paste0(fileName, c('.grd', '.gri')))
-        zip(zipfile=file, files=fs, extras = '-j')
+      if(require(rgdal)) {
+        if (input$projFileType == 'png') {
+          png(file)
+          raster::image(rvs$projCur)
+          dev.off()
+        } else if (input$projFileType == 'raster') {
+          fileName <- names(rvs$projCur)
+          tmpdir <- tempdir()
+          raster::writeRaster(rvs$projCur, file.path(tmpdir, fileName), format = input$projFileType, overwrite = TRUE)
+          fs <- file.path(tmpdir, paste0(fileName, c('.grd', '.gri')))
+          zip(zipfile=file, files=fs, extras = '-j')
+        } else {
+          r <- raster::writeRaster(rvs$projCur, file, format = input$projFileType, overwrite = TRUE)
+          file.rename(r@file@name, file)
+        }  
       } else {
-        r <- raster::writeRaster(rvs$projCur, file, format = input$projFileType, overwrite = TRUE)
-        file.rename(r@file@name, file)
+        shinyLogs %>% writeLog("Please install the rgdal package before downloading rasters.")
       }
     }
   )
