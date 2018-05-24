@@ -150,7 +150,22 @@ popUpContent <- function(x) {
     tags$strong(paste("occID:", x['occID'])),
     tags$br(),
     tags$strong(paste("Latitude:", lat)),
-    tags$strong(paste("Longitude:", lon))
+    tags$br(),
+    tags$strong(paste("Longitude:", lon)),
+    tags$br(),
+    tags$strong(paste("Year:", x['year'])),
+    tags$br(),
+    tags$strong(paste("Inst. Code:", x['institutionCode'])),
+    tags$br(),
+    tags$strong(paste("Country:", x['country'])),
+    tags$br(),
+    tags$strong(paste("State/Prov.:", x['stateProvince'])),
+    tags$br(),
+    tags$strong(paste("Locality:", x['locality'])),
+    tags$br(),
+    tags$strong(paste("Elevation:", x['elevation'])),
+    tags$br(),
+    tags$strong(paste("Basis of Record:", x['basisOfRecord']))
   ))
 }
 
