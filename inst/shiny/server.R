@@ -244,6 +244,38 @@ shinyServer(function(input, output, session) {
         }
       }
     }
+    if(component() == 'proj') {
+        updateTabsetPanel(session, 'main', selected = 'Map')
+        req(mapProj())
+        mapPredVals <- spp[[curSp()]]$visualization$mapPredVals
+        # if no threshold specified
+        if (rmm()$output$prediction$thresholdRule != 'noThresh') {
+          rasPal <- c('gray', 'blue')
+          map %>% addLegend("bottomright", colors = c('gray', 'blue'),
+                            title = "Thresholded Suitability", labels = c("predicted absence", "predicted presence"),
+                            opacity = 1, layerId = 'leg')
+        } else {
+          # if threshold specified
+          rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+          legendPal <- colorNumeric(rev(rasCols), mapPredVals, na.color='transparent')
+          rasPal <- colorNumeric(rasCols, mapPredVals, na.color='transparent')
+          map %>% addLegend("bottomright", pal = legendPal, title = "Predicted Suitability",
+                            values = mapPredVals, layerId = 'leg',
+                            labFormat = reverseLabels(2, reverse_order=TRUE))
+        }
+        # map model prediction raster
+        map %>% 
+          clearMarkers() %>% clearImages() %>% clearShapes() %>%
+          map_occs(occs()) %>%
+          addRasterImage(mapPred(), colors = rasPal, opacity = 0.7, 
+                         group = 'c7', layerId = 'r1ID')
+        # add background polygon
+        for (shp in bgShpXY()) {
+          map %>%
+            addPolygons(lng=shp[,1], lat=shp[,2], fill = FALSE,
+                        weight=4, color="red", group='c7')  
+        }
+    }
     # logic for initializing or removing leaflet draw toolbar
     if((component() == 'poccs' & module() == 'selOccs') | component() == 'proj') {
       map %>% leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
@@ -863,9 +895,9 @@ shinyServer(function(input, output, session) {
     bioclimPlot()
   }, width = 700, height = 700)
   
-  # # # # # # # # # # # # # # # # #
-  # module Maxent Evaluation Plots
-  # # # # # # # # # # # # # # # # #
+  # # # # # # # # # # # # # # # # # # #
+  # module Maxent Evaluation Plots ####
+  # # # # # # # # # # # # # # # # # # #
   maxentEvalPlot <- callModule(maxentEvalPlot_MOD, 'c7_maxentEvalPlot')
   output$maxentEvalPlot <- renderPlot({
     # do not plot if missing models
@@ -873,9 +905,9 @@ shinyServer(function(input, output, session) {
     maxentEvalPlot()
   }, width = 700, height = 700)
   
-  # # # # # # # # # # # # # # # 
-  # module Response Curve Plots
-  # # # # # # # # # # # # # # # 
+  # # # # # # # # # # # # # # # # # #
+  # module Response Curve Plots ####
+  # # # # # # # # # # # # # # # # # #
   responsePlot <- callModule(responsePlot_MOD, 'c7_responsePlot')
   output$responsePlot <- renderPlot({
     # do not plot if missing models
@@ -889,16 +921,9 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goMapPreds, {
     mapPreds <- callModule(mapPreds_MOD, 'c7_mapPreds')
     mapPreds()
-    spp[[curSp()]]$visualization$mapPred
-
     updateTabsetPanel(session, 'main', selected = 'Map')
-    
-    
     shinyjs::enable("dlPred")
   })
-  
-  # convenience function for mapped model prediction raster for current species
-  mapPred <- reactive(spp[[curSp()]]$visualization$mapPred)
   
   # download for model predictions (restricted to background extent)
   output$dlPred <- downloadHandler(
@@ -931,6 +956,9 @@ shinyServer(function(input, output, session) {
   # VISUALIZE: other controls ####
   # # # # # # # # # # # # # # # # # #
   
+  # convenience function for mapped model prediction raster for current species
+  mapPred <- reactive(spp[[curSp()]]$visualization$mapPred)
+  
   # handle downloads for BIOCLIM Plots png
   output$vizPlot <- downloadHandler(
     filename = function() {
@@ -959,14 +987,14 @@ shinyServer(function(input, output, session) {
   ### COMPONENT: PROJECT MODEL ####
   ########################################### #
   
-  # module Project to New Area
-  projArea <- callModule(projectArea_MOD, 'c8_projectArea')
   
+  # # # # # # # # # # # # # # # # #
+  # module Project to New Area ####
+  # # # # # # # # # # # # # # # # #
   observeEvent(input$goProjectArea, {
+    projArea <- callModule(projectArea_MOD, 'c8_projectArea')
     projArea()
     # unpack
-    rvs$projMsk <- projArea.call[[1]]
-    rvs$projCur <- projArea.call[[2]]
     rvs$projCurVals <- getVals(rvs$projCur, rvs$comp7.type)
     rvs$comp8.pj <- 'area'
     
@@ -980,7 +1008,9 @@ shinyServer(function(input, output, session) {
     shinyjs::enable("dlProj")
   })
   
-  # module Project to New Time
+  # # # # # # # # # # # # # # # # #
+  # module Project to New Time ####
+  # # # # # # # # # # # # # # # # #
   projTime <- callModule(projectTime_MOD, 'c8_projectTime', rvs)
   
   observeEvent(input$goProjectTime, {
@@ -1004,7 +1034,9 @@ shinyServer(function(input, output, session) {
     shinyjs::enable("dlProj")
   })
   
-  # module Environmental Similarity
+  # # # # # # # # # # # # # # # # # # # #
+  # module Environmental Similarity ####
+  # # # # # # # # # # # # # # # # # # # #
   envSimilarity <- callModule(envSimilarity_MOD, 'c8_envSimilarity', rvs)
   
   observeEvent(input$goEnvSimilarity, {
