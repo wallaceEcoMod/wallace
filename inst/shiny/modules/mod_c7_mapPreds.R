@@ -2,7 +2,6 @@
 mapPreds_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    threshPred_UI(ns('threshPred')),
     tags$div(title='Please see guidance for an explanation of different Maxent output types.',
              radioButtons(ns('maxentPredType'), label = "Prediction output",
                           choices = list("raw", "logistic", "cloglog"), selected = "raw", inline = TRUE)),
@@ -30,14 +29,16 @@ mapPreds_MOD <- function(input, output, session) {
     }
     
     if(rmm()$model$algorithm == "Maxent") {
-      predSel <- maxentPredTransform(results(), bgMask(), input$maxentPredType, shinyLogs)
+      predSel <- maxentPredTransform(results()$models[[curModel()]], bgMask(), input$maxentPredType, shinyLogs)
+      names(predSel) <- curModel()
       # put transformed predictions into results list
       spp[[curSp()]]$results[[input$maxentPredType]] <- predSel
     }
     
     # generate binary prediction based on selected thresholding rule 
     # (same for all Maxent prediction types because they scale the same)
-    getThreshPred <- callModule(threshPred_MOD, "threshPred", predSel)
+    print(predSel)
+    getThreshPred <- callModule(threshPred_MOD, 'threshPred', predSel)
     threshPrediction <- getThreshPred()
     
     # save to spp

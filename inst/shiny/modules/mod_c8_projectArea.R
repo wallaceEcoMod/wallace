@@ -28,7 +28,7 @@ projectArea_MOD <- function(input, output, session) {
     
     # generate binary prediction based on selected thresholding rule 
     # (same for all Maxent prediction types because they scale the same)
-    projArea.thr.call <- callModule(threshPred_MOD, "threshPred", projArea)
+    projArea.thr.call <- callModule(threshPred_MOD, input$threshPred, projArea)
     projArea.thr <- projArea.thr.call()
     
     # save to spp
@@ -38,6 +38,7 @@ projectArea_MOD <- function(input, output, session) {
     # METADATA
     spp[[curSp()]]$rmm$output$transfer <- NULL
     spp[[curSp()]]$rmm$output$transfer$notes <- NULL
+    spp[[curSp()]]$rmm$output$project$thresholdRule <- input$threshPred
   })
 }
 

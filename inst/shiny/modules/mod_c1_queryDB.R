@@ -33,7 +33,7 @@ queryDb_MOD <- function(input, output, session) {
     # post-download cleaned state; occsOrig is the raw download
     # rmm is the range model metadata object
     spp[[n]] <- list(occs = occs, occData = list(occsOrig = occsOrig, occsCleaned = occs),
-                     rmm = rangeModelMetadata::rangeModelMetadataTemplate())
+                     rmm = rangeModelMetadata::rmmTemplate())
     
     # METADATA ####
     spp[[n]]$rmm$data$occurrence$taxa <- n

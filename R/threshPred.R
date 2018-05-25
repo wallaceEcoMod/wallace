@@ -20,20 +20,20 @@ getThresh <- function(occPredVals, thresh) {
 
 #' @export
 
-threshPred  <- function(occs, results, predSel, thresh, predType, shinyLogs = NULL) {
+threshPred  <- function(occs, predSel, curModel, thresh, predType, shinyLogs = NULL) {
   if (thresh != 'noThresh') {
     # find predicted values for occurrences for selected model
     # extract the suitability values for all occurrences
     occs.xy <- occs[c('longitude', 'latitude')]
     
     # determine the threshold based on the current, not projected, prediction
-    occPredVals <- raster::extract(predCur, occs.xy)
+    occPredVals <- raster::extract(predSel, occs.xy)
     # get the chosen threshold value
     x <- getThresh(occPredVals, thresh)  
     # threshold model prediction
     threshPred <- predSel > x
     # rename
-    names(threshPred) <- paste0(modSel, '_thresh_', thresh)
+    names(threshPred) <- paste0(curModel, '_thresh_', thresh)
     shinyLogs %>% writeLog(thresh, 'threshold selected for', predType, ': ', round(x, digits = 3), '.')
   } else {
     threshPred <- predSel

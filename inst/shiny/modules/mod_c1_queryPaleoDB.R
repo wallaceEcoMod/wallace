@@ -37,7 +37,7 @@ queryPaleoDb_MOD <- function(input, output, session) {
     # while "occsOrig" will be preserved in this state
     # rmm is the range model metadata object
     spp[[n]] <- list(occs = occs, occData = list(occsOrig = occsOrig, occsCleaned = occs),
-                     rmm = rangeModelMetadata::rangeModelMetadataTemplate())
+                     rmm = rangeModelMetadata::rmmTemplate())
     
     # METADATA ####
     spp[[n]]$rmm$data$occurrence$taxa <- n

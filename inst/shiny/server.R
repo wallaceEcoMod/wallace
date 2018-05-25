@@ -59,7 +59,7 @@ shinyServer(function(input, output, session) {
     for(n in c("Meles_meles", "Puma_concolor")) {
       occs <- f[[n]]$occs
       spp[[n]] <- list(occs = occs, occData = list(occsCleaned = occs),
-                       rmm = rangeModelMetadata::rangeModelMetadataTemplate())
+                       rmm = rangeModelMetadata::rmmTemplate())
       spp[[n]]$envs <- wc
       spp[[n]]$bg <- f[[n]]$bg
       spp[[n]]$procEnvs <- list()
@@ -212,15 +212,17 @@ shinyServer(function(input, output, session) {
     
     if(component() == 'vis') {
       if(module() == 'mapPreds') {
+        updateTabsetPanel(session, 'main', selected = 'Map')
         req(mapPred())
         mapPredVals <- spp[[curSp()]]$visualization$mapPredVals
-        # MAPPING
+        # if no threshold specified
         if (rmm()$output$prediction$thresholdRule != 'noThresh') {
           rasPal <- c('gray', 'blue')
           map %>% addLegend("bottomright", colors = c('gray', 'blue'),
                             title = "Thresholded Suitability", labels = c("predicted absence", "predicted presence"),
                             opacity = 1, layerId = 'leg')
         } else {
+          # if threshold specified
           rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
           legendPal <- colorNumeric(rev(rasCols), mapPredVals, na.color='transparent')
           rasPal <- colorNumeric(rasCols, mapPredVals, na.color='transparent')
@@ -228,11 +230,13 @@ shinyServer(function(input, output, session) {
                             values = mapPredVals, layerId = 'leg',
                             labFormat = reverseLabels(2, reverse_order=TRUE))
         }
+        # map model prediction raster
         map %>% 
           clearMarkers() %>% clearImages() %>% clearShapes() %>%
           map_occs(occs()) %>%
           addRasterImage(mapPred(), colors = rasPal, opacity = 0.7, 
                          group = 'c7', layerId = 'r1ID')
+        # add background polygon
         for (shp in bgShpXY()) {
           map %>%
             addPolygons(lng=shp[,1], lat=shp[,2], fill = FALSE,
@@ -894,7 +898,7 @@ shinyServer(function(input, output, session) {
   })
   
   # convenience function for mapped model prediction raster for current species
-  mapPred <- reactive(spp[[curSp()]]$visualization$mapPred[[curModel()]])
+  mapPred <- reactive(spp[[curSp()]]$visualization$mapPred)
   
   # download for model predictions (restricted to background extent)
   output$dlPred <- downloadHandler(
@@ -956,12 +960,10 @@ shinyServer(function(input, output, session) {
   ########################################### #
   
   # module Project to New Area
-  projArea <- callModule(projectArea_MOD, 'c8_projectArea', rvs)
+  projArea <- callModule(projectArea_MOD, 'c8_projectArea')
   
   observeEvent(input$goProjectArea, {
-    projArea.call <- projArea()
-    # stop if no model prediction
-    req(rvs$predCur)
+    projArea()
     # unpack
     rvs$projMsk <- projArea.call[[1]]
     rvs$projCur <- projArea.call[[2]]
