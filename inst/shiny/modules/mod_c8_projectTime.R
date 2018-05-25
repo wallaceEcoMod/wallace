@@ -104,7 +104,6 @@ projectTime_MOD <- function(input, output, session) {
     
     projTime.thr.call <- callModule(threshPred_MOD, "threshPred", projTime)
     projTime.thr <- projTime.thr.call()
-    pjPred <- projTime.thr$pred
     
     shinyLogs %>% writeLog("Projected to", paste0('20', input$selTime), 
                            "for GCM", GCMlookup[input$selGCM], 
