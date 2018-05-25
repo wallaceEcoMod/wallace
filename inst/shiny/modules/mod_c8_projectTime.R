@@ -7,8 +7,6 @@ projectTime_UI <- function(id) {
     # "4.5" is "Future 4.5"
     # "6" is "Future 6"
     # "8.5" is "Future 8.5"
-    
-    
     selectInput(ns("selTime"), label = "Select time period",
                 choices = list("Select period" = "",
                                # "Last Glacial Maximum (~22,000 years ago)" = 'lgm',
@@ -26,7 +24,7 @@ projectTime_UI <- function(id) {
   )
 }
 
-projectTime_MOD <- function(input, output, session, rvs) {
+projectTime_MOD <- function(input, output, session) {
   
   output$selGCMui <- renderUI({
     ns <- session$ns
@@ -49,26 +47,25 @@ projectTime_MOD <- function(input, output, session, rvs) {
   })
   
   reactive({
-    if (is.null(rvs$predCur)) {
+    if (is.null(spp[[curSp()]]$visualization$mapPred)) {
       shinyLogs %>% writeLog(type = 'error', 'Calculate a model prediction in component 7 
-                       before projecting.')
+                             before projecting.')
       return()
     }
-    if (is.null(rvs$polyPjXY)) {
+    if (is.null(spp[[curSp()]]$polyPjXY)) {
       shinyLogs %>% writeLog(type = 'error', "The polygon has not been drawn and finished. 
-                       Please use the draw toolbar on the left-hand of the map to complete
-                       the polygon.")
+                             Please use the draw toolbar on the left-hand of the map to complete
+                             the polygon.")
       return()
     }
     
-    # record for RMD
-    rvs$pjTimePar <- list(rcp=input$selRCP, gcm=input$selGCM, year=input$selTime)
+    # pjTimePar <- list(rcp = input$selRCP, gcm = input$selGCM, year = input$selTime)
     
-    if (is.null(rvs$polyPjXY)) {
+    if (is.null(spp[[curSp()]]$polyPjXY)) {
       shinyLogs %>% writeLog(type = 'error', 'Select projection extent first.')
       return()
     }
-    envsRes <- raster::res(rvs$envs)[1]
+    envsRes <- raster::res(spp[[curSp()]]$envs)[1]
     if (envsRes < 0.01) {
       shinyLogs %>% writeLog(type = 'error', 'Project to New Time currently only available with resolutions >30 arc seconds.')
       return()
@@ -89,42 +86,37 @@ projectTime_MOD <- function(input, output, session, rvs) {
       return()
     }
     
-    withProgress(message = paste("Retrieving WorldClim data for", input$selTime, input$selRCP, "..."), {
+    smartProgress(shinyLogs, message = paste("Retrieving WorldClim data for", input$selTime, input$selRCP, "..."), {
       projTimeEnvs <- raster::getData('CMIP5', var = "bio", res = envsRes * 60,
                                       rcp = input$selRCP, model = input$selGCM, year = input$selTime)
       names(projTimeEnvs) <- paste0('bio', c(paste0('0',1:9), 10:19))
       # in case user subsetted bioclims
-      projTimeEnvs <- projTimeEnvs[[rvs$bcSels]]
+      projTimeEnvs <- projTimeEnvs[[names(envs())]]
     })
     
-    # create new spatial polygon from coordinates
-    newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(rvs$polyPjXY)), ID=rvs$polyPjID)))  
+    outputType <- spp[[curSp()]]$rmm$output$prediction$notes
     
-    # concatanate coords to a single character
-    xy.round <- round(rvs$polyPjXY, digits = 2)
-    coordsChar <- paste(apply(xy.round, 1, function(b) paste0('(',paste(b, collapse=', '),')')), collapse=', ')  
-    shinyLogs %>% writeLog('New time projection for model', rvs$curMod, 'with extent coordinates:', coordsChar)
+    projTime <- c8_projectTime(curModel(),
+                               projTimeEnvs,
+                               outputType,
+                               spp[[curSp()]]$polyPjXY,
+                               spp[[curSp()]]$polyPjID)
     
-    withProgress(message = "Clipping environmental data to current extent...", {
-      pjtMsk <- raster::crop(projTimeEnvs, newPoly)
-      pjtMsk <- raster::mask(pjtMsk, newPoly)
-    })
+    projTime.thr.call <- callModule(threshPred_MOD, "threshPred", projTime)
+    projTime.thr <- projTime.thr.call()
+    pjPred <- projTime.thr$pred
     
-    modCur <- rvs$mods[[rvs$curMod]]
+    shinyLogs %>% writeLog("Projected to", paste0('20', input$selTime), 
+                           "for GCM", GCMlookup[input$selGCM], 
+                           "under RCP", as.numeric(input$selRCP)/10.0, ".")
+    # save to spp
+    spp[[curSp()]]$project$projTime <- projTime.thr
+    spp[[curSp()]]$project$projTimeVals <- getVals(projTime.thr, outputType)
     
-    withProgress(message = ("Projecting to new time..."), {
-      pargs <- paste0("outputformat=", rvs$comp7.type)
-      modProjTime <- dismo::predict(modCur, pjtMsk, args = pargs)
-      modProjTime.thr.call <- callModule(threshPred_MOD, "threshPred", modProjTime)
-      modProjTime.thr <- modProjTime.thr.call()
-      pjPred <- modProjTime.thr$pred
-      rvs$comp8.thr <- modProjTime.thr$thresh
-      shinyLogs %>% writeLog("Projected to", paste0('20', input$selTime), 
-                       "for GCM", GCMlookup[input$selGCM], 
-                       "under RCP", as.numeric(input$selRCP)/10.0, ".")
-    })
-    
-    return(list(pjMsk=pjtMsk, pjPred=pjPred))
+    # METADATA
+    spp[[curSp()]]$rmm$output$transfer <- NULL
+    spp[[curSp()]]$rmm$output$transfer$notes <- NULL
+    spp[[curSp()]]$rmm$output$project$thresholdRule <- input$threshPred
   })
 }
 

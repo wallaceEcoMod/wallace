@@ -29,7 +29,6 @@ wcBioclims_MOD <- function(input, output, session, spIn) {
     
     # FUNCTION CALL ####
     envs <- c3_worldclim(input$bcRes, 
-                         input$bcSelChoice, 
                          input$bcSel, 
                          shinyLogs)
     req(envs)

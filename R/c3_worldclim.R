@@ -3,13 +3,12 @@
 #' download worldclim variables. see www.worldclim.com
 #' 
 #' @param bcRes numeric resolution of the climatic layers
-#' @param bcSelChoice boolean TRUE/FALSE TRUE=user selects the variables
 #' @param bcSel list of boolean data. selected variables
 #' 
 #' 
 #' 
 
-c3_worldclim<- function(bcRes, bcSelChoice, bcSel, shinyLogs=NULL){
+c3_worldclim<- function(bcRes, bcSel, shinyLogs=NULL){
   
   if(bcRes == '') {
     shinyLogs %>% writeLog(type = 'error', 'Select a raster resolution.')
