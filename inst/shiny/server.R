@@ -246,38 +246,40 @@ shinyServer(function(input, output, session) {
     }
     if(component() == 'proj') {
         updateTabsetPanel(session, 'main', selected = 'Map')
-        req(mapProj())
-        mapPredVals <- spp[[curSp()]]$visualization$mapPredVals
-        # if no threshold specified
-        if (rmm()$output$prediction$thresholdRule != 'noThresh') {
-          rasPal <- c('gray', 'blue')
-          map %>% addLegend("bottomright", colors = c('gray', 'blue'),
-                            title = "Thresholded Suitability", labels = c("predicted absence", "predicted presence"),
-                            opacity = 1, layerId = 'leg')
-        } else {
-          # if threshold specified
-          rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-          legendPal <- colorNumeric(rev(rasCols), mapPredVals, na.color='transparent')
-          rasPal <- colorNumeric(rasCols, mapPredVals, na.color='transparent')
-          map %>% addLegend("bottomright", pal = legendPal, title = "Predicted Suitability",
-                            values = mapPredVals, layerId = 'leg',
-                            labFormat = reverseLabels(2, reverse_order=TRUE))
-        }
-        # map model prediction raster
-        map %>% 
-          clearMarkers() %>% clearImages() %>% clearShapes() %>%
-          map_occs(occs()) %>%
-          addRasterImage(mapPred(), colors = rasPal, opacity = 0.7, 
-                         group = 'c7', layerId = 'r1ID')
-        # add background polygon
-        for (shp in bgShpXY()) {
+        if(!is.null(mapProj())) {
+          mapProjVals <- spp[[curSp()]]$project$mapProjVals
+          # if no threshold specified
+          if (rmm()$output$project$thresholdRule != 'noThresh') {
+            rasPal <- c('gray', 'blue')
+            map %>% addLegend("bottomright", colors = c('gray', 'blue'),
+                              title = "Thresholded Suitability", labels = c("predicted absence", "predicted presence"),
+                              opacity = 1, layerId = 'leg')
+          } else {
+            # if threshold specified
+            rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+            legendPal <- colorNumeric(rev(rasCols), mapProjVals, na.color='transparent')
+            rasPal <- colorNumeric(rasCols, mapProjVals, na.color='transparent')
+            map %>% addLegend("bottomright", pal = legendPal, title = "Predicted Suitability",
+                              values = mapProjVals, layerId = 'leg',
+                              labFormat = reverseLabels(2, reverse_order=TRUE))
+          }
+          # map model prediction raster
           map %>%
-            addPolygons(lng=shp[,1], lat=shp[,2], fill = FALSE,
-                        weight=4, color="red", group='c7')  
+            clearMarkers() %>% clearImages() %>% clearShapes() %>%
+            map_occs(occs()) %>%
+            addRasterImage(mapProj(), colors = rasPal, opacity = 0.7,
+                           group = 'c8', layerId = 'r1ID')
+          # add background polygon
+          for (shp in bgShpXY()) {
+            map %>%
+              addPolygons(lng=shp[,1], lat=shp[,2], fill = FALSE,
+                          weight=4, color="red", group='c7')
+          }
         }
     }
     # logic for initializing or removing leaflet draw toolbar
     if((component() == 'poccs' & module() == 'selOccs') | component() == 'proj') {
+      print(component())
       map %>% leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
                                              rectangleOptions = FALSE, circleOptions = FALSE, 
                                              markerOptions = FALSE)
@@ -994,17 +996,6 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goProjectArea, {
     projArea <- callModule(projectArea_MOD, 'c8_projectArea')
     projArea()
-    # unpack
-    rvs$projCurVals <- getVals(rvs$projCur, rvs$comp7.type)
-    rvs$comp8.pj <- 'area'
-    
-    rasVals <- c(spp[[curSp()]]$visualization$mapPredVals, rvs$projCurVals)
-    rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-    map %>% comp8_map(rvs$projCur, rvs$polyPjXY, bgShpXY, rasVals, 
-                      rasCols, "Predicted Suitability", 'rProj')
-    
-    map %>% drawToolbarRefresh()
-    
     shinyjs::enable("dlProj")
   })
   
@@ -1056,11 +1047,20 @@ shinyServer(function(input, output, session) {
     shinyjs::enable("dlProj")
   })
   
+  # # # # # # # # # # # # # # # # # #
+  # PROJECT: other controls ####
+  # # # # # # # # # # # # # # # # # #
+  
+  # convenience function for mapped model prediction raster for current species
+  mapProj <- reactive(spp[[curSp()]]$project$mapProj)
+  
   # Reset Projection Extent button functionality
   observeEvent(input$goResetProj, {
     map %>%
       removeShape("projExt") %>%
       removeImage("rProj")
+    spp[[curSp()]]$polyPjXY <- NULL
+    spp[[curSp()]]$polyPjID <- NULL
     shinyLogs %>% writeLog("Reset projection extent.")
   })
   

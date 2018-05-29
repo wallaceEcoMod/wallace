@@ -1,4 +1,4 @@
-c8_projectArea <- function(model, envs, outputType, polyPjXY, polyPjID, shinyLogs = NULL) {
+c8_projectArea <- function(results, curModel, envs, outputType, polyPjXY, polyPjID, shinyLogs = NULL) {
   # create new spatial polygon from coordinates
   newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(polyPjXY)), ID = polyPjID)))  
   
@@ -6,7 +6,7 @@ c8_projectArea <- function(model, envs, outputType, polyPjXY, polyPjID, shinyLog
   xy.round <- round(polyPjXY, digits = 2)
   xy.round <- xy.round[-nrow(xy.round),]  # remove last point that completes polygon
   coordsChar <- paste(apply(xy.round, 1, function(b) paste0('(',paste(b, collapse=', '),')')), collapse=', ')  
-  shinyLogs %>% writeLog('New area projection for model', curModel(), 'with extent coordinates:', coordsChar)
+  shinyLogs %>% writeLog('New area projection for model', curModel, 'with extent coordinates:', coordsChar)
   
   smartProgress(shinyLogs, message = "Masking environmental grids to projection extent...", {
     projMsk <- raster::crop(envs, newPoly)
@@ -15,7 +15,7 @@ c8_projectArea <- function(model, envs, outputType, polyPjXY, polyPjID, shinyLog
   
   smartProgress(shinyLogs, message = 'Projecting model to new area...', {
     pargs <- paste0("outputformat=", outputType)
-    modProjArea <- dismo::predict(model, projMsk, args = pargs)
+    modProjArea <- dismo::predict(results$models[[curModel]], projMsk, args = pargs)
 
     return(modProjArea)
   })

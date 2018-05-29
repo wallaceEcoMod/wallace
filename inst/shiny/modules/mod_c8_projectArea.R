@@ -21,10 +21,13 @@ projectArea_MOD <- function(input, output, session) {
     
     outputType <- spp[[curSp()]]$rmm$output$prediction$notes
     
-    projArea <- c8_projectArea(curModel(), 
+    projArea <- c8_projectArea(results(),
+                               curModel(), 
+                               envs(),
                                outputType,
                                spp[[curSp()]]$polyPjXY,
-                               spp[[curSp()]]$polyPjID)
+                               spp[[curSp()]]$polyPjID,
+                               shinyLogs)
     
     # generate binary prediction based on selected thresholding rule 
     # (same for all Maxent prediction types because they scale the same)
@@ -32,8 +35,8 @@ projectArea_MOD <- function(input, output, session) {
     projArea.thr <- projArea.thr.call()
     
     # save to spp
-    spp[[curSp()]]$project$projArea <- projArea.thr
-    spp[[curSp()]]$project$projAreaVals <- getVals(projArea.thr, outputType)
+    spp[[curSp()]]$project$mapProj <- projArea.thr
+    spp[[curSp()]]$project$mapProjVals <- getVals(projArea.thr, outputType)
     
     # METADATA
     spp[[curSp()]]$rmm$output$transfer <- NULL

@@ -212,7 +212,7 @@ shinyUI(tagList(
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.partSel == 'sp'", uiBottom2(partitionSpat_INFO)),
                                                 conditionalPanel("input.partSel == 'nsp'", uiBottom2(partitionNonSpat_INFO))
-),
+                               ),
                                # COMPONENT 6 ####
                                conditionalPanel("input.tabs == 'model'",
                                                 h4("Build and Evaluate Niche Model"),
@@ -263,7 +263,7 @@ shinyUI(tagList(
                                                                  selectInput('predFileType', label = "Select download file type",
                                                                              choices = list("GRD" = 'raster', "ASCII" = 'ascii', 
                                                                                             "GeoTIFF" = 'GTiff', "PNG" = "png"))
-                                                                 ),
+                                                ),
                                                 conditionalPanel("input.visSel == 'bioclimPlot' | input.visSel == 'maxentEval'", 
                                                                  downloadButton('dlVizPlot', "Download Plot")),
                                                 HTML('<hr>'),
@@ -355,8 +355,8 @@ shinyUI(tagList(
                                                                                               column(width=2, downloadButton('dlOccs', "Download Current")),
                                                                                               column(width=2,downloadButton('dlAllOccs', "Download All")),
                                                                                               column(width=4)
-                                                                                              ), 
-                                                                   br(), DT::dataTableOutput('occTbl')),
+                                                          ), 
+                                                          br(), DT::dataTableOutput('occTbl')),
                                                           tabPanel('Results', 
                                                                    conditionalPanel("input.tabs == 'envs'", verbatimTextOutput('envsPrint')),
                                                                    conditionalPanel("input.tabs == 'model'", uiOutput('evalTbls')),
