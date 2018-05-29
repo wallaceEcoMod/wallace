@@ -150,19 +150,23 @@ shinyServer(function(input, output, session) {
       spp[[curSp()]]$polyPjXY <- xy
       spp[[curSp()]]$polyPjID <- id  
     }
+    print(spp[[curSp()]]$polyPjXY)
     
     # UI CONTROLS - for some reason, curSp() disappears here unless input is updated
     updateSelectInput(session, "curSp", selected = curSp())
   })
   
   # component-level logic
+  rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+  
   observe({
     # must have one species selected and occurrence data
     # for mapping to be functional
     req(length(curSp()) == 1, occs())
     # map the original occs for Component Obtain Occurrence Data
     if(component() == 'occs') {
-      map %>% map_occs(spp[[curSp()]]$occData$occsCleaned)
+      map %>% clearAll() %>%
+        map_occs(spp[[curSp()]]$occData$occsCleaned)
     } 
     # map the analysis occs for components downstream of the first
     if(component() == 'poccs') {
@@ -170,24 +174,25 @@ shinyServer(function(input, output, session) {
         # if you've thinned already, map thinned points blue
         # and kept points red
         if(!is.null(spp[[curSp()]]$procOccs$occsThin)) {
-          map %>% map_occs(spp[[curSp()]]$procOccs$occsPreThin, fillColor = 'blue', fillOpacity = 1) %>%
+          map %>% clearAll() %>% 
+            map_occs(spp[[curSp()]]$procOccs$occsPreThin, fillColor = 'blue', fillOpacity = 1) %>%
             map_occs(occs(), fillOpacity = 1, clear = FALSE) %>%
             addLegend("bottomright", colors = c('red', 'blue'), title = "Occ Records", 
                       labels = c('retained', 'removed'), opacity = 1)  
         } else {
           # if you haven't thinned, map all points red
-          map %>% map_occs(occs())
+          map %>% clearAll() %>% map_occs(occs())
         }
       } else {
-        map %>% map_occs(occs())
+        map %>% clearAll() %>% map_occs(occs())
       }
     }
     if(component() == 'penvs') {
       updateTabsetPanel(session, 'main', selected = 'Map')
       if(is.null(bgExt())) {
-        map %>% map_occs(occs())
+        map %>% clearAll() %>% map_occs(occs())
       }else{
-        map %>% map_occs(occs())
+        map %>% clearAll() %>% map_occs(occs())
         for (shp in bgShpXY()) {
           map %>%
             addPolygons(lng=shp[,1], lat=shp[,2], weight=4, color="gray", group='bgShp')
@@ -203,7 +208,7 @@ shinyServer(function(input, output, session) {
       # colors for partition symbology
       newColors <- gsub("FF$", "", rainbow(max(occsGrp)))  
       partsFill <- newColors[occsGrp]
-      map %>%
+      map %>% clearAll() %>%
         map_occs(occs(), fillColor = partsFill, fillOpacity = 1) %>%
         addLegend("bottomright", colors = newColors,
                   title = "Partition Groups", labels = sort(unique(occsGrp)),
@@ -223,7 +228,6 @@ shinyServer(function(input, output, session) {
                             opacity = 1, layerId = 'leg')
         } else {
           # if threshold specified
-          rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
           legendPal <- colorNumeric(rev(rasCols), mapPredVals, na.color='transparent')
           rasPal <- colorNumeric(rasCols, mapPredVals, na.color='transparent')
           map %>% addLegend("bottomright", pal = legendPal, title = "Predicted Suitability",
@@ -232,54 +236,50 @@ shinyServer(function(input, output, session) {
         }
         # map model prediction raster
         map %>% 
-          clearMarkers() %>% clearImages() %>% clearShapes() %>%
-          map_occs(occs()) %>%
+          clearAll() %>% map_occs(occs()) %>%
           addRasterImage(mapPred(), colors = rasPal, opacity = 0.7, 
-                         group = 'c7', layerId = 'r1ID')
+                         group = 'vis', layerId = 'mapPred')
         # add background polygon
-        for (shp in bgShpXY()) {
-          map %>%
-            addPolygons(lng=shp[,1], lat=shp[,2], fill = FALSE,
-                        weight=4, color="red", group='c7')  
-        }
+        mapBgPolys(bgShpXY())
       }
     }
     if(component() == 'proj') {
         updateTabsetPanel(session, 'main', selected = 'Map')
-        if(!is.null(mapProj())) {
-          mapProjVals <- spp[[curSp()]]$project$mapProjVals
-          # if no threshold specified
-          if (rmm()$output$project$thresholdRule != 'noThresh') {
-            rasPal <- c('gray', 'blue')
-            map %>% addLegend("bottomright", colors = c('gray', 'blue'),
-                              title = "Thresholded Suitability", labels = c("predicted absence", "predicted presence"),
-                              opacity = 1, layerId = 'leg')
-          } else {
-            # if threshold specified
-            rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-            legendPal <- colorNumeric(rev(rasCols), mapProjVals, na.color='transparent')
-            rasPal <- colorNumeric(rasCols, mapProjVals, na.color='transparent')
-            map %>% addLegend("bottomright", pal = legendPal, title = "Predicted Suitability",
-                              values = mapProjVals, layerId = 'leg',
-                              labFormat = reverseLabels(2, reverse_order=TRUE))
-          }
-          # map model prediction raster
-          map %>%
-            clearMarkers() %>% clearImages() %>% clearShapes() %>%
-            map_occs(occs()) %>%
-            addRasterImage(mapProj(), colors = rasPal, opacity = 0.7,
-                           group = 'c8', layerId = 'r1ID')
-          # add background polygon
-          for (shp in bgShpXY()) {
-            map %>%
-              addPolygons(lng=shp[,1], lat=shp[,2], fill = FALSE,
-                          weight=4, color="red", group='c7')
+        if(!is.null(spp[[curSp()]]$polyPjXY)) {
+          print(spp[[curSp()]]$polyPjXY)
+          if(!is.null(mapProj())) {
+            mapProjVals <- spp[[curSp()]]$project$mapProjVals
+            polyPjXY <- spp[[curSp()]]$polyPjXY
+            # if no threshold specified
+            if(rmm()$output$project$thresholdRule != 'noThresh') {
+              rasPal <- c('gray', 'blue')
+              map %>% addLegend("bottomright", colors = c('gray', 'blue'),
+                                title = "Thresholded Suitability", labels = c("predicted absence", "predicted presence"),
+                                opacity = 1, layerId = 'leg')
+            } else {
+              # if threshold specified
+              legendPal <- colorNumeric(rev(rasCols), mapProjVals, na.color='transparent')
+              rasPal <- colorNumeric(rasCols, mapProjVals, na.color='transparent')
+              map %>% addLegend("bottomright", pal = legendPal, title = "Predicted Suitability",
+                                values = mapProjVals, layerId = 'leg',
+                                labFormat = reverseLabels(2, reverse_order=TRUE))
+            }
+            
+            # map model prediction raster and projection polygon
+            map %>% clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
+              map_occs(occs()) %>%
+              addRasterImage(mapProj(), colors = rasPal, opacity = 0.7,
+                             layerId = 'projRas', group = 'proj') %>%
+              addPolygons(lng=polyPjXY[,1], lat=polyPjXY[,2], layerId="projExt", fill = FALSE,
+                          weight=4, color="blue", group='proj')
+            
+            # add background polygon
+            mapBgPolys(bgShpXY())
           }
         }
     }
     # logic for initializing or removing leaflet draw toolbar
     if((component() == 'poccs' & module() == 'selOccs') | component() == 'proj') {
-      print(component())
       map %>% leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
                                              rectangleOptions = FALSE, circleOptions = FALSE, 
                                              markerOptions = FALSE)
@@ -996,13 +996,20 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goProjectArea, {
     projArea <- callModule(projectArea_MOD, 'c8_projectArea')
     projArea()
+    # MAPPING
+    map %>% 
+      # reset draw polygon
+      leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
+      leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
+                                     rectangleOptions = FALSE, circleOptions = FALSE, 
+                                     markerOptions = FALSE) 
     shinyjs::enable("dlProj")
   })
   
   # # # # # # # # # # # # # # # # #
   # module Project to New Time ####
   # # # # # # # # # # # # # # # # #
-  projTime <- callModule(projectTime_MOD, 'c8_projectTime', rvs)
+  projTime <- callModule(projectTime_MOD, 'c8_projectTime')
   
   observeEvent(input$goProjectTime, {
     projTime.call <- projTime()
@@ -1058,9 +1065,10 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goResetProj, {
     map %>%
       removeShape("projExt") %>%
-      removeImage("rProj")
+      removeImage("projRas")
     spp[[curSp()]]$polyPjXY <- NULL
     spp[[curSp()]]$polyPjID <- NULL
+    spp[[curSp()]]$project$mapProj <- NULL
     shinyLogs %>% writeLog("Reset projection extent.")
   })
   

@@ -138,16 +138,16 @@ mapCenter <- function(bounds) {
 }
 
 # map occurrences with the Wallace default symbology
-map_occs <- function(map, occs, fillColor = 'red', fillOpacity = 0.2, clear = TRUE) {
-  if(clear == TRUE) {
-    map %>%
-      clearMarkers() %>% clearShapes() %>% clearImages() %>% clearControls()  
-  }
+map_occs <- function(map, occs, fillColor = 'red', fillOpacity = 0.2) {
   map %>%
     addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, 
                      radius = 5, color = 'red', fill = TRUE, fillColor = fillColor, 
                      fillOpacity = fillOpacity, weight = 2, popup = ~pop) %>%
     zoom2Occs(occs)
+}
+
+clearAll <- function(map) {
+  map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% clearControls()
 }
 
 # zoom to occ pts
@@ -300,13 +300,7 @@ respCurv <- function(mod, i) {  # copied mostly from dismo
   #graphics::text(x = vals, y = pred, labels = row.names(mod@presence), pos = 3, offset = 1)
 }
 
-getVals <- function(r, type='raw') {
-  v <- raster::values(r)
-  # remove NAs
-  v <- v[!is.na(v)]
-  if (type == 'logistic' | type == 'cloglog') v <- c(v, 0, 1)  # set to 0-1 scale
-  return(v)
-}
+
 
 ####################### #
 # COMP 8 ####

@@ -4,12 +4,10 @@
 \alias{c3_worldclim}
 \title{c3_worldclim}
 \usage{
-c3_worldclim(bcRes, bcSelChoice, bcSel, shinyLogs = NULL)
+c3_worldclim(bcRes, bcSel, shinyLogs = NULL)
 }
 \arguments{
 \item{bcRes}{numeric resolution of the climatic layers}
-
-\item{bcSelChoice}{boolean TRUE/FALSE TRUE=user selects the variables}
 
 \item{bcSel}{list of boolean data. selected variables}
 }
