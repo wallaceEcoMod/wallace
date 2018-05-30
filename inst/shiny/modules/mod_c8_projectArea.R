@@ -2,7 +2,7 @@ projectArea_UI <- function(id) {
   ns <- NS(id)
   tagList(
     tags$div(title='Create binary map of predicted presence/absence assuming all values above threshold value represent presence. Also can be interpreted as a "potential distribution" (see guidance).',
-             selectInput(ns('threshhold'), label = "Set threshold",
+             selectInput(ns('threshold'), label = "Set threshold",
                          choices = list("No threshold" = 'noThresh',
                                         "Minimum Training Presence" = 'mtp', 
                                         "10 Percentile Training Presence" = 'p10')))
@@ -35,20 +35,28 @@ projectArea_MOD <- function(input, output, session) {
     
     # generate binary prediction based on selected thresholding rule 
     # (same for all Maxent prediction types because they scale the same)
-    rasName <- paste0(curModel(), '_thresh_', predType)
-    projArea.thr  <- threshPred(occs(), 
-                                projArea, 
-                                rmm()$output$prediction$thresholdRule, 
-                                rasName)
+    
+    if(!(input$threshold == 'noThresh')) {
+      # use threshold from present-day model training area
+      thr <- rmm()$visualization$thresholds[[input$threshold]]
+      projAreaThr <- projArea > thr
+      shinyLogs %>% writeLog("Projection of model to new area for", curSp(), 'with threshold', input$threshold, ': ', thr, '.')
+    } else {
+      projAreaThr <- projArea
+      shinyLogs %>% writeLog("Projection of model to new area for", curSp(), 'with', predType, 'output.')
+    }
+    
+    # rename
+    names(projAreaThr) <- paste0(curModel(), '_thresh_', predType)
     
     # save to spp
-    spp[[curSp()]]$project$mapProj <- projArea.thr
-    spp[[curSp()]]$project$mapProjVals <- getVals(projArea.thr, predType)
+    spp[[curSp()]]$project$mapProj <- projAreaThr
+    spp[[curSp()]]$project$mapProjVals <- getRasterVals(projAreaThr, predType)
     
     # METADATA
     spp[[curSp()]]$rmm$output$transfer <- NULL
     spp[[curSp()]]$rmm$output$transfer$notes <- NULL
-    spp[[curSp()]]$rmm$output$project$thresholdRule <- input$threshhold
+    spp[[curSp()]]$rmm$output$project$thresholdRule <- input$threshold
   })
 }
 

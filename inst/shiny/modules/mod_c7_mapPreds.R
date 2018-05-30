@@ -6,7 +6,7 @@ mapPreds_UI <- function(id) {
              radioButtons(ns('maxentPredType'), label = "Prediction output",
                           choices = list("raw", "logistic", "cloglog"), selected = "raw", inline = TRUE)),
     tags$div(title='Create binary map of predicted presence/absence assuming all values above threshold value represent presence. Also can be interpreted as a "potential distribution" (see guidance).',
-             selectInput(ns('threshhold'), label = "Set threshold",
+             selectInput(ns('threshold'), label = "Set threshold",
                          choices = list("No threshold" = 'noThresh',
                                         "Minimum Training Presence" = 'mtp', 
                                         "10 Percentile Training Presence" = 'p10')))
@@ -53,24 +53,41 @@ mapPreds_MOD <- function(input, output, session) {
     
     # generate binary prediction based on selected thresholding rule 
     # (same for all Maxent prediction types because they scale the same)
-    rasName <- paste0(curModel(), '_thresh_', predType)
-    threshPrediction  <- threshPred(occs(), 
-                                    predSel, 
-                                    input$threshhold, 
-                                    rasName)
-    threshVal <- round(raster::cellStats(threshPrediction, min), digits = 3)
-    shinyLogs %>% writeLog(input$threshhold, 'threshold selected for', predType, ': ', threshVal, '.')
     
+    # find predicted values for occurrences for selected model
+    # extract the suitability values for all occurrences
+    occs.xy <- occs()[c('longitude', 'latitude')]
+    # determine the threshold based on the current, not projected, prediction
+    occPredVals <- raster::extract(predSel, occs.xy)
+    # get all thresholds
+    thresholds <- getAllThresh(occPredVals)
+    
+    # get the chosen threshold value
+    if(!(input$threshold == 'noThresh')) {
+      thr <- thresholds[[input$threshold]]
+      predThr <- predSel > thr
+      shinyLogs %>% writeLog(input$threshold, 'threshold selected for', predType, ': ', thr, '.')
+    } else {
+      predThr <- predSel
+    }
+    # threshold prediction and rename
+    names(predThr) <- paste0(curModel(), '_thresh_', predType)
     
     # save to spp
-    spp[[curSp()]]$visualization$mapPred <- threshPrediction
-    spp[[curSp()]]$visualization$mapPredVals <- getRasterVals(threshPrediction, predType)
+    spp[[curSp()]]$visualization$thresholds <- thresholds
+    spp[[curSp()]]$visualization$mapPred <- predThr
+    spp[[curSp()]]$visualization$mapPredVals <- getRasterVals(predThr, predType)
     
     # write to log box
     shinyLogs %>% writeLog(rmm()$model$algorithm, predType, "model prediction plotted.")
     
     # METADATA
-    spp[[curSp()]]$rmm$output$prediction$thresholdRule <- input$threshhold
+    spp[[curSp()]]$rmm$output$prediction$thresholdRule <- input$threshold
+    if(!(input$threshold == 'noThresh')) {
+      spp[[curSp()]]$rmm$output$prediction$thresholdSet <- thr
+    } else {
+      spp[[curSp()]]$rmm$output$prediction$thresholdSet <- NULL
+    }
     if(rmm()$model$algorithm == "Maxent") {
       spp[[curSp()]]$rmm$output$prediction$notes <- predType
     }

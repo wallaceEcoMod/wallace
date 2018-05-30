@@ -65,15 +65,6 @@ shinyServer(function(input, output, session) {
       spp[[n]]$procEnvs <- list()
       spp[[n]]$procEnvs$bgMask <- r[[n]]
     }
-    # spp$Meles_meles$occs <- f$Meles_meles$occs
-    # spp$Meles_meles$bg <- f$Meles_meles$bg
-    # spp$Meles_meles$procEnvs$bgMask <- r1
-    # spp$Meles_meles$envs <- wc
-    # spp$Puma_concolor$occs <- f$Puma_concolor$occs
-    # spp$Puma_concolor$bg <- f$Puma_concolor$bg 
-    # spp$Puma_concolor$procEnvs$bgMask <- r1
-    # spp$Puma_concolor$envs <- wc
-    
     print('SECRET DATA LOADED')
   })
   
@@ -150,8 +141,6 @@ shinyServer(function(input, output, session) {
       spp[[curSp()]]$polyPjXY <- xy
       spp[[curSp()]]$polyPjID <- id  
     }
-    print(spp[[curSp()]]$polyPjXY)
-    
     # UI CONTROLS - for some reason, curSp() disappears here unless input is updated
     updateSelectInput(session, "curSp", selected = curSp())
   })
@@ -246,8 +235,7 @@ shinyServer(function(input, output, session) {
     if(component() == 'proj') {
         updateTabsetPanel(session, 'main', selected = 'Map')
         if(!is.null(spp[[curSp()]]$polyPjXY)) {
-          print(spp[[curSp()]]$polyPjXY)
-          if(!is.null(mapProj())) {
+          if(!is.null(spp[[curSp()]]$project)) {
             mapProjVals <- spp[[curSp()]]$project$mapProjVals
             polyPjXY <- spp[[curSp()]]$polyPjXY
             # if no threshold specified
@@ -1068,7 +1056,7 @@ shinyServer(function(input, output, session) {
       removeImage("projRas")
     spp[[curSp()]]$polyPjXY <- NULL
     spp[[curSp()]]$polyPjID <- NULL
-    spp[[curSp()]]$project$mapProj <- NULL
+    spp[[curSp()]]$project <- NULL
     shinyLogs %>% writeLog("Reset projection extent.")
   })
   
