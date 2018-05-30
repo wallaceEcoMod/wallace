@@ -1,9 +1,9 @@
-source("funcs/functions.R")
+source("funcs/helper_functions.R")
 wd <- getwd()
 # load module and helper functions
 setwd("..")
 setwd("..")
-funcs <- list.files(path="R", pattern="^c|^helper", full.names=TRUE)
+funcs <- list.files(path="R", pattern="^c", full.names=TRUE)
 sapply(funcs, source)
 setwd(wd)
 

@@ -62,6 +62,7 @@ infoGenerator <- function(pkgName, modName , modAuts) {
 # MISC ####
 ####################### #
 
+# retrieves the species name for use internally in non-shiny functions
 spName <- function(sp) {
   if(class(sp) == "list") {
     name <- sp$occs$taxon_name[1]
@@ -70,6 +71,17 @@ spName <- function(sp) {
     name <- sp$taxon_name[1]
   }
   return(paste(strsplit(as.character(name), "_")[[1]], collapse = " "))  
+}
+
+# either prints a message to console or makes a progress bar in the shiny app
+# the entry of the first param "logs" turns on shiny functionality
+smartProgress <- function(logs, message, expr) {
+  if(!is.null(logs)) {
+    withProgress(message = message, expr)
+  } else {
+    message(message)
+    expr
+  }
 }
 
 formatSpName <- function(spName) {
@@ -100,6 +112,32 @@ writeSpp <- function(spp, sp, dir) {
   if(!is.null(spp[[sp]]$procEnvs$bgMask)) raster::writeRaster(spp[[sp]]$procEnvs$bgMask, file.path(dir, paste0(sp, "_bgMask.tif")), bylayer = TRUE)
 }
 
+# add text to log
+writeLog <- function(logs, ..., type = 'default') {
+  if (is.null(logs)) {
+    if (type == "default") {
+      pre <- "> "
+    } else if (type == 'error') {
+      pre <- 'ERROR: '
+    } else if (type == 'warning') {
+      pre <- 'WARNING: '
+    }  
+    newEntries <- paste(pre, ..., collapse = "")
+    message(newEntries)
+    return()
+  }
+  
+  if (type == "default") {
+    pre <- "> "
+  } else if (type == 'error') {
+    pre <- '<font color="red"><b>! ERROR</b></font> : '
+  } else if (type == 'warning') {
+    pre <- '<font color="orange"><b>! WARNING</b></font> : '
+  }
+  newEntries <- paste(pre, ..., collapse = "")
+  logs(paste(logs(), newEntries, sep = '<br>'))
+}
+
 ####################### #
 # MAPPING ####
 ####################### #
@@ -121,6 +159,15 @@ map_occs <- function(map, occs, fillColor = 'red', fillOpacity = 0.2, customZoom
     map %>% zoom2Occs(occs)
   } else {
     map %>% zoom2Occs(customZoom)
+  }
+}
+
+# map all background polygons
+mapBgPolys <- function(map, bgShpXY) {
+  for (shp in bgShpXY) {
+    map %>%
+      addPolygons(lng = shp[,1], lat = shp[,2], fill = FALSE,
+                  weight = 4, color="red", group='proj')
   }
 }
 
@@ -172,6 +219,36 @@ smartZoom <- function(longi, lati) {
 }
 
 ####################### #
+# OBTAIN OCCS ####
+####################### #
+
+popUpContent <- function(x) {
+  lat <- round(as.numeric(x['latitude']), digits = 2)
+  lon <- round(as.numeric(x['longitude']), digits = 2)
+  as.character(tagList(
+    tags$strong(paste("occID:", x['occID'])),
+    tags$br(),
+    tags$strong(paste("Latitude:", lat)),
+    tags$br(),
+    tags$strong(paste("Longitude:", lon)),
+    tags$br(),
+    tags$strong(paste("Year:", x['year'])),
+    tags$br(),
+    tags$strong(paste("Inst. Code:", x['institutionCode'])),
+    tags$br(),
+    tags$strong(paste("Country:", x['country'])),
+    tags$br(),
+    tags$strong(paste("State/Prov.:", x['stateProvince'])),
+    tags$br(),
+    tags$strong(paste("Locality:", x['locality'])),
+    tags$br(),
+    tags$strong(paste("Elevation:", x['elevation'])),
+    tags$br(),
+    tags$strong(paste("Basis of Record:", x['basisOfRecord']))
+  ))
+}
+
+####################### #
 # COMP 3 ####
 ####################### #
 
@@ -194,10 +271,10 @@ remEnvsValsNA <- function(occs, occsEnvsVals, logs) {
     
     return(occs)
   })
-}
+  }
 
 ####################### #
-# COMP 4 ####
+# PROCESS ENVS ####
 ####################### #
 
 # make a minimum convex polygon as SpatialPolygons object
@@ -210,10 +287,20 @@ mcp <- function(xy) {
 }
 
 ####################### #
-# COMP 7 ####
+# MODEL ####
 ####################### #
 
+maxentPredTransform <- function(results, curModel, bgMask, predType, shinyLogs = NULL) {
+  pargs <- paste0("outputformat=", predType) 
+  smartProgress(shinyLogs, message = paste0("Generating ", predType, " prediction for model", curModel, "..."), {
+    transPred <- dismo::predict(results$models[[curModel]], bgMask, args=pargs)
+  })  
+  return(transPred)
+}
 
+####################### #
+# VISUALIZE ####
+####################### #
 
 evalPlots <- function(results) {
   par(mfrow=c(3,2))
@@ -277,17 +364,33 @@ respCurv <- function(mod, i) {  # copied mostly from dismo
   #graphics::text(x = vals, y = pred, labels = row.names(mod@presence), pos = 3, offset = 1)
 }
 
+# retrieve the value range for a prediction raster for plotting
+getRasterVals <- function(r, type='raw') {
+  v <- raster::values(r)
+  # remove NAs
+  v <- v[!is.na(v)]
+  if (type == 'logistic' | type == 'cloglog') v <- c(v, 0, 1)  # set to 0-1 scale
+  return(v)
+}
 
+getAllThresh <- function(occPredVals) {
+  # remove all NA
+  occPredVals <- na.omit(occPredVals)
+  # apply minimum training presence threshold
+  mtp <- min(occPredVals)
+  # Define 10% training presence threshold
+  if (length(occPredVals) < 10) {  # if less than 10 occ values, find 90% of total and round down
+    n90 <- floor(length(occPredVals) * 0.9)
+  } else {  # if greater than or equal to 10 occ values, round up
+    n90 <- ceiling(length(occPredVals) * 0.9)
+  }
+  p10 <- rev(sort(occPredVals))[n90]  # apply 10% training presence threshold over all models
+  return(list(mtp = mtp, p10 = p10))
+}
 
 ####################### #
-# COMP 8 ####
+# PROJECT ####
 ####################### #
-
-GCMlookup <- c(AC="ACCESS1-0", BC="BCC-CSM1-1", CC="CCSM4", CE="CESM1-CAM5-1-FV2",
-               CN="CNRM-CM5", GF="GFDL-CM3", GD="GFDL-ESM2G", GS="GISS-E2-R",
-               HD="HadGEM2-AO", HG="HadGEM2-CC", HE="HadGEM2-ES", IN="INMCM4",
-               IP="IPSL-CM5A-LR", ME="MPI-ESM-P", MI="MIROC-ESM-CHEM", MR="MIROC-ESM",
-               MC="MIROC5", MP="MPI-ESM-LR", MG="MRI-CGCM3", NO="NorESM1-M")
 
 reverseLabels <- function(..., reverse_order = FALSE) {
   if (reverse_order) {
@@ -297,48 +400,6 @@ reverseLabels <- function(..., reverse_order = FALSE) {
   } else {
     labelFormat(...)
   }
-}
-
-comp8_map <- function(map, ras, polyXY, bgShpXY, rasVals, rasCols, 
-                      legTitle, clearID = NULL) {
-  
-  # if thresholded, plot with two colors
-  if (grepl('thresh', names(ras))) {
-    rasPal <- c('gray', 'blue')
-    map %>% addLegend("bottomright", colors = c('gray', 'blue'),
-                      title = "Thresholded Suitability", labels = c("predicted absence", "predicted presence"),
-                      opacity = 1, layerId = 'leg')
-  } else {
-    rasPal <- colorNumeric(rasCols, rasVals, na.color='transparent')
-    legPal <- colorNumeric(rev(rasCols), rasVals, na.color='transparent')
-    map %>% addLegend("bottomright", pal = legPal, title = legTitle,
-                      values = rasVals, layerId = 'leg',
-                      labFormat = reverseLabels(2, reverse_order=TRUE))
-  }
-  map %>% 
-    clearMarkers() %>% 
-    clearShapes() %>%
-    removeImage(clearID) %>%
-    addRasterImage(ras, colors = rasPal, opacity = 0.7, 
-                   group = 'c7', layerId = 'rProj') %>%
-    addPolygons(lng=polyXY[,1], lat=polyXY[,2], layerId="projExt", fill = FALSE,
-                weight=4, color="green", group='c8')
-  
-  for (shp in bgShpXY()) {
-    map %>%
-      addPolygons(lng=shp[,1], lat=shp[,2], fill = FALSE,
-                  weight=4, color="red", group='c8')  
-  }
-}
-
-drawToolbarRefresh <- function(map) {
-  map %>% leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
-    leaflet.extras::addDrawToolbar(
-      targetGroup='draw',
-      polylineOptions = FALSE,
-      rectangleOptions = FALSE,
-      circleOptions = FALSE,
-      markerOptions = FALSE)
 }
 
 ####################### #
@@ -370,3 +431,5 @@ printVecAsis <- function(x, asChar = FALSE) {
     }
   }
 }
+
+

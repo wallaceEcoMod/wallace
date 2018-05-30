@@ -1,7 +1,7 @@
-source("funcs/functions.R", local = TRUE)
-# load modules
+# load modules and functions
+source("funcs/helper_functions.R")
 for (f in list.files('./modules')) {
-  source(file.path('modules', f), local=TRUE)
+  source(file.path('modules', f), local = TRUE)
 }
 
 # Define UI for application
