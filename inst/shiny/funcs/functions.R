@@ -138,12 +138,16 @@ mapCenter <- function(bounds) {
 }
 
 # map occurrences with the Wallace default symbology
-map_occs <- function(map, occs, fillColor = 'red', fillOpacity = 0.2) {
+map_occs <- function(map, occs, fillColor = 'red', fillOpacity = 0.2, customZoom = NULL) {
   map %>%
     addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, 
                      radius = 5, color = 'red', fill = TRUE, fillColor = fillColor, 
-                     fillOpacity = fillOpacity, weight = 2, popup = ~pop) %>%
-    zoom2Occs(occs)
+                     fillOpacity = fillOpacity, weight = 2, popup = ~pop)
+  if(is.null(customZoom)) {
+    map %>% zoom2Occs(occs)
+  } else {
+    map %>% zoom2Occs(customZoom)
+  }
 }
 
 clearAll <- function(map) {
@@ -153,11 +157,10 @@ clearAll <- function(map) {
 # zoom to occ pts
 zoom2Occs <- function(map, occs) {
   # map %>% clearShapes()
-  lati <- occs["latitude"]
-  longi <- occs["longitude"]
-  z <- smartZoom(longi, lati)
+  lat <- occs["latitude"]
+  lon <- occs["longitude"]
+  z <- smartZoom(lon, lat)
   map %>% fitBounds(z[1], z[2], z[3], z[4])
-  
   
   ## this section makes letter icons for occs based on basisOfRecord
   # makeOccIcons <- function(width = 10, height = 10, ...) {

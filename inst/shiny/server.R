@@ -46,12 +46,16 @@ shinyServer(function(input, output, session) {
   # FOR DEVELOPMENT PURPOSES
   observeEvent(input$load, {
     f <- c1_userOccs('example_data/multispecies.csv', "multispecies.csv")
-    wc <- raster::stack(list.files('wc10', full.names = TRUE, pattern="bil$"))
+    wc <- c3_worldclim(10, paste0('bio', 1:19))
     wc <- raster::brick(wc)
     r <- list()
-    r[["Procyon_lotor"]] <- raster::stack(list.files('example_data/Procyon_lotor_mskEnvs', full.names = TRUE))
+    ls1 <- list.files('example_data/Procyon_lotor_mskEnvs', full.names = TRUE)
+    ls1 <- ls1[-which(grepl("gri$",ls1))]
+    r[["Procyon_lotor"]] <- raster::stack(ls1)
     r[["Procyon_lotor"]] <- raster::brick(r[["Procyon_lotor"]])
-    r[["Nyctereutes_procyonoides"]] <- raster::stack(list.files('example_data/Nyctereutes_procyonoides_mskEnvs', full.names = TRUE))
+    ls2 <- list.files('example_data/Nyctereutes_procyonoides_mskEnvs', full.names = TRUE)
+    ls2 <- ls2[-which(grepl("gri$",ls2))]
+    r[["Nyctereutes_procyonoides"]] <- raster::stack(ls2)
     r[["Nyctereutes_procyonoides"]] <- raster::brick(r[["Nyctereutes_procyonoides"]])
     for(n in c("Procyon_lotor", "Nyctereutes_procyonoides")) {
       occs <- f[[n]]$occs
@@ -129,6 +133,7 @@ shinyServer(function(input, output, session) {
     req(curSp())
     coords <- unlist(input$map_draw_new_feature$geometry$coordinates)
     xy <- matrix(c(coords[c(TRUE,FALSE)], coords[c(FALSE,TRUE)]), ncol=2)
+    colnames(xy) <- c('longitude', 'latitude')
     id <- input$map_draw_new_feature$properties$`_leaflet_id`
     
     if(component() == 'poccs') {
@@ -212,15 +217,15 @@ shinyServer(function(input, output, session) {
           rasPal <- c('gray', 'blue')
           map %>% clearAll() %>% 
             addLegend("bottomright", colors = c('gray', 'blue'),
-                      title = "Thresholded Suitability", labels = c("predicted absence", "predicted presence"),
-                      opacity = 1)
+                      title = "Thresholded Suitability<br>(Training)", labels = c("predicted absence", "predicted presence"),
+                      opacity = 1, layerId = "train")
         } else {
           # if threshold specified
           legendPal <- colorNumeric(rev(rasCols), mapPredVals, na.color='transparent')
           rasPal <- colorNumeric(rasCols, mapPredVals, na.color='transparent')
           map %>% clearAll() %>% 
-            addLegend("bottomright", pal = legendPal, title = "Predicted Suitability",
-                      values = mapPredVals,
+            addLegend("bottomright", pal = legendPal, title = "Predicted Suitability<br>(Training)",
+                      values = mapPredVals, layerId = "train",
                       labFormat = reverseLabels(2, reverse_order=TRUE))
         }
         # map model prediction raster
@@ -241,21 +246,22 @@ shinyServer(function(input, output, session) {
             # if no threshold specified
             if(rmm()$output$project$thresholdRule != 'noThresh') {
               rasPal <- c('gray', 'blue')
-              map %>% addLegend("bottomright", colors = c('gray', 'blue'),
-                                title = "Thresholded Suitability", labels = c("predicted absence", "predicted presence"),
-                                opacity = 1, layerId = 'leg')
+              map %>% removeControl("proj") %>%
+                addLegend("bottomright", colors = c('gray', 'blue'), title = "Thresholded Suitability<br>(Projected)", 
+                          labels = c("predicted absence", "predicted presence"), opacity = 1, layerId = 'proj')
             } else {
               # if threshold specified
               legendPal <- colorNumeric(rev(rasCols), mapProjVals, na.color='transparent')
               rasPal <- colorNumeric(rasCols, mapProjVals, na.color='transparent')
-              map %>% addLegend("bottomright", pal = legendPal, title = "Predicted Suitability",
-                                values = mapProjVals, layerId = 'leg',
-                                labFormat = reverseLabels(2, reverse_order=TRUE))
+              map %>% removeControl("proj") %>%
+                addLegend("bottomright", pal = legendPal, title = "Predicted Suitability<br>(Projected)",
+                                values = mapProjVals, layerId = 'proj', labFormat = reverseLabels(2, reverse_order=TRUE))
             }
             
             # map model prediction raster and projection polygon
+            sharedExt <- rbind(polyPjXY, occs()[c("longitude", "latitude")])
             map %>% clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
-              map_occs(occs()) %>%
+              map_occs(occs(), customZoom = sharedExt) %>%
               addRasterImage(mapProj(), colors = rasPal, opacity = 0.7,
                              layerId = 'projRas', group = 'proj') %>%
               addPolygons(lng=polyPjXY[,1], lat=polyPjXY[,2], layerId="projExt", fill = FALSE,
@@ -1052,7 +1058,8 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goResetProj, {
     map %>%
       removeShape("projExt") %>%
-      removeImage("projRas")
+      removeImage("projRas") %>%
+      removeControl("proj")
     spp[[curSp()]]$polyPjXY <- NULL
     spp[[curSp()]]$polyPjID <- NULL
     spp[[curSp()]]$project <- NULL

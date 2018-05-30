@@ -38,7 +38,7 @@ projectArea_MOD <- function(input, output, session) {
     
     if(!(input$threshold == 'noThresh')) {
       # use threshold from present-day model training area
-      thr <- rmm()$visualization$thresholds[[input$threshold]]
+      thr <- spp[[curSp()]]$visualization$thresholds[[input$threshold]]
       projAreaThr <- projArea > thr
       shinyLogs %>% writeLog("Projection of model to new area for", curSp(), 'with threshold', input$threshold, ': ', thr, '.')
     } else {
