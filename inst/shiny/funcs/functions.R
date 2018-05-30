@@ -5,35 +5,7 @@
 ####################### #
 # UI ####
 ####################### #
-uiTop <- function(modPkg, pkgDes) {
-  list(span(modPkg, id="rpkg"),
-       span(paste(':', pkgDes), id="pkgDes"),
-       br())
-}
-
-uiBottom <- function(modAuthors=NULL, pkgName=NULL, pkgAuthors) {
-  if (is.null(modAuthors)) {
-    list(span(pkgName, id = "rpkg"), "references", br(),
-         div(paste('Package Developers:', pkgAuthors), id="pkgDes"),
-         a("CRAN", href = file.path("http://cran.r-project.org/web/packages", pkgName, "index.html"), target = "_blank"),
-         " | ",
-         a("documentation", href = file.path("https://cran.r-project.org/web/packages", pkgName, paste0(pkgName, ".pdf")), target = "_blank"))
-  } else {
-    if (is.null(pkgName)) {
-      list(div(paste('Module Developers:', modAuthors), id="pkgDes"))
-    } else {
-      list(div(paste('Module Developers:', modAuthors), id="pkgDes"),
-           span(pkgName, id = "rpkg"), "references", br(),
-           div(paste('Package Developers:', pkgAuthors), id="pkgDes"),
-           a("CRAN", href = file.path("http://cran.r-project.org/web/packages", pkgName, "index.html"), target = "_blank"),
-           " | ",
-           a("documentation", href = file.path("https://cran.r-project.org/web/packages", pkgName, paste0(pkgName, ".pdf")), target = "_blank")
-      )
-    }
-  }
-}
-
-uiTop2 <- function(mod_INFO) {
+uiTop <- function(mod_INFO) {
   modName <- mod_INFO$modName
   pkgName <- mod_INFO$pkgName
   pkgTitl <- mod_INFO$pkgTitl
@@ -52,7 +24,7 @@ uiTop2 <- function(mod_INFO) {
   return(ls)
 }
 
-uiBottom2 <- function(mod_INFO) {
+uiBottom <- function(mod_INFO) {
   modAuts <- mod_INFO$modAuts
   pkgName <- mod_INFO$pkgName 
   pkgAuts <- mod_INFO$pkgAuts
@@ -75,8 +47,10 @@ uiBottom2 <- function(mod_INFO) {
 infoGenerator <- function(pkgName, modName , modAuts) {
   pkgInfo <- sapply(pkgName, packageDescription, simplify = FALSE)
   pkgTitl <- sapply(pkgInfo, function(x) x$Title)
-  pkgAutsSimp <- function(x) gsub("\\s+,", ",", gsub("\n|\\[ctb\\]|\\[aut\\]|\\[aut, cre\\]", "", x$Author))
-  pkgAuts <- sapply(pkgInfo, pkgAutsSimp)
+  # remove square brackets and spaces before commas
+  pkgAuts <- sapply(pkgInfo, function(x) gsub("\\s+,", ",", gsub("\n|\\[.*?\\]", "", x$Author)))
+  # remove parens and spaces before commas
+  pkgAuts <- sapply(pkgAuts, function(x) gsub("\\s+,", ",", gsub("\\(.*?\\)", "", x)))
   list(modName = modName,
        modAuts = modAuts,
        pkgName = pkgName,

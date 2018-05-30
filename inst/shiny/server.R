@@ -148,9 +148,7 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "curSp", selected = curSp())
   })
   
-  # component-level logic
-  rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-  
+  # component-level mapping logic
   observe({
     # must have one species selected and occurrence data
     # for mapping to be functional
@@ -206,7 +204,7 @@ shinyServer(function(input, output, session) {
                   title = "Partition Groups", labels = sort(unique(occsGrp)),
                   opacity = 1)
     }
-    
+    rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
     if(component() == 'vis') {
       if(module() == 'mapPreds') {
         updateTabsetPanel(session, 'main', selected = 'Map')
@@ -238,38 +236,38 @@ shinyServer(function(input, output, session) {
       }
     }
     if(component() == 'proj') {
-        updateTabsetPanel(session, 'main', selected = 'Map')
-        if(!is.null(spp[[curSp()]]$polyPjXY)) {
-          if(!is.null(spp[[curSp()]]$project)) {
-            mapProjVals <- spp[[curSp()]]$project$mapProjVals
-            polyPjXY <- spp[[curSp()]]$polyPjXY
-            # if no threshold specified
-            if(rmm()$output$transfer$environment1$thresholdRule != 'none') {
-              rasPal <- c('gray', 'blue')
-              map %>% removeControl("proj") %>%
-                addLegend("bottomright", colors = c('gray', 'blue'), title = "Thresholded Suitability<br>(Projected)", 
-                          labels = c("predicted absence", "predicted presence"), opacity = 1, layerId = 'proj')
-            } else {
-              # if threshold specified
-              legendPal <- colorNumeric(rev(rasCols), mapProjVals, na.color='transparent')
-              rasPal <- colorNumeric(rasCols, mapProjVals, na.color='transparent')
-              map %>% removeControl("proj") %>%
-                addLegend("bottomright", pal = legendPal, title = "Predicted Suitability<br>(Projected)",
-                                values = mapProjVals, layerId = 'proj', labFormat = reverseLabels(2, reverse_order=TRUE))
-            }
-            
-            # map model prediction raster and projection polygon
-            sharedExt <- rbind(polyPjXY, occs()[c("longitude", "latitude")])
-            map %>% clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
-              map_occs(occs(), customZoom = sharedExt) %>%
-              addRasterImage(mapProj(), colors = rasPal, opacity = 0.7,
-                             layerId = 'projRas', group = 'proj') %>%
-              addPolygons(lng=polyPjXY[,1], lat=polyPjXY[,2], layerId="projExt", fill = FALSE,
-                          weight=4, color="blue", group='proj') %>%
-              # add background polygon
-              mapBgPolys(bgShpXY())
+      updateTabsetPanel(session, 'main', selected = 'Map')
+      if(!is.null(spp[[curSp()]]$polyPjXY)) {
+        if(!is.null(spp[[curSp()]]$project)) {
+          mapProjVals <- spp[[curSp()]]$project$mapProjVals
+          polyPjXY <- spp[[curSp()]]$polyPjXY
+          # if no threshold specified
+          if(rmm()$output$transfer$environment1$thresholdRule != 'none') {
+            rasPal <- c('gray', 'blue')
+            map %>% removeControl("proj") %>%
+              addLegend("bottomright", colors = c('gray', 'blue'), title = "Thresholded Suitability<br>(Projected)", 
+                        labels = c("predicted absence", "predicted presence"), opacity = 1, layerId = 'proj')
+          } else {
+            # if threshold specified
+            legendPal <- colorNumeric(rev(rasCols), mapProjVals, na.color='transparent')
+            rasPal <- colorNumeric(rasCols, mapProjVals, na.color='transparent')
+            map %>% removeControl("proj") %>%
+              addLegend("bottomright", pal = legendPal, title = "Predicted Suitability<br>(Projected)",
+                        values = mapProjVals, layerId = 'proj', labFormat = reverseLabels(2, reverse_order=TRUE))
           }
+          
+          # map model prediction raster and projection polygon
+          sharedExt <- rbind(polyPjXY, occs()[c("longitude", "latitude")])
+          map %>% clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
+            map_occs(occs(), customZoom = sharedExt) %>%
+            addRasterImage(mapProj(), colors = rasPal, opacity = 0.7,
+                           layerId = 'projRas', group = 'proj') %>%
+            addPolygons(lng=polyPjXY[,1], lat=polyPjXY[,2], layerId="projExt", fill = FALSE,
+                        weight=4, color="blue", group='proj') %>%
+            # add background polygon
+            mapBgPolys(bgShpXY())
         }
+      }
     }
     # logic for initializing or removing leaflet draw toolbar
     if((component() == 'poccs' & module() == 'selOccs') | component() == 'proj') {
