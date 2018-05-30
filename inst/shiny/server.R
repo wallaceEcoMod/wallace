@@ -45,18 +45,15 @@ shinyServer(function(input, output, session) {
   
   # FOR DEVELOPMENT PURPOSES
   observeEvent(input$load, {
-    # spp[['Puma_concolor']]$occs <- read.csv('Puma_concolor_occs.csv')[,1:12]
-    # spp[['Puma_concolor']]$bg <- read.csv('Puma_concolor_bg.csv')
-    # spp[['Puma_concolor']]$procEnvs$bgMask <- raster::stack(list.files(pattern="tif$", full.names = T))
     f <- c1_userOccs('example_data/multispecies.csv', "multispecies.csv")
     wc <- raster::stack(list.files('wc10', full.names = TRUE, pattern="bil$"))
     wc <- raster::brick(wc)
     r <- list()
-    r[["Meles_meles"]] <- raster::stack(list.files('example_data/Meles meles_mskEnvs', full.names = TRUE))
-    r[["Meles_meles"]] <- raster::brick(r[["Meles_meles"]])
-    r[["Puma_concolor"]] <- raster::stack(list.files('example_data/Puma concolor_mskEnvs', full.names = TRUE))
-    r[["Puma_concolor"]] <- raster::brick(r[["Puma_concolor"]])
-    for(n in c("Meles_meles", "Puma_concolor")) {
+    r[["Procyon_lotor"]] <- raster::stack(list.files('example_data/Procyon_lotor_mskEnvs', full.names = TRUE))
+    r[["Procyon_lotor"]] <- raster::brick(r[["Procyon_lotor"]])
+    r[["Nyctereutes_procyonoides"]] <- raster::stack(list.files('example_data/Nyctereutes_procyonoides_mskEnvs', full.names = TRUE))
+    r[["Nyctereutes_procyonoides"]] <- raster::brick(r[["Nyctereutes_procyonoides"]])
+    for(n in c("Procyon_lotor", "Nyctereutes_procyonoides")) {
       occs <- f[[n]]$occs
       spp[[n]] <- list(occs = occs, occData = list(occsCleaned = occs),
                        rmm = rangeModelMetadata::rmmTemplate())
@@ -64,6 +61,7 @@ shinyServer(function(input, output, session) {
       spp[[n]]$bg <- f[[n]]$bg
       spp[[n]]$procEnvs <- list()
       spp[[n]]$procEnvs$bgMask <- r[[n]]
+      spp[[n]]$occs$partition <- f[[n]]$occs$partition
     }
     print('SECRET DATA LOADED')
   })
@@ -165,7 +163,7 @@ shinyServer(function(input, output, session) {
         if(!is.null(spp[[curSp()]]$procOccs$occsThin)) {
           map %>% clearAll() %>% 
             map_occs(spp[[curSp()]]$procOccs$occsPreThin, fillColor = 'blue', fillOpacity = 1) %>%
-            map_occs(occs(), fillOpacity = 1, clear = FALSE) %>%
+            map_occs(occs(), fillOpacity = 1) %>%
             addLegend("bottomright", colors = c('red', 'blue'), title = "Occ Records", 
                       labels = c('retained', 'removed'), opacity = 1)  
         } else {
@@ -201,7 +199,7 @@ shinyServer(function(input, output, session) {
         map_occs(occs(), fillColor = partsFill, fillOpacity = 1) %>%
         addLegend("bottomright", colors = newColors,
                   title = "Partition Groups", labels = sort(unique(occsGrp)),
-                  opacity = 1, layerId = 'leg')
+                  opacity = 1)
     }
     
     if(component() == 'vis') {
@@ -212,24 +210,26 @@ shinyServer(function(input, output, session) {
         # if no threshold specified
         if (rmm()$output$prediction$thresholdRule != 'noThresh') {
           rasPal <- c('gray', 'blue')
-          map %>% addLegend("bottomright", colors = c('gray', 'blue'),
-                            title = "Thresholded Suitability", labels = c("predicted absence", "predicted presence"),
-                            opacity = 1, layerId = 'leg')
+          map %>% clearAll() %>% 
+            addLegend("bottomright", colors = c('gray', 'blue'),
+                      title = "Thresholded Suitability", labels = c("predicted absence", "predicted presence"),
+                      opacity = 1)
         } else {
           # if threshold specified
           legendPal <- colorNumeric(rev(rasCols), mapPredVals, na.color='transparent')
           rasPal <- colorNumeric(rasCols, mapPredVals, na.color='transparent')
-          map %>% addLegend("bottomright", pal = legendPal, title = "Predicted Suitability",
-                            values = mapPredVals, layerId = 'leg',
-                            labFormat = reverseLabels(2, reverse_order=TRUE))
+          map %>% clearAll() %>% 
+            addLegend("bottomright", pal = legendPal, title = "Predicted Suitability",
+                      values = mapPredVals,
+                      labFormat = reverseLabels(2, reverse_order=TRUE))
         }
         # map model prediction raster
         map %>% 
-          clearAll() %>% map_occs(occs()) %>%
+          map_occs(occs()) %>%
           addRasterImage(mapPred(), colors = rasPal, opacity = 0.7, 
-                         group = 'vis', layerId = 'mapPred')
-        # add background polygon
-        mapBgPolys(bgShpXY())
+                         group = 'vis', layerId = 'mapPred') %>%
+          # add background polygon(s)
+          mapBgPolys(bgShpXY())
       }
     }
     if(component() == 'proj') {
@@ -259,10 +259,9 @@ shinyServer(function(input, output, session) {
               addRasterImage(mapProj(), colors = rasPal, opacity = 0.7,
                              layerId = 'projRas', group = 'proj') %>%
               addPolygons(lng=polyPjXY[,1], lat=polyPjXY[,2], layerId="projExt", fill = FALSE,
-                          weight=4, color="blue", group='proj')
-            
-            # add background polygon
-            mapBgPolys(bgShpXY())
+                          weight=4, color="blue", group='proj') %>%
+              # add background polygon
+              mapBgPolys(bgShpXY())
           }
         }
     }
@@ -645,7 +644,7 @@ shinyServer(function(input, output, session) {
   
   # DOWNLOAD: masked environmental variable rasters
   output$dlBgShp <- downloadHandler(
-    filename = function() paste0(spName(spp[[curSp()]]), '_bgShp.zip'),
+    filename = function() paste0(formatSpName(curSp()), '_bgShp.zip'),
     content = function(file) {
       tmpdir <- tempdir()
       setwd(tempdir())
@@ -667,7 +666,7 @@ shinyServer(function(input, output, session) {
   
   # DOWNLOAD: masked environmental variable rasters
   output$dlMskEnvs <- downloadHandler(
-    filename = function() paste0(spName(spp[[curSp()]]), '_mskEnvs.zip'),
+    filename = function() paste0(formatSpName(curSp()), '_mskEnvs.zip'),
     content = function(file) {
       tmpdir <- tempdir()
       setwd(tempdir())

@@ -59,7 +59,7 @@ smartProgress <- function(logs, message, expr) {
   }
 }
 
-mapBgPolys <- function(bgShpXY) {
+mapBgPolys <- function(map, bgShpXY) {
   for (shp in bgShpXY) {
     map %>%
       addPolygons(lng = shp[,1], lat = shp[,2], fill = FALSE,

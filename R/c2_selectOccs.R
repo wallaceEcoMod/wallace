@@ -21,7 +21,8 @@ c2_selectOccs <- function(occs, polySelXY, polySelID = 1, shinyLogs = NULL) {
     intersect <- sp::over(pts, newPoly)
     ptRemIndex <- as.numeric(which(is.na(intersect)))
     
-    remIDs <- as.numeric(pts[ptRemIndex,]$occID)
+    remIDs <- printVecAsis(pts[ptRemIndex,]$occID)
+    # need code here to format the string better
     
     occs.sel <- occs[-ptRemIndex,]
     
