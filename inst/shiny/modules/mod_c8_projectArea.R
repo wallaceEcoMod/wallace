@@ -1,9 +1,10 @@
 projectArea_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    tags$div(title='Create binary map of predicted presence/absence assuming all values above threshold value represent presence. Also can be interpreted as a "potential distribution" (see guidance).',
+    tags$div(title='Create binary map of predicted presence/absence assuming all values above threshold value represent presence. 
+             Also can be interpreted as a "potential distribution" (see guidance).',
              selectInput(ns('threshold'), label = "Set threshold",
-                         choices = list("No threshold" = 'noThresh',
+                         choices = list("No threshold" = 'none',
                                         "Minimum Training Presence" = 'mtp', 
                                         "10 Percentile Training Presence" = 'p10')))
   )
@@ -25,18 +26,20 @@ projectArea_MOD <- function(input, output, session) {
     
     predType <- rmm()$output$prediction$notes
     
-    projArea <- c8_projectArea(results(),
-                               curModel(), 
-                               envs(),
-                               predType,
-                               spp[[curSp()]]$polyPjXY,
-                               spp[[curSp()]]$polyPjID,
-                               shinyLogs)
+    projArea.out <- c8_projectArea(results(),
+                                   curModel(), 
+                                   envs(),
+                                   predType,
+                                   spp[[curSp()]]$polyPjXY,
+                                   spp[[curSp()]]$polyPjID,
+                                   shinyLogs)
+    
+    projExt <- projArea.out$projExt
+    projArea <- projArea.out$projArea
     
     # generate binary prediction based on selected thresholding rule 
     # (same for all Maxent prediction types because they scale the same)
-    
-    if(!(input$threshold == 'noThresh')) {
+    if(!(input$threshold == 'none')) {
       # use threshold from present-day model training area
       thr <- spp[[curSp()]]$visualization$thresholds[[input$threshold]]
       projAreaThr <- projArea > thr
@@ -45,7 +48,6 @@ projectArea_MOD <- function(input, output, session) {
       projAreaThr <- projArea
       shinyLogs %>% writeLog("Projection of model to new area for", curSp(), 'with', predType, 'output.')
     }
-    
     # rename
     names(projAreaThr) <- paste0(curModel(), '_thresh_', predType)
     
@@ -54,9 +56,25 @@ projectArea_MOD <- function(input, output, session) {
     spp[[curSp()]]$project$mapProjVals <- getRasterVals(projAreaThr, predType)
     
     # METADATA
-    spp[[curSp()]]$rmm$output$transfer <- NULL
+    spp[[curSp()]]$rmm$data$transfer$environment1$minVal <- printVecAsis(raster::cellStats(projExt, min), asChar = TRUE)
+    spp[[curSp()]]$rmm$data$transfer$environment1$maxVal <- printVecAsis(raster::cellStats(projExt, max), asChar = TRUE)
+    spp[[curSp()]]$rmm$data$transfer$environment1$yearMin <- 1960
+    spp[[curSp()]]$rmm$data$transfer$environment1$yearMax <- 1990
+    spp[[curSp()]]$rmm$data$transfer$environment1$resolution <- paste(round(raster::res(projExt)[1] * 60, digits = 2), "degrees")
+    spp[[curSp()]]$rmm$data$transfer$environment1$extentSet <- printVecAsis(as.vector(projExt@extent), asChar = TRUE)
+    spp[[curSp()]]$rmm$data$transfer$environment1$extentRule <- "project to user-selected new area"
+    spp[[curSp()]]$rmm$data$transfer$environment1$sources <- "WorldClim 1.4"
+    
+    spp[[curSp()]]$rmm$output$transfer$environment1$units <- ifelse(predType == "raw", "relative occurrence rate", predType)
+    spp[[curSp()]]$rmm$output$transfer$environment1$minVal <- printVecAsis(raster::cellStats(projAreaThr, min), asChar = TRUE)
+    spp[[curSp()]]$rmm$output$transfer$environment1$maxVal <- printVecAsis(raster::cellStats(projAreaThr, max), asChar = TRUE)
+    if(!(input$threshold == 'none')) {
+      spp[[curSp()]]$rmm$output$transfer$environment1$thresholdSet <- thr
+    } else {
+      spp[[curSp()]]$rmm$output$transfer$environment1$thresholdSet <- NULL
+    }
+    spp[[curSp()]]$rmm$output$transfer$environment1$thresholdRule <- input$threshold
     spp[[curSp()]]$rmm$output$transfer$notes <- NULL
-    spp[[curSp()]]$rmm$output$project$thresholdRule <- input$threshold
   })
 }
 

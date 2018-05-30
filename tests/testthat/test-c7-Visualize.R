@@ -94,7 +94,7 @@ test_that("Component 7 Map Prediction: Select", {
   select.map <- drop.menus[[which(selects.ids == "c7_mxEvalPlots-mxEvalSel")]]
   select.map$clickElement()
   dataValues <- list("'mtp'", "'p10'")
-  selectDropdownItem(comp7Tab, "'noThresh'", dataValues)
+  selectDropdownItem(comp7Tab, "'none'", dataValues)
 })
 
 test_that("Component 7 Map Prediction: Buttons", { 

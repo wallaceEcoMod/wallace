@@ -50,9 +50,9 @@ wcBioclims_MOD <- function(input, output, session, spIn) {
       spp[[sp]]$rmm$data$environment$variableNames <- names(envs)
       spp[[sp]]$rmm$data$environment$yearMin <- 1960
       spp[[sp]]$rmm$data$environment$yearMax <- 1990
-      spp[[sp]]$rmm$data$environment$resolution <- raster::res(envs)
+      spp[[sp]]$rmm$data$environment$resolution <- paste(round(raster::res(envs)[1] * 60, digits = 2), "degrees")
       spp[[sp]]$rmm$data$environment$extent <- 'global'
-      spp[[sp]]$rmm$data$environment$sources <- 'WorldClim'
+      spp[[sp]]$rmm$data$environment$sources <- 'WorldClim 1.4'
     }
   })
 }

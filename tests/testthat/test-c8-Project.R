@@ -61,7 +61,7 @@ test_that("Component 8 Module Project to New Extent: Selects", {
   select.thr <- drop.menus.full[[7]]
   select.thr$clickElement()
   dataValues <- list("'mtp'", "'p10'")
-  selectDropdownItem(comp8Tab, "'noThresh'", dataValues)
+  selectDropdownItem(comp8Tab, "'none'", dataValues)
   
   select.dl <- drop.menus.full[[9]]
   select.dl$clickElement()

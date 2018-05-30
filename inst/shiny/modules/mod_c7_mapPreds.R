@@ -7,7 +7,7 @@ mapPreds_UI <- function(id) {
                           choices = list("raw", "logistic", "cloglog"), selected = "raw", inline = TRUE)),
     tags$div(title='Create binary map of predicted presence/absence assuming all values above threshold value represent presence. Also can be interpreted as a "potential distribution" (see guidance).',
              selectInput(ns('threshold'), label = "Set threshold",
-                         choices = list("No threshold" = 'noThresh',
+                         choices = list("No threshold" = 'none',
                                         "Minimum Training Presence" = 'mtp', 
                                         "10 Percentile Training Presence" = 'p10')))
   )
@@ -63,7 +63,7 @@ mapPreds_MOD <- function(input, output, session) {
     thresholds <- getAllThresh(occPredVals)
     
     # get the chosen threshold value
-    if(!(input$threshold == 'noThresh')) {
+    if(!(input$threshold == 'none')) {
       thr <- thresholds[[input$threshold]]
       predThr <- predSel > thr
       shinyLogs %>% writeLog(input$threshold, 'threshold selected for', predType, ': ', thr, '.')
@@ -83,7 +83,7 @@ mapPreds_MOD <- function(input, output, session) {
     
     # METADATA
     spp[[curSp()]]$rmm$output$prediction$thresholdRule <- input$threshold
-    if(!(input$threshold == 'noThresh')) {
+    if(!(input$threshold == 'none')) {
       spp[[curSp()]]$rmm$output$prediction$thresholdSet <- thr
     } else {
       spp[[curSp()]]$rmm$output$prediction$thresholdSet <- NULL

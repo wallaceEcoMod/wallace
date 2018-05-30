@@ -373,18 +373,26 @@ drawToolbarRefresh <- function(map) {
 
 makeCap <- function(x) paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)))
 getSpName <- function() deparse(substitute(input$spName))
-printVecAsis <- function(x) {
+printVecAsis <- function(x, asChar = FALSE) {
   if (is.character(x)) {
     if (length(x) == 1) {
       return(paste0("\'", x, "\'"))
     } else {
-      return(paste0("c(", paste(sapply(x, function(a) paste0("\'", a, "\'")), collapse=", "), ")"))
+      if(asChar == FALSE) {
+        return(paste0("c(", paste(sapply(x, function(a) paste0("\'", a, "\'")), collapse=", "), ")"))
+      } else {
+        return(paste0("(", paste(sapply(x, function(a) paste0("\'", a, "\'")), collapse=", "), ")"))
+      }
     }
   } else {
     if (length(x) == 1) {
       return(x)
     } else {
-      return(paste0("c(", paste(x, collapse=", "), ")"))
+      if(asChar == FALSE) {
+        return(paste0("c(", paste(x, collapse=", "), ")"))  
+      } else {
+        return(paste0("(", paste(x, collapse=", "), ")"))
+      }
     }
   }
 }

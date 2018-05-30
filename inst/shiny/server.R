@@ -213,7 +213,7 @@ shinyServer(function(input, output, session) {
         req(mapPred())
         mapPredVals <- spp[[curSp()]]$visualization$mapPredVals
         # if no threshold specified
-        if (rmm()$output$prediction$thresholdRule != 'noThresh') {
+        if (rmm()$output$prediction$thresholdRule != 'none') {
           rasPal <- c('gray', 'blue')
           map %>% clearAll() %>% 
             addLegend("bottomright", colors = c('gray', 'blue'),
@@ -244,7 +244,7 @@ shinyServer(function(input, output, session) {
             mapProjVals <- spp[[curSp()]]$project$mapProjVals
             polyPjXY <- spp[[curSp()]]$polyPjXY
             # if no threshold specified
-            if(rmm()$output$project$thresholdRule != 'noThresh') {
+            if(rmm()$output$transfer$environment1$thresholdRule != 'none') {
               rasPal <- c('gray', 'blue')
               map %>% removeControl("proj") %>%
                 addLegend("bottomright", colors = c('gray', 'blue'), title = "Thresholded Suitability<br>(Projected)", 
@@ -1002,26 +1002,16 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # # #
   # module Project to New Time ####
   # # # # # # # # # # # # # # # # #
-  projTime <- callModule(projectTime_MOD, 'c8_projectTime')
-  
   observeEvent(input$goProjectTime, {
-    projTime.call <- projTime()
-    # stop if no model prediction
-    req(rvs$predCur)
-    # unpack
-    rvs$projMsk <- projTime.call[[1]]
-    rvs$projCur <- projTime.call[[2]]
-    req(rvs$projCur)
-    rvs$projCurVals <- getVals(rvs$projCur, rvs$comp7.type)
-    rvs$comp8.pj <- 'time'
-    
-    rasVals <- c(spp[[curSp()]]$visualization$mapPredVals, rvs$projCurVals)
-    rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-    map %>% comp8_map(rvs$projCur, rvs$polyPjXY, bgShpXY, rasVals, 
-                      rasCols, "Predicted Suitability", 'rProj')
-    
-    map %>% drawToolbarRefresh()
-    
+    projTime <- callModule(projectTime_MOD, 'c8_projectTime')
+    projTime()
+    # MAPPING
+    map %>% 
+      # reset draw polygon
+      leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
+      leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
+                                     rectangleOptions = FALSE, circleOptions = FALSE, 
+                                     markerOptions = FALSE) 
     shinyjs::enable("dlProj")
   })
   

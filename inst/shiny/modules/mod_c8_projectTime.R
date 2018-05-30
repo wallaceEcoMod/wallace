@@ -1,7 +1,8 @@
 projectTime_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    # aliases are different for ecoclimate temporal scenarios. e.g. "lgm" is "LGM". 
+    # aliases are different for ecoclimate temporal scenarios. e.g. 
+    # "lgm" is "LGM"
     # "mid" is "Holo"
     # "2.6" is "Future 2.6"
     # "4.5" is "Future 4.5"
@@ -20,7 +21,12 @@ projectTime_UI <- function(id) {
                                '4.5' = 45,
                                '6.0' = 60,
                                '8.5' = 85)),
-    threshPred_UI(ns('threshPred'))
+    tags$div(title='Create binary map of predicted presence/absence assuming all values above threshold value represent presence. 
+             Also can be interpreted as a "potential distribution" (see guidance).',
+             selectInput(ns('threshold'), label = "Set threshold",
+                         choices = list("No threshold" = 'none',
+                                        "Minimum Training Presence" = 'mtp', 
+                                        "10 Percentile Training Presence" = 'p10')))
   )
 }
 
@@ -47,6 +53,7 @@ projectTime_MOD <- function(input, output, session) {
   })
   
   reactive({
+    # ERRORS
     if (is.null(spp[[curSp()]]$visualization$mapPred)) {
       shinyLogs %>% writeLog(type = 'error', 'Calculate a model prediction in component 7 
                              before projecting.')
@@ -61,12 +68,12 @@ projectTime_MOD <- function(input, output, session) {
     
     # pjTimePar <- list(rcp = input$selRCP, gcm = input$selGCM, year = input$selTime)
     
-    if (is.null(spp[[curSp()]]$polyPjXY)) {
+    if(is.null(spp[[curSp()]]$polyPjXY)) {
       shinyLogs %>% writeLog(type = 'error', 'Select projection extent first.')
       return()
     }
     envsRes <- raster::res(spp[[curSp()]]$envs)[1]
-    if (envsRes < 0.01) {
+    if(envsRes < 0.01) {
       shinyLogs %>% writeLog(type = 'error', 'Project to New Time currently only available with resolutions >30 arc seconds.')
       return()
     }
@@ -94,31 +101,68 @@ projectTime_MOD <- function(input, output, session) {
       projTimeEnvs <- projTimeEnvs[[names(envs())]]
     })
     
-    outputType <- spp[[curSp()]]$rmm$output$prediction$notes
+    predType <- rmm()$output$prediction$notes
     
-    projTime <- c8_projectTime(curModel(),
-                               projTimeEnvs,
-                               outputType,
-                               spp[[curSp()]]$polyPjXY,
-                               spp[[curSp()]]$polyPjID)
+    projTime.out <- c8_projectTime(results(),
+                                   curModel(),
+                                   projTimeEnvs,
+                                   predType,
+                                   spp[[curSp()]]$polyPjXY,
+                                   spp[[curSp()]]$polyPjID,
+                                   shinyLogs)
+    projExt <- projTime.out$projExt
+    projTime <- projTime.out$projTime
     
-    projTime.thr.call <- callModule(threshPred_MOD, "threshPred", projTime)
-    projTime.thr <- projTime.thr.call()
+    # generate binary prediction based on selected thresholding rule 
+    # (same for all Maxent prediction types because they scale the same)
+    if(!(input$threshold == 'none')) {
+      # use threshold from present-day model training area
+      thr <- spp[[curSp()]]$visualization$thresholds[[input$threshold]]
+      projTimeThr <- projTime > thr
+      shinyLogs %>% writeLog("Projection of model to", paste0('20', input$selTime), "for", 
+                             curSp(), 'with threshold', input$threshold, ': ', thr,
+                             "for GCM", GCMlookup[input$selGCM], 
+                             "under RCP", as.numeric(input$selRCP)/10.0, ".")
+    } else {
+      projTimeThr <- projTime
+      shinyLogs %>% writeLog("Projection of model to", paste0('20', input$selTime), "for", 
+                             curSp(), 'with', predType, 'output',
+                             "for GCM", GCMlookup[input$selGCM], 
+                             "under RCP", as.numeric(input$selRCP)/10.0, ".")
+    }
+    # rename
+    names(projTimeThr) <- paste0(curModel(), '_thresh_', predType)
     
-    shinyLogs %>% writeLog("Projected to", paste0('20', input$selTime), 
-                           "for GCM", GCMlookup[input$selGCM], 
-                           "under RCP", as.numeric(input$selRCP)/10.0, ".")
     # save to spp
-    spp[[curSp()]]$project$projTime <- projTime.thr
-    spp[[curSp()]]$project$projTimeVals <- getVals(projTime.thr, outputType)
+    spp[[curSp()]]$project$mapProj <- projTimeThr
+    spp[[curSp()]]$project$mapProjVals <- getRasterVals(projTimeThr, predType)
     
     # METADATA
-    spp[[curSp()]]$rmm$output$transfer <- NULL
+    spp[[curSp()]]$rmm$data$transfer$environment1$minVal <- printVecAsis(raster::cellStats(projExt, min), asChar = TRUE)
+    spp[[curSp()]]$rmm$data$transfer$environment1$maxVal <- printVecAsis(raster::cellStats(projExt, max), asChar = TRUE)
+    spp[[curSp()]]$rmm$data$transfer$environment1$yearMin <- 1960
+    spp[[curSp()]]$rmm$data$transfer$environment1$yearMax <- 1990
+    spp[[curSp()]]$rmm$data$transfer$environment1$resolution <- paste(round(raster::res(projExt)[1] * 60, digits = 2), "degrees")
+    spp[[curSp()]]$rmm$data$transfer$environment1$extentSet <- printVecAsis(as.vector(projExt@extent), asChar = TRUE)
+    spp[[curSp()]]$rmm$data$transfer$environment1$extentRule <- "project to user-selected new time"
+    spp[[curSp()]]$rmm$data$transfer$environment1$sources <- "WorldClim 1.4"
+    spp[[curSp()]]$rmm$data$transfer$environment1$notes <- paste("projection to year", paste0('20', input$selTime), 
+                                                                 "for GCM", GCMlookup[input$selGCM], "under RCP", 
+                                                                 as.numeric(input$selRCP)/10.0)
+    
+    spp[[curSp()]]$rmm$output$transfer$environment1$units <- ifelse(predType == "raw", "relative occurrence rate", predType)
+    spp[[curSp()]]$rmm$output$transfer$environment1$minVal <- printVecAsis(raster::cellStats(projTimeThr, min), asChar = TRUE)
+    spp[[curSp()]]$rmm$output$transfer$environment1$maxVal <- printVecAsis(raster::cellStats(projTimeThr, max), asChar = TRUE)
+    if(!(input$threshold == 'none')) {
+      spp[[curSp()]]$rmm$output$transfer$environment1$thresholdSet <- thr
+    } else {
+      spp[[curSp()]]$rmm$output$transfer$environment1$thresholdSet <- NULL
+    }
+    spp[[curSp()]]$rmm$output$transfer$environment1$thresholdRule <- input$threshold
     spp[[curSp()]]$rmm$output$transfer$notes <- NULL
-    spp[[curSp()]]$rmm$output$project$thresholdRule <- input$threshPred
   })
 }
 
 projectTime_INFO <- infoGenerator(modName = "Project to New Time", 
-                                  modAuts = "Jamie M. Kass, Bruno Vilela, Robert P. Anderson", 
+                                  modAuts = "Jamie M. Kass, Bruno Vilela, Gonzalo Pinilla, Robert P. Anderson", 
                                   pkgName = "dismo")

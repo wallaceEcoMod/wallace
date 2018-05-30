@@ -15,9 +15,7 @@ c8_projectArea <- function(results, curModel, envs, outputType, polyPjXY, polyPj
   
   smartProgress(shinyLogs, message = 'Projecting model to new area...', {
     pargs <- paste0("outputformat=", outputType)
-    print(results$models[[curModel]])
-    print(projMsk)
     modProjArea <- dismo::predict(results$models[[curModel]], projMsk, args = pargs)
   })
-  return(modProjArea)
+  return(list(projExt=projMsk, projArea=modProjArea))
 }
