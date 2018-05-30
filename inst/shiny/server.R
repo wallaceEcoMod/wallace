@@ -204,12 +204,12 @@ shinyServer(function(input, output, session) {
                   title = "Partition Groups", labels = sort(unique(occsGrp)),
                   opacity = 1)
     }
-    rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
     if(component() == 'vis') {
       if(module() == 'mapPreds') {
         updateTabsetPanel(session, 'main', selected = 'Map')
         req(mapPred())
         mapPredVals <- spp[[curSp()]]$visualization$mapPredVals
+        rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
         # if no threshold specified
         if (rmm()$output$prediction$thresholdRule != 'none') {
           rasPal <- c('gray', 'blue')
@@ -239,33 +239,57 @@ shinyServer(function(input, output, session) {
       updateTabsetPanel(session, 'main', selected = 'Map')
       if(!is.null(spp[[curSp()]]$polyPjXY)) {
         if(!is.null(spp[[curSp()]]$project)) {
-          mapProjVals <- spp[[curSp()]]$project$mapProjVals
           polyPjXY <- spp[[curSp()]]$polyPjXY
-          # if no threshold specified
-          if(rmm()$output$transfer$environment1$thresholdRule != 'none') {
-            rasPal <- c('gray', 'blue')
-            map %>% removeControl("proj") %>%
-              addLegend("bottomright", colors = c('gray', 'blue'), title = "Thresholded Suitability<br>(Projected)", 
-                        labels = c("predicted absence", "predicted presence"), opacity = 1, layerId = 'proj')
-          } else {
-            # if threshold specified
-            legendPal <- colorNumeric(rev(rasCols), mapProjVals, na.color='transparent')
-            rasPal <- colorNumeric(rasCols, mapProjVals, na.color='transparent')
-            map %>% removeControl("proj") %>%
-              addLegend("bottomright", pal = legendPal, title = "Predicted Suitability<br>(Projected)",
-                        values = mapProjVals, layerId = 'proj', labFormat = reverseLabels(2, reverse_order=TRUE))
+          if(module() == "projArea" | module() == "projTime") {
+            mapProjVals <- spp[[curSp()]]$project$mapProjVals
+            rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+            # if no threshold specified
+            if(rmm()$output$transfer$environment1$thresholdRule != 'none') {
+              rasPal <- c('gray', 'blue')
+              map %>% removeControl("proj") %>%
+                addLegend("bottomright", colors = c('gray', 'blue'), title = "Thresholded Suitability<br>(Projected)", 
+                          labels = c("predicted absence", "predicted presence"), opacity = 1, layerId = 'proj')
+            } else {
+              # if threshold specified
+              legendPal <- colorNumeric(rev(rasCols), mapProjVals, na.color='transparent')
+              rasPal <- colorNumeric(rasCols, mapProjVals, na.color='transparent')
+              map %>% removeControl("proj") %>%
+                addLegend("bottomright", pal = legendPal, title = "Predicted Suitability<br>(Projected)",
+                          values = mapProjVals, layerId = 'proj', labFormat = reverseLabels(2, reverse_order=TRUE))
+              
+            }
+            # map model prediction raster and projection polygon
+            sharedExt <- rbind(polyPjXY, occs()[c("longitude", "latitude")])
+            map %>% clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
+              map_occs(occs(), customZoom = sharedExt) %>%
+              addRasterImage(mapProj(), colors = rasPal, opacity = 0.7,
+                             layerId = 'projRas', group = 'proj') %>%
+              addPolygons(lng=polyPjXY[,1], lat=polyPjXY[,2], layerId="projExt", fill = FALSE,
+                          weight=4, color="blue", group='proj') %>%
+              # add background polygon
+              mapBgPolys(bgShpXY())
+          } else if(module() == "mess") {
+            if(!is.null(spp[[curSp()]]$project$mess)) {
+              mess <- spp[[curSp()]]$project$mess
+              mapProjVals <- spp[[curSp()]]$project$messVals
+              rasCols <- RColorBrewer::brewer.pal(n=11, name='Reds')
+              legendPal <- colorNumeric(rev(rasCols), mapProjVals, na.color='transparent')
+              rasPal <- colorNumeric(rasCols, mapProjVals, na.color='transparent')
+              map %>% removeControl("proj") %>%
+                addLegend("bottomright", pal = legendPal, title = "MESS Values",
+                          values = mapProjVals, layerId = 'proj', labFormat = reverseLabels(2, reverse_order=TRUE))
+              # map model prediction raster and projection polygon
+              sharedExt <- rbind(polyPjXY, occs()[c("longitude", "latitude")])
+              map %>% clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
+                map_occs(occs(), customZoom = sharedExt) %>%
+                addRasterImage(mess, colors = rasPal, opacity = 0.7,
+                               layerId = 'projRas', group = 'proj') %>%
+                addPolygons(lng=polyPjXY[,1], lat=polyPjXY[,2], layerId="projExt", fill = FALSE,
+                            weight=4, color="blue", group='proj') %>%
+                # add background polygon
+                mapBgPolys(bgShpXY())
+            }
           }
-          
-          # map model prediction raster and projection polygon
-          sharedExt <- rbind(polyPjXY, occs()[c("longitude", "latitude")])
-          map %>% clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
-            map_occs(occs(), customZoom = sharedExt) %>%
-            addRasterImage(mapProj(), colors = rasPal, opacity = 0.7,
-                           layerId = 'projRas', group = 'proj') %>%
-            addPolygons(lng=polyPjXY[,1], lat=polyPjXY[,2], layerId="projExt", fill = FALSE,
-                        weight=4, color="blue", group='proj') %>%
-            # add background polygon
-            mapBgPolys(bgShpXY())
         }
       }
     }
@@ -355,7 +379,7 @@ shinyServer(function(input, output, session) {
   occs <- reactive(spp[[curSp()]]$occs)
   # convenience function for metadata list for current species
   rmm <- reactive(spp[[curSp()]]$rmm)
-
+  
   # TABLE
   # options <- list(autoWidth = TRUE, columnDefs = list(list(width = '40%', targets = 7)),
   #                 scrollX=TRUE, scrollY=400)
@@ -378,7 +402,7 @@ shinyServer(function(input, output, session) {
         dplyr::select(-pop)
       # if bg values are present, add them to table
       if(!is.null(bg())) {
-       tbl <- rbind(tbl, bg()) 
+        tbl <- rbind(tbl, bg()) 
       }
       write.csv(tbl, file, row.names = FALSE)
     }
@@ -565,7 +589,7 @@ shinyServer(function(input, output, session) {
   
   # convenience function for environmental variables for current species
   envs <- reactive(spp[[curSp()]]$envs)
-
+  
   # map center coordinates for 30 arcsec download
   mapCntr <- reactive(mapCenter(input$map_bounds))
   
@@ -1000,8 +1024,9 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # # #
   # module Project to New Time ####
   # # # # # # # # # # # # # # # # #
+  # needs to be outside observeEvent to trigger GCM ui
+  projTime <- callModule(projectTime_MOD, 'c8_projectTime')
   observeEvent(input$goProjectTime, {
-    projTime <- callModule(projectTime_MOD, 'c8_projectTime')
     projTime()
     # MAPPING
     map %>% 
@@ -1016,21 +1041,30 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # # # # # #
   # module Environmental Similarity ####
   # # # # # # # # # # # # # # # # # # # #
-  envSimilarity <- callModule(envSimilarity_MOD, 'c8_envSimilarity', rvs)
-  
   observeEvent(input$goEnvSimilarity, {
-    rvs$mess <- envSimilarity()
-    # stop if no model projection
-    req(rvs$projCur)
-    rvs$comp8.esim <- 'mess'
-    # set infinite values to NA
-    rvs$mess[is.infinite(rvs$mess)] <- NA
-    # extract values
-    rvs$messVals <- getVals(rvs$mess)
+    envSimilarity <- callModule(envSimilarity_MOD, 'c8_envSimilarity')
+    envSimilarity()
     
-    rasVals <- rvs$messVals
-    rasCols <- RColorBrewer::brewer.pal(n=11, name='Reds')
-    map %>% comp8_map(rvs$mess, rvs$polyPjXY, bgShpXY, rasVals, rasCols, "MESS Values")
+    # MAPPING
+    map %>% 
+      # reset draw polygon
+      leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
+      leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
+                                     rectangleOptions = FALSE, circleOptions = FALSE, 
+                                     markerOptions = FALSE) 
+    shinyjs::enable("dlProj")
+    
+    # # stop if no model projection
+    # req(rvs$projCur)
+    # rvs$comp8.esim <- 'mess'
+    # # set infinite values to NA
+    # rvs$mess[is.infinite(rvs$mess)] <- NA
+    # # extract values
+    # rvs$messVals <- getVals(rvs$mess)
+    # 
+    # rasVals <- rvs$messVals
+    # rasCols <- RColorBrewer::brewer.pal(n=11, name='Reds')
+    # map %>% comp8_map(rvs$mess, rvs$polyPjXY, bgShpXY, rasVals, rasCols, "MESS Values")
     
     shinyjs::enable("dlProj")
   })

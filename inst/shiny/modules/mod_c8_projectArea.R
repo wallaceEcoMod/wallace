@@ -12,6 +12,7 @@ projectArea_UI <- function(id) {
 
 projectArea_MOD <- function(input, output, session) {
   reactive({
+    # ERRORS ####
     if (is.null(spp[[curSp()]]$visualization$mapPred)) {
       shinyLogs %>% writeLog(type = 'error', 'Calculate a model prediction in component 7 
                              before projecting.')
@@ -24,8 +25,8 @@ projectArea_MOD <- function(input, output, session) {
       return()
     }
     
+    # FUNCTION CALL ####
     predType <- rmm()$output$prediction$notes
-    
     projArea.out <- c8_projectArea(results(),
                                    curModel(), 
                                    envs(),
@@ -37,6 +38,7 @@ projectArea_MOD <- function(input, output, session) {
     projExt <- projArea.out$projExt
     projArea <- projArea.out$projArea
     
+    # PROCESSING ####
     # generate binary prediction based on selected thresholding rule 
     # (same for all Maxent prediction types because they scale the same)
     if(!(input$threshold == 'none')) {
@@ -51,11 +53,11 @@ projectArea_MOD <- function(input, output, session) {
     # rename
     names(projAreaThr) <- paste0(curModel(), '_thresh_', predType)
     
-    # save to spp
+    # LOAD INTO SPP ####
     spp[[curSp()]]$project$mapProj <- projAreaThr
     spp[[curSp()]]$project$mapProjVals <- getRasterVals(projAreaThr, predType)
     
-    # METADATA
+    # METADATA ####
     spp[[curSp()]]$rmm$data$transfer$environment1$minVal <- printVecAsis(raster::cellStats(projExt, min), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$maxVal <- printVecAsis(raster::cellStats(projExt, max), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$yearMin <- 1960

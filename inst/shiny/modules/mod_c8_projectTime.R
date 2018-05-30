@@ -31,7 +31,7 @@ projectTime_UI <- function(id) {
 }
 
 projectTime_MOD <- function(input, output, session) {
-  
+  # dynamic ui for GCM selection: choices differ depending on choice of time period
   output$selGCMui <- renderUI({
     ns <- session$ns
     GCMlookup <- c(AC="ACCESS1-0", BC="BCC-CSM1-1", CC="CCSM4", CE="CESM1-CAM5-1-FV2",
@@ -53,7 +53,7 @@ projectTime_MOD <- function(input, output, session) {
   })
   
   reactive({
-    # ERRORS
+    # ERRORS ####
     if (is.null(spp[[curSp()]]$visualization$mapPred)) {
       shinyLogs %>% writeLog(type = 'error', 'Calculate a model prediction in component 7 
                              before projecting.')
@@ -65,8 +65,6 @@ projectTime_MOD <- function(input, output, session) {
                              the polygon.")
       return()
     }
-    
-    # pjTimePar <- list(rcp = input$selRCP, gcm = input$selGCM, year = input$selTime)
     
     if(is.null(spp[[curSp()]]$polyPjXY)) {
       shinyLogs %>% writeLog(type = 'error', 'Select projection extent first.')
@@ -93,6 +91,7 @@ projectTime_MOD <- function(input, output, session) {
       return()
     }
     
+    # DATA ####
     smartProgress(shinyLogs, message = paste("Retrieving WorldClim data for", input$selTime, input$selRCP, "..."), {
       projTimeEnvs <- raster::getData('CMIP5', var = "bio", res = envsRes * 60,
                                       rcp = input$selRCP, model = input$selGCM, year = input$selTime)
@@ -100,9 +99,9 @@ projectTime_MOD <- function(input, output, session) {
       # in case user subsetted bioclims
       projTimeEnvs <- projTimeEnvs[[names(envs())]]
     })
-    
+
+    # FUNCTION CALL ####    
     predType <- rmm()$output$prediction$notes
-    
     projTime.out <- c8_projectTime(results(),
                                    curModel(),
                                    projTimeEnvs,
@@ -113,6 +112,7 @@ projectTime_MOD <- function(input, output, session) {
     projExt <- projTime.out$projExt
     projTime <- projTime.out$projTime
     
+    # PROCESSING ####
     # generate binary prediction based on selected thresholding rule 
     # (same for all Maxent prediction types because they scale the same)
     if(!(input$threshold == 'none')) {
@@ -133,21 +133,22 @@ projectTime_MOD <- function(input, output, session) {
     # rename
     names(projTimeThr) <- paste0(curModel(), '_thresh_', predType)
     
-    # save to spp
+    # LOAD INTO SPP ####
     spp[[curSp()]]$project$mapProj <- projTimeThr
     spp[[curSp()]]$project$mapProjVals <- getRasterVals(projTimeThr, predType)
     
-    # METADATA
+    # METADATA ####
+    projYr <- paste0('20', input$selTime)
     spp[[curSp()]]$rmm$data$transfer$environment1$minVal <- printVecAsis(raster::cellStats(projExt, min), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$maxVal <- printVecAsis(raster::cellStats(projExt, max), asChar = TRUE)
-    spp[[curSp()]]$rmm$data$transfer$environment1$yearMin <- 1960
-    spp[[curSp()]]$rmm$data$transfer$environment1$yearMax <- 1990
+    spp[[curSp()]]$rmm$data$transfer$environment1$yearMin <- projYr
+    spp[[curSp()]]$rmm$data$transfer$environment1$yearMax <- projYr
     spp[[curSp()]]$rmm$data$transfer$environment1$resolution <- paste(round(raster::res(projExt)[1] * 60, digits = 2), "degrees")
     spp[[curSp()]]$rmm$data$transfer$environment1$extentSet <- printVecAsis(as.vector(projExt@extent), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$extentRule <- "project to user-selected new time"
     spp[[curSp()]]$rmm$data$transfer$environment1$sources <- "WorldClim 1.4"
-    spp[[curSp()]]$rmm$data$transfer$environment1$notes <- paste("projection to year", paste0('20', input$selTime), 
-                                                                 "for GCM", GCMlookup[input$selGCM], "under RCP", 
+    spp[[curSp()]]$rmm$data$transfer$environment1$notes <- paste("projection to year", projYr, "for GCM", 
+                                                                 GCMlookup[input$selGCM], "under RCP", 
                                                                  as.numeric(input$selRCP)/10.0)
     
     spp[[curSp()]]$rmm$output$transfer$environment1$units <- ifelse(predType == "raw", "relative occurrence rate", predType)

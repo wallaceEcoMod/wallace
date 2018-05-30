@@ -8,33 +8,30 @@ envSimilarity_UI <- function(id) {
 envSimilarity_MOD <- function(input, output, session, rvs) {
   
   reactive({
-    req(rvs$envs, rvs$mods, rvs$predCur)
-    
-    if (is.null(rvs$projCur)) {
+    # ERRORS ####
+    if (is.null(mapProj())) {
       shinyLogs %>% writeLog(type = 'error', 'Project to new area or time first.')
       return()
     }
-    if (is.null(rvs$polyPjXY)) {
-      shinyLogs %>% writeLog(type = 'error', "The polygon has not been drawn and finished. 
-                       Please use the draw toolbar on the left-hand of the map to complete
-                       the polygon.")
+    if (is.null(spp[[curSp()]]$polyPjXY)) {
+      shinyLogs %>% writeLog(type = 'error', "The polygon has not been drawn and finished. Please 
+                                    use the draw toolbar on the left-hand of the map to complete the polygon.")
       return()
     }
     
-    occs.xy <- rvs$occs %>% dplyr::select(longitude, latitude)
+    # FUNCTION CALL ####
+    projYr <- spp[[curSp()]]$rmm$data$transfer$environment1$yearMax
+    time <- ifelse(projYr == "1990", "present-day", projYr)
+    mss <- c8_mess(occs(), 
+                   bg(), 
+                   bgMask(), 
+                   mapProj(), 
+                   time, 
+                   shinyLogs)
     
-    withProgress(message = "Generating MESS map...", {
-      occVals <- raster::extract(rvs$envs, occs.xy)
-      pjMESS <- suppressWarnings(dismo::mess(rvs$projMsk, occVals))
-      if (rvs$comp8.pj == 'area') {
-        shinyLogs %>% writeLog("Generated MESS map for present.")
-      } else if (rvs$comp8.pj == 'time') {
-        shinyLogs %>% writeLog("Generated MESS map for", paste0('20', rvs$pjTimePar$time), 
-                         "for GCM", GCMlookup[rvs$pjTimePar$gcm], 
-                         "under RCP", as.numeric(rvs$pjTimePar$rcp)/10.0, ".")
-      }
-    })
-    return(pjMESS)
+    # LOAD INTO SPP ####
+    spp[[curSp()]]$project$mess <- mss
+    spp[[curSp()]]$project$messVals <- getRasterVals(mess)
   })
 }
 
