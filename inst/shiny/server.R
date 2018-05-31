@@ -66,8 +66,10 @@ shinyServer(function(input, output, session) {
       spp[[n]]$procEnvs <- list()
       spp[[n]]$procEnvs$bgMask <- r[[n]]
       spp[[n]]$occs$partition <- f[[n]]$occs$partition
+      print(spp[[n]]$occs[,names(spp[[n]]$procEnvs$bgMask)])
     }
     print('SECRET DATA LOADED')
+    
   })
   
   # load modules

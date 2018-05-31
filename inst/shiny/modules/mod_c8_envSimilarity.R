@@ -25,13 +25,13 @@ envSimilarity_MOD <- function(input, output, session, rvs) {
     mss <- c8_mess(occs(), 
                    bg(), 
                    bgMask(), 
-                   mapProj(), 
+                   spp[[curSp()]]$project$pjEnvs, 
                    time, 
                    shinyLogs)
     
     # LOAD INTO SPP ####
     spp[[curSp()]]$project$mess <- mss
-    spp[[curSp()]]$project$messVals <- getRasterVals(mess)
+    spp[[curSp()]]$project$messVals <- getRasterVals(mss)
   })
 }
 

@@ -31,14 +31,15 @@ projectTime_UI <- function(id) {
 }
 
 projectTime_MOD <- function(input, output, session) {
+  GCMlookup <- c(AC="ACCESS1-0", BC="BCC-CSM1-1", CC="CCSM4", CE="CESM1-CAM5-1-FV2",
+                 CN="CNRM-CM5", GF="GFDL-CM3", GD="GFDL-ESM2G", GS="GISS-E2-R",
+                 HD="HadGEM2-AO", HG="HadGEM2-CC", HE="HadGEM2-ES", IN="INMCM4",
+                 IP="IPSL-CM5A-LR", ME="MPI-ESM-P", MI="MIROC-ESM-CHEM", MR="MIROC-ESM",
+                 MC="MIROC5", MP="MPI-ESM-LR", MG="MRI-CGCM3", NO="NorESM1-M")
   # dynamic ui for GCM selection: choices differ depending on choice of time period
   output$selGCMui <- renderUI({
     ns <- session$ns
-    GCMlookup <- c(AC="ACCESS1-0", BC="BCC-CSM1-1", CC="CCSM4", CE="CESM1-CAM5-1-FV2",
-                   CN="CNRM-CM5", GF="GFDL-CM3", GD="GFDL-ESM2G", GS="GISS-E2-R",
-                   HD="HadGEM2-AO", HG="HadGEM2-CC", HE="HadGEM2-ES", IN="INMCM4",
-                   IP="IPSL-CM5A-LR", ME="MPI-ESM-P", MI="MIROC-ESM-CHEM", MR="MIROC-ESM",
-                   MC="MIROC5", MP="MPI-ESM-LR", MG="MRI-CGCM3", NO="NorESM1-M")
+    
     if (input$selTime == 'lgm') {
       gcms <- c('CC', 'MR', 'MC')
     } else if (input$selTime == 'mid') {
@@ -99,7 +100,7 @@ projectTime_MOD <- function(input, output, session) {
       # in case user subsetted bioclims
       projTimeEnvs <- projTimeEnvs[[names(envs())]]
     })
-
+    
     # FUNCTION CALL ####    
     predType <- rmm()$output$prediction$notes
     projTime.out <- c8_projectTime(results(),
@@ -134,6 +135,7 @@ projectTime_MOD <- function(input, output, session) {
     names(projTimeThr) <- paste0(curModel(), '_thresh_', predType)
     
     # LOAD INTO SPP ####
+    spp[[curSp()]]$project$pjEnvs <- projExt
     spp[[curSp()]]$project$mapProj <- projTimeThr
     spp[[curSp()]]$project$mapProjVals <- getRasterVals(projTimeThr, predType)
     
@@ -148,8 +150,8 @@ projectTime_MOD <- function(input, output, session) {
     spp[[curSp()]]$rmm$data$transfer$environment1$extentRule <- "project to user-selected new time"
     spp[[curSp()]]$rmm$data$transfer$environment1$sources <- "WorldClim 1.4"
     spp[[curSp()]]$rmm$data$transfer$environment1$notes <- paste("projection to year", projYr, "for GCM", 
-                                                                 GCMlookup[input$selGCM], "under RCP", 
-                                                                 as.numeric(input$selRCP)/10.0)
+                                  GCMlookup[input$selGCM], "under RCP", 
+                                  as.numeric(input$selRCP)/10.0)
     
     spp[[curSp()]]$rmm$output$transfer$environment1$units <- ifelse(predType == "raw", "relative occurrence rate", predType)
     spp[[curSp()]]$rmm$output$transfer$environment1$minVal <- printVecAsis(raster::cellStats(projTimeThr, min), asChar = TRUE)

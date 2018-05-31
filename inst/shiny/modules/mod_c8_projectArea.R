@@ -54,6 +54,7 @@ projectArea_MOD <- function(input, output, session) {
     names(projAreaThr) <- paste0(curModel(), '_thresh_', predType)
     
     # LOAD INTO SPP ####
+    spp[[curSp()]]$project$pjEnvs <- projExt
     spp[[curSp()]]$project$mapProj <- projAreaThr
     spp[[curSp()]]$project$mapProjVals <- getRasterVals(projAreaThr, predType)
     
