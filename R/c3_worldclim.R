@@ -19,8 +19,6 @@ c3_worldclim<- function(bcRes, bcSel, shinyLogs=NULL){
     if(bcRes == 0.5) {
       wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes, 
                               lon = mapCntr()[1], lat = mapCntr()[2])
-      # rvs$bcLon <- mapCntr()[1]
-      # rvs$bcLat <- mapCntr()[2]
     }else{
       wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes)
       wcbc <- wcbc[[bcSel]]

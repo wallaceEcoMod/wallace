@@ -37,11 +37,6 @@ shinyServer(function(input, output, session) {
   expl <- 'Please find messages for the user in this log window.'
   logInit <- c(paste(intro, brk, expl, brk, sep='<br>'))
   shinyLogs <- reactiveVal(logInit)
-  #logs <- reactiveVal(logInit)
-  # legacy
-  rvs <- reactiveValues()
-  # legacy
-  rmd <- reactiveValues()
   
   # FOR DEVELOPMENT PURPOSES
   observeEvent(input$load, {
@@ -944,33 +939,6 @@ shinyServer(function(input, output, session) {
     shinyjs::enable("dlPred")
   })
   
-  # download for model predictions (restricted to background extent)
-  output$dlPred <- downloadHandler(
-    filename = function() {
-      ext <- switch(input$predFileType, raster = 'grd', ascii = 'asc', GTiff = 'tif', PNG = 'png')
-      paste0(names(rvs$predCur), '.', ext)},
-    content = function(file) {
-      if(require(rgdal)) {
-        if (input$predFileType == 'png') {
-          png(file)
-          raster::image(rvs$predCur)
-          dev.off()
-        } else if (input$predFileType == 'raster') {
-          fileName <- names(rvs$predCur)
-          tmpdir <- tempdir()
-          raster::writeRaster(rvs$predCur, file.path(tmpdir, fileName), format = input$predFileType, overwrite = TRUE)
-          fs <- file.path(tmpdir, paste0(fileName, c('.grd', '.gri')))
-          zip(zipfile=file, files=fs, extras = '-j')
-        } else {
-          r <- raster::writeRaster(rvs$predCur, file, format = input$predFileType, overwrite = TRUE)
-          file.rename(r@file@name, file)
-        }
-      } else {
-        shinyLogs %>% writeLog("Please install the rgdal package before downloading rasters.")
-      }
-    }
-  )
-  
   # # # # # # # # # # # # # # # # # #
   # VISUALIZE: other controls ####
   # # # # # # # # # # # # # # # # # #
@@ -979,7 +947,7 @@ shinyServer(function(input, output, session) {
   mapPred <- reactive(spp[[curSp()]]$visualization$mapPred)
   
   # handle downloads for BIOCLIM Plots png
-  output$vizPlot <- downloadHandler(
+  output$dlVizPlot <- downloadHandler(
     filename = function() {
       if(module() == "bioclimPlot") {
         paste0(spName(), "_bioClimPlot.png")
@@ -999,6 +967,33 @@ shinyServer(function(input, output, session) {
         responsePlot()
       }
       dev.off()
+    }
+  )
+  
+  # download for model predictions (restricted to background extent)
+  output$dlPred <- downloadHandler(
+    filename = function() {
+      ext <- switch(input$predFileType, raster = 'grd', ascii = 'asc', GTiff = 'tif', PNG = 'png')
+      paste0(names(mapPred()), '.', ext)},
+    content = function(file) {
+      if(require(rgdal)) {
+        if (input$predFileType == 'png') {
+          png(file)
+          raster::image(mapPred())
+          dev.off()
+        } else if (input$predFileType == 'raster') {
+          fileName <- names(mapPred())
+          tmpdir <- tempdir()
+          raster::writeRaster(mapPred(), file.path(tmpdir, fileName), format = input$predFileType, overwrite = TRUE)
+          fs <- file.path(tmpdir, paste0(fileName, c('.grd', '.gri')))
+          zip(zipfile=file, files=fs, extras = '-j')
+        } else {
+          r <- raster::writeRaster(mapPred(), file, format = input$predFileType, overwrite = TRUE)
+          file.rename(r@file@name, file)
+        }
+      } else {
+        shinyLogs %>% writeLog("Please install the rgdal package before downloading rasters.")
+      }
     }
   )
   
@@ -1055,20 +1050,6 @@ shinyServer(function(input, output, session) {
                                      rectangleOptions = FALSE, circleOptions = FALSE, 
                                      markerOptions = FALSE) 
     shinyjs::enable("dlProj")
-    
-    # # stop if no model projection
-    # req(rvs$projCur)
-    # rvs$comp8.esim <- 'mess'
-    # # set infinite values to NA
-    # rvs$mess[is.infinite(rvs$mess)] <- NA
-    # # extract values
-    # rvs$messVals <- getVals(rvs$mess)
-    # 
-    # rasVals <- rvs$messVals
-    # rasCols <- RColorBrewer::brewer.pal(n=11, name='Reds')
-    # map %>% comp8_map(rvs$mess, rvs$polyPjXY, bgShpXY, rasVals, rasCols, "MESS Values")
-    
-    shinyjs::enable("dlProj")
   })
   
   # # # # # # # # # # # # # # # # # #
@@ -1094,21 +1075,21 @@ shinyServer(function(input, output, session) {
   output$dlProj <- downloadHandler(
     filename = function() {
       ext <- switch(input$projFileType, raster = 'grd', ascii = 'asc', GTiff = 'tif', PNG = 'png')
-      paste0(names(rvs$projCur), '.', ext)},
+      paste0(names(mapProj()), '.', ext)},
     content = function(file) {
       if(require(rgdal)) {
         if (input$projFileType == 'png') {
           png(file)
-          raster::image(rvs$projCur)
+          raster::image(mapProj())
           dev.off()
         } else if (input$projFileType == 'raster') {
-          fileName <- names(rvs$projCur)
+          fileName <- names(mapProj())
           tmpdir <- tempdir()
-          raster::writeRaster(rvs$projCur, file.path(tmpdir, fileName), format = input$projFileType, overwrite = TRUE)
+          raster::writeRaster(mapProj(), file.path(tmpdir, fileName), format = input$projFileType, overwrite = TRUE)
           fs <- file.path(tmpdir, paste0(fileName, c('.grd', '.gri')))
           zip(zipfile=file, files=fs, extras = '-j')
         } else {
-          r <- raster::writeRaster(rvs$projCur, file, format = input$projFileType, overwrite = TRUE)
+          r <- raster::writeRaster(mapProj(), file, format = input$projFileType, overwrite = TRUE)
           file.rename(r@file@name, file)
         }  
       } else {

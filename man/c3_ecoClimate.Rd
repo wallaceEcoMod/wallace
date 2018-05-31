@@ -4,7 +4,7 @@
 \alias{c3_ecoClimate}
 \title{c3_ecoClimate}
 \usage{
-c3_ecoClimate(bcAOGCM, bcScenario, bcSelChoice = FALSE, bcSels,
+c3_ecoClimate(bcAOGCM, bcScenario, ecoClimSelChoice = FALSE, ecoClimSel,
   shinyLogs = NULL)
 }
 \arguments{
@@ -14,11 +14,9 @@ Options are: "CCSM", "CNRM", "MIROC", "FGOALS", "GISS", "IPSL","MRI", "MPI"}
 \item{bcScenario}{select the temporal scenario that you want to download. 
 Options are: "LGM" (Last Glacial Maximum, 21,000 years ago), "Holo" ()}
 
-\item{bcSelChoice}{boolean TRUE/FALSE TRUE=user selects the variables}
+\item{ecoClimSelChoice}{boolean TRUE/FALSE TRUE=user selects the variables}
 
-\item{bcSels}{list of boolean data. selected variables}
-
-\item{rvs}{monster list}
+\item{ecoClimSel}{list of boolean data. selected variables}
 }
 \description{
 download ecoClimate variables. see www.ecoclimate.org

@@ -33,6 +33,7 @@ wcBioclims_MOD <- function(input, output, session, spIn) {
                          shinyLogs)
     req(envs)
     
+    # PROCESSING ####
     for(sp in spIn) {
       # remove occurrences with NA values for variables
       withProgress(message = paste0("Extracting environmental values for occurrences of ", sp, "..."), {

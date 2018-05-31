@@ -5,7 +5,7 @@ envSimilarity_UI <- function(id) {
   )
 }
 
-envSimilarity_MOD <- function(input, output, session, rvs) {
+envSimilarity_MOD <- function(input, output, session) {
   
   reactive({
     # ERRORS ####

@@ -9,7 +9,6 @@
 #' @param occDb character name of the paleontological database. Either "PaleobioDB" or "neotoma"
 #' @param occNum integer maximum number of records
 #' @param timeInterval character Either "LGM" (Last Glacial Maximum) or "Holo" (Holocene). For PaleobioDB only Holocene is allowed.
-#' @param rvs list of parameters
 #' 
 #' 
 

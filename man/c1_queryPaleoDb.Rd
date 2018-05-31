@@ -14,8 +14,6 @@ c1_queryPaleoDb(spName, occDb, occNum, timeInterval, shinyLogs = NULL)
 \item{occNum}{integer maximum number of records}
 
 \item{timeInterval}{character Either "LGM" (Last Glacial Maximum) or "Holo" (Holocene). For PaleobioDB only Holocene is allowed.}
-
-\item{rvs}{list of parameters}
 }
 \description{
 \code{c1_queryPaleoDb} returns species occurrences

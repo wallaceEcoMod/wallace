@@ -8,28 +8,27 @@
 #' Options are: "CCSM", "CNRM", "MIROC", "FGOALS", "GISS", "IPSL","MRI", "MPI"
 #' @param bcScenario select the temporal scenario that you want to download. 
 #' Options are: "LGM" (Last Glacial Maximum, 21,000 years ago), "Holo" ()
-#' @param bcSelChoice boolean TRUE/FALSE TRUE=user selects the variables
-#' @param bcSels list of boolean data. selected variables
-#' @param rvs monster list 
+#' @param ecoClimSelChoice boolean TRUE/FALSE TRUE=user selects the variables
+#' @param ecoClimSel list of boolean data. selected variables
 #' 
 #' 
 
-c3_ecoClimate <- function (bcAOGCM, bcScenario, bcSelChoice=FALSE, bcSels, 
+c3_ecoClimate <- function (bcAOGCM, bcScenario, ecoClimSelChoice=FALSE, ecoClimSel, 
                           shinyLogs=NULL){
 
   smartProgress(shinyLogs, message = "Retrieving ecoClimate data...", {
     ecoClimatelayers <- ecoClimate_getdata(AOGCM=bcAOGCM, Baseline="Modern", Scenario=bcScenario)
   })
 
-  if (bcSelChoice== TRUE){
-    # I assume that if bcSelChoise is TRUE, then bcSels exist and it is a vector of characters, bio1, bio2, etc.
-    x <- gregexpr("[0-9]+", bcSels)  # Numbers with any number of digits
-    x2 <- as.numeric(unlist(regmatches(bcSels, x)))
+  if (ecoClimSelChoice== TRUE){
+    # I assume that if bcSelChoise is TRUE, then ecoClimSel exist and it is a vector of characters, bio1, bio2, etc.
+    x <- gregexpr("[0-9]+", ecoClimSel)  # Numbers with any number of digits
+    x2 <- as.numeric(unlist(regmatches(ecoClimSel, x)))
     
     ecoClimatelayers<- ecoClimate_select (ecoClimatelayers, Sels=sels)
     
     shinyLogs %>% writeLog("Environmental predictors: ecoClimate bioclimatic variables",
-                      bcSels, "at 0.5 degree resolution.")
+                      ecoClimSel, "at 0.5 degree resolution.")
     
   }
   return(ecoClimatelayers)
