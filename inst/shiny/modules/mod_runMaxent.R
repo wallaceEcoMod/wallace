@@ -1,5 +1,5 @@
 
-maxent_UI <- function(id) {
+runMaxent_UI <- function(id) {
   ns <- NS(id)
   tagList(
     strong("Select feature classes "), strong(em("(flexibility of modeled response)")), br(),
@@ -18,7 +18,7 @@ maxent_UI <- function(id) {
   )
 }
 
-maxent_MOD <- function(input, output, session) {
+runMaxent_MOD <- function(input, output, session) {
   reactive({
     
     for(sp in spIn()) {  
@@ -29,7 +29,7 @@ maxent_MOD <- function(input, output, session) {
         return()
       }
       # FUNCTION CALL ####
-      m.maxent <- c6_maxent(spp[[sp]]$occs, 
+      m.maxent <- runMaxent(spp[[sp]]$occs, 
                             spp[[sp]]$bg, 
                             spp[[sp]]$occs$partition,
                             spp[[sp]]$bg$partition,
@@ -51,11 +51,28 @@ maxent_MOD <- function(input, output, session) {
       spp[[sp]]$rmm$model$maxent$regularizationRule <- paste("increment by", input$rmsStep)
       spp[[sp]]$rmm$model$maxent$notes <- "dismo package implementation"
     }
-    
-    
   })
 }
 
-maxent_INFO <- infoGenerator(modName = "Maxent",
+runMaxent_INFO <- infoGenerator(modName = "Maxent",
                              modAuts = "Jamie M. Kass, Robert Muscarella, Bruno Vilela, Robert P. Anderson",
                              pkgName = c("ENMeval", "dismo"))
+
+runMaxent_TBL <- function(input, output, session) {
+  output$evalTbls <- renderUI({
+    options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
+    evalTbl <- results()$evalTbl
+    evalTblBins <- results()$evalTblBins
+    evalTblRound <- cbind(evalTbl[,1:3], round(evalTbl[,4:16], digits=3))
+    evalTblBinsRound <- cbind(settings=evalTbl[,1], round(evalTblBins, digits=3))
+    output$evalTbl <- DT::renderDataTable(evalTblRound, options = options)
+    output$evalTblBins <- DT::renderDataTable(evalTblBinsRound, options = options)
+    tagList(
+      br(),
+      div("Evaluation statistics: full model and partition averages", id="stepText"), br(), br(),
+      DT::dataTableOutput('evalTbl'), br(),
+      div("Individual partition bin evaluation statistics", id="stepText"), br(), br(),
+      DT::dataTableOutput('evalTblBins')  
+    )
+  })
+}

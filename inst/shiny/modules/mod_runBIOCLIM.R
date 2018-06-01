@@ -1,10 +1,10 @@
-bioclim_UI <- function(id) {
+runBIOCLIM_UI <- function(id) {
   ns <- NS(id)
   tagList(
   )
 }
 
-bioclim_MOD <- function(input, output, session) {
+runBIOCLIM_MOD <- function(input, output, session) {
   reactive({
     for(sp in spIn()) {
       # ERRORS ####
@@ -15,7 +15,7 @@ bioclim_MOD <- function(input, output, session) {
       }
       
       # FUNCTION CALL ####
-      m.bioclim <- c6_bioclim(spp[[sp]]$occs, 
+      m.bioclim <- runBIOCLIM(spp[[sp]]$occs, 
                               spp[[sp]]$bg, 
                               spp[[sp]]$procEnvs$bgMask, 
                               shinyLogs)
@@ -32,9 +32,28 @@ bioclim_MOD <- function(input, output, session) {
   })
 }
 
-bioclim_INFO <- infoGenerator(modName = "BIOCLIM",
+runBIOCLIM_INFO <- infoGenerator(modName = "BIOCLIM",
                               modAuts = "Jamie M. Kass, Robert Muscarella, Bruno Vilela, Robert P. Anderson",
                               pkgName = c("ENMeval", "dismo"))
+
+runBIOCLIM_TBL <- function(input, output, session) {
+  output$evalTbls <- renderUI({
+    options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
+    evalTbl <- results()$evalTbl
+    evalTblBins <- results()$evalTblBins
+    evalTblRound <- round(evalTbl, digits=3)
+    evalTblBinsRound <- results()$evalTblBins
+    output$evalTbl <- DT::renderDataTable(evalTblRound, options = options)
+    output$evalTblBins <- DT::renderDataTable(evalTblBinsRound, options = options)
+    tagList(
+      br(),
+      div("Evaluation statistics: full model and partition averages", id="stepText"), br(), br(),
+      DT::dataTableOutput('evalTbl'), br(),
+      div("Individual partition bin evaluation statistics", id="stepText"), br(), br(),
+      DT::dataTableOutput('evalTblBins')
+    )
+  })
+}
 # occVals <- raster::extract(e$predictions, values$modParams$occ.pts)
 # 
 # values$mtps <- min(occVals)  # apply minimum training presence threshold

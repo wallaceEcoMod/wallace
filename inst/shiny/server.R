@@ -3,7 +3,7 @@ wd <- getwd()
 # load module and helper functions
 setwd("..")
 setwd("..")
-funcs <- list.files(path="R", pattern="^c", full.names=TRUE)
+funcs <- list.files(path="R", pattern="!^\\.", full.names=TRUE)
 sapply(funcs, source)
 setwd(wd)
 
@@ -61,10 +61,8 @@ shinyServer(function(input, output, session) {
       spp[[n]]$procEnvs <- list()
       spp[[n]]$procEnvs$bgMask <- r[[n]]
       spp[[n]]$occs$partition <- f[[n]]$occs$partition
-      print(spp[[n]]$occs[,names(spp[[n]]$procEnvs$bgMask)])
     }
     print('SECRET DATA LOADED')
-    
   })
   
   # load modules
@@ -455,6 +453,7 @@ shinyServer(function(input, output, session) {
   # module Select Occurrences on Map ####
   # # # # # # # # # # # # # # # # # # # # #
   observeEvent(input$goSelectOccs, {
+    print(class(spp[[curSp()]]$occs))
     req(input$map_draw_new_feature)
     selOccs <- callModule(selectOccs_MOD, 'c2_selOccs_uiID')
     selOccs()
@@ -799,12 +798,11 @@ shinyServer(function(input, output, session) {
   # module Maxent ####
   # # # # # # # # # # # 
   observeEvent(input$goMaxent, {
-    mod.maxent <- callModule(maxent_MOD, 'c6_maxent')
+    mod.maxent <- callModule(runMaxent_MOD, 'runMaxent')
     mod.maxent()
+    runMaxent_TBL(input, output, session)
     # make sure the results were entered before proceeding
     req(results())
-    # full model and partition average evaluation table, and individual partition table
-    
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     # customize visualizations for maxent
@@ -817,17 +815,32 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # 
   # module BIOCLIM ####
   # # # # # # # # # # # # 
-  observeEvent(input$goBioclim, {
-    mod.bioclim <- callModule(bioclim_MOD, 'c6_bioclim')
+  observeEvent(input$goBIOCLIM, {
+    mod.bioclim <- callModule(runBIOCLIM_MOD, 'runBIOCLIM')
     mod.bioclim()
+    runBIOCLIM_TBL(input, output, session)
     # make sure the results were entered before proceeding
     req(results())
-    
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     # update radio buttons for Visualization component
     updateRadioButtons(session, "visSel", choices = list("BIOCLIM Envelope Plots" = 'bioclimPlot',
                                                          "Map Prediction" = 'mapPreds'))
+  })
+  
+  # # # # # # # # # # # # 
+  # module GAM ####
+  # # # # # # # # # # # # 
+  observeEvent(input$goGAM, {
+    mod.gam <- callModule(runGAM_MOD, 'runGAM')
+    mod.gam()
+    runGAM_TBL(input, output, session)
+    # make sure the results were entered before proceeding
+    req(results())
+    # switch to Results tab
+    updateTabsetPanel(session, 'main', selected = 'Results')
+    # update radio buttons for Visualization component
+    updateRadioButtons(session, "visSel", choices = list("Map Prediction" = 'mapPreds'))
   })
   
   # # # # # # # # # # # # # # # # # #
@@ -856,28 +869,6 @@ shinyServer(function(input, output, session) {
   
   # shortcut to currently selected model, read from modSelUI
   curModel <- reactive({input$curModel})
-  
-  output$evalTbls <- renderUI({
-    options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
-    evalTbl <- results()$evalTbl
-    evalTblBins <- results()$evalTblBins
-    if(rmm()$model$algorithm == "Maxent") {
-      evalTblRound <- cbind(evalTbl[,1:3], round(evalTbl[,4:16], digits=3))
-      evalTblBinsRound <- cbind(settings=evalTbl[,1], round(evalTblBins, digits=3))
-    } else if (rmm()$model$algorithm == "BIOCLIM"){
-      evalTblRound <- round(evalTbl, digits=3)
-      evalTblBinsRound <- results()$evalTblBins
-    }
-    output$evalTbl <- DT::renderDataTable(evalTblRound, options = options)
-    output$evalTblBins <- DT::renderDataTable(evalTblBinsRound, options = options)
-    tagList(
-      br(),
-      div("Evaluation statistics: full model and partition averages", id="stepText"), br(), br(),
-      DT::dataTableOutput('evalTbl'), br(),
-      div("Individual partition bin evaluation statistics", id="stepText"), br(), br(),
-      DT::dataTableOutput('evalTblBins')  
-    )
-  })
   
   # download for partitioned occurrence records csv
   output$dlEvalTbl <- downloadHandler(

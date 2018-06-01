@@ -1,4 +1,4 @@
-c6_bioclim  <- function(occs, bg, bgMask, shinyLogs = NULL) {
+runBIOCLIM  <- function(occs, bg, bgMask, shinyLogs = NULL) {
   
   bioclimEval <- function() {
     # RUN FULL DATA MODEL

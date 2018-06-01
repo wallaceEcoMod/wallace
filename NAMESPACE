@@ -2,6 +2,7 @@
 
 export(ecoClimate_getdata)
 export(ecoClimate_select)
+export(runGAM)
 export(run_wallace)
 import(leaflet)
 import(shiny)

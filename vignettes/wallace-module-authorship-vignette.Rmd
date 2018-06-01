@@ -9,7 +9,9 @@ knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 
 ## *Wallace* modules
 
-*Wallace* is an `R`-based, interactive application for reproducible ecological modeling. The application is also expandible via the addition of new modules, which in *Wallace* are discrete parts of the modeling analysis. This vignette steps through the module authorship process, focusing on the steps involved in adding a module, and also on best practices and some troubleshooting.
+*Wallace* is an `R`-based, interactive application for reproducible ecological modeling. The application is also expandible via the addition of new modules, which in *Wallace* are discrete parts of the modeling analysis. This vignette steps through the module authorship process, focusing on the steps involved in adding a module, and also on best practices and some troubleshooting. 
+
+*Wallace* is built using an R package for graphic user interface applications called `shiny`, and the modules in *Wallace* are structured as `shiny` modules. Before proceeding, it is advisable to read through the <a href="https://shiny.rstudio.com/tutorial/written-tutorial/lesson1/" target="_blank">tutorial</a> on `shiny` to give you a firm foundation on the basics of using this package. Also very helpful is this <a=href "https://shiny.rstudio.com/articles/modules.html" target="_blank">instructional page</a> on `shiny` modules. There are also many more `shiny` informational resources <a href="https://shiny.rstudio.com/tutorial/" target="_blank">here</a> as well.
 
 ## Module structure overview
 
@@ -18,16 +20,20 @@ This section was written for *Wallace* v2.0.0. There are 4 necessary steps to ad
 ## Step 1: Write a function
 
 Let's first write a function that carries out the module's analysis. This function takes the following inputs: 
- 1. occurrence point coordinates
- 2. background point coordinates
- 3. occurrence point environmental values
- 4. background point environmental values
- 5. degrees of freedom
+1. occurrence point coordinates
+2. background point coordinates
+3. occurrence point environmental values
+4. background point environmental values
+5. degrees of freedom
 
-It outputs the fitted model object.
+This function outputs the fitted model object.
 
 ```{r}
-runGAM <- function(occs.xy, bg.xy, occs.vals, bg.vals, degFr) {
+runGAM <- function(occs.vals, bg.vals, degFr, spName, shinyLogs=NULL) {
+  if(!require(gam)) {
+    shinyLogs %>% writeLog("Please install the gam package before running.")
+    return()
+  }
   # make vector of each variable wrapped in the spline function s() with
   # the assigned degrees of freedom
   degFrs <- paste0("s(", names(occs.vals), ", ", degFr, ")")
@@ -40,7 +46,11 @@ runGAM <- function(occs.xy, bg.xy, occs.vals, bg.vals, degFr) {
   # make formula
   f <- as.formula(paste("pa", paste(degFrs, collapse = " + "), sep = " ~ "))
   # run the GAM
-  mod <- gam(f, family = "binomial", data = d)
+  smartProgress(shinyLogs, message = paste("Running GAM for", spName), {
+    mod <- gam(f, family = "binomial", data = d)
+  })
+  # write log message
+  shinyLogs %>% writeLog("GAM ran successfully for ", spName, ".")
   # output model object
   return(mod)
 }
@@ -52,19 +62,96 @@ Save this as a script here: `wallace/R/runGAM.R`.
 
 2. Compose a `shiny` module that lays out the UI and server logic for your tool. 
 
+Before moving forward, we should go over some important points about the structure of the data that *Wallace* stores on species. All data specific to a species is recorded in a reactiveValues list, the reactive version of a regular list, called `spp`. To access the data on the species currently selected, we index `spp` with a reactive function that returns the selected species' name, called `curSp()` in this way: `spp[[curSp()]]`. This gives us a list of data objects for the selected species. A complete list of all reactive functions that return character outputs is below.
+
+```{r echo=FALSE, results="asis", eval=TRUE} 
+df1 <- data.frame("shortcut"=c("curSp()","curMsp()", "allSp()","spIn()","curEnv()","curModel()","component()","module()"),
+                  "output"=c("selected species name",'selected species names separated by "|"',"vector of all species names","if batch on, all species names, if batch off, selected species name", "selected environmental variable","selected model","selected component","selected module"))
+knitr::kable(df1)
+```
+
+In addition, some data objects that are used often in the analysis are stored as top entities, such as the occurrence data table (`spp[[curSp()]]$occs`), the environmental variable RasterStack (`spp[[curSp()]]$envs`), etc. These objects have reactive functions associated with them as shortcuts. For example, `spp[[curSp()]]$occs` can be accessed with `occs()`, and `spp[[curSp()]]$envs` with `envs()`. **NOTE**: These functions cannot be used to overwrite entities in the list---in this case, you must use the long form. For example:
+
+```{r}
+# this will not work
+occs() <- newDF
+# this will work
+spp[[curSp()]]$occs <- newDF
+```
+
+The complete list of reactive functions that return data outputs is below.
+
+```{r echo=FALSE, results="asis", eval=TRUE} 
+df1 <- data.frame("shortcut"=c("curSp()","curMsp()", "allSp()","spIn()","curEnv()","curModel()","component()","module()"),
+                  "output"=c("selected species name",'selected species names separated by "|"',"vector of all species names","if batch on, all species names, if batch off, selected species name", "selected environmental variable","selected model","selected component","selected module"))
+df2 <- data.frame("shortcut"=c("occs()","envs()","bg()","bgExt()","bgMask()","results()","mapPred()","mapProj()","rmm()"),
+                  "long form"=c("spp[[curSp()]]$occs",
+                                "spp[[curSp()]]$envs",
+                                "spp[[curSp()]]$bg",
+                                "spp[[curSp()]]\\$procEnvs\\$bgExt",
+                                "spp[[curSp()]]\\$procEnvs\\$bgMask",
+                                "spp[[curSp()]]$results",
+                                "spp[[curSp()]]\\$visualization\\$mapPred",
+                                "spp[[curSp()]]\\$project\\$mapProj",
+                                "spp[[curSp()]]$rmm"),
+                  "class"=c("data frame","RasterStack","matrix","SpatialPolygons","RasterStack",
+                            "data frame","Raster","Raster","rangeModelMetadata"))
+knitr::kable(df2)
+#"character", "character vector", 
+```
+
+
+
 ```{r}
 # filename: mod_model_glm.R
 
 # this function details the graphic user interface (UI) logic
-runGAM_UI <- function() {
-  
+runGAM_UI <- function(id) {
+  ns <- NS(id)
+  tagList(
+    tags$div(title="These degrees of freedom represent the smoothing parameter for the splines corresponding to each variable.",
+             numericInput(ns("degFr"), "Degrees of Freedom", value = 1))
+  )
 }
 
 # this function details the server logic (calculations, etc.)
-runGAM_MOD <- function() {
-  
+runGAM_MOD <- function(input, output, session) {
+  reactive({
+    for(sp in spIn()) {
+      # ERRORS ####
+      if(is.null(spp[[sp]]$occs$partition)) {
+        shinyLogs %>% writeLog(type = 'error', "Before building a model, please partition 
+                               occurrences for cross-validation for", curSp(), ".")
+        return()
+      }
+
+      # FUNCTION CALL ####
+      mod.gam <- runGAM(spp[[sp]]$occs[,names(envs())], spp[[sp]]$bg[,names(envs())], input$degFr, sp, shinyLogs)
+      # ensure the model object was returned before proceeding
+      req(mod.gam)
+      
+      # LOAD INTO SPP ####
+      spp[[sp]]$results <- mod.gam
+      
+      # METADATA ####
+      spp[[sp]]$rmm$model$algorithm <- "GAM"
+      spp[[sp]]$rmm$model$gam$family <- "binominal"
+      f <- as.character(mod.gam$formula)
+      spp[[sp]]$rmm$model$gam$formula <- paste(f[2],f[1],f[3])
+      spp[[sp]]$rmm$model$gam$notes <- "gam package implementation"
+    }
+  })
 }
 
+# this function specifies the visual output
+runGAM_TBL <- function(input, output, session) {
+  output$evalTbls <- renderUI({
+    output$gamSummary <- renderPrint(summary(spp[[curSp()]]$results))
+    verbatimTextOutput("gamSummary")
+  })
+}
+
+# this function specifies metadata used by ui.R
 runGAM_INFO <- infoGenerator(modName = "Generalized Additive Model",
                              modAuts = "Johnny Modules, Alfred Russel Wallace",
                              pkgName = "gam")
@@ -74,7 +161,64 @@ Save this as a script here `wallace/inst/shiny/modules/mod_runGAM.R`.
 
 ## Step 3: Modify `ui.R`
 
+Next, the modular function for our new module's ui must be referenced into the file `ui.R` in order for *Wallace* to display the controls and package information. Below is the section of `ui.R` for the MODEL component after editing to incorporate the ui for our GAM module (see the comments for where we made changes).
+
+```{r}
+# MODEL ####
+conditionalPanel("input.tabs == 'model'",
+                 h4("Build and Evaluate Niche Model"),
+                 radioButtons("modelSel", "Modules Available:",
+                              # we added GAM to the list here
+                              choices = list("BIOCLIM", "Maxent", "GAM")),
+                 HTML('<hr>'),
+                 conditionalPanel("input.modelSel == 'Maxent'",
+                                  uiTop(runMaxent_INFO),
+                                  htmlOutput('maxentJar'), br(),
+                                  "(", HTML("<font color='blue'><b>NOTE</b></font>"), 
+                                  ": see module guidance for troubleshooting tips 
+                                  if you are experiencing problems.)",
+                                  HTML('<hr>'),
+                                  runMaxent_UI('runMaxent'),
+                                  actionButton('goMaxent', 'Run')),
+                 conditionalPanel("input.modelSel == 'BIOCLIM'",
+                                  uiTop(runBIOCLIM_INFO),
+                                  runBIOCLIM_UI('runBIOCLIM'),
+                                  actionButton('goBIOCLIM', 'Run')),
+                 # we added a conditional panel for our module here
+                 conditionalPanel("input.modelSel == 'GAM'",
+                                  uiTop(runGAM_INFO),
+                                  bioclim_UI('model_gam'),
+                                  actionButton('goGAM', 'Run')),
+                 HTML('<hr>'),
+                 downloadButton('dlEvalTbl', "Download CSV"),
+                 HTML('<hr>'),
+                 conditionalPanel("input.modelSel == 'Maxent'", uiBottom(runMaxent_INFO)),
+                 conditionalPanel("input.modelSel == 'BIOCLIM'", uiBottom(runBIOCLIM_INFO)),
+                 # this is new
+                 conditionalPanel("input.modelSel == 'GAM'", uiBottom(runGAM_INFO))
+)
+```
+
 ## Step 4: Modify `server.R`
+
+Finally, we need to call the module and the other functions from `mod_runGAM.R` in the file `server.R`.
+
+```{r}
+  # # # # # # # # # # # # 
+  # module GAM ####
+  # # # # # # # # # # # # 
+  observeEvent(input$goGAM, {
+    mod.gam <- callModule(runGAM_MOD, 'runGAM')
+    mod.gam()
+    runGAM_TBL(input, output, session)
+    # make sure the results were entered before proceeding
+    req(results())
+    # switch to Results tab
+    updateTabsetPanel(session, 'main', selected = 'Results')
+    # update radio buttons for Visualization component
+    updateRadioButtons(session, "visSel", choices = list("Map Prediction" = 'mapPreds'))
+  })
+```
 
 As we improve *Wallace* and release new versions, we always make a big effort to simplify the module authorship process.
 

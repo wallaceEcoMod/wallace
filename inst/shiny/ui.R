@@ -29,7 +29,7 @@ shinyUI(tagList(
                                                 actionButton('load', 'HACK'),
                                                 includeMarkdown("Rmd/text_intro_tab.Rmd")
                                ),
-                               # COMPONENT 1 ####
+                               # OBTAIN OCCS ####
                                conditionalPanel("input.tabs == 'occs'",
                                                 h4("Obtain Occurrence Data"),
                                                 radioButtons("occsSel", "Modules Available:",
@@ -61,7 +61,7 @@ shinyUI(tagList(
                                                 conditionalPanel("input.occsSel == 'pdb'", uiBottom(queryPaleoDb_INFO)),
                                                 conditionalPanel("input.occsSel == 'user'", uiBottom(userOccs_INFO))
                                ),
-                               # COMPONENT 2 ####
+                               # PROCESS OCCS ####
                                conditionalPanel("input.tabs == 'poccs'",
                                                 h4("Process Occurrence Data"),
                                                 radioButtons("procOccsSel", "Modules Available:",
@@ -96,7 +96,7 @@ shinyUI(tagList(
                                                 conditionalPanel("input.procOccsSel == 'remID'", uiBottom(removeByID_INFO)),
                                                 conditionalPanel("input.procOccsSel == 'spthin'", uiBottom(thinOccs_INFO))
                                ),
-                               # COMPONENT 3 ####
+                               # OBTAIN ENVS ####
                                conditionalPanel("input.tabs == 'envs'",
                                                 h4("Obtain Environmental Data"),
                                                 radioButtons("envsSel", "Modules Available:",
@@ -130,7 +130,7 @@ shinyUI(tagList(
                                                 conditionalPanel("input.envsSel == 'ecoClimatelayers'", uiBottom(ecoclimate_INFO)),
                                                 conditionalPanel("input.envsSel == 'user'", uiBottom(userEnvs_INFO))
                                ),
-                               # COMPONENT 4 ####
+                               # PROCESS ENVS ####
                                conditionalPanel("input.tabs == 'penvs'",
                                                 h4("Process Environmental Data"),
                                                 radioButtons("procEnvsSel", "Modules Available:",
@@ -165,7 +165,7 @@ shinyUI(tagList(
                                                 conditionalPanel("input.procEnvsSel == 'bgSel'", uiBottom(bgExtent_INFO)),
                                                 conditionalPanel("input.procEnvsSel == 'bgUser'", uiBottom(userBgExtent_INFO))
                                ),
-                               # COMPONENT ESPACE ####
+                               # ESPACE ####
                                conditionalPanel("input.tabs == 'espace'",
                                                 h4("Environmental Space"),
                                                 radioButtons("espaceSel", "Modules Available:",
@@ -194,7 +194,7 @@ shinyUI(tagList(
                                                 conditionalPanel("input.espaceSel == 'occDens'", uiBottom(espace_occDens_INFO)),
                                                 conditionalPanel("input.espaceSel == 'nicheOv'", uiBottom(espace_nicheOv_INFO))
                                ),
-                               # COMPONENT 5 ####
+                               # PARTITION ####
                                conditionalPanel("input.tabs == 'part'",
                                                 h4("Partition Occurrence Data"),
                                                 radioButtons("partSel", "Modules Available:",
@@ -213,31 +213,36 @@ shinyUI(tagList(
                                                 conditionalPanel("input.partSel == 'sp'", uiBottom(partitionSpat_INFO)),
                                                 conditionalPanel("input.partSel == 'nsp'", uiBottom(partitionNonSpat_INFO))
                                ),
-                               # COMPONENT 6 ####
+                               # MODEL ####
                                conditionalPanel("input.tabs == 'model'",
                                                 h4("Build and Evaluate Niche Model"),
                                                 radioButtons("modelSel", "Modules Available:",
-                                                             choices = list("BIOCLIM", "Maxent")),
+                                                             choices = list("BIOCLIM", "Maxent", "GAM")),
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.modelSel == 'Maxent'",
-                                                                 uiTop(maxent_INFO),
+                                                                 uiTop(runMaxent_INFO),
                                                                  htmlOutput('maxentJar'), br(),
                                                                  "(", HTML("<font color='blue'><b>NOTE</b></font>"), 
                                                                  ": see module guidance for troubleshooting tips if you are experiencing problems.)",
                                                                  HTML('<hr>'),
-                                                                 maxent_UI('c6_maxent'),
+                                                                 runMaxent_UI('runMaxent'),
                                                                  actionButton('goMaxent', 'Run')),
                                                 conditionalPanel("input.modelSel == 'BIOCLIM'",
-                                                                 uiTop(bioclim_INFO),
-                                                                 bioclim_UI('c6_bioclim'),
-                                                                 actionButton('goBioclim', 'Run')),
+                                                                 uiTop(runBIOCLIM_INFO),
+                                                                 runBIOCLIM_UI('runBIOCLIM'),
+                                                                 actionButton('goBIOCLIM', 'Run')),
+                                                conditionalPanel("input.modelSel == 'GAM'",
+                                                                 uiTop(runGAM_INFO),
+                                                                 runGAM_UI('runGAM'),
+                                                                 actionButton('goGAM', 'Run')),
                                                 HTML('<hr>'),
                                                 downloadButton('dlEvalTbl', "Download CSV"),
                                                 HTML('<hr>'),
-                                                conditionalPanel("input.modelSel == 'Maxent'", uiBottom(maxent_INFO)),
-                                                conditionalPanel("input.modelSel == 'BIOCLIM'", uiBottom(bioclim_INFO))
+                                                conditionalPanel("input.modelSel == 'Maxent'", uiBottom(runMaxent_INFO)),
+                                                conditionalPanel("input.modelSel == 'BIOCLIM'", uiBottom(runBIOCLIM_INFO)),
+                                                conditionalPanel("input.modelSel == 'GAM'", uiBottom(runGAM_INFO))
                                ),
-                               # COMPONENT 7 ####
+                               # VISUALIZE ####
                                conditionalPanel("input.tabs == 'vis'", 
                                                 h4("Visualize Model Results"),
                                                 radioButtons("visSel", "Modules Available:",
@@ -272,7 +277,7 @@ shinyUI(tagList(
                                                 conditionalPanel("input.visSel == 'response'", uiBottom(responsePlot_INFO)),
                                                 conditionalPanel("input.visSel == 'mapPreds'", uiBottom(mapPreds_INFO))
                                ),
-                               # COMPONENT 8 ####
+                               # PROJECT ####
                                conditionalPanel("input.tabs == 'proj'",
                                                 h4("Project Model"),
                                                 radioButtons("projSel", "Modules Available:",
