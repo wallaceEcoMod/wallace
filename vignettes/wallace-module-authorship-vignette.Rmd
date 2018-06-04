@@ -7,15 +7,37 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 ```
 
-## *Wallace* modules
+## *Wallace* modules (v.2.0.0)
 
-*Wallace* is an `R`-based, interactive application for reproducible ecological modeling. The application is also expandible via the addition of new modules, which in *Wallace* are discrete parts of the modeling analysis. This vignette steps through the module authorship process, focusing on the steps involved in adding a module, and also on best practices and some troubleshooting. 
+*Wallace* is an `R`-based, interactive application for reproducible ecological modeling. The application is also expandible via the addition of new modules, which in *Wallace* are discrete parts of the modeling analysis. This vignette steps through the module authorship process, focusing on the steps involved in adding a module, and also on best practices and some troubleshooting. This vignette was tailored for researchers who would like to author their own *Wallace* module based on some technique they'd like to disseminate to the community or use themselves within the *Wallace* workflow. Thus to follow along, it will help to have at least an intermediate understanding of `R` programming. Also, please see our <a href="https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.12945" target="_blank">publication</a> in *Methods in Ecology and Evolution* to read in detail about our philosophy for *Wallace*, the modularity of the application, and our vision for module authorship.
 
-*Wallace* is built using an R package for graphic user interface applications called `shiny`, and the modules in *Wallace* are structured as `shiny` modules. Before proceeding, it is advisable to read through the <a href="https://shiny.rstudio.com/tutorial/written-tutorial/lesson1/" target="_blank">tutorial</a> on `shiny` to give you a firm foundation on the basics of using this package. Also very helpful is this <a=href "https://shiny.rstudio.com/articles/modules.html" target="_blank">instructional page</a> on `shiny` modules. There are also many more `shiny` informational resources <a href="https://shiny.rstudio.com/tutorial/" target="_blank">here</a> as well.
+*Wallace* is built using an R package for developing graphic user interface applications called `shiny`, and the modules in *Wallace* are structured as `shiny` modules. Before proceeding, it is advisable to read through the <a href="https://shiny.rstudio.com/tutorial/written-tutorial/lesson1/" target="_blank">tutorial</a> on `shiny` to give you a firm foundation of the basics. Also very helpful is this <a=href "https://shiny.rstudio.com/articles/modules.html" target="_blank">instructional page</a> on `shiny` modules. For further reading, there are many more `shiny` informational resources <a href="https://shiny.rstudio.com/tutorial/" target="_blank">here</a> as well.
+
+First, a brief outline of the file structure of the `wallace` package. The starred directories/files are the ones we'll be concentrating in this vignette. Particular focus will be on the two main scripts `ui.R` and `server.R`, which dictate the main functionality of the application. Also of note are the directories for modules
+
+```
+/wallace
+ ├── inst
+ |   ├── docs  # vignette documents
+ |   └── shiny
+ |   └────  example_data
+*|   └────  funcs  # helper functions not specific to any one module
+ |   └────  js  # javascript files (currently only log window)
+*|   └────  modules  # .R files for each module
+*|   └────  Rmd  # .Rmd files for guidance, etc.
+*|   └────  server.R  # script with all functionality for processing
+*|   └────  ui.R  # script with all functionality for user interface
+ |   └────  www  # miscellaneous files (currently only image files)
+ ├── man  # .Rd files for function help text
+*├── R  # all module functions
+ ├── tests  # unit test scripts
+ ├── vignettes  # .Rmd files for vignettes
+ ├── wallace.Rproj  # R project file -- when developing, load Wallace with this
+```
 
 ## Module structure overview
 
-This section was written for *Wallace* v2.0.0. There are 4 necessary steps to adding a functional module. This example will be for a module that implements a generalized additive model (GAM). As *Wallace* currently focuses on models of species niches and distributions, this GAM will be binomial and tailored to presence-only occurrence data, which means that instead of real absence data we'll use background values instead (sometimes referred to "pseudo-absences").
+There are 5 necessary steps to adding a functional module: 1) write an R function, 2) write a `shiny` module that calls this R function, 3) modify `ui.R` to display your module's controls, 4) modify `server.R` to implement your module's functionality when these controls are used, and finally 5) write an R Markdown file that includes the guidance text for your module. The example we will go over is for a module that implements a generalized additive model (GAM). As *Wallace* currently focuses on models of species niches and distributions that lack absence data, this GAM will be binomial (predicting the probability of a binary outcome) and tailored to presence-only occurrence data, which means that instead of real absence data we'll use background values instead (sometimes referred to as "pseudo-absences").
 
 ## Step 1: Write a function
 

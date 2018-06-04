@@ -1,9 +1,12 @@
-source("funcs/helper_functions.R")
+# load helper functions
+source("helper_functions.R")
+# load modules
+for (f in list.files('./modules')) source(file.path('modules', f), local=TRUE)
 wd <- getwd()
-# load module and helper functions
+# load module functions
 setwd("..")
 setwd("..")
-funcs <- list.files(path="R", pattern="!^\\.", full.names=TRUE)
+funcs <- list.files(path="R", full.names=TRUE)
 sapply(funcs, source)
 setwd(wd)
 
@@ -64,9 +67,6 @@ shinyServer(function(input, output, session) {
     }
     print('SECRET DATA LOADED')
   })
-  
-  # load modules
-  for (f in list.files('./modules')) source(file.path('modules', f), local=TRUE)
   
   # initialize log window
   output$log <- renderUI({
