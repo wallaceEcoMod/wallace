@@ -1,7 +1,5 @@
 # load helper functions
 source("helper_functions.R")
-# load modules
-for (f in list.files('./modules')) source(file.path('modules', f), local=TRUE)
 wd <- getwd()
 # load module functions
 setwd("..")
@@ -40,6 +38,9 @@ shinyServer(function(input, output, session) {
   expl <- 'Please find messages for the user in this log window.'
   logInit <- c(paste(intro, brk, expl, brk, sep='<br>'))
   shinyLogs <- reactiveVal(logInit)
+  
+  # load modules
+  for (f in list.files('./modules')) source(file.path('modules', f), local=TRUE)
   
   # FOR DEVELOPMENT PURPOSES
   observeEvent(input$load, {
