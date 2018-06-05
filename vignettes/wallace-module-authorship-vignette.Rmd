@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 
 *Wallace* is built using an R package for developing graphic user interface applications called `shiny`, and the modules in *Wallace* are structured as `shiny` modules. Before proceeding, it is advisable to read through the <a href="https://shiny.rstudio.com/tutorial/written-tutorial/lesson1/" target="_blank">tutorial</a> on `shiny` to give you a firm foundation of the basics. Also very helpful is this <a=href "https://shiny.rstudio.com/articles/modules.html" target="_blank">instructional page</a> on `shiny` modules. For further reading, there are many more `shiny` informational resources <a href="https://shiny.rstudio.com/tutorial/" target="_blank">here</a> as well.
 
-First, a brief outline of the file structure of the `wallace` package. The starred directories/files are the ones we'll be concentrating in this vignette. Particular focus will be on the two main scripts `ui.R` and `server.R`, which dictate the main functionality of the application. Also of note are the directories for modules
+First, a brief outline of the file structure of the `wallace` package. The starred directories/files are the ones we'll be concentrating in this vignette. Particular focus will be on the two main scripts `ui.R` and `server.R`, which dictate the main functionality of the application. Also of note is the script that includes helper functions, and the directories for modules (`/inst/shiny/modules`), module functions (`/R`) guidance text (`/inst/shiny/Rmd`).
 
 ```
 /wallace
@@ -21,7 +21,7 @@ First, a brief outline of the file structure of the `wallace` package. The starr
  |   ├── docs  # vignette documents
  |   └── shiny
  |   └────  example_data
-*|   └────  funcs  # helper functions not specific to any one module
+*|   └────  helper_functions.R  # helper functions not specific to any one module
  |   └────  js  # javascript files (currently only log window)
 *|   └────  modules  # .R files for each module
 *|   └────  Rmd  # .Rmd files for guidance, etc.
@@ -41,12 +41,7 @@ There are 5 necessary steps to adding a functional module: 1) write an R functio
 
 ## Step 1: Write a function
 
-Let's first write a function that carries out the module's analysis. This function takes the following inputs: 
-1. occurrence point coordinates
-2. background point coordinates
-3. occurrence point environmental values
-4. background point environmental values
-5. degrees of freedom
+Let's first write a function that carries out the module's analysis. This function takes the following inputs: environmental predictor values at 1) occurrence points and 2) background points, 3) degrees of freedom for the spline smoothing terms in the GAM, 4) the species name, and 5) shinyLogs. The last one, shinyLogs, is a reactive value (`shiny::reactiveVal()`) that holds all the text and HTML formatting for the log window. If you call the function with shinyLogs as a parameter input, certain functionality inside will be `shiny`-functional. If shinyLogs is not NULL, `writeLog()` will and `smartProgress()` functions. If 
 
 This function outputs the fitted model object.
 
@@ -81,8 +76,6 @@ runGAM <- function(occs.vals, bg.vals, degFr, spName, shinyLogs=NULL) {
 Save this as a script here: `wallace/R/runGAM.R`.
 
 ## Step 2: Write a `shiny` module that calls your function
-
-2. Compose a `shiny` module that lays out the UI and server logic for your tool. 
 
 Before moving forward, we should go over some important points about the structure of the data that *Wallace* stores on species. All data specific to a species is recorded in a reactiveValues list, the reactive version of a regular list, called `spp`. To access the data on the species currently selected, we index `spp` with a reactive function that returns the selected species' name, called `curSp()` in this way: `spp[[curSp()]]`. This gives us a list of data objects for the selected species. A complete list of all reactive functions that return character outputs is below.
 
@@ -122,10 +115,16 @@ knitr::kable(df2)
 #"character", "character vector", 
 ```
 
+In the module script, we define two main functions, `runGAM_UI()` and `runGAM_MOD()`, which specify the logic for `ui.R` and `server.R`, respectively. The function `runGAM_UI()` details the UI controls, including hover text if needed, etc. One thing that is perhaps unexpected is the use of the `NS()` function, which ensures these UI controls can talk to `ui.R` even though they are in their own namespace. It turns out `shiny` modules exist in unique namespaces, and this means that if we want to use any of the results inside here in `server.R`, we need to funnel them into our `spp` list. We can see this below, in the `runGAM_MOD()` function. 
 
+This regular function is a wrapper for a `shiny` reactive expression. Inside, there is a template for the essential parts needed in a *Wallace* module. The first, "ERRORS", catches any possible errors before the module's core functionality is run, writes a log message, then returns to `server.R`. The user will need to define these. Next, we call the function from `/wallace/R` and make sure it returned something. Next, we load the model object into `spp`. Finally, we fill in the right metadata fields for the rangeModelMetadata object in `spp`.
+
+There are two other functions below this. The first is `modGAM_INFO()`, which includes information on the packages used in the module for the UI around the controls. It is called in `ui.R`. The second is `modGAM_TBL()`, which defines a custom UI with `shiny::renderUI()` that shows the model `summary()` output from the console, and assigns it to `output$evalTbls`, which is a built-in UI for model result displays. It is called in `server.R`.
+
+Save this as a script here `wallace/inst/shiny/modules/mod_runGAM.R`.
 
 ```{r}
-# filename: mod_model_glm.R
+# filename: mod_runGAM.R
 
 # this function details the graphic user interface (UI) logic
 runGAM_UI <- function(id) {
@@ -141,6 +140,7 @@ runGAM_MOD <- function(input, output, session) {
   reactive({
     for(sp in spIn()) {
       # ERRORS ####
+      # check to make sure partitioning was done in the last component before proceeding
       if(is.null(spp[[sp]]$occs$partition)) {
         shinyLogs %>% writeLog(type = 'error', "Before building a model, please partition 
                                occurrences for cross-validation for", curSp(), ".")
@@ -148,6 +148,7 @@ runGAM_MOD <- function(input, output, session) {
       }
 
       # FUNCTION CALL ####
+      # run the module function from /wallace/R
       mod.gam <- runGAM(spp[[sp]]$occs[,names(envs())], spp[[sp]]$bg[,names(envs())], input$degFr, sp, shinyLogs)
       # ensure the model object was returned before proceeding
       req(mod.gam)
@@ -179,11 +180,9 @@ runGAM_INFO <- infoGenerator(modName = "Generalized Additive Model",
                              pkgName = "gam")
 ```
 
-Save this as a script here `wallace/inst/shiny/modules/mod_runGAM.R`.
-
 ## Step 3: Modify `ui.R`
 
-Next, the modular function for our new module's ui must be referenced into the file `ui.R` in order for *Wallace* to display the controls and package information. Below is the section of `ui.R` for the MODEL component after editing to incorporate the ui for our GAM module (see the comments for where we made changes).
+Next, the function for our new module's ui must be referenced into the file `ui.R` in order for *Wallace* to display the controls and package information. Open `ui.R` and navigate to the MODEL component. We will be adding some code to the existing code block within `shiny::conditionalPanel()`. This function displays UI only if the logical statement in the first parameter is met, which in this case is the user selection of the "Model" component tab. We'll first be adding a new radio button for selection of the GAM module, then creating a new `conditionalPanel()` block below BIOCLIM that specifies all the UI necessary for our module. Most of this is handled by `runGAM_UI()`, which we defined in `mod_runGAM.R` above. We also use the internal functions `uiTop()` (in this block) and `uiBottom()` (below the download button) to display the package information we defined in `runGAM_INFO()`. Lastly, we add the `shiny::actionButton()` for our module to enable the user to run it. We'll see how we can observe this button for a press in order to activate our module at the right time in the next step. In the code below, please see the comments for where we made changes to the original `ui.R`.
 
 ```{r}
 # MODEL ####
@@ -209,7 +208,7 @@ conditionalPanel("input.tabs == 'model'",
                  # we added a conditional panel for our module here
                  conditionalPanel("input.modelSel == 'GAM'",
                                   uiTop(runGAM_INFO),
-                                  bioclim_UI('model_gam'),
+                                  runGAM_UI('model_gam'),
                                   actionButton('goGAM', 'Run')),
                  HTML('<hr>'),
                  downloadButton('dlEvalTbl', "Download CSV"),
@@ -223,24 +222,29 @@ conditionalPanel("input.tabs == 'model'",
 
 ## Step 4: Modify `server.R`
 
-Finally, we need to call the module and the other functions from `mod_runGAM.R` in the file `server.R`.
+Finally, we need to call the module and the other functions from `mod_runGAM.R` in `server.R`. Open `server.R` and navigate to the MODEL component. You should see "module Maxent" and "module BIOCLIM" code blocks, wrapped in `observeEvent()`. This `shiny` function initiates what's inside the block when an action is taken by the user, which in this case is a button press. The button we are observing is `input$goGAM`, which we just specified in `ui.R`. In `server.R`, entities from `ui.R` have the notation `input$...`. Within this block, we will call our module with `shiny::callModule()`, which assigns the reactive expression to a variable, and then initialize it by running the module function on the next line. We do not assign it ot a variable because our modules have no output---all the assignments are internal and to the list `spp`. We then check to make sure the results were saved, then run our specialized table function, which displays the model results. Finally, we make some UI updates (which can only be made in `server.R`) to switch to the Results tab, and to update the module selection in the next component to display only those relevant to GAMs (which for now is just "Map Prediction").
 
 ```{r}
   # # # # # # # # # # # # 
   # module GAM ####
   # # # # # # # # # # # # 
   observeEvent(input$goGAM, {
+    # assign module function to variable
     mod.gam <- callModule(runGAM_MOD, 'runGAM')
+    # initialize module
     mod.gam()
-    runGAM_TBL(input, output, session)
     # make sure the results were entered before proceeding
     req(results())
+    # initialize GAM results table
+    runGAM_TBL(input, output, session)
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     # update radio buttons for Visualization component
     updateRadioButtons(session, "visSel", choices = list("Map Prediction" = 'mapPreds'))
   })
 ```
+
+## Step 5: Write `gtext_model_runGAM.Rmd`
 
 As we improve *Wallace* and release new versions, we always make a big effort to simplify the module authorship process.
 
