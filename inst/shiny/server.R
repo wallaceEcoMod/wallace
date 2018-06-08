@@ -209,7 +209,7 @@ shinyServer(function(input, output, session) {
     req(rvs$occs)
     occsDT <- rvs$occs %>% dplyr::mutate(longitude = round(as.numeric(longitude), digits = 2),
                                          latitude = round(as.numeric(latitude), digits = 2))
-    occsDT %>% dplyr::select(name, occID, longitude:basisOfRecord)
+    occsDT %>% dplyr::select(name, occID, longitude:occurrenceID)
   }, rownames = FALSE)
   
   # handle downloading of original GBIF records after cleaning

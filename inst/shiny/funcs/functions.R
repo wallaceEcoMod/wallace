@@ -157,15 +157,17 @@ popUpContent <- function(x) {
     tags$br(),
     tags$strong(paste("Inst. Code:", x['institutionCode'])),
     tags$br(),
+    tags$strong(paste("Basis of Record:", x['basisOfRecord'])),
+    tags$br(),
+    tags$strong(paste("Occurrence ID:", x['occurrenceID'])),
+    tags$br(),
     tags$strong(paste("Country:", x['country'])),
     tags$br(),
     tags$strong(paste("State/Prov.:", x['stateProvince'])),
     tags$br(),
     tags$strong(paste("Locality:", x['locality'])),
     tags$br(),
-    tags$strong(paste("Elevation:", x['elevation'])),
-    tags$br(),
-    tags$strong(paste("Basis of Record:", x['basisOfRecord']))
+    tags$strong(paste("Elevation:", x['elevation']))
   ))
 }
 

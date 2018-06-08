@@ -9,7 +9,7 @@ queryDb_UI <- function(id) {
     tags$div(title='Examples: Felis catus, Canis lupus, Nyctereutes procyonoides',
              textInput(ns("spName"), label = "Enter species scientific name", placeholder = 'format: Genus species')),
     tags$div(title='Maximum number of occurrences recovered from databases. Downloaded records are not sorted randomly: rows are always consistent between downloads.',
-             sliderInput(ns("occNum"), "Set maximum number of occurrences", min = 1, max = 500, value = 100))
+             numericInput(ns("occNum"), "Set maximum number of occurrences", value = 100, min = 1))
   )
 }
 
@@ -93,7 +93,7 @@ queryDb_MOD <- function(input, output, session, rvs) {
     recs <- dbOccs.remDups()
     # standardize VertNet column names
     if (input$occDb == 'vertnet') {
-      fields <- c('institutioncode', 'stateprovince', 'basisofrecord', 'maximumelevationinmeters')
+      fields <- c('institutioncode', 'stateprovince', 'basisofrecord', 'occurrenceid', 'maximumelevationinmeters')
       for (i in fields) {
         if (!(i %in% names(recs))) recs[i] <- NA
       }
@@ -101,6 +101,7 @@ queryDb_MOD <- function(input, output, session, rvs) {
         dplyr::rename(institutionCode = institutioncode) %>%
         dplyr::rename(stateProvince = stateprovince) %>%
         dplyr::rename(basisOfRecord = basisofrecord) %>%
+        dplyr::rename(occurrenceID = occurrenceid) %>%
         dplyr::rename(elevation = maximumelevationinmeters)
     }
     
@@ -123,14 +124,14 @@ queryDb_MOD <- function(input, output, session, rvs) {
     req(dbOccs.stdCols())
     recs <- dbOccs.stdCols()
     
-    for (col in c("year", "institutionCode", "country", "stateProvince",
-                  "locality", "elevation", "basisOfRecord")) {  # add all cols to match origOccs if not already there
+    for (col in c("year", "institutionCode", "basisOfRecord", "occurrenceID", "country", "stateProvince",
+                  "locality", "elevation")) {  # add all cols to match origOccs if not already there
       if (!(col %in% names(recs))) recs[,col] <- NA
     }
     
     # subset by key columns and make id and popup columns
-    cols <- c("name", "longitude", "latitude","year", "institutionCode", "country", "stateProvince",
-              "locality", "elevation", "basisOfRecord", "occID")
+    cols <- c("name", "longitude", "latitude", "year", "institutionCode", "basisOfRecord", "occurrenceID", "country", "stateProvince",
+              "locality", "elevation", "occID")
     recs <- recs %>%
       dplyr::select(dplyr::one_of(cols)) %>%
       dplyr::mutate(pop = unlist(apply(recs, 1, popUpContent)))  # make new column for leaflet marker popup content
