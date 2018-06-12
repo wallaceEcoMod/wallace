@@ -21,10 +21,10 @@ partSp_MOD <- function(input, output, session) {
       }
       
       # FUNCTION CALL ####
-      group.data <- c5_partitionOccs(occs(), 
-                                     bg(), 
+      group.data <- c5_partitionOccs(spp[[sp]]$occs, 
+                                     spp[[sp]]$bg, 
                                      input$partSpSel, 
-                                     bgMsk = bgMask(), 
+                                     bgMsk = spp[[sp]]$procEnvs$bgMask, 
                                      aggFact = input$aggFact, 
                                      shinyLogs)
       req(group.data)

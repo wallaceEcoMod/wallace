@@ -17,11 +17,11 @@ runMaxent  <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
     return()
   }
   
-  if (is.null(fcs)) {
+  if(is.null(fcs)) {
     shinyLogs %>% writeLog(type = 'error', "No feature classes selected.")
     return()
   }
-  if (!require('rJava')) {
+  if(!require('rJava')) {
     shinyLogs %>% writeLog(type = "error", 'Package rJava cannot load. 
                Please download the latest version of Java, and make sure it is the 
                correct version (e.g. 64-bit for a 64-bit system). After installing, 
