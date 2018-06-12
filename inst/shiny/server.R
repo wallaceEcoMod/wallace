@@ -226,7 +226,7 @@ shinyServer(function(input, output, session) {
         map %>% 
           map_occs(occs()) %>%
           addRasterImage(mapPred(), colors = rasPal, opacity = 0.7, 
-                         group = 'vis', layerId = 'mapPred') %>%
+                         group = 'vis', layerId = 'mapPred', method = "ngb") %>%
           # add background polygon(s)
           mapBgPolys(bgShpXY())
       }
@@ -260,7 +260,7 @@ shinyServer(function(input, output, session) {
             map %>% clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
               map_occs(occs(), customZoom = sharedExt) %>%
               addRasterImage(mapProj(), colors = rasPal, opacity = 0.7,
-                             layerId = 'projRas', group = 'proj') %>%
+                             layerId = 'projRas', group = 'proj', method = "ngb") %>%
               addPolygons(lng=polyPjXY[,1], lat=polyPjXY[,2], layerId="projExt", fill = FALSE,
                           weight=4, color="blue", group='proj') %>%
               # add background polygon
@@ -280,7 +280,7 @@ shinyServer(function(input, output, session) {
               map %>% clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
                 map_occs(occs(), customZoom = sharedExt) %>%
                 addRasterImage(mess, colors = rasPal, opacity = 0.7,
-                               layerId = 'projRas', group = 'proj') %>%
+                               layerId = 'projRas', group = 'proj', method = "ngb") %>%
                 addPolygons(lng=polyPjXY[,1], lat=polyPjXY[,2], layerId="projExt", fill = FALSE,
                             weight=4, color="blue", group='proj') %>%
                 # add background polygon
@@ -460,7 +460,8 @@ shinyServer(function(input, output, session) {
     selOccs <- callModule(selectOccs_MOD, 'c2_selOccs_uiID')
     selOccs()
     # MAPPING
-    map %>% leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
+    map %>% clearAll() %>%
+      leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
       leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
                                      rectangleOptions = FALSE, circleOptions = FALSE, 
                                      markerOptions = FALSE, circleMarkerOptions = FALSE) %>%
@@ -488,7 +489,7 @@ shinyServer(function(input, output, session) {
   # reset occurrences button functionality
   observeEvent(input$goResetOccs, {
     req(curSp())
-    spp[[curSp()]]$occs <- spp[[curSp()]]$occData$occsOrig  
+    spp[[curSp()]]$occs <- spp[[curSp()]]$occData$occsCleaned  
     shinyLogs %>% writeLog("Reset occurrences.")
     # MAPPING
     map %>%
