@@ -11,7 +11,7 @@
 c3_userEnvs<- function(rasPath, rasName, shinyLogs=NULL){
   
   smartProgress(shinyLogs, message = "Reading in rasters...", {
-    uenvs <- raster::stack(rasPath)
+    userEnvs <- raster::stack(rasPath)
     })
   # assign names
   names(userEnvs) <- fileNameNoExt(rasName)
