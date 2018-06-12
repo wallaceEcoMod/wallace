@@ -88,9 +88,7 @@ mapPreds_MOD <- function(input, output, session) {
     } else {
       spp[[curSp()]]$rmm$output$prediction$thresholdSet <- NULL
     }
-    if(rmm()$model$algorithm == "Maxent") {
-      spp[[curSp()]]$rmm$output$prediction$notes <- predType
-    }
+    spp[[curSp()]]$rmm$output$prediction$notes <- predType
     
   })
 }

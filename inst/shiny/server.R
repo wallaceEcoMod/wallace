@@ -256,6 +256,7 @@ shinyServer(function(input, output, session) {
             }
             # map model prediction raster and projection polygon
             sharedExt <- rbind(polyPjXY, occs()[c("longitude", "latitude")])
+            print(mapProj())
             map %>% clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
               map_occs(occs(), customZoom = sharedExt) %>%
               addRasterImage(mapProj(), colors = rasPal, opacity = 0.7,
@@ -293,7 +294,7 @@ shinyServer(function(input, output, session) {
     if((component() == 'poccs' & module() == 'selOccs') | component() == 'proj') {
       map %>% leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
                                              rectangleOptions = FALSE, circleOptions = FALSE, 
-                                             markerOptions = FALSE)
+                                             markerOptions = FALSE, circleMarkerOptions = FALSE)
     } else {
       map %>% leaflet.extras::removeDrawToolbar(clearFeatures = TRUE)
     }
@@ -462,7 +463,7 @@ shinyServer(function(input, output, session) {
     map %>% leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
       leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
                                      rectangleOptions = FALSE, circleOptions = FALSE, 
-                                     markerOptions = FALSE) %>%
+                                     markerOptions = FALSE, circleMarkerOptions = FALSE) %>%
       map_occs(occs()) %>%
       zoom2Occs(occs())
     # UI CONTROLS 
@@ -1006,7 +1007,7 @@ shinyServer(function(input, output, session) {
       leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
       leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
                                      rectangleOptions = FALSE, circleOptions = FALSE, 
-                                     markerOptions = FALSE) 
+                                     markerOptions = FALSE, circleMarkerOptions = FALSE) 
     shinyjs::enable("dlProj")
   })
   
@@ -1023,7 +1024,7 @@ shinyServer(function(input, output, session) {
       leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
       leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
                                      rectangleOptions = FALSE, circleOptions = FALSE, 
-                                     markerOptions = FALSE) 
+                                     markerOptions = FALSE, circleMarkerOptions = FALSE) 
     shinyjs::enable("dlProj")
   })
   
@@ -1040,7 +1041,7 @@ shinyServer(function(input, output, session) {
       leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
       leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
                                      rectangleOptions = FALSE, circleOptions = FALSE, 
-                                     markerOptions = FALSE) 
+                                     markerOptions = FALSE, circleMarkerOptions = FALSE) 
     shinyjs::enable("dlProj")
   })
   

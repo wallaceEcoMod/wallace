@@ -14,7 +14,7 @@ partNsp_MOD <- function(input, output, session) {
     
     for(sp in spIn()) {
       if (is.null(bgMask())) {
-        shinyLogs %>% writeLog(type = 'error', "Before partitioning occurrences for ", spName(spp[[sp]]), 
+        shinyLogs %>% writeLog(type = 'error', "Before partitioning occurrences for ", sp, 
                         ", mask your environmental variables by your background extent.")
         return()
       }
