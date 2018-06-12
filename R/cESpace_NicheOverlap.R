@@ -2,6 +2,7 @@
 #' 
 #' @param z1 ecospat niche object for species 1 from cESpace_OccDens
 #' @param z2 ecospat niche object for species 2 from cESpace_OccDens
+#' @export
 
 cESpace_nicheOv <- function(z1, z2, iter = 100, equivalency = FALSE, similarity = TRUE, 
                             shinyLogs = NULL) {

@@ -1,3 +1,5 @@
+#' @export
+
 c4_bgMask <- function(occs, envs, bgExt, shinyLogs=NULL) {
   if (is.null(bgExt)) {
     shinyLogs %>% writeLog(type = 'error', "Before sampling background points, define the background extent.")

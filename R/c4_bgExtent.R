@@ -1,3 +1,5 @@
+#' @export
+
 c4_bgExtent <- function(occs, envs, bgSel, bgBuf, shinyLogs=NULL) {
   if (is.null(envs)) {
     shinyLogs %>% writeLog(type = 'error', "Before defining the background extent, 

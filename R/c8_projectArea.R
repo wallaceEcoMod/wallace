@@ -1,3 +1,5 @@
+#' @export
+
 c8_projectArea <- function(results, curModel, envs, outputType, polyPjXY, polyPjID, shinyLogs = NULL) {
   # create new spatial polygon from coordinates
   newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(polyPjXY)), ID = polyPjID)))  

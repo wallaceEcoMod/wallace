@@ -1,3 +1,5 @@
+#' @export
+
 runMaxent  <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, 
                         clamp, shinyLogs = NULL) {
   if (is.null(occsGrp)) {

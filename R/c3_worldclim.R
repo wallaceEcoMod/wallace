@@ -5,7 +5,7 @@
 #' @param bcRes numeric resolution of the climatic layers
 #' @param bcSel list of boolean data. selected variables
 #' 
-#' 
+#' @export
 #' 
 
 c3_worldclim<- function(bcRes, bcSel, shinyLogs=NULL){

@@ -1,4 +1,4 @@
-
+#' @export
 
 c1_userOccs <- function(csvPath, csvName, shinyLogs = NULL) {
   

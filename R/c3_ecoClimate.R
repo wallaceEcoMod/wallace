@@ -10,7 +10,7 @@
 #' Options are: "LGM" (Last Glacial Maximum, 21,000 years ago), "Holo" ()
 #' @param ecoClimSelChoice boolean TRUE/FALSE TRUE=user selects the variables
 #' @param ecoClimSel list of boolean data. selected variables
-#' 
+#' @export 
 #' 
 
 c3_ecoClimate <- function (bcAOGCM, bcScenario, ecoClimSelChoice=FALSE, ecoClimSel, 

@@ -4,7 +4,7 @@
 #' 
 #' @param rasPath character of directory to rasters
 #' @param rasName character vector of raster names
-#' 
+#' @export
 #' 
 #' 
 

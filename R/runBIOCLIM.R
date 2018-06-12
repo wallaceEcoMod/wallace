@@ -1,3 +1,5 @@
+#' @export
+
 runBIOCLIM  <- function(occs, bg, bgMask, shinyLogs = NULL) {
   
   bioclimEval <- function() {

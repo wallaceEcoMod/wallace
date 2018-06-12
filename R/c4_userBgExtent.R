@@ -1,3 +1,5 @@
+#' @export
+
 c4_userBgExtent <- function(bgShp_path, bgShp_name, userBgBuf, shinyLogs=NULL) {
     
     pathdir <- dirname(bgShp_path)

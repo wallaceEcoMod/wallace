@@ -1,3 +1,5 @@
+#' @export
+
 c5_partitionOccs <- function(occs, bg, method, kfolds=NULL, bgMsk=NULL, aggFact=NULL, shinyLogs = NULL) {
 
   if (method == '') {

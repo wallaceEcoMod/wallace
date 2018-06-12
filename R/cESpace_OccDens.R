@@ -2,6 +2,7 @@
 #' 
 #' @param pca output of pca component
 #' @param spSel species selected (1 or 2)
+#' @export
 
 cESpace_occDens<- function(sp.name1, sp.name2, pca, shinyLogs = NULL) {
   bg <- pca$scores$bg

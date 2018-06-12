@@ -1,3 +1,5 @@
+#' @export
+
 # plot ENMeval stats based on user selection ("value")
 makeMaxentEvalPlot <- function(evalTbl, value) {
   fc <- length(unique(evalTbl$features))

@@ -1,3 +1,5 @@
+#' @export
+
 c8_mess <- function(occs, bg, bgMsk, projExtRas, time, shinyLogs = NULL) {
   
   occsVals <- occs[,names(bgMsk)]

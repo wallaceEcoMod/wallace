@@ -1,3 +1,5 @@
+#' @export
+
 c2_thinOccs <- function(occs, thinDist, shinyLogs=NULL) {
   if (is.null(occs)) {
     shinyLogs %>% writeLog(type = 'error', "Before processing occurrences, 

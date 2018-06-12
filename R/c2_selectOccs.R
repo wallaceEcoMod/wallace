@@ -1,3 +1,5 @@
+#' @export
+
 c2_selectOccs <- function(occs, polySelXY, polySelID = 1, shinyLogs = NULL) {
   if (is.null(occs)) {
     shinyLogs %>% writeLog(type = 'error', "Before processing occurrences, 

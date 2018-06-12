@@ -10,7 +10,6 @@
 #' @param occNum integer maximum number of records
 #' @param timeInterval character Either "LGM" (Last Glacial Maximum) or "Holo" (Holocene). For PaleobioDB only Holocene is allowed.
 #' 
-#' 
 
 c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, shinyLogs = NULL) {
   spName <- trimws(spName)

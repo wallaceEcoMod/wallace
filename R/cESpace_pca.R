@@ -4,6 +4,7 @@
 #' @param bgMask2 rasterStack environmental grids for sp2 masked by its background
 #' @param occs.z1 table of occurrences with environmental values for sp1
 #' @param occs.z2 table of occurrences with environmental values for sp2
+#' @export
 
 cESpace_pca<- function(sp.name1, sp.name2 = NULL, occs.z1, occs.z2 = NULL, 
                        bgPts.z1, bgPts.z2 = NULL, shinyLogs = NULL) {

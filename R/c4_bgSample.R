@@ -1,3 +1,5 @@
+#' @export
+
 c4_bgSample <- function(occs, bgMask, bgPtsNum, shinyLogs=NULL) {
   # sample random background points
   smartProgress(shinyLogs, message = "Generating background points...", {

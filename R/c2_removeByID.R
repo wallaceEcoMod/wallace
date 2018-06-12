@@ -1,4 +1,4 @@
-
+#' @export
 
 c2_removeByID <- function(occs, removeID, shinyLogs = NULL) {
   if (is.null(occs)) {
