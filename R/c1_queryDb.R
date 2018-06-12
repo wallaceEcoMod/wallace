@@ -16,6 +16,7 @@
 #'
 #' @examples
 #' c1_queryDb(spName = "Tremarctos ornatus", occDb = "gbif", occNum = 100)
+#' @export
 
 c1_queryDb <- function(spName, occDb, occNum, shinyLogs=NULL) {
   # capitalize genus name if not already, trim whitespace

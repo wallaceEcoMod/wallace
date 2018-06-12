@@ -23,6 +23,8 @@
 # line.
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
+#' 
+#' 
 
 c3_userEnvs<- function(rasPath, rasName, shinyLogs=NULL){
   

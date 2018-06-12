@@ -19,7 +19,7 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("downloadEvalPlots")
   shinyjs::disable("dlPred")
   shinyjs::disable("dlProj")
-  shinyjs::disable("dlRMD")
+  # shinyjs::disable("dlRMD")
   
   ########################## #
   # REACTIVE VALUES LISTS ####
@@ -1101,12 +1101,11 @@ shinyServer(function(input, output, session) {
         input$rmdFileType, Rmd = 'Rmd', PDF = 'pdf', HTML = 'html', Word = 'docx'
       ))},
     content = function(file) {
-      sp <- spp[[curSp()]]
       exp <- knitr::knit_expand("Rmd/userReport.Rmd", 
-                                spName=spName(spp[[curSp()]]), 
+                                spName=curSp(), 
                                 occsSource=rmm()$data$occurrence$sources,
                                 occsNum=rmm()$code$wallaceSettings$occsNum,  # comp 1
-                                occsCSV=spp[[n]]$rmm$code$wallaceSettings$userCSV,
+                                occsCSV=rmm()$code$wallaceSettings$userCSV,
                                 occsRemoved=printVecAsis(rmm()$code$wallaceSettings$removedIDs)
                                 
       )  # comp 8

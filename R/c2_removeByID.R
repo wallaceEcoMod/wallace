@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #' @title c2_removeByID
 #' @description ..
 #'
@@ -22,6 +23,8 @@
 # this documentation when the user looks them up from the command
 # line.
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
+=======
+>>>>>>> 7de27dd1010e7833d00078c654d301e4126b6136
 #' @export
 
 c2_removeByID <- function(occs, removeID, shinyLogs = NULL) {

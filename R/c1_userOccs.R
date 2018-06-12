@@ -22,6 +22,7 @@
 # this documentation when the user looks them up from the command
 # line.
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
+
 #' @export
 
 c1_userOccs <- function(csvPath, csvName, shinyLogs = NULL) {

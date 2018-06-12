@@ -8,6 +8,7 @@
 #' @param occDb character name of the paleontological database. Either "PaleobioDB" or "neotoma"
 #' @param occNum integer maximum number of records
 #' @param timeInterval character Either "LGM" (Last Glacial Maximum) or "Holo" (Holocene). For PaleobioDB only Holocene is allowed.
+<<<<<<< HEAD
 # @keywords
 #'
 # @examples
@@ -23,6 +24,9 @@
 # line.
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
+=======
+#' 
+>>>>>>> 7de27dd1010e7833d00078c654d301e4126b6136
 
 c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, shinyLogs = NULL) {
   spName <- trimws(spName)
