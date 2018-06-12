@@ -10,9 +10,10 @@ runMaxent  <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
   
   # error for no maxent.jar in dismo directory
   jar <- paste(system.file(package="dismo"), "/java/maxent.jar", sep='')
-  if (!file.exists(jar)) {
-    shinyLogs %>% writeLog(type = 'error', 'File maxent.jar missing. Please see directions 
-                      on the toolbar to download and copy to the appropriate directory.')
+  if(!file.exists(jar)) {
+    shinyLogs %>% writeLog(type = 'error', "To use Maxent, make sure you download,", strong("maxent.jar"), "from the",
+                           a("AMNH Maxent webpage", href="http://biodiversityinformatics.amnh.org/open_source/maxent/", target="_blank"),
+                           "and place it in this directory:", br(), em(jar))
     return()
   }
   
