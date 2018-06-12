@@ -1,10 +1,12 @@
-#' @title 
+#' @title c2_thinOccs
 #' @description ..
 #'
 #' @details
 #' See Examples.
 #'
-#' @param
+#' @param occs
+#' @param thinDist
+#' @param shinyLogs=NULL
 # @keywords
 #'
 # @examples

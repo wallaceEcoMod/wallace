@@ -1,10 +1,13 @@
-#' @title 
+#' @title c2_selectOccs
 #' @description ..
 #'
 #' @details
 #' See Examples.
 #'
-#' @param
+#' @param occs
+#' @param polySelXY
+#' @param polySelID 
+#' @param shinyLogs 
 # @keywords
 #'
 # @examples

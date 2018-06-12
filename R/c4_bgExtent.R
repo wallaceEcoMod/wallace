@@ -1,3 +1,31 @@
+#' @title c4_bgExtent
+#' @description ..
+#'
+#' @details
+#' See Examples.
+#'
+#' @param occs
+#' @param envs
+#' @param bgSel
+#' @param bgBuf
+#' @param shinyLogs
+# @keywords
+#'
+# @examples
+#'
+#'
+# @return 
+#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+# @note
+
+# @seealso
+# @references
+# @aliases - a list of additional topic names that will be mapped to
+# this documentation when the user looks them up from the command
+# line.
+# @family - a family name. All functions that have the same family tag will be linked in the documentation.
+#' @export
+#' 
 c4_bgExtent <- function(occs, envs, bgSel, bgBuf, shinyLogs=NULL) {
   if (is.null(envs)) {
     shinyLogs %>% writeLog(type = 'error', "Before defining the background extent, 

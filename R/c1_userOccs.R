@@ -1,10 +1,12 @@
-#' @title 
+#' @title c1_userOccs
 #' @description ..
 #'
 #' @details
 #' See Examples.
 #'
-#' @param
+#' @param csvPath
+#' @param csvName
+#' @param shinyLogs
 # @keywords
 #'
 # @examples

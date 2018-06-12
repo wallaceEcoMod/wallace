@@ -1,10 +1,12 @@
-#' @title 
+#' @title c2_removeByID
 #' @description ..
 #'
 #' @details
 #' See Examples.
 #'
-#' @param
+#' @param occs
+#' @param removeID
+#' @param shinyLogs = NULL
 # @keywords
 #'
 # @examples
