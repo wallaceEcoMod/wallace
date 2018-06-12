@@ -1094,10 +1094,6 @@ shinyServer(function(input, output, session) {
   ### RMARKDOWN FUNCTIONALITY ####
   ########################################### #
   
-  observe({
-    if(!is.null(curSp())) print(rmm()$code$wallaceSettings)
-  })
-  
   # handler for R Markdown download
   output$dlRMD <- downloadHandler(
     filename = function() {
