@@ -22,10 +22,11 @@ envSimilarity_MOD <- function(input, output, session, rvs) {
     }
     
     occs.xy <- rvs$occs %>% dplyr::select(longitude, latitude)
+    all.xy <- rbind(occs.xy, bg.xy)
     
     withProgress(message = "Generating MESS map...", {
-      occVals <- raster::extract(rvs$envs, occs.xy)
-      pjMESS <- suppressWarnings(dismo::mess(rvs$projMsk, occVals))
+      trainingVals <- raster::extract(rvs$envs, all.xy)
+      pjMESS <- suppressWarnings(dismo::mess(rvs$projMsk, trainingVals))
       if (rvs$comp8.pj == 'area') {
         rvs %>% writeLog("Generated MESS map for present.")
       } else if (rvs$comp8.pj == 'time') {
