@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 #' @title c4_bgExtent
 #' @description ..
 #'
@@ -27,10 +27,7 @@
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 #' 
-=======
-#' @export
 
->>>>>>> 7de27dd1010e7833d00078c654d301e4126b6136
 c4_bgExtent <- function(occs, envs, bgSel, bgBuf, shinyLogs=NULL) {
   if (is.null(envs)) {
     shinyLogs %>% writeLog(type = 'error', "Before defining the background extent, 
