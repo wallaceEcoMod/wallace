@@ -1,3 +1,4 @@
+
 #' @title c4_bgSample
 #' @description ..
 #'
@@ -22,6 +23,7 @@
 # this documentation when the user looks them up from the command
 # line.
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
+
 #' @export
 
 c4_bgSample <- function(occs, bgMask, bgPtsNum, shinyLogs=NULL) {

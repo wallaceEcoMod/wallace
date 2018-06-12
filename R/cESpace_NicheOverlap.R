@@ -27,9 +27,6 @@
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 
-#' calibrate a PCA for the background of two selected species
-#' 
-
 cESpace_nicheOv <- function(z1, z2, iter = 100, equivalency = FALSE, similarity = TRUE, 
                             shinyLogs = NULL) {
   nicheOv <- list()
