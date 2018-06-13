@@ -93,6 +93,36 @@ mapPreds_MOD <- function(input, output, session) {
   })
 }
 
+mapPreds_MAP <- function(map, session) {
+  updateTabsetPanel(session, 'main', selected = 'Map')
+  req(mapPred())
+  mapPredVals <- spp[[curSp()]]$visualization$mapPredVals
+  rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+  # if no threshold specified
+  if (rmm()$output$prediction$thresholdRule != 'none') {
+    rasPal <- c('gray', 'blue')
+    map %>% clearAll() %>%
+      addLegend("bottomright", colors = c('gray', 'blue'),
+                title = "Thresholded Suitability<br>(Training)", labels = c("predicted absence", "predicted presence"),
+                opacity = 1, layerId = "train")
+  } else {
+    # if threshold specified
+    legendPal <- colorNumeric(rev(rasCols), mapPredVals, na.color='transparent')
+    rasPal <- colorNumeric(rasCols, mapPredVals, na.color='transparent')
+    map %>% clearAll() %>%
+      addLegend("bottomright", pal = legendPal, title = "Predicted Suitability<br>(Training)",
+                values = mapPredVals, layerId = "train",
+                labFormat = reverseLabels(2, reverse_order=TRUE))
+  }
+  # map model prediction raster
+  map %>%
+    map_occs(occs()) %>%
+    addRasterImage(mapPred(), colors = rasPal, opacity = 0.7,
+                   group = 'vis', layerId = 'mapPred', method = "ngb") %>%
+    # add background polygon(s)
+    mapBgPolys(bgShpXY())
+}
+
 mapPreds_INFO <- infoGenerator(modName = "Map Prediction", 
                                modAuts = "Jamie M. Kass, Robert Muscarella, Bruno Vilela, Robert P. Anderson", 
                                pkgName = "dismo")

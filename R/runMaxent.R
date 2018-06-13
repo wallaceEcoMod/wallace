@@ -1,4 +1,4 @@
-
+#' \code{runMaxent} returns a formatted tibble of species occurrences with a selection of appropriate fields.
 #' @title Run Maxent
 #' @description ..
 #'
