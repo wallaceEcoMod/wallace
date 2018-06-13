@@ -752,6 +752,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goProjectTime, {
     projTime.call <- projTime()
+    req(projTime.call)
     # stop if no model prediction
     req(rvs$predCur)
     # unpack
