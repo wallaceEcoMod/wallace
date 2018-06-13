@@ -142,8 +142,9 @@ shinyServer(function(input, output, session) {
   observe({
     if ((input$tabs == 2 & input$procOccSel == 'selOccs') | input$tabs == 8) {
       map %>% leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
-                                             rectangleOptions = FALSE, circleOptions = FALSE, 
-                                             markerOptions = FALSE)
+                                             rectangleOptions = FALSE, circleOptions = FALSE,
+                                             markerOptions = FALSE, circleMarkerOptions = FALSE,
+                                             editOptions = leaflet.extras::editToolbarOptions())
     } else {
       map %>% leaflet.extras::removeDrawToolbar(clearFeatures = TRUE)
     }
