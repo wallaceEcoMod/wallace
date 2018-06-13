@@ -163,25 +163,6 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  # logic for actions proceeding the deletion of polygons from the draw toolbar
-  observeEvent(input$map_draw_deleted_features, {
-    if (input$tabs == 2 & input$procOccSel == 'selOccs') {
-      rvs$occs <- rvs$occsPreProc  
-      # reset for RMD
-      rvs$comp2 <- NULL
-      rvs %>% writeLog("Reset occurrences.")
-      map %>%
-        clearMarkers() %>%
-        map_plotLocs(rvs$occs) %>%
-        zoom2Occs(rvs$occs)
-    } else if (input$tabs == 8) {
-      map %>%
-        removeShape("projExt") %>%
-        removeImage(c("rProjArea", "rProjTime", "rProjMESS"))
-      rvs %>% writeLog("Reset projection extent.")
-    }
-  })
-  
   ########################################## #
   ### COMPONENT 1: OBTAIN OCCURRENCE DATA ####
   ########################################## #
@@ -308,6 +289,18 @@ shinyServer(function(input, output, session) {
       write.csv(rvs$occs %>% dplyr::select(-pop), file, row.names = FALSE)
     }
   )
+  
+  # Reset Occs button functionality
+  observeEvent(input$goResetOccs, {
+    rvs$occs <- rvs$occsPreProc  
+    # reset for RMD
+    rvs$comp2 <- NULL
+    rvs %>% writeLog("Reset occurrences.")
+    map %>%
+      clearMarkers() %>%
+      map_plotLocs(rvs$occs) %>%
+      zoom2Occs(rvs$occs)
+  })
   
   ############################################# #
   ### COMPONENT 3: OBTAIN ENVIRONMENTAL DATA ####
@@ -792,6 +785,14 @@ shinyServer(function(input, output, session) {
                       addID = 'rProjMESS', clearID = c('r1ID', 'rProjArea', 'rProjTime', 'rProjMESS'))
     
     shinyjs::enable("dlProj")
+  })
+  
+  # Reset Projection Extent button functionality
+  observeEvent(input$goResetProj, {
+    map %>%
+      removeShape("projExt") %>%
+      removeImage(c("rProjArea", "rProjTime", "rProjMESS"))
+    rvs %>% writeLog("Reset projection extent.")
   })
   
   # download for model predictions (restricted to background extent)
