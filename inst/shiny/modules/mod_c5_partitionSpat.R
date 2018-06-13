@@ -24,8 +24,9 @@ partitionSpat_MOD <- function(input, output, session) {
       group.data <- c5_partitionOccs(spp[[sp]]$occs, 
                                      spp[[sp]]$bg, 
                                      input$partitionSpatSel, 
-                                     bgMsk = spp[[sp]]$procEnvs$bgMask, 
-                                     aggFact = input$aggFact, 
+                                     NULL,
+                                     spp[[sp]]$procEnvs$bgMask, 
+                                     input$aggFact, 
                                      shinyLogs)
       req(group.data)
       

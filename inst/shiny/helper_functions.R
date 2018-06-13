@@ -264,7 +264,7 @@ remEnvsValsNA <- function(occs, occsEnvsVals, logs) {
     
     if (length(na.rowNums) > 0) {
       occs.notNA <- occs[-na.rowNums,]
-      logs %>% writeLog(type = 'warning', 'Removed records without environmental values with occIDs: "',
+      logs %>% writeLog(type = 'warning', 'Removed records without environmental values with occIDs: ',
                         paste(occs[na.rowNums,]$occID, collapse=', '), ".")
       return(occs.notNA)
     }

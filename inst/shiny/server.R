@@ -125,9 +125,6 @@ shinyServer(function(input, output, session) {
   # initialize provider tile option
   observe({map %>% addProviderTiles(input$bmap)})
   
-  observeEvent(input$test1, map %>% leaflet.extras::addDrawToolbar())
-  observeEvent(input$test2, map %>% leaflet.extras::removeDrawToolbar())
-  
   # logic for recording the attributes of drawn polygon features
   observeEvent(input$map_draw_new_feature, {
     req(curSp())
@@ -174,8 +171,8 @@ shinyServer(function(input, output, session) {
     req(length(curSp()) == 1, occs())
     f <- switch(module(), "dbOccs"=queryDb_MAP, "userOccs"=userOccs_MAP,
                 "selOccs"=selectOccs_MAP, "remID"=removeByID_MAP, "spthin"=thinOccs_MAP,
-                "bgSel"=bgExtent_MAP, "bgUser"=userBgExtent_MAP)
-                # "nsp"=partitionNonSpat_MAP, "sp"=partitionSpat_MAP)
+                "bgSel"=bgExtent_MAP, "bgUser"=userBgExtent_MAP,
+                "nsp"=partitionNonSpat_MAP, "sp"=partitionSpat_MAP)
     req(f)
     map %>% f(session)
   })
