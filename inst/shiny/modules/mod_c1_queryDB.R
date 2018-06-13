@@ -93,7 +93,7 @@ queryDb_MOD <- function(input, output, session, rvs) {
     recs <- dbOccs.remDups()
     # standardize VertNet column names
     if (input$occDb == 'vertnet') {
-      fields <- c('institutioncode', 'stateprovince', 'basisofrecord', 'occurrenceid', 'maximumelevationinmeters')
+      fields <- c('institutioncode', 'stateprovince', 'basisofrecord', 'catalognumber', 'maximumelevationinmeters')
       for (i in fields) {
         if (!(i %in% names(recs))) recs[i] <- NA
       }
@@ -101,7 +101,7 @@ queryDb_MOD <- function(input, output, session, rvs) {
         dplyr::rename(institutionCode = institutioncode) %>%
         dplyr::rename(stateProvince = stateprovince) %>%
         dplyr::rename(basisOfRecord = basisofrecord) %>%
-        dplyr::rename(occurrenceID = occurrenceid) %>%
+        dplyr::rename(catalogNumber = catalognumber) %>%
         dplyr::rename(elevation = maximumelevationinmeters)
     }
     
@@ -124,14 +124,14 @@ queryDb_MOD <- function(input, output, session, rvs) {
     req(dbOccs.stdCols())
     recs <- dbOccs.stdCols()
     
-    for (col in c("year", "institutionCode", "basisOfRecord", "occurrenceID", "country", "stateProvince",
+    for (col in c("year", "institutionCode", "catalogNumber", "basisOfRecord", "country", "stateProvince",
                   "locality", "elevation")) {  # add all cols to match origOccs if not already there
       if (!(col %in% names(recs))) recs[,col] <- NA
     }
     
     # subset by key columns and make id and popup columns
-    cols <- c("name", "longitude", "latitude", "year", "institutionCode", "basisOfRecord", "occurrenceID", "country", "stateProvince",
-              "locality", "elevation", "occID")
+    cols <- c("name", "longitude", "latitude", "year", "institutionCode", "catalogNumber", "basisOfRecord", 
+              "country", "stateProvince", "locality", "elevation", "occID")
     recs <- recs %>%
       dplyr::select(dplyr::one_of(cols)) %>%
       dplyr::mutate(pop = unlist(apply(recs, 1, popUpContent)))  # make new column for leaflet marker popup content

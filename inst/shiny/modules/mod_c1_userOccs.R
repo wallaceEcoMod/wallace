@@ -41,8 +41,8 @@ userOccs_MOD <- function(input, output, session, rvs) {
     rvs %>% writeLog("User-specified CSV file", input$userCSV$name, "with total of", 
                       nrow(uoccs), "records with coordinates was uploaded.")
     
-    for (col in c("year", "institutionCode", "country", "stateProvince",
-                  "locality", "elevation", "basisOfRecord")) {  # add all cols to match origOccs if not already there
+    for (col in c("year", "institutionCode", "catalogNumber", "basisOfRecord", "country", "stateProvince",
+                  "locality", "elevation")) {  # add all cols to match origOccs if not already there
       if (!(col %in% names(uoccs))) uoccs[,col] <- NA
     }
     

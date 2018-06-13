@@ -356,7 +356,7 @@ shinyUI(tagList(
                              conditionalPanel("input.tabs != 'rmd' & input.tabs != 0",
                                               tabsetPanel(id = 'main',
                                                           tabPanel('Map', leaflet::leafletOutput("map", height=600)),
-                                                          tabPanel('Occs Tbl', DT::dataTableOutput('occTbl')),
+                                                          tabPanel('Occs Tbl', br(), br(), DT::dataTableOutput('occTbl')),
                                                           tabPanel('Results', 
                                                                    conditionalPanel("input.tabs == 3", verbatimTextOutput('envsPrint')),
                                                                    conditionalPanel("input.tabs == 6", uiOutput('evalTbls')),
