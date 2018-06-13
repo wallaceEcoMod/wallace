@@ -24,6 +24,8 @@ partitionNonSpat_MOD <- function(input, output, session) {
                                      spp[[sp]]$bg, 
                                      input$partNspSel, 
                                      kfolds = input$kfolds, 
+                                     NULL,
+                                     NULL,
                                      shinyLogs)
       req(group.data)
       

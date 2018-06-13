@@ -171,8 +171,8 @@ shinyServer(function(input, output, session) {
     req(length(curSp()) == 1, occs())
     f <- switch(module(), "dbOccs"=queryDb_MAP, "userOccs"=userOccs_MAP,
                 "selOccs"=selectOccs_MAP, "remID"=removeByID_MAP, "spthin"=thinOccs_MAP,
-                "bgSel"=bgExtent_MAP, "bgUser"=userBgExtent_MAP)
-                # "nsp"=partitionNonSpat_MAP, "sp"=partitionSpat_MAP)
+                "bgSel"=bgExtent_MAP, "bgUser"=userBgExtent_MAP,
+                "nsp"=partitionNonSpat_MAP, "sp"=partitionSpat_MAP)
     req(f)
     map %>% f(session)
   })
