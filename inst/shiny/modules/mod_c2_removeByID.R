@@ -30,6 +30,15 @@ removeByID_MOD <- function(input, output, session) {
   })
 }
 
+removeByID_MAP <- function(map) {
+  map %>% clearAll() %>%
+    addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude, 
+                     radius = 5, color = 'red', fill = TRUE, fillColor = "red", 
+                     fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
+    zoom2Occs(occs()) %>%
+    leaflet.extras::removeDrawToolbar(clearFeatures = TRUE)
+}
+
 removeByID_INFO <- infoGenerator(modName = "Remove Occurrences By ID",
                                  modAuts = "Jamie M. Kass, Robert P. Anderson",
                                  pkgName = NULL)

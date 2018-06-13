@@ -26,6 +26,18 @@ selectOccs_MOD <- function(input, output, session) {
   })
 }
 
+selectOccs_MAP <- function(map) {
+  map %>% clearAll() %>%
+    addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude, 
+                     radius = 5, color = 'red', fill = TRUE, fillColor = "red", 
+                     fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
+    zoom2Occs(occs()) %>%
+    leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
+                                   rectangleOptions = FALSE, circleOptions = FALSE,
+                                   markerOptions = FALSE, circleMarkerOptions = FALSE,
+                                   editOptions = leaflet.extras::editToolbarOptions())
+}
+
 selectOccs_INFO <- infoGenerator(modName = "Select Occurrences On Map",
                               modAuts = "Jamie M. Kass, Robert P. Anderson",
                               pkgName = "leaflet.extras")

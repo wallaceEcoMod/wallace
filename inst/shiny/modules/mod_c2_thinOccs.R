@@ -55,7 +55,8 @@ thinOccs_MAP <- function(map) {
       addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude, 
                        radius = 5, color = 'red', fill = TRUE, fillColor = "red", 
                        fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
-      zoom2Occs(occs())
+      zoom2Occs(occs()) %>%
+      leaflet.extras::removeDrawToolbar(clearFeatures = TRUE)
   }
 }
 

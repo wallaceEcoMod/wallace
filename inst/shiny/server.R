@@ -164,151 +164,163 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  # component-level mapping logic
+  # MAPPING LOGIC ####
   observe({
     # must have one species selected and occurrence data
-    # for mapping to be functional
     req(length(curSp()) == 1, occs())
-    # map the original occs for Component Obtain Occurrence Data
-    if(module() == 'dbOccs') {
-      map %>% queryDb_MAP()
-    } else if(module() == "userOccs") {
-      map %>% userOccs_MAP()
-    }
-    # map the analysis occs for components downstream of the first
-    if(component() == 'poccs') {
-      if(module() == 'spthin') {
-        map %>% thinOccs_MAP()
-      } else {
-        map %>% clearAll() %>% map_occs(occs())
-      }
-    }
-    if(component() == 'penvs') {
-      updateTabsetPanel(session, 'main', selected = 'Map')
-      if(is.null(bgExt())) {
-        map %>% clearAll() %>% map_occs(occs())
-      }else{
-        map %>% clearAll() %>% map_occs(occs())
-        for (shp in bgShpXY()) {
-          map %>%
-            addPolygons(lng=shp[,1], lat=shp[,2], weight=4, color="gray", group='bgShp')
-        }
-        bb <- bgExt()@bbox
-        map %>% fitBounds(bb[1], bb[2], bb[3], bb[4])
-      }
-    }
-    if(component() == 'part') {
-      updateTabsetPanel(session, 'main', selected = 'Map')
-      req(occs()$partition)
-      occsGrp <- occs()$partition
-      # colors for partition symbology
-      newColors <- gsub("FF$", "", rainbow(max(occsGrp)))  
-      partsFill <- newColors[occsGrp]
-      map %>% clearAll() %>%
-        map_occs(occs(), fillColor = partsFill, fillOpacity = 1) %>%
-        addLegend("bottomright", colors = newColors,
-                  title = "Partition Groups", labels = sort(unique(occsGrp)),
-                  opacity = 1)
-    }
-    if(component() == 'vis') {
-      if(module() == 'mapPreds') {
-        updateTabsetPanel(session, 'main', selected = 'Map')
-        req(mapPred())
-        mapPredVals <- spp[[curSp()]]$visualization$mapPredVals
-        rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-        # if no threshold specified
-        if (rmm()$output$prediction$thresholdRule != 'none') {
-          rasPal <- c('gray', 'blue')
-          map %>% clearAll() %>% 
-            addLegend("bottomright", colors = c('gray', 'blue'),
-                      title = "Thresholded Suitability<br>(Training)", labels = c("predicted absence", "predicted presence"),
-                      opacity = 1, layerId = "train")
-        } else {
-          # if threshold specified
-          legendPal <- colorNumeric(rev(rasCols), mapPredVals, na.color='transparent')
-          rasPal <- colorNumeric(rasCols, mapPredVals, na.color='transparent')
-          map %>% clearAll() %>% 
-            addLegend("bottomright", pal = legendPal, title = "Predicted Suitability<br>(Training)",
-                      values = mapPredVals, layerId = "train",
-                      labFormat = reverseLabels(2, reverse_order=TRUE))
-        }
-        # map model prediction raster
-        map %>% 
-          map_occs(occs()) %>%
-          addRasterImage(mapPred(), colors = rasPal, opacity = 0.7, 
-                         group = 'vis', layerId = 'mapPred', method = "ngb") %>%
-          # add background polygon(s)
-          mapBgPolys(bgShpXY())
-      }
-    }
-    if(component() == 'proj') {
-      updateTabsetPanel(session, 'main', selected = 'Map')
-      if(!is.null(spp[[curSp()]]$polyPjXY)) {
-        if(!is.null(spp[[curSp()]]$project)) {
-          polyPjXY <- spp[[curSp()]]$polyPjXY
-          if(module() == "projArea" | module() == "projTime") {
-            mapProjVals <- spp[[curSp()]]$project$mapProjVals
-            rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-            # if no threshold specified
-            if(rmm()$output$transfer$environment1$thresholdRule != 'none') {
-              rasPal <- c('gray', 'blue')
-              map %>% removeControl("proj") %>%
-                addLegend("bottomright", colors = c('gray', 'blue'), title = "Thresholded Suitability<br>(Projected)", 
-                          labels = c("predicted absence", "predicted presence"), opacity = 1, layerId = 'proj')
-            } else {
-              # if threshold specified
-              legendPal <- colorNumeric(rev(rasCols), mapProjVals, na.color='transparent')
-              rasPal <- colorNumeric(rasCols, mapProjVals, na.color='transparent')
-              map %>% removeControl("proj") %>%
-                addLegend("bottomright", pal = legendPal, title = "Predicted Suitability<br>(Projected)",
-                          values = mapProjVals, layerId = 'proj', labFormat = reverseLabels(2, reverse_order=TRUE))
-              
-            }
-            # map model prediction raster and projection polygon
-            sharedExt <- rbind(polyPjXY, occs()[c("longitude", "latitude")])
-            map %>% clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
-              map_occs(occs(), customZoom = sharedExt) %>%
-              addRasterImage(mapProj(), colors = rasPal, opacity = 0.7,
-                             layerId = 'projRas', group = 'proj', method = "ngb") %>%
-              addPolygons(lng=polyPjXY[,1], lat=polyPjXY[,2], layerId="projExt", fill = FALSE,
-                          weight=4, color="blue", group='proj') %>%
-              # add background polygon
-              mapBgPolys(bgShpXY())
-          } else if(module() == "mess") {
-            if(!is.null(spp[[curSp()]]$project$mess)) {
-              mess <- spp[[curSp()]]$project$mess
-              mapProjVals <- spp[[curSp()]]$project$messVals
-              rasCols <- RColorBrewer::brewer.pal(n=11, name='Reds')
-              legendPal <- colorNumeric(rev(rasCols), mapProjVals, na.color='transparent')
-              rasPal <- colorNumeric(rasCols, mapProjVals, na.color='transparent')
-              map %>% removeControl("proj") %>%
-                addLegend("bottomright", pal = legendPal, title = "MESS Values",
-                          values = mapProjVals, layerId = 'proj', labFormat = reverseLabels(2, reverse_order=TRUE))
-              # map model prediction raster and projection polygon
-              sharedExt <- rbind(polyPjXY, occs()[c("longitude", "latitude")])
-              map %>% clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
-                map_occs(occs(), customZoom = sharedExt) %>%
-                addRasterImage(mess, colors = rasPal, opacity = 0.7,
-                               layerId = 'projRas', group = 'proj', method = "ngb") %>%
-                addPolygons(lng=polyPjXY[,1], lat=polyPjXY[,2], layerId="projExt", fill = FALSE,
-                            weight=4, color="blue", group='proj') %>%
-                # add background polygon
-                mapBgPolys(bgShpXY())
-            }
-          }
-        }
-      }
-    }
-    # logic for initializing or removing leaflet draw toolbar
-    if((component() == 'poccs' & module() == 'selOccs') | component() == 'proj') {
-      map %>% leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
-                                             rectangleOptions = FALSE, circleOptions = FALSE, 
-                                             markerOptions = FALSE, circleMarkerOptions = FALSE,
-                                             editOptions = leaflet.extras::editToolbarOptions())
-    } else {
-      map %>% leaflet.extras::removeDrawToolbar(clearFeatures = TRUE)
-    }
+    f <- switch(module(), "dbOccs"=queryDb_MAP, "userOccs"=userOccs_MAP,
+                "selOccs"=selectOccs_MAP, "remID"=removeByID_MAP, "spthin"=thinOccs_MAP)
+    req(f)
+    map %>% f()
   })
+  
+  # component-level mapping logic
+  # observe({
+  #   # must have one species selected and occurrence data
+  #   # for mapping to be functional
+  #   req(length(curSp()) == 1, occs())
+  #   # map the original occs for Component Obtain Occurrence Data
+  #   if(module() == 'dbOccs') {
+  #     map %>% queryDb_MAP()
+  #   } else if(module() == "userOccs") {
+  #     map %>% userOccs_MAP()
+  #   }
+  #   # map the analysis occs for components downstream of the first
+  #   if(component() == 'poccs') {
+  #     if(module() == 'spthin') {
+  #       map %>% thinOccs_MAP()
+  #     } else {
+  #       map %>% clearAll() %>% map_occs(occs())
+  #     }
+  #   }
+  #   if(component() == 'penvs') {
+  #     updateTabsetPanel(session, 'main', selected = 'Map')
+  #     if(is.null(bgExt())) {
+  #       map %>% clearAll() %>% map_occs(occs())
+  #     }else{
+  #       map %>% clearAll() %>% map_occs(occs())
+  #       for (shp in bgShpXY()) {
+  #         map %>%
+  #           addPolygons(lng=shp[,1], lat=shp[,2], weight=4, color="gray", group='bgShp')
+  #       }
+  #       bb <- bgExt()@bbox
+  #       map %>% fitBounds(bb[1], bb[2], bb[3], bb[4])
+  #     }
+  #   }
+  #   if(component() == 'part') {
+  #     updateTabsetPanel(session, 'main', selected = 'Map')
+  #     req(occs()$partition)
+  #     occsGrp <- occs()$partition
+  #     # colors for partition symbology
+  #     newColors <- gsub("FF$", "", rainbow(max(occsGrp)))
+  #     partsFill <- newColors[occsGrp]
+  #     map %>% clearAll() %>%
+  #       map_occs(occs(), fillColor = partsFill, fillOpacity = 1) %>%
+  #       addLegend("bottomright", colors = newColors,
+  #                 title = "Partition Groups", labels = sort(unique(occsGrp)),
+  #                 opacity = 1)
+  #   }
+  #   if(component() == 'vis') {
+  #     if(module() == 'mapPreds') {
+  #       updateTabsetPanel(session, 'main', selected = 'Map')
+  #       req(mapPred())
+  #       mapPredVals <- spp[[curSp()]]$visualization$mapPredVals
+  #       rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+  #       # if no threshold specified
+  #       if (rmm()$output$prediction$thresholdRule != 'none') {
+  #         rasPal <- c('gray', 'blue')
+  #         map %>% clearAll() %>%
+  #           addLegend("bottomright", colors = c('gray', 'blue'),
+  #                     title = "Thresholded Suitability<br>(Training)", labels = c("predicted absence", "predicted presence"),
+  #                     opacity = 1, layerId = "train")
+  #       } else {
+  #         # if threshold specified
+  #         legendPal <- colorNumeric(rev(rasCols), mapPredVals, na.color='transparent')
+  #         rasPal <- colorNumeric(rasCols, mapPredVals, na.color='transparent')
+  #         map %>% clearAll() %>%
+  #           addLegend("bottomright", pal = legendPal, title = "Predicted Suitability<br>(Training)",
+  #                     values = mapPredVals, layerId = "train",
+  #                     labFormat = reverseLabels(2, reverse_order=TRUE))
+  #       }
+  #       # map model prediction raster
+  #       map %>%
+  #         map_occs(occs()) %>%
+  #         addRasterImage(mapPred(), colors = rasPal, opacity = 0.7,
+  #                        group = 'vis', layerId = 'mapPred', method = "ngb") %>%
+  #         # add background polygon(s)
+  #         mapBgPolys(bgShpXY())
+  #     }
+  #   }
+  #   if(component() == 'proj') {
+  #     updateTabsetPanel(session, 'main', selected = 'Map')
+  #     if(!is.null(spp[[curSp()]]$polyPjXY)) {
+  #       if(!is.null(spp[[curSp()]]$project)) {
+  #         polyPjXY <- spp[[curSp()]]$polyPjXY
+  #         if(module() == "projArea" | module() == "projTime") {
+  #           mapProjVals <- spp[[curSp()]]$project$mapProjVals
+  #           rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+  #           # if no threshold specified
+  #           if(rmm()$output$transfer$environment1$thresholdRule != 'none') {
+  #             rasPal <- c('gray', 'blue')
+  #             map %>% removeControl("proj") %>%
+  #               addLegend("bottomright", colors = c('gray', 'blue'), title = "Thresholded Suitability<br>(Projected)",
+  #                         labels = c("predicted absence", "predicted presence"), opacity = 1, layerId = 'proj')
+  #           } else {
+  #             # if threshold specified
+  #             legendPal <- colorNumeric(rev(rasCols), mapProjVals, na.color='transparent')
+  #             rasPal <- colorNumeric(rasCols, mapProjVals, na.color='transparent')
+  #             map %>% removeControl("proj") %>%
+  #               addLegend("bottomright", pal = legendPal, title = "Predicted Suitability<br>(Projected)",
+  #                         values = mapProjVals, layerId = 'proj', labFormat = reverseLabels(2, reverse_order=TRUE))
+  # 
+  #           }
+  #           # map model prediction raster and projection polygon
+  #           sharedExt <- rbind(polyPjXY, occs()[c("longitude", "latitude")])
+  #           map %>% clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
+  #             map_occs(occs(), customZoom = sharedExt) %>%
+  #             addRasterImage(mapProj(), colors = rasPal, opacity = 0.7,
+  #                            layerId = 'projRas', group = 'proj', method = "ngb") %>%
+  #             addPolygons(lng=polyPjXY[,1], lat=polyPjXY[,2], layerId="projExt", fill = FALSE,
+  #                         weight=4, color="blue", group='proj') %>%
+  #             # add background polygon
+  #             mapBgPolys(bgShpXY())
+  #         } else if(module() == "mess") {
+  #           if(!is.null(spp[[curSp()]]$project$mess)) {
+  #             mess <- spp[[curSp()]]$project$mess
+  #             mapProjVals <- spp[[curSp()]]$project$messVals
+  #             rasCols <- RColorBrewer::brewer.pal(n=11, name='Reds')
+  #             legendPal <- colorNumeric(rev(rasCols), mapProjVals, na.color='transparent')
+  #             rasPal <- colorNumeric(rasCols, mapProjVals, na.color='transparent')
+  #             map %>% removeControl("proj") %>%
+  #               addLegend("bottomright", pal = legendPal, title = "MESS Values",
+  #                         values = mapProjVals, layerId = 'proj', labFormat = reverseLabels(2, reverse_order=TRUE))
+  #             # map model prediction raster and projection polygon
+  #             sharedExt <- rbind(polyPjXY, occs()[c("longitude", "latitude")])
+  #             map %>% clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
+  #               map_occs(occs(), customZoom = sharedExt) %>%
+  #               addRasterImage(mess, colors = rasPal, opacity = 0.7,
+  #                              layerId = 'projRas', group = 'proj', method = "ngb") %>%
+  #               addPolygons(lng=polyPjXY[,1], lat=polyPjXY[,2], layerId="projExt", fill = FALSE,
+  #                           weight=4, color="blue", group='proj') %>%
+  #               # add background polygon
+  #               mapBgPolys(bgShpXY())
+  #           }
+  #         }
+  #       }
+  #     }
+  #   }
+  # # logic for initializing or removing leaflet draw toolbar
+  # observe({
+  #   if((component() == 'poccs' & module() == 'selOccs') | component() == 'proj') {
+  #     map %>% leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
+  #                                            rectangleOptions = FALSE, circleOptions = FALSE,
+  #                                            markerOptions = FALSE, circleMarkerOptions = FALSE,
+  #                                            editOptions = leaflet.extras::editToolbarOptions())
+  #   } else {
+  #     map %>% leaflet.extras::removeDrawToolbar(clearFeatures = TRUE)
+  #   }
+  # })
+  # # })
   
   ########################################## #
   # COMPONENT: OBTAIN OCCURRENCE DATA ####
