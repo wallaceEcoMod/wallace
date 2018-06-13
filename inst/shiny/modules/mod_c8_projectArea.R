@@ -83,7 +83,12 @@ projectArea_MOD <- function(input, output, session) {
 
 projectArea_MAP <- function(map, session) {
   updateTabsetPanel(session, 'main', selected = 'Map')
-  req(spp[[curSp()]]$polyPjXY, spp[[curSp()]]$project)
+  req(results())
+  map %>% leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
+                                         rectangleOptions = FALSE, circleOptions = FALSE,
+                                         markerOptions = FALSE, circleMarkerOptions = FALSE,
+                                         editOptions = leaflet.extras::editToolbarOptions())
+  req(spp[[curSp()]]$polyPjXY, spp[[curSp()]]$project)  
   polyPjXY <- spp[[curSp()]]$polyPjXY
   mapProjVals <- spp[[curSp()]]$project$mapProjVals
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
@@ -104,7 +109,8 @@ projectArea_MAP <- function(map, session) {
   }
   # map model prediction raster and projection polygon
   sharedExt <- rbind(polyPjXY, occs()[c("longitude", "latitude")])
-  map %>% clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
+  map %>% 
+    clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
     map_occs(occs(), customZoom = sharedExt) %>%
     addRasterImage(mapProj(), colors = rasPal, opacity = 0.7,
                    layerId = 'projRas', group = 'proj', method = "ngb") %>%

@@ -1,6 +1,6 @@
 Package: wallace
 Version: 1.9.0
-Date: 2018-02-12
+Date: 2018-06-16
 Title: A Modular Platform for Reproducible Modeling of Species Niches
         and Distributions
 Authors@R: c(person("Jamie M.", "Kass", email = "jkass@gradcenter.cuny.edu", role = c("aut", "cre")),
@@ -20,8 +20,8 @@ Author: Jamie M. Kass [aut, cre],
 Maintainer: Jamie M. Kass <jamie.m.kass@gmail.com>
 Depends:
     R (>= 3.4.2),
-    shiny (>= 0.14.2),
-    leaflet (>= 1.0.1)
+    shiny (>= 1.1.0),
+    leaflet (>= 2.0.0)
 Imports:
     DT (>= 0.2),
     shinyjs,
@@ -38,7 +38,7 @@ Imports:
     shinythemes,
     magrittr,
     rgdal,
-    leaflet.extras,
+    leaflet.extras (>= 1.0.0),
     paleobioDB,
     repmis,
     ade4,

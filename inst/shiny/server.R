@@ -173,23 +173,11 @@ shinyServer(function(input, output, session) {
                 "selOccs"=selectOccs_MAP, "remID"=removeByID_MAP, "spthin"=thinOccs_MAP,
                 "bgSel"=bgExtent_MAP, "bgUser"=userBgExtent_MAP,
                 "nsp"=partitionNonSpat_MAP, "sp"=partitionSpat_MAP,
-                "mapPreds"=mapPreds_MAP)
+                "mapPreds"=mapPreds_MAP,
+                "projArea"=projectArea_MAP, "projTime"= projectTime_MAP, "mess"=envSimilarity_MAP)
     req(f)
     map %>% f(session)
   })
-  
-  # # logic for initializing or removing leaflet draw toolbar
-  # observe({
-  #   if((component() == 'poccs' & module() == 'selOccs') | component() == 'proj') {
-  #     map %>% leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
-  #                                            rectangleOptions = FALSE, circleOptions = FALSE,
-  #                                            markerOptions = FALSE, circleMarkerOptions = FALSE,
-  #                                            editOptions = leaflet.extras::editToolbarOptions())
-  #   } else {
-  #     map %>% leaflet.extras::removeDrawToolbar(clearFeatures = TRUE)
-  #   }
-  # })
-  # # })
   
   ########################################## #
   # COMPONENT: OBTAIN OCCURRENCE DATA ####
