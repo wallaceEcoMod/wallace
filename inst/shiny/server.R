@@ -125,9 +125,6 @@ shinyServer(function(input, output, session) {
   # initialize provider tile option
   observe({map %>% addProviderTiles(input$bmap)})
   
-  observeEvent(input$test1, map %>% leaflet.extras::addDrawToolbar())
-  observeEvent(input$test2, map %>% leaflet.extras::removeDrawToolbar())
-  
   # logic for recording the attributes of drawn polygon features
   observeEvent(input$map_draw_new_feature, {
     req(curSp())
