@@ -47,6 +47,27 @@ userBgExtent_MOD <- function(input, output, session) {
   })
 }
 
+userBgExtent_MAP <- function(map, session) {
+  updateTabsetPanel(session, 'main', selected = 'Map')
+  if(is.null(bgExt())) {
+    map %>% clearAll() %>%     
+      addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude, 
+                       radius = 5, color = 'red', fill = TRUE, fillColor = "red", 
+                       fillOpacity = 0.2, weight = 2, popup = ~pop)
+  }else{
+    map %>% clearAll() %>%
+      addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude, 
+                       radius = 5, color = 'red', fill = TRUE, fillColor = "red", 
+                       fillOpacity = 0.2, weight = 2, popup = ~pop)
+    for(shp in bgShpXY()) {
+      map %>%
+        addPolygons(lng=shp[,1], lat=shp[,2], weight=4, color="gray", group='bgShp')
+    }
+    bb <- bgExt()@bbox
+    map %>% fitBounds(bb[1], bb[2], bb[3], bb[4])
+  }
+}
+
 userBgExtent_INFO <- infoGenerator(modName = "User-specified Study Region",
                                    modAuts = "Jamie M. Kass, Bruno Vilela, Robert P. Anderson",
                                    pkgName = NULL)

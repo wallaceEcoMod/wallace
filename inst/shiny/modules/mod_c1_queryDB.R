@@ -48,7 +48,7 @@ queryDb_MOD <- function(input, output, session) {
   })
 }
 
-queryDb_MAP <- function(map) {
+queryDb_MAP <- function(map, session) {
   occs <- spp[[curSp()]]$occData$occsCleaned
   map %>% clearAll() %>%
     addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, 

@@ -23,6 +23,8 @@ c3_worldclim<- function(bcRes, bcSel, shinyLogs=NULL){
       wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes)
       wcbc <- wcbc[[bcSel]]
     }
+    # convert to brick for faster processing
+    wcbc <- raster::brick(wcbc)
   }) 
   
   if (raster::nlayers(wcbc) == 19) {

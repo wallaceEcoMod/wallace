@@ -26,7 +26,7 @@ selectOccs_MOD <- function(input, output, session) {
   })
 }
 
-selectOccs_MAP <- function(map) {
+selectOccs_MAP <- function(map, session) {
   map %>% clearAll() %>%
     addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude, 
                      radius = 5, color = 'red', fill = TRUE, fillColor = "red", 

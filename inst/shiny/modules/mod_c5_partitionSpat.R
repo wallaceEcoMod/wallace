@@ -1,8 +1,8 @@
 
-partSp_UI <- function(id) {
+partitionSpat_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    selectInput(ns("partSpSel"), "Options Available:",
+    selectInput(ns("partitionSpatSel"), "Options Available:",
                 choices = list("None selected" = '',
                                "Block (k = 4)" = "block",
                                "Checkerboard 1 (k = 2)" = "cb1",
@@ -11,7 +11,7 @@ partSp_UI <- function(id) {
   )
 }
 
-partSp_MOD <- function(input, output, session) {
+partitionSpat_MOD <- function(input, output, session) {
   reactive({
     for(sp in spIn()) {
       if (is.null(bgMask())) {
@@ -23,7 +23,7 @@ partSp_MOD <- function(input, output, session) {
       # FUNCTION CALL ####
       group.data <- c5_partitionOccs(spp[[sp]]$occs, 
                                      spp[[sp]]$bg, 
-                                     input$partSpSel, 
+                                     input$partitionSpatSel, 
                                      bgMsk = spp[[sp]]$procEnvs$bgMask, 
                                      aggFact = input$aggFact, 
                                      shinyLogs)
@@ -34,15 +34,15 @@ partSp_MOD <- function(input, output, session) {
       spp[[sp]]$bg$partition <- group.data$bg.grp
       
       # METADATA ####
-      if(input$partSpSel == 'block') {
+      if(input$partitionSpatSel == 'block') {
         spp[[sp]]$rmm$model$partition$numberFolds <- 4
         spp[[sp]]$rmm$model$partition$partitionRule <- 'spatial block'
       }
-      if(input$partSpSel == 'cb1') {
+      if(input$partitionSpatSel == 'cb1') {
         spp[[sp]]$rmm$model$partition$numberFolds <- 2
         spp[[sp]]$rmm$model$partition$partitionRule <- 'checkerboard'
       }
-      if(input$partSpSel == 'cb2') {
+      if(input$partitionSpatSel == 'cb2') {
         spp[[sp]]$rmm$model$partition$numberFolds <- 4
         spp[[sp]]$rmm$model$partition$partitionRule <- 'hierarchical checkerboard'
         spp[[sp]]$rmm$model$partition$notes <- paste('aggregation factor =', input$aggFact)
@@ -50,6 +50,20 @@ partSp_MOD <- function(input, output, session) {
     }
     
   })
+}
+
+partitionSpat_MAP <- function(map, session) {
+  updateTabsetPanel(session, 'main', selected = 'Map')
+  req(occs()$partition)
+  occsGrp <- occs()$partition
+  # colors for partition symbology
+  newColors <- gsub("FF$", "", rainbow(max(occsGrp)))
+  partsFill <- newColors[occsGrp]
+  map %>% clearAll() %>%
+    map_occs(occs(), fillColor = partsFill, fillOpacity = 1) %>%
+    addLegend("bottomright", colors = newColors,
+              title = "Partition Groups", labels = sort(unique(occsGrp)),
+              opacity = 1)
 }
 
 partitionSpat_INFO <- infoGenerator(modName = "Spatial Partition",

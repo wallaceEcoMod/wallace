@@ -44,27 +44,28 @@ shinyServer(function(input, output, session) {
   
   # FOR DEVELOPMENT PURPOSES
   observeEvent(input$load, {
-    f <- c1_userOccs('example_data/multispecies.csv', "multispecies.csv")
-    wc <- c3_worldclim(10, paste0('bio', 1:19))
-    wc <- raster::brick(wc)
-    r <- list()
-    ls1 <- list.files('example_data/Procyon_lotor_mskEnvs', full.names = TRUE)
-    ls1 <- ls1[-which(grepl("gri$",ls1))]
-    r[["Procyon_lotor"]] <- raster::stack(ls1)
-    r[["Procyon_lotor"]] <- raster::brick(r[["Procyon_lotor"]])
-    ls2 <- list.files('example_data/Nyctereutes_procyonoides_mskEnvs', full.names = TRUE)
-    ls2 <- ls2[-which(grepl("gri$",ls2))]
-    r[["Nyctereutes_procyonoides"]] <- raster::stack(ls2)
-    r[["Nyctereutes_procyonoides"]] <- raster::brick(r[["Nyctereutes_procyonoides"]])
+    f <- c1_userOccs('example_data/multispecies copy.csv', "multispecies copy.csv")
+    # wc <- c3_worldclim(10, paste0('bio', 1:19))
+    # wc <- raster::brick(wc)
+    # r <- list()
+    # ls1 <- list.files('example_data/Procyon_lotor_mskEnvs', full.names = TRUE)
+    # ls1 <- ls1[-which(grepl("gri$",ls1))]
+    # r[["Procyon_lotor"]] <- raster::stack(ls1)
+    # r[["Procyon_lotor"]] <- raster::brick(r[["Procyon_lotor"]])
+    # ls2 <- list.files('example_data/Nyctereutes_procyonoides_mskEnvs', full.names = TRUE)
+    # ls2 <- ls2[-which(grepl("gri$",ls2))]
+    # r[["Nyctereutes_procyonoides"]] <- raster::stack(ls2)
+    # r[["Nyctereutes_procyonoides"]] <- raster::brick(r[["Nyctereutes_procyonoides"]])
     for(n in c("Procyon_lotor", "Nyctereutes_procyonoides")) {
       occs <- f[[n]]$occs
+      occs$partition <- NULL
       spp[[n]] <- list(occs = occs, occData = list(occsCleaned = occs),
                        rmm = rangeModelMetadata::rmmTemplate())
-      spp[[n]]$envs <- wc
-      spp[[n]]$bg <- f[[n]]$bg
-      spp[[n]]$procEnvs <- list()
-      spp[[n]]$procEnvs$bgMask <- r[[n]]
-      spp[[n]]$occs$partition <- f[[n]]$occs$partition
+      # spp[[n]]$envs <- wc
+      # spp[[n]]$bg <- f[[n]]$bg
+      # spp[[n]]$procEnvs <- list()
+      # spp[[n]]$procEnvs$bgMask <- r[[n]]
+      # spp[[n]]$occs$partition <- f[[n]]$occs$partition
     }
     print('SECRET DATA LOADED')
   })
@@ -124,6 +125,9 @@ shinyServer(function(input, output, session) {
   # initialize provider tile option
   observe({map %>% addProviderTiles(input$bmap)})
   
+  observeEvent(input$test1, map %>% leaflet.extras::addDrawToolbar())
+  observeEvent(input$test2, map %>% leaflet.extras::removeDrawToolbar())
+  
   # logic for recording the attributes of drawn polygon features
   observeEvent(input$map_draw_new_feature, {
     req(curSp())
@@ -169,9 +173,11 @@ shinyServer(function(input, output, session) {
     # must have one species selected and occurrence data
     req(length(curSp()) == 1, occs())
     f <- switch(module(), "dbOccs"=queryDb_MAP, "userOccs"=userOccs_MAP,
-                "selOccs"=selectOccs_MAP, "remID"=removeByID_MAP, "spthin"=thinOccs_MAP)
+                "selOccs"=selectOccs_MAP, "remID"=removeByID_MAP, "spthin"=thinOccs_MAP,
+                "bgSel"=bgExtent_MAP, "bgUser"=userBgExtent_MAP)
+                # "nsp"=partitionNonSpat_MAP, "sp"=partitionSpat_MAP)
     req(f)
-    map %>% f()
+    map %>% f(session)
   })
   
   # component-level mapping logic
@@ -194,31 +200,10 @@ shinyServer(function(input, output, session) {
   #     }
   #   }
   #   if(component() == 'penvs') {
-  #     updateTabsetPanel(session, 'main', selected = 'Map')
-  #     if(is.null(bgExt())) {
-  #       map %>% clearAll() %>% map_occs(occs())
-  #     }else{
-  #       map %>% clearAll() %>% map_occs(occs())
-  #       for (shp in bgShpXY()) {
-  #         map %>%
-  #           addPolygons(lng=shp[,1], lat=shp[,2], weight=4, color="gray", group='bgShp')
-  #       }
-  #       bb <- bgExt()@bbox
-  #       map %>% fitBounds(bb[1], bb[2], bb[3], bb[4])
-  #     }
+      
   #   }
   #   if(component() == 'part') {
-  #     updateTabsetPanel(session, 'main', selected = 'Map')
-  #     req(occs()$partition)
-  #     occsGrp <- occs()$partition
-  #     # colors for partition symbology
-  #     newColors <- gsub("FF$", "", rainbow(max(occsGrp)))
-  #     partsFill <- newColors[occsGrp]
-  #     map %>% clearAll() %>%
-  #       map_occs(occs(), fillColor = partsFill, fillOpacity = 1) %>%
-  #       addLegend("bottomright", colors = newColors,
-  #                 title = "Partition Groups", labels = sort(unique(occsGrp)),
-  #                 opacity = 1)
+
   #   }
   #   if(component() == 'vis') {
   #     if(module() == 'mapPreds') {
@@ -480,15 +465,7 @@ shinyServer(function(input, output, session) {
     req(input$map_draw_new_feature)
     selOccs <- callModule(selectOccs_MOD, 'c2_selOccs_uiID')
     selOccs()
-    # MAPPING
-    map %>% clearAll() %>%
-      leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
-      leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
-                                     rectangleOptions = FALSE, circleOptions = FALSE, 
-                                     markerOptions = FALSE, circleMarkerOptions = FALSE,
-                                     editOptions = TRUE) %>%
-      map_occs(occs()) %>%
-      zoom2Occs(occs())
+
     # UI CONTROLS 
     # updateSelectInput(session, "curSp", selected = curSp())
     shinyjs::enable("dlProcOccs")
@@ -796,9 +773,9 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # # # # # # # # # # #
   # module Non-spatial Occurrence Partitions ####
   # # # # # # # # # # # # # # # # # # # # # # # # #
-  partNsp <- callModule(partNsp_MOD, 'cParts_partNsp_uiID')
-  observeEvent(input$goPartNsp, {
-    partNsp()
+  partitionNonSpat <- callModule(partitionNonSpat_MOD, 'cParts_partitionNonSpat_uiID')
+  observeEvent(input$goPartitionNonSpat, {
+    partitionNonSpat()
     # UI CONTROLS 
     # updateSelectInput(session, "curSp", selected = curSp())
     shinyjs::enable("dlPart")
@@ -807,9 +784,9 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # # # # # # # # #
   # module Spatial Occurrence Partitions ####
   # # # # # # # # # # # # # # # # # # # # # # #
-  partSp <- callModule(partSp_MOD, 'cParts_partSp_uiID')
-  observeEvent(input$goPartSp, {
-    partSp()
+  partitionSpat <- callModule(partitionSpat_MOD, 'cParts_partitionSpat_uiID')
+  observeEvent(input$goPartitionSpat, {
+    partitionSpat()
     # UI CONTROLS 
     # updateSelectInput(session, "curSp", selected = curSp())
     shinyjs::enable("dlPart")

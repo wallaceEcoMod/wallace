@@ -41,6 +41,7 @@ wcBioclims_MOD <- function(input, output, session, spIn) {
       })
       # remove occurrences with NA environmental values
       spp[[sp]]$occs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, shinyLogs)
+      occsEnvsVals <- na.omit(occsEnvsVals)
       
       # LOAD INTO SPP ####
       spp[[sp]]$envs <- envs

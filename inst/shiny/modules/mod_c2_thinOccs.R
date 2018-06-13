@@ -33,7 +33,7 @@ thinOccs_MOD <- function(input, output, session) {
   })
 }
 
-thinOccs_MAP <- function(map) {
+thinOccs_MAP <- function(map, session) {
   # if you've thinned already, map thinned points blue
   # and kept points red
   if(!is.null(spp[[curSp()]]$procOccs$occsThin)) {

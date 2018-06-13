@@ -1,5 +1,5 @@
 
-partNsp_UI <- function(id) {
+partitionNonSpat_UI <- function(id) {
   ns <- NS(id)
   tagList(
     selectInput(ns("partNspSel"), "Options Available:",
@@ -9,7 +9,7 @@ partNsp_UI <- function(id) {
   )
 }
 
-partNsp_MOD <- function(input, output, session) {
+partitionNonSpat_MOD <- function(input, output, session) {
   reactive({
     
     for(sp in spIn()) {
@@ -42,6 +42,20 @@ partNsp_MOD <- function(input, output, session) {
       }
     }
   })
+}
+
+partitionNonSpat_MAP <- function(map, session) {
+  updateTabsetPanel(session, 'main', selected = 'Map')
+  req(occs()$partition)
+  occsGrp <- occs()$partition
+  # colors for partition symbology
+  newColors <- gsub("FF$", "", rainbow(max(occsGrp)))
+  partsFill <- newColors[occsGrp]
+  map %>% clearAll() %>%
+    map_occs(occs(), fillColor = partsFill, fillOpacity = 1) %>%
+    addLegend("bottomright", colors = newColors,
+              title = "Partition Groups", labels = sort(unique(occsGrp)),
+              opacity = 1)
 }
 
 partitionNonSpat_INFO <- infoGenerator(modName = "Non-spatial Partition",

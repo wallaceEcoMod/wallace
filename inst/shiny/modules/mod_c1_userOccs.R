@@ -34,7 +34,7 @@ userOccs_MOD <- function(input, output, session) {
   })
 }
 
-userOccs_MAP <- function(map) {
+userOccs_MAP <- function(map, session) {
   occs <- spp[[curSp()]]$occData$occsCleaned
   map %>% clearAll() %>%
     addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, 
