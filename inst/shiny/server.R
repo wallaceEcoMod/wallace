@@ -453,8 +453,8 @@ shinyServer(function(input, output, session) {
   ############################################# #
   
   # module Non-spatial Occurrence Partitions
+  partNsp.call <- callModule(partNsp_MOD, 'c5_partNsp', rvs)
   observeEvent(input$goPartNsp, {
-    partNsp.call <- callModule(partNsp_MOD, 'c5_partNsp', rvs)
     partNsp <- partNsp.call()
     # stop if no background mask
     req(rvs$bgMsk)
@@ -463,10 +463,10 @@ shinyServer(function(input, output, session) {
     map %>% comp5_map(rvs$occs, rvs$occsGrp)
     shinyjs::enable("dlPart")
   })
-  
+
   # module Spatial Occurrence Partitions
+  partSp.call <- callModule(partSp_MOD, 'c5_partSp', rvs)  
   observeEvent(input$goPartSp, {
-    partSp.call <- callModule(partSp_MOD, 'c5_partSp', rvs)
     partSp <- partSp.call()
     # stop if no background mask
     req(rvs$bgMsk)

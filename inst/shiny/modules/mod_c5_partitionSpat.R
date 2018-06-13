@@ -7,11 +7,19 @@ partSp_UI <- function(id) {
                                "Block (k = 4)" = "block",
                                "Checkerboard 1 (k = 2)" = "cb1",
                                "Checkerboard 2 (k = 4)" = "cb2")),
-    numericInput(ns("aggFact"), label = "Aggregation Factor", value = 2, min = 2)
+    uiOutput(ns("aggFactui"))
   )
 }
 
 partSp_MOD <- function(input, output, session, rvs) {
+  
+  output$aggFactui <- renderUI({
+    ns <- session$ns
+    if (input$partSpSel == "cb1" | input$partSpSel == "cb2") {
+      numericInput(ns("aggFact"), label = "Aggregation Factor", value = 2, min = 2)
+    }
+  })
+  
   reactive({
     if (is.null(rvs$bgMsk)) {
       rvs %>% writeLog(type = 'error', "Before partitioning occurrences, 

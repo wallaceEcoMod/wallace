@@ -5,11 +5,20 @@ partNsp_UI <- function(id) {
     selectInput(ns("partNspSel"), "Options Available:",
                 choices = list("None selected" = '', "Jackknife (k = n)" = "jack",
                                "Random k-fold" = "rand")),
-    numericInput(ns("kfolds"), label = "Number of Folds", value = 2, min = 2)
+    uiOutput(ns('kfoldsui'))
   )
 }
 
 partNsp_MOD <- function(input, output, session, rvs, occs, bgPts) {
+  
+  output$kfoldsui <- renderUI({
+    ns <- session$ns
+    if (input$partNspSel == "rand") {
+      numericInput(ns("kfolds"), label = "Number of Folds", value = 2, min = 2)  
+    }
+  })
+  
+  
   reactive({
     if (is.null(rvs$bgMsk)) {
       rvs %>% writeLog(type = 'error', "Before partitioning occurrences, 
