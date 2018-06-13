@@ -1,15 +1,28 @@
-#' c1_queryPaleoDb
-#' 
-#' \code{c1_queryPaleoDb} returns species occurrences
-#' 
-#' query paleobioDB or neotoma databases and returns the complete list of data, 
-#' data with coordinates, and data with no duplicates
-#' 
+#' @title `c1_queryPaleoDb` returns species occurrences
+#' @description #' query paleobioDB or neotoma databases and returns the complete list of data, data with coordinates, and data with no duplicates
+#'
+#' @details
+#' See Examples.
+#'
 #' @param spName character species name. For paleobioDb it returns records associated with the specified taxonomic name, including any synonyms.
 #' @param occDb character name of the paleontological database. Either "PaleobioDB" or "neotoma"
 #' @param occNum integer maximum number of records
 #' @param timeInterval character Either "LGM" (Last Glacial Maximum) or "Holo" (Holocene). For PaleobioDB only Holocene is allowed.
-#' 
+# @keywords
+#'
+# @examples
+#'
+#'
+# @return 
+#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+# @note
+# @seealso
+# @references
+# @aliases - a list of additional topic names that will be mapped to
+# this documentation when the user looks them up from the command
+# line.
+# @family - a family name. All functions that have the same family tag will be linked in the documentation.
+#' @export
 
 c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, shinyLogs = NULL) {
   spName <- trimws(spName)

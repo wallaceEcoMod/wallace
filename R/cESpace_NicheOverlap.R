@@ -1,7 +1,30 @@
-#' calibrate a PCA for the background of two selected species
-#' 
+#' @title cESpace_nicheOv
+#' @description ..
+#'
+#' @details
+#' See Examples.
+#'
 #' @param z1 ecospat niche object for species 1 from cESpace_OccDens
 #' @param z2 ecospat niche object for species 2 from cESpace_OccDens
+#' @param iter number of iterations
+#' @param equivalency
+#' @param similarity
+#' @param shinyLogs
+# @keywords
+#'
+# @examples
+#'
+#'
+# @return 
+#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+# @note
+
+# @seealso
+# @references
+# @aliases - a list of additional topic names that will be mapped to
+# this documentation when the user looks them up from the command
+# line.
+# @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 
 cESpace_nicheOv <- function(z1, z2, iter = 100, equivalency = FALSE, similarity = TRUE, 

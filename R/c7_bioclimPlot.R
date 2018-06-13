@@ -1,6 +1,31 @@
+
+#' @title makeBioclimPlot
+#' @description ..
+#'
+#' @details
+#' See Examples.
+#'
+#' @param x
+#' @param a=1
+#' @param b=2
+#' @param p=0.9
+#' @param ...
+# @keywords
+#'
+# @examples
+#'
+#'
+# @return 
+#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+# @note
+# @seealso
+# @references
+# @aliases - a list of additional topic names that will be mapped to
+# this documentation when the user looks them up from the command
+# line.
+# @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 
-# modified from the bioclim plot method for bioclim in dismo v.1.1-1 for Wallace
 makeBioclimPlot <- function(x, a=1, b=2, p=0.9, ...) {
   
   d <- x@presence
