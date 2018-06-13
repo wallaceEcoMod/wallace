@@ -48,6 +48,15 @@ queryDb_MOD <- function(input, output, session) {
   })
 }
 
+queryDb_MAP <- function(map) {
+  occs <- spp[[curSp()]]$occData$occsCleaned
+  map %>% clearAll() %>%
+    addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, 
+                     radius = 5, color = 'red', fill = TRUE, fillColor = "red", 
+                     fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
+    zoom2Occs(occs)
+}
+
 queryDb_INFO <- infoGenerator(modName = "Query Database (Present)",
                               modAuts = "Jamie M. Kass, Bruno Vilela, Robert P. Anderson",
                               pkgName = "spocc")

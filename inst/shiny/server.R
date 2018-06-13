@@ -144,31 +144,41 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "curSp", selected = curSp())
   })
   
+  # logic for actions proceeding the deletion of polygons from the draw toolbar
+  observeEvent(input$map_draw_deleted_features, {
+    if(component() == "poccs" & module() == "selOccs") {
+      spp[[curSp()]]$occs <- spp[[curSp()]]$occData$occsCleaned  
+      shinyLogs %>% writeLog("Reset occurrences.")
+      # MAPPING
+      map %>%
+        map_occs(occs()) %>%
+        zoom2Occs(occs())
+    } else if(component() == "proj") {
+      map %>%
+        removeImage("projRas") %>%
+        removeControl("proj")
+      spp[[curSp()]]$polyPjXY <- NULL
+      spp[[curSp()]]$polyPjID <- NULL
+      spp[[curSp()]]$project <- NULL
+      shinyLogs %>% writeLog("Reset projection extent.") 
+    }
+  })
+  
   # component-level mapping logic
   observe({
     # must have one species selected and occurrence data
     # for mapping to be functional
     req(length(curSp()) == 1, occs())
     # map the original occs for Component Obtain Occurrence Data
-    if(component() == 'occs') {
-      map %>% clearAll() %>%
-        map_occs(spp[[curSp()]]$occData$occsCleaned)
-    } 
+    if(module() == 'dbOccs') {
+      map %>% queryDb_MAP()
+    } else if(module() == "userOccs") {
+      map %>% userOccs_MAP()
+    }
     # map the analysis occs for components downstream of the first
     if(component() == 'poccs') {
       if(module() == 'spthin') {
-        # if you've thinned already, map thinned points blue
-        # and kept points red
-        if(!is.null(spp[[curSp()]]$procOccs$occsThin)) {
-          map %>% clearAll() %>% 
-            map_occs(spp[[curSp()]]$procOccs$occsPreThin, fillColor = 'blue', fillOpacity = 1) %>%
-            map_occs(occs(), fillOpacity = 1) %>%
-            addLegend("bottomright", colors = c('red', 'blue'), title = "Occ Records", 
-                      labels = c('retained', 'removed'), opacity = 1)  
-        } else {
-          # if you haven't thinned, map all points red
-          map %>% clearAll() %>% map_occs(occs())
-        }
+        map %>% thinOccs_MAP()
       } else {
         map %>% clearAll() %>% map_occs(occs())
       }
@@ -256,7 +266,6 @@ shinyServer(function(input, output, session) {
             }
             # map model prediction raster and projection polygon
             sharedExt <- rbind(polyPjXY, occs()[c("longitude", "latitude")])
-            print(mapProj())
             map %>% clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
               map_occs(occs(), customZoom = sharedExt) %>%
               addRasterImage(mapProj(), colors = rasPal, opacity = 0.7,
@@ -294,7 +303,8 @@ shinyServer(function(input, output, session) {
     if((component() == 'poccs' & module() == 'selOccs') | component() == 'proj') {
       map %>% leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
                                              rectangleOptions = FALSE, circleOptions = FALSE, 
-                                             markerOptions = FALSE, circleMarkerOptions = FALSE)
+                                             markerOptions = FALSE, circleMarkerOptions = FALSE,
+                                             editOptions = leaflet.extras::editToolbarOptions())
     } else {
       map %>% leaflet.extras::removeDrawToolbar(clearFeatures = TRUE)
     }
@@ -455,7 +465,6 @@ shinyServer(function(input, output, session) {
   # module Select Occurrences on Map ####
   # # # # # # # # # # # # # # # # # # # # #
   observeEvent(input$goSelectOccs, {
-    print(class(spp[[curSp()]]$occs))
     req(input$map_draw_new_feature)
     selOccs <- callModule(selectOccs_MOD, 'c2_selOccs_uiID')
     selOccs()
@@ -464,7 +473,8 @@ shinyServer(function(input, output, session) {
       leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
       leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
                                      rectangleOptions = FALSE, circleOptions = FALSE, 
-                                     markerOptions = FALSE, circleMarkerOptions = FALSE) %>%
+                                     markerOptions = FALSE, circleMarkerOptions = FALSE,
+                                     editOptions = TRUE) %>%
       map_occs(occs()) %>%
       zoom2Occs(occs())
     # UI CONTROLS 
