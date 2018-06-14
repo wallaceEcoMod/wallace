@@ -514,13 +514,22 @@ shinyServer(function(input, output, session) {
     nBinsCols <- ncols - 16
     # render both full model and partition avg datatable, and individual partition datatable
     output$evalTbls <- renderUI({
-      tagList(
-        br(),
-        div("Full model and partition bin average evaluation statistics", id="stepText"), br(), br(),
-        DT::dataTableOutput('evalTbl'), br(), 
-        div("Individual partition bin evaluation statistics", id="stepText"), br(), br(),
-        DT::dataTableOutput('evalTblBins')  
+      tabsetPanel(
+        tabPanel("Evaluation", 
+                 tagList(
+                   br(),
+                   div("Full model and partition bin average evaluation statistics", id="stepText"), br(), br(),
+                   DT::dataTableOutput('evalTbl'), br(), 
+                   div("Individual partition bin evaluation statistics", id="stepText"), br(), br(),
+                   DT::dataTableOutput('evalTblBins')  
+                 )),
+        tabPanel("Lambdas",
+                 br(),
+                 div("Maxent Lambdas File", id="stepText"), br(), br(),
+                 verbatimTextOutput("lambdas")
+                 )
       )
+      
     })
     output$evalTbl <- DT::renderDataTable(modRes.round[,1:16], 
                                           options = list(scrollX = TRUE,
@@ -528,6 +537,10 @@ shinyServer(function(input, output, session) {
     output$evalTblBins <- DT::renderDataTable(modRes.round[,17:(nBinsCols+16)], 
                                               options = list(scrollX = TRUE,
                                                              sDom  = '<"top">rtp<"bottom">'))
+    output$lambdas <- renderPrint({
+      modCur <- rvs$mods[[rvs$modSel]]
+      modCur@lambdas
+    })
     shinyjs::show(id = "evalTblBins")
     
     # switch to Results tab

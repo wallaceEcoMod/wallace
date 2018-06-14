@@ -15,7 +15,7 @@ In addition to model performance, researchers often are interested in the relati
 
 This module relies on plotting functionality from R package `dismo`.
 
-Users must first select a model. Depending on the `ENMeval` settings selected in Component **Model**, there may be multiple choices for Maxent. Users must then choose a predictor variable to view its response curve. Users can download the currently displayed response curve plot as an image file (.png).
+Users must first select a model. Depending on the `ENMeval` settings selected in Component **Model**, there may be multiple choices for Maxent. Users must then choose a predictor variable to view its response curve. The predictor variables available for selection in the dropdown menu are the variables with non-zero coefficients in the model (i.e., non-zero lambda values). Users can download the currently displayed response curve plot as an image file (.png).
 
 **REFERENCES**
 
