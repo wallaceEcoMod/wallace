@@ -5,7 +5,8 @@ userBgExtent_UI <- function(id) {
     fileInput(ns("userBgShp"), label = 'Upload polygon with field order: longitude, latitude (.csv)',
               accept=c(".csv", ".dbf", ".shx", ".shp"), multiple = TRUE),
     tags$div(title='Buffer area in degrees (1 degree = ~111 km). Exact length varies based on latitudinal position.',
-             numericInput(ns("userBgBuf"), label = "Study region buffer distance (degree)", value = 0, min = 0, step = 0.5))
+             numericInput(ns("userBgBuf"), label = "Study region buffer distance (degree)", value = 0, min = 0, step = 0.5)),
+    checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE)
   )
 }
 
@@ -27,22 +28,28 @@ userBgExtent_MOD <- function(input, output, session) {
                                  input$userBgBuf,
                                  shinyLogs)
     
-    # LOAD INTO SPP ####
-    spp[[curSp()]]$procEnvs$bgExt <- userBgExt
+    # loop over all species if batch is on
+    if(input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
     
-    # METADATA ####
-    # get extensions of all input files
-    exts <- sapply(strsplit(input$userBgShp$name, '\\.'), FUN=function(x) x[2])
-    if('csv' %in% exts) {
-      spp[[curSp()]]$rmm$code$wallaceSettings$userBgExt <- 'csv'
-      spp[[curSp()]]$rmm$code$wallaceSettings$userBgPath <- input$userBgShp$datapath
-    }
-    else if('shp' %in% exts) {
-      spp[[curSp()]]$rmm$code$wallaceSettings$userBgExt <- 'shp'
-      # get index of .shp
-      i <- which(exts == 'shp')
-      shpName <- strsplit(input$userBgShp$name[i], '\\.')[[1]][1]
-      spp[[curSp()]]$rmm$code$wallaceSettings$userBgShpParams <- list(dsn=input$userBgShp$datapath[i], layer=shpName)
+    # PROCESSING ####
+    for(sp in spLoop) {
+      # LOAD INTO SPP ####
+      spp[[sp]]$procEnvs$bgExt <- userBgExt
+      
+      # METADATA ####
+      # get extensions of all input files
+      exts <- sapply(strsplit(input$userBgShp$name, '\\.'), FUN=function(x) x[2])
+      if('csv' %in% exts) {
+        spp[[sp]]$rmm$code$wallaceSettings$userBgExt <- 'csv'
+        spp[[sp]]$rmm$code$wallaceSettings$userBgPath <- input$userBgShp$datapath
+      }
+      else if('shp' %in% exts) {
+        spp[[sp]]$rmm$code$wallaceSettings$userBgExt <- 'shp'
+        # get index of .shp
+        i <- which(exts == 'shp')
+        shpName <- strsplit(input$userBgShp$name[i], '\\.')[[1]][1]
+        spp[[sp]]$rmm$code$wallaceSettings$userBgShpParams <- list(dsn=input$userBgShp$datapath[i], layer=shpName)
+      }
     }
   })
 }

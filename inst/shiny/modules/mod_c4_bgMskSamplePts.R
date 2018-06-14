@@ -2,7 +2,8 @@
 bgMskAndSamplePts_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    numericInput(ns("bgPtsNum"), label = "No. of background points", value = 10000, min = 1, step = 1)
+    numericInput(ns("bgPtsNum"), label = "No. of background points", value = 10000, min = 1, step = 1),
+    checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE)
   )
 }
 
@@ -11,7 +12,11 @@ bgMskAndSamplePts_MOD <- function(input, output, session) {
     
     req(bgExt())
     
-    for(sp in spIn()) {
+    # loop over all species if batch is on
+    if(input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
+    
+    # PROCESSING ####
+    for(sp in spLoop) {
       # FUNCTION CALL ####
       bgMask <- c4_bgMask(spp[[sp]]$occs, 
                           spp[[sp]]$envs, 

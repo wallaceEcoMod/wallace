@@ -7,16 +7,20 @@ bgExtent_UI <- function(id) {
                                 "Minimum convex polygon" = 'mcp',
                                 "Point buffers" = 'ptbuf')),
     tags$div(title='Buffer area in degrees (1 degree = ~111 km). Exact length varies based on latitudinal position.',
-             numericInput(ns("bgBuf"), label = "Study region buffer distance (degree)", value = 0.5, min = 0, step = 0.5))
+             numericInput(ns("bgBuf"), label = "Study region buffer distance (degree)", value = 0.5, min = 0, step = 0.5)),
+    checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE)
   )
 }
 
 bgExtent_MOD <- function(input, output, session) {
   reactive({
-    
+    # ERRORS ####
     req(curSp(), occs(), envs())
     
-    for(sp in spIn()) {
+    # loop over all species if batch is on
+    if(input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
+    
+    for(sp in spLoop) {
       # FUNCTION CALL ####
       bgExt <- c4_bgExtent(spp[[sp]]$occs, 
                            spp[[sp]]$envs, 
@@ -30,15 +34,6 @@ bgExtent_MOD <- function(input, output, session) {
       
       # METADATA ####
       spp[[sp]]$rmm$model$maxent$backgroundSizeRule <- paste0(input$bgSel, ', ', input$bgBuf, ' degree buffer')
-      
-      # # MAPPING ####
-      # map %>% map_occs(spp[[sp]]$occs)
-      # for (shp in bgShpXY()) {
-      #   map %>%
-      #     addPolygons(lng=shp[,1], lat=shp[,2], weight=4, color="gray", group='bgShp')  
-      # }
-      # bb <- spp[[sp]]$procEnvs$bgExt@bbox
-      # map %>% fitBounds(bb[1], bb[2], bb[3], bb[4])  
     }
   })
 }

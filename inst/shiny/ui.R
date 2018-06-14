@@ -326,7 +326,6 @@ shinyUI(tagList(
                       column(8,
                              conditionalPanel("input.tabs != 'intro' & input.tabs != 'rmd'",
                                               fixedRow(column(6, div(id = "wallaceLog", class = "scrollbox", htmlOutput("log"))),
-                                                       column(2, checkboxInput("batch", label = h4(strong("Batch")), value = TRUE, width = '200%')),
                                                        column(4, fixedPanel(
                                                          uiOutput("curSpUI"),
                                                          uiOutput("curEnvUI"),

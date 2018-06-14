@@ -2,7 +2,8 @@
 userEnvs_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    fileInput(ns("userEnvs"), label = "Input rasters", multiple = TRUE)
+    fileInput(ns("userEnvs"), label = "Input rasters", multiple = TRUE),
+    checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE)
   )
 }
 
@@ -19,26 +20,33 @@ userEnvs_MOD <- function(input, output, session) {
       return()
     }
     
-      userEnvs <- c3_userEnvs(rasPath = input$userEnvs$datapath,
-                              rasName = input$userEnvs$name)
-      
-      # remove occurrences with NA values for variables
-      withProgress(message = paste0("Extracting environmental values for occurrences of ", spName(spp[[curSp()]]), "..."), {
-        occsEnvsVals <- as.data.frame(raster::extract(userEnvs, occs()[c('longitude', 'latitude')]))
-        names(occsEnvsVals) <- paste0('env_', names(occsEnvsVals))
+    userEnvs <- c3_userEnvs(rasPath = input$userEnvs$datapath,
+                            rasName = input$userEnvs$name)
+    
+    # loop over all species if batch is on
+    if(input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
+    
+    for(sp in spLoop) {
+      # get environmental variable values per occurrence record
+      withProgress(message = paste0("Extracting environmental values for occurrences of ", sp, "..."), {
+        occsEnvsVals <- as.data.frame(raster::extract(userEnvs, spp[[sp]]$occs[c('longitude', 'latitude')]))
       })
-      # remove occurrences with NA environmental values
-      spp[[curSp()]]$occs <- remEnvsValsNA(occs(), occsEnvsVals, shinyLogs)
+      # remove occurrence records with NA environmental values
+      spp[[sp]]$occs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, shinyLogs)
+      # also remove variable value rows with NA environmental values
+      occsEnvsVals <- na.omit(occsEnvsVals)
       
       # LOAD INTO SPP ####
-      spp[[curSp()]]$envs <- userEnvs
-      # add columns for env variables beginning with "envs_" to occs tbl
-      spp[[curSp()]]$occs <- cbind(occs(), occsEnvsVals)
+      spp[[sp]]$envs <- userEnvs
+      # add columns for env variable values for each occurrence record
+      spp[[sp]]$occs <- cbind(spp[[sp]]$occs, occsEnvsVals)
       
       # METADATA ####
-      spp[[curSp()]]$rmm$data$environment$variableNames <- names(userEnvs)
-      spp[[curSp()]]$rmm$data$environment$resolution <- raster::res(userEnvs)
-      spp[[curSp()]]$rmm$data$environment$sources <- 'user'
+      spp[[sp]]$rmm$data$environment$variableNames <- names(userEnvs)
+      spp[[sp]]$rmm$data$environment$resolution <- raster::res(userEnvs)
+      spp[[sp]]$rmm$data$environment$sources <- 'user'
+    }
+    
   })
 }
 

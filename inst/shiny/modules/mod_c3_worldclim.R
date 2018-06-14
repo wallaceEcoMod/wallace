@@ -13,8 +13,8 @@ wcBioclims_UI <- function(id) {
     conditionalPanel(paste0("input['", ns("bcSelChoice"), "']"),
                      checkboxGroupInput(ns("bcSel"), label = "Select",
                                         choices = setNames(as.list(paste0('bio', 1:19)), paste0('bio', 1:19)), 
-                                        inline=TRUE, selected = paste0('bio', 1:19)))
-    
+                                        inline=TRUE, selected = paste0('bio', 1:19))),
+    checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE)
   )
 }
 
@@ -28,24 +28,26 @@ wcBioclims_MOD <- function(input, output, session, spIn) {
     }
     
     # FUNCTION CALL ####
-    envs <- c3_worldclim(input$bcRes, 
-                         input$bcSel, 
-                         shinyLogs)
+    envs <- c3_worldclim(input$bcRes, input$bcSel, shinyLogs)
     req(envs)
     
+    # loop over all species if batch is on
+    if(input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
+    
     # PROCESSING ####
-    for(sp in spIn) {
-      # remove occurrences with NA values for variables
+    for(sp in spLoop) {
+      # get environmental variable values per occurrence record
       withProgress(message = paste0("Extracting environmental values for occurrences of ", sp, "..."), {
         occsEnvsVals <- as.data.frame(raster::extract(envs, spp[[sp]]$occs[c('longitude', 'latitude')]))
       })
-      # remove occurrences with NA environmental values
+      # remove occurrence records with NA environmental values
       spp[[sp]]$occs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, shinyLogs)
+      # also remove variable value rows with NA environmental values
       occsEnvsVals <- na.omit(occsEnvsVals)
       
       # LOAD INTO SPP ####
       spp[[sp]]$envs <- envs
-      # add columns for env variables beginning with "envs_" to occs tbl
+      # add columns for env variable values for each occurrence record
       spp[[sp]]$occs <- cbind(spp[[sp]]$occs, occsEnvsVals)
       
       # METADATA ####

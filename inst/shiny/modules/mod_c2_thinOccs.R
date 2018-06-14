@@ -5,15 +5,17 @@ thinOccs_UI <- function(id) {
     # tags$div(checkboxInput(ns("spThinAllSp"), label = "Batch for all species?", value = TRUE),
     tags$div(
       title='The minimum distance between occurrence locations (nearest neighbor distance) in km for resulting thinned dataset. Ideally based on species biology (e.g., home-range size).',
-      numericInput(ns("thinDist"), label = "Thinning distance (km)", value = 0))
+      numericInput(ns("thinDist"), label = "Thinning distance (km)", value = 0),
+      checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE))
   )
 }
 
 thinOccs_MOD <- function(input, output, session) {
   reactive({
-    # loop over all species in spIn -- if batch is on, this is all species with data,
-    # but if batch is off, spIn is just the current selected species (curSp)
-    for(sp in spIn()) {
+    # loop over all species if batch is on
+    if(input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
+    
+    for(sp in spLoop) {
       # FUNCTION CALL ####
       occs.thin <- c2_thinOccs(spp[[sp]]$occs,
                                input$thinDist,
