@@ -81,6 +81,45 @@ projectArea_MOD <- function(input, output, session) {
   })
 }
 
+projectArea_MAP <- function(map, session) {
+  updateTabsetPanel(session, 'main', selected = 'Map')
+  req(results())
+  map %>% leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
+                                         rectangleOptions = FALSE, circleOptions = FALSE,
+                                         markerOptions = FALSE, circleMarkerOptions = FALSE,
+                                         editOptions = leaflet.extras::editToolbarOptions())
+  req(spp[[curSp()]]$polyPjXY, spp[[curSp()]]$project)  
+  polyPjXY <- spp[[curSp()]]$polyPjXY
+  mapProjVals <- spp[[curSp()]]$project$mapProjVals
+  rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+  # if no threshold specified
+  if(rmm()$output$transfer$environment1$thresholdRule != 'none') {
+    rasPal <- c('gray', 'blue')
+    map %>% removeControl("proj") %>%
+      addLegend("bottomright", colors = c('gray', 'blue'), title = "Thresholded Suitability<br>(Projected)",
+                labels = c("predicted absence", "predicted presence"), opacity = 1, layerId = 'proj')
+  } else {
+    # if threshold specified
+    legendPal <- colorNumeric(rev(rasCols), mapProjVals, na.color='transparent')
+    rasPal <- colorNumeric(rasCols, mapProjVals, na.color='transparent')
+    map %>% removeControl("proj") %>%
+      addLegend("bottomright", pal = legendPal, title = "Predicted Suitability<br>(Projected)",
+                values = mapProjVals, layerId = 'proj', labFormat = reverseLabels(2, reverse_order=TRUE))
+    
+  }
+  # map model prediction raster and projection polygon
+  sharedExt <- rbind(polyPjXY, occs()[c("longitude", "latitude")])
+  map %>% 
+    clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
+    map_occs(occs(), customZoom = sharedExt) %>%
+    addRasterImage(mapProj(), colors = rasPal, opacity = 0.7,
+                   layerId = 'projRas', group = 'proj', method = "ngb") %>%
+    addPolygons(lng=polyPjXY[,1], lat=polyPjXY[,2], layerId="projExt", fill = FALSE,
+                weight=4, color="blue", group='proj') %>%
+    # add background polygon
+    mapBgPolys(bgShpXY())
+}
+
 projectArea_INFO <- infoGenerator(modName = "Project to New Extent",
                                   modAuts = "Jamie M. Kass, Bruno Vilela, Robert P. Anderson", 
                                   pkgName = "dismo")

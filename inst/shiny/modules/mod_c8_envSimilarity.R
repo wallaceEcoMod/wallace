@@ -35,6 +35,28 @@ envSimilarity_MOD <- function(input, output, session) {
   })
 }
 
+envSimilarity_MAP <- function(map, session) {
+  req(spp[[curSp()]]$project$mess)
+  mess <- spp[[curSp()]]$project$mess
+  mapProjVals <- spp[[curSp()]]$project$messVals
+  rasCols <- RColorBrewer::brewer.pal(n=11, name='Reds')
+  legendPal <- colorNumeric(rev(rasCols), mapProjVals, na.color='transparent')
+  rasPal <- colorNumeric(rasCols, mapProjVals, na.color='transparent')
+  map %>% removeControl("proj") %>%
+    addLegend("bottomright", pal = legendPal, title = "MESS Values",
+              values = mapProjVals, layerId = 'proj', labFormat = reverseLabels(2, reverse_order=TRUE))
+  # map model prediction raster and projection polygon
+  sharedExt <- rbind(polyPjXY, occs()[c("longitude", "latitude")])
+  map %>% clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
+    map_occs(occs(), customZoom = sharedExt) %>%
+    addRasterImage(mess, colors = rasPal, opacity = 0.7,
+                   layerId = 'projRas', group = 'proj', method = "ngb") %>%
+    addPolygons(lng=polyPjXY[,1], lat=polyPjXY[,2], layerId="projExt", fill = FALSE,
+                weight=4, color="blue", group='proj') %>%
+    # add background polygon
+    mapBgPolys(bgShpXY())
+}
+
 envSimilarity_INFO <- infoGenerator(modName = "Calculate Environmental Similarity",
                                     modAuts = "Jamie M. Kass, Bruno Vilela, Robert P. Anderson", 
                                     pkgName = "dismo")
