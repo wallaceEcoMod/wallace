@@ -59,11 +59,6 @@ test_that("Comp 6 Module Maxent: Checkboxes", {
   expect_false(lqhpt$isElementSelected()[[1]])
   lqhpt$clickElement()
   expect_true(lqhpt$isElementSelected()[[1]])
-  
-  # clamp checkbox
-  clamp <- comp6Tab$findChildElement(value = "//input[@id='c6_maxent-clamp']")
-  clamp$clickElement()
-  expect_true(clamp$isElementSelected()[[1]])
 })
 
 test_that("Component 6 Module Maxent: Slider", {
