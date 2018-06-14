@@ -22,12 +22,7 @@ envSimilarity_MOD <- function(input, output, session) {
     # FUNCTION CALL ####
     projYr <- spp[[curSp()]]$rmm$data$transfer$environment1$yearMax
     time <- ifelse(projYr == "1990", "present-day", projYr)
-    mss <- c8_mess(occs(), 
-                   bg(), 
-                   bgMask(), 
-                   spp[[curSp()]]$project$pjEnvs, 
-                   time, 
-                   shinyLogs)
+    mss <- c8_mess(occs(), bg(), bgMask(), spp[[curSp()]]$project$pjEnvs, time, shinyLogs)
     
     # LOAD INTO SPP ####
     spp[[curSp()]]$project$mess <- mss

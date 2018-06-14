@@ -13,15 +13,18 @@ runMaxent_UI <- function(id) {
                          min = 0.5, max = 10, step=0.5, value = c(1, 2))),
     tags$div(title='Value used to step through regularization multiplier range (e.g. range of 1-3 with step 0.5 results in [1, 1.5, 2, 2.5, 3]).',
              numericInput(ns("rmsStep"), label = "Multiplier step value", value = 1)),
-    tags$div(title='If checked, the response will resist extrapolation to environmental values outside those used to build the model. See guidance for details.',
-             checkboxInput(ns('clamp'), label = 'Clamp predictions?'))
+    checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE)
   )
 }
 
 runMaxent_MOD <- function(input, output, session) {
   reactive({
     
-    for(sp in spIn()) {  
+    # loop over all species if batch is on
+    if(input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
+    
+    # PROCESSING ####
+    for(sp in spLoop) {
       # ERRORS ####
       if (is.null(spp[[sp]]$occs$partition)) {
         shinyLogs %>% writeLog(type = 'error', "Before building a model, please partition 
@@ -37,7 +40,6 @@ runMaxent_MOD <- function(input, output, session) {
                             input$rms, 
                             input$rmsStep, 
                             input$fcs, 
-                            input$clamp, 
                             shinyLogs)
       req(m.maxent)
       

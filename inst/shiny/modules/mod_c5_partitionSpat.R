@@ -7,13 +7,19 @@ partitionSpat_UI <- function(id) {
                                "Block (k = 4)" = "block",
                                "Checkerboard 1 (k = 2)" = "cb1",
                                "Checkerboard 2 (k = 4)" = "cb2")),
-    numericInput(ns("aggFact"), label = "Aggregation Factor", value = 2, min = 2)
+    numericInput(ns("aggFact"), label = "Aggregation Factor", value = 2, min = 2),
+    checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE)
   )
 }
 
 partitionSpat_MOD <- function(input, output, session) {
   reactive({
-    for(sp in spIn()) {
+    
+    # loop over all species if batch is on
+    if(input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
+    
+    # PROCESSING ####
+    for(sp in spLoop) {
       if (is.null(bgMask())) {
         shinyLogs %>% writeLog(type = 'error', "Before partitioning occurrences for ", sp,
                                ", mask your environmental variables by your background extent.")
@@ -21,13 +27,9 @@ partitionSpat_MOD <- function(input, output, session) {
       }
       
       # FUNCTION CALL ####
-      group.data <- c5_partitionOccs(spp[[sp]]$occs, 
-                                     spp[[sp]]$bg, 
-                                     input$partitionSpatSel, 
-                                     NULL,
-                                     spp[[sp]]$procEnvs$bgMask, 
-                                     input$aggFact, 
-                                     shinyLogs)
+      group.data <- c5_partitionOccs(spp[[sp]]$occs, spp[[sp]]$bg, input$partitionSpatSel, 
+                                     kfolds = NULL, bgMask = spp[[sp]]$procEnvs$bgMask, 
+                                     aggFact = input$aggFact, shinyLogs)
       req(group.data)
       
       # LOAD INTO SPP ####

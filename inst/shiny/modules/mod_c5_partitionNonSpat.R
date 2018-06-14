@@ -5,14 +5,19 @@ partitionNonSpat_UI <- function(id) {
     selectInput(ns("partNspSel"), "Options Available:",
                 choices = list("None selected" = '', "Jackknife (k = n)" = "jack",
                                "Random k-fold" = "rand")),
-    numericInput(ns("kfolds"), label = "Number of Folds", value = 2, min = 2)
+    numericInput(ns("kfolds"), label = "Number of Folds", value = 2, min = 2),
+    checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE)
   )
 }
 
 partitionNonSpat_MOD <- function(input, output, session) {
   reactive({
     
-    for(sp in spIn()) {
+    # loop over all species if batch is on
+    if(input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
+    
+    # PROCESSING ####
+    for(sp in spLoop) {
       if (is.null(bgMask())) {
         shinyLogs %>% writeLog(type = 'error', "Before partitioning occurrences for ", sp, 
                         ", mask your environmental variables by your background extent.")
@@ -20,13 +25,8 @@ partitionNonSpat_MOD <- function(input, output, session) {
       }
       
       #### FUNCTION CALL
-      group.data <- c5_partitionOccs(spp[[sp]]$occs, 
-                                     spp[[sp]]$bg, 
-                                     input$partNspSel, 
-                                     kfolds = input$kfolds, 
-                                     NULL,
-                                     NULL,
-                                     shinyLogs)
+      group.data <- c5_partitionOccs(spp[[sp]]$occs, spp[[sp]]$bg, input$partNspSel, 
+                                     kfolds = input$kfolds, bgMask = NULL, aggFact = NULL, shinyLogs)
       req(group.data)
       
       # LOAD INTO SPP ####

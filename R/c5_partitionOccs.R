@@ -9,7 +9,7 @@
 #' @param bg
 #' @param method
 #' @param kfolds
-#' @param bgMsk
+#' @param bgMask
 #' @param aggFact
 #' @param shinyLogs
 # @keywords
@@ -28,7 +28,7 @@
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 
-c5_partitionOccs <- function(occs, bg, method, kfolds=NULL, bgMsk=NULL, aggFact=NULL, shinyLogs = NULL) {
+c5_partitionOccs <- function(occs, bg, method, kfolds=NULL, bgMask=NULL, aggFact=NULL, shinyLogs = NULL) {
 
   if (method == '') {
     shinyLogs %>% writeLog(type = 'error', "Please select a partitioning option.")
@@ -69,7 +69,7 @@ c5_partitionOccs <- function(occs, bg, method, kfolds=NULL, bgMsk=NULL, aggFact=
                         factor greater than 1 for ", em(spName(occs)), ".")
       return()
     }
-    if(is.null(bgMsk)) {
+    if(is.null(bgMask)) {
       shinyLogs %>% writeLog(type = 'error', "Please specify a background mask to use
                         checkerboard partition functions for ", em(spName(occs)), ".")
       return()
@@ -83,7 +83,7 @@ c5_partitionOccs <- function(occs, bg, method, kfolds=NULL, bgMsk=NULL, aggFact=
   
   if(method == 'cb1') {
     smartProgress(shinyLogs, message = "Aggregating rasters...", {
-      group.data <- ENMeval::get.checkerboard1(occs.xy, bgMsk, bg.xy, aggFact)
+      group.data <- ENMeval::get.checkerboard1(occs.xy, bgMask, bg.xy, aggFact)
     })
     
     shinyLogs %>% writeLog("Occurrences partitioned by checkerboard 1 method with 
@@ -92,7 +92,7 @@ c5_partitionOccs <- function(occs, bg, method, kfolds=NULL, bgMsk=NULL, aggFact=
   
   if(method == 'cb2') {
     smartProgress(shinyLogs, message = "Aggregating rasters...", {
-      group.data <- ENMeval::get.checkerboard2(occs.xy, bgMsk, bg.xy, aggFact)
+      group.data <- ENMeval::get.checkerboard2(occs.xy, bgMask, bg.xy, aggFact)
     })
     
     shinyLogs %>% writeLog("Occurrences partitioned by checkerboard 2 method with 

@@ -13,7 +13,6 @@
 #' @param rms
 #' @param rmsStep
 #' @param fcs
-#' @param clamp
 #' @param shinyLogs
 # @keywords
 #'
@@ -33,7 +32,7 @@
 #' @export
 
 runMaxent  <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, 
-                        clamp, shinyLogs = NULL) {
+                        shinyLogs = NULL) {
   if (is.null(occsGrp)) {
     shinyLogs %>% writeLog(type = 'error', "Before building a model, please partition 
                         occurrences for cross-validation.")
@@ -91,7 +90,7 @@ runMaxent  <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
   e <- ENMeval::ENMevaluate(occs.xy, bgMsk, bg.coords = bg.xy,
                             RMvalues = rms.interval, fc = fcs, method = 'user', 
                             occ.grp = occsGrp, bg.grp = bgGrp, 
-                            clamp = clamp, bin.output = TRUE,
+                            bin.output = TRUE,
                             progbar = FALSE, updateProgress = updateProgress)
   
   # name the output models in the model list

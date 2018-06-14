@@ -27,13 +27,8 @@ projectArea_MOD <- function(input, output, session) {
     
     # FUNCTION CALL ####
     predType <- rmm()$output$prediction$notes
-    projArea.out <- c8_projectArea(results(),
-                                   curModel(), 
-                                   envs(),
-                                   predType,
-                                   spp[[curSp()]]$polyPjXY,
-                                   spp[[curSp()]]$polyPjID,
-                                   shinyLogs)
+    projArea.out <- c8_projectArea(results(), curModel(), envs(), predType, spp[[curSp()]]$polyPjXY, 
+                                   spp[[curSp()]]$polyPjID, shinyLogs)
     
     projExt <- projArea.out$projExt
     projArea <- projArea.out$projArea

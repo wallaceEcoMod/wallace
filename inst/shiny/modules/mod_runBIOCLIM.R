@@ -1,12 +1,18 @@
 runBIOCLIM_UI <- function(id) {
   ns <- NS(id)
   tagList(
+    checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE)
   )
 }
 
 runBIOCLIM_MOD <- function(input, output, session) {
   reactive({
-    for(sp in spIn()) {
+    
+    # loop over all species if batch is on
+    if(input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
+    
+    # PROCESSING ####
+    for(sp in spLoop) {
       # ERRORS ####
       if(is.null(spp[[sp]]$occs$partition)) {
         shinyLogs %>% writeLog(type = 'error', "Before building a model, please partition 

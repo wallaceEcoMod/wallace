@@ -23,10 +23,7 @@ userBgExtent_MOD <- function(input, output, session) {
       return()
     }
     # FUNCTION CALL ####
-    userBgExt <- c4_userBgExtent(input$userBgShp$datapath,
-                                 input$userBgShp$name,
-                                 input$userBgBuf,
-                                 shinyLogs)
+    userBgExt <- c4_userBgExtent(input$userBgShp$datapath, input$userBgShp$name, input$userBgBuf, shinyLogs)
     
     # loop over all species if batch is on
     if(input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()

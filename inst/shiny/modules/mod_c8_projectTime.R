@@ -103,13 +103,8 @@ projectTime_MOD <- function(input, output, session) {
     
     # FUNCTION CALL ####    
     predType <- rmm()$output$prediction$notes
-    projTime.out <- c8_projectTime(results(),
-                                   curModel(),
-                                   projTimeEnvs,
-                                   predType,
-                                   spp[[curSp()]]$polyPjXY,
-                                   spp[[curSp()]]$polyPjID,
-                                   shinyLogs)
+    projTime.out <- c8_projectTime(results(), curModel(), projTimeEnvs, predType, spp[[curSp()]]$polyPjXY,
+                                   spp[[curSp()]]$polyPjID, shinyLogs)
     projExt <- projTime.out$projExt
     projTime <- projTime.out$projTime
     
