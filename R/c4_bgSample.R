@@ -34,11 +34,13 @@ c4_bgSample <- function(occs, bgMask, bgPtsNum, shinyLogs=NULL) {
     # pct <- round((bgPtsNum / num.vals) * 100, digits = 2)
     bgXY <- dismo::randomPoints(bgMask, bgPtsNum)
     bgXY <- bgXY %>% as.data.frame() %>% dplyr::select(longitude = x, latitude = y)
-    bgXY.num <- nrow(bgXY)
   })
-  
-  shinyLogs %>% writeLog(em(spName(occs)), ': Random background points sampled (n = ', bgPtsNum, 
-                    '), with ', bgXY.num, ' points generated.')
-  
+  bg.prop <- round(nrow(bgXY)/bgPtsNum, digits = 2)
+  if(bg.prop == 1) {
+    shinyLogs %>% writeLog(em(spName(occs)), ": ", bgPtsNum, " random background points sampled.")
+  } else {
+    shinyLogs %>% writeLog(em(spName(occs)), ": ", bgPtsNum, " random background points requested, 
+                           but only ", 100*bg.prop, "% of points (n = ", nrow(bgXY), ") were able to be sampled.")
+  }
   return(bgXY)
 }

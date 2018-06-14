@@ -145,26 +145,6 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, "curSp", selected = curSp())
   })
   
-  # logic for actions proceeding the deletion of polygons from the draw toolbar
-  observeEvent(input$map_draw_deleted_features, {
-    if(component() == "poccs" & module() == "selOccs") {
-      spp[[curSp()]]$occs <- spp[[curSp()]]$occData$occsCleaned  
-      shinyLogs %>% writeLog("Reset occurrences.")
-      # MAPPING
-      map %>%
-        map_occs(occs()) %>%
-        zoom2Occs(occs())
-    } else if(component() == "proj") {
-      map %>%
-        removeImage("projRas") %>%
-        removeControl("proj")
-      spp[[curSp()]]$polyPjXY <- NULL
-      spp[[curSp()]]$polyPjID <- NULL
-      spp[[curSp()]]$project <- NULL
-      shinyLogs %>% writeLog("Reset projection extent.") 
-    }
-  })
-  
   # MAPPING LOGIC ####
   observe({
     # must have one species selected and occurrence data
