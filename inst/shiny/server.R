@@ -729,6 +729,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goProjectArea, {
     projArea.call <- projArea()
+    req(projArea.call)
     # stop if no model prediction
     req(rvs$predCur)
     # unpack
@@ -784,6 +785,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$goEnvSimilarity, {
     rvs$mess <- envSimilarity()
+    req(rvs$mess)
     # stop if no model projection
     req(rvs$projCur)
     rvs$comp8.esim <- 'mess'

@@ -22,6 +22,8 @@ envSimilarity_MOD <- function(input, output, session, rvs) {
     }
     
     occs.xy <- rvs$occs %>% dplyr::select(longitude, latitude)
+    bg.xy <- as.data.frame(rvs$bgPts)
+    names(bg.xy) <- names(occs.xy)
     all.xy <- rbind(occs.xy, bg.xy)
     
     withProgress(message = "Generating MESS map...", {
