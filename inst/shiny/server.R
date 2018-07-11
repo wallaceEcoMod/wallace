@@ -202,6 +202,7 @@ shinyServer(function(input, output, session) {
       map_plotLocs(rvs$occs) %>%
       zoom2Occs(rvs$occs)
     shinyjs::disable("dlDbOccs")
+    shinyjs::enable("dlRMD")
   })
   
   # TABLE
