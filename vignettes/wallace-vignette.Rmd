@@ -3,7 +3,7 @@ title: "Wallace Ecological Modeling Application Vignette"
 author:
 - Jamie M. Kass
 - Sarah I. Meenan
-- Gonzalo Pinilla-Buitrago
+- Gonzalo E. Pinilla-Buitrago
 - Cory Merow
 - Robert P. Anderson
 date: 06/08/2018
@@ -328,4 +328,13 @@ Also, although we don't have anything built into *Wallace* for post-processing m
 Thus ends the *Wallace* vignette. We hope you learned more about the application, its features, and modeling of species distributions and niches in general. We hate to be repetitive, but we highly encourage you to read the guidance text, follow up on the recommended publications, and hopefully let those lead you to other relevant publications that can inform you further. 
 
 Also, please reach out to us by email or through any of the websites mentioned in the Introduction. We'd love to hear your thoughts, opinions, or suggestions on how to make *Wallace* better for all users.
+
+
+# Acknowledgments
+
+*Wallace* was recognized as a finalist for the 2015 Ebbe Nielsen Challenge of the Global Biodiversity Information Facility (GBIF), and received prize funding.
+
+This material is based upon work supported by the National Science Foundation under Grant Numbers DBI-1661510 (RPA), DBI-1650241 (RPA), DEB-1119915 (RPA), DEB-1046328 (MEA), and DBI-1401312 (RM). Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Science Foundation.
+
+Additional sources of funding for JMK include a CUNY Science Scholarship and a CUNY Graduate Center Provost Digital Innovation Grant.
 
