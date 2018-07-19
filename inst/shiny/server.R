@@ -219,7 +219,7 @@ shinyServer(function(input, output, session) {
   output$dlDbOccs <- downloadHandler(
     filename = function() {paste0(formatSpName(spName()), '_original_', rvs$occDb, ".csv")},
     content = function(file) {
-      write.csv(rvs$occsOrig, file, row.names=FALSE)
+      write_csv_robust(rvs$occsOrig, file, row.names=FALSE)
     }
   )
   
@@ -287,7 +287,7 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       # thinned_rowNums <- as.numeric(thinOccs()$occID)
       # origThinned <- rvs$occsOrig[thinned_rowNums,]
-      write.csv(rvs$occs %>% dplyr::select(-pop), file, row.names = FALSE)
+      write_csv_robust(rvs$occs %>% dplyr::select(-pop), file, row.names = FALSE)
     }
   )
   
@@ -486,7 +486,7 @@ shinyServer(function(input, output, session) {
       occs.bg.bind <-rbind(rvs$occs[,1:3], bg.bind)
       all.bind <- cbind(occs.bg.bind, c(rvs$occsGrp, rvs$bgGrp))
       names(all.bind)[4] <- "group"
-      write.csv(all.bind, file, row.names = FALSE)
+      write_csv_robust(all.bind, file, row.names = FALSE)
     }
   )
   
@@ -591,7 +591,7 @@ shinyServer(function(input, output, session) {
       }
     },
     content = function(file) {
-      write.csv(rvs$modRes, file, row.names = FALSE)
+      write_csv_robust(rvs$modRes, file, row.names = FALSE)
     }
   )
   
