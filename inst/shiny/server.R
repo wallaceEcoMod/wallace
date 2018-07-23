@@ -430,7 +430,6 @@ shinyServer(function(input, output, session) {
     filename = function() {'mskEnvs.zip'},
     content = function(file) {
       tmpdir <- tempdir()
-      setwd(tempdir())
       type <- input$bgMskFileType
       nm <- names(rvs$bgMsk)
       
@@ -438,9 +437,9 @@ shinyServer(function(input, output, session) {
                           suffix = nm, format = type, overwrite = TRUE)
       ext <- switch(type, raster = 'grd', ascii = 'asc', GTiff = 'tif')
       
-      fs <- paste0('msk_', nm, '.', ext)
+      fs <- file.path(tmpdir, paste0('msk_', nm, '.', ext))
       if (ext == 'grd') {
-        fs <- c(fs, paste0('msk_', nm, '.gri'))
+        fs <- c(fs, file.path(tmpdir, paste0('msk_', nm, '.gri')))
       }
       zip(zipfile=file, files=fs)
       if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
