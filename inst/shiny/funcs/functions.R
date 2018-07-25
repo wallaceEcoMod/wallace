@@ -424,10 +424,27 @@ lambdasDF <- function(m, maxentVersion) {
                row.names=1:length(lambdas))  
   } else if(maxentVersion == "maxnet") {
     lambdas <- m$betas
-    data.frame(var=names(lambdas),
+    if(sum(grepl("hinge", names(lambdas))) > 0) {
+      hinges <- which(grepl("hinge", names(lambdas)))
+      hinges.ranges <- gsub("[a-z]|\\s*\\([^\\)]+\\):", "", names(lambdas)[hinges])
+      hinges.fmins <- as.numeric(sapply(hinges.ranges, function(x) strsplit(x, split = ":")[[1]][1]))
+      hinges.fmaxs <- as.numeric(sapply(hinges.ranges, function(x) strsplit(x, split = ":")[[1]][2]))
+      nonhinges <- which(!grepl("hinge", names(lambdas)))
+      nonhinges.fmins <- as.numeric(m$featuremins[nonhinges])
+      nonhinges.fmaxs <- as.numeric(m$featuremaxs[nonhinges])
+      fmins <- c(nonhinges.fmins, hinges.fmins)
+      fmaxs <- c(nonhinges.fmaxs, hinges.fmaxs)
+    } else {
+      fmins <- as.numeric(m$featuremins)
+      fmaxs <- as.numeric(m$featuremaxs)
+    }
+    # if variables that are not in lambdas are included in mins/maxs, remove them
+    fmins <- fmins[names(m$featuremins) %in% names(lambdas)]
+    fmaxs <- fmaxs[names(m$featuremaxs) %in% names(lambdas)]
+    data.frame(var=gsub("(:[^:]+):.*", "", names(lambdas)),
                coef=as.numeric(lambdas),
-               min=m$varmin,
-               max=m$varmax,
+               min=fmins,
+               max=fmaxs,
                row.names=1:length(lambdas))
   }
   
