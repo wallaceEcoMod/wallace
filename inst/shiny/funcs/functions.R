@@ -414,13 +414,23 @@ bc.plot <- function(x, a=1, b=2, p=0.9, ...) {
 }
 
 # make data.frame of lambdas vector from Maxent model object
-lambdasDF <- function(mx) {
-  lambdas <- mx@lambdas[1:(length(mx@lambdas)-4)]
-  data.frame(var=sapply(lambdas, FUN=function(x) strsplit(x, ',')[[1]][1]),
-             coef=sapply(lambdas, FUN=function(x) as.numeric(strsplit(x, ',')[[1]][2])),
-             min=sapply(lambdas, FUN=function(x) as.numeric(strsplit(x, ',')[[1]][3])),
-             max=sapply(lambdas, FUN=function(x) as.numeric(strsplit(x, ',')[[1]][4])),
-             row.names=1:length(lambdas))
+lambdasDF <- function(m, maxentVersion) {
+  if(maxentVersion == "maxent.jar") {
+    lambdas <- m@lambdas[1:(length(m@lambdas)-4)]
+    data.frame(var=sapply(lambdas, FUN=function(x) strsplit(x, ',')[[1]][1]),
+               coef=sapply(lambdas, FUN=function(x) as.numeric(strsplit(x, ',')[[1]][2])),
+               min=sapply(lambdas, FUN=function(x) as.numeric(strsplit(x, ',')[[1]][3])),
+               max=sapply(lambdas, FUN=function(x) as.numeric(strsplit(x, ',')[[1]][4])),
+               row.names=1:length(lambdas))  
+  } else if(maxentVersion == "maxnet") {
+    lambdas <- m$betas
+    data.frame(var=names(lambdas),
+               coef=as.numeric(lambdas),
+               min=m$varmin,
+               max=m$varmax,
+               row.names=1:length(lambdas))
+  }
+  
 }
 ## pulls out all non-zero, non-redundant (removes hinge/product/threshold) predictor names
 mxNonzeroCoefs <- function(mx) {
