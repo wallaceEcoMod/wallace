@@ -430,6 +430,8 @@ shinyServer(function(input, output, session) {
     filename = function() {'mskEnvs.zip'},
     content = function(file) {
       tmpdir <- tempdir()
+      owd <- setwd(tmpdir)
+      on.exit(setwd(owd))
       type <- input$bgMskFileType
       nm <- names(rvs$bgMsk)
       
@@ -437,11 +439,11 @@ shinyServer(function(input, output, session) {
                           suffix = nm, format = type, overwrite = TRUE)
       ext <- switch(type, raster = 'grd', ascii = 'asc', GTiff = 'tif')
       
-      fs <- file.path(tmpdir, paste0('msk_', nm, '.', ext))
+      fs <- paste0('msk_', nm, '.', ext)
       if (ext == 'grd') {
-        fs <- c(fs, file.path(tmpdir, paste0('msk_', nm, '.gri')))
+        fs <- c(fs, paste0('msk_', nm, '.gri'))
       }
-      zip(zipfile=file, files=fs)
+      zip::zip(zipfile=file, files=fs)
       if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
     },
     contentType = "application/zip"
@@ -696,9 +698,10 @@ shinyServer(function(input, output, session) {
   # download for model predictions (restricted to background extent)
   output$dlPred <- downloadHandler(
     filename = function() {
-      ext <- switch(input$predFileType, raster = 'grd', ascii = 'asc', GTiff = 'tif', png = 'png')
+      ext <- switch(input$predFileType, raster = 'zip', ascii = 'asc', GTiff = 'tif', png = 'png')
       paste0(names(rvs$predCur), '.', ext)},
     content = function(file) {
+      browser()
       if (require(rgdal)) {
         if (input$predFileType == 'png') {
           png(file)
@@ -708,8 +711,10 @@ shinyServer(function(input, output, session) {
           fileName <- names(rvs$predCur)
           tmpdir <- tempdir()
           raster::writeRaster(rvs$predCur, file.path(tmpdir, fileName), format = input$predFileType, overwrite = TRUE)
-          fs <- file.path(tmpdir, paste0(fileName, c('.grd', '.gri')))
-          zip(zipfile=file, files=fs, extras = '-j')
+          owd <- setwd(tmpdir)
+          fs <- paste0(fileName, c('.grd', '.gri'))
+          zip::zip(zipfile=file, files=fs)
+          setwd(owd)
         } else {
           r <- raster::writeRaster(rvs$predCur, file, format = input$predFileType, overwrite = TRUE)
           file.rename(r@file@name, file)
@@ -813,7 +818,7 @@ shinyServer(function(input, output, session) {
   # download for model predictions (restricted to background extent)
   output$dlProj <- downloadHandler(
     filename = function() {
-      ext <- switch(input$projFileType, raster = 'grd', ascii = 'asc', GTiff = 'tif', PNG = 'png')
+      ext <- switch(input$projFileType, raster = 'zip', ascii = 'asc', GTiff = 'tif', PNG = 'png')
       paste0(names(rvs$projCur), '.', ext)},
     content = function(file) {
       if (require(rgdal)) {
@@ -825,8 +830,10 @@ shinyServer(function(input, output, session) {
           fileName <- names(rvs$projCur)
           tmpdir <- tempdir()
           raster::writeRaster(rvs$projCur, file.path(tmpdir, fileName), format = input$projFileType, overwrite = TRUE)
-          fs <- file.path(tmpdir, paste0(fileName, c('.grd', '.gri')))
-          zip(zipfile=file, files=fs, extras = '-j')
+          owd <- setwd(tmpdir)
+          fs <- paste0(fileName, c('.grd', '.gri'))
+          zip::zip(zipfile=file, files=fs)
+          setwd(owd)
         } else {
           r <- raster::writeRaster(rvs$projCur, file, format = input$projFileType, overwrite = TRUE)
           file.rename(r@file@name, file)
