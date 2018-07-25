@@ -414,7 +414,7 @@ bc.plot <- function(x, a=1, b=2, p=0.9, ...) {
 }
 
 # make data.frame of lambdas vector from Maxent model object
-lambdasDF <- function(m, maxentVersion) {
+lambdasDF <- function(m, maxentVersion = "maxent.jar") {
   if(maxentVersion == "maxent.jar") {
     lambdas <- m@lambdas[1:(length(m@lambdas)-4)]
     data.frame(var=sapply(lambdas, FUN=function(x) strsplit(x, ',')[[1]][1]),
