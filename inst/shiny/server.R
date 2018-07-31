@@ -249,9 +249,10 @@ shinyServer(function(input, output, session) {
     rvs$comp2 <- c(rvs$comp2, 'sel')
     map %>%
       clearMarkers() %>%
+      clearControls() %>%
       map_plotLocs(rvs$occs) %>%
-      zoom2Occs(rvs$occs) %>%
-      drawToolbarRefresh()
+      zoom2Occs(rvs$occs)
+      
     shinyjs::enable("dlProcOccs")
   })
   
@@ -327,6 +328,11 @@ shinyServer(function(input, output, session) {
     rvs$comp3 <- 'bc'
     # remove occurrences with NA values for variables
     rvs$occs <- remEnvsValsNA(rvs)
+    # MAPPING - Plot the remaining occs after of removing NA
+    map %>%
+      clearMarkers() %>%
+      map_plotLocs(rvs$occs) %>%
+      zoom2Occs(rvs$occs)
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     # enable download button
@@ -348,6 +354,11 @@ shinyServer(function(input, output, session) {
     updateRadioButtons(session, "projSel", 
                        choices = list("Project to New Extent" = 'projArea',
                                       "Calculate Environmental Similarity" = 'mess'))
+    # MAPPING - Plot the remaining occs after of removing NA
+    map %>%
+      clearMarkers() %>%
+      map_plotLocs(rvs$occs) %>%
+      zoom2Occs(rvs$occs)
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
   })
