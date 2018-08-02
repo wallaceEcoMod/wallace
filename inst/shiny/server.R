@@ -249,10 +249,9 @@ shinyServer(function(input, output, session) {
     rvs$comp2 <- c(rvs$comp2, 'sel')
     map %>%
       clearMarkers() %>%
-      clearControls() %>%
       map_plotLocs(rvs$occs) %>%
-      zoom2Occs(rvs$occs)
-      
+      zoom2Occs(rvs$occs) %>%
+      drawToolbarRefresh()
     shinyjs::enable("dlProcOccs")
   })
   
@@ -331,6 +330,7 @@ shinyServer(function(input, output, session) {
     # MAPPING - Plot the remaining occs after of removing NA
     map %>%
       clearMarkers() %>%
+      clearControls() %>%
       map_plotLocs(rvs$occs) %>%
       zoom2Occs(rvs$occs)
     # switch to Results tab
