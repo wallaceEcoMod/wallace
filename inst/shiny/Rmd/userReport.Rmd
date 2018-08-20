@@ -358,6 +358,7 @@ e <- ENMeval::ENMevaluate(occs.xy, envsBgMsk, bg.coords=bg.xy, RMvalues=rms, fc=
 # unpack the results data frame, the list of models, and the RasterStack of raw predictions
 evalTbl <- e@results
 evalMods <- e@models
+names(evalMods) <- e@results$settings
 evalPreds <- e@predictions
 ```
 
