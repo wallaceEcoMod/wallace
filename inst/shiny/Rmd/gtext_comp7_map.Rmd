@@ -19,10 +19,10 @@ Users may then choose a thresholding rule to convert the continuous prediction t
 
 **REFERENCES**
 
-Merow C., Smith M.J., Silander J.A. (2013). A practical guide to MaxEnt for modeling species’ distributions: What it does, and why inputs and settings matter. *Ecography*. 36: 1058-1069.
+Merow C., Smith M.J., Silander J.A. (2013). A practical guide to MaxEnt for modeling species' distributions: What it does, and why inputs and settings matter. *Ecography*. 36: 1058-1069.
 
 Peterson A. T., Soberón J., Pearson R. G., Anderson R. P., Martinez-Meyer E., Nakamura M., Araújo M. B. (2011). Modeling Ecological Niches, and Niches and Geographic Distributions. In: Ecological Niches and Geographic Distributions. Princeton, New Jersey: Monographs in Population Biology, 49. Princeton University Press.
 
-Phillips, S. J., Anderson, R. P., Dudík, M., Schapire, R. E. and Blair, M. E. (2017). Opening the black box: an open-source release of Maxent. *Ecography*. 40: 887–893.
+Phillips, S. J., Anderson, R. P., Dudík, M., Schapire, R. E. and Blair, M. E. (2017). Opening the black box: an open-source release of Maxent. *Ecography*. 40: 887-893.
 
-Yackulic, C. B., Chandler, R., Zipkin, E. F., Royle, J. A., Nichols, J. D., Campbell Grant, E. H., & Veran, S. (2013). Presence‐only modelling using MAXENT: when can we trust the inferences?. *Methods in Ecology and Evolution*. 4: 236-243.
+Yackulic, C. B., Chandler, R., Zipkin, E. F., Royle, J. A., Nichols, J. D., Campbell Grant, E. H., & Veran, S. (2013). Presence-only modelling using MAXENT: when can we trust the inferences?. *Methods in Ecology and Evolution*. 4: 236-243.
