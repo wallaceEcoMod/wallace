@@ -7,7 +7,7 @@ output: html_document
 
 **BACKGROUND**  
 
-In simple terms, applying or “projecting” a niche/distributional model to a region or time period different from the ones used to make the model involves making a prediction based on the model and the new values of the predictor variables, as long as these values are available for the original region and time period. In reality, however, researchers should be cognizant of many possible pitfalls, including non-analog conditions (e.g., requiring extrapolation in environmental space) and heterogeneity in the effects of species interactions (Fitzpatrick and Hargrove 2009; Anderson 2013).
+In simple terms, applying or "projecting" a niche/distributional model to a region or time period different from the ones used to make the model involves making a prediction based on the model and the new values of the predictor variables, as long as these values are available for the original region and time period. In reality, however, researchers should be cognizant of many possible pitfalls, including non-analog conditions (e.g., requiring extrapolation in environmental space) and heterogeneity in the effects of species interactions (Fitzpatrick and Hargrove 2009; Anderson 2013).
 
 **IMPLEMENTATION** 
 
