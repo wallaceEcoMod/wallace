@@ -7,7 +7,7 @@ output: html_document
 
 **BACKGROUND**
 
-Maxent is a machine learning algorithm that estimates the species’ response to the environment, constrained to be as close to uniform across the study region as possible given the input data at hand (Phillips et al. 2006, Elith et al. 2011). Maxent characterizes the background environment available in the study region by a random sample drawn from it, and hence is called a presence-background ENM technique. It has been shown to be among the highest-performing niche/distributional modeling techniques for a wide range of environments and species (Elith et al. 2006), including for small sample sizes (Hernandez et al. 2006).
+Maxent is a machine learning algorithm that estimates the species' response to the environment, constrained to be as close to uniform across the study region as possible given the input data at hand (Phillips et al. 2006, Elith et al. 2011). Maxent characterizes the background environment available in the study region by a random sample drawn from it, and hence is called a presence-background ENM technique. It has been shown to be among the highest-performing niche/distributional modeling techniques for a wide range of environments and species (Elith et al. 2006), including for small sample sizes (Hernandez et al. 2006).
 
 As a machine learning technique, Maxent has the ability to make internal decisions about variable selection and model fit (James et al. 2013); nevertheless, various external decisions can greatly affect model complexity and geographic predictions. Importantly, the Maxent software leveraged here gives users the ability to increase or decrease the potential for model complexity through two key factors: feature classes and the regularization multiplier. First, various *feature classes* determine the shape of available modeled relationships in environmental space.  More (and more complicated) feature classes lead to the potential for higher model complexity. The features offered by *Wallace* are linear (L), quadratic (Q), hinge (H), and product (P). Second, greater values for the *regularization multiplier* penalize complexity, and hence tend to lead to simpler models with fewer variables. These settings can hold especially strong influence on model output for Maxent (Warren and Seifert 2011, Radosavljevic & Anderson 2014). For these reasons, evaluating model performance and estimating optimal model complexity constitute important elements of a niche/distributional modeling study with Maxent. See Phillips and Dudík (2008) for technical information, and both Elith et al. (2011) and Merow et al. (2013) for other explanations.
 
@@ -31,7 +31,7 @@ Start a new R session to ensure `rJava` is not loaded, then run the following in
 
 **REFERENCES**
 
-Elith J., Graham C.H., Anderson R.P., Dudík M., Ferrier S., Guisan A., Hijmans R.J., Huettmann F., Leathwick J.R., Leahmann A., Li J., Lohmann L.G., Loiselle B.A., Manion G., Moritz C., Nakamura M., Nakazawa Y., Overton J.M., Peterson A.T., Phillips S.J., Richardson K.S., Scachetti-Pereira R., Schapire R.E., Soberón J., Williams S., Wisz M.S., Zimmermann N.E. 2006. Novel methods improve prediction of species’ distributions from occurrence data. *Ecography*. 29:129-151.
+Elith J., Graham C.H., Anderson R.P., Dudík M., Ferrier S., Guisan A., Hijmans R.J., Huettmann F., Leathwick J.R., Leahmann A., Li J., Lohmann L.G., Loiselle B.A., Manion G., Moritz C., Nakamura M., Nakazawa Y., Overton J.M., Peterson A.T., Phillips S.J., Richardson K.S., Scachetti-Pereira R., Schapire R.E., Soberón J., Williams S., Wisz M.S., Zimmermann N.E. 2006. Novel methods improve prediction of species' distributions from occurrence data. *Ecography*. 29:129-151.
 
 Elith, J., Phillips, S.J., Hastie, T., Dudík, M., Chee, Y.E., & Yates, C.J. (2011). A statistical explanation of MaxEnt for ecologists. *Diversity and Distributions*. 17: 43-57.
 
@@ -39,9 +39,9 @@ Hernandez, P.A., Graham, C. H., Master, L.L., & Albert, D.L. (2006). The effect 
 
 James, G., Witten, D., Hastie, T., & Tibshirani, R. (2013). *An Introduction to Statistical Learning* (Vol. 6). New York: Springer.
 
-Merow C., Smith M.J., Silander J.A. (2013). A practical guide to MaxEnt for modeling species’ distributions: What it does, and why inputs and settings matter. *Ecography*. 36: 1058-1069.
+Merow C., Smith M.J., Silander J.A. (2013). A practical guide to MaxEnt for modeling species' distributions: What it does, and why inputs and settings matter. *Ecography*. 36: 1058-1069.
 
-Muscarella, R., Galante, P. J., Soley‐Guardia, M., Boria, R. A., Kass, J. M., Uriarte, M., & Anderson, R. P. (2014). ENMeval: An R package for conducting spatially independent evaluations and estimating optimal model complexity for Maxent ecological niche models. *Methods in Ecology and Evolution*. 5: 1198-1205.
+Muscarella, R., Galante, P. J., Soley-Guardia, M., Boria, R. A., Kass, J. M., Uriarte, M., & Anderson, R. P. (2014). ENMeval: An R package for conducting spatially independent evaluations and estimating optimal model complexity for Maxent ecological niche models. *Methods in Ecology and Evolution*. 5: 1198-1205.
 
 Phillips, S.J., Anderson, R.P. & Schapire, R.E. (2006) Maximum entropy modeling of species geographic distributions. *Ecological Modelling*. 190: 231-259.
 

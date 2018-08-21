@@ -9,7 +9,7 @@ Welcome to *Wallace*, a flexible application for reproducible ecological modelin
 
 The application is written in `R` with the web app development package `shiny`. Please find the stable version of *Wallace* on <a href="https://CRAN.R-project.org/package=wallace" target="_blank">CRAN</a>, and the development version on <a href="https://github.com/wallaceEcoMod/wallace" target="_blank">Github</a>. We also maintain a *Wallace* <a href="https://wallaceecomod.github.io/" target="_blank">website</a> that has some basic info, links, and will be updated with tutorial materials in the near future.
 
-*Wallace* is designed to facilitate spatial biodiversity research, and currently concentrates on modeling species niches and distributions using occurrence datasets and environmental predictor variables. These models provide an estimate of the species’ response to environmental conditions, and can be used to generate maps that indicate suitable areas for the species (i.e. its potential geographic distribution; Guisan & Thuiller 2005; Elith & Leathwick 2009; Franklin 2010a; Peterson et al. 2011). This research area has grown tremendously over the past two decades, with applications to pressing environmental issues such as conservation biology (Franklin 2010b), invasive species (Ficetola et al. 2007), zoonotic diseases (González et al. 2010), and climate-change impacts (Kearney et al. 2010).
+*Wallace* is designed to facilitate spatial biodiversity research, and currently concentrates on modeling species niches and distributions using occurrence datasets and environmental predictor variables. These models provide an estimate of the species' response to environmental conditions, and can be used to generate maps that indicate suitable areas for the species (i.e. its potential geographic distribution; Guisan & Thuiller 2005; Elith & Leathwick 2009; Franklin 2010a; Peterson et al. 2011). This research area has grown tremendously over the past two decades, with applications to pressing environmental issues such as conservation biology (Franklin 2010b), invasive species (Ficetola et al. 2007), zoonotic diseases (González et al. 2010), and climate-change impacts (Kearney et al. 2010).
 
 Also, for more detail, please see our paper in Methods in Ecology and Evolution.
 
@@ -56,7 +56,7 @@ We dedicate this software to Alfred Russel Wallace, the co-discoverer of evoluti
 
 1. Elith J. & Leathwick J.R. (2009). Species distribution models: ecological explanation and prediction across space and time. *Annual Review of Ecology, Evolution, and Systematics*. 40: 677–697.
 
-2. Ficetola G.F., Thuiller W. & Miaud C. (2007) Prediction and validation of the potential global distribution of a problematic alien invasive species—the American bullfrog. *Diversity and Distributions*, 13, 476-485.
+2. Ficetola G.F., Thuiller W. & Miaud C. (2007) Prediction and validation of the potential global distribution of a problematic alien invasive species &horbar; the American bullfrog. *Diversity and Distributions*, 13, 476-485.
 
 3. Franklin J. (2010a). Mapping species distributions: spatial inference and prediction. Cambridge: Cambridge University Press.
 
