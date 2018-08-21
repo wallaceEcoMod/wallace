@@ -3,7 +3,8 @@ maxent_UI <- function(id) {
   ns <- NS(id)
   tagList(
     strong("Select feature classes "), strong(em("(flexibility of modeled response)")), br(),
-    "key: ", strong("L"), "inear, ", strong("Q"), "uadratic, ", strong("H"), "inge, ", strong("P"), "roduct, ", strong("T"), "hreshold",
+    "key: ", strong("L"), "inear, ", strong("Q"), "uadratic, ", strong("H"), "inge, ", 
+    strong("P"), "roduct",
     tags$div(title='Feature combinations to be explored. Features are constructed using different relationships within and among the environmental predictors, and are used to constrain the computed probability distribution. In short, more features = more potential model complexity.',
              checkboxGroupInput(ns("fcs"), label='',
                        choices = list("L", "LQ", "H", "LQH", "LQHP"), inline = TRUE)),
