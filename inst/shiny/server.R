@@ -550,7 +550,7 @@ shinyServer(function(input, output, session) {
     output$evalTblBins <- DT::renderDataTable(modRes.round[,17:(nBinsCols+16)], 
                                               options = list(scrollX = TRUE,
                                                              sDom  = '<"top">rtp<"bottom">'))
-    output$lambdas <- renderPrint({
+    output$lambda <- renderPrint({
       modCur <- rvs$mods[[rvs$modSel]]
       modCur@lambdas
     })

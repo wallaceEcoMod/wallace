@@ -451,7 +451,7 @@ lambdasDF <- function(m, maxentVersion = "maxent.jar") {
 }
 ## pulls out all non-zero, non-redundant (removes hinge/product/threshold) predictor names
 mxNonzeroCoefs <- function(mx) {
-  x <- lambdasDF(mx)
+  x <- lambdasDF(mx, maxentVersion = "maxnet")
   #remove any rows that have a zero lambdas value (Second column)
   x <- x[(x[,2] != 0),]
   #remove any rows that have duplicate "var"s (hinges, quadratics)
