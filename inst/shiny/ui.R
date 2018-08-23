@@ -7,8 +7,8 @@ for (f in list.files('./modules')) {
 # Define UI for application
 shinyUI(tagList(
   shinyjs::useShinyjs(),
-  navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsible=TRUE,
-             title='Wallace',
+  navbarPage(theme=shinythemes::shinytheme('darkly'), id='tabs', collapsible=TRUE,
+             title='Wallace/maxnet',
              tabPanel("Intro", value=0),
              tabPanel("1 Occ Data", value=1),
              tabPanel("2 Process Occs", value=2),
