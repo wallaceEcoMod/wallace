@@ -550,7 +550,7 @@ shinyServer(function(input, output, session) {
     output$evalTblBins <- DT::renderDataTable(modRes.round[,17:(nBinsCols+16)], 
                                               options = list(scrollX = TRUE,
                                                              sDom  = '<"top">rtp<"bottom">'))
-    output$lambda <- renderPrint({
+    output$lambdas <- renderPrint({
       modCur <- rvs$mods[[rvs$modSel]]
       modCur@lambdas
     })
@@ -627,7 +627,7 @@ shinyServer(function(input, output, session) {
     # from the lambdas file (the predictors that were not removed via regularization)
     if (rvs$comp6 == "maxent") {
       modCur <- rvs$mods[[rvs$modSel]]
-      nonZeroCoefs <- mxNonzeroCoefs(modCur)
+      nonZeroCoefs <- mxNonzeroCoefs(modCur, maxentVersion = "maxnet")
       envsNames <- names(rvs$bgMsk[[nonZeroCoefs]])
       rvs$mxNonZeroCoefs <- envsNames
     } else {

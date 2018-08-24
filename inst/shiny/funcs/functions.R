@@ -414,7 +414,7 @@ bc.plot <- function(x, a=1, b=2, p=0.9, ...) {
 }
 
 # make data.frame of lambdas vector from Maxent model object
-lambdasDF <- function(m, maxentVersion = "maxent.jar") {
+lambdasDF <- function(m, maxentVersion) {
   if(maxentVersion == "maxent.jar") {
     lambdas <- m@lambdas[1:(length(m@lambdas)-4)]
     data.frame(var=sapply(lambdas, FUN=function(x) strsplit(x, ',')[[1]][1]),
@@ -461,7 +461,7 @@ mxNonzeroCoefs <- function(mx, maxentVersion = "maxnet") {
     x <- unique(sub("hinge\\(", "", x))
     x <- unique(sub("\\)", "", x))
   } else if(maxentVersion == "maxent.jar") {
-    x <- lambdasDF(mx, maxentVersion = "maxnet")
+    x <- lambdasDF(mx, maxentVersion = "maxent.jar")
     #remove any rows that have a zero lambdas value (Second column)
     x <- x[(x[,2] != 0),]
     #remove any rows that have duplicate "var"s (hinges, quadratics)
