@@ -552,7 +552,7 @@ shinyServer(function(input, output, session) {
                                                              sDom  = '<"top">rtp<"bottom">'))
     output$lambdas <- renderPrint({
       modCur <- rvs$mods[[rvs$modSel]]
-      modCur@lambdas
+      modCur$betas
     })
     shinyjs::show(id = "evalTblBins")
     
