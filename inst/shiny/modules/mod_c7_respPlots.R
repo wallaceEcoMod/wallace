@@ -26,14 +26,14 @@ respPlots_MOD <- function(input, output, session, rvs) {
       content = function(file) {
         png(file)
         if (input$dlRespPlotAll == TRUE) {
-          dismo::response(modCur)
+          maxent::plot(modCur, type = "cloglog")
         } else {
-          dismo::response(modCur, var = rvs$envSel)  
+          maxnet::response.plot(modCur, v = rvs$envSel, type = "cloglog")  
         }
         dev.off()
       }
     )
     
-    dismo::response(modCur, var = rvs$envSel)
+    maxnet::response.plot(modCur, v = rvs$envSel, type = "cloglog")
   })
 }
