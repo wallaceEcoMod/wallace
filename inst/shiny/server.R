@@ -20,16 +20,16 @@ shinyServer(function(input, output, session) {
                         comp5='', comp6='', comp7.type='', comp7='', comp8.pj='', comp8.esim='')
   
   observeEvent(input$load, {
-    f <- read.csv('/Users/musasabi/Downloads/Puma concolor_partitioned_occs(1).csv')
+    f <- read.csv('C:/Users/gepin/Desktop/maxnet_files/Canis lupus_partitioned_occs.csv')
     rvs$occs <- f %>% dplyr::filter(name != 'background')
     rvs$occs$pop <- unlist(apply(rvs$occs, 1, popUpContent))
     rvs$occsGrp <- rvs$occs$group
     rvs$bgPts <- f %>% dplyr::filter(name == 'background')
     rvs$bgGrp <- rvs$bgPts$group
-    rvs$bgShp <- rgdal::readOGR('/Users/musasabi/Downloads', 'mcp')
+    rvs$bgShp <- rgdal::readOGR('C:/Users/gepin/Desktop/maxnet_files/box.shp')
     rvs$bgPts <- rvs$bgPts %>% dplyr::select(longitude, latitude)
-    rvs$envs <- raster::stack(list.files('/Users/musasabi/Documents/github/wallace/inst/shiny/wc10', 'bil$', full.names=TRUE))
-    rvs$bgMsk <- raster::stack(list.files('/Users/musasabi/Downloads/mskEnvs', 'gri$', full.names = TRUE))  
+    rvs$envs <- raster::stack(list.files('C:/Users/gepin/Desktop/maxnet_files/bio_10m_bil', 'bil$', full.names=TRUE))
+    rvs$bgMsk <- raster::stack(list.files('C:/Users/gepin/Desktop/maxnet_files/mskEnvs', 'tif$', full.names = TRUE))  
     print('HACKING DONE')
   })
   
