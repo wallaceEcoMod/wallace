@@ -37,8 +37,9 @@ projectArea_MOD <- function(input, output, session, rvs) {
     modCur <- rvs$mods[[rvs$modSel]]
     
     withProgress(message = 'Projecting model to new area...', {
-      pargs <- paste0("outputformat=", rvs$comp7.type)
-      modProjArea <- dismo::predict(modCur, projMsk, args = pargs)
+      pargs <- rvs$comp7.type
+      modProjArea <- ENMeval::maxnet.predictRaster(modCur, projMsk, type = pargs, clamp = T)
+      crs(modProjArea) <- crs(projMsk)
       # generate binary prediction based on selected thresholding rule 
       # (same for all Maxent prediction types because they scale the same)
       modProjArea.thr.call <- callModule(threshPred_MOD, "threshPred", modProjArea)

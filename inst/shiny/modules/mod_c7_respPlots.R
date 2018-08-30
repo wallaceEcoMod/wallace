@@ -26,7 +26,7 @@ respPlots_MOD <- function(input, output, session, rvs) {
       content = function(file) {
         png(file)
         if (input$dlRespPlotAll == TRUE) {
-          maxent::plot(modCur, type = "cloglog")
+          plot(modCur, type = "cloglog")
         } else {
           maxnet::response.plot(modCur, v = rvs$envSel, type = "cloglog")  
         }

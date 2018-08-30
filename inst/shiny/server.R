@@ -697,7 +697,7 @@ shinyServer(function(input, output, session) {
       clearMarkers() %>% clearImages() %>% clearShapes() %>%
       map_plotLocs(rvs$occs) %>%
       addRasterImage(rvs$predCur, colors = rasPal, opacity = 0.7, 
-                     group = 'c7', layerId = 'r1ID')
+                     group = 'c7', layerId = 'r1ID', project = T)
     for (shp in bgShpXY()) {
       map %>%
         addPolygons(lng=shp[,1], lat=shp[,2], fill = FALSE,
@@ -784,7 +784,7 @@ shinyServer(function(input, output, session) {
     req(rvs$projCur)
     rvs$projCurVals <- getVals(rvs$projCur, rvs$comp7.type)
     rvs$comp8.pj <- 'time'
-    
+    crs(rvs$projCur) <- crs(rvs$bgMsk)
     rasVals <- c(rvs$predCurVals, rvs$projCurVals)
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
     map %>% comp8_map(rvs$projCur, rvs$polyPjXY, bgShpXY, rasVals, 

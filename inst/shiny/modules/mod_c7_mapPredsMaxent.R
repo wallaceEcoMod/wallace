@@ -22,6 +22,7 @@ mapPredsMaxent_MOD <- function(input, output, session, rvs) {
     
     # initially pick raw prediction
     predSel <- rvs$modPreds[[rvs$modSel]]
+    crs(predSel) <- crs(rvs$bgMsk)
     names(predSel) <- paste0(rvs$modSel, '_raw')
     
     if (is.na(raster::crs(predSel))) {
@@ -35,29 +36,31 @@ mapPredsMaxent_MOD <- function(input, output, session, rvs) {
     }
     
     # argument for predict function
-    pargs <- paste0("outputformat=", rvs$comp7.type)
+    pargs <- rvs$comp7.type
     
     if (input$predType == 'logistic') {
       # Generate logistic predictions for each model
       if (is.null(rvs$modPredsLog)) {
         withProgress(message = "Generating logistic predictions...", {
-          logPredsList <- sapply(rvs$mods, function(x) dismo::predict(x, rvs$bgMsk, args=pargs))
+          logPredsList <- sapply(rvs$mods, function(x) ENMeval::maxnet.predictRaster(x, rvs$bgMsk, type=pargs, clamp = T))
           rvs$modPredsLog <- raster::stack(logPredsList)
           names(rvs$modPredsLog) <- names(rvs$modPreds)
         })  
       }
       predSel <- rvs$modPredsLog[[rvs$modSel]]
+      crs(predSel) <- crs(rvs$bgMsk)
       names(predSel) <- paste0(rvs$modSel, '_log')
     } else if (input$predType == 'cloglog') {
       # Generate cloglog predictions for each model
       if (is.null(rvs$modPredsCLL)) {
         withProgress(message = "Generating cloglog predictions...", {
-          cllPredsList <- sapply(rvs$mods, function(x) dismo::predict(x, rvs$bgMsk, args=pargs))
+          cllPredsList <- sapply(rvs$mods, function(x) ENMeval::maxnet.predictRaster(x, rvs$bgMsk, type=pargs, clamp = T))
           rvs$modPredsCLL <- raster::stack(cllPredsList)
           names(rvs$modPredsCLL) <- names(rvs$modPreds)
         })  
       }
       predSel <- rvs$modPredsCLL[[rvs$modSel]]
+      crs(predSel) <- crs(rvs$bgMsk)
       names(predSel) <- paste0(rvs$modSel, '_cll')
     }
     

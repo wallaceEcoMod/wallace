@@ -105,8 +105,8 @@ projectTime_MOD <- function(input, output, session, rvs) {
     modCur <- rvs$mods[[rvs$modSel]]
     
     withProgress(message = ("Projecting to new time..."), {
-      pargs <- paste0("outputformat=", rvs$comp7.type)
-      modProjTime <- dismo::predict(modCur, pjtMsk, args = pargs)
+      pargs <- rvs$comp7.type
+      modProjTime <- ENMeval::maxnet.predictRaster(modCur, pjtMsk, type = pargs, clamp = T)
       modProjTime.thr.call <- callModule(threshPred_MOD, "threshPred", modProjTime)
       modProjTime.thr <- modProjTime.thr.call()
       pjPred <- modProjTime.thr$pred
