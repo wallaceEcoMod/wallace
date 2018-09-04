@@ -2,6 +2,12 @@
 maxent_UI <- function(id) {
   ns <- NS(id)
   tagList(
+    strong("Select algorithm"), br(),
+    tags$div(title = 'text',
+             radioButtons(ns("algMaxent"), label='',
+                          choices = list("maxnet", "maxent.jar"), inline = TRUE)),
+             # checkboxGroupInput(ns("algMaxent"), label='',
+             #                    choices = list("maxnet", "maxent.jar"), inline = TRUE)),
     strong("Select feature classes "), strong(em("(flexibility of modeled response)")), br(),
     "key: ", strong("L"), "inear, ", strong("Q"), "uadratic, ", strong("H"), "inge, ", 
     strong("P"), "roduct",
@@ -15,7 +21,7 @@ maxent_UI <- function(id) {
     tags$div(title='Value used to step through regularization multiplier range (e.g. range of 1-3 with step 0.5 results in [1, 1.5, 2, 2.5, 3]).',
              numericInput(ns("rmsStep"), label = "Multiplier step value", value = 1))
   )
-}
+  }
 
 maxent_MOD <- function(input, output, session, rvs) {
   reactive({
