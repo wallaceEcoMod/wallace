@@ -40,6 +40,12 @@ wcBioclims_MOD <- function(input, output, session, logs, mapCntr, envs) {
                                 lon = mapCntr()[1], lat = mapCntr()[2])
         rvs$bcLon <- mapCntr()[1]
         rvs$bcLat <- mapCntr()[2]
+        # delete id tile (_*) from names for 30 sec rasters
+        i <- grep('_', names(wcbc))
+        editNames <- sapply(strsplit(names(wcbc)[i], '_'), function(x) x[1])
+        names(wcbc)[i] <- editNames
+        rvs$bcSels[i] <- editNames
+        wcbc <- wcbc[[input$bcSels]]
       } else {
         wcbc <- raster::getData(name = "worldclim", var = "bio", res = input$bcRes)
         wcbc <- wcbc[[input$bcSels]]
