@@ -19,8 +19,9 @@ maxent_UI <- function(id) {
              sliderInput(ns("rms"), label = "",
                 min = 0.5, max = 10, step=0.5, value = c(1, 2))),
     tags$div(title='Value used to step through regularization multiplier range (e.g. range of 1-3 with step 0.5 results in [1, 1.5, 2, 2.5, 3]).',
-             numericInput(ns("rmsStep"), label = "Multiplier step value", value = 1))
-  )
+             numericInput(ns("rmsStep"), label = "Multiplier step value", value = 1)),
+    strong("clamping?"), tags$div(title = 'clampling text',
+                                  checkboxInput(ns("clamp"), label='', value = T)))
   }
 
 maxent_MOD <- function(input, output, session, rvs) {
