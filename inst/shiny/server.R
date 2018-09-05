@@ -552,7 +552,11 @@ shinyServer(function(input, output, session) {
                                                              sDom  = '<"top">rtp<"bottom">'))
     output$lambdas <- renderPrint({
       modCur <- rvs$mods[[rvs$modSel]]
-      modCur$betas
+      if (rvs$algMaxent == "maxnet") {
+        modCur$betas
+      } else if (rvs$algMaxent == "maxent.jar") {
+        modCur@lambdas
+      }
     })
     shinyjs::show(id = "evalTblBins")
     
