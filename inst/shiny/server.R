@@ -627,7 +627,11 @@ shinyServer(function(input, output, session) {
     # from the lambdas file (the predictors that were not removed via regularization)
     if (rvs$comp6 == "maxent") {
       modCur <- rvs$mods[[rvs$modSel]]
-      nonZeroCoefs <- mxNonzeroCoefs(modCur, maxentVersion = "maxnet")
+      if (rvs$algMaxent == "maxnet") {
+        nonZeroCoefs <- mxNonzeroCoefs(modCur, maxentVersion = "maxnet")
+      } else if(rvs$algMaxent == "maxent.jar") {
+        nonZeroCoefs <- mxNonzeroCoefs(modCur, maxentVersion = "maxent.jar")
+      }
       envsNames <- names(rvs$bgMsk[[nonZeroCoefs]])
       rvs$mxNonZeroCoefs <- envsNames
     } else {

@@ -53,6 +53,7 @@ maxent_MOD <- function(input, output, session, rvs) {
     rvs$fcs <- input$fcs
     rvs$rms <- input$rms
     rvs$rmsStep <- input$rmsStep
+    rvs$algMaxent <- input$algMaxent
     
     # define the vector of RMs to input
     rms <- seq(input$rms[1], input$rms[2], input$rmsStep)  
@@ -66,21 +67,23 @@ maxent_MOD <- function(input, output, session, rvs) {
     }
     
     jar <- paste(system.file(package="dismo"), "/java/maxent.jar", sep='')
-    if (!file.exists(jar)) {
+    if (!file.exists(jar) & input$algMaxent == "maxent.jar") {
       txt <- HTML(paste("To use Maxent, make sure you download,", strong("maxent.jar"), "from the",
-                 a("AMNH Maxent webpage", href="http://biodiversityinformatics.amnh.org/open_source/maxent/", target="_blank"),
-                 "and place it in this directory:", br(), em(jar)))
+                        a("AMNH Maxent webpage", 
+                          href="http://biodiversityinformatics.amnh.org/open_source/maxent/", 
+                          target="_blank"), "and place it in this directory:", br(), em(jar)))
       rvs %>% writeLog(type = 'error', txt)
       return()
     }
-    
+   
     occs.xy <- rvs$occs %>% dplyr::select(longitude, latitude)
     
     e <- ENMeval::ENMevaluate(occs.xy, rvs$bgMsk, bg.coords = rvs$bgPts,
                               RMvalues = rms, fc = input$fcs, method = 'user', 
                               occ.grp = rvs$occsGrp, bg.grp = rvs$bgGrp, 
                               bin.output = TRUE,
-                              progbar = FALSE, updateProgress = updateProgress)
+                              progbar = FALSE, updateProgress = updateProgress,
+                              algorithm = input$algMaxent)
     
     names(e@models) <- e@results$settings
     
