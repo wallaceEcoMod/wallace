@@ -792,7 +792,7 @@ shinyServer(function(input, output, session) {
     req(rvs$projCur)
     rvs$projCurVals <- getVals(rvs$projCur, rvs$comp7.type)
     rvs$comp8.pj <- 'time'
-    crs(rvs$projCur) <- crs(rvs$bgMsk)
+    raster::crs(rvs$projCur) <- raster::crs(rvs$bgMsk)
     rasVals <- c(rvs$predCurVals, rvs$projCurVals)
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
     map %>% comp8_map(rvs$projCur, rvs$polyPjXY, bgShpXY, rasVals, 
