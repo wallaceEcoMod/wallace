@@ -59,6 +59,7 @@ maxent_MOD <- function(input, output, session, rvs) {
     rvs$fcs <- input$fcs
     rvs$rms <- input$rms
     rvs$rmsStep <- input$rmsStep
+    rvs$clamp <- input$clamp
     rvs$algMaxent <- input$algMaxent
     
     # define the vector of RMs to input
