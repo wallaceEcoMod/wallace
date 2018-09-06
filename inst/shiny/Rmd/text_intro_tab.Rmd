@@ -5,7 +5,7 @@ output: html_document
 
 #### WORKFLOW
 
-*Wallace* (v1.0.5) currently includes the following components and modules:  
+*Wallace* (v1.0.6) currently includes the following components and modules:  
 
 **1**: *Obtain Occurrence Data*  
 - Query Database  
