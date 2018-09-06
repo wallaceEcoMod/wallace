@@ -42,7 +42,7 @@ mapPredsMaxent_MOD <- function(input, output, session, rvs) {
       # Generate logistic predictions for each model
       if (is.null(rvs$modPredsLog)) {
         withProgress(message = "Generating logistic predictions...", {
-          logPredsList <- sapply(rvs$mods, function(x) ENMeval::maxnet.predictRaster(x, rvs$bgMsk, type=pargs, clamp = rvs$algMaxent))
+          logPredsList <- sapply(rvs$mods, function(x) ENMeval::maxnet.predictRaster(x, rvs$bgMsk, type=pargs, clamp = rvs$clamp))
           rvs$modPredsLog <- raster::stack(logPredsList)
           names(rvs$modPredsLog) <- names(rvs$modPreds)
         })  
@@ -54,7 +54,7 @@ mapPredsMaxent_MOD <- function(input, output, session, rvs) {
       # Generate cloglog predictions for each model
       if (is.null(rvs$modPredsCLL)) {
         withProgress(message = "Generating cloglog predictions...", {
-          cllPredsList <- sapply(rvs$mods, function(x) ENMeval::maxnet.predictRaster(x, rvs$bgMsk, type=pargs, clamp = rvs$algMaxent))
+          cllPredsList <- sapply(rvs$mods, function(x) ENMeval::maxnet.predictRaster(x, rvs$bgMsk, type=pargs, clamp = rvs$clamp))
           rvs$modPredsCLL <- raster::stack(cllPredsList)
           names(rvs$modPredsCLL) <- names(rvs$modPreds)
         })  

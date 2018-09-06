@@ -38,7 +38,7 @@ projectArea_MOD <- function(input, output, session, rvs) {
     
     withProgress(message = 'Projecting model to new area...', {
       pargs <- rvs$comp7.type
-      modProjArea <- ENMeval::maxnet.predictRaster(modCur, projMsk, type = pargs, clamp = rvs$algMaxent)
+      modProjArea <- ENMeval::maxnet.predictRaster(modCur, projMsk, type = pargs, clamp = rvs$clamp)
       raster::crs(modProjArea) <- raster::crs(projMsk)
       # generate binary prediction based on selected thresholding rule 
       # (same for all Maxent prediction types because they scale the same)
