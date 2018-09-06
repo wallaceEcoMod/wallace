@@ -680,8 +680,9 @@ shinyServer(function(input, output, session) {
       mapPreds <- callModule(mapPreds_MOD, 'c7_mapPreds', rvs)
     }
     # stop if mapPreds is NULL
-    req(mapPreds())
     rvs$predCur <- mapPreds()
+    req(rvs$predCur)
+    
     # stop if no models
     req(rvs$mods)
     rvs$predCurVals <- getVals(rvs$predCur, rvs$comp7.type)
@@ -705,7 +706,7 @@ shinyServer(function(input, output, session) {
       clearMarkers() %>% clearImages() %>% clearShapes() %>%
       map_plotLocs(rvs$occs) %>%
       addRasterImage(rvs$predCur, colors = rasPal, opacity = 0.7, 
-                     group = 'c7', layerId = 'r1ID', project = T)
+                     group = 'c7', layerId = 'r1ID', project = TRUE)
     for (shp in bgShpXY()) {
       map %>%
         addPolygons(lng=shp[,1], lat=shp[,2], fill = FALSE,

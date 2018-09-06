@@ -22,7 +22,7 @@ mapPredsMaxent_MOD <- function(input, output, session, rvs) {
     
     # initially pick raw prediction
     predSel <- rvs$modPreds[[rvs$modSel]]
-    crs(predSel) <- crs(rvs$bgMsk)
+    raster::crs(predSel) <- raster::crs(rvs$bgMsk)
     names(predSel) <- paste0(rvs$modSel, '_raw')
     
     if (is.na(raster::crs(predSel))) {
@@ -48,7 +48,7 @@ mapPredsMaxent_MOD <- function(input, output, session, rvs) {
         })  
       }
       predSel <- rvs$modPredsLog[[rvs$modSel]]
-      crs(predSel) <- crs(rvs$bgMsk)
+      raster::crs(predSel) <- raster::crs(rvs$bgMsk)
       names(predSel) <- paste0(rvs$modSel, '_log')
     } else if (input$predType == 'cloglog') {
       # Generate cloglog predictions for each model
@@ -60,7 +60,7 @@ mapPredsMaxent_MOD <- function(input, output, session, rvs) {
         })  
       }
       predSel <- rvs$modPredsCLL[[rvs$modSel]]
-      crs(predSel) <- crs(rvs$bgMsk)
+      raster::crs(predSel) <- raster::crs(rvs$bgMsk)
       names(predSel) <- paste0(rvs$modSel, '_cll')
     }
     

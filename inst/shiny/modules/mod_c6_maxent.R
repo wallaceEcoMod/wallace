@@ -101,7 +101,7 @@ maxent_MOD <- function(input, output, session, rvs) {
     #                                            avg.test.or10pct = Mean.OR10, var.test.or10pct = Var.OR10,
     #                                            parameters = nparam)
     
-    rvs %>% writeLog("Maxent ran successfully and output evaluation results for", nrow(e@results), "models.")
+    rvs %>% writeLog("Maxent ran successfully using", input$algMaxent, "and output evaluation results for", nrow(e@results), "models.")
     
     return(e)
   })
