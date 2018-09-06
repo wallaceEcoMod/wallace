@@ -4,6 +4,20 @@
 
 *Wallace* is a modular platform for reproducible modeling of species niches and distributions, written in R. The application guides users through a complete analysis, from the acquisition of data to visualizing model predictions on an interactive map, thus bundling complex workflows into a single, streamlined interface.
 
+# ATTENTION
+
+Due to the newest release of ENMeval v0.3.0, Wallace is having problems running the Maxent module. As a temporary solution, please install the older version of ENMeval v0.2.2.
+
+```R
+devtools::install_github("bobmuscarella/ENMeval@Version-0.2.2")
+```
+
+If you want to test a development version of Wallace that uses ENMeval v0.3.0 and allows users the option of using the maxnet package to run Maxent, please install the *alpha* version of Wallace v1.0.6. Please be aware that this is an untested version.
+
+```R
+devtools::install_github("wallaceEcoMod/wallace@maxnet")
+```
+
 Install *Wallace* via CRAN and run the application with the following R code.
 
 ```R
