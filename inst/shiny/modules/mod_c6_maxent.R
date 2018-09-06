@@ -40,13 +40,16 @@ maxent_MOD <- function(input, output, session, rvs) {
       rvs %>% writeLog(type = 'error', "No feature classes selected.")
       return()
     }
-    if (input$algMaxent == "maxent.jar" & !require('rJava')) {
-      rvs %>% writeLog(type = "error", 'Package rJava cannot load. 
-               Please download the latest version of Java, and make sure it is the 
-               correct version (e.g. 64-bit for a 64-bit system). After installing, 
-               try "library(rJava)". If it loads properly, restart Wallace and try again.
-               If it does not, please consult www.github.com/wallaceecomod/wallace for
-               more tips on getting rJava to work.')
+    if (input$algMaxent == "maxent.jar") {
+      if (!require('rJava')) {
+        rvs %>% writeLog(type = "error", 'Package rJava cannot load.
+               Please download the latest version of Java, and make sure it is the
+                         correct version (e.g. 64-bit for a 64-bit system). After installing,
+                         try "library(rJava)". If it loads properly, restart Wallace and try again.
+                         If it does not, please consult www.github.com/wallaceecomod/wallace for
+                         more tips on getting rJava to work.')
+        return() 
+      }
       return()
     }
     
