@@ -17,7 +17,7 @@ If you want to test a development version of Wallace that uses ENMeval v0.3.0 an
 ```R
 devtools::install_github("wallaceEcoMod/wallace@maxnet")
 ```
-
+#
 Install *Wallace* via CRAN and run the application with the following R code.
 
 ```R
