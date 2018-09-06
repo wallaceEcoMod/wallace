@@ -20,12 +20,17 @@ maxent_UI <- function(id) {
                 min = 0.5, max = 10, step=0.5, value = c(1, 2))),
     tags$div(title='Value used to step through regularization multiplier range (e.g. range of 1-3 with step 0.5 results in [1, 1.5, 2, 2.5, 3]).',
              numericInput(ns("rmsStep"), label = "Multiplier step value", value = 1)),
-    strong("clamping?"), tags$div(title = 'clampling text',
-                                  checkboxInput(ns("clamp"), label='', value = T)))
+    strong("Clamping?"), tags$div(title = 'Clamp model predictions?',
+                                  checkboxInput(ns("clamp"), label='', value = TRUE)))
   }
 
 maxent_MOD <- function(input, output, session, rvs) {
+  observe({
+    shinyjs::toggleState("clamp", condition = (input$algMaxent == "maxnet"))
+  })
+  
   reactive({
+    
     if (is.null(rvs$occsGrp)) {
       rvs %>% writeLog(type = 'error', "Before building a model, partition 
                        occurrences in component 5.")
@@ -35,7 +40,7 @@ maxent_MOD <- function(input, output, session, rvs) {
       rvs %>% writeLog(type = 'error', "No feature classes selected.")
       return()
     }
-    if (!require('rJava')) {
+    if (input$algMaxent == "maxent.jar" & !require('rJava')) {
       rvs %>% writeLog(type = "error", 'Package rJava cannot load. 
                Please download the latest version of Java, and make sure it is the 
                correct version (e.g. 64-bit for a 64-bit system). After installing, 
@@ -82,7 +87,7 @@ maxent_MOD <- function(input, output, session, rvs) {
     e <- ENMeval::ENMevaluate(occs.xy, rvs$bgMsk, bg.coords = rvs$bgPts,
                               RMvalues = rms, fc = input$fcs, method = 'user', 
                               occ.grp = rvs$occsGrp, bg.grp = rvs$bgGrp, 
-                              bin.output = TRUE,
+                              bin.output = TRUE, clamp = input$clamp,
                               progbar = FALSE, updateProgress = updateProgress,
                               algorithm = input$algMaxent)
     
