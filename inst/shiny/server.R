@@ -19,19 +19,19 @@ shinyServer(function(input, output, session) {
   rvs <- reactiveValues(logs = logInit(), comp1='', comp2='', comp3='', comp4.shp='', comp4.buf=0,
                         comp5='', comp6='', comp7.type='', comp7='', comp8.pj='', comp8.esim='')
   
-  observeEvent(input$load, {
-    f <- read.csv('C:/Users/gepin/Desktop/maxnet_files/Canis lupus_partitioned_occs.csv')
-    rvs$occs <- f %>% dplyr::filter(name != 'background')
-    rvs$occs$pop <- unlist(apply(rvs$occs, 1, popUpContent))
-    rvs$occsGrp <- rvs$occs$group
-    rvs$bgPts <- f %>% dplyr::filter(name == 'background')
-    rvs$bgGrp <- rvs$bgPts$group
-    rvs$bgShp <- rgdal::readOGR('C:/Users/gepin/Desktop/maxnet_files/box.shp')
-    rvs$bgPts <- rvs$bgPts %>% dplyr::select(longitude, latitude)
-    rvs$envs <- raster::stack(list.files('C:/Users/gepin/Desktop/maxnet_files/bio_10m_bil', 'bil$', full.names=TRUE))
-    rvs$bgMsk <- raster::stack(list.files('C:/Users/gepin/Desktop/maxnet_files/mskEnvs', 'tif$', full.names = TRUE))  
-    print('HACKING DONE')
-  })
+  # observeEvent(input$load, {
+  #   f <- read.csv('C:/Users/gepin/Desktop/maxnet_files/Canis lupus_partitioned_occs.csv')
+  #   rvs$occs <- f %>% dplyr::filter(name != 'background')
+  #   rvs$occs$pop <- unlist(apply(rvs$occs, 1, popUpContent))
+  #   rvs$occsGrp <- rvs$occs$group
+  #   rvs$bgPts <- f %>% dplyr::filter(name == 'background')
+  #   rvs$bgGrp <- rvs$bgPts$group
+  #   rvs$bgShp <- rgdal::readOGR('C:/Users/gepin/Desktop/maxnet_files/box.shp')
+  #   rvs$bgPts <- rvs$bgPts %>% dplyr::select(longitude, latitude)
+  #   rvs$envs <- raster::stack(list.files('C:/Users/gepin/Desktop/maxnet_files/bio_10m_bil', 'bil$', full.names=TRUE))
+  #   rvs$bgMsk <- raster::stack(list.files('C:/Users/gepin/Desktop/maxnet_files/mskEnvs', 'tif$', full.names = TRUE))  
+  #   print('HACKING DONE')
+  # })
   
   # for RMD
   curWD <- getwd()

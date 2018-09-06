@@ -8,7 +8,7 @@ for (f in list.files('./modules')) {
 shinyUI(tagList(
   shinyjs::useShinyjs(),
   navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsible=TRUE,
-             title='Wallace/maxnet',
+             title='Wallace',
              tabPanel("Intro", value=0),
              tabPanel("1 Occ Data", value=1),
              tabPanel("2 Process Occs", value=2),
@@ -25,7 +25,7 @@ shinyUI(tagList(
                                includeCSS("css/styles.css"),
                                includeScript("js/scroll.js"),
                                conditionalPanel("input.tabs == 0",
-                                                actionButton('load', 'HACK'),
+                                                #actionButton('load', 'HACK'),
                                                 includeMarkdown("Rmd/text_intro_tab.Rmd")
                                ),
                                # COMPONENT 1 ####
