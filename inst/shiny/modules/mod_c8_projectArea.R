@@ -27,7 +27,11 @@ projectArea_MOD <- function(input, output, session, rvs) {
     xy.round <- round(rvs$polyPjXY, digits = 2)
     xy.round <- xy.round[-nrow(xy.round),]  # remove last point that completes polygon
     coordsChar <- paste(apply(xy.round, 1, function(b) paste0('(',paste(b, collapse=', '),')')), collapse=', ')  
-    rvs %>% writeLog('New area projection for model', rvs$modSel, 'with extent coordinates:', coordsChar)
+    if (rvs$clamp == T | rvs$algMaxent == "maxent.jar") {
+      rvs %>% writeLog('New area projection for clamped model', rvs$modSel, 'with extent coordinates:', coordsChar)
+    } else if (rvs$clamp == F) {
+      rvs %>% writeLog('New area projection for unclamped', rvs$modSel, 'with extent coordinates:', coordsChar)
+    }
     
     withProgress(message = "Masking environmental grids to projection extent...", {
       projMsk <- raster::crop(rvs$envs, newPoly)
@@ -37,7 +41,7 @@ projectArea_MOD <- function(input, output, session, rvs) {
     modCur <- rvs$mods[[rvs$modSel]]
     
     withProgress(message = 'Projecting model to new area...', {
-      pargs <- rvs$comp7.type
+      if (rvs$comp7.type == "raw") {pargs <- "link"} else {pargs <- rvs$comp7.type}
       modProjArea <- ENMeval::maxnet.predictRaster(modCur, projMsk, type = pargs, clamp = rvs$clamp)
       raster::crs(modProjArea) <- raster::crs(projMsk)
       # generate binary prediction based on selected thresholding rule 

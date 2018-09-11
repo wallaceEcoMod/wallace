@@ -72,7 +72,12 @@ mapPredsMaxent_MOD <- function(input, output, session, rvs) {
     rvs$comp7.thr <- predSel.thr$thresh
     
     # write to log box
-    rvs %>% writeLog("Maxent", input$predType, "model prediction plotted.")
+    if (rvs$clamp == T | rvs$algMaxent == "maxent.jar") {
+      rvs %>% writeLog("Maxent", input$predType, "clamped model prediction plotted.")
+    } else if (rvs$clamp == F) {
+      rvs %>% writeLog("Maxent", input$predType, "unclamped model prediction plotted.")
+    }
+    
     
     return(pjPred)
   })

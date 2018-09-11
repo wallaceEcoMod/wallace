@@ -6,8 +6,6 @@ maxent_UI <- function(id) {
     tags$div(title = 'text',
              radioButtons(ns("algMaxent"), label='',
                           choices = list("maxnet", "maxent.jar"), inline = TRUE)),
-             # checkboxGroupInput(ns("algMaxent"), label='',
-             #                    choices = list("maxnet", "maxent.jar"), inline = TRUE)),
     strong("Select feature classes "), strong(em("(flexibility of modeled response)")), br(),
     "key: ", strong("L"), "inear, ", strong("Q"), "uadratic, ", strong("H"), "inge, ", 
     strong("P"), "roduct",
@@ -48,9 +46,8 @@ maxent_MOD <- function(input, output, session, rvs) {
                          try "library(rJava)". If it loads properly, restart Wallace and try again.
                          If it does not, please consult www.github.com/wallaceecomod/wallace for
                          more tips on getting rJava to work.')
-        return() 
+        return()
       }
-      return()
     }
     
     if (is.null(input$fcs)) {
@@ -62,8 +59,12 @@ maxent_MOD <- function(input, output, session, rvs) {
     rvs$fcs <- input$fcs
     rvs$rms <- input$rms
     rvs$rmsStep <- input$rmsStep
-    rvs$clamp <- input$clamp
     rvs$algMaxent <- input$algMaxent
+    if (rvs$algMaxent == "maxnet") {
+      rvs$clamp <- input$clamp
+    } else if (rvs$algMaxent == "maxent.jar") {
+      rvs$clamp <- T
+    }
     
     # define the vector of RMs to input
     rms <- seq(input$rms[1], input$rms[2], input$rmsStep)  
@@ -77,13 +78,15 @@ maxent_MOD <- function(input, output, session, rvs) {
     }
     
     jar <- paste(system.file(package="dismo"), "/java/maxent.jar", sep='')
-    if (!file.exists(jar) & input$algMaxent == "maxent.jar") {
-      txt <- HTML(paste("To use Maxent, make sure you download,", strong("maxent.jar"), "from the",
-                        a("AMNH Maxent webpage", 
-                          href="http://biodiversityinformatics.amnh.org/open_source/maxent/", 
-                          target="_blank"), "and place it in this directory:", br(), em(jar)))
-      rvs %>% writeLog(type = 'error', txt)
-      return()
+    if (input$algMaxent == "maxent.jar") {
+      if (!file.exists(jar)) {
+        txt <- HTML(paste("To use Maxent, make sure you download,", strong("maxent.jar"), "from the",
+                          a("AMNH Maxent webpage",
+                            href = "http://biodiversityinformatics.amnh.org/open_source/maxent/",
+                            target = "_blank"), "and place it in this directory:", br(), em(jar)))
+        rvs %>% writeLog(type = 'error', txt)
+        return()
+      }
     }
    
     occs.xy <- rvs$occs %>% dplyr::select(longitude, latitude)
@@ -91,20 +94,18 @@ maxent_MOD <- function(input, output, session, rvs) {
     e <- ENMeval::ENMevaluate(occs.xy, rvs$bgMsk, bg.coords = rvs$bgPts,
                               RMvalues = rms, fc = input$fcs, method = 'user', 
                               occ.grp = rvs$occsGrp, bg.grp = rvs$bgGrp, 
-                              bin.output = TRUE, clamp = input$clamp,
+                              bin.output = TRUE, clamp = rvs$clamp,
                               progbar = FALSE, updateProgress = updateProgress,
                               algorithm = input$algMaxent)
     
     names(e@models) <- e@results$settings
     
-    # # rename results table fields
-    # e@results <- e@results %>% dplyr::rename(avg.test.AUC = Mean.AUC, var.test.AUC = Var.AUC,
-    #                                            avg.diff.AUC = Mean.AUC.DIFF, var.diff.AUC = Var.AUC.DIFF,
-    #                                            avg.test.orMTP = Mean.ORmin, var.test.orMTP = Var.ORmin,
-    #                                            avg.test.or10pct = Mean.OR10, var.test.or10pct = Var.OR10,
-    #                                            parameters = nparam)
+    if (rvs$clamp == T | rvs$algMaxent == "maxent.jar") {
+      rvs %>% writeLog("Maxent ran successfully using", input$algMaxent, "and output evaluation results for", nrow(e@results), "clamped models.")
+    } else if (rvs$clamp == F) {
+      rvs %>% writeLog("Maxent ran successfully using", input$algMaxent, "and output evaluation results for", nrow(e@results), "unclampled models.")
+    }
     
-    rvs %>% writeLog("Maxent ran successfully using", input$algMaxent, "and output evaluation results for", nrow(e@results), "models.")
     
     return(e)
   })
