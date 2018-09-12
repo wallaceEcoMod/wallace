@@ -250,13 +250,16 @@ bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(bb)), 1)))
 ```
 
 ```{r bgMCP, echo = bg.mcp, include = bg.mcp}
+occs.xy <- occs[c('longitude', 'latitude')]
+sp::coordinates(occs.xy) <- ~ longitude + latitude
 bgExt <- mcp(occs.xy)
 ```
 
 ```{r bgPtBufs, echo = bg.ptbuf, include = bg.ptbuf}
 # make SpatialPoints object for buffering
-occs.sp <- sp::SpatialPoints(occs.xy)
-bgExt <- rgeos::gBuffer(occs.sp, width = {{bgBuf}})
+occs.xy <- occs[c('longitude', 'latitude')]
+sp::coordinates(occs.xy) <- ~ longitude + latitude
+bgExt <- rgeos::gBuffer(occs.xy, width = {{bgBuf}})
 ```
 
 ```{asis, echo = bg.userCSV, eval = bg.userCSV, include = bg.userCSV}
