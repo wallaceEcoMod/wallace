@@ -200,6 +200,16 @@ Using WorldClim (http://www.worldclim.org/) bioclimatic dataset at resolution of
 ```{r getEnvBC, echo = env.bc, include = env.bc}
 # get WorldClim bioclimatic variable rasters
 envs <- raster::getData(name = "worldclim", var = "bio", res = {{bcRes}}, lat = {{bcLat}}, lon = {{bcLon}})
+# change names rasters variables
+envRes <- {{bcRes}}
+if (envRes == 0.5) {
+  i <- grep('_', names(envs))
+  editNames <- sapply(strsplit(names(envs)[i], '_'), function(x) x[1])
+  names(envs)[i] <- editNames
+}
+i <- grep('bio[0-9]$', names(envs))
+editNames <- paste('bio', sapply(strsplit(names(envs)[i], 'bio'), function(x) x[2]), sep='0')
+names(envs)[i] <- editNames
 # subset by those variables selected
 envs <- envs[[{{bcSels}}]]
 # extract environmental values at occ grid cells
