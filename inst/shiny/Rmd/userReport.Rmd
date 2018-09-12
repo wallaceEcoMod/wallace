@@ -113,8 +113,6 @@ occs$latitude <- as.numeric(occs$latitude)
 occs$longitude <- as.numeric(occs$longitude)
 # give all records a unique ID
 occs$occID <- row.names(occs)
-# extract occurrence coordinates
-occs.xy <- occs[c('longitude', 'latitude')]
 ```
 
 ```{asis, echo = occs.csv, eval = occs.csv, include = occs.csv}
@@ -131,8 +129,6 @@ userOccs.csv <- read.csv(userOccs.path, header = TRUE)
 # remove rows with duplicate coordinates
 occs.dups <- duplicated(userOccs.csv[c('longitude', 'latitude')])
 occs <- userOccs.csv[!occs.dups,]
-# extract occurrence coordinates
-occs.xy <- occs[c('longitude', 'latitude')]
 ```
 
 
@@ -158,6 +154,8 @@ The following code recreates the polygon used to select occurrences to keep in t
 ```{r occsSelect, echo = poccs.sel, include = poccs.sel}
 selCoords <- data.frame(x = {{occsSelX}}, y = {{occsSelY}})
 selPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)), ID=1)))
+occs.xy <- occs[c('longitude', 'latitude')]
+sp::coordinates(occs.xy) <- ~ longitude + latitude
 intersect <- sp::over(occs.xy, selPoly)
 intersect.rowNums <- as.numeric(which(!(is.na(intersect))))
 occs <- occs[intersect.rowNums, ]
