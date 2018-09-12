@@ -120,7 +120,7 @@ User CSV path with occurrence data. If the CSV file is not in the current worksp
 ```
 
 ```{r occInput, echo = occs.csv}
-# NOTE: provide the path to the folder that contains the rasters
+# NOTE: provide the path to the folder that contains the CSV file
 d.occs <- ''
 # create path to user occurrences csv file
 userOccs.path <- file.path(d.occs, "{{occsCSV}}")
@@ -129,6 +129,10 @@ userOccs.csv <- read.csv(userOccs.path, header = TRUE)
 # remove rows with duplicate coordinates
 occs.dups <- duplicated(userOccs.csv[c('longitude', 'latitude')])
 occs <- userOccs.csv[!occs.dups,]
+# remove NAs
+occs <- occs[complete.cases(occs$longitude, occs$latitude), ]
+# give all records a unique ID
+occs$occID <- row.names(occs)
 ```
 
 
