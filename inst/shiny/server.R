@@ -170,7 +170,7 @@ shinyServer(function(input, output, session) {
   # module Query Database
   dbOccs <- callModule(queryDb_MOD, 'c1_queryDb', rvs)
   
-  spName <- reactive(as.character(rvs$occs$name[1]))
+  spName <- reactive(rvs$spName)
   
   observeEvent(input$goDbOccs, {
     rvs$occs <- dbOccs()
@@ -894,9 +894,18 @@ shinyServer(function(input, output, session) {
       }
       bcSels <- printVecAsis(rvs$bcSels)
       exp <- knitr::knit_expand("Rmd/userReport.Rmd", 
-                                curWD=curWD, spName=spName(), 
-                                dbName=rvs$occDb, occNum=rvs$occNum, occsCSV=rvs$userCSV$name,  # comp 1
-                                thinDist=rvs$thinDist, occsRemoved=rvs$occsRem, occsSelX=polySelX, occsSelY=polySelY,  # comp 2
+                                curWD = curWD, 
+                                # comp 1
+                                spName = spName(), 
+                                dbName = rvs$occDb, 
+                                occNum = rvs$occNum, 
+                                occsCSV = rvs$userCSV$name,
+                                # comp 2
+                                thinDist=rvs$thinDist, 
+                                occsRemoved=rvs$occsRem,
+                                occsSelX=polySelX,
+                                occsSelY=polySelY,  
+                                # comp 3
                                 bcRes=rvs$bcRes, bcLat=rvs$bcLat, bcLon=rvs$bcLon, # comp 3
                                 userEnvs=printVecAsis(rvs$userEnvs$name), bcSels=bcSels, # comp 3
                                 bgSel=rvs$comp4.shp, bgBuf=rvs$comp4.buf, bgUserCSVpath=rvs$userBgShp$datapath,  # comp 4
