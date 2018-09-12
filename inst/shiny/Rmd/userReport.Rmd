@@ -81,6 +81,7 @@ library(spThin)
 library(dismo)
 library(rgeos)
 library(ENMeval)
+library(dplyr)
 ```
 
 Wallace also includes several functions developed to help integrate different packages and some additional functionality. For this reason, it is necessary to load the file `functions.R`, The function `system.file()` finds this script, and `source()` loads it.
