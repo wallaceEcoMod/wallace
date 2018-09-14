@@ -386,9 +386,14 @@ evalPreds <- e@predictions
 Below are some visualizations of your modeling analysis results.
 ```
 
-```{r respCurv, echo = viz.resp, include = viz.resp}
+```{r respCurvJav, echo = viz.resp & '{{algMaxent}}' == "maxent.jar", include = viz.resp}
 # view response curves for environmental variables with non-zero coefficients
 dismo::response(evalMods[["{{modSel}}"]], var = {{mxNonZeroCoefs}})
+```
+
+```{r respCurvMaxnet, echo = viz.resp & '{{algMaxent}}' == "maxnet", include = viz.resp}
+# view response curves for environmental variables with non-zero coefficients
+maxnet::response.plot(evalMods[["{{modSel}}"]], var = {{mxNonZeroCoefs}}, type = "cloglog")
 ```
 
 ```{r bcPlot, echo = viz.bcPlot, include = viz.bcPlot}
