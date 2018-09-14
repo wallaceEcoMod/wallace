@@ -925,6 +925,8 @@ shinyServer(function(input, output, session) {
                                 aggFact = rvs$aggFact,
                                 # comp 6
                                 enmSel = rvs$comp6,
+                                algMaxent = rvs$algMaxent,
+                                clamp = rvs$clamp,
                                 rms1 = rvs$rms[1],
                                 rms2 = rvs$rms[2],
                                 rmsStep = rvs$rmsStep,
