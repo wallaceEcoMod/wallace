@@ -46,7 +46,10 @@ mod.bioclim <- rvs$comp6 == 'bioclim'
 mod.maxent <- rvs$comp6 == 'maxent'
 mod.any <- mod.bioclim | mod.maxent
 # comp7
-viz.pred.thr <- !(is.null(rvs$comp7.thr))
+viz.pred.thr <- 
+  if (!(is.null(rvs$comp7.thr))) {
+    !(rvs$comp7.thr == 'noThresh')
+  } else {FALSE}
 viz.pred.p10 <- rvs$comp7.thr == 'p10'
 viz.pred.raw <- rvs$comp7.type == 'raw'
 viz.pred.log <- rvs$comp7.type == 'logistic'
@@ -391,9 +394,9 @@ Below are some visualizations of your modeling analysis results.
 dismo::response(evalMods[["{{modSel}}"]], var = {{mxNonZeroCoefs}})
 ```
 
-```{r respCurvMaxnet, echo = viz.resp & '{{algMaxent}}' == "maxnet", include = viz.resp}
+```{r respCurvMaxnet, echo = viz.resp & '{{algMaxent}}' == "maxnet", include = viz.resp, warning = F, message = F}
 # view response curves for environmental variables with non-zero coefficients
-maxnet::response.plot(evalMods[["{{modSel}}"]], var = {{mxNonZeroCoefs}}, type = "cloglog")
+plot(evalMods[["{{modSel}}"]], vars = {{mxNonZeroCoefs}}, type = "cloglog")
 ```
 
 ```{r bcPlot, echo = viz.bcPlot, include = viz.bcPlot}
@@ -418,12 +421,12 @@ pred <- evalPreds[["{{modSel}}"]]
 
 ```{r, echo = viz.pred.log, include = viz.pred.log}
 # generate logistic prediction
-pred <- dismo::predict(mod, envsBgMsk, args=c("outputformat=logistic"))
+pred <- ENMeval::maxnet.predictRaster(mod, envsBgMsk, type = 'logistic', clamp = {{clamp}})
 ```
 
 ```{r, echo = viz.pred.cll, include = viz.pred.cll}
 # generate cloglog prediction
-pred <- dismo::predict(mod, envsBgMsk, args=c("outputformat=cloglog"))
+pred <- ENMeval::maxnet.predictRaster(mod, envsBgMsk, type = 'cloglog', clamp = {{clamp}}) 
 ```
 
 ```{r, echo = viz.pred.thr, include = viz.pred.thr}
