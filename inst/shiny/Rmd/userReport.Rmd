@@ -263,17 +263,19 @@ bgExt <- rgeos::gBuffer(occs.xy, width = {{bgBuf}})
 ```
 
 ```{asis, echo = bg.userCSV, eval = bg.userCSV, include = bg.userCSV}
-User study extent name is `r "{{bgUserCSVname}}"`. User study extent path is `r "{{bgUserCSVpath}}"`. Read in the .csv file and generate a Spatial Polygon object.
+Read a .csv file and generate a Spatial Polygon object.
 ```
 
 ```{r bgUserCSV, echo = bg.userCSV, include = bg.userCSV}
+# NOTE: provide the full path to the CSV file
+csvPath <- ''
 # read csv with coordinates for polygon
-shp <- read.csv("{{bgUserCSVpath}}", header = TRUE)
+shp <- read.csv(csvPath, header = TRUE)
 bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(shp)), 1)))
 ```
 
 ```{asis, echo = bg.userShp, eval = bg.userShp, include = bg.userShp}
-User study extent name is `r "{{bgUserShpName}}"`. User study extent path is `r "{{bgUserShpPath}}"`. Read in the .csv file and generate a Spatial Polygon object.
+User study extent name is `r "{{bgUserShpName}}"`. User study extent path is `r "{{bgUserShpPath}}"`. Read in the .shp file and generate a Spatial Polygon object.
 ```
 
 ```{r bg.userShp, echo = bg.userShp, include = bg.userShp}

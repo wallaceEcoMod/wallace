@@ -901,24 +901,51 @@ shinyServer(function(input, output, session) {
                                 occNum = rvs$occNum, 
                                 occsCSV = rvs$userCSV$name,
                                 # comp 2
-                                thinDist=rvs$thinDist, 
-                                occsRemoved=rvs$occsRem,
-                                occsSelX=polySelX,
-                                occsSelY=polySelY,  
+                                thinDist = rvs$thinDist, 
+                                occsRemoved = rvs$occsRem,
+                                occsSelX = polySelX,
+                                occsSelY = polySelY,  
                                 # comp 3
-                                bcRes=rvs$bcRes, bcLat=rvs$bcLat, bcLon=rvs$bcLon, # comp 3
-                                userEnvs=printVecAsis(rvs$userEnvs$name), bcSels=bcSels, # comp 3
-                                bgSel=rvs$comp4.shp, bgBuf=rvs$comp4.buf, bgUserCSVpath=rvs$userBgShp$datapath,  # comp 4
-                                bgUserCSVname=rvs$userBgShp$name, bgUserShpPath=rvs$bgUserShpPar$dsn,  # comp 4 
-                                bgUserShpName=rvs$bgUserShpPar$layer, bgPtsNum=rvs$bgPtsNum, # comp 4
-                                partSel=rvs$partSel, kfolds=rvs$kfolds, aggFact=rvs$aggFact,  # comp 5
-                                enmSel=rvs$comp6, rms1=rvs$rms[1], rms2=rvs$rms[2], rmsStep=rvs$rmsStep, # comp 6
-                                fcs=printVecAsis(rvs$fcs),  # comp 6
-                                modSel=rvs$modSel, mxNonZeroCoefs=printVecAsis(rvs$mxNonZeroCoefs), envSel=rvs$envSel,  # comp 7
-                                bcPlot1=rvs$bcPlotsPar$bc1, bcPlot2=rvs$bcPlotsPar$bc2, bcPlotP=rvs$bcPlotsPar$p,  # comp 7
-                                mxEvalSel=rvs$mxEvalSel, predType=rvs$comp7.type, comp7.thresh=rvs$comp7.thr, # comp 7 
-                                occsPjX=polyPjX, occsPjY=polyPjY, pjRCP=rvs$pjTimePar$rcp, pjGCM=rvs$pjTimePar$gcm,  # comp 8
-                                pjYear=rvs$pjTimePar$year, comp8.thresh=rvs$comp8.thr)  # comp 8
+                                bcRes = rvs$bcRes, 
+                                bcLat = rvs$bcLat, 
+                                bcLon = rvs$bcLon,
+                                userEnvs = printVecAsis(rvs$userEnvs$name), 
+                                bcSels = bcSels, 
+                                # comp 4
+                                bgSel = rvs$comp4.shp, 
+                                bgBuf = rvs$comp4.buf, 
+                                #bgUserCSVname = rvs$bgUserCSVname,
+                                #bgUserCSVpath = rvs$bgUserCSVpath,
+                                bgUserShpPath = rvs$bgUserShpPar$dsn, 
+                                bgUserShpName = rvs$bgUserShpPar$layer, 
+                                bgPtsNum = rvs$bgPtsNum,
+                                # comp 5
+                                partSel = rvs$partSel, 
+                                kfolds = rvs$kfolds, 
+                                aggFact = rvs$aggFact,
+                                # comp 6
+                                enmSel = rvs$comp6,
+                                rms1 = rvs$rms[1],
+                                rms2 = rvs$rms[2],
+                                rmsStep = rvs$rmsStep,
+                                fcs = printVecAsis(rvs$fcs),
+                                # comp 7
+                                modSel = rvs$modSel, 
+                                mxNonZeroCoefs = printVecAsis(rvs$mxNonZeroCoefs),
+                                envSel = rvs$envSel,
+                                bcPlot1 = rvs$bcPlotsPar$bc1, 
+                                bcPlot2 = rvs$bcPlotsPar$bc2,
+                                bcPlotP = rvs$bcPlotsPar$p,
+                                mxEvalSel = rvs$mxEvalSel,
+                                predType = rvs$comp7.type,
+                                comp7.thresh = rvs$comp7.thr,
+                                # comp 8 
+                                occsPjX = polyPjX,
+                                occsPjY = polyPjY,
+                                pjRCP = rvs$pjTimePar$rcp,
+                                pjGCM = rvs$pjTimePar$gcm,
+                                pjYear = rvs$pjTimePar$year,
+                                comp8.thresh = rvs$comp8.thr)
       # temporarily switch to the temp dir, in case you do not have write
       # permission to the current working directory
       owd <- setwd(tempdir())
