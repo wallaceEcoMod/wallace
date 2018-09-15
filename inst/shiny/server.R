@@ -721,7 +721,7 @@ shinyServer(function(input, output, session) {
       ext <- switch(input$predFileType, raster = 'zip', ascii = 'asc', GTiff = 'tif', png = 'png')
       paste0(names(rvs$predCur), '.', ext)},
     content = function(file) {
-      browser()
+      # browser()
       if (require(rgdal)) {
         if (input$predFileType == 'png') {
           png(file)
