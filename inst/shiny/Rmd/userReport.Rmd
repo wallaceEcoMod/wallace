@@ -45,11 +45,10 @@ part.any <- rvs$comp5 != ''
 mod.bioclim <- rvs$comp6 == 'bioclim'
 mod.maxent <- rvs$comp6 == 'maxent'
 mod.any <- mod.bioclim | mod.maxent
+alg.maxent <- rvs$algMaxent == 'maxent.jar'
+alg.maxnet <- rvs$algMaxent == 'maxnet'
 # comp7
-viz.pred.thr <- 
-  if (!(is.null(rvs$comp7.thr))) {
-    !(rvs$comp7.thr == 'noThresh')
-  } else {FALSE}
+viz.pred.thr <- if (!(is.null(rvs$comp7.thr))) {!(rvs$comp7.thr == 'noThresh')} else {FALSE}
 viz.pred.p10 <- rvs$comp7.thr == 'p10'
 viz.pred.raw <- rvs$comp7.type == 'raw'
 viz.pred.log <- rvs$comp7.type == 'logistic'
@@ -63,7 +62,7 @@ viz.any <- rvs$comp7 != ''
 pj.area <- rvs$comp8.pj == 'area'
 pj.time <- rvs$comp8.pj == 'time'
 pj.mess <- rvs$comp8.esim == 'mess'
-pj.thr <- !(is.null(rvs$comp8.thr))
+pj.thr <- if (!(is.null(rvs$comp8.thr))) {!(rvs$comp8.thr == 'noThresh')} else {FALSE}
 pj.any <- pj.area | pj.time | pj.mess
 ```
 
@@ -289,7 +288,7 @@ bgExt <- rgdal::readOGR(d.bg, "{{bgUserShpName}}")
 ```
 
 ```{asis, echo = bg.bufWid, eval = bg.bufWid, include = bg.bufWid}
-Buffer size of the study extent polygon defined as `r {{bgBuf}}` km.
+Buffer size of the study extent polygon defined as `r {{bgBuf}}` degrees.
 ```
 
 ```{r bgBufWid, echo = bg.bufWid, include = bg.bufWid}
@@ -328,6 +327,7 @@ You selected to partition your occurrence data by the `r partSwitch` method.
 ```
 
 ```{r blockGrp, echo = part.block, include = part.block}
+occs.xy <- occs[c('longitude', 'latitude')]
 group.data <- ENMeval::get.block(occ=occs.xy, bg.coords=bg.xy)
 ```
 
@@ -419,14 +419,24 @@ mod <- evalMods[["{{modSel}}"]]
 pred <- evalPreds[["{{modSel}}"]]
 ```
 
-```{r, echo = viz.pred.log, include = viz.pred.log}
+```{r maxnetLog, echo = viz.pred.log & alg.maxnet, include = viz.pred.log}
 # generate logistic prediction
 pred <- ENMeval::maxnet.predictRaster(mod, envsBgMsk, type = 'logistic', clamp = {{clamp}})
 ```
 
-```{r, echo = viz.pred.cll, include = viz.pred.cll}
+```{r maxnetCll, echo = viz.pred.cll & alg.maxnet, include = viz.pred.cll}
 # generate cloglog prediction
 pred <- ENMeval::maxnet.predictRaster(mod, envsBgMsk, type = 'cloglog', clamp = {{clamp}}) 
+```
+
+```{r maxentLog, echo = viz.pred.log & alg.maxent, include = viz.pred.log}
+# generate logistic prediction
+pred <- dismo::predict(mod, envsBgMsk, args = c("outputformat=logistic"))
+```
+
+```{r maxentCll, echo = viz.pred.cll & alg.maxent, include = viz.pred.cll}
+# generate cloglog prediction
+pred <- dismo::predict(mod, envsBgMsk, args = c("outputformat=cloglog")) 
 ```
 
 ```{r, echo = viz.pred.thr, include = viz.pred.thr}
@@ -449,36 +459,106 @@ You selected to project your model. First define a polygon with the coordinates 
 ```
 
 ```{r projSel, echo = pj.any, include = pj.any}
-projCoords <- data.frame(x = {{occsPjX}}, y = {{occsPjX}})
+projCoords <- data.frame(x = {{occsPjX}}, y = {{occsPjY}})
 projPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(projCoords)), ID=1)))
 ```
 
-```{asis, echo = pj.area, eval = pj.area, include = pj.area}
+```{asis, echo = pj.area & alg.maxnet, eval = pj.area, include = pj.area}
 ### Project Niche Model to New Extent
-Now use crop and mask the predictor variables by projPoly, and use the predict() function to predict the values for the new extent based on the model selected.
+Now use crop and mask the predictor variables by projPoly, and use the maxnet.predictRaster() function to predict the values for the new extent based on the model selected.
 ```
 
-```{r projArea, echo = pj.area, include = pj.area}
+```{r projAreaMaxnet.raw, echo = pj.area & alg.maxnet & viz.pred.raw, include = pj.area}
 predsProj <- raster::crop(envs, projPoly)
 predsProj <- raster::mask(predsProj, projPoly)
-
-proj <- dismo::predict(mod, predsProj)
+proj <- ENMeval::maxnet.predictRaster(mod, predsProj, type = 'exponential', clamp = {{clamp}})
 ```
 
-```{asis, echo = pj.time, eval = pj.time, include = pj.time}
+```{r projAreaMaxnet.log, echo = pj.area & alg.maxnet & viz.pred.log, include = pj.area}
+predsProj <- raster::crop(envs, projPoly)
+predsProj <- raster::mask(predsProj, projPoly)
+proj <- ENMeval::maxnet.predictRaster(mod, predsProj, type = 'logistic', clamp = {{clamp}})
+```
+
+```{r projAreaMaxnet.cll, echo = pj.area & alg.maxnet & viz.pred.cll, include = pj.area}
+predsProj <- raster::crop(envs, projPoly)
+predsProj <- raster::mask(predsProj, projPoly)
+proj <- ENMeval::maxnet.predictRaster(mod, predsProj, type = 'cloglog', clamp = {{clamp}})
+```
+
+```{asis, echo = pj.area & alg.maxent, eval = pj.area, include = pj.area}
+### Project Niche Model to New Extent
+Now use crop and mask the predictor variables by projPoly, and use the dismo::predict() function to predict the values for the new extent based on the model selected.
+```
+
+```{r projAreaMaxent.raw, echo = pj.area & alg.maxent & viz.pred.raw, include = pj.area}
+predsProj <- raster::crop(envs, projPoly)
+predsProj <- raster::mask(predsProj, projPoly)
+proj <- dismo::predict(mod, predsProj, args = c("outputformat=raw"))
+```
+
+```{r projAreaMaxent.log, echo = pj.area & alg.maxent & viz.pred.log, include = pj.area}
+predsProj <- raster::crop(envs, projPoly)
+predsProj <- raster::mask(predsProj, projPoly)
+proj <- dismo::predict(mod, predsProj, args = c("outputformat=logistic"))
+```
+
+```{r projAreaMaxent.cll, echo = pj.area & alg.maxent & viz.pred.cll, include = pj.area}
+predsProj <- raster::crop(envs, projPoly)
+predsProj <- raster::mask(predsProj, projPoly)
+proj <- dismo::predict(mod, predsProj, args = c("outputformat=cloglog"))
+```
+
+```{asis, echo = pj.time & alg.maxnet, eval = pj.time, include = pj.time}
 ### Project Niche Model to New Time
-Now download the future climate variables chosen with *Wallace*, crop and mask them by projPoly, and use the predict() function to predict the values for the new time based on the model selected.
+Now download the future climate variables chosen with *Wallace*, crop and mask them by projPoly, and use the maxnet.predictRaster() function to predict the values for the new time based on the model selected.
 ```
 
-```{r projTime, echo = pj.time, include = pj.time}
+```{asis, echo = pj.time & alg.maxent, eval = pj.time, include = pj.time}
+### Project Niche Model to New Time
+Now download the future climate variables chosen with *Wallace*, crop and mask them by projPoly, and use the dismo::predict() function to predict the values for the new time based on the model selected.
+```
+
+```{r pTNet, echo = pj.time, include = pj.time}
 envsFuture <- raster::getData("CMIP5", var = "bio", res = {{bcRes}}, rcp = {{pjRCP}}, model = "{{pjGCM}}", year = {{pjYear}})
 
 predsProj <- raster::crop(envsFuture, projPoly)
 predsProj <- raster::mask(predsProj, projPoly)
 
 # rename future climate variable names
-names(envsMsk) <- names(envs)
-proj <- dismo::predict(mod, predsProj)
+names(predsProj) <- paste0('bio', sprintf("%02d", 1:19))
+# select climate variables
+predsProj <- raster::subset(predsProj, names(envs))
+```
+
+```{r pTNet.raw, echo = pj.time & alg.maxnet & viz.pred.raw, include = pj.time}
+# predict model
+proj <- ENMeval::maxnet.predictRaster(mod, predsProj, type = 'exponential', clamp = {{clamp}})
+```
+
+```{r pTNet.log, echo = pj.time & alg.maxnet & viz.pred.log, include = pj.time}
+# predict model
+proj <- ENMeval::maxnet.predictRaster(mod, predsProj, type = 'logistic', clamp = {{clamp}})
+```
+
+```{r pTNet.cll, echo = pj.time & alg.maxnet & viz.pred.cll, include = pj.time}
+# predict model
+proj <- ENMeval::maxnet.predictRaster(mod, predsProj, type = 'cloglog', clamp = {{clamp}})
+```
+
+```{r pTEnt.raw, echo = pj.time & alg.maxent & viz.pred.raw, include = pj.time}
+# predict model
+proj <- dismo::predict(mod, predsProj, args = c('outputformat=raw'))
+```
+
+```{r pTEnt.log, echo = pj.time & alg.maxent & viz.pred.log, include = pj.time}
+# predict model
+proj <- dismo::predict(mod, predsProj, args = c('outputformat=logistic'))
+```
+
+```{r pTEnt.cll, echo = pj.time & alg.maxent & viz.pred.cll, include = pj.time}
+# predict model
+proj <- dismo::predict(mod, predsProj, args = c('outputformat=cloglog'))
 ```
 
 ```{r, echo = pj.thr, include = pj.thr}
@@ -501,6 +581,7 @@ To visualize the environmental difference between the occurrence localities and 
 ```
 
 ```{r projMESS, echo = pj.mess, include = pj.mess}
+
 # extract environmental values from occurrence localities -- these were the values that went into the model
 occEnvVals <- raster::extract(envs, occs.xy)
 # compare these values with the projection extent (envsMsk)
