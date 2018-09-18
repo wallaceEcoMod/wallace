@@ -110,8 +110,13 @@ projectTime_MOD <- function(input, output, session, rvs) {
     modCur <- rvs$mods[[rvs$modSel]]
     
     withProgress(message = ("Projecting to new time..."), {
-      if (rvs$comp7.type == "raw") {pargs <- "link"} else {pargs <- rvs$comp7.type}
-      modProjTime <- ENMeval::maxnet.predictRaster(modCur, pjtMsk, type = pargs, clamp = rvs$clamp)
+      if (rvs$algMaxent == "maxnet") {
+        if (rvs$comp7.type == "raw") {pargs <- "exponential"} else {pargs <- rvs$comp7.type}
+        modProjTime <- ENMeval::maxnet.predictRaster(modCur, pjtMsk, type = pargs, clamp = rvs$clamp)
+      } else if (rvs$algMaxent == "maxent.jar") {
+        pargs <- paste0("outputformat=", rvs$comp7.type)
+        modProjTime <- dismo::predict(modCur, pjtMsk, args = pargs)
+      }
       modProjTime.thr.call <- callModule(threshPred_MOD, "threshPred", modProjTime)
       modProjTime.thr <- modProjTime.thr.call()
       pjPred <- modProjTime.thr$pred

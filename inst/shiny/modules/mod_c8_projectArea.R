@@ -41,8 +41,13 @@ projectArea_MOD <- function(input, output, session, rvs) {
     modCur <- rvs$mods[[rvs$modSel]]
     
     withProgress(message = 'Projecting model to new area...', {
-      if (rvs$comp7.type == "raw") {pargs <- "link"} else {pargs <- rvs$comp7.type}
-      modProjArea <- ENMeval::maxnet.predictRaster(modCur, projMsk, type = pargs, clamp = rvs$clamp)
+      if (rvs$algMaxent == "maxnet") {
+        if (rvs$comp7.type == "raw") {pargs <- "exponential"} else {pargs <- rvs$comp7.type}
+        modProjArea <- ENMeval::maxnet.predictRaster(modCur, projMsk, type = pargs, clamp = rvs$clamp)
+      } else if (rvs$algMaxent == "maxent.jar") {
+        pargs <- paste0("outputformat=", rvs$comp7.type)
+        modProjArea <- dismo::predict(modCur, projMsk, args = pargs)
+      }
       raster::crs(modProjArea) <- raster::crs(projMsk)
       # generate binary prediction based on selected thresholding rule 
       # (same for all Maxent prediction types because they scale the same)
