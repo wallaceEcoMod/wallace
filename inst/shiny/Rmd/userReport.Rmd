@@ -414,6 +414,11 @@ ENMeval::eval.plot(evalTbl, value = "{{mxEvalSel}}")
 mod <- evalMods[["{{modSel}}"]]
 ```
 
+```{r, echo = viz.pred & mod.bioclim, include = viz.pred}
+# generate bioclim prediction
+pred <- evalPreds[["{{modSel}}"]]
+```
+
 ```{r, echo = viz.pred.raw, include = viz.pred.raw}
 # generate raw prediction
 pred <- evalPreds[["{{modSel}}"]]
