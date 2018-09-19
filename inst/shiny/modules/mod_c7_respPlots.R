@@ -23,7 +23,7 @@ respPlots_MOD <- function(input, output, session, rvs) {
     # handle downloads for Response Plots png
     if (input$dlRespPlotAll == FALSE) {
       output$dlRespPlot <- downloadHandler(
-        filename = function() {paste0(spName(), "_", rvs$envSel, "_response.png")},
+        filename = function() {paste0(spName(), "_", rvs$modSel, "_", rvs$envSel, "_response.png")},
         content = function(file) {
           png(file)
           if (rvs$algMaxent == "maxnet") {
@@ -35,13 +35,13 @@ respPlots_MOD <- function(input, output, session, rvs) {
         })
       } else if (input$dlRespPlotAll == TRUE) {
         output$dlRespPlot <- downloadHandler(
-          filename = function() {paste0(spName(), "_all_response.png")},
+          filename = function() {paste0(spName(), "_", rvs$modSel, "_all_response.png")},
           content = function(file) {
             png(file)
             if (rvs$algMaxent == "maxnet") {
-              plot(modCur, type = "cloglog")
+              plot(modCur, type = "cloglog", vars = rvs$mxNonZeroCoefs)
             } else if (rvs$algMaxent == "maxent.jar") {
-              dismo::response(modCur)
+              dismo::response(modCur, var = rvs$mxNonZeroCoefs)
             }
             dev.off()
           })
