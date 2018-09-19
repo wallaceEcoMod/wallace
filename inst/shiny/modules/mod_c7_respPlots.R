@@ -20,36 +20,39 @@ respPlots_MOD <- function(input, output, session, rvs) {
     
     modCur <- rvs$mods[[rvs$modSel]]
     
-    # handle downloads for Response Plots png for Maxnet
-    if (rvs$algMaxent == "maxnet") {
+    # handle downloads for Response Plots png
+    if (input$dlRespPlotAll == FALSE) {
       output$dlRespPlot <- downloadHandler(
         filename = function() {paste0(spName(), "_", rvs$envSel, "_response.png")},
         content = function(file) {
           png(file)
-          if (input$dlRespPlotAll == TRUE) {
-            plot(modCur, type = "cloglog")
-          } else {
-            maxnet::response.plot(modCur, v = rvs$envSel, type = "cloglog")  
+          if (rvs$algMaxent == "maxnet") {
+            maxnet::response.plot(modCur, v = rvs$envSel, type = "cloglog")
+          } else if (rvs$algMaxent == "maxent.jar") {
+            dismo::response(modCur, var = rvs$envSel)
           }
           dev.off()
-        }
-      )
+        })
+      } else if (input$dlRespPlotAll == TRUE) {
+        output$dlRespPlot <- downloadHandler(
+          filename = function() {paste0(spName(), "_all_response.png")},
+          content = function(file) {
+            png(file)
+            if (rvs$algMaxent == "maxnet") {
+              plot(modCur, type = "cloglog")
+            } else if (rvs$algMaxent == "maxent.jar") {
+              dismo::response(modCur)
+            }
+            dev.off()
+          })
+      }
+    # plot in wallace
+    if (rvs$algMaxent == "maxnet") {
       maxnet::response.plot(modCur, v = rvs$envSel, type = "cloglog")
     } else if (rvs$algMaxent == "maxent.jar") {
-      # handle downloads for Response Plots png for maxent.jar
-      output$dlRespPlot <- downloadHandler(
-        filename = function() {paste0(spName(), "_", rvs$envSel, "_response.png")},
-        content = function(file) {
-          png(file)
-          if (input$dlRespPlotAll == TRUE) {
-            dismo::response(modCur)
-          } else {
-            dismo::response(modCur, var = rvs$envSel)  
-          }
-          dev.off()
-        }
-      )
       dismo::response(modCur, var = rvs$envSel)
     }
   })
 }
+    
+
