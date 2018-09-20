@@ -15,7 +15,7 @@ devtools::install_github("bobmuscarella/ENMeval@Version-0.2.2")
 If you want to test a development version of Wallace that uses ENMeval v0.3.0 and allows users the option of using the maxnet package to run Maxent, please install the *alpha* version of Wallace v1.0.5.9000. Please be aware that this is an untested version.
 
 ```R
-devtools::install_github("wallaceEcoMod/wallace@maxnet")
+devtools::install_github("wallaceEcoMod/wallace@maxnet", dependencies = TRUE)
 ```
 #
 Install *Wallace* via CRAN and run the application with the following R code.
