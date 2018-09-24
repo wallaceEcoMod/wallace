@@ -818,9 +818,21 @@ shinyServer(function(input, output, session) {
     rvs$mess[is.infinite(rvs$mess)] <- NA
     # extract values
     rvs$messVals <- getVals(rvs$mess)
-    
     rasVals <- rvs$messVals
-    rasCols <- RColorBrewer::brewer.pal(n=11, name='Reds')
+    # define colorRamp for mess
+    if (max(rasVals) > 0 & min(rasVals) < 0) {
+      rc1 <- colorRampPalette(colors = rev(RColorBrewer::brewer.pal(n = 3, name = 'Reds')),
+                              space = "Lab")(abs(min(rasVals)))
+      rc2 <- colorRampPalette(colors = RColorBrewer::brewer.pal(n = 3, name = 'Blues'), 
+                              space = "Lab")(max(rasVals))
+      rasCols <- c(rc1, rc2)
+    } else if (max(rasVals) < 0 & min(rasVals) < 0) {
+      rasCols <- colorRampPalette(colors = rev(RColorBrewer::brewer.pal(n = 3, name = 'Reds')), 
+                                  space = "Lab")(abs(min(rasVals)))
+    } else if (max(rasVals) > 0 & min(rasVals) > 0) {
+      rasCols <- colorRampPalette(colors = RColorBrewer::brewer.pal(n = 3, name = 'Blues'),
+                                  space = "Lab")(max(rasVals))
+    }
     map %>% comp8_map(rvs$mess, rvs$polyPjXY, bgShpXY, rasVals, rasCols, "MESS Values",
                       addID = 'rProjMESS', clearID = c('r1ID', 'rProjArea', 'rProjTime', 'rProjMESS'))
     

@@ -544,7 +544,7 @@ comp8_map <- function(map, ras, polyXY, bgShpXY, rasVals, rasCols,
     clearMarkers() %>% 
     clearShapes() %>%
     removeImage(clearID) %>%
-    addRasterImage(ras, colors = rasPal, opacity = 0.7, 
+    addRasterImage(ras, colors = rasPal, opacity = 0.9, 
                    group = 'c7', layerId = addID) %>%
     addPolygons(lng=polyXY[,1], lat=polyXY[,2], layerId="projExt", fill = FALSE,
                 weight=4, color="green", group='c8')
