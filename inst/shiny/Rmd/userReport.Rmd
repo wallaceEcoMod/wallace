@@ -45,8 +45,8 @@ part.any <- rvs$comp5 != ''
 mod.bioclim <- rvs$comp6 == 'bioclim'
 mod.maxent <- rvs$comp6 == 'maxent'
 mod.any <- mod.bioclim | mod.maxent
-alg.maxent <- rvs$algMaxent == 'maxent.jar'
-alg.maxnet <- rvs$algMaxent == 'maxnet'
+alg.maxent <- if (mod.maxent) {rvs$algMaxent == 'maxent.jar'} else {FALSE}
+alg.maxnet <- if (mod.maxent) {rvs$algMaxent == 'maxnet'} else {FALSE}
 # comp7
 viz.pred.thr <- if (!(is.null(rvs$comp7.thr))) {!(rvs$comp7.thr == 'noThresh')} else {FALSE}
 viz.pred.p10 <- rvs$comp7.thr == 'p10'
@@ -514,12 +514,28 @@ predsProj <- raster::mask(predsProj, projPoly)
 proj <- dismo::predict(mod, predsProj, args = c("outputformat=cloglog"))
 ```
 
+```{asis, echo = pj.area & mod.bioclim, eval = pj.area, include = pj.area}
+### Project Niche Model to New Extent
+Now use crop and mask the predictor variables by projPoly, and use the dismo::predict() function to predict the values for the new extent based on the model selected.
+```
+
+```{r projAreaBioclim, echo = pj.area & mod.bioclim, include = pj.area}
+predsProj <- raster::crop(envs, projPoly)
+predsProj <- raster::mask(predsProj, projPoly)
+proj <- dismo::predict(mod, predsProj)
+```
+
 ```{asis, echo = pj.time & alg.maxnet, eval = pj.time, include = pj.time}
 ### Project Niche Model to New Time
 Now download the future climate variables chosen with *Wallace*, crop and mask them by projPoly, and use the maxnet.predictRaster() function to predict the values for the new time based on the model selected.
 ```
 
 ```{asis, echo = pj.time & alg.maxent, eval = pj.time, include = pj.time}
+### Project Niche Model to New Time
+Now download the future climate variables chosen with *Wallace*, crop and mask them by projPoly, and use the dismo::predict() function to predict the values for the new time based on the model selected.
+```
+
+```{asis, echo = pj.time & mod.bioclim, eval = pj.time, include = pj.time}
 ### Project Niche Model to New Time
 Now download the future climate variables chosen with *Wallace*, crop and mask them by projPoly, and use the dismo::predict() function to predict the values for the new time based on the model selected.
 ```
@@ -564,6 +580,11 @@ proj <- dismo::predict(mod, predsProj, args = c('outputformat=logistic'))
 ```{r pTEnt.cll, echo = pj.time & alg.maxent & viz.pred.cll, include = pj.time}
 # predict model
 proj <- dismo::predict(mod, predsProj, args = c('outputformat=cloglog'))
+```
+
+```{r pTBioclim, echo = pj.time & mod.bioclim, include = pj.time}
+# predict model
+proj <- dismo::predict(mod, predsProj)
 ```
 
 ```{r, echo = pj.thr, include = pj.thr}
