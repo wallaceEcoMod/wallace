@@ -238,6 +238,7 @@ shinyServer(function(input, output, session) {
       clearMarkers() %>%
       map_plotLocs(rvs$occs) %>%
       zoom2Occs(rvs$occs)
+    shinyjs::enable("dlProcOccs")
   })
   
   # module Select Occurrences on Map
