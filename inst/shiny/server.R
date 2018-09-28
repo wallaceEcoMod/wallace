@@ -283,7 +283,9 @@ shinyServer(function(input, output, session) {
   
   # handle download for thinned records csv
   output$dlProcOccs <- downloadHandler(
-    filename = function() {paste0(formatSpName(spName()), "_processed_occs.csv")},
+    filename = function() {ifelse(rvs$comp1 == 'csv', 
+                                  "user_processed_occs.csv", 
+                                  paste0(formatSpName(spName()), "_processed_occs.csv"))},
     content = function(file) {
       # thinned_rowNums <- as.numeric(thinOccs()$occID)
       # origThinned <- rvs$occsOrig[thinned_rowNums,]
