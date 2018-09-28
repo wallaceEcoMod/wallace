@@ -66,11 +66,7 @@ pj.thr <- if (!(is.null(rvs$comp8.thr))) {!(rvs$comp8.thr == 'noThresh')} else {
 pj.any <- pj.area | pj.time | pj.mess
 ```
 
-<<<<<<< HEAD
-Please find below the R code history from your *Wallace* v1.0.5.9* session. 
-=======
 Please find below the R code history from your *Wallace* v1.0.5.9100 session. 
->>>>>>> 99bbfbc8f5be2ba5d4f0c5577a5cc891d5bee7fa
 
 You can reproduce your session results by running this R Markdown file in RStudio. 
 

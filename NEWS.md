@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-# wallace 1.0.5.9*
-=======
 # wallace 1.0.5.9100
->>>>>>> 99bbfbc8f5be2ba5d4f0c5577a5cc891d5bee7fa
 - Wallace no longer needs rJava to run! Oh happy days! Wallace is now compatible with ENMeval 0.3.0, which now has no rJava dependency and runs Maxent using maxnet by default (CRAN package maxnet; https://onlinelibrary.wiley.com/doi/abs/10.1111/ecog.03049). This means Wallace no longer loads rJava automatically when using the ENMeval partition functions or running Maxent. You can still select the Java implementation of Maxent by choosing "maxent.jar" in the Maxent module, whereupon rJava will load. 
 - Wallace now works on computers that error when some non-ASCII characters are used. This problem was discovered during a workshop in Vietnam on some Chinese computers.
 - Users can now select bioclimatic variables when using 30 arc second data.
