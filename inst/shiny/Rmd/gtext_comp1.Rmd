@@ -10,9 +10,8 @@ output: html_document
 Niche/distributional modeling analyses require georeferenced occurrence records for the species (e.g., with latitude/longitude). At present, Component **Obtain Occurrence Records** focuses on data documenting the *presence* of the species (i.e., not any information on its absence or non-detection; Franklin 2010 chap. 4; Peterson et al. 2011 chapter 5; Anderson 2012). *Wallace* currently allows users either to: 1) obtain occurrence records from selected online biodiversity databases and download the results (Module ***Query Database***); or 2) upload their own dataset (Module ***User-specified Occurrences***). 
 
 **REFERENCES**
-Anderson, R. P. (2012), Harnessing the world's biodiversity data: promise and peril in ecological niche modeling of species distributions. *Annals of the New York Academy of Sciences*. 1260: 66-80.
 
-Anderson, R. P. (2015). El modelado de nichos y distribuciones: no es simplemente "clic, clic, clic." [With English and French translations: Modeling niches and distributions: it's not just "click, click, click" and La modélisation de niche et de distributions: ce n'est pas juste "clic, clic, clic"]. Biogeografía. 8: 4-27.
+Anderson, R. P. (2012). Harnessing the world's biodiversity data: promise and peril in ecological niche modeling of species distributions. *Annals of the New York Academy of Sciences*. 1260: 66-80.
 
 Franklin J. (2010). Mapping Species Distributions: Spatial Inference and Prediction. Data for species distribution models: the biological data. In: Mapping species distributions: spatial inference and prediction. Cambridge: Cambridge University Press.
 
