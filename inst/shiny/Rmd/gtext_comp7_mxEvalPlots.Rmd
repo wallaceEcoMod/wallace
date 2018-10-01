@@ -17,7 +17,7 @@ Users can select which evaluation metric plot to view in the "Results" tab. Diff
 
 **REFERENCES**
 
-Merow, C., Smith, M. J., Edwards, T. C., Guisan, A., McMahon, S. M., Normand, S., ... & Elith, J. (2014). What do we gain from simplicity versus complexity in species distribution models? Ecography, 37: 1267-1281.
+Merow, C., Smith, M. J., Edwards, T. C., Guisan, A., McMahon, S. M., Normand, S., ... & Elith, J. (2014). What do we gain from simplicity versus complexity in species distribution models? *Ecography*, 37: 1267-1281.
 
 Muscarella, R., Galante, P. J., Soley-Guardia, M., Boria, R. A., Kass, J. M., Uriarte, M., & Anderson, R. P. (2014). ENMeval: An R package for conducting spatially independent evaluations and estimating optimal model complexity for Maxent ecological niche models. *Methods in Ecology and Evolution*. 5: 1198-1205.
 

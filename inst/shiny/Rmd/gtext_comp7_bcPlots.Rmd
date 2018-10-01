@@ -19,4 +19,4 @@ The envelope plot can be viewed in the "Results" tab. The axes of the plot repre
 
 Booth T.H., Nix H.A., Busby J.R., Hutchinson M.F. (2014). BIOCLIM: The first species distribution modelling package, its early applications and relevance to most current MaxEnt studies. *Diversity and Distributions*. 20: 1-9.
 
-Hutchinson, G.E. (1957). Concluding remarks. Cold Spring Harbor Symposia on Quantitative Biology. 22: 415-427.
+Hutchinson, G.E. (1957). Concluding remarks. *Cold Spring Harbor Symposia on Quantitative Biology*. 22: 415-427.
