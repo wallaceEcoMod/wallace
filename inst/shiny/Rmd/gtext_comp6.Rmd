@@ -49,6 +49,3 @@ Peterson A. T., Soberón J., Pearson R. G., Anderson R. P., Martinez-Meyer E., N
 Roberts, D. R., Bahn, V., Ciuti, S., Boyce, M. S., Elith, J., Guillera-Arroita, G., Hauenstein, S., Lahoz-Monfort, J. J., Schröder, B., Thuiller, W., Warton, D. I., Wintle, B. A., Hartig, F. and Dormann, C. F. (2017), Cross-validation strategies for data with temporal, spatial, hierarchical, or phylogenetic structure. *Ecography*. 40: 913-929.
 
 Warren, D. L., & Seifert, S. N. (2011). Ecological niche modeling in Maxent : the importance of model complexity and the performance of model selection criteria. *Ecological Applications*. 21: 335-342.
-
-
-
