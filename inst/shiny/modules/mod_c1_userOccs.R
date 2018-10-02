@@ -31,6 +31,10 @@ userOccs_MOD <- function(input, output, session, rvs) {
     uoccs <- csv %>% 
       dplyr::filter(name == spName) %>%
       dplyr::filter(!is.na(latitude) & !is.na(longitude))
+    
+    # remove duplicates
+    uoccs.dups <- duplicated(uoccs %>% dplyr::select(longitude, latitude))
+    uoccs <- uoccs[!uoccs.dups,]
       
     if (nrow(uoccs) == 0) {
       rvs %>% writeLog(type = 'warning', 'No records with coordinates found in', 
