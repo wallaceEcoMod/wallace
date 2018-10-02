@@ -612,8 +612,10 @@ To visualize the environmental difference between the occurrence localities and 
 
 ```{r projMESS, echo = pj.mess, include = pj.mess}
 
-# extract environmental values from occurrence localities -- these were the values that went into the model
-occEnvVals <- raster::extract(envs, occs.xy)
+# extract environmental values from occurrence localities and background -- these were the values that went into the model
+names(bg.xy) <- names(occs.xy)
+all.xy <- rbind(occs.xy, bg.xy)
+occEnvVals <- raster::extract(envs, all.xy)
 # compare these values with the projection extent (envsMsk)
 proj.mess <- dismo::mess(predsProj, occEnvVals)
 plot(proj.mess)
