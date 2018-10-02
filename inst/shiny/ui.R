@@ -8,7 +8,7 @@ for (f in list.files('./modules')) {
 shinyUI(tagList(
   shinyjs::useShinyjs(),
   navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsible=TRUE,
-             title='Wallace v1.0.5.9102',
+             title='Wallace v1.0.5.9103',
              tabPanel("Intro", value=0),
              tabPanel("1 Occ Data", value=1),
              tabPanel("2 Process Occs", value=2),
