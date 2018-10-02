@@ -332,18 +332,22 @@ group.data <- ENMeval::get.block(occ=occs.xy, bg.coords=bg.xy)
 ```
 
 ```{r check1Grp, echo = part.cb1, include = part.cb1}
+occs.xy <- occs[c('longitude', 'latitude')]
 group.data <- ENMeval::get.checkerboard1(occ=occs.xy, env=envsBgMsk, bg.coords=bg.xy, aggregation.factor={{aggFact}})
 ```
 
 ```{r check2Grp, echo = part.cb2, include = part.cb2}
+occs.xy <- occs[c('longitude', 'latitude')]
 group.data <- ENMeval::get.checkerboard2(occ=occs.xy, env=envsBgMsk, bg.coords=bg.xy, aggregation.factor={{aggFact}})
 ```
 
 ```{r jackGrp, echo = part.jack, include = part.jack}
+occs.xy <- occs[c('longitude', 'latitude')]
 group.data <- ENMeval::get.jackknife(occ=occs.xy, bg.coords=bg.xy)
 ```
 
 ```{r randGrp, echo = part.rand, include = part.rand}
+occs.xy <- occs[c('longitude', 'latitude')]
 group.data <- ENMeval::get.randomkfold(occ=occs.xy, bg.coords=bg.xy, kfolds={{kfolds}})
 ```
 
