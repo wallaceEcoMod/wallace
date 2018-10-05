@@ -17,7 +17,7 @@ Author: Jamie M. Kass [aut, cre],
     Cory Merow [aut],
     Robert P. Anderson [aut]
 Maintainer: Jamie M. Kass <jkass@gradcenter.cuny.edu>
-Depends: R (>= 3.5.1), shiny (>= 1.1.0), leaflet (>= 2.0.2)
+Depends: R (>= 3.5.0), shiny (>= 1.1.0), leaflet (>= 2.0.2)
 Imports: DT (>= 0.4), shinyjs, spocc (>= 0.8.0), RColorBrewer, dplyr,
         spThin, ENMeval (>= 0.3.0), rgeos, maptools, dismo, raster, shinythemes,
         magrittr, rgdal, leaflet.extras, XML, rmarkdown, testthat, zip
