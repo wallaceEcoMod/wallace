@@ -12,16 +12,38 @@
 #' "vertnet", and "bison"
 #' @param occNum numeric maximum number of occurrence records to return
 #' @param shinyLogs insert the shinyLogs reactive list here for running in shiny, otherwise leave the default NULL
+#' @param doCitations set TRUE to use `Bridgetree` to get a complete list of original data sources in a citable format
+#' @param gbifUser specify only if using `Bridgetree` with GBIF to get a complete list of original data sources in a citable format. This, as well as `gbifEmail` and `gbifPW` are constraints imposed by GBIF to obtain the complete set of metadata associated with occurrence records and is not stored or used by `wallace` for any other purposes.
+#' @param gbifEmail  specify only if using `Bridgetree` with GBIF to get a complete list of original data sources in a citable format.
+#' @param gbifPW=NULL  specify only if using `Bridgetree` with GBIF to get a complete list of original data sources in a citable format.
 #' @return formatted tibble of species occurrence records 
 #'
 #' @examples
 #' c1_queryDb(spName = "Tremarctos ornatus", occDb = "gbif", occNum = 100)
 #' @export
 
-c1_queryDb <- function(spName, occDb, occNum, shinyLogs=NULL) {
+#c1_queryDb <- function(spName, occDb, occNum, shinyLogs=NULL) {
+c1_queryDb <- function(spName, 
+                       occDb, 
+                       occNum, 
+                       doCitations=F,
+                       gbifUser=NULL, 
+                       gbifEmail=NULL,
+                       gbifPW=NULL,
+                       shinyLogs=NULL) {
+  #CM>>
+    # for testing
+    # case 1: previous versions of wallace
+    spName='Bassaricyon neblina';occDb='gbif';occNum=50; doCitations=F; gbifUser=NULL; gbifEmail=NULL; gbifPW=NULL;shinyLogs=NULL
+    # case 2: bridgetree with gbif
+    spName='Bassaricyon neblina';occDb='gbif';occNum=50; doCitations=T; gbifUser='wallacetester'; gbifEmail='cmerow@yahoo.com'; gbifPW='wallacetester';shinyLogs=NULL
+    # case 3: bridgetree with rbien
+    spName='Turritis glabra';occDb='bien';occNum=50; doCitations=T; gbifUser=NULL; gbifEmail=NULL; gbifPW=NULL;shinyLogs=NULL
+  #CM<<
+  
   # capitalize genus name if not already, trim whitespace
   spName <- trimws(paste0(toupper(substring(spName, 1, 1)), substring(spName, 2, nchar(spName))))  
-  
+
   # figure out how many separate names (components of scientific name) were entered
   nameSplit <- length(unlist(strsplit(spName, " ")))
   # if two names not entered, throw error and return
@@ -32,7 +54,42 @@ c1_queryDb <- function(spName, occDb, occNum, shinyLogs=NULL) {
 
   # query database
   smartProgress(shinyLogs, message = paste0("Querying ", occDb, " for ", spName, "..."), {
-    q <- spocc::occ(spName, occDb, limit=occNum)
+    #CM>>
+    if(!doCitations){
+      q <- spocc::occ(spName, occDb, limit=occNum)
+    }
+    if(doCitations){
+      mBTO <- studyTaxonList(x = spName, datasources = "NCBI");
+      if(occDb=='gbif'){
+        if(any(unlist(lapply(list(gbifUser, gbifEmail,gbifPW),is.null)))) {
+          shinyLogs %>% writeLog('error', 'Please specify your GBIF username, email, and password. This is needed to get citations for occurrence records. Wallace does not store your information or use it for anything else.')
+        return()
+        }
+        login <- BridgeTree::GBIFLoginManager(user=gbifUser,email=gbifEmail,pwd=gbifPW)
+        myBTO <- occQuery(x = mBTO, GBIFLogin = login)
+        myOccCitations <- occCitation(mBTO)
+        # make something with the same slots as spocc that we use
+        q=list(gbif=list(meta=list(found=NULL),data=list(formatSpName(spName))))
+        q[[occDb]]$meta$found=mBTO@occResults[[spName]][[2]]$totalRecords
+        q[[occDb]]$data[[formatSpName(spName)]]=mBTO@occResults[[spName]][[1]]
+          #hack because of capitalization of col names for later use. maybe we can rename these in bridgetree to match
+        q[[occDb]]$data[[formatSpName(spName)]]$longitude=q[[occDb]]$data[[formatSpName(spName)]]$Longitude
+        q[[occDb]]$data[[formatSpName(spName)]]$latitude=q[[occDb]]$data[[formatSpName(spName)]]$Latitude
+        q[[occDb]]$data[[formatSpName(spName)]]$name=formatSpName(spName)
+        q[[occDb]]$data[[formatSpName(spName)]]$year=q[[occDb]]$data[[formatSpName(spName)]]$CollYear
+      }
+      
+      if(occDb=='bien'){
+        mBTO <- occQuery(x = mBTO)
+        myOccCitations <- occCitation(mBTO)
+        # make something with the same slots as spocc that we use
+        q=list(bien=list(meta=list(found=NULL),data=list(formatSpName(spName))))
+          #may need to rename fields to match code below. or rename bridgetree fields
+      }
+    }
+      # original way
+    #q <- spocc::occ(spName, occDb, limit=occNum)
+    #CM<<
   })
   
   # get total number of records found in database
