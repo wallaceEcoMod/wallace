@@ -5,6 +5,8 @@
 - Added more instructions on how to troubleshoot installing rJava.
 - Occurrence points with NA environmental values now disappear from the map.
 - We also fixed some other small bugs dealing with the shiny code and Markdown file.
+- MESS color gradient
+- Small changes in text guidance
 
 # wallace 1.0.5
 - A brand new vignette was finally added to our website. Please find it here: https://wallaceecomod.github.io/vignettes/wallace_vignette.html
