@@ -33,6 +33,10 @@ We engineered *Wallace* to be used by a broad audience that includes graduate st
 
 * **<span style="color:blue">reproducible</span>**: users can download an `rmarkdown` .Rmd file that when run reproduces the analysis
 
+### **_Wallace_ website**
+
+For more information and relevant links see our <a href="https://wallaceecomod.github.io/" target="_blank">website</a>.
+
 ### **Watch webinars about _Wallace_**
 
 *The following webinar was the "37th Global Online Biodiversity Informatics Seminar" in the Biodiversity Informatics Training Curriculum organized by Town Peterson.*
@@ -54,13 +58,19 @@ Please <a href="mailto:wallaceecomod@gmail.com">email us</a> with any other ques
 <br>
 **-----------------------------------------------------**
 <br>
-<br>
 
 #### **Acknowledgments**
 
-We dedicate this software to Alfred Russel Wallace, the co-discoverer of evolution by natural selection and the founder of the field of biogeography.
+We dedicate this software to Alfred Russel Wallace, the co-discoverer of evolution by natural selection and the founder of the field of biogeography. 
 
-<br>
+Currently, *Wallace* is being expanded via funding from the U.S. National Science Foundation DBI-1661510 and NASA 80NSSC18K0406.
+
+*Wallace* was inspired by the 2015 Ebbe Nielsen Challenge of the Global Biodiversity Information Facility (GBIF), for which it was recognized as a finalist and received prize funding.
+
+This material is based upon work supported by the U.S. National Science Foundation (NSF) and National Aeronautics and Space Administration (NASA) under Grant Numbers NSF DBI-1661510 (RPA), DBI-1650241 (RPA), DEB-1119915 (RPA), DEB-1046328 (MEA), and DBI-1401312 (RM); and NASA 80NSSC18K0406. Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Science Foundation or of NASA.
+
+Additional sources of funding include: for JMK, a CUNY Science Scholarship and a CUNY Graduate Center Provost Digital Innovation Grant; for BV, a Coordination for the Improvement of Higher Education Personnel (CAPES) doctoral grant from Brazil; for Grisales-Betancur, a fellowship of the 'Asociación Nacional de Empresarios' from Colombia; for Meenan, the City College Fellows program.
+
 
 #### **References**
 
