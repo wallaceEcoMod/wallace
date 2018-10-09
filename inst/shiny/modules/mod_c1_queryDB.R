@@ -2,46 +2,50 @@
 
 queryDb_UI <- function(id) {
   ns <- shiny::NS(id)
-  shiny::tagList(
+  tagList(
     #radioButtons(ns("occsDb"), "Choose Database", # Jamie's way, but doesn't work with conditional panel
-    radioButtons("occsDb", "Choose Database",
-                 choices = list("GBIF" = 'gbif',
-                                "BIEN" = 'bien',
-                                "VertNet" = 'vertnet',
-                                "BISON" = 'bison'), inline = TRUE),
-    # CM >>
+    tags$div(title = "text",
+             radioButtons(ns("occsDb"), label = "Choose Database",
+                          choices = c("GBIF" = 'gbif', 
+                                      "BIEN" = 'bien', 
+                                      "VERTNET" = 'vertnet', 
+                                      "BISON" = 'bison'), 
+                          inline = TRUE)),
+    # CM + GEPB>>
     # add checkbox for data sources
-    # this currently doesn't work. however, if you replace ns("occsDb") wiht "occsDb" above, and similarly for doCitations below, it does. but i figure we don't want to 
-    conditionalPanel(
-      condition="input.occsDb == 'gbif' | input.occsDb == 'bien'",
-        #paste0("input.",ns("occsDb")," == 'gbif'"),
-      #checkboxInput(ns('doCitations'),'Include Data Source Citations', value=T)), # Jamie's way, but doesn't work with conditional panel
-      checkboxInput('doCitations','Include Data Source Citations', value=T)),
-    conditionalPanel(
-      condition="input.occsDb == 'gbif' & input.doCitations == true",
-        #paste0("input.",ns("occsDb")," == 'gbif' & input.",ns("doCitations")," == true"),
-      splitLayout(textInput('gbifUser','GBIF User ID',value=NULL),
-                  textInput('gbifEmail','GBIF email',value=NULL),
-                  textInput('gbifPW','GBIF password',value=NULL))),
-    #CM<<
+    conditionalPanel(sprintf("input['%1$s'] == 'gbif' | input['%1$s'] == 'bien'", ns("occsDb")),
+                     checkboxInput(ns("doCitations"), 
+                                   label = 'Include Data Source Citations', 
+                                   value = FALSE),
+                     conditionalPanel(sprintf("input['%1$s'] == 'gbif' & input['%2$s'] == true",
+                                              ns("occsDb"), ns("doCitations")),
+                                      splitLayout(textInput(ns('gbifUser'),
+                                                            'GBIF User ID',
+                                                            value=NULL),
+                                                  textInput(ns('gbifEmail'),
+                                                            'GBIF email',
+                                                            value=NULL),
+                                                  textInput(ns('gbifPW'),
+                                                            'GBIF password',
+                                                            value=NULL)))),
+    # << CM + GEPB
     tags$div(title='Examples: Felis catus, Canis lupus, Nyctereutes procyonoides',
              textInput(ns("spName"), label = "Enter species scientific name", placeholder = 'format: Genus species')),
     tags$div(title='Maximum number of occurrences recovered from databases. 
              Downloaded records are not sorted randomly: rows are always consistent between downloads.',
              numericInput(ns("occsNum"), "Set maximum number of occurrences", value = 100, min = 1))
   )
-  
 }
 
 queryDb_MOD <- function(input, output, session) {
   reactive({
-    # CM >>
-    # for testing
-    input=list(spName='Alliaria petiolata',occsDb='gbif',occsNum=50)
-    shinyLogs=NULL
-    spp=list(NULL)
-    n=1
-    #CM<<
+    # # CM >>
+    # # for testing
+    # input=list(spName='Alliaria petiolata',occsDb='gbif',occsNum=50)
+    # shinyLogs=NULL
+    # spp=list(NULL)
+    # n=1
+    # #CM<<
     
     # FUNCTION CALL ####
     occsTbls <- c1_queryDb(input$spName, 
