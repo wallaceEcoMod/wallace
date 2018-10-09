@@ -29,4 +29,4 @@ writeRaster(r, path_to_new_projected_raster_file)
 
 Users will need to know what the original CRS of their rasters is, then look up (i.e., Google search) its proj4 format. After saving, upload the new projected rasters and continue with your analysis. 
 
-**NOTE**: A reminder that some file types like .asc cannot embed CRS information in the file, so please avoid these types -- instead use types such as .tif that retain the CRS. 
+**NOTE**: A reminder that some file types like .asc cannot embed CRS information in the file, so please avoid these types -- instead use types such as .tif that retain the CRS.

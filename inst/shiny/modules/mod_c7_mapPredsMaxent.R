@@ -22,6 +22,7 @@ mapPredsMaxent_MOD <- function(input, output, session, rvs) {
     
     # initially pick raw prediction
     predSel <- rvs$modPreds[[rvs$modSel]]
+    raster::crs(predSel) <- raster::crs(rvs$bgMsk)
     names(predSel) <- paste0(rvs$modSel, '_raw')
     
     if (is.na(raster::crs(predSel))) {
@@ -35,29 +36,45 @@ mapPredsMaxent_MOD <- function(input, output, session, rvs) {
     }
     
     # argument for predict function
-    pargs <- paste0("outputformat=", rvs$comp7.type)
+    pargs <- rvs$comp7.type
     
     if (input$predType == 'logistic') {
       # Generate logistic predictions for each model
       if (is.null(rvs$modPredsLog)) {
         withProgress(message = "Generating logistic predictions...", {
-          logPredsList <- sapply(rvs$mods, function(x) dismo::predict(x, rvs$bgMsk, args=pargs))
+          logPredsList <- if (rvs$algMaxent == "maxnet") {
+            sapply(rvs$mods, function(x) ENMeval::maxnet.predictRaster(x, rvs$bgMsk, type=pargs, 
+                                                                       clamp = rvs$clamp))
+          } else if (rvs$algMaxent == "maxent.jar") {
+            sapply(rvs$mods, function(x) dismo::predict(x, rvs$bgMsk, 
+                                                        args = paste0("outputformat=", 
+                                                                      rvs$comp7.type)))
+          }
           rvs$modPredsLog <- raster::stack(logPredsList)
           names(rvs$modPredsLog) <- names(rvs$modPreds)
-        })  
+        })
       }
       predSel <- rvs$modPredsLog[[rvs$modSel]]
+      raster::crs(predSel) <- raster::crs(rvs$bgMsk)
       names(predSel) <- paste0(rvs$modSel, '_log')
     } else if (input$predType == 'cloglog') {
       # Generate cloglog predictions for each model
       if (is.null(rvs$modPredsCLL)) {
         withProgress(message = "Generating cloglog predictions...", {
-          cllPredsList <- sapply(rvs$mods, function(x) dismo::predict(x, rvs$bgMsk, args=pargs))
+          cllPredsList <- if (rvs$algMaxent == "maxnet") {
+            sapply(rvs$mods, function(x) ENMeval::maxnet.predictRaster(x, rvs$bgMsk, type = pargs, 
+                                                                       clamp = rvs$clamp))
+          } else if (rvs$algMaxent == "maxent.jar") {
+            sapply(rvs$mods, function(x) dismo::predict(x, rvs$bgMsk, 
+                                                        args = paste0("outputformat=", 
+                                                                      rvs$comp7.type)))
+          }
           rvs$modPredsCLL <- raster::stack(cllPredsList)
           names(rvs$modPredsCLL) <- names(rvs$modPreds)
         })  
       }
       predSel <- rvs$modPredsCLL[[rvs$modSel]]
+      raster::crs(predSel) <- raster::crs(rvs$bgMsk)
       names(predSel) <- paste0(rvs$modSel, '_cll')
     }
     
@@ -69,7 +86,12 @@ mapPredsMaxent_MOD <- function(input, output, session, rvs) {
     rvs$comp7.thr <- predSel.thr$thresh
     
     # write to log box
-    rvs %>% writeLog("Maxent", input$predType, "model prediction plotted.")
+    if (rvs$clamp == T | rvs$algMaxent == "maxent.jar") {
+      rvs %>% writeLog("Maxent", input$predType, "clamped model prediction plotted.")
+    } else if (rvs$clamp == F) {
+      rvs %>% writeLog("Maxent", input$predType, "unclamped model prediction plotted.")
+    }
+    
     
     return(pjPred)
   })

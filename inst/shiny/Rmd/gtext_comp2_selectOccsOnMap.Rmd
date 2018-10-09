@@ -17,5 +17,4 @@ Occurrences that fall within (i.e. overlap with) the polygon are retained, and a
 
 **REFERENCES**
 
-Gaiji, S., Chavan, V., Ariño, A. H., Otegui, J., Hobern, D., Sood, R., & Robles, E. (2013). Content assessment of the primary biodiversity data published through GBIF network: status, challenges and potentials. Biodiversity Informatics, 8: 94-172.
-
+Gaiji, S., Chavan, V., Ariño, A. H., Otegui, J., Hobern, D., Sood, R., Robles, E. (2013). Content assessment of the primary biodiversity data published through GBIF network: status, challenges and potentials. *Biodiversity Informatics*. 8: 94-172.

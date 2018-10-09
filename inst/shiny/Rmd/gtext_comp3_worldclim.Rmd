@@ -37,4 +37,4 @@ This module relies on the R package `raster` to download bioclimatic variables f
 
 **REFERENCES**
 
-Hijmans, R. J., Cameron, S. E., Parra, J. L., Jones, P. G., & Jarvis, A. 2005. Very high resolution interpolated climate surfaces for global land areas. *International Journal of Climatology*. 25: 1965-1978.
+Hijmans, R. J., Cameron, S. E., Parra, J. L., Jones, P. G., Jarvis, A. 2005. Very high resolution interpolated climate surfaces for global land areas. *International Journal of Climatology*. 25: 1965-1978.

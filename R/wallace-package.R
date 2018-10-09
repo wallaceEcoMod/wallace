@@ -10,6 +10,8 @@
 #' @author \strong{Jamie M. Kass}\cr
 #' (email: \email{jkass@@gradcenter.cuny.edu};
 #' Website: \url{https://ndimhypervol.github.io/})
+#' @author \strong{Gonzalo E. Pinilla-Buitrago}\cr
+#' (email: \email{gpinillabuitrago@@gradcenter.cuny.edu})
 #' @author \strong{Bruno Vilela}\cr
 #' (email: \email{bvilela@@wustl.edu};
 #' Website: \url{https://bvilela.weebly.com/})
@@ -31,12 +33,12 @@
 #' @details \tabular{ll}{
 #' Package: \tab wallace\cr
 #' Type: \tab Package\cr
-#' Version: \tab 1.0.0\cr
-#' Date: \tab 2017-11-23\cr
+#' Version: \tab 1.0.6\cr
+#' Date: \tab 2018-10-05\cr
 #' License: \tab GNU 3.0\cr
 #' }
 #'
-#' @references Kass J.M., Vilela B., Aeillo-Lammens M.E., Muscarella R., Merow C., and Anderson R.P. (2017) \emph{Wallace}: A modular platform for reproducible ecological modeling. Version 1.0.0.
+#' @references Kass J.M., Pinilla-Buitrago G.E., Vilela B., Aeillo-Lammens M.E., Muscarella R., Merow C., and Anderson R.P. (2018) \emph{Wallace}: A modular platform for reproducible ecological modeling. Version 1.0.6
 #' @import shiny leaflet
 #' @importFrom magrittr "%>%"
 NULL

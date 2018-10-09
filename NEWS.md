@@ -1,3 +1,13 @@
+# wallace 1.0.6
+- Wallace no longer needs rJava to run! Oh happy days! Wallace is now compatible with ENMeval 0.3.0, which now has no rJava dependency and runs Maxent using maxnet by default (CRAN package maxnet; https://onlinelibrary.wiley.com/doi/abs/10.1111/ecog.03049). This means Wallace no longer loads rJava automatically when using the ENMeval partition functions or running Maxent. You can still select the Java implementation of Maxent by choosing "maxent.jar" in the Maxent module, whereupon rJava will load. 
+- Wallace now works on computers that error when some non-ASCII characters are used. This problem was discovered during a workshop in Vietnam on some Chinese computers.
+- Users can now select bioclimatic variables when using 30 arc second data.
+- Added more instructions on how to troubleshoot installing rJava.
+- Occurrence points with NA environmental values now disappear from the map.
+- We also fixed some other small bugs dealing with the shiny code and Markdown file.
+- MESS color gradient
+- Small changes in text guidance
+
 # wallace 1.0.5
 - A brand new vignette was finally added to our website. Please find it here: https://wallaceecomod.github.io/vignettes/wallace_vignette.html
 - *Methods in Ecology and Evolution* paper published in April 2018 -- DOI remains the same.
