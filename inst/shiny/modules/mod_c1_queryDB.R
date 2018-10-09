@@ -1,20 +1,48 @@
+
+
 queryDb_UI <- function(id) {
-  ns <- NS(id)
-  tagList(
-    radioButtons(ns("occsDb"), "Choose Database",
+  ns <- shiny::NS(id)
+  shiny::tagList(
+    #radioButtons(ns("occsDb"), "Choose Database", # Jamie's way, but doesn't work with conditional panel
+    radioButtons("occsDb", "Choose Database",
                  choices = list("GBIF" = 'gbif',
+                                "BIEN" = 'bien',
                                 "VertNet" = 'vertnet',
                                 "BISON" = 'bison'), inline = TRUE),
+    # CM >>
+    # add checkbox for data sources
+    # this currently doesn't work. however, if you replace ns("occsDb") wiht "occsDb" above, and similarly for doCitations below, it does. but i figure we don't want to 
+    conditionalPanel(
+      condition="input.occsDb == 'gbif' | input.occsDb == 'bien'",
+        #paste0("input.",ns("occsDb")," == 'gbif'"),
+      #checkboxInput(ns('doCitations'),'Include Data Source Citations', value=T)), # Jamie's way, but doesn't work with conditional panel
+      checkboxInput('doCitations','Include Data Source Citations', value=T)),
+    conditionalPanel(
+      condition="input.occsDb == 'gbif' & input.doCitations == true",
+        #paste0("input.",ns("occsDb")," == 'gbif' & input.",ns("doCitations")," == true"),
+      splitLayout(textInput('gbifUser','GBIF User ID',value=NULL),
+                  textInput('gbifEmail','GBIF email',value=NULL),
+                  textInput('gbifPW','GBIF password',value=NULL))),
+    #CM<<
     tags$div(title='Examples: Felis catus, Canis lupus, Nyctereutes procyonoides',
              textInput(ns("spName"), label = "Enter species scientific name", placeholder = 'format: Genus species')),
     tags$div(title='Maximum number of occurrences recovered from databases. 
              Downloaded records are not sorted randomly: rows are always consistent between downloads.',
              numericInput(ns("occsNum"), "Set maximum number of occurrences", value = 100, min = 1))
   )
+  
 }
 
 queryDb_MOD <- function(input, output, session) {
   reactive({
+    # CM >>
+    # for testing
+    input=list(spName='Alliaria petiolata',occsDb='gbif',occsNum=50)
+    shinyLogs=NULL
+    spp=list(NULL)
+    n=1
+    #CM<<
+    
     # FUNCTION CALL ####
     occsTbls <- c1_queryDb(input$spName, 
                            input$occsDb, 
@@ -39,8 +67,15 @@ queryDb_MOD <- function(input, output, session) {
     spp[[n]]$rmm$data$occurrence$taxa <- n
     spp[[n]]$rmm$data$occurrence$dataType <- "presence only"
     spp[[n]]$rmm$data$occurrence$presenceSampleSize <- nrow(occs)
-    spp[[n]]$rmm$data$occurrence$sources <- input$occsDb
     spp[[n]]$rmm$code$wallaceSettings$occsNum <- input$occsNum
+    #CM >>
+     # store citations with Bridgetree, or just report the database if users are too lame to use bridgetree
+    if(input$doCitations){
+      # spp[[n]]$rmm$data$occurrence$sources <- somebridgetreething
+    } else {
+      spp[[n]]$rmm$data$occurrence$sources <- input$occsDb
+    }  
+    #CM<<
     
     # RETURN ####
     # output the table
@@ -58,6 +93,6 @@ queryDb_MAP <- function(map, session) {
 }
 
 queryDb_INFO <- infoGenerator(modName = "Query Database (Present)",
-                              modAuts = "Jamie M. Kass, Bruno Vilela, Robert P. Anderson",
+                              modAuts = "Jamie M. Kass, Bruno Vilela, Robert P. Anderson, Hannah Owens, Cory Merow",
                               pkgName = "spocc")
 
