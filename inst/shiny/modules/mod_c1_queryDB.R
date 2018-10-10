@@ -13,7 +13,7 @@ queryDb_UI <- function(id) {
     # add checkbox for data sources
     # this currently doesn't work. however, if you replace ns("occsDb") wiht "occsDb" above, and similarly for doCitations below, it does. but i figure we don't want to 
     conditionalPanel(
-      condition="input.occsDb == 'gbif' | input.occsDb == 'bien'",
+      condition="input.occsDb == 'gbif'",# bien citations not working yet | input.occsDb == 'bien'",
         #paste0("input.",ns("occsDb")," == 'gbif'"),
       #checkboxInput(ns('doCitations'),'Include Data Source Citations', value=T)), # Jamie's way, but doesn't work with conditional panel
       checkboxInput('doCitations','Include Data Source Citations', value=T)),
@@ -44,10 +44,20 @@ queryDb_MOD <- function(input, output, session) {
     #CM<<
     
     # FUNCTION CALL ####
-    occsTbls <- c1_queryDb(input$spName, 
-                           input$occsDb, 
-                           input$occsNum, 
+    # CM >>
+    occsTbls <- c1_queryDb(input$spName,
+                           input$occsDb,
+                           input$occsNum,
+                           input$doCitations,
+                           input$gbifUser, 
+                           input$gbifEmail,
+                           input$gbifPW,
                            shinyLogs)
+    #CM<<
+    # occsTbls <- c1_queryDb(input$spName, 
+    #                        input$occsDb, 
+    #                        input$occsNum, 
+    #                        shinyLogs)
     req(occsTbls)
     
     # LOAD INTO SPP ####
@@ -69,9 +79,10 @@ queryDb_MOD <- function(input, output, session) {
     spp[[n]]$rmm$data$occurrence$presenceSampleSize <- nrow(occs)
     spp[[n]]$rmm$code$wallaceSettings$occsNum <- input$occsNum
     #CM >>
-     # store citations with Bridgetree, or just report the database if users are too lame to use bridgetree
+     # store citations with occCite, or just report the database if users are too lame to use bridgetree
     if(input$doCitations){
-      # spp[[n]]$rmm$data$occurrence$sources <- somebridgetreething
+      # DOUBLE CHECK THIS DOESN"T NEED TO BE VECTORIZED!!
+      spp[[n]]$rmm$data$occurrence$sources <- occsTbls$citations
     } else {
       spp[[n]]$rmm$data$occurrence$sources <- input$occsDb
     }  

@@ -46,7 +46,7 @@ Imports:
     XML,
     neotoma,
     gam,
-    BridgeTree
+    occCite
 Description: The 'shiny' application Wallace is a modular platform for reproducible modeling of species niches and distributions. Wallace guides users through a complete analysis, from the acquisition of species occurrence and environmental data to visualizing model predictions on an interactive map, thus bundling complex workflows into a single, streamlined interface.
 License: GPL-3
 URL: https://wallaceEcoMod.github.io

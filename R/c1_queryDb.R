@@ -12,10 +12,10 @@
 #' "vertnet", and "bison"
 #' @param occNum numeric maximum number of occurrence records to return
 #' @param shinyLogs insert the shinyLogs reactive list here for running in shiny, otherwise leave the default NULL
-#' @param doCitations set TRUE to use `Bridgetree` to get a complete list of original data sources in a citable format
-#' @param gbifUser specify only if using `Bridgetree` with GBIF to get a complete list of original data sources in a citable format. This, as well as `gbifEmail` and `gbifPW` are constraints imposed by GBIF to obtain the complete set of metadata associated with occurrence records and is not stored or used by `wallace` for any other purposes.
-#' @param gbifEmail  specify only if using `Bridgetree` with GBIF to get a complete list of original data sources in a citable format.
-#' @param gbifPW=NULL  specify only if using `Bridgetree` with GBIF to get a complete list of original data sources in a citable format.
+#' @param doCitations set TRUE to use `occCite` to get a complete list of original data sources in a citable format
+#' @param gbifUser specify only if using `occCite` with GBIF to get a complete list of original data sources in a citable format. This, as well as `gbifEmail` and `gbifPW` are constraints imposed by GBIF to obtain the complete set of metadata associated with occurrence records and is not stored or used by `wallace` for any other purposes.
+#' @param gbifEmail  specify only if using `occCite` with GBIF to get a complete list of original data sources in a citable format.
+#' @param gbifPW=NULL  specify only if using `occCite` with GBIF to get a complete list of original data sources in a citable format.
 #' @return formatted tibble of species occurrence records 
 #'
 #' @examples
@@ -57,17 +57,20 @@ c1_queryDb <- function(spName,
     #CM>>
     if(!doCitations){
       q <- spocc::occ(spName, occDb, limit=occNum)
+      myOccCitations=NULL
     }
     if(doCitations){
-      mBTO <- studyTaxonList(x = spName, datasources = "NCBI");
+      
+      mBTO <- studyTaxonList(x = spName, datasources = "NCBI")
+      
       if(occDb=='gbif'){
         if(any(unlist(lapply(list(gbifUser, gbifEmail,gbifPW),is.null)))) {
           shinyLogs %>% writeLog('error', 'Please specify your GBIF username, email, and password. This is needed to get citations for occurrence records. Wallace does not store your information or use it for anything else.')
-        return()
+          return()
         }
-        login <- BridgeTree::GBIFLoginManager(user=gbifUser,email=gbifEmail,pwd=gbifPW)
-        myBTO <- occQuery(x = mBTO, GBIFLogin = login)
-        myOccCitations <- occCitation(mBTO)
+        login <- occCite::GBIFLoginManager(user=gbifUser,email=gbifEmail,pwd=gbifPW)
+        myBTO <- occCite::occQuery(x = mBTO, 'gbif',GBIFLogin = login,limit=occNum)
+        myOccCitations <- occCite::occCitation(mBTO)
         # make something with the same slots as spocc that we use
         q=list(gbif=list(meta=list(found=NULL),data=list(formatSpName(spName))))
         q[[occDb]]$meta$found=mBTO@occResults[[spName]][[2]]$totalRecords
@@ -80,11 +83,15 @@ c1_queryDb <- function(spName,
       }
       
       if(occDb=='bien'){
-        mBTO <- occQuery(x = mBTO)
-        myOccCitations <- occCitation(mBTO)
+        mBTO <- occCite::occQuery(x = mBTO,'bien',limit=occNum)
+        # citations currently not used with BIEN because most data sources don't have proper citations
+        #myOccCitations <- occCite::occCitation(mBTO)
+        myOccCitations=NULL
         # make something with the same slots as spocc that we use
         q=list(bien=list(meta=list(found=NULL),data=list(formatSpName(spName))))
           #may need to rename fields to match code below. or rename bridgetree fields
+        q[[occDb]]$meta$found=nrow(mBTO@occResults[[spName]][[1]][['OccurrenceTable']])
+        q[[occDb]]$data[[formatSpName(spName)]]=mBTO@occResults[[spName]][[1]][['OccurrenceTable']]
       }
     }
       # original way
@@ -153,6 +160,6 @@ c1_queryDb <- function(spName,
                     '] out of [', totRows, '] total (limit ', occNum, ').
                     Records without coordinates removed [', noCoordsRem, '].
                     Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')
-  return(list(orig = occsOrig, cleaned=occs))
+  return(list(orig = occsOrig, cleaned=occs,citations=myOccCitations))
 }
 
