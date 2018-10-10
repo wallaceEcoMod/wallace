@@ -54,42 +54,41 @@ c1_queryDb <- function(spName,
 
   # query database
   smartProgress(shinyLogs, message = paste0("Querying ", occDb, " for ", spName, "..."), {
-    #CM>>
-    if(!doCitations){
-      q <- spocc::occ(spName, occDb, limit=occNum)
-    }
-    if(doCitations){
-      mBTO <- studyTaxonList(x = spName, datasources = "NCBI");
-      if(occDb=='gbif'){
-        if(any(unlist(lapply(list(gbifUser, gbifEmail,gbifPW),is.null)))) {
+    #CM+GEPB>>
+    if (occDb == 'bison' | occDb == 'vertnet') {
+      q <- spocc::occ(spName, occDb, limit = occNum)
+    } else if (occDb == 'gbif') {
+      if (doCitations == FALSE) {
+        q <- spocc::occ(spName, occDb, limit = occNum)
+      } else if (doCitations == TRUE) {
+        if(any(unlist(lapply(list(gbifUser, gbifEmail, gbifPW),is.null)))) {
           shinyLogs %>% writeLog('error', 'Please specify your GBIF username, email, and password. This is needed to get citations for occurrence records. Wallace does not store your information or use it for anything else.')
-        return()
+          return()
         }
-        login <- BridgeTree::GBIFLoginManager(user=gbifUser,email=gbifEmail,pwd=gbifPW)
-        myBTO <- occQuery(x = mBTO, GBIFLogin = login)
+        mBTO <- BridgeTree::studyTaxonList(x = spName, datasources = "NCBI")
+        login <- BridgeTree::GBIFLoginManager(user = gbifUser, email = gbifEmail, pwd = gbifPW)
+        myBTO <- BridgeTree::occQuery(x = mBTO, GBIFLogin = login)
         myOccCitations <- occCitation(mBTO)
         # make something with the same slots as spocc that we use
         q=list(gbif=list(meta=list(found=NULL),data=list(formatSpName(spName))))
         q[[occDb]]$meta$found=mBTO@occResults[[spName]][[2]]$totalRecords
         q[[occDb]]$data[[formatSpName(spName)]]=mBTO@occResults[[spName]][[1]]
-          #hack because of capitalization of col names for later use. maybe we can rename these in bridgetree to match
+        # hack because of capitalization of col names for later use. maybe we can rename these in
+        # bridgetree to match
         q[[occDb]]$data[[formatSpName(spName)]]$longitude=q[[occDb]]$data[[formatSpName(spName)]]$Longitude
         q[[occDb]]$data[[formatSpName(spName)]]$latitude=q[[occDb]]$data[[formatSpName(spName)]]$Latitude
         q[[occDb]]$data[[formatSpName(spName)]]$name=formatSpName(spName)
         q[[occDb]]$data[[formatSpName(spName)]]$year=q[[occDb]]$data[[formatSpName(spName)]]$CollYear
       }
-      
-      if(occDb=='bien'){
-        mBTO <- occQuery(x = mBTO)
-        myOccCitations <- occCitation(mBTO)
-        # make something with the same slots as spocc that we use
-        q=list(bien=list(meta=list(found=NULL),data=list(formatSpName(spName))))
-          #may need to rename fields to match code below. or rename bridgetree fields
-      }
+    } else if (occDb == 'bien') {
+      mBTO <- BridgeTree::studyTaxonList(x = spName, datasources = "NCBI")
+      mBTO <- BridgeTree::occQuery(x = mBTO, datasources = 'bien')
+      myOccCitations <- occCitation(mBTO)
+      # make something with the same slots as spocc that we use
+      q=list(bien=list(meta=list(found=NULL),data=list(formatSpName(spName))))
+      #may need to rename fields to match code below. or rename bridgetree fields
     }
-      # original way
-    #q <- spocc::occ(spName, occDb, limit=occNum)
-    #CM<<
+    #CM+GEPB<<
   })
   
   # get total number of records found in database
