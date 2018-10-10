@@ -8,12 +8,12 @@ queryDb_UI <- function(id) {
              radioButtons(ns("occsDb"), label = "Choose Database",
                           choices = c("GBIF" = 'gbif', 
                                       "BIEN" = 'bien', 
-                                      "VERTNET" = 'vertnet', 
+                                      "VertNet" = 'vertnet', 
                                       "BISON" = 'bison'), 
                           inline = TRUE)),
     # CM + GEPB>>
     # add checkbox for data sources
-    conditionalPanel(sprintf("input['%1$s'] == 'gbif' | input['%1$s'] == 'bien'", ns("occsDb")),
+    conditionalPanel(sprintf("input['%s'] == 'gbif'", ns("occsDb")),
                      checkboxInput(ns("doCitations"), 
                                    label = 'Include Data Source Citations', 
                                    value = FALSE),
@@ -50,7 +50,11 @@ queryDb_MOD <- function(input, output, session) {
     # FUNCTION CALL ####
     occsTbls <- c1_queryDb(input$spName, 
                            input$occsDb, 
-                           input$occsNum, 
+                           input$occsNum,
+                           input$doCitations,
+                           input$gbifUser, 
+                           input$gbifEmail,
+                           input$gbifPW,
                            shinyLogs)
     req(occsTbls)
     
