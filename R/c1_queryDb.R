@@ -35,9 +35,9 @@ c1_queryDb <- function(spName,
     # for testing
     # case 1: previous versions of wallace
     # spName='Bassaricyon neblina';occDb='gbif';occNum=50; doCitations=F; gbifUser=NULL; gbifEmail=NULL; gbifPW=NULL;shinyLogs=NULL
-    # case 2: bridgetree with gbif
+    # case 2: occCite with gbif
     # spName='Bassaricyon neblina';occDb='gbif';occNum=50; doCitations=T; gbifUser='wallacetester'; gbifEmail='cmerow@yahoo.com'; gbifPW='wallacetester';shinyLogs=NULL; GBIFDownloadDirectory='~/Desktop'
-    # case 3: bridgetree with rbien
+    # case 3: occCite with rbien
     # spName='Turritis glabra';occDb='bien';occNum=50; doCitations=T; gbifUser=NULL; gbifEmail=NULL; gbifPW=NULL;shinyLogs=NULL
   #CM<<
   
@@ -57,17 +57,19 @@ c1_queryDb <- function(spName,
     #CM+GEPB>>
     if (occDb == 'bison' | occDb == 'vertnet') {
       q <- spocc::occ(spName, occDb, limit = occNum)
+      myOccCitations <- NULL
     } else if (occDb == 'gbif') {
       if (doCitations == FALSE) {
         q <- spocc::occ(spName, occDb, limit = occNum)
+        myOccCitations <- NULL
       } else if (doCitations == TRUE) {
         if(any(unlist(lapply(list(gbifUser, gbifEmail, gbifPW),is.null)))) {
           shinyLogs %>% writeLog('error', 'Please specify your GBIF username, email, and password. This is needed to get citations for occurrence records. Wallace does not store your information or use it for anything else.')
           return()
         }
-        myBTO <- BridgeTree::studyTaxonList(x = spName, datasources = "NCBI")
+        myBTO <- occCite::studyTaxonList(x = spName, datasources = "NCBI")
         login <- occCite::GBIFLoginManager(user = gbifUser, email = gbifEmail, pwd = gbifPW)
-        myBTO <- occCite::occQuery(x = myBTO, GBIFLogin = login, limit = occNUm)
+        myBTO <- occCite::occQuery(x = myBTO, GBIFLogin = login, limit = occNum)
         myOccCitations <- occCite::occCitation(mBTO)
         # make something with the same slots as spocc that we use
         q=list(gbif=list(meta=list(found=NULL),data=list(formatSpName(spName))))
@@ -75,8 +77,8 @@ c1_queryDb <- function(spName,
         q[[occDb]]$data[[formatSpName(spName)]]=mBTO@occResults[[spName]][['GBIF']][['OccurrenceTable']]
       }
     } else if (occDb == 'bien') {
-      myBTO <- BridgeTree::studyTaxonList(x = spName, datasources = "NCBI")
-      mBTO <- occCite::occQuery(x = mBTO, datasources = 'bien', limit = occNum)
+      myBTO <- occCite::studyTaxonList(x = spName, datasources = "NCBI")
+      myBTO <- occCite::occQuery(x = myBTO, datasources = 'bien', limit = occNum)
       myOccCitations <- NULL
       # make something with the same slots as spocc that we use
       q=list(bien=list(meta=list(found=NULL),data=list(formatSpName(spName))))
@@ -125,24 +127,38 @@ c1_queryDb <- function(spName,
   } else if (occDb == 'vertnet') { # standardize VertNet column names
     fields <- c('institutioncode', 'stateprovince', 'basisofrecord', 'maximumelevationinmeters')
     for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
-    occs <- occs %>% dplyr::rename(institution_code = institutioncode, 
+    occs <- occs %>% dplyr::rename(taxon_name = name,
+                                   institution_code = institutioncode, 
                                    state_province = stateprovince, 
                                    record_type = basisofrecord, 
                                    elevation = maximumelevationinmeters)
   } else if (occDb == 'bison') { # standardize BISON column names
     fields <- c('countryCode', 'ownerInstitutionCollectionCode', 'calculatedCounty', 'elevation')
     for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
-    occs <- occs %>% dplyr::rename(country = countryCode, 
+    occs <- occs %>% dplyr::rename(taxon_name = providedScientificName,
+                                   country = countryCode, 
                                    institution_code = ownerInstitutionCollectionCode, 
-                                   locality = calculatedCounty)
+                                   locality = calculatedCounty,
+                                   record_type = basisOfRecord,
+                                   state_province = stateProvince)
   } else if (occDb == 'bien') {
-    # CM >> Do you need to add any formatting here for bien records? GEPB:YES
-    cols <- names(occs)
-    occs <- occs %>% 
-      dplyr::select(dplyr::one_of(cols)) %>%
-      dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent))) %>%  # make new column for leaflet marker popup content
-      dplyr::arrange_(cols)
+    fields <- c('country', 'state_province', 'locality', 'elevation', 'record_type')
+    for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
+    occs <- occs %>% dplyr::rename(taxon_name = name,
+                                   institution_code = Dataset)
   }
+  # CM >> Do you need to add any formatting here for bien records? GEPB:YES
+  
+  
+  # subset by key columns and make id and popup columns
+  cols <- c("taxon_name", "longitude", "latitude",  "occID", 
+            "year", "institution_code", "country", "state_province",
+            "locality", "elevation", "record_type")
+  occs <- occs %>% 
+    dplyr::select(dplyr::one_of(cols)) %>%
+    # make new column for leaflet marker popup content
+    dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent))) %>%  
+    dplyr::arrange_(cols)
 
   # subset by key columns and make id and popup columns
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)

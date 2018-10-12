@@ -13,7 +13,6 @@ queryDb_UI <- function(id) {
                           inline = TRUE)),
     # CM + GEPB>>
     # add checkbox for data sources
-<<<<<<< HEAD
     conditionalPanel(sprintf("input['%s'] == 'gbif'", ns("occsDb")),
                      checkboxInput(ns("doCitations"), 
                                    label = 'Include Data Source Citations', 
