@@ -70,11 +70,11 @@ c1_queryDb <- function(spName,
         myBTO <- occCite::studyTaxonList(x = spName, datasources = "NCBI")
         login <- occCite::GBIFLoginManager(user = gbifUser, email = gbifEmail, pwd = gbifPW)
         myBTO <- occCite::occQuery(x = myBTO, GBIFLogin = login, limit = occNum)
-        myOccCitations <- occCite::occCitation(mBTO)
+        myOccCitations <- occCite::occCitation(myBTO)
         # make something with the same slots as spocc that we use
         q=list(gbif=list(meta=list(found=NULL),data=list(formatSpName(spName))))
         q[[occDb]]$meta$found=nrow(myBTO@occResults[[spName]][['GBIF']][['OccurrenceTable']])
-        q[[occDb]]$data[[formatSpName(spName)]]=mBTO@occResults[[spName]][['GBIF']][['OccurrenceTable']]
+        q[[occDb]]$data[[formatSpName(spName)]]=myBTO@occResults[[spName]][['GBIF']][['OccurrenceTable']]
       }
     } else if (occDb == 'bien') {
       myBTO <- occCite::studyTaxonList(x = spName, datasources = "NCBI")
