@@ -13,10 +13,11 @@ queryDb_UI <- function(id) {
     # add checkbox for data sources
     # this currently doesn't work. however, if you replace ns("occsDb") wiht "occsDb" above, and similarly for doCitations below, it does. but i figure we don't want to 
     conditionalPanel(
-      condition="input.occsDb == 'gbif'",# bien citations not working yet | input.occsDb == 'bien'",
+      condition="input.occsDb == 'gbif'", # bien citations not working yet | input.occsDb == 'bien'",
         #paste0("input.",ns("occsDb")," == 'gbif'"),
       #checkboxInput(ns('doCitations'),'Include Data Source Citations', value=T)), # Jamie's way, but doesn't work with conditional panel
       checkboxInput('doCitations','Include Data Source Citations', value=T)),
+    
     conditionalPanel(
       condition="input.occsDb == 'gbif' & input.doCitations == true",
         #paste0("input.",ns("occsDb")," == 'gbif' & input.",ns("doCitations")," == true"),
@@ -25,11 +26,27 @@ queryDb_UI <- function(id) {
                   textInput('gbifPW','GBIF password',value=NULL))),
     #CM<<
     tags$div(title='Examples: Felis catus, Canis lupus, Nyctereutes procyonoides',
-             textInput(ns("spName"), label = "Enter species scientific name", placeholder = 'format: Genus species')),
+             textInput(ns("spName"), label = "Enter species scientific name", 
+                       placeholder = 'format: Genus species')),
     tags$div(title='Maximum number of occurrences recovered from databases. 
-             Downloaded records are not sorted randomly: rows are always consistent between downloads.',
-             numericInput(ns("occsNum"), "Set maximum number of occurrences", value = 100, min = 1))
-  )
+             Downloaded records are not sorted randomly: 
+             rows are always consistent between downloads.',
+             numericInput(ns("occsNum"), "Set maximum number of occurrences", 
+                          value = 100, min = 1)))#,
+    # CM >>
+    # tags$div(title='This info is required by GBIF to enable metadata download. 
+    #          Wallace does not save or use this for anything else.',
+    #          textInput(ns("gbifUser"), label = " ", 
+    #                    placeholder = ' ')),
+    # tags$div(title='This info is required by GBIF to enable metadata download. 
+    #          Wallace does not save or use this for anything else.',
+    #          textInput(ns("gbifEmail"), label = " ", 
+    #                    placeholder = ' ')),
+    # tags$div(title='This info is required by GBIF to enable metadata download. 
+    #          Wallace does not save or use this for anything else.',
+    #          textInput(ns("gbifPW"), label = " ", 
+    #                    placeholder = '')))
+    #CM<<
   
 }
 
@@ -37,10 +54,10 @@ queryDb_MOD <- function(input, output, session) {
   reactive({
     # CM >>
     # for testing
-    input=list(spName='Alliaria petiolata',occsDb='gbif',occsNum=50)
-    shinyLogs=NULL
-    spp=list(NULL)
-    n=1
+    # input=list(spName='Alliaria petiolata',occsDb='gbif',occsNum=50)
+    # shinyLogs=NULL
+    # spp=list(NULL)
+    # n=1
     #CM<<
     
     # FUNCTION CALL ####
@@ -53,11 +70,12 @@ queryDb_MOD <- function(input, output, session) {
                            input$gbifEmail,
                            input$gbifPW,
                            shinyLogs)
-    #CM<<
     # occsTbls <- c1_queryDb(input$spName, 
     #                        input$occsDb, 
     #                        input$occsNum, 
     #                        shinyLogs)
+    #CM<<
+    
     req(occsTbls)
     
     # LOAD INTO SPP ####
