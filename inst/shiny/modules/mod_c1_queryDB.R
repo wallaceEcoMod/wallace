@@ -7,12 +7,13 @@ queryDb_UI <- function(id) {
     tags$div(title = "text",
              radioButtons(ns("occsDb"), label = "Choose Database",
                           choices = c("GBIF" = 'gbif', 
-                                      "BIEN" = 'bien', 
                                       "VertNet" = 'vertnet', 
-                                      "BISON" = 'bison'), 
+                                      "BISON" = 'bison',
+                                      "BIEN" = 'bien'), 
                           inline = TRUE)),
     # CM + GEPB>>
     # add checkbox for data sources
+<<<<<<< HEAD
     conditionalPanel(sprintf("input['%s'] == 'gbif'", ns("occsDb")),
                      checkboxInput(ns("doCitations"), 
                                    label = 'Include Data Source Citations', 
@@ -30,32 +31,40 @@ queryDb_UI <- function(id) {
                                                             value=NULL)))),
     # << CM + GEPB
     tags$div(title='Examples: Felis catus, Canis lupus, Nyctereutes procyonoides',
-             textInput(ns("spName"), label = "Enter species scientific name", placeholder = 'format: Genus species')),
+             textInput(ns("spName"), label = "Enter species scientific name", 
+                       placeholder = 'format: Genus species')),
     tags$div(title='Maximum number of occurrences recovered from databases. 
-             Downloaded records are not sorted randomly: rows are always consistent between downloads.',
+             Downloaded records are not sorted randomly: 
+             rows are always consistent between downloads.',
              numericInput(ns("occsNum"), "Set maximum number of occurrences", value = 100, min = 1))
   )
 }
 
 queryDb_MOD <- function(input, output, session) {
   reactive({
-    # # CM >>
-    # # for testing
+    # CM >>
+    # for testing
     # input=list(spName='Alliaria petiolata',occsDb='gbif',occsNum=50)
     # shinyLogs=NULL
     # spp=list(NULL)
     # n=1
-    # #CM<<
     
     # FUNCTION CALL ####
-    occsTbls <- c1_queryDb(input$spName, 
-                           input$occsDb, 
+    # CM >>
+    occsTbls <- c1_queryDb(input$spName,
+                           input$occsDb,
                            input$occsNum,
                            input$doCitations,
                            input$gbifUser, 
                            input$gbifEmail,
                            input$gbifPW,
                            shinyLogs)
+    # occsTbls <- c1_queryDb(input$spName, 
+    #                        input$occsDb, 
+    #                        input$occsNum, 
+    #                        shinyLogs)
+    #CM<<
+    
     req(occsTbls)
     
     # LOAD INTO SPP ####
@@ -77,9 +86,10 @@ queryDb_MOD <- function(input, output, session) {
     spp[[n]]$rmm$data$occurrence$presenceSampleSize <- nrow(occs)
     spp[[n]]$rmm$code$wallaceSettings$occsNum <- input$occsNum
     #CM >>
-     # store citations with Bridgetree, or just report the database if users are too lame to use bridgetree
+     # store citations with occCite, or just report the database if users are too lame to use bridgetree
     if(input$doCitations){
-      # spp[[n]]$rmm$data$occurrence$sources <- somebridgetreething
+      # DOUBLE CHECK THIS DOESN"T NEED TO BE VECTORIZED!!
+      spp[[n]]$rmm$data$occurrence$sources <- occsTbls$citations
     } else {
       spp[[n]]$rmm$data$occurrence$sources <- input$occsDb
     }  
