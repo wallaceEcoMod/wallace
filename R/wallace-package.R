@@ -36,7 +36,7 @@
 #' License: \tab GNU 3.0\cr
 #' }
 #'
-#' @references Kass J.M., Vilela B., Aeillo-Lammens M.E., Muscarella R., Merow C., and Anderson R.P. (2017) \emph{Wallace}: A modular platform for reproducible ecological modeling. Version 1.0.0.
+#' @references Kass J.M., Pinilla-Buitrago G.E., Vilela B., Aeillo-Lammens M.E., Muscarella R., Merow C., and Anderson R.P. (2018) \emph{Wallace}: A modular platform for reproducible ecological modeling. Version 1.9.9*
 #' @import shiny leaflet
 #' @importFrom magrittr "%>%"
 NULL
