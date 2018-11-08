@@ -20,18 +20,21 @@
 
 c1_queryDb <- function(spName, occDb, occNum, shinyLogs=NULL) {
   # capitalize genus name if not already, trim whitespace
-  spName <- trimws(paste0(toupper(substring(spName, 1, 1)), substring(spName, 2, nchar(spName))))  
+  spName <- trimws(paste0(toupper(substring(spName, 1, 1)), 
+                          substring(spName, 2, nchar(spName))))  
   
   # figure out how many separate names (components of scientific name) were entered
   nameSplit <- length(unlist(strsplit(spName, " ")))
   # if two names not entered, throw error and return
   if (nameSplit != 2) {
-    shinyLogs %>% writeLog(type = 'error', 'Please input both genus and species names.')
+    shinyLogs %>% writeLog(type = 'error', 
+                           'Please input both genus and species names.')
     return()
   }
 
   # query database
-  smartProgress(shinyLogs, message = paste0("Querying ", occDb, " for ", spName, "..."), {
+  smartProgress(shinyLogs, message = paste0("Querying ", occDb, " for ", 
+                                            spName, "..."), {
     q <- spocc::occ(spName, occDb, limit=occNum)
   })
   
@@ -55,7 +58,8 @@ c1_queryDb <- function(spName, occDb, occNum, shinyLogs=NULL) {
   # subset to just records with latitude and longitude
   occsXY <- occsOrig[!is.na(occsOrig$latitude) & !is.na(occsOrig$longitude),]
   if (nrow(occsXY) == 0) {
-    shinyLogs %>% writeLog(type = 'warning', 'No records with coordinates found in', occDb, "for", em(spName), ".")
+    shinyLogs %>% writeLog(type = 'warning', 'No records with coordinates found in',
+                           occDb, "for", em(spName), ".")
     return()
   }
   
@@ -63,7 +67,8 @@ c1_queryDb <- function(spName, occDb, occNum, shinyLogs=NULL) {
   occs <- occsXY[!dups,]
   
   if (occDb == 'gbif') {
-    fields <- c('institutionCode', 'stateProvince', 'basisOfRecord', "country", "locality", "elevation")
+    fields <- c('institutionCode', 'stateProvince', 'basisOfRecord', "country",
+                "locality", "elevation")
     for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
     occs <- occs %>% dplyr::rename(taxon_name = name, 
                                    institution_code = institutionCode, 
@@ -71,31 +76,42 @@ c1_queryDb <- function(spName, occDb, occNum, shinyLogs=NULL) {
                                    record_type = basisOfRecord)
     # standardize VertNet column names
   } else if (occDb == 'vertnet') {
-    fields <- c('institutioncode', 'stateprovince', 'basisofrecord', 'maximumelevationinmeters')
+    fields <- c('institutioncode', 'stateprovince', 'basisofrecord', 
+                'maximumelevationinmeters')
     for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
-    occs <- occs %>% dplyr::rename(institution_code = institutioncode, state_province = stateprovince, record_type = basisofrecord, elevation = maximumelevationinmeters)
+    occs <- occs %>% dplyr::rename(institution_code = institutioncode, 
+                                   state_province = stateprovince, 
+                                   record_type = basisofrecord, 
+                                   elevation = maximumelevationinmeters)
     # standardize BISON column names
   } else if (occDb == 'bison') {
-    fields <- c('countryCode', 'ownerInstitutionCollectionCode', 'calculatedCounty', 'elevation')
+    fields <- c('countryCode', 'ownerInstitutionCollectionCode', 
+                'calculatedCounty', 'elevation')
     for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
-    occs <- occs %>% dplyr::rename(country = countryCode, institution_code = ownerInstitutionCollectionCode, locality = calculatedCounty)
+    occs <- occs %>% dplyr::rename(country = countryCode, 
+                                   institution_code = ownerInstitutionCollectionCode, 
+                                   locality = calculatedCounty)
   }
   
   # subset by key columns and make id and popup columns
-  cols <- c("taxon_name", "longitude", "latitude",  "occID", "year", "institution_code", "country", "state_province",
-            "locality", "elevation", "record_type")
+  cols <- c("taxon_name", "longitude", "latitude",  "occID", "year", 
+            "institution_code", "country", "state_province", "locality", 
+            "elevation", "record_type")
   occs <- occs %>% 
     dplyr::select(dplyr::one_of(cols)) %>%
-    dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent))) %>%  # make new column for leaflet marker popup content
+    # make new column for leaflet marker popup content
+    dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent))) %>%  
     dplyr::arrange_(cols)
   
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
   dupsRem <- nrow(occsXY) - nrow(occs)
   
-  shinyLogs %>% writeLog('Total ', occDb, ' records for ', em(spName), ' returned [', nrow(occsOrig),
-                    '] out of [', totRows, '] total (limit ', occNum, ').
-                    Records without coordinates removed [', noCoordsRem, '].
-                    Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')
-  return(list(orig = occsOrig, cleaned=occs))
+  shinyLogs %>% writeLog('Total ', occDb, ' records for ', em(spName), ' returned [',
+                         nrow(occsOrig), '] out of [', totRows, '] total (limit ',
+                         occNum, '). 
+                         Records without coordinates removed [', noCoordsRem, '].
+                         Duplicated records removed [', dupsRem, ']. 
+                         Remaining records [', nrow(occs), '].')
+  return(list(orig = occsOrig, cleaned = occs))
 }
 
