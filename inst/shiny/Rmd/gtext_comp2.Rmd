@@ -1,0 +1,14 @@
+---
+title: "comp2"
+output: html_document
+---
+
+### **Component: Process Occurrence Data**
+
+**ORIENTATION**
+
+Biodiversity data (especially from aggregated online databases) typically suffer from errors and sampling biases, calling for better data quality and checking protocols (Costello et al. 2013). Component **Process Occurrence Data** provides some simple ways for users to clean and process such datasets in order to reduce the effects of data characteristics that may be detrimental to results. *Wallace* currently allows users either to: 1) remove records by ID (Module ***Remove Occurrences By ID***), 2) spatial selection (Module ***Select Occurrences On Map***), or 3) thin records within a user-specified distance (Module ***Spatial Thin***).  The first module addresses user-detected data errors, such as in georeferencing or identification (and also allows users to select occurrences from a subset of a species' range for analysis), whereas the second aims to reduce the effects of spatial sampling biases. These modules can be run in sequence (e.g. select points on the map, and then spatially thin).
+
+**REFERENCES**
+
+Costello, M. J., Michener, W. K., Gahegan, M., Zhang, Z. Q., & Bourne, P. E. (2013). Biodiversity data should be published, cited, and peer reviewed. *Trends in Ecology & Evolution*. 28: 454-461.

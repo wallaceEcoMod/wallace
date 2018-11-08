@@ -1,0 +1,16 @@
+---
+title: "comp7"
+output: html_document
+---
+
+### **Component: Visualize Model Results**
+
+**ORIENTATION**
+
+Niche/distributional models can be used to make predictions across geographic space, and the modeled response can be examined in environmental space as well (Elith and Graham 2009; Guisan and Zimmermann 2000). Component **Visualize Model Results** gives the user options for visualizations from both perspectives. *Wallace* provides 1) bivariate environmental envelope plots for BIOCLIM models (Module ***BIOCLIM Envelope Plots***), 2) plots showing evaluation results over the range of Maxent models explored (Module ***Maxent Evaluation Plots***), 3) response curves that depict how model response relates to changes in the environmental predictor variables (Module ***Plot Response Curves***), and 4) maps of model predictions in the study region (Module ***Map Prediction***. All plots are displayed in the "Results" tab. 
+
+**REFERENCES**
+
+Elith, J., & Graham, C. H. (2009). Do they? How do they? WHY do they differ? On finding reasons for differing performances of species distribution models. *Ecography*. 32: 66-77.
+
+Guisan, A., & Zimmermann, N. E. (2000). Predictive habitat distribution models in ecology. *Ecological Modelling*. 135: 147-186.

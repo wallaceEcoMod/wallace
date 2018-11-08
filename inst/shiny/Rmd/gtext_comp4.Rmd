@@ -1,0 +1,22 @@
+---
+title: "comp4"
+output: html_document
+---
+
+### **Component: Process Environmental Data**
+
+**ORIENTATION**
+
+Environmental data may be processed in many ways for niche/distributional modeling: reclassification (re-categorizing the original cell values), resampling (changing the cell size), masking (cropping the grid based on a specified shape), etc. At present, Component **Process Environmental Data** addresses one critical step: selecting a study region for analysis by masking the predictor variable grids. This determines the spatial extent for model building, as well as the environmental characteristics of the data used for comparison with records of the species' presence (e.g., the 'background' data; Peterson et al. 2011 chap. 7). By doing so, it also sets the range (and combinations) of environmental conditions associated with model building, allowing later flagging of 'non-analogous' conditions (e.g., when applying a model to another region or time period; Williams and Jackson 2007). 
+
+*Wallace* provides four alternative ways for delimiting a study region. The first three are  options under Module ***Select Study Region***: 1) a rectangular "bounding box" around occurrence localities, 2) a convex shape drawn around occurrence localities with minimized area (minimum convex polygon), or 3) buffers around occurrence localities. Alternatively, users can upload a polygon (Module ***User-specified Background Extent***). All study region polygons can then be buffered by a user-defined distance in degrees. 
+
+After choosing a way to delimit the study region (***Step 1***), *Wallace* samples background points (= pixels; ***Step 2***) from the environmental data according the the number provided by the user. If that number is smaller than the total in the environmental data (within the chosen background extent), some environmental conditions may be missed in the sample. Depending upon the variables used in the final model, such a situation may lead to the need for environmental extrapolation in order to make a prediction to the full background extent (see Components **Model**, **Visualize**, and **Project**; Guevara et al. 2018).
+
+**REFERENCES**
+
+Guevara, L., Gerstner, B. E., Kass, J. M., Anderson, R. P. (2018). Toward ecologically realistic predictions of species distributions: A cross-time example from tropical montane cloud forests. *Global Change Biology*. 24: 1511-1522.
+
+Peterson A. T., Soberón J., Pearson R. G., Anderson R. P., Martinez-Meyer E., Nakamura M., Araújo M. B. (2011). Modeling Ecological Niches. In: *Ecological Niches and Geographic Distributions*. Princeton, New Jersey: Monographs in Population Biology, 49. Princeton University Press.
+
+Williams, J. W., & Jackson, S. T. (2007). Novel climates, no-analog communities, and ecological surprises. *Frontiers in Ecology and the Environment*. 5: 475-482.

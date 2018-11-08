@@ -1,0 +1,26 @@
+---
+title: "comp3"
+output: html_document
+---
+
+### **Component: Obtain Environmental Data**
+
+**ORIENTATION**
+
+In addition to occurrence data, algorithms for niche/distributional modeling require environmental predictor variables (Franklin 2010 chap. 5, Peterson et al. 2011 chap. 6). Component **Obtain Environmental Data** allows users to obtain these variables from online sources in the form of raster grids. In recent years, a number of global databases of climate data have emerged (Hijmans et al. 2005, Kriticos et al. 2012, Sbrocco and Barber 2013, Karger et al. 2016). Currently, *Wallace* provides two options for environmental data. First, it offers access to present-day averaged climate data from the WorldClim dataset, which has near-global coverage of terrestrial areas (Module ***WorldClim***). Second, users may alternatively upload environmental raster grids (Module ***User-Specified Environmental Data***).
+
+We envision that future releases will offer other terrestrial climate datasets (with different interpolation methodologies, e.g. CHELSA; or with different variables, e.g. CliMond); marine climate datasets (e.g. MARSPEC); vegetation, land cover, and land use data. 
+
+**REFERENCES**
+
+Franklin J. (2010). Mapping Species Distributions: Spatial Inference and Prediction. Data for species distribution models: the environmental data. In: Mapping species distributions: spatial inference and prediction. Cambridge: Cambridge University Press.
+
+Hijmans, R. J., Cameron, S. E., Parra, J. L., Jones, P. G., & Jarvis, A. (2005). Very high resolution interpolated climate surfaces for global land areas. *International Journal of Climatology*.  25: 1965-1978.
+
+Karger, D.N., Conrad, O., Böhner, J., Kawohl, T., Kreft, H., Soria-Auza, R.W., Zimmermann, N.E, Linder, H.P. & Kessler, M. (2016). CHELSA climatologies at high resolution for the earth's land surface areas (Version 1.1). World Data Center for Climate. doi:10.1594/WDCC/CHELSA_v1_1. http://dx.doi.org/doi:10.1594/WDCC/CHELSA_v1_1
+
+Kriticos, D. J., Webber, B. L., Leriche, A., Ota, N., Macadam, I., Bathols, J., & Scott, J. K. (2012). CliMond: global high-resolution historical and future scenario climate surfaces for bioclimatic modelling. *Methods in Ecology and Evolution*. 3: 53-64.
+
+Peterson A. T., Soberón J., Pearson R. G., Anderson R. P., Martinez-Meyer E., Nakamura M., Araújo M. B. (2011). Environmental Data. In: *Ecological Niches and Geographic Distributions*. Princeton, New Jersey: Monographs in Population Biology, 49. Princeton University Press.
+
+Sbrocco, E. J., & Barber, P. H. (2013). MARSPEC: ocean climate layers for marine spatial ecology. *Ecology*. 94: 979-979.

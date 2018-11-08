@@ -1,0 +1,18 @@
+---
+title: "comp5"
+output: html_document
+---
+
+### **Component: Partition Occurrence Data**
+
+**ORIENTATION**
+
+Evaluating the accuracy of a predictive model usually requires testing it on independent data; however, as truly independent data are difficult to obtain for most biodiversity datasets, researchers often partition a single dataset into subsets. Occurrence data are partitioned into two categories: 1) those used to make the model (i.e. "training" or "calibration"); and 2) others that are withheld for evaluating it (i.e. "testing" or "evaluation" data) (Guisan and Zimmermann 2000; Peterson et al. 2011). One widely-used technique, *k*-fold cross-validation, involves partitioning the full dataset into *k* groups, then iteratively building a model using all groups but one and testing this model on the left-out group. This iterative process results in *k* models. Evaluation statistics can be averaged over these *k* models to help in model selection, leading to the production of a full model that includes all the data if desired.
+
+There are myriad particular ways to partition data for niche/distributional models, but they can be split into two main categories that are offered in 1) Module ***Non-spatial Partition*** and 2) Module ***Spatial Partition***. 
+
+**REFERENCES**
+
+Guisan A., Zimmermann N.E. (2000). Predictive habitat distribution models in ecology. *Ecological Modelling*. 135: 147-186.
+
+Peterson A. T., Soberón J., Pearson R. G., Anderson R. P., Martinez-Meyer E., Nakamura M., Araújo M. B. (2011). Evaluating Model Performance and Significance. In: *Ecological Niches and Geographic Distributions*. Princeton, New Jersey: Monographs in Population Biology, 49. Princeton University Press.
