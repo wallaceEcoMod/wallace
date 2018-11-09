@@ -102,7 +102,7 @@ shinyServer(function(input, output, session) {
     else if(component() == "model") input$modelSel
     else if(component() == "vis") input$visSel
     else if(component() == "proj") input$projSel
-    else if(component() == "rmd") ''
+    #else if(component() == "rmd") ''
   })
   
   # logic to serve the selected component/module guidance text
