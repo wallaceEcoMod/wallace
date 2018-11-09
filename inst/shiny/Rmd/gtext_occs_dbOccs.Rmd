@@ -1,5 +1,5 @@
 ---
-title: "comp1_dbOccs"
+title: "occs_dbOccs"
 output: html_document
 ---
 

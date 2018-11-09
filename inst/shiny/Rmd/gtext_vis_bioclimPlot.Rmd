@@ -1,5 +1,5 @@
 ---
-title: "comp7_bcplots"
+title: "vis_bioclimPlot"
 output: html_document
 ---
 

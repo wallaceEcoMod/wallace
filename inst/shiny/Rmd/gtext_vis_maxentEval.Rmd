@@ -1,5 +1,5 @@
 ---
-title: "tab7_mxEvalPlots"
+title: "vis_maxentEval"
 output: html_document
 ---
 

@@ -1,5 +1,5 @@
 ---
-title: "comp1_userOccs"
+title: "occs_userOccs"
 output: html_document
 ---
 

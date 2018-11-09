@@ -1,5 +1,5 @@
 ---
-title: "tab7_pred"
+title: "vis_mapPreds"
 output: html_document
 ---
 
@@ -15,7 +15,7 @@ This module relies on functionality for model prediction grids from the R packag
 
 Users must first choose a model. Depending on the `ENMeval` settings selected in Component **Model**, there may be multiple choices for Maxent. *Wallace* calculates model output based on the predictor variable values for each cell and plots the prediction on the map. Three Maxent model output scales are available for viewing in *Wallace*: "raw", "logistic", and "cloglog". The "raw" predicted values of the background pixels sum to 1 and can represent relative abundance (*not* probability of presence; Phillips et al. 2017; see also Merow et al. 2013). The "logistic" and "cloglog" transformations of the raw values range from 0 to 1 and approximate probability of occurrence, with different assumptions. For logistic, the assumption is that prevalence of the species equals 0.5 (Yackulic et al. 2012; Merow et al. 2013). For cloglog, assumptions are made regarding spatial dependence and cell size (Phillips et al. 2017). Logistic and cloglog transformed values are generally similar, but cloglog tends to be higher for mid- to high-range values (Phillips et al. 2017).
 
-Users may then choose a thresholding rule to convert the continuous prediction to a binary one (0s and 1s), which can be interpreted as presence/absence or suitable/unsuitable. Please see guidance text for **Component: Model** for more details on thresholding rules. After the model and threshold selections are made, the prediction can be plotted on the map. Users can download the prediction as either raster grid types for analysis (.grd and .asc), or as an image file (.png).
+Users may then choose a thresholding rule to convert the continuous prediction to a binary one (0s and 1s), which can be interpreted as presence/absence or suitable/unsuitable. Please see guidance text for **Component: Model** for more details on thresholding rules. After the model and threshold selections are made, the prediction can be plotted on the map. Users can download the prediction as either raster grid types for analysis (.asc, .grd and .tif), or as an image file (.png).
 
 **REFERENCES**
 
