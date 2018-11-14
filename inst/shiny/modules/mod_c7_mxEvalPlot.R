@@ -27,5 +27,7 @@ maxentEvalPlot_MOD <- function(input, output, session) {
 }
 
 maxentEvalPlot_INFO <- infoGenerator(modName = "Maxent Evaluation Plots", 
-                                  modAuts = "Jamie M. Kass, Robert Muscarella, Bruno Vilela, Robert P. Anderson", 
-                                  pkgName = c("ENMeval", "dismo"))
+                                     modAuts = "Jamie M. Kass, Robert Muscarella,
+                                     Bruno Vilela, Gonzalo E. Pinilla-Buitrago,
+                                     Robert P. Anderson", 
+                                     pkgName = c("ENMeval", "dismo"))
