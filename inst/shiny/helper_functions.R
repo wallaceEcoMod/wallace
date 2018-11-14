@@ -122,7 +122,7 @@ writeLog <- function(logs, ..., type = 'default') {
     } else if (type == 'warning') {
       pre <- 'WARNING: '
     }  
-    newEntries <- paste(pre, ..., collapse = "")
+    newEntries <- paste0(pre, ..., collapse = "")
     message(newEntries)
     return()
   }
@@ -134,7 +134,7 @@ writeLog <- function(logs, ..., type = 'default') {
   } else if (type == 'warning') {
     pre <- '<font color="orange"><b>! WARNING</b></font> : '
   }
-  newEntries <- paste(pre, ..., collapse = "")
+  newEntries <- paste0(pre, ..., collapse = "")
   logs(paste(logs(), newEntries, sep = '<br>'))
 }
 

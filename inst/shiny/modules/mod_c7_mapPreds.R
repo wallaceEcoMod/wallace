@@ -66,7 +66,8 @@ mapPreds_MOD <- function(input, output, session) {
     if(!(input$threshold == 'none')) {
       thr <- thresholds[[input$threshold]]
       predThr <- predSel > thr
-      shinyLogs %>% writeLog(curSp(), ":", input$threshold, 'threshold selected for', predType, ':', thr, '.')
+      shinyLogs %>% writeLog(curSp(), ": ", input$threshold, ' threshold selected
+                             for ', predType, ': ', thr, '.')
     } else {
       predThr <- predSel
     }
@@ -79,7 +80,8 @@ mapPreds_MOD <- function(input, output, session) {
     spp[[curSp()]]$visualization$mapPredVals <- getRasterVals(predThr, predType)
     
     # write to log box
-    shinyLogs %>% writeLog(curSp(), ":", rmm()$model$algorithm, predType, "model prediction plotted.")
+    shinyLogs %>% writeLog(curSp(), ": ", rmm()$model$algorithm, " ", predType,
+                           " model prediction plotted.")
     
     # METADATA
     spp[[curSp()]]$rmm$output$prediction$thresholdRule <- input$threshold

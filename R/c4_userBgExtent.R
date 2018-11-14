@@ -38,7 +38,8 @@ c4_userBgExtent <- function(bgShp_path, bgShp_name, userBgBuf, shinyLogs=NULL) {
       bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(f)), 1)))
     } else if ('shp' %in% exts) {
       if (length(exts) < 3) {
-        shinyLogs %>% writeLog(type = 'error', 'If entering a shapefile, please select all the following files: .shp, .shx, .dbf.')
+        shinyLogs %>% writeLog(type = 'error', 'If entering a shapefile, please
+                               select all the following files: .shp, .shx, .dbf.')
         return()
       }
       file.rename(bgShp_path, file.path(pathdir, bgShp_name))
@@ -48,7 +49,8 @@ c4_userBgExtent <- function(bgShp_path, bgShp_name, userBgBuf, shinyLogs=NULL) {
       # read in shapefile and extract coords
       bgExt <- rgdal::readOGR(pathdir[i], shpName)
     } else {
-      shinyLogs %>% writeLog(type = 'error', 'Please enter either a CSV file of vertex coordinates or shapefile (.shp, .shx, .dbf).')
+      shinyLogs %>% writeLog(type = 'error', 'Please enter either a CSV file of
+                             vertex coordinates or shapefile (.shp, .shx, .dbf).')
       return()
     }
     shinyLogs %>% writeLog("Study extent: user-defined polygon.")

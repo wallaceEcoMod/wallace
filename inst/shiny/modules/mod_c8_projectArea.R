@@ -19,9 +19,9 @@ projectArea_MOD <- function(input, output, session) {
       return()
     }
     if (is.null(spp[[curSp()]]$polyPjXY)) {
-      shinyLogs %>% writeLog(type = 'error', "The polygon has not been drawn and finished. 
-                             Please use the draw toolbar on the left-hand of the map to complete
-                             the polygon.")
+      shinyLogs %>% writeLog(type = 'error', "The polygon has not been drawn and
+                              finished. Please use the draw toolbar on the 
+                              left-hand of the map to complete the polygon.")
       return()
     }
     
@@ -40,10 +40,12 @@ projectArea_MOD <- function(input, output, session) {
       # use threshold from present-day model training area
       thr <- spp[[curSp()]]$visualization$thresholds[[input$threshold]]
       projAreaThr <- projArea > thr
-      shinyLogs %>% writeLog("Projection of model to new area for", curSp(), 'with threshold', input$threshold, ': ', thr, '.')
+      shinyLogs %>% writeLog("Projection of model to new area for ", curSp(), 
+                             ' with threshold ', input$threshold, ': ', thr, '.')
     } else {
       projAreaThr <- projArea
-      shinyLogs %>% writeLog("Projection of model to new area for", curSp(), 'with', predType, 'output.')
+      shinyLogs %>% writeLog("Projection of model to new area for ", curSp(), 
+                             ' with ', predType, ' output.')
     }
     # rename
     names(projAreaThr) <- paste0(curModel(), '_thresh_', predType)

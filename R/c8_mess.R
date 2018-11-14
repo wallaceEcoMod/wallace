@@ -41,7 +41,7 @@ c8_mess <- function(occs, bg, bgMsk, projExtRas, time, shinyLogs = NULL) {
     mss <- suppressWarnings(dismo::mess(projExtRas2, allVals))
     # for mapping purposes, set all infinite values to NA
     mss[is.infinite(mss)] <- NA
-    shinyLogs %>% writeLog("Generated MESS map for", time, ".")
+    shinyLogs %>% writeLog("Generated MESS map for ", time, ".")
   })
   
   return(mss)

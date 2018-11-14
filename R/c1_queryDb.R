@@ -43,7 +43,8 @@ c1_queryDb <- function(spName, occDb, occNum, shinyLogs=NULL) {
   
   # if species not found, print message to log box and return
   if (q[[occDb]]$meta$found == 0) {
-    shinyLogs %>% writeLog(type = 'error', 'No records found for ', em(spName), ". Please check the spelling.")
+    shinyLogs %>% writeLog(type = 'error', 'No records found for ', em(spName), 
+                           ". Please check the spelling.")
     return()
   }
   # extract occurrence tibble
@@ -58,8 +59,8 @@ c1_queryDb <- function(spName, occDb, occNum, shinyLogs=NULL) {
   # subset to just records with latitude and longitude
   occsXY <- occsOrig[!is.na(occsOrig$latitude) & !is.na(occsOrig$longitude),]
   if (nrow(occsXY) == 0) {
-    shinyLogs %>% writeLog(type = 'warning', 'No records with coordinates found in',
-                           occDb, "for", em(spName), ".")
+    shinyLogs %>% writeLog(type = 'warning', 'No records with coordinates found 
+                           in ', occDb, " for ", em(spName), ".")
     return()
   }
   
@@ -106,12 +107,11 @@ c1_queryDb <- function(spName, occDb, occNum, shinyLogs=NULL) {
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
   dupsRem <- nrow(occsXY) - nrow(occs)
   
-  shinyLogs %>% writeLog('Total ', occDb, ' records for ', em(spName), ' returned [',
-                         nrow(occsOrig), '] out of [', totRows, '] total (limit ',
-                         occNum, '). 
-                         Records without coordinates removed [', noCoordsRem, '].
-                         Duplicated records removed [', dupsRem, ']. 
-                         Remaining records [', nrow(occs), '].')
+  shinyLogs %>% writeLog('Total ', occDb, ' records for ', em(spName), ' returned 
+                         [', nrow(occsOrig), '] out of [', totRows, '] total 
+                         (limit ', occNum, '). Records without coordinates 
+                         removed [', noCoordsRem, ']. Duplicated records removed
+                         [', dupsRem, ']. Remaining records [', nrow(occs), '].')
   return(list(orig = occsOrig, cleaned = occs))
 }
 

@@ -115,16 +115,18 @@ projectTime_MOD <- function(input, output, session) {
       # use threshold from present-day model training area
       thr <- spp[[curSp()]]$visualization$thresholds[[input$threshold]]
       projTimeThr <- projTime > thr
-      shinyLogs %>% writeLog("Projection of model to", paste0('20', input$selTime), "for", 
-                             curSp(), 'with threshold', input$threshold, ': ', thr,
-                             "for GCM", GCMlookup[input$selGCM], 
-                             "under RCP", as.numeric(input$selRCP)/10.0, ".")
+      shinyLogs %>% writeLog("Projection of model to ", 
+                             paste0('20', input$selTime), " for ", 
+                             curSp(), ' with threshold ', input$threshold, 
+                             ': ', thr, " for GCM ", GCMlookup[input$selGCM], 
+                             " under RCP ", as.numeric(input$selRCP)/10.0, ".")
     } else {
       projTimeThr <- projTime
-      shinyLogs %>% writeLog("Projection of model to", paste0('20', input$selTime), "for", 
-                             curSp(), 'with', predType, 'output',
-                             "for GCM", GCMlookup[input$selGCM], 
-                             "under RCP", as.numeric(input$selRCP)/10.0, ".")
+      shinyLogs %>% writeLog("Projection of model to ", 
+                             paste0('20', input$selTime), " for ", 
+                             curSp(), ' with ', predType, " output for GCM ",
+                             GCMlookup[input$selGCM], 
+                             " under RCP ", as.numeric(input$selRCP)/10.0, ".")
     }
     # rename
     names(projTimeThr) <- paste0(curModel(), '_thresh_', predType)

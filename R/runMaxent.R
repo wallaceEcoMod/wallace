@@ -42,9 +42,12 @@ runMaxent  <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
   # error for no maxent.jar in dismo directory
   jar <- paste(system.file(package="dismo"), "/java/maxent.jar", sep='')
   if(!file.exists(jar)) {
-    shinyLogs %>% writeLog(type = 'error', "To use Maxent, make sure you download,", strong("maxent.jar"), "from the",
-                           a("AMNH Maxent webpage", href="http://biodiversityinformatics.amnh.org/open_source/maxent/", target="_blank"),
-                           "and place it in this directory:", br(), em(jar))
+    shinyLogs %>% writeLog(type = 'error', "To use Maxent, make sure you 
+                           download, ", strong("maxent.jar"), " from the ",
+                           a("AMNH Maxent webpage", 
+                             href="http://biodiversityinformatics.amnh.org/open_source/maxent/", 
+                             target="_blank"),
+                           " and place it in this directory:", br(), em(jar))
     return()
   }
   
@@ -114,8 +117,9 @@ runMaxent  <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
   colnames(statsBins) <- gsub("OR10", "or10pct", colnames(statsBins))
   colnames(statsBins) <- gsub("ORmin", "orMTP", colnames(statsBins))
   
-  shinyLogs %>% writeLog("Maxent ran successfully for", em(spName(occs)), "and output evaluation results for", 
-                    nrow(e@results), "models.")
+  shinyLogs %>% writeLog("Maxent ran successfully for ", em(spName(occs)), " and
+                         output evaluation results for ", nrow(e@results), 
+                         " models.")
   
   # output ENMeval object in list form to be compatible with other models
   e <- list(models=e@models, evalTbl=stats, evalTblBins=statsBins, predictions=e@predictions, occPredVals=occPredVals)

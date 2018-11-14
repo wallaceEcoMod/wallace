@@ -42,8 +42,8 @@ c3_ecoClimate <- function (bcAOGCM, bcScenario, ecoClimSelChoice=FALSE, ecoClimS
     
     ecoClimatelayers<- ecoClimate_select (ecoClimatelayers, Sels=sels)
     
-    shinyLogs %>% writeLog("Environmental predictors: ecoClimate bioclimatic variables",
-                      ecoClimSel, "at 0.5 degree resolution.")
+    shinyLogs %>% writeLog("Environmental predictors: ecoClimate bioclimatic
+                           variables ", ecoClimSel, " at 0.5 degree resolution.")
     
   }
   return(ecoClimatelayers)
