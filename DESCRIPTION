@@ -39,7 +39,7 @@ Imports:
     paleobioDB,
     rangeModelMetadata,
     raster,
-    RcolorBrewer,
+    RColorBrewer,
     repmis,
     rgdal,
     rgeos,
