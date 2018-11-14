@@ -25,7 +25,7 @@ shinyUI(tagList(
                                includeCSS("css/styles.css"),
                                includeScript("js/scroll.js"),
                                conditionalPanel("input.tabs == 'intro'",
-                                                actionButton('load', 'HACK'),
+                                                #actionButton('load', 'HACK'),
                                                 includeMarkdown("Rmd/text_intro_tab.Rmd")
                                ),
                                # OBTAIN OCCS ####
