@@ -159,8 +159,7 @@ c1_queryDb <- function(spName, occDb, occNum, doCitations = F, gbifUser = NULL,
                                    institution_code = 
                                      ownerInstitutionCollectionCode,
                                    elevation = verbatimElevation,
-                                   uncertainty = coordinateuncertaintyinmeters)
-                                   
+                                   uncertainty = coordinateUncertaintyInMeters)
   } else if (occDb == 'bien') {
     fields <- c("name", "longitude", "latitude", "country",
                 "state_province", "locality", "year", "record_type",
