@@ -296,7 +296,7 @@ shinyServer(function(input, output, session) {
       paste0(n, "_", source, ".csv")
     },
     content = function(file) {
-      write.csv(spp[[curSp()]]$occData$occsOrig, file, row.names=FALSE)
+      write.csv(spp[[curSp()]]$occData$occsOrig, file, row.names = FALSE)
     }
   )
   

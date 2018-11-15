@@ -110,6 +110,9 @@ c1_queryDb <- function(spName, occDb, occNum, doCitations = F, gbifUser = NULL,
   # make new column for original ID
   occsOrig$occID <- as.numeric(row.names(occsOrig))
   
+  # delete colums with list to avoid conflict
+  occsOrig["networkKeys"] <- NULL
+  
   # subset to just records with latitude and longitude
   occsXY <- occsOrig[!is.na(occsOrig$latitude) & !is.na(occsOrig$longitude),]
   if (nrow(occsXY) == 0) {
