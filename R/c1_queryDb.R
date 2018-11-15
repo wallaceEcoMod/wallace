@@ -8,14 +8,22 @@
 #' appropriate to studies in biogeography.
 #'
 #' @param spName character species Latin name, with format "Genus species"
-#' @param occDb character biodiversity database to query; current choices are "gbif", 
-#' "vertnet", and "bison"
+#' @param occDb character biodiversity database to query; current choices are 
+#' "gbif", "vertnet", and "bison"
 #' @param occNum numeric maximum number of occurrence records to return
-#' @param shinyLogs insert the shinyLogs reactive list here for running in shiny, otherwise leave the default NULL
-#' @param doCitations set TRUE to use `occCite` to get a complete list of original data sources in a citable format
-#' @param gbifUser specify only if using `occCite` with GBIF to get a complete list of original data sources in a citable format. This, as well as `gbifEmail` and `gbifPW` are constraints imposed by GBIF to obtain the complete set of metadata associated with occurrence records and is not stored or used by `wallace` for any other purposes.
-#' @param gbifEmail  specify only if using `occCite` with GBIF to get a complete list of original data sources in a citable format.
-#' @param gbifPW=NULL  specify only if using `occCite` with GBIF to get a complete list of original data sources in a citable format.
+#' @param shinyLogs insert the shinyLogs reactive list here for running in shiny,
+#'  otherwise leave the default NULL
+#' @param doCitations set TRUE to use `occCite` to get a complete list of original
+#'  data sources in a citable format
+#' @param gbifUser specify only if using `occCite` with GBIF to get a complete list
+#'  of original data sources in a citable format. This, as well as `gbifEmail` 
+#'  and `gbifPW` are constraints imposed by GBIF to obtain the complete set of 
+#'  metadata associated with occurrence records and is not stored or used by 
+#'  `wallace` for any other purposes.
+#' @param gbifEmail  specify only if using `occCite` with GBIF to get a 
+#' complete list of original data sources in a citable format.
+#' @param gbifPW=NULL  specify only if using `occCite` with GBIF to get a complete 
+#' list of original data sources in a citable format.
 #' @return formatted tibble of species occurrence records 
 #'
 #' @examples
@@ -23,14 +31,8 @@
 #' @export
 
 #c1_queryDb <- function(spName, occDb, occNum, shinyLogs=NULL) {
-c1_queryDb <- function(spName, 
-                       occDb, 
-                       occNum, 
-                       doCitations=F,
-                       gbifUser=NULL, 
-                       gbifEmail=NULL,
-                       gbifPW=NULL,
-                       shinyLogs=NULL) {
+c1_queryDb <- function(spName, occDb, occNum, doCitations = F, gbifUser = NULL, 
+                       gbifEmail = NULL, gbifPW = NULL, shinyLogs = NULL) {
   
   # capitalize genus name if not already, trim whitespace
   spName <- trimws(paste0(toupper(substring(spName, 1, 1)), 
@@ -40,13 +42,14 @@ c1_queryDb <- function(spName,
   nameSplit <- length(unlist(strsplit(spName, " ")))
   # if two names not entered, throw error and return
   if (nameSplit != 2) {
-    shinyLogs %>% writeLog(type = 'error', 
-                           'Please input both genus and species names.')
+    shinyLogs %>% writeLog(type = 'error', 'Please input both genus and species
+                           names.')
     return()
   }
 
   # query database
-  smartProgress(shinyLogs, message = paste0("Querying ", occDb, " for ", spName, "..."), {
+  smartProgress(shinyLogs, message = paste0("Querying ", occDb, " for ", 
+                                            spName, "..."), {
      if (occDb == 'bison' | occDb == 'vertnet') {
       q <- spocc::occ(spName, occDb, limit = occNum)
       myOccCitations <- NULL
@@ -55,28 +58,37 @@ c1_queryDb <- function(spName,
         q <- spocc::occ(spName, occDb, limit = occNum)
         myOccCitations <- NULL
       } else if (doCitations == TRUE) {
-        if(any(unlist(lapply(list(gbifUser, gbifEmail, gbifPW),is.null)))) {
-          shinyLogs %>% writeLog('error', 'Please specify your GBIF username, email, and password. This is needed to get citations for occurrence records. Wallace does not store your information or use it for anything else.')
+        if(any(unlist(lapply(list(gbifUser, gbifEmail, gbifPW), is.null)))) {
+          shinyLogs %>% writeLog('error', 'Please specify your GBIF username, 
+                                 email, and password. This is needed to get
+                                 citations for occurrence records. Wallace does
+                                 not store your information or use it for
+                                 anything else.')
           return()
         }
         myBTO <- occCite::studyTaxonList(x = spName, datasources = "NCBI")
-        login <- occCite::GBIFLoginManager(user = gbifUser, email = gbifEmail, pwd = gbifPW)
+        login <- occCite::GBIFLoginManager(user = gbifUser, email = gbifEmail, 
+                                           pwd = gbifPW)
         myBTO <- occCite::occQuery(x = myBTO, GBIFLogin = login, limit = occNum)
         myOccCitations <- occCite::occCitation(myBTO)
         # make something with the same slots as spocc that we use
-        q=list(gbif=list(meta=list(found=NULL),data=list(formatSpName(spName))))
-        q[[occDb]]$meta$found=nrow(myBTO@occResults[[spName]][['GBIF']][['OccurrenceTable']])
-        q[[occDb]]$data[[formatSpName(spName)]]=myBTO@occResults[[spName]][['GBIF']][['OccurrenceTable']]
+        q <- list(gbif = list(meta = list(found = NULL),
+                              data = list(formatSpName(spName))))
+        q[[occDb]]$meta$found <- 
+          nrow(myBTO@occResults[[spName]][['GBIF']][['OccurrenceTable']])
+        q[[occDb]]$data[[formatSpName(spName)]] <- 
+          myBTO@occResults[[spName]][['GBIF']][['OccurrenceTable']]
       }
     } else if (occDb == 'bien') {
       myBTO <- occCite::studyTaxonList(x = spName, datasources = "NCBI")
       myBTO <- occCite::occQuery(x = myBTO, datasources = 'bien', limit = occNum)
       myOccCitations <- NULL
       # make something with the same slots as spocc that we use
-      q=list(bien=list(meta=list(found=NULL),data=list(formatSpName(spName))))
-      q[[occDb]]$meta$found=
+      q <- list(bien = list(meta = list(found = NULL),
+                            data = list(formatSpName(spName))))
+      q[[occDb]]$meta$found <- 
         nrow(myBTO@occResults[[spName]][['BIEN']][['OccurrenceTable']])
-      q[[occDb]]$data[[formatSpName(spName)]]=
+      q[[occDb]]$data[[formatSpName(spName)]] <- 
         myBTO@occResults[[spName]][['BIEN']][['OccurrenceTable']]
     }
  })
@@ -121,7 +133,8 @@ c1_queryDb <- function(spName,
                                    record_type = basisOfRecord)
 
   } else if (occDb == 'vertnet') { # standardize VertNet column names
-    fields <- c('institutioncode', 'stateprovince', 'basisofrecord', 'maximumelevationinmeters')
+    fields <- c('institutioncode', 'stateprovince', 'basisofrecord', 
+                'maximumelevationinmeters')
     for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
     occs <- occs %>% dplyr::rename(taxon_name = name,
                                    institution_code = institutioncode, 
@@ -129,11 +142,13 @@ c1_queryDb <- function(spName,
                                    record_type = basisofrecord, 
                                    elevation = maximumelevationinmeters)
   } else if (occDb == 'bison') { # standardize BISON column names
-    fields <- c('countryCode', 'ownerInstitutionCollectionCode', 'calculatedCounty', 'elevation')
+    fields <- c('countryCode', 'ownerInstitutionCollectionCode', 
+                'calculatedCounty', 'elevation')
     for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
     occs <- occs %>% dplyr::rename(taxon_name = providedScientificName,
                                    country = countryCode, 
-                                   institution_code = ownerInstitutionCollectionCode, 
+                                   institution_code = 
+                                     ownerInstitutionCollectionCode, 
                                    locality = calculatedCounty,
                                    record_type = basisOfRecord,
                                    state_province = stateProvince)
