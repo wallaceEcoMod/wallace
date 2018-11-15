@@ -35,6 +35,7 @@ Imports:
     leaflet.extras (>= 1.0.0),
     magrittr,
     maptools,
+    mapview,
     neotoma,
     paleobioDB,
     rangeModelMetadata,
