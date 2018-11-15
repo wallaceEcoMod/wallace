@@ -33,7 +33,6 @@
 #c1_queryDb <- function(spName, occDb, occNum, shinyLogs=NULL) {
 c1_queryDb <- function(spName, occDb, occNum, doCitations = F, gbifUser = NULL, 
                        gbifEmail = NULL, gbifPW = NULL, shinyLogs = NULL) {
-  
   # capitalize genus name if not already, trim whitespace
   spName <- trimws(paste0(toupper(substring(spName, 1, 1)), 
                           substring(spName, 2, nchar(spName))))  
@@ -49,7 +48,7 @@ c1_queryDb <- function(spName, occDb, occNum, doCitations = F, gbifUser = NULL,
 
   # query database
   smartProgress(shinyLogs, message = paste0("Querying ", occDb, " for ", 
-                                            spName, "..."), {
+                                            spName, "..."),{
      if (occDb == 'bison' | occDb == 'vertnet') {
       q <- spocc::occ(spName, occDb, limit = occNum)
       myOccCitations <- NULL
@@ -122,47 +121,59 @@ c1_queryDb <- function(spName, occDb, occNum, doCitations = F, gbifUser = NULL,
   dups <- duplicated(occsXY[,c('longitude','latitude')])
   occs <- occsXY[!dups,]
   
-
   if (occDb == 'gbif') {
-    fields <- c('institutionCode', 'stateProvince', 'basisOfRecord', "country",
-                "locality", "elevation")
+    fields <- c("name", "longitude", "latitude", "country", "stateProvince",
+                "locality", "year", "basisOfRecord", "institutionCode", "elevation",
+                "coordinateUncertaintyInMeters")
     for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
     occs <- occs %>% dplyr::rename(taxon_name = name, 
-                                   institution_code = institutionCode, 
                                    state_province = stateProvince, 
-                                   record_type = basisOfRecord)
-
-  } else if (occDb == 'vertnet') { # standardize VertNet column names
-    fields <- c('institutioncode', 'stateprovince', 'basisofrecord', 
-                'maximumelevationinmeters')
+                                   record_type = basisOfRecord,
+                                   institution_code = institutionCode,
+                                   uncertainty = coordinateUncertaintyInMeters) 
+} else if (occDb == 'vertnet') { # standardize VertNet column names
+    fields <- c("name", "longitude", "latitude", "country", "stateprovince",
+                "locality", "year", "basisofrecord", "institutioncode", 
+                "maximumelevationinmeters", "coordinateuncertaintyinmeters")
     for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
     occs <- occs %>% dplyr::rename(taxon_name = name,
-                                   institution_code = institutioncode, 
                                    state_province = stateprovince, 
                                    record_type = basisofrecord, 
-                                   elevation = maximumelevationinmeters)
+                                   institution_code = institutioncode, 
+                                   elevation = maximumelevationinmeters,
+                                   uncertainty = coordinateuncertaintyinmeters)
   } else if (occDb == 'bison') { # standardize BISON column names
-    fields <- c('countryCode', 'ownerInstitutionCollectionCode', 
-                'calculatedCounty', 'elevation')
+    fields <- c("providedScientificName", "longitude", "latitude", "countryCode",
+                "stateProvince", "verbatimLocality", "year", "basisOfRecord",
+                "ownerInstitutionCollectionCode", "verbatimElevation", 
+                "coordinateUncertaintyInMeters")
     for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
     occs <- occs %>% dplyr::rename(taxon_name = providedScientificName,
                                    country = countryCode, 
-                                   institution_code = 
-                                     ownerInstitutionCollectionCode, 
-                                   locality = calculatedCounty,
+                                   state_province = stateProvince,
+                                   locality = verbatimLocality,
                                    record_type = basisOfRecord,
-                                   state_province = stateProvince)
+                                   institution_code = 
+                                     ownerInstitutionCollectionCode,
+                                   elevation = verbatimElevation,
+                                   uncertainty = coordinateuncertaintyinmeters)
+                                   
   } else if (occDb == 'bien') {
-    fields <- c('country', 'state_province', 'locality', 'elevation', 'record_type')
+    fields <- c("name", "longitude", "latitude", "country",
+                "state_province", "locality", "year", "record_type",
+                "institution_code", "elevation", 
+                "uncertainty")
+    # occCite field requirements (no downloaded by occCite) "country", 
+    # "state_province", "locality", "year", "record_type", "institution_code",
+    # "elevation", "uncertainty"
     for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
-    occs <- occs %>% dplyr::rename(taxon_name = name,
-                                   institution_code = Dataset)
+    occs <- occs %>% dplyr::rename(taxon_name = name)
   }
   
   # subset by key columns and make id and popup columns
-  cols <- c("taxon_name", "longitude", "latitude",  "occID", "year", 
-            "institution_code", "country", "state_province", "locality", 
-            "elevation", "record_type")
+  cols <- c("occID", "taxon_name", "longitude", "latitude", "country", 
+            "state_province", "locality", "year", "record_type", "institution_code",
+            "elevation", "uncertainty")
   occs <- occs %>% 
     dplyr::select(dplyr::one_of(cols)) %>%
     # make new column for leaflet marker popup content
