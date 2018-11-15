@@ -246,7 +246,7 @@ shinyServer(function(input, output, session) {
       dplyr::mutate(longitude = round(as.numeric(longitude), digits = 2),
                     latitude = round(as.numeric(latitude), digits = 2)) %>% 
       dplyr::select(-pop)
-  }, rownames = FALSE)
+  }, rownames = FALSE, options = list(scrollX = TRUE))
   
   # DOWNLOAD: current species occurrence data table
   output$dlOccs <- downloadHandler(
