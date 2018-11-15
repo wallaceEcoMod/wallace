@@ -12,13 +12,26 @@
 #' "vertnet", and "bison"
 #' @param occNum numeric maximum number of occurrence records to return
 #' @param shinyLogs insert the shinyLogs reactive list here for running in shiny, otherwise leave the default NULL
+#' @param doCitations set TRUE to use `occCite` to get a complete list of original data sources in a citable format
+#' @param gbifUser specify only if using `occCite` with GBIF to get a complete list of original data sources in a citable format. This, as well as `gbifEmail` and `gbifPW` are constraints imposed by GBIF to obtain the complete set of metadata associated with occurrence records and is not stored or used by `wallace` for any other purposes.
+#' @param gbifEmail  specify only if using `occCite` with GBIF to get a complete list of original data sources in a citable format.
+#' @param gbifPW=NULL  specify only if using `occCite` with GBIF to get a complete list of original data sources in a citable format.
 #' @return formatted tibble of species occurrence records 
 #'
 #' @examples
 #' c1_queryDb(spName = "Tremarctos ornatus", occDb = "gbif", occNum = 100)
 #' @export
 
-c1_queryDb <- function(spName, occDb, occNum, shinyLogs=NULL) {
+#c1_queryDb <- function(spName, occDb, occNum, shinyLogs=NULL) {
+c1_queryDb <- function(spName, 
+                       occDb, 
+                       occNum, 
+                       doCitations=F,
+                       gbifUser=NULL, 
+                       gbifEmail=NULL,
+                       gbifPW=NULL,
+                       shinyLogs=NULL) {
+  
   # capitalize genus name if not already, trim whitespace
   spName <- trimws(paste0(toupper(substring(spName, 1, 1)), 
                           substring(spName, 2, nchar(spName))))  
@@ -33,10 +46,40 @@ c1_queryDb <- function(spName, occDb, occNum, shinyLogs=NULL) {
   }
 
   # query database
-  smartProgress(shinyLogs, message = paste0("Querying ", occDb, " for ", 
-                                            spName, "..."), {
-    q <- spocc::occ(spName, occDb, limit=occNum)
-  })
+  smartProgress(shinyLogs, message = paste0("Querying ", occDb, " for ", spName, "..."), {
+     if (occDb == 'bison' | occDb == 'vertnet') {
+      q <- spocc::occ(spName, occDb, limit = occNum)
+      myOccCitations <- NULL
+    } else if (occDb == 'gbif') {
+      if (doCitations == FALSE) {
+        q <- spocc::occ(spName, occDb, limit = occNum)
+        myOccCitations <- NULL
+      } else if (doCitations == TRUE) {
+        if(any(unlist(lapply(list(gbifUser, gbifEmail, gbifPW),is.null)))) {
+          shinyLogs %>% writeLog('error', 'Please specify your GBIF username, email, and password. This is needed to get citations for occurrence records. Wallace does not store your information or use it for anything else.')
+          return()
+        }
+        myBTO <- occCite::studyTaxonList(x = spName, datasources = "NCBI")
+        login <- occCite::GBIFLoginManager(user = gbifUser, email = gbifEmail, pwd = gbifPW)
+        myBTO <- occCite::occQuery(x = myBTO, GBIFLogin = login, limit = occNum)
+        myOccCitations <- occCite::occCitation(myBTO)
+        # make something with the same slots as spocc that we use
+        q=list(gbif=list(meta=list(found=NULL),data=list(formatSpName(spName))))
+        q[[occDb]]$meta$found=nrow(myBTO@occResults[[spName]][['GBIF']][['OccurrenceTable']])
+        q[[occDb]]$data[[formatSpName(spName)]]=myBTO@occResults[[spName]][['GBIF']][['OccurrenceTable']]
+      }
+    } else if (occDb == 'bien') {
+      myBTO <- occCite::studyTaxonList(x = spName, datasources = "NCBI")
+      myBTO <- occCite::occQuery(x = myBTO, datasources = 'bien', limit = occNum)
+      myOccCitations <- NULL
+      # make something with the same slots as spocc that we use
+      q=list(bien=list(meta=list(found=NULL),data=list(formatSpName(spName))))
+      q[[occDb]]$meta$found=
+        nrow(myBTO@occResults[[spName]][['BIEN']][['OccurrenceTable']])
+      q[[occDb]]$data[[formatSpName(spName)]]=
+        myBTO@occResults[[spName]][['BIEN']][['OccurrenceTable']]
+    }
+ })
   
   # get total number of records found in database
   totRows <- q[[occDb]]$meta$found
@@ -67,6 +110,7 @@ c1_queryDb <- function(spName, occDb, occNum, shinyLogs=NULL) {
   dups <- duplicated(occsXY[,c('longitude','latitude')])
   occs <- occsXY[!dups,]
   
+
   if (occDb == 'gbif') {
     fields <- c('institutionCode', 'stateProvince', 'basisOfRecord', "country",
                 "locality", "elevation")
@@ -75,23 +119,29 @@ c1_queryDb <- function(spName, occDb, occNum, shinyLogs=NULL) {
                                    institution_code = institutionCode, 
                                    state_province = stateProvince, 
                                    record_type = basisOfRecord)
-    # standardize VertNet column names
-  } else if (occDb == 'vertnet') {
-    fields <- c('institutioncode', 'stateprovince', 'basisofrecord', 
-                'maximumelevationinmeters')
+
+  } else if (occDb == 'vertnet') { # standardize VertNet column names
+    fields <- c('institutioncode', 'stateprovince', 'basisofrecord', 'maximumelevationinmeters')
     for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
-    occs <- occs %>% dplyr::rename(institution_code = institutioncode, 
+    occs <- occs %>% dplyr::rename(taxon_name = name,
+                                   institution_code = institutioncode, 
                                    state_province = stateprovince, 
                                    record_type = basisofrecord, 
                                    elevation = maximumelevationinmeters)
-    # standardize BISON column names
-  } else if (occDb == 'bison') {
-    fields <- c('countryCode', 'ownerInstitutionCollectionCode', 
-                'calculatedCounty', 'elevation')
+  } else if (occDb == 'bison') { # standardize BISON column names
+    fields <- c('countryCode', 'ownerInstitutionCollectionCode', 'calculatedCounty', 'elevation')
     for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
-    occs <- occs %>% dplyr::rename(country = countryCode, 
+    occs <- occs %>% dplyr::rename(taxon_name = providedScientificName,
+                                   country = countryCode, 
                                    institution_code = ownerInstitutionCollectionCode, 
-                                   locality = calculatedCounty)
+                                   locality = calculatedCounty,
+                                   record_type = basisOfRecord,
+                                   state_province = stateProvince)
+  } else if (occDb == 'bien') {
+    fields <- c('country', 'state_province', 'locality', 'elevation', 'record_type')
+    for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
+    occs <- occs %>% dplyr::rename(taxon_name = name,
+                                   institution_code = Dataset)
   }
   
   # subset by key columns and make id and popup columns
@@ -103,7 +153,8 @@ c1_queryDb <- function(spName, occDb, occNum, shinyLogs=NULL) {
     # make new column for leaflet marker popup content
     dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent))) %>%  
     dplyr::arrange_(cols)
-  
+
+  # subset by key columns and make id and popup columns
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
   dupsRem <- nrow(occsXY) - nrow(occs)
   
