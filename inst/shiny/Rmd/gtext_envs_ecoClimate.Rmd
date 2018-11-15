@@ -1,48 +1,18 @@
 ---
-title: "comp3_ecoClimate"
+title: "envs_ecoClimate"
 output: html_document
 ---
 
-### **Module:** ***ecoClimate***
+### **Module:** ***EcoClimate***
 
 **BACKGROUND**
 
-ecoClimate arose from the need for climate layers with which to build ecological
-niche models and test macroecological and biogeographic hypotheses in the past, present, and future. ecoClimate offers a suite of processed, multi-temporal climate data sets from the most recent multi-model ensembles developed by the Coupled Modeling Intercomparison Projects
-(CMIP5) and Paleoclimate Modeling Intercomparison Projects (PMIP3) across past, present, and future time frames, at global extents and 0.5° spatial resolution, in convenient formats for analysis and manipulation. A priority of ecoClimate is consistency across these diverse data, but retaining information on uncertainties among model predictions.
-
-BIO1 = Annual Mean Temperature  
-BIO2 = Mean Diurnal Range (Mean of monthly (max temp - min temp))  
-BIO3 = Isothermality (BIO2/BIO7) (* 100)  
-BIO4 = Temperature Seasonality (standard deviation *100)  
-BIO5 = Max Temperature of Warmest Month  
-BIO6 = Min Temperature of Coldest Month  
-BIO7 = Temperature Annual Range (BIO5-BIO6)  
-BIO8 = Mean Temperature of Wettest Quarter  
-BIO9 = Mean Temperature of Driest Quarter  
-BIO10 = Mean Temperature of Warmest Quarter  
-BIO11 = Mean Temperature of Coldest Quarter  
-BIO12 = Annual Precipitation  
-BIO13 = Precipitation of Wettest Month  
-BIO14 = Precipitation of Driest Month  
-BIO15 = Precipitation Seasonality (Coefficient of Variation)  
-BIO16 = Precipitation of Wettest Quarter  
-BIO17 = Precipitation of Driest Quarter  
-BIO18 = Precipitation of Warmest Quarter  
-BIO19 = Precipitation of Coldest Quarter  
+text
 
 **IMPLEMENTATION**
 
-This module relies on the R package `raster`, `repmis` and `sp`to load the climatic variables from the ecoClimate server. 
-
+text
 
 **REFERENCES**
 
-Lima-Ribeiro, M.S., Varela, S., González-Hernández, J., de Oliveira, G., Diniz-Filho, J.A.F. and Terribile, L.C. 2015. ecoClimate: a database of climate cata from multiple models for past, present, and future for Macroecologists and Biogeographers *Biodiversity Informatics* 10, 1-21 (2015)
-
-Varela, S., Lima-Ribeiro, M.S. and Terribile, L.C. 2015. A Short Guide to the Climatic Variables of the Last Glacial Maximum for Biogeographers *PLoS ONE* 10(6): e0129037 
-
-
-
-
-
+reference

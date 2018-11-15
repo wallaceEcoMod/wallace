@@ -5,42 +5,43 @@ output: html_document
 
 #### WORKFLOW
 
-*Wallace* (v1.9.0) currently includes the following components and modules:  
+*Wallace* (v1.9.9*) currently includes the following components and modules:  
 
 **1**: *Obtain Occurrence Data*  
--Query Database  
--User-specified
+- Query Database  
+- User-specified Occurrences
 
 **2:** *Process Occurrence Data*  
--Select Localities  
--Spatial Thin  
+- Select Occurrences on Map  
+- Remove Occurrences by ID  
+- Spatial Thin  
 
 **3:** *Obtain Environmental Data*  
--WorldClim  
--EcoClimate  
--User-specified 
+- WorldClim
+- EcoClimate
+- User-specified Environmental Data
 
 **4:** *Process Environmental Data*  
--Select Study Region  
--User-specified 
+- Select Study Region  
+- User-specified Study Region
 
 **5:** *Partition Occurrence Data*  
--Non-spatial Partition  
--Spatial Partition  
+- Non-spatial Partition  
+- Spatial Partition  
 
 **6:** *Build and Evaluate Niche Model*  
--BIOCLIM  
--Maxent  
+- BIOCLIM  
+- Maxent  
 
 **7:** *Visualize Model Results*  
--BIOCLIM Envelope Plot  
--Maxent Evaluation Plots  
--Plot Response Curves  
--Map Prediction  
+- BIOCLIM Envelope Plot  
+- Maxent Evaluation Plots  
+- Plot Response Curves  
+- Map Prediction  
 
 **8:** *Project Model*  
--Project to New Area  
--Project to New Time  
--Calculate Environmental Similarity  
+- Project to New Area  
+- Project to New Time  
+- Calculate Environmental Similarity  
 
 **Download Session Code**  

@@ -39,8 +39,9 @@ c4_bgSample <- function(occs, bgMask, bgPtsNum, shinyLogs=NULL) {
   if(bg.prop == 1) {
     shinyLogs %>% writeLog(em(spName(occs)), ": ", bgPtsNum, " random background points sampled.")
   } else {
-    shinyLogs %>% writeLog(em(spName(occs)), ": ", bgPtsNum, " random background points requested, 
-                           but only ", 100*bg.prop, "% of points (n = ", nrow(bgXY), ") were able to be sampled.")
+    shinyLogs %>% writeLog(em(spName(occs)), ": ", bgPtsNum, " random background
+                           points requested, but only ", 100*bg.prop, "% of 
+                           points (n = ", nrow(bgXY), ") were able to be sampled.")
   }
   return(bgXY)
 }

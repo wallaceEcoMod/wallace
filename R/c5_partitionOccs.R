@@ -40,27 +40,32 @@ c5_partitionOccs <- function(occs, bg, method, kfolds=NULL, bgMask=NULL, aggFact
   
   if (method == 'jack') {
     group.data <- ENMeval::get.jackknife(occs.xy, bg.xy)
-    shinyLogs %>% writeLog("Occurrences partitioned by jackknife method for ", em(spName(occs)), ".")
+    shinyLogs %>% writeLog("Occurrences partitioned by jackknife method for ", 
+                           em(spName(occs)), ".")
   }
   
   if (method == 'rand') {
     if(is.null(kfolds)) {
-      shinyLogs %>% writeLog(type = 'error', "Please specify a kfold value to use
-                        the random partition function for ", em(spName(occs)), ".")
+      shinyLogs %>% writeLog(type = 'error', "Please specify a kfold value to 
+                             use the random partition function for ", 
+                             em(spName(occs)), ".")
       return()
     }
     if (kfolds < 2) {
-      shinyLogs %>% writeLog(type = 'error', "Please specify a kfold value greater than 1 for ", em(spName(occs)), ".")  
+      shinyLogs %>% writeLog(type = 'error', "Please specify a kfold value 
+                             greater than 1 for ", em(spName(occs)), ".")  
       return()
     }
     
     group.data <- ENMeval::get.randomkfold(occs.xy, bg.xy, kfolds)
-    shinyLogs %>% writeLog("Occurrences partitioned by random k-fold (k = ", kfolds, ") for ", em(spName(occs)), ".")
+    shinyLogs %>% writeLog("Occurrences partitioned by random k-fold 
+                           (k = ", kfolds, ") for ", em(spName(occs)), ".")
   }
   
   if (method == 'block') {
     group.data <- ENMeval::get.block(occs.xy, bg.xy)
-    shinyLogs %>% writeLog("Occurrences partitioned by block method for ", em(spName(occs)), ".")
+    shinyLogs %>% writeLog("Occurrences partitioned by block method for ", 
+                           em(spName(occs)), ".")
   }
   
   if (method == 'cb1' | method == 'cb2') {
@@ -70,13 +75,15 @@ c5_partitionOccs <- function(occs, bg, method, kfolds=NULL, bgMask=NULL, aggFact
       return()
     }
     if(is.null(bgMask)) {
-      shinyLogs %>% writeLog(type = 'error', "Please specify a background mask to use
-                        checkerboard partition functions for ", em(spName(occs)), ".")
+      shinyLogs %>% writeLog(type = 'error', "Please specify a background mask 
+                             to use checkerboard partition functions for ", 
+                             em(spName(occs)), ".")
       return()
     }
     if(is.null(aggFact)) {
-      shinyLogs %>% writeLog(type = 'error', "Please specify an aggregation factor to use
-                        checkerboard partition functions for ", em(spName(occs)), ".")
+      shinyLogs %>% writeLog(type = 'error', "Please specify an aggregation 
+                             factor to use checkerboard partition functions for ",
+                             em(spName(occs)), ".")
       return()
     }
   }
@@ -87,7 +94,8 @@ c5_partitionOccs <- function(occs, bg, method, kfolds=NULL, bgMask=NULL, aggFact
     })
     
     shinyLogs %>% writeLog("Occurrences partitioned by checkerboard 1 method with 
-                                 aggregation factor ", aggFact, " for ", em(spName(occs)), ".")
+                           aggregation factor ", aggFact, " for ", 
+                           em(spName(occs)), ".")
   }
   
   if(method == 'cb2') {
@@ -96,7 +104,8 @@ c5_partitionOccs <- function(occs, bg, method, kfolds=NULL, bgMask=NULL, aggFact
     })
     
     shinyLogs %>% writeLog("Occurrences partitioned by checkerboard 2 method with 
-                             aggregation factor ", aggFact, " for ", em(spName(occs)), ".")
+                           aggregation factor ", aggFact, " for ", 
+                           em(spName(occs)), ".")
   }
   
   return(group.data)

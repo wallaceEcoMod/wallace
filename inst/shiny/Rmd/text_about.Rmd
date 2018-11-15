@@ -7,20 +7,36 @@ output: html_document
 
 <img src="img/jamie.jpg" alt="jamie" style="width: 100px;"/>
 
-<a href="https://www.researchgate.net/profile/Jamie_Kass" target="_blank">Jamie M. Kass</a> (lead developer) is a coauthor of ENMeval and currently a PhD candidate at CUNY Graduate Center and City College of New York. He was supported by a CUNY Science Scholarship, a CUNY Graduate Center Provost Digital Innovation Grant, and the National Science Foundation Division of Biological Infrastructure (DBI-1650241).
+<a href="https://www.researchgate.net/profile/Jamie_Kass" target="_blank">Jamie M. Kass</a> (lead developer) is a coauthor of ENMeval and currently a PhD candidate at CUNY Graduate Center and City College of New York. In 2019, he will begain a JSPS postdoctoral fellowship at Okinawa Institute of Science and Technology in Japan.
+ 
+<img src="img/gonzalo.png" alt="gonzalo" style="width: 100px;"/>
+
+<a href="https://www.researchgate.net/profile/Gonzalo_Pinilla-Buitrago" target="_blank">Gonzalo E. Pinilla-Buitrago</a> (co-developer) is a PhD student at CUNY Graduate Center and City College of New York.
 
 <img src="img/bruno.png" alt="bruno" style="width: 100px;"/>
 
-<a href="https://www.researchgate.net/profile/Bruno_Vilela3" target="_blank">Bruno Vilela</a> (co-developer) is a coauthor of spThin and currently a post-doctoral researcher at Washington University in St. Louis. He was supported by a Coordination for the Improvement of Higher Education Personnel (CAPES) doctoral grant from Brazil.
+<a href="https://www.researchgate.net/profile/Bruno_Vilela3" target="_blank">Bruno Vilela</a> (co-developer) is a coauthor of spThin and currently a professor at Universidade Federal da Bahia in Brazil.
 
 <img src="img/matt.png" alt="matt" style="width: 100px;"/>
 
-<a href="https://www.researchgate.net/profile/Matthew_Aiello-Lammens" target="_blank">Matthew Aiello-Lammens</a> (co-developer) is the lead author of spThin and Assistant Professor of Biology at Pace University. He was supported by the National Science Foundation Dimensions of Biodiversity program (DEB-1046328).
+<a href="https://www.researchgate.net/profile/Matthew_Aiello-Lammens" target="_blank">Matthew Aiello-Lammens</a> (co-developer) is the lead author of spThin and Assistant Professor of Biology at Pace University.
 
 <img src="img/bob.png" alt="bob" style="width: 100px;"/>
 
-<a href="https://www.researchgate.net/profile/Robert_Muscarella" target="_blank">Robert Muscarella</a> (co-developer) is the lead author of ENMeval and currently a National Science Foundation post-doctoral fellow at Aarhus University in Denmark. He was supported by the National Science Foundation Division of Biological Infrastructure program (DBI-1401312).
+<a href="https://www.researchgate.net/profile/Robert_Muscarella" target="_blank">Robert Muscarella</a> (co-developer) is the lead author of ENMeval and currently is a reasercher at Aarhus University in Denmark. In 2019, he will began a professor position at Uppsala University in Sweden.
+
+<img src="img/cory.png" alt="cory" style="width: 100px;"/>
+
+<a href="https://www.researchgate.net/profile/Cory_Merow2" target="_blank">Cory Merow</a> (co-developer) is currently a researcher at the University of Connecticut.
 
 <img src="img/rob.png" alt="rob" style="width: 100px;"/>
 
-<a href="https://www.researchgate.net/profile/Robert_Anderson7" target="_blank">Robert P. Anderson</a> (co-developer) is a coauthor of spThin and ENMeval, and Professor of Biology at City College of New York, CUNY. He was supported by the National Science Foundation Divisions of Biological Infrastructure and Environmental Biology (DBI-1650241 and DEB-1119915).
+<a href="https://www.researchgate.net/profile/Robert_Anderson7" target="_blank">Robert P. Anderson</a> (co-developer) is a coauthor of spThin and ENMeval, and Professor of Biology at City College of New York, CUNY. 
+
+<img src="img/valentina.png" alt="valentina" style="width: 100px;"/>
+
+<a href="https://www.researchgate.net/profile/Valentina_Grisales_Betancur" target="_blank">Valentina Grisales-Betancur</a> (collaborator) is an undergraduate student at EAFIT University in Colombia.
+
+<img src="img/sarah.png" alt="sarah" style="width: 100px;"/>
+
+Sarah Mennan (collaborator) recently completed her undergraduate degree from the City College of New York.

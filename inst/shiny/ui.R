@@ -7,7 +7,7 @@ for (f in list.files('./modules')) source(file.path('modules', f), local=TRUE)
 shinyUI(tagList(
   shinyjs::useShinyjs(),
   navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsible=TRUE,
-             title='Wallace',
+             title='Wallace v1.9.9.9003',
              tabPanel("Intro", value='intro'),
              tabPanel("Occ Data", value='occs'),
              tabPanel("Process Occs", value='poccs'),
@@ -25,7 +25,7 @@ shinyUI(tagList(
                                includeCSS("css/styles.css"),
                                includeScript("js/scroll.js"),
                                conditionalPanel("input.tabs == 'intro'",
-                                                actionButton('load', 'HACK'),
+                                                #actionButton('load', 'HACK'),
                                                 includeMarkdown("Rmd/text_intro_tab.Rmd")
                                ),
                                # OBTAIN OCCS ####

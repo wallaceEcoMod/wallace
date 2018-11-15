@@ -107,7 +107,8 @@ runBIOCLIM  <- function(occs, bg, bgMask, shinyLogs = NULL) {
     e <- bioclimEval()
   })
   
-  shinyLogs %>% writeLog("BIOCLIM ran successfully for", em(spName(occs)), "and output evaluation results.")
+  shinyLogs %>% writeLog("BIOCLIM ran successfully for ", em(spName(occs)), 
+                         " and output evaluation results.")
   
   return(e)
 }

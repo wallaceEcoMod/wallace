@@ -1,5 +1,33 @@
-# wallace 1.9.0
+# wallace 1.9.9*
 - in dev
+
+# wallace 1.0.6.1
+- Adding a couple convenience functions for running wallace headless by @isaacovercast
+
+# wallace 1.0.6
+- Wallace no longer needs rJava to run! Oh happy days! Wallace is now compatible with ENMeval 0.3.0, which now has no rJava dependency and runs Maxent using maxnet by default (CRAN package maxnet; https://onlinelibrary.wiley.com/doi/abs/10.1111/ecog.03049). This means Wallace no longer loads rJava automatically when using the ENMeval partition functions or running Maxent. You can still select the Java implementation of Maxent by choosing "maxent.jar" in the Maxent module, whereupon rJava will load. 
+- Wallace now works on computers that error when some non-ASCII characters are used. This problem was discovered during a workshop in Vietnam on some Chinese computers.
+- Users can now select bioclimatic variables when using 30 arc second data.
+- Added more instructions on how to troubleshoot installing rJava.
+- Occurrence points with NA environmental values now disappear from the map.
+- We also fixed some other small bugs dealing with the shiny code and Markdown file.
+- MESS color gradient
+- Small changes in text guidance
+
+# wallace 1.0.5
+- A brand new vignette was finally added to our website. Please find it here: https://wallaceecomod.github.io/vignettes/wallace_vignette.html
+- *Methods in Ecology and Evolution* paper published in April 2018 -- DOI remains the same.
+- The lambdas file for each Maxent model can now be viewed in a subtab of Results.
+- Projections in the Project component no longer overlap with map predictions from the Visualize component.
+- Added more options to Draw toolbar to allow users to erase drawn polygons. Until `leaflet.extras` enables programmatic removal of drawn polygons again, the Reset button will only reset the data, and not affect polygons. 
+- Pagination was added back to the model results table.
+- Enabled download of the model results table as .csv.
+- Removed the pop-up field from the occurrence table for downloads.
+- Fixed a problem with downloading rasters as .png.
+- Fixed bug that made the app crash if Project is selected after pressing Reset to remove the polygon in the Project component.
+- There is now a check to see that `rgdal` is installed before downloads of rasters are allowed. This turns out to be an issue with `raster` package, as the `rgdal` dependency for this function doesn't seem to be functional.
+- The slider for regularization multipliers is now restricted to a minimum of 0.5, and is able to be set to increments of 0.5. An RM value of 0 caused errors for Hinge models, and it's not clear whether RM of 0 is recommendable for other FCs, so it was removed.
+- In the highly improbable case users select all points in the Select Occs module, the app now does not crash, and instead informs the user to select a subset instead.
 
 # wallace 1.0.4
 - Fixed the mapped display for the user-drawn polygon in **Module:** ***Select Occurrences On Map*** so that it remains displayed after the Finish button is pressed.

@@ -36,7 +36,7 @@ c8_projectTime <- function(results, curModel, envs, outputType, polyPjXY, polyPj
   xy.round <- round(polyPjXY, digits = 2)
   xy.round <- xy.round[-nrow(xy.round),]  # remove last point that completes polygon
   coordsChar <- paste(apply(xy.round, 1, function(b) paste0('(',paste(b, collapse=', '),')')), collapse=', ')  
-  shinyLogs %>% writeLog('New time projection for model', curModel, 'with extent coordinates:', coordsChar)
+  shinyLogs %>% writeLog('New time projection for model ', curModel, ' with extent coordinates: ', coordsChar)
   
   smartProgress(shinyLogs, message = "Clipping environmental data to current extent...", {
     pjtMsk <- raster::crop(envs, newPoly)

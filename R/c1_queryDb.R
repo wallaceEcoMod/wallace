@@ -31,31 +31,23 @@ c1_queryDb <- function(spName,
                        gbifEmail=NULL,
                        gbifPW=NULL,
                        shinyLogs=NULL) {
-  #CM>>
-    # for testing
-    # case 1: previous versions of wallace
-    # spName='Bassaricyon neblina';occDb='gbif';occNum=50; doCitations=F; gbifUser=NULL; gbifEmail=NULL; gbifPW=NULL;shinyLogs=NULL
-    # case 2: occCite with gbif
-    # spName='Bassaricyon neblina';occDb='gbif';occNum=50; doCitations=T; gbifUser='wallacetester'; gbifEmail='cmerow@yahoo.com'; gbifPW='wallacetester';shinyLogs=NULL; GBIFDownloadDirectory='~/Desktop'
-    # case 3: occCite with rbien
-    # spName='Turritis glabra';occDb='bien';occNum=50; doCitations=T; gbifUser=NULL; gbifEmail=NULL; gbifPW=NULL;shinyLogs=NULL
-  #CM<<
   
   # capitalize genus name if not already, trim whitespace
-  spName <- trimws(paste0(toupper(substring(spName, 1, 1)), substring(spName, 2, nchar(spName))))  
-
+  spName <- trimws(paste0(toupper(substring(spName, 1, 1)), 
+                          substring(spName, 2, nchar(spName))))  
+  
   # figure out how many separate names (components of scientific name) were entered
   nameSplit <- length(unlist(strsplit(spName, " ")))
   # if two names not entered, throw error and return
   if (nameSplit != 2) {
-    shinyLogs %>% writeLog(type = 'error', 'Please input both genus and species names.')
+    shinyLogs %>% writeLog(type = 'error', 
+                           'Please input both genus and species names.')
     return()
   }
 
   # query database
   smartProgress(shinyLogs, message = paste0("Querying ", occDb, " for ", spName, "..."), {
-    #CM+GEPB>>
-    if (occDb == 'bison' | occDb == 'vertnet') {
+     if (occDb == 'bison' | occDb == 'vertnet') {
       q <- spocc::occ(spName, occDb, limit = occNum)
       myOccCitations <- NULL
     } else if (occDb == 'gbif') {
@@ -87,15 +79,15 @@ c1_queryDb <- function(spName,
       q[[occDb]]$data[[formatSpName(spName)]]=
         myBTO@occResults[[spName]][['BIEN']][['OccurrenceTable']]
     }
-    #CM+GEPB<<
-})
+ })
   
   # get total number of records found in database
   totRows <- q[[occDb]]$meta$found
   
   # if species not found, print message to log box and return
   if (q[[occDb]]$meta$found == 0) {
-    shinyLogs %>% writeLog(type = 'error', 'No records found for ', em(spName), ". Please check the spelling.")
+    shinyLogs %>% writeLog(type = 'error', 'No records found for ', em(spName), 
+                           ". Please check the spelling.")
     return()
   }
   # extract occurrence tibble
@@ -110,20 +102,24 @@ c1_queryDb <- function(spName,
   # subset to just records with latitude and longitude
   occsXY <- occsOrig[!is.na(occsOrig$latitude) & !is.na(occsOrig$longitude),]
   if (nrow(occsXY) == 0) {
-    shinyLogs %>% writeLog(type = 'warning', 'No records with coordinates found in', occDb, "for", em(spName), ".")
+    shinyLogs %>% writeLog(type = 'warning', 'No records with coordinates found 
+                           in ', occDb, " for ", em(spName), ".")
     return()
   }
   
   dups <- duplicated(occsXY[,c('longitude','latitude')])
   occs <- occsXY[!dups,]
   
-  if (occDb == 'gbif') { # standardize BISON column names
-    fields <- c('institutionCode', 'stateProvince', 'basisOfRecord', "country", "locality", "elevation")
+
+  if (occDb == 'gbif') {
+    fields <- c('institutionCode', 'stateProvince', 'basisOfRecord', "country",
+                "locality", "elevation")
     for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
     occs <- occs %>% dplyr::rename(taxon_name = name, 
                                    institution_code = institutionCode, 
                                    state_province = stateProvince, 
                                    record_type = basisOfRecord)
+
   } else if (occDb == 'vertnet') { # standardize VertNet column names
     fields <- c('institutioncode', 'stateprovince', 'basisofrecord', 'maximumelevationinmeters')
     for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
@@ -147,13 +143,11 @@ c1_queryDb <- function(spName,
     occs <- occs %>% dplyr::rename(taxon_name = name,
                                    institution_code = Dataset)
   }
-  # CM >> Do you need to add any formatting here for bien records? GEPB:YES
-  
   
   # subset by key columns and make id and popup columns
-  cols <- c("taxon_name", "longitude", "latitude",  "occID", 
-            "year", "institution_code", "country", "state_province",
-            "locality", "elevation", "record_type")
+  cols <- c("taxon_name", "longitude", "latitude",  "occID", "year", 
+            "institution_code", "country", "state_province", "locality", 
+            "elevation", "record_type")
   occs <- occs %>% 
     dplyr::select(dplyr::one_of(cols)) %>%
     # make new column for leaflet marker popup content
@@ -164,13 +158,11 @@ c1_queryDb <- function(spName,
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
   dupsRem <- nrow(occsXY) - nrow(occs)
   
-  shinyLogs %>% writeLog('Total ', occDb, ' records for ', em(spName), 
-                         ' returned [', nrow(occsOrig),'] out of [', totRows,
-                         '] total (limit ', occNum, 
-                         '). Records without coordinates removed [', noCoordsRem, 
-                         ']. Duplicated records removed [', dupsRem, 
-                         ']. Remaining records [', nrow(occs), '].')
-  
-  return(list(orig = occsOrig, cleaned = occs, citations = myOccCitations))
+  shinyLogs %>% writeLog('Total ', occDb, ' records for ', em(spName), ' returned 
+                         [', nrow(occsOrig), '] out of [', totRows, '] total 
+                         (limit ', occNum, '). Records without coordinates 
+                         removed [', noCoordsRem, ']. Duplicated records removed
+                         [', dupsRem, ']. Remaining records [', nrow(occs), '].')
+  return(list(orig = occsOrig, cleaned = occs))
 }
 

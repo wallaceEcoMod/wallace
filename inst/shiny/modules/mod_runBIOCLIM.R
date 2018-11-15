@@ -15,8 +15,9 @@ runBIOCLIM_MOD <- function(input, output, session) {
     for(sp in spLoop) {
       # ERRORS ####
       if(is.null(spp[[sp]]$occs$partition)) {
-        shinyLogs %>% writeLog(type = 'error', "Before building a model, please partition 
-                          occurrences for cross-validation for", spName(spp[[sp]]), ".")
+        shinyLogs %>% writeLog(type = 'error', "Before building a model, please
+                               partition occurrences for cross-validation for ",
+                               spName(spp[[sp]]), ".")
         return()
       }
       

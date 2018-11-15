@@ -32,7 +32,8 @@ c1_userOccs <- function(csvPath, csvName, shinyLogs = NULL) {
   
   # check to make sure all column names are correct
   if (!all(c('taxon_name', 'longitude', 'latitude') %in% names(csv))) {
-    shinyLogs %>% writeLog(type = "error", 'Please input CSV file with columns "taxon_name", "longitude", "latitude".')
+    shinyLogs %>% writeLog(type = "error", 'Please input CSV file with columns
+                           "taxon_name", "longitude", "latitude".')
     return()
   }
   
@@ -44,7 +45,8 @@ c1_userOccs <- function(csvPath, csvName, shinyLogs = NULL) {
   spNames <- trimws(as.character(unique(occs$taxon_name)))
   
   if (nrow(occs) == 0) {
-    shinyLogs %>% writeLog(type = 'warning', 'No records with coordinates found in ', csvName, ".")
+    shinyLogs %>% writeLog(type = 'warning', 'No records with coordinates found 
+                           in ', csvName, ".")
     return()
   }
   

@@ -54,7 +54,8 @@ c2_thinOccs <- function(occs, thinDist, shinyLogs=NULL) {
     # }
   })
   
-  shinyLogs %>% writeLog('Total records for ', em(spName(occs)), ' thinned to [', nrow(occs.thin), '] localities.')
+  shinyLogs %>% writeLog('Total records for ', em(spName(occs)), ' thinned to 
+                         [', nrow(occs.thin), '] localities.')
   
   return(occs.thin)
 }

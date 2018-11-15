@@ -53,5 +53,7 @@ envSimilarity_MAP <- function(map, session) {
 }
 
 envSimilarity_INFO <- infoGenerator(modName = "Calculate Environmental Similarity",
-                                    modAuts = "Jamie M. Kass, Bruno Vilela, Robert P. Anderson", 
+                                    modAuts = "Jamie M. Kass, Bruno Vilela, 
+                                    Gonzalo E. Pinilla-Buitrago, Robert P. 
+                                    Anderson", 
                                     pkgName = "dismo")

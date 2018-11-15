@@ -19,5 +19,7 @@ responsePlot_MOD <- function(input, output, session) {
 }
 
 responsePlot_INFO <- infoGenerator(modName = "Response Curves", 
-                                   modAuts = "Jamie M. Kass, Robert Muscarella, Bruno Vilela, Robert P. Anderson", 
+                                   modAuts = "Jamie M. Kass, Robert Muscarella, 
+                                   Bruno Vilela, Gonzalo E. Pinilla-Buitrago, 
+                                   Robert P. Anderson", 
                                    pkgName = "dismo")

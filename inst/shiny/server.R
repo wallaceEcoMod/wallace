@@ -42,33 +42,33 @@ shinyServer(function(input, output, session) {
   # load modules
   for (f in list.files('./modules')) source(file.path('modules', f), local=TRUE)
   
-  # FOR DEVELOPMENT PURPOSES
-  observeEvent(input$load, {
-    f <- c1_userOccs('example_data/multispecies copy.csv', "multispecies copy.csv")
-    # wc <- c3_worldclim(10, paste0('bio', 1:19))
-    # wc <- raster::brick(wc)
-    # r <- list()
-    # ls1 <- list.files('example_data/Procyon_lotor_mskEnvs', full.names = TRUE)
-    # ls1 <- ls1[-which(grepl("gri$",ls1))]
-    # r[["Procyon_lotor"]] <- raster::stack(ls1)
-    # r[["Procyon_lotor"]] <- raster::brick(r[["Procyon_lotor"]])
-    # ls2 <- list.files('example_data/Nyctereutes_procyonoides_mskEnvs', full.names = TRUE)
-    # ls2 <- ls2[-which(grepl("gri$",ls2))]
-    # r[["Nyctereutes_procyonoides"]] <- raster::stack(ls2)
-    # r[["Nyctereutes_procyonoides"]] <- raster::brick(r[["Nyctereutes_procyonoides"]])
-    for(n in c("Procyon_lotor", "Nyctereutes_procyonoides")) {
-      occs <- f[[n]]$occs
-      occs$partition <- NULL
-      spp[[n]] <- list(occs = occs, occData = list(occsCleaned = occs),
-                       rmm = rangeModelMetadata::rmmTemplate())
-      # spp[[n]]$envs <- wc
-      # spp[[n]]$bg <- f[[n]]$bg
-      # spp[[n]]$procEnvs <- list()
-      # spp[[n]]$procEnvs$bgMask <- r[[n]]
-      # spp[[n]]$occs$partition <- f[[n]]$occs$partition
-    }
-    print('SECRET DATA LOADED')
-  })
+  # # FOR DEVELOPMENT PURPOSES
+  # observeEvent(input$load, {
+  #   f <- c1_userOccs('example_data/multispecies copy.csv', "multispecies copy.csv")
+  #   # wc <- c3_worldclim(10, paste0('bio', 1:19))
+  #   # wc <- raster::brick(wc)
+  #   # r <- list()
+  #   # ls1 <- list.files('example_data/Procyon_lotor_mskEnvs', full.names = TRUE)
+  #   # ls1 <- ls1[-which(grepl("gri$",ls1))]
+  #   # r[["Procyon_lotor"]] <- raster::stack(ls1)
+  #   # r[["Procyon_lotor"]] <- raster::brick(r[["Procyon_lotor"]])
+  #   # ls2 <- list.files('example_data/Nyctereutes_procyonoides_mskEnvs', full.names = TRUE)
+  #   # ls2 <- ls2[-which(grepl("gri$",ls2))]
+  #   # r[["Nyctereutes_procyonoides"]] <- raster::stack(ls2)
+  #   # r[["Nyctereutes_procyonoides"]] <- raster::brick(r[["Nyctereutes_procyonoides"]])
+  #   for(n in c("Procyon_lotor", "Nyctereutes_procyonoides")) {
+  #     occs <- f[[n]]$occs
+  #     occs$partition <- NULL
+  #     spp[[n]] <- list(occs = occs, occData = list(occsCleaned = occs),
+  #                      rmm = rangeModelMetadata::rmmTemplate())
+  #     # spp[[n]]$envs <- wc
+  #     # spp[[n]]$bg <- f[[n]]$bg
+  #     # spp[[n]]$procEnvs <- list()
+  #     # spp[[n]]$procEnvs$bgMask <- r[[n]]
+  #     # spp[[n]]$occs$partition <- f[[n]]$occs$partition
+  #   }
+  #   print('SECRET DATA LOADED')
+  # })
   
   # initialize log window
   output$log <- renderUI({
@@ -102,7 +102,7 @@ shinyServer(function(input, output, session) {
     else if(component() == "model") input$modelSel
     else if(component() == "vis") input$visSel
     else if(component() == "proj") input$projSel
-    else if(component() == "rmd") ''
+    #else if(component() == "rmd") ''
   })
   
   # logic to serve the selected component/module guidance text
