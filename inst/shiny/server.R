@@ -243,9 +243,11 @@ shinyServer(function(input, output, session) {
     # check if spp has species in it
     req(length(reactiveValuesToList(spp)) > 0)
     occs() %>% 
-      dplyr::mutate(longitude = round(as.numeric(longitude), digits = 2),
+      dplyr::mutate(occID = as.numeric(occID),
+                    longitude = round(as.numeric(longitude), digits = 2),
                     latitude = round(as.numeric(latitude), digits = 2)) %>% 
-      dplyr::select(-pop)
+      dplyr::select(-pop) %>% 
+      dplyr::arrange(occID)
   }, rownames = FALSE, options = list(scrollX = TRUE))
   
   # DOWNLOAD: current species occurrence data table

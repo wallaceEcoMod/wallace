@@ -108,7 +108,7 @@ c1_queryDb <- function(spName, occDb, occNum, doCitations = F, gbifUser = NULL,
   occsOrig$longitude <- as.numeric(occsOrig$longitude)
   
   # make new column for original ID
-  occsOrig$occID <- row.names(occsOrig)
+  occsOrig$occID <- as.numeric(row.names(occsOrig))
   
   # subset to just records with latitude and longitude
   occsXY <- occsOrig[!is.na(occsOrig$latitude) & !is.na(occsOrig$longitude),]
