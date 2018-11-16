@@ -386,7 +386,7 @@ shinyUI(tagList(
                                                                                     br(),
                                                                                     fluidRow(
                                                                                       column(3, h5("Download all data")),
-                                                                                      column(2, downloadButton('dlOccsAll', "ZIP file"))
+                                                                                      column(2, downloadButton('dlAllOccs', "CVS file"))
                                                                                     )
                                                                    ))
                                                           

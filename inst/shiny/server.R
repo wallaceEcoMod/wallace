@@ -256,7 +256,9 @@ shinyServer(function(input, output, session) {
   # DOWNLOAD: current species occurrence data table
   output$dlOccs <- downloadHandler(
     filename = function() {
-      paste0(spName(spp[[curSp()]]), ".csv")
+      n <- formatSpName(spName(spp[[curSp()]]))
+      source <- rmm()$data$occurrence$sources
+      paste0(n, "_", source, ".csv")
     },
     content = function(file) {
       tbl <- occs() %>% 
@@ -271,22 +273,23 @@ shinyServer(function(input, output, session) {
   
   # DOWNLOAD: all species occurrence data table
   output$dlAllOccs <- downloadHandler(
-    filename = "multispecies.csv",
+    filename = function(){"multispecies_ocurrence_table.csv"},
     content = function(file) {
-      inTbl <- occs() %>% dplyr::select(-pop)
-      tbl <- matrix(ncol = ncol(inTbl))
-      colnames(tbl) <- names(inTbl)
-      for(sp in allSp()) {
-        curTbl <- spp[[sp]]$occs %>% dplyr::select(-pop)  
-        # if bg values are present, add them to table
-        if(!is.null(spp[[sp]]$bg)) {
-          curTbl <- rbind(curTbl, spp[[sp]]$bg) 
-        }
-        tbl <- rbind(tbl, curTbl)
-      }
+      l <- lapply(allSp(), function(x) {spp[[x]]$occData$occsCleaned})
+      tbl <- dplyr::bind_rows(l)
+      # inTbl <- occs() %>% dplyr::select(-pop)
+      # tbl <- matrix(ncol = ncol(inTbl))
+      # colnames(tbl) <- names(inTbl)
+      # for(sp in allSp()) {
+      #   curTbl <- spp[[sp]]$occs %>% dplyr::select(-pop)  
+      #   # # if bg values are present, add them to table
+      #   # if(!is.null(spp[[sp]]$bg)) {
+      #   #   curTbl <- rbind(curTbl, spp[[sp]]$bg) 
+      #   # }
+      #   tbl <- rbind(tbl, curTbl)
+      # }
       # remove first NA row
       tbl <- tbl[-1,]
-      
       write.csv(tbl, file, row.names = FALSE)
     }
   )
@@ -294,9 +297,9 @@ shinyServer(function(input, output, session) {
   # DOWNLOAD: occsOrig
   output$dlDbOccs <- downloadHandler(
     filename = function() {
-      n <- formatSpName(occs()$taxon_name[1])
+      n <- formatSpName(spName(spp[[curSp()]]))
       source <- rmm()$data$occurrence$sources
-      paste0(n, "_", source, ".csv")
+      paste0(n, "_", source, "_raw.csv")
     },
     content = function(file) {
       write.csv(spp[[curSp()]]$occData$occsOrig, file, row.names = FALSE)
