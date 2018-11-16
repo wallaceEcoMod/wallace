@@ -121,6 +121,10 @@ c1_queryDb <- function(spName, occDb, occNum, doCitations = F, gbifUser = NULL,
     return()
   }
   
+  # round longitude and latitude with 5 digits
+  occsXY['longitude'] <- round(occsXY['longitude'], 5)
+  occsXY['latitude'] <- round(occsXY['latitude'], 5)
+  
   dups <- duplicated(occsXY[,c('longitude','latitude')])
   occs <- occsXY[!dups,]
   
