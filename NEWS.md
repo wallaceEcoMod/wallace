@@ -1,5 +1,6 @@
 # wallace 1.9.9*
 - in dev
+- coordinates on the map
 
 # wallace 1.0.6.1
 - Adding a couple convenience functions for running wallace headless by @isaacovercast

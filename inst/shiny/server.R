@@ -119,7 +119,7 @@ shinyServer(function(input, output, session) {
   m <- leaflet() %>% 
     setView(0, 0, zoom = 2) %>% 
     addProviderTiles('Esri.WorldTopoMap') %>% 
-    addMouseCoordinates()
+    mapview::addMouseCoordinates()
   output$map <- renderLeaflet(m)
   
   # create map proxy to make further changes to existing map
