@@ -52,10 +52,10 @@ shinyUI(tagList(
                                                                  userOccs_UI('c1_userOccs_uiID'),
                                                                  actionButton("goUserOccs", "Load Occurrences"),
                                                                  HTML('<hr>')),
-                                                conditionalPanel("input.occsSel == 'dbOccs' | input.occsSel == 'pdbOccs'",
-                                                                 strong("Download raw occurrence data"), br(), br(),
-                                                                 downloadButton('dlDbOccs', "Download CSV"),
-                                                                 HTML('<hr>')),
+                                                #conditionalPanel("input.occsSel == 'dbOccs' | input.occsSel == 'pdbOccs'",
+                                                                 #strong("Download raw occurrence data"), br(), br(),
+                                                                 #downloadButton('dlDbOccs', "Download CSV"),
+                                                                 #HTML('<hr>')),
                                                 conditionalPanel("input.occsSel == 'dbOccs'", uiBottom(queryDb_INFO)),
                                                 conditionalPanel("input.occsSel == 'pdbOccs'", uiBottom(queryPaleoDb_INFO)),
                                                 conditionalPanel("input.occsSel == 'userOccs'", uiBottom(userOccs_INFO))
@@ -345,12 +345,14 @@ shinyUI(tagList(
                                                                                                          'ESRI Imagery'="Esri.WorldImagery",
                                                                                                          'ESRI Nat Geo'='Esri.NatGeoWorldMap'),
                                                                                              selected = "Esri.WorldTopoMap"))),
-                                                          tabPanel('Occs Tbl', br(), fluidRow(column(width=4, tags$h4("Download occurrence data as .csv")), 
-                                                                                              column(width=2, downloadButton('dlOccs', "Download Current")),
-                                                                                              column(width=2,downloadButton('dlAllOccs', "Download All")),
-                                                                                              column(width=4)
-                                                          ), 
-                                                          br(), DT::dataTableOutput('occTbl')),
+                                                          tabPanel('Table', br(), 
+                                                          #          fluidRow(column(width=4, tags$h4("Download occurrence data as .csv")), 
+                                                          #                                     column(width=2, downloadButton('dlOccs', "Download Current")),
+                                                          #                                     column(width=2,downloadButton('dlAllOccs', "Download All")),
+                                                          #                                     column(width=4)
+                                                          # ), 
+                                                          # br(), 
+                                                          DT::dataTableOutput('occTbl')),
                                                           tabPanel('Results', 
                                                                    conditionalPanel("input.tabs == 'envs'", verbatimTextOutput('envsPrint')),
                                                                    conditionalPanel("input.tabs == 'model'", uiOutput('evalTbls')),
@@ -368,7 +370,26 @@ shinyUI(tagList(
                                                                                     nicheOv_resultsUI("cEspace_nicheOv_uiID"))
                                                           ),
                                                           tabPanel('Component Guidance', uiOutput('gtext_component')),
-                                                          tabPanel('Module Guidance', uiOutput('gtext_module'))
+                                                          tabPanel('Module Guidance', uiOutput('gtext_module')),
+                                                          tabPanel('Download', 
+                                                                   conditionalPanel("input.tabs == 'occs'",
+                                                                                    br(), 
+                                                                                    fluidRow(
+                                                                                      column(3, h5("Download original occurrence data")),
+                                                                                      column(2, downloadButton('dlDbOccs', "CVS file"))
+                                                                                    ),
+                                                                                    br(),
+                                                                                    fluidRow(
+                                                                                      column(3, h5("Download current table")),
+                                                                                      column(2, downloadButton('dlOccs', "CVS file"))
+                                                                                    ),
+                                                                                    br(),
+                                                                                    fluidRow(
+                                                                                      column(3, h5("Download all data")),
+                                                                                      column(2, downloadButton('dlOccsAll', "ZIP file"))
+                                                                                    )
+                                                                   ))
+                                                          
                                               )
                              ),
                              conditionalPanel("input.tabs == 'rmd'",
