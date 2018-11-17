@@ -62,6 +62,7 @@ queryDb_MOD <- function(input, output, session) {
     spp[[n]]$rmm$data$occurrence$dataType <- "presence only"
     spp[[n]]$rmm$data$occurrence$presenceSampleSize <- nrow(occs)
     spp[[n]]$rmm$code$wallaceSettings$occsNum <- input$occsNum
+    spp[[n]]$rmm$code$wallaceSettings$occsRemoved <- input$occsNum - nrow(occsTbls$cleaned)
      # store citations with occCite, or just report the database if users are 
      # too lame to use bridgetree
     if(input$doCitations){
