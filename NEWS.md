@@ -1,6 +1,10 @@
 # wallace 1.9.9*
 - in dev
 - coordinates on the map
+- bien option
+- download all your data
+- new sub-tab download
+- coordinates uncertainty
 
 # wallace 1.0.6.1
 - Adding a couple convenience functions for running wallace headless by @isaacovercast
