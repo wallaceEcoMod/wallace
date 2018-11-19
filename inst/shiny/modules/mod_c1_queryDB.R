@@ -31,7 +31,7 @@ queryDb_UI <- function(id) {
              Downloaded records are not sorted randomly: 
              rows are always consistent between downloads.',
              numericInput(ns("occsNum"), "Set maximum number of occurrences", 
-                          value = NA, min = 1))
+                          value = 100, min = 1))
   )
 }
 

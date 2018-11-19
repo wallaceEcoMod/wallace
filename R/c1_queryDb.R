@@ -182,6 +182,9 @@ c1_queryDb <- function(spName, occDb, occNum, doCitations = F, gbifUser = NULL,
             "elevation", "uncertainty")
   occs <- occs %>% 
     dplyr::select(dplyr::one_of(cols)) %>%
+    dplyr::mutate(year = as.integer(year), 
+                  uncertainty = as.numeric(uncertainty),
+                  elevation = as.numeric(elevation)) %>% 
     # make new column for leaflet marker popup content
     dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent))) %>%  
     dplyr::arrange_(cols)
