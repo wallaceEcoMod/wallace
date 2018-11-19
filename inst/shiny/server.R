@@ -12,7 +12,9 @@ options(shiny.maxRequestSize=5000*1024^2)
 
 shinyServer(function(input, output, session) {
   # disable download buttons
+  shinyjs::disable("dlDbOccs")
   shinyjs::disable("dlOccs")
+  shinyjs::disable("dlAllOccs")
   # shinyjs::disable("dlEnvs")
   shinyjs::disable("dlMskEnvs")
   shinyjs::disable("downloadEvalcsv")
@@ -177,7 +179,9 @@ shinyServer(function(input, output, session) {
     # UI CONTROLS
     # assign the selected species to the present occ table's taxon name
     updateSelectInput(session, "curSp", selected = n)
+    shinyjs::enable("dlDbOccs")
     shinyjs::enable("dlOccs")
+    if (length(allSp()) > 1) shinyjs::enable("dlAllOccs")
     shinyjs::enable("dlRMD")
   })
   
