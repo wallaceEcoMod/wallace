@@ -44,7 +44,7 @@ c1_userOccs <- function(csvPath, csvName, shinyLogs = NULL) {
   occs <- csv.xy %>% dplyr::filter(!grepl("bg_", taxon_name))
   spNames <- trimws(as.character(unique(occs$taxon_name)))
   
-  if (nrow(csv.xy) == 0) {
+  if (nrow(occs) == 0) {
     shinyLogs %>% writeLog(type = 'warning', 'No records with coordinates found 
                            in ', csvName, ".")
     return()
