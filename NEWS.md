@@ -5,6 +5,7 @@
 - download all your data
 - new sub-tab download
 - coordinates uncertainty
+- duplicates removed in userOccs #202
 
 # wallace 1.0.6.1
 - Adding a couple convenience functions for running wallace headless by @isaacovercast
