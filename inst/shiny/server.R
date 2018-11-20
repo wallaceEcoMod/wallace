@@ -206,7 +206,8 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goUserOccs, {
     userOccs <- callModule(userOccs_MOD, 'c1_userOccs_uiID')
     userOccs()
-    shinyjs::disable("dlOccs")
+    shinyjs::enable("dlOccs")
+    if (length(allSp()) > 1) shinyjs::enable("dlAllOccs")
     shinyjs::enable("dlRMD")
   })
   
