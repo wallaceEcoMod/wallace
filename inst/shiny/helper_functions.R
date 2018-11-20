@@ -88,7 +88,7 @@ formatSpName <- function(spName) {
   spName <- as.character(spName)
   spl <- strsplit(spName, split=' ')
   if(length(spl[[1]]) > 1) {
-    paste(spl[[1]], collapse='_')
+    paste(spl[[1]][1:2], collapse='_')
   } else {
     spName
   }
