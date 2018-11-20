@@ -16,9 +16,11 @@ userOccs_MOD <- function(input, output, session) {
     # LOAD INTO SPP ####
     # if species name is already in list, overwrite it
     for(n in names(occsList)) {
-      occs <- occsList[[n]]$occs
+      occs <- occsList[[n]]$cleaned
+      occsOrig <- occsList[[n]]$orig
       if(!is.null(spp[[n]])) spp[[n]] <- NULL
-      spp[[n]] <- list(occs = occs, occData = list(occsCleaned = occs),
+      spp[[n]] <- list(occs = occs, 
+                       occData = list(occsOrig = occsOrig, occsCleaned = occs),
                        rmm = rangeModelMetadata::rmmTemplate())
       if(!is.null(occsList[[n]]$bg)) spp[[n]]$bg <- occsList[[n]]$bg
       
@@ -44,5 +46,6 @@ userOccs_MAP <- function(map, session) {
 }
 
 userOccs_INFO <- infoGenerator(modName = "User-specified Occurrences",
-                              modAuts = "Jamie M. Kass, Bruno Vilela, Robert P. Anderson",
+                              modAuts = "Jamie M. Kass, Bruno Vilela, Gonzalo E. 
+                                        Pinilla-Buitrago, Robert P. Anderson",
                               pkgName = NULL)

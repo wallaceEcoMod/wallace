@@ -44,7 +44,7 @@ c1_userOccs <- function(csvPath, csvName, shinyLogs = NULL) {
   occs <- csv.xy %>% dplyr::filter(!grepl("bg_", taxon_name))
   spNames <- trimws(as.character(unique(occs$taxon_name)))
   
-  if (nrow(occs) == 0) {
+  if (nrow(csv.xy) == 0) {
     shinyLogs %>% writeLog(type = 'warning', 'No records with coordinates found 
                            in ', csvName, ".")
     return()
@@ -57,17 +57,32 @@ c1_userOccs <- function(csvPath, csvName, shinyLogs = NULL) {
     # add occID field if it doesn't exist
     if(!("occID" %in% names(sp.occs))) sp.occs$occID <- row.names(sp.occs)
     # add all cols to match dbOccs if not already there
-    for (col in c("year", "institution_code", "country", "state_province",
-                  "locality", "elevation", "record_type")) {  
+    for (col in c("country", "state_province", "locality", "year", "record_type", 
+                  "institution_code", "elevation", "uncertainty")) {  
       if (!(col %in% names(sp.occs))) sp.occs[,col] <- NA
     }
     # add popup field
     sp.occs$pop <- unlist(apply(sp.occs, 1, popUpContent))
     n <- formatSpName(i)
-    occsList[[n]] <- list(occs = sp.occs)
     
-    shinyLogs %>% writeLog("Data for ", em(i), " uploaded from ", csvName, ": ", 
-                      nrow(sp.occs), " occurrence records with coordinates.")
+    # subset to just records with latitude and longitude
+    occsXY <- sp.occs[!is.na(sp.occs$latitude) & !is.na(sp.occs$longitude),]
+    
+    # round longitude and latitude with 5 digits
+    occsXY['longitude'] <- round(occsXY['longitude'], 5)
+    occsXY['latitude'] <- round(occsXY['latitude'], 5)
+    
+    dups <- duplicated(occsXY[,c('longitude','latitude')])
+    occs <- occsXY[!dups,]
+    
+    occsList[[n]] <- list(orig = sp.occs, cleaned = occs)
+    
+    # subset by key columns and make id and popup columns
+    dupsRem <- nrow(sp.occs) - nrow(occs)
+    
+    shinyLogs %>% writeLog("Data for ", em(i), " uploaded from ", csvName, ": 
+                           Duplicated records removed [", dupsRem, "]. Remaining 
+                           records [", nrow(occs), "].")
     
     # look for background records
     sp.bg <- csv.xy %>% dplyr::filter(taxon_name == paste0("bg_", i))
