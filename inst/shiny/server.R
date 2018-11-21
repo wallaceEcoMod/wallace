@@ -15,6 +15,7 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("dlDbOccs")
   shinyjs::disable("dlOccs")
   shinyjs::disable("dlAllOccs")
+  shinyjs::disable("dlProcOccs")
   # shinyjs::disable("dlEnvs")
   shinyjs::disable("dlMskEnvs")
   shinyjs::disable("downloadEvalcsv")
@@ -323,6 +324,16 @@ shinyServer(function(input, output, session) {
     removeByID()
   })
   
+  # Enable/disable single processed occs
+  observeEvent(input$goRemoveByID, {
+    shiny::observe({
+      shinyjs::toggleState("dlProcOccs", 
+        !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords) |
+        !is.null(spp[[curSp()]]$procOccs$occsThin) |
+        !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs))
+    })
+  })
+  
   # # # # # # # # # # # # # # # # # # # # #
   # module Select Occurrences on Map ####
   # # # # # # # # # # # # # # # # # # # # #
@@ -330,10 +341,18 @@ shinyServer(function(input, output, session) {
     req(input$map_draw_new_feature)
     selOccs <- callModule(selectOccs_MOD, 'c2_selOccs_uiID')
     selOccs()
-
     # UI CONTROLS 
-    # updateSelectInput(session, "curSp", selected = curSp())
-    shinyjs::enable("dlProcOccs")
+    #updateSelectInput(session, "curSp", selected = curSp())
+  })
+  
+  # Enable/disable single processed occs
+  observeEvent(input$goSelectOccs, {
+    shiny::observe({
+      shinyjs::toggleState("dlProcOccs", 
+        !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords) |
+        !is.null(spp[[curSp()]]$procOccs$occsThin) |
+        !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs))
+    })
   })
   
   # # # # # # # # # # # # # #
@@ -343,7 +362,16 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goThinOccs, {
     thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs_uiID')
     thinOccs()
-    shinyjs::enable("dlProcOccs")
+  })
+  
+  # Enable/disable single processed occs
+  observeEvent(input$goThinOccs, {
+      shiny::observe({
+        shinyjs::toggleState("dlProcOccs", 
+          !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords) |
+          !is.null(spp[[curSp()]]$procOccs$occsThin) |
+          !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs))
+    })
   })
   
   # # # # # # # # # # # # # # # # # #
@@ -353,7 +381,10 @@ shinyServer(function(input, output, session) {
   # reset occurrences button functionality
   observeEvent(input$goResetOccs, {
     req(curSp())
-    spp[[curSp()]]$occs <- spp[[curSp()]]$occData$occsCleaned  
+    spp[[curSp()]]$occs <- spp[[curSp()]]$occData$occsCleaned
+    spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords <- NULL
+    spp[[curSp()]]$procOccs$occsThin <- NULL
+    spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs <- NULL
     shinyLogs %>% writeLog("Reset occurrences for ", 
                            em(spp[[curSp()]]$occs[1, "taxon_name"]), ".")
     # MAPPING
@@ -362,7 +393,20 @@ shinyServer(function(input, output, session) {
       zoom2Occs(occs())
     # UI CONTROLS 
     # updateSelectInput(session, "curSp", selected = curSp())
+    shinyjs::disable("dlProcOccs")
   })
+  
+  # DOWNLOAD: current processed occurrence data table
+  output$dlProcOccs <- downloadHandler(
+    filename = function() {
+      n <- formatSpName(spName(spp[[curSp()]]))
+      paste0(n, "_processed_occs.csv")
+    },
+    content = function(file) {
+      tbl <- occs() %>% dplyr::select(-pop)
+      write.csv(tbl, file, row.names = FALSE)
+    }
+  )
   
   ############################################# #
   ### COMPONENT: OBTAIN ENVIRONMENTAL DATA ####
