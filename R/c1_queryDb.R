@@ -130,30 +130,33 @@ c1_queryDb <- function(spName, occDb, occNum, doCitations = F, gbifUser = NULL,
   
   if (occDb == 'gbif') {
     fields <- c("name", "longitude", "latitude", "country", "stateProvince",
-                "locality", "year", "basisOfRecord", "institutionCode", "elevation",
-                "coordinateUncertaintyInMeters")
+                "locality", "year", "basisOfRecord", "catalogNumber", 
+                "institutionCode", "elevation", "coordinateUncertaintyInMeters")
     for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
     occs <- occs %>% dplyr::rename(taxon_name = name, 
                                    state_province = stateProvince, 
                                    record_type = basisOfRecord,
                                    institution_code = institutionCode,
+                                   catalog_number = catalogNumber,
                                    uncertainty = coordinateUncertaintyInMeters) 
 } else if (occDb == 'vertnet') { # standardize VertNet column names
     fields <- c("name", "longitude", "latitude", "country", "stateprovince",
-                "locality", "year", "basisofrecord", "institutioncode", 
-                "maximumelevationinmeters", "coordinateuncertaintyinmeters")
+                "locality", "year", "basisofrecord", "catalognumber", 
+                "institutioncode", "maximumelevationinmeters", 
+                "coordinateuncertaintyinmeters")
     for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
     occs <- occs %>% dplyr::rename(taxon_name = name,
                                    state_province = stateprovince, 
                                    record_type = basisofrecord, 
-                                   institution_code = institutioncode, 
+                                   institution_code = institutioncode,
+                                   catalog_number = catalognumber,
                                    elevation = maximumelevationinmeters,
                                    uncertainty = coordinateuncertaintyinmeters)
   } else if (occDb == 'bison') { # standardize BISON column names
     fields <- c("providedScientificName", "longitude", "latitude", "countryCode",
                 "stateProvince", "verbatimLocality", "year", "basisOfRecord",
-                "ownerInstitutionCollectionCode", "verbatimElevation", 
-                "coordinateUncertaintyInMeters")
+                "catalogNumber", "ownerInstitutionCollectionCode", 
+                "verbatimElevation", "coordinateUncertaintyInMeters")
     for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
     occs <- occs %>% dplyr::rename(taxon_name = providedScientificName,
                                    country = countryCode, 
@@ -162,13 +165,13 @@ c1_queryDb <- function(spName, occDb, occNum, doCitations = F, gbifUser = NULL,
                                    record_type = basisOfRecord,
                                    institution_code = 
                                      ownerInstitutionCollectionCode,
+                                   catalog_number = catalogNumber,
                                    elevation = verbatimElevation,
                                    uncertainty = coordinateUncertaintyInMeters)
   } else if (occDb == 'bien') {
-    fields <- c("name", "longitude", "latitude", "country",
-                "state_province", "locality", "year", "record_type",
-                "institution_code", "elevation", 
-                "uncertainty")
+    fields <- c("name", "longitude", "latitude", "country", "state_province", 
+                "locality", "year", "record_type", "catalog_number", 
+                "institution_code", "elevation", "uncertainty")
     # occCite field requirements (no downloaded by occCite) "country", 
     # "state_province", "locality", "year", "record_type", "institution_code",
     # "elevation", "uncertainty"
@@ -178,8 +181,8 @@ c1_queryDb <- function(spName, occDb, occNum, doCitations = F, gbifUser = NULL,
   
   # subset by key columns and make id and popup columns
   cols <- c("occID", "taxon_name", "longitude", "latitude", "country", 
-            "state_province", "locality", "year", "record_type", "institution_code",
-            "elevation", "uncertainty")
+            "state_province", "locality", "year", "record_type", "catalog_number", 
+            "institution_code", "elevation", "uncertainty")
   occs <- occs %>% 
     dplyr::select(dplyr::one_of(cols)) %>%
     dplyr::mutate(year = as.integer(year), 

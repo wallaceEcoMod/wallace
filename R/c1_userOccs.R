@@ -21,7 +21,8 @@
 # @aliases - a list of additional topic names that will be mapped to
 # this documentation when the user looks them up from the command
 # line.
-# @family - a family name. All functions that have the same family tag will be linked in the documentation.
+# @family - a family name. All functions that have the same family tag will be linked
+#  in the documentation.
 
 #' @export
 
@@ -57,8 +58,9 @@ c1_userOccs <- function(csvPath, csvName, shinyLogs = NULL) {
     # add occID field if it doesn't exist
     if(!("occID" %in% names(sp.occs))) sp.occs$occID <- row.names(sp.occs)
     # add all cols to match dbOccs if not already there
-    for (col in c("country", "state_province", "locality", "year", "record_type", 
-                  "institution_code", "elevation", "uncertainty")) {  
+    for (col in c("country", "state_province", "locality", "year", "record_type",
+                  "catalog_number", "institution_code", "elevation", 
+                  "uncertainty")) {  
       if (!(col %in% names(sp.occs))) sp.occs[,col] <- NA
     }
     # add popup field
