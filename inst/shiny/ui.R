@@ -87,7 +87,9 @@ shinyUI(tagList(
                                                                  uiTop(thinOccs_INFO),
                                                                  thinOccs_UI('c2_thinOccs_uiID'),
                                                                  actionButton("goThinOccs", "Thin Occurrences")
-                                                ),
+                                                ), br(),
+                                                strong("Reset to original occurrences"), br(), br(),
+                                                actionButton("goResetOccs", "Reset"),
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.procOccsSel == 'selOccs'", uiBottom(selectOccs_INFO)),
                                                 conditionalPanel("input.procOccsSel == 'remID'", uiBottom(removeByID_INFO)),

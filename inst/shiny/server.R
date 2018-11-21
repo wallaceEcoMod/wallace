@@ -354,7 +354,8 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goResetOccs, {
     req(curSp())
     spp[[curSp()]]$occs <- spp[[curSp()]]$occData$occsCleaned  
-    shinyLogs %>% writeLog("Reset occurrences.")
+    shinyLogs %>% writeLog("Reset occurrences for ", 
+                           em(spp[[curSp()]]$occs[1, "taxon_name"]), ".")
     # MAPPING
     map %>%
       map_occs(occs()) %>%
