@@ -232,19 +232,23 @@ popUpContent <- function(x) {
     tags$br(),
     tags$strong(paste("Longitude:", lon)),
     tags$br(),
-    tags$strong(paste("Year:", x['year'])),
-    tags$br(),
-    tags$strong(paste("Inst. Code:", x['institutionCode'])),
-    tags$br(),
     tags$strong(paste("Country:", x['country'])),
     tags$br(),
-    tags$strong(paste("State/Prov.:", x['stateProvince'])),
+    tags$strong(paste("State/Prov.:", x['state_province'])),
     tags$br(),
     tags$strong(paste("Locality:", x['locality'])),
     tags$br(),
+    tags$strong(paste("Year:", x['year'])),
+    tags$br(),
+    tags$strong(paste("Basis of Record:", x['record_type'])),
+    tags$br(),
+    tags$strong(paste("Catalog number:", x['catalog_number'])),
+    tags$br(),
+    tags$strong(paste("Inst. Code:", x['institution_code'])),
+    tags$br(),
     tags$strong(paste("Elevation:", x['elevation'])),
     tags$br(),
-    tags$strong(paste("Basis of Record:", x['basisOfRecord']))
+    tags$strong(paste("Uncertainty (m):", x['uncertainty']))
   ))
 }
 
