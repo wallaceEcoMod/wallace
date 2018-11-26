@@ -41,8 +41,8 @@ c1_queryDb <- function(spName, occDb, occNum, doCitations = F, gbifUser = NULL,
   nameSplit <- length(unlist(strsplit(spName, " ")))
   # if two names not entered, throw error and return
   if (nameSplit != 2) {
-    shinyLogs %>% writeLog(type = 'error', 'Please input both genus and species
-                           names.')
+    shinyLogs %>% writeLog(type = 'error',
+                           'Please input both genus and species names.')
     return()
   }
 
@@ -58,11 +58,10 @@ c1_queryDb <- function(spName, occDb, occNum, doCitations = F, gbifUser = NULL,
         myOccCitations <- NULL
       } else if (doCitations == TRUE) {
         if(any(unlist(lapply(list(gbifUser, gbifEmail, gbifPW), is.null)))) {
-          shinyLogs %>% writeLog('error', 'Please specify your GBIF username, 
-                                 email, and password. This is needed to get
-                                 citations for occurrence records. Wallace does
-                                 not store your information or use it for
-                                 anything else.')
+          shinyLogs %>% writeLog('error', 
+            'Please specify your GBIF username, email, and password. This is needed',
+            ' to get citations for occurrence records. Wallace does not store your',
+            ' information or use it for anything else.')
           return()
         }
         myBTO <- occCite::studyTaxonList(x = spName, datasources = "NCBI")
@@ -116,8 +115,8 @@ c1_queryDb <- function(spName, occDb, occNum, doCitations = F, gbifUser = NULL,
   # subset to just records with latitude and longitude
   occsXY <- occsOrig[!is.na(occsOrig$latitude) & !is.na(occsOrig$longitude),]
   if (nrow(occsXY) == 0) {
-    shinyLogs %>% writeLog(type = 'warning', 'No records with coordinates found 
-                           in ', occDb, " for ", em(spName), ".")
+    shinyLogs %>% writeLog(type = 'warning', 'No records with coordinates found in ',
+                           occDb, " for ", em(spName), ".")
     return()
   }
   
@@ -195,11 +194,11 @@ c1_queryDb <- function(spName, occDb, occNum, doCitations = F, gbifUser = NULL,
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
   dupsRem <- nrow(occsXY) - nrow(occs)
   
-  shinyLogs %>% writeLog('Total ', occDb, ' records for ', em(spName), ' returned 
-                         [', nrow(occsOrig), '] out of [', totRows, '] total 
-                         (limit ', occNum, '). Records without coordinates 
-                         removed [', noCoordsRem, ']. Duplicated records removed
-                         [', dupsRem, ']. Remaining records [', nrow(occs), '].')
+  shinyLogs %>% writeLog('Total ', occDb, ' records for ', em(spName), ' returned [',
+    nrow(occsOrig), '] out of [', totRows, '] total (limit ', occNum, 
+    '). Records without coordinates removed [', noCoordsRem, 
+    ']. Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs),
+    '].')
   return(list(orig = occsOrig, cleaned = occs))
 }
 

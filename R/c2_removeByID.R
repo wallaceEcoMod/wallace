@@ -28,8 +28,8 @@
 
 c2_removeByID <- function(occs, removeID, shinyLogs = NULL) {
   if (is.null(occs)) {
-    shinyLogs %>% writeLog(type = 'error', "Before processing occurrences, 
-                      obtain the data in component 1.")
+    shinyLogs %>% writeLog(type = 'error', 
+      "Before processing occurrences, obtain the data in component 1.")
     return()
   }
   

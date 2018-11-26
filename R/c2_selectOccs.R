@@ -29,14 +29,14 @@
 
 c2_selectOccs <- function(occs, polySelXY, polySelID = 1, shinyLogs = NULL) {
   if (is.null(occs)) {
-    shinyLogs %>% writeLog(type = 'error', "Before processing occurrences, 
-                      obtain the data in component 1.")
+    shinyLogs %>% writeLog(type = 'error', 
+      "Before processing occurrences, obtain the data in component 1.")
     return()
   }
   if (is.null(polySelXY)) {
-    shinyLogs %>% writeLog(type = 'error', 'The polygon has not been finished. 
-                           Please press "Finish" on the map toolbar, then 
-                           the "Select Occurrences" button.')
+    shinyLogs %>% writeLog(type = 'error', 
+      'The polygon has not been finished. Please press "Finish" on the map toolbar,',
+      ' then the "Select Occurrences" button.')
       return()
     }
     
@@ -55,8 +55,8 @@ c2_selectOccs <- function(occs, polySelXY, polySelID = 1, shinyLogs = NULL) {
     
     occs.sel <- occs[-ptRemIndex,]
     
-    shinyLogs %>% writeLog(em(spName(occs)), ": Removing occurrences with 
-                           occID = ", remIDs, ". Updated data has 
-                           n = ", nrow(occs.sel), " records.")
+    shinyLogs %>% writeLog(em(spName(occs)), ": Removing occurrences with occID = ",
+                           remIDs, ". Updated data has n = ", nrow(occs.sel), 
+                           " records.")
     return(occs.sel)
 }
