@@ -295,7 +295,7 @@ shinyServer(function(input, output, session) {
       #   tbl <- rbind(tbl, curTbl)
       # }
       # remove first NA row
-      tbl <- tbl[-1,]
+      tbl <- tbl[-1,] %>% dplyr::select(-pop)
       write_csv_robust(tbl, file, row.names = FALSE)
     }
   )
