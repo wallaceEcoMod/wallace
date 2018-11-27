@@ -436,4 +436,18 @@ printVecAsis <- function(x, asChar = FALSE) {
   }
 }
 
-
+#####################
+# Download utlities #
+#####################
+convert_list_cols <- function(x) {
+  dplyr::mutate_if(.tbl = x,
+                   .predicate = function(col) inherits(col, "list"),
+                   .funs = function(col) {
+                     vapply(col,
+                            jsonlite::toJSON,
+                            character(1L))
+                   })
+}
+write_csv_robust <- function(x, ...) {
+  write.csv(convert_list_cols(x), ...)
+}

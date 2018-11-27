@@ -273,7 +273,7 @@ shinyServer(function(input, output, session) {
       if(!is.null(bg())) {
         tbl <- rbind(tbl, bg()) 
       }
-      write.csv(tbl, file, row.names = FALSE)
+      write_csv_robust(tbl, file, row.names = FALSE)
     }
   )
   
@@ -296,7 +296,7 @@ shinyServer(function(input, output, session) {
       # }
       # remove first NA row
       tbl <- tbl[-1,]
-      write.csv(tbl, file, row.names = FALSE)
+      write_csv_robust(tbl, file, row.names = FALSE)
     }
   )
   
@@ -308,7 +308,7 @@ shinyServer(function(input, output, session) {
       paste0(n, "_", source, "_raw.csv")
     },
     content = function(file) {
-      write.csv(spp[[curSp()]]$occData$occsOrig, file, row.names = FALSE)
+      write_csv_robust(spp[[curSp()]]$occData$occsOrig, file, row.names = FALSE)
     }
   )
   
@@ -404,7 +404,7 @@ shinyServer(function(input, output, session) {
     },
     content = function(file) {
       tbl <- occs() %>% dplyr::select(-pop)
-      write.csv(tbl, file, row.names = FALSE)
+      write_csv_robust(tbl, file, row.names = FALSE)
     }
   )
   
@@ -594,8 +594,8 @@ shinyServer(function(input, output, session) {
       
       exts <- c('dbf', 'shp', 'shx')
       fs <- paste0(n, '_bgShp.', exts)
-      zip(zipfile=file, files=fs)
-      if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
+      zip::zip(zipfile=file, files=fs)
+            if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
     },
     contentType = "application/zip"
   )
@@ -605,7 +605,8 @@ shinyServer(function(input, output, session) {
     filename = function() paste0(formatSpName(curSp()), '_mskEnvs.zip'),
     content = function(file) {
       tmpdir <- tempdir()
-      setwd(tempdir())
+      owd <- setwd(tmpdir)
+      on.exit(setwd(owd))
       type <- input$bgMskFileType
       nm <- names(envs())
       
@@ -617,7 +618,7 @@ shinyServer(function(input, output, session) {
       if (ext == 'grd') {
         fs <- c(fs, paste0(nm, '.gri'))
       }
-      zip(zipfile=file, files=fs)
+      zip::zip(zipfile=file, files=fs)
       if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
     },
     contentType = "application/zip"
@@ -793,7 +794,7 @@ shinyServer(function(input, output, session) {
     },
     content = function(file) {
       evalTbl <- cbind(results()$evalTbl, results()$evalTblBins)
-      write.csv(evalTbl, file, row.names = FALSE)
+      write_csv_robust(evalTbl, file, row.names = FALSE)
     }
   )
   
@@ -876,9 +877,10 @@ shinyServer(function(input, output, session) {
   # download for model predictions (restricted to background extent)
   output$dlPred <- downloadHandler(
     filename = function() {
-      ext <- switch(input$predFileType, raster = 'grd', ascii = 'asc', GTiff = 'tif', PNG = 'png')
+      ext <- switch(input$predFileType, raster = 'zip', ascii = 'asc', GTiff = 'tif', PNG = 'png')
       paste0(names(mapPred()), '.', ext)},
     content = function(file) {
+      browser()
       if(require(rgdal)) {
         if (input$predFileType == 'png') {
           png(file)
@@ -888,8 +890,10 @@ shinyServer(function(input, output, session) {
           fileName <- names(mapPred())
           tmpdir <- tempdir()
           raster::writeRaster(mapPred(), file.path(tmpdir, fileName), format = input$predFileType, overwrite = TRUE)
-          fs <- file.path(tmpdir, paste0(fileName, c('.grd', '.gri')))
-          zip(zipfile=file, files=fs, extras = '-j')
+          owd <- setwd(tmpdir)
+          fs <- paste0(fileName, c('.grd', '.gri'))
+          zip::zip(zipfile = file, files = fs)
+          setwd(owd)
         } else {
           r <- raster::writeRaster(mapPred(), file, format = input$predFileType, overwrite = TRUE)
           file.rename(r@file@name, file)
@@ -977,9 +981,10 @@ shinyServer(function(input, output, session) {
   # download for model predictions (restricted to background extent)
   output$dlProj <- downloadHandler(
     filename = function() {
-      ext <- switch(input$projFileType, raster = 'grd', ascii = 'asc', GTiff = 'tif', PNG = 'png')
+      ext <- switch(input$projFileType, raster = 'zip', ascii = 'asc', GTiff = 'tif', PNG = 'png')
       paste0(names(mapProj()), '.', ext)},
     content = function(file) {
+      browser()
       if(require(rgdal)) {
         if (input$projFileType == 'png') {
           png(file)
@@ -989,8 +994,10 @@ shinyServer(function(input, output, session) {
           fileName <- names(mapProj())
           tmpdir <- tempdir()
           raster::writeRaster(mapProj(), file.path(tmpdir, fileName), format = input$projFileType, overwrite = TRUE)
-          fs <- file.path(tmpdir, paste0(fileName, c('.grd', '.gri')))
-          zip(zipfile=file, files=fs, extras = '-j')
+          owd <- setwd(tmpdir)
+          fs <- paste0(fileName, c('.grd', '.gri'))
+          zip::zip(zipfile = file, files = fs)
+          setwd(owd)
         } else {
           r <- raster::writeRaster(mapProj(), file, format = input$projFileType, overwrite = TRUE)
           file.rename(r@file@name, file)
