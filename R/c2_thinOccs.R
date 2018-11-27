@@ -35,7 +35,7 @@ c2_thinOccs <- function(occs, thinDist, shinyLogs=NULL) {
   
   if (thinDist <= 0) {
     shinyLogs %>% writeLog(type = "error", 
-                           'Assign positive distance to thinning parameter.')
+      'Assign positive distance to thinning parameter.')
     return()
   }
   print(occs)
@@ -55,8 +55,8 @@ c2_thinOccs <- function(occs, thinDist, shinyLogs=NULL) {
     # }
   })
   
-  shinyLogs %>% writeLog('Total records for ', em(spName(occs)), ' thinned to [', 
-                         nrow(occs.thin), '] localities.')
+  shinyLogs %>% writeLog(
+    'Total records for ', em(spName(occs)), ' thinned to [', nrow(occs.thin), '] localities.')
   
   return(occs.thin)
 }

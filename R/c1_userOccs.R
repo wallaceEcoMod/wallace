@@ -33,8 +33,8 @@ c1_userOccs <- function(csvPath, csvName, shinyLogs = NULL) {
   
   # check to make sure all column names are correct
   if (!all(c('taxon_name', 'longitude', 'latitude') %in% names(csv))) {
-    shinyLogs %>% writeLog(type = "error", 'Please input CSV file with columns ',
-                           '"taxon_name", "longitude", "latitude".')
+    shinyLogs %>% writeLog(type = "error", 
+      'Please input CSV file with columns "taxon_name", "longitude", "latitude".')
     return()
   }
   
@@ -46,8 +46,8 @@ c1_userOccs <- function(csvPath, csvName, shinyLogs = NULL) {
   spNames <- trimws(as.character(unique(occs$taxon_name)))
   
   if (nrow(occs) == 0) {
-    shinyLogs %>% writeLog(type = 'warning', 'No records with coordinates found in ',
-                           csvName, ".")
+    shinyLogs %>% writeLog(type = 'warning', 
+      'No records with coordinates found in ', csvName, ".")
     return()
   }
   
@@ -82,17 +82,16 @@ c1_userOccs <- function(csvPath, csvName, shinyLogs = NULL) {
     # subset by key columns and make id and popup columns
     dupsRem <- nrow(sp.occs) - nrow(occs)
     
-    shinyLogs %>% writeLog("Data for ", em(i), " uploaded from ", csvName,
-                           ": Duplicated records removed [", dupsRem, 
-                           "]. Remaining records [", nrow(occs), "].")
+    shinyLogs %>% writeLog(
+      "Data for ", em(i), " uploaded from ", csvName, ": Duplicated records removed [", dupsRem, "]. Remaining records [", nrow(occs), "].")
     
     # look for background records
     sp.bg <- csv.xy %>% dplyr::filter(taxon_name == paste0("bg_", i))
     # if they exist, load them into occsList for the current species
     if(nrow(sp.bg) > 0) {
       occsList[[n]]$bg <- sp.bg
-      shinyLogs %>% writeLog("Data for ", em(i), " uploaded from ", csvName, ": ", 
-                             nrow(sp.bg), " background records.")
+      shinyLogs %>% writeLog(
+        "Data for ", em(i), " uploaded from ", csvName, ": ", nrow(sp.bg), " background records.")
     }
   }
   
