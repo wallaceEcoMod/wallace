@@ -1,5 +1,5 @@
 ---
-title: "tab5_nonspatial"
+title: "part_nsp"
 output: html_document
 ---
 

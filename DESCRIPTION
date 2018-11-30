@@ -1,57 +1,68 @@
 Package: wallace
-Version: 1.9.9.9001
-Date: 2018-06-16
-Title: A Modular Platform for Reproducible Modeling of Species Niches
-        and Distributions
-Authors@R: c(person("Jamie M.", "Kass", email = "jkass@gradcenter.cuny.edu", role = c("aut", "cre")),
-	person("Bruno", "Vilela", email = "bvilela@wustl.edu", role = "aut"),
-	person("Matthew E.", "Aiello-Lammens", email = "matt.lammens@gmail.com", role = "aut"),
-	person("Robert", "Muscarella", email = "bob.muscarella@gmail.com", role = "aut"),
-	person("Cory", "Merow", email = "corymerow@gmail.com", role = "aut"),
-	person("Gonzalo", "Pinilla-Buitrago", email = "gepinillab@gmail.com", role = "aut"),
-	person("Robert P.", "Anderson", email = "randerson@ccny.cuny.edu", role = "aut"))
-Author: Jamie M. Kass [aut, cre],
+Version: 1.9.9.9009
+Date: 2018-11-14
+Title: A Modular Platform for Reproducible Modeling of Species Niches 
+    and Distributions
+Authors@R: 
+    c(person("Jamie M.", "Kass", email = "jkass@gradcenter.cuny.edu", role = c("aut", "cre")),
+    person("Gonzalo E.", "Pinilla-Buitrago", email = "gpinillabuitrago@gradcenter.cuny.edu", role = "aut"),
+	  person("Bruno", "Vilela", email = "bvilela@wustl.edu", role = "aut"),
+	  person("Matthew E.", "Aiello-Lammens", email = "matt.lammens@gmail.com", role = "aut"),
+	  person("Robert", "Muscarella", email = "bob.muscarella@gmail.com", role = "aut"),
+	  person("Cory", "Merow", email = "corymerow@gmail.com", role = "aut"),
+	  person("Robert P.", "Anderson", email = "randerson@ccny.cuny.edu", role = "aut"))
+Author: 
+    Jamie M. Kass [aut, cre],
+    Gonzalo E. Pinilla-Buitrago [aut],
     Bruno Vilela [aut],
     Matthew E. Aiello-Lammens [aut],
     Robert Muscarella [aut],
     Cory Merow [aut],
-    Gonzalo Pinilla-Buitrago [aut],
     Robert P. Anderson [aut]
 Maintainer: Jamie M. Kass <jamie.m.kass@gmail.com>
 Depends:
-    R (>= 3.4.2),
-    shiny (>= 1.1.0),
-    leaflet (>= 2.0.0)
+    R (>= 3.5.0),
+    shiny (>= 1.2.0),
+    leaflet (>= 2.0.2)
 Imports:
-    DT (>= 0.2),
-    shinyjs,
-    spocc (>= 0.5.4),
-    RColorBrewer,
-    rmarkdown,
-    dplyr,
-    spThin,
-    ENMeval,
-    rgeos,
-    maptools,
-    dismo,
-    raster,
-    shinythemes,
-    magrittr,
-    rgdal,
-    leaflet.extras (>= 1.0.0),
-    paleobioDB,
-    repmis,
     ade4,
-    rangeModelMetadata,
-    XML,
+    dismo,
+    dplyr,
+    DT (>= 0.5),
+    ecospat,
+    ENMeval (>= 0.3.0),
+    gam,
+    leaflet.extras (>= 1.0.0),
+    magrittr,
+    maptools,
+    mapview,
     neotoma,
-    gam
-Description: The 'shiny' application Wallace is a modular platform for reproducible modeling of species niches and distributions. Wallace guides users through a complete analysis, from the acquisition of species occurrence and environmental data to visualizing model predictions on an interactive map, thus bundling complex workflows into a single, streamlined interface.
+    paleobioDB,
+    rangeModelMetadata,
+    raster,
+    RColorBrewer,
+    repmis,
+    rgdal,
+    rgeos,
+    rmarkdown,
+    shinyjs,
+    shinythemes,
+    sp,
+    spocc (>= 0.8.0),
+    spThin,
+    XML,
+    zip
+Description: The 'shiny' application Wallace is a modular platform for 
+    reproducible modeling of species niches and distributions. Wallace
+    guides users through a complete analysis, from the acquisition of species
+    occurrence and environmental data to visualizing model predictions on an 
+    interactive map, thus bundling complex workflows into a single, 
+    streamlined interface.
 License: GPL-3
 URL: https://wallaceEcoMod.github.io
 Encoding: UTF-8
 RoxygenNote: 6.0.1
-Suggests: knitr, rmarkdown, testthat, RSelenium
+Suggests: knitr, testthat, RSelenium
 NeedsCompilation: no
 Packaged: 2017-11-29 05:26:31 UTC; musasabi
 VignetteBuilder: knitr

@@ -61,7 +61,8 @@ c4_bgExtent <- function(occs, envs, bgSel, bgBuf, shinyLogs=NULL) {
     msg <- paste(em(spName(occs)), " study extent: minimum convex polygon,")
   } else if (bgSel == 'ptbuf') {
     if (bgBuf == 0) {
-      shinyLogs %>% writeLog(type = 'error', 'Change buffer distance to positive or negative value.')
+      shinyLogs %>% writeLog(type = 'error', 'Change buffer distance to positive
+                             or negative value.')
       return()
     }
     bgExt <- rgeos::gBuffer(occs.sp, width = bgBuf)

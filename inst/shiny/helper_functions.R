@@ -88,7 +88,7 @@ formatSpName <- function(spName) {
   spName <- as.character(spName)
   spl <- strsplit(spName, split=' ')
   if(length(spl[[1]]) > 1) {
-    paste(spl[[1]], collapse='_')
+    paste(spl[[1]][1:2], collapse='_')
   } else {
     spName
   }
@@ -122,7 +122,7 @@ writeLog <- function(logs, ..., type = 'default') {
     } else if (type == 'warning') {
       pre <- 'WARNING: '
     }  
-    newEntries <- paste(pre, ..., collapse = "")
+    newEntries <- paste0(pre, ..., collapse = "")
     message(newEntries)
     return()
   }
@@ -134,7 +134,7 @@ writeLog <- function(logs, ..., type = 'default') {
   } else if (type == 'warning') {
     pre <- '<font color="orange"><b>! WARNING</b></font> : '
   }
-  newEntries <- paste(pre, ..., collapse = "")
+  newEntries <- paste0(pre, ..., collapse = "")
   logs(paste(logs(), newEntries, sep = '<br>'))
 }
 
@@ -232,19 +232,23 @@ popUpContent <- function(x) {
     tags$br(),
     tags$strong(paste("Longitude:", lon)),
     tags$br(),
-    tags$strong(paste("Year:", x['year'])),
-    tags$br(),
-    tags$strong(paste("Inst. Code:", x['institutionCode'])),
-    tags$br(),
     tags$strong(paste("Country:", x['country'])),
     tags$br(),
-    tags$strong(paste("State/Prov.:", x['stateProvince'])),
+    tags$strong(paste("State/Prov.:", x['state_province'])),
     tags$br(),
     tags$strong(paste("Locality:", x['locality'])),
     tags$br(),
+    tags$strong(paste("Year:", x['year'])),
+    tags$br(),
+    tags$strong(paste("Basis of Record:", x['record_type'])),
+    tags$br(),
+    tags$strong(paste("Catalog number:", x['catalog_number'])),
+    tags$br(),
+    tags$strong(paste("Inst. Code:", x['institution_code'])),
+    tags$br(),
     tags$strong(paste("Elevation:", x['elevation'])),
     tags$br(),
-    tags$strong(paste("Basis of Record:", x['basisOfRecord']))
+    tags$strong(paste("Uncertainty (m):", x['uncertainty']))
   ))
 }
 
@@ -432,4 +436,18 @@ printVecAsis <- function(x, asChar = FALSE) {
   }
 }
 
-
+#####################
+# Download utlities #
+#####################
+convert_list_cols <- function(x) {
+  dplyr::mutate_if(.tbl = x,
+                   .predicate = function(col) inherits(col, "list"),
+                   .funs = function(col) {
+                     vapply(col,
+                            jsonlite::toJSON,
+                            character(1L))
+                   })
+}
+write_csv_robust <- function(x, ...) {
+  write.csv(convert_list_cols(x), ...)
+}

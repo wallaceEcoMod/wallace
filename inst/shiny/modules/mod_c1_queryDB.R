@@ -1,25 +1,46 @@
 queryDb_UI <- function(id) {
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   tagList(
-    radioButtons(ns("occsDb"), "Choose Database",
-                 choices = list("GBIF" = 'gbif',
-                                "VertNet" = 'vertnet',
-                                "BISON" = 'bison'), inline = TRUE),
-    tags$div(title='Examples: Felis catus, Canis lupus, Nyctereutes procyonoides',
-             textInput(ns("spName"), label = "Enter species scientific name", placeholder = 'format: Genus species')),
-    tags$div(title='Maximum number of occurrences recovered from databases. 
-             Downloaded records are not sorted randomly: rows are always consistent between downloads.',
-             numericInput(ns("occsNum"), "Set maximum number of occurrences", value = 100, min = 1))
+    tags$div(title = "text",
+             radioButtons(ns("occsDb"), label = "Choose Database",
+                          choices = c("GBIF" = 'gbif', 
+                                      "VertNet" = 'vertnet', 
+                                      "BISON" = 'bison',
+                                      "BIEN" = 'bien'), 
+                          inline = TRUE)),
+    conditionalPanel(sprintf("input['%s'] == 'gbif'", ns("occsDb")),
+                     checkboxInput(ns("doCitations"), 
+                                   label = 'Include Data Source Citations', 
+                                   value = FALSE),
+                     conditionalPanel(sprintf("input['%1$s'] == 'gbif' & 
+                                              input['%2$s'] == true",
+                                              ns("occsDb"), ns("doCitations")),
+                                      splitLayout(textInput(ns('gbifUser'),
+                                                            'GBIF User ID',
+                                                            value=NULL),
+                                                  textInput(ns('gbifEmail'),
+                                                            'GBIF email',
+                                                            value=NULL),
+                                                  textInput(ns('gbifPW'),
+                                                            'GBIF password',
+                                                            value=NULL)))),
+    tags$div(title = 'Examples: Felis catus, Canis lupus, Nyctereutes procyonoides',
+             textInput(ns("spName"), label = "Enter species scientific name", 
+                       placeholder = 'format: Genus species')),
+    tags$div(title = 'Maximum number of occurrences recovered from databases. 
+             Downloaded records are not sorted randomly: 
+             rows are always consistent between downloads.',
+             numericInput(ns("occsNum"), "Set maximum number of occurrences", 
+                          value = 100, min = 1))
   )
 }
 
 queryDb_MOD <- function(input, output, session) {
   reactive({
     # FUNCTION CALL ####
-    occsTbls <- c1_queryDb(input$spName, 
-                           input$occsDb, 
-                           input$occsNum, 
-                           shinyLogs)
+    occsTbls <- c1_queryDb(input$spName, input$occsDb, input$occsNum, 
+                           input$doCitations, input$gbifUser, input$gbifEmail,
+                           input$gbifPW, shinyLogs)
     req(occsTbls)
     
     # LOAD INTO SPP ####
@@ -32,16 +53,24 @@ queryDb_MOD <- function(input, output, session) {
     # altered during session, while occData$occsCleaned is preserved in the
     # post-download cleaned state; occsOrig is the raw download
     # rmm is the range model metadata object
-    spp[[n]] <- list(occs = occs, occData = list(occsOrig = occsOrig, occsCleaned = occs),
+    spp[[n]] <- list(occs = occs, 
+                     occData = list(occsOrig = occsOrig, occsCleaned = occs),
                      rmm = rangeModelMetadata::rmmTemplate())
     
     # METADATA ####
     spp[[n]]$rmm$data$occurrence$taxa <- n
     spp[[n]]$rmm$data$occurrence$dataType <- "presence only"
     spp[[n]]$rmm$data$occurrence$presenceSampleSize <- nrow(occs)
-    spp[[n]]$rmm$data$occurrence$sources <- input$occsDb
     spp[[n]]$rmm$code$wallaceSettings$occsNum <- input$occsNum
-    
+    spp[[n]]$rmm$code$wallaceSettings$occsRemoved <- input$occsNum - nrow(occsTbls$cleaned)
+     # store citations with occCite, or just report the database if users are 
+     # too lame to use bridgetree
+    if(input$doCitations){
+      # DOUBLE CHECK THIS DOESN"T NEED TO BE VECTORIZED!!
+      spp[[n]]$rmm$data$occurrence$sources <- occsTbls$citations
+    } else {
+      spp[[n]]$rmm$data$occurrence$sources <- input$occsDb
+    }  
     # RETURN ####
     # output the table
     return(occs)
@@ -58,6 +87,8 @@ queryDb_MAP <- function(map, session) {
 }
 
 queryDb_INFO <- infoGenerator(modName = "Query Database (Present)",
-                              modAuts = "Jamie M. Kass, Bruno Vilela, Robert P. Anderson",
+                              modAuts = "Jamie M. Kass, Bruno Vilela, Gonzalo E. 
+                                Pinilla-Buitrago, Hannah Owens, Cory Merow, Robert P.
+                                Anderson",
                               pkgName = "spocc")
 

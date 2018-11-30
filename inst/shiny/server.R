@@ -12,7 +12,10 @@ options(shiny.maxRequestSize=5000*1024^2)
 
 shinyServer(function(input, output, session) {
   # disable download buttons
+  shinyjs::disable("dlDbOccs")
   shinyjs::disable("dlOccs")
+  shinyjs::disable("dlAllOccs")
+  shinyjs::disable("dlProcOccs")
   # shinyjs::disable("dlEnvs")
   shinyjs::disable("dlMskEnvs")
   shinyjs::disable("downloadEvalcsv")
@@ -42,33 +45,33 @@ shinyServer(function(input, output, session) {
   # load modules
   for (f in list.files('./modules')) source(file.path('modules', f), local=TRUE)
   
-  # FOR DEVELOPMENT PURPOSES
-  observeEvent(input$load, {
-    f <- c1_userOccs('example_data/multispecies copy.csv', "multispecies copy.csv")
-    # wc <- c3_worldclim(10, paste0('bio', 1:19))
-    # wc <- raster::brick(wc)
-    # r <- list()
-    # ls1 <- list.files('example_data/Procyon_lotor_mskEnvs', full.names = TRUE)
-    # ls1 <- ls1[-which(grepl("gri$",ls1))]
-    # r[["Procyon_lotor"]] <- raster::stack(ls1)
-    # r[["Procyon_lotor"]] <- raster::brick(r[["Procyon_lotor"]])
-    # ls2 <- list.files('example_data/Nyctereutes_procyonoides_mskEnvs', full.names = TRUE)
-    # ls2 <- ls2[-which(grepl("gri$",ls2))]
-    # r[["Nyctereutes_procyonoides"]] <- raster::stack(ls2)
-    # r[["Nyctereutes_procyonoides"]] <- raster::brick(r[["Nyctereutes_procyonoides"]])
-    for(n in c("Procyon_lotor", "Nyctereutes_procyonoides")) {
-      occs <- f[[n]]$occs
-      occs$partition <- NULL
-      spp[[n]] <- list(occs = occs, occData = list(occsCleaned = occs),
-                       rmm = rangeModelMetadata::rmmTemplate())
-      # spp[[n]]$envs <- wc
-      # spp[[n]]$bg <- f[[n]]$bg
-      # spp[[n]]$procEnvs <- list()
-      # spp[[n]]$procEnvs$bgMask <- r[[n]]
-      # spp[[n]]$occs$partition <- f[[n]]$occs$partition
-    }
-    print('SECRET DATA LOADED')
-  })
+  # # FOR DEVELOPMENT PURPOSES
+  # observeEvent(input$load, {
+  #   f <- c1_userOccs('example_data/multispecies copy.csv', "multispecies copy.csv")
+  #   # wc <- c3_worldclim(10, paste0('bio', 1:19))
+  #   # wc <- raster::brick(wc)
+  #   # r <- list()
+  #   # ls1 <- list.files('example_data/Procyon_lotor_mskEnvs', full.names = TRUE)
+  #   # ls1 <- ls1[-which(grepl("gri$",ls1))]
+  #   # r[["Procyon_lotor"]] <- raster::stack(ls1)
+  #   # r[["Procyon_lotor"]] <- raster::brick(r[["Procyon_lotor"]])
+  #   # ls2 <- list.files('example_data/Nyctereutes_procyonoides_mskEnvs', full.names = TRUE)
+  #   # ls2 <- ls2[-which(grepl("gri$",ls2))]
+  #   # r[["Nyctereutes_procyonoides"]] <- raster::stack(ls2)
+  #   # r[["Nyctereutes_procyonoides"]] <- raster::brick(r[["Nyctereutes_procyonoides"]])
+  #   for(n in c("Procyon_lotor", "Nyctereutes_procyonoides")) {
+  #     occs <- f[[n]]$occs
+  #     occs$partition <- NULL
+  #     spp[[n]] <- list(occs = occs, occData = list(occsCleaned = occs),
+  #                      rmm = rangeModelMetadata::rmmTemplate())
+  #     # spp[[n]]$envs <- wc
+  #     # spp[[n]]$bg <- f[[n]]$bg
+  #     # spp[[n]]$procEnvs <- list()
+  #     # spp[[n]]$procEnvs$bgMask <- r[[n]]
+  #     # spp[[n]]$occs$partition <- f[[n]]$occs$partition
+  #   }
+  #   print('SECRET DATA LOADED')
+  # })
   
   # initialize log window
   output$log <- renderUI({
@@ -102,7 +105,7 @@ shinyServer(function(input, output, session) {
     else if(component() == "model") input$modelSel
     else if(component() == "vis") input$visSel
     else if(component() == "proj") input$projSel
-    else if(component() == "rmd") ''
+    #else if(component() == "rmd") ''
   })
   
   # logic to serve the selected component/module guidance text
@@ -116,7 +119,10 @@ shinyServer(function(input, output, session) {
   ######################## #
   
   # create map
-  m <- leaflet() %>% setView(0, 0, zoom = 2) %>% addProviderTiles('Esri.WorldTopoMap')
+  m <- leaflet() %>% 
+    setView(0, 0, zoom = 2) %>% 
+    addProviderTiles('Esri.WorldTopoMap') %>% 
+    mapview::addMouseCoordinates()
   output$map <- renderLeaflet(m)
   
   # create map proxy to make further changes to existing map
@@ -174,7 +180,9 @@ shinyServer(function(input, output, session) {
     # UI CONTROLS
     # assign the selected species to the present occ table's taxon name
     updateSelectInput(session, "curSp", selected = n)
+    shinyjs::enable("dlDbOccs")
     shinyjs::enable("dlOccs")
+    if (length(allSp()) > 1) shinyjs::enable("dlAllOccs")
     shinyjs::enable("dlRMD")
   })
   
@@ -199,7 +207,8 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goUserOccs, {
     userOccs <- callModule(userOccs_MOD, 'c1_userOccs_uiID')
     userOccs()
-    shinyjs::disable("dlOccs")
+    shinyjs::enable("dlOccs")
+    if (length(allSp()) > 1) shinyjs::enable("dlAllOccs")
     shinyjs::enable("dlRMD")
   })
   
@@ -243,15 +252,19 @@ shinyServer(function(input, output, session) {
     # check if spp has species in it
     req(length(reactiveValuesToList(spp)) > 0)
     occs() %>% 
-      dplyr::mutate(longitude = round(as.numeric(longitude), digits = 2),
+      dplyr::mutate(occID = as.numeric(occID),
+                    longitude = round(as.numeric(longitude), digits = 2),
                     latitude = round(as.numeric(latitude), digits = 2)) %>% 
-      dplyr::select(-pop)
-  }, rownames = FALSE)
+      dplyr::select(-pop) %>% 
+      dplyr::arrange(occID)
+  }, rownames = FALSE, options = list(scrollX = TRUE))
   
   # DOWNLOAD: current species occurrence data table
   output$dlOccs <- downloadHandler(
     filename = function() {
-      paste0(spName(spp[[curSp()]]), ".csv")
+      n <- formatSpName(spName(spp[[curSp()]]))
+      source <- rmm()$data$occurrence$sources
+      paste0(n, "_", source, ".csv")
     },
     content = function(file) {
       tbl <- occs() %>% 
@@ -260,41 +273,42 @@ shinyServer(function(input, output, session) {
       if(!is.null(bg())) {
         tbl <- rbind(tbl, bg()) 
       }
-      write.csv(tbl, file, row.names = FALSE)
+      write_csv_robust(tbl, file, row.names = FALSE)
     }
   )
   
   # DOWNLOAD: all species occurrence data table
   output$dlAllOccs <- downloadHandler(
-    filename = "multispecies.csv",
+    filename = function(){"multispecies_ocurrence_table.csv"},
     content = function(file) {
-      inTbl <- occs() %>% dplyr::select(-pop)
-      tbl <- matrix(ncol = ncol(inTbl))
-      colnames(tbl) <- names(inTbl)
-      for(sp in allSp()) {
-        curTbl <- spp[[sp]]$occs %>% dplyr::select(-pop)  
-        # if bg values are present, add them to table
-        if(!is.null(spp[[sp]]$bg)) {
-          curTbl <- rbind(curTbl, spp[[sp]]$bg) 
-        }
-        tbl <- rbind(tbl, curTbl)
-      }
+      l <- lapply(allSp(), function(x) {spp[[x]]$occData$occsCleaned})
+      tbl <- dplyr::bind_rows(l)
+      # inTbl <- occs() %>% dplyr::select(-pop)
+      # tbl <- matrix(ncol = ncol(inTbl))
+      # colnames(tbl) <- names(inTbl)
+      # for(sp in allSp()) {
+      #   curTbl <- spp[[sp]]$occs %>% dplyr::select(-pop)  
+      #   # # if bg values are present, add them to table
+      #   # if(!is.null(spp[[sp]]$bg)) {
+      #   #   curTbl <- rbind(curTbl, spp[[sp]]$bg) 
+      #   # }
+      #   tbl <- rbind(tbl, curTbl)
+      # }
       # remove first NA row
-      tbl <- tbl[-1,]
-      
-      write.csv(tbl, file, row.names = FALSE)
+      tbl <- tbl[-1,] %>% dplyr::select(-pop)
+      write_csv_robust(tbl, file, row.names = FALSE)
     }
   )
   
   # DOWNLOAD: occsOrig
   output$dlDbOccs <- downloadHandler(
     filename = function() {
-      n <- formatSpName(occs()$taxon_name[1])
+      n <- formatSpName(spName(spp[[curSp()]]))
       source <- rmm()$data$occurrence$sources
-      paste0(n, "_", source, ".csv")
+      paste0(n, "_", source, "_raw.csv")
     },
     content = function(file) {
-      write.csv(spp[[curSp()]]$occData$occsOrig, file, row.names=FALSE)
+      write_csv_robust(spp[[curSp()]]$occData$occsOrig, file, row.names = FALSE)
     }
   )
   
@@ -310,6 +324,16 @@ shinyServer(function(input, output, session) {
     removeByID()
   })
   
+  # Enable/disable single processed occs
+  observeEvent(input$goRemoveByID, {
+    shiny::observe({
+      shinyjs::toggleState("dlProcOccs", 
+        !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords) |
+        !is.null(spp[[curSp()]]$procOccs$occsThin) |
+        !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs))
+    })
+  })
+  
   # # # # # # # # # # # # # # # # # # # # #
   # module Select Occurrences on Map ####
   # # # # # # # # # # # # # # # # # # # # #
@@ -317,10 +341,18 @@ shinyServer(function(input, output, session) {
     req(input$map_draw_new_feature)
     selOccs <- callModule(selectOccs_MOD, 'c2_selOccs_uiID')
     selOccs()
-
     # UI CONTROLS 
-    # updateSelectInput(session, "curSp", selected = curSp())
-    shinyjs::enable("dlProcOccs")
+    #updateSelectInput(session, "curSp", selected = curSp())
+  })
+  
+  # Enable/disable single processed occs
+  observeEvent(input$goSelectOccs, {
+    shiny::observe({
+      shinyjs::toggleState("dlProcOccs", 
+        !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords) |
+        !is.null(spp[[curSp()]]$procOccs$occsThin) |
+        !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs))
+    })
   })
   
   # # # # # # # # # # # # # #
@@ -330,7 +362,16 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goThinOccs, {
     thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs_uiID')
     thinOccs()
-    shinyjs::enable("dlProcOccs")
+  })
+  
+  # Enable/disable single processed occs
+  observeEvent(input$goThinOccs, {
+      shiny::observe({
+        shinyjs::toggleState("dlProcOccs", 
+          !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords) |
+          !is.null(spp[[curSp()]]$procOccs$occsThin) |
+          !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs))
+    })
   })
   
   # # # # # # # # # # # # # # # # # #
@@ -340,15 +381,32 @@ shinyServer(function(input, output, session) {
   # reset occurrences button functionality
   observeEvent(input$goResetOccs, {
     req(curSp())
-    spp[[curSp()]]$occs <- spp[[curSp()]]$occData$occsCleaned  
-    shinyLogs %>% writeLog("Reset occurrences.")
+    spp[[curSp()]]$occs <- spp[[curSp()]]$occData$occsCleaned
+    spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords <- NULL
+    spp[[curSp()]]$procOccs$occsThin <- NULL
+    spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs <- NULL
+    shinyLogs %>% writeLog("Reset occurrences for ", 
+                           em(spp[[curSp()]]$occs[1, "taxon_name"]), ".")
     # MAPPING
     map %>%
       map_occs(occs()) %>%
       zoom2Occs(occs())
     # UI CONTROLS 
     # updateSelectInput(session, "curSp", selected = curSp())
+    shinyjs::disable("dlProcOccs")
   })
+  
+  # DOWNLOAD: current processed occurrence data table
+  output$dlProcOccs <- downloadHandler(
+    filename = function() {
+      n <- formatSpName(spName(spp[[curSp()]]))
+      paste0(n, "_processed_occs.csv")
+    },
+    content = function(file) {
+      tbl <- occs() %>% dplyr::select(-pop)
+      write_csv_robust(tbl, file, row.names = FALSE)
+    }
+  )
   
   ############################################# #
   ### COMPONENT: OBTAIN ENVIRONMENTAL DATA ####
@@ -536,8 +594,8 @@ shinyServer(function(input, output, session) {
       
       exts <- c('dbf', 'shp', 'shx')
       fs <- paste0(n, '_bgShp.', exts)
-      zip(zipfile=file, files=fs)
-      if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
+      zip::zip(zipfile=file, files=fs)
+            if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
     },
     contentType = "application/zip"
   )
@@ -547,7 +605,8 @@ shinyServer(function(input, output, session) {
     filename = function() paste0(formatSpName(curSp()), '_mskEnvs.zip'),
     content = function(file) {
       tmpdir <- tempdir()
-      setwd(tempdir())
+      owd <- setwd(tmpdir)
+      on.exit(setwd(owd))
       type <- input$bgMskFileType
       nm <- names(envs())
       
@@ -559,7 +618,7 @@ shinyServer(function(input, output, session) {
       if (ext == 'grd') {
         fs <- c(fs, paste0(nm, '.gri'))
       }
-      zip(zipfile=file, files=fs)
+      zip::zip(zipfile=file, files=fs)
       if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
     },
     contentType = "application/zip"
@@ -735,7 +794,7 @@ shinyServer(function(input, output, session) {
     },
     content = function(file) {
       evalTbl <- cbind(results()$evalTbl, results()$evalTblBins)
-      write.csv(evalTbl, file, row.names = FALSE)
+      write_csv_robust(evalTbl, file, row.names = FALSE)
     }
   )
   
@@ -818,9 +877,10 @@ shinyServer(function(input, output, session) {
   # download for model predictions (restricted to background extent)
   output$dlPred <- downloadHandler(
     filename = function() {
-      ext <- switch(input$predFileType, raster = 'grd', ascii = 'asc', GTiff = 'tif', PNG = 'png')
+      ext <- switch(input$predFileType, raster = 'zip', ascii = 'asc', GTiff = 'tif', PNG = 'png')
       paste0(names(mapPred()), '.', ext)},
     content = function(file) {
+      browser()
       if(require(rgdal)) {
         if (input$predFileType == 'png') {
           png(file)
@@ -830,8 +890,10 @@ shinyServer(function(input, output, session) {
           fileName <- names(mapPred())
           tmpdir <- tempdir()
           raster::writeRaster(mapPred(), file.path(tmpdir, fileName), format = input$predFileType, overwrite = TRUE)
-          fs <- file.path(tmpdir, paste0(fileName, c('.grd', '.gri')))
-          zip(zipfile=file, files=fs, extras = '-j')
+          owd <- setwd(tmpdir)
+          fs <- paste0(fileName, c('.grd', '.gri'))
+          zip::zip(zipfile = file, files = fs)
+          setwd(owd)
         } else {
           r <- raster::writeRaster(mapPred(), file, format = input$predFileType, overwrite = TRUE)
           file.rename(r@file@name, file)
@@ -919,9 +981,10 @@ shinyServer(function(input, output, session) {
   # download for model predictions (restricted to background extent)
   output$dlProj <- downloadHandler(
     filename = function() {
-      ext <- switch(input$projFileType, raster = 'grd', ascii = 'asc', GTiff = 'tif', PNG = 'png')
+      ext <- switch(input$projFileType, raster = 'zip', ascii = 'asc', GTiff = 'tif', PNG = 'png')
       paste0(names(mapProj()), '.', ext)},
     content = function(file) {
+      browser()
       if(require(rgdal)) {
         if (input$projFileType == 'png') {
           png(file)
@@ -931,8 +994,10 @@ shinyServer(function(input, output, session) {
           fileName <- names(mapProj())
           tmpdir <- tempdir()
           raster::writeRaster(mapProj(), file.path(tmpdir, fileName), format = input$projFileType, overwrite = TRUE)
-          fs <- file.path(tmpdir, paste0(fileName, c('.grd', '.gri')))
-          zip(zipfile=file, files=fs, extras = '-j')
+          owd <- setwd(tmpdir)
+          fs <- paste0(fileName, c('.grd', '.gri'))
+          zip::zip(zipfile = file, files = fs)
+          setwd(owd)
         } else {
           r <- raster::writeRaster(mapProj(), file, format = input$projFileType, overwrite = TRUE)
           file.rename(r@file@name, file)

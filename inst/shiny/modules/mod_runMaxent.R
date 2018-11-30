@@ -27,8 +27,9 @@ runMaxent_MOD <- function(input, output, session) {
     for(sp in spLoop) {
       # ERRORS ####
       if (is.null(spp[[sp]]$occs$partition)) {
-        shinyLogs %>% writeLog(type = 'error', "Before building a model, please partition 
-                          occurrences for cross-validation for", spName(spp[[sp]]), ".")
+        shinyLogs %>% writeLog(type = 'error', "Before building a model, please
+                                partition occurrences for cross-validation for ",
+                                spName(spp[[sp]]), ".")
         return()
       }
       # FUNCTION CALL ####
@@ -57,7 +58,9 @@ runMaxent_MOD <- function(input, output, session) {
 }
 
 runMaxent_INFO <- infoGenerator(modName = "Maxent",
-                             modAuts = "Jamie M. Kass, Robert Muscarella, Bruno Vilela, Robert P. Anderson",
+                             modAuts = "Jamie M. Kass, Robert Muscarella, Bruno
+                             Vilela, Gonzalo E. Pinilla-Buitrago, Robert P. 
+                             Anderson",
                              pkgName = c("ENMeval", "dismo"))
 
 runMaxent_TBL <- function(input, output, session) {

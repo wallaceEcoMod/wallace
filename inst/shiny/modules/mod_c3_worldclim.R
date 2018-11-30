@@ -62,5 +62,6 @@ wcBioclims_MOD <- function(input, output, session, spIn) {
 }
 
 worldclim_INFO <- infoGenerator(modName = "WorldClim Bioclims",
-                                modAuts = "Jamie M. Kass, Robert P. Anderson",
+                                modAuts = "Jamie M. Kass, 
+                                Gonzalo E. Pinilla-Buitrago, Robert P. Anderson",
                                 pkgName = "raster")

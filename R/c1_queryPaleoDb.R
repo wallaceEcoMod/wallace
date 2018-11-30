@@ -30,14 +30,16 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, shinyLogs = NUL
   nameSplit <- length(unlist(strsplit(spName, " ")))
   # if two names not entered, throw error and return
   if (nameSplit != 2) {
-    shinyLogs %>% writeLog(type = 'error', 'Please input both genus and species names.')
+    shinyLogs %>% writeLog(type = 'error', 
+      'Please input both genus and species names.')
     return()
   }
   
   if (occDb == "PaleobioDB") {
    
     if (timeInterval == "LGM") {
-      shinyLogs %>% writeLog(type = 'error', 'PaleobioDB does not have separate LGM records. You can only download Holocene records.')
+      shinyLogs %>% writeLog(type = 'error', 
+        'PaleobioDB does not have separate LGM records. You can only download Holocene records.')
       return()
     } else if (timeInterval == "Holo") {
       
@@ -66,7 +68,8 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, shinyLogs = NUL
   }
   
   if (class(occsOrig) == "try-error") {
-    shinyLogs %>% writeLog(type = 'error', 'No records found for ', em(spName), ". Please check the spelling.") 
+    shinyLogs %>% writeLog(type = 'error', 
+      'No records found for ', em(spName), ". Please check the spelling.") 
     return()
   }
   
@@ -86,7 +89,8 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, shinyLogs = NUL
   # subset to just records with latitude and longitude
   occsXY <-  occsOrig[!is.na(occsOrig$longitude) & !is.na(occsOrig$latitude),]
   if (nrow(occsXY) == 0) {
-    shinyLogs %>% writeLog(type = 'warning', 'No records with coordinates found in', occDb, "for", em(spName), ".")
+    shinyLogs %>% writeLog(type = 'warning', 
+      'No records with coordinates found in ', occDb, " for ", em(spName), ".")
   }
 
   
@@ -103,9 +107,7 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, shinyLogs = NUL
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
   
   dupsRem <- nrow(occsXY) - nrow(occs)
-  shinyLogs %>% writeLog('Total ', occDb, ' records for ', em(spName), ' returned [', nrow(occsOrig),
-                    '] out of [', totRows, '] total (limit ', occNum, ').',
-                    'Records without coordinates removed [', noCoordsRem, '].
-                   Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')
+  shinyLogs %>% writeLog(
+    'Total ', occDb, ' records for ', em(spName), ' returned [', nrow(occsOrig),'] out of [', totRows, '] total (limit ', occNum, '). Records without coordinates removed [', noCoordsRem, ']. Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')
   return(list(orig=occsOrig, cleaned=occs))
 }
