@@ -157,7 +157,7 @@ shinyUI(tagList(
                                                                  actionButton("goBgMask", "Sample"), br(), br(),
                                                                  HTML('<hr>'),
                                                                  selectInput('bgMskFileType', label = "Select download file type",
-                                                                             choices = list("GRD" = 'raster', "ASCII" = 'ascii', "GeoTIFF" = 'GTiff')),
+                                                                             choices = list("GeoTIFF" = 'GTiff', "GRD" = 'raster', "ASCII" = 'ascii')),
                                                                  strong("Download predictor rasters masked to background extent"), br(), br(),
                                                                  downloadButton('dlMskEnvs', "Download")),
                                                 HTML('<hr>'),
@@ -396,6 +396,12 @@ shinyUI(tagList(
                                                                                     fluidRow(
                                                                                       column(3, h5("Download processed occurence table")),
                                                                                       column(2, downloadButton('dlProcOccs', "CVS file"))
+                                                                                    )
+                                                                   ),
+                                                                   conditionalPanel("input.tabs == 'envs'",
+                                                                                    br(),
+                                                                                    fluidRow(
+                                                                                      column(3, h5("No download data available in this component"))
                                                                                     )
                                                                    )
                                                                    )
