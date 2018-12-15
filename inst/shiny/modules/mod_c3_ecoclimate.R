@@ -62,6 +62,13 @@ ecoClimate_MOD <- function(input, output, session, shinyLogs) {
   })
 }
 
+ecoclimate_MAP <- function(map, session) {
+  map %>% clearAll() %>%     
+    addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude, 
+                     radius = 5, color = 'red', fill = TRUE, fillColor = "red", 
+                     fillOpacity = 0.2, weight = 2, popup = ~pop)
+}
+
 ecoclimate_INFO <- infoGenerator(modName = "ecoClimate",
                                  modAuts = "Sara Varela, Jamie M. Kass, Robert P. Anderson",
                                  pkgName = "raster")

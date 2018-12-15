@@ -62,6 +62,13 @@ wcBioclims_MOD <- function(input, output, session, spIn) {
   })
 }
 
+wcBioclims_MAP <- function(map, session) {
+  map %>% clearAll() %>%     
+    addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude, 
+                     radius = 5, color = 'red', fill = TRUE, fillColor = "red", 
+                     fillOpacity = 0.2, weight = 2, popup = ~pop)
+}
+
 worldclim_INFO <- infoGenerator(modName = "WorldClim Bioclims",
                                 modAuts = "Jamie M. Kass, 
                                 Gonzalo E. Pinilla-Buitrago, Robert P. Anderson",

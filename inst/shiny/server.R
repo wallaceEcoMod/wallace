@@ -155,12 +155,23 @@ shinyServer(function(input, output, session) {
   observe({
     # must have one species selected and occurrence data
     req(length(curSp()) == 1, occs())
-    f <- switch(module(), "dbOccs"=queryDb_MAP, "userOccs"=userOccs_MAP,
-                "selOccs"=selectOccs_MAP, "remID"=removeByID_MAP, "spthin"=thinOccs_MAP,
-                "bgSel"=bgExtent_MAP, "bgUser"=userBgExtent_MAP,
-                "nsp"=partitionNonSpat_MAP, "sp"=partitionSpat_MAP,
-                "mapPreds"=mapPreds_MAP,
-                "projArea"=projectArea_MAP, "projTime"= projectTime_MAP, "mess"=envSimilarity_MAP)
+    f <- switch(module(), 
+                "dbOccs" = queryDb_MAP, 
+                "userOccs" = userOccs_MAP,
+                "selOccs" = selectOccs_MAP, 
+                "remID" = removeByID_MAP, 
+                "spthin" = thinOccs_MAP, 
+                "wcbc" = wcBioclims_MAP,
+                "ecoClimate" = ecoclimate_MAP,
+                "userEnvs" = userEnvs_MAP,
+                "bgSel" = bgExtent_MAP, 
+                "bgUser" = userBgExtent_MAP,
+                "nsp" = partitionNonSpat_MAP, 
+                "sp" = partitionSpat_MAP,
+                "mapPreds" = mapPreds_MAP, 
+                "projArea" = projectArea_MAP, 
+                "projTime" = projectTime_MAP, 
+                "mess" = envSimilarity_MAP)
     req(f)
     map %>% f(session)
   })
