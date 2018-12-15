@@ -13,7 +13,7 @@ runMaxent_UI <- function(id) {
                          min = 0.5, max = 10, step=0.5, value = c(1, 2))),
     tags$div(title='Value used to step through regularization multiplier range (e.g. range of 1-3 with step 0.5 results in [1, 1.5, 2, 2.5, 3]).',
              numericInput(ns("rmsStep"), label = "Multiplier step value", value = 1)),
-    checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE)
+    checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE)
   )
 }
 

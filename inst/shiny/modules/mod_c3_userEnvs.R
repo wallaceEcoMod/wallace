@@ -3,7 +3,7 @@ userEnvs_UI <- function(id) {
   ns <- NS(id)
   tagList(
     fileInput(ns("userEnvs"), label = "Input rasters", multiple = TRUE),
-    checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE)
+    checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE)
   )
 }
 

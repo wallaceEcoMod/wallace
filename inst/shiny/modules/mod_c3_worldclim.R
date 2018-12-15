@@ -9,12 +9,13 @@ wcBioclims_UI <- function(id) {
                                "2.5 arcmin" = 2.5,
                                "5 arcmin" = 5,
                                "10 arcmin" = 10))),
-    checkboxInput(ns("bcSelChoice"), label = "Specify variables to use in analysis?"),
+    checkboxInput(ns("bcSelChoice"), label = "Specify variables to use in analysis?", 
+                  value = TRUE),
     conditionalPanel(paste0("input['", ns("bcSelChoice"), "']"),
                      checkboxGroupInput(ns("bcSel"), label = "Select",
                                         choices = setNames(as.list(paste0('bio', 1:19)), paste0('bio', 1:19)), 
-                                        inline=TRUE, selected = paste0('bio', 1:19))),
-    checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE)
+                                        inline = TRUE, selected = paste0('bio', 1:19))),
+    checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE)
   )
 }
 

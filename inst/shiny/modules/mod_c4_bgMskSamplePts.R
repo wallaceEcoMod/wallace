@@ -3,7 +3,7 @@ bgMskAndSamplePts_UI <- function(id) {
   ns <- NS(id)
   tagList(
     numericInput(ns("bgPtsNum"), label = "No. of background points", value = 10000, min = 1, step = 1),
-    checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE)
+    checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE)
   )
 }
 
