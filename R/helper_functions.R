@@ -117,15 +117,14 @@ writeSpp <- function(spp, sp, dir) {
 #' @export
 writeLog <- function(logs, ..., type = 'default') {
   if (is.null(logs)) {
-    if (type == "default") {
-      pre <- "> "
-    } else if (type == 'error') {
-      pre <- 'ERROR: '
+    if (type == "error") {
+      stop(paste(..., collapse = ""), call.=FALSE)
+      return()
     } else if (type == 'warning') {
-      pre <- 'WARNING: '
+      warning(paste(..., collapse = ""), call.=FALSE)
+      return()
     }  
-    newEntries <- paste(pre, ..., collapse = "")
-    message(newEntries)
+    message(paste(..., collapse = ""))
     return()
   }
   
@@ -137,7 +136,7 @@ writeLog <- function(logs, ..., type = 'default') {
     pre <- '<font color="orange"><b>! WARNING</b></font> : '
   }
   newEntries <- paste(pre, ..., collapse = "")
-  logs(paste(logs(), newEntries, sep = '<br>'))
+  logs(paste0(logs(), newEntries, sep = '<br>'))
 }
 
 ####################### #
