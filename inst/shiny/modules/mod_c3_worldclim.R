@@ -9,12 +9,13 @@ wcBioclims_UI <- function(id) {
                                "2.5 arcmin" = 2.5,
                                "5 arcmin" = 5,
                                "10 arcmin" = 10))),
-    checkboxInput(ns("bcSelChoice"), label = "Specify variables to use in analysis?"),
+    checkboxInput(ns("bcSelChoice"), label = "Specify variables to use in analysis?", 
+                  value = TRUE),
     conditionalPanel(paste0("input['", ns("bcSelChoice"), "']"),
                      checkboxGroupInput(ns("bcSel"), label = "Select",
                                         choices = setNames(as.list(paste0('bio', 1:19)), paste0('bio', 1:19)), 
-                                        inline=TRUE, selected = paste0('bio', 1:19))),
-    checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE)
+                                        inline = TRUE, selected = paste0('bio', 1:19))),
+    checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE)
   )
 }
 
@@ -59,6 +60,13 @@ wcBioclims_MOD <- function(input, output, session, spIn) {
       spp[[sp]]$rmm$data$environment$sources <- 'WorldClim 1.4'
     }
   })
+}
+
+wcBioclims_MAP <- function(map, session) {
+  map %>% clearAll() %>%     
+    addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude, 
+                     radius = 5, color = 'red', fill = TRUE, fillColor = "red", 
+                     fillOpacity = 0.2, weight = 2, popup = ~pop)
 }
 
 worldclim_INFO <- infoGenerator(modName = "WorldClim Bioclims",

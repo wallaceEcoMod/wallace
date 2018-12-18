@@ -6,7 +6,7 @@ thinOccs_UI <- function(id) {
     tags$div(
       title='The minimum distance between occurrence locations (nearest neighbor distance) in km for resulting thinned dataset. Ideally based on species biology (e.g., home-range size).',
       numericInput(ns("thinDist"), label = "Thinning distance (km)", value = 0),
-      checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE))
+      checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE))
   )
 }
 

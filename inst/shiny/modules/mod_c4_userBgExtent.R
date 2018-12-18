@@ -2,11 +2,11 @@
 userBgExtent_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    fileInput(ns("userBgShp"), label = 'Upload polygon with field order: longitude, latitude (.csv)',
+    fileInput(ns("userBgShp"), label = 'Upload polygon in shapefile (.shp, .shx, .dbf) or CSV file with field order (longitude, latitude)',
               accept=c(".csv", ".dbf", ".shx", ".shp"), multiple = TRUE),
     tags$div(title='Buffer area in degrees (1 degree = ~111 km). Exact length varies based on latitudinal position.',
              numericInput(ns("userBgBuf"), label = "Study region buffer distance (degree)", value = 0, min = 0, step = 0.5)),
-    checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE)
+    checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE)
   )
 }
 

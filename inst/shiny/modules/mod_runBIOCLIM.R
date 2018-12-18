@@ -1,7 +1,7 @@
 runBIOCLIM_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE)
+    checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE)
   )
 }
 

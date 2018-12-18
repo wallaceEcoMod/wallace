@@ -6,7 +6,7 @@ partitionNonSpat_UI <- function(id) {
                 choices = list("None selected" = '', "Jackknife (k = n)" = "jack",
                                "Random k-fold" = "rand")),
     numericInput(ns("kfolds"), label = "Number of Folds", value = 2, min = 2),
-    checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE)
+    checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE)
   )
 }
 
