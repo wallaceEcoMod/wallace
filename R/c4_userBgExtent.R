@@ -56,7 +56,7 @@ c4_userBgExtent <- function(bgShp_path, bgShp_name, userBgBuf, shinyLogs=NULL) {
     shinyLogs %>% writeLog("Study extent: user-defined polygon.")
   
     if (userBgBuf > 0) {
-      bgExt <- rgeos::gBuffer(userBgShp(), width = userBgBuf)
+      bgExt <- rgeos::gBuffer(bgExt, width = userBgBuf)
       shinyLogs %>% writeLog('Study extent buffered by ', userBgBuf, ' degrees.')
     }
 
