@@ -42,7 +42,7 @@ c2_thinOccs <- function(occs, thinDist, shinyLogs=NULL) {
   print(class(occs))
   # query database
   smartProgress(shinyLogs, message = paste0("Spatially thinning for ", spName(occs), "..."), {  # start progress bar
-    output <- spThin::thin(occs, 'latitude', 'longitude', 'taxon_name', thin.par = thinDist,
+    output <- spThin::thin(occs, 'latitude', 'longitude', 'scientific_name', thin.par = thinDist,
                            reps = 100, locs.thinned.list.return = TRUE, write.files = FALSE,
                            verbose = FALSE)
     

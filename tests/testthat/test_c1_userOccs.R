@@ -15,7 +15,7 @@ test_that("error checks", {
    # user's input headers are in an invalid format
   expect_error(c1_userOccs(csvPath = './Data/Marmosops_wrong.csv', 
                            csvName = 'Marmosops_wrong'),
-               'Please input CSV file with columns "taxon_name", "longitude", "latitude".')
+               'Please input CSV file with columns "scientific_name", "longitude", "latitude".')
   })
 
 ### test if the warning messages appear when they are supposed to

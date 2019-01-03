@@ -35,7 +35,7 @@ bgMskAndSamplePts_MOD <- function(input, output, session) {
       # LOAD INTO SPP ####
       spp[[sp]]$procEnvs$bgMask <- bgMask
       # add columns for env variables beginning with "envs_" to bg tbl
-      spp[[sp]]$bg <- cbind(taxon_name = paste0("bg_", spName(spp[[sp]])), bgPts, 
+      spp[[sp]]$bg <- cbind(scientific_name = paste0("bg_", spName(spp[[sp]])), bgPts, 
                            occID = NA, year = NA, institution_code = NA, country = NA, 
                            state_province = NA, locality = NA, elevation = NA, 
                            record_type = NA, bgEnvsVals)

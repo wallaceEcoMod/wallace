@@ -45,7 +45,7 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, shinyLogs = NUL
       
       # query database
       smartProgress(shinyLogs, message = paste0("Querying ", occDb, " ..."), {
-        occsOrig <- try(paleobioDB::pbdb_occurrences(taxon_name=spName, limit=occNum, vocab="pbdb",  
+        occsOrig <- try(paleobioDB::pbdb_occurrences(scientific_name=spName, limit=occNum, vocab="pbdb",  
                                                      max_ma= 0.02, show=c("coords", "bin", "loc")), silent =TRUE)
       })
     }
@@ -81,7 +81,7 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, shinyLogs = NUL
   names(occsOrig)[names(occsOrig) == "lat"] <- "latitude"
   names(occsOrig)[names(occsOrig) == "early_interval"] <- "time_interval"
   names(occsOrig)[names(occsOrig) == "cc"] <- "country"
-  occsOrig$taxon_name <- as.character(occsOrig$taxon_name)
+  occsOrig$scientific_name <- as.character(occsOrig$scientific_name)
   
   # make new column for original ID
   occsOrig$occID <- 1: nrow(occsOrig)
@@ -98,7 +98,7 @@ c1_queryPaleoDb <- function(spName, occDb, occNum, timeInterval, shinyLogs = NUL
   occs <- occsXY[!dups,]
   
   # subset by key columns and make id and popup columns
-  cols <- c("taxon_name", "longitude", "latitude","time_interval", "collection_no", "country", 
+  cols <- c("scientific_name", "longitude", "latitude","time_interval", "collection_no", "country", 
             "collection_no", "record_type", "occID")
   occs <- occs %>% dplyr::select(dplyr::one_of(cols)) %>%
     dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent))) %>% # make new column for leaflet marker popup content

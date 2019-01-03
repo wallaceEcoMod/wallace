@@ -65,10 +65,10 @@ infoGenerator <- function(pkgName, modName , modAuts) {
 # retrieves the species name for use internally in non-shiny functions
 spName <- function(sp) {
   if(class(sp) == "list") {
-    name <- sp$occs$taxon_name[1]
+    name <- sp$occs$scientific_name[1]
   }
   if("data.frame" %in% class(sp)) {
-    name <- sp$taxon_name[1]
+    name <- sp$scientific_name[1]
   }
   return(paste(strsplit(as.character(name), "_")[[1]], collapse = " "))  
 }

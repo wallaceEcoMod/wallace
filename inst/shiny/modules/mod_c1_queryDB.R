@@ -46,7 +46,7 @@ queryDb_MOD <- function(input, output, session) {
     # LOAD INTO SPP ####
     occsOrig <- occsTbls$orig
     occs <- occsTbls$cleaned
-    n <- formatSpName(occs$taxon_name)
+    n <- formatSpName(occs$scientific_name)
     # if species name is already in list, overwrite it
     if(!is.null(spp[[n]])) spp[[n]] <- NULL
     # add two copies of occs dataset -- higher level occs will be

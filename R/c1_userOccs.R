@@ -32,9 +32,9 @@ c1_userOccs <- function(csvPath, csvName, shinyLogs = NULL) {
   csv <- read.csv(csvPath, header = TRUE)
   
   # check to make sure all column names are correct
-  if (!all(c('taxon_name', 'longitude', 'latitude') %in% names(csv))) {
+  if (!all(c('scientific_name', 'longitude', 'latitude') %in% names(csv))) {
     shinyLogs %>% writeLog(type = "error", 
-      'Please input CSV file with columns "taxon_name", "longitude", "latitude".')
+      'Please input CSV file with columns "scientific_name", "longitude", "latitude".')
     return()
   }
   
@@ -42,8 +42,8 @@ c1_userOccs <- function(csvPath, csvName, shinyLogs = NULL) {
   csv.xy <- csv %>% dplyr::filter(!is.na(latitude) & !is.na(longitude))
   
   # get all species names
-  occs <- csv.xy %>% dplyr::filter(!grepl("bg_", taxon_name))
-  spNames <- trimws(as.character(unique(occs$taxon_name)))
+  occs <- csv.xy %>% dplyr::filter(!grepl("bg_", scientific_name))
+  spNames <- trimws(as.character(unique(occs$scientific_name)))
   
   if (nrow(occs) == 0) {
     shinyLogs %>% writeLog(type = 'warning', 
@@ -54,7 +54,7 @@ c1_userOccs <- function(csvPath, csvName, shinyLogs = NULL) {
   # put species into a list in the same form as spp
   occsList <- list()
   for (i in spNames) {
-    sp.occs <- csv.xy %>% dplyr::filter(taxon_name == i)
+    sp.occs <- csv.xy %>% dplyr::filter(scientific_name == i)
     # add occID field if it doesn't exist
     if(!("occID" %in% names(sp.occs))) sp.occs$occID <- row.names(sp.occs)
     # add all cols to match dbOccs if not already there
@@ -86,7 +86,7 @@ c1_userOccs <- function(csvPath, csvName, shinyLogs = NULL) {
       "Data for ", em(i), " uploaded from ", csvName, ": Duplicated records removed [", dupsRem, "]. Remaining records [", nrow(occs), "].")
     
     # look for background records
-    sp.bg <- csv.xy %>% dplyr::filter(taxon_name == paste0("bg_", i))
+    sp.bg <- csv.xy %>% dplyr::filter(scientific_name == paste0("bg_", i))
     # if they exist, load them into occsList for the current species
     if(nrow(sp.bg) > 0) {
       occsList[[n]]$bg <- sp.bg

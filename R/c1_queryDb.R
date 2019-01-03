@@ -130,7 +130,7 @@ c1_queryDb <- function(spName, occDb, occNum, doCitations = F, gbifUser = NULL,
                 "locality", "year", "basisOfRecord", "catalogNumber", 
                 "institutionCode", "elevation", "coordinateUncertaintyInMeters")
     for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
-    occs <- occs %>% dplyr::rename(taxon_name = name, 
+    occs <- occs %>% dplyr::rename(scientific_name = name, 
                                    state_province = stateProvince, 
                                    record_type = basisOfRecord,
                                    institution_code = institutionCode,
@@ -142,7 +142,7 @@ c1_queryDb <- function(spName, occDb, occNum, doCitations = F, gbifUser = NULL,
                 "institutioncode", "maximumelevationinmeters", 
                 "coordinateuncertaintyinmeters")
     for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
-    occs <- occs %>% dplyr::rename(taxon_name = name,
+    occs <- occs %>% dplyr::rename(scientific_name = name,
                                    state_province = stateprovince, 
                                    record_type = basisofrecord, 
                                    institution_code = institutioncode,
@@ -155,7 +155,7 @@ c1_queryDb <- function(spName, occDb, occNum, doCitations = F, gbifUser = NULL,
                 "catalogNumber", "ownerInstitutionCollectionCode", 
                 "verbatimElevation", "coordinateUncertaintyInMeters")
     for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
-    occs <- occs %>% dplyr::rename(taxon_name = providedScientificName,
+    occs <- occs %>% dplyr::rename(scientific_name = providedScientificName,
                                    country = countryCode, 
                                    state_province = stateProvince,
                                    locality = verbatimLocality,
@@ -173,11 +173,11 @@ c1_queryDb <- function(spName, occDb, occNum, doCitations = F, gbifUser = NULL,
     # "state_province", "locality", "year", "record_type", "institution_code",
     # "elevation", "uncertainty"
     for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
-    occs <- occs %>% dplyr::rename(taxon_name = name)
+    occs <- occs %>% dplyr::rename(scientific_name = name)
   }
   
   # subset by key columns and make id and popup columns
-  cols <- c("occID", "taxon_name", "longitude", "latitude", "country", 
+  cols <- c("occID", "scientific_name", "longitude", "latitude", "country", 
             "state_province", "locality", "year", "record_type", "catalog_number", 
             "institution_code", "elevation", "uncertainty")
   occs <- occs %>% 

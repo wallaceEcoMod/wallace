@@ -187,9 +187,9 @@ shinyServer(function(input, output, session) {
     queryDb <- callModule(queryDb_MOD, 'c1_queryDb_uiID')
     # return the occs table
     occsTbl <- queryDb()
-    n <- formatSpName(occsTbl$taxon_name)
+    n <- formatSpName(occsTbl$scientific_name)
     # UI CONTROLS
-    # assign the selected species to the present occ table's taxon name
+    # assign the selected species to the present occ table's scientific name
     updateSelectInput(session, "curSp", selected = n)
     shinyjs::enable("dlDbOccs")
     shinyjs::enable("dlOccs")
@@ -204,9 +204,9 @@ shinyServer(function(input, output, session) {
     paleoDb <- callModule(queryPaleoDb_MOD, 'c1_queryPaleoDb_uiID')
     # return the occs table
     occsTbl <- paleoDb()
-    n <- formatSpName(occsTbl$taxon_name)
+    n <- formatSpName(occsTbl$scientific_name)
     # UI CONTROLS
-    # assign the selected species to the present occ table's taxon name
+    # assign the selected species to the present occ table's scientific name
     updateSelectInput(session, "curSp", selected = n)
     shinyjs::enable("dlOccs")
     shinyjs::enable("dlRMD")
@@ -397,7 +397,7 @@ shinyServer(function(input, output, session) {
     spp[[curSp()]]$procOccs$occsThin <- NULL
     spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs <- NULL
     shinyLogs %>% writeLog("Reset occurrences for ", 
-                           em(spp[[curSp()]]$occs[1, "taxon_name"]), ".")
+                           em(spp[[curSp()]]$occs[1, "scientific_name"]), ".")
     # MAPPING
     map %>%
       map_occs(occs()) %>%

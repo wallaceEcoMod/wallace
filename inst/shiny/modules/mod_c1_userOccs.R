@@ -25,7 +25,7 @@ userOccs_MOD <- function(input, output, session) {
       if(!is.null(occsList[[n]]$bg)) spp[[n]]$bg <- occsList[[n]]$bg
       
       # METADATA ####
-      spp[[n]]$rmm$data$occurrence$taxa <- occs$taxon_name[1]
+      spp[[n]]$rmm$data$occurrence$taxa <- occs$scientific_name[1]
       spp[[n]]$rmm$data$occurrence$dataType <- "presence only"
       spp[[n]]$rmm$data$occurrence$presenceSampleSize <- nrow(occs)
       spp[[n]]$rmm$data$occurrence$sources <- "user"

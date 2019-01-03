@@ -1,4 +1,4 @@
-"taxon_name","longitude","latitude","occID","year","institution_code","country","state_province","locality","elevation","record_type","bio01","bio02","bio03","bio04","bio05","bio06","bio07","bio08","bio09","bio10","bio11","bio12","bio13","bio14","bio15","bio16","bio17","bio18","bio19","partition"
+"scientific_name","longitude","latitude","occID","year","institution_code","country","state_province","locality","elevation","record_type","bio01","bio02","bio03","bio04","bio05","bio06","bio07","bio08","bio09","bio10","bio11","bio12","bio13","bio14","bio15","bio16","bio17","bio18","bio19","partition"
 "Nyctereutes procyonoides",133.714573,33.616477,"31",2018,"iNaturalist","Japan",NA,NA,NA,"HUMAN_OBSERVATION",158,79,27,7236,301,12,289,246,65,252,65,2275,311,57,48,878,211,867,211,1
 "Nyctereutes procyonoides",138.78491,35.140233,"100",2017,"iNaturalist","Japan",NA,NA,NA,"HUMAN_OBSERVATION",156,90,30,7158,303,3,300,243,65,250,65,1967,261,62,41,703,216,698,216,1
 "Nyctereutes procyonoides",140.574408,37.714139,"116",2016,"NIES","Japan","Fukushima",NA,NA,"MACHINE_OBSERVATION",118,89,27,8323,288,-36,324,225,13,225,13,1257,174,51,42,494,168,494,168,2
