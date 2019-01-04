@@ -29,7 +29,7 @@ wcBioclims_MOD <- function(input, output, session, spIn) {
     }
     
     # FUNCTION CALL ####
-    envs <- c3_worldclim(input$bcRes, input$bcSel, shinyLogs)
+    envs <- c3_worldclim(input$bcRes, input$bcSel, mapCntr(), shinyLogs)
     req(envs)
     
     # loop over all species if batch is on
