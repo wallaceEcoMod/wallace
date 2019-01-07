@@ -2,6 +2,10 @@
 runMaxent_UI <- function(id) {
   ns <- NS(id)
   tagList(
+    strong("Select algorithm"), br(),
+    tags$div(title = 'text',
+             radioButtons(ns("algMaxent"), label='',
+                          choices = list("maxnet", "maxent.jar"), inline = TRUE)),
     strong("Select feature classes "), strong(em("(flexibility of modeled response)")), br(),
     "key: ", strong("L"), "inear, ", strong("Q"), "uadratic, ", strong("H"), "inge, ", strong("P"), "roduct, ", strong("T"), "hreshold",
     tags$div(title='Feature combinations to be explored. Features are constructed using different relationships within and among the environmental predictors, and are used to constrain the computed probability distribution. In short, more features = more potential model complexity.',
@@ -13,12 +17,22 @@ runMaxent_UI <- function(id) {
                          min = 0.5, max = 10, step=0.5, value = c(1, 2))),
     tags$div(title='Value used to step through regularization multiplier range (e.g. range of 1-3 with step 0.5 results in [1, 1.5, 2, 2.5, 3]).',
              numericInput(ns("rmsStep"), label = "Multiplier step value", value = 1)),
+    strong("Clamping?"), tags$div(title = 'Clamp model predictions?',
+                                  checkboxInput(ns("clamp"), label='', value = TRUE)),
     checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE)
   )
 }
 
 runMaxent_MOD <- function(input, output, session) {
+  observe({
+    shinyjs::toggleState("clamp", condition = (input$algMaxent == "maxnet"))
+  })
   reactive({
+    
+    if (is.null(input$fcs)) {
+      shinyLogs %>% writeLog(type = 'error', "No feature classes selected.")
+      return()
+    }
     
     # loop over all species if batch is on
     if(input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
@@ -41,6 +55,8 @@ runMaxent_MOD <- function(input, output, session) {
                             input$rms, 
                             input$rmsStep, 
                             input$fcs, 
+                            input$clamp,
+                            input$algMaxent,
                             shinyLogs)
       req(m.maxent)
       
@@ -48,20 +64,22 @@ runMaxent_MOD <- function(input, output, session) {
       spp[[sp]]$results <- m.maxent
       
       # METADATA ####
-      spp[[sp]]$rmm$model$algorithm <- "Maxent"
+      spp[[sp]]$rmm$model$algorithm <- input$algMaxent
       spp[[sp]]$rmm$model$maxent$featureSet <- input$fcs
       spp[[sp]]$rmm$model$maxent$regularizationMultiplierSet <- input$rms
       spp[[sp]]$rmm$model$maxent$regularizationRule <- paste("increment by", input$rmsStep)
-      spp[[sp]]$rmm$model$maxent$notes <- "dismo package implementation"
+      notes <- paste0("clamping,", ifelse(input$clamp, " on", " off"))
+      if(input$algMaxent == "maxent.jar") notes <- paste0(notes, ", dismo package implementation")
+      spp[[sp]]$rmm$model$maxent$notes <- notes
+      
     }
   })
 }
 
 runMaxent_INFO <- infoGenerator(modName = "Maxent",
                              modAuts = "Jamie M. Kass, Robert Muscarella, Bruno
-                             Vilela, Gonzalo E. Pinilla-Buitrago, Robert P. 
-                             Anderson",
-                             pkgName = c("ENMeval", "dismo"))
+                             Vilela, Gonzalo E. Pinilla-Buitrago, Robert P. Anderson",
+                             pkgName = c("ENMeval", "dismo", "maxnet"))
 
 runMaxent_TBL <- function(input, output, session) {
   output$evalTbls <- renderUI({
