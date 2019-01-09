@@ -330,11 +330,16 @@ shinyUI(tagList(
                       # RESULTS WINDOW ####
                       column(8,
                              conditionalPanel("input.tabs != 'intro' & input.tabs != 'rmd'",
-                                              fixedRow(column(6, div(id = "wallaceLog", class = "scrollbox", htmlOutput("log"))),
-                                                       column(4, fixedPanel(
-                                                         uiOutput("curSpUI"),
-                                                         uiOutput("curEnvUI"),
-                                                         uiOutput("curModelUI"))
+                                              fixedRow(column(4, absolutePanel(uiOutput("curSpUI"), 
+                                                                               uiOutput("curModelUI"),
+                                                                               uiOutput("curEnvUI"))),
+                                                       column(2, 
+                                                              offset = 1,
+                                                              align = "left",
+                                                              div(id = "wallaceLog",
+                                                                  class = "scrollbox",
+                                                                  htmlOutput("log"))),
+                                                       tags$head(tags$style(".leaflet-top {z-index:999!important;}")
                                                        )
                                               )
                              ),
