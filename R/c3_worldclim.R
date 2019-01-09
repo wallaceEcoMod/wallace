@@ -23,7 +23,7 @@
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 
-c3_worldclim<- function(bcRes, bcSel, shinyLogs=NULL){
+c3_worldclim<- function(bcRes, bcSel, mapCntr, shinyLogs=NULL){
   
   if(bcRes == '') {
     shinyLogs %>% writeLog(type = 'error', 'Select a raster resolution.')
@@ -33,7 +33,7 @@ c3_worldclim<- function(bcRes, bcSel, shinyLogs=NULL){
   smartProgress(shinyLogs, message = "Retrieving WorldClim data...", {
     if(bcRes == 0.5) {
       wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes, 
-                              lon = mapCntr()[1], lat = mapCntr()[2])
+                              lon = mapCntr[1], lat = mapCntr[2])
     }else{
       wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes)
       wcbc <- wcbc[[bcSel]]
