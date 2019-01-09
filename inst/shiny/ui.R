@@ -141,9 +141,10 @@ shinyUI(tagList(
                                                                  uiTop(bgExtent_INFO),
                                                                  div("Step 1:", id="step"), div("Choose Background Extent", id="stepText"), br(), br(),
                                                                  bgExtent_UI('c4_bgExtent_uiID'),
-                                                                 actionButton("goBgExt", "Select"), br(), br(),
-                                                                 strong("Download shapefile of background extent"), br(), br(),
-                                                                 downloadButton('dlBgShp', "Download")),
+                                                                 actionButton("goBgExt", "Select"), br(), br()#,
+                                                                 # strong("Download shapefile of background extent"), br(), br(),
+                                                                 # downloadButton('dlBgShp', "Download")
+                                                                 ),
                                                 conditionalPanel("input.procEnvsSel == 'bgUser'",
                                                                  uiTop(userBgExtent_INFO),
                                                                  div("Step 1:", id="step"), div("Choose Background Extent", id="stepText"), br(), br(),
@@ -154,12 +155,14 @@ shinyUI(tagList(
                                                                  div("Step 2:", id="step"), div("Sample Background Points", id="stepText"), br(), br(),
                                                                  strong('Mask predictor rasters by background extent and sample background points'), br(), br(),
                                                                  bgMskAndSamplePts_UI('c4_bgMskAndSamplePts'),
-                                                                 actionButton("goBgMask", "Sample"), br(), br(),
-                                                                 HTML('<hr>'),
-                                                                 selectInput('bgMskFileType', label = "Select download file type",
-                                                                             choices = list("GeoTIFF" = 'GTiff', "GRD" = 'raster', "ASCII" = 'ascii')),
-                                                                 strong("Download predictor rasters masked to background extent"), br(), br(),
-                                                                 downloadButton('dlMskEnvs', "Download")),
+                                                                 actionButton("goBgMask", "Sample") #, 
+                                                                 #br(), br(),
+                                                                 #HTML('<hr>'),
+                                                                 #selectInput('bgMskFileType', label = "Select download file type",
+                                                                  #           choices = list("GeoTIFF" = 'GTiff', "GRD" = 'raster', "ASCII" = 'ascii')),
+                                                                 #strong("Download predictor rasters masked to background extent"), br(), br(),
+                                                                 #downloadButton('dlMskEnvs', "Download")
+                                                                 ),
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.procEnvsSel == 'bgSel'", uiBottom(bgExtent_INFO)),
                                                 conditionalPanel("input.procEnvsSel == 'bgUser'", uiBottom(userBgExtent_INFO))
@@ -402,6 +405,28 @@ shinyUI(tagList(
                                                                                     br(),
                                                                                     fluidRow(
                                                                                       column(3, h5("No download data available in this component"))
+                                                                                    )
+                                                                   ),
+                                                                   conditionalPanel("input.tabs == 'penvs'",
+                                                                                    br(), 
+                                                                                    fluidRow(
+                                                                                      column(3, h5("Download shapefile of background extent")),
+                                                                                      column(2, downloadButton('dlBgShp', "ZIP file"))
+                                                                                    ),
+                                                                                    br(),
+                                                                                    fluidRow(
+                                                                                    column(3, h5("Download predictor rasters masked to background extent (Select download file type)")),
+                                                                                    column(2, selectInput('bgMskFileType', 
+                                                                                                          label = NULL,
+                                                                                                          choices = list("GeoTIFF" = 'GTiff', 
+                                                                                                                         "GRD" = 'raster', 
+                                                                                                                         "ASCII" = 'ascii'))),
+                                                                                    column(2, downloadButton('dlMskEnvs', "ZIP file"))
+                                                                                    ),
+                                                                                    br(),
+                                                                                    fluidRow(
+                                                                                      column(3, h5("Download sample background points")),
+                                                                                      column(2, downloadButton('dlBgPts', "CVS file"))
                                                                                     )
                                                                    )
                                                                    )

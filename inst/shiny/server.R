@@ -17,7 +17,9 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("dlAllOccs")
   shinyjs::disable("dlProcOccs")
   # shinyjs::disable("dlEnvs")
+  shinyjs::disable("dlBgShp")
   shinyjs::disable("dlMskEnvs")
+  shinyjs::disable("dlBgPts")
   shinyjs::disable("downloadEvalcsv")
   shinyjs::disable("downloadEvalPlots")
   shinyjs::disable("dlPred")
@@ -542,6 +544,14 @@ shinyServer(function(input, output, session) {
     bgExt()
     # UI CONTROLS
     # updateSelectInput(session, "curSp", selected = curSp())
+    
+  })
+  
+  # Enable/disable download shapefile button
+  observeEvent(input$goBgExt, {
+    shiny::observe({
+      shinyjs::toggleState("dlBgShp", !is.null(spp[[curSp()]]$procEnvs$bgExt))
+    })
   })
   
   # # # # # # # # # # # # # # # # # # # # # # # 
@@ -562,8 +572,15 @@ shinyServer(function(input, output, session) {
     bgMskPts <- callModule(bgMskAndSamplePts_MOD, 'c4_bgMskAndSamplePts')
     bgMskPts()
     # UI CONTROLS 
-    updateSelectInput(session, "curSp", selected = curSp())
-    shinyjs::enable('dlMskEnvs')
+    # updateSelectInput(session, "curSp", selected = curSp())
+  })
+  
+  # Enable/disable download background mask and points buttons
+  observeEvent(input$goBgMask, {
+    shiny::observe({
+      shinyjs::toggleState("dlMskEnvs", !is.null(spp[[curSp()]]$procEnvs$bgMask))
+      shinyjs::toggleState("dlBgPts", !is.null(spp[[curSp()]]$bgPts))
+      })
   })
   
   # # # # # # # # # # # # # # # # # #
@@ -633,6 +650,18 @@ shinyServer(function(input, output, session) {
       if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
     },
     contentType = "application/zip"
+  )
+  
+  # DOWNLOAD: background points table
+  output$dlBgPts <- downloadHandler(
+    filename = function() {
+      n <- formatSpName(spName(spp[[curSp()]]))
+      paste0(n, "_bgPoints.csv")
+    },
+    content = function(file) {
+      tbl <- as.data.frame(spp[[curSp()]]$bgPts)
+      write_csv_robust(tbl, file, row.names = FALSE)
+    }
   )
   
   ############################################## #

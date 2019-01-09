@@ -39,6 +39,8 @@ bgMskAndSamplePts_MOD <- function(input, output, session) {
                            occID = NA, year = NA, institution_code = NA, country = NA, 
                            state_province = NA, locality = NA, elevation = NA, 
                            record_type = NA, bgEnvsVals)
+      # sample background points
+      spp[[sp]]$bgPts <- bgPts
       
       # METADATA ####
       spp[[sp]]$rmm$model$maxent$backgroundSizeSet <- input$bgPtsNum
