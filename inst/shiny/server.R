@@ -145,6 +145,10 @@ shinyServer(function(input, output, session) {
       spp[[curSp()]]$polySelXY <- xy
       spp[[curSp()]]$polySelID <- id
     } 
+    if(component() == 'penvs') {
+      spp[[curSp()]]$polyExtXY <- xy
+      spp[[curSp()]]$polyExtID <- id
+    }
     if(component() == 'proj') {
       spp[[curSp()]]$polyPjXY <- xy
       spp[[curSp()]]$polyPjID <- id  
@@ -168,6 +172,7 @@ shinyServer(function(input, output, session) {
                 "userEnvs" = userEnvs_MAP,
                 "bgSel" = bgExtent_MAP, 
                 "bgUser" = userBgExtent_MAP,
+                "bgDraw" = drawBgExtent_MAP,
                 "nsp" = partitionNonSpat_MAP, 
                 "sp" = partitionSpat_MAP,
                 "mapPreds" = mapPreds_MAP, 

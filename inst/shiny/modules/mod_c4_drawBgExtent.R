@@ -1,0 +1,71 @@
+drawBgExtent_UI <- function(id) {
+  ns <- NS(id)
+  tagList(
+    "Draw a polygon and select buffer distance(**)", br(), br(),
+    tags$div(
+      title = 'Buffer area in degrees (1 degree = ~111 km). Exact length varies based on latitudinal position.',
+      numericInput(ns("drawBgBuf"), label = "Study region buffer distance (degree)",
+        value = 0, min = 0, step = 0.5
+      )
+    ),
+    checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE)
+  )
+}
+
+drawBgExtent_MOD <- function(input, output, session) {
+  reactive({
+    # ERRORS ####
+    if (is.null(envs())) {
+      shinyLogs %>% writeLog(type = 'error',
+                             'Environmental variables missing. Obtain them in component 3.')
+      return()
+    }
+    if (is.null(spp[[curSp()]]$polyExtXY)) {
+      shinyLogs %>% writeLog(
+        type = 'error', 
+        "The polygon has not been drawn and finished. Please use the draw toolbar on the left-hand of the map to complete the polygon."
+      )
+      return()
+    }
+    # FUNCTION CALL ####
+    drawBgExt <- c4_drawBgExtent(spp[[curSp()]]$polyExtXY, spp[[curSp()]]$polyExtID,
+                                 input$drawBgBuf, shinyLogs)
+    
+    # loop over all species if batch is on
+    if (input$batch == TRUE)
+      spLoop <- allSp()
+    else
+      spLoop <- curSp()
+    
+    # PROCESSING ####
+    for (sp in spLoop) {
+      # LOAD INTO SPP ####
+      spp[[sp]]$procEnvs$bgExt <- drawBgExt
+      
+      # METADATA ####
+      polyX <- printVecAsis(round(spp[[curSp()]]$polySelXY[, 1], digits = 4))
+      polyY <- printVecAsis(round(spp[[curSp()]]$polySelXY[, 2], digits = 4))
+      spp[[curSp()]]$rmm$code$wallaceSettings$drawExtPolyCoords <-
+        paste0('X: ', polyX, ', Y: ', polyY)
+    }
+  })
+}
+
+drawBgExtent_MAP <- function(map, session) {
+  updateTabsetPanel(session, 'main', selected = 'Map')
+  map %>% leaflet.extras::addDrawToolbar(
+    targetGroup = 'draw',
+    polylineOptions = FALSE,
+    rectangleOptions = FALSE,
+    circleOptions = FALSE,
+    markerOptions = FALSE,
+    circleMarkerOptions = FALSE,
+    editOptions = leaflet.extras::editToolbarOptions()
+  )
+  req(spp[[curSp()]]$polyExtXY)
+  polyExtXY <- spp[[curSp()]]$polyExtXY
+}
+
+drawBgExtent_INFO <- infoGenerator(modName = "Draw-specified Study Region(**)",
+                                   modAuts = "Gonzalo E. Pinilla-Buitrago, Jamie M. Kass, Bruno Vilela, Robert P. Anderson (**)",
+                                   pkgName = NULL)

@@ -134,7 +134,8 @@ shinyUI(tagList(
                                                 h4("Process Environmental Data"),
                                                 radioButtons("procEnvsSel", "Modules Available:",
                                                              choices = list("Select Study Region" = "bgSel",
-                                                                            "User-specified" = "bgUser")),
+                                                                            "User-specified" = "bgUser",
+                                                                            "Draw polygon(**)" = "bgDraw")),
                                                 
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.procEnvsSel == 'bgSel'",
@@ -150,22 +151,22 @@ shinyUI(tagList(
                                                                  div("Step 1:", id="step"), div("Choose Background Extent", id="stepText"), br(), br(),
                                                                  userBgExtent_UI('c4_userBgExtent'),
                                                                  actionButton("goUserBg", "Load")),
-                                                conditionalPanel("input.procEnvsSel == 'bgSel' | input.procEnvsSel == 'bgUser'",
+                                                conditionalPanel("input.procEnvsSel == 'bgDraw'",
+                                                                 uiTop(drawBgExtent_INFO),
+                                                                 div("Step 1:", id="step"), div("Draw Background Extent(**)", id="stepText"), br(), br(),
+                                                                 drawBgExtent_UI('c4_drawBgExtent'),
+                                                                 actionButton("goDrawBg", "Create(**)")),
+                                                conditionalPanel("input.procEnvsSel == 'bgSel' | input.procEnvsSel == 'bgUser' | input.procEnvsSel == 'bgDraw'",
                                                                  HTML('<hr>'),
                                                                  div("Step 2:", id="step"), div("Sample Background Points", id="stepText"), br(), br(),
                                                                  strong('Mask predictor rasters by background extent and sample background points'), br(), br(),
                                                                  bgMskAndSamplePts_UI('c4_bgMskAndSamplePts'),
-                                                                 actionButton("goBgMask", "Sample") #, 
-                                                                 #br(), br(),
-                                                                 #HTML('<hr>'),
-                                                                 #selectInput('bgMskFileType', label = "Select download file type",
-                                                                  #           choices = list("GeoTIFF" = 'GTiff', "GRD" = 'raster', "ASCII" = 'ascii')),
-                                                                 #strong("Download predictor rasters masked to background extent"), br(), br(),
-                                                                 #downloadButton('dlMskEnvs', "Download")
+                                                                 actionButton("goBgMask", "Sample") 
                                                                  ),
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.procEnvsSel == 'bgSel'", uiBottom(bgExtent_INFO)),
-                                                conditionalPanel("input.procEnvsSel == 'bgUser'", uiBottom(userBgExtent_INFO))
+                                                conditionalPanel("input.procEnvsSel == 'bgUser'", uiBottom(userBgExtent_INFO)),
+                                                conditionalPanel("input.procEnvsSel == 'bgDraw'", uiBottom(drawBgExtent_INFO))
                                ),
                                # ESPACE ####
                                conditionalPanel("input.tabs == 'espace'",
