@@ -43,10 +43,9 @@ drawBgExtent_MOD <- function(input, output, session) {
       spp[[sp]]$procEnvs$bgExt <- drawBgExt
       
       # METADATA ####
-      polyX <- printVecAsis(round(spp[[curSp()]]$polySelXY[, 1], digits = 4))
-      polyY <- printVecAsis(round(spp[[curSp()]]$polySelXY[, 2], digits = 4))
-      spp[[curSp()]]$rmm$code$wallaceSettings$drawExtPolyCoords <-
-        paste0('X: ', polyX, ', Y: ', polyY)
+      polyX <- printVecAsis(round(spp[[curSp()]]$polyExtXY[, 1], digits = 4))
+      polyY <- printVecAsis(round(spp[[curSp()]]$polyExtXY[, 2], digits = 4))
+      spp[[curSp()]]$rmm$code$wallaceSettings$drawExtPolyCoords <- paste0('X: ', polyX, ', Y: ', polyY)
     }
   })
 }

@@ -560,11 +560,19 @@ shinyServer(function(input, output, session) {
   })
   
   # # # # # # # # # # # # # # # # # # # # # # # 
-  # module User-defined Background Extent ####
+  # module Upload Background Extent ####
   # # # # # # # # # # # # # # # # # # # # # # # 
   observeEvent(input$goUserBg, {
     userBg <- callModule(userBgExtent_MOD, 'c4_userBgExtent')
     userBg()
+  })
+  
+  # # # # # # # # # # # # # # # # # # # # # # # 
+  # module Draw Background Extent ####
+  # # # # # # # # # # # # # # # # # # # # # # # 
+  observeEvent(input$goDrawBg, {
+    drawBg <- callModule(drawBgExtent_MOD, 'c4_drawBgExtent')
+    drawBg()
   })
   
   # # # # # # # # # # # # # # # # # # # # # # # # #
