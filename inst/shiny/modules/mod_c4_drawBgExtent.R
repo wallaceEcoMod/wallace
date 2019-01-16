@@ -28,8 +28,11 @@ drawBgExtent_MOD <- function(input, output, session) {
       return()
     }
     # FUNCTION CALL ####
-    drawBgExt <- c4_drawBgExtent(spp[[curSp()]]$polyExtXY, spp[[curSp()]]$polyExtID,
-                                 input$drawBgBuf, shinyLogs)
+    drawBgExt <- c4_drawBgExtent(spp[[curSp()]]$polyExtXY, 
+                                 spp[[curSp()]]$polyExtID,
+                                 input$drawBgBuf, 
+                                 spp[[curSp()]]$occs,
+                                 shinyLogs)
     
     # loop over all species if batch is on
     if (input$batch == TRUE)
@@ -63,6 +66,22 @@ drawBgExtent_MAP <- function(map, session) {
   )
   req(spp[[curSp()]]$polyExtXY)
   polyExtXY <- spp[[curSp()]]$polyExtXY
+  
+  if(is.null(bgExt())) {
+    map %>% clearAll() %>%     
+      addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude, 
+                       radius = 5, color = 'red', fill = TRUE, fillColor = "red", 
+                       fillOpacity = 0.2, weight = 2, popup = ~pop)
+  } else {
+    map %>% clearAll() %>%
+      addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude, 
+                       radius = 5, color = 'red', fill = TRUE, fillColor = "red", 
+                       fillOpacity = 0.2, weight = 2, popup = ~pop)
+    for(shp in bgShpXY()) {
+      map %>%
+        addPolygons(lng=shp[,1], lat=shp[,2], weight=4, color="gray", group='bgShp')
+    }
+  }
 }
 
 drawBgExtent_INFO <- infoGenerator(modName = "Draw-specified Study Region(**)",

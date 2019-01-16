@@ -573,6 +573,9 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goDrawBg, {
     drawBg <- callModule(drawBgExtent_MOD, 'c4_drawBgExtent')
     drawBg()
+    shiny::observe({
+      shinyjs::toggleState("dlBgShp", !is.null(spp[[curSp()]]$procEnvs$bgExt))
+    })
   })
   
   # # # # # # # # # # # # # # # # # # # # # # # # #
