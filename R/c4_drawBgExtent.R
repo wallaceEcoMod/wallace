@@ -10,7 +10,7 @@ c4_drawBgExtent <- function(polyExtXY, polyExtID, drawBgBuf, occs,
   if (ptRem == 0) {
     bgExt <- rgeos::gBuffer(newPoly, width = drawBgBuf)
     if (drawBgBuf == 0 ) {
-      shinyLogs %>% writeLog(em(spName(occs)), ' : Draw polygon without buffer(**)')
+      shinyLogs %>% writeLog(em(spName(occs)), ' : Draw polygon without buffer(**).')
     } else {
       shinyLogs %>% writeLog(em(spName(occs)), ' : Draw polygon with buffer of ', drawBgBuf, ' degrees (**).')
     }
@@ -18,7 +18,7 @@ c4_drawBgExtent <- function(polyExtXY, polyExtID, drawBgBuf, occs,
     return(bgExt)
   } else if (ptRem > 0) {
     shinyLogs %>% writeLog(type = 'error', 
-                           "The draw polygon did not include all localities(**)")
+                           "The draw polygon did not include all localities(**). Remove the polygon before to draw a new one.")
     return()
   }
 }

@@ -135,7 +135,7 @@ writeLog <- function(logs, ..., type = 'default') {
     pre <- '> <font color="orange"><b>! WARNING</b></font> : '
   }
   newEntries <- paste0(pre, ..., collapse = "")
-  logs(paste(logs(), newEntries, '', sep = '<br>'))
+  logs(paste0(logs(), newEntries, '', sep = '<br>'))
 }
 
 ####################### #

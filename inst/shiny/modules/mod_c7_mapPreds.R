@@ -31,7 +31,7 @@ mapPreds_MOD <- function(input, output, session) {
     predSel <- results()$predictions[[curModel()]]
     
     if(is.na(raster::crs(predSel))) {
-      shinyLog %>% writeLog(type = "error", "Model prediction raster has undefined 
+      shinyLogs %>% writeLog(type = "error", "Model prediction raster has undefined 
                             coordinate reference system (CRS), and thus cannot be 
                             mapped. This is likely due to undefined CRS for input 
                             rasters. Please see guidance text for module 'User-specified 
