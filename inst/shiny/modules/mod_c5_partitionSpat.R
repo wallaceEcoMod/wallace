@@ -7,7 +7,10 @@ partitionSpat_UI <- function(id) {
                                "Block (k = 4)" = "block",
                                "Checkerboard 1 (k = 2)" = "cb1",
                                "Checkerboard 2 (k = 4)" = "cb2")),
-    numericInput(ns("aggFact"), label = "Aggregation Factor", value = 2, min = 2),
+    conditionalPanel(sprintf("input['%1$s'] == 'cb1' | input['%1$s'] == 'cb2'", 
+                             ns("partitionSpatSel")),
+                     numericInput(ns("aggFact"), label = "Aggregation Factor", 
+                                  value = 2, min = 2)),
     checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE)
   )
 }
