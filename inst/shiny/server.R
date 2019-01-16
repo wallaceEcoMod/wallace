@@ -41,7 +41,7 @@ shinyServer(function(input, output, session) {
   intro <- '***WELCOME TO WALLACE***'
   brk <- paste(rep('------', 14), collapse='')
   expl <- 'Please find messages for the user in this log window.'
-  logInit <- c(paste(intro, brk, expl, brk, sep='<br>'))
+  logInit <- c(paste(intro, brk, expl, brk, '', sep='<br>'))
   shinyLogs <- reactiveVal(logInit)
   
   # load modules

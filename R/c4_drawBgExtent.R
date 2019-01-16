@@ -18,7 +18,7 @@ c4_drawBgExtent <- function(polyExtXY, polyExtID, drawBgBuf, occs,
     return(bgExt)
   } else if (ptRem > 0) {
     shinyLogs %>% writeLog(type = 'error', 
-                           "The draw polygon doesn't included all localities(**)")
+                           "The draw polygon did not include all localities(**)")
     return()
   }
 }

@@ -117,7 +117,7 @@ writeSpp <- function(spp, sp, dir) {
 #' @export
 writeLog <- function(logs, ..., type = 'default') {
   if (is.null(logs)) {
-    if (type == "error") {
+    if (type == 'error') {
       stop(paste(..., collapse = ""), call.=FALSE)
       return()
     } else if (type == 'warning') {
@@ -128,7 +128,7 @@ writeLog <- function(logs, ..., type = 'default') {
     return()
   }
   
-  if (type == "default") {
+  if (type == 'default') {
     pre <- "> "
   } else if (type == 'error') {
     pre <- '<font color="red"><b>! ERROR</b></font> : '
