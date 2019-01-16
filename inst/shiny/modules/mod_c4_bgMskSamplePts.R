@@ -9,6 +9,11 @@ bgMskAndSamplePts_UI <- function(id) {
 
 bgMskAndSamplePts_MOD <- function(input, output, session) {
   reactive({
+    # WARNING ####
+    if (input$bgPtsNum < 1) {
+      shinyLogs %>% writeLog(type = 'warning', "Type the number of background points")
+      return()
+    }
     
     req(bgExt())
     
