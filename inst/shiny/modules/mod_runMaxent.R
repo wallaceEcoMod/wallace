@@ -83,19 +83,37 @@ runMaxent_INFO <- infoGenerator(modName = "Maxent",
 
 runMaxent_TBL <- function(input, output, session) {
   output$evalTbls <- renderUI({
+    tabsetPanel(
+      tabPanel("Evaluation",
+               tagList(
+                 br(),
+                 div("Evaluation statistics: full model and partition averages", id="stepText"), br(), br(),
+                 DT::dataTableOutput('evalTbl'), br(),
+                 div("Evaluation statistics: individual partitions", id="stepText"), br(), br(),
+                 DT::dataTableOutput('evalTblBins')  
+               )),
+      tabPanel("Lambdas",
+               br(),
+               div("Maxent lambdas file", id = "stepText"), br(), br(),
+               verbatimTextOutput("lambdas")
+               )
+    )
     options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
     evalTbl <- results()$evalTbl
     evalTblBins <- results()$evalTblBins
     evalTblRound <- cbind(evalTbl[,1:3], round(evalTbl[,4:16], digits=3))
     evalTblBinsRound <- cbind(settings=evalTbl[,1], round(evalTblBins, digits=3))
+    # define contents for both evaluation tables
     output$evalTbl <- DT::renderDataTable(evalTblRound, options = options)
     output$evalTblBins <- DT::renderDataTable(evalTblBinsRound, options = options)
-    tagList(
-      br(),
-      div("Evaluation statistics: full model and partition averages", id="stepText"), br(), br(),
-      DT::dataTableOutput('evalTbl'), br(),
-      div("Individual partition bin evaluation statistics", id="stepText"), br(), br(),
-      DT::dataTableOutput('evalTblBins')  
-    )
+    # define contents for lambdas table
+    output$lambdas <- renderPrint({
+      if (spp[[sp]]$rmm$model$algorithm == "maxnet") {
+        curModel()$betas
+      } else if (spp[[sp]]$rmm$model$algorithm == "maxent.jar") {
+        curModel()@lambdas
+      }
+    })
+    
   })
 }
