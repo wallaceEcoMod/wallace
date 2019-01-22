@@ -34,8 +34,13 @@ bgMskAndSamplePts_MOD <- function(input, output, session) {
                            shinyLogs)
       req(bgPts)
       withProgress(message = paste0("Extracting background values for ", spName(spp[[sp]]), "..."), {
-        bgEnvsVals <- as.data.frame(raster::extract(spp[[sp]]$envs, bgPts))
+        bgEnvsVals <- as.data.frame(raster::extract(bgMask, bgPts))
       })
+      
+      if(sum(rowSums(is.na(raster::extract(bgMask, spp[[sp]]$occs[,c("longitude", "latitude")])))) > 0) {
+        shinyLogs %>% writeLog("One or more occurrence points are outside your study extent. Please increase the buffer slightly to include them.")
+        return()
+      }
       
       # LOAD INTO SPP ####
       spp[[sp]]$procEnvs$bgMask <- bgMask
