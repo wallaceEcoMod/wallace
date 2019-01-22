@@ -766,8 +766,9 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # 
   # module Maxent ####
   # # # # # # # # # # # 
+  
+  mod.maxent <- callModule(runMaxent_MOD, 'runMaxent')
   observeEvent(input$goMaxent, {
-    mod.maxent <- callModule(runMaxent_MOD, 'runMaxent')
     mod.maxent()
     runMaxent_TBL(input, output, session)
     # make sure the results were entered before proceeding

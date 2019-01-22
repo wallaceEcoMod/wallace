@@ -102,8 +102,7 @@ runMaxent  <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, clamp
   endTxt <- paste(", using", algMaxent, "with clamping", ifelse(clampSel, "on.", "off."))
   
   shinyLogs %>% writeLog("Maxent ran successfully for ", em(spName(occs)), " and
-                         output evaluation results for ", nrow(e@results), 
-                         " models", endTxt)
+                         output evaluation results for ", nrow(e@results), " models", endTxt)
   
   # output ENMeval object in list form to be compatible with other models
   e <- list(models=e@models, evalTbl=stats, evalTblBins=statsBins, predictions=e@predictions, occPredVals=occPredVals)

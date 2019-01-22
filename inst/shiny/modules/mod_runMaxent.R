@@ -18,19 +18,30 @@ runMaxent_UI <- function(id) {
     tags$div(title='Value used to step through regularization multiplier range (e.g. range of 1-3 with step 0.5 results in [1, 1.5, 2, 2.5, 3]).',
              numericInput(ns("rmsStep"), label = "Multiplier step value", value = 1)),
     strong("Clamping?"), tags$div(title = 'Clamp model predictions?',
-                                  checkboxInput(ns("clamp"), label='', value = TRUE)),
+                                  selectInput(ns("clamp"), label='', choices = list("", "TRUE", "FALSE"), selected = "")),
     checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE)
   )
 }
 
 runMaxent_MOD <- function(input, output, session) {
   observe({
-    shinyjs::toggleState("clamp", condition = (input$algMaxent == "maxnet"))
+    if(input$algMaxent == "maxnet") {
+      updateSelectInput(session, "clamp", selected = "")
+      shinyjs::enable("clamp")
+    } else {
+      updateSelectInput(session, "clamp", selected = "TRUE")  
+      shinyjs::disable("clamp")
+    }
   })
+  
   reactive({
     
-    if (is.null(input$fcs)) {
+    if(is.null(input$fcs)) {
       shinyLogs %>% writeLog(type = 'error', "No feature classes selected.")
+      return()
+    }
+    if(input$clamp == "") {
+      shinyLogs %>% writeLog(type = 'error', "Please specify clamping setting.")
       return()
     }
     
@@ -82,6 +93,7 @@ runMaxent_INFO <- infoGenerator(modName = "Maxent",
                              pkgName = c("ENMeval", "dismo", "maxnet"))
 
 runMaxent_TBL <- function(input, output, session) {
+  req(results())
   output$evalTbls <- renderUI({
     tabsetPanel(
       tabPanel("Evaluation",
