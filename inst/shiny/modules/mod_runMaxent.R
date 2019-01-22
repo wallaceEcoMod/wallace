@@ -98,22 +98,22 @@ runMaxent_TBL <- function(input, output, session) {
                verbatimTextOutput("lambdas")
                )
     )
-    options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
-    evalTbl <- results()$evalTbl
-    evalTblBins <- results()$evalTblBins
-    evalTblRound <- cbind(evalTbl[,1:3], round(evalTbl[,4:16], digits=3))
-    evalTblBinsRound <- cbind(settings=evalTbl[,1], round(evalTblBins, digits=3))
-    # define contents for both evaluation tables
-    output$evalTbl <- DT::renderDataTable(evalTblRound, options = options)
-    output$evalTblBins <- DT::renderDataTable(evalTblBinsRound, options = options)
-    # define contents for lambdas table
-    output$lambdas <- renderPrint({
-      if (spp[[sp]]$rmm$model$algorithm == "maxnet") {
-        curModel()$betas
-      } else if (spp[[sp]]$rmm$model$algorithm == "maxent.jar") {
-        curModel()@lambdas
-      }
-    })
-    
   })
+  options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
+  evalTbl <- results()$evalTbl
+  evalTblBins <- results()$evalTblBins
+  evalTblRound <- cbind(evalTbl[,1:3], round(evalTbl[,4:16], digits=3))
+  evalTblBinsRound <- cbind(settings=evalTbl[,1], round(evalTblBins, digits=3))
+  # define contents for both evaluation tables
+  output$evalTbl <- DT::renderDataTable(evalTblRound, options = options)
+  output$evalTblBins <- DT::renderDataTable(evalTblBinsRound, options = options)
+  # define contents for lambdas table
+  output$lambdas <- renderPrint({
+    if(spp[[curSp()]]$rmm$model$algorithm == "maxnet") {
+      results()$models[[curModel()]]$betas
+    } else if(spp[[curSp()]]$rmm$model$algorithm == "maxent.jar") {
+      results()$models[[curModel()]]@lambdas
+    }
+  })
+  
 }
