@@ -58,30 +58,35 @@ runMaxent_MOD <- function(input, output, session) {
         return()
       }
       # FUNCTION CALL ####
-      m.maxent <- runMaxent(spp[[sp]]$occs, 
-                            spp[[sp]]$bg, 
-                            spp[[sp]]$occs$partition,
-                            spp[[sp]]$bg$partition,
-                            spp[[sp]]$procEnvs$bgMask, 
-                            input$rms, 
-                            input$rmsStep, 
-                            input$fcs, 
-                            input$clamp,
-                            input$algMaxent,
-                            shinyLogs)
-      req(m.maxent)
+      res.maxent <- runMaxent(spp[[sp]]$occs, 
+                              spp[[sp]]$bg, 
+                              spp[[sp]]$occs$partition,
+                              spp[[sp]]$bg$partition,
+                              spp[[sp]]$procEnvs$bgMask, 
+                              input$rms, 
+                              input$rmsStep, 
+                              input$fcs, 
+                              input$clamp,
+                              input$algMaxent,
+                              shinyLogs)
+      req(res.maxent)
       
       # LOAD INTO SPP ####
-      spp[[sp]]$results <- m.maxent
+      spp[[sp]]$results <- res.maxent
       
       # METADATA ####
       spp[[sp]]$rmm$model$algorithm <- input$algMaxent
       spp[[sp]]$rmm$model$maxent$featureSet <- input$fcs
       spp[[sp]]$rmm$model$maxent$regularizationMultiplierSet <- input$rms
       spp[[sp]]$rmm$model$maxent$regularizationRule <- paste("increment by", input$rmsStep)
-      notes <- paste0("clamping,", ifelse(input$clamp, " on", " off"))
-      if(input$algMaxent == "maxent.jar") notes <- paste0(notes, ", dismo package implementation")
-      spp[[sp]]$rmm$model$maxent$notes <- notes
+      spp[[sp]]$rmm$model$maxent$clamping <- input$clamp
+      if(input$algMaxent == "maxent.jar") {
+        ver <- paste("Maxent", maxentJARversion(), "via dismo", packageVersion('dismo'))
+      }
+      if(input$algMaxent == "maxnet") {
+        ver <- paste("maxnet", packageVersion('maxnet'))
+      }
+      spp[[sp]]$rmm$model$maxent$algorithmNotes <- ver
       
     }
   })
