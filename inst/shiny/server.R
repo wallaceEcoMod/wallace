@@ -21,7 +21,7 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("dlMskEnvs")
   shinyjs::disable("dlBgPts")
   shinyjs::disable("dlPart")
-  shinyjs::disable("downloadEvalcsv")
+  shinyjs::disable("dlEvalTbl")
   shinyjs::disable("downloadEvalPlots")
   shinyjs::disable("dlPred")
   shinyjs::disable("dlProj")
@@ -796,6 +796,7 @@ shinyServer(function(input, output, session) {
                        choices = list("Maxent Evaluation Plots" = 'maxentEval',
                                       "Plot Response Curves" = 'response',
                                       "Map Prediction" = 'mapPreds'))
+    shinyjs::enable("dlEvalTbl")
   })
   
   # # # # # # # # # # # # 
@@ -812,6 +813,7 @@ shinyServer(function(input, output, session) {
     # update radio buttons for Visualization component
     updateRadioButtons(session, "visSel", choices = list("BIOCLIM Envelope Plots" = 'bioclimPlot',
                                                          "Map Prediction" = 'mapPreds'))
+    shinyjs::enable("dlEvalTbl")
   })
   
   # # # # # # # # # # # # 

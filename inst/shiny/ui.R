@@ -239,8 +239,6 @@ shinyUI(tagList(
                                                                  runGAM_UI('runGAM'),
                                                                  actionButton('goGAM', 'Run')),
                                                 HTML('<hr>'),
-                                                downloadButton('dlEvalTbl', "Download CSV"),
-                                                HTML('<hr>'),
                                                 conditionalPanel("input.modelSel == 'Maxent'", uiBottom(runMaxent_INFO)),
                                                 conditionalPanel("input.modelSel == 'BIOCLIM'", uiBottom(runBIOCLIM_INFO)),
                                                 conditionalPanel("input.modelSel == 'GAM'", uiBottom(runGAM_INFO))
@@ -440,7 +438,15 @@ shinyUI(tagList(
                                                                                     fluidRow(
                                                                                       column(3, h5("Download occurrence and background localities with partition values")),
                                                                                       column(2, downloadButton('dlPart', "CVS file"))
-                                                                                    ))
+                                                                                    )
+                                                                   ),
+                                                                   conditionalPanel("input.tabs == 'model'",
+                                                                                    br(),
+                                                                                    fluidRow(
+                                                                                      column(3, h5("Download evaluation table")),
+                                                                                      column(2, downloadButton('dlEvalTbl', "CSV file"))
+                                                                                    )
+                                                                   )
                                                                    )
                                                           
                                               )
