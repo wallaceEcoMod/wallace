@@ -290,13 +290,20 @@ mcp <- function(xy) {
 ####################### #
 # MODEL ####
 ####################### #
-
-maxentPredTransform <- function(results, curModel, bgMask, predType, shinyLogs = NULL) {
-  pargs <- paste0("outputformat=", predType) 
-  smartProgress(shinyLogs, message = paste0("Generating ", predType, " prediction for model ", curModel, "..."), {
-    transPred <- dismo::predict(results$models[[curModel]], bgMask, args=pargs)
-  })  
-  return(transPred)
+maxentJARversion <- function() {
+  if (is.null(getOption('dismo_rJavaLoaded'))) {
+    # to avoid trouble on macs
+    Sys.setenv(NOAWT=TRUE)
+    if ( requireNamespace('rJava') ) {
+      rJava::.jpackage('dismo')
+      options(dismo_rJavaLoaded=TRUE)
+    } else {
+      stop('rJava cannot be loaded')
+    }
+  }
+  mxe <- rJava::.jnew("meversion") 
+  v <- try(rJava::.jcall(mxe, "S", "meversion"))
+  return(v)
 }
 
 ####################### #
@@ -378,15 +385,15 @@ getAllThresh <- function(occPredVals) {
   # remove all NA
   occPredVals <- na.omit(occPredVals)
   # apply minimum training presence threshold
-  mtp <- min(occPredVals)
+  min.thr <- min(occPredVals)
   # Define 10% training presence threshold
   if (length(occPredVals) < 10) {  # if less than 10 occ values, find 90% of total and round down
-    n90 <- floor(length(occPredVals) * 0.9)
+    pct10 <- ceiling(length(occPredVals) * 0.1)
   } else {  # if greater than or equal to 10 occ values, round up
-    n90 <- ceiling(length(occPredVals) * 0.9)
+    pct10 <- floor(length(occPredVals) * 0.1)
   }
-  p10 <- rev(sort(occPredVals))[n90]  # apply 10% training presence threshold over all models
-  return(list(mtp = mtp, p10 = p10))
+  pct10.thr <- sort(occPredVals)[pct10]  # apply 10% training presence threshold over all models
+  return(list(mtp = min.thr, p10 = pct10.thr))
 }
 
 ####################### #
@@ -433,4 +440,18 @@ printVecAsis <- function(x, asChar = FALSE) {
   }
 }
 
-
+#####################
+# Download utlities #
+#####################
+convert_list_cols <- function(x) {
+  dplyr::mutate_if(.tbl = x,
+                   .predicate = function(col) inherits(col, "list"),
+                   .funs = function(col) {
+                     vapply(col,
+                            jsonlite::toJSON,
+                            character(1L))
+                   })
+}
+write_csv_robust <- function(x, ...) {
+  write.csv(convert_list_cols(x), ...)
+}

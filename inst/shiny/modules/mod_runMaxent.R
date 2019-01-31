@@ -18,19 +18,30 @@ runMaxent_UI <- function(id) {
     tags$div(title='Value used to step through regularization multiplier range (e.g. range of 1-3 with step 0.5 results in [1, 1.5, 2, 2.5, 3]).',
              numericInput(ns("rmsStep"), label = "Multiplier step value", value = 1)),
     strong("Clamping?"), tags$div(title = 'Clamp model predictions?',
-                                  checkboxInput(ns("clamp"), label='', value = TRUE)),
+                                  selectInput(ns("clamp"), label='', choices = list("", "TRUE", "FALSE"), selected = "")),
     checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE)
   )
 }
 
 runMaxent_MOD <- function(input, output, session) {
   observe({
-    shinyjs::toggleState("clamp", condition = (input$algMaxent == "maxnet"))
+    if(input$algMaxent == "maxnet") {
+      updateSelectInput(session, "clamp", selected = "")
+      shinyjs::enable("clamp")
+    } else {
+      updateSelectInput(session, "clamp", selected = "TRUE")  
+      shinyjs::disable("clamp")
+    }
   })
+  
   reactive({
     
-    if (is.null(input$fcs)) {
+    if(is.null(input$fcs)) {
       shinyLogs %>% writeLog(type = 'error', "No feature classes selected.")
+      return()
+    }
+    if(input$clamp == "") {
+      shinyLogs %>% writeLog(type = 'error', "Please specify clamping setting.")
       return()
     }
     
@@ -47,30 +58,35 @@ runMaxent_MOD <- function(input, output, session) {
         return()
       }
       # FUNCTION CALL ####
-      m.maxent <- runMaxent(spp[[sp]]$occs, 
-                            spp[[sp]]$bg, 
-                            spp[[sp]]$occs$partition,
-                            spp[[sp]]$bg$partition,
-                            spp[[sp]]$procEnvs$bgMask, 
-                            input$rms, 
-                            input$rmsStep, 
-                            input$fcs, 
-                            input$clamp,
-                            input$algMaxent,
-                            shinyLogs)
-      req(m.maxent)
+      res.maxent <- runMaxent(spp[[sp]]$occs, 
+                              spp[[sp]]$bg, 
+                              spp[[sp]]$occs$partition,
+                              spp[[sp]]$bg$partition,
+                              spp[[sp]]$procEnvs$bgMask, 
+                              input$rms, 
+                              input$rmsStep, 
+                              input$fcs, 
+                              input$clamp,
+                              input$algMaxent,
+                              shinyLogs)
+      req(res.maxent)
       
       # LOAD INTO SPP ####
-      spp[[sp]]$results <- m.maxent
+      spp[[sp]]$results <- res.maxent
       
       # METADATA ####
       spp[[sp]]$rmm$model$algorithm <- input$algMaxent
       spp[[sp]]$rmm$model$maxent$featureSet <- input$fcs
       spp[[sp]]$rmm$model$maxent$regularizationMultiplierSet <- input$rms
       spp[[sp]]$rmm$model$maxent$regularizationRule <- paste("increment by", input$rmsStep)
-      notes <- paste0("clamping,", ifelse(input$clamp, " on", " off"))
-      if(input$algMaxent == "maxent.jar") notes <- paste0(notes, ", dismo package implementation")
-      spp[[sp]]$rmm$model$maxent$notes <- notes
+      spp[[sp]]$rmm$model$maxent$clamping <- input$clamp
+      if(input$algMaxent == "maxent.jar") {
+        ver <- paste("Maxent", maxentJARversion(), "via dismo", packageVersion('dismo'))
+      }
+      if(input$algMaxent == "maxnet") {
+        ver <- paste("maxnet", packageVersion('maxnet'))
+      }
+      spp[[sp]]$rmm$model$maxent$algorithmNotes <- ver
       
     }
   })
@@ -82,20 +98,39 @@ runMaxent_INFO <- infoGenerator(modName = "Maxent",
                              pkgName = c("ENMeval", "dismo", "maxnet"))
 
 runMaxent_TBL <- function(input, output, session) {
+  req(results())
   output$evalTbls <- renderUI({
-    options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
-    evalTbl <- results()$evalTbl
-    evalTblBins <- results()$evalTblBins
-    evalTblRound <- cbind(evalTbl[,1:3], round(evalTbl[,4:16], digits=3))
-    evalTblBinsRound <- cbind(settings=evalTbl[,1], round(evalTblBins, digits=3))
-    output$evalTbl <- DT::renderDataTable(evalTblRound, options = options)
-    output$evalTblBins <- DT::renderDataTable(evalTblBinsRound, options = options)
-    tagList(
-      br(),
-      div("Evaluation statistics: full model and partition averages", id="stepText"), br(), br(),
-      DT::dataTableOutput('evalTbl'), br(),
-      div("Individual partition bin evaluation statistics", id="stepText"), br(), br(),
-      DT::dataTableOutput('evalTblBins')  
+    tabsetPanel(
+      tabPanel("Evaluation",
+               tagList(
+                 br(),
+                 div("Evaluation statistics: full model and partition averages", id="stepText"), br(), br(),
+                 DT::dataTableOutput('evalTbl'), br(),
+                 div("Evaluation statistics: individual partitions", id="stepText"), br(), br(),
+                 DT::dataTableOutput('evalTblBins')  
+               )),
+      tabPanel("Lambdas",
+               br(),
+               div("Maxent lambdas file", id = "stepText"), br(), br(),
+               verbatimTextOutput("lambdas")
+               )
     )
   })
+  options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
+  evalTbl <- results()$evalTbl
+  evalTblBins <- results()$evalTblBins
+  evalTblRound <- cbind(evalTbl[,1:3], round(evalTbl[,4:16], digits=3))
+  evalTblBinsRound <- cbind(settings=evalTbl[,1], round(evalTblBins, digits=3))
+  # define contents for both evaluation tables
+  output$evalTbl <- DT::renderDataTable(evalTblRound, options = options)
+  output$evalTblBins <- DT::renderDataTable(evalTblBinsRound, options = options)
+  # define contents for lambdas table
+  output$lambdas <- renderPrint({
+    if(spp[[curSp()]]$rmm$model$algorithm == "maxnet") {
+      results()$models[[curModel()]]$betas
+    } else if(spp[[curSp()]]$rmm$model$algorithm == "maxent.jar") {
+      results()$models[[curModel()]]@lambdas
+    }
+  })
+  
 }
