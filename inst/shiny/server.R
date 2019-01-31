@@ -762,15 +762,15 @@ shinyServer(function(input, output, session) {
   
   # download for partitioned occurrence records csv
   output$dlPart <- downloadHandler(
-    filename = function() paste0("_partitioned_occs.csv"),
+    filename = function() paste0(formatSpName(curSp()), "_partitioned_occs.csv"),
     content = function(file) {
       bg.bind <- data.frame(rep('background', 
                                 nrow(spp[[curSp()]]$bgPts)), spp[[curSp()]]$bgPts)
-      #names(bg.bind) <- c('scientific_name', 'longitude', 'latitude')
-      occs.bg.bind <-rbind(spp[[curSp()]]$occs[, 1:3], bg.bind)
+      names(bg.bind) <- c('scientific_name', 'longitude', 'latitude')
+      occs.bg.bind <- rbind(spp[[curSp()]]$occs[, 2:4], bg.bind)
       all.bind <- cbind(occs.bg.bind, c(spp[[curSp()]]$occs$partition, 
                                         spp[[curSp()]]$bg$partition))
-      #names(all.bind)[4] <- "group"
+      names(all.bind)[4] <- "group"
       write_csv_robust(all.bind, file, row.names = FALSE)
     }
   )
