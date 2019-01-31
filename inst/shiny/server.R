@@ -20,7 +20,8 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("dlBgShp")
   shinyjs::disable("dlMskEnvs")
   shinyjs::disable("dlBgPts")
-  shinyjs::disable("downloadEvalcsv")
+  shinyjs::disable("dlPart")
+  shinyjs::disable("dlEvalTbl")
   shinyjs::disable("downloadEvalPlots")
   shinyjs::disable("dlPred")
   shinyjs::disable("dlProj")
@@ -759,6 +760,21 @@ shinyServer(function(input, output, session) {
     shinyjs::enable("dlPart")
   })
   
+  # download for partitioned occurrence records csv
+  output$dlPart <- downloadHandler(
+    filename = function() paste0(formatSpName(curSp()), "_partitioned_occs.csv"),
+    content = function(file) {
+      bg.bind <- data.frame(rep('background', 
+                                nrow(spp[[curSp()]]$bgPts)), spp[[curSp()]]$bgPts)
+      names(bg.bind) <- c('scientific_name', 'longitude', 'latitude')
+      occs.bg.bind <- rbind(spp[[curSp()]]$occs[, 2:4], bg.bind)
+      all.bind <- cbind(occs.bg.bind, c(spp[[curSp()]]$occs$partition, 
+                                        spp[[curSp()]]$bg$partition))
+      names(all.bind)[4] <- "group"
+      write_csv_robust(all.bind, file, row.names = FALSE)
+    }
+  )
+  
   ######################### #
   ### COMPONENT: MODEL ####
   ######################### #
@@ -780,6 +796,7 @@ shinyServer(function(input, output, session) {
                        choices = list("Maxent Evaluation Plots" = 'maxentEval',
                                       "Plot Response Curves" = 'response',
                                       "Map Prediction" = 'mapPreds'))
+    shinyjs::enable("dlEvalTbl")
   })
   
   # # # # # # # # # # # # 
@@ -796,6 +813,7 @@ shinyServer(function(input, output, session) {
     # update radio buttons for Visualization component
     updateRadioButtons(session, "visSel", choices = list("BIOCLIM Envelope Plots" = 'bioclimPlot',
                                                          "Map Prediction" = 'mapPreds'))
+    shinyjs::enable("dlEvalTbl")
   })
   
   # # # # # # # # # # # # 
@@ -934,7 +952,7 @@ shinyServer(function(input, output, session) {
   # download for model predictions (restricted to background extent)
   output$dlPred <- downloadHandler(
     filename = function() {
-      ext <- switch(input$predFileType, raster = 'zip', ascii = 'asc', GTiff = 'tif', PNG = 'png')
+      ext <- switch(input$predFileType, raster = 'zip', ascii = 'asc', GTiff = 'tif', png = 'png')
       paste0(names(mapPred()), '.', ext)},
     content = function(file) {
       browser()

@@ -14,7 +14,10 @@
 mapPreds_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    uiOutput(ns('maxentPredTypeUI')),
+    tags$div(title='Please see guidance for an explanation of different Maxent output types.',
+             uiOutput(ns('maxentPredTypeUI')),
+             radioButtons(ns('maxentPredType'), label = "Prediction output",
+                          choices = list("raw", "logistic", "cloglog"), selected = "raw", inline = TRUE)),
     tags$div(title='Create binary map of predicted presence/absence assuming all values above threshold value represent presence. Also can be interpreted as a "potential distribution" (see guidance).',
              selectInput(ns('threshold'), label = "Set threshold",
                          choices = list("No threshold" = 'none',
@@ -28,16 +31,6 @@ mapPreds_UI <- function(id) {
 
 mapPreds_MOD <- function(input, output, session) {
   reactive({
-    # define conditional behavior for Maxent prediction type
-    output$maxentPredTypeUI <- renderUI({
-      ns <- session$ns
-      if(!(rmm()$model$algorithm %in% c("maxent.jar", "maxnet"))) {
-        tags$div(title='Please see guidance for an explanation of different Maxent output types.',
-                 radioButtons(ns('maxentPredType'), label = "Prediction output",
-                              choices = list("raw", "logistic", "cloglog"), selected = "raw", inline = TRUE))
-      }
-    })
-    
     # ERRORS ####
     if(is.null(results())) {
       shinyLogs %>% writeLog(type = 'error', "Models must be run before visualizing model predictions.")
