@@ -434,7 +434,13 @@ shinyUI(tagList(
                                                                                       column(3, h5("Download sample background points")),
                                                                                       column(2, downloadButton('dlBgPts', "CVS file"))
                                                                                     )
-                                                                   )
+                                                                   ),
+                                                                   conditionalPanel("input.tabs == 'part'",
+                                                                                    br(),
+                                                                                    fluidRow(
+                                                                                      column(3, h5("Download occurrence and background localities with partition values")),
+                                                                                      column(2, downloadButton('dlPart', "CVS file"))
+                                                                                    ))
                                                                    )
                                                           
                                               )

@@ -20,6 +20,7 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("dlBgShp")
   shinyjs::disable("dlMskEnvs")
   shinyjs::disable("dlBgPts")
+  shinyjs::disable("dlPart")
   shinyjs::disable("downloadEvalcsv")
   shinyjs::disable("downloadEvalPlots")
   shinyjs::disable("dlPred")
@@ -758,6 +759,21 @@ shinyServer(function(input, output, session) {
     # updateSelectInput(session, "curSp", selected = curSp())
     shinyjs::enable("dlPart")
   })
+  
+  # download for partitioned occurrence records csv
+  output$dlPart <- downloadHandler(
+    filename = function() paste0("_partitioned_occs.csv"),
+    content = function(file) {
+      bg.bind <- data.frame(rep('background', 
+                                nrow(spp[[curSp()]]$bgPts)), spp[[curSp()]]$bgPts)
+      #names(bg.bind) <- c('scientific_name', 'longitude', 'latitude')
+      occs.bg.bind <-rbind(spp[[curSp()]]$occs[, 1:3], bg.bind)
+      all.bind <- cbind(occs.bg.bind, c(spp[[curSp()]]$occs$partition, 
+                                        spp[[curSp()]]$bg$partition))
+      #names(all.bind)[4] <- "group"
+      write_csv_robust(all.bind, file, row.names = FALSE)
+    }
+  )
   
   ######################### #
   ### COMPONENT: MODEL ####
