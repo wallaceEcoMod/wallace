@@ -863,9 +863,9 @@ shinyServer(function(input, output, session) {
     filename = function() {
       if(rmm()$model$algorithm == "BIOCLIM") {
         paste0(curSp(), "_bioclim_evalTbl.csv")  
-      } else if(rmm ()$model$algorithm == "maxent.jar") {
+      } else if(rmm()$model$algorithm == "maxent.jar") {
         paste0(curSp(), "_maxent_evalTbl.csv")  
-      } else if(rmm ()$model$algorithm == "maxnet") {
+      } else if(rmm()$model$algorithm == "maxnet") {
         paste0(curSp(), "_maxnet_evalTbl.csv")  
       }
     },
