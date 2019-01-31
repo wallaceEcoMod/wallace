@@ -38,8 +38,6 @@ c2_thinOccs <- function(occs, thinDist, shinyLogs=NULL) {
       'Assign positive distance to thinning parameter.')
     return()
   }
-  print(occs)
-  print(class(occs))
   # query database
   smartProgress(shinyLogs, message = paste0("Spatially thinning for ", spName(occs), "..."), {  # start progress bar
     output <- spThin::thin(occs, 'latitude', 'longitude', 'scientific_name', thin.par = thinDist,
