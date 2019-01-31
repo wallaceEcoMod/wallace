@@ -381,20 +381,21 @@ getRasterVals <- function(r, type='raw') {
   return(v)
 }
 
-getAllThresh <- function(occPredVals) {
-  # remove all NA
-  occPredVals <- na.omit(occPredVals)
-  # apply minimum training presence threshold
-  min.thr <- min(occPredVals)
-  # Define 10% training presence threshold
-  if (length(occPredVals) < 10) {  # if less than 10 occ values, find 90% of total and round down
-    pct10 <- ceiling(length(occPredVals) * 0.1)
-  } else {  # if greater than or equal to 10 occ values, round up
-    pct10 <- floor(length(occPredVals) * 0.1)
-  }
-  pct10.thr <- sort(occPredVals)[pct10]  # apply 10% training presence threshold over all models
-  return(list(mtp = min.thr, p10 = pct10.thr))
-}
+# getAllThresh <- function(occPredVals) {
+#   # remove all NA
+#   occPredVals <- na.omit(occPredVals)
+#   # apply minimum training presence threshold
+#   min.thr <- min(occPredVals)
+#   # Define 10% training presence threshold
+#   if (length(occPredVals) < 10) {  # if less than 10 occ values, find 90% of total and round down
+#     pct10 <- ceiling(length(occPredVals) * 0.1)
+#   } else {  # if greater than or equal to 10 occ values, round up
+#     pct10 <- floor(length(occPredVals) * 0.1)
+#   }
+#   pct10.thr <- sort(occPredVals)[pct10]  # apply 10% training presence threshold over all models
+#   return(list(mtp = min.thr, p10 = pct10.thr))
+# }
+
 
 ####################### #
 # PROJECT ####
