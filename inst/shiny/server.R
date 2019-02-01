@@ -174,6 +174,7 @@ shinyServer(function(input, output, session) {
                 "bgSel" = bgExtent_MAP, 
                 "bgUser" = userBgExtent_MAP,
                 "bgDraw" = drawBgExtent_MAP,
+                "biasFile" = mapBias_MAP,
                 "nsp" = partitionNonSpat_MAP, 
                 "sp" = partitionSpat_MAP,
                 "mapPreds" = mapPreds_MAP, 
@@ -695,6 +696,16 @@ shinyServer(function(input, output, session) {
     #shinyjs::enable("dlRMD")
   })
   
+  # # # # # # # # # # # # # # # # # #
+  # module User Bias File        ####
+  # # # # # # # # # # # # # # # # # #
+  observeEvent(input$goBiasFileUpload, {
+    userBiasFileUpload <- callModule(userBiasFile_MOD, 'samp_biasFileUpload')
+    userBiasFileUpload()
+    #shinyjs::enable("dlOccs")
+    #if (length(allSp()) > 1) shinyjs::enable("dlAllOccs")
+    #shinyjs::enable("dlRMD")
+  })
   
   ############################################## #
   ### COMPONENT: ESPACE ####
