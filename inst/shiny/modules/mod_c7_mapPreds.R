@@ -1,4 +1,16 @@
 
+# mapPreds_UI <- function(id) {
+#   ns <- NS(id)
+#   tagList(
+#     uiOutput(ns('maxentPredTypeUI')),
+#     tags$div(title='Create binary map of predicted presence/absence assuming all values above threshold value represent presence. Also can be interpreted as a "potential distribution" (see guidance).',
+#              selectInput(ns('threshold'), label = "Set threshold",
+#                          choices = list("No threshold" = 'none',
+#                                         "Minimum Training Presence" = 'mtp', 
+#                                         "10 Percentile Training Presence" = 'p10')))
+#   )
+# }
+
 mapPreds_UI <- function(id) {
   ns <- NS(id)
   tagList(
@@ -9,10 +21,13 @@ mapPreds_UI <- function(id) {
     tags$div(title='Create binary map of predicted presence/absence assuming all values above threshold value represent presence. Also can be interpreted as a "potential distribution" (see guidance).',
              selectInput(ns('threshold'), label = "Set threshold",
                          choices = list("No threshold" = 'none',
-                                        "Minimum Training Presence" = 'mtp', 
-                                        "10 Percentile Training Presence" = 'p10')))
+                                        "Quantile of Training Presences" = 'qtp'))),
+             conditionalPanel(sprintf("input['%s'] == 'qtp'", ns("threshold")),
+                              sliderInput(ns("trainPresQuantile"), "Set quantile", 
+                                          min = 0, max = 1, value = .05))
   )
 }
+
 
 mapPreds_MOD <- function(input, output, session) {
   reactive({
@@ -77,16 +92,21 @@ mapPreds_MOD <- function(input, output, session) {
     # determine the threshold based on the current, not projected, prediction
     occPredVals <- raster::extract(predSel, occs.xy)
     # get all thresholds
-    thr <- getAllThresh(occPredVals)
+    #thr <- getAllThresh(occPredVals) # seems like this should be inside the next if to avoid computing for no reason
     
     # get the chosen threshold value
     if(input$threshold != 'none') {
-      thr.sel <- thr[[input$threshold]]
+      #thr.sel <- thr[[input$threshold]]
+      # this eliminates the need for the getAllThresh function
+      thr.sel <- quantile(occPredVals,probs=input$trainPresQuantile)
+      
       predSel.thr <- predSel > thr.sel
       # rename prediction raster if thresholded
       names(predSel.thr) <- paste0(curModel(), '_', predType)
+      # shinyLogs %>% writeLog(curSp(), ": ", input$threshold, ' threshold selected
+      #                        for ', predType, ': ', thr, '.')
       shinyLogs %>% writeLog(curSp(), ": ", input$threshold, ' threshold selected
-                             for ', predType, ': ', thr, '.')
+                             for ', predType, ': ', thr.sel, '.')
     } else {
       predSel.thr <- predSel
     }
@@ -97,7 +117,8 @@ mapPreds_MOD <- function(input, output, session) {
     
     # LOAD INTO SPP ####
     spp[[curSp()]]$results[[predType]] <- predSel
-    spp[[curSp()]]$visualization$thresholds <- thr
+    #spp[[curSp()]]$visualization$thresholds <- thr
+    spp[[curSp()]]$visualization$thresholds <- thr.sel # were you recording multiple before?
     spp[[curSp()]]$visualization$mapPred <- predSel.thr
     spp[[curSp()]]$visualization$mapPredVals <- getRasterVals(predSel.thr, predType)
     
