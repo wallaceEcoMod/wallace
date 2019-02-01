@@ -682,6 +682,21 @@ shinyServer(function(input, output, session) {
   )
   
   ############################################## #
+  ### COMPONENT: SAMPLING BIAS ####
+  ############################################## #
+  # # # # # # # # # # # # # # # # # #
+  # module User Background Data ####
+  # # # # # # # # # # # # # # # # # #
+  observeEvent(input$goUserBGUpload, {
+    userBGUpload <- callModule(userBG_MOD, 'samp_userBiasBg_uiID')
+    userBGUpload()
+    #shinyjs::enable("dlOccs")
+    #if (length(allSp()) > 1) shinyjs::enable("dlAllOccs")
+    #shinyjs::enable("dlRMD")
+  })
+  
+  
+  ############################################## #
   ### COMPONENT: ESPACE ####
   ############################################## #
   
