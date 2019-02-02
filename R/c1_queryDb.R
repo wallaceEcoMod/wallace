@@ -33,16 +33,23 @@
 #c1_queryDb <- function(spName, occDb, occNum, shinyLogs=NULL) {
 c1_queryDb <- function(spName, occDb, occNum, doCitations = F, gbifUser = NULL, 
                        gbifEmail = NULL, gbifPW = NULL, shinyLogs = NULL) {
-  # capitalize genus name if not already, trim whitespace
-  spName <- trimws(paste0(toupper(substring(spName, 1, 1)), 
-                          substring(spName, 2, nchar(spName))))  
+  
+  # get all species names
+  spNames <- trimws(strsplit(spName, ",")[[1]])
+  
+  # function for capitalizing genus names
+  spCap <- function(x) {
+    paste0(toupper(substring(x, 1, 1)), substring(x, 2, nchar(x)))
+  }
+  # capitalize genus names
+  spNames <- sapply(spNames, spCap)
   
   # figure out how many separate names (components of scientific name) were entered
-  nameSplit <- length(unlist(strsplit(spName, " ")))
+  namesSplit <- sapply(spNames, function(x) strsplit(x, " "))
+  namesSplitCheck <- sapply(namesSplit, function(x) length(x) == 2)
   # if two names not entered, throw error and return
-  if (nameSplit != 2) {
-    shinyLogs %>% writeLog(type = 'error',
-      'Please input both genus and species names.')
+  if(!all(namesSplitCheck)) {
+    shinyLogs %>% writeLog(type = 'error', 'Please input both genus and species names.')
     return()
   }
 
@@ -50,11 +57,11 @@ c1_queryDb <- function(spName, occDb, occNum, doCitations = F, gbifUser = NULL,
   smartProgress(shinyLogs, message = paste0("Querying ", occDb, " for ", 
                                             spName, "..."),{
      if (occDb == 'bison' | occDb == 'vertnet') {
-      q <- spocc::occ(spName, occDb, limit = occNum)
+      q <- spocc::occ(spNames, occDb, limit = occNum)
       myOccCitations <- NULL
     } else if (occDb == 'gbif') {
       if (doCitations == FALSE) {
-        q <- spocc::occ(spName, occDb, limit = occNum)
+        q <- spocc::occ(spNames, occDb, limit = occNum)
         myOccCitations <- NULL
       } else if (doCitations == TRUE) {
         if(any(unlist(lapply(list(gbifUser, gbifEmail, gbifPW), is.null)))) {
@@ -98,14 +105,21 @@ c1_queryDb <- function(spName, occDb, occNum, doCitations = F, gbifUser = NULL,
       'No records found for ', em(spName), '. Please check the spelling.')
     return()
   }
-  # extract occurrence tibble
-  occsOrig <- q[[occDb]]$data[[formatSpName(spName)]]
-  # make sure latitude and longitude are numeric (sometimes they aren't)
-  occsOrig$latitude <- as.numeric(occsOrig$latitude)
-  occsOrig$longitude <- as.numeric(occsOrig$longitude)
+  # extract occurrence tibbles
+  occsOrig <- list()
+  for(i in 1:length(spNames)) {
+    spName.fmt <- formatSpName(spNames[i])
+    occsOrig[[spName.fmt]] <- q[[occDb]]$data[[spName.fmt]]
+    # make sure latitude and longitude are numeric (sometimes they aren't)
+    occsOrig[[spName.fmt]]$latitude <- as.numeric(occsOrig[[spName.fmt]]$latitude)
+    occsOrig[[spName.fmt]]$longitude <- as.numeric(occsOrig[[spName.fmt]]$longitude)
+    # make new column for original ID
+    occsOrig[[spName.fmt]]$occID <- as.numeric(row.names(occsOrig[[spName.fmt]]))
+  }
   
-  # make new column for original ID
-  occsOrig$occID <- as.numeric(row.names(occsOrig))
+  
+  
+  
   
   # delete colums with list to avoid conflict
   occsOrig["networkKeys"] <- NULL

@@ -85,14 +85,13 @@ smartProgress <- function(logs, message, expr) {
   }
 }
 
-formatSpName <- function(spName) {
-  spName <- as.character(spName)
-  spl <- strsplit(spName, split=' ')
-  if(length(spl[[1]]) > 1) {
-    paste(spl[[1]], collapse='_')
-  } else {
-    spName
-  }
+formatSpName <- function(spNames) {
+  spNames <- as.character(spNames)
+  # separate by space
+  spNames.fmt <- sapply(spNames, function(x) strsplit(x, split=' '))
+  # put underscores in
+  spNames.fmt <- sapply(spNames.fmt, function(x) paste(x, collapse='_'))
+  return(spNames.fmt)
 }
 
 # for naming files

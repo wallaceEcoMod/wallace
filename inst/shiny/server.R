@@ -684,6 +684,7 @@ shinyServer(function(input, output, session) {
   ############################################## #
   ### COMPONENT: SAMPLING BIAS ####
   ############################################## #
+  
   # # # # # # # # # # # # # # # # # #
   # module User Background Data ####
   # # # # # # # # # # # # # # # # # #
@@ -694,6 +695,19 @@ shinyServer(function(input, output, session) {
     #if (length(allSp()) > 1) shinyjs::enable("dlAllOccs")
     #shinyjs::enable("dlRMD")
   })
+  
+  # # # # # # # # # # # # # # # # # #
+  # module Make Target Group ####
+  # # # # # # # # # # # # # # # # # #
+  observeEvent(input$goTargetDbOccs, {
+    targetQueryDB <- callModule(queryDb_MOD, 'samp_queryDb_uiID')
+    targetQueryDB()
+    #shinyjs::enable("dlOccs")
+    #if (length(allSp()) > 1) shinyjs::enable("dlAllOccs")
+    #shinyjs::enable("dlRMD")
+  })
+  
+  
   
   
   ############################################## #
