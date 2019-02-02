@@ -25,7 +25,7 @@ queryDb_UI <- function(id) {
                                                             'GBIF password',
                                                             value=NULL)))),
     tags$div(title = 'Examples: Felis catus, Canis lupus, Nyctereutes procyonoides',
-             textInput(ns("spName"), label = "Enter species scientific name", 
+             textInput(ns("spNames"), label = "Enter species scientific name", 
                        placeholder = 'format: Genus species')),
     tags$div(title = 'Maximum number of occurrences recovered from databases. 
              Downloaded records are not sorted randomly: 
@@ -38,42 +38,44 @@ queryDb_UI <- function(id) {
 queryDb_MOD <- function(input, output, session) {
   reactive({
     # FUNCTION CALL ####
-    occsTbls <- c1_queryDb(input$spName, input$occsDb, input$occsNum, 
+    occsList <- c1_queryDb(input$spNames, input$occsDb, input$occsNum, 
                            input$doCitations, input$gbifUser, input$gbifEmail,
                            input$gbifPW, shinyLogs)
-    req(occsTbls)
+    req(occsList)
     
-    # LOAD INTO SPP ####
-    occsOrig <- occsTbls$orig
-    occs <- occsTbls$cleaned
-    n <- formatSpName(occs$scientific_name)
-    # if species name is already in list, overwrite it
-    if(!is.null(spp[[n]])) spp[[n]] <- NULL
-    # add two copies of occs dataset -- higher level occs will be
-    # altered during session, while occData$occsCleaned is preserved in the
-    # post-download cleaned state; occsOrig is the raw download
-    # rmm is the range model metadata object
-    spp[[n]] <- list(occs = occs, 
-                     occData = list(occsOrig = occsOrig, occsCleaned = occs),
-                     rmm = rangeModelMetadata::rmmTemplate())
     
-    # METADATA ####
-    spp[[n]]$rmm$data$occurrence$taxa <- n
-    spp[[n]]$rmm$data$occurrence$dataType <- "presence only"
-    spp[[n]]$rmm$data$occurrence$presenceSampleSize <- nrow(occs)
-    spp[[n]]$rmm$code$wallaceSettings$occsNum <- input$occsNum
-    spp[[n]]$rmm$code$wallaceSettings$occsRemoved <- input$occsNum - nrow(occsTbls$cleaned)
-     # store citations with occCite, or just report the database if users are 
-     # too lame to use bridgetree
-    if(input$doCitations){
-      # DOUBLE CHECK THIS DOESN"T NEED TO BE VECTORIZED!!
-      spp[[n]]$rmm$data$occurrence$sources <- occsTbls$citations
-    } else {
-      spp[[n]]$rmm$data$occurrence$sources <- input$occsDb
-    }  
+    for(sp in names(occsList)) {
+      # LOAD INTO SPP ####
+      # if species name is already in list, overwrite it
+      if(!is.null(spp[[sp]])) spp[[sp]] <- NULL
+      # add two copies of occs dataset -- higher level occs will be
+      # altered during session, while occData$occsCleaned is preserved in the
+      # post-download cleaned state; occsOrig is the raw download
+      # rmm is the range model metadata object
+      spp[[sp]] <- list(occs = occsList[[sp]]$cleaned, 
+                       occData = list(occsOrig = occsList[[sp]]$orig, 
+                                      occsCleaned = occsList[[sp]]$cleaned),
+                       rmm = rangeModelMetadata::rmmTemplate())  
+      
+      # METADATA ####
+      spp[[sp]]$rmm$data$occurrence$taxa <- sp
+      spp[[sp]]$rmm$data$occurrence$dataType <- "presence only"
+      spp[[sp]]$rmm$data$occurrence$presenceSampleSize <- nrow(occs)
+      spp[[sp]]$rmm$code$wallaceSettings$occsNum <- input$occsNum
+      spp[[sp]]$rmm$code$wallaceSettings$occsRemoved <- input$occsNum - nrow(occsList[[sp]]$cleaned)
+      # store citations with occCite, or just report the database if users are 
+      # too lame to use bridgetree
+      if(input$doCitations){
+        # DOUBLE CHECK THIS DOESN"T NEED TO BE VECTORIZED!!
+        spp[[sp]]$rmm$data$occurrence$sources <- occsList[[sp]]$citations
+      } else {
+        spp[[sp]]$rmm$data$occurrence$sources <- input$occsDb
+      }  
+    }
+    
     # RETURN ####
     # output the table
-    return(occs)
+    return(occsList[[sp]]$cleaned)
   })
 }
 
