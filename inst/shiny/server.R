@@ -685,6 +685,7 @@ shinyServer(function(input, output, session) {
   ############################################## #
   ### COMPONENT: SAMPLING BIAS ####
   ############################################## #
+  
   # # # # # # # # # # # # # # # # # #
   # module User Background Data ####
   # # # # # # # # # # # # # # # # # #
@@ -697,11 +698,19 @@ shinyServer(function(input, output, session) {
   })
   
   # # # # # # # # # # # # # # # # # #
+
   # module User Bias File        ####
   # # # # # # # # # # # # # # # # # #
   observeEvent(input$goBiasFileUpload, {
     userBiasFileUpload <- callModule(userBiasFile_MOD, 'samp_biasFileUpload')
     userBiasFileUpload()
+  })
+      
+  # module Make Target Group ####
+  # # # # # # # # # # # # # # # # # #
+  observeEvent(input$goTargetDbOccs, {
+    targetQueryDB <- callModule(queryDb_MOD, 'samp_queryDb_uiID')
+    targetQueryDB()
     #shinyjs::enable("dlOccs")
     #if (length(allSp()) > 1) shinyjs::enable("dlAllOccs")
     #shinyjs::enable("dlRMD")

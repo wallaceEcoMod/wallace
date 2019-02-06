@@ -189,9 +189,9 @@ shinyUI(tagList(
                                                 ),
                                                 conditionalPanel("input.samplingBias == 'biasBgMake'",
                                                                  #uiTop(bgExtent_INFO),
-                                                                 div("Step 1:", id="step"), div("Specify Species to Include in a Target Group", id="stepText"), br(), br(),
-                                                                 bgExtent_UI('c4_bgExtent_uiID'),
-                                                                 actionButton("goBgExt", "Select"), br(), br()#,
+                                                                 div("Step 1:", id="step"), div("Specify Target Group Species", id="stepText"), br(), br(),
+                                                                 queryDb_UI('samp_queryDb_uiID'),
+                                                                 actionButton("goTargetDbOccs", "Query Database"), br(), br()#,
                                                                  # strong("Download shapefile of background extent"), br(), br(),
                                                                  # downloadButton('dlBgShp', "Download")
                                                 ),
