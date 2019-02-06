@@ -194,8 +194,8 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goDbOccs, {
     queryDb <- callModule(queryDb_MOD, 'c1_queryDb_uiID')
     # return the occs table
-    occsTbl <- queryDb()
-    n <- formatSpName(occsTbl$scientific_name)
+    occsList <- queryDb()
+    n <- formatSpName(occsList[[1]]$scientific_name)
     # UI CONTROLS
     # assign the selected species to the present occ table's scientific name
     updateSelectInput(session, "curSp", selected = n)
@@ -211,8 +211,8 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goPaleoDbOccs, {
     paleoDb <- callModule(queryPaleoDb_MOD, 'c1_queryPaleoDb_uiID')
     # return the occs table
-    occsTbl <- paleoDb()
-    n <- formatSpName(occsTbl$scientific_name)
+    occsList <- paleoDb()
+    n <- formatSpName(occsList[[1]]$scientific_name)
     # UI CONTROLS
     # assign the selected species to the present occ table's scientific name
     updateSelectInput(session, "curSp", selected = n)
@@ -700,8 +700,9 @@ shinyServer(function(input, output, session) {
   # module Make Target Group ####
   # # # # # # # # # # # # # # # # # #
   observeEvent(input$goTargetDbOccs, {
-    targetQueryDB <- callModule(queryDb_MOD, 'samp_queryDb_uiID')
-    targetQueryDB()
+    targetQueryDB <- callModule(queryDb_MOD, 'samp_queryDb_uiID', targetGroup = TRUE)
+    occsList <- targetQueryDB()
+    targetGroupBG <- callModule(targetGroupBG_MOD, 'samp_targetGroupBg_uiID', occsList)
     #shinyjs::enable("dlOccs")
     #if (length(allSp()) > 1) shinyjs::enable("dlAllOccs")
     #shinyjs::enable("dlRMD")

@@ -68,7 +68,8 @@ c1_queryDb <- function(spNames, occDb, occNum, doCitations = F, gbifUser = NULL,
         } else if (doCitations == TRUE) {
           if(any(unlist(lapply(list(gbifUser, gbifEmail, gbifPW), is.null)))) {
             shinyLogs %>% writeLog('error', 
-                                   'Please specify your GBIF username, email, and password. This is needed to get citations for occurrence records. Wallace does not store your information or use it for anything else.')
+                                   'Please specify your GBIF username, email, and password. This is needed to get citations for occurrence records. 
+                                   Wallace does not store your information or use it for anything else.')
             return()
           }
           myBTO <- occCite::studyTaxonList(x = sp, datasources = "NCBI")
