@@ -2,7 +2,7 @@
 % Please edit documentation in R/c3_ecoClimate.R
 \name{c3_ecoClimate}
 \alias{c3_ecoClimate}
-\title{c3_ecoClimate}
+\title{download ecoClimate variables. see www.ecoclimate.org}
 \usage{
 c3_ecoClimate(bcAOGCM, bcScenario, ecoClimSelChoice = FALSE, ecoClimSel,
   shinyLogs = NULL)
@@ -19,6 +19,11 @@ Options are: "LGM" (Last Glacial Maximum, 21,000 years ago), "Holo" ()}
 \item{ecoClimSel}{list of boolean data. selected variables}
 }
 \description{
-download ecoClimate variables. see www.ecoclimate.org
 For EcoClimate the resolution is fixed to 0.5 degrees
+}
+\details{
+See Examples.
+}
+\author{
+Jamie Kass <jkass@gradcenter.cuny.edu>
 }

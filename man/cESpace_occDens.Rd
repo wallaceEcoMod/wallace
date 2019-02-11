@@ -7,10 +7,20 @@
 cESpace_occDens(sp.name1, sp.name2, pca, shinyLogs = NULL)
 }
 \arguments{
-\item{pca}{output of pca component}
+\item{sp.name1}{x}
 
-\item{spSel}{species selected (1 or 2)}
+\item{sp.name2}{x}
+
+\item{pca}{pca output of pca component}
+
+\item{shinyLogs}{x}
 }
 \description{
-calibrate a PCA for the background of two selected species
+..
+}
+\details{
+See Examples.
+}
+\author{
+Jamie Kass <jkass@gradcenter.cuny.edu>
 }

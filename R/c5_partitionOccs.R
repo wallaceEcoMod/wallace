@@ -5,13 +5,13 @@
 #' @details
 #' See Examples.
 #'
-#' @param occs
-#' @param bg
-#' @param method
-#' @param kfolds
-#' @param bgMask
-#' @param aggFact
-#' @param shinyLogs
+#' @param occs x
+#' @param bg x
+#' @param method x
+#' @param kfolds x
+#' @param bgMask x
+#' @param aggFact x
+#' @param shinyLogs x
 # @keywords
 #'
 # @examples

@@ -7,9 +7,9 @@
 #' @param z1 ecospat niche object for species 1 from cESpace_OccDens
 #' @param z2 ecospat niche object for species 2 from cESpace_OccDens
 #' @param iter number of iterations
-#' @param equivalency
-#' @param similarity
-#' @param shinyLogs
+#' @param equivalency x
+#' @param similarity x
+#' @param shinyLogs x
 # @keywords
 #'
 # @examples

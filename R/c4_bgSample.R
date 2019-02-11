@@ -5,10 +5,10 @@
 #' @details
 #' See Examples.
 #'
-#' @param occs
-#' @param bgMask
-#' @param bgPtsNum
-#' @param shinyLogs
+#' @param occs x
+#' @param bgMask x
+#' @param bgPtsNum x
+#' @param shinyLogs x
 # @keywords
 #'
 # @examples

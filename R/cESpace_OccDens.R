@@ -4,10 +4,10 @@
 #'
 #' @details
 #' See Examples.
-#' @param sp.name1
-#' @param sp.name2
+#' @param sp.name1 x
+#' @param sp.name2 x
 #' @param pca pca output of pca component
-#' @param shinyLogs
+#' @param shinyLogs x
 # @param spSel species selected (1 or 2)
 # @keywords
 #'

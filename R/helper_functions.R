@@ -5,6 +5,7 @@
 ####################### #
 # UI ####
 ####################### #
+#' @export
 uiTop <- function(mod_INFO) {
   modName <- mod_INFO$modName
   pkgName <- mod_INFO$pkgName
@@ -24,6 +25,7 @@ uiTop <- function(mod_INFO) {
   return(ls)
 }
 
+#' @export
 uiBottom <- function(mod_INFO) {
   modAuts <- mod_INFO$modAuts
   pkgName <- mod_INFO$pkgName 
@@ -44,6 +46,7 @@ uiBottom <- function(mod_INFO) {
   return(ls)
 }
 
+#' @export
 infoGenerator <- function(pkgName, modName , modAuts) {
   pkgInfo <- sapply(pkgName, packageDescription, simplify = FALSE)
   pkgTitl <- sapply(pkgInfo, function(x) x$Title)
@@ -63,6 +66,7 @@ infoGenerator <- function(pkgName, modName , modAuts) {
 ####################### #
 
 # retrieves the species name for use internally in non-shiny functions
+#' @export
 spName <- function(sp) {
   if(class(sp) == "list") {
     name <- sp$occs$scientific_name[1]
@@ -85,6 +89,7 @@ smartProgress <- function(logs, message, expr) {
   }
 }
 
+#' @export
 formatSpName <- function(spNames) {
   spNames <- as.character(spNames)
   # separate by space
@@ -95,6 +100,7 @@ formatSpName <- function(spNames) {
 }
 
 # for naming files
+#' @export
 nameAbbr <- function(spname) {
   namespl <- strsplit(tolower(spname), " ")
   genusAbbr <- substring(namespl[[1]][1], 1, 1)
@@ -102,10 +108,12 @@ nameAbbr <- function(spname) {
   return(fullNameAbbr)
 }
 
+#' @export
 fileNameNoExt <- function(f) {
   sub(pattern = "(.*)\\..*$", replacement = "\\1", f)
 }
 
+#' @export
 writeSpp <- function(spp, sp, dir) {
   if(!is.null(spp[[sp]]$occs)) write.csv(spp[[sp]]$occs, file.path(dir, paste0(sp, "_occs.csv")))
   if(!is.null(spp[[sp]]$bg)) write.csv(spp[[sp]]$bg, file.path(dir, paste0(sp, "_bg.csv")))
@@ -143,6 +151,7 @@ writeLog <- function(logs, ..., type = 'default') {
 ####################### #
 
 # return the map center given the bounds
+#' @export
 mapCenter <- function(bounds) {
   map_center <- c((bounds$west + bounds$east) / 2, (bounds$north + bounds$south) / 2)
   map_center <- round(map_center, digits=3)
@@ -150,6 +159,7 @@ mapCenter <- function(bounds) {
 }
 
 # map occurrences with the Wallace default symbology
+#' @export
 map_occs <- function(map, occs, fillColor = 'red', fillOpacity = 0.2, customZoom = NULL) {
   map %>%
     addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, 
@@ -163,6 +173,7 @@ map_occs <- function(map, occs, fillColor = 'red', fillOpacity = 0.2, customZoom
 }
 
 # map all background polygons
+#' @export
 mapBgPolys <- function(map, bgShpXY) {
   for (shp in bgShpXY) {
     map %>%
@@ -171,11 +182,13 @@ mapBgPolys <- function(map, bgShpXY) {
   }
 }
 
+#' @export
 clearAll <- function(map) {
   map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% clearControls()
 }
 
 # zoom to occ pts
+#' @export
 zoom2Occs <- function(map, occs) {
   # map %>% clearShapes()
   lat <- occs["latitude"]
@@ -210,6 +223,7 @@ zoom2Occs <- function(map, occs) {
 }
 
 # zooms appropriately for any extent
+#' @export
 smartZoom <- function(longi, lati) {
   lg.diff <- abs(max(longi) - min(longi))
   lt.diff <- abs(max(lati) - min(lati))
@@ -221,7 +235,7 @@ smartZoom <- function(longi, lati) {
 ####################### #
 # OBTAIN OCCS ####
 ####################### #
-
+#' @export
 popUpContent <- function(x) {
   lat <- round(as.numeric(x['latitude']), digits = 2)
   lon <- round(as.numeric(x['longitude']), digits = 2)
@@ -251,7 +265,7 @@ popUpContent <- function(x) {
 ####################### #
 # COMP 3 ####
 ####################### #
-
+#' @export
 remEnvsValsNA <- function(occs, occsEnvsVals, logs) {
   withProgress(message = "Checking for points with NA values...", {
     na.rowNums <- which(rowSums(is.na(occsEnvsVals)) > 1)
@@ -278,6 +292,7 @@ remEnvsValsNA <- function(occs, occsEnvsVals, logs) {
 ####################### #
 
 # make a minimum convex polygon as SpatialPolygons object
+#' @export
 mcp <- function(xy) {
   xy <- as.data.frame(sp::coordinates(xy))
   coords.t <- chull(xy[, 1], xy[, 2])
@@ -289,6 +304,7 @@ mcp <- function(xy) {
 ####################### #
 # MODEL ####
 ####################### #
+#' @export
 maxentJARversion <- function() {
   if (is.null(getOption('dismo_rJavaLoaded'))) {
     # to avoid trouble on macs
@@ -308,7 +324,7 @@ maxentJARversion <- function() {
 ####################### #
 # VISUALIZE ####
 ####################### #
-
+#' @export
 evalPlots <- function(results) {
   par(mfrow=c(3,2))
   fc <- length(unique(results$features))
@@ -327,6 +343,7 @@ evalPlots <- function(results) {
 }
 
 # make data.frame of lambdas vector from Maxent model object
+#' @export
 lambdasDF <- function(mx) {
   lambdas <- mx@lambdas[1:(length(mx@lambdas)-4)]
   data.frame(var=sapply(lambdas, FUN=function(x) strsplit(x, ',')[[1]][1]),
@@ -336,6 +353,7 @@ lambdasDF <- function(mx) {
              row.names=1:length(lambdas))
 }
 ## pulls out all non-zero, non-redundant (removes hinge/product/threshold) predictor names
+#' @export
 mxNonzeroCoefs <- function(mx) {
   x <- lambdasDF(mx)
   #remove any rows that have a zero lambdas value (Second column)
@@ -348,6 +366,7 @@ mxNonzeroCoefs <- function(mx) {
   x <- unique(sub("\\(", "", x))
 }
 
+#' @export
 respCurv <- function(mod, i) {  # copied mostly from dismo
   v <- rbind(mod@presence, mod@absence)
   v.nr <- nrow(v)
@@ -372,6 +391,7 @@ respCurv <- function(mod, i) {  # copied mostly from dismo
 }
 
 # retrieve the value range for a prediction raster for plotting
+#' @export
 getRasterVals <- function(r, type='raw') {
   v <- raster::values(r)
   # remove NAs
@@ -399,7 +419,7 @@ getRasterVals <- function(r, type='raw') {
 ####################### #
 # PROJECT ####
 ####################### #
-
+#' @export
 reverseLabels <- function(..., reverse_order = FALSE) {
   if (reverse_order) {
     function(type = "numeric", cuts) {
@@ -413,9 +433,11 @@ reverseLabels <- function(..., reverse_order = FALSE) {
 ####################### #
 # SESSION CODE ####
 ####################### #
-
+#' @export
 makeCap <- function(x) paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)))
+#' @export
 getSpName <- function() deparse(substitute(input$spName))
+#' @export
 printVecAsis <- function(x, asChar = FALSE) {
   if (is.character(x)) {
     if (length(x) == 1) {
@@ -443,6 +465,7 @@ printVecAsis <- function(x, asChar = FALSE) {
 #####################
 # Download utlities #
 #####################
+#' @export
 convert_list_cols <- function(x) {
   dplyr::mutate_if(.tbl = x,
                    .predicate = function(col) inherits(col, "list"),
@@ -452,6 +475,7 @@ convert_list_cols <- function(x) {
                             character(1L))
                    })
 }
+#' @export
 write_csv_robust <- function(x, ...) {
   write.csv(convert_list_cols(x), ...)
 }

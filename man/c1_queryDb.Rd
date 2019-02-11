@@ -4,17 +4,34 @@
 \alias{c1_queryDb}
 \title{Query online database for species occurrence records.}
 \usage{
-c1_queryDb(spName, occDb, occNum, shinyLogs = NULL)
+c1_queryDb(spNames, occDb, occNum, doCitations = F, gbifUser = NULL,
+  gbifEmail = NULL, gbifPW = NULL, shinyLogs = NULL)
 }
 \arguments{
-\item{spName}{character species Latin name, with format "Genus species"}
-
-\item{occDb}{character biodiversity database to query; current choices are "gbif", 
-"vertnet", and "bison"}
+\item{occDb}{character biodiversity database to query; current choices are 
+"gbif", "vertnet", and "bison"}
 
 \item{occNum}{numeric maximum number of occurrence records to return}
 
-\item{shinyLogs}{insert the shinyLogs reactive list here for running in shiny, otherwise leave the default NULL}
+\item{doCitations}{set TRUE to use `occCite` to get a complete list of original
+data sources in a citable format}
+
+\item{gbifUser}{specify only if using `occCite` with GBIF to get a complete list
+of original data sources in a citable format. This, as well as `gbifEmail` 
+and `gbifPW` are constraints imposed by GBIF to obtain the complete set of 
+metadata associated with occurrence records and is not stored or used by 
+`wallace` for any other purposes.}
+
+\item{gbifEmail}{specify only if using `occCite` with GBIF to get a 
+complete list of original data sources in a citable format.}
+
+\item{shinyLogs}{insert the shinyLogs reactive list here for running in shiny,
+otherwise leave the default NULL}
+
+\item{spName}{character species Latin name, with format "Genus species"}
+
+\item{gbifPW=NULL}{specify only if using `occCite` with GBIF to get a complete 
+list of original data sources in a citable format.}
 }
 \value{
 formatted tibble of species occurrence records

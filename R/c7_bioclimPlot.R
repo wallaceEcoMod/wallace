@@ -5,11 +5,11 @@
 #' @details
 #' See Examples.
 #'
-#' @param x
-#' @param a=1
-#' @param b=2
-#' @param p=0.9
-#' @param ...
+#' @param x x
+#' @param a x
+#' @param b x
+#' @param p x
+#' @param ... x
 # @keywords
 #'
 # @examples

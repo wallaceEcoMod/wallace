@@ -5,9 +5,9 @@
 #' @details
 #' See Examples.
 #'
-#' @param occs
-#' @param removeID
-#' @param shinyLogs = NULL
+#' @param occs x
+#' @param removeID x
+#' @param shinyLogs x
 # @keywords
 #'
 # @examples

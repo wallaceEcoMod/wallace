@@ -2,7 +2,7 @@
 % Please edit documentation in R/cESpace_NicheOverlap.R
 \name{cESpace_nicheOv}
 \alias{cESpace_nicheOv}
-\title{calibrate a PCA for the background of two selected species}
+\title{cESpace_nicheOv}
 \usage{
 cESpace_nicheOv(z1, z2, iter = 100, equivalency = FALSE,
   similarity = TRUE, shinyLogs = NULL)
@@ -11,7 +11,21 @@ cESpace_nicheOv(z1, z2, iter = 100, equivalency = FALSE,
 \item{z1}{ecospat niche object for species 1 from cESpace_OccDens}
 
 \item{z2}{ecospat niche object for species 2 from cESpace_OccDens}
+
+\item{iter}{number of iterations}
+
+\item{equivalency}{x}
+
+\item{similarity}{x}
+
+\item{shinyLogs}{x}
 }
 \description{
-calibrate a PCA for the background of two selected species
+..
+}
+\details{
+See Examples.
+}
+\author{
+Jamie Kass <jkass@gradcenter.cuny.edu>
 }

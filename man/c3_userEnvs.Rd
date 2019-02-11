@@ -12,5 +12,11 @@ c3_userEnvs(rasPath, rasName, shinyLogs = NULL)
 \item{rasName}{character vector of raster names}
 }
 \description{
-download worldclim variables. see www.worldclim.com
+Download worldclim variables. see www.worldclim.com
+}
+\details{
+See Examples.
+}
+\author{
+Jamie Kass <jkass@gradcenter.cuny.edu>
 }

@@ -5,10 +5,10 @@
 #' @details
 #' See Examples.
 #'
-#' @param bgShp_path
-#' @param bgShp_name
-#' @param userBgBuf
-#' @param shinyLogs
+#' @param bgShp_path x
+#' @param bgShp_name x 
+#' @param userBgBuf x
+#' @param shinyLogs x
 # @keywords
 #'
 # @examples

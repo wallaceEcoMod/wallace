@@ -4,7 +4,7 @@
 \alias{c3_worldclim}
 \title{c3_worldclim}
 \usage{
-c3_worldclim(bcRes, bcSel, shinyLogs = NULL)
+c3_worldclim(bcRes, bcSel, mapCntr, shinyLogs = NULL)
 }
 \arguments{
 \item{bcRes}{numeric resolution of the climatic layers}
@@ -13,4 +13,10 @@ c3_worldclim(bcRes, bcSel, shinyLogs = NULL)
 }
 \description{
 download worldclim variables. see www.worldclim.com
+}
+\details{
+See Examples.
+}
+\author{
+Jamie Kass <jkass@gradcenter.cuny.edu>
 }

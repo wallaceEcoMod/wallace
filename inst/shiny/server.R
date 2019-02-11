@@ -1,13 +1,3 @@
-# load helper functions
-# source("helper_functions.R")
-wd <- getwd()
-# load module functions
-setwd("..")
-setwd("..")
-funcs <- list.files(path="R", full.names=TRUE)
-sapply(funcs, source)
-setwd(wd)
-
 options(shiny.maxRequestSize=5000*1024^2)
 
 shinyServer(function(input, output, session) {

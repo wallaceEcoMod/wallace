@@ -1,5 +1,3 @@
-# load helper functions
-source("helper_functions.R")
 # load modules
 for (f in list.files('./modules')) source(file.path('modules', f), local=TRUE)
 

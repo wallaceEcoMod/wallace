@@ -5,15 +5,15 @@
 #' @details
 #' See Examples.
 #'
-#' @param occs
-#' @param bg 
-#' @param occsGrp 
-#' @param bgGrp
-#' @param bgMsk 
-#' @param rms
-#' @param rmsStep
-#' @param fcs
-#' @param shinyLogs
+#' @param occs x
+#' @param bg  x
+#' @param occsGrp  x
+#' @param bgGrp x
+#' @param bgMsk x
+#' @param rms x
+#' @param rmsStep x
+#' @param fcs x
+#' @param shinyLogs x
 # @keywords
 #'
 # @examples

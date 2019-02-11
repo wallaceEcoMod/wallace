@@ -5,13 +5,13 @@
 #' @details
 #' See Examples.
 #'
-#' @param results
-#' @param curModel
-#' @param envs
-#' @param outputType
-#' @param polyPjXY
-#' @param polyPjID
-#' @param shinyLogs
+#' @param results x
+#' @param curModel x
+#' @param envs x
+#' @param outputType x
+#' @param polyPjXY x
+#' @param polyPjID x
+#' @param shinyLogs x
 # @keywords
 #'
 # @examples

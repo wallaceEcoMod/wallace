@@ -5,10 +5,10 @@
 #' @details
 #' See Examples.
 #'
-#' @param occs
-#' @param polySelXY
-#' @param polySelID 
-#' @param shinyLogs 
+#' @param occs x
+#' @param polySelXY x
+#' @param polySelID x
+#' @param shinyLogs x
 # @keywords
 #'
 # @examples

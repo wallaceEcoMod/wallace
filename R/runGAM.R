@@ -4,7 +4,7 @@
 #' @details
 #' See Examples.
 #'
-#' @param
+#' @param occs.vals x
 # @keywords
 #'
 # @examples

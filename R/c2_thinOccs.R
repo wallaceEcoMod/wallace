@@ -5,9 +5,9 @@
 #' @details
 #' See Examples.
 #'
-#' @param occs
-#' @param thinDist
-#' @param shinyLogs=NULL
+#' @param occs x
+#' @param thinDist x
+#' @param shinyLogs x
 # @keywords
 #'
 # @examples

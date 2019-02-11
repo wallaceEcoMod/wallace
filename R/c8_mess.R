@@ -5,12 +5,12 @@
 #' @details
 #' See Examples.
 #'
-#' @param occs
-#' @param bg
-#' @param bgMsk
-#' @param projExtRas
-#' @param time
-#' @param shinyLogs
+#' @param occs x
+#' @param bg x
+#' @param bgMsk x
+#' @param projExtRas x
+#' @param time x
+#' @param shinyLogs x
 # @keywords
 #'
 # @examples

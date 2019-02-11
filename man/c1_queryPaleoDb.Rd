@@ -2,7 +2,7 @@
 % Please edit documentation in R/c1_queryPaleoDb.R
 \name{c1_queryPaleoDb}
 \alias{c1_queryPaleoDb}
-\title{c1_queryPaleoDb}
+\title{`c1_queryPaleoDb` returns species occurrences}
 \usage{
 c1_queryPaleoDb(spName, occDb, occNum, timeInterval, shinyLogs = NULL)
 }
@@ -16,9 +16,11 @@ c1_queryPaleoDb(spName, occDb, occNum, timeInterval, shinyLogs = NULL)
 \item{timeInterval}{character Either "LGM" (Last Glacial Maximum) or "Holo" (Holocene). For PaleobioDB only Holocene is allowed.}
 }
 \description{
-\code{c1_queryPaleoDb} returns species occurrences
+#' query paleobioDB or neotoma databases and returns the complete list of data, data with coordinates, and data with no duplicates
 }
 \details{
-query paleobioDB or neotoma databases and returns the complete list of data, 
-data with coordinates, and data with no duplicates
+See Examples.
+}
+\author{
+Jamie Kass <jkass@gradcenter.cuny.edu>
 }

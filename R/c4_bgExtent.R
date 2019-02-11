@@ -5,11 +5,11 @@
 #' @details
 #' See Examples.
 #'
-#' @param occs
-#' @param envs
-#' @param bgSel
-#' @param bgBuf
-#' @param shinyLogs
+#' @param occs x
+#' @param envs x
+#' @param bgSel x
+#' @param bgBuf x
+#' @param shinyLogs x
 # @keywords
 #'
 # @examples

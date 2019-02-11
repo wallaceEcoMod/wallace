@@ -4,8 +4,8 @@
 \alias{cESpace_pca}
 \title{calibrate a PCA for the background of two selected species}
 \usage{
-cESpace_pca(sp.name1, sp.name2 = NULL, occs.z1, occs.z2 = NULL, bgPts.z1,
-  bgPts.z2 = NULL, shinyLogs = NULL)
+cESpace_pca(sp.name1, sp.name2 = NULL, occs.z1, occs.z2 = NULL,
+  bgPts.z1, bgPts.z2 = NULL, shinyLogs = NULL)
 }
 \arguments{
 \item{occs.z1}{table of occurrences with environmental values for sp1}

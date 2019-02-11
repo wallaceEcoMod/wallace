@@ -5,8 +5,8 @@
 #' @details
 #' See Examples.
 #'
-#' @param evalTbl
-#' @param value
+#' @param evalTbl x
+#' @param value x
 # @keywords
 #'
 # @examples
