@@ -14,10 +14,15 @@
 mapPreds_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    tags$div(title='Please see guidance for an explanation of different Maxent output types.',
-             uiOutput(ns('maxentPredTypeUI')),
-             radioButtons(ns('maxentPredType'), label = "Prediction output",
-                          choices = list("raw", "logistic", "cloglog"), selected = "raw", inline = TRUE)),
+    conditionalPanel(condition = "input.modelSel == 'Maxent'", 
+                     tags$div(title='Please see guidance for an explanation of different Maxent output types.',
+                              uiOutput(ns('maxentPredTypeUI')),
+                              radioButtons(ns('maxentPredType'), 
+                                           label = "Prediction output",
+                                           choices = list("raw", 
+                                                          "logistic", 
+                                                          "cloglog"), 
+                                           selected = "raw", inline = TRUE))),
     tags$div(title='Create binary map of predicted presence/absence assuming all values above threshold value represent presence. Also can be interpreted as a "potential distribution" (see guidance).',
              selectInput(ns('threshold'), label = "Set threshold",
                          choices = list("No threshold" = 'none',
@@ -117,8 +122,7 @@ mapPreds_MOD <- function(input, output, session) {
     
     # LOAD INTO SPP ####
     spp[[curSp()]]$results[[predType]] <- predSel
-    #spp[[curSp()]]$visualization$thresholds <- thr
-    spp[[curSp()]]$visualization$thresholds <- thr.sel # were you recording multiple before?
+    if (input$threshold != 'none') spp[[curSp()]]$visualization$thresholds <- thr.sel # were you recording multiple before?
     spp[[curSp()]]$visualization$mapPred <- predSel.thr
     spp[[curSp()]]$visualization$mapPredVals <- getRasterVals(predSel.thr, predType)
     

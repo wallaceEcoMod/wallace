@@ -486,7 +486,6 @@ shinyUI(tagList(
                                                                                                             choices = list("GeoTIFF" = 'GTiff',
                                                                                                                            "GRD" = 'raster', 
                                                                                                                            "ASCII" = 'ascii', 
-                                                                                                                           "PDF" = 'pdf', 
                                                                                                                            "PNG" = 'png'))),
                                                                                       column(2, downloadButton('', "Predition file(**)"))))
                                                                    )
