@@ -116,8 +116,6 @@ mapPreds_MOD <- function(input, output, session) {
       predSel.thr <- predSel > thr.sel
       # rename prediction raster if thresholded
       names(predSel.thr) <- paste0(curModel(), '_', predType)
-      # shinyLogs %>% writeLog(curSp(), ": ", input$threshold, ' threshold selected
-      #                        for ', predType, ': ', thr, '.')
       shinyLogs %>% writeLog(curSp(), ": ", input$threshold, ' threshold selected
                              for ', predType, ': ', thr.sel, '.')
     } else {
@@ -125,8 +123,13 @@ mapPreds_MOD <- function(input, output, session) {
     }
     
     # write to log box
-    shinyLogs %>% writeLog(curSp(), ": ", rmm()$model$algorithm, " ", predType,
-                           " model prediction plotted.")
+    if (predType == 'BIOCLIM') {
+      shinyLogs %>% writeLog(curSp(), ": ", predType, " model prediction plotted.")
+    } else {
+      shinyLogs %>% writeLog(curSp(), ": ", rmm()$model$algorithm, " ", predType,
+                             " model prediction plotted.")
+    }
+    
     
     # LOAD INTO SPP ####
     spp[[curSp()]]$results[[predType]] <- predSel
