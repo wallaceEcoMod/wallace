@@ -12,6 +12,7 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("dlBgPts")
   shinyjs::disable("dlPart")
   shinyjs::disable("dlEvalTbl")
+  shinyjs::disable("dlVisBioclim")
   shinyjs::disable("downloadEvalPlots")
   shinyjs::disable("dlPred")
   shinyjs::disable("dlProj")
@@ -840,6 +841,7 @@ shinyServer(function(input, output, session) {
     updateRadioButtons(session, "visSel", choices = list("BIOCLIM Envelope Plots" = 'bioclimPlot',
                                                          "Map Prediction" = 'mapPreds'))
     shinyjs::enable("dlEvalTbl")
+    shinyjs::enable("dlVisBioclim")
   })
   
   # # # # # # # # # # # # 
@@ -958,7 +960,10 @@ shinyServer(function(input, output, session) {
     filename = function() {paste0(curSp(), "_bioClimPlot.png")},
     content = function(file) {
       png(file)
-      bioclimPlot() 
+      makeBioclimPlot(results()$models[[curModel()]],
+                      spp[[curSp()]]$rmm$code$wallaceSettings$bcPlotSettings[['bc1']],
+                      spp[[curSp()]]$rmm$code$wallaceSettings$bcPlotSettings[['bc2']],
+                      spp[[curSp()]]$rmm$code$wallaceSettings$bcPlotSettings[['p']]) 
       dev.off()
       }
     )
