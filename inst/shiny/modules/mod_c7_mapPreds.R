@@ -26,6 +26,8 @@ mapPreds_UI <- function(id) {
     tags$div(title='Create binary map of predicted presence/absence assuming all values above threshold value represent presence. Also can be interpreted as a "potential distribution" (see guidance).',
              selectInput(ns('threshold'), label = "Set threshold",
                          choices = list("No threshold" = 'none',
+                                        "Minimum Training Presence" = 'mtp', 
+                                        "10 Percentile Training Presence" = 'p10',
                                         "Quantile of Training Presences" = 'qtp'))),
              conditionalPanel(sprintf("input['%s'] == 'qtp'", ns("threshold")),
                               sliderInput(ns("trainPresQuantile"), "Set quantile", 
@@ -100,10 +102,16 @@ mapPreds_MOD <- function(input, output, session) {
     #thr <- getAllThresh(occPredVals) # seems like this should be inside the next if to avoid computing for no reason
     
     # get the chosen threshold value
-    if(input$threshold != 'none') {
+    if (input$threshold != 'none') {
       #thr.sel <- thr[[input$threshold]]
       # this eliminates the need for the getAllThresh function
-      thr.sel <- quantile(occPredVals,probs=input$trainPresQuantile)
+      if (input$threshold == 'mtp') {
+        thr.sel <- quantile(occPredVals, probs = 0)
+      } else if (input$threshold == 'p10') {
+        thr.sel <- quantile(occPredVals, probs = 0.1)
+      } else if (input$threshold == 'qtp'){
+        thr.sel <- quantile(occPredVals, probs = input$trainPresQuantile)
+      }
       
       predSel.thr <- predSel > thr.sel
       # rename prediction raster if thresholded
