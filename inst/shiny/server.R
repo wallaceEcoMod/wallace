@@ -954,28 +954,14 @@ shinyServer(function(input, output, session) {
   mapPred <- reactive(spp[[curSp()]]$visualization$mapPred)
   
   # handle downloads for BIOCLIM Plots png
-  output$dlVizPlot <- downloadHandler(
-    filename = function() {
-      if(module() == "bioclimPlot") {
-        paste0(spName(), "_bioClimPlot.png")
-      } else if(module() == "maxentEvalPlot") {
-        paste0(spName(), "_maxentEvalPlot.png")
-      } else if(module() == "responsePlot") {
-        paste0(spName(), "_responsePlot.png")
-      }
-    },
+  output$dlVisBioclim <- downloadHandler(
+    filename = function() {paste0(curSp(), "_bioClimPlot.png")},
     content = function(file) {
       png(file)
-      if(module() == "bioclimPlot") {
-        bioclimPlot() 
-      } else if(module() == "maxentEvalPlot") {
-        maxentEvalPlot()
-      } else if(module() == "responsePlot") {
-        responsePlot()
-      }
+      bioclimPlot() 
       dev.off()
-    }
-  )
+      }
+    )
   
   # download for model predictions (restricted to background extent)
   output$dlPred <- downloadHandler(
