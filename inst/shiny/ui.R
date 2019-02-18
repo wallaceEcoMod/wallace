@@ -295,8 +295,7 @@ shinyUI(tagList(
                                                 conditionalPanel("input.visSel == 'mapPreds'",
                                                                  uiTop(mapPreds_INFO),
                                                                  mapPreds_UI('c7_mapPreds'),
-                                                                 actionButton("goMapPreds", "Plot"), br(), br(),
-                                                                 HTML('<hr>')
+                                                                 actionButton("goMapPreds", "Plot"), br()
                                                 ),
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.visSel == 'bioclimPlot'", uiBottom(bioclimPlot_INFO)),
@@ -487,7 +486,7 @@ shinyUI(tagList(
                                                                                                                            "GRD" = 'raster', 
                                                                                                                            "ASCII" = 'ascii', 
                                                                                                                            "PNG" = 'png'))),
-                                                                                      column(2, downloadButton('', "Predition file(**)"))))
+                                                                                      column(2, downloadButton('dlPred', "Predition file(**)"))))
                                                                    )
                                                           
                                               )
