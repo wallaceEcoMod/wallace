@@ -971,30 +971,67 @@ shinyServer(function(input, output, session) {
   # download for model predictions (restricted to background extent)
   output$dlPred <- downloadHandler(
     filename = function() {
-      ext <- switch(input$predFileType, raster = 'zip', ascii = 'asc', GTiff = 'tif', png = 'png')
-      paste0(names(mapPred()), '.', ext)},
+      ext <- switch(input$predFileType, raster = 'zip', ascii = 'asc', 
+                    GTiff = 'tif', png = 'png')
+      paste0(curSp(), '.', ext)},
     content = function(file) {
-      browser()
-      if(require(rgdal)) {
+      # if(require(rgdal)) {
         if (input$predFileType == 'png') {
-          png(file)
-          raster::image(mapPred())
-          dev.off()
+          req(mapPred())
+          if (rmm()$output$prediction$thresholdRule != 'none') {
+            mapPredVals <- NULL
+            rasPal <- c('gray', 'blue')
+            legendPal <- colorBin(rasPal, 0:1, bins = 2)
+            mapTitle <- "Thresholded Suitability<br>(Training)"
+            mapLabFormat <- function(type, cuts, p) {
+              n = length(cuts)
+              cuts[n] = "predicted presence"
+              for (i in 2:(n - 1)) {
+                cuts[i] = ""
+              }
+              cuts[1] = "predicted absence"
+              paste0(cuts[-n], cuts[-1])
+            }
+            mapOpacity <- 1
+          } else {
+            rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+            mapPredVals <- spp[[curSp()]]$visualization$mapPredVals
+            rasPal <- colorNumeric(rasCols, mapPredVals, na.color='transparent')
+            legendPal <- colorNumeric(rev(rasCols), mapPredVals, na.color='transparent')
+            mapTitle <- "Predicted Suitability<br>(Training)"
+            mapLabFormat <- reverseLabels(2, reverse_order=TRUE)
+            mapOpacity <- NULL
+          }
+          m <- leaflet() %>%
+            addLegend("bottomright", pal = legendPal, title = mapTitle, 
+                      labFormat = mapLabFormat, opacity = mapOpacity, 
+                      layerId = "train") %>% 
+            addProviderTiles(input$bmap) %>%
+            addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
+                             radius = 5, color = 'red', fill = TRUE, fillColor = 'red',
+                             fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
+            addRasterImage(mapPred(), colors = rasPal, opacity = 0.7,
+                           group = 'vis', layerId = 'mapPred', method = "ngb") %>%
+            addPolygons(data = bgExt(), fill = FALSE, weight = 4, color="red", 
+                        group='proj')
+          mapview::mapshot(m, file = file)
         } else if (input$predFileType == 'raster') {
-          fileName <- names(mapPred())
+          fileName <- curSp()
           tmpdir <- tempdir()
-          raster::writeRaster(mapPred(), file.path(tmpdir, fileName), format = input$predFileType, overwrite = TRUE)
+          raster::writeRaster(mapPred(), file.path(tmpdir, fileName), 
+                              format = input$predFileType, overwrite = TRUE)
           owd <- setwd(tmpdir)
           fs <- paste0(fileName, c('.grd', '.gri'))
           zip::zip(zipfile = file, files = fs)
           setwd(owd)
         } else {
-          r <- raster::writeRaster(mapPred(), file, format = input$predFileType, overwrite = TRUE)
+          r <- raster::writeRaster(mapPred(), file, format = input$predFileType, 
+                                   overwrite = TRUE)
           file.rename(r@file@name, file)
         }
-      } else {
-        shinyLogs %>% writeLog("Please install the rgdal package before downloading rasters.")
-      }
+      # } else {
+      #   shinyLogs %>% writeLog("Please install the rgdal package before downloading rasters.")
+      # }
     }
   )
   
