@@ -11,7 +11,7 @@ bgMskAndSamplePts_MOD <- function(input, output, session) {
   reactive({
     # WARNING ####
     if (input$bgPtsNum < 1) {
-      shinyLogs %>% writeLog(type = 'error', "Enter a non-zero number of background points.")
+      shinyLogs %>% writeLog(type = 'warning', "Enter a non-zero number of background points.")
       return()
     }
     
