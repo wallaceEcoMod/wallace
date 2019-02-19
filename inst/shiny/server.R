@@ -13,7 +13,8 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("dlPart")
   shinyjs::disable("dlEvalTbl")
   shinyjs::disable("dlVisBioclim")
-  shinyjs::disable("downloadEvalPlots")
+  shinyjs::disable("dlMaxentPlots")
+  shinyjs::disable("dlRespCurves")
   shinyjs::disable("dlPred")
   shinyjs::disable("dlProj")
   # shinyjs::disable("dlRMD")
@@ -824,6 +825,8 @@ shinyServer(function(input, output, session) {
                                       "Plot Response Curves" = 'response',
                                       "Map Prediction" = 'mapPreds'))
     shinyjs::enable("dlEvalTbl")
+    shinyjs::enable("dlMaxentPlots")
+    shinyjs::enable("dlRespCurves")
   })
   
   # # # # # # # # # # # # 
@@ -968,6 +971,46 @@ shinyServer(function(input, output, session) {
       }
     )
   
+  # handle downloads for Maxent Plots png
+  output$dlMaxentPlots <- downloadHandler(
+    filename = function() {paste0(curSp(), "_evalPlots.zip")},
+    content = function(file) {
+      tmpdir <- tempdir()
+      parEval <- c('avg.test.AUC', 'avg.diff.AUC', 'avg.test.orMTP', 'avg.test.or10pct', 
+                   'delta.AICc')
+      for (i in parEval) {
+        png(paste0(tmpdir, "\\", gsub("[[:punct:]]", "_", i), ".png"))
+        makeMaxentEvalPlot(results()$evalTbl, i)
+        dev.off()
+      }
+      owd <- setwd(tmpdir)
+      zip::zip(zipfile = file, 
+               files = paste0(gsub("[[:punct:]]", "_", parEval), ".png"))
+      setwd(owd)
+    }
+  )
+  
+  # handle downloads for Response Curve Plots png
+  output$dlRespCurves <- downloadHandler(
+    filename = function() {paste0(curSp(), "_responseCurves.zip")},
+    content = function(file) {
+      tmpdir <- tempdir()
+      namesEnvs <- names(envs())
+      for (i in namesEnvs) {
+        png(paste0(tmpdir, "\\", i, ".png"))
+        if (spp[[curSp()]]$rmm$model$algorithm == "maxnet") {
+          maxnet::response.plot(results()$models[[curModel()]], v = i, type = "cloglog")
+        } else if (spp[[curSp()]]$rmm$model$algorithm == "maxent.jar") {
+          dismo::response(results()$models[[curModel()]], var = i)
+        }
+        dev.off()
+      }
+      owd <- setwd(tmpdir)
+      zip::zip(zipfile = file, files = paste0(namesEnvs, ".png"))
+      setwd(owd)
+    }
+  )
+  
   # download for model predictions (restricted to background extent)
   output$dlPred <- downloadHandler(
     filename = function() {
@@ -975,7 +1018,7 @@ shinyServer(function(input, output, session) {
                     GTiff = 'tif', png = 'png')
       paste0(curSp(), '.', ext)},
     content = function(file) {
-      # if(require(rgdal)) {
+      if(require(rgdal)) {
         if (input$predFileType == 'png') {
           req(mapPred())
           if (rmm()$output$prediction$thresholdRule != 'none') {
@@ -1029,9 +1072,9 @@ shinyServer(function(input, output, session) {
                                    overwrite = TRUE)
           file.rename(r@file@name, file)
         }
-      # } else {
-      #   shinyLogs %>% writeLog("Please install the rgdal package before downloading rasters.")
-      # }
+      } else {
+       shinyLogs %>% writeLog("Please install the rgdal package before downloading rasters.")
+      }
     }
   )
   

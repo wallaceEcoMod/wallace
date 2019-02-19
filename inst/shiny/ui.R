@@ -473,10 +473,10 @@ shinyUI(tagList(
                                                                                                               column(2, downloadButton('dlVisBioclim', "PNG file")))),
                                                                                     conditionalPanel("input.modelSel == 'Maxent'",
                                                                                                      fluidRow(column(3, h5("Download Maxent plots (**)")),
-                                                                                                              column(2, downloadButton('dlVisENMeval', "ZIP file"))),
+                                                                                                              column(2, downloadButton('dlMaxentPlots', "ZIP file"))),
                                                                                                      br(),
                                                                                                      fluidRow(column(3, h5("Download Response plots (**)")),
-                                                                                                              column(2, downloadButton('dlVisResp', "ZIP file")))),
+                                                                                                              column(2, downloadButton('dlRespCurves', "ZIP file")))),
                                                                                     br(),
                                                                                     fluidRow(
                                                                                       column(3, h5("Download current prediction (Select download file type**)")),
