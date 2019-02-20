@@ -488,7 +488,7 @@ shinyServer(function(input, output, session) {
     # ensure envs entity is within spp
     req(curSp(), envs())
     if(!is.null(envs())) {
-      n <- c(names(envs()), "ALL")
+      n <- c(names(envs()))
     } else {
       n <- NULL
     }
@@ -499,13 +499,7 @@ shinyServer(function(input, output, session) {
   })
   
   # shortcut to currently selected environmental variable, read from curEnvUI
-  curEnv <- reactive({
-    if("ALL" %in% input$curEnv) {
-      return(names(envs()))
-    } else {
-      return(input$curEnv)  
-    }
-  })
+  curEnv <- reactive({return(input$curEnv)})
   
   # convenience function for environmental variables for current species
   envs <- reactive(spp[[curSp()]]$envs)
