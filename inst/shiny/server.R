@@ -494,8 +494,9 @@ shinyServer(function(input, output, session) {
     }
     envsNameList <- c(list("Current variable" = ""), setNames(as.list(n), n))
     if(component() == 'espace') options <- list(maxItems = 2) else options <- list(maxItems = 1)
-    selectizeInput('curEnv', label = NULL , choices = envsNameList,
+    selectizeInput('curEnv', label = "Select variable" , choices = envsNameList,
                    multiple = TRUE, selected = n[1], options = options)
+    p("Reponse curves are displayed automatically in 'Results' tab(**)")
   })
   
   # shortcut to currently selected environmental variable, read from curEnvUI
