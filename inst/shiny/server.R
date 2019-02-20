@@ -496,7 +496,6 @@ shinyServer(function(input, output, session) {
     if(component() == 'espace') options <- list(maxItems = 2) else options <- list(maxItems = 1)
     selectizeInput('curEnv', label = "Select variable" , choices = envsNameList,
                    multiple = TRUE, selected = n[1], options = options)
-    p("Reponse curves are displayed automatically in 'Results' tab(**)")
   })
   
   # shortcut to currently selected environmental variable, read from curEnvUI
@@ -1011,7 +1010,14 @@ shinyServer(function(input, output, session) {
     filename = function() {
       ext <- switch(input$predFileType, raster = 'zip', ascii = 'asc', 
                     GTiff = 'tif', png = 'png')
-      paste0(curSp(), '.', ext)},
+      thresholdRule <- rmm()$output$prediction$thresholdRule
+      predType <- rmm()$output$prediction$notes
+      if (thresholdRule == 'none') {
+        paste0(curSp(), "_", predType, '.', ext)
+      } else {
+        paste0(curSp(), "_", thresholdRule, '.', ext)
+      }
+    },
     content = function(file) {
       if(require(rgdal)) {
         if (input$predFileType == 'png') {
