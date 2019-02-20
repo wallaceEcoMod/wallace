@@ -1036,6 +1036,7 @@ shinyServer(function(input, output, session) {
               paste0(cuts[-n], cuts[-1])
             }
             mapOpacity <- 1
+            mapValues <- 0:1
           } else {
             rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
             mapPredVals <- spp[[curSp()]]$visualization$mapPredVals
@@ -1044,11 +1045,12 @@ shinyServer(function(input, output, session) {
             mapTitle <- "Predicted Suitability<br>(Training)"
             mapLabFormat <- reverseLabels(2, reverse_order=TRUE)
             mapOpacity <- NULL
+            mapValues <- mapPredVals
           }
           m <- leaflet() %>%
             addLegend("bottomright", pal = legendPal, title = mapTitle, 
                       labFormat = mapLabFormat, opacity = mapOpacity, 
-                      layerId = "train") %>% 
+                      values = mapValues, layerId = "train") %>% 
             addProviderTiles(input$bmap) %>%
             addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                              radius = 5, color = 'red', fill = TRUE, fillColor = 'red',
