@@ -5,7 +5,7 @@ for (f in list.files('./modules')) source(file.path('modules', f), local=TRUE)
 shinyUI(tagList(
   shinyjs::useShinyjs(),
   navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsible=TRUE,
-             title='Wallace v1.9.9.9013',
+             title='Wallace v1.9.9.9014',
              tabPanel("Intro", value='intro'),
              tabPanel("Occ Data", value='occs'),
              tabPanel("Process Occs", value='poccs'),

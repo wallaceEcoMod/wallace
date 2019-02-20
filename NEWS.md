@@ -7,9 +7,13 @@
 - coordinates uncertainty
 - duplicates removed in userOccs #202
 - coordinates on map #174
-- download tab
 - download background points #195
 - Draw polygon tool in the Process Environmental Data component #192
+- png map download the same as shiny
+- more informative filenames
+- menus fixed
+- removed deafult options
+- quantile training
 
 # wallace 1.0.6.1
 - Adding a couple convenience functions for running wallace headless by @isaacovercast
