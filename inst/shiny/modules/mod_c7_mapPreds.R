@@ -1,20 +1,18 @@
 
-# mapPreds_UI <- function(id) {
-#   ns <- NS(id)
-#   tagList(
-#     uiOutput(ns('maxentPredTypeUI')),
-#     tags$div(title='Create binary map of predicted presence/absence assuming all values above threshold value represent presence. Also can be interpreted as a "potential distribution" (see guidance).',
-#              selectInput(ns('threshold'), label = "Set threshold",
-#                          choices = list("No threshold" = 'none',
-#                                         "Minimum Training Presence" = 'mtp', 
-#                                         "10 Percentile Training Presence" = 'p10')))
-#   )
-# }
-
 mapPreds_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    conditionalPanel(condition = "input.modelSel == 'Maxent'", 
+    tags$div(title='Create binary map of predicted presence/absence assuming all values above threshold value represent presence. Also can be interpreted as a "potential distribution" (see guidance).',
+             selectInput(ns('threshold'), label = "Set threshold",
+                         choices = list("No threshold" = 'none',
+                                        "Minimum Training Presence" = 'mtp', 
+                                        "10 Percentile Training Presence" = 'p10',
+                                        "Quantile of Training Presences" = 'qtp'))),
+    conditionalPanel(sprintf("input['%s'] == 'qtp'", ns("threshold")),
+                     sliderInput(ns("trainPresQuantile"), "Set quantile",
+                                 min = 0, max = 1, value = .05)),
+    conditionalPanel(condition = sprintf("input.modelSel == 'Maxent' & input['%s'] == 'none'", 
+                                         ns("threshold")),
                      tags$div(title='Please see guidance for an explanation of different Maxent output types.',
                               uiOutput(ns('maxentPredTypeUI')),
                               radioButtons(ns('maxentPredType'), 
@@ -22,16 +20,7 @@ mapPreds_UI <- function(id) {
                                            choices = list("raw", 
                                                           "logistic", 
                                                           "cloglog"), 
-                                           selected = "raw", inline = TRUE))),
-    tags$div(title='Create binary map of predicted presence/absence assuming all values above threshold value represent presence. Also can be interpreted as a "potential distribution" (see guidance).',
-             selectInput(ns('threshold'), label = "Set threshold",
-                         choices = list("No threshold" = 'none',
-                                        "Minimum Training Presence" = 'mtp', 
-                                        "10 Percentile Training Presence" = 'p10',
-                                        "Quantile of Training Presences" = 'qtp'))),
-             conditionalPanel(sprintf("input['%s'] == 'qtp'", ns("threshold")),
-                              sliderInput(ns("trainPresQuantile"), "Set quantile", 
-                                          min = 0, max = 1, value = .05))
+                                           selected = "raw", inline = TRUE)))
   )
 }
 
