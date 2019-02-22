@@ -31,12 +31,18 @@ queryDb_UI <- function(id) {
              Downloaded records are not sorted randomly: 
              rows are always consistent between downloads.',
              numericInput(ns("occsNum"), "Set maximum number of occurrences", 
-                          value = 100, min = 1))
+                          value = 0, min = 0))
   )
 }
 
 queryDb_MOD <- function(input, output, session, targetGroup = FALSE) {
   reactive({
+    # WARNING ####
+    if (input$occsNum < 1) {
+      shinyLogs %>% writeLog(type = 'warning', "Enter a non-zero number of occurrences.")
+      return()
+    }
+    
     # FUNCTION CALL ####
     occsList <- c1_queryDb(input$spNames, input$occsDb, input$occsNum, 
                            input$doCitations, input$gbifUser, input$gbifEmail,

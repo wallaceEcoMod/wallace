@@ -5,7 +5,7 @@ for (f in list.files('./modules')) source(file.path('modules', f), local=TRUE)
 shinyUI(tagList(
   shinyjs::useShinyjs(),
   navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsible=TRUE,
-             title='Wallace v1.9.9.9013',
+             title='Wallace v1.9.9.9014',
              tabPanel("Intro", value='intro'),
              tabPanel("Occ Data", value='occs'),
              tabPanel("Process Occs", value='poccs'),
@@ -24,7 +24,6 @@ shinyUI(tagList(
                                includeCSS("css/styles.css"),
                                includeScript("js/scroll.js"),
                                conditionalPanel("input.tabs == 'intro'",
-                                                #actionButton('load', 'HACK'),
                                                 includeMarkdown("Rmd/text_intro_tab.Rmd")
                                ),
                                # OBTAIN OCCS ####
@@ -51,10 +50,6 @@ shinyUI(tagList(
                                                                  userOccs_UI('c1_userOccs_uiID'),
                                                                  actionButton("goUserOccs", "Load Occurrences"),
                                                                  HTML('<hr>')),
-                                                #conditionalPanel("input.occsSel == 'dbOccs' | input.occsSel == 'pdbOccs'",
-                                                                 #strong("Download raw occurrence data"), br(), br(),
-                                                                 #downloadButton('dlDbOccs', "Download CSV"),
-                                                                 #HTML('<hr>')),
                                                 conditionalPanel("input.occsSel == 'dbOccs'", uiBottom(queryDb_INFO)),
                                                 conditionalPanel("input.occsSel == 'pdbOccs'", uiBottom(queryPaleoDb_INFO)),
                                                 conditionalPanel("input.occsSel == 'userOccs'", uiBottom(userOccs_INFO))
@@ -120,9 +115,6 @@ shinyUI(tagList(
                                                                  userEnvs_UI('c3_userEnvs_uiID'),
                                                                  actionButton('goUserEnvs', 'Load Env Data')
                                                 ),
-                                                # br(), br(),
-                                                # strong("Download environmental predictors"), br(), br(),
-                                                # downloadButton('dlEnvs', "Download"),
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.envsSel == 'wcbc'", uiBottom(worldclim_INFO)),
                                                 conditionalPanel("input.envsSel == 'ecoClimatelayers'", uiBottom(ecoclimate_INFO)),
@@ -142,8 +134,6 @@ shinyUI(tagList(
                                                                  div("Step 1:", id="step"), div("Choose Background Extent", id="stepText"), br(), br(),
                                                                  bgExtent_UI('c4_bgExtent_uiID'),
                                                                  actionButton("goBgExt", "Select"), br(), br()#,
-                                                                 # strong("Download shapefile of background extent"), br(), br(),
-                                                                 # downloadButton('dlBgShp', "Download")
                                                                  ),
                                                 conditionalPanel("input.procEnvsSel == 'bgUser'",
                                                                  uiTop(userBgExtent_INFO),
@@ -305,14 +295,8 @@ shinyUI(tagList(
                                                 conditionalPanel("input.visSel == 'mapPreds'",
                                                                  uiTop(mapPreds_INFO),
                                                                  mapPreds_UI('c7_mapPreds'),
-                                                                 actionButton("goMapPreds", "Plot"), br(), br(),
-                                                                 HTML('<hr>'),
-                                                                 selectInput('predFileType', label = "Select download file type",
-                                                                             choices = list("GRD" = 'raster', "ASCII" = 'ascii', 
-                                                                                            "GeoTIFF" = 'GTiff', "PNG" = "png"))
+                                                                 actionButton("goMapPreds", "Plot"), br()
                                                 ),
-                                                conditionalPanel("input.visSel == 'bioclimPlot' | input.visSel == 'maxentEval'", 
-                                                                 downloadButton('dlVizPlot', "Download Plot")),
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.visSel == 'bioclimPlot'", uiBottom(bioclimPlot_INFO)),
                                                 conditionalPanel("input.visSel == 'maxentEval'", uiBottom(maxentEvalPlot_INFO)),
@@ -396,12 +380,6 @@ shinyUI(tagList(
                                                                                                          'ESRI Nat Geo'='Esri.NatGeoWorldMap'),
                                                                                              selected = "Esri.WorldTopoMap"))),
                                                           tabPanel('Table', br(), 
-                                                          #          fluidRow(column(width=4, tags$h4("Download occurrence data as .csv")), 
-                                                          #                                     column(width=2, downloadButton('dlOccs', "Download Current")),
-                                                          #                                     column(width=2,downloadButton('dlAllOccs', "Download All")),
-                                                          #                                     column(width=4)
-                                                          # ), 
-                                                          # br(), 
                                                           DT::dataTableOutput('occTbl')),
                                                           tabPanel('Results', 
                                                                    conditionalPanel("input.tabs == 'envs'", verbatimTextOutput('envsPrint')),
@@ -487,7 +465,28 @@ shinyUI(tagList(
                                                                                       column(3, h5("Download evaluation table")),
                                                                                       column(2, downloadButton('dlEvalTbl', "CSV file"))
                                                                                     )
-                                                                   )
+                                                                   ),
+                                                                   conditionalPanel("input.tabs == 'vis'",
+                                                                                    br(),
+                                                                                    conditionalPanel("input.modelSel == 'BIOCLIM'",
+                                                                                                     fluidRow(column(3, h5("Download Bioclim plot (**)")),
+                                                                                                              column(2, downloadButton('dlVisBioclim', "PNG file")))),
+                                                                                    conditionalPanel("input.modelSel == 'Maxent'",
+                                                                                                     fluidRow(column(3, h5("Download Maxent plots (**)")),
+                                                                                                              column(2, downloadButton('dlMaxentPlots', "ZIP file"))),
+                                                                                                     br(),
+                                                                                                     fluidRow(column(3, h5("Download Response plots (**)")),
+                                                                                                              column(2, downloadButton('dlRespCurves', "ZIP file")))),
+                                                                                    br(),
+                                                                                    fluidRow(
+                                                                                      column(3, h5("Download current prediction (Select download file type**)")),
+                                                                                      column(2, selectInput('predFileType', 
+                                                                                                            label = NULL,
+                                                                                                            choices = list("GeoTIFF" = 'GTiff',
+                                                                                                                           "GRD" = 'raster', 
+                                                                                                                           "ASCII" = 'ascii', 
+                                                                                                                           "PNG" = 'png'))),
+                                                                                      column(2, downloadButton('dlPred', "Predition file(**)"))))
                                                                    )
                                                           
                                               )

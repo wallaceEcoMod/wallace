@@ -12,7 +12,9 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("dlBgPts")
   shinyjs::disable("dlPart")
   shinyjs::disable("dlEvalTbl")
-  shinyjs::disable("downloadEvalPlots")
+  shinyjs::disable("dlVisBioclim")
+  shinyjs::disable("dlMaxentPlots")
+  shinyjs::disable("dlRespCurves")
   shinyjs::disable("dlPred")
   shinyjs::disable("dlProj")
   # shinyjs::disable("dlRMD")
@@ -486,24 +488,18 @@ shinyServer(function(input, output, session) {
     # ensure envs entity is within spp
     req(curSp(), envs())
     if(!is.null(envs())) {
-      n <- c(names(envs()), "ALL")
+      n <- c(names(envs()))
     } else {
       n <- NULL
     }
     envsNameList <- c(list("Current variable" = ""), setNames(as.list(n), n))
     if(component() == 'espace') options <- list(maxItems = 2) else options <- list(maxItems = 1)
-    selectizeInput('curEnv', label = NULL , choices = envsNameList,
+    selectizeInput('curEnv', label = "Select variable" , choices = envsNameList,
                    multiple = TRUE, selected = n[1], options = options)
   })
   
   # shortcut to currently selected environmental variable, read from curEnvUI
-  curEnv <- reactive({
-    if("ALL" %in% input$curEnv) {
-      return(names(envs()))
-    } else {
-      return(input$curEnv)  
-    }
-  })
+  curEnv <- reactive({return(input$curEnv)})
   
   # convenience function for environmental variables for current species
   envs <- reactive(spp[[curSp()]]$envs)
@@ -823,6 +819,8 @@ shinyServer(function(input, output, session) {
                                       "Plot Response Curves" = 'response',
                                       "Map Prediction" = 'mapPreds'))
     shinyjs::enable("dlEvalTbl")
+    shinyjs::enable("dlMaxentPlots")
+    shinyjs::enable("dlRespCurves")
   })
   
   # # # # # # # # # # # # 
@@ -840,6 +838,7 @@ shinyServer(function(input, output, session) {
     updateRadioButtons(session, "visSel", choices = list("BIOCLIM Envelope Plots" = 'bioclimPlot',
                                                          "Map Prediction" = 'mapPreds'))
     shinyjs::enable("dlEvalTbl")
+    shinyjs::enable("dlVisBioclim")
   })
   
   # # # # # # # # # # # # 
@@ -954,55 +953,130 @@ shinyServer(function(input, output, session) {
   mapPred <- reactive(spp[[curSp()]]$visualization$mapPred)
   
   # handle downloads for BIOCLIM Plots png
-  output$dlVizPlot <- downloadHandler(
-    filename = function() {
-      if(module() == "bioclimPlot") {
-        paste0(spName(), "_bioClimPlot.png")
-      } else if(module() == "maxentEvalPlot") {
-        paste0(spName(), "_maxentEvalPlot.png")
-      } else if(module() == "responsePlot") {
-        paste0(spName(), "_responsePlot.png")
-      }
-    },
+  output$dlVisBioclim <- downloadHandler(
+    filename = function() {paste0(curSp(), "_bioClimPlot.png")},
     content = function(file) {
       png(file)
-      if(module() == "bioclimPlot") {
-        bioclimPlot() 
-      } else if(module() == "maxentEvalPlot") {
-        maxentEvalPlot()
-      } else if(module() == "responsePlot") {
-        responsePlot()
-      }
+      makeBioclimPlot(results()$models[[curModel()]],
+                      spp[[curSp()]]$rmm$code$wallaceSettings$bcPlotSettings[['bc1']],
+                      spp[[curSp()]]$rmm$code$wallaceSettings$bcPlotSettings[['bc2']],
+                      spp[[curSp()]]$rmm$code$wallaceSettings$bcPlotSettings[['p']]) 
       dev.off()
+      }
+    )
+  
+  # handle downloads for Maxent Plots png
+  output$dlMaxentPlots <- downloadHandler(
+    filename = function() {paste0(curSp(), "_evalPlots.zip")},
+    content = function(file) {
+      tmpdir <- tempdir()
+      parEval <- c('avg.test.AUC', 'avg.diff.AUC', 'avg.test.orMTP', 'avg.test.or10pct', 
+                   'delta.AICc')
+      for (i in parEval) {
+        png(paste0(tmpdir, "\\", gsub("[[:punct:]]", "_", i), ".png"))
+        makeMaxentEvalPlot(results()$evalTbl, i)
+        dev.off()
+      }
+      owd <- setwd(tmpdir)
+      zip::zip(zipfile = file, 
+               files = paste0(gsub("[[:punct:]]", "_", parEval), ".png"))
+      setwd(owd)
+    }
+  )
+  
+  # handle downloads for Response Curve Plots png
+  output$dlRespCurves <- downloadHandler(
+    filename = function() {paste0(curSp(), "_responseCurves.zip")},
+    content = function(file) {
+      tmpdir <- tempdir()
+      namesEnvs <- names(envs())
+      for (i in namesEnvs) {
+        png(paste0(tmpdir, "\\", i, ".png"))
+        if (spp[[curSp()]]$rmm$model$algorithm == "maxnet") {
+          maxnet::response.plot(results()$models[[curModel()]], v = i, type = "cloglog")
+        } else if (spp[[curSp()]]$rmm$model$algorithm == "maxent.jar") {
+          dismo::response(results()$models[[curModel()]], var = i)
+        }
+        dev.off()
+      }
+      owd <- setwd(tmpdir)
+      zip::zip(zipfile = file, files = paste0(namesEnvs, ".png"))
+      setwd(owd)
     }
   )
   
   # download for model predictions (restricted to background extent)
   output$dlPred <- downloadHandler(
     filename = function() {
-      ext <- switch(input$predFileType, raster = 'zip', ascii = 'asc', GTiff = 'tif', png = 'png')
-      paste0(names(mapPred()), '.', ext)},
+      ext <- switch(input$predFileType, raster = 'zip', ascii = 'asc', 
+                    GTiff = 'tif', png = 'png')
+      thresholdRule <- rmm()$output$prediction$thresholdRule
+      predType <- rmm()$output$prediction$notes
+      if (thresholdRule == 'none') {
+        paste0(curSp(), "_", predType, '.', ext)
+      } else {
+        paste0(curSp(), "_", thresholdRule, '.', ext)
+      }
+    },
     content = function(file) {
-      browser()
       if(require(rgdal)) {
         if (input$predFileType == 'png') {
-          png(file)
-          raster::image(mapPred())
-          dev.off()
+          req(mapPred())
+          if (rmm()$output$prediction$thresholdRule != 'none') {
+            mapPredVals <- NULL
+            rasPal <- c('gray', 'blue')
+            legendPal <- colorBin(rasPal, 0:1, bins = 2)
+            mapTitle <- "Thresholded Suitability<br>(Training)"
+            mapLabFormat <- function(type, cuts, p) {
+              n = length(cuts)
+              cuts[n] = "predicted presence"
+              for (i in 2:(n - 1)) {
+                cuts[i] = ""
+              }
+              cuts[1] = "predicted absence"
+              paste0(cuts[-n], cuts[-1])
+            }
+            mapOpacity <- 1
+            mapValues <- 0:1
+          } else {
+            rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+            mapPredVals <- spp[[curSp()]]$visualization$mapPredVals
+            rasPal <- colorNumeric(rasCols, mapPredVals, na.color='transparent')
+            legendPal <- colorNumeric(rev(rasCols), mapPredVals, na.color='transparent')
+            mapTitle <- "Predicted Suitability<br>(Training)"
+            mapLabFormat <- reverseLabels(2, reverse_order=TRUE)
+            mapOpacity <- NULL
+            mapValues <- mapPredVals
+          }
+          m <- leaflet() %>%
+            addLegend("bottomright", pal = legendPal, title = mapTitle, 
+                      labFormat = mapLabFormat, opacity = mapOpacity, 
+                      values = mapValues, layerId = "train") %>% 
+            addProviderTiles(input$bmap) %>%
+            addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
+                             radius = 5, color = 'red', fill = TRUE, fillColor = 'red',
+                             fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
+            addRasterImage(mapPred(), colors = rasPal, opacity = 0.7,
+                           group = 'vis', layerId = 'mapPred', method = "ngb") %>%
+            addPolygons(data = bgExt(), fill = FALSE, weight = 4, color="red", 
+                        group='proj')
+          mapview::mapshot(m, file = file)
         } else if (input$predFileType == 'raster') {
-          fileName <- names(mapPred())
+          fileName <- curSp()
           tmpdir <- tempdir()
-          raster::writeRaster(mapPred(), file.path(tmpdir, fileName), format = input$predFileType, overwrite = TRUE)
+          raster::writeRaster(mapPred(), file.path(tmpdir, fileName), 
+                              format = input$predFileType, overwrite = TRUE)
           owd <- setwd(tmpdir)
           fs <- paste0(fileName, c('.grd', '.gri'))
           zip::zip(zipfile = file, files = fs)
           setwd(owd)
         } else {
-          r <- raster::writeRaster(mapPred(), file, format = input$predFileType, overwrite = TRUE)
+          r <- raster::writeRaster(mapPred(), file, format = input$predFileType, 
+                                   overwrite = TRUE)
           file.rename(r@file@name, file)
         }
       } else {
-        shinyLogs %>% writeLog("Please install the rgdal package before downloading rasters.")
+       shinyLogs %>% writeLog("Please install the rgdal package before downloading rasters.")
       }
     }
   )

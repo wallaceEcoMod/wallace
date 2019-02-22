@@ -11,13 +11,19 @@ queryPaleoDb_UI <- function(id) {
              textInput(ns("spName"), label = "Enter species scientific name", 
                        placeholder = 'format: Genus species')),
     tags$div(title='Maximum number of occurrences recovered from databases. Downloaded records are not sorted randomly: rows are always consistent between downloads.',
-             sliderInput(ns("occsNum"), "Set maximum number of occurrences", 
-                         min = 1, max = 500, value = 100))
+             numericInput(ns("occsNum"), "Set maximum number of occurrences", 
+                          value = 0, min = 0, max = 500))
   )
 }
 
 queryPaleoDb_MOD <- function(input, output, session) {
   reactive({
+    # WARNING ####
+    if (input$occsNum < 1) {
+      shinyLogs %>% writeLog(type = 'warning', "Enter a non-zero number of ocurrences.")
+      return()
+    }
+    
     # FUNCTION CALL ####
     occsTbls <- c1_queryPaleoDb(input$spName, 
                                input$occsDb, 

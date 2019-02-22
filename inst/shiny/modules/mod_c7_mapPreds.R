@@ -1,30 +1,26 @@
 
-# mapPreds_UI <- function(id) {
-#   ns <- NS(id)
-#   tagList(
-#     uiOutput(ns('maxentPredTypeUI')),
-#     tags$div(title='Create binary map of predicted presence/absence assuming all values above threshold value represent presence. Also can be interpreted as a "potential distribution" (see guidance).',
-#              selectInput(ns('threshold'), label = "Set threshold",
-#                          choices = list("No threshold" = 'none',
-#                                         "Minimum Training Presence" = 'mtp', 
-#                                         "10 Percentile Training Presence" = 'p10')))
-#   )
-# }
-
 mapPreds_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    tags$div(title='Please see guidance for an explanation of different Maxent output types.',
-             uiOutput(ns('maxentPredTypeUI')),
-             radioButtons(ns('maxentPredType'), label = "Prediction output",
-                          choices = list("raw", "logistic", "cloglog"), selected = "raw", inline = TRUE)),
     tags$div(title='Create binary map of predicted presence/absence assuming all values above threshold value represent presence. Also can be interpreted as a "potential distribution" (see guidance).',
              selectInput(ns('threshold'), label = "Set threshold",
                          choices = list("No threshold" = 'none',
+                                        "Minimum Training Presence" = 'mtp', 
+                                        "10 Percentile Training Presence" = 'p10',
                                         "Quantile of Training Presences" = 'qtp'))),
-             conditionalPanel(sprintf("input['%s'] == 'qtp'", ns("threshold")),
-                              sliderInput(ns("trainPresQuantile"), "Set quantile", 
-                                          min = 0, max = 1, value = .05))
+    conditionalPanel(sprintf("input['%s'] == 'qtp'", ns("threshold")),
+                     sliderInput(ns("trainPresQuantile"), "Set quantile",
+                                 min = 0, max = 1, value = .05)),
+    conditionalPanel(condition = sprintf("input.modelSel == 'Maxent' & input['%s'] == 'none'", 
+                                         ns("threshold")),
+                     tags$div(title='Please see guidance for an explanation of different Maxent output types.',
+                              uiOutput(ns('maxentPredTypeUI')),
+                              radioButtons(ns('maxentPredType'), 
+                                           label = "Prediction output",
+                                           choices = list("raw", 
+                                                          "logistic", 
+                                                          "cloglog"), 
+                                           selected = "raw", inline = TRUE)))
   )
 }
 
@@ -95,30 +91,43 @@ mapPreds_MOD <- function(input, output, session) {
     #thr <- getAllThresh(occPredVals) # seems like this should be inside the next if to avoid computing for no reason
     
     # get the chosen threshold value
-    if(input$threshold != 'none') {
+    if (input$threshold != 'none') {
       #thr.sel <- thr[[input$threshold]]
       # this eliminates the need for the getAllThresh function
-      thr.sel <- quantile(occPredVals,probs=input$trainPresQuantile)
+      if (input$threshold == 'mtp') {
+        thr.sel <- quantile(occPredVals, probs = 0)
+      } else if (input$threshold == 'p10') {
+        thr.sel <- quantile(occPredVals, probs = 0.1)
+      } else if (input$threshold == 'qtp'){
+        thr.sel <- quantile(occPredVals, probs = input$trainPresQuantile)
+      }
       
       predSel.thr <- predSel > thr.sel
       # rename prediction raster if thresholded
       names(predSel.thr) <- paste0(curModel(), '_', predType)
-      # shinyLogs %>% writeLog(curSp(), ": ", input$threshold, ' threshold selected
-      #                        for ', predType, ': ', thr, '.')
+      nameAlg <- ifelse(rmm()$model$algorithm == "BIOCLIM", 
+                        "", 
+                        paste0(" ", rmm()$model$algorithm, " "))
       shinyLogs %>% writeLog(curSp(), ": ", input$threshold, ' threshold selected
-                             for ', predType, ': ', thr.sel, '.')
+                             for ', nameAlg, predType, ' (', 
+                             formatC(thr.sel, format = "e", 2), ').')
     } else {
       predSel.thr <- predSel
     }
     
     # write to log box
-    shinyLogs %>% writeLog(curSp(), ": ", rmm()$model$algorithm, " ", predType,
-                           " model prediction plotted.")
+    if (predType == 'BIOCLIM') {
+      shinyLogs %>% writeLog(curSp(), ": BIOCLIM model prediction plotted.")
+    } else if (input$threshold != 'none'){
+      shinyLogs %>% writeLog(curSp(), ": ", rmm()$model$algorithm, " model prediction plotted.")
+    } else if (input$threshold == 'none'){
+      shinyLogs %>% writeLog(curSp(), ": ", rmm()$model$algorithm, " ", predType,
+                             " model prediction plotted.")
+    }
     
     # LOAD INTO SPP ####
     spp[[curSp()]]$results[[predType]] <- predSel
-    #spp[[curSp()]]$visualization$thresholds <- thr
-    spp[[curSp()]]$visualization$thresholds <- thr.sel # were you recording multiple before?
+    if (input$threshold != 'none') spp[[curSp()]]$visualization$thresholds <- thr.sel # were you recording multiple before?
     spp[[curSp()]]$visualization$mapPred <- predSel.thr
     spp[[curSp()]]$visualization$mapPredVals <- getRasterVals(predSel.thr, predType)
     
