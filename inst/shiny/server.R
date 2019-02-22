@@ -809,7 +809,7 @@ shinyServer(function(input, output, session) {
   # module Maxent ####
   # # # # # # # # # # # 
   
-  mod.maxent <- callModule(runMaxent_MOD, 'runMaxent')
+  mod.maxent <- callModule(runMaxent_MOD, 'runMaxent_uiID')
   observeEvent(input$goMaxent, {
     mod.maxent()
     runMaxent_TBL(input, output, session)
@@ -829,7 +829,7 @@ shinyServer(function(input, output, session) {
   # module BIOCLIM ####
   # # # # # # # # # # # # 
   observeEvent(input$goBIOCLIM, {
-    mod.bioclim <- callModule(runBIOCLIM_MOD, 'runBIOCLIM')
+    mod.bioclim <- callModule(runBIOCLIM_MOD, 'runBIOCLIM_uiID')
     mod.bioclim()
     runBIOCLIM_TBL(input, output, session)
     # make sure the results were entered before proceeding
@@ -846,7 +846,7 @@ shinyServer(function(input, output, session) {
   # module GAM ####
   # # # # # # # # # # # # 
   observeEvent(input$goGAM, {
-    mod.gam <- callModule(runGAM_MOD, 'runGAM')
+    mod.gam <- callModule(runGAM_MOD, 'runGAM_uiID')
     mod.gam()
     runGAM_TBL(input, output, session)
     # make sure the results were entered before proceeding
