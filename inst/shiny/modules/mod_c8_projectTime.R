@@ -117,14 +117,14 @@ projectTime_MOD <- function(input, output, session) {
       projTimeThr <- projTime > thr
       shinyLogs %>% writeLog("Projection of model to ", 
                              paste0('20', input$selTime), " for ", 
-                             curSp(), ' with threshold ', input$threshold, 
-                             ': ', thr, " for GCM ", GCMlookup[input$selGCM], 
+                             em(spName(occs)), ' with threshold ', input$threshold, ' (', 
+                             formatC(thr, format = "e", 2), ") for GCM ", GCMlookup[input$selGCM], 
                              " under RCP ", as.numeric(input$selRCP)/10.0, ".")
     } else {
       projTimeThr <- projTime
       shinyLogs %>% writeLog("Projection of model to ", 
                              paste0('20', input$selTime), " for ", 
-                             curSp(), ' with ', predType, " output for GCM ",
+                             em(spName(occs)), ' with ', predType, " output for GCM ",
                              GCMlookup[input$selGCM], 
                              " under RCP ", as.numeric(input$selRCP)/10.0, ".")
     }
