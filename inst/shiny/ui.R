@@ -327,6 +327,8 @@ shinyUI(tagList(
                                                                  envSimilarity_UI('c8_envSimilarity'),
                                                                  strong("Calculate MESS for current extent"), br(), br(),
                                                                  actionButton('goEnvSimilarity', "Calculate MESS")),
+                                                strong("Reset projection extent"), br(), br(),
+                                                actionButton("goResetProj", "Reset"),
                                                 HTML('<hr>'),
                                                 selectInput('projFileType', label = "Select download file type",
                                                             choices = list("GRD" = 'raster', "ASCII" = 'ascii', "GeoTIFF" = 'GTiff',
