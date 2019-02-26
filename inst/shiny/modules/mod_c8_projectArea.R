@@ -59,7 +59,8 @@ projectArea_MOD <- function(input, output, session) {
       }
       projAreaThr <- projArea > thr.sel
       shinyLogs %>% writeLog("Projection of model to new area for ", curSp(), 
-                             ' with threshold ', input$threshold, ': ', thr.sel, '.')
+                             ' with threshold ', input$threshold, ' (', 
+                             formatC(thr.sel, format = "e", 2), ').')
     } else {
       projAreaThr <- projArea
       shinyLogs %>% writeLog("Projection of model to new area for ", curSp(), 
@@ -110,9 +111,9 @@ projectArea_MAP <- function(map, session) {
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
   # if no threshold specified
   if(rmm()$output$transfer$environment1$thresholdRule != 'none') {
-    rasPal <- c('gray', 'blue')
+    rasPal <- c('gray', 'red')
     map %>% removeControl("proj") %>%
-      addLegend("bottomright", colors = c('gray', 'blue'), title = "Thresholded Suitability<br>(Projected)",
+      addLegend("bottomright", colors = c('gray', 'red'), title = "Thresholded Suitability<br>(Projected)",
                 labels = c("predicted absence", "predicted presence"), opacity = 1, layerId = 'proj')
   } else {
     # if threshold specified
@@ -134,6 +135,12 @@ projectArea_MAP <- function(map, session) {
                 weight=4, color="blue", group='proj') %>%
     # add background polygon
     mapBgPolys(bgShpXY())
+  
+  # create new spatial polygon from coordinates
+  newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(polyPjXY)), 
+                                                   ID = spp[[curSp()]]$polyPjID)))
+  if (rgeos::gIntersects(newPoly, bgExt())) {map %>% removeImage('mapPred')} 
+  
 }
 
 projectArea_INFO <- infoGenerator(modName = "Project to New Extent",
