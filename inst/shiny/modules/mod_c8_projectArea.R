@@ -6,7 +6,14 @@ projectArea_UI <- function(id) {
              selectInput(ns('threshold'), label = "Set threshold",
                          choices = list("No threshold" = 'none',
                                         "Minimum Training Presence" = 'mtp', 
-                                        "10 Percentile Training Presence" = 'p10')))
+                                        "10 Percentile Training Presence" = 'p10',
+                                        "Quantile of Training Presences" = 'qtp'))),
+    conditionalPanel(sprintf("input['%s'] == 'qtp'", ns("threshold")),
+                     sliderInput(ns("trainPresQuantile"), "Set quantile",
+                                 min = 0, max = 1, value = .05)),
+    conditionalPanel(condition = sprintf("input.modelSel == 'Maxent' & input['%s'] == 'none'", 
+                                         ns("threshold")),
+                     h5("Prediction output is the same than Visualize component (**)"))
   )
 }
 
@@ -27,7 +34,11 @@ projectArea_MOD <- function(input, output, session) {
     
     # FUNCTION CALL ####
     predType <- rmm()$output$prediction$notes
-    projArea.out <- c8_projectArea(results(), curModel(), envs(), predType, spp[[curSp()]]$polyPjXY, 
+    projArea.out <- c8_projectArea(results(), curModel(), envs(), 
+                                   outputType = predType, 
+                                   alg = rmm()$model$algorithm, 
+                                   clamp = rmm()$model$maxent$clamping, 
+                                   spp[[curSp()]]$polyPjXY, 
                                    spp[[curSp()]]$polyPjID, shinyLogs)
     
     projExt <- projArea.out$projExt
@@ -36,17 +47,25 @@ projectArea_MOD <- function(input, output, session) {
     # PROCESSING ####
     # generate binary prediction based on selected thresholding rule 
     # (same for all Maxent prediction types because they scale the same)
+    occPredVals <- spp[[curSp()]]$visualization$occPredVals
+    
     if(!(input$threshold == 'none')) {
-      # use threshold from present-day model training area
-      thr <- spp[[curSp()]]$visualization$thresholds[[input$threshold]]
-      projAreaThr <- projArea > thr
+      if (input$threshold == 'mtp') {
+        thr.sel <- quantile(occPredVals, probs = 0)
+      } else if (input$threshold == 'p10') {
+        thr.sel <- quantile(occPredVals, probs = 0.1)
+      } else if (input$threshold == 'qtp'){
+        thr.sel <- quantile(occPredVals, probs = input$trainPresQuantile)
+      }
+      projAreaThr <- projArea > thr.sel
       shinyLogs %>% writeLog("Projection of model to new area for ", curSp(), 
-                             ' with threshold ', input$threshold, ': ', thr, '.')
+                             ' with threshold ', input$threshold, ': ', thr.sel, '.')
     } else {
       projAreaThr <- projArea
       shinyLogs %>% writeLog("Projection of model to new area for ", curSp(), 
                              ' with ', predType, ' output.')
     }
+    raster::crs(projAreaThr) <- raster::crs(envs())
     # rename
     names(projAreaThr) <- paste0(curModel(), '_thresh_', predType)
     
@@ -69,7 +88,7 @@ projectArea_MOD <- function(input, output, session) {
     spp[[curSp()]]$rmm$output$transfer$environment1$minVal <- printVecAsis(raster::cellStats(projAreaThr, min), asChar = TRUE)
     spp[[curSp()]]$rmm$output$transfer$environment1$maxVal <- printVecAsis(raster::cellStats(projAreaThr, max), asChar = TRUE)
     if(!(input$threshold == 'none')) {
-      spp[[curSp()]]$rmm$output$transfer$environment1$thresholdSet <- thr
+      spp[[curSp()]]$rmm$output$transfer$environment1$thresholdSet <- thr.sel
     } else {
       spp[[curSp()]]$rmm$output$transfer$environment1$thresholdSet <- NULL
     }

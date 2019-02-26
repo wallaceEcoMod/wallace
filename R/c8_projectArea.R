@@ -28,7 +28,8 @@
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 
-c8_projectArea <- function(results, curModel, envs, outputType, polyPjXY, polyPjID, shinyLogs = NULL) {
+c8_projectArea <- function(results, curModel, envs, outputType, alg, clamp, polyPjXY, 
+                           polyPjID, shinyLogs = NULL) {
   # create new spatial polygon from coordinates
   newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(polyPjXY)), ID = polyPjID)))  
   
@@ -36,7 +37,19 @@ c8_projectArea <- function(results, curModel, envs, outputType, polyPjXY, polyPj
   xy.round <- round(polyPjXY, digits = 2)
   xy.round <- xy.round[-nrow(xy.round),]  # remove last point that completes polygon
   coordsChar <- paste(apply(xy.round, 1, function(b) paste0('(',paste(b, collapse=', '),')')), collapse=', ')  
-  shinyLogs %>% writeLog('New area projection for model ', curModel, ' with extent coordinates: ', coordsChar)
+  
+  if (alg == 'bioclim') {
+    shinyLogs %>% writeLog('New area projection for BIOCLIM model with extent coordinates:',
+                     coordsChar)
+  } else if (alg == 'maxent') {
+    if (clamp == TRUE | alg == "maxent.jar") {
+      shinyLogs %>% writeLog('New area projection for clamped model', curModel(), 
+                       'with extent coordinates:', coordsChar)
+    } else if (clamp == FALSE) {
+      shinyLogs %>% writeLog('New area projection for unclamped', curModel(), 
+                       'with extent coordinates:', coordsChar)
+    }
+  }
   
   smartProgress(shinyLogs, message = "Masking environmental grids to projection extent...", {
     projMsk <- raster::crop(envs, newPoly)
@@ -44,8 +57,19 @@ c8_projectArea <- function(results, curModel, envs, outputType, polyPjXY, polyPj
   })
   
   smartProgress(shinyLogs, message = 'Projecting model to new area...', {
-    pargs <- paste0("outputformat=", outputType)
-    modProjArea <- dismo::predict(results$models[[curModel]], projMsk, args = pargs)
+    if (alg == 'BIOCLIM') {
+      modProjArea <- dismo::predict(results$models[[curModel]], projMsk)
+    } else if (alg == 'maxnet') {
+      if (outputType == "raw") {pargs <- "exponential"} else {pargs <- outputType}
+      modProjArea <- ENMeval::maxnet.predictRaster(results$models[[curModel]], 
+                                                   projMsk, type = pargs, 
+                                                   clamp = clamp)
+    } else if (alg == "maxent.jar") {
+      pargs <- paste0("outputformat=", outputType)
+      modProjArea <- dismo::predict(results$models[[curModel]], projMsk, 
+                                    args = pargs)
+    }
   })
+  
   return(list(projExt=projMsk, projArea=modProjArea))
 }

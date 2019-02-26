@@ -127,6 +127,7 @@ mapPreds_MOD <- function(input, output, session) {
     
     # LOAD INTO SPP ####
     spp[[curSp()]]$results[[predType]] <- predSel
+    spp[[curSp()]]$visualization$occPredVals <- occPredVals
     if (input$threshold != 'none') spp[[curSp()]]$visualization$thresholds <- thr.sel # were you recording multiple before?
     spp[[curSp()]]$visualization$mapPred <- predSel.thr
     spp[[curSp()]]$visualization$mapPredVals <- getRasterVals(predSel.thr, predType)
