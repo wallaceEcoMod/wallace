@@ -13,7 +13,7 @@ runGAM_MOD <- function(input, output, session) {
       if(is.null(spp[[sp]]$occs$partition)) {
         shinyLogs %>% writeLog(type = 'error', "Before building a model, please
                                partition occurrences for cross-validation for ",
-                               em(spName(occs)), ".")
+                               em(spName(occs())), ".")
         return()
       }
 

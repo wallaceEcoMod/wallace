@@ -108,7 +108,7 @@ mapPreds_MOD <- function(input, output, session) {
       nameAlg <- ifelse(rmm()$model$algorithm == "BIOCLIM", 
                         "", 
                         paste0(" ", rmm()$model$algorithm, " "))
-      shinyLogs %>% writeLog(em(spName(occs)), ": ", input$threshold, ' threshold selected
+      shinyLogs %>% writeLog(em(spName(occs())), ": ", input$threshold, ' threshold selected
                              for ', nameAlg, predType, ' (', 
                              formatC(thr.sel, format = "e", 2), ').')
     } else {
@@ -117,11 +117,11 @@ mapPreds_MOD <- function(input, output, session) {
     
     # write to log box
     if (predType == 'BIOCLIM') {
-      shinyLogs %>% writeLog(em(spName(occs)), ": BIOCLIM model prediction plotted.")
+      shinyLogs %>% writeLog(em(spName(occs())), ": BIOCLIM model prediction plotted.")
     } else if (input$threshold != 'none'){
-      shinyLogs %>% writeLog(em(spName(occs)), ": ", rmm()$model$algorithm, " model prediction plotted.")
+      shinyLogs %>% writeLog(em(spName(occs())), ": ", rmm()$model$algorithm, " model prediction plotted.")
     } else if (input$threshold == 'none'){
-      shinyLogs %>% writeLog(em(spName(occs)), ": ", rmm()$model$algorithm, " ", predType,
+      shinyLogs %>% writeLog(em(spName(occs())), ": ", rmm()$model$algorithm, " ", predType,
                              " model prediction plotted.")
     }
     

@@ -58,12 +58,12 @@ projectArea_MOD <- function(input, output, session) {
         thr.sel <- quantile(occPredVals, probs = input$trainPresQuantile)
       }
       projAreaThr <- projArea > thr.sel
-      shinyLogs %>% writeLog("Projection of model to new area for ", em(spName(occs)), 
+      shinyLogs %>% writeLog("Projection of model to new area for ", em(spName(occs())), 
                              ' with threshold ', input$threshold, ' (', 
                              formatC(thr.sel, format = "e", 2), ').')
     } else {
       projAreaThr <- projArea
-      shinyLogs %>% writeLog("Projection of model to new area for ", em(spName(occs)), 
+      shinyLogs %>% writeLog("Projection of model to new area for ", em(spName(occs())), 
                              ' with ', predType, ' output.')
     }
     raster::crs(projAreaThr) <- raster::crs(envs())
