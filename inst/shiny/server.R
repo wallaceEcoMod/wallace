@@ -1023,7 +1023,7 @@ shinyServer(function(input, output, session) {
         if (input$predFileType == 'png') {
           req(mapPred())
           if (rmm()$output$prediction$thresholdRule != 'none') {
-            mapPredVals <- NULL
+            mapPredVals <- 0:1
             rasPal <- c('gray', 'blue')
             legendPal <- colorBin(rasPal, 0:1, bins = 2)
             mapTitle <- "Thresholded Suitability<br>(Training)"
@@ -1037,7 +1037,6 @@ shinyServer(function(input, output, session) {
               paste0(cuts[-n], cuts[-1])
             }
             mapOpacity <- 1
-            mapValues <- 0:1
           } else {
             rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
             mapPredVals <- spp[[curSp()]]$visualization$mapPredVals
@@ -1046,12 +1045,11 @@ shinyServer(function(input, output, session) {
             mapTitle <- "Predicted Suitability<br>(Training)"
             mapLabFormat <- reverseLabels(2, reverse_order=TRUE)
             mapOpacity <- NULL
-            mapValues <- mapPredVals
           }
           m <- leaflet() %>%
             addLegend("bottomright", pal = legendPal, title = mapTitle, 
                       labFormat = mapLabFormat, opacity = mapOpacity, 
-                      values = mapValues, layerId = "train") %>% 
+                      values = mapPredVals, layerId = "train") %>% 
             addProviderTiles(input$bmap) %>%
             addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                              radius = 5, color = 'red', fill = TRUE, fillColor = 'red',
@@ -1158,27 +1156,70 @@ shinyServer(function(input, output, session) {
   # download for model predictions (restricted to background extent)
   output$dlProj <- downloadHandler(
     filename = function() {
-      ext <- switch(input$projFileType, raster = 'zip', ascii = 'asc', GTiff = 'tif', PNG = 'png')
-      paste0(names(mapProj()), '.', ext)},
+      ext <- switch(input$projFileType, raster = 'zip', ascii = 'asc', 
+                    GTiff = 'tif', png = 'png')
+      thresholdRule <- rmm()$output$transfer$environment1$thresholdRule
+      predType <- rmm()$output$prediction$notes
+      if (thresholdRule == 'none') {
+        paste0(curSp(), "_proj_", predType, '.', ext)
+      } else {
+        paste0(curSp(), "_proj_", thresholdRule, '.', ext)
+      }
+    },
     content = function(file) {
-      browser()
       if(require(rgdal)) {
         if (input$projFileType == 'png') {
-          png(file)
-          raster::image(mapProj())
-          dev.off()
+          req(mapProj())
+          if (rmm()$output$transfer$environment1$thresholdRule != 'none') {
+            mapProjVals <- 0:1
+            rasPal <- c('gray', 'red')
+            legendPal <- colorBin(rasPal, 0:1, bins = 2)
+            mapTitle <- "Thresholded Suitability<br>(Projected)"
+            mapLabFormat <- function(type, cuts, p) {
+              n = length(cuts)
+              cuts[n] = "predicted presence"
+              for (i in 2:(n - 1)) {
+                cuts[i] = ""
+              }
+              cuts[1] = "predicted absence"
+              paste0(cuts[-n], cuts[-1])
+            }
+            mapOpacity <- 1
+          } else {
+            rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+            mapProjVals <- spp[[curSp()]]$project$mapProjVals
+            rasPal <- colorNumeric(rasCols, mapProjVals, na.color='transparent')
+            legendPal <- colorNumeric(rev(rasCols), mapProjVals, na.color='transparent')
+            mapTitle <- "Predicted Suitability<br>(Projected)"
+            mapLabFormat <- reverseLabels(2, reverse_order=TRUE)
+            mapOpacity <- NULL
+          }
+          m <- leaflet() %>%
+            addLegend("bottomright", pal = legendPal, title = mapTitle, 
+                      labFormat = mapLabFormat, opacity = mapOpacity, 
+                      values = mapProjVals, layerId = "train") %>% 
+            addProviderTiles(input$bmap) %>%
+            addRasterImage(mapProj(), colors = rasPal, opacity = 0.7,
+                           group = 'vis', layerId = 'mapProj', method = "ngb") %>%
+            addPolygons(lng = spp[[curSp()]]$polyPjXY[, 1], 
+                        lat = spp[[curSp()]]$polyPjXY[, 2], fill = FALSE, 
+                        weight = 4, color = "blue", 
+                        group = 'proj')
+          mapview::mapshot(m, file = file)
         } else if (input$projFileType == 'raster') {
-          fileName <- names(mapProj())
+          fileName <- curSp()
           tmpdir <- tempdir()
-          raster::writeRaster(mapProj(), file.path(tmpdir, fileName), format = input$projFileType, overwrite = TRUE)
+          raster::writeRaster(mapProj(), file.path(tmpdir, fileName), 
+                              format = input$projFileType, overwrite = TRUE)
           owd <- setwd(tmpdir)
           fs <- paste0(fileName, c('.grd', '.gri'))
           zip::zip(zipfile = file, files = fs)
           setwd(owd)
         } else {
-          r <- raster::writeRaster(mapProj(), file, format = input$projFileType, overwrite = TRUE)
+          r <- raster::writeRaster(mapProj(), file, format = input$projFileType, 
+                                   overwrite = TRUE)
           file.rename(r@file@name, file)
-        }  
+        }
       } else {
         shinyLogs %>% writeLog("Please install the rgdal package before downloading rasters.")
       }
