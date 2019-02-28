@@ -51,16 +51,16 @@ projectArea_MOD <- function(input, output, session) {
     
     if(!(input$threshold == 'none')) {
       if (input$threshold == 'mtp') {
-        thr.sel <- quantile(occPredVals, probs = 0)
+        thr <- quantile(occPredVals, probs = 0)
       } else if (input$threshold == 'p10') {
-        thr.sel <- quantile(occPredVals, probs = 0.1)
+        thr <- quantile(occPredVals, probs = 0.1)
       } else if (input$threshold == 'qtp'){
-        thr.sel <- quantile(occPredVals, probs = input$trainPresQuantile)
+        thr <- quantile(occPredVals, probs = input$trainPresQuantile)
       }
-      projAreaThr <- projArea > thr.sel
+      projAreaThr <- projArea > thr
       shinyLogs %>% writeLog("Projection of model to new area for ", em(spName(occs())), 
                              ' with threshold ', input$threshold, ' (', 
-                             formatC(thr.sel, format = "e", 2), ').')
+                             formatC(thr, format = "e", 2), ').')
     } else {
       projAreaThr <- projArea
       shinyLogs %>% writeLog("Projection of model to new area for ", em(spName(occs())), 
@@ -89,7 +89,7 @@ projectArea_MOD <- function(input, output, session) {
     spp[[curSp()]]$rmm$output$transfer$environment1$minVal <- printVecAsis(raster::cellStats(projAreaThr, min), asChar = TRUE)
     spp[[curSp()]]$rmm$output$transfer$environment1$maxVal <- printVecAsis(raster::cellStats(projAreaThr, max), asChar = TRUE)
     if(!(input$threshold == 'none')) {
-      spp[[curSp()]]$rmm$output$transfer$environment1$thresholdSet <- thr.sel
+      spp[[curSp()]]$rmm$output$transfer$environment1$thresholdSet <- thr
     } else {
       spp[[curSp()]]$rmm$output$transfer$environment1$thresholdSet <- NULL
     }

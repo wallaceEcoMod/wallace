@@ -10,8 +10,6 @@ projectTime_UI <- function(id) {
     # "8.5" is "Future 8.5"
     selectInput(ns("selTime"), label = "Select time period",
                 choices = list("Select period" = "",
-                               # "Last Glacial Maximum (~22,000 years ago)" = 'lgm',
-                               # "Mid Holocene (~6000 years ago)" = 'mid',
                                "2050" = 50,
                                "2070" = 70)),
     uiOutput(ns('selGCMui')),
@@ -26,7 +24,14 @@ projectTime_UI <- function(id) {
              selectInput(ns('threshold'), label = "Set threshold",
                          choices = list("No threshold" = 'none',
                                         "Minimum Training Presence" = 'mtp', 
-                                        "10 Percentile Training Presence" = 'p10')))
+                                        "10 Percentile Training Presence" = 'p10',
+                                        "Quantile of Training Presences" = 'qtp'))),
+    conditionalPanel(sprintf("input['%s'] == 'qtp'", ns("threshold")),
+                     sliderInput(ns("trainPresQuantile"), "Set quantile",
+                                 min = 0, max = 1, value = .05)),
+    conditionalPanel(condition = sprintf("input.modelSel == 'Maxent' & input['%s'] == 'none'", 
+                                         ns("threshold")),
+                     h5("Prediction output is the same than Visualize component (**)"))
   )
 }
 
@@ -103,7 +108,10 @@ projectTime_MOD <- function(input, output, session) {
     
     # FUNCTION CALL ####    
     predType <- rmm()$output$prediction$notes
-    projTime.out <- c8_projectTime(results(), curModel(), projTimeEnvs, predType, spp[[curSp()]]$polyPjXY,
+    projTime.out <- c8_projectTime(results(), curModel(), projTimeEnvs, predType, 
+                                   alg = rmm()$model$algorithm, 
+                                   clamp = rmm()$model$maxent$clamping,
+                                   spp[[curSp()]]$polyPjXY,
                                    spp[[curSp()]]$polyPjID, shinyLogs)
     projExt <- projTime.out$projExt
     projTime <- projTime.out$projTime
@@ -111,9 +119,17 @@ projectTime_MOD <- function(input, output, session) {
     # PROCESSING ####
     # generate binary prediction based on selected thresholding rule 
     # (same for all Maxent prediction types because they scale the same)
+    occPredVals <- spp[[curSp()]]$visualization$occPredVals
+    
     if(!(input$threshold == 'none')) {
       # use threshold from present-day model training area
-      thr <- spp[[curSp()]]$visualization$thresholds[[input$threshold]]
+      if (input$threshold == 'mtp') {
+        thr <- quantile(occPredVals, probs = 0)
+      } else if (input$threshold == 'p10') {
+        thr <- quantile(occPredVals, probs = 0.1)
+      } else if (input$threshold == 'qtp'){
+        thr <- quantile(occPredVals, probs = input$trainPresQuantile)
+      }
       projTimeThr <- projTime > thr
       shinyLogs %>% writeLog("Projection of model to ", 
                              paste0('20', input$selTime), " for ", 
@@ -128,6 +144,7 @@ projectTime_MOD <- function(input, output, session) {
                              GCMlookup[input$selGCM], 
                              " under RCP ", as.numeric(input$selRCP)/10.0, ".")
     }
+    raster::crs(projTimeThr) <- raster::crs(envs())
     # rename
     names(projTimeThr) <- paste0(curModel(), '_thresh_', predType)
     
@@ -176,9 +193,9 @@ projectTime_MAP <- function(map, session) {
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
   # if no threshold specified
   if(rmm()$output$transfer$environment1$thresholdRule != 'none') {
-    rasPal <- c('gray', 'blue')
+    rasPal <- c('gray', 'red')
     map %>% removeControl("proj") %>%
-      addLegend("bottomright", colors = c('gray', 'blue'), title = "Thresholded Suitability<br>(Projected)",
+      addLegend("bottomright", colors = c('gray', 'red'), title = "Thresholded Suitability<br>(Projected)",
                 labels = c("predicted absence", "predicted presence"), opacity = 1, layerId = 'proj')
   } else {
     # if threshold specified
@@ -196,10 +213,15 @@ projectTime_MAP <- function(map, session) {
     map_occs(occs(), customZoom = sharedExt) %>%
     addRasterImage(mapProj(), colors = rasPal, opacity = 0.7,
                    layerId = 'projRas', group = 'proj', method = "ngb") %>%
-    addPolygons(lng=polyPjXY[,1], lat=polyPjXY[,2], layerId="projExt", fill = FALSE,
-                weight=4, color="blue", group='proj') %>%
+    addPolygons(lng = polyPjXY[,1], lat = polyPjXY[,2], layerId = "projExt", 
+                fill = FALSE, weight = 4, color = "blue", group = 'proj') %>%
     # add background polygon
     mapBgPolys(bgShpXY())
+  
+  # create new spatial polygon from coordinates
+  newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(polyPjXY)), 
+                                                   ID = spp[[curSp()]]$polyPjID)))
+  if (rgeos::gIntersects(newPoly, bgExt())) {map %>% removeImage('mapPred')}
 }
 
 projectTime_INFO <- infoGenerator(modName = "Project to New Time", 
