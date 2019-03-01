@@ -233,20 +233,45 @@ shinyServer(function(input, output, session) {
     # req(length(reactiveValuesToList(spp)) > 0)
     # get the species names
     n <- names(spp)
-    # make a named list of their names
-    sppNameList <- c(list("Current species" = ""), setNames(as.list(n), n))
     # if no current species selected, select the first name
+    # if one species selected, retain it
+    # if two species selected, 
     # NOTE: this line is necessary to retain the selection after selecting different tabs
-    if(!is.null(curSp())) selected <- curSp() else selected <- n[1]
+    if(!is.null(curSp())) {
+      curSp.split <- strsplit(curSp(), "|", fixed=TRUE)[[1]]
+      print(curSp.split)
+      if(length(curSp.split) == 1) {
+        selected <- curSp()
+      }else if(length(curSp.split) > 1) {
+        selected <- n
+      }
+    }else{
+      selected <- n[1]
+    }
     # if espace component, allow for multiple species selection
     if(component() == 'espace') options <- list(maxItems = 2) else options <- list(maxItems = 1)
+    # make a named list of their names
+    sppNameList <- c(list("Current species" = ""), setNames(as.list(n), n))
     # generate a selectInput ui that lists the available species
     selectizeInput('curSp', label = NULL , choices = sppNameList,
                    multiple = TRUE, selected = selected, options = options)
   })
   
   # shortcut to currently selected species, read from curSpUI
-  curSp <- reactive(input$curSp)
+  curSp <- reactive({
+    curSp.len <- length(input$curSp)
+    if(curSp.len == 1) {
+      input$curSp
+    }else if(curSp.len > 1) {
+      paste0(input$curSp, collapse = '|')
+    }
+  })
+  
+  observe({
+    print(curSp())
+    print(input$curSp)
+  })
+  
   # vector of all species with occurrence data loaded
   allSp <- reactive(names(reactiveValuesToList(spp)))
   # conditional species input to modules with batch option
@@ -707,9 +732,9 @@ shinyServer(function(input, output, session) {
   ### COMPONENT: ESPACE ####
   ############################################## #
   
-  curMSp <- reactive({
-    if(length(curSp()) > 1) paste0(curSp(), collapse = '|')
-  })
+  # curMSp <- reactive({
+  #   if(length(curSp()) > 1) paste0(curSp(), collapse = '|')
+  # })
   
   # # # # # # # # # # # # # # # # # # # # # # #
   # module Principle Components Analysis ####

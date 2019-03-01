@@ -38,7 +38,9 @@ c3_worldclim<- function(bcRes, bcSel, mapCntr, shinyLogs=NULL){
       wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes)
       wcbc <- wcbc[[bcSel]]
     }
+  })
     # convert to brick for faster processing
+  smartProgress(shinyLogs, message = "Converting to RasterBrick for faster processing...", {
     wcbc <- raster::brick(wcbc)
   }) 
   

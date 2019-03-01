@@ -17,7 +17,8 @@ bgExtent_MOD <- function(input, output, session) {
     # ERRORS ####
     if (is.null(envs())) {
       shinyLogs %>% writeLog(type = 'error',
-                             'Environmental variables missing. Obtain them in component 3.')
+                             paste0('Environmental variables missing for ', 
+                                    curSp(), '. Obtain them in component 3.'))
       return()
     }
     req(curSp(), occs(), envs())
