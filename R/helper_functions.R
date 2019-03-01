@@ -69,12 +69,12 @@ infoGenerator <- function(pkgName, modName , modAuts) {
 #' @export
 spName <- function(sp) {
   if(class(sp) == "list") {
-    name <- sp$occs$scientific_name[1]
+    sp <- sp$occs$scientific_name[1]
   }
   if("data.frame" %in% class(sp)) {
-    name <- sp$scientific_name[1]
+    sp <- sp$scientific_name[1]
   }
-  return(paste(strsplit(as.character(name), "_")[[1]], collapse = " "))  
+  return(paste(strsplit(as.character(sp), "_")[[1]], collapse = " "))  
 }
 
 # either prints a message to console or makes a progress bar in the shiny app

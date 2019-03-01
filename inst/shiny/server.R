@@ -25,9 +25,10 @@ shinyServer(function(input, output, session) {
   
   # single species list of lists
   spp <- reactiveValues()
-  # multiple species list of lists: each entity is a species pair list which contains
-  # results of multispecies analyses
-  msp <- reactiveValues()
+  # # multiple species list of lists: each entity is a species pair list which contains
+  # # results of multispecies analyses
+  # msp <- reactiveValues()
+  envs.global <- reactiveValues()
   # list with current guidance text
   gtext <- reactiveValues()
   # single reactive value for dynamic log vector
@@ -228,26 +229,43 @@ shinyServer(function(input, output, session) {
   # OBTAIN OCCS: other controls ####
   # # # # # # # # # # # # # # # # # #
   
+  # output$curSpUI <- renderUI({
+  #   # check that a species is in the list already -- if not, don't proceed
+  #   # req(length(reactiveValuesToList(spp)) > 0)
+  #   # get the species names
+  #   n <- names(spp)
+  #   # if no current species selected, select the first name
+  #   # if one species selected, retain it
+  #   # if two species selected, 
+  #   # NOTE: this line is necessary to retain the selection after selecting different tabs
+  #   if(!is.null(curSp())) {
+  #     curSp.split <- strsplit(curSp(), "|", fixed=TRUE)[[1]]
+  #     print(curSp.split)
+  #     if(length(curSp.split) == 1) {
+  #       selected <- curSp()
+  #     }else if(length(curSp.split) > 1) {
+  #       selected <- n
+  #     }
+  #   }else{
+  #     selected <- n[1]
+  #   }
+  #   # if espace component, allow for multiple species selection
+  #   if(component() == 'espace') options <- list(maxItems = 2) else options <- list(maxItems = 1)
+  #   # make a named list of their names
+  #   sppNameList <- c(list("Current species" = ""), setNames(as.list(n), n))
+  #   # generate a selectInput ui that lists the available species
+  #   selectizeInput('curSp', label = NULL , choices = sppNameList,
+  #                  multiple = TRUE, selected = selected, options = options)
+  # })
+  
   output$curSpUI <- renderUI({
     # check that a species is in the list already -- if not, don't proceed
     # req(length(reactiveValuesToList(spp)) > 0)
     # get the species names
     n <- names(spp)
     # if no current species selected, select the first name
-    # if one species selected, retain it
-    # if two species selected, 
     # NOTE: this line is necessary to retain the selection after selecting different tabs
-    if(!is.null(curSp())) {
-      curSp.split <- strsplit(curSp(), "|", fixed=TRUE)[[1]]
-      print(curSp.split)
-      if(length(curSp.split) == 1) {
-        selected <- curSp()
-      }else if(length(curSp.split) > 1) {
-        selected <- n
-      }
-    }else{
-      selected <- n[1]
-    }
+    if(!is.null(curSp())) selected <- curSp() else selected <- n[1]
     # if espace component, allow for multiple species selection
     if(component() == 'espace') options <- list(maxItems = 2) else options <- list(maxItems = 1)
     # make a named list of their names
@@ -258,24 +276,19 @@ shinyServer(function(input, output, session) {
   })
   
   # shortcut to currently selected species, read from curSpUI
-  curSp <- reactive({
-    curSp.len <- length(input$curSp)
-    if(curSp.len == 1) {
-      input$curSp
-    }else if(curSp.len > 1) {
-      paste0(input$curSp, collapse = '|')
-    }
-  })
+  # curSp <- reactive({
+  #   curSp.len <- length(input$curSp)
+  #   if(curSp.len == 1) {
+  #     input$curSp
+  #   }else if(curSp.len > 1) {
+  #     paste0(input$curSp, collapse = '|')
+  #   }
+  # })
   
-  observe({
-    print(curSp())
-    print(input$curSp)
-  })
+  curSp <- reactive(input$curSp)
   
   # vector of all species with occurrence data loaded
   allSp <- reactive(names(reactiveValuesToList(spp)))
-  # conditional species input to modules with batch option
-  spIn <- reactive(if(input$batch == TRUE) allSp() else curSp())
   
   # convenience function for occurrence table for current species
   occs <- reactive(spp[[curSp()]]$occs)
@@ -365,9 +378,9 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goRemoveByID, {
     shiny::observe({
       shinyjs::toggleState("dlProcOccs", 
-        !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords) |
-        !is.null(spp[[curSp()]]$procOccs$occsThin) |
-        !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs))
+                           !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords) |
+                             !is.null(spp[[curSp()]]$procOccs$occsThin) |
+                             !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs))
     })
   })
   
@@ -386,9 +399,9 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goSelectOccs, {
     shiny::observe({
       shinyjs::toggleState("dlProcOccs", 
-        !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords) |
-        !is.null(spp[[curSp()]]$procOccs$occsThin) |
-        !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs))
+                           !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords) |
+                             !is.null(spp[[curSp()]]$procOccs$occsThin) |
+                             !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs))
     })
   })
   
@@ -403,11 +416,11 @@ shinyServer(function(input, output, session) {
   
   # Enable/disable single processed occs
   observeEvent(input$goThinOccs, {
-      shiny::observe({
-        shinyjs::toggleState("dlProcOccs", 
-          !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords) |
-          !is.null(spp[[curSp()]]$procOccs$occsThin) |
-          !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs))
+    shiny::observe({
+      shinyjs::toggleState("dlProcOccs", 
+                           !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords) |
+                             !is.null(spp[[curSp()]]$procOccs$occsThin) |
+                             !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs))
     })
   })
   
@@ -453,7 +466,7 @@ shinyServer(function(input, output, session) {
   # module WorldClim Bioclims ####
   # # # # # # # # # # # # # # # # #
   observeEvent(input$goEnvData, {
-    wcBioclims <- callModule(wcBioclims_MOD, 'c3_wcBioclims_uiID', spIn())
+    wcBioclims <- callModule(wcBioclims_MOD, 'c3_wcBioclims_uiID')
     wcBioclims()
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
@@ -524,10 +537,10 @@ shinyServer(function(input, output, session) {
   })
   
   # shortcut to currently selected environmental variable, read from curEnvUI
-  curEnv <- reactive({return(input$curEnv)})
+  curEnv <- reactive(input$curEnv)
   
   # convenience function for environmental variables for current species
-  envs <- reactive(spp[[curSp()]]$envs)
+  envs <- reactive(envs.global[[spp[[curSp()]]$envs]])
   
   # map center coordinates for 30 arcsec download
   mapCntr <- reactive(mapCenter(input$map_bounds))
@@ -609,7 +622,7 @@ shinyServer(function(input, output, session) {
     shiny::observe({
       shinyjs::toggleState("dlMskEnvs", !is.null(spp[[curSp()]]$procEnvs$bgMask))
       shinyjs::toggleState("dlBgPts", !is.null(spp[[curSp()]]$bgPts))
-      })
+    })
   })
   
   # # # # # # # # # # # # # # # # # #
@@ -652,7 +665,7 @@ shinyServer(function(input, output, session) {
       exts <- c('dbf', 'shp', 'shx')
       fs <- paste0(n, '_bgShp.', exts)
       zip::zip(zipfile=file, files=fs)
-            if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
+      if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
     },
     contentType = "application/zip"
   )
@@ -709,14 +722,14 @@ shinyServer(function(input, output, session) {
   })
   
   # # # # # # # # # # # # # # # # # #
-
+  
   # module User Bias File        ####
   # # # # # # # # # # # # # # # # # #
   observeEvent(input$goBiasFileUpload, {
     userBiasFileUpload <- callModule(userBiasFile_MOD, 'samp_biasFileUpload')
     userBiasFileUpload()
   })
-      
+  
   # module Make Target Group ####
   # # # # # # # # # # # # # # # # # #
   observeEvent(input$goTargetDbOccs, {
@@ -833,7 +846,6 @@ shinyServer(function(input, output, session) {
   mod.maxent <- callModule(runMaxent_MOD, 'runMaxent_uiID')
   observeEvent(input$goMaxent, {
     mod.maxent()
-    runMaxent_TBL(input, output, session)
     # make sure the results were entered before proceeding
     req(results())
     # switch to Results tab
@@ -885,8 +897,51 @@ shinyServer(function(input, output, session) {
   # MODEL: other controls ####
   # # # # # # # # # # # # # # # # # #
   
+  output$evalTbls <- renderUI({
+    req(results())
+    
+    options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
+    evalTbl <- results()$evalTbl
+    evalTblBins <- results()$evalTblBins
+    evalTblRound <- cbind(evalTbl[,1:3], round(evalTbl[,4:16], digits=3))
+    evalTblBinsRound <- cbind(settings=evalTbl[,1], round(evalTblBins, digits=3))
+    # define contents for both evaluation tables
+    output$evalTbl <- DT::renderDataTable(evalTblRound, options = options)
+    output$evalTblBins <- DT::renderDataTable(evalTblBinsRound, options = options)
+    # define contents for lambdas table
+    output$lambdas <- renderPrint({
+      if(spp[[curSp()]]$rmm$model$algorithm == "maxnet") {
+        results()$models[[curModel()]]$betas
+      } else if(spp[[curSp()]]$rmm$model$algorithm == "maxent.jar") {
+        results()$models[[curModel()]]@lambdas
+      }
+    })
+    
+    tabsetPanel(
+      tabPanel("Evaluation",
+               tagList(
+                 br(),
+                 div("Evaluation statistics: full model and partition averages", id="stepText"), br(), br(),
+                 DT::dataTableOutput('evalTbl'), br(),
+                 div("Evaluation statistics: individual partitions", id="stepText"), br(), br(),
+                 DT::dataTableOutput('evalTblBins')  
+               )),
+      tabPanel("Lambdas",
+               br(),
+               div("Maxent lambdas file", id = "stepText"), br(), br(),
+               verbatimTextOutput("lambdas")
+      )
+    )
+  })
+  
   # convenience function for modeling results list for current species
-  results <- reactive(spp[[curSp()]]$results)
+  results <- reactive({
+    if(length(curSp()) > 1) {
+      sapply(curSp(), function(x) spp[[x]]$results)
+    }else{
+      spp[[curSp()]]$results
+    }
+  })
   
   # ui that populates with the names of models that were run
   output$curModelUI <- renderUI({
@@ -906,7 +961,7 @@ shinyServer(function(input, output, session) {
   })
   
   # shortcut to currently selected model, read from modSelUI
-  curModel <- reactive({input$curModel})
+  curModel <- reactive(input$curModel)
   
   # download for partitioned occurrence records csv
   output$dlEvalTbl <- downloadHandler(
@@ -987,8 +1042,8 @@ shinyServer(function(input, output, session) {
                       spp[[curSp()]]$rmm$code$wallaceSettings$bcPlotSettings[['bc2']],
                       spp[[curSp()]]$rmm$code$wallaceSettings$bcPlotSettings[['p']]) 
       dev.off()
-      }
-    )
+    }
+  )
   
   # handle downloads for Maxent Plots png
   output$dlMaxentPlots <- downloadHandler(
@@ -1099,7 +1154,7 @@ shinyServer(function(input, output, session) {
           file.rename(r@file@name, file)
         }
       } else {
-       shinyLogs %>% writeLog("Please install the rgdal package before downloading rasters.")
+        shinyLogs %>% writeLog("Please install the rgdal package before downloading rasters.")
       }
     }
   )

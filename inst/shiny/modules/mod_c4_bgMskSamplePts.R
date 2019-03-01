@@ -24,7 +24,7 @@ bgMskAndSamplePts_MOD <- function(input, output, session) {
     for(sp in spLoop) {
       # FUNCTION CALL ####
       bgMask <- c4_bgMask(spp[[sp]]$occs, 
-                          spp[[sp]]$envs, 
+                          envs.global[[spp[[sp]]$envs]],
                           spp[[sp]]$procEnvs$bgExt, 
                           shinyLogs)
       req(bgMask)
@@ -33,12 +33,14 @@ bgMskAndSamplePts_MOD <- function(input, output, session) {
                            input$bgPtsNum, 
                            shinyLogs)
       req(bgPts)
-      withProgress(message = paste0("Extracting background values for ", spName(spp[[sp]]), "..."), {
+      withProgress(message = paste0("Extracting background values for ", spName(sp), "..."), {
         bgEnvsVals <- as.data.frame(raster::extract(bgMask, bgPts))
       })
       
       if(sum(rowSums(is.na(raster::extract(bgMask, spp[[sp]]$occs[,c("longitude", "latitude")])))) > 0) {
-        shinyLogs %>% writeLog(type = "warning", "One or more occurrence points are outside your study extent. Please increase the buffer slightly to include them.")
+        shinyLogs %>% writeLog(type = "error", "One or more occurrence points have NULL raster values for ", 
+                               spName(sp), ". This can sometimes happen for points on the margin of the study extent.",
+                               " Please increase the buffer slightly to include them.")
         return()
       }
       
