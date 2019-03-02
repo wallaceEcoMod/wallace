@@ -580,9 +580,7 @@ shinyServer(function(input, output, session) {
   
   # Enable/disable download shapefile button
   observeEvent(input$goBgExt, {
-    shiny::observe({
       shinyjs::toggleState("dlBgShp", !is.null(spp[[curSp()]]$procEnvs$bgExt))
-    })
   })
   
   # # # # # # # # # # # # # # # # # # # # # # # 
@@ -619,10 +617,8 @@ shinyServer(function(input, output, session) {
   
   # Enable/disable download background mask and points buttons
   observeEvent(input$goBgMask, {
-    shiny::observe({
       shinyjs::toggleState("dlMskEnvs", !is.null(spp[[curSp()]]$procEnvs$bgMask))
       shinyjs::toggleState("dlBgPts", !is.null(spp[[curSp()]]$bgPts))
-    })
   })
   
   # # # # # # # # # # # # # # # # # #
@@ -755,11 +751,12 @@ shinyServer(function(input, output, session) {
   pca <- callModule(pca_MOD, 'cEspace_PCA_uiID')
   
   observeEvent(input$goPCA, {
+    print(curSp())
     # stop if no environmental variables
     if(length(curSp()) != 2) {
       shinyLogs %>% writeLog(type = 'error', "Please select two species.")
     }
-    req(spp[[curSp()[1]]]$procEnvs$bg.envsVals, spp[[curSp()[2]]]$procEnvs$bg.envsVals)
+    req(spp[[curSp()[1]]]$procEnvs$bgMask, spp[[curSp()[2]]]$procEnvs$bgMask)
     # initialize module
     pca()
     # UI CONTROLS 
@@ -935,18 +932,12 @@ shinyServer(function(input, output, session) {
   })
   
   # convenience function for modeling results list for current species
-  results <- reactive({
-    if(length(curSp()) > 1) {
-      sapply(curSp(), function(x) spp[[x]]$results)
-    }else{
-      spp[[curSp()]]$results
-    }
-  })
+  results <- reactive(spp[[curSp()]]$results)
   
   # ui that populates with the names of models that were run
   output$curModelUI <- renderUI({
     # do not display until both current species is selected and it has a model
-    req(curSp(), results())
+    req(curSp(), length(curSp()) == 1, results())
     # if 
     if(!is.null(results())) {
       n <- names(results()$models)  
