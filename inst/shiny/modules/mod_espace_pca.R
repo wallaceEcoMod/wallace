@@ -2,52 +2,74 @@
 pca_controlsUI <- function(id) {
   ns <- NS(id)
   tagList(
-    checkboxInput(ns("pcaSelChoice"), label = "Specify variables to use in analysis?"),
+    checkboxInput(ns("pcaVarSel"), label = "Specify variables to use in analysis?"),
+    conditionalPanel(paste0("input['", ns("pcaVarSel"), "']"),
+                     uiOutput(ns("pcaSel"))),
+    selectInput(ns("pcaPlotSel"), "Plot selection:", choices = list("None selected" = "",
+                                                                    "Occurrences only" = "occs",
+                                                                    "Occurrences + Background" = "occsBg")),
     uiOutput(ns("pcaControls"))
   )
 }
 
 pca_resultsUI <- function(id) {
   ns <- NS(id)
-  plotOutput(ns('pcaPlot'))
+  uiOutput(ns('pcaResults'))
 }
 
 pca_MOD <- function(input, output, session) {
+  output$pcaSel <- renderUI({
+    req(curSp())
+    sp <- curSp()[1]
+    if(is.null(spp[[sp]]$envs)) return()
+    sp1.envNames <- names(envs.global[[spp[[sp]]$envs]])
+    checkboxGroupInput(session$ns("pcaSel"), label = "Select",
+                       choices = sp1.envNames, 
+                       inline = TRUE, selected = sp1.envNames)
+  })
+  
   reactive({
-    # FUNCTION CALL ####
-    sp1 <- curSp()[1]
-    sp2 <- curSp()[2]
     
-    # PROCESSING ####
-    sp1.envNames <- names(envs.global[[spp[[sp1]]$envs]])
-    sp2.envNames <- names(envs.global[[spp[[sp2]]$envs]])
-    if(all(sp1.envNames == sp2.envNames) == FALSE) {
-      shinyLogs %>% writeLog(type = "error", "Species 1 and species 2 must have the same environmental variables.")
+    if(input$pcaPlotSel == "") {
+      shinyLogs %>% writeLog(type = "error", "Please choose a PCA plotting type.")
       return()
     }
-    print(sp1.envNames)
-    print(head(spp[[sp1]]$bg))
-    sp1.bgVals <- spp[[sp1]]$bg[sp1.envNames]
-    sp2.bgVals <- spp[[sp2]]$bg[sp1.envNames]
-    sp1.occsVals <- spp[[sp1]]$occs[sp1.envNames]
-    sp2.occsVals <- spp[[sp2]]$occs[sp1.envNames]
+    
+    # PROCESSING ####
+    sp1 <- curSp()[1]
+    sp1.envNames <- names(envs.global[[spp[[sp1]]$envs]])
+    if(is.null(input$pcaSel)) pcaSel <- sp1.envNames else pcaSel <- input$pcaSel
+    sp1.occsVals <- spp[[sp1]]$occs[pcaSel]
+    sp1.bgVals <- spp[[sp1]]$bg[pcaSel]
+    if(length(curSp()) > 1) {
+      sp2 <- curSp()[2]
+      sp2.envNames <- names(envs.global[[spp[[sp2]]$envs]])
+      if(all(sp1.envNames == sp2.envNames) == FALSE) {
+        shinyLogs %>% writeLog(type = "error", "Species 1 and species 2 must have the same environmental variables.")
+        return()
+      }
+      sp2.occsVals <- spp[[sp2]]$occs[pcaSel]
+      sp2.bgVals <- spp[[sp2]]$bg[pcaSel]
+    }else{
+      sp2 <- NULL
+      sp2.occsVals <- NULL
+      sp2.bgVals <- NULL
+    }
+    
+    # FUNCTION CALL ####
     pca <- cESpace_pca(sp1, sp2, 
-                       sp1.bgVals,
-                       sp2.bgVals,
                        sp1.occsVals, 
                        sp2.occsVals,
+                       sp1.bgVals,
+                       sp2.bgVals,
                        shinyLogs)
     
     req(pca)
     
     output$pcaControls <- renderUI({
       tagList(
-        # conditionalPanel(paste0("input['", "pcaSelChoice", "']"),
-        #                  checkboxGroupInput("pcaSel", label = "Select",
-        #                                     choices = setNames(as.list(n), n), 
-        #                                     inline = TRUE, selected = n)),
-        numericInput(session$ns("pc1"), "X-axis Component", value = 1, min = 1, max = length(sp1.envNames)),
-        numericInput(session$ns("pc2"), "Y-axis Component", value = 2, min = 1, max = length(sp1.envNames))
+        numericInput(session$ns("pc1"), "X-axis Component", value = 1, min = 1, max = length(pcaSel)),
+        numericInput(session$ns("pc2"), "Y-axis Component", value = 2, min = 1, max = length(pcaSel))
       )
     })
     
@@ -63,12 +85,48 @@ pca_MOD <- function(input, output, session) {
     # add to vector of IDs removed
     
     # PLOTS ####
-    output$pcaPlot <- renderPlot({
-      par(mfrow=c(1,2))
-      ade4::s.class(pca$scores[pca$scores$sp == 'bg',1:2], 
-                    as.factor(pca$scores[pca$scores$sp == 'bg',]$bg),
-                    col=c("blue","red"), cstar = 0, cpoint = 0.1)
-      ade4::s.corcircle(pca$co, lab = sp1.envNames, full = FALSE, box = TRUE)  
+    output$pcaResults <- renderUI({
+      output$pcaScatter <- renderPlot({
+        if(input$pcaPlotSel == "occs") {
+          x <- pca$scores[pca$scores$bg == 'sp', ]
+          x.f <- factor(x$sp)
+        }else if(input$pcaPlotSel == "occsBg") {
+          x <- pca$scores[pca$scores$sp == 'bg', ]
+          x.f <- factor(x$bg)
+        }
+        print(str(x))
+        print(str(x.f))
+        ade4::s.class(x, x.f, xax = input$pc1, yax = input$pc2, 
+                      col = c("red", "blue"), cstar = 0, cpoint = 0.1)
+      })
+      output$pcaCorCircle <- renderPlot({
+        ade4::s.corcircle(pca$co, xax = input$pc1, yax = input$pc2, 
+                          lab = pcaSel, full = FALSE, box = TRUE)  
+      })
+      output$pcaScree <- renderPlot({
+        screeplot(pca)
+      })
+      output$pcaOut <- renderPrint({
+        summary(pca)
+      })
+      tabsetPanel(
+        tabPanel("PCA scatter plot",
+                 tagList(
+                   plotOutput(session$ns('pcaScatter'))
+                 )),
+        tabPanel("PCA correlation circle",
+                 tagList(
+                   plotOutput(session$ns('pcaCorCircle'))
+                 )),
+        tabPanel("PCA screeplot",
+                 tagList(
+                   plotOutput(session$ns('pcaScree'))
+                 )),
+        tabPanel("PCA results summary",
+                 tagList(
+                   verbatimTextOutput(session$ns("pcaOut"))
+                 ))
+      )
     })
     
     return(pca)

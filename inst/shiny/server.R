@@ -753,10 +753,9 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goPCA, {
     print(curSp())
     # stop if no environmental variables
-    if(length(curSp()) != 2) {
-      shinyLogs %>% writeLog(type = 'error', "Please select two species.")
-    }
-    req(spp[[curSp()[1]]]$procEnvs$bgMask, spp[[curSp()[2]]]$procEnvs$bgMask)
+    # if(length(curSp()) != 2) {
+    #   shinyLogs %>% writeLog(type = 'error', "Please select two species.")
+    # }
     # initialize module
     pca()
     # UI CONTROLS 

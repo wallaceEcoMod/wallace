@@ -23,7 +23,6 @@ bgMskAndSamplePts_MOD <- function(input, output, session) {
     # PROCESSING ####
     for(sp in spLoop) {
       # FUNCTION CALL ####
-      print(spp[[sp]]$envs)
       bgMask <- c4_bgMask(spp[[sp]]$occs, 
                           envs.global[[spp[[sp]]$envs]],
                           spp[[sp]]$procEnvs$bgExt, 
