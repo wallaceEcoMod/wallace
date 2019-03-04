@@ -22,11 +22,18 @@ cESpace_pca<- function(sp.name1, sp.name2 = NULL, occs.z1, occs.z2 = NULL,
   }
   
   # pca calibration and prediction of scores
-  
   pca <- ade4::dudi.pca(data, row.w = bg > 0, center = TRUE, scale = TRUE, 
                         scannf = FALSE, nf = ncol(data))
   
   pca$scores <- cbind(pca$li, sp, bg)
+  
+  if(is.null(sp.name2)) {
+    spNames <- sp.name1
+  }else{
+    spNames <- paste(spName(sp.name1), "and", spName(sp.name2))
+  }
+  
+  shinyLogs %>% writeLog(paste0("Principle components analysis run for ", spNames, "."))
   
   return(pca)
 }

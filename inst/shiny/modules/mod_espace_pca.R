@@ -29,7 +29,7 @@ pca_MOD <- function(input, output, session) {
   })
   
   reactive({
-    
+    # ERRORS ####
     if(input$pcaPlotSel == "") {
       shinyLogs %>% writeLog(type = "error", "Please choose a PCA plotting type.")
       return()
@@ -73,13 +73,15 @@ pca_MOD <- function(input, output, session) {
       )
     })
     
-    # LOAD INTO MSP ####
-    
-    # if(is.null(msp[[curMSp()]])) {
-    #   msp[[curMSp()]] <- list(pca = pca)
-    # }else{
-    #   msp[[curMSp()]]$pca <- pca
-    # }
+    # LOAD INTO SPP ####
+    # this name concatenates the species names when there are two,
+    # and returns the same name when there is only one species name
+    mspName <- paste(curSp(), collapse = "|")
+    if(is.null(spp[[mspName]])) {
+      spp[[mspName]] <- list(pca = pca)
+    }else{
+      spp[[mspName]]$pca <- pca
+    }
     
     # RMD VALUES ####
     # add to vector of IDs removed
@@ -94,8 +96,6 @@ pca_MOD <- function(input, output, session) {
           x <- pca$scores[pca$scores$sp == 'bg', ]
           x.f <- factor(x$bg)
         }
-        print(str(x))
-        print(str(x.f))
         ade4::s.class(x, x.f, xax = input$pc1, yax = input$pc2, 
                       col = c("red", "blue"), cstar = 0, cpoint = 0.1)
       })

@@ -751,7 +751,6 @@ shinyServer(function(input, output, session) {
   pca <- callModule(pca_MOD, 'cEspace_PCA_uiID')
   
   observeEvent(input$goPCA, {
-    print(curSp())
     # stop if no environmental variables
     # if(length(curSp()) != 2) {
     #   shinyLogs %>% writeLog(type = 'error', "Please select two species.")
@@ -768,8 +767,6 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # # # # # # 
   occDens <- callModule(occDens_MOD, 'cEspace_occDens_uiID')
   observeEvent(input$goOccDens, {
-    # stop if no environmental variables
-    req(msp[[curMSp()]]$pca)
     # initialize module
     occDens()
     # UI CONTROLS 
@@ -780,10 +777,7 @@ shinyServer(function(input, output, session) {
   # module Niche Overlap ####
   # # # # # # # # # # # # # # # 
   nicheOv <- callModule(nicheOv_MOD, 'cEspace_nicheOv_uiID')
-  
   observeEvent(input$goNicheOv, {
-    # stop if no environmental variables
-    req(msp[[curMSp()]]$occDens)
     # initialize module
     nicheOv()
     # UI CONTROLS 
