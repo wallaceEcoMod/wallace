@@ -31,20 +31,35 @@ envSimilarity_MOD <- function(input, output, session) {
 }
 
 envSimilarity_MAP <- function(map, session) {
-  req(spp[[curSp()]]$project$mess)
+  req(spp[[curSp()]]$project$mess, spp[[curSp()]]$polyPjXY)
+  polyPjXY <- spp[[curSp()]]$polyPjXY
   mess <- spp[[curSp()]]$project$mess
-  mapProjVals <- spp[[curSp()]]$project$messVals
-  rasCols <- RColorBrewer::brewer.pal(n=11, name='Reds')
-  legendPal <- colorNumeric(rev(rasCols), mapProjVals, na.color='transparent')
-  rasPal <- colorNumeric(rasCols, mapProjVals, na.color='transparent')
+  rasVals <- spp[[curSp()]]$project$messVals
+  # define colorRamp for mess
+  if (max(rasVals) > 0 & min(rasVals) < 0) {
+    rc1 <- colorRampPalette(colors = rev(RColorBrewer::brewer.pal(n = 3, name = 'Reds')),
+                            space = "Lab")(abs(min(rasVals)))
+    rc2 <- colorRampPalette(colors = RColorBrewer::brewer.pal(n = 3, name = 'Blues'), 
+                            space = "Lab")(max(rasVals))
+    rasCols <- c(rc1, rc2)
+  } else if (max(rasVals) < 0 & min(rasVals) < 0) {
+    rasCols <- colorRampPalette(colors = rev(RColorBrewer::brewer.pal(n = 3, name = 'Reds')), 
+                                space = "Lab")(abs(min(rasVals)))
+  } else if (max(rasVals) > 0 & min(rasVals) > 0) {
+    rasCols <- colorRampPalette(colors = RColorBrewer::brewer.pal(n = 3, name = 'Blues'),
+                                space = "Lab")(max(rasVals))
+  }
+  legendPal <- colorNumeric(rev(rasCols), rasVals, na.color='transparent')
+  rasPal <- colorNumeric(rasCols, rasVals, na.color='transparent')
   map %>% removeControl("proj") %>%
     addLegend("bottomright", pal = legendPal, title = "MESS Values",
-              values = mapProjVals, layerId = 'proj', labFormat = reverseLabels(2, reverse_order=TRUE))
+              values = rasVals, layerId = 'proj', 
+              labFormat = reverseLabels(2, reverse_order=TRUE))
   # map model prediction raster and projection polygon
   sharedExt <- rbind(polyPjXY, occs()[c("longitude", "latitude")])
   map %>% clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
     map_occs(occs(), customZoom = sharedExt) %>%
-    addRasterImage(mess, colors = rasPal, opacity = 0.7,
+    addRasterImage(mess, colors = rasPal, opacity = 0.9,
                    layerId = 'projRas', group = 'proj', method = "ngb") %>%
     addPolygons(lng = polyPjXY[,1], lat = polyPjXY[,2], layerId = "projExt", 
                 fill = FALSE, weight = 4, color = "red", group = 'proj') %>%

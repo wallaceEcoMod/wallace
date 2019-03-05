@@ -76,7 +76,7 @@ projectTime_MOD <- function(input, output, session) {
       shinyLogs %>% writeLog(type = 'error', 'Select projection extent first.')
       return()
     }
-    envsRes <- raster::res(spp[[curSp()]]$envs)[1]
+    envsRes <- raster::res(envs())[1]
     if(envsRes < 0.01) {
       shinyLogs %>% writeLog(type = 'error', 'Project to New Time currently only available with resolutions >30 arc seconds.')
       return()
