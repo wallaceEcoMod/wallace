@@ -46,8 +46,8 @@ envSimilarity_MAP <- function(map, session) {
     map_occs(occs(), customZoom = sharedExt) %>%
     addRasterImage(mess, colors = rasPal, opacity = 0.7,
                    layerId = 'projRas', group = 'proj', method = "ngb") %>%
-    addPolygons(lng=polyPjXY[,1], lat=polyPjXY[,2], layerId="projExt", fill = FALSE,
-                weight=4, color="blue", group='proj') %>%
+    addPolygons(lng = polyPjXY[,1], lat = polyPjXY[,2], layerId = "projExt", 
+                fill = FALSE, weight = 4, color = "red", group = 'proj') %>%
     # add background polygon
     mapBgPolys(bgShpXY())
 }

@@ -1120,7 +1120,7 @@ shinyServer(function(input, output, session) {
                              fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
             addRasterImage(mapPred(), colors = rasPal, opacity = 0.7,
                            group = 'vis', layerId = 'mapPred', method = "ngb") %>%
-            addPolygons(data = bgExt(), fill = FALSE, weight = 4, color="red", 
+            addPolygons(data = bgExt(), fill = FALSE, weight = 4, color = "blue", 
                         group='proj')
           mapview::mapshot(m, file = file)
         } else if (input$predFileType == 'raster') {
@@ -1267,7 +1267,7 @@ shinyServer(function(input, output, session) {
                            group = 'vis', layerId = 'mapProj', method = "ngb") %>%
             addPolygons(lng = spp[[curSp()]]$polyPjXY[, 1], 
                         lat = spp[[curSp()]]$polyPjXY[, 2], fill = FALSE, 
-                        weight = 4, color = "blue", 
+                        weight = 4, color = "red", 
                         group = 'proj')
           mapview::mapshot(m, file = file)
         } else if (input$projFileType == 'raster') {
