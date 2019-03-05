@@ -19,7 +19,7 @@ wcBioclims_UI <- function(id) {
   )
 }
 
-wcBioclims_MOD <- function(input, output, session, spIn) {
+wcBioclims_MOD <- function(input, output, session) {
   reactive({
     # ERRORS ####
     if (is.null(occs())) {
@@ -29,8 +29,10 @@ wcBioclims_MOD <- function(input, output, session, spIn) {
     }
     
     # FUNCTION CALL ####
-    envs <- c3_worldclim(input$bcRes, input$bcSel, mapCntr(), shinyLogs)
-    req(envs)
+    wcbc <- c3_worldclim(input$bcRes, input$bcSel, mapCntr(), shinyLogs)
+    req(wcbc)
+    
+    envs.global[["wcbc"]] <- wcbc
     
     # loop over all species if batch is on
     if(input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
@@ -38,8 +40,9 @@ wcBioclims_MOD <- function(input, output, session, spIn) {
     # PROCESSING ####
     for(sp in spLoop) {
       # get environmental variable values per occurrence record
-      withProgress(message = paste0("Extracting environmental values for occurrences of ", sp, "..."), {
-        occsEnvsVals <- as.data.frame(raster::extract(envs, spp[[sp]]$occs[c('longitude', 'latitude')]))
+      withProgress(message = paste0("Extracting environmental values for occurrences of ", spName(sp), "..."), {
+        occs.xy <- spp[[sp]]$occs[c('longitude', 'latitude')]
+        occsEnvsVals <- as.data.frame(raster::extract(wcbc, occs.xy))
       })
       # remove occurrence records with NA environmental values
       spp[[sp]]$occs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, shinyLogs)
@@ -47,15 +50,16 @@ wcBioclims_MOD <- function(input, output, session, spIn) {
       occsEnvsVals <- na.omit(occsEnvsVals)
       
       # LOAD INTO SPP ####
-      spp[[sp]]$envs <- envs
+      # add reference to WorldClim bioclim data
+      spp[[sp]]$envs <- "wcbc"
       # add columns for env variable values for each occurrence record
       spp[[sp]]$occs <- cbind(spp[[sp]]$occs, occsEnvsVals)
       
       # METADATA ####
-      spp[[sp]]$rmm$data$environment$variableNames <- names(envs)
+      spp[[sp]]$rmm$data$environment$variableNames <- names(wcbc)
       spp[[sp]]$rmm$data$environment$yearMin <- 1960
       spp[[sp]]$rmm$data$environment$yearMax <- 1990
-      spp[[sp]]$rmm$data$environment$resolution <- paste(round(raster::res(envs)[1] * 60, digits = 2), "degrees")
+      spp[[sp]]$rmm$data$environment$resolution <- paste(round(raster::res(wcbc)[1] * 60, digits = 2), "degrees")
       spp[[sp]]$rmm$data$environment$extent <- 'global'
       spp[[sp]]$rmm$data$environment$sources <- 'WorldClim 1.4'
     }

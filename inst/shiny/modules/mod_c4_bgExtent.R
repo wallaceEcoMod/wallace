@@ -15,12 +15,13 @@ bgExtent_UI <- function(id) {
 bgExtent_MOD <- function(input, output, session) {
   reactive({
     # ERRORS ####
-    if (is.null(envs())) {
+    if(is.null(envs())) {
       shinyLogs %>% writeLog(type = 'error',
-                             'Environmental variables missing. Obtain them in component 3.')
+                             paste0('Environmental variables missing for ', 
+                                    curSp(), '. Obtain them in component 3.'))
       return()
     }
-    req(curSp(), occs(), envs())
+    req(curSp(), occs())
     
     # loop over all species if batch is on
     if(input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
@@ -28,7 +29,6 @@ bgExtent_MOD <- function(input, output, session) {
     for(sp in spLoop) {
       # FUNCTION CALL ####
       bgExt <- c4_bgExtent(spp[[sp]]$occs, 
-                           spp[[sp]]$envs, 
                            input$bgSel, 
                            input$bgBuf, 
                            shinyLogs)  

@@ -26,12 +26,12 @@ queryDb_UI <- function(id) {
                                                             value=NULL)))),
     tags$div(title = 'Examples: Felis catus, Canis lupus, Nyctereutes procyonoides',
              textInput(ns("spNames"), label = "Enter species scientific name", 
-                       placeholder = 'format: Genus species')),
+                       placeholder = 'format: Genus species', value="meles meles, martes martes")),
     tags$div(title = 'Maximum number of occurrences recovered from databases. 
              Downloaded records are not sorted randomly: 
              rows are always consistent between downloads.',
              numericInput(ns("occsNum"), "Set maximum number of occurrences", 
-                          value = 0, min = 0))
+                          value = 100, min = 0))
   )
 }
 
