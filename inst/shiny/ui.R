@@ -82,8 +82,14 @@ shinyUI(tagList(
                                                                  thinOccs_UI('c2_thinOccs_uiID'),
                                                                  actionButton("goThinOccs", "Thin Occurrences")
                                                 ), br(),
-                                                strong("Reset to original occurrences"), br(), br(),
-                                                actionButton("goResetOccs", "Reset"),
+                                                strong("Reset to original occurrences"), br(),
+                                                actionButton("goResetOccs", "Reset", class = 'butResOccs'),
+                                                tags$head(tags$style(".butResOccs {background-color: #C51E10;
+                                                                     color: white;
+                                                                     padding: 1px 1px;
+                                                                     border: none;} 
+                                                                     .butResOccs:hover {background-color: #830D03; 
+                                                                     color: white;}")),
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.procOccsSel == 'selOccs'", uiBottom(selectOccs_INFO)),
                                                 conditionalPanel("input.procOccsSel == 'remID'", uiBottom(removeByID_INFO)),
@@ -329,8 +335,13 @@ shinyUI(tagList(
                                                                  actionButton('goEnvSimilarity', "Calculate MESS")),
                                                 br(),
                                                 strong("Reset projection extent"), br(),
-                                                actionButton("goResetProj", "Reset", class = 'buttonReset'),
-                                                tags$head(tags$style(".buttonReset{background-color:#add8e6;} .buttonReset{color: white;}")),
+                                                actionButton("goResetProj", "Reset", class = 'butResPj'),
+                                                tags$head(tags$style(".butResPj {background-color: #C51E10;
+                                                                                    color: white;
+                                                                                    padding: 1px 1px;
+                                                                                    border: none;} 
+                                                                      .butResPj:hover {background-color: #830D03; 
+                                                                                          color: white;}")),
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.projSel == 'projArea'", uiBottom(projectArea_INFO)),
                                                 conditionalPanel("input.projSel == 'projTime'", uiBottom(projectTime_INFO)),
