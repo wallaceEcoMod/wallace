@@ -506,7 +506,16 @@ shinyUI(tagList(
                                                                                                                            "GRD" = 'raster', 
                                                                                                                            "ASCII" = 'ascii', 
                                                                                                                            "PNG" = 'png'))),
-                                                                                      column(2, downloadButton('dlProj', "Projection file(**)"))))
+                                                                                      column(2, downloadButton('dlProj', "Projection file(**)"))),
+                                                                                    fluidRow(
+                                                                                      column(3, h5("Download MESS (Select download file type**)")),
+                                                                                      column(2, selectInput('messFileType', 
+                                                                                                            label = NULL,
+                                                                                                            choices = list("GeoTIFF" = 'GTiff',
+                                                                                                                           "GRD" = 'raster', 
+                                                                                                                           "ASCII" = 'ascii', 
+                                                                                                                           "PNG" = 'png'))),
+                                                                                      column(2, downloadButton('dlMess', "MESS file(**)"))))
                                                                    )
                                                           
                                               )

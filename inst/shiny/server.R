@@ -17,6 +17,7 @@ shinyServer(function(input, output, session) {
   shinyjs::disable("dlRespCurves")
   shinyjs::disable("dlPred")
   shinyjs::disable("dlProj")
+  shinyjs::disable("dlMess")
   # shinyjs::disable("dlRMD")
   
   ########################## #
@@ -1195,7 +1196,7 @@ shinyServer(function(input, output, session) {
       leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
                                      rectangleOptions = FALSE, circleOptions = FALSE, 
                                      markerOptions = FALSE, circleMarkerOptions = FALSE) 
-    shinyjs::enable("dlProj")
+    shinyjs::enable("dlMess")
   })
   
   # # # # # # # # # # # # # # # # # #
@@ -1290,6 +1291,67 @@ shinyServer(function(input, output, session) {
     }
   )
   
+  # download for mess (restricted to background extent)
+  output$dlMess <- downloadHandler(
+    filename = function() {
+      ext <- switch(input$messFileType, raster = 'zip', ascii = 'asc', 
+                    GTiff = 'tif', png = 'png')
+      paste0(curSp(), "_mess.", ext)
+    },
+    content = function(file) {
+      if(require(rgdal)) {
+        req(spp[[curSp()]]$project$mess, spp[[curSp()]]$polyPjXY)
+        mess <- spp[[curSp()]]$project$mess
+        if (input$messFileType == 'png') {
+          polyPjXY <- spp[[curSp()]]$polyPjXY
+          rasVals <- spp[[curSp()]]$project$messVals
+          # define colorRamp for mess
+          if (max(rasVals) > 0 & min(rasVals) < 0) {
+            rc1 <- colorRampPalette(colors = rev(RColorBrewer::brewer.pal(n = 3, name = 'Reds')),
+                                    space = "Lab")(abs(min(rasVals)))
+            rc2 <- colorRampPalette(colors = RColorBrewer::brewer.pal(n = 3, name = 'Blues'), 
+                                    space = "Lab")(max(rasVals))
+            rasCols <- c(rc1, rc2)
+          } else if (max(rasVals) < 0 & min(rasVals) < 0) {
+            rasCols <- colorRampPalette(colors = rev(RColorBrewer::brewer.pal(n = 3, name = 'Reds')), 
+                                        space = "Lab")(abs(min(rasVals)))
+          } else if (max(rasVals) > 0 & min(rasVals) > 0) {
+            rasCols <- colorRampPalette(colors = RColorBrewer::brewer.pal(n = 3, name = 'Blues'),
+                                        space = "Lab")(max(rasVals))
+          }
+          legendPal <- colorNumeric(rev(rasCols), rasVals, na.color='transparent')
+          rasPal <- colorNumeric(rasCols, rasVals, na.color='transparent')
+          m <- leaflet() %>%
+            addLegend("bottomright", pal = legendPal, title = "MESS Values", 
+                      labFormat = reverseLabels(2, reverse_order=TRUE),
+                      values = rasVals, layerId = "train") %>% 
+            addProviderTiles(input$bmap) %>%
+            addRasterImage(mess, colors = rasPal, opacity = 0.7,
+                           group = 'vis', layerId = 'mapProj', method = "ngb") %>%
+            addPolygons(lng = spp[[curSp()]]$polyPjXY[, 1], 
+                        lat = spp[[curSp()]]$polyPjXY[, 2], fill = FALSE, 
+                        weight = 4, color = "red", 
+                        group = 'proj')
+          mapview::mapshot(m, file = file)
+        } else if (input$messFileType == 'raster') {
+          fileName <- curSp()
+          tmpdir <- tempdir()
+          raster::writeRaster(mess, file.path(tmpdir, fileName), 
+                              format = input$messFileType, overwrite = TRUE)
+          owd <- setwd(tmpdir)
+          fs <- paste0(fileName, c('.grd', '.gri'))
+          zip::zip(zipfile = file, files = fs)
+          setwd(owd)
+        } else {
+          r <- raster::writeRaster(mess, file, format = input$messFileType, 
+                                   overwrite = TRUE)
+          file.rename(r@file@name, file)
+        }
+      } else {
+        shinyLogs %>% writeLog("Please install the rgdal package before downloading rasters.")
+      }
+    }
+  )
   ########################################### #
   ### RMARKDOWN FUNCTIONALITY ####
   ########################################### #
