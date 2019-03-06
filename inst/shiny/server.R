@@ -264,6 +264,8 @@ shinyServer(function(input, output, session) {
     # req(length(reactiveValuesToList(spp)) > 0)
     # get the species names
     n <- names(spp)
+    # remove multispecies names from list
+    n <- n[!grepl("|", n, fixed = TRUE)]
     # if no current species selected, select the first name
     # NOTE: this line is necessary to retain the selection after selecting different tabs
     if(!is.null(curSp())) selected <- curSp() else selected <- n[1]
@@ -373,6 +375,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goRemoveByID, {
     removeByID <- callModule(removeByID_MOD, 'c2_removeByID_uiID')
     removeByID()
+    
   })
   
   # Enable/disable single processed occs
@@ -398,12 +401,10 @@ shinyServer(function(input, output, session) {
   
   # Enable/disable single processed occs
   observeEvent(input$goSelectOccs, {
-    shiny::observe({
       shinyjs::toggleState("dlProcOccs", 
                            !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords) |
                              !is.null(spp[[curSp()]]$procOccs$occsThin) |
                              !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs))
-    })
   })
   
   # # # # # # # # # # # # # #
@@ -417,12 +418,10 @@ shinyServer(function(input, output, session) {
   
   # Enable/disable single processed occs
   observeEvent(input$goThinOccs, {
-    shiny::observe({
       shinyjs::toggleState("dlProcOccs", 
                            !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords) |
                              !is.null(spp[[curSp()]]$procOccs$occsThin) |
                              !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs))
-    })
   })
   
   # # # # # # # # # # # # # # # # # #
