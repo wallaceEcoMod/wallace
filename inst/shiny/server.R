@@ -1,25 +1,6 @@
 options(shiny.maxRequestSize=5000*1024^2)
 
 shinyServer(function(input, output, session) {
-  # disable download buttons
-  shinyjs::disable("dlDbOccs")
-  shinyjs::disable("dlOccs")
-  shinyjs::disable("dlAllOccs")
-  shinyjs::disable("dlProcOccs")
-  # shinyjs::disable("dlEnvs")
-  shinyjs::disable("dlBgShp")
-  shinyjs::disable("dlMskEnvs")
-  shinyjs::disable("dlBgPts")
-  shinyjs::disable("dlPart")
-  shinyjs::disable("dlEvalTbl")
-  shinyjs::disable("dlVisBioclim")
-  shinyjs::disable("dlMaxentPlots")
-  shinyjs::disable("dlRespCurves")
-  shinyjs::disable("dlPred")
-  shinyjs::disable("dlProj")
-  shinyjs::disable("dlMess")
-  # shinyjs::disable("dlRMD")
-  
   ########################## #
   # REACTIVE VALUES LISTS ####
   ########################## #
@@ -179,6 +160,55 @@ shinyServer(function(input, output, session) {
     map %>% f(session)
   })
   
+  ######################## #
+  ### BUTTOMS LOGIC ####
+  ######################## #
+  
+  # Disable download buttons
+  shinyjs::disable("dlDbOccs")
+  shinyjs::disable("dlOccs")
+  shinyjs::disable("dlAllOccs")
+  shinyjs::disable("dlProcOccs")
+  shinyjs::disable("dlBgShp")
+  shinyjs::disable("dlMskEnvs")
+  shinyjs::disable("dlBgPts")
+  shinyjs::disable("dlPart")
+  shinyjs::disable("dlEvalTbl")
+  shinyjs::disable("dlVisBioclim")
+  shinyjs::disable("dlMaxentPlots")
+  shinyjs::disable("dlRespCurves")
+  shinyjs::disable("dlPred")
+  shinyjs::disable("dlProj")
+  shinyjs::disable("dlMess")
+  # shinyjs::disable("dlRMD")
+  
+  # Enable/disable buttons
+  observe({
+    req(length(curSp()) == 1)
+    shinyjs::toggleState("dlDbOccs", !is.null(occs()))
+    shinyjs::toggleState("dlOccs", !is.null(occs()))
+    shinyjs::toggleState("dlAllOccs", length(allSp()) > 1)
+    shinyjs::toggleState("dlRMD", !is.null(occs()))
+    shinyjs::toggleState("dlProcOccs",
+                         !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords) |
+                           !is.null(spp[[curSp()]]$procOccs$occsThin) |
+                           !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs))
+    shinyjs::toggleState("dlMskEnvs", !is.null(spp[[curSp()]]$procEnvs$bgMask))
+    shinyjs::toggleState("dlBgPts", !is.null(spp[[curSp()]]$bgPts))
+    shinyjs::toggleState("dlBgShp", !is.null(spp[[curSp()]]$procEnvs$bgExt))
+    shinyjs::toggleState("dlPart", !is.null(spp[[curSp()]]$occs$partition))
+    shinyjs::toggleState("dlEvalTbl", !is.null(spp[[curSp()]]$results))
+    shinyjs::toggleState("dlVisBioclim", spp[[curSp()]]$rmm$model$algorithm == "BIOCLIM")
+    shinyjs::toggleState("dlMaxentPlots", (spp[[curSp()]]$rmm$model$algorithm == "maxnet" |
+                                             spp[[curSp()]]$rmm$model$algorithm == "maxent.jar"))
+    shinyjs::toggleState("dlRespCurves", (spp[[curSp()]]$rmm$model$algorithm == "maxnet" |
+                                            spp[[curSp()]]$rmm$model$algorithm == "maxent.jar"))
+    shinyjs::toggleState("dlPred", !is.null(spp[[curSp()]]$visualization$occPredVals))
+    shinyjs::toggleState("dlProj", !is.null(spp[[curSp()]]$project$pjEnvs))
+    shinyjs::toggleState("dlMess", !is.null(spp[[curSp()]]$project$messVals))
+    # shinyjs::toggleState("dlWhatever", !is.null(spp[[curSp()]]$whatever))
+  })
+  
   ########################################## #
   # COMPONENT: OBTAIN OCCURRENCE DATA ####
   ########################################## #
@@ -191,13 +221,6 @@ shinyServer(function(input, output, session) {
     # return the occs table
     occsList <- queryDb()
     n <- formatSpName(occsList[[1]]$scientific_name)
-    # UI CONTROLS
-    # assign the selected species to the present occ table's scientific name
-    updateSelectInput(session, "curSp", selected = n)
-    shinyjs::enable("dlDbOccs")
-    shinyjs::enable("dlOccs")
-    if (length(allSp()) > 1) shinyjs::enable("dlAllOccs")
-    shinyjs::enable("dlRMD")
   })
   
   # # # # # # # # # # # # # # # # # # # 
@@ -208,11 +231,6 @@ shinyServer(function(input, output, session) {
     # return the occs table
     occsList <- paleoDb()
     n <- formatSpName(occsList[[1]]$scientific_name)
-    # UI CONTROLS
-    # assign the selected species to the present occ table's scientific name
-    updateSelectInput(session, "curSp", selected = n)
-    shinyjs::enable("dlOccs")
-    shinyjs::enable("dlRMD")
   })
   
   # # # # # # # # # # # # # # # # # #
@@ -221,9 +239,6 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goUserOccs, {
     userOccs <- callModule(userOccs_MOD, 'c1_userOccs_uiID')
     userOccs()
-    shinyjs::enable("dlOccs")
-    if (length(allSp()) > 1) shinyjs::enable("dlAllOccs")
-    shinyjs::enable("dlRMD")
   })
   
   # # # # # # # # # # # # # # # # # #
@@ -378,16 +393,6 @@ shinyServer(function(input, output, session) {
     
   })
   
-  # Enable/disable single processed occs
-  observeEvent(input$goRemoveByID, {
-    shiny::observe({
-      shinyjs::toggleState("dlProcOccs", 
-                           !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords) |
-                             !is.null(spp[[curSp()]]$procOccs$occsThin) |
-                             !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs))
-    })
-  })
-  
   # # # # # # # # # # # # # # # # # # # # #
   # module Select Occurrences on Map ####
   # # # # # # # # # # # # # # # # # # # # #
@@ -399,14 +404,6 @@ shinyServer(function(input, output, session) {
     #updateSelectInput(session, "curSp", selected = curSp())
   })
   
-  # Enable/disable single processed occs
-  observeEvent(input$goSelectOccs, {
-      shinyjs::toggleState("dlProcOccs", 
-                           !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords) |
-                             !is.null(spp[[curSp()]]$procOccs$occsThin) |
-                             !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs))
-  })
-  
   # # # # # # # # # # # # # #
   # module Spatial Thin ####
   # # # # # # # # # # # # # # 
@@ -414,14 +411,6 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goThinOccs, {
     thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs_uiID')
     thinOccs()
-  })
-  
-  # Enable/disable single processed occs
-  observeEvent(input$goThinOccs, {
-      shinyjs::toggleState("dlProcOccs", 
-                           !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords) |
-                             !is.null(spp[[curSp()]]$procOccs$occsThin) |
-                             !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs))
   })
   
   # # # # # # # # # # # # # # # # # #
@@ -441,9 +430,6 @@ shinyServer(function(input, output, session) {
     map %>%
       map_occs(occs()) %>%
       zoom2Occs(occs())
-    # UI CONTROLS 
-    # updateSelectInput(session, "curSp", selected = curSp())
-    shinyjs::disable("dlProcOccs")
   })
   
   # DOWNLOAD: current processed occurrence data table
@@ -472,8 +458,6 @@ shinyServer(function(input, output, session) {
     updateTabsetPanel(session, 'main', selected = 'Results')
     # UI CONTROLS 
     updateSelectInput(session, "curSp", selected = curSp())
-    # enable download button
-    # shinyjs::enable("dlEnvs")
   })
   
   # # # # # # # # # # # # # # # # #
@@ -492,8 +476,6 @@ shinyServer(function(input, output, session) {
   #   vals$occs <- remEnvsValsNA(vals)
   #   # switch to Results tab
   #   updateTabsetPanel(session, 'main', selected = 'Results')
-  #   # enable download button
-  #   # shinyjs::enable("dlEnvs")
   # })
   
   # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -573,14 +555,6 @@ shinyServer(function(input, output, session) {
     # initialize module
     bgExt <- callModule(bgExtent_MOD, 'c4_bgExtent_uiID')
     bgExt()
-    # UI CONTROLS
-    # updateSelectInput(session, "curSp", selected = curSp())
-    
-  })
-  
-  # Enable/disable download shapefile button
-  observeEvent(input$goBgExt, {
-      shinyjs::toggleState("dlBgShp", !is.null(spp[[curSp()]]$procEnvs$bgExt))
   })
   
   # # # # # # # # # # # # # # # # # # # # # # # 
@@ -597,9 +571,6 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goDrawBg, {
     drawBg <- callModule(drawBgExtent_MOD, 'c4_drawBgExtent')
     drawBg()
-    shiny::observe({
-      shinyjs::toggleState("dlBgShp", !is.null(spp[[curSp()]]$procEnvs$bgExt))
-    })
   })
   
   # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -611,14 +582,6 @@ shinyServer(function(input, output, session) {
     req(bgExt())
     bgMskPts <- callModule(bgMskAndSamplePts_MOD, 'c4_bgMskAndSamplePts')
     bgMskPts()
-    # UI CONTROLS 
-    # updateSelectInput(session, "curSp", selected = curSp())
-  })
-  
-  # Enable/disable download background mask and points buttons
-  observeEvent(input$goBgMask, {
-      shinyjs::toggleState("dlMskEnvs", !is.null(spp[[curSp()]]$procEnvs$bgMask))
-      shinyjs::toggleState("dlBgPts", !is.null(spp[[curSp()]]$bgPts))
   })
   
   # # # # # # # # # # # # # # # # # #
@@ -712,13 +675,9 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goUserBGUpload, {
     userBGUpload <- callModule(userBG_MOD, 'samp_userBiasBg_uiID')
     userBGUpload()
-    #shinyjs::enable("dlOccs")
-    #if (length(allSp()) > 1) shinyjs::enable("dlAllOccs")
-    #shinyjs::enable("dlRMD")
   })
   
   # # # # # # # # # # # # # # # # # #
-  
   # module User Bias File        ####
   # # # # # # # # # # # # # # # # # #
   observeEvent(input$goBiasFileUpload, {
@@ -726,15 +685,13 @@ shinyServer(function(input, output, session) {
     userBiasFileUpload()
   })
   
+  # # # # # # # # # # # # # # # # # #
   # module Make Target Group ####
   # # # # # # # # # # # # # # # # # #
   observeEvent(input$goTargetDbOccs, {
     targetQueryDB <- callModule(queryDb_MOD, 'samp_queryDb_uiID', targetGroup = TRUE)
     occsList <- targetQueryDB()
     targetGroupBG <- callModule(targetGroupBG_MOD, 'samp_targetGroupBg_uiID', occsList)
-    #shinyjs::enable("dlOccs")
-    #if (length(allSp()) > 1) shinyjs::enable("dlAllOccs")
-    #shinyjs::enable("dlRMD")
   })
   
   ############################################## #
@@ -794,9 +751,6 @@ shinyServer(function(input, output, session) {
   partitionNonSpat <- callModule(partitionNonSpat_MOD, 'cParts_partitionNonSpat_uiID')
   observeEvent(input$goPartitionNonSpat, {
     partitionNonSpat()
-    # UI CONTROLS 
-    # updateSelectInput(session, "curSp", selected = curSp())
-    shinyjs::enable("dlPart")
   })
   
   # # # # # # # # # # # # # # # # # # # # # # #
@@ -805,9 +759,6 @@ shinyServer(function(input, output, session) {
   partitionSpat <- callModule(partitionSpat_MOD, 'cParts_partitionSpat_uiID')
   observeEvent(input$goPartitionSpat, {
     partitionSpat()
-    # UI CONTROLS 
-    # updateSelectInput(session, "curSp", selected = curSp())
-    shinyjs::enable("dlPart")
   })
   
   # download for partitioned occurrence records csv
@@ -845,9 +796,6 @@ shinyServer(function(input, output, session) {
                        choices = list("Maxent Evaluation Plots" = 'maxentEval',
                                       "Plot Response Curves" = 'response',
                                       "Map Prediction" = 'mapPreds'))
-    shinyjs::enable("dlEvalTbl")
-    shinyjs::enable("dlMaxentPlots")
-    shinyjs::enable("dlRespCurves")
   })
   
   # # # # # # # # # # # # 
@@ -864,8 +812,6 @@ shinyServer(function(input, output, session) {
     # update radio buttons for Visualization component
     updateRadioButtons(session, "visSel", choices = list("BIOCLIM Envelope Plots" = 'bioclimPlot',
                                                          "Map Prediction" = 'mapPreds'))
-    shinyjs::enable("dlEvalTbl")
-    shinyjs::enable("dlVisBioclim")
   })
   
   # # # # # # # # # # # # 
@@ -1006,7 +952,6 @@ shinyServer(function(input, output, session) {
     mapPreds <- callModule(mapPreds_MOD, 'c7_mapPreds')
     mapPreds()
     updateTabsetPanel(session, 'main', selected = 'Map')
-    shinyjs::enable("dlPred")
   })
   
   # # # # # # # # # # # # # # # # # #
@@ -1161,7 +1106,6 @@ shinyServer(function(input, output, session) {
       leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
                                      rectangleOptions = FALSE, circleOptions = FALSE, 
                                      markerOptions = FALSE, circleMarkerOptions = FALSE) 
-    shinyjs::enable("dlProj")
   })
   
   # # # # # # # # # # # # # # # # #
@@ -1178,7 +1122,6 @@ shinyServer(function(input, output, session) {
       leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
                                      rectangleOptions = FALSE, circleOptions = FALSE, 
                                      markerOptions = FALSE, circleMarkerOptions = FALSE) 
-    shinyjs::enable("dlProj")
   })
   
   # # # # # # # # # # # # # # # # # # # #
@@ -1195,7 +1138,6 @@ shinyServer(function(input, output, session) {
       leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
                                      rectangleOptions = FALSE, circleOptions = FALSE, 
                                      markerOptions = FALSE, circleMarkerOptions = FALSE) 
-    shinyjs::enable("dlMess")
   })
   
   # # # # # # # # # # # # # # # # # #
