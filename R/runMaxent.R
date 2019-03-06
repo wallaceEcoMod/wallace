@@ -31,7 +31,7 @@
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 
-runMaxent  <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, clampSel, algMaxent,
+runMaxent <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, clampSel, algMaxent,
                         shinyLogs = NULL) {
   if (is.null(occsGrp)) {
     shinyLogs %>% writeLog(type = 'error', "Before building a model, please partition 
@@ -44,8 +44,8 @@ runMaxent  <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, clamp
     # error for no maxent.jar in dismo directory
     jar <- paste(system.file(package="dismo"), "/java/maxent.jar", sep='')
     if(!file.exists(jar)) {
-      shinyLogs %>% writeLog(type = 'error', "To use Maxent, make sure you 
-                           download, ", strong("maxent.jar"), " from the ",
+      shinyLogs %>% writeLog(type = 'error', "To use Maxent, make sure you download, ", 
+                             strong("maxent.jar"), " from the ",
                              a("AMNH Maxent webpage", 
                                href="http://biodiversityinformatics.amnh.org/open_source/maxent/", 
                                target="_blank"), " and place it in this directory:", br(), em(jar))
@@ -53,8 +53,8 @@ runMaxent  <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, clamp
     }
     
     if(!require('rJava')) {
-      shinyLogs %>% writeLog(type = "error", 'Package rJava cannot load. 
-               Please download the latest version of Java, and make sure it is the 
+      shinyLogs %>% writeLog(type = "error", 'Package rJava cannot load.', 
+                             'Please download the latest version of Java, and make sure it is the 
                correct version (e.g. 64-bit for a 64-bit system). After installing, 
                try "library(rJava)". If it loads properly, restart Wallace and try again.
                If it does not, please consult www.github.com/wallaceecomod/wallace for
