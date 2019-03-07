@@ -221,7 +221,11 @@ projectTime_MAP <- function(map, session) {
   # create new spatial polygon from coordinates
   newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(polyPjXY)), 
                                                    ID = spp[[curSp()]]$polyPjID)))
-  if (rgeos::gIntersects(newPoly, bgExt())) {map %>% removeImage('mapPred')}
+  if (rgeos::gIntersects(newPoly, bgExt())) {
+    map %>% 
+      removeImage('mapPred') %>% 
+      removeControl('train')
+    }
 }
 
 projectTime_INFO <- infoGenerator(modName = "Project to New Time", 
