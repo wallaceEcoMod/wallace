@@ -141,6 +141,7 @@ shinyServer(function(input, output, session) {
                 "dbOccs" = queryDb_MAP, 
                 "userOccs" = userOccs_MAP,
                 "selOccs" = selectOccs_MAP, 
+                "profOccs" = occProfile_MAP,
                 "remID" = removeByID_MAP, 
                 "spthin" = thinOccs_MAP, 
                 "wcbc" = wcBioclims_MAP,
@@ -380,70 +381,6 @@ shinyServer(function(input, output, session) {
     }
   )
   
-  ########################################### #
-  ### COMPONENT: PROCESS OCCURRENCE DATA ####
-  ########################################### #
-  
-  # # # # # # # # # # # # # # # # # # # #
-  # module Remove Occurrences By ID ####
-  # # # # # # # # # # # # # # # # # # # #
-  observeEvent(input$goRemoveByID, {
-    removeByID <- callModule(removeByID_MOD, 'c2_removeByID_uiID')
-    removeByID()
-    
-  })
-  
-  # # # # # # # # # # # # # # # # # # # # #
-  # module Select Occurrences on Map ####
-  # # # # # # # # # # # # # # # # # # # # #
-  observeEvent(input$goSelectOccs, {
-    req(input$map_draw_new_feature)
-    selOccs <- callModule(selectOccs_MOD, 'c2_selOccs_uiID')
-    selOccs()
-    # UI CONTROLS 
-    #updateSelectInput(session, "curSp", selected = curSp())
-  })
-  
-  # # # # # # # # # # # # # #
-  # module Spatial Thin ####
-  # # # # # # # # # # # # # # 
-  
-  observeEvent(input$goThinOccs, {
-    thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs_uiID')
-    thinOccs()
-  })
-  
-  # # # # # # # # # # # # # # # # # #
-  # PROCESS OCCS: other controls ####
-  # # # # # # # # # # # # # # # # # #
-  
-  # reset occurrences button functionality
-  observeEvent(input$goResetOccs, {
-    req(curSp())
-    spp[[curSp()]]$occs <- spp[[curSp()]]$occData$occsCleaned
-    spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords <- NULL
-    spp[[curSp()]]$procOccs$occsThin <- NULL
-    spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs <- NULL
-    shinyLogs %>% writeLog("Reset occurrences for ", 
-                           em(spp[[curSp()]]$occs[1, "scientific_name"]), ".")
-    # MAPPING
-    map %>%
-      map_occs(occs()) %>%
-      zoom2Occs(occs())
-  })
-  
-  # DOWNLOAD: current processed occurrence data table
-  output$dlProcOccs <- downloadHandler(
-    filename = function() {
-      n <- formatSpName(spName(spp[[curSp()]]))
-      paste0(n, "_processed_occs.csv")
-    },
-    content = function(file) {
-      tbl <- occs() %>% dplyr::select(-pop)
-      write_csv_robust(tbl, file, row.names = FALSE)
-    }
-  )
-  
   ############################################# #
   ### COMPONENT: OBTAIN ENVIRONMENTAL DATA ####
   ############################################# #
@@ -542,6 +479,81 @@ shinyServer(function(input, output, session) {
     # DT::datatable(data.frame(name=names, min=mins, max=maxs), 
     #               rownames = FALSE, options = list(pageLength = raster::nlayers(envs())))
   })
+  
+  ########################################### #
+  ### COMPONENT: PROCESS OCCURRENCE DATA ####
+  ########################################### #
+  
+  # # # # # # # # # # # # # # # # # # # #
+  # module Profile Occurrences ####
+  # # # # # # # # # # # # # # # # # # # #
+  observeEvent(input$goProfileOccs, {
+    profileOccs <- callModule(profileOccs_MOD, 'c2_profileOccs_uiID')
+    profileOccs()
+  })
+  
+  # observeEvent(input$goProfileOccsClean, {
+  #   
+  # })
+  
+  # # # # # # # # # # # # # # # # # # # #
+  # module Remove Occurrences By ID ####
+  # # # # # # # # # # # # # # # # # # # #
+  observeEvent(input$goRemoveByID, {
+    removeByID <- callModule(removeByID_MOD, 'c2_removeByID_uiID')
+    removeByID()
+  })
+  
+  # # # # # # # # # # # # # # # # # # # # #
+  # module Select Occurrences on Map ####
+  # # # # # # # # # # # # # # # # # # # # #
+  observeEvent(input$goSelectOccs, {
+    req(input$map_draw_new_feature)
+    selOccs <- callModule(selectOccs_MOD, 'c2_selOccs_uiID')
+    selOccs()
+    # UI CONTROLS 
+    #updateSelectInput(session, "curSp", selected = curSp())
+  })
+  
+  # # # # # # # # # # # # # #
+  # module Spatial Thin ####
+  # # # # # # # # # # # # # # 
+  
+  observeEvent(input$goThinOccs, {
+    thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs_uiID')
+    thinOccs()
+  })
+  
+  # # # # # # # # # # # # # # # # # #
+  # PROCESS OCCS: other controls ####
+  # # # # # # # # # # # # # # # # # #
+  
+  # reset occurrences button functionality
+  observeEvent(input$goResetOccs, {
+    req(curSp())
+    spp[[curSp()]]$occs <- spp[[curSp()]]$occData$occsCleaned
+    spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords <- NULL
+    spp[[curSp()]]$procOccs$occsThin <- NULL
+    spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs <- NULL
+    shinyLogs %>% writeLog("Reset occurrences for ", 
+                           em(spp[[curSp()]]$occs[1, "scientific_name"]), ".")
+    # MAPPING
+    map %>%
+      map_occs(occs()) %>%
+      zoom2Occs(occs())
+  })
+  
+  # DOWNLOAD: current processed occurrence data table
+  output$dlProcOccs <- downloadHandler(
+    filename = function() {
+      n <- formatSpName(spName(spp[[curSp()]]))
+      paste0(n, "_processed_occs.csv")
+    },
+    content = function(file) {
+      tbl <- occs() %>% dplyr::select(-pop)
+      write_csv_robust(tbl, file, row.names = FALSE)
+    }
+  )
   
   ############################################## #
   ### COMPONENT: PROCESS ENVIRONMENTAL DATA ####

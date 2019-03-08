@@ -4,8 +4,8 @@
 \alias{c8_projectTime}
 \title{c8_projectTim}
 \usage{
-c8_projectTime(results, curModel, envs, outputType, polyPjXY, polyPjID,
-  shinyLogs = NULL)
+c8_projectTime(results, curModel, envs, outputType, alg, clamp, polyPjXY,
+  polyPjID, shinyLogs = NULL)
 }
 \arguments{
 \item{results}{x}

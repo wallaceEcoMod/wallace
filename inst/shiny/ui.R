@@ -54,47 +54,6 @@ shinyUI(tagList(
                                                 conditionalPanel("input.occsSel == 'pdbOccs'", uiBottom(queryPaleoDb_INFO)),
                                                 conditionalPanel("input.occsSel == 'userOccs'", uiBottom(userOccs_INFO))
                                ),
-                               # PROCESS OCCS ####
-                               conditionalPanel("input.tabs == 'poccs'",
-                                                h4("Process Occurrence Data"),
-                                                radioButtons("procOccsSel", "Modules Available:",
-                                                             choices = list("Select Occurrences On Map" = 'selOccs',
-                                                                            "Remove Occurrences By ID" = 'remID',
-                                                                            "Spatial Thin" = 'spthin')),
-                                                HTML('<hr>'),
-                                                conditionalPanel("input.procOccsSel == 'selOccs'",
-                                                                 uiTop(selectOccs_INFO),
-                                                                 selectOccs_UI('c2_selectOccs_uiID'),
-                                                                 strong("Select occurrences intersecting drawn polygon"), br(),
-                                                                 "(", HTML("<font color='blue'><b>NOTE</b></font>"), 
-                                                                 ': to begin drawing, click hexagon icon on map toolbar, 
-                                                                 and when complete, press "Finish" and then the "Select Occurrences" button)', br(), br(),
-                                                                 actionButton("goSelectOccs", "Select Occurrences")
-                                                ),
-                                                conditionalPanel("input.procOccsSel == 'remID'",
-                                                                 uiTop(removeByID_INFO),
-                                                                 removeByID_UI('c2_removeByID_uiID'),
-                                                                 actionButton("goRemoveByID", "Remove Occurrence")
-                                                ),
-                                                # placeholder for select on map
-                                                conditionalPanel("input.procOccsSel == 'spthin'",
-                                                                 uiTop(thinOccs_INFO),
-                                                                 thinOccs_UI('c2_thinOccs_uiID'),
-                                                                 actionButton("goThinOccs", "Thin Occurrences")
-                                                ), br(),
-                                                strong("Reset to original occurrences"), br(),
-                                                actionButton("goResetOccs", "Reset", class = 'butResOccs'),
-                                                tags$head(tags$style(".butResOccs {background-color: #C51E10;
-                                                                     color: white;
-                                                                     padding: 1px 1px;
-                                                                     border: none;} 
-                                                                     .butResOccs:hover {background-color: #830D03; 
-                                                                     color: white;}")),
-                                                HTML('<hr>'),
-                                                conditionalPanel("input.procOccsSel == 'selOccs'", uiBottom(selectOccs_INFO)),
-                                                conditionalPanel("input.procOccsSel == 'remID'", uiBottom(removeByID_INFO)),
-                                                conditionalPanel("input.procOccsSel == 'spthin'", uiBottom(thinOccs_INFO))
-                               ),
                                # OBTAIN ENVS ####
                                conditionalPanel("input.tabs == 'envs'",
                                                 h4("Obtain Environmental Data"),
@@ -126,6 +85,54 @@ shinyUI(tagList(
                                                 conditionalPanel("input.envsSel == 'ecoClimatelayers'", uiBottom(ecoclimate_INFO)),
                                                 conditionalPanel("input.envsSel == 'userEnvs'", uiBottom(userEnvs_INFO))
                                ),
+                               # PROCESS OCCS ####
+                               conditionalPanel("input.tabs == 'poccs'",
+                                                h4("Process Occurrence Data"),
+                                                radioButtons("procOccsSel", "Modules Available:",
+                                                             choices = list("Profile Occurrences" = "profOccs",
+                                                                            "Select Occurrences On Map" = 'selOccs',
+                                                                            "Remove Occurrences By ID" = 'remID',
+                                                                            "Spatial Thin" = 'spthin')),
+                                                HTML('<hr>'),
+                                                conditionalPanel("input.procOccsSel == 'profOccs'",
+                                                                 # uiTop(profileOccs_INFO),
+                                                                 actionButton("goProfileOccs", "Profile Occurrences"), br(), br(),
+                                                                 profileOccs_UI('c2_profileOccs_uiID'), 
+                                                                 actionButton("goProfileOccsClean", "Clean Occurrences")
+                                                ),
+                                                conditionalPanel("input.procOccsSel == 'selOccs'",
+                                                                 uiTop(selectOccs_INFO),
+                                                                 selectOccs_UI('c2_selectOccs_uiID'),
+                                                                 strong("Select occurrences intersecting drawn polygon"), br(),
+                                                                 "(", HTML("<font color='blue'><b>NOTE</b></font>"), 
+                                                                 ': to begin drawing, click hexagon icon on map toolbar, 
+                                                                 and when complete, press "Finish" and then the "Select Occurrences" button)', br(), br(),
+                                                                 actionButton("goSelectOccs", "Select Occurrences")
+                                                ),
+                                                conditionalPanel("input.procOccsSel == 'remID'",
+                                                                 uiTop(removeByID_INFO),
+                                                                 removeByID_UI('c2_removeByID_uiID'),
+                                                                 actionButton("goRemoveByID", "Remove Occurrence")
+                                                ),
+                                                # placeholder for select on map
+                                                conditionalPanel("input.procOccsSel == 'spthin'",
+                                                                 uiTop(thinOccs_INFO),
+                                                                 thinOccs_UI('c2_thinOccs_uiID'),
+                                                                 actionButton("goThinOccs", "Thin Occurrences")
+                                                ), br(),
+                                                strong("Reset to original occurrences"), br(),
+                                                actionButton("goResetOccs", "Reset", class = 'butResOccs'),
+                                                tags$head(tags$style(".butResOccs {background-color: #C51E10;
+                                                    color: white;
+                                                    padding: 5px 5px;
+                                                    border: none;} 
+                                                    .butResOccs:hover {background-color: #830D03; 
+                                                    color: white;}")),
+                                                HTML('<hr>'),
+                                                conditionalPanel("input.procOccsSel == 'selOccs'", uiBottom(selectOccs_INFO)),
+                                                conditionalPanel("input.procOccsSel == 'remID'", uiBottom(removeByID_INFO)),
+                                                conditionalPanel("input.procOccsSel == 'spthin'", uiBottom(thinOccs_INFO))
+                               ),
                                # PROCESS ENVS ####
                                conditionalPanel("input.tabs == 'penvs'",
                                                 h4("Process Environmental Data"),
@@ -133,14 +140,13 @@ shinyUI(tagList(
                                                              choices = list("Select Study Region" = "bgSel",
                                                                             "User-specified" = "bgUser",
                                                                             "Draw polygon(**)" = "bgDraw")),
-                                                
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.procEnvsSel == 'bgSel'",
                                                                  uiTop(bgExtent_INFO),
                                                                  div("Step 1:", id="step"), div("Choose Background Extent", id="stepText"), br(), br(),
                                                                  bgExtent_UI('c4_bgExtent_uiID'),
                                                                  actionButton("goBgExt", "Select"), br(), br()#,
-                                                                 ),
+                                                ),
                                                 conditionalPanel("input.procEnvsSel == 'bgUser'",
                                                                  uiTop(userBgExtent_INFO),
                                                                  div("Step 1:", id="step"), div("Choose Background Extent", id="stepText"), br(), br(),
@@ -157,7 +163,7 @@ shinyUI(tagList(
                                                                  strong('Mask predictor rasters by background extent and sample background points'), br(), br(),
                                                                  bgMskAndSamplePts_UI('c4_bgMskAndSamplePts'),
                                                                  actionButton("goBgMask", "Sample") 
-                                                                 ),
+                                                ),
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.procEnvsSel == 'bgSel'", uiBottom(bgExtent_INFO)),
                                                 conditionalPanel("input.procEnvsSel == 'bgUser'", uiBottom(userBgExtent_INFO)),
@@ -171,7 +177,7 @@ shinyUI(tagList(
                                                                             "Make Target Group" = "biasBgMake",
                                                                             #"Sampling Covariates" = "sampCov",
                                                                             "Bias Surface" = "biasFile")),
-
+                                                
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.samplingBias == 'bgUserTarget'",
                                                                  #uiTop(bgExtent_INFO),
@@ -361,7 +367,7 @@ shinyUI(tagList(
                              conditionalPanel("input.tabs != 'intro' & input.tabs != 'rmd'",
                                               fixedRow(column(4, absolutePanel(uiOutput("curSpUI"), 
                                                                                uiOutput("curModelUI"))),
-                                                                               #uiOutput("curEnvUI"))),
+                                                       #uiOutput("curEnvUI"))),
                                                        column(2, 
                                                               offset = 1,
                                                               align = "left",
@@ -385,9 +391,11 @@ shinyUI(tagList(
                                                                                                          'ESRI Nat Geo'='Esri.NatGeoWorldMap'),
                                                                                              selected = "Esri.WorldTopoMap"))),
                                                           tabPanel('Table', br(), 
-                                                          DT::dataTableOutput('occTbl')),
+                                                                   DT::dataTableOutput('occTbl')),
                                                           tabPanel('Results', 
                                                                    conditionalPanel("input.tabs == 'envs'", verbatimTextOutput('envsPrint')),
+                                                                   conditionalPanel("input.tabs == 'poccs'", 
+                                                                                    profileOccs_resultsUI("c2_profileOccs_uiID")),
                                                                    conditionalPanel("input.tabs == 'model'", uiOutput('evalTbls')),
                                                                    conditionalPanel("input.tabs == 'vis' && input.visSel == 'response'",
                                                                                     imageOutput('responsePlot')),
@@ -443,13 +451,13 @@ shinyUI(tagList(
                                                                                     ),
                                                                                     br(),
                                                                                     fluidRow(
-                                                                                    column(3, h5("Download predictor rasters masked to background extent (Select download file type)")),
-                                                                                    column(2, selectInput('bgMskFileType', 
-                                                                                                          label = NULL,
-                                                                                                          choices = list("GeoTIFF" = 'GTiff', 
-                                                                                                                         "GRD" = 'raster', 
-                                                                                                                         "ASCII" = 'ascii'))),
-                                                                                    column(2, downloadButton('dlMskEnvs', "ZIP file"))
+                                                                                      column(3, h5("Download predictor rasters masked to background extent (Select download file type)")),
+                                                                                      column(2, selectInput('bgMskFileType', 
+                                                                                                            label = NULL,
+                                                                                                            choices = list("GeoTIFF" = 'GTiff', 
+                                                                                                                           "GRD" = 'raster', 
+                                                                                                                           "ASCII" = 'ascii'))),
+                                                                                      column(2, downloadButton('dlMskEnvs', "ZIP file"))
                                                                                     ),
                                                                                     br(),
                                                                                     fluidRow(
@@ -512,7 +520,7 @@ shinyUI(tagList(
                                                                                                                            "ASCII" = 'ascii', 
                                                                                                                            "PNG" = 'png'))),
                                                                                       column(2, downloadButton('dlMess', "MESS file(**)"))))
-                                                                   )
+                                                          )
                                                           
                                               )
                              ),
