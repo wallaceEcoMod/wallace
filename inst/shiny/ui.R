@@ -11,7 +11,7 @@ shinyUI(tagList(
              tabPanel("Env Data", value='envs'),
              tabPanel("Process Occs", value='poccs'),
              tabPanel("Process Envs", value='penvs'),
-             tabPanel("Sampling", value='samp'),
+             # tabPanel("Sampling", value='samp'),
              tabPanel("Env Space", value='espace'),
              tabPanel("Partition Occs", value='part'),
              tabPanel("Model", value='model'),
