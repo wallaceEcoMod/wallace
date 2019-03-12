@@ -108,7 +108,7 @@ projectTime_MOD <- function(input, output, session) {
     
     # FUNCTION CALL ####    
     predType <- rmm()$output$prediction$notes
-    projTime.out <- c8_projectTime(results(), curModel(), projTimeEnvs, predType, 
+    projTime.out <- c8_projectTime(evalOut(), curModel(), projTimeEnvs, predType, 
                                    alg = rmm()$model$algorithm, 
                                    clamp = rmm()$model$maxent$clamping,
                                    spp[[curSp()]]$polyPjXY,
@@ -182,7 +182,7 @@ projectTime_MOD <- function(input, output, session) {
 
 projectTime_MAP <- function(map, session) {
   updateTabsetPanel(session, 'main', selected = 'Map')
-  req(results())
+  req(evalOut())
   map %>% leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
                                          rectangleOptions = FALSE, circleOptions = FALSE,
                                          markerOptions = FALSE, circleMarkerOptions = FALSE,

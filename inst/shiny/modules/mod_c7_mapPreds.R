@@ -28,7 +28,7 @@ mapPreds_UI <- function(id) {
 mapPreds_MOD <- function(input, output, session) {
   reactive({
     # ERRORS ####
-    if(is.null(results())) {
+    if(is.null(evalOut())) {
       shinyLogs %>% writeLog(type = 'error', "Models must be run before visualizing model predictions.")
       return()
     }
@@ -39,7 +39,7 @@ mapPreds_MOD <- function(input, output, session) {
     }
     
     # pick the prediction that matches the model selected
-    predSel <- results()$predictions[[curModel()]]
+    predSel <- evalOut()@predictions[[curModel()]]
     raster::crs(predSel) <- raster::crs(bgMask())
     if(is.na(raster::crs(predSel))) {
       shinyLogs %>% writeLog(type = "error", "Model prediction raster has undefined 
@@ -55,6 +55,12 @@ mapPreds_MOD <- function(input, output, session) {
     # define predType based on model type
     if(rmm()$model$algorithm == "BIOCLIM") {
       predType <- "BIOCLIM"
+      m <- evalOut()@models[[curModel()]]
+      predSel <- dismo::predict(m, bgMask())
+      # define crs 
+      raster::crs(predSel) <- raster::crs(bgMask())
+      # define predSel name
+      names(predSel) <- curModel()
     }
     if(rmm()$model$algorithm %in% c("maxent.jar", "maxnet")) {
       predType <- input$maxentPredType
@@ -63,7 +69,7 @@ mapPreds_MOD <- function(input, output, session) {
         # transform and redefine predSel 
         
         smartProgress(shinyLogs, message = paste0("Generating ", input$maxentPredType, " prediction for model ", curModel(), "..."), {
-          m <- results()$models[[curModel()]]
+          m <- evalOut()@models[[curModel()]]
           clamping <- rmm()$model$maxent$clamping
           if(rmm()$model$algorithm == "maxnet") {
             predSel <- ENMeval::maxnet.predictRaster(m, bgMask(), type = input$maxentPredType, clamp = clamping)
@@ -126,7 +132,6 @@ mapPreds_MOD <- function(input, output, session) {
     }
     
     # LOAD INTO SPP ####
-    spp[[curSp()]]$results[[predType]] <- predSel
     spp[[curSp()]]$visualization$occPredVals <- occPredVals
     if (input$threshold != 'none') spp[[curSp()]]$visualization$thresholds <- thr.sel # were you recording multiple before?
     spp[[curSp()]]$visualization$mapPred <- predSel.thr

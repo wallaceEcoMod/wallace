@@ -107,7 +107,7 @@ df2 <- data.frame("description" = c("occurrence locality coordinates", "environm
                                     "environmental raster(s) masked to background extent", 
                                     "ENMeval results table", "model prediction raster", 
                                     "model projection raster", "metadata"),
-                  "shortcut"=c("occs()","envs()","bg()","bgExt()","bgMask()","results()","mapPred()","mapProj()","rmm()"),
+                  "shortcut"=c("occs()","envs()","bg()","bgExt()","bgMask()","evalOut()","mapPred()","mapProj()","rmm()"),
                   "long_form"=c("spp[[curSp()]]$occs",
                                 "spp[[curSp()]]$envs",
                                 "spp[[curSp()]]$bg",
@@ -251,7 +251,7 @@ observeEvent(input$goGAM, {
   # initialize module
   mod.gam()
   # make sure the results were entered before proceeding
-  req(results())
+  req(evalOut())
   # initialize GAM results table
   runGAM_TBL(input, output, session)
   # switch to Results tab

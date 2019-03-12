@@ -33,8 +33,9 @@ runBIOCLIM <- function(occs, bg, occsGrp, bgGrp, bgMsk, shinyLogs = NULL) {
   occs.xy <- occs %>% dplyr::select(longitude, latitude)
   bg.xy <- bg %>% dplyr::select(longitude, latitude)
   
-  e <- ENMevaluate(occs = occs.xy, envs = bgMsk, bg = bg.xy, mod.name = "bioclim", 
-                   partitions = "user", occ.grp = occsGrp, bg.grp = bgGrp)
+  e <- ENMeval::ENMevaluate(occs = occs.xy, envs = bgMsk, bg = bg.xy, 
+                            mod.name = "bioclim", partitions = "user", 
+                            occ.grp = occsGrp, bg.grp = bgGrp)
   
   shinyLogs %>% writeLog("BIOCLIM ran successfully for ", em(spName(occs)), 
                          " and output evaluation results.")

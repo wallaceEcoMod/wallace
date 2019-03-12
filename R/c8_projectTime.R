@@ -5,7 +5,7 @@
 #' @details
 #' See Examples.
 #'
-#' @param results x
+#' @param evalOut x
 #' @param curModel x
 #' @param envs x
 #' @param outputType x
@@ -28,7 +28,7 @@
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 
-c8_projectTime <- function(results, curModel, envs, outputType, alg, clamp, 
+c8_projectTime <- function(evalOut, curModel, envs, outputType, alg, clamp, 
                            polyPjXY, polyPjID, shinyLogs = NULL) {
   # create new spatial polygon from coordinates
   newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(polyPjXY)), ID = polyPjID)))  
@@ -58,15 +58,15 @@ c8_projectTime <- function(results, curModel, envs, outputType, alg, clamp,
   
   smartProgress(shinyLogs, message = ("Projecting to new time..."), {
     if (alg == 'BIOCLIM') {
-      modProjTime <- dismo::predict(results$models[[curModel]], pjtMsk)
+      modProjTime <- dismo::predict(evalOut@models[[curModel]], pjtMsk)
     } else if (alg == 'maxnet') {
       if (outputType == "raw") {pargs <- "exponential"} else {pargs <- outputType}
-      modProjTime <- ENMeval::maxnet.predictRaster(results$models[[curModel]], 
+      modProjTime <- ENMeval::maxnet.predictRaster(evalOut@models[[curModel]], 
                                                    pjtMsk, type = pargs, 
                                                    clamp = clamp)
     } else if (alg == "maxent.jar") {
       pargs <- paste0("outputformat=", outputType)
-      modProjTime <- dismo::predict(results$models[[curModel]], pjtMsk, 
+      modProjTime <- dismo::predict(evalOut@models[[curModel]], pjtMsk, 
                                     args = pargs)
     }
   })

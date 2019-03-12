@@ -13,7 +13,7 @@ bioclimPlot_MOD <- function(input, output, session) {
   
   reactive({
     # FUNCTION CALL ####
-    makeBioclimPlot(results()$models[[curModel()]],
+    makeBioclimPlot(evalOut()@models[[curModel()]],
                 input$bc1,
                 input$bc2,
                 input$bcProb)

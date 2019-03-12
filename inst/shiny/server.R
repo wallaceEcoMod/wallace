@@ -817,7 +817,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goBIOCLIM, {
     mod.bioclim <- callModule(runBIOCLIM_MOD, 'runBIOCLIM_uiID')
     mod.bioclim()
-    runBIOCLIM_TBL(input, output, session)
+    #runBIOCLIM_TBL(input, output, session)
     # make sure the results were entered before proceeding
     req(evalOut())
     # switch to Results tab
@@ -856,6 +856,9 @@ shinyServer(function(input, output, session) {
     if(tuned.n > 0) {
       res.round <- cbind(res[,seq(1, tuned.n)], round(res[,seq(tuned.n+1, ncol(res))], digits = 3))
       res.grp.round <- cbind(res.grp[,seq(1, tuned.n+1)], round(res.grp[,seq(tuned.n+2, ncol(res.grp))], digits = 3))
+    } else {
+      res.round <- cbind(round(res[, 1:13], digits = 3))
+      res.grp.round <- cbind(fold = res.grp[, 1], round(res.grp[, 2:5], digits = 3))
     }
     # define contents for both evaluation tables
     options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')

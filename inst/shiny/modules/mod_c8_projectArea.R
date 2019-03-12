@@ -34,7 +34,7 @@ projectArea_MOD <- function(input, output, session) {
     
     # FUNCTION CALL ####
     predType <- rmm()$output$prediction$notes
-    projArea.out <- c8_projectArea(results(), curModel(), envs(), 
+    projArea.out <- c8_projectArea(evalOut(), curModel(), envs(), 
                                    outputType = predType, 
                                    alg = rmm()$model$algorithm, 
                                    clamp = rmm()$model$maxent$clamping, 
@@ -100,7 +100,7 @@ projectArea_MOD <- function(input, output, session) {
 
 projectArea_MAP <- function(map, session) {
   updateTabsetPanel(session, 'main', selected = 'Map')
-  req(results())
+  req(evalOut())
   map %>% leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
                                          rectangleOptions = FALSE, circleOptions = FALSE,
                                          markerOptions = FALSE, circleMarkerOptions = FALSE,

@@ -13,15 +13,15 @@ responsePlot_MOD <- function(input, output, session) {
   reactive({
     # ERRORS ####
     req(curSp())
-    if(is.null(results())) {
+    if(is.null(evalOut())) {
       shinyLogs %>% writeLog(type = 'error', "Models must first be run in component Model.")
       return()
     }
     # plot in wallace
     if (spp[[curSp()]]$rmm$model$algorithm == "maxnet") {
-      maxnet::response.plot(results()$models[[curModel()]], v = curEnv(), type = "cloglog")
+      maxnet::response.plot(evalOut()@models[[curModel()]], v = curEnv(), type = "cloglog")
     } else if (spp[[curSp()]]$rmm$model$algorithm == "maxent.jar") {
-      dismo::response(results()$models[[curModel()]], var = curEnv())
+      dismo::response(evalOut()@models[[curModel()]], var = curEnv())
     }
     
   })

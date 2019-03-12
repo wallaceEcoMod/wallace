@@ -20,7 +20,7 @@ maxentEvalPlot_MOD <- function(input, output, session) {
     }
     
     # FUNCTION CALL ####
-    makeMaxentEvalPlot(results()$evalTbl, input$maxentEvalSel)
+    makeMaxentEvalPlot(evalOut()@evalTbl, input$maxentEvalSel)
     
     # METADATA ####
     spp[[curSp()]]$rmm$code$wallaceSettings$maxentEvalPlotSel <- input$maxentEvalSel

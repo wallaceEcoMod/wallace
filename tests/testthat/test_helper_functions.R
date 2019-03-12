@@ -291,10 +291,10 @@ mcp <- function(xy) {
 # MODEL ####
 ####################### #
 
-maxentPredTransform <- function(results, curModel, bgMask, predType, shinyLogs = NULL) {
+maxentPredTransform <- function(evalOut, curModel, bgMask, predType, shinyLogs = NULL) {
   pargs <- paste0("outputformat=", predType) 
   smartProgress(shinyLogs, message = paste0("Generating ", predType, " prediction for model ", curModel, "..."), {
-    transPred <- dismo::predict(results$models[[curModel]], bgMask, args=pargs)
+    transPred <- dismo::predict(evalOut@models[[curModel]], bgMask, args=pargs)
   })  
   return(transPred)
 }
@@ -303,21 +303,21 @@ maxentPredTransform <- function(results, curModel, bgMask, predType, shinyLogs =
 # VISUALIZE ####
 ####################### #
 
-evalPlots <- function(results) {
+evalPlots <- function(evalOut) {
   par(mfrow=c(3,2))
-  fc <- length(unique(results$features))
+  fc <- length(unique(evalOut@features))
   col <- rainbow(fc)
-  rm <- length(unique(results$rm))
+  rm <- length(unique(evalOut@rm))
   plot(rep(1, times=fc), 1:fc, ylim=c(.5,fc+1), xlim=c(0,3), axes=F, ylab='', xlab='', cex=2, pch=21, bg=col)
   segments(rep(.8, times=fc), 1:fc, rep(1.2, times=fc), 1:fc, lwd=1, col=col)
   points(rep(1, times=fc), 1:fc, ylim=c(-1,fc+2), cex=2, pch=21, bg=col)
-  text(x=rep(1.3, times=fc), y=1:fc, labels=unique(results$features), adj=0)
+  text(x=rep(1.3, times=fc), y=1:fc, labels=unique(evalOut@features), adj=0)
   text(x=1, y=fc+1, labels="Feature Classes", adj=.20, cex=1.3, font=2)
-  ENMeval::eval.plot(results, legend=FALSE, value="delta.AICc")
-  ENMeval::eval.plot(results, legend=FALSE, value="Mean.AUC", variance="Var.AUC")
-  ENMeval::eval.plot(results, legend=FALSE, value="Mean.AUC.DIFF", variance="Var.AUC.DIFF")
-  ENMeval::eval.plot(results, legend=FALSE, value="Mean.ORmin", variance="Var.ORmin")
-  ENMeval::eval.plot(results, legend=FALSE, value="Mean.OR10", variance="Var.OR10")
+  ENMeval::eval.plot(evalOut, legend=FALSE, value="delta.AICc")
+  ENMeval::eval.plot(evalOut, legend=FALSE, value="Mean.AUC", variance="Var.AUC")
+  ENMeval::eval.plot(evalOut, legend=FALSE, value="Mean.AUC.DIFF", variance="Var.AUC.DIFF")
+  ENMeval::eval.plot(evalOut, legend=FALSE, value="Mean.ORmin", variance="Var.ORmin")
+  ENMeval::eval.plot(evalOut, legend=FALSE, value="Mean.OR10", variance="Var.OR10")
 }
 
 # make data.frame of lambdas vector from Maxent model object
