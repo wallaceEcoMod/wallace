@@ -162,7 +162,7 @@ shinyServer(function(input, output, session) {
   })
   
   ######################## #
-  ### BUTTOMS LOGIC ####
+  ### BUTTONS LOGIC ####
   ######################## #
   
   # Disable download buttons
@@ -492,10 +492,11 @@ shinyServer(function(input, output, session) {
     profileOccs()
   })
   
-  # observeEvent(input$goProfileOccsClean, {
-  #   
-  # })
-  
+  observeEvent(input$goProfileOccsClean, {
+    profileOccsClean <- callModule(profileOccsClean_MOD, 'c2_profileOccsClean_uiID')
+    profileOccsClean()
+  })
+
   # # # # # # # # # # # # # # # # # # # #
   # module Remove Occurrences By ID ####
   # # # # # # # # # # # # # # # # # # # #
