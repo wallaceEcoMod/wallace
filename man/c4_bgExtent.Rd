@@ -4,18 +4,18 @@
 \alias{c4_bgExtent}
 \title{c4_bgExtent}
 \usage{
-c4_bgExtent(occs, envs, bgSel, bgBuf, shinyLogs = NULL)
+c4_bgExtent(occs, bgSel, bgBuf, shinyLogs = NULL)
 }
 \arguments{
 \item{occs}{x}
-
-\item{envs}{x}
 
 \item{bgSel}{x}
 
 \item{bgBuf}{x}
 
 \item{shinyLogs}{x}
+
+\item{envs}{x}
 }
 \description{
 ..

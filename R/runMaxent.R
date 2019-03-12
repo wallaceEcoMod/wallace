@@ -91,21 +91,13 @@ runMaxent <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, clampS
                             progbar = FALSE, updateProgress = updateProgress,
                             algorithm = algMaxent)
   
-  # name the output models in the model list
-  names(e@models) <- e@results$settings
   # get the values of the prediction for each occ point
   occPredVals <- raster::extract(e@predictions, occs.xy)
-  
-  stats <- e@results[,1:16]
-  statsBins <- e@results[,17:ncol(e@results)]
   
   endTxt <- paste(", using", algMaxent, "with clamping", ifelse(clampSel, "on.", "off."))
   
   shinyLogs %>% writeLog("Maxent ran successfully for ", em(spName(occs)), " and
                          output evaluation results for ", nrow(e@results), " models", endTxt)
-  
-  # output ENMeval object in list form to be compatible with other models
-  e <- list(models=e@models, evalTbl=stats, evalTblBins=statsBins, predictions=e@predictions, occPredVals=occPredVals)
   
   return(e)
   

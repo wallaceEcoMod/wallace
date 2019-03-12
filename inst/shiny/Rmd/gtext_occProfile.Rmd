@@ -1,0 +1,15 @@
+---
+title: "Occurrence Data Profiling"
+output: html_document
+---
+  
+**BACKGROUND**
+  
+When occurrence data come from large data aggregators, they may include records that have not been quality controlled (e.g., coordinates correspond to country centroids), or which are not suited for your specific application (e.g., contain outliers). Using `occProfileR` you can remove problematic records and flag questionable records to explore whether they are suitable for your modeling applicatation
+
+**IMPLEMENTATION**
+  
+Begin by clicking the 'Profile Occurrences' button. This will run all the default tests in  `occProfileR`. Using the map, you can see how each point was graded. By using the checkboxes on the tool panel, you can select which grades you'd like to keep; clicking 'Clean Occurrences' will select the subset of points which pass the quality control tests you've chosen.
+
+**REFERENCES** 
+Serra-Diaz, J. M., B. J. Enquist, B. Maitner, C. Merow, and J.-C. Svenning. 2017. Big data of tree species distributions: how big and how good?:1–12.

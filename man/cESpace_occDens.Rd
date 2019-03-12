@@ -22,5 +22,5 @@ cESpace_occDens(sp.name1, sp.name2, pca, shinyLogs = NULL)
 See Examples.
 }
 \author{
-Jamie Kass <jkass@gradcenter.cuny.edu>
+Olivier Broennimann, Jamie Kass <jkass@gradcenter.cuny.edu>
 }

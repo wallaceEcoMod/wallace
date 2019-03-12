@@ -141,6 +141,7 @@ shinyServer(function(input, output, session) {
                 "dbOccs" = queryDb_MAP, 
                 "userOccs" = userOccs_MAP,
                 "selOccs" = selectOccs_MAP, 
+                "profOccs" = occProfile_MAP,
                 "remID" = removeByID_MAP, 
                 "spthin" = thinOccs_MAP, 
                 "wcbc" = wcBioclims_MAP,
@@ -161,7 +162,7 @@ shinyServer(function(input, output, session) {
   })
   
   ######################## #
-  ### BUTTOMS LOGIC ####
+  ### BUTTONS LOGIC ####
   ######################## #
   
   # Disable download buttons
@@ -197,7 +198,7 @@ shinyServer(function(input, output, session) {
     shinyjs::toggleState("dlBgPts", !is.null(spp[[curSp()]]$bgPts))
     shinyjs::toggleState("dlBgShp", !is.null(spp[[curSp()]]$procEnvs$bgExt))
     shinyjs::toggleState("dlPart", !is.null(spp[[curSp()]]$occs$partition))
-    shinyjs::toggleState("dlEvalTbl", !is.null(spp[[curSp()]]$results))
+    shinyjs::toggleState("dlEvalTbl", !is.null(evalOut()))
     shinyjs::toggleState("dlVisBioclim", spp[[curSp()]]$rmm$model$algorithm == "BIOCLIM")
     shinyjs::toggleState("dlMaxentPlots", (spp[[curSp()]]$rmm$model$algorithm == "maxnet" |
                                              spp[[curSp()]]$rmm$model$algorithm == "maxent.jar"))
@@ -380,70 +381,6 @@ shinyServer(function(input, output, session) {
     }
   )
   
-  ########################################### #
-  ### COMPONENT: PROCESS OCCURRENCE DATA ####
-  ########################################### #
-  
-  # # # # # # # # # # # # # # # # # # # #
-  # module Remove Occurrences By ID ####
-  # # # # # # # # # # # # # # # # # # # #
-  observeEvent(input$goRemoveByID, {
-    removeByID <- callModule(removeByID_MOD, 'c2_removeByID_uiID')
-    removeByID()
-    
-  })
-  
-  # # # # # # # # # # # # # # # # # # # # #
-  # module Select Occurrences on Map ####
-  # # # # # # # # # # # # # # # # # # # # #
-  observeEvent(input$goSelectOccs, {
-    req(input$map_draw_new_feature)
-    selOccs <- callModule(selectOccs_MOD, 'c2_selOccs_uiID')
-    selOccs()
-    # UI CONTROLS 
-    #updateSelectInput(session, "curSp", selected = curSp())
-  })
-  
-  # # # # # # # # # # # # # #
-  # module Spatial Thin ####
-  # # # # # # # # # # # # # # 
-  
-  observeEvent(input$goThinOccs, {
-    thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs_uiID')
-    thinOccs()
-  })
-  
-  # # # # # # # # # # # # # # # # # #
-  # PROCESS OCCS: other controls ####
-  # # # # # # # # # # # # # # # # # #
-  
-  # reset occurrences button functionality
-  observeEvent(input$goResetOccs, {
-    req(curSp())
-    spp[[curSp()]]$occs <- spp[[curSp()]]$occData$occsCleaned
-    spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords <- NULL
-    spp[[curSp()]]$procOccs$occsThin <- NULL
-    spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs <- NULL
-    shinyLogs %>% writeLog("Reset occurrences for ", 
-                           em(spp[[curSp()]]$occs[1, "scientific_name"]), ".")
-    # MAPPING
-    map %>%
-      map_occs(occs()) %>%
-      zoom2Occs(occs())
-  })
-  
-  # DOWNLOAD: current processed occurrence data table
-  output$dlProcOccs <- downloadHandler(
-    filename = function() {
-      n <- formatSpName(spName(spp[[curSp()]]))
-      paste0(n, "_processed_occs.csv")
-    },
-    content = function(file) {
-      tbl <- occs() %>% dplyr::select(-pop)
-      write_csv_robust(tbl, file, row.names = FALSE)
-    }
-  )
-  
   ############################################# #
   ### COMPONENT: OBTAIN ENVIRONMENTAL DATA ####
   ############################################# #
@@ -542,6 +479,82 @@ shinyServer(function(input, output, session) {
     # DT::datatable(data.frame(name=names, min=mins, max=maxs), 
     #               rownames = FALSE, options = list(pageLength = raster::nlayers(envs())))
   })
+  
+  ########################################### #
+  ### COMPONENT: PROCESS OCCURRENCE DATA ####
+  ########################################### #
+  
+  # # # # # # # # # # # # # # # # # # # #
+  # module Profile Occurrences ####
+  # # # # # # # # # # # # # # # # # # # #
+  observeEvent(input$goProfileOccs, {
+    profileOccs <- callModule(profileOccs_MOD, 'c2_profileOccs_uiID')
+    profileOccs()
+  })
+  
+  observeEvent(input$goProfileOccsClean, {
+    profileOccsClean <- callModule(profileOccsClean_MOD, 'c2_profileOccsClean_uiID')
+    profileOccsClean()
+  })
+
+  # # # # # # # # # # # # # # # # # # # #
+  # module Remove Occurrences By ID ####
+  # # # # # # # # # # # # # # # # # # # #
+  observeEvent(input$goRemoveByID, {
+    removeByID <- callModule(removeByID_MOD, 'c2_removeByID_uiID')
+    removeByID()
+  })
+  
+  # # # # # # # # # # # # # # # # # # # # #
+  # module Select Occurrences on Map ####
+  # # # # # # # # # # # # # # # # # # # # #
+  observeEvent(input$goSelectOccs, {
+    req(input$map_draw_new_feature)
+    selOccs <- callModule(selectOccs_MOD, 'c2_selOccs_uiID')
+    selOccs()
+    # UI CONTROLS 
+    #updateSelectInput(session, "curSp", selected = curSp())
+  })
+  
+  # # # # # # # # # # # # # #
+  # module Spatial Thin ####
+  # # # # # # # # # # # # # # 
+  
+  observeEvent(input$goThinOccs, {
+    thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs_uiID')
+    thinOccs()
+  })
+  
+  # # # # # # # # # # # # # # # # # #
+  # PROCESS OCCS: other controls ####
+  # # # # # # # # # # # # # # # # # #
+  
+  # reset occurrences button functionality
+  observeEvent(input$goResetOccs, {
+    req(curSp())
+    spp[[curSp()]]$occs <- spp[[curSp()]]$occData$occsCleaned
+    spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords <- NULL
+    spp[[curSp()]]$procOccs$occsThin <- NULL
+    spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs <- NULL
+    shinyLogs %>% writeLog("Reset occurrences for ", 
+                           em(spp[[curSp()]]$occs[1, "scientific_name"]), ".")
+    # MAPPING
+    map %>%
+      map_occs(occs()) %>%
+      zoom2Occs(occs())
+  })
+  
+  # DOWNLOAD: current processed occurrence data table
+  output$dlProcOccs <- downloadHandler(
+    filename = function() {
+      n <- formatSpName(spName(spp[[curSp()]]))
+      paste0(n, "_processed_occs.csv")
+    },
+    content = function(file) {
+      tbl <- occs() %>% dplyr::select(-pop)
+      write_csv_robust(tbl, file, row.names = FALSE)
+    }
+  )
   
   ############################################## #
   ### COMPONENT: PROCESS ENVIRONMENTAL DATA ####
@@ -788,7 +801,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$goMaxent, {
     mod.maxent()
     # make sure the results were entered before proceeding
-    req(results())
+    req(evalOut())
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     # customize visualizations for maxent
@@ -806,7 +819,7 @@ shinyServer(function(input, output, session) {
     mod.bioclim()
     runBIOCLIM_TBL(input, output, session)
     # make sure the results were entered before proceeding
-    req(results())
+    req(evalOut())
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     # update radio buttons for Visualization component
@@ -822,7 +835,7 @@ shinyServer(function(input, output, session) {
     mod.gam()
     runGAM_TBL(input, output, session)
     # make sure the results were entered before proceeding
-    req(results())
+    req(evalOut())
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     # update radio buttons for Visualization component
@@ -834,22 +847,26 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # # # #
   
   output$evalTbls <- renderUI({
-    req(results())
+    req(evalOut())
     
-    options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
-    evalTbl <- results()$evalTbl
-    evalTblBins <- results()$evalTblBins
-    evalTblRound <- cbind(evalTbl[,1:3], round(evalTbl[,4:16], digits=3))
-    evalTblBinsRound <- cbind(settings=evalTbl[,1], round(evalTblBins, digits=3))
+    print(names(evalOut()@models))
+    res <- evalOut()@results
+    res.grp <- evalOut()@results.grp
+    tuned.n <- ncol(evalOut()@tuned.settings)
+    if(tuned.n > 0) {
+      res.round <- cbind(res[,seq(1, tuned.n)], round(res[,seq(tuned.n+1, ncol(res))], digits = 3))
+      res.grp.round <- cbind(res.grp[,seq(1, tuned.n+1)], round(res.grp[,seq(tuned.n+2, ncol(res.grp))], digits = 3))
+    }
     # define contents for both evaluation tables
-    output$evalTbl <- DT::renderDataTable(evalTblRound, options = options)
-    output$evalTblBins <- DT::renderDataTable(evalTblBinsRound, options = options)
+    options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
+    output$evalTbl <- DT::renderDataTable(res.round, options = options)
+    output$evalTblBins <- DT::renderDataTable(res.grp.round, options = options)
     # define contents for lambdas table
     output$lambdas <- renderPrint({
       if(spp[[curSp()]]$rmm$model$algorithm == "maxnet") {
-        results()$models[[curModel()]]$betas
+        evalOut()@models[[curModel()]]$betas
       } else if(spp[[curSp()]]$rmm$model$algorithm == "maxent.jar") {
-        results()$models[[curModel()]]@lambdas
+        evalOut()@models[[curModel()]]@lambdas
       }
     })
     
@@ -871,15 +888,16 @@ shinyServer(function(input, output, session) {
   })
   
   # convenience function for modeling results list for current species
-  results <- reactive(spp[[curSp()]]$results)
+  evalOut <- reactive(spp[[curSp()]]$evalOut)
   
   # ui that populates with the names of models that were run
   output$curModelUI <- renderUI({
     # do not display until both current species is selected and it has a model
-    req(curSp(), length(curSp()) == 1, results())
+    req(curSp(), length(curSp()) == 1, evalOut())
     # if 
-    if(!is.null(results())) {
-      n <- names(results()$models)  
+    if(!is.null(evalOut())) {
+      n <- names(evalOut()@models)  
+      print(n)
     } else {
       n <- NULL
     }
@@ -905,7 +923,7 @@ shinyServer(function(input, output, session) {
       }
     },
     content = function(file) {
-      evalTbl <- cbind(results()$evalTbl, results()$evalTblBins)
+      evalTbl <- evalOut()@results
       write_csv_robust(evalTbl, file, row.names = FALSE)
     }
   )
@@ -921,7 +939,7 @@ shinyServer(function(input, output, session) {
   bioclimPlot <- callModule(bioclimPlot_MOD, 'c7_bioclimPlot')
   output$bioclimPlot <- renderPlot({
     # do not plot if missing models
-    req(curSp(), results())
+    req(curSp(), evalOut())
     bioclimPlot()
   }, width = 700, height = 700)
   
@@ -931,7 +949,7 @@ shinyServer(function(input, output, session) {
   maxentEvalPlot <- callModule(maxentEvalPlot_MOD, 'c7_maxentEvalPlot')
   output$maxentEvalPlot <- renderPlot({
     # do not plot if missing models
-    req(curSp(), results())
+    req(curSp(), evalOut())
     maxentEvalPlot()
   }, width = 700, height = 700)
   
@@ -966,7 +984,7 @@ shinyServer(function(input, output, session) {
     filename = function() {paste0(curSp(), "_bioClimPlot.png")},
     content = function(file) {
       png(file)
-      makeBioclimPlot(results()$models[[curModel()]],
+      makeBioclimPlot(evalOut()@models[[curModel()]],
                       spp[[curSp()]]$rmm$code$wallaceSettings$bcPlotSettings[['bc1']],
                       spp[[curSp()]]$rmm$code$wallaceSettings$bcPlotSettings[['bc2']],
                       spp[[curSp()]]$rmm$code$wallaceSettings$bcPlotSettings[['p']]) 
@@ -983,7 +1001,7 @@ shinyServer(function(input, output, session) {
                    'delta.AICc')
       for (i in parEval) {
         png(paste0(tmpdir, "\\", gsub("[[:punct:]]", "_", i), ".png"))
-        makeMaxentEvalPlot(results()$evalTbl, i)
+        makeMaxentEvalPlot(evalOut()@results, i)
         dev.off()
       }
       owd <- setwd(tmpdir)
@@ -1002,9 +1020,9 @@ shinyServer(function(input, output, session) {
       for (i in namesEnvs) {
         png(paste0(tmpdir, "\\", i, ".png"))
         if (spp[[curSp()]]$rmm$model$algorithm == "maxnet") {
-          maxnet::response.plot(results()$models[[curModel()]], v = i, type = "cloglog")
+          maxnet::response.plot(evalOut()@models[[curModel()]], v = i, type = "cloglog")
         } else if (spp[[curSp()]]$rmm$model$algorithm == "maxent.jar") {
-          dismo::response(results()$models[[curModel()]], var = i)
+          dismo::response(evalOut()@models[[curModel()]], var = i)
         }
         dev.off()
       }
