@@ -1,17 +1,17 @@
 # 
 # sample workflow with module functions
-occs <- c1_queryDb("meles meles", "gbif", 100, doCitations = FALSE)
-sp="Meles_meles"
-envs <- c3_worldclim(10, 1:19)
-occs.thin <- c2_profileOccs(sp.name = sp,
-                            sp.table = occs[[1]]$cleaned,
-                            x.field = "longitude",
-                            y.field = "latitude",
-                            t.field = "year",
-                            l.field = "locality",
-                            # c.field = "country",
-                            # e.field = "elevation",
-                            r.env = envs)
+# occs <- c1_queryDb("meles meles", "gbif", 100, doCitations = FALSE)
+# sp="Meles_meles"
+# envs <- c3_worldclim(10, 1:19)
+# occs.thin <- c2_profileOccs(sp.name = sp,
+#                             sp.table = occs[[1]]$cleaned,
+#                             x.field = "longitude",
+#                             y.field = "latitude",
+#                             t.field = "year",
+#                             l.field = "locality",
+#                             # c.field = "country",
+#                             # e.field = "elevation",
+#                             r.env = envs)
 # 
 # for(sp in spLoop) {
 #   # FUNCTION CALL ####

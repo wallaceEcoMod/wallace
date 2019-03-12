@@ -93,17 +93,18 @@ profileOccsClean_MOD <- function(input, output, session) {
   reactive({
     # loop over all species if batch is on
     #if(input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
+    print(input$grades)
     spLoop <- curSp()
     for(sp in spLoop) {
       # FUNCTION CALL ####
       #########
       # make sure some have been selected
       # CM: how do I put a shinylog here?
-      # if (is.null(input$grades)) {
-      #   shinyLogs %>% writeLog(type = 'error', 
-      #                          'You must select some grades to keep.')
-      #   return()
-      # }
+      if (is.null(input$grades)) {
+        shinyLogs %>% writeLog(type = 'error',
+                               'You must select some grades to keep.')
+        return()
+      }
       occs=occs()
       # CM: i think occs should have all the grades with it
       # check this uses the right formats
