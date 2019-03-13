@@ -23,10 +23,10 @@
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 
-makeMaxentEvalPlot <- function(evalTbl, value) {
-  fc <- length(unique(evalTbl$features))
+makeMaxentEvalPlot <- function(results, value) {
+  fc <- length(unique(results[, 1]))
   col <- rainbow(fc)
-  rm <- length(unique(evalTbl$rm))
+  rm <- length(unique(results[, 2]))
   xlab <- "Regularization Multiplier"
   
   if (value != "delta.AICc") {
@@ -35,10 +35,10 @@ makeMaxentEvalPlot <- function(evalTbl, value) {
     variance <- NULL
   }
   
-  y <- evalTbl[,value]
+  y <- results[,value]
   
   if (value != "delta.AICc") {
-    v <- evalTbl[,variance]
+    v <- results[,variance]
     # ylim <- c(min(y-v), max(y+v))
     ylim <- c(0, 1)
   } else {
