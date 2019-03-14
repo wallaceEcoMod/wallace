@@ -136,7 +136,7 @@ shinyServer(function(input, output, session) {
   # MAPPING LOGIC ####
   observe({
     # must have one species selected and occurrence data
-    req(length(curSp()) == 1, occs())
+    req(length(curSp()) == 1, occs(), module())
     f <- switch(module(), 
                 "dbOccs" = queryDb_MAP, 
                 "userOccs" = userOccs_MAP,
@@ -1325,14 +1325,9 @@ shinyServer(function(input, output, session) {
         input$rmdFileType, Rmd = 'Rmd', PDF = 'pdf', HTML = 'html', Word = 'docx'
       ))},
     content = function(file) {
-      exp <- knitr::knit_expand("Rmd/userReport.Rmd", 
-                                spName=curSp(), 
-                                occsSource=rmm()$data$occurrence$sources,
-                                occsNum=rmm()$code$wallaceSettings$occsNum,  # comp 1
-                                occsCSV=rmm()$code$wallaceSettings$userCSV,
-                                occsRemoved=printVecAsis(rmm()$code$wallaceSettings$removedIDs)
+      knit.params <- c(file = "Rmd/userReport.Rmd", spName = curSp(), queryDb_RMD())
+      exp <- do.call(knitr::knit_expand, knit.params)
                                 
-      )  # comp 8
       # temporarily switch to the temp dir, in case you do not have write
       # permission to the current working directory
       owd <- setwd(tempdir())
