@@ -5,7 +5,7 @@
 #' @details
 #' See Examples.
 #'
-#' @param evalTbl x
+#' @param results x
 #' @param value x
 # @keywords
 #'
@@ -24,12 +24,12 @@
 #' @export
 
 makeMaxentEvalPlot <- function(results, value) {
-  fc <- length(unique(results[, 1]))
+  fc <- length(unique(results$fc))
   col <- rainbow(fc)
-  rm <- length(unique(results[, 2]))
+  rm <- length(unique(results$rm))
   xlab <- "Regularization Multiplier"
   
-  if (value != "delta.AICc") {
+  if (value != "AICc.delta") {
     variance <- gsub('avg', 'var', value)
   } else {
     variance <- NULL
@@ -37,31 +37,30 @@ makeMaxentEvalPlot <- function(results, value) {
   
   y <- results[,value]
   
-  if (value != "delta.AICc") {
+  if (value != "AICc.delta") {
     v <- results[,variance]
-    # ylim <- c(min(y-v), max(y+v))
     ylim <- c(0, 1)
   } else {
-    ylim <- c(min(y, na.rm=TRUE), max(y, na.rm=TRUE))
+    ylim <- c(min(y, na.rm = TRUE), max(y, na.rm = TRUE))
   }
-  
-  
-  plot(evalTbl$rm, y, col='white', ylim=ylim, ylab=value, xlab=xlab, axes=F, cex.lab=1.5)
-  if (value=="delta.AICc") abline(h=2, lty=3)
-  axis(1, at= unique(evalTbl$rm))
+  plot(results$rm, y, col = 'white', ylim = ylim, ylab = value, xlab = xlab, 
+       axes = F, cex.lab = 1.5)
+  if (value == "AICc.delta") abline(h = 2, lty = 3)
+  axis(1, at = unique(results$rm))
   axis(2)
   box()
-  for (j in 1:length(unique(evalTbl$features))){
-    s <- ((fc*rm)-fc+j)
-    points(evalTbl$rm[seq(j, s, fc)], y[seq(j, s, fc)], type="l", col=col[j])
+  for (j in 1:length(unique(results$fc))){
+    s <- ((fc * rm) - fc + j)
+    points(results$rm[seq(j, s, fc)], y[seq(j, s, fc)], type = "l", col = col[j])
     if (!is.null(variance)) {
-      arrows(evalTbl$rm[seq(j, s, fc)],
+      arrows(results$rm[seq(j, s, fc)],
              y[seq(j, s, fc)] + v[seq(j, s, fc)],
-             evalTbl$rm[seq(j, s, fc)],
+             results$rm[seq(j, s, fc)],
              y[seq(j, s, fc)] - v[seq(j, s, fc)],
-             code=3, length=.05, angle=90, col=col[j])
+             code = 3, length = .05, angle = 90, col = col[j])
     }
   }
-  points(evalTbl$rm, y, bg=col, pch=21)
-  legend("topright", legend=unique(evalTbl$features), pt.bg=col, pch=21, bg='white', cex=1, ncol=2)
+  points(results$rm, y, bg = col, pch = 21)
+  legend("topright", legend = unique(results$fc), pt.bg = col, pch = 21, 
+         bg = 'white', cex = 1, ncol = 2)
 }

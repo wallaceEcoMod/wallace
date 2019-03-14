@@ -20,7 +20,8 @@ mapPreds_UI <- function(id) {
                                            choices = list("raw", 
                                                           "logistic", 
                                                           "cloglog"), 
-                                           selected = "raw", inline = TRUE)))
+                                           selected = "cloglog", # Check default (selected = "raw")
+                                           inline = TRUE)))
   )
 }
 

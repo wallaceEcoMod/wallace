@@ -8,15 +8,15 @@ wcBioclims_UI <- function(id) {
                                         "30 arcsec" = 0.5,
                                         "2.5 arcmin" = 2.5,
                                         "5 arcmin" = 5,
-                                        "10 arcmin" = 10))),
-    checkboxInput(ns("doBrick"), label = "Save to memory for faster processing?", value = FALSE),
+                                        "10 arcmin" = 10), selected = 10)), # Check default (No selected parameter)
+    checkboxInput(ns("doBrick"), label = "Save to memory for faster processing?", value = T), # Check default (value = FALSE)
     checkboxInput(ns("bcSelChoice"), label = "Specify variables to use in analysis?", 
                   value = TRUE),
     conditionalPanel(paste0("input['", ns("bcSelChoice"), "']"),
                      checkboxGroupInput(ns("bcSel"), label = "Select",
                                         choices = setNames(as.list(paste0('bio', 1:19)), paste0('bio', 1:19)), 
                                         inline = TRUE, selected = paste0('bio', 1:19))),
-    checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE)
+    checkboxInput(ns("batch"), label = strong("Batch"), value = T) # Check default (value = FALSE)
   )
 }
 

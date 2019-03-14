@@ -93,7 +93,8 @@ shinyUI(tagList(
                                                              choices = list("Profile Occurrences" = "profOccs",
                                                                             "Select Occurrences On Map" = 'selOccs',
                                                                             "Remove Occurrences By ID" = 'remID',
-                                                                            "Spatial Thin" = 'spthin')),
+                                                                            "Spatial Thin" = 'spthin'),
+                                                             selected = "spthin"), # Check default (no selected)
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.procOccsSel == 'profOccs'",
                                                                  # uiTop(profileOccs_INFO),
@@ -242,7 +243,8 @@ shinyUI(tagList(
                                                 h4("Partition Occurrence Data"),
                                                 radioButtons("partSel", "Modules Available:",
                                                              choices = list("Non-spatial Partition" = 'nsp',
-                                                                            "Spatial Partition" = 'sp')),
+                                                                            "Spatial Partition" = 'sp'), 
+                                                             selected = 'sp'), # Check default (no selected)
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.partSel == 'sp'",
                                                                  uiTop(partitionSpat_INFO),
@@ -260,7 +262,8 @@ shinyUI(tagList(
                                conditionalPanel("input.tabs == 'model'",
                                                 h4("Build and Evaluate Niche Model"),
                                                 radioButtons("modelSel", "Modules Available:",
-                                                             choices = list("BIOCLIM", "Maxent", "GAM")),
+                                                             choices = list("BIOCLIM", "Maxent", "GAM"),
+                                                             selected = "Maxent"), # Check default (no selected)
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.modelSel == 'Maxent'",
                                                                  uiTop(runMaxent_INFO),
@@ -290,7 +293,8 @@ shinyUI(tagList(
                                                              choices = list("BIOCLIM Envelope Plots" = 'bioclimPlot',
                                                                             "Maxent Evaluation Plots" = 'maxentEval',
                                                                             "Plot Response Curves" = 'response',
-                                                                            "Map Prediction" = 'mapPreds')),
+                                                                            "Map Prediction" = 'mapPreds'),
+                                                             selected = 'mapPreds'), # Check default (no selected param)
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.visSel == 'bioclimPlot'",
                                                                  uiTop(bioclimPlot_INFO),

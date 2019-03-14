@@ -7,8 +7,8 @@ bgExtent_UI <- function(id) {
                                 "Minimum convex polygon" = 'mcp',
                                 "Point buffers" = 'ptbuf')),
     tags$div(title='Buffer area in degrees (1 degree = ~111 km). Exact length varies based on latitudinal position.',
-             numericInput(ns("bgBuf"), label = "Study region buffer distance (degree)", value = 0, min = 0, step = 0.5)),
-    checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE)
+             numericInput(ns("bgBuf"), label = "Study region buffer distance (degree)", value = 1, min = 0, step = 0.5)), # Check default (value = 0)
+    checkboxInput(ns("batch"), label = strong("Batch"), value = T) # Check default (value = FALSE)
   )
 }
 

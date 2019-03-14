@@ -4,10 +4,10 @@
 \alias{makeMaxentEvalPlot}
 \title{makeMaxentEvalPlot}
 \usage{
-makeMaxentEvalPlot(evalTbl, value)
+makeMaxentEvalPlot(results, value)
 }
 \arguments{
-\item{evalTbl}{x}
+\item{results}{x}
 
 \item{value}{x}
 }

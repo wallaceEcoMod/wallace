@@ -6,12 +6,13 @@ partitionSpat_UI <- function(id) {
                 choices = list("None selected" = '',
                                "Block (k = 4)" = "block",
                                "Checkerboard 1 (k = 2)" = "cb1",
-                               "Checkerboard 2 (k = 4)" = "cb2")),
+                               "Checkerboard 2 (k = 4)" = "cb2"), 
+                selected = 'block'), # Check default (no selected)
     conditionalPanel(sprintf("input['%1$s'] == 'cb1' | input['%1$s'] == 'cb2'", 
                              ns("partitionSpatSel")),
                      numericInput(ns("aggFact"), label = "Aggregation Factor", 
                                   value = 2, min = 2)),
-    checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE)
+    checkboxInput(ns("batch"), label = strong("Batch"), value = T) # Check default (value = FALSE)
   )
 }
 

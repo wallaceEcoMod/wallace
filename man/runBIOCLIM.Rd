@@ -4,16 +4,16 @@
 \alias{runBIOCLIM}
 \title{runBIOCLIM}
 \usage{
-runBIOCLIM(occs, bg, bgMask, shinyLogs = NULL)
+runBIOCLIM(occs, bg, occsGrp, bgGrp, bgMsk, shinyLogs = NULL)
 }
 \arguments{
 \item{occs}{x}
 
 \item{bg}{x}
 
-\item{bgMask}{x}
-
 \item{shinyLogs}{x}
+
+\item{bgMask}{x}
 }
 \description{
 ..
