@@ -13,8 +13,8 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE, eval = FALSE)
 
 ```{r vars, include = FALSE, eval = TRUE}
 # comp1
-occs.db <- "{{occsSource}}" != "user"
-occs.user <- "{{occsSource}}" == "user"
+occs.db <- "{{occDb}}" != "user"
+occs.user <- "{{occDb}}" == "user"
 ```
 
 Please find below the R code history from your *Wallace* v1.9.9* session. 
@@ -49,12 +49,12 @@ source(system.file('shiny/funcs', 'functions.R', package = 'wallace'))
 ```
 
 ```{asis, echo = occs.db, eval = occs.db, include = occs.db}
-You searched the `r "{{occsSource}}"` database for *`r "{{spName}}"`*, limited to `r {{occsNum}}` records. 
+You searched the `r "{{occDb}}"` database for *`r "{{spName}}"`*, limited to `r {{occNum}}` records. 
 ```
 
 ```{r occSearch, echo = occs.db, include = occs.db}
 # query selected database for occurrence records
-occs.query <- c1_queryDb(spName = "{{spName}}", occDb = "{{occsSource}}", occNum = {{occsNum}})
+occs.query <- c1_queryDb(spName = "{{spName}}", occDb = "{{occDb}}", occNum = {{occNum}})
 occs <- occs.query$cleaned
 ```
 

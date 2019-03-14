@@ -107,8 +107,8 @@ queryDb_INFO <- infoGenerator(modName = "Query Database (Present)",
                               pkgName = "spocc")
 
 queryDb_RMD <- function(session) {
-  list(occsSource = rmm()$data$occurrence$sources,
-       occsNum = rmm()$code$wallaceSettings$occsNum,
-       occsCSV = rmm()$code$wallaceSettings$userCSV)
+  list(spName = curSp(),
+       occDb = input$occsDb,
+       occNum = input$occsNum)
 }
   
