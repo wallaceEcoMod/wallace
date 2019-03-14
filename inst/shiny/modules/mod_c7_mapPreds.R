@@ -73,7 +73,7 @@ mapPreds_MOD <- function(input, output, session) {
           m <- evalOut()@models[[curModel()]]
           clamping <- rmm()$model$maxent$clamping
           if(rmm()$model$algorithm == "maxnet") {
-            predSel <- ENMeval::maxnet.predictRaster(m, bgMask(), type = input$maxentPredType, clamp = clamping)
+            predSel <- ENMeval::maxnet.predictRaster(m, bgMask(), type = input$maxentPredType, doClamp = clamping)
           }
           if(rmm()$model$algorithm == "maxent.jar") {
             predSel <- dismo::predict(m, bgMask(), args = paste0("outputformat=", input$maxentPredType))

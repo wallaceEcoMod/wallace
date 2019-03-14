@@ -63,7 +63,7 @@ c8_projectArea <- function(evalOut, curModel, envs, outputType, alg, clamp, poly
       if (outputType == "raw") {pargs <- "exponential"} else {pargs <- outputType}
       modProjArea <- ENMeval::maxnet.predictRaster(evalOut@models[[curModel]], 
                                                    projMsk, type = pargs, 
-                                                   clamp = clamp)
+                                                   doClamp = clamp)
     } else if (alg == "maxent.jar") {
       pargs <- paste0("outputformat=", outputType)
       modProjArea <- dismo::predict(evalOut@models[[curModel]], projMsk, 
