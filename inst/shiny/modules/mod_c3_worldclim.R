@@ -4,11 +4,12 @@ wcBioclims_UI <- function(id) {
   tagList(
     tags$div(title='Approximate lengths at equator: 10 arcmin = ~20 km, 5 arcmin = ~10 km, 2.5 arcmin = ~5 km, 30 arcsec = ~1 km. Exact length varies based on latitudinal position.',
              selectInput(ns("bcRes"), label = "Select WorldClim bioclimatic variable resolution",
-                choices = list("Select resolution" = "",
-                               "30 arcsec" = 0.5,
-                               "2.5 arcmin" = 2.5,
-                               "5 arcmin" = 5,
-                               "10 arcmin" = 10))),
+                         choices = list("Select resolution" = "",
+                                        "30 arcsec" = 0.5,
+                                        "2.5 arcmin" = 2.5,
+                                        "5 arcmin" = 5,
+                                        "10 arcmin" = 10))),
+    checkboxInput(ns("doBrick"), label = "Save to memory for faster processing?", value = FALSE),
     checkboxInput(ns("bcSelChoice"), label = "Specify variables to use in analysis?", 
                   value = TRUE),
     conditionalPanel(paste0("input['", ns("bcSelChoice"), "']"),
@@ -29,7 +30,7 @@ wcBioclims_MOD <- function(input, output, session) {
     }
     
     # FUNCTION CALL ####
-    wcbc <- c3_worldclim(input$bcRes, input$bcSel, mapCntr(), shinyLogs)
+    wcbc <- c3_worldclim(input$bcRes, input$bcSel, mapCntr(), input$doBrick, shinyLogs)
     req(wcbc)
     
     envs.global[["wcbc"]] <- wcbc

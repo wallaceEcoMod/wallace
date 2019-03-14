@@ -106,3 +106,9 @@ queryDb_INFO <- infoGenerator(modName = "Query Database (Present)",
                                 Anderson",
                               pkgName = "spocc")
 
+queryDb_RMD <- function(session) {
+  list(spName = curSp(),
+       occDb = input$occsDb,
+       occNum = input$occsNum)
+}
+  

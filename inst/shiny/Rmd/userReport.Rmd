@@ -13,10 +13,8 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE, eval = FALSE)
 
 ```{r vars, include = FALSE, eval = TRUE}
 # comp1
-occs.db <- "{{occsSource}}" != "user"
-occs.user <- "{{occsSource}}" == "user"
-poccs.any <- !is.null({{occsRemoved}})
-poccs.rem <- !is.null({{occsRemoved}})
+occs.db <- "{{occDb}}" != "user"
+occs.user <- "{{occDb}}" == "user"
 ```
 
 Please find below the R code history from your *Wallace* v1.9.9* session. 
@@ -51,12 +49,13 @@ source(system.file('shiny/funcs', 'functions.R', package = 'wallace'))
 ```
 
 ```{asis, echo = occs.db, eval = occs.db, include = occs.db}
-You searched the `r "{{occsSource}}"` database for *`r "{{spName}}"`*, limited to `r {{occsNum}}` records. 
+You searched the `r "{{occDb}}"` database for *`r "{{spName}}"`*, limited to `r {{occNum}}` records. 
 ```
 
 ```{r occSearch, echo = occs.db, include = occs.db}
 # query selected database for occurrence records
-occs <- c1_queryDb(spName = "{{spName}}", occDb = "{{occsSource}}", occNum = {{occsNum}})
+occs.query <- c1_queryDb(spName = "{{spName}}", occDb = "{{occDb}}", occNum = {{occNum}})
+occs <- occs.query$cleaned
 ```
 
 ```{asis, echo = occs.user, eval = occs.user, include = occs.user}
@@ -67,22 +66,13 @@ User CSV path with occurrence data. If the CSV file is not in the current worksp
 # NOTE: provide the path to the .csv file
 occs.path <- ""
 # get a list of species occurrence data
-occs <- c1_userOccs(csvPath = occs.path, csvName = "{{occsCSV}}")
+occs.user <- c1_userOccs(csvPath = occs.path, csvName = "{{occsCSV}}")
+occs <- occs.user$cleaned
 ```
 
 
-```{asis, echo = poccs.any, eval = poccs.any, include = poccs.any}
-### Process Occurrence Data
-```
 
-```{asis, echo = poccs.rem, eval = poccs.rem, include = poccs.rem}
-Remove the occurrence localities with the following IDs: `r {{occsRemoved}}`.
-```
 
-```{r poccs.rem, echo = poccs.rem, include = poccs.rem}
-# remove the rows that match the occIDs selected
-occs <- occs %>% filter(!(occID %in% {{occsRemoved}}))
-```
 
 
 
