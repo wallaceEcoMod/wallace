@@ -29,7 +29,7 @@ makeMaxentEvalPlot <- function(results, value) {
   rm <- length(unique(results$rm))
   xlab <- "Regularization Multiplier"
   
-  if (value != "AICc.delta") {
+  if (value != "delta.AICc") {
     variance <- gsub('avg', 'var', value)
   } else {
     variance <- NULL
@@ -37,7 +37,7 @@ makeMaxentEvalPlot <- function(results, value) {
   
   y <- results[,value]
   
-  if (value != "AICc.delta") {
+  if (value != "delta.AICc") {
     v <- results[,variance]
     ylim <- c(0, 1)
   } else {
@@ -45,7 +45,7 @@ makeMaxentEvalPlot <- function(results, value) {
   }
   plot(results$rm, y, col = 'white', ylim = ylim, ylab = value, xlab = xlab, 
        axes = F, cex.lab = 1.5)
-  if (value == "AICc.delta") abline(h = 2, lty = 3)
+  if (value == "delta.AICc") abline(h = 2, lty = 3)
   axis(1, at = unique(results$rm))
   axis(2)
   box()
