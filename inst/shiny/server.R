@@ -1325,16 +1325,27 @@ shinyServer(function(input, output, session) {
         input$rmdFileType, Rmd = 'Rmd', PDF = 'pdf', HTML = 'html', Word = 'docx'
       ))},
     content = function(file) {
-      knit.params <- c(file = "Rmd/userReport.Rmd", spName = curSp(), queryDb_RMD())
-      exp <- do.call(knitr::knit_expand, knit.params)
+      knit.lst <- list()
+      # make RMD text for all species
+      for(sp in allSp()) {
+        knit.params <- c(file = "Rmd/userReport.Rmd", spName = sp, 
+                         queryDb_RMD(), userOccs_RMD())
+        knit.lst[[sp]] <- do.call(knitr::knit_expand, knit.params)  
+      }
+      # remove the header text from all species' RMD past the first
+      for(k in 2:length(knit.lst)) {
+        knit.lst[[k]] <- gsub("---\ntitle.*Your analyses are below.", "", knit.lst[[k]])
+      }
+      # concatenate all species' RMDs together
+      knit.out <- paste(knit.lst, collapse = "\n")
                                 
       # temporarily switch to the temp dir, in case you do not have write
       # permission to the current working directory
       owd <- setwd(tempdir())
       on.exit(setwd(owd))
-      writeLines(exp, 'userReport2.Rmd')
+      writeLines(knit.out, 'userReport2.Rmd')
       
-      if (input$rmdFileType == 'Rmd') {
+      if(input$rmdFileType == 'Rmd') {
         out <- rmarkdown::render('userReport2.Rmd', rmarkdown::md_document(variant="markdown_github"))
         writeLines(gsub('``` r', '```{r}', readLines(out)), 'userReport3.Rmd')
         out <- 'userReport3.Rmd'

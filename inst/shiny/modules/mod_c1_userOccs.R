@@ -49,3 +49,7 @@ userOccs_INFO <- infoGenerator(modName = "User-specified Occurrences",
                               modAuts = "Jamie M. Kass, Bruno Vilela, Gonzalo E. 
                                         Pinilla-Buitrago, Robert P. Anderson",
                               pkgName = NULL)
+
+userOccs_RMD <- function(session) {
+  list(userOccsCsvName = input$userCSV$name)
+}

@@ -3,7 +3,7 @@ title: Wallace Session `r Sys.Date()`
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r, include=FALSE}
 library(knitr)
 knit_engines$set(asis = function(options) {
   if (options$echo && options$eval) knit_child(text = options$code)
@@ -11,7 +11,7 @@ knit_engines$set(asis = function(options) {
 knitr::opts_chunk$set(message = FALSE, warning = FALSE, eval = FALSE)
 ```
 
-```{r vars, include = FALSE, eval = TRUE}
+```{r, include = FALSE, eval = TRUE}
 # comp1
 occs.db <- "{{occDb}}" != "user"
 occs.user <- "{{occDb}}" == "user"
@@ -28,7 +28,7 @@ For more detailed information see <http://rmarkdown.rstudio.com>).
 ### Package installation
 
 Wallace uses the following R packages that must be installed and loaded before starting.
-```{r loadPkgs}
+```{r}
 library(spocc)
 library(spThin)
 library(dismo)
@@ -38,13 +38,15 @@ library(ENMeval)
 
 Wallace also includes several functions developed to help integrate different packages and some additional functionality. For this reason, it is necessary to load the file `functions.R`, The function `system.file()` finds this script, and `source()` loads it.
 
-```{r loadFunctions}
+```{r}
 source(system.file('shiny/funcs', 'functions.R', package = 'wallace'))
 ```
 
+Your analyses are below.
+
 ## Record of analysis for *`r "{{spName}}"`*.
 
-```{asis occsTitle}
+```{asis}
 ### Obtain Occurrence Data
 ```
 
@@ -52,7 +54,7 @@ source(system.file('shiny/funcs', 'functions.R', package = 'wallace'))
 You searched the `r "{{occDb}}"` database for *`r "{{spName}}"`*, limited to `r {{occNum}}` records. 
 ```
 
-```{r occSearch, echo = occs.db, include = occs.db}
+```{r, echo = occs.db, include = occs.db}
 # query selected database for occurrence records
 occs.query <- c1_queryDb(spName = "{{spName}}", occDb = "{{occDb}}", occNum = {{occNum}})
 occs <- occs.query$cleaned
@@ -62,17 +64,10 @@ occs <- occs.query$cleaned
 User CSV path with occurrence data. If the CSV file is not in the current workspace, change to the correct file path (e.g. "/Users/darwin/Documents/occs.user").
 ```
 
-```{r occInput, echo = occs.user}
+```{r, echo = occs.user}
 # NOTE: provide the path to the .csv file
 occs.path <- ""
 # get a list of species occurrence data
-occs.user <- c1_userOccs(csvPath = occs.path, csvName = "{{occsCSV}}")
+occs.user <- c1_userOccs(csvPath = occs.path, csvName = "{{userOccsCsvName}}")
 occs <- occs.user$cleaned
 ```
-
-
-
-
-
-
-
