@@ -12,9 +12,7 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE, eval = FALSE)
 ```
 
 ```{r, include = FALSE, eval = TRUE}
-# comp1
-occs.db <- "{{occDb}}" != "user"
-occs.user <- "{{occDb}}" == "user"
+
 ```
 
 Please find below the R code history from your *Wallace* v1.9.9* session. 
@@ -50,24 +48,45 @@ Your analyses are below.
 ### Obtain Occurrence Data
 ```
 
-```{asis, echo = occs.db, eval = occs.db, include = occs.db}
+```{asis, echo = {{occsDb_knit}}, eval = {{occsDb_knit}}, include = {{occsDb_knit}}}
 You searched the `r "{{occDb}}"` database for *`r "{{spName}}"`*, limited to `r {{occNum}}` records. 
 ```
 
-```{r, echo = occs.db, include = occs.db}
+```{r, echo = {{occsDb_knit}}, include = {{occsDb_knit}}}
 # query selected database for occurrence records
 occs.query <- c1_queryDb(spName = "{{spName}}", occDb = "{{occDb}}", occNum = {{occNum}})
 occs <- occs.query$cleaned
 ```
 
-```{asis, echo = occs.user, eval = occs.user, include = occs.user}
+```{asis, echo = {{occsUser_knit}}, eval = {{occsUser_knit}}, include = {{occsUser_knit}}}
 User CSV path with occurrence data. If the CSV file is not in the current workspace, change to the correct file path (e.g. "/Users/darwin/Documents/occs.user").
 ```
 
-```{r, echo = occs.user}
+```{r, echo = {{occsUser_knit}}}
 # NOTE: provide the path to the .csv file
 occs.path <- ""
 # get a list of species occurrence data
 occs.user <- c1_userOccs(csvPath = occs.path, csvName = "{{userOccsCsvName}}")
-occs <- occs.user$cleaned
+occs <- occs[["{{spName}}"]]$cleaned
+```
+
+```{asis}
+### Process Occurrence Data
+```
+
+```{asis, echo = {{removeByID_knit}}, eval = {{removeByID_knit}}, include = {{removeByID_knit}}}
+Remove the occurrence localities by ID.
+```
+
+```{r, echo = {{removeByID_knit}}, include = {{removeByID_knit}}}
+# remove the rows that match the occIDs selected
+occs <- c2_removeByID(occs, {{removeByID_id}})
+```
+
+```{asis, echo = {{selectByID_knit}}, eval = {{selectByID_knit}}, include = {{selectByID_knit}}}
+The following code recreates the polygon used to select occurrences to keep in the analysis.
+```
+
+```{r, echo = {{selectByID_knit}}, include = {{selectByID_knit}}}
+occs <- c2_selectOccs(occs, "{{selectByID_xy}}", "{{selectByID_id}}")
 ```

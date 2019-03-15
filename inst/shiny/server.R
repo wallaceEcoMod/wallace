@@ -1328,8 +1328,16 @@ shinyServer(function(input, output, session) {
       knit.lst <- list()
       # make RMD text for all species
       for(sp in allSp()) {
+        occSource <- spp[[sp]]$rmm$data$occurrence$sources
+        occsDb_knit <- occSource != "user"
+        occsUser_knit <- occSource == "user"
+        removeByID_knit <- !is.null(spp[[sp]]$rmm$code$wallaceSettings$removedIDs)
+        selectByID_knit <- !is.null(spp[[sp]]$rmm$code$wallaceSettings$occsSelPolyCoords)
         knit.params <- c(file = "Rmd/userReport.Rmd", spName = sp, 
-                         queryDb_RMD(), userOccs_RMD())
+                         occsDb_knit = occsDb_knit, occsUser_knit = occsUser_knit,
+                         removeByID_knit = removeByID_knit, selectByID_knit = selectByID_knit,
+                         queryDb_RMD(), userOccs_RMD(), 
+                         removeByID_RMD(), selectOccs_RMD())
         knit.lst[[sp]] <- do.call(knitr::knit_expand, knit.params)  
       }
       # remove the header text from all species' RMD past the first
