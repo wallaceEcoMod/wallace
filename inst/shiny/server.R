@@ -1326,19 +1326,23 @@ shinyServer(function(input, output, session) {
       ))},
     content = function(file) {
       knit.lst <- list()
+  
       # make RMD text for all species
       for(sp in allSp()) {
         occSource <- spp[[sp]]$rmm$data$occurrence$sources
-        occsDb_knit <- occSource != "user"
-        occsUser_knit <- occSource == "user"
-        removeByID_knit <- !is.null(spp[[sp]]$rmm$code$wallaceSettings$removedIDs)
-        selectByID_knit <- !is.null(spp[[sp]]$rmm$code$wallaceSettings$occsSelPolyCoords)
-        knit.params <- c(file = "Rmd/userReport.Rmd", spName = sp, 
-                         occsDb_knit = occsDb_knit, occsUser_knit = occsUser_knit,
-                         removeByID_knit = removeByID_knit, selectByID_knit = selectByID_knit,
-                         queryDb_RMD(), userOccs_RMD(), 
-                         removeByID_RMD(), selectOccs_RMD())
-        knit.lst[[sp]] <- do.call(knitr::knit_expand, knit.params)  
+        knit.logicals <- list(
+          occsDb_knit = occSource != "user",
+          occsUser_knit = occSource == "user",
+          removeByID_knit = !is.null(spp[[sp]]$rmm$code$wallaceSettings$removedIDs),
+          selectByID_knit = !is.null(spp[[sp]]$rmm$code$wallaceSettings$occsSelPolyCoords),
+          espacePCA_knit = NULL,
+          espaceOccDens_knit = NULL,
+          espaceNicheOv_knit = NULL)
+        knit.params <- c(file = "Rmd/userReport.Rmd", spName = spName(sp), 
+                         knit.logicals,
+                         queryDb_RMD(sp), userOccs_RMD(sp), 
+                         removeByID_RMD(sp), selectOccs_RMD(sp))
+        knit.lst[[sp]] <- do.call(knitr::knit_expand, knit.params)
       }
       # remove the header text from all species' RMD past the first
       for(k in 2:length(knit.lst)) {

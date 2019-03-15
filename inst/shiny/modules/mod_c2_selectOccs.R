@@ -42,7 +42,7 @@ selectOccs_INFO <- infoGenerator(modName = "Select Occurrences On Map",
                               modAuts = "Jamie M. Kass, Robert P. Anderson",
                               pkgName = "leaflet.extras")
 
-selectOccs_RMD <- function(session) {
-  list(selectByID_xy = spp[[curSp()]]$polySelXY,
-       selectByID_id = spp[[curSp()]]$polySelID)
+selectOccs_RMD <- function(sp) {
+  list(selectByID_xy = spp[[sp]]$polySelXY,
+       selectByID_id = spp[[sp]]$polySelID)
 }

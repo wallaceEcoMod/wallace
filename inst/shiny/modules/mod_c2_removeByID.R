@@ -45,7 +45,7 @@ removeByID_INFO <- infoGenerator(modName = "Remove Occurrences By ID",
                                  modAuts = "Jamie M. Kass, Robert P. Anderson",
                                  pkgName = NULL)
 
-removeByID_RMD <- function(session) {
-  list(removeByID_id = input$removeID)
+removeByID_RMD <- function(sp) {
+  list(removeByID_id = spp[[sp]]$rmm$code$wallaceSettings$removedIDs)
 }
 
