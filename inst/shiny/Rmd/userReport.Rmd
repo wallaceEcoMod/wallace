@@ -34,13 +34,14 @@ library(rgeos)
 library(ENMeval)
 ```
 
-Wallace also includes several functions developed to help integrate different packages and some additional functionality. For this reason, it is necessary to load the file `functions.R`, The function `system.file()` finds this script, and `source()` loads it.
+The *Wallace* session code .Rmd file is composed of a chain of module functions that are internal to *Wallace*. Each of these functions corresponds to a single module that the user ran during the session. To see the internal code for these module functions, click on the links in the .Rmd file. Users are encouraged to write custom code in the .Rmd directly to modify their analysis, and even modify the module function code to further customize. To see the source code for any module function, just type its name into the R console and press Return.
 
 ```{r}
-source(system.file('shiny/funcs', 'functions.R', package = 'wallace'))
+# example:
+# just type the function name and press Return to see its source code
+# paste this code into a new script to edit it
+c1_queryDb
 ```
-
-Your analyses are below.
 
 ## Record of analysis for *`r "{{spName}}"`*.
 
@@ -49,7 +50,7 @@ Your analyses are below.
 ```
 
 ```{asis, echo = {{occsDb_knit}}, eval = {{occsDb_knit}}, include = {{occsDb_knit}}}
-You searched the `r "{{occDb}}"` database for *`r "{{spName}}"`*, limited to `r {{occNum}}` records. 
+You searched the `r "{{occDb}}"` database for *`r "{{spName}}"`*, limited to `r {{occNum}}` records.
 ```
 
 ```{r, echo = {{occsDb_knit}}, include = {{occsDb_knit}}}
