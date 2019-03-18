@@ -45,6 +45,8 @@ userEnvs_MOD <- function(input, output, session) {
       spp[[sp]]$rmm$data$environment$variableNames <- names(userEnvs)
       spp[[sp]]$rmm$data$environment$resolution <- raster::res(userEnvs)
       spp[[sp]]$rmm$data$environment$sources <- 'user'
+      
+      spp[[sp]]$rmm$wallaceSettings$userRasName <- input$userEnvs$name
     }
     
   })
@@ -60,3 +62,7 @@ userEnvs_MAP <- function(map, session) {
 userEnvs_INFO <- infoGenerator(modName = "User-specified Environmental Data",
                                modAuts = "Jamie M. Kass, Robert P. Anderson",
                                pkgName = NULL)
+
+userEnvs_RMD <- function(sp) {
+  list(userRasName = spp[[sp]]$rmm$wallaceSettings$userRasName)
+}
