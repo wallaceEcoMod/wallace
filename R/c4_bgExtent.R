@@ -43,7 +43,7 @@ c4_bgExtent <- function(occs, bgSel, bgBuf, shinyLogs=NULL) {
   
   # generate background extent - one grid cell is added to perimeter of each shape
   # to ensure cells of points on border are included
-  if (bgSel == 'bb') {
+  if (bgSel == 'bounding box') {
     xmin <- occs.sp@bbox[1]
     xmax <- occs.sp@bbox[3]
     ymin <- occs.sp@bbox[2]
@@ -51,11 +51,11 @@ c4_bgExtent <- function(occs, bgSel, bgBuf, shinyLogs=NULL) {
     bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin), ncol=2)
     bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(bb)), 1)))
     msg <- paste(em(spName(occs)), " study extent: bounding box.")
-  } else if (bgSel == 'mcp') {
+  } else if (bgSel == "minimum convex polygon") {
     bgExt <- mcp(occs.xy)
     # bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
-    msg <- paste(em(spName(occs)), " study extent: minimum convex polygon.")
-  } else if (bgSel == 'ptbuf') {
+    
+  } else if (bgSel == 'point buffers') {
     if (bgBuf == 0) {
       shinyLogs %>% writeLog(type = 'error', 'Change buffer distance to positive
                              or negative value.')
@@ -64,8 +64,9 @@ c4_bgExtent <- function(occs, bgSel, bgBuf, shinyLogs=NULL) {
     bgExt <- rgeos::gBuffer(occs.sp, width = bgBuf)
     msg <- paste(em(spName(occs)), " study extent: buffered points.")
   }
+  msg <- paste0(em(spName(occs)), " study extent: ", bgSel, ".")
   
-  if (bgBuf > 0 & bgSel != 'ptbuf') {
+  if (bgBuf > 0 & bgSel != 'point buffers') {
     bgExt <- rgeos::gBuffer(bgExt, width = bgBuf)
     shinyLogs %>% writeLog(msg, ' Buffered by ', bgBuf, ' degrees.')
   }else{

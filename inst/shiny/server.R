@@ -1329,22 +1329,25 @@ shinyServer(function(input, output, session) {
   
       # make RMD text for all species
       for(sp in allSp()) {
-        occSource <- spp[[sp]]$rmm$data$occurrence$sources
         knit.logicals <- list(
-          occsDb_knit = occSource != "user",
-          occsUser_knit = occSource == "user",
+          occsDb_knit = spp[[sp]]$rmm$data$occurrence$sources != "user",
+          occsUser_knit = spp[[sp]]$rmm$data$occurrence$sources == "user",
           removeByID_knit = !is.null(spp[[sp]]$rmm$code$wallaceSettings$removedIDs),
           selectByID_knit = !is.null(spp[[sp]]$rmm$code$wallaceSettings$occsSelPolyCoords),
+          worldclim_knit = spp[[sp]]$rmm$data$environment$sources == "WorldClim 1.4",
+          bgExtent_knit = !is.null(spp[[sp]]$procEnvs$bgExt),
+          bgMskSamplePts_knit = !is.null(spp[[sp]]$bgPts),
           espacePCA_knit = NULL,
           espaceOccDens_knit = NULL,
           espaceNicheOv_knit = NULL)
         knit.params <- c(file = "Rmd/userReport.Rmd", spName = spName(sp), 
                          knit.logicals,
                          queryDb_RMD(sp), userOccs_RMD(sp), 
+                         worldclim_RMD(sp),
                          removeByID_RMD(sp), selectOccs_RMD(sp),
                          worldclim_RMD(sp), userEnvs_RMD(sp),
-                         bgExtent_RMD(sp), bgMskSamplePts_RMD(sp),
-                         drawBgExtent_RMD(sp), userBgExtent_RMD(sp))
+                         bgExtent_RMD(sp), bgMskSamplePts_RMD(sp)
+                         )
         knit.lst[[sp]] <- do.call(knitr::knit_expand, knit.params)
       }
       # remove the header text from all species' RMD past the first
@@ -1353,6 +1356,7 @@ shinyServer(function(input, output, session) {
       }
       # concatenate all species' RMDs together
       knit.out <- paste(knit.lst, collapse = "\n")
+      print(knit.out)
                                 
       # temporarily switch to the temp dir, in case you do not have write
       # permission to the current working directory

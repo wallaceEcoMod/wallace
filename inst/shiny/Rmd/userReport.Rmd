@@ -32,6 +32,7 @@ library(spThin)
 library(dismo)
 library(rgeos)
 library(ENMeval)
+library(wallace)
 ```
 
 The *Wallace* session code .Rmd file is composed of a chain of module functions that are internal to *Wallace*. Each of these functions corresponds to a single module that the user ran during the session. To see the internal code for these module functions, click on the links in the .Rmd file. Users are encouraged to write custom code in the .Rmd directly to modify their analysis, and even modify the module function code to further customize. To see the source code for any module function, just type its name into the R console and press Return.
@@ -43,7 +44,11 @@ The *Wallace* session code .Rmd file is composed of a chain of module functions 
 c1_queryDb
 ```
 
-## Record of analysis for *`r "{{spName}}"`*.
+Your analyses are below.
+
+########################################### #
+## Analysis for *`r "{{spName}}"`*
+########################################### #
 
 ```{asis}
 ### Obtain Occurrence Data
@@ -91,3 +96,32 @@ The following code recreates the polygon used to select occurrences to keep in t
 ```{r, echo = {{selectByID_knit}}, include = {{selectByID_knit}}}
 occs <- c2_selectOccs(occs, "{{selectByID_xy}}", "{{selectByID_id}}")
 ```
+
+``` {asis, echo = {{worldclim_knit}}, eval = {{worldclim_knit}}, include = {{worldclim_knit}}}
+Using WorldClim (http://www.worldclim.org/) bioclimatic dataset at resolution of `r {{wcRes}}` arcmin.
+```
+
+```{r, echo = {{worldclim_knit}}, include = {{worldclim_knit}}}
+envs <- c3_worldclim({{wcRes}}, {{bcSel}}, {{mapCntr}}, {{wcBrick}})
+```
+
+```{asis, echo = {{bgExtent_knit}}, eval = {{bgExtent_knit}}, include = {{bgExtent_knit}}}
+### Process Environmental Data
+Background selection technique chosen as "`r '{{bgSel}}'`".
+```
+
+```{r, echo = {{bgExtent_knit}}, include = {{bgExtent_knit}}}
+bgExt <- c4_bgExtent(occs, "{{bgSel}}", {{bgBuf}})
+```
+
+```{asis, echo = {{bgMskSamplePts_knit}}, eval = {{bgMskSamplePts_knit}}, include = {{bgMskSamplePts_knit}}}
+### Process Environmental Data
+Environmental rasters masked to background extent, and *n* = `r {{bgPtsNum}}` background points sampled over this extent.
+```
+
+```{r, echo = {{bgMskSamplePts_knit}}, include = {{bgMskSamplePts_knit}}}
+bgMask <- c4_bgMask(occs, envs, bgExt)
+
+bgPts <- c4_bgSample(occs, bgMask, {{bgPtsNum}})
+```
+   

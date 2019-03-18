@@ -67,6 +67,7 @@ wcBioclims_MOD <- function(input, output, session) {
       spp[[sp]]$rmm$wallaceSettings$wcRes <- input$wcRes
       spp[[sp]]$rmm$wallaceSettings$bcSel <- input$bcSel
       spp[[sp]]$rmm$wallaceSettings$mapCntr <- mapCntr()
+      spp[[sp]]$rmm$wallaceSettings$wcBrick <- input$doBrick
     }
   })
 }
@@ -85,6 +86,7 @@ worldclim_INFO <- infoGenerator(modName = "WorldClim Bioclims",
 
 worldclim_RMD <- function(sp) {
   list(wcRes = spp[[sp]]$rmm$wallaceSettings$wcRes,
-       bcSel = spp[[sp]]$rmm$wallaceSettings$bcSel,
-       mapCntr = spp[[sp]]$rmm$wallaceSettings$mapCntr)
+       bcSel = printVecAsis(spp[[sp]]$rmm$wallaceSettings$bcSel),
+       mapCntr = printVecAsis(spp[[sp]]$rmm$wallaceSettings$mapCntr),
+       wcBrick = spp[[sp]]$rmm$wallaceSettings$wcBrick)
 }
