@@ -3,7 +3,7 @@ wcBioclims_UI <- function(id) {
   ns <- NS(id)
   tagList(
     tags$div(title='Approximate lengths at equator: 10 arcmin = ~20 km, 5 arcmin = ~10 km, 2.5 arcmin = ~5 km, 30 arcsec = ~1 km. Exact length varies based on latitudinal position.',
-             selectInput(ns("bcRes"), label = "Select WorldClim bioclimatic variable resolution",
+             selectInput(ns("wcRes"), label = "Select WorldClim bioclimatic variable resolution",
                          choices = list("Select resolution" = "",
                                         "30 arcsec" = 0.5,
                                         "2.5 arcmin" = 2.5,
@@ -30,7 +30,7 @@ wcBioclims_MOD <- function(input, output, session) {
     }
     
     # FUNCTION CALL ####
-    wcbc <- c3_worldclim(input$bcRes, input$bcSel, mapCntr(), input$doBrick, shinyLogs)
+    wcbc <- c3_worldclim(input$wcRes, input$bcSel, mapCntr(), input$doBrick, shinyLogs)
     req(wcbc)
     
     envs.global[["wcbc"]] <- wcbc
@@ -63,6 +63,10 @@ wcBioclims_MOD <- function(input, output, session) {
       spp[[sp]]$rmm$data$environment$resolution <- paste(round(raster::res(wcbc)[1] * 60, digits = 2), "degrees")
       spp[[sp]]$rmm$data$environment$extent <- 'global'
       spp[[sp]]$rmm$data$environment$sources <- 'WorldClim 1.4'
+      
+      spp[[sp]]$rmm$wallaceSettings$wcRes <- input$wcRes
+      spp[[sp]]$rmm$wallaceSettings$bcSel <- input$bcSel
+      spp[[sp]]$rmm$wallaceSettings$mapCntr <- mapCntr()
     }
   })
 }
@@ -78,3 +82,9 @@ worldclim_INFO <- infoGenerator(modName = "WorldClim Bioclims",
                                 modAuts = "Jamie M. Kass, 
                                 Gonzalo E. Pinilla-Buitrago, Robert P. Anderson",
                                 pkgName = "raster")
+
+worldclim_RMD <- function(sp) {
+  list(wcRes = spp[[sp]]$rmm$wallaceSettings$wcRes,
+       bcSel = spp[[sp]]$rmm$wallaceSettings$bcSel,
+       mapCntr = spp[[sp]]$rmm$wallaceSettings$mapCntr)
+}

@@ -1341,7 +1341,10 @@ shinyServer(function(input, output, session) {
         knit.params <- c(file = "Rmd/userReport.Rmd", spName = spName(sp), 
                          knit.logicals,
                          queryDb_RMD(sp), userOccs_RMD(sp), 
-                         removeByID_RMD(sp), selectOccs_RMD(sp))
+                         removeByID_RMD(sp), selectOccs_RMD(sp),
+                         worldclim_RMD(sp), userEnvs_RMD(sp),
+                         bgExtent_RMD(sp), bgMskSamplePts_RMD(sp),
+                         drawBgExtent_RMD(sp), userBgExtent_RMD(sp))
         knit.lst[[sp]] <- do.call(knitr::knit_expand, knit.params)
       }
       # remove the header text from all species' RMD past the first
