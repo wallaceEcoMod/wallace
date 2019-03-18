@@ -61,7 +61,7 @@ You searched the `r "{{occDb}}"` database for *`r "{{spName}}"`*, limited to `r 
 ```{r, echo = {{occsDb_knit}}, include = {{occsDb_knit}}}
 # query selected database for occurrence records
 occs.query <- c1_queryDb(spName = "{{spName}}", occDb = "{{occDb}}", occNum = {{occNum}})
-occs <- occs.query$cleaned
+occs.{{sp}} <- occs.query$cleaned
 ```
 
 ```{asis, echo = {{occsUser_knit}}, eval = {{occsUser_knit}}, include = {{occsUser_knit}}}
@@ -73,7 +73,7 @@ User CSV path with occurrence data. If the CSV file is not in the current worksp
 occs.path <- ""
 # get a list of species occurrence data
 occs.user <- c1_userOccs(csvPath = occs.path, csvName = "{{userOccsCsvName}}")
-occs <- occs[["{{spName}}"]]$cleaned
+occs.{{sp}} <- occs.user[["{{spName}}"]]$cleaned
 ```
 
 ```{asis}
@@ -86,7 +86,7 @@ Remove the occurrence localities by ID.
 
 ```{r, echo = {{removeByID_knit}}, include = {{removeByID_knit}}}
 # remove the rows that match the occIDs selected
-occs <- c2_removeByID(occs, {{removeByID_id}})
+occs.{{sp}} <- c2_removeByID(occs.{{sp}}, {{removeByID_id}})
 ```
 
 ```{asis, echo = {{selectByID_knit}}, eval = {{selectByID_knit}}, include = {{selectByID_knit}}}
@@ -94,7 +94,7 @@ The following code recreates the polygon used to select occurrences to keep in t
 ```
 
 ```{r, echo = {{selectByID_knit}}, include = {{selectByID_knit}}}
-occs <- c2_selectOccs(occs, "{{selectByID_xy}}", "{{selectByID_id}}")
+occs.{{sp}} <- c2_selectOccs(occs.{{sp}}, "{{selectByID_xy}}", "{{selectByID_id}}")
 ```
 
 ``` {asis, echo = {{worldclim_knit}}, eval = {{worldclim_knit}}, include = {{worldclim_knit}}}
@@ -102,7 +102,15 @@ Using WorldClim (http://www.worldclim.org/) bioclimatic dataset at resolution of
 ```
 
 ```{r, echo = {{worldclim_knit}}, include = {{worldclim_knit}}}
-envs <- c3_worldclim({{wcRes}}, {{bcSel}}, {{mapCntr}}, {{wcBrick}})
+envs.{{sp}} <- c3_worldclim({{wcRes}}, {{bcSel}}, {{mapCntr}}, {{wcBrick}})
+occs.{{sp}}.xy <- occs.{{sp}}[c('longitude', 'latitude')]
+occs.{{sp}}.z <- as.data.frame(raster::extract(envs.{{sp}}, occs.{{sp}}.xy))
+# remove occurrence records with NA environmental values
+occs.{{sp}} <- remEnvsValsNA(occs.{{sp}}, occs.{{sp}}.z)
+# also remove variable value rows with NA environmental values
+occs.{{sp}}.z <- na.omit(occs.{{sp}}.z)
+# add columns for env variable values for each occurrence record
+occs.{{sp}} <- cbind(occs.{{sp}}, occs.{{sp}}.z)
 ```
 
 ```{asis, echo = {{bgExtent_knit}}, eval = {{bgExtent_knit}}, include = {{bgExtent_knit}}}
@@ -111,7 +119,7 @@ Background selection technique chosen as "`r '{{bgSel}}'`".
 ```
 
 ```{r, echo = {{bgExtent_knit}}, include = {{bgExtent_knit}}}
-bgExt <- c4_bgExtent(occs, "{{bgSel}}", {{bgBuf}})
+bgExt.{{sp}} <- c4_bgExtent(occs.{{sp}}, "{{bgSel}}", {{bgBuf}})
 ```
 
 ```{asis, echo = {{bgMskSamplePts_knit}}, eval = {{bgMskSamplePts_knit}}, include = {{bgMskSamplePts_knit}}}
@@ -120,8 +128,23 @@ Environmental rasters masked to background extent, and *n* = `r {{bgPtsNum}}` ba
 ```
 
 ```{r, echo = {{bgMskSamplePts_knit}}, include = {{bgMskSamplePts_knit}}}
-bgMask <- c4_bgMask(occs, envs, bgExt)
+bgMask.{{sp}} <- c4_bgMask(occs.{{sp}}, envs.{{sp}}, bgExt.{{sp}})
 
-bgPts <- c4_bgSample(occs, bgMask, {{bgPtsNum}})
+bg.{{sp}} <- c4_bgSample(occs.{{sp}}, bgMask.{{sp}}, {{bgPtsNum}})
+bg.{{sp}}.z <- as.data.frame(raster::extract(bgMask.{{sp}}, bg.{{sp}}))
+```
+
+```{asis, echo = {{espace_pca_knit}}, eval = {{espace_pca_knit}}, include = {{espace_pca_knit}}}
+### Process Environmental Data
+Environmental PCA run.
+```
+
+```{r, echo = {{espace_pca_knit}}, include = {{espace_pca_knit}}}
+pca.sel <- {{pcaSel}}
+pca.{{sp}} <- cESpace_pca(espace.sp1, espace.sp2, 
+                          occs.{{espace.sp1}}.z[pca.sel], 
+                          occs.{{espace.sp2}}.z[pca.sel],
+                          bg.{{espace.sp1}}.z[pca.sel], 
+                          bg.{{espace.sp2}}.z[pca.sel])
 ```
    

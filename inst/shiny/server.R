@@ -1327,8 +1327,9 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       knit.lst <- list()
   
-      # make RMD text for all species
+      # make RMD text for all individual species and multispecies pairs
       for(sp in allSp()) {
+        print(sp)
         knit.logicals <- list(
           occsDb_knit = spp[[sp]]$rmm$data$occurrence$sources != "user",
           occsUser_knit = spp[[sp]]$rmm$data$occurrence$sources == "user",
@@ -1337,18 +1338,21 @@ shinyServer(function(input, output, session) {
           worldclim_knit = spp[[sp]]$rmm$data$environment$sources == "WorldClim 1.4",
           bgExtent_knit = !is.null(spp[[sp]]$procEnvs$bgExt),
           bgMskSamplePts_knit = !is.null(spp[[sp]]$bgPts),
-          espacePCA_knit = NULL,
+          espace_pca_knit = !is.null(spp[[sp]]$pca),
           espaceOccDens_knit = NULL,
           espaceNicheOv_knit = NULL)
         knit.params <- c(file = "Rmd/userReport.Rmd", spName = spName(sp), 
+                         sp = sp,
                          knit.logicals,
                          queryDb_RMD(sp), userOccs_RMD(sp), 
                          worldclim_RMD(sp),
                          removeByID_RMD(sp), selectOccs_RMD(sp),
                          worldclim_RMD(sp), userEnvs_RMD(sp),
-                         bgExtent_RMD(sp), bgMskSamplePts_RMD(sp)
+                         bgExtent_RMD(sp), bgMskSamplePts_RMD(sp),
+                         espace_pca_RMD(sp)
                          )
         knit.lst[[sp]] <- do.call(knitr::knit_expand, knit.params)
+        print(knit.lst)
       }
       # remove the header text from all species' RMD past the first
       for(k in 2:length(knit.lst)) {

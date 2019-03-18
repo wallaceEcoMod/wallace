@@ -83,8 +83,8 @@ pca_MOD <- function(input, output, session) {
       spp[[mspName]]$pca <- pca
     }
     
-    # RMD VALUES ####
-    # add to vector of IDs removed
+    # METADATA ####
+    spp[[mspName]]$rmm$wallaceSettings$pcaSel <- input$pcaSel
     
     # PLOTS ####
     output$pcaResults <- renderUI({
@@ -136,3 +136,9 @@ pca_MOD <- function(input, output, session) {
 espace_pca_INFO <- infoGenerator(modName = "Environmental Ordination", 
                                  modAuts = "Olivier Broennimann, Jamie Kass", 
                                  pkgName = "ade4")
+
+espace_pca_RMD <- function(sp) {
+  list(espace.sp1 = curSp()[1],
+       espace.sp2 = curSp()[2],
+       pcaSel = spp[[sp]]$rmm$wallaceSettings$pcaSel)
+}
