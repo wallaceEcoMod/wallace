@@ -1,0 +1,10 @@
+name: shiny
+title:
+username:
+account: gepinillab
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 792617
+bundleId: 1942658
+url: https://gepinillab.shinyapps.io/shiny/
+when: 1552664299.27738

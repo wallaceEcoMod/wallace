@@ -26,6 +26,7 @@ Depends:
     leaflet (>= 2.0.2)
 Imports:
     ade4,
+    BIEN,
     dismo,
     dplyr,
     DT (>= 0.5),

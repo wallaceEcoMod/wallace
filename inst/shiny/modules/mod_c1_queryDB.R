@@ -8,22 +8,23 @@ queryDb_UI <- function(id) {
                                       "BISON" = 'bison',
                                       "BIEN" = 'bien'), 
                           inline = TRUE)),
-    conditionalPanel(sprintf("input['%s'] == 'gbif'", ns("occsDb")),
-                     checkboxInput(ns("doCitations"), 
-                                   label = 'Include Data Source Citations', 
-                                   value = FALSE),
-                     conditionalPanel(sprintf("input['%1$s'] == 'gbif' & 
-                                              input['%2$s'] == true",
-                                              ns("occsDb"), ns("doCitations")),
-                                      splitLayout(textInput(ns('gbifUser'),
-                                                            'GBIF User ID',
-                                                            value=NULL),
-                                                  textInput(ns('gbifEmail'),
-                                                            'GBIF email',
-                                                            value=NULL),
-                                                  textInput(ns('gbifPW'),
-                                                            'GBIF password',
-                                                            value=NULL)))),
+    # GEPB: doCitations will be not available for v2 (17/Mar/2019)
+    # conditionalPanel(sprintf("input['%s'] == 'gbif'", ns("occsDb")),
+    #                  checkboxInput(ns("doCitations"), 
+    #                                label = 'Include Data Source Citations', 
+    #                                value = FALSE),
+    #                  conditionalPanel(sprintf("input['%1$s'] == 'gbif' & 
+    #                                           input['%2$s'] == true",
+    #                                           ns("occsDb"), ns("doCitations")),
+    #                                   splitLayout(textInput(ns('gbifUser'),
+    #                                                         'GBIF User ID',
+    #                                                         value=NULL),
+    #                                               textInput(ns('gbifEmail'),
+    #                                                         'GBIF email',
+    #                                                         value=NULL),
+    #                                               textInput(ns('gbifPW'),
+    #                                                         'GBIF password',
+    #                                                         value=NULL)))),
     tags$div(title = 'Examples: Felis catus, Canis lupus, Nyctereutes procyonoides',
              textInput(ns("spNames"), label = "Enter species scientific name", 
                        placeholder = 'format: Genus species', value="meles meles, martes martes")),
@@ -45,8 +46,9 @@ queryDb_MOD <- function(input, output, session, targetGroup = FALSE) {
     
     # FUNCTION CALL ####
     occsList <- c1_queryDb(input$spNames, input$occsDb, input$occsNum, 
-                           input$doCitations, input$gbifUser, input$gbifEmail,
-                           input$gbifPW, shinyLogs)
+                           shinyLogs = shinyLogs)
+                           # input$doCitations, input$gbifUser, input$gbifEmail,
+                           # input$gbifPW, shinyLogs)
     req(occsList)
     
     if(targetGroup == TRUE) {
@@ -72,14 +74,15 @@ queryDb_MOD <- function(input, output, session, targetGroup = FALSE) {
         spp[[sp]]$rmm$data$occurrence$presenceSampleSize <- nrow(occs)
         spp[[sp]]$rmm$code$wallaceSettings$occsNum <- input$occsNum
         spp[[sp]]$rmm$code$wallaceSettings$occsRemoved <- input$occsNum - nrow(occsList[[sp]]$cleaned)
+        spp[[sp]]$rmm$data$occurrence$sources <- input$occsDb
         # store citations with occCite, or just report the database if users are 
         # too lame to use bridgetree
-        if(input$doCitations){
-          # DOUBLE CHECK THIS DOESN"T NEED TO BE VECTORIZED!!
-          spp[[sp]]$rmm$data$occurrence$sources <- occsList[[sp]]$citations
-        } else {
-          spp[[sp]]$rmm$data$occurrence$sources <- input$occsDb
-        }  
+        # if(input$doCitations){
+        #   # DOUBLE CHECK THIS DOESN"T NEED TO BE VECTORIZED!!
+        #   spp[[sp]]$rmm$data$occurrence$sources <- occsList[[sp]]$citations
+        # } else {
+        #   spp[[sp]]$rmm$data$occurrence$sources <- input$occsDb
+        # }  
       }
       return(occsList)
     }

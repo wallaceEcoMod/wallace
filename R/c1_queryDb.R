@@ -58,37 +58,38 @@ c1_queryDb <- function(spNames, occDb, occNum, doCitations = F, gbifUser = NULL,
   for(sp in spNames) {
     # query database
     smartProgress(shinyLogs, message = paste0("Querying ", occDb, " for ", sp, "..."),{
-      if (occDb == 'bison' | occDb == 'vertnet') {
+      if (occDb == 'bison' | occDb == 'vertnet' | occDb == 'gbif') {
         q <- spocc::occ(sp, occDb, limit = occNum)
-        myOccCitations <- NULL
-      } else if (occDb == 'gbif') {
-        if (doCitations == FALSE) {
-          q <- spocc::occ(sp, occDb, limit = occNum)
-          myOccCitations <- NULL
-        } else if (doCitations == TRUE) {
-          if(any(unlist(lapply(list(gbifUser, gbifEmail, gbifPW), is.null)))) {
-            shinyLogs %>% writeLog('error', 
-                                   'Please specify your GBIF username, email, and password. This is needed to get citations for occurrence records. 
-                                   Wallace does not store your information or use it for anything else.')
-            return()
-          }
-          myBTO <- occCite::studyTaxonList(x = sp, datasources = "NCBI")
-          login <- occCite::GBIFLoginManager(user = gbifUser, email = gbifEmail, 
-                                             pwd = gbifPW)
-          myBTO <- occCite::occQuery(x = myBTO, GBIFLogin = login, limit = occNum)
-          myOccCitations <- occCite::occCitation(myBTO)
-          # make something with the same slots as spocc that we use
-          q <- list(gbif = list(meta = list(found = NULL),
-                                data = list(formatSpName(sp))))
-          q[[occDb]]$meta$found <- 
-            nrow(myBTO@occResults[[sp]][['GBIF']][['OccurrenceTable']])
-          q[[occDb]]$data[[formatSpName(sp)]] <- 
-            myBTO@occResults[[sp]][['GBIF']][['OccurrenceTable']]
-        }
+        # myOccCitations <- NULL
+      # } else if (occDb == 'gbif') {
+      #   if (doCitations == FALSE) {
+      #     q <- spocc::occ(sp, occDb, limit = occNum)
+      #     myOccCitations <- NULL
+      #   } else if (doCitations == TRUE) {
+      #     if(any(unlist(lapply(list(gbifUser, gbifEmail, gbifPW), is.null)))) {
+      #       shinyLogs %>% writeLog('error', 
+      #                              'Please specify your GBIF username, email, and password. This is needed to get citations for occurrence records. 
+      #                              Wallace does not store your information or use it for anything else.')
+      #       return()
+      #     }
+      #     myBTO <- occCite::studyTaxonList(x = sp, datasources = "NCBI")
+      #     login <- occCite::GBIFLoginManager(user = gbifUser, email = gbifEmail, 
+      #                                        pwd = gbifPW)
+      #     myBTO <- occCite::occQuery(x = myBTO, GBIFLogin = login, limit = occNum)
+      #     myOccCitations <- occCite::occCitation(myBTO)
+      #     # make something with the same slots as spocc that we use
+      #     q <- list(gbif = list(meta = list(found = NULL),
+      #                           data = list(formatSpName(sp))))
+      #     q[[occDb]]$meta$found <- 
+      #       nrow(myBTO@occResults[[sp]][['GBIF']][['OccurrenceTable']])
+      #     q[[occDb]]$data[[formatSpName(sp)]] <- 
+      #       myBTO@occResults[[sp]][['GBIF']][['OccurrenceTable']]
+      #   }
       } else if (occDb == 'bien') {
-        myBTO <- occCite::studyTaxonList(x = sp, datasources = "NCBI")
-        myBTO <- occCite::occQuery(x = myBTO, datasources = 'bien', limit = occNum)
-        myOccCitations <- NULL
+        # myBTO <- occCite::studyTaxonList(x = sp, datasources = "NCBI")
+        # myBTO <- occCite::occQuery(x = myBTO, datasources = 'bien', limit = occNum)
+        # myOccCitations <- NULL
+        q <- BIEN::BIEN_occurrence_species(species = sp)
         # make something with the same slots as spocc that we use
         q <- list(bien = list(meta = list(found = NULL),
                               data = list(formatSpName(sp))))
@@ -172,14 +173,15 @@ c1_queryDb <- function(spNames, occDb, occNum, doCitations = F, gbifUser = NULL,
                                      elevation = verbatimElevation,
                                      uncertainty = coordinateUncertaintyInMeters)
     } else if (occDb == 'bien') {
-      fields <- c("name", "longitude", "latitude", "country", "state_province", 
+      fields <- c("scrubbed_species_binomial", "longitude", "latitude", "country", "state_province", 
                   "locality", "year", "record_type", "catalog_number", 
-                  "institution_code", "elevation", "uncertainty")
+                  "collection_code", "elevation", "uncertainty")
       # occCite field requirements (no downloaded by occCite) "country", 
       # "state_province", "locality", "year", "record_type", "institution_code",
       # "elevation", "uncertainty"
       for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
-      occs <- occs %>% dplyr::rename(scientific_name = name)
+      occs <- occs %>% dplyr::rename(scientific_name = scrubbed_species_binomial,
+                                     institution_code = collection_code)
     }
     
     # subset by key columns and make id and popup columns
@@ -208,7 +210,6 @@ c1_queryDb <- function(spNames, occDb, occNum, doCitations = F, gbifUser = NULL,
     # put into list
     occList[[formatSpName(sp)]] <- list(orig = occsOrig, cleaned = occs)
   }
-  
   return(occList)
 }
 
