@@ -76,15 +76,15 @@ pca_MOD <- function(input, output, session) {
     # LOAD INTO SPP ####
     # this name concatenates the species names when there are two,
     # and returns the same name when there is only one species name
-    mspName <- paste(curSp(), collapse = "|")
+    mspName <- paste(curSp(), collapse = ".")
     if(is.null(spp[[mspName]])) {
       spp[[mspName]] <- list(pca = pca)
     }else{
       spp[[mspName]]$pca <- pca
     }
     
-    # RMD VALUES ####
-    # add to vector of IDs removed
+    # METADATA ####
+    spp[[mspName]]$rmm$wallaceSettings$pcaSel <- pcaSel
     
     # PLOTS ####
     output$pcaResults <- renderUI({
@@ -136,3 +136,9 @@ pca_MOD <- function(input, output, session) {
 espace_pca_INFO <- infoGenerator(modName = "Environmental Ordination", 
                                  modAuts = "Olivier Broennimann, Jamie Kass", 
                                  pkgName = "ade4")
+
+espace_pca_RMD <- function(sp) {
+  list(espace.sp1 = strsplit(sp, ".", fixed = TRUE)[[1]][1],
+       espace.sp2 = strsplit(sp, ".", fixed = TRUE)[[1]][2],
+       pcaSel = printVecAsis(spp[[sp]]$rmm$wallaceSettings$pcaSel))
+}
