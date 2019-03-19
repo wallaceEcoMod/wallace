@@ -246,42 +246,13 @@ shinyServer(function(input, output, session) {
   # OBTAIN OCCS: other controls ####
   # # # # # # # # # # # # # # # # # #
   
-  # output$curSpUI <- renderUI({
-  #   # check that a species is in the list already -- if not, don't proceed
-  #   # req(length(reactiveValuesToList(spp)) > 0)
-  #   # get the species names
-  #   n <- names(spp)
-  #   # if no current species selected, select the first name
-  #   # if one species selected, retain it
-  #   # if two species selected, 
-  #   # NOTE: this line is necessary to retain the selection after selecting different tabs
-  #   if(!is.null(curSp())) {
-  #     curSp.split <- strsplit(curSp(), "|", fixed=TRUE)[[1]]
-  #     print(curSp.split)
-  #     if(length(curSp.split) == 1) {
-  #       selected <- curSp()
-  #     }else if(length(curSp.split) > 1) {
-  #       selected <- n
-  #     }
-  #   }else{
-  #     selected <- n[1]
-  #   }
-  #   # if espace component, allow for multiple species selection
-  #   if(component() == 'espace') options <- list(maxItems = 2) else options <- list(maxItems = 1)
-  #   # make a named list of their names
-  #   sppNameList <- c(list("Current species" = ""), setNames(as.list(n), n))
-  #   # generate a selectInput ui that lists the available species
-  #   selectizeInput('curSp', label = NULL , choices = sppNameList,
-  #                  multiple = TRUE, selected = selected, options = options)
-  # })
-  
   output$curSpUI <- renderUI({
     # check that a species is in the list already -- if not, don't proceed
     # req(length(reactiveValuesToList(spp)) > 0)
     # get the species names
     n <- names(spp)
     # remove multispecies names from list
-    n <- n[!grepl("|", n, fixed = TRUE)]
+    n <- n[!grepl(".", n, fixed = TRUE)]
     # if no current species selected, select the first name
     # NOTE: this line is necessary to retain the selection after selecting different tabs
     if(!is.null(curSp())) selected <- curSp() else selected <- n[1]
@@ -1329,18 +1300,18 @@ shinyServer(function(input, output, session) {
   
       # make RMD text for all individual species and multispecies pairs
       for(sp in allSp()) {
-        print(sp)
         knit.logicals <- list(
-          occsDb_knit = spp[[sp]]$rmm$data$occurrence$sources != "user",
-          occsUser_knit = spp[[sp]]$rmm$data$occurrence$sources == "user",
+          occsDb_knit = !is.null(spp[[sp]]$rmm$code$wallaceSettings$occsNum),
+          occsUser_knit = !is.null(spp[[sp]]$rmm$code$wallaceSettings$userCSV),
           removeByID_knit = !is.null(spp[[sp]]$rmm$code$wallaceSettings$removedIDs),
           selectByID_knit = !is.null(spp[[sp]]$rmm$code$wallaceSettings$occsSelPolyCoords),
-          worldclim_knit = spp[[sp]]$rmm$data$environment$sources == "WorldClim 1.4",
+          worldclim_knit = !is.null(spp[[sp]]$rmm$wallaceSettings$wcRes),
           bgExtent_knit = !is.null(spp[[sp]]$procEnvs$bgExt),
           bgMskSamplePts_knit = !is.null(spp[[sp]]$bgPts),
           espace_pca_knit = !is.null(spp[[sp]]$pca),
           espaceOccDens_knit = NULL,
           espaceNicheOv_knit = NULL)
+        print(knit.logicals)
         knit.params <- c(file = "Rmd/userReport.Rmd", spName = spName(sp), 
                          sp = sp,
                          knit.logicals,
@@ -1352,7 +1323,7 @@ shinyServer(function(input, output, session) {
                          espace_pca_RMD(sp)
                          )
         knit.lst[[sp]] <- do.call(knitr::knit_expand, knit.params)
-        print(knit.lst)
+        # print(knit.lst)
       }
       # remove the header text from all species' RMD past the first
       for(k in 2:length(knit.lst)) {

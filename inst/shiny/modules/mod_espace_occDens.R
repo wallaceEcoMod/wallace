@@ -19,7 +19,7 @@ occDens_MOD <- function(input, output, session) {
       return()
     }
     # if no multispecies analysis has been run yet
-    mspName <- paste(curSp(), collapse = "|")
+    mspName <- paste(curSp(), collapse = ".")
     if(is.null(spp[[mspName]])) {
       shinyLogs %>% writeLog(type = "error", "Please run PCA with two species before running the occurrence density grid module.")
       return()
