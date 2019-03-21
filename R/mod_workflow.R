@@ -53,7 +53,7 @@
 # }
 # 
 # #occs.thin <- c2_thinOccs(as.data.frame(occs$cleaned), 100)
-# ext <- c4_bgExtent(occs.thin, envs, "mcp", 1)
+# ext <- c4_bgExtent(occs.thin, envs, "minimum convex polygon", 1)
 # bgMsk <- c4_bgMask(occs.thin, envs, ext)
 # bg <- c4_bgSample(occs.thin, bgMsk, 1000)
 # grps <- c5_partitionOccs(occs.thin, bg, "block")

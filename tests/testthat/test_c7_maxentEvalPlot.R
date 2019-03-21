@@ -9,16 +9,16 @@ source("test_helper_functions.R")
 
 ## occurrences
 out.gbif <- c1_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
-occs <- as.data.frame(out.gbif$cleaned)
+occs <- as.data.frame(out.gbif$Panthera_onca$cleaned)
 
 ## background mask
 # enviromental data
-envs <- c3_worldclim(bcRes = 10, bcSel = (list(TRUE,TRUE,TRUE,TRUE,TRUE)))
+envs <- c3_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
 # remove records without enviromental values 
 records <- which(is.na(raster::extract(envs$bio1.1, occs[,3:4])) == TRUE)
 occs <- occs[-records, ] 
 # background extent 
-bgExt <- c4_bgExtent(occs, envs, bgSel = 'bb', bgBuf = 0.5) 
+bgExt <- c4_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5) 
 # background masked 
 bgMsk <- c4_bgMask(occs, envs, bgExt)
 

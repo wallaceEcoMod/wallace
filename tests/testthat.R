@@ -6,4 +6,4 @@ library(wallace)
 # currently they must be run manually. We're working on ways to get automated tests
 # running in the meantime.
 
-# test_check("wallace")
+test_check("wallace")
