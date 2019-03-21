@@ -46,9 +46,9 @@ c1_queryDb
 
 Your analyses are below.
 
-########################################### #
-## Analysis for *`r "{{spName}}"`*
-########################################### #
+###########################################
+Analysis for *`r "{{spName}}"`*
+###########################################
 
 ```{asis}
 ### Obtain Occurrence Data
@@ -135,13 +135,13 @@ bg.{{sp}}.z <- as.data.frame(raster::extract(bgMask.{{sp}}, bg.{{sp}}))
 ```
 
 ```{asis, echo = {{espace_pca_knit}}, eval = {{espace_pca_knit}}, include = {{espace_pca_knit}}}
-### Process Environmental Data
+### Environmental Space Analyses
 Environmental PCA run.
 ```
 
 ```{r, echo = {{espace_pca_knit}}, include = {{espace_pca_knit}}}
 pca.sel <- {{pcaSel}}
-pca.{{sp}} <- cESpace_pca(espace.sp1, espace.sp2, 
+pca.{{sp}} <- cESpace_pca("{{espace.sp1}}", "{{espace.sp2}}", 
                           occs.{{espace.sp1}}.z[pca.sel], 
                           occs.{{espace.sp2}}.z[pca.sel],
                           bg.{{espace.sp1}}.z[pca.sel], 
