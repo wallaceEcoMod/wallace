@@ -13,13 +13,13 @@ source("test_helper_functions.R")
 
 ## occurrences
 occs <-  c1_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
-occs <- as.data.frame(occs$cleaned)
+occs <- as.data.frame(occs$Panthera_onca$cleaned)
 
 ## background 
 # enviromental variables 
-envs <- c3_worldclim(bcRes = 10, bcSel = (list(TRUE,TRUE,TRUE,TRUE,TRUE)))
+envs <- c3_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
 # background extent
-bgExt <- c4_bgExtent(occs, envs, bgSel = 'bb', bgBuf = 0.5)
+bgExt <- c4_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
 # background points as coordinates
 bg <- as.data.frame(bgExt@polygons[[1]]@Polygons[[1]]@coords)
 names(bg) <- c('longitude', 'latitude')

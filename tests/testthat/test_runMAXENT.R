@@ -13,16 +13,16 @@ source("test_helper_functions.R")
 
 ## occurrences
 out.gbif <- c1_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
-occs <- as.data.frame(out.gbif$cleaned)
+occs <- as.data.frame(out.gbif$Panthera_onca$cleaned)
 
 ## background mask
 # enviromental data
-envs <- c3_worldclim(bcRes = 10, bcSel = (list(TRUE,TRUE,TRUE,TRUE,TRUE)))
+envs <- c3_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
 # remove records without enviromental values 
 records <- which(is.na(raster::extract(envs$bio1.1, occs[,3:4])) == TRUE)
 occs <- occs[-records, ] 
 # background extent 
-bgExt <- c4_bgExtent(occs, envs, bgSel = 'bb', bgBuf = 0.5) 
+bgExt <- c4_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5) 
 # background masked 
 bgMsk <- c4_bgMask(occs, envs, bgExt)
 
@@ -72,35 +72,35 @@ for (i in algoritm) {
       # lists
     expect_is(maxentAlg[c("evalTbl","evalTblBins", "models")], "list")
      # a raster Stack
-    expect_is(maxentAlg$predictions, "RasterStack")
+    expect_is(maxentAlg@predictions, "RasterStack")
       # a matrix
-    expect_is(maxentAlg$occPredVals, "matrix")
+    expect_is(maxentAlg@occPredVals, "matrix")
     # there are as much models as feature classes * rms/rmsStep
-    expect_equal(length(maxentAlg$models), (length(rms)/rmsStep)*length(fcs))
+    expect_equal(length(maxentAlg@models), (length(rms)/rmsStep)*length(fcs))
     # as many rasters as models are generated
-    expect_equal(length(maxentAlg$models), raster::nlayers(maxentAlg$predictions))
+    expect_equal(length(maxentAlg@models), raster::nlayers(maxentAlg@predictions))
     # there is a model for each combination of feature classes and regularization multiplier 
-    expect_equal(sort(names(maxentAlg$models)),
+    expect_equal(sort(names(maxentAlg@models)),
                  paste0(sort(rep(fcs, length(rms)/rmsStep)), paste0("_", seq(rms[1], rms[2], by = rmsStep))))
     # there are prediction values for each model 
-    expect_equal(sort(names(maxentAlg$models)), sort(colnames(maxentAlg$occPredVals))) 
+    expect_equal(sort(names(maxentAlg@models)), sort(colnames(maxentAlg@occPredVals))) 
     # evaluation table has the right amout of rows
-    expect_equal(nrow(maxentAlg$evalTbl), (length(rms)/rmsStep)*length(fcs))
+    expect_equal(nrow(maxentAlg@results), (length(rms)/rmsStep)*length(fcs))
     # columns name in the evaluation table are right
-    expect_equal(names(maxentAlg$evalTbl), c("settings", "features", "rm", "train.AUC", "avg.test.AUC", "var.test.AUC", 
+    expect_equal(names(maxentAlg@results), c("features", "rm", "train.AUC", "avg.test.AUC", "var.test.AUC", 
                                              "avg.diff.AUC", "var.diff.AUC", "avg.test.orMTP", "var.test.orMTP", "avg.test.or10pct", "var.test.or10pct",
                                              "AICc", "delta.AICc", "w.AIC", "parameters"))
     # bin evaluation table has the right amout of columns and rows
-    expect_equal(nrow(maxentAlg$evalTblBins), (length(rms)/rmsStep)*length(fcs))
-    expect_equal(ncol(maxentAlg$evalTblBins), (nlevels(factor(occsGrp)))*4)
+    expect_equal(nrow(maxentAlg@results.grp), (length(rms)/rmsStep)*length(fcs))
+    expect_equal(ncol(maxentAlg@results.grp), (nlevels(factor(occsGrp)))*4)
   })
   
   ### test function stepts 
   test_that("output data checks", {
     # the AUC values are between 0 and 1
-    expect_false(FALSE %in% ((maxentAlg$evalTbl[c("var.diff.AUC", "avg.diff.AUC", "var.test.AUC", "avg.test.AUC",
+    expect_false(FALSE %in% ((maxentAlg@results[c("var.diff.AUC", "avg.diff.AUC", "var.test.AUC", "avg.test.AUC",
                                               "train.AUC")])<1 | 
-                           (maxentAlg$evalTbl[c("var.diff.AUC", "avg.diff.AUC", "var.test.AUC", "avg.test.AUC",
+                           (maxentAlg@results[c("var.diff.AUC", "avg.diff.AUC", "var.test.AUC", "avg.test.AUC",
                                                 "train.AUC")])>0))
   })
   }
