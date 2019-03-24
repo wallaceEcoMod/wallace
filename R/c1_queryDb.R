@@ -89,14 +89,12 @@ c1_queryDb <- function(spNames, occDb, occNum, doCitations = F, gbifUser = NULL,
         # myBTO <- occCite::studyTaxonList(x = sp, datasources = "NCBI")
         # myBTO <- occCite::occQuery(x = myBTO, datasources = 'bien', limit = occNum)
         # myOccCitations <- NULL
-        q <- BIEN::BIEN_occurrence_species(species = sp)
+        qBien <- BIEN::BIEN_occurrence_species(species = sp)
         # make something with the same slots as spocc that we use
         q <- list(bien = list(meta = list(found = NULL),
                               data = list(formatSpName(sp))))
-        q[[occDb]]$meta$found <- 
-          nrow(myBTO@occResults[[sp]][['BIEN']][['OccurrenceTable']])
-        q[[occDb]]$data[[formatSpName(sp)]] <- 
-          myBTO@occResults[[sp]][['BIEN']][['OccurrenceTable']]
+        q[[occDb]]$meta$found <- nrow(qBien)
+        q[[occDb]]$data[[formatSpName(sp)]] <- qBien
       }
     })
     
@@ -173,10 +171,10 @@ c1_queryDb <- function(spNames, occDb, occNum, doCitations = F, gbifUser = NULL,
                                      elevation = verbatimElevation,
                                      uncertainty = coordinateUncertaintyInMeters)
     } else if (occDb == 'bien') {
-      fields <- c("scrubbed_species_binomial", "longitude", "latitude", "country", "state_province", 
-                  "locality", "year", "record_type", "catalog_number", 
-                  "collection_code", "elevation", "uncertainty")
-      # occCite field requirements (no downloaded by occCite) "country", 
+      fields <- c("scrubbed_species_binomial", "longitude", "latitude", 
+                  "collection_code", "country", "state_province", "locality", "year", 
+                  "record_type", "catalog_number", "elevation", "uncertainty")
+      # BIEN field requirements (no downloaded by BIEN) "country", 
       # "state_province", "locality", "year", "record_type", "institution_code",
       # "elevation", "uncertainty"
       for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
@@ -190,9 +188,9 @@ c1_queryDb <- function(spNames, occDb, occNum, doCitations = F, gbifUser = NULL,
               "institution_code", "elevation", "uncertainty")
     occs <- occs %>% 
       dplyr::select(dplyr::one_of(cols)) %>%
-      dplyr::mutate(year = as.integer(year), 
-                    uncertainty = as.numeric(uncertainty)) %>% 
-      # make new column for leaflet marker popup content
+      dplyr::mutate(year = as.integer(year),
+                    uncertainty = as.numeric(uncertainty)) %>%
+      # # make new column for leaflet marker popup content
       dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent))) %>%  
       dplyr::arrange_(cols)
     
