@@ -24,7 +24,7 @@ arcmin10 <- c3_worldclim(bcRes, bcSel= envar)
 ### test if the error messages appear when they are supposed to 
 test_that("error checks", {
   # the user has not selected a raster resolution 
-  expect_error(c3_worldclim(bcRes = '', bcSel = envar),
+  expect_error(c3_worldclim(bcRes = '', bcSel = envar, doBrick = FALSE),
                'Select a raster resolution.')
   })
 

@@ -9,13 +9,13 @@ source("test_helper_functions.R")
 
 ## get records
 out.gbif <- c1_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
-occs <- as.data.frame(out.gbif$cleaned)
+occs <- as.data.frame(out.gbif$Panthera_onca$cleaned)
 
 ## background
 # enviromental data
-envs <- c3_worldclim(bcRes = 10, bcSel = (list(TRUE,TRUE,TRUE,TRUE,TRUE)))
+envs <- c3_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
 # background extent 
-bgExt <- c4_bgExtent(occs, envs, bgSel = 'bb', bgBuf = 0.5) 
+bgExt <- c4_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5) 
 # background masked 
 bgMask <- c4_bgMask(occs, envs, bgExt)
 ## background sample

@@ -9,7 +9,7 @@ source("test_helper_functions.R")
 
 ## occurrences
 out.gbif <- c1_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
-occs <- as.data.frame(out.gbif$cleaned)
+occs <- as.data.frame(out.gbif$Panthera_onca$cleaned)
 
 ## record to remove
 removeID <- 81 

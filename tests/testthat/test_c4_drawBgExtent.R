@@ -13,7 +13,7 @@ source("test_helper_functions.R")
 
 ## occurrences
 occs <-  c1_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
-occs <- as.data.frame(occs$cleaned)
+occs <- as.data.frame(occs$Panthera_onca$cleaned)
 
 ## Draw Background Extent
 # set coordinates 
