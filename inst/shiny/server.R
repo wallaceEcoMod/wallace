@@ -1309,9 +1309,11 @@ shinyServer(function(input, output, session) {
           bgExtent_knit = !is.null(spp[[sp]]$procEnvs$bgExt),
           bgMskSamplePts_knit = !is.null(spp[[sp]]$bgPts),
           espace_pca_knit = !is.null(spp[[sp]]$pca),
-          espaceOccDens_knit = NULL,
-          espaceNicheOv_knit = NULL)
+          espaceOccDens_knit = !is.null(spp[[sp]]$occDens),
+          espaceNicheOv_knit = !is.null(spp[[sp]]$nicheOv))
         print(knit.logicals)
+        spAbbr1 <- tolower(strsplit(sp, "_")[[1]])
+        spAbbr2 <- paste(substr(spAbbr1[1], 1, 1), substr(spAbbr1[2], 1, 3), collapse = "")
         knit.params <- c(file = "Rmd/userReport.Rmd", spName = spName(sp), 
                          sp = sp,
                          knit.logicals,
