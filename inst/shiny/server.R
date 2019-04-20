@@ -1,6 +1,3 @@
-UPLOAD_SIZE_MB <- 5000
-options(shiny.maxRequestSize = UPLOAD_SIZE_MB*1024^2)
-
 function(input, output, session) {
   ########################## #
   # REACTIVE VALUES LISTS ####

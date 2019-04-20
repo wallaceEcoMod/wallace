@@ -1,11 +1,7 @@
-# load modules
-module_files <- list.files('modules', pattern = "\\.R$", full.names = TRUE)
-for (file in module_files) source(file, local = TRUE)
-
 tagList(
   shinyjs::useShinyjs(),
   navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsible=TRUE,
-             title='Wallace v1.9.9.9015',
+             title=glue('Wallace v{packageVersion("wallace")}'),
              tabPanel("Intro", value='intro'),
              tabPanel("Occ Data", value='occs'),
              tabPanel("Env Data", value='envs'),
@@ -19,7 +15,7 @@ tagList(
              tabPanel("Project", value='proj'),
              tabPanel("maskRangeR", value = 'post'),
              tabPanel("Session Code", value='rmd'),
-             
+
              fluidRow(column(4,
                              wellPanel(
                                tags$link(href = "css/styles.css", rel = "stylesheet"),
@@ -31,8 +27,8 @@ tagList(
                                conditionalPanel("input.tabs == 'occs'",
                                                 h4("Obtain Occurrence Data"),
                                                 radioButtons("occsSel", "Modules Available:",
-                                                             choices = list("Query Database (Present)" = 'dbOccs', 
-                                                                            "Query Database (Paleo)" = 'pdbOccs', 
+                                                             choices = list("Query Database (Present)" = 'dbOccs',
+                                                                            "Query Database (Paleo)" = 'pdbOccs',
                                                                             "User-specified" = 'userOccs'),
                                                              selected = 'dbOccs'),
                                                 HTML('<hr>'),
@@ -107,8 +103,8 @@ tagList(
                                                                  uiTop(selectOccs_INFO),
                                                                  selectOccs_UI('c2_selectOccs_uiID'),
                                                                  strong("Select occurrences intersecting drawn polygon"), br(),
-                                                                 "(", HTML("<font color='blue'><b>NOTE</b></font>"), 
-                                                                 ': to begin drawing, click hexagon icon on map toolbar, 
+                                                                 "(", HTML("<font color='blue'><b>NOTE</b></font>"),
+                                                                 ': to begin drawing, click hexagon icon on map toolbar,
                                                                  and when complete, press "Finish" and then the "Select Occurrences" button)', br(), br(),
                                                                  actionButton("goSelectOccs", "Select Occurrences")
                                                 ),
@@ -128,8 +124,8 @@ tagList(
                                                 tags$head(tags$style(".butResOccs {background-color: #C51E10;
                                                     color: white;
                                                     padding: 5px 5px;
-                                                    border: none;} 
-                                                    .butResOccs:hover {background-color: #830D03; 
+                                                    border: none;}
+                                                    .butResOccs:hover {background-color: #830D03;
                                                     color: white;}")),
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.procOccsSel == 'selOccs'", uiBottom(selectOccs_INFO)),
@@ -165,7 +161,7 @@ tagList(
                                                                  div("Step 2:", id="step"), div("Sample Background Points", id="stepText"), br(), br(),
                                                                  strong('Mask predictor rasters by background extent and sample background points'), br(), br(),
                                                                  bgMskAndSamplePts_UI('c4_bgMskAndSamplePts'),
-                                                                 actionButton("goBgMask", "Sample") 
+                                                                 actionButton("goBgMask", "Sample")
                                                 ),
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.procEnvsSel == 'bgSel'", uiBottom(bgExtent_INFO)),
@@ -180,7 +176,7 @@ tagList(
                                                                             "Make Target Group" = "biasBgMake",
                                                                             #"Sampling Covariates" = "sampCov",
                                                                             "Bias Surface" = "biasFile")),
-                                                
+
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.samplingBias == 'bgUserTarget'",
                                                                  #uiTop(bgExtent_INFO),
@@ -217,7 +213,7 @@ tagList(
                                                              choices = list("Principal Components Analysis" = "pca",
                                                                             "Occurrence Density Grid" = "occDens",
                                                                             "Niche Overlap" = "nicheOv")),
-                                                
+
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.espaceSel == 'pca'",
                                                                  uiTop(espace_pca_INFO),
@@ -244,7 +240,7 @@ tagList(
                                                 h4("Partition Occurrence Data"),
                                                 radioButtons("partSel", "Modules Available:",
                                                              choices = list("Non-spatial Partition" = 'nsp',
-                                                                            "Spatial Partition" = 'sp'), 
+                                                                            "Spatial Partition" = 'sp'),
                                                              selected = 'sp'), # Check default (no selected)
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.partSel == 'sp'",
@@ -269,7 +265,7 @@ tagList(
                                                 conditionalPanel("input.modelSel == 'Maxent'",
                                                                  uiTop(runMaxent_INFO),
                                                                  htmlOutput('maxentJar'), br(),
-                                                                 "(", HTML("<font color='blue'><b>NOTE</b></font>"), 
+                                                                 "(", HTML("<font color='blue'><b>NOTE</b></font>"),
                                                                  ": see module guidance for troubleshooting tips if you are experiencing problems.)",
                                                                  HTML('<hr>'),
                                                                  runMaxent_UI('runMaxent_uiID'),
@@ -288,7 +284,7 @@ tagList(
                                                 conditionalPanel("input.modelSel == 'GAM'", uiBottom(runGAM_INFO))
                                ),
                                # VISUALIZE ####
-                               conditionalPanel("input.tabs == 'vis'", 
+                               conditionalPanel("input.tabs == 'vis'",
                                                 h4("Visualize Model Results"),
                                                 radioButtons("visSel", "Modules Available:",
                                                              choices = list("BIOCLIM Envelope Plots" = 'bioclimPlot',
@@ -347,8 +343,8 @@ tagList(
                                                 tags$head(tags$style(".butResPj {background-color: #C51E10;
                                                                                     color: white;
                                                                                     padding: 1px 1px;
-                                                                                    border: none;} 
-                                                                      .butResPj:hover {background-color: #830D03; 
+                                                                                    border: none;}
+                                                                      .butResPj:hover {background-color: #830D03;
                                                                                           color: white;}")),
                                                 HTML('<hr>'),
                                                 conditionalPanel("input.projSel == 'projArea'", uiBottom(projectArea_INFO)),
@@ -360,8 +356,8 @@ tagList(
                                                 h4("Post-processing(**)"),
                                                 radioButtons("postSel", "Modules Available:",
                                                              choices = list("User SDM(**)" = 'userSdmPost',
-                                                                            "Olinguito(**)" = 'olinPost', 
-                                                                            "Biomodelos(**)" = 'biomPost', 
+                                                                            "Olinguito(**)" = 'olinPost',
+                                                                            "Biomodelos(**)" = 'biomPost',
                                                                             "Multimask(**)" = 'multPost',
                                                                             "SVM(**)" = 'svmPost'),
                                                              selected = 'olinPost'),
@@ -404,10 +400,10 @@ tagList(
                       # RESULTS WINDOW ####
                       column(8,
                              conditionalPanel("input.tabs != 'intro' & input.tabs != 'rmd'",
-                                              fixedRow(column(4, absolutePanel(uiOutput("curSpUI"), 
+                                              fixedRow(column(4, absolutePanel(uiOutput("curSpUI"),
                                                                                uiOutput("curModelUI"))),
                                                        #uiOutput("curEnvUI"))),
-                                                       column(2, 
+                                                       column(2,
                                                               offset = 1,
                                                               align = "left",
                                                               div(id = "wallaceLog",
@@ -422,16 +418,16 @@ tagList(
                                               tabsetPanel(id = 'main',
                                                           tabPanel('Map', leaflet::leafletOutput("map", height = 700),
                                                                    absolutePanel(top = 160, right = 20, width = 150, draggable = TRUE,
-                                                                                 selectInput("bmap", "", 
+                                                                                 selectInput("bmap", "",
                                                                                              choices = c('ESRI Topo'="Esri.WorldTopoMap",
                                                                                                          'Stamen Terrain'="Stamen.Terrain",
                                                                                                          'Open Topo'="OpenTopoMap",
                                                                                                          'ESRI Imagery'="Esri.WorldImagery",
                                                                                                          'ESRI Nat Geo'='Esri.NatGeoWorldMap'),
                                                                                              selected = "Esri.WorldTopoMap"))),
-                                                          tabPanel('Table', br(), 
+                                                          tabPanel('Table', br(),
                                                                    DT::dataTableOutput('occTbl')),
-                                                          tabPanel('Results', 
+                                                          tabPanel('Results',
                                                                    conditionalPanel("input.tabs == 'envs'", verbatimTextOutput('envsPrint')),
                                                                    # conditionalPanel("input.tabs == 'poccs'",
                                                                    #                  profileOccs_resultsUI("c2_profileOccs_uiID")),
@@ -451,9 +447,9 @@ tagList(
                                                           ),
                                                           tabPanel('Component Guidance', uiOutput('gtext_component')),
                                                           tabPanel('Module Guidance', uiOutput('gtext_module')),
-                                                          tabPanel('Download', 
+                                                          tabPanel('Download',
                                                                    conditionalPanel("input.tabs == 'occs'",
-                                                                                    br(), 
+                                                                                    br(),
                                                                                     fluidRow(
                                                                                       column(3, h5("Download original occurrence data")),
                                                                                       column(2, downloadButton('dlDbOccs', "CVS file"))
@@ -483,7 +479,7 @@ tagList(
                                                                                     )
                                                                    ),
                                                                    conditionalPanel("input.tabs == 'penvs'",
-                                                                                    br(), 
+                                                                                    br(),
                                                                                     fluidRow(
                                                                                       column(3, h5("Download shapefile of background extent")),
                                                                                       column(2, downloadButton('dlBgShp', "ZIP file"))
@@ -491,10 +487,10 @@ tagList(
                                                                                     br(),
                                                                                     fluidRow(
                                                                                       column(3, h5("Download predictor rasters masked to background extent (Select download file type)")),
-                                                                                      column(2, selectInput('bgMskFileType', 
+                                                                                      column(2, selectInput('bgMskFileType',
                                                                                                             label = NULL,
-                                                                                                            choices = list("GeoTIFF" = 'GTiff', 
-                                                                                                                           "GRD" = 'raster', 
+                                                                                                            choices = list("GeoTIFF" = 'GTiff',
+                                                                                                                           "GRD" = 'raster',
                                                                                                                            "ASCII" = 'ascii'))),
                                                                                       column(2, downloadButton('dlMskEnvs', "ZIP file"))
                                                                                     ),
@@ -532,35 +528,35 @@ tagList(
                                                                                     br(),
                                                                                     fluidRow(
                                                                                       column(3, h5("Download current prediction (Select download file type**)")),
-                                                                                      column(2, selectInput('predFileType', 
+                                                                                      column(2, selectInput('predFileType',
                                                                                                             label = NULL,
                                                                                                             choices = list("GeoTIFF" = 'GTiff',
-                                                                                                                           "GRD" = 'raster', 
-                                                                                                                           "ASCII" = 'ascii', 
+                                                                                                                           "GRD" = 'raster',
+                                                                                                                           "ASCII" = 'ascii',
                                                                                                                            "PNG" = 'png'))),
                                                                                       column(2, downloadButton('dlPred', "Predition file(**)")))),
                                                                    conditionalPanel("input.tabs == 'proj'",
                                                                                     br(),
                                                                                     fluidRow(
                                                                                       column(3, h5("Download projection (Select download file type**)")),
-                                                                                      column(2, selectInput('projFileType', 
+                                                                                      column(2, selectInput('projFileType',
                                                                                                             label = NULL,
                                                                                                             choices = list("GeoTIFF" = 'GTiff',
-                                                                                                                           "GRD" = 'raster', 
-                                                                                                                           "ASCII" = 'ascii', 
+                                                                                                                           "GRD" = 'raster',
+                                                                                                                           "ASCII" = 'ascii',
                                                                                                                            "PNG" = 'png'))),
                                                                                       column(2, downloadButton('dlProj', "Projection file(**)"))),
                                                                                     fluidRow(
                                                                                       column(3, h5("Download MESS (Select download file type**)")),
-                                                                                      column(2, selectInput('messFileType', 
+                                                                                      column(2, selectInput('messFileType',
                                                                                                             label = NULL,
                                                                                                             choices = list("GeoTIFF" = 'GTiff',
-                                                                                                                           "GRD" = 'raster', 
-                                                                                                                           "ASCII" = 'ascii', 
+                                                                                                                           "GRD" = 'raster',
+                                                                                                                           "ASCII" = 'ascii',
                                                                                                                            "PNG" = 'png'))),
                                                                                       column(2, downloadButton('dlMess', "MESS file(**)"))))
                                                           )
-                                                          
+
                                               )
                              ),
                              conditionalPanel("input.tabs == 'rmd'",

@@ -32,6 +32,7 @@ Imports:
     ecospat,
     ENMeval (>= 0.3.0),
     gam,
+    glue,
     leaflet.extras (>= 1.0.0),
     magrittr,
     maptools,
