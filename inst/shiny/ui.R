@@ -22,8 +22,8 @@ shinyUI(tagList(
              
              fluidRow(column(4,
                              wellPanel(
-                               includeCSS("css/styles.css"),
-                               includeScript("js/scroll.js"),
+                               tags$link(href = "css/styles.css", rel = "stylesheet"),
+                               tags$script(src = "js/scroll.js"),
                                conditionalPanel("input.tabs == 'intro'",
                                                 includeMarkdown("Rmd/text_intro_tab.Rmd")
                                ),
