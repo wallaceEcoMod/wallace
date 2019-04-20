@@ -1,8 +1,8 @@
 # load modules
-for (f in list.files('./modules')) source(file.path('modules', f), local=TRUE)
+module_files <- list.files('modules', pattern = "\\.R$", full.names = TRUE)
+for (file in module_files) source(file, local = TRUE)
 
-# Define UI for application
-shinyUI(tagList(
+tagList(
   shinyjs::useShinyjs(),
   navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsible=TRUE,
              title='Wallace v1.9.9.9015',
@@ -582,4 +582,4 @@ shinyUI(tagList(
                       )
              )
   )
-))
+)
