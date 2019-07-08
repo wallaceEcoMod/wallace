@@ -3,17 +3,17 @@ queryDb_UI <- function(id) {
   tagList(
     tags$div(title = "text",
              radioButtons(ns("occsDb"), label = "Choose Database",
-                          choices = c("GBIF" = 'gbif', 
-                                      "VertNet" = 'vertnet', 
+                          choices = c("GBIF" = 'gbif',
+                                      "VertNet" = 'vertnet',
                                       "BISON" = 'bison',
-                                      "BIEN" = 'bien'), 
+                                      "BIEN" = 'bien'),
                           inline = TRUE)),
     # GEPB: doCitations will be not available for v2 (17/Mar/2019)
     # conditionalPanel(sprintf("input['%s'] == 'gbif'", ns("occsDb")),
-    #                  checkboxInput(ns("doCitations"), 
-    #                                label = 'Include Data Source Citations', 
+    #                  checkboxInput(ns("doCitations"),
+    #                                label = 'Include Data Source Citations',
     #                                value = FALSE),
-    #                  conditionalPanel(sprintf("input['%1$s'] == 'gbif' & 
+    #                  conditionalPanel(sprintf("input['%1$s'] == 'gbif' &
     #                                           input['%2$s'] == true",
     #                                           ns("occsDb"), ns("doCitations")),
     #                                   splitLayout(textInput(ns('gbifUser'),
@@ -26,12 +26,12 @@ queryDb_UI <- function(id) {
     #                                                         'GBIF password',
     #                                                         value=NULL)))),
     tags$div(title = 'Examples: Felis catus, Canis lupus, Nyctereutes procyonoides',
-             textInput(ns("spNames"), label = "Enter species scientific name", 
-                       placeholder = 'format: Genus species', value="meles meles, martes martes")), # Default (remove values)
+             textInput(ns("spNames"), label = "Enter species scientific name",
+                       placeholder = 'format: Genus species', value="meles meles")), # Default (remove values)
     conditionalPanel(sprintf("input['%s'] != 'bien'", ns("occsDb")),
                      tags$div(title = 'Maximum number of occurrences recovered from databases. Downloaded records are not sorted randomly: rows are always consistent between downloads.',
-                              numericInput(ns("occsNum"), 
-                                           "Set maximum number of occurrences", 
+                              numericInput(ns("occsNum"),
+                                           "Set maximum number of occurrences",
                                            value = 100, min = 0)))
   )
 }
@@ -43,14 +43,14 @@ queryDb_MOD <- function(input, output, session, targetGroup = FALSE) {
       shinyLogs %>% writeLog(type = 'warning', "Enter a non-zero number of occurrences.")
       return()
     }
-    
+
     # FUNCTION CALL ####
-    occsList <- c1_queryDb(input$spNames, input$occsDb, input$occsNum, 
+    occsList <- c1_queryDb(input$spNames, input$occsDb, input$occsNum,
                            shinyLogs = shinyLogs)
                            # input$doCitations, input$gbifUser, input$gbifEmail,
                            # input$gbifPW, shinyLogs)
     req(occsList)
-    
+
     if(targetGroup == TRUE) {
       return(occsList)
     }
@@ -63,11 +63,11 @@ queryDb_MOD <- function(input, output, session, targetGroup = FALSE) {
         # altered during session, while occData$occsCleaned is preserved in the
         # post-download cleaned state; occsOrig is the raw download
         # rmm is the range model metadata object
-        spp[[sp]] <- list(occs = occsList[[sp]]$cleaned, 
-                          occData = list(occsOrig = occsList[[sp]]$orig, 
+        spp[[sp]] <- list(occs = occsList[[sp]]$cleaned,
+                          occData = list(occsOrig = occsList[[sp]]$orig,
                                          occsCleaned = occsList[[sp]]$cleaned),
-                          rmm = rangeModelMetadata::rmmTemplate())  
-        
+                          rmm = rangeModelMetadata::rmmTemplate())
+
         # METADATA ####
         spp[[sp]]$rmm$data$occurrence$taxa <- sp
         spp[[sp]]$rmm$data$occurrence$dataType <- "presence only"
@@ -75,19 +75,19 @@ queryDb_MOD <- function(input, output, session, targetGroup = FALSE) {
         spp[[sp]]$rmm$code$wallaceSettings$occsNum <- input$occsNum
         spp[[sp]]$rmm$code$wallaceSettings$occsRemoved <- input$occsNum - nrow(occsList[[sp]]$cleaned)
         spp[[sp]]$rmm$data$occurrence$sources <- input$occsDb
-        # store citations with occCite, or just report the database if users are 
+        # store citations with occCite, or just report the database if users are
         # too lame to use bridgetree
         # if(input$doCitations){
         #   # DOUBLE CHECK THIS DOESN"T NEED TO BE VECTORIZED!!
         #   spp[[sp]]$rmm$data$occurrence$sources <- occsList[[sp]]$citations
         # } else {
         #   spp[[sp]]$rmm$data$occurrence$sources <- input$occsDb
-        # }  
+        # }
       }
       return(occsList)
     }
-    
-    
+
+
     # RETURN ####
     # output the table
     # return(occsList[[sp]]$cleaned)
@@ -97,14 +97,14 @@ queryDb_MOD <- function(input, output, session, targetGroup = FALSE) {
 queryDb_MAP <- function(map, session) {
   occs <- spp[[curSp()]]$occData$occsCleaned
   map %>% clearAll() %>%
-    addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, 
-                     radius = 5, color = 'red', fill = TRUE, fillColor = "red", 
+    addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude,
+                     radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                      fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
     zoom2Occs(occs)
 }
 
 queryDb_INFO <- infoGenerator(modName = "Query Database (Present)",
-                              modAuts = "Jamie M. Kass, Bruno Vilela, Gonzalo E. 
+                              modAuts = "Jamie M. Kass, Bruno Vilela, Gonzalo E.
                                 Pinilla-Buitrago, Hannah Owens, Cory Merow, Robert P.
                                 Anderson",
                               pkgName = "spocc")
@@ -113,4 +113,4 @@ queryDb_RMD <- function(sp) {
   list(occDb = spp[[sp]]$rmm$data$occurrence$sources,
        occNum = spp[[sp]]$rmm$code$wallaceSettings$occsNum)
 }
-  
+

@@ -14,7 +14,6 @@ tagList(
     tabPanel("Model", value='model'),
     tabPanel("Visualize", value='vis'),
     tabPanel("Project", value='proj'),
-    tabPanel("maskRangeR", value = 'post'),
     tabPanel("Session Code", value='rmd'),
 
     fluidRow(
@@ -459,12 +458,22 @@ tagList(
             h4("Project Model"),
             radioButtons(
               "projSel", "Modules Available:",
-              choices = list("Project to New Extent" = 'projArea',
+              choices = list("Draw Project Region (**)" = 'projDraw',
+                             "User-specified Project Region (**)" = 'projShp',
+                             "Project to New Extent" = 'projArea',
                              "Project to New Time" = 'projTime',
+                             "Project to User Region (**)" = 'projUser',
                              "Calculate Environmental Similarity" = 'mess'),
-              selected = 'projArea'
+              selected = 'projDraw'
             ),
             tags$hr(),
+            conditionalPanel(
+              "input.projSel == 'projDraw'",
+              uiTop(projectDraw_INFO),
+              projectDraw_UI('c8_projectDraw'),
+              strong("Define projection extent (**)"), br(),
+              actionButton('goProjectDraw', "Create (**)")
+            ),
             conditionalPanel(
               "input.projSel == 'projArea'",
               uiTop(projectArea_INFO),
@@ -507,67 +516,6 @@ tagList(
             conditionalPanel(
               "input.projSel == 'mess'",
               uiBottom(envSimilarity_INFO)
-            )
-          ),
-          # POST PROCESING ####
-          conditionalPanel(
-            "input.tabs == 'post'",
-            h4("Post-processing(**)"),
-            radioButtons(
-              "postSel", "Modules Available:",
-              choices = list("User SDM(**)" = 'userSdmPost',
-                             "Olinguito(**)" = 'olinPost',
-                             "Biomodelos(**)" = 'biomPost',
-                             "Multimask(**)" = 'multPost',
-                             "SVM(**)" = 'svmPost'),
-              selected = 'olinPost'
-            ),
-            tags$hr(),
-            conditionalPanel(
-              "input.postSel == 'userSdmPost'",
-              uiTop(userSDM_INFO),
-              uiOutput("userSDM_UI"),
-              tags$hr()
-            ),
-            conditionalPanel(
-              "input.postSel == 'olinPost'",
-              uiTop(olinguito_INFO),
-              tags$hr()
-            ),
-            conditionalPanel(
-              "input.postSel == 'biomPost'",
-              uiTop(biomodelos_INFO),
-              tags$hr()
-            ),
-            conditionalPanel(
-              "input.postSel == 'multPost'",
-              uiTop(multilayers_INFO),
-              tags$hr()
-            ),
-            conditionalPanel(
-              "input.postSel == 'svmPost'",
-              uiTop(SVM_INFO),
-              tags$hr()
-            ),
-            conditionalPanel(
-              "input.postSel == 'userSdmPost'",
-              uiBottom(userSDM_INFO)
-            ),
-            conditionalPanel(
-              "input.postSel == 'olinPost'",
-              uiBottom(olinguito_INFO)
-            ),
-            conditionalPanel(
-              "input.postSel == 'biomPost'",
-              uiBottom(biomodelos_INFO)
-            ),
-            conditionalPanel(
-              "input.postSel == 'multPost'",
-              uiBottom(multilayers_INFO)
-            ),
-            conditionalPanel(
-              "input.postSel == 'svmPost'",
-              uiBottom(SVM_INFO)
             )
           ),
           # SESSION CODE ####
