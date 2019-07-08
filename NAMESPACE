@@ -3,7 +3,6 @@
 export(c1_queryDb)
 export(c1_queryPaleoDb)
 export(c1_userOccs)
-export(c2_profileOccs)
 export(c2_removeByID)
 export(c2_selectOccs)
 export(c2_thinOccs)

@@ -1,6 +1,4 @@
-options(shiny.maxRequestSize=5000*1024^2)
-
-shinyServer(function(input, output, session) {
+function(input, output, session) {
   ########################## #
   # REACTIVE VALUES LISTS ####
   ########################## #
@@ -141,7 +139,7 @@ shinyServer(function(input, output, session) {
                 "dbOccs" = queryDb_MAP, 
                 "userOccs" = userOccs_MAP,
                 "selOccs" = selectOccs_MAP, 
-                "profOccs" = occProfile_MAP,
+                # "profOccs" = occProfile_MAP,
                 "remID" = removeByID_MAP, 
                 "spthin" = thinOccs_MAP, 
                 "wcbc" = wcBioclims_MAP,
@@ -458,15 +456,15 @@ shinyServer(function(input, output, session) {
   # # # # # # # # # # # # # # # # # # # #
   # module Profile Occurrences ####
   # # # # # # # # # # # # # # # # # # # #
-  observeEvent(input$goProfileOccs, {
-    profileOccs <- callModule(profileOccs_MOD, 'c2_profileOccs_uiID')
-    profileOccs()
-  })
-
-  observeEvent(input$goProfileOccsClean, {
-    profileOccsClean <- callModule(profileOccsClean_MOD, 'c2_profileOccsClean_uiID')
-    profileOccsClean()
-  })
+  # observeEvent(input$goProfileOccs, {
+  #   profileOccs <- callModule(profileOccs_MOD, 'c2_profileOccs_uiID')
+  #   profileOccs()
+  # })
+  # 
+  # observeEvent(input$goProfileOccsClean, {
+  #   profileOccsClean <- callModule(profileOccsClean_MOD, 'c2_profileOccsClean_uiID')
+  #   profileOccsClean()
+  # })
 
   # # # # # # # # # # # # # # # # # # # #
   # module Remove Occurrences By ID ####
@@ -1379,4 +1377,4 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       rangeModelMetadata::rmmToCSV(rmm(), filename = file)
     })
-})
+}
