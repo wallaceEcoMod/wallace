@@ -1,19 +1,25 @@
 #' 
-#' #' @title c2_thinOccs
+#' #' @title c2_profileOccs
 #' #' @description ..
 #' #'
 #' #' @details
 #' #' See Examples.
 #' #'
-#' #' @param occs x
-#' #' @param thinDist x
-#' #' @param shinyLogs x
+#' #' @param sp.name x
+#' #' @param sp.table x
+#' #' @param x.field x
+#' #' @param y.field x
+#' #' @param t.field x
+#' #' @param l.field 
+#' # c.field = "country",
+#' # e.field = "elevation",
+#' #' @param r.env 
 #' # @keywords
 #' #'
 #' # @examples
 #' #'
 #' #'
-#' # @return 
+#' # @return
 #' #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 #' # @note
 #' 
@@ -26,28 +32,28 @@
 #' 
 #' #' @export
 #' 
-#' c2_profileOccs <- function(sp.name, 
-#'                            sp.table, 
-#'                            x.field, 
-#'                            y.field, 
-#'                            t.field, 
+#' c2_profileOccs <- function(sp.name,
+#'                            sp.table,
+#'                            x.field,
+#'                            y.field,
+#'                            t.field,
 #'                            l.field,
 #'                            # c.field = "country",
 #'                            # e.field = "elevation",
-#'                            r.env, 
+#'                            r.env,
 #'                            shinyLogs = NULL) {
-#'   
+#' 
 #'   # query database
 #'   occs.prof <- suppressMessages(
-#'                occProfileR::occurrenceProfile(sp.name = sp.name, 
-#'                                               sp.table = sp.table, 
-#'                                               x.field = x.field, 
-#'                                               y.field = y.field, 
-#'                                               t.field = t.field, 
+#'                occProfileR::occurrenceProfile(sp.name = sp.name,
+#'                                               sp.table = sp.table,
+#'                                               x.field = x.field,
+#'                                               y.field = y.field,
+#'                                               t.field = t.field,
 #'                                               l.field = l.field,
-#'                                               # c.field = c.field, 
+#'                                               # c.field = c.field,
 #'                                               # e.field = e.field,
-#'                                               doCentroidDetection = TRUE, 
+#'                                               doCentroidDetection = TRUE,
 #'                                               doRangeAnalysis = TRUE,
 #'                                               doCountryRecordAnalysis = FALSE,
 #'                                               doHyperHumanDetection = FALSE,
@@ -56,9 +62,9 @@
 #'                                               doEnvOutliers=TRUE,
 #'                                               r.env = r.env,
 #'                                               verbose = F))
-#'     
+#' 
 #'   shinyLogs %>% writeLog('Occurrences profiled for ', em(sp.name), '.')
-#'   
+#' 
 #'   return(occs.prof)
 #' }
 #' 
@@ -78,7 +84,7 @@
 #' # @examples
 #' #'
 #' #'
-#' # @return 
+#' # @return
 #' #' @author Cory Merow <jkass@@gradcenter.cuny.edu>
 #' # @note
 #' 
@@ -90,28 +96,27 @@
 #' # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' 
 #' #' @export
-#' # 
+#' #
 #' # c2_selectCleanedOccs <- function(occs, grades, shinyLogs = NULL) {
 #' #   if (is.null(occs)) {
-#' #     shinyLogs %>% writeLog(type = 'error', 
+#' #     shinyLogs %>% writeLog(type = 'error',
 #' #                            "Before processing occurrences, obtain the data in component 1.")
 #' #     return()
 #' #   }
 #' #   # make sure some have been selected
 #' #   # also add a test that at least some presences pass the specified tests
 #' #   if (is.null(grades)) {
-#' #     shinyLogs %>% writeLog(type = 'error', 
+#' #     shinyLogs %>% writeLog(type = 'error',
 #' #                            'You must select some grades to keep.')
 #' #     return()
 #' #   }
-#' #   
+#' #
 #' #   # CM: i think occs should have all the grades with it
 #' #   # check this uses the right formats
-#' #   keep=occs$quality.grade %in% unlist(grades) 
+#' #   keep=occs$quality.grade %in% unlist(grades)
 #' #   occsClean=occs[keep,]
-#' #   
+#' #
 #' #   shinyLogs %>% writeLog(
 #' #     em(spName(occs)), ": Removing dirty occurrences")
 #' #   return(occsClean)
 #' # }
-#'   

@@ -126,20 +126,24 @@ tagList(
             h4("Process Occurrence Data"),
             radioButtons(
               "procOccsSel", "Modules Available:",
-              # choices = list("Profile Occurrences" = "profOccs",
-              #                "Select Occurrences On Map" = 'selOccs',
               choices = list("Select Occurrences On Map" = 'selOccs',
                              "Remove Occurrences By ID" = 'remID',
-                             "Spatial Thin" = 'spthin'),
+                             "Spatial Thin" = 'spthin'),#,
+                             #"Profile Occurrences" = "profOccs"), # CM
               selected = "spthin" # Check default (no selected)
             ),
             tags$hr(),
+            
+            # CM: start comment
             # conditionalPanel("input.procOccsSel == 'profOccs'",
-            #                  # uiTop(profileOccs_INFO),
+            #                  uiTop(profileOccs_INFO),
             #                  actionButton("goProfileOccs", "Profile Occurrences"), br(), br(),
             #                  profileOccs_UI('c2_profileOccs_uiID'),
-            #                  actionButton("goProfileOccsClean", "Clean Occurrences")
+            #                  actionButton("goProfileOccsClean", "Clean Occurrences"),
+            #                  uiBottom(profileOccs_INFO)
             # ),
+            # CM: End comment
+            
             conditionalPanel(
               "input.procOccsSel == 'selOccs'",
               uiTop(selectOccs_INFO),
