@@ -6,8 +6,8 @@
 #     # tags$div(checkboxInput(ns("spThinAllSp"), label = "Batch for all species?", value = TRUE),
 #     tags$div(
 #       title='Create a profile characterizing occurrence records for cleaning and filtering.',
-#       checkboxGroupInput(ns("grades"), 
-#                          label = strong("Choose grades to keep"), 
+#       checkboxGroupInput(ns("grades"),
+#                          label = strong("Choose grades to keep"),
 #                          choices = list("A: xxx" = "A",
 #                                         "B: xxx" = "B",
 #                                         "C: xxx" = "C",
@@ -30,7 +30,7 @@
 #   reactive({
 #     # loop over all species if batch is on
 #     if(input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
-#     
+# 
 #     for(sp in spLoop) {
 #       # FUNCTION CALL ####
 #       occs.prof <- c2_profileOccs(sp.name = sp,
@@ -44,13 +44,13 @@
 #                                   r.env = envs.global[[spp[[sp]]$envs]],
 #                                   shinyLogs)
 #       req(occs.prof)
-#       
+# 
 #       occs.prof$occ_full_profile <- occs.prof$occ_full_profile[order(occs.prof$occ_full_profile$occID),]
-#       
+# 
 #       # LOAD INTO SPP ####
 #       # record present occs before thinning (this may be different from occData$occOrig)
 #       spp[[sp]]$procOccs$occsProf <- occs.prof
-#       
+# 
 #       # PLOTS ####
 #       output$profileOccsResults <- renderUI({
 #         full.qaqc <- occs.prof$occ_full_profile
@@ -62,14 +62,14 @@
 #                                                                 '#abd9e9','#e0f3f8',
 #                                                                 '#fee090','#fdae61',
 #                                                                 '#f46d43','#d73027'))
-#           color.to.plot<-as.character(sapply(full.qaqc$quality.grade, 
+#           color.to.plot<-as.character(sapply(full.qaqc$quality.grade,
 #                                              function (x) proposed.color.grading[x,'color.qgrade']))
-#           
+# 
 #           full.qaqc$grade.color <- color.to.plot
-#           ggplot2::ggplot(ggplot2::aes(x=quality.grade,fill=quality.grade), data = full.qaqc) + 
-#             ggplot2::geom_bar() 
+#           ggplot2::ggplot(ggplot2::aes(x=quality.grade,fill=quality.grade), data = full.qaqc) +
+#             ggplot2::geom_bar()
 #         })
-#         
+# 
 #         tabsetPanel(
 #           tabPanel("Occurrence Profiling Results",
 #                    tagList(
@@ -81,10 +81,10 @@
 #                    ))
 #         )
 #       })
-#       
+# 
 #       # METADATA ####
 #       # decide later on metadata
-#       # spp[[sp]]$rmm$code$wallaceSettings$thinDistKM <- input$thinDist  
+#       # spp[[sp]]$rmm$code$wallaceSettings$thinDistKM <- input$thinDist
 #     }
 #   })
 # }
@@ -113,9 +113,9 @@
 #       print(input$grades)
 #       print('       ')
 #       print(unlist(input$grades) )
-#       
-#       keep= print(occs.thin$occ_short_profile$quality.grade) %in% 
-#         unlist(input$grades) 
+# 
+#       keep= print(occs.thin$occ_short_profile$quality.grade) %in%
+#         unlist(input$grades)
 #       print(keep)
 #       # Test that at least some presences pass the specified test
 #       if(length(keep)==0) {
@@ -123,20 +123,20 @@
 #                               'You must select some grades to keep.')
 #         return()
 #       }
-#       
+# 
 #       occsClean=occs[keep,]
 # 
-#       shinyLogs %>% writeLog( 
+#       shinyLogs %>% writeLog(
 #         em(spName(occs)), ": Removing dirty occurrences")
-#       
+# 
 #       ########
-#       
+# 
 #       # LOAD INTO SPP ####
-#       spp[[sp]]$occs <- occs.clean 
-#     
+#       spp[[sp]]$occs <- occs.clean
+# 
 #       # METADATA ####
 #       # decide later on metadata
-#       # spp[[sp]]$rmm$code$wallaceSettings$thinDistKM <- input$thinDist 
+#       # spp[[sp]]$rmm$code$wallaceSettings$thinDistKM <- input$thinDist
 #       # CM: add a vector of which grades/tests kept
 #     }
 #   })

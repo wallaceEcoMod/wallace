@@ -20,7 +20,7 @@ nicheOv_MOD <- function(input, output, session) {
       shinyLogs %>% writeLog(type = "error", "Please select two species to run the niche overlap module.")
       return()
     }
-    mspName <- paste(curSp(), collapse = "|")
+    mspName <- paste(curSp(), collapse = ".")
     if(is.null(spp[[mspName]])) {
       shinyLogs %>% writeLog(type = "error", "Please run PCA and occurrence density with two species before running the niche overlap module.")
       return()

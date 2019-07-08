@@ -23,7 +23,7 @@
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 
-c3_worldclim<- function(bcRes, bcSel, mapCntr, shinyLogs=NULL){
+c3_worldclim<- function(bcRes, bcSel, mapCntr, doBrick, shinyLogs=NULL){
   
   if(bcRes == '') {
     shinyLogs %>% writeLog(type = 'error', 'Select a raster resolution.')
@@ -39,10 +39,12 @@ c3_worldclim<- function(bcRes, bcSel, mapCntr, shinyLogs=NULL){
       wcbc <- wcbc[[bcSel]]
     }
   })
-    # convert to brick for faster processing
-  smartProgress(shinyLogs, message = "Converting to RasterBrick for faster processing...", {
-    wcbc <- raster::brick(wcbc)
-  }) 
+  # convert to brick for faster processing
+  if(doBrick == TRUE) {
+    smartProgress(shinyLogs, message = "Converting to RasterBrick for faster processing...", {
+      wcbc <- raster::brick(wcbc)
+    })   
+  }
   
   if (raster::nlayers(wcbc) == 19) {
     bcSel <- 'bio1-19'
@@ -50,7 +52,7 @@ c3_worldclim<- function(bcRes, bcSel, mapCntr, shinyLogs=NULL){
     bcSel <- paste(names(wcbc), collapse = ", ")
   }
   shinyLogs %>% writeLog("WorldClim bioclimatic variables ", bcSel, " at ", 
-                    bcRes, " arcmin resolution.")
+                         bcRes, " arcmin resolution.")
   
   # change names if bio01 is bio1, and so forth
   i <- grep('bio[0-9]$', names(wcbc))

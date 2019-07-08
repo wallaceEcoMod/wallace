@@ -2,8 +2,8 @@
 bgMskAndSamplePts_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    numericInput(ns("bgPtsNum"), label = "No. of background points", value = 0, min = 1, step = 1),
-    checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE)
+    numericInput(ns("bgPtsNum"), label = "No. of background points", value = 10000, min = 1, step = 1), # Check default (value = 10000)
+    checkboxInput(ns("batch"), label = strong("Batch"), value = T) # Check default (value = FALSE)
   )
 }
 
@@ -63,3 +63,8 @@ bgMskAndSamplePts_MOD <- function(input, output, session) {
 bgMskSamplePts_INFO <- infoGenerator(modName = "Sample Background Points",
                                      modAuts = "Jamie M. Kass, Bruno Vilela, Robert P. Anderson",
                                      pkgName = NULL)
+
+bgMskSamplePts_RMD <- function(sp) {
+  list(bgPtsNum = spp[[sp]]$rmm$model$maxent$backgroundSizeSet)
+}
+

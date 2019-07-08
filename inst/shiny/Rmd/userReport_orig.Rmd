@@ -290,7 +290,6 @@ bg.xy <- dismo::randomPoints(envsBgMsk, {{bgPtsNum}})
 bg.xy <- as.data.frame(bg.xy)  
 ```
 
-
 ```{r partSwitch, include = FALSE, eval = part.any}
 partSwitch <- switch("{{partSel}}", 'block'='Block', 'cb1'='Checkerboard 1', 'cb2'='Checkerboard 2', 'jack'='Jackknife', 'random'='Random')
 ```
@@ -331,9 +330,6 @@ group.data <- ENMeval::get.randomkfold(occ=occs.xy, bg.coords=bg.xy, kfolds={{kf
 occs.grp <- group.data[[1]]
 bg.grp <- group.data[[2]]
 ```
-
-
-
 
 ```{asis, echo = mod.any, eval = mod.any, include = mod.any}
 ### Build and Evaluate Niche Model

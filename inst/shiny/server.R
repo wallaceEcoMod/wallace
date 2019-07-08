@@ -1,6 +1,4 @@
-options(shiny.maxRequestSize=5000*1024^2)
-
-shinyServer(function(input, output, session) {
+function(input, output, session) {
   ########################## #
   # REACTIVE VALUES LISTS ####
   ########################## #
@@ -136,12 +134,12 @@ shinyServer(function(input, output, session) {
   # MAPPING LOGIC ####
   observe({
     # must have one species selected and occurrence data
-    req(length(curSp()) == 1, occs())
+    req(length(curSp()) == 1, occs(), module())
     f <- switch(module(), 
                 "dbOccs" = queryDb_MAP, 
                 "userOccs" = userOccs_MAP,
                 "selOccs" = selectOccs_MAP, 
-                #"profOccs" = occProfile_MAP,
+                # "profOccs" = occProfile_MAP,
                 "remID" = removeByID_MAP, 
                 "spthin" = thinOccs_MAP, 
                 "wcbc" = wcBioclims_MAP,
@@ -246,42 +244,13 @@ shinyServer(function(input, output, session) {
   # OBTAIN OCCS: other controls ####
   # # # # # # # # # # # # # # # # # #
   
-  # output$curSpUI <- renderUI({
-  #   # check that a species is in the list already -- if not, don't proceed
-  #   # req(length(reactiveValuesToList(spp)) > 0)
-  #   # get the species names
-  #   n <- names(spp)
-  #   # if no current species selected, select the first name
-  #   # if one species selected, retain it
-  #   # if two species selected, 
-  #   # NOTE: this line is necessary to retain the selection after selecting different tabs
-  #   if(!is.null(curSp())) {
-  #     curSp.split <- strsplit(curSp(), "|", fixed=TRUE)[[1]]
-  #     print(curSp.split)
-  #     if(length(curSp.split) == 1) {
-  #       selected <- curSp()
-  #     }else if(length(curSp.split) > 1) {
-  #       selected <- n
-  #     }
-  #   }else{
-  #     selected <- n[1]
-  #   }
-  #   # if espace component, allow for multiple species selection
-  #   if(component() == 'espace') options <- list(maxItems = 2) else options <- list(maxItems = 1)
-  #   # make a named list of their names
-  #   sppNameList <- c(list("Current species" = ""), setNames(as.list(n), n))
-  #   # generate a selectInput ui that lists the available species
-  #   selectizeInput('curSp', label = NULL , choices = sppNameList,
-  #                  multiple = TRUE, selected = selected, options = options)
-  # })
-  
   output$curSpUI <- renderUI({
     # check that a species is in the list already -- if not, don't proceed
     # req(length(reactiveValuesToList(spp)) > 0)
     # get the species names
     n <- names(spp)
     # remove multispecies names from list
-    n <- n[!grepl("|", n, fixed = TRUE)]
+    n <- n[!grepl(".", n, fixed = TRUE)]
     # if no current species selected, select the first name
     # NOTE: this line is necessary to retain the selection after selecting different tabs
     if(!is.null(curSp())) selected <- curSp() else selected <- n[1]
@@ -1325,21 +1294,52 @@ shinyServer(function(input, output, session) {
         input$rmdFileType, Rmd = 'Rmd', PDF = 'pdf', HTML = 'html', Word = 'docx'
       ))},
     content = function(file) {
-      exp <- knitr::knit_expand("Rmd/userReport.Rmd", 
-                                spName=curSp(), 
-                                occsSource=rmm()$data$occurrence$sources,
-                                occsNum=rmm()$code$wallaceSettings$occsNum,  # comp 1
-                                occsCSV=rmm()$code$wallaceSettings$userCSV,
-                                occsRemoved=printVecAsis(rmm()$code$wallaceSettings$removedIDs)
+      knit.lst <- list()
+  
+      # make RMD text for all individual species and multispecies pairs
+      for(sp in allSp()) {
+        knit.logicals <- list(
+          occsDb_knit = !is.null(spp[[sp]]$rmm$code$wallaceSettings$occsNum),
+          occsUser_knit = !is.null(spp[[sp]]$rmm$code$wallaceSettings$userCSV),
+          removeByID_knit = !is.null(spp[[sp]]$rmm$code$wallaceSettings$removedIDs),
+          selectByID_knit = !is.null(spp[[sp]]$rmm$code$wallaceSettings$occsSelPolyCoords),
+          worldclim_knit = !is.null(spp[[sp]]$rmm$wallaceSettings$wcRes),
+          bgExtent_knit = !is.null(spp[[sp]]$procEnvs$bgExt),
+          bgMskSamplePts_knit = !is.null(spp[[sp]]$bgPts),
+          espace_pca_knit = !is.null(spp[[sp]]$pca),
+          espaceOccDens_knit = !is.null(spp[[sp]]$occDens),
+          espaceNicheOv_knit = !is.null(spp[[sp]]$nicheOv))
+        print(knit.logicals)
+        spAbbr1 <- tolower(strsplit(sp, "_")[[1]])
+        spAbbr2 <- paste(substr(spAbbr1[1], 1, 1), substr(spAbbr1[2], 1, 3), collapse = "")
+        knit.params <- c(file = "Rmd/userReport.Rmd", spName = spName(sp), 
+                         sp = sp,
+                         knit.logicals,
+                         queryDb_RMD(sp), userOccs_RMD(sp), 
+                         worldclim_RMD(sp),
+                         removeByID_RMD(sp), selectOccs_RMD(sp),
+                         worldclim_RMD(sp), userEnvs_RMD(sp),
+                         bgExtent_RMD(sp), bgMskSamplePts_RMD(sp),
+                         espace_pca_RMD(sp)
+                         )
+        knit.lst[[sp]] <- do.call(knitr::knit_expand, knit.params)
+        # print(knit.lst)
+      }
+      # remove the header text from all species' RMD past the first
+      for(k in 2:length(knit.lst)) {
+        knit.lst[[k]] <- gsub("---\ntitle.*Your analyses are below.", "", knit.lst[[k]])
+      }
+      # concatenate all species' RMDs together
+      knit.out <- paste(knit.lst, collapse = "\n")
+      print(knit.out)
                                 
-      )  # comp 8
       # temporarily switch to the temp dir, in case you do not have write
       # permission to the current working directory
       owd <- setwd(tempdir())
       on.exit(setwd(owd))
-      writeLines(exp, 'userReport2.Rmd')
+      writeLines(knit.out, 'userReport2.Rmd')
       
-      if (input$rmdFileType == 'Rmd') {
+      if(input$rmdFileType == 'Rmd') {
         out <- rmarkdown::render('userReport2.Rmd', rmarkdown::md_document(variant="markdown_github"))
         writeLines(gsub('``` r', '```{r}', readLines(out)), 'userReport3.Rmd')
         out <- 'userReport3.Rmd'
@@ -1377,4 +1377,4 @@ shinyServer(function(input, output, session) {
     content = function(file) {
       rangeModelMetadata::rmmToCSV(rmm(), filename = file)
     })
-})
+}

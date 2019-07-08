@@ -3,12 +3,12 @@ bgExtent_UI <- function(id) {
   ns <- NS(id)
   tagList(
     radioButtons(ns("bgSel"), "Background Extents:",
-                 choices = list("Bounding box" = 'bb', 
-                                "Minimum convex polygon" = 'mcp',
-                                "Point buffers" = 'ptbuf')),
+                 choices = list("bounding box", 
+                                "minimum convex polygon",
+                                "point buffers")),
     tags$div(title='Buffer area in degrees (1 degree = ~111 km). Exact length varies based on latitudinal position.',
-             numericInput(ns("bgBuf"), label = "Study region buffer distance (degree)", value = 0, min = 0, step = 0.5)),
-    checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE)
+             numericInput(ns("bgBuf"), label = "Study region buffer distance (degree)", value = 1, min = 0, step = 0.5)), # Check default (value = 0)
+    checkboxInput(ns("batch"), label = strong("Batch"), value = T) # Check default (value = FALSE)
   )
 }
 
@@ -39,6 +39,8 @@ bgExtent_MOD <- function(input, output, session) {
       
       # METADATA ####
       spp[[sp]]$rmm$model$maxent$backgroundSizeRule <- paste0(input$bgSel, ', ', input$bgBuf, ' degree buffer')
+      spp[[sp]]$rmm$wallaceSettings$bgSel <- input$bgSel
+      spp[[sp]]$rmm$wallaceSettings$bgBuf <- input$bgBuf
     }
   })
 }
@@ -67,3 +69,8 @@ bgExtent_MAP <- function(map, session) {
 bgExtent_INFO <- infoGenerator(modName = "Select Study Region",
                                modAuts = "Jamie M. Kass, Bruno Vilela, Robert P. Anderson",
                                pkgName = c("sp", "rgeos"))
+
+bgExtent_RMD <- function(sp) {
+  list(bgSel = spp[[sp]]$rmm$wallaceSettings$bgSel,
+       bgBuf = spp[[sp]]$rmm$wallaceSettings$bgBuf)
+}
