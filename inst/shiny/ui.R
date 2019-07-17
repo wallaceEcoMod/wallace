@@ -200,7 +200,7 @@ tagList(
               uiTop(bgExtent_INFO),
               div("Step 1:", id="step"), div("Choose Background Extent", id="stepText"), br(), br(),
               bgExtent_UI('c4_bgExtent_uiID'),
-              actionButton("goBgExt", "Select"), br(), br()#,
+              actionButton("goBgExt", "Select"), br(), br()
             ),
             conditionalPanel(
               "input.procEnvsSel == 'bgUser'",
@@ -458,35 +458,37 @@ tagList(
             h4("Project Model"),
             radioButtons(
               "projSel", "Modules Available:",
-              choices = list("Draw Project Region (**)" = 'projDraw',
-                             "User-specified Project Region (**)" = 'projShp',
-                             "Project to New Extent" = 'projArea',
+              choices = list("Project to New Extent" = 'projArea',
                              "Project to New Time" = 'projTime',
-                             "Project to User Region (**)" = 'projUser',
+                             "Project to User-files (**)" = 'projUser',
                              "Calculate Environmental Similarity" = 'mess'),
-              selected = 'projDraw'
+              selected = 'projArea'
             ),
             tags$hr(),
-            conditionalPanel(
-              "input.projSel == 'projDraw'",
-              uiTop(projectDraw_INFO),
-              projectDraw_UI('c8_projectDraw'),
-              strong("Define projection extent (**)"), br(),
-              actionButton('goProjectDraw', "Create (**)")
-            ),
+            # conditionalPanel(
+            #   "input.projSel == 'projDraw'",
+            #   uiTop(projectDraw_INFO),
+            #   projectDraw_UI('c8_projectDraw'),
+            #   strong("Define projection extent (**)"), br(),
+            #   actionButton('goProjectDraw', "Create (**)")
+            # ),
             conditionalPanel(
               "input.projSel == 'projArea'",
               uiTop(projectArea_INFO),
-              projectArea_UI('c8_projectArea'),
-              strong("Project model to current extent (red)"), br(),
-              actionButton('goProjectArea', "Project")
+              projExtent_UI('c8_projExtent'),
+              actionButton("goProjExt", "Create(**)"), br(), br()#,
+              # projectArea_UI('c8_projectArea'),
+              # strong("Project model to current extent (red)"), br(),
+              # actionButton('goProjectArea', "Project")
             ),
             conditionalPanel(
               "input.projSel == 'projTime'",
               uiTop(projectTime_INFO),
-              projectTime_UI('c8_projectTime'),
-              strong("Project model to new time for current extent (red)"), br(),
-              actionButton('goProjectTime', "Project")
+              dprojExtent_UI('c8_projExtent'),
+              actionButton("goProjExt", "Create(**)"), br(), br()#,
+              # projectTime_UI('c8_projectTime'),
+              # strong("Project model to new time for current extent (red)"), br(),
+              # actionButton('goProjectTime', "Project")
             ),
             conditionalPanel(
               "input.projSel == 'mess'",
