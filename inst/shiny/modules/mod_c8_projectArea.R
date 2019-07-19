@@ -1,8 +1,11 @@
 projectArea_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    tags$div(title='Create binary map of predicted presence/absence assuming all values above threshold value represent presence.
-             Also can be interpreted as a "potential distribution" (see guidance).',
+    tags$div(title =
+               paste0('Create binary map of predicted presence/absence assuming ',
+                      'all values above threshold value represent presence. Also ',
+                      'can be interpreted as a "potential distribution" (see ',
+                      'guidance).'),
              selectInput(ns('threshold'), label = "Set threshold",
                          choices = list("No threshold" = 'none',
                                         "Minimum Training Presence" = 'mtp',
@@ -11,7 +14,7 @@ projectArea_UI <- function(id) {
     conditionalPanel(sprintf("input['%s'] == 'qtp'", ns("threshold")),
                      sliderInput(ns("trainPresQuantile"), "Set quantile",
                                  min = 0, max = 1, value = .05)),
-    conditionalPanel(condition = sprintf("input.modelSel == 'Maxent' & input['%s'] == 'none'",
+    conditionalPanel(sprintf("input.modelSel == 'Maxent' & input['%s'] == 'none'",
                                          ns("threshold")),
                      h5("Prediction output is the same than Visualize component (**)"))
   )
@@ -118,7 +121,7 @@ projectArea_MAP <- function(map, session) {
     shp <- lapply(polyPjXY, function(x) x@coords)
   }
   map %>% clearAll() %>%
-    addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4, color = "gray",
+    addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4, color = "red",
                 group = 'bgShp')
   req(evalOut())
   req(spp[[curSp()]]$project$pjExt, spp[[curSp()]]$project$pjEnvs)
@@ -153,7 +156,6 @@ projectArea_MAP <- function(map, session) {
   sharedExt <- rbind(polyPjXY, occs()[c("longitude", "latitude")])
   map %>%
     clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
-    map_occs(occs(), customZoom = sharedExt) %>%
     addRasterImage(mapProj(), colors = rasPal, opacity = 0.7,
                    layerId = 'projRas', group = 'proj', method = "ngb") %>%
     addPolygons(lng = polyPjXY[,1], lat = polyPjXY[,2], layerId = "projExt",

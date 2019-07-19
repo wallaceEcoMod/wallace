@@ -465,30 +465,33 @@ tagList(
               selected = 'projArea'
             ),
             tags$hr(),
-            # conditionalPanel(
-            #   "input.projSel == 'projDraw'",
-            #   uiTop(projectDraw_INFO),
-            #   projectDraw_UI('c8_projectDraw'),
-            #   strong("Define projection extent (**)"), br(),
-            #   actionButton('goProjectDraw', "Create (**)")
-            # ),
             conditionalPanel(
               "input.projSel == 'projArea'",
               uiTop(projectArea_INFO),
+              div("Step 1:", id = "step"),
+              div("Choose Study Region (**)", id = "stepText"), br(), br(),
               projExtent_UI('c8_projectExtent_uiID'),
-              actionButton("goProjExt", "Create(**)"), br(), br()#,
-              # projectArea_UI('c8_projectArea'),
-              # strong("Project model to current extent (red)"), br(),
-              # actionButton('goProjectArea', "Project")
+              actionButton("goProjExt", "Create(**)"), br(), br(),
+              tags$hr(),
+              div("Step 2:", id = "step"),
+              div("Project (**)", id = "stepText"), br(), br(),
+              p("Project model to project extent (red) (**)"), br(),
+              projectArea_UI('c8_projectArea'),
+              actionButton('goProjectArea', "Project")
             ),
             conditionalPanel(
               "input.projSel == 'projTime'",
               uiTop(projectTime_INFO),
+              div("Step 1:", id = "step"),
+              div("Choose Study Region (**)", id = "stepText"), br(), br(),
               projExtent_UI('c8_projectExtent_uiID'),
-              actionButton("goProjExt", "Create(**)"), br(), br()#,
-              # projectTime_UI('c8_projectTime'),
-              # strong("Project model to new time for current extent (red)"), br(),
-              # actionButton('goProjectTime', "Project")
+              actionButton("goProjExt", "Create(**)"), br(), br(),
+              tags$hr(),
+              div("Step 2:", id = "step"),
+              div("Project (**)", id = "stepText"), br(), br(),
+              p("Project model to project extent (red) (**)"), br(),
+              projectTime_UI('c8_projectTime'),
+              actionButton('goProjectTime', "Project")
             ),
             conditionalPanel(
               "input.projSel == 'mess'",

@@ -1,8 +1,6 @@
 projExtent_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    div("Step 1:", id = "step"),
-    div("Choose Study Region (**)", id = "stepText"), br(), br(),
     selectInput(ns('projExt'), label = "Select method (**)",
                 choices = list("Draw polygon(**)" = 'pjDraw',
                                "User-specified(**)" = 'pjUser',
