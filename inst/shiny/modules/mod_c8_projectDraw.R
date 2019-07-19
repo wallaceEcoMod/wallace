@@ -84,9 +84,3 @@ projectDraw_MAP <- function(map, session) {
                 group = 'bgShp')
 
 }
-
-projectDraw_INFO <-
-  infoGenerator(modName = "Draw-specified Study Region(**)",
-                modAuts = paste0("Gonzalo E. Pinilla-Buitrago, Jamie M. Kass, ",
-                                 "Bruno Vilela, Robert P. Anderson (**)"),
-                pkgName = NULL)

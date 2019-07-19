@@ -23,16 +23,17 @@ userBgExtent_MOD <- function(input, output, session) {
       return()
     }
     # FUNCTION CALL ####
-    userBgExt <- c4_userBgExtent(input$userBgShp$datapath, input$userBgShp$name, input$userBgBuf, shinyLogs)
-    
+    userBgExt <- c4_userBgExtent(input$userBgShp$datapath, input$userBgShp$name,
+                                 input$userBgBuf, shinyLogs)
+
     # loop over all species if batch is on
     if(input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
-    
+
     # PROCESSING ####
     for(sp in spLoop) {
       # LOAD INTO SPP ####
       spp[[sp]]$procEnvs$bgExt <- userBgExt
-      
+
       # METADATA ####
       # get extensions of all input files
       exts <- sapply(strsplit(input$userBgShp$name, '\\.'), FUN=function(x) x[2])
@@ -45,7 +46,8 @@ userBgExtent_MOD <- function(input, output, session) {
         # get index of .shp
         i <- which(exts == 'shp')
         shpName <- strsplit(input$userBgShp$name[i], '\\.')[[1]][1]
-        spp[[sp]]$rmm$code$wallaceSettings$userBgShpParams <- list(dsn=input$userBgShp$datapath[i], layer=shpName)
+        spp[[sp]]$rmm$code$wallaceSettings$userBgShpParams <-
+          list(dsn = input$userBgShp$datapath[i], layer = shpName)
       }
     }
   })
@@ -54,14 +56,14 @@ userBgExtent_MOD <- function(input, output, session) {
 userBgExtent_MAP <- function(map, session) {
   updateTabsetPanel(session, 'main', selected = 'Map')
   if(is.null(bgExt())) {
-    map %>% clearAll() %>%     
-      addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude, 
-                       radius = 5, color = 'red', fill = TRUE, fillColor = "red", 
+    map %>% clearAll() %>%
+      addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
+                       radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                        fillOpacity = 0.2, weight = 2, popup = ~pop)
   }else{
     map %>% clearAll() %>%
-      addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude, 
-                       radius = 5, color = 'red', fill = TRUE, fillColor = "red", 
+      addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
+                       radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                        fillOpacity = 0.2, weight = 2, popup = ~pop)
     for(shp in bgShpXY()) {
       map %>%

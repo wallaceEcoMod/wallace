@@ -103,6 +103,23 @@ projectArea_MOD <- function(input, output, session) {
 
 projectArea_MAP <- function(map, session) {
   updateTabsetPanel(session, 'main', selected = 'Map')
+  # Reset draw polygon
+  map %>% leaflet.extras::addDrawToolbar(
+    targetGroup = 'draw', polylineOptions = FALSE, rectangleOptions = FALSE,
+    circleOptions = FALSE, markerOptions = FALSE, circleMarkerOptions = FALSE,
+    editOptions = leaflet.extras::editToolbarOptions()
+  )
+  # Add just projection Polygon
+  req(spp[[curSp()]]$project$pjExt)
+  polyPjXY <- spp[[curSp()]]$project$pjExt@polygons[[1]]@Polygons
+  if(length(polyPjXY) == 1) {
+    shp <- polyPjXY[[1]]@coords
+  } else {
+    shp <- lapply(polyPjXY, function(x) x@coords)
+  }
+  map %>% clearAll() %>%
+    addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4, color = "gray",
+                group = 'bgShp')
   req(evalOut())
   req(spp[[curSp()]]$project$pjExt, spp[[curSp()]]$project$pjEnvs)
   polyPjXY <- spp[[curSp()]]$project$pjExt@polygons[[1]]@Polygons

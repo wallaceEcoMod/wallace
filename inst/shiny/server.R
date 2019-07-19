@@ -152,7 +152,6 @@ function(input, output, session) {
                 "nsp" = partitionNonSpat_MAP,
                 "sp" = partitionSpat_MAP,
                 "mapPreds" = mapPreds_MAP,
-                "projDraw" = projectDraw_MAP,
                 "projArea" = projectArea_MAP,
                 "projTime" = projectTime_MAP,
                 "mess" = envSimilarity_MAP)
@@ -1092,9 +1091,16 @@ function(input, output, session) {
   # # # # # # # # # # # # # # # # #
   # module Draw Project Region ####
   # # # # # # # # # # # # # # # # #
-  observeEvent(input$goProjectDraw, {
-    projDraw <- callModule(projectDraw_MOD, 'c8_projectDraw')
-    projDraw()
+  observeEvent(input$goProjExt, {
+    projExtent <- callModule(projExtent_MOD, 'c8_projectExtent_uiID')
+    projExtent()
+    # # MAPPING
+    # map %>%
+    #   # reset draw polygon
+    #   leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
+    #   leaflet.extras::addDrawToolbar(
+    #     targetGroup = 'draw', polylineOptions = FALSE, rectangleOptions = FALSE,
+    #     circleOptions = FALSE, markerOptions = FALSE, circleMarkerOptions = FALSE)
   })
 
   # # # # # # # # # # # # # # # # #
@@ -1104,12 +1110,12 @@ function(input, output, session) {
     projArea <- callModule(projectArea_MOD, 'c8_projectArea')
     projArea()
     # MAPPING
-    map %>%
-      # reset draw polygon
-      leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
-      leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
-                                     rectangleOptions = FALSE, circleOptions = FALSE,
-                                     markerOptions = FALSE, circleMarkerOptions = FALSE)
+    # map %>%
+    #   # reset draw polygon
+    #   leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
+    #   leaflet.extras::addDrawToolbar(targetGroup = 'draw', polylineOptions = FALSE,
+    #                                  rectangleOptions = FALSE, circleOptions = FALSE,
+    #                                  markerOptions = FALSE, circleMarkerOptions = FALSE)
   })
 
   # # # # # # # # # # # # # # # # #
@@ -1123,7 +1129,7 @@ function(input, output, session) {
     map %>%
       # reset draw polygon
       leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
-      leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
+      leaflet.extras::addDrawToolbar(targetGroup = 'draw', polylineOptions = FALSE,
                                      rectangleOptions = FALSE, circleOptions = FALSE,
                                      markerOptions = FALSE, circleMarkerOptions = FALSE)
   })
@@ -1139,7 +1145,7 @@ function(input, output, session) {
     map %>%
       # reset draw polygon
       leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
-      leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
+      leaflet.extras::addDrawToolbar(targetGroup = 'draw', polylineOptions = FALSE,
                                      rectangleOptions = FALSE, circleOptions = FALSE,
                                      markerOptions = FALSE, circleMarkerOptions = FALSE)
   })

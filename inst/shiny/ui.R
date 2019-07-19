@@ -475,7 +475,7 @@ tagList(
             conditionalPanel(
               "input.projSel == 'projArea'",
               uiTop(projectArea_INFO),
-              projExtent_UI('c8_projExtent'),
+              projExtent_UI('c8_projectExtent_uiID'),
               actionButton("goProjExt", "Create(**)"), br(), br()#,
               # projectArea_UI('c8_projectArea'),
               # strong("Project model to current extent (red)"), br(),
@@ -484,7 +484,7 @@ tagList(
             conditionalPanel(
               "input.projSel == 'projTime'",
               uiTop(projectTime_INFO),
-              dprojExtent_UI('c8_projExtent'),
+              projExtent_UI('c8_projectExtent_uiID'),
               actionButton("goProjExt", "Create(**)"), br(), br()#,
               # projectTime_UI('c8_projectTime'),
               # strong("Project model to new time for current extent (red)"), br(),
