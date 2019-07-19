@@ -139,7 +139,7 @@ function(input, output, session) {
                 "dbOccs" = queryDb_MAP, 
                 "userOccs" = userOccs_MAP,
                 "selOccs" = selectOccs_MAP, 
-                # "profOccs" = occProfile_MAP,
+               # "profOccs" = occProfile_MAP, # CM
                 "remID" = removeByID_MAP, 
                 "spthin" = thinOccs_MAP, 
                 "wcbc" = wcBioclims_MAP,
@@ -456,6 +456,7 @@ function(input, output, session) {
   # # # # # # # # # # # # # # # # # # # #
   # module Profile Occurrences ####
   # # # # # # # # # # # # # # # # # # # #
+  # CM: start comment
   # observeEvent(input$goProfileOccs, {
   #   profileOccs <- callModule(profileOccs_MOD, 'c2_profileOccs_uiID')
   #   profileOccs()
@@ -465,7 +466,7 @@ function(input, output, session) {
   #   profileOccsClean <- callModule(profileOccsClean_MOD, 'c2_profileOccsClean_uiID')
   #   profileOccsClean()
   # })
-
+  # CM: end comment
   # # # # # # # # # # # # # # # # # # # #
   # module Remove Occurrences By ID ####
   # # # # # # # # # # # # # # # # # # # #

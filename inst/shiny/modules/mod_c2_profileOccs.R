@@ -31,6 +31,14 @@
 #     # loop over all species if batch is on
 #     if(input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
 # 
+#     libs=c('occProfileR')
+#     hasNecessaryLibraries=all(unlist(lapply(libs,function(x) require(x,character.only=TRUE))))
+#     if(!hasNecessaryLibraries){  
+#       shinyLogs %>% writeLog(type = 'error',
+#                              paste0('You must install the following packages to use this module: ',libs))
+#       return()
+#     }
+#     
 #     for(sp in spLoop) {
 #       # FUNCTION CALL ####
 #       occs.prof <- c2_profileOccs(sp.name = sp,
@@ -83,8 +91,8 @@
 #       })
 # 
 #       # METADATA ####
-#       # decide later on metadata
-#       # spp[[sp]]$rmm$code$wallaceSettings$thinDistKM <- input$thinDist
+#       # decide later on metadata: maybe each of  the filters names
+#       spp[[sp]]$rmm$code$wallaceSettings$occProfileRSettings <- NA
 #     }
 #   })
 # }
@@ -136,7 +144,7 @@
 # 
 #       # METADATA ####
 #       # decide later on metadata
-#       # spp[[sp]]$rmm$code$wallaceSettings$thinDistKM <- input$thinDist
+#       spp[[sp]]$rmm$code$wallaceSettings$occProfileRGradesKept <- NA      
 #       # CM: add a vector of which grades/tests kept
 #     }
 #   })
