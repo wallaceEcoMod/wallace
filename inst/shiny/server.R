@@ -1091,16 +1091,14 @@ function(input, output, session) {
   # # # # # # # # # # # # # # # # #
   # module Draw Project Region ####
   # # # # # # # # # # # # # # # # #
-  observeEvent(input$goProjExt, {
-    projExtent <- callModule(projExtent_MOD, 'c8_projectExtent_uiID')
+  observeEvent(input$goProjExtArea, {
+    projExtent <- callModule(projExtent_MOD, 'c8_projectExtentArea_uiID')
     projExtent()
-    # # MAPPING
-    # map %>%
-    #   # reset draw polygon
-    #   leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
-    #   leaflet.extras::addDrawToolbar(
-    #     targetGroup = 'draw', polylineOptions = FALSE, rectangleOptions = FALSE,
-    #     circleOptions = FALSE, markerOptions = FALSE, circleMarkerOptions = FALSE)
+  })
+
+  observeEvent(input$goProjExtTime, {
+    projExtent <- callModule(projExtent_MOD, 'c8_projectExtentTime_uiID')
+    projExtent()
   })
 
   # # # # # # # # # # # # # # # # #
@@ -1109,13 +1107,6 @@ function(input, output, session) {
   observeEvent(input$goProjectArea, {
     projArea <- callModule(projectArea_MOD, 'c8_projectArea')
     projArea()
-    # MAPPING
-    # map %>%
-    #   # reset draw polygon
-    #   leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
-    #   leaflet.extras::addDrawToolbar(targetGroup = 'draw', polylineOptions = FALSE,
-    #                                  rectangleOptions = FALSE, circleOptions = FALSE,
-    #                                  markerOptions = FALSE, circleMarkerOptions = FALSE)
   })
 
   # # # # # # # # # # # # # # # # #
@@ -1125,13 +1116,6 @@ function(input, output, session) {
   projTime <- callModule(projectTime_MOD, 'c8_projectTime')
   observeEvent(input$goProjectTime, {
     projTime()
-    # MAPPING
-    map %>%
-      # reset draw polygon
-      leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
-      leaflet.extras::addDrawToolbar(targetGroup = 'draw', polylineOptions = FALSE,
-                                     rectangleOptions = FALSE, circleOptions = FALSE,
-                                     markerOptions = FALSE, circleMarkerOptions = FALSE)
   })
 
   # # # # # # # # # # # # # # # # # # # #
@@ -1140,14 +1124,6 @@ function(input, output, session) {
   observeEvent(input$goEnvSimilarity, {
     envSimilarity <- callModule(envSimilarity_MOD, 'c8_envSimilarity')
     envSimilarity()
-
-    # MAPPING
-    map %>%
-      # reset draw polygon
-      leaflet.extras::removeDrawToolbar(clearFeatures = TRUE) %>%
-      leaflet.extras::addDrawToolbar(targetGroup = 'draw', polylineOptions = FALSE,
-                                     rectangleOptions = FALSE, circleOptions = FALSE,
-                                     markerOptions = FALSE, circleMarkerOptions = FALSE)
   })
 
   # # # # # # # # # # # # # # # # # #

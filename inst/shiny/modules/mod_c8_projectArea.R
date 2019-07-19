@@ -30,11 +30,7 @@ projectArea_MOD <- function(input, output, session) {
       return()
     }
     if (is.null(spp[[curSp()]]$project$pjExt)) {
-      shinyLogs %>%
-        writeLog(
-          type = 'error',
-          paste0("There is not a projection region. Please use the draw ",
-                 "or user-specified modules to specified it. (**)"))
+      shinyLogs %>% writeLog(type = 'error', 'Select projection extent first.')
       return()
     }
 
@@ -123,14 +119,7 @@ projectArea_MAP <- function(map, session) {
   map %>% clearAll() %>%
     addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4, color = "red",
                 group = 'bgShp')
-  req(evalOut())
-  req(spp[[curSp()]]$project$pjExt, spp[[curSp()]]$project$pjEnvs)
-  polyPjXY <- spp[[curSp()]]$project$pjExt@polygons[[1]]@Polygons
-  if(length(polyPjXY) == 1) {
-    polyPjXY <- polyPjXY[[1]]@coords
-  } else {
-    polyPjXY <- lapply(polyPjXY, function(x) x@coords)
-  }
+  req(evalOut(), spp[[curSp()]]$project$pjEnvs)
   mapProjVals <- spp[[curSp()]]$project$mapProjVals
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
   # if no threshold specified
@@ -149,31 +138,21 @@ projectArea_MAP <- function(map, session) {
       addLegend("bottomright", pal = legendPal,
                 title = "Predicted Suitability<br>(Projected)",
                 values = mapProjVals, layerId = 'proj',
-                labFormat = reverseLabels(2, reverse_order=TRUE))
+                labFormat = reverseLabels(2, reverse_order = TRUE))
   }
   # map model prediction raster and projection polygon
-  colnames(polyPjXY) <- c("longitude", "latitude")
-  sharedExt <- rbind(polyPjXY, occs()[c("longitude", "latitude")])
+  colnames(shp) <- c("longitude", "latitude")
   map %>%
     clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
     addRasterImage(mapProj(), colors = rasPal, opacity = 0.7,
                    layerId = 'projRas', group = 'proj', method = "ngb") %>%
-    addPolygons(lng = polyPjXY[,1], lat = polyPjXY[,2], layerId = "projExt",
-                fill = FALSE, weight = 4, color = "red", group = 'proj') %>%
-    # add background polygon
-    mapBgPolys(bgShpXY())
-
-  # # create new spatial polygon from coordinates
-  # newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(polyPjXY)),
-  #                                                  ID = spp[[curSp()]]$polyPjID)))
-  if (rgeos::gIntersects(spp[[curSp()]]$project$pjExt, bgExt())) {
-    map %>%
-      removeImage('mapPred') %>%
-      removeControl('train')
-    }
+    addPolygons(lng = shp[,1], lat = shp[,2], layerId = "projExt",
+                fill = FALSE, weight = 4, color = "red", group = 'proj')
 
 }
 
-projectArea_INFO <- infoGenerator(modName = "Project to New Extent",
-                                  modAuts = "Jamie M. Kass, Bruno Vilela, Robert P. Anderson",
-                                  pkgName = "dismo")
+projectArea_INFO <-
+  infoGenerator(modName = "Project to New Extent",
+                modAuts = paste0("Jamie M. Kass, Bruno Vilela, Gonzalo E. ',
+                                 'Pinilla-Buitrago, Robert P. Anderson"),
+                pkgName = "dismo")

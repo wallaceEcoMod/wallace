@@ -29,26 +29,17 @@
 
 c8_projectArea <- function(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
                            shinyLogs = NULL) {
-  # create new spatial polygon from coordinates
   newPoly <- pjExt
 
-  # concatanate coords to a single character
-  # xy.round <- round(polyPjXY, digits = 2)
-  # xy.round <- xy.round[-nrow(xy.round),]  # remove last point that completes polygon
-  # coordsChar <- paste(apply(xy.round, 1, function(b) paste0('(',paste(b, collapse=', '),')')), collapse=', ')
-  #
-  # if (alg == 'bioclim') {
-  #   shinyLogs %>% writeLog('New area projection for BIOCLIM model with extent coordinates:',
-  #                    coordsChar)
-  # } else if (alg == 'maxent') {
-  #   if (clamp == TRUE | alg == "maxent.jar") {
-  #     shinyLogs %>% writeLog('New area projection for clamped model', curModel(),
-  #                      'with extent coordinates:', coordsChar)
-  #   } else if (clamp == FALSE) {
-  #     shinyLogs %>% writeLog('New area projection for unclamped', curModel(),
-  #                      'with extent coordinates:', coordsChar)
-  #   }
-  # }
+  if (alg == 'bioclim') {
+    shinyLogs %>% writeLog('Projection for BIOCLIM model.')
+  } else if (alg == 'maxent') {
+    if (clamp == TRUE | alg == "maxent.jar") {
+      shinyLogs %>% writeLog('Projection for clamped model', curModel(), '.')
+    } else if (clamp == FALSE) {
+      shinyLogs %>% writeLog('New area projection for unclamped', curModel(), '.')
+    }
+  }
 
   smartProgress(shinyLogs, message = "Masking environmental grids to projection extent...", {
     projMsk <- raster::crop(envs, newPoly)

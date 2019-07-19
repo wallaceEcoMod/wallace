@@ -9,15 +9,14 @@
 #' @param curModel x
 #' @param envs x
 #' @param outputType x
-#' @param polyPjXY x
-#' @param polyPjID x
+#' @param pjExt x
 #' @param shinyLogs x
 # @keywords
 #'
 # @examples
 #'
 #'
-# @return 
+# @return
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 # @note
 # @seealso
@@ -28,48 +27,39 @@
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 
-c8_projectTime <- function(evalOut, curModel, envs, outputType, alg, clamp, 
-                           polyPjXY, polyPjID, shinyLogs = NULL) {
-  # create new spatial polygon from coordinates
-  newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(polyPjXY)), ID = polyPjID)))  
-  
-  # concatanate coords to a single character
-  xy.round <- round(polyPjXY, digits = 2)
-  xy.round <- xy.round[-nrow(xy.round),]  # remove last point that completes polygon
-  coordsChar <- paste(apply(xy.round, 1, function(b) paste0('(',paste(b, collapse=', '),')')), collapse=', ')  
-  
+c8_projectTime <- function(evalOut, curModel, envs, outputType, alg, clamp,
+                           pjExt, shinyLogs = NULL) {
+  newPoly <- pjExt
+
   if (alg == 'bioclim') {
-    shinyLogs %>% writeLog('New time projection for BIOCLIM model with extent coordinates:',
-                           coordsChar)
+    shinyLogs %>% writeLog('Projection for BIOCLIM model.')
   } else if (alg == 'maxent') {
     if (clamp == TRUE | alg == "maxent.jar") {
-      shinyLogs %>% writeLog('New time projection for clamped model', curModel(), 
-                             'with extent coordinates:', coordsChar)
+      shinyLogs %>% writeLog('Projection for clamped model', curModel(), '.')
     } else if (clamp == FALSE) {
-      shinyLogs %>% writeLog('New time projection for unclamped', curModel(), 
-                             'with extent coordinates:', coordsChar)
+      shinyLogs %>% writeLog('New area projection for unclamped', curModel(), '.')
     }
   }
-  
+
   smartProgress(shinyLogs, message = "Clipping environmental data to current extent...", {
     pjtMsk <- raster::crop(envs, newPoly)
     pjtMsk <- raster::mask(pjtMsk, newPoly)
   })
-  
+
   smartProgress(shinyLogs, message = ("Projecting to new time..."), {
     if (alg == 'BIOCLIM') {
       modProjTime <- dismo::predict(evalOut@models[[curModel]], pjtMsk)
     } else if (alg == 'maxnet') {
       if (outputType == "raw") {pargs <- "exponential"} else {pargs <- outputType}
-      modProjTime <- ENMeval::maxnet.predictRaster(evalOut@models[[curModel]], 
-                                                   pjtMsk, type = pargs, 
+      modProjTime <- ENMeval::maxnet.predictRaster(evalOut@models[[curModel]],
+                                                   pjtMsk, type = pargs,
                                                    doClamp = clamp)
     } else if (alg == "maxent.jar") {
       pargs <- paste0("outputformat=", outputType)
-      modProjTime <- dismo::predict(evalOut@models[[curModel]], pjtMsk, 
+      modProjTime <- dismo::predict(evalOut@models[[curModel]], pjtMsk,
                                     args = pargs)
     }
   })
-  
+
   return(list(projExt = pjtMsk, projTime = modProjTime))
 }

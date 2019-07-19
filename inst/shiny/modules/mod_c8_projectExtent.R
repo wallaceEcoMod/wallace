@@ -49,8 +49,9 @@ projExtent_MOD <- function(input, output, session) {
         shinyLogs %>%
           writeLog(
             type = 'error',
-            paste0("The polygon has not been drawn and finished. Please use the draw ",
-                   "toolbar on the left-hand of the map to complete the polygon."))
+            paste0("The polygon has not been drawn and finished. Please use the ",
+                   "draw toolbar on the left-hand of the map to complete the ",
+                   "polygon."))
         return()
       }
     }
