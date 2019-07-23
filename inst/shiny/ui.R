@@ -132,7 +132,7 @@ tagList(
               selected = "spthin" # Check default (no selected)
             ),
             tags$hr(),
-            
+
             # CM: start comment
             # conditionalPanel("input.procOccsSel == 'profOccs'",
             #                  uiTop(profileOccs_INFO),
@@ -142,7 +142,7 @@ tagList(
             #                  uiBottom(profileOccs_INFO)
             # ),
             # CM: End comment
-            
+
             conditionalPanel(
               "input.procOccsSel == 'selOccs'",
               uiTop(selectOccs_INFO),
@@ -496,6 +496,20 @@ tagList(
               p("Project model to project extent (red) (**)"), br(),
               projectTime_UI('c8_projectTime'),
               actionButton('goProjectTime', "Project")
+            ),
+            conditionalPanel(
+              "input.projSel == 'projUser'",
+              # uiTop(projectUser_INFO),
+              div("Step 1:", id = "step"),
+              div("Choose Study Region (**)", id = "stepText"), br(), br(),
+              projExtent_UI('c8_projectExtentUser_uiID'),
+              actionButton("goProjExtUser", "Create(**)"), br(), br(),
+              tags$hr(),
+              div("Step 2:", id = "step"),
+              div("Project (**)", id = "stepText"), br(), br(),
+              p("Project model to project extent (red) (**)"), br()#,
+              # projectUser_UI('c8_projectUser'),
+              # actionButton('goProjectuser', "Project")
             ),
             conditionalPanel(
               "input.projSel == 'mess'",

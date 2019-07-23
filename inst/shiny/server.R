@@ -1102,6 +1102,11 @@ function(input, output, session) {
     projExtent()
   })
 
+  observeEvent(input$goProjExtUser, {
+    projExtent <- callModule(projExtent_MOD, 'c8_projectExtentUser_uiID')
+    projExtent()
+  })
+
   # # # # # # # # # # # # # # # # #
   # module Project to New Area ####
   # # # # # # # # # # # # # # # # #
