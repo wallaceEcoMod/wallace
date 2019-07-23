@@ -499,7 +499,7 @@ tagList(
             ),
             conditionalPanel(
               "input.projSel == 'projUser'",
-              # uiTop(projectUser_INFO),
+              uiTop(projectUser_INFO),
               div("Step 1:", id = "step"),
               div("Choose Study Region (**)", id = "stepText"), br(), br(),
               projExtent_UI('c8_projectExtentUser_uiID'),
@@ -535,6 +535,10 @@ tagList(
             conditionalPanel(
               "input.projSel == 'projTime'",
               uiBottom(projectTime_INFO)
+            ),
+            conditionalPanel(
+              "input.projSel == 'projUser'",
+              uiBottom(projectUser_INFO)
             ),
             conditionalPanel(
               "input.projSel == 'mess'",
