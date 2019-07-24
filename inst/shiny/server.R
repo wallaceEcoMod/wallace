@@ -1124,6 +1124,14 @@ function(input, output, session) {
     projTime()
   })
 
+  # # # # # # # # # # # # # # # # #
+  # module Project to User-files ####
+  # # # # # # # # # # # # # # # # #
+  observeEvent(input$goProjectUser, {
+    projUser <- callModule(projectUser_MOD, 'c8_projectUser_uiID')
+    # projUser()
+  })
+
   # # # # # # # # # # # # # # # # # # # #
   # module Environmental Similarity ####
   # # # # # # # # # # # # # # # # # # # #

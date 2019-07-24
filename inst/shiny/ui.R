@@ -508,7 +508,7 @@ tagList(
               div("Step 2:", id = "step"),
               div("Project (**)", id = "stepText"), br(), br(),
               p("Project model to project extent (red) (**)"),
-              projectUser_UI('c8_projectUser'),
+              projectUser_UI('c8_projectUser_uiID'),
               actionButton('goProjectUser', "Project")
             ),
             conditionalPanel(
