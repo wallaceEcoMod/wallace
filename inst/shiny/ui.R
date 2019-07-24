@@ -507,9 +507,9 @@ tagList(
               tags$hr(),
               div("Step 2:", id = "step"),
               div("Project (**)", id = "stepText"), br(), br(),
-              p("Project model to project extent (red) (**)"), br()#,
-              # projectUser_UI('c8_projectUser'),
-              # actionButton('goProjectuser', "Project")
+              p("Project model to project extent (red) (**)"),
+              projectUser_UI('c8_projectUser'),
+              actionButton('goProjectUser', "Project")
             ),
             conditionalPanel(
               "input.projSel == 'mess'",
@@ -518,7 +518,6 @@ tagList(
               strong("Calculate MESS for current extent"), br(), br(),
               actionButton('goEnvSimilarity', "Calculate MESS")
             ),
-            br(),
             strong("Reset projection extent"), br(),
             actionButton("goResetProj", "Reset", class = 'butResPj'),
             tags$head(tags$style(".butResPj {background-color: #C51E10;
