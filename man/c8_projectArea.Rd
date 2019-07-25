@@ -4,8 +4,8 @@
 \alias{c8_projectArea}
 \title{c8_projectArea}
 \usage{
-c8_projectArea(evalOut, curModel, envs, outputType, alg, clamp, polyPjXY,
-  polyPjID, shinyLogs = NULL)
+c8_projectArea(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
+  shinyLogs = NULL)
 }
 \arguments{
 \item{evalOut}{x}
@@ -16,9 +16,7 @@ c8_projectArea(evalOut, curModel, envs, outputType, alg, clamp, polyPjXY,
 
 \item{outputType}{x}
 
-\item{polyPjXY}{x}
-
-\item{polyPjID}{x}
+\item{pjExt}{x}
 
 \item{shinyLogs}{x}
 }

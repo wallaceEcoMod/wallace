@@ -1129,7 +1129,7 @@ function(input, output, session) {
   # # # # # # # # # # # # # # # # #
   observeEvent(input$goProjectUser, {
     projUser <- callModule(projectUser_MOD, 'c8_projectUser_uiID')
-    # projUser()
+    projUser()
   })
 
   # # # # # # # # # # # # # # # # # # # #
