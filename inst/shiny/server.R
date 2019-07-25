@@ -154,6 +154,7 @@ function(input, output, session) {
                 "mapPreds" = mapPreds_MAP,
                 "projArea" = projectArea_MAP,
                 "projTime" = projectTime_MAP,
+                "projUser" = projectUser_MAP,
                 "mess" = envSimilarity_MAP)
     req(f)
     map %>% f(session)

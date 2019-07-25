@@ -123,6 +123,57 @@ projectUser_MOD <- function(input, output, session) {
   })
 }
 
+projectUser_MAP <- function(map, session) {
+  updateTabsetPanel(session, 'main', selected = 'Map')
+  # Reset draw polygon
+  map %>% leaflet.extras::addDrawToolbar(
+    targetGroup = 'draw', polylineOptions = FALSE, rectangleOptions = FALSE,
+    circleOptions = FALSE, markerOptions = FALSE, circleMarkerOptions = FALSE,
+    editOptions = leaflet.extras::editToolbarOptions()
+  )
+  # Add just projection Polygon
+  req(spp[[curSp()]]$project$pjExt)
+  polyPjXY <- spp[[curSp()]]$project$pjExt@polygons[[1]]@Polygons
+  if(length(polyPjXY) == 1) {
+    shp <- polyPjXY[[1]]@coords
+  } else {
+    shp <- lapply(polyPjXY, function(x) x@coords)
+  }
+  map %>% clearAll() %>%
+    addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4, color = "red",
+                group = 'bgShp')
+  req(evalOut(), spp[[curSp()]]$project$pjEnvs)
+  mapProjVals <- spp[[curSp()]]$project$mapProjVals
+  rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+  # if no threshold specified
+  if(rmm()$output$transfer$environment1$thresholdRule != 'none') {
+    rasPal <- c('gray', 'red')
+    map %>% removeControl("proj") %>%
+      addLegend("bottomright", colors = c('gray', 'red'),
+                title = "Thresholded Suitability<br>(Projected)",
+                labels = c("predicted absence", "predicted presence"),
+                opacity = 1, layerId = 'proj')
+  } else {
+    # if threshold specified
+    legendPal <- colorNumeric(rev(rasCols), mapProjVals, na.color = 'transparent')
+    rasPal <- colorNumeric(rasCols, mapProjVals, na.color = 'transparent')
+    map %>% removeControl("proj") %>%
+      addLegend("bottomright", pal = legendPal,
+                title = "Predicted Suitability<br>(Projected)",
+                values = mapProjVals, layerId = 'proj',
+                labFormat = reverseLabels(2, reverse_order = TRUE))
+  }
+  # map model prediction raster and projection polygon
+  colnames(shp) <- c("longitude", "latitude")
+  map %>%
+    clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
+    addRasterImage(mapProj(), colors = rasPal, opacity = 0.7,
+                   layerId = 'projRas', group = 'proj', method = "ngb") %>%
+    addPolygons(lng = shp[,1], lat = shp[,2], layerId = "projExt",
+                fill = FALSE, weight = 4, color = "red", group = 'proj')
+
+}
+
 projectUser_INFO <-
   infoGenerator(modName = "Project to User-files (**)",
                 modAuts = paste0("Gonzalo E. Pinilla-Buitrago, Jamie M. Kass, ",
