@@ -116,9 +116,12 @@ projectArea_MAP <- function(map, session) {
   } else {
     shp <- lapply(polyPjXY, function(x) x@coords)
   }
-  map %>% clearAll() %>%
+  bb <- spp[[curSp()]]$project$pjExt@bbox
+  bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
+  map %>% clearAll() %>% removeImage('projRas') %>%
     addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4, color = "red",
-                group = 'bgShp')
+                group = 'bgShp') %>%
+    fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
   req(evalOut(), spp[[curSp()]]$project$pjEnvs)
   mapProjVals <- spp[[curSp()]]$project$mapProjVals
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")

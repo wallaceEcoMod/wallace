@@ -10,17 +10,17 @@ uiTop <- function(mod_INFO) {
   modName <- mod_INFO$modName
   pkgName <- mod_INFO$pkgName
   pkgTitl <- mod_INFO$pkgTitl
-  
+
   ls <- list(div(paste("Module: ", modName), id="mod"))
-  
+
   if(!is.null(pkgName)) {
     for(i in 1:length(pkgName)) {
       ls <- c(ls, list(span(pkgName[i], id="rpkg"),
                        span(paste(':', pkgTitl[i]), id="pkgDes"),
                        br()))
-    }  
+    }
   }
-  
+
   ls <- c(ls, list(HTML('<hr>')))
   return(ls)
 }
@@ -28,18 +28,18 @@ uiTop <- function(mod_INFO) {
 #' @export
 uiBottom <- function(mod_INFO) {
   modAuts <- mod_INFO$modAuts
-  pkgName <- mod_INFO$pkgName 
+  pkgName <- mod_INFO$pkgName
   pkgAuts <- mod_INFO$pkgAuts
-  
+
   ls <- list(div(paste('Module Developers:', modAuts), id="pkgDes"))
-  
+
   if(!is.null(pkgName)) {
     for(i in 1:length(pkgName)) {
       ls <- c(ls, list(span(pkgName[i], id = "rpkg"), "references", br(),
                        div(paste('Package Developers:', pkgAuts[i]), id="pkgDes"),
-                       a("CRAN", href = file.path("http://cran.r-project.org/web/packages", 
-                                                  pkgName[i], "index.html"), target = "_blank"), " | ", 
-                       a("documentation", href = file.path("https://cran.r-project.org/web/packages", 
+                       a("CRAN", href = file.path("http://cran.r-project.org/web/packages",
+                                                  pkgName[i], "index.html"), target = "_blank"), " | ",
+                       a("documentation", href = file.path("https://cran.r-project.org/web/packages",
                                                            pkgName[i], paste0(pkgName[i], ".pdf")), target = "_blank"), br()))
     }
   }
@@ -74,7 +74,7 @@ spName <- function(sp) {
   if("data.frame" %in% class(sp)) {
     sp <- sp$scientific_name[1]
   }
-  return(paste(strsplit(as.character(sp), "_")[[1]], collapse = " "))  
+  return(paste(strsplit(as.character(sp), "_")[[1]], collapse = " "))
 }
 
 # either prints a message to console or makes a progress bar in the shiny app
@@ -130,11 +130,11 @@ writeLog <- function(logs, ..., type = 'default') {
     } else if (type == 'warning') {
       warning(paste0(..., collapse = ""), call.=FALSE)
       return()
-    }  
+    }
     message(paste0(..., collapse = ""))
     return()
   }
-  
+
   if (type == "default") {
     pre <- "> "
   } else if (type == 'error') {
@@ -162,8 +162,8 @@ mapCenter <- function(bounds) {
 #' @export
 map_occs <- function(map, occs, fillColor = 'red', fillOpacity = 0.2, customZoom = NULL) {
   map %>%
-    addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude, 
-                     radius = 5, color = 'red', fill = TRUE, fillColor = fillColor, 
+    addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude,
+                     radius = 5, color = 'red', fill = TRUE, fillColor = fillColor,
                      fillOpacity = fillOpacity, weight = 2, popup = ~pop)
   if(is.null(customZoom)) {
     map %>% zoom2Occs(occs)
@@ -195,7 +195,7 @@ zoom2Occs <- function(map, occs) {
   lon <- occs["longitude"]
   z <- smartZoom(lon, lat)
   map %>% fitBounds(z[1], z[2], z[3], z[4])
-  
+
   ## this section makes letter icons for occs based on basisOfRecord
   # makeOccIcons <- function(width = 10, height = 10, ...) {
   #   occIcons <- c('H', 'O', 'P', 'U', 'F', 'M', 'I', 'L', 'A', 'X')
@@ -230,6 +230,18 @@ smartZoom <- function(longi, lati) {
   if (lg.diff > 1) lg.diff <- 1
   if (lt.diff > 1) lt.diff <- 1
   c(min(longi-lg.diff), min(lati-lt.diff), max(longi+lg.diff), max(lati+lt.diff))
+}
+
+# zooms appropriately for any polygon
+#' @export
+polyZoom <- function(xmin, ymin, xmax, ymax, fraction) {
+  x <- (xmax - xmin) * fraction
+  y <- (ymax - ymin) * fraction
+  x1 <- xmin - x
+  x2 <- xmax + x
+  y1 <- ymin - y
+  y2 <- ymax + y
+  return(c(x1, y1, x2, y2))
 }
 
 ####################### #
@@ -269,20 +281,20 @@ popUpContent <- function(x) {
 remEnvsValsNA <- function(occs, occsEnvsVals, logs) {
   withProgress(message = "Checking for points with NA values...", {
     na.rowNums <- which(rowSums(is.na(occsEnvsVals)) > 1)
-    
+
     if (length(na.rowNums) == length(occsEnvsVals)) {
-      logs %>% writeLog(type = 'error', 'No localities overlay with environmental predictors. 
+      logs %>% writeLog(type = 'error', 'No localities overlay with environmental predictors.
                         All localities may be marine -- please redo with terrestrial occurrences.')
       return()
     }
-    
+
     if (length(na.rowNums) > 0) {
       occs.notNA <- occs[-na.rowNums,]
       logs %>% writeLog(type = 'warning', 'Removed records without environmental values with occIDs: ',
                         paste(occs[na.rowNums,]$occID, collapse=', '), ".")
       return(occs.notNA)
     }
-    
+
     # # check to see if any cells are NA for one or more rasters but not all,
     # # then fix it
     # n <- raster::nlayers(envs)
@@ -293,7 +305,7 @@ remEnvsValsNA <- function(occs, occsEnvsVals, logs) {
     #   envs[z.i] <- NA
     #   warning(paste0("Environmental raster grid cells (n = ", length(z.i), ") found with NA values for one or more but not all variables. These cells were converted to NA for all variables.\n"), immediate. = TRUE)
     # }
-    
+
     return(occs)
   })
   }
@@ -327,7 +339,7 @@ maxentJARversion <- function() {
       stop('rJava cannot be loaded')
     }
   }
-  mxe <- rJava::.jnew("meversion") 
+  mxe <- rJava::.jnew("meversion")
   v <- try(rJava::.jcall(mxe, "S", "meversion"))
   return(v)
 }
@@ -465,7 +477,7 @@ printVecAsis <- function(x, asChar = FALSE) {
       return(x)
     } else {
       if(asChar == FALSE) {
-        return(paste0("c(", paste(x, collapse=", "), ")"))  
+        return(paste0("c(", paste(x, collapse=", "), ")"))
       } else {
         return(paste0("(", paste(x, collapse=", "), ")"))
       }
