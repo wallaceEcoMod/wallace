@@ -19,17 +19,17 @@ projectUser_UI <- function(id) {
     conditionalPanel(sprintf("input['%s'] == 'qtp'", ns("threshold")),
                      sliderInput(ns("trainPresQuantile"), "Set quantile",
                                  min = 0, max = 1, value = .05)),
-    conditionalPanel(sprintf("input.modelSel == 'Maxent' & input['%s'] == 'none'",
-                             ns("threshold")),
-                     h5("Prediction output is the same than Visualize component (**)"))
+    conditionalPanel(
+      sprintf("input.modelSel == 'Maxent' & input['%s'] == 'none'", ns("threshold")),
+      h5("Prediction output is the same than Visualize component (**)"))
   )
 }
 
 projectUser_MOD <- function(input, output, session) {
   reactive({
     # ERRORS ####
-    # GEPB: Filenames different
     # GEPB: Raster and pjExt no match
+    # if (rgeos::gIntersects(spp[[curSp()]]$project$pjExt, bgExt()))
     if (is.null(spp[[curSp()]]$visualization$mapPred)) {
       shinyLogs %>%
         writeLog(type = 'error',
@@ -44,13 +44,42 @@ projectUser_MOD <- function(input, output, session) {
       shinyLogs %>% writeLog(type = 'error', "Raster files not uploaded.")
       return()
     }
+    # Check the number of selected files
+    if (length(input$userProjEnvs$name) !=
+        length(spp[[curSp()]]$rmm$data$environment$variableNames)) {
+      shinyLogs %>%
+        writeLog(type = 'error', "Number of files are not the same that the ",
+                 "enviromental variables (**)")
+      return()
+    }
+    # Check if the filesnames are the same that envs()
+    if (!identical(tools::file_path_sans_ext(sort(input$userProjEnvs$name)),
+                   sort(spp[[curSp()]]$rmm$data$environment$variableNames))) {
+      shinyLogs %>%
+        writeLog(type = 'error',
+                 paste0("Raster files don't have same names. You must name your",
+                        " files as: (**) "),
+                 em(paste(spp[[curSp()]]$rmm$data$environment$variableNames,
+                                             collapse = ", ")), ".")
+      return()
+    }
 
-    # FUNCTION CALL ####
+    # Load raster ####
     userProjEnvs <- c3_userEnvs(rasPath = input$userProjEnvs$datapath,
                                 rasName = input$userProjEnvs$name)
+
+    # ERRORS ####
+    # Check that the extents of raster and projection extent instersects
+    if (!rgeos::gIntersects(spp[[curSp()]]$project$pjExt,
+                            as(raster::extent(userProjEnvs), 'SpatialPolygons'))) {
+      shinyLogs %>%
+        writeLog(type = 'error', 'Extents do not overlap (**)')
+      return()
+    }
+
     # FUNCTION CALL ####
     predType <- rmm()$output$prediction$notes
-    projUser.out <- c8_projectUser(evalOut(), curModel(), envs(),
+    projUser.out <- c8_projectUser(evalOut(), curModel(), userProjEnvs,
                                    outputType = predType,
                                    alg = rmm()$model$algorithm,
                                    clamp = rmm()$model$maxent$clamping,
@@ -169,7 +198,7 @@ projectUser_MAP <- function(map, session) {
     clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
     addRasterImage(mapProj(), colors = rasPal, opacity = 0.7,
                    layerId = 'projRas', group = 'proj', method = "ngb") %>%
-    addPolygons(lng = shp[,1], lat = shp[,2], layerId = "projExt",
+    addPolygons(lng = shp[, 1], lat = shp[, 2], layerId = "projExt",
                 fill = FALSE, weight = 4, color = "red", group = 'proj')
 
 }
