@@ -98,7 +98,7 @@ function(input, output, session) {
   m <- leaflet() %>%
     setView(0, 0, zoom = 2) %>%
     addProviderTiles('Esri.WorldTopoMap') %>%
-    mapview::addMouseCoordinates()
+    leafem::addMouseCoordinates()
   output$map <- renderLeaflet(m)
 
   # create map proxy to make further changes to existing map
@@ -615,7 +615,7 @@ function(input, output, session) {
 
       exts <- c('dbf', 'shp', 'shx')
       fs <- paste0(n, '_bgShp.', exts)
-      zip::zip(zipfile=file, files=fs)
+      zip::zipr(zipfile = file, files = fs)
       if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
     },
     contentType = "application/zip"
@@ -639,7 +639,7 @@ function(input, output, session) {
       if (ext == 'grd') {
         fs <- c(fs, paste0(nm, '.gri'))
       }
-      zip::zip(zipfile=file, files=fs)
+      zip::zipr(zipfile = file, files = fs)
       if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
     },
     contentType = "application/zip"
@@ -987,7 +987,7 @@ function(input, output, session) {
         dev.off()
       }
       owd <- setwd(tmpdir)
-      zip::zip(zipfile = file,
+      zip::zipr(zipfile = file,
                files = paste0(gsub("[[:punct:]]", "_", parEval), ".png"))
       setwd(owd)
     }
@@ -1009,7 +1009,7 @@ function(input, output, session) {
         dev.off()
       }
       owd <- setwd(tmpdir)
-      zip::zip(zipfile = file, files = paste0(namesEnvs, ".png"))
+      zip::zipr(zipfile = file, files = paste0(namesEnvs, ".png"))
       setwd(owd)
     }
   )
@@ -1075,7 +1075,7 @@ function(input, output, session) {
                               format = input$predFileType, overwrite = TRUE)
           owd <- setwd(tmpdir)
           fs <- paste0(fileName, c('.grd', '.gri'))
-          zip::zip(zipfile = file, files = fs)
+          zip::zipr(zipfile = file, files = fs)
           setwd(owd)
         } else {
           r <- raster::writeRaster(mapPred(), file, format = input$predFileType,
@@ -1178,7 +1178,7 @@ function(input, output, session) {
 
       exts <- c('dbf', 'shp', 'shx')
       fs <- paste0(n, '_projShp.', exts)
-      zip::zip(zipfile = file, files = fs)
+      zip::zipr(zipfile = file, files = fs)
       if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
     },
     contentType = "application/zip"
@@ -1244,7 +1244,7 @@ function(input, output, session) {
                               format = input$projFileType, overwrite = TRUE)
           owd <- setwd(tmpdir)
           fs <- paste0(fileName, c('.grd', '.gri'))
-          zip::zip(zipfile = file, files = fs)
+          zip::zipr(zipfile = file, files = fs)
           setwd(owd)
         } else {
           r <- raster::writeRaster(mapProj(), file, format = input$projFileType,
@@ -1306,7 +1306,7 @@ function(input, output, session) {
                               format = input$messFileType, overwrite = TRUE)
           owd <- setwd(tmpdir)
           fs <- paste0(fileName, c('.grd', '.gri'))
-          zip::zip(zipfile = file, files = fs)
+          zip::zipr(zipfile = file, files = fs)
           setwd(owd)
         } else {
           r <- raster::writeRaster(mess, file, format = input$messFileType,
