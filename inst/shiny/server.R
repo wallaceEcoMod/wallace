@@ -178,6 +178,7 @@ function(input, output, session) {
   shinyjs::disable("dlMaxentPlots")
   shinyjs::disable("dlRespCurves")
   shinyjs::disable("dlPred")
+  shinyjs::disable("dlPjShp")
   shinyjs::disable("dlProj")
   shinyjs::disable("dlMess")
   # shinyjs::disable("dlRMD")
@@ -204,6 +205,7 @@ function(input, output, session) {
     shinyjs::toggleState("dlRespCurves", (spp[[curSp()]]$rmm$model$algorithm == "maxnet" |
                                             spp[[curSp()]]$rmm$model$algorithm == "maxent.jar"))
     shinyjs::toggleState("dlPred", !is.null(spp[[curSp()]]$visualization$occPredVals))
+    shinyjs::toggleState("dlPjShp", !is.null(spp[[curSp()]]$project$pjExt))
     shinyjs::toggleState("dlProj", !is.null(spp[[curSp()]]$project$pjEnvs))
     shinyjs::toggleState("dlMess", !is.null(spp[[curSp()]]$project$messVals))
     # shinyjs::toggleState("dlWhatever", !is.null(spp[[curSp()]]$whatever))
@@ -1159,6 +1161,28 @@ function(input, output, session) {
     spp[[curSp()]]$project <- NULL
     shinyLogs %>% writeLog("Reset projection extent.")
   })
+
+  # DOWNLOAD: Shapefile of prejection extent
+  output$dlPjShp <- downloadHandler(
+    filename = function() paste0(formatSpName(curSp()), '_projShp.zip'),
+    content = function(file) {
+      tmpdir <- tempdir()
+      setwd(tempdir())
+      n <- spName(spp[[curSp()]])
+
+      rgdal::writeOGR(obj = spp[[curSp()]]$project$pjExt,
+                      dsn = tmpdir,
+                      layer = paste0(n, '_projShp'),
+                      driver = "ESRI Shapefile",
+                      overwrite_layer = TRUE)
+
+      exts <- c('dbf', 'shp', 'shx')
+      fs <- paste0(n, '_projShp.', exts)
+      zip::zip(zipfile = file, files = fs)
+      if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
+    },
+    contentType = "application/zip"
+  )
 
   # download for model predictions (restricted to background extent)
   output$dlProj <- downloadHandler(

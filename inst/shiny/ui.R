@@ -764,6 +764,10 @@ tagList(
               ),
               conditionalPanel(
                 "input.tabs == 'proj'",
+                fluidRow(
+                  column(3, h5("Download shapefile of projection extent")),
+                  column(2, downloadButton('dlPjShp', "ZIP file"))
+                ),
                 br(),
                 fluidRow(
                   column(3, h5("Download projection (Select download file type**)")),
