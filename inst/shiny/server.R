@@ -827,24 +827,36 @@ function(input, output, session) {
 
   output$evalTbls <- renderUI({
     req(evalOut())
-
-    print(names(evalOut()@models))
     res <- evalOut()@results
     res.grp <- evalOut()@results.grp
     tuned.n <- ncol(evalOut()@tuned.settings)
     if(tuned.n > 0) {
-      res.round <- cbind(res[,seq(1, tuned.n)], round(res[,seq(tuned.n+1, ncol(res))], digits = 3))
-      res.grp.round <- cbind(res.grp[,seq(1, tuned.n+1)], round(res.grp[,seq(tuned.n+2, ncol(res.grp))], digits = 3))
+      res.round <- cbind(res[,seq(1, tuned.n)],
+                         round(res[,seq(tuned.n+1, ncol(res))], digits = 3))
+      res.grp.round <- cbind(res.grp[,seq(1, tuned.n+1)],
+                             round(res.grp[,seq(tuned.n+2, ncol(res.grp))],
+                                   digits = 3))
     } else {
       res.round <- cbind(round(res[, 1:13], digits = 3))
-      res.grp.round <- cbind(fold = res.grp[, 1], round(res.grp[, 2:5], digits = 3))
+      res.grp.round <- cbind(fold = res.grp[, 1],
+                             round(res.grp[, 2:5], digits = 3))
     }
     # define contents for both evaluation tables
     options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
     output$evalTbl <- DT::renderDataTable(res.round, options = options)
     output$evalTblBins <- DT::renderDataTable(res.grp.round, options = options)
-    # define contents for lambdas table
-    output$lambdas <- renderPrint({
+
+    tagList(br(),
+            div("Evaluation statistics: full model and partition averages",
+                id = "stepText"), br(), br(),
+            DT::dataTableOutput('evalTbl'), br(),
+            div("Evaluation statistics: individual partitions",
+                id = "stepText"), br(), br(),
+            DT::dataTableOutput('evalTblBins'))
+  })
+
+  # define contents for lambdas table
+  output$lambdas <- renderPrint({
       if(spp[[curSp()]]$rmm$model$algorithm == "maxnet") {
         evalOut()@models[[curModel()]]$betas
       } else if(spp[[curSp()]]$rmm$model$algorithm == "maxent.jar") {
@@ -852,22 +864,6 @@ function(input, output, session) {
       }
     })
 
-    tabsetPanel(
-      tabPanel("Evaluation",
-               tagList(
-                 br(),
-                 div("Evaluation statistics: full model and partition averages", id="stepText"), br(), br(),
-                 DT::dataTableOutput('evalTbl'), br(),
-                 div("Evaluation statistics: individual partitions", id="stepText"), br(), br(),
-                 DT::dataTableOutput('evalTblBins')
-               )),
-      tabPanel("Lambdas",
-               br(),
-               div("Maxent lambdas file", id = "stepText"), br(), br(),
-               verbatimTextOutput("lambdas")
-      )
-    )
-  })
 
   # convenience function for modeling results list for current species
   evalOut <- reactive(spp[[curSp()]]$evalOut)
@@ -879,7 +875,6 @@ function(input, output, session) {
     # if
     if(!is.null(evalOut())) {
       n <- names(evalOut()@models)
-      print(n)
     } else {
       n <- NULL
     }

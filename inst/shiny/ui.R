@@ -621,6 +621,16 @@ tagList(
                 "input.tabs == 'model'",
                 uiOutput('evalTbls')
               ),
+              # conditionalPanel(
+              #   "input.tabs == 'model' && input.modelSel == 'Maxent'",
+              #   tabsetPanel(
+              #     tabPanel("Evaluation",
+              #              uiOutput('evalTbls1')),
+              #     tabPanel("Lambdas",
+              #              div("Maxent lambdas file", id = "stepText"), br(), br(),
+              #              verbatimTextOutput('lambdas'))
+              #   )
+              # ),
               conditionalPanel(
                 "input.tabs == 'vis' && input.visSel == 'response'",
                 imageOutput('responsePlot')
@@ -645,6 +655,11 @@ tagList(
                 "input.tabs == 'espace' && input.espaceSel == 'nicheOv'",
                 nicheOv_resultsUI("cEspace_nicheOv_uiID")
               )
+            ),
+            tabPanel(
+              'Lambdas',
+              div("Maxent lambdas file", id = "stepText"), br(), br(),
+              verbatimTextOutput('lambdas')
             ),
             tabPanel(
               'Component Guidance',
