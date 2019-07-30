@@ -658,7 +658,6 @@ tagList(
             ),
             tabPanel(
               'Lambdas',
-              div("Maxent lambdas file", id = "stepText"), br(), br(),
               verbatimTextOutput('lambdas')
             ),
             tabPanel(

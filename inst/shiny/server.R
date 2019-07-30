@@ -826,7 +826,7 @@ function(input, output, session) {
   # # # # # # # # # # # # # # # # # #
 
   output$evalTbls <- renderUI({
-    req(evalOut())
+    req(curSp(), evalOut())
     res <- evalOut()@results
     res.grp <- evalOut()@results.grp
     tuned.n <- ncol(evalOut()@tuned.settings)
@@ -857,12 +857,23 @@ function(input, output, session) {
 
   # define contents for lambdas table
   output$lambdas <- renderPrint({
+      req(curSp(), evalOut())
       if(spp[[curSp()]]$rmm$model$algorithm == "maxnet") {
         evalOut()@models[[curModel()]]$betas
       } else if(spp[[curSp()]]$rmm$model$algorithm == "maxent.jar") {
         evalOut()@models[[curModel()]]@lambdas
       }
     })
+
+  # hide lambdas table if it is not a maxent model
+  observeEvent(input$modelSel, {
+    modelSel <- input$modelSel
+    if (modelSel == 'Maxent') {
+      showTab(inputId = 'main', target = 'Lambdas')
+    } else {
+      hideTab(inputId = 'main', target = 'Lambdas')
+    }
+  })
 
 
   # convenience function for modeling results list for current species
