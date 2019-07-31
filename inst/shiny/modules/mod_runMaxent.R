@@ -4,24 +4,47 @@ runMaxent_UI <- function(id) {
   tagList(
     strong("Select algorithm"), br(),
     tags$div(title = 'text',
-             radioButtons(ns("algMaxent"), label='',
+             radioButtons(ns("algMaxent"), label = '',
                           choices = list("maxnet", "maxent.jar"), inline = TRUE)),
-    strong("Select feature classes "), strong(em("(flexibility of modeled response)")), br(),
-    "key: ", strong("L"), "inear, ", strong("Q"), "uadratic, ", strong("H"), "inge, ", strong("P"), "roduct, ", strong("T"), "hreshold",
-    tags$div(title='Feature combinations to be explored. Features are constructed using different relationships within and among the environmental predictors, and are used to constrain the computed probability distribution. In short, more features = more potential model complexity.',
-             checkboxGroupInput(ns("fcs"), label='',
-                                choices = list("L", "LQ", "H", "LQH", "LQHP", "LQHPT"), 
-                                inline = TRUE, 
+    strong("Select feature classes "),
+    strong(em("(flexibility of modeled response)")), br(),
+    "key: ", strong("L"), "inear, ", strong("Q"), "uadratic, ",
+    strong("H"), "inge, ", strong("P"), "roduct, ", strong("T"), "hreshold",
+    tags$div(title = paste0('Feature combinations to be explored. Features are ',
+                            'constructed using different relationships within and ',
+                            'among the environmental predictors, and are used to ',
+                            'constrain the computed probability distribution. ',
+                            'In short, more features = more potential model ',
+                            'complexity.'),
+             checkboxGroupInput(ns("fcs"), label = '',
+                                choices = list("L", "LQ", "H", "LQH", "LQHP",
+                                               "LQHPT"),
+                                inline = TRUE,
                                 selected = c("L", "LQ"))), # Check default (no selected param)
-    strong("Select regularization multipliers "), strong(em("(penalty against complexity)")),
-    tags$div(title='Range of regularization multipliers to explore. Greater values of the regularization multiplier lead to increased penalty against overly complex and/or overfit models. A value of 0 results in no regularization.',
+    strong("Select regularization multipliers "),
+    strong(em("(penalty against complexity)")),
+    tags$div(title = paste0('Range of regularization multipliers to explore. ',
+                            'Greater values of the regularization multiplier lead ',
+                            'to increased penalty against overly complex and/or ',
+                            'overfit models. A value of 0 results in no ',
+                            'regularization.'),
              sliderInput(ns("rms"), label = "",
-                         min = 0.5, max = 10, step=0.5, value = c(1, 2))),
-    tags$div(title='Value used to step through regularization multiplier range (e.g. range of 1-3 with step 0.5 results in [1, 1.5, 2, 2.5, 3]).',
-             numericInput(ns("rmsStep"), label = "Multiplier step value", value = 1)),
-    strong("Clamping?"), tags$div(title = 'Clamp model predictions?',
-                                  selectInput(ns("clamp"), label='', 
-                                              choices = list("", "TRUE", "FALSE"))),
+                         min = 0.5, max = 10, step = 0.5, value = c(1, 2))),
+    tags$div(title = paste0('Value used to step through regularization multiplier ',
+                            'range (e.g. range of 1-3 with step 0.5 results in ',
+                            '[1, 1.5, 2, 2.5, 3]).'),
+             numericInput(ns("rmsStep"), label = "Multiplier step value",
+                          value = 1)),
+    strong("Are you using a categorical variable? (**)"),
+    tags$div(title = '',
+             selectInput(ns("categSel"), label = '',
+                         choices = list("NO", "YES")),
+             conditionalPanel(sprintf("input['%s'] == 'YES'", ns("categSel")),
+                              uiOutput('catEnvs'))),
+    strong("Clamping?"),
+    tags$div(title = 'Clamp model predictions?',
+             selectInput(ns("clamp"), label = '',
+                         choices = list("", "TRUE", "FALSE"))),
     checkboxInput(ns("batch"), label = strong("Batch"), value = T) # Check default (value = FALSE)
   )
 }
@@ -32,13 +55,13 @@ runMaxent_MOD <- function(input, output, session) {
       updateSelectInput(session, "clamp", selected = "TRUE") # Check default (selected = "")
       shinyjs::enable("clamp")
     } else {
-      updateSelectInput(session, "clamp", selected = "TRUE")  
+      updateSelectInput(session, "clamp", selected = "TRUE")
       shinyjs::disable("clamp")
     }
   })
-  
+
   reactive({
-    
+
     if(is.null(input$fcs)) {
       shinyLogs %>% writeLog(type = 'error', "No feature classes selected.")
       return()
@@ -47,10 +70,10 @@ runMaxent_MOD <- function(input, output, session) {
       shinyLogs %>% writeLog(type = 'error', "Please specify clamping setting.")
       return()
     }
-    
+
     # loop over all species if batch is on
     if(input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
-    
+
     # PROCESSING ####
     for(sp in spLoop) {
       # ERRORS ####
@@ -60,42 +83,53 @@ runMaxent_MOD <- function(input, output, session) {
                                 spName(spp[[sp]]), ".")
         return()
       }
+
+      # Define vector of categorical variables if they exits
+      if (input$categSel == 'NO') {
+        catEnvs <- NULL
+      } else if (input$categSel == 'YES') {
+        catEnvs <- selCatEnvs()
+      }
       # FUNCTION CALL ####
-      res.maxent <- runMaxent(spp[[sp]]$occs, 
-                              spp[[sp]]$bg, 
+      res.maxent <- runMaxent(spp[[sp]]$occs,
+                              spp[[sp]]$bg,
                               spp[[sp]]$occs$partition,
                               spp[[sp]]$bg$partition,
-                              spp[[sp]]$procEnvs$bgMask, 
-                              input$rms, 
-                              input$rmsStep, 
-                              input$fcs, 
+                              spp[[sp]]$procEnvs$bgMask,
+                              input$rms,
+                              input$rmsStep,
+                              input$fcs,
                               input$clamp,
                               input$algMaxent,
+                              catEnvs,
                               shinyLogs)
       req(res.maxent)
-      
+
       # LOAD INTO SPP ####
       spp[[sp]]$evalOut <- res.maxent
-      
+
       # METADATA ####
       spp[[sp]]$rmm$model$algorithm <- input$algMaxent
       spp[[sp]]$rmm$model$maxent$featureSet <- input$fcs
       spp[[sp]]$rmm$model$maxent$regularizationMultiplierSet <- input$rms
-      spp[[sp]]$rmm$model$maxent$regularizationRule <- paste("increment by", input$rmsStep)
+      spp[[sp]]$rmm$model$maxent$regularizationRule <- paste("increment by",
+                                                             input$rmsStep)
       spp[[sp]]$rmm$model$maxent$clamping <- input$clamp
       if(input$algMaxent == "maxent.jar") {
-        ver <- paste("Maxent", maxentJARversion(), "via dismo", packageVersion('dismo'))
+        ver <- paste("Maxent", maxentJARversion(), "via dismo",
+                     packageVersion('dismo'))
       }
       if(input$algMaxent == "maxnet") {
         ver <- paste("maxnet", packageVersion('maxnet'))
       }
       spp[[sp]]$rmm$model$maxent$algorithmNotes <- ver
-      
+
     }
   })
 }
 
-runMaxent_INFO <- infoGenerator(modName = "Maxent",
-                             modAuts = "Jamie M. Kass, Robert Muscarella, Bruno
-                             Vilela, Gonzalo E. Pinilla-Buitrago, Robert P. Anderson",
-                             pkgName = c("ENMeval", "dismo", "maxnet"))
+runMaxent_INFO <-
+  infoGenerator(modName = "Maxent",
+                modAuts = paste0("Jamie M. Kass, Robert Muscarella, Bruno Vilela, ',
+                                 'Gonzalo E. Pinilla-Buitrago, Robert P. Anderson"),
+                pkgName = c("ENMeval", "dismo", "maxnet"))

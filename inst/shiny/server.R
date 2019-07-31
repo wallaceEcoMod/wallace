@@ -51,7 +51,9 @@ function(input, output, session) {
 
   # initialize log window
   output$log <- renderUI({
-    tags$div(id='logHeader', tags$div(id='logContent', HTML(paste0(shinyLogs(), "<br>", collapse = ""))))
+    tags$div(id = 'logHeader',
+             tags$div(id = 'logContent',
+                      HTML(paste0(shinyLogs(), "<br>", collapse = ""))))
   })
 
   ######################## #
@@ -899,6 +901,24 @@ function(input, output, session) {
   # shortcut to currently selected model, read from modSelUI
   curModel <- reactive(input$curModel)
 
+  # picker option to select categorical variables
+  output$catEnvs <- renderUI({
+    req(curSp(), occs(), envs())
+    if(!is.null(envs())) {
+      n <- c(names(envs()))
+    } else {
+      n <- NULL
+    }
+    envList <- setNames(as.list(n), n)
+    shinyWidgets::pickerInput(
+      "selCatEnvs",
+      label = "Select categorical variables (**)",
+      choices = envList,
+      multiple = TRUE)
+  })
+
+  selCatEnvs <- reactive(input$selCatEnvs)
+
   # download for partitioned occurrence records csv
   output$dlEvalTbl <- downloadHandler(
     filename = function() {
@@ -1089,7 +1109,8 @@ function(input, output, session) {
           file.rename(r@file@name, file)
         }
       } else {
-        shinyLogs %>% writeLog("Please install the rgdal package before downloading rasters.")
+        shinyLogs %>%
+          writeLog("Please install the rgdal package before downloading rasters.")
       }
     }
   )
