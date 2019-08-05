@@ -868,12 +868,14 @@ function(input, output, session) {
     })
 
   # hide lambdas table if it is not a maxent model
+  observeEvent(input$tabs, {
+    hideTab(inputId = 'main', target = 'Lambdas')
+  })
+
   observeEvent(input$modelSel, {
-    modelSel <- input$modelSel
-    if (modelSel == 'Maxent') {
+    hideTab(inputId = 'main', target = 'Lambdas')
+    if (module() == "Maxent") {
       showTab(inputId = 'main', target = 'Lambdas')
-    } else {
-      hideTab(inputId = 'main', target = 'Lambdas')
     }
   })
 

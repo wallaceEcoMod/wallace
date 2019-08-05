@@ -34,7 +34,7 @@ tagList(
             radioButtons(
               "occsSel", "Modules Available:",
               choices = list("Query Database (Present)" = 'dbOccs',
-                             "Query Database (Paleo)" = 'pdbOccs',
+                             #"Query Database (Paleo)" = 'pdbOccs',
                              "User-specified" = 'userOccs'),
               selected = 'dbOccs'
             ),
@@ -80,7 +80,7 @@ tagList(
             radioButtons(
               "envsSel", "Modules Available:",
               choices = list("WorldClim Bioclims" = 'wcbc',
-                             "ecoClimate"= 'ecoClimate',
+                             #"ecoClimate"= 'ecoClimate',
                              "User-specified" = 'userEnvs')
             ),
             tags$hr(),
@@ -364,7 +364,9 @@ tagList(
             h4("Build and Evaluate Niche Model"),
             radioButtons(
               "modelSel", "Modules Available:",
-              choices = list("BIOCLIM", "Maxent", "GAM"),
+              choices = list("BIOCLIM",
+                             # "GAM",
+                             "Maxent"),
               selected = "Maxent" # Check default (no selected)
             ),
             tags$hr(),
