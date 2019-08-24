@@ -1431,5 +1431,5 @@ function(input, output, session) {
     },
     content = function(file) {
       rangeModelMetadata::rmmToCSV(rmm(), filename = file)
-    })
+  })
 }

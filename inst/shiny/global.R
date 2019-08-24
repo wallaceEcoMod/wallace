@@ -1,7 +1,10 @@
+library(wallace)
 library(glue)
 
 UPLOAD_SIZE_MB <- 5000
 options(shiny.maxRequestSize = UPLOAD_SIZE_MB*1024^2)
+
+source("helpers.R")
 
 # load all modules
 module_files <- list.files('modules', pattern = "\\.R$", full.names = TRUE)
