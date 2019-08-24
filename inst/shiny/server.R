@@ -5,54 +5,30 @@ function(input, output, session) {
 
   # single species list of lists
   spp <- reactiveValues()
-  # # multiple species list of lists: each entity is a species pair list which contains
-  # # results of multispecies analyses
-  # msp <- reactiveValues()
   envs.global <- reactiveValues()
+
   # list with current guidance text
   gtext <- reactiveValues()
-  # single reactive value for dynamic log vector
-  intro <- '***WELCOME TO WALLACE***'
-  brk <- paste(rep('------', 14), collapse='')
-  expl <- 'Please find messages for the user in this log window.'
-  logInit <- c(paste(intro, brk, expl, brk, '', sep='<br>'))
-  shinyLogs <- reactiveVal(logInit)
+
+  # Variable to keep track of current log message
+  initLogMsg <- function() {
+    intro <- '***WELCOME TO WALLACE***'
+    brk <- paste(rep('------', 14), collapse = '')
+    expl <- 'Please find messages for the user in this log window.'
+    logInit <- paste(intro, brk, expl, brk, '', sep = '<br>')
+    logInit
+  }
+  shinyLogs <- reactiveVal(initLogMsg())
+
+  # Write out logs to the log Window
+  observeEvent(shinyLogs(), {
+    shinyjs::html(id = "logHeader", html = paste0(shinyLogs(), "<br>"), add = TRUE)
+    shinyjs::js$scrollLogger()
+  })
 
   # load modules
+  # TODO the modules should not be sourced here, only in global
   for (f in list.files('./modules')) source(file.path('modules', f), local=TRUE)
-
-  # # FOR DEVELOPMENT PURPOSES
-  # observeEvent(input$load, {
-  #   f <- c1_userOccs('example_data/multispecies copy.csv', "multispecies copy.csv")
-  #   # wc <- c3_worldclim(10, paste0('bio', 1:19))
-  #   # wc <- raster::brick(wc)
-  #   # r <- list()
-  #   # ls1 <- list.files('example_data/Procyon_lotor_mskEnvs', full.names = TRUE)
-  #   # ls1 <- ls1[-which(grepl("gri$",ls1))]
-  #   # r[["Procyon_lotor"]] <- raster::stack(ls1)
-  #   # r[["Procyon_lotor"]] <- raster::brick(r[["Procyon_lotor"]])
-  #   # ls2 <- list.files('example_data/Nyctereutes_procyonoides_mskEnvs', full.names = TRUE)
-  #   # ls2 <- ls2[-which(grepl("gri$",ls2))]
-  #   # r[["Nyctereutes_procyonoides"]] <- raster::stack(ls2)
-  #   # r[["Nyctereutes_procyonoides"]] <- raster::brick(r[["Nyctereutes_procyonoides"]])
-  #   for(n in c("Procyon_lotor", "Nyctereutes_procyonoides")) {
-  #     occs <- f[[n]]$occs
-  #     occs$partition <- NULL
-  #     spp[[n]] <- list(occs = occs, occData = list(occsCleaned = occs),
-  #                      rmm = rangeModelMetadata::rmmTemplate())
-  #     # spp[[n]]$envs <- wc
-  #     # spp[[n]]$bg <- f[[n]]$bg
-  #     # spp[[n]]$procEnvs <- list()
-  #     # spp[[n]]$procEnvs$bgMask <- r[[n]]
-  #     # spp[[n]]$occs$partition <- f[[n]]$occs$partition
-  #   }
-  #   print('SECRET DATA LOADED')
-  # })
-
-  # initialize log window
-  output$log <- renderUI({
-    tags$div(id='logHeader', tags$div(id='logContent', HTML(paste0(shinyLogs(), "<br>", collapse = ""))))
-  })
 
   ######################## #
   ### GUIDANCE TEXT ####
@@ -431,7 +407,9 @@ function(input, output, session) {
   curEnv <- reactive(input$curEnv)
 
   # convenience function for environmental variables for current species
-  envs <- reactive(envs.global[[spp[[curSp()]]$envs]])
+  envs <- reactive({
+    envs.global[[spp[[curSp()]]$envs]]
+  })
 
   # map center coordinates for 30 arcsec download
   mapCntr <- reactive(mapCenter(input$map_bounds))

@@ -1,5 +1,11 @@
+resourcePath <- system.file("shiny", "www", package = "wallace")
+
 tagList(
   shinyjs::useShinyjs(),
+  shinyjs::extendShinyjs(
+    script = file.path(resourcePath, "js", "shinyjs-funcs.js"),
+    functions = c("scrollLogger")
+  ),
   navbarPage(
     theme = shinythemes::shinytheme('united'), id = 'tabs', collapsible = TRUE,
     title = glue('Wallace v{packageVersion("wallace")}'),
@@ -22,7 +28,6 @@ tagList(
 
         wellPanel(
           tags$link(href = "css/styles.css", rel = "stylesheet"),
-          tags$script(src = "js/scroll.js"),
           conditionalPanel(
             "input.tabs == 'intro'",
             includeMarkdown("Rmd/text_intro_tab.Rmd")
@@ -577,9 +582,10 @@ tagList(
               2,
               offset = 1,
               align = "left",
-              div(id = "wallaceLog",
-                  class = "scrollbox",
-                  htmlOutput("log"))
+              div(
+                id = "wallaceLog",
+                div(id = "logHeader", div(id = "logContent"))
+              )
             ),
             tags$head(tags$style(".leaflet-top {z-index:999!important;}")
             )

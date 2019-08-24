@@ -43,30 +43,35 @@ writeSpp <- function(spp, sp, dir) {
   if(!is.null(spp[[sp]]$procEnvs$bgMask)) raster::writeRaster(spp[[sp]]$procEnvs$bgMask, file.path(dir, paste0(sp, "_bgMask.tif")), bylayer = TRUE)
 }
 
-# add text to log
+#' Add text to a logger
+#'
+#' @param logger The logger to write the text to. Can be NULL or a function
+#' @param ... Messages to write to the logger
+#' @param type One of "default", "error", "warning"
 #' @export
-writeLog <- function(logs, ..., type = 'default') {
-  if (is.null(logs)) {
+writeLog <- function(logger, ..., type = 'default') {
+  if (is.null(logger)) {
     if (type == 'error') {
       stop(paste0(..., collapse = ""), call.=FALSE)
-      return()
     } else if (type == 'warning') {
       warning(paste0(..., collapse = ""), call.=FALSE)
-      return()
+    } else {
+      message(paste0(..., collapse = ""))
     }
-    message(paste0(..., collapse = ""))
-    return()
+  } else if (is.function(logger)) {
+    if (type == "default") {
+      pre <- "> "
+    } else if (type == 'error') {
+      pre <- '> <font color="red"><b>! ERROR</b></font> : '
+    } else if (type == 'warning') {
+      pre <- '> <font color="orange"><b>! WARNING</b></font> : '
+    }
+    newEntries <- paste0(pre, ..., collapse = "")
+    logger(newEntries)
+  } else {
+    warning("Invalid logger type")
   }
-
-  if (type == "default") {
-    pre <- "> "
-  } else if (type == 'error') {
-    pre <- '> <font color="red"><b>! ERROR</b></font> : '
-  } else if (type == 'warning') {
-    pre <- '> <font color="orange"><b>! WARNING</b></font> : '
-  }
-  newEntries <- paste0(pre, ..., collapse = "")
-  logs(paste0(logs(), newEntries, '', sep = '<br>'))
+  invisible()
 }
 
 ####################### #
