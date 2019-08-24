@@ -4,14 +4,14 @@
 \alias{c1_userOccs}
 \title{c1_userOccs}
 \usage{
-c1_userOccs(csvPath, csvName, shinyLogs = NULL)
+c1_userOccs(csvPath, csvName, logger = NULL)
 }
 \arguments{
 \item{csvPath}{x}
 
 \item{csvName}{x}
 
-\item{shinyLogs}{x}
+\item{logger}{x}
 }
 \description{
 ..
