@@ -1,46 +1,5 @@
 resourcePath <- system.file("shiny", "www", package = "wallace")
 
-# Add radio buttons for all modules in a component
-insert_modules_options <- function(component) {
-  unlist(setNames(
-    lapply(COMPONENT_MODULES[[component]], `[[`, "id"),
-    lapply(COMPONENT_MODULES[[component]], `[[`, "short_name")
-  ))
-}
-
-# Add the UI for a module
-insert_modules_ui <- function(component) {
-  lapply(COMPONENT_MODULES[[component]], function(module) {
-    conditionalPanel(
-      glue("input.{component}Sel == '{module$id}'"),
-      ui_top(
-        modName = module$long_name,
-        modAuts = module$authors,
-        pkgName = module$package
-      ),
-      do.call(module$ui_function, list(module$id)),
-      tags$hr(),
-      ui_bottom(
-        modName = module$long_name,
-        modAuts = module$authors,
-        pkgName = module$package
-      )
-    )
-  })
-}
-
-# Add the results section UI of all modules in a component
-insert_modules_results <- function(component) {
-  lapply(COMPONENT_MODULES[[component]], function(module) {
-    if (is.null(module$result_function)) return()
-    conditionalPanel(
-      glue("input.{component}Sel == '{module$id}'"),
-      do.call(module$result_function, list(module$id))
-    )
-  })
-}
-
-
 tagList(
   shinyjs::useShinyjs(),
   shinyjs::extendShinyjs(
