@@ -6,7 +6,7 @@
 #'
 #' @param csvPath x
 #' @param csvName x
-#' @param shinyLogs x
+#' @param logger x
 # @keywords
 #'
 # @examples
@@ -26,14 +26,14 @@
 
 #' @export
 
-c1_userOccs <- function(csvPath, csvName, shinyLogs = NULL) {
+c1_userOccs <- function(csvPath, csvName, logger = NULL) {
 
   # read in csv
   csv <- read.csv(csvPath, header = TRUE)
 
   # check to make sure all column names are correct
   if (!all(c('scientific_name', 'longitude', 'latitude') %in% names(csv))) {
-    shinyLogs %>% writeLog(type = "error",
+    logger %>% writeLog(type = "error",
       'Please input CSV file with columns "scientific_name", "longitude", "latitude".')
     return()
   }
@@ -46,7 +46,7 @@ c1_userOccs <- function(csvPath, csvName, shinyLogs = NULL) {
   spNames <- trimws(as.character(unique(occs$scientific_name)))
 
   if (nrow(occs) == 0) {
-    shinyLogs %>% writeLog(type = 'warning',
+    logger %>% writeLog(type = 'warning',
       'No records with coordinates found in ', csvName, ".")
     return()
   }
@@ -82,7 +82,7 @@ c1_userOccs <- function(csvPath, csvName, shinyLogs = NULL) {
     # subset by key columns and make id and popup columns
     dupsRem <- nrow(sp.occs) - nrow(occs)
 
-    shinyLogs %>% writeLog(
+    logger %>% writeLog(
       "Data for ", em(i), " uploaded from ", csvName, ": Duplicated records removed [", dupsRem, "]. Remaining records [", nrow(occs), "].")
 
     # look for background records
@@ -90,7 +90,7 @@ c1_userOccs <- function(csvPath, csvName, shinyLogs = NULL) {
     # if they exist, load them into occsList for the current species
     if(nrow(sp.bg) > 0) {
       occsList[[n]]$bg <- sp.bg
-      shinyLogs %>% writeLog(
+      logger %>% writeLog(
         "Data for ", em(i), " uploaded from ", csvName, ": ", nrow(sp.bg), " background records.")
     }
   }

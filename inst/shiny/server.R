@@ -26,9 +26,14 @@ function(input, output, session) {
     shinyjs::js$scrollLogger()
   })
 
-  # load modules
-  # TODO the modules should not be sourced here, only in global
-  for (f in list.files('./modules')) source(file.path('modules', f), local=TRUE)
+  # tab and module-level reactives
+  component <- reactive({
+    input$tabs
+  })
+  module <- reactive({
+    if (component() == "intro") "intro"
+    else input[[glue("{component()}Sel")]]
+  })
 
   ######################## #
   ### GUIDANCE TEXT ####
@@ -36,34 +41,16 @@ function(input, output, session) {
 
   # UI for component guidance text
   output$gtext_component <- renderUI({
-    shiny::includeMarkdown(file.path('Rmd', gtext$curComponent))
+    file <- file.path('Rmd', glue("gtext_{component()}.Rmd"))
+    if (!file.exists(file)) return()
+    includeMarkdown(file)
   })
 
   # UI for module guidance text
   output$gtext_module <- renderUI({
-    shiny::includeMarkdown(file.path('Rmd', gtext$curModule))
-  })
-
-  # tab and module-level reactives
-  component <- reactive({input$tabs})
-  module <- reactive({
-    if(component() == "intro") "intro"
-    else if(component() == "occs") input$occsSel
-    else if(component() == "poccs") input$procOccsSel
-    else if(component() == "envs") input$envsSel
-    else if(component() == "penvs") input$procEnvsSel
-    else if(component() == "espace") input$espaceSel
-    else if(component() == "part") input$partSel
-    else if(component() == "model") input$modelSel
-    else if(component() == "vis") input$visSel
-    else if(component() == "proj") input$projSel
-    #else if(component() == "rmd") ''
-  })
-
-  # logic to serve the selected component/module guidance text
-  observe({
-    gtext$curComponent <- paste0("gtext_", component(), ".Rmd")
-    gtext$curModule <- paste0("gtext_", component(), "_", module(), ".Rmd")
+    file <- COMPONENT_MODULES[[component()]][[module()]]$instructions
+    if (is.null(file)) return()
+    includeMarkdown(file)
   })
 
   ######################## #
@@ -71,17 +58,20 @@ function(input, output, session) {
   ######################## #
 
   # create map
-  m <- leaflet() %>%
-    setView(0, 0, zoom = 2) %>%
-    addProviderTiles('Esri.WorldTopoMap') %>%
-    leafem::addMouseCoordinates()
-  output$map <- renderLeaflet(m)
+  output$map <- renderLeaflet(
+    leaflet() %>%
+      setView(0, 0, zoom = 2) %>%
+      addProviderTiles('Esri.WorldTopoMap') %>%
+      mapview::addMouseCoordinates()
+  )
 
   # create map proxy to make further changes to existing map
   map <- leafletProxy("map")
 
-  # initialize provider tile option
-  observe({map %>% addProviderTiles(input$bmap)})
+  # change provider tile option
+  observe({
+    map %>% addProviderTiles(input$bmap)
+  })
 
   # logic for recording the attributes of drawn polygon features
   observeEvent(input$map_draw_new_feature, {
@@ -107,57 +97,19 @@ function(input, output, session) {
     updateSelectInput(session, "curSp", selected = curSp())
   })
 
-  # MAPPING LOGIC ####
+  # Call the module-specific map function for the current module
   observe({
     # must have one species selected and occurrence data
     req(length(curSp()) == 1, occs(), module())
-    f <- switch(module(),
-                "dbOccs" = queryDb_MAP,
-                "userOccs" = userOccs_MAP,
-                "selOccs" = selectOccs_MAP,
-               # "profOccs" = occProfile_MAP, # CM
-                "remID" = removeByID_MAP,
-                "spthin" = thinOccs_MAP,
-                "wcbc" = wcBioclims_MAP,
-                "ecoClimate" = ecoclimate_MAP,
-                "userEnvs" = userEnvs_MAP,
-                "bgSel" = bgExtent_MAP,
-                "bgUser" = userBgExtent_MAP,
-                "bgDraw" = drawBgExtent_MAP,
-                "biasFile" = mapBias_MAP,
-                "nsp" = partitionNonSpat_MAP,
-                "sp" = partitionSpat_MAP,
-                "mapPreds" = mapPreds_MAP,
-                "projArea" = projectArea_MAP,
-                "projTime" = projectTime_MAP,
-                "projUser" = projectUser_MAP,
-                "mess" = envSimilarity_MAP)
-    req(f)
-    map %>% f(session)
+    map_fx <- COMPONENT_MODULES[[component()]][[module()]]$map_function
+    if (!is.null(map_fx)) {
+      do.call(map_fx, list(map, common = common))
+    }
   })
 
   ######################## #
   ### BUTTONS LOGIC ####
   ######################## #
-
-  # Disable download buttons
-  shinyjs::disable("dlDbOccs")
-  shinyjs::disable("dlOccs")
-  shinyjs::disable("dlAllOccs")
-  shinyjs::disable("dlProcOccs")
-  shinyjs::disable("dlBgShp")
-  shinyjs::disable("dlMskEnvs")
-  shinyjs::disable("dlBgPts")
-  shinyjs::disable("dlPart")
-  shinyjs::disable("dlEvalTbl")
-  shinyjs::disable("dlVisBioclim")
-  shinyjs::disable("dlMaxentPlots")
-  shinyjs::disable("dlRespCurves")
-  shinyjs::disable("dlPred")
-  shinyjs::disable("dlPjShp")
-  shinyjs::disable("dlProj")
-  shinyjs::disable("dlMess")
-  # shinyjs::disable("dlRMD")
 
   # Enable/disable buttons
   observe({
@@ -185,38 +137,6 @@ function(input, output, session) {
     shinyjs::toggleState("dlProj", !is.null(spp[[curSp()]]$project$pjEnvs))
     shinyjs::toggleState("dlMess", !is.null(spp[[curSp()]]$project$messVals))
     # shinyjs::toggleState("dlWhatever", !is.null(spp[[curSp()]]$whatever))
-  })
-
-  ########################################## #
-  # COMPONENT: OBTAIN OCCURRENCE DATA ####
-  ########################################## #
-
-  # # # # # # # # # # # # # # # # # # # #
-  # module Query Database (Present) ####
-  # # # # # # # # # # # # # # # # # # # #
-  observeEvent(input$goDbOccs, {
-    queryDb <- callModule(queryDb_MOD, 'c1_queryDb_uiID')
-    # return the occs table
-    occsList <- queryDb()
-    n <- formatSpName(occsList[[1]]$scientific_name)
-  })
-
-  # # # # # # # # # # # # # # # # # # #
-  # module Query Database (Paleo) ####
-  # # # # # # # # # # # # # # # # # # #
-  observeEvent(input$goPaleoDbOccs, {
-    paleoDb <- callModule(queryPaleoDb_MOD, 'c1_queryPaleoDb_uiID')
-    # return the occs table
-    occsList <- paleoDb()
-    n <- formatSpName(occsList[[1]]$scientific_name)
-  })
-
-  # # # # # # # # # # # # # # # # # #
-  # module User Occurrence Data ####
-  # # # # # # # # # # # # # # # # # #
-  observeEvent(input$goUserOccs, {
-    userOccs <- callModule(userOccs_MOD, 'c1_userOccs_uiID')
-    userOccs()
   })
 
   # # # # # # # # # # # # # # # # # #
@@ -281,7 +201,7 @@ function(input, output, session) {
     filename = function() {
       n <- formatSpName(spName(spp[[curSp()]]))
       source <- rmm()$data$occurrence$sources
-      paste0(n, "_", source, ".csv")
+      glue("{n}_{source}.csv")
     },
     content = function(file) {
       tbl <- occs() %>%
@@ -322,7 +242,7 @@ function(input, output, session) {
     filename = function() {
       n <- formatSpName(spName(spp[[curSp()]]))
       source <- rmm()$data$occurrence$sources
-      paste0(n, "_", source, "_raw.csv")
+      glue("{n}_{source}_raw.csv")
     },
     content = function(file) {
       write_csv_robust(spp[[curSp()]]$occData$occsOrig, file, row.names = FALSE)
@@ -417,6 +337,7 @@ function(input, output, session) {
   # text showing the current map center
   output$ctrLatLon <- renderText({
     paste('Using map center', paste(mapCntr(), collapse=', '))
+    glue('Using map center {join(mapCntr())}')
   })
 
   # CONSOLE PRINT
@@ -505,7 +426,7 @@ function(input, output, session) {
   output$dlProcOccs <- downloadHandler(
     filename = function() {
       n <- formatSpName(spName(spp[[curSp()]]))
-      paste0(n, "_processed_occs.csv")
+      glue("{n}_processed_occs.csv")
     },
     content = function(file) {
       tbl <- occs() %>% dplyr::select(-pop)
@@ -579,7 +500,7 @@ function(input, output, session) {
 
   # DOWNLOAD: masked environmental variable rasters
   output$dlBgShp <- downloadHandler(
-    filename = function() paste0(formatSpName(curSp()), '_bgShp.zip'),
+    filename = function() glue("{formatSpName(curSp())}_bgShp.zip"),
     content = function(file) {
       tmpdir <- tempdir()
       setwd(tempdir())
@@ -668,14 +589,10 @@ function(input, output, session) {
   ### COMPONENT: ESPACE ####
   ############################################## #
 
-  # curMSp <- reactive({
-  #   if(length(curSp()) > 1) paste0(curSp(), collapse = '|')
-  # })
-
   # # # # # # # # # # # # # # # # # # # # # # #
   # module Principle Components Analysis ####
   # # # # # # # # # # # # # # # # # # # # # # #
-  pca <- callModule(pca_MOD, 'cEspace_PCA_uiID')
+  pca <- callModule(pca_MOD, 'cEspace_PCA_uiID', .curSp = curSp)
 
   observeEvent(input$goPCA, {
     # stop if no environmental variables
@@ -774,7 +691,6 @@ function(input, output, session) {
   observeEvent(input$goBIOCLIM, {
     mod.bioclim <- callModule(runBIOCLIM_MOD, 'runBIOCLIM_uiID')
     mod.bioclim()
-    #runBIOCLIM_TBL(input, output, session)
     # make sure the results were entered before proceeding
     req(evalOut())
     # switch to Results tab
@@ -782,21 +698,6 @@ function(input, output, session) {
     # update radio buttons for Visualization component
     updateRadioButtons(session, "visSel", choices = list("BIOCLIM Envelope Plots" = 'bioclimPlot',
                                                          "Map Prediction" = 'mapPreds'))
-  })
-
-  # # # # # # # # # # # #
-  # module GAM ####
-  # # # # # # # # # # # #
-  observeEvent(input$goGAM, {
-    mod.gam <- callModule(runGAM_MOD, 'runGAM_uiID')
-    mod.gam()
-    runGAM_TBL(input, output, session)
-    # make sure the results were entered before proceeding
-    req(evalOut())
-    # switch to Results tab
-    updateTabsetPanel(session, 'main', selected = 'Results')
-    # update radio buttons for Visualization component
-    updateRadioButtons(session, "visSel", choices = list("Map Prediction" = 'mapPreds'))
   })
 
   # # # # # # # # # # # # # # # # # #
@@ -825,11 +726,11 @@ function(input, output, session) {
     output$evalTblBins <- DT::renderDataTable(res.grp.round, options = options)
 
     tagList(br(),
-            div("Evaluation statistics: full model and partition averages",
-                id = "stepText"), br(), br(),
+            span("Evaluation statistics: full model and partition averages",
+                class = "stepText"), br(), br(),
             DT::dataTableOutput('evalTbl'), br(),
-            div("Evaluation statistics: individual partitions",
-                id = "stepText"), br(), br(),
+            span("Evaluation statistics: individual partitions",
+                class = "stepText"), br(), br(),
             DT::dataTableOutput('evalTblBins'))
   })
 
@@ -1320,71 +1221,107 @@ function(input, output, session) {
   ### RMARKDOWN FUNCTIONALITY ####
   ########################################### #
 
+  filetype_to_ext <- function(type = c("Rmd", "PDF", "HTML", "Word")) {
+    type <- match.arg(type)
+    switch(
+      type,
+      Rmd = '.Rmd',
+      PDF = '.pdf',
+      HTML = '.html',
+      Word = '.docx'
+    )
+  }
+
   # handler for R Markdown download
   output$dlRMD <- downloadHandler(
     filename = function() {
-      paste0("wallace-session-", Sys.Date(), ".", switch(
-        input$rmdFileType, Rmd = 'Rmd', PDF = 'pdf', HTML = 'html', Word = 'docx'
-      ))},
+      paste0("wallace-session-", Sys.Date(), filetype_to_ext(input$rmdFileType))
+    },
     content = function(file) {
-      knit.lst <- list()
+      md_files <- c()
+      md_intro_file <- tempfile(pattern = "intro_", fileext = ".md")
+      rmarkdown::render("Rmd/userReport_intro.Rmd",
+                        output_format = rmarkdown::github_document(html_preview = FALSE),
+                        output_file = md_intro_file,
+                        clean = TRUE)
+      md_files <- c(md_files, md_intro_file)
 
-      # make RMD text for all individual species and multispecies pairs
-      for(sp in allSp()) {
-        knit.logicals <- list(
-          occsDb_knit = !is.null(spp[[sp]]$rmm$code$wallaceSettings$occsNum),
-          occsUser_knit = !is.null(spp[[sp]]$rmm$code$wallaceSettings$userCSV),
-          removeByID_knit = !is.null(spp[[sp]]$rmm$code$wallaceSettings$removedIDs),
-          selectByID_knit = !is.null(spp[[sp]]$rmm$code$wallaceSettings$occsSelPolyCoords),
-          worldclim_knit = !is.null(spp[[sp]]$rmm$wallaceSettings$wcRes),
-          bgExtent_knit = !is.null(spp[[sp]]$procEnvs$bgExt),
-          bgMskSamplePts_knit = !is.null(spp[[sp]]$bgPts),
-          espace_pca_knit = !is.null(spp[[sp]]$pca),
-          espaceOccDens_knit = !is.null(spp[[sp]]$occDens),
-          espaceNicheOv_knit = !is.null(spp[[sp]]$nicheOv))
-        print(knit.logicals)
-        spAbbr1 <- tolower(strsplit(sp, "_")[[1]])
-        spAbbr2 <- paste(substr(spAbbr1[1], 1, 1), substr(spAbbr1[2], 1, 3), collapse = "")
-        knit.params <- c(file = "Rmd/userReport.Rmd", spName = spName(sp),
-                         sp = sp,
-                         knit.logicals,
-                         queryDb_RMD(sp), userOccs_RMD(sp),
-                         worldclim_RMD(sp),
-                         removeByID_RMD(sp), selectOccs_RMD(sp),
-                         worldclim_RMD(sp), userEnvs_RMD(sp),
-                         bgExtent_RMD(sp), bgMskSamplePts_RMD(sp),
-                         espace_pca_RMD(sp)
-                         )
-        knit.lst[[sp]] <- do.call(knitr::knit_expand, knit.params)
-        # print(knit.lst)
+      for (sp in allSp()) {
+        species_rmds <- list()
+        for (component in names(COMPONENT_MODULES)) {
+          for (module in COMPONENT_MODULES[[component]]) {
+            rmd_file <- module$rmd_file
+            rmd_function <- module$rmd_function
+            if (is.null(rmd_file)) next
+
+            if (is.null(rmd_function)) {
+              rmd_vars <- list()
+            } else {
+              rmd_vars <- do.call(rmd_function, list(species = spp[[sp]]))
+            }
+            knit_params <- c(
+              file = rmd_file,
+              spName = spName(sp),
+              sp = sp,
+              rmd_vars
+            )
+            module_rmd <- do.call(knitr::knit_expand, knit_params)
+            module_rmd_file <- tempfile(pattern = paste0(module$id, "_"),
+                                        fileext = ".Rmd")
+            writeLines(module_rmd, module_rmd_file)
+            species_rmds[[component]] <- c(species_rmds[[component]], module_rmd_file)
+          }
+        }
+
+        species_md_file <- tempfile(pattern = paste0(sp, "_"),
+                                    fileext = ".md")
+        rmarkdown::render("Rmd/userReport_species.Rmd",
+                          params = list(child_rmds = species_rmds, spName = spName(sp)),
+                          output_format = rmarkdown::github_document(html_preview = FALSE),
+                          output_file = species_md_file,
+                          clean = TRUE)
+        md_files <- c(md_files, species_md_file)
+
+        # TODO these should be set in each individual module's rmd function
+        # knit.logicals <- list(
+        #   removeByID_knit = !is.null(spp[[sp]]$rmm$code$wallaceSettings$removedIDs),
+        #   selectByID_knit = !is.null(spp[[sp]]$rmm$code$wallaceSettings$occsSelPolyCoords),
+        #   worldclim_knit = !is.null(spp[[sp]]$rmm$wallaceSettings$wcRes),
+        #   bgExtent_knit = !is.null(spp[[sp]]$procEnvs$bgExt),
+        #   bgMskSamplePts_knit = !is.null(spp[[sp]]$bgPts),
+        #   espace_pca_knit = !is.null(spp[[sp]]$pca),
+        #   espace_occDens_knit = !is.null(spp[[sp]]$occDens),
+        #   espace_nicheOv_knit = !is.null(spp[[sp]]$nicheOv))
       }
-      # remove the header text from all species' RMD past the first
-      for(k in 2:length(knit.lst)) {
-        knit.lst[[k]] <- gsub("---\ntitle.*Your analyses are below.", "", knit.lst[[k]])
-      }
-      # concatenate all species' RMDs together
-      knit.out <- paste(knit.lst, collapse = "\n")
-      print(knit.out)
 
-      # temporarily switch to the temp dir, in case you do not have write
-      # permission to the current working directory
-      owd <- setwd(tempdir())
-      on.exit(setwd(owd))
-      writeLines(knit.out, 'userReport2.Rmd')
+      combined_md <-
+        md_files %>%
+        lapply(readLines, encoding = "UTF-8") %>%
+        lapply(paste, collapse = "\n") %>%
+        paste(collapse = "\n\n")
 
-      if(input$rmdFileType == 'Rmd') {
-        out <- rmarkdown::render('userReport2.Rmd', rmarkdown::md_document(variant="markdown_github"))
-        writeLines(gsub('``` r', '```{r}', readLines(out)), 'userReport3.Rmd')
-        out <- 'userReport3.Rmd'
+      result_file <- tempfile(pattern = "result_", fileext = filetype_to_ext(input$rmdFileType))
+      if (input$rmdFileType == "Rmd") {
+        combined_rmd <- gsub('``` r', '```{r}', combined_md)
+        writeLines(combined_rmd, result_file, useBytes = TRUE)
       } else {
-        out <- rmarkdown::render('userReport2.Rmd',
-                                 switch(input$rmdFileType,
-                                        PDF = rmarkdown::pdf_document(latex_engine='xelatex'),
-                                        HTML = rmarkdown::html_document(),
-                                        Word = rmarkdown::word_document())
+        combined_md_file <- tempfile(pattern = "combined_", fileext = ".md")
+        writeLines(combined_md, combined_md_file)
+        rmarkdown::render(
+          input = combined_md_file,
+          output_format =
+            switch(
+              input$rmdFileType,
+              "PDF" = rmarkdown::pdf_document(),
+              "HTML" = rmarkdown::html_document(),
+              "Word" = rmarkdown::word_document()
+            ),
+          output_file = result_file,
+          clean = TRUE
         )
       }
-      file.rename(out, file)
+
+      file.rename(result_file, file)
     }
   )
 
@@ -1409,5 +1346,48 @@ function(input, output, session) {
     },
     content = function(file) {
       rangeModelMetadata::rmmToCSV(rmm(), filename = file)
+  })
+
+  # Create a data structure that holds variables and functions used by modules
+  common = list(
+    # Reactive variables to pass on to modules
+    logger = shinyLogs,
+    spp = spp,
+    curSp = curSp,
+    allSp = allSp,
+    curEnv = curEnv,
+    curModel = curModel,
+    component = component,
+    module = module,
+
+    # Shortcuts to values nested inside spp
+    occs = occs,
+    envs = envs,
+    bg = bg,
+    bgExt = bgExt,
+    bgMask = bgMask,
+    evalOut = evalOut,
+    mapPred = mapPred,
+    mapProj = mapProj,
+    rmm = rmm,
+
+    # Switch to a new component tab
+    update_component = function(tab = c("Map", "Table", "Results", "Download")) {
+      tab <- match.arg(tab)
+      updateTabsetPanel(session, "main", selected = tab)
+    },
+
+    # Remove a specific module so that it will not be selectable in the UI
+    remove_module = function(component = COMPONENTS, module) {
+      component <- match.arg(component)
+      shinyjs::js$removeModule(component = component, module = module)
+    }
+  )
+
+  # Initialize all modules
+  lapply(names(COMPONENT_MODULES), function(component) {
+    lapply(COMPONENT_MODULES[[component]], function(module) {
+      callModule(get(module$server_function), module$id, common = common)
+    })
   })
 }

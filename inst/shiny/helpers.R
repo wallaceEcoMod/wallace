@@ -3,18 +3,16 @@ uiTop <- function(mod_INFO) {
   pkgName <- mod_INFO$pkgName
   pkgTitl <- mod_INFO$pkgTitl
 
-  ls <- list(div(paste("Module: ", modName), id="mod"))
+  ls <- list(div(paste("Module: ", modName), class = "mod"))
 
-  if(!is.null(pkgName)) {
-    for(i in 1:length(pkgName)) {
-      ls <- c(ls, list(span(pkgName[i], id="rpkg"),
-                       span(paste(':', pkgTitl[i]), id="pkgDes"),
-                       br()))
-    }
+  for (i in seq_along(pkgName)) {
+    ls <- c(ls, list(span(pkgName[i], class = "rpkg"),
+                     span(paste(':', pkgTitl[i]), class = "pkgDes"),
+                     br()))
   }
 
   ls <- c(ls, list(HTML('<hr>')))
-  return(ls)
+  ls
 }
 
 uiBottom <- function(mod_INFO) {
@@ -22,19 +20,26 @@ uiBottom <- function(mod_INFO) {
   pkgName <- mod_INFO$pkgName
   pkgAuts <- mod_INFO$pkgAuts
 
-  ls <- list(div(paste('Module Developers:', modAuts), id="pkgDes"))
+  ls <- list(div(paste('Module Developers:', modAuts), class = "pkgDes"))
 
-  if(!is.null(pkgName)) {
-    for(i in 1:length(pkgName)) {
-      ls <- c(ls, list(span(pkgName[i], id = "rpkg"), "references", br(),
-                       div(paste('Package Developers:', pkgAuts[i]), id="pkgDes"),
-                       a("CRAN", href = file.path("http://cran.r-project.org/web/packages",
-                                                  pkgName[i], "index.html"), target = "_blank"), " | ",
-                       a("documentation", href = file.path("https://cran.r-project.org/web/packages",
-                                                           pkgName[i], paste0(pkgName[i], ".pdf")), target = "_blank"), br()))
-    }
+  for (i in seq_along(pkgName)) {
+    ls <- c(ls, list(
+      span(pkgName[i], class = "rpkg"), "references", br(),
+      div(paste('Package Developers:', pkgAuts[i]), class = "pkgDes"),
+      a("CRAN", href = file.path("http://cran.r-project.org/web/packages",
+                                 pkgName[i], "index.html"), target = "_blank"), " | ",
+      a("documentation", href = file.path("https://cran.r-project.org/web/packages",
+                                          pkgName[i], paste0(pkgName[i], ".pdf")), target = "_blank"), br()
+    ))
   }
-  return(ls)
+  ls
+}
+
+ui_top <- function(pkgName, modName , modAuts) {
+  uiTop(infoGenerator(pkgName, modName , modAuts))
+}
+ui_bottom <- function(pkgName, modName , modAuts) {
+  uiBottom(infoGenerator(pkgName, modName , modAuts))
 }
 
 infoGenerator <- function(pkgName, modName , modAuts) {
@@ -50,3 +55,6 @@ infoGenerator <- function(pkgName, modName , modAuts) {
        pkgTitl = pkgTitl,
        pkgAuts = pkgAuts)
 }
+
+# Join a string vector into a single string separated by commas
+join <- function(v) paste(v, collapse = ", ")
