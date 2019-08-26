@@ -1,8 +1,3 @@
----
-title: "envs_ecoClimate"
-output: html_document
----
-
 ### **Module:** ***EcoClimate***
 
 **BACKGROUND**

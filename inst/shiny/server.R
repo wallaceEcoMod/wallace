@@ -243,24 +243,6 @@ function(input, output, session) {
   ### COMPONENT: OBTAIN ENVIRONMENTAL DATA ####
   ############################################# #
 
-  # # # # # # # # # # # # # # # # #
-  # module ecoClimate ####
-  # # # # # # # # # # # # # # # # #
-  # ecoClimatelayers <- callModule(ecoClimate_MOD, 'c3_ecoClimate_uiID')
-  # observeEvent(input$goEcoClimData, {
-  #   # load into envs
-  #   vals$envs <- ecoClimatelayers()
-  #   # stop if no occurrence data
-  #   req(vals$occs)
-  #   req(vals$envs)
-  #   # record for RMD
-  #   vals$envsType <- 'ecoClimate'
-  #   # remove occurrences with NA values for variables
-  #   vals$occs <- remEnvsValsNA(vals)
-  #   # switch to Results tab
-  #   updateTabsetPanel(session, 'main', selected = 'Results')
-  # })
-
   # # # # # # # # # # # # # # # # # # # # # # # # # # #
   # module User-defined Environmental Predictors ####
   # # # # # # # # # # # # # # # # # # # # # # # # # # #

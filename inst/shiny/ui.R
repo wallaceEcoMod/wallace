@@ -55,18 +55,11 @@ tagList(
               "envsSel", "Modules Available:",
               choices = c(
                 insert_modules_options("envs"),
-                             "ecoClimate"= 'ecoClimate',
-                             "User-specified" = 'userEnvs')
+                "User-specified" = 'userEnvs'
+              )
             ),
             tags$hr(),
             insert_modules_ui("envs"),
-            conditionalPanel(
-              "input.envsSel == 'ecoClimatelayers'",
-              uiTop(ecoclimate_INFO),
-              ecoClimate_UI("c3_ecoClimate_uiID"),
-              strong("ecoClimate layers have a resolution of 0.5 degrees"),
-              actionButton("goEcoClimData", "Load Env Data")
-            ),
             conditionalPanel(
               "input.envsSel == 'userEnvs'",
               uiTop(userEnvs_INFO),
@@ -74,10 +67,6 @@ tagList(
               actionButton('goUserEnvs', 'Load Env Data')
             ),
             tags$hr(),
-            conditionalPanel(
-              "input.envsSel == 'ecoClimatelayers'",
-              uiBottom(ecoclimate_INFO)
-            ),
             conditionalPanel(
               "input.envsSel == 'userEnvs'",
               uiBottom(userEnvs_INFO)
@@ -580,7 +569,7 @@ tagList(
               conditionalPanel(
                 "input.tabs == 'envs'",
                 insert_modules_results("envs"),
-                conditionalPanel("input.envsSel != 'c3_worldclim'",
+                conditionalPanel("input.envsSel == 'userEnvs'",
                                  verbatimTextOutput('envsPrint'))
               ),
               # conditionalPanel("input.tabs == 'poccs'",
