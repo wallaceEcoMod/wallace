@@ -16,7 +16,7 @@ for (file in base_module_files) source(file, local = TRUE)
 # The components that have modules. These names must match the values of the
 # tabs of the components in the UI.
 COMPONENTS <- c("occs", "envs", "poccs", "penvs", "espace", "part", "model",
-                "vis", "proj", "post")
+                "vis", "proj")
 
 # Information about modules that various parts of the app need access to
 COMPONENT_MODULES <- list()

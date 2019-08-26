@@ -64,10 +64,12 @@ tagList(
             h4("Process Occurrence Data"),
             radioButtons(
               "poccsSel", "Modules Available:",
-              choices = list("Select Occurrences On Map" = 'selOccs',
-                             "Remove Occurrences By ID" = 'remID',
-                             "Spatial Thin" = 'spthin'),#,
-                             #"Profile Occurrences" = "profOccs"), # CM
+              choices = c(
+                insert_modules_options("poccs"),
+                "Select Occurrences On Map" = 'selOccs',
+                "Remove Occurrences By ID" = 'remID',
+                "Spatial Thin" = 'spthin'),#,
+              #"Profile Occurrences" = "profOccs"), # CM
               selected = "spthin" # Check default (no selected)
             ),
             tags$hr(),
@@ -82,6 +84,7 @@ tagList(
             # ),
             # CM: End comment
 
+            insert_modules_ui("poccs"),
             conditionalPanel(
               "input.poccsSel == 'selOccs'",
               uiTop(selectOccs_INFO),
@@ -132,11 +135,14 @@ tagList(
             h4("Process Environmental Data"),
             radioButtons(
               "penvsSel", "Modules Available:",
-              choices = list("Select Study Region" = "bgSel",
-                             "User-specified" = "bgUser",
-                             "Draw polygon(**)" = "bgDraw")
+              choices = c(
+                insert_modules_options("penvs"),
+                "Select Study Region" = "bgSel",
+                "User-specified" = "bgUser",
+                "Draw polygon(**)" = "bgDraw")
             ),
             tags$hr(),
+            insert_modules_ui("penvs"),
             conditionalPanel(
               "input.penvsSel == 'bgSel'",
               uiTop(bgExtent_INFO),
@@ -234,11 +240,13 @@ tagList(
             h4("Environmental Space"),
             radioButtons(
               "espaceSel", "Modules Available:",
-              choices = list("Principal Components Analysis" = "pca",
-                             "Occurrence Density Grid" = "occDens",
-                             "Niche Overlap" = "nicheOv")
+              choices = c(insert_modules_options("espace"),
+                "Principal Components Analysis" = "pca",
+                "Occurrence Density Grid" = "occDens",
+                "Niche Overlap" = "nicheOv")
             ),
             tags$hr(),
+            insert_modules_ui("espace"),
             conditionalPanel(
               "input.espaceSel == 'pca'",
               uiTop(espace_pca_INFO),
@@ -277,11 +285,14 @@ tagList(
             h4("Partition Occurrence Data"),
             radioButtons(
               "partSel", "Modules Available:",
-              choices = list("Non-spatial Partition" = 'nsp',
-                             "Spatial Partition" = 'sp'),
+              choices = c(
+                insert_modules_options("part"),
+                "Non-spatial Partition" = 'nsp',
+                "Spatial Partition" = 'sp'),
               selected = 'sp' # Check default (no selected)
             ),
             tags$hr(),
+            insert_modules_ui("part"),
             conditionalPanel(
               "input.partSel == 'sp'",
               uiTop(partitionSpat_INFO),
@@ -348,13 +359,16 @@ tagList(
             h4("Visualize Model Results"),
             radioButtons(
               "visSel", "Modules Available:",
-              choices = list("BIOCLIM Envelope Plots" = 'bioclimPlot',
-                             "Maxent Evaluation Plots" = 'maxentEval',
-                             "Plot Response Curves" = 'response',
-                             "Map Prediction" = 'mapPreds'),
+              choices = c(
+                insert_modules_options("vis"),
+                "BIOCLIM Envelope Plots" = 'bioclimPlot',
+                "Maxent Evaluation Plots" = 'maxentEval',
+                "Plot Response Curves" = 'response',
+                "Map Prediction" = 'mapPreds'),
               selected = 'mapPreds' # Check default (no selected param)
             ),
             tags$hr(),
+            insert_modules_ui("vis"),
             conditionalPanel(
               "input.visSel == 'bioclimPlot'",
               uiTop(bioclimPlot_INFO),
@@ -400,13 +414,16 @@ tagList(
             h4("Project Model"),
             radioButtons(
               "projSel", "Modules Available:",
-              choices = list("Project to New Extent" = 'projArea',
-                             "Project to New Time" = 'projTime',
-                             "Project to User-files (**)" = 'projUser',
-                             "Calculate Environmental Similarity" = 'mess'),
+              choices = c(
+                insert_modules_options("proj"),
+                "Project to New Extent" = 'projArea',
+                "Project to New Time" = 'projTime',
+                "Project to User-files (**)" = 'projUser',
+                "Calculate Environmental Similarity" = 'mess'),
               selected = 'projArea'
             ),
             tags$hr(),
+            insert_modules_ui("proj"),
             conditionalPanel(
               "input.projSel == 'projArea'",
               uiTop(projectArea_INFO),
