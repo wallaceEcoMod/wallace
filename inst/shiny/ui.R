@@ -565,14 +565,12 @@ tagList(
             ),
             tabPanel(
               'Results',
-              conditionalPanel(
-                "input.tabs == 'occs'",
-                insert_modules_results("occs")
-              ),
-              conditionalPanel(
-                "input.tabs == 'envs'",
-                insert_modules_results("envs")
-              ),
+              lapply(COMPONENTS, function(component) {
+                conditionalPanel(
+                  glue::glue("input.tabs == '{component}'"),
+                  insert_modules_results(component)
+                )
+              }),
               # conditionalPanel("input.tabs == 'poccs'",
               #                  profileOccs_resultsUI("c2_profileOccs_uiID")),
               conditionalPanel(
