@@ -15,21 +15,7 @@ The following code recreates the polygon used to select occurrences to keep in t
 occs.{{sp}} <- c2_selectOccs(occs.{{sp}}, "{{selectByID_xy}}", "{{selectByID_id}}")
 ```
 
-``` {asis, echo = {{worldclim_knit}}, eval = {{worldclim_knit}}, include = {{worldclim_knit}}}
-Using WorldClim (http://www.worldclim.org/) bioclimatic dataset at resolution of `r {{wcRes}}` arcmin.
-```
 
-```{r, echo = {{worldclim_knit}}, include = {{worldclim_knit}}}
-envs.{{sp}} <- c3_worldclim({{wcRes}}, {{bcSel}}, {{mapCntr}}, {{wcBrick}})
-occs.{{sp}}.xy <- occs.{{sp}}[c('longitude', 'latitude')]
-occs.{{sp}}.vals <- as.data.frame(raster::extract(envs.{{sp}}, occs.{{sp}}.xy))
-# remove occurrence records with NA environmental values
-occs.{{sp}} <- remEnvsValsNA(occs.{{sp}}, occs.{{sp}}.vals)
-# also remove variable value rows with NA environmental values
-occs.{{sp}}.vals <- na.omit(occs.{{sp}}.vals)
-# add columns for env variable values for each occurrence record
-occs.{{sp}} <- cbind(occs.{{sp}}, occs.{{sp}}.vals)
-```
 
 ```{asis, echo = {{bgExtent_knit}}, eval = {{bgExtent_knit}}, include = {{bgExtent_knit}}}
 ### Process Environmental Data

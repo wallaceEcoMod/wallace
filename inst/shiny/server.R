@@ -162,16 +162,6 @@ function(input, output, session) {
                    multiple = TRUE, selected = selected, options = options)
   })
 
-  # shortcut to currently selected species, read from curSpUI
-  # curSp <- reactive({
-  #   curSp.len <- length(input$curSp)
-  #   if(curSp.len == 1) {
-  #     input$curSp
-  #   }else if(curSp.len > 1) {
-  #     paste0(input$curSp, collapse = '|')
-  #   }
-  # })
-
   curSp <- reactive(input$curSp)
 
   # vector of all species with occurrence data loaded
@@ -254,18 +244,6 @@ function(input, output, session) {
   ############################################# #
 
   # # # # # # # # # # # # # # # # #
-  # module WorldClim Bioclims ####
-  # # # # # # # # # # # # # # # # #
-  observeEvent(input$goEnvData, {
-    wcBioclims <- callModule(wcBioclims_MOD, 'c3_wcBioclims_uiID')
-    wcBioclims()
-    # switch to Results tab
-    updateTabsetPanel(session, 'main', selected = 'Results')
-    # UI CONTROLS
-    updateSelectInput(session, "curSp", selected = curSp())
-  })
-
-  # # # # # # # # # # # # # # # # #
   # module ecoClimate ####
   # # # # # # # # # # # # # # # # #
   # ecoClimatelayers <- callModule(ecoClimate_MOD, 'c3_ecoClimate_uiID')
@@ -328,16 +306,13 @@ function(input, output, session) {
 
   # convenience function for environmental variables for current species
   envs <- reactive({
+    req(curSp(), spp[[curSp()]]$envs)
     envs.global[[spp[[curSp()]]$envs]]
   })
 
   # map center coordinates for 30 arcsec download
-  mapCntr <- reactive(mapCenter(input$map_bounds))
-
-  # text showing the current map center
-  output$ctrLatLon <- renderText({
-    paste('Using map center', paste(mapCntr(), collapse=', '))
-    glue('Using map center {join(mapCntr())}')
+  mapCntr <- reactive({
+    mapCenter(input$map_bounds)
   })
 
   # CONSOLE PRINT
@@ -1286,7 +1261,6 @@ function(input, output, session) {
         # knit.logicals <- list(
         #   removeByID_knit = !is.null(spp[[sp]]$rmm$code$wallaceSettings$removedIDs),
         #   selectByID_knit = !is.null(spp[[sp]]$rmm$code$wallaceSettings$occsSelPolyCoords),
-        #   worldclim_knit = !is.null(spp[[sp]]$rmm$wallaceSettings$wcRes),
         #   bgExtent_knit = !is.null(spp[[sp]]$procEnvs$bgExt),
         #   bgMskSamplePts_knit = !is.null(spp[[sp]]$bgPts),
         #   espace_pca_knit = !is.null(spp[[sp]]$pca),
@@ -1359,6 +1333,8 @@ function(input, output, session) {
     curModel = curModel,
     component = component,
     module = module,
+    envs.global = envs.global,
+    mapCntr = mapCntr,
 
     # Shortcuts to values nested inside spp
     occs = occs,

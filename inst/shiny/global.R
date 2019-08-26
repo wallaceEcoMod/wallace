@@ -25,7 +25,8 @@ COMPONENT_MODULES <- list()
 base_module_configs <- c(
   "modules/c1_queryDb.yml",
   "modules/c1_queryPaleoDb.yml",
-  "modules/c1_userOccs.yml"
+  "modules/c1_userOccs.yml",
+  "modules/c3_worldclim.yml"
 )
 
 # Load user-defined modules

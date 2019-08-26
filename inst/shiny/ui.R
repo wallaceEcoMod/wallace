@@ -53,19 +53,13 @@ tagList(
             h4("Obtain Environmental Data"),
             radioButtons(
               "envsSel", "Modules Available:",
-              choices = list("WorldClim Bioclims" = 'wcbc',
+              choices = c(
+                insert_modules_options("envs"),
                              "ecoClimate"= 'ecoClimate',
                              "User-specified" = 'userEnvs')
             ),
             tags$hr(),
-            conditionalPanel(
-              "input.envsSel == 'wcbc'",
-              uiTop(worldclim_INFO),
-              wcBioclims_UI("c3_wcBioclims_uiID"),
-              strong("Using map center coordinates as reference for tile download."),
-              textOutput('ctrLatLon'), br(),
-              actionButton("goEnvData", "Load Env Data")
-            ),
+            insert_modules_ui("envs"),
             conditionalPanel(
               "input.envsSel == 'ecoClimatelayers'",
               uiTop(ecoclimate_INFO),
@@ -80,10 +74,6 @@ tagList(
               actionButton('goUserEnvs', 'Load Env Data')
             ),
             tags$hr(),
-            conditionalPanel(
-              "input.envsSel == 'wcbc'",
-              uiBottom(worldclim_INFO)
-            ),
             conditionalPanel(
               "input.envsSel == 'ecoClimatelayers'",
               uiBottom(ecoclimate_INFO)
@@ -589,7 +579,9 @@ tagList(
               ),
               conditionalPanel(
                 "input.tabs == 'envs'",
-                verbatimTextOutput('envsPrint')
+                insert_modules_results("envs"),
+                conditionalPanel("input.envsSel != 'c3_worldclim'",
+                                 verbatimTextOutput('envsPrint'))
               ),
               # conditionalPanel("input.tabs == 'poccs'",
               #                  profileOccs_resultsUI("c2_profileOccs_uiID")),

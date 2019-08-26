@@ -66,7 +66,7 @@ gam_module_server <- function(input, output, session, common) {
       spp[[sp]]$rmm$model$gam$notes <- "gam package implementation"
     }
 
-    common$update_component(tab = "Result")
+    common$update_component(tab = "Results")
     common$remove_module(component = "vis", module = "mapPreds")
   })
 

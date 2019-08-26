@@ -59,7 +59,7 @@ species' scientific name.
 
 The `common` variable supplied to a module's server and map function is a list containing:
 
-  - The following reactive variables that can be used by the module: logger, spp, curSp, allSp, curEnv, curModel, component, module
+  - The following reactive variables that can be used by the module: logger, spp, curSp, allSp, curEnv, curModel, component, module, envs.global, mapCntr
   - The following reactives that are shortcuts to reactives inside spp: occs, envs, bg, bgExt, bgMask, evalOut, mapPred, mapProj, rmm
   - A function `update_component(tab)` that allows you to switch to a new tab within the component
   - A function `remove_module(component, module)` to remove a specific module from the UI
