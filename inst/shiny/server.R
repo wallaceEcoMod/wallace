@@ -243,20 +243,6 @@ function(input, output, session) {
   ### COMPONENT: OBTAIN ENVIRONMENTAL DATA ####
   ############################################# #
 
-  # # # # # # # # # # # # # # # # # # # # # # # # # # #
-  # module User-defined Environmental Predictors ####
-  # # # # # # # # # # # # # # # # # # # # # # # # # # #
-  observeEvent(input$goUserEnvs, {
-    userEnvs <- callModule(userEnvs_MOD, 'c3_userEnvs_uiID')
-    userEnvs()
-    # make project to new time module unavailable for user envs
-    updateRadioButtons(session, "projSel",
-                       choices = list("Project to New Extent" = 'projArea',
-                                      "Calculate Environmental Similarity" = 'mess'))
-    # switch to Results tab
-    updateTabsetPanel(session, 'main', selected = 'Results')
-  })
-
   # # # # # # # # # # # # # # # # # #
   # OBTAIN ENVS: other controls ####
   # # # # # # # # # # # # # # # # # #

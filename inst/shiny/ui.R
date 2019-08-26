@@ -53,24 +53,10 @@ tagList(
             h4("Obtain Environmental Data"),
             radioButtons(
               "envsSel", "Modules Available:",
-              choices = c(
-                insert_modules_options("envs"),
-                "User-specified" = 'userEnvs'
-              )
+              choices = insert_modules_options("envs")
             ),
             tags$hr(),
-            insert_modules_ui("envs"),
-            conditionalPanel(
-              "input.envsSel == 'userEnvs'",
-              uiTop(userEnvs_INFO),
-              userEnvs_UI('c3_userEnvs_uiID'),
-              actionButton('goUserEnvs', 'Load Env Data')
-            ),
-            tags$hr(),
-            conditionalPanel(
-              "input.envsSel == 'userEnvs'",
-              uiBottom(userEnvs_INFO)
-            )
+            insert_modules_ui("envs")
           ),
           # PROCESS OCCS ####
           conditionalPanel(
@@ -568,9 +554,7 @@ tagList(
               ),
               conditionalPanel(
                 "input.tabs == 'envs'",
-                insert_modules_results("envs"),
-                conditionalPanel("input.envsSel == 'userEnvs'",
-                                 verbatimTextOutput('envsPrint'))
+                insert_modules_results("envs")
               ),
               # conditionalPanel("input.tabs == 'poccs'",
               #                  profileOccs_resultsUI("c2_profileOccs_uiID")),

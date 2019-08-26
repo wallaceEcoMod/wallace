@@ -26,18 +26,18 @@
 #'
 #'
 
-c3_userEnvs <- function(rasPath, rasName, shinyLogs=NULL){
+c3_userEnvs <- function(rasPath, rasName, logger=NULL){
 
-  smartProgress(shinyLogs, message = "Reading in rasters...", {
+  smartProgress(logger, message = "Reading in rasters...", {
     rasStack <- raster::stack(rasPath)
   })
   # assign names
   names(rasStack) <- tools::file_path_sans_ext(rasName)
 
-  shinyLogs %>% writeLog("Raster: User input.")
+  logger %>% writeLog("Raster: User input.")
 
   if(is.na(raster::crs(rasStack))) {
-    shinyLogs %>% writeLog(type = "warning",'Input rasters have undefined coordinate reference system (CRS). Mapping functionality in components Visualize Model Results and Project Model will not work. If you wish to map rasters in these components, please define their projections and upload again. See guidance text in this module for more details.')
+    logger %>% writeLog(type = "warning",'Input rasters have undefined coordinate reference system (CRS). Mapping functionality in components Visualize Model Results and Project Model will not work. If you wish to map rasters in these components, please define their projections and upload again. See guidance text in this module for more details.')
   }
   return(rasStack)
 }
