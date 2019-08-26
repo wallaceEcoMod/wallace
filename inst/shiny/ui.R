@@ -66,7 +66,6 @@ tagList(
               "poccsSel", "Modules Available:",
               choices = c(
                 insert_modules_options("poccs"),
-                "Select Occurrences On Map" = 'selOccs',
                 "Remove Occurrences By ID" = 'remID',
                 "Spatial Thin" = 'spthin'),#,
               #"Profile Occurrences" = "profOccs"), # CM
@@ -85,16 +84,6 @@ tagList(
             # CM: End comment
 
             insert_modules_ui("poccs"),
-            conditionalPanel(
-              "input.poccsSel == 'selOccs'",
-              uiTop(selectOccs_INFO),
-              selectOccs_UI('c2_selectOccs_uiID'),
-              strong("Select occurrences intersecting drawn polygon"), br(),
-              "(", HTML("<font color='blue'><b>NOTE</b></font>"),
-              ': to begin drawing, click hexagon icon on map toolbar,
-                                            and when complete, press "Finish" and then the "Select Occurrences" button)', br(), br(),
-              actionButton("goSelectOccs", "Select Occurrences")
-            ),
             conditionalPanel(
               "input.poccsSel == 'remID'",
               uiTop(removeByID_INFO),
@@ -117,10 +106,6 @@ tagList(
                                .butResOccs:hover {background-color: #830D03;
                                color: white;}")),
             tags$hr(),
-            conditionalPanel(
-              "input.poccsSel == 'selOccs'",
-              uiBottom(selectOccs_INFO)
-            ),
             conditionalPanel(
               "input.poccsSel == 'remID'",
               uiBottom(removeByID_INFO)

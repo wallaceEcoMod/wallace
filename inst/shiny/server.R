@@ -322,19 +322,6 @@ function(input, output, session) {
     updateTabsetPanel(session, 'main', selected = 'Map')
   })
 
-  # # # # # # # # # # # # # # # # # # # # #
-  # module Select Occurrences on Map ####
-  # # # # # # # # # # # # # # # # # # # # #
-  observeEvent(input$goSelectOccs, {
-    req(input$map_draw_new_feature)
-    selOccs <- callModule(selectOccs_MOD, 'c2_selOccs_uiID')
-    selOccs()
-    # switch to Map tab
-    updateTabsetPanel(session, 'main', selected = 'Map')
-    # UI CONTROLS
-    #updateSelectInput(session, "curSp", selected = curSp())
-  })
-
   # # # # # # # # # # # # # #
   # module Spatial Thin ####
   # # # # # # # # # # # # # #
@@ -1228,7 +1215,6 @@ function(input, output, session) {
         # TODO these should be set in each individual module's rmd function
         # knit.logicals <- list(
         #   removeByID_knit = !is.null(spp[[sp]]$rmm$code$wallaceSettings$removedIDs),
-        #   selectByID_knit = !is.null(spp[[sp]]$rmm$code$wallaceSettings$occsSelPolyCoords),
         #   bgExtent_knit = !is.null(spp[[sp]]$procEnvs$bgExt),
         #   bgMskSamplePts_knit = !is.null(spp[[sp]]$bgPts),
         #   espace_pca_knit = !is.null(spp[[sp]]$pca),
