@@ -1,0 +1,65 @@
+---
+title: "How to write a Wallace module"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+```
+
+1. Come up with an ID for the new module. The ID must be unique (there cannot be two modules with the same ID) and can only contain English letters, digits, and underscores.
+
+2. Create a YAML file named `<id>.yml` with the following parameters:
+
+    - component: Which component this module belongs to (one of: occs, envs, poccs, penvs, espace, part, model, vis, proj)
+    - short_name: The label to show beside the radio button in the component's UI
+    - long_name: A longer name for the module, to show as the title in the UI
+    - authors: The author or authors of this module
+    - package: The R package that is used by this module
+
+3. In the same directory as the YAML file, you need to have a markdown file named `<id>.md` that contains instructions for this module.
+
+4. In the same directory as the YAML and md files, you need to have an R file named `<id>.R` with the source code used in the module. This R file needs to contain:
+
+    - A function named `<id>_module_ui` that returns the UI for this module.
+    This function should follow the conventions for general Shiny modules - it
+    should take a single argument, and use it to namespace all its UI. The UI
+    needs to be returned from the function. There should usually be some sort
+    of a "Run" button.
+    - A function named `<id>_module_server` that returns the server for this module.
+    This function should follow the conventions for general Shiny modules - it
+    should take `input`, `output`, and `session` as parameters, as well as one
+    extra parameter named `common` - see below for details. There should usually
+    be an observer for a click on the "Run" button.
+    - *OPTIONAL:* A function named `<id>_module_result` that returns the UI for the
+    results section of the module. This function should follow the conventions
+    for Shiny modules - it should take a single argument, and use it to namespace
+    all its UI. Any outputs need to be rendered in the `<id>_module_server` function.
+    - *OPTIONAL:* A function named `<id>_module_map` that modifies the map. This
+    function takes two arguments: `map` (a reference to a leaflet map) and
+    `common` (the same parameter that is given to the server function - see below for details).
+    - *OPTIONAL:* A function named `<id>_module_rmd` that returns a list with
+    variables that are used in the module's Rmd code. This function takes an
+    argument `species` that contains all the information for the current species.
+
+5. *OPTIONAL:* If the module should add some code to the Session Code download,
+you need to create a file `<id>.Rmd` in the same directory. This file should 
+contain Rmd code to repeat the step this module performs. If you need to use any
+variables in the code, you can wrap the variables in double curly braces (for
+example `{{num_observations}}`) and define them using the `<id>_module_rmd`
+function metioned above. Two variables are always made automatically available
+for these Rmd code chunks: `{{sp}}` is the species ID and `{{spName}}` is the
+species' scientific name. 
+
+6. After creating a module, you need to tell the Wallace app to use your new module. You do this by calling the `wallace::register_module(config_file)` function.
+
+**Tip:** You can use the `wallace::create_module()` function to generate the template for a new module to help with the steps above.
+
+### The `common` variable
+
+The `common` variable supplied to a module's server and map function is a list containing:
+
+  - The following reactive variables that can be used by the module: logger, spp, curSp, allSp, curEnv, curModel, component, module, envs.global, mapCntr
+  - The following reactives that are shortcuts to reactives inside spp: occs, envs, bg, bgExt, bgMask, evalOut, mapPred, mapProj, rmm
+  - A function `update_component(tab)` that allows you to switch to a new tab within the component
+  - A function `remove_module(component, module)` to remove a specific module from the UI

@@ -1,8 +1,3 @@
----
-title: "occs_dbOccs"
-output: html_document
----
-
 ### **Module:** ***Query Database*** 
 
 **BACKGROUND**  

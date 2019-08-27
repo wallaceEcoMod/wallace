@@ -1,8 +1,3 @@
----
-title: "occs_pdbOccs"
-output: html_document
----
-
 ### **Module:** ***Query Paleo-database*** 
 
 **BACKGROUND**  

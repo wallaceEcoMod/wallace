@@ -1,5 +1,3 @@
-
-
 #' @title Run \emph{Wallace} Application
 #'
 #'
@@ -20,7 +18,6 @@
 # line.
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
-
 run_wallace <- function(launch.browser = TRUE, port = getOption("shiny.port")){
   app_path <- system.file("shiny", package = "wallace")
   return(shiny::runApp(app_path, launch.browser = launch.browser, port = port))

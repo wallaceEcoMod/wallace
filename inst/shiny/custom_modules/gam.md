@@ -1,15 +1,10 @@
----
-title: "model_GAM"
-output: html_document
----
-
 ### **Module:** ***GAM***
 
 **BACKGROUND**
 
 text
 
-**IMPLEMENTATION** 
+**IMPLEMENTATION**
 
 text
 

@@ -6,13 +6,13 @@
 #'
 #' @param bcRes numeric resolution of the climatic layers
 #' @param bcSel list of boolean data. selected variables
-#' 
+#'
 # @keywords
 #'
 # @examples
 #'
 #'
-# @return 
+# @return
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 # @note
 # @seealso
@@ -23,16 +23,16 @@
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 
-c3_worldclim<- function(bcRes, bcSel, mapCntr, doBrick, shinyLogs=NULL){
-  
+c3_worldclim<- function(bcRes, bcSel, mapCntr, doBrick, logger=NULL){
+
   if(bcRes == '') {
-    shinyLogs %>% writeLog(type = 'error', 'Select a raster resolution.')
+    logger %>% writeLog(type = 'error', 'Select a raster resolution.')
     return()
   }
-  
-  smartProgress(shinyLogs, message = "Retrieving WorldClim data...", {
+
+  smartProgress(logger, message = "Retrieving WorldClim data...", {
     if(bcRes == 0.5) {
-      wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes, 
+      wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes,
                               lon = mapCntr[1], lat = mapCntr[2])
     }else{
       wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes)
@@ -41,23 +41,23 @@ c3_worldclim<- function(bcRes, bcSel, mapCntr, doBrick, shinyLogs=NULL){
   })
   # convert to brick for faster processing
   if(doBrick == TRUE) {
-    smartProgress(shinyLogs, message = "Converting to RasterBrick for faster processing...", {
+    smartProgress(logger, message = "Converting to RasterBrick for faster processing...", {
       wcbc <- raster::brick(wcbc)
-    })   
+    })
   }
-  
+
   if (raster::nlayers(wcbc) == 19) {
     bcSel <- 'bio1-19'
   } else {
     bcSel <- paste(names(wcbc), collapse = ", ")
   }
-  shinyLogs %>% writeLog("WorldClim bioclimatic variables ", bcSel, " at ", 
+  logger %>% writeLog("WorldClim bioclimatic variables ", bcSel, " at ",
                          bcRes, " arcmin resolution.")
-  
+
   # change names if bio01 is bio1, and so forth
   i <- grep('bio[0-9]$', names(wcbc))
   editNames <- paste('bio', sapply(strsplit(names(wcbc)[i], 'bio'), function(x) x[2]), sep='0')
   names(wcbc)[i] <- editNames
-  
+
   return(wcbc)
 }

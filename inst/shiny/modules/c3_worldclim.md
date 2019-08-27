@@ -1,8 +1,3 @@
----
-title: "envs_wcbc"
-output: html_document
----
-
 ### **Module:** ***WorldClim***
 
 **BACKGROUND**
