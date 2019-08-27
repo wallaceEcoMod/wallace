@@ -1,66 +1,3 @@
-## -------------------------------------------------------------------- ##
-## Define functions
-## -------------------------------------------------------------------- ##
-
-####################### #
-# UI ####
-####################### #
-#' @export
-uiTop <- function(mod_INFO) {
-  modName <- mod_INFO$modName
-  pkgName <- mod_INFO$pkgName
-  pkgTitl <- mod_INFO$pkgTitl
-
-  ls <- list(div(paste("Module: ", modName), id="mod"))
-
-  if(!is.null(pkgName)) {
-    for(i in 1:length(pkgName)) {
-      ls <- c(ls, list(span(pkgName[i], id="rpkg"),
-                       span(paste(':', pkgTitl[i]), id="pkgDes"),
-                       br()))
-    }
-  }
-
-  ls <- c(ls, list(HTML('<hr>')))
-  return(ls)
-}
-
-#' @export
-uiBottom <- function(mod_INFO) {
-  modAuts <- mod_INFO$modAuts
-  pkgName <- mod_INFO$pkgName
-  pkgAuts <- mod_INFO$pkgAuts
-
-  ls <- list(div(paste('Module Developers:', modAuts), id="pkgDes"))
-
-  if(!is.null(pkgName)) {
-    for(i in 1:length(pkgName)) {
-      ls <- c(ls, list(span(pkgName[i], id = "rpkg"), "references", br(),
-                       div(paste('Package Developers:', pkgAuts[i]), id="pkgDes"),
-                       a("CRAN", href = file.path("http://cran.r-project.org/web/packages",
-                                                  pkgName[i], "index.html"), target = "_blank"), " | ",
-                       a("documentation", href = file.path("https://cran.r-project.org/web/packages",
-                                                           pkgName[i], paste0(pkgName[i], ".pdf")), target = "_blank"), br()))
-    }
-  }
-  return(ls)
-}
-
-#' @export
-infoGenerator <- function(pkgName, modName , modAuts) {
-  pkgInfo <- sapply(pkgName, packageDescription, simplify = FALSE)
-  pkgTitl <- sapply(pkgInfo, function(x) x$Title)
-  # remove square brackets and spaces before commas
-  pkgAuts <- sapply(pkgInfo, function(x) gsub("\\s+,", ",", gsub("\n|\\[.*?\\]", "", x$Author)))
-  # remove parens and spaces before commas
-  pkgAuts <- sapply(pkgAuts, function(x) gsub("\\s+,", ",", gsub("\\(.*?\\)", "", x)))
-  list(modName = modName,
-       modAuts = modAuts,
-       pkgName = pkgName,
-       pkgTitl = pkgTitl,
-       pkgAuts = pkgAuts)
-}
-
 ####################### #
 # MISC ####
 ####################### #
@@ -99,20 +36,6 @@ formatSpName <- function(spNames) {
   return(spNames.fmt)
 }
 
-# for naming files
-#' @export
-nameAbbr <- function(spname) {
-  namespl <- strsplit(tolower(spname), " ")
-  genusAbbr <- substring(namespl[[1]][1], 1, 1)
-  fullNameAbbr <- paste0(genusAbbr, "_", namespl[[1]][2])
-  return(fullNameAbbr)
-}
-
-#' @export
-fileNameNoExt <- function(f) {
-  sub(pattern = "(.*)\\..*$", replacement = "\\1", f)
-}
-
 #' @export
 writeSpp <- function(spp, sp, dir) {
   if(!is.null(spp[[sp]]$occs)) write.csv(spp[[sp]]$occs, file.path(dir, paste0(sp, "_occs.csv")))
@@ -120,30 +43,35 @@ writeSpp <- function(spp, sp, dir) {
   if(!is.null(spp[[sp]]$procEnvs$bgMask)) raster::writeRaster(spp[[sp]]$procEnvs$bgMask, file.path(dir, paste0(sp, "_bgMask.tif")), bylayer = TRUE)
 }
 
-# add text to log
+#' Add text to a logger
+#'
+#' @param logger The logger to write the text to. Can be NULL or a function
+#' @param ... Messages to write to the logger
+#' @param type One of "default", "error", "warning"
 #' @export
-writeLog <- function(logs, ..., type = 'default') {
-  if (is.null(logs)) {
+writeLog <- function(logger, ..., type = 'default') {
+  if (is.null(logger)) {
     if (type == 'error') {
       stop(paste0(..., collapse = ""), call.=FALSE)
-      return()
     } else if (type == 'warning') {
       warning(paste0(..., collapse = ""), call.=FALSE)
-      return()
+    } else {
+      message(paste0(..., collapse = ""))
     }
-    message(paste0(..., collapse = ""))
-    return()
+  } else if (is.function(logger)) {
+    if (type == "default") {
+      pre <- "> "
+    } else if (type == 'error') {
+      pre <- '> <font color="red"><b>! ERROR</b></font> : '
+    } else if (type == 'warning') {
+      pre <- '> <font color="orange"><b>! WARNING</b></font> : '
+    }
+    newEntries <- paste0(pre, ..., collapse = "")
+    logger(newEntries)
+  } else {
+    warning("Invalid logger type")
   }
-
-  if (type == "default") {
-    pre <- "> "
-  } else if (type == 'error') {
-    pre <- '> <font color="red"><b>! ERROR</b></font> : '
-  } else if (type == 'warning') {
-    pre <- '> <font color="orange"><b>! WARNING</b></font> : '
-  }
-  newEntries <- paste0(pre, ..., collapse = "")
-  logs(paste0(logs(), newEntries, '', sep = '<br>'))
+  invisible()
 }
 
 ####################### #

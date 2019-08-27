@@ -1,0 +1,5 @@
+component: "poccs"
+short_name: "Select Occurrences On Map"
+long_name: "Select Occurrences On Map"
+authors: "Jamie M. Kass, Robert P. Anderson"
+package: [leaflet.extras]

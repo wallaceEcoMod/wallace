@@ -1,8 +1,3 @@
----
-title: "poccs_selOccs"
-output: html_document
----
-
 ### **Module:** ***Select Occurrences On Map***
 
 **BACKGROUND**  
