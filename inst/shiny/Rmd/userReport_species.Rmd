@@ -1,0 +1,23 @@
+---
+params:
+  spName: ""
+  child_rmds: ""
+---
+
+```{r, include=FALSE}
+library(knitr)
+knit_engines$set(asis = function(options) {
+  if (options$echo && options$eval) knit_child(text = options$code)
+})
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, eval = FALSE)
+```
+
+## Analysis for *"`r params$spName`"*
+
+```{r, comment='', echo=FALSE, message=FALSE, warning=FALSE, eval=TRUE, results="asis"}
+for (component_rmds in params$child_rmds) {
+  for (rmd in component_rmds) {
+    cat(knitr::knit_child(rmd, quiet = TRUE))
+  }
+}
+```

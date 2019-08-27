@@ -17,24 +17,26 @@ pca_resultsUI <- function(id) {
   uiOutput(ns('pcaResults'))
 }
 
-pca_MOD <- function(input, output, session) {
+pca_MOD <- function(input, output, session, .curSp) {
+  curSp <- .curSp
+
   output$pcaSel <- renderUI({
     req(curSp())
     sp <- curSp()[1]
     if(is.null(spp[[sp]]$envs)) return()
     sp1.envNames <- names(envs.global[[spp[[sp]]$envs]])
     checkboxGroupInput(session$ns("pcaSel"), label = "Select",
-                       choices = sp1.envNames, 
+                       choices = sp1.envNames,
                        inline = TRUE, selected = sp1.envNames)
   })
-  
+
   reactive({
     # ERRORS ####
     if(input$pcaPlotSel == "") {
       shinyLogs %>% writeLog(type = "error", "Please choose a PCA plotting type.")
       return()
     }
-    
+
     # PROCESSING ####
     sp1 <- curSp()[1]
     sp1.envNames <- names(envs.global[[spp[[sp1]]$envs]])
@@ -55,24 +57,24 @@ pca_MOD <- function(input, output, session) {
       sp2.occsVals <- NULL
       sp2.bgVals <- NULL
     }
-    
+
     # FUNCTION CALL ####
-    pca <- cESpace_pca(sp1, sp2, 
-                       sp1.occsVals, 
+    pca <- cESpace_pca(sp1, sp2,
+                       sp1.occsVals,
                        sp2.occsVals,
                        sp1.bgVals,
                        sp2.bgVals,
                        shinyLogs)
-    
+
     req(pca)
-    
+
     output$pcaControls <- renderUI({
       tagList(
         numericInput(session$ns("pc1"), "X-axis Component", value = 1, min = 1, max = length(pcaSel)),
         numericInput(session$ns("pc2"), "Y-axis Component", value = 2, min = 1, max = length(pcaSel))
       )
     })
-    
+
     # LOAD INTO SPP ####
     # this name concatenates the species names when there are two,
     # and returns the same name when there is only one species name
@@ -82,10 +84,10 @@ pca_MOD <- function(input, output, session) {
     }else{
       spp[[mspName]]$pca <- pca
     }
-    
+
     # METADATA ####
     spp[[mspName]]$rmm$wallaceSettings$pcaSel <- pcaSel
-    
+
     # PLOTS ####
     output$pcaResults <- renderUI({
       output$pcaScatter <- renderPlot({
@@ -96,12 +98,12 @@ pca_MOD <- function(input, output, session) {
           x <- pca$scores[pca$scores$sp == 'bg', ]
           x.f <- factor(x$bg)
         }
-        ade4::s.class(x, x.f, xax = input$pc1, yax = input$pc2, 
+        ade4::s.class(x, x.f, xax = input$pc1, yax = input$pc2,
                       col = c("red", "blue"), cstar = 0, cpoint = 0.1)
       })
       output$pcaCorCircle <- renderPlot({
-        ade4::s.corcircle(pca$co, xax = input$pc1, yax = input$pc2, 
-                          lab = pcaSel, full = FALSE, box = TRUE)  
+        ade4::s.corcircle(pca$co, xax = input$pc1, yax = input$pc2,
+                          lab = pcaSel, full = FALSE, box = TRUE)
       })
       output$pcaScree <- renderPlot({
         screeplot(pca)
@@ -128,13 +130,13 @@ pca_MOD <- function(input, output, session) {
                  ))
       )
     })
-    
+
     return(pca)
   })
 }
 
-espace_pca_INFO <- infoGenerator(modName = "Environmental Ordination", 
-                                 modAuts = "Olivier Broennimann, Jamie Kass", 
+espace_pca_INFO <- infoGenerator(modName = "Environmental Ordination",
+                                 modAuts = "Olivier Broennimann, Jamie Kass",
                                  pkgName = "ade4")
 
 espace_pca_RMD <- function(sp) {

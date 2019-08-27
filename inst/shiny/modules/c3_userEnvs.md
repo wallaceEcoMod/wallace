@@ -1,8 +1,3 @@
----
-title: "envs_userEnvs"
-output: html_document
----
-
 ### **Module:** ***User-specified Environmental Data***
 
 **BACKGROUND**

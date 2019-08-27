@@ -13,8 +13,8 @@ Options are: "CCSM", "CNRM", "MIROC", "COSMOS", "FGOALS", "GISS", "IPSL","MRI", 
 \item{Baseline}{Select a baseline for the climatic layers.
 Options are: "Pre-industrial" (piControl-1760), "Historical" (1900-1949), "Modern" (1950-1999)}
 
-\item{Scenario}{Select a temporal scenario. 
-Options are: "LGM" (21,000 years ago), "Holo" (6,000 years ago), 
+\item{Scenario}{Select a temporal scenario.
+Options are: "LGM" (21,000 years ago), "Holo" (6,000 years ago),
 "Present", "Future 2.6" (rcp 2.6), "Future 4.5" (rcp 4.5), "Future 6" (rcp 6), "Future 8.5" (rcp 8.5)}
 }
 \description{

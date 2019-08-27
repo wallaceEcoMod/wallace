@@ -5,13 +5,13 @@
 \title{download ecoClimate variables. see www.ecoclimate.org}
 \usage{
 c3_ecoClimate(bcAOGCM, bcScenario, ecoClimSelChoice = FALSE, ecoClimSel,
-  shinyLogs = NULL)
+  logger = NULL)
 }
 \arguments{
-\item{bcAOGCM}{name of the Atmospheric and Oceanic Global Circulation Model. 
+\item{bcAOGCM}{name of the Atmospheric and Oceanic Global Circulation Model.
 Options are: "CCSM", "CNRM", "MIROC", "FGOALS", "GISS", "IPSL","MRI", "MPI"}
 
-\item{bcScenario}{select the temporal scenario that you want to download. 
+\item{bcScenario}{select the temporal scenario that you want to download.
 Options are: "LGM" (Last Glacial Maximum, 21,000 years ago), "Holo" ()}
 
 \item{ecoClimSelChoice}{boolean TRUE/FALSE TRUE=user selects the variables}

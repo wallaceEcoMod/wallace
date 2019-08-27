@@ -8,7 +8,7 @@ runGAM_UI <- function(id) {
 
 runGAM_MOD <- function(input, output, session) {
   reactive({
-    for(sp in spIn()) {
+    for (sp in list(curSp())) {
       # ERRORS ####
       if(is.null(spp[[sp]]$occs$partition)) {
         shinyLogs %>% writeLog(type = 'error', "Before building a model, please
@@ -21,10 +21,10 @@ runGAM_MOD <- function(input, output, session) {
       mod.gam <- runGAM(spp[[sp]]$occs[,names(envs())], spp[[sp]]$bg[,names(envs())], input$degFr, sp, shinyLogs)
       # ensure the model object was returned before proceeding
       req(mod.gam)
-      
+
       # LOAD INTO SPP ####
       spp[[sp]]$results <- mod.gam
-      
+
       # METADATA ####
       spp[[sp]]$rmm$model$algorithm <- "GAM"
       spp[[sp]]$rmm$model$gam$family <- "binominal"

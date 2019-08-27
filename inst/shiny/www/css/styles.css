@@ -1,14 +1,3 @@
-.panel-title {
-  color: green;
-}
-
-#controls {
-  /* Appearance */
-  background-color: white;
-  padding: 0 5px 5px 5px;
-  border: 4px solid green;
-}
-
 #logHeader {
 	position:relative;
 	min-height:90px;
@@ -19,7 +8,7 @@
   position:absolute;
   z-index: 5;
 }
-.scrollbox {
+#wallaceLog {
   height:100px;
   width:450px;
   padding:5px;
@@ -29,51 +18,8 @@
 hr {
     border: none;
     height: 5px;
-    /* Set the hr color */
     color: #333; /* old IE */
     background-color: #333; /* Modern Browsers */
-}
-#title1 {
-  font-size:30pt;
-}
-#title2 {
-  font-size:10pt;
-}
-#title3 {
-  font-size:7pt;
-}
-#rpkg {
-  font-size:12pt;
-  font-weight:bold;
-}
-#mod {
-  color:purple; 
-  font-size:18pt; 
-  font-weight:bold;
-}
-#step {
-  color:red;
-  font-weight:bold;
-  display:inline;
-  font-size:14pt;
-}
-#stepText {
-  font-style:italic;
-  display:inline;
-  font-size:14pt;
-}
-#pkgDes {
-  font-size:10pt; 
-  font-style:italic;
-}
-#pkgSm {
-  font-size:8pt; 
-  font-style:italic;
-  color:gray;
-}
-#ref {
-  font-size:9pt; 
-  font-style:italic;
 }
 .shiny-progress .bar {
   background-color:#FF0000;
@@ -81,4 +27,53 @@ hr {
 }
 .shiny-progress .progress {
   height:7px;
+}
+
+.rpkg {
+  font-size:12pt;
+  font-weight:bold;
+}
+.mod {
+  color:purple;
+  font-size:18pt;
+  font-weight:bold;
+}
+.pkgDes {
+  font-size:10pt;
+  font-style:italic;
+}
+
+
+.step {
+  color:red;
+  font-weight:bold;
+  font-size:14pt;
+}
+.stepText {
+  font-style:italic;
+  font-size:14pt;
+}
+
+.butResOccs {
+  background-color: #C51E10;
+  color: white;
+  padding: 5px 5px;
+  border: none;
+}
+.butResOccs:hover {
+  background-color: #830D03;
+  color: white;
+}
+.butResPj {
+  background-color: #C51E10;
+  color: white;
+  padding: 1px 1px;
+  border: none;
+}
+.butResPj:hover {
+  background-color: #830D03;
+  color: white;
+}
+.leaflet-top {
+  z-index: 999 !important;
 }
