@@ -560,7 +560,6 @@ tagList(
               #                  profileOccs_resultsUI("c2_profileOccs_uiID")),
               conditionalPanel(
                 "input.tabs == 'model'",
-                insert_modules_results("model"),
                 conditionalPanel("input.modelSel == 'BIOCLIM' || input.modelSel == 'Maxent'",
                                  uiOutput('evalTbls'))
               ),
