@@ -7,9 +7,6 @@ function(input, output, session) {
   spp <- reactiveValues()
   envs.global <- reactiveValues()
 
-  # list with current guidance text
-  gtext <- reactiveValues()
-
   # Variable to keep track of current log message
   initLogMsg <- function() {
     intro <- '***WELCOME TO WALLACE***'
