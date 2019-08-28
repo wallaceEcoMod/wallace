@@ -4,7 +4,7 @@
 \alias{c2_selectOccs}
 \title{c2_selectOccs}
 \usage{
-c2_selectOccs(occs, polySelXY, polySelID = 1, shinyLogs = NULL)
+c2_selectOccs(occs, polySelXY, polySelID = 1, logger = NULL)
 }
 \arguments{
 \item{occs}{x}
@@ -13,7 +13,7 @@ c2_selectOccs(occs, polySelXY, polySelID = 1, shinyLogs = NULL)
 
 \item{polySelID}{x}
 
-\item{shinyLogs}{x}
+\item{logger}{x}
 }
 \description{
 ..

@@ -1,28 +1,37 @@
+resourcePath <- system.file("shiny", "www", package = "wallace")
+
 tagList(
   shinyjs::useShinyjs(),
+  shinyjs::extendShinyjs(
+    script = file.path(resourcePath, "js", "shinyjs-funcs.js"),
+    functions = c("scrollLogger", "removeModule")
+  ),
   navbarPage(
-    theme = shinythemes::shinytheme('united'), id = 'tabs', collapsible = TRUE,
+    theme = shinythemes::shinytheme('united'),
+    id = 'tabs',
+    collapsible = TRUE,
+    header = tags$head(tags$link(href = "css/styles.css", rel = "stylesheet")),
     title = glue('Wallace v{packageVersion("wallace")}'),
-    tabPanel("Intro", value='intro'),
-    tabPanel("Occ Data", value='occs'),
-    tabPanel("Env Data", value='envs'),
-    tabPanel("Process Occs", value='poccs'),
-    tabPanel("Process Envs", value='penvs'),
+    tabPanel("Intro", value ='intro'),
+    tabPanel("Occ Data", value = 'occs'),
+    tabPanel("Env Data", value = 'envs'),
+    tabPanel("Process Occs", value = 'poccs'),
+    tabPanel("Process Envs", value = 'penvs'),
     # tabPanel("Sampling", value='samp'),
-    tabPanel("Env Space", value='espace'),
-    tabPanel("Partition Occs", value='part'),
-    tabPanel("Model", value='model'),
-    tabPanel("Visualize", value='vis'),
-    tabPanel("Project", value='proj'),
-    tabPanel("Session Code", value='rmd'),
-
+    tabPanel("Env Space", value = 'espace'),
+    tabPanel("Partition Occs", value = 'part'),
+    tabPanel("Model", value = 'model'),
+    tabPanel("Visualize", value = 'vis'),
+    tabPanel("Project", value = 'proj'),
+    tabPanel("Session Code", value = 'rmd')
+  ),
+  tags$div(
+    class = "container-fluid",
     fluidRow(
       column(
         4,
 
         wellPanel(
-          tags$link(href = "css/styles.css", rel = "stylesheet"),
-          tags$script(src = "js/scroll.js"),
           conditionalPanel(
             "input.tabs == 'intro'",
             includeMarkdown("Rmd/text_intro_tab.Rmd")
@@ -33,45 +42,10 @@ tagList(
             h4("Obtain Occurrence Data"),
             radioButtons(
               "occsSel", "Modules Available:",
-              choices = list("Query Database (Present)" = 'dbOccs',
-                             "Query Database (Paleo)" = 'pdbOccs',
-                             "User-specified" = 'userOccs'),
-              selected = 'dbOccs'
+              choices = insert_modules_options("occs")
             ),
             tags$hr(),
-            conditionalPanel(
-              "input.occsSel == 'dbOccs'",
-              uiTop(queryDb_INFO),
-              queryDb_UI('c1_queryDb_uiID'),
-              actionButton("goDbOccs", "Query Database"), br(), br(),
-              tags$hr()
-            ),
-            conditionalPanel(
-              "input.occsSel == 'pdbOccs'",
-              uiTop(queryPaleoDb_INFO),
-              queryPaleoDb_UI('c1_queryPaleoDb_uiID'),
-              actionButton("goPaleoDbOccs", "Query Database"), br(), br(),
-              tags$hr()
-            ),
-            conditionalPanel(
-              "input.occsSel == 'userOccs'",
-              uiTop(userOccs_INFO),
-              userOccs_UI('c1_userOccs_uiID'),
-              actionButton("goUserOccs", "Load Occurrences"),
-              tags$hr()
-            ),
-            conditionalPanel(
-              "input.occsSel == 'dbOccs'",
-              uiBottom(queryDb_INFO)
-            ),
-            conditionalPanel(
-              "input.occsSel == 'pdbOccs'",
-              uiBottom(queryPaleoDb_INFO)
-            ),
-            conditionalPanel(
-              "input.occsSel == 'userOccs'",
-              uiBottom(userOccs_INFO)
-            )
+            insert_modules_ui("occs")
           ),
           # OBTAIN ENVS ####
           conditionalPanel(
@@ -79,62 +53,28 @@ tagList(
             h4("Obtain Environmental Data"),
             radioButtons(
               "envsSel", "Modules Available:",
-              choices = list("WorldClim Bioclims" = 'wcbc',
-                             "ecoClimate"= 'ecoClimate',
-                             "User-specified" = 'userEnvs')
+              choices = insert_modules_options("envs")
             ),
             tags$hr(),
-            conditionalPanel(
-              "input.envsSel == 'wcbc'",
-              uiTop(worldclim_INFO),
-              wcBioclims_UI("c3_wcBioclims_uiID"),
-              strong("Using map center coordinates as reference for tile download."),
-              textOutput('ctrLatLon'), br(),
-              actionButton("goEnvData", "Load Env Data")
-            ),
-            conditionalPanel(
-              "input.envsSel == 'ecoClimatelayers'",
-              uiTop(ecoclimate_INFO),
-              ecoClimate_UI("c3_ecoClimate_uiID"),
-              strong("ecoClimate layers have a resolution of 0.5 degrees"),
-              actionButton("goEcoClimData", "Load Env Data")
-            ),
-            conditionalPanel(
-              "input.envsSel == 'userEnvs'",
-              uiTop(userEnvs_INFO),
-              userEnvs_UI('c3_userEnvs_uiID'),
-              actionButton('goUserEnvs', 'Load Env Data')
-            ),
-            tags$hr(),
-            conditionalPanel(
-              "input.envsSel == 'wcbc'",
-              uiBottom(worldclim_INFO)
-            ),
-            conditionalPanel(
-              "input.envsSel == 'ecoClimatelayers'",
-              uiBottom(ecoclimate_INFO)
-            ),
-            conditionalPanel(
-              "input.envsSel == 'userEnvs'",
-              uiBottom(userEnvs_INFO)
-            )
+            insert_modules_ui("envs")
           ),
           # PROCESS OCCS ####
           conditionalPanel(
             "input.tabs == 'poccs'",
             h4("Process Occurrence Data"),
             radioButtons(
-              "procOccsSel", "Modules Available:",
-              choices = list("Select Occurrences On Map" = 'selOccs',
-                             "Remove Occurrences By ID" = 'remID',
-                             "Spatial Thin" = 'spthin'),#,
-                             #"Profile Occurrences" = "profOccs"), # CM
+              "poccsSel", "Modules Available:",
+              choices = c(
+                insert_modules_options("poccs"),
+                "Remove Occurrences By ID" = 'remID',
+                "Spatial Thin" = 'spthin'),#,
+              #"Profile Occurrences" = "profOccs"), # CM
               selected = "spthin" # Check default (no selected)
             ),
             tags$hr(),
 
             # CM: start comment
-            # conditionalPanel("input.procOccsSel == 'profOccs'",
+            # conditionalPanel("input.poccsSel == 'profOccs'",
             #                  uiTop(profileOccs_INFO),
             #                  actionButton("goProfileOccs", "Profile Occurrences"), br(), br(),
             #                  profileOccs_UI('c2_profileOccs_uiID'),
@@ -143,100 +83,93 @@ tagList(
             # ),
             # CM: End comment
 
+            insert_modules_ui("poccs"),
             conditionalPanel(
-              "input.procOccsSel == 'selOccs'",
-              uiTop(selectOccs_INFO),
-              selectOccs_UI('c2_selectOccs_uiID'),
-              strong("Select occurrences intersecting drawn polygon"), br(),
-              "(", HTML("<font color='blue'><b>NOTE</b></font>"),
-              ': to begin drawing, click hexagon icon on map toolbar,
-                                            and when complete, press "Finish" and then the "Select Occurrences" button)', br(), br(),
-              actionButton("goSelectOccs", "Select Occurrences")
-          ),
-          conditionalPanel(
-            "input.procOccsSel == 'remID'",
-            uiTop(removeByID_INFO),
-            removeByID_UI('c2_removeByID_uiID'),
-            actionButton("goRemoveByID", "Remove Occurrence")
-          ),
-          # placeholder for select on map
-          conditionalPanel(
-            "input.procOccsSel == 'spthin'",
-            uiTop(thinOccs_INFO),
-            thinOccs_UI('c2_thinOccs_uiID'),
-            actionButton("goThinOccs", "Thin Occurrences")
-          ), br(),
-          strong("Reset to original occurrences"), br(),
-          actionButton("goResetOccs", "Reset", class = 'butResOccs'),
-          tags$head(tags$style(".butResOccs {background-color: #C51E10;
+              "input.poccsSel == 'remID'",
+              uiTop(removeByID_INFO),
+              removeByID_UI('c2_removeByID_uiID'),
+              actionButton("goRemoveByID", "Remove Occurrence")
+            ),
+            # placeholder for select on map
+            conditionalPanel(
+              "input.poccsSel == 'spthin'",
+              uiTop(thinOccs_INFO),
+              thinOccs_UI('c2_thinOccs_uiID'),
+              actionButton("goThinOccs", "Thin Occurrences")
+            ), br(),
+            strong("Reset to original occurrences"), br(),
+            actionButton("goResetOccs", "Reset", class = 'butResOccs'),
+            tags$head(tags$style(".butResOccs {background-color: #C51E10;
                                color: white;
                                padding: 5px 5px;
                                border: none;}
                                .butResOccs:hover {background-color: #830D03;
                                color: white;}")),
-          tags$hr(),
-          conditionalPanel(
-            "input.procOccsSel == 'selOccs'",
-            uiBottom(selectOccs_INFO)
+            tags$hr(),
+            conditionalPanel(
+              "input.poccsSel == 'remID'",
+              uiBottom(removeByID_INFO)
+            ),
+            conditionalPanel(
+              "input.poccsSel == 'spthin'",
+              uiBottom(thinOccs_INFO)
+            )
           ),
-          conditionalPanel(
-            "input.procOccsSel == 'remID'",
-            uiBottom(removeByID_INFO)
-          ),
-          conditionalPanel(
-            "input.procOccsSel == 'spthin'",
-            uiBottom(thinOccs_INFO)
-          )
-          ),
-          # PROCESS ENVS ####
           conditionalPanel(
             "input.tabs == 'penvs'",
             h4("Process Environmental Data"),
             radioButtons(
-              "procEnvsSel", "Modules Available:",
-              choices = list("Select Study Region" = "bgSel",
-                             "User-specified" = "bgUser",
-                             "Draw polygon(**)" = "bgDraw")
+              "penvsSel", "Modules Available:",
+              choices = c(
+                insert_modules_options("penvs"),
+                "Select Study Region" = "bgSel",
+                "User-specified" = "bgUser",
+                "Draw polygon(**)" = "bgDraw")
             ),
             tags$hr(),
+            insert_modules_ui("penvs"),
             conditionalPanel(
-              "input.procEnvsSel == 'bgSel'",
+              "input.penvsSel == 'bgSel'",
               uiTop(bgExtent_INFO),
-              div("Step 1:", id="step"), div("Choose Background Extent", id="stepText"), br(), br(),
+              span("Step 1:", class = "step"),
+              span("Choose Background Extent", class = "stepText"), br(), br(),
               bgExtent_UI('c4_bgExtent_uiID'),
               actionButton("goBgExt", "Select"), br(), br()
             ),
             conditionalPanel(
-              "input.procEnvsSel == 'bgUser'",
+              "input.penvsSel == 'bgUser'",
               uiTop(userBgExtent_INFO),
-              div("Step 1:", id="step"), div("Choose Background Extent", id="stepText"), br(), br(),
+              span("Step 1:", class = "step"),
+              span("Choose Background Extent", class = "stepText"), br(), br(),
               userBgExtent_UI('c4_userBgExtent'),
               actionButton("goUserBg", "Load")),
             conditionalPanel(
-              "input.procEnvsSel == 'bgDraw'",
+              "input.penvsSel == 'bgDraw'",
               uiTop(drawBgExtent_INFO),
-              div("Step 1:", id="step"), div("Draw Background Extent(**)", id="stepText"), br(), br(),
+              span("Step 1:", class = "step"),
+              span("Draw Background Extent(**)", class = "stepText"), br(), br(),
               drawBgExtent_UI('c4_drawBgExtent'),
               actionButton("goDrawBg", "Create(**)")),
             conditionalPanel(
-              "input.procEnvsSel == 'bgSel' | input.procEnvsSel == 'bgUser' | input.procEnvsSel == 'bgDraw'",
+              "input.penvsSel == 'bgSel' | input.penvsSel == 'bgUser' | input.penvsSel == 'bgDraw'",
               tags$hr(),
-              div("Step 2:", id="step"), div("Sample Background Points", id="stepText"), br(), br(),
+              span("Step 2:", class = "step"),
+              span("Sample Background Points", class = "stepText"), br(), br(),
               strong('Mask predictor rasters by background extent and sample background points'), br(), br(),
               bgMskAndSamplePts_UI('c4_bgMskAndSamplePts'),
               actionButton("goBgMask", "Sample")
             ),
             tags$hr(),
             conditionalPanel(
-              "input.procEnvsSel == 'bgSel'",
+              "input.penvsSel == 'bgSel'",
               uiBottom(bgExtent_INFO)
             ),
             conditionalPanel(
-              "input.procEnvsSel == 'bgUser'",
+              "input.penvsSel == 'bgUser'",
               uiBottom(userBgExtent_INFO)
             ),
             conditionalPanel(
-              "input.procEnvsSel == 'bgDraw'",
+              "input.penvsSel == 'bgDraw'",
               uiBottom(drawBgExtent_INFO)
             )
           ),
@@ -255,34 +188,36 @@ tagList(
             conditionalPanel(
               "input.samplingBias == 'bgUserTarget'",
               #uiTop(bgExtent_INFO),
-              div("Upload custom background", id="stepText"), br(), br(),
+              span("Upload custom background", class="stepText"), br(), br(),
               userBiasBg_UI('samp_biasBG_uiID'),
               actionButton("goUserBiasBgUpload", "Select"), br(), br()#,
             ),
             conditionalPanel(
               "input.samplingBias == 'biasBgMake'",
               #uiTop(bgExtent_INFO),
-              div("Step 1:", id="step"), div("Specify Target Group Species", id="stepText"), br(), br(),
-              queryDb_UI('samp_queryDb_uiID'),
+              span("Step 1:", class="step"),
+              span("Specify Target Group Species", class="stepText"), br(), br(),
+              #queryDb_UI('samp_queryDb_uiID'),
               actionButton("goTargetDbOccs", "Query Database"), br(), br()#,
             ),
             # Placeholder not implemented yet
             # conditionalPanel("input.samplingBias == 'sampCov'",
             #                  #uiTop(userBgExtent_INFO),
-            #                  div("Step 1:", id="step"), div("Choose Background Extent", id="stepText"), br(), br(),
+            #                  span("Step 1:", class="step"),
+            #                  span("Choose Background Extent", class="stepText"), br(), br(),
             #                  userBgExtent_UI('c4_userBgExtent'),
             #                  actionButton("goUserBg", "Load")),
             conditionalPanel(
               "input.samplingBias == 'biasFile'",
               #uiTop(drawBgExtent_INFO),
-              div("Upload Bias File", id="stepText"), br(), br(),
+              span("Upload Bias File", class="stepText"), br(), br(),
               userBiasFile_UI('samp_biasFileUpload'),
               actionButton("goBiasFileUpload", "Upload")
             ),
             tags$hr()
-            #conditionalPanel("input.procEnvsSel == 'bgTarget'", uiBottom(bgExtent_INFO)),
-            #conditionalPanel("input.procEnvsSel == 'sampCov'", uiBottom(userBgExtent_INFO)),
-            #conditionalPanel("input.procEnvsSel == 'biasSurf'", uiBottom(drawBgExtent_INFO))
+            #conditionalPanel("input.penvsSel == 'bgTarget'", uiBottom(bgExtent_INFO)),
+            #conditionalPanel("input.penvsSel == 'sampCov'", uiBottom(userBgExtent_INFO)),
+            #conditionalPanel("input.penvsSel == 'biasSurf'", uiBottom(drawBgExtent_INFO))
           ),
           # ESPACE ####
           conditionalPanel(
@@ -290,11 +225,13 @@ tagList(
             h4("Environmental Space"),
             radioButtons(
               "espaceSel", "Modules Available:",
-              choices = list("Principal Components Analysis" = "pca",
-                             "Occurrence Density Grid" = "occDens",
-                             "Niche Overlap" = "nicheOv")
+              choices = c(insert_modules_options("espace"),
+                "Principal Components Analysis" = "pca",
+                "Occurrence Density Grid" = "occDens",
+                "Niche Overlap" = "nicheOv")
             ),
             tags$hr(),
+            insert_modules_ui("espace"),
             conditionalPanel(
               "input.espaceSel == 'pca'",
               uiTop(espace_pca_INFO),
@@ -333,11 +270,14 @@ tagList(
             h4("Partition Occurrence Data"),
             radioButtons(
               "partSel", "Modules Available:",
-              choices = list("Non-spatial Partition" = 'nsp',
-                             "Spatial Partition" = 'sp'),
+              choices = c(
+                insert_modules_options("part"),
+                "Non-spatial Partition" = 'nsp',
+                "Spatial Partition" = 'sp'),
               selected = 'sp' # Check default (no selected)
             ),
             tags$hr(),
+            insert_modules_ui("part"),
             conditionalPanel(
               "input.partSel == 'sp'",
               uiTop(partitionSpat_INFO),
@@ -364,7 +304,10 @@ tagList(
             h4("Build and Evaluate Niche Model"),
             radioButtons(
               "modelSel", "Modules Available:",
-              choices = list("BIOCLIM", "Maxent", "GAM"),
+              choices = c(
+                "BIOCLIM", "Maxent",
+                insert_modules_options("model")
+              ),
               selected = "Maxent" # Check default (no selected)
             ),
             tags$hr(),
@@ -384,12 +327,7 @@ tagList(
               runBIOCLIM_UI('runBIOCLIM_uiID'),
               actionButton('goBIOCLIM', 'Run')
             ),
-            conditionalPanel(
-              "input.modelSel == 'GAM'",
-              uiTop(runGAM_INFO),
-              runGAM_UI('runGAM_uiID'),
-              actionButton('goGAM', 'Run')
-            ),
+            insert_modules_ui("model"),
             tags$hr(),
             conditionalPanel(
               "input.modelSel == 'Maxent'",
@@ -398,10 +336,6 @@ tagList(
             conditionalPanel(
               "input.modelSel == 'BIOCLIM'",
               uiBottom(runBIOCLIM_INFO)
-            ),
-            conditionalPanel(
-              "input.modelSel == 'GAM'",
-              uiBottom(runGAM_INFO)
             )
           ),
           # VISUALIZE ####
@@ -410,13 +344,16 @@ tagList(
             h4("Visualize Model Results"),
             radioButtons(
               "visSel", "Modules Available:",
-              choices = list("BIOCLIM Envelope Plots" = 'bioclimPlot',
-                             "Maxent Evaluation Plots" = 'maxentEval',
-                             "Plot Response Curves" = 'response',
-                             "Map Prediction" = 'mapPreds'),
+              choices = c(
+                insert_modules_options("vis"),
+                "BIOCLIM Envelope Plots" = 'bioclimPlot',
+                "Maxent Evaluation Plots" = 'maxentEval',
+                "Plot Response Curves" = 'response',
+                "Map Prediction" = 'mapPreds'),
               selected = 'mapPreds' # Check default (no selected param)
             ),
             tags$hr(),
+            insert_modules_ui("vis"),
             conditionalPanel(
               "input.visSel == 'bioclimPlot'",
               uiTop(bioclimPlot_INFO),
@@ -462,23 +399,26 @@ tagList(
             h4("Project Model"),
             radioButtons(
               "projSel", "Modules Available:",
-              choices = list("Project to New Extent" = 'projArea',
-                             "Project to New Time" = 'projTime',
-                             "Project to User-files (**)" = 'projUser',
-                             "Calculate Environmental Similarity" = 'mess'),
+              choices = c(
+                insert_modules_options("proj"),
+                "Project to New Extent" = 'projArea',
+                "Project to New Time" = 'projTime',
+                "Project to User-files (**)" = 'projUser',
+                "Calculate Environmental Similarity" = 'mess'),
               selected = 'projArea'
             ),
             tags$hr(),
+            insert_modules_ui("proj"),
             conditionalPanel(
               "input.projSel == 'projArea'",
               uiTop(projectArea_INFO),
-              div("Step 1:", id = "step"),
-              div("Choose Study Region (**)", id = "stepText"), br(), br(),
+              span("Step 1:", class = "step"),
+              span("Choose Study Region (**)", class = "stepText"), br(), br(),
               projExtent_UI('c8_projectExtentArea_uiID'),
               actionButton("goProjExtArea", "Create(**)"), br(), br(),
               tags$hr(),
-              div("Step 2:", id = "step"),
-              div("Project (**)", id = "stepText"), br(), br(),
+              span("Step 2:", class = "step"),
+              span("Project (**)", class = "stepText"), br(), br(),
               p("Project model to project extent (red) (**)"), br(),
               projectArea_UI('c8_projectArea'),
               actionButton('goProjectArea', "Project")
@@ -486,13 +426,13 @@ tagList(
             conditionalPanel(
               "input.projSel == 'projTime'",
               uiTop(projectTime_INFO),
-              div("Step 1:", id = "step"),
-              div("Choose Study Region (**)", id = "stepText"), br(), br(),
+              span("Step 1:", class = "step"),
+              span("Choose Study Region (**)", class = "stepText"), br(), br(),
               projExtent_UI('c8_projectExtentTime_uiID'),
               actionButton("goProjExtTime", "Create(**)"), br(), br(),
               tags$hr(),
-              div("Step 2:", id = "step"),
-              div("Project (**)", id = "stepText"), br(), br(),
+              span("Step 2:", class = "step"),
+              span("Project (**)", class = "stepText"), br(), br(),
               p("Project model to project extent (red) (**)"), br(),
               projectTime_UI('c8_projectTime'),
               actionButton('goProjectTime', "Project")
@@ -500,13 +440,13 @@ tagList(
             conditionalPanel(
               "input.projSel == 'projUser'",
               uiTop(projectUser_INFO),
-              div("Step 1:", id = "step"),
-              div("Choose Study Region (**)", id = "stepText"), br(), br(),
+              span("Step 1:", class = "step"),
+              span("Choose Study Region (**)", class = "stepText"), br(), br(),
               projExtent_UI('c8_projectExtentUser_uiID'),
               actionButton("goProjExtUser", "Create(**)"), br(), br(),
               tags$hr(),
-              div("Step 2:", id = "step"),
-              div("Project (**)", id = "stepText"), br(), br(),
+              span("Step 2:", class = "step"),
+              span("Project (**)", class = "stepText"), br(), br(),
               p("Project model to project extent (red) (**)"),
               projectUser_UI('c8_projectUser_uiID'),
               actionButton('goProjectUser', "Project")
@@ -577,11 +517,10 @@ tagList(
               2,
               offset = 1,
               align = "left",
-              div(id = "wallaceLog",
-                  class = "scrollbox",
-                  htmlOutput("log"))
-            ),
-            tags$head(tags$style(".leaflet-top {z-index:999!important;}")
+              div(
+                id = "wallaceLog",
+                div(id = "logHeader", div(id = "logContent"))
+              )
             )
           )
         ),
@@ -611,26 +550,19 @@ tagList(
             ),
             tabPanel(
               'Results',
-              conditionalPanel(
-                "input.tabs == 'envs'",
-                verbatimTextOutput('envsPrint')
-              ),
+              lapply(COMPONENTS, function(component) {
+                conditionalPanel(
+                  glue::glue("input.tabs == '{component}'"),
+                  insert_modules_results(component)
+                )
+              }),
               # conditionalPanel("input.tabs == 'poccs'",
               #                  profileOccs_resultsUI("c2_profileOccs_uiID")),
               conditionalPanel(
                 "input.tabs == 'model'",
-                uiOutput('evalTbls')
+                conditionalPanel("input.modelSel == 'BIOCLIM' || input.modelSel == 'Maxent'",
+                                 uiOutput('evalTbls'))
               ),
-              # conditionalPanel(
-              #   "input.tabs == 'model' && input.modelSel == 'Maxent'",
-              #   tabsetPanel(
-              #     tabPanel("Evaluation",
-              #              uiOutput('evalTbls1')),
-              #     tabPanel("Lambdas",
-              #              div("Maxent lambdas file", id = "stepText"), br(), br(),
-              #              verbatimTextOutput('lambdas'))
-              #   )
-              # ),
               conditionalPanel(
                 "input.tabs == 'vis' && input.visSel == 'response'",
                 imageOutput('responsePlot')
@@ -675,17 +607,17 @@ tagList(
                 br(),
                 fluidRow(
                   column(3, h5("Download original occurrence data")),
-                  column(2, downloadButton('dlDbOccs', "CVS file"))
+                  column(2, shinyjs::disabled(downloadButton('dlDbOccs', "CVS file")))
                 ),
                 br(),
                 fluidRow(
                   column(3, h5("Download current table")),
-                  column(2, downloadButton('dlOccs', "CVS file"))
+                  column(2, shinyjs::disabled(downloadButton('dlOccs', "CVS file")))
                 ),
                 br(),
                 fluidRow(
                   column(3, h5("Download all data")),
-                  column(2, downloadButton('dlAllOccs', "CVS file"))
+                  column(2, shinyjs::disabled(downloadButton('dlAllOccs', "CVS file")))
                 )
               ),
               conditionalPanel(
@@ -693,7 +625,7 @@ tagList(
                 br(),
                 fluidRow(
                   column(3, h5("Download processed occurence table")),
-                  column(2, downloadButton('dlProcOccs', "CVS file"))
+                  column(2, shinyjs::disabled(downloadButton('dlProcOccs', "CVS file")))
                 )
               ),
               conditionalPanel(
@@ -708,7 +640,7 @@ tagList(
                 br(),
                 fluidRow(
                   column(3, h5("Download shapefile of background extent")),
-                  column(2, downloadButton('dlBgShp', "ZIP file"))
+                  column(2, shinyjs::disabled(downloadButton('dlBgShp', "ZIP file")))
                 ),
                 br(),
                 fluidRow(
@@ -718,12 +650,12 @@ tagList(
                                         choices = list("GeoTIFF" = 'GTiff',
                                                        "GRD" = 'raster',
                                                        "ASCII" = 'ascii'))),
-                  column(2, downloadButton('dlMskEnvs', "ZIP file"))
+                  column(2, shinyjs::disabled(downloadButton('dlMskEnvs', "ZIP file")))
                 ),
                 br(),
                 fluidRow(
                   column(3, h5("Download sample background points")),
-                  column(2, downloadButton('dlBgPts', "CVS file"))
+                  column(2, shinyjs::disabled(downloadButton('dlBgPts', "CVS file")))
                 )
               ),
               conditionalPanel(
@@ -731,7 +663,7 @@ tagList(
                 br(),
                 fluidRow(
                   column(3, h5("Download occurrence and background localities with partition values")),
-                  column(2, downloadButton('dlPart', "CVS file"))
+                  column(2, shinyjs::disabled(downloadButton('dlPart', "CVS file")))
                 )
               ),
               conditionalPanel(
@@ -739,7 +671,7 @@ tagList(
                 br(),
                 fluidRow(
                   column(3, h5("Download evaluation table")),
-                  column(2, downloadButton('dlEvalTbl', "CSV file"))
+                  column(2, shinyjs::disabled(downloadButton('dlEvalTbl', "CSV file")))
                 )
               ),
               conditionalPanel(
@@ -749,19 +681,19 @@ tagList(
                   "input.modelSel == 'BIOCLIM'",
                   fluidRow(
                     column(3, h5("Download Bioclim plot (**)")),
-                    column(2, downloadButton('dlVisBioclim', "PNG file"))
+                    column(2, shinyjs::disabled(downloadButton('dlVisBioclim', "PNG file")))
                   )
                 ),
                 conditionalPanel(
                   "input.modelSel == 'Maxent'",
                   fluidRow(
                     column(3, h5("Download Maxent plots (**)")),
-                    column(2, downloadButton('dlMaxentPlots', "ZIP file"))
+                    column(2, shinyjs::disabled(downloadButton('dlMaxentPlots', "ZIP file")))
                   ),
                   br(),
                   fluidRow(
                     column(3, h5("Download Response plots (**)")),
-                    column(2, downloadButton('dlRespCurves', "ZIP file"))
+                    column(2, shinyjs::disabled(downloadButton('dlRespCurves', "ZIP file")))
                   )
                 ),
                 br(),
@@ -773,14 +705,14 @@ tagList(
                                                        "GRD" = 'raster',
                                                        "ASCII" = 'ascii',
                                                        "PNG" = 'png'))),
-                  column(2, downloadButton('dlPred', "Predition file(**)"))
+                  column(2, shinyjs::disabled(downloadButton('dlPred', "Predition file(**)")))
                 )
               ),
               conditionalPanel(
                 "input.tabs == 'proj'",
                 fluidRow(
                   column(3, h5("Download shapefile of projection extent")),
-                  column(2, downloadButton('dlPjShp', "ZIP file"))
+                  column(2, shinyjs::disabled(downloadButton('dlPjShp', "ZIP file")))
                 ),
                 br(),
                 fluidRow(
@@ -791,7 +723,7 @@ tagList(
                                                        "GRD" = 'raster',
                                                        "ASCII" = 'ascii',
                                                        "PNG" = 'png'))),
-                  column(2, downloadButton('dlProj', "Projection file(**)"))
+                  column(2, shinyjs::disabled(downloadButton('dlProj', "Projection file(**)")))
                 ),
                 fluidRow(
                   column(3, h5("Download MESS (Select download file type**)")),
@@ -801,7 +733,7 @@ tagList(
                                                        "GRD" = 'raster',
                                                        "ASCII" = 'ascii',
                                                        "PNG" = 'png'))),
-                  column(2, downloadButton('dlMess', "MESS file(**)"))
+                  column(2, shinyjs::disabled(downloadButton('dlMess', "MESS file(**)")))
                 )
               )
             )

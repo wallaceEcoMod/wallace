@@ -5,7 +5,7 @@
 \title{Run Maxent}
 \usage{
 runMaxent(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, clampSel,
-  algMaxent, shinyLogs = NULL)
+  algMaxent, catEnvs, shinyLogs = NULL)
 }
 \arguments{
 \item{occs}{x}
