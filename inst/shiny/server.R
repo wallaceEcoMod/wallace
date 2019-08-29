@@ -7,9 +7,6 @@ function(input, output, session) {
   spp <- reactiveValues()
   envs.global <- reactiveValues()
 
-  # list with current guidance text
-  gtext <- reactiveValues()
-
   # Variable to keep track of current log message
   initLogMsg <- function() {
     intro <- '***WELCOME TO WALLACE***'
@@ -1336,9 +1333,73 @@ function(input, output, session) {
   )
 
   # Initialize all modules
+  modules <- list()
   lapply(names(COMPONENT_MODULES), function(component) {
     lapply(COMPONENT_MODULES[[component]], function(module) {
-      callModule(get(module$server_function), module$id, common = common)
+      return <- callModule(get(module$server_function), module$id, common = common)
+      if (is.list(return) &&
+          "save" %in% names(return) && is.function(return$save) &&
+          "load" %in% names(return) && is.function(return$load)) {
+        modules[[module$id]] <<- return
+      }
     })
+  })
+
+  # Save the current session to a file
+  output$save_session <- downloadHandler(
+    filename = function() {
+      paste0("wallace-session-", Sys.Date(), ".rds")
+    },
+    content = function(file) {
+      state <- list()
+
+      # Save general data
+      state$main <- list(
+        version = as.character(packageVersion("wallace")),
+        spp = reactiveValuesToList(spp),
+        envs_global = reactiveValuesToList(envs.global),
+        cur_sp = input$curSp,
+        map_type = input$bmap,
+        selected_module = sapply(COMPONENTS, function(x) input[[glue("{x}Sel")]], simplify = FALSE)
+      )
+
+      # Ask each module to save whatever data it wants
+      for (module_id in names(modules)) {
+        state[[module_id]] <- modules[[module_id]]$save()
+      }
+
+      saveRDS(state, file)
+    }
+  )
+
+  observeEvent(input$load_session, {
+    state <- readRDS(input$load_session$datapath)
+
+    # Load general data
+    new_version <- as.character(packageVersion("wallace"))
+    if (state$main$version != new_version) {
+      shinyalert::shinyalert(
+        text = glue("The input file was saved using Wallace v{state$main$version}, but you are using Wallace v{new_version}"),
+        type = "warning"
+      )
+    }
+    updateSelectInput(session, "curSp", selected = state$main$cur_sp)
+    updateSelectInput(session, "bmap", selected = state$main$map_type)
+    for (spname in names(state$main$spp)) {
+      spp[[spname]] <- state$main$spp[[spname]]
+    }
+    for (envname in names(state$main$envs_global)) {
+      envs.global[[envname]] <- state$main$envs_global[[envname]]
+    }
+    for (component in names(state$main$selected_module)) {
+      value <- state$main$selected_module[[component]]
+      updateRadioButtons(session, glue("{component}Sel"), selected = value)
+    }
+    state$main <- NULL
+
+    # Ask each module to load its own data
+    for (module_id in names(state)) {
+      modules[[module_id]]$load(state[[module_id]])
+    }
   })
 }

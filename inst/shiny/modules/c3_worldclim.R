@@ -94,6 +94,16 @@ c3_worldclim_module_server <- function(input, output, session, common) {
     envs.global[[spp[[curSp()]]$envs]]
   })
 
+  return(list(
+    save = function() {
+      list(
+        wcRes = input$wcRes
+      )
+    },
+    load = function(state) {
+      updateSelectInput(session, "wcRes", selected = state$wcRes)
+    }
+  ))
 }
 
 c3_worldclim_module_result <- function(id) {

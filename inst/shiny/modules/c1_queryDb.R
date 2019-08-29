@@ -89,12 +89,24 @@ c1_queryDb_module_server <- function(input, output, session, common) {
       }
     }
   })
+
+  return(list(
+    save = function() {
+      list(
+        spNames = input$spNames,
+        occsNum = input$occsNum
+      )
+    },
+    load = function(state) {
+      updateTextInput(session, "spNames", value = state$spNames)
+      updateNumericInput(session, "occsNum", value = state$occsNum)
+    }
+  ))
 }
 
 c1_queryDb_module_map <- function(map, common) {
   spp <- common$spp
   curSp <- common$curSp
-
   occs <- spp[[curSp()]]$occData$occsCleaned
   map %>% clearAll() %>%
     addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude,
@@ -110,4 +122,3 @@ c1_queryDb_module_rmd <- function(species) {
     occNum = species$rmm$code$wallaceSettings$occsNum
   )
 }
-

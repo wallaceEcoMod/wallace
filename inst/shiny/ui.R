@@ -6,11 +6,16 @@ tagList(
     script = file.path(resourcePath, "js", "shinyjs-funcs.js"),
     functions = c("scrollLogger", "removeModule")
   ),
+  shinyalert::useShinyalert(),
   navbarPage(
     theme = shinythemes::shinytheme('united'),
     id = 'tabs',
     collapsible = TRUE,
-    header = tags$head(tags$link(href = "css/styles.css", rel = "stylesheet")),
+    header = tagList(
+      tags$head(tags$link(href = "css/styles.css", rel = "stylesheet")),
+      column(2, downloadButton("save_session", "Save Session")),
+      column(4, fileInput("load_session", "Load Session"))
+    ),
     title = glue('Wallace v{packageVersion("wallace")}'),
     tabPanel("Intro", value ='intro'),
     tabPanel("Occ Data", value = 'occs'),
