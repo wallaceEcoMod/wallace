@@ -4,7 +4,8 @@
 \alias{create_module}
 \title{Create a Wallace module}
 \usage{
-create_module(id, dir, map = TRUE, result = TRUE, rmd = TRUE)
+create_module(id, dir, map = TRUE, result = TRUE, rmd = TRUE,
+  save = TRUE)
 }
 \arguments{
 \item{id}{The id of the module.}
@@ -17,7 +18,10 @@ create_module(id, dir, map = TRUE, result = TRUE, rmd = TRUE)
 the Result tab.}
 
 \item{rmd}{Whether or not the module should add Rmd code to the Session Code
-download}
+download.}
+
+\item{save}{Whether or not the module has some custom data to save when the
+user saves the current session.}
 }
 \description{
 Create the template of a new Wallace module.

@@ -26,7 +26,7 @@ knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
     should take a single argument, and use it to namespace all its UI. The UI
     needs to be returned from the function. There should usually be some sort
     of a "Run" button.
-    - A function named `<id>_module_server` that returns the server for this module.
+    - A function named `<id>_module_server` that defines the server for this module.
     This function should follow the conventions for general Shiny modules - it
     should take `input`, `output`, and `session` as parameters, as well as one
     extra parameter named `common` - see below for details. There should usually
@@ -41,6 +41,13 @@ knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
     - *OPTIONAL:* A function named `<id>_module_rmd` that returns a list with
     variables that are used in the module's Rmd code. This function takes an
     argument `species` that contains all the information for the current species.
+    - *OPTIONAL:* The `<id>_module_server` function can return a list with two
+    functions `save()` and `load(state)`, if you want the module to be able to
+    record some information when the state of the session is saved. The `save()`
+    function takes no arguments and should return a named list with all the
+    variables to save. The `load(state)` function takes one argument, which will
+    contain the same list of variables that was saved, and it should take 
+    the necessary steps to load the information back into the module.
 
 5. *OPTIONAL:* If the module should add some code to the Session Code download,
 you need to create a file `<id>.Rmd` in the same directory. This file should 
@@ -53,7 +60,7 @@ species' scientific name.
 
 6. After creating a module, you need to tell the Wallace app to use your new module. You do this by calling the `wallace::register_module(config_file)` function.
 
-**Tip:** You can use the `wallace::create_module()` function to generate the template for a new module to help with the steps above.
+**Tip:** It's highly recommended to use the `wallace::create_module()` function to generate the template for a new module to help with the steps above, instead of trying to create them all.
 
 ### The `common` variable
 

@@ -1346,45 +1346,58 @@ function(input, output, session) {
   })
 
   # Save the current session to a file
+  save_session <- function(file) {
+    state <- list()
+
+    # Save general data
+    state$main <- list(
+      version = as.character(packageVersion("wallace")),
+      spp = reactiveValuesToList(spp),
+      envs_global = reactiveValuesToList(envs.global),
+      cur_sp = input$curSp,
+      selected_module = sapply(COMPONENTS, function(x) input[[glue("{x}Sel")]], simplify = FALSE)
+    )
+
+    # Ask each module to save whatever data it wants
+    for (module_id in names(modules)) {
+      state[[module_id]] <- modules[[module_id]]$save()
+    }
+
+    saveRDS(state, file)
+  }
+
   output$save_session <- downloadHandler(
     filename = function() {
       paste0("wallace-session-", Sys.Date(), ".rds")
     },
     content = function(file) {
-      state <- list()
-
-      # Save general data
-      state$main <- list(
-        version = as.character(packageVersion("wallace")),
-        spp = reactiveValuesToList(spp),
-        envs_global = reactiveValuesToList(envs.global),
-        cur_sp = input$curSp,
-        map_type = input$bmap,
-        selected_module = sapply(COMPONENTS, function(x) input[[glue("{x}Sel")]], simplify = FALSE)
-      )
-
-      # Ask each module to save whatever data it wants
-      for (module_id in names(modules)) {
-        state[[module_id]] <- modules[[module_id]]$save()
-      }
-
-      saveRDS(state, file)
+      save_session(file)
     }
   )
 
-  observeEvent(input$load_session, {
-    state <- readRDS(input$load_session$datapath)
+  # Load a wallace session from a file
+  load_session <- function(file) {
+    if (tools::file_ext(file) != "rds") {
+      shinyalert::shinyalert("Invalid Wallace session file", type = "error")
+      return()
+    }
+
+    state <- readRDS(file)
+
+    if (!is.list(state) || is.null(state$main) || is.null(state$main$version)) {
+      shinyalert::shinyalert("Invalid Wallace session file", type = "error")
+      return()
+    }
 
     # Load general data
     new_version <- as.character(packageVersion("wallace"))
     if (state$main$version != new_version) {
       shinyalert::shinyalert(
-        text = glue("The input file was saved using Wallace v{state$main$version}, but you are using Wallace v{new_version}"),
+        glue("The input file was saved using Wallace v{state$main$version}, but you are using Wallace v{new_version}"),
         type = "warning"
       )
     }
-    updateSelectInput(session, "curSp", selected = state$main$cur_sp)
-    updateSelectInput(session, "bmap", selected = state$main$map_type)
+
     for (spname in names(state$main$spp)) {
       spp[[spname]] <- state$main$spp[[spname]]
     }
@@ -1395,11 +1408,17 @@ function(input, output, session) {
       value <- state$main$selected_module[[component]]
       updateRadioButtons(session, glue("{component}Sel"), selected = value)
     }
+    updateSelectInput(session, "curSp", selected = state$main$cur_sp)
+
     state$main <- NULL
 
     # Ask each module to load its own data
     for (module_id in names(state)) {
       modules[[module_id]]$load(state[[module_id]])
     }
+  }
+
+  observeEvent(input$load_session, {
+    load_session(input$load_session$datapath)
   })
 }

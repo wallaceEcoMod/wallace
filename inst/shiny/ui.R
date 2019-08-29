@@ -12,9 +12,7 @@ tagList(
     id = 'tabs',
     collapsible = TRUE,
     header = tagList(
-      tags$head(tags$link(href = "css/styles.css", rel = "stylesheet")),
-      column(2, downloadButton("save_session", "Save Session")),
-      column(4, fileInput("load_session", "Load Session"))
+      tags$head(tags$link(href = "css/styles.css", rel = "stylesheet"))
     ),
     title = glue('Wallace v{packageVersion("wallace")}'),
     tabPanel("Intro", value ='intro'),
@@ -492,6 +490,10 @@ tagList(
           # SESSION CODE ####
           conditionalPanel(
             "input.tabs == 'rmd'",
+            h4("Save session"),
+            p("By saving your session into a file, you can resume working on it at a later time or you can share the file with a collaborator."),
+            downloadButton("save_session", "Save Session"), br(), br(),
+            fileInput("load_session", "Load Session", accept = ".rds"),
             h4("Download Session Code"),
             uiTop(rmd_INFO),
             selectInput('rmdFileType', label = "Select download file type",
