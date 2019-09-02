@@ -46,6 +46,10 @@ for (module_config_file in all_module_configs) {
   # Perform lots of error checking to ensure the module was written properly
   required_fields <- c("component", "short_name", "long_name", "authors", "package")
 
+  if (id == "main") {
+    stop("A module cannot be named `main`", call. = FALSE)
+  }
+
   if (!grepl("^[A-Za-z0-9_]+$", id)) {
     stop("Module {id}: The id can only contain English characters, digits, and underscores",
          call. = FALSE)

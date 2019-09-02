@@ -22,6 +22,15 @@
     # Result
   })
 
+  return(list(
+    save = function() {
+      # Save any values that should be saved when the current session is saved
+    },
+    load = function(state) {
+      # Load
+    }
+  ))
+
 }
 
 {{id}}_module_result <- function(id) {

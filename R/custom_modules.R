@@ -34,10 +34,12 @@ register_module <- function(config_file) {
 #' @param result Whether or not the module should support showing information in
 #' the Result tab.
 #' @param rmd Whether or not the module should add Rmd code to the Session Code
-#' download
+#' download.
+#' @param save Whether or not the module has some custom data to save when the
+#' user saves the current session.
 #' @seealso \code{\link[wallace]{register_module}}
 #' @export
-create_module <- function(id, dir, map = TRUE, result = TRUE, rmd = TRUE) {
+create_module <- function(id, dir, map = TRUE, result = TRUE, rmd = TRUE, save = TRUE) {
   if (!grepl("^[A-Za-z0-9_]+$", id)) {
     stop("The id can only contain English characters, digits, and underscores",
          call. = FALSE)
@@ -68,6 +70,9 @@ create_module <- function(id, dir, map = TRUE, result = TRUE, rmd = TRUE) {
   }
   if (!rmd) {
     r_file <- gsub("\n\\{\\{id}}_module_rmd <- function.*?}", "", r_file)
+  }
+  if (!save) {
+    r_file <- gsub("\n *return\\(list\\(.*?))\n", "", r_file)
   }
   r_file <- gsub("\\{\\{id}}", id, r_file)
   writeLines(r_file, file.path(dir, glue::glue("{id}.R")))

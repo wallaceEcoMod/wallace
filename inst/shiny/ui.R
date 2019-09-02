@@ -6,11 +6,14 @@ tagList(
     script = file.path(resourcePath, "js", "shinyjs-funcs.js"),
     functions = c("scrollLogger", "removeModule")
   ),
+  shinyalert::useShinyalert(),
   navbarPage(
     theme = shinythemes::shinytheme('united'),
     id = 'tabs',
     collapsible = TRUE,
-    header = tags$head(tags$link(href = "css/styles.css", rel = "stylesheet")),
+    header = tagList(
+      tags$head(tags$link(href = "css/styles.css", rel = "stylesheet"))
+    ),
     title = glue('Wallace v{packageVersion("wallace")}'),
     tabPanel("Intro", value ='intro'),
     tabPanel("Occ Data", value = 'occs'),
@@ -487,6 +490,10 @@ tagList(
           # SESSION CODE ####
           conditionalPanel(
             "input.tabs == 'rmd'",
+            h4("Save session"),
+            p("By saving your session into a file, you can resume working on it at a later time or you can share the file with a collaborator."),
+            downloadButton("save_session", "Save Session"), br(), br(),
+            fileInput("load_session", "Load Session", accept = ".rds"),
             h4("Download Session Code"),
             uiTop(rmd_INFO),
             selectInput('rmdFileType', label = "Select download file type",
