@@ -39,7 +39,7 @@ register_module <- function(config_file) {
 #' user saves the current session.
 #' @seealso \code{\link[wallace]{register_module}}
 #' @export
-create_module <- function(id, dir, map = TRUE, result = TRUE, rmd = TRUE, save = TRUE) {
+create_module <- function(id, dir, map = FALSE, result = FALSE, rmd = FALSE, save = FALSE) {
   if (!grepl("^[A-Za-z0-9_]+$", id)) {
     stop("The id can only contain English characters, digits, and underscores",
          call. = FALSE)
