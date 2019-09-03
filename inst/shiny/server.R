@@ -277,7 +277,7 @@ function(input, output, session) {
 
   # map center coordinates for 30 arcsec download
   mapCntr <- reactive({
-    mapCenter(input$map_bounds)
+    round(as.numeric(input$map_center), digits = 3)
   })
 
   # CONSOLE PRINT
