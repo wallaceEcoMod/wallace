@@ -1345,6 +1345,11 @@ function(input, output, session) {
     })
   })
 
+  observe({
+    spp_size <- as.numeric(pryr::object_size(reactiveValuesToList(spp)))
+    shinyjs::toggle("save_warning", condition = (spp_size >= SAVE_SESSION_SIZE_MB_WARNING * MB))
+  })
+
   # Save the current session to a file
   save_session <- function(file) {
     state <- list()
