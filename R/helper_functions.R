@@ -78,14 +78,6 @@ writeLog <- function(logger, ..., type = 'default') {
 # MAPPING ####
 ####################### #
 
-# return the map center given the bounds
-#' @export
-mapCenter <- function(bounds) {
-  map_center <- c((bounds$west + bounds$east) / 2, (bounds$north + bounds$south) / 2)
-  map_center <- round(map_center, digits=3)
-  return(map_center)
-}
-
 # map occurrences with the Wallace default symbology
 #' @export
 map_occs <- function(map, occs, fillColor = 'red', fillOpacity = 0.2, customZoom = NULL) {

@@ -277,7 +277,7 @@ function(input, output, session) {
 
   # map center coordinates for 30 arcsec download
   mapCntr <- reactive({
-    mapCenter(input$map_bounds)
+    round(as.numeric(input$map_center), digits = 3)
   })
 
   # CONSOLE PRINT
@@ -1343,6 +1343,11 @@ function(input, output, session) {
         modules[[module$id]] <<- return
       }
     })
+  })
+
+  observe({
+    spp_size <- as.numeric(pryr::object_size(reactiveValuesToList(spp)))
+    shinyjs::toggle("save_warning", condition = (spp_size >= SAVE_SESSION_SIZE_MB_WARNING * MB))
   })
 
   # Save the current session to a file

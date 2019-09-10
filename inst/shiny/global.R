@@ -1,8 +1,12 @@
 library(wallace)
 library(glue)
 
+MB <- 1024^2
+
 UPLOAD_SIZE_MB <- 5000
-options(shiny.maxRequestSize = UPLOAD_SIZE_MB*1024^2)
+options(shiny.maxRequestSize = UPLOAD_SIZE_MB*MB)
+
+SAVE_SESSION_SIZE_MB_WARNING <- 100
 
 source("helpers.R")
 

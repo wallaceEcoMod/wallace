@@ -4,8 +4,8 @@
 \alias{create_module}
 \title{Create a Wallace module}
 \usage{
-create_module(id, dir, map = TRUE, result = TRUE, rmd = TRUE,
-  save = TRUE)
+create_module(id, dir, map = FALSE, result = FALSE, rmd = FALSE,
+  save = FALSE)
 }
 \arguments{
 \item{id}{The id of the module.}

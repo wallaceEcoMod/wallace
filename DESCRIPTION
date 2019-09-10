@@ -42,6 +42,7 @@ Imports:
     mapview,
     neotoma,
     paleobioDB,
+    pryr,
     rangeModelMetadata,
     raster,
     RColorBrewer,

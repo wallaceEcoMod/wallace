@@ -492,6 +492,11 @@ tagList(
             "input.tabs == 'rmd'",
             h4("Save session"),
             p("By saving your session into a file, you can resume working on it at a later time or you can share the file with a collaborator."),
+            shinyjs::hidden(p(
+              id = "save_warning",
+              icon("warning"),
+              "The current session data is large, which means the downloaded file may be large and the download might take a long time."
+            )),
             downloadButton("save_session", "Save Session"), br(), br(),
             fileInput("load_session", "Load Session", accept = ".rds"),
             h4("Download Session Code"),
