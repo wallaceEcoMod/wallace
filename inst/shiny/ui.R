@@ -497,6 +497,7 @@ tagList(
               icon("warning"),
               "The current session data is large, which means the downloaded file may be large and the download might take a long time."
             )),
+            checkboxInput("save_portable", "Ensure the session data is portable and can be loaded on other computers", FALSE),
             downloadButton("save_session", "Save Session"), br(), br(),
             fileInput("load_session", "Load Session", accept = ".rds"),
             h4("Download Session Code"),

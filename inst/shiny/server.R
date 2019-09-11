@@ -1354,10 +1354,17 @@ function(input, output, session) {
   save_session <- function(file) {
     state <- list()
 
+    if (input$save_portable) {
+      spp_save <- reactiveValuesToList(spp)
+      stop("This has not been implemented yet")
+    } else {
+      spp_save <- reactiveValuesToList(spp)
+    }
+
     # Save general data
     state$main <- list(
       version = as.character(packageVersion("wallace")),
-      spp = reactiveValuesToList(spp),
+      spp = spp_save,
       envs_global = reactiveValuesToList(envs.global),
       cur_sp = input$curSp,
       selected_module = sapply(COMPONENTS, function(x) input[[glue("{x}Sel")]], simplify = FALSE)
