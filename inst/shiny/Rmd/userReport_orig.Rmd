@@ -33,7 +33,7 @@ bg.userCSV <- rvs$comp4.shp == 'csv'
 bg.userShp <- rvs$comp4.shp == 'shp'
 bg.user <- bg.userShp | bg.userCSV
 bg.any <- rvs$comp4.shp != ''
-bg.bufWid <- rvs$comp4.buf > 0 & bg.ptbuf == FALSE
+bg.bufWid <- rvs$comp4.buf > 0
 # comp5
 part.block <- rvs$comp5 == 'block'
 part.cb1 <- rvs$comp5 == 'cb1'
@@ -243,7 +243,7 @@ bgExt <- mcp(occs.xy)
 ```{r bgPtBufs, echo = bg.ptbuf, include = bg.ptbuf}
 # make SpatialPoints object for buffering
 occs.sp <- sp::SpatialPoints(occs.xy)
-bgExt <- rgeos::gBuffer(occs.sp, width = {{bgBuf}})
+bgExt <- occs.sp
 ```
 
 ```{asis, echo = bg.userCSV, eval = bg.userCSV, include = bg.userCSV}
