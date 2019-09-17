@@ -52,7 +52,7 @@ bgExtent_MOD <- function(input, output, session, rvs) {
         rvs %>% writeLog(type = 'error', 'Change buffer distance to positive or negative value.')
         return()
       }
-      bgExt <- rgeos::gBuffer(occs.sp, width = input$bgBuf)
+      bgExt <- occs.sp
       msg <- "Study extent: buffered points."
     }
     

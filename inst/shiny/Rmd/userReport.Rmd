@@ -33,7 +33,7 @@ bg.userCSV <- rvs$comp4.shp == 'csv'
 bg.userShp <- rvs$comp4.shp == 'shp'
 bg.user <- bg.userShp | bg.userCSV
 bg.any <- rvs$comp4.shp != ''
-bg.bufWid <- rvs$comp4.buf > 0 & bg.ptbuf == FALSE
+bg.bufWid <- rvs$comp4.buf > 0
 # comp5
 part.block <- rvs$comp5 == 'block'
 part.cb1 <- rvs$comp5 == 'cb1'
@@ -66,7 +66,7 @@ pj.thr <- if (!(is.null(rvs$comp8.thr))) {!(rvs$comp8.thr == 'noThresh')} else {
 pj.any <- pj.area | pj.time | pj.mess
 ```
 
-Please find below the R code history from your *Wallace* v1.0.6.1 session. 
+Please find below the R code history from your *Wallace* v1.0.6.2 session. 
 
 You can reproduce your session results by running this R Markdown file in RStudio. 
 
@@ -261,7 +261,7 @@ bgExt <- mcp(occs.xy)
 # make SpatialPoints object for buffering
 occs.xy <- occs[c('longitude', 'latitude')]
 sp::coordinates(occs.xy) <- ~ longitude + latitude
-bgExt <- rgeos::gBuffer(occs.xy, width = {{bgBuf}})
+bgExt <- occs.xy
 ```
 
 ```{asis, echo = bg.userCSV, eval = bg.userCSV, include = bg.userCSV}
@@ -291,7 +291,7 @@ bgExt <- rgdal::readOGR(d.bg, "{{bgUserShpName}}")
 Buffer size of the study extent polygon defined as `r {{bgBuf}}` degrees.
 ```
 
-```{r bgBufWid, echo = bg.bufWid, include = bg.bufWid}
+```{r bgufWid, echo = bg.bufWid, include = bg.bufWid}
 bgExt <- rgeos::gBuffer(bgExt, width = {{bgBuf}})
 ```
 
