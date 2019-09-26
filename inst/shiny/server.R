@@ -59,7 +59,7 @@ function(input, output, session) {
     leaflet() %>%
       setView(0, 0, zoom = 2) %>%
       addProviderTiles('Esri.WorldTopoMap') %>%
-      mapview::addMouseCoordinates()
+      leafem::addMouseCoordinates()
   )
 
   # create map proxy to make further changes to existing map
