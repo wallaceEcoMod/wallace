@@ -14,8 +14,8 @@ tagList(
     header = tagList(
       tags$head(tags$link(href = "css/styles.css", rel = "stylesheet"))
     ),
-    title = glue('Wallace v{packageVersion("wallace")}'),
-    tabPanel("Intro", value ='intro'),
+    title = glue::glue('Wallace v{packageVersion("wallace")}'),
+    tabPanel("Intro", value = 'intro'),
     tabPanel("Occ Data", value = 'occs'),
     tabPanel("Env Data", value = 'envs'),
     tabPanel("Process Occs", value = 'poccs'),
@@ -69,7 +69,6 @@ tagList(
               "poccsSel", "Modules Available:",
               choices = c(
                 insert_modules_options("poccs"),
-                "Remove Occurrences By ID" = 'remID',
                 "Spatial Thin" = 'spthin'),#,
               #"Profile Occurrences" = "profOccs"), # CM
               selected = "spthin" # Check default (no selected)
@@ -87,12 +86,6 @@ tagList(
             # CM: End comment
 
             insert_modules_ui("poccs"),
-            conditionalPanel(
-              "input.poccsSel == 'remID'",
-              uiTop(removeByID_INFO),
-              removeByID_UI('c2_removeByID_uiID'),
-              actionButton("goRemoveByID", "Remove Occurrence")
-            ),
             # placeholder for select on map
             conditionalPanel(
               "input.poccsSel == 'spthin'",
@@ -109,10 +102,6 @@ tagList(
                                .butResOccs:hover {background-color: #830D03;
                                color: white;}")),
             tags$hr(),
-            conditionalPanel(
-              "input.poccsSel == 'remID'",
-              uiBottom(removeByID_INFO)
-            ),
             conditionalPanel(
               "input.poccsSel == 'spthin'",
               uiBottom(thinOccs_INFO)

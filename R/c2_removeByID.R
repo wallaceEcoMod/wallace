@@ -7,13 +7,13 @@
 #'
 #' @param occs x
 #' @param removeID x
-#' @param shinyLogs x
+#' @param logger x
 # @keywords
 #'
 # @examples
 #'
 #'
-# @return 
+# @return
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 # @note
 
@@ -26,24 +26,24 @@
 
 #' @export
 
-c2_removeByID <- function(occs, removeID, shinyLogs = NULL) {
+c2_removeByID <- function(occs, removeID, logger = NULL) {
   if (is.null(occs)) {
-    shinyLogs %>% writeLog(type = 'error', 
+    logger %>% writeLog(type = 'error',
       "Before processing occurrences, obtain the data in component 1.")
     return()
   }
-  
+
   if (!(removeID %in% occs$occID)) {
-    shinyLogs %>% writeLog(type = 'error','Entered occID not found.')
+    logger %>% writeLog(type = 'error','Entered occID not found.')
     return()
   }
-  
+
   # find which occID corresponds to row for removal
-  i <- which(removeID == occs$occID)  
+  i <- which(removeID == occs$occID)
   # remove the row
   occs.remID <- occs[-i,]
-  
-  shinyLogs %>% writeLog(
+
+  logger %>% writeLog(
     "Removed occurrence from ", em(spName(occs)), "with occID = ", removeID,". Updated data has n = ", nrow(occs.remID), " records.")
   return(occs.remID)
 }

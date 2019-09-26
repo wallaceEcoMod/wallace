@@ -309,15 +309,6 @@ function(input, output, session) {
   #   profileOccsClean()
   # })
   # CM: end comment
-  # # # # # # # # # # # # # # # # # # # #
-  # module Remove Occurrences By ID ####
-  # # # # # # # # # # # # # # # # # # # #
-  observeEvent(input$goRemoveByID, {
-    removeByID <- callModule(removeByID_MOD, 'c2_removeByID_uiID')
-    removeByID()
-    # switch to Map tab
-    updateTabsetPanel(session, 'main', selected = 'Map')
-  })
 
   # # # # # # # # # # # # # #
   # module Spatial Thin ####
@@ -1232,7 +1223,6 @@ function(input, output, session) {
 
         # TODO these should be set in each individual module's rmd function
         # knit.logicals <- list(
-        #   removeByID_knit = !is.null(spp[[sp]]$rmm$code$wallaceSettings$removedIDs),
         #   bgExtent_knit = !is.null(spp[[sp]]$procEnvs$bgExt),
         #   bgMskSamplePts_knit = !is.null(spp[[sp]]$bgPts),
         #   espace_pca_knit = !is.null(spp[[sp]]$pca),

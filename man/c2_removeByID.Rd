@@ -4,14 +4,14 @@
 \alias{c2_removeByID}
 \title{c2_removeByID}
 \usage{
-c2_removeByID(occs, removeID, shinyLogs = NULL)
+c2_removeByID(occs, removeID, logger = NULL)
 }
 \arguments{
 \item{occs}{x}
 
 \item{removeID}{x}
 
-\item{shinyLogs}{x}
+\item{logger}{x}
 }
 \description{
 ..

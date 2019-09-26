@@ -1,0 +1,5 @@
+component: "poccs"
+short_name: "Remove Occurrences By ID"
+long_name: "Remove Occurrences By ID"
+authors: "Jamie M. Kass, Robert P. Anderson"
+package: [leaflet.extras]
