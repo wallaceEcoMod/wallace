@@ -53,6 +53,7 @@ Imports:
     shinyalert,
     shinyjs,
     shinythemes,
+    shinyWidgets,
     sp,
     spocc (>= 0.8.0),
     spThin,
