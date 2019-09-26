@@ -1,13 +1,8 @@
----
-title: "poccs_spthin"
-output: html_document
----
-
 ### **Module:** ***Spatial Thin***
 
 **BACKGROUND**
 
-In addition to the possibility of errors regarding identification and georeferencing, datasets of occurrence records typically suffer from the effects of uneven (i.e., biased) sampling across geographic space. An example would be higher sampling effort near roads and established research centers. Geographically biased sampling also often results in biases in environmental space, which distorts estimates of the species' niche (Kadmon et al. 2004). Furthermore, this can falsely inflate estimates of model performance (Veloz 2009). Although these problems are well recognized, the field has not yet reached consensus regarding best practices (either conceptually or operationally). Nevertheless, some ways of dealing with this problem include: 1) quantifying heterogeneity in sampling effort across geography by, for example, sampling for a "target group" of species detected with the same techniques (Anderson 2003) and correcting for such spatial sampling patterns during model building (Phillips et al. 2009) not currently implemented in *Wallace*; or 2) reducing the effects of biased sampling by thinning records based on geographic distance (implemented here) or environmental distances (Varela et al. 2014).  
+In addition to the possibility of errors regarding identification and georeferencing, datasets of occurrence records typically suffer from the effects of uneven (i.e., biased) sampling across geographic space. An example would be higher sampling effort near roads and established research centers. Geographically biased sampling also often results in biases in environmental space, which distorts estimates of the species' niche (Kadmon et al. 2004). Furthermore, this can falsely inflate estimates of model performance (Veloz 2009). Although these problems are well recognized, the field has not yet reached consensus regarding best practices (either conceptually or operationally). Nevertheless, some ways of dealing with this problem include: 1) quantifying heterogeneity in sampling effort across geography by, for example, sampling for a "target group" of species detected with the same techniques (Anderson 2003) and correcting for such spatial sampling patterns during model building (Phillips et al. 2009) not currently implemented in *Wallace*; or 2) reducing the effects of biased sampling by thinning records based on geographic distance (implemented here) or environmental distances (Varela et al. 2014).
 
 **IMPLEMENTATION**
 

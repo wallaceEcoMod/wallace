@@ -4,14 +4,14 @@
 \alias{c2_thinOccs}
 \title{c2_thinOccs}
 \usage{
-c2_thinOccs(occs, thinDist, shinyLogs = NULL)
+c2_thinOccs(occs, thinDist, logger = NULL)
 }
 \arguments{
 \item{occs}{x}
 
 \item{thinDist}{x}
 
-\item{shinyLogs}{x}
+\item{logger}{x}
 }
 \description{
 ..

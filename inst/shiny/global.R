@@ -32,7 +32,8 @@ base_module_configs <- c(
   "modules/c3_worldclim.yml",
   "modules/c3_userEnvs.yml",
   "modules/c2_selectOccs.yml",
-  "modules/c2_removeByID.yml"
+  "modules/c2_removeByID.yml",
+  "modules/c2_thinOccs.yml"
 )
 
 # Load user-defined modules

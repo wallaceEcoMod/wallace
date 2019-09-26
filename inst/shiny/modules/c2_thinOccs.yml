@@ -1,0 +1,5 @@
+component: "poccs"
+short_name: "Spatial Thin"
+long_name: "Spatial Thin"
+authors: "Jamie M. Kass, Matthew E. Aiello-Lammens, Robert P. Anderson"
+package: [spThin]

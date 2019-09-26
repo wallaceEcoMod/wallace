@@ -33,7 +33,6 @@ tagList(
     fluidRow(
       column(
         4,
-
         wellPanel(
           conditionalPanel(
             "input.tabs == 'intro'",
@@ -67,14 +66,11 @@ tagList(
             h4("Process Occurrence Data"),
             radioButtons(
               "poccsSel", "Modules Available:",
-              choices = c(
-                insert_modules_options("poccs"),
-                "Spatial Thin" = 'spthin'),#,
+              choices = insert_modules_options("poccs")
               #"Profile Occurrences" = "profOccs"), # CM
-              selected = "spthin" # Check default (no selected)
             ),
             tags$hr(),
-
+            insert_modules_ui("poccs")  #,
             # CM: start comment
             # conditionalPanel("input.poccsSel == 'profOccs'",
             #                  uiTop(profileOccs_INFO),
@@ -85,27 +81,18 @@ tagList(
             # ),
             # CM: End comment
 
-            insert_modules_ui("poccs"),
-            # placeholder for select on map
-            conditionalPanel(
-              "input.poccsSel == 'spthin'",
-              uiTop(thinOccs_INFO),
-              thinOccs_UI('c2_thinOccs_uiID'),
-              actionButton("goThinOccs", "Thin Occurrences")
-            ), br(),
-            strong("Reset to original occurrences"), br(),
-            actionButton("goResetOccs", "Reset", class = 'butResOccs'),
-            tags$head(tags$style(".butResOccs {background-color: #C51E10;
-                               color: white;
-                               padding: 5px 5px;
-                               border: none;}
-                               .butResOccs:hover {background-color: #830D03;
-                               color: white;}")),
-            tags$hr(),
-            conditionalPanel(
-              "input.poccsSel == 'spthin'",
-              uiBottom(thinOccs_INFO)
-            )
+            # GEPB: Reset button
+            # tags$br(),
+            # tags$strong("Reset to original occurrences"),
+            # tags$br(),
+            # actionButton("goResetOccs", "Reset", class = 'butResOccs'),
+            # tags$head(tags$style(".butResOccs {background-color: #C51E10;
+            #                    color: white;
+            #                    padding: 5px 5px;
+            #                    border: none;}
+            #                    .butResOccs:hover {background-color: #830D03;
+            #                    color: white;}"))
+            # GEPB: End Comment
           ),
           conditionalPanel(
             "input.tabs == 'penvs'",

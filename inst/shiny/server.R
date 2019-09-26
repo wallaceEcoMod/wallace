@@ -310,17 +310,6 @@ function(input, output, session) {
   # })
   # CM: end comment
 
-  # # # # # # # # # # # # # #
-  # module Spatial Thin ####
-  # # # # # # # # # # # # # #
-
-  observeEvent(input$goThinOccs, {
-    thinOccs <- callModule(thinOccs_MOD, 'c2_thinOccs_uiID')
-    thinOccs()
-    # switch to Map tab
-    updateTabsetPanel(session, 'main', selected = 'Map')
-  })
-
   # # # # # # # # # # # # # # # # # #
   # PROCESS OCCS: other controls ####
   # # # # # # # # # # # # # # # # # #
