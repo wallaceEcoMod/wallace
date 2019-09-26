@@ -29,7 +29,6 @@ Depends:
 Imports:
     ade4,
     BIEN,
-    bsplus,
     dismo,
     dplyr,
     DT (>= 0.5),

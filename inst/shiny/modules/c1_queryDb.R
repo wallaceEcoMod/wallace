@@ -1,52 +1,42 @@
 c1_queryDb_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
-    bsplus::bs_accordion(id = ns("c1_queryDB_accordion")) %>%
-      bsplus::bs_set_opts(use_heading_link = TRUE) %>%
-      bsplus::bs_append(
-        title = "Data stuff",
-        content = tagList(
-          tags$div(title = "text",
-                   radioButtons(ns("occsDb"), label = "Choose Database",
-                                choices = c("GBIF" = 'gbif',
-                                            "VertNet" = 'vertnet',
-                                            "BISON" = 'bison',
-                                            "BIEN" = 'bien'),
-                                inline = TRUE)),
-        conditionalPanel(
-          sprintf("input['%s'] == 'gbif'", ns("occsDb")),
-          checkboxInput(ns("doCitations"),
-                        label = 'Include Data Source Citations',
-                        value = FALSE),
-          conditionalPanel(
-            sprintf("input['%1$s'] == 'gbif' &
-                    input['%2$s'] == true",
-                    ns("occsDb"), ns("doCitations")),
-            splitLayout(textInput(ns('gbifUser'),
-                                  'GBIF User ID',
-                                  value = NULL),
-                        textInput(ns('gbifEmail'),
-                                  'GBIF email',
-                                  value = NULL),
-                        textInput(ns('gbifPW'),
-                                  'GBIF password',
-                                  value = NULL))
-          )
-        ))
-      ) %>%
-      bsplus::bs_append(
-        title = "Species stuff",
-        content = tagList(
-          tags$div(title = 'Examples: Felis catus, Canis lupus, Nyctereutes procyonoides',
-                   textInput(ns("spNames"), label = "Enter species scientific name",
-                             placeholder = 'format: Genus species', value = "meles meles, martes martes")),
-        tags$div(title = 'Maximum number of occurrences recovered from databases.
-                 Downloaded records are not sorted randomly:
-                 rows are always consistent between downloads.',
-                 numericInput(ns("occsNum"), "Set maximum number of occurrences",
-                              value = 100, min = 0))
-        )
-      ),
+    tags$div(title = "text",
+             radioButtons(ns("occsDb"), label = "Choose Database",
+                          choices = c("GBIF" = 'gbif',
+                                      "VertNet" = 'vertnet',
+                                      "BISON" = 'bison',
+                                      "BIEN" = 'bien'),
+                          inline = TRUE)),
+    conditionalPanel(
+      sprintf("input['%s'] == 'gbif'", ns("occsDb")),
+      checkboxInput(ns("doCitations"),
+                    label = 'Include Data Source Citations',
+                    value = FALSE),
+      conditionalPanel(
+        sprintf("input['%1$s'] == 'gbif' &
+                               input['%2$s'] == true",
+                ns("occsDb"), ns("doCitations")),
+        splitLayout(textInput(ns('gbifUser'),
+                              'GBIF User ID',
+                              value = NULL),
+                    textInput(ns('gbifEmail'),
+                              'GBIF email',
+                              value = NULL),
+                    textInput(ns('gbifPW'),
+                              'GBIF password',
+                              value = NULL))
+      )
+    ),
+    tags$div(title = 'Examples: Felis catus, Canis lupus, Nyctereutes procyonoides',
+             textInput(ns("spNames"), label = "Enter species scientific name",
+                       placeholder = 'format: Genus species',
+                       value = "meles meles, martes martes")),
+    tags$div(title = paste0('Maximum number of occurrences recovered from ',
+    'databases. Downloaded records are not sorted randomly: rows are always ',
+    'consistent between downloads.'),
+             numericInput(ns("occsNum"), "Set maximum number of occurrences",
+                          value = 100, min = 0)),
     actionButton(ns("goDbOccs"), "Query Database")
   )
 }
