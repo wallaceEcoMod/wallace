@@ -1,5 +1,5 @@
 Package: wallace
-Version: 1.0.6.1
+Version: 1.0.6.2
 Date: 2018-10-05
 Title: A Modular Platform for Reproducible Modeling of Species Niches and Distributions
 Authors@R: c(person("Jamie M.", "Kass", email = "jkass@gradcenter.cuny.edu", role = c("aut", "cre")),
