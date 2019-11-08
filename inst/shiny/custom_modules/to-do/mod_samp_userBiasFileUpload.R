@@ -11,7 +11,7 @@ userBiasFile_MOD <- function(input, output, session) {
   reactive({
     # ERRORS ####
     # if (is.null(occs())) {
-    #   shinyLogs %>% writeLog(type = 'error', "Before obtaining environmental variables, 
+    #   shinyLogs %>% writeLog(type = 'error', "Before obtaining environmental variables,
     #                          obtain occurrence data in component 1.")
     #   return()
     # }
@@ -19,18 +19,18 @@ userBiasFile_MOD <- function(input, output, session) {
       shinyLogs %>% writeLog(type = 'error', "User bias raster file not uploaded. File name not valid.")
       return()
     }
-    
+
     # CM: note we're using a generic raster reading function
-    biasLayer <- c3_userEnvs(rasPath = input$userBiasFile$datapath,
+    biasLayer <- envs_userEnvs(rasPath = input$userBiasFile$datapath,
                              rasName = input$userBiasFile$name)
-    
+
     # loop over all species if batch is on
     if(input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
 
     for(sp in spLoop) {
       # And this does bias file-specific checks
-      biasLayer = samp_userBiasFileCheck(biasLayer,spp[[sp]]$envs) 
-      
+      biasLayer = samp_userBiasFileCheck(biasLayer,spp[[sp]]$envs)
+
       # get environmental variable values per occurrence record
       withProgress(message = paste0("Extracting bias values for occurrences of ", sp, "..."), {
         occsBiasVals <- as.data.frame(raster::extract(biasLayer, spp[[sp]]$occs[c('longitude', 'latitude')]))
@@ -49,7 +49,7 @@ userBiasFile_MOD <- function(input, output, session) {
       spp[[sp]]$rmm$modeling$maxent$samplingBiasRule <- 'offset'
       spp[[sp]]$rmm$data$environment$sources <- 'user'
     }
-    
+
   })
 }
 
@@ -65,7 +65,7 @@ mapBias_MAP <- function(map, session) {
     addLegend("bottomright", pal = legendPal, title = "Sampling Bias",
               values = mapPredVals, layerId = "train",
               labFormat = reverseLabels(2, reverse_order=TRUE))
-  
+
   # map model prediction raster
   map %>%
     map_occs(occs()) %>%

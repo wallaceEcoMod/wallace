@@ -75,7 +75,7 @@ tagList(
             # conditionalPanel("input.poccsSel == 'profOccs'",
             #                  uiTop(profileOccs_INFO),
             #                  actionButton("goProfileOccs", "Profile Occurrences"), br(), br(),
-            #                  profileOccs_UI('c2_profileOccs_uiID'),
+            #                  profileOccs_UI('poccs_profileOccs_uiID'),
             #                  actionButton("goProfileOccsClean", "Clean Occurrences"),
             #                  uiBottom(profileOccs_INFO)
             # ),
@@ -546,7 +546,7 @@ tagList(
                 )
               }),
               # conditionalPanel("input.tabs == 'poccs'",
-              #                  profileOccs_resultsUI("c2_profileOccs_uiID")),
+              #                  profileOccs_resultsUI("poccs_profileOccs_uiID")),
               conditionalPanel(
                 "input.tabs == 'model'",
                 conditionalPanel("input.modelSel == 'BIOCLIM' || input.modelSel == 'Maxent'",

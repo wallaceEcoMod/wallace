@@ -1,4 +1,4 @@
-# 
+#
 # profileOccs_UI <- function(id) {
 #   ns <- NS(id)
 #   tagList(
@@ -20,28 +20,28 @@
 #     )
 #   )
 # }
-# 
+#
 # profileOccs_resultsUI <- function(id) {
 #   ns <- NS(id)
 #   uiOutput(ns('profileOccsResults'))
 # }
-# 
+#
 # profileOccs_MOD <- function(input, output, session) {
 #   reactive({
 #     # loop over all species if batch is on
 #     if(input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
-# 
+#
 #     libs=c('occProfileR')
 #     hasNecessaryLibraries=all(unlist(lapply(libs,function(x) require(x,character.only=TRUE))))
-#     if(!hasNecessaryLibraries){  
+#     if(!hasNecessaryLibraries){
 #       shinyLogs %>% writeLog(type = 'error',
 #                              paste0('You must install the following packages to use this module: ',libs))
 #       return()
 #     }
-#     
+#
 #     for(sp in spLoop) {
 #       # FUNCTION CALL ####
-#       occs.prof <- c2_profileOccs(sp.name = sp,
+#       occs.prof <- poccs_profileOccs(sp.name = sp,
 #                                   sp.table = spp[[sp]]$occs,
 #                                   x.field = "longitude",
 #                                   y.field = "latitude",
@@ -52,13 +52,13 @@
 #                                   r.env = envs.global[[spp[[sp]]$envs]],
 #                                   shinyLogs)
 #       req(occs.prof)
-# 
+#
 #       occs.prof$occ_full_profile <- occs.prof$occ_full_profile[order(occs.prof$occ_full_profile$occID),]
-# 
+#
 #       # LOAD INTO SPP ####
 #       # record present occs before thinning (this may be different from occData$occOrig)
 #       spp[[sp]]$procOccs$occsProf <- occs.prof
-# 
+#
 #       # PLOTS ####
 #       output$profileOccsResults <- renderUI({
 #         full.qaqc <- occs.prof$occ_full_profile
@@ -72,12 +72,12 @@
 #                                                                 '#f46d43','#d73027'))
 #           color.to.plot<-as.character(sapply(full.qaqc$quality.grade,
 #                                              function (x) proposed.color.grading[x,'color.qgrade']))
-# 
+#
 #           full.qaqc$grade.color <- color.to.plot
 #           ggplot2::ggplot(ggplot2::aes(x=quality.grade,fill=quality.grade), data = full.qaqc) +
 #             ggplot2::geom_bar()
 #         })
-# 
+#
 #         tabsetPanel(
 #           tabPanel("Occurrence Profiling Results",
 #                    tagList(
@@ -89,14 +89,14 @@
 #                    ))
 #         )
 #       })
-# 
+#
 #       # METADATA ####
 #       # decide later on metadata: maybe each of  the filters names
 #       spp[[sp]]$rmm$code$wallaceSettings$occProfileRSettings <- NA
 #     }
 #   })
 # }
-# 
+#
 # profileOccsClean_MOD <- function(input, output, session) {
 #   reactive({
 #     # loop over all species if batch is on
@@ -121,7 +121,7 @@
 #       print(input$grades)
 #       print('       ')
 #       print(unlist(input$grades) )
-# 
+#
 #       keep= print(occs.thin$occ_short_profile$quality.grade) %in%
 #         unlist(input$grades)
 #       print(keep)
@@ -131,25 +131,25 @@
 #                               'You must select some grades to keep.')
 #         return()
 #       }
-# 
+#
 #       occsClean=occs[keep,]
-# 
+#
 #       shinyLogs %>% writeLog(
 #         em(spName(occs)), ": Removing dirty occurrences")
-# 
+#
 #       ########
-# 
+#
 #       # LOAD INTO SPP ####
 #       spp[[sp]]$occs <- occs.clean
-# 
+#
 #       # METADATA ####
 #       # decide later on metadata
-#       spp[[sp]]$rmm$code$wallaceSettings$occProfileRGradesKept <- NA      
+#       spp[[sp]]$rmm$code$wallaceSettings$occProfileRGradesKept <- NA
 #       # CM: add a vector of which grades/tests kept
 #     }
 #   })
 # }
-# 
+#
 # occProfile_MAP <- function(map, session) {
 #   updateTabsetPanel(session, 'main', selected = 'Map')
 #   req(spp[[curSp()]]$procOccs$occsProf)
@@ -161,15 +161,15 @@
 #   n <- length(unique(grades))
 #   newColors <- gsub("FF$", "", rainbow(n))
 #   partsFill <- newColors[match(grades, sort(unique(grades)))]
-# 
+#
 #   map %>% clearAll() %>%
 #     map_occs(occs(), fillColor = partsFill, fillOpacity = 1) %>%
 #     addLegend("bottomright", colors = newColors,
 #               title = "Profile Grades", labels = sort(unique(grades)),
 #               opacity = 1)
 # }
-# 
+#
 # profileOccs_INFO <- infoGenerator(modName = "Profile Occurrences",
 #                                modAuts = "Pep Serra, Cory Merow, Jamie M. Kass",
 #                                pkgName = "occProfileR")
-# 
+#

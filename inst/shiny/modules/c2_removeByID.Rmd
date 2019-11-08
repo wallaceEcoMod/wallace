@@ -1,8 +1,0 @@
-```{asis, echo = {{removeByID_knit}}, eval = {{removeByID_knit}}, include = {{removeByID_knit}}}
-Remove the occurrence localities by ID.
-```
-
-```{r, echo = {{removeByID_knit}}, include = {{removeByID_knit}}}
-# remove the rows that match the occIDs selected
-occs.{{sp}} <- c2_removeByID(occs.{{sp}}, "{{removeByID_id}}")
-```

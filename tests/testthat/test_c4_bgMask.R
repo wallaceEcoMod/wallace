@@ -1,5 +1,5 @@
 #### COMPONENT 4: Process Environmental Data
-#### MODULE: Select Study Region 
+#### MODULE: Select Study Region
 context("bgMask")
 
 source("test_helper_functions.R")
@@ -8,23 +8,23 @@ source("test_helper_functions.R")
 ### Set parameters
 
 ## occurrences
-occs <-  c1_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+occs <-  occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
 occs <- as.data.frame(occs$cleaned)
 
-## enviromental variables 
-envs <- c3_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
+## enviromental variables
+envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
 
-## background extent 
-bgExt <- c4_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5) 
+## background extent
+bgExt <- c4_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
 
 
-### run function 
+### run function
 bgMask <- c4_bgMask(occs, envs, bgExt)
 
 
-### test if the error messages appear when they are supposed to 
+### test if the error messages appear when they are supposed to
 test_that("error checks", {
-  # the user has not selected the background extent 
+  # the user has not selected the background extent
   expect_error(c4_bgMask(occs, envs, bgExt=NULL),
                'Before sampling background points, define the background extent.')
   })

@@ -27,13 +27,13 @@ COMPONENT_MODULES <- list()
 
 # Load all Wallace base modules
 base_module_configs <- c(
-  "modules/c1_queryDb.yml",
-  "modules/c1_userOccs.yml",
-  "modules/c3_worldclim.yml",
-  "modules/c3_userEnvs.yml",
-  "modules/c2_selectOccs.yml",
-  "modules/c2_removeByID.yml",
-  "modules/c2_thinOccs.yml"
+  "modules/occs_queryDb.yml",
+  "modules/occs_userOccs.yml",
+  "modules/envs_worldclim.yml",
+  "modules/envs_userEnvs.yml",
+  "modules/poccs_selectOccs.yml",
+  "modules/poccs_removeByID.yml",
+  "modules/poccs_thinOccs.yml"
 )
 
 # Load user-defined modules

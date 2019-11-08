@@ -41,7 +41,7 @@ The *Wallace* session code .Rmd file is composed of a chain of module functions 
 # example:
 # just type the function name and press Return to see its source code
 # paste this code into a new script to edit it
-c1_queryDb
+occs_queryDb
 ```
 
 Your analyses are below.
@@ -60,7 +60,7 @@ You searched the `r "{{occDb}}"` database for *`r "{{spName}}"`*, limited to `r 
 
 ```{r, echo = {{occsDb_knit}}, include = {{occsDb_knit}}}
 # query selected database for occurrence records
-occs.query <- c1_queryDb(spName = "{{spName}}", occDb = "{{occDb}}", occNum = {{occNum}})
+occs.query <- occs_queryDb(spName = "{{spName}}", occDb = "{{occDb}}", occNum = {{occNum}})
 occs.{{sp}} <- occs.query$cleaned
 ```
 
@@ -72,7 +72,7 @@ User CSV path with occurrence data. If the CSV file is not in the current worksp
 # NOTE: provide the path to the .csv file
 occs.path <- ""
 # get a list of species occurrence data
-occs.user <- c1_userOccs(csvPath = occs.path, csvName = "{{userOccsCsvName}}")
+occs.user <- occs_userOccs(csvPath = occs.path, csvName = "{{userOccsCsvName}}")
 occs.{{sp}} <- occs.user[["{{spName}}"]]$cleaned
 ```
 
@@ -86,7 +86,7 @@ Remove the occurrence localities by ID.
 
 ```{r, echo = {{removeByID_knit}}, include = {{removeByID_knit}}}
 # remove the rows that match the occIDs selected
-occs.{{sp}} <- c2_removeByID(occs.{{sp}}, {{removeByID_id}})
+occs.{{sp}} <- poccs_removeByID(occs.{{sp}}, {{removeByID_id}})
 ```
 
 ```{asis, echo = {{selectByID_knit}}, eval = {{selectByID_knit}}, include = {{selectByID_knit}}}
@@ -94,7 +94,7 @@ The following code recreates the polygon used to select occurrences to keep in t
 ```
 
 ```{r, echo = {{selectByID_knit}}, include = {{selectByID_knit}}}
-occs.{{sp}} <- c2_selectOccs(occs.{{sp}}, "{{selectByID_xy}}", "{{selectByID_id}}")
+occs.{{sp}} <- poccs_selectOccs(occs.{{sp}}, "{{selectByID_xy}}", "{{selectByID_id}}")
 ```
 
 ``` {asis, echo = {{worldclim_knit}}, eval = {{worldclim_knit}}, include = {{worldclim_knit}}}
@@ -102,7 +102,7 @@ Using WorldClim (http://www.worldclim.org/) bioclimatic dataset at resolution of
 ```
 
 ```{r, echo = {{worldclim_knit}}, include = {{worldclim_knit}}}
-envs.{{sp}} <- c3_worldclim({{wcRes}}, {{bcSel}}, {{mapCntr}}, {{wcBrick}})
+envs.{{sp}} <- envs_worldclim({{wcRes}}, {{bcSel}}, {{mapCntr}}, {{wcBrick}})
 occs.{{sp}}.xy <- occs.{{sp}}[c('longitude', 'latitude')]
 occs.{{sp}}.vals <- as.data.frame(raster::extract(envs.{{sp}}, occs.{{sp}}.xy))
 # remove occurrence records with NA environmental values

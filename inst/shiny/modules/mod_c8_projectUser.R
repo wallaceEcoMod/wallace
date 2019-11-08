@@ -63,7 +63,7 @@ projectUser_MOD <- function(input, output, session) {
     }
 
     # Load raster ####
-    userProjEnvs <- c3_userEnvs(rasPath = input$userProjEnvs$datapath,
+    userProjEnvs <- envs_userEnvs(rasPath = input$userProjEnvs$datapath,
                                 rasName = input$userProjEnvs$name)
 
     # ERRORS ####

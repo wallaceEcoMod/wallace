@@ -300,12 +300,12 @@ function(input, output, session) {
   # # # # # # # # # # # # # # # # # # # #
   # CM: start comment
   # observeEvent(input$goProfileOccs, {
-  #   profileOccs <- callModule(profileOccs_MOD, 'c2_profileOccs_uiID')
+  #   profileOccs <- callModule(profileOccs_MOD, 'poccs_profileOccs_uiID')
   #   profileOccs()
   # })
   #
   # observeEvent(input$goProfileOccsClean, {
-  #   profileOccsClean <- callModule(profileOccsClean_MOD, 'c2_profileOccsClean_uiID')
+  #   profileOccsClean <- callModule(profileOccsClean_MOD, 'poccs_profileOccsClean_uiID')
   #   profileOccsClean()
   # })
   # CM: end comment

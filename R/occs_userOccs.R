@@ -6,7 +6,7 @@
 #'
 #' @param csvPath x
 #' @param csvName x
-#' @param shinyLogs x
+#' @param logger x
 # @keywords
 #'
 # @examples
@@ -26,28 +26,28 @@
 
 #' @export
 
-samp_userBiasBg <- function(csvPath, csvName, shinyLogs = NULL) {
+occs_userOccs <- function(csvPath, csvName, logger = NULL) {
 
   # read in csv
   csv <- read.csv(csvPath, header = TRUE)
 
   # check to make sure all column names are correct
   if (!all(c('scientific_name', 'longitude', 'latitude') %in% names(csv))) {
-    shinyLogs %>% writeLog(type = "error",
-                           'Please input CSV file with columns "scientific_name", "longitude", "latitude". For background points, the value of "scientific_name" should be background.')
+    logger %>% writeLog(type = "error",
+      'Please input CSV file with columns "scientific_name", "longitude", "latitude".')
     return()
   }
 
   # subset to just records with non-NA latitude and longitude
   csv.xy <- csv %>% dplyr::filter(!is.na(latitude) & !is.na(longitude))
-
+  csv.xy$scientific_name <- trimws(csv.xy$scientific_name)
   # get all species names
-  bg <- csv.xy %>% dplyr::filter(grepl("background", scientific_name))
-  #spNames <- trimws(as.character(unique(occs$scientific_name)))
+  occs <- csv.xy %>% dplyr::filter(!grepl("bg_", scientific_name))
+  spNames <- trimws(as.character(unique(occs$scientific_name)))
 
-  if (nrow(bg) == 0) {
-    shinyLogs %>% writeLog(type = 'warning',
-                           'No records with coordinates found in ', csvName, ".")
+  if (nrow(occs) == 0) {
+    logger %>% writeLog(type = 'warning',
+      'No records with coordinates found in ', csvName, ".")
     return()
   }
 
@@ -82,7 +82,7 @@ samp_userBiasBg <- function(csvPath, csvName, shinyLogs = NULL) {
     # subset by key columns and make id and popup columns
     dupsRem <- nrow(sp.occs) - nrow(occs)
 
-    shinyLogs %>% writeLog(
+    logger %>% writeLog(
       "Data for ", em(i), " uploaded from ", csvName, ": Duplicated records removed [", dupsRem, "]. Remaining records [", nrow(occs), "].")
 
     # look for background records
@@ -90,7 +90,7 @@ samp_userBiasBg <- function(csvPath, csvName, shinyLogs = NULL) {
     # if they exist, load them into occsList for the current species
     if(nrow(sp.bg) > 0) {
       occsList[[n]]$bg <- sp.bg
-      shinyLogs %>% writeLog(
+      logger %>% writeLog(
         "Data for ", em(i), " uploaded from ", csvName, ": ", nrow(sp.bg), " background records.")
     }
   }

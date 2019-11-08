@@ -1,5 +1,5 @@
 #### COMPONENT 4: Process Environmental Data
-#### MODULE: Select Study Region 
+#### MODULE: Select Study Region
 context("bgSample")
 
 source("test_helper_functions.R")
@@ -8,22 +8,22 @@ source("test_helper_functions.R")
 ### Set parameters
 
 ## occurrences
-occs <-  c1_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+occs <-  occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
 occs <- as.data.frame(occs$Panthera_onca$cleaned)
 
 ## background mask
 # enviromental data
-envs <- c3_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
-# background extent 
-bgExt <- c4_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5) 
-# background masked 
+envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
+# background extent
+bgExt <- c4_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
+# background masked
 bgMask <- c4_bgMask(occs, envs, bgExt)
 
 ## Number of background points to sample
 bgPtsNum <- 1000
 
 
-### run function 
+### run function
 bgsample <- c4_bgSample(occs, bgMask, bgPtsNum)
 
 
@@ -40,10 +40,10 @@ test_that("output type checks", {
   # check if all the points sampled overlap with the study region
     # set longitude and latitude
   sp::coordinates(bgsample) <- ~ longitude + latitude
-    # create polygon 
+    # create polygon
   Poly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(
     bgExt@polygons[[1]]@Polygons[[1]]@coords)),ID=1)))
-  # check which points overlap 
+  # check which points overlap
   overlap <- sp::over(bgsample, Poly)
   expect_false(NA %in% overlap)
   })

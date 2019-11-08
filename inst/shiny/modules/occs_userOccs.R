@@ -1,0 +1,56 @@
+occs_userOccs_module_ui <- function(id) {
+  ns <- NS(id)
+  tagList(
+    fileInput(ns("userCSV"), label = "Upload Occurrence CSV"),
+    actionButton(ns("goUserOccs"), "Load Occurrences")
+  )
+}
+
+occs_userOccs_module_server <- function(input, output, session, common) {
+  logger <- common$logger
+  spp <- common$spp
+
+  observeEvent(input$goUserOccs, {
+    # FUNCTION CALL ####
+    occsList <- occs_userOccs(input$userCSV$datapath, input$userCSV$name, logger)
+
+    if (is.null(occsList)) return()
+
+    # LOAD INTO SPP ####
+    # if species name is already in list, overwrite it
+    for(sp in names(occsList)) {
+      occs <- occsList[[sp]]$cleaned
+      occsOrig <- occsList[[sp]]$orig
+      if(!is.null(spp[[sp]])) spp[[sp]] <- NULL
+      spp[[sp]] <- list(occs = occs,
+                       occData = list(occsOrig = occsOrig, occsCleaned = occs),
+                       rmm = rangeModelMetadata::rmmTemplate())
+      if(!is.null(occsList[[sp]]$bg)) spp[[sp]]$bg <- occsList[[sp]]$bg
+
+      # METADATA ####
+      spp[[sp]]$rmm$data$occurrence$taxa <- occs$scientific_name[1]
+      spp[[sp]]$rmm$data$occurrence$dataType <- "presence only"
+      spp[[sp]]$rmm$data$occurrence$presenceSampleSize <- nrow(occs)
+      spp[[sp]]$rmm$data$occurrence$sources <- "user"
+      spp[[sp]]$rmm$code$wallaceSettings$userCSV <- input$userCSV$name
+    }
+  })
+}
+
+occs_userOccs_module_map <- function(map, common) {
+  spp <- common$spp
+  curSp <- common$curSp
+  occs <- spp[[curSp()]]$occData$occsCleaned
+  map %>% clearAll() %>%
+    addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude,
+                     radius = 5, color = 'red', fill = TRUE, fillColor = "red",
+                     fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
+    zoom2Occs(occs)
+}
+
+occs_userOccs_module_rmd <- function(species) {
+  list(
+    occsUser_knit = !is.null(species$rmm$code$wallaceSettings$userCSV),
+    userOccsCsvName = species$rmm$code$wallaceSettings$userCSV
+  )
+}

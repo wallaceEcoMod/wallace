@@ -1,0 +1,9 @@
+```{asis, echo = {{occsDb_knit}}, eval = {{occsDb_knit}}, include = {{occsDb_knit}}}
+You searched the `r "{{occDb}}"` database for *`r "{{spName}}"`*, limited to `r {{occNum}}` records.
+```
+
+```{r, echo = {{occsDb_knit}}, include = {{occsDb_knit}}}
+# query selected database for occurrence records
+occs.query <- occs_queryDb(spName = "{{spName}}", occDb = "{{occDb}}", occNum = {{occNum}})
+occs.{{sp}} <- occs.query$cleaned
+```
