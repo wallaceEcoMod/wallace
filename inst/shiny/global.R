@@ -33,7 +33,8 @@ base_module_configs <- c(
   "modules/envs_userEnvs.yml",
   "modules/poccs_selectOccs.yml",
   "modules/poccs_removeByID.yml",
-  "modules/poccs_thinOccs.yml"
+  "modules/poccs_thinOccs.yml",
+  "modules/penvs_drawBgExtent.yml"
 )
 
 # Load user-defined modules

@@ -1,5 +1,5 @@
 
-#' @title thinOccs
+#' @title poocs_thinOccs
 #' @description ..
 #'
 #' @details
@@ -26,7 +26,7 @@
 
 #' @export
 
-thinOccs <- function(occs, thinDist, logger=NULL) {
+poccs_thinOccs <- function(occs, thinDist, logger = NULL) {
   if (is.null(occs)) {
     logger %>% writeLog(type = 'error',
       "Before processing occurrences, obtain the data in component 1.")

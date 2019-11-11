@@ -1,5 +1,5 @@
 envs_userEnvs_module_ui <- function(id) {
-  ns <- NS(id)
+  ns <- shiny::NS(id)
   tagList(
     fileInput(ns("userEnvs"), label = "Input rasters", multiple = TRUE),
     checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE),

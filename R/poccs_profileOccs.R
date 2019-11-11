@@ -1,5 +1,5 @@
 #'
-#' #' @title profileOccs
+#' #' @title poccs_profileOccs
 #' #' @description ..
 #' #'
 #' #' @details
@@ -32,7 +32,7 @@
 #'
 #' #' @export
 #'
-#' profileOccs <- function(sp.name,
+#' poccs_profileOccs <- function(sp.name,
 #'                            sp.table,
 #'                            x.field,
 #'                            y.field,

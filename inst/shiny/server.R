@@ -363,14 +363,6 @@ function(input, output, session) {
     userBg()
   })
 
-  # # # # # # # # # # # # # # # # # # # # # # #
-  # module Draw Background Extent ####
-  # # # # # # # # # # # # # # # # # # # # # # #
-  observeEvent(input$goDrawBg, {
-    drawBg <- callModule(drawBgExtent_MOD, 'c4_drawBgExtent')
-    drawBg()
-  })
-
   # # # # # # # # # # # # # # # # # # # # # # # # #
   # module Background Mask and Sample Points ####
   # # # # # # # # # # # # # # # # # # # # # # # # #

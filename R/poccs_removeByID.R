@@ -1,5 +1,5 @@
 
-#' @title removeByID
+#' @title poccs_removeByID
 #' @description ..
 #'
 #' @details
@@ -26,7 +26,7 @@
 
 #' @export
 
-removeByID <- function(occs, removeID, logger = NULL) {
+poccs_removeByID <- function(occs, removeID, logger = NULL) {
   if (is.null(occs)) {
     logger %>% writeLog(type = 'error',
       "Before processing occurrences, obtain the data in component 1.")

@@ -102,8 +102,7 @@ tagList(
               choices = c(
                 insert_modules_options("penvs"),
                 "Select Study Region" = "bgSel",
-                "User-specified" = "bgUser",
-                "Draw polygon(**)" = "bgDraw")
+                "User-specified" = "bgUser")
             ),
             tags$hr(),
             insert_modules_ui("penvs"),
@@ -123,14 +122,7 @@ tagList(
               userBgExtent_UI('c4_userBgExtent'),
               actionButton("goUserBg", "Load")),
             conditionalPanel(
-              "input.penvsSel == 'bgDraw'",
-              uiTop(drawBgExtent_INFO),
-              span("Step 1:", class = "step"),
-              span("Draw Background Extent(**)", class = "stepText"), br(), br(),
-              drawBgExtent_UI('c4_drawBgExtent'),
-              actionButton("goDrawBg", "Create(**)")),
-            conditionalPanel(
-              "input.penvsSel == 'bgSel' | input.penvsSel == 'bgUser' | input.penvsSel == 'bgDraw'",
+              "input.penvsSel == 'bgSel' | input.penvsSel == 'bgUser'",
               tags$hr(),
               span("Step 2:", class = "step"),
               span("Sample Background Points", class = "stepText"), br(), br(),
@@ -146,10 +138,6 @@ tagList(
             conditionalPanel(
               "input.penvsSel == 'bgUser'",
               uiBottom(userBgExtent_INFO)
-            ),
-            conditionalPanel(
-              "input.penvsSel == 'bgDraw'",
-              uiBottom(drawBgExtent_INFO)
             )
           ),
           # SAMPLING BIAS ####

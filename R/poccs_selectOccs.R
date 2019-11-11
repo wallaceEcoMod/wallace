@@ -1,5 +1,5 @@
 
-#' @title selectOccs
+#' @title poccs_selectOccs
 #' @description ..
 #'
 #' @details
@@ -27,7 +27,7 @@
 
 #' @export
 
-selectOccs <- function(occs, polySelXY, polySelID = 1, logger = NULL) {
+poccs_selectOccs <- function(occs, polySelXY, polySelID = 1, logger = NULL) {
   if (is.null(occs)) {
     logger %>% writeLog(type = 'error',
       "Before processing occurrences, obtain the data in component 1.")
