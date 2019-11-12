@@ -1,8 +1,3 @@
----
-title: "penvs_bgUser"
-output: html_document
----
-
 ### **Module:** ***User-specified Study Region***
 
 **BACKGROUND**

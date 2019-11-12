@@ -101,8 +101,7 @@ tagList(
               "penvsSel", "Modules Available:",
               choices = c(
                 insert_modules_options("penvs"),
-                "Select Study Region" = "bgSel",
-                "User-specified" = "bgUser")
+                "Select Study Region" = "bgSel")
             ),
             tags$hr(),
             insert_modules_ui("penvs"),
@@ -115,14 +114,7 @@ tagList(
               actionButton("goBgExt", "Select"), br(), br()
             ),
             conditionalPanel(
-              "input.penvsSel == 'bgUser'",
-              uiTop(userBgExtent_INFO),
-              span("Step 1:", class = "step"),
-              span("Choose Background Extent", class = "stepText"), br(), br(),
-              userBgExtent_UI('c4_userBgExtent'),
-              actionButton("goUserBg", "Load")),
-            conditionalPanel(
-              "input.penvsSel == 'bgSel' | input.penvsSel == 'bgUser'",
+              "input.penvsSel == 'bgSel'",
               tags$hr(),
               span("Step 2:", class = "step"),
               span("Sample Background Points", class = "stepText"), br(), br(),
@@ -134,10 +126,6 @@ tagList(
             conditionalPanel(
               "input.penvsSel == 'bgSel'",
               uiBottom(bgExtent_INFO)
-            ),
-            conditionalPanel(
-              "input.penvsSel == 'bgUser'",
-              uiBottom(userBgExtent_INFO)
             )
           ),
           # SAMPLING BIAS ####

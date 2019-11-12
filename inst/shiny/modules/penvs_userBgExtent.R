@@ -1,15 +1,19 @@
-penvs_drawBgExtent_module_ui <- function(id) {
+penvs_userBgExtent_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
     span("Step 1:", class = "step"),
-    span("Draw Background Extent(**)", class = "stepText"), br(), br(),
-    "Draw a polygon and select buffer distance(**)", br(), br(),
-    tags$p(paste0('Buffer area in degrees (1 degree = ~111 km). Exact length',
-                  ' varies based on latitudinal position.')),
-    numericInput(ns("drawBgBuf"), label = "Study region buffer distance (degree)",
-                 value = 0, min = 0, step = 0.5),
+    span("Choose Background Extent", class = "stepText"), br(), br(),
+    fileInput(ns("userBgShp"),
+              label = paste0('Upload polygon in shapefile (.shp, .shx, .dbf) ',
+                             'or CSV file with field order (longitude, latitude)'),
+              accept = c(".csv", ".dbf", ".shx", ".shp"), multiple = TRUE),
+    tags$div(title = paste0('Buffer area in degrees (1 degree = ~111 km). Exact',
+                            ' length varies based on latitudinal position.'),
+             numericInput(ns("userBgBuf"),
+                          label = "Study region buffer distance (degree)",
+                          value = 0, min = 0, step = 0.5)),
     checkboxInput(ns("batch1"), label = strong("Batch"), value = FALSE),
-    actionButton(ns('goDrawBg'), "Create(**)"),
+    actionButton(ns("goUserBg"), "Load"),
     tags$hr(),
     span("Step 2:", class = "step"),
     span("Sample Background Points", class = "stepText"), br(), br(),
@@ -22,7 +26,8 @@ penvs_drawBgExtent_module_ui <- function(id) {
   )
 }
 
-penvs_drawBgExtent_module_server <- function(input, output, session, common) {
+penvs_userBgExtent_module_server <- function(input, output, session, common) {
+
   logger <- common$logger
   spp <- common$spp
   allSp <- common$allSp
@@ -31,46 +36,50 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
   envs <- common$envs
   bgExt <- common$bgExt
 
-  observeEvent(input$goDrawBg, {
-    # WARNING ####
+  observeEvent(input$goUserBg, {
+    # ERRORS ####
     if (is.null(envs())) {
       logger %>%
         writeLog(type = 'error',
                  'Environmental variables missing. Obtain them in component 3.')
       return()
     }
-    if (is.null(spp[[curSp()]]$polyExtXY)) {
-      logger %>% writeLog(
-        type = 'error',
-        paste0("The polygon has not been drawn and finished. Please use the ",
-               "draw toolbar on the left-hand of the map to complete ",
-               "the polygon.")
-      )
+    if (is.null(input$userBgShp)) {
+      logger %>%
+        writeLog(type = 'error',
+                 'Background extent files not uploaded.')
       return()
     }
     # FUNCTION CALL ####
-    drawBgExt <- penvs_drawBgExtent(spp[[curSp()]]$polyExtXY,
-                                    spp[[curSp()]]$polyExtID,
-                                    input$drawBgBuf,
-                                    spp[[curSp()]]$occs,
+    userBgExt <- penvs_userBgExtent(input$userBgShp$datapath,
+                                    input$userBgShp$name,
+                                    input$userBgBuf,
                                     logger)
 
     # loop over all species if batch is on
-    if (input$batch1 == TRUE) {
-      spLoop <- allSp()
-    } else {
-      spLoop <- curSp()
-    }
+    if (input$batch1 == TRUE) spLoop <- allSp() else spLoop <- curSp()
 
+    # PROCESSING ####
     for (sp in spLoop) {
       # LOAD INTO SPP ####
-      spp[[sp]]$procEnvs$bgExt <- drawBgExt
+      spp[[sp]]$procEnvs$bgExt <- userBgExt
 
       # METADATA ####
-      polyX <- printVecAsis(round(spp[[curSp()]]$polyExtXY[, 1], digits = 4))
-      polyY <- printVecAsis(round(spp[[curSp()]]$polyExtXY[, 2], digits = 4))
-      spp[[curSp()]]$rmm$code$wallaceSettings$drawExtPolyCoords <-
-        paste0('X: ', polyX, ', Y: ', polyY)
+      # get extensions of all input files
+      exts <- sapply(strsplit(input$userBgShp$name, '\\.'),
+                     FUN = function(x) x[2])
+      if ('csv' %in% exts) {
+        spp[[sp]]$rmm$code$wallaceSettings$userBgExt <- 'csv'
+        spp[[sp]]$rmm$code$wallaceSettings$userBgPath <- input$userBgShp$datapath
+      }
+      else if ('shp' %in% exts) {
+        spp[[sp]]$rmm$code$wallaceSettings$userBgExt <- 'shp'
+        # get index of .shp
+        i <- which(exts == 'shp')
+        shpName <- strsplit(input$userBgShp$name[i], '\\.')[[1]][1]
+        spp[[sp]]$rmm$code$wallaceSettings$userBgShpParams <-
+          list(dsn = input$userBgShp$datapath[i], layer = shpName)
+      }
     }
   })
 
@@ -100,8 +109,8 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
       req(bgPts)
       withProgress(message = paste0("Extracting background values for ",
                                     spName(sp), "..."), {
-        bgEnvsVals <- as.data.frame(raster::extract(bgMask, bgPts))
-      })
+                                      bgEnvsVals <- as.data.frame(raster::extract(bgMask, bgPts))
+                                    })
 
       if (sum(rowSums(is.na(raster::extract(bgMask, spp[[sp]]$occs[ , c("longitude", "latitude")])))) > 0) {
         logger %>%
@@ -110,7 +119,7 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
                           "values for ", spName(sp), ". This can sometimes ",
                           "happen for points on the margin of the study extent.",
                           " Please increase the buffer slightly to include them.")
-                   )
+          )
         return()
       }
 
@@ -129,10 +138,6 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
     }
   })
 
-  # output$result <- renderText({
-  #   # Result
-  # })
-
   # return(list(
   #   save = function() {
   #     # Save any values that should be saved when the current session is saved
@@ -141,30 +146,14 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
   #     # Load
   #   }
   # ))
+
   common$update_component(tab = "Map")
 }
 
-# penvs_drawBgExtent_module_result <- function(id) {
-#   ns <- NS(id)
-#
-#   # Result UI
-#   verbatimTextOutput(ns("result"))
-# }
-
-penvs_drawBgExtent_module_map <- function(map, common) {
+penvs_userBgExtent_module_map <- function(map, common) {
   spp <- common$spp
   curSp <- common$curSp
   occs <- common$occs
-
-  map %>% leaflet.extras::addDrawToolbar(
-    targetGroup = 'draw',
-    polylineOptions = FALSE,
-    rectangleOptions = FALSE,
-    circleOptions = FALSE,
-    markerOptions = FALSE,
-    circleMarkerOptions = FALSE,
-    editOptions = leaflet.extras::editToolbarOptions()
-  )
 
   if (is.null(spp[[curSp()]]$procEnvs$bgExt)) {
     map %>% clearAll() %>%
@@ -187,10 +176,12 @@ penvs_drawBgExtent_module_map <- function(map, common) {
         addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4, color = "gray",
                     group = 'bgShp')
     }
+    bb <- spp[[curSp()]]$procEnvs$bgExt@bbox
+    map %>% fitBounds(bb[1], bb[2], bb[3], bb[4])
   }
 }
 
-# penvs_drawBgExtent_module_rmd <- function(species) {
+# penvs_userBgExtent_module_rmd <- function(species) {
 #   # Variables used in the module's Rmd code
 #   list(
 #     module_knit = species$rmm$code$wallaceSettings$someFlag,

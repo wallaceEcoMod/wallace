@@ -355,14 +355,6 @@ function(input, output, session) {
     bgExt()
   })
 
-  # # # # # # # # # # # # # # # # # # # # # # #
-  # module Upload Background Extent ####
-  # # # # # # # # # # # # # # # # # # # # # # #
-  observeEvent(input$goUserBg, {
-    userBg <- callModule(userBgExtent_MOD, 'c4_userBgExtent')
-    userBg()
-  })
-
   # # # # # # # # # # # # # # # # # # # # # # # # #
   # module Background Mask and Sample Points ####
   # # # # # # # # # # # # # # # # # # # # # # # # #
