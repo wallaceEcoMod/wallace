@@ -1,8 +1,3 @@
----
-title: "penvs_bgSel"
-output: html_document
----
-
 ### **Module:** ***Select Study Region***
 
 **BACKGROUND**

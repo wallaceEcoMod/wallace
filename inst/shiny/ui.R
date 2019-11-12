@@ -99,34 +99,10 @@ tagList(
             h4("Process Environmental Data"),
             radioButtons(
               "penvsSel", "Modules Available:",
-              choices = c(
-                insert_modules_options("penvs"),
-                "Select Study Region" = "bgSel")
+              choices = insert_modules_options("penvs")
             ),
             tags$hr(),
-            insert_modules_ui("penvs"),
-            conditionalPanel(
-              "input.penvsSel == 'bgSel'",
-              uiTop(bgExtent_INFO),
-              span("Step 1:", class = "step"),
-              span("Choose Background Extent", class = "stepText"), br(), br(),
-              bgExtent_UI('c4_bgExtent_uiID'),
-              actionButton("goBgExt", "Select"), br(), br()
-            ),
-            conditionalPanel(
-              "input.penvsSel == 'bgSel'",
-              tags$hr(),
-              span("Step 2:", class = "step"),
-              span("Sample Background Points", class = "stepText"), br(), br(),
-              strong('Mask predictor rasters by background extent and sample background points'), br(), br(),
-              bgMskAndSamplePts_UI('c4_bgMskAndSamplePts'),
-              actionButton("goBgMask", "Sample")
-            ),
-            tags$hr(),
-            conditionalPanel(
-              "input.penvsSel == 'bgSel'",
-              uiBottom(bgExtent_INFO)
-            )
+            insert_modules_ui("penvs")
           ),
           # SAMPLING BIAS ####
           conditionalPanel(

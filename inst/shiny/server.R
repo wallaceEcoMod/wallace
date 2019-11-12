@@ -345,27 +345,6 @@ function(input, output, session) {
   ### COMPONENT: PROCESS ENVIRONMENTAL DATA ####
   ############################################## #
 
-  # # # # # # # # # # # # # # # # #
-  # module Background Extent ####
-  # # # # # # # # # # # # # # # # #
-
-  observeEvent(input$goBgExt, {
-    # initialize module
-    bgExt <- callModule(bgExtent_MOD, 'c4_bgExtent_uiID')
-    bgExt()
-  })
-
-  # # # # # # # # # # # # # # # # # # # # # # # # #
-  # module Background Mask and Sample Points ####
-  # # # # # # # # # # # # # # # # # # # # # # # # #
-
-  observeEvent(input$goBgMask, {
-    # stop if no background shape
-    req(bgExt())
-    bgMskPts <- callModule(bgMskAndSamplePts_MOD, 'c4_bgMskAndSamplePts')
-    bgMskPts()
-  })
-
   # # # # # # # # # # # # # # # # # #
   # PROCESS ENVS: other controls ####
   # # # # # # # # # # # # # # # # # #

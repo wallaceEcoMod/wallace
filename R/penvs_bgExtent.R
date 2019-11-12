@@ -31,7 +31,9 @@
 penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL) {
 
   if (nrow(occs) <= 2) {
-    logger %>% writeLog(type = 'error', 'Too few localities (<2) to create a background polygon.')
+    logger %>%
+      writeLog(type = 'error',
+               'Too few localities (<2) to create a background polygon.')
     return()
   }
 
@@ -39,7 +41,7 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL) {
   occs.xy <- occs[c('longitude', 'latitude')]
 
   # make spatial pts object of original occs and preserve origID
-  occs.sp <- sp::SpatialPointsDataFrame(occs.xy, data=occs['occID'])
+  occs.sp <- sp::SpatialPointsDataFrame(occs.xy, data = occs['occID'])
 
   # generate background extent - one grid cell is added to perimeter of each shape
   # to ensure cells of points on border are included
@@ -48,7 +50,8 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL) {
     xmax <- occs.sp@bbox[3]
     ymin <- occs.sp@bbox[2]
     ymax <- occs.sp@bbox[4]
-    bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin), ncol=2)
+    bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin),
+                 ncol = 2)
     bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(bb)), 1)))
     msg <- paste(em(spName(occs)), " study extent: bounding box.")
   } else if (bgSel == "minimum convex polygon") {
@@ -57,8 +60,9 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL) {
 
   } else if (bgSel == 'point buffers') {
     if (bgBuf == 0) {
-      logger %>% writeLog(type = 'error', 'Change buffer distance to positive
-                             or negative value.')
+      logger %>%
+      writeLog(type = 'error',
+               'Change buffer distance to positive or negative value.')
       return()
     }
     bgExt <- rgeos::gBuffer(occs.sp, width = bgBuf)
@@ -74,7 +78,8 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL) {
   }
 
   # make into SP data frame
-  bgExt <- sp::SpatialPolygonsDataFrame(bgExt, data = data.frame(x=1), match.ID = FALSE)
+  bgExt <- sp::SpatialPolygonsDataFrame(bgExt, data = data.frame(x = 1),
+                                        match.ID = FALSE)
 
   return(bgExt)
 }

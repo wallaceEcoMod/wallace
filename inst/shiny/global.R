@@ -34,6 +34,7 @@ base_module_configs <- c(
   "modules/poccs_selectOccs.yml",
   "modules/poccs_removeByID.yml",
   "modules/poccs_thinOccs.yml",
+  "modules/penvs_bgExtent.yml",
   "modules/penvs_drawBgExtent.yml",
   "modules/penvs_userBgExtent.yml"
 )
