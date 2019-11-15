@@ -29,17 +29,21 @@ envs_userEnvs_module_server <- function(input, output, session, common) {
     }
 
     userEnvs <- envs_userEnvs(rasPath = input$userEnvs$datapath,
-                            rasName = input$userEnvs$name)
+                              rasName = input$userEnvs$name)
 
     envs.global[["userEnvs"]] <- userEnvs
 
     # loop over all species if batch is on
-    if(input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
+    if (input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
 
-    for(sp in spLoop) {
+    for (sp in spLoop) {
       # get environmental variable values per occurrence record
-      withProgress(message = paste0("Extracting environmental values for occurrences of ", sp, "..."), {
-        occsEnvsVals <- as.data.frame(raster::extract(userEnvs, spp[[sp]]$occs[c('longitude', 'latitude')]))
+      withProgress(
+        message = paste0("Extracting environmental values for occurrences of ",
+                         sp, "..."), {
+        occsEnvsVals <-
+          as.data.frame(raster::extract(userEnvs,
+                                        spp[[sp]]$occs[c('longitude', 'latitude')]))
       })
       # remove occurrence records with NA environmental values
       spp[[sp]]$occs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, logger)

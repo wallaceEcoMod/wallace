@@ -98,7 +98,8 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
                                       bgEnvsVals <- as.data.frame(raster::extract(bgMask, bgPts))
                                     })
 
-      if (sum(rowSums(is.na(raster::extract(bgMask, spp[[sp]]$occs[ , c("longitude", "latitude")])))) > 0) {
+      if (sum(rowSums(is.na(raster::extract(bgMask, spp[[sp]]$occs[ ,
+                                            c("longitude", "latitude")])))) > 0) {
         logger %>%
           writeLog(type = "error",
                    paste0("One or more occurrence points have NULL raster ",

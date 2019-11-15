@@ -31,8 +31,9 @@
 #' @export
 
 #occs_queryDb <- function(spName, occDb, occNum, logger=NULL) {
-occs_queryDb <- function(spNames, occDb, occNum, doCitations = FALSE, gbifUser = NULL,
-                       gbifEmail = NULL, gbifPW = NULL, logger = NULL) {
+occs_queryDb <- function(spNames, occDb, occNum, doCitations = FALSE,
+                         gbifUser = NULL, gbifEmail = NULL, gbifPW = NULL,
+                         logger = NULL) {
 
   # get all species names
   spNames <- trimws(strsplit(spNames, ",")[[1]])
@@ -48,16 +49,18 @@ occs_queryDb <- function(spNames, occDb, occNum, doCitations = FALSE, gbifUser =
   namesSplit <- sapply(spNames, function(x) strsplit(x, " "))
   namesSplitCheck <- sapply(namesSplit, function(x) length(x) == 2)
   # if two names not entered, throw error and return
-  if(!all(namesSplitCheck)) {
-    logger %>% writeLog(type = 'error', 'Please input both genus and species names.')
+  if (!all(namesSplitCheck)) {
+    logger %>%
+      writeLog(type = 'error', 'Please input both genus and species names.')
     return()
   }
 
   occList <- list()
 
-  for(sp in spNames) {
+  for (sp in spNames) {
     # query database
-    smartProgress(logger, message = paste0("Querying ", occDb, " for ", sp, "..."),{
+    smartProgress(logger,
+                  message = paste0("Querying ", occDb, " for ", sp, "..."), {
       if (occDb == 'bison' | occDb == 'vertnet' | occDb == 'gbif') {
         q <- spocc::occ(sp, occDb, limit = occNum)
         # myOccCitations <- NULL
@@ -99,9 +102,10 @@ occs_queryDb <- function(spNames, occDb, occNum, doCitations = FALSE, gbifUser =
     })
 
     # if species not found, print message to log box and return
-    if(q[[occDb]]$meta$found == 0) {
-      logger %>% writeLog(type = 'error',
-                             'No records found for ', em(sp), '. Please check the spelling.')
+    if (q[[occDb]]$meta$found == 0) {
+      logger %>%
+        writeLog(type = 'error',
+                 'No records found for ', em(sp), '. Please check the spelling.')
       next
     }
     # extract occurrence tibbles
@@ -117,7 +121,7 @@ occs_queryDb <- function(spNames, occDb, occNum, doCitations = FALSE, gbifUser =
     # subset to just records with latitude and longitude
     occsXY <- occsOrig[!is.na(occsOrig$latitude) & !is.na(occsOrig$longitude),]
     # if no records with coordinates, throw warning
-    if(nrow(occsXY) == 0) {
+    if (nrow(occsXY) == 0) {
       logger %>% writeLog(type = 'warning',
                              'No records with coordinates found in ',
                              occDb, " for ", em(length(spNames)[sp]), ".")
@@ -201,10 +205,12 @@ occs_queryDb <- function(spNames, occDb, occNum, doCitations = FALSE, gbifUser =
     # get total number of records found in database
     totRows <- q[[occDb]]$meta$found
 
-    logger %>% writeLog(
-      'Total ', occDb, ' records for ', em(sp), ' returned [', nrow(occsOrig),
-      '] out of [', totRows, '] total (limit ', occNum, '). Records without coordinates removed [',
-      noCoordsRem, ']. Duplicated records removed [', dupsRem, ']. Remaining records [', nrow(occs), '].')
+    logger %>%
+      writeLog('Total ', occDb, ' records for ', em(sp), ' returned [',
+               nrow(occsOrig), '] out of [', totRows, '] total (limit ', occNum,
+               '). Records without coordinates removed [', noCoordsRem,
+               ']. Duplicated records removed [', dupsRem,
+               ']. Remaining records [', nrow(occs), '].')
     # put into list
     occList[[formatSpName(sp)]] <- list(orig = occsOrig, cleaned = occs)
   }

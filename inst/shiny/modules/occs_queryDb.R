@@ -48,14 +48,15 @@ occs_queryDb_module_server <- function(input, output, session, common) {
   observeEvent(input$goDbOccs, {
     # WARNING ####
     if (input$occsNum < 1) {
-      logger %>% writeLog(type = 'warning', "Enter a non-zero number of occurrences.")
+      logger %>% writeLog(type = 'warning',
+                          "Enter a non-zero number of occurrences.")
       return()
     }
 
     # FUNCTION CALL ####
     occsList <- occs_queryDb(input$spNames, input$occsDb, input$occsNum,
-                           input$doCitations, input$gbifUser, input$gbifEmail,
-                           input$gbifPW, logger)
+                             input$doCitations, input$gbifUser, input$gbifEmail,
+                             input$gbifPW, logger)
     req(occsList)
 
     for (sp in names(occsList)) {

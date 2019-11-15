@@ -12,14 +12,14 @@ function(input, output, session) {
     intro <- '***WELCOME TO WALLACE***'
     brk <- paste(rep('------', 14), collapse = '')
     expl <- 'Please find messages for the user in this log window.'
-    logInit <- paste(intro, brk, expl, brk, '', sep = '<br>')
+    logInit <- gsub('.{4}$', '', paste(intro, brk, expl, brk, '', sep = '<br>'))
     logInit
   }
-  shinyLogs <- reactiveVal(initLogMsg())
+  logger <- reactiveVal(initLogMsg())
 
   # Write out logs to the log Window
-  observeEvent(shinyLogs(), {
-    shinyjs::html(id = "logHeader", html = paste0(shinyLogs(), "<br>"), add = TRUE)
+  observeEvent(logger(), {
+    shinyjs::html(id = "logHeader", html = logger(), add = FALSE)
     shinyjs::js$scrollLogger()
   })
 
@@ -1239,7 +1239,7 @@ function(input, output, session) {
   # Create a data structure that holds variables and functions used by modules
   common = list(
     # Reactive variables to pass on to modules
-    logger = shinyLogs,
+    logger = logger,
     spp = spp,
     curSp = curSp,
     allSp = allSp,

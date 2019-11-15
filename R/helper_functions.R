@@ -52,9 +52,9 @@ writeSpp <- function(spp, sp, dir) {
 writeLog <- function(logger, ..., type = 'default') {
   if (is.null(logger)) {
     if (type == 'error') {
-      stop(paste0(..., collapse = ""), call.=FALSE)
+      stop(paste0(..., collapse = ""), call. = FALSE)
     } else if (type == 'warning') {
-      warning(paste0(..., collapse = ""), call.=FALSE)
+      warning(paste0(..., collapse = ""), call. = FALSE)
     } else {
       message(paste0(..., collapse = ""))
     }
@@ -66,8 +66,8 @@ writeLog <- function(logger, ..., type = 'default') {
     } else if (type == 'warning') {
       pre <- '> <font color="orange"><b>! WARNING</b></font> : '
     }
-    newEntries <- paste0(pre, ..., collapse = "")
-    logger(newEntries)
+    newEntries <- paste0('<br>', pre, ..., collapse = "")
+    logger(paste0(logger(), newEntries))
   } else {
     warning("Invalid logger type")
   }

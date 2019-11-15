@@ -17,20 +17,20 @@ poccs_thinOccs_module_ui <- function(id) {
 poccs_thinOccs_module_server <- function(input, output, session, common) {
 
   logger <- common$logger
-  occs <- common$occs
   spp <- common$spp
   curSp <- common$curSp
   allSp <- common$allSp
 
   observeEvent(input$goThinOccs, {
+
     # loop over all species if batch is on
     if (input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
 
     for (sp in spLoop) {
       # FUNCTION CALL ####
-      occs.thin <- poccs_thinOccs(occs(),
-                               input$thinDist,
-                               logger)
+      occs.thin <- poccs_thinOccs(spp[[sp]]$occs,
+                                  input$thinDist,
+                                  logger)
       req(occs.thin)
 
       # LOAD INTO SPP ####
