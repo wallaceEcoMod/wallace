@@ -4,8 +4,16 @@
 \alias{occs_queryDb}
 \title{Query online database for species occurrence records.}
 \usage{
-occs_queryDb(spNames, occDb, occNum, doCitations = FALSE,
-  gbifUser = NULL, gbifEmail = NULL, gbifPW = NULL, logger = NULL)
+occs_queryDb(
+  spNames,
+  occDb,
+  occNum,
+  doCitations = FALSE,
+  gbifUser = NULL,
+  gbifEmail = NULL,
+  gbifPW = NULL,
+  logger = NULL
+)
 }
 \arguments{
 \item{spNames}{character species Latin name, with format "Genus species"}

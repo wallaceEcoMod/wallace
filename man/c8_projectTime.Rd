@@ -4,8 +4,16 @@
 \alias{c8_projectTime}
 \title{c8_projectTim}
 \usage{
-c8_projectTime(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
-  shinyLogs = NULL)
+c8_projectTime(
+  evalOut,
+  curModel,
+  envs,
+  outputType,
+  alg,
+  clamp,
+  pjExt,
+  shinyLogs = NULL
+)
 }
 \arguments{
 \item{evalOut}{x}

@@ -36,7 +36,8 @@ base_module_configs <- c(
   "modules/poccs_thinOccs.yml",
   "modules/penvs_bgExtent.yml",
   "modules/penvs_drawBgExtent.yml",
-  "modules/penvs_userBgExtent.yml"
+  "modules/penvs_userBgExtent.yml",
+  "modules/espace_nicheOv.yml"
 )
 
 # Load user-defined modules

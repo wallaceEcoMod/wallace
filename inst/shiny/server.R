@@ -487,17 +487,6 @@ function(input, output, session) {
     updateSelectInput(session, "curSp", selected = curSp())
   })
 
-  # # # # # # # # # # # # # # #
-  # module Niche Overlap ####
-  # # # # # # # # # # # # # # #
-  nicheOv <- callModule(nicheOv_MOD, 'cEspace_nicheOv_uiID')
-  observeEvent(input$goNicheOv, {
-    # initialize module
-    nicheOv()
-    # UI CONTROLS
-    updateSelectInput(session, "curSp", selected = curSp())
-  })
-
   ################################################## #
   ### COMPONENT: PARTITION OCCURRENCE DATA ####
   ################################################# #

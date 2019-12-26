@@ -4,8 +4,15 @@
 \alias{c5_partitionOccs}
 \title{c5_partitionOccs}
 \usage{
-c5_partitionOccs(occs, bg, method, kfolds = NULL, bgMask = NULL,
-  aggFact = NULL, shinyLogs = NULL)
+c5_partitionOccs(
+  occs,
+  bg,
+  method,
+  kfolds = NULL,
+  bgMask = NULL,
+  aggFact = NULL,
+  shinyLogs = NULL
+)
 }
 \arguments{
 \item{occs}{x}

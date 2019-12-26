@@ -1,0 +1,5 @@
+component: "espace"
+short_name: "Niche Overlap"
+long_name: "Niche Overlap"
+authors: "Olivier Broennimann, Jamie Kass"
+package: [ecospat]

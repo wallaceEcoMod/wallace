@@ -4,8 +4,13 @@
 \alias{envs_ecoClimate}
 \title{download ecoClimate variables. see www.ecoclimate.org}
 \usage{
-envs_ecoClimate(bcAOGCM, bcScenario, ecoClimSelChoice = FALSE,
-  ecoClimSel, logger = NULL)
+envs_ecoClimate(
+  bcAOGCM,
+  bcScenario,
+  ecoClimSelChoice = FALSE,
+  ecoClimSel,
+  logger = NULL
+)
 }
 \arguments{
 \item{bcAOGCM}{name of the Atmospheric and Oceanic Global Circulation Model.

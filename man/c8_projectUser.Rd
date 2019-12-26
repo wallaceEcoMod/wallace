@@ -4,8 +4,16 @@
 \alias{c8_projectUser}
 \title{c8_projectUser}
 \usage{
-c8_projectUser(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
-  shinyLogs = NULL)
+c8_projectUser(
+  evalOut,
+  curModel,
+  envs,
+  outputType,
+  alg,
+  clamp,
+  pjExt,
+  shinyLogs = NULL
+)
 }
 \arguments{
 \item{evalOut}{x}

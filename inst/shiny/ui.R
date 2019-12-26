@@ -158,8 +158,7 @@ tagList(
               "espaceSel", "Modules Available:",
               choices = c(insert_modules_options("espace"),
                 "Principal Components Analysis" = "pca",
-                "Occurrence Density Grid" = "occDens",
-                "Niche Overlap" = "nicheOv")
+                "Occurrence Density Grid" = "occDens")
             ),
             tags$hr(),
             insert_modules_ui("espace"),
@@ -175,12 +174,6 @@ tagList(
               occDens_controlsUI('cEspace_occDens_uiID'),
               actionButton("goOccDens", "Run")
             ),
-            conditionalPanel(
-              "input.espaceSel == 'nicheOv'",
-              uiTop(espace_nicheOv_INFO),
-              nicheOv_controlsUI('cEspace_nicheOv_uiID'),
-              actionButton("goNicheOv", "Run")
-            ),
             tags$hr(),
             conditionalPanel(
               "input.espaceSel == 'pca'",
@@ -189,10 +182,6 @@ tagList(
             conditionalPanel(
               "input.espaceSel == 'occDens'",
               uiBottom(espace_occDens_INFO)
-            ),
-            conditionalPanel(
-              "input.espaceSel == 'nicheOv'",
-              uiBottom(espace_nicheOv_INFO)
             )
           ),
           # PARTITION ####

@@ -4,8 +4,16 @@
 \alias{c8_projectArea}
 \title{c8_projectArea}
 \usage{
-c8_projectArea(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
-  shinyLogs = NULL)
+c8_projectArea(
+  evalOut,
+  curModel,
+  envs,
+  outputType,
+  alg,
+  clamp,
+  pjExt,
+  shinyLogs = NULL
+)
 }
 \arguments{
 \item{evalOut}{x}
