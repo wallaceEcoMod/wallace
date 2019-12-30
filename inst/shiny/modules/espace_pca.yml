@@ -1,0 +1,5 @@
+component: "espace"
+short_name: "Environmental Ordination"
+long_name: "Principal Components Analysis"
+authors: "Olivier Broennimann, Gonzalo E. Pinilla-Buitrago, Jamie M. Kass"
+package: [ade4]

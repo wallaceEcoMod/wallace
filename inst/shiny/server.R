@@ -459,23 +459,6 @@ function(input, output, session) {
   ### COMPONENT: ESPACE ####
   ############################################## #
 
-  # # # # # # # # # # # # # # # # # # # # # # #
-  # module Principle Components Analysis ####
-  # # # # # # # # # # # # # # # # # # # # # # #
-  pca <- callModule(pca_MOD, 'cEspace_PCA_uiID', .curSp = curSp)
-
-  observeEvent(input$goPCA, {
-    # stop if no environmental variables
-    # if(length(curSp()) != 2) {
-    #   shinyLogs %>% writeLog(type = 'error', "Please select two species.")
-    # }
-    # initialize module
-    pca()
-    # UI CONTROLS
-    updateTabsetPanel(session, 'main', selected = 'Results')
-    updateSelectInput(session, "curSp", selected = curSp())
-  })
-
   # # # # # # # # # # # # # # # # # # # #
   # module Occurrence Density Grids ####
   # # # # # # # # # # # # # # # # # # # #
