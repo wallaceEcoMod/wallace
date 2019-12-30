@@ -28,7 +28,7 @@
 # linked in the documentation.
 #' @export
 
-cESpace_nicheOv <- function(z1, z2, iter = 100, equivalency = FALSE,
+espace_nicheOv <- function(z1, z2, iter = 100, equivalency = FALSE,
                             similarity = TRUE, logger = NULL) {
   nicheOv <- list()
 

@@ -53,37 +53,54 @@ espace_nicheOv_module_server <- function(input, output, session, common) {
   })
 
   output$nicheOvText <- renderUI({
+    if (length(curSp()) == 2) {
+      mSp <- paste(curSp(), collapse = ".")
+      sp1 <- curSp()[1]
+      sp2 <- curSp()[2]
+    } else {
+      mSp <- curSp()
+    }
+    req(spp[[mSp]]$nicheOv)
     HTML(
       paste(
-        "Overlap D = ", round(nicheOv$overlap$D, 2),
-        "\n",
-        "Sp1 only :", round(nicheOv$USE[3], 2),
-        " | Sp2 only :", round(nicheOv$USE[1], 2),
-        " | Both :", round(nicheOv$USE[2], 2)
+        "Overlap D = ", round(spp[[mSp]]$nicheOv$overlap$D, 2),
+        " | Sp1 only :", round(spp[[mSp]]$nicheOv$USE[3], 2),
+        " | Sp2 only :", round(spp[[mSp]]$nicheOv$USE[1], 2),
+        " | Both :", round(spp[[mSp]]$nicheOv$USE[2], 2)
       )
     )
   })
 
   output$nicheOvPlot <- renderPlot({
-    #plots
+    if (length(curSp()) == 2) {
+      mSp <- paste(curSp(), collapse = ".")
+      sp1 <- curSp()[1]
+      sp2 <- curSp()[2]
+    } else {
+      mSp <- curSp()
+    }
+    req(spp[[mSp]]$nicheOv)
+    # plots
     layout(matrix(c(1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3), 4, 3, byrow = F))
-    #layout.show(3)
+    # layout.show(3)
 
     ecospat::ecospat.plot.niche.dyn(
-      z1,
-      z2,
+      spp[[mSp]]$occDens[[sp1]],
+      spp[[mSp]]$occDens[[sp2]],
       0.5,
-      title = mspName,
+      title = mSp,
       colz1 = "blue",
       colz2 = "red",
       colinter = "purple",
       colZ1 = "blue",
       colZ2 = "red"
     )
-    if (!is.null(nicheOv$equiv))
-      ecospat::ecospat.plot.overlap.test(nicheOv$equiv, "D", "Equivalency test")
-    if (!is.null(nicheOv$simil))
-      ecospat::ecospat.plot.overlap.test(nicheOv$simil, "D", "Similarity test")
+    if (!is.null(spp[[mSp]]$nicheOv$equiv))
+      ecospat::ecospat.plot.overlap.test(spp[[mSp]]$nicheOv$equiv,
+                                         "D", "Equivalency test")
+    if (!is.null(spp[[mSp]]$nicheOv$simil))
+      ecospat::ecospat.plot.overlap.test(spp[[mSp]]$nicheOv$simil,
+                                         "D", "Similarity test")
   })
 
   return(list(
