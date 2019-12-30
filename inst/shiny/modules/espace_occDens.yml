@@ -1,0 +1,5 @@
+component: "espace"
+short_name: "Occurrence Density Grid"
+long_name: "Occurrence Density Grid"
+authors: "Olivier Broennimann, Gonzalo E. Pinilla-Buitrago, Jamie M. Kass"
+package: [ecospat, adehabitatHR]

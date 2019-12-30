@@ -38,6 +38,7 @@ base_module_configs <- c(
   "modules/penvs_drawBgExtent.yml",
   "modules/penvs_userBgExtent.yml",
   "modules/espace_pca.yml",
+  "modules/espace_occDens.yml",
   "modules/espace_nicheOv.yml"
 )
 

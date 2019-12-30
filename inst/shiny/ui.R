@@ -156,22 +156,10 @@ tagList(
             h4("Environmental Space"),
             radioButtons(
               "espaceSel", "Modules Available:",
-              choices = c(insert_modules_options("espace"),
-                "Occurrence Density Grid" = "occDens")
+              choices = insert_modules_options("espace")
             ),
             tags$hr(),
-            insert_modules_ui("espace"),
-            conditionalPanel(
-              "input.espaceSel == 'occDens'",
-              uiTop(espace_occDens_INFO),
-              occDens_controlsUI('cEspace_occDens_uiID'),
-              actionButton("goOccDens", "Run")
-            ),
-            tags$hr(),
-            conditionalPanel(
-              "input.espaceSel == 'occDens'",
-              uiBottom(espace_occDens_INFO)
-            )
+            insert_modules_ui("espace")
           ),
           # PARTITION ####
           conditionalPanel(
@@ -493,19 +481,7 @@ tagList(
               conditionalPanel(
                 "input.tabs == 'vis' && input.visSel == 'maxentEval' && input.modelSel == 'Maxent'",
                 imageOutput('maxentEvalPlot')
-              ),
-              # conditionalPanel(
-              #   "input.tabs == 'espace' && input.espaceSel == 'pca'",
-              #   pca_resultsUI("cEspace_PCA_uiID")
-              # ),
-              # conditionalPanel(
-              #   "input.tabs == 'espace' && input.espaceSel == 'occDens'",
-              #   occDens_resultsUI("cEspace_occDens_uiID")
-              # ),
-              # conditionalPanel(
-              #   "input.tabs == 'espace' && input.espaceSel == 'nicheOv'",
-              #   nicheOv_resultsUI("cEspace_nicheOv_uiID")
-              # )
+              )
             ),
             tabPanel(
               'Lambdas',

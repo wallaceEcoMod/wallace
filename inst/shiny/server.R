@@ -459,16 +459,6 @@ function(input, output, session) {
   ### COMPONENT: ESPACE ####
   ############################################## #
 
-  # # # # # # # # # # # # # # # # # # # #
-  # module Occurrence Density Grids ####
-  # # # # # # # # # # # # # # # # # # # #
-  occDens <- callModule(occDens_MOD, 'cEspace_occDens_uiID')
-  observeEvent(input$goOccDens, {
-    # initialize module
-    occDens()
-    # UI CONTROLS
-    updateSelectInput(session, "curSp", selected = curSp())
-  })
 
   ################################################## #
   ### COMPONENT: PARTITION OCCURRENCE DATA ####
