@@ -1,5 +1,6 @@
-#' \code{runMaxent} returns a formatted tibble of species occurrences with a selection of appropriate fields.
-#' @title Run Maxent
+#' \code{runMaxent} returns a formatted tibble of species occurrences with a
+#' selection of appropriate fields.
+#' @title model_maxent
 #' @description ..
 #'
 #' @details
@@ -13,14 +14,14 @@
 #' @param rms x
 #' @param rmsStep x
 #' @param fcs x
-#' @param shinyLogs x
+#' @param logger x
 # @keywords
 #'
 # @examples
 #'
 #'
 # @return
-#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+#' @author Jamie M. Kass <jkass@@gradcenter.cuny.edu>
 # @note
 
 # @seealso
@@ -28,26 +29,26 @@
 # @aliases - a list of additional topic names that will be mapped to
 # this documentation when the user looks them up from the command
 # line.
-# @family - a family name. All functions that have the same family tag will be linked in the documentation.
+# @family - a family name. All functions that have the same family tag will be
+# linked in the documentation.
 #' @export
 
-runMaxent <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, clampSel,
-                      algMaxent, catEnvs, shinyLogs = NULL) {
+model_maxent <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
+                         clampSel, algMaxent, catEnvs, logger = NULL) {
   if (is.null(occsGrp)) {
-    shinyLogs %>%
-      writeLog(type = 'error',
-               paste0("Before building a model, please partition ",
-                      "occurrences for cross-validation.")
-               )
+    logger %>% writeLog(
+      type = 'error',
+      "Before building a model, please partition occurrences for cross-validation."
+    )
     return()
   }
 
   # if maxent.jar selected check for jar file and whether rJava can be loaded
   if (algMaxent == "maxent.jar") {
     # error for no maxent.jar in dismo directory
-    jar <- paste(system.file(package="dismo"), "/java/maxent.jar", sep='')
+    jar <- paste(system.file(package = "dismo"), "/java/maxent.jar", sep = '')
     if(!file.exists(jar)) {
-      shinyLogs %>%
+      logger %>%
         writeLog(
           type = 'error',
           "To use Maxent, make sure you download, ", strong("maxent.jar"),
@@ -55,20 +56,19 @@ runMaxent <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, clampS
           a("AMNH Maxent webpage",
             href = "http://biodiversityinformatics.amnh.org/open_source/maxent/",
             target = "_blank"),
-          " and place it in this directory:", br(), em(jar))
+            " and place it in this directory:", br(), em(jar))
       return()
     }
 
     if(!require('rJava')) {
-      shinyLogs %>%
-        writeLog(
-          type = "error",
-          paste0('Package rJava cannot load. Please download the latest version of ',
-                 'Java, and make sure it is the correct version (e.g. 64-bit for a ',
-                 '64-bit system). After installing, try "library(rJava)". If it ',
-                 'loads properly, restart Wallace and try again. If it does not, ',
-                 'please consult www.github.com/wallaceecomod/wallace for more ',
-                 'tips on getting rJava to work.'))
+      logger %>% writeLog(
+        type = "error",
+        paste0('Package rJava cannot load. Please download the latest version of ',
+               'Java, and make sure it is the correct version (e.g. 64-bit for a ',
+               '64-bit system). After installing, try "library(rJava)". If it ',
+               'loads properly, restart Wallace and try again. If it does not, ',
+               'please consult www.github.com/wallaceecomod/wallace for more ',
+               'tips on getting rJava to work.'))
       return()
     }
   }
@@ -76,7 +76,7 @@ runMaxent <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, clampS
   # define the vector of RMs to input
   rms.interval <- seq(rms[1], rms[2], rmsStep)
   # create the Progress Bar object for ENMeval
-  if (!is.null(shinyLogs)) {
+  if (!is.null(logger)) {
     progress <- shiny::Progress$new()
     progress$set(message = paste0("Building/Evaluating ENMs for ",
                                   spName(occs), "..."), value = 0)
@@ -108,8 +108,8 @@ runMaxent <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, clampS
   endTxt <- paste(", using", algMaxent, "with clamping",
                   ifelse(clampSel, "on.", "off."))
 
-  shinyLogs %>% writeLog("Maxent ran successfully for ", em(spName(occs)), " and
-                         output evaluation results for ", nrow(e@results), " models",
-                         endTxt)
+  logger %>% writeLog(
+    "Maxent ran successfully for ", em(spName(occs)), " and output evaluation ",
+    "results for ", nrow(e@results), " models", endTxt)
   return(e)
 }

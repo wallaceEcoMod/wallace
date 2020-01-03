@@ -483,39 +483,6 @@ function(input, output, session) {
   ### COMPONENT: MODEL ####
   ######################### #
 
-  # # # # # # # # # # #
-  # module Maxent ####
-  # # # # # # # # # # #
-
-  mod.maxent <- callModule(runMaxent_MOD, 'runMaxent_uiID')
-  observeEvent(input$goMaxent, {
-    mod.maxent()
-    # make sure the results were entered before proceeding
-    req(evalOut())
-    # switch to Results tab
-    updateTabsetPanel(session, 'main', selected = 'Results')
-    # customize visualizations for maxent
-    updateRadioButtons(session, "visSel",
-                       choices = list("Maxent Evaluation Plots" = 'maxentEval',
-                                      "Plot Response Curves" = 'response',
-                                      "Map Prediction" = 'mapPreds'))
-  })
-
-  # # # # # # # # # # # #
-  # module BIOCLIM ####
-  # # # # # # # # # # # #
-  observeEvent(input$goBIOCLIM, {
-    mod.bioclim <- callModule(runBIOCLIM_MOD, 'runBIOCLIM_uiID')
-    mod.bioclim()
-    # make sure the results were entered before proceeding
-    req(evalOut())
-    # switch to Results tab
-    updateTabsetPanel(session, 'main', selected = 'Results')
-    # update radio buttons for Visualization component
-    updateRadioButtons(session, "visSel", choices = list("BIOCLIM Envelope Plots" = 'bioclimPlot',
-                                                         "Map Prediction" = 'mapPreds'))
-  })
-
   # # # # # # # # # # # # # # # # # #
   # MODEL: other controls ####
   # # # # # # # # # # # # # # # # # #

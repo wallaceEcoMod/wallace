@@ -170,37 +170,16 @@ tagList(
               choices = insert_modules_options("part")
             ),
             tags$hr(),
-            insert_modules_ui("part"),
+            insert_modules_ui("part")
           ),
           # MODEL ####
           conditionalPanel(
             "input.tabs == 'model'",
             h4("Build and Evaluate Niche Model"),
-            radioButtons(
-              "modelSel", "Modules Available:",
-              choices = c(
-                "Maxent",
-                insert_modules_options("model")
-              ),
-              selected = "Maxent" # Check default (no selected)
-            ),
+            radioButtons("modelSel", "Modules Available:",
+              choices = insert_modules_options("model")),
             tags$hr(),
-            conditionalPanel(
-              "input.modelSel == 'Maxent'",
-              uiTop(runMaxent_INFO),
-              htmlOutput('maxentJar'), br(),
-              "(", HTML("<font color='blue'><b>NOTE</b></font>"),
-              ": see module guidance for troubleshooting tips if you are experiencing problems.)",
-              tags$hr(),
-              runMaxent_UI('runMaxent_uiID'),
-              actionButton('goMaxent', 'Run')
-            ),
-            insert_modules_ui("model"),
-            tags$hr(),
-            conditionalPanel(
-              "input.modelSel == 'Maxent'",
-              uiBottom(runMaxent_INFO)
-            )
+            insert_modules_ui("model")
           ),
           # VISUALIZE ####
           conditionalPanel(

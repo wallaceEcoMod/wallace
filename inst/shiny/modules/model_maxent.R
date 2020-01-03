@@ -1,7 +1,10 @@
-
-runMaxent_UI <- function(id) {
-  ns <- NS(id)
+model_maxent_module_ui <- function(id) {
+  ns <- shiny::NS(id)
   tagList(
+    htmlOutput('maxentJar'), br(), "(",
+    HTML("<font color='blue'><b>NOTE</b></font>"),
+    ": see module guidance for troubleshooting tips if you are experiencing problems.)",
+    tags$hr(),
     strong("Select algorithm"), br(),
     tags$div(title = 'text',
              radioButtons(ns("algMaxent"), label = '',
@@ -45,11 +48,18 @@ runMaxent_UI <- function(id) {
     tags$div(title = 'Clamp model predictions?',
              selectInput(ns("clamp"), label = '',
                          choices = list("", "TRUE", "FALSE"))),
-    checkboxInput(ns("batch"), label = strong("Batch"), value = T) # Check default (value = FALSE)
+    checkboxInput(ns("batch"), label = strong("Batch"), value = T), # Check default (value = FALSE)
+    actionButton(ns("goMaxent"), "Run")
   )
 }
 
-runMaxent_MOD <- function(input, output, session) {
+model_maxent_module_server <- function(input, output, session, common) {
+
+  allSp <- common$allSp
+  curSp <- common$curSp
+  spp <- common$spp
+  logger <- common$logger
+
   observe({
     if(input$algMaxent == "maxnet") {
       updateSelectInput(session, "clamp", selected = "TRUE") # Check default (selected = "")
@@ -60,14 +70,13 @@ runMaxent_MOD <- function(input, output, session) {
     }
   })
 
-  reactive({
-
+  observeEvent(input$goMaxent, {
     if(is.null(input$fcs)) {
-      shinyLogs %>% writeLog(type = 'error', "No feature classes selected.")
+      logger %>% writeLog(type = 'error', "No feature classes selected.")
       return()
     }
     if(input$clamp == "") {
-      shinyLogs %>% writeLog(type = 'error', "Please specify clamping setting.")
+      logger %>% writeLog(type = 'error', "Please specify clamping setting.")
       return()
     }
 
@@ -78,9 +87,9 @@ runMaxent_MOD <- function(input, output, session) {
     for(sp in spLoop) {
       # ERRORS ####
       if (is.null(spp[[sp]]$occs$partition)) {
-        shinyLogs %>% writeLog(type = 'error', "Before building a model, please
+        logger %>% writeLog(type = 'error', "Before building a model, please
                                 partition occurrences for cross-validation for ",
-                                spName(spp[[sp]]), ".")
+                            spName(spp[[sp]]), ".")
         return()
       }
 
@@ -91,18 +100,18 @@ runMaxent_MOD <- function(input, output, session) {
         catEnvs <- selCatEnvs()
       }
       # FUNCTION CALL ####
-      res.maxent <- runMaxent(spp[[sp]]$occs,
-                              spp[[sp]]$bg,
-                              spp[[sp]]$occs$partition,
-                              spp[[sp]]$bg$partition,
-                              spp[[sp]]$procEnvs$bgMask,
-                              input$rms,
-                              input$rmsStep,
-                              input$fcs,
-                              input$clamp,
-                              input$algMaxent,
-                              catEnvs,
-                              shinyLogs)
+      res.maxent <- model_maxent(spp[[sp]]$occs,
+                                 spp[[sp]]$bg,
+                                 spp[[sp]]$occs$partition,
+                                 spp[[sp]]$bg$partition,
+                                 spp[[sp]]$procEnvs$bgMask,
+                                 input$rms,
+                                 input$rmsStep,
+                                 input$fcs,
+                                 input$clamp,
+                                 input$algMaxent,
+                                 catEnvs,
+                                 logger)
       req(res.maxent)
 
       # LOAD INTO SPP ####
@@ -123,13 +132,39 @@ runMaxent_MOD <- function(input, output, session) {
         ver <- paste("maxnet", packageVersion('maxnet'))
       }
       spp[[sp]]$rmm$model$maxent$algorithmNotes <- ver
-
     }
+    common$update_component(tab = "Results")
+    common$remove_module(component = "vis", module = "vis_bioclimPlot")
+})
+
+  output$maxentPrint <- renderPrint({
+    req(spp[[curSp()]]$evalOut)
+    spp[[curSp()]]$evalOut
   })
+
+  return(list(
+    save = function() {
+      # Save any values that should be saved when the current session is saved
+    },
+    load = function(state) {
+      # Load
+    }
+  ))
+
 }
 
-runMaxent_INFO <-
-  infoGenerator(modName = "Maxent",
-                modAuts = paste0("Jamie M. Kass, Robert Muscarella, Bruno Vilela, ',
-                                 'Gonzalo E. Pinilla-Buitrago, Robert P. Anderson"),
-                pkgName = c("ENMeval", "dismo", "maxnet"))
+model_maxent_module_result <- function(id) {
+  ns <- NS(id)
+  # Result UI
+  verbatimTextOutput(ns("maxentPrint"))
+}
+
+model_maxent_module_rmd <- function(species) {
+  # Variables used in the module's Rmd code
+  list(
+    module_knit = species$rmm$code$wallaceSettings$someFlag,
+    var1 = species$rmm$code$wallaceSettings$someSetting1,
+    var2 = species$rmm$code$wallaceSettings$someSetting2
+  )
+}
+

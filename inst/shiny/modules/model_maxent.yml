@@ -1,0 +1,5 @@
+component: "model"
+short_name: "Maxent"
+long_name: "Maxent"
+authors: "Jamie M. Kass, Robert Muscarella, Bruno Vilela, Gonzalo E. Pinilla-Buitrago, Robert P. Anderson"
+package: [ENMeval, dismo, maxnet]

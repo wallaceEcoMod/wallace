@@ -1,8 +1,3 @@
----
-title: "model_Maxent"
-output: html_document
----
-
 ### **Module:** ***Maxent***
 
 **BACKGROUND**
