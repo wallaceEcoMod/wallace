@@ -40,7 +40,8 @@ base_module_configs <- c(
   "modules/espace_pca.yml",
   "modules/espace_occDens.yml",
   "modules/espace_nicheOv.yml",
-  "modules/part_nonSpat.yml"
+  "modules/part_nonSpat.yml",
+  "modules/part_spat.yml"
 )
 
 # Load user-defined modules

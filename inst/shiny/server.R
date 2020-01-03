@@ -464,14 +464,6 @@ function(input, output, session) {
   ### COMPONENT: PARTITION OCCURRENCE DATA ####
   ################################################# #
 
-  # # # # # # # # # # # # # # # # # # # # # # #
-  # module Spatial Occurrence Partitions ####
-  # # # # # # # # # # # # # # # # # # # # # # #
-  partitionSpat <- callModule(partitionSpat_MOD, 'cParts_partitionSpat_uiID')
-  observeEvent(input$goPartitionSpat, {
-    partitionSpat()
-  })
-
   # download for partitioned occurrence records csv
   output$dlPart <- downloadHandler(
     filename = function() paste0(formatSpName(curSp()), "_partitioned_occs.csv"),

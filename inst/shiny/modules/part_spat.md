@@ -1,8 +1,3 @@
----
-title: "part_sp"
-output: html_document
----
-
 ### **Module:** ***Spatial Partition***
 
 **BACKGROUND**

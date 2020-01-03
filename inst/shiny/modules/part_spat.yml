@@ -1,0 +1,5 @@
+component: "part"
+short_name: "Spatial Partition"
+long_name: "Spatial Partition"
+authors: "Jamie M. Kass, Bruno Vilela, Robert P. Anderson"
+package: [ENMeval]
