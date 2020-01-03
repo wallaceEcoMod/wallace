@@ -167,10 +167,8 @@ tagList(
             h4("Partition Occurrence Data"),
             radioButtons(
               "partSel", "Modules Available:",
-              choices = c(
-                insert_modules_options("part"),
-                "Non-spatial Partition" = 'nsp',
-                "Spatial Partition" = 'sp'),
+              choices = c(insert_modules_options("part"),
+                          "Spatial Partition" = 'sp'),
               selected = 'sp' # Check default (no selected)
             ),
             tags$hr(),
@@ -180,20 +178,11 @@ tagList(
               uiTop(partitionSpat_INFO),
               partitionSpat_UI('cParts_partitionSpat_uiID'),
               actionButton("goPartitionSpat", "Partition")),
-            conditionalPanel(
-              "input.partSel == 'nsp'",
-              uiTop(partitionNonSpat_INFO),
-              partitionNonSpat_UI('cParts_partitionNonSpat_uiID'),
-              actionButton("goPartitionNonSpat", "Partition")),
             tags$hr(),
             conditionalPanel(
               "input.partSel == 'sp'",
               uiBottom(partitionSpat_INFO)
             ),
-            conditionalPanel(
-              "input.partSel == 'nsp'",
-              uiBottom(partitionNonSpat_INFO)
-            )
           ),
           # MODEL ####
           conditionalPanel(

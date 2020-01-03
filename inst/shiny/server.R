@@ -464,14 +464,6 @@ function(input, output, session) {
   ### COMPONENT: PARTITION OCCURRENCE DATA ####
   ################################################# #
 
-  # # # # # # # # # # # # # # # # # # # # # # # # #
-  # module Non-spatial Occurrence Partitions ####
-  # # # # # # # # # # # # # # # # # # # # # # # # #
-  partitionNonSpat <- callModule(partitionNonSpat_MOD, 'cParts_partitionNonSpat_uiID')
-  observeEvent(input$goPartitionNonSpat, {
-    partitionNonSpat()
-  })
-
   # # # # # # # # # # # # # # # # # # # # # # #
   # module Spatial Occurrence Partitions ####
   # # # # # # # # # # # # # # # # # # # # # # #

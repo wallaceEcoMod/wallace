@@ -1,8 +1,3 @@
----
-title: "part_nsp"
-output: html_document
----
-
 ### **Module:** ***Non-spatial Partition***
 
 **BACKGROUND**
