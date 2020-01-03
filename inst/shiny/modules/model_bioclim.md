@@ -1,8 +1,3 @@
----
-title: "comp6_bioclim"
-output: html_document
----
-
 ### **Module:** ***BIOCLIM***
 
 **BACKGROUND**

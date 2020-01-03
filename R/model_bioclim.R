@@ -1,5 +1,5 @@
 
-#' @title runBIOCLIM 
+#' @title model_bioclim
 #' @description ..
 #'
 #' @details
@@ -8,14 +8,14 @@
 #' @param occs x
 #' @param bg x
 #' @param bgMask x
-#' @param shinyLogs x
+#' @param logger x
 # @keywords
 #'
 # @examples
 #'
 #'
-# @return 
-#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+# @return
+#' @author Jamie M. Kass <jkass@@gradcenter.cuny.edu>
 # @note
 
 # @seealso
@@ -27,18 +27,18 @@
 
 #' @export
 
-runBIOCLIM <- function(occs, bg, occsGrp, bgGrp, bgMsk, shinyLogs = NULL) {
-  
+model_bioclim <- function(occs, bg, occsGrp, bgGrp, bgMsk, logger = NULL) {
+
   # get just coordinates
   occs.xy <- occs %>% dplyr::select(longitude, latitude)
   bg.xy <- bg %>% dplyr::select(longitude, latitude)
-  
-  e <- ENMeval::ENMevaluate(occs = occs.xy, envs = bgMsk, bg = bg.xy, 
-                            mod.name = "bioclim", partitions = "user", 
+
+  e <- ENMeval::ENMevaluate(occs = occs.xy, envs = bgMsk, bg = bg.xy,
+                            mod.name = "bioclim", partition = "user",
                             occ.grp = occsGrp, bg.grp = bgGrp)
-  
-  shinyLogs %>% writeLog("BIOCLIM ran successfully for ", em(spName(occs)), 
-                         " and output evaluation results.")
-  
+
+  logger %>% writeLog("BIOCLIM ran successfully for ", em(spName(occs)),
+                      " and output evaluation results.")
+
   return(e)
 }

@@ -179,7 +179,7 @@ tagList(
             radioButtons(
               "modelSel", "Modules Available:",
               choices = c(
-                "BIOCLIM", "Maxent",
+                "Maxent",
                 insert_modules_options("model")
               ),
               selected = "Maxent" # Check default (no selected)
@@ -195,21 +195,11 @@ tagList(
               runMaxent_UI('runMaxent_uiID'),
               actionButton('goMaxent', 'Run')
             ),
-            conditionalPanel(
-              "input.modelSel == 'BIOCLIM'",
-              uiTop(runBIOCLIM_INFO),
-              runBIOCLIM_UI('runBIOCLIM_uiID'),
-              actionButton('goBIOCLIM', 'Run')
-            ),
             insert_modules_ui("model"),
             tags$hr(),
             conditionalPanel(
               "input.modelSel == 'Maxent'",
               uiBottom(runMaxent_INFO)
-            ),
-            conditionalPanel(
-              "input.modelSel == 'BIOCLIM'",
-              uiBottom(runBIOCLIM_INFO)
             )
           ),
           # VISUALIZE ####

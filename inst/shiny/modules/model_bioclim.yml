@@ -1,0 +1,5 @@
+component: "model"
+short_name: "BIOCLIM"
+long_name: "BIOCLIM"
+authors: "Jamie M. Kass, Robert Muscarella, Bruno Vilela, Robert P. Anderson"
+package: [ENMeval, dismo]
