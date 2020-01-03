@@ -31,10 +31,10 @@ envs_worldclim<- function(bcRes, bcSel, mapCntr, doBrick, logger=NULL){
   }
 
   smartProgress(logger, message = "Retrieving WorldClim data...", {
-    if(bcRes == 0.5) {
+    if (bcRes == 0.5) {
       wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes,
                               lon = mapCntr[1], lat = mapCntr[2])
-    }else{
+    } else {
       wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes)
       wcbc <- wcbc[[bcSel]]
     }
