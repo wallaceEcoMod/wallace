@@ -603,16 +603,6 @@ function(input, output, session) {
   ### COMPONENT: VISUALIZE MODEL RESULTS ####
   ########################################### #
 
-  # # # # # # # # # # # # # #
-  # module BIOCLIM Plots ####
-  # # # # # # # # # # # # # #
-  bioclimPlot <- callModule(bioclimPlot_MOD, 'c7_bioclimPlot')
-  output$bioclimPlot <- renderPlot({
-    # do not plot if missing models
-    req(curSp(), evalOut())
-    bioclimPlot()
-  }, width = 700, height = 700)
-
   # # # # # # # # # # # # # # # # # # #
   # module Maxent Evaluation Plots ####
   # # # # # # # # # # # # # # # # # # #

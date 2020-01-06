@@ -1,5 +1,5 @@
 
-#' @title makeBioclimPlot
+#' @title vis_bioclimPlot
 #' @description ..
 #'
 #' @details
@@ -15,7 +15,7 @@
 # @examples
 #'
 #'
-# @return 
+# @return
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 # @note
 # @seealso
@@ -26,10 +26,10 @@
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 
-makeBioclimPlot <- function(x, a=1, b=2, p=0.9, ...) {
-  
+vis_bioclimPlot <- function(x, a=1, b=2, p=0.9, ...) {
+
   d <- x@presence
-  
+
   myquantile <- function(x, p) {
     p <- min(1, max(0, p))
     x <- sort(as.vector(stats::na.omit(x)))
@@ -41,7 +41,7 @@ makeBioclimPlot <- function(x, a=1, b=2, p=0.9, ...) {
     above = x[ti+1]
     below + (above-below)*(i-ti)
   }
-  
+
   p <- min(1,  max(0, p))
   if (p > 0.5) p <- 1 - p
   p <- p / 2

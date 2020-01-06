@@ -24,7 +24,7 @@ model_bioclim_module_server <- function(input, output, session, common) {
         logger %>% writeLog(
           type = 'error',
           "Before building a model, please partition occurrences for ",
-          "cross-validation for ", spName(spp[[sp]]), ".")
+          "cross-validation for ", em(spName(sp)), ".")
         return()
       }
 

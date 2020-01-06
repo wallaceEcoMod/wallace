@@ -189,7 +189,6 @@ tagList(
               "visSel", "Modules Available:",
               choices = c(
                 insert_modules_options("vis"),
-                "BIOCLIM Envelope Plots" = 'bioclimPlot',
                 "Maxent Evaluation Plots" = 'maxentEval',
                 "Plot Response Curves" = 'response',
                 "Map Prediction" = 'mapPreds'),
@@ -197,11 +196,6 @@ tagList(
             ),
             tags$hr(),
             insert_modules_ui("vis"),
-            conditionalPanel(
-              "input.visSel == 'bioclimPlot'",
-              uiTop(bioclimPlot_INFO),
-              bioclimPlot_UI('c7_bioclimPlot')
-            ),
             conditionalPanel(
               "input.visSel == 'maxentEval'",
               uiTop(maxentEvalPlot_INFO),
@@ -219,10 +213,6 @@ tagList(
               actionButton("goMapPreds", "Plot"), br()
             ),
             tags$hr(),
-            conditionalPanel(
-              "input.visSel == 'bioclimPlot'",
-              uiBottom(bioclimPlot_INFO)
-            ),
             conditionalPanel(
               "input.visSel == 'maxentEval'",
               uiBottom(maxentEvalPlot_INFO)
@@ -419,10 +409,6 @@ tagList(
               conditionalPanel(
                 "input.tabs == 'vis' && input.visSel == 'response'",
                 imageOutput('responsePlot')
-              ),
-              conditionalPanel(
-                "input.tabs == 'vis' && input.visSel == 'bioclimPlot' && input.modelSel == 'BIOCLIM'",
-                imageOutput('bioclimPlot')
               ),
               conditionalPanel(
                 "input.tabs == 'vis' && input.visSel == 'maxentEval' && input.modelSel == 'Maxent'",

@@ -1,4 +1,4 @@
-runGAM <- function(occs.vals, bg.vals, degFr, spName, logger = NULL) {
+runGAM <- function(occs.vals, bg.vals, degFr, spN, logger = NULL) {
   if (!require(gam)) {
     logger %>% writeLog("Please install the gam package before running.")
     return()
@@ -15,11 +15,11 @@ runGAM <- function(occs.vals, bg.vals, degFr, spName, logger = NULL) {
   # make formula
   f <- as.formula(paste("pa", paste(degFrs, collapse = " + "), sep = " ~ "))
   # run the GAM
-  smartProgress(logger, message = paste("Running GAM for", spName), {
+  smartProgress(logger, message = paste("Running GAM for", spN), {
     mod <- gam(f, family = "binomial", data = d)
   })
   # write log message
-  logger %>% writeLog("GAM ran successfully for ", spName, ".")
+  logger %>% writeLog("GAM ran successfully for ", spN, ".")
   # output model object
   return(mod)
 }
@@ -48,7 +48,7 @@ gam_module_server <- function(input, output, session, common) {
       if (is.null(spp[[sp]]$occs$partition)) {
         logger %>% writeLog(type = 'error', "Before building a model, please
                                partition occurrences for cross-validation for ",
-                               em(spName(occs())), ".")
+                               em(spName(curSp())), ".")
         return()
       }
 

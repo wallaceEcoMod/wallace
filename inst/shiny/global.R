@@ -43,7 +43,8 @@ base_module_configs <- c(
   "modules/part_nonSpat.yml",
   "modules/part_spat.yml",
   "modules/model_maxent.yml",
-  "modules/model_bioclim.yml"
+  "modules/model_bioclim.yml",
+  "modules/vis_bioclimPlot.yml"
 )
 
 # Load user-defined modules

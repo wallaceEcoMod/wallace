@@ -1,8 +1,3 @@
----
-title: "vis_bioclimPlot"
-output: html_document
----
-
 ### **Module:** ***BIOCLIM Envelope Plots*** 
 
 **BACKGROUND**  
