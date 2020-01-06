@@ -104,7 +104,7 @@ tagList(
             tags$hr(),
             insert_modules_ui("penvs")
           ),
-          # # SAMPLING BIAS ####
+          # SAMPLING BIAS ####
           # conditionalPanel(
           #   "input.tabs == 'samp'",
           #   h4("Accounting for Sampling Bias"),
