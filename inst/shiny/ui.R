@@ -189,18 +189,12 @@ tagList(
               "visSel", "Modules Available:",
               choices = c(
                 insert_modules_options("vis"),
-                "Maxent Evaluation Plots" = 'maxentEval',
                 "Plot Response Curves" = 'response',
                 "Map Prediction" = 'mapPreds'),
               selected = 'mapPreds' # Check default (no selected param)
             ),
             tags$hr(),
             insert_modules_ui("vis"),
-            conditionalPanel(
-              "input.visSel == 'maxentEval'",
-              uiTop(maxentEvalPlot_INFO),
-              maxentEvalPlot_UI('c7_maxentEvalPlot')
-            ),
             conditionalPanel(
               "input.visSel == 'response'",
               uiTop(responsePlot_INFO),
@@ -213,10 +207,6 @@ tagList(
               actionButton("goMapPreds", "Plot"), br()
             ),
             tags$hr(),
-            conditionalPanel(
-              "input.visSel == 'maxentEval'",
-              uiBottom(maxentEvalPlot_INFO)
-            ),
             conditionalPanel(
               "input.visSel == 'response'",
               uiBottom(responsePlot_INFO)
@@ -409,10 +399,6 @@ tagList(
               conditionalPanel(
                 "input.tabs == 'vis' && input.visSel == 'response'",
                 imageOutput('responsePlot')
-              ),
-              conditionalPanel(
-                "input.tabs == 'vis' && input.visSel == 'maxentEval' && input.modelSel == 'Maxent'",
-                imageOutput('maxentEvalPlot')
               )
             ),
             tabPanel(

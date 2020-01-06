@@ -603,16 +603,6 @@ function(input, output, session) {
   ### COMPONENT: VISUALIZE MODEL RESULTS ####
   ########################################### #
 
-  # # # # # # # # # # # # # # # # # # #
-  # module Maxent Evaluation Plots ####
-  # # # # # # # # # # # # # # # # # # #
-  maxentEvalPlot <- callModule(maxentEvalPlot_MOD, 'c7_maxentEvalPlot')
-  output$maxentEvalPlot <- renderPlot({
-    # do not plot if missing models
-    req(curSp(), evalOut())
-    maxentEvalPlot()
-  }, width = 700, height = 700)
-
   # # # # # # # # # # # # # # # # # #
   # module Response Curve Plots ####
   # # # # # # # # # # # # # # # # # #

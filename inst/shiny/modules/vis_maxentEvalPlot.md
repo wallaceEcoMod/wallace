@@ -1,8 +1,3 @@
----
-title: "vis_maxentEval"
-output: html_document
----
-
 ### **Module:** ***Maxent Evaluation Plots*** 
 
 **BACKGROUND**  
@@ -22,3 +17,4 @@ Merow, C., Smith, M. J., Edwards, T. C., Guisan, A., McMahon, S. M., Normand, S.
 Muscarella, R., Galante, P. J., Soley-Guardia, M., Boria, R. A., Kass, J. M., Uriarte, M., & Anderson, R. P. (2014). ENMeval: An R package for conducting spatially independent evaluations and estimating optimal model complexity for Maxent ecological niche models. *Methods in Ecology and Evolution*. 5: 1198-1205.
 
 Radosavljevic, A., & Anderson, R. P. (2014). Making better Maxent models of species distributions: complexity, overfitting and evaluation. *Journal of Biogeography*. 41: 629-643.
+
