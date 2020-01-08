@@ -12,6 +12,7 @@
 #' @param bgMask x
 #' @param aggFact x
 #' @param logger x
+#' @param spN x
 # @keywords
 #'
 # @examples
@@ -30,7 +31,7 @@
 #' @export
 
 part_partitionOccs <- function(occs, bg, method, kfolds = NULL, bgMask = NULL,
-                               aggFact = NULL, logger = NULL) {
+                               aggFact = NULL, logger = NULL, spN = NULL) {
 
   if (method == '') {
     logger %>% writeLog(type = 'error', "Please select a partitioning option.")
@@ -43,49 +44,49 @@ part_partitionOccs <- function(occs, bg, method, kfolds = NULL, bgMask = NULL,
   if (method == 'jack') {
     group.data <- ENMeval::get.jackknife(occs.xy, bg.xy)
     logger %>% writeLog("Occurrences partitioned by jackknife method for ",
-                           em(spName(occs)), ".")
+                           em(spName(spN)), ".")
   }
 
   if (method == 'rand') {
     if(is.null(kfolds)) {
       logger %>% writeLog(type = 'error', "Please specify a kfold value to
                              use the random partition function for ",
-                             em(spName(occs)), ".")
+                             em(spName(spN)), ".")
       return()
     }
     if (kfolds < 2) {
       logger %>% writeLog(type = 'error', "Please specify a kfold value
-                             greater than 1 for ", em(spName(occs)), ".")
+                             greater than 1 for ", em(spName(spN)), ".")
       return()
     }
 
     group.data <- ENMeval::get.randomkfold(occs.xy, bg.xy, kfolds)
     logger %>% writeLog("Occurrences partitioned by random k-fold
-                           (k = ", kfolds, ") for ", em(spName(occs)), ".")
+                           (k = ", kfolds, ") for ", em(spName(spN)), ".")
   }
 
   if (method == 'block') {
     group.data <- ENMeval::get.block(occs.xy, bg.xy)
     logger %>% writeLog("Occurrences partitioned by block method for ",
-                           em(spName(occs)), ".")
+                           em(spName(spN)), ".")
   }
 
   if (method == 'cb1' | method == 'cb2') {
     if(is.na(aggFact) | aggFact <= 1) {
       logger %>% writeLog(type = 'error', "Please specify a positive aggregation
-                        factor greater than 1 for ", em(spName(occs)), ".")
+                        factor greater than 1 for ", em(spName(spN)), ".")
       return()
     }
     if(is.null(bgMask)) {
       logger %>% writeLog(type = 'error', "Please specify a background mask
                              to use checkerboard partition functions for ",
-                             em(spName(occs)), ".")
+                             em(spName(spN)), ".")
       return()
     }
     if(is.null(aggFact)) {
       logger %>% writeLog(type = 'error', "Please specify an aggregation
                              factor to use checkerboard partition functions for ",
-                             em(spName(occs)), ".")
+                             em(spName(spN)), ".")
       return()
     }
   }
@@ -97,7 +98,7 @@ part_partitionOccs <- function(occs, bg, method, kfolds = NULL, bgMask = NULL,
 
     logger %>% writeLog("Occurrences partitioned by checkerboard 1 method with
                            aggregation factor ", aggFact, " for ",
-                           em(spName(occs)), ".")
+                           em(spName(spN)), ".")
   }
 
   if(method == 'cb2') {
@@ -107,7 +108,7 @@ part_partitionOccs <- function(occs, bg, method, kfolds = NULL, bgMask = NULL,
 
     logger %>% writeLog("Occurrences partitioned by checkerboard 2 method with
                            aggregation factor ", aggFact, " for ",
-                           em(spName(occs)), ".")
+                           em(spName(spN)), ".")
   }
 
   return(group.data)

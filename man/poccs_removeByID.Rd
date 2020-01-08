@@ -4,7 +4,7 @@
 \alias{poccs_removeByID}
 \title{poccs_removeByID}
 \usage{
-poccs_removeByID(occs, removeID, logger = NULL)
+poccs_removeByID(occs, removeID, logger = NULL, spN = NULL)
 }
 \arguments{
 \item{occs}{x}
@@ -12,6 +12,8 @@ poccs_removeByID(occs, removeID, logger = NULL)
 \item{removeID}{x}
 
 \item{logger}{x}
+
+\item{spN}{x}
 }
 \description{
 ..

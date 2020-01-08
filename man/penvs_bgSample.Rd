@@ -4,7 +4,7 @@
 \alias{penvs_bgSample}
 \title{penvs_bgSample}
 \usage{
-penvs_bgSample(occs, bgMask, bgPtsNum, logger = NULL)
+penvs_bgSample(occs, bgMask, bgPtsNum, logger = NULL, spN = NULL)
 }
 \arguments{
 \item{occs}{x}
@@ -14,6 +14,8 @@ penvs_bgSample(occs, bgMask, bgPtsNum, logger = NULL)
 \item{bgPtsNum}{x}
 
 \item{logger}{x}
+
+\item{spN}{x}
 }
 \description{
 ..

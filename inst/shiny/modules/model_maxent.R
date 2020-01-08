@@ -89,7 +89,7 @@ model_maxent_module_server <- function(input, output, session, common) {
       if (is.null(spp[[sp]]$occs$partition)) {
         logger %>% writeLog(type = 'error', "Before building a model, please
                                 partition occurrences for cross-validation for ",
-                            spName(spp[[sp]]), ".")
+                            em(spName(sp)), ".")
         return()
       }
 
@@ -111,7 +111,8 @@ model_maxent_module_server <- function(input, output, session, common) {
                                  input$clamp,
                                  input$algMaxent,
                                  catEnvs,
-                                 logger)
+                                 logger,
+                                 spN = sp)
       req(res.maxent)
 
       # LOAD INTO SPP ####

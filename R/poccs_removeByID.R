@@ -8,6 +8,7 @@
 #' @param occs x
 #' @param removeID x
 #' @param logger x
+#' @param spN x
 # @keywords
 #'
 # @examples
@@ -26,7 +27,7 @@
 
 #' @export
 
-poccs_removeByID <- function(occs, removeID, logger = NULL) {
+poccs_removeByID <- function(occs, removeID, logger = NULL, spN = NULL) {
   if (is.null(occs)) {
     logger %>% writeLog(type = 'error',
       "Before processing occurrences, obtain the data in component 1.")
@@ -44,6 +45,6 @@ poccs_removeByID <- function(occs, removeID, logger = NULL) {
   occs.remID <- occs[-i,]
 
   logger %>% writeLog(
-    "Removed occurrence from ", em(spName(occs)), "with occID = ", removeID,". Updated data has n = ", nrow(occs.remID), " records.")
+    "Removed occurrence from ", em(spName(spN)), "with occID = ", removeID,". Updated data has n = ", nrow(occs.remID), " records.")
   return(occs.remID)
 }

@@ -4,7 +4,7 @@
 \alias{model_bioclim}
 \title{model_bioclim}
 \usage{
-model_bioclim(occs, bg, occsGrp, bgGrp, bgMsk, logger = NULL)
+model_bioclim(occs, bg, occsGrp, bgGrp, bgMsk, logger = NULL, spN = NULL)
 }
 \arguments{
 \item{occs}{x}
@@ -12,6 +12,8 @@ model_bioclim(occs, bg, occsGrp, bgGrp, bgMsk, logger = NULL)
 \item{bg}{x}
 
 \item{logger}{x}
+
+\item{spN}{x}
 
 \item{bgMask}{x}
 }

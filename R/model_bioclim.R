@@ -9,6 +9,7 @@
 #' @param bg x
 #' @param bgMask x
 #' @param logger x
+#' @param spN x
 # @keywords
 #'
 # @examples
@@ -27,7 +28,8 @@
 
 #' @export
 
-model_bioclim <- function(occs, bg, occsGrp, bgGrp, bgMsk, logger = NULL) {
+model_bioclim <- function(occs, bg, occsGrp, bgGrp, bgMsk, logger = NULL,
+                          spN = NULL) {
 
   # get just coordinates
   occs.xy <- occs %>% dplyr::select(longitude, latitude)
@@ -35,13 +37,13 @@ model_bioclim <- function(occs, bg, occsGrp, bgGrp, bgMsk, logger = NULL) {
 
   smartProgress(logger,
                 message = paste0("Building/Evaluating BIOCLIM model for ",
-                                 spName(occs), "..."), {
+                                 spName(spN), "..."), {
      e <- ENMeval::ENMevaluate(occs = occs.xy, envs = bgMsk, bg = bg.xy,
                                mod.name = "bioclim", partition = "user",
                                occ.grp = occsGrp, bg.grp = bgGrp)
   })
 
-  logger %>% writeLog("BIOCLIM ran successfully for ", em(spName(occs)),
+  logger %>% writeLog("BIOCLIM ran successfully for ", em(spName(spN)),
                       " and output evaluation results.")
 
   return(e)

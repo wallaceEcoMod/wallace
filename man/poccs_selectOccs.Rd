@@ -4,7 +4,7 @@
 \alias{poccs_selectOccs}
 \title{poccs_selectOccs}
 \usage{
-poccs_selectOccs(occs, polySelXY, polySelID = 1, logger = NULL)
+poccs_selectOccs(occs, polySelXY, polySelID = 1, logger = NULL, spN = NULL)
 }
 \arguments{
 \item{occs}{x}
@@ -14,6 +14,8 @@ poccs_selectOccs(occs, polySelXY, polySelID = 1, logger = NULL)
 \item{polySelID}{x}
 
 \item{logger}{x}
+
+\item{spN}{x}
 }
 \description{
 ..

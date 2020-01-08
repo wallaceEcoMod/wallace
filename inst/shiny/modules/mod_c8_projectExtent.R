@@ -71,10 +71,10 @@ projExtent_MOD <- function(input, output, session) {
                                input$drawPjBuf, shinyLogs)
       if (input$drawPjBuf == 0 ) {
         shinyLogs %>% writeLog(
-          em(spName(occs())), ' : Draw polygon without buffer(**).')
+          em(spName(curSp())), ' : Draw polygon without buffer(**).')
       } else {
         shinyLogs %>% writeLog(
-          em(spName(occs())), ' : Draw polygon with buffer of ', input$drawPjBuf,
+          em(spName(curSp())), ' : Draw polygon with buffer of ', input$drawPjBuf,
           ' degrees (**).')
       }
       # METADATA ####
@@ -109,7 +109,7 @@ projExtent_MOD <- function(input, output, session) {
     if (input$projExt == 'pjCur') {
       polyPj <- spp[[curSp()]]$procEnvs$bgExt
       shinyLogs %>% writeLog(
-        em(spName(occs())), ' : Projection extent equal to current extent region. (**)')
+        em(spName(curSp())), ' : Projection extent equal to current extent region. (**)')
     }
 
     # LOAD INTO SPP ####

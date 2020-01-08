@@ -18,9 +18,10 @@ poccs_selectOccs_module_server <- function(input, output, session, common) {
 
   observeEvent(input$goSelectOccs, {
     occs.sel <- poccs_selectOccs(occs(),
-                              spp[[curSp()]]$polySelXY,
-                              spp[[curSp()]]$polySelID,
-                              logger)
+                                 spp[[curSp()]]$polySelXY,
+                                 spp[[curSp()]]$polySelID,
+                                 logger,
+                                 spN = curSp())
     req(occs.sel)
 
     # LOAD INTO SPP ####

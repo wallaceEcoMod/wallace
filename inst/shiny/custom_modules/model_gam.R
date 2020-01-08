@@ -1,4 +1,4 @@
-runGAM <- function(occs.vals, bg.vals, degFr, spN, logger = NULL) {
+runGAM <- function(occs.vals, bg.vals, degFr, spN = NULL, logger = NULL) {
   if (!require(gam)) {
     logger %>% writeLog("Please install the gam package before running.")
     return()
@@ -15,11 +15,11 @@ runGAM <- function(occs.vals, bg.vals, degFr, spN, logger = NULL) {
   # make formula
   f <- as.formula(paste("pa", paste(degFrs, collapse = " + "), sep = " ~ "))
   # run the GAM
-  smartProgress(logger, message = paste("Running GAM for", spN), {
+  smartProgress(logger, message = paste("Running GAM for", spName(spN)), {
     mod <- gam(f, family = "binomial", data = d)
   })
   # write log message
-  logger %>% writeLog("GAM ran successfully for ", spN, ".")
+  logger %>% writeLog("GAM ran successfully for ", em(spName(spN)), ".")
   # output model object
   return(mod)
 }

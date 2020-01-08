@@ -8,6 +8,7 @@
 #' @param occs x
 #' @param thinDist x
 #' @param logger x
+#' @param spN x
 # @keywords
 #'
 # @examples
@@ -26,7 +27,7 @@
 
 #' @export
 
-poccs_thinOccs <- function(occs, thinDist, logger = NULL) {
+poccs_thinOccs <- function(occs, thinDist, logger = NULL, spN = NULL) {
   if (is.null(occs)) {
     logger %>% writeLog(type = 'error',
       "Before processing occurrences, obtain the data in component 1.")
@@ -39,7 +40,7 @@ poccs_thinOccs <- function(occs, thinDist, logger = NULL) {
     return()
   }
   # query database
-  smartProgress(logger, message = paste0("Spatially thinning for ", spName(occs), "..."), {  # start progress bar
+  smartProgress(logger, message = paste0("Spatially thinning for ", spName(spN), "..."), {  # start progress bar
     output <- spThin::thin(occs, 'latitude', 'longitude', 'scientific_name', thin.par = thinDist,
                            reps = 100, locs.thinned.list.return = TRUE, write.files = FALSE,
                            verbose = FALSE)
@@ -54,7 +55,7 @@ poccs_thinOccs <- function(occs, thinDist, logger = NULL) {
   })
 
   logger %>% writeLog(
-    'Total records for ', em(spName(occs)), ' thinned to [', nrow(occs.thin), '] localities.')
+    'Total records for ', em(spName(spN)), ' thinned to [', nrow(occs.thin), '] localities.')
 
   return(occs.thin)
 }

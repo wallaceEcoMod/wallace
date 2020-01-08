@@ -100,15 +100,17 @@ penvs_userBgExtent_module_server <- function(input, output, session, common) {
       bgMask <- penvs_bgMask(spp[[sp]]$occs,
                              envs.global[[spp[[sp]]$envs]],
                              spp[[sp]]$procEnvs$bgExt,
-                             logger)
+                             logger,
+                             spN = sp)
       req(bgMask)
       bgPts <- penvs_bgSample(spp[[sp]]$occs,
                               bgMask,
                               input$bgPtsNum,
-                              logger)
+                              logger,
+                              spN = sp)
       req(bgPts)
       withProgress(message = paste0("Extracting background values for ",
-                                    spName(sp), "..."), {
+                                    em(spName(sp)), "..."), {
                                       bgEnvsVals <- as.data.frame(raster::extract(bgMask, bgPts))
                                     })
 
@@ -116,7 +118,7 @@ penvs_userBgExtent_module_server <- function(input, output, session, common) {
         logger %>%
           writeLog(type = "error",
                    paste0("One or more occurrence points have NULL raster ",
-                          "values for ", spName(sp), ". This can sometimes ",
+                          "values for ", em(spName(sp)), ". This can sometimes ",
                           "happen for points on the margin of the study extent.",
                           " Please increase the buffer slightly to include them.")
           )

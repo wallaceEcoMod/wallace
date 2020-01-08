@@ -124,7 +124,7 @@ occs_queryDb <- function(spNames, occDb, occNum, doCitations = FALSE,
     if (nrow(occsXY) == 0) {
       logger %>% writeLog(type = 'warning',
                              'No records with coordinates found in ',
-                             occDb, " for ", em(length(spNames)[sp]), ".")
+                             occDb, " for ", em(sp), ".")
       return()
     }
     # round longitude and latitude with 5 digits

@@ -16,7 +16,8 @@ model_maxent(
   clampSel,
   algMaxent,
   catEnvs,
-  logger = NULL
+  logger = NULL,
+  spN = NULL
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ model_maxent(
 \item{fcs}{x}
 
 \item{logger}{x}
+
+\item{spN}{x}
 }
 \description{
 ..

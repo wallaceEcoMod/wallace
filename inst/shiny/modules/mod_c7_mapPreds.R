@@ -5,21 +5,21 @@ mapPreds_UI <- function(id) {
     tags$div(title='Create binary map of predicted presence/absence assuming all values above threshold value represent presence. Also can be interpreted as a "potential distribution" (see guidance).',
              selectInput(ns('threshold'), label = "Set threshold",
                          choices = list("No threshold" = 'none',
-                                        "Minimum Training Presence" = 'mtp', 
+                                        "Minimum Training Presence" = 'mtp',
                                         "10 Percentile Training Presence" = 'p10',
                                         "Quantile of Training Presences" = 'qtp'))),
     conditionalPanel(sprintf("input['%s'] == 'qtp'", ns("threshold")),
                      sliderInput(ns("trainPresQuantile"), "Set quantile",
                                  min = 0, max = 1, value = .05)),
-    conditionalPanel(condition = sprintf("input.modelSel == 'Maxent' & input['%s'] == 'none'", 
+    conditionalPanel(condition = sprintf("input.modelSel == 'Maxent' & input['%s'] == 'none'",
                                          ns("threshold")),
                      tags$div(title='Please see guidance for an explanation of different Maxent output types.',
                               uiOutput(ns('maxentPredTypeUI')),
-                              radioButtons(ns('maxentPredType'), 
+                              radioButtons(ns('maxentPredType'),
                                            label = "Prediction output",
-                                           choices = list("raw", 
-                                                          "logistic", 
-                                                          "cloglog"), 
+                                           choices = list("raw",
+                                                          "logistic",
+                                                          "cloglog"),
                                            selected = "cloglog", # Check default (selected = "raw")
                                            inline = TRUE)))
   )
@@ -33,32 +33,32 @@ mapPreds_MOD <- function(input, output, session) {
       shinyLogs %>% writeLog(type = 'error', "Models must be run before visualizing model predictions.")
       return()
     }
-    
+
     if(is.na(input$threshold)) {
       shinyLogs %>% writeLog(type = 'error', "Please select a thresholding rule.")
       return()
     }
-    
+
     # pick the prediction that matches the model selected
     predSel <- evalOut()@predictions[[curModel()]]
     raster::crs(predSel) <- raster::crs(bgMask())
     if(is.na(raster::crs(predSel))) {
-      shinyLogs %>% writeLog(type = "error", "Model prediction raster has undefined 
-                             coordinate reference system (CRS), and thus cannot be 
-                             mapped. This is likely due to undefined CRS for input 
-                             rasters. Please see guidance text for module 'User-specified 
-                             Environmental Data' in component 'Obtain Environmental Data' 
+      shinyLogs %>% writeLog(type = "error", "Model prediction raster has undefined
+                             coordinate reference system (CRS), and thus cannot be
+                             mapped. This is likely due to undefined CRS for input
+                             rasters. Please see guidance text for module 'User-specified
+                             Environmental Data' in component 'Obtain Environmental Data'
                              for more details.")
       return()
     }
-    
+
     # PROCESSING ####
     # define predType based on model type
     if(rmm()$model$algorithm == "BIOCLIM") {
       predType <- "BIOCLIM"
       m <- evalOut()@models[[curModel()]]
       predSel <- dismo::predict(m, bgMask())
-      # define crs 
+      # define crs
       raster::crs(predSel) <- raster::crs(bgMask())
       # define predSel name
       names(predSel) <- curModel()
@@ -67,8 +67,8 @@ mapPreds_MOD <- function(input, output, session) {
       predType <- input$maxentPredType
       # if selected prediction type is not raw, transform
       if(predType != "raw") {
-        # transform and redefine predSel 
-        
+        # transform and redefine predSel
+
         smartProgress(shinyLogs, message = paste0("Generating ", input$maxentPredType, " prediction for model ", curModel(), "..."), {
           m <- evalOut()@models[[curModel()]]
           clamping <- rmm()$model$maxent$clamping
@@ -79,16 +79,16 @@ mapPreds_MOD <- function(input, output, session) {
             predSel <- dismo::predict(m, bgMask(), args = paste0("outputformat=", input$maxentPredType))
           }
         })
-        # define crs 
+        # define crs
         raster::crs(predSel) <- raster::crs(bgMask())
         # define predSel name
         names(predSel) <- curModel()
-      } 
+      }
     }
-    
-    # generate binary prediction based on selected thresholding rule 
+
+    # generate binary prediction based on selected thresholding rule
     # (same for all Maxent prediction types because they scale the same)
-    
+
     # find predicted values for occurrences for selected model
     # extract the suitability values for all occurrences
     occs.xy <- occs()[c('longitude', 'latitude')]
@@ -96,7 +96,7 @@ mapPreds_MOD <- function(input, output, session) {
     occPredVals <- raster::extract(predSel, occs.xy)
     # get all thresholds
     #thr <- getAllThresh(occPredVals) # seems like this should be inside the next if to avoid computing for no reason
-    
+
     # get the chosen threshold value
     if (input$threshold != 'none') {
       #thr.sel <- thr[[input$threshold]]
@@ -108,36 +108,36 @@ mapPreds_MOD <- function(input, output, session) {
       } else if (input$threshold == 'qtp'){
         thr.sel <- quantile(occPredVals, probs = input$trainPresQuantile)
       }
-      
+
       predSel.thr <- predSel > thr.sel
       # rename prediction raster if thresholded
       names(predSel.thr) <- paste0(curModel(), '_', predType)
-      nameAlg <- ifelse(rmm()$model$algorithm == "BIOCLIM", 
-                        "", 
+      nameAlg <- ifelse(rmm()$model$algorithm == "BIOCLIM",
+                        "",
                         paste0(" ", rmm()$model$algorithm, " "))
-      shinyLogs %>% writeLog(em(spName(occs())), ": ", input$threshold, ' threshold selected
-                             for ', nameAlg, predType, ' (', 
+      shinyLogs %>% writeLog(em(spName(curSp())), ": ", input$threshold, ' threshold selected
+                             for ', nameAlg, predType, ' (',
                              formatC(thr.sel, format = "e", 2), ').')
     } else {
       predSel.thr <- predSel
     }
-    
+
     # write to log box
     if (predType == 'BIOCLIM') {
-      shinyLogs %>% writeLog(em(spName(occs())), ": BIOCLIM model prediction plotted.")
+      shinyLogs %>% writeLog(em(spName(curSp())), ": BIOCLIM model prediction plotted.")
     } else if (input$threshold != 'none'){
-      shinyLogs %>% writeLog(em(spName(occs())), ": ", rmm()$model$algorithm, " model prediction plotted.")
+      shinyLogs %>% writeLog(em(spName(curSp())), ": ", rmm()$model$algorithm, " model prediction plotted.")
     } else if (input$threshold == 'none'){
-      shinyLogs %>% writeLog(em(spName(occs())), ": ", rmm()$model$algorithm, " ", predType,
+      shinyLogs %>% writeLog(em(spName(curSp())), ": ", rmm()$model$algorithm, " ", predType,
                              " model prediction plotted.")
     }
-    
+
     # LOAD INTO SPP ####
     spp[[curSp()]]$visualization$occPredVals <- occPredVals
     if (input$threshold != 'none') spp[[curSp()]]$visualization$thresholds <- thr.sel # were you recording multiple before?
     spp[[curSp()]]$visualization$mapPred <- predSel.thr
     spp[[curSp()]]$visualization$mapPredVals <- getRasterVals(predSel.thr, predType)
-    
+
     # METADATA ####
     spp[[curSp()]]$rmm$output$prediction$thresholdRule <- input$threshold
     if(input$threshold != 'none') {
@@ -146,7 +146,7 @@ mapPreds_MOD <- function(input, output, session) {
       spp[[curSp()]]$rmm$output$prediction$thresholdSet <- NULL
     }
     spp[[curSp()]]$rmm$output$prediction$notes <- predType
-    
+
   })
 }
 
@@ -180,8 +180,8 @@ mapPreds_MAP <- function(map, session) {
     mapBgPolys(bgShpXY())
 }
 
-mapPreds_INFO <- infoGenerator(modName = "Map Prediction", 
+mapPreds_INFO <- infoGenerator(modName = "Map Prediction",
                                modAuts = "Jamie M. Kass, Robert Muscarella, Bruno
                                Vilela, Gonzalo E. Pinilla-Buitrago, Robert P.
-                               Anderson", 
+                               Anderson",
                                pkgName = "dismo")

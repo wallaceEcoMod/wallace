@@ -9,6 +9,7 @@
 #' @param bgMask x
 #' @param bgPtsNum x
 #' @param logger x
+#' @param spN x
 # @keywords
 #'
 # @examples
@@ -26,7 +27,7 @@
 
 #' @export
 
-penvs_bgSample <- function(occs, bgMask, bgPtsNum, logger=NULL) {
+penvs_bgSample <- function(occs, bgMask, bgPtsNum, logger = NULL, spN = NULL) {
   # sample random background points
   smartProgress(logger, message = "Generating background points...", {
     # rvals <- raster::getValues(bgMask)
@@ -37,9 +38,9 @@ penvs_bgSample <- function(occs, bgMask, bgPtsNum, logger=NULL) {
   })
   bg.prop <- round(nrow(bgXY)/bgPtsNum, digits = 2)
   if(bg.prop == 1) {
-    logger %>% writeLog(em(spName(occs)), ": ", bgPtsNum, " random background points sampled.")
+    logger %>% writeLog(em(spName(spN)), ": ", bgPtsNum, " random background points sampled.")
   } else {
-    logger %>% writeLog(em(spName(occs)), ": ", bgPtsNum, " random background
+    logger %>% writeLog(em(spName(spN)), ": ", bgPtsNum, " random background
                            points requested, but only ", 100*bg.prop, "% of
                            points (n = ", nrow(bgXY), ") were able to be sampled.")
   }

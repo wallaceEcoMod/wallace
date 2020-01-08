@@ -30,7 +30,8 @@ poccs_thinOccs_module_server <- function(input, output, session, common) {
       # FUNCTION CALL ####
       occs.thin <- poccs_thinOccs(spp[[sp]]$occs,
                                   input$thinDist,
-                                  logger)
+                                  logger,
+                                  spN = sp)
       req(occs.thin)
 
       # LOAD INTO SPP ####

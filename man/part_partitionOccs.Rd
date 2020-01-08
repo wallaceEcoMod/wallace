@@ -11,7 +11,8 @@ part_partitionOccs(
   kfolds = NULL,
   bgMask = NULL,
   aggFact = NULL,
-  logger = NULL
+  logger = NULL,
+  spN = NULL
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ part_partitionOccs(
 \item{aggFact}{x}
 
 \item{logger}{x}
+
+\item{spN}{x}
 }
 \description{
 ..

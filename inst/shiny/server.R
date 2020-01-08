@@ -322,7 +322,7 @@ function(input, output, session) {
     spp[[curSp()]]$procOccs$occsThin <- NULL
     spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs <- NULL
     shinyLogs %>% writeLog("Reset occurrences for ",
-                           em(spp[[curSp()]]$occs[1, "scientific_name"]), ".")
+                           em(spName(curSp())), ".")
     # MAPPING
     map %>%
       map_occs(occs()) %>%

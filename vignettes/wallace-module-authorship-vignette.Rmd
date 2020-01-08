@@ -48,7 +48,7 @@ Let's first write a function that carries out the module's analysis. This functi
 Let's now write a function that fits a GAM and outputs the model object. Save the code below as a script to: `wallace/R/runGAM.R`.
 
 ```{r}
-runGAM <- function(occs.vals, bg.vals, degFr, spName, shinyLogs=NULL) {
+runGAM <- function(occs.vals, bg.vals, degFr, spN, shinyLogs=NULL) {
   if(!require(gam)) {
     shinyLogs %>% writeLog("Please install the gam package before running.")
     return()
@@ -69,7 +69,7 @@ runGAM <- function(occs.vals, bg.vals, degFr, spName, shinyLogs=NULL) {
     mod <- gam(f, family = "binomial", data = d)
   })
   # write log message
-  shinyLogs %>% writeLog("GAM ran successfully for ", spName, ".")
+  shinyLogs %>% writeLog("GAM ran successfully for ", em(spName(spN)), ".")
   # output model object
   return(mod)
 }
@@ -153,7 +153,7 @@ runGAM_MOD <- function(input, output, session) {
       # check to make sure partitioning was done in the last component before proceeding
       if(is.null(spp[[sp]]$occs$partition)) {
         shinyLogs %>% writeLog(type = 'error', "Before building a model, please partition 
-                               occurrences for cross-validation for", curSp(), ".")
+                               occurrences for cross-validation for", em(spName(curSp())), ".")
         return()
       }
       

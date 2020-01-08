@@ -4,7 +4,7 @@
 \alias{penvs_bgExtent}
 \title{penvs_bgExtent}
 \usage{
-penvs_bgExtent(occs, bgSel, bgBuf, logger = NULL)
+penvs_bgExtent(occs, bgSel, bgBuf, logger = NULL, spN = NULL)
 }
 \arguments{
 \item{occs}{x}
@@ -14,6 +14,8 @@ penvs_bgExtent(occs, bgSel, bgBuf, logger = NULL)
 \item{bgBuf}{x}
 
 \item{logger}{x}
+
+\item{spN}{x}
 
 \item{envs}{x}
 }

@@ -4,10 +4,12 @@
 \alias{runGAM}
 \title{Build a GAM}
 \usage{
-runGAM(occs.vals, bg.vals, degFr, spName, shinyLogs = NULL)
+runGAM(occs.vals, bg.vals, degFr, spN, shinyLogs = NULL)
 }
 \arguments{
 \item{occs.vals}{x}
+
+\item{spN}{x}
 }
 \description{
 ..

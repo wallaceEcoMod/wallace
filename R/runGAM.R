@@ -5,12 +5,13 @@
 #' See Examples.
 #'
 #' @param occs.vals x
+#' @param spN x
 # @keywords
 #'
 # @examples
 #'
 #'
-# @return 
+# @return
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 # @note
 
@@ -22,7 +23,7 @@
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 
-runGAM <- function(occs.vals, bg.vals, degFr, spName, shinyLogs=NULL) {
+runGAM <- function(occs.vals, bg.vals, degFr, spN, shinyLogs=NULL) {
   if(!require(gam)) {
     shinyLogs %>% writeLog("Please install the gam package before running.")
     return()
@@ -39,11 +40,11 @@ runGAM <- function(occs.vals, bg.vals, degFr, spName, shinyLogs=NULL) {
   # make formula
   f <- as.formula(paste("pa", paste(degFrs, collapse = " + "), sep = " ~ "))
   # run the GAM
-  smartProgress(shinyLogs, message = paste("Running GAM for", spName), {
+  smartProgress(shinyLogs, message = paste("Running GAM for", spName(spN)), {
                 mod <- gam(f, family = "binomial", data = d)
   })
   # write log message
-  shinyLogs %>% writeLog("GAM ran successfully for ", spName, ".")
+  shinyLogs %>% writeLog("GAM ran successfully for ", em(spName(spN)), ".")
   # output model object
   return(mod)
 }

@@ -30,7 +30,7 @@ part_nonSpat_module_server <- function(input, output, session, common) {
       if (is.null(bgMask())) {
         logger %>% writeLog(
           type = 'error',
-          "Before partitioning occurrences for ", sp, ", mask your ",
+          "Before partitioning occurrences for ", em(spName(sp)), ", mask your ",
           "environmental variables by your background extent."
         )
         return()
@@ -39,7 +39,8 @@ part_nonSpat_module_server <- function(input, output, session, common) {
       #### FUNCTION CALL
       group.data <- part_partitionOccs(spp[[sp]]$occs, spp[[sp]]$bg,
                                        input$partNspSel, kfolds = input$kfolds,
-                                       bgMask = NULL, aggFact = NULL, logger)
+                                       bgMask = NULL, aggFact = NULL, logger,
+                                       spN = sp)
       req(group.data)
 
       # LOAD INTO SPP ####

@@ -4,7 +4,7 @@
 \alias{penvs_bgMask}
 \title{penvs_bgMask}
 \usage{
-penvs_bgMask(occs, envs, bgExt, logger = NULL)
+penvs_bgMask(occs, envs, bgExt, logger = NULL, spN = NULL)
 }
 \arguments{
 \item{occs}{x}
@@ -14,6 +14,8 @@ penvs_bgMask(occs, envs, bgExt, logger = NULL)
 \item{bgExt}{x}
 
 \item{logger}{x}
+
+\item{spN}{x}
 }
 \description{
 ..

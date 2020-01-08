@@ -15,6 +15,7 @@
 #' @param rmsStep x
 #' @param fcs x
 #' @param logger x
+#' @param spN x
 # @keywords
 #'
 # @examples
@@ -34,7 +35,8 @@
 #' @export
 
 model_maxent <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
-                         clampSel, algMaxent, catEnvs, logger = NULL) {
+                         clampSel, algMaxent, catEnvs, logger = NULL,
+                         spN = NULL) {
   if (is.null(occsGrp)) {
     logger %>% writeLog(
       type = 'error',
@@ -79,7 +81,7 @@ model_maxent <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
   if (!is.null(logger)) {
     progress <- shiny::Progress$new()
     progress$set(message = paste0("Building/Evaluating ENMs for ",
-                                  spName(occs), "..."), value = 0)
+                                  em(spName(spN)), "..."), value = 0)
     on.exit(progress$close())
     n <- length(rms.interval) * length(fcs)
     updateProgress <- function(value = NULL, detail = NULL) {
@@ -109,7 +111,7 @@ model_maxent <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
                   ifelse(clampSel, "on.", "off."))
 
   logger %>% writeLog(
-    "Maxent ran successfully for ", em(spName(occs)), " and output evaluation ",
+    "Maxent ran successfully for ", em(spName(spN)), " and output evaluation ",
     "results for ", nrow(e@results), " models", endTxt)
   return(e)
 }

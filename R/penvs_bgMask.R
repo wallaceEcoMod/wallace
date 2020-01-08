@@ -9,6 +9,7 @@
 #' @param envs x
 #' @param bgExt x
 #' @param logger x
+#' @param spN x
 #'
 # @keywords
 #'
@@ -28,18 +29,18 @@
 
 #' @export
 
-penvs_bgMask <- function(occs, envs, bgExt, logger=NULL) {
+penvs_bgMask <- function(occs, envs, bgExt, logger = NULL, spN = NULL) {
   if (is.null(bgExt)) {
     logger %>% writeLog(type = 'error', "Before sampling background points, define the background extent.")
     return()
   }
   # mask envs by background extent
-  smartProgress(logger, message = paste0("Masking rasters for ", spName(occs), "..."), {
+  smartProgress(logger, message = paste0("Masking rasters for ", spName(spN), "..."), {
     bgCrop <- raster::crop(envs, bgExt)
     bgMask <- raster::mask(bgCrop, bgExt)
   })
 
-  logger %>% writeLog(em(spName(occs)), ': Environmental data masked.')
+  logger %>% writeLog(em(spName(spN)), ': Environmental data masked.')
 
   return(bgMask)
 }

@@ -10,6 +10,7 @@
 #' @param bgSel x
 #' @param bgBuf x
 #' @param logger x
+#' @param spN x
 # @keywords
 #'
 # @examples
@@ -28,7 +29,7 @@
 #' @export
 #'
 
-penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL) {
+penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL, spN = NULL) {
 
   if (nrow(occs) <= 2) {
     logger %>%
@@ -53,7 +54,7 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL) {
     bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin),
                  ncol = 2)
     bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(bb)), 1)))
-    msg <- paste(em(spName(occs)), " study extent: bounding box.")
+    msg <- paste(em(spName(spN)), " study extent: bounding box.")
   } else if (bgSel == "minimum convex polygon") {
     bgExt <- mcp(occs.xy)
     # bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
@@ -66,9 +67,9 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL) {
       return()
     }
     bgExt <- rgeos::gBuffer(occs.sp, width = bgBuf)
-    msg <- paste(em(spName(occs)), " study extent: buffered points.")
+    msg <- paste(em(spName(spN)), " study extent: buffered points.")
   }
-  msg <- paste0(em(spName(occs)), " study extent: ", bgSel, ".")
+  msg <- paste0(em(spName(spN)), " study extent: ", bgSel, ".")
 
   if (bgBuf > 0 & bgSel != 'point buffers') {
     bgExt <- rgeos::gBuffer(bgExt, width = bgBuf)

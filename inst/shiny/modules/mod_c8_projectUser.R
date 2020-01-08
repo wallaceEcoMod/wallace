@@ -102,13 +102,13 @@ projectUser_MOD <- function(input, output, session) {
       }
       projUserThr <- projUser > thr
       shinyLogs %>% writeLog("Projection of model to user-specified files for (**)",
-                             em(spName(occs())), ' with threshold ',
+                             em(spName(curSp())), ' with threshold ',
                              input$threshold, ' (', formatC(thr, format = "e", 2),
                              ').')
     } else {
       projUserThr <- projUser
       shinyLogs %>% writeLog("Projection of model to user-specified files for (**)",
-                             em(spName(occs())), ' with ', predType, ' output.')
+                             em(spName(curSp())), ' with ', predType, ' output.')
     }
     raster::crs(projUserThr) <- raster::crs(envs())
     # rename

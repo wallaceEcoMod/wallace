@@ -34,7 +34,8 @@ model_bioclim_module_server <- function(input, output, session, common) {
                                  occsGrp = spp[[sp]]$occs$partition,
                                  bgGrp = spp[[sp]]$bg$partition,
                                  bgMsk = spp[[sp]]$procEnvs$bgMask,
-                                 logger)
+                                 logger,
+                                 spN = sp)
 
       req(m.bioclim)
 

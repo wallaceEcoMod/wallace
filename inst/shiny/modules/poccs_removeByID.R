@@ -17,8 +17,9 @@ poccs_removeByID_module_server <- function(input, output, session, common) {
   observeEvent(input$goRemoveByID, {
     # FUNCTION CALL ####
     occs.rem <- poccs_removeByID(occs(),
-                              input$removeID,
-                              logger)
+                                 input$removeID,
+                                 logger,
+                                 spN = curSp())
     print(input$removeID)
     req(occs.rem)
     # LOAD INTO SPP ####

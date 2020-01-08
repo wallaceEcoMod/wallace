@@ -10,6 +10,7 @@
 #' @param drawBgBuf x
 #' @param occs x
 #' @param logger x
+#' @param spN x
 # @keywords
 #'
 # @examples
@@ -28,7 +29,7 @@
 #' @export
 
 penvs_drawBgExtent <- function(polyExtXY, polyExtID, drawBgBuf, occs,
-                               logger = NULL) {
+                               logger = NULL, spN = NULL) {
   ptRem <- NULL
   occs.xy <- occs[c('longitude', 'latitude')]
   # make spatial pts object of original occs and preserve origID
@@ -40,9 +41,9 @@ penvs_drawBgExtent <- function(polyExtXY, polyExtID, drawBgBuf, occs,
   if (ptRem == 0) {
     bgExt <- rgeos::gBuffer(newPoly, width = drawBgBuf)
     if (drawBgBuf == 0 ) {
-      logger %>% writeLog(em(spName(occs)), ' : Draw polygon without buffer(**).')
+      logger %>% writeLog(em(spName(spN)), ' : Draw polygon without buffer(**).')
     } else {
-      logger %>% writeLog(em(spName(occs)), ' : Draw polygon with buffer of ',
+      logger %>% writeLog(em(spName(spN)), ' : Draw polygon with buffer of ',
                           drawBgBuf, ' degrees (**).')
     }
     bgExt <- sp::SpatialPolygonsDataFrame(bgExt,

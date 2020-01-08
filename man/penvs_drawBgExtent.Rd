@@ -4,7 +4,14 @@
 \alias{penvs_drawBgExtent}
 \title{penvs_drawBgExtent}
 \usage{
-penvs_drawBgExtent(polyExtXY, polyExtID, drawBgBuf, occs, logger = NULL)
+penvs_drawBgExtent(
+  polyExtXY,
+  polyExtID,
+  drawBgBuf,
+  occs,
+  logger = NULL,
+  spN = NULL
+)
 }
 \arguments{
 \item{polyExtXY}{x}
@@ -16,6 +23,8 @@ penvs_drawBgExtent(polyExtXY, polyExtID, drawBgBuf, occs, logger = NULL)
 \item{occs}{x}
 
 \item{logger}{x}
+
+\item{spN}{x}
 }
 \description{
 ..

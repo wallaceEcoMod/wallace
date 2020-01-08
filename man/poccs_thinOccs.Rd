@@ -4,7 +4,7 @@
 \alias{poccs_thinOccs}
 \title{poocs_thinOccs}
 \usage{
-poccs_thinOccs(occs, thinDist, logger = NULL)
+poccs_thinOccs(occs, thinDist, logger = NULL, spN = NULL)
 }
 \arguments{
 \item{occs}{x}
@@ -12,6 +12,8 @@ poccs_thinOccs(occs, thinDist, logger = NULL)
 \item{thinDist}{x}
 
 \item{logger}{x}
+
+\item{spN}{x}
 }
 \description{
 ..

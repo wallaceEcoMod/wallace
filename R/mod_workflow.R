@@ -44,7 +44,7 @@
 #   occsClean=occs[keep,]
 #
 #   shinyLogs %>% writeLog(
-#     em(spName(occs)), ": Removing dirty occurrences")
+#     em(spName(curSp())), ": Removing dirty occurrences")
 #
 #   ########
 #
