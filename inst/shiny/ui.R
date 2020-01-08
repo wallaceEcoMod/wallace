@@ -389,21 +389,10 @@ tagList(
                   insert_modules_results(component)
                 )
               }),
-              # conditionalPanel("input.tabs == 'poccs'",
-              #                  profileOccs_resultsUI("poccs_profileOccs_uiID")),
-              conditionalPanel(
-                "input.tabs == 'model'",
-                conditionalPanel("input.modelSel == 'BIOCLIM' || input.modelSel == 'Maxent'",
-                                 uiOutput('evalTbls'))
-              ),
               conditionalPanel(
                 "input.tabs == 'vis' && input.visSel == 'response'",
                 imageOutput('responsePlot')
               )
-            ),
-            tabPanel(
-              'Lambdas',
-              verbatimTextOutput('lambdas')
             ),
             tabPanel(
               'Component Guidance',

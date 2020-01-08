@@ -487,59 +487,6 @@ function(input, output, session) {
   # MODEL: other controls ####
   # # # # # # # # # # # # # # # # # #
 
-  output$evalTbls <- renderUI({
-    req(curSp(), evalOut())
-    res <- evalOut()@results
-    res.grp <- evalOut()@results.grp
-    tuned.n <- ncol(evalOut()@tuned.settings)
-    if(tuned.n > 0) {
-      res.round <- cbind(res[,seq(1, tuned.n)],
-                         round(res[,seq(tuned.n+1, ncol(res))], digits = 3))
-      res.grp.round <- cbind(res.grp[,seq(1, tuned.n+1)],
-                             round(res.grp[,seq(tuned.n+2, ncol(res.grp))],
-                                   digits = 3))
-    } else {
-      res.round <- cbind(round(res[, 1:13], digits = 3))
-      res.grp.round <- cbind(fold = res.grp[, 1],
-                             round(res.grp[, 2:5], digits = 3))
-    }
-    # define contents for both evaluation tables
-    options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
-    output$evalTbl <- DT::renderDataTable(res.round, options = options)
-    output$evalTblBins <- DT::renderDataTable(res.grp.round, options = options)
-
-    tagList(br(),
-            span("Evaluation statistics: full model and partition averages",
-                class = "stepText"), br(), br(),
-            DT::dataTableOutput('evalTbl'), br(),
-            span("Evaluation statistics: individual partitions",
-                class = "stepText"), br(), br(),
-            DT::dataTableOutput('evalTblBins'))
-  })
-
-  # define contents for lambdas table
-  output$lambdas <- renderPrint({
-      req(curSp(), evalOut())
-      if(spp[[curSp()]]$rmm$model$algorithm == "maxnet") {
-        evalOut()@models[[curModel()]]$betas
-      } else if(spp[[curSp()]]$rmm$model$algorithm == "maxent.jar") {
-        evalOut()@models[[curModel()]]@lambdas
-      }
-    })
-
-  # hide lambdas table if it is not a maxent model
-  observeEvent(input$tabs, {
-    hideTab(inputId = 'main', target = 'Lambdas')
-  })
-
-  observeEvent(input$modelSel, {
-    hideTab(inputId = 'main', target = 'Lambdas')
-    if (module() == "Maxent") {
-      showTab(inputId = 'main', target = 'Lambdas')
-    }
-  })
-
-
   # convenience function for modeling results list for current species
   evalOut <- reactive(spp[[curSp()]]$evalOut)
 

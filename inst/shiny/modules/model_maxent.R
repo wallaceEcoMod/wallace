@@ -59,6 +59,7 @@ model_maxent_module_server <- function(input, output, session, common) {
   curSp <- common$curSp
   spp <- common$spp
   logger <- common$logger
+  curModel <- common$curModel
 
   observe({
     if(input$algMaxent == "maxnet") {
@@ -135,12 +136,57 @@ model_maxent_module_server <- function(input, output, session, common) {
       spp[[sp]]$rmm$model$maxent$algorithmNotes <- ver
     }
     common$update_component(tab = "Results")
-    common$remove_module(component = "vis", module = "vis_bioclimPlot")
 })
 
-  output$maxentPrint <- renderPrint({
-    req(spp[[curSp()]]$evalOut)
-    spp[[curSp()]]$evalOut
+  output$evalTbls <- renderUI({
+    req(spp[[curSp()]]$rmm$model$algorithm)
+    if (spp[[curSp()]]$rmm$model$algorithm == "maxnet" |
+        spp[[curSp()]]$rmm$model$algorithm == "maxent.jar") {
+      req(spp[[curSp()]]$evalOut)
+      res <- spp[[curSp()]]$evalOut@results
+      res.grp <- spp[[curSp()]]$evalOut@results.grp
+      tuned.n <- ncol(spp[[curSp()]]$evalOut@tune.settings)
+      if(tuned.n > 0) {
+        res.round <- cbind(res[,seq(1, tuned.n)],
+                           round(res[,seq(tuned.n+1, ncol(res))], digits = 3))
+        res.grp.round <- cbind(res.grp[,seq(1, tuned.n+1)],
+                               round(res.grp[,seq(tuned.n+2, ncol(res.grp))],
+                                     digits = 3))
+      } else {
+        res.round <- cbind(round(res[, 1:13], digits = 3))
+        res.grp.round <- cbind(fold = res.grp[, 1],
+                               round(res.grp[, 2:5], digits = 3))
+      }
+      # define contents for both evaluation tables
+      options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
+      output$evalTbl <- DT::renderDataTable(res.round, options = options)
+      output$evalTblBins <- DT::renderDataTable(res.grp.round, options = options)
+      output$lambdas <- renderPrint({
+        req(spp[[curSp()]]$evalOut)
+        if(spp[[curSp()]]$rmm$model$algorithm == "maxnet") {
+          spp[[curSp()]]$evalOut@models[[curModel()]]$betas
+        } else if(spp[[curSp()]]$rmm$model$algorithm == "maxent.jar") {
+          spp[[curSp()]]$evalOut@models[[curModel()]]@lambdas
+        }
+      })
+
+      tabsetPanel(
+        tabPanel("Evaluation",
+                 tagList(br(),
+                         span("Evaluation statistics: full model and partition averages",
+                              class = "stepText"), br(), br(),
+                         DT::dataTableOutput(session$ns('evalTbl')), br(),
+                         span("Evaluation statistics: individual partitions",
+                              class = "stepText"), br(), br(),
+                         DT::dataTableOutput(session$ns('evalTblBins')))
+        ),
+        tabPanel("Lambdas",
+                 br(),
+                 span("Maxent Lambdas File", class = "stepText"), br(), br(),
+                 verbatimTextOutput(session$ns("lambdas"))
+        )
+      )
+    }
   })
 
   return(list(
@@ -157,7 +203,7 @@ model_maxent_module_server <- function(input, output, session, common) {
 model_maxent_module_result <- function(id) {
   ns <- NS(id)
   # Result UI
-  verbatimTextOutput(ns("maxentPrint"))
+  uiOutput(ns('evalTbls'))
 }
 
 model_maxent_module_rmd <- function(species) {
