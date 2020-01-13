@@ -189,17 +189,11 @@ tagList(
               "visSel", "Modules Available:",
               choices = c(
                 insert_modules_options("vis"),
-                "Plot Response Curves" = 'response',
                 "Map Prediction" = 'mapPreds'),
               selected = 'mapPreds' # Check default (no selected param)
             ),
             tags$hr(),
             insert_modules_ui("vis"),
-            conditionalPanel(
-              "input.visSel == 'response'",
-              uiTop(responsePlot_INFO),
-              responsePlot_UI('c7_responsePlot')
-            ),
             conditionalPanel(
               "input.visSel == 'mapPreds'",
               uiTop(mapPreds_INFO),
@@ -207,10 +201,6 @@ tagList(
               actionButton("goMapPreds", "Plot"), br()
             ),
             tags$hr(),
-            conditionalPanel(
-              "input.visSel == 'response'",
-              uiBottom(responsePlot_INFO)
-            ),
             conditionalPanel(
               "input.visSel == 'mapPreds'",
               uiBottom(mapPreds_INFO)
@@ -345,7 +335,6 @@ tagList(
                 uiOutput("curModelUI")
               )
             ),
-            #uiOutput("curEnvUI"))),
             column(
               2,
               offset = 1,
@@ -388,11 +377,7 @@ tagList(
                   glue::glue("input.tabs == '{component}'"),
                   insert_modules_results(component)
                 )
-              }),
-              conditionalPanel(
-                "input.tabs == 'vis' && input.visSel == 'response'",
-                imageOutput('responsePlot')
-              )
+              })
             ),
             tabPanel(
               'Component Guidance',

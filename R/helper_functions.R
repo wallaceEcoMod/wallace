@@ -287,26 +287,48 @@ evalPlots <- function(evalOut) {
 
 # make data.frame of lambdas vector from Maxent model object
 #' @export
-lambdasDF <- function(mx) {
-  lambdas <- mx@lambdas[1:(length(mx@lambdas)-4)]
-  data.frame(var=sapply(lambdas, FUN=function(x) strsplit(x, ',')[[1]][1]),
-             coef=sapply(lambdas, FUN=function(x) as.numeric(strsplit(x, ',')[[1]][2])),
-             min=sapply(lambdas, FUN=function(x) as.numeric(strsplit(x, ',')[[1]][3])),
-             max=sapply(lambdas, FUN=function(x) as.numeric(strsplit(x, ',')[[1]][4])),
-             row.names=1:length(lambdas))
+lambdasDF <- function(mx, alg) {
+  if (alg == "maxent.jar") {
+    lambdas <- mx@lambdas[1:(length(mx@lambdas)-4)]
+    data.frame(var = sapply(lambdas, FUN = function(x) strsplit(x, ',')[[1]][1]),
+               coef = sapply(lambdas, FUN = function(x) as.numeric(strsplit(x, ',')[[1]][2])),
+               row.names=1:length(lambdas))
+  } else if (alg == "maxnet") {
+    lambdas <- mx$betas
+    data.frame(var = names(lambdas),
+               coef = lambdas,
+               row.names = 1:length(lambdas))
+  }
 }
 ## pulls out all non-zero, non-redundant (removes hinge/product/threshold) predictor names
 #' @export
-mxNonzeroCoefs <- function(mx) {
-  x <- lambdasDF(mx)
-  #remove any rows that have a zero lambdas value (Second column)
-  x <- x[(x[,2] != 0),]
-  #remove any rows that have duplicate "var"s (hinges, quadratics)
-  x <- unique(sub("\\^\\S*", "", x[,1]))
-  x <- unique(sub("\\`", "", x))
-  x <- unique(sub("\\'", "", x))
-  x <- unique(sub("\\=\\S*", "", x))
-  x <- unique(sub("\\(", "", x))
+mxNonzeroCoefs <- function(mx, alg) {
+  if (alg == "maxent.jar") {
+    x <- lambdasDF(mx, alg)
+    #remove any rows that have a zero lambdas value (Second column)
+    x <- x[(x[,2] != 0),]
+    #remove any rows that have duplicate "var"s (hinges, quadratics, product)
+    x <- unique(sub("\\^\\S*", "", x[,1]))
+    x <- unique(sub("\\`", "", x))
+    x <- unique(sub("\\'", "", x))
+    x <- unique(sub("\\=\\S*", "", x))
+    x <- unique(sub("\\(", "", x))
+    x <- unique(unlist(strsplit(x, split = "\\*")))
+    x <- sort(x)
+  } else if (alg == "maxnet") {
+    x <- lambdasDF(mx, alg)
+    #remove any rows that have a zero lambdas value (Second column)
+    x <- x[(x[,2] != 0),]
+    #remove any rows that have duplicate "var"s (hinges, quadratics, product)
+    x <- unique(sub("\\^\\S*", "", x[,1]))
+    x <- unique(sub("\\I", "", x))
+    x <- unique(sub("\\hinge", "", x))
+    x <- unique(sub("\\categorical", "", x))
+    x <- unique(sub("\\)\\:\\S*", "", x))
+    x <- unique(sub("\\(", "", x))
+    x <- unique(unlist(strsplit(x, split = "\\:")))
+    x <- sort(x)
+  }
 }
 
 #' @export

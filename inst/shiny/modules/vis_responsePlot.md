@@ -1,8 +1,3 @@
----
-title: "vis_response"
-output: html_document
----
-
 ### **Module:** ***Plot Response Curves*** 
 	
 **BACKGROUND**  
@@ -20,3 +15,4 @@ Users must first select a model. Depending on the `ENMeval` settings selected in
 **REFERENCES**
 
 Elith, J., & Graham, C. H. (2009). Do they? How do they? WHY do they differ? On finding reasons for differing performances of species distribution models. *Ecography*. 32: 66-77.
+

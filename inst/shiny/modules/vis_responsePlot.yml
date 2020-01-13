@@ -1,0 +1,5 @@
+component: "vis"
+short_name: "Response Curves"
+long_name: "Plot Response Curves"
+authors: "Jamie M. Kass, Robert Muscarella, Bruno Vilela, Gonzalo E. Pinilla-Buitrago, Robert P. Anderson"
+package: [dismo, maxnet]

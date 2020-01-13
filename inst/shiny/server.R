@@ -244,28 +244,6 @@ function(input, output, session) {
   # OBTAIN ENVS: other controls ####
   # # # # # # # # # # # # # # # # # #
 
-  # ui that populates with the names of environmental predictors used
-  output$curEnvUI <- renderUI({
-    # for Maxent, only display the environmental predictors with non-zero beta coefficients
-    # from the lambdas file (the predictors that were not removed via regularization)
-    # if (rmm()$model$algorithm == "Maxent") {
-    #   mod <- spp[[curSp()]]$model$models[[curModel()]]
-    #   n <- mxNonzeroCoefs(mod)
-    # } else {
-
-    # ensure envs entity is within spp
-    req(curSp(), envs())
-    if(!is.null(envs())) {
-      n <- c(names(envs()))
-    } else {
-      n <- NULL
-    }
-    envsNameList <- c(list("Current variable" = ""), setNames(as.list(n), n))
-    if(component() == 'espace') options <- list(maxItems = 2) else options <- list(maxItems = 1)
-    selectizeInput('curEnv', label = "Select variable" , choices = envsNameList,
-                   multiple = TRUE, selected = n[1], options = options)
-  })
-
   # shortcut to currently selected environmental variable, read from curEnvUI
   curEnv <- reactive(input$curEnv)
 
@@ -549,15 +527,6 @@ function(input, output, session) {
   ########################################### #
   ### COMPONENT: VISUALIZE MODEL RESULTS ####
   ########################################### #
-
-  # # # # # # # # # # # # # # # # # #
-  # module Response Curve Plots ####
-  # # # # # # # # # # # # # # # # # #
-  responsePlot <- callModule(responsePlot_MOD, 'c7_responsePlot')
-  output$responsePlot <- renderPlot({
-    # do not plot if missing models
-    responsePlot()
-  }, width = 700, height = 700)
 
   # # # # # # # # # # # # # # #
   # module Map Prediction ####
