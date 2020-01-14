@@ -1,0 +1,5 @@
+component: "proj"
+short_name: "Project to User-files (**)"
+long_name: "Project to User-files (**)"
+authors: "Gonzalo E. Pinilla-Buitrago, Jamie M. Kass, Robert P. Anderson"
+package: [dismo]

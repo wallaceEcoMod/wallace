@@ -49,7 +49,8 @@ base_module_configs <- c(
   "modules/vis_maxentEvalPlot.yml",
   "modules/vis_responsePlot.yml",
   "modules/proj_area.yml",
-  "modules/proj_time.yml"
+  "modules/proj_time.yml",
+  "modules/proj_user.yml"
 )
 
 # Load user-defined modules

@@ -667,20 +667,6 @@ function(input, output, session) {
   ### COMPONENT: PROJECT MODEL ####
   ########################################### #
 
-  observeEvent(input$goProjExtUser, {
-    projExtent <- callModule(projExtent_MOD, 'c8_projectExtentUser_uiID')
-    projExtent()
-  })
-
-
-  # # # # # # # # # # # # # # # # #
-  # module Project to User-files ####
-  # # # # # # # # # # # # # # # # #
-  observeEvent(input$goProjectUser, {
-    projUser <- callModule(projectUser_MOD, 'c8_projectUser_uiID')
-    projUser()
-  })
-
   # # # # # # # # # # # # # # # # # # # #
   # module Environmental Similarity ####
   # # # # # # # # # # # # # # # # # # # #
@@ -864,19 +850,6 @@ function(input, output, session) {
       }
     }
   )
-
-  # Render a text with filenames for user-specified projection rasters
-  output$projUserNames <- renderUI({
-    req(curSp())
-    sp <- curSp()[1]
-    if(is.null(spp[[sp]]$envs)) return()
-    envNames <- names(envs.global[[spp[[sp]]$envs]])
-    tagList(
-      tags$em("Your files must be named as: (**)"),
-      tags$p(paste(spp[[curSp()]]$rmm$data$environment$variableNames,
-                   collapse = ", "))
-    )
-    })
 
   ########################################### #
   ### RMARKDOWN FUNCTIONALITY ####

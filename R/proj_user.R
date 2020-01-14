@@ -1,5 +1,5 @@
 
-#' @title c8_projectUser
+#' @title proj_user
 #' @description ..
 #'
 #' @details
@@ -10,7 +10,7 @@
 #' @param envs x
 #' @param outputType x
 #' @param pjExt x
-#' @param shinyLogs x
+#' @param logger x
 # @keywords
 #'
 # @examples
@@ -27,27 +27,27 @@
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 
-c8_projectUser <- function(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
-                           shinyLogs = NULL) {
+proj_user <- function(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
+                      logger = NULL) {
   newPoly <- pjExt
 
   if (alg == 'bioclim') {
-    shinyLogs %>% writeLog('Projection for BIOCLIM model.')
+    logger %>% writeLog('Projection for BIOCLIM model.')
   } else if (alg == 'maxent') {
     if (clamp == TRUE | alg == "maxent.jar") {
-      shinyLogs %>% writeLog('Projection for clamped model', curModel(), '.')
+      logger %>% writeLog('Projection for clamped model', curModel(), '.')
     } else if (clamp == FALSE) {
-      shinyLogs %>% writeLog('Projection for unclamped', curModel(), '.')
+      logger %>% writeLog('Projection for unclamped', curModel(), '.')
     }
   }
 
-  smartProgress(shinyLogs,
+  smartProgress(logger,
                 message = "Masking environmental grids to projection extent...", {
     projMsk <- raster::crop(envs, newPoly)
     projMsk <- raster::mask(projMsk, newPoly)
   })
 
-  smartProgress(shinyLogs,
+  smartProgress(logger,
                 message = 'Projecting model to user-specified files (**)...', {
     if (alg == 'BIOCLIM') {
       modProjUser <- dismo::predict(evalOut@models[[curModel]], projMsk)

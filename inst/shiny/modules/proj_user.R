@@ -1,4 +1,4 @@
-proj_time_module_ui <- function(id) {
+proj_user_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
     span("Step 1:", class = "step"),
@@ -20,8 +20,8 @@ proj_time_module_ui <- function(id) {
                          'Buffer area in degrees (1 degree = ~111 km). Exact',
                          ' length varies based on latitudinal position.'),
                        numericInput(ns("userPjBuf"),
-                         label = "Study region buffer distance (degree)",
-                         value = 0, min = 0, step = 0.5)
+                                    label = "Study region buffer distance (degree)",
+                                    value = 0, min = 0, step = 0.5)
                      )),
     conditionalPanel(sprintf("input['%s'] == 'pjDraw'", ns("projExt")),
                      p("Draw a polygon and select buffer distance(**)"),
@@ -37,22 +37,17 @@ proj_time_module_ui <- function(id) {
                      )),
     conditionalPanel(sprintf("input['%s'] == 'pjCur'", ns("projExt")),
                      p('You will use the same extent (**)')),
-    actionButton(ns("goProjExtTime"), "Create(**)"), br(),
+    actionButton(ns("goProjExtUser"), "Create(**)"), br(),
     tags$hr(),
     span("Step 2:", class = "step"),
     span("Project (**)", class = "stepText"), br(),
     p("Project model to projected extent (red) (**)"),
-    selectInput(ns("selTime"), label = "Select time period",
-                choices = list("Select period" = "",
-                               "2050" = 50,
-                               "2070" = 70)),
-    uiOutput(ns('selGCMui')),
-    selectInput(ns('selRCP'), label = "Select RCP",
-                choices = list("Select RCP" = "",
-                               '2.6' = 26,
-                               '4.5' = 45,
-                               '6.0' = 60,
-                               '8.5' = 85)),
+    uiOutput(ns("projUserNames")),
+    fileInput(ns("userProjEnvs"),
+              label = paste0('Input rasters in single-file format (i.e. .tif, ',
+                             '.asc). All rasters must have the same extent and ',
+                             'resolution (cell size). (**)'),
+              accept = c(".asc", ".tif"), multiple = TRUE),
     tags$div(title = paste0('Create binary map of predicted presence/absence ',
                             'assuming all values above threshold value represent ',
                             'presence. Also can be interpreted as a "potential ',
@@ -67,15 +62,16 @@ proj_time_module_ui <- function(id) {
                                  min = 0, max = 1, value = .05)),
     conditionalPanel(paste0("input['", ns("threshold"), "'] == 'none'"),
                      uiOutput(ns("noThrs"))),
-    actionButton(ns('goProjectTime'), "Project")
+    actionButton(ns('goProjectUser'), "Project")
   )
 }
 
-proj_time_module_server <- function(input, output, session, common) {
+proj_user_module_server <- function(input, output, session, common) {
 
   spp <- common$spp
   evalOut <- common$evalOut
   envs <- common$envs
+  envs.global <- common$envs.global
   rmm <- common$rmm
   curSp <- common$curSp
   curModel <- common$curModel
@@ -89,33 +85,21 @@ proj_time_module_server <- function(input, output, session, common) {
     }
   })
 
-  GCMlookup <- c(AC = "ACCESS1-0", BC = "BCC-CSM1-1", CC = "CCSM4",
-                 CE = "CESM1-CAM5-1-FV2", CN = "CNRM-CM5", GF = "GFDL-CM3",
-                 GD = "GFDL-ESM2G", GS = "GISS-E2-R", HD = "HadGEM2-AO",
-                 HG = "HadGEM2-CC", HE = "HadGEM2-ES", IN = "INMCM4",
-                 IP = "IPSL-CM5A-LR", ME = "MPI-ESM-P", MI = "MIROC-ESM-CHEM",
-                 MR = "MIROC-ESM", MC = "MIROC5", MP = "MPI-ESM-LR",
-                 MG = "MRI-CGCM3", NO = "NorESM1-M")
 
-  # dynamic ui for GCM selection: choices differ depending on choice of time period
-  output$selGCMui <- renderUI({
-    ns <- session$ns
-
-    if (input$selTime == 'lgm') {
-      gcms <- c('CC', 'MR', 'MC')
-    } else if (input$selTime == 'mid') {
-      gcms <- c("BC", "CC", "CE", "CN", "HG", "IP", "MR", "ME", "MG")
-    } else {
-      gcms <- c("AC", "BC", "CC", "CE", "CN", "GF", "GD", "GS", "HD",
-                "HG", "HE", "IN", "IP", "MI", "MR", "MC", "MP", "MG", "NO")
-    }
-    names(gcms) <- GCMlookup[gcms]
-    gcms <- as.list(c("Select GCM" = "", gcms))
-    selectInput(ns("selGCM"), label = "Select global circulation model",
-                choices = gcms)
+  # Render a text with filenames for user-specified projection rasters
+  output$projUserNames <- renderUI({
+    req(curSp())
+    sp <- curSp()[1]
+    if(is.null(spp[[sp]]$envs)) return()
+    envNames <- names(envs.global[[spp[[sp]]$envs]])
+    tagList(
+      tags$em("Your files must be named as: (**)"),
+      tags$p(paste(spp[[curSp()]]$rmm$data$environment$variableNames,
+                   collapse = ", "))
+    )
   })
 
-  observeEvent(input$goProjExtTime, {
+  observeEvent(input$goProjExtUser, {
     # ERRORS ####
     if (is.null(spp[[curSp()]]$visualization$mapPred)) {
       logger %>%
@@ -197,69 +181,65 @@ proj_time_module_server <- function(input, output, session, common) {
     common$update_component(tab = "Map")
   })
 
-  observeEvent(input$goProjectTime, {
+  observeEvent(input$goProjectUser, {
     # ERRORS ####
     if (is.null(spp[[curSp()]]$visualization$mapPred)) {
       logger %>%
-        writeLog(
-          type = 'error',
-          'Calculate a model prediction in visualization component before projecting.')
+        writeLog(type = 'error',
+                 'Calculate a model prediction in visualize component before projecting.')
       return()
     }
     if (is.null(spp[[curSp()]]$project$pjExt)) {
       logger %>% writeLog(type = 'error', 'Select projection extent first.')
       return()
     }
-    envsRes <- raster::res(envs())[1]
-    if(envsRes < 0.01) {
+    if (is.null(input$userProjEnvs)) {
+      logger %>% writeLog(type = 'error', "Raster files not uploaded.")
+      return()
+    }
+    # Check the number of selected files
+    if (length(input$userProjEnvs$name) !=
+        length(spp[[curSp()]]$rmm$data$environment$variableNames)) {
+      logger %>%
+        writeLog(type = 'error', "Number of files are not the same that the ",
+                 "enviromental variables (**)")
+      return()
+    }
+    # Check if the filesnames are the same that envs()
+    if (!identical(tools::file_path_sans_ext(sort(input$userProjEnvs$name)),
+                   sort(spp[[curSp()]]$rmm$data$environment$variableNames))) {
       logger %>%
         writeLog(type = 'error',
-                 paste0('Project to New Time currently only available with ',
-                        'resolutions >30 arc seconds.'))
+                 paste0("Raster files don't have same names. You must name your",
+                        " files as: (**) "),
+                 em(paste(spp[[curSp()]]$rmm$data$environment$variableNames,
+                          collapse = ", ")), ".")
       return()
     }
 
-    # code taken from dismo getData() function to catch if user is trying to
-    # download a missing combo of gcm / rcp
-    gcms <- c('AC', 'BC', 'CC', 'CE', 'CN', 'GF', 'GD', 'GS', 'HD', 'HG', 'HE',
-              'IN', 'IP', 'MI', 'MR', 'MC', 'MP', 'MG', 'NO')
-    rcps <- c(26, 45, 60, 85)
-    m <- matrix(c(0,1,1,0,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-                  1,1,1,1,1,1,1,0,1,1,0,0,1,0,1,1,1,0,0,1,1,1,1,0,1,1,1,1,1,0,1,
-                  0,1,1,1,1,1,1,1,1,1,1,1,1,1), ncol = 4)
-    i <- m[which(input$selGCM == gcms), which(input$selRCP == rcps)]
-    if (!i) {
+    # Load raster ####
+    userProjEnvs <- envs_userEnvs(rasPath = input$userProjEnvs$datapath,
+                                  rasName = input$userProjEnvs$name)
+
+    # ERRORS ####
+    # Check that the extents of raster and projection extent instersects
+    if (!rgeos::gIntersects(spp[[curSp()]]$project$pjExt,
+                            as(raster::extent(userProjEnvs), 'SpatialPolygons'))) {
       logger %>%
-        writeLog(type = 'error',
-                 paste0('This combination of GCM and RCP is not available. Please ',
-                        'make a different selection.'))
+        writeLog(type = 'error', 'Extents do not overlap (**)')
       return()
     }
-
-    # DATA ####
-    smartProgress(
-      logger,
-      message = paste("Retrieving WorldClim data for", input$selTime,
-                      input$selRCP, "..."),
-      {
-        projTimeEnvs <-
-          raster::getData('CMIP5', var = "bio", res = envsRes * 60,
-                          rcp = input$selRCP, model = input$selGCM,
-                          year = input$selTime)
-        names(projTimeEnvs) <- paste0('bio', c(paste0('0',1:9), 10:19))
-        # in case user subsetted bioclims
-        projTimeEnvs <- projTimeEnvs[[names(envs())]]
-      }
-    )
 
     # FUNCTION CALL ####
     predType <- rmm()$output$prediction$notes
-    projTime.out <- proj_time(evalOut(), curModel(), projTimeEnvs, predType,
+    projUser.out <- proj_user(evalOut(), curModel(), userProjEnvs,
+                              outputType = predType,
                               alg = rmm()$model$algorithm,
                               clamp = rmm()$model$maxent$clamping,
                               spp[[curSp()]]$project$pjExt, logger)
-    projExt <- projTime.out$projExt
-    projTime <- projTime.out$projTime
+
+    projExt <- projUser.out$projExt
+    projUser <- projUser.out$projUser
 
     # PROCESSING ####
     # generate binary prediction based on selected thresholding rule
@@ -267,7 +247,6 @@ proj_time_module_server <- function(input, output, session, common) {
     occPredVals <- spp[[curSp()]]$visualization$occPredVals
 
     if(!(input$threshold == 'none')) {
-      # use threshold from present-day model training area
       if (input$threshold == 'mtp') {
         thr <- quantile(occPredVals, probs = 0)
       } else if (input$threshold == 'p10') {
@@ -275,54 +254,46 @@ proj_time_module_server <- function(input, output, session, common) {
       } else if (input$threshold == 'qtp'){
         thr <- quantile(occPredVals, probs = input$trainPresQuantile)
       }
-      projTimeThr <- projTime > thr
-      logger %>% writeLog("Projection of model to ", paste0('20', input$selTime),
-                             " for ", em(spName(curSp())), ' with threshold ',
+      projUserThr <- projUser > thr
+      logger %>% writeLog("Projection of model to user-specified files for (**)",
+                             em(spName(curSp())), ' with threshold ',
                              input$threshold, ' (', formatC(thr, format = "e", 2),
-                             ") for GCM ", GCMlookup[input$selGCM],
-                             " under RCP ", as.numeric(input$selRCP)/10.0, ".")
+                             ').')
     } else {
-      projTimeThr <- projTime
-      logger %>% writeLog("Projection of model to ", paste0('20', input$selTime),
-                             " for ", em(spName(curSp())), ' with ', predType,
-                             " output for GCM ", GCMlookup[input$selGCM],
-                             " under RCP ", as.numeric(input$selRCP)/10.0, ".")
+      projUserThr <- projUser
+      logger %>% writeLog("Projection of model to user-specified files for (**)",
+                             em(spName(curSp())), ' with ', predType, ' output.')
     }
-    raster::crs(projTimeThr) <- raster::crs(envs())
+    raster::crs(projUserThr) <- raster::crs(envs())
     # rename
-    names(projTimeThr) <- paste0(curModel(), '_thresh_', predType)
+    names(projUserThr) <- paste0(curModel(), '_thresh_', predType)
 
     # LOAD INTO SPP ####
     spp[[curSp()]]$project$pjEnvs <- projExt
-    spp[[curSp()]]$project$mapProj <- projTimeThr
-    spp[[curSp()]]$project$mapProjVals <- getRasterVals(projTimeThr, predType)
+    spp[[curSp()]]$project$mapProj <- projUserThr
+    spp[[curSp()]]$project$mapProjVals <- getRasterVals(projUserThr, predType)
 
     # METADATA ####
-    projYr <- paste0('20', input$selTime)
     spp[[curSp()]]$rmm$data$transfer$environment1$minVal <-
       printVecAsis(raster::cellStats(projExt, min), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$maxVal <-
       printVecAsis(raster::cellStats(projExt, max), asChar = TRUE)
-    spp[[curSp()]]$rmm$data$transfer$environment1$yearMin <- projYr
-    spp[[curSp()]]$rmm$data$transfer$environment1$yearMax <- projYr
+    spp[[curSp()]]$rmm$data$transfer$environment1$yearMin <- 1960
+    spp[[curSp()]]$rmm$data$transfer$environment1$yearMax <- 1990
     spp[[curSp()]]$rmm$data$transfer$environment1$resolution <-
       paste(round(raster::res(projExt)[1] * 60, digits = 2), "degrees")
     spp[[curSp()]]$rmm$data$transfer$environment1$extentSet <-
       printVecAsis(as.vector(projExt@extent), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$extentRule <-
-      "project to user-selected new time"
+      "project to user-specified files"
     spp[[curSp()]]$rmm$data$transfer$environment1$sources <- "WorldClim 1.4"
-    spp[[curSp()]]$rmm$data$transfer$environment1$notes <-
-      paste("projection to year", projYr, "for GCM",
-            GCMlookup[input$selGCM], "under RCP",
-            as.numeric(input$selRCP)/10.0)
 
     spp[[curSp()]]$rmm$output$transfer$environment1$units <-
       ifelse(predType == "raw", "relative occurrence rate", predType)
     spp[[curSp()]]$rmm$output$transfer$environment1$minVal <-
-      printVecAsis(raster::cellStats(projTimeThr, min), asChar = TRUE)
+      printVecAsis(raster::cellStats(projUserThr, min), asChar = TRUE)
     spp[[curSp()]]$rmm$output$transfer$environment1$maxVal <-
-      printVecAsis(raster::cellStats(projTimeThr, max), asChar = TRUE)
+      printVecAsis(raster::cellStats(projUserThr, max), asChar = TRUE)
     if(!(input$threshold == 'none')) {
       spp[[curSp()]]$rmm$output$transfer$environment1$thresholdSet <- thr
     } else {
@@ -330,8 +301,6 @@ proj_time_module_server <- function(input, output, session, common) {
     }
     spp[[curSp()]]$rmm$output$transfer$environment1$thresholdRule <- input$threshold
     spp[[curSp()]]$rmm$output$transfer$notes <- NULL
-
-    common$update_component(tab = "Map")
   })
 
   return(list(
@@ -345,7 +314,7 @@ proj_time_module_server <- function(input, output, session, common) {
 
 }
 
-proj_time_module_map <- function(map, common) {
+proj_user_module_map <- function(map, common) {
 
   spp <- common$spp
   evalOut <- common$evalOut
@@ -404,7 +373,7 @@ proj_time_module_map <- function(map, common) {
                 fill = FALSE, weight = 4, color = "red", group = 'proj')
 }
 
-proj_time_module_rmd <- function(species) {
+proj_user_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
     module_knit = species$rmm$code$wallaceSettings$someFlag,
