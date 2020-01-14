@@ -1,8 +1,3 @@
----
-title: "proj_projTime"
-output: html_document
----
-
 ### **Module:** ***Project to New Time***
 
 **BACKGROUND**  
@@ -26,3 +21,4 @@ Users may choose a thresholding rule to convert the continuous prediction to a b
 Anderson R.P. (2013). A framework for using niche models to estimate impacts of climate change on species distributions. *Annals of the New York Academy of Sciences*. 1297: 8-28.
 
 Fitzpatrick, M. C., & Hargrove, W. W. (2009). The projection of species distribution models and the problem of non-analog climate. *Biodiversity and Conservation*. 18: 2255-2261.
+

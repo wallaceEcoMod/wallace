@@ -667,28 +667,11 @@ function(input, output, session) {
   ### COMPONENT: PROJECT MODEL ####
   ########################################### #
 
-  # # # # # # # # # # # # # # # # #
-  # Step 1: Project extent ####
-  # # # # # # # # # # # # # # # # #
-  observeEvent(input$goProjExtTime, {
-    projExtent <- callModule(projExtent_MOD, 'c8_projectExtentTime_uiID')
-    projExtent()
-  })
-
   observeEvent(input$goProjExtUser, {
     projExtent <- callModule(projExtent_MOD, 'c8_projectExtentUser_uiID')
     projExtent()
   })
 
-
-  # # # # # # # # # # # # # # # # #
-  # module Project to New Time ####
-  # # # # # # # # # # # # # # # # #
-  # needs to be outside observeEvent to trigger GCM ui
-  projTime <- callModule(projectTime_MOD, 'c8_projectTime')
-  observeEvent(input$goProjectTime, {
-    projTime()
-  })
 
   # # # # # # # # # # # # # # # # #
   # module Project to User-files ####

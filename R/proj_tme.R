@@ -1,5 +1,5 @@
 
-#' @title c8_projectTim
+#' @title proj_time
 #' @description ..
 #'
 #' @details
@@ -10,7 +10,7 @@
 #' @param envs x
 #' @param outputType x
 #' @param pjExt x
-#' @param shinyLogs x
+#' @param logger x
 # @keywords
 #'
 # @examples
@@ -27,26 +27,26 @@
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 
-c8_projectTime <- function(evalOut, curModel, envs, outputType, alg, clamp,
-                           pjExt, shinyLogs = NULL) {
+proj_time <- function(evalOut, curModel, envs, outputType, alg, clamp,
+                      pjExt, logger = NULL) {
   newPoly <- pjExt
 
   if (alg == 'bioclim') {
-    shinyLogs %>% writeLog('Projection for BIOCLIM model.')
+    logger %>% writeLog('Projection for BIOCLIM model.')
   } else if (alg == 'maxent') {
     if (clamp == TRUE | alg == "maxent.jar") {
-      shinyLogs %>% writeLog('Projection for clamped model', curModel(), '.')
+      logger %>% writeLog('Projection for clamped model', curModel(), '.')
     } else if (clamp == FALSE) {
-      shinyLogs %>% writeLog('New area projection for unclamped', curModel(), '.')
+      logger %>% writeLog('New area projection for unclamped', curModel(), '.')
     }
   }
 
-  smartProgress(shinyLogs, message = "Clipping environmental data to current extent...", {
+  smartProgress(logger, message = "Clipping environmental data to current extent...", {
     pjtMsk <- raster::crop(envs, newPoly)
     pjtMsk <- raster::mask(pjtMsk, newPoly)
   })
 
-  smartProgress(shinyLogs, message = ("Projecting to new time..."), {
+  smartProgress(logger, message = ("Projecting to new time..."), {
     if (alg == 'BIOCLIM') {
       modProjTime <- dismo::predict(evalOut@models[[curModel]], pjtMsk)
     } else if (alg == 'maxnet') {

@@ -1,13 +1,47 @@
-projectTime_UI <- function(id) {
-  ns <- NS(id)
+proj_time_module_ui <- function(id) {
+  ns <- shiny::NS(id)
   tagList(
-    # aliases are different for ecoclimate temporal scenarios. e.g.
-    # "lgm" is "LGM"
-    # "mid" is "Holo"
-    # "2.6" is "Future 2.6"
-    # "4.5" is "Future 4.5"
-    # "6" is "Future 6"
-    # "8.5" is "Future 8.5"
+    span("Step 1:", class = "step"),
+    span("Choose Study Region (**)", class = "stepText"), br(), br(),
+    selectInput(ns('projExt'), label = "Select method (**)",
+                choices = list("Same extent (**)" = 'pjCur',
+                               "Draw polygon(**)" = 'pjDraw',
+                               "User-specified(**)" = 'pjUser')),
+    conditionalPanel(sprintf("input['%s'] == 'pjUser'", ns("projExt")),
+                     fileInput(
+                       ns("userPjShp"),
+                       label = paste0(
+                         'Upload polygon in shapefile (.shp, .shx, .dbf) or ',
+                         'CSV file with field order (longitude, latitude)'),
+                       accept = c(".csv", ".dbf", ".shx", ".shp"),
+                       multiple = TRUE),
+                     tags$div(
+                       title = paste0(
+                         'Buffer area in degrees (1 degree = ~111 km). Exact',
+                         ' length varies based on latitudinal position.'),
+                       numericInput(ns("userPjBuf"),
+                         label = "Study region buffer distance (degree)",
+                         value = 0, min = 0, step = 0.5)
+                     )),
+    conditionalPanel(sprintf("input['%s'] == 'pjDraw'", ns("projExt")),
+                     p("Draw a polygon and select buffer distance(**)"),
+                     tags$div(
+                       title = paste0(
+                         'Buffer area in degrees (1 degree = ~111 km). Exact',
+                         ' length varies based on latitudinal position.'
+                       ),
+                       numericInput(
+                         ns("drawPjBuf"),
+                         label = "Study region buffer distance (degree)",
+                         value = 0, min = 0, step = 0.5)
+                     )),
+    conditionalPanel(sprintf("input['%s'] == 'pjCur'", ns("projExt")),
+                     p('You will use the same extent (**)')),
+    actionButton(ns("goProjExtTime"), "Create(**)"), br(),
+    tags$hr(),
+    span("Step 2:", class = "step"),
+    span("Project (**)", class = "stepText"), br(),
+    p("Project model to projected extent (red) (**)"),
     selectInput(ns("selTime"), label = "Select time period",
                 choices = list("Select period" = "",
                                "2050" = 50,
@@ -31,13 +65,30 @@ projectTime_UI <- function(id) {
     conditionalPanel(sprintf("input['%s'] == 'qtp'", ns("threshold")),
                      sliderInput(ns("trainPresQuantile"), "Set quantile",
                                  min = 0, max = 1, value = .05)),
-    conditionalPanel(sprintf("input.modelSel == 'Maxent' & input['%s'] == 'none'",
-                             ns("threshold")),
-                     h5("Prediction output is the same than Visualize component (**)"))
+    conditionalPanel(paste0("input['", ns("threshold"), "'] == 'none'"),
+                     uiOutput(ns("noThrs"))),
+    actionButton(ns('goProjectTime'), "Project")
   )
 }
 
-projectTime_MOD <- function(input, output, session) {
+proj_time_module_server <- function(input, output, session, common) {
+
+  spp <- common$spp
+  evalOut <- common$evalOut
+  envs <- common$envs
+  rmm <- common$rmm
+  curSp <- common$curSp
+  curModel <- common$curModel
+  logger <- common$logger
+
+  output$noThrs <- renderUI({
+    ns <- session$ns
+    req(curSp(), evalOut())
+    if (spp[[curSp()]]$rmm$model$algorithm != "BIOCLIM") {
+      h5("Prediction output is the same than Visualize component (**)")
+    }
+  })
+
   GCMlookup <- c(AC = "ACCESS1-0", BC = "BCC-CSM1-1", CC = "CCSM4",
                  CE = "CESM1-CAM5-1-FV2", CN = "CNRM-CM5", GF = "GFDL-CM3",
                  GD = "GFDL-ESM2G", GS = "GISS-E2-R", HD = "HadGEM2-AO",
@@ -45,6 +96,7 @@ projectTime_MOD <- function(input, output, session) {
                  IP = "IPSL-CM5A-LR", ME = "MPI-ESM-P", MI = "MIROC-ESM-CHEM",
                  MR = "MIROC-ESM", MC = "MIROC5", MP = "MPI-ESM-LR",
                  MG = "MRI-CGCM3", NO = "NorESM1-M")
+
   # dynamic ui for GCM selection: choices differ depending on choice of time period
   output$selGCMui <- renderUI({
     ns <- session$ns
@@ -63,21 +115,97 @@ projectTime_MOD <- function(input, output, session) {
                 choices = gcms)
   })
 
-  reactive({
+  observeEvent(input$goProjExtTime, {
     # ERRORS ####
     if (is.null(spp[[curSp()]]$visualization$mapPred)) {
-      shinyLogs %>%
+      logger %>% writeLog(type = 'error',
+                          'Calculate a model prediction in model component before projecting.')
+      return()
+    }
+    if (input$projExt == 'pjDraw') {
+      if (is.null(spp[[curSp()]]$polyPjXY)) {
+        logger %>% writeLog(type = 'error',
+                            paste0("The polygon has not been drawn and finished. Please use the ",
+                                   "draw toolbar on the left-hand of the map to complete the ",
+                                   "polygon."))
+        return()
+      }
+    }
+    if (input$projExt == 'pjUser') {
+      if (is.null(input$userPjShp$datapath)) {
+        logger %>% writeLog(type = 'error', paste0("Specified filepath(s) (**)"))
+        return()
+      }
+    }
+
+    # FUNCTION CALL ####
+    if (input$projExt == 'pjDraw') {
+      polyPj <- proj_draw(spp[[curSp()]]$polyPjXY, spp[[curSp()]]$polyPjID,
+                          input$drawPjBuf, logger)
+      if (input$drawPjBuf == 0 ) {
+        logger %>% writeLog(
+          em(spName(curSp())), ' : Draw polygon without buffer(**).')
+      } else {
+        logger %>% writeLog(
+          em(spName(curSp())), ' : Draw polygon with buffer of ', input$drawPjBuf,
+          ' degrees (**).')
+      }
+      # METADATA ####
+      polyX <- printVecAsis(round(spp[[curSp()]]$polyPjXY[, 1], digits = 4))
+      polyY <- printVecAsis(round(spp[[curSp()]]$polyPjXY[, 2], digits = 4))
+      spp[[curSp()]]$rmm$code$wallaceSettings$drawExtPolyPjCoords <-
+        paste0('X: ', polyX, ', Y: ', polyY)
+    }
+
+    if (input$projExt == 'pjUser') {
+      polyPj <- penvs_userBgExtent(input$userPjShp$datapath,
+                                   input$userPjShp$name,
+                                   input$userPjBuf, logger)
+      # METADATA ####
+      # get extensions of all input files
+      exts <- sapply(strsplit(input$userPjShp$name, '\\.'),
+                     FUN = function(x) x[2])
+      if('csv' %in% exts) {
+        spp[[curSp()]]$rmm$code$wallaceSettings$userPjExt <- 'csv'
+        spp[[curSp()]]$rmm$code$wallaceSettings$userPjPath <- input$userPjShp$datapath
+      }
+      else if('shp' %in% exts) {
+        spp[[curSp()]]$rmm$code$wallaceSettings$userPjExt <- 'shp'
+        # get index of .shp
+        i <- which(exts == 'shp')
+        shpName <- strsplit(input$userPjShp$name[i], '\\.')[[1]][1]
+        spp[[curSp()]]$rmm$code$wallaceSettings$userPjShpParams <-
+          list(dsn = input$userPjShp$datapath[i], layer = shpName)
+      }
+    }
+
+    if (input$projExt == 'pjCur') {
+      polyPj <- spp[[curSp()]]$procEnvs$bgExt
+      logger %>% writeLog(
+        em(spName(curSp())),
+        ' : Projection extent equal to current extent region. (**)')
+    }
+    # LOAD INTO SPP ####
+    spp[[curSp()]]$project$pjExt <- polyPj
+
+    common$update_component(tab = "Map")
+  })
+
+  observeEvent(input$goProjectTime, {
+    # ERRORS ####
+    if (is.null(spp[[curSp()]]$visualization$mapPred)) {
+      logger %>%
         writeLog(type = 'error',
-                 'Calculate a model prediction in component 7 before projecting.')
+                 'Calculate a model prediction in visualization component before projecting.')
       return()
     }
     if (is.null(spp[[curSp()]]$project$pjExt)) {
-      shinyLogs %>% writeLog(type = 'error', 'Select projection extent first.')
+      logger %>% writeLog(type = 'error', 'Select projection extent first.')
       return()
     }
     envsRes <- raster::res(envs())[1]
     if(envsRes < 0.01) {
-      shinyLogs %>%
+      logger %>%
         writeLog(type = 'error',
                  paste0('Project to New Time currently only available with ',
                         'resolutions >30 arc seconds.'))
@@ -94,7 +222,7 @@ projectTime_MOD <- function(input, output, session) {
                   0,1,1,1,1,1,1,1,1,1,1,1,1,1), ncol = 4)
     i <- m[which(input$selGCM == gcms), which(input$selRCP == rcps)]
     if (!i) {
-      shinyLogs %>%
+      logger %>%
         writeLog(type = 'error',
                  paste0('This combination of GCM and RCP is not available. Please ',
                         'make a different selection.'))
@@ -102,23 +230,27 @@ projectTime_MOD <- function(input, output, session) {
     }
 
     # DATA ####
-    smartProgress(shinyLogs,
-                  message = paste("Retrieving WorldClim data for", input$selTime,
-                                  input$selRCP, "..."), {
-      projTimeEnvs <- raster::getData('CMIP5', var = "bio", res = envsRes * 60,
-                                      rcp = input$selRCP, model = input$selGCM,
-                                      year = input$selTime)
-      names(projTimeEnvs) <- paste0('bio', c(paste0('0',1:9), 10:19))
-      # in case user subsetted bioclims
-      projTimeEnvs <- projTimeEnvs[[names(envs())]]
-    })
+    smartProgress(
+      logger,
+      message = paste("Retrieving WorldClim data for", input$selTime,
+                      input$selRCP, "..."),
+      {
+        projTimeEnvs <-
+          raster::getData('CMIP5', var = "bio", res = envsRes * 60,
+                          rcp = input$selRCP, model = input$selGCM,
+                          year = input$selTime)
+        names(projTimeEnvs) <- paste0('bio', c(paste0('0',1:9), 10:19))
+        # in case user subsetted bioclims
+        projTimeEnvs <- projTimeEnvs[[names(envs())]]
+      }
+    )
 
     # FUNCTION CALL ####
     predType <- rmm()$output$prediction$notes
-    projTime.out <- c8_projectTime(evalOut(), curModel(), projTimeEnvs, predType,
-                                   alg = rmm()$model$algorithm,
-                                   clamp = rmm()$model$maxent$clamping,
-                                   spp[[curSp()]]$project$pjExt, shinyLogs)
+    projTime.out <- proj_time(evalOut(), curModel(), projTimeEnvs, predType,
+                              alg = rmm()$model$algorithm,
+                              clamp = rmm()$model$maxent$clamping,
+                              spp[[curSp()]]$project$pjExt, logger)
     projExt <- projTime.out$projExt
     projTime <- projTime.out$projTime
 
@@ -137,14 +269,14 @@ projectTime_MOD <- function(input, output, session) {
         thr <- quantile(occPredVals, probs = input$trainPresQuantile)
       }
       projTimeThr <- projTime > thr
-      shinyLogs %>% writeLog("Projection of model to ", paste0('20', input$selTime),
+      logger %>% writeLog("Projection of model to ", paste0('20', input$selTime),
                              " for ", em(spName(curSp())), ' with threshold ',
                              input$threshold, ' (', formatC(thr, format = "e", 2),
                              ") for GCM ", GCMlookup[input$selGCM],
                              " under RCP ", as.numeric(input$selRCP)/10.0, ".")
     } else {
       projTimeThr <- projTime
-      shinyLogs %>% writeLog("Projection of model to ", paste0('20', input$selTime),
+      logger %>% writeLog("Projection of model to ", paste0('20', input$selTime),
                              " for ", em(spName(curSp())), ' with ', predType,
                              " output for GCM ", GCMlookup[input$selGCM],
                              " under RCP ", as.numeric(input$selRCP)/10.0, ".")
@@ -175,8 +307,8 @@ projectTime_MOD <- function(input, output, session) {
     spp[[curSp()]]$rmm$data$transfer$environment1$sources <- "WorldClim 1.4"
     spp[[curSp()]]$rmm$data$transfer$environment1$notes <-
       paste("projection to year", projYr, "for GCM",
-                                  GCMlookup[input$selGCM], "under RCP",
-                                  as.numeric(input$selRCP)/10.0)
+            GCMlookup[input$selGCM], "under RCP",
+            as.numeric(input$selRCP)/10.0)
 
     spp[[curSp()]]$rmm$output$transfer$environment1$units <-
       ifelse(predType == "raw", "relative occurrence rate", predType)
@@ -192,11 +324,27 @@ projectTime_MOD <- function(input, output, session) {
     spp[[curSp()]]$rmm$output$transfer$environment1$thresholdRule <- input$threshold
     spp[[curSp()]]$rmm$output$transfer$notes <- NULL
   })
+
+  return(list(
+    save = function() {
+      # Save any values that should be saved when the current session is saved
+    },
+    load = function(state) {
+      # Load
+    }
+  ))
+
 }
 
-projectTime_MAP <- function(map, session) {
-  updateTabsetPanel(session, 'main', selected = 'Map')
-  # Reset draw polygon
+proj_time_module_map <- function(map, common) {
+
+  spp <- common$spp
+  evalOut <- common$evalOut
+  curSp <- common$curSp
+  rmm <- common$rmm
+  mapProj <- common$mapProj
+
+  # Map logic
   map %>% leaflet.extras::addDrawToolbar(
     targetGroup = 'draw', polylineOptions = FALSE, rectangleOptions = FALSE,
     circleOptions = FALSE, markerOptions = FALSE, circleMarkerOptions = FALSE,
@@ -236,7 +384,6 @@ projectTime_MAP <- function(map, session) {
                 title = "Predicted Suitability<br>(Projected)",
                 values = mapProjVals, layerId = 'proj',
                 labFormat = reverseLabels(2, reverse_order = TRUE))
-
   }
   # map model prediction raster and projection polygon
   colnames(shp) <- c("longitude", "latitude")
@@ -248,8 +395,12 @@ projectTime_MAP <- function(map, session) {
                 fill = FALSE, weight = 4, color = "red", group = 'proj')
 }
 
-projectTime_INFO <-
-  infoGenerator(modName = "Project to New Time",
-                modAuts = paste0("Jamie M. Kass, Bruno Vilela, Gonzalo E. ',
-                                 'Pinilla-Buitrago, Robert P. Anderson"),
-                pkgName = "dismo")
+proj_time_module_rmd <- function(species) {
+  # Variables used in the module's Rmd code
+  list(
+    module_knit = species$rmm$code$wallaceSettings$someFlag,
+    var1 = species$rmm$code$wallaceSettings$someSetting1,
+    var2 = species$rmm$code$wallaceSettings$someSetting2
+  )
+}
+

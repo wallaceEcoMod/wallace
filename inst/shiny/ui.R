@@ -198,26 +198,11 @@ tagList(
               "projSel", "Modules Available:",
               choices = c(
                 insert_modules_options("proj"),
-                "Project to New Time" = 'projTime',
                 "Project to User-files (**)" = 'projUser',
                 "Calculate Environmental Similarity" = 'mess')
             ),
             tags$hr(),
             insert_modules_ui("proj"),
-            conditionalPanel(
-              "input.projSel == 'projTime'",
-              uiTop(projectTime_INFO),
-              span("Step 1:", class = "step"),
-              span("Choose Study Region (**)", class = "stepText"), br(), br(),
-              projExtent_UI('c8_projectExtentTime_uiID'),
-              actionButton("goProjExtTime", "Create(**)"), br(), br(),
-              tags$hr(),
-              span("Step 2:", class = "step"),
-              span("Project (**)", class = "stepText"), br(), br(),
-              p("Project model to project extent (red) (**)"), br(),
-              projectTime_UI('c8_projectTime'),
-              actionButton('goProjectTime', "Project")
-            ),
             conditionalPanel(
               "input.projSel == 'projUser'",
               uiTop(projectUser_INFO),
@@ -248,10 +233,6 @@ tagList(
                                  .butResPj:hover {background-color: #830D03;
                                  color: white;}")),
             tags$hr(),
-            conditionalPanel(
-              "input.projSel == 'projTime'",
-              uiBottom(projectTime_INFO)
-            ),
             conditionalPanel(
               "input.projSel == 'projUser'",
               uiBottom(projectUser_INFO)
