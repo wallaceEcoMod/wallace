@@ -670,11 +670,6 @@ function(input, output, session) {
   # # # # # # # # # # # # # # # # #
   # Step 1: Project extent ####
   # # # # # # # # # # # # # # # # #
-  observeEvent(input$goProjExtArea, {
-    projExtent <- callModule(projExtent_MOD, 'c8_projectExtentArea_uiID')
-    projExtent()
-  })
-
   observeEvent(input$goProjExtTime, {
     projExtent <- callModule(projExtent_MOD, 'c8_projectExtentTime_uiID')
     projExtent()
@@ -685,13 +680,6 @@ function(input, output, session) {
     projExtent()
   })
 
-  # # # # # # # # # # # # # # # # #
-  # module Project to New Area ####
-  # # # # # # # # # # # # # # # # #
-  observeEvent(input$goProjectArea, {
-    projArea <- callModule(projectArea_MOD, 'c8_projectArea')
-    projArea()
-  })
 
   # # # # # # # # # # # # # # # # #
   # module Project to New Time ####

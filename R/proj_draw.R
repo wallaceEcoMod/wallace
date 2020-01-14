@@ -1,5 +1,5 @@
 
-#' @title c8_projectDraw
+#' @title proj_draw
 #' @description ..
 #'
 #' @details
@@ -8,7 +8,7 @@
 #' @param polyPjXY x
 #' @param polyPjID x
 #' @param drawBgBuf x
-#' @param shinyLogs x
+#' @param logger x
 # @keywords
 #'
 # @examples
@@ -26,7 +26,7 @@
 
 #' @export
 
-c8_projectDraw <- function(polyPjXY, polyPjID, drawPjBuf, shinyLogs = NULL) {
+proj_draw <- function(polyPjXY, polyPjID, drawPjBuf, logger = NULL) {
   newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(polyPjXY)),
                                                    ID = polyPjID)))
   bgExt <- rgeos::gBuffer(newPoly, width = drawPjBuf)

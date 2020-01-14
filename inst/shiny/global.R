@@ -47,7 +47,8 @@ base_module_configs <- c(
   "modules/vis_mapPreds.yml",
   "modules/vis_bioclimPlot.yml",
   "modules/vis_maxentEvalPlot.yml",
-  "modules/vis_responsePlot.yml"
+  "modules/vis_responsePlot.yml",
+  "modules/proj_area.yml"
 )
 
 # Load user-defined modules

@@ -1,5 +1,5 @@
 
-#' @title c8_projectArea
+#' @title proj_area
 #' @description ..
 #'
 #' @details
@@ -10,7 +10,7 @@
 #' @param envs x
 #' @param outputType x
 #' @param pjExt x
-#' @param shinyLogs x
+#' @param logger x
 # @keywords
 #'
 # @examples
@@ -27,26 +27,27 @@
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 
-c8_projectArea <- function(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
-                           shinyLogs = NULL) {
+proj_area <- function(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
+                      logger = NULL) {
   newPoly <- pjExt
 
   if (alg == 'bioclim') {
-    shinyLogs %>% writeLog('Projection for BIOCLIM model.')
+    logger %>% writeLog('Projection for BIOCLIM model.')
   } else if (alg == 'maxent') {
     if (clamp == TRUE | alg == "maxent.jar") {
-      shinyLogs %>% writeLog('Projection for clamped model', curModel(), '.')
+      logger %>% writeLog('Projection for clamped model', curModel(), '.')
     } else if (clamp == FALSE) {
-      shinyLogs %>% writeLog('New area projection for unclamped', curModel(), '.')
+      logger %>% writeLog('New area projection for unclamped', curModel(), '.')
     }
   }
 
-  smartProgress(shinyLogs, message = "Masking environmental grids to projection extent...", {
+  smartProgress(logger,
+                message = "Masking environmental grids to projection extent...", {
     projMsk <- raster::crop(envs, newPoly)
     projMsk <- raster::mask(projMsk, newPoly)
   })
 
-  smartProgress(shinyLogs, message = 'Projecting model to new area...', {
+  smartProgress(logger, message = 'Projecting model to new area...', {
     if (alg == 'BIOCLIM') {
       modProjArea <- dismo::predict(evalOut@models[[curModel]], projMsk)
     } else if (alg == 'maxnet') {
@@ -61,5 +62,5 @@ c8_projectArea <- function(evalOut, curModel, envs, outputType, alg, clamp, pjEx
     }
   })
 
-  return(list(projExt=projMsk, projArea=modProjArea))
+  return(list(projExt = projMsk, projArea = modProjArea))
 }

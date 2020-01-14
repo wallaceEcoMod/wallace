@@ -1,0 +1,5 @@
+component: "proj"
+short_name: "Project to New Extent"
+long_name: "Project to New Extent"
+authors: "Jamie M. Kass, Bruno Vilela, Gonzalo E. Pinilla-Buitrago, Robert P. Anderson"
+package: [dismo]
