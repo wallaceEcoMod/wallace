@@ -528,16 +528,6 @@ function(input, output, session) {
   ### COMPONENT: VISUALIZE MODEL RESULTS ####
   ########################################### #
 
-  # # # # # # # # # # # # # # #
-  # module Map Prediction ####
-  # # # # # # # # # # # # # # #
-  # MOTE: this prediction is restricted to the background extent
-  observeEvent(input$goMapPreds, {
-    mapPreds <- callModule(mapPreds_MOD, 'c7_mapPreds')
-    mapPreds()
-    updateTabsetPanel(session, 'main', selected = 'Map')
-  })
-
   # # # # # # # # # # # # # # # # # #
   # VISUALIZE: other controls ####
   # # # # # # # # # # # # # # # # # #
@@ -1065,6 +1055,7 @@ function(input, output, session) {
     bg = bg,
     bgExt = bgExt,
     bgMask = bgMask,
+    bgShpXY = bgShpXY,
     evalOut = evalOut,
     mapPred = mapPred,
     mapProj = mapProj,

@@ -1,0 +1,5 @@
+component: "vis"
+short_name: "Map Prediction"
+long_name: "Map Prediction"
+authors: "Jamie M. Kass, Robert Muscarella, Bruno Vilela, Gonzalo E. Pinilla-Buitrago, Robert P. Anderson"
+package: [dismo]

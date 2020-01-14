@@ -44,6 +44,7 @@ base_module_configs <- c(
   "modules/part_spat.yml",
   "modules/model_maxent.yml",
   "modules/model_bioclim.yml",
+  "modules/vis_mapPreds.yml",
   "modules/vis_bioclimPlot.yml",
   "modules/vis_maxentEvalPlot.yml",
   "modules/vis_responsePlot.yml"

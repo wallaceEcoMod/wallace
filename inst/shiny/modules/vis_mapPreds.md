@@ -1,8 +1,3 @@
----
-title: "vis_mapPreds"
-output: html_document
----
-
 ### **Module:** ***Map Prediction*** 
 
 **BACKGROUND**  

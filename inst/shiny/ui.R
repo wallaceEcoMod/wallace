@@ -185,26 +185,10 @@ tagList(
           conditionalPanel(
             "input.tabs == 'vis'",
             h4("Visualize Model Results"),
-            radioButtons(
-              "visSel", "Modules Available:",
-              choices = c(
-                insert_modules_options("vis"),
-                "Map Prediction" = 'mapPreds'),
-              selected = 'mapPreds' # Check default (no selected param)
-            ),
+            radioButtons("visSel", "Modules Available:",
+              choices = insert_modules_options("vis")),
             tags$hr(),
-            insert_modules_ui("vis"),
-            conditionalPanel(
-              "input.visSel == 'mapPreds'",
-              uiTop(mapPreds_INFO),
-              mapPreds_UI('c7_mapPreds'),
-              actionButton("goMapPreds", "Plot"), br()
-            ),
-            tags$hr(),
-            conditionalPanel(
-              "input.visSel == 'mapPreds'",
-              uiBottom(mapPreds_INFO)
-            )
+            insert_modules_ui("vis")
           ),
           # PROJECT ####
           conditionalPanel(
