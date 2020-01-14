@@ -667,14 +667,6 @@ function(input, output, session) {
   ### COMPONENT: PROJECT MODEL ####
   ########################################### #
 
-  # # # # # # # # # # # # # # # # # # # #
-  # module Environmental Similarity ####
-  # # # # # # # # # # # # # # # # # # # #
-  observeEvent(input$goEnvSimilarity, {
-    envSimilarity <- callModule(envSimilarity_MOD, 'c8_envSimilarity')
-    envSimilarity()
-  })
-
   # # # # # # # # # # # # # # # # # #
   # PROJECT: other controls ####
   # # # # # # # # # # # # # # # # # #

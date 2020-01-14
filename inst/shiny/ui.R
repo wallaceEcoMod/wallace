@@ -196,32 +196,17 @@ tagList(
             h4("Project Model"),
             radioButtons(
               "projSel", "Modules Available:",
-              choices = c(
-                insert_modules_options("proj"),
-                "Calculate Environmental Similarity" = 'mess')
-            ),
+              choices = insert_modules_options("proj")),
             tags$hr(),
-            insert_modules_ui("proj"),
-            conditionalPanel(
-              "input.projSel == 'mess'",
-              uiTop(envSimilarity_INFO),
-              envSimilarity_UI('c8_envSimilarity'),
-              strong("Calculate MESS for current extent"), br(), br(),
-              actionButton('goEnvSimilarity', "Calculate MESS")
-            ),
-            strong("Reset projection extent"), br(),
-            actionButton("goResetProj", "Reset", class = 'butResPj'),
-            tags$head(tags$style(".butResPj {background-color: #C51E10;
-                                 color: white;
-                                 padding: 1px 1px;
-                                 border: none;}
-                                 .butResPj:hover {background-color: #830D03;
-                                 color: white;}")),
-            tags$hr(),
-            conditionalPanel(
-              "input.projSel == 'mess'",
-              uiBottom(envSimilarity_INFO)
-            )
+            insert_modules_ui("proj")
+            # strong("Reset projection extent"), br(),
+            # actionButton("goResetProj", "Reset", class = 'butResPj'),
+            # tags$head(tags$style(".butResPj {background-color: #C51E10;
+            #                      color: white;
+            #                      padding: 1px 1px;
+            #                      border: none;}
+            #                      .butResPj:hover {background-color: #830D03;
+            #                      color: white;}"))
           ),
           # SESSION CODE ####
           conditionalPanel(

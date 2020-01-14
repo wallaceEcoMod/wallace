@@ -1,8 +1,3 @@
----
-title: "proj_mess"
-output: html_document
----
-
 ### **Module:** ***Calculate Environmental Similarity***
 
 **BACKGROUND**  
@@ -24,3 +19,4 @@ Elith, J., Kearney, M., & Phillips, S. (2010). The art of modelling range-shifti
 Fitzpatrick, M. C., & Hargrove, W. W. (2009). The projection of species distribution models and the problem of non-analog climate. *Biodiversity and Conservation*. 18: 2255-2261.
 
 Williams, J. W., & Jackson, S. T. (2007). Novel climates, no-analog communities, and ecological surprises. *Frontiers in Ecology and the Environment*. 5: 475-482.
+

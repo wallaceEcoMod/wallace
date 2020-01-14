@@ -50,7 +50,8 @@ base_module_configs <- c(
   "modules/vis_responsePlot.yml",
   "modules/proj_area.yml",
   "modules/proj_time.yml",
-  "modules/proj_user.yml"
+  "modules/proj_user.yml",
+  "modules/proj_mess.yml"
 )
 
 # Load user-defined modules
