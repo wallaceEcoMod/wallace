@@ -4,12 +4,16 @@
 \alias{occs_userOccs}
 \title{occs_userOccs}
 \usage{
-occs_userOccs(csvPath, csvName, logger = NULL)
+occs_userOccs(txtPath, txtName, txtSep, txtDec, logger = NULL)
 }
 \arguments{
-\item{csvPath}{x}
+\item{txtPath}{x}
 
-\item{csvName}{x}
+\item{txtName}{x}
+
+\item{txtSep}{x}
+
+\item{txtDec}{x}
 
 \item{logger}{x}
 }
@@ -21,4 +25,6 @@ See Examples.
 }
 \author{
 Jamie Kass <jkass@gradcenter.cuny.edu>
+
+Gonzalo E. Pinilla-Buitrago <jkass@gradcenter.cuny.edu>
 }

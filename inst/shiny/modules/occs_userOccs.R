@@ -2,6 +2,14 @@ occs_userOccs_module_ui <- function(id) {
   ns <- NS(id)
   tagList(
     fileInput(ns("userCSV"), label = "Upload Occurrence CSV"),
+    checkboxInput(
+      ns("noCSV"), value = FALSE,
+      label = "Do you want to define another delimiter-separated and decimal values? (**)"),
+    conditionalPanel(
+      sprintf("input['%s'] == 1", ns("noCSV")),
+      textInput(ns("sepCSV"), label = "Define delimiter-separator (**)", value = ","),
+      textInput(ns("decCSV"), label = "Define decimal-separator (**)", value = ".")
+    ),
     actionButton(ns("goUserOccs"), "Load Occurrences")
   )
 }
@@ -12,7 +20,14 @@ occs_userOccs_module_server <- function(input, output, session, common) {
 
   observeEvent(input$goUserOccs, {
     # FUNCTION CALL ####
-    occsList <- occs_userOccs(input$userCSV$datapath, input$userCSV$name, logger)
+    if (input$noCSV == 0 | is.null(input$noCSV)) {
+      occsList <- occs_userOccs(input$userCSV$datapath, input$userCSV$name,
+                                ",", ".", logger)
+    } else {
+      occsList <- occs_userOccs(input$userCSV$datapath, input$userCSV$name,
+                                input$sepCSV, input$decCSV, logger)
+    }
+
 
     if (is.null(occsList)) return()
 

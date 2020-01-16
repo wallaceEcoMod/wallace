@@ -4,8 +4,10 @@
 #' @details
 #' See Examples.
 #'
-#' @param csvPath x
-#' @param csvName x
+#' @param txtPath x
+#' @param txtName x
+#' @param txtSep x
+#' @param txtDec x
 #' @param logger x
 # @keywords
 #'
@@ -14,6 +16,7 @@
 #'
 # @return
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <jkass@@gradcenter.cuny.edu>
 # @note
 
 # @seealso
@@ -26,35 +29,49 @@
 
 #' @export
 
-occs_userOccs <- function(csvPath, csvName, logger = NULL) {
+occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
+                          logger = NULL) {
 
-  # read in csv
-  csv <- read.csv(csvPath, header = TRUE)
+  # read in txt
+  txt <- tryCatch(expr = read.table(file = txtPath, header = TRUE, sep = txtSep,
+                                    dec = txtDec),
+                  error = function(e) "error")
+
+  if (class(txt) == "character") {
+    logger %>% writeLog(
+      type = "error",
+      paste0("There is something wrong in your file. Check file format or ",
+             "delimiter and decimal separators.(**)"))
+    return()
+  }
 
   # check to make sure all column names are correct
-  if (!all(c('scientific_name', 'longitude', 'latitude') %in% names(csv))) {
-    logger %>% writeLog(type = "error",
-      'Please input CSV file with columns "scientific_name", "longitude", "latitude".')
+  if (!all(c('scientific_name', 'longitude', 'latitude') %in% names(txt))) {
+    logger %>% writeLog(
+      type = "error",
+      paste0('Please input txt file with columns "scientific_name", ',
+             '"longitude", "latitude" or check delimeter and decimal ',
+             'separators. (**)'))
     return()
   }
 
   # subset to just records with non-NA latitude and longitude
-  csv.xy <- csv %>% dplyr::filter(!is.na(latitude) & !is.na(longitude))
-  csv.xy$scientific_name <- trimws(csv.xy$scientific_name)
+  txt.xy <- txt %>% dplyr::filter(!is.na(latitude) & !is.na(longitude))
+  txt.xy$scientific_name <- trimws(txt.xy$scientific_name)
   # get all species names
-  occs <- csv.xy %>% dplyr::filter(!grepl("bg_", scientific_name))
+  occs <- txt.xy %>% dplyr::filter(!grepl("bg_", scientific_name))
   spNames <- trimws(as.character(unique(occs$scientific_name)))
 
   if (nrow(occs) == 0) {
     logger %>% writeLog(type = 'warning',
-      'No records with coordinates found in ', csvName, ".")
+      'No records with coordinates found in ', txtName, ".")
     return()
   }
 
   # put species into a list in the same form as spp
   occsList <- list()
   for (i in spNames) {
-    sp.occs <- csv.xy %>% dplyr::filter(scientific_name == i)
+    sp.occs <- txt.xy %>% dplyr::filter(scientific_name == i)
     # add occID field if it doesn't exist
     if(!("occID" %in% names(sp.occs))) sp.occs$occID <- row.names(sp.occs)
     # add all cols to match dbOccs if not already there
@@ -83,15 +100,15 @@ occs_userOccs <- function(csvPath, csvName, logger = NULL) {
     dupsRem <- nrow(sp.occs) - nrow(occs)
 
     logger %>% writeLog(
-      "Data for ", em(i), " uploaded from ", csvName, ": Duplicated records removed [", dupsRem, "]. Remaining records [", nrow(occs), "].")
+      "Data for ", em(i), " uploaded from ", txtName, ": Duplicated records removed [", dupsRem, "]. Remaining records [", nrow(occs), "].")
 
     # look for background records
-    sp.bg <- csv.xy %>% dplyr::filter(scientific_name == paste0("bg_", i))
+    sp.bg <- txt.xy %>% dplyr::filter(scientific_name == paste0("bg_", i))
     # if they exist, load them into occsList for the current species
     if(nrow(sp.bg) > 0) {
       occsList[[n]]$bg <- sp.bg
       logger %>% writeLog(
-        "Data for ", em(i), " uploaded from ", csvName, ": ", nrow(sp.bg), " background records.")
+        "Data for ", em(i), " uploaded from ", txtName, ": ", nrow(sp.bg), " background records.")
     }
   }
 
