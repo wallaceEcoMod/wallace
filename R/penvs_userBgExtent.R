@@ -8,6 +8,7 @@
 #' @param bgShp_path x
 #' @param bgShp_name x
 #' @param userBgBuf x
+#' @param occs x
 #' @param logger x
 # @keywords
 #'
@@ -26,7 +27,7 @@
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 
-penvs_userBgExtent <- function(bgShp_path, bgShp_name, userBgBuf,
+penvs_userBgExtent <- function(bgShp_path, bgShp_name, userBgBuf, occs,
                                logger = NULL) {
     pathdir <- dirname(bgShp_path)
     pathfile <- basename(bgShp_path)
@@ -57,12 +58,31 @@ penvs_userBgExtent <- function(bgShp_path, bgShp_name, userBgBuf,
       return()
     }
 
-    logger %>% writeLog("Study extent: user-defined polygon.")
-
     if (userBgBuf > 0) {
       bgExt <- rgeos::gBuffer(bgExt, width = userBgBuf)
-      logger %>% writeLog('Study extent buffered by ', userBgBuf, ' degrees.')
     }
 
-    return(bgExt)
+    ### Points outside polygon
+
+    occs.xy <- occs[c('longitude', 'latitude')]
+    # make spatial pts object of original occs and preserve origID
+    pts <- sp::SpatialPointsDataFrame(occs.xy, data = occs['occID'])
+    intersect <- sp::over(pts, bgExt)
+    ptRem <- ifelse(all(!is.na(intersect)), 0, as.numeric(which(is.na(intersect))))
+
+    if (ptRem == 0) {
+      if (userBgBuf > 0) {
+        logger %>% writeLog('Study extent user-defined polygon buffered by ',
+                            userBgBuf, ' degrees.')
+      } else {
+        logger %>% writeLog("Study extent: user-defined polygon.")
+      }
+      return(bgExt)
+    } else if (ptRem > 0) {
+      logger %>%
+        writeLog(type = 'error',
+                 paste0("The polygon did not include all localities(**). ",
+                        "You can remove localities in Process Occs component"))
+      return()
+    }
 }

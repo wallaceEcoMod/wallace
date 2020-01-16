@@ -35,6 +35,7 @@ penvs_userBgExtent_module_server <- function(input, output, session, common) {
   envs.global <- common$envs.global
   envs <- common$envs
   bgExt <- common$bgExt
+  occs <- common$occs
 
   observeEvent(input$goUserBg, {
     # ERRORS ####
@@ -54,6 +55,7 @@ penvs_userBgExtent_module_server <- function(input, output, session, common) {
     userBgExt <- penvs_userBgExtent(input$userBgShp$datapath,
                                     input$userBgShp$name,
                                     input$userBgBuf,
+                                    occs(),
                                     logger)
 
     # loop over all species if batch is on
