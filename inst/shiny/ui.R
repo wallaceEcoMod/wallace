@@ -14,7 +14,7 @@ tagList(
     header = tagList(
       tags$head(tags$link(href = "css/styles.css", rel = "stylesheet"))
     ),
-    title = glue::glue('Wallace v{packageVersion("wallace")}'),
+    title = glue::glue('#WallaceEcoMod v{packageVersion("wallace")}'),
     tabPanel("Intro", value = 'intro'),
     tabPanel("Occ Data", value = 'occs'),
     tabPanel("Env Data", value = 'envs'),
