@@ -4,7 +4,7 @@
 \alias{penvs_userBgExtent}
 \title{penvs_userBgExtent}
 \usage{
-penvs_userBgExtent(bgShp_path, bgShp_name, userBgBuf, logger = NULL)
+penvs_userBgExtent(bgShp_path, bgShp_name, userBgBuf, occs, logger = NULL)
 }
 \arguments{
 \item{bgShp_path}{x}
@@ -12,6 +12,8 @@ penvs_userBgExtent(bgShp_path, bgShp_name, userBgBuf, logger = NULL)
 \item{bgShp_name}{x}
 
 \item{userBgBuf}{x}
+
+\item{occs}{x}
 
 \item{logger}{x}
 }

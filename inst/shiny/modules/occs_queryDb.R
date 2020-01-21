@@ -23,20 +23,26 @@ occs_queryDb_module_ui <- function(id) {
                     textInput(ns('gbifEmail'),
                               'GBIF email',
                               value = NULL),
-                    textInput(ns('gbifPW'),
-                              'GBIF password',
-                              value = NULL))
+                    passwordInput(ns('gbifPW'),
+                                  'GBIF password',
+                                  value = NULL))
       )
     ),
     tags$div(title = 'Examples: Felis catus, Canis lupus, Nyctereutes procyonoides',
              textInput(ns("spNames"), label = "Enter species scientific name",
                        placeholder = 'format: Genus species',
                        value = "meles meles, martes martes")),
-    tags$div(title = paste0('Maximum number of occurrences recovered from ',
-    'databases. Downloaded records are not sorted randomly: rows are always ',
-    'consistent between downloads.'),
-             numericInput(ns("occsNum"), "Set maximum number of occurrences",
-                          value = 100, min = 0)),
+    conditionalPanel(
+      sprintf(
+        "(input['%1$s'] == 'gbif' & input['%2$s'] == false) | input['%1$s'] == 'vertnet' | input['%1$s'] == 'bison'" ,
+        ns("occsDb"), ns("doCitations")),
+      tags$div(
+        title = paste0('Maximum number of occurrences recovered from ',
+                       'databases. Downloaded records are not sorted randomly: ',
+                       'rows are always consistent between downloads.'),
+        numericInput(ns("occsNum"), "Set maximum number of occurrences",
+                     value = 100, min = 0))
+    ),
     actionButton(ns("goDbOccs"), "Query Database")
   )
 }

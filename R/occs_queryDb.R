@@ -61,33 +61,73 @@ occs_queryDb <- function(spNames, occDb, occNum, doCitations = FALSE,
     # query database
     smartProgress(logger,
                   message = paste0("Querying ", occDb, " for ", sp, "..."), {
-      if (occDb == 'bison' | occDb == 'vertnet' | occDb == 'gbif') {
+      if (occDb == 'bison' | occDb == 'vertnet') {
         q <- spocc::occ(sp, occDb, limit = occNum)
-        # myOccCitations <- NULL
-      # } else if (occDb == 'gbif') {
-      #   if (doCitations == FALSE) {
-      #     q <- spocc::occ(sp, occDb, limit = occNum)
-      #     myOccCitations <- NULL
-      #   } else if (doCitations == TRUE) {
-      #     if(any(unlist(lapply(list(gbifUser, gbifEmail, gbifPW), is.null)))) {
-      #       logger %>% writeLog('error',
-      #                              'Please specify your GBIF username, email, and password. This is needed to get citations for occurrence records.
-      #                              Wallace does not store your information or use it for anything else.')
-      #       return()
-      #     }
-      #     myBTO <- occCite::studyTaxonList(x = sp, datasources = "NCBI")
-      #     login <- occCite::GBIFLoginManager(user = gbifUser, email = gbifEmail,
-      #                                        pwd = gbifPW)
-      #     myBTO <- occCite::occQuery(x = myBTO, GBIFLogin = login, limit = occNum)
-      #     myOccCitations <- occCite::occCitation(myBTO)
-      #     # make something with the same slots as spocc that we use
-      #     q <- list(gbif = list(meta = list(found = NULL),
-      #                           data = list(formatSpName(sp))))
-      #     q[[occDb]]$meta$found <-
-      #       nrow(myBTO@occResults[[sp]][['GBIF']][['OccurrenceTable']])
-      #     q[[occDb]]$data[[formatSpName(sp)]] <-
-      #       myBTO@occResults[[sp]][['GBIF']][['OccurrenceTable']]
-      #   }
+        myOccCitations <- NULL
+      } else if (occDb == 'gbif') {
+        if (doCitations == FALSE) {
+          q <- spocc::occ(sp, occDb, limit = occNum)
+          myOccCitations <- NULL
+        } else if (doCitations == TRUE) {
+          if(any(unlist(lapply(list(gbifUser, gbifEmail, gbifPW), is.null)))) {
+            logger %>% writeLog(
+              type = 'error',
+              paste0('Please specify your GBIF username, email, and password. ',
+              'This is needed to get citations for occurrence records. Wallace ',
+              'does not store your information or use it for anything else.')
+              )
+            return()
+          }
+          login <- occCite::GBIFLoginManager(user = gbifUser, email = gbifEmail,
+                                             pwd = gbifPW)
+          if (is.null(login)) {
+            logger %>% writeLog(
+              type = 'error',
+              "There is an error in your GBIF credentials. Please check them (**)"
+            )
+            return()
+          }
+          nameGBIF <- studyTaxonList(x = sp)
+          bestMatch <- as.character(nameGBIF@cleanedTaxonomy$`Best Match`)
+          inputMatch <- as.character(nameGBIF@cleanedTaxonomy$`Input Name`)
+          if (bestMatch == "No match") {
+            logger %>%
+              writeLog(
+                type = "error",
+                paste0("There is no match for ", em(formatSpName(sp)),
+                       " in GBIF database. Please check the spelling. (**)")
+              )
+            return()
+          }
+          if (bestMatch != inputMatch) {
+            logger %>%
+              writeLog(type = 'warning',
+                       "There is no a stricly match in the GBIF search. Data ",
+                       "downloaded corresponds to ", em(bestMatch), ". (**)")
+          }
+
+          myBTO <- occCite::occQuery(x = sp,
+                                     datasource = "gbif",
+                                     GBIFLogin = login,
+                                     checkPreviousGBIFDownload = FALSE)
+          #myOccCitations <- occCite::occCitation(myBTO)
+          # make something with the same slots as spocc that we use
+          q <- list(gbif = list(meta = list(found = NULL),
+                                data = list(formatSpName(sp))))
+
+          q[[occDb]]$meta$found <-
+            nrow(myBTO@occResults[[bestMatch]][['GBIF']][['OccurrenceTable']])
+          q[[occDb]]$data[[formatSpName(sp)]] <-
+            myBTO@occResults[[bestMatch]][['GBIF']][['OccurrenceTable']]
+          doiGBIF <- myBTO@occResults[[bestMatch]][['GBIF']]$Metadata$doi
+          dateDOI <- format(as.Date(myBTO@occResults[[bestMatch]][['GBIF']]$Metadata$created),
+                            "%d %B %Y")
+          logger %>%
+            writeLog(
+              "#CiteTheDOI: Gbif.org (", dateDOI,") GBIF Ocurrence Download https://doi.org/",
+              doiGBIF
+            )
+        }
       } else if (occDb == 'bien') {
         # myBTO <- occCite::studyTaxonList(x = sp, datasources = "NCBI")
         # myBTO <- occCite::occQuery(x = myBTO, datasources = 'bien', limit = occNum)
