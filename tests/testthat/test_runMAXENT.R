@@ -42,7 +42,7 @@ rms <- c(1:2)
 ## regularization multipliers step value
 rmsStep <- 1
 ## feature classes
-fcs <- c('L', 'LQ', 'H', 'LQH', 'LQHP', 'LQHPT')
+fcs <- c('L', 'LQ', 'H', 'LQH', 'LQHP')
 
 ## algorithm
 algoritm <- c('maxent.jar','maxnet')

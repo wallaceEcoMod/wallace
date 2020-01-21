@@ -23,8 +23,7 @@
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 
-envs_worldclim<- function(bcRes, bcSel, mapCntr, doBrick, logger=NULL){
-
+envs_worldclim<- function(bcRes, bcSel, mapCntr, doBrick, logger=NULL) {
   if(bcRes == '') {
     logger %>% writeLog(type = 'error', 'Select a raster resolution.')
     return()
@@ -51,13 +50,16 @@ envs_worldclim<- function(bcRes, bcSel, mapCntr, doBrick, logger=NULL){
   } else {
     bcSel <- paste(names(wcbc), collapse = ", ")
   }
-  logger %>% writeLog("WorldClim bioclimatic variables ", bcSel, " at ",
-                         bcRes, " arcmin resolution.")
 
   # change names if bio01 is bio1, and so forth
   i <- grep('bio[0-9]$', names(wcbc))
   editNames <- paste('bio', sapply(strsplit(names(wcbc)[i], 'bio'), function(x) x[2]), sep='0')
   names(wcbc)[i] <- editNames
+
+  logger %>% writeLog("WorldClim bioclimatic variables ",
+                      paste(names(wcbc), collapse = ", "), " at ",
+                      bcRes, " arcmin resolution.")
+
 
   return(wcbc)
 }

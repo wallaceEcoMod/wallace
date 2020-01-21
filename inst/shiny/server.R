@@ -244,6 +244,7 @@ function(input, output, session) {
   # OBTAIN ENVS: other controls ####
   # # # # # # # # # # # # # # # # # #
 
+  bcSel <- reactive(input$bcSel)
   # shortcut to currently selected environmental variable, read from curEnvUI
   curEnv <- reactive(input$curEnv)
 
@@ -988,6 +989,7 @@ function(input, output, session) {
     # Shortcuts to values nested inside spp
     occs = occs,
     envs = envs,
+    bcSel = bcSel,
     bg = bg,
     bgExt = bgExt,
     bgMask = bgMask,

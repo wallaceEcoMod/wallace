@@ -12,9 +12,13 @@ envs_worldclim_module_ui <- function(id) {
     checkboxInput(ns("bcSelChoice"), label = "Specify variables to use in analysis?",
                   value = TRUE),
     conditionalPanel(paste0("input['", ns("bcSelChoice"), "']"),
-                     checkboxGroupInput(ns("bcSel"), label = "Select",
-                                        choices = setNames(as.list(paste0('bio', 1:19)), paste0('bio', 1:19)),
-                                        inline = TRUE, selected = paste0('bio', 1:19))),
+                     shinyWidgets::pickerInput(
+                       "bcSel",
+                       label = "Select categorical variables (**)",
+                       choices = setNames(as.list(paste0('bio', 1:19)), paste0('bio', 1:19)),
+                       multiple = TRUE,
+                       selected = paste0('bio', 1:19),
+                       options = list(`actions-box` = TRUE))),
     checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE), # Check default (value = FALSE)
     strong("Using map center coordinates as reference for tile download."),
     textOutput(ns("ctrLatLon")), br(),
@@ -25,6 +29,7 @@ envs_worldclim_module_ui <- function(id) {
 envs_worldclim_module_server <- function(input, output, session, common) {
 
   logger <- common$logger
+  bcSel <- common$bcSel
   occs <- common$occs
   spp <- common$spp
   allSp <- common$allSp
@@ -41,7 +46,7 @@ envs_worldclim_module_server <- function(input, output, session, common) {
     }
 
     # FUNCTION CALL ####
-    wcbc <- envs_worldclim(input$wcRes, input$bcSel, mapCntr(), input$doBrick, logger)
+    wcbc <- envs_worldclim(input$wcRes, bcSel(), mapCntr(), input$doBrick, logger)
     req(wcbc)
 
     envs.global[["wcbc"]] <- wcbc

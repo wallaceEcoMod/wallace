@@ -20,8 +20,7 @@ model_maxent_module_ui <- function(id) {
                             'In short, more features = more potential model ',
                             'complexity.'),
              checkboxGroupInput(ns("fcs"), label = '',
-                                choices = list("L", "LQ", "H", "LQH", "LQHP",
-                                               "LQHPT"),
+                                choices = list("L", "LQ", "H", "LQH", "LQHP"),
                                 inline = TRUE,
                                 selected = c("L", "LQ"))), # Check default (no selected param)
     strong("Select regularization multipliers "),

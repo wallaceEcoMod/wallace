@@ -53,8 +53,6 @@ envs_userEnvs_module_server <- function(input, output, session, common) {
       # LOAD INTO SPP ####
       spp[[sp]]$envs <- "userEnvs"
       # add columns for env variable values for each occurrence record
-      print(nrow(spp[[sp]]$occs))
-      print(nrow(occsEnvsVals))
       spp[[sp]]$occs <- cbind(spp[[sp]]$occs, occsEnvsVals)
 
       # METADATA ####
