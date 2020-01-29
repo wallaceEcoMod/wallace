@@ -1,16 +1,16 @@
 Package: wallace
 Version: 1.0.6.2
-Date: 2018-10-05
+Date: 2020-02-12
 Title: A Modular Platform for Reproducible Modeling of Species Niches and Distributions
-Authors@R: c(person("Jamie M.", "Kass", email = "jamie.kass@oist.jp", role = c("aut", "cre")),
-  person("Gonzalo E.", "Pinilla-Buitrago", email = "gpinillabuitrago@gradcenter.cuny.edu", role = "aut"),
+Authors@R: c(person("Jamie M.", "Kass", email = "jamie.kass@oist.jp", role = "aut"),
+  person("Gonzalo E.", "Pinilla-Buitrago", email = "gpinillabuitrago@gradcenter.cuny.edu", role = c("aut", "cre")),
 	person("Bruno", "Vilela", email = "bvilela@wustl.edu", role = "aut"),
 	person("Matthew E.", "Aiello-Lammens", email = "matt.lammens@gmail.com", role = "aut"),
 	person("Robert", "Muscarella", email = "bob.muscarella@gmail.com", role = "aut"),
 	person("Cory", "Merow", email = "corymerow@gmail.com", role = "aut"),
 	person("Robert P.", "Anderson", email = "randerson@ccny.cuny.edu", role = "aut"))
-Author: Jamie M. Kass [aut, cre],
-    Gonzalo E. Pinilla-Buitrago [aut],
+Author: Jamie M. Kass [aut],
+    Gonzalo E. Pinilla-Buitrago [aut, cre],
     Bruno Vilela [aut],
     Matthew E. Aiello-Lammens [aut],
     Robert Muscarella [aut],
@@ -25,8 +25,8 @@ Description: The 'shiny' application 'wallace' is a modular platform for reprodu
 License: GPL-3
 URL: https://wallaceEcoMod.github.io
 Encoding: UTF-8
-RoxygenNote: 7.0.1
-Suggests: knitr 
+RoxygenNote: 7.0.2
+Suggests: knitr
 NeedsCompilation: no
 Packaged: 2017-11-29 05:26:31 UTC; musasabi
 VignetteBuilder: knitr
