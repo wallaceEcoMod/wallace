@@ -14,18 +14,21 @@ Please see the official website (\url{https://wallaceecomod.github.io/}) for mor
 \tabular{ll}{
 Package: \tab wallace\cr
 Type: \tab Package\cr
-Version: \tab 1.0.0\cr
-Date: \tab 2017-11-23\cr
+Version: \tab 1.0.6.2\cr
+Date: \tab 2019-10-21\cr
 License: \tab GNU 3.0\cr
 }
 }
 \references{
-Kass J.M., Vilela B., Aeillo-Lammens M.E., Muscarella R., Merow C., and Anderson R.P. (2017) \emph{Wallace}: A modular platform for reproducible ecological modeling. Version 1.0.0.
+Kass J.M., Pinilla-Buitrago G.E., Vilela B., Aeillo-Lammens M.E., Muscarella R., Merow C., and Anderson R.P. (2018) \emph{Wallace}: A modular platform for reproducible ecological modeling. Version 1.0.6.1
 }
 \author{
 \strong{Jamie M. Kass}\cr
 (email: \email{jkass@gradcenter.cuny.edu};
 Website: \url{https://ndimhypervol.github.io/})
+
+\strong{Gonzalo E. Pinilla-Buitrago}\cr
+(email: \email{gpinillabuitrago@gradcenter.cuny.edu})
 
 \strong{Bruno Vilela}\cr
 (email: \email{bvilela@wustl.edu};
@@ -38,7 +41,8 @@ Website: \url{https://mlammens.github.io/})
 \strong{Robert Muscarella}\cr
 (email: \email{bob.muscarella@gmail.com};
 Website: \url{https://bobmuscarella.weebly.com/})
-#' @author \strong{Cory Merow}\cr
+
+\strong{Cory Merow}\cr
 (email: \email{cory.merow@gmail.com};
 Website: \url{https://cmerow.github.io/})
 

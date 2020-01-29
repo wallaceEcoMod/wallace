@@ -2,7 +2,7 @@ Package: wallace
 Version: 1.0.6.2
 Date: 2018-10-05
 Title: A Modular Platform for Reproducible Modeling of Species Niches and Distributions
-Authors@R: c(person("Jamie M.", "Kass", email = "jkass@gradcenter.cuny.edu", role = c("aut", "cre")),
+Authors@R: c(person("Jamie M.", "Kass", email = "jamie.kass@oist.jp", role = c("aut", "cre")),
   person("Gonzalo E.", "Pinilla-Buitrago", email = "gpinillabuitrago@gradcenter.cuny.edu", role = "aut"),
 	person("Bruno", "Vilela", email = "bvilela@wustl.edu", role = "aut"),
 	person("Matthew E.", "Aiello-Lammens", email = "matt.lammens@gmail.com", role = "aut"),
@@ -16,7 +16,7 @@ Author: Jamie M. Kass [aut, cre],
     Robert Muscarella [aut],
     Cory Merow [aut],
     Robert P. Anderson [aut]
-Maintainer: Jamie M. Kass <jkass@gradcenter.cuny.edu>
+Maintainer: Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
 Depends: R (>= 3.5.0), shiny (>= 1.1.0), leaflet (>= 2.0.2)
 Imports: DT (>= 0.4), shinyjs, spocc (>= 0.8.0), RColorBrewer, dplyr,
         spThin, ENMeval (>= 0.3.0), rgeos, maptools, dismo, raster, shinythemes,
@@ -25,7 +25,7 @@ Description: The 'shiny' application 'wallace' is a modular platform for reprodu
 License: GPL-3
 URL: https://wallaceEcoMod.github.io
 Encoding: UTF-8
-RoxygenNote: 6.0.1
+RoxygenNote: 7.0.1
 Suggests: knitr 
 NeedsCompilation: no
 Packaged: 2017-11-29 05:26:31 UTC; musasabi
