@@ -1,5 +1,0 @@
-component: "penvs"
-short_name: "correlations env"
-long_name: "calculate pearson correlations"
-authors: "pg"
-package: [raster]
