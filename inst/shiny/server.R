@@ -162,7 +162,7 @@ function(input, output, session) {
   curSp <- reactive(input$curSp)
 
   # vector of all species with occurrence data loaded
-  allSp <- reactive(names(reactiveValuesToList(spp)))
+  allSp <- reactive(names(reactiveValuesToList(spp))[!grepl("\\.", names(reactiveValuesToList(spp)))])
 
   # convenience function for occurrence table for current species
   occs <- reactive(spp[[curSp()]]$occs)

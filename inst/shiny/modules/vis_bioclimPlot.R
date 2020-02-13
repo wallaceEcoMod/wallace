@@ -17,11 +17,14 @@ vis_bioclimPlot_module_server <- function(input, output, session, common) {
   evalOut <- common$evalOut
 
   observe({
-    req(curSp(), evalOut())
-    if (spp[[curSp()]]$rmm$model$algorithm == "BIOCLIM") {
-      # METADATA ####
-      spp[[curSp()]]$rmm$code$wallaceSettings$bcPlotSettings <-
-        list(bc1 = input$bc1, bc2 = input$bc2, p = input$bcProb)
+    req(curSp())
+    if (length(curSp()) == 1) {
+      req(evalOut())
+      if (spp[[curSp()]]$rmm$model$algorithm == "BIOCLIM") {
+        # METADATA ####
+        spp[[curSp()]]$rmm$code$wallaceSettings$bcPlotSettings <-
+          list(bc1 = input$bc1, bc2 = input$bc2, p = input$bcProb)
+      }
     }
   })
 

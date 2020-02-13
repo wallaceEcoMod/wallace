@@ -21,16 +21,19 @@ vis_maxentEvalPlot_module_server <- function(input, output, session, common) {
   evalOut <- common$evalOut
 
   observe({
-    req(curSp(), evalOut())
-    if (spp[[curSp()]]$rmm$model$algorithm == "maxent.jar" |
-        spp[[curSp()]]$rmm$model$algorithm == "maxnet") {
-      # ERRORS ####
-      if (is.null(input$maxentEvalSel)) {
-        logger %>% writeLog(type = 'error', "Please choose a statistic to plot.")
-        return()
+    req(curSp())
+    if (length(curSp()) == 1) {
+      req(evalOut())
+      if (spp[[curSp()]]$rmm$model$algorithm == "maxent.jar" |
+          spp[[curSp()]]$rmm$model$algorithm == "maxnet") {
+        # ERRORS ####
+        if (is.null(input$maxentEvalSel)) {
+          logger %>% writeLog(type = 'error', "Please choose a statistic to plot.")
+          return()
+        }
+        # METADATA ####
+        spp[[curSp()]]$rmm$code$wallaceSettings$maxentEvalPlotSel <- input$maxentEvalSel
       }
-      # METADATA ####
-      spp[[curSp()]]$rmm$code$wallaceSettings$maxentEvalPlotSel <- input$maxentEvalSel
     }
   })
 

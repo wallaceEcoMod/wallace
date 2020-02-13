@@ -12,7 +12,7 @@ model_maxent_module_ui <- function(id) {
     strong("Select feature classes "),
     strong(em("(flexibility of modeled response)")), br(),
     "key: ", strong("L"), "inear, ", strong("Q"), "uadratic, ",
-    strong("H"), "inge, ", strong("P"), "roduct, ", strong("T"), "hreshold",
+    strong("H"), "inge, ", strong("P"), "roduct, ",
     tags$div(title = paste0('Feature combinations to be explored. Features are ',
                             'constructed using different relationships within and ',
                             'among the environmental predictors, and are used to ',
