@@ -1,7 +1,6 @@
 ##### QUESTIONS
 # 1. error with message: 'Too few localities (<2) to create a background polygon.' Expectation 2
-# 2. point buffers option doesn't print any message
-# 3. I couldn't test the overlap with the point Buffers background extent
+# 2. I couldn't test the overlap with the point Buffers background extent. From Andrea: I fixed this, problem was you were selecting a single point buffer
 
 ####The errors to expect are:
 #'Too few localities (<2) to create a background polygon.'
@@ -80,11 +79,16 @@ test_that("output type checks", {
   expect_false(NA %in% overlap1)
   # point Buffers
   # create polygon
-  #Poly2 <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(
-  #bgExt2@polygons[[1]]@Polygons[[1]]@coords)),ID=1)))
+  Poly2<-list()
+  for (i in 1:9){
+   Poly2[[i]]<- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(
+      bgExt2@polygons[[1]]@Polygons[[i]]@coords)),ID=1)))
+     }
+  Poly2 <- do.call(raster::bind,Poly2)
+
   # check which points overlap
-  #overlap2 <- sp::over(points, Poly2)
-  #expect_false(NA %in% overlap2)
+  overlap2 <- sp::over(points, Poly2)
+  expect_false(NA %in% overlap2)
   # minimum Convex Polygon
   # create polygon
   Poly3 <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(
