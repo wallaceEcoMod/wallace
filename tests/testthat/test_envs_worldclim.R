@@ -1,6 +1,6 @@
 ##### QUESTIONS
   # 1. If I add "FALSE" values to the selected variables vector, the function doesn't work
-  # 2. The names aren't the ones specified in the function
+  # 2. The names aren't the ones specified in the function. Is this a problem for further analyses? I told Gonzalo to look at it
 
 
 #### COMPONENT 3: Obtain Environmental Data
