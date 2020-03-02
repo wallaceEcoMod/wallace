@@ -3,9 +3,9 @@
 # 2. point buffers option doesn't print any message
 # 3. I couldn't test the overlap with the point Buffers background extent
 
-      ####The errors to expect are:
-'Too few localities (<2) to create a background polygon.'
-'Change buffer distance to positive or negative value.'
+####The errors to expect are:
+#'Too few localities (<2) to create a background polygon.'
+#'Change buffer distance to positive or negative value.'
 
 #### COMPONENT 4: Process Environmental Data
 #### MODULE: Select Study Region
@@ -23,8 +23,6 @@ occs <- as.data.frame(occs[[1]]$cleaned)
 foccs <-  occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 1)
 foccs <- as.data.frame(foccs[[1]]$cleaned)
 
-## enviromental variables
-envs <- envs_worldclim(bcRes = 10, doBrick=TRUE,bcSel = (list(TRUE,TRUE,TRUE,TRUE,TRUE)))
 
 ## background extent
 bBox <- 'bounding box' # bounding Box
@@ -33,30 +31,30 @@ bPoly <- 'minimum convex polygon' # minimum Convex Polygon
 
 ## Study region buffer distance (degree)
 bgBuf <- 0.5
-
-spN=occs
+#Specify occurrence table
+spN<-occs
 ### run function and set coordinates reference system
 ## background extent: bounding Box
-bgExt1 <- penvs_bgExtent(occs, envs, bgSel = bBox, bgBuf=bgBuf,spN=occs)
+bgExt1 <- penvs_bgExtent(occs, bgSel = bBox, bgBuf=bgBuf,logger = NULL, spN = occs)
 raster::crs(bgExt1) <- "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=WGS84"
 ## background extent: point Buffers
-bgExt2 <- penvs_bgExtent(occs, envs, bgSel = bPoint, bgBuf)
+bgExt2 <- penvs_bgExtent(occs, bgSel = bPoint, bgBuf=bgBuf,spN=occs,logger = NULL)
 raster::crs(bgExt2) <- "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=WGS84"
 ## background extent: minimum Convex Polygon
-bgExt3 <- penvs_bgExtent(occs, envs, bgSel = bPoly, bgBuf)
+bgExt3 <- penvs_bgExtent(occs, bgSel = bPoly, bgBuf=bgBuf,spN=occs, logger=NULL)
 raster::crs(bgExt3) <- "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=WGS84"
 
 
 ### test if the error messages appear when they are supposed to
 test_that("error checks", {
-  # the user has not loaded the environmental data
-  expect_error(penvs_bgExtent(occs, envs = NULL , bgSel = bBox, bgBuf),'Before defining the background extent,
-                      obtain environmental data in component 3.')
-  # <= 2 records with longitude and latitude
-  expect_error(penvs_bgExtent(occs = foccs, envs, bgSel = bBox, bgBuf))
+
+  # <= 2 records with longitude and latitude. Error is the same but des not pass test.
+  expect_error(penvs_bgExtent(occs = foccs, bgSel = bBox, bgBuf), 'Too few localities (<2) to create a background polygon.')
+
+  #Expected error is
+
   # buffer == 0 while using Point Buffers as background extent
-  expect_error(penvs_bgExtent(occs, envs , bgSel = bPoint, bgBuf = 0),'Change buffer distance to positive
-                             or negative value.')
+  expect_error(penvs_bgExtent(occs , bgSel = bPoint, bgBuf = 0),'Change buffer distance to positive or negative value.')
 })
 
 ### test output features
