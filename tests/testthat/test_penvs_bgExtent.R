@@ -81,6 +81,7 @@ test_that("output type checks", {
   # create polygon
   Poly2<-list()
   for (i in 1:9){
+
    Poly2[[i]]<- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(
       bgExt2@polygons[[1]]@Polygons[[i]]@coords)),ID=1)))
      }
