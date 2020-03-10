@@ -80,16 +80,8 @@ test_that("output type checks", {
   # point Buffers
   # create polygon
   Poly2<-list()
-<<<<<<< HEAD
   for (i in 1:9){
 
-=======
-<<<<<<< HEAD
-  for (i in 1:9){
-=======
-  for (i in 1:10){
->>>>>>> a4be61a143e8da364a51e599b873f69f0973a3ac
->>>>>>> 8a7e3782cd4397fafebe0b726418240e6d40cd9b
    Poly2[[i]]<- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(
       bgExt2@polygons[[1]]@Polygons[[i]]@coords)),ID=1)))
      }
