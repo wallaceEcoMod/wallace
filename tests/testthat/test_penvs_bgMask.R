@@ -15,11 +15,10 @@ occs <- as.data.frame(occs[[1]]$cleaned)
 envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
 
 ## background extent
-bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
-
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
 
 ### run function
-bgMask <- penvs_bgMask(occs, envs, bgExt)
+bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
 
 
 ### test if the error messages appear when they are supposed to
