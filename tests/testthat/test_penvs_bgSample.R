@@ -24,7 +24,7 @@ bgPtsNum <- 1000
 
 
 ### run function
-bgsample <- penvs_bgSample(occs, bgMask, bgPtsNum)
+bgsample <- penvs_bgSample(occs, bgMask, bgPtsNum,spN=occs)
 
 
 ### test output features
@@ -35,7 +35,7 @@ test_that("output type checks", {
   expect_equal(ncol(bgsample), 2)
   # the headers of columns correspond to longitude and latitude
   expect_equal(c('longitude', 'latitude'), names(bgsample))
-  # the number of background pints sampled are the same as specified in the function
+  # the number of background points sampled are the same as specified in the function
   expect_equal(nrow(bgsample), bgPtsNum)
   # check if all the points sampled overlap with the study region
   # set longitude and latitude
