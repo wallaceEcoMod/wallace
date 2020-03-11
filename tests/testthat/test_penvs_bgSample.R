@@ -15,16 +15,16 @@ occs <- as.data.frame(occs$Panthera_onca$cleaned)
 # enviromental data
 envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
 # background extent
-bgExt <- c4_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
 # background masked
-bgMask <- c4_bgMask(occs, envs, bgExt)
+bgMask <- penvs_bgMask(occs, envs, bgExt)
 
 ## Number of background points to sample
 bgPtsNum <- 1000
 
 
 ### run function
-bgsample <- c4_bgSample(occs, bgMask, bgPtsNum)
+bgsample <- penvs_bgSample(occs, bgMask, bgPtsNum)
 
 
 ### test output features
