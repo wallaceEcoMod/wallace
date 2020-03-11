@@ -9,15 +9,15 @@ source("test_helper_functions.R")
 
 ## occurrences
 occs <-  occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
-occs <- as.data.frame(occs$Panthera_onca$cleaned)
+occs <- as.data.frame(occs[[1]]$cleaned)
 
 ## background mask
 # enviromental data
 envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
 # background extent
-bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
 # background masked
-bgMask <- penvs_bgMask(occs, envs, bgExt)
+bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
 
 ## Number of background points to sample
 bgPtsNum <- 1000
