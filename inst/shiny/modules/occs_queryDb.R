@@ -87,14 +87,16 @@ occs_queryDb_module_server <- function(input, output, session, common) {
 
       spp[[sp]]$rmm$code$wallaceSettings$occsNum <- input$occsNum
       spp[[sp]]$rmm$code$wallaceSettings$occsRemoved <- input$occsNum - nrow(occsList[[sp]]$cleaned)
+      spp[[sp]]$rmm$data$occurrence$sources <- input$occsDb
       # store citations with occCite, or just report the database if users are
       # too lame to use bridgetree
-      if (input$doCitations) {
-        # DOUBLE CHECK THIS DOESN"T NEED TO BE VECTORIZED!!
-        spp[[sp]]$rmm$data$occurrence$sources <- occsList[[sp]]$citations
-      } else {
-        spp[[sp]]$rmm$data$occurrence$sources <- input$occsDb
-      }
+      # GEPB: Checar donde guardar citations in RMM object
+      # if (input$doCitations) {
+      #   # DOUBLE CHECK THIS DOESN"T NEED TO BE VECTORIZED!!
+      #   spp[[sp]]$rmm$data$occurrence$sources <- occsList[[sp]]$citations
+      # } else {
+      #   spp[[sp]]$rmm$data$occurrence$sources <- input$occsDb
+      # }
     }
   })
 

@@ -87,7 +87,7 @@ occs_queryDb <- function(spNames, occDb, occNum, doCitations = FALSE,
             )
             return()
           }
-          nameGBIF <- studyTaxonList(x = sp)
+          nameGBIF <- occCite::studyTaxonList(x = sp)
           bestMatch <- as.character(nameGBIF@cleanedTaxonomy$`Best Match`)
           inputMatch <- as.character(nameGBIF@cleanedTaxonomy$`Input Name`)
           if (bestMatch == "No match") {
@@ -179,25 +179,27 @@ occs_queryDb <- function(spNames, occDb, occNum, doCitations = FALSE,
                   "locality", "year", "basisOfRecord", "catalogNumber",
                   "institutionCode", "elevation", "coordinateUncertaintyInMeters")
       for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
-      occs <- occs %>% dplyr::rename(scientific_name = name,
-                                     state_province = stateProvince,
-                                     record_type = basisOfRecord,
-                                     institution_code = institutionCode,
-                                     catalog_number = catalogNumber,
-                                     uncertainty = coordinateUncertaintyInMeters)
+      occs <- occs %>%
+        dplyr::rename(scientific_name = name,
+                      state_province = stateProvince,
+                      record_type = basisOfRecord,
+                      institution_code = institutionCode,
+                      catalog_number = catalogNumber,
+                      uncertainty = coordinateUncertaintyInMeters)
     } else if (occDb == 'vertnet') { # standardize VertNet column names
       fields <- c("name", "longitude", "latitude", "country", "stateprovince",
                   "locality", "year", "basisofrecord", "catalognumber",
                   "institutioncode", "maximumelevationinmeters",
                   "coordinateuncertaintyinmeters")
       for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
-      occs <- occs %>% dplyr::rename(scientific_name = name,
-                                     state_province = stateprovince,
-                                     record_type = basisofrecord,
-                                     institution_code = institutioncode,
-                                     catalog_number = catalognumber,
-                                     elevation = maximumelevationinmeters,
-                                     uncertainty = coordinateuncertaintyinmeters)
+      occs <- occs %>%
+        dplyr::rename(scientific_name = name,
+                      state_province = stateprovince,
+                      record_type = basisofrecord,
+                      institution_code = institutioncode,
+                      catalog_number = catalognumber,
+                      elevation = maximumelevationinmeters,
+                      uncertainty = coordinateuncertaintyinmeters)
     } else if (occDb == 'bison') { # standardize BISON column names
       fields <- c("providedScientificName", "longitude", "latitude", "countryCode",
                   "stateProvince", "verbatimLocality", "year", "basisOfRecord",
