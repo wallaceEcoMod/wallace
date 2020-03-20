@@ -94,16 +94,18 @@ occs_queryDb <- function(spNames, occDb, occNum, doCitations = FALSE,
             logger %>%
               writeLog(
                 type = "error",
-                paste0("There is no match for ", em(formatSpName(sp)),
-                       " in GBIF database. Please check the spelling. (**)")
+                hlSpp(em(sp)),
+                "There is no match in GBIF database. Please check the spelling. (**)"
               )
             return()
           }
           if (bestMatch != inputMatch) {
             logger %>%
-              writeLog(type = 'warning',
-                       "There is no a stricly match in the GBIF search. Data ",
-                       "downloaded corresponds to ", em(bestMatch), ". (**)")
+              writeLog(
+                type = 'warning',
+                hlSpp(em(inputMatch)),
+                "There is no a stricly match in the GBIF search. Data ",
+                "downloaded corresponds to ", em(bestMatch), ". (**)")
           }
 
           myBTO <- occCite::occQuery(x = sp,
@@ -124,8 +126,9 @@ occs_queryDb <- function(spNames, occDb, occNum, doCitations = FALSE,
                             "%d %B %Y")
           logger %>%
             writeLog(
-              "#CiteTheDOI: Gbif.org (", dateDOI,") GBIF Ocurrence Download https://doi.org/",
-              doiGBIF
+              hlSpp(em(sp)),
+              "(**) #CiteTheDOI: Gbif.org (", dateDOI,
+              ") GBIF Ocurrence Download https://doi.org/", doiGBIF
             )
         }
       } else if (occDb == 'bien') {
@@ -145,7 +148,8 @@ occs_queryDb <- function(spNames, occDb, occNum, doCitations = FALSE,
     if (q[[occDb]]$meta$found == 0) {
       logger %>%
         writeLog(type = 'error',
-                 'No records found for ', em(sp), '. Please check the spelling.')
+                 hlSpp(em(sp)),
+                 'No records found, please check the spelling. (**)')
       next
     }
     # extract occurrence tibbles
@@ -162,9 +166,10 @@ occs_queryDb <- function(spNames, occDb, occNum, doCitations = FALSE,
     occsXY <- occsOrig[!is.na(occsOrig$latitude) & !is.na(occsOrig$longitude),]
     # if no records with coordinates, throw warning
     if (nrow(occsXY) == 0) {
-      logger %>% writeLog(type = 'warning',
-                             'No records with coordinates found in ',
-                             occDb, " for ", em(sp), ".")
+      logger %>% writeLog(
+        type = 'warning',
+        hlSpp(em(sp)),
+        'No records with coordinates found in ', occDb, ". (**)")
       return()
     }
     # round longitude and latitude with 5 digits
@@ -246,8 +251,9 @@ occs_queryDb <- function(spNames, occDb, occNum, doCitations = FALSE,
     totRows <- q[[occDb]]$meta$found
 
     logger %>%
-      writeLog('Total ', occDb, ' records for ', em(sp), ' returned [',
-               nrow(occsOrig), '] out of [', totRows, '] total (limit ', occNum,
+      writeLog(hlSpp(em(sp)),
+               'Total ', occDb, ' records returned [', nrow(occsOrig), '] out of [',
+               totRows, '] total (limit ', occNum,
                '). Records without coordinates removed [', noCoordsRem,
                ']. Duplicated records removed [', dupsRem,
                ']. Remaining records [', nrow(occs), '].')

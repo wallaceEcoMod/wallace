@@ -142,7 +142,7 @@ function(input, output, session) {
 
   output$curSpUI <- renderUI({
     # check that a species is in the list already -- if not, don't proceed
-    # req(length(reactiveValuesToList(spp)) > 0)
+    req(length(reactiveValuesToList(spp)) > 0)
     # get the species names
     n <- names(spp)
     # remove multispecies names from list
@@ -207,17 +207,6 @@ function(input, output, session) {
     content = function(file) {
       l <- lapply(allSp(), function(x) {spp[[x]]$occData$occsCleaned})
       tbl <- dplyr::bind_rows(l)
-      # inTbl <- occs() %>% dplyr::select(-pop)
-      # tbl <- matrix(ncol = ncol(inTbl))
-      # colnames(tbl) <- names(inTbl)
-      # for(sp in allSp()) {
-      #   curTbl <- spp[[sp]]$occs %>% dplyr::select(-pop)
-      #   # # if bg values are present, add them to table
-      #   # if(!is.null(spp[[sp]]$bg)) {
-      #   #   curTbl <- rbind(curTbl, spp[[sp]]$bg)
-      #   # }
-      #   tbl <- rbind(tbl, curTbl)
-      # }
       # remove first NA row
       tbl <- tbl %>% dplyr::select(-pop)
       write_csv_robust(tbl, file, row.names = FALSE)
@@ -263,11 +252,6 @@ function(input, output, session) {
   output$envsPrint <- renderPrint({
     req(envs())
     envs()
-    # mins <- sapply(envs()@layers, function(x) x@data@min)
-    # maxs <- sapply(envs()@layers, function(x) x@data@max)
-    # names <- sapply(strsplit(names(envs()), '[.]'), function(x) x[-2])
-    # DT::datatable(data.frame(name=names, min=mins, max=maxs),
-    #               rownames = FALSE, options = list(pageLength = raster::nlayers(envs())))
   })
 
   ########################################### #
