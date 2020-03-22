@@ -122,7 +122,7 @@ function(input, output, session) {
     shinyjs::toggleState("dlMskEnvs", !is.null(spp[[curSp()]]$procEnvs$bgMask))
     shinyjs::toggleState("dlBgPts", !is.null(spp[[curSp()]]$bgPts))
     shinyjs::toggleState("dlBgShp", !is.null(spp[[curSp()]]$procEnvs$bgExt))
-    shinyjs::toggleState("dlPart", !is.null(spp[[curSp()]]$occs$partition))
+    shinyjs::toggleState("dlPart", ("partition" %in% colnames(spp[[curSp()]]$occs)))
     shinyjs::toggleState("dlEvalTbl", !is.null(evalOut()))
     shinyjs::toggleState("dlVisBioclim", spp[[curSp()]]$rmm$model$algorithm == "BIOCLIM")
     shinyjs::toggleState("dlMaxentPlots", (spp[[curSp()]]$rmm$model$algorithm == "maxnet" |
