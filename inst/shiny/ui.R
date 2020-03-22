@@ -211,22 +211,14 @@ tagList(
           # SESSION CODE ####
           conditionalPanel(
             "input.tabs == 'rmd'",
-            h4("Save session"),
-            p("By saving your session into a file, you can resume working on it at a later time or you can share the file with a collaborator."),
-            shinyjs::hidden(p(
-              id = "save_warning",
-              icon("warning"),
-              "The current session data is large, which means the downloaded file may be large and the download might take a long time."
-            )),
-            checkboxInput("save_portable", "Ensure the session data is portable and can be loaded on other computers", FALSE),
-            downloadButton("save_session", "Save Session"), br(), br(),
-            fileInput("load_session", "Load Session", accept = ".rds"),
-            h4("Download Session Code"),
+            h4("Download Session Code and Metadata"),
             uiTop(rmd_INFO),
-            selectInput('rmdFileType', label = "Select download file type",
+            strong("Select download file type"),
+            selectInput('rmdFileType', label = "",
                         choices = list("Rmd", "PDF", "HTML", "Word")),
             downloadButton('dlRMD', 'Download Session Code'),
             tags$hr(),
+            strong("Download metadata CSV files (**)"), br(), br(),
             downloadButton('dlRMM', 'Download Metadata'),
             tags$hr(),
             uiBottom(rmd_INFO)
@@ -297,6 +289,25 @@ tagList(
             tabPanel(
               'Module Guidance',
               uiOutput('gtext_module')
+            ),
+            tabPanel(
+              'Save session',
+              h4("Save session"),
+              p(paste0("By saving your session into a file, you can resume ",
+                       "working on it at a later time or you can share the file",
+                       " with a collaborator.")),
+              shinyjs::hidden(p(
+                id = "save_warning",
+                icon("warning"),
+                paste0("The current session data is large, which means the ",
+                       "downloaded file may be large and the download might",
+                       " take a long time.")
+                )),
+              checkboxInput(
+                "save_portable",
+                "Ensure the session data is portable and can be loaded on other computers",
+                FALSE),
+              downloadButton("save_session", "Save Session")
             ),
             tabPanel(
               'Download',
@@ -458,6 +469,11 @@ tagList(
                 column(8, includeMarkdown("Rmd/text_about.Rmd")
                 )
               )
+            ),
+            tabPanel(
+              'Load',
+              h4("Load session"),
+              fileInput("load_session", "", accept = ".rds")
             )
           )
         )

@@ -949,11 +949,16 @@ function(input, output, session) {
   ################################
 
   output$dlRMM <- downloadHandler(
-    filename = function() {
-      paste0("wallace-session-", Sys.Date(), ".csv")
-    },
+    filename = function() {paste0("wallace-metadata-", Sys.Date(), ".zip")},
     content = function(file) {
-      rangeModelMetadata::rmmToCSV(rmm(), filename = file)
+      tmpdir <- tempdir()
+      owd <- setwd(tmpdir)
+      namesSpp <- allSp()
+      for (i in namesSpp) {
+        rangeModelMetadata::rmmToCSV(spp[[i]]$rmm, filename = paste0(i, "_RMM.csv"))
+      }
+      zip::zipr(zipfile = file, files = paste0(namesSpp, "_RMM.csv"))
+      setwd(owd)
   })
 
   # Create a data structure that holds variables and functions used by modules
