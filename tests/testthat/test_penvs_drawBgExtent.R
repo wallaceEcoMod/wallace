@@ -32,17 +32,17 @@ expertDrawPoly2 <- matrix(c(longitude2, latitude2), byrow = F, ncol = 2)
 
 ### run function and set coordinates reference system
 # buffer == 0.5
-drawBgBf <- c4_drawBgExtent(polyExtXY = expertDrawPoly, polyExtID = 1, drawBgBuf = 0.5, occs)
+drawBgBf <- penvs_drawBgExtent(polyExtXY = expertDrawPoly, polyExtID = 1, drawBgBuf = 0.5, occs)
 raster::crs(drawBgBf) <- "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=WGS84"
 # buffer == 0
-drawBg <- c4_drawBgExtent(polyExtXY = expertDrawPoly, polyExtID = 1, drawBgBuf = 0, occs)
+drawBg <- penvs_drawBgExtent(polyExtXY = expertDrawPoly, polyExtID = 1, drawBgBuf = 0, occs)
 raster::crs(drawBg) <- "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=WGS84"
 
 
 ### test if the error messages appear when they are supposed to
 test_that("error checks", {
   # the drawn polygon does not include all localities
-  expect_error(c4_drawBgExtent(polyExtXY = expertDrawPoly2, polyExtID = 1, drawBgBuf, occs))
+  expect_error(penvs_drawBgExtent(polyExtXY = expertDrawPoly2, polyExtID = 1, drawBgBuf, occs))
 })
 
 ### test output features
