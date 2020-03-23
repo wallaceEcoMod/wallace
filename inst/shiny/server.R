@@ -124,11 +124,9 @@ function(input, output, session) {
     shinyjs::toggleState("dlBgShp", !is.null(spp[[curSp()]]$procEnvs$bgExt))
     shinyjs::toggleState("dlPart", ("partition" %in% colnames(spp[[curSp()]]$occs)))
     shinyjs::toggleState("dlEvalTbl", !is.null(evalOut()))
-    shinyjs::toggleState("dlVisBioclim", spp[[curSp()]]$rmm$model$algorithm == "BIOCLIM")
-    shinyjs::toggleState("dlMaxentPlots", (spp[[curSp()]]$rmm$model$algorithm == "maxnet" |
-                                             spp[[curSp()]]$rmm$model$algorithm == "maxent.jar"))
-    shinyjs::toggleState("dlRespCurves", (spp[[curSp()]]$rmm$model$algorithm == "maxnet" |
-                                            spp[[curSp()]]$rmm$model$algorithm == "maxent.jar"))
+    shinyjs::toggleState("dlVisBioclim", !is.null(spp[[curSp()]]$rmm$modelFit$bioclim$notes))
+    shinyjs::toggleState("dlMaxentPlots", !is.null(spp[[curSp()]]$rmm$modelFit$maxent$notes))
+    shinyjs::toggleState("dlRespCurves", !is.null(spp[[curSp()]]$rmm$modelFit$maxent$notes))
     shinyjs::toggleState("dlPred", !is.null(spp[[curSp()]]$visualization$occPredVals))
     shinyjs::toggleState("dlPjShp", !is.null(spp[[curSp()]]$project$pjExt))
     shinyjs::toggleState("dlProj", !is.null(spp[[curSp()]]$project$pjEnvs))

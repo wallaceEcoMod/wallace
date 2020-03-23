@@ -132,7 +132,7 @@ model_maxent_module_server <- function(input, output, session, common) {
       if(input$algMaxent == "maxnet") {
         ver <- paste("maxnet", packageVersion('maxnet'))
       }
-      spp[[sp]]$rmm$model$maxent$algorithmNotes <- ver
+      spp[[sp]]$rmm$modelFit$maxent$algorithmNotes <- ver
     }
     common$update_component(tab = "Results")
 })
