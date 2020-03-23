@@ -81,10 +81,10 @@ envs_userEnvs_module_result <- function(id) {
   verbatimTextOutput(ns("envsPrint"))
 }
 
-envs_userEnvs_module_map <- function(map, common) {
-  occs <- common$occs
-  map %>% clearAll() %>%
-    addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
-                     radius = 5, color = 'red', fill = TRUE, fillColor = "red",
-                     fillOpacity = 0.2, weight = 2, popup = ~pop)
-}
+# envs_userEnvs_module_map <- function(map, common) {
+#   occs <- common$occs
+#   map %>% clearAll() %>%
+#     addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
+#                      radius = 5, color = 'red', fill = TRUE, fillColor = "red",
+#                      fillOpacity = 0.2, weight = 2, popup = ~pop)
+# }

@@ -3,9 +3,9 @@ User CSV path with occurrence data. If the CSV file is not in the current worksp
 ```
 
 ```{r, echo = {{occsUser_knit}}}
-# NOTE: provide the path to the .csv file
-occs.path <- ""
-# get a list of species occurrence data
-occs.user <- occs_userOccs(csvPath = occs.path, csvName = "{{userOccsCsvName}}")
-occs.{{sp}} <- occs.user[["{{spName}}"]]$cleaned
+# # NOTE: provide the path to the .csv file
+# occs.path <- ""
+# # get a list of species occurrence data
+# occs.user <- occs_userOccs(csvPath = occs.path, csvName = "{{userOccsCsvName}}")
+# occs.{{sp}} <- occs.user[["{{spName}}"]]$cleaned
 ```

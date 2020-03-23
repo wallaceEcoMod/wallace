@@ -127,14 +127,14 @@ envs_worldclim_module_map <- function(map, common) {
                      fillOpacity = 0.2, weight = 2, popup = ~pop)
 }
 
-envs_worldclim_module_rmd <- function(species) {
-  # Variables used in the module's Rmd code
-  list(
-    worldclim_knit = !is.null(species$rmm$wallaceSettings$wcRes),
-    wcRes = species$rmm$wallaceSettings$wcRes,
-    bcSel = printVecAsis(species$rmm$wallaceSettings$bcSel),
-    mapCntr = printVecAsis(species$rmm$wallaceSettings$mapCntr),
-    wcBrick = species$rmm$wallaceSettings$wcBrick
-  )
-}
+# envs_worldclim_module_rmd <- function(species) {
+#   # Variables used in the module's Rmd code
+#   list(
+#     worldclim_knit = !is.null(species$rmm$wallaceSettings$wcRes),
+#     wcRes = species$rmm$wallaceSettings$wcRes,
+#     bcSel = printVecAsis(species$rmm$wallaceSettings$bcSel),
+#     mapCntr = printVecAsis(species$rmm$wallaceSettings$mapCntr),
+#     wcBrick = species$rmm$wallaceSettings$wcBrick
+#   )
+# }
 

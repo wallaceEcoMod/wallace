@@ -101,12 +101,12 @@ proj_mess_module_map <- function(map, common) {
                 fill = FALSE, weight = 4, color = "red", group = 'proj')
 }
 
-proj_mess_module_rmd <- function(species) {
-  # Variables used in the module's Rmd code
-  list(
-    module_knit = species$rmm$code$wallaceSettings$someFlag,
-    var1 = species$rmm$code$wallaceSettings$someSetting1,
-    var2 = species$rmm$code$wallaceSettings$someSetting2
-  )
-}
+# proj_mess_module_rmd <- function(species) {
+#   # Variables used in the module's Rmd code
+#   list(
+#     module_knit = species$rmm$code$wallaceSettings$someFlag,
+#     var1 = species$rmm$code$wallaceSettings$someSetting1,
+#     var2 = species$rmm$code$wallaceSettings$someSetting2
+#   )
+# }
 
