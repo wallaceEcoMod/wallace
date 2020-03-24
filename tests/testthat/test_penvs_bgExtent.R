@@ -1,5 +1,5 @@
 ##### QUESTIONS
-# 1. error with message: 'Too few localities (<2) to create a background polygon.' Expectation 2
+# 1. error with message: 'Too few localities (<2) to create a background polygon.' Expectation 2 From Andres: its fixed, just added a grepl argument to the expect error so it ommits regular expressions
 # 2. I couldn't test the overlap with the point Buffers background extent. From Andrea: I fixed this, problem was you were selecting a single point buffer
 
 ####The errors to expect are:
@@ -48,7 +48,7 @@ raster::crs(bgExt3) <- "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=WGS84"
 test_that("error checks", {
 
   # <= 2 records with longitude and latitude. Error is the same but des not pass test.
-  expect_error(penvs_bgExtent(occs = foccs, bgSel = bBox, bgBuf), 'Too few localities (<2) to create a background polygon.')
+  expect_error(penvs_bgExtent(occs = foccs, bgSel = bBox, bgBuf), 'Too few localities (<2) to create a background polygon.',fixed=TRUE)
 
   #Expected error is
 
