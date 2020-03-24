@@ -1,7 +1,12 @@
 ##### QUESTIONS
+<<<<<<< HEAD
 # 1. error with message: Please enter either a CSV file of vertex coordinates or shapefile (.shp, .shx, .dbf). From Andres: this is fixed
 ## 2-this still needs a test for points outside of polygon part
 ##3- There is still a  problem with the function given occs with CRS to fix
+=======
+# 1. error with message: Please enter either a CSV file of vertex coordinates or shapefile (.shp, .shx, .dbf).
+## this still needs a test for points outside of polygon part
+>>>>>>> 75c8837a0329af42d5b69d6f6134746ad3721eec
 
 #### COMPONENT 4: Process Environmental Data
 #### MODULE: user-specified
