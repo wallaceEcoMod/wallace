@@ -1,4 +1,3 @@
-
 #### COMPONENT 4: Process Environmental Data
 #### MODULE: user-specified
 context("userBgExtent")
