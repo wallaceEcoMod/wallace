@@ -14,7 +14,7 @@ envs_worldclim_module_ui <- function(id) {
     conditionalPanel(paste0("input['", ns("bcSelChoice"), "']"),
                      shinyWidgets::pickerInput(
                        "bcSel",
-                       label = "Select categorical variables (**)",
+                       label = "Select bioclim variables (**)",
                        choices = setNames(as.list(paste0('bio', 1:19)), paste0('bio', 1:19)),
                        multiple = TRUE,
                        selected = paste0('bio', 1:19),
