@@ -152,6 +152,7 @@ out.bien <- occs_queryDb(spNames = "espeletia grandiflora", occDb = "bien",occNu
 # original BIEN headers
 headersBien <- c("scrubbed_species_binomial", "longitude", "latitude",
                  "collection_code")
+
 # check headers
 test_that("Bien headers", {
   # the original headers haven't changed
@@ -160,7 +161,7 @@ test_that("Bien headers", {
   expect_equal(names(out.bien[[1]]$cleaned),
                c("occID", "scientific_name", "longitude", "latitude", "country",
           "state_province", "locality", "year", "record_type", "catalog_number",
-          "institution_code", "elevation", "uncertainty"))
+          "institution_code", "elevation", "uncertainty","pop"))
 })
 
 
