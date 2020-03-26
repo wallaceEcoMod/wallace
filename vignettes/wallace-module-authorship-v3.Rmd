@@ -84,7 +84,7 @@ correlations_module_ui <- function(id) {
     ## Add a checkbox for batch processing (more than 1 species)
     checkboxInput(ns("batch1"), label = strong("Batch"), value = T),
     ## Give the action button a name and a label.
-    actionButton(ns("runCorrs"), "Calculate correlations")
+    actionButton(ns("runCorrs"), label = "Calculate correlations")
   )
 }
 ```
