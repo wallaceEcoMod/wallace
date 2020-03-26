@@ -145,3 +145,22 @@ test_that("Bison headers", {
                  "locality", "year", "record_type","catalog_number", "institution_code",
                  "elevation", "uncertainty", "pop"))
   })
+
+##BIEN
+# download data from BIEN
+out.bien <- occs_queryDb(spNames = "espeletia grandiflora", occDb = "bien",occNum)
+# original BIEN headers
+headersBien <- c("scrubbed_species_binomial", "longitude", "latitude",
+                 "collection_code")
+# check headers
+test_that("Bien headers", {
+  # the original headers haven't changed
+  expect_false('FALSE' %in%  (headersBien %in% names(out.bien[[1]]$orig)))
+  # the headers in the claned table are the ones specified in the function
+  expect_equal(names(out.bien[[1]]$cleaned),
+               c("occID", "scientific_name", "longitude", "latitude", "country",
+          "state_province", "locality", "year", "record_type", "catalog_number",
+          "institution_code", "elevation", "uncertainty"))
+})
+
+
