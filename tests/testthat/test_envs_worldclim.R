@@ -1,6 +1,6 @@
 ##### QUESTIONS
   # 1. If I add "FALSE" values to the selected variables vector, the function doesn't work
-  # 2. The names aren't the ones specified in the function
+  # 2. The names aren't the ones specified in the function. Is this a problem for further analyses? I told Gonzalo to look at it
 
 
 #### COMPONENT 3: Obtain Environmental Data
@@ -18,7 +18,7 @@ envar <- list(TRUE, TRUE,TRUE,TRUE,TRUE)
 
 
 ### run function
-arcmin10 <- envs_worldclim(bcRes, bcSel= envar)
+arcmin10 <- envs_worldclim(bcRes, bcSel= envar,doBrick=T)
 
 
 ### test if the error messages appear when they are supposed to
@@ -39,3 +39,4 @@ test_that("output type checks", {
   # the names are right
   expect_equal(names(arcmin10), c("bio1.1", "bio1.2", "bio1.3", "bio1.4", "bio1.5"))
   })
+
