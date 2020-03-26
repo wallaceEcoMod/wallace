@@ -145,3 +145,60 @@ test_that("Bison headers", {
                  "locality", "year", "record_type","catalog_number", "institution_code",
                  "elevation", "uncertainty", "pop"))
   })
+
+##BIEN
+# download data from BIEN
+out.bien <- occs_queryDb(spNames = "espeletia grandiflora", occDb = "bien",occNum)
+# original BIEN headers
+headersBien <- c("scrubbed_species_binomial", "longitude", "latitude",
+                 "collection_code", "country", "state_province", "locality", "year",
+                 "record_type", "catalog_number", "elevation", "uncertainty")
+# check headers
+test_that("Bien headers", {
+  # the original headers haven't changed
+  expect_false('FALSE' %in%  (headersBien %in% names(out.bien[[1]]$orig)))
+  # the headers in the claned table are the ones specified in the function
+  expect_equal(names(out.bien[[1]]$cleaned),
+               c("occID", "scientific_name", "longitude", "latitude", "country",
+          "state_province", "locality", "year", "record_type", "catalog_number",
+          "institution_code", "elevation", "uncertainty"))
+})
+
+fields <- c("scrubbed_species_binomial", "longitude", "latitude",
+            "collection_code", "country", "state_province", "locality", "year",
+            "record_type", "catalog_number", "elevation", "uncertainty")
+# BIEN field requirements (no downloaded by BIEN) "country",
+# "state_province", "locality", "year", "record_type", "institution_code",
+# "elevation", "uncertainty"
+for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
+occs <- occs %>% dplyr::rename(scientific_name = scrubbed_species_binomial,
+                               institution_code = collection_code)
+}
+
+# subset by key columns and make id and popup columns
+cols <- c("occID", "scientific_name", "longitude", "latitude", "country",
+          "state_province", "locality", "year", "record_type", "catalog_number",
+          "institution_code", "elevation", "uncertainty")
+occs <- occs %>%
+  dplyr::select(dplyr::one_of(cols)) %>%
+  dplyr::mutate(year = as.integer(year),
+                uncertainty = as.numeric(uncertainty)) %>%
+  # # make new column for leaflet marker popup content
+  dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent))) %>%
+  dplyr::arrange_(cols)
+
+# subset by key columns and make id and popup columns
+noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
+dupsRem <- nrow(occsXY) - nrow(occs)
+
+# get total number of records found in database
+totRows <- q[[occDb]]$meta$found
+
+logger %>%
+  writeLog('Total ', occDb, ' records for ', em(sp), ' returned [',
+           nrow(occsOrig), '] out of [', totRows, '] total (limit ', occNum,
+           '). Records without coordinates removed [', noCoordsRem,
+           ']. Duplicated records removed [', dupsRem,
+           ']. Remaining records [', nrow(occs), '].')
+# put into list
+occList[[formatSpName(sp)]] <- list(orig = occsOrig, cleaned = occs)
