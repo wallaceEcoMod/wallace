@@ -9,25 +9,24 @@ source("test_helper_functions.R")
 
 ## occurrences
 occs <-  occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
-occs <- as.data.frame(occs$cleaned)
+occs <- as.data.frame(occs[[1]]$cleaned)
 
 ## enviromental variables
 envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
 
 ## background extent
-bgExt <- c4_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
-
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
 
 ### run function
-bgMask <- c4_bgMask(occs, envs, bgExt)
+bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
 
 
 ### test if the error messages appear when they are supposed to
 test_that("error checks", {
   # the user has not selected the background extent
-  expect_error(c4_bgMask(occs, envs, bgExt=NULL),
+  expect_error(penvs_bgMask(occs, envs, bgExt=NULL),
                'Before sampling background points, define the background extent.')
-  })
+})
 
 ### test output features
 test_that("output type checks", {
@@ -45,4 +44,4 @@ test_that("output type checks", {
   expect_true(raster::cellStats(bgMask$bio1.3, sum) < raster::cellStats(envs$bio1.3, sum))
   expect_true(raster::cellStats(bgMask$bio1.4, sum) < raster::cellStats(envs$bio1.4, sum))
   expect_true(raster::cellStats(bgMask$bio1.5, sum) < raster::cellStats(envs$bio1.5, sum))
-  })
+})

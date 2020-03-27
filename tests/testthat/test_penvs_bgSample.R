@@ -9,22 +9,22 @@ source("test_helper_functions.R")
 
 ## occurrences
 occs <-  occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
-occs <- as.data.frame(occs$Panthera_onca$cleaned)
+occs <- as.data.frame(occs[[1]]$cleaned)
 
 ## background mask
 # enviromental data
 envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
 # background extent
-bgExt <- c4_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
 # background masked
-bgMask <- c4_bgMask(occs, envs, bgExt)
+bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
 
 ## Number of background points to sample
 bgPtsNum <- 1000
 
 
 ### run function
-bgsample <- c4_bgSample(occs, bgMask, bgPtsNum)
+bgsample <- penvs_bgSample(occs, bgMask, bgPtsNum,spN=occs)
 
 
 ### test output features
@@ -35,15 +35,15 @@ test_that("output type checks", {
   expect_equal(ncol(bgsample), 2)
   # the headers of columns correspond to longitude and latitude
   expect_equal(c('longitude', 'latitude'), names(bgsample))
-  # the number of background pints sampled are the same as specified in the function
+  # the number of background points sampled are the same as specified in the function
   expect_equal(nrow(bgsample), bgPtsNum)
   # check if all the points sampled overlap with the study region
-    # set longitude and latitude
+  # set longitude and latitude
   sp::coordinates(bgsample) <- ~ longitude + latitude
-    # create polygon
+  # create polygon
   Poly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(
     bgExt@polygons[[1]]@Polygons[[1]]@coords)),ID=1)))
   # check which points overlap
   overlap <- sp::over(bgsample, Poly)
   expect_false(NA %in% overlap)
-  })
+})

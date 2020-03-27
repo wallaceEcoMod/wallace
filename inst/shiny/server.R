@@ -232,6 +232,7 @@ function(input, output, session) {
   # # # # # # # # # # # # # # # # # #
 
   bcSel <- reactive(input$bcSel)
+  VarSelector <- reactive(input$VarSelector)
   # shortcut to currently selected environmental variable, read from curEnvUI
   curEnv <- reactive(input$curEnv)
 
@@ -975,6 +976,7 @@ function(input, output, session) {
     occs = occs,
     envs = envs,
     bcSel = bcSel,
+    VarSelector = VarSelector,
     bg = bg,
     bgExt = bgExt,
     bgMask = bgMask,
