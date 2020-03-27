@@ -1,8 +1,8 @@
-```{asis, echo = {{occsDb_knit}}, eval = {{occsDb_knit}}, include = {{occsDb_knit}}}
+```{asis, echo = {{occs_queryDb_knit}}, eval = {{occs_queryDb_knit}}, include = {{occs_queryDb_knit}}}
 You searched the `r "{{occDb}}"` database for *`r "{{spName}}"`*, limited to `r {{occNum}}` records.
 ```
 
-```{r, echo = {{occsDb_knit}}, include = {{occsDb_knit}}}
+```{r, echo = {{occs_queryDb_knit}}, include = {{occs_queryDb_knit}}}
 # query selected database for occurrence records
 occs.query <- occs_queryDb(spName = "{{spName}}", occDb = "{{occDb}}", occNum = {{occNum}})
 occs.{{sp}} <- occs.query$cleaned

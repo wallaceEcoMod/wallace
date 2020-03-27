@@ -185,12 +185,13 @@ penvs_userBgExtent_module_map <- function(map, common) {
   }
 }
 
-# penvs_userBgExtent_module_rmd <- function(species) {
-#   # Variables used in the module's Rmd code
-#   list(
-#     module_knit = species$rmm$code$wallaceSettings$someFlag,
-#     var1 = species$rmm$code$wallaceSettings$someSetting1,
-#     var2 = species$rmm$code$wallaceSettings$someSetting2
-#   )
-# }
+penvs_userBgExtent_module_rmd <- function(species) {
+  # Variables used in the module's Rmd code
+  list(
+    penvs_userBgExtent_knit = FALSE
+    # penvs_userBgExtent_knit = species$rmm$code$wallaceSettings$someFlag,
+    # var1 = species$rmm$code$wallaceSettings$someSetting1,
+    # var2 = species$rmm$code$wallaceSettings$someSetting2
+  )
+}
 

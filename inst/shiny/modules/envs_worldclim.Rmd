@@ -1,8 +1,8 @@
-```{asis, echo = {{worldclim_knit}}, eval = {{worldclim_knit}}, include = {{worldclim_knit}}}
+```{asis, echo = {{envs_worldclim_knit}}, eval = {{envs_worldclim_knit}}, include = {{envs_worldclim_knit}}}
 Using WorldClim (http://www.worldclim.org/) bioclimatic dataset at resolution of `r {{wcRes}}` arcmin.
 ```
 
-```{r, echo = {{worldclim_knit}}, include = {{worldclim_knit}}}
+```{r, echo = {{envs_worldclim_knit}}, include = {{envs_worldclim_knit}}}
 # envs.{{sp}} <- envs_worldclim({{wcRes}}, {{bcSel}}, {{mapCntr}}, {{wcBrick}})
 # occs.{{sp}}.xy <- occs.{{sp}}[c('longitude', 'latitude')]
 # occs.{{sp}}.vals <- as.data.frame(raster::extract(envs.{{sp}}, occs.{{sp}}.xy))

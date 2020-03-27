@@ -61,11 +61,11 @@ poccs_removeByID_module_map <- function(map, common) {
     zoom2Occs(occs())
 }
 
-# poccs_removeByID_module_rmd <- function(species) {
-#   # Variables used in the module's Rmd code
-#   list(
-#     removeByID_knit = !is.null(spp[[sp]]$rmm$code$wallaceSettings$removedIDs),
-#     removeByID_id = spp[[sp]]$rmm$code$wallaceSettings$removedIDs
-#   )
-# }
+poccs_removeByID_module_rmd <- function(species) {
+  # Variables used in the module's Rmd code
+  list(
+    poccs_removeByID_knit = !is.null(species$rmm$code$wallaceSettings$removedIDs),
+    removeByID_id = species$rmm$code$wallaceSettings$removedIDs
+  )
+}
 

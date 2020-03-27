@@ -1,7 +1,7 @@
-```{asis, echo = {{module_knit}}, eval = {{module_knit}}, include = {{module_knit}}}
-Description of what the code will do {{var1}}
+```{asis, echo = {{penvs_userBgExtent_knit}}, eval = {{penvs_userBgExtent_knit}}, include = {{penvs_userBgExtent_knit}}}
+Description of what the code will do
 ```
 
-```{r, echo = {{module_knit}}, include = {{module_knit}}}
-# R code to run {{var2}}
+```{r, echo = {{penvs_userBgExtent_knit}}, include = {{penvs_userBgExtent_knit}}}
+# R code to run
 ```

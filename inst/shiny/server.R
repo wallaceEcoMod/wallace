@@ -847,6 +847,7 @@ function(input, output, session) {
       paste0("wallace-session-", Sys.Date(), filetype_to_ext(input$rmdFileType))
     },
     content = function(file) {
+      spp <- common$spp
       md_files <- c()
       md_intro_file <- tempfile(pattern = "intro_", fileext = ".md")
       rmarkdown::render("Rmd/userReport_intro.Rmd",
@@ -856,7 +857,7 @@ function(input, output, session) {
       md_files <- c(md_files, md_intro_file)
 
       for (sp in allSp()) {
-        species_rmds <- list()
+        species_rmds <- NULL
         for (component in names(COMPONENT_MODULES)) {
           for (module in COMPONENT_MODULES[[component]]) {
             rmd_file <- module$rmd_file
@@ -878,27 +879,24 @@ function(input, output, session) {
             module_rmd_file <- tempfile(pattern = paste0(module$id, "_"),
                                         fileext = ".Rmd")
             writeLines(module_rmd, module_rmd_file)
-            species_rmds[[component]] <- c(species_rmds[[component]], module_rmd_file)
+            species_rmds <- c(species_rmds, module_rmd_file)
           }
         }
 
         species_md_file <- tempfile(pattern = paste0(sp, "_"),
                                     fileext = ".md")
-        rmarkdown::render("Rmd/userReport_species.Rmd",
+        print(species_rmds)
+        print(spName(sp))
+        print(species_md_file)
+        rmarkdown::render(input = "Rmd/userReport_species.Rmd",
                           params = list(child_rmds = species_rmds, spName = spName(sp)),
                           output_format = rmarkdown::github_document(html_preview = FALSE),
                           output_file = species_md_file,
                           clean = TRUE)
         md_files <- c(md_files, species_md_file)
-
-        # TODO these should be set in each individual module's rmd function
-        # knit.logicals <- list(
-        #   bgExtent_knit = !is.null(spp[[sp]]$procEnvs$bgExt),
-        #   bgMskSamplePts_knit = !is.null(spp[[sp]]$bgPts),
-        #   espace_pca_knit = !is.null(spp[[sp]]$pca),
-        #   espace_occDens_knit = !is.null(spp[[sp]]$occDens),
-        #   espace_nicheOv_knit = !is.null(spp[[sp]]$nicheOv))
       }
+
+      print(md_files)
 
       combined_md <-
         md_files %>%

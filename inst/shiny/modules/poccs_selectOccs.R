@@ -50,12 +50,12 @@ poccs_selectOccs_module_map <- function(map, common) {
                                    editOptions = leaflet.extras::editToolbarOptions())
 }
 
-# poccs_selectOccs_module_rmd <- function(species) {
-#   # Variables used in the module's Rmd code
-#   list(
-#     selectByID_knit = !is.null(species$rmm$code$wallaceSettings$occsSelPolyCoords),
-#     selectByID_xy = species$polySelXY,
-#     selectByID_id = species$polySelID
-#   )
-# }
+poccs_selectOccs_module_rmd <- function(species) {
+  # Variables used in the module's Rmd code
+  list(
+    poccs_selectByID_knit = !is.null(species$rmm$code$wallaceSettings$occsSelPolyCoords),
+    selectByID_xy = species$polySelXY,
+    selectByID_id = species$polySelID
+  )
+}
 

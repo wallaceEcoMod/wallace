@@ -122,8 +122,8 @@ occs_queryDb_module_map <- function(map, common) {
 
 occs_queryDb_module_rmd <- function(species) {
   list(
-    occsDb_knit = !is.null(species$rmm$code$wallaceSettings$occsNum),
+    occs_queryDb_knit = !is.null(species$rmm$code$wallace$occsNum),
     occDb = species$rmm$data$occurrence$sources,
-    occNum = species$rmm$code$wallaceSettings$occsNum
+    occNum = species$rmm$code$wallace$occsNum
   )
 }

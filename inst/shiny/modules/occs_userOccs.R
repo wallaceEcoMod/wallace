@@ -63,9 +63,9 @@ occs_userOccs_module_map <- function(map, common) {
     zoom2Occs(occs)
 }
 
-# occs_userOccs_module_rmd <- function(species) {
-#   list(
-#     occsUser_knit = !is.null(species$rmm$code$wallaceSettings$userCSV),
-#     userOccsCsvName = species$rmm$code$wallaceSettings$userCSV
-#   )
-# }
+occs_userOccs_module_rmd <- function(species) {
+  list(
+    occs_userOccs_knit = !is.null(species$rmm$code$wallaceSettings$userCSV),
+    userOccsCsvName = species$rmm$code$wallaceSettings$userCSV
+  )
+}

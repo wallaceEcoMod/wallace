@@ -1,7 +1,7 @@
-```{asis, echo = {{module_knit}}, eval = {{module_knit}}, include = {{module_knit}}}
-Description of what the code will do {{var1}}
+```{asis, echo = {{correlations_knit}}, eval = {{correlations_knit}}, include = {{correlations_knit}}}
+Description of what the code will do
 ```
 
-```{r, echo = {{module_knit}}, include = {{module_knit}}}
-# R code to run {{var2}}
+```{r, echo = {{correlations_knit}}, include = {{correlations_knit}}}
+# R code to run 
 ```
