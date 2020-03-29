@@ -88,7 +88,11 @@ occs_queryDb_module_server <- function(input, output, session, common) {
       spp[[sp]]$rmm$code$wallace$occsRemoved <- input$occsNum - nrow(occsList[[sp]]$cleaned)
       # Store citations
       if (input$doCitations) {
-        spp[[sp]]$rmm$data$occurrence$sources <- occsList[[sp]]$citations
+        spp[[sp]]$rmm$data$occurrence$sources <- input$occsDb
+        spp[[sp]]$rmm$code$wallace$gbifDOI <- occsList[[sp]]$citation
+        spp[[sp]]$rmm$code$wallace$gbifUser <- input$gbifUser
+        spp[[sp]]$rmm$code$wallace$gbifEmail <- input$gbifEmail
+        spp[[sp]]$rmm$code$wallace$doCitations <- input$doCitations
       } else {
         spp[[sp]]$rmm$data$occurrence$sources <- input$occsDb
       }
@@ -122,8 +126,12 @@ occs_queryDb_module_map <- function(map, common) {
 
 occs_queryDb_module_rmd <- function(species) {
   list(
-    occs_queryDb_knit = !is.null(species$rmm$code$wallace$occsNum),
+    occs_queryDb_knit = !is.null(species$rmm$data$occurrence$sources),
+    occs_citation_knit = !is.null(species$rmm$code$wallace$gbifDOI),
     occDb = species$rmm$data$occurrence$sources,
-    occNum = species$rmm$code$wallace$occsNum
+    occNum = species$rmm$code$wallace$occsNum,
+    doCitations = species$rmm$code$wallace$doCitations,
+    gbifUser = species$rmm$code$wallace$gbifUser,
+    gbifEmail = species$rmm$code$wallace$gbifEmail
   )
 }

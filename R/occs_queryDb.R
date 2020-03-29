@@ -31,7 +31,7 @@
 #' @export
 
 #occs_queryDb <- function(spName, occDb, occNum, logger=NULL) {
-occs_queryDb <- function(spNames, occDb, occNum, doCitations = FALSE,
+occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
                          gbifUser = NULL, gbifEmail = NULL, gbifPW = NULL,
                          logger = NULL) {
 
@@ -87,7 +87,7 @@ occs_queryDb <- function(spNames, occDb, occNum, doCitations = FALSE,
             )
             return()
           }
-          nameGBIF <- studyTaxonList(x = sp)
+          nameGBIF <- occCite::studyTaxonList(x = sp)
           bestMatch <- as.character(nameGBIF@cleanedTaxonomy$`Best Match`)
           inputMatch <- as.character(nameGBIF@cleanedTaxonomy$`Input Name`)
           if (bestMatch == "No match") {
@@ -124,6 +124,7 @@ occs_queryDb <- function(spNames, occDb, occNum, doCitations = FALSE,
           doiGBIF <- myBTO@occResults[[bestMatch]][['GBIF']]$Metadata$doi
           dateDOI <- format(as.Date(myBTO@occResults[[bestMatch]][['GBIF']]$Metadata$created),
                             "%d %B %Y")
+          citeGBIF <- list(doi = doiGBIF, date = dateDOI)
           logger %>%
             writeLog(
               hlSpp(em(sp)),
@@ -258,7 +259,12 @@ occs_queryDb <- function(spNames, occDb, occNum, doCitations = FALSE,
                ']. Duplicated records removed [', dupsRem,
                ']. Remaining records [', nrow(occs), '].')
     # put into list
-    occList[[formatSpName(sp)]] <- list(orig = occsOrig, cleaned = occs)
+    if (doCitations & occDb == "gbif") {
+      occList[[formatSpName(sp)]] <- list(orig = occsOrig, cleaned = occs,
+                                          citation = citeGBIF)
+    } else {
+      occList[[formatSpName(sp)]] <- list(orig = occsOrig, cleaned = occs)
+    }
   }
   return(occList)
 }

@@ -2,7 +2,7 @@
 title: Wallace Session `r Sys.Date()`
 ---
 
-```{r uno, include=FALSE, }
+```{r, include=FALSE, }
 library(knitr)
 knit_engines$set(asis = function(options) {
   if (options$echo && options$eval) knit_child(text = options$code)
@@ -21,7 +21,7 @@ For more detailed information see <http://rmarkdown.rstudio.com>).
 ### Package installation
 
 Wallace uses the following R packages that must be installed and loaded before starting.
-```{r dos}
+```{r}
 library(spocc)
 library(spThin)
 library(dismo)
@@ -32,7 +32,7 @@ library(wallace)
 
 The *Wallace* session code .Rmd file is composed of a chain of module functions that are internal to *Wallace*. Each of these functions corresponds to a single module that the user ran during the session. To see the internal code for these module functions, click on the links in the .Rmd file. Users are encouraged to write custom code in the .Rmd directly to modify their analysis, and even modify the module function code to further customize. To see the source code for any module function, just type its name into the R console and press Return.
 
-```{r tres}
+```{r}
 # example:
 # just type the function name and press Return to see its source code
 # paste this code into a new script to edit it
@@ -41,4 +41,3 @@ occs_queryDb
 
 Your analyses are below.
 
----

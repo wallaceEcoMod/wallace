@@ -886,9 +886,6 @@ function(input, output, session) {
 
         species_md_file <- tempfile(pattern = paste0(sp, "_"),
                                     fileext = ".md")
-        print(species_rmds)
-        print(spName(sp))
-        print(species_md_file)
         rmarkdown::render(input = "Rmd/userReport_species.Rmd",
                           params = list(child_rmds = species_rmds, spName = spName(sp)),
                           output_format = rmarkdown::github_document(html_preview = FALSE),
@@ -896,8 +893,6 @@ function(input, output, session) {
                           clean = TRUE)
         md_files <- c(md_files, species_md_file)
       }
-
-      print(md_files)
 
       combined_md <-
         md_files %>%

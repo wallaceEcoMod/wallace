@@ -20,7 +20,6 @@ poccs_removeByID_module_server <- function(input, output, session, common) {
                                  input$removeID,
                                  logger,
                                  spN = curSp())
-    print(input$removeID)
     req(occs.rem)
     # LOAD INTO SPP ####
     spp[[curSp()]]$occs <- occs.rem
