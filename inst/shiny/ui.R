@@ -303,10 +303,6 @@ tagList(
                        "downloaded file may be large and the download might",
                        " take a long time.")
                 )),
-              checkboxInput(
-                "save_portable",
-                "Ensure the session data is portable and can be loaded on other computers",
-                FALSE),
               downloadButton("save_session", "Save Session")
             ),
             tabPanel(
@@ -473,7 +469,8 @@ tagList(
             tabPanel(
               'Load',
               h4("Load session"),
-              fileInput("load_session", "", accept = ".rds")
+              fileInput("load_session", "", accept = ".rds"),
+              actionButton('goLoad_session', 'Load RDS')
             )
           )
         )

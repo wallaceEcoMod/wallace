@@ -85,6 +85,9 @@ occs_queryDb_module_server <- function(input, output, session, common) {
       spp[[sp]]$rmm$data$occurrence$yearMin <- min(occsList[[sp]]$cleaned$year)
       spp[[sp]]$rmm$data$occurrence$yearMax <- max(occsList[[sp]]$cleaned$year)
       spp[[sp]]$rmm$code$wallace$occsNum <- input$occsNum
+      if (input$doCitations | input$occsDb == 'bien') {
+        spp[[sp]]$rmm$code$wallace$occsNum <- nrow(occsList[[sp]]$orig)
+      }
       spp[[sp]]$rmm$code$wallace$occsRemoved <- input$occsNum - nrow(occsList[[sp]]$cleaned)
       # Store citations
       if (input$doCitations) {

@@ -1016,12 +1016,7 @@ function(input, output, session) {
   save_session <- function(file) {
     state <- list()
 
-    if (input$save_portable) {
-      spp_save <- reactiveValuesToList(spp)
-      stop("This has not been implemented yet")
-    } else {
-      spp_save <- reactiveValuesToList(spp)
-    }
+    spp_save <- reactiveValuesToList(spp)
 
     # Save general data
     state$main <- list(
@@ -1092,7 +1087,7 @@ function(input, output, session) {
     }
   }
 
-  observeEvent(input$load_session, {
+  observeEvent(input$goLoad_session, {
     load_session(input$load_session$datapath)
   })
 }

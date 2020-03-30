@@ -252,10 +252,10 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
     totRows <- q[[occDb]]$meta$found
 
     logger %>%
-      writeLog(hlSpp(em(sp)),
-               'Total ', occDb, ' records returned [', nrow(occsOrig), '] out of [',
-               totRows, '] total (limit ', occNum,
-               '). Records without coordinates removed [', noCoordsRem,
+      writeLog(hlSpp(em(sp)), 'Total ', occDb, ' records returned [', nrow(occsOrig),
+               '] out of [', totRows, '] total',
+               if (!(doCitations | occDb == 'bien')) {paste0(' (limit ', occNum,')')},
+               '. Records without coordinates removed [', noCoordsRem,
                ']. Duplicated records removed [', dupsRem,
                ']. Remaining records [', nrow(occs), '].')
     # put into list
