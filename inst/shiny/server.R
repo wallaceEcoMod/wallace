@@ -122,13 +122,11 @@ function(input, output, session) {
     shinyjs::toggleState("dlMskEnvs", !is.null(spp[[curSp()]]$procEnvs$bgMask))
     shinyjs::toggleState("dlBgPts", !is.null(spp[[curSp()]]$bgPts))
     shinyjs::toggleState("dlBgShp", !is.null(spp[[curSp()]]$procEnvs$bgExt))
-    shinyjs::toggleState("dlPart", !is.null(spp[[curSp()]]$occs$partition))
+    shinyjs::toggleState("dlPart", ("partition" %in% colnames(spp[[curSp()]]$occs)))
     shinyjs::toggleState("dlEvalTbl", !is.null(evalOut()))
-    shinyjs::toggleState("dlVisBioclim", spp[[curSp()]]$rmm$model$algorithm == "BIOCLIM")
-    shinyjs::toggleState("dlMaxentPlots", (spp[[curSp()]]$rmm$model$algorithm == "maxnet" |
-                                             spp[[curSp()]]$rmm$model$algorithm == "maxent.jar"))
-    shinyjs::toggleState("dlRespCurves", (spp[[curSp()]]$rmm$model$algorithm == "maxnet" |
-                                            spp[[curSp()]]$rmm$model$algorithm == "maxent.jar"))
+    shinyjs::toggleState("dlVisBioclim", !is.null(spp[[curSp()]]$rmm$modelFit$bioclim$notes))
+    shinyjs::toggleState("dlMaxentPlots", !is.null(spp[[curSp()]]$rmm$modelFit$maxent$notes))
+    shinyjs::toggleState("dlRespCurves", !is.null(spp[[curSp()]]$rmm$modelFit$maxent$notes))
     shinyjs::toggleState("dlPred", !is.null(spp[[curSp()]]$visualization$occPredVals))
     shinyjs::toggleState("dlPjShp", !is.null(spp[[curSp()]]$project$pjExt))
     shinyjs::toggleState("dlProj", !is.null(spp[[curSp()]]$project$pjEnvs))
@@ -142,9 +140,9 @@ function(input, output, session) {
 
   output$curSpUI <- renderUI({
     # check that a species is in the list already -- if not, don't proceed
-    # req(length(reactiveValuesToList(spp)) > 0)
+    req(length(reactiveValuesToList(spp)) > 0)
     # get the species names
-    n <- names(spp)
+    n <- names(spp)[order(names(spp))]
     # remove multispecies names from list
     n <- n[!grepl(".", n, fixed = TRUE)]
     # if no current species selected, select the first name
@@ -235,6 +233,7 @@ function(input, output, session) {
   # # # # # # # # # # # # # # # # # #
 
   bcSel <- reactive(input$bcSel)
+  VarSelector <- reactive(input$VarSelector)
   # shortcut to currently selected environmental variable, read from curEnvUI
   curEnv <- reactive(input$curEnv)
 
@@ -253,11 +252,6 @@ function(input, output, session) {
   output$envsPrint <- renderPrint({
     req(envs())
     envs()
-    # mins <- sapply(envs()@layers, function(x) x@data@min)
-    # maxs <- sapply(envs()@layers, function(x) x@data@max)
-    # names <- sapply(strsplit(names(envs()), '[.]'), function(x) x[-2])
-    # DT::datatable(data.frame(name=names, min=mins, max=maxs),
-    #               rownames = FALSE, options = list(pageLength = raster::nlayers(envs())))
   })
 
   ########################################### #
@@ -855,6 +849,7 @@ function(input, output, session) {
       paste0("wallace-session-", Sys.Date(), filetype_to_ext(input$rmdFileType))
     },
     content = function(file) {
+      spp <- common$spp
       md_files <- c()
       md_intro_file <- tempfile(pattern = "intro_", fileext = ".md")
       rmarkdown::render("Rmd/userReport_intro.Rmd",
@@ -864,7 +859,7 @@ function(input, output, session) {
       md_files <- c(md_files, md_intro_file)
 
       for (sp in allSp()) {
-        species_rmds <- list()
+        species_rmds <- NULL
         for (component in names(COMPONENT_MODULES)) {
           for (module in COMPONENT_MODULES[[component]]) {
             rmd_file <- module$rmd_file
@@ -886,26 +881,18 @@ function(input, output, session) {
             module_rmd_file <- tempfile(pattern = paste0(module$id, "_"),
                                         fileext = ".Rmd")
             writeLines(module_rmd, module_rmd_file)
-            species_rmds[[component]] <- c(species_rmds[[component]], module_rmd_file)
+            species_rmds <- c(species_rmds, module_rmd_file)
           }
         }
 
         species_md_file <- tempfile(pattern = paste0(sp, "_"),
                                     fileext = ".md")
-        rmarkdown::render("Rmd/userReport_species.Rmd",
+        rmarkdown::render(input = "Rmd/userReport_species.Rmd",
                           params = list(child_rmds = species_rmds, spName = spName(sp)),
                           output_format = rmarkdown::github_document(html_preview = FALSE),
                           output_file = species_md_file,
                           clean = TRUE)
         md_files <- c(md_files, species_md_file)
-
-        # TODO these should be set in each individual module's rmd function
-        # knit.logicals <- list(
-        #   bgExtent_knit = !is.null(spp[[sp]]$procEnvs$bgExt),
-        #   bgMskSamplePts_knit = !is.null(spp[[sp]]$bgPts),
-        #   espace_pca_knit = !is.null(spp[[sp]]$pca),
-        #   espace_occDens_knit = !is.null(spp[[sp]]$occDens),
-        #   espace_nicheOv_knit = !is.null(spp[[sp]]$nicheOv))
       }
 
       combined_md <-
@@ -955,11 +942,16 @@ function(input, output, session) {
   ################################
 
   output$dlRMM <- downloadHandler(
-    filename = function() {
-      paste0("wallace-session-", Sys.Date(), ".csv")
-    },
+    filename = function() {paste0("wallace-metadata-", Sys.Date(), ".zip")},
     content = function(file) {
-      rangeModelMetadata::rmmToCSV(rmm(), filename = file)
+      tmpdir <- tempdir()
+      owd <- setwd(tmpdir)
+      namesSpp <- allSp()
+      for (i in namesSpp) {
+        rangeModelMetadata::rmmToCSV(spp[[i]]$rmm, filename = paste0(i, "_RMM.csv"))
+      }
+      zip::zipr(zipfile = file, files = paste0(namesSpp, "_RMM.csv"))
+      setwd(owd)
   })
 
   # Create a data structure that holds variables and functions used by modules
@@ -980,6 +972,7 @@ function(input, output, session) {
     occs = occs,
     envs = envs,
     bcSel = bcSel,
+    VarSelector = VarSelector,
     bg = bg,
     bgExt = bgExt,
     bgMask = bgMask,
@@ -1024,12 +1017,7 @@ function(input, output, session) {
   save_session <- function(file) {
     state <- list()
 
-    if (input$save_portable) {
-      spp_save <- reactiveValuesToList(spp)
-      stop("This has not been implemented yet")
-    } else {
-      spp_save <- reactiveValuesToList(spp)
-    }
+    spp_save <- reactiveValuesToList(spp)
 
     # Save general data
     state$main <- list(
@@ -1100,7 +1088,7 @@ function(input, output, session) {
     }
   }
 
-  observeEvent(input$load_session, {
+  observeEvent(input$goLoad_session, {
     load_session(input$load_session$datapath)
   })
 }

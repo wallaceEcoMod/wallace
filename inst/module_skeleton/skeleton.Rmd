@@ -1,7 +1,9 @@
-```{asis, echo = {{module_knit}}, eval = {{module_knit}}, include = {{module_knit}}}
+```{asis, echo = {{moduleID_knit}}, eval = {{moduleID_knit}}, include = {{moduleID_knit}}}
+# Remember to change moduleID to the name of your module 
+# (e.g. moduleID_knit => occs_queryDb_knit) (**)
 Description of what the code will do {{var1}}
 ```
 
-```{r, echo = {{module_knit}}, include = {{module_knit}}}
+```{r, echo = {{moduleID_knit}}, include = {{moduleID_knit}}}
 # R code to run {{var2}}
 ```

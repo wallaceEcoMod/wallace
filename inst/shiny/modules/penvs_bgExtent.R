@@ -169,16 +169,17 @@ penvs_bgExtent_module_map <- function(map, common) {
   }
 }
 
-### Original idea for RMD
+## Original idea for RMD
 # bgExtent_RMD <- function(sp) {
 #   list(bgSel = spp[[sp]]$rmm$wallaceSettings$bgSel,
 #        bgBuf = spp[[sp]]$rmm$wallaceSettings$bgBuf)
 # }
-# penvs_bgExtent_module_rmd <- function(species) {
-#   # Variables used in the module's Rmd code
-#   list(
-#     module_knit = species$rmm$code$wallaceSettings$someFlag,
-#     var1 = species$rmm$code$wallaceSettings$someSetting1,
-#     var2 = species$rmm$code$wallaceSettings$someSetting2
-#   )
-# }
+penvs_bgExtent_module_rmd <- function(species) {
+  # Variables used in the module's Rmd code
+  list(
+    penvs_bgExtent_knit = FALSE
+    # penvs_bgExtent_knit = species$rmm$code$wallaceSettings$someFlag,
+    # var1 = species$rmm$code$wallaceSettings$someSetting1,
+    # var2 = species$rmm$code$wallaceSettings$someSetting2
+  )
+}

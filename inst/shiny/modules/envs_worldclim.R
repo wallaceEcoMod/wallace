@@ -130,7 +130,7 @@ envs_worldclim_module_map <- function(map, common) {
 envs_worldclim_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    worldclim_knit = !is.null(species$rmm$wallaceSettings$wcRes),
+    envs_worldclim_knit = !is.null(species$rmm$wallaceSettings$wcRes),
     wcRes = species$rmm$wallaceSettings$wcRes,
     bcSel = printVecAsis(species$rmm$wallaceSettings$bcSel),
     mapCntr = printVecAsis(species$rmm$wallaceSettings$mapCntr),

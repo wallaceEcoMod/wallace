@@ -1,7 +1,7 @@
-```{asis, echo = {{selectByID_knit}}, eval = {{selectByID_knit}}, include = {{selectByID_knit}}}
+```{asis, echo = {{poccs_selectByID_knit}}, eval = {{poccs_selectByID_knit}}, include = {{poccs_selectByID_knit}}}
 The following code recreates the polygon used to select occurrences to keep in the analysis.
 ```
 
-```{r, echo = {{selectByID_knit}}, include = {{selectByID_knit}}}
-occs.{{sp}} <- poccs_selectOccs(occs.{{sp}}, "{{selectByID_xy}}", "{{selectByID_id}}")
+```{r, echo = {{poccs_selectByID_knit}}, include = {{poccs_selectByID_knit}}}
+#occs.{{sp}} <- poccs_selectOccs(occs.{{sp}}, "{{selectByID_xy}}", "{{selectByID_id}}")
 ```

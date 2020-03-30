@@ -31,20 +31,21 @@
 #' @export
 
 #occs_queryDb <- function(spName, occDb, occNum, logger=NULL) {
-occs_queryDb <- function(spNames, occDb, occNum, doCitations = FALSE,
+occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
                          gbifUser = NULL, gbifEmail = NULL, gbifPW = NULL,
                          logger = NULL) {
-
-  # get all species names
-  spNames <- trimws(strsplit(spNames, ",")[[1]])
-
+  # Get all species names for textInput Shiny
+  if (length(spNames) == 1) {
+    if (grepl(x = spNames, pattern = ",")) {
+      spNames <- trimws(strsplit(spNames, ",")[[1]])
+    }
+  }
   # function for capitalizing genus names
   spCap <- function(x) {
     paste0(toupper(substring(x, 1, 1)), substring(x, 2, nchar(x)))
   }
   # capitalize genus names
   spNames <- sapply(spNames, spCap)
-
   # figure out how many separate names (components of scientific name) were entered
   namesSplit <- sapply(spNames, function(x) strsplit(x, " "))
   namesSplitCheck <- sapply(namesSplit, function(x) length(x) == 2)
@@ -94,16 +95,18 @@ occs_queryDb <- function(spNames, occDb, occNum, doCitations = FALSE,
             logger %>%
               writeLog(
                 type = "error",
-                paste0("There is no match for ", em(formatSpName(sp)),
-                       " in GBIF database. Please check the spelling. (**)")
+                hlSpp(em(sp)),
+                "There is no match in GBIF database. Please check the spelling. (**)"
               )
             return()
           }
           if (bestMatch != inputMatch) {
             logger %>%
-              writeLog(type = 'warning',
-                       "There is no a stricly match in the GBIF search. Data ",
-                       "downloaded corresponds to ", em(bestMatch), ". (**)")
+              writeLog(
+                type = 'warning',
+                hlSpp(em(inputMatch)),
+                "There is no a stricly match in the GBIF search. Data ",
+                "downloaded corresponds to ", em(bestMatch), ". (**)")
           }
 
           myBTO <- occCite::occQuery(x = sp,
@@ -122,10 +125,12 @@ occs_queryDb <- function(spNames, occDb, occNum, doCitations = FALSE,
           doiGBIF <- myBTO@occResults[[bestMatch]][['GBIF']]$Metadata$doi
           dateDOI <- format(as.Date(myBTO@occResults[[bestMatch]][['GBIF']]$Metadata$created),
                             "%d %B %Y")
+          citeGBIF <- list(doi = doiGBIF, date = dateDOI)
           logger %>%
             writeLog(
-              "#CiteTheDOI: Gbif.org (", dateDOI,") GBIF Ocurrence Download https://doi.org/",
-              doiGBIF
+              hlSpp(em(sp)),
+              "(**) #CiteTheDOI: Gbif.org (", dateDOI,
+              ") GBIF Ocurrence Download https://doi.org/", doiGBIF
             )
         }
       } else if (occDb == 'bien') {
@@ -145,7 +150,8 @@ occs_queryDb <- function(spNames, occDb, occNum, doCitations = FALSE,
     if (q[[occDb]]$meta$found == 0) {
       logger %>%
         writeLog(type = 'error',
-                 'No records found for ', em(sp), '. Please check the spelling.')
+                 hlSpp(em(sp)),
+                 'No records found, please check the spelling. (**)')
       next
     }
     # extract occurrence tibbles
@@ -162,9 +168,10 @@ occs_queryDb <- function(spNames, occDb, occNum, doCitations = FALSE,
     occsXY <- occsOrig[!is.na(occsOrig$latitude) & !is.na(occsOrig$longitude),]
     # if no records with coordinates, throw warning
     if (nrow(occsXY) == 0) {
-      logger %>% writeLog(type = 'warning',
-                             'No records with coordinates found in ',
-                             occDb, " for ", em(sp), ".")
+      logger %>% writeLog(
+        type = 'warning',
+        hlSpp(em(sp)),
+        'No records with coordinates found in ', occDb, ". (**)")
       return()
     }
     # round longitude and latitude with 5 digits
@@ -204,7 +211,7 @@ occs_queryDb <- function(spNames, occDb, occNum, doCitations = FALSE,
       fields <- c("providedScientificName", "longitude", "latitude", "countryCode",
                   "stateProvince", "verbatimLocality", "year", "basisOfRecord",
                   "catalogNumber", "ownerInstitutionCollectionCode",
-                  "verbatimElevation", "coordinateUncertaintyInMeters")
+                  "verbatimElevation", "uncertainty")
       for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
       occs <- occs %>% dplyr::rename(scientific_name = providedScientificName,
                                      country = countryCode,
@@ -214,8 +221,7 @@ occs_queryDb <- function(spNames, occDb, occNum, doCitations = FALSE,
                                      institution_code =
                                        ownerInstitutionCollectionCode,
                                      catalog_number = catalogNumber,
-                                     elevation = verbatimElevation,
-                                     uncertainty = coordinateUncertaintyInMeters)
+                                     elevation = verbatimElevation)
     } else if (occDb == 'bien') {
       fields <- c("scrubbed_species_binomial", "longitude", "latitude",
                   "collection_code", "country", "state_province", "locality", "year",
@@ -248,13 +254,19 @@ occs_queryDb <- function(spNames, occDb, occNum, doCitations = FALSE,
     totRows <- q[[occDb]]$meta$found
 
     logger %>%
-      writeLog('Total ', occDb, ' records for ', em(sp), ' returned [',
-               nrow(occsOrig), '] out of [', totRows, '] total (limit ', occNum,
-               '). Records without coordinates removed [', noCoordsRem,
+      writeLog(hlSpp(em(sp)), 'Total ', occDb, ' records returned [', nrow(occsOrig),
+               '] out of [', totRows, '] total',
+               if (!(doCitations | occDb == 'bien')) {paste0(' (limit ', occNum,')')},
+               '. Records without coordinates removed [', noCoordsRem,
                ']. Duplicated records removed [', dupsRem,
                ']. Remaining records [', nrow(occs), '].')
     # put into list
-    occList[[formatSpName(sp)]] <- list(orig = occsOrig, cleaned = occs)
+    if (doCitations & occDb == "gbif") {
+      occList[[formatSpName(sp)]] <- list(orig = occsOrig, cleaned = occs,
+                                          citation = citeGBIF)
+    } else {
+      occList[[formatSpName(sp)]] <- list(orig = occsOrig, cleaned = occs)
+    }
   }
   return(occList)
 }

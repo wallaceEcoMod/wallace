@@ -43,8 +43,8 @@ model_bioclim_module_server <- function(input, output, session, common) {
       spp[[sp]]$evalOut <- m.bioclim
 
       # METADATA ####
-      spp[[sp]]$rmm$model$algorithm <- "BIOCLIM"
-      spp[[sp]]$rmm$model$bioclim$notes <- "ENMeval/dismo package implementation"
+      spp[[sp]]$rmm$modelFit$algorithm <- "BIOCLIM"
+      spp[[sp]]$rmm$modelFit$bioclim$notes <- "ENMeval/dismo package implementation"
     }
     common$update_component(tab = "Results")
   })
@@ -102,9 +102,10 @@ model_bioclim_module_result <- function(id) {
 model_bioclim_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    module_knit = species$rmm$code$wallaceSettings$someFlag,
-    var1 = species$rmm$code$wallaceSettings$someSetting1,
-    var2 = species$rmm$code$wallaceSettings$someSetting2
+    model_bioclim_knit = FALSE
+    # model_bioclim_knit = species$rmm$code$wallaceSettings$someFlag,
+    # var1 = species$rmm$code$wallaceSettings$someSetting1,
+    # var2 = species$rmm$code$wallaceSettings$someSetting2
   )
 }
 

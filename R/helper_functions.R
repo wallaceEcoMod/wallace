@@ -74,6 +74,12 @@ writeLog <- function(logger, ..., type = 'default') {
   invisible()
 }
 
+# Highlight species name in Windows Log
+#' @export
+hlSpp <- function(scientificName) {
+  boldSpp <- paste0('<font color="#003300"><b>', scientificName, ' | </b></font>')
+}
+
 ####################### #
 # MAPPING ####
 ####################### #
