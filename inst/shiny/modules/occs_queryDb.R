@@ -97,6 +97,7 @@ occs_queryDb_module_server <- function(input, output, session, common) {
         spp[[sp]]$rmm$data$occurrence$sources <- input$occsDb
       }
     }
+    common$update_component(tab = "Map")
   })
 
   return(list(

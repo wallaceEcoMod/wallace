@@ -34,17 +34,18 @@
 occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
                          gbifUser = NULL, gbifEmail = NULL, gbifPW = NULL,
                          logger = NULL) {
-
-  # get all species names
-  spNames <- trimws(strsplit(spNames, ",")[[1]])
-
+  # Get all species names for textInput Shiny
+  if (length(spNames) == 1) {
+    if (grepl(x = spNames, pattern = ",")) {
+      spNames <- trimws(strsplit(spNames, ",")[[1]])
+    }
+  }
   # function for capitalizing genus names
   spCap <- function(x) {
     paste0(toupper(substring(x, 1, 1)), substring(x, 2, nchar(x)))
   }
   # capitalize genus names
   spNames <- sapply(spNames, spCap)
-
   # figure out how many separate names (components of scientific name) were entered
   namesSplit <- sapply(spNames, function(x) strsplit(x, " "))
   namesSplitCheck <- sapply(namesSplit, function(x) length(x) == 2)
@@ -208,7 +209,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
       fields <- c("providedScientificName", "longitude", "latitude", "countryCode",
                   "stateProvince", "verbatimLocality", "year", "basisOfRecord",
                   "catalogNumber", "ownerInstitutionCollectionCode",
-                  "verbatimElevation", "coordinateUncertaintyInMeters")
+                  "verbatimElevation", "uncertainty")
       for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
       occs <- occs %>% dplyr::rename(scientific_name = providedScientificName,
                                      country = countryCode,
@@ -218,8 +219,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
                                      institution_code =
                                        ownerInstitutionCollectionCode,
                                      catalog_number = catalogNumber,
-                                     elevation = verbatimElevation,
-                                     uncertainty = coordinateUncertaintyInMeters)
+                                     elevation = verbatimElevation)
     } else if (occDb == 'bien') {
       fields <- c("scrubbed_species_binomial", "longitude", "latitude",
                   "collection_code", "country", "state_province", "locality", "year",

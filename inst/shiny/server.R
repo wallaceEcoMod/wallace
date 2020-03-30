@@ -142,7 +142,7 @@ function(input, output, session) {
     # check that a species is in the list already -- if not, don't proceed
     req(length(reactiveValuesToList(spp)) > 0)
     # get the species names
-    n <- names(spp)
+    n <- names(spp)[order(names(spp))]
     # remove multispecies names from list
     n <- n[!grepl(".", n, fixed = TRUE)]
     # if no current species selected, select the first name
