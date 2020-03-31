@@ -79,23 +79,28 @@ occs_queryDb_module_server <- function(input, output, session, common) {
                         rmm = rangeModelMetadata::rmmTemplate())
 
       # METADATA ####
-      spp[[sp]]$rmm$data$occurrence$taxa <- sp
+      spp[[sp]]$rmm$data$occurrence$taxon <- sp
       spp[[sp]]$rmm$data$occurrence$dataType <- "presence only"
-
-      # The following line doesn't return anything so Dean commented it out
-      #spp[[sp]]$rmm$data$occurrence$presenceSampleSize <- nrow(occs)
-
-      spp[[sp]]$rmm$code$wallaceSettings$occsNum <- input$occsNum
-      spp[[sp]]$rmm$code$wallaceSettings$occsRemoved <- input$occsNum - nrow(occsList[[sp]]$cleaned)
-      # store citations with occCite, or just report the database if users are
-      # too lame to use bridgetree
+      spp[[sp]]$rmm$data$occurrence$presenceSampleSize <- nrow(occsList[[sp]]$cleaned)
+      spp[[sp]]$rmm$data$occurrence$yearMin <- min(occsList[[sp]]$cleaned$year)
+      spp[[sp]]$rmm$data$occurrence$yearMax <- max(occsList[[sp]]$cleaned$year)
+      spp[[sp]]$rmm$code$wallace$occsNum <- input$occsNum
+      if (input$doCitations | input$occsDb == 'bien') {
+        spp[[sp]]$rmm$code$wallace$occsNum <- nrow(occsList[[sp]]$orig)
+      }
+      spp[[sp]]$rmm$code$wallace$occsRemoved <- input$occsNum - nrow(occsList[[sp]]$cleaned)
+      # Store citations
       if (input$doCitations) {
-        # DOUBLE CHECK THIS DOESN"T NEED TO BE VECTORIZED!!
-        spp[[sp]]$rmm$data$occurrence$sources <- occsList[[sp]]$citations
+        spp[[sp]]$rmm$data$occurrence$sources <- input$occsDb
+        spp[[sp]]$rmm$code$wallace$gbifDOI <- occsList[[sp]]$citation
+        spp[[sp]]$rmm$code$wallace$gbifUser <- input$gbifUser
+        spp[[sp]]$rmm$code$wallace$gbifEmail <- input$gbifEmail
+        spp[[sp]]$rmm$code$wallace$doCitations <- input$doCitations
       } else {
         spp[[sp]]$rmm$data$occurrence$sources <- input$occsDb
       }
     }
+    common$update_component(tab = "Map")
   })
 
   return(list(
@@ -125,8 +130,12 @@ occs_queryDb_module_map <- function(map, common) {
 
 occs_queryDb_module_rmd <- function(species) {
   list(
-    occsDb_knit = !is.null(species$rmm$code$wallaceSettings$occsNum),
+    occs_queryDb_knit = !is.null(species$rmm$data$occurrence$sources),
+    occs_citation_knit = !is.null(species$rmm$code$wallace$gbifDOI),
     occDb = species$rmm$data$occurrence$sources,
-    occNum = species$rmm$code$wallaceSettings$occsNum
+    occNum = species$rmm$code$wallace$occsNum,
+    doCitations = species$rmm$code$wallace$doCitations,
+    gbifUser = species$rmm$code$wallace$gbifUser,
+    gbifEmail = species$rmm$code$wallace$gbifEmail
   )
 }

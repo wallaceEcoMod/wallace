@@ -2,7 +2,7 @@
 title: Wallace Session `r Sys.Date()`
 ---
 
-```{r, include=FALSE}
+```{r, include=FALSE, }
 library(knitr)
 knit_engines$set(asis = function(options) {
   if (options$echo && options$eval) knit_child(text = options$code)
@@ -41,4 +41,3 @@ occs_queryDb
 
 Your analyses are below.
 
----

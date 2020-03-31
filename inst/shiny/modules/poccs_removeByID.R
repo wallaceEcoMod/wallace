@@ -20,7 +20,6 @@ poccs_removeByID_module_server <- function(input, output, session, common) {
                                  input$removeID,
                                  logger,
                                  spN = curSp())
-    print(input$removeID)
     req(occs.rem)
     # LOAD INTO SPP ####
     spp[[curSp()]]$occs <- occs.rem
@@ -64,8 +63,8 @@ poccs_removeByID_module_map <- function(map, common) {
 poccs_removeByID_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    removeByID_knit = !is.null(spp[[sp]]$rmm$code$wallaceSettings$removedIDs),
-    removeByID_id = spp[[sp]]$rmm$code$wallaceSettings$removedIDs
+    poccs_removeByID_knit = !is.null(species$rmm$code$wallaceSettings$removedIDs),
+    removeByID_id = species$rmm$code$wallaceSettings$removedIDs
   )
 }
 

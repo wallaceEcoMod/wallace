@@ -132,7 +132,7 @@ model_maxent_module_server <- function(input, output, session, common) {
       if(input$algMaxent == "maxnet") {
         ver <- paste("maxnet", packageVersion('maxnet'))
       }
-      spp[[sp]]$rmm$model$maxent$algorithmNotes <- ver
+      spp[[sp]]$rmm$modelFit$maxent$algorithmNotes <- ver
     }
     common$update_component(tab = "Results")
 })
@@ -208,9 +208,10 @@ model_maxent_module_result <- function(id) {
 model_maxent_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    module_knit = species$rmm$code$wallaceSettings$someFlag,
-    var1 = species$rmm$code$wallaceSettings$someSetting1,
-    var2 = species$rmm$code$wallaceSettings$someSetting2
+    model_maxent_knit = FALSE
+    # model_maxent_knit = species$rmm$code$wallaceSettings$someFlag,
+    # var1 = species$rmm$code$wallaceSettings$someSetting1,
+    # var2 = species$rmm$code$wallaceSettings$someSetting2
   )
 }
 

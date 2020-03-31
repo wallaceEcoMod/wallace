@@ -1,7 +1,6 @@
-```{asis, echo = {{module_knit}}, eval = {{module_knit}}, include = {{module_knit}}}
-Description of what the code will do {{var1}}
+```{asis, echo = {{poccs_thinOccs_knit}}, eval = {{poccs_thinOccs_knit}}, include = {{poccs_thinOccs_knit}}}
+Description of what the code will do 
 ```
 
-```{r, echo = {{module_knit}}, include = {{module_knit}}}
-# R code to run {{var2}}
-```
+```{r, echo = {{poccs_thinOccs_knit}}, include = {{poccs_thinOccs_knit}}}
+# R code to run 

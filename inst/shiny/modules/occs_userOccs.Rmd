@@ -1,11 +1,11 @@
-```{asis, echo = {{occsUser_knit}}, eval = {{occsUser_knit}}, include = {{occsUser_knit}}}
+```{asis, echo = {{occs_userOccs_knit}}, eval = {{occs_userOccs_knit}}, include = {{occs_userOccs_knit}}}
 User CSV path with occurrence data. If the CSV file is not in the current workspace, change to the correct file path (e.g. "/Users/darwin/Documents/occs.user").
 ```
 
-```{r, echo = {{occsUser_knit}}}
-# NOTE: provide the path to the .csv file
-occs.path <- ""
-# get a list of species occurrence data
-occs.user <- occs_userOccs(csvPath = occs.path, csvName = "{{userOccsCsvName}}")
-occs.{{sp}} <- occs.user[["{{spName}}"]]$cleaned
+```{r, echo = {{occs_userOccs_knit}}}
+# # NOTE: provide the path to the .csv file
+# occs.path <- ""
+# # get a list of species occurrence data
+# occs.user <- occs_userOccs(csvPath = occs.path, csvName = "{{userOccsCsvName}}")
+# occs.{{sp}} <- occs.user[["{{spName}}"]]$cleaned
 ```
