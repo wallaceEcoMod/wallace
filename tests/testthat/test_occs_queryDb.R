@@ -108,25 +108,24 @@ test_that("GBIF headers", {
                  "elevation", "uncertainty", "pop"))
   })
 }
-####Starting here I have not checked
 
 ## VERTNET
 # download data from Vertnet
-out.vert <- occs_queryDb(spNames = "panthera onca", occDb = "vertnet", occNum)
+#out.vert <- occs_queryDb(spNames = "panthera onca", occDb = "vertnet", occNum)
 # original Vertnet headers
-headersVertnet <- c("name", "longitude", "latitude", "country", "stateprovince", "locality",
-                    "year", "basisofrecord", "catalognumber", "institutioncode",
-                    "maximumelevationinmeters", "coordinateuncertaintyinmeters")
+#headersVertnet <- c("name", "longitude", "latitude", "country", "stateprovince", "locality",
+                #    "year", "basisofrecord", "catalognumber", "institutioncode",
+                 #   "maximumelevationinmeters", "coordinateuncertaintyinmeters")
 # check headers
-test_that("Vertnet headers", {
+#test_that("Vertnet headers", {
   # the original headers haven't changed
-  expect_false('FALSE' %in%  (headersVertnet %in% names(out.vert$orig)))
+ # expect_false('FALSE' %in%  (headersVertnet %in% names(out.vert$orig)))
   # the headers in the claned table are the ones specified in the function
-  expect_equal(names(out.vert$cleaned),
-               c("occID", "scientific_name", "longitude", "latitude", "country", "state_province",
-                 "locality", "year", "record_type","catalog_number", "institution_code",
-                 "elevation", "uncertainty", "pop"))
-  })
+  #expect_equal(names(out.vert$cleaned),
+           #    c("occID", "scientific_name", "longitude", "latitude", "country", "state_province",
+            #     "locality", "year", "record_type","catalog_number", "institution_code",
+             #    "elevation", "uncertainty", "pop"))
+#  })
 
 ## BISON
 # download data from Bison
