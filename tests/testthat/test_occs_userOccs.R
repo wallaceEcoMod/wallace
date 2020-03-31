@@ -7,28 +7,28 @@ source("test_helper_functions.R")
 
 ### Set parameters
 ## path to the file
-csvPath <- './Data/Marmosops_sp.csv'
+txtPath <- './Data/Marmosops_sp.csv'
 ## file name
-csvName <- 'Marmosops_sp'
+txtName <- 'Marmosops_sp'
 
 
 ### run function
-user.occs <- occs_userOccs(csvPath, csvName)
+user.occs <- occs_userOccs(txtPath, txtName,txtSep=",",txtDec=".")
 
 
 ### test if the error messages appear when they are supposed to
 test_that("error checks", {
    # user's input headers are in an invalid format
-  expect_error(userOccs(csvPath = './Data/Marmosops_wrong.csv',
-                           csvName = 'Marmosops_wrong'),
-               'Please input CSV file with columns "scientific_name", "longitude", "latitude".')
+  expect_error(occs_userOccs(txtPath = './Data/Marmosops_wrong.csv',
+                           txtName = 'Marmosops_wrong',txtSep=",",txtDec="."),
+               'Please input txt file with columns "scientific_name", "longitude", "latitude" or check delimeter and decimal separators. (**)',fixed=T)
   })
 
 ### test if the warning messages appear when they are supposed to
 test_that("warnings checks", {
    # user's input does not have coordinates
-  expect_warning(userOccs(csvPath = './Data/Marmosops_NA.csv',
-                             csvName = 'Marmosops_NA'),
+  expect_warning(occs_userOccs(txtPath = './Data/Marmosops_NA.csv',
+                             txtName = 'Marmosops_NA',txtSep=",",txtDec="."),
                  paste0('No records with coordinates found in ', "Marmosops_NA", "."))
   })
 

@@ -28,7 +28,7 @@ Name.p <- list.files(path='./shapefile', pattern = ".prj", full.names = FALSE)
 ## Buffer == 0.5
 userBgbf <- penvs_userBgExtent(bgShp_path = Path, bgShp_name = Name, userBgBuf = 0.5,occs=occs)
 ## Buffer == 0
-userBg <- penvs_userBgExtent(bgShp_path = Path, bgShp_name = Name, userBgBuf = 0.01,occs=occs)
+userBg <- penvs_userBgExtent(bgShp_path = Path, bgShp_name = Name, userBgBuf = 0, occs=occs)
 
 
 ### test if the error messages appear when they are supposed to
