@@ -184,7 +184,7 @@ function(input, output, session) {
   # DOWNLOAD: current species occurrence data table
   output$dlOccs <- downloadHandler(
     filename = function() {
-      n <- formatSpName(spName(spp[[curSp()]]))
+      n <- formatSpName(curSp())
       source <- rmm()$data$occurrence$sources
       glue("{n}_{source}.csv")
     },
@@ -203,9 +203,10 @@ function(input, output, session) {
   output$dlAllOccs <- downloadHandler(
     filename = function(){"multispecies_ocurrence_table.csv"},
     content = function(file) {
-      l <- lapply(allSp(), function(x) {spp[[x]]$occData$occsCleaned})
+      l <- lapply(allSp(), function(x) {
+        data.frame(spp[[x]]$occData$occsCleaned, stringsAsFactors = FALSE)
+        })
       tbl <- dplyr::bind_rows(l)
-      # remove first NA row
       tbl <- tbl %>% dplyr::select(-pop)
       write_csv_robust(tbl, file, row.names = FALSE)
     }
@@ -214,7 +215,7 @@ function(input, output, session) {
   # DOWNLOAD: occsOrig
   output$dlDbOccs <- downloadHandler(
     filename = function() {
-      n <- formatSpName(spName(spp[[curSp()]]))
+      n <- formatSpName(curSp())
       source <- rmm()$data$occurrence$sources
       glue("{n}_{source}_raw.csv")
     },
