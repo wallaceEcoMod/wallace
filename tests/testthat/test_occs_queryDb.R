@@ -7,7 +7,7 @@ source("test_helper_functions.R")
 
 ### Set parameters
 ## species names
-spNames <- c("panthera onca")
+spNames <- c("panthera onca","Tremarctos ornatus")
 ## database
 occDb <- "gbif"
 ## number of occurrence records to download
@@ -33,14 +33,14 @@ test_that("error checks", {
                'Please input both genus and species names.')
   # the species' name has spelling errors, or it is not found in the database
   expect_error(occs_queryDb(spNames = "Panthera onc", occDb, occNum),
-               paste0('No records found for ', em("Panthera onc"),'. Please check the spelling.'))
+               paste0(hlSpp(em("Panthera onc")),'No records found, please check the spelling. (**)'),fixed=T)
   })
 
 ### test if the warning messages appear when they are supposed to
 test_that("warnings checks", {
   # the species is found in the database, but it does not have coordinates (Log & lat)
   expect_warning(occs_queryDb(spName = "Artibeus macleayii", occDb, occNum),
-               paste0('No records with coordinates found in ', "gbif", " for ", em("Artibeus macleayii"), "."))
+               paste0(hlSpp(em("Artibeus macleayii")),'No records with coordinates found in ', occDb,". (**)"),fixed=T)
   })
 
 ###For multisp this goes in a loop
