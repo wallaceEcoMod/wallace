@@ -33,10 +33,9 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
                           logger = NULL) {
 
   # read in txt
-  txt <- tryCatch(expr = read.table(file = txtPath, header = TRUE, sep = txtSep,
+  txt <- tryCatch(expr = read.delim(file = txtPath, header = TRUE, sep = txtSep,
                                     dec = txtDec),
                   error = function(e) "error")
-
   if (class(txt) == "character") {
     logger %>% writeLog(
       type = "error",
@@ -54,13 +53,30 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
              'separators. (**)'))
     return()
   }
-
   # subset to just records with non-NA latitude and longitude
   txt.xy <- txt %>% dplyr::filter(!is.na(latitude) & !is.na(longitude))
   txt.xy$scientific_name <- trimws(txt.xy$scientific_name)
   # get all species names
   occs <- txt.xy %>% dplyr::filter(!grepl("bg_", scientific_name))
   spNames <- trimws(as.character(unique(occs$scientific_name)))
+
+  spCap <- function(x) {
+    paste0(toupper(substring(x, 1, 1)), substring(x, 2, nchar(x)))
+  }
+  # capitalize genus names
+  spNames <- sapply(spNames, spCap)
+  # figure out how many separate names (components of scientific name) were entered
+  namesSplit <- sapply(spNames, function(x) strsplit(x, " "))
+  namesSplitCheck <- sapply(namesSplit, function(x) length(x) == 2)
+  # if two names not entered, throw error and return
+  if (!all(namesSplitCheck)) {
+    logger %>%
+      writeLog(type = 'error',
+               paste0('Please input just genus and species epithet in scientific',
+                      ' name field in your file (e.g., "Canis lupus")(**).'))
+    return()
+  }
+
 
   if (nrow(occs) == 0) {
     logger %>% writeLog(type = 'warning',
@@ -100,7 +116,8 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
     dupsRem <- nrow(sp.occs) - nrow(occs)
 
     logger %>% writeLog(
-      "Data for ", em(i), " uploaded from ", txtName, ": Duplicated records removed [", dupsRem, "]. Remaining records [", nrow(occs), "].")
+      hlSpp(em(i)), "Data uploaded from <i>'", txtName, "'</i>: Duplicated records removed [",
+      dupsRem, "]. Remaining records [", nrow(occs), "].")
 
     # look for background records
     sp.bg <- txt.xy %>% dplyr::filter(scientific_name == paste0("bg_", i))
@@ -108,9 +125,9 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
     if(nrow(sp.bg) > 0) {
       occsList[[n]]$bg <- sp.bg
       logger %>% writeLog(
-        "Data for ", em(i), " uploaded from ", txtName, ": ", nrow(sp.bg), " background records.")
+        hlSpp(em(i)), "Data for uploaded from <i>'", txtName, "'</i>: ", nrow(sp.bg),
+        " background records.")
     }
   }
-
   return(occsList)
 }

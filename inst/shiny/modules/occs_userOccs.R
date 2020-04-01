@@ -49,6 +49,7 @@ occs_userOccs_module_server <- function(input, output, session, common) {
       spp[[sp]]$rmm$data$occurrence$sources <- "user"
       spp[[sp]]$rmm$code$wallaceSettings$userCSV <- input$userCSV$name
     }
+    common$update_component(tab = "Map")
   })
 }
 
