@@ -1,28 +1,31 @@
 ```{asis, echo = {{occs_queryDb_knit & !occs_citation_knit}}, eval = {{occs_queryDb_knit & !occs_citation_knit}}, include = {{occs_queryDb_knit & !occs_citation_knit}}}
 ### Obtain Occurrence Data
-You searched the `r "{{occDb}}"` database for *`r "{{spName}}"`*, limited to `r {{occNum}}` records.
+You searched the `r "{{occDb_rmd}}"` database for *`r "{{spName}}"`*, limited to `r {{occNum_rmd}}` records.
 ```
 
 ```{asis, echo = {{occs_queryDb_knit & occs_citation_knit}}, eval = {{occs_queryDb_knit & occs_citation_knit}}, include = {{occs_queryDb_knit & occs_citation_knit}}}
 ### Obtain Occurrence Data
-You searched the `r "{{occDb}}"` database for *`r "{{spName}}"`*, limited to `r {{occNum}}` records, using the citation option (**)
+You searched the `r "{{occDb_rmd}}"` database for *`r "{{spName}}"`*, limited to `r {{occNum_rmd}}` records, using the citation option (**)
 ```
 
 ```{r, echo = {{occs_queryDb_knit & !occs_citation_knit}}, include = {{occs_queryDb_knit & !occs_citation_knit}}}
 # Query selected database for occurrence records
-queryDb.{{sp}} <- occs_queryDb(spNames = "{{spName}}", occDb = "{{occDb}}", 
-                               occNum = {{occNum}})
-occs.{{sp}} <- queryDb.{{sp}}${{sp}}$cleaned
+queryDb_{{spAbr}} <- occs_queryDb(spNames = "{{spName}}", 
+                               occDb = "{{occDb_rmd}}", 
+                               occNum = {{occNum_rmd}})
+occs_{{spAbr}} <- queryDb_{{spAbr}}${{sp}}$cleaned
 ```
 
 ```{r, echo = {{occs_queryDb_knit & occs_citation_knit}}, include = {{occs_queryDb_knit & occs_citation_knit}}}
 # Query selected database for occurrence records
-queryDb.{{sp}} <- occs_queryDb(spNames = "{{spName}}", occDb = "{{occDb}}", 
-                               doCitations = {{doCitations}},
-                               gbifUser = "{{gbifUser}}", gbifEmail = "{{gbifEmail}}",
+queryDb_{{spAbr}} <- occs_queryDb(spNames = "{{spName}}", 
+                               occDb = "{{occDb_rmd}}", 
+                               doCitations = {{doCitations_rmd}},
+                               gbifUser = "{{gbifUser_rmd}}", 
+                               gbifEmail = "{{gbifEmail_rmd}}",
                                # Please type your GBIF password (**)
                                gbifPW = "")
-occs.{{sp}} <- queryDb.{{sp}}${{sp}}$cleaned
+occs_{{spAbr}} <- queryDb_{{spAbr}}${{sp}}$cleaned
 # Print DOI and date of your search (**)
-queryDb.{{sp}}${{sp}}$citation
+queryDb_{{spAbr}}${{sp}}$citation
 ```

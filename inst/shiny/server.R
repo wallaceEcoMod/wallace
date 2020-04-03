@@ -190,7 +190,7 @@ function(input, output, session) {
     },
     content = function(file) {
       tbl <- occs() %>%
-        dplyr::select(-pop)
+        dplyr::select(-c(pop, occID))
       # if bg values are present, add them to table
       if(!is.null(bg())) {
         tbl <- rbind(tbl, bg())
@@ -875,9 +875,11 @@ function(input, output, session) {
               file = rmd_file,
               spName = spName(sp),
               sp = sp,
+              spAbr = as.character(abbreviate(spName(sp), minlength = 2)),
               rmd_vars
             )
             module_rmd <- do.call(knitr::knit_expand, knit_params)
+
             module_rmd_file <- tempfile(pattern = paste0(module$id, "_"),
                                         fileext = ".Rmd")
             writeLines(module_rmd, module_rmd_file)
@@ -888,7 +890,10 @@ function(input, output, session) {
         species_md_file <- tempfile(pattern = paste0(sp, "_"),
                                     fileext = ".md")
         rmarkdown::render(input = "Rmd/userReport_species.Rmd",
-                          params = list(child_rmds = species_rmds, spName = spName(sp)),
+                          params = list(child_rmds = species_rmds,
+                                        spName = spName(sp),
+                                        spAbr = as.character(abbreviate(spName(sp),
+                                                                        minlength = 2))),
                           output_format = rmarkdown::github_document(html_preview = FALSE),
                           output_file = species_md_file,
                           clean = TRUE)
