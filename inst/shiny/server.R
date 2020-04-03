@@ -850,6 +850,7 @@ function(input, output, session) {
     },
     content = function(file) {
       spp <- common$spp
+      spAbr <-
       md_files <- c()
       md_intro_file <- tempfile(pattern = "intro_", fileext = ".md")
       rmarkdown::render("Rmd/userReport_intro.Rmd",
@@ -857,6 +858,12 @@ function(input, output, session) {
                         output_file = md_intro_file,
                         clean = TRUE)
       md_files <- c(md_files, md_intro_file)
+      spAbr <- spAbr <- plyr::alply(abbreviate(stringr::str_replace(allSp(), "_", " "),
+                                               minlength = 2),
+                                    .margins = 1,
+                                    function(x) {
+                                      x <- as.character(x)})
+      names(spAbr) <- allSp()
 
       for (sp in allSp()) {
         species_rmds <- NULL
@@ -875,7 +882,7 @@ function(input, output, session) {
               file = rmd_file,
               spName = spName(sp),
               sp = sp,
-              spAbr = as.character(abbreviate(spName(sp), minlength = 2)),
+              spAbr = spAbr[[sp]],
               rmd_vars
             )
             module_rmd <- do.call(knitr::knit_expand, knit_params)
@@ -892,8 +899,7 @@ function(input, output, session) {
         rmarkdown::render(input = "Rmd/userReport_species.Rmd",
                           params = list(child_rmds = species_rmds,
                                         spName = spName(sp),
-                                        spAbr = as.character(abbreviate(spName(sp),
-                                                                        minlength = 2))),
+                                        spAbr = spAbr[[sp]]),
                           output_format = rmarkdown::github_document(html_preview = FALSE),
                           output_file = species_md_file,
                           clean = TRUE)

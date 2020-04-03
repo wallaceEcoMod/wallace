@@ -59,6 +59,21 @@ occs_userOccs_module_server <- function(input, output, session, common) {
     }
     common$update_component(tab = "Map")
   })
+
+  return(list(
+    save = function() {
+      list(
+        noCSV = input$noCSV,
+        sepCSV = input$sepCSV,
+        decCSV = input$decCSV
+      )
+    },
+    load = function(state) {
+      updateCheckboxInput(session, "noCSV", value = state$noCSV)
+      updateTextInput(session, "sepCSV", value = state$sepCSV)
+      updateTextInput(session, "decCSV", value = state$decCSV)
+    }
+  ))
 }
 
 occs_userOccs_module_map <- function(map, common) {
