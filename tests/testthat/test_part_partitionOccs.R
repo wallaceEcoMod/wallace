@@ -13,19 +13,19 @@ source("test_helper_functions.R")
 
 ## occurrences
 occs <-  occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
-occs <- as.data.frame(occs$Panthera_onca$cleaned)
+occs <- as.data.frame(occs[[1]]$cleaned)
 
 ## background
 # enviromental variables
 envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
 # background extent
-bgExt <- c4_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
 # background points as coordinates
 bg <- as.data.frame(bgExt@polygons[[1]]@Polygons[[1]]@coords)
 names(bg) <- c('longitude', 'latitude')
 
 ## background mask
-bgMask <- c4_bgMask(occs, envs, bgExt)
+bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
 
 # partition methodology
 jack <- 'jack' # Non-spatial Partition - jackknife
@@ -44,68 +44,68 @@ aggFact <- 2
 ### run function
 
 ## jackknife
-partJack <- c5_partitionOccs(occs, bg, method = jack, kfolds = NULL, bgMask = NULL,
-                             aggFact = NULL)
+partJack <- part_partitionOccs(occs, bg, method = jack, kfolds = NULL, bgMask = NULL,
+                             aggFact = NULL,spN=occs)
 ## random k-fold
-partfold <- c5_partitionOccs(occs, bg, method = folds, kfolds, bgMask = NULL,
-                             aggFact = NULL)
+partfold <- part_partitionOccs(occs, bg, method = folds, kfolds, bgMask = NULL,
+                             aggFact = NULL,spN=occs)
 ## block
-partblock <- c5_partitionOccs(occs, bg, method = block, kfolds = NULL, bgMask = NULL,
-                              aggFact = NULL)
+partblock <- part_partitionOccs(occs, bg, method = block, kfolds = NULL, bgMask = NULL,
+                              aggFact = NULL,spN=occs)
 ## checkerboard 1
-partche1 <- c5_partitionOccs(occs, bg, method = cb1, kfolds = NULL, bgMask,
-                             aggFact)
+partche1 <- part_partitionOccs(occs, bg, method = cb1, kfolds = NULL, bgMask,
+                             aggFact,spN=occs)
 ## checkerboard 2
-partche2 <- c5_partitionOccs(occs, bg, method = cb2, kfolds = NULL, bgMask,
-                             aggFact)
+partche2 <- part_partitionOccs(occs, bg, method = cb2, kfolds = NULL, bgMask,
+                             aggFact,spN=occs)
 
 
 ## test if the error messages appear when they are supposed to
 test_that("error checks", {
   # the user has not selected a partitioning option
-  expect_error(c5_partitionOccs(occs, bg, method = '', kfolds = NULL, bgMask = NULL,
-                                aggFact = NULL), 'Please select a partitioning option.')
+  expect_error(part_partitionOccs(occs, bg, method = '', kfolds = NULL, bgMask = NULL,
+                                aggFact = NULL,spN=occs), 'Please select a partitioning option.')
   # method is random partition and kfolds parameter is NULL
-  expect_error(c5_partitionOccs(occs, bg, method = folds, kfolds = NULL, bgMask = NULL,
-                                aggFact = NULL), paste0("Please specify a kfold value to
+  expect_error(part_partitionOccs(occs, bg, method = folds, kfolds = NULL, bgMask = NULL,
+                                aggFact = NULL,spN=occs), paste0("Please specify a kfold value to
                              use the random partition function for ",
                                                         em("Panthera onca"), "."))
   # method is random partition and kfolds < 2
-  expect_error(c5_partitionOccs(occs, bg, method = folds, kfolds = 1, bgMask = NULL,
-                                aggFact = NULL), paste0("Please specify a kfold value
+  expect_error(part_partitionOccs(occs, bg, method = folds, kfolds = 1, bgMask = NULL,
+                                aggFact = NULL,spN=occs), paste0("Please specify a kfold value
                              greater than 1 for ", em("Panthera onca"), "."))
   # method is checkerboard 1 but aggregation factor parameter < 1
-  expect_error(c5_partitionOccs(occs, bg, method = cb1, kfolds = NULL, bgMask,
-                                aggFact = -2), paste0("Please specify a positive aggregation
+  expect_error(part_partitionOccs(occs, bg, method = cb1, kfolds = NULL, bgMask,
+                                aggFact = -2,spN=occs), paste0("Please specify a positive aggregation
                         factor greater than 1 for ", em("Panthera onca"), "."))
   # method is checkerboard 2 but aggregation factor parameter < 1
-  expect_error(c5_partitionOccs(occs, bg, method = cb2, kfolds = NULL, bgMask,
-                                aggFact = -2), paste0("Please specify a positive aggregation
+  expect_error(part_partitionOccs(occs, bg, method = cb2, kfolds = NULL, bgMask,
+                                aggFact = -2,spN=occs), paste0("Please specify a positive aggregation
                         factor greater than 1 for ", em("Panthera onca"), "."))
   # method is checkerboard 1 but aggregation factor parameter = 1
-  expect_error(c5_partitionOccs(occs, bg, method = cb1, kfolds = NULL, bgMask,
-                                aggFact = 1), paste0("Please specify a positive aggregation
+  expect_error(part_partitionOccs(occs, bg, method = cb1, kfolds = NULL, bgMask,
+                                aggFact = 1,spN=occs), paste0("Please specify a positive aggregation
                         factor greater than 1 for ", em("Panthera onca"), "."))
   # method is checkerboard 2 but aggregation factor parameter = 1
-  expect_error(c5_partitionOccs(occs, bg, method = cb2, kfolds = NULL, bgMask,
-                                aggFact = -2), paste0("Please specify a positive aggregation
+  expect_error(part_partitionOccs(occs, bg, method = cb2, kfolds = NULL, bgMask,
+                                aggFact = -2,spN=occs), paste0("Please specify a positive aggregation
                         factor greater than 1 for ", em("Panthera onca"), "."))
   # method is checkerboard 1 but aggregation factor parameter is NA
-  expect_error(c5_partitionOccs(occs, bg, method = cb1, kfolds = NULL, bgMask,
-                                aggFact = NA), paste0("Please specify a positive aggregation
+  expect_error(part_partitionOccs(occs, bg, method = cb1, kfolds = NULL, bgMask,
+                                aggFact = NA,spN=occs), paste0("Please specify a positive aggregation
                         factor greater than 1 for ", em("Panthera onca"), "."))
   # method is checkerboard 2 but aggregation factor parameter is NA
-  expect_error(c5_partitionOccs(occs, bg, method = cb2, kfolds = NULL, bgMask,
-                                aggFact = NA), paste0("Please specify a positive aggregation
+  expect_error(part_partitionOccs(occs, bg, method = cb2, kfolds = NULL, bgMask,
+                                aggFact = NA,spN=occs), paste0("Please specify a positive aggregation
                         factor greater than 1 for ", em("Panthera onca"), "."))
   # method is checkerboard 1 but athe bgMask parameter is NULL
-  expect_error(c5_partitionOccs(occs, bg, method = cb1, kfolds = NULL, bgMask = NULL,
-                                aggFact = 2), paste0("Please specify a background mask
+  expect_error(part_partitionOccs(occs, bg, method = cb1, kfolds = NULL, bgMask = NULL,
+                                aggFact = 2,spN=occs), paste0("Please specify a background mask
                              to use checkerboard partition functions for ",
                                                      em("Panthera onca"), "."))
   # method is checkerboard 2 but athe bgMask parameter is NULL
-  expect_error(c5_partitionOccs(occs, bg, method = cb2, kfolds = NULL, bgMask = NULL,
-                                aggFact = 2), paste0("Please specify a background mask
+  expect_error(part_partitionOccs(occs, bg, method = cb2, kfolds = NULL, bgMask = NULL,
+                                aggFact = 2,spN=occs), paste0("Please specify a background mask
                              to use checkerboard partition functions for ",
                                                      em("Panthera onca"), "."))
 })
