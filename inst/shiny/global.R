@@ -29,6 +29,7 @@ COMPONENT_MODULES <- list()
 base_module_configs <- c(
   "modules/occs_queryDb.yml",
   "modules/occs_userOccs.yml",
+  "modules/occs_paleoDb.yml",
   "modules/envs_worldclim.yml",
   "modules/envs_userEnvs.yml",
   "modules/poccs_selectOccs.yml",
