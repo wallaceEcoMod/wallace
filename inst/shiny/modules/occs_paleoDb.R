@@ -69,6 +69,7 @@ occs_paleoDb_module_server <- function(input, output, session, common) {
     spp[[sp]]$rmm$code$wallace$occsNum <- input$occsNumPB
     spp[[sp]]$rmm$code$wallace$occsRemoved <- nrow(occsOrig) - nrow(occs)
     spp[[sp]]$rmm$data$occurrence$sources <- "paleobioDb"
+    spp[[sp]]$rmd$timeInterval <- input$timeInterval
 
     common$update_component(tab = "Map")
   })
@@ -105,9 +106,9 @@ occs_paleoDb_module_map <- function(map, common) {
 occs_paleoDb_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    occs_paleoDb_knit = species$rmm$code$wallaceSettings$someFlag,
-    var1 = species$rmm$code$wallaceSettings$someSetting1,
-    var2 = species$rmm$code$wallaceSettings$someSetting2
+    occs_paleoDb_knit = species$rmm$data$occurrence$sources == "paleobioDb",
+    occsNumPB_rmd = species$rmm$code$wallace$occsNum,
+    timeInterval_rmd = species$rmd$timeInterval
   )
 }
 

@@ -117,7 +117,7 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
 
   dupsRem <- nrow(occsXY) - nrow(occs)
   logger %>% writeLog(
-    hlSpp(spName), 'Total palobioDB records returned [', nrow(occsOrig),
+    hlSpp(spName), 'Total paleobioDb records returned [', nrow(occsOrig),
     '] (limit ', occNum, '). Records without coordinates removed [',
     noCoordsRem, ']. Duplicated records removed [', dupsRem,
     ']. Remaining records [', nrow(occs), '].')

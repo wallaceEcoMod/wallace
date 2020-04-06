@@ -1,9 +1,12 @@
-```{asis, echo = {{moduleID_knit}}, eval = {{moduleID_knit}}, include = {{moduleID_knit}}}
-# Remember to change moduleID to the name of your module 
-# (e.g. moduleID_knit => occs_queryDb_knit) (**)
-Description of what the code will do 
+```{asis, echo = {{occs_paleoDb_knit}}, eval = {{occs_paleoDb_knit}}, include = {{occs_paleoDb_knit}}}
+### Obtain Occurrence Data
+You searched the paleobioDB database for *`r "{{spName}}"`*, limited to `r {{occsNumPB_rmd}}` records in the {{timeInterval_rmd}}. 
 ```
 
-```{r, echo = {{moduleID_knit}}, include = {{moduleID_knit}}}
-# R code to run 
+```{r, echo = {{occs_paleoDb_knit}}, include = {{occs_paleoDb_knit}}}
+# Query selected database for occurrence records
+paleoDb_{{spAbr}} <- occs_paleoDb(spName = "{{spName}}", 
+                                  occNum = {{occsNumPB_rmd}}, 
+                                  timeInterval = "{{timeInterval_rmd}}")
+occs_{{spAbr}} <- paleoDb_{{spAbr}}$cleaned
 ```
