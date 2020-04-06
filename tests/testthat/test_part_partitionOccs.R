@@ -74,41 +74,41 @@ test_that("error checks", {
   # method is random partition and kfolds < 2
   expect_error(part_partitionOccs(occs, bg, method = folds, kfolds = 1, bgMask = NULL,
                                 aggFact = NULL,spN=occs), paste0("Please specify a kfold value
-                             greater than 1 for ", em("Panthera onca"), "."))
+                             greater than 1 for ", em(spName(spN)), "."),fixed=T)
   # method is checkerboard 1 but aggregation factor parameter < 1
   expect_error(part_partitionOccs(occs, bg, method = cb1, kfolds = NULL, bgMask,
                                 aggFact = -2,spN=occs), paste0("Please specify a positive aggregation
-                        factor greater than 1 for ", em("Panthera onca"), "."))
+                        factor greater than 1 for ", em(spName(spN)), "."),fixed=T)
   # method is checkerboard 2 but aggregation factor parameter < 1
   expect_error(part_partitionOccs(occs, bg, method = cb2, kfolds = NULL, bgMask,
                                 aggFact = -2,spN=occs), paste0("Please specify a positive aggregation
-                        factor greater than 1 for ", em("Panthera onca"), "."))
+                        factor greater than 1 for ", em(spName(spN)), "."),fixed=T)
   # method is checkerboard 1 but aggregation factor parameter = 1
   expect_error(part_partitionOccs(occs, bg, method = cb1, kfolds = NULL, bgMask,
                                 aggFact = 1,spN=occs), paste0("Please specify a positive aggregation
-                        factor greater than 1 for ", em("Panthera onca"), "."))
+                        factor greater than 1 for ", em(spName(spN)), "."),fixed=T)
   # method is checkerboard 2 but aggregation factor parameter = 1
   expect_error(part_partitionOccs(occs, bg, method = cb2, kfolds = NULL, bgMask,
                                 aggFact = -2,spN=occs), paste0("Please specify a positive aggregation
-                        factor greater than 1 for ", em("Panthera onca"), "."))
+                        factor greater than 1 for ", em(spName(spN)), "."),fixed=T)
   # method is checkerboard 1 but aggregation factor parameter is NA
   expect_error(part_partitionOccs(occs, bg, method = cb1, kfolds = NULL, bgMask,
                                 aggFact = NA,spN=occs), paste0("Please specify a positive aggregation
-                        factor greater than 1 for ", em("Panthera onca"), "."))
+                        factor greater than 1 for ", em(spName(spN)), "."),fixed=T)
   # method is checkerboard 2 but aggregation factor parameter is NA
   expect_error(part_partitionOccs(occs, bg, method = cb2, kfolds = NULL, bgMask,
                                 aggFact = NA,spN=occs), paste0("Please specify a positive aggregation
-                        factor greater than 1 for ", em("Panthera onca"), "."))
+                        factor greater than 1 for ", em(spName(spN)), "."),fixed=T)
   # method is checkerboard 1 but athe bgMask parameter is NULL
   expect_error(part_partitionOccs(occs, bg, method = cb1, kfolds = NULL, bgMask = NULL,
                                 aggFact = 2,spN=occs), paste0("Please specify a background mask
                              to use checkerboard partition functions for ",
-                                                     em("Panthera onca"), "."))
+                                                     em(spName(spN)), "."),fixed=T)
   # method is checkerboard 2 but athe bgMask parameter is NULL
   expect_error(part_partitionOccs(occs, bg, method = cb2, kfolds = NULL, bgMask = NULL,
                                 aggFact = 2,spN=occs), paste0("Please specify a background mask
                              to use checkerboard partition functions for ",
-                                                     em("Panthera onca"), "."))
+                                                     em(spName(spN)), "."),fixed=T)
 })
 
 ### test output features
