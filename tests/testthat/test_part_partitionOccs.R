@@ -67,9 +67,10 @@ test_that("error checks", {
                                 aggFact = NULL,spN=occs), 'Please select a partitioning option.')
   # method is random partition and kfolds parameter is NULL
   expect_error(part_partitionOccs(occs, bg, method = folds, kfolds = NULL, bgMask = NULL,
-                                aggFact = NULL,spN=occs), paste0("Please specify a kfold value to
+                                aggFact = NULL,spN=occs),
+                                paste0("Please specify a kfold value to
                              use the random partition function for ",
-                                                        em("Panthera onca"), "."))
+                                       em(spName(spN)), "."),fixed=T)
   # method is random partition and kfolds < 2
   expect_error(part_partitionOccs(occs, bg, method = folds, kfolds = 1, bgMask = NULL,
                                 aggFact = NULL,spN=occs), paste0("Please specify a kfold value
