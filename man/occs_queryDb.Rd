@@ -7,7 +7,7 @@
 occs_queryDb(
   spNames,
   occDb,
-  occNum,
+  occNum = NULL,
   doCitations = FALSE,
   gbifUser = NULL,
   gbifEmail = NULL,
