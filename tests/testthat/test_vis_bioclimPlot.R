@@ -9,30 +9,28 @@ source("test_helper_functions.R")
 
 ## get records
 out.gbif <- occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
-occs <- as.data.frame(out.gbif$Panthera_onca$cleaned)
+occs <- as.data.frame(out.gbif[[1]]$cleaned)
 
 ## background
 # enviromental data
 envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
 # background extent
-bgExt <- c4_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
 # background masked
-bgMask <- c4_bgMask(occs, envs, bgExt)
+bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
 ## background sample
-bg <- c4_bgSample(occs, bgMask, bgPtsNum = 10000)
+bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=occs)
 
 ## Partition
-partblock <- c5_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,
-                              aggFact = NULL)
+partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,
+                              aggFact = NULL,spN=spN)
 # occurrences partitioned
-occs$partition
 occs$partition <- partblock$occ.grp
 # background points partitioned
-bg$partition
 bg$partition <- partblock$bg.grp
 
 ## model
-bioclimAlg <- runBIOCLIM(occs, bg, bgMask)
+bioclimAlg <- model_bioclim(occs, bg, bgMask,spN=spN)
 
 
 ### run function
