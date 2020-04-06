@@ -38,18 +38,42 @@ occs_userOccs_module_server <- function(input, output, session, common) {
       occsOrig <- occsList[[sp]]$orig
       if(!is.null(spp[[sp]])) spp[[sp]] <- NULL
       spp[[sp]] <- list(occs = occs,
-                       occData = list(occsOrig = occsOrig, occsCleaned = occs),
-                       rmm = rangeModelMetadata::rmmTemplate())
+                        occData = list(occsOrig = occsOrig, occsCleaned = occs),
+                        rmm = rangeModelMetadata::rmmTemplate(),
+                        rmd = list())
       if(!is.null(occsList[[sp]]$bg)) spp[[sp]]$bg <- occsList[[sp]]$bg
 
       # METADATA ####
-      spp[[sp]]$rmm$data$occurrence$taxa <- occs$scientific_name[1]
+      spp[[sp]]$rmm$data$occurrence$taxon <- unique(occs$scientific_name)
       spp[[sp]]$rmm$data$occurrence$dataType <- "presence only"
       spp[[sp]]$rmm$data$occurrence$presenceSampleSize <- nrow(occs)
       spp[[sp]]$rmm$data$occurrence$sources <- "user"
-      spp[[sp]]$rmm$code$wallaceSettings$userCSV <- input$userCSV$name
+      spp[[sp]]$rmm$code$wallace$userCSV <- input$userCSV$name
+      spp[[sp]]$rmm$code$wallace$occsNum <- nrow(occs)
+      spp[[sp]]$rmm$code$wallace$occsRemoved <- nrow(occs) - nrow(occsOrig)
+      spp[[sp]]$rmd$sepCSV <- ifelse(input$noCSV == 0 | is.null(input$noCSV),
+                                     ",", input$sepCSV)
+      spp[[sp]]$rmd$decCSV <- ifelse(input$noCSV == 0 | is.null(input$noCSV),
+                                     ".", input$decCSV)
+
     }
+    common$update_component(tab = "Map")
   })
+
+  return(list(
+    save = function() {
+      list(
+        noCSV = input$noCSV,
+        sepCSV = input$sepCSV,
+        decCSV = input$decCSV
+      )
+    },
+    load = function(state) {
+      updateCheckboxInput(session, "noCSV", value = state$noCSV)
+      updateTextInput(session, "sepCSV", value = state$sepCSV)
+      updateTextInput(session, "decCSV", value = state$decCSV)
+    }
+  ))
 }
 
 occs_userOccs_module_map <- function(map, common) {
@@ -65,7 +89,9 @@ occs_userOccs_module_map <- function(map, common) {
 
 occs_userOccs_module_rmd <- function(species) {
   list(
-    occs_userOccs_knit = !is.null(species$rmm$code$wallaceSettings$userCSV),
-    userOccsCsvName = species$rmm$code$wallaceSettings$userCSV
+    occs_userOccs_knit = !is.null(species$rmm$code$wallace$userCSV),
+    userCSV_rmd = species$rmm$code$wallace$userCSV,
+    sepCSV_rmd = species$rmd$sepCSV,
+    decCSV_rmd = species$rmd$decCSV
   )
 }

@@ -190,7 +190,7 @@ function(input, output, session) {
     },
     content = function(file) {
       tbl <- occs() %>%
-        dplyr::select(-pop)
+        dplyr::select(-c(pop, occID))
       # if bg values are present, add them to table
       if(!is.null(bg())) {
         tbl <- rbind(tbl, bg())
@@ -850,6 +850,7 @@ function(input, output, session) {
     },
     content = function(file) {
       spp <- common$spp
+      spAbr <-
       md_files <- c()
       md_intro_file <- tempfile(pattern = "intro_", fileext = ".md")
       rmarkdown::render("Rmd/userReport_intro.Rmd",
@@ -857,6 +858,12 @@ function(input, output, session) {
                         output_file = md_intro_file,
                         clean = TRUE)
       md_files <- c(md_files, md_intro_file)
+      spAbr <- spAbr <- plyr::alply(abbreviate(stringr::str_replace(allSp(), "_", " "),
+                                               minlength = 2),
+                                    .margins = 1,
+                                    function(x) {
+                                      x <- as.character(x)})
+      names(spAbr) <- allSp()
 
       for (sp in allSp()) {
         species_rmds <- NULL
@@ -875,9 +882,11 @@ function(input, output, session) {
               file = rmd_file,
               spName = spName(sp),
               sp = sp,
+              spAbr = spAbr[[sp]],
               rmd_vars
             )
             module_rmd <- do.call(knitr::knit_expand, knit_params)
+
             module_rmd_file <- tempfile(pattern = paste0(module$id, "_"),
                                         fileext = ".Rmd")
             writeLines(module_rmd, module_rmd_file)
@@ -888,7 +897,9 @@ function(input, output, session) {
         species_md_file <- tempfile(pattern = paste0(sp, "_"),
                                     fileext = ".md")
         rmarkdown::render(input = "Rmd/userReport_species.Rmd",
-                          params = list(child_rmds = species_rmds, spName = spName(sp)),
+                          params = list(child_rmds = species_rmds,
+                                        spName = spName(sp),
+                                        spAbr = spAbr[[sp]]),
                           output_format = rmarkdown::github_document(html_preview = FALSE),
                           output_file = species_md_file,
                           clean = TRUE)
