@@ -9,14 +9,14 @@ source("test_helper_functions.R")
 
 ## occurrences
 out.gbif <- occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
-occs <- as.data.frame(out.gbif$Panthera_onca$cleaned)
+occs <- as.data.frame(out.gbif[[1]]$cleaned)
 
 ## thinning distance (km)
 thinDist <- 30
 
 
 ### run function
-out.thin <- poccs_thinOccs(occs, thinDist)
+out.thin <- poccs_thinOccs(occs, thinDist,spN=occs)
 
 
 ### test if the error messages appear when they are supposed to
