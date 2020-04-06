@@ -131,8 +131,10 @@ occs_queryDb_module_map <- function(map, common) {
 
 occs_queryDb_module_rmd <- function(species) {
   list(
-    occs_queryDb_knit = !is.null(species$rmm$data$occurrence$sources) &
-      species$rmm$data$occurrence$sources != "user",
+    occs_queryDb_knit = species$rmm$data$occurrence$sources == 'gbif' |
+      species$rmm$data$occurrence$sources == 'vernet' |
+      species$rmm$data$occurrence$sources == 'bison' |
+      species$rmm$data$occurrence$sources == 'bien',
     occs_citation_knit = !is.null(species$rmm$code$wallace$gbifDOI),
     occDb_rmd = species$rmm$data$occurrence$sources,
     occNum_rmd = species$rmm$code$wallace$occsNum,

@@ -1,0 +1,5 @@
+component: "occs"
+short_name: "Query Database (Paleo)"
+long_name: "Query Database (Paleo)"
+authors: "Sara Varela, Jamie Kass, Gonzalo E. Pinilla-Buitrago"
+package: [paleobioDB]

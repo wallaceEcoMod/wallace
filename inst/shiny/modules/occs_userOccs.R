@@ -89,7 +89,7 @@ occs_userOccs_module_map <- function(map, common) {
 
 occs_userOccs_module_rmd <- function(species) {
   list(
-    occs_userOccs_knit = !is.null(species$rmm$code$wallace$userCSV),
+    occs_userOccs_knit = species$rmm$data$occurrence$sources == 'user',
     userCSV_rmd = species$rmm$code$wallace$userCSV,
     sepCSV_rmd = species$rmd$sepCSV,
     decCSV_rmd = species$rmd$decCSV
