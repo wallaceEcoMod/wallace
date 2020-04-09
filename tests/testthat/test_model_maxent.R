@@ -13,7 +13,7 @@ source("test_helper_functions.R")
 
 ## occurrences
 out.gbif <- occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
-occs <- as.data.frame(out.gbif$Panthera_onca$cleaned)
+occs <- as.data.frame(out.gbif[[1]]$cleaned)
 
 ## background mask
 # enviromental data
@@ -22,16 +22,16 @@ envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBri
 records <- which(is.na(raster::extract(envs$bio1.1, occs[,3:4])) == TRUE)
 occs <- occs[-records, ]
 # background extent
-bgExt <- c4_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
 # background masked
-bgMsk <- c4_bgMask(occs, envs, bgExt)
+bgMsk <- penvs_bgMask(occs, envs, bgExt,spN=occs)
 
 ## background sample
-bg <- c4_bgSample(occs, bgMsk, bgPtsNum = 10000)
+bg <- penvs_bgSample(occs, bgMsk, bgPtsNum = 10000,spN=occs)
 
 ## partition data
-partblock <- c5_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,
-                              aggFact = NULL)
+partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,
+                              aggFact = NULL,spN=occs)
 # occurrences partitioned
 occsGrp = partblock$occ.grp
 # background points partitioned
@@ -47,52 +47,73 @@ fcs <- c('L', 'LQ', 'H', 'LQH', 'LQHP')
 ## algorithm
 algoritm <- c('maxent.jar','maxnet')
 
-
+#Java file route
+jar <- paste(system.file(package = "dismo"), "/java/maxent.jar", sep = '')
+#wrong java file route
+jar_f <- paste(system.file(package = "dismo"), "/maxent.jar", sep = '')
 ## test if the error messages appear when they are supposed to
 test_that("error checks", {
   # user has not partitioned occurrences
-  expect_error(runMaxent(occs, bg, occsGrp = NULL, bgGrp, bgMsk, rms, rmsStep, fcs,
-                         clampSel = TRUE, algMaxent = algoritm[1]), "Before building a model, please partition
-                        occurrences for cross-validation.")
-})
+  expect_error(model_maxent(occs, bg, occsGrp = NULL, bgGrp, bgMsk, rms, rmsStep, fcs,
+                         clampSel = TRUE, algMaxent = algoritm[1]), "Before building a model, please partition occurrences for cross-validation.")
+##missing 2 errors
+  'Package rJava cannot load. Please download the latest version of ',
+  'Java, and make sure it is the correct version (e.g. 64-bit for a ',
+  '64-bit system). After installing, try "library(rJava)". If it ',
+  'loads properly, restart Wallace and try again. If it does not, ',
+  'please consult www.github.com/wallaceecomod/wallace for more ',
+  'tips on getting rJava to work.'
+ ##User has not dowloaded maxent.jar to the right place
+  expect_error(model_maxent(occs, bg, occsGrp = NULL, bgGrp, bgMsk, rms, rmsStep, fcs,
+                            clampSel = TRUE, algMaxent = algoritm[1])
+  "To use Maxent, make sure you download, ", strong("maxent.jar"),
+  " from the ",
+  a("AMNH Maxent webpage",
+    href = "http://biodiversityinformatics.amnh.org/open_source/maxent/",
+    target = "_blank"),
+  " and place it in this directory:", br(), em(jar))
+  })
 
 ### test output features
-i <- algoritm[1]
+i <- algoritm[2]
 for (i in algoritm) {
   ### run function
-  maxentAlg <- runMaxent(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, clampSel = TRUE,
-                         algMaxent = i)
+  maxentAlg <- model_maxent(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, clampSel = TRUE,
+                         algMaxent = i,catEnvs=NULL,spN=occs)
 
   test_that("output type checks", {
-    # the output is a list
-    expect_is(maxentAlg, "list")
-    # the output list has five elements
-    expect_equal(length(maxentAlg), 5)
-    # element within the output list are:
-    # lists
-    expect_is(maxentAlg[c("evalTbl","evalTblBins", "models")], "list")
+    # the output is an ENMeval object
+    expect_is(maxentAlg, "ENMevaluation")
+    # element within the evaluation are:
+    # character
+    expect_is(maxentAlg@algorithm, "character")
+    expect_is(maxentAlg@partition.method, "character")
+    #data frame
+    expect_is(maxentAlg@results, "data.frame")
+    expect_is(maxentAlg@occ.pts, "data.frame")
+    expect_is(maxentAlg@bg.pts, "data.frame")
     # a raster Stack
     expect_is(maxentAlg@predictions, "RasterStack")
-    # a matrix
-    expect_is(maxentAlg@occPredVals, "matrix")
+    #list
+    expect_is(maxentAlg@models, "list")
+    # numeric
+    expect_is(maxentAlg@occ.grp, "numeric")
+    expect_is(maxentAlg@bg.grp, "numeric")
     # there are as much models as feature classes * rms/rmsStep
     expect_equal(length(maxentAlg@models), (length(rms)/rmsStep)*length(fcs))
     # as many rasters as models are generated
     expect_equal(length(maxentAlg@models), raster::nlayers(maxentAlg@predictions))
     # there is a model for each combination of feature classes and regularization multiplier
-    expect_equal(sort(names(maxentAlg@models)),
+    expect_equal(as.character(sort(maxentAlg@results$settings)),
                  paste0(sort(rep(fcs, length(rms)/rmsStep)), paste0("_", seq(rms[1], rms[2], by = rmsStep))))
-    # there are prediction values for each model
-    expect_equal(sort(names(maxentAlg@models)), sort(colnames(maxentAlg@occPredVals)))
     # evaluation table has the right amout of rows
     expect_equal(nrow(maxentAlg@results), (length(rms)/rmsStep)*length(fcs))
-    # columns name in the evaluation table are right
-    expect_equal(names(maxentAlg@results), c("features", "rm", "train.AUC", "avg.test.AUC", "var.test.AUC",
+    # columns name in the evaluation table are right only first 16 as the others depend on partitions
+    expect_equal(names(maxentAlg@results)[1:16], c("settings","features", "rm", "train.AUC", "avg.test.AUC", "var.test.AUC",
                                              "avg.diff.AUC", "var.diff.AUC", "avg.test.orMTP", "var.test.orMTP", "avg.test.or10pct", "var.test.or10pct",
                                              "AICc", "delta.AICc", "w.AIC", "parameters"))
-    # bin evaluation table has the right amout of columns and rows
-    expect_equal(nrow(maxentAlg@results.grp), (length(rms)/rmsStep)*length(fcs))
-    expect_equal(ncol(maxentAlg@results.grp), (nlevels(factor(occsGrp)))*4)
+    # bin evaluation table has the right amout of columns
+    expect_equal(ncol(maxentAlg@results)-16, (nlevels(factor(occsGrp)))*4) ##colnumbers minus the 16 minimum
   })
 
   ### test function stepts
