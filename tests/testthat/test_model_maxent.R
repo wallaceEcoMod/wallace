@@ -52,30 +52,16 @@ jar <- paste(system.file(package = "dismo"), "/java/maxent.jar", sep = '')
 #wrong java file route
 jar_f <- paste(system.file(package = "dismo"), "/maxent.jar", sep = '')
 ## test if the error messages appear when they are supposed to
-test_that("error checks", {
+test_that("error checks" {
   # user has not partitioned occurrences
   expect_error(model_maxent(occs, bg, occsGrp = NULL, bgGrp, bgMsk, rms, rmsStep, fcs,
                          clampSel = TRUE, algMaxent = algoritm[1]), "Before building a model, please partition occurrences for cross-validation.")
-##missing 2 errors
-  'Package rJava cannot load. Please download the latest version of ',
-  'Java, and make sure it is the correct version (e.g. 64-bit for a ',
-  '64-bit system). After installing, try "library(rJava)". If it ',
-  'loads properly, restart Wallace and try again. If it does not, ',
-  'please consult www.github.com/wallaceecomod/wallace for more ',
-  'tips on getting rJava to work.'
- ##User has not dowloaded maxent.jar to the right place
-  expect_error(model_maxent(occs, bg, occsGrp = NULL, bgGrp, bgMsk, rms, rmsStep, fcs,
-                            clampSel = TRUE, algMaxent = algoritm[1])
-  "To use Maxent, make sure you download, ", strong("maxent.jar"),
-  " from the ",
-  a("AMNH Maxent webpage",
-    href = "http://biodiversityinformatics.amnh.org/open_source/maxent/",
-    target = "_blank"),
-  " and place it in this directory:", br(), em(jar))
-  })
+})
+##missing 2 errors related to jar
+
 
 ### test output features
-i <- algoritm[2]
+
 for (i in algoritm) {
   ### run function
   maxentAlg <- model_maxent(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, clampSel = TRUE,
@@ -84,6 +70,9 @@ for (i in algoritm) {
   test_that("output type checks", {
     # the output is an ENMeval object
     expect_is(maxentAlg, "ENMevaluation")
+    #the output has 9 slots with correct names
+    expect_equal(length(slotNames(maxentAlg)), 10)
+    expect_equal(slotNames(maxentAlg),c("algorithm","results","predictions","models","partition.method","occ.pts","occ.grp","bg.pts","bg.grp","overlap"))
     # element within the evaluation are:
     # character
     expect_is(maxentAlg@algorithm, "character")
