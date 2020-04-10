@@ -7,7 +7,8 @@ source("test_helper_functions.R")
 
 ### Set parameters
 ## species names
-spNames <- c("panthera onca","Tremarctos ornatus")
+spNames <- c("panthera onca","Procyon lotor")
+spNamesPlants<-c("espeletia grandiflora","fuchsia boliviana")
 ## database
 occDb <- "gbif"
 ## number of occurrence records to download
@@ -15,12 +16,14 @@ occNum <- 1000
 
 
 ### run function
+  #gbif
 out.gbif <- occs_queryDb(spNames, occDb, occNum)
-
-### get the total number of records found in the database
-    ##this still needs to be modified for multisp
-taxonkey <- rgbif::name_suggest(q='"panthera onca"', rank='species')$key[1]
-total_occ <- rgbif::occ_search(taxonkey, limit=0, return='meta')
+  #Vertnet
+out.vert <- occs_queryDb(spNames, occDb = "vertnet", occNum)
+# Bison
+out.bison <- occs_queryDb(spNames, occDb = "bison",occNum)
+# BIEN
+out.bien <- occs_queryDb(spNames = spNamesPlants, occDb = "bien",occNum)
 
 
 ### test if the error messages appear when they are supposed to
@@ -43,10 +46,15 @@ test_that("warnings checks", {
                paste0(hlSpp(em("Artibeus macleayii")),'No records with coordinates found in ', occDb,". (**)"),fixed=T)
   })
 
-###For multisp this goes in a loop
+#
+##Test for correct outputs in loop to test for multiple species
+
+  ##GBIF
 
 for (i in 1:length(spNames)){
-
+  ### get the total number of records found in the database
+  taxonkey <- rgbif::name_suggest(q=spNames[i], rank='species')$key[1]
+  total_occ <- rgbif::occ_search(taxonkey, limit=0, return='meta')
 ### test output features
 test_that("output type checks", {
   # the output is a list
@@ -59,8 +67,9 @@ test_that("output type checks", {
   expect_equal(length(out.gbif[[i]]), 2)
   # the elements on the main list are lists too
   expect_is(out.gbif[[i]][c("orig","cleaned")], "list")
+  # Only one species was dowloaded for each sublist
+  expect_equal(length(unique(out.gbif[[i]]$cleaned$scientific_name)),1)
   # if the database holds more records than the specified by the user (occNum),
-      ##careful here because total_occ is being computed for only 1st species of list
   # the number of records downloaded is:
   if (total_occ$count >= occNum){
     # the same as specified in the function (occNum)
@@ -92,7 +101,6 @@ test_that("output data checks", {
 
 ### check header names
 
-## GBIF
 # original GBIF headers
 headersGBIF <- c("name", "longitude", "latitude", "country", "stateProvince", "locality",
                  "year", "basisOfRecord", "catalogNumber", "institutionCode", "elevation",
@@ -110,57 +118,154 @@ test_that("GBIF headers", {
 }
 
 ## VERTNET
-# download data from Vertnet
-#out.vert <- occs_queryDb(spNames = "panthera onca", occDb = "vertnet", occNum)
 # original Vertnet headers
-headersVertnet <- c("name", "longitude", "latitude", "country", "stateprovince", "locality",
+headersVertnet <- c("name", "longitude", "latitude", "country", "stateprovince",
                     "year", "basisofrecord", "catalognumber", "institutioncode",
-                   "maximumelevationinmeters", "coordinateuncertaintyinmeters")
-# check headers
-test_that("Vertnet headers", {
-  # the original headers haven't changed
-  expect_false('FALSE' %in%  (headersVertnet %in% names(out.vert$orig)))
-   #the headers in the cleaned table are the ones specified in the function
-  expect_equal(names(out.vert$cleaned),
-              c("occID", "scientific_name", "longitude", "latitude", "country", "state_province",
-                "locality", "year", "record_type","catalog_number", "institution_code",
-                "elevation", "uncertainty", "pop"))
-  })
+                    "coordinateuncertaintyinmeters")
 
+for (i in 1:length(spNames)){
+##Check output
+test_that("output type checks", {
+  # the output is a list
+  expect_is(out.vert, "list")
+  #the list has as many elements as species names provided
+  expect_equal(length(out.vert), length(spNames))
+  # each individual species result is a list
+  expect_is(out.vert[[i]], "list")
+  #Each individual list has two elements
+  expect_equal(length(out.vert[[i]]), 2)
+  # the elements on the main list are lists too
+  expect_is(out.vert[[i]][c("orig","cleaned")], "list")
+  # Only one species was dowloaded for each sublist
+  expect_equal(length(unique(out.vert[[i]]$orig$name)),1)
+  # cleaned list has 14 columns
+  expect_equal(14, ncol(out.vert[[i]]$cleaned))
+})
+  ### test function stepts
+  test_that("output data checks", {
+    # if the original database has records without coordinates OR duplicates:
+    if ((TRUE %in% duplicated(out.vert[[i]]$orig[,c('longitude','latitude')]) == TRUE)|
+        (NA %in% out.vert$orig[,c('longitude','latitude')]) == TRUE){
+      # the cleaned table must have fewer records than the original one
+      expect_true((nrow(out.vert[[i]]$orig)) > (nrow(out.vert[[i]]$cleaned)))
+    } else { # if not,
+      # both tables should have the same number of records
+      expect_true((nrow(out.vert[[i]]$orig)) == (nrow(out.vert[[i]]$cleaned)))
+    }
+    # there are not "NA" values in longitude OR latitude columns in the cleaned table
+    expect_false(NA %in% out.vert[[i]]$cleaned$latitude)|(NA %in% out.vert[[i]]$cleaned$longitude)
+    # there are not duplicate values in longitude AND latitude columns in the cleaned table
+    expect_false(TRUE %in% duplicated(out.vert[[i]]$cleaned[,c('longitude','latitude')]))
+  })
+  # check headers
+  test_that("Vertnet headers", {
+    # the original headers haven't changed
+    expect_false('FALSE' %in%  (headersVertnet %in% names(out.vert[[i]]$orig)))
+    #the headers in the cleaned table are the ones specified in the function
+    expect_equal(names(out.vert[[i]]$cleaned),
+                 c("occID", "scientific_name", "longitude", "latitude", "country", "state_province",
+                   "locality", "year", "record_type","catalog_number", "institution_code",
+                   "elevation", "uncertainty", "pop"))
+  })
+}
 ## BISON
-# download data from Bison
-out.bison <- occs_queryDb(spName = "panthera onca", occDb = "bison",occNum)
 # original Bison headers
 headersBison <- c("providedScientificName", "longitude", "latitude", "countryCode",
                   "stateProvince", "verbatimLocality", "year", "basisOfRecord", "catalogNumber",
                   "ownerInstitutionCollectionCode", "verbatimElevation")
+for (i in 1:length(spNames)){
+  ##Check output
+  test_that("output type checks", {
+    # the output is a list
+    expect_is(out.bison, "list")
+    #the list has as many elements as species names provided
+    expect_equal(length(out.bison), length(spNames))
+    # each individual species result is a list
+    expect_is(out.bison[[i]], "list")
+    #Each individual list has two elements
+    expect_equal(length(out.bison[[i]]), 2)
+    # the elements on the main list are lists too
+    expect_is(out.bison[[i]][c("orig","cleaned")], "list")
+    # Only one species was dowloaded for each sublist
+    expect_equal(length(unique(out.bison[[i]]$cleaned$scientific_name)),1)
+    # cleaned list has 14 columns
+    expect_equal(14, ncol(out.bison[[i]]$cleaned))
+  })
+  ### test function stepts
+  test_that("output data checks", {
+    # if the original database has records without coordinates OR duplicates:
+    if ((TRUE %in% duplicated(out.bison[[i]]$orig[,c('longitude','latitude')]) == TRUE)|
+        (NA %in% out.bison$orig[,c('longitude','latitude')]) == TRUE){
+      # the cleaned table must have fewer records than the original one
+      expect_true((nrow(out.bison[[i]]$orig)) > (nrow(out.bison[[i]]$cleaned)))
+    } else { # if not,
+      # both tables should have the same number of records
+      expect_true((nrow(out.bison[[i]]$orig)) == (nrow(out.bison[[i]]$cleaned)))
+    }
+    # there are not "NA" values in longitude OR latitude columns in the cleaned table
+    expect_false(NA %in% out.bison[[i]]$cleaned$latitude)|(NA %in% out.bison[[i]]$cleaned$longitude)
+    # there are not duplicate values in longitude AND latitude columns in the cleaned table
+    expect_false(TRUE %in% duplicated(out.bison[[i]]$cleaned[,c('longitude','latitude')]))
+  })
 # check headers
 test_that("Bison headers", {
   # the original headers haven't changed
-  expect_false('FALSE' %in%  (headersBison %in% names(out.bison[[1]]$orig)))
+  expect_false('FALSE' %in%  (headersBison %in% names(out.bison[[i]]$orig)))
   # the headers in the claned table are the ones specified in the function
-  expect_equal(names(out.bison[[1]]$cleaned),
+  expect_equal(names(out.bison[[i]]$cleaned),
                c("occID", "scientific_name", "longitude", "latitude", "country", "state_province",
                  "locality", "year", "record_type","catalog_number", "institution_code",
                  "elevation", "uncertainty", "pop"))
   })
-
+}
 ##BIEN
-# download data from BIEN
-out.bien <- occs_queryDb(spNames = "espeletia grandiflora", occDb = "bien",occNum)
 # original BIEN headers
 headersBien <- c("scrubbed_species_binomial", "longitude", "latitude",
                  "collection_code")
 
+for (i in 1:length(spNamesPlants)){
+  ##Check output
+  test_that("output type checks", {
+    # the output is a list
+    expect_is(out.bien, "list")
+    #the list has as many elements as species names provided
+    expect_equal(length(out.bien), length(spNamesPlants))
+    # each individual species result is a list
+    expect_is(out.bien[[i]], "list")
+    #Each individual list has two elements
+    expect_equal(length(out.bien[[i]]), 2)
+    # the elements on the main list are lists too
+    expect_is(out.bien[[i]][c("orig","cleaned")], "list")
+    # Only one species was dowloaded for each sublist
+    expect_equal(length(unique(out.bien[[i]]$cleaned$scientific_name)),1)
+    # cleaned list has 14 columns
+    expect_equal(14, ncol(out.bien[[i]]$cleaned))
+  })
+  ### test function stepts
+  test_that("output data checks", {
+    # if the original database has records without coordinates OR duplicates:
+    if ((TRUE %in% duplicated(out.bien[[i]]$orig[,c('longitude','latitude')]) == TRUE)|
+        (NA %in% out.bien$orig[,c('longitude','latitude')]) == TRUE){
+      # the cleaned table must have fewer records than the original one
+      expect_true((nrow(out.bien[[i]]$orig)) > (nrow(out.bien[[i]]$cleaned)))
+    } else { # if not,
+      # both tables should have the same number of records
+      expect_true((nrow(out.bien[[i]]$orig)) == (nrow(out.bien[[i]]$cleaned)))
+    }
+    # there are not "NA" values in longitude OR latitude columns in the cleaned table
+    expect_false(NA %in% out.bien[[i]]$cleaned$latitude)|(NA %in% out.bien[[i]]$cleaned$longitude)
+    # there are not duplicate values in longitude AND latitude columns in the cleaned table
+    expect_false(TRUE %in% duplicated(out.bien[[i]]$cleaned[,c('longitude','latitude')]))
+  })
 # check headers
 test_that("Bien headers", {
   # the original headers haven't changed
-  expect_false('FALSE' %in%  (headersBien %in% names(out.bien[[1]]$orig)))
+  expect_false('FALSE' %in%  (headersBien %in% names(out.bien[[i]]$orig)))
   # the headers in the claned table are the ones specified in the function
-  expect_equal(names(out.bien[[1]]$cleaned),
+  expect_equal(names(out.bien[[i]]$cleaned),
                c("occID", "scientific_name", "longitude", "latitude", "country",
           "state_province", "locality", "year", "record_type", "catalog_number",
           "institution_code", "elevation", "uncertainty","pop"))
 })
 
-
+}
