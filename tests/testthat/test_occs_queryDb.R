@@ -67,8 +67,6 @@ test_that("output type checks", {
   expect_equal(length(out.gbif[[i]]), 2)
   # the elements on the main list are lists too
   expect_is(out.gbif[[i]][c("orig","cleaned")], "list")
-  # Only one species was dowloaded for each sublist
-  expect_equal(length(unique(out.gbif[[i]]$cleaned$scientific_name)),1)
   #downloaded species corresponds to queried species
   expect_match(gsub(" \\(.*\\)","",unique(out.gbif[[i]]$cleaned$scientific_name)),spNames[i],ignore.case=T)
   # if the database holds more records than the specified by the user (occNum),
@@ -191,10 +189,9 @@ for (i in 1:length(spNames)){
     expect_equal(length(out.bison[[i]]), 2)
     # the elements on the main list are lists too
     expect_is(out.bison[[i]][c("orig","cleaned")], "list")
-    # Only one species was dowloaded for each sublist. Can t test because of taxonomy not standarized in BISON
-   # expect_equal(length(unique(out.bison[[i]]$cleaned$scientific_name)),1)
-    #downloaded species corresponds to queried species
-  #  expect_match(gsub(" \\(.*\\)","",unique(out.gbif[[i]]$cleaned$scientific_name)),spNames[i],ignore.case=T)
+    #downloaded species corresponds to queried species. Taxonomy not standarized so testing for species name not genus
+        ##works with these 2 species might fail with others if epithet changed
+    expect_match(unique(out.bison[[i]]$cleaned$scientific_name),strsplit(spNames[i]," ")[[1]][2],ignore.case=T,all=T)
 
     # cleaned list has 14 columns
     expect_equal(14, ncol(out.bison[[i]]$cleaned))
