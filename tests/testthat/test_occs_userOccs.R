@@ -22,6 +22,10 @@ test_that("error checks", {
   expect_error(occs_userOccs(txtPath = './Data/Marmosops_wrong.csv',
                            txtName = 'Marmosops_wrong',txtSep=",",txtDec="."),
                'Please input txt file with columns "scientific_name", "longitude", "latitude" or check delimeter and decimal separators. (**)',fixed=T)
+ expect_error(occs_userOccs(txtPath='./Data/Marmosops_wrongSP.csv',txtName='Data/Marmosops_wrongSP.csv',txtSep=",",txtDec="."),
+              'Please input just genus and species epithet in scientific name field in your file (e.g., "Canis lupus")(**).',fixed=T)
+expect_error(occs_userOccs(txtPath='./Data/Marmosops_sp.csv',txtSep=" ",txtDec="."),
+ "There is something wrong in your file. Check file format or delimiter and decimal separators.(**)",fixed=T)
   })
 
 ### test if the warning messages appear when they are supposed to
