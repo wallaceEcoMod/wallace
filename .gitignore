@@ -14,9 +14,7 @@ vignettes/*.html
 vignettes/*.pdf
 # spThin files
 spatial_thin_log.txt
-# worldclim files
-wc*
-cmip5
+
 # r proj files
 .Rproj.user
 .RData
@@ -29,6 +27,5 @@ inst/doc
 *Thumbs.db
 # .zip from occCite
 .zip
-
 # cory's rproj
 wallaceFork.Rproj
