@@ -9,7 +9,7 @@ correlations_module_ui <- function(id) {
     ## UI for reselecting variables after calculating correlations
     uiOutput(ns("VarSelect")),
     actionButton(ns("selectConfirm"), label = "Select Variables")
-  )
+    )
 }
 
 correlations_module_server <- function(input, output, session, common) {
@@ -41,41 +41,78 @@ correlations_module_server <- function(input, output, session, common) {
   # If batch is true, loop through all species
   for (sp in spLoop){
     # FUNCTION CALL ####
-    smartProgress(logger, message = "Calculating pairwise correlations", {envCorrs <- raster::layerStats(x = bgMask(), na.rm = T, stat = "pearson")
-    })
-    logger %>% writeLog("Finished calculating correlations")
+    smartProgress(logger, message = "Calculating pairwise correlations", {envCorrs <- raster::layerStats(x = spp[[sp]]$procEnvs$bgMask, na.rm = T, stat = "pearson")})
+    logger %>% writeLog(hlSpp(em(sp)), "Finished calculating correlations")
   #envCorrs <- raster::layerStats(x = bgMask(), na.rm = T, stat = "pearson")
 
     # LOAD INTO SPP ####
   spp[[sp]]$procEnvs$envCorrs <- envCorrs$`pearson correlation coefficient`
     # METADATA ####
   }
+  # Switch to Results tab to display results
+  common$update_component(tab = "Results")
+  })
+
   # Define output as a table
   output$envCorrTable <- renderText({
     # Result
-  knitr::kable(spp[[curSp()]]$procEnvs$envCorrs, format = 'html')
-  })
+    knitr::kable(spp[[curSp()]]$procEnvs$envCorrs, format = 'html')
   })
 
   ## Observe when selection is confirmed
   observeEvent(input$selectConfirm, {
     req(spp[[curSp()]]$procEnvs$envCorrs)
-    print(spp[[curSp()]]$procEnvs$bgMask)
-    print(VarSelector())
+    #print(spp[[curSp()]]$procEnvs$bgMask)
+    #print(VarSelector())
 #################################################
     ## update bg object
-     spp[[curSp()]]$procEnvs$bgMask <- spp[[curSp()]]$procEnvs$bgMask[[VarSelector()]]
+    spp[[curSp()]]$procEnvs$bgMask <- spp[[curSp()]]$procEnvs$bgMask[[VarSelector()]]
 
-    spp[[curSp()]]$procEnvs$bgExt <- spp[[curSp()]]$procEnvs$bgMask[[VarSelector()]]
-    print(spp[[curSp()]]$procEnvs$bgExt)
-    print(spp[[curSp()]]$procEnvs$bgMask)
+## spp[[curSp()]]$procEnvs$bgExt <- spp[[curSp()]]$procEnvs$bgMask[[VarSelector()]]
+    #print(spp[[sp]]$procEnvs$bgExt)
+    # Add a line to logger to identify which variables were selected
+    logger %>% writeLog(hlSpp(em(curSp())), "Selected", paste0(names(spp[[curSp()]]$procEnvs$bgMask), collapse = ", "))
+    #print(spp[[sp]]$procEnvs$bgMask)
   })
+}
+
+## Add code to update the map between species
+correlations_module_map <- function(map, common) {
+  spp <- common$spp
+  curSp <- common$curSp
+  occs <- common$occs
+
+  if (is.null(spp[[curSp()]]$procEnvs$bgExt)) {
+    map %>% clearAll() %>%
+      addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
+                       radius = 5, color = 'red', fill = TRUE, fillColor = "red",
+                       fillOpacity = 0.2, weight = 2, popup = ~pop)
+  } else {
+    map %>% clearAll() %>%
+      addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
+                       radius = 5, color = 'red', fill = TRUE, fillColor = "red",
+                       fillOpacity = 0.2, weight = 2, popup = ~pop)
+    polys <- spp[[curSp()]]$procEnvs$bgExt@polygons[[1]]@Polygons
+    if (length(polys) == 1) {
+      xy <- list(polys[[1]]@coords)
+    } else {
+      xy <- lapply(polys, function(x) x@coords)
+    }
+    for (shp in xy) {
+      map %>%
+        addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4, color = "gray",
+                    group = 'bgShp')
+    }
+    bb <- spp[[curSp()]]$procEnvs$bgExt@bbox
+    map %>% fitBounds(bb[1], bb[2], bb[3], bb[4])
+  }
 }
 
 
 correlations_module_result <- function(id) {
   ns <- NS(id)
-
+  #spp <- common$spp
+  #curSp <- common$curSp
   # Result UI as html
   htmlOutput(ns("envCorrTable"))
 }

@@ -129,6 +129,10 @@ correlations_module_server <- function(input, output, session, common) {
   })
 }
 ```
+
+```{}
+change 2 lines in server file
+```
   
     - *OPTIONAL:* A function named `correlations_module_result` that returns the UI for the
     results section of the module. This function should follow the conventions
