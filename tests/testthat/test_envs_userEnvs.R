@@ -25,7 +25,7 @@ userEnvs <- envs_userEnvs(rasPath = Path, rasName = Name)
 test_that("warning checks", {
   # input rasters have undefined coordinate reference system (CRS)
   expect_warning(envs_userEnvs(rasPath = './wc10/bio_No_Projection.tif',
-                             rasName = 'no_Projection'),'Input rasters have undefined coordinate reference system (CRS). Mapping functionality in components Visualize Model Results and Project Model will not work. If you wish to map rasters in these components, please define their projections and upload again. See guidance text in this module for more details.')
+                             rasName = 'no_Projection'),'Input rasters have undefined coordinate reference system (CRS). Mapping functionality in components Visualize Model Results and Project Model will not work. If you wish to map rasters in these components, please define their projections and upload again. See guidance text in this module for more details.',fixed=T)
   })
 
 ### test output features
