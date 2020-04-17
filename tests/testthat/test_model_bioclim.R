@@ -35,9 +35,10 @@ bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMas
 ### test output features
 test_that("output type checks", {
   # the output is a list
-  expect_is(bioclimAlg, "list")
-  # the output list has five elements
-  expect_equal(length(bioclimAlg), 5)
+  expect_is(bioclimAlg, "ENMevaluation")
+  #the output has 9 slots with correct names
+  expect_equal(length(slotNames(bioclimAlg)), 14)
+  expect_equal(slotNames(bioclimAlg),c("algorithm","tune.settings","partition.method","partition.settings","other.settings","results","results.grp","models","predictions","occs","occ.grp","bg","bg.grp","overlap"))
   # element within the output list are:
   # lists
   expect_is(bioclimAlg [c("models", "evalTbl")], "list")
