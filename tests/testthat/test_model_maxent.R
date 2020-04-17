@@ -52,7 +52,7 @@ jar <- paste(system.file(package = "dismo"), "/java/maxent.jar", sep = '')
 #wrong java file route
 jar_f <- paste(system.file(package = "dismo"), "/maxent.jar", sep = '')
 ## test if the error messages appear when they are supposed to
-test_that("error checks" {
+test_that("error checks", {
   # user has not partitioned occurrences
   expect_error(model_maxent(occs, bg, occsGrp = NULL, bgGrp, bgMsk, rms, rmsStep, fcs,
                          clampSel = TRUE, algMaxent = algoritm[1]), "Before building a model, please partition occurrences for cross-validation.")
@@ -64,8 +64,14 @@ test_that("error checks" {
 
 for (i in algoritm) {
   ### run function
+  if(i=="maxent.jar"){
+  pred.type="log"
+  }
+  else {
+  pred.type="cloglog"
+  }
   maxentAlg <- model_maxent(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, clampSel = TRUE,
-                         algMaxent = i,catEnvs=NULL,spN=occs)
+                         algMaxent = i,catEnvs=NULL,spN=occs,pred.type=pred.type)
 
   test_that("output type checks", {
     # the output is an ENMeval object
@@ -109,8 +115,8 @@ for (i in algoritm) {
   test_that("output data checks", {
     # the AUC values are between 0 and 1
     expect_false(FALSE %in% ((maxentAlg@results[c("var.diff.AUC", "avg.diff.AUC", "var.test.AUC", "avg.test.AUC",
-                                                  "train.AUC")])<1 |
+                                                  "train.AUC")])<=1 |
                                (maxentAlg@results[c("var.diff.AUC", "avg.diff.AUC", "var.test.AUC", "avg.test.AUC",
-                                                    "train.AUC")])>0))
+                                                    "train.AUC")])>=0))
   })
 }
