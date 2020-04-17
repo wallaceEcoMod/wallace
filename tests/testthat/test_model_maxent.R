@@ -71,52 +71,61 @@ for (i in algoritm) {
   pred.type="cloglog"
   }
   maxentAlg <- model_maxent(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, clampSel = TRUE,
-                         algMaxent = i,catEnvs=NULL,spN=occs,pred.type=pred.type)
+                         algMaxent = i,catEnvs=NULL,spN=occs)
 
   test_that("output type checks", {
     # the output is an ENMeval object
     expect_is(maxentAlg, "ENMevaluation")
     #the output has 9 slots with correct names
-    expect_equal(length(slotNames(maxentAlg)), 10)
-    expect_equal(slotNames(maxentAlg),c("algorithm","results","predictions","models","partition.method","occ.pts","occ.grp","bg.pts","bg.grp","overlap"))
+    expect_equal(length(slotNames(maxentAlg)), 14)
+    expect_equal(slotNames(maxentAlg),c("algorithm","tune.settings","partition.method","partition.settings",
+                                        "other.settings","results","results.grp","models",
+                                        "predictions","occs","occ.grp","bg","bg.grp","overlap"))
     # element within the evaluation are:
     # character
     expect_is(maxentAlg@algorithm, "character")
     expect_is(maxentAlg@partition.method, "character")
-    #data frame
+    # a data frame
+    expect_is(maxentAlg@tune.settings, "data.frame")
     expect_is(maxentAlg@results, "data.frame")
-    expect_is(maxentAlg@occ.pts, "data.frame")
-    expect_is(maxentAlg@bg.pts, "data.frame")
+    expect_is(maxentAlg@results.grp, "data.frame")
+    expect_is(maxentAlg@occs, "data.frame")
+    expect_is(maxentAlg@bg, "data.frame")
+    # a list
+    expect_is(maxentAlg@partition.settings, "list")
+    expect_is(maxentAlg@other.settings, "list")
+    expect_is(maxentAlg@models, "list")
     # a raster Stack
     expect_is(maxentAlg@predictions, "RasterStack")
-    #list
-    expect_is(maxentAlg@models, "list")
-    # numeric
-    expect_is(maxentAlg@occ.grp, "numeric")
-    expect_is(maxentAlg@bg.grp, "numeric")
+    # factor
+    expect_is(maxentAlg@occ.grp, "factor")
+    expect_is(maxentAlg@bg.grp, "factor")
+    # there is 1 model
     # there are as much models as feature classes * rms/rmsStep
     expect_equal(length(maxentAlg@models), (length(rms)/rmsStep)*length(fcs))
     # as many rasters as models are generated
     expect_equal(length(maxentAlg@models), raster::nlayers(maxentAlg@predictions))
     # there is a model for each combination of feature classes and regularization multiplier
-    expect_equal(as.character(sort(maxentAlg@results$settings)),
-                 paste0(sort(rep(fcs, length(rms)/rmsStep)), paste0("_", seq(rms[1], rms[2], by = rmsStep))))
+    expect_equal(sort(as.character(maxentAlg@results$tune.args)),
+                 sort(paste0(rep(fcs, length(rms)/rmsStep), paste0("_", seq(rms[1], rms[2], by = rmsStep)))))
     # evaluation table has the right amout of rows
     expect_equal(nrow(maxentAlg@results), (length(rms)/rmsStep)*length(fcs))
-    # columns name in the evaluation table are right only first 16 as the others depend on partitions
-    expect_equal(names(maxentAlg@results)[1:16], c("settings","features", "rm", "train.AUC", "avg.test.AUC", "var.test.AUC",
-                                             "avg.diff.AUC", "var.diff.AUC", "avg.test.orMTP", "var.test.orMTP", "avg.test.or10pct", "var.test.or10pct",
-                                             "AICc", "delta.AICc", "w.AIC", "parameters"))
-    # bin evaluation table has the right amout of columns
-    expect_equal(ncol(maxentAlg@results)-16, (nlevels(factor(occsGrp)))*4) ##colnumbers minus the 16 minimum
+
+    # columns name in the evaluation table are right
+    expect_equal(colnames(maxentAlg@results),c("fc","rm","tune.args","auc.train","cbi.train","auc.diff.avg",
+                                               "auc.diff.sd","auc.test.avg","auc.test.sd","or.10p.avg","or.10p.sd",
+                                               "or.mtp.avg","or.mtp.sd","AICc","delta.AICc","w.AIC","nparam"))
+
+    # bin evaluation table has the right amout of rows
+    expect_equal(nrow(maxentAlg@results.grp), (nlevels(factor(occsGrp)))*10) ##colnumbers minus the 16 minimum
   })
 
   ### test function stepts
   test_that("output data checks", {
     # the AUC values are between 0 and 1
-    expect_false(FALSE %in% ((maxentAlg@results[c("var.diff.AUC", "avg.diff.AUC", "var.test.AUC", "avg.test.AUC",
-                                                  "train.AUC")])<=1 |
-                               (maxentAlg@results[c("var.diff.AUC", "avg.diff.AUC", "var.test.AUC", "avg.test.AUC",
-                                                    "train.AUC")])>=0))
+    expect_false(FALSE %in% ((maxentAlg@results[c("auc.test.avg", "auc.test.sd", "auc.diff.avg",
+                                                  "auc.diff.sd")])<=1 |
+                               (maxentAlg@results[c("auc.test.avg", "auc.test.sd", "auc.diff.avg",
+                                                    "auc.diff.sd")])>=0))
   })
 }
