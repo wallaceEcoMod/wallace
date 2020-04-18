@@ -64,12 +64,6 @@ test_that("error checks", {
 
 for (i in algoritm) {
   ### run function
-  if(i=="maxent.jar"){
-  pred.type="log"
-  }
-  else {
-  pred.type="cloglog"
-  }
   maxentAlg <- model_maxent(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, clampSel = TRUE,
                          algMaxent = i,catEnvs=NULL,spN=occs)
 
@@ -111,11 +105,18 @@ for (i in algoritm) {
     # evaluation table has the right amout of rows
     expect_equal(nrow(maxentAlg@results), (length(rms)/rmsStep)*length(fcs))
 
-    # columns name in the evaluation table are right
+    # columns name in the evaluation table are right for each algorithm assuming block partition
+    if (i=="maxent.jar"){
     expect_equal(colnames(maxentAlg@results),c("fc","rm","tune.args","auc.train","cbi.train","auc.diff.avg",
-                                               "auc.diff.sd","auc.test.avg","auc.test.sd","or.10p.avg","or.10p.sd",
+                                               "auc.diff.sd","auc.test.avg","auc.test.sd","maxKappa.test.avg",
+                                               "maxKappa.test.sd","maxTSS.test.avg","maxTSS.test.sd","or.10p.avg","or.10p.sd",
                                                "or.mtp.avg","or.mtp.sd","AICc","delta.AICc","w.AIC","nparam"))
-
+    }
+    else if (i=="maxnet"){
+    expect_equal(colnames(maxentAlg@results),c("fc","rm","tune.args","auc.train","cbi.train","auc.diff.avg",
+                                                 "auc.diff.sd","auc.test.avg","auc.test.sd","or.10p.avg","or.10p.sd",
+                                                 "or.mtp.avg","or.mtp.sd","AICc","delta.AICc","w.AIC","nparam"))
+    }
     # bin evaluation table has the right amout of rows
     expect_equal(nrow(maxentAlg@results.grp), (nlevels(factor(occsGrp)))*10) ##colnumbers minus the 16 minimum
   })
