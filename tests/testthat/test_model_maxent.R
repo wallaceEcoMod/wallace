@@ -104,7 +104,6 @@ for (i in algoritm) {
                  sort(paste0(rep(fcs, length(rms)/rmsStep), paste0("_", seq(rms[1], rms[2], by = rmsStep)))))
     # evaluation table has the right amout of rows
     expect_equal(nrow(maxentAlg@results), (length(rms)/rmsStep)*length(fcs))
-
     # columns name in the evaluation table are right for each algorithm assuming block partition
     if (i=="maxent.jar"){
     expect_equal(colnames(maxentAlg@results),c("fc","rm","tune.args","auc.train","cbi.train","auc.diff.avg",
