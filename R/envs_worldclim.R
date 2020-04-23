@@ -35,7 +35,9 @@ envs_worldclim<- function(bcRes, bcSel, mapCntr, doBrick, logger=NULL) {
                               lon = mapCntr[1], lat = mapCntr[2])
     } else {
       wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes)
+      nam_wcbc <- names(wcbc)
       wcbc <- wcbc[[bcSel]]
+      names(wcbc) <- nam_wcbc
     }
   })
   # convert to brick for faster processing
@@ -45,17 +47,13 @@ envs_worldclim<- function(bcRes, bcSel, mapCntr, doBrick, logger=NULL) {
     })
   }
 
-  if (raster::nlayers(wcbc) == 19) {
-    bcSel <- 'bio1-19'
-  } else {
-    bcSel <- paste(names(wcbc), collapse = ", ")
-  }
-
   # change names if bio01 is bio1, and so forth
+  if (bcRes == 0.5) {
+    names(wcbc) <- gsub("_.*", "", names(wcbc))
+  }
   i <- grep('bio[0-9]$', names(wcbc))
-  editNames <- paste('bio', sapply(strsplit(names(wcbc)[i], 'bio'), function(x) x[2]), sep='0')
+  editNames <- paste('bio', sapply(strsplit(names(wcbc)[i], 'bio'), function(x) x[2]), sep = '0')
   names(wcbc)[i] <- editNames
-
   logger %>% writeLog("WorldClim bioclimatic variables ",
                       paste(names(wcbc), collapse = ", "), " at ",
                       bcRes, " arcmin resolution.")
