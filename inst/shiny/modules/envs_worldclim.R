@@ -1,16 +1,21 @@
 envs_worldclim_module_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    tags$div(title='Approximate lengths at equator: 10 arcmin = ~20 km, 5 arcmin = ~10 km, 2.5 arcmin = ~5 km, 30 arcsec = ~1 km. Exact length varies based on latitudinal position.',
-             selectInput(ns("wcRes"), label = "Select WorldClim bioclimatic variable resolution",
+    tags$div(
+      title = paste0('Approximate lengths at equator: 10 arcmin = ~20 km, ',
+                     '5 arcmin = ~10 km, 2.5 arcmin = ~5 km, 30 arcsec = ~1 km. ',
+                     'Exact length varies based on latitudinal position.'),
+             selectInput(ns("wcRes"),
+                         label = "Select WorldClim bioclimatic variable resolution",
                          choices = list("Select resolution" = "",
                                         "30 arcsec" = 0.5,
                                         "2.5 arcmin" = 2.5,
                                         "5 arcmin" = 5,
                                         "10 arcmin" = 10), selected = 10)), # Check default (No selected parameter)
-    checkboxInput(ns("doBrick"), label = "Save to memory for faster processing?", value = T), # Check default (value = FALSE)
-    checkboxInput(ns("bcSelChoice"), label = "Specify variables to use in analysis?",
-                  value = TRUE),
+    checkboxInput(ns("doBrick"), label = "Save to memory for faster processing?",
+                  value = TRUE), # Check default (value = FALSE)
+    checkboxInput(ns("bcSelChoice"), value = TRUE,
+                  label = "Specify variables to use in analysis?"),
     conditionalPanel(paste0("input['", ns("bcSelChoice"), "']"),
                      shinyWidgets::pickerInput(
                        "bcSel",
@@ -19,9 +24,17 @@ envs_worldclim_module_ui <- function(id) {
                        multiple = TRUE,
                        selected = paste0('bio', 1:19),
                        options = list(`actions-box` = TRUE))),
-    checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE), # Check default (value = FALSE)
-    strong("Using map center coordinates as reference for tile download."),
-    textOutput(ns("ctrLatLon")), br(),
+    conditionalPanel(
+      sprintf("input['%s'] != '0.5'", ns("wcRes")),
+      checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE) # Check default (value = FALSE)
+    ),
+    conditionalPanel(
+      sprintf("input['%s'] == '0.5'", ns("wcRes")),
+      em("Batch option not available for 30 arcsec resolution."), br(),
+      strong("Using map center coordinates as reference for tile download."),
+      textOutput(ns("ctrLatLon"))
+    ),
+    br(),
     actionButton(ns("goEnvData"), "Load Env Data")
   )
 }
@@ -45,14 +58,21 @@ envs_worldclim_module_server <- function(input, output, session, common) {
       return()
     }
 
-    # FUNCTION CALL ####
-    wcbc <- envs_worldclim(input$wcRes, bcSel(), mapCntr(), input$doBrick, logger)
-    req(wcbc)
+    if (input$wcRes != 0.5) {
+      # FUNCTION CALL ####
+      wcbc <- envs_worldclim(input$wcRes, bcSel(), doBrick = input$doBrick,
+                             logger = logger)
+      req(wcbc)
+      envs.global[["wcbc"]] <- wcbc
+    } else {
+      wcbc <- envs_worldclim(input$wcRes, bcSel(), mapCntr(), input$doBrick, logger)
+      req(wcbc)
+      envs.global[[paste0("wcbc_", curSp())]] <- wcbc
+    }
 
-    envs.global[["wcbc"]] <- wcbc
 
     # loop over all species if batch is on
-    if (input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
+    if (input$batch == FALSE | input$wcRes == 0.5) spLoop <- curSp() else spLoop <- allSp()
 
     # PROCESSING ####
     for (sp in spLoop) {
@@ -62,7 +82,7 @@ envs_worldclim_module_server <- function(input, output, session, common) {
         occsEnvsVals <- as.data.frame(raster::extract(wcbc, occs.xy))
       })
       # remove occurrence records with NA environmental values
-      spp[[sp]]$occs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, logger)
+      spp[[sp]]$occs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, curSp(), logger)
       # also remove variable value rows with NA environmental values
       occsEnvsVals <- na.omit(occsEnvsVals)
 
@@ -70,7 +90,12 @@ envs_worldclim_module_server <- function(input, output, session, common) {
 
       # LOAD INTO SPP ####
       # add reference to WorldClim bioclim data
-      spp[[sp]]$envs <- "wcbc"
+      if (raster::res(wcbc)[] > 0.009) {
+        spp[[sp]]$envs <- "wcbc"
+      } else {
+        spp[[sp]]$envs <- paste0("wcbc_", curSp())
+      }
+
       # add columns for env variable values for each occurrence record
       spp[[sp]]$occs <- cbind(spp[[sp]]$occs, occsEnvsVals)
 

@@ -37,6 +37,6 @@ test_that("output type checks", {
   # the resolution is right
   expect_equal((raster::res(arcmin10)), c(10/60, 10/60))
   # the names are right
-  expect_equal(names(arcmin10), c("bio1.1", "bio1.2", "bio1.3", "bio1.4", "bio1.5"))
+  expect_equal(names(arcmin10), c("bio01", "bio02", "bio03", "bio04", "bio05"))
   })
 
