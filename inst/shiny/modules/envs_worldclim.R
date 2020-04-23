@@ -39,9 +39,9 @@ envs_worldclim_module_server <- function(input, output, session, common) {
 
   observeEvent(input$goEnvData, {
     # ERRORS ####
-    if (is.null(occs())) {
+    if (is.null(curSp())) {
       logger %>% writeLog(type = 'error', "Before obtaining environmental variables,
-                             obtain occurrence data in component 1.")
+                             obtain occurrence data in 'Occ Data' component.")
       return()
     }
 
