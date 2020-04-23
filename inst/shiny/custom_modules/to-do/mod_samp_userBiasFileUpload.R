@@ -36,7 +36,7 @@ userBiasFile_MOD <- function(input, output, session) {
         occsBiasVals <- as.data.frame(raster::extract(biasLayer, spp[[sp]]$occs[c('longitude', 'latitude')]))
       })
       # remove occurrence records with NA environmental values
-      spp[[sp]]$occs <- remEnvsValsNA(spp[[sp]]$occs, occsBiasVals, shinyLogs)
+      spp[[sp]]$occs <- remEnvsValsNA(spp[[sp]]$occs, occsBiasVals, curSp(), shinyLogs)
       # also remove variable value rows with NA environmental values
       occsEnvsVals <- na.omit(occsBiasVals)
 

@@ -52,7 +52,7 @@ envs_ecoclimate_module_server <- function(input, output, session, common) {
         occsEnvsVals <- as.data.frame(raster::extract(ecoClims, spp[[sp]]$occs[c('longitude', 'latitude')]))
       })
       # remove occurrences with NA environmental values
-      spp[[sp]]$occs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, logger)
+      spp[[sp]]$occs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, curSp(), logger)
 
       # LOAD INTO SPP ####
       spp[[sp]]$envs <- ecoClims

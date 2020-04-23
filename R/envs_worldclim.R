@@ -23,7 +23,7 @@
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 
-envs_worldclim<- function(bcRes, bcSel, mapCntr, doBrick, logger=NULL) {
+envs_worldclim <- function(bcRes, bcSel, mapCntr, doBrick, logger = NULL) {
   if(bcRes == '') {
     logger %>% writeLog(type = 'error', 'Select a raster resolution.')
     return()
