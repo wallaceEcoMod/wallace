@@ -7,9 +7,10 @@ User CSV path with occurrence data. If the CSV file is not in the current worksp
 occs_path <- ""
 occs_path <- file.path(occs_path, "{{userCSV_rmd}}")
 # get a list of species occurrence data
-userOccs_{{spAbr}} <- occs_userOccs(txtPath = occs_path, 
-                                    txtName = "{{userCSV_rmd}}", 
-                                    txtSep = "{{sepCSV_rmd}}", 
-                                    txtDec = "{{decCSV_rmd}}")
+userOccs_{{spAbr}} <- occs_userOccs(
+  txtPath = occs_path, 
+  txtName = "{{userCSV_rmd}}", 
+  txtSep = "{{sepCSV_rmd}}", 
+  txtDec = "{{decCSV_rmd}}")
 occs_{{spAbr}} <- userOccs_{{spAbr}}${{sp}}$cleaned
 ```
