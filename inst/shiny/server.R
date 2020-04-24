@@ -115,6 +115,7 @@ function(input, output, session) {
     shinyjs::toggleState("dlOccs", !is.null(occs()))
     shinyjs::toggleState("dlAllOccs", length(allSp()) > 1)
     shinyjs::toggleState("dlRMD", !is.null(occs()))
+    shinyjs::toggleState("dlGlobalEnvs", !is.null(spp[[curSp()]]$envs))
     shinyjs::toggleState("dlProcOccs",
                          !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords) |
                            !is.null(spp[[curSp()]]$procOccs$occsThin) |
@@ -253,6 +254,32 @@ function(input, output, session) {
     req(envs())
     envs()
   })
+
+  output$dlGlobalEnvs <- downloadHandler(
+    filename = function() paste0(spp[[curSp()]]$envs, '_envs.zip'),
+    content = function(file) {
+      withProgress(
+        message = paste0("Preparing ", paste0(spp[[curSp()]]$envs, '_envs.zip ...')), {
+        tmpdir <- tempdir()
+        owd <- setwd(tmpdir)
+        on.exit(setwd(owd))
+        type <- input$globalEnvsFileType
+        nm <- names(envs.global[[spp[[curSp()]]$envs]])
+
+        raster::writeRaster(envs.global[[spp[[curSp()]]$envs]], nm, bylayer = TRUE,
+                            format = type, overwrite = TRUE)
+        ext <- switch(type, raster = 'grd', ascii = 'asc', GTiff = 'tif')
+
+        fs <- paste0(nm, '.', ext)
+        if (ext == 'grd') {
+          fs <- c(fs, paste0(nm, '.gri'))
+        }
+        zip::zipr(zipfile = file, files = fs)
+        if (file.exists(paste0(file, ".zip"))) file.rename(paste0(file, ".zip"), file)
+      })
+    },
+    contentType = "application/zip"
+  )
 
   ########################################### #
   ### COMPONENT: PROCESS OCCURRENCE DATA ####

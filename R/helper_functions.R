@@ -110,7 +110,8 @@ mapBgPolys <- function(map, bgShpXY) {
 
 #' @export
 clearAll <- function(map) {
-  map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% clearControls()
+  map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>%
+    clearControls() %>% removeLayersControl()
 }
 
 # zoom to occ pts
@@ -204,20 +205,24 @@ popUpContent <- function(x) {
 # COMP 3 ####
 ####################### #
 #' @export
-remEnvsValsNA <- function(occs, occsEnvsVals, logs) {
+remEnvsValsNA <- function(occs, occsEnvsVals, sppName, logger) {
   withProgress(message = "Checking for points with NA values...", {
     na.rowNums <- which(rowSums(is.na(occsEnvsVals)) > 1)
-
     if (length(na.rowNums) == length(occsEnvsVals)) {
-      logs %>% writeLog(type = 'error', 'No localities overlay with environmental predictors.
-                        All localities may be marine -- please redo with terrestrial occurrences.')
+      logger %>% writeLog(
+        type = 'error',
+        hlSpp(sppName), paste0('No localities overlay with environmental ',
+        'predictors. All localities may be marine -- please redo with ',
+        'terrestrial occurrences.')
+      )
       return()
     }
-
     if (length(na.rowNums) > 0) {
       occs.notNA <- occs[-na.rowNums,]
-      logs %>% writeLog(type = 'warning', 'Removed records without environmental values with occIDs: ',
-                        paste(occs[na.rowNums,]$occID, collapse=', '), ".")
+      logger %>% writeLog(
+        type = 'warning',
+        hlSpp(sppName), 'Removed records without environmental values with occIDs: ',
+        paste(occs[na.rowNums,]$occID, collapse=', '), ".")
       return(occs.notNA)
     }
 

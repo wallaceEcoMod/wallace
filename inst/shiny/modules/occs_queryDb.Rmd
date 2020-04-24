@@ -10,21 +10,23 @@ You searched the `r "{{occDb_rmd}}"` database for *`r "{{spName}}"`*, limited to
 
 ```{r, echo = {{occs_queryDb_knit & !occs_citation_knit}}, include = {{occs_queryDb_knit & !occs_citation_knit}}}
 # Query selected database for occurrence records
-queryDb_{{spAbr}} <- occs_queryDb(spNames = "{{spName}}", 
-                               occDb = "{{occDb_rmd}}", 
-                               occNum = {{occNum_rmd}})
+queryDb_{{spAbr}} <- occs_queryDb(
+  spNames = "{{spName}}", 
+  occDb = "{{occDb_rmd}}", 
+  occNum = {{occNum_rmd}})
 occs_{{spAbr}} <- queryDb_{{spAbr}}${{sp}}$cleaned
 ```
 
 ```{r, echo = {{occs_queryDb_knit & occs_citation_knit}}, include = {{occs_queryDb_knit & occs_citation_knit}}}
 # Query selected database for occurrence records
-queryDb_{{spAbr}} <- occs_queryDb(spNames = "{{spName}}", 
-                               occDb = "{{occDb_rmd}}", 
-                               doCitations = {{doCitations_rmd}},
-                               gbifUser = "{{gbifUser_rmd}}", 
-                               gbifEmail = "{{gbifEmail_rmd}}",
-                               # Please type your GBIF password (**)
-                               gbifPW = "")
+queryDb_{{spAbr}} <- occs_queryDb(
+  spNames = "{{spName}}", 
+  occDb = "{{occDb_rmd}}", 
+  doCitations = {{doCitations_rmd}},
+  gbifUser = "{{gbifUser_rmd}}", 
+  gbifEmail = "{{gbifEmail_rmd}}",
+  # Please type your GBIF password (**)
+  gbifPW = "")
 occs_{{spAbr}} <- queryDb_{{spAbr}}${{sp}}$cleaned
 # Print DOI and date of your search (**)
 queryDb_{{spAbr}}${{sp}}$citation

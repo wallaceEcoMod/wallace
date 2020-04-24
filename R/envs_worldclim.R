@@ -5,7 +5,7 @@
 #' See Examples.
 #'
 #' @param bcRes numeric resolution of the climatic layers
-#' @param bcSel list of boolean data. selected variables
+#' @param bcSel chacter vector with bionames selected
 #'
 # @keywords
 #'
@@ -23,38 +23,32 @@
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 
-envs_worldclim<- function(bcRes, bcSel, mapCntr, doBrick, logger=NULL) {
+envs_worldclim <- function(bcRes, bcSel, mapCntr, doBrick, logger = NULL) {
   if(bcRes == '') {
     logger %>% writeLog(type = 'error', 'Select a raster resolution.')
     return()
   }
 
   smartProgress(logger, message = "Retrieving WorldClim data...", {
-    if (bcRes == 0.5) {
       wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes,
                               lon = mapCntr[1], lat = mapCntr[2])
-    } else {
-      wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes)
+      # change names if bio01 is bio1, and so forth
+      if (bcRes == 0.5) {
+        names(wcbc) <- gsub("_.*", "", names(wcbc))
+      }
+      i <- grep('bio[0-9]$', names(wcbc))
+      editNames <- paste('bio', sapply(strsplit(names(wcbc)[i], 'bio'), function(x) x[2]), sep = '0')
+      names(wcbc)[i] <- editNames
+
       wcbc <- wcbc[[bcSel]]
-    }
   })
+
   # convert to brick for faster processing
   if(doBrick == TRUE) {
     smartProgress(logger, message = "Converting to RasterBrick for faster processing...", {
       wcbc <- raster::brick(wcbc)
     })
   }
-
-  if (raster::nlayers(wcbc) == 19) {
-    bcSel <- 'bio1-19'
-  } else {
-    bcSel <- paste(names(wcbc), collapse = ", ")
-  }
-
-  # change names if bio01 is bio1, and so forth
-  i <- grep('bio[0-9]$', names(wcbc))
-  editNames <- paste('bio', sapply(strsplit(names(wcbc)[i], 'bio'), function(x) x[2]), sep='0')
-  names(wcbc)[i] <- editNames
 
   logger %>% writeLog("WorldClim bioclimatic variables ",
                       paste(names(wcbc), collapse = ", "), " at ",

@@ -14,8 +14,7 @@ source("test_helper_functions.R")
 ## resolution
 bcRes <- 10 # (10 arcmin)
 ## variables to download
-envar <- list(TRUE, TRUE,TRUE,TRUE,TRUE)
-
+envar <- c('bio01', 'bio02', 'bio03', 'bio10', 'bio11')
 
 ### run function
 arcmin10 <- envs_worldclim(bcRes, bcSel= envar,doBrick=T)
@@ -37,6 +36,6 @@ test_that("output type checks", {
   # the resolution is right
   expect_equal((raster::res(arcmin10)), c(10/60, 10/60))
   # the names are right
-  expect_equal(names(arcmin10), c("bio1.1", "bio1.2", "bio1.3", "bio1.4", "bio1.5"))
+  expect_equal(names(arcmin10), c("bio01", "bio02", "bio03", "bio10", "bio11"))
   })
 

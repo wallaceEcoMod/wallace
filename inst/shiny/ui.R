@@ -337,7 +337,13 @@ tagList(
                 "input.tabs == 'envs'",
                 br(),
                 fluidRow(
-                  column(3, h5("No download data available in this component"))
+                  column(3, h5("Download environmental variables (Select download file type)")),
+                  column(2, selectInput('globalEnvsFileType',
+                                        label = NULL,
+                                        choices = list("GeoTIFF" = 'GTiff',
+                                                       "GRD" = 'raster',
+                                                       "ASCII" = 'ascii'))),
+                  column(2, shinyjs::disabled(downloadButton('dlGlobalEnvs', "ZIP file")))
                 )
               ),
               conditionalPanel(

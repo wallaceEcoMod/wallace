@@ -18,9 +18,9 @@ envs_userEnvs_module_server <- function(input, output, session, common) {
 
   observeEvent(input$goUserEnvs, {
     # ERRORS ####
-    if (is.null(occs())) {
+    if (is.null(curSp())) {
       logger %>% writeLog(type = 'error', "Before obtaining environmental variables,
-                             obtain occurrence data in component 1.")
+                             obtain occurrence data in 'Occ Data' component.")
       return()
     }
     if (is.null(input$userEnvs)) {
@@ -46,7 +46,7 @@ envs_userEnvs_module_server <- function(input, output, session, common) {
                                         spp[[sp]]$occs[c('longitude', 'latitude')]))
       })
       # remove occurrence records with NA environmental values
-      spp[[sp]]$occs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, logger)
+      spp[[sp]]$occs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, curSp(), logger)
       # also remove variable value rows with NA environmental values
       occsEnvsVals <- na.omit(occsEnvsVals)
 
