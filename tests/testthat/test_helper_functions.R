@@ -168,12 +168,13 @@ mapBgPolys <- function(map, bgShpXY) {
   for (shp in bgShpXY) {
     map %>%
       addPolygons(lng = shp[,1], lat = shp[,2], fill = FALSE,
-                  weight = 4, color="red", group='proj')
+                  weight = 4, color = "red", group = 'proj')
   }
 }
 
 clearAll <- function(map) {
-  map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% clearControls()
+  map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>%
+    clearControls() %>% removeLayersControl()
 }
 
 # zoom to occ pts

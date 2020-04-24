@@ -110,7 +110,8 @@ mapBgPolys <- function(map, bgShpXY) {
 
 #' @export
 clearAll <- function(map) {
-  map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>% clearControls()
+  map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>%
+    clearControls() %>% removeLayersControl()
 }
 
 # zoom to occ pts

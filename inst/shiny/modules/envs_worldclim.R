@@ -30,8 +30,12 @@ envs_worldclim_module_ui <- function(id) {
     ),
     conditionalPanel(
       sprintf("input['%s'] == '0.5'", ns("wcRes")),
-      em("Batch option not available for 30 arcsec resolution."), br(),
-      strong("Using map center coordinates as reference for tile download."),
+      em("Batch option not available for 30 arcsec resolution."), br(), br(),
+      strong(
+        paste0("Using map center coordinates as reference for tile download. ",
+               "You can viualize the tile in the bottomleft corner on ",
+               "the map. All occurrence outside of the purple polygon will ",
+               "be removed (**)")), br(), br(),
       textOutput(ns("ctrLatLon"))
     ),
     br(),
@@ -90,7 +94,7 @@ envs_worldclim_module_server <- function(input, output, session, common) {
 
       # LOAD INTO SPP ####
       # add reference to WorldClim bioclim data
-      if (raster::res(wcbc)[] > 0.009) {
+      if (raster::res(wcbc)[1] > 0.009) {
         spp[[sp]]$envs <- "wcbc"
       } else {
         spp[[sp]]$envs <- paste0("wcbc_", curSp())
@@ -149,10 +153,21 @@ envs_worldclim_module_result <- function(id) {
 envs_worldclim_module_map <- function(map, common) {
   # Map logic
   occs <- common$occs
+  mapCntr <- common$mapCntr
+  lon_tile <- seq(-180, 180, 30)
+  lat_tile <- seq(-60, 90, 30)
   map %>% clearAll() %>%
     addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                      radius = 5, color = 'red', fill = TRUE, fillColor = "red",
-                     fillOpacity = 0.2, weight = 2, popup = ~pop)
+                     fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
+    addRectangles(lng1 = lon_tile[sum(lon_tile <= mapCntr()[1])],
+                  lng2 = lon_tile[sum(lon_tile <= mapCntr()[1])] + 30,
+                  lat1 = lat_tile[sum(lat_tile <= mapCntr()[2])],
+                  lat2 = lat_tile[sum(lat_tile <= mapCntr()[2])] + 30,
+                  color = "purple", group = "30 arcsec tile") %>%
+    hideGroup("30 arcsec tile") %>% zoom2Occs(occs()) %>%
+    addLayersControl(overlayGroups = "30 arcsec tile", position = "bottomleft",
+                     options = layersControlOptions(collapsed = FALSE))
 }
 
 envs_worldclim_module_rmd <- function(species) {
