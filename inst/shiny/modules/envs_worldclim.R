@@ -31,7 +31,7 @@ envs_worldclim_module_ui <- function(id) {
       em("Batch option not available for 30 arcsec resolution."), br(), br(),
       strong(
         paste0("Using map center coordinates as reference for tile download. ",
-               "You can viualize the tile in the bottomleft corner on ",
+               "You can vizualize the tile in the bottomleft corner on ",
                "the map. All occurrence outside of the purple polygon will ",
                "be removed (**)")), br(), br(),
       textOutput(ns("ctrLatLon"))
@@ -132,11 +132,15 @@ envs_worldclim_module_server <- function(input, output, session, common) {
   return(list(
     save = function() {
       list(
-        wcRes = input$wcRes
+        wcRes = input$wcRes,
+        wcBrick = input$doBrick,
+        bcSel = bcSel()
       )
     },
     load = function(state) {
       updateSelectInput(session, "wcRes", selected = state$wcRes)
+      updateCheckboxInput(session, "doBrick", value = state$doBrick)
+      shinyWidgets::updatePickerInput(session, "bcSel", selected = state$bcSel)
     }
   ))
 }
