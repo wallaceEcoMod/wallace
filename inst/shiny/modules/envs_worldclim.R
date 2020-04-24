@@ -14,16 +14,14 @@ envs_worldclim_module_ui <- function(id) {
                                         "10 arcmin" = 10), selected = 10)), # Check default (No selected parameter)
     checkboxInput(ns("doBrick"), label = "Save to memory for faster processing?",
                   value = TRUE), # Check default (value = FALSE)
-    checkboxInput(ns("bcSelChoice"), value = TRUE,
-                  label = "Specify variables to use in analysis?"),
-    conditionalPanel(paste0("input['", ns("bcSelChoice"), "']"),
-                     shinyWidgets::pickerInput(
-                       "bcSel",
-                       label = "Select bioclim variables (**)",
-                       choices = setNames(as.list(paste0('bio', 1:19)), paste0('bio', 1:19)),
-                       multiple = TRUE,
-                       selected = paste0('bio', 1:19),
-                       options = list(`actions-box` = TRUE))),
+    shinyWidgets::pickerInput(
+      "bcSel",
+      label = "Select bioclim variables (**)",
+      choices = setNames(as.list(paste0('bio', sprintf("%02d", 1:19))),
+                         paste0('bio', sprintf("%02d", 1:19))),
+      multiple = TRUE,
+      selected = paste0('bio', sprintf("%02d", 1:19)),
+      options = list(`actions-box` = TRUE)),
     conditionalPanel(
       sprintf("input['%s'] != '0.5'", ns("wcRes")),
       checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE) # Check default (value = FALSE)
@@ -113,7 +111,7 @@ envs_worldclim_module_server <- function(input, output, session, common) {
       spp[[sp]]$rmm$data$environment$projection <- as.character(raster::crs(wcbc))
 
       spp[[sp]]$rmd$wcRes <- input$wcRes
-      spp[[sp]]$rmd$bcSel <- input$bcSel
+      spp[[sp]]$rmd$bcSel <- bcSel()
       spp[[sp]]$rmd$mapCntr <- mapCntr()
       spp[[sp]]$rmd$wcBrick <- input$doBrick
     }
@@ -173,11 +171,11 @@ envs_worldclim_module_map <- function(map, common) {
 envs_worldclim_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    envs_worldclim_knit = !is.null(species$rmm$wallaceSettings$wcRes),
-    wcRes = species$rmm$wallaceSettings$wcRes,
-    bcSel = printVecAsis(species$rmm$wallaceSettings$bcSel),
-    mapCntr = printVecAsis(species$rmm$wallaceSettings$mapCntr),
-    wcBrick = species$rmm$wallaceSettings$wcBrick
+    envs_worldclim_knit = !is.null(species$rmd$wcRes),
+    wcRes_rmd = species$rmd$wcRes,
+    bcSel_rmd = printVecAsis(species$rmd$bcSel),
+    mapCntr_rmd = printVecAsis(species$rmd$mapCntr),
+    wcBrick_rmd = species$rmd$wcBrick
   )
 }
 
