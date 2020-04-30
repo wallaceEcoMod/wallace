@@ -14,7 +14,7 @@ source("test_helper_functions.R")
 ## resolution
 bcRes <- 10 # (10 arcmin)
 ## variables to download
-envar <- c('bio01', 'bio02', 'bio03', 'bio10', 'bio11')
+envar <- c('bio1', 'bio2', 'bio3', 'bio10', 'bio11')
 
 ### run function
 arcmin10 <- envs_worldclim(bcRes, bcSel= envar,doBrick=T)
