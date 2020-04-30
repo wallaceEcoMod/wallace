@@ -1,5 +1,5 @@
 ```{asis, echo = {{correlations_knit}}, eval = {{correlations_knit}}, include = {{correlations_knit}}}
-Description of what the code will do
+Calculate pearsons correlations and select vars
 ```
 
 ```{r, echo = {{correlations_knit}}, include = {{correlations_knit}}}

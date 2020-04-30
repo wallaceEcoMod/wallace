@@ -34,23 +34,27 @@ correlations_module_server <- function(input, output, session, common) {
 
   ## When action button defined in the ui function above is clicked, do the following:
   observeEvent(input$runCorrs, {
+    # Check that the background has already been selected
     req(bgMask())
-    # WARNING ####
-  # Set up if you want batch to be allowed
-  if (input$batch1 == TRUE) spLoop <- allSp() else spLoop <- curSp()
-  # If batch is true, loop through all species
-  for (sp in spLoop){
-    # FUNCTION CALL ####
-    smartProgress(logger, message = "Calculating pairwise correlations", {envCorrs <- raster::layerStats(x = spp[[sp]]$procEnvs$bgMask, na.rm = T, stat = "pearson")})
-    logger %>% writeLog(hlSpp(em(sp)), "Finished calculating correlations")
-  #envCorrs <- raster::layerStats(x = bgMask(), na.rm = T, stat = "pearson")
 
-    # LOAD INTO SPP ####
-  spp[[sp]]$procEnvs$envCorrs <- envCorrs$`pearson correlation coefficient`
-    # METADATA ####
-  }
-  # Switch to Results tab to display results
-  common$update_component(tab = "Results")
+    # Set up if you want batch to be allowed
+    # allSp() is the list of species selected
+    # curSp() refers to the currently selected species in the GUI
+    if (input$batch1 == TRUE) spLoop <- allSp() else spLoop <- curSp()
+    # If batch is true, loop through all species (allSp())
+    for (sp in spLoop){
+      # FUNCTION CALL ####
+      smartProgress(logger, message = "Calculating pairwise correlations", {envCorrs <- raster::layerStats(x = spp[[sp]]$procEnvs$bgMask, na.rm = T, stat = "pearson")})
+      # To update the log window
+      logger %>% writeLog(hlSpp(em(sp)), "Finished calculating correlations")
+      #envCorrs <- raster::layerStats(x = bgMask(), na.rm = T, stat = "pearson")
+
+      # LOAD INTO SPP ####
+      spp[[sp]]$procEnvs$envCorrs <- envCorrs$`pearson correlation coefficient`
+      # METADATA ####
+    }
+    # Switch to Results tab to display results
+    common$update_component(tab = "Results")
   })
 
   # Define output as a table
@@ -62,17 +66,13 @@ correlations_module_server <- function(input, output, session, common) {
   ## Observe when selection is confirmed
   observeEvent(input$selectConfirm, {
     req(spp[[curSp()]]$procEnvs$envCorrs)
-    #print(spp[[curSp()]]$procEnvs$bgMask)
-    #print(VarSelector())
-#################################################
+
     ## update bg object
     spp[[curSp()]]$procEnvs$bgMask <- spp[[curSp()]]$procEnvs$bgMask[[VarSelector()]]
 
-## spp[[curSp()]]$procEnvs$bgExt <- spp[[curSp()]]$procEnvs$bgMask[[VarSelector()]]
-    #print(spp[[sp]]$procEnvs$bgExt)
     # Add a line to logger to identify which variables were selected
-    logger %>% writeLog(hlSpp(em(curSp())), "Selected", paste0(names(spp[[curSp()]]$procEnvs$bgMask), collapse = ", "))
-    #print(spp[[sp]]$procEnvs$bgMask)
+    # hlSpp() prints the species name in green, bold, and italics
+    logger %>% writeLog(hlSpp(em(curSp())), "Selected: ", paste0(names(spp[[curSp()]]$procEnvs$bgMask), collapse = ", "))
   })
 }
 
@@ -120,7 +120,7 @@ correlations_module_result <- function(id) {
 correlations_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    correlations_knit = FALSE
+    # correlations_knit = !is.null(spp[[sp]]$procEnvs$envCorrs),
     # correlations_knit = species$rmm$code$wallaceSettings$someFlag,
     # var1 = species$rmm$code$wallaceSettings$someSetting1,
     # var2 = species$rmm$code$wallaceSettings$someSetting2

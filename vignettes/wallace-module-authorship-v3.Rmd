@@ -25,11 +25,11 @@ To begin, use the `wallace::create_module()` function to generate the template f
     - save, boolean; will the module save custom data when the user saves the current session?
 
 ```{r, eval = F}
-wallace::create_module(id = "correlations", dir = "./inst/shiny/modules", map = F, result = T, rmd = F, save = F)
+wallace::create_module(id = "correlations", dir = "./inst/shiny/custom_modules", map = F, result = T, rmd = F, save = F)
 ```
 
-### Edit the four new files created in the ./modules directory
-Four new files will be created in the ./modules directory: correlations.yml, correlations.md, correlations.Rmd, correlations.R.
+### Edit the four new files created in the ./custom_modules directory
+Four new files will be created in the ./custom_modules directory: correlations.yml, correlations.md, correlations.R and optionally correlations.Rmd.
 
 2. Open the YAML file named `correlations.yml` and set the following parameters:
 
@@ -84,8 +84,11 @@ correlations_module_ui <- function(id) {
     ## Add a checkbox for batch processing (more than 1 species)
     checkboxInput(ns("batch1"), label = strong("Batch"), value = T),
     ## Give the action button a name and a label.
-    actionButton(ns("runCorrs"), label = "Calculate correlations")
-  )
+    actionButton(ns("runCorrs"), label = "Calculate correlations"),
+    ## UI for reselecting variables after calculating correlations
+    uiOutput(ns("VarSelect")),
+    actionButton(ns("selectConfirm"), label = "Select Variables")
+    )
 }
 ```
     
@@ -93,6 +96,7 @@ correlations_module_ui <- function(id) {
     This function should follow the conventions for general Shiny modules - it
     should take `input`, `output`, and `session` as parameters, as well as one
     extra parameter named `common`.
+    
 The `common` variable supplied to a module's server and map function is a list containing:
   - The following reactive variables that can be used by the module: logger, spp, curSp, allSp, curEnv, curModel, component, module, envs.global, mapCntr
   - The following reactives that are shortcuts to reactives inside spp: occs, envs, bg, bgExt, bgMask, evalOut, mapPred, mapProj, rmm
@@ -103,45 +107,92 @@ The `common` variable supplied to a module's server and map function is a list c
 correlations_module_server <- function(input, output, session, common) {
   ## Define common objects that will be used in this function
   logger <- common$logger
-  spp <- common$spp
-  allSp <- common$allSp
-  curSp <- common$curSp
+  spp    <- common$spp
+  allSp  <- common$allSp
+  curSp  <- common$curSp
   bgMask <- common$bgMask # raster stack after masking by background
+  VarSelector <- common$VarSelector
+
+  output$VarSelect <- renderUI({
+    req(bgMask())
+    shinyWidgets::pickerInput(
+      "VarSelector",
+      label = "Select variables (**)",
+      choices = setNames(as.list(names(bgMask())), names(bgMask())),
+      multiple = TRUE,
+      selected = names(bgMask()),
+      options = list(`actions-box` = TRUE))
+  })
 
   ## When action button defined in the ui function above is clicked, do the following:
   observeEvent(input$runCorrs, {
-    # WARNING ####
-  # Set up if you want batch to be allowed
-  if (input$batch1 == TRUE) spLoop <- allSp() else spLoop <- curSp()
-  # If batch is true, loop through all species
-  for (sp in spLoop){
+    # Check that the background has already been selected
+    req(bgMask())
+    
+    # Set up if you want batch to be allowed
+      # allSp() is the list of species selected
+      # curSp() refers to the currently selected species in the GUI
+    if (input$batch1 == TRUE) spLoop <- allSp() else spLoop <- curSp()
+    # If batch is true, loop through all species (allSp())
+    for (sp in spLoop){
     # FUNCTION CALL ####
-  envCorrs <- raster::layerStats(x = bgMask(), na.rm = T, stat = "pearson")
+      smartProgress(logger, message = "Calculating pairwise correlations", {envCorrs <- raster::layerStats(x = spp[[sp]]$procEnvs$bgMask, na.rm = T, stat = "pearson")})
+    # To update the log window
+    logger %>% writeLog(hlSpp(em(sp)), "Finished calculating correlations")
+    #envCorrs <- raster::layerStats(x = bgMask(), na.rm = T, stat = "pearson")
+
     # LOAD INTO SPP ####
-  spp[[sp]]$procEnvs$envCorrs <- envCorrs[[1]]
+  spp[[sp]]$procEnvs$envCorrs <- envCorrs$`pearson correlation coefficient`
     # METADATA ####
   }
-  # Define output as a table 
+  # Switch to Results tab to display results
+  common$update_component(tab = "Results")
+  })
+
+  # Define output as a table
   output$envCorrTable <- renderText({
     # Result
-  knitr::kable(spp[[sp]]$procEnvs$envCorrs, format = 'html')
+    knitr::kable(spp[[curSp()]]$procEnvs$envCorrs, format = 'html')
   })
+
+  ## Observe when selection is confirmed
+  observeEvent(input$selectConfirm, {
+    req(spp[[curSp()]]$procEnvs$envCorrs)
+
+    ## update bg object
+    spp[[curSp()]]$procEnvs$bgMask <- spp[[curSp()]]$procEnvs$bgMask[[VarSelector()]]
+
+    # Add a line to logger to identify which variables were selected
+        # hlSpp() prints the species name in green, bold, and italics
+    logger %>% writeLog(hlSpp(em(curSp())), "Selected: ", paste0(names(spp[[curSp()]]$procEnvs$bgMask), collapse = ", "))
   })
 }
 ```
 
-```{}
-change 2 lines in server file
+Two lines in the file server.R need to be updated:
+The component controls (here, COMPONENT: OBTAIN ENVIRONMENTAL DATA), and  to create a shortcut to values nested inside common list (METADATA FUNCTIONALITY).
+
+The server.R file is found at **./inst/shiny/server.R**
+```{r, eval = F}
+VarSelector <- reactive(input$VarSelector)
+```
+
+```{r, eval = F}
+VarSelector = VarSelector,
 ```
   
     - *OPTIONAL:* A function named `correlations_module_result` that returns the UI for the
     results section of the module. This function should follow the conventions
     for Shiny modules - it should take a single argument, and use it to namespace
     all its UI. Any outputs need to be rendered in the `<id>_module_server` function.
+    
+    We call the results function "envCorrTable" from the server function, above.
+    
 ```{r, eval = F}
 correlations_module_result <- function(id) {
   ns <- NS(id)
-
+  #spp <- common$spp
+  #curSp <- common$curSp
   # Result UI as html
   htmlOutput(ns("envCorrTable"))
 }
@@ -181,5 +232,7 @@ function metioned above. Two variables are always made automatically available
 for these Rmd code chunks: `{{sp}}` is the species ID and `{{spName}}` is the
 species' scientific name. 
 
-## 6. After creating a module, you need to tell the Wallace app to use your new module. You do this by calling the `wallace::register_module(config_file)` function.
-
+## 6. After creating a module, you need to tell the Wallace app to use your new module. You do this by calling the function
+```{r}
+wallace::register_module(register_module("./inst/shiny/custom_modules/correlations.yml"))
+```
