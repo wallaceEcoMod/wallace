@@ -97,7 +97,7 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
   occsXY <-  occsOrig[!is.na(occsOrig$longitude) & !is.na(occsOrig$latitude),]
   if (nrow(occsXY) == 0) {
     logger %>% writeLog(type = 'warning',
-      'No records with coordinates found in ', occDb, " for ", em(spName), ".")
+      "No records with coordinates found in paleobioDB for ", em(spName), ".")
   }
 
 
