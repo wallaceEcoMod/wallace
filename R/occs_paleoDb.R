@@ -75,8 +75,9 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
   # }
 
   if (class(occsOrig) == "try-error") {
-    logger %>% writeLog(type = 'error',
-      'No records found for ', em(spName), ". Please check the spelling.")
+    logger %>% writeLog(
+      type = 'error',
+      hlSpp(spName), "No records found, please check the spelling.")
     return()
   }
 
@@ -96,8 +97,9 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
   # subset to just records with latitude and longitude
   occsXY <-  occsOrig[!is.na(occsOrig$longitude) & !is.na(occsOrig$latitude),]
   if (nrow(occsXY) == 0) {
-    logger %>% writeLog(type = 'warning',
-      "No records with coordinates found in paleobioDB for ", em(spName), ".")
+    logger %>% writeLog(
+      type = 'warning',
+      hlSpp(spName), "No records with coordinates found in paleobioDB.")
   }
 
 
