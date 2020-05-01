@@ -9,7 +9,7 @@ envs_worldclim(bcRes, bcSel, mapCntr, doBrick, logger = NULL)
 \arguments{
 \item{bcRes}{numeric resolution of the climatic layers}
 
-\item{bcSel}{list of boolean data. selected variables}
+\item{bcSel}{chacter vector with bionames selected}
 }
 \description{
 download worldclim variables. see www.worldclim.com

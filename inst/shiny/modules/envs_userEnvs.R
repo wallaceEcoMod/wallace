@@ -1,6 +1,10 @@
 envs_userEnvs_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
+    checkboxInput(
+      ns("doBrick"),
+      label = "Save to memory for faster processing and save/load option (**)",
+      value = TRUE), # Check default (value = FALSE)
     fileInput(ns("userEnvs"), label = "Input rasters", multiple = TRUE),
     checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE),
     actionButton(ns('goUserEnvs'), 'Load Env Data')
@@ -29,12 +33,18 @@ envs_userEnvs_module_server <- function(input, output, session, common) {
     }
 
     userEnvs <- envs_userEnvs(rasPath = input$userEnvs$datapath,
-                              rasName = input$userEnvs$name)
-
-    envs.global[["userEnvs"]] <- userEnvs
+                              rasName = input$userEnvs$name,
+                              doBrick = input$doBrick,
+                              logger)
 
     # loop over all species if batch is on
-    if (input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
+    if (input$batch == TRUE) {
+      spLoop <- allSp()
+      envs.global[["user"]] <- userEnvs
+    } else {
+      spLoop <- curSp()
+      envs.global[[paste0("user_", curSp())]] <- userEnvs
+    }
 
     for (sp in spLoop) {
       # get environmental variable values per occurrence record
@@ -46,12 +56,21 @@ envs_userEnvs_module_server <- function(input, output, session, common) {
                                         spp[[sp]]$occs[c('longitude', 'latitude')]))
       })
       # remove occurrence records with NA environmental values
-      spp[[sp]]$occs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, curSp(), logger)
+      spp[[sp]]$occs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, sp, logger)
       # also remove variable value rows with NA environmental values
       occsEnvsVals <- na.omit(occsEnvsVals)
 
+      logger %>% writeLog(hlSpp(sp), "User specified variables (",
+                          paste(names(userEnvs), collapse = ", "),
+                          ") ready to use. (**)")
+
+
       # LOAD INTO SPP ####
-      spp[[sp]]$envs <- "userEnvs"
+      if (input$batch == TRUE) {
+        spp[[sp]]$envs <- "user"
+      } else {
+        spp[[sp]]$envs <- paste0("user_", sp)
+      }
       # add columns for env variable values for each occurrence record
       spp[[sp]]$occs <- cbind(spp[[sp]]$occs, occsEnvsVals)
 
@@ -59,13 +78,15 @@ envs_userEnvs_module_server <- function(input, output, session, common) {
       spp[[sp]]$rmm$data$environment$variableNames <- names(userEnvs)
       spp[[sp]]$rmm$data$environment$resolution <- raster::res(userEnvs)
       spp[[sp]]$rmm$data$environment$sources <- 'user'
+      spp[[sp]]$rmm$data$environment$extent <- as.character(raster::extent(userEnvs))
+      spp[[sp]]$rmm$data$environment$projection <- as.character(raster::crs(userEnvs))
 
-      spp[[sp]]$rmm$wallaceSettings$userRasName <- input$userEnvs$name
+      spp[[sp]]$rmd$userRasName <- input$userEnvs$name
+      spp[[sp]]$rmd$userBrick <- input$doBrick
     }
 
     common$update_component(tab = "Results")
     common$remove_module(component = "proj", module = "projTime")
-    common$remove_module(component = "proj", module = "projUser")
   })
 
   output$envsPrint <- renderPrint({
@@ -87,4 +108,13 @@ envs_userEnvs_module_map <- function(map, common) {
     addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                      radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                      fillOpacity = 0.2, weight = 2, popup = ~pop)
+}
+
+envs_userEnvs_module_rmd <- function(species) {
+  # Variables used in the module's Rmd code
+  list(
+    envs_userEnvs_knit = !is.null(species$rmd$userRasName),
+    userRasName_rmd = printVecAsis(species$rmd$userRasName),
+    userBrick_rmd = species$rmd$userBrick
+  )
 }

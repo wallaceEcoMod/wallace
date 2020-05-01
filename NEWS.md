@@ -1,4 +1,4 @@
-# wallace 1.9.9*
+# wallace 1.9.0
 - in dev
 - coordinates on the map
 - bien option

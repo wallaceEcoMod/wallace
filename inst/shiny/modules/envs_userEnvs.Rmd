@@ -1,0 +1,22 @@
+```{asis, echo = {{envs_userEnvs_knit}}, eval = {{envs_userEnvs_knit}}, include = {{envs_userEnvs_knit}}}
+Using user-specified variables.
+```
+
+```{r, echo = {{envs_userEnvs_knit}}, include = {{envs_userEnvs_knit}}}
+## Specify the directory with the environmental variables
+dir_envs_{{spAbr}} <- ""
+envs_path <- file.path(dir_envs_{{spAbr}}, {{userRasName_rmd}})
+# Create environmental object (**)
+envs_{{spAbr}} <- envs_userEnvs(
+  rasPath = envs_path,
+  rasName = {{userRasName_rmd}},
+  doBrick = {{userBrick_rmd}})
+occs_xy_{{spAbr}} <- occs_{{spAbr}}[c('longitude', 'latitude')]
+occs_vals_{{spAbr}} <- as.data.frame(raster::extract(envs_{{spAbr}}, occs_xy_{{spAbr}}))
+# remove occurrence records with NA environmental values
+occs_{{spAbr}} <- occs_{{spAbr}}[!(rowSums(is.na(occs_vals_{{spAbr}})) > 1), ]
+# also remove variable value rows with NA environmental values
+occs_vals_{{spAbr}} <- na.omit(occs_vals_{{spAbr}})
+# add columns for env variable values for each occurrence record
+occs_{{spAbr}} <- cbind(occs_{{spAbr}}, occs_vals_{{spAbr}})
+```

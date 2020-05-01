@@ -33,7 +33,7 @@
 #' @details \tabular{ll}{
 #' Package: \tab wallace\cr
 #' Type: \tab Package\cr
-#' Version: \tab 1.9.9\cr
+#' Version: \tab 1.9.0\cr
 #' Date: \tab 2018-11-14\cr
 #' License: \tab GNU 3.0\cr
 #' }

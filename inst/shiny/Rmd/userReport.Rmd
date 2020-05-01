@@ -15,7 +15,7 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE, eval = FALSE)
 
 ```
 
-Please find below the R code history from your *Wallace* v1.9.9* session. 
+Please find below the R code history from your *Wallace* v1.9.0 session. 
 
 You can reproduce your session results by running this R Markdown file in RStudio. 
 

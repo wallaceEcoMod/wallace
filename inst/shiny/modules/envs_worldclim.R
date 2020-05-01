@@ -12,8 +12,10 @@ envs_worldclim_module_ui <- function(id) {
                                         "2.5 arcmin" = 2.5,
                                         "5 arcmin" = 5,
                                         "10 arcmin" = 10), selected = 10)), # Check default (No selected parameter)
-    checkboxInput(ns("doBrick"), label = "Save to memory for faster processing?",
-                  value = TRUE), # Check default (value = FALSE)
+    checkboxInput(
+      ns("doBrick"),
+      label = "Save to memory for faster processing and save/load option(**)",
+      value = TRUE), # Check default (value = FALSE)
     shinyWidgets::pickerInput(
       "bcSel",
       label = "Select bioclim variables (**)",
@@ -84,7 +86,7 @@ envs_worldclim_module_server <- function(input, output, session, common) {
         occsEnvsVals <- as.data.frame(raster::extract(wcbc, occs.xy))
       })
       # remove occurrence records with NA environmental values
-      spp[[sp]]$occs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, curSp(), logger)
+      spp[[sp]]$occs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, sp, logger)
       # also remove variable value rows with NA environmental values
       occsEnvsVals <- na.omit(occsEnvsVals)
 
@@ -95,7 +97,7 @@ envs_worldclim_module_server <- function(input, output, session, common) {
       if (raster::res(wcbc)[1] > 0.009) {
         spp[[sp]]$envs <- "wcbc"
       } else {
-        spp[[sp]]$envs <- paste0("wcbc_", curSp())
+        spp[[sp]]$envs <- paste0("wcbc_", sp)
       }
 
       # add columns for env variable values for each occurrence record
@@ -147,7 +149,6 @@ envs_worldclim_module_server <- function(input, output, session, common) {
 
 envs_worldclim_module_result <- function(id) {
   ns <- NS(id)
-
   # Result UI
   verbatimTextOutput(ns("envsPrint"))
 }

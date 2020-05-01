@@ -4,12 +4,10 @@
 \alias{occs_paleoDb}
 \title{`occs_paleoDb` returns species occurrences}
 \usage{
-occs_paleoDb(spName, occDb, occNum, timeInterval, logger = NULL)
+occs_paleoDb(spName, occNum, timeInterval, logger = NULL)
 }
 \arguments{
 \item{spName}{character species name. For paleobioDb it returns records associated with the specified taxonomic name, including any synonyms.}
-
-\item{occDb}{character name of the paleontological database. Either "PaleobioDB" or "neotoma"}
 
 \item{occNum}{integer maximum number of records}
 

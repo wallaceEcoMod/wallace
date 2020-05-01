@@ -7,6 +7,7 @@
 #'
 #' @param rasPath character of directory to rasters
 #' @param rasName character vector of raster names
+#' @param doBrick Brick option
 # @keywords
 #'
 # @examples
@@ -26,7 +27,7 @@
 #'
 #'
 
-envs_userEnvs <- function(rasPath, rasName, logger=NULL){
+envs_userEnvs <- function(rasPath, rasName, doBrick = FALSE, logger = NULL){
 
   smartProgress(logger, message = "Reading in rasters...", {
     rasStack <- raster::stack(rasPath)
@@ -34,10 +35,22 @@ envs_userEnvs <- function(rasPath, rasName, logger=NULL){
   # assign names
   names(rasStack) <- tools::file_path_sans_ext(rasName)
 
-  logger %>% writeLog("Raster: User input.")
-
   if(is.na(raster::crs(rasStack))) {
-    logger %>% writeLog(type = "warning",'Input rasters have undefined coordinate reference system (CRS). Mapping functionality in components Visualize Model Results and Project Model will not work. If you wish to map rasters in these components, please define their projections and upload again. See guidance text in this module for more details.')
+    logger %>% writeLog(
+      type = "warning",
+      paste0('Input rasters have undefined coordinate reference system (CRS). ',
+             'Mapping functionality in components Visualize Model Results and ',
+             'Project Model will not work. If you wish to map rasters in these ',
+             'components, please define their projections and upload again. ',
+             'See guidance text in this module for more details.'))
   }
+
+  # convert to brick for faster processing
+  if(doBrick == TRUE) {
+    smartProgress(logger, message = "Converting to RasterBrick for faster processing...", {
+      rasStack  <- raster::brick(rasStack)
+    })
+  }
+
   return(rasStack)
 }
