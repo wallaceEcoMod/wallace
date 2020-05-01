@@ -1,5 +1,5 @@
 component: "envs"
 short_name: "User-specified"
 long_name: "User-specified Environmental Data"
-authors: "Jamie M. Kass, Robert P. Anderson"
+authors: "Jamie M. Kass, Gonzalo E. Pinilla-Buitrago, Robert P. Anderson"
 package: []
