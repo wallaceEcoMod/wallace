@@ -4,12 +4,14 @@
 \alias{envs_userEnvs}
 \title{envs_worldclim}
 \usage{
-envs_userEnvs(rasPath, rasName, logger = NULL)
+envs_userEnvs(rasPath, rasName, doBrick = FALSE, logger = NULL)
 }
 \arguments{
 \item{rasPath}{character of directory to rasters}
 
 \item{rasName}{character vector of raster names}
+
+\item{doBrick}{Brick option}
 }
 \description{
 Download worldclim variables. see www.worldclim.com
