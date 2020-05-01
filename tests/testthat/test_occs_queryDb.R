@@ -43,8 +43,8 @@ test_that("error checks", {
 test_that("warnings checks", {
   # the species is found in the database, but it does not have coordinates (Log & lat)
   expect_warning(occs_queryDb(spName = "Artibeus macleayii", occDb, occNum),
-               paste0(hlSpp(em("Artibeus macleayii")),'No records with coordinates found in ', occDb,". (**)"),fixed=T)
-  })
+                paste0(hlSpp(em("Artibeus macleayii")),'No records with coordinates found in ', occDb,". (**)"),fixed=T)
+              })
 
 #
 ##Test for correct outputs in loop to test for multiple species
