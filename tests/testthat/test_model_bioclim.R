@@ -35,47 +35,59 @@ bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMas
 ### test output features
 test_that("output type checks", {
   # the output is a list
-  expect_is(bioclimAlg, "list")
-  # the output list has five elements
-  expect_equal(length(bioclimAlg), 5)
-  # element within the output list are:
-  # lists
-  expect_is(bioclimAlg [c("models", "evalTbl")], "list")
+  expect_is(bioclimAlg, "ENMevaluation")
+  #the output has 9 slots with correct names
+  expect_equal(length(slotNames(bioclimAlg)), 14)
+  expect_equal(slotNames(bioclimAlg),c("algorithm","tune.settings","partition.method","partition.settings",
+                                       "other.settings","results","results.grp","models",
+                                       "predictions","occs","occ.grp","bg","bg.grp","overlap"))
+  # element within the evaluation are:
+  # character
+  expect_is(bioclimAlg@algorithm, "character")
+  expect_is(bioclimAlg@partition.method, "character")
   # a data frame
+  expect_is(bioclimAlg@tune.settings, "data.frame")
+  expect_is(bioclimAlg@results, "data.frame")
   expect_is(bioclimAlg@results.grp, "data.frame")
+  expect_is(bioclimAlg@occs, "data.frame")
+  expect_is(bioclimAlg@bg, "data.frame")
+  # a list
+  expect_is(bioclimAlg@partition.settings, "list")
+  expect_is(bioclimAlg@other.settings, "list")
+  expect_is(bioclimAlg@models, "list")
   # a raster Stack
   expect_is(bioclimAlg@predictions, "RasterStack")
-  # a matrix
-  expect_is(bioclimAlg@occPredVals, "matrix")
+  # factor
+  expect_is(bioclimAlg@occ.grp, "factor")
+  expect_is(bioclimAlg@bg.grp, "factor")
   # there is 1 model
   expect_equal(length(bioclimAlg@models), 1)
   # there is 1 prediction
   expect_equal(raster::nlayers(bioclimAlg@predictions), 1)
-  # there are prediction values for the model
-  expect_equal(names(bioclimAlg@models), colnames(bioclimAlg@occPredVals))
   # there is 1 model in the evaluation table
   expect_equal(nrow(bioclimAlg@results), 1)
   # columns name in the evaluation table are right
-  expect_equal(colnames(bioclimAlg@results),c("avg.test.AUC", "var.test.AUC", "avg.diff.AUC",
-                                              "var.diff.AUC", "avg.test.orMTP", "var.test.orMTP",
-                                              "avg.test.or10pct", "var.test.or10pct"))
-  # rows name in the evaluation table are right
-  expect_equal(rownames(bioclimAlg@results), "BIOCLIM")
-  # there is 1 model in the bin evaluation table
-  expect_equal(nrow(bioclimAlg@results.grp), 1)
-  # bin evaluation table has the right amout of columns
-  expect_equal(ncol(bioclimAlg@results.grp), (length(unique(partblock$occ.grp))*4))
-  # # rows name in the evaluation table are right
-  expect_equal(rownames(bioclimAlg@results.grp), "BIOCLIM")
+  expect_equal(colnames(bioclimAlg@results),c("auc.train", "cbi.train", "auc.diff.avg",
+                                              "auc.diff.sd", "auc.test.avg", "auc.test.sd",
+                                              "maxKappa.test.avg", "maxKappa.test.sd",
+                                              "maxTSS.test.avg","maxTSS.test.sd","or.10p.avg",
+                                              "or.10p.sd","or.mtp.avg","or.mtp.sd","nparam"))
+
+  # there are as many models in the bin evaluation table as partitions
+  expect_equal(nrow(bioclimAlg@results.grp), length(unique(partblock$occ.grp)))
+
+  # # col name in the evaluation table are right
+  expect_equal(colnames(bioclimAlg@results.grp), c( "tune.args", "fold","auc.test","auc.diff","or.mtp","or.10p",
+                                                     "maxTSS.test","maxKappa.test"))
 })
 
 ### test function stepts
 test_that("output data checks", {
   # the AUC values are between 0 and 1
-  expect_false(FALSE %in% ((bioclimAlg@results[,c("avg.test.AUC", "var.test.AUC", "avg.diff.AUC",
-                                                  "var.diff.AUC")])<1 |
-                             (bioclimAlg@results[,c("avg.test.AUC", "var.test.AUC", "avg.diff.AUC",
-                                                    "var.diff.AUC")])<0))
+  expect_false(FALSE %in% ((bioclimAlg@results[,c("auc.test.avg", "auc.test.sd", "auc.diff.avg",
+                                                  "auc.diff.sd")])<=1 |
+                             (bioclimAlg@results[,c("auc.test.avg", "auc.test.sd", "auc.diff.avg",
+                                                    "auc.diff.sd")])<=0))
   # the predictions generated are within the background mask
   expect_equal(extent(bgMask), extent(bioclimAlg@predictions))
 })

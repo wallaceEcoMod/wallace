@@ -23,26 +23,26 @@ bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=occs)
 
 ## Partition
 partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,
-                              aggFact = NULL,spN=spN)
+                              aggFact = NULL,spN=occs)
 # occurrences partitioned
 occs$partition <- partblock$occ.grp
 # background points partitioned
 bg$partition <- partblock$bg.grp
 
 ## model
-bioclimAlg <- model_bioclim(occs, bg, bgMask,spN=spN)
+bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=occs)
 
 
 ### run function
-bioclimPlot <- recordPlot(makeBioclimPlot(x = bioclimAlg$models$BIOCLIM, a=1, b=2, p=1))
+bioclimPlot <- recordPlot(vis_bioclimPlot(x = bioclimAlg@models$bioclim, a=1, b=2, p=1))
 
 
 ## test if the error messages appear when they are supposed to
 test_that("error checks", {
   # the user specified a variable that wasn't included within the model
-  expect_error(makeBioclimPlot(x = bioclimAlg$models$BIOCLIM, a=(raster::nlayers(envs))+1,
+  expect_error(vis_bioclimPlot(x = bioclimAlg@models$bioclim, a=(raster::nlayers(envs))+1,
                                b=2, p=1))
-  expect_error(makeBioclimPlot(x = bioclimAlg$models$BIOCLIM, a= 1,
+  expect_error(vis_bioclimPlot(x = bioclimAlg@models$bioclim, a= 1,
                                b=(raster::nlayers(envs))+1, p=1))
 })
 
