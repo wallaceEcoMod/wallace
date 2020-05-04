@@ -6,7 +6,7 @@
 #'
 #' @param spName character species name. For paleobioDb it returns records associated with the specified taxonomic name, including any synonyms.
 #' @param occNum integer maximum number of records
-#' @param timeInterval character Either "LGM" (Last Glacial Maximum) or "Holo" (Holocene). For PaleobioDB only Holocene is allowed.
+#' @param timeInterval character e.g. "Holocene" (Holocene).
 # @keywords
 #'
 # @examples
@@ -95,12 +95,13 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
   occsOrig$occID <- 1:nrow(occsOrig)
 
   # subset to just records with latitude and longitude
-  occsXY <-  occsOrig[!is.na(occsOrig$longitude) & !is.na(occsOrig$latitude),]
-  if (nrow(occsXY) == 0) {
-    logger %>% writeLog(
-      type = 'warning',
-      hlSpp(spName), "No records with coordinates found in paleobioDB.")
-  }
+  # all plaeobioDB recors have coords, so this warning is commented until future database
+  # occsXY <-  occsOrig[!is.na(occsOrig$longitude) & !is.na(occsOrig$latitude),]
+  # if (nrow(occsXY) == 0) {
+  #   logger %>% writeLog(
+  #     type = 'warning',
+  #     hlSpp(spName), "No records with coordinates found in paleobioDB.")
+  # }
 
 
   dups <- duplicated(occsXY[,c('longitude','latitude')])
