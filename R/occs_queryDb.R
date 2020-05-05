@@ -26,6 +26,7 @@
 #' list of original data sources in a citable format.
 #' @return formatted tibble of species occurrence records
 #'
+#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 #' @examples
 #' occs_queryDb(spName = "Tremarctos ornatus", occDb = "gbif", occNum = 100)
 #' @export
