@@ -1,6 +1,6 @@
 #' Query online database for species occurrence records.
 #'
-#' \code{occs_queryDb} returns a formatted tibble of species occurrences with a selection of appropriate fields.
+#' \code{occs_queryDb} returns a list of lists, one per queried species. Each list of species occurrences with a selection of appropriate fields.
 #'
 #' This function is called by the module occs_queryDb to query a database for
 #' species occurrence records, subset to only those records with coordinates,
