@@ -24,7 +24,7 @@
 #' complete list of original data sources in a citable format.
 #' @param gbifPW=NULL  specify only if using `occCite` with GBIF to get a complete
 #' list of original data sources in a citable format.
-#' @return formatted tibble of species occurrence records
+#' @return List of lists. One list per species with occurence records. Each indiivudal species list with appropriate fields for analysis
 #'
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 #' @examples
