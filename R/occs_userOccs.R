@@ -2,7 +2,7 @@
 #' @description
 #' Load user database with species occurrence records. Returns a list of lists, one per species provided in database an each species list with a set of appropriate fields
 #' @details
-#' #'This function is called by the module occs_queryDb to load a user provided database for
+#' This function is called by the module occs_queryDb to load a user provided database for
 #' species occurrence records, subset to only those records with coordinates,
 #' remove records with duplicate coordinates, and select some columns with fields
 #' appropriate to studies in biogeography.
@@ -11,7 +11,8 @@
 #' @param txtName name of database without the extension. Database must have at least three columns named 'scientific_name', 'longitude', 'latitude'
 #' @param txtSep  field separator used in database (as in read.delim)
 #' @param txtDec  decimal separator used for coordinates in database
-#' @param logger x
+#' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#'  otherwise leave the default NULL
 # @keywords
 #'
 #' @examples
@@ -22,7 +23,7 @@
 #'
 #' @return List of lists. One list per species with occurence records. Each indiivudal species list with appropriate fields for analysis
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
-#' @author Gonzalo E. Pinilla-Buitrago <jkass@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
 
 # @seealso
