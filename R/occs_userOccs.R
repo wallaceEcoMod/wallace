@@ -1,20 +1,26 @@
 #' @title occs_userOccs
-#' @description ..
-#'
+#' @description
+#' Load user database with species occurrence records. Returns a list of lists, one per species provided in database an each species list with a set of appropriate fields
 #' @details
-#' See Examples.
+#' #'This function is called by the module occs_queryDb to load a user provided database for
+#' species occurrence records, subset to only those records with coordinates,
+#' remove records with duplicate coordinates, and select some columns with fields
+#' appropriate to studies in biogeography.
 #'
-#' @param txtPath x
-#' @param txtName x
-#' @param txtSep x
-#' @param txtDec x
+#' @param txtPath path to database including database name and extension
+#' @param txtName name of database without the extension. Database must have at least three columns named 'scientific_name', 'longitude', 'latitude'
+#' @param txtSep  field separator used in database (as in read.delim)
+#' @param txtDec  decimal separator used for coordinates in database
 #' @param logger x
 # @keywords
 #'
-# @examples
+#' @examples
+#'txtPath <- './Data/Marmosops_sp.csv'
+#'txtName <- 'Marmosops_sp'
+#'user.occs <- occs_userOccs(txtPath, txtName,txtSep=",",txtDec=".")
 #'
 #'
-# @return
+#' @return List of lists. One list per species with occurence records. Each indiivudal species list with appropriate fields for analysis
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 #' @author Gonzalo E. Pinilla-Buitrago <jkass@@gradcenter.cuny.edu>
 # @note

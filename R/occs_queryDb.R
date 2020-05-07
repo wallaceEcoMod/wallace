@@ -1,6 +1,6 @@
 #' Query online database for species occurrence records.
 #'
-#' \code{occs_queryDb} returns a formatted tibble of species occurrences with a selection of appropriate fields.
+#' \code{occs_queryDb} returns a list of lists, one per queried species. Each list of species occurrences with a selection of appropriate fields.
 #'
 #' This function is called by the module occs_queryDb to query a database for
 #' species occurrence records, subset to only those records with coordinates,
@@ -24,8 +24,9 @@
 #' complete list of original data sources in a citable format.
 #' @param gbifPW=NULL  specify only if using `occCite` with GBIF to get a complete
 #' list of original data sources in a citable format.
-#' @return formatted tibble of species occurrence records
+#' @return List of lists. One list per species with occurence records. Each indiivudal species list with appropriate fields for analysis
 #'
+#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 #' @examples
 #' occs_queryDb(spName = "Tremarctos ornatus", occDb = "gbif", occNum = 100)
 #' @export
