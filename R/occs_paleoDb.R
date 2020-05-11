@@ -14,10 +14,7 @@
 #'  otherwise leave the default NULL
 # @keywords
 #'
-# @examples
-#'
-#'
-#' @return A list of 2 elements. First element contains the original dowloaded dataset, second elementwith appropriate fields for analyses
+#' @return A list of 2 dataframes. First dataframe is the original dowloaded dataset, second data frame without duplicates and with appropriate fields for analyses
 
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
