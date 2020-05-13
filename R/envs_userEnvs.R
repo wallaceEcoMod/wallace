@@ -1,9 +1,10 @@
 #'
 #' @title  envs_worldclim
-#' @description Download worldclim variables. see www.worldclim.com
+#' @description Load user provided rasters
 #'
 #' @details
-#' See Examples.
+#' This function is called by the module envs to load user provided raster variables for use in further analyses.
+#' It returns either a rasterStack or rasterBrick of loaded variables with appropriate names for further analyses.
 #'
 #' @param rasPath character of path to rasters, must be the full path including file name and extension
 #' @param rasName character vector of raster names to be assigned to loaded rasters
@@ -17,7 +18,8 @@
 #'Name <- list.files(path='./wc10/', pattern = "*cut.tif$", full.names = FALSE)
 #'userEnvs <- envs_userEnvs(rasPath = Path, rasName = Name,doBrick=TRUE)
 #'
-# @return
+#' @return A rasterStack or a rasterBrick (if doBrick=TRUE) of user provided rasters
+#'
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 # @note
 
