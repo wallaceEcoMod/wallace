@@ -9,7 +9,7 @@
 #' @param bcRes numeric resolution of the climatic layers. Currently avaialable resolutions are 0.5, 2.5 and 10
 #' @param bcSel character vector with bionames to be selected
 #' @param mapCntr numeric vector with longitude and latitude for a tile. Required for bcRes 0.5, for other resolutions world data will be downloaded
-#' @param doBrick logical converts dowloaded rasters to brick for faster processing
+#' @param doBrick logical converts downloaded rasters to brick for faster processing
 #' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 #'
