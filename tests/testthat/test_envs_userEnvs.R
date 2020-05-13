@@ -18,7 +18,7 @@ Name <- list.files(path='./wc10/', pattern = "*cut.tif$", full.names = FALSE)
 
 
 ### run function
-userEnvs <- envs_userEnvs(rasPath = Path, rasName = Name)
+userEnvs <- envs_userEnvs(rasPath = Path, rasName = Name,doBrick=TRUE)
 
 
 ### test if the warning messages appear when they are supposed to
