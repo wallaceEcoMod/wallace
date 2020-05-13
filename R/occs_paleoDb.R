@@ -1,26 +1,29 @@
 #' @title `occs_paleoDb` returns species occurrences
-#' @description #' query paleobioDB or neotoma databases and returns the complete list of data, data with coordinates, and data with no duplicates
+#' @description
+#' query paleobioDB database and returns the complete list of data, data with coordinates, and data with no duplicates
 #'
 #' @details
-#' See Examples.
+#'This function is called by the module occs_queryDb to query the paleobioDB database for
+#' species occurrence records in the holocene. It removes records with duplicate coordinates, and select some columns with fields
+#' appropriate to studies in biogeography.
 #'
 #' @param spName character species name. For paleobioDb it returns records associated with the specified taxonomic name, including any synonyms.
 #' @param occNum integer maximum number of records
-#' @param timeInterval character e.g. "Holocene" (Holocene).
+#' @param timeInterval character , currently a single timeInterval is allowed: "Holocene" (Holocene).
+#' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#'  otherwise leave the default NULL
 # @keywords
 #'
-# @examples
-#'
-#'
-# @return
+#' @return A list of 2 dataframes. First dataframe is the original dowloaded dataset, second data frame without duplicates and with appropriate fields for analyses
+
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
-# @note
-# @seealso
-# @references
-# @aliases - a list of additional topic names that will be mapped to
-# this documentation when the user looks them up from the command
-# line.
-# @family - a family name. All functions that have the same family tag will be linked in the documentation.
+#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Sara Varela <sara_varela@@yahoo.com>
+#' @examples
+#'spName<-"Didelphis virginiana"
+#'occNum<-100
+#'timeInterval<-"Holocene"
+#'occsPaleo<- occs_paleoDb(spName, occNum, timeInterval, logger = NULL)
 #' @export
 
 occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
@@ -102,6 +105,7 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
   #     type = 'warning',
   #     hlSpp(spName), "No records with coordinates found in paleobioDB.")
   # }
+  occsXY<-occsOrig
 
 
   dups <- duplicated(occsXY[,c('longitude','latitude')])

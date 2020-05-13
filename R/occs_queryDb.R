@@ -11,7 +11,7 @@
 #' @param occDb character biodiversity database to query; current choices are
 #' "gbif", "vertnet", and "bison"
 #' @param occNum numeric maximum number of occurrence records to return
-#' @param logger insert the logger reactive list here for running in shiny,
+#' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 #' @param doCitations set TRUE to use `occCite` to get a complete list of original
 #'  data sources in a citable format

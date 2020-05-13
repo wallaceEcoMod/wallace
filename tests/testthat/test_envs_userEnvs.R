@@ -18,8 +18,8 @@ Name <- list.files(path='./wc10/', pattern = "*cut.tif$", full.names = FALSE)
 
 
 ### run function
-userEnvs <- envs_userEnvs(rasPath = Path, rasName = Name)
-
+userEnvs <- envs_userEnvs(rasPath = Path, rasName = Name,doBrick=TRUE)
+userEnvs_stack <- envs_userEnvs(rasPath = Path, rasName = Name,doBrick=FALSE)
 
 ### test if the warning messages appear when they are supposed to
 test_that("warning checks", {
@@ -30,9 +30,11 @@ test_that("warning checks", {
 
 ### test output features
 test_that("output type checks", {
-  # the output is a RasterStack
-  expect_is(userEnvs, "RasterStack")
+  # the output is a RasterBrick when doBrick=TRUE
+  expect_is(userEnvs, "RasterBrick")
   # the number of layer is the same as loaded by the user
   expect_equal(length(Name), raster::nlayers(userEnvs))
+  # the output is a RasterStack when doBrick=FALSE
+  expect_is(userEnvs_stack ,"RasterStack")
   })
 
