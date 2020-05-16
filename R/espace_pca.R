@@ -5,14 +5,14 @@
 #' This function is called by the component espace to calibrate a pca for one (default) or 2 species in environmental space.
 #' When using within Wallace GUI parameters are obtained from the model object, in particular,
 #'table of occurences with environmental values and table of background points with environmental values
-#' are slots of the model objetc.
+#' are slots of the model object.
 
 #' @param sp.name1 character, name of species 1 to be analyzed
-#' @param sp.name2 character, name of species 2 to be analyzed. Default is NULL
+#' @param sp.name2 character, name of species 2 to be analyzed. Default is NULL.
 #' @param occs.z1 table of occurrences with environmental values for sp1.
-#' @param occs.z2 table of occurrences with environmental values for sp2 Default is NULL
+#' @param occs.z2 table of occurrences with environmental values for sp2 Default is NULL.
 #' @param bgPts.z1 table of background points with environmental values for sp1.
-#' @param bgPts.z2 table of background points with environmental values for sp1. Default is NULL
+#' @param bgPts.z2 table of background points with environmental values for sp2. Default is NULL.
 #' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 #' @examples
@@ -29,7 +29,7 @@
 #'
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
-#'  @author Olivier Broennimann olivier.broennimann@@unil.ch
+#' @author Olivier Broennimann olivier.broennimann@@unil.ch
 #' @export
 
 espace_pca<- function(sp.name1, sp.name2 = NULL, occs.z1, occs.z2 = NULL,
