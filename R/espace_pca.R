@@ -1,12 +1,35 @@
-#' calibrate a PCA for the background of two selected species
-#'
-#' @param sp.name1
-#' @param sp.name2
-#' @param occs.z1 table of occurrences with environmental values for sp1
+#' @title espace_pca
+#' @description
+#' calibrate a PCA for the background of one or two selected species
+#' @details
+#' This function is called by the component espace to calibrate a pca for one or 2 species envrionmental space.
+#' When using within Wallace GUI parameters are obtained from the model object, in particular,
+#'table of occurences with environmental values and table of background points with environmental values
+#' are slots of the model objetc.
+
+#' @param sp.name1 character, name of species 1 to be analyzed
+#' @param sp.name2 character, name of species 2 to be analyzed. Default is NULL
+#' @param occs.z1 table of occurrences with environmental values for sp1.
 #' @param occs.z2 table of occurrences with environmental values for sp2
-#' @param bgPts.z1
-#' @param bgPts.z2
-#' @param logger
+#' @param bgPts.z1 table of background points with environmental values for sp1.
+#' @param bgPts.z2 table of background points with environmental values for sp1.
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#'  otherwise leave the default NULL
+#' @examples
+#' occs <-  as.data.frame(wallace::occs_queryDb(spName = sp.name1, occDb = "gbif", occNum = 100)[[1]]$cleaned)
+#'envs <- wallace::envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
+#'bgExt <- wallace::penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
+#'bgMask <- wallace::penvs_bgMask(occs, envs, bgExt,spN=occs)
+#'bg <- wallace::penvs_bgSample(occs, bgMask, bgPtsNum = 1000,spN=occs)
+#' bioclimAlg <- wallace::model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=occs)
+#' espace_pca(sp.name1,occs.z1=bioclimAlg@@occs,bgPts.z1=bioclimAlg@@bg)
+#'
+#' @return A list of 14 elements of classes dudi and pca as in dudi.pca
+#' @seealso dudi.pca in the ade4 package
+#'
+#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#'  @author Olivier Broennimann olivier.broennimann@@unil.ch
 #' @export
 
 espace_pca<- function(sp.name1, sp.name2 = NULL, occs.z1, occs.z2 = NULL,
