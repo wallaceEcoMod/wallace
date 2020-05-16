@@ -4,7 +4,8 @@
 #' @details
 #' This function is called by the component espace to calibrate a pca for one (default) or 2 species in environmental space.
 #' When using within Wallace GUI parameters are obtained from the model object, in particular,
-#' table of occurences with environmental values and table of background points with environmental values
+#' table of occurences with environmental values and table of background points with environmental values. User must be careful as these tables must contain only
+#' environmental variables and not the point coordinates as outputed by model objects.
 #' The provided species name(s) are only used for logger messages and not for querying or selecting occurrences.
 
 #' @param sp.name1 character, name of species 1 to be analyzed
@@ -22,7 +23,7 @@
 #'bgMask <- wallace::penvs_bgMask(occs, envs, bgExt,spN=occs)
 #'bg <- wallace::penvs_bgSample(occs, bgMask, bgPtsNum = 1000,spN=occs)
 #' bioclimAlg <- wallace::model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=occs)
-#' espace_pca(sp.name1,occs.z1=bioclimAlg@@occs,bgPts.z1=bioclimAlg@@bg)
+#' espace_pca(sp.name1,occs.z1=bioclimAlg@@occs[3:7],bgPts.z1=bioclimAlg@@bg[3:7])
 #'
 #' @return A list of 14 elements of classes dudi and pca as in dudi.pca
 #' @seealso dudi.pca in the ade4 package
