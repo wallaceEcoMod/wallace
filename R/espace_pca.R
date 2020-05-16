@@ -1,9 +1,12 @@
 #' calibrate a PCA for the background of two selected species
 #'
-#' @param bgMask1 rasterStack environmental grids for sp1 masked by its background
-#' @param bgMask2 rasterStack environmental grids for sp2 masked by its background
+#' @param sp.name1
+#' @param sp.name2
 #' @param occs.z1 table of occurrences with environmental values for sp1
 #' @param occs.z2 table of occurrences with environmental values for sp2
+#' @param bgPts.z1
+#' @param bgPts.z2
+#' @param logger
 #' @export
 
 espace_pca<- function(sp.name1, sp.name2 = NULL, occs.z1, occs.z2 = NULL,
