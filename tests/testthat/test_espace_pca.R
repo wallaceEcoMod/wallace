@@ -10,9 +10,13 @@ source("test_helper_functions.R")
 
 ###SET PARAMETERS (running model)
   sp.name1<-"Panthera onca"
+  sp.name2<-"Procyon lotor"
+  species<-c(sp.name1,sp.name2)
+  model<-list()
+  for (i in 1:2){
 
 ## occurrences
-occs <-  occs_queryDb(spName = sp.name1, occDb = "gbif", occNum = 100)
+occs <-  occs_queryDb(spName = species[i], occDb = "gbif", occNum = 100)
 occs <- as.data.frame(occs[[1]]$cleaned)
 ## process data
 occs <- poccs_thinOccs(occs = occs, thinDist = 10,spN=occs)
@@ -30,18 +34,27 @@ partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMas
 ### Create model
 bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=occs)
 
-
+model[i]<-bioclimAlg
 ##DELETE at the ends
 ##espace_pca<- function(sp.name1, sp.name2 = NULL, occs.z1, occs.z2 = NULL,
   ##                    bgPts.z1, bgPts.z2 = NULL, logger = NULL)
-
+  }
+  ##Set parameters
+      ##Remove coordinates (lat/long from tables)
+  occs.z1<-model[[1]]@occs[3:length(model[[1]]@occs)]
+  occs.z2<-model[[2]]@occs[3:length(model[[2]]@occs)]
+  bgPts.z1<-model[[1]]@bg[3:length(model[[1]]@bg)]
+  bgPts.z2<-model[[2]]@bg[3:length(model[[2]]@bg)]
 ###RUN FUNCTION
 
-  Testpca<-espace_pca(sp.name1,occs.z1=bioclimAlg@occs,bgPts.z1=bioclimAlg@bg)
+  Testpca<-espace_pca(sp.name1,sp.name2,occs.z1,occs.z2,bgPts.z1,bgPts.z2)
 
   test_that("output checks", {
     #output is a list
-    expect_is(Testpca,list)
+    expect_equal(mode(Testpca),"list")
+    #list is of objects of typoe "pca" and "dudi"
+    expect_is(Testpca,"pca")
+    expect_is(Testpca,"dudi")
     #list has 14 objects
     expect_equal(length(Testpca),14)
     #objects in list are as expected
