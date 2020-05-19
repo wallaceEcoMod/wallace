@@ -41,6 +41,8 @@ test_that("output type checks", {
 
 ### test function stepts
 test_that("output data checks", {
+  ##output dataframe has the same columns as original occurrences
+  expect_equal(names(occs),names(out.map))
   ## test if the points out of the extention to thin were removed
   # extract longitude and latitude columns from 'occs' data frame
   points <- occs[,c(3,4)]
