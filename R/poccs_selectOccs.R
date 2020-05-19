@@ -1,15 +1,15 @@
-
 #' @title poccs_selectOccs
-#' @description ..
+#' @description This function removes occurrences outside of a user created polygon
 #'
 #' @details
 #' See Examples.
 #'
-#' @param occs x
-#' @param polySelXY x
-#' @param polySelID x
-#' @param logger x
-#' @param spN x
+#' @param occs data frame of cleaned occurrences obtained from component occs: Obtain occurrence data.
+#' @param polySelXY matrix of longitude and latitude describing the expert drawn polygon.
+#' @param polySelID Polygon ID to be used in SpatialPolygons creation, defaults to 1.
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#'  otherwise leave the default NULL
+#' @param spN data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages
 # @keywords
 #'
 # @examples
