@@ -15,7 +15,8 @@
 # @examples
 #'
 #'
-# @return
+#' @return A new occurence dataframe including only occurences inside the provided polygon and mantaining all
+#' columns from original dataframe for further analyses.
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 # @note
 
