@@ -20,7 +20,7 @@ expertAddedPoly <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
 
 
 ### run function
-out.map <- poccs_selectOccs(occs, polySelXY = expertAddedPoly,polySelID = 1, logger = NULL, spN = occs)
+out.occs <- poccs_selectOccs(occs, polySelXY = expertAddedPoly,polySelID = 1, logger = NULL, spN = occs)
 
 
 ### test if the error messages appear when they are supposed to
@@ -36,13 +36,13 @@ test_that("error checks", {
 ### test output features
 test_that("output type checks", {
    # the output is a data frame
-  expect_is(out.map, "data.frame")
+  expect_is(out.occs, "data.frame")
   })
 
 ### test function stepts
 test_that("output data checks", {
   ##output dataframe has the same columns as original occurrences
-  expect_equal(names(occs),names(out.map))
+  expect_equal(names(occs),names(out.occs))
   ## test if the points out of the extention to thin were removed
   # extract longitude and latitude columns from 'occs' data frame
   points <- occs[,c(3,4)]
@@ -54,9 +54,9 @@ test_that("output data checks", {
   # if at least one record was out of the extention to thin
   if ((NA %in% overlap) == TRUE){
     # the original data frame has more records than the thinned one
-    expect_true(nrow(occs) > nrow(out.map))
+    expect_true(nrow(occs) > nrow(out.occs))
   } else { # if not,
     # the original data frame has the same amount of records than the "thinned" one
-    expect_equal(nrow(occs), nrow(out.map))
+    expect_equal(nrow(occs), nrow(out.occs))
   }
   })
