@@ -4,32 +4,33 @@
 #'
 #' @details
 #' #' @details
-#' This function is called by the select occurrences by ID module. It allows for removal of
-#' occurrences flagged by the user on the map. The function will return
+#' This function is called by the select occurrences by ID module. It allows for removal of a single
+#' occurrence flagged by the user on the map. The function will return
 #' a data frame of occurrences with all relevant columns for futher analyses and without the
-#' occurrences selected by the user
+#' occurrence selected by the user
 #'
 #' @param occs data frame of cleaned occurrences obtained from component occs: Obtain occurrence data.
-#' @param removeID x
+#' @param removeID The ID of the occurrence to be removed from the occurrences dataframe.
 #' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 #' @param spN data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages
 
 # @keywords
 #'
-# @examples
+#' @examples
+#'out.gbif <- occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+#'occs <- as.data.frame(out.gbif[[1]]$cleaned)
+#'removeID <- 81
+#'out.ID <- poccs_removeByID(occs, removeID,spN=occs)
 #'
-#'
-# @return
+#' @return A new occurence dataframe without the user selected occurrence mantaining all
+#' columns from original dataframe for further analyses.
+
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 # @note
 
 # @seealso
 # @references
-# @aliases - a list of additional topic names that will be mapped to
-# this documentation when the user looks them up from the command
-# line.
-# @family - a family name. All functions that have the same family tag will be linked in the documentation.
 
 #' @export
 
