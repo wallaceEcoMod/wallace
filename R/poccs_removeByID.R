@@ -4,7 +4,7 @@
 #'
 #' @details
 #' #' @details
-#' This function is called by the select occurrences by ID module. It allows for removal of a single
+#' This function is called by the remove occurrences by ID module. It allows for removal of a single
 #' occurrence flagged by the user on the map. The function will return
 #' a data frame of occurrences with all relevant columns for futher analyses and without the
 #' occurrence selected by the user
