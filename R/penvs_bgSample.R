@@ -1,6 +1,7 @@
 
 #' @title penvs_bgSample
-#' @description ..
+#' @description This function samples background points with environmental data from a provided background extent
+#' @aliases ##check difference btw bgmask and bgextent
 #'
 #' @details
 #' See Examples.

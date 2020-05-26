@@ -24,7 +24,7 @@
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 # @note
 
-#' @seealso #' @seealso  \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}
+#' @seealso \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}
 # @references
 # @aliases - a list of additional topic names that will be mapped to
 # this documentation when the user looks them up from the command
