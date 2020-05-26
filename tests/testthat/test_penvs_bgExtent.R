@@ -1,12 +1,4 @@
-##### QUESTIONS
-# 1. error with message: 'Too few localities (<2) to create a background polygon.' Expectation 2 From Andres: its fixed, just added a grepl argument to the expect error so it ommits regular expressions
-# 2. I couldn't test the overlap with the point Buffers background extent. From Andrea: I fixed this, problem was you were selecting a single point buffer
-
-####The errors to expect are:
-#'Too few localities (<2) to create a background polygon.'
-#'Change buffer distance to positive or negative value.'
-
-#### COMPONENT 4: Process Environmental Data
+#### COMPONENT penvs: Process Environmental Data
 #### MODULE: Select Study Region
 context("bgExtent")
 
