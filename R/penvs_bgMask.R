@@ -1,9 +1,11 @@
 
 #' @title penvs_bgMask
-#' @description ..
+#' @description This functions crops and masks the environmental data to the provided background area
 #'
 #' @details
-#' See Examples.
+#'  This function is used in the select study region component. Here, the environmental layers to be used in the modelling
+#'  are cropped and masked to the provided background area. The background area is determined in the function penvs_bgExtent from the same component.
+#'  The function returns the provided environmental layers cropped and masked in the provided format (either a Brick or a rasterStack)
 #'
 #' @param occs x
 #' @param envs x
