@@ -1,9 +1,11 @@
 
 #' @title penvs_bgExtent
-#' @description ..
+#' @description This function generates a background area according to a user provided method
 #'
 #' @details
-#' See Examples.
+#' This function is used in the select study region component. Here, the user can select between three methods,
+#' 'bounding box' , 'point buffers' or ' minimum convex polygon' to determine the background extent based on the
+#' observed occurrences. The function returns a SpatialPolygonsDataFrame object of the desired extent.
 #'
 #' @param occs x
 #' @param envs x
