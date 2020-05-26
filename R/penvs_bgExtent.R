@@ -7,7 +7,7 @@
 #' 'bounding box' , 'point buffers' or ' minimum convex polygon' to determine the background extent based on the
 #' observed occurrences. The function returns a SpatialPolygonsDataFrame object of the desired extent.
 #'
-#' @param occs data frame of cleaned and porcessed occurrences obtained from components occs: Obtain occurrence data and, poccs: Process occurrence data.
+#' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.
 #' @param bgSel Method of backround building. Must be one of three options: 'bounding box' , 'point buffers' or ' minimum convex polygon'
 #' @param bgBuf buffer distance in degrees to be used in the building of the background area.
 #' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
@@ -15,10 +15,12 @@
 #' @param spN data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages
 # @keywords
 #'
-# @examples
+#' @examples
+#' occs <-  occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+#' occs <- as.data.frame(occs[[1]]$cleaned)
+#' bgExt1 <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf=0.5,logger = NULL, spN = occs)
 #'
-#'
-# @return
+#' @return A SpatialPolygonsDataFrame object that contains all occurrences from occs
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 # @note
 
