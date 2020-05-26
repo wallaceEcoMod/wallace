@@ -29,7 +29,7 @@
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 # @note
 
-# @seealso
+#' @seealso  \code{\link{pevns_bgExtent}} , \code{\link{pevns_bgSample}}
 # @references
 # @aliases - a list of additional topic names that will be mapped to
 # this documentation when the user looks them up from the command
