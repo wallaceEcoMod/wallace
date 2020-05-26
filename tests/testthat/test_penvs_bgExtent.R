@@ -22,8 +22,7 @@ bPoly <- 'minimum convex polygon' # minimum Convex Polygon
 
 ## Study region buffer distance (degree)
 bgBuf <- 0.5
-#Specify occurrence table
-spN<-occs
+
 ### run function and set coordinates reference system
 ## background extent: bounding Box
 bgExt1 <- penvs_bgExtent(occs, bgSel = bBox, bgBuf=bgBuf,logger = NULL, spN = occs)
