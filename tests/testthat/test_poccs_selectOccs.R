@@ -1,4 +1,4 @@
-#### COMPONENT 2: Process Occurrence Data
+#### COMPONENT poccs: Process Occurrence Data
 #### MODULE: Select Occurrences On Map
 context("selectOccs")
 
