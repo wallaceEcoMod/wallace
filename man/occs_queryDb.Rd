@@ -35,17 +35,17 @@ metadata associated with occurrence records and is not stored or used by
 \item{gbifEmail}{specify only if using `occCite` with GBIF to get a
 complete list of original data sources in a citable format.}
 
-\item{logger}{insert the logger reactive list here for running in shiny,
+\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
 \item{gbifPW=NULL}{specify only if using `occCite` with GBIF to get a complete
 list of original data sources in a citable format.}
 }
 \value{
-formatted tibble of species occurrence records
+List of lists. One list per species with occurence records. Each indiivudal species list with appropriate fields for analysis
 }
 \description{
-\code{occs_queryDb} returns a formatted tibble of species occurrences with a selection of appropriate fields.
+\code{occs_queryDb} returns a list of lists, one per queried species. Each list of species occurrences with a selection of appropriate fields.
 }
 \details{
 This function is called by the module occs_queryDb to query a database for
@@ -55,4 +55,7 @@ appropriate to studies in biogeography.
 }
 \examples{
 occs_queryDb(spName = "Tremarctos ornatus", occDb = "gbif", occNum = 100)
+}
+\author{
+Jamie Kass <jkass@gradcenter.cuny.edu>
 }

@@ -7,21 +7,38 @@
 penvs_bgMask(occs, envs, bgExt, logger = NULL, spN = NULL)
 }
 \arguments{
-\item{occs}{x}
+\item{occs}{data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.}
 
-\item{envs}{x}
+\item{envs}{a RasterStack or RasterBrick of environmental layers to be processed. This detemrines the output type.}
 
-\item{bgExt}{x}
+\item{bgExt}{A SpatialPolygonsDataFrame with the background area to be used for processing}
 
-\item{logger}{x}
+\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+otherwise leave the default NULL}
 
-\item{spN}{x}
+\item{spN}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages}
+}
+\value{
+A rasterStack or a rasterBirck of environmental layers cropped and masked to match the provided background extent.
 }
 \description{
-..
+This functions crops and masks the environmental data to the provided background area
 }
 \details{
-See Examples.
+This function is used in the select study region component. Here, the environmental layers to be used in the modelling
+ are cropped and masked to the provided background area. The background area is determined in the function penvs_bgExtent from the same component.
+ The function returns the provided environmental layers cropped and masked in the provided format (either a Brick or a rasterStack)
+}
+\examples{
+occs <-  occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+occs <- as.data.frame(occs[[1]]$cleaned)
+envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = TRUE)
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
+bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
+
+}
+\seealso{
+\code{\link{penvs_bgExtent}} , \code{\link{penvs_bgSample}}
 }
 \author{
 Jamie Kass <jkass@gradcenter.cuny.edu>

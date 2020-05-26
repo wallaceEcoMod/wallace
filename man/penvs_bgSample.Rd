@@ -2,6 +2,12 @@
 % Please edit documentation in R/penvs_bgSample.R
 \name{penvs_bgSample}
 \alias{penvs_bgSample}
+\alias{##check}
+\alias{difference}
+\alias{btw}
+\alias{bgmask}
+\alias{and}
+\alias{bgextent}
 \title{penvs_bgSample}
 \usage{
 penvs_bgSample(occs, bgMask, bgPtsNum, logger = NULL, spN = NULL)
@@ -18,7 +24,7 @@ penvs_bgSample(occs, bgMask, bgPtsNum, logger = NULL, spN = NULL)
 \item{spN}{x}
 }
 \description{
-..
+This function samples background points with environmental data from a provided background extent
 }
 \details{
 See Examples.
