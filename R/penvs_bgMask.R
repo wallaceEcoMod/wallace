@@ -1,15 +1,19 @@
 
 #' @title penvs_bgMask
-#' @description ..
+#' @description This functions crops and masks the environmental data to the provided background area
 #'
 #' @details
-#' See Examples.
+#'  This function is used in the select study region component. Here, the environmental layers to be used in the modelling
+#'  are cropped and masked to the provided background area. The background area is determined in the function penvs_bgExtent from the same component.
+#'  The function returns the provided environmental layers cropped and masked in the provided format (either a Brick or a rasterStack)
 #'
-#' @param occs x
-#' @param envs x
-#' @param bgExt x
-#' @param logger x
-#' @param spN x
+#' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.
+#' @param envs a RasterStack or RasterBrick of environmental layers to be processed
+#' @param bgExt A SpatialPolygonsDataFrame with the background area to be used for processing
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#' otherwise leave the default NULL
+#' @param spN data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages
+
 #'
 # @keywords
 #'
