@@ -1,4 +1,4 @@
-#### COMPONENT 4: Process Environmental Data
+#### COMPONENT penvs: Process Environmental Data
 #### MODULE: Select Study Region
 context("bgSample")
 
