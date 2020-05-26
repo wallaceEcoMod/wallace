@@ -8,7 +8,7 @@
 #'  The function returns the provided environmental layers cropped and masked in the provided format (either a Brick or a rasterStack)
 #'
 #' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.
-#' @param envs a RasterStack or RasterBrick of environmental layers to be processed
+#' @param envs a RasterStack or RasterBrick of environmental layers to be processed. This detemrines the output type.
 #' @param bgExt A SpatialPolygonsDataFrame with the background area to be used for processing
 #' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 #' otherwise leave the default NULL
@@ -17,10 +17,15 @@
 #'
 # @keywords
 #'
-# @examples
+#' @examples
+#'occs <-  occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+#'occs <- as.data.frame(occs[[1]]$cleaned)
+#'envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = TRUE)
+#'bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
+#'bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
+
 #'
-#'
-# @return
+#' @return A rasterStack or a rasterBirck of environmental layers cropped and masked to match the provided background extent.
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 # @note
 
