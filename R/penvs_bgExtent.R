@@ -7,12 +7,12 @@
 #' 'bounding box' , 'point buffers' or ' minimum convex polygon' to determine the background extent based on the
 #' observed occurrences. The function returns a SpatialPolygonsDataFrame object of the desired extent.
 #'
-#' @param occs x
-#' @param envs x
-#' @param bgSel x
-#' @param bgBuf x
-#' @param logger x
-#' @param spN x
+#' @param occs data frame of cleaned and porcessed occurrences obtained from components occs: Obtain occurrence data and, poccs: Process occurrence data.
+#' @param bgSel Method of backround building. Must be one of three options: 'bounding box' , 'point buffers' or ' minimum convex polygon'
+#' @param bgBuf buffer distance in degrees to be used in the building of the background area.
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#' otherwise leave the default NULL
+#' @param spN data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages
 # @keywords
 #'
 # @examples
