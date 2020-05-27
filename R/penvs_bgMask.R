@@ -25,7 +25,7 @@
 #'bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
 
 #'
-#' @return A rasterStack or a rasterBirck of environmental layers cropped and masked to match the provided background extent.
+#' @return A RasterStack or a RasterBrick of environmental layers cropped and masked to match the provided background extent.
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 # @note
 
