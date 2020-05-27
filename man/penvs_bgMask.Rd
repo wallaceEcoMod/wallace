@@ -19,7 +19,7 @@ otherwise leave the default NULL}
 \item{spN}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages}
 }
 \value{
-A rasterStack or a rasterBirck of environmental layers cropped and masked to match the provided background extent.
+A RasterStack or a RasterBrick of environmental layers cropped and masked to match the provided background extent.
 }
 \description{
 This functions crops and masks the environmental data to the provided background area
