@@ -1,9 +1,4 @@
-##### QUESTIONS
-# 1. error with message: "The draw polygon did not include all localities(**). Remove the polygon before to draw a new one."
-      ###Its fixed, in expect_error you must include agrepl command to make it avoid regular expressions such as **
-
-
-#### COMPONENT 4: Process Environmental Data
+#### COMPONENT penvs: Process Environmental Data
 #### MODULE: Draw polygon
 context("drawBgExtent")
 
