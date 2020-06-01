@@ -1,4 +1,3 @@
-
 #' @title penvs_drawBgExtent: Draw background extent
 #' @description This function generates a background area according to a user drwan polygon and provided buffer
 #'
