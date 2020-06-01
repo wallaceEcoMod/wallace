@@ -1,26 +1,33 @@
-
-#' @title penvs_userBgExtent
-#' @description ..
+#' @title penvs_userBgExtent: user provided background extent
+#' @description This function generates a background area according to a user provided polygon and buffer
 #'
 #' @details
-#' See Examples.
+#' This function is used in the select study region component. Here, the user provides either a shapefile or a csv with vertex coordinates
+#' with the desired shape for the background extent, the user may include a buffer to the given polygon. The buffered poylgon must include all occurrences (occs) or function will return an error.
+#' The function returns a SpatialPolygons object of the desired extent (+ buffer).
 #'
-#' @param bgShp_path x
-#' @param bgShp_name x
-#' @param userBgBuf x
+#' @param bgShp_path Path to the user provided shapefile or csv with vertex coordinates. M
+#' @param bgShp_name Name of the user porvided shapefile or csv with vertex coordinates.
+#' @param userBgBuf Buffer to be used in creating the background extent must be >=0
 #' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#' otherwise leave the default NULL
 
-#' @param logger x
 # @keywords
 #'
-# @examples
-#'
-#'
-# @return
+#' @examples
+#' "espeletia argentea" endemic to Colombia (provided shapefile in test folder)
+#' occs <-  occs_queryDb(spName = "espeletia argentea", occDb = "gbif", occNum = 100)
+#' occs <- as.data.frame(occs[[1]]$cleaned)
+#' Path <- list.files(path='./tests/testthat/shapefile', pattern = "COL_adm0.", full.names = TRUE)
+#' Name <- list.files(path='./tests/testthat/shapefile', pattern = "COL_adm0.", full.names = FALSE)
+#' userBgbf <- penvs_userBgExtent(bgShp_path = Path, bgShp_name = Name, userBgBuf = 0.5,occs=occs)
+#' @return This function returns a SpatialPolygons object with the user provided shape (+ a buffer is userBgBuf >0).
+#' The polygon will be at least large enough to contain all occurrences.
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 # @note
 
-# @seealso
+#' @seealso \code{\link{penvs_drawBgExtent}}, \code{\link{penvs_bgExtent}}, \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}
 # @references
 # @aliases - a list of additional topic names that will be mapped to
 # this documentation when the user looks them up from the command
@@ -34,7 +41,7 @@ penvs_userBgExtent <- function(bgShp_path, bgShp_name, userBgBuf, occs,
     pathfile <- basename(bgShp_path)
     # get extensions of all input files
     exts <- sapply(strsplit(bgShp_name, '\\.'), FUN = function(x) x[2])
-    if (length(exts) == 1 & exts == 'csv') {
+    if (length(exts) == 1 & exts[1] == 'csv') {
       f <- read.csv(bgShp_path, header = TRUE)
       bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(f)), 1)))
     } else if ('shp' %in% exts) {
@@ -59,7 +66,7 @@ penvs_userBgExtent <- function(bgShp_path, bgShp_name, userBgBuf, occs,
       return()
     }
 
-    if (userBgBuf > 0) {
+    if (userBgBuf >= 0) {
       bgExt <- rgeos::gBuffer(bgExt, width = userBgBuf)
     }
 
