@@ -8,7 +8,8 @@
 #' @param polyExtXY x
 #' @param polyExtID x
 #' @param drawBgBuf x
-#' @param occs x
+#' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.
+
 #' @param logger x
 #' @param spN x
 # @keywords
@@ -53,8 +54,8 @@ penvs_drawBgExtent <- function(polyExtXY, polyExtID, drawBgBuf, occs,
   } else if (ptRem > 0) {
     logger %>%
       writeLog(type = 'error',
-               paste0("The draw polygon did not include all localities(**). ",
-                      "Remove the polygon before to draw a new one."))
+               paste0("The drawn polygon did not include all localities(**). ",
+                      "Remove the polygon before drawing a new one."))
     return()
   }
 }

@@ -37,7 +37,7 @@ raster::crs(drawBg) <- "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=WGS84"
 ### test if the error messages appear when they are supposed to
 test_that("error checks", {
   # the drawn polygon does not include all localities
-  expect_error(penvs_drawBgExtent(polyExtXY = expertDrawPoly2, polyExtID = 1, drawBgBuf, occs),"The draw polygon did not include all localities(**). Remove the polygon before to draw a new one.",fixed=TRUE)
+  expect_error(penvs_drawBgExtent(polyExtXY = expertDrawPoly2, polyExtID = 1, drawBgBuf, occs),"The drawn polygon did not include all localities(**). Remove the polygon before drawing a new one.",fixed=TRUE)
 })
 
 ### test output features
