@@ -8,7 +8,8 @@
 #' @param bgShp_path x
 #' @param bgShp_name x
 #' @param userBgBuf x
-#' @param occs x
+#' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.
+
 #' @param logger x
 # @keywords
 #'
