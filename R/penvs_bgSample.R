@@ -30,7 +30,7 @@
 #' Maximum number of pointsis equal to non NA cells in each layer of the reference brick or stack.
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 # @note
-#' @seealso \code{\link{penvs_bgMask}} , \code{\link{penvs_bgExtent}} \code{\link[dismo]{randomPoints}}
+#' @seealso \code{\link{penvs_bgMask}} , \code{\link{penvs_bgExtent}}  \code{\link{penvs_userBgExtent}}, \code{\link{penvs_drawBgExtent}}, \code{\link[dismo]{randomPoints}}
 # @references
 # @aliases - a list of additional topic names that will be mapped to
 # this documentation when the user looks them up from the command
