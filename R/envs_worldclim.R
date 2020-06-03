@@ -1,4 +1,4 @@
-#' @title envs_worldclim
+#' @title envs_worldclim Obtain worldclim variables
 #' @description download worldclim variables. see www.worldclim.com
 #'
 #' @details
@@ -15,16 +15,17 @@
 #'
 # @keywords
 #'
-# @examples
+#' @examples
 #' bcRes <- 10 # (10 arcmin)
 #' envar <- c('bio01', 'bio02', 'bio03', 'bio10', 'bio11')
 #' arcmin10 <- envs_worldclim(bcRes, bcSel= envar,doBrick=T)
 #'
 #' @return A rasterStack or a rasterBrick (if doBrick=TRUE) of downloaded worldclim rasters at the requested resolution
 #'
-#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+#' @author Jamie Kass < jamie.m.kass@@gmail.com >
+#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
-# @seealso
+#' @seealso \code{\link[raster]{getData}}
 # @references
 # @aliases - a list of additional topic names that will be mapped to
 # this documentation when the user looks them up from the command

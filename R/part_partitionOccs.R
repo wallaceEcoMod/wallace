@@ -1,5 +1,5 @@
 
-#' @title part_partitionOccs
+#' @title part_partitionOccs Partition occurrence data
 #' @description this function partitions occurrence data and background points according to a user selected method.
 #'
 #' @details
@@ -35,7 +35,7 @@
 #'
 #' @return A list of two vectors containing group assignments for occurrences (occ.grp) and background points (bg.grp).
 #' @author Jamie Kass < jamie.m.kass@@gmail.com >
-#' @author Gonzalo Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 #' @author Andrea Paz < paz.andreita@@gmail.com>
 # @note
 #' @seealso \code{\link[ENMeval]{partitions}}

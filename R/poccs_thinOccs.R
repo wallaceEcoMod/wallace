@@ -1,5 +1,5 @@
 
-#' @title poocs_thinOccs
+#' @title poocs_thinOccs Thin occurrences
 #' @description The function thins the observed occurences by a user provided distance
 #'
 #' @details
@@ -21,12 +21,11 @@
 #'
 #'
 #' @return Output is a data frame of thinned occurences (all occurences at a distance >thinDist) with the same columns as occs
-#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
-# Question is Matt a co-author here?
+#' @author Jamie Kass < jamie.m.kass@@gmail.com >
+#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
 
-#' @seealso
-#' thin in the spThin package
+#' @seealso \code{\link[spThin]{thin}}
 # @references
 # @aliases - a list of additional topic names that will be mapped to
 # this documentation when the user looks them up from the command

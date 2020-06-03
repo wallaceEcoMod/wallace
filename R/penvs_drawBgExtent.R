@@ -26,7 +26,8 @@
 #' @return This functions returns a SpatialPolygonsDataFrame based on the user specified coordinates (drawn on map)
 #' This SpatialPolygonsDataFrame may be larger than specified if drawBgBuf > 0. The SpatialPolygonsDataFramewill include all occurrences.
 
-#' @author Gonzalo Pinilla gpinillabuitrago@@gradcenter.cuny.edu
+#' @author Jamie Kass < jamie.m.kass@@gmail.com >
+#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
 #' @seealso \code{\link{penvs_userBgExtent}}, \code{\link{penvs_bgExtent}}, \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}
 # @references

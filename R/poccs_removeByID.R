@@ -1,9 +1,8 @@
 
-#' @title poccs_removeByID
+#' @title poccs_removeByID Remove occurrence by ID
 #' @description This function removes user selected occurrences by ID
 #'
 #' @details
-#' #' @details
 #' This function is called by the remove occurrences by ID module. It allows for removal of a single
 #' occurrence flagged by the user on the map. The function will return
 #' a data frame of occurrences with all relevant columns for futher analyses and without the
@@ -26,7 +25,8 @@
 #' @return A new occurence dataframe without the user selected occurrence mantaining all
 #' columns from original dataframe for further analyses.
 
-#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+#' @author Jamie Kass < jamie.m.kass@@gmail.com >
+#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
 
 # @seealso
