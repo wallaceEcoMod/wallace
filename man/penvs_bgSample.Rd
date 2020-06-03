@@ -43,7 +43,7 @@ bgsample <- penvs_bgSample(occs, bgMask, bgPtsNum=1000,spN=occs)
 
 }
 \seealso{
-\code{\link{penvs_bgMask}} , \code{\link{penvs_bgExtent}} \code{\link[dismo]{randomPoints}}
+\code{\link{penvs_bgMask}} , \code{\link{penvs_bgExtent}}  \code{\link{penvs_userBgExtent}}, \code{\link{penvs_drawBgExtent}}, \code{\link[dismo]{randomPoints}}
 }
 \author{
 Jamie Kass <jkass@gradcenter.cuny.edu>

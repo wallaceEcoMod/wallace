@@ -2,26 +2,44 @@
 % Please edit documentation in R/penvs_userBgExtent.R
 \name{penvs_userBgExtent}
 \alias{penvs_userBgExtent}
-\title{penvs_userBgExtent}
+\title{penvs_userBgExtent: user provided background extent}
 \usage{
 penvs_userBgExtent(bgShp_path, bgShp_name, userBgBuf, occs, logger = NULL)
 }
 \arguments{
-\item{bgShp_path}{x}
+\item{bgShp_path}{Path to the user provided shapefile or csv with vertex coordinates. M}
 
-\item{bgShp_name}{x}
+\item{bgShp_name}{Name of the user porvided shapefile or csv with vertex coordinates.}
 
-\item{userBgBuf}{x}
+\item{userBgBuf}{Buffer to be used in creating the background extent must be >=0}
 
-\item{occs}{x}
+\item{occs}{data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.}
 
-\item{logger}{x}
+\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+otherwise leave the default NULL}
+}
+\value{
+This function returns a SpatialPolygons object with the user provided shape (+ a buffer is userBgBuf >0).
+The polygon will be at least large enough to contain all occurrences.
 }
 \description{
-..
+This function generates a background area according to a user provided polygon and buffer
 }
 \details{
-See Examples.
+This function is used in the select study region component. Here, the user provides either a shapefile or a csv with vertex coordinates
+with the desired shape for the background extent, the user may include a buffer to the given polygon. The buffered poylgon must include all occurrences (occs) or function will return an error.
+The function returns a SpatialPolygons object of the desired extent (+ buffer).
+}
+\examples{
+"espeletia argentea" endemic to Colombia (provided shapefile in test folder)
+occs <-  occs_queryDb(spName = "espeletia argentea", occDb = "gbif", occNum = 100)
+occs <- as.data.frame(occs[[1]]$cleaned)
+Path <- list.files(path='./tests/testthat/shapefile', pattern = "COL_adm0.", full.names = TRUE)
+Name <- list.files(path='./tests/testthat/shapefile', pattern = "COL_adm0.", full.names = FALSE)
+userBgbf <- penvs_userBgExtent(bgShp_path = Path, bgShp_name = Name, userBgBuf = 0.5,occs=occs)
+}
+\seealso{
+\code{\link{penvs_drawBgExtent}}, \code{\link{penvs_bgExtent}}, \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}
 }
 \author{
 Jamie Kass <jkass@gradcenter.cuny.edu>

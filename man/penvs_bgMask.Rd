@@ -38,7 +38,7 @@ bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
 
 }
 \seealso{
-\code{\link{penvs_bgExtent}} , \code{\link{penvs_bgSample}}
+\code{\link{penvs_userBgExtent}}, \code{\link{penvs_drawBgExtent}}, \code{\link{penvs_bgExtent}} , \code{\link{penvs_bgSample}}
 }
 \author{
 Jamie Kass <jkass@gradcenter.cuny.edu>

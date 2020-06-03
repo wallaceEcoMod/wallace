@@ -2,7 +2,7 @@
 % Please edit documentation in R/occs_paleoDb.R
 \name{occs_paleoDb}
 \alias{occs_paleoDb}
-\title{`occs_paleoDb` returns species occurrences}
+\title{`occs_paleoDb`}
 \usage{
 occs_paleoDb(spName, occNum, timeInterval, logger = NULL)
 }

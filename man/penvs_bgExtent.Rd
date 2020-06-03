@@ -36,7 +36,7 @@ bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf=0.5,logger = NULL, s
 
 }
 \seealso{
-\code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}
+\code{\link{penvs_userBgExtent}}, \code{\link{penvs_drawBgExtent}}, \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}
 }
 \author{
 Jamie Kass <jkass@gradcenter.cuny.edu>

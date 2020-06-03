@@ -2,7 +2,7 @@
 % Please edit documentation in R/penvs_drawBgExtent.R
 \name{penvs_drawBgExtent}
 \alias{penvs_drawBgExtent}
-\title{penvs_drawBgExtent}
+\title{penvs_drawBgExtent: Draw background extent}
 \usage{
 penvs_drawBgExtent(
   polyExtXY,
@@ -14,23 +14,41 @@ penvs_drawBgExtent(
 )
 }
 \arguments{
-\item{polyExtXY}{x}
+\item{polyExtXY}{Coordinates of polygon endpoints obtained from user drawn polygon in GUI.}
 
-\item{polyExtID}{x}
+\item{polyExtID}{Numeric ID to be used in the generation of the polygon.}
 
-\item{drawBgBuf}{x}
+\item{drawBgBuf}{The buffer to be used in generating the SpatialPolygonsDataFrame, maybe be 0 or >0. A number must be specified.}
 
-\item{occs}{x}
+\item{occs}{data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.}
 
-\item{logger}{x}
+\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+otherwise leave the default NULL}
 
-\item{spN}{x}
+\item{spN}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages}
+}
+\value{
+This functions returns a SpatialPolygonsDataFrame based on the user specified coordinates (drawn on map)
+This SpatialPolygonsDataFrame may be larger than specified if drawBgBuf > 0. The SpatialPolygonsDataFramewill include all occurrences.
 }
 \description{
-..
+This function generates a background area according to a user drwan polygon and provided buffer
 }
 \details{
-See Examples.
+This function is used in the select study region component. Here, in the GUI, the user draws a polygon to be used
+as the background extent and may include a buffer to the given polygon. The buffered poylgon must include all occurrences (occs) or function will return an error.
+The function returns a SpatialPolygonsDataFrame object of the desired extent (+ buffer).
+}
+\examples{
+occs <-  occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+occs <- as.data.frame(occs[[1]]$cleaned)
+longitude <- c(-27.78641, -74.09170, -84.01930, -129.74867, -142.19085, -45.55045, -28.56050)
+latitude <- c(-40.40539, -37.02010, 2.28455, 40.75350, 56.35954, 54.55045, -7.11861)
+expertDrawPoly <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
+drawBgBf <- penvs_drawBgExtent(polyExtXY = expertDrawPoly, polyExtID = 1, drawBgBuf = 0.5, occs,spN=occs)
+}
+\seealso{
+\code{\link{penvs_userBgExtent}}, \code{\link{penvs_bgExtent}}, \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}
 }
 \author{
 Gonzalo Pinilla gpinillabuitrago@gradcenter.cuny.edu
