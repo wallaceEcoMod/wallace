@@ -35,7 +35,7 @@
 #'
 #' @return A list of two vectors containing group assignments for occurrences (occ.grp) and background points (bg.grp).
 #' @author Jamie Kass < jamie.m.kass@@gmail.com >
-#' @author Gonzalo Pinilla < gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 #' @author Andrea Paz < paz.andreita@@gmail.com>
 # @note
 #' @seealso \code{\link[ENMeval]{partitions}}
