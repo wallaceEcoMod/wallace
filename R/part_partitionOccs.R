@@ -1,6 +1,6 @@
 
 #' @title part_partitionOccs
-#' @description this function partitions occurrence data and bacground points according to a suer selected method.
+#' @description this function partitions occurrence data and background points according to a user selected method.
 #'
 #' @details
 #' This function is used in the partition occurrence data component.
@@ -30,9 +30,8 @@
 #' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
 #' bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
 #' bgSample <- penvs_bgSample(occs, bgMask, bgPtsNum=1000,spN=occs)
-#' folds <- 'rand' # Non-spatial Partition - random k-fold
-#' kfolds <- 4
-#' partfold <- part_partitionOccs(occs, bgSample, method = folds, kfolds, bgMask = NULL, aggFact = NULL,spN=occs)
+#' folds <- 'rand'
+#' partfold <- part_partitionOccs(occs, bgSample, method = folds, kfolds=4, bgMask = NULL, aggFact = NULL,spN=occs)
 #'
 #' @return A list of two vectors containing group assignments for occurrences (occ.grp) and background points (bg.grp).
 #' @author Jamie Kass < jamie.m.kass@@gmail.com >
