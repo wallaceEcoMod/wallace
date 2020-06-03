@@ -1,4 +1,4 @@
-#' @title `occs_paleoDb` returns species occurrences
+#' @title `occs_paleoDb`
 #' @description
 #' query paleobioDB database and returns the complete list of data, data with coordinates, and data with no duplicates
 #'
