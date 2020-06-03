@@ -2,7 +2,7 @@
 % Please edit documentation in R/poccs_thinOccs.R
 \name{poccs_thinOccs}
 \alias{poccs_thinOccs}
-\title{poocs_thinOccs}
+\title{poocs_thinOccs Thin occurrences}
 \usage{
 poccs_thinOccs(occs, thinDist, logger = NULL, spN = NULL)
 }
@@ -35,8 +35,10 @@ out.thin <- poccs_thinOccs(occs=occs, thinDist=30,spN=occs,logger=NULL)
 
 }
 \seealso{
-thin in the spThin package
+\code{\link[spThin]{thin}}
 }
 \author{
-Jamie Kass <jkass@gradcenter.cuny.edu>
+Jamie Kass < jamie.m.kass@gmail.com >
+
+Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
 }

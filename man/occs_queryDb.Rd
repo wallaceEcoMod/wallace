@@ -2,7 +2,7 @@
 % Please edit documentation in R/occs_queryDb.R
 \name{occs_queryDb}
 \alias{occs_queryDb}
-\title{Query online database for species occurrence records.}
+\title{occs_queryDb Query online database for species occurrence records.}
 \usage{
 occs_queryDb(
   spNames,
@@ -45,7 +45,7 @@ list of original data sources in a citable format.}
 List of lists. One list per species with occurence records. Each indiivudal species list with appropriate fields for analysis
 }
 \description{
-\code{occs_queryDb} returns a list of lists, one per queried species. Each list of species occurrences with a selection of appropriate fields.
+Queries a given database for occurrence data on the provided species'
 }
 \details{
 This function is called by the module occs_queryDb to query a database for
@@ -57,5 +57,9 @@ appropriate to studies in biogeography.
 occs_queryDb(spName = "Tremarctos ornatus", occDb = "gbif", occNum = 100)
 }
 \author{
-Jamie Kass <jkass@gradcenter.cuny.edu>
+Jamie Kass < jamie.m.kass@gmail.com >
+
+Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
+
+Andrea Paz < paz.andreita@gmail.com>
 }

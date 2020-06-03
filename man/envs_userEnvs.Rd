@@ -2,7 +2,7 @@
 % Please edit documentation in R/envs_userEnvs.R
 \name{envs_userEnvs}
 \alias{envs_userEnvs}
-\title{envs_worldclim}
+\title{envs_userEnvs}
 \usage{
 envs_userEnvs(rasPath, rasName, doBrick = FALSE, logger = NULL)
 }
@@ -33,5 +33,7 @@ userEnvs <- envs_userEnvs(rasPath = Path, rasName = Name,doBrick=TRUE)
 
 }
 \author{
-Jamie Kass <jkass@gradcenter.cuny.edu>
+Jamie Kass < jamie.m.kass@gmail.com >
+
+Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
 }

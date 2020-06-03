@@ -2,7 +2,7 @@
 % Please edit documentation in R/penvs_bgExtent.R
 \name{penvs_bgExtent}
 \alias{penvs_bgExtent}
-\title{penvs_bgExtent}
+\title{penvs_bgExtent Generate background extent}
 \usage{
 penvs_bgExtent(occs, bgSel, bgBuf, logger = NULL, spN = NULL)
 }
@@ -39,5 +39,7 @@ bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf=0.5,logger = NULL, s
 \code{\link{penvs_userBgExtent}}, \code{\link{penvs_drawBgExtent}}, \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}
 }
 \author{
-Jamie Kass <jkass@gradcenter.cuny.edu>
+Jamie Kass < jamie.m.kass@gmail.com >
+
+Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
 }

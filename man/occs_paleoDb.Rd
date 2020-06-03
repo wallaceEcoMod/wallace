@@ -2,7 +2,7 @@
 % Please edit documentation in R/occs_paleoDb.R
 \name{occs_paleoDb}
 \alias{occs_paleoDb}
-\title{`occs_paleoDb`}
+\title{`occs_paleoDb` query paleobioDB database}
 \usage{
 occs_paleoDb(spName, occNum, timeInterval, logger = NULL)
 }
@@ -34,9 +34,9 @@ timeInterval<-"Holocene"
 occsPaleo<- occs_paleoDb(spName, occNum, timeInterval, logger = NULL)
 }
 \author{
-Jamie Kass <jkass@gradcenter.cuny.edu>
+Jamie Kass < jamie.m.kass@gmail.com >
 
-Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
 
 Sara Varela <sara_varela@yahoo.com>
 }

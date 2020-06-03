@@ -42,5 +42,9 @@ userBgbf <- penvs_userBgExtent(bgShp_path = Path, bgShp_name = Name, userBgBuf =
 \code{\link{penvs_drawBgExtent}}, \code{\link{penvs_bgExtent}}, \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}
 }
 \author{
-Jamie Kass <jkass@gradcenter.cuny.edu>
+Jamie Kass < jamie.m.kass@gmail.com >
+
+Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
+
+Andrea Paz < paz.andreita@gmail.com>
 }

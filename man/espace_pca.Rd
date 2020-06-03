@@ -57,9 +57,9 @@ espace_pca(sp.name1,occs.z1=bioclimAlg@occs[3:7],bgPts.z1=bioclimAlg@bg[3:7])
 dudi.pca in the ade4 package
 }
 \author{
-Jamie Kass <jkass@gradcenter.cuny.edu>
+Jamie Kass < jamie.m.kass@gmail.com >
 
-Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
 
 Olivier Broennimann olivier.broennimann@unil.ch
 }

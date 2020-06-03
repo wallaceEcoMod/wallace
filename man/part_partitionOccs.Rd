@@ -2,7 +2,7 @@
 % Please edit documentation in R/part_partitionOccs.R
 \name{part_partitionOccs}
 \alias{part_partitionOccs}
-\title{part_partitionOccs}
+\title{part_partitionOccs Partition occurrence data}
 \usage{
 part_partitionOccs(
   occs,
@@ -66,7 +66,7 @@ partfold <- part_partitionOccs(occs, bgSample, method = folds, kfolds=4, bgMask 
 \author{
 Jamie Kass < jamie.m.kass@gmail.com >
 
-Gonzalo Pinilla < gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
 
 Andrea Paz < paz.andreita@gmail.com>
 }

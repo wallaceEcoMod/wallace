@@ -2,7 +2,7 @@
 % Please edit documentation in R/occs_userOccs.R
 \name{occs_userOccs}
 \alias{occs_userOccs}
-\title{occs_userOccs}
+\title{occs_userOccs Loads user provided occurrence records}
 \usage{
 occs_userOccs(txtPath, txtName, txtSep, txtDec, logger = NULL)
 }
@@ -38,7 +38,7 @@ user.occs <- occs_userOccs(txtPath, txtName,txtSep=",",txtDec=".")
 
 }
 \author{
-Jamie Kass <jkass@gradcenter.cuny.edu>
+Jamie Kass < jamie.m.kass@gmail.com >
 
-Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
 }

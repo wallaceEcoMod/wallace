@@ -2,7 +2,7 @@
 % Please edit documentation in R/penvs_bgMask.R
 \name{penvs_bgMask}
 \alias{penvs_bgMask}
-\title{penvs_bgMask}
+\title{penvs_bgMask Mask environmental data}
 \usage{
 penvs_bgMask(occs, envs, bgExt, logger = NULL, spN = NULL)
 }
@@ -41,5 +41,7 @@ bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
 \code{\link{penvs_userBgExtent}}, \code{\link{penvs_drawBgExtent}}, \code{\link{penvs_bgExtent}} , \code{\link{penvs_bgSample}}
 }
 \author{
-Jamie Kass <jkass@gradcenter.cuny.edu>
+Jamie Kass < jamie.m.kass@gmail.com >
+
+Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
 }
