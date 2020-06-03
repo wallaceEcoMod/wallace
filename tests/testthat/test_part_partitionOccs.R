@@ -1,8 +1,4 @@
-##### QUESTIONS
-# 1. error: method is checkerboard but aggregation factor parameter is NULL
-# is.na(aggFact) is a previous message that cover that problem
-
-#### COMPONENT 5: Partition Occurrence Data
+#### COMPONENT part: Partition Occurrence Data
 #### MODULE: Non-spatial Partition & Spatial Partition
 context("partitionOccs")
 
@@ -89,7 +85,7 @@ test_that("error checks", {
                         factor greater than 1 for ", em(spName(spN)), "."),fixed=T)
   # method is checkerboard 2 but aggregation factor parameter = 1
   expect_error(part_partitionOccs(occs, bg, method = cb2, kfolds = NULL, bgMask,
-                                aggFact = -2,spN=occs), paste0("Please specify a positive aggregation
+                                aggFact = 1,spN=occs), paste0("Please specify a positive aggregation
                         factor greater than 1 for ", em(spName(spN)), "."),fixed=T)
   # method is checkerboard 1 but aggregation factor parameter is NA
   expect_error(part_partitionOccs(occs, bg, method = cb1, kfolds = NULL, bgMask,
@@ -99,6 +95,16 @@ test_that("error checks", {
   expect_error(part_partitionOccs(occs, bg, method = cb2, kfolds = NULL, bgMask,
                                 aggFact = NA,spN=occs), paste0("Please specify a positive aggregation
                         factor greater than 1 for ", em(spName(spN)), "."),fixed=T)
+  # method is checkerboard 1 but aggregation factor parameter is NULL
+  expect_error(part_partitionOccs(occs, bg, method = cb1, kfolds = NULL, bgMask,
+                                  aggFact = NULL,spN=occs), paste0("Please specify an aggregation
+                             factor to use checkerboard partition functions for ",
+                                                                   em(spName(spN)), "."),fixed=T)
+  # method is checkerboard 2 but aggregation factor parameter is NULL
+  expect_error(part_partitionOccs(occs, bg, method = cb2, kfolds = NULL, bgMask,
+                                  aggFact = NULL,spN=occs), paste0("Please specify an aggregation
+                             factor to use checkerboard partition functions for ",
+                                                                   em(spName(spN)), "."),fixed=T)
   # method is checkerboard 1 but athe bgMask parameter is NULL
   expect_error(part_partitionOccs(occs, bg, method = cb1, kfolds = NULL, bgMask = NULL,
                                 aggFact = 2,spN=occs), paste0("Please specify a background mask
