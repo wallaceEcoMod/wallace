@@ -11,14 +11,32 @@ occs_paleoDb(spName, occNum, timeInterval, logger = NULL)
 
 \item{occNum}{integer maximum number of records}
 
-\item{timeInterval}{character Either "LGM" (Last Glacial Maximum) or "Holo" (Holocene). For PaleobioDB only Holocene is allowed.}
+\item{timeInterval}{character , currently a single timeInterval is allowed: "Holocene" (Holocene).}
+
+\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+otherwise leave the default NULL}
+}
+\value{
+A list of 2 dataframes. First dataframe is the original dowloaded dataset, second data frame without duplicates and with appropriate fields for analyses
 }
 \description{
-#' query paleobioDB or neotoma databases and returns the complete list of data, data with coordinates, and data with no duplicates
+query paleobioDB database and returns the complete list of data, data with coordinates, and data with no duplicates
 }
 \details{
-See Examples.
+This function is called by the module occs_queryDb to query the paleobioDB database for
+species occurrence records in the holocene. It removes records with duplicate coordinates, and select some columns with fields
+appropriate to studies in biogeography.
+}
+\examples{
+spName<-"Didelphis virginiana"
+occNum<-100
+timeInterval<-"Holocene"
+occsPaleo<- occs_paleoDb(spName, occNum, timeInterval, logger = NULL)
 }
 \author{
 Jamie Kass <jkass@gradcenter.cuny.edu>
+
+Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
+
+Sara Varela <sara_varela@yahoo.com>
 }

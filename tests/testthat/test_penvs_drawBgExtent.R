@@ -1,9 +1,4 @@
-##### QUESTIONS
-# 1. error with message: "The draw polygon did not include all localities(**). Remove the polygon before to draw a new one."
-      ###Its fixed, in expect_error you must include agrepl command to make it avoid regular expressions such as **
-
-
-#### COMPONENT 4: Process Environmental Data
+#### COMPONENT penvs: Process Environmental Data
 #### MODULE: Draw polygon
 context("drawBgExtent")
 
@@ -15,8 +10,6 @@ source("test_helper_functions.R")
 ## occurrences
 occs <-  occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
 occs <- as.data.frame(occs[[1]]$cleaned)
-#Specify occurrence table
-spN<-occs
 ## Draw Background Extent
 # set coordinates
 longitude <- c(-27.78641, -74.09170, -84.01930, -129.74867, -142.19085, -45.55045, -28.56050)
@@ -44,7 +37,7 @@ raster::crs(drawBg) <- "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=WGS84"
 ### test if the error messages appear when they are supposed to
 test_that("error checks", {
   # the drawn polygon does not include all localities
-  expect_error(penvs_drawBgExtent(polyExtXY = expertDrawPoly2, polyExtID = 1, drawBgBuf, occs),"The draw polygon did not include all localities(**). Remove the polygon before to draw a new one.",fixed=TRUE)
+  expect_error(penvs_drawBgExtent(polyExtXY = expertDrawPoly2, polyExtID = 1, drawBgBuf, occs),"The drawn polygon did not include all localities(**). Remove the polygon before drawing a new one.",fixed=TRUE)
 })
 
 ### test output features
@@ -64,3 +57,4 @@ test_that("output type checks", {
   overlap <- sp::over(points, Poly)
   expect_false(NA %in% overlap)
 })
+

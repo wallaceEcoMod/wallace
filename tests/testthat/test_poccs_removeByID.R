@@ -1,4 +1,4 @@
-#### COMPONENT 2: Process Occurrence Data
+#### COMPONENT pocss: Process Occurrence Data
 #### MODULE: Remove Occurrences By ID
 context("removeByID")
 

@@ -1,21 +1,30 @@
-
 #' @title poccs_selectOccs
-#' @description ..
+#' @description This function removes occurrences outside of a user created polygon
 #'
 #' @details
-#' See Examples.
+#' This function is called by the select occurrences on map module. It allows for removal of
+#' occurrences outside the user drawn polygon in the map. The function will return
+#' a data frame of occurrences with all relevant columns for futher analyses and without the
+#' occurrences outside of the polygon.
 #'
-#' @param occs x
-#' @param polySelXY x
-#' @param polySelID x
-#' @param logger x
-#' @param spN x
+#' @param occs data frame of cleaned occurrences obtained from component occs: Obtain occurrence data.
+#' @param polySelXY matrix of longitude and latitude describing the expert drawn polygon.
+#' @param polySelID Polygon ID to be used in SpatialPolygons creation, defaults to 1.
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#'  otherwise leave the default NULL
+#' @param spN data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages
 # @keywords
 #'
 # @examples
-#'
-#'
-# @return
+
+#'occs <- occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 1000)[[1]]$cleaned
+#'longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331, -66.47149, -66.71319, -71.11931)
+#'latitude <- c(13.18379, 7.52315, 0.93105, -1.70167, 0.98391, 6.09208, 12.74980)
+#'expertAddedPoly <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
+#'out.occs<- poccs_selectOccs(occs, polySelXY = expertAddedPoly,polySelID = 1, logger = NULL, spN = occs)
+
+#' @return A new occurence dataframe including only occurences inside the provided polygon and mantaining all
+#' columns from original dataframe for further analyses.
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 # @note
 

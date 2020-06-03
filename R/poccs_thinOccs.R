@@ -1,24 +1,32 @@
 
 #' @title poocs_thinOccs
-#' @description ..
+#' @description The function thins the observed occurences by a user provided distance
 #'
 #' @details
-#' See Examples.
+#' This function is called by the component poccs: process occurrence data to thin the occurence data
+#' to a user specified distance. Providing an output with preserved columns appropriate for further analyses
+#' and a maximized number of occurrences that are separated by at least the provided distance.
 #'
-#' @param occs x
-#' @param thinDist x
-#' @param logger x
-#' @param spN x
+#' @param occs data frame of cleaned occurrences obtained from component occs: Obtain occurrence data.
+#' @param thinDist Distance in meters to be used for thinning. Number must be positive.
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#'  otherwise leave the default NULL
+#' @param spN data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages
 # @keywords
 #'
-# @examples
+#' @examples
+#' out.gbif <- occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+#' occs <- as.data.frame(out.gbif[[1]]$cleaned)
+#' out.thin <- poccs_thinOccs(occs=occs, thinDist=30,spN=occs,logger=NULL)
 #'
 #'
-# @return
+#' @return Output is a data frame of thinned occurences (all occurences at a distance >thinDist) with the same columns as occs
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+# Question is Matt a co-author here?
 # @note
 
-# @seealso
+#' @seealso
+#' thin in the spThin package
 # @references
 # @aliases - a list of additional topic names that will be mapped to
 # this documentation when the user looks them up from the command

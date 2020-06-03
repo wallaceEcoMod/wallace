@@ -1,26 +1,30 @@
 
 #' @title penvs_bgExtent
-#' @description ..
+#' @description This function generates a background area according to a user provided method
 #'
 #' @details
-#' See Examples.
+#' This function is used in the select study region component. Here, the user can select between three methods,
+#' 'bounding box' , 'point buffers' or ' minimum convex polygon' to determine the background extent based on the
+#' observed occurrences. The function returns a SpatialPolygonsDataFrame object of the desired extent.
 #'
-#' @param occs x
-#' @param envs x
-#' @param bgSel x
-#' @param bgBuf x
-#' @param logger x
-#' @param spN x
+#' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.
+#' @param bgSel Method of backround building. Must be one of three options: 'bounding box' , 'point buffers' or ' minimum convex polygon'
+#' @param bgBuf buffer distance in degrees to be used in the building of the background area.
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#' otherwise leave the default NULL
+#' @param spN data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages
 # @keywords
 #'
-# @examples
+#' @examples
+#' occs <-  occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+#' occs <- as.data.frame(occs[[1]]$cleaned)
+#' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf=0.5,logger = NULL, spN = occs)
 #'
-#'
-# @return
+#' @return A SpatialPolygonsDataFrame object that contains all occurrences from occs
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 # @note
 
-# @seealso
+#' @seealso \code{\link{penvs_userBgExtent}}, \code{\link{penvs_drawBgExtent}}, \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}
 # @references
 # @aliases - a list of additional topic names that will be mapped to
 # this documentation when the user looks them up from the command

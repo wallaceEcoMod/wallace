@@ -1,4 +1,4 @@
-#### COMPONENT 4: Process Environmental Data
+#### COMPONENT penvs: Process Environmental Data
 #### MODULE: Select Study Region
 context("bgSample")
 
@@ -21,11 +21,11 @@ bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
 
 ## Number of background points to sample
 bgPtsNum <- 1000
-
+bgPtsNum_big<-100000
 
 ### run function
 bgsample <- penvs_bgSample(occs, bgMask, bgPtsNum,spN=occs)
-
+bgsample_big <- penvs_bgSample(occs, bgMask, bgPtsNum_big,spN=occs)
 
 ### test output features
 test_that("output type checks", {
@@ -37,6 +37,9 @@ test_that("output type checks", {
   expect_equal(c('longitude', 'latitude'), names(bgsample))
   # the number of background points sampled are the same as specified in the function
   expect_equal(nrow(bgsample), bgPtsNum)
+  # the number of background points sampled are the the max possible if bgPtsNum is bigger than available
+  expect_equal(nrow(bgsample_big),(ncell(bgMask) - freq(bgMask, value = NA)[[1]]))
+
   # check if all the points sampled overlap with the study region
   # set longitude and latitude
   sp::coordinates(bgsample) <- ~ longitude + latitude

@@ -1,4 +1,4 @@
-#### COMPONENT 2: Process Occurrence Data
+#### COMPONENT poccs: Process Occurrence Data
 #### MODULE: Spatial Thin
 context("thinOccs")
 
@@ -16,7 +16,7 @@ thinDist <- 30
 
 
 ### run function
-out.thin <- poccs_thinOccs(occs, thinDist,spN=occs)
+out.thin <- poccs_thinOccs(occs=occs, thinDist,spN=occs)
 
 
 ### test if the error messages appear when they are supposed to
@@ -39,4 +39,6 @@ test_that("output type checks", {
 test_that("output data checks", {
    # the original data frame has more records than the thinned  one
   expect_true((nrow(occs)) > (nrow(out.thin)))
+  #the thinned data frame has the same coulmns as the orginal dataframe
+  expect_equal(names(occs),names(out.thin))
   })
