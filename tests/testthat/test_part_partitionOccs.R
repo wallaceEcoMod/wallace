@@ -36,7 +36,8 @@ kfolds <- 4
 # aggregation factor
 aggFact <- 2
 
-
+#Define SpN for error messages
+spN=occs
 ### run function
 
 ## jackknife
