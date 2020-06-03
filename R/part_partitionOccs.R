@@ -72,6 +72,12 @@ part_partitionOccs <- function(occs, bg, method, kfolds = NULL, bgMask = NULL,
   }
 
   if (method == 'cb1' | method == 'cb2') {
+    if(is.null(aggFact)) {
+      logger %>% writeLog(type = 'error', "Please specify an aggregation
+                             factor to use checkerboard partition functions for ",
+                          em(spName(spN)), ".")
+      return()
+    }
     if(is.na(aggFact) | aggFact <= 1) {
       logger %>% writeLog(type = 'error', "Please specify a positive aggregation
                         factor greater than 1 for ", em(spName(spN)), ".")
@@ -83,12 +89,7 @@ part_partitionOccs <- function(occs, bg, method, kfolds = NULL, bgMask = NULL,
                              em(spName(spN)), ".")
       return()
     }
-    if(is.null(aggFact)) {
-      logger %>% writeLog(type = 'error', "Please specify an aggregation
-                             factor to use checkerboard partition functions for ",
-                             em(spName(spN)), ".")
-      return()
-    }
+
   }
 
   if(method == 'cb1') {
