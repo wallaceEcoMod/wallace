@@ -53,8 +53,8 @@ j<-'raw'
 i<-'maxent.jar'
 for (j in outputType) {
   ### run function
-  modProj <- proj_area(evalOut = maxentAlg@results, curModel = 'L_1', envs, outputType = j,
-                            alg=i,pjExt = expertAddedPoly )
+  modProj <- proj_area(evalOut = maxentAlg, curModel = 'L_1', envs, outputType = j,
+                            alg=i,clamp=FALSE, pjExt = expertAddedPoly )
   proj_area <- function(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
                         logger = NULL)
    ### test output features
