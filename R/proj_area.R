@@ -1,14 +1,16 @@
 
-#' @title proj_area
-#' @description ..
+#' @title proj_area Project model to a new area
+#' @description Function projects the model generated in previous components to a new user drawn area
 #'
 #' @details
 #' See Examples.
 #'
-#' @param evalOut x
-#' @param curModel x
+#' @param evalOut ENMevaluate output from previous module and using any of the available algorithms
+#' @param curModel If algorithm is maxent, model selected by user as best or optimal, in terms of feature class and regularization multiplier (e.g 'L_1'). Else must be 1
 #' @param envs x
 #' @param outputType x
+#' @param alg X
+#' @param clamp X
 #' @param pjExt x
 #' @param logger x
 # @keywords
@@ -33,22 +35,25 @@ proj_area <- function(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
 
   if (alg == 'bioclim') {
     logger %>% writeLog('Projection for BIOCLIM model.')
-  } else if (alg == 'maxent') {
-    if (clamp == TRUE | alg == "maxent.jar") {
-      logger %>% writeLog('Projection for clamped model', curModel(), '.')
-    } else if (clamp == FALSE) {
-      logger %>% writeLog('New area projection for unclamped', curModel(), '.')
+  } else if (alg == 'maxent.jar'|clamp==TRUE) {
+  #  if (clamp == TRUE | alg == "maxent.jar") {
+    #  logger %>% writeLog('Projection for clamped model', curModel(), '.')
+     logger %>% writeLog('Projection for clamped model ', curModel, '.')
+
+       } else if (clamp == FALSE) {
+      #logger %>% writeLog('New area projection for unclamped', curModel(), '.')
+       logger %>% writeLog('New area projection for unclamped ', curModel, '.')
     }
-  }
+  #}
 
   smartProgress(logger,
                 message = "Masking environmental grids to projection extent...", {
     projMsk <- raster::crop(envs, newPoly)
-    projMsk <- raster::mask(projMsk, newPoly)
+  #  projMsk <- raster::mask(projMsk, newPoly)
   })
 
   smartProgress(logger, message = 'Projecting model to new area...', {
-    if (alg == 'BIOCLIM') {
+    if (alg == 'bioclim') {
       modProjArea <- dismo::predict(evalOut@models[[curModel]], projMsk)
     } else if (alg == 'maxnet') {
       if (outputType == "raw") {pargs <- "exponential"} else {pargs <- outputType}
