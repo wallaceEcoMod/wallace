@@ -32,13 +32,6 @@ rms <- c(1:2)
 rmsStep <- 1
 # feature classes
 fcs <- c('L', 'H', 'LQH')
-# algorithm
-algorithm <- c('maxent.jar','maxnet')
-
-# build model and test for both algorithms
-for (i in algorithm) {
-maxentAlg <- model_maxent(occs, bg, occsGrp, bgGrp, bgMask, rms, rmsStep, fcs, clampSel = TRUE,
-                          algMaxent = i,catEnvs=NULL,spN=occs)
 
 ## extent to project
 # set coordinates
@@ -46,17 +39,28 @@ longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331, -66.47149, -66.71319,
 latitude <- c(13.18379, 7.52315, 0.93105, -1.70167, 0.98391, 6.09208, 12.74980)
 # generate matrix
 expertAddedPoly <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
-
+###iterating items
 # outputType
 outputType <- c('raw', 'logistic', 'cloglog')
-j<-'raw'
-i<-'maxent.jar'
+# algorithm
+algorithm <- c('maxent.jar','maxnet','bioclim')
+# build model and test for both algorithms
+for (i in algorithm) {
+  if(algorithm == 'bioclim'){
+    modAlg <- model_bioclim(occs, bg, occsGrp, bgGrp, bgMask,spN=occs)
+  }
+  else{
+    modAlg <- model_maxent(occs, bg, occsGrp, bgGrp, bgMask, rms, rmsStep, fcs, clampSel = TRUE,
+                          algMaxent = i,catEnvs=NULL,spN=occs)
+  }
+
+
+
 for (j in outputType) {
   ### run function
-  modProj <- proj_area(evalOut = maxentAlg, curModel = 'L_1', envs, outputType = j,
+  modProj <- proj_area(evalOut = modAlg, curModel = 'L_1', envs, outputType = j,
                             alg=i,clamp=FALSE, pjExt = expertAddedPoly )
-  proj_area <- function(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
-                        logger = NULL)
+
    ### test output features
   test_that("output type checks", {
     # the output is a list
