@@ -17,8 +17,20 @@
 #'  otherwise leave the default NULL
 # @keywords
 #'
-# @examples
-#'
+#' @examples
+#'out.gbif <- occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+#'occs <- as.data.frame(out.gbif[[1]]$cleaned)
+#'envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
+#'bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
+#'bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
+#'bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=occs)
+#'partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=occs)
+## extent to project
+#'longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331, -66.47149, -66.71319, -71.11931)
+#'latitude <- c(13.18379, 7.52315, 0.93105, -1.70167, 0.98391, 6.09208, 12.74980)
+#'expertAddedPoly <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
+#'modAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=occs)
+#'modProj <- proj_area(evalOut = modAlg, curModel = 1, envs, outputType = 'raw', alg='bioclim',clamp=FALSE, pjExt = expertAddedPoly )
 #'
 #' @return A list of two elements: projExt and projArea.
 #' The first is a RasterBrick of the environmental variables cropped to the projection area.
