@@ -30,30 +30,29 @@
 proj_time <- function(evalOut, curModel, envs, outputType, alg, clamp,
                       pjExt, logger = NULL) {
   newPoly <- pjExt
-
   if (alg == 'bioclim') {
-    logger %>% writeLog('Projection for BIOCLIM model.')
-  } else if (alg == 'maxent') {
-    if (clamp == TRUE | alg == "maxent.jar") {
-      logger %>% writeLog('Projection for clamped model', curModel(), '.')
-    } else if (clamp == FALSE) {
-      logger %>% writeLog('New area projection for unclamped', curModel(), '.')
-    }
+    logger %>% writeLog('Projection in time for BIOCLIM model.')
+  } else if (alg == 'maxent.jar'|clamp==TRUE) {
+
+    logger %>% writeLog('Projection in time for clamped model ', curModel, '.')
+
+  } else if (clamp == FALSE) {
+    logger %>% writeLog('New time projection for unclamped ', curModel, '.')
   }
+
 
   smartProgress(logger, message = "Clipping environmental data to current extent...", {
     pjtMsk <- raster::crop(envs, newPoly)
-    pjtMsk <- raster::mask(pjtMsk, newPoly)
   })
 
   smartProgress(logger, message = ("Projecting to new time..."), {
-    if (alg == 'BIOCLIM') {
+    if (alg == 'bioclim') {
       modProjTime <- dismo::predict(evalOut@models[[curModel]], pjtMsk)
     } else if (alg == 'maxnet') {
       if (outputType == "raw") {pargs <- "exponential"} else {pargs <- outputType}
-      modProjTime <- ENMeval::maxnet.predictRaster(evalOut@models[[curModel]],
-                                                   pjtMsk, type = pargs,
-                                                   doClamp = clamp)
+      modProjTime <- ENMeval::maxnet.predictRaster(mod = evalOut@models[[curModel]],
+                                                  envs = pjtMsk, doClamp = clamp,
+                                                  pred.type = pargs)
     } else if (alg == "maxent.jar") {
       pargs <- paste0("outputformat=", outputType)
       modProjTime <- dismo::predict(evalOut@models[[curModel]], pjtMsk,
