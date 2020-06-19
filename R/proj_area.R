@@ -52,10 +52,10 @@ proj_area <- function(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
   newPoly <- pjExt
 
   if (alg == 'bioclim') {
-    logger %>% writeLog('Projection for BIOCLIM model.')
+    logger %>% writeLog('New area projection for BIOCLIM model.')
   } else if (alg == 'maxent.jar'|clamp==TRUE) {
 
-     logger %>% writeLog('Projection for clamped model ', curModel, '.')
+     logger %>% writeLog('New area projection for clamped model ', curModel, '.')
 
        } else if (clamp == FALSE) {
        logger %>% writeLog('New area projection for unclamped ', curModel, '.')
