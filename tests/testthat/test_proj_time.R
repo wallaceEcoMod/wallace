@@ -56,7 +56,7 @@ for (i in algorithm) {
   else{
     modAlg <- model_maxent(occs, bg, occsGrp, bgGrp, bgMask, rms, rmsStep, fcs, clampSel = TRUE,
                            algMaxent = i,catEnvs=NULL,spN=occs)
-    curModel-'L_1'
+    curModel='L_1'
 
   }
 
@@ -76,7 +76,7 @@ for (i in algorithm) {
       expect_equal(length(modProj), 2)
       # element within the output list are:
       # a rasterBrick
-      expect_is(modProj$projExt, "RasterBrick")
+      expect_is(modProj$projExt, "RasterStack")
       # a rasterLayer
       expect_is(modProj$projTime, "RasterLayer")
       # there are as many projection extents as environmental variables used
