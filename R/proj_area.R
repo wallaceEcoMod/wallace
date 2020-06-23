@@ -8,7 +8,7 @@
 #' This function returns a list including the cropped environmental variables used for projecting and the projected model.
 #' @param evalOut ENMevaluate output from previous module and using any of the available algorithms
 #' @param curModel If algorithm is maxent, model selected by user as best or optimal, in terms of feature class and regularization multiplier (e.g 'L_1'). Else must be 1
-#' @param envs Environmental layers to be used for projecting the model. They must matchthe layers used for generating the model in the model component
+#' @param envs Environmental layers to be used for projecting the model. They must match the layers used for generating the model in the model component
 #' @param outputType Output type to be used when algorithm is maxnet or maxent.jar.
 #' @param alg Modeling algorithm used in the model component. Can be one of : 'bioclim', 'maxent.jar' or 'maxnet'
 #' @param clamp logical, wether projection will be of clamped or uncalmped model.
@@ -33,7 +33,7 @@
 #'modProj <- proj_area(evalOut = modAlg, curModel = 1, envs, outputType = 'raw', alg='bioclim',clamp=FALSE, pjExt = expertAddedPoly )
 #'
 #' @return A list of two elements: projExt and projArea.
-#' The first is a RasterBrick of the environmental variables cropped to the projection area.
+#' The first is a RasterBrick or a RasterStack of the environmental variables cropped to the projection area.
 #' The second element is a raster of the projected model with the specified output type.
 #' @author Andrea Paz <paz.andreita@@gmail.com>
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
