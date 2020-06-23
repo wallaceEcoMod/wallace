@@ -48,17 +48,19 @@ algorithm <- c('maxent.jar','maxnet','bioclim')
 for (i in algorithm) {
   if(i== 'bioclim'){
     modAlg <- model_bioclim(occs, bg, occsGrp, bgGrp, bgMask,spN=occs)
+    curModel=1
   }
   else{
     modAlg <- model_maxent(occs, bg, occsGrp, bgGrp, bgMask, rms, rmsStep, fcs, clampSel = TRUE,
                           algMaxent = i,catEnvs=NULL,spN=occs)
+    curModel='L_1'
   }
 
 
 
 for (j in outputType) {
   ### run function
-  modProj <- proj_area(evalOut = modAlg, curModel = 'L_1', envs, outputType = j,
+  modProj <- proj_area(evalOut = modAlg, curModel, envs, outputType = j,
                             alg=i,clamp=FALSE, pjExt = expertAddedPoly )
 
    ### test output features
