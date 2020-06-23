@@ -46,7 +46,7 @@ outputType <- c('raw', 'logistic', 'cloglog')
 algorithm <- c('maxent.jar','maxnet','bioclim')
 # build model and test for both algorithms
 for (i in algorithm) {
-  if(algorithm == 'bioclim'){
+  if(i== 'bioclim'){
     modAlg <- model_bioclim(occs, bg, occsGrp, bgGrp, bgMask,spN=occs)
   }
   else{
