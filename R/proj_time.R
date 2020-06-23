@@ -1,5 +1,5 @@
 
-#' @title proj_time
+#' @title proj_time Project model to a new time
 #' @description ..
 #'
 #' @details
@@ -17,7 +17,9 @@
 #'
 #'
 # @return
+#' @author Andrea Paz <paz.andreita@@gmail.com>
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
 # @seealso
 # @references
@@ -50,7 +52,7 @@ proj_time <- function(evalOut, curModel, envs, outputType, alg, clamp,
       modProjTime <- dismo::predict(evalOut@models[[curModel]], pjtMsk)
     } else if (alg == 'maxnet') {
       if (outputType == "raw") {pargs <- "exponential"} else {pargs <- outputType}
-      modProjTime <- ENMeval::maxnet.predictRaster(mod = evalOut@models[[curModel]],
+      modProjTime <- ENMeval::enm.maxnet@pred(mod = evalOut@models[[curModel]],
                                                   envs = pjtMsk, doClamp = clamp,
                                                   pred.type = pargs)
     } else if (alg == "maxent.jar") {
