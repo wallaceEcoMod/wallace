@@ -4,7 +4,7 @@
 
 #' @details
 #' This functions allows for the projection of the model created in previous components to a new time and area.
-#' The projection area is user provided in the map of the GUI and the projeciton time user selected. The model will be porjected to the new area and time as long as the environmental variables are available for the area.
+#' The projection area is user provided in the map of the GUI and the projection time user selected. The model will be projected to the new area and time as long as the environmental variables are available for the area.
 #' This function returns a list including the cropped environmental variables used for projecting and the projected model.
 
 #'

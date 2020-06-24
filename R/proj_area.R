@@ -4,7 +4,7 @@
 #'
 #' @details
 #' This functions allows for the projection of the model created in previous components to a new area.
-#' The projection area is user provided in the map of the GUI. The model will be porjected to the new area as long as the environmental variables are available for the area.
+#' The projection area is user provided in the map of the GUI. The model will be projected to the new area as long as the environmental variables are available for the area.
 #' This function returns a list including the cropped environmental variables used for projecting and the projected model.
 #' @param evalOut ENMevaluate output from previous module and using any of the available algorithms
 #' @param curModel If algorithm is maxent, model selected by user as best or optimal, in terms of feature class and regularization multiplier (e.g 'L_1'). Else must be 1
