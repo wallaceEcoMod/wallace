@@ -1,4 +1,4 @@
-#' @title proj_user Project model to user specified areaand/or time
+#' @title proj_user Project model to user specified area and/or time
 #' @description ..
 #'
 #' @details
@@ -37,7 +37,7 @@ proj_user <- function(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
     logger %>% writeLog('User specified projection for clamped model ', curModel, '.')
     }
   else if (clamp == FALSE) {
-      logger %>% writeLog('User specified projection for unclamped model', curModel(), '.')
+      logger %>% writeLog('User specified projection for unclamped model', curModel, '.')
     }
 
   smartProgress(logger,
@@ -46,7 +46,7 @@ proj_user <- function(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
   })
 
   smartProgress(logger,
-                message = 'Projecting model to user-specified files (**)...', {
+                message = 'Projecting model to user-specified time and/or area', {
     if (alg == 'bioclim') {
       modProjUser <- dismo::predict(evalOut@models[[curModel]], projMsk)
     } else if (alg == 'maxnet') {
