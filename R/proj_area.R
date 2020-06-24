@@ -58,7 +58,7 @@ proj_area <- function(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
      logger %>% writeLog('New area projection for clamped model ', curModel, '.')
 
        } else if (clamp == FALSE) {
-       logger %>% writeLog('New area projection for unclamped ', curModel, '.')
+       logger %>% writeLog('New area projection for unclamped model ', curModel, '.')
     }
 
 
