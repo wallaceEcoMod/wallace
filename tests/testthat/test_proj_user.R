@@ -1,5 +1,5 @@
 #### COMPONENT proj: Project Model
-#### MODULE: Project to User provided area and/or extent
+#### MODULE: Project to User provided area
 context("proj_user")
 
 source("test_helper_functions.R")
