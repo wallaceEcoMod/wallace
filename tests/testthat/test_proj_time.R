@@ -1,5 +1,5 @@
 #### COMPONENT proj: Project Model
-#### MODULE: Project to New Extent
+#### MODULE: Project to New time
 context("proj_time")
 
 source("test_helper_functions.R")
