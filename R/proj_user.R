@@ -1,5 +1,4 @@
-
-#' @title proj_user
+#' @title proj_user Project model to user specified areaand/or time
 #' @description ..
 #'
 #' @details
@@ -32,30 +31,31 @@ proj_user <- function(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
   newPoly <- pjExt
 
   if (alg == 'bioclim') {
-    logger %>% writeLog('Projection for BIOCLIM model.')
-  } else if (alg == 'maxent') {
-    if (clamp == TRUE | alg == "maxent.jar") {
-      logger %>% writeLog('Projection for clamped model', curModel(), '.')
-    } else if (clamp == FALSE) {
-      logger %>% writeLog('Projection for unclamped', curModel(), '.')
-    }
+    logger %>% writeLog('User specified projection for BIOCLIM model.')
   }
+  else if (alg == 'maxent.jar'|clamp==TRUE) {
+    logger %>% writeLog('User specified projection for clamped model ', curModel, '.')
+    }
+  else if (clamp == FALSE) {
+      logger %>% writeLog('User specified projection for unclamped model', curModel(), '.')
+    }
 
   smartProgress(logger,
                 message = "Masking environmental grids to projection extent...", {
     projMsk <- raster::crop(envs, newPoly)
-    projMsk <- raster::mask(projMsk, newPoly)
   })
 
   smartProgress(logger,
                 message = 'Projecting model to user-specified files (**)...', {
-    if (alg == 'BIOCLIM') {
+    if (alg == 'bioclim') {
       modProjUser <- dismo::predict(evalOut@models[[curModel]], projMsk)
     } else if (alg == 'maxnet') {
       if (outputType == "raw") {pargs <- "exponential"} else {pargs <- outputType}
-      modProjUser <- ENMeval::maxnet.predictRaster(evalOut@models[[curModel]],
-                                                   projMsk, type = pargs,
-                                                   doClamp = clamp)
+      modProjUser <- ENMeval::enm.maxnet@pred(mod = evalOut@models[[curModel]],
+                                                   envs = projMsk, doClamp = clamp,
+                                              pred.type = pargs)
+
+
     } else if (alg == "maxent.jar") {
       pargs <- paste0("outputformat=", outputType)
       modProjUser <- dismo::predict(evalOut@models[[curModel]], projMsk,
