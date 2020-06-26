@@ -70,6 +70,7 @@ proj_time <- function(evalOut, curModel, envs, outputType, alg, clamp,
 
   smartProgress(logger, message = "Clipping environmental data to current extent...", {
     pjtMsk <- raster::crop(envs, newPoly)
+    projMsk <- raster::mask(projMsk, newPoly)
   })
 
   smartProgress(logger, message = ("Projecting to new time..."), {
