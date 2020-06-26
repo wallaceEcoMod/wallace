@@ -5,12 +5,12 @@
 # retrieves the species name for use internally in non-shiny functions
 #' @export
 spName <- function(sp) {
-  if(class(sp) == "list") {
-    sp <- sp$occs$scientific_name[1]
-  }
-  if("data.frame" %in% class(sp)) {
-    sp <- sp$scientific_name[1]
-  }
+  # if(class(sp) == "list") {
+  #   sp <- sp$occs$scientific_name[1]
+  # }
+  # if("data.frame" %in% class(sp)) {
+  #   sp <- sp$scientific_name[1]
+  # }
   return(paste(strsplit(as.character(sp), "_")[[1]], collapse = " "))
 }
 
