@@ -60,6 +60,7 @@ proj_user <- function(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
   smartProgress(logger,
                 message = "Masking environmental grids to projection extent...", {
     projMsk <- raster::crop(envs, newPoly)
+    projMsk <- raster::mask(projMsk, newPoly)
   })
 
   smartProgress(logger,
