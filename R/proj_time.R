@@ -14,7 +14,7 @@
 #' @param outputType Output type to be used when algorithm is maxnet or maxent.jar.
 #' @param alg Modeling algorithm used in the model component. Can be one of : 'bioclim', 'maxent.jar' or 'maxnet'
 #' @param clamp logical, whether projection will be of clamped or unclamped model.
-#' @param pjExt Extent of the area to project the model to. This is defined by the user in the map of the GUI and is provided as a matrix of latitude, longitude values.
+#' @param pjExt Extent of the area to project the model to. This is defined by the user in the map of the GUI and is provided as a SpatialPolygons object.
 #' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 # @keywords
