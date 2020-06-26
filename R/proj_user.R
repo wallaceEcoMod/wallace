@@ -8,7 +8,7 @@
 
 #' @param evalOut ENMevaluate output from previous module and using any of the available algorithms
 #' @param curModel If algorithm is maxent, model selected by user as best or optimal, in terms of feature class and regularization multiplier (e.g 'L_1'). Else must be 1
-#' @param envs Environmental layers used for model generation and to be used for projection.
+#' @param envs Environmental layers used for projection.
 #' @param outputType Output type to be used when algorithm is maxnet or maxent.jar.
 #' @param alg Modeling algorithm used in the model component. Can be one of : 'bioclim', 'maxent.jar' or 'maxnet'
 #' @param clamp logical, whether projection will be of clamped or unclamped model.
@@ -51,13 +51,11 @@ proj_user <- function(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
 
   if (alg == 'bioclim') {
     logger %>% writeLog('User specified projection for BIOCLIM model.')
-  }
-  else if (alg == 'maxent.jar'|clamp==TRUE) {
+  } else if (alg == 'maxent.jar'|clamp==TRUE) {
     logger %>% writeLog('User specified projection for clamped model ', curModel, '.')
-    }
-  else if (clamp == FALSE) {
-      logger %>% writeLog('User specified projection for unclamped model', curModel, '.')
-    }
+  } else if (clamp == FALSE) {
+    logger %>% writeLog('User specified projection for unclamped model', curModel, '.')
+  }
 
   smartProgress(logger,
                 message = "Masking environmental grids to projection extent...", {
@@ -69,9 +67,13 @@ proj_user <- function(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
     if (alg == 'bioclim') {
       modProjUser <- dismo::predict(evalOut@models[[curModel]], projMsk)
     } else if (alg == 'maxnet') {
-      if (outputType == "raw") {pargs <- "exponential"} else {pargs <- outputType}
+      if (outputType == "raw") {
+        pargs <- "exponential"
+      } else {
+        pargs <- outputType
+      }
       modProjUser <- ENMeval::enm.maxnet@pred(mod = evalOut@models[[curModel]],
-                                                   envs = projMsk, doClamp = clamp,
+                                              envs = projMsk, doClamp = clamp,
                                               pred.type = pargs)
 
 
