@@ -1,7 +1,8 @@
-#' Query online database for species occurrence records.
+#' occs_queryDb Query online database for species occurrence records.
 #'
-#' \code{occs_queryDb} returns a list of lists, one per queried species. Each list of species occurrences with a selection of appropriate fields.
+#' @description  Queries a given database for occurrence data on the provided species'
 #'
+#' @details
 #' This function is called by the module occs_queryDb to query a database for
 #' species occurrence records, subset to only those records with coordinates,
 #' remove records with duplicate coordinates, and select some columns with fields
@@ -26,7 +27,9 @@
 #' list of original data sources in a citable format.
 #' @return List of lists. One list per species with occurence records. Each indiivudal species list with appropriate fields for analysis
 #'
-#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+#' @author Jamie Kass < jamie.m.kass@@gmail.com >
+#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Andrea Paz < paz.andreita@@gmail.com>
 #' @examples
 #' occs_queryDb(spName = "Tremarctos ornatus", occDb = "gbif", occNum = 100)
 #' @export

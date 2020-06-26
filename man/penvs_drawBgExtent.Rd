@@ -51,5 +51,7 @@ drawBgBf <- penvs_drawBgExtent(polyExtXY = expertDrawPoly, polyExtID = 1, drawBg
 \code{\link{penvs_userBgExtent}}, \code{\link{penvs_bgExtent}}, \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}
 }
 \author{
-Gonzalo Pinilla gpinillabuitrago@gradcenter.cuny.edu
+Jamie Kass < jamie.m.kass@gmail.com >
+
+Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
 }

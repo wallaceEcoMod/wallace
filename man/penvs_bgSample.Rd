@@ -2,7 +2,7 @@
 % Please edit documentation in R/penvs_bgSample.R
 \name{penvs_bgSample}
 \alias{penvs_bgSample}
-\title{penvs_bgSample}
+\title{penvs_bgSample Sample background points}
 \usage{
 penvs_bgSample(occs, bgMask, bgPtsNum, logger = NULL, spN = NULL)
 }
@@ -46,5 +46,7 @@ bgsample <- penvs_bgSample(occs, bgMask, bgPtsNum=1000,spN=occs)
 \code{\link{penvs_bgMask}} , \code{\link{penvs_bgExtent}}  \code{\link{penvs_userBgExtent}}, \code{\link{penvs_drawBgExtent}}, \code{\link[dismo]{randomPoints}}
 }
 \author{
-Jamie Kass <jkass@gradcenter.cuny.edu>
+Jamie Kass < jamie.m.kass@gmail.com >
+
+Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
 }

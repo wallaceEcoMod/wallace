@@ -24,7 +24,9 @@
 #' userBgbf <- penvs_userBgExtent(bgShp_path = Path, bgShp_name = Name, userBgBuf = 0.5,occs=occs)
 #' @return This function returns a SpatialPolygons object with the user provided shape (+ a buffer is userBgBuf >0).
 #' The polygon will be at least large enough to contain all occurrences.
-#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+#' @author Jamie Kass < jamie.m.kass@@gmail.com >
+#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Andrea Paz < paz.andreita@@gmail.com>
 # @note
 
 #' @seealso \code{\link{penvs_drawBgExtent}}, \code{\link{penvs_bgExtent}}, \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}

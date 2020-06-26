@@ -1,5 +1,5 @@
 
-#' @title penvs_bgMask
+#' @title penvs_bgMask Mask environmental data
 #' @description This functions crops and masks the environmental data to the provided background area
 #'
 #' @details
@@ -26,7 +26,8 @@
 
 #'
 #' @return A RasterStack or a RasterBrick of environmental layers cropped and masked to match the provided background extent.
-#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+#' @author Jamie Kass < jamie.m.kass@@gmail.com >
+#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
 
 #' @seealso   \code{\link{penvs_userBgExtent}}, \code{\link{penvs_drawBgExtent}}, \code{\link{penvs_bgExtent}} , \code{\link{penvs_bgSample}}

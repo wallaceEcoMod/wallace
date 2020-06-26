@@ -1,10 +1,10 @@
-#' @title poccs_selectOccs
+#' @title poccs_selectOccs Remove occurrences outside of polygon
 #' @description This function removes occurrences outside of a user created polygon
 #'
 #' @details
 #' This function is called by the select occurrences on map module. It allows for removal of
 #' occurrences outside the user drawn polygon in the map. The function will return
-#' a data frame of occurrences with all relevant columns for futher analyses and without the
+#' a data frame of occurrences with all relevant columns for further analyses and without the
 #' occurrences outside of the polygon.
 #'
 #' @param occs data frame of cleaned occurrences obtained from component occs: Obtain occurrence data.
@@ -15,7 +15,7 @@
 #' @param spN data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages
 # @keywords
 #'
-# @examples
+#' @examples
 
 #'occs <- occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 1000)[[1]]$cleaned
 #'longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331, -66.47149, -66.71319, -71.11931)
@@ -25,7 +25,8 @@
 
 #' @return A new occurence dataframe including only occurences inside the provided polygon and mantaining all
 #' columns from original dataframe for further analyses.
-#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+#' @author Jamie Kass < jamie.m.kass@@gmail.com >
+#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
 
 # @seealso

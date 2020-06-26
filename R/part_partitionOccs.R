@@ -1,27 +1,44 @@
 
-#' @title part_partitionOccs
-#' @description ..
+#' @title part_partitionOccs Partition occurrence data
+#' @description this function partitions occurrence data and background points according to a user selected method.
 #'
 #' @details
-#' See Examples.
+#' This function is used in the partition occurrence data component.
+#' A user selected method is used to partition occurrence and background points into different groups for model testing.
+#' A list of group assignments for both occurrences and background points is returned.
 #'
-#' @param occs x
-#' @param bg x
-#' @param method x
-#' @param kfolds x
-#' @param bgMask x
-#' @param aggFact x
-#' @param logger x
-#' @param spN x
+#' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.
+#' @param bg Coordinates of background points to be used for modelling.
+#' @param method Partitioning method to be used, one of 5 options: \cr
+#'  (1) 'jack' Non-spatial Partition - jackknife  \cr
+#'  (2) 'rand' Non-spatial Partition - random k-fold  \cr
+#'  (3) 'block' spatial Partition - block  \cr
+#'  (4) 'cb1' spatial Partition - checkerboard 1 (K=2)  \cr
+#'  (5) 'cb2' spatial Partition - checkerboard 2 (K=4)  \cr
+#' @param kfolds Number of partitions to create if selected method is random k-fold (must be >=2). If other method then keep default of NULL
+#' @param bgMask A RasterStack or a RasterBrick of environmental layers cropped and masked.
+#' @param aggFact Aggregation factor to be used when using checkerboard partition (must be >=1)
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#' otherwise leave the default NULL
+#' @param spN data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages
 # @keywords
 #'
-# @examples
+#' @examples
+#' occs <-  occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+#' occs <- as.data.frame(occs[[1]]$cleaned)
+#' envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
+#' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
+#' bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
+#' bgSample <- penvs_bgSample(occs, bgMask, bgPtsNum=1000,spN=occs)
+#' folds <- 'rand'
+#' partfold <- part_partitionOccs(occs, bgSample, method = folds, kfolds=4, bgMask = NULL, aggFact = NULL,spN=occs)
 #'
-#'
-# @return
-#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+#' @return A list of two vectors containing group assignments for occurrences (occ.grp) and background points (bg.grp).
+#' @author Jamie Kass < jamie.m.kass@@gmail.com >
+#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Andrea Paz < paz.andreita@@gmail.com>
 # @note
-# @seealso
+#' @seealso \code{\link[ENMeval]{partitions}}
 # @references
 # @aliases - a list of additional topic names that will be mapped to
 # this documentation when the user looks them up from the command
@@ -72,6 +89,12 @@ part_partitionOccs <- function(occs, bg, method, kfolds = NULL, bgMask = NULL,
   }
 
   if (method == 'cb1' | method == 'cb2') {
+    if(is.null(aggFact)) {
+      logger %>% writeLog(type = 'error', "Please specify an aggregation
+                             factor to use checkerboard partition functions for ",
+                          em(spName(spN)), ".")
+      return()
+    }
     if(is.na(aggFact) | aggFact <= 1) {
       logger %>% writeLog(type = 'error', "Please specify a positive aggregation
                         factor greater than 1 for ", em(spName(spN)), ".")
@@ -83,12 +106,7 @@ part_partitionOccs <- function(occs, bg, method, kfolds = NULL, bgMask = NULL,
                              em(spName(spN)), ".")
       return()
     }
-    if(is.null(aggFact)) {
-      logger %>% writeLog(type = 'error', "Please specify an aggregation
-                             factor to use checkerboard partition functions for ",
-                             em(spName(spN)), ".")
-      return()
-    }
+
   }
 
   if(method == 'cb1') {

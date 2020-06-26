@@ -1,4 +1,4 @@
-#### COMPONENT 7: Visualize Model Results
+#### COMPONENT vis: Visualize Model Results
 #### MODULE: BIOCLIM Envelope Plots
 context("bioclimPlot")
 
@@ -34,7 +34,8 @@ bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMas
 
 
 ### run function
-bioclimPlot <- recordPlot(vis_bioclimPlot(x = bioclimAlg@models$bioclim, a=1, b=2, p=1))
+bioclimPlot <- vis_bioclimPlot(x = bioclimAlg@models$bioclim, a=2, b=3, p=0.7)
+bioclimPlot<-recordPlot(bioclimPlot)
 
 
 ## test if the error messages appear when they are supposed to

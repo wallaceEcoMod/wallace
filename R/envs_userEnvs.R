@@ -1,5 +1,5 @@
 #'
-#' @title  envs_worldclim
+#' @title  envs_userEnvs
 #' @description Load user provided rasters
 #'
 #' @details
@@ -20,7 +20,8 @@
 #'
 #' @return A rasterStack or a rasterBrick (if doBrick=TRUE) of user provided rasters
 #'
-#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+#' @author Jamie Kass < jamie.m.kass@@gmail.com >
+#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
 
 # @seealso

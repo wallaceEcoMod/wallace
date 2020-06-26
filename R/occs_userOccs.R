@@ -1,4 +1,4 @@
-#' @title occs_userOccs
+#' @title occs_userOccs Loads user provided occurrence records
 #' @description
 #' Load user database with species occurrence records. Returns a list of lists, one per species provided in database an each species list with a set of appropriate fields
 #' @details
@@ -22,8 +22,8 @@
 #'
 #'
 #' @return List of lists. One list per species with occurence records. Each indiivudal species list with appropriate fields for analysis
-#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
-#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Jamie Kass < jamie.m.kass@@gmail.com >
+#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
 
 # @seealso

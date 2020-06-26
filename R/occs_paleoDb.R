@@ -1,4 +1,4 @@
-#' @title `occs_paleoDb` returns species occurrences
+#' @title `occs_paleoDb` query paleobioDB database
 #' @description
 #' query paleobioDB database and returns the complete list of data, data with coordinates, and data with no duplicates
 #'
@@ -16,8 +16,8 @@
 #'
 #' @return A list of 2 dataframes. First dataframe is the original dowloaded dataset, second data frame without duplicates and with appropriate fields for analyses
 
-#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
-#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Jamie Kass < jamie.m.kass@@gmail.com >
+#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 #' @author Sara Varela <sara_varela@@yahoo.com>
 #' @examples
 #'spName<-"Didelphis virginiana"

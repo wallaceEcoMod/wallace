@@ -1,27 +1,25 @@
-#### COMPONENT 8: Project Model
+#### COMPONENT proj: Project Model
 #### MODULE: Project to New Extent
-context("projectArea")
+context("proj_area")
 
 source("test_helper_functions.R")
 
 ## occurrences
 out.gbif <- occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
-occs <- as.data.frame(out.gbif$Panthera_onca$cleaned)
-
+occs <- as.data.frame(out.gbif[[1]]$cleaned)
 ## background mask
 # enviromental data
 envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
 # background extent
-bgExt <- c4_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
 # background masked
-bgMsk <- c4_bgMask(occs, envs, bgExt)
-
+bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
 ## background sample
-bg <- c4_bgSample(occs, bgMsk, bgPtsNum = 10000)
+bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=occs)
 
-## partition data
-partblock <- c5_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,
-                              aggFact = NULL)
+## Partition
+partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,
+                                aggFact = NULL,spN=occs)
 # occurrences partitioned
 occsGrp = partblock$occ.grp
 # background points partitioned
@@ -34,28 +32,38 @@ rms <- c(1:2)
 rmsStep <- 1
 # feature classes
 fcs <- c('L', 'H', 'LQH')
-# algorithm
-algoritm <- c('maxent.jar','maxnet')
-# build model
-maxentAlg  <- runMaxent(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, clampSel = TRUE,
-                         algMaxent = algoritm[1])
 
-## extention to project
+## extent to project
 # set coordinates
 longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331, -66.47149, -66.71319, -71.11931)
 latitude <- c(13.18379, 7.52315, 0.93105, -1.70167, 0.98391, 6.09208, 12.74980)
 # generate matrix
 expertAddedPoly <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
-
+###iterating items
 # outputType
 outputType <- c('raw', 'logistic', 'cloglog')
+# algorithm
+algorithm <- c('maxent.jar','maxnet','bioclim')
+# build model and test for both algorithms
+for (i in algorithm) {
+  if(i== 'bioclim'){
+    modAlg <- model_bioclim(occs, bg, occsGrp, bgGrp, bgMask,spN=occs)
+    curModel=1
+  }
+  else{
+    modAlg <- model_maxent(occs, bg, occsGrp, bgGrp, bgMask, rms, rmsStep, fcs, clampSel = TRUE,
+                          algMaxent = i,catEnvs=NULL,spN=occs)
+    curModel='L_1'
+  }
 
-i <- outputType[1]
-for (i in outputType) {
+
+
+for (j in outputType) {
   ### run function
-  modProj <- c8_projectArea(results = maxentAlg@results, curModel = 'L_1', envs, outputType = i,
-                      polyPjXY = expertAddedPoly , polyPjID = 1)
-  ### test output features
+  modProj <- proj_area(evalOut = modAlg, curModel, envs, outputType = j,
+                            alg=i,clamp=FALSE, pjExt = expertAddedPoly )
+
+   ### test output features
   test_that("output type checks", {
     # the output is a list
     expect_is(modProj, "list")
@@ -71,4 +79,5 @@ for (i in outputType) {
     # there is 1 projection area
     expect_equal(raster::nlayers(modProj$projArea), 1)
   })
-  }
+}
+}

@@ -1,5 +1,5 @@
 
-#' @title penvs_bgSample
+#' @title penvs_bgSample Sample background points
 #' @description This function samples background points from an area determined by a rasterBrick or RasterStack of environmental layers previously cropped and masked to user determined extent
 #'
 #' @details
@@ -28,7 +28,8 @@
 #' @return a dataframe containing point coordinates (longitude and latitude).
 #' All points are within the area provided in the RasterBrick or RasterStack (bgMask).
 #' Maximum number of pointsis equal to non NA cells in each layer of the reference brick or stack.
-#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+#' @author Jamie Kass < jamie.m.kass@@gmail.com >
+#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
 #' @seealso \code{\link{penvs_bgMask}} , \code{\link{penvs_bgExtent}}  \code{\link{penvs_userBgExtent}}, \code{\link{penvs_drawBgExtent}}, \code{\link[dismo]{randomPoints}}
 # @references

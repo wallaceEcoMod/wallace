@@ -2,7 +2,7 @@
 % Please edit documentation in R/envs_worldclim.R
 \name{envs_worldclim}
 \alias{envs_worldclim}
-\title{envs_worldclim}
+\title{envs_worldclim Obtain worldclim variables}
 \usage{
 envs_worldclim(bcRes, bcSel, mapCntr, doBrick, logger = NULL)
 }
@@ -16,12 +16,7 @@ envs_worldclim(bcRes, bcSel, mapCntr, doBrick, logger = NULL)
 \item{doBrick}{logical converts downloaded rasters to brick for faster processing}
 
 \item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
- otherwise leave the default NULL
-
-
-bcRes <- 10 # (10 arcmin)
-envar <- c('bio01', 'bio02', 'bio03', 'bio10', 'bio11')
-arcmin10 <- envs_worldclim(bcRes, bcSel= envar,doBrick=T)}
+otherwise leave the default NULL}
 }
 \value{
 A rasterStack or a rasterBrick (if doBrick=TRUE) of downloaded worldclim rasters at the requested resolution
@@ -34,6 +29,17 @@ This function is called by the module envs to download worldclim variables from 
 The variables to be dowloaded are selected by the user with bcSel and the resolution with bcRes
 It returns either a rasterStack or rasterBrick of selected variables with appropriate names for further analyses.
 }
+\examples{
+bcRes <- 10 # (10 arcmin)
+envar <- c('bio01', 'bio02', 'bio03', 'bio10', 'bio11')
+arcmin10 <- envs_worldclim(bcRes, bcSel= envar,doBrick=T)
+
+}
+\seealso{
+\code{\link[raster]{getData}}
+}
 \author{
-Jamie Kass <jkass@gradcenter.cuny.edu>
+Jamie Kass < jamie.m.kass@gmail.com >
+
+Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
 }

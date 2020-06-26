@@ -28,8 +28,8 @@
 #' @return A list of 14 elements of classes dudi and pca as in dudi.pca
 #' @seealso dudi.pca in the ade4 package
 #'
-#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
-#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Jamie Kass < jamie.m.kass@@gmail.com >
+#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 #' @author Olivier Broennimann olivier.broennimann@@unil.ch
 #' @export
 

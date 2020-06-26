@@ -1,5 +1,5 @@
 
-#' @title penvs_bgExtent
+#' @title penvs_bgExtent Generate background extent
 #' @description This function generates a background area according to a user provided method
 #'
 #' @details
@@ -21,7 +21,8 @@
 #' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf=0.5,logger = NULL, spN = occs)
 #'
 #' @return A SpatialPolygonsDataFrame object that contains all occurrences from occs
-#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+#' @author Jamie Kass < jamie.m.kass@@gmail.com >
+#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
 
 #' @seealso \code{\link{penvs_userBgExtent}}, \code{\link{penvs_drawBgExtent}}, \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}

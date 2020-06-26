@@ -2,7 +2,7 @@
 # 1. How to test the maxent.jar error message
 
 
-#### COMPONENT 6: Build and Evaluate Niche Model
+#### COMPONENT model: Build and Evaluate Niche Model
 #### MODULE: Maxent.Jar & Maxnet
 context("model_maxent")
 
@@ -19,7 +19,7 @@ occs <- as.data.frame(out.gbif[[1]]$cleaned)
 # enviromental data
 envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
 # remove records without enviromental values
-records <- which(is.na(raster::extract(envs$bio1.1, occs[,3:4])) == TRUE)
+records <- which(is.na(raster::extract(envs$bio01.1, occs[,3:4])) == TRUE)
 occs <- occs[-records, ]
 # background extent
 bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
@@ -45,7 +45,7 @@ rmsStep <- 1
 fcs <- c('L', 'LQ', 'H', 'LQH', 'LQHP')
 
 ## algorithm
-algoritm <- c('maxent.jar','maxnet')
+algorithm <- c('maxent.jar','maxnet')
 
 #Java file route
 jar <- paste(system.file(package = "dismo"), "/java/maxent.jar", sep = '')
@@ -55,14 +55,14 @@ jar_f <- paste(system.file(package = "dismo"), "/maxent.jar", sep = '')
 test_that("error checks", {
   # user has not partitioned occurrences
   expect_error(model_maxent(occs, bg, occsGrp = NULL, bgGrp, bgMsk, rms, rmsStep, fcs,
-                         clampSel = TRUE, algMaxent = algoritm[1]), "Before building a model, please partition occurrences for cross-validation.")
+                         clampSel = TRUE, algMaxent = algorithm[1]), "Before building a model, please partition occurrences for cross-validation.")
 })
 ##missing 2 errors related to jar
 
 
 ### test output features
 
-for (i in algoritm) {
+for (i in algorithm) {
   ### run function
   maxentAlg <- model_maxent(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, clampSel = TRUE,
                          algMaxent = i,catEnvs=NULL,spN=occs)

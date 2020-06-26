@@ -2,7 +2,7 @@
 % Please edit documentation in R/poccs_removeByID.R
 \name{poccs_removeByID}
 \alias{poccs_removeByID}
-\title{poccs_removeByID}
+\title{poccs_removeByID Remove occurrence by ID}
 \usage{
 poccs_removeByID(occs, removeID, logger = NULL, spN = NULL)
 }
@@ -24,7 +24,6 @@ columns from original dataframe for further analyses.
 This function removes user selected occurrences by ID
 }
 \details{
-#' @details
 This function is called by the remove occurrences by ID module. It allows for removal of a single
 occurrence flagged by the user on the map. The function will return
 a data frame of occurrences with all relevant columns for futher analyses and without the
@@ -38,5 +37,7 @@ out.ID <- poccs_removeByID(occs, removeID,spN=occs)
 
 }
 \author{
-Jamie Kass <jkass@gradcenter.cuny.edu>
+Jamie Kass < jamie.m.kass@gmail.com >
+
+Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
 }
