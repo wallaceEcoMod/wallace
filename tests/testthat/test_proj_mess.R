@@ -20,11 +20,6 @@ bg <- penvs_bgSample(occs, bgMsk, bgPtsNum = 10000,spN=occs)
 ## Partition
 partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,
                                 aggFact = NULL,spN=occs)
-# occurrences partitioned
-occsGrp = partblock$occ.grp
-# background points partitioned
-bgGrp = partblock$bg.grp
-
 ### Create model
 bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMsk,spN=occs)
 modelOccs<-bioclimAlg@occs
