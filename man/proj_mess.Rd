@@ -2,29 +2,58 @@
 % Please edit documentation in R/proj_mess.R
 \name{proj_mess}
 \alias{proj_mess}
-\title{proj_mess}
+\title{proj_mess generate MESS map for projection time}
 \usage{
 proj_mess(occs, bg, bgMsk, projExtRas, time, logger = NULL)
 }
 \arguments{
-\item{occs}{x}
+\item{occs}{A data frame of occurences used for modeling and values of environmental variables for each point}
 
-\item{bg}{x}
+\item{bg}{A data frame of points used as background for modeling and values of environmental variables for each point}
 
-\item{bgMsk}{x}
+\item{bgMsk}{A rasterBrick or rasterStack of environmental variables used for modeling. They must be cropped and masked to extent used in model training}
 
-\item{projExtRas}{x}
+\item{projExtRas}{A rasterStack or rasterBrick of envrionmental variables to be used for projecting}
 
-\item{time}{x}
+\item{time}{a string of the time used for projecting (e.g. "2040 MIROC6 ssp126)}
 
-\item{logger}{x}
+\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+otherwise leave the default NULL}
 }
 \description{
-..
+This function generates a MESS map for the new vairables for projection based on variables and points used for modeling in previous components
 }
 \details{
-See Examples.
+This functions allows for the creation of a MESS map for the new provided variables for projection.
+These variables are either user uploaded or selected from worldclim database.
+MESS map is based on occurence and background points used for generating the model and the environmental values at those points
+}
+\examples{
+out.gbif <- occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+occs <- as.data.frame(out.gbif[[1]]$cleaned)
+envs <- envs_worldclim(bcRes = 10, bcSel = c('bio01','bio19'), doBrick = FALSE)
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
+bgMsk <- penvs_bgMsk(occs, envs, bgExt,spN=occs)
+bg <- penvs_bgSample(occs, bgMsk, bgPtsNum = 10000,spN=occs)
+partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=occs)
+bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMsk,spN=occs)
+modelOccs<-bioclimAlg@occs
+modelBg<-bioclimAlg@bg
+longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331, -66.47149, -66.71319, -71.11931)
+latitude <- c(13.18379, 7.52315, 0.93105, -1.70167, 0.98391, 6.09208, 12.74980)
+selCoords <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
+expertAddedPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)), ID=1)))
+envsFut<-list.files(path='./wc10/Future', pattern = ".tif$", full.names = TRUE)
+projExtRas<-raster::mask(projExtRas,expertAddedPoly)
+time<-"2021-2040 MIROC6 ssp126"
+projMess<- proj_mess(occs=modelOccs, bg=modelBg, bgMsk=bgMsk, projExtRas=projExtRas, time=time, logger = NULL)
+
+}
+\seealso{
+\code{\link[dismo]{mess}}, \code{\link{proj_time}} \code{\link{proj_user}}
 }
 \author{
 Jamie Kass <jkass@gradcenter.cuny.edu>
+
+Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
 }

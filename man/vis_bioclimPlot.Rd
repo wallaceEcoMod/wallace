@@ -2,27 +2,50 @@
 % Please edit documentation in R/vis_bioclimPlot.R
 \name{vis_bioclimPlot}
 \alias{vis_bioclimPlot}
-\title{vis_bioclimPlot}
+\title{vis_bioclimPlot Visualize bivariate plot of bioclim model}
 \usage{
 vis_bioclimPlot(x, a = 1, b = 2, p = 0.9, ...)
 }
 \arguments{
-\item{x}{x}
+\item{x}{Bioclim model including values for each environmental layer at each occurrence point.}
 
-\item{a}{x}
+\item{a}{Numeric. Environmental layer to be used as x axis. Default is layer 1.}
 
-\item{b}{x}
+\item{b}{Numeric. Environmental layer to be used as x axis. Default is layer 2.}
 
-\item{p}{x}
-
-\item{...}{x}
+\item{p}{Numeric (0-1). Percentile distribution to be used for plotting enveloppe and showing points outside of enveloppe. Default is 0.9.}
+}
+\value{
+A bivariate plot of environmental values for occurrences. Includes a rectangle representing the bioclimatic enveloppe given p.
+Occurrences that are inside the enveloppe for all layers (included those not plotted) are shown as green circles and those outside of the enveloppe for one ore more variables are plotted as red crosses.
 }
 \description{
-..
+This functions creates a bivariate plot with two of the environmental variables used for modeling as x and y axes and occurrencies as observations
 }
 \details{
-See Examples.
+This is a bivariate plot with x and y axes representing two of the envo=ironmental layers used for modelling (user selected although 1 and 2 as default)/
+Occurrences used for modeling are shown with differential visualization if they are outside of the selected percentile distribution (for any variable).
+Plot also includes a rectangle representing the bivariate bioclimatic enveloppe according to a provided percentile.
+}
+\examples{
+out.gbif <- occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+occs <- as.data.frame(out.gbif[[1]]$cleaned)
+envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
+bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
+bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=occs)
+partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=occs)
+occs$partition <- partblock$occ.grp
+bg$partition <- partblock$bg.grp
+bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=occs)
+bioclimPlot <- vis_bioclimPlot(x = bioclimAlg@models$bioclim, a=1, b=2, p=1)
+
+}
+\seealso{
+\code{\link{model_bioclim}} \code{\link[ENMeval]{ENMevaluate}}
 }
 \author{
 Jamie Kass <jkass@gradcenter.cuny.edu>
+
+Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
 }
