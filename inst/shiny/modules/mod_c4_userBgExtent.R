@@ -34,7 +34,6 @@ userBgExtent_MOD <- function(input, output, session, rvs) {
     if (length(exts) == 1 & exts == 'csv') {
       # record for RMD
       rvs$comp4.shp <- 'csv'
-      rvs$bgUserCSVPath <- inPath
       f <- read.csv(inPath, header = TRUE)
       
       bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(f)), 1)))

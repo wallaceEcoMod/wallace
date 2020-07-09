@@ -414,7 +414,7 @@ bc.plot <- function(x, a=1, b=2, p=0.9, ...) {
 }
 
 # make data.frame of lambdas vector from Maxent model object
-lambdasDF <- function(m, maxentVersion = "maxent.jar") {
+lambdasDF <- function(m, maxentVersion) {
   if(maxentVersion == "maxent.jar") {
     lambdas <- m@lambdas[1:(length(m@lambdas)-4)]
     data.frame(var=sapply(lambdas, FUN=function(x) strsplit(x, ',')[[1]][1]),
@@ -450,16 +450,27 @@ lambdasDF <- function(m, maxentVersion = "maxent.jar") {
   
 }
 ## pulls out all non-zero, non-redundant (removes hinge/product/threshold) predictor names
-mxNonzeroCoefs <- function(mx) {
-  x <- lambdasDF(mx)
-  #remove any rows that have a zero lambdas value (Second column)
-  x <- x[(x[,2] != 0),]
-  #remove any rows that have duplicate "var"s (hinges, quadratics)
-  x <- unique(sub("\\^\\S*", "", x[,1]))
-  x <- unique(sub("\\`", "", x))
-  x <- unique(sub("\\'", "", x))
-  x <- unique(sub("\\=\\S*", "", x))
-  x <- unique(sub("\\(", "", x))
+mxNonzeroCoefs <- function(mx, maxentVersion = "maxnet") {
+  if(maxentVersion == "maxnet") {
+    x <- lambdasDF(mx, maxentVersion = "maxnet")
+    #remove any rows that have a zero lambdas value (Second column)
+    x <- x[(x[,2] != 0),]
+    #remove any rows that have duplicate "var"s (hinges, quadratics)
+    x <- unique(sub("\\^\\S*", "", x[,1]))
+    x <- unique(sub("[I]\\(", "", x))
+    x <- unique(sub("hinge\\(", "", x))
+    x <- unique(sub("\\)", "", x))
+  } else if(maxentVersion == "maxent.jar") {
+    x <- lambdasDF(mx, maxentVersion = "maxent.jar")
+    #remove any rows that have a zero lambdas value (Second column)
+    x <- x[(x[,2] != 0),]
+    #remove any rows that have duplicate "var"s (hinges, quadratics)
+    x <- unique(sub("\\^\\S*", "", x[,1]))
+    x <- unique(sub("\\`", "", x))
+    x <- unique(sub("\\'", "", x))
+    x <- unique(sub("\\=\\S*", "", x))
+    x <- unique(sub("\\(", "", x))
+  }
 }
 
 respCurv <- function(mod, i) {  # copied mostly from dismo
@@ -533,7 +544,7 @@ comp8_map <- function(map, ras, polyXY, bgShpXY, rasVals, rasCols,
     clearMarkers() %>% 
     clearShapes() %>%
     removeImage(clearID) %>%
-    addRasterImage(ras, colors = rasPal, opacity = 0.7, 
+    addRasterImage(ras, colors = rasPal, opacity = 0.9, 
                    group = 'c7', layerId = addID) %>%
     addPolygons(lng=polyXY[,1], lat=polyXY[,2], layerId="projExt", fill = FALSE,
                 weight=4, color="green", group='c8')

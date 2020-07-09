@@ -14,7 +14,6 @@ queryDb_UI <- function(id) {
 }
 
 queryDb_MOD <- function(input, output, session, rvs) {
-  
   spName <- reactive({
     n <- input$spName
     trimws(paste0(toupper(substring(n, 1, 1)), substring(n, 2, nchar(n))))
@@ -26,6 +25,7 @@ queryDb_MOD <- function(input, output, session, rvs) {
     # record for later (RMD, etc.)
     rvs$occDb <- input$occDb
     rvs$occNum <- input$occNum
+    rvs$spName <- spName()
     
     # figure out how many separate names (components of scientific name) were entered
     nameSplit <- length(unlist(strsplit(spName(), " ")))

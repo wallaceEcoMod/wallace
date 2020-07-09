@@ -4,7 +4,12 @@
 \alias{run_wallace}
 \title{Run \emph{Wallace} Application}
 \usage{
-run_wallace()
+run_wallace(launch.browser=TRUE, port=NA)
+}
+\arguments{
+  \item{launch.browser}{Whether or not to launch a new browser window.}
+
+  \item{port}{The port for the shiny server to listen on. Defaults to a random available port.}
 }
 \description{
 This function runs the \emph{Wallace} application in the user's default web browser.

@@ -30,7 +30,7 @@ mxEvalPlots_MOD <- function(input, output, session, rvs) {
 
     # handle downloads for Maxent Evaluation Plots png
     output$dlMxEvalPlot <- downloadHandler(
-      filename = function() {paste0(spName(), "_maxent_eval_plot.png")},
+      filename = function() {paste0(spName(), "_",rvs$mxEvalSel,"_EvalPlot.png")},
       content = function(file) {
         png(file)
         evalPlot(rvs$modRes, input$mxEvalSel)

@@ -21,19 +21,38 @@ respPlots_MOD <- function(input, output, session, rvs) {
     modCur <- rvs$mods[[rvs$modSel]]
     
     # handle downloads for Response Plots png
-    output$dlRespPlot <- downloadHandler(
-      filename = function() {paste0(spName(), "_", rvs$envSel, "_response.png")},
-      content = function(file) {
-        png(file)
-        if (input$dlRespPlotAll == TRUE) {
-          dismo::response(modCur)
-        } else {
-          dismo::response(modCur, var = rvs$envSel)  
-        }
-        dev.off()
+    if (input$dlRespPlotAll == FALSE) {
+      output$dlRespPlot <- downloadHandler(
+        filename = function() {paste0(spName(), "_", rvs$modSel, "_", rvs$envSel, "_response.png")},
+        content = function(file) {
+          png(file)
+          if (rvs$algMaxent == "maxnet") {
+            maxnet::response.plot(modCur, v = rvs$envSel, type = "cloglog")
+          } else if (rvs$algMaxent == "maxent.jar") {
+            dismo::response(modCur, var = rvs$envSel)
+          }
+          dev.off()
+        })
+      } else if (input$dlRespPlotAll == TRUE) {
+        output$dlRespPlot <- downloadHandler(
+          filename = function() {paste0(spName(), "_", rvs$modSel, "_all_response.png")},
+          content = function(file) {
+            png(file)
+            if (rvs$algMaxent == "maxnet") {
+              plot(modCur, type = "cloglog", vars = rvs$mxNonZeroCoefs)
+            } else if (rvs$algMaxent == "maxent.jar") {
+              dismo::response(modCur, var = rvs$mxNonZeroCoefs)
+            }
+            dev.off()
+          })
       }
-    )
-    
-    dismo::response(modCur, var = rvs$envSel)
+    # plot in wallace
+    if (rvs$algMaxent == "maxnet") {
+      maxnet::response.plot(modCur, v = rvs$envSel, type = "cloglog")
+    } else if (rvs$algMaxent == "maxent.jar") {
+      dismo::response(modCur, var = rvs$envSel)
+    }
   })
 }
+    
+

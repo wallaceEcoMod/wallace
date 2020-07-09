@@ -11,7 +11,11 @@ Environmental data may be processed in many ways for niche/distributional modeli
 
 *Wallace* provides four alternative ways for delimiting a study region. The first three are  options under Module ***Select Study Region***: 1) a rectangular "bounding box" around occurrence localities, 2) a convex shape drawn around occurrence localities with minimized area (minimum convex polygon), or 3) buffers around occurrence localities. Alternatively, users can upload a polygon (Module ***User-specified Background Extent***). All study region polygons can then be buffered by a user-defined distance in degrees. 
 
+After choosing a way to delimit the study region (***Step 1***), *Wallace* samples background points (= pixels; ***Step 2***) from the environmental data according the the number provided by the user. If that number is smaller than the total in the environmental data (within the chosen background extent), some environmental conditions may be missed in the sample. Depending upon the variables used in the final model, such a situation may lead to the need for environmental extrapolation in order to make a prediction to the full background extent (see Components **Model**, **Visualize**, and **Project**; Guevara et al. 2018).
+
 **REFERENCES**
+
+Guevara, L., Gerstner, B. E., Kass, J. M., Anderson, R. P. (2018). Toward ecologically realistic predictions of species distributions: A cross-time example from tropical montane cloud forests. *Global Change Biology*. 24: 1511-1522.
 
 Peterson A. T., Soberón J., Pearson R. G., Anderson R. P., Martinez-Meyer E., Nakamura M., Araújo M. B. (2011). Modeling Ecological Niches. In: *Ecological Niches and Geographic Distributions*. Princeton, New Jersey: Monographs in Population Biology, 49. Princeton University Press.
 

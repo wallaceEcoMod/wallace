@@ -94,8 +94,19 @@ projectTime_MOD <- function(input, output, session, rvs) {
     
     # concatanate coords to a single character
     xy.round <- round(rvs$polyPjXY, digits = 2)
-    coordsChar <- paste(apply(xy.round, 1, function(b) paste0('(',paste(b, collapse=', '),')')), collapse=', ')  
-    rvs %>% writeLog('New time projection for model', rvs$modSel, 'with extent coordinates:', coordsChar)
+    coordsChar <- paste(apply(xy.round, 1, function(b) paste0('(',paste(b, collapse=', '),')')),
+                        collapse=', ')  
+    if (rvs$comp6 == 'bioclim') {
+      rvs %>% writeLog('New time projection for BIOCLIM model with extent coordinates:', coordsChar)
+    } else if (rvs$comp6 == 'maxent') {
+      if (rvs$clamp == T | rvs$algMaxent == "maxent.jar") {
+        rvs %>% writeLog('New time projection for clamped model', rvs$modSel, 'with extent coordinates:',
+                         coordsChar)
+      } else if (rvs$clamp == F) {
+        rvs %>% writeLog('New time projection for unclamped model', rvs$modSel, 'with extent coordinates:',
+                         coordsChar)
+      }
+    }
     
     withProgress(message = "Clipping environmental data to current extent...", {
       pjtMsk <- raster::crop(projTimeEnvs, newPoly)
@@ -105,8 +116,18 @@ projectTime_MOD <- function(input, output, session, rvs) {
     modCur <- rvs$mods[[rvs$modSel]]
     
     withProgress(message = ("Projecting to new time..."), {
-      pargs <- paste0("outputformat=", rvs$comp7.type)
-      modProjTime <- dismo::predict(modCur, pjtMsk, args = pargs)
+      if (rvs$comp6 == 'bioclim') {
+        modProjTime <- dismo::predict(modCur, pjtMsk)
+      } else if (rvs$comp6 == 'maxent') {
+        if (rvs$algMaxent == "maxnet") {
+          if (rvs$comp7.type == "raw") {pargs <- "exponential"} else {pargs <- rvs$comp7.type}
+          modProjTime <- ENMeval::maxnet.predictRaster(modCur, pjtMsk, type = pargs, clamp = rvs$clamp)
+        } else if (rvs$algMaxent == "maxent.jar") {
+          pargs <- paste0("outputformat=", rvs$comp7.type)
+          modProjTime <- dismo::predict(modCur, pjtMsk, args = pargs)
+        }
+      }
+      
       modProjTime.thr.call <- callModule(threshPred_MOD, "threshPred", modProjTime)
       modProjTime.thr <- modProjTime.thr.call()
       pjPred <- modProjTime.thr$pred

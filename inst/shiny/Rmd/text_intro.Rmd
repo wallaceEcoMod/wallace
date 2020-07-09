@@ -5,7 +5,7 @@ output: html_document
 
 ### **What is *Wallace*?**  
 
-Welcome to *Wallace*, a flexible application for reproducible ecological modeling, built for community expansion. The current version of *Wallace* (v1.0.5) steps the user through a full niche/distribution modeling analysis, from data acquisition to visualizing results.
+Welcome to *Wallace*, a flexible application for reproducible ecological modeling, built for community expansion. The current version of *Wallace* (v1.0.6.1) steps the user through a full niche/distribution modeling analysis, from data acquisition to visualizing results.
 
 The application is written in `R` with the web app development package `shiny`. Please find the stable version of *Wallace* on <a href="https://CRAN.R-project.org/package=wallace" target="_blank">CRAN</a>, and the development version on <a href="https://github.com/wallaceEcoMod/wallace" target="_blank">Github</a>. We also maintain a *Wallace* <a href="https://wallaceecomod.github.io/" target="_blank">website</a> that has some basic info, links, and will be updated with tutorial materials in the near future.
 
@@ -13,7 +13,7 @@ The application is written in `R` with the web app development package `shiny`. 
 
 Also, for more detail, please see our paper in Methods in Ecology and Evolution.
 
-Kass JM, Vilela B, Aiello-Lammens ME, Muscarella R, Merow C, Anderson RP. Wallace: A flexible platform for reproducible modeling of species niches and distributions built for community expansion. Methods Ecol Evol. 2018;00:1-6. https://doi.org/10.1111/2041-210X.12945
+Kass J. M., Vilela B., Aiello-Lammens M. E., Muscarella R., Merow C., Anderson R. P. (2018). Wallace: A flexible platform for reproducible modeling of species niches and distributions built for community expansion. *Methods Ecol Evol*. 2018. 9: 1151-1156. https://doi.org/10.1111/2041-210X.12945
 
 ### **Who is *Wallace* for?**  
 
@@ -33,6 +33,20 @@ We engineered *Wallace* to be used by a broad audience that includes graduate st
 
 * **<span style="color:blue">reproducible</span>**: users can download an `rmarkdown` .Rmd file that when run reproduces the analysis
 
+### **_Wallace_ website**
+
+For more information and relevant links see our <a href="https://wallaceecomod.github.io/" target="_blank">website</a>.
+
+### **Watch webinars about _Wallace_**
+
+*The following webinar was the "37th Global Online Biodiversity Informatics Seminar" in the Biodiversity Informatics Training Curriculum organized by Town Peterson.*
+
+Kass, J. M. 9 May 2018. "WALLACE: A flexible platform for reproducible modeling of species niches and distributions built for community expansion." Broadcast from the City College of New York, City University of New York. <a href="https://www.youtube.com/watch?v=00CSd9vx2CE&feature=youtu.be" target="_blank">Watch on YouTube</a>.
+
+*The following webinar was part of the "Modelado de Distribuciones Potenciales" series, organized by Angela Cuervo.*
+
+Anderson, R. P. 21 May 2018. "El software Wallace para modelar nichos y distribuciones: Un coche con motor R, volante de ratón y cerebro de humano." Broadcast from the City College of New York, City University of New York. <a href="https://www.youtube.com/watch?v=0652g9PDKp4" target="_blank">Watch on YouTube</a>. 
+
 ### **Contribute to _Wallace_**
 
 Contributors should submit pull requests to the *Wallace* <a href="https://github.com/wallaceEcoMod/wallace" target="_blank">Github account</a> for module authorship or significant code contributions to either the UI or server files. Also, please connect on Github to post code-related issues and the <a href="https://groups.google.com/forum/#!forum/wallaceecomod" target="_blank">Google Group</a> for methodological and other broader-scope questions, thoughts, or suggestions for improvement.
@@ -44,28 +58,38 @@ Please <a href="mailto:wallaceecomod@gmail.com">email us</a> with any other ques
 <br>
 **-----------------------------------------------------**
 <br>
-<br>
 
 #### **Acknowledgments**
 
-We dedicate this software to Alfred Russel Wallace, the co-discoverer of evolution by natural selection and the founder of the field of biogeography.
+We dedicate this software to Alfred Russel Wallace, the co-discoverer of evolution by natural selection and the founder of the field of biogeography. 
 
-<br>
+Currently, *Wallace* is being expanded via funding from the U.S. National Science Foundation DBI-1661510 and NASA 80NSSC18K0406.
+
+*Wallace* was inspired by the 2015 Ebbe Nielsen Challenge of the Global Biodiversity Information Facility (GBIF), for which it was recognized as a finalist and received prize funding.
+
+This material is based upon work supported by the U.S. National Science Foundation (NSF) and National Aeronautics and Space Administration (NASA) under Grant Numbers NSF DBI-1661510 (RPA), DBI-1650241 (RPA), DEB-1119915 (RPA), DEB-1046328 (MEA), and DBI-1401312 (RM); and NASA 80NSSC18K0406. Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Science Foundation or of NASA.
+
+Additional sources of funding include: for JMK, a CUNY Science Scholarship and a CUNY Graduate Center Provost Digital Innovation Grant; for BV, a Coordination for the Improvement of Higher Education Personnel (CAPES) doctoral grant from Brazil; for Grisales-Betancur, a fellowship of the 'Asociación Nacional de Empresarios' from Colombia; for Meenan, the City College Fellows program.
+
 
 #### **References**
 
-1. Elith J. & Leathwick J.R. (2009). Species distribution models: ecological explanation and prediction across space and time. *Annual Review of Ecology, Evolution, and Systematics*. 40: 677-697.
+1. Anderson, R. P. (2012). Harnessing the world's biodiversity data: promise and peril in ecological niche modeling of species distributions. *Annals of the New York Academy of Sciences*. 1260: 66-80.
 
-2. Ficetola G.F., Thuiller W. & Miaud C. (2007) Prediction and validation of the potential global distribution of a problematic alien invasive species &horbar; the American bullfrog. *Diversity and Distributions*, 13, 476-485.
+2. Anderson, R. P. (2015). El modelado de nichos y distribuciones: no es simplemente "clic, clic, clic." [With English and French translations: Modeling niches and distributions: it's not just "click, click, click" and La modélisation de niche et de distributions: ce n'est pas juste "clic, clic, clic"]. *Biogeografía*. 8: 4-27.
 
-3. Franklin J. (2010a). Mapping species distributions: spatial inference and prediction. Cambridge: Cambridge University Press.
+3. Elith J. & Leathwick J.R. (2009). Species distribution models: ecological explanation and prediction across space and time. *Annual Review of Ecology, Evolution, and Systematics*. 40: 677-697.
 
-4. Franklin J. (2010b) Moving beyond static species distribution models in support of conservation biogeography. *Diversity and Distributions*, 16, 321-330.
+4. Ficetola G.F., Thuiller W. & Miaud C. (2007) Prediction and validation of the potential global distribution of a problematic alien invasive species &horbar; the American bullfrog. *Diversity and Distributions*. 13: 476-485.
 
-5. González, C., Wang, O., Strutz, S. E., González-Salazar, C., Sánchez-Cordero, V., & Sarkar, S. 2010. Climate change and risk of leishmaniasis in North America: predictions from ecological niche models of vector and reservoir species. *PLoS Neglected Tropical Diseases*, 4:e585.
+5. Franklin J. (2010a). Mapping species distributions: spatial inference and prediction. Cambridge: Cambridge University Press.
 
-6. Guisan A. & Thuiller W. (2005). Predicting species distribution: offering more than simple habitat models. *Ecology Letters*. 8: 993-1009.
+6. Franklin J. (2010b) Moving beyond static species distribution models in support of conservation biogeography. *Diversity and Distributions*. 16: 321-330.
 
-7. Kearney M.R., Wintle B.A. & Porter W.P. (2010) Correlative and mechanistic models of species distribution provide congruent forecasts under climate change. *Conservation Letters*, 3, 203-213.
+7. González, C., Wang, O., Strutz, S. E., González-Salazar, C., Sánchez-Cordero, V., & Sarkar, S. 2010. Climate change and risk of leishmaniasis in North America: predictions from ecological niche models of vector and reservoir species. *PLoS Neglected Tropical Diseases*. 4: e585.
 
-8. Peterson A.T., Soberón J., Pearson R.G., Anderson R.P., Martinez-Meyer E., Nakamura M., Araújo M.B. (2011). Ecological niches and geographic distributions. Princeton, New Jersey: Monographs in Population Biology, 49. Princeton University Press.
+8. Guisan A. & Thuiller W. (2005). Predicting species distribution: offering more than simple habitat models. *Ecology Letters*. 8: 993-1009.
+
+9. Kearney M.R., Wintle B.A. & Porter W.P. (2010) Correlative and mechanistic models of species distribution provide congruent forecasts under climate change. *Conservation Letters*. 3: 203-213.
+
+10. Peterson A.T., Soberón J., Pearson R.G., Anderson R.P., Martinez-Meyer E., Nakamura M., Araújo M.B. (2011). Ecological niches and geographic distributions. Princeton, New Jersey: Monographs in Population Biology, 49. Princeton University Press.

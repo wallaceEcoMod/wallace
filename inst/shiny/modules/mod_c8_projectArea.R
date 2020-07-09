@@ -26,8 +26,19 @@ projectArea_MOD <- function(input, output, session, rvs) {
     # concatanate coords to a single character
     xy.round <- round(rvs$polyPjXY, digits = 2)
     xy.round <- xy.round[-nrow(xy.round),]  # remove last point that completes polygon
-    coordsChar <- paste(apply(xy.round, 1, function(b) paste0('(',paste(b, collapse=', '),')')), collapse=', ')  
-    rvs %>% writeLog('New area projection for model', rvs$modSel, 'with extent coordinates:', coordsChar)
+    coordsChar <- paste(apply(xy.round, 1, function(b) paste0('(',paste(b, collapse=', '),')')), 
+                        collapse=', ')  
+    if (rvs$comp6 == 'bioclim') {
+      rvs %>% writeLog('New area projection for BIOCLIM model with extent coordinates:', coordsChar)
+    } else if (rvs$comp6 == 'maxent') {
+      if (rvs$clamp == T | rvs$algMaxent == "maxent.jar") {
+        rvs %>% writeLog('New area projection for clamped model', rvs$modSel, 'with extent coordinates:', 
+                         coordsChar)
+      } else if (rvs$clamp == F) {
+        rvs %>% writeLog('New area projection for unclamped', rvs$modSel, 'with extent coordinates:', 
+                         coordsChar)
+      }
+    }
     
     withProgress(message = "Masking environmental grids to projection extent...", {
       projMsk <- raster::crop(rvs$envs, newPoly)
@@ -37,8 +48,19 @@ projectArea_MOD <- function(input, output, session, rvs) {
     modCur <- rvs$mods[[rvs$modSel]]
     
     withProgress(message = 'Projecting model to new area...', {
-      pargs <- paste0("outputformat=", rvs$comp7.type)
-      modProjArea <- dismo::predict(modCur, projMsk, args = pargs)
+      if (rvs$comp6 == 'bioclim') {
+        modProjArea <- dismo::predict(modCur, projMsk)
+      } else if (rvs$comp6 == 'maxent') {
+        if (rvs$algMaxent == "maxnet") {
+          if (rvs$comp7.type == "raw") {pargs <- "exponential"} else {pargs <- rvs$comp7.type}
+          modProjArea <- ENMeval::maxnet.predictRaster(modCur, projMsk, type = pargs, clamp = rvs$clamp)
+        } else if (rvs$algMaxent == "maxent.jar") {
+          pargs <- paste0("outputformat=", rvs$comp7.type)
+          modProjArea <- dismo::predict(modCur, projMsk, args = pargs)
+        }
+      }
+      
+      raster::crs(modProjArea) <- raster::crs(projMsk)
       # generate binary prediction based on selected thresholding rule 
       # (same for all Maxent prediction types because they scale the same)
       modProjArea.thr.call <- callModule(threshPred_MOD, "threshPred", modProjArea)
