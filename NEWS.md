@@ -1,3 +1,6 @@
+# wallace 1.0.6.2
+- Double distance in point buffer fixed.
+
 # wallace 1.0.6.1
 - Adding a couple convenience functions for running wallace headless by @isaacovercast
 

@@ -8,3 +8,7 @@
 spatial_thin_log.txt    # spThin files
 wc*    # worldclim files
 cmip5*    # worldclim files
+^tests$
+^wallace.Rproj$
+^selenium-server-standalone.jar$
+^.travis.yml$

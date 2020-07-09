@@ -9,23 +9,25 @@
 \emph{Wallace} is a \code{shiny} app that guides users through a complete species niche/distributional modeling analysis, from the acquisition of species occurrence and environmental data to visualizing model predictions on an interactive map (\code{rleaflet}), thus bundling complex workflows into a single, streamlined GUI interface. New functionality, in the form of modules, can be added to \emph{Wallace} via contributions from the user community. In addition, executable session code (R Markdown format) can be downloaded to share with others or use as supplementary information for scientific papers and reports. The application is run via the function \code{\link{run_wallace}}.
 }
 \details{
-Please see the official website (\url{https://wallaceecomod.github.io/}) for more details. If you have questions about the application, please participate in the \href{https://groups.google.com/forum/#!forum/wallaceecomod}{Google Group}, or email the team directly: \url{wallaceEcoMod@gmail.com}.
+Please see the official website (\url{https://wallaceecomod.github.io/}) for more details. If you have questions about the application, please participate in the \href{https://groups.google.com/forum/#!forum/wallaceecomod}{Google Group}, or email the team directly: \email{wallaceecomod@gmail.com}.
 
 \tabular{ll}{
 Package: \tab wallace\cr
 Type: \tab Package\cr
-Version: \tab 1.0.0\cr
-Date: \tab 2017-11-23\cr
+Version: \tab 1.0.6.2\cr
+Date: \tab 2020-02-12\cr
 License: \tab GNU 3.0\cr
 }
 }
 \references{
-Kass J.M., Vilela B., Aeillo-Lammens M.E., Muscarella R., Merow C., and Anderson R.P. (2017) \emph{Wallace}: A modular platform for reproducible ecological modeling. Version 1.0.0.
+Kass J.M., Pinilla-Buitrago G.E., Vilela B., Aeillo-Lammens M.E., Muscarella R., Merow C., and Anderson R.P. (2018) \emph{Wallace}: A modular platform for reproducible ecological modeling. Version 1.0.6.1
 }
 \author{
 \strong{Jamie M. Kass}\cr
 (email: \email{jkass@gradcenter.cuny.edu};
-Website: \url{https://ndimhypervol.github.io/})
+
+\strong{Gonzalo E. Pinilla-Buitrago}\cr
+(email: \email{gpinillabuitrago@gradcenter.cuny.edu})
 
 \strong{Bruno Vilela}\cr
 (email: \email{bvilela@wustl.edu};
@@ -33,12 +35,13 @@ Website: \url{https://bvilela.weebly.com/})
 
 \strong{Matthew E. Aeillo-Lammens}\cr
 (email: \email{matt.lammens@gmail.com};
-Website: \url{https://mlammens.github.io/})
+Website: \url{https://ecologistatwork.com/})
 
 \strong{Robert Muscarella}\cr
 (email: \email{bob.muscarella@gmail.com};
 Website: \url{https://bobmuscarella.weebly.com/})
-#' @author \strong{Cory Merow}\cr
+
+\strong{Cory Merow}\cr
 (email: \email{cory.merow@gmail.com};
 Website: \url{https://cmerow.github.io/})
 
