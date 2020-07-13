@@ -21,7 +21,7 @@ occs <- as.data.frame(occs[[1]]$cleaned)
 ## process data
 occs <- poccs_thinOccs(occs = occs, thinDist = 10,spN=occs)
 # enviromental data
-envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
+envs <- envs_worldclim(bcRes = 10, bcSel = c("bio01","bio02","bio13","bio14"), doBrick = FALSE)
 # background extent
 bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
 # background masked
