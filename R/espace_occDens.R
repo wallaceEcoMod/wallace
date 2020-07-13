@@ -1,24 +1,26 @@
 
-#' @title calibrate a PCA for the background of two selected species
-#' @description ..
+#' @title Occurence density grid
+#' @description calculates the part of environmental space more densly populated by species & the avaialbility of environmental conditions in the background
 #'
 #' @details
-#' See Examples.
-#' @param sp.name1 x
-#' @param sp.name2 x
-#' @param pca pca output of pca component
-#' @param logger x
-# @param spSel species selected (1 or 2)
+#' This fuctions implements a density estimation for each region in the environmental space (gridded at 100*100 pixels).
+#' Then an occurrence density is estimated using a kernel density approach. The density of environmental conditions in the background is calcuated in the same way.
+#
+#' @param sp.name1 character, name of species 1 to be analyzed
+#' @param sp.name2 character, name of species 2 to be analyzed.
+#' @param pca pca output of pca component ( in list format)
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#'  otherwise leave the default NULL
 # @keywords
 #'
 # @examples
 #'
 #'
-# @return
-#' @author Olivier Broennimann, Jamie Kass <jkass@@gradcenter.cuny.edu>
+#' @return
+#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+#' @author Olivier Broennimann <olivier.broennimann@@unil.ch>
 # @note
-
-# @seealso
+#' @seealso \code{\link{espace_pca}} \code{\link{espace_nicheOv}} \code{\link[ecospat]{grid.clim.dyn}} \code{\link[adeHabitatHR]{kernelUD}}
 # @references
 # @aliases - a list of additional topic names that will be mapped to
 # this documentation when the user looks them up from the command
