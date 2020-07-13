@@ -32,10 +32,10 @@
 #'bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=occs)
 #'model[i]<-bioclimAlg }
 #' ##Set parameters for running PCA and occDens
-#'occs.z1<-model[[1]]@occs[3:length(model[[1]]@occs)]
-#' occs.z2<-model[[2]]@occs[3:length(model[[2]]@occs)]
-#' bgPts.z1<-model[[1]]@bg[3:length(model[[1]]@bg)]
-#' bgPts.z2<-model[[2]]@bg[3:length(model[[2]]@bg)]
+#'occs.z1<-model[[1]]@@occs[3:length(model[[1]]@@occs)]
+#' occs.z2<-model[[2]]@@occs[3:length(model[[2]]@@occs)]
+#' bgPts.z1<-model[[1]]@@bg[3:length(model[[1]]@@bg)]
+#' bgPts.z2<-model[[2]]@@bg[3:length(model[[2]]@@bg)]
 #' Testpca<-espace_pca(sp.name1,sp.name2,occs.z1,occs.z2,bgPts.z1,bgPts.z2)
 #' ###RUN FUNCTION
 #' TestOccDens<-espace_occDens(sp.name1, sp.name2,Testpca)
