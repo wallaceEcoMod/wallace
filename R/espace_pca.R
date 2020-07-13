@@ -1,4 +1,4 @@
-#' @title espace_pca Principal component analysis t
+#' @title espace_pca Principal component analysis
 #' @description Principal component analysis to reduce dimensionalty of environmental space
 #' @details
 #' This function is called by the component espace to calibrate a pca for one (default) or 2 species in environmental space.

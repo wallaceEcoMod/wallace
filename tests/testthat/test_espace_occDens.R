@@ -1,5 +1,5 @@
 #### COMPONENT espace: Do analysis in environmental space.
-#### MODULE: espace
+#### MODULE: Occurence density grid
 context("espace_occDens")
 
 source("test_helper_functions.R")

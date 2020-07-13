@@ -1,5 +1,5 @@
 #### COMPONENT espace: Do analysis in environmental space.
-#### MODULE: espace
+#### MODULE: Principal component analysis
 context("espace_pca")
 
 source("test_helper_functions.R")
