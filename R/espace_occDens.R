@@ -13,11 +13,36 @@
 #'  otherwise leave the default NULL
 # @keywords
 #'
-# @examples
+#' @examples
+#'###SET PARAMETERS (running model)
+#'sp.name1<-"Panthera onca"
+#'sp.name2<-"Procyon lotor"
+#'species<-c(sp.name1,sp.name2)
+#' ##make models for both species to get necessary inputs
+#'model<-list()
+#' for (i in 1:2){
+# 'occs <-  occs_queryDb(spName = species[i], occDb = "gbif", occNum = 100)
+#' occs <- as.data.frame(occs[[1]]$cleaned)
+#' occs <- poccs_thinOccs(occs = occs, thinDist = 10,spN=occs)
+#' envs <- envs_worldclim(bcRes = 10,  bcSel = c("bio01","bio02","bio13","bio14"), doBrick = FALSE)
+#' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
+#' bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
+#'  bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 1000,spN=occs)
+#' partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=occs)
+#'bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=occs)
+#'model[i]<-bioclimAlg }
+#' ##Set parameters for running PCA and occDens
+#'occs.z1<-model[[1]]@occs[3:length(model[[1]]@occs)]
+#' occs.z2<-model[[2]]@occs[3:length(model[[2]]@occs)]
+#' bgPts.z1<-model[[1]]@bg[3:length(model[[1]]@bg)]
+#' bgPts.z2<-model[[2]]@bg[3:length(model[[2]]@bg)]
+#' Testpca<-espace_pca(sp.name1,sp.name2,occs.z1,occs.z2,bgPts.z1,bgPts.z2)
+#' ###RUN FUNCTION
+#' TestOccDens<-espace_occDens(sp.name1, sp.name2,Testpca)
 #'
-#'
-#' @return
-#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+#' @return Returns a list of 2 lists (one for each species). Each list contains 10 species specific slots with information outputed by ecospat::grid.clim.dyn.
+#' z.uncor is the density of occurrence of the species and z.cor the occupancy of the environment by the species. It has the input parameters as individual slots and a rasterLayer with the shape of occupancy in environmental space
+#' @author Jamie Kass <jamie.m.kass@@gmail.com >
 #' @author Olivier Broennimann <olivier.broennimann@@unil.ch>
 # @note
 #' @seealso \code{\link{espace_pca}} \code{\link{espace_nicheOv}} \code{\link[ecospat]{grid.clim.dyn}} \code{\link[adeHabitatHR]{kernelUD}}
@@ -39,10 +64,10 @@ espace_occDens <- function(sp.name1, sp.name2, pca, logger = NULL) {
   smartProgress(logger, message = "Running occurrence density grids...", {
     occDens1 <- ecospat::ecospat.grid.clim.dyn(scores.bg12, scores.bg1,
                                                scores.occs1, 100)
-    incProgress(1/2)
+   # incProgress(1/2)
     occDens2 <- ecospat::ecospat.grid.clim.dyn(scores.bg12, scores.bg2,
                                                scores.occs2, 100)
-    incProgress(1/2)
+  # incProgress(1/2)
   })
   occDens <- list()
   occDens[[sp.name1]] <- occDens1
