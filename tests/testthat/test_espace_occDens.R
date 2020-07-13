@@ -61,6 +61,21 @@ test_that("output checks", {
   expect_equal(length(TestOccDens[[sp.name2]]),10)
   ##The name of the slots of each list is correct
   expect_equal(names(TestOccDens[[sp.name1]]),c("x","y","z","z.uncor","z.cor","Z","glob","glob1","sp","w"))
+  expect_equal(names(TestOccDens[[sp.name2]]),c("x","y","z","z.uncor","z.cor","Z","glob","glob1","sp","w"))
+   ##Test that all outputs but x and y and inputs (including occupancy, density and weights) are all raster layers
+  #sp1
+  expect_is(TestOccDens[[sp.name1]]$z,'RasterLayer')
+  expect_is(TestOccDens[[sp.name1]]$Z,'RasterLayer')
+  expect_is(TestOccDens[[sp.name1]]$z.uncor,'RasterLayer')
+  expect_is(TestOccDens[[sp.name1]]$z.cor,'RasterLayer')
+  expect_is(TestOccDens[[sp.name1]]$w,'RasterLayer')
+  #sp2
+  expect_is(TestOccDens[[sp.name2]]$z,'RasterLayer')
+  expect_is(TestOccDens[[sp.name2]]$Z,'RasterLayer')
+  expect_is(TestOccDens[[sp.name2]]$z.uncor,'RasterLayer')
+  expect_is(TestOccDens[[sp.name2]]$z.cor,'RasterLayer')
+  expect_is(TestOccDens[[sp.name2]]$w,'RasterLayer')
+
   })
 
 
