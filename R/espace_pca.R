@@ -28,7 +28,6 @@
 #' @seealso \code{\link[ade4]{dudi.pca}}
 #'
 #' @author Jamie Kass < jamie.m.kass@@gmail.com >
-#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 #' @author Olivier Broennimann <olivier.broennimann@@unil.ch>
 #' @export
 
