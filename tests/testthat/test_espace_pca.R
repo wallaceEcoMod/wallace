@@ -35,9 +35,6 @@ partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMas
 bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=occs)
 
 model[i]<-bioclimAlg
-##DELETE at the ends
-##espace_pca<- function(sp.name1, sp.name2 = NULL, occs.z1, occs.z2 = NULL,
-  ##                    bgPts.z1, bgPts.z2 = NULL, logger = NULL)
   }
   ##Set parameters
       ##Remove coordinates (lat/long from tables)
