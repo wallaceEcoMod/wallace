@@ -2,7 +2,7 @@
 % Please edit documentation in R/proj_area.R
 \name{proj_area}
 \alias{proj_area}
-\title{proj_area}
+\title{proj_area Project model to a new area}
 \usage{
 proj_area(
   evalOut,
@@ -16,24 +16,58 @@ proj_area(
 )
 }
 \arguments{
-\item{evalOut}{x}
+\item{evalOut}{ENMevaluate output from previous module and using any of the available algorithms}
 
-\item{curModel}{x}
+\item{curModel}{If algorithm is maxent, model selected by user as best or optimal, in terms of feature class and regularization multiplier (e.g 'L_1'). Else must be 1}
 
-\item{envs}{x}
+\item{envs}{Environmental layers to be used for projecting the model. They must match the layers used for generating the model in the model component}
 
-\item{outputType}{x}
+\item{outputType}{Output type to be used when algorithm is maxnet or maxent.jar.}
 
-\item{pjExt}{x}
+\item{alg}{Modeling algorithm used in the model component. Can be one of : 'bioclim', 'maxent.jar' or 'maxnet'}
 
-\item{logger}{x}
+\item{clamp}{logical, whether projection will be of clamped or unclamped model.}
+
+\item{pjExt}{Extent of the area to project the model to. This is defined by the user in the map of the GUI and is provided as a matrix of latitude, longitude values.}
+
+\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+otherwise leave the default NULL}
+}
+\value{
+A list of two elements: projExt and projArea.
+The first is a RasterBrick or a RasterStack of the environmental variables cropped to the projection area.
+The second element is a raster of the projected model with the specified output type.
 }
 \description{
-..
+Function projects the model generated in previous components to a new user drawn area
 }
 \details{
-See Examples.
+This functions allows for the projection of the model created in previous components to a new area.
+The projection area is user provided in the map of the GUI. The model will be projected to the new area as long as the environmental variables are available for the area.
+This function returns a list including the cropped environmental variables used for projecting and the projected model.
+}
+\examples{
+out.gbif <- occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+occs <- as.data.frame(out.gbif[[1]]$cleaned)
+envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
+bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
+bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=occs)
+partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=occs)
+longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331, -66.47149, -66.71319, -71.11931)
+latitude <- c(13.18379, 7.52315, 0.93105, -1.70167, 0.98391, 6.09208, 12.74980)
+expertAddedPoly <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
+modAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=occs)
+modProj <- proj_area(evalOut = modAlg, curModel = 1, envs, outputType = 'raw', alg='bioclim',clamp=FALSE, pjExt = expertAddedPoly )
+
+}
+\seealso{
+\code{\link[dismo]{predict}}, \code{\link[ENMeval]{maxnet.predictRaster}}, \code{\link{proj_time}} \code{\link{proj_user}}
 }
 \author{
+Andrea Paz <paz.andreita@gmail.com>
+
 Jamie Kass <jkass@gradcenter.cuny.edu>
+
+Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
 }
