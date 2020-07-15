@@ -1,18 +1,18 @@
-#' @title proj_user Project model to user specified area
-#' @description The function projects the model generated in previous components to a user uploaded area
+#' @title proj_user Project model to user specified area and time
+#' @description The function projects the model generated in previous components to user uploaded environmental variables and area
 #'
 #' @details
-#' This functions allows for the projection of the model created in previous components to a new area provided by the user.
-#' The projection area/time is user uploaded. The model will be projected to the new area as long as the environmental variables are available for the area.
+#' This functions allows for the projection of the model created in previous components to a new time and area provided by the user.
+#' The projection time and area is user provided The model will be projected to the new time and area as long as the environmental variables provided are available for the area and match the variables used for model building.
 #' This function returns a list including the cropped environmental variables used for projecting and the projected model.
 
 #' @param evalOut ENMevaluate output from previous module and using any of the available algorithms
 #' @param curModel If algorithm is maxent, model selected by user as best or optimal, in terms of feature class and regularization multiplier (e.g 'L_1'). Else must be 1
-#' @param envs Environmental layers used for projection.
+#' @param envs User provided environmental layers (in raster format) to be used for projection.
 #' @param outputType Output type to be used when algorithm is maxnet or maxent.jar.
 #' @param alg Modeling algorithm used in the model component. Can be one of : 'bioclim', 'maxent.jar' or 'maxnet'
 #' @param clamp logical, whether projection will be of clamped or unclamped model.
-#' @param pjExt Extent of the area to project the model to. This must be provided by the user as a shapefile
+#' @param pjExt Extent of the area to project the model to. This must be provided by the user as a shapefileor as a SpatialPolygons object
 #' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 
@@ -21,7 +21,7 @@
 #' @examples
 #'out.gbif <- occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
 #"occs <- as.data.frame(out.gbif[[1]]$cleaned)
-#'envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
+#'envs <- envs_worldclim(bcRes = 10, bcSel = c('bio01','bio19'), doBrick = FALSE)
 #"bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
 #'bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
 #'bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=occs)
@@ -29,7 +29,9 @@
 #'Path <- list.files(path='./tests/testthat/shapefile', pattern = "COL_adm0.", full.names = TRUE)
 #'userExt<-rgdal::readOGR(Path[2])
 #'modAlg <- model_bioclim(occs, partblock$bg.grp,  partblock$occ.grp, bgGrp, bgMask,spN=occs)
-#'modProj <- proj_user(evalOut = modAlg, curModel=1, envs=envs,alg='bioclim',clamp=FALSE, pjExt = userExt )
+#'envsFut<-list.files(path='./wc10/Future', pattern = ".tif$", full.names = TRUE)
+#'envsFut<-raster::stack(envsFut)
+#'modProj <- proj_user(evalOut = modAlg, curModel=1, envs=envsFut,alg='bioclim',clamp=FALSE, pjExt = userExt )
 #'
 # @return
 #' @author Andrea Paz <paz.andreita@@gmail.com>
@@ -64,7 +66,7 @@ proj_user <- function(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
   })
 
   smartProgress(logger,
-                message = 'Projecting model to user uploaded area', {
+                message = 'Projecting model to user uploaded environmental variables & area', {
     if (alg == 'bioclim') {
       modProjUser <- dismo::predict(evalOut@models[[curModel]], projMsk)
     } else if (alg == 'maxnet') {

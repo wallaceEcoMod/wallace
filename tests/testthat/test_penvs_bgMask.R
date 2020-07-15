@@ -39,9 +39,9 @@ test_that("output type checks", {
   # all the environmental layers have the same amount of pixels
   expect_equal(raster::cellStats(bgMask, sum), raster::cellStats(bgMask, sum))
   # the original layers have more pixels than the masked ones
-  expect_true(raster::cellStats(bgMask$bio1.1, sum) < raster::cellStats(envs$bio1.1, sum))
-  expect_true(raster::cellStats(bgMask$bio1.2, sum) < raster::cellStats(envs$bio1.2, sum))
-  expect_true(raster::cellStats(bgMask$bio1.3, sum) < raster::cellStats(envs$bio1.3, sum))
-  expect_true(raster::cellStats(bgMask$bio1.4, sum) < raster::cellStats(envs$bio1.4, sum))
-  expect_true(raster::cellStats(bgMask$bio1.5, sum) < raster::cellStats(envs$bio1.5, sum))
+  expect_true(raster::cellStats(bgMask$bio01.1, sum) < raster::cellStats(envs$bio01.1, sum))
+  expect_true(raster::cellStats(bgMask$bio01.2, sum) < raster::cellStats(envs$bio01.2, sum))
+  expect_true(raster::cellStats(bgMask$bio01.3, sum) < raster::cellStats(envs$bio01.3, sum))
+  expect_true(raster::cellStats(bgMask$bio01.4, sum) < raster::cellStats(envs$bio01.4, sum))
+  expect_true(raster::cellStats(bgMask$bio01.5, sum) < raster::cellStats(envs$bio01.5, sum))
 })

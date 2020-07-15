@@ -9,7 +9,7 @@ out.gbif <- occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
 occs <- as.data.frame(out.gbif[[1]]$cleaned)
 ## background mask
 # enviromental data
-envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
+envs <- envs_worldclim(bcRes = 10, bcSel = c('bio01','bio19'), doBrick = FALSE)
 # background extent
 bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
 # background masked
@@ -36,6 +36,9 @@ fcs <- c('L', 'H', 'LQH')
 ## extent to project from user provided shapefile
 Path <- list.files(path='./shapefile', pattern = "COL_adm0.", full.names = TRUE)
 userExt<-rgdal::readOGR(Path[2])
+#new envs
+envsFut<-list.files(path='./wc10/Future', pattern = ".tif$", full.names = TRUE)
+envsFut<-raster::stack(envsFut)
 ###iterating items
 # outputType
 outputType <- c('raw', 'logistic', 'cloglog')
@@ -57,7 +60,7 @@ for (i in algorithm) {
 
   for (j in outputType) {
     ### run function
-    modProj <- proj_user(evalOut = modAlg, curModel, envs=envs, outputType = j,
+    modProj <- proj_user(evalOut = modAlg, curModel, envs=envsFut, outputType = j,
                          alg=i,clamp=FALSE, pjExt = userExt )
 
 

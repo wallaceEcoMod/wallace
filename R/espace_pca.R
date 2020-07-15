@@ -1,11 +1,10 @@
-#' @title espace_pca
-#' @description
-#' calibrate a PCA for the background of one or two selected species
+#' @title espace_pca Principal component analysis
+#' @description Principal component analysis to reduce dimensionalty of environmental space
 #' @details
 #' This function is called by the component espace to calibrate a pca for one (default) or 2 species in environmental space.
 #' When using within Wallace GUI parameters are obtained from the model object, in particular,
 #' table of occurences with environmental values and table of background points with environmental values. User must be careful as these tables must contain only
-#' environmental variables and not the point coordinates as outputed by model objects.
+#' environmental variables and not the point coordinates as outputed by model objects. The PCA is calibrated over the whole set of background points
 #' The provided species name(s) are only used for logger messages and not for querying or selecting occurrences.
 
 #' @param sp.name1 character, name of species 1 to be analyzed
@@ -26,11 +25,10 @@
 #' espace_pca(sp.name1,occs.z1=bioclimAlg@@occs[3:7],bgPts.z1=bioclimAlg@@bg[3:7])
 #'
 #' @return A list of 14 elements of classes dudi and pca as in dudi.pca
-#' @seealso dudi.pca in the ade4 package
+#' @seealso \code{\link[ade4]{dudi.pca}}
 #'
 #' @author Jamie Kass < jamie.m.kass@@gmail.com >
-#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
-#' @author Olivier Broennimann olivier.broennimann@@unil.ch
+#' @author Olivier Broennimann <olivier.broennimann@@unil.ch>
 #' @export
 
 espace_pca<- function(sp.name1, sp.name2 = NULL, occs.z1, occs.z2 = NULL,

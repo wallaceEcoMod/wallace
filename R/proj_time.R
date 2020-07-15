@@ -14,7 +14,7 @@
 #' @param outputType Output type to be used when algorithm is maxnet or maxent.jar.
 #' @param alg Modeling algorithm used in the model component. Can be one of : 'bioclim', 'maxent.jar' or 'maxnet'
 #' @param clamp logical, whether projection will be of clamped or unclamped model.
-#' @param pjExt Extent of the area to project the model to. This is defined by the user in the map of the GUI and is provided as a matrix of latitude, longitude values.
+#' @param pjExt Extent of the area to project the model to. This is defined by the user in the map of the GUI and is provided as a SpatialPolygons object.
 #' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 # @keywords
@@ -30,11 +30,11 @@
 #' ## extent to project
 #' longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331, -66.47149, -66.71319, -71.11931)
 #' latitude <- c(13.18379, 7.52315, 0.93105, -1.70167, 0.98391, 6.09208, 12.74980)
-#' # generate matrix
-#' expertAddedPoly <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
+#'selCoords <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
+#'expertAddedPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)), ID=1)))
 #' ##projection time layers, using worldclim 2.1 Future 2021-2040 MIROC6 ssp126 bioclims as example
 #' envsFut<-list.files(path='./tests/testthat/wc10/Future', pattern = ".tif$", full.names = TRUE)
-#' envsFut<-stack(envsFut)
+#' envsFut<-raster::stack(envsFut)
 #' modAlg <- model_bioclim(occs, bg, partblock$occ.grp, bgGrp = partblock$bg.grp, bgMask,spN=occs)
 #' modProj <- proj_time(evalOut = modAlg, curModel=1, envs=envsFut,alg='bioclim',clamp=FALSE, pjExt = expertAddedPoly )
 

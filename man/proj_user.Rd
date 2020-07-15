@@ -2,7 +2,7 @@
 % Please edit documentation in R/proj_user.R
 \name{proj_user}
 \alias{proj_user}
-\title{proj_user Project model to user specified area}
+\title{proj_user Project model to user specified area and time}
 \usage{
 proj_user(
   evalOut,
@@ -20,7 +20,7 @@ proj_user(
 
 \item{curModel}{If algorithm is maxent, model selected by user as best or optimal, in terms of feature class and regularization multiplier (e.g 'L_1'). Else must be 1}
 
-\item{envs}{Environmental layers used for projection.}
+\item{envs}{User provided environmental layers (in raster format) to be used for projection.}
 
 \item{outputType}{Output type to be used when algorithm is maxnet or maxent.jar.}
 
@@ -28,29 +28,32 @@ proj_user(
 
 \item{clamp}{logical, whether projection will be of clamped or unclamped model.}
 
-\item{pjExt}{Extent of the area to project the model to. This must be provided by the user as a shapefile}
+\item{pjExt}{Extent of the area to project the model to. This must be provided by the user as a shapefileor as a SpatialPolygons object}
 
 \item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 }
 \description{
-The function projects the model generated in previous components to a user uploaded area
+
+The function projects the model generated in previous components to user uploaded environmental variables and area
 }
 \details{
-This functions allows for the projection of the model created in previous components to a new area provided by the user.
-The projection area/time is user uploaded. The model will be projected to the new area as long as the environmental variables are available for the area.
+This functions allows for the projection of the model created in previous components to a new time and area provided by the user.
+The projection time and area is user provided The model will be projected to the new time and area as long as the environmental variables provided are available for the area and match the variables used for model building.
 This function returns a list including the cropped environmental variables used for projecting and the projected model.
 }
 \examples{
 out.gbif <- occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
-envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
+envs <- envs_worldclim(bcRes = 10, bcSel = c('bio01','bio19'), doBrick = FALSE)
 bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
 bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=occs)
 partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=occs)
 Path <- list.files(path='./tests/testthat/shapefile', pattern = "COL_adm0.", full.names = TRUE)
 userExt<-rgdal::readOGR(Path[2])
 modAlg <- model_bioclim(occs, partblock$bg.grp,  partblock$occ.grp, bgGrp, bgMask,spN=occs)
-modProj <- proj_user(evalOut = modAlg, curModel=1, envs=envs,alg='bioclim',clamp=FALSE, pjExt = userExt )
+envsFut<-list.files(path='./wc10/Future', pattern = ".tif$", full.names = TRUE)
+envsFut<-raster::stack(envsFut)
+modProj <- proj_user(evalOut = modAlg, curModel=1, envs=envsFut,alg='bioclim',clamp=FALSE, pjExt = userExt )
 
 }
 \seealso{

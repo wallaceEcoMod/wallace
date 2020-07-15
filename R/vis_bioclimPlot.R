@@ -28,8 +28,8 @@
 #'bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=occs)
 #'bioclimPlot <- vis_bioclimPlot(x = bioclimAlg@@models$bioclim, a=1, b=2, p=1)
 #'
-#' @return A bivariate plot of environmental values for occurrences. Includes a rectangle representing the bioclimatic enveloppe given p.
-#' Occurrences that are inside the enveloppe for all layers (included those not plotted) are shown as green circles and those outside of the enveloppe for one ore more variables are plotted as red crosses.
+#' @return A bivariate plot of environmental values for occurrences. Includes a blue rectangle representing the bioclimatic enveloppe given p.
+#' Occurrences that are inside the enveloppe for all layers (included those not plotted) are shown as green circles and those outside of the enveloppe for one ore more variables are plotted as orange triangles/
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 #' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
@@ -73,7 +73,7 @@ vis_bioclimPlot <- function(x, a=1, b=2, p=0.9, ...) {
   #		x2 <- myquantile(x[,a], 1-p)
   #		y1 <- myquantile(x[,b], p)
   #		y2 <- myquantile(x[,b], 1-p)
-  polygon(rbind(c(x1,y1), c(x1,y2), c(x2,y2), c(x2,y1), c(x1,y1)), border='blue', lwd=2)
-  points(d[i,a], d[i,b], xlab=colnames(x)[a], ylab=colnames(x)[b], col='green' )
-  points(d[!i,a], d[!i,b], col='red', pch=3)
+  polygon(rbind(c(x1,y1), c(x1,y2), c(x2,y2), c(x2,y1), c(x1,y1)), border='#0072B2', lwd=2)
+  points(d[i,a], d[i,b], xlab=colnames(x)[a], ylab=colnames(x)[b], col='#009E73' ,pch=16)
+  points(d[!i,a], d[!i,b], col="#D55E00", pch=17)
 }

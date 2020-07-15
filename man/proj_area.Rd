@@ -28,7 +28,7 @@ proj_area(
 
 \item{clamp}{logical, whether projection will be of clamped or unclamped model.}
 
-\item{pjExt}{Extent of the area to project the model to. This is defined by the user in the map of the GUI and is provided as a matrix of latitude, longitude values.}
+\item{pjExt}{Extent of the area to project the model to. This is defined by the user in the map of the GUI and is provided as a SpatialPolygons object}
 
 \item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
@@ -56,7 +56,8 @@ bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=occs)
 partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=occs)
 longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331, -66.47149, -66.71319, -71.11931)
 latitude <- c(13.18379, 7.52315, 0.93105, -1.70167, 0.98391, 6.09208, 12.74980)
-expertAddedPoly <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
+selCoords <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
+expertAddedPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)), ID=1)))
 modAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=occs)
 modProj <- proj_area(evalOut = modAlg, curModel = 1, envs, outputType = 'raw', alg='bioclim',clamp=FALSE, pjExt = expertAddedPoly )
 
