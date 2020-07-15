@@ -6,9 +6,11 @@ Over the past two decades, the worldwide biodiversity informatics community has 
 
 **IMPLEMENTATION** 
 
-This module relies on the R package `spocc`, which provides streamlined access to many species occurrence databases, some of which aggregate data from myriad providers. Users can choose between three of the largest databases: <a href="http://www.gbif.org" target="_blank">GBIF</a>, <a href="http://www.vertnet.org" target="_blank">VertNet</a>, and <a href="https://bison.usgs.gov" target="_blank">BISON</a>. Note that currently users must choose only one of these databases, and any later download overwrites previous ones. 
+This module relies on the R package `spocc`, which provides streamlined access to many species occurrence databases, some of which aggregate data from myriad providers. Users can choose between three of the largest databases: <a href="http://www.gbif.org" target="_blank">GBIF</a>, <a href="http://www.vertnet.org" target="_blank">VertNet*</a>, and <a href="https://bison.usgs.gov" target="_blank">BISON</a>. Note that currently users must choose only one of these databases, and any later download overwrites previous ones. 
 
 Records used in downstream analyses in *Wallace* are filtered to remove those without georeferences (latitude/longitude coordinates) and those that have exact duplicate coordinates of other records (including number of decimal places). The "Occs Tbl" tab displays all the filtered records with several key fields: name, longitude, latitude, year, institutionCode, country, stateProvince, locality, elevation, and basisOfRecord (standard field names from GBIF). The records available for download as a .csv file have all original fields and include records without georeferences.
+
+(*) Vertnet option is not available because is not currently supported by `spocc`.
 
 **REFERENCES**
 
