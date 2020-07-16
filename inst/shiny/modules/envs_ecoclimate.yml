@@ -1,0 +1,5 @@
+component: "envs"
+short_name: "ecoClimate"
+long_name: "ecoClimate"
+authors: "Sara Varela, Jamie M. Kass, Gonzalo E. Pinilla-Buitrago, Robert P. Anderson"
+package: [raster]

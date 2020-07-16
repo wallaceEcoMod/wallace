@@ -1,30 +1,3 @@
-envs_ecoclimate_module_ui <- function(id) {
-  ns <- NS(id)
-  tagList(
-    "Not implemented"
-    # tags$div(title='Select AOGCM',
-    #          selectInput(ns("bcAOGCM"), label = "Select the Atmospheric Oceanic General Circulation Model you want to use",
-    #                      choices = list("Select AOGCMs" = "",
-    #                                     "CCSM" = "CCSM",
-    #                                     "CNRM"= "CNRM",
-    #                                     "MIROC"="MIROC",
-    #                                     "FGOALS"="FGOALS",
-    #                                     "GISS"="GISS",
-    #                                     "IPSL"="IPSL",
-    #                                     "MRI"= "MRI",
-    #                                     "MPI"= "MPI"
-    #                      ))),
-    #
-    # checkboxInput(ns("ecoClimSelChoice"), label = "Specify variables to use in analysis?"),
-    # conditionalPanel(paste0("input['", ns("ecoClimSelChoice"), "']"),
-    #                  checkboxGroupInput(ns("ecoClimSel"), label = "Select",
-    #                                     choices = setNames(as.list(paste0('bio', 1:19)), paste0('bio', 1:19)),
-    #                                     inline=TRUE, selected = paste0('bio', 1:19))),
-    # strong("ecoClimate layers have a resolution of 0.5 degrees"),
-    # actionButton(ns("goEcoClimData"), "Load Env Data")
-  )
-}
-
 envs_ecoclimate_module_server <- function(input, output, session, common) {
 
   logger <- common$logger
