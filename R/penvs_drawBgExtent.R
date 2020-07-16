@@ -11,7 +11,7 @@
 #' @param polyExtID Numeric ID to be used in the generation of the polygon.
 #' @param drawBgBuf The buffer to be used in generating the SpatialPolygonsDataFrame, maybe be 0 or >0. A number must be specified.
 #' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.
-#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #' otherwise leave the default NULL
 #' @param spN data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages
 # @keywords
@@ -24,7 +24,7 @@
 #' expertDrawPoly <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
 #' drawBgBf <- penvs_drawBgExtent(polyExtXY = expertDrawPoly, polyExtID = 1, drawBgBuf = 0.5, occs,spN=occs)
 #' @return This functions returns a SpatialPolygonsDataFrame based on the user specified coordinates (drawn on map)
-#' This SpatialPolygonsDataFrame may be larger than specified if drawBgBuf > 0. The SpatialPolygonsDataFramewill include all occurrences.
+#' This SpatialPolygonsDataFrame may be larger than specified if drawBgBuf > 0. The SpatialPolygonsDataFrame will include all occurrences.
 
 #' @author Jamie Kass < jamie.m.kass@@gmail.com >
 #' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
