@@ -10,7 +10,6 @@
 #' @param bcScenario select the temporal scenario that you want to download.
 #' Options are: "LGM" (21,000 years ago), "Holo" (6,000 years ago),
 #' "Present", "Future 2.6" (rcp 2.6), "Future 4.5" (rcp 4.5), "Future 6" (rcp 6), "Future 8.5" (rcp 8.5)
-#' @param ecoClimSelChoice boolean TRUE/FALSE TRUE=user selects the variables
 #' @param ecoClimSel list of boolean data. selected variables
 # @keywords
 #'
@@ -29,26 +28,29 @@
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 #'
-envs_ecoClimate <- function(bcAOGCM, bcScenario, ecoClimSelChoice = FALSE,
-                            ecoClimSel, logger = NULL) {
+envs_ecoClimate <- function(bcAOGCM, bcScenario, ecoClimSel, logger = NULL) {
   smartProgress(logger, message = "Retrieving ecoClimate data...", {
     ecoClimatelayers <- ecoClimate_getdata(AOGCM = bcAOGCM,
                                            Baseline = "Modern",
-                                           Scenario = bcScenario)
+                                           Scenario = bcScenario,
+                                           logger)
   })
+  if (is.null(ecoClimatelayers)) return()
+  ecoClimatelayers <- ecoClimate_select(ecoClimatelayers, Sels = ecoClimSel)
+  # Changing rasters names
+  names(ecoClimatelayers) <- gsub("\\.", "", names(ecoClimatelayers))
+  i <- grep('bio[0-9]$', names(ecoClimatelayers))
+  editNames <- paste('bio', sapply(strsplit(names(ecoClimatelayers)[i], 'bio'), function(x) x[2]), sep = '0')
+  names(ecoClimatelayers)[i] <- editNames
 
-  if (ecoClimSelChoice == TRUE) {
-    # I assume that if bcSelChoise is TRUE, then ecoClimSel exist and it is a
-    # vector of characters, bio1, bio2, etc.
-    x <- gregexpr("[0-9]+", ecoClimSel)  # Numbers with any number of digits
-    x2 <- as.numeric(unlist(regmatches(ecoClimSel, x)))
+  # Define WGS84
+  raster::crs(ecoClimatelayers) <- raster::crs("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs")
 
-    ecoClimatelayers <- ecoClimate_select(ecoClimatelayers, Sels = sels)
+  logger %>% writeLog("Environmental predictors: ecoClimate bioclimatic variables ",
+                      paste(names(ecoClimatelayers), collapse = ", "),
+                      " at 0.5 degree resolution. Global Circulation Model = ",
+                      bcAOGCM, ", Scenario = ", bcScenario, ". (**)")
 
-    logger %>% writeLog("Environmental predictors: ecoClimate bioclimatic variables ",
-                        ecoClimSel, " at 0.5 degree resolution.")
-
-  }
   return(ecoClimatelayers)
 }
 
@@ -74,7 +76,7 @@ envs_ecoClimate <- function(bcAOGCM, bcScenario, ecoClimSelChoice = FALSE,
 #' }
 #'
 
-ecoClimate_getdata<- function (AOGCM, Baseline, Scenario) {
+ecoClimate_getdata<- function (AOGCM, Baseline, Scenario, logger = NULL) {
 
   if (!(AOGCM %in% c("CCSM", "CNRM", "MIROC", "COSMOS", "FGOALS", "GISS",
                      "IPSL", "MRI", "MPI"))) {
@@ -102,7 +104,9 @@ ecoClimate_getdata<- function (AOGCM, Baseline, Scenario) {
   }
 
   if (AOGCM == "COSMOS" && Baseline == "Modern" && Scenario == "Present") {
-    stop(paste0("ecoClimate has no data for AOGCM=", AOGCM, ", Baseline= ", Baseline, ", Scenario=", Scenario))
+    logger %>% writeLog(type = 'error',
+    "ecoClimatehas no data for AOGCM = ", AOGCM, ", Baseline =  ", Baseline, ", Scenario = ", Scenario)
+    return()
   }
 
   if (AOGCM == "FGOALS" && Baseline == "Modern" && Scenario == "Present") {
@@ -133,7 +137,8 @@ ecoClimate_getdata<- function (AOGCM, Baseline, Scenario) {
   }
 
   if (AOGCM == "COSMOS" && Baseline == "Modern" && Scenario == "LGM") {
-    stop(paste0("ecoClimate has no data for AOGCM=", AOGCM, ", Baseline= ", Baseline, ", Scenario=", Scenario))
+    logger %>% writeLog(type = 'error', "ecoClimatehas no data for AOGCM = ", AOGCM, ", Baseline =  ", Baseline, ", Scenario = ", Scenario)
+    return()
   }
 
   if (AOGCM == "FGOALS" && Baseline == "Modern" && Scenario == "LGM") {
@@ -166,14 +171,16 @@ ecoClimate_getdata<- function (AOGCM, Baseline, Scenario) {
   }
 
   if (AOGCM == "COSMOS" && Baseline == "Modern" && Scenario == "Holo") {
-    stop(paste0("ecoClimate has no data for AOGCM=", AOGCM, ", Baseline= ", Baseline, ", Scenario=", Scenario))
+    logger %>% writeLog(type = 'error', "ecoClimatehas no data for AOGCM = ", AOGCM, ", Baseline =  ", Baseline, ", Scenario = ", Scenario)
+    return()
   }
 
   if (AOGCM == "FGOALS" && Baseline == "Modern" && Scenario == "Holo") {
     FinURL <- paste0("https://www.dropbox.com/sh/kijh17ehg8v3uv8/AAAvdu0QfwI7BF1xNtgUe6y8a/bio%20%23baseline_Modern%281950-1999%29%23%20FGOALS_mHol%286ka%29.txt?dl=1")
   }
   if (AOGCM == "GISS" && Baseline == "Modern" && Scenario == "Holo") {
-    stop(paste0("ecoClimate has no data for AOGCM=", AOGCM, ", Baseline= ", Baseline, ", Scenario=", Scenario))
+    logger %>% writeLog(type = 'error', "ecoClimatehas no data for AOGCM = ", AOGCM, ", Baseline =  ", Baseline, ", Scenario = ", Scenario)
+    return()
   }
 
   if (AOGCM == "IPSL" && Baseline == "Modern" && Scenario == "Holo") {
@@ -199,7 +206,8 @@ ecoClimate_getdata<- function (AOGCM, Baseline, Scenario) {
   }
 
   if (AOGCM == "COSMOS" && Baseline == "Modern" && Scenario == "Future 8.5") {
-    stop(paste0("ecoClimate has no data for AOGCM=", AOGCM, ", Baseline= ", Baseline, ", Scenario=", Scenario))
+    logger %>% writeLog(type = 'error', "ecoClimatehas no data for AOGCM = ", AOGCM, ", Baseline =  ", Baseline, ", Scenario = ", Scenario)
+    return()
   }
 
   if (AOGCM == "FGOALS" && Baseline == "Modern" && Scenario == "Future 8.5") {
@@ -215,7 +223,8 @@ ecoClimate_getdata<- function (AOGCM, Baseline, Scenario) {
     FinURL <- paste0("https://www.dropbox.com/sh/ei6m84sctoinhi9/AADQ-geA4e9nzXQSH4SOdq3la/bio%20%23baseline_Modern%281950-1999%29%23%20MRI_rcp85%282080-2100%29.txt?dl=1")
   }
   if (AOGCM == "MPI" && Baseline == "Modern" && Scenario == "Future 8.5") {
-    stop(paste0("ecoClimate has no data for AOGCM=", AOGCM, ", Baseline= ", Baseline, ", Scenario=", Scenario))
+    logger %>% writeLog(type = 'error', "ecoClimatehas no data for AOGCM = ", AOGCM, ", Baseline =  ", Baseline, ", Scenario = ", Scenario)
+    return()
   }
 
 
@@ -224,14 +233,16 @@ ecoClimate_getdata<- function (AOGCM, Baseline, Scenario) {
     FinURL <- paste0("https://www.dropbox.com/sh/ei6m84sctoinhi9/AAD2rXFucDHfwmOW7LUAhF5ia/bio%20%23baseline_Modern%281950-1999%29%23%20CCSM_rcp26%282080-2100%29.txt?dl=1")
   }
   if (AOGCM == "CNRM" && Baseline == "Modern" && Scenario == "Future 2.6") {
-    stop(paste0("ecoClimate has no data for AOGCM=", AOGCM, ", Baseline= ", Baseline, ", Scenario=", Scenario))
+    logger %>% writeLog(type = 'error', "ecoClimatehas no data for AOGCM = ", AOGCM, ", Baseline =  ", Baseline, ", Scenario = ", Scenario)
+    return()
   }
   if (AOGCM == "MIROC" && Baseline == "Modern" && Scenario == "Future 2.6") {
     FinURL <- paste0("https://www.dropbox.com/sh/ei6m84sctoinhi9/AAA49-6_FwVvRxsQLBborOkha/bio%20%23baseline_Modern%281950-1999%29%23%20MIROC_rcp26%282080-2100%29.txt?dl=1")
   }
 
   if (AOGCM == "COSMOS" && Baseline == "Modern" && Scenario == "Future 2.6") {
-    stop(paste0("ecoClimate has no data for AOGCM=", AOGCM, ", Baseline= ", Baseline, ", Scenario=", Scenario))
+    logger %>% writeLog(type = 'error', "ecoClimatehas no data for AOGCM = ", AOGCM, ", Baseline =  ", Baseline, ", Scenario = ", Scenario)
+    return()
   }
 
   if (AOGCM == "FGOALS" && Baseline == "Modern" && Scenario == "Future 2.6") {
@@ -247,7 +258,8 @@ ecoClimate_getdata<- function (AOGCM, Baseline, Scenario) {
     FinURL <- paste0("https://www.dropbox.com/sh/ei6m84sctoinhi9/AADxV4qNkInBdqpNMSASycTCa/bio%20%23baseline_Modern%281950-1999%29%23%20MRI_rcp26%282080-2100%29.txt?dl=1")
   }
   if (AOGCM == "MPI" && Baseline == "Modern" && Scenario == "Future 2.6") {
-    stop(paste0("ecoClimate has no data for AOGCM=", AOGCM, ", Baseline= ", Baseline, ", Scenario=", Scenario))
+    logger %>% writeLog(type = 'error', "ecoClimatehas no data for AOGCM = ", AOGCM, ", Baseline =  ", Baseline, ", Scenario = ", Scenario)
+    return()
   }
 
 
@@ -263,11 +275,13 @@ ecoClimate_getdata<- function (AOGCM, Baseline, Scenario) {
   }
 
   if (AOGCM == "COSMOS" && Baseline == "Modern" && Scenario == "Future 4.5") {
-    stop(paste0("ecoClimate has no data for AOGCM=", AOGCM, ", Baseline= ", Baseline, ", Scenario=", Scenario))
+    logger %>% writeLog(type = 'error', "ecoClimatehas no data for AOGCM = ", AOGCM, ", Baseline =  ", Baseline, ", Scenario = ", Scenario)
+    return()
   }
 
   if (AOGCM == "FGOALS" && Baseline == "Modern" && Scenario == "Future 4.5") {
-    stop(paste0("ecoClimate has no data for AOGCM=", AOGCM, ", Baseline= ", Baseline, ", Scenario=", Scenario))
+    logger %>% writeLog(type = 'error', "ecoClimatehas no data for AOGCM = ", AOGCM, ", Baseline =  ", Baseline, ", Scenario = ", Scenario)
+    return()
   }
   if (AOGCM == "GISS" && Baseline == "Modern" && Scenario == "Future 4.5") {
     FinURL <- paste0("https://www.dropbox.com/sh/ei6m84sctoinhi9/AAAiV_w1REiX61Si9FjBCMLxa/bio%20%23baseline_Modern%281950-1999%29%23%20GISS_rcp45%282080-2100%29.txt?dl=1")
@@ -279,7 +293,8 @@ ecoClimate_getdata<- function (AOGCM, Baseline, Scenario) {
     FinURL <- paste0("https://www.dropbox.com/sh/ei6m84sctoinhi9/AABET5mP2c9qPladhp6nkcHBa/bio%20%23baseline_Modern%281950-1999%29%23%20MRI_rcp45%282080-2100%29.txt?dl=1")
   }
   if (AOGCM == "MPI" && Baseline == "Modern" && Scenario == "Future 4.5") {
-    stop(paste0("ecoClimate has no data for AOGCM=", AOGCM, ", Baseline= ", Baseline, ", Scenario=", Scenario))
+    logger %>% writeLog(type = 'error', "ecoClimatehas no data for AOGCM = ", AOGCM, ", Baseline =  ", Baseline, ", Scenario = ", Scenario)
+    return()
   }
 
 
@@ -288,18 +303,21 @@ ecoClimate_getdata<- function (AOGCM, Baseline, Scenario) {
     FinURL <- paste0("https://www.dropbox.com/sh/ei6m84sctoinhi9/AAAu9NfGSwBSqvQ_sbDrUjtpa/bio%20%23baseline_Modern%281950-1999%29%23%20CCSM_rcp60%282080-2100%29.txt?dl=1")
   }
   if (AOGCM == "CNRM" && Baseline == "Modern" && Scenario == "Future 6") {
-    stop(paste0("ecoClimate has no data for AOGCM=", AOGCM, ", Baseline= ", Baseline, ", Scenario=", Scenario))
+    logger %>% writeLog(type = 'error', "ecoClimatehas no data for AOGCM = ", AOGCM, ", Baseline =  ", Baseline, ", Scenario = ", Scenario)
+    return()
   }
   if (AOGCM == "MIROC" && Baseline == "Modern" && Scenario == "Future 6") {
     FinURL <- paste0("https://www.dropbox.com/sh/ei6m84sctoinhi9/AADuGCrBF0brWWtrBjomSQfOa/bio%20%23baseline_Modern%281950-1999%29%23%20MIROC_rcp60%282080-2100%29.txt?dl=1")
   }
 
   if (AOGCM == "COSMOS" && Baseline == "Modern" && Scenario == "Future 4.5") {
-    stop(paste0("ecoClimate has no data for AOGCM=", AOGCM, ", Baseline= ", Baseline, ", Scenario=", Scenario))
+    logger %>% writeLog(type = 'error', "ecoClimatehas no data for AOGCM = ", AOGCM, ", Baseline =  ", Baseline, ", Scenario = ", Scenario)
+    return()
   }
 
   if (AOGCM == "FGOALS" && Baseline == "Modern" && Scenario == "Future 6") {
-    stop(paste0("ecoClimate has no data for AOGCM=", AOGCM, ", Baseline= ", Baseline, ", Scenario=", Scenario))
+    logger %>% writeLog(type = 'error', "ecoClimatehas no data for AOGCM = ", AOGCM, ", Baseline =  ", Baseline, ", Scenario = ", Scenario)
+    return()
   }
   if (AOGCM == "GISS" && Baseline == "Modern" && Scenario == "Future 6") {
     FinURL <- paste0("https://www.dropbox.com/sh/ei6m84sctoinhi9/AADo_ux8CBb6fBGxxSrdRrJRa/bio%20%23baseline_Modern%281950-1999%29%23%20GISS_rcp60%282080-2100%29.txt?dl=1")
@@ -311,13 +329,14 @@ ecoClimate_getdata<- function (AOGCM, Baseline, Scenario) {
     FinURL <- paste0("https://www.dropbox.com/sh/ei6m84sctoinhi9/AAAfNyo79Z3RpJ-7wqzMjdRZa/bio%20%23baseline_Modern%281950-1999%29%23%20MRI_rcp60%282080-2100%29.txt?dl=1")
   }
   if (AOGCM == "MPI" && Baseline == "Modern" && Scenario == "Future 6") {
-    stop(paste0("ecoClimate has no data for AOGCM=", AOGCM, ", Baseline= ", Baseline, ", Scenario=", Scenario))
+    logger %>% writeLog(type = 'error', "ecoClimatehas no data for AOGCM = ", AOGCM, ", Baseline =  ", Baseline, ", Scenario = ", Scenario)
+    return()
   }
 
   # Download data
   climate_data <- repmis::source_data(FinURL, header = TRUE)
-  gridded(climate_data) <- ~ long + lat
-  map_climate<- stack(climate_data)[[-1]]
+  sp::gridded(climate_data) <- ~ long + lat
+  map_climate<- raster::stack(climate_data)[[-1]]
   return(map_climate)
 }
 
@@ -346,6 +365,3 @@ ecoClimate_select <- function(map_climate, Sels = c(1:19), extent = c(-180, 180,
   crop_stack<- raster::crop(select_var, extent)
   return(crop_stack)
 }
-
-
-

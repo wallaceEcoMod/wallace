@@ -74,7 +74,6 @@ envs_worldclim_module_server <- function(input, output, session, common) {
       envs.global[[paste0("wcbc_", curSp())]] <- wcbc
     }
 
-
     # loop over all species if batch is on
     if (input$batch == FALSE | input$wcRes == 0.5) spLoop <- curSp() else spLoop <- allSp()
 
