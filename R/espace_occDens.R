@@ -56,7 +56,7 @@
 espace_occDens <- function(sp.name1, sp.name2, pca, logger = NULL) {
   bg <- pca$scores$bg
   sp <- pca$scores$sp
-  scores.bg12 <- pca$scores[bg != 'bg', 1:2]
+  scores.bg12 <- pca$scores[bg != 'sp', 1:2]
   scores.bg1 <- pca$scores[bg == sp.name1, 1:2]
   scores.occs1 <- pca$scores[sp == sp.name1, 1:2]
   scores.bg2 <- pca$scores[bg == sp.name2, 1:2]
