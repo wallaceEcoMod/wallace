@@ -11,7 +11,10 @@ part_spat_module_ui <- function(id) {
                              ns("partitionSpatSel")),
                      numericInput(ns("aggFact"), label = "Aggregation Factor",
                                   value = 2, min = 2)),
-    checkboxInput(ns("batch"), label = strong("Batch"), value = T), # Check default (value = FALSE)
+    tags$div(
+      title = "Add Batch guidance text here (**)",
+      checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE) # Check default (value = FALSE)
+    ),
     actionButton(ns("goPartitionSpat"), "Partition")
   )
 }

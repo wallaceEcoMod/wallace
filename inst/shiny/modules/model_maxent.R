@@ -47,7 +47,10 @@ model_maxent_module_ui <- function(id) {
     tags$div(title = 'Clamp model predictions?',
              selectInput(ns("clamp"), label = '',
                          choices = list("", "TRUE", "FALSE"))),
-    checkboxInput(ns("batch"), label = strong("Batch"), value = T), # Check default (value = FALSE)
+    tags$div(
+      title = "Add Batch guidance text here (**)",
+      checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE) # Check default (value = FALSE)
+    ),
     actionButton(ns("goMaxent"), "Run")
   )
 }

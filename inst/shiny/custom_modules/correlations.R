@@ -3,7 +3,9 @@ correlations_module_ui <- function(id) {
   tagList(
     # UI
     ## Add a checkbox for batch processing (more than 1 species)
-    checkboxInput(ns("batch1"), label = strong("Batch"), value = T),
+    tags$div(
+      title = "Add Batch guidance text here (**)",
+      checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE)),
     ## Give the action button a name and a label.
     actionButton(ns("runCorrs"), label = "Calculate correlations"),
     ## UI for reselecting variables after calculating correlations
@@ -40,7 +42,7 @@ correlations_module_server <- function(input, output, session, common) {
     # Set up if you want batch to be allowed
     # allSp() is the list of species selected
     # curSp() refers to the currently selected species in the GUI
-    if (input$batch1 == TRUE) spLoop <- allSp() else spLoop <- curSp()
+    if (input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
     # If batch is true, loop through all species (allSp())
     for (sp in spLoop){
       # FUNCTION CALL ####

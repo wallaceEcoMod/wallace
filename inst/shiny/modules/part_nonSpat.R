@@ -8,7 +8,10 @@ part_nonSpat_module_ui <- function(id) {
     conditionalPanel(sprintf("input['%s'] == 'rand'", ns("partNspSel")),
                      numericInput(ns("kfolds"), label = "Number of Folds",
                                   value = 2, min = 2)),
-    checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE),
+    tags$div(
+      title = "Add Batch guidance text here (**)",
+      checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE) # Check default (value = FALSE)
+    ),
     actionButton(ns("goPartitionNonSpat"), "Partition")
   )
 }
