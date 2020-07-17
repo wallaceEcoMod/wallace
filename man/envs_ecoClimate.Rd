@@ -4,22 +4,15 @@
 \alias{envs_ecoClimate}
 \title{download ecoClimate variables. see www.ecoclimate.org}
 \usage{
-envs_ecoClimate(
-  bcAOGCM,
-  bcScenario,
-  ecoClimSelChoice = FALSE,
-  ecoClimSel,
-  logger = NULL
-)
+envs_ecoClimate(bcAOGCM, bcScenario, ecoClimSel, logger = NULL)
 }
 \arguments{
 \item{bcAOGCM}{name of the Atmospheric and Oceanic Global Circulation Model.
 Options are: "CCSM", "CNRM", "MIROC", "FGOALS", "GISS", "IPSL","MRI", "MPI"}
 
 \item{bcScenario}{select the temporal scenario that you want to download.
-Options are: "LGM" (Last Glacial Maximum, 21,000 years ago), "Holo" ()}
-
-\item{ecoClimSelChoice}{boolean TRUE/FALSE TRUE=user selects the variables}
+Options are: "LGM" (21,000 years ago), "Holo" (6,000 years ago),
+"Present", "Future 2.6" (rcp 2.6), "Future 4.5" (rcp 4.5), "Future 6" (rcp 6), "Future 8.5" (rcp 8.5)}
 
 \item{ecoClimSel}{list of boolean data. selected variables}
 }
@@ -30,5 +23,5 @@ For EcoClimate the resolution is fixed to 0.5 degrees
 See Examples.
 }
 \author{
-Jamie Kass <jkass@gradcenter.cuny.edu>
+Jamie M. Kass <jamie.m.kass@gmail.com>
 }

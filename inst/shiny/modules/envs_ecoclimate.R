@@ -88,10 +88,14 @@ envs_ecoclimate_module_server <- function(input, output, session, common) {
 
       # METADATA ####
       spp[[sp]]$rmm$data$environment$variableNames <- names(ecoClims)
-      spp[[sp]]$rmm$data$environment$resolution <- paste(round(raster::res(ecoClims)[1] * 60, digits = 2), "degrees")
+      spp[[sp]]$rmm$data$environment$resolution <- paste(round(raster::res(ecoClims)[1] * 60, digits = 2), "minutes")
       spp[[sp]]$rmm$data$environment$extent <- as.character(raster::extent(ecoClims))
       spp[[sp]]$rmm$data$environment$sources <- nmEcoClimate
       spp[[sp]]$rmm$data$environment$projection <- as.character(raster::crs(ecoClims))
+
+      spp[[sp]]$rmd$bcAOGCM <- input$bcAOGCM
+      spp[[sp]]$rmd$bcScenario <- input$bcScenario
+      spp[[sp]]$rmd$ecoClimSel <- ecoClimSel()
     }
     common$update_component(tab = "Results")
   })
@@ -104,12 +108,20 @@ envs_ecoclimate_module_server <- function(input, output, session, common) {
   return(list(
     save = function() {
       # Save any values that should be saved when the current session is saved
+      list(
+        bcAOGCM = input$bcAOGCM,
+        bcScenario = input$bcScenario,
+        ecoClimSel = ecoClimSel()
+      )
     },
     load = function(state) {
       # Load
+      updateSelectInput(session, "bcAOGCM", selected = state$bcAOGCM)
+      updateSelectInput(session, "bcScenario", selected = state$bcScenario)
+      shinyWidgets::updatePickerInput(session, "ecoClimSel",
+                                      selected = state$ecoClimSel)
     }
   ))
-
 }
 
 envs_ecoclimate_module_result <- function(id) {

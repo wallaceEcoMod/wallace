@@ -106,7 +106,7 @@ envs_worldclim_module_server <- function(input, output, session, common) {
       spp[[sp]]$rmm$data$environment$variableNames <- names(wcbc)
       spp[[sp]]$rmm$data$environment$yearMin <- 1960
       spp[[sp]]$rmm$data$environment$yearMax <- 1990
-      spp[[sp]]$rmm$data$environment$resolution <- paste(round(raster::res(wcbc)[1] * 60, digits = 2), "degrees")
+      spp[[sp]]$rmm$data$environment$resolution <- paste(round(raster::res(wcbc)[1] * 60, digits = 2), "minutes")
       spp[[sp]]$rmm$data$environment$extent <- as.character(raster::extent(wcbc))
       spp[[sp]]$rmm$data$environment$sources <- 'WorldClim 1.4'
       spp[[sp]]$rmm$data$environment$projection <- as.character(raster::crs(wcbc))

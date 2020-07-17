@@ -312,7 +312,7 @@ function(input, output, session) {
     spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords <- NULL
     spp[[curSp()]]$procOccs$occsThin <- NULL
     spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs <- NULL
-    shinyLogs %>% writeLog("Reset occurrences for ",
+    logger %>% writeLog("Reset occurrences for ",
                            em(spName(curSp())), ".")
     # MAPPING
     map %>%
@@ -670,7 +670,7 @@ function(input, output, session) {
           file.rename(r@file@name, file)
         }
       } else {
-        shinyLogs %>%
+        logger %>%
           writeLog("Please install the rgdal package before downloading rasters.")
       }
     }
@@ -696,7 +696,7 @@ function(input, output, session) {
     spp[[curSp()]]$polyPjXY <- NULL
     spp[[curSp()]]$polyPjID <- NULL
     spp[[curSp()]]$project <- NULL
-    shinyLogs %>% writeLog("Reset projection extent.")
+    logger %>% writeLog("Reset projection extent.")
   })
 
   # DOWNLOAD: Shapefile of prejection extent
@@ -789,7 +789,7 @@ function(input, output, session) {
           file.rename(r@file@name, file)
         }
       } else {
-        shinyLogs %>% writeLog("Please install the rgdal package before downloading rasters.")
+        logger %>% writeLog("Please install the rgdal package before downloading rasters.")
       }
     }
   )
@@ -851,7 +851,7 @@ function(input, output, session) {
           file.rename(r@file@name, file)
         }
       } else {
-        shinyLogs %>% writeLog("Please install the rgdal package before downloading rasters.")
+        logger %>% writeLog("Please install the rgdal package before downloading rasters.")
       }
     }
   )
@@ -1130,5 +1130,6 @@ function(input, output, session) {
 
   observeEvent(input$goLoad_session, {
     load_session(input$load_session$datapath)
+    shinyalert::shinyalert("Session loaded (**)", type = "success")
   })
 }
