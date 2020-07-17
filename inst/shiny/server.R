@@ -234,6 +234,7 @@ function(input, output, session) {
   # # # # # # # # # # # # # # # # # #
 
   bcSel <- reactive(input$bcSel)
+  ecoClimSel <- reactive(input$ecoClimSel)
   VarSelector <- reactive(input$VarSelector)
   # shortcut to currently selected environmental variable, read from curEnvUI
   curEnv <- reactive(input$curEnv)
@@ -311,8 +312,9 @@ function(input, output, session) {
     spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords <- NULL
     spp[[curSp()]]$procOccs$occsThin <- NULL
     spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs <- NULL
-    shinyLogs %>% writeLog("Reset occurrences for ",
-                           em(spName(curSp())), ".")
+    logger %>% writeLog(
+      hlSpp(spName(curSp())), "Reset to original occurrences (n =",
+      nrow(spp[[curSp()]]$occs), ").")
     # MAPPING
     map %>%
       map_occs(occs()) %>%
@@ -669,7 +671,7 @@ function(input, output, session) {
           file.rename(r@file@name, file)
         }
       } else {
-        shinyLogs %>%
+        logger %>%
           writeLog("Please install the rgdal package before downloading rasters.")
       }
     }
@@ -695,7 +697,7 @@ function(input, output, session) {
     spp[[curSp()]]$polyPjXY <- NULL
     spp[[curSp()]]$polyPjID <- NULL
     spp[[curSp()]]$project <- NULL
-    shinyLogs %>% writeLog("Reset projection extent.")
+    logger %>% writeLog("Reset projection extent.")
   })
 
   # DOWNLOAD: Shapefile of prejection extent
@@ -788,7 +790,7 @@ function(input, output, session) {
           file.rename(r@file@name, file)
         }
       } else {
-        shinyLogs %>% writeLog("Please install the rgdal package before downloading rasters.")
+        logger %>% writeLog("Please install the rgdal package before downloading rasters.")
       }
     }
   )
@@ -850,7 +852,7 @@ function(input, output, session) {
           file.rename(r@file@name, file)
         }
       } else {
-        shinyLogs %>% writeLog("Please install the rgdal package before downloading rasters.")
+        logger %>% writeLog("Please install the rgdal package before downloading rasters.")
       }
     }
   )
@@ -1010,6 +1012,7 @@ function(input, output, session) {
     occs = occs,
     envs = envs,
     bcSel = bcSel,
+    ecoClimSel = ecoClimSel,
     VarSelector = VarSelector,
     bg = bg,
     bgExt = bgExt,
@@ -1128,5 +1131,6 @@ function(input, output, session) {
 
   observeEvent(input$goLoad_session, {
     load_session(input$load_session$datapath)
+    shinyalert::shinyalert("Session loaded (**)", type = "success")
   })
 }

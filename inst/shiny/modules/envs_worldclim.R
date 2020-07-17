@@ -26,7 +26,10 @@ envs_worldclim_module_ui <- function(id) {
       options = list(`actions-box` = TRUE)),
     conditionalPanel(
       sprintf("input['%s'] != '0.5'", ns("wcRes")),
-      checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE) # Check default (value = FALSE)
+      tags$div(
+        title = "Add Batch guidance text here (**)",
+        checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE) # Check default (value = FALSE)
+      )
     ),
     conditionalPanel(
       sprintf("input['%s'] == '0.5'", ns("wcRes")),
@@ -74,7 +77,6 @@ envs_worldclim_module_server <- function(input, output, session, common) {
       envs.global[[paste0("wcbc_", curSp())]] <- wcbc
     }
 
-
     # loop over all species if batch is on
     if (input$batch == FALSE | input$wcRes == 0.5) spLoop <- curSp() else spLoop <- allSp()
 
@@ -90,7 +92,7 @@ envs_worldclim_module_server <- function(input, output, session, common) {
       # also remove variable value rows with NA environmental values
       occsEnvsVals <- na.omit(occsEnvsVals)
 
-      logger %>% writeLog(hlSpp(em(sp)), "Worldclim variables ready to use. (**)")
+      logger %>% writeLog(hlSpp(sp), "Worldclim variables ready to use. (**)")
 
       # LOAD INTO SPP ####
       # add reference to WorldClim bioclim data
@@ -107,7 +109,7 @@ envs_worldclim_module_server <- function(input, output, session, common) {
       spp[[sp]]$rmm$data$environment$variableNames <- names(wcbc)
       spp[[sp]]$rmm$data$environment$yearMin <- 1960
       spp[[sp]]$rmm$data$environment$yearMax <- 1990
-      spp[[sp]]$rmm$data$environment$resolution <- paste(round(raster::res(wcbc)[1] * 60, digits = 2), "degrees")
+      spp[[sp]]$rmm$data$environment$resolution <- paste(round(raster::res(wcbc)[1] * 60, digits = 2), "minutes")
       spp[[sp]]$rmm$data$environment$extent <- as.character(raster::extent(wcbc))
       spp[[sp]]$rmm$data$environment$sources <- 'WorldClim 1.4'
       spp[[sp]]$rmm$data$environment$projection <- as.character(raster::crs(wcbc))

@@ -52,6 +52,7 @@ poccs_removeByID <- function(occs, removeID, logger = NULL, spN = NULL) {
   occs.remID <- occs[-i,]
 
   logger %>% writeLog(
-    "Removed occurrence from ", em(spName(spN)), "with occID = ", removeID,". Updated data has n = ", nrow(occs.remID), " records.")
+    hlSpp(spN), "Removed occurrence with occID = ", removeID,
+    ". Updated data has n = ", nrow(occs.remID), " records.")
   return(occs.remID)
 }

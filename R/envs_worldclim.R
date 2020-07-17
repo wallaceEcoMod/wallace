@@ -63,7 +63,5 @@ envs_worldclim <- function(bcRes, bcSel, mapCntr, doBrick, logger = NULL) {
   logger %>% writeLog("WorldClim bioclimatic variables ",
                       paste(names(wcbc), collapse = ", "), " at ",
                       bcRes, " arcmin resolution.")
-
-
   return(wcbc)
 }

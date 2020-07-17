@@ -3,7 +3,10 @@ userBiasFile_UI <- function(id) {
   ns <- NS(id)
   tagList(
     fileInput(ns("userBiasFile"), label = "Upload BiasFile"),
-    checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE)
+    tags$div(
+      title = "Add Batch guidance text here (**)",
+      checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE)
+    )
   )
 }
 

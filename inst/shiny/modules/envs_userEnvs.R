@@ -6,7 +6,10 @@ envs_userEnvs_module_ui <- function(id) {
       label = "Save to memory for faster processing and save/load option (**)",
       value = TRUE), # Check default (value = FALSE)
     fileInput(ns("userEnvs"), label = "Input rasters", multiple = TRUE),
-    checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE),
+    tags$div(
+      title = "Add Batch guidance text here (**)",
+      checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE) # Check default (value = FALSE)
+    ),
     actionButton(ns('goUserEnvs'), 'Load Env Data')
   )
 }

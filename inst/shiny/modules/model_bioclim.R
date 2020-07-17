@@ -1,7 +1,10 @@
 model_bioclim_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
-    checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE),
+    tags$div(
+      title = "Add Batch guidance text here (**)",
+      checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE) # Check default (value = FALSE)
+    ),
     actionButton(ns('goBIOCLIM'), 'Run')
   )
 }

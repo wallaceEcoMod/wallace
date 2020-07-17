@@ -16,8 +16,8 @@ vis_bioclimPlot(x, a = 1, b = 2, p = 0.9, ...)
 \item{p}{Numeric (0-1). Percentile distribution to be used for plotting enveloppe and showing points outside of enveloppe. Default is 0.9.}
 }
 \value{
-A bivariate plot of environmental values for occurrences. Includes a rectangle representing the bioclimatic enveloppe given p.
-Occurrences that are inside the enveloppe for all layers (included those not plotted) are shown as green circles and those outside of the enveloppe for one ore more variables are plotted as red crosses.
+A bivariate plot of environmental values for occurrences. Includes a blue rectangle representing the bioclimatic enveloppe given p.
+Occurrences that are inside the enveloppe for all layers (included those not plotted) are shown as green circles and those outside of the enveloppe for one ore more variables are plotted as orange triangles/
 }
 \description{
 This functions creates a bivariate plot with two of the environmental variables used for modeling as x and y axes and occurrencies as observations

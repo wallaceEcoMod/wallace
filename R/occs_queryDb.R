@@ -99,7 +99,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
             logger %>%
               writeLog(
                 type = "error",
-                hlSpp(em(sp)),
+                hlSpp(sp),
                 "There is no match in GBIF database. Please check the spelling. (**)"
               )
             return()
@@ -108,7 +108,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
             logger %>%
               writeLog(
                 type = 'warning',
-                hlSpp(em(inputMatch)),
+                hlSpp(inputMatch),
                 "There is no a stricly match in the GBIF search. Data ",
                 "downloaded corresponds to ", em(bestMatch), ". (**)")
           }
@@ -121,18 +121,25 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
           # make something with the same slots as spocc that we use
           q <- list(gbif = list(meta = list(found = NULL),
                                 data = list(formatSpName(sp))))
-
+          gbif_raw <- read.table(unz(
+            as.character(myBTO@occResults[[bestMatch]][['GBIF']][['RawOccurrences']]),
+            "occurrence.txt"), sep = "\t", header = TRUE, quote = "")
+          gbif_occCite_df <- gbif_raw %>%
+            dplyr::select(scientificName, decimalLongitude, decimalLatitude, countryCode,
+                          stateProvince, locality, year, basisOfRecord, catalogNumber,
+                          institutionCode, elevation, coordinateUncertaintyInMeters) %>%
+            dplyr::rename(name = scientificName, longitude = decimalLongitude,
+                          latitude = decimalLatitude, country = countryCode)
           q[[occDb]]$meta$found <-
             nrow(myBTO@occResults[[bestMatch]][['GBIF']][['OccurrenceTable']])
-          q[[occDb]]$data[[formatSpName(sp)]] <-
-            myBTO@occResults[[bestMatch]][['GBIF']][['OccurrenceTable']]
+          q[[occDb]]$data[[formatSpName(sp)]] <- gbif_occCite_df
           doiGBIF <- myBTO@occResults[[bestMatch]][['GBIF']]$Metadata$doi
           dateDOI <- format(as.Date(myBTO@occResults[[bestMatch]][['GBIF']]$Metadata$created),
                             "%d %B %Y")
           citeGBIF <- list(doi = doiGBIF, date = dateDOI)
           logger %>%
             writeLog(
-              hlSpp(em(sp)),
+              hlSpp(sp),
               "(**) #CiteTheDOI: Gbif.org (", dateDOI,
               ") GBIF Ocurrence Download https://doi.org/", doiGBIF
             )
@@ -154,7 +161,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
     if (q[[occDb]]$meta$found == 0) {
       logger %>%
         writeLog(type = 'error',
-                 hlSpp(em(sp)),
+                 hlSpp(sp),
                  'No records found, please check the spelling. (**)')
       next
     }
@@ -174,7 +181,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
     if (nrow(occsXY) == 0) {
       logger %>% writeLog(
         type = 'warning',
-        hlSpp(em(sp)),
+        hlSpp(sp),
         'No records with coordinates found in ', occDb, ". (**)")
       return()
     }
@@ -258,7 +265,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
     totRows <- q[[occDb]]$meta$found
 
     logger %>%
-      writeLog(hlSpp(em(sp)), 'Total ', occDb, ' records returned [', nrow(occsOrig),
+      writeLog(hlSpp(sp), 'Total ', occDb, ' records returned [', nrow(occsOrig),
                '] out of [', totRows, '] total',
                if (!(doCitations | occDb == 'bien')) {paste0(' (limit ', occNum,')')},
                '. Records without coordinates removed [', noCoordsRem,

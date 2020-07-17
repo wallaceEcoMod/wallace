@@ -66,6 +66,7 @@ poccs_selectOccs <- function(occs, polySelXY, polySelID = 1, logger = NULL, spN 
     occs.sel <- occs[-ptRemIndex,]
 
     logger %>% writeLog(
-      em(spName(spN)), ": Removing occurrences with occID = ", remIDs, ". Updated data has n = ", nrow(occs.sel), " records.")
+      hlSpp(spN), "Removing occurrence(s) with occID = ", remIDs,
+      ". Updated data has n = ", nrow(occs.sel), " records.")
     return(occs.sel)
 }

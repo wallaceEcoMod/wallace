@@ -4,7 +4,8 @@ occs_queryDb_module_ui <- function(id) {
     tags$div(title = "text",
              radioButtons(ns("occsDb"), label = "Choose Database",
                           choices = c("GBIF" = 'gbif',
-                                      "VertNet" = 'vertnet',
+                                      # GEPB: Commented until is supported by spocc
+                                      # "VertNet" = 'vertnet',
                                       "BISON" = 'bison',
                                       "BIEN" = 'bien'),
                           inline = TRUE)),

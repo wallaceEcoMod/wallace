@@ -105,8 +105,7 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
   #     type = 'warning',
   #     hlSpp(spName), "No records with coordinates found in paleobioDB.")
   # }
-  occsXY<-occsOrig
-
+  occsXY <- occsOrig
 
   dups <- duplicated(occsXY[,c('longitude','latitude')])
   occs <- occsXY[!dups, ]

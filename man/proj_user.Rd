@@ -34,7 +34,6 @@ proj_user(
 otherwise leave the default NULL}
 }
 \description{
-
 The function projects the model generated in previous components to user uploaded environmental variables and area
 }
 \details{
