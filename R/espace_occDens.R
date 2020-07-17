@@ -40,7 +40,7 @@
 #' ###RUN FUNCTION
 #' TestOccDens<-espace_occDens(sp.name1, sp.name2,Testpca)
 #'
-#' @return Returns a list of 2 lists (one for each species). Each list contains 10 species specific slots with information outputed by ecospat::grid.clim.dyn.
+#' @return Returns a list of 2 lists (one for each species). Each list is an ecospat noche object that contains 10 species specific slots with information outputed by ecospat::grid.clim.dyn.
 #' z.uncor is the density of occurrence of the species and z.cor the occupancy of the environment by the species. It has the input parameters as individual slots.
 #' @author Jamie Kass <jamie.m.kass@@gmail.com >
 #' @author Olivier Broennimann <olivier.broennimann@@unil.ch>
