@@ -46,7 +46,7 @@ correlations_module_server <- function(input, output, session, common) {
       # FUNCTION CALL ####
       smartProgress(logger, message = "Calculating pairwise correlations", {envCorrs <- raster::layerStats(x = spp[[sp]]$procEnvs$bgMask, na.rm = T, stat = "pearson")})
       # To update the log window
-      logger %>% writeLog(hlSpp(em(sp)), "Finished calculating correlations")
+      logger %>% writeLog(hlSpp(sp), "Finished calculating correlations")
       #envCorrs <- raster::layerStats(x = bgMask(), na.rm = T, stat = "pearson")
 
       # LOAD INTO SPP ####
@@ -72,7 +72,7 @@ correlations_module_server <- function(input, output, session, common) {
 
     # Add a line to logger to identify which variables were selected
     # hlSpp() prints the species name in green, bold, and italics
-    logger %>% writeLog(hlSpp(em(curSp())), "Selected: ", paste0(names(spp[[curSp()]]$procEnvs$bgMask), collapse = ", "))
+    logger %>% writeLog(hlSpp(curSp()), "Selected: ", paste0(names(spp[[curSp()]]$procEnvs$bgMask), collapse = ", "))
   })
 }
 

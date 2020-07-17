@@ -312,8 +312,9 @@ function(input, output, session) {
     spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords <- NULL
     spp[[curSp()]]$procOccs$occsThin <- NULL
     spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs <- NULL
-    logger %>% writeLog("Reset occurrences for ",
-                           em(spName(curSp())), ".")
+    logger %>% writeLog(
+      hlSpp(spName(curSp())), "Reset to original occurrences (n =",
+      nrow(spp[[curSp()]]$occs), ").")
     # MAPPING
     map %>%
       map_occs(occs()) %>%

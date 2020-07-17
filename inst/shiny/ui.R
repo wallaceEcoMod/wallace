@@ -70,7 +70,7 @@ tagList(
               #"Profile Occurrences" = "profOccs"), # CM
             ),
             tags$hr(),
-            insert_modules_ui("poccs")  #,
+            insert_modules_ui("poccs"),
             # CM: start comment
             # conditionalPanel("input.poccsSel == 'profOccs'",
             #                  uiTop(profileOccs_INFO),
@@ -80,19 +80,16 @@ tagList(
             #                  uiBottom(profileOccs_INFO)
             # ),
             # CM: End comment
-
-            # GEPB: Reset button
-            # tags$br(),
-            # tags$strong("Reset to original occurrences"),
-            # tags$br(),
-            # actionButton("goResetOccs", "Reset", class = 'butResOccs'),
-            # tags$head(tags$style(".butResOccs {background-color: #C51E10;
-            #                    color: white;
-            #                    padding: 5px 5px;
-            #                    border: none;}
-            #                    .butResOccs:hover {background-color: #830D03;
-            #                    color: white;}"))
-            # GEPB: End Comment
+            tags$hr(),
+            tags$strong("Reset to original occurrences"),
+            tags$br(),
+            actionButton("goResetOccs", "Reset", class = 'butResOccs'),
+            tags$head(tags$style(".butResOccs {background-color: #C51E10;
+                               color: white;
+                               padding: 5px 5px;
+                               border: none;}
+                               .butResOccs:hover {background-color: #830D03;
+                               color: white;}"))
           ),
           conditionalPanel(
             "input.tabs == 'penvs'",

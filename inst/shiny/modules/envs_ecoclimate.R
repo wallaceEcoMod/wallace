@@ -77,7 +77,7 @@ envs_ecoclimate_module_server <- function(input, output, session, common) {
       # remove occurrences with NA environmental values
       spp[[sp]]$occs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, sp, logger)
 
-      logger %>% writeLog(hlSpp(em(sp)), "EcoClimate variables ready to use. (**)")
+      logger %>% writeLog(hlSpp(sp), "EcoClimate variables ready to use. (**)")
 
       # LOAD INTO SPP ####
       spp[[sp]]$envs <- nmEcoClimate
