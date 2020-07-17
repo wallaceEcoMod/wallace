@@ -88,11 +88,10 @@ envs_ecoclimate_module_server <- function(input, output, session, common) {
 
       # METADATA ####
       spp[[sp]]$rmm$data$environment$variableNames <- names(ecoClims)
-      spp[[sp]]$rmm$data$environment$yearMin <- input$bcScenario
-      spp[[sp]]$rmm$data$environment$yearMax <- input$bcScenario
       spp[[sp]]$rmm$data$environment$resolution <- paste(round(raster::res(ecoClims)[1] * 60, digits = 2), "degrees")
-      spp[[sp]]$rmm$data$environment$extent <- 'global'
-      spp[[sp]]$rmm$data$environment$sources <- 'ecoClimate'
+      spp[[sp]]$rmm$data$environment$extent <- as.character(raster::extent(ecoClims))
+      spp[[sp]]$rmm$data$environment$sources <- nmEcoClimate
+      spp[[sp]]$rmm$data$environment$projection <- as.character(raster::crs(ecoClims))
     }
     common$update_component(tab = "Results")
   })
