@@ -121,11 +121,18 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
           # make something with the same slots as spocc that we use
           q <- list(gbif = list(meta = list(found = NULL),
                                 data = list(formatSpName(sp))))
-
+          gbif_raw <- read.table(unz(
+            as.character(myBTO@occResults[[bestMatch]][['GBIF']][['RawOccurrences']]),
+            "occurrence.txt"), sep = "\t", header = TRUE, quote = "")
+          gbif_occCite_df <- gbif_raw %>%
+            dplyr::select(scientificName, decimalLongitude, decimalLatitude, countryCode,
+                          stateProvince, locality, year, basisOfRecord, catalogNumber,
+                          institutionCode, elevation, coordinateUncertaintyInMeters) %>%
+            dplyr::rename(name = scientificName, longitude = decimalLongitude,
+                          latitude = decimalLatitude, country = countryCode)
           q[[occDb]]$meta$found <-
             nrow(myBTO@occResults[[bestMatch]][['GBIF']][['OccurrenceTable']])
-          q[[occDb]]$data[[formatSpName(sp)]] <-
-            myBTO@occResults[[bestMatch]][['GBIF']][['OccurrenceTable']]
+          q[[occDb]]$data[[formatSpName(sp)]] <- gbif_occCite_df
           doiGBIF <- myBTO@occResults[[bestMatch]][['GBIF']]$Metadata$doi
           dateDOI <- format(as.Date(myBTO@occResults[[bestMatch]][['GBIF']]$Metadata$created),
                             "%d %B %Y")
