@@ -323,10 +323,7 @@ function(input, output, session) {
 
   # DOWNLOAD: current processed occurrence data table
   output$dlProcOccs <- downloadHandler(
-    filename = function() {
-      n <- formatSpName(spName(spp[[curSp()]]))
-      glue("{n}_processed_occs.csv")
-    },
+    filename = function() paste0(curSp(), "_processed_occs.csv"),
     content = function(file) {
       tbl <- occs() %>% dplyr::select(-pop)
       write_csv_robust(tbl, file, row.names = FALSE)
