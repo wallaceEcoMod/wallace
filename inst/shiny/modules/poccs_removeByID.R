@@ -37,14 +37,16 @@ poccs_removeByID_module_server <- function(input, output, session, common) {
     common$update_component(tab = "Map")
   })
 
-  # return(list(
-  #   save = function() {
-  #     # Save any values that should be saved when the current session is saved
-  #   },
-  #   load = function(state) {
-  #     # Load
-  #   }
-  # ))
+  return(list(
+    save = function() {
+      list(
+        removeID = input$removeID
+      )
+    },
+    load = function(state) {
+      updateNumericInput(session, "removeID", value = state$removeID)
+    }
+  ))
 
 }
 

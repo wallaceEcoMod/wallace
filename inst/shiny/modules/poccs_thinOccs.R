@@ -49,15 +49,14 @@ poccs_thinOccs_module_server <- function(input, output, session, common) {
     common$update_component(tab = "Map")
   })
 
-  # return(list(
-  #   save = function() {
-  #     # Save any values that should be saved when the current session is saved
-  #   },
-  #   load = function(state) {
-  #     # Load
-  #   }
-  # ))
-
+  return(list(
+    save = function() {
+      list(thinDist = input$thinDist)
+    },
+    load = function(state) {
+      updateNumericInput(session, "thinDist", value = state$thinDist)
+    }
+  ))
 }
 
 poccs_thinOccs_module_map <- function(map, common) {
