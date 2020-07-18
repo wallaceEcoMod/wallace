@@ -44,7 +44,7 @@ poccs_thinOccs_module_server <- function(input, output, session, common) {
 
       # METADATA ####
       # perhaps there should be a thinDist metadata field?
-      spp[[sp]]$rmm$code$wallaceSettings$thinDistKM <- input$thinDist
+      spp[[sp]]$rmm$code$wallace$thinDistKm <- input$thinDist
     }
     common$update_component(tab = "Map")
   })

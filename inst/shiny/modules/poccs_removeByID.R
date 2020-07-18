@@ -28,11 +28,10 @@ poccs_removeByID_module_server <- function(input, output, session, common) {
     # if no removeIDs are recorded yet, make a list to record them
     # if at least one exists, add to the list
     if (is.null(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs)) {
-      spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs <- input$removeID
+      spp[[curSp()]]$rmm$code$wallace$removedIDs <- input$removeID
     } else {
       spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs <-
-        c(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs,
-          input$removeID)
+        c(spp[[curSp()]]$rmm$code$wallace$removedIDs, input$removeID)
     }
 
     common$update_component(tab = "Map")
