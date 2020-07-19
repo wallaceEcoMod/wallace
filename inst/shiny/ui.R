@@ -99,7 +99,17 @@ tagList(
               choices = insert_modules_options("penvs")
             ),
             tags$hr(),
-            insert_modules_ui("penvs")
+            insert_modules_ui("penvs"),
+            tags$hr(),
+            tags$strong("Reset background (**)"),
+            tags$br(),
+            actionButton("goReset_penvs", "Reset", class = 'butResPenvs'),
+            tags$head(tags$style(".butResPenvs {background-color: #C51E10;
+                               color: white;
+                               padding: 5px 5px;
+                               border: none;}
+                               .butResPenvs:hover {background-color: #830D03;
+                               color: white;}"))
           ),
           # SAMPLING BIAS ####
           # conditionalPanel(

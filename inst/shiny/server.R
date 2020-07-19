@@ -313,7 +313,7 @@ function(input, output, session) {
     spp[[curSp()]]$procOccs$occsThin <- NULL
     spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs <- NULL
     logger %>% writeLog(
-      hlSpp(spName(curSp())), "Reset to original occurrences (n =",
+      hlSpp(curSp()), "Reset to original occurrences (n =",
       nrow(spp[[curSp()]]$occs), ").")
     # MAPPING
     map %>%
@@ -381,7 +381,7 @@ function(input, output, session) {
 
   # DOWNLOAD: masked environmental variable rasters
   output$dlMskEnvs <- downloadHandler(
-    filename = function() paste0(formatSpName(curSp()), '_mskEnvs.zip'),
+    filename = function() paste0(curSp(), '_mskEnvs.zip'),
     content = function(file) {
       tmpdir <- tempdir()
       owd <- setwd(tmpdir)
@@ -406,7 +406,7 @@ function(input, output, session) {
   # DOWNLOAD: background points table
   output$dlBgPts <- downloadHandler(
     filename = function() {
-      n <- formatSpName(spName(spp[[curSp()]]))
+      n <- curSp()
       paste0(n, "_bgPoints.csv")
     },
     content = function(file) {
@@ -414,6 +414,22 @@ function(input, output, session) {
       write_csv_robust(tbl, file, row.names = FALSE)
     }
   )
+
+  # reset background button functionality
+  observeEvent(input$goReset_penvs, {
+    req(curSp())
+    spp[[curSp()]]$procEnvs$bgExt <- NULL
+    spp[[curSp()]]$procEnvs$bgMask <- NULL
+    spp[[curSp()]]$bg <- NULL
+    spp[[curSp()]]$bgPts <- NULL
+    spp[[curSp()]]$rmm$model$maxent$backgroundSizeSet <- NULL
+    logger %>% writeLog(
+      hlSpp(curSp()), "Reset background extent and background points (**).")
+    # MAPPING
+    map %>%
+      map_occs(occs()) %>%
+      zoom2Occs(occs())
+  })
 
   ############################################## #
   ### COMPONENT: SAMPLING BIAS ####

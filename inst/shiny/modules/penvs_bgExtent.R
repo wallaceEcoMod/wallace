@@ -65,10 +65,11 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
       spp[[sp]]$procEnvs$bgExt <- bgExt
 
       # METADATA ####
-      spp[[sp]]$rmm$model$maxent$backgroundSizeRule <-
+      spp[[sp]]$rmm$data$occurrence$backgroundSampleSizeRule <-
         paste0(input$bgSel, ', ', input$bgBuf, ' degree buffer')
-      spp[[sp]]$rmm$wallaceSettings$bgSel <- input$bgSel
-      spp[[sp]]$rmm$wallaceSettings$bgBuf <- input$bgBuf
+
+      # spp[[sp]]$rmm$wallace$bgSel <- input$bgSel
+      # spp[[sp]]$rmm$wallace$bgBuf <- input$bgBuf
     }
   })
 
@@ -118,17 +119,24 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
       spp[[sp]]$bgPts <- bgPts
 
       # METADATA ####
-      spp[[sp]]$rmm$model$maxent$backgroundSizeSet <- input$bgPtsNum
+      spp[[sp]]$rmm$data$occurrence$backgroundSampleSizeSet <- input$bgPtsNum
     }
   })
-  # return(list(
-  #   save = function() {
-  #     # Save any values that should be saved when the current session is saved
-  #   },
-  #   load = function(state) {
-  #     # Load
-  #   }
-  # ))
+  return(list(
+    save = function() {
+      list(
+        bgSel = input$bgSel,
+        bgBuf = input$bgBuf,
+        bgPtsNum = input$bgPtsNum
+      )
+    },
+    load = function(state) {
+      # Load
+      updateRadioButtons(session, "bgSel", selected = state$bgSel)
+      updateNumericInput(session, "bgBuf", value = state$bgBuf)
+      updateNumericInput(session, "bgPtsNum", value = state$bgPtsNum)
+    }
+  ))
   common$update_component(tab = "Map")
 }
 

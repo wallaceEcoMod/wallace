@@ -63,20 +63,18 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
 
     for (sp in spLoop) {
       # FUNCTION CALL ####
-      drawBgExt <- penvs_drawBgExtent(drawExtXY,
-                                      drawExtID,
-                                      input$drawBgBuf,
-                                      spp[[sp]]$occs,
-                                      logger,
-                                      spN = sp)
+      drawBgExt <- penvs_drawBgExtent(drawExtXY, drawExtID, input$drawBgBuf,
+                                      spp[[sp]]$occs, logger, spN = sp)
       # LOAD INTO SPP ####
       spp[[sp]]$procEnvs$bgExt <- drawBgExt
 
       # METADATA ####
       polyX <- printVecAsis(round(spp[[curSp()]]$polyExtXY[, 1], digits = 4))
       polyY <- printVecAsis(round(spp[[curSp()]]$polyExtXY[, 2], digits = 4))
-      spp[[curSp()]]$rmm$code$wallaceSettings$drawExtPolyCoords <-
-        paste0('X: ', polyX, ', Y: ', polyY)
+      spp[[curSp()]]$rmm$code$wallace$drawExtPolyCoords <-
+        paste0('Draw Polygon (X: ', polyX, ', Y: ', polyY, ')')
+      spp[[sp]]$rmm$data$occurrence$backgroundSampleSizeRule <-
+        paste0('Draw Polygon, ', input$bgBuf, ' degree buffer')
     }
   })
 
@@ -131,31 +129,25 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
       spp[[sp]]$bgPts <- bgPts
 
       # METADATA ####
-      spp[[sp]]$rmm$model$maxent$backgroundSizeSet <- input$bgPtsNum
+      spp[[sp]]$rmm$data$occurrence$backgroundSampleSizeSet <- input$bgPtsNum
     }
   })
 
-  # output$result <- renderText({
-  #   # Result
-  # })
-
-  # return(list(
-  #   save = function() {
-  #     # Save any values that should be saved when the current session is saved
-  #   },
-  #   load = function(state) {
-  #     # Load
-  #   }
-  # ))
+  return(list(
+    save = function() {
+      list(
+        drawBgBuf = input$drawBgBuf,
+        bgPtsNum = input$bgPtsNum
+      )
+    },
+    load = function(state) {
+      # Load
+      updateNumericInput(session, "drawBgBuf", value = state$drawBgBuf)
+      updateNumericInput(session, "bgPtsNum", value = state$bgPtsNum)
+    }
+  ))
   common$update_component(tab = "Map")
 }
-
-# penvs_drawBgExtent_module_result <- function(id) {
-#   ns <- NS(id)
-#
-#   # Result UI
-#   verbatimTextOutput(ns("result"))
-# }
 
 penvs_drawBgExtent_module_map <- function(map, common) {
   spp <- common$spp

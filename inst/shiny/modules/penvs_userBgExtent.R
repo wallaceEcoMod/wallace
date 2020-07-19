@@ -76,18 +76,20 @@ penvs_userBgExtent_module_server <- function(input, output, session, common) {
 
       # METADATA ####
       # get extensions of all input files
+      spp[[sp]]$rmm$data$occurrence$backgroundSampleSizeRule <-
+        paste0('User Polygon, ', input$bgBuf, ' degree buffer')
       exts <- sapply(strsplit(input$userBgShp$name, '\\.'),
                      FUN = function(x) x[2])
       if ('csv' %in% exts) {
-        spp[[sp]]$rmm$code$wallaceSettings$userBgExt <- 'csv'
-        spp[[sp]]$rmm$code$wallaceSettings$userBgPath <- input$userBgShp$datapath
+        spp[[sp]]$rmm$code$wallace$userBgExt <- 'csv'
+        spp[[sp]]$rmm$code$wallace$userBgPath <- input$userBgShp$datapath
       }
       else if ('shp' %in% exts) {
-        spp[[sp]]$rmm$code$wallaceSettings$userBgExt <- 'shp'
+        spp[[sp]]$rmm$code$wallace$userBgExt <- 'shp'
         # get index of .shp
         i <- which(exts == 'shp')
         shpName <- strsplit(input$userBgShp$name[i], '\\.')[[1]][1]
-        spp[[sp]]$rmm$code$wallaceSettings$userBgShpParams <-
+        spp[[sp]]$rmm$code$wallace$userBgShpParams <-
           list(dsn = input$userBgShp$datapath[i], layer = shpName)
       }
     }
@@ -144,18 +146,23 @@ penvs_userBgExtent_module_server <- function(input, output, session, common) {
       spp[[sp]]$bgPts <- bgPts
 
       # METADATA ####
-      spp[[sp]]$rmm$model$maxent$backgroundSizeSet <- input$bgPtsNum
+      spp[[sp]]$rmm$data$occurrence$backgroundSampleSizeSet <- input$bgPtsNum
     }
   })
 
-  # return(list(
-  #   save = function() {
-  #     # Save any values that should be saved when the current session is saved
-  #   },
-  #   load = function(state) {
-  #     # Load
-  #   }
-  # ))
+  return(list(
+    save = function() {
+      list(
+        userBgBuf = input$userBgBuf,
+        bgPtsNum = input$bgPtsNum
+      )
+    },
+    load = function(state) {
+      # Load
+      updateNumericInput(session, "userBgBuf", value = state$userBgBuf)
+      updateNumericInput(session, "bgPtsNum", value = state$bgPtsNum)
+    }
+  ))
 
   common$update_component(tab = "Map")
 }
