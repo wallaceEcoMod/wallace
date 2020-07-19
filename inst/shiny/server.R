@@ -359,11 +359,11 @@ function(input, output, session) {
 
   # DOWNLOAD: masked environmental variable rasters
   output$dlBgShp <- downloadHandler(
-    filename = function() glue("{formatSpName(curSp())}_bgShp.zip"),
+    filename = function() paste0(curSp(), "_bgShp.zip"),
     content = function(file) {
       tmpdir <- tempdir()
       setwd(tempdir())
-      n <- spName(spp[[curSp()]])
+      n <- curSp()
 
       rgdal::writeOGR(obj = bgExt(),
                       dsn = tmpdir,
