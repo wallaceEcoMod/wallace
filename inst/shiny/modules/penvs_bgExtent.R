@@ -58,10 +58,7 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
 
     for (sp in spLoop) {
       # FUNCTION CALL ####
-      bgExt <- penvs_bgExtent(spp[[sp]]$occs,
-                              input$bgSel,
-                              input$bgBuf,
-                              logger,
+      bgExt <- penvs_bgExtent(spp[[sp]]$occs, input$bgSel, input$bgBuf, logger,
                               spN = sp)
       req(bgExt)
 
@@ -90,25 +87,19 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
     # PROCESSING ####
     for (sp in spLoop) {
       # FUNCTION CALL ####
-      bgMask <- penvs_bgMask(spp[[sp]]$occs,
-                             envs.global[[spp[[sp]]$envs]],
-                             spp[[sp]]$procEnvs$bgExt,
-                             logger,
-                             spN = sp)
+      bgMask <- penvs_bgMask(spp[[sp]]$occs, envs.global[[spp[[sp]]$envs]],
+                             spp[[sp]]$procEnvs$bgExt, logger, spN = sp)
       req(bgMask)
-      bgPts <- penvs_bgSample(spp[[sp]]$occs,
-                              bgMask,
-                              input$bgPtsNum,
-                              logger,
+      bgPts <- penvs_bgSample(spp[[sp]]$occs, bgMask, input$bgPtsNum, logger,
                               spN = sp)
       req(bgPts)
-      withProgress(message = paste0("Extracting background values for ",
-                                    em(spName(sp)), "..."), {
-                                      bgEnvsVals <- as.data.frame(raster::extract(bgMask, bgPts))
-                                    })
+      withProgress(
+        message = paste0("Extracting background values for ", spName(sp), "..."), {
+          bgEnvsVals <- as.data.frame(raster::extract(bgMask, bgPts))
+        })
 
-      if (sum(rowSums(is.na(raster::extract(bgMask, spp[[sp]]$occs[ ,
-                                            c("longitude", "latitude")])))) > 0) {
+      NApoints <- sum(rowSums(is.na(raster::extract(bgMask, spp[[sp]]$occs[ , c("longitude", "latitude")]))))
+      if (NApoints > 0) {
         logger %>%
           writeLog(type = "error",
                    paste0("One or more occurrence points have NULL raster ",
@@ -122,7 +113,7 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
       # LOAD INTO SPP ####
       spp[[sp]]$procEnvs$bgMask <- bgMask
       # add columns for env variables beginning with "envs_" to bg tbl
-      spp[[sp]]$bg <- cbind(scientific_name = paste0("bg_", spName(spp[[sp]])), bgPts,
+      spp[[sp]]$bg <- cbind(scientific_name = paste0("bg_", sp), bgPts,
                             occID = NA, year = NA, institution_code = NA, country = NA,
                             state_province = NA, locality = NA, elevation = NA,
                             record_type = NA, bgEnvsVals)
