@@ -50,7 +50,7 @@ penvs_drawBgExtent <- function(polyExtXY, polyExtID, drawBgBuf, occs,
   ptRem <- ifelse(all(!is.na(intersect)), 0, as.numeric(which(is.na(intersect))))
   if (ptRem == 0) {
     bgExt <- rgeos::gBuffer(newPoly, width = drawBgBuf)
-    if (drawBgBuf == 0 ) {
+    if (drawBgBuf == 0) {
       logger %>% writeLog(hlSpp(spN), 'Draw polygon without buffer(**).')
     } else {
       logger %>% writeLog(hlSpp(spN), 'Draw polygon with buffer of ',
@@ -62,9 +62,9 @@ penvs_drawBgExtent <- function(polyExtXY, polyExtID, drawBgBuf, occs,
     return(bgExt)
   } else if (ptRem > 0) {
     logger %>%
-      writeLog(type = 'error',
-               paste0("The drawn polygon did not include all localities(**). ",
-                      "Remove the polygon before drawing a new one."))
+      writeLog(type = 'error', hlSpp(spN),
+               "The drawn polygon did not include all localities(**). ",
+               "Remove the polygon before drawing a new one.")
     return()
   }
 }

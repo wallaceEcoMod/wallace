@@ -54,22 +54,21 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
       )
       return()
     }
-    # FUNCTION CALL ####
-    drawBgExt <- penvs_drawBgExtent(spp[[curSp()]]$polyExtXY,
-                                    spp[[curSp()]]$polyExtID,
-                                    input$drawBgBuf,
-                                    spp[[curSp()]]$occs,
-                                    logger,
-                                    spN = curSp())
+
+    drawExtXY <- spp[[curSp()]]$polyExtXY
+    drawExtID <- spp[[curSp()]]$polyExtID
 
     # loop over all species if batch is on
-    if (input$batch1 == TRUE) {
-      spLoop <- allSp()
-    } else {
-      spLoop <- curSp()
-    }
+    if (input$batch1 == TRUE) spLoop <- allSp() else spLoop <- curSp()
 
     for (sp in spLoop) {
+      # FUNCTION CALL ####
+      drawBgExt <- penvs_drawBgExtent(drawExtXY,
+                                      drawExtID,
+                                      input$drawBgBuf,
+                                      spp[[sp]]$occs,
+                                      logger,
+                                      spN = sp)
       # LOAD INTO SPP ####
       spp[[sp]]$procEnvs$bgExt <- drawBgExt
 
@@ -114,7 +113,7 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
 
       if (sum(rowSums(is.na(raster::extract(bgMask, spp[[sp]]$occs[ , c("longitude", "latitude")])))) > 0) {
         logger %>%
-          writeLog(type = "error", hlSpp(spN),
+          writeLog(type = "error", hlSpp(sp),
                    "One or more occurrence points have NULL raster values.",
                    "This can sometimes happen for points on the margin of the study extent.",
                    " Please increase the buffer slightly to include them.")

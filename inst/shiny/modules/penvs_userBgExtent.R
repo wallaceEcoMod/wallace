@@ -57,18 +57,20 @@ penvs_userBgExtent_module_server <- function(input, output, session, common) {
                  'Background extent files not uploaded.')
       return()
     }
-    # FUNCTION CALL ####
-    userBgExt <- penvs_userBgExtent(input$userBgShp$datapath,
-                                    input$userBgShp$name,
-                                    input$userBgBuf,
-                                    occs(),
-                                    logger)
+
 
     # loop over all species if batch is on
     if (input$batch1 == TRUE) spLoop <- allSp() else spLoop <- curSp()
 
     # PROCESSING ####
     for (sp in spLoop) {
+      # FUNCTION CALL ####
+      userBgExt <- penvs_userBgExtent(input$userBgShp$datapath,
+                                      input$userBgShp$name,
+                                      input$userBgBuf,
+                                      spp[[sp]]$occs,
+                                      logger,
+                                      spN = sp)
       # LOAD INTO SPP ####
       spp[[sp]]$procEnvs$bgExt <- userBgExt
 
@@ -124,7 +126,7 @@ penvs_userBgExtent_module_server <- function(input, output, session, common) {
 
       if (sum(rowSums(is.na(raster::extract(bgMask, spp[[sp]]$occs[ , c("longitude", "latitude")])))) > 0) {
         logger %>%
-          writeLog(type = "error", hlSpp(spN),
+          writeLog(type = "error", hlSpp(sp),
                    "One or more occurrence points have NULL raster values.",
                    "This can sometimes happen for points on the margin of the study extent.",
                    " Please increase the buffer slightly to include them.")
