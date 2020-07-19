@@ -46,9 +46,8 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
   observeEvent(input$goBgExt, {
     # ERRORS ####
     if (is.null(envs())) {
-      logger %>% writeLog(type = 'error',
-                          paste0('Environmental variables missing for ',
-                                 em(spName(curSp())), '. Obtain them in component 3.'))
+      logger %>% writeLog(type = 'error', hlSpp(spN), 'Environmental variables missing.',
+                          '. Obtain them in component 3.')
       return()
     }
     req(curSp(), occs())
@@ -101,12 +100,10 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
       NApoints <- sum(rowSums(is.na(raster::extract(bgMask, spp[[sp]]$occs[ , c("longitude", "latitude")]))))
       if (NApoints > 0) {
         logger %>%
-          writeLog(type = "error",
-                   paste0("One or more occurrence points have NULL raster ",
-                          "values for ", em(spName(sp)), ". This can sometimes ",
-                          "happen for points on the margin of the study extent.",
-                          " Please increase the buffer slightly to include them.")
-          )
+          writeLog(type = "error", hlSpp(spN),
+                   "One or more occurrence points have NULL raster values.",
+                   "This can sometimes happen for points on the margin of the study extent.",
+                   " Please increase the buffer slightly to include them.")
         return()
       }
 

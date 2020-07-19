@@ -12,6 +12,8 @@
 #' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.
 #' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 #' otherwise leave the default NULL
+#' @param spN data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages
+# @keywords
 
 # @keywords
 #'
@@ -38,7 +40,7 @@
 #' @export
 
 penvs_userBgExtent <- function(bgShp_path, bgShp_name, userBgBuf, occs,
-                               logger = NULL) {
+                               logger = NULL, spN = NULL) {
     pathdir <- dirname(bgShp_path)
     pathfile <- basename(bgShp_path)
     # get extensions of all input files
@@ -82,17 +84,17 @@ penvs_userBgExtent <- function(bgShp_path, bgShp_name, userBgBuf, occs,
 
     if (ptRem == 0) {
       if (userBgBuf > 0) {
-        logger %>% writeLog('Study extent user-defined polygon buffered by ',
+        logger %>% writeLog(hlSpp(spN), 'Study extent user-defined polygon buffered by ',
                             userBgBuf, ' degrees.')
       } else {
-        logger %>% writeLog("Study extent: user-defined polygon.")
+        logger %>% writeLog(hlSpp(spN), "Study extent: user-defined polygon.")
       }
       return(bgExt)
     } else if (ptRem > 0) {
       logger %>%
-        writeLog(type = 'error',
-                 paste0("The polygon did not include all localities(**). ",
-                        "You can remove localities in Process Occs component"))
+        writeLog(type = 'error', hlSpp(spN),
+                 "The polygon did not include all localities(**). ",
+                 "You can remove localities in Process Occs component")
       return()
     }
 }

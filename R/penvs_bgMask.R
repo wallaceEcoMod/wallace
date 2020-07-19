@@ -45,12 +45,12 @@ penvs_bgMask <- function(occs, envs, bgExt, logger = NULL, spN = NULL) {
     return()
   }
   # mask envs by background extent
-  smartProgress(logger, message = paste0("Masking rasters for ", spName(spN), "..."), {
+  smartProgress(logger, message = paste0("Masking rasters for ", spN, "..."), {
     bgCrop <- raster::crop(envs, bgExt)
     bgMask <- raster::mask(bgCrop, bgExt)
   })
 
-  logger %>% writeLog(em(spName(spN)), ': Environmental data masked.')
+  logger %>% writeLog(hlSpp(spN), 'Environmental data masked.')
 
   return(bgMask)
 }

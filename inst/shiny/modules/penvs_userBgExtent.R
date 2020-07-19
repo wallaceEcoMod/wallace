@@ -118,18 +118,16 @@ penvs_userBgExtent_module_server <- function(input, output, session, common) {
                               spN = sp)
       req(bgPts)
       withProgress(message = paste0("Extracting background values for ",
-                                    em(spName(sp)), "..."), {
+                                    spName(sp), "..."), {
                                       bgEnvsVals <- as.data.frame(raster::extract(bgMask, bgPts))
                                     })
 
       if (sum(rowSums(is.na(raster::extract(bgMask, spp[[sp]]$occs[ , c("longitude", "latitude")])))) > 0) {
         logger %>%
-          writeLog(type = "error",
-                   paste0("One or more occurrence points have NULL raster ",
-                          "values for ", em(spName(sp)), ". This can sometimes ",
-                          "happen for points on the margin of the study extent.",
-                          " Please increase the buffer slightly to include them.")
-          )
+          writeLog(type = "error", hlSpp(spN),
+                   "One or more occurrence points have NULL raster values.",
+                   "This can sometimes happen for points on the margin of the study extent.",
+                   " Please increase the buffer slightly to include them.")
         return()
       }
 

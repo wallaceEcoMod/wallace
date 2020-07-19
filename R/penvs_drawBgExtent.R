@@ -51,9 +51,9 @@ penvs_drawBgExtent <- function(polyExtXY, polyExtID, drawBgBuf, occs,
   if (ptRem == 0) {
     bgExt <- rgeos::gBuffer(newPoly, width = drawBgBuf)
     if (drawBgBuf == 0 ) {
-      logger %>% writeLog(em(spName(spN)), ' : Draw polygon without buffer(**).')
+      logger %>% writeLog(hlSpp(spN), 'Draw polygon without buffer(**).')
     } else {
-      logger %>% writeLog(em(spName(spN)), ' : Draw polygon with buffer of ',
+      logger %>% writeLog(hlSpp(spN), 'Draw polygon with buffer of ',
                           drawBgBuf, ' degrees (**).')
     }
     bgExt <- sp::SpatialPolygonsDataFrame(bgExt,
