@@ -1,23 +1,29 @@
 
-#' @title download ecoClimate variables. see www.ecoclimate.org
-#' @description For EcoClimate the resolution is fixed to 0.5 degrees
+#' @title envs_ecoClimate Obtain ecoClimate variables
+#' @description download ecoClimate variables. See www.ecoclimate.org.
 #'
 #' @details
-#' See Examples.
+#' #' This function is called by the module envs to download ecoClimate variables from www.ecoclimate.org.
+#' The variables to be dowloaded are selected by the user with bcSel and the resolution is fixed to 0.5 degrees
+#' It returns either a rasterStack or rasterBrick of selected variables with appropriate names for further analyses?
+
 #'
 #' @param bcAOGCM name of the Atmospheric and Oceanic Global Circulation Model.
 #' Options are: "CCSM", "CNRM", "MIROC", "FGOALS", "GISS", "IPSL","MRI", "MPI"
 #' @param bcScenario select the temporal scenario that you want to download.
 #' Options are: "LGM" (21,000 years ago), "Holo" (6,000 years ago),
 #' "Present", "Future 2.6" (rcp 2.6), "Future 4.5" (rcp 4.5), "Future 6" (rcp 6), "Future 8.5" (rcp 8.5)
-#' @param ecoClimSel list of boolean data. selected variables
+#' @param ecoClimSel list of boolean data. selected variables (NOT!)
 # @keywords
 #'
-# @examples
+#' @examples
 #'
 #'
 # @return
+#' @author Sara Varela <sara_varela@@yahoo.com>
 #' @author Jamie M. Kass <jamie.m.kass@@gmail.com>
+#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
+
 # @note
 
 # @seealso
@@ -54,7 +60,7 @@ envs_ecoClimate <- function(bcAOGCM, bcScenario, ecoClimSel, logger = NULL) {
   return(ecoClimatelayers)
 }
 
-
+###Auxiliary functions
 #' ecoClimate_getdata
 #'
 #' download ecoClimate layers. more info at www.ecoclimate.org
