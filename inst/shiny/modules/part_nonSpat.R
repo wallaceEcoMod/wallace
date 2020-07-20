@@ -65,10 +65,14 @@ part_nonSpat_module_server <- function(input, output, session, common) {
 
   return(list(
     save = function() {
-      # Save any values that should be saved when the current session is saved
+      list(
+        partNspSel = input$partNspSel,
+        kfolds = input$kfolds
+      )
     },
     load = function(state) {
-      # Load
+      updateSelectInput(session, "partNspSel", selected = state$partNspSel)
+      updateNumericInput(session, "kfolds", value = state$kfolds)
     }
   ))
 

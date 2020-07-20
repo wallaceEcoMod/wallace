@@ -471,7 +471,7 @@ function(input, output, session) {
 
   # download for partitioned occurrence records csv
   output$dlPart <- downloadHandler(
-    filename = function() paste0(formatSpName(curSp()), "_partitioned_occs.csv"),
+    filename = function() paste0(curSp(), "_partitioned_occs.csv"),
     content = function(file) {
       bg.bind <- data.frame(rep('background',
                                 nrow(spp[[curSp()]]$bgPts)), spp[[curSp()]]$bgPts)

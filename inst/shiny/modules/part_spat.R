@@ -74,10 +74,14 @@ part_spat_module_server <- function(input, output, session, common) {
 
   return(list(
     save = function() {
-      # Save any values that should be saved when the current session is saved
+      list(
+        partitionSpatSel = input$partitionSpatSel,
+        aggFact = input$aggFact
+      )
     },
     load = function(state) {
-      # Load
+      updateSelectInput(session, "partitionSpatSel", selected = state$partitionSpatSel)
+      updateNumericInput(session, "aggFact", value = state$aggFact)
     }
   ))
 
