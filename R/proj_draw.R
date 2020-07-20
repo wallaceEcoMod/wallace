@@ -1,23 +1,32 @@
 
-#' @title proj_draw
-#' @description ..
+#' @title proj_draw Draw projection extent
+#' @description This function creates a polygon object from coordinates of user drwan poylgon in the GUI
 #'
 #' @details
-#' See Examples.
-#'
-#' @param polyPjXY x
-#' @param polyPjID x
-#' @param drawBgBuf x
-#' @param logger x
+#' This function is used in the project model component. In the GUI, the user draws a polygon to be used
+#' as the projection extent and may include a buffer to the given polygon.
+#' The function returns a SpatialPolygonsDataFrame object of the desired extent (+ buffer).
+
+#' @param polyPjXY Coordinates of polygon endpoints obtained from user drawn polygon.
+#' @param polyPjID Numeric ID to be used in the generation of the polygon.
+#' @param drawBgBuf the buffer to be used in generating the SpatialPolygonsDataFrame, must be >=0 . A number must be specified.
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny, otherwise leave the default NULL
 # @keywords
 #'
-# @examples
+#' @examples
+#'longitude <- c(-27.78641, -74.09170, -84.01930, -129.74867, -142.19085, -45.55045, -28.56050)
+#'latitude <- c(-40.40539, -37.02010, 2.28455, 40.75350, 56.35954, 54.55045, -7.11861)
+#'userDrawPoly <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
+#'drawPjBuf = 0.5
+#' polyPjID=1
+#' polygonTest<-proj_draw(polyPjXY=userDrawPoly, polyPjID, drawPjBuf, logger = NULL)
 #'
-#'
-# @return
+#' @return This functions returns a SpatialPolygonsDataFrame based on the user specified coordinates (drawn on map).
+#' This SpatialPolygonsDataFrame may be larger than specified if drawBgBuf > 0.
+
 #' @author Gonzalo Pinilla gpinillabuitrago@@gradcenter.cuny.edu
 # @note
-# @seealso
+#' @seealso  \code{\link{proj_user}}
 # @references
 # @aliases - a list of additional topic names that will be mapped to
 # this documentation when the user looks them up from the command

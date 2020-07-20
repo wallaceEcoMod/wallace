@@ -4,7 +4,14 @@
 \alias{penvs_userBgExtent}
 \title{penvs_userBgExtent: user provided background extent}
 \usage{
-penvs_userBgExtent(bgShp_path, bgShp_name, userBgBuf, occs, logger = NULL)
+penvs_userBgExtent(
+  bgShp_path,
+  bgShp_name,
+  userBgBuf,
+  occs,
+  logger = NULL,
+  spN = NULL
+)
 }
 \arguments{
 \item{bgShp_path}{Path to the user provided shapefile or csv with vertex coordinates. M}
@@ -17,6 +24,8 @@ penvs_userBgExtent(bgShp_path, bgShp_name, userBgBuf, occs, logger = NULL)
 
 \item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
+
+\item{spN}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages}
 }
 \value{
 This function returns a SpatialPolygons object with the user provided shape (+ a buffer is userBgBuf >0).
