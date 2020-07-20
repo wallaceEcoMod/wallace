@@ -2,7 +2,7 @@
 % Please edit documentation in R/envs_ecoClimate.R
 \name{envs_ecoClimate}
 \alias{envs_ecoClimate}
-\title{download ecoClimate variables. see www.ecoclimate.org}
+\title{envs_ecoClimate Obtain ecoClimate variables}
 \usage{
 envs_ecoClimate(bcAOGCM, bcScenario, ecoClimSel, logger = NULL)
 }
@@ -14,14 +14,31 @@ Options are: "CCSM", "CNRM", "MIROC", "FGOALS", "GISS", "IPSL","MRI", "MPI"}
 Options are: "LGM" (21,000 years ago), "Holo" (6,000 years ago),
 "Present", "Future 2.6" (rcp 2.6), "Future 4.5" (rcp 4.5), "Future 6" (rcp 6), "Future 8.5" (rcp 8.5)}
 
-\item{ecoClimSel}{list of boolean data. selected variables}
+\item{ecoClimSel}{Numeric vector with list of variables to select.}
+}
+\value{
+A rasterStack of selected variables
 }
 \description{
-For EcoClimate the resolution is fixed to 0.5 degrees
+download ecoClimate variables. See www.ecoclimate.org.
 }
 \details{
-See Examples.
+#' This function is called by the module envs to download ecoClimate variables from www.ecoclimate.org.
+The variables to be dowloaded are selected by the user with bcSel and the resolution is fixed to 0.5 degrees
+This function currently gets ariables from Dropbox and the process takes significantly more time than for other datasets.
+It returns a rasterStack o of selected variables.
+}
+\examples{
+bcAOGCM="CCSM"
+bcScenario="LGM"
+ecoClimSel=c(1,2,3)
+varsEcoClimate<-envs_ecoClimate(bcAOGCM, bcScenario, ecoClimSel, logger = NULL)
+
 }
 \author{
+Sara Varela <sara_varela@yahoo.com>
+
 Jamie M. Kass <jamie.m.kass@gmail.com>
+
+Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
 }

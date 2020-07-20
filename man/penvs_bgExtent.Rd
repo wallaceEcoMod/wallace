@@ -32,7 +32,7 @@ observed occurrences. The function returns a SpatialPolygonsDataFrame object of 
 \examples{
 occs <-  occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
 occs <- as.data.frame(occs[[1]]$cleaned)
-bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf=0.5,logger = NULL, spN = occs)
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf=0.5,logger = NULL, spN = NULL)
 
 }
 \seealso{

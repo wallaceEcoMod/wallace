@@ -2,7 +2,7 @@
 % Please edit documentation in R/espace_nicheOv.R
 \name{espace_nicheOv}
 \alias{espace_nicheOv}
-\title{espace_nicheOv}
+\title{espace_nicheOv Niche Overlap}
 \usage{
 espace_nicheOv(
   z1,
@@ -14,24 +14,58 @@ espace_nicheOv(
 )
 }
 \arguments{
-\item{z1}{ecospat niche object for species 1 from cESpace_OccDens}
+\item{z1}{ecospat niche object for species 1 from espace_occDens}
 
-\item{z2}{ecospat niche object for species 2 from cESpace_OccDens}
+\item{z2}{ecospat niche object for species 2 from espace_occDens}
 
 \item{iter}{number of iterations}
 
-\item{equivalency}{x}
+\item{equivalency}{Logical. Whether to run equivalency test. Default is False.}
 
-\item{similarity}{x}
+\item{similarity}{Logical. Whether to run similarity test. Default is True}
 
-\item{logger}{x}
+\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+otherwise leave the default NULL}
+}
+\value{
+A list of 4 elements if all is set to TRUE. Elements are overlap (Schoener's D), USE (ecopstat.niche.dyn.index), equiv and simil
 }
 \description{
-..
+Function evaluates niche overlap between the two species for which the occurrence density grid was computed
 }
 \details{
-See Examples.
+The niche overlap quantification is based on the occurrence densities and the densities of environmental conditions available in the background extent that are estimated in the module Occurrence Density Grid.
+The function computes 4 different things, Schoener's D, unfilling, stability, expansion indices (Guisan et al. 2014 TREE), and tests for niche equivalency and niche similarity.
+}
+\examples{
+sp.name1<-"Panthera onca"
+sp.name2<-"Procyon lotor"
+species<-c(sp.name1,sp.name2)
+for (i in 1:2){
+ occs <-  occs_queryDb(spName = species[i], occDb = "gbif", occNum = 100)
+ occs <- as.data.frame(occs[[1]]$cleaned)
+ occs <- poccs_thinOccs(occs = occs, thinDist = 10,spN=occs)
+envs <- envs_worldclim(bcRes = 10,  bcSel = c("bio01","bio02","bio13","bio14"), doBrick = FALSE)
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
+bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
+bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 1000,spN=occs)
+partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=occs)
+ bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=occs)
+model[i]<-bioclimAlg }
+occs.z1<-model[[1]]@occs[3:length(model[[1]]@occs)]
+occs.z2<-model[[2]]@occs[3:length(model[[2]]@occs)]
+bgPts.z1<-model[[1]]@bg[3:length(model[[1]]@bg)]
+bgPts.z2<-model[[2]]@bg[3:length(model[[2]]@bg)]
+Testpca<-espace_pca(sp.name1,sp.name2,occs.z1,occs.z2,bgPts.z1,bgPts.z2)
+TestOccDens<-espace_occDens(sp.name1, sp.name2,Testpca)
+TestNicheOv<-espace_nicheOv(z1=TestOccDens[[sp.name1]], z2=TestOccDens[[sp.name2]], iter=100 , equivalency = TRUE, similarity = TRUE, logger = NULL)
+
+}
+\seealso{
+\code{\link{espace_pca}} \code{\link{espace_occDens}} \code{\link[ecospat]{niche.overlap}}  \code{\link[ecospat]{niche.dyn.index}} \code{\link[ecospat]{niche.equivalency.test}} \code{\link[ecospat]{niche.similarity.test}}
 }
 \author{
-Jamie Kass <jkass@gradcenter.cuny.edu>
+Jamie Kass <jamie.m.kass@gmail.com >
+
+Olivier Broennimann <olivier.broennimann@unil.ch>
 }

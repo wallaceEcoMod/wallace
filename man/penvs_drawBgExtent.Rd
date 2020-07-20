@@ -22,14 +22,14 @@ penvs_drawBgExtent(
 
 \item{occs}{data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.}
 
-\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
 \item{spN}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages}
 }
 \value{
 This functions returns a SpatialPolygonsDataFrame based on the user specified coordinates (drawn on map)
-This SpatialPolygonsDataFrame may be larger than specified if drawBgBuf > 0. The SpatialPolygonsDataFramewill include all occurrences.
+This SpatialPolygonsDataFrame may be larger than specified if drawBgBuf > 0. The SpatialPolygonsDataFrame will include all occurrences.
 }
 \description{
 This function generates a background area according to a user drwan polygon and provided buffer

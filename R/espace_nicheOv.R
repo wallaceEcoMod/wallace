@@ -1,25 +1,50 @@
-#' @title espace_nicheOv
-#' @description ..
+#' @title espace_nicheOv Niche Overlap
+#' @description Function evaluates niche overlap between the two species for which the occurrence density grid was computed
 #'
 #' @details
-#' See Examples.
+#' The niche overlap quantification is based on the occurrence densities and the densities of environmental conditions available in the background extent that are estimated in the module Occurrence Density Grid.
+#' The function computes 4 different things, Schoener's D, unfilling, stability, expansion indices (Guisan et al. 2014 TREE), and tests for niche equivalency and niche similarity.
 #'
-#' @param z1 ecospat niche object for species 1 from cESpace_OccDens
-#' @param z2 ecospat niche object for species 2 from cESpace_OccDens
+#' @param z1 ecospat niche object for species 1 from espace_occDens
+#' @param z2 ecospat niche object for species 2 from espace_occDens
 #' @param iter number of iterations
-#' @param equivalency x
-#' @param similarity x
-#' @param logger x
+#' @param equivalency Logical. Whether to run equivalency test. Default is False.
+#' @param similarity Logical. Whether to run similarity test. Default is True
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#'  otherwise leave the default NULL
 # @keywords
 #'
-# @examples
+#' @examples
+#'sp.name1<-"Panthera onca"
+#'sp.name2<-"Procyon lotor"
+#'species<-c(sp.name1,sp.name2)
+#"model<-list()
+#'for (i in 1:2){
+#'  occs <-  occs_queryDb(spName = species[i], occDb = "gbif", occNum = 100)
+#'  occs <- as.data.frame(occs[[1]]$cleaned)
+#'  occs <- poccs_thinOccs(occs = occs, thinDist = 10,spN=occs)
+#' envs <- envs_worldclim(bcRes = 10,  bcSel = c("bio01","bio02","bio13","bio14"), doBrick = FALSE)
+#' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
+#'bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
+#'bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 1000,spN=occs)
+#' partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=occs)
+#'  bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=occs)
+#' model[i]<-bioclimAlg }
+##Remove coordinates (lat/long from tables)
+#'occs.z1<-model[[1]]@@occs[3:length(model[[1]]@@occs)]
+#'occs.z2<-model[[2]]@@occs[3:length(model[[2]]@@occs)]
+#'bgPts.z1<-model[[1]]@@bg[3:length(model[[1]]@@bg)]
+#'bgPts.z2<-model[[2]]@@bg[3:length(model[[2]]@@bg)]
+#'Testpca<-espace_pca(sp.name1,sp.name2,occs.z1,occs.z2,bgPts.z1,bgPts.z2)
+#'TestOccDens<-espace_occDens(sp.name1, sp.name2,Testpca)
+#'TestNicheOv<-espace_nicheOv(z1=TestOccDens[[sp.name1]], z2=TestOccDens[[sp.name2]], iter=100 , equivalency = TRUE, similarity = TRUE, logger = NULL)
 #'
-#'
-# @return
-#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+#' @return A list of 4 elements if all is set to TRUE. Elements are overlap (Schoener's D), USE (ecopstat.niche.dyn.index), equiv and simil
+#' @author Jamie Kass <jamie.m.kass@@gmail.com >
+#' @author Olivier Broennimann <olivier.broennimann@@unil.ch>
 # @note
 
-# @seealso
+#' @seealso  \code{\link{espace_pca}} \code{\link{espace_occDens}} \code{\link[ecospat]{niche.overlap}}  \code{\link[ecospat]{niche.dyn.index}} \code{\link[ecospat]{niche.equivalency.test}} \code{\link[ecospat]{niche.similarity.test}}
 # @references
 # @aliases - a list of additional topic names that will be mapped to
 # this documentation when the user looks them up from the command
