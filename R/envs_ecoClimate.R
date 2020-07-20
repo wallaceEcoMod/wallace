@@ -5,7 +5,8 @@
 #' @details
 #' #' This function is called by the module envs to download ecoClimate variables from www.ecoclimate.org.
 #' The variables to be dowloaded are selected by the user with bcSel and the resolution is fixed to 0.5 degrees
-#' It returns either a rasterStack or rasterBrick of selected variables with appropriate names for further analyses?
+#' This function currently gets ariables from Dropbox and the process takes significantly more time than for other datasets.
+#' It returns a rasterStack o of selected variables.
 
 #'
 #' @param bcAOGCM name of the Atmospheric and Oceanic Global Circulation Model.
@@ -13,13 +14,16 @@
 #' @param bcScenario select the temporal scenario that you want to download.
 #' Options are: "LGM" (21,000 years ago), "Holo" (6,000 years ago),
 #' "Present", "Future 2.6" (rcp 2.6), "Future 4.5" (rcp 4.5), "Future 6" (rcp 6), "Future 8.5" (rcp 8.5)
-#' @param ecoClimSel list of boolean data. selected variables (NOT!)
+#' @param ecoClimSel Numeric vector with list of variables to select.
 # @keywords
 #'
 #' @examples
+#'bcAOGCM="CCSM"
+#'bcScenario="LGM"
+#'ecoClimSel=c(1,2,3)
+#'varsEcoClimate<-envs_ecoClimate(bcAOGCM, bcScenario, ecoClimSel, logger = NULL)
 #'
-#'
-# @return
+#' @return A rasterStack of selected variables
 #' @author Sara Varela <sara_varela@@yahoo.com>
 #' @author Jamie M. Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
