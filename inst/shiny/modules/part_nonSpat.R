@@ -77,16 +77,23 @@ part_nonSpat_module_server <- function(input, output, session, common) {
 part_nonSpat_module_map <- function(map, common) {
   occs <- common$occs
   # Map logic
-  req(occs()$partition)
-  occsGrp <- occs()$partition
-  # colors for partition symbology
-  newColors <- gsub("FF$", "", rainbow(max(occsGrp)))
-  partsFill <- newColors[occsGrp]
-  map %>% clearAll() %>%
-    map_occs(occs(), fillColor = partsFill, fillOpacity = 1) %>%
-    addLegend("bottomright", colors = newColors,
-              title = "Partition Groups", labels = sort(unique(occsGrp)),
-              opacity = 1)
+  if (!is.null(occs()$partition)) {
+    occsGrp <- occs()$partition
+    # colors for partition symbology
+    newColors <- gsub("FF$", "", rainbow(max(occsGrp)))
+    partsFill <- newColors[occsGrp]
+    map %>% clearAll() %>%
+      map_occs(occs(), fillColor = partsFill, fillOpacity = 1) %>%
+      addLegend("bottomright", colors = newColors,
+                title = "Partition Groups", labels = sort(unique(occsGrp)),
+                opacity = 1)
+  } else {
+    map %>% clearAll() %>%
+      addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
+                       radius = 5, color = 'red', fill = TRUE, fillColor = "red",
+                       fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
+      zoom2Occs(occs())
+  }
 }
 
 part_nonSpat_module_rmd <- function(species) {
