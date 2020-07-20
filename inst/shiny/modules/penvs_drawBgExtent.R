@@ -54,30 +54,27 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
       )
       return()
     }
-    # FUNCTION CALL ####
-    drawBgExt <- penvs_drawBgExtent(spp[[curSp()]]$polyExtXY,
-                                    spp[[curSp()]]$polyExtID,
-                                    input$drawBgBuf,
-                                    spp[[curSp()]]$occs,
-                                    logger,
-                                    spN = curSp())
+
+    drawExtXY <- spp[[curSp()]]$polyExtXY
+    drawExtID <- spp[[curSp()]]$polyExtID
 
     # loop over all species if batch is on
-    if (input$batch1 == TRUE) {
-      spLoop <- allSp()
-    } else {
-      spLoop <- curSp()
-    }
+    if (input$batch1 == TRUE) spLoop <- allSp() else spLoop <- curSp()
 
     for (sp in spLoop) {
+      # FUNCTION CALL ####
+      drawBgExt <- penvs_drawBgExtent(drawExtXY, drawExtID, input$drawBgBuf,
+                                      spp[[sp]]$occs, logger, spN = sp)
       # LOAD INTO SPP ####
       spp[[sp]]$procEnvs$bgExt <- drawBgExt
 
       # METADATA ####
       polyX <- printVecAsis(round(spp[[curSp()]]$polyExtXY[, 1], digits = 4))
       polyY <- printVecAsis(round(spp[[curSp()]]$polyExtXY[, 2], digits = 4))
-      spp[[curSp()]]$rmm$code$wallaceSettings$drawExtPolyCoords <-
-        paste0('X: ', polyX, ', Y: ', polyY)
+      spp[[curSp()]]$rmm$code$wallace$drawExtPolyCoords <-
+        paste0('Draw Polygon (X: ', polyX, ', Y: ', polyY, ')')
+      spp[[sp]]$rmm$data$occurrence$backgroundSampleSizeRule <-
+        paste0('Draw Polygon, ', input$bgBuf, ' degree buffer')
     }
   })
 
@@ -108,25 +105,23 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
                               spN = sp)
       req(bgPts)
       withProgress(message = paste0("Extracting background values for ",
-                                    em(spName(sp)), "..."), {
+                                    spName(sp), "..."), {
         bgEnvsVals <- as.data.frame(raster::extract(bgMask, bgPts))
       })
 
       if (sum(rowSums(is.na(raster::extract(bgMask, spp[[sp]]$occs[ , c("longitude", "latitude")])))) > 0) {
         logger %>%
-          writeLog(type = "error",
-                   paste0("One or more occurrence points have NULL raster ",
-                          "values for ", em(spName(sp)), ". This can sometimes ",
-                          "happen for points on the margin of the study extent.",
-                          " Please increase the buffer slightly to include them.")
-                   )
+          writeLog(type = "error", hlSpp(sp),
+                   "One or more occurrence points have NULL raster values.",
+                   "This can sometimes happen for points on the margin of the study extent.",
+                   " Please increase the buffer slightly to include them.")
         return()
       }
 
       # LOAD INTO SPP ####
       spp[[sp]]$procEnvs$bgMask <- bgMask
       # add columns for env variables beginning with "envs_" to bg tbl
-      spp[[sp]]$bg <- cbind(scientific_name = paste0("bg_", spName(spp[[sp]])), bgPts,
+      spp[[sp]]$bg <- cbind(scientific_name = paste0("bg_", sp), bgPts,
                             occID = NA, year = NA, institution_code = NA, country = NA,
                             state_province = NA, locality = NA, elevation = NA,
                             record_type = NA, bgEnvsVals)
@@ -134,31 +129,25 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
       spp[[sp]]$bgPts <- bgPts
 
       # METADATA ####
-      spp[[sp]]$rmm$model$maxent$backgroundSizeSet <- input$bgPtsNum
+      spp[[sp]]$rmm$data$occurrence$backgroundSampleSizeSet <- input$bgPtsNum
     }
   })
 
-  # output$result <- renderText({
-  #   # Result
-  # })
-
-  # return(list(
-  #   save = function() {
-  #     # Save any values that should be saved when the current session is saved
-  #   },
-  #   load = function(state) {
-  #     # Load
-  #   }
-  # ))
+  return(list(
+    save = function() {
+      list(
+        drawBgBuf = input$drawBgBuf,
+        bgPtsNum = input$bgPtsNum
+      )
+    },
+    load = function(state) {
+      # Load
+      updateNumericInput(session, "drawBgBuf", value = state$drawBgBuf)
+      updateNumericInput(session, "bgPtsNum", value = state$bgPtsNum)
+    }
+  ))
   common$update_component(tab = "Map")
 }
-
-# penvs_drawBgExtent_module_result <- function(id) {
-#   ns <- NS(id)
-#
-#   # Result UI
-#   verbatimTextOutput(ns("result"))
-# }
 
 penvs_drawBgExtent_module_map <- function(map, common) {
   spp <- common$spp

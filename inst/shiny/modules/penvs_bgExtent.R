@@ -46,9 +46,8 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
   observeEvent(input$goBgExt, {
     # ERRORS ####
     if (is.null(envs())) {
-      logger %>% writeLog(type = 'error',
-                          paste0('Environmental variables missing for ',
-                                 em(spName(curSp())), '. Obtain them in component 3.'))
+      logger %>% writeLog(type = 'error', hlSpp(curSp()), 'Environmental variables missing.',
+                          '. Obtain them in component 3.')
       return()
     }
     req(curSp(), occs())
@@ -58,10 +57,7 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
 
     for (sp in spLoop) {
       # FUNCTION CALL ####
-      bgExt <- penvs_bgExtent(spp[[sp]]$occs,
-                              input$bgSel,
-                              input$bgBuf,
-                              logger,
+      bgExt <- penvs_bgExtent(spp[[sp]]$occs, input$bgSel, input$bgBuf, logger,
                               spN = sp)
       req(bgExt)
 
@@ -69,10 +65,11 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
       spp[[sp]]$procEnvs$bgExt <- bgExt
 
       # METADATA ####
-      spp[[sp]]$rmm$model$maxent$backgroundSizeRule <-
+      spp[[sp]]$rmm$data$occurrence$backgroundSampleSizeRule <-
         paste0(input$bgSel, ', ', input$bgBuf, ' degree buffer')
-      spp[[sp]]$rmm$wallaceSettings$bgSel <- input$bgSel
-      spp[[sp]]$rmm$wallaceSettings$bgBuf <- input$bgBuf
+
+      # spp[[sp]]$rmm$wallace$bgSel <- input$bgSel
+      # spp[[sp]]$rmm$wallace$bgBuf <- input$bgBuf
     }
   })
 
@@ -90,39 +87,31 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
     # PROCESSING ####
     for (sp in spLoop) {
       # FUNCTION CALL ####
-      bgMask <- penvs_bgMask(spp[[sp]]$occs,
-                             envs.global[[spp[[sp]]$envs]],
-                             spp[[sp]]$procEnvs$bgExt,
-                             logger,
-                             spN = sp)
+      bgMask <- penvs_bgMask(spp[[sp]]$occs, envs.global[[spp[[sp]]$envs]],
+                             spp[[sp]]$procEnvs$bgExt, logger, spN = sp)
       req(bgMask)
-      bgPts <- penvs_bgSample(spp[[sp]]$occs,
-                              bgMask,
-                              input$bgPtsNum,
-                              logger,
+      bgPts <- penvs_bgSample(spp[[sp]]$occs, bgMask, input$bgPtsNum, logger,
                               spN = sp)
       req(bgPts)
-      withProgress(message = paste0("Extracting background values for ",
-                                    em(spName(sp)), "..."), {
-                                      bgEnvsVals <- as.data.frame(raster::extract(bgMask, bgPts))
-                                    })
+      withProgress(
+        message = paste0("Extracting background values for ", spName(sp), "..."), {
+          bgEnvsVals <- as.data.frame(raster::extract(bgMask, bgPts))
+        })
 
-      if (sum(rowSums(is.na(raster::extract(bgMask, spp[[sp]]$occs[ ,
-                                            c("longitude", "latitude")])))) > 0) {
+      NApoints <- sum(rowSums(is.na(raster::extract(bgMask, spp[[sp]]$occs[ , c("longitude", "latitude")]))))
+      if (NApoints > 0) {
         logger %>%
-          writeLog(type = "error",
-                   paste0("One or more occurrence points have NULL raster ",
-                          "values for ", em(spName(sp)), ". This can sometimes ",
-                          "happen for points on the margin of the study extent.",
-                          " Please increase the buffer slightly to include them.")
-          )
+          writeLog(type = "error", hlSpp(sp),
+                   "One or more occurrence points have NULL raster values.",
+                   "This can sometimes happen for points on the margin of the study extent.",
+                   " Please increase the buffer slightly to include them.")
         return()
       }
 
       # LOAD INTO SPP ####
       spp[[sp]]$procEnvs$bgMask <- bgMask
       # add columns for env variables beginning with "envs_" to bg tbl
-      spp[[sp]]$bg <- cbind(scientific_name = paste0("bg_", spName(spp[[sp]])), bgPts,
+      spp[[sp]]$bg <- cbind(scientific_name = paste0("bg_", sp), bgPts,
                             occID = NA, year = NA, institution_code = NA, country = NA,
                             state_province = NA, locality = NA, elevation = NA,
                             record_type = NA, bgEnvsVals)
@@ -130,17 +119,24 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
       spp[[sp]]$bgPts <- bgPts
 
       # METADATA ####
-      spp[[sp]]$rmm$model$maxent$backgroundSizeSet <- input$bgPtsNum
+      spp[[sp]]$rmm$data$occurrence$backgroundSampleSizeSet <- input$bgPtsNum
     }
   })
-  # return(list(
-  #   save = function() {
-  #     # Save any values that should be saved when the current session is saved
-  #   },
-  #   load = function(state) {
-  #     # Load
-  #   }
-  # ))
+  return(list(
+    save = function() {
+      list(
+        bgSel = input$bgSel,
+        bgBuf = input$bgBuf,
+        bgPtsNum = input$bgPtsNum
+      )
+    },
+    load = function(state) {
+      # Load
+      updateRadioButtons(session, "bgSel", selected = state$bgSel)
+      updateNumericInput(session, "bgBuf", value = state$bgBuf)
+      updateNumericInput(session, "bgPtsNum", value = state$bgPtsNum)
+    }
+  ))
   common$update_component(tab = "Map")
 }
 
