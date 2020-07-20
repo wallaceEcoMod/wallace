@@ -60,50 +60,45 @@ part_partitionOccs <- function(occs, bg, method, kfolds = NULL, bgMask = NULL,
 
   if (method == 'jack') {
     group.data <- ENMeval::get.jackknife(occs.xy, bg.xy)
-    logger %>% writeLog("Occurrences partitioned by jackknife method for ",
-                           em(spName(spN)), ".")
+    logger %>% writeLog(hlSpp(spN), "Occurrences partitioned by jackknife method.")
   }
 
   if (method == 'rand') {
     if(is.null(kfolds)) {
-      logger %>% writeLog(type = 'error', "Please specify a kfold value to
-                             use the random partition function for ",
-                             em(spName(spN)), ".")
+      logger %>% writeLog(type = 'error', hlSpp(spN),
+                          "Please specify a kfold value to use the random ",
+                          "partition function.")
       return()
     }
     if (kfolds < 2) {
-      logger %>% writeLog(type = 'error', "Please specify a kfold value
-                             greater than 1 for ", em(spName(spN)), ".")
+      logger %>% writeLog(type = 'error', hlSpp(spN),
+                          "Please specify a kfold value greater than 1.")
       return()
     }
-
     group.data <- ENMeval::get.randomkfold(occs.xy, bg.xy, kfolds)
-    logger %>% writeLog("Occurrences partitioned by random k-fold
-                           (k = ", kfolds, ") for ", em(spName(spN)), ".")
+    logger %>% writeLog(hlSpp(spN),
+                        "Occurrences partitioned by random k-fold (k = ", kfolds, ").")
   }
 
   if (method == 'block') {
     group.data <- ENMeval::get.block(occs.xy, bg.xy)
-    logger %>% writeLog("Occurrences partitioned by block method for ",
-                           em(spName(spN)), ".")
+    logger %>% writeLog(hlSpp(spN), "Occurrences partitioned by block method.")
   }
 
   if (method == 'cb1' | method == 'cb2') {
     if(is.null(aggFact)) {
-      logger %>% writeLog(type = 'error', "Please specify an aggregation
-                             factor to use checkerboard partition functions for ",
-                          em(spName(spN)), ".")
+      logger %>% writeLog(type = 'error', hlSpp(spN),
+                          "Please specify an aggregation factor to use checkerboard partition functions.")
       return()
     }
     if(is.na(aggFact) | aggFact <= 1) {
-      logger %>% writeLog(type = 'error', "Please specify a positive aggregation
-                        factor greater than 1 for ", em(spName(spN)), ".")
+      logger %>% writeLog(type = 'error', hlSpp(spN),
+                          "Please specify a positive aggregation factor greater than 1.")
       return()
     }
     if(is.null(bgMask)) {
-      logger %>% writeLog(type = 'error', "Please specify a background mask
-                             to use checkerboard partition functions for ",
-                             em(spName(spN)), ".")
+      logger %>% writeLog(type = 'error', hlSpp(spN),
+                          "Please specify a background mask to use checkerboard partition functions.")
       return()
     }
 
@@ -114,9 +109,9 @@ part_partitionOccs <- function(occs, bg, method, kfolds = NULL, bgMask = NULL,
       group.data <- ENMeval::get.checkerboard1(occs.xy, bgMask, bg.xy, aggFact)
     })
 
-    logger %>% writeLog("Occurrences partitioned by checkerboard 1 method with
-                           aggregation factor ", aggFact, " for ",
-                           em(spName(spN)), ".")
+    logger %>% writeLog(hlSpp(spN),
+                        "Occurrences partitioned by checkerboard 1 method with ",
+                        "aggregation factor ", aggFact, ".")
   }
 
   if(method == 'cb2') {
@@ -124,10 +119,9 @@ part_partitionOccs <- function(occs, bg, method, kfolds = NULL, bgMask = NULL,
       group.data <- ENMeval::get.checkerboard2(occs.xy, bgMask, bg.xy, aggFact)
     })
 
-    logger %>% writeLog("Occurrences partitioned by checkerboard 2 method with
-                           aggregation factor ", aggFact, " for ",
-                           em(spName(spN)), ".")
+    logger %>% writeLog(hlSpp(spN),
+                        "Occurrences partitioned by checkerboard 2 method with ",
+                        "aggregation factor ", aggFact, ".")
   }
-
   return(group.data)
 }
