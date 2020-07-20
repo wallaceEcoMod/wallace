@@ -57,35 +57,39 @@ penvs_userBgExtent_module_server <- function(input, output, session, common) {
                  'Background extent files not uploaded.')
       return()
     }
-    # FUNCTION CALL ####
-    userBgExt <- penvs_userBgExtent(input$userBgShp$datapath,
-                                    input$userBgShp$name,
-                                    input$userBgBuf,
-                                    occs(),
-                                    logger)
+
 
     # loop over all species if batch is on
     if (input$batch1 == TRUE) spLoop <- allSp() else spLoop <- curSp()
 
     # PROCESSING ####
     for (sp in spLoop) {
+      # FUNCTION CALL ####
+      userBgExt <- penvs_userBgExtent(input$userBgShp$datapath,
+                                      input$userBgShp$name,
+                                      input$userBgBuf,
+                                      spp[[sp]]$occs,
+                                      logger,
+                                      spN = sp)
       # LOAD INTO SPP ####
       spp[[sp]]$procEnvs$bgExt <- userBgExt
 
       # METADATA ####
       # get extensions of all input files
+      spp[[sp]]$rmm$data$occurrence$backgroundSampleSizeRule <-
+        paste0('User Polygon, ', input$bgBuf, ' degree buffer')
       exts <- sapply(strsplit(input$userBgShp$name, '\\.'),
                      FUN = function(x) x[2])
       if ('csv' %in% exts) {
-        spp[[sp]]$rmm$code$wallaceSettings$userBgExt <- 'csv'
-        spp[[sp]]$rmm$code$wallaceSettings$userBgPath <- input$userBgShp$datapath
+        spp[[sp]]$rmm$code$wallace$userBgExt <- 'csv'
+        spp[[sp]]$rmm$code$wallace$userBgPath <- input$userBgShp$datapath
       }
       else if ('shp' %in% exts) {
-        spp[[sp]]$rmm$code$wallaceSettings$userBgExt <- 'shp'
+        spp[[sp]]$rmm$code$wallace$userBgExt <- 'shp'
         # get index of .shp
         i <- which(exts == 'shp')
         shpName <- strsplit(input$userBgShp$name[i], '\\.')[[1]][1]
-        spp[[sp]]$rmm$code$wallaceSettings$userBgShpParams <-
+        spp[[sp]]$rmm$code$wallace$userBgShpParams <-
           list(dsn = input$userBgShp$datapath[i], layer = shpName)
       }
     }
@@ -118,25 +122,23 @@ penvs_userBgExtent_module_server <- function(input, output, session, common) {
                               spN = sp)
       req(bgPts)
       withProgress(message = paste0("Extracting background values for ",
-                                    em(spName(sp)), "..."), {
+                                    spName(sp), "..."), {
                                       bgEnvsVals <- as.data.frame(raster::extract(bgMask, bgPts))
                                     })
 
       if (sum(rowSums(is.na(raster::extract(bgMask, spp[[sp]]$occs[ , c("longitude", "latitude")])))) > 0) {
         logger %>%
-          writeLog(type = "error",
-                   paste0("One or more occurrence points have NULL raster ",
-                          "values for ", em(spName(sp)), ". This can sometimes ",
-                          "happen for points on the margin of the study extent.",
-                          " Please increase the buffer slightly to include them.")
-          )
+          writeLog(type = "error", hlSpp(sp),
+                   "One or more occurrence points have NULL raster values.",
+                   "This can sometimes happen for points on the margin of the study extent.",
+                   " Please increase the buffer slightly to include them.")
         return()
       }
 
       # LOAD INTO SPP ####
       spp[[sp]]$procEnvs$bgMask <- bgMask
       # add columns for env variables beginning with "envs_" to bg tbl
-      spp[[sp]]$bg <- cbind(scientific_name = paste0("bg_", spName(spp[[sp]])), bgPts,
+      spp[[sp]]$bg <- cbind(scientific_name = paste0("bg_", sp), bgPts,
                             occID = NA, year = NA, institution_code = NA, country = NA,
                             state_province = NA, locality = NA, elevation = NA,
                             record_type = NA, bgEnvsVals)
@@ -144,18 +146,23 @@ penvs_userBgExtent_module_server <- function(input, output, session, common) {
       spp[[sp]]$bgPts <- bgPts
 
       # METADATA ####
-      spp[[sp]]$rmm$model$maxent$backgroundSizeSet <- input$bgPtsNum
+      spp[[sp]]$rmm$data$occurrence$backgroundSampleSizeSet <- input$bgPtsNum
     }
   })
 
-  # return(list(
-  #   save = function() {
-  #     # Save any values that should be saved when the current session is saved
-  #   },
-  #   load = function(state) {
-  #     # Load
-  #   }
-  # ))
+  return(list(
+    save = function() {
+      list(
+        userBgBuf = input$userBgBuf,
+        bgPtsNum = input$bgPtsNum
+      )
+    },
+    load = function(state) {
+      # Load
+      updateNumericInput(session, "userBgBuf", value = state$userBgBuf)
+      updateNumericInput(session, "bgPtsNum", value = state$bgPtsNum)
+    }
+  ))
 
   common$update_component(tab = "Map")
 }

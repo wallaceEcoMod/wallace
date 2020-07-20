@@ -18,7 +18,7 @@
 #' @examples
 #' occs <-  occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
 #' occs <- as.data.frame(occs[[1]]$cleaned)
-#' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf=0.5,logger = NULL, spN = occs)
+#' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf=0.5,logger = NULL, spN = NULL)
 #'
 #' @return A SpatialPolygonsDataFrame object that contains all occurrences from occs
 #' @author Jamie Kass < jamie.m.kass@@gmail.com >
@@ -59,11 +59,9 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL, spN = NULL) {
     bb <- matrix(c(xmin, xmin, xmax, xmax, xmin, ymin, ymax, ymax, ymin, ymin),
                  ncol = 2)
     bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(bb)), 1)))
-    msg <- paste(em(spName(spN)), " study extent: bounding box.")
+    msg <- "Study extent: bounding box."
   } else if (bgSel == "minimum convex polygon") {
     bgExt <- mcp(occs.xy)
-    # bb <- xy_mcp@polygons[[1]]@Polygons[[1]]@coords
-
   } else if (bgSel == 'point buffers') {
     if (bgBuf == 0) {
       logger %>%
@@ -72,15 +70,15 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL, spN = NULL) {
       return()
     }
     bgExt <- rgeos::gBuffer(occs.sp, width = bgBuf)
-    msg <- paste(em(spName(spN)), " study extent: buffered points.")
+    msg <- paste0("Study extent: buffered points.  Buffered by ", bgBuf, "degrees.")
   }
-  msg <- paste0(em(spName(spN)), " study extent: ", bgSel, ".")
+  msg <- "Study extent: minimum convex polygon."
 
   if (bgBuf > 0 & bgSel != 'point buffers') {
     bgExt <- rgeos::gBuffer(bgExt, width = bgBuf)
-    logger %>% writeLog(msg, ' Buffered by ', bgBuf, ' degrees.')
+    logger %>% writeLog(hlSpp(spN), msg, ' Buffered by ', bgBuf, ' degrees.')
   }else{
-    logger %>% writeLog(msg)
+    logger %>% writeLog(hlSpp(spN), msg)
   }
 
   # make into SP data frame
