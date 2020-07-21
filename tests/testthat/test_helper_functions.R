@@ -254,7 +254,7 @@ popUpContent <- function(x) {
 # COMP 3 ####
 ####################### #
 
-remEnvsValsNA <- function(occs, occsEnvsVals, logs) {
+#remEnvsValsNA <- function(occs, occsEnvsVals, logs) {
   withProgress(message = "Checking for points with NA values...", {
     na.rowNums <- which(rowSums(is.na(occsEnvsVals)) > 1)
 
@@ -274,7 +274,41 @@ remEnvsValsNA <- function(occs, occsEnvsVals, logs) {
     return(occs)
   })
   }
+remEnvsValsNA <- function(occs, occsEnvsVals, sppName, logger) {
+  withProgress(message = "Checking for points with NA values...", {
+    na.rowNums <- which(rowSums(is.na(occsEnvsVals)) > 1)
+    if (length(na.rowNums) == length(occsEnvsVals)) {
+      logger %>% writeLog(
+        type = 'error',
+        hlSpp(sppName), paste0('No localities overlay with environmental ',
+                               'predictors. All localities may be marine -- please redo with ',
+                               'terrestrial occurrences.')
+      )
+      return()
+    }
+    if (length(na.rowNums) > 0) {
+      occs.notNA <- occs[-na.rowNums,]
+      logger %>% writeLog(
+        type = 'warning',
+        hlSpp(sppName), 'Removed records without environmental values with occIDs: ',
+        paste(occs[na.rowNums,]$occID, collapse=', '), ".")
+      return(occs.notNA)
+    }
 
+    # # check to see if any cells are NA for one or more rasters but not all,
+    # # then fix it
+    # n <- raster::nlayers(envs)
+    # z <- raster::getValues(envs)
+    # z.rs <- rowSums(is.na(z))
+    # z.i <- which(z.rs < n & z.rs > 0)
+    # if(length(z.i) > 0) {
+    #   envs[z.i] <- NA
+    #   warning(paste0("Environmental raster grid cells (n = ", length(z.i), ") found with NA values for one or more but not all variables. These cells were converted to NA for all variables.\n"), immediate. = TRUE)
+    # }
+
+    return(occs)
+  })
+}
 ####################### #
 # PROCESS ENVS ####
 ####################### #
