@@ -13,7 +13,7 @@ envs <- envs_worldclim(bcRes = 10, bcSel = c('bio01','bio19'), doBrick = FALSE)
 # background extent
 bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
 # background masked
-bgMsk <- penvs_bgMsk(occs, envs, bgExt,spN=occs)
+bgMsk <- penvs_bgMask(occs, envs, bgExt,spN=occs)
 ## background sample
 bg <- penvs_bgSample(occs, bgMsk, bgPtsNum = 10000,spN=occs)
 
