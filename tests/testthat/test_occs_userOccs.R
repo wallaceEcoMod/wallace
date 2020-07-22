@@ -75,3 +75,4 @@ test_that("output data checks", {
   expect_false(TRUE %in% duplicated(user.occs$Marmosops_chucha$cleaned
                                     [,c('longitude','latitude')]))
   })
+
