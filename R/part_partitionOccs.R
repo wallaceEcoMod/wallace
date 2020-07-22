@@ -66,8 +66,7 @@ part_partitionOccs <- function(occs, bg, method, kfolds = NULL, bgMask = NULL,
   if (method == 'rand') {
     if(is.null(kfolds)) {
       logger %>% writeLog(type = 'error', hlSpp(spN),
-                          "Please specify a kfold value to use the random ",
-                          "partition function.")
+                          "Please specify a kfold value to use the random partition function.")
       return()
     }
     if (kfolds < 2) {
