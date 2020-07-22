@@ -25,9 +25,8 @@ model_bioclim_module_server <- function(input, output, session, common) {
       # ERRORS ####
       if(is.null(spp[[sp]]$occs$partition)) {
         logger %>% writeLog(
-          type = 'error',
-          "Before building a model, please partition occurrences for ",
-          "cross-validation for ", em(spName(sp)), ".")
+          type = 'error', hlSpp(sp),
+          "Before building a model, please partition occurrences for cross-validation.")
         return()
       }
 
@@ -46,15 +45,15 @@ model_bioclim_module_server <- function(input, output, session, common) {
       spp[[sp]]$evalOut <- m.bioclim
 
       # METADATA ####
-      spp[[sp]]$rmm$model$algorithm <- "BIOCLIM"
+      spp[[sp]]$rmm$model$algorithms <- "BIOCLIM"
       spp[[sp]]$rmm$model$bioclim$notes <- "ENMeval/dismo package implementation"
     }
     common$update_component(tab = "Results")
   })
 
   output$evalTblsBioclim <- renderUI({
-    req(spp[[curSp()]]$rmm$model$algorithm)
-    if (spp[[curSp()]]$rmm$model$algorithm == "BIOCLIM") {
+    req(spp[[curSp()]]$rmm$model$algorithms)
+    if (spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM") {
       req(spp[[curSp()]]$evalOut)
       res <- spp[[curSp()]]$evalOut@results
       res.grp <- spp[[curSp()]]$evalOut@results.grp
@@ -74,16 +73,6 @@ model_bioclim_module_server <- function(input, output, session, common) {
               DT::dataTableOutput(session$ns('evalTblBins')))
     }
   })
-
-  return(list(
-    save = function() {
-      # Save any values that should be saved when the current session is saved
-    },
-    load = function(state) {
-      # Load
-    }
-  ))
-
 }
 
 model_bioclim_module_result <- function(id) {

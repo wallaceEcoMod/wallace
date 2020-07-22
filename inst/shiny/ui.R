@@ -408,6 +408,10 @@ tagList(
                 fluidRow(
                   column(3, h5("Download evaluation table")),
                   column(2, shinyjs::disabled(downloadButton('dlEvalTbl', "CSV file")))
+                ), br(),
+                fluidRow(
+                  column(3, h5("Download evaluation groups table")),
+                  column(2, shinyjs::disabled(downloadButton('dlEvalTblBins', "CSV file")))
                 )
               ),
               conditionalPanel(
