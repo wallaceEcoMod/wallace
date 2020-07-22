@@ -18,7 +18,7 @@ occs <- as.data.frame(out.gbif[[1]]$cleaned)
 
 ## background mask
 # enviromental data
-envs <- envs_worldclim(bcRes = 10, bcSel = c("bio01","bio02","bio13","bio14"), doBrick = FALSE)
+envs <- envs_worldclim(bcRes = 10, bcSel = c("bio01","bio02","bio7","bio13","bio14","bio15","bio19"), doBrick = FALSE)
 # remove records without enviromental values
 records <- which(is.na(raster::extract(envs$bio01, occs[,3:4])) == TRUE)
 occs <- occs[-records, ]
