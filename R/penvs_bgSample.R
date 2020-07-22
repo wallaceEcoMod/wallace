@@ -18,12 +18,13 @@
 # @keywords
 #'
 #' @examples
-#' occs <-  occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+#' spN<-"Panthera onca"
+#' occs <-  occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
 #' occs <- as.data.frame(occs[[1]]$cleaned)
 #' envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = TRUE)
-#' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
-#' bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
-#' bgsample <- penvs_bgSample(occs, bgMask, bgPtsNum=1000,spN=occs)
+#' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
+#' bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
+#' bgsample <- penvs_bgSample(occs, bgMask, bgPtsNum=1000,spN=spN)
 #'
 #' @return a dataframe containing point coordinates (longitude and latitude).
 #' All points are within the area provided in the RasterBrick or RasterStack (bgMask).

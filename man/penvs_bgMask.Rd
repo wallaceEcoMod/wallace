@@ -30,11 +30,12 @@ This function is used in the select study region component. Here, the environmen
  The function returns the provided environmental layers cropped and masked in the provided format (either a Brick or a rasterStack)
 }
 \examples{
-occs <-  occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+spN<-"Panthera onca"
+occs <-  occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
 occs <- as.data.frame(occs[[1]]$cleaned)
 envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = TRUE)
-bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
-bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
+bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
 
 }
 \seealso{

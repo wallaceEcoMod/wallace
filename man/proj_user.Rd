@@ -42,14 +42,15 @@ The projection time and area is user provided The model will be projected to the
 This function returns a list including the cropped environmental variables used for projecting and the projected model.
 }
 \examples{
-out.gbif <- occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+spN<-"Panthera onca"
+out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
 envs <- envs_worldclim(bcRes = 10, bcSel = c('bio01','bio19'), doBrick = FALSE)
-bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
-bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=occs)
-partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=occs)
+bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
+bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=spN)
+partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=spN)
 Path <- list.files(path='./tests/testthat/shapefile', pattern = "COL_adm0.", full.names = TRUE)
 userExt<-rgdal::readOGR(Path[2])
-modAlg <- model_bioclim(occs, partblock$bg.grp,  partblock$occ.grp, bgGrp, bgMask,spN=occs)
+modAlg <- model_bioclim(occs, partblock$bg.grp,  partblock$occ.grp, bgGrp, bgMask,spN=spN)
 envsFut<-list.files(path='./wc10/Future', pattern = ".tif$", full.names = TRUE)
 envsFut<-raster::stack(envsFut)
 modProj <- proj_user(evalOut = modAlg, curModel=1, envs=envsFut,alg='bioclim',clamp=FALSE, pjExt = userExt )

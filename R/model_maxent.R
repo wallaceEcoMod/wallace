@@ -74,11 +74,11 @@ model_maxent <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
       return()
     }
 
-    if (ENMeval::maxentJARversion() < "3.4.1") {
+    if (maxentJARversion() < "3.4.1") {
       logger %>% writeLog(
         type = "error",
         "Please, use the updated version of Maxent (v3.4.1). Currently, you are",
-        "using (", ENMeval::maxentJARversion(), ").(**)"
+        "using (", maxentJARversion(), ").(**)"
       )
       return()
     }

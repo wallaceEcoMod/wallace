@@ -61,5 +61,7 @@ Jamie Kass < jamie.m.kass@gmail.com >
 
 Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
 
+Hannah Owens
+
 Andrea Paz < paz.andreita@gmail.com>
 }

@@ -29,14 +29,15 @@ These variables are either user uploaded or selected from worldclim database.
 MESS map is based on occurence and background points used for generating the model and the environmental values at those points
 }
 \examples{
-out.gbif <- occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+spN<-"Panthera onca"
+out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
 occs <- as.data.frame(out.gbif[[1]]$cleaned)
 envs <- envs_worldclim(bcRes = 10, bcSel = c('bio01','bio19'), doBrick = FALSE)
-bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
 bgMsk <- penvs_bgMsk(occs, envs, bgExt,spN=occs)
-bg <- penvs_bgSample(occs, bgMsk, bgPtsNum = 10000,spN=occs)
-partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=occs)
-bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMsk,spN=occs)
+bg <- penvs_bgSample(occs, bgMsk, bgPtsNum = 10000,spN=spN)
+partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=spN)
+bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMsk,spN=spN)
 modelOccs<-bioclimAlg@occs
 modelBg<-bioclimAlg@bg
 longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331, -66.47149, -66.71319, -71.11931)
