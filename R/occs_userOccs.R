@@ -94,7 +94,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
   }
 
   # Check that longitude and latitude are numeric
-  if (!is.numeric(txt$longitude) | !is.numeric(txt$latitude)) {
+  else if (!is.numeric(txt$longitude) | !is.numeric(txt$latitude)) {
     logger %>% writeLog(
       type = "error",
       paste0('Please input txt file. No all values in longitude or latitude are numeric.(**)'))
