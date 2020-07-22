@@ -46,8 +46,8 @@ model_bioclim_module_server <- function(input, output, session, common) {
       spp[[sp]]$evalOut <- m.bioclim
 
       # METADATA ####
-      spp[[sp]]$rmm$modelFit$algorithm <- "BIOCLIM"
-      spp[[sp]]$rmm$modelFit$bioclim$notes <- "ENMeval/dismo package implementation"
+      spp[[sp]]$rmm$model$algorithm <- "BIOCLIM"
+      spp[[sp]]$rmm$model$bioclim$notes <- "ENMeval/dismo package implementation"
     }
     common$update_component(tab = "Results")
   })
@@ -58,18 +58,8 @@ model_bioclim_module_server <- function(input, output, session, common) {
       req(spp[[curSp()]]$evalOut)
       res <- spp[[curSp()]]$evalOut@results
       res.grp <- spp[[curSp()]]$evalOut@results.grp
-      tuned.n <- ncol(spp[[curSp()]]$evalOut@tune.settings)
-      if(tuned.n > 0) {
-        res.round <- cbind(res[,seq(1, tuned.n)],
-                           round(res[,seq(tuned.n+1, ncol(res))], digits = 3))
-        res.grp.round <- cbind(res.grp[,seq(1, tuned.n+1)],
-                               round(res.grp[,seq(tuned.n+2, ncol(res.grp))],
-                                     digits = 3))
-      } else {
-        res.round <- cbind(round(res[, 1:13], digits = 3))
-        res.grp.round <- cbind(fold = res.grp[, 1],
-                               round(res.grp[, 2:5], digits = 3))
-      }
+      res.round <- cbind(round(res[, 1:11], digits = 3))
+      res.grp.round <- round(res.grp[, 2:6], digits = 3)
       # define contents for both evaluation tables
       options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
       output$evalTbl <- DT::renderDataTable(res.round, options = options)
