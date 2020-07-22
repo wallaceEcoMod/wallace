@@ -25,7 +25,7 @@ bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
 ### test if the error messages appear when they are supposed to
 test_that("error checks", {
   # the user has not selected the background extent
-  expect_error(penvs_bgMask(occs, envs, bgExt=NULL),
+  expect_error(penvs_bgMask(occs, envs, bgExt=NULL,spN=spN),
                'Before sampling background points, define the background extent.')
 })
 
@@ -40,8 +40,8 @@ test_that("output type checks", {
   # all the environmental layers have the same amount of pixels
   expect_equal(raster::cellStats(bgMask, sum), raster::cellStats(bgMask, sum))
   # the original layers have more pixels than the masked ones
-  expect_true(raster::cellStats(bgMask$bio01.1, sum) < raster::cellStats(envs$bio01.1, sum))
-  expect_true(raster::cellStats(bgMask$bio01.2, sum) < raster::cellStats(envs$bio01.2, sum))
-  expect_true(raster::cellStats(bgMask$bio01.13, sum) < raster::cellStats(envs$bio01.13, sum))
-  expect_true(raster::cellStats(bgMask$bio01.14, sum) < raster::cellStats(envs$bio01.14, sum))
+  expect_true(raster::cellStats(bgMask$bio01, sum) < raster::cellStats(envs$bio01, sum))
+  expect_true(raster::cellStats(bgMask$bio02, sum) < raster::cellStats(envs$bio02, sum))
+  expect_true(raster::cellStats(bgMask$bio13, sum) < raster::cellStats(envs$bio13, sum))
+  expect_true(raster::cellStats(bgMask$bio14, sum) < raster::cellStats(envs$bio14, sum))
 })
