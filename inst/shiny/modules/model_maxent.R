@@ -63,15 +63,7 @@ model_maxent_module_server <- function(input, output, session, common) {
   logger <- common$logger
   curModel <- common$curModel
 
-  observe({
-    if(input$algMaxent == "maxnet") {
-      updateSelectInput(session, "clamp", selected = "TRUE") # Check default (selected = "")
-      shinyjs::enable("clamp")
-    } else {
-      updateSelectInput(session, "clamp", selected = "TRUE")
-      shinyjs::disable("clamp")
-    }
-  })
+  updateSelectInput(session, "clamp", selected = "TRUE") # Check default (selected = "")
 
   observeEvent(input$goMaxent, {
     if(is.null(input$fcs)) {
