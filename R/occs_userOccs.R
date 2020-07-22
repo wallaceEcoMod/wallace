@@ -60,13 +60,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
              'separators. (**)'))
     return()
   }
-  # Check that longitude and latitude are numeric
-  if (!is.numeric(txt$longitude) | !is.numeric(txt$latitude)) {
-    logger %>% writeLog(
-      type = "error",
-      paste0('Please input txt file. No all values in longitude or latitude are numeric.(**)'))
-    return()
-  }
+
 
   # subset to just records with non-NA latitude and longitude
   txt.xy <- txt %>% dplyr::filter(!is.na(latitude) & !is.na(longitude))
@@ -96,6 +90,14 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
   if (nrow(occs) == 0) {
     logger %>% writeLog(type = 'warning',
       'No records with coordinates found in ', txtName, ".")
+    return()
+  }
+
+  # Check that longitude and latitude are numeric
+  if (!is.numeric(txt$longitude) | !is.numeric(txt$latitude)) {
+    logger %>% writeLog(
+      type = "error",
+      paste0('Please input txt file. No all values in longitude or latitude are numeric.(**)'))
     return()
   }
 
