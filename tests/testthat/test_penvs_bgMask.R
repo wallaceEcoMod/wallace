@@ -8,17 +8,18 @@ source("test_helper_functions.R")
 ### Set parameters
 
 ## occurrences
-occs <-  occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+spN<-"Panthera onca"
+occs <-  occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
 occs <- as.data.frame(occs[[1]]$cleaned)
 
 ## enviromental variables
 envs <- envs_worldclim(bcRes = 10, bcSel = c("bio01","bio02","bio13","bio14"), doBrick = FALSE)
 
 ## background extent
-bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
 
 ### run function
-bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
+bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
 
 
 ### test if the error messages appear when they are supposed to
@@ -41,7 +42,6 @@ test_that("output type checks", {
   # the original layers have more pixels than the masked ones
   expect_true(raster::cellStats(bgMask$bio01.1, sum) < raster::cellStats(envs$bio01.1, sum))
   expect_true(raster::cellStats(bgMask$bio01.2, sum) < raster::cellStats(envs$bio01.2, sum))
-  expect_true(raster::cellStats(bgMask$bio01.3, sum) < raster::cellStats(envs$bio01.3, sum))
-  expect_true(raster::cellStats(bgMask$bio01.4, sum) < raster::cellStats(envs$bio01.4, sum))
-  expect_true(raster::cellStats(bgMask$bio01.5, sum) < raster::cellStats(envs$bio01.5, sum))
+  expect_true(raster::cellStats(bgMask$bio01.13, sum) < raster::cellStats(envs$bio01.13, sum))
+  expect_true(raster::cellStats(bgMask$bio01.14, sum) < raster::cellStats(envs$bio01.14, sum))
 })
