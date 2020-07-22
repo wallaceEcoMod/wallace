@@ -49,7 +49,7 @@ model_maxent <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
   if (algMaxent == "maxent.jar") {
     # error for no maxent.jar in dismo directory
     jar <- paste(system.file(package = "dismo"), "/java/maxent.jar", sep = '')
-    if(!file.exists(jar)) {
+    if (!file.exists(jar)) {
       logger %>%
         writeLog(
           type = 'error',
@@ -62,7 +62,7 @@ model_maxent <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
       return()
     }
 
-    if(!require('rJava')) {
+    if (!require('rJava')) {
       logger %>% writeLog(
         type = "error",
         paste0('Package rJava cannot load. Please download the latest version of ',
@@ -71,6 +71,15 @@ model_maxent <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
                'loads properly, restart Wallace and try again. If it does not, ',
                'please consult www.github.com/wallaceecomod/wallace for more ',
                'tips on getting rJava to work.'))
+      return()
+    }
+
+    if (ENMeval::maxentJARversion() < "3.4.1") {
+      logger %>% writeLog(
+        type = "error",
+        "Please, use the updated version of Maxent (v3.4.1). Currently, you are",
+        "using (", ENMeval::maxentJARversion(), ").(**)"
+      )
       return()
     }
   }

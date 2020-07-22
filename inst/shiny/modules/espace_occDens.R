@@ -47,14 +47,13 @@ espace_occDens_module_server <- function(input, output, session, common) {
     # LOAD INTO SPP ####
     req(occDens)
     spp[[mspName]]$occDens <- occDens
-    # METADATA ####
 
     common$update_component(tab = "Results")
   })
 
   # PLOTS ####
   output$occDensPlot <- renderPlot({
-    par(mfrow=c(1,2))
+    par(mfrow = c(1,2))
     if (length(curSp()) == 2) {
       mSp <- paste(curSp(), collapse = ".")
       sp1 <- curSp()[1]
@@ -66,16 +65,6 @@ espace_occDens_module_server <- function(input, output, session, common) {
     ecospat::ecospat.plot.niche(spp[[mSp]]$occDens[[sp1]], title = spName(sp1))
     ecospat::ecospat.plot.niche(spp[[mSp]]$occDens[[sp2]], title = spName(sp2))
   })
-
-  return(list(
-    save = function() {
-      # Save any values that should be saved when the current session is saved
-    },
-    load = function(state) {
-      # Load
-    }
-  ))
-
 }
 
 espace_occDens_module_result <- function(id) {

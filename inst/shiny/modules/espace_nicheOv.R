@@ -49,7 +49,7 @@ espace_nicheOv_module_server <- function(input, output, session, common) {
     # LOAD INTO SPP ####
     spp[[mspName]]$nicheOv <- nicheOv
 
-    # METADATA ####
+    common$update_component(tab = "Results")
   })
 
   output$nicheOvText <- renderUI({
@@ -102,16 +102,6 @@ espace_nicheOv_module_server <- function(input, output, session, common) {
       ecospat::ecospat.plot.overlap.test(spp[[mSp]]$nicheOv$simil,
                                          "D", "Similarity test")
   })
-
-  return(list(
-    save = function() {
-      # Save any values that should be saved when the current session is saved
-    },
-    load = function(state) {
-      # Load
-    }
-  ))
-
 }
 
 espace_nicheOv_module_result <- function(id) {

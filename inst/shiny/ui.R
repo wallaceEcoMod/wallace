@@ -377,6 +377,24 @@ tagList(
                 )
               ),
               conditionalPanel(
+                "input.tabs == 'espace'",
+                br(),
+                fluidRow(
+                  column(3, h5("Download PCA results")),
+                  column(2, shinyjs::disabled(downloadButton('dlPcaResults', "ZIP file")))
+                ),
+                br(),
+                fluidRow(
+                  column(3, h5("Download Occurence density grid")),
+                  column(2, shinyjs::disabled(downloadButton('dlOccDens', "PNG file")))
+                ),
+                br(),
+                fluidRow(
+                  column(3, h5("Download Niche Overlap plot")),
+                  column(2, shinyjs::disabled(downloadButton('dlNicheOvPlot', "PNG file")))
+                )
+              ),
+              conditionalPanel(
                 "input.tabs == 'part'",
                 br(),
                 fluidRow(

@@ -35,8 +35,8 @@ part_spat_module_server <- function(input, output, session, common) {
     for(sp in spLoop) {
       if (is.null(bgMask())) {
         logger %>% writeLog(
-          type = 'error',
-          "Before partitioning occurrences for ", em(spName(sp)), ", mask your ",
+          type = 'error', hlSpp(sp),
+          "Before partitioning occurrences, mask your ",
           "environmental variables by your background extent.")
         return()
       }
@@ -74,10 +74,14 @@ part_spat_module_server <- function(input, output, session, common) {
 
   return(list(
     save = function() {
-      # Save any values that should be saved when the current session is saved
+      list(
+        partitionSpatSel = input$partitionSpatSel,
+        aggFact = input$aggFact
+      )
     },
     load = function(state) {
-      # Load
+      updateSelectInput(session, "partitionSpatSel", selected = state$partitionSpatSel)
+      updateNumericInput(session, "aggFact", value = state$aggFact)
     }
   ))
 
@@ -86,16 +90,23 @@ part_spat_module_server <- function(input, output, session, common) {
 part_spat_module_map <- function(map, common) {
   occs <- common$occs
   # Map logic
-  req(occs()$partition)
-  occsGrp <- occs()$partition
-  # colors for partition symbology
-  newColors <- gsub("FF$", "", rainbow(max(occsGrp)))
-  partsFill <- newColors[occsGrp]
-  map %>% clearAll() %>%
-    map_occs(occs(), fillColor = partsFill, fillOpacity = 1) %>%
-    addLegend("bottomright", colors = newColors,
-              title = "Partition Groups", labels = sort(unique(occsGrp)),
-              opacity = 1)
+  if (!is.null(occs()$partition)) {
+    occsGrp <- occs()$partition
+    # colors for partition symbology
+    newColors <- gsub("FF$", "", rainbow(max(occsGrp)))
+    partsFill <- newColors[occsGrp]
+    map %>% clearAll() %>%
+      map_occs(occs(), fillColor = partsFill, fillOpacity = 1) %>%
+      addLegend("bottomright", colors = newColors,
+                title = "Partition Groups", labels = sort(unique(occsGrp)),
+                opacity = 1)
+  } else {
+    map %>% clearAll() %>%
+      addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
+                       radius = 5, color = 'red', fill = TRUE, fillColor = "red",
+                       fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
+      zoom2Occs(occs())
+  }
 }
 
 part_spat_module_rmd <- function(species) {
