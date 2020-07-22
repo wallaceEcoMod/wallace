@@ -55,11 +55,9 @@ espace_pca<- function(sp.name1, sp.name2 = NULL, occs.z1, occs.z2 = NULL,
   if (is.null(sp.name2)) {
     spNames <- sp.name1
   } else {
-    spNames <- paste(em(spName(sp.name1)), "and", em(spName(sp.name2)))
+    spNames <- paste0(sp.name1, " and ", sp.name2)
   }
-
-  logger %>% writeLog(paste0("Principle components analysis run for ",
-                             spNames, "."))
+  logger %>% writeLog(hlSpp(spNames), "Principle components analysis.")
 
   return(pca)
 }

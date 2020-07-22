@@ -52,8 +52,8 @@ espace_pca_module_server <- function(input, output, session, common) {
       sp2.envNames <- names(envs.global[[spp[[sp2]]$envs]])
       if (all(sp1.envNames == sp2.envNames) == FALSE) {
         logger %>% writeLog(
-          type = "error",
-          "Species 1 and species 2 must have the same environmental variables."
+          type = "error", hlSpp(curSp()[1], " and ", curSp()[2]),
+          " must have the same environmental variables."
         )
         return()
       }
@@ -85,9 +85,7 @@ espace_pca_module_server <- function(input, output, session, common) {
       spp[[mspName]]$pca <- pca
     }
 
-    # METADATA ####
-    spp[[mspName]]$rmm$wallaceSettings$pcaSel <- pcaSel
-
+    # spp[[mspName]]$rmm$wallace$pcaSel <- pcaSel
     common$update_component(tab = "Results")
   })
 
@@ -169,10 +167,14 @@ espace_pca_module_server <- function(input, output, session, common) {
 
   return(list(
     save = function() {
-      # Save any values that should be saved when the current session is saved
+      list(
+        pcaVarSel = input$pcaVarSel,
+        pcaPlotSel = input$pcaPlotSel
+      )
     },
     load = function(state) {
-      # Load
+      updateCheckboxInput(session, "pcaVarSel", value = state$pcaVarSel)
+      updateSelectInput(session, "pcaPlotSel", selected = state$pcaPlotSel)
     }
   ))
   updateSelectInput(session, "curSp", selected = curSp())

@@ -123,6 +123,7 @@ function(input, output, session) {
     shinyjs::toggleState("dlMskEnvs", !is.null(spp[[curSp()]]$procEnvs$bgMask))
     shinyjs::toggleState("dlBgPts", !is.null(spp[[curSp()]]$bgPts))
     shinyjs::toggleState("dlBgShp", !is.null(spp[[curSp()]]$procEnvs$bgExt))
+    shinyjs::toggleState("dlPcaResults", !is.null(spp[[curSp()]]$pca))
     shinyjs::toggleState("dlPart", ("partition" %in% colnames(spp[[curSp()]]$occs)))
     shinyjs::toggleState("dlEvalTbl", !is.null(evalOut()))
     shinyjs::toggleState("dlVisBioclim", !is.null(spp[[curSp()]]$rmm$modelFit$bioclim$notes))
@@ -134,6 +135,13 @@ function(input, output, session) {
     shinyjs::toggleState("dlMess", !is.null(spp[[curSp()]]$project$messVals))
     # shinyjs::toggleState("dlWhatever", !is.null(spp[[curSp()]]$whatever))
   })
+
+ observe({
+   req(length(curSp()) == 2)
+   shinyjs::toggleState("dlPcaResults", !is.null(spp[[paste0(curSp()[1],".",curSp()[2])]]$pca))
+   shinyjs::toggleState("dlOccDens", !is.null(spp[[paste0(curSp()[1],".",curSp()[2])]]$occDens))
+   shinyjs::toggleState("dlNicheOvPlot", !is.null(spp[[paste0(curSp()[1],".",curSp()[2])]]$nicheOv))
+ })
 
   # # # # # # # # # # # # # # # # # #
   # OBTAIN OCCS: other controls ####
@@ -464,6 +472,118 @@ function(input, output, session) {
   ### COMPONENT: ESPACE ####
   ############################################## #
 
+  output$dlPcaResults <- downloadHandler(
+    filename = function() {
+      mspName <- paste(curSp(), collapse = ".")
+      paste0(mspName, "_PcaResults.zip")
+    },
+    content = function(file) {
+      if (length(curSp()) == 2) {
+        mSp <- paste(curSp(), collapse = ".")
+        sp1 <- curSp()[1]
+        sp2 <- curSp()[2]
+      } else {
+        mSp <- curSp()
+      }
+      tmpdir <- tempdir()
+      req(spp[[mSp]]$pca)
+      png(paste0(tmpdir, "\\pcaScatterOccs.png"), width = 500, height = 500)
+      x <- spp[[mSp]]$pca$scores[spp[[mSp]]$pca$scores$bg == 'sp', ]
+      x.f <- factor(x$sp)
+      ade4::s.class(x, x.f, xax = 1, yax = 2,
+                    col = c("red", "blue"), cstar = 0, cpoint = 0.1)
+      dev.off()
+      png(paste0(tmpdir, "\\pcaScatterOccsBg.png"), width = 500, height = 500)
+      x <- spp[[mSp]]$pca$scores[spp[[mSp]]$pca$scores$sp == 'bg', ]
+      x.f <- factor(x$bg)
+      ade4::s.class(x, x.f, xax = 1, yax = 2,
+                    col = c("red", "blue"), cstar = 0, cpoint = 0.1)
+      dev.off()
+      png(paste0(tmpdir, "\\pcaCorCircle.png"), width = 500, height = 500)
+      ade4::s.corcircle(spp[[mSp]]$pca$co, xax = 1, yax = 2,
+                        lab = input$pcaSel, full = FALSE, box = TRUE)
+      dev.off()
+      png(paste0(tmpdir, "\\pcaScree.png"), width = 500, height = 500)
+      screeplot(spp[[mSp]]$pca, main = NULL)
+      dev.off()
+      sink(paste0(tmpdir, "\\pcaOut.txt"))
+      print(summary(spp[[mSp]]$pca))
+      sink()
+      owd <- setwd(tmpdir)
+      zip::zipr(zipfile = file,
+                files = c("pcaScatterOccs.png", "pcaScatterOccsBg.png",
+                          "pcaCorCircle.png", "pcaScree.png", "pcaOut.txt"))
+      setwd(owd)
+    }
+  )
+
+  output$dlOccDens <- downloadHandler(
+    filename = function() {
+      mspName <- paste(curSp(), collapse = ".")
+      paste0(mspName, "_occDens.png")
+    },
+    content = function(file) {
+      png(file, width = 1000, height = 500)
+      par(mfrow=c(1,2))
+      if (length(curSp()) == 2) {
+        mSp <- paste(curSp(), collapse = ".")
+        sp1 <- curSp()[1]
+        sp2 <- curSp()[2]
+      } else {
+        mSp <- curSp()
+      }
+      req(spp[[mSp]]$occDens)
+      ecospat::ecospat.plot.niche(spp[[mSp]]$occDens[[sp1]], title = spName(sp1))
+      ecospat::ecospat.plot.niche(spp[[mSp]]$occDens[[sp2]], title = spName(sp2))
+      dev.off()
+    }
+  )
+
+  output$dlNicheOvPlot <- downloadHandler(
+    filename = function() {
+      mSp <- paste(curSp(), collapse = ".")
+      paste0(mSp, "_nicheOvPlot.png")
+    },
+    content = function(file) {
+      png(file, width = 1000, height = 500)
+      layout(matrix(c(1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3), 4, 3, byrow = F))
+      if (length(curSp()) == 2) {
+        mSp <- paste(curSp(), collapse = ".")
+        sp1 <- curSp()[1]
+        sp2 <- curSp()[2]
+      } else {
+        mSp <- curSp()
+      }
+      req(spp[[mSp]]$occDens)
+      ecospat::ecospat.plot.niche.dyn(
+        spp[[mSp]]$occDens[[sp1]],
+        spp[[mSp]]$occDens[[sp2]],
+        0.5,
+        title = mSp,
+        colz1 = "blue",
+        colz2 = "red",
+        colinter = "purple",
+        colZ1 = "blue",
+        colZ2 = "red"
+      )
+      req(spp[[mSp]]$nicheOv)
+      if (!is.null(spp[[mSp]]$nicheOv$equiv))
+        ecospat::ecospat.plot.overlap.test(spp[[mSp]]$nicheOv$equiv,
+                                           "D", "Equivalency test")
+      if (!is.null(spp[[mSp]]$nicheOv$simil))
+        ecospat::ecospat.plot.overlap.test(spp[[mSp]]$nicheOv$simil,
+                                           "D", "Similarity test")
+      ovMetrics <- paste(
+        "Overlap D = ", round(spp[[mSp]]$nicheOv$overlap$D, 2), "\n",
+        "Sp1 only :", round(spp[[mSp]]$nicheOv$USE[3], 2), "\n",
+        "Sp2 only :", round(spp[[mSp]]$nicheOv$USE[1], 2), "\n",
+        "Both :", round(spp[[mSp]]$nicheOv$USE[2], 2)
+      )
+      plot.new()
+      text(0.5, 0.5, ovMetrics, cex = 2, font = 2, )
+      dev.off()
+    }
+  )
 
   ################################################## #
   ### COMPONENT: PARTITION OCCURRENCE DATA ####
@@ -978,17 +1098,6 @@ function(input, output, session) {
       file.rename(result_file, file)
     }
   )
-
-  ########################################### #
-  ### COMPONENT: POST-PROCESSING ####
-  ########################################### #
-
-  # user SDM
-  output$userSDM_UI <- renderUI({
-    req(!exists("pepe"))
-    fileInput("userSDM", label = "Input SDM (**)")
-    actionButton('goUserSDM', 'Load')
-  })
 
   ################################
   ### METADATA FUNCTIONALITY ####

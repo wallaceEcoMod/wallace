@@ -73,8 +73,8 @@ espace_occDens <- function(sp.name1, sp.name2, pca, logger = NULL) {
   occDens[[sp.name1]] <- occDens1
   occDens[[sp.name2]] <- occDens2
 
-  logger %>% writeLog(paste0("Occurrence density grid run for ",
-                             em(spName(sp.name1)), " and ", em(spName(sp.name2)), "."))
+  logger %>% writeLog(hlSpp(paste0(sp.name1, " and ", sp.name2)),
+                      "Occurrence density grid.")
 
   return(occDens)
 }
