@@ -8,7 +8,8 @@ source("test_helper_functions.R")
 ### Set parameters
 
 ## occurrences
-out.gbif <- occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 1000)
+spN="Panthera onca"
+out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 1000)
 occs <- as.data.frame(out.gbif[[1]]$cleaned)
 
 ## extention to thin
@@ -20,7 +21,7 @@ expertAddedPoly <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
 
 
 ### run function
-out.occs <- poccs_selectOccs(occs, polySelXY = expertAddedPoly,polySelID = 1, logger = NULL, spN = occs)
+out.occs <- poccs_selectOccs(occs, polySelXY = expertAddedPoly,polySelID = 1, logger = NULL, spN = spN)
 
 
 ### test if the error messages appear when they are supposed to

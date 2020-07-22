@@ -8,10 +8,11 @@ source("test_helper_functions.R")
 ### Set parameters
 
 ## occurrences
-occs <-  occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+spN<-"Panthera onca"
+occs <-  occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
 occs <- as.data.frame(occs[[1]]$cleaned)
 # database with less than 2 occurences (to test error message)
-foccs <-  occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 1)
+foccs <-  occs_queryDb(spName = spN, occDb = "gbif", occNum = 1)
 foccs <- as.data.frame(foccs[[1]]$cleaned)
 
 
@@ -25,13 +26,13 @@ bgBuf <- 0.5
 
 ### run function and set coordinates reference system
 ## background extent: bounding Box
-bgExt1 <- penvs_bgExtent(occs, bgSel = bBox, bgBuf=bgBuf,logger = NULL, spN = occs)
+bgExt1 <- penvs_bgExtent(occs, bgSel = bBox, bgBuf=bgBuf,logger = NULL, spN = spN)
 raster::crs(bgExt1) <- "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=WGS84"
 ## background extent: point Buffers
-bgExt2 <- penvs_bgExtent(occs, bgSel = bPoint, bgBuf=bgBuf,spN=occs,logger = NULL)
+bgExt2 <- penvs_bgExtent(occs, bgSel = bPoint, bgBuf=bgBuf,spN=spN,logger = NULL)
 raster::crs(bgExt2) <- "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=WGS84"
 ## background extent: minimum Convex Polygon
-bgExt3 <- penvs_bgExtent(occs, bgSel = bPoly, bgBuf=bgBuf,spN=occs, logger=NULL)
+bgExt3 <- penvs_bgExtent(occs, bgSel = bPoly, bgBuf=bgBuf,spN=spN, logger=NULL)
 raster::crs(bgExt3) <- "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=WGS84"
 
 
@@ -59,19 +60,22 @@ test_that("output type checks", {
   expect_false(raster::area(bgExt2) == raster::area(bgExt3))
   # check if all the records are within the study region
   # extract longitude and latitude columns from the 'occs' data frame
-  points <- occs[,c(3,4)]
-  sp::coordinates(points) <- ~ longitude + latitude
+  # extract just coordinates
+  occs.xy <- occs[c('longitude', 'latitude')]
+  # make spatial pts object of original occs and preserve origID
+  occs.sp <- sp::SpatialPointsDataFrame(occs.xy, data = occs['occID'])
+
   # bounding Box
   # create polygon
   Poly1 <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(
     bgExt1@polygons[[1]]@Polygons[[1]]@coords)),ID=1)))
   # check which points overlap
-  overlap1 <- sp::over(points, Poly1)
+  overlap1 <- sp::over(occs.sp, Poly1)
   expect_false(NA %in% overlap1)
   # point Buffers
   # create polygon
   Poly2<-list()
-  for (i in 1:9){
+  for (i in 1:length(bgExt@polygons[[1]]@Polygons)){
 
    Poly2[[i]]<- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(
       bgExt2@polygons[[1]]@Polygons[[i]]@coords)),ID=1)))
@@ -79,13 +83,13 @@ test_that("output type checks", {
   Poly2 <- do.call(raster::bind,Poly2)
 
   # check which points overlap
-  overlap2 <- sp::over(points, Poly2)
+  overlap2 <- sp::over(occs.sp, Poly2)
   expect_false(NA %in% overlap2)
   # minimum Convex Polygon
   # create polygon
   Poly3 <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(
     bgExt3@polygons[[1]]@Polygons[[1]]@coords)),ID=1)))
   # check which points overlap
-  overlap3 <- sp::over(points, Poly3)
+  overlap3 <- sp::over(occs.sp, Poly3)
   expect_false(NA %in% overlap3)
 })

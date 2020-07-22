@@ -5,23 +5,24 @@ context("proj_mess")
 source("test_helper_functions.R")
 
 ## occurrences
-out.gbif <- occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+spN<-"Panthera onca"
+out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
 occs <- as.data.frame(out.gbif[[1]]$cleaned)
 ## background mask
 # enviromental data
 envs <- envs_worldclim(bcRes = 10, bcSel = c('bio01','bio19'), doBrick = FALSE)
 # background extent
-bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
 # background masked
-bgMsk <- penvs_bgMask(occs, envs, bgExt,spN=occs)
+bgMsk <- penvs_bgMask(occs, envs, bgExt,spN=spN)
 ## background sample
-bg <- penvs_bgSample(occs, bgMsk, bgPtsNum = 10000,spN=occs)
+bg <- penvs_bgSample(occs, bgMsk, bgPtsNum = 10000,spN=spN)
 
 ## Partition
 partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,
-                                aggFact = NULL,spN=occs)
+                                aggFact = NULL,spN=spN)
 ### Create model
-bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMsk,spN=occs)
+bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMsk,spN=spN)
 modelOccs<-bioclimAlg@occs
 modelBg<-bioclimAlg@bg
 ## extent to project
@@ -45,8 +46,8 @@ projMess<- proj_mess(occs=modelOccs, bg=modelBg, bgMsk=bgMsk, projExtRas=projExt
       # the output is a list
       expect_is(projMess, "RasterLayer")
       # the output has the sime extent as requested
-      expect_equal(extent(projMess),extent(projExtRas))
+      expect_equal(raster::extent(projMess),raster::extent(projExtRas))
       # RasterLayer contains numeric mess values
-      expect_type(values(projMess),"double")
+      expect_type(raster::values(projMess),"double")
 
     })

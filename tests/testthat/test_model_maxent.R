@@ -12,7 +12,8 @@ source("test_helper_functions.R")
 ### Set parameters
 
 ## occurrences
-out.gbif <- occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+spN<-"Panthera onca"
+out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
 occs <- as.data.frame(out.gbif[[1]]$cleaned)
 
 ## background mask
@@ -22,16 +23,16 @@ envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBri
 records <- which(is.na(raster::extract(envs$bio01.1, occs[,3:4])) == TRUE)
 occs <- occs[-records, ]
 # background extent
-bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
 # background masked
-bgMsk <- penvs_bgMask(occs, envs, bgExt,spN=occs)
+bgMsk <- penvs_bgMask(occs, envs, bgExt,spN=spN)
 
 ## background sample
-bg <- penvs_bgSample(occs, bgMsk, bgPtsNum = 10000,spN=occs)
+bg <- penvs_bgSample(occs, bgMsk, bgPtsNum = 10000,spN=spN)
 
 ## partition data
 partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,
-                              aggFact = NULL,spN=occs)
+                              aggFact = NULL,spN=spN)
 # occurrences partitioned
 occsGrp = partblock$occ.grp
 # background points partitioned
@@ -65,7 +66,7 @@ test_that("error checks", {
 for (i in algorithm) {
   ### run function
   maxentAlg <- model_maxent(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, clampSel = TRUE,
-                         algMaxent = i,catEnvs=NULL,spN=occs)
+                         algMaxent = i,catEnvs=NULL,spN=spN)
 
   test_that("output type checks", {
     # the output is an ENMeval object

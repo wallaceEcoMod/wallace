@@ -19,20 +19,20 @@ source("test_helper_functions.R")
 occs <-  occs_queryDb(spName = species[i], occDb = "gbif", occNum = 100)
 occs <- as.data.frame(occs[[1]]$cleaned)
 ## process data
-occs <- poccs_thinOccs(occs = occs, thinDist = 10,spN=occs)
+occs <- poccs_thinOccs(occs = occs, thinDist = 10,spN=species[i])
 # enviromental data
 envs <- envs_worldclim(bcRes = 10, bcSel = c("bio01","bio02","bio13","bio14"), doBrick = FALSE)
 # background extent
-bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=species[i])
 # background masked
-bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
+bgMask <- penvs_bgMask(occs, envs, bgExt,spN=species[i])
 ## background sample
-bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 1000,spN=occs)
+bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 1000,spN=species[i])
 ## Partition
 partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,
-                                aggFact = NULL,spN=occs)
+                                aggFact = NULL,spN=species[i])
 ### Create model
-bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=occs)
+bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=species[i])
 
 model[i]<-bioclimAlg
   }

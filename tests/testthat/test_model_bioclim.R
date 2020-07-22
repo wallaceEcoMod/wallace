@@ -6,30 +6,30 @@ source("test_helper_functions.R")
 
 
 ### Set parameters
-
+spN="Panthera onca"
 ## get records
-out.gbif <- occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
 occs <- as.data.frame(out.gbif[[1]]$cleaned)
 
 ## process data
-occs <- poccs_thinOccs(occs = occs, thinDist = 10,spN=occs)
+occs <- poccs_thinOccs(occs = occs, thinDist = 10,spN=spN)
 
 ## background
 # enviromental data
 envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
 # background extent
-bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
 # background masked
-bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
+bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
 ## background sample
-bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=occs)
+bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=spN)
 
 ## Partition
 partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,
-                              aggFact = NULL,spN=occs)
+                              aggFact = NULL,spN=spN)
 
 ### run function
-bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=occs)
+bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=spN)
 
 
 ### test output features
@@ -89,5 +89,5 @@ test_that("output data checks", {
                              (bioclimAlg@results[,c("auc.test.avg", "auc.test.sd", "auc.diff.avg",
                                                     "auc.diff.sd")])<=0))
   # the predictions generated are within the background mask
-  expect_equal(extent(bgMask), extent(bioclimAlg@predictions))
+  expect_equal(raster::extent(bgMask), raster::extent(bioclimAlg@predictions))
 })
