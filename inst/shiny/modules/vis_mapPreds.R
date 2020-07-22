@@ -35,7 +35,7 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
   output$maxentPredType <- renderUI({
     ns <- session$ns
     req(curSp(), evalOut())
-    if (spp[[curSp()]]$rmm$model$algorithm != "BIOCLIM") {
+    if (spp[[curSp()]]$rmm$model$algorithms != "BIOCLIM") {
         tags$div(
           title = 'Please see guidance for an explanation of different Maxent output types.',
           radioButtons(ns('maxentPredType'), label = "Prediction output",
@@ -75,7 +75,7 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
 
     # PROCESSING ####
     # define predType based on model type
-    if (spp[[curSp()]]$rmm$model$algorithm == "BIOCLIM") {
+    if (spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM") {
       predType <- "BIOCLIM"
       m <- evalOut()@models[[curModel()]]
       predSel <- dismo::predict(m, bgMask())
@@ -83,7 +83,7 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
       raster::crs(predSel) <- raster::crs(bgMask())
       # define predSel name
       names(predSel) <- curModel()
-    } else if (spp[[curSp()]]$rmm$model$algorithm %in% c("maxent.jar", "maxnet")) {
+    } else if (spp[[curSp()]]$rmm$model$algorithms %in% c("maxent.jar", "maxnet")) {
       predType <- input$maxentPredType
       # if selected prediction type is not raw, transform
       if (predType != "raw") {
@@ -93,12 +93,12 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
           message = paste0("Generating ", input$maxentPredType,
                            " prediction for model ", curModel(), "..."), {
           m <- evalOut()@models[[curModel()]]
-          clamping <- spp[[curSp()]]$rmm$model$maxent$clamping
-          if (spp[[curSp()]]$rmm$model$algorithm == "maxnet") {
+          clamping <- spp[[curSp()]]$rmm$model$algorithm$maxent$clamping
+          if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
             predSel <- ENMeval::maxnet.predictRaster(m, bgMask(),
                                                      type = input$maxentPredType,
                                                      doClamp = clamping)
-          } else if (spp[[curSp()]]$rmm$model$algorithm == "maxent.jar") {
+          } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
             predSel <- dismo::predict(m, bgMask(),
                                       args = paste0("outputformat=",
                                                     input$maxentPredType))
@@ -131,9 +131,9 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
       predSel.thr <- predSel > thr.sel
       # rename prediction raster if thresholded
       names(predSel.thr) <- paste0(curModel(), '_', predType)
-      nameAlg <- ifelse(spp[[curSp()]]$rmm$model$algorithm == "BIOCLIM",
+      nameAlg <- ifelse(spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM",
                         "",
-                        paste0(" ", spp[[curSp()]]$rmm$model$algorithm, " "))
+                        paste0(" ", spp[[curSp()]]$rmm$model$algorithms, " "))
       logger %>% writeLog(
         em(spName(curSp())), ": ", input$threshold, ' threshold selected for ',
         nameAlg, predType, ' (', formatC(thr.sel, format = "e", 2), ').')
@@ -147,11 +147,11 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
         em(spName(curSp())), ": BIOCLIM model prediction plotted.")
     } else if (input$threshold != 'none'){
       logger %>% writeLog(
-        em(spName(curSp())), ": ", spp[[curSp()]]$rmm$model$algorithm,
+        em(spName(curSp())), ": ", spp[[curSp()]]$rmm$model$algorithms,
         " model prediction plotted.")
     } else if (input$threshold == 'none'){
       logger %>% writeLog(
-        em(spName(curSp())), ": ", spp[[curSp()]]$rmm$model$algorithm, " ",
+        em(spName(curSp())), ": ", spp[[curSp()]]$rmm$model$algorithms, " ",
         predType, " model prediction plotted.")
     }
 

@@ -431,7 +431,7 @@ function(input, output, session) {
     spp[[curSp()]]$procEnvs$bgMask <- NULL
     spp[[curSp()]]$bg <- NULL
     spp[[curSp()]]$bgPts <- NULL
-    spp[[curSp()]]$rmm$model$maxent$backgroundSizeSet <- NULL
+    spp[[curSp()]]$rmm$model$algorithm$maxent$backgroundSizeSet <- NULL
     logger %>% writeLog(
       hlSpp(curSp()), "Reset background extent and background points (**).")
     # MAPPING

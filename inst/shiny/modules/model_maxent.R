@@ -114,12 +114,12 @@ model_maxent_module_server <- function(input, output, session, common) {
       spp[[sp]]$evalOut <- res.maxent
 
       # METADATA ####
-      spp[[sp]]$rmm$model$algorithm <- input$algMaxent
-      spp[[sp]]$rmm$model$maxent$featureSet <- input$fcs
-      spp[[sp]]$rmm$model$maxent$regularizationMultiplierSet <- input$rms
-      spp[[sp]]$rmm$model$maxent$regularizationRule <- paste("increment by",
+      spp[[sp]]$rmm$model$algorithms <- input$algMaxent
+      spp[[sp]]$rmm$model$algorithm$maxent$featureSet <- input$fcs
+      spp[[sp]]$rmm$model$algorithm$maxent$regularizationMultiplierSet <- input$rms
+      spp[[sp]]$rmm$model$algorithm$maxent$regularizationRule <- paste("increment by",
                                                              input$rmsStep)
-      spp[[sp]]$rmm$model$maxent$clamping <- input$clamp
+      spp[[sp]]$rmm$model$algorithm$maxent$clamping <- input$clamp
       if(input$algMaxent == "maxent.jar") {
         ver <- paste("Maxent", maxentJARversion(), "via dismo",
                      packageVersion('dismo'))
@@ -133,9 +133,9 @@ model_maxent_module_server <- function(input, output, session, common) {
 })
 
   output$evalTbls <- renderUI({
-    req(spp[[curSp()]]$rmm$model$algorithm)
-    if (spp[[curSp()]]$rmm$model$algorithm == "maxnet" |
-        spp[[curSp()]]$rmm$model$algorithm == "maxent.jar") {
+    req(spp[[curSp()]]$rmm$model$algorithms)
+    if (spp[[curSp()]]$rmm$model$algorithms == "maxnet" |
+        spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
       req(spp[[curSp()]]$evalOut)
       res <- spp[[curSp()]]$evalOut@results
       res.grp <- spp[[curSp()]]$evalOut@results.grp
@@ -157,9 +157,9 @@ model_maxent_module_server <- function(input, output, session, common) {
       output$evalTblBins <- DT::renderDataTable(res.grp.round, options = options)
       output$lambdas <- renderPrint({
         req(spp[[curSp()]]$evalOut)
-        if(spp[[curSp()]]$rmm$model$algorithm == "maxnet") {
+        if(spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
           spp[[curSp()]]$evalOut@models[[curModel()]]$betas
-        } else if(spp[[curSp()]]$rmm$model$algorithm == "maxent.jar") {
+        } else if(spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
           spp[[curSp()]]$evalOut@models[[curModel()]]@lambdas
         }
       })

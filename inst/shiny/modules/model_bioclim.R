@@ -46,7 +46,7 @@ model_bioclim_module_server <- function(input, output, session, common) {
 
       # METADATA ####
       spp[[sp]]$rmm$model$algorithms <- "BIOCLIM"
-      spp[[sp]]$rmm$model$bioclim$notes <- "ENMeval/dismo package implementation"
+      spp[[sp]]$rmm$model$algorithm$bioclim$notes <- "ENMeval/dismo package implementation"
     }
     common$update_component(tab = "Results")
   })
