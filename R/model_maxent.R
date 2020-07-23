@@ -1,27 +1,31 @@
-#' \code{runMaxent} returns a formatted tibble of species occurrences with a
-#' selection of appropriate fields.
-#' @title model_maxent
-#' @description ..
+
+#' @title model_maxent Generate maxent or maxnet model
+#' @description This functions generates maxent or maxnet models using ENMeval 2.0 and user provided tuning parameters.
 #'
 #' @details
-#' See Examples.
+#' The function generates model in ENMeval using a user porvided parition of occurrences from previous components i GUI.
+#' User can activate clamping and input de tuning argumenta to be used for model building
 #'
 #' @param occs x
 #' @param bg  x
-#' @param occsGrp  x
-#' @param bgGrp x
+#' @param user.grp
 #' @param bgMsk x
 #' @param rms x
 #' @param rmsStep x
 #' @param fcs x
-#' @param logger x
-#' @param spN x
+#' @param parallel
+#' @param numCores
+#' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#'  otherwise leave the default NULL
+#' @param spN Species name to be used for all logger messages
+
 # @keywords
 #'
 # @examples
 #'
 #'
-# @return
+#' @return Fucntion returns an ENMevaluate object with all the evaluated models.
+#' selection of appropriate fields.
 #' @author Jamie M. Kass <jkass@@gradcenter.cuny.edu>
 # @note
 
@@ -34,9 +38,10 @@
 # linked in the documentation.
 #' @export
 
-model_maxent <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
-                         clampSel, algMaxent, catEnvs, logger = NULL,
+model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
+                         clampSel, algMaxent, catEnvs, parallel=FALSE, numCores=NULL, logger = NULL,
                          spN = NULL) {
+
   if (is.null(occsGrp)) {
     logger %>% writeLog(
       type = 'error',
@@ -86,6 +91,8 @@ model_maxent <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
 
   # define the vector of RMs to input
   rms.interval <- seq(rms[1], rms[2], rmsStep)
+  ##set up tuning parameter argument
+  tune.args=list(fc = fcs, rm = rms.interval)
   # create the Progress Bar object for ENMeval
   if (!is.null(logger)) {
     progress <- shiny::Progress$new()
@@ -104,16 +111,18 @@ model_maxent <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
   # get just coordinates
   occs.xy <- occs %>% dplyr::select(longitude, latitude)
   bg.xy <- bg %>% dplyr::select(longitude, latitude)
-
   # run ENMeval
-  e <- ENMeval::ENMevaluate(occs.xy, bgMsk, bg.coords = bg.xy,
-                            RMvalues = rms.interval, fc = fcs, method = 'user',
-                            occ.grp = occsGrp, bg.grp = bgGrp,
-                            bin.output = TRUE, clamp = clampSel,
-                            progbar = FALSE, updateProgress = updateProgress,
-                            algorithm = algMaxent, categoricals = catEnvs)
+  e <- ENMeval::ENMevaluate(occs = occs.xy, envs = bgMsk, bg = bg.xy,
+                            tune.args=tune.args,
+                            taxon.name=NULL,categoricals = catEnvs,
+                            mod.name = algMaxent, user.enm=NULL,partitions = 'user', user.grp=user.grp,
+                            occs.ind=NULL, kfolds=NA, aggregation.factor=c(2,2), orientation="lat_lon",
+                            n.bg=10000, overlap= FALSE, overlapStat=c("D","I"),
+                            clamp = clampSel, pred.type="cloglog", abs.auc.diff=FALSE,
+                            user.test.grps = NULL,
+                            parallel=parallel,numCores=numCores,parallelType="doSNOW",
+                            updateProgress = updateProgress,quiet=FALSE)
 
-  # get the values of the prediction for each occ point
   occPredVals <- raster::extract(e@predictions, occs.xy)
 
   endTxt <- paste("]), using", algMaxent, "with clamping",
@@ -125,4 +134,6 @@ model_maxent <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
     paste(rms.interval, collapse = ", "),"]; Feature classes: [",
     paste(fcs, collapse = ", "), endTxt, "(**)")
   return(e)
+
 }
+

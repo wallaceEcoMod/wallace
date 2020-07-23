@@ -28,7 +28,7 @@
 
 #' @export
 
-model_bioclim <- function(occs, bg, occsGrp, bgGrp, bgMsk, logger = NULL,
+model_bioclim <- function(occs, bg, user.grp, bgMsk, logger = NULL,
                           spN = NULL) {
 
   # get just coordinates
@@ -39,8 +39,8 @@ model_bioclim <- function(occs, bg, occsGrp, bgGrp, bgMsk, logger = NULL,
                 message = paste0("Building/Evaluating BIOCLIM model for ",
                                  spName(spN), "..."), {
      e <- ENMeval::ENMevaluate(occs = occs.xy, envs = bgMsk, bg = bg.xy,
-                               mod.name = "bioclim", partition = "user",
-                               occ.grp = occsGrp, bg.grp = bgGrp)
+                               mod.name = "bioclim", partitions = "user",
+                               user.grp= user.grp)
   })
 
   logger %>% writeLog(hlSpp(spN),
