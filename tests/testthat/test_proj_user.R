@@ -6,7 +6,7 @@ source("test_helper_functions.R")
 
 ## occurrences
 spN="Panthera onca"
-out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
+out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 1000)
 occs <- as.data.frame(out.gbif[[1]]$cleaned)
 ## background mask
 # enviromental data

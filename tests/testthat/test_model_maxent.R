@@ -1,7 +1,3 @@
-##### QUESTIONS
-# 1. How to test the maxent.jar error message
-
-
 #### COMPONENT model: Build and Evaluate Niche Model
 #### MODULE: Maxent.Jar & Maxnet
 context("model_maxent")
@@ -13,7 +9,7 @@ source("test_helper_functions.R")
 
 ## occurrences
 spN<-"Panthera onca"
-out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
+out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 1000)
 occs <- as.data.frame(out.gbif[[1]]$cleaned)
 
 ## background mask
@@ -43,7 +39,7 @@ rms <- c(1:2)
 ## regularization multipliers step value
 rmsStep <- 1
 ## feature classes
-fcs <- c('L', 'LQ', 'H', 'LQH', 'LQHP')
+fcs <- c('L', 'LQ', 'H', 'LQH','LQHP')
 
 ## algorithm
 algorithm <- c('maxent.jar','maxnet')

@@ -15,7 +15,7 @@ for (i in 1:2){
   occs <-  occs_queryDb(spName = species[i], occDb = "gbif", occNum = 100)
   occs <- as.data.frame(occs[[1]]$cleaned)
   ## process data
-  occs <- poccs_thinOccs(occs = occs, thinDist = 10,spN=species[i])
+ # occs <- poccs_thinOccs(occs = occs, thinDist = 10,spN=species[i]) ##Removed because warning from spthin on different names
   # enviromental data
   envs <- envs_worldclim(bcRes = 10,  bcSel = c("bio01","bio02","bio13","bio14"), doBrick = FALSE)
   # background extent
@@ -30,7 +30,7 @@ for (i in 1:2){
   ### Create model
   bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=species[i])
 
-  model[i]<-bioclimAlg
+  model[[i]]<-bioclimAlg
 }
 ##Set parameters
 ##Remove coordinates (lat/long from tables)

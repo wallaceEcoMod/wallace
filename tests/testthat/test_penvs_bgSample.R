@@ -21,7 +21,7 @@ bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
 bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
 
 ## Number of background points to sample
-bgPtsNum <- 1000
+bgPtsNum <- 100
 bgPtsNum_big<-100000
 
 ### run function
