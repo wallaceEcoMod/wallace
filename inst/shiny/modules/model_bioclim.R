@@ -25,9 +25,8 @@ model_bioclim_module_server <- function(input, output, session, common) {
       # ERRORS ####
       if(is.null(spp[[sp]]$occs$partition)) {
         logger %>% writeLog(
-          type = 'error',
-          "Before building a model, please partition occurrences for ",
-          "cross-validation for ", em(spName(sp)), ".")
+          type = 'error', hlSpp(sp),
+          "Before building a model, please partition occurrences for cross-validation.")
         return()
       }
 
@@ -46,30 +45,20 @@ model_bioclim_module_server <- function(input, output, session, common) {
       spp[[sp]]$evalOut <- m.bioclim
 
       # METADATA ####
-      spp[[sp]]$rmm$modelFit$algorithm <- "BIOCLIM"
-      spp[[sp]]$rmm$modelFit$bioclim$notes <- "ENMeval/dismo package implementation"
+      spp[[sp]]$rmm$model$algorithms <- "BIOCLIM"
+      spp[[sp]]$rmm$model$algorithm$bioclim$notes <- "ENMeval/dismo package implementation"
     }
     common$update_component(tab = "Results")
   })
 
   output$evalTblsBioclim <- renderUI({
-    req(spp[[curSp()]]$rmm$model$algorithm)
-    if (spp[[curSp()]]$rmm$model$algorithm == "BIOCLIM") {
+    req(spp[[curSp()]]$rmm$model$algorithms)
+    if (spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM") {
       req(spp[[curSp()]]$evalOut)
       res <- spp[[curSp()]]$evalOut@results
       res.grp <- spp[[curSp()]]$evalOut@results.grp
-      tuned.n <- ncol(spp[[curSp()]]$evalOut@tune.settings)
-      if(tuned.n > 0) {
-        res.round <- cbind(res[,seq(1, tuned.n)],
-                           round(res[,seq(tuned.n+1, ncol(res))], digits = 3))
-        res.grp.round <- cbind(res.grp[,seq(1, tuned.n+1)],
-                               round(res.grp[,seq(tuned.n+2, ncol(res.grp))],
-                                     digits = 3))
-      } else {
-        res.round <- cbind(round(res[, 1:13], digits = 3))
-        res.grp.round <- cbind(fold = res.grp[, 1],
-                               round(res.grp[, 2:5], digits = 3))
-      }
+      res.round <- cbind(round(res[, 1:11], digits = 3))
+      res.grp.round <- round(res.grp[, 2:6], digits = 3)
       # define contents for both evaluation tables
       options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
       output$evalTbl <- DT::renderDataTable(res.round, options = options)
@@ -84,16 +73,6 @@ model_bioclim_module_server <- function(input, output, session, common) {
               DT::dataTableOutput(session$ns('evalTblBins')))
     }
   })
-
-  return(list(
-    save = function() {
-      # Save any values that should be saved when the current session is saved
-    },
-    load = function(state) {
-      # Load
-    }
-  ))
-
 }
 
 model_bioclim_module_result <- function(id) {

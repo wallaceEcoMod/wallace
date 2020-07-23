@@ -20,7 +20,7 @@ vis_bioclimPlot_module_server <- function(input, output, session, common) {
     req(curSp())
     if (length(curSp()) == 1) {
       req(evalOut())
-      if (spp[[curSp()]]$rmm$model$algorithm == "BIOCLIM") {
+      if (spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM") {
         # METADATA ####
         spp[[curSp()]]$rmm$code$wallaceSettings$bcPlotSettings <-
           list(bc1 = input$bc1, bc2 = input$bc2, p = input$bcProb)
@@ -30,7 +30,7 @@ vis_bioclimPlot_module_server <- function(input, output, session, common) {
 
   output$bioclimPlot <- renderPlot({
     req(curSp(), evalOut())
-    if (spp[[curSp()]]$rmm$model$algorithm == "BIOCLIM"){
+    if (spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM"){
       # FUNCTION CALL ####
       vis_bioclimPlot(evalOut()@models[[curModel()]],
                       input$bc1,

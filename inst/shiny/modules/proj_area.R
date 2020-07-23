@@ -62,7 +62,7 @@ proj_area_module_server <- function(input, output, session, common) {
   output$noThrs <- renderUI({
     ns <- session$ns
     req(curSp(), evalOut())
-    if (spp[[curSp()]]$rmm$model$algorithm != "BIOCLIM") {
+    if (spp[[curSp()]]$rmm$model$algorithms != "BIOCLIM") {
       h5("Prediction output is the same than Visualize component (**)")
     }
   })
@@ -160,8 +160,8 @@ proj_area_module_server <- function(input, output, session, common) {
     predType <- rmm()$output$prediction$notes
     projArea.out <- proj_area(evalOut(), curModel(), envs(),
                               outputType = predType,
-                              alg = rmm()$model$algorithm,
-                              clamp = rmm()$model$maxent$clamping,
+                              alg = spp[[curSp()]]$rmm$model$algorithms,
+                              clamp = rmm()$model$algorithm$maxent$clamping,
                               spp[[curSp()]]$project$pjExt,
                               logger)
 

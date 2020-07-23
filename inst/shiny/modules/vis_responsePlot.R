@@ -20,9 +20,9 @@ vis_responsePlot_module_server <- function(input, output, session, common) {
   output$curEnvUI <- renderUI({
     # ensure envs entity is within spp
     req(curSp(), evalOut())
-    if (spp[[curSp()]]$rmm$model$algorithm == "maxnet") {
+    if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
       n <- mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxnet")
-    } else if (spp[[curSp()]]$rmm$model$algorithm == "maxent.jar") {
+    } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
       n <- mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxent.jar")
     }
     envsNameList <- c(setNames(as.list(n), n))
@@ -33,12 +33,12 @@ vis_responsePlot_module_server <- function(input, output, session, common) {
 
   output$responsePlot <- renderPlot({
     req(curSp(), evalOut())
-    if (spp[[curSp()]]$rmm$model$algorithm == "maxnet") {
+    if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
       req(curEnv())
       suppressWarnings(
         plot(evalOut()@models[[curModel()]], vars = curEnv(), type = "cloglog")
         )
-    } else if (spp[[curSp()]]$rmm$model$algorithm == "maxent.jar") {
+    } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
       dismo::response(evalOut()@models[[curModel()]], var = curEnv())
     }
   }, width = 700, height = 700)

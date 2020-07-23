@@ -84,7 +84,7 @@ proj_time_module_server <- function(input, output, session, common) {
   output$noThrs <- renderUI({
     ns <- session$ns
     req(curSp(), evalOut())
-    if (spp[[curSp()]]$rmm$model$algorithm != "BIOCLIM") {
+    if (spp[[curSp()]]$rmm$model$algorithms != "BIOCLIM") {
       h5("Prediction output is the same than Visualize component (**)")
     }
   })
@@ -255,8 +255,8 @@ proj_time_module_server <- function(input, output, session, common) {
     # FUNCTION CALL ####
     predType <- rmm()$output$prediction$notes
     projTime.out <- proj_time(evalOut(), curModel(), projTimeEnvs, predType,
-                              alg = rmm()$model$algorithm,
-                              clamp = rmm()$model$maxent$clamping,
+                              alg = spp[[curSp()]]$rmm$model$algorithms,
+                              clamp = rmm()$model$algorithm$maxent$clamping,
                               spp[[curSp()]]$project$pjExt, logger)
     projExt <- projTime.out$projExt
     projTime <- projTime.out$projTime

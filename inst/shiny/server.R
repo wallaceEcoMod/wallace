@@ -126,9 +126,10 @@ function(input, output, session) {
     shinyjs::toggleState("dlPcaResults", !is.null(spp[[curSp()]]$pca))
     shinyjs::toggleState("dlPart", ("partition" %in% colnames(spp[[curSp()]]$occs)))
     shinyjs::toggleState("dlEvalTbl", !is.null(evalOut()))
-    shinyjs::toggleState("dlVisBioclim", !is.null(spp[[curSp()]]$rmm$modelFit$bioclim$notes))
-    shinyjs::toggleState("dlMaxentPlots", !is.null(spp[[curSp()]]$rmm$modelFit$maxent$notes))
-    shinyjs::toggleState("dlRespCurves", !is.null(spp[[curSp()]]$rmm$modelFit$maxent$notes))
+    shinyjs::toggleState("dlEvalTblBins", !is.null(evalOut()))
+    shinyjs::toggleState("dlVisBioclim", !is.null(spp[[curSp()]]$rmm$model$algorithm$bioclim$notes))
+    shinyjs::toggleState("dlMaxentPlots", !is.null(spp[[curSp()]]$rmm$model$algorithm$maxent$notes))
+    shinyjs::toggleState("dlRespCurves", !is.null(spp[[curSp()]]$rmm$model$algorithm$maxent$notes))
     shinyjs::toggleState("dlPred", !is.null(spp[[curSp()]]$visualization$occPredVals))
     shinyjs::toggleState("dlPjShp", !is.null(spp[[curSp()]]$project$pjExt))
     shinyjs::toggleState("dlProj", !is.null(spp[[curSp()]]$project$pjEnvs))
@@ -430,7 +431,7 @@ function(input, output, session) {
     spp[[curSp()]]$procEnvs$bgMask <- NULL
     spp[[curSp()]]$bg <- NULL
     spp[[curSp()]]$bgPts <- NULL
-    spp[[curSp()]]$rmm$model$maxent$backgroundSizeSet <- NULL
+    spp[[curSp()]]$rmm$data$occurrence$backgroundSampleSizeSet <- NULL
     logger %>% writeLog(
       hlSpp(curSp()), "Reset background extent and background points (**).")
     # MAPPING
@@ -656,17 +657,34 @@ function(input, output, session) {
   # download for partitioned occurrence records csv
   output$dlEvalTbl <- downloadHandler(
     filename = function() {
-      if(rmm()$model$algorithm == "BIOCLIM") {
+      if(spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM") {
         paste0(curSp(), "_bioclim_evalTbl.csv")
-      } else if(rmm()$model$algorithm == "maxent.jar") {
+      } else if(spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
         paste0(curSp(), "_maxent_evalTbl.csv")
-      } else if(rmm()$model$algorithm == "maxnet") {
+      } else if(spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
         paste0(curSp(), "_maxnet_evalTbl.csv")
       }
     },
     content = function(file) {
-      evalTbl <- evalOut()@results
+      evalTbl <- spp[[curSp()]]$evalOut@results
       write_csv_robust(evalTbl, file, row.names = FALSE)
+    }
+  )
+
+  # download for partitioned occurrence records csv
+  output$dlEvalTblBins <- downloadHandler(
+    filename = function() {
+      if(spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM") {
+        paste0(curSp(), "_bioclim_evalTblBins.csv")
+      } else if(spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
+        paste0(curSp(), "_maxent_evalTblBins.csv")
+      } else if(spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
+        paste0(curSp(), "_maxnet_evalTblBins.csv")
+      }
+    },
+    content = function(file) {
+      evalTblBins <- spp[[curSp()]]$evalOut@results.grp
+      write_csv_robust(evalTblBins, file, row.names = FALSE)
     }
   )
 
@@ -722,9 +740,9 @@ function(input, output, session) {
       namesEnvs <- names(envs())
       for (i in namesEnvs) {
         png(paste0(tmpdir, "\\", i, ".png"))
-        if (spp[[curSp()]]$rmm$model$algorithm == "maxnet") {
+        if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
           maxnet::response.plot(evalOut()@models[[curModel()]], v = i, type = "cloglog")
-        } else if (spp[[curSp()]]$rmm$model$algorithm == "maxent.jar") {
+        } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
           dismo::response(evalOut()@models[[curModel()]], var = i)
         }
         dev.off()
@@ -1140,6 +1158,7 @@ function(input, output, session) {
     bgExt = bgExt,
     bgMask = bgMask,
     bgShpXY = bgShpXY,
+    selCatEnvs = selCatEnvs,
     evalOut = evalOut,
     mapPred = mapPred,
     mapProj = mapProj,

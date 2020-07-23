@@ -43,8 +43,8 @@ model_bioclim <- function(occs, bg, occsGrp, bgGrp, bgMsk, logger = NULL,
                                occ.grp = occsGrp, bg.grp = bgGrp)
   })
 
-  logger %>% writeLog("BIOCLIM ran successfully for ", em(spName(spN)),
-                      " and output evaluation results.")
+  logger %>% writeLog(hlSpp(spN),
+                      "BIOCLIM ran successfully and output evaluation results.")
 
   return(e)
 }

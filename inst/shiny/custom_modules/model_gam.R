@@ -59,7 +59,7 @@ gam_module_server <- function(input, output, session, common) {
       spp[[sp]]$results <- mod.gam
 
       # METADATA ####
-      spp[[sp]]$rmm$model$algorithm <- "GAM"
+      spp[[sp]]$rmm$model$algorithms <- "GAM"
       spp[[sp]]$rmm$model$gam$family <- "binominal"
       f <- as.character(mod.gam$formula)
       spp[[sp]]$rmm$model$gam$formula <- paste(f[2],f[1],f[3])

@@ -24,8 +24,8 @@ vis_maxentEvalPlot_module_server <- function(input, output, session, common) {
     req(curSp())
     if (length(curSp()) == 1) {
       req(evalOut())
-      if (spp[[curSp()]]$rmm$model$algorithm == "maxent.jar" |
-          spp[[curSp()]]$rmm$model$algorithm == "maxnet") {
+      if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar" |
+          spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
         # ERRORS ####
         if (is.null(input$maxentEvalSel)) {
           logger %>% writeLog(type = 'error', "Please choose a statistic to plot.")
@@ -39,8 +39,8 @@ vis_maxentEvalPlot_module_server <- function(input, output, session, common) {
 
   output$maxentEvalPlot <- renderPlot({
     req(curSp(), evalOut())
-    if (spp[[curSp()]]$rmm$model$algorithm == "maxent.jar" |
-        spp[[curSp()]]$rmm$model$algorithm == "maxnet") {
+    if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar" |
+        spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
       # FUNCTION CALL ####
       if (!is.null(input$maxentEvalSel)) {
         ENMeval::plot.eval(evalOut(), input$maxentEvalSel, "rm", "fc")
