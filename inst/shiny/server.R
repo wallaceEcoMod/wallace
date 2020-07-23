@@ -127,9 +127,9 @@ function(input, output, session) {
     shinyjs::toggleState("dlPart", ("partition" %in% colnames(spp[[curSp()]]$occs)))
     shinyjs::toggleState("dlEvalTbl", !is.null(evalOut()))
     shinyjs::toggleState("dlEvalTblBins", !is.null(evalOut()))
-    shinyjs::toggleState("dlVisBioclim", !is.null(spp[[curSp()]]$rmm$modelFit$bioclim$notes))
-    shinyjs::toggleState("dlMaxentPlots", !is.null(spp[[curSp()]]$rmm$modelFit$maxent$notes))
-    shinyjs::toggleState("dlRespCurves", !is.null(spp[[curSp()]]$rmm$modelFit$maxent$notes))
+    shinyjs::toggleState("dlVisBioclim", !is.null(spp[[curSp()]]$rmm$model$algorithm$bioclim$notes))
+    shinyjs::toggleState("dlMaxentPlots", !is.null(spp[[curSp()]]$rmm$model$algorithm$maxent$notes))
+    shinyjs::toggleState("dlRespCurves", !is.null(spp[[curSp()]]$rmm$model$algorithm$maxent$notes))
     shinyjs::toggleState("dlPred", !is.null(spp[[curSp()]]$visualization$occPredVals))
     shinyjs::toggleState("dlPjShp", !is.null(spp[[curSp()]]$project$pjExt))
     shinyjs::toggleState("dlProj", !is.null(spp[[curSp()]]$project$pjEnvs))
@@ -431,7 +431,7 @@ function(input, output, session) {
     spp[[curSp()]]$procEnvs$bgMask <- NULL
     spp[[curSp()]]$bg <- NULL
     spp[[curSp()]]$bgPts <- NULL
-    spp[[curSp()]]$rmm$model$algorithm$maxent$backgroundSizeSet <- NULL
+    spp[[curSp()]]$rmm$data$occurrence$backgroundSampleSizeSet <- NULL
     logger %>% writeLog(
       hlSpp(curSp()), "Reset background extent and background points (**).")
     # MAPPING
@@ -1158,6 +1158,7 @@ function(input, output, session) {
     bgExt = bgExt,
     bgMask = bgMask,
     bgShpXY = bgShpXY,
+    selCatEnvs = selCatEnvs,
     evalOut = evalOut,
     mapPred = mapPred,
     mapProj = mapProj,

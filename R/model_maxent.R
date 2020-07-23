@@ -119,8 +119,8 @@ model_maxent <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
   endTxt <- paste("]), using", algMaxent, "with clamping",
                   ifelse(clampSel, "on.", "off."))
 
-  logger %>% writeLog(
-    "Maxent ran successfully for ", em(spName(spN)), " and output evaluation ",
+  logger %>% writeLog(hlSpp(spN),
+    "Maxent ran successfully and output evaluation ",
     "results for ", nrow(e@results), " models (Regularization multiplier values: [",
     paste(rms.interval, collapse = ", "),"]; Feature classes: [",
     paste(fcs, collapse = ", "), endTxt, "(**)")

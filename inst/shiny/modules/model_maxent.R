@@ -62,6 +62,7 @@ model_maxent_module_server <- function(input, output, session, common) {
   spp <- common$spp
   logger <- common$logger
   curModel <- common$curModel
+  selCatEnvs <- common$selCatEnvs
 
   updateSelectInput(session, "clamp", selected = "TRUE") # Check default (selected = "")
 
@@ -82,9 +83,9 @@ model_maxent_module_server <- function(input, output, session, common) {
     for(sp in spLoop) {
       # ERRORS ####
       if (is.null(spp[[sp]]$occs$partition)) {
-        logger %>% writeLog(type = 'error', "Before building a model, please
-                                partition occurrences for cross-validation for ",
-                            em(spName(sp)), ".")
+        logger %>% writeLog(type = 'error', hlSpp(sp),
+                            "Before building a model, please partition ",
+                            "occurrences for cross-validation.")
         return()
       }
 
@@ -127,7 +128,7 @@ model_maxent_module_server <- function(input, output, session, common) {
       if(input$algMaxent == "maxnet") {
         ver <- paste("maxnet", packageVersion('maxnet'))
       }
-      spp[[sp]]$rmm$modelFit$maxent$algorithmNotes <- ver
+      spp[[sp]]$rmm$model$algorithm$maxent$notes <- ver
     }
     common$update_component(tab = "Results")
 })
@@ -143,13 +144,12 @@ model_maxent_module_server <- function(input, output, session, common) {
       if(tuned.n > 0) {
         res.round <- cbind(res[,seq(1, tuned.n)],
                            round(res[,seq(tuned.n+1, ncol(res))], digits = 3))
-        res.grp.round <- cbind(res.grp[,seq(1, tuned.n+1)],
-                               round(res.grp[,seq(tuned.n+2, ncol(res.grp))],
-                                     digits = 3))
+        res.grp.round <- cbind(res.grp[, 1:2],
+                               round(res.grp[, 3:6], digits = 3))
       } else {
         res.round <- cbind(round(res[, 1:13], digits = 3))
         res.grp.round <- cbind(fold = res.grp[, 1],
-                               round(res.grp[, 2:5], digits = 3))
+                               round(res.grp[, 2:6], digits = 3))
       }
       # define contents for both evaluation tables
       options <- list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">')
@@ -185,10 +185,23 @@ model_maxent_module_server <- function(input, output, session, common) {
 
   return(list(
     save = function() {
+      list(
+        algMaxent = input$algMaxent,
+        fcs = input$fcs,
+        rms = input$rms,
+        rmsStep = input$rmsStep,
+        categSel = input$categSel,
+        clamp = input$clamp
+      )
       # Save any values that should be saved when the current session is saved
     },
     load = function(state) {
-      # Load
+      updateRadioButtons(session, "algMaxent", selected = state$algMaxent)
+      updateCheckboxGroupInput(session, "fcs", selected = state$fcs)
+      updateSliderInput(session, "rms", value = state$rms)
+      updateNumericInput(session, "rmsStep", value = state$rmsStep)
+      updateSelectInput(session, "categSel", selected = state$categSel)
+      updateSelectInput(session, "clamp", selected = state$clamp)
     }
   ))
 
