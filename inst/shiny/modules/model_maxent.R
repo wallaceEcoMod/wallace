@@ -1,7 +1,7 @@
 model_maxent_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
-    htmlOutput('maxentJar'), br(), "(",
+    htmlOutput('maxentJar'), "(",
     HTML("<font color='blue'><b>NOTE</b></font>"),
     ": see module guidance for troubleshooting tips if you are experiencing problems.)",
     tags$hr(),
@@ -47,6 +47,18 @@ model_maxent_module_ui <- function(id) {
     tags$div(title = 'Clamp model predictions?',
              selectInput(ns("clamp"), label = '',
                          choices = list("", "TRUE", "FALSE"))),
+    strong("Parallel?"),
+    tags$div(
+      title = 'Use parallel option for quicker analysis? (**)',
+      selectInput(ns("parallel"), label = '',
+                  choices = list("", "TRUE", "FALSE")),
+      conditionalPanel(
+        sprintf("input['%s'] == 'TRUE'", ns("parallel")),
+        numericInput(
+          "numCores",
+          label = paste0("Specify the number of cores (max. ", parallel::detectCores(), ")"),
+          value = 1, min = 1, max = parallel::detectCores(), step = 1
+        ))),
     tags$div(
       title = "Add Batch guidance text here (**)",
       checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE) # Check default (value = FALSE)
