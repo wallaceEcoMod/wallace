@@ -47,7 +47,7 @@ part_nonSpat_module_server <- function(input, output, session, common) {
       req(group.data)
 
       # LOAD INTO SPP ####
-      spp[[sp]]$occs$partition <- group.data$occ.grp
+      spp[[sp]]$occs$partition <- group.data$occs.grp
       spp[[sp]]$bg$partition <- group.data$bg.grp
 
       # METADATA ####
@@ -104,9 +104,9 @@ part_nonSpat_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
     part_nonSpat_knit = FALSE
-    # part_nonSpat_knit = species$rmm$code$wallaceSettings$someFlag,
-    # var1 = species$rmm$code$wallaceSettings$someSetting1,
-    # var2 = species$rmm$code$wallaceSettings$someSetting2
+    # part_nonSpat_knit = species$rmm$code$wallace$someFlag,
+    # var1 = species$rmm$code$wallace$someSetting1,
+    # var2 = species$rmm$code$wallace$someSetting2
   )
 }
 

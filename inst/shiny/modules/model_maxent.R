@@ -203,7 +203,9 @@ model_maxent_module_server <- function(input, output, session, common) {
         rms = input$rms,
         rmsStep = input$rmsStep,
         categSel = input$categSel,
-        clamp = input$clamp
+        clamp = input$clamp,
+        parallel = input$parallel,
+        numCores = input$numCores
       )
       # Save any values that should be saved when the current session is saved
     },
@@ -214,6 +216,8 @@ model_maxent_module_server <- function(input, output, session, common) {
       updateNumericInput(session, "rmsStep", value = state$rmsStep)
       updateSelectInput(session, "categSel", selected = state$categSel)
       updateSelectInput(session, "clamp", selected = state$clamp)
+      updateSelectInput(session, "parallel", selected = state$parallel)
+      updateNumericInput(session, "numCores", value = state$numCores)
     }
   ))
 
@@ -229,9 +233,9 @@ model_maxent_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
     model_maxent_knit = FALSE
-    # model_maxent_knit = species$rmm$code$wallaceSettings$someFlag,
-    # var1 = species$rmm$code$wallaceSettings$someSetting1,
-    # var2 = species$rmm$code$wallaceSettings$someSetting2
+    # model_maxent_knit = species$rmm$code$wallace$someFlag,
+    # var1 = species$rmm$code$wallace$someSetting1,
+    # var2 = species$rmm$code$wallace$someSetting2
   )
 }
 
