@@ -27,10 +27,10 @@ poccs_removeByID_module_server <- function(input, output, session, common) {
     # METADATA ####
     # if no removeIDs are recorded yet, make a list to record them
     # if at least one exists, add to the list
-    if (is.null(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs)) {
+    if (is.null(spp[[curSp()]]$rmm$code$wallace$removedIDs)) {
       spp[[curSp()]]$rmm$code$wallace$removedIDs <- input$removeID
     } else {
-      spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs <-
+      spp[[curSp()]]$rmm$code$wallace$removedIDs <-
         c(spp[[curSp()]]$rmm$code$wallace$removedIDs, input$removeID)
     }
 
@@ -64,8 +64,8 @@ poccs_removeByID_module_map <- function(map, common) {
 poccs_removeByID_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    poccs_removeByID_knit = !is.null(species$rmm$code$wallaceSettings$removedIDs),
-    removeByID_id = species$rmm$code$wallaceSettings$removedIDs
+    poccs_removeByID_knit = !is.null(species$rmm$code$wallace$removedIDs),
+    removeByID_id = species$rmm$code$wallace$removedIDs
   )
 }
 

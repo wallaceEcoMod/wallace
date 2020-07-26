@@ -105,7 +105,7 @@ proj_area_module_server <- function(input, output, session, common) {
       # METADATA ####
       polyX <- printVecAsis(round(spp[[curSp()]]$polyPjXY[, 1], digits = 4))
       polyY <- printVecAsis(round(spp[[curSp()]]$polyPjXY[, 2], digits = 4))
-      spp[[curSp()]]$rmm$code$wallaceSettings$drawExtPolyPjCoords <-
+      spp[[curSp()]]$rmm$code$wallace$drawExtPolyPjCoords <-
         paste0('X: ', polyX, ', Y: ', polyY)
     }
 
@@ -118,15 +118,15 @@ proj_area_module_server <- function(input, output, session, common) {
       exts <- sapply(strsplit(input$userPjShp$name, '\\.'),
                      FUN = function(x) x[2])
       if('csv' %in% exts) {
-        spp[[curSp()]]$rmm$code$wallaceSettings$userPjExt <- 'csv'
-        spp[[curSp()]]$rmm$code$wallaceSettings$userPjPath <- input$userPjShp$datapath
+        spp[[curSp()]]$rmm$code$wallace$userPjExt <- 'csv'
+        spp[[curSp()]]$rmm$code$wallace$userPjPath <- input$userPjShp$datapath
       }
       else if('shp' %in% exts) {
-        spp[[curSp()]]$rmm$code$wallaceSettings$userPjExt <- 'shp'
+        spp[[curSp()]]$rmm$code$wallace$userPjExt <- 'shp'
         # get index of .shp
         i <- which(exts == 'shp')
         shpName <- strsplit(input$userPjShp$name[i], '\\.')[[1]][1]
-        spp[[curSp()]]$rmm$code$wallaceSettings$userPjShpParams <-
+        spp[[curSp()]]$rmm$code$wallace$userPjShpParams <-
           list(dsn = input$userPjShp$datapath[i], layer = shpName)
       }
     }
@@ -305,9 +305,9 @@ proj_area_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
     proj_area_knit = FALSE
-    # proj_area_knit = species$rmm$code$wallaceSettings$someFlag,
-    # var1 = species$rmm$code$wallaceSettings$someSetting1,
-    # var2 = species$rmm$code$wallaceSettings$someSetting2
+    # proj_area_knit = species$rmm$code$wallace$someFlag,
+    # var1 = species$rmm$code$wallace$someSetting1,
+    # var2 = species$rmm$code$wallace$someSetting2
   )
 }
 

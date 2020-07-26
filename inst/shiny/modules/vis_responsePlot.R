@@ -14,7 +14,6 @@ vis_responsePlot_module_server <- function(input, output, session, common) {
   curModel <- common$curModel
   curEnv <- common$curEnv
   evalOut <- common$evalOut
-  logger <- common$logger
 
   # ui that populates with the names of environmental predictors used
   output$curEnvUI <- renderUI({
@@ -54,9 +53,9 @@ vis_responsePlot_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
     vis_responsePlot_knit = FALSE
-    # vis_responsePlot_knit = species$rmm$code$wallaceSettings$someFlag,
-    # var1 = species$rmm$code$wallaceSettings$someSetting1,
-    # var2 = species$rmm$code$wallaceSettings$someSetting2
+    # vis_responsePlot_knit = species$rmm$code$wallace$someFlag,
+    # var1 = species$rmm$code$wallace$someSetting1,
+    # var2 = species$rmm$code$wallace$someSetting2
   )
 }
 

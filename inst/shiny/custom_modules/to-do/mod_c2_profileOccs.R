@@ -92,7 +92,7 @@
 #
 #       # METADATA ####
 #       # decide later on metadata: maybe each of  the filters names
-#       spp[[sp]]$rmm$code$wallaceSettings$occProfileRSettings <- NA
+#       spp[[sp]]$rmm$code$wallace$occProfileRSettings <- NA
 #     }
 #   })
 # }
@@ -144,7 +144,7 @@
 #
 #       # METADATA ####
 #       # decide later on metadata
-#       spp[[sp]]$rmm$code$wallaceSettings$occProfileRGradesKept <- NA
+#       spp[[sp]]$rmm$code$wallace$occProfileRGradesKept <- NA
 #       # CM: add a vector of which grades/tests kept
 #     }
 #   })

@@ -230,9 +230,9 @@ vis_mapPreds_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
     vis_mapPreds_knit = FALSE
-    # vis_mapPreds_knit = species$rmm$code$wallaceSettings$someFlag,
-    # var1 = species$rmm$code$wallaceSettings$someSetting1,
-    # var2 = species$rmm$code$wallaceSettings$someSetting2
+    # vis_mapPreds_knit = species$rmm$code$wallace$someFlag,
+    # var1 = species$rmm$code$wallace$someSetting1,
+    # var2 = species$rmm$code$wallace$someSetting2
   )
 }
 
