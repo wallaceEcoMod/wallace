@@ -84,7 +84,8 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
     return()
   }
 
-
+  occsOrig$lng <- as.numeric(occsOrig$lng)
+  occsOrig$lat <- as.numeric(occsOrig$lat)
   # get total number of records found in database
   totRows <- nrow(occsOrig)
   # extract occurrence tibble
