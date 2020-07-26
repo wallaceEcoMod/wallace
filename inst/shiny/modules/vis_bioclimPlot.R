@@ -22,7 +22,7 @@ vis_bioclimPlot_module_server <- function(input, output, session, common) {
       req(evalOut())
       if (spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM") {
         # METADATA ####
-        spp[[curSp()]]$rmm$code$wallaceSettings$bcPlotSettings <-
+        spp[[curSp()]]$rmm$code$wallace$bcPlotSettings <-
           list(bc1 = input$bc1, bc2 = input$bc2, p = input$bcProb)
       }
     }
@@ -38,6 +38,22 @@ vis_bioclimPlot_module_server <- function(input, output, session, common) {
                       input$bcProb)
     }
   }, width = 700, height = 700)
+
+
+  return(list(
+    save = function() {
+      list(
+        bc1 = input$bc1,
+        bc2 = input$bc2,
+        bcProb = input$bcProb
+      )
+    },
+    load = function(state) {
+      updateNumericInput(session, "bc1", value = state$bc1)
+      updateNumericInput(session, "bc2", value = state$bc2)
+      updateNumericInput(session, "bcProb", value = state$bcProb)
+    }
+  ))
 }
 
 vis_bioclimPlot_module_result <- function(id) {
@@ -50,9 +66,9 @@ vis_bioclimPlot_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
     vis_bioclimPlot_knit = FALSE
-    # vis_bioclimPlot_knit = species$rmm$code$wallaceSettings$someFlag,
-    # var1 = species$rmm$code$wallaceSettings$someSetting1,
-    # var2 = species$rmm$code$wallaceSettings$someSetting2
+    # vis_bioclimPlot_knit = species$rmm$code$wallace$someFlag,
+    # var1 = species$rmm$code$wallace$someSetting1,
+    # var2 = species$rmm$code$wallace$someSetting2
   )
 }
 

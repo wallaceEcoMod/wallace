@@ -117,9 +117,9 @@ function(input, output, session) {
     shinyjs::toggleState("dlRMD", !is.null(occs()))
     shinyjs::toggleState("dlGlobalEnvs", !is.null(spp[[curSp()]]$envs))
     shinyjs::toggleState("dlProcOccs",
-                         !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords) |
+                         !is.null(spp[[curSp()]]$rmm$code$wallace$occsSelPolyCoords) |
                            !is.null(spp[[curSp()]]$procOccs$occsThin) |
-                           !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs))
+                           !is.null(spp[[curSp()]]$rmm$code$wallace$removedIDs))
     shinyjs::toggleState("dlMskEnvs", !is.null(spp[[curSp()]]$procEnvs$bgMask))
     shinyjs::toggleState("dlBgPts", !is.null(spp[[curSp()]]$bgPts))
     shinyjs::toggleState("dlBgShp", !is.null(spp[[curSp()]]$procEnvs$bgExt))
@@ -318,9 +318,9 @@ function(input, output, session) {
   observeEvent(input$goResetOccs, {
     req(curSp())
     spp[[curSp()]]$occs <- spp[[curSp()]]$occData$occsCleaned
-    spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords <- NULL
+    spp[[curSp()]]$rmm$code$wallace$occsSelPolyCoords <- NULL
     spp[[curSp()]]$procOccs$occsThin <- NULL
-    spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs <- NULL
+    spp[[curSp()]]$rmm$code$wallace$removedIDs <- NULL
     logger %>% writeLog(
       hlSpp(curSp()), "Reset to original occurrences (n =",
       nrow(spp[[curSp()]]$occs), ").")
@@ -705,10 +705,10 @@ function(input, output, session) {
     filename = function() {paste0(curSp(), "_bioClimPlot.png")},
     content = function(file) {
       png(file)
-      makeBioclimPlot(evalOut()@models[[curModel()]],
-                      spp[[curSp()]]$rmm$code$wallaceSettings$bcPlotSettings[['bc1']],
-                      spp[[curSp()]]$rmm$code$wallaceSettings$bcPlotSettings[['bc2']],
-                      spp[[curSp()]]$rmm$code$wallaceSettings$bcPlotSettings[['p']])
+      vis_bioclimPlot(evalOut()@models[[curModel()]],
+                      spp[[curSp()]]$rmm$code$wallace$bcPlotSettings[['bc1']],
+                      spp[[curSp()]]$rmm$code$wallace$bcPlotSettings[['bc2']],
+                      spp[[curSp()]]$rmm$code$wallace$bcPlotSettings[['p']])
       dev.off()
     }
   )
@@ -718,12 +718,13 @@ function(input, output, session) {
     filename = function() {paste0(curSp(), "_evalPlots.zip")},
     content = function(file) {
       tmpdir <- tempdir()
-      parEval <- c('avg.test.AUC', 'avg.diff.AUC', 'avg.test.orMTP', 'avg.test.or10pct',
-                   'delta.AICc')
+      parEval <- c('auc.test', 'auc.diff', 'or.mtp', 'or.10p', 'delta.AICc')
       for (i in parEval) {
-        png(paste0(tmpdir, "\\", gsub("[[:punct:]]", "_", i), ".png"))
-        makeMaxentEvalPlot(evalOut()@results, i)
-        dev.off()
+        # png(paste0(tmpdir, "\\", gsub("[[:punct:]]", "_", i), ".png"))
+        ENMeval::plot_eval.stats(spp[[curSp()]]$evalOut, i, "rm", "fc")
+        ggplot2::ggsave(paste0(tmpdir, "\\",
+                               gsub("[[:punct:]]", "_", i), ".png"))
+        # dev.off()
       }
       owd <- setwd(tmpdir)
       zip::zipr(zipfile = file,

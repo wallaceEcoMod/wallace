@@ -32,7 +32,7 @@ vis_maxentEvalPlot_module_server <- function(input, output, session, common) {
           return()
         }
         # METADATA ####
-        spp[[curSp()]]$rmm$code$wallaceSettings$maxentEvalPlotSel <- input$maxentEvalSel
+        spp[[curSp()]]$rmm$code$wallace$maxentEvalPlotSel <- input$maxentEvalSel
       }
     }
   })
@@ -43,10 +43,19 @@ vis_maxentEvalPlot_module_server <- function(input, output, session, common) {
         spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
       # FUNCTION CALL ####
       if (!is.null(input$maxentEvalSel)) {
-        ENMeval::plot.eval(evalOut(), input$maxentEvalSel, "rm", "fc")
+        ENMeval::plot_eval.stats(evalOut(), input$maxentEvalSel, "rm", "fc")
       }
     }
   }, width = 700, height = 700)
+
+  return(list(
+    save = function() {
+      list(maxentEvalSel = input$maxentEvalSel)
+    },
+    load = function(state) {
+      updateSelectInput(session, "maxentEvalSel", selected = state$maxentEvalSel)
+    }
+  ))
 }
 
 vis_maxentEvalPlot_module_result <- function(id) {
@@ -59,9 +68,9 @@ vis_maxentEvalPlot_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
     vis_maxentEvalPlot_knit = FALSE
-    # vis_maxentEvalPlot_knit = species$rmm$code$wallaceSettings$someFlag,
-    # var1 = species$rmm$code$wallaceSettings$someSetting1,
-    # var2 = species$rmm$code$wallaceSettings$someSetting2
+    # vis_maxentEvalPlot_knit = species$rmm$code$wallace$someFlag,
+    # var1 = species$rmm$code$wallace$someSetting1,
+    # var2 = species$rmm$code$wallace$someSetting2
   )
 }
 
