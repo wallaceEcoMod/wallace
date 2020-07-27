@@ -8,7 +8,8 @@ source("test_helper_functions.R")
 ### Set parameters
 
 ## occurrences
-out.gbif <- occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+spN="Panthera onca"
+out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
 occs <- as.data.frame(out.gbif[[1]]$cleaned)
 
 ## record to remove
@@ -16,7 +17,7 @@ removeID <- 81
 
 
 ### run function
-out.ID <- poccs_removeByID(occs, removeID,spN=occs)
+out.ID <- poccs_removeByID(occs, removeID,spN=spN)
 
 
 ### test if the error messages appear when they are supposed to

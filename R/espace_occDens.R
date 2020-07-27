@@ -23,13 +23,13 @@
 #' for (i in 1:2){
 # 'occs <-  occs_queryDb(spName = species[i], occDb = "gbif", occNum = 100)
 #' occs <- as.data.frame(occs[[1]]$cleaned)
-#' occs <- poccs_thinOccs(occs = occs, thinDist = 10,spN=occs)
+#' occs <- poccs_thinOccs(occs = occs, thinDist = 10,spN=species[i])
 #' envs <- envs_worldclim(bcRes = 10,  bcSel = c("bio01","bio02","bio13","bio14"), doBrick = FALSE)
-#' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
-#' bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
-#'  bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 1000,spN=occs)
-#' partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=occs)
-#'bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=occs)
+#' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=species[i])
+#' bgMask <- penvs_bgMask(occs, envs, bgExt,spN=species[i])
+#'  bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 1000,spN=species[i])
+#' partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=species[i])
+#'bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=species[i])
 #'model[i]<-bioclimAlg }
 #' ##Set parameters for running PCA and occDens
 #'occs.z1<-model[[1]]@@occs[3:length(model[[1]]@@occs)]

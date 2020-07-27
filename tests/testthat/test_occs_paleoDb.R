@@ -1,4 +1,4 @@
-#### COMPONENT 1: Obtain Occurrence Data
+#### COMPONENT occs:  Obtain Occurrence Data
 #### MODULE: Query Database (Past)
 context("paleoDb")
 

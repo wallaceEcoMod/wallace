@@ -1,9 +1,9 @@
 library(testthat)
 library(wallace)
+#some tests need data so they must be run from the right testthat folder
+setwd("tests/testthat/")
+# To run all tests from tesst folder
+test_dir(".")
 
-# The tests need Wallace to be run separately on a specific port (5556) so that 
-# RSelenium can find the app. Thus, automatic tests on CRAN will not work, and
-# currently they must be run manually. We're working on ways to get automated tests
-# running in the meantime.
-
+##this inside an R CMD can't get it to run yet
 test_check("wallace")
