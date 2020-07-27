@@ -48,7 +48,7 @@ vis_maxentEvalPlot_module_server <- function(input, output, session, common) {
         spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
       # FUNCTION CALL ####
       if (!is.null(input$maxentEvalSel)) {
-        ENMeval::plot_eval.stats(evalOut(), input$maxentEvalSel, "rm", "fc")
+        ENMeval::evalplot.stats(evalOut(), input$maxentEvalSel, "rm", "fc")
       }
     }
   }, width = 700, height = 700)

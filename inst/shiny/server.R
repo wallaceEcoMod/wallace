@@ -721,7 +721,7 @@ function(input, output, session) {
       parEval <- c('auc.test', 'auc.diff', 'or.mtp', 'or.10p', 'delta.AICc')
       for (i in parEval) {
         # png(paste0(tmpdir, "\\", gsub("[[:punct:]]", "_", i), ".png"))
-        ENMeval::plot_eval.stats(spp[[curSp()]]$evalOut, i, "rm", "fc")
+        ENMeval::evalplot.stats(spp[[curSp()]]$evalOut, i, "rm", "fc")
         ggplot2::ggsave(paste0(tmpdir, "\\",
                                gsub("[[:punct:]]", "_", i), ".png"))
         # dev.off()
