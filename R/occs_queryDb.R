@@ -124,7 +124,8 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
                                 data = list(formatSpName(sp))))
           gbif_raw <- read.table(unz(
             as.character(myBTO@occResults[[bestMatch]][['GBIF']][['RawOccurrences']]),
-            "occurrence.txt"), sep = "\t", header = TRUE, quote = "")
+            "occurrence.txt"), sep = "\t", header = TRUE, quote = "",
+            encoding = "UTF-8")
           gbif_occCite_df <- gbif_raw %>%
             dplyr::select(scientificName, decimalLongitude, decimalLatitude, countryCode,
                           stateProvince, locality, year, basisOfRecord, catalogNumber,
