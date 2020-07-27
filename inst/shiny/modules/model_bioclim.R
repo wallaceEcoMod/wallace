@@ -30,11 +30,13 @@ model_bioclim_module_server <- function(input, output, session, common) {
         return()
       }
 
+      user_grp <- list(occs.grp = spp[[sp]]$occs$partition,
+                       bg.grp = spp[[sp]]$bg$partition)
+
       # FUNCTION CALL ####
       m.bioclim <- model_bioclim(occs = spp[[sp]]$occs,
                                  bg = spp[[sp]]$bg,
-                                 occsGrp = spp[[sp]]$occs$partition,
-                                 bgGrp = spp[[sp]]$bg$partition,
+                                 user.grp = user_grp,
                                  bgMsk = spp[[sp]]$procEnvs$bgMask,
                                  logger,
                                  spN = sp)
