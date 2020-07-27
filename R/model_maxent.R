@@ -54,8 +54,8 @@
 #' @export
 
 model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
-                         clampSel, algMaxent, catEnvs, parallel=FALSE, numCores=NULL, logger = NULL,
-                         spN = NULL) {
+                         clampSel, algMaxent, catEnvs, parallel = FALSE,
+                         numCores = NULL, logger = NULL, spN = NULL) {
 
   if (is.null(user.grp)) {
     logger %>% writeLog(
@@ -127,16 +127,31 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
   occs.xy <- occs %>% dplyr::select(longitude, latitude)
   bg.xy <- bg %>% dplyr::select(longitude, latitude)
   # run ENMeval
-  e <- ENMeval::ENMevaluate(occs = occs.xy, envs = bgMsk, bg = bg.xy,
-                            tune.args=tune.args,
-                            taxon.name=NULL,categoricals = catEnvs,
-                            mod.name = algMaxent, user.enm=NULL,partitions = 'user', user.grp=user.grp,
-                            occs.ind=NULL, kfolds=NA, aggregation.factor=c(2,2), orientation="lat_lon",
-                            overlap= FALSE, overlapStat=c("D","I"),
-                            clamp = clampSel, pred.type="cloglog", abs.auc.diff=FALSE,
-                            user.test.grps = NULL,
-                            parallel=parallel,numCores=numCores,parallelType="doSNOW",
-                            updateProgress = updateProgress,quiet=FALSE)
+  e <- ENMeval::ENMevaluate(occs = occs.xy,
+                            bg = bg.xy,
+                            partitions = 'user',
+                            user.grp = user.grp,
+                            envs = bgMsk,
+                            tune.args = tune.args,
+                            clamp = clampSel,
+                            mod.name = algMaxent,
+                            categoricals = catEnvs,
+                            parallel = parallel,
+                            numCores = numCores,
+                            parallelType = "doSNOW",
+                            # taxon.name = NULL,
+                            # user.enm = NULL,
+                            # occs.ind = NULL,
+                            # kfolds = NA,
+                            # aggregation.factor = c(2,2),
+                            # orientation = "lat_lon",
+                            # overlap = FALSE,
+                            # overlapStat = c("D","I"),
+                            # pred.type = "cloglog",
+                            # abs.auc.diff = FALSE,
+                            # user.test.grps = NULL,
+                            updateProgress = updateProgress,
+                            quiet = FALSE)
 
   occPredVals <- raster::extract(e@predictions, occs.xy)
 

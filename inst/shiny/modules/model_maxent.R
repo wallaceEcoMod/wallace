@@ -57,7 +57,8 @@ model_maxent_module_ui <- function(id) {
         numericInput(
           "numCores",
           label = paste0("Specify the number of cores (max. ", parallel::detectCores(), ")"),
-          value = 1, min = 1, max = parallel::detectCores(), step = 1
+          value = parallel::detectCores() - 1, min = 1,
+          max = parallel::detectCores(), step = 1
         ))),
     tags$div(
       title = "Add Batch guidance text here (**)",
@@ -87,6 +88,10 @@ model_maxent_module_server <- function(input, output, session, common) {
       logger %>% writeLog(type = 'error', "Please specify clamping setting.")
       return()
     }
+    if(input$parallel == "") {
+      logger %>% writeLog(type = 'error', "Please specify parallel setting.")
+      return()
+    }
 
     # loop over all species if batch is on
     if(input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
@@ -107,11 +112,12 @@ model_maxent_module_server <- function(input, output, session, common) {
       } else if (input$categSel == 'YES') {
         catEnvs <- selCatEnvs()
       }
+      user_grp <- list(occs.grp = spp[[sp]]$occs$partition,
+                       bg.grp = spp[[sp]]$bg$partition)
       # FUNCTION CALL ####
       res.maxent <- model_maxent(spp[[sp]]$occs,
                                  spp[[sp]]$bg,
-                                 spp[[sp]]$occs$partition,
-                                 spp[[sp]]$bg$partition,
+                                 user_grp,
                                  spp[[sp]]$procEnvs$bgMask,
                                  input$rms,
                                  input$rmsStep,
@@ -119,6 +125,8 @@ model_maxent_module_server <- function(input, output, session, common) {
                                  input$clamp,
                                  input$algMaxent,
                                  catEnvs,
+                                 input$parallel,
+                                 input$numCores,
                                  logger,
                                  spN = sp)
       req(res.maxent)
