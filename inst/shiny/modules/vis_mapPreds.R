@@ -86,29 +86,31 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
     } else if (spp[[curSp()]]$rmm$model$algorithms %in% c("maxent.jar", "maxnet")) {
       predType <- input$maxentPredType
       # if selected prediction type is not raw, transform
-      if (predType != "raw") {
-        # transform and redefine predSel
-        smartProgress(
-          logger,
-          message = paste0("Generating ", input$maxentPredType,
-                           " prediction for model ", curModel(), "..."), {
-          m <- evalOut()@models[[curModel()]]
-          clamping <- spp[[curSp()]]$rmm$model$algorithm$maxent$clamping
-          if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
-            predSel <- ENMeval::maxnet.predictRaster(m, bgMask(),
-                                                     type = input$maxentPredType,
-                                                     doClamp = clamping)
-          } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
-            predSel <- dismo::predict(m, bgMask(),
-                                      args = paste0("outputformat=",
-                                                    input$maxentPredType))
-          }
-        })
-        # define crs
-        raster::crs(predSel) <- raster::crs(bgMask())
-        # define predSel name
-        names(predSel) <- curModel()
-      }
+      # transform and redefine predSel
+      smartProgress(
+        logger,
+        message = paste0("Generating ", input$maxentPredType,
+                         " prediction for model ", curModel(), "..."), {
+                           m <- evalOut()@models[[curModel()]]
+                           clamping <- spp[[curSp()]]$rmm$model$algorithm$maxent$clamping
+                           if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
+                             if (predType == "raw") predType <- "exponential"
+                             predSel <- ENMeval::enm.maxnet@pred(m, bgMask(),
+                                                                 other.settings = list(
+                                                                   pred.type = predType,
+                                                                   clamp = clamping))
+                           } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
+                             predSel <- ENMeval::enm.maxent.jar@pred(m, bgMask(),
+                                                                     other.settings = list(
+                                                                       pred.type = predType,
+                                                                       clamp = clamping))
+                           }
+                         })
+      # define crs
+      raster::crs(predSel) <- raster::crs(bgMask())
+      # define predSel name
+      names(predSel) <- curModel()
+
     }
 
     # generate binary prediction based on selected thresholding rule

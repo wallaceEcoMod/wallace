@@ -55,7 +55,7 @@ proj_area <- function(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
 
   if (alg == 'bioclim') {
     logger %>% writeLog('New area projection for BIOCLIM model.')
-  } else if (alg == 'maxent.jar'|clamp==TRUE) {
+  } else if (alg == 'maxent.jar'| clamp == TRUE) {
 
      logger %>% writeLog('New area projection for clamped model ', curModel, '.')
 
@@ -74,16 +74,18 @@ proj_area <- function(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
     if (alg == 'bioclim') {
       modProjArea <- dismo::predict(evalOut@models[[curModel]], projMsk)
     } else if (alg == 'maxnet') {
-      if (outputType == "raw") {pargs <- "exponential"} else {pargs <- outputType}
-      modProjArea <- ENMeval::enm.maxnet@pred(mod = evalOut@models[[curModel]],
-                                                   envs = projMsk, doClamp = clamp,
-                                                     pred.type = pargs)
-
-
+      if (outputType == "raw") outputType <- "exponential"
+      modProjArea <- ENMeval::enm.maxnet@pred(evalOut@models[[curModel]],
+                                              projMsk,
+                                              other.settings = list(
+                                                pred.type = outputType,
+                                                clamp = clamp))
     } else if (alg == 'maxent.jar') {
-      pargs <- paste0("outputformat=", outputType)
-      modProjArea <- dismo::predict(evalOut@models[[curModel]], projMsk,
-                                    args = pargs)
+      modProjArea <- ENMeval::enm.maxent.jar@pred(evalOut@models[[curModel]],
+                                                  projMsk,
+                                                  other.settings = list(
+                                                    pred.type = outputType,
+                                                    clamp = clamp))
     }
   })
 

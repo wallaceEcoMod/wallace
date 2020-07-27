@@ -71,20 +71,18 @@ proj_user <- function(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
     if (alg == 'bioclim') {
       modProjUser <- dismo::predict(evalOut@models[[curModel]], projMsk)
     } else if (alg == 'maxnet') {
-      if (outputType == "raw") {
-        pargs <- "exponential"
-      } else {
-        pargs <- outputType
-      }
-      modProjUser <- ENMeval::enm.maxnet@pred(mod = evalOut@models[[curModel]],
-                                              envs = projMsk, doClamp = clamp,
-                                              pred.type = pargs)
-
-
-    } else if (alg == "maxent.jar") {
-      pargs <- paste0("outputformat=", outputType)
-      modProjUser <- dismo::predict(evalOut@models[[curModel]], projMsk,
-                                    args = pargs)
+      if (outputType == "raw") outputType <- "exponential"
+      modProjArea <- ENMeval::enm.maxnet@pred(evalOut@models[[curModel]],
+                                              projMsk,
+                                              other.settings = list(
+                                                pred.type = outputType,
+                                                clamp = clamp))
+    } else if (alg == 'maxent.jar') {
+      modProjArea <- ENMeval::enm.maxent.jar@pred(evalOut@models[[curModel]],
+                                                  projMsk,
+                                                  other.settings = list(
+                                                    pred.type = outputType,
+                                                    clamp = clamp))
     }
   })
 

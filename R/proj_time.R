@@ -71,21 +71,25 @@ proj_time <- function(evalOut, curModel, envs, outputType, alg, clamp,
 
   smartProgress(logger, message = "Clipping environmental data to current extent...", {
     pjtMsk <- raster::crop(envs, newPoly)
-    projMsk <- raster::mask(pjtMsk, newPoly)
+    pjtMsk <- raster::mask(pjtMsk, newPoly)
   })
 
   smartProgress(logger, message = ("Projecting to new time..."), {
     if (alg == 'bioclim') {
       modProjTime <- dismo::predict(evalOut@models[[curModel]], pjtMsk)
     } else if (alg == 'maxnet') {
-      if (outputType == "raw") {pargs <- "exponential"} else {pargs <- outputType}
-      modProjTime <- ENMeval::enm.maxnet@pred(mod = evalOut@models[[curModel]],
-                                                  envs = pjtMsk, doClamp = clamp,
-                                                  pred.type = pargs)
-    } else if (alg == "maxent.jar") {
-      pargs <- paste0("outputformat=", outputType)
-      modProjTime <- dismo::predict(evalOut@models[[curModel]], pjtMsk,
-                                    args = pargs)
+      if (outputType == "raw") outputType <- "exponential"
+      modProjArea <- ENMeval::enm.maxnet@pred(evalOut@models[[curModel]],
+                                              pjtMsk,
+                                              other.settings = list(
+                                                pred.type = outputType,
+                                                clamp = clamp))
+    } else if (alg == 'maxent.jar') {
+      modProjArea <- ENMeval::enm.maxent.jar@pred(evalOut@models[[curModel]],
+                                                  pjtMsk,
+                                                  other.settings = list(
+                                                    pred.type = outputType,
+                                                    clamp = clamp))
     }
   })
 
