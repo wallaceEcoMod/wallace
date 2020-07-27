@@ -738,15 +738,23 @@ function(input, output, session) {
     filename = function() {paste0(curSp(), "_responseCurves.zip")},
     content = function(file) {
       tmpdir <- tempdir()
-      namesEnvs <- names(envs())
-      for (i in namesEnvs) {
-        png(paste0(tmpdir, "\\", i, ".png"))
-        if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
-          maxnet::response.plot(evalOut()@models[[curModel()]], v = i, type = "cloglog")
-        } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
-          dismo::response(evalOut()@models[[curModel()]], var = i)
+      if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
+        namesEnvs <- mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxnet")
+        for (i in namesEnvs) {
+          png(paste0(tmpdir, "\\", i, ".png"))
+          suppressWarnings(
+            maxnet::response.plot(evalOut()@models[[curModel()]], v = i,
+                                  type = "cloglog")
+          )
+          dev.off()
         }
-        dev.off()
+      } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
+        namesEnvs <- mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxent.jar")
+        for (i in namesEnvs) {
+          png(paste0(tmpdir, "\\", i, ".png"))
+          dismo::response(evalOut()@models[[curModel()]], var = i)
+          dev.off()
+        }
       }
       owd <- setwd(tmpdir)
       zip::zipr(zipfile = file, files = paste0(namesEnvs, ".png"))
