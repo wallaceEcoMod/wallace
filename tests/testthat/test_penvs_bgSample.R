@@ -8,24 +8,25 @@ source("test_helper_functions.R")
 ### Set parameters
 
 ## occurrences
-occs <-  occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+spN<-"Panthera onca"
+occs <-  occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
 occs <- as.data.frame(occs[[1]]$cleaned)
 
 ## background mask
 # enviromental data
 envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
 # background extent
-bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
 # background masked
-bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
+bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
 
 ## Number of background points to sample
-bgPtsNum <- 1000
+bgPtsNum <- 100
 bgPtsNum_big<-100000
 
 ### run function
-bgsample <- penvs_bgSample(occs, bgMask, bgPtsNum,spN=occs)
-bgsample_big <- penvs_bgSample(occs, bgMask, bgPtsNum_big,spN=occs)
+bgsample <- penvs_bgSample(occs, bgMask, bgPtsNum,spN=spN)
+bgsample_big <- penvs_bgSample(occs, bgMask, bgPtsNum_big,spN=spN)
 
 ### test output features
 test_that("output type checks", {

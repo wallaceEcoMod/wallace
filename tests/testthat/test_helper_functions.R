@@ -139,6 +139,22 @@ writeLog <- function(logs, ..., type = 'default') {
   logs(paste0(logs(), newEntries, '', sep = '<br>'))
 }
 
+maxentJARversion <- function() {
+  if (is.null(getOption('dismo_rJavaLoaded'))) {
+    # to avoid trouble on macs
+    Sys.setenv(NOAWT=TRUE)
+    if ( requireNamespace('rJava') ) {
+      rJava::.jpackage('dismo')
+      options(dismo_rJavaLoaded=TRUE)
+    } else {
+      stop('rJava cannot be loaded')
+    }
+  }
+  mxe <- rJava::.jnew("meversion")
+  v <- try(rJava::.jcall(mxe, "S", "meversion"))
+  return(v)
+}
+
 ####################### #
 # MAPPING ####
 ####################### #
@@ -254,27 +270,42 @@ popUpContent <- function(x) {
 # COMP 3 ####
 ####################### #
 
-remEnvsValsNA <- function(occs, occsEnvsVals, logs) {
+
+remEnvsValsNA <- function(occs, occsEnvsVals, sppName, logger) {
   withProgress(message = "Checking for points with NA values...", {
     na.rowNums <- which(rowSums(is.na(occsEnvsVals)) > 1)
-
     if (length(na.rowNums) == length(occsEnvsVals)) {
-      logs %>% writeLog(type = 'error', 'No localities overlay with environmental predictors.
-                        All localities may be marine -- please redo with terrestrial occurrences.')
+      logger %>% writeLog(
+        type = 'error',
+        hlSpp(sppName), paste0('No localities overlay with environmental ',
+                               'predictors. All localities may be marine -- please redo with ',
+                               'terrestrial occurrences.')
+      )
       return()
     }
-
     if (length(na.rowNums) > 0) {
       occs.notNA <- occs[-na.rowNums,]
-      logs %>% writeLog(type = 'warning', 'Removed records without environmental values with occIDs: ',
-                        paste(occs[na.rowNums,]$occID, collapse=', '), ".")
+      logger %>% writeLog(
+        type = 'warning',
+        hlSpp(sppName), 'Removed records without environmental values with occIDs: ',
+        paste(occs[na.rowNums,]$occID, collapse=', '), ".")
       return(occs.notNA)
     }
 
+    # # check to see if any cells are NA for one or more rasters but not all,
+    # # then fix it
+    # n <- raster::nlayers(envs)
+    # z <- raster::getValues(envs)
+    # z.rs <- rowSums(is.na(z))
+    # z.i <- which(z.rs < n & z.rs > 0)
+    # if(length(z.i) > 0) {
+    #   envs[z.i] <- NA
+    #   warning(paste0("Environmental raster grid cells (n = ", length(z.i), ") found with NA values for one or more but not all variables. These cells were converted to NA for all variables.\n"), immediate. = TRUE)
+    # }
+
     return(occs)
   })
-  }
-
+}
 ####################### #
 # PROCESS ENVS ####
 ####################### #

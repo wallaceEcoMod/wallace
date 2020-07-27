@@ -1,31 +1,50 @@
-#' \code{runMaxent} returns a formatted tibble of species occurrences with a
-#' selection of appropriate fields.
-#' @title model_maxent
-#' @description ..
+
+#' @title model_maxent Generate maxent or maxnet model
+#' @description This functions generates maxent or maxnet models using ENMeval 2.0 and user provided tuning parameters.
 #'
 #' @details
-#' See Examples.
+#' The function generates model in ENMeval using a user porvided parition of occurrences from previous components i GUI.
+#' User can activate clamping and input de tuning argumenta to be used for model building
 #'
-#' @param occs x
-#' @param bg  x
-#' @param occsGrp  x
-#' @param bgGrp x
-#' @param bgMsk x
-#' @param rms x
-#' @param rmsStep x
-#' @param fcs x
-#' @param logger x
-#' @param spN x
+#' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.
+#' @param bg  Coordinates of background points to be used for modelling.
+#' @param user.grp  A list of two vectors containing group assignments for occurrences (occs.grp) and background points (bg.grp).
+#' @param bgMsk A RasterStack or a RasterBrick of environmental layers cropped and masked to match the provided background extent.
+#' @param rms Vector of range of regularization multipliers to be used in the ENMeval run
+#' @param rmsStep Step to be used when defining regularization multipliers to be used from the provided range.
+#' @param fcs Feature classes to be tested in the ENM eval run
+#' @param parallel Whether to use parallel in the generation of models. Default is FALSE
+#' @param numCores If using parallel how many cores to use. Default is NULL
+#' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#'  otherwise leave the default NULL
+#' @param spN Species name to be used for all logger messages
+
 # @keywords
 #'
-# @examples
+#' @examples
+#'spN<-"Panthera onca"
+#'out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 1000)
+#'occs <- as.data.frame(out.gbif[[1]]$cleaned)
+#'envs <- envs_worldclim(bcRes = 10, bcSel = c("bio01","bio02","bio07","bio13","bio14","bio15","bio19"), doBrick = FALSE)
+# remove records without enviromental values
+#'records <- which(is.na(raster::extract(envs$bio01, occs[,3:4])) == TRUE)
+#'occs <- occs[-records, ]
+#'bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
+#'bgMsk <- penvs_bgMask(occs, envs, bgExt,spN=spN)
+#'bg <-penvs_bgSample(occs, bgMsk, bgPtsNum = 10000,spN=spN)
+#'partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=spN)
+#'rms <- c(1:2)
+#'rmsStep <- 1
+#'fcs <- c('L', 'LQ', 'H', 'LQH','LQHP')
+#'maxentAlg <- model_maxent(occs=occs, bg=bg, user.grp=partblock, bgMsk=bgMsk, rms=rms, rmsStep, fcs, clampSel = TRUE,algMaxent = "maxnet",catEnvs=NULL,parallel=FALSE,numCores=NULL,logger=NULL,spN=spN)
+
 #'
-#'
-# @return
+#' @return Function returns an ENMevaluate object with all the evaluated models and a selection of appropriate fields.
 #' @author Jamie M. Kass <jkass@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
 
-# @seealso
+#' @seealso \code{\link[ENMeval]{ENMevaluate}}
 # @references
 # @aliases - a list of additional topic names that will be mapped to
 # this documentation when the user looks them up from the command
@@ -34,10 +53,11 @@
 # linked in the documentation.
 #' @export
 
-model_maxent <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
-                         clampSel, algMaxent, catEnvs, logger = NULL,
+model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
+                         clampSel, algMaxent, catEnvs, parallel=FALSE, numCores=NULL, logger = NULL,
                          spN = NULL) {
-  if (is.null(occsGrp)) {
+
+  if (is.null(user.grp)) {
     logger %>% writeLog(
       type = 'error',
       "Before building a model, please partition occurrences for cross-validation."
@@ -86,6 +106,8 @@ model_maxent <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
 
   # define the vector of RMs to input
   rms.interval <- seq(rms[1], rms[2], rmsStep)
+  ##set up tuning parameter argument
+  tune.args=list(fc = fcs, rm = rms.interval)
   # create the Progress Bar object for ENMeval
   if (!is.null(logger)) {
     progress <- shiny::Progress$new()
@@ -104,16 +126,18 @@ model_maxent <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
   # get just coordinates
   occs.xy <- occs %>% dplyr::select(longitude, latitude)
   bg.xy <- bg %>% dplyr::select(longitude, latitude)
-
   # run ENMeval
-  e <- ENMeval::ENMevaluate(occs.xy, bgMsk, bg.coords = bg.xy,
-                            RMvalues = rms.interval, fc = fcs, method = 'user',
-                            occ.grp = occsGrp, bg.grp = bgGrp,
-                            bin.output = TRUE, clamp = clampSel,
-                            progbar = FALSE, updateProgress = updateProgress,
-                            algorithm = algMaxent, categoricals = catEnvs)
+  e <- ENMeval::ENMevaluate(occs = occs.xy, envs = bgMsk, bg = bg.xy,
+                            tune.args=tune.args,
+                            taxon.name=NULL,categoricals = catEnvs,
+                            mod.name = algMaxent, user.enm=NULL,partitions = 'user', user.grp=user.grp,
+                            occs.ind=NULL, kfolds=NA, aggregation.factor=c(2,2), orientation="lat_lon",
+                            overlap= FALSE, overlapStat=c("D","I"),
+                            clamp = clampSel, pred.type="cloglog", abs.auc.diff=FALSE,
+                            user.test.grps = NULL,
+                            parallel=parallel,numCores=numCores,parallelType="doSNOW",
+                            updateProgress = updateProgress,quiet=FALSE)
 
-  # get the values of the prediction for each occ point
   occPredVals <- raster::extract(e@predictions, occs.xy)
 
   endTxt <- paste("]), using", algMaxent, "with clamping",
@@ -125,4 +149,6 @@ model_maxent <- function(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs,
     paste(rms.interval, collapse = ", "),"]; Feature classes: [",
     paste(fcs, collapse = ", "), endTxt, "(**)")
   return(e)
+
 }
+

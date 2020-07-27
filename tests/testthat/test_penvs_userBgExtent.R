@@ -7,11 +7,13 @@ source("test_helper_functions.R")
 
 ### Set parameters
 ##ocurrences to test function for Colombia using "espeletia argentea" endemic to Colombia (provided shapefile)
-occs <-  occs_queryDb(spName = "espeletia argentea", occDb = "gbif", occNum = 100)
+spN="Espeletia argentea"
+occs <-  occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
 occs <- as.data.frame(occs[[1]]$cleaned)
 
 ## occurrences to test outside of user polygon (this species is distributed in central/sout america)
-occs_out <-  occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+spNOut<-"Panthera onca"
+occs_out <-  occs_queryDb(spName = spNOut, occDb = "gbif", occNum = 100)
 occs_out <- as.data.frame(occs_out[[1]]$cleaned)
 ## path to files
 Path <- list.files(path='./shapefile', pattern = "COL_adm0.", full.names = TRUE)
@@ -26,18 +28,18 @@ Name.p <- list.files(path='./shapefile', pattern = ".prj", full.names = FALSE)
 
 ### run function
 ## Buffer == 0.5
-userBgbf <- penvs_userBgExtent(bgShp_path = Path, bgShp_name = Name, userBgBuf = 0.5,occs=occs)
+userBgbf <- penvs_userBgExtent(bgShp_path = Path, bgShp_name = Name, userBgBuf = 0.5,occs=occs,spN=spN)
 ## Buffer == 0
-userBg <- penvs_userBgExtent(bgShp_path = Path, bgShp_name = Name, userBgBuf = 0, occs=occs)
+userBg <- penvs_userBgExtent(bgShp_path = Path, bgShp_name = Name, userBgBuf = 0, occs=occs,spN=spN)
 
 
 ### test if the error messages appear when they are supposed to
 test_that("error checks", {
   # the user has not loaded the environmental data
-  expect_error(penvs_userBgExtent(bgShp_path = Path, bgShp_name = Name.s, userBgBuf = 0.5,occs=occs),'If entering a shapefile, please select all the following files: .shp, .shx, .dbf.',fixed=T)
-  expect_error(penvs_userBgExtent(bgShp_path = Path, bgShp_name = Name.p, userBgBuf = 0.5, occs=occs ),'Please enter either a CSV file of vertex coordinates or shapefile (.shp, .shx, .dbf).',fixed=T)
+  expect_error(penvs_userBgExtent(bgShp_path = Path, bgShp_name = Name.s, userBgBuf = 0.5,occs=occs,spN=spN),'If entering a shapefile, please select all the following files: .shp, .shx, .dbf.',fixed=T)
+  expect_error(penvs_userBgExtent(bgShp_path = Path, bgShp_name = Name.p, userBgBuf = 0.5, occs=occs,spN=spN ),'Please enter either a CSV file of vertex coordinates or shapefile (.shp, .shx, .dbf).',fixed=T)
   #The user background does not include all occurrences
-  expect_error(penvs_userBgExtent(bgShp_path = Path, bgShp_name = Name, userBgBuf = 0.5, occs=occs_out ),'The polygon did not include all localities(**). You can remove localities in Process Occs component',fixed=T)
+  expect_error(penvs_userBgExtent(bgShp_path = Path, bgShp_name = Name, userBgBuf = 0.5, occs=occs_out,spN=spNOut ),'The polygon did not include all localities(**). You can remove localities in Process Occs component',fixed=T)
 })
 
 ### test output features

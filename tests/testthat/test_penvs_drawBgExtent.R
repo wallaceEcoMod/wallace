@@ -8,7 +8,8 @@ source("test_helper_functions.R")
 ### Set parameters
 
 ## occurrences
-occs <-  occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+spN<-"Panthera onca"
+occs <-  occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
 occs <- as.data.frame(occs[[1]]$cleaned)
 ## Draw Background Extent
 # set coordinates
@@ -27,17 +28,17 @@ expertDrawPoly2 <- matrix(c(longitude2, latitude2), byrow = F, ncol = 2)
 
 ### run function and set coordinates reference system
 # buffer == 0.5
-drawBgBf <- penvs_drawBgExtent(polyExtXY = expertDrawPoly, polyExtID = 1, drawBgBuf = 0.5, occs,spN=occs)
+drawBgBf <- penvs_drawBgExtent(polyExtXY = expertDrawPoly, polyExtID = 1, drawBgBuf = 0.5, occs,spN=spN)
 raster::crs(drawBgBf) <- "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=WGS84"
 # buffer == 0
-drawBg <- penvs_drawBgExtent(polyExtXY = expertDrawPoly, polyExtID = 1, drawBgBuf = 0, occs,spN=occs)
+drawBg <- penvs_drawBgExtent(polyExtXY = expertDrawPoly, polyExtID = 1, drawBgBuf = 0, occs,spN=spN)
 raster::crs(drawBg) <- "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=WGS84"
 
 
 ### test if the error messages appear when they are supposed to
 test_that("error checks", {
   # the drawn polygon does not include all localities
-  expect_error(penvs_drawBgExtent(polyExtXY = expertDrawPoly2, polyExtID = 1, drawBgBuf, occs),"The drawn polygon did not include all localities(**). Remove the polygon before drawing a new one.",fixed=TRUE)
+  expect_error(penvs_drawBgExtent(polyExtXY = expertDrawPoly2, polyExtID = 1, drawBgBuf=0.5, occs,spN=spN),"The drawn polygon did not include all localities(**). Remove the polygon before drawing a new one.",fixed=TRUE)
 })
 
 ### test output features

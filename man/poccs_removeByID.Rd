@@ -30,10 +30,11 @@ a data frame of occurrences with all relevant columns for futher analyses and wi
 occurrence selected by the user
 }
 \examples{
-out.gbif <- occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+spN<-"Panthera onca"
+out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
 occs <- as.data.frame(out.gbif[[1]]$cleaned)
 removeID <- 81
-out.ID <- poccs_removeByID(occs, removeID,spN=occs)
+out.ID <- poccs_removeByID(occs, removeID,spN=spN)
 
 }
 \author{

@@ -24,16 +24,17 @@
 # @keywords
 #'
 #' @examples
-#' occs <-  occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+#' spN<-"Panthera onca"
+#' occs <-  occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
 #' occs <- as.data.frame(occs[[1]]$cleaned)
 #' envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
-#' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
-#' bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
-#' bgSample <- penvs_bgSample(occs, bgMask, bgPtsNum=1000,spN=occs)
+#' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
+#' bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
+#' bgSample <- penvs_bgSample(occs, bgMask, bgPtsNum=1000,spN=spN)
 #' folds <- 'rand'
-#' partfold <- part_partitionOccs(occs, bgSample, method = folds, kfolds=4, bgMask = NULL, aggFact = NULL,spN=occs)
+#' partfold <- part_partitionOccs(occs, bgSample, method = folds, kfolds=4, bgMask = NULL, aggFact = NULL,spN=spN)
 #'
-#' @return A list of two vectors containing group assignments for occurrences (occ.grp) and background points (bg.grp).
+#' @return A list of two vectors containing group assignments for occurrences (occs.grp) and background points (bg.grp).
 #' @author Jamie Kass < jamie.m.kass@@gmail.com >
 #' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 #' @author Andrea Paz < paz.andreita@@gmail.com>
@@ -66,8 +67,7 @@ part_partitionOccs <- function(occs, bg, method, kfolds = NULL, bgMask = NULL,
   if (method == 'rand') {
     if(is.null(kfolds)) {
       logger %>% writeLog(type = 'error', hlSpp(spN),
-                          "Please specify a kfold value to use the random ",
-                          "partition function.")
+                          "Please specify a kfold value to use the random partition function.")
       return()
     }
     if (kfolds < 2) {

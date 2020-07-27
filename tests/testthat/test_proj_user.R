@@ -5,21 +5,22 @@ context("proj_user")
 source("test_helper_functions.R")
 
 ## occurrences
-out.gbif <- occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+spN="Panthera onca"
+out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 1000)
 occs <- as.data.frame(out.gbif[[1]]$cleaned)
 ## background mask
 # enviromental data
 envs <- envs_worldclim(bcRes = 10, bcSel = c('bio01','bio19'), doBrick = FALSE)
 # background extent
-bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=occs)
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
 # background masked
-bgMask <- penvs_bgMask(occs, envs, bgExt,spN=occs)
+bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
 ## background sample
-bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=occs)
+bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=spN)
 
 ## Partition
 partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,
-                                aggFact = NULL,spN=occs)
+                                aggFact = NULL,spN=spN)
 # occurrences partitioned
 occsGrp = partblock$occ.grp
 # background points partitioned
@@ -47,12 +48,12 @@ algorithm <- c('maxent.jar','maxnet','bioclim')
 # build model and test for both algorithms
 for (i in algorithm) {
   if(i == 'bioclim'){
-    modAlg <- model_bioclim(occs, bg, occsGrp, bgGrp, bgMask,spN=occs)
+    modAlg <- model_bioclim(occs, bg, occsGrp, bgGrp, bgMask,spN=spN)
     curModel=1
   }
   else{
     modAlg <- model_maxent(occs, bg, occsGrp, bgGrp, bgMask, rms, rmsStep, fcs, clampSel = TRUE,
-                           algMaxent = i,catEnvs=NULL,spN=occs)
+                           algMaxent = i,catEnvs=NULL,spN=spN)
     curModel='L_1'
   }
 

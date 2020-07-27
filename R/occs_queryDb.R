@@ -29,6 +29,7 @@
 #'
 #' @author Jamie Kass < jamie.m.kass@@gmail.com >
 #' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Hannah Owens
 #' @author Andrea Paz < paz.andreita@@gmail.com>
 #' @examples
 #' occs_queryDb(spName = "Tremarctos ornatus", occDb = "gbif", occNum = 100)
