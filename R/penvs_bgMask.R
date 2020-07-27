@@ -12,7 +12,7 @@
 #' @param bgExt A SpatialPolygonsDataFrame with the background area to be used for processing
 #' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 #' otherwise leave the default NULL
-#' @param spN data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages
+#' @param spN Species name to be used for all logger messages
 
 #'
 # @keywords

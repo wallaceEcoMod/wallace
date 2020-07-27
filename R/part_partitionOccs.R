@@ -34,7 +34,7 @@
 #' folds <- 'rand'
 #' partfold <- part_partitionOccs(occs, bgSample, method = folds, kfolds=4, bgMask = NULL, aggFact = NULL,spN=spN)
 #'
-#' @return A list of two vectors containing group assignments for occurrences (occ.grp) and background points (bg.grp).
+#' @return A list of two vectors containing group assignments for occurrences (occs.grp) and background points (bg.grp).
 #' @author Jamie Kass < jamie.m.kass@@gmail.com >
 #' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 #' @author Andrea Paz < paz.andreita@@gmail.com>

@@ -24,15 +24,11 @@ bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
 bgMsk <- penvs_bgMask(occs, envs, bgExt,spN=spN)
 
 ## background sample
-bg <- penvs_bgSample(occs, bgMsk, bgPtsNum = 10000,spN=spN)
+bg <-penvs_bgSample(occs, bgMsk, bgPtsNum = 10000,spN=spN)
 
 ## partition data
 partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,
                               aggFact = NULL,spN=spN)
-# occurrences partitioned
-occsGrp = partblock$occ.grp
-# background points partitioned
-bgGrp = partblock$bg.grp
 
 ## regularization multipliers
 rms <- c(1:2)
@@ -40,7 +36,7 @@ rms <- c(1:2)
 rmsStep <- 1
 ## feature classes
 fcs <- c('L', 'LQ', 'H', 'LQH','LQHP')
-
+algMaxent<-"maxent.jar"
 ## algorithm
 algorithm <- c('maxent.jar','maxnet')
 
@@ -61,17 +57,18 @@ test_that("error checks", {
 
 for (i in algorithm) {
   ### run function
-  maxentAlg <- model_maxent(occs, bg, occsGrp, bgGrp, bgMsk, rms, rmsStep, fcs, clampSel = TRUE,
-                         algMaxent = i,catEnvs=NULL,spN=spN)
+
+  maxentAlg <- model_maxent(occs=occs, bg=bg, user.grp=partblock, bgMsk=bgMsk, rms=rms, rmsStep, fcs, clampSel = TRUE,
+                         algMaxent = i,catEnvs=NULL,parallel=FALSE,numCores=NULL,logger=NULL,spN=spN)
 
   test_that("output type checks", {
     # the output is an ENMeval object
     expect_is(maxentAlg, "ENMevaluation")
     #the output has 9 slots with correct names
-    expect_equal(length(slotNames(maxentAlg)), 14)
+    expect_equal(length(slotNames(maxentAlg)), 16)
     expect_equal(slotNames(maxentAlg),c("algorithm","tune.settings","partition.method","partition.settings",
                                         "other.settings","results","results.grp","models",
-                                        "predictions","occs","occ.grp","bg","bg.grp","overlap"))
+                                        "predictions","taxon.name","occs","occs.grp","bg","bg.grp","overlap","rmm"))
     # element within the evaluation are:
     # character
     expect_is(maxentAlg@algorithm, "character")
@@ -89,7 +86,7 @@ for (i in algorithm) {
     # a raster Stack
     expect_is(maxentAlg@predictions, "RasterStack")
     # factor
-    expect_is(maxentAlg@occ.grp, "factor")
+    expect_is(maxentAlg@occs.grp, "factor")
     expect_is(maxentAlg@bg.grp, "factor")
     # there is 1 model
     # there are as much models as feature classes * rms/rmsStep
@@ -104,8 +101,7 @@ for (i in algorithm) {
     # columns name in the evaluation table are right for each algorithm assuming block partition
     if (i=="maxent.jar"){
     expect_equal(colnames(maxentAlg@results),c("fc","rm","tune.args","auc.train","cbi.train","auc.diff.avg",
-                                               "auc.diff.sd","auc.test.avg","auc.test.sd","maxKappa.test.avg",
-                                               "maxKappa.test.sd","maxTSS.test.avg","maxTSS.test.sd","or.10p.avg","or.10p.sd",
+                                               "auc.diff.sd","auc.test.avg","auc.test.sd","or.10p.avg","or.10p.sd",
                                                "or.mtp.avg","or.mtp.sd","AICc","delta.AICc","w.AIC","nparam"))
     }
     else if (i=="maxnet"){
@@ -114,7 +110,7 @@ for (i in algorithm) {
                                                  "or.mtp.avg","or.mtp.sd","AICc","delta.AICc","w.AIC","nparam"))
     }
     # bin evaluation table has the right amout of rows
-    expect_equal(nrow(maxentAlg@results.grp), (nlevels(factor(occsGrp)))*10) ##colnumbers minus the 16 minimum
+    expect_equal(nrow(maxentAlg@results.grp), (nlevels(factor(partblock$occs.grp)))*10) ##colnumbers minus the 16 minimum
   })
 
   ### test function stepts

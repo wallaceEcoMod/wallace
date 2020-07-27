@@ -29,7 +29,7 @@ partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMas
                               aggFact = NULL,spN=spN)
 
 ### run function
-bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=spN)
+bioclimAlg <- model_bioclim(occs, bg, user.grp=partblock, bgMask,spN=spN)
 
 
 ### test output features
@@ -37,10 +37,10 @@ test_that("output type checks", {
   # the output is a list
   expect_is(bioclimAlg, "ENMevaluation")
   #the output has 9 slots with correct names
-  expect_equal(length(slotNames(bioclimAlg)), 14)
+  expect_equal(length(slotNames(bioclimAlg)), 16)
   expect_equal(slotNames(bioclimAlg),c("algorithm","tune.settings","partition.method","partition.settings",
                                        "other.settings","results","results.grp","models",
-                                       "predictions","occs","occ.grp","bg","bg.grp","overlap"))
+                                       "predictions","taxon.name","occs","occs.grp","bg","bg.grp","overlap","rmm"))
   # element within the evaluation are:
   # character
   expect_is(bioclimAlg@algorithm, "character")
@@ -58,7 +58,7 @@ test_that("output type checks", {
   # a raster Stack
   expect_is(bioclimAlg@predictions, "RasterStack")
   # factor
-  expect_is(bioclimAlg@occ.grp, "factor")
+  expect_is(bioclimAlg@occs.grp, "factor")
   expect_is(bioclimAlg@bg.grp, "factor")
   # there is 1 model
   expect_equal(length(bioclimAlg@models), 1)
@@ -69,16 +69,13 @@ test_that("output type checks", {
   # columns name in the evaluation table are right
   expect_equal(colnames(bioclimAlg@results),c("auc.train", "cbi.train", "auc.diff.avg",
                                               "auc.diff.sd", "auc.test.avg", "auc.test.sd",
-                                              "maxKappa.test.avg", "maxKappa.test.sd",
-                                              "maxTSS.test.avg","maxTSS.test.sd","or.10p.avg",
-                                              "or.10p.sd","or.mtp.avg","or.mtp.sd","nparam"))
+                                              "or.10p.avg","or.10p.sd","or.mtp.avg","or.mtp.sd","nparam"))
 
   # there are as many models in the bin evaluation table as partitions
-  expect_equal(nrow(bioclimAlg@results.grp), length(unique(partblock$occ.grp)))
+  expect_equal(nrow(bioclimAlg@results.grp), length(unique(partblock$occs.grp)))
 
   # # col name in the evaluation table are right
-  expect_equal(colnames(bioclimAlg@results.grp), c( "tune.args", "fold","auc.test","auc.diff","or.mtp","or.10p",
-                                                     "maxTSS.test","maxKappa.test"))
+  expect_equal(colnames(bioclimAlg@results.grp), c( "tune.args", "fold","auc.test","auc.diff","or.mtp","or.10p"))
 })
 
 ### test function stepts
