@@ -2,7 +2,7 @@ vis_responsePlot_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
     uiOutput(ns("curEnvUI")),
-    h6("Reponse curves are displayed automatically in 'Results' tab(**)")
+    h5("Reponse curves are displayed automatically in 'Results' tab(**)")
   )
 }
 
@@ -18,25 +18,32 @@ vis_responsePlot_module_server <- function(input, output, session, common) {
   # ui that populates with the names of environmental predictors used
   output$curEnvUI <- renderUI({
     # ensure envs entity is within spp
-    req(curSp(), evalOut())
-    if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
-      n <- mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxnet")
-    } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
-      n <- mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxent.jar")
+    req(curSp(), evalOut(), curModel())
+    if (spp[[curSp()]]$rmm$model$algorithms != "BIOCLIM") {
+      if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
+        n <- mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxnet")
+      } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
+        n <- mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxent.jar")
+      }
+      envsNameList <- c(setNames(as.list(n), n))
+      selectizeInput("curEnv", label = "Select variable" ,
+                     choices = envsNameList, multiple = FALSE, selected = n[1],
+                     options = list(maxItems = 1))
     }
-    envsNameList <- c(setNames(as.list(n), n))
-    selectizeInput("curEnv", label = "Select variable" ,
-                   choices = envsNameList, multiple = FALSE, selected = n[1],
-                   options = list(maxItems = 1))
   })
 
   output$responsePlot <- renderPlot({
     req(curSp(), evalOut())
-    if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
+    if (spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM") {
+      par(mar = c(0,0,0,0))
+      plot(c(0, 1), c(0, 1), ann = F, bty = 'n', type = 'n', xaxt = 'n', yaxt = 'n')
+      text(x = 0.25, y = 1, "Response curves module requires a Maxent model (**)",
+           cex = 1.2, col = "#641E16")
+    } else if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
       req(curEnv())
       suppressWarnings(
-        plot(evalOut()@models[[curModel()]], vars = curEnv(), type = "cloglog")
-        )
+        maxnet::response.plot(evalOut()@models[[curModel()]], v = curEnv(), type = "cloglog")
+      )
     } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
       dismo::response(evalOut()@models[[curModel()]], var = curEnv())
     }
@@ -45,7 +52,6 @@ vis_responsePlot_module_server <- function(input, output, session, common) {
 
 vis_responsePlot_module_result <- function(id) {
   ns <- NS(id)
-  # Result UI
   imageOutput(ns('responsePlot'))
 }
 
