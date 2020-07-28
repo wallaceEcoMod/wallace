@@ -49,11 +49,11 @@ algorithm <- c('maxent.jar','maxnet','bioclim')
 # build model and test for both algorithms
 for (i in algorithm) {
   if(i== 'bioclim'){
-    modAlg <- model_bioclim(occs, bg, occsGrp, bgGrp, bgMask,spN=spN)
+    modAlg <- model_bioclim(occs, bg, partblock, bgMask,spN=spN)
     curModel=1
   }
   else{
-    modAlg <- model_maxent(occs, bg, occsGrp, bgGrp, bgMask, rms, rmsStep, fcs, clampSel = TRUE,
+    modAlg <- model_maxent(occs, bg, partblock, bgMask, rms, rmsStep, fcs, clampSel = TRUE,
                           algMaxent = i,catEnvs=NULL,spN=spN)
     curModel='L_1'
   }

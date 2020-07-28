@@ -73,7 +73,7 @@ for (i in algorithm) {
       expect_equal(length(modProj), 2)
       # element within the output list are:
       # a rasterBrick
-      expect_is(modProj$projExt, "RasterStack")
+      expect_is(modProj$projExt, "RasterBrick")
       # a rasterLayer
       expect_is(modProj$projTime, "RasterLayer")
       # there are as many projection extents as environmental variables used
