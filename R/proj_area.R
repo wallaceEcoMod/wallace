@@ -37,11 +37,11 @@
 #' @return A list of two elements: projExt and projArea.
 #' The first is a RasterBrick or a RasterStack of the environmental variables cropped to the projection area.
 #' The second element is a raster of the projected model with the specified output type.
-#' @author Andrea Paz <paz.andreita@@gmail.com>
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+#' @author Andrea Paz <paz.andreita@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
-#' @seealso \code{\link[dismo]{predict}}, \code{\link[ENMeval]{maxnet.predictRaster}}, \code{\link{proj_time}} \code{\link{proj_user}}
+#' @seealso \code{\link[dismo]{predict}}, \code{\link{proj_time}} \code{\link{proj_user}}
 # @references
 # @aliases - a list of additional topic names that will be mapped to
 # this documentation when the user looks them up from the command
