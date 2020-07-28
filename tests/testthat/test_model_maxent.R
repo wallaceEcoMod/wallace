@@ -36,7 +36,7 @@ rms <- c(1:2)
 rmsStep <- 1
 ## feature classes
 fcs <- c('L', 'LQ', 'H', 'LQH','LQHP')
-algMaxent<-"maxent.jar"
+
 ## algorithm
 algorithm <- c('maxent.jar','maxnet')
 
