@@ -767,8 +767,8 @@ function(input, output, session) {
     filename = function() {
       ext <- switch(input$predFileType, raster = 'zip', ascii = 'asc',
                     GTiff = 'tif', png = 'png')
-      thresholdRule <- rmm()$output$prediction$thresholdRule
-      predType <- rmm()$output$prediction$notes
+      thresholdRule <- rmm()$prediction$binary$thresholdRule
+      predType <- rmm()$prediction$notes
       if (thresholdRule == 'none') {
         paste0(curSp(), "_", predType, '.', ext)
       } else {
@@ -779,7 +779,13 @@ function(input, output, session) {
       if(require(rgdal)) {
         if (input$predFileType == 'png') {
           req(mapPred())
-          if (rmm()$output$prediction$thresholdRule != 'none') {
+          if (!webshot::is_phantomjs_installed()) {
+            logger %>%
+              writeLog(type = "error", "To download PNG predition, you require to",
+                       " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
+                       " in you are R console. (**)")
+          }
+          if (rmm()$prediction$binary$thresholdRule != 'none') {
             mapPredVals <- 0:1
             rasPal <- c('gray', 'blue')
             legendPal <- colorBin(rasPal, 0:1, bins = 2)
@@ -888,7 +894,7 @@ function(input, output, session) {
       ext <- switch(input$projFileType, raster = 'zip', ascii = 'asc',
                     GTiff = 'tif', png = 'png')
       thresholdRule <- rmm()$output$transfer$environment1$thresholdRule
-      predType <- rmm()$output$prediction$notes
+      predType <- rmm()$prediction$notes
       if (thresholdRule == 'none') {
         paste0(curSp(), "_proj_", predType, '.', ext)
       } else {
@@ -899,6 +905,12 @@ function(input, output, session) {
       if(require(rgdal)) {
         if (input$projFileType == 'png') {
           req(mapProj())
+          if (!webshot::is_phantomjs_installed()) {
+            logger %>%
+              writeLog(type = "error", "To download PNG predition, you require to",
+                       " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
+                       " in you are R console. (**)")
+          }
           if (rmm()$output$transfer$environment1$thresholdRule != 'none') {
             mapProjVals <- 0:1
             rasPal <- c('gray', 'red')
@@ -967,6 +979,12 @@ function(input, output, session) {
         req(spp[[curSp()]]$project$mess, spp[[curSp()]]$polyPjXY)
         mess <- spp[[curSp()]]$project$mess
         if (input$messFileType == 'png') {
+          if (!webshot::is_phantomjs_installed()) {
+            logger %>%
+              writeLog(type = "error", "To download PNG predition, you require to",
+                       " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
+                       " in you are R console. (**)")
+          }
           polyPjXY <- spp[[curSp()]]$polyPjXY
           rasVals <- spp[[curSp()]]$project$messVals
           # define colorRamp for mess

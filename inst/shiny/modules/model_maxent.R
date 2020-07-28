@@ -94,7 +94,7 @@ model_maxent_module_server <- function(input, output, session, common) {
     }
 
     # loop over all species if batch is on
-    if(input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
+    if (input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
 
     # PROCESSING ####
     for(sp in spLoop) {
