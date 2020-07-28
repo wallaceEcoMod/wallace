@@ -417,24 +417,19 @@ tagList(
               conditionalPanel(
                 "input.tabs == 'vis'",
                 br(),
-                conditionalPanel(
-                  "input.modelSel == 'BIOCLIM'",
-                  fluidRow(
-                    column(3, h5("Download Bioclim plot (**)")),
-                    column(2, shinyjs::disabled(downloadButton('dlVisBioclim', "PNG file")))
-                  )
+                fluidRow(
+                  column(3, h5("Download Bioclim plot (**)")),
+                  column(2, shinyjs::disabled(downloadButton('dlVisBioclim', "PNG file")))
                 ),
-                conditionalPanel(
-                  "input.modelSel == 'Maxent'",
-                  fluidRow(
-                    column(3, h5("Download Maxent plots (**)")),
-                    column(2, shinyjs::disabled(downloadButton('dlMaxentPlots', "ZIP file")))
-                  ),
-                  br(),
-                  fluidRow(
-                    column(3, h5("Download Response plots (**)")),
-                    column(2, shinyjs::disabled(downloadButton('dlRespCurves', "ZIP file")))
-                  )
+                br(),
+                fluidRow(
+                  column(3, h5("Download Maxent plots (**)")),
+                  column(2, shinyjs::disabled(downloadButton('dlMaxentPlots', "ZIP file")))
+                ),
+                br(),
+                fluidRow(
+                  column(3, h5("Download Response plots (**)")),
+                  column(2, shinyjs::disabled(downloadButton('dlRespCurves', "ZIP file")))
                 ),
                 br(),
                 fluidRow(

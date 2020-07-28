@@ -53,7 +53,7 @@ poccs_selectOccs_module_map <- function(map, common) {
 poccs_selectOccs_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    poccs_selectByID_knit = !is.null(species$rmm$code$wallaceSettings$occsSelPolyCoords),
+    poccs_selectByID_knit = !is.null(species$rmm$code$wallace$occsSelPolyCoords),
     selectByID_xy = species$polySelXY,
     selectByID_id = species$polySelID
   )

@@ -37,11 +37,11 @@
 #' @return A list of two elements: projExt and projArea.
 #' The first is a RasterBrick or a RasterStack of the environmental variables cropped to the projection area.
 #' The second element is a raster of the projected model with the specified output type.
-#' @author Andrea Paz <paz.andreita@@gmail.com>
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+#' @author Andrea Paz <paz.andreita@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
-#' @seealso \code{\link[dismo]{predict}}, \code{\link[ENMeval]{maxnet.predictRaster}}, \code{\link{proj_time}} \code{\link{proj_user}}
+#' @seealso \code{\link[dismo]{predict}}, \code{\link{proj_time}} \code{\link{proj_user}}
 # @references
 # @aliases - a list of additional topic names that will be mapped to
 # this documentation when the user looks them up from the command
@@ -55,7 +55,7 @@ proj_area <- function(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
 
   if (alg == 'bioclim') {
     logger %>% writeLog('New area projection for BIOCLIM model.')
-  } else if (alg == 'maxent.jar'|clamp==TRUE) {
+  } else if (alg == 'maxent.jar'| clamp == TRUE) {
 
      logger %>% writeLog('New area projection for clamped model ', curModel, '.')
 
@@ -74,16 +74,18 @@ proj_area <- function(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
     if (alg == 'bioclim') {
       modProjArea <- dismo::predict(evalOut@models[[curModel]], projMsk)
     } else if (alg == 'maxnet') {
-      if (outputType == "raw") {pargs <- "exponential"} else {pargs <- outputType}
-      modProjArea <- ENMeval::enm.maxnet@pred(mod = evalOut@models[[curModel]],
-                                                   envs = projMsk, doClamp = clamp,
-                                                     pred.type = pargs)
-
-
+      if (outputType == "raw") outputType <- "exponential"
+      modProjArea <- ENMeval::enm.maxnet@pred(evalOut@models[[curModel]],
+                                              projMsk,
+                                              other.settings = list(
+                                                pred.type = outputType,
+                                                clamp = clamp))
     } else if (alg == 'maxent.jar') {
-      pargs <- paste0("outputformat=", outputType)
-      modProjArea <- dismo::predict(evalOut@models[[curModel]], projMsk,
-                                    args = pargs)
+      modProjArea <- ENMeval::enm.maxent.jar@pred(evalOut@models[[curModel]],
+                                                  projMsk,
+                                                  other.settings = list(
+                                                    pred.type = outputType,
+                                                    clamp = clamp))
     }
   })
 

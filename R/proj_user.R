@@ -35,12 +35,12 @@
 #'modProj <- proj_user(evalOut = modAlg, curModel=1, envs=envsFut,alg='bioclim',clamp=FALSE, pjExt = userExt )
 #'
 # @return
-#' @author Andrea Paz <paz.andreita@@gmail.com>
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+#' @author Andrea Paz <paz.andreita@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
-#' @seealso \code{\link[dismo]{predict}}, \code{\link[ENMeval]{maxnet.predictRaster}}, \code{\link{proj_time}} \code{\link{proj_area}}
-
+#' @seealso \code{\link[dismo]{predict}}, \code{\link{proj_time}} \code{\link{proj_user}}
+#'
 # @references
 # @aliases - a list of additional topic names that will be mapped to
 # this documentation when the user looks them up from the command
@@ -71,20 +71,18 @@ proj_user <- function(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
     if (alg == 'bioclim') {
       modProjUser <- dismo::predict(evalOut@models[[curModel]], projMsk)
     } else if (alg == 'maxnet') {
-      if (outputType == "raw") {
-        pargs <- "exponential"
-      } else {
-        pargs <- outputType
-      }
-      modProjUser <- ENMeval::enm.maxnet@pred(mod = evalOut@models[[curModel]],
-                                              envs = projMsk, doClamp = clamp,
-                                              pred.type = pargs)
-
-
-    } else if (alg == "maxent.jar") {
-      pargs <- paste0("outputformat=", outputType)
-      modProjUser <- dismo::predict(evalOut@models[[curModel]], projMsk,
-                                    args = pargs)
+      if (outputType == "raw") outputType <- "exponential"
+      modProjArea <- ENMeval::enm.maxnet@pred(evalOut@models[[curModel]],
+                                              projMsk,
+                                              other.settings = list(
+                                                pred.type = outputType,
+                                                clamp = clamp))
+    } else if (alg == 'maxent.jar') {
+      modProjArea <- ENMeval::enm.maxent.jar@pred(evalOut@models[[curModel]],
+                                                  projMsk,
+                                                  other.settings = list(
+                                                    pred.type = outputType,
+                                                    clamp = clamp))
     }
   })
 

@@ -117,9 +117,9 @@ function(input, output, session) {
     shinyjs::toggleState("dlRMD", !is.null(occs()))
     shinyjs::toggleState("dlGlobalEnvs", !is.null(spp[[curSp()]]$envs))
     shinyjs::toggleState("dlProcOccs",
-                         !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords) |
+                         !is.null(spp[[curSp()]]$rmm$code$wallace$occsSelPolyCoords) |
                            !is.null(spp[[curSp()]]$procOccs$occsThin) |
-                           !is.null(spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs))
+                           !is.null(spp[[curSp()]]$rmm$code$wallace$removedIDs))
     shinyjs::toggleState("dlMskEnvs", !is.null(spp[[curSp()]]$procEnvs$bgMask))
     shinyjs::toggleState("dlBgPts", !is.null(spp[[curSp()]]$bgPts))
     shinyjs::toggleState("dlBgShp", !is.null(spp[[curSp()]]$procEnvs$bgExt))
@@ -318,9 +318,9 @@ function(input, output, session) {
   observeEvent(input$goResetOccs, {
     req(curSp())
     spp[[curSp()]]$occs <- spp[[curSp()]]$occData$occsCleaned
-    spp[[curSp()]]$rmm$code$wallaceSettings$occsSelPolyCoords <- NULL
+    spp[[curSp()]]$rmm$code$wallace$occsSelPolyCoords <- NULL
     spp[[curSp()]]$procOccs$occsThin <- NULL
-    spp[[curSp()]]$rmm$code$wallaceSettings$removedIDs <- NULL
+    spp[[curSp()]]$rmm$code$wallace$removedIDs <- NULL
     logger %>% writeLog(
       hlSpp(curSp()), "Reset to original occurrences (n =",
       nrow(spp[[curSp()]]$occs), ").")
@@ -705,10 +705,10 @@ function(input, output, session) {
     filename = function() {paste0(curSp(), "_bioClimPlot.png")},
     content = function(file) {
       png(file)
-      makeBioclimPlot(evalOut()@models[[curModel()]],
-                      spp[[curSp()]]$rmm$code$wallaceSettings$bcPlotSettings[['bc1']],
-                      spp[[curSp()]]$rmm$code$wallaceSettings$bcPlotSettings[['bc2']],
-                      spp[[curSp()]]$rmm$code$wallaceSettings$bcPlotSettings[['p']])
+      vis_bioclimPlot(evalOut()@models[[curModel()]],
+                      spp[[curSp()]]$rmm$code$wallace$bcPlotSettings[['bc1']],
+                      spp[[curSp()]]$rmm$code$wallace$bcPlotSettings[['bc2']],
+                      spp[[curSp()]]$rmm$code$wallace$bcPlotSettings[['p']])
       dev.off()
     }
   )
@@ -718,12 +718,13 @@ function(input, output, session) {
     filename = function() {paste0(curSp(), "_evalPlots.zip")},
     content = function(file) {
       tmpdir <- tempdir()
-      parEval <- c('avg.test.AUC', 'avg.diff.AUC', 'avg.test.orMTP', 'avg.test.or10pct',
-                   'delta.AICc')
+      parEval <- c('auc.test', 'auc.diff', 'or.mtp', 'or.10p', 'delta.AICc')
       for (i in parEval) {
-        png(paste0(tmpdir, "\\", gsub("[[:punct:]]", "_", i), ".png"))
-        makeMaxentEvalPlot(evalOut()@results, i)
-        dev.off()
+        # png(paste0(tmpdir, "\\", gsub("[[:punct:]]", "_", i), ".png"))
+        ENMeval::evalplot.stats(spp[[curSp()]]$evalOut, i, "rm", "fc")
+        ggplot2::ggsave(paste0(tmpdir, "\\",
+                               gsub("[[:punct:]]", "_", i), ".png"))
+        # dev.off()
       }
       owd <- setwd(tmpdir)
       zip::zipr(zipfile = file,
@@ -737,15 +738,23 @@ function(input, output, session) {
     filename = function() {paste0(curSp(), "_responseCurves.zip")},
     content = function(file) {
       tmpdir <- tempdir()
-      namesEnvs <- names(envs())
-      for (i in namesEnvs) {
-        png(paste0(tmpdir, "\\", i, ".png"))
-        if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
-          maxnet::response.plot(evalOut()@models[[curModel()]], v = i, type = "cloglog")
-        } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
-          dismo::response(evalOut()@models[[curModel()]], var = i)
+      if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
+        namesEnvs <- mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxnet")
+        for (i in namesEnvs) {
+          png(paste0(tmpdir, "\\", i, ".png"))
+          suppressWarnings(
+            maxnet::response.plot(evalOut()@models[[curModel()]], v = i,
+                                  type = "cloglog")
+          )
+          dev.off()
         }
-        dev.off()
+      } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
+        namesEnvs <- mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxent.jar")
+        for (i in namesEnvs) {
+          png(paste0(tmpdir, "\\", i, ".png"))
+          dismo::response(evalOut()@models[[curModel()]], var = i)
+          dev.off()
+        }
       }
       owd <- setwd(tmpdir)
       zip::zipr(zipfile = file, files = paste0(namesEnvs, ".png"))
@@ -758,8 +767,8 @@ function(input, output, session) {
     filename = function() {
       ext <- switch(input$predFileType, raster = 'zip', ascii = 'asc',
                     GTiff = 'tif', png = 'png')
-      thresholdRule <- rmm()$output$prediction$thresholdRule
-      predType <- rmm()$output$prediction$notes
+      thresholdRule <- rmm()$prediction$binary$thresholdRule
+      predType <- rmm()$prediction$notes
       if (thresholdRule == 'none') {
         paste0(curSp(), "_", predType, '.', ext)
       } else {
@@ -770,7 +779,13 @@ function(input, output, session) {
       if(require(rgdal)) {
         if (input$predFileType == 'png') {
           req(mapPred())
-          if (rmm()$output$prediction$thresholdRule != 'none') {
+          if (!webshot::is_phantomjs_installed()) {
+            logger %>%
+              writeLog(type = "error", "To download PNG predition, you require to",
+                       " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
+                       " in you are R console. (**)")
+          }
+          if (rmm()$prediction$binary$thresholdRule != 'none') {
             mapPredVals <- 0:1
             rasPal <- c('gray', 'blue')
             legendPal <- colorBin(rasPal, 0:1, bins = 2)
@@ -879,7 +894,7 @@ function(input, output, session) {
       ext <- switch(input$projFileType, raster = 'zip', ascii = 'asc',
                     GTiff = 'tif', png = 'png')
       thresholdRule <- rmm()$output$transfer$environment1$thresholdRule
-      predType <- rmm()$output$prediction$notes
+      predType <- rmm()$prediction$notes
       if (thresholdRule == 'none') {
         paste0(curSp(), "_proj_", predType, '.', ext)
       } else {
@@ -890,6 +905,12 @@ function(input, output, session) {
       if(require(rgdal)) {
         if (input$projFileType == 'png') {
           req(mapProj())
+          if (!webshot::is_phantomjs_installed()) {
+            logger %>%
+              writeLog(type = "error", "To download PNG predition, you require to",
+                       " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
+                       " in you are R console. (**)")
+          }
           if (rmm()$output$transfer$environment1$thresholdRule != 'none') {
             mapProjVals <- 0:1
             rasPal <- c('gray', 'red')
@@ -958,6 +979,12 @@ function(input, output, session) {
         req(spp[[curSp()]]$project$mess, spp[[curSp()]]$polyPjXY)
         mess <- spp[[curSp()]]$project$mess
         if (input$messFileType == 'png') {
+          if (!webshot::is_phantomjs_installed()) {
+            logger %>%
+              writeLog(type = "error", "To download PNG predition, you require to",
+                       " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
+                       " in you are R console. (**)")
+          }
           polyPjXY <- spp[[curSp()]]$polyPjXY
           rasVals <- spp[[curSp()]]$project$messVals
           # define colorRamp for mess

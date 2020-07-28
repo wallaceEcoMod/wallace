@@ -32,21 +32,35 @@ vis_maxentEvalPlot_module_server <- function(input, output, session, common) {
           return()
         }
         # METADATA ####
-        spp[[curSp()]]$rmm$code$wallaceSettings$maxentEvalPlotSel <- input$maxentEvalSel
+        spp[[curSp()]]$rmm$code$wallace$maxentEvalPlotSel <- input$maxentEvalSel
       }
     }
   })
 
   output$maxentEvalPlot <- renderPlot({
     req(curSp(), evalOut())
-    if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar" |
+    if (spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM") {
+      par(mar = c(0,0,0,0))
+      plot(c(0, 1), c(0, 1), ann = F, bty = 'n', type = 'n', xaxt = 'n', yaxt = 'n')
+      text(x = 0.25, y = 1, "Evaluation plot module requires a Maxent model (**)",
+           cex = 1.2, col = "#641E16")
+    } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar" |
         spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
       # FUNCTION CALL ####
       if (!is.null(input$maxentEvalSel)) {
-        ENMeval::plot.eval(evalOut(), input$maxentEvalSel, "rm", "fc")
+        ENMeval::evalplot.stats(evalOut(), input$maxentEvalSel, "rm", "fc")
       }
     }
   }, width = 700, height = 700)
+
+  return(list(
+    save = function() {
+      list(maxentEvalSel = input$maxentEvalSel)
+    },
+    load = function(state) {
+      updateSelectInput(session, "maxentEvalSel", selected = state$maxentEvalSel)
+    }
+  ))
 }
 
 vis_maxentEvalPlot_module_result <- function(id) {
@@ -59,9 +73,9 @@ vis_maxentEvalPlot_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
     vis_maxentEvalPlot_knit = FALSE
-    # vis_maxentEvalPlot_knit = species$rmm$code$wallaceSettings$someFlag,
-    # var1 = species$rmm$code$wallaceSettings$someSetting1,
-    # var2 = species$rmm$code$wallaceSettings$someSetting2
+    # vis_maxentEvalPlot_knit = species$rmm$code$wallace$someFlag,
+    # var1 = species$rmm$code$wallace$someSetting1,
+    # var2 = species$rmm$code$wallace$someSetting2
   )
 }
 

@@ -27,6 +27,7 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
   spp <- common$spp
   evalOut <- common$evalOut
   curSp <- common$curSp
+  allSp <- common$allSp
   curModel <- common$curModel
   bgMask <- common$bgMask
   occs <- common$occs
@@ -72,7 +73,6 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
                " 'Obtain Environmental Data' for more details."))
       return()
     }
-
     # PROCESSING ####
     # define predType based on model type
     if (spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM") {
@@ -84,31 +84,37 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
       # define predSel name
       names(predSel) <- curModel()
     } else if (spp[[curSp()]]$rmm$model$algorithms %in% c("maxent.jar", "maxnet")) {
-      predType <- input$maxentPredType
-      # if selected prediction type is not raw, transform
-      if (predType != "raw") {
-        # transform and redefine predSel
-        smartProgress(
-          logger,
-          message = paste0("Generating ", input$maxentPredType,
-                           " prediction for model ", curModel(), "..."), {
-          m <- evalOut()@models[[curModel()]]
-          clamping <- spp[[curSp()]]$rmm$model$algorithm$maxent$clamping
-          if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
-            predSel <- ENMeval::maxnet.predictRaster(m, bgMask(),
-                                                     type = input$maxentPredType,
-                                                     doClamp = clamping)
-          } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
-            predSel <- dismo::predict(m, bgMask(),
-                                      args = paste0("outputformat=",
-                                                    input$maxentPredType))
-          }
-        })
-        # define crs
-        raster::crs(predSel) <- raster::crs(bgMask())
-        # define predSel name
-        names(predSel) <- curModel()
+      if (is.null(input$maxentPredType)) {
+        predType <- "cloglog"
+      } else {
+        predType <- input$maxentPredType
       }
+      # if selected prediction type is not raw, transform
+      # transform and redefine predSel
+      smartProgress(
+        logger,
+        message = paste0("Generating ", input$maxentPredType,
+                         " prediction for model ", curModel(), "..."), {
+                           m <- evalOut()@models[[curModel()]]
+                           clamping <- spp[[curSp()]]$rmm$model$algorithm$maxent$clamping
+                           if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
+                             if (predType == "raw") predType <- "exponential"
+                             predSel <- ENMeval::enm.maxnet@pred(m, bgMask(),
+                                                                 other.settings = list(
+                                                                   pred.type = predType,
+                                                                   clamp = clamping))
+                           } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
+                             predSel <- ENMeval::enm.maxent.jar@pred(m, bgMask(),
+                                                                     other.settings = list(
+                                                                       pred.type = predType,
+                                                                       clamp = clamping))
+                           }
+                         })
+      # define crs
+      raster::crs(predSel) <- raster::crs(bgMask())
+      # define predSel name
+      names(predSel) <- curModel()
+
     }
 
     # generate binary prediction based on selected thresholding rule
@@ -134,9 +140,9 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
       nameAlg <- ifelse(spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM",
                         "",
                         paste0(" ", spp[[curSp()]]$rmm$model$algorithms, " "))
-      logger %>% writeLog(
-        em(spName(curSp())), ": ", input$threshold, ' threshold selected for ',
-        nameAlg, predType, ' (', formatC(thr.sel, format = "e", 2), ').')
+      logger %>% writeLog(hlSpp(curSp()),
+                          input$threshold, ' threshold selected for ', nameAlg, predType,
+                          ' (', formatC(thr.sel, format = "e", 2), ').')
     } else {
       predSel.thr <- predSel
     }
@@ -144,14 +150,14 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
     # write to log box
     if (predType == 'BIOCLIM') {
       logger %>% writeLog(
-        em(spName(curSp())), ": BIOCLIM model prediction plotted.")
+        hlSpp(curSp()), "BIOCLIM model prediction plotted.")
     } else if (input$threshold != 'none'){
       logger %>% writeLog(
-        em(spName(curSp())), ": ", spp[[curSp()]]$rmm$model$algorithms,
+        hlSpp(curSp()), spp[[curSp()]]$rmm$model$algorithms,
         " model prediction plotted.")
     } else if (input$threshold == 'none'){
       logger %>% writeLog(
-        em(spName(curSp())), ": ", spp[[curSp()]]$rmm$model$algorithms, " ",
+        hlSpp(curSp()), spp[[curSp()]]$rmm$model$algorithms, " ",
         predType, " model prediction plotted.")
     }
 
@@ -161,26 +167,33 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
       spp[[curSp()]]$visualization$thresholds <- thr.sel # were you recording multiple before?
     }
     spp[[curSp()]]$visualization$mapPred <- predSel.thr
-    spp[[curSp()]]$visualization$mapPredVals <- getRasterVals(predSel.thr,
-                                                              predType)
+    spp[[curSp()]]$visualization$mapPredVals <- getRasterVals(predSel.thr, predType)
 
     # METADATA ####
-    spp[[curSp()]]$rmm$output$prediction$thresholdRule <- input$threshold
+    spp[[curSp()]]$rmm$prediction$binary$thresholdRule <- input$threshold
     if(input$threshold != 'none') {
-      spp[[curSp()]]$rmm$output$prediction$thresholdSet <- thr.sel
+      spp[[curSp()]]$rmm$prediction$binary$thresholdSet <- thr.sel
     } else {
-      spp[[curSp()]]$rmm$output$prediction$thresholdSet <- NULL
+      spp[[curSp()]]$rmm$prediction$binary$thresholdSet <- NULL
+      spp[[curSp()]]$rmm$prediction$continuous$minVal <- min(occPredVals)
+      spp[[curSp()]]$rmm$prediction$continuous$maxVal <- max(occPredVals)
     }
-    spp[[curSp()]]$rmm$output$prediction$notes <- predType
+    spp[[curSp()]]$rmm$prediction$notes <- predType
+
+
     common$update_component(tab = "Map")
   })
 
   return(list(
     save = function() {
-      # Save any values that should be saved when the current session is saved
+      list(
+        threshold = input$threshold,
+        trainPresQuantile = input$trainPresQuantile
+      )
     },
     load = function(state) {
-      # Load
+      updateSelectInput(session, "threshold", selected = state$threshold)
+      updateSliderInput(session, 'trainPresQuantile', value = state$trainPresQuantile)
     }
   ))
 
@@ -200,7 +213,7 @@ vis_mapPreds_module_map <- function(map, common) {
   mapPredVals <- spp[[curSp()]]$visualization$mapPredVals
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
   # if no threshold specified
-  if (rmm()$output$prediction$thresholdRule != 'none') {
+  if (rmm()$prediction$binary$thresholdRule != 'none') {
     rasPal <- c('gray', 'blue')
     map %>% clearAll() %>%
       addLegend("bottomright", colors = c('gray', 'blue'),
@@ -230,9 +243,9 @@ vis_mapPreds_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
     vis_mapPreds_knit = FALSE
-    # vis_mapPreds_knit = species$rmm$code$wallaceSettings$someFlag,
-    # var1 = species$rmm$code$wallaceSettings$someSetting1,
-    # var2 = species$rmm$code$wallaceSettings$someSetting2
+    # vis_mapPreds_knit = species$rmm$code$wallace$someFlag,
+    # var1 = species$rmm$code$wallace$someSetting1,
+    # var2 = species$rmm$code$wallace$someSetting2
   )
 }
 

@@ -57,12 +57,12 @@ modProj <- proj_user(evalOut = modAlg, curModel=1, envs=envsFut,alg='bioclim',cl
 
 }
 \seealso{
-\code{\link[dismo]{predict}}, \code{\link[ENMeval]{maxnet.predictRaster}}, \code{\link{proj_time}} \code{\link{proj_area}}
+\code{\link[dismo]{predict}}, \code{\link{proj_time}} \code{\link{proj_user}}
 }
 \author{
-Andrea Paz <paz.andreita@gmail.com>
-
 Jamie Kass <jkass@gradcenter.cuny.edu>
+
+Andrea Paz <paz.andreita@gmail.com>
 
 Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
 }

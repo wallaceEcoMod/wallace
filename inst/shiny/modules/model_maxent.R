@@ -1,7 +1,7 @@
 model_maxent_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
-    htmlOutput('maxentJar'), br(), "(",
+    htmlOutput('maxentJar'), "(",
     HTML("<font color='blue'><b>NOTE</b></font>"),
     ": see module guidance for troubleshooting tips if you are experiencing problems.)",
     tags$hr(),
@@ -47,6 +47,19 @@ model_maxent_module_ui <- function(id) {
     tags$div(title = 'Clamp model predictions?',
              selectInput(ns("clamp"), label = '',
                          choices = list("", "TRUE", "FALSE"))),
+    strong("Parallel?"),
+    tags$div(
+      title = 'Use parallel option for quicker analysis? (**)',
+      selectInput(ns("parallel"), label = '',
+                  choices = list("", "TRUE", "FALSE")),
+      conditionalPanel(
+        sprintf("input['%s'] == 'TRUE'", ns("parallel")),
+        numericInput(
+          "numCores",
+          label = paste0("Specify the number of cores (max. ", parallel::detectCores(), ")"),
+          value = parallel::detectCores() - 1, min = 1,
+          max = parallel::detectCores(), step = 1
+        ))),
     tags$div(
       title = "Add Batch guidance text here (**)",
       checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE) # Check default (value = FALSE)
@@ -75,9 +88,13 @@ model_maxent_module_server <- function(input, output, session, common) {
       logger %>% writeLog(type = 'error', "Please specify clamping setting.")
       return()
     }
+    if(input$parallel == "") {
+      logger %>% writeLog(type = 'error', "Please specify parallel setting.")
+      return()
+    }
 
     # loop over all species if batch is on
-    if(input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
+    if (input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
 
     # PROCESSING ####
     for(sp in spLoop) {
@@ -95,11 +112,12 @@ model_maxent_module_server <- function(input, output, session, common) {
       } else if (input$categSel == 'YES') {
         catEnvs <- selCatEnvs()
       }
+      user_grp <- list(occs.grp = spp[[sp]]$occs$partition,
+                       bg.grp = spp[[sp]]$bg$partition)
       # FUNCTION CALL ####
       res.maxent <- model_maxent(spp[[sp]]$occs,
                                  spp[[sp]]$bg,
-                                 spp[[sp]]$occs$partition,
-                                 spp[[sp]]$bg$partition,
+                                 user_grp,
                                  spp[[sp]]$procEnvs$bgMask,
                                  input$rms,
                                  input$rmsStep,
@@ -107,6 +125,8 @@ model_maxent_module_server <- function(input, output, session, common) {
                                  input$clamp,
                                  input$algMaxent,
                                  catEnvs,
+                                 input$parallel,
+                                 input$numCores,
                                  logger,
                                  spN = sp)
       req(res.maxent)
@@ -191,7 +211,9 @@ model_maxent_module_server <- function(input, output, session, common) {
         rms = input$rms,
         rmsStep = input$rmsStep,
         categSel = input$categSel,
-        clamp = input$clamp
+        clamp = input$clamp,
+        parallel = input$parallel,
+        numCores = input$numCores
       )
       # Save any values that should be saved when the current session is saved
     },
@@ -202,6 +224,8 @@ model_maxent_module_server <- function(input, output, session, common) {
       updateNumericInput(session, "rmsStep", value = state$rmsStep)
       updateSelectInput(session, "categSel", selected = state$categSel)
       updateSelectInput(session, "clamp", selected = state$clamp)
+      updateSelectInput(session, "parallel", selected = state$parallel)
+      updateNumericInput(session, "numCores", value = state$numCores)
     }
   ))
 
@@ -217,9 +241,9 @@ model_maxent_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
     model_maxent_knit = FALSE
-    # model_maxent_knit = species$rmm$code$wallaceSettings$someFlag,
-    # var1 = species$rmm$code$wallaceSettings$someSetting1,
-    # var2 = species$rmm$code$wallaceSettings$someSetting2
+    # model_maxent_knit = species$rmm$code$wallace$someFlag,
+    # var1 = species$rmm$code$wallace$someSetting1,
+    # var2 = species$rmm$code$wallace$someSetting2
   )
 }
 

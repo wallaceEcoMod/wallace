@@ -30,11 +30,13 @@ model_bioclim_module_server <- function(input, output, session, common) {
         return()
       }
 
+      user_grp <- list(occs.grp = spp[[sp]]$occs$partition,
+                       bg.grp = spp[[sp]]$bg$partition)
+
       # FUNCTION CALL ####
       m.bioclim <- model_bioclim(occs = spp[[sp]]$occs,
                                  bg = spp[[sp]]$bg,
-                                 occsGrp = spp[[sp]]$occs$partition,
-                                 bgGrp = spp[[sp]]$bg$partition,
+                                 user.grp = user_grp,
                                  bgMsk = spp[[sp]]$procEnvs$bgMask,
                                  logger,
                                  spN = sp)
@@ -85,9 +87,9 @@ model_bioclim_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
     model_bioclim_knit = FALSE
-    # model_bioclim_knit = species$rmm$code$wallaceSettings$someFlag,
-    # var1 = species$rmm$code$wallaceSettings$someSetting1,
-    # var2 = species$rmm$code$wallaceSettings$someSetting2
+    # model_bioclim_knit = species$rmm$code$wallace$someFlag,
+    # var1 = species$rmm$code$wallace$someSetting1,
+    # var2 = species$rmm$code$wallace$someSetting2
   )
 }
 
