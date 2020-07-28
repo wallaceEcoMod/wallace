@@ -21,10 +21,6 @@ bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=spN)
 ## Partition
 partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,
                                 aggFact = NULL,spN=spN)
-# occurrences partitioned
-occsGrp = partblock$occ.grp
-# background points partitioned
-bgGrp = partblock$bg.grp
 
 ## model
 # regularization multipliers
@@ -48,11 +44,11 @@ algorithm <- c('maxent.jar','maxnet','bioclim')
 # build model and test for both algorithms
 for (i in algorithm) {
   if(i == 'bioclim'){
-    modAlg <- model_bioclim(occs, bg, occsGrp, bgGrp, bgMask,spN=spN)
+    modAlg <- model_bioclim(occs, bg, partblock, bgMask,spN=spN)
     curModel=1
   }
   else{
-    modAlg <- model_maxent(occs, bg, occsGrp, bgGrp, bgMask, rms, rmsStep, fcs, clampSel = TRUE,
+    modAlg <- model_maxent(occs, bg, partblock, bgMask, rms, rmsStep, fcs, clampSel = TRUE,
                            algMaxent = i,catEnvs=NULL,spN=spN)
     curModel='L_1'
   }

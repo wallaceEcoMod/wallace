@@ -22,7 +22,7 @@ bg <- penvs_bgSample(occs, bgMsk, bgPtsNum = 10000,spN=spN)
 partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,
                                 aggFact = NULL,spN=spN)
 ### Create model
-bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMsk,spN=spN)
+bioclimAlg <- model_bioclim(occs, bg, partblock, bgMsk,spN=spN)
 modelOccs<-bioclimAlg@occs
 modelBg<-bioclimAlg@bg
 ## extent to project

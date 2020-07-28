@@ -127,13 +127,13 @@ test_that("output checks", {
   expect_equal(length(partche1), 2)
   expect_equal(length(partche2), 2)
   # jackknife: the number of partition is the same as the number of records
-  expect_equal(nlevels(factor(partJack$occ.grp)), nrow(occs))
+  expect_equal(nlevels(factor(partJack$occs.grp)), nrow(occs))
   # random: the number of partition is the same as specified in the function (kfolds). 4 in this case
-  expect_equal(nlevels(factor(partfold$occ.grp)), kfolds)
+  expect_equal(nlevels(factor(partfold$occs.grp)), kfolds)
   # block: the number of partition is 4
-  expect_equal(nlevels(factor(partblock$occ.grp)), 4)
+  expect_equal(nlevels(factor(partblock$occs.grp)), 4)
   # checkerboard 1: the number of partition is 2
-  expect_equal(nlevels(factor(partche1$occ.grp)), 2)
+  expect_equal(nlevels(factor(partche1$occs.grp)), 2)
   # checkerboard 2: the number of partition is 4
-  expect_equal(nlevels(factor(partche2$occ.grp)), 4)
+  expect_equal(nlevels(factor(partche2$occs.grp)), 4)
 })
