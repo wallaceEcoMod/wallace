@@ -48,7 +48,7 @@ jar_f <- paste(system.file(package = "dismo"), "/maxent.jar", sep = '')
 test_that("error checks", {
   # user has not partitioned occurrences
   expect_error(model_maxent(occs, bg, user.grp = NULL, bgMsk, rms, rmsStep, fcs,
-                         clampSel = TRUE, algMaxent = algorithm[1]), "Before building a model, please partition occurrences for cross-validation.")
+                         clampSel = TRUE, catEnvs=NULL,algMaxent = algorithm[1],spN=spN), "Before building a model, please partition occurrences for cross-validation.")
 })
 ##missing 2 errors related to jar
 
