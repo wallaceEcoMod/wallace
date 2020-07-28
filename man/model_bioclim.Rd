@@ -4,18 +4,24 @@
 \alias{model_bioclim}
 \title{model_bioclim}
 \usage{
-model_bioclim(occs, bg, occsGrp, bgGrp, bgMsk, logger = NULL, spN = NULL)
+model_bioclim(occs, bg, user.grp, bgMsk, logger = NULL, spN = NULL)
 }
 \arguments{
-\item{occs}{x}
+\item{occs}{data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.}
 
-\item{bg}{x}
+\item{bg}{Coordinates of background points to be used for modelling.}
 
-\item{logger}{x}
+\item{user.grp}{A list of two vectors containing group assignments for occurrences (occs.grp) and background points (bg.grp).}
 
-\item{spN}{x}
+\item{bgMsk}{A RasterStack or a RasterBrick of environmental layers cropped and masked to match the provided background extent.}
 
-\item{bgMask}{x}
+\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+otherwise leave the default NULL}
+
+\item{spN}{Species name to be used for all logger messages}
+}
+\value{
+Function returns an ENMevaluate object with all the evaluated models and a selection of appropriate fields.
 }
 \description{
 ..
@@ -23,6 +29,24 @@ model_bioclim(occs, bg, occsGrp, bgGrp, bgMsk, logger = NULL, spN = NULL)
 \details{
 See Examples.
 }
+\examples{
+spN="Panthera onca"
+out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
+occs <- as.data.frame(out.gbif[[1]]$cleaned)
+occs <- poccs_thinOccs(occs = occs, thinDist = 10,spN=spN)
+envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
+bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
+bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=spN)
+partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL, aggFact = NULL,spN=spN)
+bioclimAlg <- model_bioclim(occs, bg, user.grp=partblock, bgMask,spN=spN)
+
+}
+\seealso{
+\code{\link[ENMeval]{ENMevaluate}}
+}
 \author{
 Jamie M. Kass <jkass@gradcenter.cuny.edu>
+
+Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
 }

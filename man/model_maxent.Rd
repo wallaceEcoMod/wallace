@@ -2,13 +2,12 @@
 % Please edit documentation in R/model_maxent.R
 \name{model_maxent}
 \alias{model_maxent}
-\title{model_maxent}
+\title{model_maxent Generate maxent or maxnet model}
 \usage{
 model_maxent(
   occs,
   bg,
-  occsGrp,
-  bgGrp,
+  user.grp,
   bgMsk,
   rms,
   rmsStep,
@@ -16,41 +15,68 @@ model_maxent(
   clampSel,
   algMaxent,
   catEnvs,
+  parallel = FALSE,
+  numCores = NULL,
   logger = NULL,
   spN = NULL
 )
 }
 \arguments{
-\item{occs}{x}
+\item{occs}{data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.}
 
-\item{bg}{x}
+\item{bg}{Coordinates of background points to be used for modelling.}
 
-\item{occsGrp}{x}
+\item{user.grp}{A list of two vectors containing group assignments for occurrences (occs.grp) and background points (bg.grp).}
 
-\item{bgGrp}{x}
+\item{bgMsk}{A RasterStack or a RasterBrick of environmental layers cropped and masked to match the provided background extent.}
 
-\item{bgMsk}{x}
+\item{rms}{Vector of range of regularization multipliers to be used in the ENMeval run}
 
-\item{rms}{x}
+\item{rmsStep}{Step to be used when defining regularization multipliers to be used from the provided range.}
 
-\item{rmsStep}{x}
+\item{fcs}{Feature classes to be tested in the ENM eval run}
 
-\item{fcs}{x}
+\item{parallel}{Whether to use parallel in the generation of models. Default is FALSE}
 
-\item{logger}{x}
+\item{numCores}{If using parallel how many cores to use. Default is NULL}
 
-\item{spN}{x}
+\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+otherwise leave the default NULL}
+
+\item{spN}{Species name to be used for all logger messages}
+}
+\value{
+Function returns an ENMevaluate object with all the evaluated models and a selection of appropriate fields.
 }
 \description{
-..
+This functions generates maxent or maxnet models using ENMeval 2.0 and user provided tuning parameters.
 }
 \details{
-\code{runMaxent} returns a formatted tibble of species occurrences with a
-selection of appropriate fields.
+The function generates model in ENMeval using a user porvided parition of occurrences from previous components i GUI.
+User can activate clamping and input de tuning argumenta to be used for model building
+}
+\examples{
+spN<-"Panthera onca"
+out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 1000)
+occs <- as.data.frame(out.gbif[[1]]$cleaned)
+envs <- envs_worldclim(bcRes = 10, bcSel = c("bio01","bio02","bio07","bio13","bio14","bio15","bio19"), doBrick = FALSE)
+records <- which(is.na(raster::extract(envs$bio01, occs[,3:4])) == TRUE)
+occs <- occs[-records, ]
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
+bgMsk <- penvs_bgMask(occs, envs, bgExt,spN=spN)
+bg <-penvs_bgSample(occs, bgMsk, bgPtsNum = 10000,spN=spN)
+partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=spN)
+rms <- c(1:2)
+rmsStep <- 1
+fcs <- c('L', 'LQ', 'H', 'LQH','LQHP')
+maxentAlg <- model_maxent(occs=occs, bg=bg, user.grp=partblock, bgMsk=bgMsk, rms=rms, rmsStep, fcs, clampSel = TRUE,algMaxent = "maxnet",catEnvs=NULL,parallel=FALSE,numCores=NULL,logger=NULL,spN=spN)
 
-
-See Examples.
+}
+\seealso{
+\code{\link[ENMeval]{ENMevaluate}}
 }
 \author{
 Jamie M. Kass <jkass@gradcenter.cuny.edu>
+
+Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
 }

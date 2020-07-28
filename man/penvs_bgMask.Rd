@@ -16,7 +16,7 @@ penvs_bgMask(occs, envs, bgExt, logger = NULL, spN = NULL)
 \item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
-\item{spN}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages}
+\item{spN}{Species name to be used for all logger messages}
 }
 \value{
 A RasterStack or a RasterBrick of environmental layers cropped and masked to match the provided background extent.

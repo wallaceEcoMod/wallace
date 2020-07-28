@@ -39,7 +39,7 @@ otherwise leave the default NULL}
 \item{spN}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages}
 }
 \value{
-A list of two vectors containing group assignments for occurrences (occ.grp) and background points (bg.grp).
+A list of two vectors containing group assignments for occurrences (occs.grp) and background points (bg.grp).
 }
 \description{
 this function partitions occurrence data and background points according to a user selected method.
