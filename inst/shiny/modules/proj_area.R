@@ -157,7 +157,7 @@ proj_area_module_server <- function(input, output, session, common) {
     }
 
     # FUNCTION CALL ####
-    predType <- rmm()$output$prediction$notes
+    predType <- rmm()$prediction$notes
     projArea.out <- proj_area(evalOut(), curModel(), envs(),
                               outputType = predType,
                               alg = spp[[curSp()]]$rmm$model$algorithms,

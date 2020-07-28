@@ -231,7 +231,7 @@ proj_user_module_server <- function(input, output, session, common) {
     }
 
     # FUNCTION CALL ####
-    predType <- rmm()$output$prediction$notes
+    predType <- rmm()$prediction$notes
     projUser.out <- proj_user(evalOut(), curModel(), userProjEnvs,
                               outputType = predType,
                               alg = spp[[curSp()]]$rmm$model$algorithms,
