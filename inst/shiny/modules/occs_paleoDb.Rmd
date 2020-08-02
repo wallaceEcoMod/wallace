@@ -5,9 +5,36 @@ You searched the paleobioDB database for *`r "{{spName}}"`*, limited to `r {{occ
 
 ```{r, echo = {{occs_paleoDb_knit}}, include = {{occs_paleoDb_knit}}}
 # Query selected database for occurrence records
-paleoDb_{{spAbr}} <- occs_paleoDb(
-  spName = "{{spName}}", 
-  occNum = {{occsNumPB_rmd}}, 
-  timeInterval = "{{timeInterval_rmd}}")
-occs_{{spAbr}} <- paleoDb_{{spAbr}}$cleaned
+paleoDb_{{spAbr}}<-paleobioDB::pbdb_occurrences(
+  taxon_name = "{{spName}}",
+  limit = {{occsNumPB_rmd}},
+  interval = "{{timeInterval_rmd}}",
+  vocab = 'pbdb',
+  show = c("coords", "bin", "loc"))
+#Clean dowloaded occurrences and organize results table
+paleoDb_{{spAbr}}$lng <- as.numeric(paleoDb_{{spAbr}}$lng)
+paleoDb_{{spAbr}}$lat <- as.numeric(paleoDb_{{spAbr}}$lat)
+  # get total number of records found in database
+  totRows <- nrow(paleoDb_{{spAbr}})
+  # extract occurrence tibble and rename columns for further analyses
+  names(paleoDb_{{spAbr}})[names(paleoDb_{{spAbr}}) == "lng"] <- "longitude"
+  names(paleoDb_{{spAbr}})[names(paleoDb_{{spAbr}}) == "lat"] <- "latitude"
+  names(paleoDb_{{spAbr}})[names(paleoDb_{{spAbr}}) == "cc"] <- "country"
+  paleoDb_{{spAbr}}$taxon_name <- as.character(paleoDb_{{spAbr}}$taxon_name)
+  names(paleoDb_{{spAbr}})[names(paleoDb_{{spAbr}}) == "taxon_name"] <- "scientific_name"
+  # make new column for original ID
+  paleoDb_{{spAbr}}$occID <- 1:nrow(paleoDb_{{spAbr}})
+  dups <- duplicated(paleoDb_{{spAbr}}[,c('longitude','latitude')])
+  occs <- paleoDb_{{spAbr}}[!dups, ]
+
+  # subset by key columns and make id and popup columns. This will ensure right columns for further analyses
+  cols <- c("scientific_name", "longitude", "latitude", "early_interval",
+            "late_interval", "country", "collection_no", "record_type",
+            "early_age", "late_age", "occID")
+  occs <- occs %>% dplyr::select(dplyr::one_of(cols)) %>%
+    # make new column for leaflet marker popup content
+    dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent))) %>%
+    dplyr::arrange_(cols)
+##3Create final object with cleaned occurences
+occs_{{spAbr}} <- occs
 ```
