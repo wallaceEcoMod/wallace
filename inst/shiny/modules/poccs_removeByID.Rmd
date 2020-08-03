@@ -1,8 +1,12 @@
 ```{asis, echo = {{poccs_removeByID_knit}}, eval = {{poccs_removeByID_knit}}, include = {{poccs_removeByID_knit}}}
+### Process Occurrence Data
 Remove the occurrence localities by ID.
 ```
 
 ```{r, echo = {{poccs_removeByID_knit}}, include = {{poccs_removeByID_knit}}}
 # remove the rows that match the occIDs selected
-#occs.{{sp}} <- poccs_removeByID(occs.{{sp}}, "{{removeByID_id}}")
+occs_{{spAbr}} <- poccs_removeByID(
+  occs = occs_{{spAbr}} , 
+  removeID = {{removeByID_id_rmd}},
+  spN = "{{spName}}")
 ```
