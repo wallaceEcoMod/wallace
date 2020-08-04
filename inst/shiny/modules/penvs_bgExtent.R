@@ -68,6 +68,10 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
       spp[[sp]]$rmm$data$occurrence$backgroundSampleSizeRule <-
         paste0(input$bgSel, ', ', input$bgBuf, ' degree buffer')
 
+      ##Creating these to facilitate RMD generation
+      spp[[sp]]$rmd$bgSel <- input$bgSel
+      spp[[sp]]$rmd$bgBuf <- input$bgBuf
+
       # spp[[sp]]$rmm$wallace$bgSel <- input$bgSel
       # spp[[sp]]$rmm$wallace$bgBuf <- input$bgBuf
     }
@@ -179,9 +183,10 @@ penvs_bgExtent_module_map <- function(map, common) {
 penvs_bgExtent_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    penvs_bgExtent_knit = FALSE
+    penvs_bgExtent_knit = !is.null(species$rmd$bgSel),
     # penvs_bgExtent_knit = species$rmm$code$wallace$someFlag,
-    # var1 = species$rmm$code$wallace$someSetting1,
-    # var2 = species$rmm$code$wallace$someSetting2
+    bgPtsNum_rmd = species$rmm$data$occurrence$backgroundSampleSizeSet,
+    bgSel_rmd = species$rmd$bgSel,
+    bgBuf_rmd = species$rmd$bgBuf
   )
 }

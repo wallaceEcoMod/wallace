@@ -1,7 +1,32 @@
 ```{asis, echo = {{penvs_bgExtent_knit}}, eval = {{penvs_bgExtent_knit}}, include = {{penvs_bgExtent_knit}}}
-Description of what the code will do
+###Process environmental data
+Sampling of {{bgPtsNum_rmd}} background points and corresponding environmental data using a "{{bgSel_rmd}}" method with a {{bgBuf_rmd}} degree buffer.
 ```
 
 ```{r, echo = {{penvs_bgExtent_knit}}, include = {{penvs_bgExtent_knit}}}
-# R code to run
+# Generate background extent 
+bgExt_{{spAbr}} <- penvs_bgExtent(
+  occs = occs_{{spAbr}},
+  bgSel = "{{bgSel_rmd}}",
+  bgBuf = {{bgBuf_rmd}},
+  spN = "{{spName}}")
+# Mask environmental data to provided extent
+ bgMask_{{spAbr}} <- penvs_bgMask(
+   occs = occs_{{spAbr}},
+   envs = envs_{{spAbr}},
+   bgExt = bgExt_{{spAbr}},
+   spN = "{{spName}}")
+# Sample background points from the provided area
+   bgSample_{{spAbr}}<-penvs_bgSample(
+    occs = occs_{{spAbr}},
+    bgMask =  bgMask_{{spAbr}},
+    bgPtsNum = {{bgPtsNum_rmd}},
+    spN = "{{spName}}")
+# Extract values of environmental layers for each background point
+bgEnvsVals_{{spAbr}} <- as.data.frame(raster::extract(bgMask_{{spAbr}},  bgSample_{{spAbr}}))
+##Add extracted values to background points table
+bgEnvsVals_{{spAbr}} <- cbind(scientific_name = paste0("bg_", "{{spName}}"), bgSample_{{spAbr}},
+                            occID = NA, year = NA, institution_code = NA, country = NA,
+                            state_province = NA, locality = NA, elevation = NA,
+                            record_type = NA, bgEnvsVals_{{spAbr}})
 ```

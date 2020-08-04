@@ -7,6 +7,6 @@ Remove occurrences outside of user drawn polygon
 occs_{{spAbr}} <- poccs_selectOccs(
   occs = occs_{{spAbr}},
   polySelXY = matrix({{selectByID_xy_rmd}},ncol=2,byrow=FALSE),
-  polySelID = {{selectByID_id_rmd}}
+  polySelID = {{selectByID_id_rmd}},
   spN= "{{spName}}")
 ```
