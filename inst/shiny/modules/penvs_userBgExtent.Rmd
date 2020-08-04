@@ -1,13 +1,14 @@
 ```{asis, echo = {{penvs_userBgExtent_knit}}, eval = {{penvs_userBgExtent_knit}}, include = {{penvs_userBgExtent_knit}}}
-###Process environmental data
+### Process environmental data
 Sampling of {{bgPtsNum_rmd}} background points and corresponding environmental data using a user provided background extent with a {{userBgBuf_rmd}} degree buffer.
 ```
 
 ```{r, echo = {{penvs_userBgExtent_knit}}, include = {{penvs_userBgExtent_knit}}}
-# Load the user provided shapefile or csv file with the desired extent
+# Load the user provided shapefile or csv file with the desired extent.
+  ##User must input the path to shapefile or csv file and the file name 
 bgExt_{{spAbr}} <- penvs_userBgExtent(
-  bgShp_path = "{{bgShp_path_rmd}}",
-  bgShp_name = "{{bgShp_name_rmd}}",
+  bgShp_path = "Input path here",
+  bgShp_name = "Input file name here",
   userBgBuf = {{userBgBuf_rmd}},
   occs = occs_{{spAbr}},
   spN = "{{spName}}")
