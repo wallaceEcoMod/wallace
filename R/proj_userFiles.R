@@ -1,4 +1,4 @@
-#' @title proj_user Project model to user specified area and time
+#' @title proj_userFiles Project model to user specified area and time
 #' @description The function projects the model generated in previous components to user uploaded environmental variables and area
 #'
 #' @details
@@ -15,6 +15,7 @@
 #' @param pjExt Extent of the area to project the model to. This must be provided by the user as a shapefileor as a SpatialPolygons object
 #' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
+#' @param spN Character. Used to obtain species name for logger messages
 
 # @keywords
 #'
@@ -32,7 +33,7 @@
 #'modAlg <- model_bioclim(occs, partblock$bg.grp,  partblock$occ.grp, bgGrp, bgMask,spN=spN)
 #'envsFut<-list.files(path='./wc10/Future', pattern = ".tif$", full.names = TRUE)
 #'envsFut<-raster::stack(envsFut)
-#'modProj <- proj_user(evalOut = modAlg, curModel=1, envs=envsFut,alg='bioclim',clamp=FALSE, pjExt = userExt )
+#'modProj <- proj_userFiles(evalOut = modAlg, curModel=1, envs=envsFut,alg='bioclim',clamp=FALSE, pjExt = userExt)
 #'
 # @return
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
@@ -48,16 +49,16 @@
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 
-proj_user <- function(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
-                      logger = NULL) {
+proj_userFiles <- function(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
+                           logger = NULL, spN = NULL) {
   newPoly <- pjExt
 
   if (alg == 'bioclim') {
-    logger %>% writeLog('User specified projection for BIOCLIM model.')
-  } else if (alg == 'maxent.jar'|clamp==TRUE) {
-    logger %>% writeLog('User specified projection for clamped model ', curModel, '.')
+    logger %>% writeLog(hlSpp(spN), 'User specified projection for BIOCLIM model.')
+  } else if (alg == 'maxent.jar' | clamp == TRUE) {
+    logger %>% writeLog(hlSpp(spN), 'User specified projection for clamped model ', curModel, '.')
   } else if (clamp == FALSE) {
-    logger %>% writeLog('User specified projection for unclamped model', curModel, '.')
+    logger %>% writeLog(hlSpp(spN), 'User specified projection for unclamped model', curModel, '.')
   }
 
   smartProgress(logger,
@@ -72,17 +73,17 @@ proj_user <- function(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
       modProjUser <- dismo::predict(evalOut@models[[curModel]], projMsk)
     } else if (alg == 'maxnet') {
       if (outputType == "raw") outputType <- "exponential"
-      modProjArea <- ENMeval::enm.maxnet@pred(evalOut@models[[curModel]],
+      modProjUser <- ENMeval::enm.maxnet@pred(evalOut@models[[curModel]],
                                               projMsk,
                                               other.settings = list(
                                                 pred.type = outputType,
                                                 clamp = clamp))
     } else if (alg == 'maxent.jar') {
-      modProjArea <- ENMeval::enm.maxent.jar@pred(evalOut@models[[curModel]],
+      modProjUser <- ENMeval::enm.maxent.jar@pred(evalOut@models[[curModel]],
                                                   projMsk,
                                                   other.settings = list(
-                                                    pred.type = outputType,
-                                                    clamp = clamp))
+                                                  pred.type = outputType,
+                                                  clamp = clamp))
     }
   })
 
