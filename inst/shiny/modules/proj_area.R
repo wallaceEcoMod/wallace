@@ -4,8 +4,8 @@ proj_area_module_ui <- function(id) {
     span("Step 1:", class = "step"),
     span("Choose Study Region (**)", class = "stepText"), br(), br(),
     selectInput(ns('projExt'), label = "Select method (**)",
-      choices = list("Same extent (**)" = 'pjCur',
-                     "Draw polygon(**)" = 'pjDraw',
+      choices = list("Draw polygon(**)" = 'pjDraw',
+                     "Same extent (**)" = 'pjCur',
                      "User-specified(**)" = 'pjUser')),
     conditionalPanel(sprintf("input['%s'] == 'pjUser'", ns("projExt")),
       fileInput(ns("userPjShp"),
@@ -85,7 +85,7 @@ proj_area_module_server <- function(input, output, session, common) {
     }
     if (input$projExt == 'pjUser') {
       if (is.null(input$userPjShp$datapath)) {
-        logger %>% writeLog(type = 'error', paste0("Specified filepath(s) (**)"))
+        logger %>% writeLog(type = 'error', "Specified filepath(s) (**)")
         return()
       }
     }
@@ -93,13 +93,13 @@ proj_area_module_server <- function(input, output, session, common) {
     # FUNCTION CALL ####
     if (input$projExt == 'pjDraw') {
       polyPj <- proj_draw(spp[[curSp()]]$polyPjXY, spp[[curSp()]]$polyPjID,
-                          input$drawPjBuf, logger)
+                          input$drawPjBuf, logger, spN = curSp())
       if (input$drawPjBuf == 0 ) {
         logger %>% writeLog(
-          em(spName(curSp())), ' : Draw polygon without buffer(**).')
+          hlSpp(curSp()), ' : Draw polygon without buffer(**).')
       } else {
         logger %>% writeLog(
-          em(spName(curSp())), ' : Draw polygon with buffer of ', input$drawPjBuf,
+          hlSpp(curSp()), ' : Draw polygon with buffer of ', input$drawPjBuf,
           ' degrees (**).')
       }
       # METADATA ####
@@ -110,9 +110,8 @@ proj_area_module_server <- function(input, output, session, common) {
     }
 
     if (input$projExt == 'pjUser') {
-      polyPj <- penvs_userBgExtent(input$userPjShp$datapath,
-                                   input$userPjShp$name,
-                                   input$userPjBuf, logger)
+      polyPj <- proj_userExtent(input$userPjShp$datapath, input$userPjShp$name,
+                                input$userPjBuf, logger, spN = curSp())
       # METADATA ####
       # get extensions of all input files
       exts <- sapply(strsplit(input$userPjShp$name, '\\.'),
@@ -134,7 +133,7 @@ proj_area_module_server <- function(input, output, session, common) {
     if (input$projExt == 'pjCur') {
       polyPj <- spp[[curSp()]]$procEnvs$bgExt
       logger %>% writeLog(
-        em(spName(curSp())),
+        hlSpp(curSp()),
         ' : Projection extent equal to current extent region. (**)')
     }
     # LOAD INTO SPP ####
@@ -163,7 +162,7 @@ proj_area_module_server <- function(input, output, session, common) {
                               alg = spp[[curSp()]]$rmm$model$algorithms,
                               clamp = rmm()$model$algorithm$maxent$clamping,
                               spp[[curSp()]]$project$pjExt,
-                              logger)
+                              logger, spN = curSp())
 
     projExt <- projArea.out$projExt
     projArea <- projArea.out$projArea
@@ -182,14 +181,12 @@ proj_area_module_server <- function(input, output, session, common) {
         thr <- quantile(occPredVals, probs = input$trainPresQuantile)
       }
       projAreaThr <- projArea > thr
-      logger %>% writeLog("Projection of model to new area for ",
-                          em(spName(curSp())),' with threshold ',
-                          input$threshold, ' (', formatC(thr, format = "e", 2),
-                          ').')
+      logger %>% writeLog(hlSpp(curSp()), "Projection of model to new area with threshold ",
+                          input$threshold, ' (', formatC(thr, format = "e", 2), ').')
     } else {
       projAreaThr <- projArea
-      logger %>% writeLog("Projection of model to new area for ", em(spName(curSp())),
-                          ' with ', predType, ' output.')
+      logger %>% writeLog(hlSpp(curSp()), "Projection of model to new area with ",
+                          predType, ' output.')
     }
     raster::crs(projAreaThr) <- raster::crs(envs())
     # rename
@@ -205,8 +202,10 @@ proj_area_module_server <- function(input, output, session, common) {
       printVecAsis(raster::cellStats(projExt, min), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$maxVal <-
       printVecAsis(raster::cellStats(projExt, max), asChar = TRUE)
-    spp[[curSp()]]$rmm$data$transfer$environment1$yearMin <- 1960
-    spp[[curSp()]]$rmm$data$transfer$environment1$yearMax <- 1990
+    if (spp[[curSp()]]$rmm$data$environment$sources == 'WorldClim 1.4') {
+      spp[[curSp()]]$rmm$data$transfer$environment1$yearMin <- 1960
+      spp[[curSp()]]$rmm$data$transfer$environment1$yearMax <- 1990
+    }
     spp[[curSp()]]$rmm$data$transfer$environment1$resolution <-
       paste(round(raster::res(projExt)[1] * 60, digits = 2), "degrees")
     spp[[curSp()]]$rmm$data$transfer$environment1$extentSet <-
@@ -214,20 +213,24 @@ proj_area_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$rmm$data$transfer$environment1$extentRule <-
       "project to user-selected new area"
     spp[[curSp()]]$rmm$data$transfer$environment1$sources <-
-      "WorldClim 1.4"
-    spp[[curSp()]]$rmm$output$transfer$environment1$units <-
+      spp[[curSp()]]$rmm$data$environment$sources
+    spp[[curSp()]]$rmm$prediction$transfer$environment1$units <-
       ifelse(predType == "raw", "relative occurrence rate", predType)
-    spp[[curSp()]]$rmm$output$transfer$environment1$minVal <-
+    spp[[curSp()]]$rmm$prediction$transfer$environment1$minVal <-
       printVecAsis(raster::cellStats(projAreaThr, min), asChar = TRUE)
-    spp[[curSp()]]$rmm$output$transfer$environment1$maxVal <-
+    spp[[curSp()]]$rmm$prediction$transfer$environment1$maxVal <-
       printVecAsis(raster::cellStats(projAreaThr, max), asChar = TRUE)
     if(!(input$threshold == 'none')) {
-      spp[[curSp()]]$rmm$output$transfer$environment1$thresholdSet <- thr
+      spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet <- thr
     } else {
-      spp[[curSp()]]$rmm$output$transfer$environment1$thresholdSet <- NULL
+      spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet <- NULL
     }
-    spp[[curSp()]]$rmm$output$transfer$environment1$thresholdRule <- input$threshold
-    spp[[curSp()]]$rmm$output$transfer$notes <- NULL
+    spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdRule <- input$threshold
+    if (!is.null(spp[[curSp()]]$rmm$model$algorithm$maxent$clamping)) {
+      spp[[curSp()]]$rmm$prediction$transfer$environment1$extrapolation <-
+        spp[[curSp()]]$rmm$model$algorithm$maxent$clamping
+    }
+    spp[[curSp()]]$rmm$prediction$transfer$notes <- NULL
 
     common$update_component(tab = "Map")
   })

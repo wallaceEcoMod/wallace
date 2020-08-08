@@ -4,8 +4,8 @@ proj_time_module_ui <- function(id) {
     span("Step 1:", class = "step"),
     span("Choose Study Region (**)", class = "stepText"), br(), br(),
     selectInput(ns('projExt'), label = "Select method (**)",
-                choices = list("Same extent (**)" = 'pjCur',
-                               "Draw polygon(**)" = 'pjDraw',
+                choices = list("Draw polygon(**)" = 'pjDraw',
+                               "Same extent (**)" = 'pjCur',
                                "User-specified(**)" = 'pjUser')),
     conditionalPanel(sprintf("input['%s'] == 'pjUser'", ns("projExt")),
                      fileInput(
@@ -147,13 +147,13 @@ proj_time_module_server <- function(input, output, session, common) {
     # FUNCTION CALL ####
     if (input$projExt == 'pjDraw') {
       polyPj <- proj_draw(spp[[curSp()]]$polyPjXY, spp[[curSp()]]$polyPjID,
-                          input$drawPjBuf, logger)
+                          input$drawPjBuf, logger, spN = curSp())
       if (input$drawPjBuf == 0 ) {
         logger %>% writeLog(
-          em(spName(curSp())), ' : Draw polygon without buffer(**).')
+          hlSpp(curSp()), ' : Draw polygon without buffer(**).')
       } else {
         logger %>% writeLog(
-          em(spName(curSp())), ' : Draw polygon with buffer of ', input$drawPjBuf,
+          hlSpp(curSp()), ' : Draw polygon with buffer of ', input$drawPjBuf,
           ' degrees (**).')
       }
       # METADATA ####
@@ -164,9 +164,8 @@ proj_time_module_server <- function(input, output, session, common) {
     }
 
     if (input$projExt == 'pjUser') {
-      polyPj <- penvs_userBgExtent(input$userPjShp$datapath,
-                                   input$userPjShp$name,
-                                   input$userPjBuf, logger)
+      polyPj <- proj_userExtent(input$userPjShp$datapath, input$userPjShp$name,
+                                input$userPjBuf, logger, spN = curSp())
       # METADATA ####
       # get extensions of all input files
       exts <- sapply(strsplit(input$userPjShp$name, '\\.'),
@@ -188,8 +187,8 @@ proj_time_module_server <- function(input, output, session, common) {
     if (input$projExt == 'pjCur') {
       polyPj <- spp[[curSp()]]$procEnvs$bgExt
       logger %>% writeLog(
-        em(spName(curSp())),
-        ' : Projection extent equal to current extent region. (**)')
+        hlSpp(curSp()),
+        'Projection extent equal to current extent region. (**)')
     }
     # LOAD INTO SPP ####
     spp[[curSp()]]$project$pjExt <- polyPj
@@ -257,7 +256,7 @@ proj_time_module_server <- function(input, output, session, common) {
     projTime.out <- proj_time(evalOut(), curModel(), projTimeEnvs, predType,
                               alg = spp[[curSp()]]$rmm$model$algorithms,
                               clamp = rmm()$model$algorithm$maxent$clamping,
-                              spp[[curSp()]]$project$pjExt, logger)
+                              spp[[curSp()]]$project$pjExt, logger, spN = curSp())
     projExt <- projTime.out$projExt
     projTime <- projTime.out$projTime
 
@@ -276,17 +275,16 @@ proj_time_module_server <- function(input, output, session, common) {
         thr <- quantile(occPredVals, probs = input$trainPresQuantile)
       }
       projTimeThr <- projTime > thr
-      logger %>% writeLog("Projection of model to ", paste0('20', input$selTime),
-                             " for ", em(spName(curSp())), ' with threshold ',
-                             input$threshold, ' (', formatC(thr, format = "e", 2),
-                             ") for GCM ", GCMlookup[input$selGCM],
-                             " under RCP ", as.numeric(input$selRCP)/10.0, ".")
+      logger %>% writeLog(hlSpp(curSp()), "Projection of model to ", paste0('20', input$selTime),
+                          ' with threshold ', input$threshold, ' (',
+                          formatC(thr, format = "e", 2), ") for GCM ",
+                          GCMlookup[input$selGCM], " under RCP ",
+                          as.numeric(input$selRCP)/10.0, ".")
     } else {
       projTimeThr <- projTime
-      logger %>% writeLog("Projection of model to ", paste0('20', input$selTime),
-                             " for ", em(spName(curSp())), ' with ', predType,
-                             " output for GCM ", GCMlookup[input$selGCM],
-                             " under RCP ", as.numeric(input$selRCP)/10.0, ".")
+      logger %>% writeLog(hlSpp(curSp()), "Projection of model to ", paste0('20', input$selTime),
+                          ' with ', predType, " output for GCM ", GCMlookup[input$selGCM],
+                          " under RCP ", as.numeric(input$selRCP)/10.0, ".")
     }
     raster::crs(projTimeThr) <- raster::crs(envs())
     # rename
@@ -298,38 +296,42 @@ proj_time_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$project$mapProjVals <- getRasterVals(projTimeThr, predType)
 
     # METADATA ####
-    projYr <- paste0('20', input$selTime)
     spp[[curSp()]]$rmm$data$transfer$environment1$minVal <-
       printVecAsis(raster::cellStats(projExt, min), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$maxVal <-
       printVecAsis(raster::cellStats(projExt, max), asChar = TRUE)
-    spp[[curSp()]]$rmm$data$transfer$environment1$yearMin <- projYr
-    spp[[curSp()]]$rmm$data$transfer$environment1$yearMax <- projYr
     spp[[curSp()]]$rmm$data$transfer$environment1$resolution <-
       paste(round(raster::res(projExt)[1] * 60, digits = 2), "degrees")
     spp[[curSp()]]$rmm$data$transfer$environment1$extentSet <-
       printVecAsis(as.vector(projExt@extent), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$extentRule <-
       "project to user-selected new time"
+    projYr <- paste0('20', input$selTime)
+    spp[[curSp()]]$rmm$data$transfer$environment1$yearMin <- projYr
+    spp[[curSp()]]$rmm$data$transfer$environment1$yearMax <- projYr
     spp[[curSp()]]$rmm$data$transfer$environment1$sources <- "WorldClim 1.4"
     spp[[curSp()]]$rmm$data$transfer$environment1$notes <-
       paste("projection to year", projYr, "for GCM",
             GCMlookup[input$selGCM], "under RCP",
             as.numeric(input$selRCP)/10.0)
 
-    spp[[curSp()]]$rmm$output$transfer$environment1$units <-
+    spp[[curSp()]]$rmm$prediction$transfer$environment1$units <-
       ifelse(predType == "raw", "relative occurrence rate", predType)
-    spp[[curSp()]]$rmm$output$transfer$environment1$minVal <-
+    spp[[curSp()]]$rmm$prediction$transfer$environment1$minVal <-
       printVecAsis(raster::cellStats(projTimeThr, min), asChar = TRUE)
-    spp[[curSp()]]$rmm$output$transfer$environment1$maxVal <-
+    spp[[curSp()]]$rmm$prediction$transfer$environment1$maxVal <-
       printVecAsis(raster::cellStats(projTimeThr, max), asChar = TRUE)
     if(!(input$threshold == 'none')) {
-      spp[[curSp()]]$rmm$output$transfer$environment1$thresholdSet <- thr
+      spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet <- thr
     } else {
-      spp[[curSp()]]$rmm$output$transfer$environment1$thresholdSet <- NULL
+      spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet <- NULL
     }
-    spp[[curSp()]]$rmm$output$transfer$environment1$thresholdRule <- input$threshold
-    spp[[curSp()]]$rmm$output$transfer$notes <- NULL
+    spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdRule <- input$threshold
+    if (!is.null(spp[[curSp()]]$rmm$model$algorithm$maxent$clamping)) {
+      spp[[curSp()]]$rmm$prediction$transfer$environment1$extrapolation <-
+        spp[[curSp()]]$rmm$model$algorithm$maxent$clamping
+    }
+    spp[[curSp()]]$rmm$prediction$transfer$notes <- NULL
 
     common$update_component(tab = "Map")
   })
