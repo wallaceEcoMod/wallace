@@ -12,7 +12,8 @@ proj_area(
   alg,
   clamp,
   pjExt,
-  logger = NULL
+  logger = NULL,
+  spN = NULL
 )
 }
 \arguments{
@@ -32,6 +33,8 @@ proj_area(
 
 \item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
+
+\item{spN}{Character. Used to obtain species name for logger messages}
 }
 \value{
 A list of two elements: projExt and projArea.
@@ -64,7 +67,7 @@ modProj <- proj_area(evalOut = modAlg, curModel = 1, envs, outputType = 'raw', a
 
 }
 \seealso{
-\code{\link[dismo]{predict}}, \code{\link{proj_time}} \code{\link{proj_user}}
+\code{\link[dismo]{predict}}, \code{\link{proj_time}} \code{\link{proj_userFiles}}
 }
 \author{
 Jamie Kass <jkass@gradcenter.cuny.edu>

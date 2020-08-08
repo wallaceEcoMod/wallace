@@ -11,6 +11,7 @@
 #' @param polyPjID Numeric ID to be used in the generation of the polygon.
 #' @param drawBgBuf the buffer to be used in generating the SpatialPolygonsDataFrame, must be >=0 . A number must be specified.
 #' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny, otherwise leave the default NULL
+#' @param spN Character. Used to obtain species name for logger messages
 # @keywords
 #'
 #' @examples
@@ -26,7 +27,7 @@
 
 #' @author Gonzalo Pinilla gpinillabuitrago@@gradcenter.cuny.edu
 # @note
-#' @seealso  \code{\link{proj_user}}
+#' @seealso  \code{\link{proj_userFiles}}
 # @references
 # @aliases - a list of additional topic names that will be mapped to
 # this documentation when the user looks them up from the command
@@ -35,11 +36,17 @@
 
 #' @export
 
-proj_draw <- function(polyPjXY, polyPjID, drawPjBuf, logger = NULL) {
+proj_draw <- function(polyPjXY, polyPjID, drawPjBuf, logger = NULL, spN = NULL) {
   newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(polyPjXY)),
                                                    ID = polyPjID)))
   bgExt <- rgeos::gBuffer(newPoly, width = drawPjBuf)
   bgExt <- sp::SpatialPolygonsDataFrame(bgExt, data = data.frame(x = 1),
                                         match.ID = FALSE)
+  if (drawPjBuf == 0) {
+    logger %>% writeLog(hlSpp(spN), 'Draw polygon without buffer(**).')
+  } else {
+    logger %>% writeLog(hlSpp(spN), 'Draw polygon with buffer of ',
+                        drawPjBuf, ' degrees (**).')
+  }
   return(bgExt)
 }

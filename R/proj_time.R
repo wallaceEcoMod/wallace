@@ -17,6 +17,7 @@
 #' @param pjExt Extent of the area to project the model to. This is defined by the user in the map of the GUI and is provided as a SpatialPolygons object.
 #' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
+#' @param spN Character. Used to obtain species name for logger messages
 # @keywords
 #'
 #' @examples
@@ -46,7 +47,7 @@
 #' @author Andrea Paz <paz.andreita@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
-#' @seealso \code{\link[dismo]{predict}}, \code{\link{proj_time}} \code{\link{proj_user}}
+#' @seealso \code{\link[dismo]{predict}}, \code{\link{proj_time}} \code{\link{proj_userFiles}}
 #'
 # @references
 # @aliases - a list of additional topic names that will be mapped to
@@ -56,16 +57,16 @@
 #' @export
 
 proj_time <- function(evalOut, curModel, envs, outputType, alg, clamp,
-                      pjExt, logger = NULL) {
+                      pjExt, logger = NULL, spN = NULL) {
   newPoly <- pjExt
   if (alg == 'bioclim') {
-    logger %>% writeLog('Projection in time for BIOCLIM model.')
+    logger %>% writeLog(hlSpp(spN), 'Projection in time for BIOCLIM model.')
   } else if (alg == 'maxent.jar'|clamp==TRUE) {
 
-    logger %>% writeLog('Projection in time for clamped model ', curModel, '.')
+    logger %>% writeLog(hlSpp(spN), 'Projection in time for clamped model ', curModel, '.')
 
   } else if (clamp == FALSE) {
-    logger %>% writeLog('New time projection for unclamped ', curModel, '.')
+    logger %>% writeLog(hlSpp(spN), 'New time projection for unclamped ', curModel, '.')
   }
 
 
@@ -79,13 +80,13 @@ proj_time <- function(evalOut, curModel, envs, outputType, alg, clamp,
       modProjTime <- dismo::predict(evalOut@models[[curModel]], pjtMsk)
     } else if (alg == 'maxnet') {
       if (outputType == "raw") outputType <- "exponential"
-      modProjArea <- ENMeval::enm.maxnet@pred(evalOut@models[[curModel]],
+      modProjTime <- ENMeval::enm.maxnet@pred(evalOut@models[[curModel]],
                                               pjtMsk,
                                               other.settings = list(
                                                 pred.type = outputType,
                                                 clamp = clamp))
     } else if (alg == 'maxent.jar') {
-      modProjArea <- ENMeval::enm.maxent.jar@pred(evalOut@models[[curModel]],
+      modProjTime <- ENMeval::enm.maxent.jar@pred(evalOut@models[[curModel]],
                                                   pjtMsk,
                                                   other.settings = list(
                                                     pred.type = outputType,

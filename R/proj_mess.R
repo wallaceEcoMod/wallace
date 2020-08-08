@@ -14,6 +14,7 @@
 #' @param time a string of the time used for projecting (e.g. "2040 MIROC6 ssp126)
 #' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
+#' @param spN Character. Used to obtain species name for logger messages
 # @keywords
 #'
 #' @examples
@@ -47,7 +48,7 @@
 #' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 
 # @note
-#' @seealso \code{\link[dismo]{mess}}, \code{\link{proj_time}} \code{\link{proj_user}}
+#' @seealso \code{\link[dismo]{mess}}, \code{\link{proj_time}} \code{\link{proj_userFiles}}
 
 # @references
 # @aliases - a list of additional topic names that will be mapped to
@@ -56,7 +57,7 @@
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 
-proj_mess <- function(occs, bg, bgMsk, projExtRas, time, logger = NULL) {
+proj_mess <- function(occs, bg, bgMsk, projExtRas, time, logger = NULL, spN = NULL) {
 
   occsVals <- occs[,names(bgMsk)]
   bgVals <- bg[,names(bgMsk)]
@@ -70,7 +71,7 @@ proj_mess <- function(occs, bg, bgMsk, projExtRas, time, logger = NULL) {
     mss <- suppressWarnings(dismo::mess(projExtRas2, allVals))
     # for mapping purposes, set all infinite values to NA
     mss[is.infinite(mss)] <- NA
-    logger %>% writeLog("Generated MESS map for ", time, ".")
+    logger %>% writeLog(hlSpp(spN), "Generated MESS map for ", time, ".")
   })
 
   return(mss)
