@@ -205,15 +205,16 @@ tagList(
               "projSel", "Modules Available:",
               choices = insert_modules_options("proj")),
             tags$hr(),
-            insert_modules_ui("proj")
-            # strong("Reset projection extent"), br(),
-            # actionButton("goResetProj", "Reset", class = 'butResPj'),
-            # tags$head(tags$style(".butResPj {background-color: #C51E10;
-            #                      color: white;
-            #                      padding: 1px 1px;
-            #                      border: none;}
-            #                      .butResPj:hover {background-color: #830D03;
-            #                      color: white;}"))
+            insert_modules_ui("proj"),
+            tags$hr(),
+            strong("Reset projection extent"), br(),
+            actionButton("goResetProj", "Reset", class = 'butResPj'),
+            tags$head(tags$style(".butResPj {background-color: #C51E10;
+                                 color: white;
+                                 padding: 1px 1px;
+                                 border: none;}
+                                 .butResPj:hover {background-color: #830D03;
+                                 color: white;}"))
           ),
           # SESSION CODE ####
           conditionalPanel(
