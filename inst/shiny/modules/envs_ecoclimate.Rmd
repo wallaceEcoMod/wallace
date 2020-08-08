@@ -4,7 +4,7 @@ Using Ecoclimate (http://www.ecoclimate.org)  dataset at resolution of 0.5 degre
 ```
 
 ```{r, echo = {{envs_ecoclimate_knit}}, include = {{envs_ecoclimate_knit}}}
-# R code to run 
+# R code to get environmental data from Ecoclimate
 envs_{{spAbr}} <- envs_ecoClimate(
   bcAOGCM = "{{bcAOGCM_rmd}}",
   bcScenario ="{{bcScenario_rmd}}",

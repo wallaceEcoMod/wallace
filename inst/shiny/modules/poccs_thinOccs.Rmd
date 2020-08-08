@@ -7,5 +7,5 @@ Thinning the occurrences to  `r "{{thinDist_rmd}}"` km
 # Thin occurrences 
 occs_{{spAbr}} <- poccs_thinOccs(
   occs = occs_{{spAbr}}, 
-  thinDist = {{thinDist_rmd}}
+  thinDist = {{thinDist_rmd}},
   spN="{{spName}}")

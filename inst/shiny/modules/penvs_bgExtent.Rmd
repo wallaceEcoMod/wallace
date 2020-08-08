@@ -1,5 +1,5 @@
 ```{asis, echo = {{penvs_bgExtent_knit}}, eval = {{penvs_bgExtent_knit}}, include = {{penvs_bgExtent_knit}}}
-###Process environmental data
+### Process environmental data
 Sampling of {{bgPtsNum_rmd}} background points and corresponding environmental data using a "{{bgSel_rmd}}" method with a {{bgBuf_rmd}} degree buffer.
 ```
 
