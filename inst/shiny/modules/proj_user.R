@@ -347,7 +347,7 @@ proj_user_module_map <- function(map, common) {
   mapProjVals <- spp[[curSp()]]$project$mapProjVals
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
   # if no threshold specified
-  if(rmm()$output$transfer$environment1$thresholdRule != 'none') {
+  if(rmm()$prediction$transfer$environment1$thresholdRule != 'none') {
     rasPal <- c('gray', 'red')
     map %>% removeControl("proj") %>%
       addLegend("bottomright", colors = c('gray', 'red'),

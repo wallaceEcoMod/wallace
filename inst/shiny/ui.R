@@ -446,9 +446,20 @@ tagList(
               ),
               conditionalPanel(
                 "input.tabs == 'proj'",
+                br(),
                 fluidRow(
                   column(3, h5("Download shapefile of projection extent")),
                   column(2, shinyjs::disabled(downloadButton('dlPjShp', "ZIP file")))
+                ),
+                br(),
+                fluidRow(
+                  column(3, h5("Download projected environmental variables (Select download file type)")),
+                  column(2, selectInput('projEnvsFileType',
+                                        label = NULL,
+                                        choices = list("GeoTIFF" = 'GTiff',
+                                                       "GRD" = 'raster',
+                                                       "ASCII" = 'ascii'))),
+                  column(2, shinyjs::disabled(downloadButton('dlProjEnvs', "ZIP file")))
                 ),
                 br(),
                 fluidRow(
@@ -461,6 +472,7 @@ tagList(
                                                        "PNG" = 'png'))),
                   column(2, shinyjs::disabled(downloadButton('dlProj', "Projection file(**)")))
                 ),
+                br(),
                 fluidRow(
                   column(3, h5("Download MESS (Select download file type**)")),
                   column(2, selectInput('messFileType',

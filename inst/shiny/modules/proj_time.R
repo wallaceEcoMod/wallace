@@ -292,8 +292,12 @@ proj_time_module_server <- function(input, output, session, common) {
 
     # LOAD INTO SPP ####
     spp[[curSp()]]$project$pjEnvs <- projExt
+    spp[[curSp()]]$project$projTimeEnvs <- projTimeEnvs
     spp[[curSp()]]$project$mapProj <- projTimeThr
     spp[[curSp()]]$project$mapProjVals <- getRasterVals(projTimeThr, predType)
+    spp[[curSp()]]$project$pjEnvsDl <- paste0('CMIP5_', envsRes * 60, "min_RCP",
+                                              input$selRCP, "_", input$selGCM,
+                                              "_", input$selTime)
 
     # METADATA ####
     spp[[curSp()]]$rmm$data$transfer$environment1$minVal <-
@@ -379,7 +383,7 @@ proj_time_module_map <- function(map, common) {
   mapProjVals <- spp[[curSp()]]$project$mapProjVals
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
   # if no threshold specified
-  if(rmm()$output$transfer$environment1$thresholdRule != 'none') {
+  if(rmm()$prediction$transfer$environment1$thresholdRule != 'none') {
     rasPal <- c('gray', 'red')
     map %>% removeControl("proj") %>%
       addLegend("bottomright", colors = c('gray', 'red'),

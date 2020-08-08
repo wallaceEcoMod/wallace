@@ -96,10 +96,10 @@ proj_area_module_server <- function(input, output, session, common) {
                           input$drawPjBuf, logger, spN = curSp())
       if (input$drawPjBuf == 0 ) {
         logger %>% writeLog(
-          hlSpp(curSp()), ' : Draw polygon without buffer(**).')
+          hlSpp(curSp()), 'Draw polygon without buffer(**).')
       } else {
         logger %>% writeLog(
-          hlSpp(curSp()), ' : Draw polygon with buffer of ', input$drawPjBuf,
+          hlSpp(curSp()), 'Draw polygon with buffer of ', input$drawPjBuf,
           ' degrees (**).')
       }
       # METADATA ####
@@ -133,8 +133,7 @@ proj_area_module_server <- function(input, output, session, common) {
     if (input$projExt == 'pjCur') {
       polyPj <- spp[[curSp()]]$procEnvs$bgExt
       logger %>% writeLog(
-        hlSpp(curSp()),
-        ' : Projection extent equal to current extent region. (**)')
+        hlSpp(curSp()), 'Projection extent equal to current extent region. (**)')
     }
     # LOAD INTO SPP ####
     spp[[curSp()]]$project$pjExt <- polyPj
@@ -277,7 +276,7 @@ proj_area_module_map <- function(map, common) {
   mapProjVals <- spp[[curSp()]]$project$mapProjVals
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
   # if no threshold specified
-  if(rmm()$output$transfer$environment1$thresholdRule != 'none') {
+  if(rmm()$prediction$transfer$environment1$thresholdRule != 'none') {
     rasPal <- c('gray', 'red')
     map %>% removeControl("proj") %>%
       addLegend("bottomright", colors = c('gray', 'red'),
