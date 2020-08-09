@@ -3,8 +3,8 @@
 #' @description This functions generates maxent or maxnet models using ENMeval 2.0 and user provided tuning parameters.
 #'
 #' @details
-#' The function generates model in ENMeval using a user porvided parition of occurrences from previous components i GUI.
-#' User can activate clamping and input de tuning argumenta to be used for model building
+#' The function generates model in ENMeval using a user provided partition of occurrences from previous components in the GUI.
+#' User can activate clamping and input de tuning arguments to be used for model building
 #'
 #' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.
 #' @param bg  Coordinates of background points to be used for modelling.
