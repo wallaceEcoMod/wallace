@@ -36,11 +36,15 @@ proj_mess_module_server <- function(input, output, session, common) {
     projYr <- spp[[curSp()]]$rmm$data$transfer$environment1$yearMax
     time <- ifelse(projYr == "1990", "present-day", projYr)
     mss <- proj_mess(occs(), bg(), bgMask(), spp[[curSp()]]$project$pjEnvs,
-                     time, logger)
+                     time, logger, spN = curSp())
 
     # LOAD INTO SPP ####
     spp[[curSp()]]$project$mess <- mss
     spp[[curSp()]]$project$messVals <- getRasterVals(mss)
+
+    # METADATA
+    spp[[curSp()]]$rmm$prediction$uncertainty$extrapolation <-
+      "MESS (multivariate environmental similarity surface)"
 
     common$update_component(tab = "Map")
   })

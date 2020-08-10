@@ -205,15 +205,16 @@ tagList(
               "projSel", "Modules Available:",
               choices = insert_modules_options("proj")),
             tags$hr(),
-            insert_modules_ui("proj")
-            # strong("Reset projection extent"), br(),
-            # actionButton("goResetProj", "Reset", class = 'butResPj'),
-            # tags$head(tags$style(".butResPj {background-color: #C51E10;
-            #                      color: white;
-            #                      padding: 1px 1px;
-            #                      border: none;}
-            #                      .butResPj:hover {background-color: #830D03;
-            #                      color: white;}"))
+            insert_modules_ui("proj"),
+            tags$hr(),
+            strong("Reset projection extent"), br(),
+            actionButton("goResetProj", "Reset", class = 'butResPj'),
+            tags$head(tags$style(".butResPj {background-color: #C51E10;
+                                 color: white;
+                                 padding: 1px 1px;
+                                 border: none;}
+                                 .butResPj:hover {background-color: #830D03;
+                                 color: white;}"))
           ),
           # SESSION CODE ####
           conditionalPanel(
@@ -445,9 +446,20 @@ tagList(
               ),
               conditionalPanel(
                 "input.tabs == 'proj'",
+                br(),
                 fluidRow(
                   column(3, h5("Download shapefile of projection extent")),
                   column(2, shinyjs::disabled(downloadButton('dlPjShp', "ZIP file")))
+                ),
+                br(),
+                fluidRow(
+                  column(3, h5("Download projected environmental variables (Select download file type)")),
+                  column(2, selectInput('projEnvsFileType',
+                                        label = NULL,
+                                        choices = list("GeoTIFF" = 'GTiff',
+                                                       "GRD" = 'raster',
+                                                       "ASCII" = 'ascii'))),
+                  column(2, shinyjs::disabled(downloadButton('dlProjEnvs', "ZIP file")))
                 ),
                 br(),
                 fluidRow(
@@ -460,6 +472,7 @@ tagList(
                                                        "PNG" = 'png'))),
                   column(2, shinyjs::disabled(downloadButton('dlProj', "Projection file(**)")))
                 ),
+                br(),
                 fluidRow(
                   column(3, h5("Download MESS (Select download file type**)")),
                   column(2, selectInput('messFileType',

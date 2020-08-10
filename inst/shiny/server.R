@@ -132,6 +132,7 @@ function(input, output, session) {
     shinyjs::toggleState("dlRespCurves", !is.null(spp[[curSp()]]$rmm$model$algorithm$maxent$notes))
     shinyjs::toggleState("dlPred", !is.null(spp[[curSp()]]$visualization$occPredVals))
     shinyjs::toggleState("dlPjShp", !is.null(spp[[curSp()]]$project$pjExt))
+    shinyjs::toggleState("dlProjEnvs", !is.null(spp[[curSp()]]$project$pjEnvsDl))
     shinyjs::toggleState("dlProj", !is.null(spp[[curSp()]]$project$pjEnvs))
     shinyjs::toggleState("dlMess", !is.null(spp[[curSp()]]$project$messVals))
     # shinyjs::toggleState("dlWhatever", !is.null(spp[[curSp()]]$whatever))
@@ -866,13 +867,13 @@ function(input, output, session) {
     logger %>% writeLog("Reset projection extent.")
   })
 
-  # DOWNLOAD: Shapefile of prejection extent
+  # DOWNLOAD: Shapefile of projection extent
   output$dlPjShp <- downloadHandler(
-    filename = function() paste0(formatSpName(curSp()), '_projShp.zip'),
+    filename = function() paste0(curSp(), '_projShp.zip'),
     content = function(file) {
       tmpdir <- tempdir()
       setwd(tempdir())
-      n <- spName(spp[[curSp()]])
+      n <- curSp()
 
       rgdal::writeOGR(obj = spp[[curSp()]]$project$pjExt,
                       dsn = tmpdir,
@@ -888,12 +889,39 @@ function(input, output, session) {
     contentType = "application/zip"
   )
 
+  # DOWNLOAD: Projected envs
+  output$dlProjEnvs <- downloadHandler(
+    filename = function() paste0(spp[[curSp()]]$project$pjEnvsDl, '_pjEnvs.zip'),
+    content = function(file) {
+      withProgress(
+        message = paste0("Preparing ", paste0(spp[[curSp()]]$project$pjEnvsDl, '_pjEnvs.zip...')), {
+          tmpdir <- tempdir()
+          owd <- setwd(tmpdir)
+          on.exit(setwd(owd))
+          type <- input$projEnvsFileType
+          nm <- names(spp[[curSp()]]$project$projTimeEnvs)
+
+          raster::writeRaster(spp[[curSp()]]$project$projTimeEnvs, nm, bylayer = TRUE,
+                              format = type, overwrite = TRUE)
+          ext <- switch(type, raster = 'grd', ascii = 'asc', GTiff = 'tif')
+
+          fs <- paste0(nm, '.', ext)
+          if (ext == 'grd') {
+            fs <- c(fs, paste0(nm, '.gri'))
+          }
+          zip::zipr(zipfile = file, files = fs)
+          if (file.exists(paste0(file, ".zip"))) file.rename(paste0(file, ".zip"), file)
+        })
+    },
+    contentType = "application/zip"
+  )
+
   # download for model predictions (restricted to background extent)
   output$dlProj <- downloadHandler(
     filename = function() {
       ext <- switch(input$projFileType, raster = 'zip', ascii = 'asc',
                     GTiff = 'tif', png = 'png')
-      thresholdRule <- rmm()$output$transfer$environment1$thresholdRule
+      thresholdRule <- rmm()$prediction$transfer$environment1$thresholdRule
       predType <- rmm()$prediction$notes
       if (thresholdRule == 'none') {
         paste0(curSp(), "_proj_", predType, '.', ext)
@@ -911,7 +939,7 @@ function(input, output, session) {
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in you are R console. (**)")
           }
-          if (rmm()$output$transfer$environment1$thresholdRule != 'none') {
+          if (rmm()$prediction$transfer$environment1$thresholdRule != 'none') {
             mapProjVals <- 0:1
             rasPal <- c('gray', 'red')
             legendPal <- colorBin(rasPal, 0:1, bins = 2)
@@ -935,6 +963,12 @@ function(input, output, session) {
             mapLabFormat <- reverseLabels(2, reverse_order=TRUE)
             mapOpacity <- NULL
           }
+          polyPjXY <- spp[[curSp()]]$project$pjExt@polygons[[1]]@Polygons
+          if(length(polyPjXY) == 1) {
+            shp <- polyPjXY[[1]]@coords
+          } else {
+            shp <- lapply(polyPjXY, function(x) x@coords)
+          }
           m <- leaflet() %>%
             addLegend("bottomright", pal = legendPal, title = mapTitle,
                       labFormat = mapLabFormat, opacity = mapOpacity,
@@ -942,10 +976,8 @@ function(input, output, session) {
             addProviderTiles(input$bmap) %>%
             addRasterImage(mapProj(), colors = rasPal, opacity = 0.7,
                            group = 'vis', layerId = 'mapProj', method = "ngb") %>%
-            addPolygons(lng = spp[[curSp()]]$polyPjXY[, 1],
-                        lat = spp[[curSp()]]$polyPjXY[, 2], fill = FALSE,
-                        weight = 4, color = "red",
-                        group = 'proj')
+            addPolygons(lng = shp[, 1], lat = shp[, 2], fill = FALSE,
+                        weight = 4, color = "red", group = 'proj')
           mapview::mapshot(m, file = file)
         } else if (input$projFileType == 'raster') {
           fileName <- curSp()
@@ -976,7 +1008,7 @@ function(input, output, session) {
     },
     content = function(file) {
       if(require(rgdal)) {
-        req(spp[[curSp()]]$project$mess, spp[[curSp()]]$polyPjXY)
+        req(spp[[curSp()]]$project$mess, spp[[curSp()]]$project$pjExt)
         mess <- spp[[curSp()]]$project$mess
         if (input$messFileType == 'png') {
           if (!webshot::is_phantomjs_installed()) {
@@ -985,8 +1017,13 @@ function(input, output, session) {
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in you are R console. (**)")
           }
-          polyPjXY <- spp[[curSp()]]$polyPjXY
           rasVals <- spp[[curSp()]]$project$messVals
+          polyPjXY <- spp[[curSp()]]$project$pjExt@polygons[[1]]@Polygons
+          if(length(polyPjXY) == 1) {
+            shp <- polyPjXY[[1]]@coords
+          } else {
+            shp <- lapply(polyPjXY, function(x) x@coords)
+          }
           # define colorRamp for mess
           if (max(rasVals) > 0 & min(rasVals) < 0) {
             rc1 <- colorRampPalette(colors = rev(RColorBrewer::brewer.pal(n = 3, name = 'Reds')),
@@ -1010,10 +1047,8 @@ function(input, output, session) {
             addProviderTiles(input$bmap) %>%
             addRasterImage(mess, colors = rasPal, opacity = 0.7,
                            group = 'vis', layerId = 'mapProj', method = "ngb") %>%
-            addPolygons(lng = spp[[curSp()]]$polyPjXY[, 1],
-                        lat = spp[[curSp()]]$polyPjXY[, 2], fill = FALSE,
-                        weight = 4, color = "red",
-                        group = 'proj')
+            addPolygons(lng = shp[, 1], lat = shp[, 2], fill = FALSE,
+                        weight = 4, color = "red", group = 'proj')
           mapview::mapshot(m, file = file)
         } else if (input$messFileType == 'raster') {
           fileName <- curSp()

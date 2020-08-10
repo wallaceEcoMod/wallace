@@ -4,7 +4,7 @@
 \alias{proj_draw}
 \title{proj_draw Draw projection extent}
 \usage{
-proj_draw(polyPjXY, polyPjID, drawPjBuf, logger = NULL)
+proj_draw(polyPjXY, polyPjID, drawPjBuf, logger = NULL, spN = NULL)
 }
 \arguments{
 \item{polyPjXY}{Coordinates of polygon endpoints obtained from user drawn polygon.}
@@ -12,6 +12,8 @@ proj_draw(polyPjXY, polyPjID, drawPjBuf, logger = NULL)
 \item{polyPjID}{Numeric ID to be used in the generation of the polygon.}
 
 \item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny, otherwise leave the default NULL}
+
+\item{spN}{Character. Used to obtain species name for logger messages}
 
 \item{drawBgBuf}{the buffer to be used in generating the SpatialPolygonsDataFrame, must be >=0 . A number must be specified.}
 }
@@ -37,7 +39,7 @@ polygonTest<-proj_draw(polyPjXY=userDrawPoly, polyPjID, drawPjBuf, logger = NULL
 
 }
 \seealso{
-\code{\link{proj_user}}
+\code{\link{proj_userFiles}}
 }
 \author{
 Gonzalo Pinilla gpinillabuitrago@gradcenter.cuny.edu

@@ -4,7 +4,7 @@
 \alias{proj_mess}
 \title{proj_mess generate MESS map for projection time}
 \usage{
-proj_mess(occs, bg, bgMsk, projExtRas, time, logger = NULL)
+proj_mess(occs, bg, bgMsk, projExtRas, time, logger = NULL, spN = NULL)
 }
 \arguments{
 \item{occs}{A data frame of occurences used for modeling and values of environmental variables for each point}
@@ -19,6 +19,8 @@ proj_mess(occs, bg, bgMsk, projExtRas, time, logger = NULL)
 
 \item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
+
+\item{spN}{Character. Used to obtain species name for logger messages}
 }
 \description{
 This function generates a MESS map for the new vairables for projection based on variables and points used for modeling in previous components
@@ -51,7 +53,7 @@ projMess<- proj_mess(occs=modelOccs, bg=modelBg, bgMsk=bgMsk, projExtRas=projExt
 
 }
 \seealso{
-\code{\link[dismo]{mess}}, \code{\link{proj_time}} \code{\link{proj_user}}
+\code{\link[dismo]{mess}}, \code{\link{proj_time}} \code{\link{proj_userFiles}}
 }
 \author{
 Jamie Kass <jkass@gradcenter.cuny.edu>
