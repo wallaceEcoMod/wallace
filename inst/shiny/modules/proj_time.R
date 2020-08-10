@@ -42,17 +42,47 @@ proj_time_module_ui <- function(id) {
     span("Step 2:", class = "step"),
     span("Project (**)", class = "stepText"), br(),
     p("Project model to projected extent (red) (**)"),
-    selectInput(ns("selTime"), label = "Select time period",
-                choices = list("Select period" = "",
-                               "2050" = 50,
-                               "2070" = 70)),
-    uiOutput(ns('selGCMui')),
-    selectInput(ns('selRCP'), label = "Select RCP",
-                choices = list("Select RCP" = "",
-                               '2.6' = 26,
-                               '4.5' = 45,
-                               '6.0' = 60,
-                               '8.5' = 85)),
+    radioButtons(ns('selTimeVar'), label = "Select source of variables",
+                 choices = list("Worldclim" = "worldclim",
+                                "ecoClimate" = "ecoclimate"),
+                 inline = TRUE),
+    conditionalPanel(sprintf("input['%s'] == 'worldclim'", ns("selTimeVar")),
+                     selectInput(ns("selTime"), label = "Select time period",
+                                 choices = list("Select period" = "",
+                                                "2050" = 50,
+                                                "2070" = 70)),
+                     uiOutput(ns('selGCMui')),
+                     selectInput(ns('selRCP'), label = "Select RCP",
+                                 choices = list("Select RCP" = "",
+                                                '2.6' = 26,
+                                                '4.5' = 45,
+                                                '6.0' = 60,
+                                                '8.5' = 85))),
+    conditionalPanel(sprintf("input['%s'] == 'ecoclimate'", ns("selTimeVar")),
+                     tags$div(title = 'Select AOGCM',
+                              selectInput(ns("pjAOGCM"),
+                                          label = "Select the Atmospheric Oceanic General Circulation Model you want to use (**)",
+                                          choices = list("Select AOGCMs" = "",
+                                                         "CCSM" = "CCSM",
+                                                         "CNRM" = "CNRM",
+                                                         "MIROC" = "MIROC",
+                                                         "FGOALS" = "FGOALS",
+                                                         "GISS" = "GISS",
+                                                         "IPSL" = "IPSL",
+                                                         "MRI" = "MRI",
+                                                         "MPI" = "MPI")
+                              )),
+                     tags$div(title = 'Select Scenario',
+                              selectInput(ns("pjScenario"),
+                                          label = "select the temporal scenario that you want to use (**)",
+                                          choices = list("Select Scenario" = "",
+                                                         "2080-2100 RCP 2.6" = "Future 2.6",
+                                                         "2080-2100 RCP 4.5" = "Future 4.5",
+                                                         "2080-2100 RCP 6" = "Future 6",
+                                                         "2080-2100 RCP 8.5" = "Future 8.5",
+                                                         "Holocene (6,000 years ago)" = "Holo",
+                                                         "LGM (21,000 years ago)" = "LGM")
+                              ))),
     tags$div(title = paste0('Create binary map of predicted presence/absence ',
                             'assuming all values above threshold value represent ',
                             'presence. Also can be interpreted as a "potential ',
@@ -150,10 +180,10 @@ proj_time_module_server <- function(input, output, session, common) {
                           input$drawPjBuf, logger, spN = curSp())
       if (input$drawPjBuf == 0 ) {
         logger %>% writeLog(
-          hlSpp(curSp()), ' : Draw polygon without buffer(**).')
+          hlSpp(curSp()), 'Draw polygon without buffer(**).')
       } else {
         logger %>% writeLog(
-          hlSpp(curSp()), ' : Draw polygon with buffer of ', input$drawPjBuf,
+          hlSpp(curSp()), 'Draw polygon with buffer of ', input$drawPjBuf,
           ' degrees (**).')
       }
       # METADATA ####
@@ -218,38 +248,50 @@ proj_time_module_server <- function(input, output, session, common) {
       return()
     }
 
-    # code taken from dismo getData() function to catch if user is trying to
-    # download a missing combo of gcm / rcp
-    gcms <- c('AC', 'BC', 'CC', 'CE', 'CN', 'GF', 'GD', 'GS', 'HD', 'HG', 'HE',
-              'IN', 'IP', 'MI', 'MR', 'MC', 'MP', 'MG', 'NO')
-    rcps <- c(26, 45, 60, 85)
-    m <- matrix(c(0,1,1,0,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-                  1,1,1,1,1,1,1,0,1,1,0,0,1,0,1,1,1,0,0,1,1,1,1,0,1,1,1,1,1,0,1,
-                  0,1,1,1,1,1,1,1,1,1,1,1,1,1), ncol = 4)
-    i <- m[which(input$selGCM == gcms), which(input$selRCP == rcps)]
-    if (!i) {
-      logger %>%
-        writeLog(type = 'error',
-                 paste0('This combination of GCM and RCP is not available. Please ',
-                        'make a different selection.'))
-      return()
-    }
-
-    # DATA ####
-    smartProgress(
-      logger,
-      message = paste("Retrieving WorldClim data for", input$selTime,
-                      input$selRCP, "..."),
-      {
-        projTimeEnvs <-
-          raster::getData('CMIP5', var = "bio", res = envsRes * 60,
-                          rcp = input$selRCP, model = input$selGCM,
-                          year = input$selTime)
-        names(projTimeEnvs) <- paste0('bio', c(paste0('0',1:9), 10:19))
-        # in case user subsetted bioclims
-        projTimeEnvs <- projTimeEnvs[[names(envs())]]
+        # DATA ####
+    if (input$selTimeVar == 'worldclim') {
+      # code taken from dismo getData() function to catch if user is trying to
+      # download a missing combo of gcm / rcp
+      gcms <- c('AC', 'BC', 'CC', 'CE', 'CN', 'GF', 'GD', 'GS', 'HD', 'HG', 'HE',
+                'IN', 'IP', 'MI', 'MR', 'MC', 'MP', 'MG', 'NO')
+      rcps <- c(26, 45, 60, 85)
+      m <- matrix(c(0,1,1,0,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+                    1,1,1,1,1,1,1,0,1,1,0,0,1,0,1,1,1,0,0,1,1,1,1,0,1,1,1,1,1,0,1,
+                    0,1,1,1,1,1,1,1,1,1,1,1,1,1), ncol = 4)
+      i <- m[which(input$selGCM == gcms), which(input$selRCP == rcps)]
+      if (!i) {
+        logger %>%
+          writeLog(type = 'error',
+                   paste0('This combination of GCM and RCP is not available. Please ',
+                          'make a different selection.'))
+        return()
       }
-    )
+      smartProgress(
+        logger,
+        message = paste("Retrieving WorldClim data for", input$selTime,
+                        input$selRCP, "..."),
+        {
+          projTimeEnvs <-
+            raster::getData('CMIP5', var = "bio", res = envsRes * 60,
+                            rcp = input$selRCP, model = input$selGCM,
+                            year = input$selTime)
+          names(projTimeEnvs) <- paste0('bio', c(paste0('0',1:9), 10:19))
+          # in case user subsetted bioclims
+          projTimeEnvs <- projTimeEnvs[[names(envs())]]
+        }
+      )
+    } else if (input$selTimeVar == 'ecoclimate') {
+      smartProgress(
+        logger,
+        message = paste0("Retrieving ecoClimate data of GCM ", input$pjAOGCM,
+                         " for ", input$pjScenario, "..."),
+        {
+          projTimeEnvs <- envs_ecoClimate(input$pjAOGCM, input$pjScenario,
+                                          as.numeric(gsub("bio", "", names(envs()))),
+                                          logger)
+        }
+      )
+    }
 
     # FUNCTION CALL ####
     predType <- rmm()$prediction$notes
@@ -275,16 +317,28 @@ proj_time_module_server <- function(input, output, session, common) {
         thr <- quantile(occPredVals, probs = input$trainPresQuantile)
       }
       projTimeThr <- projTime > thr
-      logger %>% writeLog(hlSpp(curSp()), "Projection of model to ", paste0('20', input$selTime),
-                          ' with threshold ', input$threshold, ' (',
-                          formatC(thr, format = "e", 2), ") for GCM ",
-                          GCMlookup[input$selGCM], " under RCP ",
-                          as.numeric(input$selRCP)/10.0, ".")
+      if (input$selTimeVar == 'worldclim') {
+        logger %>% writeLog(hlSpp(curSp()), "Projection of model to ", paste0('20', input$selTime),
+                            ' with threshold ', input$threshold, ' (',
+                            formatC(thr, format = "e", 2), ") for GCM ",
+                            GCMlookup[input$selGCM], " under RCP ",
+                            as.numeric(input$selRCP)/10.0, ".")
+      } else if (input$selTimeVar == 'ecoclimate') {
+        logger %>% writeLog(hlSpp(curSp()), "Projection of model to ", input$pjScenario,
+                            ' with threshold ', input$threshold, ' (',
+                            formatC(thr, format = "e", 2), ") for GCM ",
+                            input$pjAOGCM, ".")
+      }
     } else {
       projTimeThr <- projTime
-      logger %>% writeLog(hlSpp(curSp()), "Projection of model to ", paste0('20', input$selTime),
-                          ' with ', predType, " output for GCM ", GCMlookup[input$selGCM],
-                          " under RCP ", as.numeric(input$selRCP)/10.0, ".")
+      if (input$selTimeVar == 'worldclim') {
+        logger %>% writeLog(hlSpp(curSp()), "Projection of model to ", paste0('20', input$selTime),
+                            ' with ', predType, " output for GCM ", GCMlookup[input$selGCM],
+                            " under RCP ", as.numeric(input$selRCP)/10.0, ".")
+      } else if (input$selTimeVar == 'ecoclimate') {
+        logger %>% writeLog(hlSpp(curSp()), "Projection of model to ", input$pjScenario,
+                            ' with ', predType, " output for GCM ", input$pjAOGCM, ".")
+      }
     }
     raster::crs(projTimeThr) <- raster::crs(envs())
     # rename
@@ -295,9 +349,14 @@ proj_time_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$project$projTimeEnvs <- projTimeEnvs
     spp[[curSp()]]$project$mapProj <- projTimeThr
     spp[[curSp()]]$project$mapProjVals <- getRasterVals(projTimeThr, predType)
-    spp[[curSp()]]$project$pjEnvsDl <- paste0('CMIP5_', envsRes * 60, "min_RCP",
-                                              input$selRCP, "_", input$selGCM,
-                                              "_", input$selTime)
+    if (input$selTimeVar == "worldclim") {
+      spp[[curSp()]]$project$pjEnvsDl <- paste0('CMIP5_', envsRes * 60, "min_RCP",
+                                                input$selRCP, "_", input$selGCM,
+                                                "_", input$selTime)
+    } else if (input$selTimeVar == "ecoclimate") {
+      spp[[curSp()]]$project$pjEnvsDl <- paste0('ecoClimate_', input$pjScenario,
+                                                '_', input$pjAOGCM)
+    }
 
     # METADATA ####
     spp[[curSp()]]$rmm$data$transfer$environment1$minVal <-
@@ -310,14 +369,31 @@ proj_time_module_server <- function(input, output, session, common) {
       printVecAsis(as.vector(projExt@extent), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$extentRule <-
       "project to user-selected new time"
-    projYr <- paste0('20', input$selTime)
-    spp[[curSp()]]$rmm$data$transfer$environment1$yearMin <- projYr
-    spp[[curSp()]]$rmm$data$transfer$environment1$yearMax <- projYr
-    spp[[curSp()]]$rmm$data$transfer$environment1$sources <- "WorldClim 1.4"
-    spp[[curSp()]]$rmm$data$transfer$environment1$notes <-
-      paste("projection to year", projYr, "for GCM",
-            GCMlookup[input$selGCM], "under RCP",
-            as.numeric(input$selRCP)/10.0)
+    if (input$selTimeVar == "worldclim") {
+      projYr <- paste0('20', input$selTime)
+      spp[[curSp()]]$rmm$data$transfer$environment1$yearMin <- projYr
+      spp[[curSp()]]$rmm$data$transfer$environment1$yearMax <- projYr
+      spp[[curSp()]]$rmm$data$transfer$environment1$sources <- "WorldClim 1.4"
+      spp[[curSp()]]$rmm$data$transfer$environment1$notes <-
+        paste("projection to year", projYr, "for GCM",
+              GCMlookup[input$selGCM], "under RCP",
+              as.numeric(input$selRCP)/10.0)
+    } else if (input$selTimeVar == "ecoclimate") {
+      spp[[curSp()]]$rmm$data$transfer$environment1$sources <- "ecoClimate"
+      spp[[curSp()]]$rmm$data$transfer$environment1$notes <-
+        paste("projection to", input$pjScenario, "for GCM", input$pjAOGCM)
+      if (input$pjScenario == "LGM") {
+        spp[[curSp()]]$rmm$data$transfer$environment1$yearMin <- -21000
+        spp[[curSp()]]$rmm$data$transfer$environment1$yearMax <- -21000
+      } else if (input$pjScenario == "Holo") {
+        spp[[curSp()]]$rmm$data$transfer$environment1$yearMin <- -6000
+        spp[[curSp()]]$rmm$data$transfer$environment1$yearMax <- -6000
+      } else {
+        spp[[curSp()]]$rmm$data$transfer$environment1$yearMin <- 2080
+        spp[[curSp()]]$rmm$data$transfer$environment1$yearMax <- 2100
+      }
+    }
+
 
     spp[[curSp()]]$rmm$prediction$transfer$environment1$units <-
       ifelse(predType == "raw", "relative occurrence rate", predType)
@@ -342,10 +418,29 @@ proj_time_module_server <- function(input, output, session, common) {
 
   return(list(
     save = function() {
-      # Save any values that should be saved when the current session is saved
+      list(
+        projExt = input$projExt,
+        userPjBuf = input$userPjBuf,
+        drawPjBuf = input$drawPjBuf,
+        selTimeVar = input$selTimeVar,
+        selTime = input$selTime,
+        selRCP = input$selRCP,
+        pjAOGCM = input$pjAOGCM,
+        pjScenario = input$pjScenario,
+        threshold = input$threshold,
+        trainPresQuantile = input$trainPresQuantile
+      )
     },
     load = function(state) {
-      # Load
+      updateSelectInput(session, 'projExt', selected = state$projExt)
+      updateNumericInput(session, 'userPjBuf', value = state$userPjBuf)
+      updateNumericInput(session, 'drawPjBuf', value = state$drawPjBuf)
+      updateSelectInput(session, 'selTime', selected = state$selTime)
+      updateSelectInput(session, 'selRCP', selected = state$selRCP)
+      updateSelectInput(session, 'pjAOGCM', selected = state$pjAOGCM)
+      updateSelectInput(session, 'pjScenario', selected = state$pjScenario)
+      updateSelectInput(session, 'threshold', selected = state$threshold)
+      updateSliderInput(session, 'trainPresQuantile', value = state$trainPresQuantile)
     }
   ))
 

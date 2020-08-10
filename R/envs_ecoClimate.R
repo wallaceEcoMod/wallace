@@ -376,7 +376,7 @@ ecoClimate_getdata<- function (AOGCM, Baseline, Scenario, logger = NULL) {
 #'
 
 ecoClimate_select <- function(map_climate, Sels = c(1:19), extent = c(-180, 180, -90, 90)) {
-  select_var<- map_climate[[Sels]]
-  crop_stack<- raster::crop(select_var, extent)
+  select_var <- map_climate[[Sels]]
+  crop_stack <- raster::crop(select_var, extent)
   return(crop_stack)
 }

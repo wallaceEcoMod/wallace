@@ -236,10 +236,20 @@ proj_area_module_server <- function(input, output, session, common) {
 
   return(list(
     save = function() {
-      # Save any values that should be saved when the current session is saved
+      list(
+        projExt = input$projExt,
+        userPjBuf = input$userPjBuf,
+        drawPjBuf = input$drawPjBuf,
+        threshold = input$threshold,
+        trainPresQuantile = input$trainPresQuantile
+      )
     },
     load = function(state) {
-      # Load
+      updateSelectInput(session, 'projExt', selected = state$projExt)
+      updateNumericInput(session, 'userPjBuf', value = state$userPjBuf)
+      updateNumericInput(session, 'drawPjBuf', value = state$drawPjBuf)
+      updateSelectInput(session, 'threshold', selected = state$threshold)
+      updateSliderInput(session, 'trainPresQuantile', value = state$trainPresQuantile)
     }
   ))
 }
