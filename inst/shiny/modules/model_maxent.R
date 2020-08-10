@@ -51,7 +51,8 @@ model_maxent_module_ui <- function(id) {
     tags$div(
       title = 'Use parallel option for quicker analysis? (**)',
       selectInput(ns("parallel"), label = '',
-                  choices = list("", "TRUE", "FALSE")),
+                  choices = list("", "TRUE", "FALSE"),
+                  selected = "FALSE"),
       conditionalPanel(
         sprintf("input['%s'] == 'TRUE'", ns("parallel")),
         numericInput(
