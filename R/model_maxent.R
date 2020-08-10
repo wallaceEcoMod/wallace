@@ -13,6 +13,9 @@
 #' @param rms Vector of range of regularization multipliers to be used in the ENMeval run
 #' @param rmsStep Step to be used when defining regularization multipliers to be used from the provided range.
 #' @param fcs Feature classes to be tested in the ENM eval run
+#' @param clampSel Boolean Use of clamping in the model
+#' @param algMaxent Algorithm tu be used in modeling. A selection of "maxnet" or "maxent.jar"
+#' @param catEnvs  If categorical predictor variables are included must provide the names
 #' @param parallel Whether to use parallel in the generation of models. Default is FALSE
 #' @param numCores If using parallel how many cores to use. Default is NULL
 #' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,

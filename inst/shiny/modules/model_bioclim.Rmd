@@ -1,7 +1,14 @@
 ```{asis, echo = {{model_bioclim_knit}}, eval = {{model_bioclim_knit}}, include = {{model_bioclim_knit}}}
-Description of what the code will do 
+### Build and Evaluate Niche Model
+Generating a species distribution model using the bioclim alogorithm as implemented in ENMeval V2.0. 
 ```
 
 ```{r, echo = {{model_bioclim_knit}}, include = {{model_bioclim_knit}}}
-# R code to run 
+# Run bioclim model for the selected species
+model_bioclim_{{spAbr}} <- model_bioclim(
+  occs =  occs_{{spAbr}},
+  bg = bgEnvsVals_{{spAbr}}, 
+  user.grp = groups_{{spAbr}}, 
+  bgMsk = bgMask_{{spAbr}},
+  spN = "{{spName}}")
 ```
