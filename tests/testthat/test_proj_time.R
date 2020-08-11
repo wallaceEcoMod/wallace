@@ -62,7 +62,7 @@ for (i in algorithm) {
   for (j in outputType) {
     ### run function
     modProj <- proj_time(evalOut = modAlg, curModel, envs=envsFut, outputType = j,
-                         alg=i,clamp=FALSE, pjExt = expertAddedPoly )
+                         alg=i,clamp=FALSE, pjExt = expertAddedPoly, spN=spN )
 
 
     ### test output features
