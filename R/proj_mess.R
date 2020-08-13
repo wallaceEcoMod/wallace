@@ -48,7 +48,7 @@
 #' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 
 # @note
-#' @seealso \code{\link[dismo]{mess}}, \code{\link{proj_time}} \code{\link{proj_userFiles}}
+#' @seealso \code{\link[dismo]{mess}}, \code{\link{proj_time}} \code{\link{proj_userEnvs}}
 
 # @references
 # @aliases - a list of additional topic names that will be mapped to

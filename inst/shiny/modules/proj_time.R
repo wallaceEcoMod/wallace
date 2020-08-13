@@ -295,10 +295,25 @@ proj_time_module_server <- function(input, output, session, common) {
 
     # FUNCTION CALL ####
     predType <- rmm()$prediction$notes
-    projTime.out <- proj_time(evalOut(), curModel(), projTimeEnvs, predType,
-                              alg = spp[[curSp()]]$rmm$model$algorithms,
-                              clamp = rmm()$model$algorithm$maxent$clamping,
-                              spp[[curSp()]]$project$pjExt, logger, spN = curSp())
+    if (spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM") {
+      projTime.out <- proj_time(evalOut = evalOut(),
+                                curModel = curModel(),
+                                envs = projTimeEnvs,
+                                pjExt = spp[[curSp()]]$project$pjExt,
+                                alg = spp[[curSp()]]$rmm$model$algorithms,
+                                logger,
+                                spN = curSp())
+    } else {
+      projTime.out <- proj_time(evalOut = evalOut(),
+                                curModel = curModel(),
+                                envs = projTimeEnvs,
+                                pjExt = spp[[curSp()]]$project$pjExt,
+                                alg = spp[[curSp()]]$rmm$model$algorithms,
+                                outputType = predType,
+                                clamp = rmm()$model$algorithm$maxent$clamping,
+                                logger,
+                                spN = curSp())
+    }
     projExt <- projTime.out$projExt
     projTime <- projTime.out$projTime
 

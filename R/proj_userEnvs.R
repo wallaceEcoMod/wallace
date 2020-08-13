@@ -1,4 +1,4 @@
-#' @title proj_userFiles Project model to user specified area and time
+#' @title proj_userEnvs Project model to user specified area and time
 #' @description The function projects the model generated in previous components to user uploaded environmental variables and area
 #'
 #' @details
@@ -10,7 +10,7 @@
 #' @param curModel If algorithm is maxent, model selected by user as best or optimal, in terms of feature class and regularization multiplier (e.g 'L_1'). Else must be 1
 #' @param envs User provided environmental layers (in raster format) to be used for projection.
 #' @param outputType Output type to be used when algorithm is maxnet or maxent.jar.
-#' @param alg Modeling algorithm used in the model component. Can be one of : 'bioclim', 'maxent.jar' or 'maxnet'
+#' @param alg Modeling algorithm used in the model component. Can be one of : 'BIOCLIM', 'maxent.jar' or 'maxnet'
 #' @param clamp logical, whether projection will be of clamped or unclamped model.
 #' @param pjExt Extent of the area to project the model to. This must be provided by the user as a shapefileor as a SpatialPolygons object
 #' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
@@ -33,14 +33,14 @@
 #'modAlg <- model_bioclim(occs, partblock$bg.grp,  partblock$occ.grp, bgGrp, bgMask,spN=spN)
 #'envsFut<-list.files(path='./wc10/Future', pattern = ".tif$", full.names = TRUE)
 #'envsFut<-raster::stack(envsFut)
-#'modProj <- proj_userFiles(evalOut = modAlg, curModel=1, envs=envsFut,alg='bioclim',clamp=FALSE, pjExt = userExt)
+#'modProj <- proj_userEnvs(evalOut = modAlg, curModel=1, envs=envsFut,alg='BIOCLIM', pjExt = userExt)
 #'
 # @return
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 #' @author Andrea Paz <paz.andreita@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
-#' @seealso \code{\link[dismo]{predict}}, \code{\link{proj_time}} \code{\link{proj_user}}
+#' @seealso \code{\link[dismo]{predict}}, \code{\link{proj_time}} \code{\link{proj_userExtent}}
 #'
 # @references
 # @aliases - a list of additional topic names that will be mapped to
@@ -49,11 +49,11 @@
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 
-proj_userFiles <- function(evalOut, curModel, envs, outputType, alg, clamp, pjExt,
-                           logger = NULL, spN = NULL) {
+proj_userEnvs <- function(evalOut, curModel, envs, pjExt, alg, outputType = NULL,
+                           clamp = NULL, logger = NULL, spN = NULL) {
   newPoly <- pjExt
 
-  if (alg == 'bioclim') {
+  if (alg == 'BIOCLIM') {
     logger %>% writeLog(hlSpp(spN), 'User specified projection for BIOCLIM model.')
   } else if (alg == 'maxent.jar' | clamp == TRUE) {
     logger %>% writeLog(hlSpp(spN), 'User specified projection for clamped model ', curModel, '.')
@@ -69,7 +69,7 @@ proj_userFiles <- function(evalOut, curModel, envs, outputType, alg, clamp, pjEx
 
   smartProgress(logger,
                 message = 'Projecting model to user uploaded environmental variables & area', {
-    if (alg == 'bioclim') {
+    if (alg == 'BIOCLIM') {
       modProjUser <- dismo::predict(evalOut@models[[curModel]], projMsk)
     } else if (alg == 'maxnet') {
       if (outputType == "raw") outputType <- "exponential"

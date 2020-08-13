@@ -148,12 +148,25 @@ proj_area_module_server <- function(input, output, session, common) {
 
     # FUNCTION CALL ####
     predType <- rmm()$prediction$notes
-    projArea.out <- proj_area(evalOut(), curModel(), envs(),
-                              outputType = predType,
-                              alg = spp[[curSp()]]$rmm$model$algorithms,
-                              clamp = rmm()$model$algorithm$maxent$clamping,
-                              spp[[curSp()]]$project$pjExt,
-                              logger, spN = curSp())
+    if (spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM") {
+      projArea.out <- proj_area(evalOut = evalOut(),
+                                curModel = curModel(),
+                                envs = envs(),
+                                pjExt = spp[[curSp()]]$project$pjExt,
+                                alg = spp[[curSp()]]$rmm$model$algorithms,
+                                logger,
+                                spN = curSp())
+    } else {
+      projArea.out <- proj_area(evalOut = evalOut(),
+                                curModel = curModel(),
+                                envs = envs(),
+                                pjExt = spp[[curSp()]]$project$pjExt,
+                                alg = spp[[curSp()]]$rmm$model$algorithms,
+                                outputType = predType,
+                                clamp = rmm()$model$algorithm$maxent$clamping,
+                                logger,
+                                spN = curSp())
+    }
 
     projExt <- projArea.out$projExt
     projArea <- projArea.out$projArea

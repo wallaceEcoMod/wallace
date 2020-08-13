@@ -38,7 +38,7 @@
 #' envsFut<-list.files(path='./tests/testthat/wc10/Future', pattern = ".tif$", full.names = TRUE)
 #' envsFut<-raster::stack(envsFut)
 #' modAlg <- model_bioclim(occs, bg, partblock$occ.grp, bgGrp = partblock$bg.grp, bgMask,spN=spN)
-#' modProj <- proj_time(evalOut = modAlg, curModel=1, envs=envsFut,alg='bioclim',clamp=FALSE, pjExt = expertAddedPoly )
+#' modProj <- proj_time(evalOut = modAlg, curModel=1, envs=envsFut,alg='BIOCLIM', pjExt = expertAddedPoly)
 
 #' @return A list of two elements: projExt and projTime.
 #' The first is a RasterBrick or RasterStack of the environmental variables cropped to the projection area.
@@ -47,7 +47,7 @@
 #' @author Andrea Paz <paz.andreita@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
-#' @seealso \code{\link[dismo]{predict}}, \code{\link{proj_time}} \code{\link{proj_userFiles}}
+#' @seealso \code{\link[dismo]{predict}}, \code{\link{proj_time}} \code{\link{proj_userEnvs}}
 #'
 # @references
 # @aliases - a list of additional topic names that will be mapped to
@@ -56,12 +56,12 @@
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 
-proj_time <- function(evalOut, curModel, envs, outputType, alg, clamp,
-                      pjExt, logger = NULL, spN = NULL) {
+proj_time <- function(evalOut, curModel, envs, pjExt, alg, outputType = NULL,
+                      clamp = NULL, logger = NULL, spN = NULL) {
   newPoly <- pjExt
-  if (alg == 'bioclim') {
+  if (alg == 'BIOCLIM') {
     logger %>% writeLog(hlSpp(spN), 'Projection in time for BIOCLIM model.')
-  } else if (alg == 'maxent.jar'|clamp==TRUE) {
+  } else if (alg == 'maxent.jar'| clamp == TRUE) {
 
     logger %>% writeLog(hlSpp(spN), 'Projection in time for clamped model ', curModel, '.')
 
@@ -76,7 +76,7 @@ proj_time <- function(evalOut, curModel, envs, outputType, alg, clamp,
   })
 
   smartProgress(logger, message = ("Projecting to new time..."), {
-    if (alg == 'bioclim') {
+    if (alg == 'BIOCLIM') {
       modProjTime <- dismo::predict(evalOut@models[[curModel]], pjtMsk)
     } else if (alg == 'maxnet') {
       if (outputType == "raw") outputType <- "exponential"

@@ -231,13 +231,25 @@ proj_user_module_server <- function(input, output, session, common) {
 
     # FUNCTION CALL ####
     predType <- rmm()$prediction$notes
-    projUser.out <- proj_userFiles(evalOut(), curModel(), userProjEnvs,
-                                   outputType = predType,
-                                   alg = spp[[curSp()]]$rmm$model$algorithms,
-                                   clamp = rmm()$model$algorithm$maxent$clamping,
-                                   spp[[curSp()]]$project$pjExt, logger,
-                                   spN = curSp())
-
+    if (spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM") {
+      projUser.out <- proj_userEnvs(evalOut = evalOut(),
+                                    curModel = curModel(),
+                                    envs = userProjEnvs,
+                                    pjExt = spp[[curSp()]]$project$pjExt,
+                                    alg = spp[[curSp()]]$rmm$model$algorithms,
+                                    logger,
+                                    spN = curSp())
+    } else {
+      projUser.out <- proj_userEnvs(evalOut = evalOut(),
+                                    curModel = curModel(),
+                                    envs = userProjEnvs,
+                                    pjExt = spp[[curSp()]]$project$pjExt,
+                                    alg = spp[[curSp()]]$rmm$model$algorithms,
+                                    outputType = predType,
+                                    clamp = rmm()$model$algorithm$maxent$clamping,
+                                    logger,
+                                    spN = curSp())
+    }
     projExt <- projUser.out$projExt
     projUser <- projUser.out$projUser
 
