@@ -36,6 +36,14 @@ espace_pca_module_server <- function(input, output, session, common) {
 
   observeEvent(input$goPCA, {
     # ERRORS ####
+    if (length(curSp()) != 2) {
+      logger %>% writeLog(
+        type = "error",
+        "Please select two species to run the PCA module."
+      )
+      return()
+    }
+    # ERRORS ####
     if(input$pcaPlotSel == "") {
       logger %>% writeLog(type = "error", "Please choose a PCA plotting type.")
       return()
@@ -47,23 +55,17 @@ espace_pca_module_server <- function(input, output, session, common) {
     if (is.null(input$pcaSel)) pcaSel <- sp1.envNames else pcaSel <- input$pcaSel
     sp1.occsVals <- spp[[sp1]]$occs[pcaSel]
     sp1.bgVals <- spp[[sp1]]$bg[pcaSel]
-    if (length(curSp()) > 1) {
-      sp2 <- curSp()[2]
-      sp2.envNames <- names(envs.global[[spp[[sp2]]$envs]])
-      if (all(sp1.envNames == sp2.envNames) == FALSE) {
-        logger %>% writeLog(
-          type = "error", hlSpp(curSp()[1], " and ", curSp()[2]),
-          " must have the same environmental variables."
-        )
-        return()
-      }
-      sp2.occsVals <- spp[[sp2]]$occs[pcaSel]
-      sp2.bgVals <- spp[[sp2]]$bg[pcaSel]
-    } else {
-      sp2 <- NULL
-      sp2.occsVals <- NULL
-      sp2.bgVals <- NULL
+    sp2 <- curSp()[2]
+    sp2.envNames <- names(envs.global[[spp[[sp2]]$envs]])
+    if (all(sp1.envNames == sp2.envNames) == FALSE) {
+      logger %>% writeLog(
+        type = "error", hlSpp(curSp()[1], " and ", curSp()[2]),
+        " must have the same environmental variables."
+      )
+      return()
     }
+    sp2.occsVals <- spp[[sp2]]$occs[pcaSel]
+    sp2.bgVals <- spp[[sp2]]$bg[pcaSel]
 
     # FUNCTION CALL ####
     pca <- espace_pca(sp1, sp2,
@@ -192,8 +194,7 @@ espace_pca_module_rmd <- function(species) {
   #      espace.sp2 = strsplit(sp, ".", fixed = TRUE)[[1]][2],
   #      pcaSel = printVecAsis(spp[[sp]]$rmm$wallace$pcaSel))
   list(
-    espace_pca_knit = FALSE
-    # espace_pca_knit = species$rmm$code$wallace$someFlag,
+    espace_pca_knit = !is.null(species$pca)
     # var1 = species$rmm$code$wallace$someSetting1,
     # var2 = species$rmm$code$wallace$someSetting2
   )

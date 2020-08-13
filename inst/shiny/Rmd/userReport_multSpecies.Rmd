@@ -1,7 +1,8 @@
 ---
 params:
-  spName: ""
-  spAbr: ""
+  multAbr: ""
+  spName1: ""
+  spName2: ""
   child_rmds: ""
 ---
 
@@ -14,9 +15,9 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE, eval = FALSE)
 ```
 
 -------------------------------------------------------------------------------
-
-## Analysis for *`r params$spName`* (`r params$spAbr`)
-
+  
+## ESPACE analysis for *`r params$spName1`* and *`r params$spName2`* (`r params$multAbr`)
+  
 ```{r, comment='', echo=FALSE, message=FALSE, warning=FALSE, eval=TRUE, results="asis"}
 for (component_rmds in params$child_rmds) {
   for (rmd in component_rmds) {
