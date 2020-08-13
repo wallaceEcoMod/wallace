@@ -5,7 +5,7 @@ Generating a species distribution model using the bioclim alogorithm as implemen
 
 ```{r, echo = {{model_bioclim_knit}}, include = {{model_bioclim_knit}}}
 # Run bioclim model for the selected species
-model_bioclim_{{spAbr}} <- model_bioclim(
+model_{{spAbr}} <- model_bioclim(
   occs =  occs_{{spAbr}},
   bg = bgEnvsVals_{{spAbr}}, 
   user.grp = groups_{{spAbr}}, 

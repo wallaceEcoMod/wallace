@@ -7,7 +7,7 @@ For tuning using `r  c("{{fcs1_rmd}}","{{fcs2_rmd}}","{{fcs3_rmd}}","{{fcs4_rmd}
 
 ```{r, echo = {{model_maxent_knit}}, include = {{model_maxent_knit}}}
 # Run maxent model for the selected species
-model_maxent_{{spAbr}} <- model_maxent(
+model_{{spAbr}} <- model_maxent(
   occs = occs_{{spAbr}},
   bg = bgEnvsVals_{{spAbr}},
   user.grp = groups_{{spAbr}}, 
@@ -31,7 +31,7 @@ For tuning using `r  c("{{fcs1_rmd}}","{{fcs2_rmd}}","{{fcs3_rmd}}","{{fcs4_rmd}
 
 ```{r, echo = {{model_maxent_knit & cat_envs_knit}}, include = {{model_maxent_knit & cat_envs_knit}}}
 # Run maxent model for the selected species
-model_maxent_{{spAbr}} <- model_maxent(
+model_{{spAbr}} <- model_maxent(
   occs = occs_{{spAbr}},
   bg = bgEnvsVals_{{spAbr}},
   user.grp = groups_{{spAbr}}, 
