@@ -6,7 +6,7 @@ proj_user_module_ui <- function(id) {
     selectInput(ns('projExt'), label = "Select method (**)",
                 choices = list("Draw polygon(**)" = 'pjDraw',
                                "Same extent (**)" = 'pjCur',
-                               "User-specified(**)" = 'pjUser')),
+                               "User-specified polygon(**)" = 'pjUser')),
     conditionalPanel(sprintf("input['%s'] == 'pjUser'", ns("projExt")),
                      fileInput(
                        ns("userPjShp"),

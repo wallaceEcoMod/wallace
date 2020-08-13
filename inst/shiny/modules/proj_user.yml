@@ -1,5 +1,5 @@
 component: "proj"
-short_name: "Project to User-files (**)"
-long_name: "Project to User-files (**)"
+short_name: "Project to User environments (**)"
+long_name: "Project to User environments (**)"
 authors: "Gonzalo E. Pinilla-Buitrago, Jamie M. Kass, Robert P. Anderson"
 package: [dismo]

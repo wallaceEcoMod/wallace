@@ -5,8 +5,7 @@ proj_area_module_ui <- function(id) {
     span("Choose Study Region (**)", class = "stepText"), br(), br(),
     selectInput(ns('projExt'), label = "Select method (**)",
       choices = list("Draw polygon(**)" = 'pjDraw',
-                     "Same extent (**)" = 'pjCur',
-                     "User-specified(**)" = 'pjUser')),
+                     "User-specified polygon(**)" = 'pjUser')),
     conditionalPanel(sprintf("input['%s'] == 'pjUser'", ns("projExt")),
       fileInput(ns("userPjShp"),
                 label = paste0('Upload polygon in shapefile (.shp, .shx, .dbf) or ',
@@ -22,8 +21,6 @@ proj_area_module_ui <- function(id) {
                               ' length varies based on latitudinal position.'),
         numericInput(ns("drawPjBuf"), label = "Study region buffer distance (degree)",
                      value = 0, min = 0, step = 0.5))),
-    conditionalPanel(sprintf("input['%s'] == 'pjCur'", ns("projExt")),
-      p('You will use the same extent (**)')),
     actionButton(ns("goProjExtArea"), "Create(**)"), br(),
     tags$hr(),
     span("Step 2:", class = "step"),
@@ -130,11 +127,6 @@ proj_area_module_server <- function(input, output, session, common) {
       }
     }
 
-    if (input$projExt == 'pjCur') {
-      polyPj <- spp[[curSp()]]$procEnvs$bgExt
-      logger %>% writeLog(
-        hlSpp(curSp()), 'Projection extent equal to current extent region. (**)')
-    }
     # LOAD INTO SPP ####
     spp[[curSp()]]$project$pjExt <- polyPj
 
