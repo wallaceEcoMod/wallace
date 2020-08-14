@@ -1,0 +1,7 @@
+```{asis, echo = {{envs_ecoclimate_knit}}, eval = {{envs_ecoclimate_knit}}, include = {{envs_ecoclimate_knit}}}
+
+```
+
+```{r, echo = {{envs_ecoclimate_knit}}, include = {{envs_ecoclimate_knit}}}
+
+```
