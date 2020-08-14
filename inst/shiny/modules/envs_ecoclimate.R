@@ -144,10 +144,14 @@ envs_ecoclimate_module_map <- function(map, common) {
 envs_ecoclimate_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    envs_ecoclimate_knit = FALSE
-    # var1 = species$rmm$code$wallace$someSetting1,
-    # var2 = species$rmm$code$wallace$someSetting2
+    envs_ecoclimate_knit = !is.null(species$rmd$bcAOGCM),
+    bcAOGCM_rmd = species$rmd$bcAOGCM,
+    bcScenario_rmd = species$rmd$bcScenario,
+    ecoClimSel_rmd = species$rmd$ecoClimSel
+    ##Alternative using rmm instead of RMD object but not working
+    #grepl("ecoClimate",species$rmm$data$environment$sources)
   )
 }
+
 
 
