@@ -1,7 +1,17 @@
 ```{asis, echo = {{espace_nicheOv_knit}}, eval = {{espace_nicheOv_knit}}, include = {{espace_nicheOv_knit}}}
-Description of what the code will do
+NicheOv: *`r "{{spName1}}"`* y *`r "{{spName2}}"`*
 ```
 
 ```{r, echo = {{espace_nicheOv_knit}}, include = {{espace_nicheOv_knit}}}
-# R code to run
+# Abreviaturas
+NicheOvPrueba_{{multAbr}} <- occsPrueba_{{spAbr1}} + bgPrueba{{spAbr2}}
+
+# Nombres a los cuales tienes acceso
+multAbr = {{multAbr}}
+sp1 = {{sp1}}
+sp2 = {{sp2}}
+spAbr1 = {{spAbr1}}
+spAbr2 = {{spAbr2}}
+spName1 = "{{spName1}}"
+spName2 = "{{spName2}}"
 ```

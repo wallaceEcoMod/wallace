@@ -39,7 +39,7 @@ polygonTest<-proj_draw(polyPjXY=userDrawPoly, polyPjID, drawPjBuf, logger = NULL
 
 }
 \seealso{
-\code{\link{proj_userFiles}}
+\code{\link{proj_userEnvs}}
 }
 \author{
 Gonzalo Pinilla gpinillabuitrago@gradcenter.cuny.edu

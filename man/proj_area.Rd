@@ -8,10 +8,10 @@ proj_area(
   evalOut,
   curModel,
   envs,
-  outputType,
-  alg,
-  clamp,
   pjExt,
+  alg,
+  outputType = NULL,
+  clamp = NULL,
   logger = NULL,
   spN = NULL
 )
@@ -23,13 +23,13 @@ proj_area(
 
 \item{envs}{Environmental layers to be used for projecting the model. They must match the layers used for generating the model in the model component}
 
+\item{pjExt}{Extent of the area to project the model to. This is defined by the user in the map of the GUI and is provided as a SpatialPolygons object}
+
+\item{alg}{Modeling algorithm used in the model component. Can be one of : 'BIOCLIM', 'maxent.jar' or 'maxnet'}
+
 \item{outputType}{Output type to be used when algorithm is maxnet or maxent.jar.}
 
-\item{alg}{Modeling algorithm used in the model component. Can be one of : 'bioclim', 'maxent.jar' or 'maxnet'}
-
 \item{clamp}{logical, whether projection will be of clamped or unclamped model.}
-
-\item{pjExt}{Extent of the area to project the model to. This is defined by the user in the map of the GUI and is provided as a SpatialPolygons object}
 
 \item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
@@ -63,11 +63,11 @@ latitude <- c(13.18379, 7.52315, 0.93105, -1.70167, 0.98391, 6.09208, 12.74980)
 selCoords <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
 expertAddedPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)), ID=1)))
 modAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=occs)
-modProj <- proj_area(evalOut = modAlg, curModel = 1, envs, outputType = 'raw', alg='bioclim',clamp=FALSE, pjExt = expertAddedPoly )
+modProj <- proj_area(evalOut = modAlg, curModel = 1, envs, outputType = 'raw', alg='BIOCLIM', pjExt = expertAddedPoly)
 
 }
 \seealso{
-\code{\link[dismo]{predict}}, \code{\link{proj_time}} \code{\link{proj_userFiles}}
+\code{\link[dismo]{predict}}, \code{\link{proj_time}} \code{\link{proj_userEnvs}}
 }
 \author{
 Jamie Kass <jkass@gradcenter.cuny.edu>

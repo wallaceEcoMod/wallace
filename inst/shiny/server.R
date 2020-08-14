@@ -171,7 +171,10 @@ function(input, output, session) {
   curSp <- reactive(input$curSp)
 
   # vector of all species with occurrence data loaded
-  allSp <- reactive(names(reactiveValuesToList(spp))[!grepl("\\.", names(reactiveValuesToList(spp)))])
+  allSp <- reactive(sort(names(reactiveValuesToList(spp))[!grepl("\\.", names(reactiveValuesToList(spp)))]))
+
+  # vector of all species with occurrence data loaded
+  multSp <- reactive(sort(names(reactiveValuesToList(spp))[grepl("\\.", names(reactiveValuesToList(spp)))]))
 
   # convenience function for occurrence table for current species
   occs <- reactive(spp[[curSp()]]$occs)
@@ -1092,7 +1095,6 @@ function(input, output, session) {
     },
     content = function(file) {
       spp <- common$spp
-      spAbr <-
       md_files <- c()
       md_intro_file <- tempfile(pattern = "intro_", fileext = ".md")
       rmarkdown::render("Rmd/userReport_intro.Rmd",
@@ -1100,16 +1102,15 @@ function(input, output, session) {
                         output_file = md_intro_file,
                         clean = TRUE)
       md_files <- c(md_files, md_intro_file)
-      spAbr <- spAbr <- plyr::alply(abbreviate(stringr::str_replace(allSp(), "_", " "),
-                                               minlength = 2),
-                                    .margins = 1,
-                                    function(x) {
-                                      x <- as.character(x)})
+      # Abbreviation for one species
+      spAbr <- plyr::alply(abbreviate(stringr::str_replace(allSp(), "_", " "),
+                                      minlength = 2),
+                           .margins = 1, function(x) {x <- as.character(x)})
       names(spAbr) <- allSp()
 
       for (sp in allSp()) {
         species_rmds <- NULL
-        for (component in names(COMPONENT_MODULES)) {
+        for (component in names(COMPONENT_MODULES[names(COMPONENT_MODULES) != "espace"])) {
           for (module in COMPONENT_MODULES[[component]]) {
             rmd_file <- module$rmd_file
             rmd_function <- module$rmd_function
@@ -1146,6 +1147,57 @@ function(input, output, session) {
                           output_file = species_md_file,
                           clean = TRUE)
         md_files <- c(md_files, species_md_file)
+      }
+
+      if (!is.null(multSp())) {
+        for (sp in multSp()) {
+          namesMult <- unlist(strsplit(sp, "\\."))
+          multSpecies_rmds <- NULL
+          for (component in names(COMPONENT_MODULES[names(COMPONENT_MODULES) == "espace"])) {
+            for (module in COMPONENT_MODULES[[component]]) {
+              rmd_file <- module$rmd_file
+              rmd_function <- module$rmd_function
+              if (is.null(rmd_file)) next
+
+              if (is.null(rmd_function)) {
+                rmd_vars <- list()
+              } else {
+                rmd_vars <- do.call(rmd_function, list(species = spp[[sp]]))
+              }
+              knit_params <- c(
+                file = rmd_file,
+                spName1 = spName(namesMult[1]),
+                spName2 = spName(namesMult[2]),
+                sp1 = namesMult[1],
+                spAbr1 = spAbr[[namesMult[1]]],
+                sp2 = namesMult[2],
+                spAbr2 = spAbr[[namesMult[2]]],
+                multAbr = paste0(spAbr[[namesMult[1]]], "_", spAbr[[namesMult[2]]]),
+                rmd_vars
+              )
+              module_rmd <- do.call(knitr::knit_expand, knit_params)
+
+              module_rmd_file <- tempfile(pattern = paste0(module$id, "_"),
+                                          fileext = ".Rmd")
+              writeLines(module_rmd, module_rmd_file)
+              multSpecies_rmds <- c(multSpecies_rmds, module_rmd_file)
+            }
+          }
+
+          multSpecies_md_file <- tempfile(pattern = paste0(sp, "_"),
+                                          fileext = ".md")
+          rmarkdown::render(input = "Rmd/userReport_multSpecies.Rmd",
+                            params = list(child_rmds = multSpecies_rmds,
+                                          spName1 = spName(namesMult[1]),
+                                          spName2 = spName(namesMult[2]),
+                                          multAbr = paste0(spAbr[[namesMult[1]]], "_",
+                                                           spAbr[[namesMult[2]]])
+                            ),
+                            output_format = rmarkdown::github_document(html_preview = FALSE),
+                            output_file = multSpecies_md_file,
+                            clean = TRUE)
+          md_files <- c(md_files, multSpecies_md_file)
+        }
       }
 
       combined_md <-
@@ -1203,6 +1255,7 @@ function(input, output, session) {
     spp = spp,
     curSp = curSp,
     allSp = allSp,
+    multSp = multSp,
     curEnv = curEnv,
     curModel = curModel,
     component = component,

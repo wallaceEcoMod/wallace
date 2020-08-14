@@ -8,10 +8,10 @@ proj_time(
   evalOut,
   curModel,
   envs,
-  outputType,
-  alg,
-  clamp,
   pjExt,
+  alg,
+  outputType = NULL,
+  clamp = NULL,
   logger = NULL,
   spN = NULL
 )
@@ -23,13 +23,13 @@ proj_time(
 
 \item{envs}{Environmental layers of different time to be used for projecting the model. They must match the layers used for generating the model in the model component}
 
-\item{outputType}{Output type to be used when algorithm is maxnet or maxent.jar.}
+\item{pjExt}{Extent of the area to project the model to. This is defined by the user in the map of the GUI and is provided as a SpatialPolygons object.}
 
 \item{alg}{Modeling algorithm used in the model component. Can be one of : 'bioclim', 'maxent.jar' or 'maxnet'}
 
-\item{clamp}{logical, whether projection will be of clamped or unclamped model.}
+\item{outputType}{Output type to be used when algorithm is maxnet or maxent.jar.}
 
-\item{pjExt}{Extent of the area to project the model to. This is defined by the user in the map of the GUI and is provided as a SpatialPolygons object.}
+\item{clamp}{logical, whether projection will be of clamped or unclamped model.}
 
 \item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
@@ -67,10 +67,10 @@ expertAddedPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoo
 envsFut<-list.files(path='./tests/testthat/wc10/Future', pattern = ".tif$", full.names = TRUE)
 envsFut<-raster::stack(envsFut)
 modAlg <- model_bioclim(occs, bg, partblock$occ.grp, bgGrp = partblock$bg.grp, bgMask,spN=spN)
-modProj <- proj_time(evalOut = modAlg, curModel=1, envs=envsFut,alg='bioclim',clamp=FALSE, pjExt = expertAddedPoly )
+modProj <- proj_time(evalOut = modAlg, curModel=1, envs=envsFut,alg='BIOCLIM', pjExt = expertAddedPoly)
 }
 \seealso{
-\code{\link[dismo]{predict}}, \code{\link{proj_time}} \code{\link{proj_userFiles}}
+\code{\link[dismo]{predict}}, \code{\link{proj_time}} \code{\link{proj_userEnvs}}
 }
 \author{
 Jamie Kass <jkass@gradcenter.cuny.edu>

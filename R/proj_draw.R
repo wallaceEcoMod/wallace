@@ -27,7 +27,7 @@
 
 #' @author Gonzalo Pinilla gpinillabuitrago@@gradcenter.cuny.edu
 # @note
-#' @seealso  \code{\link{proj_userFiles}}
+#' @seealso  \code{\link{proj_userEnvs}}
 # @references
 # @aliases - a list of additional topic names that will be mapped to
 # this documentation when the user looks them up from the command

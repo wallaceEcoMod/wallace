@@ -53,7 +53,7 @@ projMess<- proj_mess(occs=modelOccs, bg=modelBg, bgMsk=bgMsk, projExtRas=projExt
 
 }
 \seealso{
-\code{\link[dismo]{mess}}, \code{\link{proj_time}} \code{\link{proj_userFiles}}
+\code{\link[dismo]{mess}}, \code{\link{proj_time}} \code{\link{proj_userEnvs}}
 }
 \author{
 Jamie Kass <jkass@gradcenter.cuny.edu>
