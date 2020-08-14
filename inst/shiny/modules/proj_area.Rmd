@@ -1,7 +1,17 @@
 ```{asis, echo = {{proj_area_knit}}, eval = {{proj_area_knit}}, include = {{proj_area_knit}}}
-Description of what the code will do 
+## Project model
+Projecting the model to a new area 
 ```
 
 ```{r, echo = {{proj_area_knit}}, include = {{proj_area_knit}}}
 # R code to run 
+proj_area_{{spAbr}} <- proj_area(
+  evalOut = model_{{spAbr}},
+  curModel = ,
+  envs, 
+  outputType,
+  alg,
+  clamp,
+  pjExt,
+  spN = NULL) 
 ```

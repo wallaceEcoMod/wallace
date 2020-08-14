@@ -317,6 +317,19 @@ proj_area_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
     proj_area_knit = FALSE
+  ###Use this after bioclim problem is fixed
+  #    !is.null(species$rmm$data$transfer$environment1$extentRule)&
+                   #   species$rmm$data$transfer$environment1$extentRule ==
+                    #    "project to user-selected new area",
+
+   # curModel = ,
+    #envs,
+    #outputType,
+   # alg_rmd = species$rmm$model$algorithms,
+  #  clamp = species$rmm$model$algorithm$maxent$clamping,
+  #  pjExt,
+
+
     # proj_area_knit = species$rmm$code$wallace$someFlag,
     # var1 = species$rmm$code$wallace$someSetting1,
     # var2 = species$rmm$code$wallace$someSetting2
