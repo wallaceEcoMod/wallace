@@ -62,7 +62,7 @@ for (i in algorithm) {
   for (j in outputType) {
     ### run function
     modProj <- proj_userEnvs(evalOut = modAlg, curModel, envs=envsFut, outputType = j,
-                             alg=i,clamp=FALSE, pjExt = userExt )
+                              alg=i,clamp=FALSE, pjExt = userExt )
 
 
     ### test output features
