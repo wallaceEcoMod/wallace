@@ -36,6 +36,14 @@ espace_pca_module_server <- function(input, output, session, common) {
 
   observeEvent(input$goPCA, {
     # ERRORS ####
+    if (length(curSp()) != 2) {
+      logger %>% writeLog(
+        type = "error",
+        "Please select two species to run the PCA module."
+      )
+      return()
+    }
+    # ERRORS ####
     if(input$pcaPlotSel == "") {
       logger %>% writeLog(type = "error", "Please choose a PCA plotting type.")
       return()
@@ -47,24 +55,17 @@ espace_pca_module_server <- function(input, output, session, common) {
     if (is.null(input$pcaSel)) pcaSel <- sp1.envNames else pcaSel <- input$pcaSel
     sp1.occsVals <- spp[[sp1]]$occs[pcaSel]
     sp1.bgVals <- spp[[sp1]]$bg[pcaSel]
-    if (length(curSp()) > 1) {
-      sp2 <- curSp()[2]
-      sp2.envNames <- names(envs.global[[spp[[sp2]]$envs]])
-      if (all(sp1.envNames == sp2.envNames) == FALSE) {
-        logger %>% writeLog(
-          type = "error", hlSpp(curSp()[1], " and ", curSp()[2]),
-          " must have the same environmental variables."
-        )
-        return()
-      }
-      sp2.occsVals <- spp[[sp2]]$occs[pcaSel]
-      sp2.bgVals <- spp[[sp2]]$bg[pcaSel]
-    } else {
-      sp2 <- NULL
-      sp2.occsVals <- NULL
-      sp2.bgVals <- NULL
+    sp2 <- curSp()[2]
+    sp2.envNames <- names(envs.global[[spp[[sp2]]$envs]])
+    if (all(sp1.envNames == sp2.envNames) == FALSE) {
+      logger %>% writeLog(
+        type = "error", hlSpp(curSp()[1], " and ", curSp()[2]),
+        " must have the same environmental variables."
+      )
+      return()
     }
-
+    sp2.occsVals <- spp[[sp2]]$occs[pcaSel]
+    sp2.bgVals <- spp[[sp2]]$bg[pcaSel]
 
     # FUNCTION CALL ####
     pca <- espace_pca(sp1, sp2,
@@ -85,22 +86,8 @@ espace_pca_module_server <- function(input, output, session, common) {
     } else {
       spp[[mspName]]$pca <- pca
     }
-    ##Metadata
-        ##For species 1
-    spp[[sp1]]$rmm$wallace$espace$species1 <- sp1
-    spp[[sp1]]$rmm$wallace$espace$species2 <- sp2
-    spp[[sp1]]$rmm$wallace$pcaSel <- pcaSel
-    spp[[sp1]]$rmd$wallace$espace$occsOther<-sp2.occsVals
-    spp[[sp1]]$rmd$wallace$espace$bgOther<-sp2.bgVals
-  #  spp[[sp1]]$rmd$wallace$espace$spAbrOther = spAbr[[sp2]]
-        ##For species 2
-    spp[[sp2]]$rmm$wallace$espace$species1 <- sp2
-    spp[[sp2]]$rmm$wallace$espace$species2 <- sp1
-    spp[[sp2]]$rmm$wallace$pcaSel <- pcaSel
-    spp[[sp2]]$rmd$wallace$espace$occsOther<-sp1.occsVals
-    spp[[sp2]]$rmd$wallace$espace$bgOther<-sp1.bgVals
- #   spp[[sp2]]$rmd$wallace$espace$spAbrOther = spAbr[[sp1]]
 
+    # spp[[mspName]]$rmm$wallace$pcaSel <- pcaSel
     common$update_component(tab = "Results")
   })
 
@@ -207,24 +194,8 @@ espace_pca_module_rmd <- function(species) {
   #      espace.sp2 = strsplit(sp, ".", fixed = TRUE)[[1]][2],
   #      pcaSel = printVecAsis(spp[[sp]]$rmm$wallace$pcaSel))
   list(
-   # espace_pca_knit = !is.null(species$rmm$wallace$pcaSel),
-    espace_pca_knit = FALSE
+    espace_pca_knit = !is.null(species$pca)
     # var1 = species$rmm$code$wallace$someSetting1,
     # var2 = species$rmm$code$wallace$someSetting2
-  #  selectedVars_rmd = species$rmm$wallace$pcaSel,
-   # sp2Abr_rmd = species$rmd$wallace$espace$spAbrOther, ##this currently fails because spABR cannot be accssed from here.
-   # sp.name1_rmd = species$rmm$wallace$espace$species1,
-    #sp.name2_rmd = species$rmm$wallace$espace$species2,
-    #occs.z2_rmd = species$rmd$wallace$espace$occsother,
-    #bgPts.z2_rmd = species$rmd$wallace$espace$bgother
-  ##to put back in rmd after testing model component
-  #espace_pca(
-  # sp.name1 = "{{sp.name1_rmd}}",
-  #sp.name2 = "{{sp.name2_rmd}}",
-  # occs.z1 = occs_{{spAbr}}[,{{selectedVars_rmd}}],
-  # occs.z2 = occs_{{sp2Abr_rmd}},
-  #bgPts.z1 = bgEnvsVals_{{spAbr}})
-  #bgPts.z2 = bgEnvsVals_{{sp2Abr_rmd}})
   )
 }
-
