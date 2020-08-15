@@ -39,7 +39,7 @@ projExtRas<-raster::crop(envsFut,expertAddedPoly)
 projExtRas<-raster::mask(projExtRas,expertAddedPoly)
 time<-"2021-2040 MIROC6 ssp126"
 ### run function
-projMess<- proj_mess(occs=modelOccs, bg=modelBg, bgMsk=bgMsk, projExtRas=projExtRas, time=time, logger = NULL)
+projMess<- proj_mess(occs=modelOccs, bg=modelBg, bgMsk=bgMsk, projExtRas=projExtRas, time=time, spN=spN,logger = NULL)
 
     ### test output features
     test_that("output type checks", {
