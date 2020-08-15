@@ -43,10 +43,10 @@ envsFut<-raster::stack(envsFut)
 # outputType
 outputType <- c('raw', 'logistic', 'cloglog')
 # algorithm
-algorithm <- c('maxent.jar','maxnet','bioclim')
+algorithm <- c('maxent.jar','maxnet','BIOCLIM')
 # build model and test for both algorithms
 for (i in algorithm) {
-  if(i == 'bioclim'){
+  if(i == 'BIOCLIM'){
     modAlg <- model_bioclim(occs, bg, partblock, bgMask,spN=spN)
     curModel=1
   }
