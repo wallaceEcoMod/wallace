@@ -86,10 +86,8 @@ model_bioclim_module_result <- function(id) {
 model_bioclim_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    model_bioclim_knit = FALSE
-    # model_bioclim_knit = species$rmm$code$wallace$someFlag,
-    # var1 = species$rmm$code$wallace$someSetting1,
-    # var2 = species$rmm$code$wallace$someSetting2
+    model_bioclim_knit = if(!is.null(species$rmm$model$algorithms)) {
+      species$rmm$model$algorithms == "BIOCLIM"} else {FALSE}
   )
 }
 

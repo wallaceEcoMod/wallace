@@ -16,7 +16,7 @@ model<-list()
 for (i in 1:2){
 
   ## occurrences
-  occs <-  occs_queryDb(spName = species[i], occDb = "gbif", occNum = 100)
+  occs <-  occs_queryDb(spName = species[i], occDb = "gbif", occNum = 1000)
   occs <- as.data.frame(occs[[1]]$cleaned)
   ## process data
   #occs <- poccs_thinOccs(occs = occs, thinDist = 10,spN=species[i]) ##Removed because warning from spthin on different names
@@ -32,7 +32,7 @@ for (i in 1:2){
   partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,
                                   aggFact = NULL,spN=species[i])
   ### Create model
-  bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=species[i])
+  bioclimAlg <- model_bioclim(occs, bg, partblock, bgMask,spN=species[i])
 
   model[[i]]<-bioclimAlg
 }

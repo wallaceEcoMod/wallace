@@ -1,5 +1,5 @@
 #' @title proj_userEnvs Project model to user specified area and time
-#' @description The function projects the model generated in previous components to user uploaded environmental variables and area
+#' @description The function projects the model generated in previous components to user uploaded environmental variables
 #'
 #' @details
 #' This functions allows for the projection of the model created in previous components to a new time and area provided by the user.

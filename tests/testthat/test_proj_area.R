@@ -8,6 +8,7 @@ source("test_helper_functions.R")
 spN="Panthera onca"
 out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 1000)
 occs <- as.data.frame(out.gbif[[1]]$cleaned)
+
 ## background mask
 # enviromental data
 envs <- envs_worldclim(bcRes = 10, bcSel = c("bio01","bio02","bio13","bio14"), doBrick = FALSE)
@@ -21,10 +22,6 @@ bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=spN)
 ## Partition
 partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,
                                 aggFact = NULL,spN=spN)
-# occurrences partitioned
-occsGrp = partblock$occ.grp
-# background points partitioned
-bgGrp = partblock$bg.grp
 
 ## model
 # regularization multipliers
@@ -41,29 +38,30 @@ latitude <- c(13.18379, 7.52315, 0.93105, -1.70167, 0.98391, 6.09208, 12.74980)
 # generate matrix
 selCoords <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
 expertAddedPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)), ID=1)))
+##select coordinates only
+occs.xy <- occs %>% dplyr::select(longitude, latitude)
+bg.xy <- bg %>% dplyr::select(longitude, latitude)
 ###iterating items
 # outputType
 outputType <- c('raw', 'logistic', 'cloglog')
 # algorithm
-algorithm <- c('maxent.jar','maxnet','bioclim')
+algorithm <- c('maxent.jar','maxnet','BIOCLIM')
 # build model and test for both algorithms
 for (i in algorithm) {
-  if(i== 'bioclim'){
-    modAlg <- model_bioclim(occs, bg, occsGrp, bgGrp, bgMask,spN=spN)
+  if(i== 'BIOCLIM'){
+    modAlg <- model_bioclim(occs, bg, partblock, bgMask,spN=spN)
     curModel=1
   }
   else{
-    modAlg <- model_maxent(occs, bg, occsGrp, bgGrp, bgMask, rms, rmsStep, fcs, clampSel = TRUE,
+    modAlg <- model_maxent(occs.xy, bg.xy, partblock, bgMask, rms, rmsStep, fcs, clampSel = TRUE,
                           algMaxent = i,catEnvs=NULL,spN=spN)
     curModel='L_1'
   }
 
-
-
 for (j in outputType) {
   ### run function
   modProj <- proj_area(evalOut = modAlg, curModel, envs, outputType = j,
-                            alg=i,clamp=FALSE, pjExt = expertAddedPoly )
+                            alg=i,clamp=FALSE, pjExt = expertAddedPoly, spN=spN )
 
    ### test output features
   test_that("output type checks", {

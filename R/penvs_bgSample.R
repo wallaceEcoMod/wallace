@@ -28,7 +28,7 @@
 #'
 #' @return a dataframe containing point coordinates (longitude and latitude).
 #' All points are within the area provided in the RasterBrick or RasterStack (bgMask).
-#' Maximum number of pointsis equal to non NA cells in each layer of the reference brick or stack.
+#' Maximum number of points is equal to non NA cells in each layer of the reference brick or stack.
 #' @author Jamie Kass < jamie.m.kass@@gmail.com >
 #' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 # @note

@@ -199,4 +199,3 @@ espace_pca_module_rmd <- function(species) {
     # var2 = species$rmm$code$wallace$someSetting2
   )
 }
-

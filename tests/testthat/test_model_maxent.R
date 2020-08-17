@@ -36,7 +36,7 @@ rms <- c(1:2)
 rmsStep <- 1
 ## feature classes
 fcs <- c('L', 'LQ', 'H', 'LQH','LQHP')
-algMaxent<-"maxent.jar"
+
 ## algorithm
 algorithm <- c('maxent.jar','maxnet')
 
@@ -47,8 +47,8 @@ jar_f <- paste(system.file(package = "dismo"), "/maxent.jar", sep = '')
 ## test if the error messages appear when they are supposed to
 test_that("error checks", {
   # user has not partitioned occurrences
-  expect_error(model_maxent(occs, bg, occsGrp = NULL, bgGrp, bgMsk, rms, rmsStep, fcs,
-                         clampSel = TRUE, algMaxent = algorithm[1]), "Before building a model, please partition occurrences for cross-validation.")
+  expect_error(model_maxent(occs, bg, user.grp = NULL, bgMsk, rms, rmsStep, fcs,
+                         clampSel = TRUE, catEnvs=NULL,algMaxent = algorithm[1],spN=spN), "Before building a model, please partition occurrences for cross-validation.")
 })
 ##missing 2 errors related to jar
 

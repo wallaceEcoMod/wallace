@@ -1,7 +1,33 @@
 ```{asis, echo = {{part_spat_knit}}, eval = {{part_spat_knit}}, include = {{part_spat_knit}}}
-Description of what the code will do
+### Partition occurrence data
+Partition occurrences and background points for model training and validation using "{{method_rmd}}", a spatial partition method with 4 partitions.
+```
+
+```{asis, echo = {{part_spat_aggreg_knit}}, eval = {{ part_spat_aggreg_knit }}, include = {{part_spat_aggreg_knit}}}
+### Partition occurrence data
+Partition occurrences and background points for model training and validation using "{{method_rmd}}", a spatial partition method with an aggregation factor of {{aggFact_rmd}}.
 ```
 
 ```{r, echo = {{part_spat_knit}}, include = {{part_spat_knit}}}
-# R code to run
+# R code to get partitioned data
+groups_{{spAbr}} <- part_partitionOccs(
+  occs = occs_{{spAbr}} ,
+  bg =  bgSample_{{spAbr}}, 
+  method = "{{method_code_rmd}}",
+  kfolds = NULL,
+  bgMask = NULL,
+  aggFact = NULL ,
+  spN = "{{spName}}") 
+```
+
+```{r, echo = {{part_spat_aggreg_knit}}, include = {{part_spat_aggreg_knit}}}
+# R code to get partitioned data
+groups_{{spAbr}} <- part_partitionOccs(
+  occs = occs_{{spAbr}} ,
+  bg =  bgSample_{{spAbr}}, 
+  method = "{{method_code_rmd}}",
+  kfolds = NULL,
+  bgMask = bgMask_{{spAbr}},
+  aggFact = {{aggFact_rmd}},
+  spN = "{{spName}}") 
 ```

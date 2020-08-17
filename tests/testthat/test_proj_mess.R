@@ -22,7 +22,7 @@ bg <- penvs_bgSample(occs, bgMsk, bgPtsNum = 10000,spN=spN)
 partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,
                                 aggFact = NULL,spN=spN)
 ### Create model
-bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMsk,spN=spN)
+bioclimAlg <- model_bioclim(occs, bg, partblock, bgMsk,spN=spN)
 modelOccs<-bioclimAlg@occs
 modelBg<-bioclimAlg@bg
 ## extent to project
@@ -39,7 +39,7 @@ projExtRas<-raster::crop(envsFut,expertAddedPoly)
 projExtRas<-raster::mask(projExtRas,expertAddedPoly)
 time<-"2021-2040 MIROC6 ssp126"
 ### run function
-projMess<- proj_mess(occs=modelOccs, bg=modelBg, bgMsk=bgMsk, projExtRas=projExtRas, time=time, logger = NULL)
+projMess<- proj_mess(occs=modelOccs, bg=modelBg, bgMsk=bgMsk, projExtRas=projExtRas, time=time, spN=spN,logger = NULL)
 
     ### test output features
     test_that("output type checks", {

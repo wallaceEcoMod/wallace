@@ -1,4 +1,5 @@
 ```{asis, echo = {{envs_userEnvs_knit}}, eval = {{envs_userEnvs_knit}}, include = {{envs_userEnvs_knit}}}
+### Obtain environmental data
 Using user-specified variables.
 ```
 

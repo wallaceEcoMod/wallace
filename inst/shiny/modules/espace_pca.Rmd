@@ -1,5 +1,5 @@
 ```{asis, echo = {{espace_pca_knit}}, eval = {{espace_pca_knit}}, include = {{espace_pca_knit}}}
-PCA: *`r "{{spName1}}"`* y *`r "{{spName2}}"`*
+Note this is a multispecies component and thus require you to run components 1-4 for all species to be included in the analysis before running this part. Performing a principal component analysis to reduce dimensionality of environmental space for  *`r "{{spName1}}"`* y *`r "{{spName2}}"`*
 ```
 
 ```{r, echo = {{espace_pca_knit}}, include = {{espace_pca_knit}}}

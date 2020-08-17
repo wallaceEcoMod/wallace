@@ -1,7 +1,109 @@
 ```{asis, echo = {{proj_area_knit}}, eval = {{proj_area_knit}}, include = {{proj_area_knit}}}
-Description of what the code will do 
+## Project model
+Projecting the model to a new user drawn area 
 ```
 
 ```{r, echo = {{proj_area_knit}}, include = {{proj_area_knit}}}
-# R code to run 
+# First must generate the projection area according to the drawn polygon in the GUI
+proj_draw_{{spAbr}} <-proj_draw(
+  polyPjXY = matrix({{polyPjXY_rmd}},ncol=2,byrow=FALSE),
+  polyPjID = {{polyPjID_rmd}},
+  drawPjBuf = {{BgBuf_rmd}},
+  spN = "{{spName}}")
+
+# Generate a projection of the model to the desired area
+proj_area_{{spAbr}} <- proj_area(
+  evalOut = model_{{spAbr}},
+  curModel = "{{curModel_rmd}}",
+  envs = envs_{{spAbr}} , 
+  outputType = "{{outputType_rmd}}",
+  alg = "{{alg_rmd}}",
+  clamp = {{clamp_rmd}},
+  pjExt = proj_draw_{{spAbr}},
+  spN = "{{spName}}") 
+
+```
+
+```{asis, echo = {{proj_area_knit & !proj_area_extent_knit & proj_area_threshold_knit}}, eval = {{proj_area_knit  & !proj_area_extent_knit & proj_area_threshold_knit}}, include = {{proj_area_knit & !proj_area_extent_knit & proj_area_threshold_knit}}}
+## Project model
+Projecting the model to a new user drawn area using a "{{thresholdRule_rmd}}" threshold of {{threshold_rmd}}. 
+```
+
+```{r, echo =  {{proj_area_knit & !proj_area_extent_knit & proj_area_threshold_knit}}, include = {{proj_area_knit & !proj_area_extent_knit & proj_area_threshold_knit}}}
+# First must generate the projection area according to the drawn polygon in the GUI
+proj_draw_{{spAbr}} <-proj_draw(
+  polyPjXY = matrix({{polyPjXY_rmd}},ncol=2,byrow=FALSE),
+  polyPjID = {{polyPjID_rmd}},
+  drawPjBuf = {{BgBuf_rmd}},
+  spN = "{{spName}}")
+
+# Generate a projection of the model to the desired area
+proj_area_{{spAbr}} <- proj_area(
+  evalOut = model_{{spAbr}},
+  curModel = "{{curModel_rmd}}",
+  envs = envs_{{spAbr}} , 
+  outputType = "{{outputType_rmd}}",
+  alg = "{{alg_rmd}}",
+  clamp = {{clamp_rmd}},
+  pjExt = proj_draw_{{spAbr}},
+  spN = "{{spName}}") 
+
+# Add threshold if specified 
+proj_area_{{spAbr}} <- proj_area_{{spAbr}} < {{threshold_rmd}}
+```
+
+```{asis, echo = {{proj_area_knit & proj_area_extent_knit}} , eval = {{proj_area_knit & proj_area_extent_knit }}, include = {{proj_area_knit & proj_area_extent_knit}}}
+## Project model
+Projecting the model to a new user provided area 
+```
+
+```{r, echo = {{proj_area_knit & proj_area_extent_knit}}, include = {{proj_area_knit & proj_area_extent_knit}}}
+# First must generate the projection area based on user provided files
+  ##User must input the path to shapefile or csv file and the file name 
+proj_userExt_{{spAbr}} <- proj_userExtent(
+  bgShp_path = "Input path here",
+  bgShp_name = "Input file name here",
+  userBgBuf = {{BgBuf_rmd}},
+  spN = "{{spName}}")
+
+# Generate a projection of the model to the desired area
+proj_area_{{spAbr}} <- proj_area(
+  evalOut = model_{{spAbr}},
+  curModel = "{{curModel_rmd}}",
+  envs = envs_{{spAbr}} , 
+  outputType = "{{outputType_rmd}}",
+  alg = "{{alg_rmd}}",
+  clamp = {{clamp_rmd}},
+  pjExt = proj_userExt_{{spAbr}},
+  spN = "{{spName}}") 
+
+```
+
+```{asis, echo = {{proj_area_knit & proj_area_extent_knit & proj_area_threshold_knit}} , eval = {{proj_area_knit & proj_area_extent_knit & proj_area_threshold_knit}}, include = {{proj_area_knit & proj_area_extent_knit & proj_area_threshold_knit}}}
+## Project model
+Projecting the model to a new user provided area using a "{{thresholdRule_rmd}}" threshold of {{threshold_rmd}}. 
+```
+
+```{r, echo = {{proj_area_knit & proj_area_extent_knit & proj_area_threshold_knit}}, include = {{proj_area_knit & proj_area_extent_knit & proj_area_threshold_knit}}}
+# First must generate the projection area based on user provided files
+  ##User must input the path to shapefile or csv file and the file name 
+proj_userExt_{{spAbr}} <- proj_userExtent(
+  bgShp_path = "Input path here",
+  bgShp_name = "Input file name here",
+  userBgBuf = {{BgBuf_rmd}},
+  spN = "{{spName}}")
+
+# Generate a projection of the model to the desired area
+proj_area_{{spAbr}} <- proj_area(
+  evalOut = model_{{spAbr}},
+  curModel = "{{curModel_rmd}}",
+  envs = envs_{{spAbr}} , 
+  outputType = "{{outputType_rmd}}",
+  alg = "{{alg_rmd}}",
+  clamp = {{clamp_rmd}},
+  pjExt = proj_userExt_{{spAbr}},
+  spN = "{{spName}}") 
+
+# Add threshold if specified 
+proj_area_{{spAbr}} <- proj_area_{{spAbr}} < {{threshold_rmd}}
 ```

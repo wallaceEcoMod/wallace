@@ -75,8 +75,12 @@ penvs_userBgExtent_module_server <- function(input, output, session, common) {
       spp[[sp]]$procEnvs$bgExt <- userBgExt
 
       # METADATA ####
+      ##Record buffer size
+      spp[[sp]]$rmd$bgBuf <- input$userBgBuf
+      ##Record name of user provided background extent
+      spp[[sp]]$rmm$data$occurrence$backgroundSampleSizeRule <- input$userBgShp$name
       # get extensions of all input files
-      spp[[sp]]$rmm$data$occurrence$backgroundSampleSizeRule <-
+      spp[[sp]]$rmm$rmm$code$wallace$userBgName  <-input$userBgShp$name
         paste0('User Polygon, ', input$bgBuf, ' degree buffer')
       exts <- sapply(strsplit(input$userBgShp$name, '\\.'),
                      FUN = function(x) x[2])
@@ -86,6 +90,7 @@ penvs_userBgExtent_module_server <- function(input, output, session, common) {
       }
       else if ('shp' %in% exts) {
         spp[[sp]]$rmm$code$wallace$userBgExt <- 'shp'
+        spp[[sp]]$rmm$code$wallace$userBgPath <- input$userBgShp$datapath
         # get index of .shp
         i <- which(exts == 'shp')
         shpName <- strsplit(input$userBgShp$name[i], '\\.')[[1]][1]
@@ -199,12 +204,13 @@ penvs_userBgExtent_module_map <- function(map, common) {
 }
 
 penvs_userBgExtent_module_rmd <- function(species) {
-  # Variables used in the module's Rmd code
   list(
-    penvs_userBgExtent_knit = FALSE
-    # penvs_userBgExtent_knit = species$rmm$code$wallace$someFlag,
-    # var1 = species$rmm$code$wallace$someSetting1,
-    # var2 = species$rmm$code$wallace$someSetting2
+  # Variables used in the module's Rmd code
+    penvs_userBgExtent_knit = !is.null(species$rmm$code$wallace$userBgExt),
+    bgShp_path_rmd =  species$rmm$code$wallace$userBgPath,
+    bgShp_name_rmd = species$rmm$code$wallace$userBgName ,
+    userBgBuf_rmd = species$rmd$bgBuf,
+    bgPtsNum_rmd = species$rmm$data$occurrence$backgroundSampleSizeSet
   )
 }
 

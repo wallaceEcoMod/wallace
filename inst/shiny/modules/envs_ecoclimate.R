@@ -14,7 +14,7 @@ envs_ecoclimate_module_ui <- function(id) {
                                         "IPSL" = "IPSL",
                                         "MRI" = "MRI",
                                         "MPI" = "MPI")
-                         )),
+             )),
     tags$div(title = 'Select Scenario',
              selectInput(ns("bcScenario"),
                          label = "select the temporal scenario that you want to use (**)",
@@ -22,7 +22,7 @@ envs_ecoclimate_module_ui <- function(id) {
                                         "Present" = "Present",
                                         "Holocene (6,000 years ago)" = "Holo",
                                         "LGM (21,000 years ago)" = "LGM")
-                        )),
+             )),
     shinyWidgets::pickerInput(
       "ecoClimSel",
       label = "Select bioclim variables (**)",
@@ -74,9 +74,9 @@ envs_ecoclimate_module_server <- function(input, output, session, common) {
       # remove occurrences with NA values for variables
       withProgress(message = paste0("Extracting environmental values for occurrences of ",
                                     spName(sp), "..."), {
-        occsEnvsVals <- as.data.frame(raster::extract(ecoClims,
-                                                      spp[[sp]]$occs[c('longitude', 'latitude')]))
-      })
+                                      occsEnvsVals <- as.data.frame(raster::extract(ecoClims,
+                                                                                    spp[[sp]]$occs[c('longitude', 'latitude')]))
+                                    })
       # remove occurrences with NA environmental values
       spp[[sp]]$occs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, sp, logger)
 
@@ -144,9 +144,12 @@ envs_ecoclimate_module_map <- function(map, common) {
 envs_ecoclimate_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    envs_ecoclimate_knit = FALSE
-    # var1 = species$rmm$code$wallace$someSetting1,
-    # var2 = species$rmm$code$wallace$someSetting2
+    envs_ecoclimate_knit = !is.null(species$rmd$bcAOGCM),
+    bcAOGCM_rmd = species$rmd$bcAOGCM,
+    bcScenario_rmd = species$rmd$bcScenario,
+    ecoClimSel_rmd = species$rmd$ecoClimSel
+    ##Alternative using rmm instead of RMD object but not working
+    #grepl("ecoClimate",species$rmm$data$environment$sources)
   )
 }
 

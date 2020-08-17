@@ -3,8 +3,8 @@
 #' @description This functions generates maxent or maxnet models using ENMeval 2.0 and user provided tuning parameters.
 #'
 #' @details
-#' The function generates model in ENMeval using a user porvided parition of occurrences from previous components i GUI.
-#' User can activate clamping and input de tuning argumenta to be used for model building
+#' The function generates model in ENMeval using a user provided partition of occurrences from previous components in the GUI.
+#' User can activate clamping and input de tuning arguments to be used for model building
 #'
 #' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.
 #' @param bg  Coordinates of background points to be used for modelling.
@@ -13,6 +13,9 @@
 #' @param rms Vector of range of regularization multipliers to be used in the ENMeval run
 #' @param rmsStep Step to be used when defining regularization multipliers to be used from the provided range.
 #' @param fcs Feature classes to be tested in the ENM eval run
+#' @param clampSel Boolean Use of clamping in the model
+#' @param algMaxent Algorithm tu be used in modeling. A selection of "maxnet" or "maxent.jar"
+#' @param catEnvs  If categorical predictor variables are included must provide the names
 #' @param parallel Whether to use parallel in the generation of models. Default is FALSE
 #' @param numCores If using parallel how many cores to use. Default is NULL
 #' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,

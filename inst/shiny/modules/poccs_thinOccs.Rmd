@@ -1,6 +1,11 @@
 ```{asis, echo = {{poccs_thinOccs_knit}}, eval = {{poccs_thinOccs_knit}}, include = {{poccs_thinOccs_knit}}}
-Description of what the code will do 
+### Process Occurrence Data
+Thinning the occurrences to  `r "{{thinDist_rmd}}"` km
 ```
 
 ```{r, echo = {{poccs_thinOccs_knit}}, include = {{poccs_thinOccs_knit}}}
-# R code to run 
+# Thin occurrences 
+occs_{{spAbr}} <- poccs_thinOccs(
+  occs = occs_{{spAbr}}, 
+  thinDist = {{thinDist_rmd}},
+  spN="{{spName}}")

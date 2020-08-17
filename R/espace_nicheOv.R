@@ -62,8 +62,7 @@ espace_nicheOv <- function(z1, z2, iter = 100, equivalency = FALSE,
 
 
   #unfilling, stability, expansion indices (Guisan et al. 2014 TREE)
-  nicheOv$USE <- ecospat::ecospat.niche.dyn.index(
-    z1, z2, intersection = 0)$dynamic.index.w
+  nicheOv$USE <- ecospat::ecospat.niche.dyn.index(z1, z2, intersection = 0)$dynamic.index.w
 
   # niche tests
   if (equivalency == TRUE) {

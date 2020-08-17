@@ -1,7 +1,12 @@
 ```{asis, echo = {{poccs_selectByID_knit}}, eval = {{poccs_selectByID_knit}}, include = {{poccs_selectByID_knit}}}
-The following code recreates the polygon used to select occurrences to keep in the analysis.
+### Process Occurrence Data
+Remove occurrences outside of user drawn polygon
 ```
 
 ```{r, echo = {{poccs_selectByID_knit}}, include = {{poccs_selectByID_knit}}}
-#occs.{{sp}} <- poccs_selectOccs(occs.{{sp}}, "{{selectByID_xy}}", "{{selectByID_id}}")
+occs_{{spAbr}} <- poccs_selectOccs(
+  occs = occs_{{spAbr}},
+  polySelXY = matrix({{selectByID_xy_rmd}},ncol=2,byrow=FALSE),
+  polySelID = {{selectByID_id_rmd}},
+  spN= "{{spName}}")
 ```

@@ -1,7 +1,16 @@
 ```{asis, echo = {{part_nonSpat_knit}}, eval = {{part_nonSpat_knit}}, include = {{part_nonSpat_knit}}}
-Description of what the code will do
+### Partition occurrence data  
+Partition occurrences and background points for model training and validation using `r "{{method_rmd}}"`, a non-spatial partition method.
 ```
 
 ```{r, echo = {{part_nonSpat_knit}}, include = {{part_nonSpat_knit}}}
-# R code to run
+# R code to get partitioned data
+groups_{{spAbr}} <- part_partitionOccs(
+  occs = occs_{{spAbr}} ,
+  bg =  bgSample_{{spAbr}}, 
+  method = "{{method_code_rmd}}",
+  kfolds = {{k_folds_rmd}},
+  bgMask = NULL,
+  aggFact = NULL,
+  spN = "{{spName}}") 
 ```

@@ -104,12 +104,14 @@ proj_area_module_server <- function(input, output, session, common) {
       polyY <- printVecAsis(round(spp[[curSp()]]$polyPjXY[, 2], digits = 4))
       spp[[curSp()]]$rmm$code$wallace$drawExtPolyPjCoords <-
         paste0('X: ', polyX, ', Y: ', polyY)
+      spp[[curSp()]]$rmm$code$wallace$PjBuff <- input$drawPjBuf
     }
 
     if (input$projExt == 'pjUser') {
       polyPj <- proj_userExtent(input$userPjShp$datapath, input$userPjShp$name,
                                 input$userPjBuf, logger, spN = curSp())
       # METADATA ####
+      spp[[curSp()]]$rmm$code$wallace$PjBuff <- input$userPjBuf
       # get extensions of all input files
       exts <- sapply(strsplit(input$userPjShp$name, '\\.'),
                      FUN = function(x) x[2])
@@ -202,6 +204,8 @@ proj_area_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$project$mapProjVals <- getRasterVals(projAreaThr, predType)
 
     # METADATA ####
+    spp[[curSp()]]$rmd$project$curModel <- curModel()
+    spp[[curSp()]]$rmd$project$area<-TRUE
     spp[[curSp()]]$rmm$data$transfer$environment1$minVal <-
       printVecAsis(raster::cellStats(projExt, min), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$maxVal <-
@@ -321,10 +325,25 @@ proj_area_module_map <- function(map, common) {
 proj_area_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    proj_area_knit = FALSE
-    # proj_area_knit = species$rmm$code$wallace$someFlag,
-    # var1 = species$rmm$code$wallace$someSetting1,
-    # var2 = species$rmm$code$wallace$someSetting2
+    proj_area_knit = !is.null(species$rmd$project$area),
+    curModel_rmd = species$rmd$project$curModel,
+    outputType_rmd = species$rmm$prediction$notes,
+    alg_rmd = species$rmm$model$algorithms,
+    clamp_rmd = species$rmm$model$algorithm$maxent$clamping,
+    ###arguments for creating extent
+    polyPjXY_rmd = if(!is.null(species$rmm$code$wallace$drawExtPolyPjCoords)){
+    printVecAsis(species$polyPjXY)} else {NULL},
+    polyPjID_rmd =  if(!is.null(species$rmm$code$wallace$drawExtPolyPjCoords)){
+     species$polyPjID} else {0},
+    BgBuf_rmd = species$rmm$code$wallace$PjBuff,
+    ##Determine the type of projection extent to use correct RMD function
+    proj_area_extent_knit = !is.null(species$rmm$code$wallace$userPjShpParams),
+    ##Use of threshold for projection
+    proj_area_threshold_knit = !is.null(species$rmm$prediction$transfer$environment1$thresholdSet),
+    thresholdRule_rmd = species$rmm$prediction$transfer$environment1$thresholdRule,
+    threshold_rmd = if (!is.null(species$rmm$prediction$transfer$environment1$thresholdSet)){
+    species$rmm$prediction$transfer$environment1$thresholdSet} else {0}
+
+
   )
 }
-

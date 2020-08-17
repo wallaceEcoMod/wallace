@@ -9,10 +9,10 @@
 
 #' @param sp.name1 character, name of species 1 to be analyzed
 #' @param sp.name2 character, name of species 2 to be analyzed. Default is NULL.
-#' @param occs.z1 table of occurrences with environmental values for sp1.
-#' @param occs.z2 table of occurrences with environmental values for sp2 Default is NULL.
-#' @param bgPts.z1 table of background points with environmental values for sp1.
-#' @param bgPts.z2 table of background points with environmental values for sp2. Default is NULL.
+#' @param occs.z1 table of occurrences with environmental values only for sp1.
+#' @param occs.z2 table of occurrences with environmental values only for sp2 Default is NULL.
+#' @param bgPts.z1 table of background points with environmental values only for sp1.
+#' @param bgPts.z2 table of background points with environmental values only for sp2. Default is NULL.
 #' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 #' @examples

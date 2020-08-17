@@ -14,8 +14,8 @@ drawPjBufZero = 0
 drawPjBuf = 0.5
 ##setId to 1
 polyPjID=1
-polygonTest<-proj_draw(polyPjXY=userDrawPoly, polyPjID, drawPjBuf, logger = NULL)
-polygonTestZero<-proj_draw(polyPjXY=userDrawPoly, polyPjID, drawPjBuf=drawPjBufZero, logger = NULL)
+polygonTest<-proj_draw(polyPjXY=userDrawPoly, polyPjID, drawPjBuf, spN=spN, logger = NULL)
+polygonTestZero<-proj_draw(polyPjXY=userDrawPoly, polyPjID, drawPjBuf=drawPjBufZero, spN=spN, logger = NULL)
 
 test_that("output type checks", {
   # the drawn polygon does not include all localities

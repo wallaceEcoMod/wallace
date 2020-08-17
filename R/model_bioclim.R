@@ -1,9 +1,9 @@
 
-#' @title model_bioclim
-#' @description ..
+#' @title model_bioclim Generate Biolcim model
+#' @description This functions generates maxent or maxnet models using ENMeval 2.0
 #'
 #' @details
-#' See Examples.
+#' The function generates model in ENMeval using a user provided partition of occurrences from previous components in the GUI.
 #'
 #' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.
 #' @param bg  Coordinates of background points to be used for modelling.

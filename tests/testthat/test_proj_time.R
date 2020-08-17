@@ -22,11 +22,6 @@ bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=spN)
 ## Partition
 partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,
                                 aggFact = NULL,spN=spN)
-# occurrences partitioned
-occsGrp = partblock$occ.grp
-# background points partitioned
-bgGrp = partblock$bg.grp
-
 ## model
 # regularization multipliers
 rms <- c(1:2)
@@ -48,15 +43,15 @@ envsFut<-raster::stack(envsFut)
 # outputType
 outputType <- c('raw', 'logistic', 'cloglog')
 # algorithm
-algorithm <- c('maxent.jar','maxnet','bioclim')
+algorithm <- c('maxent.jar','maxnet','BIOCLIM')
 # build model and test for both algorithms
 for (i in algorithm) {
-  if(i == 'bioclim'){
-    modAlg <- model_bioclim(occs, bg, occsGrp, bgGrp, bgMask,spN=spN)
+  if(i == 'BIOCLIM'){
+    modAlg <- model_bioclim(occs, bg, partblock, bgMask,spN=spN)
     curModel=1
   }
   else{
-    modAlg <- model_maxent(occs, bg, occsGrp, bgGrp, bgMask, rms, rmsStep, fcs, clampSel = TRUE,
+    modAlg <- model_maxent(occs, bg, partblock, bgMask, rms, rmsStep, fcs, clampSel = TRUE,
                            algMaxent = i,catEnvs=NULL,spN=spN)
     curModel='L_1'
 
@@ -67,7 +62,7 @@ for (i in algorithm) {
   for (j in outputType) {
     ### run function
     modProj <- proj_time(evalOut = modAlg, curModel, envs=envsFut, outputType = j,
-                         alg=i,clamp=FALSE, pjExt = expertAddedPoly )
+                         alg=i,clamp=FALSE, pjExt = expertAddedPoly, spN=spN )
 
 
     ### test output features
@@ -78,7 +73,7 @@ for (i in algorithm) {
       expect_equal(length(modProj), 2)
       # element within the output list are:
       # a rasterBrick
-      expect_is(modProj$projExt, "RasterStack")
+      expect_is(modProj$projExt, "RasterBrick")
       # a rasterLayer
       expect_is(modProj$projTime, "RasterLayer")
       # there are as many projection extents as environmental variables used
