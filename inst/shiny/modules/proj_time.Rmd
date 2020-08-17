@@ -10,7 +10,7 @@ projTimeEnvs_{{spAbr}} <- raster::getData(
   'CMIP5',
   var = "bio",
   res = raster::res(bgMask_{{spAbr}}) * 60,
-  rcp = {{rcp_rmd}},
+  rcp = {{rcp_rmd}}/10,
   model = "{{model_rmd}}",
   year = {{year_rmd}})
 
@@ -23,7 +23,7 @@ proj_time_{{spAbr}} <-proj_time(
   evalOut = model_{{spAbr}},
   curModel = "{{curModel_rmd}}",
   envs = projTimeEnvs_{{spAbr}},
-  pjExt = {{polyPj_rmd}} ,
+  pjExt = bgExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
   clamp = {{clamp_rmd}},
@@ -42,7 +42,7 @@ projTimeEnvs_{{spAbr}} <- raster::getData(
   'CMIP5',
   var = "bio",
   res = raster::res(bgMask_{{spAbr}}) * 60,
-  rcp = {{rcp_rmd}},
+  rcp = {{rcp_rmd}}/10,
   model = "{{model_rmd}}",
   year = {{year_rmd}})
 
@@ -55,7 +55,7 @@ proj_time_{{spAbr}} <-proj_time(
   evalOut = model_{{spAbr}},
   curModel = "{{curModel_rmd}}",
   envs = projTimeEnvs_{{spAbr}},
-  pjExt ={{polyPj_rmd}},
+  pjExt = bgExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
   clamp = {{clamp_rmd}},
@@ -76,7 +76,7 @@ projTimeEnvs_{{spAbr}} <- raster::getData(
   'CMIP5',
   var = "bio",
   res = raster::res(bgMask_{{spAbr}}) * 60,
-  rcp = {{rcp_rmd}},
+  rcp = {{rcp_rmd}}/10,
   model = "{{model_rmd}}",
   year = {{year_rmd}})
 
@@ -115,7 +115,7 @@ projTimeEnvs_{{spAbr}} <- raster::getData(
   'CMIP5',
   var = "bio",
   res = raster::res(bgMask_{{spAbr}}) * 60,
-  rcp = {{rcp_rmd}},
+  rcp = {{rcp_rmd}}/10,
   model = "{{model_rmd}}",
   year = {{year_rmd}})
 
@@ -158,7 +158,7 @@ projTimeEnvs_{{spAbr}} <- raster::getData(
   'CMIP5',
   var = "bio",
   res = raster::res(bgMask_{{spAbr}}) * 60,
-  rcp = {{rcp_rmd}},
+  rcp = {{rcp_rmd}}/10,
   model = "{{model_rmd}}",
   year = {{year_rmd}})
 
@@ -200,7 +200,7 @@ projTimeEnvs_{{spAbr}} <- raster::getData(
   'CMIP5',
   var = "bio",
   res = raster::res(bgMask_{{spAbr}}) * 60,
-  rcp = {{rcp_rmd}},
+  rcp = {{rcp_rmd}}/10,
   model = "{{model_rmd}}",
   year = {{year_rmd}})
 
@@ -250,7 +250,7 @@ proj_time_{{spAbr}} <-proj_time(
   evalOut = model_{{spAbr}},
   curModel = "{{curModel_rmd}}",
   envs = projTimeEnvs_{{spAbr}} ,
-  pjExt = {{polyPj_rmd}} ,
+  pjExt = bgExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
   clamp = {{clamp_rmd}},
@@ -275,7 +275,7 @@ proj_time_{{spAbr}} <-proj_time(
   evalOut = model_{{spAbr}},
   curModel = "{{curModel_rmd}}",
   envs = projTimeEnvs_{{spAbr}} ,
-  pjExt = {{polyPj_rmd}},
+  pjExt = bgExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
   clamp = {{clamp_rmd}},
