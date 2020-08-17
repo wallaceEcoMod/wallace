@@ -374,6 +374,8 @@ proj_time_module_server <- function(input, output, session, common) {
     }
 
     # METADATA ####
+    spp[[curSp()]]$rmd$project$curModel <- curModel()
+    spp[[curSp()]]$rmd$project$time <- TRUE
     spp[[curSp()]]$rmm$data$transfer$environment1$minVal <-
       printVecAsis(raster::cellStats(projExt, min), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$maxVal <-
@@ -523,10 +525,34 @@ proj_time_module_map <- function(map, common) {
 proj_time_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    proj_time_knit = FALSE
-    # proj_time_knit = species$rmm$code$wallace$someFlag,
-    # var1 = species$rmm$code$wallace$someSetting1,
-    # var2 = species$rmm$code$wallace$someSetting2
+    proj_time_knit = !is.null(species$rmd$project$time),
+    curModel_rmd = species$rmd$project$curModel,
+    outputType_rmd = species$rmm$prediction$notes,
+    alg_rmd = species$rmm$model$algorithms,
+    clamp_rmd = species$rmm$model$algorithm$maxent$clamping,
+    projTimeEnvs_rmd = species$project$projTimeEnvs,
+
+    ##Determine the type of projection extent to use correct RMD function
+    proj_time_user_knit = !is.null(species$rmm$code$wallace$userPjShpParams),
+    proj_time_drawn_knit = !is.null(species$rmm$code$wallace$drawExtPolyPjCoords),
+    ###arguments for creating extent
+    polyPjXY_rmd = if(!is.null(species$rmm$code$wallace$drawExtPolyPjCoords)){
+      printVecAsis(species$polyPjXY)} else {NULL},
+    polyPjID_rmd =  if(!is.null(species$rmm$code$wallace$drawExtPolyPjCoords)){
+      species$polyPjID} else {0},
+    BgBuf_rmd = species$rmm$code$wallace$PjBuff,
+    polyPj_rmd = if(is.null(species$rmm$code$wallace$drawExtPolyPjCoords) & is.null(species$rmm$code$wallace$userPjShpParams)){
+      species$procEnvs$bgExt} else {NULL},
+    ##Use of threshold for projection
+    proj_area_threshold_knit = !is.null(species$rmm$prediction$transfer$environment1$thresholdSet),
+    thresholdRule_rmd = species$rmm$prediction$transfer$environment1$thresholdRule,
+    threshold_rmd = if (!is.null(species$rmm$prediction$transfer$environment1$thresholdSet)){
+      species$rmm$prediction$transfer$environment1$thresholdSet} else {0},
+    ###for guidance text
+      ##name of environmental variables used
+    envs_name_rmd = species$rmm$data$transfer$environment1$sources,
+    yearMin_rmd = species$rmm$data$transfer$environment1$yearMin,
+    yearMax_rmd = species$rmm$data$transfer$environment1$yearMax
   )
 }
 

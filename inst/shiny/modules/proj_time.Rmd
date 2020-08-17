@@ -1,7 +1,155 @@
-```{asis, echo = {{proj_time_knit}}, eval = {{proj_time_knit}}, include = {{proj_time_knit}}}
-Description of what the code will do 
+```{asis, echo = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  !proj_area_threshold_knit}}, eval = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  !proj_area_threshold_knit}}, include = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  !proj_area_threshold_knit}}}
+## Project model
+Projecting the model to a different time based on "{{envs_name_rmd}}" variables for {{yearMin_rmd}} to {{yearMax_rmd}} to the same modelling area with no threshold rule.
 ```
 
-```{r, echo = {{proj_time_knit}}, include = {{proj_time_knit}}}
-# R code to run 
+```{r, echo = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  !proj_area_threshold_knit}}, include = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  !proj_area_threshold_knit}}}
+
+# Generate a projection of the model to the desired area and time
+proj_time_{{spAbr}} <-proj_time(
+  evalOut = model_{{spAbr}},
+  curModel = "{{curModel_rmd}}",
+  envs = {{envs_name_rmd}},
+  pjExt = {{polyPj_rmd}} ,
+  alg = "{{alg_rmd}}",
+  outputType = "{{outputType_rmd}}",
+  clamp = {{clamp_rmd}},
+  spN = "{{spName}}") 
+
+```
+
+```{asis, echo = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  proj_area_threshold_knit}}, eval = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  proj_area_threshold_knit}}, include = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  proj_area_threshold_knit}}}
+## Project model
+Projecting the model to a different time based on "{{envs_name_rmd}}" variables for {{yearMin_rmd}} to {{yearMax_rmd}} to the same modelling area with a "{{thresholdRule_rmd}}" threshold rule of {{threshold_rmd}}
+```
+
+```{r, echo = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  proj_area_threshold_knit}}, include = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  proj_area_threshold_knit}}}
+# First must generate the projection area according to the drawn polygon in the GUI
+proj_draw_{{spAbr}} <-proj_draw(
+  polyPjXY = matrix({{polyPjXY_rmd}},ncol=2,byrow=FALSE),
+  polyPjID = {{polyPjID_rmd}},
+  drawPjBuf = {{BgBuf_rmd}},
+  spN = "{{spName}}")
+
+# Generate a projection of the model to the desired area and time
+proj_time_{{spAbr}} <-proj_time(
+  evalOut = model_{{spAbr}},
+  curModel = "{{curModel_rmd}}",
+  envs = {{envs_name_rmd}},
+  pjExt = proj_draw_{{spAbr}},
+  alg = "{{alg_rmd}}",
+  outputType = "{{outputType_rmd}}",
+  clamp = {{clamp_rmd}},
+  spN = "{{spName}}") 
+# Add threshold if specified 
+proj_time_{{spAbr}} <- proj_time_{{spAbr}} < {{threshold_rmd}}
+
+```
+
+```{asis, echo = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit &  !proj_area_threshold_knit}}, eval = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit &  !proj_area_threshold_knit}}, include = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit & !proj_area_threshold_knit}}}
+## Project model
+Projecting the model to a different time based on "{{envs_name_rmd}}" variables for {{yearMin_rmd}} to {{yearMax_rmd}} to a user drawn area with no threshold
+```
+
+```{r, echo = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit &  !proj_area_threshold_knit}}, include = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit &  !proj_area_threshold_knit}}}
+# First must generate the projection area according to the drawn polygon in the GUI
+proj_draw_{{spAbr}} <-proj_draw(
+  polyPjXY = matrix({{polyPjXY_rmd}},ncol=2,byrow=FALSE),
+  polyPjID = {{polyPjID_rmd}},
+  drawPjBuf = {{BgBuf_rmd}},
+  spN = "{{spName}}")
+
+# Generate a projection of the model to the desired area and time
+proj_time_{{spAbr}} <-proj_time(
+  evalOut = model_{{spAbr}},
+  curModel = "{{curModel_rmd}}",
+  envs = {{envs_name_rmd}},
+  pjExt = proj_draw_{{spAbr}},
+  alg = "{{alg_rmd}}",
+  outputType = "{{outputType_rmd}}",
+  clamp = {{clamp_rmd}},
+  spN = "{{spName}}") 
+
+```
+
+```{asis, echo = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit &  proj_area_threshold_knit}}, eval = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit &  proj_area_threshold_knit}}, include = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit & proj_area_threshold_knit}}}
+## Project model
+Projecting the model to a different time based on "{{envs_name_rmd}}" variables for {{yearMin_rmd}} to {{yearMax_rmd}} to a user drawn area with a "{{thresholdRule_rmd}}" threshold rule of {{threshold_rmd}}
+```
+
+```{r, echo = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit &  proj_area_threshold_knit}}, include = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit &  proj_area_threshold_knit}}}
+# First must generate the projection area according to the drawn polygon in the GUI
+proj_draw_{{spAbr}} <-proj_draw(
+  polyPjXY = matrix({{polyPjXY_rmd}},ncol=2,byrow=FALSE),
+  polyPjID = {{polyPjID_rmd}},
+  drawPjBuf = {{BgBuf_rmd}},
+  spN = "{{spName}}")
+
+# Generate a projection of the model to the desired area and time
+proj_time_{{spAbr}} <-proj_time(
+  evalOut = model_{{spAbr}},
+  curModel = "{{curModel_rmd}}",
+  envs = {{envs_name_rmd}},
+  pjExt = proj_draw_{{spAbr}},
+  alg = "{{alg_rmd}}",
+  outputType = "{{outputType_rmd}}",
+  clamp = {{clamp_rmd}},
+  spN = "{{spName}}") 
+
+```
+
+```{asis, echo = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit &  !proj_area_threshold_knit}}, eval = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit &  !proj_area_threshold_knit}}, include = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit & !proj_area_threshold_knit}}}
+## Project model
+Projecting the model to a different time based on "{{envs_name_rmd}}" variables for {{yearMin_rmd}} to {{yearMax_rmd}} to a user provided area with no threshold.
+```
+
+```{r, echo = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit &  !proj_area_threshold_knit}}, include = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit &  !proj_area_threshold_knit}}}
+# First must generate the projection area based on user provided files
+  ##User must input the path to shapefile or csv file and the file name 
+proj_userExt_{{spAbr}} <- proj_userExtent(
+  bgShp_path = "Input path here",
+  bgShp_name = "Input file name here",
+  userBgBuf = {{BgBuf_rmd}},
+  spN = "{{spName}}")
+
+# Generate a projection of the model to the desired area and time
+proj_time_{{spAbr}} <-proj_time(
+  evalOut = model_{{spAbr}},
+  curModel = "{{curModel_rmd}}",
+  envs = {{envs_name_rmd}},
+  pjExt = proj_draw_{{spAbr}},
+  alg = "{{alg_rmd}}",
+  outputType = "{{outputType_rmd}}",
+  clamp = {{clamp_rmd}},
+  spN = "{{spName}}") 
+
+```
+
+```{asis, echo = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit &  proj_area_threshold_knit}}, eval = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit &  proj_area_threshold_knit}}, include = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit & proj_area_threshold_knit}}}
+## Project model
+Projecting the model to a different time based on "{{envs_name_rmd}}" variables for {{yearMin_rmd}} to {{yearMax_rmd}} to a user provided area with a "{{thresholdRule_rmd}}" threshold rule of {{threshold_rmd}}
+```
+
+```{r, echo = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit &  proj_area_threshold_knit}}, include = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit &  proj_area_threshold_knit}}}
+# First must generate the projection area based on user provided files
+  ##User must input the path to shapefile or csv file and the file name 
+proj_userExt_{{spAbr}} <- proj_userExtent(
+  bgShp_path = "Input path here",
+  bgShp_name = "Input file name here",
+  userBgBuf = {{BgBuf_rmd}},
+  spN = "{{spName}}")
+
+# Generate a projection of the model to the desired area and time
+proj_time_{{spAbr}} <-proj_time(
+  evalOut = model_{{spAbr}},
+  curModel = "{{curModel_rmd}}",
+  envs = {{envs_name_rmd}},
+  pjExt = proj_draw_{{spAbr}},
+  alg = "{{alg_rmd}}",
+  outputType = "{{outputType_rmd}}",
+  clamp = {{clamp_rmd}},
+  spN = "{{spName}}") 
+# Add threshold if specified 
+proj_time_{{spAbr}} <- proj_time_{{spAbr}} < {{threshold_rmd}}
+
 ```
