@@ -1,5 +1,3 @@
-###part 1 with worldclim
-
 ```{asis, echo = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  !proj_time_threshold_knit $ proj_time_worldclim_knit}}, eval = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  !proj_time_threshold_knit & proj_time_worldclim_knit}}, include = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit & !proj_time_threshold_knit & proj_time_worldclim_knit}}}
 ### Project model
 Projecting the model to the same modelling area with no threshold rule. New time based on "{{envs_name_rmd}}" variables for {{yearMin_rmd}} using a "{{model_rmd}}" GCM and an RCP of {{rcp_rmd}}.
@@ -34,7 +32,7 @@ proj_time_{{spAbr}} <-proj_time(
 ```
 
 ```{asis, echo = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  proj_time_threshold_knit &  proj_time_worldclim_knit}}, eval = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  proj_time_threshold_knit & proj_time_worldclim_knit}}, include = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  proj_time_threshold_knit &    proj_time_worldclim_knit}}}
-## Project model
+### Project model
 Projecting the model to the same modelling area with a "{{thresholdRule_rmd}}" threshold rule of {{threshold_rmd}}. New time based on "{{envs_name_rmd}}" variables for {{yearMin_rmd}} using a "{{model_rmd}}" GCM and an RCP of {{rcp_rmd}}.
 ```
 
@@ -68,7 +66,7 @@ proj_time_{{spAbr}} <- proj_time_{{spAbr}} < {{threshold_rmd}}
 ```
 
 ```{asis, echo = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit &  !proj_time_threshold_knit & proj_time_worldclim_knit}}, eval = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit &  !proj_time_threshold_knit & proj_time_worldclim_knit}}, include = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit & !proj_time_threshold_knit & proj_time_worldclim_knit}}}
-## Project model
+### Project model
 Projecting the model to a user drawn area with no threshold. New time based on "{{envs_name_rmd}}" variables for {{yearMin_rmd}} using a "{{model_rmd}}" GCM and an RCP of {{rcp_rmd}}.
 ```
 
@@ -107,7 +105,7 @@ proj_time_{{spAbr}} <-proj_time(
 ```
 
 ```{asis, echo = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit &  proj_time_threshold_knit & proj_time_worldclim_knit}}, eval = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit &  proj_time_threshold_knit & proj_time_worldclim_knit}}, include = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit & proj_time_threshold_knit & proj_time_worldclim_knit}}}
-## Project model
+### Project model
 Projecting the model to a user drwan area with a "{{thresholdRule_rmd}}" threshold rule of {{threshold_rmd}}. New time based on "{{envs_name_rmd}}" variables for {{yearMin_rmd}} using a "{{model_rmd}}" GCM and an RCP of {{rcp_rmd}}.
 ```
 
@@ -149,12 +147,13 @@ proj_time_{{spAbr}} <- proj_time_{{spAbr}} < {{threshold_rmd}}
 ```
 
 ```{asis, echo = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit &  !proj_time_threshold_knit & proj_time_worldclim_knit}}, eval = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit &  !proj_time_threshold_knit & proj_time_worldclim_knit}}, include = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit & !proj_time_threshold_knit & proj_time_worldclim_knit}}}
-## Project model
+### Project model
 Projecting the model to a user provided area area with no threshold. New time based on "{{envs_name_rmd}}" variables for {{yearMin_rmd}} using a "{{model_rmd}}" GCM and an RCP of {{rcp_rmd}}.
 ```
 
 ```{r, echo = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit &  !proj_time_threshold_knit & proj_time_worldclim_knit}}, include = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit &  !proj_time_threshold_knit & proj_time_worldclim_knit}}}
-#Download variables for projecting 
+
+# Download variables for projecting 
 projTimeEnvs_{{spAbr}} <- raster::getData(
   'CMIP5',
   var = "bio",
@@ -164,6 +163,7 @@ projTimeEnvs_{{spAbr}} <- raster::getData(
   year = {{year_rmd}})
 
 names(projTimeEnvs_{{spAbr}}) <- paste0('bio', c(paste0('0',1:9), 10:19))
+
 # Select variables for projecting to match variables used for modelling 
 projTimeEnvs_{{spAbr}} <- projTimeEnvs_{{spAbr}}[[names(bgMask_{{spAbr}})]]
 
@@ -189,12 +189,13 @@ proj_time_{{spAbr}} <-proj_time(
 ```
 
 ```{asis, echo = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit &  proj_time_threshold_knit & proj_time_worldclim_knit}}, eval = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit &  proj_time_threshold_knit & proj_time_worldclim_knit}}, include = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit & proj_time_threshold_knit & proj_time_worldclim_knit}}}
-## Project model
+### Project model
 Projecting the model to a user provided area with a "{{thresholdRule_rmd}}" threshold rule of {{threshold_rmd}}. New time based on "{{envs_name_rmd}}" variables for {{yearMin_rmd}} using a "{{model_rmd}}" GCM and an RCP of {{rcp_rmd}}.
 ```
 
 ```{r, echo = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit &  proj_time_threshold_knit & proj_time_worldclim_knit}}, include = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit &  proj_time_threshold_knit & proj_time_worldclim_knit}}}
-#Download variables for projecting from Worldclim
+
+# Download variables for projecting from Worldclim
 projTimeEnvs_{{spAbr}} <- raster::getData(
   'CMIP5',
   var = "bio",
@@ -204,6 +205,7 @@ projTimeEnvs_{{spAbr}} <- raster::getData(
   year = {{year_rmd}})
 
 names(projTimeEnvs_{{spAbr}}) <- paste0('bio', c(paste0('0',1:9), 10:19))
+
 # Select variables for projecting to match variables used for modelling 
 projTimeEnvs_{{spAbr}} <- projTimeEnvs_{{spAbr}}[[names(bgMask_{{spAbr}})]]
 
