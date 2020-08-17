@@ -571,9 +571,9 @@ proj_time_module_rmd <- function(species) {
       species$rmd$data$transfer$environment1$RCP} else {0},
     year_rmd = if (!is.null(species$rmd$data$transfer$environment1$worldclim)){
       species$rmd$data$transfer$environment1$Time} else {0},
-    pjAOGCM_rmd = if(!is.null(sppecies$rmd$data$transfer$environment1$ecoclimate)){
+    pjAOGCM_rmd = if(!is.null(species$rmd$data$transfer$environment1$ecoclimate)){
       species$rmd$data$transfer$environment1$AOGCM} else {NULL},
-    pjScenario_rmd = if(!is.null(sppecies$rmd$data$transfer$environment1$ecoclimate)){
+    pjScenario_rmd = if(!is.null(species$rmd$data$transfer$environment1$ecoclimate)){
       species$rmd$data$transfer$environment1$Scenario} else {NULL}
   )
 }

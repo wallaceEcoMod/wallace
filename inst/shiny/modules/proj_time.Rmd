@@ -1,4 +1,4 @@
-```{asis, echo = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  !proj_time_threshold_knit $ proj_time_worldclim_knit}}, eval = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  !proj_time_threshold_knit & proj_time_worldclim_knit}}, include = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit & !proj_time_threshold_knit & proj_time_worldclim_knit}}}
+```{asis, echo = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  !proj_time_threshold_knit & proj_time_worldclim_knit}}, eval = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  !proj_time_threshold_knit & proj_time_worldclim_knit}}, include = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit & !proj_time_threshold_knit & proj_time_worldclim_knit}}}
 ### Project model
 Projecting the model to the same modelling area with no threshold rule. New time based on "{{envs_name_rmd}}" variables for {{yearMin_rmd}} using a "{{model_rmd}}" GCM and an RCP of {{rcp_rmd}}.
 
@@ -233,7 +233,7 @@ proj_time_{{spAbr}} <- proj_time_{{spAbr}} < {{threshold_rmd}}
 ```
 
 
-```{asis, echo = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  !proj_time_threshold_knit $ !proj_time_worldclim_knit}}, eval = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  !proj_time_threshold_knit & !proj_time_worldclim_knit}}, include = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit & !proj_time_threshold_knit & !proj_time_worldclim_knit}}}
+```{asis, echo = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  !proj_time_threshold_knit & !proj_time_worldclim_knit}}, eval = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  !proj_time_threshold_knit & !proj_time_worldclim_knit}}, include = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit & !proj_time_threshold_knit & !proj_time_worldclim_knit}}}
 ### Project model
 Projecting the model to the same modelling area with no threshold rule. New time based on "{{envs_name_rmd}}" variables for {{yearMin_rmd}} to {{yearMax_rmd}} using a "{{pjAOGCM_rmd}}" GCM and a "{{pjScenario_rmd}}" scenario.
 ```
