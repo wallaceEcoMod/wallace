@@ -47,7 +47,9 @@ proj_userExtent <- function(bgShp_path, bgShp_name, userBgBuf,
                         'following files: .shp, .shx, .dbf.'))
       return()
     }
-    file.rename(bgShp_path, file.path(pathdir, bgShp_name))
+    if (!file.exists(file.path(pathdir, bgShp_name)[1])) {
+      file.rename(bgShp_path, file.path(pathdir, bgShp_name))
+    }
     # get index of .shp
     i <- which(exts == 'shp')
     shpName <- strsplit(bgShp_name[i], '\\.')[[1]][1]
