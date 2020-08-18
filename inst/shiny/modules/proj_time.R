@@ -492,16 +492,18 @@ proj_time_module_map <- function(map, common) {
   req(spp[[curSp()]]$project$pjExt)
   polyPjXY <- spp[[curSp()]]$project$pjExt@polygons[[1]]@Polygons
   if(length(polyPjXY) == 1) {
-    shp <- polyPjXY[[1]]@coords
+    shp <- list(polyPjXY[[1]]@coords)
   } else {
     shp <- lapply(polyPjXY, function(x) x@coords)
   }
   bb <- spp[[curSp()]]$project$pjExt@bbox
   bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
   map %>% clearAll() %>% removeImage('projRas') %>%
-    addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4, color = "red",
-                group = 'bgShp') %>%
     fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
+  for (poly in shp) {
+    map %>% addPolygons(lng = poly[, 1], lat = poly[, 2], weight = 4,
+                        color = "red",group = 'bgShp')
+  }
   req(evalOut(), spp[[curSp()]]$project$pjEnvs)
   mapProjVals <- spp[[curSp()]]$project$mapProjVals
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
@@ -524,13 +526,13 @@ proj_time_module_map <- function(map, common) {
                 labFormat = reverseLabels(2, reverse_order = TRUE))
   }
   # map model prediction raster and projection polygon
-  colnames(shp) <- c("longitude", "latitude")
-  map %>%
-    clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
+  map %>% clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
     addRasterImage(mapProj(), colors = rasPal, opacity = 0.7,
-                   layerId = 'projRas', group = 'proj', method = "ngb") %>%
-    addPolygons(lng = shp[,1], lat = shp[,2], layerId = "projExt",
-                fill = FALSE, weight = 4, color = "red", group = 'proj')
+                   layerId = 'projRas', group = 'proj', method = "ngb")
+  for (poly in shp) {
+    map %>% addPolygons(lng = poly[, 1], lat = poly[, 2], weight = 4,
+                        color = "red", group = 'proj', fill = FALSE)
+  }
 }
 
 proj_time_module_rmd <- function(species) {

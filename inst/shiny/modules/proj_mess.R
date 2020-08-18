@@ -70,9 +70,9 @@ proj_mess_module_map <- function(map, common) {
   req(spp[[curSp()]]$project$mess, spp[[curSp()]]$project$pjExt)
   polyPjXY <- spp[[curSp()]]$project$pjExt@polygons[[1]]@Polygons
   if(length(polyPjXY) == 1) {
-    polyPjXY <- polyPjXY[[1]]@coords
+    shp <- list(polyPjXY[[1]]@coords)
   } else {
-    polyPjXY <- lapply(polyPjXY, function(x) x@coords)
+    shp <- lapply(polyPjXY, function(x) x@coords)
   }
   mess <- spp[[curSp()]]$project$mess
   rasVals <- spp[[curSp()]]$project$messVals
@@ -97,12 +97,13 @@ proj_mess_module_map <- function(map, common) {
               values = rasVals, layerId = 'proj',
               labFormat = reverseLabels(2, reverse_order=TRUE))
   # map model prediction raster and projection polygon
-  colnames(polyPjXY) <- c("longitude", "latitude")
   map %>% clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
     addRasterImage(mess, colors = rasPal, opacity = 0.9,
-                   layerId = 'projRas', group = 'proj', method = "ngb") %>%
-    addPolygons(lng = polyPjXY[,1], lat = polyPjXY[,2], layerId = "projExt",
-                fill = FALSE, weight = 4, color = "red", group = 'proj')
+                   layerId = 'projRas', group = 'proj', method = "ngb")
+  for (poly in shp) {
+    map %>% addPolygons(lng = poly[, 1], lat = poly[, 2], weight = 4,
+                        color = "red", group = 'proj', fill = FALSE)
+  }
 }
 
 proj_mess_module_rmd <- function(species) {

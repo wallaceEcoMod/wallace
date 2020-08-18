@@ -56,14 +56,13 @@ penvs_userBgExtent <- function(bgShp_path, bgShp_name, userBgBuf, occs,
                           'following files: .shp, .shx, .dbf.'))
         return()
       }
-      if (!file.exists(file.path(pathdir, bgShp_name)[1])) {
-        file.rename(bgShp_path, file.path(pathdir, bgShp_name))
-      }
       # get index of .shp
       i <- which(exts == 'shp')
-      shpName <- strsplit(bgShp_name[i], '\\.')[[1]][1]
+      if (!file.exists(file.path(pathdir, bgShp_name)[i])) {
+        file.rename(bgShp_path, file.path(pathdir, bgShp_name))
+      }
       # read in shapefile and extract coords
-      bgExt <- rgdal::readOGR(pathdir[i], shpName)
+      bgExt <- rgdal::readOGR(file.path(pathdir, bgShp_name)[i])
     } else {
       logger %>%
         writeLog(type = 'error',
