@@ -49,7 +49,7 @@ proj_area_{{spAbr}} <- proj_area(
   spN = "{{spName}}") 
 
 # Add threshold if specified 
-proj_area_{{spAbr}} <- proj_area_{{spAbr}} < {{threshold_rmd}}
+proj_area_{{spAbr}} <- proj_area_{{spAbr}}$projArea < {{threshold_rmd}}
 ```
 
 ```{asis, echo = {{proj_area_knit & proj_area_extent_knit}} , eval = {{proj_area_knit & proj_area_extent_knit }}, include = {{proj_area_knit & proj_area_extent_knit}}}
@@ -105,5 +105,5 @@ proj_area_{{spAbr}} <- proj_area(
   spN = "{{spName}}") 
 
 # Add threshold if specified 
-proj_area_{{spAbr}} <- proj_area_{{spAbr}} < {{threshold_rmd}}
+proj_area_{{spAbr}} <- proj_area_{{spAbr}}$projArea < {{threshold_rmd}}
 ```
