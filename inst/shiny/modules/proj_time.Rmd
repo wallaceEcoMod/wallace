@@ -243,7 +243,7 @@ Projecting the model to the same modelling area with no threshold rule. New time
 projTimeEnvs_{{spAbr}} <- envs_ecoClimate(
   "{{pjAOGCM_rmd}}",
   "{{pjScenario_rmd}}",
-  as.numeric(gsub("bio", "", names(envs()))))
+  as.numeric(gsub("bio", "", names(bgMask_{{spAbr}}))))
 
 # Generate a projection of the model to the desired area and time
 proj_time_{{spAbr}} <-proj_time(
@@ -268,7 +268,7 @@ Projecting the model to the same modelling area with a "{{thresholdRule_rmd}}" t
 projTimeEnvs_{{spAbr}} <- envs_ecoClimate(
   "{{pjAOGCM_rmd}}",
   "{{pjScenario_rmd}}",
-  as.numeric(gsub("bio", "", names(envs()))))
+  as.numeric(gsub("bio", "", names(bgMask_{{spAbr}}))))
 
 # Generate a projection of the model to the desired area and time
 proj_time_{{spAbr}} <-proj_time(
@@ -296,7 +296,7 @@ Projecting the model to a user drawn area with no threshold rule. New time based
 projTimeEnvs_{{spAbr}} <- envs_ecoClimate(
   "{{pjAOGCM_rmd}}",
   "{{pjScenario_rmd}}",
-  as.numeric(gsub("bio", "", names(envs()))))
+  as.numeric(gsub("bio", "", names(bgMask_{{spAbr}}))))
 
 # Generate the projection area according to the drawn polygon in the GUI
 proj_draw_{{spAbr}} <-proj_draw(
@@ -329,7 +329,7 @@ Projecting the model to a user drawn area with a "{{thresholdRule_rmd}}" thresho
 projTimeEnvs_{{spAbr}} <- envs_ecoClimate(
   "{{pjAOGCM_rmd}}",
   "{{pjScenario_rmd}}",
-  as.numeric(gsub("bio", "", names(envs()))))
+  as.numeric(gsub("bio", "", names(bgMask_{{spAbr}}))))
 
 # Generate the projection area according to the drawn polygon in the GUI
 proj_draw_{{spAbr}} <-proj_draw(
@@ -364,7 +364,7 @@ Projecting the model to a user provided area with no threshold rule. New time ba
 projTimeEnvs_{{spAbr}} <- envs_ecoClimate(
   "{{pjAOGCM_rmd}}",
   "{{pjScenario_rmd}}",
-  as.numeric(gsub("bio", "", names(envs()))))
+  as.numeric(gsub("bio", "", names(bgMask_{{spAbr}}))))
 
 # Generate the projection area based on user provided files
   ##User must input the path to shapefile or csv file and the file name 
@@ -398,7 +398,7 @@ Projecting the model to a user provided area with a "{{thresholdRule_rmd}}" thre
 projTimeEnvs_{{spAbr}} <- envs_ecoClimate(
   "{{pjAOGCM_rmd}}",
   "{{pjScenario_rmd}}",
-  as.numeric(gsub("bio", "", names(envs()))))
+  as.numeric(gsub("bio", "", names(bgMask_{{spAbr}}))))
 
 # Generate the projection area based on user provided files
   ##User must input the path to shapefile or csv file and the file name 
