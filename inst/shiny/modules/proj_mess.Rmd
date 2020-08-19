@@ -9,7 +9,7 @@ projMess_{{spAbr}} <- proj_mess(
   bg = bgEnvsVals_{{spAbr}} ,
   bgMsk =  bgMask_{{spAbr}},
   projExtRas =  projExt_{{spAbr}} ,
-  time = {{time_rmd}},
+  time = "{{time_rmd}}",
   spN ="{{spName}}")
 
 ```
