@@ -53,7 +53,7 @@ proj_area_{{spAbr}} <- proj_area(
   spN = "{{spName}}") 
 
 # Add threshold if specified 
-proj_area_{{spAbr}} <- proj_area_{{spAbr}}$projArea < {{threshold_rmd}}
+proj_area_{{spAbr}} <- proj_area_{{spAbr}}$projArea > {{threshold_rmd}}
 #store the cropped projection variables
  projExt_{{spAbr}} <- proj_area_{{spAbr}}$projExt
 ```
@@ -116,7 +116,7 @@ proj_area_{{spAbr}} <- proj_area(
   spN = "{{spName}}") 
 
 # Add threshold if specified 
-proj_area_{{spAbr}} <- proj_area_{{spAbr}}$projArea < {{threshold_rmd}}
+proj_area_{{spAbr}} <- proj_area_{{spAbr}}$projArea > {{threshold_rmd}}
 #store the cropped projection variables
  projExt_{{spAbr}} <- proj_area_{{spAbr}}$projExt
 ```

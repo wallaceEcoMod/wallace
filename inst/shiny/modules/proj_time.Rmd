@@ -63,7 +63,7 @@ proj_time_{{spAbr}} <-proj_time(
   clamp = {{clamp_rmd}},
   spN = "{{spName}}") 
 # Add threshold if specified 
-proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime < {{threshold_rmd}}
+proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime > {{threshold_rmd}}
 #store the cropped projection variables
  projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 
@@ -148,7 +148,7 @@ proj_time_{{spAbr}} <-proj_time(
   spN = "{{spName}}") 
 
 # Add threshold if specified 
-proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime < {{threshold_rmd}}
+proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime > {{threshold_rmd}}
 #store the cropped projection variables
 projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 
@@ -238,7 +238,7 @@ proj_time_{{spAbr}} <-proj_time(
   clamp = {{clamp_rmd}},
   spN = "{{spName}}") 
 # Add threshold if specified 
-proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime < {{threshold_rmd}}
+proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime > {{threshold_rmd}}
 #store the cropped projection variables
  projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 
@@ -295,7 +295,7 @@ proj_time_{{spAbr}} <-proj_time(
   clamp = {{clamp_rmd}},
   spN = "{{spName}}") 
 # Add threshold if specified 
-proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime < {{threshold_rmd}}
+proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime > {{threshold_rmd}}
 #store the cropped projection variables
  projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 
@@ -368,7 +368,7 @@ proj_time_{{spAbr}} <-proj_time(
   spN = "{{spName}}") 
 
 # Add threshold if specified 
-proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime < {{threshold_rmd}}
+proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime > {{threshold_rmd}}
 #store the cropped projection variables
  projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 
@@ -441,7 +441,7 @@ proj_time_{{spAbr}} <-proj_time(
   clamp = {{clamp_rmd}},
   spN = "{{spName}}") 
 # Add threshold if specified 
-proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime < {{threshold_rmd}}
+proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime > {{threshold_rmd}}
 #store the cropped projection variables
  projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 

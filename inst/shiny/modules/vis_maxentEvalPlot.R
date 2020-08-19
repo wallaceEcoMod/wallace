@@ -36,7 +36,10 @@ vis_maxentEvalPlot_module_server <- function(input, output, session, common) {
       }
     }
   })
-
+  observeEvent(input$maxentEvalSel,{
+    req(curSp())
+    spp[[curSp()]]$rmm$code$wallace$maxentEvalPlot <- TRUE
+  })
   output$maxentEvalPlot <- renderPlot({
     req(curSp(), evalOut())
     if (spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM") {
@@ -72,7 +75,7 @@ vis_maxentEvalPlot_module_result <- function(id) {
 vis_maxentEvalPlot_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    vis_maxentEvalPlot_knit = !is.null(species$rmm$code$wallace$maxentEvalPlotSel),
+    vis_maxentEvalPlot_knit = !is.null(species$rmm$code$wallace$maxentEvalPlot),
     evalPlot_rmd = species$rmm$code$wallace$maxentEvalPlotSel
 
   )

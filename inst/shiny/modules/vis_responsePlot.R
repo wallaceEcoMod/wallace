@@ -15,16 +15,17 @@ vis_responsePlot_module_server <- function(input, output, session, common) {
   curEnv <- common$curEnv
   evalOut <- common$evalOut
 
-  observe({
+  observeEvent(input,{
     req(curSp())
     req(curModel())
     #for rmd
-    if (spp[[curSp()]]$rmm$model$algorithms == "maxnet"|spp[[curSp()]]$rmm$model$algorithms == "maxent.jar"){
     spp[[curSp()]]$rmd$vis$responsePlot <- TRUE
-    spp[[curSp()]]$rmd$vis$curModel <- curModel()
+    if (spp[[curSp()]]$rmm$model$algorithms == "maxnet"|spp[[curSp()]]$rmm$model$algorithms == "maxent.jar"){
+      spp[[curSp()]]$rmd$vis$curModel <- curModel()
     }
 
   })
+
 
   # ui that populates with the names of environmental predictors used
   output$curEnvUI <- renderUI({
@@ -60,11 +61,14 @@ vis_responsePlot_module_server <- function(input, output, session, common) {
     }
   }, width = 700, height = 700)
 
-}
+   }
 
 vis_responsePlot_module_result <- function(id) {
+
   ns <- NS(id)
   imageOutput(ns('responsePlot'))
+
+
 }
 
 vis_responsePlot_module_rmd <- function(species) {
