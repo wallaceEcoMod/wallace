@@ -15,6 +15,9 @@ Options are: "LGM" (21,000 years ago), "Holo" (6,000 years ago),
 "Present", "Future 2.6" (rcp 2.6), "Future 4.5" (rcp 4.5), "Future 6" (rcp 6), "Future 8.5" (rcp 8.5)}
 
 \item{ecoClimSel}{Numeric vector with list of variables to select.}
+
+\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+otherwise leave the default NULL}
 }
 \value{
 A rasterStack of selected variables

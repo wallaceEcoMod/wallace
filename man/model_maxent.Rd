@@ -36,6 +36,12 @@ model_maxent(
 
 \item{fcs}{Feature classes to be tested in the ENM eval run}
 
+\item{clampSel}{Boolean Use of clamping in the model}
+
+\item{algMaxent}{Algorithm tu be used in modeling. A selection of "maxnet" or "maxent.jar"}
+
+\item{catEnvs}{If categorical predictor variables are included must provide the names}
+
 \item{parallel}{Whether to use parallel in the generation of models. Default is FALSE}
 
 \item{numCores}{If using parallel how many cores to use. Default is NULL}
@@ -52,8 +58,8 @@ Function returns an ENMevaluate object with all the evaluated models and a selec
 This functions generates maxent or maxnet models using ENMeval 2.0 and user provided tuning parameters.
 }
 \details{
-The function generates model in ENMeval using a user porvided parition of occurrences from previous components i GUI.
-User can activate clamping and input de tuning argumenta to be used for model building
+The function generates model in ENMeval using a user provided partition of occurrences from previous components in the GUI.
+User can activate clamping and input de tuning arguments to be used for model building
 }
 \examples{
 spN<-"Panthera onca"

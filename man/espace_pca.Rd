@@ -19,13 +19,13 @@ espace_pca(
 
 \item{sp.name2}{character, name of species 2 to be analyzed. Default is NULL.}
 
-\item{occs.z1}{table of occurrences with environmental values for sp1.}
+\item{occs.z1}{table of occurrences with environmental values only for sp1.}
 
-\item{occs.z2}{table of occurrences with environmental values for sp2 Default is NULL.}
+\item{occs.z2}{table of occurrences with environmental values only for sp2 Default is NULL.}
 
-\item{bgPts.z1}{table of background points with environmental values for sp1.}
+\item{bgPts.z1}{table of background points with environmental values only for sp1.}
 
-\item{bgPts.z2}{table of background points with environmental values for sp2. Default is NULL.}
+\item{bgPts.z2}{table of background points with environmental values only for sp2. Default is NULL.}
 
 \item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}

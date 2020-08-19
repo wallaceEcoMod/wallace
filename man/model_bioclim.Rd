@@ -2,7 +2,7 @@
 % Please edit documentation in R/model_bioclim.R
 \name{model_bioclim}
 \alias{model_bioclim}
-\title{model_bioclim}
+\title{model_bioclim Generate Biolcim model}
 \usage{
 model_bioclim(occs, bg, user.grp, bgMsk, logger = NULL, spN = NULL)
 }
@@ -24,10 +24,10 @@ otherwise leave the default NULL}
 Function returns an ENMevaluate object with all the evaluated models and a selection of appropriate fields.
 }
 \description{
-..
+This functions generates maxent or maxnet models using ENMeval 2.0
 }
 \details{
-See Examples.
+The function generates model in ENMeval using a user provided partition of occurrences from previous components in the GUI.
 }
 \examples{
 spN="Panthera onca"
