@@ -14,20 +14,22 @@ projTimeEnvs_{{spAbr}} <- raster::getData(
   model = "{{model_rmd}}",
   year = {{year_rmd}})
 
-names(projTimeEnvs_{{spAbr}}) <- paste0('bio', c(paste0('0',1:9), 10:19))
+names(projEnvs_{{spAbr}}) <- paste0('bio', c(paste0('0',1:9), 10:19))
 # Select variables for projecting to match variables used for modelling 
-projTimeEnvs_{{spAbr}} <- projTimeEnvs_{{spAbr}}[[names(bgMask_{{spAbr}})]]
+projTimeEnvs_{{spAbr}} <- projEnvs_{{spAbr}}[[names(bgMask_{{spAbr}})]]
 
 # Generate a projection of the model to the desired area and time
 proj_time_{{spAbr}} <-proj_time(
   evalOut = model_{{spAbr}},
   curModel = "{{curModel_rmd}}",
-  envs = projTimeEnvs_{{spAbr}},
+  envs = projEnvs_{{spAbr}},
   pjExt = bgExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
   clamp = {{clamp_rmd}},
   spN = "{{spName}}") 
+#store the cropped projection variables
+ projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 
 ```
 
@@ -46,15 +48,15 @@ projTimeEnvs_{{spAbr}} <- raster::getData(
   model = "{{model_rmd}}",
   year = {{year_rmd}})
 
-names(projTimeEnvs_{{spAbr}}) <- paste0('bio', c(paste0('0',1:9), 10:19))
+names(projEnvs_{{spAbr}}) <- paste0('bio', c(paste0('0',1:9), 10:19))
 # Select variables for projecting to match variables used for modelling 
-projTimeEnvs_{{spAbr}} <- projTimeEnvs_{{spAbr}}[[names(bgMask_{{spAbr}})]]
+projTimeEnvs_{{spAbr}} <- projEnvs_{{spAbr}}[[names(bgMask_{{spAbr}})]]
 
 # Generate a projection of the model to the desired area and time
 proj_time_{{spAbr}} <-proj_time(
   evalOut = model_{{spAbr}},
   curModel = "{{curModel_rmd}}",
-  envs = projTimeEnvs_{{spAbr}},
+  envs = projEnvs_{{spAbr}},
   pjExt = bgExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
@@ -62,6 +64,8 @@ proj_time_{{spAbr}} <-proj_time(
   spN = "{{spName}}") 
 # Add threshold if specified 
 proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime < {{threshold_rmd}}
+#store the cropped projection variables
+ projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 
 ```
 
@@ -80,9 +84,9 @@ projTimeEnvs_{{spAbr}} <- raster::getData(
   model = "{{model_rmd}}",
   year = {{year_rmd}})
 
-names(projTimeEnvs_{{spAbr}}) <- paste0('bio', c(paste0('0',1:9), 10:19))
+names(projEnvs_{{spAbr}}) <- paste0('bio', c(paste0('0',1:9), 10:19))
 # Select variables for projecting to match variables used for modelling 
-projTimeEnvs_{{spAbr}} <- projTimeEnvs_{{spAbr}}[[names(bgMask_{{spAbr}})]]
+projTimeEnvs_{{spAbr}} <- projEnvs_{{spAbr}}[[names(bgMask_{{spAbr}})]]
 
 # Generate the projection area according to the drawn polygon in the GUI
 proj_draw_{{spAbr}} <-proj_draw(
@@ -95,12 +99,14 @@ proj_draw_{{spAbr}} <-proj_draw(
 proj_time_{{spAbr}} <-proj_time(
   evalOut = model_{{spAbr}},
   curModel = "{{curModel_rmd}}",
-  envs = projTimeEnvs_{{spAbr}},
+  envs = projEnvs_{{spAbr}},
   pjExt = proj_draw_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
   clamp = {{clamp_rmd}},
   spN = "{{spName}}") 
+#store the cropped projection variables
+ projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 
 ```
 
@@ -119,9 +125,9 @@ projTimeEnvs_{{spAbr}} <- raster::getData(
   model = "{{model_rmd}}",
   year = {{year_rmd}})
 
-names(projTimeEnvs_{{spAbr}}) <- paste0('bio', c(paste0('0',1:9), 10:19))
+names(projEnvs_{{spAbr}}) <- paste0('bio', c(paste0('0',1:9), 10:19))
 # Select variables for projecting to match variables used for modelling 
-projTimeEnvs_{{spAbr}} <- projTimeEnvs_{{spAbr}}[[names(bgMask_{{spAbr}})]]
+projTimeEnvs_{{spAbr}} <- projEnvs_{{spAbr}}[[names(bgMask_{{spAbr}})]]
 
 # Generate the projection area according to the drawn polygon in the GUI
 proj_draw_{{spAbr}} <-proj_draw(
@@ -134,7 +140,7 @@ proj_draw_{{spAbr}} <-proj_draw(
 proj_time_{{spAbr}} <-proj_time(
   evalOut = model_{{spAbr}},
   curModel = "{{curModel_rmd}}",
-  envs = projTimeEnvs_{{spAbr}},
+  envs = projEnvs_{{spAbr}},
   pjExt = proj_draw_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
@@ -143,6 +149,8 @@ proj_time_{{spAbr}} <-proj_time(
 
 # Add threshold if specified 
 proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime < {{threshold_rmd}}
+#store the cropped projection variables
+projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 
 ```
 
@@ -162,10 +170,10 @@ projTimeEnvs_{{spAbr}} <- raster::getData(
   model = "{{model_rmd}}",
   year = {{year_rmd}})
 
-names(projTimeEnvs_{{spAbr}}) <- paste0('bio', c(paste0('0',1:9), 10:19))
+names(projEnvs_{{spAbr}}) <- paste0('bio', c(paste0('0',1:9), 10:19))
 
 # Select variables for projecting to match variables used for modelling 
-projTimeEnvs_{{spAbr}} <- projTimeEnvs_{{spAbr}}[[names(bgMask_{{spAbr}})]]
+projTimeEnvs_{{spAbr}} <- projEnvs_{{spAbr}}[[names(bgMask_{{spAbr}})]]
 
 # Generate the projection area based on user provided files
   ##User must input the path to shapefile or csv file and the file name 
@@ -179,12 +187,14 @@ proj_userExt_{{spAbr}} <- proj_userExtent(
 proj_time_{{spAbr}} <-proj_time(
   evalOut = model_{{spAbr}},
   curModel = "{{curModel_rmd}}",
-  envs = projTimeEnvs_{{spAbr}},
+  envs = projEnvs_{{spAbr}},
   pjExt = proj_userExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
   clamp = {{clamp_rmd}},
   spN = "{{spName}}") 
+#store the cropped projection variables
+ projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 
 ```
 
@@ -204,10 +214,10 @@ projTimeEnvs_{{spAbr}} <- raster::getData(
   model = "{{model_rmd}}",
   year = {{year_rmd}})
 
-names(projTimeEnvs_{{spAbr}}) <- paste0('bio', c(paste0('0',1:9), 10:19))
+names(projEnvs_{{spAbr}}) <- paste0('bio', c(paste0('0',1:9), 10:19))
 
 # Select variables for projecting to match variables used for modelling 
-projTimeEnvs_{{spAbr}} <- projTimeEnvs_{{spAbr}}[[names(bgMask_{{spAbr}})]]
+projTimeEnvs_{{spAbr}} <- projEnvs_{{spAbr}}[[names(bgMask_{{spAbr}})]]
 
 # Generate the projection area based on user provided files
   ##User must input the path to shapefile or csv file and the file name 
@@ -221,7 +231,7 @@ proj_userExt_{{spAbr}} <- proj_userExtent(
 proj_time_{{spAbr}} <-proj_time(
   evalOut = model_{{spAbr}},
   curModel = "{{curModel_rmd}}",
-  envs = projTimeEnvs_{{spAbr}},
+  envs = projEnvs_{{spAbr}},
   pjExt = proj_userExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
@@ -229,6 +239,8 @@ proj_time_{{spAbr}} <-proj_time(
   spN = "{{spName}}") 
 # Add threshold if specified 
 proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime < {{threshold_rmd}}
+#store the cropped projection variables
+ projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 
 ```
 
@@ -255,6 +267,8 @@ proj_time_{{spAbr}} <-proj_time(
   outputType = "{{outputType_rmd}}",
   clamp = {{clamp_rmd}},
   spN = "{{spName}}") 
+#store the cropped projection variables
+ projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 
 ```
 
@@ -282,6 +296,8 @@ proj_time_{{spAbr}} <-proj_time(
   spN = "{{spName}}") 
 # Add threshold if specified 
 proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime < {{threshold_rmd}}
+#store the cropped projection variables
+ projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 
 ```
 
@@ -309,12 +325,14 @@ proj_draw_{{spAbr}} <-proj_draw(
 proj_time_{{spAbr}} <-proj_time(
   evalOut = model_{{spAbr}},
   curModel = "{{curModel_rmd}}",
-  envs = projTimeEnvs_{{spAbr}},
+  envs = projEnvs_{{spAbr}},
   pjExt = proj_draw_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
   clamp = {{clamp_rmd}},
   spN = "{{spName}}") 
+#store the cropped projection variables
+ projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 
 ```
 
@@ -342,7 +360,7 @@ proj_draw_{{spAbr}} <-proj_draw(
 proj_time_{{spAbr}} <-proj_time(
   evalOut = model_{{spAbr}},
   curModel = "{{curModel_rmd}}",
-  envs = projTimeEnvs_{{spAbr}},
+  envs = projEnvs_{{spAbr}},
   pjExt = proj_draw_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
@@ -351,6 +369,8 @@ proj_time_{{spAbr}} <-proj_time(
 
 # Add threshold if specified 
 proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime < {{threshold_rmd}}
+#store the cropped projection variables
+ projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 
 ```
 
@@ -378,13 +398,15 @@ proj_userExt_{{spAbr}} <- proj_userExtent(
 proj_time_{{spAbr}} <-proj_time(
   evalOut = model_{{spAbr}},
   curModel = "{{curModel_rmd}}",
-  envs = projTimeEnvs_{{spAbr}},
+  envs = projEnvs_{{spAbr}},
   pjExt = proj_userExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
   clamp = {{clamp_rmd}},
   spN = "{{spName}}") 
 
+#store the cropped projection variables
+ projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 ```
 
 ```{asis, echo = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit &  proj_time_threshold_knit & !proj_time_worldclim_knit}}, eval = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit &  proj_time_threshold_knit & !proj_time_worldclim_knit}}, include = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit & proj_time_threshold_knit & !proj_time_worldclim_knit}}}
@@ -412,7 +434,7 @@ proj_userExt_{{spAbr}} <- proj_userExtent(
 proj_time_{{spAbr}} <-proj_time(
   evalOut = model_{{spAbr}},
   curModel = "{{curModel_rmd}}",
-  envs = projTimeEnvs_{{spAbr}},
+  envs = projEnvs_{{spAbr}},
   pjExt = proj_userExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
@@ -420,5 +442,7 @@ proj_time_{{spAbr}} <-proj_time(
   spN = "{{spName}}") 
 # Add threshold if specified 
 proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime < {{threshold_rmd}}
+#store the cropped projection variables
+ projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 
 ```
