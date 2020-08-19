@@ -1,7 +1,15 @@
 ```{asis, echo = {{vis_maxentEvalPlot_knit}}, eval = {{vis_maxentEvalPlot_knit}}, include = {{vis_maxentEvalPlot_knit}}}
-Description of what the code will do 
+### Visualize
+Generate a Maxent evaluation plot using "{{evalPlot_rmd}}" as evaluation statistic.
 ```
 
 ```{r, echo = {{vis_maxentEvalPlot_knit}}, include = {{vis_maxentEvalPlot_knit}}}
-# R code to run 
+# Generate an evaluation plot
+   maxentEvalPlot_{{spAbr}} <- ENMeval::evalplot.stats(
+     model_{{spAbr}},
+     "{{evalPlot_rmd}}",
+     "rm",
+     "fc")
+#plot
+maxentEvalPlot_Dl
 ```

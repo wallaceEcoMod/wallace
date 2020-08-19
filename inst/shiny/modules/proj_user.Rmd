@@ -23,7 +23,7 @@ proj_userEnvs_{{spAbr}} <- proj_userEnvs(
  projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
 ```
 
-```{asis, echo = {{proj_user_knit & proj_user_threshold_knit & !proj_user_user_knit & !proj_user_drawn_knit}}, eval = {{proj_user_knit & proj_user_threshold_knit & !proj_user_user_knit & !proj_user_drawn_knit}}, include = {{proj_user_knit & proj_user_threshold_knit & !proj_user_user_knit & !proj_user_drawn_knit}}
+```{asis, echo = {{proj_user_knit & proj_user_threshold_knit & !proj_user_user_knit & !proj_user_drawn_knit}}, eval = {{proj_user_knit & proj_user_threshold_knit & !proj_user_user_knit & !proj_user_drawn_knit}}, include = {{proj_user_knit & proj_user_threshold_knit & !proj_user_user_knit & !proj_user_drawn_knit}}}
 ### Project model
 Projecting the model to the same modelling area with a "{{thresholdRule_rmd}}" threshold rule of {{threshold_rmd}}. Environmental layers for projecting are user provided.
 ```

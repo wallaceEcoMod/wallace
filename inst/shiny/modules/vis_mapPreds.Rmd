@@ -1,4 +1,5 @@
 ```{asis, echo = {{vis_mapPreds_knit}}, eval = {{vis_mapPreds_knit}}, include = {{vis_mapPreds_knit}}}
+### Visualize
 Description of what the code will do 
 ```
 
