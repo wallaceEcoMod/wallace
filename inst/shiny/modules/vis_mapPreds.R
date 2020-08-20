@@ -32,6 +32,7 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
   bgMask <- common$bgMask
   occs <- common$occs
   logger <- common$logger
+  bgShpXY <- common$bgShpXY
 
   output$maxentPredType <- renderUI({
     ns <- session$ns
@@ -168,8 +169,9 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
     }
     spp[[curSp()]]$visualization$mapPred <- predSel.thr
     spp[[curSp()]]$visualization$mapPredVals <- getRasterVals(predSel.thr, predType)
-
     # METADATA ####
+    spp[[curSp()]]$rmd$vis$curModel <- curModel()
+    spp[[curSp()]]$rmm$prediction$Type <- predType
     spp[[curSp()]]$rmm$prediction$binary$thresholdRule <- input$threshold
     if(input$threshold != 'none') {
       spp[[curSp()]]$rmm$prediction$binary$thresholdSet <- thr.sel
@@ -212,7 +214,7 @@ vis_mapPreds_module_map <- function(map, common) {
   req(mapPred())
   mapPredVals <- spp[[curSp()]]$visualization$mapPredVals
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-  # if no threshold specified
+  # if threshold specified
   if (rmm()$prediction$binary$thresholdRule != 'none') {
     rasPal <- c('gray', 'blue')
     map %>% clearAll() %>%
@@ -221,7 +223,7 @@ vis_mapPreds_module_map <- function(map, common) {
                 labels = c("predicted absence", "predicted presence"),
                 opacity = 1, layerId = "train")
   } else {
-    # if threshold specified
+    # if no threshold specified
     legendPal <- colorNumeric(rev(rasCols), mapPredVals, na.color = 'transparent')
     rasPal <- colorNumeric(rasCols, mapPredVals, na.color = 'transparent')
     map %>% clearAll() %>%
@@ -242,10 +244,22 @@ vis_mapPreds_module_map <- function(map, common) {
 vis_mapPreds_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    vis_mapPreds_knit = FALSE
-    # vis_mapPreds_knit = species$rmm$code$wallace$someFlag,
-    # var1 = species$rmm$code$wallace$someSetting1,
-    # var2 = species$rmm$code$wallace$someSetting2
+    vis_mapPreds_knit = !is.null(species$visualization$mapPred),
+    vis_map_threshold_knit = !is.null(species$rmm$prediction$binary$thresholdSet),
+    vis_map_maxnet_knit = if(!is.null(species$rmm$model$algorithms)){
+      species$rmm$model$algorithms == "maxnet"} else {FALSE},
+    vis_map_maxent_knit = if(!is.null(species$rmm$model$algorithms)){
+      species$rmm$model$algorithms == "maxent.jar"} else {FALSE},
+    vis_map_bioclim_knit = if(!is.null(species$rmm$model$algorithms)){
+      species$rmm$model$algorithms == "BIOCLIM"} else {FALSE},
+    alg_rmd = if(!is.null(species$rmm$model$algorithms)){species$rmm$model$algorithms} else {NULL},
+    curModel_rmd = if(!is.null(species$rmd$vis$curModel)){species$rmd$vis$curModel} else {NULL},
+    clamp_rmd =  species$rmm$model$algorithm$maxent$clamping,
+    predType_rmd = species$rmm$prediction$Type,
+    threshold_rmd = if (!is.null(species$rmm$prediction$binary$thresholdSet)){
+      species$rmm$prediction$binary$thresholdSet} else {0},
+    thresholdRule_rmd = species$rmm$prediction$binary$thresholdRule
+
   )
 }
 

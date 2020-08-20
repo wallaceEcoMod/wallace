@@ -70,10 +70,11 @@ vis_bioclimPlot_module_result <- function(id) {
 vis_bioclimPlot_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    vis_bioclimPlot_knit = FALSE
-    # vis_bioclimPlot_knit = species$rmm$code$wallace$someFlag,
-    # var1 = species$rmm$code$wallace$someSetting1,
-    # var2 = species$rmm$code$wallace$someSetting2
+    vis_bioclimPlot_knit = !is.null( species$rmm$code$wallace$bcPlotSettings),
+    a_rmd = unlist(species$rmm$code$wallace$bcPlotSettings)[1],
+    b_rmd = unlist(species$rmm$code$wallace$bcPlotSettings)[2],
+    p_rmd = unlist(species$rmm$code$wallace$bcPlotSettings)[3]
+
   )
 }
 

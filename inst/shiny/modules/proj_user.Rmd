@@ -1,7 +1,184 @@
-```{asis, echo = {{proj_user_knit}}, eval = {{proj_user_knit}}, include = {{proj_user_knit}}}
-Description of what the code will do 
+```{asis, echo = {{proj_user_knit & !proj_user_user_knit & !proj_user_drawn_knit}}, eval = {{proj_user_knit & !proj_user_user_knit & !proj_user_drawn_knit}}, include = {{proj_user_knit & !proj_user_user_knit & !proj_user_drawn_knit}}}
+### Project model
+Projecting the model to the same modelling area with no threshold rule. Environmental layers for projecting are user provided.
 ```
 
-```{r, echo = {{proj_user_knit}}, include = {{proj_user_knit}}}
-# R code to run 
+```{r, echo = {{proj_user_knit & !proj_user_user_knit & !proj_user_drawn_knit}}, include = {{proj_user_knit & !proj_user_user_knit & !proj_user_drawn_knit}}}
+# Load user environmental variables
+projUserEnvs_{{spAbr}}  <- envs_userEnvs(
+  rasPath = ,#"Add full path to rasters as list e.g: Path <- list.files(path='./Projectionrasters/', pattern = ".tif",full.names = TRUE)",
+  rasName = # Add names of rasters to input e.g: Name <- list.files(path='./Projectionrasters/', pattern = ".tif", full.names = FALSE) They must match the names of the variables used for modelling
+    )
+# Project model 
+proj_userEnvs_{{spAbr}} <- proj_userEnvs(
+  evalOut = model_{{spAbr}},
+  curModel= "{{curModel_rmd}}",
+  envs = projUserEnvs_{{spAbr}} ,
+  pjExt = bgExt_{{spAbr}},
+  alg = "{{alg_rmd}}",
+  outputType = "{{outputType_rmd}}",
+  clamp = {{clamp_rmd}},
+  spN ="{{spName}}")
+#store the cropped projection variables
+ projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
 ```
+
+```{asis, echo = {{proj_user_knit & proj_user_threshold_knit & !proj_user_user_knit & !proj_user_drawn_knit}}, eval = {{proj_user_knit & proj_user_threshold_knit & !proj_user_user_knit & !proj_user_drawn_knit}}, include = {{proj_user_knit & proj_user_threshold_knit & !proj_user_user_knit & !proj_user_drawn_knit}}}
+### Project model
+Projecting the model to the same modelling area with a "{{thresholdRule_rmd}}" threshold rule of {{threshold_rmd}}. Environmental layers for projecting are user provided.
+```
+
+```{r, echo = {{proj_user_knit & proj_user_threshold_knit & !proj_user_user_knit & !proj_user_drawn_knit}}, include = {{proj_user_knit & proj_user_threshold_knit & !proj_user_user_knit & !proj_user_drawn_knit}}}
+# Load user environmental variables
+projUserEnvs_{{spAbr}}  <- envs_userEnvs(
+  rasPath = ,#"Add full path to rasters as list e.g: Path <- list.files(path='./Projectionrasters/', pattern = ".tif",full.names = TRUE)",
+  rasName = # Add names of rasters to input e.g: Name <- list.files(path='./Projectionrasters/', pattern = ".tif", full.names = FALSE) They must match the names of the variables used for modelling
+    )
+# Project model 
+proj_userEnvs_{{spAbr}} <- proj_userEnvs(
+  evalOut = model_{{spAbr}},
+  curModel= "{{curModel_rmd}}",
+  envs = projUserEnvs_{{spAbr}} ,
+  pjExt = bgExt_{{spAbr}},
+  alg = "{{alg_rmd}}",
+  outputType = "{{outputType_rmd}}",
+  clamp = {{clamp_rmd}},
+  spN ="{{spName}}")
+
+# Add threshold if specified 
+proj_userEnvs_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projUser < {{threshold_rmd}}
+#store the cropped projection variables
+ projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
+```
+
+```{asis, echo = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit}}, eval = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit}}, include = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit }}}
+### Project model
+Projecting the model to a user drawn area with no threshold rule. Environmental layers for projecting are user provided.
+```
+
+```{r, echo = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit}}, include = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit}}}
+# Load user environmental variables
+projUserEnvs_{{spAbr}}  <- envs_userEnvs(
+  rasPath = ,#"Add full path to rasters as list e.g: Path <- list.files(path='./Projectionrasters/', pattern = ".tif",full.names = TRUE)",
+  rasName = # Add names of rasters to input e.g: Name <- list.files(path='./Projectionrasters/', pattern = ".tif", full.names = FALSE) They must match the names of the variables used for modelling
+    )
+# Generate the projection area according to the drawn polygon in the GUI
+proj_draw_{{spAbr}} <-proj_draw(
+  polyPjXY = matrix({{polyPjXY_rmd}},ncol=2,byrow=FALSE),
+  polyPjID = {{polyPjID_rmd}},
+  drawPjBuf = {{BgBuf_rmd}},
+  spN = "{{spName}}")
+# Project model 
+proj_userEnvs_{{spAbr}} <- proj_userEnvs(
+  evalOut = model_{{spAbr}},
+  curModel= "{{curModel_rmd}}",
+  envs = projUserEnvs_{{spAbr}} ,
+  pjExt = proj_draw_{{spAbr}},
+  alg = "{{alg_rmd}}",
+  outputType = "{{outputType_rmd}}",
+  clamp = {{clamp_rmd}},
+  spN ="{{spName}}")
+#store the cropped projection variables
+ projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
+```
+
+```{asis, echo = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit & proj_user_threshold_knit}}, eval = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit & proj_user_threshold_knit}}, include = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit & proj_user_threshold_knit }}}
+### Project model
+Projecting the model to a user drawn area with a "{{thresholdRule_rmd}}" threshold rule of {{threshold_rmd}}. Environmental layers for projecting are user provided.
+```
+
+```{r, echo = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit & proj_user_threshold_knit}}, include = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit & proj_user_threshold_knit}}}
+# Load user environmental variables
+projUserEnvs_{{spAbr}}  <- envs_userEnvs(
+  rasPath = ,#"Add full path to rasters as list e.g: Path <- list.files(path='./Projectionrasters/', pattern = ".tif",full.names = TRUE)",
+  rasName = # Add names of rasters to input e.g: Name <- list.files(path='./Projectionrasters/', pattern = ".tif", full.names = FALSE) They must match the names of the variables used for modelling
+    )
+# Generate the projection area according to the drawn polygon in the GUI
+proj_draw_{{spAbr}} <-proj_draw(
+  polyPjXY = matrix({{polyPjXY_rmd}},ncol=2,byrow=FALSE),
+  polyPjID = {{polyPjID_rmd}},
+  drawPjBuf = {{BgBuf_rmd}},
+  spN = "{{spName}}")
+# Project model 
+proj_userEnvs_{{spAbr}} <- proj_userEnvs(
+  evalOut = model_{{spAbr}},
+  curModel= "{{curModel_rmd}}",
+  envs = projUserEnvs_{{spAbr}} ,
+  pjExt = proj_draw_{{spAbr}},
+  alg = "{{alg_rmd}}",
+  outputType = "{{outputType_rmd}}",
+  clamp = {{clamp_rmd}},
+  spN ="{{spName}}")
+# Add threshold if specified 
+proj_userEnvs_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projUser < {{threshold_rmd}}
+#store the cropped projection variables
+ projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
+```
+
+```{asis, echo = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit}}, eval = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit}}, include = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit }}}
+### Project model
+Projecting the model to a user provided area with no threshold rule. Environmental layers for projecting are user provided.
+```
+
+```{r, echo = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit}}, include = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit}}}
+# Load user environmental variables
+projUserEnvs_{{spAbr}}  <- envs_userEnvs(
+  rasPath = ,#"Add full path to rasters as list e.g: Path <- list.files(path='./Projectionrasters/', pattern = ".tif",full.names = TRUE)",
+  rasName = # Add names of rasters to input e.g: Name <- list.files(path='./Projectionrasters/', pattern = ".tif", full.names = FALSE) They must match the names of the variables used for modelling
+    )
+
+# Generate the projection area based on user provided files
+  ##User must input the path to shapefile or csv file and the file name 
+proj_userExt_{{spAbr}} <- proj_userExtent(
+  bgShp_path = "Input path here",
+  bgShp_name = "Input file name here",
+  userBgBuf = {{BgBuf_rmd}},
+  spN = "{{spName}}")
+# Project model 
+proj_userEnvs_{{spAbr}} <- proj_userEnvs(
+  evalOut = model_{{spAbr}},
+  curModel= "{{curModel_rmd}}",
+  envs = projUserEnvs_{{spAbr}} ,
+  pjExt = proj_userExt_{{spAbr}},
+  alg = "{{alg_rmd}}",
+  outputType = "{{outputType_rmd}}",
+  clamp = {{clamp_rmd}},
+  spN ="{{spName}}")
+#store the cropped projection variables
+ projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
+```
+
+```{asis, echo = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit & proj_user_threshold_knit}}, eval = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit & proj_user_threshold_knit}}, include = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit & proj_user_threshold_knit }}}
+### Project model
+Projecting the model to a user provided area with a "{{thresholdRule_rmd}}" threshold rule of {{threshold_rmd}}. Environmental layers for projecting are user provided.
+```
+
+```{r, echo = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit & proj_user_threshold_knit}}, include = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit & proj_user_threshold_knit}}}
+# Load user environmental variables
+projUserEnvs_{{spAbr}}  <- envs_userEnvs(
+  rasPath = ,#"Add full path to rasters as list e.g: Path <- list.files(path='./Projectionrasters/', pattern = ".tif",full.names = TRUE)",
+  rasName = # Add names of rasters to input e.g: Name <- list.files(path='./Projectionrasters/', pattern = ".tif", full.names = FALSE) They must match the names of the variables used for modelling
+    )
+# Generate the projection area based on user provided files
+  ##User must input the path to shapefile or csv file and the file name 
+proj_userExt_{{spAbr}} <- proj_userExtent(
+  bgShp_path = "Input path here",
+  bgShp_name = "Input file name here",
+  userBgBuf = {{BgBuf_rmd}},
+  spN = "{{spName}}")
+# Project model 
+proj_userEnvs_{{spAbr}} <- proj_userEnvs(
+  evalOut = model_{{spAbr}},
+  curModel= "{{curModel_rmd}}",
+  envs = projUserEnvs_{{spAbr}} ,
+  pjExt = proj_userExt_{{spAbr}},
+  alg = "{{alg_rmd}}",
+  outputType = "{{outputType_rmd}}",
+  clamp = {{clamp_rmd}},
+  spN ="{{spName}}")
+# Add threshold if specified 
+proj_userEnvs_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projUser < {{threshold_rmd}}
+#store the cropped projection variables
+ projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
+```
+
