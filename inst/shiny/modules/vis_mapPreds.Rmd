@@ -45,6 +45,8 @@ Generate a map of the Bioclim generated model with a "{{thresholdRule_rmd}}" thr
 
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
 predSel_{{spAbr}} <- dismo::predict(m_{{spAbr}}, bgMask_{{spAbr}})
+# Applied selected threshold
+predSel_{{spAbr}} <- predSel_{{spAbr}} > {{threshold_rmd}}
 #Get values of prediction
 mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
 #Define colors and legend  
