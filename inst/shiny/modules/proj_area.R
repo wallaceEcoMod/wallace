@@ -204,8 +204,8 @@ proj_area_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$project$mapProjVals <- getRasterVals(projAreaThr, predType)
 
     # METADATA ####
-    spp[[curSp()]]$rmd$project$curModel <- curModel()
-    spp[[curSp()]]$rmd$project$area<-TRUE
+    spp[[curSp()]]$rmm$code$wallace$project_curModel <- curModel()
+    spp[[curSp()]]$rmm$code$wallace$project_area<-TRUE
     spp[[curSp()]]$rmm$data$transfer$environment1$minVal <-
       printVecAsis(raster::cellStats(projExt, min), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$maxVal <-
@@ -327,8 +327,8 @@ proj_area_module_map <- function(map, common) {
 proj_area_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    proj_area_knit = !is.null(species$rmd$project$area),
-    curModel_rmd = species$rmd$project$curModel,
+    proj_area_knit = !is.null(species$rmm$code$wallace$project_area),
+    curModel_rmd = species$rmm$code$wallace$project_curModel,
     outputType_rmd = species$rmm$prediction$notes,
     alg_rmd = species$rmm$model$algorithms,
     clamp_rmd = species$rmm$model$algorithm$maxent$clamping,

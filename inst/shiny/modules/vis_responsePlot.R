@@ -19,9 +19,9 @@ vis_responsePlot_module_server <- function(input, output, session, common) {
     req(curSp())
     req(curModel())
     #for rmd
-    spp[[curSp()]]$rmd$vis$responsePlot <- TRUE
+    spp[[curSp()]]$rmd$vis_responsePlot <- TRUE
     if (spp[[curSp()]]$rmm$model$algorithms == "maxnet"|spp[[curSp()]]$rmm$model$algorithms == "maxent.jar"){
-      spp[[curSp()]]$rmd$vis$curModel <- curModel()
+      spp[[curSp()]]$rmd$vis_curModel <- curModel()
     }
 
   })
@@ -74,11 +74,11 @@ vis_responsePlot_module_result <- function(id) {
 vis_responsePlot_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    vis_responsePlot_knit = !is.null(species$rmd$vis$responsePlot),
+    vis_responsePlot_knit = !is.null(species$rmd$vis_responsePlot),
     vis_maxnet_knit = if(!is.null(species$rmm$model$algorithms)){
       species$rmm$model$algorithms == "maxnet"} else {FALSE},
     alg_rmd = if(!is.null(species$rmm$model$algorithms)){species$rmm$model$algorithms} else {NULL},
-    curModel_rmd = if(!is.null(species$rmd$vis$curModel)){species$rmd$vis$curModel} else {NULL}
+    curModel_rmd = if(!is.null(species$rmd$vis_curModel)){species$rmd$vis_curModel} else {NULL}
   )
 }
 

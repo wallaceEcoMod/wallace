@@ -170,7 +170,7 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$visualization$mapPred <- predSel.thr
     spp[[curSp()]]$visualization$mapPredVals <- getRasterVals(predSel.thr, predType)
     # METADATA ####
-    spp[[curSp()]]$rmd$vis$curModel <- curModel()
+    spp[[curSp()]]$rmd$vis_curModel <- curModel()
     spp[[curSp()]]$rmm$prediction$Type <- predType
     spp[[curSp()]]$rmm$prediction$binary$thresholdRule <- input$threshold
     if(input$threshold != 'none') {
@@ -253,7 +253,7 @@ vis_mapPreds_module_rmd <- function(species) {
     vis_map_bioclim_knit = if(!is.null(species$rmm$model$algorithms)){
       species$rmm$model$algorithms == "BIOCLIM"} else {FALSE},
     alg_rmd = if(!is.null(species$rmm$model$algorithms)){species$rmm$model$algorithms} else {NULL},
-    curModel_rmd = if(!is.null(species$rmd$vis$curModel)){species$rmd$vis$curModel} else {NULL},
+    curModel_rmd = if(!is.null(species$rmd$vis_curModel)){species$rmd$vis_curModel} else {NULL},
     clamp_rmd =  species$rmm$model$algorithm$maxent$clamping,
     predType_rmd = species$rmm$prediction$Type,
     threshold_rmd = if (!is.null(species$rmm$prediction$binary$thresholdSet)){

@@ -70,7 +70,7 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
 
       # METADATA ####
       ##Record buffer size
-      spp[[sp]]$rmd$bgBuf <- input$drawBgBuf
+      spp[[sp]]$rmm$code$wallace$bgBuf <- input$drawBgBuf
       polyX <- printVecAsis(round(spp[[curSp()]]$polyExtXY[, 1], digits = 4))
       polyY <- printVecAsis(round(spp[[curSp()]]$polyExtXY[, 2], digits = 4))
       spp[[curSp()]]$rmm$code$wallace$drawExtPolyCoords <-
@@ -196,7 +196,7 @@ penvs_drawBgExtent_module_rmd <- function(species) {
     penvs_drawBgExtent_knit = !is.null(species$rmm$code$wallace$drawExtPolyCoords),
     polyExtXY_rmd = printVecAsis(species$polyExtXY),
     polyExtID_rmd =  species$polyExtID,
-    drawBgBuf_rmd = species$rmd$bgBuf,
+    drawBgBuf_rmd = species$rmm$code$wallace$bgBuf,
     bgPtsNum_rmd = species$rmm$data$occurrence$backgroundSampleSizeSet
 
   )

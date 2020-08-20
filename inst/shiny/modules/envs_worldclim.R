@@ -114,10 +114,10 @@ envs_worldclim_module_server <- function(input, output, session, common) {
       spp[[sp]]$rmm$data$environment$sources <- 'WorldClim 1.4'
       spp[[sp]]$rmm$data$environment$projection <- as.character(raster::crs(wcbc))
 
-      spp[[sp]]$rmd$wcRes <- input$wcRes
-      spp[[sp]]$rmd$bcSel <- bcSel()
-      spp[[sp]]$rmd$mapCntr <- mapCntr()
-      spp[[sp]]$rmd$wcBrick <- input$doBrick
+      spp[[sp]]$rmm$code$wallace$wcRes <- input$wcRes
+      spp[[sp]]$rmm$code$wallace$bcSel <- bcSel()
+      spp[[sp]]$rmm$code$wallace$mapCntr <- mapCntr()
+      spp[[sp]]$rmm$code$wallace$wcBrick <- input$doBrick
     }
 
     common$update_component(tab = "Results")
@@ -178,11 +178,11 @@ envs_worldclim_module_map <- function(map, common) {
 envs_worldclim_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    envs_worldclim_knit = !is.null(species$rmd$wcRes),
-    wcRes_rmd = species$rmd$wcRes,
-    bcSel_rmd = printVecAsis(species$rmd$bcSel),
-    mapCntr_rmd = printVecAsis(species$rmd$mapCntr),
-    wcBrick_rmd = species$rmd$wcBrick
+    envs_worldclim_knit = !is.null(species$rmm$code$wallace$wcRes),
+    wcRes_rmd = species$rmm$code$wallace$wcRes,
+    bcSel_rmd = printVecAsis(species$rmm$code$wallace$bcSel),
+    mapCntr_rmd = printVecAsis(species$rmm$code$wallace$mapCntr),
+    wcBrick_rmd = species$rmm$code$wallace$wcBrick
   )
 }
 

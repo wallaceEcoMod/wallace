@@ -287,7 +287,7 @@ proj_user_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$project$mapProjVals <- getRasterVals(projUserThr, predType)
 
     # METADATA ####
-    spp[[curSp()]]$rmd$project$user <-TRUE
+    spp[[curSp()]]$rmd$project_user <-TRUE
     spp[[curSp()]]$rmm$data$transfer$environment1$minVal <-
       printVecAsis(raster::cellStats(projExt, min), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$maxVal <-
@@ -404,8 +404,8 @@ proj_user_module_map <- function(map, common) {
 proj_user_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    proj_user_knit = !is.null(species$rmd$project$user),
-    curModel_rmd = species$rmd$project$curModel,
+    proj_user_knit = !is.null(species$rmd$project_user),
+    curModel_rmd = species$rmd$project_curModel,
     outputType_rmd = species$rmm$prediction$notes,
     alg_rmd = species$rmm$model$algorithms,
     clamp_rmd = species$rmm$model$algorithm$maxent$clamping,

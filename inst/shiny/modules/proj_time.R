@@ -376,8 +376,8 @@ proj_time_module_server <- function(input, output, session, common) {
     }
 
     # METADATA ####
-    spp[[curSp()]]$rmd$project$curModel <- curModel()
-    spp[[curSp()]]$rmd$project$time <- TRUE
+    spp[[curSp()]]$rmm$code$wallace$project_curModel <- curModel()
+    spp[[curSp()]]$rmm$code$wallace$project_time <- TRUE
     spp[[curSp()]]$rmm$data$transfer$environment1$minVal <-
       printVecAsis(raster::cellStats(projExt, min), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$maxVal <-
@@ -391,10 +391,10 @@ proj_time_module_server <- function(input, output, session, common) {
     if (input$selTimeVar == "worldclim") {
       projYr <- paste0('20', input$selTime)
       ###For RMD only
-      spp[[curSp()]]$rmd$data$transfer$environment1$worldclim <- TRUE
-      spp[[curSp()]]$rmd$data$transfer$environment1$GCM <- input$selGCM
-      spp[[curSp()]]$rmd$data$transfer$environment1$RCP <- input$selRCP
-      spp[[curSp()]]$rmd$data$transfer$environment1$Time <- input$selTime
+      spp[[curSp()]]$rmm$code$wallace$transfer_worldclim <- TRUE
+      spp[[curSp()]]$rmm$code$wallace$transfer_GCM <- input$selGCM
+      spp[[curSp()]]$rmm$code$wallace$transfer_RCP <- input$selRCP
+      spp[[curSp()]]$rmm$code$wallace$transfer_Time <- input$selTime
 
       spp[[curSp()]]$rmm$data$transfer$environment1$yearMin <- projYr
       spp[[curSp()]]$rmm$data$transfer$environment1$yearMax <- projYr
@@ -404,9 +404,9 @@ proj_time_module_server <- function(input, output, session, common) {
               GCMlookup[input$selGCM], "under RCP",
               as.numeric(input$selRCP)/10.0)
     } else if (input$selTimeVar == "ecoclimate") {
-      spp[[curSp()]]$rmd$data$transfer$environment1$ecoclimate <- TRUE
-      spp[[curSp()]]$rmd$data$transfer$environment1$AOGCM <- input$pjAOGCM
-      spp[[curSp()]]$rmd$data$transfer$environment1$Scenario <- input$pjScenario
+      spp[[curSp()]]$rmm$code$wallace$transfer_ecoclimate <- TRUE
+      spp[[curSp()]]$rmm$code$wallace$transfer_AOGCM <- input$pjAOGCM
+      spp[[curSp()]]$rmd$transfer_Scenario <- input$pjScenario
       spp[[curSp()]]$rmm$data$transfer$environment1$sources <- "ecoClimate"
       spp[[curSp()]]$rmm$data$transfer$environment1$notes <-
         paste("projection to", input$pjScenario, "for GCM", input$pjAOGCM)
@@ -538,8 +538,8 @@ proj_time_module_map <- function(map, common) {
 proj_time_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    proj_time_knit = !is.null(species$rmd$project$time),
-    curModel_rmd = species$rmd$project$curModel,
+    proj_time_knit = !is.null(species$rmd$project_time),
+    curModel_rmd = species$rmd$project_curModel,
     outputType_rmd = species$rmm$prediction$notes,
     alg_rmd = species$rmm$model$algorithms,
     clamp_rmd = species$rmm$model$algorithm$maxent$clamping,
@@ -566,17 +566,17 @@ proj_time_module_rmd <- function(species) {
     yearMin_rmd = species$rmm$data$transfer$environment1$yearMin,
     yearMax_rmd = species$rmm$data$transfer$environment1$yearMax,
     ###for getting the right environmental variables
-    proj_time_worldclim_knit = !is.null(species$rmd$data$transfer$environment1$worldclim),
-    model_rmd = if (!is.null(species$rmd$data$transfer$environment1$worldclim)){
-      species$rmd$data$transfer$environment1$GCM} else {NULL},
-    rcp_rmd = if (!is.null(species$rmd$data$transfer$environment1$worldclim)){
-      species$rmd$data$transfer$environment1$RCP} else {0},
-    year_rmd = if (!is.null(species$rmd$data$transfer$environment1$worldclim)){
-      species$rmd$data$transfer$environment1$Time} else {0},
-    pjAOGCM_rmd = if(!is.null(species$rmd$data$transfer$environment1$ecoclimate)){
-      species$rmd$data$transfer$environment1$AOGCM} else {NULL},
-    pjScenario_rmd = if(!is.null(species$rmd$data$transfer$environment1$ecoclimate)){
-      species$rmd$data$transfer$environment1$Scenario} else {NULL}
+    proj_time_worldclim_knit = !is.null(species$rmd$transfer_worldclim),
+    model_rmd = if (!is.null(species$rmd$transfer_worldclim)){
+      species$rmd$transfer_GCM} else {NULL},
+    rcp_rmd = if (!is.null(species$rmd$transfer_worldclim)){
+      species$rmd$transfer_RCP} else {0},
+    year_rmd = if (!is.null(species$rmd$transfer_worldclim)){
+      species$rmd$transfer_Time} else {0},
+    pjAOGCM_rmd = if(!is.null(species$rmd$transfer_ecoclimate)){
+      species$rmd$transfer_AOGCM} else {NULL},
+    pjScenario_rmd = if(!is.null(species$rmd$transfer_ecoclimate)){
+      species$rmd$transfer_Scenario} else {NULL}
   )
 }
 

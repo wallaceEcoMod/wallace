@@ -51,7 +51,7 @@ part_nonSpat_module_server <- function(input, output, session, common) {
       spp[[sp]]$bg$partition <- group.data$bg.grp
 
       # METADATA ####
-      spp[[sp]]$rmd$partition$code <- input$partNspSel
+      spp[[sp]]$rmm$code$wallace$partition_code <- input$partNspSel
       spp[[sp]]$rmm$model$partition$NonSpatial <- 'Non-spatial'
       if(input$partNspSel == 'jack') {
         spp[[sp]]$rmm$model$partition$numberFolds <- nrow(spp[[sp]]$occs)
@@ -108,7 +108,7 @@ part_nonSpat_module_rmd <- function(species) {
     part_nonSpat_knit =  !is.null(species$rmm$model$partition$NonSpatial),
     k_folds_rmd = species$rmm$model$partition$numberFolds,
     method_rmd = species$rmm$model$partition$partitionRule,
-    method_code_rmd = species$rmd$partition$code
+    method_code_rmd = species$rmm$code$wallace$partition_code
   )
 }
 
