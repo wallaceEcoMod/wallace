@@ -257,7 +257,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
                     uncertainty = as.numeric(uncertainty)) %>%
       # # make new column for leaflet marker popup content
       dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent))) %>%
-      dplyr::arrange(cols)
+      dplyr::arrange_(cols)
 
     # subset by key columns and make id and popup columns
     noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
