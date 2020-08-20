@@ -1,7 +1,15 @@
 ```{asis, echo = {{proj_mess_knit}}, eval = {{proj_mess_knit}}, include = {{proj_mess_knit}}}
-Description of what the code will do
+Generate a MESS map for the projection variables given the variables used for modelling
 ```
 
 ```{r, echo = {{proj_mess_knit}}, include = {{proj_mess_knit}}}
-# R code to run 
+# R code to generate MESS raster
+projMess_{{spAbr}} <- proj_mess(
+  occs = occs_{{spAbr}},
+  bg = bgEnvsVals_{{spAbr}} ,
+  bgMsk =  bgMask_{{spAbr}},
+  projExtRas =  projExt_{{spAbr}} ,
+  time = "{{time_rmd}}",
+  spN ="{{spName}}")
+
 ```

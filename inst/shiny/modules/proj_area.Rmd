@@ -10,17 +10,20 @@ proj_draw_{{spAbr}} <-proj_draw(
   polyPjID = {{polyPjID_rmd}},
   drawPjBuf = {{BgBuf_rmd}},
   spN = "{{spName}}")
-
+# Create object of projection variables
+projAreaEnvs_{{spAbr}} <- envs_{{spAbr}}
 # Generate a projection of the model to the desired area
 proj_area_{{spAbr}} <- proj_area(
   evalOut = model_{{spAbr}},
   curModel = "{{curModel_rmd}}",
-  envs = envs_{{spAbr}} , 
+  envs = projAreaEnvs_{{spAbr}} , 
   outputType = "{{outputType_rmd}}",
   alg = "{{alg_rmd}}",
   clamp = {{clamp_rmd}},
   pjExt = proj_draw_{{spAbr}},
   spN = "{{spName}}") 
+#store the cropped projection variables
+ projExt_{{spAbr}} <- proj_area_{{spAbr}}$projExt
 
 ```
 
@@ -36,12 +39,13 @@ proj_draw_{{spAbr}} <-proj_draw(
   polyPjID = {{polyPjID_rmd}},
   drawPjBuf = {{BgBuf_rmd}},
   spN = "{{spName}}")
-
+# Create object of projection variables
+projAreaEnvs_{{spAbr}} <- envs_{{spAbr}}
 # Generate a projection of the model to the desired area
 proj_area_{{spAbr}} <- proj_area(
   evalOut = model_{{spAbr}},
   curModel = "{{curModel_rmd}}",
-  envs = envs_{{spAbr}} , 
+  envs = projAreaEnvs_{{spAbr}} , 
   outputType = "{{outputType_rmd}}",
   alg = "{{alg_rmd}}",
   clamp = {{clamp_rmd}},
@@ -49,7 +53,9 @@ proj_area_{{spAbr}} <- proj_area(
   spN = "{{spName}}") 
 
 # Add threshold if specified 
-proj_area_{{spAbr}} <- proj_area_{{spAbr}} < {{threshold_rmd}}
+proj_area_{{spAbr}} <- proj_area_{{spAbr}}$projArea > {{threshold_rmd}}
+#store the cropped projection variables
+ projExt_{{spAbr}} <- proj_area_{{spAbr}}$projExt
 ```
 
 ```{asis, echo = {{proj_area_knit & proj_area_extent_knit}} , eval = {{proj_area_knit & proj_area_extent_knit }}, include = {{proj_area_knit & proj_area_extent_knit}}}
@@ -66,16 +72,20 @@ proj_userExt_{{spAbr}} <- proj_userExtent(
   userBgBuf = {{BgBuf_rmd}},
   spN = "{{spName}}")
 
+# Create object of projection variables
+projAreaEnvs_{{spAbr}} <- envs_{{spAbr}}
 # Generate a projection of the model to the desired area
 proj_area_{{spAbr}} <- proj_area(
   evalOut = model_{{spAbr}},
   curModel = "{{curModel_rmd}}",
-  envs = envs_{{spAbr}} , 
+  envs = projAreaEnvs_{{spAbr}} , 
   outputType = "{{outputType_rmd}}",
   alg = "{{alg_rmd}}",
   clamp = {{clamp_rmd}},
   pjExt = proj_userExt_{{spAbr}},
   spN = "{{spName}}") 
+#store the cropped projection variables
+ projExt_{{spAbr}} <- proj_area_{{spAbr}}$projExt
 
 ```
 
@@ -92,12 +102,13 @@ proj_userExt_{{spAbr}} <- proj_userExtent(
   bgShp_name = "Input file name here",
   userBgBuf = {{BgBuf_rmd}},
   spN = "{{spName}}")
-
+# Create object of projection variables
+projAreaEnvs_{{spAbr}} <- envs_{{spAbr}}
 # Generate a projection of the model to the desired area
 proj_area_{{spAbr}} <- proj_area(
   evalOut = model_{{spAbr}},
   curModel = "{{curModel_rmd}}",
-  envs = envs_{{spAbr}} , 
+  envs = projAreaEnvs_{{spAbr}} , 
   outputType = "{{outputType_rmd}}",
   alg = "{{alg_rmd}}",
   clamp = {{clamp_rmd}},
@@ -105,5 +116,7 @@ proj_area_{{spAbr}} <- proj_area(
   spN = "{{spName}}") 
 
 # Add threshold if specified 
-proj_area_{{spAbr}} <- proj_area_{{spAbr}} < {{threshold_rmd}}
+proj_area_{{spAbr}} <- proj_area_{{spAbr}}$projArea > {{threshold_rmd}}
+#store the cropped projection variables
+ projExt_{{spAbr}} <- proj_area_{{spAbr}}$projExt
 ```
