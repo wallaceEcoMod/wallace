@@ -116,10 +116,10 @@ espace_nicheOv_module_result <- function(id) {
 espace_nicheOv_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    espace_nicheOv_knit = !is.null(species$nicheOv)
-    # espace_nicheOv_knit = species$rmm$code$wallace$someFlag,
-    # var1 = species$rmm$code$wallace$someSetting1,
-    # var2 = species$rmm$code$wallace$someSetting2
+    espace_nicheOv_knit = !is.null(species$nicheOv),
+    simil_rmd = if(!is.null(species$nicheOv$simil)){TRUE},
+    equiv_rmd = if (!is.null(species$nicheOv$equiv)){TRUE}
+
   )
 }
 

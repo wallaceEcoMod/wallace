@@ -1,17 +1,16 @@
 ```{asis, echo = {{espace_pca_knit}}, eval = {{espace_pca_knit}}, include = {{espace_pca_knit}}}
-Note this is a multispecies component and thus require you to run components 1-4 for all species to be included in the analysis before running this part. Performing a principal component analysis to reduce dimensionality of environmental space for  *`r "{{spName1}}"`* y *`r "{{spName2}}"`*
+### Environmental space 
+Performing a principal component analysis to reduce dimensionality of environmental space for  *`r "{{spName1}}"`* & *`r "{{spName2}}"`*
 ```
 
 ```{r, echo = {{espace_pca_knit}}, include = {{espace_pca_knit}}}
-# Abreviaturas
-pcaPrueba_{{multAbr}} <- occsPrueba_{{spAbr1}} + bgPrueba{{spAbr2}}
+#Run the pca
+espace_pca_{{multAbr}} <- espace_pca(
+  sp.name1 = "{{spName1}}",
+  sp.name2 = "{{spName2}}", 
+  occs.z1 = occs_{{spAbr1}},
+  occs.z2 = occs_{{spAbr2}},
+  bgPts.z1 = bgEnvsVals_{{spAbr1}},
+  bgPts.z2 = bgEnvsVals_{{spAbr2}})
 
-# Nombres a los cuales tienes acceso
-multAbr = {{multAbr}}
-sp1 = {{sp1}}
-sp2 = {{sp2}}
-spAbr1 = {{spAbr1}}
-spAbr2 = {{spAbr2}}
-spName1 = "{{spName1}}"
-spName2 = "{{spName2}}"
 ```

@@ -1,17 +1,15 @@
 ```{asis, echo = {{espace_nicheOv_knit}}, eval = {{espace_nicheOv_knit}}, include = {{espace_nicheOv_knit}}}
-NicheOv: *`r "{{spName1}}"`* y *`r "{{spName2}}"`*
+### Environmental space 
+Evaluating niche overlap between *`r "{{spName1}}"`* & *`r "{{spName2}}"`* for which the occurrence density grid was computed. Running equivalence test ({{equiv_rmd}}) and similarity test {{simil_rmd}}
+
 ```
 
 ```{r, echo = {{espace_nicheOv_knit}}, include = {{espace_nicheOv_knit}}}
-# Abreviaturas
-NicheOvPrueba_{{multAbr}} <- occsPrueba_{{spAbr1}} + bgPrueba{{spAbr2}}
-
-# Nombres a los cuales tienes acceso
-multAbr = {{multAbr}}
-sp1 = {{sp1}}
-sp2 = {{sp2}}
-spAbr1 = {{spAbr1}}
-spAbr2 = {{spAbr2}}
-spName1 = "{{spName1}}"
-spName2 = "{{spName2}}"
+##Run tests 
+espace_nicheOv_{{multAbr}} <- espace_nicheOv(
+  z1 = espace_occDens_{{multAbr}}[[sp1]],
+  z2 = espace_occDens_{{multAbr}}[[sp2]],
+  iter = 100,
+  equivalency = {{equiv_rmd}},
+   similarity = {{simil_rmd}}) 
 ```

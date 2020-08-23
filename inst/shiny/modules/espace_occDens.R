@@ -77,9 +77,7 @@ espace_occDens_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
     espace_occDens_knit = !is.null(species$occDens)
-    # espace_occDens_knit = species$rmm$code$wallace$someFlag,
-    # var1 = species$rmm$code$wallace$someSetting1,
-    # var2 = species$rmm$code$wallace$someSetting2
+
   )
 }
 

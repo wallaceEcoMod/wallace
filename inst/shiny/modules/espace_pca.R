@@ -195,7 +195,5 @@ espace_pca_module_rmd <- function(species) {
   #      pcaSel = printVecAsis(spp[[sp]]$rmm$wallace$pcaSel))
   list(
     espace_pca_knit = !is.null(species$pca)
-    # var1 = species$rmm$code$wallace$someSetting1,
-    # var2 = species$rmm$code$wallace$someSetting2
   )
 }
