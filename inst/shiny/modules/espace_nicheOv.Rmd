@@ -7,8 +7,8 @@ Evaluating niche overlap between *`r "{{spName1}}"`* & *`r "{{spName2}}"`* for w
 ```{r, echo = {{espace_nicheOv_knit}}, include = {{espace_nicheOv_knit}}}
 ##Run tests 
 espace_nicheOv_{{multAbr}} <- espace_nicheOv(
-  z1 = espace_occDens_{{multAbr}}[[sp1]],
-  z2 = espace_occDens_{{multAbr}}[[sp2]],
+  z1 = espace_occDens_{{multAbr}}[["{{spName1}}"]],
+  z2 = espace_occDens_{{multAbr}}[["{{spName1}}"]],
   iter = 100,
   equivalency = {{equiv_rmd}},
    similarity = {{simil_rmd}}) 

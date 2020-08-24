@@ -4,13 +4,15 @@ Performing a principal component analysis to reduce dimensionality of environmen
 ```
 
 ```{r, echo = {{espace_pca_knit}}, include = {{espace_pca_knit}}}
+#Determine the variables to use
+pcaSel_{{multAbr}} <- regmatches("{{pcaSel_rmd}}", gregexpr(".{5}", "{{pcaSel_rmd}}"))[[1]]
 #Run the pca
 espace_pca_{{multAbr}} <- espace_pca(
   sp.name1 = "{{spName1}}",
   sp.name2 = "{{spName2}}", 
-  occs.z1 = occs_{{spAbr1}},
-  occs.z2 = occs_{{spAbr2}},
-  bgPts.z1 = bgEnvsVals_{{spAbr1}},
-  bgPts.z2 = bgEnvsVals_{{spAbr2}})
+  occs.z1 = occs_{{spAbr1}}[,pcaSel_{{multAbr}}],
+  occs.z2 = occs_{{spAbr2}}[,pcaSel_{{multAbr}}],
+  bgPts.z1 = bgEnvsVals_{{spAbr1}}[,pcaSel_{{multAbr}}],
+  bgPts.z2 = bgEnvsVals_{{spAbr2}}[,pcaSel_{{multAbr}}])
 
 ```
