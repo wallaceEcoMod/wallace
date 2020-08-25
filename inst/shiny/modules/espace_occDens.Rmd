@@ -1,17 +1,13 @@
 ```{asis, echo = {{espace_occDens_knit}}, eval = {{espace_occDens_knit}}, include = {{espace_occDens_knit}}}
-occDens: *`r "{{spName1}}"`* y *`r "{{spName2}}"`*
+### Environmental space 
+Calculating the part of environmental space more densly populated by species & the availability of environmental conditions in the background for  *`r "{{spName1}}"`* & *`r "{{spName2}}"`*
 ```
 
 ```{r, echo = {{espace_occDens_knit}}, include = {{espace_occDens_knit}}}
-# Abreviaturas
-occDensPrueba_{{multAbr}} <- occsPrueba_{{spAbr1}} + bgPrueba{{spAbr2}}
+# Create density grid
+espace_occDens_{{multAbr}} <- espace_occDens(
+  sp.name1 = "{{spName1}}",
+  sp.name2 = "{{spName2}}", 
+  pca = espace_pca_{{multAbr}}) 
 
-# Nombres a los cuales tienes acceso
-multAbr = {{multAbr}}
-sp1 = {{sp1}}
-sp2 = {{sp2}}
-spAbr1 = {{spAbr1}}
-spAbr2 = {{spAbr2}}
-spName1 = "{{spName1}}"
-spName2 = "{{spName2}}"
 ```

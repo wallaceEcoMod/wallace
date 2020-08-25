@@ -87,7 +87,7 @@ espace_pca_module_server <- function(input, output, session, common) {
       spp[[mspName]]$pca <- pca
     }
 
-    # spp[[mspName]]$rmm$wallace$pcaSel <- pcaSel
+     spp[[mspName]]$pcaSel <- pcaSel
     common$update_component(tab = "Results")
   })
 
@@ -194,8 +194,7 @@ espace_pca_module_rmd <- function(species) {
   #      espace.sp2 = strsplit(sp, ".", fixed = TRUE)[[1]][2],
   #      pcaSel = printVecAsis(spp[[sp]]$rmm$wallace$pcaSel))
   list(
-    espace_pca_knit = !is.null(species$pca)
-    # var1 = species$rmm$code$wallace$someSetting1,
-    # var2 = species$rmm$code$wallace$someSetting2
+    espace_pca_knit = !is.null(species$pca),
+    pcaSel_rmd = species$pcaSel
   )
 }
