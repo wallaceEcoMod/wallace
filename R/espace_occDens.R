@@ -1,6 +1,6 @@
 
 #' @title Occurence density grid
-#' @description calculates the part of environmental space more densly populated by species & the avaialbility of environmental conditions in the background
+#' @description calculates the part of environmental space more densly populated by species & the availability of environmental conditions in the background
 #'
 #' @details
 #' This fuctions implements a density estimation for each region in the environmental space (gridded at 100*100 pixels).
