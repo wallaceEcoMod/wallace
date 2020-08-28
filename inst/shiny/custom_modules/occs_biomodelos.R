@@ -1,12 +1,11 @@
 occs_biomodelos_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
-    fileInput(ns("keyBMtxt"), label = "Input key in txt file", multiple = FALSE,
-              accept = ".txt"),
     tags$div(title = 'Examples: Marmosa xerophila, Tremarctos ornatus',
              textInput(ns("spNameBM"), label = "Enter species scientific name",
                        placeholder = 'format: Genus species')),
-    actionButton(ns("goBiomodelosOccs"), "Query Database")
+    tags$div(passwordInput(ns("keyBM"), label = "Enter API Key", value = "")),
+    actionButton(ns("goBiomodelosOccs"), "Query Biomodelos")
   )
 }
 
@@ -16,7 +15,7 @@ occs_biomodelos_module_server <- function(input, output, session, common) {
 
   observeEvent(input$goBiomodelosOccs, {
     # FUNCTION CALL ####
-    occsTbls <- occs_biomodelos(input$spNameBM, logger)
+    occsTbls <- occs_biomodelos(input$spNameBM, input$keyBM, logger)
 
     req(occsTbls)
 
