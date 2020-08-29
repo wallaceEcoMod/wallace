@@ -51,11 +51,15 @@ occs_biomodelos <- function(spName, bioKey, logger = NULL) {
   }
   urlOccs <- paste('https://api-biomodelos.humboldt.org.co/v2/species/records/',
                    jsonSearch[[1]]$taxID, sep = '')
-  respOccs <- httr::GET(urlOccs,
-                        httr::add_headers(host = 'api-biomodelos.humboldt.org.co',
-                                    authorization = paste0('apiKey ', bioKey)))
-  jsonOccs <-  httr::content(respOccs, 'text')
-  geo <-  geojsonsf::geojson_sf(jsonOccs)
+
+  smartProgress(logger, message = paste0("Querying biomodelos ..."), {
+    respOccs <- httr::GET(urlOccs,
+                          httr::add_headers(host = 'api-biomodelos.humboldt.org.co',
+                                            authorization = paste0('apiKey ', bioKey)))
+    jsonOccs <-  httr::content(respOccs, 'text')
+    geo <-  geojsonsf::geojson_sf(jsonOccs)
+  })
+
   if (nrow(geo) == 0) {
     logger %>% writeLog(
       type = 'error',
