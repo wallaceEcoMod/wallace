@@ -36,6 +36,8 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
       'Please input both genus and species names of ONE species. (**)')
     return()
   }
+  spName <- paste0(toupper(substring(spName, 1, 1)),
+                   substring(spName, 2, nchar(spName)))
   smartProgress(logger, message = paste0("Querying paleobioDB ..."), {
     occsOrig <- try(paleobioDB::pbdb_occurrences(taxon_name = spName,
                                                  limit = occNum,
