@@ -84,6 +84,7 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
     return()
   }
 
+  occsOrig <- tibble::as_tibble(occsOrig)
   occsOrig$lng <- as.numeric(occsOrig$lng)
   occsOrig$lat <- as.numeric(occsOrig$lat)
   # get total number of records found in database
@@ -119,8 +120,8 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
     # make new column for leaflet marker popup content
     dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent))) %>%
     dplyr::arrange_(cols)
-occs$early_age<-as.numeric(occs$early_age)
-occs$late_age<-as.numeric(occs$late_age)
+  occs$early_age <- as.numeric(occs$early_age)
+  occs$late_age <- as.numeric(occs$late_age)
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
 
   dupsRem <- nrow(occsXY) - nrow(occs)

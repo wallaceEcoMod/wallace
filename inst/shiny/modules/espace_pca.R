@@ -1,10 +1,7 @@
 espace_pca_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
-    checkboxInput(ns("pcaVarSel"),
-                  label = "Specify variables to use in analysis?"),
-    conditionalPanel(paste0("input['", ns("pcaVarSel"), "']"),
-                     uiOutput(ns("pcaSel"))),
+    uiOutput(ns("pcaSel")),
     selectInput(ns("pcaPlotSel"), "Plot selection:",
                 choices = list("None selected" = "",
                                "Occurrences only" = "occs",
@@ -26,12 +23,30 @@ espace_pca_module_server <- function(input, output, session, common) {
   output$pcaSel <- renderUI({
     ns <- session$ns
     req(curSp())
-    sp <- curSp()[1]
-    if(is.null(spp[[sp]]$envs)) return()
-    sp1.envNames <- names(envs.global[[spp[[sp]]$envs]])
-    checkboxGroupInput(ns("pcaSel"), label = "Select",
-                       choices = sp1.envNames,
-                       inline = TRUE, selected = sp1.envNames)
+    if (length(curSp()) == 1) {
+      shiny::tagList(
+        shiny::em("Select two species in species menu(**)"),
+        br()
+      )
+    } else if (length(curSp()) == 2) {
+      sp1 <- curSp()[1]
+      sp2 <- curSp()[2]
+      if (is.null(spp[[sp1]]$envs)) return()
+      if (is.null(spp[[sp2]]$envs)) return()
+      sp1.envNames <- names(envs.global[[spp[[sp1]]$envs]])
+      sp2.envNames <- names(envs.global[[spp[[sp2]]$envs]])
+      shared_Names <- c(sp1.envNames, sp2.envNames)
+      shared_Names <- shared_Names[duplicated(shared_Names)]
+      shiny::tagList(
+        shinyWidgets::pickerInput(
+          ns("pcaSel"),
+          label = "Select variables available for both species(**)",
+          choices = setNames(as.list(shared_Names), shared_Names),
+          multiple = TRUE,
+          selected = shared_Names,
+          options = list(`actions-box` = TRUE))
+      )
+    }
   })
 
   observeEvent(input$goPCA, {
@@ -52,18 +67,18 @@ espace_pca_module_server <- function(input, output, session, common) {
     # PROCESSING ####
     sp1 <- curSp()[1]
     sp1.envNames <- names(envs.global[[spp[[sp1]]$envs]])
-    if (is.null(input$pcaSel)) pcaSel <- sp1.envNames else pcaSel <- input$pcaSel
-    sp1.occsVals <- spp[[sp1]]$occs[pcaSel]
-    sp1.bgVals <- spp[[sp1]]$bg[pcaSel]
     sp2 <- curSp()[2]
     sp2.envNames <- names(envs.global[[spp[[sp2]]$envs]])
-    if (all(sp1.envNames == sp2.envNames) == FALSE) {
+    pcaSel <- input$pcaSel
+    if (is.null(pcaSel)) {
       logger %>% writeLog(
-        type = "error", hlSpp(curSp()[1], " and ", curSp()[2]),
+        type = "error", hlSpp(paste0(curSp()[1], " and ", curSp()[2])),
         " must have the same environmental variables."
       )
       return()
     }
+    sp1.occsVals <- spp[[sp1]]$occs[pcaSel]
+    sp1.bgVals <- spp[[sp1]]$bg[pcaSel]
     sp2.occsVals <- spp[[sp2]]$occs[pcaSel]
     sp2.bgVals <- spp[[sp2]]$bg[pcaSel]
 
@@ -87,7 +102,7 @@ espace_pca_module_server <- function(input, output, session, common) {
       spp[[mspName]]$pca <- pca
     }
 
-    # spp[[mspName]]$rmm$wallace$pcaSel <- pcaSel
+     spp[[mspName]]$pcaSel <- pcaSel
     common$update_component(tab = "Results")
   })
 
@@ -170,12 +185,12 @@ espace_pca_module_server <- function(input, output, session, common) {
   return(list(
     save = function() {
       list(
-        pcaVarSel = input$pcaVarSel,
+        pcaSel = input$pcaSel,
         pcaPlotSel = input$pcaPlotSel
       )
     },
     load = function(state) {
-      updateCheckboxInput(session, "pcaVarSel", value = state$pcaVarSel)
+      shinyWidgets::updatePickerInput(session, "pcaSel", selected = state$pcaSel)
       updateSelectInput(session, "pcaPlotSel", selected = state$pcaPlotSel)
     }
   ))
@@ -194,8 +209,7 @@ espace_pca_module_rmd <- function(species) {
   #      espace.sp2 = strsplit(sp, ".", fixed = TRUE)[[1]][2],
   #      pcaSel = printVecAsis(spp[[sp]]$rmm$wallace$pcaSel))
   list(
-    espace_pca_knit = !is.null(species$pca)
-    # var1 = species$rmm$code$wallace$someSetting1,
-    # var2 = species$rmm$code$wallace$someSetting2
+    espace_pca_knit = !is.null(species$pca),
+    pcaSel_rmd = species$pcaSel
   )
 }

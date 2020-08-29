@@ -110,6 +110,7 @@ function(input, output, session) {
 
   # Enable/disable buttons
   observe({
+    shinyjs::toggleState("goLoad_session", !is.null(input$load_session$datapath))
     req(length(curSp()) == 1)
     shinyjs::toggleState("dlDbOccs", !is.null(occs()))
     shinyjs::toggleState("dlOccs", !is.null(occs()))
@@ -687,7 +688,7 @@ function(input, output, session) {
       }
     },
     content = function(file) {
-      evalTblBins <- spp[[curSp()]]$evalOut@results.grp
+      evalTblBins <- spp[[curSp()]]$evalOut@results.partitions
       write_csv_robust(evalTblBins, file, row.names = FALSE)
     }
   )
@@ -722,7 +723,7 @@ function(input, output, session) {
     filename = function() {paste0(curSp(), "_evalPlots.zip")},
     content = function(file) {
       tmpdir <- tempdir()
-      parEval <- c('auc.test', 'auc.diff', 'or.mtp', 'or.10p', 'delta.AICc')
+      parEval <- c('auc.val', 'auc.diff', 'or.mtp', 'or.10p', 'delta.AICc')
       for (i in parEval) {
         # png(paste0(tmpdir, "\\", gsub("[[:punct:]]", "_", i), ".png"))
         ENMeval::evalplot.stats(spp[[curSp()]]$evalOut, i, "rm", "fc")
@@ -1387,6 +1388,30 @@ function(input, output, session) {
 
   observeEvent(input$goLoad_session, {
     load_session(input$load_session$datapath)
-    shinyalert::shinyalert("Session loaded (**)", type = "success")
+    # Select names of species in spp object
+    sppLoad <- grep("\\.", names(spp), value = TRUE, invert = TRUE)
+    # Storage species with no env data
+    noEnvsSpp <- NULL
+    for (i in sppLoad) {
+      diskRast <- raster::fromDisk(envs.global[[spp[[i]]$envs]])
+      if (diskRast) {
+        if (class(envs.global[[spp[[i]]$envs]]) == "RasterStack") {
+          diskExist <- !file.exists(envs.global[[spp[[i]]$envs]]@layers[[1]]@file@name)
+        } else if (class(envs.global[[spp[[i]]$envs]]) == "RasterBrick") {
+          diskExist <- !file.exists(envs.global[[spp[[i]]$envs]]@file@name)
+        }
+        if (diskExist) {
+          noEnvsSpp <- c(noEnvsSpp, i)
+        }
+      }
+    }
+    if (is.null(noEnvsSpp)) {
+      shinyalert::shinyalert(title = "Session loaded (**)", type = "success")
+    } else {
+      msgEnvAgain <- paste0("Load variables again for: ",
+                            paste0(noEnvsSpp, collapse = ", "))
+      shinyalert::shinyalert(title = "Session loaded (**)", type = "warning",
+                             text = msgEnvAgain)
+    }
   })
 }

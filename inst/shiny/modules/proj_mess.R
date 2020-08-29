@@ -41,7 +41,8 @@ proj_mess_module_server <- function(input, output, session, common) {
     # LOAD INTO SPP ####
     spp[[curSp()]]$project$mess <- mss
     spp[[curSp()]]$project$messVals <- getRasterVals(mss)
-
+    spp[[curSp()]]$rmm$code$wallace$MESS <- TRUE
+    spp[[curSp()]]$rmm$code$wallace$MESSTime <- time
     # METADATA
     spp[[curSp()]]$rmm$prediction$uncertainty$extrapolation <-
       "MESS (multivariate environmental similarity surface)"
@@ -109,7 +110,8 @@ proj_mess_module_map <- function(map, common) {
 proj_mess_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    proj_mess_knit = FALSE
+    proj_mess_knit = !is.null(species$rmm$code$wallace$MESS),
+    time_rmd = species$rmm$code$wallace$MESSTime
     # proj_mess_knit = species$rmm$code$wallace$someFlag,
     # var1 = species$rmm$code$wallace$someSetting1,
     # var2 = species$rmm$code$wallace$someSetting2

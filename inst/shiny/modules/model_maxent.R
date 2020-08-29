@@ -163,7 +163,7 @@ model_maxent_module_server <- function(input, output, session, common) {
         spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
       req(spp[[curSp()]]$evalOut)
       res <- spp[[curSp()]]$evalOut@results
-      res.grp <- spp[[curSp()]]$evalOut@results.grp
+      res.grp <- spp[[curSp()]]$evalOut@results.partitions
       tuned.n <- ncol(spp[[curSp()]]$evalOut@tune.settings)
       if(tuned.n > 0) {
         res.round <- cbind(res[,seq(1, tuned.n)],

@@ -96,9 +96,9 @@ envs_ecoclimate_module_server <- function(input, output, session, common) {
       spp[[sp]]$rmm$data$environment$sources <- nmEcoClimate
       spp[[sp]]$rmm$data$environment$projection <- as.character(raster::crs(ecoClims))
 
-      spp[[sp]]$rmd$bcAOGCM <- input$bcAOGCM
-      spp[[sp]]$rmd$bcScenario <- input$bcScenario
-      spp[[sp]]$rmd$ecoClimSel <- ecoClimSel()
+      spp[[sp]]$rmm$code$wallace$bcAOGCM <- input$bcAOGCM
+      spp[[sp]]$rmm$code$wallace$bcScenario <- input$bcScenario
+      spp[[sp]]$rmm$code$wallace$ecoClimSel <- ecoClimSel()
     }
     common$update_component(tab = "Results")
   })
@@ -144,10 +144,10 @@ envs_ecoclimate_module_map <- function(map, common) {
 envs_ecoclimate_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    envs_ecoclimate_knit = !is.null(species$rmd$bcAOGCM),
-    bcAOGCM_rmd = species$rmd$bcAOGCM,
-    bcScenario_rmd = species$rmd$bcScenario,
-    ecoClimSel_rmd = species$rmd$ecoClimSel
+    envs_ecoclimate_knit = !is.null(species$rmm$code$wallace$bcAOGCM),
+    bcAOGCM_rmd = species$rmm$code$wallace$bcAOGCM,
+    bcScenario_rmd = species$rmm$code$wallace$bcScenario,
+    ecoClimSel_rmd = species$rmm$code$wallace$ecoClimSel
     ##Alternative using rmm instead of RMD object but not working
     #grepl("ecoClimate",species$rmm$data$environment$sources)
   )

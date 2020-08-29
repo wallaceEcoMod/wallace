@@ -1,6 +1,6 @@
 
 #' @title proj_mess generate MESS map for projection time
-#' @description This function generates a MESS map for the new vairables for projection based on variables and points used for modeling in previous components
+#' @description This function generates a MESS map for the new variables for projection based on variables and points used for modeling in previous components
 #'
 #' @details
 #' This functions allows for the creation of a MESS map for the new provided variables for projection.
@@ -10,7 +10,7 @@
 #' @param occs A data frame of occurences used for modeling and values of environmental variables for each point
 #' @param bg A data frame of points used as background for modeling and values of environmental variables for each point
 #' @param bgMsk A rasterBrick or rasterStack of environmental variables used for modeling. They must be cropped and masked to extent used in model training
-#' @param projExtRas A rasterStack or rasterBrick of envrionmental variables to be used for projecting
+#' @param projExtRas A rasterStack or rasterBrick of environmental variables to be used for projecting
 #' @param time a string of the time used for projecting (e.g. "2040 MIROC6 ssp126)
 #' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL

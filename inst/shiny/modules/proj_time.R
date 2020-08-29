@@ -187,6 +187,7 @@ proj_time_module_server <- function(input, output, session, common) {
           ' degrees (**).')
       }
       # METADATA ####
+      spp[[curSp()]]$rmm$code$wallace$PjBuff <- input$drawPjBuf
       polyX <- printVecAsis(round(spp[[curSp()]]$polyPjXY[, 1], digits = 4))
       polyY <- printVecAsis(round(spp[[curSp()]]$polyPjXY[, 2], digits = 4))
       spp[[curSp()]]$rmm$code$wallace$drawExtPolyPjCoords <-
@@ -197,6 +198,7 @@ proj_time_module_server <- function(input, output, session, common) {
       polyPj <- proj_userExtent(input$userPjShp$datapath, input$userPjShp$name,
                                 input$userPjBuf, logger, spN = curSp())
       # METADATA ####
+      spp[[curSp()]]$rmm$code$wallace$PjBuff <- input$userPjBuf
       # get extensions of all input files
       exts <- sapply(strsplit(input$userPjShp$name, '\\.'),
                      FUN = function(x) x[2])
@@ -374,6 +376,8 @@ proj_time_module_server <- function(input, output, session, common) {
     }
 
     # METADATA ####
+    spp[[curSp()]]$rmm$code$wallace$project_curModel <- curModel()
+    spp[[curSp()]]$rmm$code$wallace$project_time <- TRUE
     spp[[curSp()]]$rmm$data$transfer$environment1$minVal <-
       printVecAsis(raster::cellStats(projExt, min), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$maxVal <-
@@ -386,6 +390,12 @@ proj_time_module_server <- function(input, output, session, common) {
       "project to user-selected new time"
     if (input$selTimeVar == "worldclim") {
       projYr <- paste0('20', input$selTime)
+      ###For RMD only
+      spp[[curSp()]]$rmm$code$wallace$transfer_worldclim <- TRUE
+      spp[[curSp()]]$rmm$code$wallace$transfer_GCM <- input$selGCM
+      spp[[curSp()]]$rmm$code$wallace$transfer_RCP <- input$selRCP
+      spp[[curSp()]]$rmm$code$wallace$transfer_Time <- input$selTime
+
       spp[[curSp()]]$rmm$data$transfer$environment1$yearMin <- projYr
       spp[[curSp()]]$rmm$data$transfer$environment1$yearMax <- projYr
       spp[[curSp()]]$rmm$data$transfer$environment1$sources <- "WorldClim 1.4"
@@ -394,6 +404,9 @@ proj_time_module_server <- function(input, output, session, common) {
               GCMlookup[input$selGCM], "under RCP",
               as.numeric(input$selRCP)/10.0)
     } else if (input$selTimeVar == "ecoclimate") {
+      spp[[curSp()]]$rmm$code$wallace$transfer_ecoclimate <- TRUE
+      spp[[curSp()]]$rmm$code$wallace$transfer_AOGCM <- input$pjAOGCM
+      spp[[curSp()]]$rmd$transfer_Scenario <- input$pjScenario
       spp[[curSp()]]$rmm$data$transfer$environment1$sources <- "ecoClimate"
       spp[[curSp()]]$rmm$data$transfer$environment1$notes <-
         paste("projection to", input$pjScenario, "for GCM", input$pjAOGCM)
@@ -525,10 +538,45 @@ proj_time_module_map <- function(map, common) {
 proj_time_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    proj_time_knit = FALSE
-    # proj_time_knit = species$rmm$code$wallace$someFlag,
-    # var1 = species$rmm$code$wallace$someSetting1,
-    # var2 = species$rmm$code$wallace$someSetting2
+    proj_time_knit = !is.null(species$rmd$project_time),
+    curModel_rmd = species$rmd$project_curModel,
+    outputType_rmd = species$rmm$prediction$notes,
+    alg_rmd = species$rmm$model$algorithms,
+    clamp_rmd = species$rmm$model$algorithm$maxent$clamping,
+
+    ##Determine the type of projection extent to use correct RMD function
+    proj_time_user_knit = !is.null(species$rmm$code$wallace$userPjShpParams),
+    proj_time_drawn_knit = !is.null(species$rmm$code$wallace$drawExtPolyPjCoords),
+    ###arguments for creating extent
+    polyPjXY_rmd = if(!is.null(species$rmm$code$wallace$drawExtPolyPjCoords)){
+      printVecAsis(species$polyPjXY)} else {NULL},
+    polyPjID_rmd =  if(!is.null(species$rmm$code$wallace$drawExtPolyPjCoords)){
+      species$polyPjID} else {0},
+    BgBuf_rmd = species$rmm$code$wallace$PjBuff,
+    polyPj_rmd = if(is.null(species$rmm$code$wallace$drawExtPolyPjCoords) & is.null(species$rmm$code$wallace$userPjShpParams)){
+      species$procEnvs$bgExt} else {NULL},
+    ##Use of threshold for projection
+    proj_time_threshold_knit = !is.null(species$rmm$prediction$transfer$environment1$thresholdSet),
+    thresholdRule_rmd = species$rmm$prediction$transfer$environment1$thresholdRule,
+    threshold_rmd = if (!is.null(species$rmm$prediction$transfer$environment1$thresholdSet)){
+      species$rmm$prediction$transfer$environment1$thresholdSet} else {0},
+    ###for guidance text
+      ##name of environmental variables used
+    envs_name_rmd = species$rmm$data$transfer$environment1$sources,
+    yearMin_rmd = species$rmm$data$transfer$environment1$yearMin,
+    yearMax_rmd = species$rmm$data$transfer$environment1$yearMax,
+    ###for getting the right environmental variables
+    proj_time_worldclim_knit = !is.null(species$rmd$transfer_worldclim),
+    model_rmd = if (!is.null(species$rmd$transfer_worldclim)){
+      species$rmd$transfer_GCM} else {NULL},
+    rcp_rmd = if (!is.null(species$rmd$transfer_worldclim)){
+      species$rmd$transfer_RCP} else {0},
+    year_rmd = if (!is.null(species$rmd$transfer_worldclim)){
+      species$rmd$transfer_Time} else {0},
+    pjAOGCM_rmd = if(!is.null(species$rmd$transfer_ecoclimate)){
+      species$rmd$transfer_AOGCM} else {NULL},
+    pjScenario_rmd = if(!is.null(species$rmd$transfer_ecoclimate)){
+      species$rmd$transfer_Scenario} else {NULL}
   )
 }
 

@@ -84,8 +84,8 @@ envs_userEnvs_module_server <- function(input, output, session, common) {
       spp[[sp]]$rmm$data$environment$extent <- as.character(raster::extent(userEnvs))
       spp[[sp]]$rmm$data$environment$projection <- as.character(raster::crs(userEnvs))
 
-      spp[[sp]]$rmd$userRasName <- input$userEnvs$name
-      spp[[sp]]$rmd$userBrick <- input$doBrick
+      spp[[sp]]$rmm$code$wallace$userRasName <- input$userEnvs$name
+      spp[[sp]]$rmm$code$wallace$userBrick <- input$doBrick
     }
 
     common$update_component(tab = "Results")
@@ -116,8 +116,8 @@ envs_userEnvs_module_map <- function(map, common) {
 envs_userEnvs_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    envs_userEnvs_knit = !is.null(species$rmd$userRasName),
-    userRasName_rmd = printVecAsis(species$rmd$userRasName),
-    userBrick_rmd = species$rmd$userBrick
+    envs_userEnvs_knit = !is.null(species$rmm$code$wallace$userRasName),
+    userRasName_rmd = printVecAsis(species$rmm$code$wallace$userRasName),
+    userBrick_rmd = species$rmm$code$wallace$userBrick
   )
 }

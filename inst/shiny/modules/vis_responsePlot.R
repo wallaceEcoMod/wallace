@@ -15,6 +15,18 @@ vis_responsePlot_module_server <- function(input, output, session, common) {
   curEnv <- common$curEnv
   evalOut <- common$evalOut
 
+  observeEvent(input,{
+    req(curSp())
+    req(curModel())
+    #for rmd
+    spp[[curSp()]]$rmd$vis_responsePlot <- TRUE
+    if (spp[[curSp()]]$rmm$model$algorithms == "maxnet"|spp[[curSp()]]$rmm$model$algorithms == "maxent.jar"){
+      spp[[curSp()]]$rmd$vis_curModel <- curModel()
+    }
+
+  })
+
+
   # ui that populates with the names of environmental predictors used
   output$curEnvUI <- renderUI({
     # ensure envs entity is within spp
@@ -48,20 +60,25 @@ vis_responsePlot_module_server <- function(input, output, session, common) {
       dismo::response(evalOut()@models[[curModel()]], var = curEnv())
     }
   }, width = 700, height = 700)
-}
+
+   }
 
 vis_responsePlot_module_result <- function(id) {
+
   ns <- NS(id)
   imageOutput(ns('responsePlot'))
+
+
 }
 
 vis_responsePlot_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    vis_responsePlot_knit = FALSE
-    # vis_responsePlot_knit = species$rmm$code$wallace$someFlag,
-    # var1 = species$rmm$code$wallace$someSetting1,
-    # var2 = species$rmm$code$wallace$someSetting2
+    vis_responsePlot_knit = !is.null(species$rmd$vis_responsePlot),
+    vis_maxnet_knit = if(!is.null(species$rmm$model$algorithms)){
+      species$rmm$model$algorithms == "maxnet"} else {FALSE},
+    alg_rmd = if(!is.null(species$rmm$model$algorithms)){species$rmm$model$algorithms} else {NULL},
+    curModel_rmd = if(!is.null(species$rmd$vis_curModel)){species$rmd$vis_curModel} else {NULL}
   )
 }
 
