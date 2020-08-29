@@ -688,7 +688,7 @@ function(input, output, session) {
       }
     },
     content = function(file) {
-      evalTblBins <- spp[[curSp()]]$evalOut@results.grp
+      evalTblBins <- spp[[curSp()]]$evalOut@results.partitions
       write_csv_robust(evalTblBins, file, row.names = FALSE)
     }
   )
@@ -723,7 +723,7 @@ function(input, output, session) {
     filename = function() {paste0(curSp(), "_evalPlots.zip")},
     content = function(file) {
       tmpdir <- tempdir()
-      parEval <- c('auc.test', 'auc.diff', 'or.mtp', 'or.10p', 'delta.AICc')
+      parEval <- c('auc.val', 'auc.diff', 'or.mtp', 'or.10p', 'delta.AICc')
       for (i in parEval) {
         # png(paste0(tmpdir, "\\", gsub("[[:punct:]]", "_", i), ".png"))
         ENMeval::evalplot.stats(spp[[curSp()]]$evalOut, i, "rm", "fc")

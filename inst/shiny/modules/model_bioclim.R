@@ -58,7 +58,7 @@ model_bioclim_module_server <- function(input, output, session, common) {
     if (spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM") {
       req(spp[[curSp()]]$evalOut)
       res <- spp[[curSp()]]$evalOut@results
-      res.grp <- spp[[curSp()]]$evalOut@results.grp
+      res.grp <- spp[[curSp()]]$evalOut@results.partitions
       res.round <- cbind(round(res[, 1:11], digits = 3))
       res.grp.round <- round(res.grp[, 2:6], digits = 3)
       # define contents for both evaluation tables

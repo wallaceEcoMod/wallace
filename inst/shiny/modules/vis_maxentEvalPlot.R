@@ -3,12 +3,12 @@ vis_maxentEvalPlot_module_ui <- function(id) {
   tagList(
     selectInput(ns('maxentEvalSel'), label = "Select evaluation statistic",
                 choices = list("Select Stat..." = '',
-                               "average AUC test" = 'auc.test',
+                               "average AUC test" = 'auc.val',
                                "average AUC diff" = 'auc.diff',
                                "average OR mtp" = 'or.mtp',
                                "average OR 10%" = 'or.10p',
                                "delta AICc" = 'delta.AICc'),
-                selected = 'auc.test'),
+                selected = 'auc.val'),
     h6("Maxent evaluation plots display automatically in 'Results' tab(**)")
   )
 }

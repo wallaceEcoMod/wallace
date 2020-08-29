@@ -53,7 +53,7 @@ model_bioclim <- function(occs, bg, user.grp, bgMsk, logger = NULL,
                 message = paste0("Building/Evaluating BIOCLIM model for ",
                                  spName(spN), "..."), {
      e <- ENMeval::ENMevaluate(occs = occs.xy, envs = bgMsk, bg = bg.xy,
-                               mod.name = "bioclim", partitions = "user",
+                               algorithm = "bioclim", partitions = "user",
                                user.grp= user.grp)
   })
 

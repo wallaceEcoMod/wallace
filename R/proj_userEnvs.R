@@ -73,17 +73,17 @@ proj_userEnvs <- function(evalOut, curModel, envs, pjExt, alg, outputType = NULL
       modProjUser <- dismo::predict(evalOut@models[[curModel]], projMsk)
     } else if (alg == 'maxnet') {
       if (outputType == "raw") outputType <- "exponential"
-      modProjUser <- ENMeval::enm.maxnet@pred(evalOut@models[[curModel]],
-                                              projMsk,
-                                              other.settings = list(
-                                                pred.type = outputType,
-                                                clamp = clamp))
+      modProjUser <- ENMeval::enm.maxnet@predict(evalOut@models[[curModel]],
+                                                 projMsk,
+                                                 other.settings = list(
+                                                 pred.type = outputType,
+                                                 clamp = clamp))
     } else if (alg == 'maxent.jar') {
-      modProjUser <- ENMeval::enm.maxent.jar@pred(evalOut@models[[curModel]],
-                                                  projMsk,
-                                                  other.settings = list(
-                                                  pred.type = outputType,
-                                                  clamp = clamp))
+      modProjUser <- ENMeval::enm.maxent.jar@predict(evalOut@models[[curModel]],
+                                                     projMsk,
+                                                     other.settings = list(
+                                                     pred.type = outputType,
+                                                     clamp = clamp))
     }
   })
 
