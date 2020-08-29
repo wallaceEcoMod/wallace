@@ -29,13 +29,20 @@ occs_biomodelos <- function(spName, bioKey, logger = NULL) {
       'Please input both genus and species names of ONE species. (**)')
     return()
   }
+  spName <- paste0(toupper(substring(spName, 1, 1)),
+                   substring(spName, 2, nchar(spName)))
   bioName <- gsub(pattern = " ", replacement = "%20", x = spName)
   urlSearch <- paste0('https://api-biomodelos.humboldt.org.co/v2/species/search/',
                       bioName)
   respSearch <- httr::GET(urlSearch,
-                          add_headers(host = 'api-biomodelos.humboldt.org.co',
+                          httr::add_headers(host = 'api-biomodelos.humboldt.org.co',
                                       authorization = paste0('apiKey ', bioKey)))
   jsonSearch <-  httr::content(respSearch, 'parsed')
+  if (jsonSearch == "Unauthorized") {
+    logger %>% writeLog(
+      type = 'error', "API key is not working.")
+    return()
+  }
   if (length(jsonSearch) == 0) {
     logger %>% writeLog(
       type = 'error',
@@ -45,7 +52,7 @@ occs_biomodelos <- function(spName, bioKey, logger = NULL) {
   urlOccs <- paste('https://api-biomodelos.humboldt.org.co/v2/species/records/',
                    jsonSearch[[1]]$taxID, sep = '')
   respOccs <- httr::GET(urlOccs,
-                        add_headers(host = 'api-biomodelos.humboldt.org.co',
+                        httr::add_headers(host = 'api-biomodelos.humboldt.org.co',
                                     authorization = paste0('apiKey ', bioKey)))
   jsonOccs <-  httr::content(respOccs, 'text')
   geo <-  geojsonsf::geojson_sf(jsonOccs)
@@ -56,10 +63,10 @@ occs_biomodelos <- function(spName, bioKey, logger = NULL) {
     return()
   }
 
-  occsOrig <- as_tibble(geo) %>%
-    mutate_all(function(x){iconv(x, from= "UTF-8", to = "UTF-8")}) %>%
-    mutate(longitude = sf::st_coordinates(geo$geometry)[, 1],
-           latitude = sf::st_coordinates(geo$geometry)[, 2])
+  occsOrig <- dplyr::as_tibble(geo) %>%
+    dplyr::mutate_all(function(x){iconv(x, from= "UTF-8", to = "UTF-8")}) %>%
+    dplyr::mutate(longitude = sf::st_coordinates(geo$geometry)[, 1],
+                  latitude = sf::st_coordinates(geo$geometry)[, 2])
 
   # make new column for original ID
   occsOrig$occID <- 1:nrow(occsOrig)
