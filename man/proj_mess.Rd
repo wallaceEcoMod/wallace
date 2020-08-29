@@ -13,7 +13,7 @@ proj_mess(occs, bg, bgMsk, projExtRas, time, logger = NULL, spN = NULL)
 
 \item{bgMsk}{A rasterBrick or rasterStack of environmental variables used for modeling. They must be cropped and masked to extent used in model training}
 
-\item{projExtRas}{A rasterStack or rasterBrick of envrionmental variables to be used for projecting}
+\item{projExtRas}{A rasterStack or rasterBrick of environmental variables to be used for projecting}
 
 \item{time}{a string of the time used for projecting (e.g. "2040 MIROC6 ssp126)}
 
@@ -23,7 +23,7 @@ otherwise leave the default NULL}
 \item{spN}{Character. Used to obtain species name for logger messages}
 }
 \description{
-This function generates a MESS map for the new vairables for projection based on variables and points used for modeling in previous components
+This function generates a MESS map for the new variables for projection based on variables and points used for modeling in previous components
 }
 \details{
 This functions allows for the creation of a MESS map for the new provided variables for projection.
