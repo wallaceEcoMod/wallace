@@ -49,6 +49,7 @@ occs_paleoDb_module_server <- function(input, output, session, common) {
     occsOrig <- occsTbls$orig
     occs <- occsTbls$cleaned
     sp <- formatSpName(input$spNamePB)
+    sp <- paste0(toupper(substring(sp, 1, 1)), substring(sp, 2, nchar(sp)))
     # if species name is already in list, overwrite it
     if (!is.null(spp[[sp]])) spp[[sp]] <- NULL
     # add two copies of occs dataset -- "occs" will be altered during session,
