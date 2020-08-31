@@ -56,7 +56,7 @@ model_maxent_module_ui <- function(id) {
       conditionalPanel(
         sprintf("input['%s'] == 'TRUE'", ns("parallel")),
         numericInput(
-          "numCores",
+          ns("numCores"),
           label = paste0("Specify the number of cores (max. ", parallel::detectCores(), ")"),
           value = parallel::detectCores() - 1, min = 1,
           max = parallel::detectCores(), step = 1
