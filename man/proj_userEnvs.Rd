@@ -37,7 +37,7 @@ otherwise leave the default NULL}
 \item{spN}{Character. Used to obtain species name for logger messages}
 }
 \description{
-The function projects the model generated in previous components to user uploaded environmental variables and area
+The function projects the model generated in previous components to user uploaded environmental variables
 }
 \details{
 This functions allows for the projection of the model created in previous components to a new time and area provided by the user.

@@ -82,7 +82,7 @@ Generate a map of the Maxent generated model with no threshold
 ```{r, echo = {{vis_mapPreds_knit & vis_map_maxent_knit  & !vis_map_threshold_knit}}, include = {{vis_mapPreds_knit & vis_map_maxent_knit & !vis_map_threshold_knit}}}
 # Select current model and obtain raster prediction
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
-predSel_{{spAbr}} <- ENMeval::enm.maxent.jar@pred(
+predSel_{{spAbr}} <- ENMeval::enm.maxent.jar@predict(
   m_{{spAbr}}, bgMask_{{spAbr}},
  other.settings = list(
 pred.type = "{{predType_rmd}}",
@@ -121,7 +121,7 @@ Generate a map of the Maxent generated model with a "{{thresholdRule_rmd}}" thre
 ```{r, echo = {{vis_mapPreds_knit & vis_map_maxent_knit & vis_map_threshold_knit}}, include = {{vis_mapPreds_knit & vis_map_maxent_knit & vis_map_threshold_knit}}}
 # Select current model and obtain raster prediction
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
-predSel_{{spAbr}} <- ENMeval::enm.maxent.jar@pred(
+predSel_{{spAbr}} <- ENMeval::enm.maxent.jar@predict(
   m_{{spAbr}}, bgMask_{{spAbr}},
  other.settings = list(
 pred.type = "{{predType_rmd}}",
@@ -162,7 +162,7 @@ Generate a map of the maxnet generated model with no threshold
 ```{r, echo = {{vis_mapPreds_knit & vis_map_maxnet_knit & !vis_map_threshold_knit}}, include = {{vis_mapPreds_knit & vis_map_maxnet_knit & !vis_map_threshold_knit}}}
 # Select current model and obtain raster prediction
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
-predSel_{{spAbr}} <-  ENMeval::enm.maxnet@pred(
+predSel_{{spAbr}} <-  ENMeval::enm.maxnet@predict(
   m_{{spAbr}}, bgMask_{{spAbr}},
 other.settings = list(
 pred.type = "{{predType_rmd}}",
@@ -201,7 +201,7 @@ Generate a map of the maxnet generated model with with a "{{thresholdRule_rmd}}"
 ```{r, echo = {{vis_mapPreds_knit & vis_map_maxnet_knit & vis_map_threshold_knit}}, include = {{vis_mapPreds_knit & vis_map_maxnet_knit & vis_map_threshold_knit}}}
 # Select current model and obtain raster prediction
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]] 
-predSel_{{spAbr}} <-  ENMeval::enm.maxnet@pred(
+predSel_{{spAbr}} <-  ENMeval::enm.maxnet@predict(
   m_{{spAbr}}, bgMask_{{spAbr}},
 other.settings = list(
 pred.type = "{{predType_rmd}}",

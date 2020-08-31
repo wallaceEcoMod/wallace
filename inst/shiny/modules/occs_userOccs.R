@@ -51,9 +51,9 @@ occs_userOccs_module_server <- function(input, output, session, common) {
       spp[[sp]]$rmm$code$wallace$userCSV <- input$userCSV$name
       spp[[sp]]$rmm$code$wallace$occsNum <- nrow(occs)
       spp[[sp]]$rmm$code$wallace$occsRemoved <- nrow(occs) - nrow(occsOrig)
-      spp[[sp]]$rmd$sepCSV <- ifelse(input$noCSV == 0 | is.null(input$noCSV),
+      spp[[sp]]$rmm$code$wallace$sepCSV <- ifelse(input$noCSV == 0 | is.null(input$noCSV),
                                      ",", input$sepCSV)
-      spp[[sp]]$rmd$decCSV <- ifelse(input$noCSV == 0 | is.null(input$noCSV),
+      spp[[sp]]$rmm$code$wallace$decCSV <- ifelse(input$noCSV == 0 | is.null(input$noCSV),
                                      ".", input$decCSV)
 
     }
@@ -91,7 +91,7 @@ occs_userOccs_module_rmd <- function(species) {
   list(
     occs_userOccs_knit = species$rmm$data$occurrence$sources == 'user',
     userCSV_rmd = species$rmm$code$wallace$userCSV,
-    sepCSV_rmd = species$rmd$sepCSV,
-    decCSV_rmd = species$rmd$decCSV
+    sepCSV_rmd = species$rmm$code$wallace$sepCSV,
+    decCSV_rmd = species$rmm$code$wallace$decCSV
   )
 }

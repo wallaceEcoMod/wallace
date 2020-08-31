@@ -49,6 +49,7 @@ occs_paleoDb_module_server <- function(input, output, session, common) {
     occsOrig <- occsTbls$orig
     occs <- occsTbls$cleaned
     sp <- formatSpName(input$spNamePB)
+    sp <- paste0(toupper(substring(sp, 1, 1)), substring(sp, 2, nchar(sp)))
     # if species name is already in list, overwrite it
     if (!is.null(spp[[sp]])) spp[[sp]] <- NULL
     # add two copies of occs dataset -- "occs" will be altered during session,
@@ -69,7 +70,7 @@ occs_paleoDb_module_server <- function(input, output, session, common) {
     spp[[sp]]$rmm$code$wallace$occsNum <- input$occsNumPB
     spp[[sp]]$rmm$code$wallace$occsRemoved <- nrow(occsOrig) - nrow(occs)
     spp[[sp]]$rmm$data$occurrence$sources <- "paleobioDb"
-    spp[[sp]]$rmd$timeInterval <- input$timeInterval
+    spp[[sp]]$rmm$code$wallace$timeInterval <- input$timeInterval
 
     common$update_component(tab = "Map")
   })
@@ -108,7 +109,7 @@ occs_paleoDb_module_rmd <- function(species) {
   list(
     occs_paleoDb_knit = species$rmm$data$occurrence$sources == "paleobioDb",
     occsNumPB_rmd = species$rmm$code$wallace$occsNum,
-    timeInterval_rmd = species$rmd$timeInterval
+    timeInterval_rmd = species$rmm$code$wallace$timeInterval
   )
 }
 

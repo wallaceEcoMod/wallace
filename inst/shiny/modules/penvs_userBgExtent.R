@@ -76,7 +76,7 @@ penvs_userBgExtent_module_server <- function(input, output, session, common) {
 
       # METADATA ####
       ##Record buffer size
-      spp[[sp]]$rmd$bgBuf <- input$userBgBuf
+      spp[[sp]]$rmm$code$wallace$bgBuf <- input$userBgBuf
       ##Record name of user provided background extent
       spp[[sp]]$rmm$data$occurrence$backgroundSampleSizeRule <- input$userBgShp$name
       # get extensions of all input files
@@ -209,7 +209,7 @@ penvs_userBgExtent_module_rmd <- function(species) {
     penvs_userBgExtent_knit = !is.null(species$rmm$code$wallace$userBgExt),
     bgShp_path_rmd =  species$rmm$code$wallace$userBgPath,
     bgShp_name_rmd = species$rmm$code$wallace$userBgName ,
-    userBgBuf_rmd = species$rmd$bgBuf,
+    userBgBuf_rmd = species$rmm$code$wallace$bgBuf,
     bgPtsNum_rmd = species$rmm$data$occurrence$backgroundSampleSizeSet
   )
 }

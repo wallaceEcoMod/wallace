@@ -21,7 +21,7 @@ Returns a list of 2 lists (one for each species). Each list is an ecospat noche 
 z.uncor is the density of occurrence of the species and z.cor the occupancy of the environment by the species. It has the input parameters as individual slots.
 }
 \description{
-calculates the part of environmental space more densly populated by species & the avaialbility of environmental conditions in the background
+calculates the part of environmental space more densly populated by species & the availability of environmental conditions in the background
 }
 \details{
 This fuctions implements a density estimation for each region in the environmental space (gridded at 100*100 pixels).

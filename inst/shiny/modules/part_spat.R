@@ -52,8 +52,8 @@ part_spat_module_server <- function(input, output, session, common) {
       # LOAD INTO SPP ####
       spp[[sp]]$occs$partition <- group.data$occs.grp
       spp[[sp]]$bg$partition <- group.data$bg.grp
-      spp[[sp]]$rmd$partition$code <- input$partitionSpatSel
-      spp[[sp]]$rmd$partition$agg <- input$aggFact
+      spp[[sp]]$rmm$code$wallace$partition_code <- input$partitionSpatSel
+      spp[[sp]]$rmm$code$wallace$partition_agg <- input$aggFact
       # METADATA ####
       spp[[sp]]$rmm$model$partition$Spatial <- 'Spatial'
       if(input$partitionSpatSel == 'block') {
@@ -114,11 +114,11 @@ part_spat_module_map <- function(map, common) {
 part_spat_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    part_spat_knit = !is.null(species$rmm$model$partition$Spatial)&is.null(species$rmd$partition$agg),
+    part_spat_knit = !is.null(species$rmm$model$partition$Spatial)&is.null(species$rmm$code$wallace$partition_agg),
     method_rmd = species$rmm$model$partition$partitionRule,
-    method_code_rmd = species$rmd$partition$code,
-    part_spat_aggreg_knit = !is.null(species$rmd$partition$agg),
-    aggFact_rmd = species$rmd$partition$agg
+    method_code_rmd = species$rmm$code$wallace$partition_code,
+    part_spat_aggreg_knit = !is.null(species$rmm$code$wallace$partition_agg),
+    aggFact_rmd = species$rmm$code$wallace$partition_agg
   )
 }
 

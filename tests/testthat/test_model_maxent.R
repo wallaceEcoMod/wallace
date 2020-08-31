@@ -67,7 +67,7 @@ for (i in algorithm) {
     #the output has 9 slots with correct names
     expect_equal(length(slotNames(maxentAlg)), 16)
     expect_equal(slotNames(maxentAlg),c("algorithm","tune.settings","partition.method","partition.settings",
-                                        "other.settings","results","results.grp","models",
+                                        "other.settings","results","results.partitions","models",
                                         "predictions","taxon.name","occs","occs.grp","bg","bg.grp","overlap","rmm"))
     # element within the evaluation are:
     # character
@@ -76,7 +76,7 @@ for (i in algorithm) {
     # a data frame
     expect_is(maxentAlg@tune.settings, "data.frame")
     expect_is(maxentAlg@results, "data.frame")
-    expect_is(maxentAlg@results.grp, "data.frame")
+    expect_is(maxentAlg@results.partitions, "data.frame")
     expect_is(maxentAlg@occs, "data.frame")
     expect_is(maxentAlg@bg, "data.frame")
     # a list
@@ -101,24 +101,24 @@ for (i in algorithm) {
     # columns name in the evaluation table are right for each algorithm assuming block partition
     if (i=="maxent.jar"){
     expect_equal(colnames(maxentAlg@results),c("fc","rm","tune.args","auc.train","cbi.train","auc.diff.avg",
-                                               "auc.diff.sd","auc.test.avg","auc.test.sd","or.10p.avg","or.10p.sd",
+                                               "auc.diff.sd","auc.val.avg","auc.val.sd","or.10p.avg","or.10p.sd",
                                                "or.mtp.avg","or.mtp.sd","AICc","delta.AICc","w.AIC","nparam"))
     }
     else if (i=="maxnet"){
     expect_equal(colnames(maxentAlg@results),c("fc","rm","tune.args","auc.train","cbi.train","auc.diff.avg",
-                                                 "auc.diff.sd","auc.test.avg","auc.test.sd","or.10p.avg","or.10p.sd",
+                                                 "auc.diff.sd","auc.val.avg","auc.val.sd","or.10p.avg","or.10p.sd",
                                                  "or.mtp.avg","or.mtp.sd","AICc","delta.AICc","w.AIC","nparam"))
     }
     # bin evaluation table has the right amout of rows
-    expect_equal(nrow(maxentAlg@results.grp), (nlevels(factor(partblock$occs.grp)))*10) ##colnumbers minus the 16 minimum
+    expect_equal(nrow(maxentAlg@results.partitions), (nlevels(factor(partblock$occs.grp)))*10) ##colnumbers minus the 16 minimum
   })
 
   ### test function stepts
   test_that("output data checks", {
     # the AUC values are between 0 and 1
-    expect_false(FALSE %in% ((maxentAlg@results[c("auc.test.avg", "auc.test.sd", "auc.diff.avg",
+    expect_false(FALSE %in% ((maxentAlg@results[c("auc.val.avg", "auc.val.sd", "auc.diff.avg",
                                                   "auc.diff.sd")])<=1 |
-                               (maxentAlg@results[c("auc.test.avg", "auc.test.sd", "auc.diff.avg",
+                               (maxentAlg@results[c("auc.val.avg", "auc.val.sd", "auc.diff.avg",
                                                     "auc.diff.sd")])>=0))
   })
 }

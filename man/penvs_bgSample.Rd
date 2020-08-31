@@ -21,7 +21,7 @@ otherwise leave the default NULL}
 \value{
 a dataframe containing point coordinates (longitude and latitude).
 All points are within the area provided in the RasterBrick or RasterStack (bgMask).
-Maximum number of pointsis equal to non NA cells in each layer of the reference brick or stack.
+Maximum number of points is equal to non NA cells in each layer of the reference brick or stack.
 }
 \description{
 This function samples background points from an area determined by a rasterBrick or RasterStack of environmental layers previously cropped and masked to user determined extent
