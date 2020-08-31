@@ -1101,7 +1101,8 @@ function(input, output, session) {
       rmarkdown::render("Rmd/userReport_intro.Rmd",
                         output_format = rmarkdown::github_document(html_preview = FALSE),
                         output_file = md_intro_file,
-                        clean = TRUE)
+                        clean = TRUE,
+                        encoding = "UTF-8")
       md_files <- c(md_files, md_intro_file)
       # Abbreviation for one species
       spAbr <- plyr::alply(abbreviate(stringr::str_replace(allSp(), "_", " "),
@@ -1146,7 +1147,8 @@ function(input, output, session) {
                                         spAbr = spAbr[[sp]]),
                           output_format = rmarkdown::github_document(html_preview = FALSE),
                           output_file = species_md_file,
-                          clean = TRUE)
+                          clean = TRUE,
+                          encoding = "UTF-8")
         md_files <- c(md_files, species_md_file)
       }
 
@@ -1196,14 +1198,16 @@ function(input, output, session) {
                             ),
                             output_format = rmarkdown::github_document(html_preview = FALSE),
                             output_file = multSpecies_md_file,
-                            clean = TRUE)
+                            clean = TRUE,
+                            encoding = "UTF-8")
           md_files <- c(md_files, multSpecies_md_file)
         }
       }
 
       combined_md <-
         md_files %>%
-        lapply(readLines, encoding = "UTF-8") %>%
+        lapply(readLines) %>%
+        # lapply(readLines, encoding = "UTF-8") %>%
         lapply(paste, collapse = "\n") %>%
         paste(collapse = "\n\n")
 
@@ -1224,7 +1228,8 @@ function(input, output, session) {
               "Word" = rmarkdown::word_document()
             ),
           output_file = result_file,
-          clean = TRUE
+          clean = TRUE,
+          encoding = "UTF-8"
         )
       }
 
