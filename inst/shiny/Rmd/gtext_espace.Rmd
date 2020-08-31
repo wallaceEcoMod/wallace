@@ -4,11 +4,18 @@ output: html_document
 ---
 
 ### **Component: Enviromental Space**
+This is a draft and will be updated soon
 
 **ORIENTATION**
 
-text
+
+The ecological niche is set of environmental conditions where a species can survive and reproduce. Several definition have been used by different authors depending on whether they consider abiotic and/or biotic conditions. The Grinnellian niche for instance is determined by the habitat in which the species lives and its associated behavioral adaptations (e.g. the chaparral habitat is the niche of the California thrasher’s because his behavior is adapted to it; Grinnell 1917). In contrast, the Eltonian niche (Chase & Leibord 2003) is defined as the position of a species in the trophic chain and considers not only the requirements that allow a species to persist but also how it changes the availability of depletable resources (e.g. a beaver modifies abiotic conditions by building dams, but also resources for other species by chopping down trees). Here we use the Hutchinsonian definition of the niche which considers an n-dimensional hypervolume where a species can persist and reproduce in a space defined by non-depletable environmental gradients (Hutchinson 1957).
+Component Environmental Space performs analyzes and visualizations of the Hutchinsonian niche for one or two selected species. Wallace currently allows to: 1) perform a PCA (Module Principal Components Analysis) to reduce the dimensionality of the original environmental space, 2) calculate the density of occurrence of the species along the two first components of the PCA (Module Occurrence Density Grid) and 3) perform niche overlap analyses (Module Niche Overlap).
 
 **REFERENCES**
 
-references
+Joseph Grinnell (1917). "The niche-relationships of the California Thrasher". The Auk. 34: 427–433. doi:10.2307/4072271.
+Mathew A. Leibold (2003). Ecological Niches: Linking Classical and Contemporary Approaches. University of Chicago Press
+Hutchinson, G.E. (1957). "Concluding remarks" (PDF). Cold Spring Harbor Symposia on Quantitative Biology. 22 (2): 415–427. doi:10.1101/sqb.1957.022.01.039
+
+

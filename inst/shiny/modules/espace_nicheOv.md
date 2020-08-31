@@ -1,13 +1,23 @@
-### **Module:**
+### **Module: Niche Overlap**
 
 **BACKGROUND**
 
-text
+Quantifying niche differences between species has been a topic of interest for ecologist for decades (e.g. Colwell and Futuyma 1971), however with a focus on the consumption of depletable resources (i.e. the Eltonian niche). Quantifying niche differences along environmental gradients (i.e. the Huntchinsonian niche) using species occurrences only emerged in the late 1990s with the development of species distribution models (SDM; Guisan and Zimmermann 2000). Subsequently, Warren et al. 2008 developed a SDM-based method (and associated randomization tests) to quantify niche differences using pixel by pixel comparisons of SDM predictions in the geographical space. One potential issue with this approach is that many pixels predicted as suitable by SDM may not be occupied (i.e. SDM implicitly assume that species are at equilibrium with their environment), although many factors (e.g. biotic interactions, dispersal limitations) might prevent these pixels to be occupied. The method is thus prone to overestimate niche overlap. To avoid this potential bias, Broennimann et al. 2012 developed a similar quantification and associated randomization tests in the environmental space, quantifying niche overlap directly from occurrence data instead of model predictions. This approach is implemented in this module.
 
 **IMPLEMENTATION**
 
-text
+The niche overlap quantification is based on the occurrence densities and the densities of environmental conditions available in the background extent that are estimated in the module Occurrence Density Grid. The metric overlap D (Schoener 1968) is calculated with the function ecospat.niche.overlap of the R package ecospat and provides a global index of niche overlap ranging from 0 to 1. A value of 1 is given when the ratio of density of occurrence to density of available environmental conditions are strictly the same for both species in all pixels of the environmental space. D is thus highly depend on the definition of the background extent. To ensure meaningful results, it is recommended to define a large enough background extent that encompasses the area that has been accessible to the species since it speciated (Barve et al. 2011). 
+To be independent of the background extent, niche overlap indices based on binarized niches (i.e. pixels take value of 0 if the density of occurrence is 0, or 1 if higher) can be used. Note however that in this case, the information about occurrence densities is lost, i.e. any part of the niche is considered to have the same “quality”. Binarized overlap (BinOv, BinOv12 and BinOv21) are derived from the function ecospat.niche.dyn.index, originally developed to study niche changes in biological invasions (Guisan et al. 2014). BinOv measures the proportion of the union of both niches that is overlapping between the two species.  BinOv12 measure the proportion of the niche of species 1 overlapping with the niche of species 2. The plot on the left shows this indices in the environmental space, with in blue the environmental conditions covered only by the niche of species 1, in red the environmental conditions covered only by the niche of species 2 and in purple the environmental conditions covered by both species (i.e. the niche overlap). The histogram on the right show the results of a niche similarity test. This test is analogous to the test presented by Warren et al. 2008 except that it takes place in the environmental rather than the geographical space. Both observed species niches are randomly shifts in the background extent and niche overlaps are recalculated (simulated overlaps in gray). If the observed overlap (in red) is higher than 95% of simulated overlap (p-value < 0.05), we can consider that the two species are more similar than random.  
 
 **REFERENCES**
 
-references
+Navarro, J. et al. Spatial distribution and ecological niches of non-breeding planktivorous petrels. Sci. Colwell, R.K. and Futuyma, D.J. (1971).  On the Measurement of Niche Breadth and Overlap. Ecology 52(4) 567-576. http://www.jstor.org/stable/1934144
+Guisan, A. & Zimmermann, N.E. (2000) Predictive habitat distribution models in ecology. Ecological Modelling, 135, 147-186.
+Warren, D.L., Glor, R.E. & Turelli, M. (2008) Environmental niche equivalency versus conservatism: quantitative approaches to niche evolution. Evolution, 62, 2868–2883
+Broennimann, O., Fitzpatrick, M.C., Pearman, P.B., Petitpierre, B., Pellissier, L., Yoccoz, N.G., Thuiller, W., Fortin, M.J., Randin, C., Zimmermann, N.E., Graham, C.H. & Guisan, A. (2012) Measuring ecological niche overlap from occurrence and spatial environmental data. Global Ecology and Biogeography, 21, 481-497.
+Broennimann, O., Di Cola V. and Guisan, A. (2016). ecospat: Spatial Ecology Miscellaneous Methods. R package version 2.1.1. https://CRAN.R-project.org/package=ecospat
+Schoener, T.W. 1968. Anolis lizards of Bimini: resource partitioning in a complex fauna. Ecology, 49, 704-726.
+Barve, N., Barve, V., Jiménez-Valverde, A., Lira-Noriega, A., Maher, S.P., Peterson, A.T., Soberón, J., Villalobos, F., 2011. The crucial role of the accessible area in ecological niche modeling and species distribution modeling. Ecol. Model. 222, 1810–1819.
+Guisan A, Petitpierre B, Broennimann O, Daehler C, Kueffer C (2014) Unifying niche shift studies: Insights from biological invasions. Trends Ecol Evol 29(5):260–269
+
+
