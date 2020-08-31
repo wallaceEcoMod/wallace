@@ -113,8 +113,18 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
                   "uncertainty")) {
       if (!(col %in% names(sp.occs))) sp.occs[,col] <- NA
     }
-    # add popup field
-    sp.occs$pop <- unlist(apply(sp.occs, 1, popUpContent))
+    # add popup field and arrange
+    cols <- c("occID", "scientific_name", "longitude", "latitude", "country",
+              "state_province", "locality", "year", "record_type", "catalog_number",
+              "institution_code", "elevation", "uncertainty")
+    sp.occs <- sp.occs %>%
+      dplyr::select(dplyr::one_of(cols)) %>%
+      dplyr::mutate(year = as.integer(year),
+                    uncertainty = as.numeric(uncertainty)) %>%
+      # # make new column for leaflet marker popup content
+      dplyr::mutate(pop = unlist(apply(sp.occs, 1, popUpContent))) %>%
+      dplyr::arrange_(cols)
+
     n <- formatSpName(i)
 
     # subset to just records with latitude and longitude
