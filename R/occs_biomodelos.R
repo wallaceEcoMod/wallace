@@ -38,17 +38,20 @@ occs_biomodelos <- function(spName, bioKey, logger = NULL) {
                           httr::add_headers(host = 'api-biomodelos.humboldt.org.co',
                                       authorization = paste0('apiKey ', bioKey)))
   jsonSearch <-  httr::content(respSearch, 'parsed')
-  if (jsonSearch == "Unauthorized") {
-    logger %>% writeLog(
-      type = 'error', "API key is not working.")
-    return()
-  }
+
   if (length(jsonSearch) == 0) {
     logger %>% writeLog(
       type = 'error',
       hlSpp(spName), "Species name not found, please check the spelling")
     return()
   }
+
+  if (jsonSearch == "Unauthorized") {
+    logger %>% writeLog(
+      type = 'error', "API key is not working.")
+    return()
+  }
+
   urlOccs <- paste('https://api-biomodelos.humboldt.org.co/v2/species/records/',
                    jsonSearch[[1]]$taxID, sep = '')
 
