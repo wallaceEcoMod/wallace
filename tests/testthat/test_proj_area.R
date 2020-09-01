@@ -55,7 +55,7 @@ for (i in algorithm) {
   else{
     modAlg <- model_maxent(occs.xy, bg.xy, partblock, bgMask, rms, rmsStep, fcs, clampSel = TRUE,
                           algMaxent = i,catEnvs=NULL,spN=spN)
-    curModel='L_1'
+    curModel='fc.L_rm.1'
   }
 
 for (j in outputType) {
