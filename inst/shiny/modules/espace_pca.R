@@ -204,12 +204,8 @@ espace_pca_module_result <- function(id) {
 }
 
 espace_pca_module_rmd <- function(species) {
-  # Variables used in the module's Rmd code
-  # list(espace.sp1 = strsplit(sp, ".", fixed = TRUE)[[1]][1],
-  #      espace.sp2 = strsplit(sp, ".", fixed = TRUE)[[1]][2],
-  #      pcaSel = printVecAsis(spp[[sp]]$rmm$wallace$pcaSel))
   list(
     espace_pca_knit = !is.null(species$pca),
-    pcaSel_rmd = species$pcaSel
+    pcaSel_rmd = printVecAsis(species$pcaSel)
   )
 }

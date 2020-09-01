@@ -77,7 +77,6 @@ espace_occDens_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
     espace_occDens_knit = !is.null(species$occDens)
-
   )
 }
 

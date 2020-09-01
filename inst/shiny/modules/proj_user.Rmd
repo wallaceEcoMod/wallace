@@ -17,10 +17,9 @@ proj_userEnvs_{{spAbr}} <- proj_userEnvs(
   pjExt = bgExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}},
-  spN ="{{spName}}")
-#store the cropped projection variables
- projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
+  clamp = {{clamp_rmd}})
+# store the cropped projection variables
+projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
 ```
 
 ```{asis, echo = {{proj_user_knit & proj_user_threshold_knit & !proj_user_user_knit & !proj_user_drawn_knit}}, eval = {{proj_user_knit & proj_user_threshold_knit & !proj_user_user_knit & !proj_user_drawn_knit}}, include = {{proj_user_knit & proj_user_threshold_knit & !proj_user_user_knit & !proj_user_drawn_knit}}}
@@ -42,13 +41,12 @@ proj_userEnvs_{{spAbr}} <- proj_userEnvs(
   pjExt = bgExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}},
-  spN ="{{spName}}")
+  clamp = {{clamp_rmd}})
 
 # Add threshold if specified 
 proj_userEnvs_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projUser < {{threshold_rmd}}
-#store the cropped projection variables
- projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
+# store the cropped projection variables
+projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
 ```
 
 ```{asis, echo = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit}}, eval = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit}}, include = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit }}}
@@ -66,8 +64,7 @@ projUserEnvs_{{spAbr}}  <- envs_userEnvs(
 proj_draw_{{spAbr}} <-proj_draw(
   polyPjXY = matrix({{polyPjXY_rmd}},ncol=2,byrow=FALSE),
   polyPjID = {{polyPjID_rmd}},
-  drawPjBuf = {{BgBuf_rmd}},
-  spN = "{{spName}}")
+  drawPjBuf = {{BgBuf_rmd}})
 # Project model 
 proj_userEnvs_{{spAbr}} <- proj_userEnvs(
   evalOut = model_{{spAbr}},
@@ -76,10 +73,9 @@ proj_userEnvs_{{spAbr}} <- proj_userEnvs(
   pjExt = proj_draw_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}},
-  spN ="{{spName}}")
+  clamp = {{clamp_rmd}})
 #store the cropped projection variables
- projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
+projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
 ```
 
 ```{asis, echo = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit & proj_user_threshold_knit}}, eval = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit & proj_user_threshold_knit}}, include = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit & proj_user_threshold_knit }}}
@@ -97,8 +93,7 @@ projUserEnvs_{{spAbr}}  <- envs_userEnvs(
 proj_draw_{{spAbr}} <-proj_draw(
   polyPjXY = matrix({{polyPjXY_rmd}},ncol=2,byrow=FALSE),
   polyPjID = {{polyPjID_rmd}},
-  drawPjBuf = {{BgBuf_rmd}},
-  spN = "{{spName}}")
+  drawPjBuf = {{BgBuf_rmd}})
 # Project model 
 proj_userEnvs_{{spAbr}} <- proj_userEnvs(
   evalOut = model_{{spAbr}},
@@ -107,12 +102,11 @@ proj_userEnvs_{{spAbr}} <- proj_userEnvs(
   pjExt = proj_draw_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}},
-  spN ="{{spName}}")
+  clamp = {{clamp_rmd}})
 # Add threshold if specified 
 proj_userEnvs_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projUser < {{threshold_rmd}}
-#store the cropped projection variables
- projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
+# store the cropped projection variables
+projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
 ```
 
 ```{asis, echo = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit}}, eval = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit}}, include = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit }}}
@@ -132,8 +126,7 @@ projUserEnvs_{{spAbr}}  <- envs_userEnvs(
 proj_userExt_{{spAbr}} <- proj_userExtent(
   bgShp_path = "Input path here",
   bgShp_name = "Input file name here",
-  userBgBuf = {{BgBuf_rmd}},
-  spN = "{{spName}}")
+  userBgBuf = {{BgBuf_rmd}})
 # Project model 
 proj_userEnvs_{{spAbr}} <- proj_userEnvs(
   evalOut = model_{{spAbr}},
@@ -142,10 +135,9 @@ proj_userEnvs_{{spAbr}} <- proj_userEnvs(
   pjExt = proj_userExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}},
-  spN ="{{spName}}")
-#store the cropped projection variables
- projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
+  clamp = {{clamp_rmd}})
+# store the cropped projection variables
+projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
 ```
 
 ```{asis, echo = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit & proj_user_threshold_knit}}, eval = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit & proj_user_threshold_knit}}, include = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit & proj_user_threshold_knit }}}
@@ -164,8 +156,7 @@ projUserEnvs_{{spAbr}}  <- envs_userEnvs(
 proj_userExt_{{spAbr}} <- proj_userExtent(
   bgShp_path = "Input path here",
   bgShp_name = "Input file name here",
-  userBgBuf = {{BgBuf_rmd}},
-  spN = "{{spName}}")
+  userBgBuf = {{BgBuf_rmd}})
 # Project model 
 proj_userEnvs_{{spAbr}} <- proj_userEnvs(
   evalOut = model_{{spAbr}},
@@ -174,11 +165,10 @@ proj_userEnvs_{{spAbr}} <- proj_userEnvs(
   pjExt = proj_userExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}},
-  spN ="{{spName}}")
+  clamp = {{clamp_rmd}})
 # Add threshold if specified 
 proj_userEnvs_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projUser < {{threshold_rmd}}
-#store the cropped projection variables
- projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
+# store the cropped projection variables
+projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
 ```
 

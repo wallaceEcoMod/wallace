@@ -5,11 +5,11 @@ Generate a Maxent evaluation plot using "{{evalPlot_rmd}}" as evaluation statist
 
 ```{r, echo = {{vis_maxentEvalPlot_knit}}, include = {{vis_maxentEvalPlot_knit}}}
 # Generate an evaluation plot
-   maxentEvalPlot_{{spAbr}} <- ENMeval::evalplot.stats(
-     model_{{spAbr}},
-     "{{evalPlot_rmd}}",
-     "rm",
-     "fc")
+maxentEvalPlot_{{spAbr}} <- ENMeval::evalplot.stats(
+   model_{{spAbr}},
+   "{{evalPlot_rmd}}",
+   "rm",
+   "fc")
 #plot
-maxentEvalPlot_Dl
+maxentEvalPlot_{{spAbr}}
 ```

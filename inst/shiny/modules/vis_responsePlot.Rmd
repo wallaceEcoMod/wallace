@@ -5,10 +5,10 @@ Visualize response curves from "{{alg_rmd}}" model.
 
 ```{r, echo = {{vis_responsePlot_knit & vis_maxnet_knit}}, include = {{vis_responsePlot_knit & vis_maxnet_knit}}}
 # Create response curves
- maxnet::response.plot(
-   model_{{spAbr}}@models[["{{curModel_rmd}}"]],
-   v =  names(bgMask_{{spAbr}}),
-   type = "cloglog")
+maxnet::response.plot(
+  model_{{spAbr}}@models[["{{curModel_rmd}}"]],
+  v = names(bgMask_{{spAbr}}),
+  type = "cloglog")
 
 ```
 
@@ -20,6 +20,6 @@ Visualize response curves from "{{alg_rmd}}" model.
 ```{r, echo = {{vis_responsePlot_knit & !vis_maxnet_knit }}, include = {{vis_responsePlot_knit & !vis_maxnet_knit}}}
 # Create response curves
 dismo::response(
-   model_{{spAbr}}@models[["{{curModel_rmd}}"]],
-  var =  names(bgMask_{{spAbr}}))
+  model_{{spAbr}}@models[["{{curModel_rmd}}"]],
+  var = names(bgMask_{{spAbr}}))
 ```

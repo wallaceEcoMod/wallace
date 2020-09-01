@@ -8,7 +8,7 @@ Visualize bivariate plot of bioclim model for environmental layers `r {{a_rmd}}`
 ```{r, echo = {{vis_bioclimPlot_knit}}, include = {{vis_bioclimPlot_knit}}}
 # Generate a bioclim plot 
 vis_bioclimPlot_{{spAbr}} <- vis_bioclimPlot(
-  x= model_{{spAbr}}@models$bioclim,
+  x = model_{{spAbr}}@models$bioclim,
   a = {{a_rmd}},
   b = {{b_rmd}},
   p = {{p_rmd}})

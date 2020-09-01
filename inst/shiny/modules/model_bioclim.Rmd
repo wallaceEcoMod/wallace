@@ -9,6 +9,5 @@ model_{{spAbr}} <- model_bioclim(
   occs =  occs_{{spAbr}},
   bg = bgEnvsVals_{{spAbr}}, 
   user.grp = groups_{{spAbr}}, 
-  bgMsk = bgMask_{{spAbr}},
-  spN = "{{spName}}")
+  bgMsk = bgMask_{{spAbr}})
 ```
