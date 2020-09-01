@@ -79,15 +79,22 @@ envs_ecoclimate_module_server <- function(input, output, session, common) {
                                     })
       # remove occurrences with NA environmental values
       spp[[sp]]$occs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, sp, logger)
+      # also remove variable value rows with NA environmental values
+      occsEnvsVals <- na.omit(occsEnvsVals)
 
       logger %>% writeLog(hlSpp(sp), "EcoClimate variables ready to use. (**)")
 
       # LOAD INTO SPP ####
       spp[[sp]]$envs <- nmEcoClimate
-      # remove occurrence records with NA environmental values
-      spp[[sp]]$occs <- cbind(spp[[sp]]$occs, occsEnvsVals)
-      # also remove variable value rows with NA environmental values
-      occsEnvsVals <- na.omit(occsEnvsVals)
+
+      # add columns for env variable values for each occurrence record
+      if (!any(names(occsEnvsVals) %in% names(spp[[sp]]$occs))) {
+        spp[[sp]]$occs <- cbind(spp[[sp]]$occs, occsEnvsVals)
+      } else {
+        shaEnvNames <- names(occsEnvsVals)[names(occsEnvsVals) %in% names(spp[[sp]]$occs)]
+        spp[[sp]]$occs <- spp[[sp]]$occs %>% dplyr::mutate(occsEnvsVals[shaEnvNames])
+      }
+
 
       # METADATA ####
       spp[[sp]]$rmm$data$environment$variableNames <- names(ecoClims)
@@ -147,7 +154,7 @@ envs_ecoclimate_module_rmd <- function(species) {
     envs_ecoclimate_knit = !is.null(species$rmm$code$wallace$bcAOGCM),
     bcAOGCM_rmd = species$rmm$code$wallace$bcAOGCM,
     bcScenario_rmd = species$rmm$code$wallace$bcScenario,
-    ecoClimSel_rmd = species$rmm$code$wallace$ecoClimSel
+    ecoClimSel_rmd =  printVecAsis(as.numeric(species$rmm$code$wallace$ecoClimSel))
     ##Alternative using rmm instead of RMD object but not working
     #grepl("ecoClimate",species$rmm$data$environment$sources)
   )
