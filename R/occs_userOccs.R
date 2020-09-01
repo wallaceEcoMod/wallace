@@ -143,7 +143,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
     dupsRem <- nrow(sp.occs) - nrow(occs)
 
     logger %>% writeLog(
-      hlSpp(i), "Data uploaded from <i>'", txtName,
+      hlSpp(n), "Data uploaded from <i>'", txtName,
       "'</i>: Duplicated records removed [",
       dupsRem, "]. Remaining records [", nrow(occs), "].")
 
@@ -153,7 +153,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
     if(nrow(sp.bg) > 0) {
       occsList[[n]]$bg <- sp.bg
       logger %>% writeLog(
-        hlSpp(i), "Data for uploaded from <i>'", txtName, "'</i>: ",
+        hlSpp(n), "Data for uploaded from <i>'", txtName, "'</i>: ",
         nrow(sp.bg), " background records.")
     }
   }
