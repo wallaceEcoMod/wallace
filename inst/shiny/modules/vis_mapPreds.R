@@ -259,7 +259,6 @@ vis_mapPreds_module_rmd <- function(species) {
     threshold_rmd = if (!is.null(species$rmm$prediction$binary$thresholdSet)){
       species$rmm$prediction$binary$thresholdSet} else {0},
     thresholdRule_rmd = species$rmm$prediction$binary$thresholdRule
-
   )
 }
 

@@ -1398,15 +1398,18 @@ function(input, output, session) {
     # Storage species with no env data
     noEnvsSpp <- NULL
     for (i in sppLoad) {
-      diskRast <- raster::fromDisk(envs.global[[spp[[i]]$envs]])
-      if (diskRast) {
-        if (class(envs.global[[spp[[i]]$envs]]) == "RasterStack") {
-          diskExist <- !file.exists(envs.global[[spp[[i]]$envs]]@layers[[1]]@file@name)
-        } else if (class(envs.global[[spp[[i]]$envs]]) == "RasterBrick") {
-          diskExist <- !file.exists(envs.global[[spp[[i]]$envs]]@file@name)
-        }
-        if (diskExist) {
-          noEnvsSpp <- c(noEnvsSpp, i)
+      # Check if envs.global object exists in spp
+      if (!is.null(spp[[i]]$envs)) {
+        diskRast <- raster::fromDisk(envs.global[[spp[[i]]$envs]])
+        if (diskRast) {
+          if (class(envs.global[[spp[[i]]$envs]]) == "RasterStack") {
+            diskExist <- !file.exists(envs.global[[spp[[i]]$envs]]@layers[[1]]@file@name)
+          } else if (class(envs.global[[spp[[i]]$envs]]) == "RasterBrick") {
+            diskExist <- !file.exists(envs.global[[spp[[i]]$envs]]@file@name)
+          }
+          if (diskExist) {
+            noEnvsSpp <- c(noEnvsSpp, i)
+          }
         }
       }
     }

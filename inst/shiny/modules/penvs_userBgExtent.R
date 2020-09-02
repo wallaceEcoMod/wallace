@@ -207,8 +207,7 @@ penvs_userBgExtent_module_rmd <- function(species) {
   list(
   # Variables used in the module's Rmd code
     penvs_userBgExtent_knit = !is.null(species$rmm$code$wallace$userBgExt),
-    bgShp_path_rmd =  species$rmm$code$wallace$userBgPath,
-    bgShp_name_rmd = species$rmm$code$wallace$userBgName ,
+    bgShp_name_rmd = species$rmm$code$wallace$userBgShpParams[["layer"]],
     userBgBuf_rmd = species$rmm$code$wallace$bgBuf,
     bgPtsNum_rmd = species$rmm$data$occurrence$backgroundSampleSizeSet
   )

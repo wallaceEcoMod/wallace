@@ -1,7 +1,7 @@
 ```{asis, echo = {{model_maxent_knit}}, eval = {{model_maxent_knit & !cat_envs_knit}}, include = {{model_maxent_knit}}}
 ### Build and Evaluate Niche Model
 Generating a species distribution model using the `r '{{algMaxent_rmd}}'` algorithm as implemented in ENMeval V2.0 (with clamping = `r {{clampSel_rmd}}`).
-For tuning using `r  c("{{fcs1_rmd}}","{{fcs2_rmd}}","{{fcs3_rmd}}","{{fcs4_rmd}}","{{fcs5_rmd}}")[1:{{fcs_length_rmd}}]` feature classes and regularization multipliers ranging from `r {{rms1_rmd}}` to `r {{rms2_rmd}}`  increasing by `r {{rmsStep_rmd}}`. Not using any categorical predictor variables. 
+For tuning using `r  {{fcs_rmd}}` feature classes and regularization multipliers ranging from `r {{rms_rmd[1]}}` to `r {{rms_rmd[2]}}`  increasing by `r {{rmsStep_rmd}}`. Not using any categorical predictor variables. 
 
 ```
 
@@ -12,21 +12,20 @@ model_{{spAbr}} <- model_maxent(
   bg = bgEnvsVals_{{spAbr}},
   user.grp = groups_{{spAbr}}, 
   bgMsk = bgMask_{{spAbr}},
-  rms = c({{rms1_rmd}},{{rms2_rmd}}), 
+  rms = {{rms_rmd}}, 
   rmsStep = {{rmsStep_rmd}},
-  fcs = c("{{fcs1_rmd}}","{{fcs2_rmd}}","{{fcs3_rmd}}","{{fcs4_rmd}}","{{fcs5_rmd}}")[1:{{fcs_length_rmd}}],
+  fcs = {{fcs_rmd}},
   clampSel = {{clampSel_rmd}},
   algMaxent = "{{algMaxent_rmd}}",
   catEnvs = NULL,
   parallel = {{parallel_rmd}},
-  numCores = {{numCores_rmd}},
-  spN =  "{{spName}}")
+  numCores = {{numCores_rmd}})
 ```
 
 ```{asis, echo = {{model_maxent_knit & cat_envs_knit}}, eval = {{model_maxent_knit & cat_envs_knit}}, include = {{model_maxent_knit & cat_envs_knit}}}
 ### Build and Evaluate Niche Model
 Generating a species distribution model using the `r '{{algMaxent_rmd}}'` algorithm as implemented in ENMeval V2.0 (with clamping = `r {{clampSel_rmd}}`).
-For tuning using `r  c("{{fcs1_rmd}}","{{fcs2_rmd}}","{{fcs3_rmd}}","{{fcs4_rmd}}","{{fcs5_rmd}}")[1:{{fcs_length_rmd}}]` feature classes and regularization multipliers ranging from `r {{rms1_rmd}}` to `r {{rms2_rmd}}`  increasing by `r {{rmsStep_rmd}}`. Using a total of `r {{catEnvsNum_rmd}}` categorical predictor variables. 
+For tuning using `r  {{fcs_rmd}}` feature classes and regularization multipliers ranging from `r {{rms_rmd[1]}}` to `r {{rms_rmd[2]}}`  increasing by `r {{rmsStep_rmd}}`. Using a total of `r {{catEnvsNum_rmd}}` categorical predictor variables. 
 ```
 
 ```{r, echo = {{model_maxent_knit & cat_envs_knit}}, include = {{model_maxent_knit & cat_envs_knit}}}
@@ -36,13 +35,12 @@ model_{{spAbr}} <- model_maxent(
   bg = bgEnvsVals_{{spAbr}},
   user.grp = groups_{{spAbr}}, 
   bgMsk = bgMask_{{spAbr}},
-  rms = c({{rms1_rmd}},{{rms2_rmd}}), 
+  rms = {{rms_rmd}}, 
   rmsStep = {{rmsStep_rmd}},
-  fcs = c("{{fcs1_rmd}}","{{fcs2_rmd}}","{{fcs3_rmd}}","{{fcs4_rmd}}","{{fcs5_rmd}}")[1:{{fcs_length_rmd}}],
+  fcs = {{fcs_rmd}},
   clampSel = {{clampSel_rmd}},
   algMaxent = "{{algMaxent_rmd}}",
   catEnvs = "{{catEnvs_rmd}}",
   parallel = {{parallel_rmd}},
-  numCores = {{numCores_rmd}},
-  spN =  "{{spName}}")
+  numCores = {{numCores_rmd}})
 ```

@@ -5,7 +5,7 @@ Performing a principal component analysis to reduce dimensionality of environmen
 
 ```{r, echo = {{espace_pca_knit}}, include = {{espace_pca_knit}}}
 #Determine the variables to use
-pcaSel_{{multAbr}} <- regmatches("{{pcaSel_rmd}}", gregexpr(".{5}", "{{pcaSel_rmd}}"))[[1]]
+pcaSel_{{multAbr}} <- {{pcaSel_rmd}}
 #Run the pca
 espace_pca_{{multAbr}} <- espace_pca(
   sp.name1 = "{{spName1}}",

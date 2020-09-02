@@ -100,7 +100,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
             logger %>%
               writeLog(
                 type = "error",
-                hlSpp(sp),
+                hlSpp(formatSpName(sp)),
                 "There is no match in GBIF database. Please check the spelling. (**)"
               )
             return()
@@ -141,7 +141,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
           citeGBIF <- list(doi = doiGBIF, date = dateDOI)
           logger %>%
             writeLog(
-              hlSpp(sp),
+              hlSpp(formatSpName(sp)),
               "(**) #CiteTheDOI: Gbif.org (", dateDOI,
               ") GBIF Ocurrence Download https://doi.org/", doiGBIF
             )
@@ -163,7 +163,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
     if (q[[occDb]]$meta$found == 0) {
       logger %>%
         writeLog(type = 'error',
-                 hlSpp(sp),
+                 hlSpp(formatSpName(sp)),
                  'No records found, please check the spelling. (**)')
       next
     }
@@ -183,7 +183,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
     if (nrow(occsXY) == 0) {
       logger %>% writeLog(
         type = 'warning',
-        hlSpp(sp),
+        hlSpp(formatSpName(sp)),
         'No records with coordinates found in ', occDb, ". (**)")
       return()
     }
@@ -267,7 +267,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
     totRows <- q[[occDb]]$meta$found
 
     logger %>%
-      writeLog(hlSpp(sp), 'Total ', occDb, ' records returned [', nrow(occsOrig),
+      writeLog(hlSpp(formatSpName(sp)), 'Total ', occDb, ' records returned [', nrow(occsOrig),
                '] out of [', totRows, '] total',
                if (!(doCitations | occDb == 'bien')) {paste0(' (limit ', occNum,')')},
                '. Records without coordinates removed [', noCoordsRem,

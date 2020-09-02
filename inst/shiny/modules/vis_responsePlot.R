@@ -23,7 +23,6 @@ vis_responsePlot_module_server <- function(input, output, session, common) {
     if (spp[[curSp()]]$rmm$model$algorithms == "maxnet"|spp[[curSp()]]$rmm$model$algorithms == "maxent.jar"){
       spp[[curSp()]]$rmd$vis_curModel <- curModel()
     }
-
   })
 
 
@@ -64,11 +63,8 @@ vis_responsePlot_module_server <- function(input, output, session, common) {
    }
 
 vis_responsePlot_module_result <- function(id) {
-
   ns <- NS(id)
   imageOutput(ns('responsePlot'))
-
-
 }
 
 vis_responsePlot_module_rmd <- function(species) {

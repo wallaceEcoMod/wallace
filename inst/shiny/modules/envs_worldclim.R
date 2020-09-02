@@ -103,7 +103,13 @@ envs_worldclim_module_server <- function(input, output, session, common) {
       }
 
       # add columns for env variable values for each occurrence record
-      spp[[sp]]$occs <- cbind(spp[[sp]]$occs, occsEnvsVals)
+      if (!any(names(occsEnvsVals) %in% names(spp[[sp]]$occs))) {
+        spp[[sp]]$occs <- cbind(spp[[sp]]$occs, occsEnvsVals)
+      } else {
+        shaEnvNames <- names(occsEnvsVals)[names(occsEnvsVals) %in% names(spp[[sp]]$occs)]
+        spp[[sp]]$occs <- spp[[sp]]$occs %>% dplyr::mutate(occsEnvsVals[shaEnvNames])
+      }
+
 
       # METADATA ####
       spp[[sp]]$rmm$data$environment$variableNames <- names(wcbc)

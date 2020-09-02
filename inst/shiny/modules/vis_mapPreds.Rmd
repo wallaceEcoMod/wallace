@@ -29,8 +29,8 @@ m  %>%
   addRasterImage(predSel_{{spAbr}}, colors = rasPal, opacity = 0.7,
                  group = 'vis', layerId = 'mapPred', method = "ngb") %>%
  ##add background polygons
-  addPolygons( data= bgExt_{{spAbr}},fill = FALSE,
-                                   weight = 4, color = "blue", group = 'proj')
+  addPolygons(data = bgExt_{{spAbr}}, fill = FALSE,
+              weight = 4, color = "blue", group = 'proj')
 
 
 ```
@@ -52,7 +52,7 @@ mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
 #Define colors and legend  
 rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 legendPal <- colorNumeric(rev(rasCols), mapPredVals_{{spAbr}}, na.color = 'transparent')
-rasPal <- colorNumeric(rasCols, mapPredVals_{{spAbr}}, na.color = 'transparent')
+rasPal <- c('gray', 'blue')
 #Generate map
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m  %>%
@@ -68,8 +68,8 @@ m  %>%
   addRasterImage(predSel_{{spAbr}}, colors = rasPal, opacity = 0.7,
                  group = 'vis', layerId = 'mapPred', method = "ngb") %>%
  ##add background polygons
-  addPolygons( data= bgExt_{{spAbr}},fill = FALSE,
-                                   weight = 4, color = "blue", group = 'proj')
+  addPolygons(data = bgExt_{{spAbr}},fill = FALSE,
+              weight = 4, color = "blue", group = 'proj')
 
 
 ```
@@ -84,9 +84,8 @@ Generate a map of the Maxent generated model with no threshold
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
 predSel_{{spAbr}} <- ENMeval::enm.maxent.jar@predict(
   m_{{spAbr}}, bgMask_{{spAbr}},
- other.settings = list(
-pred.type = "{{predType_rmd}}",
-clamp = {{clamp_rmd}}))
+  other.settings = list(pred.type = "{{predType_rmd}}",
+                        clamp = {{clamp_rmd}}))
 #Get values of prediction
 mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
 #Define colors and legend  
@@ -108,8 +107,8 @@ m  %>%
   addRasterImage(predSel_{{spAbr}}, colors = rasPal, opacity = 0.7,
                  group = 'vis', layerId = 'mapPred', method = "ngb") %>%
  ##add background polygons
-  addPolygons( data= bgExt_{{spAbr}},fill = FALSE,
-                                   weight = 4, color = "blue", group = 'proj')
+  addPolygons(data = bgExt_{{spAbr}},fill = FALSE,
+              weight = 4, color = "blue", group = 'proj')
 
 ```
 
@@ -123,9 +122,8 @@ Generate a map of the Maxent generated model with a "{{thresholdRule_rmd}}" thre
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
 predSel_{{spAbr}} <- ENMeval::enm.maxent.jar@predict(
   m_{{spAbr}}, bgMask_{{spAbr}},
- other.settings = list(
-pred.type = "{{predType_rmd}}",
-clamp = {{clamp_rmd}}))
+  other.settings = list(pred.type = "{{predType_rmd}}",
+                        clamp = {{clamp_rmd}}))
 # Applied selected threshold
 predSel_{{spAbr}} <- predSel_{{spAbr}} > {{threshold_rmd}}
 #Get values of prediction
@@ -133,14 +131,14 @@ mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
 #Define colors and legend  
 rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 legendPal <- colorNumeric(rev(rasCols), mapPredVals_{{spAbr}}, na.color = 'transparent')
-    rasPal <- c('gray', 'blue')
+rasPal <- c('gray', 'blue')
 # Generate map  
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m  %>%
-        addLegend("bottomright", colors = c('gray', 'blue'),
-                title = "Thresholded Suitability<br>(Training)",
-                labels = c("predicted absence", "predicted presence"),
-                opacity = 1, layerId = "train") %>% 
+  addLegend("bottomright", colors = c('gray', 'blue'),
+            title = "Thresholded Suitability<br>(Training)",
+            labels = c("predicted absence", "predicted presence"),
+            opacity = 1, layerId = "train") %>% 
   #add occurrence data
   addCircleMarkers(data = occs_{{spAbr}}, lat = ~latitude, lng = ~longitude,
                    radius = 5, color = 'red', fill = TRUE, fillColor = "red",
@@ -149,8 +147,8 @@ m  %>%
   addRasterImage(predSel_{{spAbr}}, colors = rasPal, opacity = 0.7,
                  group = 'vis', layerId = 'mapPred', method = "ngb") %>%
  ##add background polygons
-  addPolygons( data= bgExt_{{spAbr}},fill = FALSE,
-                                   weight = 4, color = "blue", group = 'proj')
+  addPolygons(data = bgExt_{{spAbr}},fill = FALSE,
+              weight = 4, color = "blue", group = 'proj')
 
 ```
 
@@ -164,14 +162,13 @@ Generate a map of the maxnet generated model with no threshold
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
 predSel_{{spAbr}} <-  ENMeval::enm.maxnet@predict(
   m_{{spAbr}}, bgMask_{{spAbr}},
-other.settings = list(
-pred.type = "{{predType_rmd}}",
-clamp = {{clamp_rmd}}))
+  other.settings = list(pred.type = "{{predType_rmd}}",
+                        clamp = {{clamp_rmd}}))
 #Get values of prediction
 mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
 #Define colors and legend  
 rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-legendPal <- colorNumeric(rev(rasCols), mapPredVals_{{spAbr}} na.color = 'transparent')
+legendPal <- colorNumeric(rev(rasCols), mapPredVals_{{spAbr}}, na.color = 'transparent')
 rasPal <- colorNumeric(rasCols, mapPredVals_{{spAbr}}, na.color = 'transparent')
 #Generate map
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
@@ -188,8 +185,8 @@ m  %>%
   addRasterImage(predSel_{{spAbr}}, colors = rasPal, opacity = 0.7,
                  group = 'vis', layerId = 'mapPred', method = "ngb") %>%
  ##add background polygons
-  addPolygons( data= bgExt_{{spAbr}},fill = FALSE,
-                                   weight = 4, color = "blue", group = 'proj')
+  addPolygons(data = bgExt_{{spAbr}},fill = FALSE,
+              weight = 4, color = "blue", group = 'proj')
 
 ```
 
@@ -203,26 +200,24 @@ Generate a map of the maxnet generated model with with a "{{thresholdRule_rmd}}"
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]] 
 predSel_{{spAbr}} <-  ENMeval::enm.maxnet@predict(
   m_{{spAbr}}, bgMask_{{spAbr}},
-other.settings = list(
-pred.type = "{{predType_rmd}}",
-clamp = {{clamp_rmd}}))
+  other.settings = list(pred.type = "{{predType_rmd}}",
+                        clamp = {{clamp_rmd}}))
 # Applied selected threshold
 predSel_{{spAbr}} <- predSel_{{spAbr}} > {{threshold_rmd}}
-
 
 #Get values of prediction
 mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
 #Define colors and legend  
 rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 legendPal <- colorNumeric(rev(rasCols), mapPredVals_{{spAbr}}, na.color = 'transparent')
-    rasPal <- c('gray', 'blue')
+rasPal <- c('gray', 'blue')
 # Generate map
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m  %>%
-        addLegend("bottomright", colors = c('gray', 'blue'),
-                title = "Thresholded Suitability<br>(Training)",
-                labels = c("predicted absence", "predicted presence"),
-                opacity = 1, layerId = "train") %>% 
+  addLegend("bottomright", colors = c('gray', 'blue'),
+            title = "Thresholded Suitability<br>(Training)",
+            labels = c("predicted absence", "predicted presence"),
+            opacity = 1, layerId = "train") %>% 
   #add occurrence data
   addCircleMarkers(data = occs_{{spAbr}}, lat = ~latitude, lng = ~longitude,
                    radius = 5, color = 'red', fill = TRUE, fillColor = "red",
@@ -231,7 +226,7 @@ m  %>%
   addRasterImage(predSel_{{spAbr}}, colors = rasPal, opacity = 0.7,
                  group = 'vis', layerId = 'mapPred', method = "ngb") %>%
  ##add background polygons
-  addPolygons( data= bgExt_{{spAbr}},fill = FALSE,
-                                   weight = 4, color = "blue", group = 'proj')
+  addPolygons(data = bgExt_{{spAbr}},fill = FALSE,
+              weight = 4, color = "blue", group = 'proj')
 
 ```

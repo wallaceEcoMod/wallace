@@ -5,7 +5,6 @@ You searched the paleobioDB database for *`r "{{spName}}"`*, limited to `r {{occ
 
 ```{r, echo = {{occs_paleoDb_knit}}, include = {{occs_paleoDb_knit}}}
 # Query selected database for occurrence records
-occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL)
 paleoDb_{{spAbr}}<-occs_paleoDb(
   spName = "{{spName}}",
   occNum = {{occsNumPB_rmd}},

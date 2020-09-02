@@ -7,8 +7,8 @@ Using Ecoclimate (http://www.ecoclimate.org)  dataset at resolution of 0.5 degre
 # R code to get environmental data from Ecoclimate
 envs_{{spAbr}} <- envs_ecoClimate(
   bcAOGCM = "{{bcAOGCM_rmd}}",
-  bcScenario ="{{bcScenario_rmd}}",
-  ecoClimSel = {{ecoClimSel_rmd}}  ) 
+  bcScenario = "{{bcScenario_rmd}}",
+  ecoClimSel = {{ecoClimSel_rmd}}) 
 ##Add envrionmental values to occurrences table
 occs_xy_{{spAbr}} <- occs_{{spAbr}}[c('longitude', 'latitude')]
 occs_vals_{{spAbr}} <- as.data.frame(raster::extract(envs_{{spAbr}}, occs_xy_{{spAbr}}))
