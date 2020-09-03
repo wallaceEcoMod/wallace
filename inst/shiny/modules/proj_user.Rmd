@@ -43,10 +43,11 @@ proj_userEnvs_{{spAbr}} <- proj_userEnvs(
   outputType = "{{outputType_rmd}}",
   clamp = {{clamp_rmd}})
 
-# Add threshold if specified 
-proj_userEnvs_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projUser < {{threshold_rmd}}
 # store the cropped projection variables
 projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
+# Add threshold if specified 
+proj_userEnvs_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projUser < {{threshold_rmd}}
+
 ```
 
 ```{asis, echo = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit}}, eval = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit}}, include = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit }}}
@@ -103,10 +104,12 @@ proj_userEnvs_{{spAbr}} <- proj_userEnvs(
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
   clamp = {{clamp_rmd}})
-# Add threshold if specified 
-proj_userEnvs_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projUser < {{threshold_rmd}}
+
 # store the cropped projection variables
 projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
+# Add threshold if specified 
+proj_userEnvs_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projUser < {{threshold_rmd}}
+
 ```
 
 ```{asis, echo = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit}}, eval = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit}}, include = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit }}}
@@ -166,9 +169,11 @@ proj_userEnvs_{{spAbr}} <- proj_userEnvs(
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
   clamp = {{clamp_rmd}})
-# Add threshold if specified 
-proj_userEnvs_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projUser < {{threshold_rmd}}
+
 # store the cropped projection variables
 projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
+# Add threshold if specified 
+proj_userEnvs_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projUser < {{threshold_rmd}}
+
 ```
 

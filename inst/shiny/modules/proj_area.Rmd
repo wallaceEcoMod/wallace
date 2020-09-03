@@ -1,9 +1,9 @@
-```{asis, echo = {{proj_area_knit}}, eval = {{proj_area_knit}}, include = {{proj_area_knit}}}
+```{asis, echo = {{proj_area_knit & !proj_area_extent_knit & proj_area_threshold_knit}}, eval = {{proj_area_knit  & !proj_area_extent_knit & !proj_area_threshold_knit}}, include = {{proj_area_knit & !proj_area_extent_knit & !proj_area_threshold_knit}}}
 ## Project model
 Projecting the model to a new user drawn area 
 ```
 
-```{r, echo = {{proj_area_knit}}, include = {{proj_area_knit}}}
+```{r, echo =  {{proj_area_knit & !proj_area_extent_knit & !proj_area_threshold_knit}}, include = {{proj_area_knit & !proj_area_extent_knit & !proj_area_threshold_knit}}}
 # First must generate the projection area according to the drawn polygon in the GUI
 proj_draw_{{spAbr}} <-proj_draw(
   polyPjXY = matrix({{polyPjXY_rmd}},ncol=2,byrow=FALSE),
@@ -48,10 +48,11 @@ proj_area_{{spAbr}} <- proj_area(
   clamp = {{clamp_rmd}},
   pjExt = proj_draw_{{spAbr}}) 
 
-# Add threshold if specified 
-proj_area_{{spAbr}} <- proj_area_{{spAbr}}$projArea > {{threshold_rmd}}
 #store the cropped projection variables
  projExt_{{spAbr}} <- proj_area_{{spAbr}}$projExt
+# Add threshold if specified 
+proj_area_{{spAbr}} <- proj_area_{{spAbr}}$projArea > {{threshold_rmd}}
+
 ```
 
 ```{asis, echo = {{proj_area_knit & proj_area_extent_knit}} , eval = {{proj_area_knit & proj_area_extent_knit }}, include = {{proj_area_knit & proj_area_extent_knit}}}
@@ -107,8 +108,9 @@ proj_area_{{spAbr}} <- proj_area(
   clamp = {{clamp_rmd}},
   pjExt = proj_userExt_{{spAbr}}) 
 
-# Add threshold if specified 
-proj_area_{{spAbr}} <- proj_area_{{spAbr}}$projArea > {{threshold_rmd}}
 #store the cropped projection variables
 projExt_{{spAbr}} <- proj_area_{{spAbr}}$projExt
+# Add threshold if specified 
+proj_area_{{spAbr}} <- proj_area_{{spAbr}}$projArea > {{threshold_rmd}}
+
 ```
