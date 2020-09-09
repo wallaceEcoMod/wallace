@@ -6,24 +6,23 @@ Sampling of {{bgPtsNum_rmd}} background points and corresponding environmental d
 ```{r, echo = {{penvs_userBgExtent_knit}}, include = {{penvs_userBgExtent_knit}}}
 # Load the user provided shapefile or csv file with the desired extent.
   ##User must input the path to shapefile or csv file and the file name 
+# Define path
+bgPath_{{spAbr}} <- ""
 bgExt_{{spAbr}} <- penvs_userBgExtent(
-  bgShp_path = "Input path here",
-  bgShp_name = "Input file name here",
+  bgShp_path = paste0(bgPath_{{spAbr}}, "{{bgShp_name_rmd}}", ".shp"),
+  bgShp_name = paste0("{{bgShp_name_rmd}}", c(".shp", ".shx", ".dbf")),
   userBgBuf = {{userBgBuf_rmd}},
+  occs = occs_{{spAbr}})
+# Mask environmental data to provided extent
+bgMask_{{spAbr}} <- penvs_bgMask(
   occs = occs_{{spAbr}},
-  spN = "{{spName}}")
-  # Mask environmental data to provided extent
- bgMask_{{spAbr}} <- penvs_bgMask(
-   occs = occs_{{spAbr}},
-   envs = envs_{{spAbr}},
-   bgExt = bgExt_{{spAbr}},
-   spN = "{{spName}}")
+  envs = envs_{{spAbr}},
+  bgExt = bgExt_{{spAbr}})
 # Sample background points from the provided area
-   bgSample_{{spAbr}}<-penvs_bgSample(
-    occs = occs_{{spAbr}},
-    bgMask =  bgMask_{{spAbr}},
-    bgPtsNum = {{bgPtsNum_rmd}},
-    spN = "{{spName}}")
+bgSample_{{spAbr}} <- penvs_bgSample(
+  occs = occs_{{spAbr}},
+  bgMask =  bgMask_{{spAbr}},
+  bgPtsNum = {{bgPtsNum_rmd}})
 # Extract values of environmental layers for each background point
 bgEnvsVals_{{spAbr}} <- as.data.frame(raster::extract(bgMask_{{spAbr}},  bgSample_{{spAbr}}))
 ##Add extracted values to background points table

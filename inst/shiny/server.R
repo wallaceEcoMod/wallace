@@ -786,7 +786,7 @@ function(input, output, session) {
           req(mapPred())
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
-              writeLog(type = "error", "To download PNG predition, you require to",
+              writeLog(type = "error", "To download PNG prediction, you require to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in you are R console. (**)")
           }
@@ -939,7 +939,7 @@ function(input, output, session) {
           req(mapProj())
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
-              writeLog(type = "error", "To download PNG predition, you require to",
+              writeLog(type = "error", "To download PNG prediction, you require to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in you are R console. (**)")
           }
@@ -1017,7 +1017,7 @@ function(input, output, session) {
         if (input$messFileType == 'png') {
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
-              writeLog(type = "error", "To download PNG predition, you require to",
+              writeLog(type = "error", "To download PNG prediction, you require to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in you are R console. (**)")
           }
@@ -1101,7 +1101,8 @@ function(input, output, session) {
       rmarkdown::render("Rmd/userReport_intro.Rmd",
                         output_format = rmarkdown::github_document(html_preview = FALSE),
                         output_file = md_intro_file,
-                        clean = TRUE)
+                        clean = TRUE,
+                        encoding = "UTF-8")
       md_files <- c(md_files, md_intro_file)
       # Abbreviation for one species
       spAbr <- plyr::alply(abbreviate(stringr::str_replace(allSp(), "_", " "),
@@ -1146,7 +1147,8 @@ function(input, output, session) {
                                         spAbr = spAbr[[sp]]),
                           output_format = rmarkdown::github_document(html_preview = FALSE),
                           output_file = species_md_file,
-                          clean = TRUE)
+                          clean = TRUE,
+                          encoding = "UTF-8")
         md_files <- c(md_files, species_md_file)
       }
 
@@ -1196,14 +1198,16 @@ function(input, output, session) {
                             ),
                             output_format = rmarkdown::github_document(html_preview = FALSE),
                             output_file = multSpecies_md_file,
-                            clean = TRUE)
+                            clean = TRUE,
+                            encoding = "UTF-8")
           md_files <- c(md_files, multSpecies_md_file)
         }
       }
 
       combined_md <-
         md_files %>%
-        lapply(readLines, encoding = "UTF-8") %>%
+        lapply(readLines) %>%
+        # lapply(readLines, encoding = "UTF-8") %>%
         lapply(paste, collapse = "\n") %>%
         paste(collapse = "\n\n")
 
@@ -1224,7 +1228,8 @@ function(input, output, session) {
               "Word" = rmarkdown::word_document()
             ),
           output_file = result_file,
-          clean = TRUE
+          clean = TRUE,
+          encoding = "UTF-8"
         )
       }
 
@@ -1393,15 +1398,18 @@ function(input, output, session) {
     # Storage species with no env data
     noEnvsSpp <- NULL
     for (i in sppLoad) {
-      diskRast <- raster::fromDisk(envs.global[[spp[[i]]$envs]])
-      if (diskRast) {
-        if (class(envs.global[[spp[[i]]$envs]]) == "RasterStack") {
-          diskExist <- !file.exists(envs.global[[spp[[i]]$envs]]@layers[[1]]@file@name)
-        } else if (class(envs.global[[spp[[i]]$envs]]) == "RasterBrick") {
-          diskExist <- !file.exists(envs.global[[spp[[i]]$envs]]@file@name)
-        }
-        if (diskExist) {
-          noEnvsSpp <- c(noEnvsSpp, i)
+      # Check if envs.global object exists in spp
+      if (!is.null(spp[[i]]$envs)) {
+        diskRast <- raster::fromDisk(envs.global[[spp[[i]]$envs]])
+        if (diskRast) {
+          if (class(envs.global[[spp[[i]]$envs]]) == "RasterStack") {
+            diskExist <- !file.exists(envs.global[[spp[[i]]$envs]]@layers[[1]]@file@name)
+          } else if (class(envs.global[[spp[[i]]$envs]]) == "RasterBrick") {
+            diskExist <- !file.exists(envs.global[[spp[[i]]$envs]]@file@name)
+          }
+          if (diskExist) {
+            noEnvsSpp <- c(noEnvsSpp, i)
+          }
         }
       }
     }

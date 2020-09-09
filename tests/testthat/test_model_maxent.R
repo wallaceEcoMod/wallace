@@ -65,9 +65,9 @@ for (i in algorithm) {
     # the output is an ENMeval object
     expect_is(maxentAlg, "ENMevaluation")
     #the output has 9 slots with correct names
-    expect_equal(length(slotNames(maxentAlg)), 16)
+    expect_equal(length(slotNames(maxentAlg)), 17)
     expect_equal(slotNames(maxentAlg),c("algorithm","tune.settings","partition.method","partition.settings",
-                                        "other.settings","results","results.partitions","models",
+                                        "other.settings","results","results.partitions","models", "variable.importance",
                                         "predictions","taxon.name","occs","occs.grp","bg","bg.grp","overlap","rmm"))
     # element within the evaluation are:
     # character
@@ -83,6 +83,7 @@ for (i in algorithm) {
     expect_is(maxentAlg@partition.settings, "list")
     expect_is(maxentAlg@other.settings, "list")
     expect_is(maxentAlg@models, "list")
+    expect_is(maxentAlg@variable.importance,"list")
     # a raster Stack
     expect_is(maxentAlg@predictions, "RasterStack")
     # factor
@@ -95,19 +96,19 @@ for (i in algorithm) {
     expect_equal(length(maxentAlg@models), raster::nlayers(maxentAlg@predictions))
     # there is a model for each combination of feature classes and regularization multiplier
     expect_equal(sort(as.character(maxentAlg@results$tune.args)),
-                 sort(paste0(rep(fcs, length(rms)/rmsStep), paste0("_", seq(rms[1], rms[2], by = rmsStep)))))
+                 sort(paste0("fc.",rep(fcs, length(rms)/rmsStep), paste0("_","rm.", seq(rms[1], rms[2], by = rmsStep)))))
     # evaluation table has the right amout of rows
     expect_equal(nrow(maxentAlg@results), (length(rms)/rmsStep)*length(fcs))
     # columns name in the evaluation table are right for each algorithm assuming block partition
     if (i=="maxent.jar"){
     expect_equal(colnames(maxentAlg@results),c("fc","rm","tune.args","auc.train","cbi.train","auc.diff.avg",
-                                               "auc.diff.sd","auc.val.avg","auc.val.sd","or.10p.avg","or.10p.sd",
-                                               "or.mtp.avg","or.mtp.sd","AICc","delta.AICc","w.AIC","nparam"))
+                                               "auc.diff.sd","auc.val.avg","auc.val.sd","cbi.val.avg","cbi.val.sd","or.10p.avg","or.10p.sd",
+                                               "or.mtp.avg","or.mtp.sd","AICc","delta.AICc","w.AIC","ncoef"))
     }
     else if (i=="maxnet"){
     expect_equal(colnames(maxentAlg@results),c("fc","rm","tune.args","auc.train","cbi.train","auc.diff.avg",
-                                                 "auc.diff.sd","auc.val.avg","auc.val.sd","or.10p.avg","or.10p.sd",
-                                                 "or.mtp.avg","or.mtp.sd","AICc","delta.AICc","w.AIC","nparam"))
+                                                 "auc.diff.sd","auc.val.avg","auc.val.sd","cbi.val.avg","cbi.val.sd","or.10p.avg","or.10p.sd",
+                                                 "or.mtp.avg","or.mtp.sd","AICc","delta.AICc","w.AIC","ncoef"))
     }
     # bin evaluation table has the right amout of rows
     expect_equal(nrow(maxentAlg@results.partitions), (nlevels(factor(partblock$occs.grp)))*10) ##colnumbers minus the 16 minimum

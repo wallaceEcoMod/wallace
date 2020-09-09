@@ -1,7 +1,6 @@
 ```{asis, echo = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  !proj_time_threshold_knit & proj_time_worldclim_knit}}, eval = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  !proj_time_threshold_knit & proj_time_worldclim_knit}}, include = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit & !proj_time_threshold_knit & proj_time_worldclim_knit}}}
 ### Project model
 Projecting the model to the same modelling area with no threshold rule. New time based on "{{envs_name_rmd}}" variables for {{yearMin_rmd}} using a "{{model_rmd}}" GCM and an RCP of  *`r {{rcp_rmd}}/10`*.
-
 ```
 
 ```{r, echo = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  !proj_time_threshold_knit & proj_time_worldclim_knit}}, include = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit & !proj_time_threshold_knit & proj_time_worldclim_knit}}}
@@ -26,11 +25,9 @@ proj_time_{{spAbr}} <-proj_time(
   pjExt = bgExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}},
-  spN = "{{spName}}") 
-#store the cropped projection variables
- projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
-
+  clamp = {{clamp_rmd}}) 
+# store the cropped projection variables
+projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 ```
 
 ```{asis, echo = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  proj_time_threshold_knit &  proj_time_worldclim_knit}}, eval = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  proj_time_threshold_knit & proj_time_worldclim_knit}}, include = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  proj_time_threshold_knit &    proj_time_worldclim_knit}}}
@@ -60,13 +57,11 @@ proj_time_{{spAbr}} <-proj_time(
   pjExt = bgExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}},
-  spN = "{{spName}}") 
+  clamp = {{clamp_rmd}}) 
 # Add threshold if specified 
 proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime > {{threshold_rmd}}
 #store the cropped projection variables
- projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
-
+projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 ```
 
 ```{asis, echo = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit &  !proj_time_threshold_knit & proj_time_worldclim_knit}}, eval = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit &  !proj_time_threshold_knit & proj_time_worldclim_knit}}, include = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit & !proj_time_threshold_knit & proj_time_worldclim_knit}}}
@@ -92,8 +87,7 @@ projTimeEnvs_{{spAbr}} <- projEnvs_{{spAbr}}[[names(bgMask_{{spAbr}})]]
 proj_draw_{{spAbr}} <-proj_draw(
   polyPjXY = matrix({{polyPjXY_rmd}},ncol=2,byrow=FALSE),
   polyPjID = {{polyPjID_rmd}},
-  drawPjBuf = {{BgBuf_rmd}},
-  spN = "{{spName}}")
+  drawPjBuf = {{BgBuf_rmd}})
 
 # Generate a projection of the model to the desired area and time
 proj_time_{{spAbr}} <-proj_time(
@@ -103,11 +97,9 @@ proj_time_{{spAbr}} <-proj_time(
   pjExt = proj_draw_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}},
-  spN = "{{spName}}") 
+  clamp = {{clamp_rmd}}) 
 #store the cropped projection variables
- projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
-
+projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 ```
 
 ```{asis, echo = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit &  proj_time_threshold_knit & proj_time_worldclim_knit}}, eval = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit &  proj_time_threshold_knit & proj_time_worldclim_knit}}, include = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit & proj_time_threshold_knit & proj_time_worldclim_knit}}}
@@ -133,8 +125,7 @@ projTimeEnvs_{{spAbr}} <- projEnvs_{{spAbr}}[[names(bgMask_{{spAbr}})]]
 proj_draw_{{spAbr}} <-proj_draw(
   polyPjXY = matrix({{polyPjXY_rmd}},ncol=2,byrow=FALSE),
   polyPjID = {{polyPjID_rmd}},
-  drawPjBuf = {{BgBuf_rmd}},
-  spN = "{{spName}}")
+  drawPjBuf = {{BgBuf_rmd}})
 
 # Generate a projection of the model to the desired area and time
 proj_time_{{spAbr}} <-proj_time(
@@ -144,14 +135,12 @@ proj_time_{{spAbr}} <-proj_time(
   pjExt = proj_draw_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}},
-  spN = "{{spName}}") 
+  clamp = {{clamp_rmd}}) 
 
 # Add threshold if specified 
 proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime > {{threshold_rmd}}
 #store the cropped projection variables
 projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
-
 ```
 
 ```{asis, echo = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit &  !proj_time_threshold_knit & proj_time_worldclim_knit}}, eval = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit &  !proj_time_threshold_knit & proj_time_worldclim_knit}}, include = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit & !proj_time_threshold_knit & proj_time_worldclim_knit}}}
@@ -180,8 +169,7 @@ projTimeEnvs_{{spAbr}} <- projEnvs_{{spAbr}}[[names(bgMask_{{spAbr}})]]
 proj_userExt_{{spAbr}} <- proj_userExtent(
   bgShp_path = "Input path here",
   bgShp_name = "Input file name here",
-  userBgBuf = {{BgBuf_rmd}},
-  spN = "{{spName}}")
+  userBgBuf = {{BgBuf_rmd}})
 
 # Generate a projection of the model to the desired area and time
 proj_time_{{spAbr}} <-proj_time(
@@ -191,11 +179,9 @@ proj_time_{{spAbr}} <-proj_time(
   pjExt = proj_userExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}},
-  spN = "{{spName}}") 
-#store the cropped projection variables
- projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
-
+  clamp = {{clamp_rmd}}) 
+# store the cropped projection variables
+projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 ```
 
 ```{asis, echo = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit &  proj_time_threshold_knit & proj_time_worldclim_knit}}, eval = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit &  proj_time_threshold_knit & proj_time_worldclim_knit}}, include = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit & proj_time_threshold_knit & proj_time_worldclim_knit}}}
@@ -224,8 +210,7 @@ projTimeEnvs_{{spAbr}} <- projEnvs_{{spAbr}}[[names(bgMask_{{spAbr}})]]
 proj_userExt_{{spAbr}} <- proj_userExtent(
   bgShp_path = "Input path here",
   bgShp_name = "Input file name here",
-  userBgBuf = {{BgBuf_rmd}},
-  spN = "{{spName}}")
+  userBgBuf = {{BgBuf_rmd}})
 
 # Generate a projection of the model to the desired area and time
 proj_time_{{spAbr}} <-proj_time(
@@ -235,13 +220,11 @@ proj_time_{{spAbr}} <-proj_time(
   pjExt = proj_userExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}},
-  spN = "{{spName}}") 
+  clamp = {{clamp_rmd}}) 
 # Add threshold if specified 
 proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime > {{threshold_rmd}}
 #store the cropped projection variables
- projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
-
+projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 ```
 
 
@@ -265,11 +248,9 @@ proj_time_{{spAbr}} <-proj_time(
   pjExt = bgExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}},
-  spN = "{{spName}}") 
+  clamp = {{clamp_rmd}}) 
 #store the cropped projection variables
  projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
-
 ```
 
 ```{asis, echo = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  proj_time_threshold_knit &  !proj_time_worldclim_knit}}, eval = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  proj_time_threshold_knit & !proj_time_worldclim_knit}}, include = {{proj_time_knit & !proj_time_user_knit & !proj_time_drawn_knit &  proj_time_threshold_knit &    !proj_time_worldclim_knit}}}
@@ -292,13 +273,11 @@ proj_time_{{spAbr}} <-proj_time(
   pjExt = bgExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}},
-  spN = "{{spName}}") 
+  clamp = {{clamp_rmd}}) 
 # Add threshold if specified 
 proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime > {{threshold_rmd}}
 #store the cropped projection variables
- projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
-
+projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 ```
 
 ```{asis, echo = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit &  !proj_time_threshold_knit & !proj_time_worldclim_knit}}, eval = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit &  !proj_time_threshold_knit & !proj_time_worldclim_knit}}, include = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit & !proj_time_threshold_knit & !proj_time_worldclim_knit}}}
@@ -318,8 +297,7 @@ projTimeEnvs_{{spAbr}} <- envs_ecoClimate(
 proj_draw_{{spAbr}} <-proj_draw(
   polyPjXY = matrix({{polyPjXY_rmd}},ncol=2,byrow=FALSE),
   polyPjID = {{polyPjID_rmd}},
-  drawPjBuf = {{BgBuf_rmd}},
-  spN = "{{spName}}")
+  drawPjBuf = {{BgBuf_rmd}})
 
 # Generate a projection of the model to the desired area and time
 proj_time_{{spAbr}} <-proj_time(
@@ -329,11 +307,9 @@ proj_time_{{spAbr}} <-proj_time(
   pjExt = proj_draw_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}},
-  spN = "{{spName}}") 
-#store the cropped projection variables
- projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
-
+  clamp = {{clamp_rmd}}) 
+# Store the cropped projection variables
+projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 ```
 
 ```{asis, echo = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit &  proj_time_threshold_knit & !proj_time_worldclim_knit}}, eval = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit &  proj_time_threshold_knit & !proj_time_worldclim_knit}}, include = {{proj_time_knit & !proj_time_user_knit & proj_time_drawn_knit & proj_time_threshold_knit & !proj_time_worldclim_knit}}}
@@ -353,8 +329,7 @@ projTimeEnvs_{{spAbr}} <- envs_ecoClimate(
 proj_draw_{{spAbr}} <-proj_draw(
   polyPjXY = matrix({{polyPjXY_rmd}},ncol=2,byrow=FALSE),
   polyPjID = {{polyPjID_rmd}},
-  drawPjBuf = {{BgBuf_rmd}},
-  spN = "{{spName}}")
+  drawPjBuf = {{BgBuf_rmd}})
 
 # Generate a projection of the model to the desired area and time
 proj_time_{{spAbr}} <-proj_time(
@@ -364,14 +339,12 @@ proj_time_{{spAbr}} <-proj_time(
   pjExt = proj_draw_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}},
-  spN = "{{spName}}") 
+  clamp = {{clamp_rmd}}) 
 
 # Add threshold if specified 
 proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime > {{threshold_rmd}}
 #store the cropped projection variables
- projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
-
+projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 ```
 
 ```{asis, echo = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit &  !proj_time_threshold_knit & !proj_time_worldclim_knit}}, eval = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit &  !proj_time_threshold_knit & !proj_time_worldclim_knit}}, include = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit & !proj_time_threshold_knit & !proj_time_worldclim_knit}}}
@@ -391,8 +364,7 @@ projTimeEnvs_{{spAbr}} <- envs_ecoClimate(
 proj_userExt_{{spAbr}} <- proj_userExtent(
   bgShp_path = "Input path here",
   bgShp_name = "Input file name here",
-  userBgBuf = {{BgBuf_rmd}},
-  spN = "{{spName}}")
+  userBgBuf = {{BgBuf_rmd}})
 
 # Generate a projection of the model to the desired area and time
 proj_time_{{spAbr}} <-proj_time(
@@ -402,11 +374,10 @@ proj_time_{{spAbr}} <-proj_time(
   pjExt = proj_userExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}},
-  spN = "{{spName}}") 
+  clamp = {{clamp_rmd}}) 
 
-#store the cropped projection variables
- projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
+# store the cropped projection variables
+projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 ```
 
 ```{asis, echo = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit &  proj_time_threshold_knit & !proj_time_worldclim_knit}}, eval = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit &  proj_time_threshold_knit & !proj_time_worldclim_knit}}, include = {{proj_time_knit & proj_time_user_knit & !proj_time_drawn_knit & proj_time_threshold_knit & !proj_time_worldclim_knit}}}
@@ -427,8 +398,7 @@ projTimeEnvs_{{spAbr}} <- envs_ecoClimate(
 proj_userExt_{{spAbr}} <- proj_userExtent(
   bgShp_path = "Input path here",
   bgShp_name = "Input file name here",
-  userBgBuf = {{BgBuf_rmd}},
-  spN = "{{spName}}")
+  userBgBuf = {{BgBuf_rmd}})
 
 # Generate a projection of the model to the desired area and time
 proj_time_{{spAbr}} <-proj_time(
@@ -438,11 +408,9 @@ proj_time_{{spAbr}} <-proj_time(
   pjExt = proj_userExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}},
-  spN = "{{spName}}") 
+  clamp = {{clamp_rmd}}) 
 # Add threshold if specified 
 proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime > {{threshold_rmd}}
 #store the cropped projection variables
- projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
-
+projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 ```

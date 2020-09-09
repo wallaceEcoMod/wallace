@@ -82,7 +82,7 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
   if (class(occsOrig) == "try-error") {
     logger %>% writeLog(
       type = 'error',
-      hlSpp(spName), "No records found, please check the spelling.")
+      hlSpp(hlSpp(formatSpName(spName))), "No records found, please check the spelling.")
     return()
   }
 
@@ -115,9 +115,9 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
   occs <- occsXY[!dups, ]
 
   # subset by key columns and make id and popup columns
-  cols <- c("scientific_name", "longitude", "latitude", "early_interval",
+  cols <- c("occID", "scientific_name", "longitude", "latitude", "early_interval",
             "late_interval", "country", "collection_no", "record_type",
-            "early_age", "late_age", "occID")
+            "early_age", "late_age")
   occs <- occs %>% dplyr::select(dplyr::one_of(cols)) %>%
     # make new column for leaflet marker popup content
     dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent))) %>%
@@ -128,7 +128,7 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
 
   dupsRem <- nrow(occsXY) - nrow(occs)
   logger %>% writeLog(
-    hlSpp(spName), 'Total paleobioDb records returned [', nrow(occsOrig),
+    hlSpp(formatSpName(spName)), 'Total paleobioDb records returned [', nrow(occsOrig),
     '] (limit ', occNum, '). Records without coordinates removed [',
     noCoordsRem, ']. Duplicated records removed [', dupsRem,
     ']. Remaining records [', nrow(occs), '].')

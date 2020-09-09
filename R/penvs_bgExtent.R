@@ -62,6 +62,7 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL, spN = NULL) {
     msg <- "Study extent: bounding box."
   } else if (bgSel == "minimum convex polygon") {
     bgExt <- mcp(occs.xy)
+    msg <- "Study extent: minimum convex polygon."
   } else if (bgSel == 'point buffers') {
     if (bgBuf == 0) {
       logger %>%
@@ -70,9 +71,8 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL, spN = NULL) {
       return()
     }
     bgExt <- rgeos::gBuffer(occs.sp, width = bgBuf)
-    msg <- paste0("Study extent: buffered points.  Buffered by ", bgBuf, "degrees.")
+    msg <- paste0("Study extent: buffered points.  Buffered by ", bgBuf, " degrees.")
   }
-  msg <- "Study extent: minimum convex polygon."
 
   if (bgBuf > 0 & bgSel != 'point buffers') {
     bgExt <- rgeos::gBuffer(bgExt, width = bgBuf)

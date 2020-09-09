@@ -8,20 +8,17 @@ Sampling of {{bgPtsNum_rmd}} background points and corresponding environmental d
 bgExt_{{spAbr}} <- penvs_bgExtent(
   occs = occs_{{spAbr}},
   bgSel = "{{bgSel_rmd}}",
-  bgBuf = {{bgBuf_rmd}},
-  spN = "{{spName}}")
+  bgBuf = {{bgBuf_rmd}})
 # Mask environmental data to provided extent
- bgMask_{{spAbr}} <- penvs_bgMask(
-   occs = occs_{{spAbr}},
-   envs = envs_{{spAbr}},
-   bgExt = bgExt_{{spAbr}},
-   spN = "{{spName}}")
+bgMask_{{spAbr}} <- penvs_bgMask(
+  occs = occs_{{spAbr}},
+  envs = envs_{{spAbr}},
+  bgExt = bgExt_{{spAbr}})
 # Sample background points from the provided area
-   bgSample_{{spAbr}}<-penvs_bgSample(
-    occs = occs_{{spAbr}},
-    bgMask =  bgMask_{{spAbr}},
-    bgPtsNum = {{bgPtsNum_rmd}},
-    spN = "{{spName}}")
+bgSample_{{spAbr}} <- penvs_bgSample(
+  occs = occs_{{spAbr}},
+  bgMask =  bgMask_{{spAbr}},
+  bgPtsNum = {{bgPtsNum_rmd}})
 # Extract values of environmental layers for each background point
 bgEnvsVals_{{spAbr}} <- as.data.frame(raster::extract(bgMask_{{spAbr}},  bgSample_{{spAbr}}))
 ##Add extracted values to background points table

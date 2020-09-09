@@ -9,8 +9,5 @@ groups_{{spAbr}} <- part_partitionOccs(
   occs = occs_{{spAbr}} ,
   bg =  bgSample_{{spAbr}}, 
   method = "{{method_code_rmd}}",
-  kfolds = {{k_folds_rmd}},
-  bgMask = NULL,
-  aggFact = NULL,
-  spN = "{{spName}}") 
+  kfolds = {{k_folds_rmd}}) 
 ```

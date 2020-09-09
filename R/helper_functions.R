@@ -5,13 +5,11 @@
 # retrieves the species name for use internally in non-shiny functions
 #' @export
 spName <- function(sp) {
-  # if(class(sp) == "list") {
-  #   sp <- sp$occs$scientific_name[1]
-  # }
-  # if("data.frame" %in% class(sp)) {
-  #   sp <- sp$scientific_name[1]
-  # }
-  return(paste(strsplit(as.character(sp), "_")[[1]], collapse = " "))
+  if (is.null(sp)) {
+    return("species")
+  } else {
+    return(paste(strsplit(as.character(sp), "_")[[1]], collapse = " "))
+  }
 }
 
 # either prints a message to console or makes a progress bar in the shiny app
@@ -77,8 +75,13 @@ writeLog <- function(logger, ..., type = 'default') {
 # Highlight species name in Windows Log
 #' @export
 hlSpp <- function(scientificName) {
-  if (grepl("_", scientificName)) scientificName <- gsub("_", " ", scientificName)
-  boldSpp <- paste0('<font color="#003300"><b><i>', scientificName, '</i> | </b></font>')
+  if (is.null(scientificName)) {
+    return("")
+  } else if (grepl("_", scientificName)) {
+    scientificName <- gsub("_", " ", scientificName)
+    boldSpp <- paste0('<font color="#003300"><b><i>', scientificName, '</i> | </b></font>')
+    return(boldSpp)
+  }
 }
 
 ####################### #
@@ -420,20 +423,20 @@ printVecAsis <- function(x, asChar = FALSE) {
     if (length(x) == 1) {
       return(paste0("\'", x, "\'"))
     } else {
-      if(asChar == FALSE) {
-        return(paste0("c(", paste(sapply(x, function(a) paste0("\'", a, "\'")), collapse=", "), ")"))
+      if (asChar == FALSE) {
+        return(paste0("c(", paste(sapply(x, function(a) paste0("\'", a, "\'")), collapse = ", "), ")"))
       } else {
-        return(paste0("(", paste(sapply(x, function(a) paste0("\'", a, "\'")), collapse=", "), ")"))
+        return(paste0("(", paste(sapply(x, function(a) paste0("\'", a, "\'")), collapse = ", "), ")"))
       }
     }
   } else {
     if (length(x) == 1) {
       return(x)
     } else {
-      if(asChar == FALSE) {
-        return(paste0("c(", paste(x, collapse=", "), ")"))
+      if (asChar == FALSE) {
+        return(paste0("c(", paste(x, collapse = ", "), ")"))
       } else {
-        return(paste0("(", paste(x, collapse=", "), ")"))
+        return(paste0("(", paste(x, collapse = ", "), ")"))
       }
     }
   }

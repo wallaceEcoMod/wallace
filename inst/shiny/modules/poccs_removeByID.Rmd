@@ -7,6 +7,5 @@ Remove the occurrence localities by ID.
 # remove the rows that match the occIDs selected
 occs_{{spAbr}} <- poccs_removeByID(
   occs = occs_{{spAbr}} , 
-  removeID = {{removeByID_id_rmd}},
-  spN = "{{spName}}")
+  removeID = {{removeByID_id_rmd}})
 ```

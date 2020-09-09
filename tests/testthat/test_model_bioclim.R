@@ -37,9 +37,9 @@ test_that("output type checks", {
   # the output is a list
   expect_is(bioclimAlg, "ENMevaluation")
   #the output has 9 slots with correct names
-  expect_equal(length(slotNames(bioclimAlg)), 16)
+  expect_equal(length(slotNames(bioclimAlg)), 17)
   expect_equal(slotNames(bioclimAlg),c("algorithm","tune.settings","partition.method","partition.settings",
-                                       "other.settings","results","results.partitions","models",
+                                       "other.settings","results","results.partitions","models","variable.importance",
                                        "predictions","taxon.name","occs","occs.grp","bg","bg.grp","overlap","rmm"))
   # element within the evaluation are:
   # character
@@ -68,14 +68,14 @@ test_that("output type checks", {
   expect_equal(nrow(bioclimAlg@results), 1)
   # columns name in the evaluation table are right
   expect_equal(colnames(bioclimAlg@results),c("auc.train", "cbi.train", "auc.diff.avg",
-                                              "auc.diff.sd", "auc.val.avg", "auc.val.sd",
-                                              "or.10p.avg","or.10p.sd","or.mtp.avg","or.mtp.sd","nparam"))
+                                              "auc.diff.sd", "auc.val.avg", "auc.val.sd","cbi.val.avg","cbi.val.sd",
+                                              "or.10p.avg","or.10p.sd","or.mtp.avg","or.mtp.sd","ncoef"))
 
   # there are as many models in the bin evaluation table as partitions
   expect_equal(nrow(bioclimAlg@results.partitions), length(unique(partblock$occs.grp)))
 
   # # col name in the evaluation table are right
-  expect_equal(colnames(bioclimAlg@results.partitions), c( "tune.args", "fold","auc.val","auc.diff","or.mtp","or.10p"))
+  expect_equal(colnames(bioclimAlg@results.partitions), c( "tune.args", "fold","auc.val","auc.diff","cbi.val","or.mtp","or.10p"))
 })
 
 ### test function stepts

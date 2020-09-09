@@ -56,7 +56,7 @@ model_maxent_module_ui <- function(id) {
       conditionalPanel(
         sprintf("input['%s'] == 'TRUE'", ns("parallel")),
         numericInput(
-          "numCores",
+          ns("numCores"),
           label = paste0("Specify the number of cores (max. ", parallel::detectCores(), ")"),
           value = parallel::detectCores() - 1, min = 1,
           max = parallel::detectCores(), step = 1
@@ -232,7 +232,6 @@ model_maxent_module_server <- function(input, output, session, common) {
       updateNumericInput(session, "numCores", value = state$numCores)
     }
   ))
-
 }
 
 model_maxent_module_result <- function(id) {
@@ -244,18 +243,13 @@ model_maxent_module_result <- function(id) {
 model_maxent_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    model_maxent_knit = if(!is.null(species$rmm$model$algorithms)){
+    model_maxent_knit =
+      if (!is.null(species$rmm$model$algorithms)) {
       species$rmm$model$algorithms != "BIOCLIM"
-    } else {FALSE},
-    rms1_rmd =  species$rmm$model$algorithm$maxent$regularizationMultiplierSet[1],
-    rms2_rmd = species$rmm$model$algorithm$maxent$regularizationMultiplierSet[2],
+      } else {FALSE},
+    rms_rmd =  printVecAsis(species$rmm$model$algorithm$maxent$regularizationMultiplierSet),
     rmsStep_rmd =  gsub("increment by", "", species$rmm$model$algorithm$maxent$regularizationRule),
-    fcs_length_rmd = length(species$rmm$model$algorithm$maxent$featureSet),
-    fcs1_rmd = species$rmm$model$algorithm$maxent$featureSet[1],
-    fcs2_rmd = species$rmm$model$algorithm$maxent$featureSet[2],
-    fcs3_rmd = species$rmm$model$algorithm$maxent$featureSet[3],
-    fcs4_rmd = species$rmm$model$algorithm$maxent$featureSet[4],
-    fcs5_rmd = species$rmm$model$algorithm$maxent$featureSet[5],
+    fcs_rmd = printVecAsis(species$rmm$model$algorithm$maxent$featureSet),
     clampSel_rmd = species$rmm$model$algorithm$maxent$clamping,
     algMaxent_rmd = species$rmm$model$algorithms,
     parallel_rmd = species$rmm$model$algorithm$maxent$parallel,
@@ -264,7 +258,6 @@ model_maxent_module_rmd <- function(species) {
     catEnvs_rmd =  if(!is.null(species$rmm$model$algorithm$maxent$categorical)){species$rmm$model$algorithm$maxent$categorical} else {NULL},
     catEnvsNum_rmd = if(!is.null(species$rmm$model$algorithm$maxent$categorical)){
       length(species$rmm$model$algorithm$maxent$categorical)} else {0}
-
     )
 }
 
