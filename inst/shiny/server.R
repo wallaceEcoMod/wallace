@@ -786,7 +786,7 @@ function(input, output, session) {
           req(mapPred())
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
-              writeLog(type = "error", "To download PNG predition, you require to",
+              writeLog(type = "error", "To download PNG prediction, you require to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in you are R console. (**)")
           }
@@ -939,7 +939,7 @@ function(input, output, session) {
           req(mapProj())
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
-              writeLog(type = "error", "To download PNG predition, you require to",
+              writeLog(type = "error", "To download PNG prediction, you require to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in you are R console. (**)")
           }
@@ -1017,7 +1017,7 @@ function(input, output, session) {
         if (input$messFileType == 'png') {
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
-              writeLog(type = "error", "To download PNG predition, you require to",
+              writeLog(type = "error", "To download PNG prediction, you require to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in you are R console. (**)")
           }

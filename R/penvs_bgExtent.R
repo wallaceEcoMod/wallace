@@ -71,7 +71,7 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL, spN = NULL) {
       return()
     }
     bgExt <- rgeos::gBuffer(occs.sp, width = bgBuf)
-    msg <- paste0("Study extent: buffered points.  Buffered by ", bgBuf, "degrees.")
+    msg <- paste0("Study extent: buffered points.  Buffered by ", bgBuf, " degrees.")
   }
 
   if (bgBuf > 0 & bgSel != 'point buffers') {
