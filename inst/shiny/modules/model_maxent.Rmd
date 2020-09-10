@@ -1,7 +1,7 @@
 ```{asis, echo = {{model_maxent_knit}}, eval = {{model_maxent_knit & !cat_envs_knit}}, include = {{model_maxent_knit}}}
 ### Build and Evaluate Niche Model
 Generating a species distribution model using the `r '{{algMaxent_rmd}}'` algorithm as implemented in ENMeval V2.0 (with clamping = `r {{clampSel_rmd}}`).
-For tuning using `r  {{fcs_rmd}}` feature classes and regularization multipliers ranging from `r {{rms_rmd[1]}}` to `r {{rms_rmd[2]}}`  increasing by `r {{rmsStep_rmd}}`. Not using any categorical predictor variables. 
+For tuning using `r  {{fcs_rmd}}` feature classes and regularization multipliers in the `r {{rms_rmd}}` range increasing by `r {{rmsStep_rmd}}`. Not using any categorical predictor variables. 
 
 ```
 
