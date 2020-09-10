@@ -296,7 +296,7 @@ proj_area_module_map <- function(map, common) {
   req(evalOut(), spp[[curSp()]]$project$pjEnvs)
   mapProjVals <- spp[[curSp()]]$project$mapProjVals
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-  # if no threshold specified
+  # if threshold specified
   if(rmm()$prediction$transfer$environment1$thresholdRule != 'none') {
     rasPal <- c('gray', 'red')
     map %>% removeControl("proj") %>%
@@ -305,7 +305,7 @@ proj_area_module_map <- function(map, common) {
                 labels = c("predicted absence", "predicted presence"),
                 opacity = 1, layerId = 'proj')
   } else {
-    # if threshold specified
+    # if no threshold specified
     legendPal <- colorNumeric(rev(rasCols), mapProjVals, na.color = 'transparent')
     rasPal <- colorNumeric(rasCols, mapProjVals, na.color = 'transparent')
     map %>% removeControl("proj") %>%

@@ -507,7 +507,7 @@ proj_time_module_map <- function(map, common) {
   req(evalOut(), spp[[curSp()]]$project$pjEnvs)
   mapProjVals <- spp[[curSp()]]$project$mapProjVals
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-  # if no threshold specified
+  # if threshold specified
   if(rmm()$prediction$transfer$environment1$thresholdRule != 'none') {
     rasPal <- c('gray', 'red')
     map %>% removeControl("proj") %>%
@@ -516,7 +516,7 @@ proj_time_module_map <- function(map, common) {
                 labels = c("predicted absence", "predicted presence"),
                 opacity = 1, layerId = 'proj')
   } else {
-    # if threshold specified
+ # if no threshold specified
     legendPal <- colorNumeric(rev(rasCols), mapProjVals, na.color = 'transparent')
     rasPal <- colorNumeric(rasCols, mapProjVals, na.color = 'transparent')
     map %>% removeControl("proj") %>%
@@ -538,8 +538,8 @@ proj_time_module_map <- function(map, common) {
 proj_time_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    proj_time_knit = !is.null(species$rmd$project_time),
-    curModel_rmd = species$rmd$project_curModel,
+    proj_time_knit = !is.null(species$rmm$code$wallace$project_time),
+    curModel_rmd = species$rmm$code$wallace$project_curModel,
     outputType_rmd = species$rmm$prediction$notes,
     alg_rmd = species$rmm$model$algorithms,
     clamp_rmd = species$rmm$model$algorithm$maxent$clamping,
@@ -566,16 +566,16 @@ proj_time_module_rmd <- function(species) {
     yearMin_rmd = species$rmm$data$transfer$environment1$yearMin,
     yearMax_rmd = species$rmm$data$transfer$environment1$yearMax,
     ###for getting the right environmental variables
-    proj_time_worldclim_knit = !is.null(species$rmd$transfer_worldclim),
-    model_rmd = if (!is.null(species$rmd$transfer_worldclim)){
-      species$rmd$transfer_GCM} else {NULL},
-    rcp_rmd = if (!is.null(species$rmd$transfer_worldclim)){
-      species$rmd$transfer_RCP} else {0},
-    year_rmd = if (!is.null(species$rmd$transfer_worldclim)){
-      species$rmd$transfer_Time} else {0},
-    pjAOGCM_rmd = if(!is.null(species$rmd$transfer_ecoclimate)){
-      species$rmd$transfer_AOGCM} else {NULL},
-    pjScenario_rmd = if(!is.null(species$rmd$transfer_ecoclimate)){
+    proj_time_worldclim_knit = !is.null(species$rmm$code$wallace$transfer_worldclim),
+    model_rmd = if (!is.null(species$rmm$code$wallace$transfer_worldclim)){
+      species$rmm$code$wallace$transfer_GCM} else {NULL},
+    rcp_rmd = if (!is.null(species$rmm$code$wallace$transfer_worldclim)){
+      species$rmm$code$wallace$transfer_RCP} else {0},
+    year_rmd = if (!is.null(species$rmm$code$wallace$transfer_worldclim)){
+      species$rmm$code$wallace$transfer_Time} else {0},
+    pjAOGCM_rmd = if(!is.null(species$rmm$code$wallace$transfer_ecoclimate)){
+      species$rmm$code$wallace$transfer_AOGCM} else {NULL},
+    pjScenario_rmd = if(!is.null(species$rmm$code$wallace$transfer_ecoclimate)){
       species$rmd$transfer_Scenario} else {NULL}
   )
 }

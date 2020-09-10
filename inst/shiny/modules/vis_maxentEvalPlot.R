@@ -77,6 +77,7 @@ vis_maxentEvalPlot_module_rmd <- function(species) {
   list(
     vis_maxentEvalPlot_knit = !is.null(species$rmm$code$wallace$maxentEvalPlot),
     evalPlot_rmd = species$rmm$code$wallace$maxentEvalPlotSel
+
   )
 }
 
