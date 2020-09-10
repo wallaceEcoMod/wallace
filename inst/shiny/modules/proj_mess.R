@@ -112,6 +112,7 @@ proj_mess_module_rmd <- function(species) {
   list(
     proj_mess_knit = !is.null(species$rmm$code$wallace$MESS),
     time_rmd = species$rmm$code$wallace$MESSTime
+   # polyPjXY_rmd <- printVecAsis(species$project$pjExt@polygons[[1]]@Polygons)
     # proj_mess_knit = species$rmm$code$wallace$someFlag,
     # var1 = species$rmm$code$wallace$someSetting1,
     # var2 = species$rmm$code$wallace$someSetting2

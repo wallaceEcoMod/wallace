@@ -103,6 +103,10 @@ espace_pca_module_server <- function(input, output, session, common) {
     }
 
      spp[[mspName]]$pcaSel <- pcaSel
+     spp[[mspName]]$pcaPlotSel <- input$pcaPlotSel
+     ###Save inputs for PCA
+     spp[[mspName]]$pc1<-input$pc1
+     spp[[mspName]]$pc2<-input$pc2
     common$update_component(tab = "Results")
   })
 
@@ -206,6 +210,9 @@ espace_pca_module_result <- function(id) {
 espace_pca_module_rmd <- function(species) {
   list(
     espace_pca_knit = !is.null(species$pca),
-    pcaSel_rmd = printVecAsis(species$pcaSel)
+    pcaSel_rmd = printVecAsis(species$pcaSel),
+    pcaPlotSel_rmd = species$pcaPlotSel,
+    pc1_rmd = species$pc1,
+    pc2_rmd = species$pc2
   )
 }

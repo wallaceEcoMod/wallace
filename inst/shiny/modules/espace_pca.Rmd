@@ -1,6 +1,6 @@
 ```{asis, echo = {{espace_pca_knit}}, eval = {{espace_pca_knit}}, include = {{espace_pca_knit}}}
 ### Environmental space 
-Performing a principal component analysis to reduce dimensionality of environmental space for  *`r "{{spName1}}"`* & *`r "{{spName2}}"`*
+Performing and plotting principal component analysis to reduce dimensionality of environmental space for  *`r "{{spName1}}"`* & *`r "{{spName2}}"`*. PCA done for {{pcaPlotSel_rmd}}.
 ```
 
 ```{r, echo = {{espace_pca_knit}}, include = {{espace_pca_knit}}}
@@ -14,5 +14,26 @@ espace_pca_{{multAbr}} <- espace_pca(
   occs.z2 = occs_{{spAbr2}}[,pcaSel_{{multAbr}}],
   bgPts.z1 = bgEnvsVals_{{spAbr1}}[,pcaSel_{{multAbr}}],
   bgPts.z2 = bgEnvsVals_{{spAbr2}}[,pcaSel_{{multAbr}}])
+
+##generate plots
+
+   # PCA Scatter Plot
+      if ("{{pcaPlotSel_rmd}}" == "occs") {
+        x <- espace_pca_{{multAbr}}$scores[espace_pca_{{multAbr}}$scores$bg == 'sp', ]
+        x.f <- factor(x$sp)
+      } else if ("{{pcaPlotSel_rmd}}" == "occsBg") {
+        x <- espace_pca_{{multAbr}}$scores[espace_pca_{{multAbr}}$scores$sp == 'bg', ]
+        x.f <- factor(x$bg)
+      }
+      ade4::s.class(x, x.f, xax = {{pc1_rmd}}, yax = {{pc2_rmd}},
+                    col = c("red", "blue"), cstar = 0, cpoint = 0.1)
+    # PCA Correlation circle
+      ade4::s.corcircle(espace_pca_{{multAbr}}$co, xax = {{pc1_rmd}}, yax = {{pc2_rmd}},
+                        lab = pcaSel_{{multAbr}}, full = FALSE, box = TRUE)
+    # PCA screeplot
+      screeplot(espace_pca_{{multAbr}}, main = NULL)
+    #Print PCA summary of results
+      summary(espace_pca_{{multAbr}})
+
 
 ```
