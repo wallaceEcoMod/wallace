@@ -19,7 +19,7 @@ occNum <- 1000
   #gbif
 out.gbif <- occs_queryDb(spNames, occDb, occNum)
   #Vertnet: currently not supported
-#out.vert <- occs_queryDb(spNames, occDb = "vertnet", occNum)
+out.vert <- occs_queryDb(spNames, occDb = "vertnet", occNum)
 # Bison
 out.bison <- occs_queryDb(spNames, occDb = "bison",occNum)
 # BIEN
@@ -119,56 +119,56 @@ test_that("GBIF headers", {
 
 ## VERTNET: currently not supported by spocc
 # original Vertnet headers
-#headersVertnet <- c("name", "longitude", "latitude", "country", "stateprovince",
- #                   "year", "basisofrecord", "catalognumber", "institutioncode",
-  #                  "coordinateuncertaintyinmeters")
+headersVertnet <- c("name", "longitude", "latitude", "country", "stateprovince",
+                    "year", "basisofrecord", "catalognumber", "institutioncode",
+                    "coordinateuncertaintyinmeters")
 
-#for (i in 1:length(spNames)){
+for (i in 1:length(spNames)){
 ##Check output
-#test_that("output type checks", {
+test_that("output type checks", {
   # the output is a list
- # expect_is(out.vert, "list")
+  expect_is(out.vert, "list")
   #the list has as many elements as species names provided
-#  expect_equal(length(out.vert), length(spNames))
+  expect_equal(length(out.vert), length(spNames))
   # each individual species result is a list
- # expect_is(out.vert[[i]], "list")
+  expect_is(out.vert[[i]], "list")
   #Each individual list has two elements
-  #expect_equal(length(out.vert[[i]]), 2)
+  expect_equal(length(out.vert[[i]]), 2)
   # the elements on the main list are lists too
-  #expect_is(out.vert[[i]][c("orig","cleaned")], "list")
+  expect_is(out.vert[[i]][c("orig","cleaned")], "list")
   #downloaded species corresponds to queried species.
- # expect_match(unique(out.vert[[i]]$cleaned$scientific_name),spNames[i],ignore.case=T)
+  expect_match(unique(out.vert[[i]]$cleaned$scientific_name),spNames[i],ignore.case=T)
 
   # cleaned list has 14 columns
- # expect_equal(14, ncol(out.vert[[i]]$cleaned))
-#})
+ expect_equal(14, ncol(out.vert[[i]]$cleaned))
+})
   ### test function stepts
- # test_that("output data checks", {
+  test_that("output data checks", {
     # if the original database has records without coordinates OR duplicates:
-   # if ((TRUE %in% duplicated(out.vert[[i]]$orig[,c('longitude','latitude')]) == TRUE)|
-    #    (NA %in% out.vert$orig[,c('longitude','latitude')]) == TRUE){
+    if ((TRUE %in% duplicated(out.vert[[i]]$orig[,c('longitude','latitude')]) == TRUE)|
+       (NA %in% out.vert$orig[,c('longitude','latitude')]) == TRUE){
       # the cleaned table must have fewer records than the original one
-     # expect_true((nrow(out.vert[[i]]$orig)) > (nrow(out.vert[[i]]$cleaned)))
-    #} else { # if not,
+      expect_true((nrow(out.vert[[i]]$orig)) > (nrow(out.vert[[i]]$cleaned)))
+    } else { # if not,
       # both tables should have the same number of records
-     # expect_true((nrow(out.vert[[i]]$orig)) == (nrow(out.vert[[i]]$cleaned)))
-    #}
+      expect_true((nrow(out.vert[[i]]$orig)) == (nrow(out.vert[[i]]$cleaned)))
+    }
     # there are not "NA" values in longitude OR latitude columns in the cleaned table
-   # expect_false(NA %in% out.vert[[i]]$cleaned$latitude)|(NA %in% out.vert[[i]]$cleaned$longitude)
+    expect_false(NA %in% out.vert[[i]]$cleaned$latitude)|(NA %in% out.vert[[i]]$cleaned$longitude)
     # there are not duplicate values in longitude AND latitude columns in the cleaned table
-  #  expect_false(TRUE %in% duplicated(out.vert[[i]]$cleaned[,c('longitude','latitude')]))
-#  })
+    expect_false(TRUE %in% duplicated(out.vert[[i]]$cleaned[,c('longitude','latitude')]))
+ })
   # check headers
- # test_that("Vertnet headers", {
+  test_that("Vertnet headers", {
     # the original headers haven't changed
-  #  expect_false('FALSE' %in%  (headersVertnet %in% names(out.vert[[i]]$orig)))
+    expect_false('FALSE' %in%  (headersVertnet %in% names(out.vert[[i]]$orig)))
     #the headers in the cleaned table are the ones specified in the function
-   # expect_equal(names(out.vert[[i]]$cleaned),
-    #             c("occID", "scientific_name", "longitude", "latitude", "country", "state_province",
-     #              "locality", "year", "record_type","catalog_number", "institution_code",
- #                  "elevation", "uncertainty", "pop"))
-  #})
-#}
+    expect_equal(names(out.vert[[i]]$cleaned),
+                c("occID", "scientific_name", "longitude", "latitude", "country", "state_province",
+                 "locality", "year", "record_type","catalog_number", "institution_code",
+                "elevation", "uncertainty", "pop"))
+  })
+}
 ## BISON
 # original Bison headers
 headersBison <- c("providedScientificName", "longitude", "latitude", "countryCode",
