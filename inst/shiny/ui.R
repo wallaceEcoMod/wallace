@@ -26,7 +26,7 @@ tagList(
     tabPanel("Model", value = 'model'),
     tabPanel("Visualize", value = 'vis'),
     tabPanel("Project", value = 'proj'),
-    tabPanel("Session Code", value = 'rmd')
+    tabPanel("Reproduce", value = 'rep')
   ),
   tags$div(
     class = "container-fluid",
@@ -216,20 +216,16 @@ tagList(
                                  .butResPj:hover {background-color: #830D03;
                                  color: white;}"))
           ),
-          # SESSION CODE ####
+          # REPRODUCIBILITY
           conditionalPanel(
-            "input.tabs == 'rmd'",
-            h4("Download Session Code and Metadata"),
-            uiTop(rmd_INFO),
-            strong("Select download file type"),
-            selectInput('rmdFileType', label = "",
-                        choices = list("Rmd", "PDF", "HTML", "Word")),
-            downloadButton('dlRMD', 'Download Session Code'),
+            "input.tabs == 'rep'",
+            h4("Reproduce Session"),
+            radioButtons(
+              "repSel", "Modules Available:",
+              choices = insert_modules_options("rep")
+            ),
             tags$hr(),
-            strong("Download metadata CSV files (**)"), br(), br(),
-            downloadButton('dlRMM', 'Download Metadata'),
-            tags$hr(),
-            uiBottom(rmd_INFO)
+            insert_modules_ui("rep")
           )
         )
       ),
@@ -237,7 +233,7 @@ tagList(
       column(
         8,
         conditionalPanel(
-          "input.tabs != 'intro' & input.tabs != 'rmd'",
+          "input.tabs != 'intro' & input.tabs != 'rep'",
           fixedRow(
             column(
               4,
@@ -259,7 +255,7 @@ tagList(
         ),
         br(),
         conditionalPanel(
-          "input.tabs != 'rmd' & input.tabs != 'intro'",
+          "input.tabs != 'intro' & input.tabs != 'rep'",
           tabsetPanel(
             id = 'main',
             tabPanel(
@@ -485,13 +481,18 @@ tagList(
                 )
               )
             )
-
           )
         ),
         conditionalPanel(
-          "input.tabs == 'rmd'",
+          "input.tabs == 'rep' & input.repSel == 'rep_markdown'",
           column(8,
-                 includeMarkdown("Rmd/text_sessionCode.Rmd")
+                 includeMarkdown("modules/rep_markdown.Rmd")
+          )
+        ),
+        conditionalPanel(
+          "input.tabs == 'rep' & input.repSel == 'rep_rmms'",
+          column(8,
+                 includeMarkdown("modules/rep_rmms.Rmd")
           )
         ),
         conditionalPanel(

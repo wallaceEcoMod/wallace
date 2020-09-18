@@ -1,0 +1,5 @@
+component: "rep"
+short_name: "Metadata"
+long_name: "Download Metadata"
+authors: "Jamie M. Kass, Gonzalo E. Pinilla-Buitrago, Cory Merow."
+package: [rangeModelMetadata]
