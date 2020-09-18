@@ -24,6 +24,7 @@ run_wallace <- function(launch.browser = TRUE, port = getOption("shiny.port"),
   app_path <- system.file("shiny", package = "wallace")
   if (biomodelos == TRUE) {
     wallace::register_module(paste0(app_path, "/custom_modules/occs_biomodelos.yml"))
+    wallace::register_module(paste0(app_path, "/custom_modules/rep_biomodelos.yml"))
   }
   return(shiny::runApp(app_path, launch.browser = launch.browser, port = port))
 }

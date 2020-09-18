@@ -8,3 +8,5 @@ rep_markdown_module_ui <- function(id) {
     downloadButton('dlRMD', 'Download Session Code')
   )
 }
+
+rep_markdown_module_server <- function(input, output, session, common) {}
