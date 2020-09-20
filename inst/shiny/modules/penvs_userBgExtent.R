@@ -44,7 +44,10 @@ penvs_userBgExtent_module_server <- function(input, output, session, common) {
   occs <- common$occs
 
   observeEvent(input$goUserBg, {
+    common$update_component(tab = "Map")
+
     # ERRORS ####
+
     if (is.null(envs())) {
       logger %>%
         writeLog(type = 'error',

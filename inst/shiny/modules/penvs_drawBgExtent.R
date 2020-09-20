@@ -38,6 +38,8 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
   bgExt <- common$bgExt
 
   observeEvent(input$goDrawBg, {
+    common$update_component(tab = "Map")
+
     # WARNING ####
     if (is.null(envs())) {
       logger %>%
