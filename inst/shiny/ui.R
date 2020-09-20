@@ -441,7 +441,7 @@ tagList(
                                                        "GRD" = 'raster',
                                                        "ASCII" = 'ascii',
                                                        "PNG" = 'png'))),
-                  column(2, shinyjs::disabled(downloadButton('dlPred', "Predition file(**)")))
+                  column(2, shinyjs::disabled(downloadButton('dlPred', "Prediction file(**)")))
                 )
               ),
               conditionalPanel(
