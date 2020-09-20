@@ -44,6 +44,7 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
   occs <- common$occs
 
   observeEvent(input$goBgExt, {
+    common$update_component(tab = "Map")
     # ERRORS ####
     if (is.null(envs())) {
       logger %>% writeLog(type = 'error', hlSpp(curSp()), 'Environmental variables missing.',
@@ -125,6 +126,7 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
       # METADATA ####
       spp[[sp]]$rmm$data$occurrence$backgroundSampleSizeSet <- input$bgPtsNum
     }
+    common$update_component(tab = "Map")
   })
   return(list(
     save = function() {
