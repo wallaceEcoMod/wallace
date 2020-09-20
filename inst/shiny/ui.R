@@ -26,6 +26,7 @@ tagList(
     tabPanel("Model", value = 'model'),
     tabPanel("Visualize", value = 'vis'),
     tabPanel("Project", value = 'proj'),
+    tabPanel("Alpha Div", value = 'alpha'),
     tabPanel("Session Code", value = 'rmd')
   ),
   tags$div(
@@ -216,6 +217,18 @@ tagList(
                                  .butResPj:hover {background-color: #830D03;
                                  color: white;}"))
           ),
+          # ALPHA ####
+          conditionalPanel(
+            "input.tabs == 'alpha'",
+            h4("Alpha diversity"),
+            radioButtons(
+              "alphaSel", "Modules Available:",
+              choices = insert_modules_options("alpha")
+            ),
+            tags$hr(),
+            insert_modules_ui("alpha")
+          ),
+
           # SESSION CODE ####
           conditionalPanel(
             "input.tabs == 'rmd'",

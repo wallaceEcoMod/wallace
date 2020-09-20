@@ -95,14 +95,31 @@ function(input, output, session) {
   })
 
   # Call the module-specific map function for the current module
+  # Call the module-specific map function for the current module
+
   observe({
-    # must have one species selected and occurrence data
-    req(length(curSp()) == 1, occs(), module())
-    map_fx <- COMPONENT_MODULES[[component()]][[module()]]$map_function
-    if (!is.null(map_fx)) {
-      do.call(map_fx, list(map, common = common))
+    if (component() == 'alpha') {# must have one species selected and occurrence data
+      #req(length(curSp()) ==1, occs(), module())
+      #for this to work with multisp we can't require occs as we will have more than 1 curSp
+      req(length(curSp()) >=1, module())
+      map_fx <- COMPONENT_MODULES[[component()]][[module()]]$map_function
+      if (!is.null(map_fx)) {
+        do.call(map_fx, list(map, common = common))
+      }
     }
+    else {
+      # must have one species selected and occurrence data
+      req(length(curSp()) ==1, occs(), module())
+      #for this to work with multisp we can't require occs as we will have more than 1 curSp
+      #req(length(curSp()) >=1, module())
+      map_fx <- COMPONENT_MODULES[[component()]][[module()]]$map_function
+      if (!is.null(map_fx)) {
+        do.call(map_fx, list(map, common = common))
+      }
+    }
+
   })
+
 
   ######################## #
   ### BUTTONS LOGIC ####
@@ -161,7 +178,9 @@ function(input, output, session) {
     # NOTE: this line is necessary to retain the selection after selecting different tabs
     if(!is.null(curSp())) selected <- curSp() else selected <- n[1]
     # if espace component, allow for multiple species selection
-    if(component() == 'espace') options <- list(maxItems = 2) else options <- list(maxItems = 1)
+    if(component() == 'espace') options <- list(maxItems = 2)
+    #if alpha component, allow for multiple species selection
+    else if (component() == 'alpha') options <- list(maxItems = 100) else options <- list(maxItems = 1)
     # make a named list of their names
     sppNameList <- c(list("Current species" = ""), setNames(as.list(n), n))
     # generate a selectInput ui that lists the available species
