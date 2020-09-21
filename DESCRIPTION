@@ -1,6 +1,6 @@
 Package: wallace
-Version: 1.0.6.2
-Date: 2020-02-12
+Version: 1.0.6.3
+Date: 2020-09-21
 Title: A Modular Platform for Reproducible Modeling of Species Niches and Distributions
 Authors@R: c(person("Jamie M.", "Kass", email = "jamie.kass@oist.jp", role = "aut"),
   person("Gonzalo E.", "Pinilla-Buitrago", email = "gpinillabuitrago@gradcenter.cuny.edu", role = c("aut", "cre")),
@@ -20,12 +20,12 @@ Maintainer: Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
 Depends: R (>= 3.5.0), shiny (>= 1.1.0), leaflet (>= 2.0.2)
 Imports: DT (>= 0.4), shinyjs, spocc (>= 0.8.0), RColorBrewer, dplyr,
         spThin, ENMeval (>= 0.3.0), rgeos, maptools, dismo, raster, shinythemes,
-        magrittr, rgdal, leaflet.extras, XML, rmarkdown, testthat, zip
+        magrittr, rgdal, leaflet.extras, XML, rmarkdown, testthat, zip, rgbif (>= 3.3.0)
 Description: The 'shiny' application 'wallace' is a modular platform for reproducible modeling of species niches and distributions. 'wallace' guides users through a complete analysis, from the acquisition of species occurrence and environmental data to visualizing model predictions on an interactive map, thus bundling complex workflows into a single, streamlined interface.
 License: GPL-3
 URL: https://wallaceEcoMod.github.io
 Encoding: UTF-8
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.1
 Suggests: knitr
 NeedsCompilation: no
 Packaged: 2017-11-29 05:26:31 UTC; musasabi
