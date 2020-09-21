@@ -1,3 +1,6 @@
+# wallace 1.0.6.3
+- rgbif updated dependency
+
 # wallace 1.0.6.2
 - Double distance in point buffer fixed.
 
