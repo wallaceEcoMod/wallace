@@ -1,14 +1,7 @@
-```{asis, echo = {{occs_paleoDb_knit}}, eval = {{occs_paleoDb_knit}}, include = {{occs_paleoDb_knit}}}
-### Obtain Occurrence Data
-You searched the paleobioDB database for *`r "{{spName}}"`*, limited to `r {{occsNumPB_rmd}}` records in the {{timeInterval_rmd}}. 
+```{asis, echo = {{occs_biomodelos_knit}}, eval = {{occs_biomodelos_knit}}, include = {{occs_biomodelos_knit}}}
+#
 ```
 
-```{r, echo = {{occs_paleoDb_knit}}, include = {{occs_paleoDb_knit}}}
-# Query selected database for occurrence records
-occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL)
-paleoDb_{{spAbr}}<-occs_paleoDb(
-  spName = "{{spName}}",
-  occNum = {{occsNumPB_rmd}},
-  timeInterval = "{{timeInterval_rmd}}")
-occs_{{spAbr}} <- paleoDb_{{spAbr}}$cleaned
+```{r, echo = {{occs_biomodelos_knit}}, include = {{occs_biomodelos_knit}}}
+#
 ```
