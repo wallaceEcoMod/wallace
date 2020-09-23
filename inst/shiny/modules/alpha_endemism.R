@@ -84,6 +84,7 @@ alpha_endemism_module_server <- function(input, output, session, common) {
       })
 
     req(SE)
+    logger %>% writeLog( "Species endemism calculated ")
     # LOAD INTO SPP ####
     # this name concatenates the species names when there are two or more
     #  mspName <- paste(curSp(), collapse = ".")
