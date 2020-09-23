@@ -26,6 +26,7 @@ tagList(
     tabPanel("Model", value = 'model'),
     tabPanel("Visualize", value = 'vis'),
     tabPanel("Project", value = 'proj'),
+    tabPanel("Alpha Div", value = 'alpha'),
     tabPanel("Session Code", value = 'rmd')
   ),
   tags$div(
@@ -216,6 +217,18 @@ tagList(
                                  .butResPj:hover {background-color: #830D03;
                                  color: white;}"))
           ),
+          # ALPHA ####
+          conditionalPanel(
+            "input.tabs == 'alpha'",
+            h4("Alpha diversity"),
+            radioButtons(
+              "alphaSel", "Modules Available:",
+              choices = insert_modules_options("alpha")
+            ),
+            tags$hr(),
+            insert_modules_ui("alpha")
+          ),
+
           # SESSION CODE ####
           conditionalPanel(
             "input.tabs == 'rmd'",
@@ -483,11 +496,47 @@ tagList(
                                                        "PNG" = 'png'))),
                   column(2, shinyjs::disabled(downloadButton('dlMess', "MESS file(**)")))
                 )
+              ),
+              conditionalPanel(
+                "input.tabs == 'alpha'",
+                br(),
+                fluidRow(
+                  column(3, h5("Download list of species used for species richness calculations")),
+                  column(2, shinyjs::disabled(downloadButton('dlSpListSR', "CSV file")))
+                ),
+                br(),
+                fluidRow(
+                  column(3, h5("Download species richness map (Select file type)")),
+                  column(2, selectInput('richFileType',
+                                        label = NULL,
+                                        choices = list("GeoTIFF" = 'GTiff',
+                                                       "GRD" = 'raster',
+                                                       "ASCII" = 'ascii',
+                                                       "PNG" = 'png'))),
+                  column(2, shinyjs::disabled(downloadButton('dlRich', "Richness file")))
+                ),
+                br(),
+                fluidRow(
+                  column(3, h5("Download list of species used for species endemism calculations")),
+                  column(2, shinyjs::disabled(downloadButton('dlSpListSE', "CSV file")))
+                ),
+                br(),
+                fluidRow(
+                  column(3, h5("Download species enedemism map (Select file type)")),
+                  column(2, selectInput('endFileType',
+                                        label = NULL,
+                                        choices = list("GeoTIFF" = 'GTiff',
+                                                       "GRD" = 'raster',
+                                                       "ASCII" = 'ascii',
+                                                       "PNG" = 'png'))),
+                  column(2, shinyjs::disabled(downloadButton('dlEnd', "Endemism file")))
+                )
               )
             )
 
           )
         ),
+
         conditionalPanel(
           "input.tabs == 'rmd'",
           column(8,

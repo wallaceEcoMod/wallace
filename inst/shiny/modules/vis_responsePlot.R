@@ -43,6 +43,7 @@ vis_responsePlot_module_server <- function(input, output, session, common) {
     }
   })
 
+
   output$responsePlot <- renderPlot({
     req(curSp(), evalOut())
     if (spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM") {
@@ -72,7 +73,7 @@ vis_responsePlot_module_rmd <- function(species) {
   list(
     vis_responsePlot_knit = !is.null(species$rmd$vis_responsePlot),
     vis_maxnet_knit = if(!is.null(species$rmm$model$algorithms)){
-      species$rmm$model$algorithms == "maxnet"} else {FALSE},
+    species$rmm$model$algorithms == "maxnet"} else {FALSE},
     alg_rmd = if(!is.null(species$rmm$model$algorithms)){species$rmm$model$algorithms} else {NULL},
     curModel_rmd = if(!is.null(species$rmd$vis_curModel)){species$rmd$vis_curModel} else {NULL}
   )
