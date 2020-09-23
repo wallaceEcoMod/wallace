@@ -95,6 +95,7 @@ alpha_endemism_module_server <- function(input, output, session, common) {
     }
 
     spp[[mspName]]$mapSEVals <- getRasterVals(SE)
+    spp[[mspName]]$ListSE <- curSp()
 
     common$update_component(tab = "Map")
   })
@@ -117,12 +118,12 @@ alpha_endemism_module_server <- function(input, output, session, common) {
 
 }
 
-#alpha_endemism_module_result <- function(id) {
-# ns <- NS(id)
+alpha_endemism_module_result <- function(id) {
+ns <- NS(id)
 
 # Result UI
-#verbatimTextOutput(ns("result"))
-#}
+verbatimTextOutput(ns("result"))
+}
 
 alpha_endemism_module_map <- function(map, common) {
   # Map logic

@@ -82,6 +82,7 @@ alpha_richness_module_server <- function(input, output, session, common) {
                        })
 
     req(SR)
+    logger %>% writeLog( "Species richness calculated ")
     # LOAD INTO SPP ####
     # this name concatenates the species names when there are two or more
   #  mspName <- paste(curSp(), collapse = ".")
@@ -93,6 +94,7 @@ alpha_richness_module_server <- function(input, output, session, common) {
     }
 
      spp[[mspName]]$mapSRVals <- getRasterVals(SR)
+     spp[[mspName]]$ListSR <- curSp()
 
     common$update_component(tab = "Map")
   })
@@ -100,8 +102,7 @@ alpha_richness_module_server <- function(input, output, session, common) {
 
   output$result <- renderPrint({
     # Result
- mspName <- "multisp"
- spp[[mspName]]$SR
+curSp()
   })
 
   return(list(
@@ -115,12 +116,12 @@ alpha_richness_module_server <- function(input, output, session, common) {
 
 }
 
-#alpha_richness_module_result <- function(id) {
- # ns <- NS(id)
+alpha_richness_module_result <- function(id) {
+  ns <- NS(id)
 
   # Result UI
-  #verbatimTextOutput(ns("result"))
-#}
+  verbatimTextOutput(ns("result"))
+}
 
 alpha_richness_module_map <- function(map, common) {
   # Map logic
