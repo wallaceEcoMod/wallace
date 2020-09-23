@@ -1,0 +1,5 @@
+component: "alpha"
+short_name: "Richness"
+long_name: "Species richness"
+authors: "Andrea Paz"
+package: [raster]

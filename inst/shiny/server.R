@@ -95,14 +95,31 @@ function(input, output, session) {
   })
 
   # Call the module-specific map function for the current module
+  # Call the module-specific map function for the current module
+
   observe({
-    # must have one species selected and occurrence data
-    req(length(curSp()) == 1, occs(), module())
-    map_fx <- COMPONENT_MODULES[[component()]][[module()]]$map_function
-    if (!is.null(map_fx)) {
-      do.call(map_fx, list(map, common = common))
+    if (component() == 'alpha') {# must have one species selected and occurrence data
+      #req(length(curSp()) ==1, occs(), module())
+      #for this to work with multisp we can't require occs as we will have more than 1 curSp
+      req(length(curSp()) >=1, module())
+      map_fx <- COMPONENT_MODULES[[component()]][[module()]]$map_function
+      if (!is.null(map_fx)) {
+        do.call(map_fx, list(map, common = common))
+      }
     }
+    else {
+      # must have one species selected and occurrence data
+      req(length(curSp()) ==1, occs(), module())
+      #for this to work with multisp we can't require occs as we will have more than 1 curSp
+      #req(length(curSp()) >=1, module())
+      map_fx <- COMPONENT_MODULES[[component()]][[module()]]$map_function
+      if (!is.null(map_fx)) {
+        do.call(map_fx, list(map, common = common))
+      }
+    }
+
   })
+
 
   ######################## #
   ### BUTTONS LOGIC ####
@@ -145,6 +162,14 @@ function(input, output, session) {
    shinyjs::toggleState("dlOccDens", !is.null(spp[[paste0(curSp()[1],".",curSp()[2])]]$occDens))
    shinyjs::toggleState("dlNicheOvPlot", !is.null(spp[[paste0(curSp()[1],".",curSp()[2])]]$nicheOv))
  })
+ observe({
+   req(length(curSp()) > 2)
+   shinyjs::toggleState("dlRich", !is.null(spp[["multisp"]]$SR))
+   shinyjs::toggleState("dlEnd", !is.null(spp[["multisp"]]$SE))
+   shinyjs::toggleState("dlSpListSR", !is.null(spp[["multisp"]]$ListSR))
+   shinyjs::toggleState("dlSpListSE", !is.null(spp[["multisp"]]$ListSE))
+ })
+
 
   # # # # # # # # # # # # # # # # # #
   # OBTAIN OCCS: other controls ####
@@ -161,7 +186,9 @@ function(input, output, session) {
     # NOTE: this line is necessary to retain the selection after selecting different tabs
     if(!is.null(curSp())) selected <- curSp() else selected <- n[1]
     # if espace component, allow for multiple species selection
-    if(component() == 'espace') options <- list(maxItems = 2) else options <- list(maxItems = 1)
+    if(component() == 'espace') options <- list(maxItems = 2)
+    #if alpha component, allow for multiple species selection
+    else if (component() == 'alpha') options <- list(maxItems = 100) else options <- list(maxItems = 1)
     # make a named list of their names
     sppNameList <- c(list("Current species" = ""), setNames(as.list(n), n))
     # generate a selectInput ui that lists the available species
@@ -1073,7 +1100,135 @@ function(input, output, session) {
       }
     }
   )
+  ########################################### #
+  ### COMPONENT: ALPHA DIVERSITY ####
+  ########################################### #
+  # download list of species used
+  output$dlSpListSR <- downloadHandler(
+    filename = function() {
+      paste0("Species_used_SR", ".csv")
+    },
+    content = function(file) {
+      tbl <- as.data.frame(spp[["multisp"]]$ListSR)
+      write_csv_robust(tbl, file, row.names = FALSE)
+    }
+  )
+  output$dlSpListSE <- downloadHandler(
+    filename = function() {
+      paste0("Species_used_SE", ".csv")
+    },
+    content = function(file) {
+      tbl <- as.data.frame(spp[["multisp"]]$ListSEs)
+      write_csv_robust(tbl, file, row.names = FALSE)
+    }
+  )
+  # download richness map
+  output$dlRich <- downloadHandler(
+    filename = function() {
+      ext <- switch(input$richFileType, raster = 'zip', ascii = 'asc',
+                    GTiff = 'tif', png = 'png')
 
+        paste0( "Richness", '.', ext)
+
+    },
+    content = function(file) {
+      if(require(rgdal)) {
+        if (input$richFileType == 'png') {
+          if (!webshot::is_phantomjs_installed()) {
+            logger %>%
+              writeLog(type = "error", "To download PNG prediction, you need to",
+                       " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
+                       " in your R console. ")
+          }
+
+            rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+            mapSRVals <-  spp[["multisp"]]$mapSRVals
+            rasPal <- colorNumeric(rasCols, mapSRVals, na.color='transparent')
+            legendPal <- colorNumeric(rev(rasCols), mapSRVals, na.color='transparent')
+            mapTitle <- "Species Richness"
+            mapLabFormat <- reverseLabels(2, reverse_order=TRUE)
+            mapOpacity <- NULL
+          m <- leaflet() %>%
+            addLegend("bottomright", pal = legendPal, title = mapTitle,
+                      labFormat = mapLabFormat, opacity = mapOpacity,
+                      values = mapSRVals, layerId = "train") %>%
+            addProviderTiles(input$bmap) %>%
+            addRasterImage( spp[["multisp"]]$SR, colors = rasPal, opacity = 0.7,
+                           group = 'alpha', layerId = 'SR', method = "ngb")
+          mapview::mapshot(m, file = file)
+        } else if (input$richFileType == 'raster') {
+          fileName <-  "Richness"
+          tmpdir <- tempdir()
+          raster::writeRaster( spp[["multisp"]]$SR, file.path(tmpdir, fileName),
+                              format = input$richFileType, overwrite = TRUE)
+          owd <- setwd(tmpdir)
+          fs <- paste0(fileName, c('.grd', '.gri'))
+          zip::zipr(zipfile = file, files = fs)
+          setwd(owd)
+        } else {
+          r <- raster::writeRaster(spp[["multisp"]]$SR, file, format = input$richFileType,
+                                   overwrite = TRUE)
+          file.rename(r@file@name, file)
+        }
+      } else {
+        logger %>% writeLog("Please install the rgdal package before downloading rasters.")
+      }
+    }
+  )
+
+  # download endemism map
+  output$dlEnd <- downloadHandler(
+    filename = function() {
+      ext <- switch(input$endFileType, raster = 'zip', ascii = 'asc',
+                    GTiff = 'tif', png = 'png')
+
+      paste0( "Endemism", '.', ext)
+
+    },
+    content = function(file) {
+      if(require(rgdal)) {
+        if (input$endFileType == 'png') {
+          if (!webshot::is_phantomjs_installed()) {
+            logger %>%
+              writeLog(type = "error", "To download PNG prediction, you need to",
+                       " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
+                       " in your R console. ")
+          }
+
+          rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+          mapSEVals <-  spp[["multisp"]]$mapSEVals
+          rasPal <- colorNumeric(rasCols, mapSEVals, na.color='transparent')
+          legendPal <- colorNumeric(rev(rasCols), mapSEVals, na.color='transparent')
+          mapTitle <- "Species Endemism"
+          mapLabFormat <- reverseLabels(2, reverse_order=TRUE)
+          mapOpacity <- NULL
+          m <- leaflet() %>%
+            addLegend("bottomright", pal = legendPal, title = mapTitle,
+                      labFormat = mapLabFormat, opacity = mapOpacity,
+                      values = mapSEVals, layerId = "train") %>%
+            addProviderTiles(input$bmap) %>%
+            addRasterImage( spp[["multisp"]]$SE, colors = rasPal, opacity = 0.7,
+                            group = 'alpha', layerId = 'SE', method = "ngb")
+          mapview::mapshot(m, file = file)
+        } else if (input$richFileType == 'raster') {
+          fileName <-  "Endemism"
+          tmpdir <- tempdir()
+          raster::writeRaster( spp[["multisp"]]$SE, file.path(tmpdir, fileName),
+                               format = input$endFileType, overwrite = TRUE)
+          owd <- setwd(tmpdir)
+          fs <- paste0(fileName, c('.grd', '.gri'))
+          zip::zipr(zipfile = file, files = fs)
+          setwd(owd)
+        } else {
+          r <- raster::writeRaster(spp[["multisp"]]$SE, file, format = input$endFileType,
+                                   overwrite = TRUE)
+          file.rename(r@file@name, file)
+        }
+      } else {
+        logger %>% writeLog("Please install the rgdal package before downloading rasters.")
+      }
+    }
+  )
   ########################################### #
   ### RMARKDOWN FUNCTIONALITY ####
   ########################################### #

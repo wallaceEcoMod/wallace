@@ -44,6 +44,8 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
   occs <- common$occs
 
   observeEvent(input$goBgExt, {
+    common$update_component(tab = "Map")
+
     # ERRORS ####
     if (is.null(envs())) {
       logger %>% writeLog(type = 'error', hlSpp(curSp()), 'Environmental variables missing.',

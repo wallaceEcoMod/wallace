@@ -1,0 +1,5 @@
+component: "alpha"
+short_name: "Endemism"
+long_name: "Endemism Calculation"
+authors: "Andrea Paz"
+package: [raster, changeRangeR]
