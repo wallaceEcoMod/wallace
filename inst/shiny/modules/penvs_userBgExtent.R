@@ -120,6 +120,16 @@ penvs_userBgExtent_module_server <- function(input, output, session, common) {
                              logger,
                              spN = sp)
       req(bgMask)
+      bgNonNA <- raster::ncell(bgMask) - raster::freq(bgMask, value = NA)[[1]]
+      if ((bgNonNA + 1) < input$bgPtsNum) {
+        logger %>%
+          writeLog(
+            type = "error", hlSpp(sp),
+            "Number of requested background points (n = ", input$bgPtsNum, ") is ",
+            "higher than the maximum points available on the background extent ",
+            "(n = ", bgNonNA, "). Please reduce the number of requested points. (**)")
+        return()
+      }
       bgPts <- penvs_bgSample(spp[[sp]]$occs,
                               bgMask,
                               input$bgPtsNum,
