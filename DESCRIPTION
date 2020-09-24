@@ -29,6 +29,7 @@ Depends:
 Imports:
     ade4,
     BIEN,
+    changeRangeR,
     dismo,
     dplyr (>= 1.0.2),
     DT (>= 0.5),
