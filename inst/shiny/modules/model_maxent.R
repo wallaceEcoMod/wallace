@@ -21,8 +21,7 @@ model_maxent_module_ui <- function(id) {
                             'complexity.'),
              checkboxGroupInput(ns("fcs"), label = '',
                                 choices = list("L", "LQ", "H", "LQH", "LQHP"),
-                                inline = TRUE,
-                                selected = c("L", "LQ"))), # Check default (no selected param)
+                                inline = TRUE)), # Check default (no selected param)
     strong("Select regularization multipliers "),
     strong(em("(penalty against complexity)")),
     tags$div(title = paste0('Range of regularization multipliers to explore. ',
@@ -63,7 +62,7 @@ model_maxent_module_ui <- function(id) {
         ))),
     tags$div(
       title = "Add Batch guidance text here (**)",
-      checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE) # Check default (value = FALSE)
+      checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE) # Check default (value = FALSE)
     ),
     actionButton(ns("goMaxent"), "Run")
   )
@@ -78,7 +77,7 @@ model_maxent_module_server <- function(input, output, session, common) {
   curModel <- common$curModel
   selCatEnvs <- common$selCatEnvs
 
-  updateSelectInput(session, "clamp", selected = "TRUE") # Check default (selected = "")
+  updateSelectInput(session, "clamp", selected = "") # Check default (selected = "")
 
   observeEvent(input$goMaxent, {
     if(is.null(input$fcs)) {

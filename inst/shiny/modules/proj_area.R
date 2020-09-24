@@ -205,7 +205,7 @@ proj_area_module_server <- function(input, output, session, common) {
 
     # METADATA ####
     spp[[curSp()]]$rmm$code$wallace$project_curModel <- curModel()
-    spp[[curSp()]]$rmm$code$wallace$project_area<-TRUE
+    spp[[curSp()]]$rmm$code$wallace$project_area <- TRUE
     spp[[curSp()]]$rmm$data$transfer$environment1$minVal <-
       printVecAsis(raster::cellStats(projExt, min), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$maxVal <-
