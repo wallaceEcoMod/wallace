@@ -544,12 +544,6 @@ tagList(
           )
         ),
         conditionalPanel(
-          "input.tabs == 'rep' & input.repSel == 'rep_biomodelos'",
-          column(8,
-                 includeMarkdown("custom_modules/rep_biomodelos.Rmd")
-          )
-        ),
-        conditionalPanel(
           "input.tabs == 'intro'",
           tabsetPanel(
             id = 'introTabs',

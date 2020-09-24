@@ -69,5 +69,13 @@ poccs_selectOccs <- function(occs, polySelXY, polySelID = 1, logger = NULL, spN 
     logger %>% writeLog(
       hlSpp(spN), "Removing occurrence(s) with occID = ", remIDs,
       ". Updated data has n = ", nrow(occs.sel), " records.")
+
+    if (nrow(occs.sel) < 4) {
+      logger %>% writeLog(type = 'error',
+        hlSpp(spN), "After removing occurrences, there is three or less points. ",
+        "You need more occurrences to continue the analysis (**)."
+      )
+      return()
+    }
     return(occs.sel)
 }

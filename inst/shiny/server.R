@@ -658,11 +658,12 @@ function(input, output, session) {
     } else {
       n <- NULL
     }
-
+    # NOTE: this line is necessary to retain the selection after selecting different tabs
+    if(!is.null(curModel())) selected <- curModel() else selected <- n[1]
     modsNameList <- c(list("Current model" = ""), setNames(as.list(n), n))
     options <- list(maxItems = 1)
     selectizeInput('curModel', label = NULL , choices = modsNameList,
-                   multiple = TRUE, selected = n[1], options = options)
+                   multiple = TRUE, selected = selected, options = options)
   })
 
   # shortcut to currently selected model, read from modSelUI

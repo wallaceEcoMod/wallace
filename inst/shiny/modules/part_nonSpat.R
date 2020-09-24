@@ -86,7 +86,15 @@ part_nonSpat_module_map <- function(map, common) {
   if (!is.null(occs()$partition)) {
     occsGrp <- occs()$partition
     # colors for partition symbology
-    newColors <- gsub("FF$", "", rainbow(max(occsGrp)))
+    if (max(occsGrp) < 3) {
+      newColors <- RColorBrewer::brewer.pal(n = 3, "Set2")[1:max(occsGrp)]
+    } else if (max(occsGrp) < 9) {
+      newColors <- RColorBrewer::brewer.pal(n = max(occsGrp), "Set2")
+    } else if (max(occsGrp) < 12) {
+      newColors <- RColorBrewer::brewer.pal(n = max(occsGrp), "RdYlBu")
+    } else {
+      newColors <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(n = 11, "RdYlBu"))(max(occsGrp))
+    }
     partsFill <- newColors[occsGrp]
     map %>% clearAll() %>%
       map_occs(occs(), fillColor = partsFill, fillOpacity = 1) %>%

@@ -1,7 +1,0 @@
-```{asis, echo = {{occs_biomodelos_knit}}, eval = {{occs_biomodelos_knit}}, include = {{occs_biomodelos_knit}}}
-#
-```
-
-```{r, echo = {{occs_biomodelos_knit}}, include = {{occs_biomodelos_knit}}}
-#
-```
