@@ -11,12 +11,12 @@ penvs_bgExtent_module_ui <- function(id) {
                             'Exact length varies based on latitudinal position.'),
              numericInput(ns("bgBuf"),
                           label = "Study region buffer distance (degree)",
-                          value = 1, min = 0, step = 0.5)),  # Check default (value = 0)
+                          value = 0, min = 0, step = 0.5)),  # Check default (value = 0)
     tags$div(
       title = "Add Batch guidance text here (**)",
-      checkboxInput(ns("batch1"), label = strong("Batch"), value = TRUE) # Check default (value = FALSE)
+      checkboxInput(ns("batch1"), label = strong("Batch"), value = FALSE) # Check default (value = FALSE)
     ),
-    actionButton(ns("goBgExt"), "Select"),  # Check default (value = FALSE)
+    actionButton(ns("goBgExt"), "Select"),
     tags$hr(),
     span("Step 2:", class = "step"),
     span("Sample Background Points", class = "stepText"), br(), br(),
@@ -26,7 +26,7 @@ penvs_bgExtent_module_ui <- function(id) {
                  value = 10000, min = 1, step = 1), # Check default (value = 10000)
     tags$div(
       title = "Add Batch guidance text here (**)",
-      checkboxInput(ns("batch2"), label = strong("Batch"), value = TRUE) # Check default (value = FALSE)
+      checkboxInput(ns("batch2"), label = strong("Batch"), value = FALSE) # Check default (value = FALSE)
     ),
     actionButton(ns("goBgMask"), "Sample")
   )

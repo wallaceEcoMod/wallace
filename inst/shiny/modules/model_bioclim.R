@@ -3,7 +3,7 @@ model_bioclim_module_ui <- function(id) {
   tagList(
     tags$div(
       title = "Add Batch guidance text here (**)",
-      checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE) # Check default (value = FALSE)
+      checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE) # Check default (value = FALSE)
     ),
     actionButton(ns('goBIOCLIM'), 'Run')
   )

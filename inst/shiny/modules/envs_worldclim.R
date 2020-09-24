@@ -11,11 +11,11 @@ envs_worldclim_module_ui <- function(id) {
                                         "30 arcsec" = 0.5,
                                         "2.5 arcmin" = 2.5,
                                         "5 arcmin" = 5,
-                                        "10 arcmin" = 10), selected = 10)), # Check default (No selected parameter)
+                                        "10 arcmin" = 10))), # Check default (No selected parameter)
     checkboxInput(
       ns("doBrick"),
       label = "Save to memory for faster processing and save/load option(**)",
-      value = TRUE), # Check default (value = FALSE)
+      value = FALSE), # Check default (value = FALSE)
     shinyWidgets::pickerInput(
       "bcSel",
       label = "Select bioclim variables (**)",
@@ -28,7 +28,7 @@ envs_worldclim_module_ui <- function(id) {
       sprintf("input['%s'] != '0.5'", ns("wcRes")),
       tags$div(
         title = "Add Batch guidance text here (**)",
-        checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE) # Check default (value = FALSE)
+        checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE) # Check default (value = FALSE)
       )
     ),
     conditionalPanel(

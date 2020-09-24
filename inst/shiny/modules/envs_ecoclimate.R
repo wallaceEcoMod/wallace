@@ -33,7 +33,7 @@ envs_ecoclimate_module_ui <- function(id) {
       options = list(`actions-box` = TRUE)),
     tags$div(
       title = "Add Batch guidance text here (**)",
-      checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE) # Check default (value = FALSE)
+      checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE) # Check default (value = FALSE)
     ),
     em("ecoClimate layers have a resolution of 0.5 degrees"), br(), br(),
     actionButton(ns("goEcoClimData"), "Load Env Data")

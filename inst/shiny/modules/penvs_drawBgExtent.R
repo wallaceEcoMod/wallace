@@ -10,7 +10,7 @@ penvs_drawBgExtent_module_ui <- function(id) {
                  value = 0, min = 0, step = 0.5),
     tags$div(
       title = "Add Batch guidance text here (**)",
-      checkboxInput(ns("batch1"), label = strong("Batch"), value = TRUE) # Check default (value = FALSE)
+      checkboxInput(ns("batch1"), label = strong("Batch"), value = FALSE) # Check default (value = FALSE)
     ),
     actionButton(ns('goDrawBg'), "Create(**)"),
     tags$hr(),
@@ -22,7 +22,7 @@ penvs_drawBgExtent_module_ui <- function(id) {
                  value = 10000, min = 1, step = 1), # Check default (value = 10000)
     tags$div(
       title = "Add Batch guidance text here (**)",
-      checkboxInput(ns("batch2"), label = strong("Batch"), value = TRUE) # Check default (value = FALSE)
+      checkboxInput(ns("batch2"), label = strong("Batch"), value = FALSE) # Check default (value = FALSE)
     ),
     actionButton(ns("goBgMask"), "Sample")
   )

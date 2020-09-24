@@ -10,7 +10,7 @@ part_nonSpat_module_ui <- function(id) {
                                   value = 2, min = 2)),
     tags$div(
       title = "Add Batch guidance text here (**)",
-      checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE) # Check default (value = FALSE)
+      checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE) # Check default (value = FALSE)
     ),
     actionButton(ns("goPartitionNonSpat"), "Partition")
   )
