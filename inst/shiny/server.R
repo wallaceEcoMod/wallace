@@ -631,11 +631,12 @@ function(input, output, session) {
     } else {
       n <- NULL
     }
-
+    # NOTE: this line is necessary to retain the selection after selecting different tabs
+    if(!is.null(curModel())) selected <- curModel() else selected <- n[1]
     modsNameList <- c(list("Current model" = ""), setNames(as.list(n), n))
     options <- list(maxItems = 1)
     selectizeInput('curModel', label = NULL , choices = modsNameList,
-                   multiple = TRUE, selected = n[1], options = options)
+                   multiple = TRUE, selected = selected, options = options)
   })
 
   # shortcut to currently selected model, read from modSelUI
@@ -786,7 +787,7 @@ function(input, output, session) {
           req(mapPred())
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
-              writeLog(type = "error", "To download PNG predition, you require to",
+              writeLog(type = "error", "To download PNG prediction, you require to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in you are R console. (**)")
           }
@@ -939,7 +940,7 @@ function(input, output, session) {
           req(mapProj())
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
-              writeLog(type = "error", "To download PNG predition, you require to",
+              writeLog(type = "error", "To download PNG prediction, you require to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in you are R console. (**)")
           }
@@ -1017,7 +1018,7 @@ function(input, output, session) {
         if (input$messFileType == 'png') {
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
-              writeLog(type = "error", "To download PNG predition, you require to",
+              writeLog(type = "error", "To download PNG prediction, you require to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in you are R console. (**)")
           }
@@ -1112,7 +1113,7 @@ function(input, output, session) {
 
       for (sp in allSp()) {
         species_rmds <- NULL
-        for (component in names(COMPONENT_MODULES[names(COMPONENT_MODULES) != "espace"])) {
+        for (component in names(COMPONENT_MODULES[names(COMPONENT_MODULES) != c("espace", "rep")])) {
           for (module in COMPONENT_MODULES[[component]]) {
             rmd_file <- module$rmd_file
             rmd_function <- module$rmd_function

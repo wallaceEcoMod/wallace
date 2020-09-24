@@ -287,6 +287,7 @@ proj_user_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$project$mapProjVals <- getRasterVals(projUserThr, predType)
 
     # METADATA ####
+    spp[[curSp()]]$rmm$code$wallace$project_curModel <- curModel()
     spp[[curSp()]]$rmd$project_user <-TRUE
     spp[[curSp()]]$rmm$data$transfer$environment1$minVal <-
       printVecAsis(raster::cellStats(projExt, min), asChar = TRUE)
@@ -317,6 +318,7 @@ proj_user_module_server <- function(input, output, session, common) {
         spp[[curSp()]]$rmm$model$algorithm$maxent$clamping
     }
     spp[[curSp()]]$rmm$prediction$transfer$notes <- NULL
+    spp[[curSp()]]$rmm$code$wallace$userPjName <- input$userProjEnvs$name
   })
 
   return(list(
@@ -405,10 +407,11 @@ proj_user_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
     proj_user_knit = !is.null(species$rmd$project_user),
-    curModel_rmd = species$rmd$project_curModel,
+    curModel_rmd = species$rmm$code$wallace$project_curModel,
     outputType_rmd = species$rmm$prediction$notes,
     alg_rmd = species$rmm$model$algorithms,
     clamp_rmd = species$rmm$model$algorithm$maxent$clamping,
+    userPjName_rmd = printVecAsis(species$rmm$code$wallace$userPjName),
     ##Use of threshold for projection
     proj_user_threshold_knit = !is.null(species$rmm$prediction$transfer$environment1$thresholdSet),
     thresholdRule_rmd = species$rmm$prediction$transfer$environment1$thresholdRule,
@@ -425,7 +428,6 @@ proj_user_module_rmd <- function(species) {
     BgBuf_rmd = species$rmm$code$wallace$PjBuff,
     polyPj_rmd = if(is.null(species$rmm$code$wallace$drawExtPolyPjCoords) & is.null(species$rmm$code$wallace$userPjShpParams)){
       species$procEnvs$bgExt} else {NULL}
-
   )
 }
 

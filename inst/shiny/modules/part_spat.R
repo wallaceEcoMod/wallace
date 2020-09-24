@@ -5,15 +5,14 @@ part_spat_module_ui <- function(id) {
                 choices = list("None selected" = '',
                                "Block (k = 4)" = "block",
                                "Checkerboard 1 (k = 2)" = "cb1",
-                               "Checkerboard 2 (k = 4)" = "cb2"),
-                selected = 'block'), # Check default (no selected)
+                               "Checkerboard 2 (k = 4)" = "cb2")), # Check default (no selected)
     conditionalPanel(sprintf("input['%1$s'] == 'cb1' | input['%1$s'] == 'cb2'",
                              ns("partitionSpatSel")),
                      numericInput(ns("aggFact"), label = "Aggregation Factor",
                                   value = 2, min = 2)),
     tags$div(
       title = "Add Batch guidance text here (**)",
-      checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE) # Check default (value = FALSE)
+      checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE) # Check default (value = FALSE)
     ),
     actionButton(ns("goPartitionSpat"), "Partition")
   )
@@ -95,7 +94,11 @@ part_spat_module_map <- function(map, common) {
   if (!is.null(occs()$partition)) {
     occsGrp <- occs()$partition
     # colors for partition symbology
-    newColors <- gsub("FF$", "", rainbow(max(occsGrp)))
+    if (max(occsGrp) < 3) {
+      newColors <- RColorBrewer::brewer.pal(n = 3, "Set2")[1:max(occsGrp)]
+    } else {
+      newColors <- RColorBrewer::brewer.pal(n = max(occsGrp), "Set2")
+    }
     partsFill <- newColors[occsGrp]
     map %>% clearAll() %>%
       map_occs(occs(), fillColor = partsFill, fillOpacity = 1) %>%

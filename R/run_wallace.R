@@ -10,7 +10,7 @@
 #' run_wallace()
 #' }
 #'
-#'#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 # @seealso
 # @references
 # @aliases - a list of additional topic names that will be mapped to
@@ -18,7 +18,7 @@
 # line.
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
-run_wallace <- function(launch.browser = TRUE, port = getOption("shiny.port")){
+run_wallace <- function(launch.browser = TRUE, port = getOption("shiny.port")) {
   app_path <- system.file("shiny", package = "wallace")
   return(shiny::runApp(app_path, launch.browser = launch.browser, port = port))
 }

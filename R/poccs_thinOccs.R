@@ -66,5 +66,13 @@ poccs_thinOccs <- function(occs, thinDist, logger = NULL, spN = NULL) {
     hlSpp(spN), 'Total records thinned (', thinDist, 'km) to ',
     nrow(occs.thin), ' localities')
 
+  if (nrow(occs.thin) < 4) {
+    logger %>% writeLog(type = 'error',
+      hlSpp(spN), "After removing occurrences, there is three or less points. ",
+      "You need more occurrences to continue the analysis (**)."
+    )
+    return()
+  }
+
   return(occs.thin)
 }

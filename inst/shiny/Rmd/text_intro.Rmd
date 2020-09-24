@@ -13,7 +13,7 @@ The application is written in `R` with the web app development package `shiny`. 
 
 Also, for more detail, please see our paper in Methods in Ecology and Evolution.
 
-Kass J. M., Vilela B., Aiello-Lammens M. E., Muscarella R., Merow C., Anderson R. P. (2018). Wallace: A flexible platform for reproducible modeling of species niches and distributions built for community expansion. *Methods Ecol Evol*. 2018. 9: 1151-1156. https://doi.org/10.1111/2041-210X.12945
+Kass J. M., Vilela B., Aiello-Lammens M. E., Muscarella R., Merow C., Anderson R. P. (2018). Wallace: A flexible platform for reproducible modeling of species niches and distributions built for community expansion. *Methods Ecol Evol*. 2018. 9: 1151-1156. <a href="https://doi.org/10.1111/2041-210X.12945" target="_blank">DOI: 10.1111/2041-210X.12945</a>
 
 ### **Who is *Wallace* for?**  
 

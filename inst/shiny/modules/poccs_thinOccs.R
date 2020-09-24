@@ -7,10 +7,10 @@ poccs_thinOccs_module_ui <- function(id) {
              'based on species biology (e.g., home-range size).')
       ),
     numericInput(ns("thinDist"), label = "Thinning distance (km)",
-                 value = 10), # Check default (value = 0)
+                 value = 0), # Check default (value = 0)
     tags$div(
       title = "Add Batch guidance text here (**)",
-      checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE) # Check default (value = FALSE)
+      checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE) # Check default (value = FALSE)
     ),
     actionButton(ns("goThinOccs"), "Thin Occurrences")
   )

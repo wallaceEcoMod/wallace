@@ -4,8 +4,7 @@ occs_queryDb_module_ui <- function(id) {
     tags$div(title = "text",
              radioButtons(ns("occsDb"), label = "Choose Database",
                           choices = c("GBIF" = 'gbif',
-                                      # GEPB: Commented until is supported by spocc
-                                      # "VertNet" = 'vertnet',
+                                      "VertNet" = 'vertnet',
                                       "BISON" = 'bison',
                                       "BIEN" = 'bien'),
                           inline = TRUE)),
@@ -32,7 +31,7 @@ occs_queryDb_module_ui <- function(id) {
     tags$div(title = 'Examples: Felis catus, Canis lupus, Nyctereutes procyonoides',
              textInput(ns("spNames"), label = "Enter species scientific name",
                        placeholder = 'format: Genus species',
-                       value = "meles meles, martes martes")),
+                       value = "")), # Check default
     conditionalPanel(
       sprintf(
         "(input['%1$s'] == 'gbif' & input['%2$s'] == false) | input['%1$s'] == 'vertnet' | input['%1$s'] == 'bison'" ,
@@ -42,7 +41,7 @@ occs_queryDb_module_ui <- function(id) {
                        'databases. Downloaded records are not sorted randomly: ',
                        'rows are always consistent between downloads.'),
         numericInput(ns("occsNum"), "Set maximum number of occurrences",
-                     value = 100, min = 0))
+                     value = 0, min = 0))
     ),
     actionButton(ns("goDbOccs"), "Query Database")
   )

@@ -126,7 +126,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
             as.character(myBTO@occResults[[bestMatch]][['GBIF']][['RawOccurrences']]),
             "occurrence.txt"), sep = "\t", header = TRUE, quote = "",
             encoding = "UTF-8")
-          gbif_occCite_df <- gbif_raw %>%
+          gbif_occCite_df <- gbif_raw %>% dplyr::as_tibble() %>%
             dplyr::select(scientificName, decimalLongitude, decimalLatitude, countryCode,
                           stateProvince, locality, year, basisOfRecord, catalogNumber,
                           institutionCode, elevation, coordinateUncertaintyInMeters) %>%
@@ -243,7 +243,8 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
       # "state_province", "locality", "year", "record_type", "institution_code",
       # "elevation", "uncertainty"
       for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
-      occs <- occs %>% dplyr::rename(scientific_name = scrubbed_species_binomial,
+      occs <- occs %>% dplyr::as_tibble() %>%
+        dplyr::rename(scientific_name = scrubbed_species_binomial,
                                      institution_code = collection_code)
     }
 

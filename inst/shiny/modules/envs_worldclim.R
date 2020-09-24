@@ -11,11 +11,11 @@ envs_worldclim_module_ui <- function(id) {
                                         "30 arcsec" = 0.5,
                                         "2.5 arcmin" = 2.5,
                                         "5 arcmin" = 5,
-                                        "10 arcmin" = 10), selected = 10)), # Check default (No selected parameter)
+                                        "10 arcmin" = 10))), # Check default (No selected parameter)
     checkboxInput(
       ns("doBrick"),
       label = "Save to memory for faster processing and save/load option(**)",
-      value = TRUE), # Check default (value = FALSE)
+      value = FALSE), # Check default (value = FALSE)
     shinyWidgets::pickerInput(
       "bcSel",
       label = "Select bioclim variables (**)",
@@ -28,7 +28,7 @@ envs_worldclim_module_ui <- function(id) {
       sprintf("input['%s'] != '0.5'", ns("wcRes")),
       tags$div(
         title = "Add Batch guidance text here (**)",
-        checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE) # Check default (value = FALSE)
+        checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE) # Check default (value = FALSE)
       )
     ),
     conditionalPanel(
@@ -60,8 +60,8 @@ envs_worldclim_module_server <- function(input, output, session, common) {
   observeEvent(input$goEnvData, {
     # ERRORS ####
     if (is.null(curSp())) {
-      logger %>% writeLog(type = 'error', "Before obtaining environmental variables,
-                             obtain occurrence data in 'Occ Data' component.")
+      logger %>% writeLog(type = 'error',
+      "Before obtaining environmental variables, obtain occurrence data in 'Occ Data' component.")
       return()
     }
 
@@ -164,19 +164,19 @@ envs_worldclim_module_result <- function(id) {
 envs_worldclim_module_map <- function(map, common) {
   # Map logic
   occs <- common$occs
-  mapCntr <- common$mapCntr
+  mapCntr <- c(mean(occs()$longitude), mean(occs()$latitude))
   lon_tile <- seq(-180, 180, 30)
   lat_tile <- seq(-60, 90, 30)
   map %>% clearAll() %>%
     addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                      radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                      fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
-    addRectangles(lng1 = lon_tile[sum(lon_tile <= mapCntr()[1])],
-                  lng2 = lon_tile[sum(lon_tile <= mapCntr()[1])] + 30,
-                  lat1 = lat_tile[sum(lat_tile <= mapCntr()[2])],
-                  lat2 = lat_tile[sum(lat_tile <= mapCntr()[2])] + 30,
+    addRectangles(lng1 = lon_tile[sum(lon_tile <= mapCntr[1])],
+                  lng2 = lon_tile[sum(lon_tile <= mapCntr[1])] + 30,
+                  lat1 = lat_tile[sum(lat_tile <= mapCntr[2])],
+                  lat2 = lat_tile[sum(lat_tile <= mapCntr[2])] + 30,
                   color = "purple", group = "30 arcsec tile") %>%
-    hideGroup("30 arcsec tile") %>% zoom2Occs(occs()) %>%
+    hideGroup("30 arcsec tile") %>%
     addLayersControl(overlayGroups = "30 arcsec tile", position = "bottomleft",
                      options = layersControlOptions(collapsed = FALSE))
 }

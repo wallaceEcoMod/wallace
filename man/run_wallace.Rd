@@ -22,5 +22,7 @@ if(interactive()){
 run_wallace()
 }
 
-#' @author Jamie Kass <jkass@gradcenter.cuny.edu>
+}
+\author{
+Jamie Kass <jkass@gradcenter.cuny.edu>
 }
