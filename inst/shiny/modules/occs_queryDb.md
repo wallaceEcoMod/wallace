@@ -13,7 +13,6 @@ When GBIF has been selected, an alternative option exists to receive data source
 
 For all options in this module, records used in downstream analyses in *Wallace* are filtered to remove those without georeferences (latitude/longitude coordinates) and  that have exact duplicate coordinates of other records (including the same number of decimal places). The "Occs Tbl" tab displays all the filtered records with several key fields: name, longitude, latitude, year, institutionCode, country, stateProvince, locality, elevation, and basisOfRecord (standard field names from GBIF). In contrast, the records available for download as a .csv file have all original fields and include records without georeferences.
 
-(*) Vertnet option is not available currently because it is not supported by `spocc` at present.
 
 **REFERENCES**
 

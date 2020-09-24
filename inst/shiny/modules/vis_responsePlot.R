@@ -15,7 +15,7 @@ vis_responsePlot_module_server <- function(input, output, session, common) {
   curEnv <- common$curEnv
   evalOut <- common$evalOut
 
-  observe({
+  observeEvent(input,{
     req(curSp())
     req(curModel())
     req(evalOut())
