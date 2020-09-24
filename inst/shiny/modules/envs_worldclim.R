@@ -164,19 +164,19 @@ envs_worldclim_module_result <- function(id) {
 envs_worldclim_module_map <- function(map, common) {
   # Map logic
   occs <- common$occs
-  mapCntr <- common$mapCntr
+  mapCntr <- c(mean(occs()$longitude), mean(occs()$latitude))
   lon_tile <- seq(-180, 180, 30)
   lat_tile <- seq(-60, 90, 30)
   map %>% clearAll() %>%
     addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                      radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                      fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
-    addRectangles(lng1 = lon_tile[sum(lon_tile <= mapCntr()[1])],
-                  lng2 = lon_tile[sum(lon_tile <= mapCntr()[1])] + 30,
-                  lat1 = lat_tile[sum(lat_tile <= mapCntr()[2])],
-                  lat2 = lat_tile[sum(lat_tile <= mapCntr()[2])] + 30,
+    addRectangles(lng1 = lon_tile[sum(lon_tile <= mapCntr[1])],
+                  lng2 = lon_tile[sum(lon_tile <= mapCntr[1])] + 30,
+                  lat1 = lat_tile[sum(lat_tile <= mapCntr[2])],
+                  lat2 = lat_tile[sum(lat_tile <= mapCntr[2])] + 30,
                   color = "purple", group = "30 arcsec tile") %>%
-    hideGroup("30 arcsec tile") %>% zoom2Occs(occs()) %>%
+    hideGroup("30 arcsec tile") %>%
     addLayersControl(overlayGroups = "30 arcsec tile", position = "bottomleft",
                      options = layersControlOptions(collapsed = FALSE))
 }
