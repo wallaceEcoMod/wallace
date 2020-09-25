@@ -96,8 +96,12 @@ part_spat_module_map <- function(map, common) {
     # colors for partition symbology
     if (max(occsGrp) < 3) {
       newColors <- RColorBrewer::brewer.pal(n = 3, "Set2")[1:max(occsGrp)]
-    } else {
+    } else if (max(occsGrp) < 9) {
       newColors <- RColorBrewer::brewer.pal(n = max(occsGrp), "Set2")
+    } else if (max(occsGrp) < 12) {
+      newColors <- RColorBrewer::brewer.pal(n = max(occsGrp), "RdYlBu")
+    } else {
+      newColors <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(n = 11, "RdYlBu"))(max(occsGrp))
     }
     partsFill <- newColors[occsGrp]
     map %>% clearAll() %>%

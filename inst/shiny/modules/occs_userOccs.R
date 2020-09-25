@@ -1,7 +1,7 @@
 occs_userOccs_module_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    fileInput(ns("userCSV"), label = "Upload Occurrence CSV"),
+    fileInput(ns("userCSV"), label = "Upload Occurrence CSV", accept = ".csv"),
     checkboxInput(
       ns("noCSV"), value = FALSE,
       label = "Do you want to define another delimiter-separated and decimal values? (**)"),
