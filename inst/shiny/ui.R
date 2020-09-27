@@ -27,6 +27,7 @@ tagList(
     tabPanel("Visualize", value = 'vis'),
     tabPanel("Project", value = 'proj'),
     tabPanel("User SDM", value = 'post'),
+    tabPanel("Mask", value = 'mask'),
     tabPanel("Alpha Div", value = 'alpha'),
     tabPanel("Reproduce", value = 'rep')
   ),
@@ -218,7 +219,7 @@ tagList(
                                  .butResPj:hover {background-color: #830D03;
                                  color: white;}"))
           ),
-          # ALPHA ####
+          # Upload User SDM ####
           conditionalPanel(
             "input.tabs == 'post'",
             h4("Upload user-specified SDM (**)"),
@@ -228,6 +229,17 @@ tagList(
             ),
             tags$hr(),
             insert_modules_ui("post")
+          ),
+          # Upload User SDM ####
+          conditionalPanel(
+            "input.tabs == 'mask'",
+            h4("Mask SDM (**)"),
+            radioButtons(
+              "maskSel", "Modules Available:",
+              choices = insert_modules_options("mask")
+            ),
+            tags$hr(),
+            insert_modules_ui("mask")
           ),
           # ALPHA ####
           conditionalPanel(
