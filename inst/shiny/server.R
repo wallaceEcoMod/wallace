@@ -109,7 +109,7 @@ function(input, output, session) {
     }
     else {
       # must have one species selected and occurrence data
-      req(length(curSp()) ==1, occs(), module())
+      req(length(curSp()) == 1, module())
       #for this to work with multisp we can't require occs as we will have more than 1 curSp
       #req(length(curSp()) >=1, module())
       map_fx <- COMPONENT_MODULES[[component()]][[module()]]$map_function
@@ -214,7 +214,7 @@ function(input, output, session) {
   #                 scrollX=TRUE, scrollY=400)
   output$occTbl <- DT::renderDataTable({
     # check if spp has species in it
-    req(length(reactiveValuesToList(spp)) > 0)
+    req(length(reactiveValuesToList(spp)) > 0, occs())
     occs() %>%
       dplyr::mutate(occID = as.numeric(occID),
                     longitude = round(as.numeric(longitude), digits = 2),

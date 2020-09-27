@@ -26,6 +26,7 @@ tagList(
     tabPanel("Model", value = 'model'),
     tabPanel("Visualize", value = 'vis'),
     tabPanel("Project", value = 'proj'),
+    tabPanel("User SDM", value = 'post'),
     tabPanel("Alpha Div", value = 'alpha'),
     tabPanel("Reproduce", value = 'rep')
   ),
@@ -216,6 +217,17 @@ tagList(
                                  border: none;}
                                  .butResPj:hover {background-color: #830D03;
                                  color: white;}"))
+          ),
+          # ALPHA ####
+          conditionalPanel(
+            "input.tabs == 'post'",
+            h4("Upload user-specified SDM (**)"),
+            radioButtons(
+              "postSel", "Modules Available:",
+              choices = insert_modules_options("post")
+            ),
+            tags$hr(),
+            insert_modules_ui("post")
           ),
           # ALPHA ####
           conditionalPanel(
@@ -490,6 +502,13 @@ tagList(
                                                        "ASCII" = 'ascii',
                                                        "PNG" = 'png'))),
                   column(2, shinyjs::disabled(downloadButton('dlMess', "MESS file(**)")))
+                )
+              ),
+              conditionalPanel(
+                "input.tabs == 'post'",
+                br(),
+                fluidRow(
+                  column(3, h5("No available data for downloading."))
                 )
               ),
               conditionalPanel(
