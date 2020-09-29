@@ -30,11 +30,7 @@ mask_expPoly_module_ui <- function(id) {
 mask_expPoly_module_server <- function(input, output, session, common) {
 
   spp <- common$spp
-  #evalOut <- common$evalOut
-  #envs <- common$envs
-  #rmm <- common$rmm
   curSp <- common$curSp
-  #curModel <- common$curModel
   logger <- common$logger
 
   observeEvent(input$goInputPoly, {
@@ -72,7 +68,7 @@ mask_expPoly_module_server <- function(input, output, session, common) {
 
       if(is.null(spp[[curSp()]]$mask$expertPoly)) {
         spp[[curSp()]]$mask$expertPoly <- list()
-        spp[[curSp()]]$mask$removePoly<- list()
+        spp[[curSp()]]$mask$removePoly <- list()
       }
       # LOAD INTO SPP ####
       # Check if polygon as already created
@@ -80,14 +76,13 @@ mask_expPoly_module_server <- function(input, output, session, common) {
         spp[[curSp()]]$mask$expertPoly <- c(spp[[curSp()]]$mask$expertPoly,
                                             polyMask)
         spp[[curSp()]]$mask$flagPoly <- FALSE
-        print(spp[[curSp()]]$mask$flagPoly)
       } else {
         # Last polygon updated
         lastPoly <- spp[[curSp()]]$mask$expertPoly[[length(spp[[curSp()]]$mask$expertPoly)]]
         # Calculate difference between polygon. If zero, they are equal.
         diffPoly <- sf::st_difference(sf::st_as_sfc(polyMask),
                                       sf::st_as_sfc(lastPoly))
-        if (sf::st_area(diffPoly) != 0) {
+        if (length(diffPoly) != 0) {
           spp[[curSp()]]$mask$expertPoly <- c(spp[[curSp()]]$mask$expertPoly,
                                               polyMask)
           spp[[curSp()]]$mask$flagPoly <- FALSE
@@ -226,23 +221,47 @@ mask_expPoly_module_map <- function(map, common) {
     circleOptions = FALSE, markerOptions = FALSE, circleMarkerOptions = FALSE,
     editOptions = leaflet.extras::editToolbarOptions()
   )
-  req(spp[[curSp()]]$postProc$prediction)
 
-  # If there is a new polygon
-  if (length(spp[[curSp()]]$mask$expertPoly) > 0) {
-    req(length(spp[[curSp()]]$mask$expertPoly))
-    expertPoly <- spp[[curSp()]]$mask$expertPoly
-    xy <- ggplot2::fortify(expertPoly[[length(expertPoly)]])
-    if (length(expertPoly) > 1) {
-      map %>%
-        addPolygons(lng = xy[,1], lat = xy[,2],
-                    weight = 4, color = "black", group = 'maskShp') %>%
-        removeImage(layerId = 'postPred') %>%
-        addRasterImage(spp[[curSp()]]$postProc$prediction,
-                       colors = c('gray', 'darkgreen'), opacity = 0.7, group = 'mask',
-                       layerId = 'postPred', method = "ngb")
-    }
+  req(spp[[curSp()]]$postProc$prediction)
+  userRaster <- spp[[curSp()]]$postProc$prediction
+  userValues <- raster::values(userRaster)
+
+  map %>% clearMarkers() %>%
+    clearShapes() %>%
+    # add background polygon
+    mapBgPolys(bgShpXY(), color = 'green', group = 'post')
+
+  if (length(unique(userValues)) == 3 |
+      length(unique(userValues)) == 2) {
+    map %>%
+      removeImage(layerId = 'postPred') %>%
+      addRasterImage(spp[[curSp()]]$postProc$prediction,
+                     colors = c('gray', 'darkgreen'), opacity = 0.7, group = 'mask',
+                     layerId = 'postPred', method = "ngb") %>%
+      addLegend("bottomright", colors = c('gray', 'darkgreen'),
+                title = "Distribution<br>map",
+                labels = c("Unsuitable", "Suitable"),
+                opacity = 1, layerId = 'expert')
+  } else {
+    rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+    legendPal <- colorNumeric(rev(rasCols), userValues, na.color = 'transparent')
+    rasPal <- colorNumeric(rasCols, userValues, na.color = 'transparent')
+    map %>%
+      removeImage(layerId = 'postPred') %>%
+      addRasterImage(spp[[curSp()]]$postProc$prediction,
+                     colors = rasPal, opacity = 0.7, group = 'mask',
+                     layerId = 'postPred', method = "ngb") %>%
+      addLegend("bottomright", pal = legendPal, title = "Suitability<br>(User) (**)",
+                values = userValues, layerId = "expert",
+                labFormat = reverseLabels(2, reverse_order = TRUE))
   }
+  # Plot Polygon
+  req(spp[[curSp()]]$mask$expertPoly)
+  expertPoly <- spp[[curSp()]]$mask$expertPoly
+  xy <- ggplot2::fortify(expertPoly[[length(expertPoly)]])
+  map %>% clearGroup('maskShp') %>%
+    addPolygons(lng = xy[, 1], lat = xy[, 2],
+                weight = 4, color = "black", group = 'maskShp')
 }
 
 mask_expPoly_module_rmd <- function(species) {
