@@ -250,6 +250,16 @@ proj_time_module_server <- function(input, output, session, common) {
       return()
     }
 
+    if(!all(names(envs()) %in% paste0('bio', sprintf("%02d", 1:19)))) {
+      nonBios <- names(envs())[!names(envs()) %in% paste0('bio', sprintf("%02d", 1:19))]
+      logger %>%
+        writeLog(type = 'error', hlSpp(curSp()),
+                 "Your model is using non-bioclimatic variables or non-conventional",
+                 " names (i.e., ", paste0(nonBios, collapse = ", "),
+                 "). You can not project to a New Time (**).")
+      return()
+    }
+
         # DATA ####
     if (input$selTimeVar == 'worldclim') {
       # code taken from dismo getData() function to catch if user is trying to

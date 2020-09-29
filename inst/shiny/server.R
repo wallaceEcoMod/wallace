@@ -109,7 +109,7 @@ function(input, output, session) {
     }
     else {
       # must have one species selected and occurrence data
-      req(length(curSp()) ==1, occs(), module())
+      req(length(curSp()) == 1, module())
       #for this to work with multisp we can't require occs as we will have more than 1 curSp
       #req(length(curSp()) >=1, module())
       map_fx <- COMPONENT_MODULES[[component()]][[module()]]$map_function
@@ -214,7 +214,7 @@ function(input, output, session) {
   #                 scrollX=TRUE, scrollY=400)
   output$occTbl <- DT::renderDataTable({
     # check if spp has species in it
-    req(length(reactiveValuesToList(spp)) > 0)
+    req(length(reactiveValuesToList(spp)) > 0, occs())
     occs() %>%
       dplyr::mutate(occID = as.numeric(occID),
                     longitude = round(as.numeric(longitude), digits = 2),
@@ -658,11 +658,12 @@ function(input, output, session) {
     } else {
       n <- NULL
     }
-
+    # NOTE: this line is necessary to retain the selection after selecting different tabs
+    if(!is.null(curModel())) selected <- curModel() else selected <- n[1]
     modsNameList <- c(list("Current model" = ""), setNames(as.list(n), n))
     options <- list(maxItems = 1)
     selectizeInput('curModel', label = NULL , choices = modsNameList,
-                   multiple = TRUE, selected = n[1], options = options)
+                   multiple = TRUE, selected = selected, options = options)
   })
 
   # shortcut to currently selected model, read from modSelUI
@@ -1267,7 +1268,7 @@ function(input, output, session) {
 
       for (sp in allSp()) {
         species_rmds <- NULL
-        for (component in names(COMPONENT_MODULES[names(COMPONENT_MODULES) != "espace"])) {
+        for (component in names(COMPONENT_MODULES[names(COMPONENT_MODULES) != c("espace", "rep")])) {
           for (module in COMPONENT_MODULES[[component]]) {
             rmd_file <- module$rmd_file
             rmd_function <- module$rmd_function

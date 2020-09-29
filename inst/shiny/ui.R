@@ -26,8 +26,9 @@ tagList(
     tabPanel("Model", value = 'model'),
     tabPanel("Visualize", value = 'vis'),
     tabPanel("Project", value = 'proj'),
+    tabPanel("User SDM", value = 'post'),
     tabPanel("Alpha Div", value = 'alpha'),
-    tabPanel("Session Code", value = 'rmd')
+    tabPanel("Reproduce", value = 'rep')
   ),
   tags$div(
     class = "container-fluid",
@@ -219,6 +220,17 @@ tagList(
           ),
           # ALPHA ####
           conditionalPanel(
+            "input.tabs == 'post'",
+            h4("Upload user-specified SDM (**)"),
+            radioButtons(
+              "postSel", "Modules Available:",
+              choices = insert_modules_options("post")
+            ),
+            tags$hr(),
+            insert_modules_ui("post")
+          ),
+          # ALPHA ####
+          conditionalPanel(
             "input.tabs == 'alpha'",
             h4("Alpha diversity"),
             radioButtons(
@@ -228,21 +240,16 @@ tagList(
             tags$hr(),
             insert_modules_ui("alpha")
           ),
-
-          # SESSION CODE ####
+          # REPRODUCIBILITY ####
           conditionalPanel(
-            "input.tabs == 'rmd'",
-            h4("Download Session Code and Metadata"),
-            uiTop(rmd_INFO),
-            strong("Select download file type"),
-            selectInput('rmdFileType', label = "",
-                        choices = list("Rmd", "PDF", "HTML", "Word")),
-            downloadButton('dlRMD', 'Download Session Code'),
+            "input.tabs == 'rep'",
+            h4("Reproduce Session"),
+            radioButtons(
+              "repSel", "Modules Available:",
+              choices = insert_modules_options("rep")
+            ),
             tags$hr(),
-            strong("Download metadata CSV files (**)"), br(), br(),
-            downloadButton('dlRMM', 'Download Metadata'),
-            tags$hr(),
-            uiBottom(rmd_INFO)
+            insert_modules_ui("rep")
           )
         )
       ),
@@ -250,7 +257,7 @@ tagList(
       column(
         8,
         conditionalPanel(
-          "input.tabs != 'intro' & input.tabs != 'rmd'",
+          "input.tabs != 'intro' & input.tabs != 'rep'",
           fixedRow(
             column(
               4,
@@ -272,7 +279,7 @@ tagList(
         ),
         br(),
         conditionalPanel(
-          "input.tabs != 'rmd' & input.tabs != 'intro'",
+          "input.tabs != 'intro' & input.tabs != 'rep'",
           tabsetPanel(
             id = 'main',
             tabPanel(
@@ -498,6 +505,13 @@ tagList(
                 )
               ),
               conditionalPanel(
+                "input.tabs == 'post'",
+                br(),
+                fluidRow(
+                  column(3, h5("No available data for downloading."))
+                )
+              ),
+              conditionalPanel(
                 "input.tabs == 'alpha'",
                 br(),
                 fluidRow(
@@ -533,14 +547,25 @@ tagList(
                 )
               )
             )
-
           )
         ),
 
         conditionalPanel(
-          "input.tabs == 'rmd'",
+          "input.tabs == 'rep' & input.repSel == 'rep_markdown'",
           column(8,
-                 includeMarkdown("Rmd/text_sessionCode.Rmd")
+                 includeMarkdown("modules/rep_markdown.Rmd")
+          )
+        ),
+        conditionalPanel(
+          "input.tabs == 'rep' & input.repSel == 'rep_rmms'",
+          column(8,
+                 includeMarkdown("modules/rep_rmms.Rmd")
+          )
+        ),
+        conditionalPanel(
+          "input.tabs == 'rep' & input.repSel == 'rep_biomodelos'",
+          column(8,
+                 includeMarkdown("custom_modules/rep_biomodelos.Rmd")
           )
         ),
         conditionalPanel(

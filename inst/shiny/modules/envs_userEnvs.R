@@ -4,11 +4,12 @@ envs_userEnvs_module_ui <- function(id) {
     checkboxInput(
       ns("doBrick"),
       label = "Save to memory for faster processing and save/load option (**)",
-      value = TRUE), # Check default (value = FALSE)
-    fileInput(ns("userEnvs"), label = "Input rasters", multiple = TRUE),
+      value = FALSE), # Check default (value = FALSE)
+    fileInput(ns("userEnvs"), label = "Input rasters",
+              accept = c(".tif", ".asc"), multiple = TRUE),
     tags$div(
       title = "Add Batch guidance text here (**)",
-      checkboxInput(ns("batch"), label = strong("Batch"), value = TRUE) # Check default (value = FALSE)
+      checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE) # Check default (value = FALSE)
     ),
     actionButton(ns('goUserEnvs'), 'Load Env Data')
   )

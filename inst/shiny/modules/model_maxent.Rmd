@@ -1,11 +1,11 @@
-```{asis, echo = {{model_maxent_knit}}, eval = {{model_maxent_knit & !cat_envs_knit}}, include = {{model_maxent_knit}}}
+```{asis, echo = {{model_maxent_knit}}, eval = {{model_maxent_knit & !cat_envs_knit}}, include = {{model_maxent_knit & !cat_envs_knit}}}
 ### Build and Evaluate Niche Model
 Generating a species distribution model using the `r '{{algMaxent_rmd}}'` algorithm as implemented in ENMeval V2.0 (with clamping = `r {{clampSel_rmd}}`).
 For tuning using `r  {{fcs_rmd}}` feature classes and regularization multipliers in the `r {{rms_rmd}}` range increasing by `r {{rmsStep_rmd}}`. Not using any categorical predictor variables. 
 
 ```
 
-```{r, echo = {{model_maxent_knit}}, include = {{model_maxent_knit}}}
+```{r, echo = {{model_maxent_knit & !cat_envs_knit}}, include = {{model_maxent_knit & !cat_envs_knit}}}
 # Run maxent model for the selected species
 model_{{spAbr}} <- model_maxent(
   occs = occs_{{spAbr}},
@@ -17,7 +17,6 @@ model_{{spAbr}} <- model_maxent(
   fcs = {{fcs_rmd}},
   clampSel = {{clampSel_rmd}},
   algMaxent = "{{algMaxent_rmd}}",
-  catEnvs = NULL,
   parallel = {{parallel_rmd}},
   numCores = {{numCores_rmd}})
 ```

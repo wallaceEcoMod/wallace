@@ -1,0 +1,5 @@
+component: "post"
+short_name: "Upload User SDM"
+long_name: "Upload User SDM"
+authors: "Gonzalo E. Pinilla-Buitrago"
+package: [raster]

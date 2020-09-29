@@ -4,11 +4,14 @@ Projecting the model to the same modelling area with no threshold rule. Environm
 ```
 
 ```{r, echo = {{proj_user_knit & !proj_user_user_knit & !proj_user_drawn_knit}}, include = {{proj_user_knit & !proj_user_user_knit & !proj_user_drawn_knit}}}
+## Specify the directory with the environmental variables
+dir_envsPj_{{spAbr}} <- ""
+envsPj_path <- file.path(dir_envsPj_{{spAbr}}, {{userPjName_rmd}})
 # Load user environmental variables
 projUserEnvs_{{spAbr}}  <- envs_userEnvs(
-  rasPath = ,#"Add full path to rasters as list e.g: Path <- list.files(path='./Projectionrasters/', pattern = ".tif",full.names = TRUE)",
-  rasName = # Add names of rasters to input e.g: Name <- list.files(path='./Projectionrasters/', pattern = ".tif", full.names = FALSE) They must match the names of the variables used for modelling
-    )
+  rasPath = envsPj_path,
+  rasName = {{userPjName_rmd}}
+)
 # Project model 
 proj_userEnvs_{{spAbr}} <- proj_userEnvs(
   evalOut = model_{{spAbr}},
@@ -23,23 +26,22 @@ projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
 
 ###Make map of projection
 bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
-bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], bb_{{spAbr}}[2, 2], fraction = 0.05)
-fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
-mapProjVals_{{spAbr}} = getRasterVals(proj_userEnvs_{{spAbr}}$projUser,"{{outputType_rmd}}")
+bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
+                   bb_{{spAbr}}[2, 2], fraction = 0.05)
+mapProjVals_{{spAbr}} <- getRasterVals(proj_userEnvs_{{spAbr}}$projUser, "{{outputType_rmd}}")
 rasCols_{{spAbr}} <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 # if no threshold specified
-  legendPal <- colorNumeric(rev(rasCols_{{spAbr}}), mapProjVals_{{spAbr}}, na.color = 'transparent')
-  rasPal_{{spAbr}} <- colorNumeric(rasCols_{{spAbr}}, mapProjVals_{{spAbr}}, na.color = 'transparent')
-  m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
-m  %>%
+legendPal <- colorNumeric(rev(rasCols_{{spAbr}}), mapProjVals_{{spAbr}}, na.color = 'transparent')
+rasPal_{{spAbr}} <- colorNumeric(rasCols_{{spAbr}}, mapProjVals_{{spAbr}}, na.color = 'transparent')
+m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
+m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
-      addLegend("bottomright", pal = legendPal,
-                title = "Predicted Suitability<br>(Projected)",
-                values = mapProjVals_{{spAbr}}, layerId = 'proj',
-                labFormat = reverseLabels(2, reverse_order = TRUE)) %>%
-
+  addLegend("bottomright", pal = legendPal,
+            title = "Predicted Suitability<br>(Projected)",
+            values = mapProjVals_{{spAbr}}, layerId = 'proj',
+            labFormat = reverseLabels(2, reverse_order = TRUE)) %>%
 # map model prediction raster and projection polygon
- clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
+  clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
   addRasterImage(proj_userEnvs_{{spAbr}}$projUser, colors = rasPal_{{spAbr}}, opacity = 0.7,
                  layerId = 'projRas', group = 'proj', method = "ngb") %>%
  ##add projection polygon (same modeling area)
@@ -53,11 +55,14 @@ Projecting the model to the same modelling area with a "{{thresholdRule_rmd}}" t
 ```
 
 ```{r, echo = {{proj_user_knit & proj_user_threshold_knit & !proj_user_user_knit & !proj_user_drawn_knit}}, include = {{proj_user_knit & proj_user_threshold_knit & !proj_user_user_knit & !proj_user_drawn_knit}}}
+## Specify the directory with the environmental variables
+dir_envsPj_{{spAbr}} <- ""
+envsPj_path <- file.path(dir_envsPj_{{spAbr}}, {{userPjName_rmd}})
 # Load user environmental variables
 projUserEnvs_{{spAbr}}  <- envs_userEnvs(
-  rasPath = ,#"Add full path to rasters as list e.g: Path <- list.files(path='./Projectionrasters/', pattern = ".tif",full.names = TRUE)",
-  rasName = # Add names of rasters to input e.g: Name <- list.files(path='./Projectionrasters/', pattern = ".tif", full.names = FALSE) They must match the names of the variables used for modelling
-    )
+  rasPath = envsPj_path,
+  rasName = {{userPjName_rmd}}
+)
 # Project model 
 proj_userEnvs_{{spAbr}} <- proj_userEnvs(
   evalOut = model_{{spAbr}},
@@ -76,30 +81,27 @@ proj_userEnvs_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projUser < {{threshold_rmd}}
 ##Make map
 ###Make map of projection
 bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
-bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], bb_{{spAbr}}[2, 2], fraction = 0.05)
-fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
-mapProjVals_{{spAbr}} = getRasterVals(proj_userEnvs_{{spAbr}},"{{outputType_rmd}}")
+bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
+                   bb_{{spAbr}}[2, 2], fraction = 0.05)
+mapProjVals_{{spAbr}} <- getRasterVals(proj_userEnvs_{{spAbr}},"{{outputType_rmd}}")
 
   # if threshold specified
-    rasPal{{spAbr}} <- c('gray', 'red')
-  m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
-m  %>%
+rasPal{{spAbr}} <- c('gray', 'red')
+m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
+m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
- addLegend("bottomright", colors = c('gray', 'red'),
-                title = "Thresholded Suitability<br>(Projected)",
-                labels = c("predicted absence", "predicted presence"),
-                opacity = 1, layerId = 'proj')%>%
+  addLegend("bottomright", colors = c('gray', 'red'),
+            title = "Thresholded Suitability<br>(Projected)",
+            labels = c("predicted absence", "predicted presence"),
+            opacity = 1, layerId = 'proj')%>%
 
 # map model prediction raster and projection polygon
- clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
+  clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
   addRasterImage(proj_userEnvs_{{spAbr}}, colors = rasPal_{{spAbr}}, opacity = 0.7,
                  layerId = 'projRas', group = 'proj', method = "ngb") %>%
  ##add projection polygon (same modeling area)
   addPolygons(data = bgExt_{{spAbr}}, fill = FALSE,
               weight = 4, color = "blue", group = 'proj')
-
-
-
 ```
 
 ```{asis, echo = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit}}, eval = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit}}, include = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit }}}
@@ -108,14 +110,17 @@ Projecting the model to a user drawn area with no threshold rule. Environmental 
 ```
 
 ```{r, echo = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit}}, include = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit}}}
+## Specify the directory with the environmental variables
+dir_envsPj_{{spAbr}} <- ""
+envsPj_path <- file.path(dir_envsPj_{{spAbr}}, {{userPjName_rmd}})
 # Load user environmental variables
-projUserEnvs_{{spAbr}}  <- envs_userEnvs(
-  rasPath = ,#"Add full path to rasters as list e.g: Path <- list.files(path='./Projectionrasters/', pattern = ".tif",full.names = TRUE)",
-  rasName = # Add names of rasters to input e.g: Name <- list.files(path='./Projectionrasters/', pattern = ".tif", full.names = FALSE) They must match the names of the variables used for modelling
-    )
+projUserEnvs_{{spAbr}} <- envs_userEnvs(
+  rasPath = envsPj_path,
+  rasName = {{userPjName_rmd}}
+)
 # Generate the projection area according to the drawn polygon in the GUI
-proj_draw_{{spAbr}} <-proj_draw(
-  polyPjXY = matrix({{polyPjXY_rmd}},ncol=2,byrow=FALSE),
+proj_draw_{{spAbr}} <- proj_draw(
+  polyPjXY = matrix({{polyPjXY_rmd}}, ncol = 2, byrow = FALSE),
   polyPjID = {{polyPjID_rmd}},
   drawPjBuf = {{BgBuf_rmd}})
 # Project model 
@@ -132,30 +137,27 @@ projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
 
 ###Make map of projection
 bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
-bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], bb_{{spAbr}}[2, 2], fraction = 0.05)
-fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
-mapProjVals_{{spAbr}} = getRasterVals( proj_userEnvs_{{spAbr}}$projUser,"{{outputType_rmd}}")
+bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
+                   bb_{{spAbr}}[2, 2], fraction = 0.05)
+mapProjVals_{{spAbr}} <- getRasterVals( proj_userEnvs_{{spAbr}}$projUser,"{{outputType_rmd}}")
 rasCols_{{spAbr}} <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 # if no threshold specified
-  legendPal <- colorNumeric(rev(rasCols_{{spAbr}}), mapProjVals_{{spAbr}}, na.color = 'transparent')
-  rasPal_{{spAbr}} <- colorNumeric(rasCols_{{spAbr}}, mapProjVals_{{spAbr}}, na.color = 'transparent')
-  m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
-m  %>%
+legendPal <- colorNumeric(rev(rasCols_{{spAbr}}), mapProjVals_{{spAbr}}, na.color = 'transparent')
+rasPal_{{spAbr}} <- colorNumeric(rasCols_{{spAbr}}, mapProjVals_{{spAbr}}, na.color = 'transparent')
+m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
+m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
-      addLegend("bottomright", pal = legendPal,
-                title = "Predicted Suitability<br>(Projected)",
-                values = mapProjVals_{{spAbr}}, layerId = 'proj',
-                labFormat = reverseLabels(2, reverse_order = TRUE)) %>%
-
+  addLegend("bottomright", pal = legendPal,
+            title = "Predicted Suitability<br>(Projected)",
+            values = mapProjVals_{{spAbr}}, layerId = 'proj',
+            labFormat = reverseLabels(2, reverse_order = TRUE)) %>%
 # map model prediction raster and projection polygon
- clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
-  addRasterImage( proj_userEnvs_{{spAbr}}$projUser, colors = rasPal_{{spAbr}}, opacity = 0.7,
+  clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
+  addRasterImage(proj_userEnvs_{{spAbr}}$projUser, colors = rasPal_{{spAbr}}, opacity = 0.7,
                  layerId = 'projRas', group = 'proj', method = "ngb") %>%
  ##add projection polygon (user drawn area)
   addPolygons(data = proj_draw_{{spAbr}}, fill = FALSE,
               weight = 4, color = "blue", group = 'proj')
-
-
 ```
 
 ```{asis, echo = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit & proj_user_threshold_knit}}, eval = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit & proj_user_threshold_knit}}, include = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit & proj_user_threshold_knit }}}
@@ -164,14 +166,17 @@ Projecting the model to a user drawn area with a "{{thresholdRule_rmd}}" thresho
 ```
 
 ```{r, echo = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit & proj_user_threshold_knit}}, include = {{proj_user_knit & !proj_user_user_knit & proj_user_drawn_knit & proj_user_threshold_knit}}}
+## Specify the directory with the environmental variables
+dir_envsPj_{{spAbr}} <- ""
+envsPj_path <- file.path(dir_envsPj_{{spAbr}}, {{userPjName_rmd}})
 # Load user environmental variables
 projUserEnvs_{{spAbr}}  <- envs_userEnvs(
-  rasPath = ,#"Add full path to rasters as list e.g: Path <- list.files(path='./Projectionrasters/', pattern = ".tif",full.names = TRUE)",
-  rasName = # Add names of rasters to input e.g: Name <- list.files(path='./Projectionrasters/', pattern = ".tif", full.names = FALSE) They must match the names of the variables used for modelling
-    )
+  rasPath = envsPj_path,
+  rasName = {{userPjName_rmd}}
+)
 # Generate the projection area according to the drawn polygon in the GUI
 proj_draw_{{spAbr}} <-proj_draw(
-  polyPjXY = matrix({{polyPjXY_rmd}},ncol=2,byrow=FALSE),
+  polyPjXY = matrix({{polyPjXY_rmd}}, ncol = 2, byrow = FALSE),
   polyPjID = {{polyPjID_rmd}},
   drawPjBuf = {{BgBuf_rmd}})
 # Project model 
@@ -192,31 +197,26 @@ proj_userEnvs_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projUser < {{threshold_rmd}}
 ##Make map
 ###Make map of projection
 bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
-bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], bb_{{spAbr}}[2, 2], fraction = 0.05)
-fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
-mapProjVals_{{spAbr}} = getRasterVals(proj_userEnvs_{{spAbr}},"{{outputType_rmd}}")
+bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
+                   bb_{{spAbr}}[2, 2], fraction = 0.05)
+mapProjVals_{{spAbr}} <- getRasterVals(proj_userEnvs_{{spAbr}},"{{outputType_rmd}}")
 
-  # if threshold specified
-    rasPal{{spAbr}} <- c('gray', 'red')
-  m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
-m  %>%
+# if threshold specified
+rasPal{{spAbr}} <- c('gray', 'red')
+m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
+m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
- addLegend("bottomright", colors = c('gray', 'red'),
-                title = "Thresholded Suitability<br>(Projected)",
-                labels = c("predicted absence", "predicted presence"),
-                opacity = 1, layerId = 'proj')%>%
-
+  addLegend("bottomright", colors = c('gray', 'red'),
+            title = "Thresholded Suitability<br>(Projected)",
+            labels = c("predicted absence", "predicted presence"),
+            opacity = 1, layerId = 'proj')%>%
 # map model prediction raster and projection polygon
- clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
+  clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
   addRasterImage(proj_userEnvs_{{spAbr}}, colors = rasPal_{{spAbr}}, opacity = 0.7,
                  layerId = 'projRas', group = 'proj', method = "ngb") %>%
  ##add projection polygon (user drawn area)
   addPolygons(data = proj_draw_{{spAbr}}, fill = FALSE,
               weight = 4, color = "blue", group = 'proj')
-
-
-
-
 ```
 
 ```{asis, echo = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit}}, eval = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit}}, include = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit }}}
@@ -225,14 +225,17 @@ Projecting the model to a user provided area with no threshold rule. Environment
 ```
 
 ```{r, echo = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit}}, include = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit}}}
+## Specify the directory with the environmental variables
+dir_envsPj_{{spAbr}} <- ""
+envsPj_path <- file.path(dir_envsPj_{{spAbr}}, {{userPjName_rmd}})
 # Load user environmental variables
 projUserEnvs_{{spAbr}}  <- envs_userEnvs(
-  rasPath = ,#"Add full path to rasters as list e.g: Path <- list.files(path='./Projectionrasters/', pattern = ".tif",full.names = TRUE)",
-  rasName = # Add names of rasters to input e.g: Name <- list.files(path='./Projectionrasters/', pattern = ".tif", full.names = FALSE) They must match the names of the variables used for modelling
-    )
+  rasPath = envsPj_path,
+  rasName = {{userPjName_rmd}}
+)
 
 # Generate the projection area based on user provided files
-  ##User must input the path to shapefile or csv file and the file name 
+##User must input the path to shapefile or csv file and the file name 
 proj_userExt_{{spAbr}} <- proj_userExtent(
   bgShp_path = "Input path here",
   bgShp_name = "Input file name here",
@@ -251,29 +254,28 @@ projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
 
 ###Make map of projection
 bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
-bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], bb_{{spAbr}}[2, 2], fraction = 0.05)
-fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
-mapProjVals_{{spAbr}} = getRasterVals(proj_userEnvs_{{spAbr}}$projUser,"{{outputType_rmd}}")
+bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
+                   bb_{{spAbr}}[2, 2], fraction = 0.05)
+mapProjVals_{{spAbr}} <- getRasterVals(proj_userEnvs_{{spAbr}}$projUser,"{{outputType_rmd}}")
 rasCols_{{spAbr}} <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 # if no threshold specified
-  legendPal <- colorNumeric(rev(rasCols_{{spAbr}}), mapProjVals_{{spAbr}}, na.color = 'transparent')
-  rasPal_{{spAbr}} <- colorNumeric(rasCols_{{spAbr}}, mapProjVals_{{spAbr}}, na.color = 'transparent')
-  m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
-m  %>%
+legendPal <- colorNumeric(rev(rasCols_{{spAbr}}), mapProjVals_{{spAbr}}, na.color = 'transparent')
+rasPal_{{spAbr}} <- colorNumeric(rasCols_{{spAbr}}, mapProjVals_{{spAbr}}, na.color = 'transparent')
+m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
+m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
-      addLegend("bottomright", pal = legendPal,
-                title = "Predicted Suitability<br>(Projected)",
-                values = mapProjVals_{{spAbr}}, layerId = 'proj',
-                labFormat = reverseLabels(2, reverse_order = TRUE)) %>%
+  addLegend("bottomright", pal = legendPal,
+            title = "Predicted Suitability<br>(Projected)",
+            values = mapProjVals_{{spAbr}}, layerId = 'proj',
+            labFormat = reverseLabels(2, reverse_order = TRUE)) %>%
 
 # map model prediction raster and projection polygon
- clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
+  clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
   addRasterImage(proj_userEnvs_{{spAbr}}$projUser, colors = rasPal_{{spAbr}}, opacity = 0.7,
                  layerId = 'projRas', group = 'proj', method = "ngb") %>%
  ##add projection polygon (user provided area)
   addPolygons(data = proj_userExt_{{spAbr}}, fill = FALSE,
               weight = 4, color = "blue", group = 'proj')
-
 ```
 
 ```{asis, echo = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit & proj_user_threshold_knit}}, eval = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit & proj_user_threshold_knit}}, include = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit & proj_user_threshold_knit }}}
@@ -282,11 +284,14 @@ Projecting the model to a user provided area with a "{{thresholdRule_rmd}}" thre
 ```
 
 ```{r, echo = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit & proj_user_threshold_knit}}, include = {{proj_user_knit & proj_user_user_knit & !proj_user_drawn_knit & proj_user_threshold_knit}}}
+## Specify the directory with the environmental variables
+dir_envsPj_{{spAbr}} <- ""
+envsPj_path <- file.path(dir_envsPj_{{spAbr}}, {{userPjName_rmd}})
 # Load user environmental variables
 projUserEnvs_{{spAbr}}  <- envs_userEnvs(
-  rasPath = ,#"Add full path to rasters as list e.g: Path <- list.files(path='./Projectionrasters/', pattern = ".tif",full.names = TRUE)",
-  rasName = # Add names of rasters to input e.g: Name <- list.files(path='./Projectionrasters/', pattern = ".tif", full.names = FALSE) They must match the names of the variables used for modelling
-    )
+  rasPath = envsPj_path,
+  rasName = {{userPjName_rmd}}
+)
 # Generate the projection area based on user provided files
   ##User must input the path to shapefile or csv file and the file name 
 proj_userExt_{{spAbr}} <- proj_userExtent(
@@ -311,29 +316,26 @@ proj_userEnvs_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projUser < {{threshold_rmd}}
 ##Make map
 ###Make map of projection
 bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
-bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], bb_{{spAbr}}[2, 2], fraction = 0.05)
-fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
-mapProjVals_{{spAbr}} = getRasterVals(proj_userEnvs_{{spAbr}},"{{outputType_rmd}}")
+bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
+                   bb_{{spAbr}}[2, 2], fraction = 0.05)
+mapProjVals_{{spAbr}} <- getRasterVals(proj_userEnvs_{{spAbr}},"{{outputType_rmd}}")
 
   # if threshold specified
-    rasPal{{spAbr}} <- c('gray', 'red')
-  m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
-m  %>%
+rasPal{{spAbr}} <- c('gray', 'red')
+m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
+m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
- addLegend("bottomright", colors = c('gray', 'red'),
-                title = "Thresholded Suitability<br>(Projected)",
-                labels = c("predicted absence", "predicted presence"),
-                opacity = 1, layerId = 'proj')%>%
+  addLegend("bottomright", colors = c('gray', 'red'),
+            title = "Thresholded Suitability<br>(Projected)",
+            labels = c("predicted absence", "predicted presence"),
+            opacity = 1, layerId = 'proj')%>%
 
 # map model prediction raster and projection polygon
- clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
+  clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
   addRasterImage(proj_userEnvs_{{spAbr}}, colors = rasPal_{{spAbr}}, opacity = 0.7,
                  layerId = 'projRas', group = 'proj', method = "ngb") %>%
  ##add projection polygon (user provided area)
   addPolygons(data = proj_userExt_{{spAbr}}, fill = FALSE,
               weight = 4, color = "blue", group = 'proj')
-
-
-
 ```
 

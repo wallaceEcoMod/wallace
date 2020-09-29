@@ -35,6 +35,11 @@ formatSpName <- function(spNames) {
 }
 
 #' @export
+fileNameNoExt <- function(f) {
+  sub(pattern = "(.*)\\..*$", replacement = "\\1", f)
+}
+
+#' @export
 writeSpp <- function(spp, sp, dir) {
   if(!is.null(spp[[sp]]$occs)) write.csv(spp[[sp]]$occs, file.path(dir, paste0(sp, "_occs.csv")))
   if(!is.null(spp[[sp]]$bg)) write.csv(spp[[sp]]$bg, file.path(dir, paste0(sp, "_bg.csv")))
@@ -60,8 +65,12 @@ writeLog <- function(logger, ..., type = 'default') {
     if (type == "default") {
       pre <- "> "
     } else if (type == 'error') {
+      shinyalert::shinyalert("Please, check window-Log for more information (**)",
+                             type = "error")
       pre <- '> <font color="red"><b>! ERROR</b></font> : '
     } else if (type == 'warning') {
+      shinyalert::shinyalert("Please, check window-Log for more information (**)",
+                             type = "warning")
       pre <- '> <font color="orange"><b>! WARNING</b></font> : '
     }
     newEntries <- paste0('<br>', pre, ..., collapse = "")
