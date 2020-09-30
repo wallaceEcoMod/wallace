@@ -58,6 +58,7 @@ base_module_configs <- c(
   "modules/mask_expPoly.yml",
   "modules/mask_temp.yml",
   "modules/change_range.yml",
+  "modules/change_overlap.yml",
   "modules/alpha_richness.yml",
   "modules/alpha_endemism.yml",
   "modules/rep_markdown.yml",
