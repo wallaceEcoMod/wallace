@@ -10,6 +10,7 @@ The species endemism calculation is implemented in Wallace using the R package r
 
 **REFERENCES**
 
-ChangeRangeR  in prep
-SE calculation
+Merow, C., Galante, P., Gerstner, B., Johnson, B., Kass, J.M., Paz, A., Rosauer, D., Serra, P., Anderson, R.P., Blair, M. "changeRangeR: Translating species’ distributions into conservation metrics". In prep.
+
+Rosauer D., Laffan S.W., Crisp M.D., Donnellan S.C., & Cook L.G. (2009) Phylogenetic endemism: a new approach for identifying geographical concentrations of evolutionary history. Molecular ecology, 18, 4061–72. 
 
