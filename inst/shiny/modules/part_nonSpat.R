@@ -81,7 +81,10 @@ part_nonSpat_module_server <- function(input, output, session, common) {
 }
 
 part_nonSpat_module_map <- function(map, common) {
-  occs <- common$occs
+  curSp <- common$curSp
+  spp <- common$spp
+  req(spp[[curSp()]]$occs)
+  occs <- spp[[curSp()]]$occs
   # Map logic
   if (!is.null(occs()$partition)) {
     occsGrp <- occs()$partition

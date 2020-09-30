@@ -62,9 +62,10 @@ occs_biomodelos_module_server <- function(input, output, session, common) {
 }
 
 occs_biomodelos_module_map <- function(map, common) {
-  spp <- common$spp
   curSp <- common$curSp
-  occs <- spp[[curSp()]]$occData$occsCleaned
+  spp <- common$spp
+  req(spp[[curSp()]]$occs)
+  occs <- spp[[curSp()]]$occs
   map %>% clearAll() %>%
     addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude,
                      radius = 5, color = 'red', fill = TRUE, fillColor = "red",

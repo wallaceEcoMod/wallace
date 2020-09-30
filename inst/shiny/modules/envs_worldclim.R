@@ -162,8 +162,10 @@ envs_worldclim_module_result <- function(id) {
 }
 
 envs_worldclim_module_map <- function(map, common) {
-  # Map logic
-  occs <- common$occs
+  curSp <- common$curSp
+  spp <- common$spp
+  req(spp[[curSp()]]$occs)
+  occs <- spp[[curSp()]]$occs
   mapCntr <- c(mean(occs()$longitude), mean(occs()$latitude))
   lon_tile <- seq(-180, 180, 30)
   lat_tile <- seq(-60, 90, 30)

@@ -344,10 +344,11 @@ proj_user_module_server <- function(input, output, session, common) {
 }
 
 proj_user_module_map <- function(map, common) {
-
-  spp <- common$spp
-  evalOut <- common$evalOut
   curSp <- common$curSp
+  spp <- common$spp
+  req(spp[[curSp()]]$occs)
+  occs <- spp[[curSp()]]$occs
+  evalOut <- common$evalOut
   rmm <- common$rmm
   mapProj <- common$mapProj
 

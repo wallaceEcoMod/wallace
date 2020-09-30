@@ -112,7 +112,10 @@ envs_userEnvs_module_result <- function(id) {
 }
 
 envs_userEnvs_module_map <- function(map, common) {
-  occs <- common$occs
+  curSp <- common$curSp
+  spp <- common$spp
+  req(spp[[curSp()]]$occs)
+  occs <- spp[[curSp()]]$occs
   map %>% clearAll() %>%
     addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                      radius = 5, color = 'red', fill = TRUE, fillColor = "red",

@@ -157,10 +157,10 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
 }
 
 penvs_bgExtent_module_map <- function(map, common) {
-  spp <- common$spp
   curSp <- common$curSp
-  occs <- common$occs
-
+  spp <- common$spp
+  req(spp[[curSp()]]$occs)
+  occs <- spp[[curSp()]]$occs
   if (is.null(spp[[curSp()]]$procEnvs$bgExt)) {
     map %>% clearAll() %>%
       addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
