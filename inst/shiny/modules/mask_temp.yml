@@ -1,0 +1,5 @@
+component: "mask"
+short_name: "Temporal extract (**)"
+long_name: "Temporal extract (**)"
+authors: "Gonzalo E. Pinilla-Buitrago (**)"
+package: [maskRangeR]
