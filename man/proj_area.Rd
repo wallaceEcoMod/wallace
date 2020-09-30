@@ -74,5 +74,5 @@ Jamie Kass <jkass@gradcenter.cuny.edu>
 
 Andrea Paz <paz.andreita@gmail.com>
 
-Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
 }

@@ -56,7 +56,7 @@ post_userSDM_module_map <- function(map, common) {
   map %>% clearMarkers() %>%
     clearShapes() %>%
     # add background polygon
-    mapBgPolys(bgShpXY())
+    mapBgPolys(bgShpXY(), color = 'green', group = 'post')
 
   # Define raster colors and shiny legend
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
@@ -66,11 +66,11 @@ post_userSDM_module_map <- function(map, common) {
     map %>% removeImage(layerId = 'mapPred') %>%
       removeImage(layerId = 'postPred') %>%
       removeControl(layerId = 'expert') %>%
-      addLegend("bottomright", colors = c('gray', 'purple'),
+      addLegend("bottomright", colors = c('gray', 'darkgreen'),
                 title = "Distribution<br>map",
                 labels = c("Unsuitable", "Suitable"),
                 opacity = 1, layerId = 'expert') %>%
-      addRasterImage(userRaster, colors = c('gray', 'purple'),
+      addRasterImage(userRaster, colors = c('gray', 'darkgreen'),
                      opacity = 0.7, group = 'mask', layerId = 'postPred',
                      method = "ngb")
   } else {

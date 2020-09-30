@@ -90,6 +90,10 @@ function(input, output, session) {
       spp[[curSp()]]$polyPjXY <- xy
       spp[[curSp()]]$polyPjID <- id
     }
+    if(component() == 'mask') {
+      spp[[curSp()]]$polyMaskXY <- xy
+      spp[[curSp()]]$polyMaskID <- id
+    }
     # UI CONTROLS - for some reason, curSp() disappears here unless input is updated
     updateSelectInput(session, "curSp", selected = curSp())
   })

@@ -169,6 +169,7 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
     }
     spp[[curSp()]]$visualization$mapPred <- predSel.thr
     spp[[curSp()]]$visualization$mapPredVals <- getRasterVals(predSel.thr, predType)
+    spp[[curSp()]]$postProc$prediction <- predSel.thr
     # METADATA ####
     spp[[curSp()]]$rmd$vis_curModel <- curModel()
     spp[[curSp()]]$rmm$prediction$Type <- predType
