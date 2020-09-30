@@ -28,6 +28,7 @@ tagList(
     tabPanel("Project", value = 'proj'),
     tabPanel("User SDM", value = 'post'),
     tabPanel("Mask", value = 'mask'),
+    tabPanel("ChangeRR", value = 'change'),
     tabPanel("Alpha Div", value = 'alpha'),
     tabPanel("Reproduce", value = 'rep')
   ),
@@ -240,6 +241,17 @@ tagList(
             ),
             tags$hr(),
             insert_modules_ui("mask")
+          ),
+          # Change ####
+          conditionalPanel(
+            "input.tabs == 'change'",
+            h4("Change RangeR"),
+            radioButtons(
+              "changeSel", "Modules Available:",
+              choices = insert_modules_options("change")
+            ),
+            tags$hr(),
+            insert_modules_ui("change")
           ),
           # ALPHA ####
           conditionalPanel(
