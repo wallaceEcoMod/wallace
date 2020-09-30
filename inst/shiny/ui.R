@@ -536,6 +536,20 @@ tagList(
                 )
               ),
               conditionalPanel(
+                "input.tabs == 'mask'",
+                br(),
+                fluidRow(
+                  column(3, h5("Download Masked prediction (Select download file type**)")),
+                  column(2, selectInput('maskFileType',
+                                        label = NULL,
+                                        choices = list("GeoTIFF" = 'GTiff',
+                                                       "GRD" = 'raster',
+                                                       "ASCII" = 'ascii',
+                                                       "PNG" = 'png'))),
+                  column(2, shinyjs::disabled(downloadButton('dlMask', "Mask file(**)")))
+                )
+              ),
+              conditionalPanel(
                 "input.tabs == 'alpha'",
                 br(),
                 fluidRow(

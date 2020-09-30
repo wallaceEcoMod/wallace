@@ -107,9 +107,9 @@ mask_expPoly_module_server <- function(input, output, session, common) {
         spp[[curSp()]]$rmm$code$wallace$userMaskExt <- 'shp'
         # get index of .shp
         i <- which(exts == 'shp')
-        shpName <- strsplit(input$userMaskShp$name[i], '\\.')[[1]][1]
+        shpName <- strsplit(input$polyExpShp$name[i], '\\.')[[1]][1]
         spp[[curSp()]]$rmm$code$wallace$userMaskShpParams <-
-          list(dsn = input$userMaskShp$datapath[i], layer = shpName)
+          list(dsn = input$polyExpShp$datapath[i], layer = shpName)
       }
 
       if (rgeos::gDisjoint(spp[[curSp()]]$postProc$bgExt, polyMask)) {
@@ -155,6 +155,7 @@ mask_expPoly_module_server <- function(input, output, session, common) {
 
   observeEvent(input$goActionPoly, {
     # WARNING ####
+    req(spp[[curSp()]]$mask$expertPoly)
     binBool <- length(unique(raster::values(spp[[curSp()]]$postProc$prediction)))
     removePoly <- ifelse(input$actExpPoly == "addPoly", FALSE, TRUE)
     if (!(binBool == 3 | binBool == 2)) {
@@ -224,7 +225,7 @@ mask_expPoly_module_map <- function(map, common) {
     editOptions = leaflet.extras::editToolbarOptions()
   )
 
-  req(spp[[curSp()]]$postProc$prediction)
+  req(spp[[curSp()]]$mask$expertPoly)
   userRaster <- spp[[curSp()]]$postProc$prediction
   userValues <- raster::values(userRaster)
 
@@ -236,7 +237,7 @@ mask_expPoly_module_map <- function(map, common) {
   if (length(unique(userValues)) == 3 |
       length(unique(userValues)) == 2) {
     map %>%
-      removeImage(layerId = 'postPred') %>%
+      removeImage(layerId = 'postPred') %>% removeImage(layerId = 'mapPred') %>%
       addRasterImage(spp[[curSp()]]$postProc$prediction,
                      colors = c('gray', 'darkgreen'), opacity = 0.7, group = 'mask',
                      layerId = 'postPred', method = "ngb") %>%
@@ -249,7 +250,7 @@ mask_expPoly_module_map <- function(map, common) {
     legendPal <- colorNumeric(rev(rasCols), userValues, na.color = 'transparent')
     rasPal <- colorNumeric(rasCols, userValues, na.color = 'transparent')
     map %>%
-      removeImage(layerId = 'postPred') %>%
+      removeImage(layerId = 'postPred') %>% removeImage(layerId = 'mapPred') %>%
       addRasterImage(spp[[curSp()]]$postProc$prediction,
                      colors = rasPal, opacity = 0.7, group = 'mask',
                      layerId = 'postPred', method = "ngb") %>%
@@ -257,8 +258,8 @@ mask_expPoly_module_map <- function(map, common) {
                 values = userValues, layerId = "expert",
                 labFormat = reverseLabels(2, reverse_order = TRUE))
   }
+  req(spp[[curSp()]]$postProc$prediction)
   # Plot Polygon
-  req(spp[[curSp()]]$mask$expertPoly)
   expertPoly <- spp[[curSp()]]$mask$expertPoly
   xy <- ggplot2::fortify(expertPoly[[length(expertPoly)]])
   map %>% clearGroup('maskShp') %>%

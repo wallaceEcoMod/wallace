@@ -157,6 +157,7 @@ function(input, output, session) {
     shinyjs::toggleState("dlProjEnvs", !is.null(spp[[curSp()]]$project$pjEnvsDl))
     shinyjs::toggleState("dlProj", !is.null(spp[[curSp()]]$project$pjEnvs))
     shinyjs::toggleState("dlMess", !is.null(spp[[curSp()]]$project$messVals))
+    shinyjs::toggleState("dlMask", !is.null(spp[[curSp()]]$mask$removePoly))
     # shinyjs::toggleState("dlWhatever", !is.null(spp[[curSp()]]$whatever))
   })
 
@@ -1102,6 +1103,76 @@ function(input, output, session) {
         }
       } else {
         logger %>% writeLog("Please install the rgdal package before downloading rasters.")
+      }
+    }
+  )
+
+  ########################################### #
+  ### COMPONENT: MasK ####
+  ########################################### #
+
+  output$dlMask <- downloadHandler(
+    filename = function() {
+      ext <- switch(input$maskFileType, raster = 'zip', ascii = 'asc',
+                    GTiff = 'tif', png = 'png')
+      paste0(curSp(), '_mask.', ext)
+    },
+    content = function(file) {
+      if(require(rgdal)) {
+        if (input$maskFileType == 'png') {
+          req(spp[[curSp()]]$postProc$prediction)
+          if (!webshot::is_phantomjs_installed()) {
+            logger %>%
+              writeLog(type = "error", "To download PNG prediction, you require to",
+                       " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
+                       " in you are R console. (**)")
+          }
+          userRaster <- spp[[curSp()]]$postProc$prediction
+          userValues <- raster::values(userRaster)
+
+          if (length(unique(userValues)) == 3 |
+              length(unique(userValues)) == 2) {
+            m -> leaflet() %>%
+              addRasterImage(userRaster,
+                             colors = c('gray', 'darkgreen'), opacity = 0.7, group = 'mask',
+                             layerId = 'postPred', method = "ngb") %>%
+              addLegend("bottomright", colors = c('gray', 'darkgreen'),
+                        title = "Distribution<br>map",
+                        labels = c("Unsuitable", "Suitable"),
+                        opacity = 1, layerId = 'expert')
+            mapview::mapshot(m, file = file)
+          } else {
+            rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+            legendPal <- colorNumeric(rev(rasCols), userValues, na.color = 'transparent')
+            rasPal <- colorNumeric(rasCols, userValues, na.color = 'transparent')
+            m -> leaflet() %>%
+              addRasterImage(userRaster,
+                             colors = rasPal, opacity = 0.7, group = 'mask',
+                             layerId = 'postPred', method = "ngb") %>%
+              addLegend("bottomright", pal = legendPal, title = "Suitability<br>(User) (**)",
+                        values = userValues, layerId = "expert",
+                        labFormat = reverseLabels(2, reverse_order = TRUE))
+            mapview::mapshot(m, file = file)
+          }
+          # Plot Polygon
+
+        } else if (input$predFileType == 'raster') {
+          fileName <- curSp()
+          tmpdir <- tempdir()
+          raster::writeRaster(spp[[curSp()]]$postProc$prediction, file.path(tmpdir, fileName),
+                              format = input$maskFileType, overwrite = TRUE)
+          owd <- setwd(tmpdir)
+          fs <- paste0(fileName, c('.grd', '.gri'))
+          zip::zipr(zipfile = file, files = fs)
+          setwd(owd)
+        } else {
+          r <- raster::writeRaster(spp[[curSp()]]$postProc$prediction, file, format = input$maskFileType,
+                                   overwrite = TRUE)
+          file.rename(r@file@name, file)
+        }
+      } else {
+        logger %>%
+          writeLog("Please install the rgdal package before downloading rasters.")
       }
     }
   )
