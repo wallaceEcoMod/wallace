@@ -352,12 +352,16 @@ change_range_module_server <- function(input, output, session, common) {
       # Save any values that should be saved when the current session is saved
       list(
         changeRangeSel = input$changeRangeSel,
-        selSource = input$selSource)
+        selSource = input$selSource,
+        selSource1 = input$selSource1,
+        selSource2 = input$selSource2)
     },
     load = function(state) {
       # Load
       updateSelectInput(session, 'changeRangeSel', selected = state$changeRangeSel)
       updateSelectInput(session, ' selSource', selected = state$selSource)
+      updateSelectInput(session, ' selSource1', selected = state$selSource1)
+      updateSelectInput(session, ' selSource2', selected = state$selSource2)
     }
   ))
 
