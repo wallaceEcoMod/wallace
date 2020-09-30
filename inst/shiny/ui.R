@@ -27,7 +27,6 @@ tagList(
     tabPanel("Visualize", value = 'vis'),
     tabPanel("Project", value = 'proj'),
     tabPanel("User SDM", value = 'post'),
-    tabPanel("ChangeRR", value = 'change'),
     tabPanel("Alpha Div", value = 'alpha'),
     tabPanel("Reproduce", value = 'rep')
   ),
