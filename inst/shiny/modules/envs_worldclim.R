@@ -165,7 +165,7 @@ envs_worldclim_module_map <- function(map, common) {
   curSp <- common$curSp
   spp <- common$spp
   req(spp[[curSp()]]$occs)
-  occs <- spp[[curSp()]]$occs
+  occs <- common$occs
   mapCntr <- c(mean(occs()$longitude), mean(occs()$latitude))
   lon_tile <- seq(-180, 180, 30)
   lat_tile <- seq(-60, 90, 30)

@@ -63,7 +63,7 @@ poccs_thinOccs_module_map <- function(map, common) {
   curSp <- common$curSp
   spp <- common$spp
   req(spp[[curSp()]]$occs)
-  occs <- spp[[curSp()]]$occs
+  occs <- common$occs
   # Map logic
   # if you've thinned already, map thinned points blue
   # and kept points red

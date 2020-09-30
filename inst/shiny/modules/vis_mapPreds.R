@@ -206,7 +206,7 @@ vis_mapPreds_module_map <- function(map, common) {
   curSp <- common$curSp
   spp <- common$spp
   req(spp[[curSp()]]$occs)
-  occs <- spp[[curSp()]]$occs
+  occs <- common$occs
   mapPred <- common$mapPred
   rmm <- common$rmm
   bgShpXY <- common$bgShpXY

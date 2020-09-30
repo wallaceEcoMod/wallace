@@ -167,7 +167,7 @@ penvs_drawBgExtent_module_map <- function(map, common) {
   curSp <- common$curSp
   spp <- common$spp
   req(spp[[curSp()]]$occs)
-  occs <- spp[[curSp()]]$occs
+  occs <- common$occs
   map %>% leaflet.extras::addDrawToolbar(
     targetGroup = 'draw',
     polylineOptions = FALSE,

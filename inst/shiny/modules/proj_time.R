@@ -490,7 +490,7 @@ proj_time_module_map <- function(map, common) {
   curSp <- common$curSp
   spp <- common$spp
   req(spp[[curSp()]]$occs)
-  occs <- spp[[curSp()]]$occs
+  occs <- common$occs
   evalOut <- common$evalOut
   rmm <- common$rmm
   mapProj <- common$mapProj

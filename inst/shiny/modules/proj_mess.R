@@ -66,7 +66,7 @@ proj_mess_module_map <- function(map, common) {
   curSp <- common$curSp
   spp <- common$spp
   req(spp[[curSp()]]$occs)
-  occs <- spp[[curSp()]]$occs
+  occs <- common$occs
   bgShpXY <- common$bgShpXY
 
   req(spp[[curSp()]]$project$mess, spp[[curSp()]]$project$pjExt)
