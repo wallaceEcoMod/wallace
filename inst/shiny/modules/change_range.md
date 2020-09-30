@@ -1,4 +1,4 @@
-### **Module: Species Endemism**
+### **Module: Areas**
 
 **BACKGROUND**
 
