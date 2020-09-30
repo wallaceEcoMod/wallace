@@ -1,0 +1,5 @@
+component: "change"
+short_name: "Areas"
+long_name: "Range/AOO/EOO"
+authors: "Andrea Paz"
+package: [raster, changeRangeR]
