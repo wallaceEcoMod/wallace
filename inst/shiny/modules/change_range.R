@@ -190,7 +190,7 @@ change_range_module_server <- function(input, output, session, common) {
       }
       else if (input$selSource =="masked"){
 
-        p <- spp[[curSp()]]$project$mapProj
+        p <- spp[[curSp()]]$project$mapProj #this will change with name of mask rangeR output
         p[p == 0] <- NA
         if (length(unique(values(test)))> 2) {
           logger %>%

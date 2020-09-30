@@ -219,7 +219,7 @@ tagList(
                                  .butResPj:hover {background-color: #830D03;
                                  color: white;}"))
           ),
-          # Post ####
+          # ALPHA ####
           conditionalPanel(
             "input.tabs == 'post'",
             h4("Upload user-specified SDM (**)"),
@@ -229,17 +229,6 @@ tagList(
             ),
             tags$hr(),
             insert_modules_ui("post")
-          ),
-          # Change ####
-          conditionalPanel(
-            "input.tabs == 'change'",
-            h4("Change RangeR"),
-            radioButtons(
-              "changeSel", "Modules Available:",
-              choices = insert_modules_options("change")
-            ),
-            tags$hr(),
-            insert_modules_ui("change")
           ),
           # ALPHA ####
           conditionalPanel(
