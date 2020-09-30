@@ -32,6 +32,7 @@ mask_expPoly_module_server <- function(input, output, session, common) {
   spp <- common$spp
   curSp <- common$curSp
   logger <- common$logger
+  bgExt <- common$bgExt
 
   observeEvent(input$goInputPoly, {
     # ERRORS ####
@@ -175,7 +176,7 @@ mask_expPoly_module_server <- function(input, output, session, common) {
     } else {
       polyMask <- spp[[curSp()]]$mask$expertPoly[[length(spp[[curSp()]]$mask$expertPoly)]]
       expertRast <- mask_expPoly(polyMask, spp[[curSp()]]$postProc$prediction,
-                                 removePoly, logger)
+                                 removePoly, bgExt = bgExt(), logger)
       spp[[curSp()]]$mask$flagPoly <- TRUE
       if (removePoly == FALSE) {
         logger %>% writeLog(
@@ -186,8 +187,9 @@ mask_expPoly_module_server <- function(input, output, session, common) {
       }
     }
     # LOAD INTO SPP ####
-    spp[[curSp()]]$postProc$prediction <- expertRast
+    spp[[curSp()]]$postProc$prediction <- expertRast$pred
     spp[[curSp()]]$mask$removePoly <- c(spp[[curSp()]]$mask$removePoly, removePoly)
+    spp[[curSp()]]$procEnvs$bgExt <- expertRast$ext
 
   })
   output$result <- renderText({
