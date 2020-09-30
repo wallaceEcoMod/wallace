@@ -21,15 +21,25 @@ post_userSDM_module_server <- function(input, output, session, common) {
     for (i in 1:length(input$sdmFile$name)) {
       ###########################
       newSppName <- fileNameNoExt(formatSpName(input$sdmFile$name[i]))
-      userSDMs <- post_userSDM(rasPath = input$sdmFile$datapath[i],
-                               rasName = input$sdmFile$name[i],
-                               logger)
-      if (!(newSppName %in% names(spp))) spp[[newSppName]] <- list()
-      logger %>% writeLog(hlSpp(newSppName), "User SDM prediction loaded (**)")
-      # LOAD INTO SPP ####
-      spp[[newSppName]]$postProc$prediction <- userSDMs$sdm
-      spp[[newSppName]]$postProc$OrigPred <- userSDMs$sdm
-      spp[[newSppName]]$procEnvs$bgExt <- userSDMs$extSdm
+
+      if ((newSppName %in% names(spp))) {
+        if (!is.null(spp[[newSppName]]$visualization$mapPred)) {
+          logger %>% writeLog(
+            type = "error", hlSpp(newSppName),
+            "Prediction already available on Wallace. You can not upload a user raster.")
+        }
+      } else {
+        spp[[newSppName]] <- list()
+        userSDMs <- post_userSDM(rasPath = input$sdmFile$datapath[i],
+                                 rasName = input$sdmFile$name[i],
+                                 logger)
+        logger %>% writeLog(hlSpp(newSppName), "User SDM prediction loaded (**)")
+        # LOAD INTO SPP ####
+        spp[[newSppName]]$postProc$prediction <- userSDMs$sdm
+        spp[[newSppName]]$postProc$OrigPred <- userSDMs$sdm
+        spp[[newSppName]]$procEnvs$bgExt <- userSDMs$extSdm
+      }
+
 
       # METADATA ####
 
@@ -54,7 +64,7 @@ post_userSDM_module_map <- function(map, common) {
                     lat1 = zoomExt[3], lat2 = zoomExt[4])
 
   map %>% clearMarkers() %>%
-    clearShapes() %>%
+    clearShapes() %>% clearAll() %>%
     # add background polygon
     mapBgPolys(bgShpXY(), color = 'green', group = 'post')
 
@@ -63,9 +73,7 @@ post_userSDM_module_map <- function(map, common) {
   # if it is threshold specified
   if (length(unique(userValues)) == 3 |
       length(unique(userValues)) == 2) {
-    map %>% removeImage(layerId = 'mapPred') %>%
-      removeImage(layerId = 'postPred') %>%
-      removeControl(layerId = 'expert') %>%
+    map %>%
       addLegend("bottomright", colors = c('gray', 'darkgreen'),
                 title = "Distribution<br>map",
                 labels = c("Unsuitable", "Suitable"),
@@ -77,9 +85,7 @@ post_userSDM_module_map <- function(map, common) {
     # if threshold specified
     legendPal <- colorNumeric(rev(rasCols), userValues, na.color = 'transparent')
     rasPal <- colorNumeric(rasCols, userValues, na.color = 'transparent')
-    map %>% removeImage(layerId = 'mapPred') %>%
-      removeImage(layerId = 'postPred') %>%
-      removeControl(layerId = 'expert') %>%
+    map %>%
       addLegend("bottomright", pal = legendPal, title = "Suitability<br>(User) (**)",
                 values = userValues, layerId = "expert",
                 labFormat = reverseLabels(2, reverse_order=TRUE)) %>%

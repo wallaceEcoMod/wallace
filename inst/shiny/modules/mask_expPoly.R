@@ -232,13 +232,13 @@ mask_expPoly_module_map <- function(map, common) {
 
   map %>% clearMarkers() %>%
     clearShapes() %>%
+    clearAll() %>%
     # add background polygon
     mapBgPolys(bgShpXY(), color = 'green', group = 'post')
 
   if (length(unique(userValues)) == 3 |
       length(unique(userValues)) == 2) {
     map %>%
-      removeImage(layerId = 'postPred') %>% removeImage(layerId = 'mapPred') %>%
       addRasterImage(spp[[curSp()]]$postProc$prediction,
                      colors = c('gray', 'darkgreen'), opacity = 0.7, group = 'mask',
                      layerId = 'postPred', method = "ngb") %>%
@@ -251,7 +251,6 @@ mask_expPoly_module_map <- function(map, common) {
     legendPal <- colorNumeric(rev(rasCols), userValues, na.color = 'transparent')
     rasPal <- colorNumeric(rasCols, userValues, na.color = 'transparent')
     map %>%
-      removeImage(layerId = 'postPred') %>% removeImage(layerId = 'mapPred') %>%
       addRasterImage(spp[[curSp()]]$postProc$prediction,
                      colors = rasPal, opacity = 0.7, group = 'mask',
                      layerId = 'postPred', method = "ngb") %>%
