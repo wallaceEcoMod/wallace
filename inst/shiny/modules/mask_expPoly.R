@@ -189,6 +189,7 @@ mask_expPoly_module_server <- function(input, output, session, common) {
     }
     # LOAD INTO SPP ####
     spp[[curSp()]]$postProc$prediction <- expertRast$pred
+    spp[[curSp()]]$mask$prediction <- expertRast$pred
     spp[[curSp()]]$mask$removePoly <- c(spp[[curSp()]]$mask$removePoly, removePoly)
     spp[[curSp()]]$procEnvs$bgExt <- expertRast$ext
 
