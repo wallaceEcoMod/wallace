@@ -55,6 +55,9 @@ change_overlap_module_server <- function(input, output, session, common) {
                          'following files: .shp, .shx, .dbf.'))
        return()
      }
+     smartProgress(
+       logger,
+       message = "Uploading user provided shapefile ", {
      # get index of .shp
      i <- which(exts == 'shp')
      if (!file.exists(file.path(pathdir, input$changeOverlapShp$name)[i])) {
@@ -63,7 +66,7 @@ change_overlap_module_server <- function(input, output, session, common) {
      # read in shapefile and extract coords
      polyOverlap  <- rgdal::readOGR(file.path(pathdir, input$changeOverlapShp$name)[i])
      logger %>% writeLog( "User shapefile loaded ")
-
+})
    } else {
      logger %>%
        writeLog(type = 'error',
@@ -97,11 +100,15 @@ change_overlap_module_server <- function(input, output, session, common) {
                    'Visualize your model before doing overlap calculations')
         return()
       }
+      smartProgress(
+        logger,
+        message = "Calculating range overlap ", {
       r = spp[[curSp()]]$visualization$mapPred
       shp = spp[[curSp()]]$change$polyOverlap
       raster::crs(shp) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
       raster::crs(r) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
       ratio.Overlap <- changeRangeR::ratioOverlap(r = r, shp = shp, field=spp[[curSp()]]$change$ShpField, category = "All")
+        })
       req(ratio.Overlap)
       logger %>% writeLog( "Proportion of range area that is contained by landcover categories calculated ")
       # LOAD INTO SPP ####
@@ -118,11 +125,15 @@ change_overlap_module_server <- function(input, output, session, common) {
                    'Project your model before doing overlap calculations')
         return()
       }
+      smartProgress(
+        logger,
+        message = "Calculating range overlap ", {
       r = sspp[[curSp()]]$project$mapProj
       shp = spp[[curSp()]]$change$polyOverlap
       raster::crs(shp) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
       raster::crs(r) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
       ratio.Overlap <- changeRangeR::ratioOverlap(r = r, shp = shp, field= spp[[curSp()]]$change$ShpField, category = "All")
+        })
       req(ratio.Overlap)
       logger %>% writeLog( "Proportion of projected range area that is contained by landcover categories calculated ")
       # LOAD INTO SPP ####
@@ -140,14 +151,17 @@ change_overlap_module_server <- function(input, output, session, common) {
           writeLog(type = 'error',
                    'Load you model in component User SDM before doing range calculations')
         return()
-      }
+     }
+      smartProgress(
+        logger,
+        message = "Calculating range overlap ", {
       r = spp[[curSp()]]$postProc$OrigPred
       shp = spp[[curSp()]]$change$polyOverlap
       raster::crs(shp) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
       raster::crs(r) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
       ratio.Overlap <- changeRangeR::ratioOverlap(r = r , shp = shp, field = spp[[curSp()]]$change$ShpField, category = "All")
       #ratio.Overlap <- changeRangeR::ratioOverlap(r = r , shp = shp, category = "All")
-
+      })
     # LOAD INTO SPP ####
     req(ratio.Overlap)
     logger %>% writeLog( "Proportion of user provided range area that is contained by landcover categories calculated ")
@@ -167,11 +181,15 @@ change_overlap_module_server <- function(input, output, session, common) {
                    'Do a maskRangeR analysis before doing range calculations')
         return()
       }
+      smartProgress(
+        logger,
+        message = "Calculating range overlap ", {
       r = spp[[curSp()]]$postProc$prediction
       shp = spp[[curSp()]]$change$polyOverlap
       raster::crs(shp) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
       raster::crs(r) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
       ratio.Overlap <- changeRangeR::ratioOverlap(r = r , shp =  shp,field = spp[[curSp()]]$change$ShpField, category = "All")
+        })
       req(ratio.Overlap)
       logger %>% writeLog( "Proportion of masked range area that is contained by landcover categories calculated ")
       # LOAD INTO SPP ####
@@ -231,14 +249,30 @@ change_overlap_module_map <- function(map, common) {
   legendPal <- colorNumeric(rev(rasCols), OverlapVals, na.color = 'transparent')
   rasPal <- colorNumeric(rasCols, OverlapVals, na.color = 'transparent')
   # Create legend
-  map %>% clearAll() %>%
-    addLegend("bottomright", pal = legendPal,
-              title = "Range Overlap",
-              values = OverlapVals, layerId = "train",
-              labFormat = reverseLabels(2, reverse_order = TRUE))
-  #MAP eoverlap
-  map %>% addRasterImage(Overlap, colors = rasPal, opacity = 0.7,
-                         layerId = 'Overlap', group = 'change', method = "ngb")
+  map %>% clearAll()
+  if (length(unique(OverlapVals)) == 3 |
+      length(unique(OverlapVals)) == 2) {
+    map %>%
+      addLegend("bottomright", colors = c('gray', 'red'),
+                title = "Range Overlap",
+                labels = c("Presence", "Absence"),
+                opacity = 1, layerId = 'expert') %>%
+      addRasterImage(userRaster, colors = c('gray', 'red'),
+                     opacity = 0.7, group = 'change', layerId = 'Overlap',
+                     method = "ngb")
+  } else {
+    # if threshold specified
+    legendPal <- colorNumeric(rev(rasCols), OverlapVals, na.color = 'transparent')
+    rasPal <- colorNumeric(rasCols, OverlapVals, na.color = 'transparent')
+    map %>%
+      addLegend("bottomright", pal = legendPal, title = "Range Overlap",
+                values = OverlapVals, layerId = "overlap",
+                labFormat = reverseLabels(2, reverse_order=TRUE)) %>%
+      addRasterImage(Overlap, colors = rasPal,
+                     opacity = 0.7, group = 'change', layerId = 'Overlap',
+                     method = "ngb")
+  }
+
 ###Add polygon intersect
   # Add just projection Polygon
   req(spp[[curSp()]]$change$polyOverlap)
