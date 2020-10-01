@@ -32,19 +32,16 @@ mask_tempAnnotate <- function(occs, env, envDates, logger = NULL) {
   # this should be a formal date object of class "POSIXct" "POSIXt"
   # smartProgress(logger, message = "Annotate ... (**)", {
     envDates <- lubridate::parse_date_time(envDates, orders = c("Y", "Ym"))
-    print(envDates)
     datedOccs <- occs
-    print(datedOccs)
     datedOccs$date <- lubridate::parse_date_time(datedOccs$year, orders = c("Y", "Ym"))
     # convert to spatial object
     sp::coordinates(datedOccs) <- c('longitude','latitude')
     raster::projection(datedOccs) <- raster::projection(env)
-    print(datedOccs)
     datedOccs <- maskRangeR::annotate(datedOccs = datedOccs,
                                       env = env,
                                       envDates = envDates,
                                       dateScale = "year")
-    bounds <- raster::quantile(datedOccs$layer,
+    bounds <- raster::quantile(datedOccs$env,
                                prob = c(0, .025, .25, .5, .75, .975, 1),
                                na.rm = T)
   # })
