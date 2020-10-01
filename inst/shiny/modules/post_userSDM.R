@@ -22,13 +22,7 @@ post_userSDM_module_server <- function(input, output, session, common) {
       ###########################
       newSppName <- fileNameNoExt(formatSpName(input$sdmFile$name[i]))
 
-      if ((newSppName %in% names(spp))) {
-        if (!is.null(spp[[newSppName]]$visualization$mapPred)) {
-          logger %>% writeLog(
-            type = "error", hlSpp(newSppName),
-            "Prediction already available on Wallace. You can not upload a user raster.")
-        }
-      } else {
+      if (!(newSppName %in% names(spp))) {
         spp[[newSppName]] <- list()
         userSDMs <- post_userSDM(rasPath = input$sdmFile$datapath[i],
                                  rasName = input$sdmFile$name[i],
@@ -38,6 +32,22 @@ post_userSDM_module_server <- function(input, output, session, common) {
         spp[[newSppName]]$postProc$prediction <- userSDMs$sdm
         spp[[newSppName]]$postProc$OrigPred <- userSDMs$sdm
         spp[[newSppName]]$procEnvs$bgExt <- userSDMs$extSdm
+      } else {
+        if (!is.null(spp[[newSppName]]$visualization$mapPred)) {
+          logger %>% writeLog(
+            type = "error", hlSpp(newSppName),
+            "Prediction already available on Wallace. You cannot upload a user raster.")
+          return()
+        } else { # If occs exists
+          userSDMs <- post_userSDM(rasPath = input$sdmFile$datapath[i],
+                                   rasName = input$sdmFile$name[i],
+                                   logger)
+          logger %>% writeLog(hlSpp(newSppName), "User SDM prediction loaded (**)")
+          # LOAD INTO SPP ####
+          spp[[newSppName]]$postProc$prediction <- userSDMs$sdm
+          spp[[newSppName]]$postProc$OrigPred <- userSDMs$sdm
+          spp[[newSppName]]$procEnvs$bgExt <- userSDMs$extSdm
+        }
       }
 
 
@@ -45,7 +55,7 @@ post_userSDM_module_server <- function(input, output, session, common) {
 
     }
     common$update_component(tab = "Map")
-})
+  })
 }
 
 post_userSDM_module_map <- function(map, common) {
@@ -93,7 +103,6 @@ post_userSDM_module_map <- function(map, common) {
                      opacity = 0.7, group = 'mask', layerId = 'postPred',
                      method = "ngb")
   }
-
 }
 
 post_userSDM_module_rmd <- function(species) {

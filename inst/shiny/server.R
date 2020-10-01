@@ -157,8 +157,9 @@ function(input, output, session) {
     shinyjs::toggleState("dlProjEnvs", !is.null(spp[[curSp()]]$project$pjEnvsDl))
     shinyjs::toggleState("dlProj", !is.null(spp[[curSp()]]$project$pjEnvs))
     shinyjs::toggleState("dlMess", !is.null(spp[[curSp()]]$project$messVals))
-    shinyjs::toggleState("dlMask", !is.null(spp[[curSp()]]$mask$removePoly))
     shinyjs::toggleState("dlOverlap", !is.null(spp[[curSp()]]$change$overlapRaster))
+    shinyjs::toggleState("dlMask", !is.null(spp[[curSp()]]$mask$removePoly) |
+                           !is.null(spp[[curSp()]]$mask$tempLog))
     # shinyjs::toggleState("dlWhatever", !is.null(spp[[curSp()]]$whatever))
   })
 
@@ -1177,6 +1178,11 @@ function(input, output, session) {
       }
     }
   )
+
+  selTempRaster <- reactive(input$selTempRaster)
+  selTempMask <- reactive(input$selTempMask)
+  sliderTemp <- reactive(input$sliderTemp)
+
   ########################################### #
   ### COMPONENT: CHANGERRR DIVERSITY ####
   ########################################### #
@@ -1589,6 +1595,9 @@ function(input, output, session) {
     bgMask = bgMask,
     bgShpXY = bgShpXY,
     selCatEnvs = selCatEnvs,
+    selTempRaster = selTempRaster,
+    selTempMask = selTempMask,
+    sliderTemp = sliderTemp,
     evalOut = evalOut,
     mapPred = mapPred,
     mapProj = mapProj,
