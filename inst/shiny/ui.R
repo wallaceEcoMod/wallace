@@ -550,6 +550,20 @@ tagList(
                 )
               ),
               conditionalPanel(
+                "input.tabs == 'change'",
+                br(),
+                fluidRow(
+                  column(3, h5("Download mapped cropped to overlap areas")),
+                  column(2, selectInput('OverlapFileType',
+                                        label = NULL,
+                                        choices = list("GeoTIFF" = 'GTiff',
+                                                       "GRD" = 'raster',
+                                                       "ASCII" = 'ascii',
+                                                       "PNG" = 'png'))),
+                  column(2, shinyjs::disabled(downloadButton('dlOverlap', "Overlap file")))
+                )
+              ),
+              conditionalPanel(
                 "input.tabs == 'alpha'",
                 br(),
                 fluidRow(

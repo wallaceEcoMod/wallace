@@ -157,6 +157,7 @@ function(input, output, session) {
     shinyjs::toggleState("dlProjEnvs", !is.null(spp[[curSp()]]$project$pjEnvsDl))
     shinyjs::toggleState("dlProj", !is.null(spp[[curSp()]]$project$pjEnvs))
     shinyjs::toggleState("dlMess", !is.null(spp[[curSp()]]$project$messVals))
+    shinyjs::toggleState("dlOverlap", !is.null(spp[[curSp()]]$change$overlapRaster))
     shinyjs::toggleState("dlMask", !is.null(spp[[curSp()]]$mask$removePoly) |
                            !is.null(spp[[curSp()]]$mask$tempLog))
     # shinyjs::toggleState("dlWhatever", !is.null(spp[[curSp()]]$whatever))
@@ -1182,6 +1183,83 @@ function(input, output, session) {
   selTempMask <- reactive(input$selTempMask)
   sliderTemp <- reactive(input$sliderTemp)
 
+  ########################################### #
+  ### COMPONENT: CHANGERRR DIVERSITY ####
+  ########################################### #
+
+  # download richness map
+  output$dlOverlap <- downloadHandler(
+    filename = function() {
+      ext <- switch(input$OverlapFileType, raster = 'zip', ascii = 'asc',
+                    GTiff = 'tif', png = 'png')
+
+      paste0( "Overlap", '.', ext)
+
+    },
+    content = function(file) {
+      if(require(rgdal)) {
+        if (input$OverlapFileType == 'png') {
+          if (!webshot::is_phantomjs_installed()) {
+            logger %>%
+              writeLog(type = "error", "To download PNG prediction, you need to",
+                       " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
+                       " in your R console. ")
+          }
+          Overlap <-  spp[[curSp()]]$change$overlapRaster
+          raster::crs(Overlap) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
+          OverlapVals <- spp[[curSp()]]$change$overlapvalues
+          rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+          legendPal <- colorNumeric(rev(rasCols), OverlapVals, na.color = 'transparent')
+          rasPal <- colorNumeric(rasCols, OverlapVals, na.color = 'transparent')
+          # Create legend
+
+          if (length(unique(OverlapVals)) == 3 |
+              length(unique(OverlapVals)) == 2) {
+            m <- leaflet() %>%
+              addLegend("bottomright", colors = c('gray', 'red'),
+                        title = "Range Overlap",
+                        labels = c("Presence", "Absence"),
+                        opacity = 1, layerId = 'expert') %>%
+              addProviderTiles(input$bmap) %>%
+              addRasterImage(userRaster, colors = c('gray', 'red'),
+                             opacity = 0.7, group = 'change', layerId = 'Overlap',
+                             method = "ngb")
+            mapview::mapshot(m, file = file)
+          } else {
+            # if threshold specified
+            legendPal <- colorNumeric(rev(rasCols), OverlapVals, na.color = 'transparent')
+            rasPal <- colorNumeric(rasCols, OverlapVals, na.color = 'transparent')
+            m <- leaflet() %>%
+              addLegend("bottomright", pal = legendPal, title = "Range Overlap",
+                        values = OverlapVals, layerId = "overlap",
+                        labFormat = reverseLabels(2, reverse_order=TRUE)) %>%
+              addProviderTiles(input$bmap) %>%
+              addRasterImage(Overlap, colors = rasPal,
+                             opacity = 0.7, group = 'change', layerId = 'Overlap',
+                             method = "ngb")
+            mapview::mapshot(m, file = file)
+          }
+
+
+        } else if (input$OverlapFileType == 'raster') {
+          fileName <-  "Overlap"
+          tmpdir <- tempdir()
+          raster::writeRaster( spp[[curSp()]]$change$overlapRaster, file.path(tmpdir, fileName),
+                               format = input$OverlapFileType, overwrite = TRUE)
+          owd <- setwd(tmpdir)
+          fs <- paste0(fileName, c('.grd', '.gri'))
+          zip::zipr(zipfile = file, files = fs)
+          setwd(owd)
+        } else {
+          r <- raster::writeRaster(spp[[curSp()]]$change$overlapRaster, file, format = input$OverlapFileType,
+                                   overwrite = TRUE)
+          file.rename(r@file@name, file)
+        }
+      } else {
+        logger %>% writeLog("Please install the rgdal package before downloading rasters.")
+      }
+    }
+  )
   ########################################### #
   ### COMPONENT: ALPHA DIVERSITY ####
   ########################################### #
