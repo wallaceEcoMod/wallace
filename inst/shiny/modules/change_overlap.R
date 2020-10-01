@@ -186,7 +186,7 @@ change_overlap_module_server <- function(input, output, session, common) {
         message = "Calculating range overlap ", {
       r = spp[[curSp()]]$postProc$prediction
       shp = spp[[curSp()]]$change$polyOverlap
-      raster::crs(shp) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
+      raster::crs(shp) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
       raster::crs(r) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
       ratio.Overlap <- changeRangeR::ratioOverlap(r = r , shp =  shp,field = spp[[curSp()]]$change$ShpField, category = "All")
         })
@@ -257,7 +257,7 @@ change_overlap_module_map <- function(map, common) {
                 title = "Range Overlap",
                 labels = c("Presence", "Absence"),
                 opacity = 1, layerId = 'expert') %>%
-      addRasterImage(userRaster, colors = c('gray', 'red'),
+      addRasterImage(Overlap, colors = c('gray', 'red'),
                      opacity = 0.7, group = 'change', layerId = 'Overlap',
                      method = "ngb")
   } else {
