@@ -56,6 +56,7 @@ base_module_configs <- c(
   "modules/proj_mess.yml",
   "modules/post_userSDM.yml",
   "modules/mask_expPoly.yml",
+  "modules/mask_temp.yml",
   "modules/change_range.yml",
   "modules/change_overlap.yml",
   "modules/alpha_richness.yml",

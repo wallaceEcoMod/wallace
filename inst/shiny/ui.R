@@ -14,15 +14,15 @@ tagList(
     header = tagList(
       tags$head(tags$link(href = "css/styles.css", rel = "stylesheet"))
     ),
-    title = glue::glue('#WallaceEcoMod'),
+    title = glue::glue('#'),
     tabPanel("Intro", value = 'intro'),
     tabPanel("Occ Data", value = 'occs'),
     tabPanel("Env Data", value = 'envs'),
-    tabPanel("Process Occs", value = 'poccs'),
-    tabPanel("Process Envs", value = 'penvs'),
+    tabPanel("Proc Occs", value = 'poccs'),
+    tabPanel("Procs Envs", value = 'penvs'),
     # tabPanel("Sampling", value='samp'),
     tabPanel("Env Space", value = 'espace'),
-    tabPanel("Partition Occs", value = 'part'),
+    tabPanel("Part Occs", value = 'part'),
     tabPanel("Model", value = 'model'),
     tabPanel("Visualize", value = 'vis'),
     tabPanel("Project", value = 'proj'),
@@ -533,6 +533,20 @@ tagList(
                 br(),
                 fluidRow(
                   column(3, h5("No available data for downloading."))
+                )
+              ),
+              conditionalPanel(
+                "input.tabs == 'mask'",
+                br(),
+                fluidRow(
+                  column(3, h5("Download Masked prediction (Select download file type**)")),
+                  column(2, selectInput('maskFileType',
+                                        label = NULL,
+                                        choices = list("GeoTIFF" = 'GTiff',
+                                                       "GRD" = 'raster',
+                                                       "ASCII" = 'ascii',
+                                                       "PNG" = 'png'))),
+                  column(2, shinyjs::disabled(downloadButton('dlMask', "Mask file(**)")))
                 )
               ),
               conditionalPanel(

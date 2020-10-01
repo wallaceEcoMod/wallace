@@ -8,6 +8,7 @@
 #' @param polyAddRem x
 #' @param prediction x
 #' @param rem x
+#' @param bgExt x
 #' @param logger x
 #' @param spN Character. Used to obtain species name for logger messages
 # @keywords
@@ -28,7 +29,7 @@
 #' @export
 #'
 
-mask_expPoly <- function(polyMask, prediction, rem = FALSE,
+mask_expPoly <- function(polyMask, prediction, bgExt, rem = FALSE,
                          logger = NULL) {
   ## Add shiny logs
   if (rem == FALSE) {
@@ -36,7 +37,7 @@ mask_expPoly <- function(polyMask, prediction, rem = FALSE,
     addRaster[is.na(addRaster)] <- 0
     newPred <- prediction + addRaster
     newPred[newPred > 1] <- 1
-    return(newPred)
+    extPoly <- bgExt
   } else {
     remRaster <- raster::rasterize(polyMask, prediction, 1)
     remRaster[is.na(remRaster)] <- 0
@@ -44,10 +45,16 @@ mask_expPoly <- function(polyMask, prediction, rem = FALSE,
     if (length(unique(rastValues)) == 3 | length(unique(rastValues)) == 2) {
       newPred <- prediction - remRaster
       newPred[newPred < 0] <- 0
+      extPoly <- bgExt
     } else {
-      newPred <- prediction - remRaster
-      newPred[newPred < 0] <- NA
+      smartProgress(logger, message = "Removing area..", {
+        newPred <- prediction - remRaster
+        newPred[newPred < 0] <- NA
+        e <- newPred > -Inf
+        extPoly <- raster::rasterToPolygons(e, dissolve = TRUE)
+      })
     }
-    return(newPred)
   }
+
+  return(list(pred = newPred, ext = extPoly))
 }

@@ -203,12 +203,12 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
 }
 
 vis_mapPreds_module_map <- function(map, common) {
-
-  spp <- common$spp
   curSp <- common$curSp
+  spp <- common$spp
+  req(spp[[curSp()]]$occs)
+  occs <- common$occs
   mapPred <- common$mapPred
   rmm <- common$rmm
-  occs <- common$occs
   bgShpXY <- common$bgShpXY
 
   # Map logic

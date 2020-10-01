@@ -119,8 +119,9 @@ occs_queryDb_module_server <- function(input, output, session, common) {
 }
 
 occs_queryDb_module_map <- function(map, common) {
-  spp <- common$spp
   curSp <- common$curSp
+  spp <- common$spp
+  req(spp[[curSp()]]$occs)
   occs <- spp[[curSp()]]$occData$occsCleaned
   map %>% clearAll() %>%
     addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude,

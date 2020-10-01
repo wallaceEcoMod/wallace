@@ -285,6 +285,7 @@ proj_user_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$project$pjEnvs <- projExt
     spp[[curSp()]]$project$mapProj <- projUserThr
     spp[[curSp()]]$project$mapProjVals <- getRasterVals(projUserThr, predType)
+    spp[[curSp()]]$postProc$prediction <- projUserThr
 
     # METADATA ####
     spp[[curSp()]]$rmm$code$wallace$project_curModel <- curModel()
@@ -343,10 +344,11 @@ proj_user_module_server <- function(input, output, session, common) {
 }
 
 proj_user_module_map <- function(map, common) {
-
-  spp <- common$spp
-  evalOut <- common$evalOut
   curSp <- common$curSp
+  spp <- common$spp
+  req(spp[[curSp()]]$occs)
+  occs <- common$occs
+  evalOut <- common$evalOut
   rmm <- common$rmm
   mapProj <- common$mapProj
 

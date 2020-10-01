@@ -4,10 +4,12 @@
 \alias{mask_expPoly}
 \title{mask_expPoly}
 \usage{
-mask_expPoly(polyMask, prediction, rem = FALSE, logger = NULL)
+mask_expPoly(polyMask, prediction, bgExt, rem = FALSE, logger = NULL)
 }
 \arguments{
 \item{prediction}{x}
+
+\item{bgExt}{x}
 
 \item{rem}{x}
 
