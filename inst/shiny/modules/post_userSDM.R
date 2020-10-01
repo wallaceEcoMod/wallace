@@ -108,7 +108,7 @@ post_userSDM_module_map <- function(map, common) {
 post_userSDM_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    # post_userSDM_knit = species$rmm$code$wallace$someFlag,
+    post_userSDM_knit = FALSE
     # var1 = species$rmm$code$wallace$someSetting1,
     # var2 = species$rmm$code$wallace$someSetting2
   )

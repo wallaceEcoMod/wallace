@@ -39,7 +39,7 @@ mask_expPoly_module_server <- function(input, output, session, common) {
     if (is.null(spp[[curSp()]]$postProc$prediction)) {
       logger %>% writeLog(
         type = 'error', hlSpp(curSp()),
-        'Calculate a model prediction in model component before projecting.')
+        'Calculate/Upload a model prediction(**)')
       return()
     }
     if (input$polyExpSel == 'expDraw') {
@@ -267,7 +267,7 @@ mask_expPoly_module_map <- function(map, common) {
 mask_expPoly_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    # mask_expPoly_knit = species$rmm$code$wallace$someFlag,
+    mask_expPoly_knit = FALSE
     # var1 = species$rmm$code$wallace$someSetting1,
     # var2 = species$rmm$code$wallace$someSetting2
   )
