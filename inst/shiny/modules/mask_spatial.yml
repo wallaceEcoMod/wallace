@@ -1,0 +1,5 @@
+component: "mask"
+short_name: "Mask by Shapefile"
+long_name: "Mask by Spatial Data"
+authors: "Gonzalo E. Pinilla-Buitrago (**)"
+package: [sp]
