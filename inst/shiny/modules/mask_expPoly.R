@@ -194,9 +194,6 @@ mask_expPoly_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$procEnvs$bgExt <- expertRast$ext
 
   })
-  output$result <- renderText({
-    # Result
-  })
 
   return(list(
     save = function() {

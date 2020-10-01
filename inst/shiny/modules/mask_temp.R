@@ -9,12 +9,12 @@ mask_temp_module_ui <- function(id) {
     actionButton(ns("goTempRasters"), "Load (**)", class = "tempRast"), br(),
     tags$hr(),
     span("Step 2:", class = "step"),
-    span("Land Cover Mask (**)", class = "stepText"), br(),
+    span("Bounds (**)", class = "stepText"), br(),
     uiOutput(ns("curTempRastersUI")),
     textInput(ns("yearInput"),
               label = paste0("Type the years to be used for extracting ",
                              "environmental data, separated by commas")),
-    actionButton(ns('goProjectArea'), "Project")
+    actionButton(ns('goAnnotate'), "Get Bounds")
   )
 }
 
@@ -23,7 +23,8 @@ mask_temp_module_server <- function(input, output, session, common) {
   spp <- common$spp
   curSp <- common$curSp
   logger <- common$logger
-
+  occs <- common$occs
+  selTempRaster <- common$selTempRaster
 
   observeEvent(input$goTempRasters, {
     curSp <- common$curSp
@@ -44,6 +45,7 @@ mask_temp_module_server <- function(input, output, session, common) {
 
     # LOAD INTO SPP ####
     spp[[curSp()]]$postProc$rasters <- ppRasters
+    print(spp[[curSp()]]$postProc$rasters)
   })
 
   output$curTempRastersUI <- renderUI({
@@ -61,18 +63,55 @@ mask_temp_module_server <- function(input, output, session, common) {
                               selected = ppRastersNameList)
   })
 
-  observeEvent(input$run, {
-    # WARNING ####
+  observeEvent(input$goAnnotate, {
+    if (is.null(occs())) {
+      logger %>% writeLog(type = 'error', hlSpp(curSp()), "Upload occs (**).")
+      return()
+    }
+    if (is.null(spp[[curSp()]]$postProc$prediction)) {
+      logger %>% writeLog(type = 'error', hlSpp(curSp()), "Upload SDM prediction (**).")
+      return()
+    }
+    if (is.null(spp[[curSp()]]$postProc$rasters)) {
+      logger %>% writeLog(type = 'error', hlSpp(curSp()), "Raster files not uploaded.")
+      return()
+    }
+    # Prepare rasters
+    env <- raster::stack(spp[[curSp()]]$postProc$rasters[[selTempRaster()]])
+    # crop climate data to study region
+    env <- raster::crop(env, spp[[curSp()]]$postProc$prediction)
+    # Prepare year vector
+    dates <- trimws(strsplit(input$yearInput, ",")[[1]])
+    # FUNCTION CALL
 
-    # FUNCTION CALL ####
+    tempExtract <- mask_tempAnnotate(occs = occs(),
+                                     env = env,
+                                     envDates = dates,
+                                     logger)
+
+    logger %>% writeLog(hlSpp(curSp()), "Values were extracted (**)")
+
+    # # subset by key columns and make id and popup columns
+    # cols <- c("occID", "scientific_name", "longitude", "latitude", "year",
+    #           "extractedValue", "country", "state_province", "locality", "record_type",
+    #           "catalog_number", "institution_code", "elevation", "uncertainty",
+    #           "pop")
+    # occsEnvs <- occs()
+    # if (!('extractedValue' %in% names(occsEnvs))) {
+    #   occsEnvs <- cbind.data.frame(occsEnvs, extractedValue = tempExtract)
+    #   occsEnvs <- occsEnvs[, cols]
+    # } else {
+    #   occsEnvs[, 'extractedValue'] <- tempExtract
+    # }
 
     # LOAD INTO SPP ####
-
-    # METADATA ####
+    spp[[curSp()]]$mask$bounds <- as.data.frame(bounds)
+    common$update_component(tab = "Results")
   })
 
-  output$result <- renderText({
-    # Result
+  output$boundsPrint <- renderPrint({
+    req(curSp(), spp[[curSp()]]$mask$bounds)
+    spp[[curSp()]]$mask$bounds
   })
 
   return(list(
@@ -88,9 +127,8 @@ mask_temp_module_server <- function(input, output, session, common) {
 
 mask_temp_module_result <- function(id) {
   ns <- NS(id)
-
   # Result UI
-  verbatimTextOutput(ns("result"))
+  verbatimTextOutput(ns("boundsPrint"))
 }
 
 mask_temp_module_map <- function(map, common) {

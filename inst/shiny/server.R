@@ -1176,6 +1176,9 @@ function(input, output, session) {
       }
     }
   )
+
+  selTempRaster <- reactive(input$selTempRaster)
+
   ########################################### #
   ### COMPONENT: ALPHA DIVERSITY ####
   ########################################### #
@@ -1511,6 +1514,7 @@ function(input, output, session) {
     bgMask = bgMask,
     bgShpXY = bgShpXY,
     selCatEnvs = selCatEnvs,
+    selTempRaster = selTempRaster,
     evalOut = evalOut,
     mapPred = mapPred,
     mapProj = mapProj,
