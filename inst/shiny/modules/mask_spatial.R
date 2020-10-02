@@ -94,6 +94,8 @@ mask_spatial_module_server <- function(input, output, session, common) {
     maskPred <- raster::mask(maskPred, dissPoly)
     e <- maskPred > -Inf
     bgExt <- raster::rasterToPolygons(e, dissolve = TRUE)
+    raster::crs(bgExt) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+    raster::crs(maskPred) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
 
     # LOAD INTO SPP ####
     spp[[curSp()]]$postProc$prediction <- maskPred
@@ -136,7 +138,8 @@ mask_spatial_module_map <- function(map, common) {
   maskFields <- common$maskFields
   maskAttribute <- common$maskAttribute
 
-  req(spp[[curSp()]]$mask$spatialMask, maskFields(), maskAttribute())
+  req(spp[[curSp()]]$mask$spatialMask)
+  req(maskFields(), maskAttribute())
   # Plot Polygon
   spatialMask <- spp[[curSp()]]$mask$spatialMask
   selAtt <- subset(spatialMask,
