@@ -4,10 +4,10 @@
 \alias{occs_biomodelos}
 \title{`occs_biomodelos` query biomodelos database}
 \usage{
-occs_biomodelos(spName, bioKey, logger = NULL)
+occs_biomodelos(spN, bioKey, logger = NULL)
 }
 \arguments{
-\item{spName}{character species name. For biomodelos it returns records associated with the specified taxonomic name, including any synonyms.}
+\item{spN}{character species name. For biomodelos it returns records associated with the specified taxonomic name, including any synonyms.}
 
 \item{bioKey}{character. Key to access biomodelos API}
 

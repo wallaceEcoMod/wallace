@@ -55,6 +55,7 @@ base_module_configs <- c(
   "modules/proj_user.yml",
   "modules/proj_mess.yml",
   "modules/post_userSDM.yml",
+  "modules/mask_spatial.yml",
   "modules/mask_expPoly.yml",
   "modules/mask_temp.yml",
   "modules/change_range.yml",

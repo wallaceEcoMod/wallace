@@ -10,7 +10,7 @@ mask_tempExtract(
   maskRaster,
   pred,
   logger = NULL,
-  spN = curSp()
+  spN = NULL
 )
 }
 \arguments{

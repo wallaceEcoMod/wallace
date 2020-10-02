@@ -1,6 +1,8 @@
 rep_biomodelos_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
+    uiOutput(ns("bioSpUI")),
+    passwordInput(ns("keyPost"), label = "Enter API Key", value = ""),
     textInput(ns("userBio"), "User biomodelos e-mail", value = NULL),
     selectInput(ns("selLicense"),
                 label = "CC License",
@@ -18,61 +20,85 @@ rep_biomodelos_module_ui <- function(id) {
 rep_biomodelos_module_server <- function(input, output, session, common) {
 
   spp <- common$spp
-  curSp <- common$curSp
+  bioSp <- common$bioSp
+
+  output$bioSpUI <- renderUI({
+    # check that a species is in the list already -- if not, don't proceed
+    req(length(reactiveValuesToList(spp)) > 0)
+    # get the species names
+    n <- names(spp)[order(names(spp))]
+    # remove multispecies names from list
+    n <- n[!grepl(".", n, fixed = TRUE)]
+    sppNameList <- c(list("Current species" = ""), setNames(as.list(n), n))
+    # generate a selectInput ui that lists the available species
+    selectizeInput('bioSp', label = "Select species" , choices = sppNameList,
+                   multiple = TRUE, selected = bioSp(), options = list(maxItems = 1))
+  })
 
   observeEvent(input$pushBiomod, {
+    if (spp[[bioSp()]]$rmm$data$occurrence$sources != "Biomodelos") {
+      shinyalert::shinyalert(
+        "You must submit a model built with occurrences from biomodelos (**)",
+        type = "error")
+      return()
+    }
+    if (is.null(spp[[bioSp()]]$biomodelos$prediction)) {
+      shinyalert::shinyalert(
+        "You need a map prediction before pushing to biomodelos (**).",
+        type = "error")
+      return()
+    }
+
     URL <- 'https://api-biomodelos.humboldt.org.co/v2/models'
 
-    biomodelos <- list(
-      taxID = spp[[curSp()]]$rmm$code$wallace$biomodelosTaxID,
-      biomodelos_user = input$userBio,
-      cc_license = input$selLicense,
-      atlas_agreement = FALSE,
-      model = 'attachment'
-    )
 
     manifest <- list(
-      edited_occurrences = paste0(curSp(), '_processed_occs.csv'),
-      raster_model_prediction = paste0(curSp(), '_pred.tif'),
-      # raster_model_continuous = paste0(curSp(), '_cloglog.tif'),
-      # raster_model_thresholded = paste0(curSp(), '_mtp.tif'),
-      shape_file_mask = paste0(curSp(), '_projectionExtentShp.zip'),
-      model_metadata = paste0(curSp(), '_metadata.csv'),
-      wallace_session = paste0(curSp(), '_session.Rmd')
+      edited_occurrences = paste0(bioSp(), '_processed_occs.csv'),
+      raster_model_prediction = paste0(bioSp(), '_pred.tif'),
+      # raster_model_continuous = paste0(bioSp(), '_cloglog.tif'),
+      raster_model_threshold = paste0(bioSp(), '_thr.csv'),
+      shape_file_mask = paste0(bioSp(), '_projectionExtentShp.zip'),
+      model_metadata = paste0(bioSp(), '_metadata.csv'),
+      wallace_session = paste0(bioSp(), '_session.Rmd')
     )
 
     ### Create files
     tmpdir <- tempdir()
     # Create occs
     # add req occs
-    tmpOccs <- file.path(tmpdir, paste0(curSp(), '_processed_occs.csv'))
-    write.csv(spp[[curSp()]]$occs, tmpOccs, row.names = FALSE)
+    tmpOccs <- file.path(tmpdir, paste0(bioSp(), '_processed_occs.csv'))
+    write.csv(spp[[bioSp()]]$occs, tmpOccs, row.names = FALSE)
 
     # Create mapPrediction
     # add req pred
-    tmpPred <- file.path(tmpdir, paste0(curSp(), '_pred.tif'))
-    raster::writeRaster(spp[[curSp()]]$visualization$mapPred, tmpPred,
+    tmpPred <- file.path(tmpdir, paste0(bioSp(), '_pred.tif'))
+    raster::writeRaster(spp[[bioSp()]]$biomodelos$prediction, tmpPred,
                         overwrite = TRUE)
+
+    # Create thr
+    # add req occs
+    tmpThrs <- file.path(tmpdir, paste0(bioSp(), '_thr.csv'))
+    write.csv(spp[[bioSp()]]$biomodelos$thrs, tmpThrs, row.names = FALSE)
 
     # Create extent shapefile
     # add req ext
-    tmpExt <- file.path(tmpdir, paste0(curSp(), '_projectionExtentShp.zip'))
-    rgdal::writeOGR(obj = spp[[curSp()]]$procEnvs$bgExt,
+    tmpExt <- file.path(tmpdir, paste0(bioSp(), '_projectionExtentShp.zip'))
+    rgdal::writeOGR(obj = spp[[bioSp()]]$procEnvs$bgExt,
                     dsn = tmpdir,
-                    layer = paste0(curSp(), '_bgShp'),
+                    layer = paste0(bioSp(), '_bgShp'),
                     driver = "ESRI Shapefile",
                     overwrite_layer = TRUE)
     exts <- c('dbf', 'shp', 'shx')
-    fsExt <- file.path(tmpdir, paste0(curSp(), '_bgShp.', exts))
+    fsExt <- file.path(tmpdir, paste0(bioSp(), '_bgShp.', exts))
     zip::zipr(zipfile = tmpExt, files = fsExt)
 
     # Create extent shapefile
     # add req metadata
-    tmpRMM <- file.path(tmpdir, paste0(curSp(), '_metadata.csv'))
-    rangeModelMetadata::rmmToCSV(spp[[curSp()]]$rmm, filename = tmpRMM)
+    tmpRMM <- file.path(tmpdir, paste0(bioSp(), '_metadata.csv'))
+    rangeModelMetadata::rmmToCSV(spp[[bioSp()]]$rmm, filename = tmpRMM)
 
     # Create RMD
-    tmpRMD <- file.path(tmpdir, paste0(curSp(), '_session.Rmd'))
+    tmpRMD <- file.path(tmpdir, paste0(bioSp(), '_session.Rmd'))
     md_files <- c()
     md_intro_file <- tempfile(pattern = "intro_", fileext = ".md")
     rmarkdown::render("Rmd/userReport_intro.Rmd",
@@ -82,10 +108,10 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
                       encoding = "UTF-8")
     md_files <- c(md_files, md_intro_file)
     # Abbreviation for one species
-    spAbr <- abbreviate(stringr::str_replace(curSp(), "_", " "), minlength = 2)
-    names(spAbr) <- curSp()
+    spAbr <- abbreviate(stringr::str_replace(bioSp(), "_", " "), minlength = 2)
+    names(spAbr) <- bioSp()
 
-    for (sp in curSp()) {
+    for (sp in bioSp()) {
       species_rmds <- NULL
       for (component in names(COMPONENT_MODULES[names(COMPONENT_MODULES) != c("espace", "rep")])) {
         for (module in COMPONENT_MODULES[[component]]) {
@@ -138,17 +164,33 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
     writeLines(combined_rmd, tmpRMD, useBytes = TRUE)
 
     # Create ZIP file
-    zip::zipr(zipfile = 'C:/Users/Gonzalo/Desktop/data/biomodelos/payload/files.zip',
+    tmpZIP <- file.path(tmpdir, paste0(spp[[bioSp()]]$rmm$code$wallace$biomodelosTaxID, '.zip'))
+    zip::zipr(zipfile = tmpZIP,
               files = c(tmpOccs, tmpPred, tmpExt, tmpRMM, tmpRMD))
 
     PAYLOAD <- list(
-      biomodelos = jsonlite::toJSON(biomodelos, auto_unbox = TRUE),
+      taxID = spp[[bioSp()]]$rmm$code$wallace$biomodelosTaxID,
+      biomodelos_user = input$userBio,
+      cc_license = input$selLicense,
+      atlas_agreement = FALSE,
       manifest = jsonlite::toJSON(manifest, auto_unbox = TRUE),
-      attachment = httr::upload_file('C:/Users/Gonzalo/Desktop/data/biomodelos/files.zip',
+      model = httr::upload_file(tmpZIP,
                                type = "application/zip")
     )
-
-    print(PAYLOAD)
+    response <- content(POST(URL, body = PAYLOAD, encode = "multipart",
+                             add_headers(host = 'api-biomodelos.humboldt.org.co',
+                                         authorization = paste0('apiKey ', input$keyPost))),
+                        as = 'parsed')
+    if (is.null(response)) {
+      shinyalert::shinyalert(
+        "Pushed to Biomodelos (**)",
+        type = "success")
+    } else if (response == "Unauthorized") {
+      shinyalert::shinyalert(
+        "API key is not working.",
+        type = "error")
+      return()
+    }
   })
 }
 

@@ -7,7 +7,7 @@
 #' species occurrence records. It removes records with duplicate coordinates, and select some columns with fields
 #' appropriate to studies in biogeography.
 #'
-#' @param spName character species name. For biomodelos it returns records associated with the specified taxonomic name, including any synonyms.
+#' @param spN character species name. For biomodelos it returns records associated with the specified taxonomic name, including any synonyms.
 #' @param bioKey character. Key to access biomodelos API
 #' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
@@ -19,19 +19,20 @@
 #' @author Peter Ersts?
 #' @export
 
-occs_biomodelos <- function(spName, bioKey, logger = NULL) {
-  spName <- trimws(spName)
+occs_biomodelos <- function(spN, bioKey, logger = NULL) {
+  spN <- trimws(spN)
   # figure out how many separate names (components of scientific name) were entered
-  nameSplit <- length(unlist(strsplit(spName, " ")))
+  nameSplit <- length(unlist(strsplit(spN, " ")))
   # if two names not entered, throw error and return
   if (nameSplit != 2) {
     logger %>% writeLog(type = 'error',
       'Please input both genus and species names of ONE species. (**)')
     return()
   }
-  spName <- paste0(toupper(substring(spName, 1, 1)),
-                   substring(spName, 2, nchar(spName)))
-  bioName <- gsub(pattern = " ", replacement = "%20", x = spName)
+  spN <- paste0(toupper(substring(spN, 1, 1)),
+                   substring(spN, 2, nchar(spN)))
+  bioName <- gsub(pattern = " ", replacement = "%20", x = spN)
+  spN <- gsub(pattern = " ", replacement = "_", x = spN)
   urlSearch <- paste0('https://api-biomodelos.humboldt.org.co/v2/species/search/',
                       bioName)
   respSearch <- httr::GET(urlSearch,
@@ -42,7 +43,7 @@ occs_biomodelos <- function(spName, bioKey, logger = NULL) {
   if (length(jsonSearch) == 0) {
     logger %>% writeLog(
       type = 'error',
-      hlSpp(spName), "Species name not found, please check the spelling")
+      hlSpp(spN), "Species name not found, please check the spelling")
     return()
   }
 
@@ -66,7 +67,7 @@ occs_biomodelos <- function(spName, bioKey, logger = NULL) {
   if (nrow(geo) == 0) {
     logger %>% writeLog(
       type = 'error',
-      hlSpp(spName), "Species without records on Biomodelos")
+      hlSpp(spN), "Species without records on Biomodelos")
     return()
   }
 
@@ -112,7 +113,7 @@ occs_biomodelos <- function(spName, bioKey, logger = NULL) {
   dupsRem <- nrow(occsXY) - nrow(occs)
 
   logger %>% writeLog(
-    hlSpp(spName), 'Total biomodelos records returned [', nrow(occsOrig),
+    hlSpp(spN), 'Total biomodelos records returned [', nrow(occsOrig),
     ']. Records without coordinates removed [',
     noCoordsRem, ']. Duplicated records removed [', dupsRem,
     ']. Remaining records [', nrow(occs), '].')

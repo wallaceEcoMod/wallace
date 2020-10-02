@@ -11,9 +11,11 @@ mask_temp_module_ui <- function(id) {
     span("Step 2:", class = "step"),
     span("Bounds (**)", class = "stepText"), br(),
     uiOutput(ns("curTempRastersUI")),
-    textInput(ns("yearInput"),
-              label = paste0("Type the years to be used for extracting ",
-                             "environmental data, separated by commas")),
+    shinyWidgets::pickerInput(ns("yearInput"),
+                              label = "Select years",
+                              choices = setNames(as.list(2001:2019), 2001:2019),
+                              multiple = TRUE,
+                              selected = setNames(as.list(2001:2019), 2001:2019)),
     actionButton(ns('goAnnotate'), "Get Bounds (**)"), br(),
     tags$hr(),
     span("Step 3:", class = "step"),
@@ -89,12 +91,11 @@ mask_temp_module_server <- function(input, output, session, common) {
     # crop climate data to study region
     env <- raster::crop(env, spp[[curSp()]]$postProc$prediction)
     # Prepare year vector
-    dates <- trimws(strsplit(input$yearInput, ",")[[1]])
     # FUNCTION CALL
 
     tempExtract <- mask_tempAnnotate(occs = occs(),
                                      env = env,
-                                     envDates = dates,
+                                     envDates = input$yearInput,
                                      logger)
 
     logger %>% writeLog(hlSpp(curSp()), "Values were extracted (**)")
@@ -233,9 +234,9 @@ mask_temp_module_map <- function(map, common) {
 mask_temp_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    mask_temp_knit = species$rmm$code$wallace$someFlag,
-    var1 = species$rmm$code$wallace$someSetting1,
-    var2 = species$rmm$code$wallace$someSetting2
+    mask_temp_knit = FALSE
+    # var1 = species$rmm$code$wallace$someSetting1,
+    # var2 = species$rmm$code$wallace$someSetting2
   )
 }
 
