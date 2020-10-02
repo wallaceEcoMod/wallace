@@ -1224,7 +1224,7 @@ function(input, output, session) {
                         labels = c("Presence", "Absence"),
                         opacity = 1, layerId = 'expert') %>%
               addProviderTiles(input$bmap) %>%
-              addRasterImage(userRaster, colors = c('gray', 'red'),
+              addRasterImage(Overlap, colors = c('gray', 'red'),
                              opacity = 0.7, group = 'change', layerId = 'Overlap',
                              method = "ngb")
             mapview::mapshot(m, file = file)
