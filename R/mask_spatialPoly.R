@@ -65,7 +65,7 @@ mask_spatialPoly <- function(bgShp_path, bgShp_name, bgExt,
   }
 
   smartProgress(logger, message = "Uploading spatial data ...", {
-    spatialPoly <- rgeos::gIntersection(polyData, bgExt)
+    spatialPoly <- raster::intersect(polyData, bgExt)
   })
   return(spatialPoly)
 }

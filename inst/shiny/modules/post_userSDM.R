@@ -65,7 +65,7 @@ post_userSDM_module_map <- function(map, common) {
   bgShpXY <- common$bgShpXY
 
   # Map logic
-  req(spp[[curSp()]]$postProc$prediction, spp[[curSp()]]$procEnvs$bgExt)
+  req(spp[[curSp()]]$postProc$OrigPred, spp[[curSp()]]$procEnvs$bgExt)
   # Zoom
   userRaster <- spp[[curSp()]]$postProc$prediction
   userValues <- raster::values(userRaster)
