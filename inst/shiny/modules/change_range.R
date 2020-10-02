@@ -258,9 +258,10 @@ change_range_module_server <- function(input, output, session, common) {
         logger %>% writeLog( "Calculated an AOO estimate based on an SDM and occurrences. This is an approximation based on unprojected coordinates")
 
         # LOAD INTO SPP ####
-        spp[[curSp()]]$rmm$data$change$AOOval <- AOOlocs
+
+        spp[[curSp()]]$rmm$data$change$AOOval <- AOOlocs$area
         spp[[curSp()]]$rmm$data$change$AOOtype <- input$selSource2
-        #spp[[curSp()]]$rmm$data$change$AOO <- aoo #Here the map but I don t have it
+        spp[[curSp()]]$rmm$data$change$AOO <- AOOlocs$aooRaster
         common$update_component(tab = "Results")
       }
       else if (input$selSource2 =="sdm"){
@@ -284,9 +285,9 @@ change_range_module_server <- function(input, output, session, common) {
         logger %>% writeLog( "Calculated an AOO estimate based on an SDM. This is an approximation based on unprojected coordinates")
 
         # LOAD INTO SPP ####
-        spp[[curSp()]]$rmm$data$change$AOOval <- AOO
+        spp[[curSp()]]$rmm$data$change$AOOval <- AOO$area
         spp[[curSp()]]$rmm$data$change$AOOtype <- input$selSource2
-        #spp[[curSp()]]$rmm$data$change$AOO <- aoo #Here the map but I don t have it
+        spp[[curSp()]]$rmm$data$change$AOO <- AOO$aooRaster
         common$update_component(tab = "Results")
       }
       else if (input$selSource2 =="mask"){
@@ -306,9 +307,9 @@ change_range_module_server <- function(input, output, session, common) {
         logger %>% writeLog( "Calculated an AOO estimate based on a masked SDM. This is an approximation based on unprojected coordinates")
 
         # LOAD INTO SPP ####
-        spp[[curSp()]]$rmm$data$change$AOOval <- AOO
+        spp[[curSp()]]$rmm$data$change$AOOval <- AOO$area
         spp[[curSp()]]$rmm$data$change$AOOtype <- input$selSource2
-        #spp[[curSp()]]$rmm$data$change$AOO <- aoo #Here the map but I don t have it
+        spp[[curSp()]]$rmm$data$change$AOO <- AOO$aooRaster
         common$update_component(tab = "Results")
       }
     }
@@ -401,23 +402,17 @@ map %>%
   }
 }
   if(!is.null(spp[[curSp()]]$rmm$data$change$AOO)){
-    polyAOO <- spp[[curSp()]]$rmm$data$change$AOO@polygons[[1]]@Polygons
-    map %%
+    AOOras <- spp[[curSp()]]$rmm$data$change$AOO
+    map %>%
       ##Add legend
-      addLegend("bottomright", colors = "red",
-                title = "AOO", labels = "AOO",
-                opacity = 1)
+      addLegend("bottomright", colors = c('gray', 'red'),
+                title = "AOO",
+                labels = c("Presence", "Absence"),
+                opacity = 1, layerId = 'expert') %>%
     ##ADD polygon
-    if (length(polyAOO) == 1) {
-      xy <- list(polyAOO[[1]]@coords)
-    } else {
-      xy <- lapply(polyAOO, function(x) x@coords)
-    }
-    for (shp in xy) {
-      map %>%
-        addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4, color = "red",
-                    group = 'change')
-    }
+    addRasterImage(AOOras, colors = c('gray', 'red'),
+                   opacity = 0.7, group = 'change', layerId = 'AOO',
+                   method = "ngb")
   }
 
 }
