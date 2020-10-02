@@ -1572,6 +1572,8 @@ function(input, output, session) {
       setwd(owd)
   })
 
+  bioSp <- reactive(input$bioSp)
+
   # Create a data structure that holds variables and functions used by modules
   common = list(
     # Reactive variables to pass on to modules
@@ -1603,6 +1605,7 @@ function(input, output, session) {
     sliderTemp = sliderTemp,
     maskFields = maskFields,
     maskAttribute = maskAttribute,
+    bioSp = bioSp,
     evalOut = evalOut,
     mapPred = mapPred,
     mapProj = mapProj,
