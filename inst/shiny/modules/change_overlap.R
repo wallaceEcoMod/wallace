@@ -2,40 +2,33 @@ change_overlap_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
     span("Step 1:", class = "step"),
+    span("Choose Input raster", class = "stepText"), br(), br(),
+    selectInput(ns("selSource") , label = "Select raster for calculations",
+                choices = list("Wallace SDM" = "wallace",
+                               "Projected SDM" = "proj",
+                               "User SDM" = "sdm",
+                               "Masked SDM" = "masked")),
+
+    actionButton(ns("goInputRaster"), "Select"),
+    tags$hr(),
+    span("Step 2:", class = "step"),
     span("Choose Input Polygon", class = "stepText"), br(), br(),
     fileInput(ns("changeOverlapShp"), label = "Upload  'Upload polygon as shapefile (.shp, .shx, .dbf)",
               accept = c(".dbf", ".shx", ".shp"), multiple = TRUE),
 
-
     actionButton(ns("goInputPoly"), "Load shapefile"),
+
     tags$hr(),
-    span("Step 2:", class = "step"),
+    span("Step 3:", class = "step"),
     span("Choose field of interest", class = "stepText"), br(),
     #Add a conditional panel showing the fields in the shapefile how?
     uiOutput(ns('selFieldui')),
-    actionButton(ns("goSelField"), "Select"),
-    #ADD this to be able to select category
-    tags$hr(),
-    span("Step 3:", class = "step"),
-    span("Choose category of interest", class = "stepText"), br(),
-    #Add a conditional panel showing the fields in the shapefile how?
     uiOutput(ns('selCatdui')),
-    actionButton(ns("goCatField"), "Select"),
+    actionButton(ns("goSelField"), "Overlap")
+    #ADD this to be able to select category
 
 
 
-#ADD this to be able to select field
-tags$hr(),
-span("Step 4:", class = "step"),
-span("Choose Input raster", class = "stepText"), br(), br(),
-selectInput(ns("selSource") , label = "Select raster for calculations",
-            choices = list("Wallace SDM" = "wallace",
-                           "Projected SDM" = "proj",
-                           "User SDM" = "sdm",
-                           "Masked SDM" = "masked")),
-
-##question for mary add option to do range for sdm that comes from maskRangeR or uploaded?
-actionButton(ns("goInputRaster"), "Overlap")
 
   )
 }
@@ -46,10 +39,29 @@ change_overlap_module_server <- function(input, output, session, common) {
   curSp <- common$curSp
   curModel <- common$curModel
   mapProj <- common$mapProj
+  changeField <- common$changeField
+  changeCategory <- common$changeCategory
 
-
+  observeEvent(input$goInputRaster, {
+    if(input$selSource == "wallace"){
+      spp[[curSp()]]$change$Plot <- spp[[curSp()]]$visualization$mapPred
+    }
+    if(input$selSource == "proj"){
+      spp[[curSp()]]$change$Plot <-  spp[[curSp()]]$project$mapProj
+    }
+    if(input$selSource == "sdm"){
+      spp[[curSp()]]$change$Plot <- spp[[curSp()]]$postProc$OrigPred
+    }
+    if(input$selSource == "masked"){
+      spp[[curSp()]]$change$Plot <- spp[[curSp()]]$postProc$prediction
+    }
+  })
  observeEvent(input$goInputPoly, {
-
+   if (is.null(spp[[curSp()]]$postProc$prediction)) {
+     logger %>% writeLog(
+       type = 'error', hlSpp(curSp()), 'Calculate/Upload a model prediction (**)')
+     return()
+   }
    pathdir <- dirname(input$changeOverlapShp$datapath)
    pathfile <- basename(input$changeOverlapShp$datapath)
    # get extensions of all input files
@@ -83,42 +95,51 @@ change_overlap_module_server <- function(input, output, session, common) {
    }
 
     spp[[curSp()]]$change$polyOverlap <- polyOverlap
+
   })
   ###add this if we want to include field selection
 
   output$selFieldui <- renderUI({
-    ns <- session$ns
     #add a conditional on providing a file
+    req(curSp())
     if(!is.null(spp[[curSp()]]$change$polyOverlap)){
    fields <- colnames(spp[[curSp()]]$change$polyOverlap@data)
     }
     else {fields<-c("load shapefile first")}
-    fields <- as.list(c("Select Field" = "", fields))
-   selectInput(ns("selField"), label = "Select field of interest",
-                choices = fields)
+
+  fields <- setNames(as.list(fields), fields)
+    shinyWidgets::pickerInput("selField",
+                              label = "Select field",
+                              choices =   fields ,
+                              multiple = FALSE,
+                              selected =   fields )
   })
-  observeEvent(input$goSelField,{
-    spp[[curSp()]]$change$ShpField <- input$selField
-  })
+
   output$selCatdui <- renderUI({
-    ns <- session$ns
     #add a conditional on providing a file
-    if(!is.null(spp[[curSp()]]$change$polyOverlap)){
-      field <- spp[[curSp()]]$change$ShpField
-      category <- as.character(unique(spp[[curSp()]]$change$polyOverlap@data[,field]))
+    req(curSp(),req(spp[[curSp()]]$change$polyOverlap),req(changeField()))
+    if(!is.null(changeField())){
+      field <- changeField()
+      category <- as.character(unique(spp[[curSp()]]$change$polyOverlap[[field]]))
       category <- c("All",category)
     }
     else {category<-c("load shapefile first")}
-    category <- as.list(c("Select Category" = "", category))
-    selectInput(ns("selCat"), label = "Select category of interest",
-                choices = category)
+    category <- setNames(as.list(category), category)
+    shinyWidgets::pickerInput("selCat",
+                              label = "Select category",
+                              choices = category,
+                              multiple = TRUE,
+                              selected = "All",
+                              options = list(`actions-box` = TRUE))
+
   })
 
 
-  observeEvent(input$goInputRaster,{
-    spp[[curSp()]]$change$ShpCat = input$selCat
+  observeEvent(input$goSelField,{
+    spp[[curSp()]]$change$ShpCat <-   changeCategory()
+    spp[[curSp()]]$change$ShpField <-    changeField()
 
-    category<-input$selCat
+    category<-changeCategory()
     if(input$selSource == "wallace"){
       if (is.null(spp[[curSp()]]$visualization$mapPred)) {
         logger %>%
@@ -138,6 +159,7 @@ change_overlap_module_server <- function(input, output, session, common) {
       req(ratio.Overlap)
       logger %>% writeLog( "Proportion of range area that is contained by landcover categories calculated ")
       # LOAD INTO SPP ####
+
       spp[[curSp()]]$change$overlapRaster <- ratio.Overlap$maskedRange
       spp[[curSp()]]$change$overlapvalue <- ratio.Overlap$ratio
       spp[[curSp()]]$change$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
@@ -154,7 +176,7 @@ change_overlap_module_server <- function(input, output, session, common) {
       smartProgress(
         logger,
         message = "Calculating range overlap ", {
-      r = sspp[[curSp()]]$project$mapProj
+      r = spp[[curSp()]]$project$mapProj
       shp = spp[[curSp()]]$change$polyOverlap
       raster::crs(shp) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
       raster::crs(r) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
@@ -178,6 +200,8 @@ change_overlap_module_server <- function(input, output, session, common) {
                    'Load you model in component User SDM before doing range calculations')
         return()
      }
+
+
       smartProgress(
         logger,
         message = "Calculating range overlap ", {
@@ -191,7 +215,6 @@ change_overlap_module_server <- function(input, output, session, common) {
     # LOAD INTO SPP ####
     req(ratio.Overlap)
     logger %>% writeLog( "Proportion of user provided range area that is contained by landcover categories calculated ")
-
       spp[[curSp()]]$change$overlapRaster <- ratio.Overlap$maskedRange
       spp[[curSp()]]$change$overlapvalue <- ratio.Overlap$ratio
       spp[[curSp()]]$change$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
@@ -207,6 +230,7 @@ change_overlap_module_server <- function(input, output, session, common) {
                    'Do a maskRangeR analysis before doing range calculations')
         return()
       }
+
       smartProgress(
         logger,
         message = "Calculating range overlap ", {
@@ -242,13 +266,16 @@ change_overlap_module_server <- function(input, output, session, common) {
       list(
         changeRangeSel = input$changeRangeSel,
         selSource = input$selSource,
-        selField = input$selField)
+        selField = input$selField,
+        selCat = input$selCat
+      )
     },
     load = function(state) {
       # Load
       updateSelectInput(session, 'changeRangeSel', selected = state$changeRangeSel)
       updateSelectInput(session, ' selSource', selected = state$selSource)
      updateSelectInput(session, ' selField', selected = state$selField)
+     updateSelectInput(session, ' selCat', selected = state$selCat)
     }
   ))
 
@@ -264,8 +291,59 @@ change_overlap_module_map <- function(map, common) {
   # Map logic
  spp <- common$spp
   curSp <- common$curSp
-  #set map parameters
+  #plot SDM to use
+  req(spp[[curSp()]]$change$Plot)
+  sdm <-  spp[[curSp()]]$change$Plot
+  raster::crs(sdm) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
+  SDMVals <- getRasterVals(sdm)
+  rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+  legendPal <- colorNumeric(rev(rasCols), SDMVals, na.color = 'transparent')
+  rasPal <- colorNumeric(rasCols, SDMVals, na.color = 'transparent')
+  zoomExt <- raster::extent(sdm)
+  map %>% fitBounds(lng1 = zoomExt[1], lng2 = zoomExt[2],
+                    lat1 = zoomExt[3], lat2 = zoomExt[4])
+  if (length(unique(SDMVals)) == 3 |
+      length(unique(SDMVals)) == 2) {
+    map %>%
+      addLegend("bottomright", colors = c('gray', 'red'),
+                title = "SDM",
+                labels = c("Presence", "Absence"),
+                opacity = 1, layerId = 'sdm') %>%
+      addRasterImage(sdm, colors = c('gray', 'red'),
+                     opacity = 0.7, group = 'change', layerId = 'sdm',
+                     method = "ngb")
+  } else {
+    # if threshold specified
+    legendPal <- colorNumeric(rev(rasCols), SDMVals, na.color = 'transparent')
+    rasPal <- colorNumeric(rasCols, SDMVals, na.color = 'transparent')
+    map %>%
+      addLegend("bottomright", pal = legendPal, title = "SDM",
+                values = SDMVals, layerId = "sdm",
+                labFormat = reverseLabels(2, reverse_order=TRUE)) %>%
+      addRasterImage(sdm, colors = rasPal,
+                     opacity = 0.7, group = 'change', layerId = 'sdm',
+                     method = "ngb")
+  }
+  # Add just projection Polygon
+  req(spp[[curSp()]]$change$polyOverlap)
+  #raster::crs(spp[[curSp()]]$change$polyOverlap) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
+  polyOvXY <- spp[[curSp()]]$change$polyOverlap@polygons
+  if(length(polyOvXY) == 1) {
+    shp <- list(polyOvXY[[1]]@Polygons[[1]]@coords)
+  } else {
+    shp <- lapply(polyOvXY, function(x) x@Polygons[[1]]@coords)
+  }
+  bb <- spp[[curSp()]]$change$polyOverlap@bbox
+  bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
+  map %>%
+  fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
+  for (poly in shp) {
+    map %>% addPolygons(lng = poly[, 1], lat = poly[, 2], weight = 4,
+                        color = "red", fill=FALSE, group = 'change')
+  }
 
+
+ ##Plot overlap
   req(spp[[curSp()]]$change$overlapRaster)
 
     Overlap <-  spp[[curSp()]]$change$overlapRaster
@@ -274,6 +352,9 @@ change_overlap_module_map <- function(map, common) {
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
   legendPal <- colorNumeric(rev(rasCols), OverlapVals, na.color = 'transparent')
   rasPal <- colorNumeric(rasCols, OverlapVals, na.color = 'transparent')
+  zoomExt <- raster::extent(Overlap)
+  map %>% fitBounds(lng1 = zoomExt[1], lng2 = zoomExt[2],
+                    lat1 = zoomExt[3], lat2 = zoomExt[4])
   # Create legend
   map %>% clearAll()
   if (length(unique(OverlapVals)) == 3 |
@@ -299,24 +380,7 @@ change_overlap_module_map <- function(map, common) {
                      method = "ngb")
   }
 
-###Add polygon intersect
-  # Add just projection Polygon
-  req(spp[[curSp()]]$change$polyOverlap)
-  #raster::crs(spp[[curSp()]]$change$polyOverlap) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
-  polyOvXY <- spp[[curSp()]]$change$polyOverlap@polygons[[1]]@Polygons
-  if(length(polyOvXY) == 1) {
-    shp <- list(polyOvXY[[1]]@coords)
-  } else {
-    shp <- lapply(polyOvXY, function(x) x@coords)
-  }
-  #bb <- spp[[curSp()]]$change$polyOverlap@bbox
-  #bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
-  #map %>%
-   # fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
-  for (poly in shp) {
-    map %>% addPolygons(lng = poly[, 1], lat = poly[, 2], weight = 4,
-                        color = "red", group = 'change')
-  }
+
 }
 change_overlap_module_rmd <- function(species) {
   # Variables used in the module's Rmd code

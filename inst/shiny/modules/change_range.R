@@ -262,7 +262,7 @@ change_range_module_server <- function(input, output, session, common) {
         spp[[curSp()]]$rmm$data$change$AOOval <- AOOlocs$area
         spp[[curSp()]]$rmm$data$change$AOOtype <- input$selSource2
         spp[[curSp()]]$rmm$data$change$AOO <- AOOlocs$aooRaster
-        common$update_component(tab = "Results")
+        common$update_component(tab = "Map")
       }
       else if (input$selSource2 =="sdm"){
         ##check that the projection exists and that it is thresholded
@@ -288,7 +288,7 @@ change_range_module_server <- function(input, output, session, common) {
         spp[[curSp()]]$rmm$data$change$AOOval <- AOO$area
         spp[[curSp()]]$rmm$data$change$AOOtype <- input$selSource2
         spp[[curSp()]]$rmm$data$change$AOO <- AOO$aooRaster
-        common$update_component(tab = "Results")
+        common$update_component(tab = "Map")
       }
       else if (input$selSource2 =="mask"){
         #CAREFUL: as its set up now if user doesn t do maskrangeR this object will be something else
@@ -310,7 +310,7 @@ change_range_module_server <- function(input, output, session, common) {
         spp[[curSp()]]$rmm$data$change$AOOval <- AOO$area
         spp[[curSp()]]$rmm$data$change$AOOtype <- input$selSource2
         spp[[curSp()]]$rmm$data$change$AOO <- AOO$aooRaster
-        common$update_component(tab = "Results")
+        common$update_component(tab = "Map")
       }
     }
     })
@@ -384,6 +384,10 @@ change_range_module_map <- function(map, common) {
 if(!is.null(spp[[curSp()]]$rmm$data$change$EOO)){
 
  polyEOO <- spp[[curSp()]]$rmm$data$change$EOO@polygons[[1]]@Polygons
+ bb <- polyEOO@bbox
+ bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
+ map %>%
+   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
 map %>%
   ##Add legend
   addLegend("bottomright", colors = "gray",
@@ -402,7 +406,11 @@ map %>%
   }
 }
   if(!is.null(spp[[curSp()]]$rmm$data$change$AOO)){
+
     AOOras <- spp[[curSp()]]$rmm$data$change$AOO
+    zoomExt <- raster::extent(AOOras)
+    map %>% fitBounds(lng1 = zoomExt[1], lng2 = zoomExt[2],
+                      lat1 = zoomExt[3], lat2 = zoomExt[4])
     map %>%
       ##Add legend
       addLegend("bottomright", colors = c('gray', 'red'),
