@@ -1,14 +1,14 @@
 #' @title `occs_biomodelos` query biomodelos database
 #' @description
-#' query biomodelos database and returns the complete list of data, data with coordinates, and data with no duplicates
+#' query BioModelos database and returns the complete list of data, data with coordinates, and data with no duplicates
 #'
 #' @details
-#'This function is called by the module occs_biomodelos to query the biomodelos database for
+#'This function is called by the module occs_biomodelos to query the BioModelos database for
 #' species occurrence records. It removes records with duplicate coordinates, and select some columns with fields
 #' appropriate to studies in biogeography.
 #'
-#' @param spN character species name. For biomodelos it returns records associated with the specified taxonomic name, including any synonyms.
-#' @param bioKey character. Key to access biomodelos API
+#' @param spN character species name. For BioModelos it returns records associated with the specified taxonomic name, including any synonyms.
+#' @param bioKey character. Key to access BioModelos API
 #' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 # @keywords
@@ -56,7 +56,7 @@ occs_biomodelos <- function(spN, bioKey, logger = NULL) {
   urlOccs <- paste('https://api-biomodelos.humboldt.org.co/v2/species/records/',
                    jsonSearch[[1]]$taxID, sep = '')
 
-  smartProgress(logger, message = paste0("Querying biomodelos ..."), {
+  smartProgress(logger, message = paste0("Querying BioModelos ..."), {
     respOccs <- httr::GET(urlOccs,
                           httr::add_headers(host = 'api-biomodelos.humboldt.org.co',
                                             authorization = paste0('apiKey ', bioKey)))
@@ -67,7 +67,7 @@ occs_biomodelos <- function(spN, bioKey, logger = NULL) {
   if (nrow(geo) == 0) {
     logger %>% writeLog(
       type = 'error',
-      hlSpp(spN), "Species without records on Biomodelos")
+      hlSpp(spN), "Species without records on BioModelos")
     return()
   }
 
@@ -113,7 +113,7 @@ occs_biomodelos <- function(spN, bioKey, logger = NULL) {
   dupsRem <- nrow(occsXY) - nrow(occs)
 
   logger %>% writeLog(
-    hlSpp(spN), 'Total biomodelos records returned [', nrow(occsOrig),
+    hlSpp(spN), 'Total BioModelos records returned [', nrow(occsOrig),
     ']. Records without coordinates removed [',
     noCoordsRem, ']. Duplicated records removed [', dupsRem,
     ']. Remaining records [', nrow(occs), '].')

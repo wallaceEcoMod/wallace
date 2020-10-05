@@ -1,4 +1,4 @@
-### **Module:** ***Query Biomodelos*** 
+### **Module:** ***Query BioModelos*** 
 
 1.Ingrese un nombre de género y especie colombiano de su elección para consultar la base de datos de BioModelos para obtener datos de ocurrencia. Tenga en cuenta que la especie ya debe estar en la base de datos de BioModelos (puede buscar opciones y leer más sobre BioModelos aquí: http://biomodelos.humboldt.org.co/).
 

@@ -5,7 +5,7 @@ occs_biomodelos_module_ui <- function(id) {
              textInput(ns("spNameBM"), label = "Enter species scientific name",
                        placeholder = 'format: Genus species')),
     tags$div(passwordInput(ns("keyBM"), label = "Enter API Key", value = "")),
-    actionButton(ns("goBiomodelosOccs"), "Query Biomodelos")
+    actionButton(ns("goBiomodelosOccs"), "Query BioModelos")
   )
 }
 

@@ -3,7 +3,7 @@ rep_biomodelos_module_ui <- function(id) {
   tagList(
     uiOutput(ns("bioSpUI")),
     passwordInput(ns("keyPost"), label = "Enter API Key", value = ""),
-    textInput(ns("userBio"), "User biomodelos e-mail", value = NULL),
+    textInput(ns("userBio"), "User BioModelos e-mail", value = NULL),
     selectInput(ns("selLicense"),
                 label = "CC License",
                 choices = list("Select License" = "",
@@ -38,13 +38,13 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
   observeEvent(input$pushBiomod, {
     if (spp[[bioSp()]]$rmm$data$occurrence$sources != "Biomodelos") {
       shinyalert::shinyalert(
-        "You must submit a model built with occurrences from biomodelos (**)",
+        "You must submit a model built with occurrences from BioModelos (**)",
         type = "error")
       return()
     }
     if (is.null(spp[[bioSp()]]$biomodelos$prediction)) {
       shinyalert::shinyalert(
-        "You need a map prediction before pushing to biomodelos (**).",
+        "You need a map prediction before pushing to BioModelos (**).",
         type = "error")
       return()
     }
@@ -183,7 +183,7 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
                         as = 'parsed')
     if (is.null(response)) {
       shinyalert::shinyalert(
-        "Pushed to Biomodelos (**)",
+        "Pushed to BioModelos (**)",
         type = "success")
     } else if (response == "Unauthorized") {
       shinyalert::shinyalert(
