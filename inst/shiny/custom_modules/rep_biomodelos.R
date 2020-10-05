@@ -177,8 +177,8 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
       model = httr::upload_file(tmpZIP,
                                type = "application/zip")
     )
-    response <- content(POST(URL, body = PAYLOAD, encode = "multipart",
-                             add_headers(host = 'api-biomodelos.humboldt.org.co',
+    response <- httr::content(httr::POST(URL, body = PAYLOAD, encode = "multipart",
+                                         httr::add_headers(host = 'api-biomodelos.humboldt.org.co',
                                          authorization = paste0('apiKey ', input$keyPost))),
                         as = 'parsed')
     if (is.null(response)) {

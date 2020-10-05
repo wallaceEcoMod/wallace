@@ -1,1 +1,27 @@
-Add text here sumercé.
+### **Module:** ***Biomodelos payload*** 
+
+1. Elija las especies que desea enviar a BioModelos
+
+2. Vuelva a ingresar la clave API que utilizó para descargar los datos de ocurrencia.
+
+3. Ingrese su correo electrónico (si aún no está registrado como usuario de BioModelos, ¡puede registrarse en su sitio web! Http://biomodelos.humboldt.org.co/);
+
+4. Para la licencia CC, elija la licencia de derechos de autor bajo la cual acepta compartir su modelo con los usuarios de BioModelos. Puede leer más sobre las diferentes licencias aquí: https://creativecommons.org/licenses/;
+
+5. Marque la casilla junto a “Acuerdo Atlas” si acepta que BioModelos puede publicar su modelo como parte del próximo Atlas de Biodiversidad de Colombia.
+
+6. “Push Payload” enviará sus datos de ocurrencia, rásteres del modelo, metadatos del modelo y archivo Rmd a BioModelos.
+
+English Version
+
+1. Choose the species you want to send to BioModelos
+
+2. Re-enter the API key that you used to download occurrence data. 
+
+3. Enter your email  (if you are not yet registered as a BioModelos user - you can register on their website! http://biomodelos.humboldt.org.co/); 
+
+4. For CC license, choose the copyright license under which you agree to share your model with BioModelos users. You can read more about different licenses here: https://creativecommons.org/licenses/;
+
+5. Check the box beside “Atlas agreement” if you agree that BioModelos can publish your model as a part of the next Atlas of Biodiversity of Colombia. 
+
+6. “Push Payload”  will send your occurrence data, model rasters, model metadata, and Rmd file to BioModelos.
