@@ -87,7 +87,7 @@ change_range_module_server <- function(input, output, session, common) {
       }
       if(input$selSource == "user"){
         # ERRORS ####
-        if (!is.null(spp[[curSp()]]$postProc$OrigPred)) {
+        if (is.null(spp[[curSp()]]$postProc$OrigPred)) {
           logger %>%
             writeLog(type = 'error',
                      'Load you model in component User SDM before doing range calculations')
