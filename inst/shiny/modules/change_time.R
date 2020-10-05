@@ -102,7 +102,7 @@ change_time_module_server <- function(input, output, session, common) {
       logger,
       message = "Loading environmental variables ", {
    rStack <- raster::stack(input$changeEnvs$datapath)
-   if (nlayers(rStack)==1) {
+   if (raster::nlayers(rStack)==1) {
      logger %>% writeLog(type = 'error', "Please upload more than one environmental variable")
      return()
    }
