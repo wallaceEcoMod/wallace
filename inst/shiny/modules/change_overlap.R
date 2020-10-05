@@ -13,7 +13,7 @@ change_overlap_module_ui <- function(id) {
     tags$hr(),
     span("Step 2:", class = "step"),
     span("Choose Input Polygon", class = "stepText"), br(), br(),
-    fileInput(ns("changeOverlapShp"), label = "Upload  'Upload polygon as shapefile (.shp, .shx, .dbf)",
+    fileInput(ns("changeOverlapShp"), label = "Upload polygon as shapefile (.shp, .shx, .dbf)",
               accept = c(".dbf", ".shx", ".shp"), multiple = TRUE),
 
     actionButton(ns("goInputPoly"), "Load shapefile"),
@@ -44,18 +44,46 @@ change_overlap_module_server <- function(input, output, session, common) {
 
   observeEvent(input$goInputRaster, {
     if(input$selSource == "wallace"){
+      if (is.null(spp[[curSp()]]$visualization$mapPred)) {
+        logger %>%
+          writeLog(type = 'error',
+                   'Visualize your model before doing overlap calculations')
+        return()
+      }
       spp[[curSp()]]$change$Plot <- spp[[curSp()]]$visualization$mapPred
     }
     if(input$selSource == "proj"){
+      if (is.null(spp[[curSp()]]$project$mapProj)) {
+        logger %>%
+          writeLog(type = 'error',
+                   'Project your model before doing overlap calculations')
+        return()
+      }
       spp[[curSp()]]$change$Plot <-  spp[[curSp()]]$project$mapProj
     }
     if(input$selSource == "sdm"){
+      if (is.null(spp[[curSp()]]$postProc$OrigPred)) {
+        logger %>%
+          writeLog(type = 'error',
+                   'Load you model in component User SDM before doing range calculations')
+        return()
+      }
       spp[[curSp()]]$change$Plot <- spp[[curSp()]]$postProc$OrigPred
     }
     if(input$selSource == "masked"){
+      #CAREFUL: as its set up now if user doesn t do maskrangeR this object will be something else
+      #(either user uploaed SDM or wallace SDM) this must be fixed in other components so it works smoothly
+
+      if (!is.null(spp[[curSp()]]$postProc$prediction)) {
+        logger %>%
+          writeLog(type = 'error',
+                   'Do a maskRangeR analysis before doing range calculations')
+        return()
+      }
       spp[[curSp()]]$change$Plot <- spp[[curSp()]]$postProc$prediction
     }
   })
+
  observeEvent(input$goInputPoly, {
    if (is.null(spp[[curSp()]]$postProc$prediction)) {
      logger %>% writeLog(
@@ -141,12 +169,7 @@ change_overlap_module_server <- function(input, output, session, common) {
 
     category<-changeCategory()
     if(input$selSource == "wallace"){
-      if (is.null(spp[[curSp()]]$visualization$mapPred)) {
-        logger %>%
-          writeLog(type = 'error',
-                   'Visualize your model before doing overlap calculations')
-        return()
-      }
+
       smartProgress(
         logger,
         message = "Calculating range overlap ", {
@@ -167,12 +190,7 @@ change_overlap_module_server <- function(input, output, session, common) {
     }
 
     if(input$selSource == "proj"){
-      if (is.null(spp[[curSp()]]$project$mapProj)) {
-        logger %>%
-          writeLog(type = 'error',
-                   'Project your model before doing overlap calculations')
-        return()
-      }
+
       smartProgress(
         logger,
         message = "Calculating range overlap ", {
@@ -194,13 +212,6 @@ change_overlap_module_server <- function(input, output, session, common) {
 
 
     if(input$selSource == "sdm"){
-     if (is.null(spp[[curSp()]]$postProc$OrigPred)) {
-        logger %>%
-          writeLog(type = 'error',
-                   'Load you model in component User SDM before doing range calculations')
-        return()
-     }
-
 
       smartProgress(
         logger,
@@ -224,14 +235,7 @@ change_overlap_module_server <- function(input, output, session, common) {
       #CAREFUL: as its set up now if user doesn t do maskrangeR this object will be something else
       #(either user uploaed SDM or wallace SDM) this must be fixed in other components so it works smoothly
 
-      if (!is.null(spp[[curSp()]]$postProc$prediction)) {
-        logger %>%
-          writeLog(type = 'error',
-                   'Do a maskRangeR analysis before doing range calculations')
-        return()
-      }
-
-      smartProgress(
+        smartProgress(
         logger,
         message = "Calculating range overlap ", {
       r = spp[[curSp()]]$postProc$prediction

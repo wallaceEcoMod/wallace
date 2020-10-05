@@ -1,0 +1,5 @@
+component: "change"
+short_name: "Time"
+long_name: "Change through time"
+authors: "Andrea Paz"
+package: [raster, changeRangeR]
