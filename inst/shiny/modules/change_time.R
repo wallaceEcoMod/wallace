@@ -102,6 +102,10 @@ change_time_module_server <- function(input, output, session, common) {
       logger,
       message = "Loading environmental variables ", {
    rStack <- raster::stack(input$changeEnvs$datapath)
+   if (nlayers(rStack)==1) {
+     logger %>% writeLog(type = 'error', "Please upload more than one environmental variable")
+     return()
+   }
    spp[[curSp()]]$change$changeEnvs <- rStack
    spp[[curSp()]]$change$changeEnvsThr <-input$EnvThrVal
       })
@@ -109,9 +113,14 @@ change_time_module_server <- function(input, output, session, common) {
 
   observeEvent(input$goInputYears, {
     req(spp[[curSp()]]$change$changeEnvs)
+    years <- trimws(strsplit(input$Years, ",")[[1]])
+    if (raster::nlayers(spp[[curSp()]]$change$changeEnvs)!=length(years)) {
+      logger %>% writeLog(type = 'error', "Please enter the years for all inputed variables")
+      return()
+    }
     smartProgress(
       logger,
-      message = "Calculatin area change through time ", {
+      message = "Calculating area change through time ", {
     SDM <- spp[[curSp()]]$change$time
     rStack <- raster::projectRaster(spp[[curSp()]]$change$changeEnvs, SDM, method = 'bilinear')
     threshold <- spp[[curSp()]]$change$changeEnvsThr
@@ -119,7 +128,6 @@ change_time_module_server <- function(input, output, session, common) {
     ##run function
     SDM.time <- changeRangeR::envChange(rStack = rStack, SDM = SDM, threshold = threshold)
     ### Set up years for plotting
-    years <- input$Years
       })
 
 
@@ -142,6 +150,17 @@ change_time_module_server <- function(input, output, session, common) {
       plot(y = spp[[curSp()]]$change$AreaTime, x = spp[[curSp()]]$change$Years, main = "SDM area change", ylab = "area (square m)")
       lines(y = spp[[curSp()]]$change$AreaTime, x = spp[[curSp()]]$change$Years)
     })
+
+    tabsetPanel(
+      tabPanel("Area through time plot",
+               tagList(
+                 plotOutput(session$ns('timePlot'))
+               )),
+      tabPanel("Are through time values",
+               tagList(
+                 verbatimTextOutput(session$ns('areaMasked'))
+               ))
+    )
   })
 
   return(list(
@@ -166,8 +185,7 @@ change_time_module_server <- function(input, output, session, common) {
 change_time_module_result <- function(id) {
 ns <- NS(id)
 # Result UI
-verbatimTextOutput(ns("TimeAreas"))
-
+uiOutput(ns("TimeAreas"))
 
 }
 
