@@ -1186,6 +1186,7 @@ function(input, output, session) {
   maskFields <- reactive(input$maskFields)
   maskAttribute <- reactive(input$maskAttribute)
 
+
   ########################################### #
   ### COMPONENT: CHANGERRR DIVERSITY ####
   ########################################### #
@@ -1263,6 +1264,8 @@ function(input, output, session) {
       }
     }
   )
+  changeField <- reactive(input$selField)
+  changeCategory <- reactive(input$selCat)
   ########################################### #
   ### COMPONENT: ALPHA DIVERSITY ####
   ########################################### #
@@ -1609,6 +1612,8 @@ function(input, output, session) {
     evalOut = evalOut,
     mapPred = mapPred,
     mapProj = mapProj,
+    changeField = changeField,
+    changeCategory  = changeCategory,
     rmm = rmm,
 
     # Switch to a new component tab
