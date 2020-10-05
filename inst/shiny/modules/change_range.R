@@ -11,6 +11,7 @@ change_range_module_ui <- function(id) {
                              ns("changeRangeSel")),
                      selectInput(ns("selSource") , label = "Select source for calculations",
                                  choices = list("Wallace SDM" = "wallace",
+                                                "Projected SDM" = "proj",
                                                 "User SDM" = "user",
                                                 "Masked SDM" = "mask"))),
     conditionalPanel(sprintf("input['%1$s'] == 'eoo'",
@@ -46,6 +47,46 @@ change_range_module_server <- function(input, output, session, common) {
     #Processing
     if(input$changeRangeSel == "range"){
       if(input$selSource == "wallace"){
+        # ERRORS ####
+        if (is.null(spp[[curSp()]]$visualization$mapPred)) {
+          logger %>%
+            writeLog(type = 'error',
+                     'Visualize your model before doing range calculations')
+          return()
+        }
+        if (is.null( spp[[curSp()]]$visualization$thresholds)) {
+          logger %>%
+            writeLog(type = 'error',
+                     'Generate a thresholded model before doing range calculations')
+          return()
+        }
+        smartProgress(
+          logger,
+          message = "Calculating a range size estimate using a South America Albers Equal Area Conic projection", {
+
+            # FUNCTION CALL ####
+            ##First project to equal area
+            p <- spp[[curSp()]]$project$mapProj
+
+            ##PROJECT
+            p<-raster::projectRaster(p,crs="+proj=aea +lat_1=-5 +lat_2=-42 +lat_0=-32 +lon_0=-60 +x_0=0 +y_0=0 +ellps=aust_SA +units=m")
+            # find the number of cells that are not NA
+            pCells <- raster::ncell(p[!is.na(p)])
+            # Convert the raster resolution to km^s
+            Resolution <- (res(p)/1000)^2
+            # Multiply the two
+            area <- pCells * Resolution
+
+          })
+
+        req(area)
+        logger %>% writeLog( "Species range size calculated based on Wallace SDM ")
+        # LOAD INTO SPP ####
+        spp[[curSp()]]$change$range <- area
+        spp[[curSp()]]$change$rangetype <- input$selSource
+        common$update_component(tab = "Results")
+      }
+      if(input$selSource == "proj"){
       # ERRORS ####
       if (is.null(spp[[curSp()]]$project$mapProj)) {
         logger %>%
@@ -79,7 +120,7 @@ change_range_module_server <- function(input, output, session, common) {
 })
 
     req(area)
-    logger %>% writeLog( "Species range size calculated based on Wallace SDM ")
+    logger %>% writeLog( "Species range size calculated based on  projected SDM ")
     # LOAD INTO SPP ####
       spp[[curSp()]]$change$range <- area
     spp[[curSp()]]$change$rangetype <- input$selSource
