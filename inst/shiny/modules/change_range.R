@@ -5,8 +5,7 @@ change_range_module_ui <- function(id) {
                 choices = list("None selected" = '',
                                "Range size" = "range",
                                "EOO" = "eoo",
-                               "AOO" = "aoo"
-                               )), # Check default (no selected)
+                               "AOO" = "aoo")), # Check default (no selected)
     conditionalPanel(sprintf("input['%1$s'] == 'range'",
                              ns("changeRangeSel")),
                      selectInput(ns("selSource") , label = "Select source for calculations",
@@ -20,13 +19,13 @@ change_range_module_ui <- function(id) {
                                   choices = list("Occurrences" = "occs",
                                                  "Wallace SDM" = "wallace",
                                                  "Projected SDM" = "proj",
-                                                 "User SDM" = "user",
+                                                 "User SDM" = "user"
                                                  ))),
 
     conditionalPanel(sprintf("input['%1$s'] == 'aoo'",
                              ns("changeRangeSel")),
                      selectInput(ns("selSource2") , label = "Select source for calculations",
-                                 choices = list("Occurrences + Wallace SDM" = "occs",
+                                 choices = list("Occurrences & Wallace SDM" = "occs",
                                                 "Wallace SDM" = "wallace",
                                                 "Projected SDM" = "proj",
                                                 "UserSDM" = "user",
@@ -71,14 +70,14 @@ change_range_module_server <- function(input, output, session, common) {
 
             # FUNCTION CALL ####
             ##First project to equal area
-            p <- spp[[curSp()]]$project$mapProj
+            p <- spp[[curSp()]]$visualization$mapPred
 
             ##PROJECT
             p<-raster::projectRaster(p,crs="+proj=aea +lat_1=-5 +lat_2=-42 +lat_0=-32 +lon_0=-60 +x_0=0 +y_0=0 +ellps=aust_SA +units=m")
             # find the number of cells that are not NA
             pCells <- raster::ncell(p[!is.na(p)])
             # Convert the raster resolution to km^s
-            Resolution <- (res(p)/1000)^2
+            Resolution <- (raster::res(p)/1000)^2
             # Multiply the two
             area <- pCells * Resolution
 
@@ -118,7 +117,7 @@ change_range_module_server <- function(input, output, session, common) {
         # find the number of cells that are not NA
         pCells <- raster::ncell(p[!is.na(p)])
         # Convert the raster resolution to km^s
-        Resolution <- (res(p)/1000)^2
+        Resolution <- (raster::res(p)/1000)^2
         # Multiply the two
         area <- pCells * Resolution
 
@@ -159,7 +158,7 @@ change_range_module_server <- function(input, output, session, common) {
             # find the number of cells that are not NA
             pCells <- raster::ncell(p[!is.na(p)])
             # Convert the raster resolution to km^s
-            Resolution <- (res(p)/1000)^2
+            Resolution <- (raster::res(p)/1000)^2
             # Multiply the two
             area <- pCells * Resolution
 
@@ -204,7 +203,7 @@ change_range_module_server <- function(input, output, session, common) {
             # find the number of cells that are not NA
             pCells <- raster::ncell(p[!is.na(p)])
             # Convert the raster resolution to km^s
-            Resolution <- (res(p)/1000)^2
+            Resolution <- (raster::res(p)/1000)^2
             # Multiply the two
             area <- pCells * Resolution
 
