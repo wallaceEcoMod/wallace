@@ -43,10 +43,10 @@ post_userSDM <- function(rasPath, rasName, logger = NULL) {
   }
   smartProgress(logger, message = "Uploading user-specified SDM (**)...", {
     r <- raster::raster(rasPath)
-    r <- raster::readAll(r)
+    r <- raster::trim(r)
     names(r) <- fileNameNoExt(rasName)
-    e <- r > -Inf
-    extPoly <- raster::rasterToPolygons(e, dissolve = TRUE)
+    extPoly <- raster::extent(r)
+    extPoly <- as(extPoly, 'SpatialPolygons')
   })
 
   if (is.na(raster::crs(r))) {
