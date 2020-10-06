@@ -147,7 +147,7 @@ change_time_module_server <- function(input, output, session, common) {
         "SDM area after masking for environmental variables through time",
         spp[[curSp()]]$change$AreaTime) })
     output$timePlot <- renderPlot({
-      plot(y = spp[[curSp()]]$change$AreaTime, x = spp[[curSp()]]$change$Years, main = "SDM area change", ylab = "area (square m)")
+      plot(y = spp[[curSp()]]$change$AreaTime, x = spp[[curSp()]]$change$Years, main = "SDM area change", ylab = "area (square m)",xlab="Time")
       lines(y = spp[[curSp()]]$change$AreaTime, x = spp[[curSp()]]$change$Years)
     })
 
