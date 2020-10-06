@@ -18,13 +18,18 @@ change_range_module_ui <- function(id) {
                              ns("changeRangeSel")),
                      selectInput(ns("selSource1") , label = "Select source for calculations",
                                   choices = list("Occurrences" = "occs",
-                                                 "SDM" = "sdm"))),
+                                                 "Wallace SDM" = "wallace",
+                                                 "Projected SDM" = "proj",
+                                                 "User SDM" = "user",
+                                                 ))),
 
     conditionalPanel(sprintf("input['%1$s'] == 'aoo'",
                              ns("changeRangeSel")),
                      selectInput(ns("selSource2") , label = "Select source for calculations",
-                                 choices = list("Occurrences" = "occs",
-                                                "SDM" = "sdm",
+                                 choices = list("Occurrences + Wallace SDM" = "occs",
+                                                "Wallace SDM" = "wallace",
+                                                "Projected SDM" = "proj",
+                                                "UserSDM" = "user",
                                                 "Masked SDM" = "mask"))),
 ##question for mary add option to do range for sdm that comes from maskRangeR or uploaded?
     actionButton(ns("goRange"), "Calculate")
@@ -217,7 +222,75 @@ change_range_module_server <- function(input, output, session, common) {
     ##if calculating EOO
     else if(input$changeRangeSel == "eoo"){
       ##Check wether based on sdm or on occurrences
-      if(input$selSource1 == "sdm"){
+      if(input$selSource1 == "wallace"){
+        ##check that the projection exists and that it is thresholded
+        if (is.null(spp[[curSp()]]$visualization$mapPred)) {
+          logger %>%
+            writeLog(type = 'error',
+                     'Project your model before doing EOO calculations')
+          return()
+        }
+        if (is.null(spp[[curSp()]]$visualization$thresholds)) {
+          logger %>%
+            writeLog(type = 'error',
+                     'Generate a thresholded prediction before doing EOO calculations')
+          return()
+        }
+        smartProgress(
+          logger,
+          message = "Calculating an EOO estimate based on the thresholded SDM ", {
+            #must reclass the sdm to get 0 to be NA
+            p <- pp[[curSp()]]$visualization$mapPred
+            p[p == 0] <- NA
+            p.pts <- raster::rasterToPoints(p)
+            eooSDM <- changeRangeR::mcp(p.pts[,1:2])
+            aeoosdm <- raster::area(eooSDM)/1000000
+
+          })
+        req(aeoosdm)
+        logger %>% writeLog( "Calculated an EOO estimate based on a thresholded SDM. This is an approximation based on a non-projected SDM")
+        # LOAD INTO SPP ####
+        spp[[curSp()]]$rmm$data$change$EOOval <- aeoosdm
+        spp[[curSp()]]$rmm$data$change$EOOtype <- input$selSource1
+        spp[[curSp()]]$rmm$data$change$EOO <- eooSDM
+        common$update_component(tab = "Map")
+      }
+      if(input$selSource1 == "user"){
+        ##check that the projection exists and that it is thresholded
+        if (is.null(spp[[curSp()]]$postProc$OrigPred)) {
+          logger %>%
+            writeLog(type = 'error',
+                     'Project load a model before doing EOO calculations')
+          return()
+        }
+        p <- spp[[curSp()]]$postProc$OrigPred
+        p[p == 0] <- NA
+        if (length(unique(values(p)))> 2) {
+          logger %>%
+            writeLog(type = 'error',
+                     'Generate a thresholded prediction before doing range calculations')
+          return()
+        }
+        smartProgress(
+          logger,
+          message = "Calculating an EOO estimate based on the user provided SDM ", {
+            #must reclass the sdm to get 0 to be NA
+            p <- spp[[curSp()]]$postProc$OrigPred
+            p[p == 0] <- NA
+            p.pts <- raster::rasterToPoints(p)
+            eooSDM <- changeRangeR::mcp(p.pts[,1:2])
+            aeoosdm <- raster::area(eooSDM)/1000000
+
+          })
+        req(aeoosdm)
+        logger %>% writeLog( "Calculated an EOO estimate based on a user provided SDM. This is an approximation based on a non-projected SDM")
+        # LOAD INTO SPP ####
+        spp[[curSp()]]$rmm$data$change$EOOval <- aeoosdm
+        spp[[curSp()]]$rmm$data$change$EOOtype <- input$selSource1
+        spp[[curSp()]]$rmm$data$change$EOO <- eooSDM
+        common$update_component(tab = "Map")
+      }
+      if(input$selSource1 == "proj"){
         ##check that the projection exists and that it is thresholded
         if (is.null(spp[[curSp()]]$project$mapProj)) {
           logger %>%
@@ -233,7 +306,7 @@ change_range_module_server <- function(input, output, session, common) {
         }
         smartProgress(
           logger,
-          message = "Calculating an EOO estimate based on the thresholded SDM ", {
+          message = "Calculating an EOO estimate based on the projected thresholded SDM ", {
             #must reclass the sdm to get 0 to be NA
         p <- spp[[curSp()]]$project$mapProj
         p[p == 0] <- NA
@@ -243,14 +316,20 @@ change_range_module_server <- function(input, output, session, common) {
 
           })
         req(aeoosdm)
-        logger %>% writeLog( "Calculated an EOO estimate based on a thresholded SDM. This is an approximation based on a non-projected SDM")
+        logger %>% writeLog( "Calculated an EOO estimate based on a projected thresholded SDM. This is an approximation based on a non-projected SDM")
         # LOAD INTO SPP ####
         spp[[curSp()]]$rmm$data$change$EOOval <- aeoosdm
         spp[[curSp()]]$rmm$data$change$EOOtype <- input$selSource1
         spp[[curSp()]]$rmm$data$change$EOO <- eooSDM
         common$update_component(tab = "Map")
       }
-      else if (input$selSource1 == "occs"){
+      if (input$selSource1 == "occs"){
+        if (is.null(spp[[curSp()]]$occs)) {
+          logger %>%
+            writeLog(type = 'error',
+                     'Get or upload occurrence data for this species before doing EOO calculations (names must match)')
+          return()
+        }
         smartProgress(
           logger,
           message = "Calculating an EOO estimate based on occurrence points ", {
@@ -276,19 +355,19 @@ change_range_module_server <- function(input, output, session, common) {
     else if (input$changeRangeSel == "aoo"){
       if(input$selSource2 =="occs"){
         ##check that the projection exists and that it is thresholded
-        if (is.null(spp[[curSp()]]$project$mapProj)) {
+        if (is.null(spp[[curSp()]]$visualization$mapPred)) {
           logger %>%
             writeLog(type = 'error',
-                     'Project your model before doing AOO calculations')
+                     'Visualize your model before doing AOO calculations')
           return()
         }
-        if (is.null(spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet)) {
+        if (is.null(spp[[curSp()]]$visualization$thresholds)) {
           logger %>%
             writeLog(type = 'error',
-                     'Generate a thresholded prediction before doing AOO calculations')
+                     'Visualize a thresholded prediction before doing AOO calculations')
           return()
         }
-        p <- spp[[curSp()]]$project$mapProj
+        p <- spp[[curSp()]]$visualization$mapPred
         p[p == 0] <- NA
         # Using filtered records how to use unfiltered?
         occs <- spp[[curSp()]]$occs
@@ -305,7 +384,33 @@ change_range_module_server <- function(input, output, session, common) {
         spp[[curSp()]]$rmm$data$change$AOO <- AOOlocs$aooRaster
         common$update_component(tab = "Map")
       }
-      else if (input$selSource2 =="sdm"){
+      else if (input$selSource2 =="wallace"){
+        ##check that the projection exists and that it is thresholded
+        if (is.null(spp[[curSp()]]$visualization$mapPred)) {
+          logger %>%
+            writeLog(type = 'error',
+                     'Visualize your model before doing AOO calculations')
+          return()
+        }
+        if (is.null(spp[[curSp()]]$visualization$thresholds)) {
+          logger %>%
+            writeLog(type = 'error',
+                     'Visualize a thresholded prediction before doing AOO calculations')
+          return()
+        }
+        p <- spp[[curSp()]]$visualization$mapPred
+        p[p == 0] <- NA
+        AOO<-changeRangeR::aooArea(r = p)
+        req(AOO)
+        logger %>% writeLog( "Calculated an AOO estimate based on an SDM. This is an approximation based on unprojected coordinates")
+
+        # LOAD INTO SPP ####
+        spp[[curSp()]]$rmm$data$change$AOOval <- AOO$area
+        spp[[curSp()]]$rmm$data$change$AOOtype <- input$selSource2
+        spp[[curSp()]]$rmm$data$change$AOO <- AOO$aooRaster
+        common$update_component(tab = "Map")
+      }
+      else if (input$selSource2 =="proj"){
         ##check that the projection exists and that it is thresholded
         if (is.null(spp[[curSp()]]$project$mapProj)) {
           logger %>%
@@ -324,6 +429,34 @@ change_range_module_server <- function(input, output, session, common) {
         AOO<-changeRangeR::aooArea(r = p)
         req(AOO)
         logger %>% writeLog( "Calculated an AOO estimate based on an SDM. This is an approximation based on unprojected coordinates")
+
+        # LOAD INTO SPP ####
+        spp[[curSp()]]$rmm$data$change$AOOval <- AOO$area
+        spp[[curSp()]]$rmm$data$change$AOOtype <- input$selSource2
+        spp[[curSp()]]$rmm$data$change$AOO <- AOO$aooRaster
+        common$update_component(tab = "Map")
+      }
+      else if (input$selSource2 =="user"){
+        ##check that the projection exists and that it is thresholded
+        if (is.null(spp[[curSp()]]$postProc$OrigPred)) {
+          logger %>%
+            writeLog(type = 'error',
+                     'Upload your model before doing AOO calculations')
+          return()
+        }
+        p <- spp[[curSp()]]$postProc$OrigPred
+        p[p == 0] <- NA
+        if (length(unique(values(p)))> 2) {
+          logger %>%
+            writeLog(type = 'error',
+                     'Generate a thresholded prediction before doing range calculations')
+          return()
+        }
+        p <- spp[[curSp()]]$postProc$OrigPred
+        p[p == 0] <- NA
+        AOO<-changeRangeR::aooArea(r = p)
+        req(AOO)
+        logger %>% writeLog( "Calculated an AOO estimate based on an user uploaded SDM. This is an approximation based on unprojected coordinates")
 
         # LOAD INTO SPP ####
         spp[[curSp()]]$rmm$data$change$AOOval <- AOO$area
