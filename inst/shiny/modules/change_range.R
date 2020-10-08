@@ -140,7 +140,7 @@ change_range_module_server <- function(input, output, session, common) {
         }
         p <- spp[[curSp()]]$postProc$OrigPred
         p[p == 0] <- NA
-        if (length(unique(values(p)))> 2) {
+        if (length(unique(raster::values(p)))> 2) {
           logger %>%
             writeLog(type = 'error',
                      'Generate a thresholded prediction before doing range calculations')
@@ -185,7 +185,7 @@ change_range_module_server <- function(input, output, session, common) {
         }
         p <- spp[[curSp()]]$postProc$prediction
         p[p == 0] <- NA
-        if (length(unique(values(p)))> 2) {
+        if (length(unique(raster::values(p)))> 2) {
           logger %>%
             writeLog(type = 'error',
                      'Generate a thresholded prediction before doing range calculations')
@@ -239,7 +239,7 @@ change_range_module_server <- function(input, output, session, common) {
           logger,
           message = "Calculating an EOO estimate based on the thresholded SDM ", {
             #must reclass the sdm to get 0 to be NA
-            p <- pp[[curSp()]]$visualization$mapPred
+            p <- spp[[curSp()]]$visualization$mapPred
             p[p == 0] <- NA
             p.pts <- raster::rasterToPoints(p)
             eooSDM <- changeRangeR::mcp(p.pts[,1:2])
@@ -264,7 +264,7 @@ change_range_module_server <- function(input, output, session, common) {
         }
         p <- spp[[curSp()]]$postProc$OrigPred
         p[p == 0] <- NA
-        if (length(unique(values(p)))> 2) {
+        if (length(unique(raster::values(p)))> 2) {
           logger %>%
             writeLog(type = 'error',
                      'Generate a thresholded prediction before doing range calculations')
@@ -445,7 +445,7 @@ change_range_module_server <- function(input, output, session, common) {
         }
         p <- spp[[curSp()]]$postProc$OrigPred
         p[p == 0] <- NA
-        if (length(unique(values(p)))> 2) {
+        if (length(unique(raster::values(p)))> 2) {
           logger %>%
             writeLog(type = 'error',
                      'Generate a thresholded prediction before doing range calculations')
@@ -469,7 +469,7 @@ change_range_module_server <- function(input, output, session, common) {
 
         p <- spp[[curSp()]]$postProc$prediction
         p[p == 0] <- NA
-        if (length(unique(values(p)))> 2) {
+        if (length(unique(raster::values(p)))> 2) {
           logger %>%
             writeLog(type = 'error',
                      'Generate a thresholded prediction before doing AOO calculations')
@@ -557,7 +557,7 @@ change_range_module_map <- function(map, common) {
 if(!is.null(spp[[curSp()]]$rmm$data$change$EOO)){
 
  polyEOO <- spp[[curSp()]]$rmm$data$change$EOO@polygons[[1]]@Polygons
- bb <- polyEOO@bbox
+ bb <- spp[[curSp()]]$rmm$data$change$EOO@bbox
  bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
  map %>%
    fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
