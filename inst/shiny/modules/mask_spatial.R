@@ -99,10 +99,10 @@ mask_spatial_module_server <- function(input, output, session, common) {
     raster::crs(maskPred) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
 
     # LOAD INTO SPP ####
+    spp[[curSp()]]$mask$spatialMask <- selectedPoly
     spp[[curSp()]]$postProc$prediction <- maskPred
     spp[[curSp()]]$mask$prediction <- maskPred
     spp[[curSp()]]$procEnvs$bgExt <- bgExt
-    spp[[curSp()]]$mask$spatialFlag <- TRUE
     logger %>% writeLog(
       hlSpp(curSp()), "Spatial Masked (**)")
 
@@ -141,28 +141,14 @@ mask_spatial_module_map <- function(map, common) {
 
   req(spp[[curSp()]]$mask$spatialMask)
   req(maskFields(), maskAttribute())
-  # Plot Polygon
-  spatialMask <- spp[[curSp()]]$mask$spatialMask
-  selAtt <- subset(spatialMask,
-                   spatialMask[[maskFields()]] %in% maskAttribute())
-  noSelAtt <- subset(spatialMask,
-                   !spatialMask[[maskFields()]] %in% maskAttribute())
-  map %>% clearGroup('maskSpatial') %>%
-    addPolygons(data = noSelAtt,
-                weight = 4, color = "blue", group = 'maskSpatial') %>%
-    addPolygons(data = selAtt,
-                weight = 4, color = "yellow", group = 'maskSpatial') %>%
-    addLayersControl(overlayGroups = 'maskSpatial', position = "bottomleft",
-                     options = layersControlOptions(collapsed = FALSE))
-  req(spp[[curSp()]]$mask$spatialFlag)
-  userRaster <- spp[[curSp()]]$postProc$prediction
-  userValues <- raster::values(userRaster)
-
   map %>% clearMarkers() %>%
     clearShapes() %>%
     clearAll() %>%
     # add background polygon
     mapBgPolys(bgShpXY(), color = 'green', group = 'post')
+
+  userRaster <- spp[[curSp()]]$postProc$prediction
+  userValues <- raster::values(userRaster)
 
   if (length(unique(userValues)) == 3 |
       length(unique(userValues)) == 2) {
@@ -186,6 +172,20 @@ mask_spatial_module_map <- function(map, common) {
                 values = userValues, layerId = "expert",
                 labFormat = reverseLabels(2, reverse_order = TRUE))
   }
+  # Plot Polygon
+  spatialMask <- spp[[curSp()]]$mask$spatialMask
+  selAtt <- subset(spatialMask,
+                   spatialMask[[maskFields()]] %in% maskAttribute())
+  noSelAtt <- subset(spatialMask,
+                   !spatialMask[[maskFields()]] %in% maskAttribute())
+  map %>% clearGroup('maskSpatial') %>%
+    addPolygons(data = noSelAtt,
+                weight = 4, color = "blue", group = 'maskSpatial') %>%
+    addPolygons(data = selAtt,
+                weight = 4, color = "yellow", group = 'maskSpatial') %>%
+    addLayersControl(overlayGroups = 'maskSpatial', position = "bottomleft",
+                     options = layersControlOptions(collapsed = FALSE))
+
 }
 
 mask_spatial_module_rmd <- function(species) {

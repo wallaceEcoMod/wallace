@@ -68,8 +68,14 @@ mask_spatialPoly <- function(bgShp_path, bgShp_name, sdm,
   smartProgress(logger, message = "Intersecting spatial data ...", {
     sdm <- stars::st_as_stars(sdm)
     sdm <- sdm >= 0
-    polR <- sf::as_Spatial(sf::st_as_sf(sdm, as_points = FALSE, merge = TRUE))
-    spatialPoly <- raster::intersect(polyData, polR)
+    # polR <- sf::as_Spatial(sf::st_as_sf(sdm, as_points = FALSE, merge = TRUE))
+    polR <- sf::st_as_sf(sdm, as_points = FALSE, merge = TRUE)
+    # spatialPoly <- raster::intersect(polyData, polR)
+    polyData <- rgeos::gBuffer(polyData, byid = TRUE, width = 0)
+    polyData <- sf::st_as_sf(polyData)
+    sf::st_crs(polyData) <- sf::st_crs(polR)
+    spatialPoly <- sf::as_Spatial(sf::st_intersection(sf::st_make_valid(polyData),
+                                                      sf::st_make_valid(polR)))
     if (length(spatialPoly) < 1) {
       logger %>% writeLog(
         type = 'error', hlSpp(spN),
