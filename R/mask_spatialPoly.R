@@ -6,7 +6,7 @@
 #'
 #' @param bgShp_path Path to the user provided shapefile
 #' @param bgShp_name Name of the user porvided shapefile
-#' @param bgExt x
+#' @param sdm x
 #' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 #' otherwise leave the default NULL
 #' @param spN x
@@ -20,7 +20,7 @@
 
 #' @export
 
-mask_spatialPoly <- function(bgShp_path, bgShp_name, bgExt,
+mask_spatialPoly <- function(bgShp_path, bgShp_name, sdm,
                             logger = NULL, spN = NULL) {
   pathdir <- dirname(bgShp_path)
   pathfile <- basename(bgShp_path)
@@ -39,8 +39,10 @@ mask_spatialPoly <- function(bgShp_path, bgShp_name, bgExt,
     if (!file.exists(file.path(pathdir, bgShp_name)[i])) {
       file.rename(bgShp_path, file.path(pathdir, bgShp_name))
     }
-    # read in shapefile and extract coords
-    polyData <- rgdal::readOGR(file.path(pathdir, bgShp_name)[i])
+    smartProgress(logger, message = "Uploading shapefile ...", {
+      polyData <- rgdal::readOGR(file.path(pathdir, bgShp_name)[i])
+    })
+
   } else {
     logger %>%
       writeLog(type = 'error',
@@ -55,17 +57,26 @@ mask_spatialPoly <- function(bgShp_path, bgShp_name, bgExt,
       "is WGS84 (**)"
     )
   }
+  # if (!rgeos::gIntersects(sdm, polyData)) {
+  #   logger %>% writeLog(
+  #     type = 'error', hlSpp(spN),
+  #     "Shapefile does not match with background extent. Please specify a new polygon. (**)"
+  #   )
+  #   return()
+  # }
 
-  if (!rgeos::gIntersects(bgExt, polyData)) {
-    logger %>% writeLog(
-      type = 'error', hlSpp(spN),
-      "Shapefile does not match with background extent. Please specify a new polygon. (**)"
-    )
-    return()
-  }
-
-  smartProgress(logger, message = "Uploading spatial data ...", {
-    spatialPoly <- raster::intersect(polyData, bgExt)
+  smartProgress(logger, message = "Intersecting spatial data ...", {
+    sdm <- stars::st_as_stars(sdm)
+    sdm <- sdm >= 0
+    polR <- sf::as_Spatial(sf::st_as_sf(sdm, as_points = FALSE, merge = TRUE))
+    spatialPoly <- raster::intersect(polyData, polR)
+    if (length(spatialPoly) < 1) {
+      logger %>% writeLog(
+        type = 'error', hlSpp(spN),
+        "Shapefile does not match with background extent. Please specify a new polygon. (**)"
+      )
+      return()
+    }
   })
   return(spatialPoly)
 }

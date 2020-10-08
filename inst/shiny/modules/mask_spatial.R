@@ -38,7 +38,7 @@ mask_spatial_module_server <- function(input, output, session, common) {
     }
     # FUNCTION CALL ####
     spatialMask <- mask_spatialPoly(input$maskShp$datapath, input$maskShp$name,
-                                    spp[[curSp()]]$procEnvs$bgExt,
+                                    spp[[curSp()]]$postProc$prediction,
                                     logger, spN = curSp())
     # LOAD INTO SPP ####
     spp[[curSp()]]$mask$spatialMask <- spatialMask
