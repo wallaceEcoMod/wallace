@@ -35,10 +35,10 @@ post_userSDM <- function(rasPath, rasName, logger = NULL) {
   spName <- paste0(toupper(substring(spName, 1, 1)),
                    substring(spName, 2, nchar(spName)))
   # Check genus and species name on file
-  if (!(length(strsplit(spName, " ")[[1]]) != 2 | length(strsplit(spName, "_")[[1]]) != 2)) {
+  if (!(length(strsplit(spName, " ")[[1]]) == 2 | length(strsplit(spName, "_")[[1]]) == 2)) {
     logger %>%
-      writeLog(type = 'warning',
-               rasName, ' without genus and species names (e.g. Canis_lupus.tif).')
+      writeLog(type = 'warning', "'",
+               rasName, "' without genus and species names (e.g. Canis_lupus.tif).")
     return()
   }
   smartProgress(logger, message = "Uploading user-specified SDM (**)...", {
@@ -46,6 +46,13 @@ post_userSDM <- function(rasPath, rasName, logger = NULL) {
     r <- raster::trim(r)
     names(r) <- fileNameNoExt(rasName)
     extPoly <- raster::extent(r)
+    if (extPoly@xmin < -180 | extPoly@xmax > 180 |
+        extPoly@ymin < -90 | extPoly@ymax > 90) {
+      logger %>%
+        writeLog(
+          type = "error", "Wrong extent projection. '", rasName,"' cannot be uploaded. (**)")
+      return()
+    }
     extPoly <- as(extPoly, 'SpatialPolygons')
   })
 
