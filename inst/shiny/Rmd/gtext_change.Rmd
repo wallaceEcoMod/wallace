@@ -1,0 +1,23 @@
+---
+  title: "change"
+output: html_document
+---
+### **Component: ChangeRangeR**
+
+**Background**
+
+  Translating a species’ current distribution into meaningful conservation metrics in a repeatable and transparent way to inform conservation planning and decision-making remains an outstanding issue in conservation biology. By using a species distribution model (SDM), as well as landscape requirements (e.g., forest cover), we can mask the output of an SDM to only those areas likely to be suitable to estimate the species’ current
+range (as we implement in the Wallace component Mask). From these reduced model outputs, upper bounds of IUCN metrics regarding area of occupancy (AOO) and extent of occurrence (EOO) can be calculated to inform the assessment of a species’ conservation status, in combination with other information. In
+addition, we can calculate the proportion of a species’ range size that is protected, that is threatened, or that is associated with different land cover types. If past or future model projections or geospatial data
+on habitat for masking are available, we can also calculate and visualize change in these metrics over time. These change metrics can then inform IUCN red-listing assessments and forward-thinking conservation planning.
+
+**Implementation**
+
+  In Wallace we can calculate these metrics for the using the changeRangeR package, as implemented in three modules:  Areas to calculate range size, EOO based on sdm or occurrence data and AOO based on sdm, masked sdm, or occurrence data; Overlap with a shapefile; and change over Time.
+Beyond single species, we can combine models from multiple species to calculate community-level metrics of conservation interest  - for that, see the Alpha Div component.
+
+**References**
+
+IUCN Standards and Petitions Committee. 2019. Guidelines for Using the IUCN Red List Categories and Criteria. Version 14. Prepared by the Standards and Petitions Committee.
+
+Merow, C., Galante, P., Gerstner, B., Johnson, B., Kass, J.M., Paz, A., Rosauer, D., Serra, P., Anderson, R.P., Blair, M. “changeRangeR: Translating species’ distributions into conservation metrics”. In prep.

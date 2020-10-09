@@ -2,11 +2,20 @@
 
 **BACKGROUND**
 
-text
+For users that have information on past environmental conditions or future scenarios, they can calculate changes in metrics over time and view a line graph and table of those changes.
 
 **IMPLEMENTATION**
 
-text
+Wallace implements the envChange function in changeRangeR.
+
+These analyses require the following data:
+
+SDM: This can be a continuous or thresholded sdm. You can make the model in wallace or upload the sdm in in the User SDM component.
+
+Environmental data: For example, forest cover data, that include in the filename the year of the data.
+
+Threshold value: Enter a value for the environmental data that you want to compare across time within the species' range.  
+
 
 **REFERENCES**
 
