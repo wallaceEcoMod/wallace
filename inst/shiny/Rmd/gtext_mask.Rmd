@@ -1,0 +1,18 @@
+---
+title: "proj"
+output: html_document
+---
+
+### **Component: Mask map**
+
+**ORIENTATION**
+
+The goal of masking range maps (or species distribution models) is to improve spatial (and possibly temporal) accuracy by incorporating different types of information. Often statistically-based SDMs are used to identify suitable environmental conditions, as the models detect locations with similar environmental conditions to where the species was observed. Often, these modeled maps are best interpreted as potential distributions since other processes besides abiotic conditions may restrict the distribution, such as dispersal, biotic interactions, social dynamics, historical contingencies, or human modification of habitat. In contrast, realized distributions describe those locations that are actually occupied by the species (at some spatial resolution) and may be smaller than potential distributions. By starting with potential distributions from any form of SDM, we can use other pieces of information to refine these models to approach realized distributions.
+
+**IMPLEMENTATION**
+
+Here, the Mask component implements methods for estimating realized distributions based on different types of data. Additional information not included as a predictor in the SDM can be described by masks that differentiate potential habitat from non-habitat. They represent a conceptual model usually relating to a single variable, e.g., forest cover, occurrence of competing species, dispersal.
+
+**REFERENCES**
+
+Merow, C., P. J. Galante, C. Babich Morrow, J. M. Kass, A. Moore, B. E. Gerstner, V. Grisales-Betancur, G. E. Pinilla- Buitrago, E. A. Noguera-Urbano, J. Velasquez-Tibatá, R. P. Anderson, M. E. Blair. Operationalizing expert knowledge in species' range estimates using diverse data types: the R package maskRangeR. https://cmerow.github.io/maskRangeR/
