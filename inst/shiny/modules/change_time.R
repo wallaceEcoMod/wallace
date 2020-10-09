@@ -156,7 +156,7 @@ change_time_module_server <- function(input, output, session, common) {
                tagList(
                  plotOutput(session$ns('timePlot'))
                )),
-      tabPanel("Are through time values",
+      tabPanel("Area through time values",
                tagList(
                  verbatimTextOutput(session$ns('areaMasked'))
                ))
