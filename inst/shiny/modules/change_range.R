@@ -28,7 +28,7 @@ change_range_module_ui <- function(id) {
                                  choices = list("Occurrences & Wallace SDM" = "occs",
                                                 "Wallace SDM" = "wallace",
                                                 "Projected SDM" = "proj",
-                                                "UserSDM" = "user",
+                                                "User SDM" = "user",
                                                 "Masked SDM" = "mask"))),
 ##question for mary add option to do range for sdm that comes from maskRangeR or uploaded?
     actionButton(ns("goRange"), "Calculate")
@@ -337,7 +337,7 @@ change_range_module_server <- function(input, output, session, common) {
         # Create a minimum convex polygon around the occurrences
         eoo <- changeRangeR::mcp(occs.xy)
         # Define the coordinate reference system as unprojected
-        crs(eoo) <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+        raster::crs(eoo) <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
         area <- raster::area(eoo)/1000000
 
       })
