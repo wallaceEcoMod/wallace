@@ -59,11 +59,17 @@ poccs_selectOccs <- function(occs, polySelXY, polySelID = 1, logger = NULL, spN 
     newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(polySelXY)), ID=polySelID)))  # create new polygon from coords
 
     intersect <- sp::over(pts, newPoly)
+
     ptRemIndex <- as.numeric(which(is.na(intersect)))
 
     remIDs <- printVecAsis(pts[ptRemIndex,]$occID)
     # need code here to format the string better
-
+    if (is.na(ptRemIndex[1])){
+      logger %>% writeLog(type = 'warning',
+                          hlSpp(spN), "Your polygon is selecting all occurrences. None will be removed.")
+      occs.sel <- occs
+      return()
+    }
     occs.sel <- occs[-ptRemIndex,]
 
     logger %>% writeLog(
