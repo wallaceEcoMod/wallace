@@ -514,8 +514,8 @@ change_range_module_server <- function(input, output, session, common) {
     #aootype<-paste0("AOO based on ", spp[[curSp()]]$rmm$data$change$AOOtype)
     #names(all_areas)<-c(rangetype,eootype,aootype)
       paste(
-        "Range based on", spp[[curSp()]]$change$rangetype, spp[[curSp()]]$change$range[1], "\n",
-        "EOO based on ",  spp[[curSp()]]$rmm$data$change$EOOtype, spp[[curSp()]]$rmm$data$change$EOOval, "\n",
+        "Range based on", spp[[curSp()]]$change$rangetype, spp[[curSp()]]$change$range[1],"Km^2", "\n",
+        "EOO based on ",  spp[[curSp()]]$rmm$data$change$EOOtype, spp[[curSp()]]$rmm$data$change$EOOval,"Km^2","\n",
         "AOO based on ", spp[[curSp()]]$rmm$data$change$AOOtype, spp[[curSp()]]$rmm$data$change$AOOval)
 
 

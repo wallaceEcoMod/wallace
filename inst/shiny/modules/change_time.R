@@ -118,6 +118,7 @@ change_time_module_server <- function(input, output, session, common) {
       logger %>% writeLog(type = 'error', "Please enter the years for all inputed variables")
       return()
     }
+    if(!is.null(spp[[curSp()]]$change$time)){
     smartProgress(
       logger,
       message = "Calculating area change through time ", {
@@ -128,15 +129,20 @@ change_time_module_server <- function(input, output, session, common) {
     ##run function
     SDM.time <- changeRangeR::envChange(rStack = rStack, SDM = SDM, threshold = threshold)
     ### Set up years for plotting
+
       })
 
+      logger %>% writeLog( "SDM area after masking for environmental variables through time calculation done")
+      # LOAD INTO SPP ####
+      spp[[curSp()]]$change$AreaTime <-SDM.time$Area
+      spp[[curSp()]]$change$Years <- years
+      common$update_component(tab = "Results")
+    }
+else{
+  logger %>% writeLog( type = 'error',"No SDM is selected for the calculations")
+}
 
-    req(area)
-    logger %>% writeLog( "SDM area after masking for environmental variables through time calculation done")
-    # LOAD INTO SPP ####
-    spp[[curSp()]]$change$AreaTime <-SDM.time$Area
-    spp[[curSp()]]$change$Years <- years
-    common$update_component(tab = "Results")
+
 
  })
 
@@ -144,7 +150,7 @@ change_time_module_server <- function(input, output, session, common) {
   output$TimeAreas <- renderUI({
     # Result
     output$areaMasked <- renderPrint({ paste(
-        "SDM area after masking for environmental variables through time",
+        "SDM area (in Km^2) after masking for environmental variables through time for:",  spp[[curSp()]]$change$Years,
         spp[[curSp()]]$change$AreaTime) })
     output$timePlot <- renderPlot({
       plot(y = spp[[curSp()]]$change$AreaTime, x = spp[[curSp()]]$change$Years, main = "SDM area change", ylab = "area (square m)",xlab="Time")

@@ -295,6 +295,7 @@ change_overlap_module_map <- function(map, common) {
   # Map logic
  spp <- common$spp
   curSp <- common$curSp
+  map %>% clearAll()
   #plot SDM to use
   req(spp[[curSp()]]$change$Plot)
   sdm <-  spp[[curSp()]]$change$Plot
