@@ -150,7 +150,7 @@ else{
   output$TimeAreas <- renderUI({
     # Result
     output$areaMasked <- renderPrint({ paste(
-        "SDM area after masking for environmental variables through time",
+        "SDM area (in Km^2) after masking for environmental variables through time for:",  spp[[curSp()]]$change$Years,
         spp[[curSp()]]$change$AreaTime) })
     output$timePlot <- renderPlot({
       plot(y = spp[[curSp()]]$change$AreaTime, x = spp[[curSp()]]$change$Years, main = "SDM area change", ylab = "area (square m)",xlab="Time")
