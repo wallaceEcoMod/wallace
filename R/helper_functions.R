@@ -60,8 +60,12 @@ writeLog <- function(logger, ..., type = 'default') {
     if (type == "default") {
       pre <- "> "
     } else if (type == 'error') {
+      shinyalert::shinyalert("Please, check window-Log for more information (**)",
+                             type = "error")
       pre <- '> <font color="red"><b>! ERROR</b></font> : '
     } else if (type == 'warning') {
+      shinyalert::shinyalert("Please, check window-Log for more information (**)",
+                             type = "warning")
       pre <- '> <font color="orange"><b>! WARNING</b></font> : '
     }
     newEntries <- paste0('<br>', pre, ..., collapse = "")

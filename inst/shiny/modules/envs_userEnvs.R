@@ -5,7 +5,8 @@ envs_userEnvs_module_ui <- function(id) {
       ns("doBrick"),
       label = "Save to memory for faster processing and save/load option (**)",
       value = FALSE), # Check default (value = FALSE)
-    fileInput(ns("userEnvs"), label = "Input rasters", multiple = TRUE),
+    fileInput(ns("userEnvs"), label = "Input rasters",
+              accept = c(".tif", ".asc"), multiple = TRUE),
     tags$div(
       title = "Add Batch guidance text here (**)",
       checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE) # Check default (value = FALSE)
