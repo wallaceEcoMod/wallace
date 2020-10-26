@@ -26,7 +26,10 @@ tagList(
     tabPanel("Model", value = 'model'),
     tabPanel("Visualize", value = 'vis'),
     tabPanel("Project", value = 'proj'),
-    tabPanel("Reproduce", value = 'rep')
+    tabPanel("Reproduce", value = 'rep'),
+    navbarMenu("Help", icon = icon("question-circle"),
+               HTML('<a href="https://groups.google.com/g/wallaceEcoMod" target="_blank">Google Group</a>'),
+               HTML('<a href="https://github.com/wallaceEcoMod/wallace/issues" target="_blank">GitHub Issues</a>'))
   ),
   tags$div(
     class = "container-fluid",
