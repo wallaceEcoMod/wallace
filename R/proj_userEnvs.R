@@ -75,15 +75,15 @@ proj_userEnvs <- function(evalOut, curModel, envs, pjExt, alg, outputType = NULL
       if (outputType == "raw") outputType <- "exponential"
       modProjUser <- ENMeval::enm.maxnet@predict(evalOut@models[[curModel]],
                                                  projMsk,
+                                                 doClamp = clamp,
                                                  other.settings = list(
-                                                 pred.type = outputType,
-                                                 clamp = clamp))
+                                                 pred.type = outputType))
     } else if (alg == 'maxent.jar') {
       modProjUser <- ENMeval::enm.maxent.jar@predict(evalOut@models[[curModel]],
                                                      projMsk,
+                                                     clamp = clamp,
                                                      other.settings = list(
-                                                     pred.type = outputType,
-                                                     clamp = clamp))
+                                                     pred.type = outputType))
     }
   })
 
