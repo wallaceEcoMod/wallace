@@ -122,7 +122,7 @@ model_maxent_module_server <- function(input, output, session, common) {
                                  input$rms,
                                  input$rmsStep,
                                  input$fcs,
-                                 input$clamp,
+                                 as.logical(input$clamp),
                                  input$algMaxent,
                                  catEnvs,
                                  input$parallel,

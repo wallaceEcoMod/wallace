@@ -129,14 +129,16 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
   # get just coordinates
   occs.xy <- occs %>% dplyr::select(longitude, latitude)
   bg.xy <- bg %>% dplyr::select(longitude, latitude)
+  print(dim(occs.xy))
+  print(dim(bg.xy))
   # run ENMeval
-  e <- ENMeval::ENMevaluate(occs = occs.xy,
-                            bg = bg.xy,
+  e <- ENMeval::ENMevaluate(occs = as.data.frame(occs.xy),
+                            bg = as.data.frame(bg.xy),
                             partitions = 'user',
                             user.grp = user.grp,
                             envs = bgMsk,
                             tune.args = tune.args,
-                            clamp = clampSel,
+                            doClamp = clampSel,
                             algorithm = algMaxent,
                             categoricals = catEnvs,
                             parallel = parallel,
