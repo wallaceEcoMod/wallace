@@ -97,7 +97,7 @@ bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2],
 mapProjVals_{{spAbr}} <- getRasterVals(proj_time_{{spAbr}},"{{outputType_rmd}}")
 
   # if threshold specified
-rasPal{{spAbr}} <- c('gray', 'red')
+rasPal_{{spAbr}} <- c('gray', 'red')
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
@@ -227,7 +227,7 @@ bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2],
 mapProjVals_{{spAbr}} <- getRasterVals(proj_time_{{spAbr}},"{{outputType_rmd}}")
 
   # if threshold specified
-rasPal{{spAbr}} <- c('gray', 'red')
+rasPal_{{spAbr}} <- c('gray', 'red')
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
@@ -361,7 +361,7 @@ bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2],
 mapProjVals_{{spAbr}} <- getRasterVals(proj_time_{{spAbr}},"{{outputType_rmd}}")
 
   # if threshold specified
-rasPal{{spAbr}} <- c('gray', 'red')
+rasPal_{{spAbr}} <- c('gray', 'red')
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
@@ -466,7 +466,7 @@ bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2],
 mapProjVals_{{spAbr}} <- getRasterVals(proj_time_{{spAbr}},"{{outputType_rmd}}")
 
 # if threshold specified
-rasPal{{spAbr}} <- c('gray', 'red')
+rasPal_{{spAbr}} <- c('gray', 'red')
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
@@ -584,7 +584,7 @@ bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2],
 mapProjVals_{{spAbr}} <- getRasterVals(proj_time_{{spAbr}},"{{outputType_rmd}}")
 
   # if threshold specified
-rasPal{{spAbr}} <- c('gray', 'red')
+rasPal_{{spAbr}} <- c('gray', 'red')
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
@@ -704,7 +704,7 @@ bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2],
 mapProjVals_{{spAbr}} <- getRasterVals(proj_time_{{spAbr}},"{{outputType_rmd}}")
 
   # if threshold specified
-rasPal{{spAbr}} <- c('gray', 'red')
+rasPal_{{spAbr}} <- c('gray', 'red')
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
