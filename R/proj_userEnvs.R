@@ -1,21 +1,21 @@
 #' @title proj_userEnvs Project model to user specified area and time
-#' @description The function projects the model generated in previous components to user uploaded environmental variables
+#' @description The function projects the model generated in previous components to user uploaded environmental variables.
 #'
 #' @details
 #' This functions allows for the projection of the model created in previous components to a new time and area provided by the user.
-#' The projection time and area is user provided The model will be projected to the new time and area as long as the environmental variables provided are available for the area and match the variables used for model building.
+#' The projection time and area is user provided. The model will be projected to the new time and area as long as the environmental variables provided are available for the area and match the variables used for model building.
 #' This function returns a list including the cropped environmental variables used for projecting and the projected model.
 
 #' @param evalOut ENMevaluate output from previous module and using any of the available algorithms
-#' @param curModel If algorithm is maxent, model selected by user as best or optimal, in terms of feature class and regularization multiplier (e.g 'L_1'). Else must be 1
-#' @param envs User provided environmental layers (in raster format) to be used for projection.
-#' @param outputType Output type to be used when algorithm is maxnet or maxent.jar.
-#' @param alg Modeling algorithm used in the model component. Can be one of : 'BIOCLIM', 'maxent.jar' or 'maxnet'
-#' @param clamp logical, whether projection will be of clamped or unclamped model.
-#' @param pjExt Extent of the area to project the model to. This must be provided by the user as a shapefileor as a SpatialPolygons object
-#' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#' @param curModel if algorithm is maxent, model selected by user as best or optimal, in terms of feature class and regularization multiplier (e.g 'L_1'). Otherwise it must be 1
+#' @param envs user provided environmental layers (in raster format) to be used for projection
+#' @param outputType output type to be used when algorithm is maxnet or maxent.jar
+#' @param alg modeling algorithm used in the model component. Can be one of : 'BIOCLIM', 'maxent.jar' or 'maxnet'
+#' @param clamp logical whether projection will be of clamped or unclamped model
+#' @param pjExt extent of the area to project the model. This must be provided by the user as a shapefile or as a SpatialPolygons object
+#' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
-#' @param spN Character. Used to obtain species name for logger messages
+#' @param spN character used to obtain species name for logger messages
 
 # @keywords
 #'
@@ -38,7 +38,7 @@
 # @return
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 #' @author Andrea Paz <paz.andreita@@gmail.com>
-#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
 #' @seealso \code{\link[dismo]{predict}}, \code{\link{proj_time}} \code{\link{proj_userExtent}}
 #'
@@ -75,15 +75,15 @@ proj_userEnvs <- function(evalOut, curModel, envs, pjExt, alg, outputType = NULL
       if (outputType == "raw") outputType <- "exponential"
       modProjUser <- ENMeval::enm.maxnet@predict(evalOut@models[[curModel]],
                                                  projMsk,
+                                                 doClamp = clamp,
                                                  other.settings = list(
-                                                 pred.type = outputType,
-                                                 clamp = clamp))
+                                                 pred.type = outputType))
     } else if (alg == 'maxent.jar') {
       modProjUser <- ENMeval::enm.maxent.jar@predict(evalOut@models[[curModel]],
                                                      projMsk,
+                                                     doClamp = clamp,
                                                      other.settings = list(
-                                                     pred.type = outputType,
-                                                     clamp = clamp))
+                                                     pred.type = outputType))
     }
   })
 

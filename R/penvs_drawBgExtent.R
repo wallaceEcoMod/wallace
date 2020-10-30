@@ -1,5 +1,5 @@
 #' @title penvs_drawBgExtent: Draw background extent
-#' @description This function generates a background area according to a user drwan polygon and provided buffer
+#' @description This function generates a background area according to a user drawn polygon and provided buffer.
 #'
 #' @details
 #' This function is used in the select study region component. Here, in the GUI, the user draws a polygon to be used
@@ -7,10 +7,10 @@
 #' The function returns a SpatialPolygonsDataFrame object of the desired extent (+ buffer).
 
 #'
-#' @param polyExtXY Coordinates of polygon endpoints obtained from user drawn polygon in GUI.
-#' @param polyExtID Numeric ID to be used in the generation of the polygon.
-#' @param drawBgBuf The buffer to be used in generating the SpatialPolygonsDataFrame, maybe be 0 or >0. A number must be specified.
-#' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.
+#' @param polyExtXY coordinates of polygon endpoints obtained from user drawn polygon in GUI
+#' @param polyExtID numeric ID to be used in the generation of the polygon
+#' @param drawBgBuf the buffer to be used in generating the SpatialPolygonsDataFrame, maybe be 0 or >0. A number must be specified.
+#' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data
 #' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #' otherwise leave the default NULL
 #' @param spN data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages
@@ -27,8 +27,8 @@
 #' @return This functions returns a SpatialPolygonsDataFrame based on the user specified coordinates (drawn on map)
 #' This SpatialPolygonsDataFrame may be larger than specified if drawBgBuf > 0. The SpatialPolygonsDataFrame will include all occurrences.
 
-#' @author Jamie Kass < jamie.m.kass@@gmail.com >
-#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Jamie Kass <jamie.m.kass@@gmail.com>
+#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
 #' @seealso \code{\link{penvs_userBgExtent}}, \code{\link{penvs_bgExtent}}, \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}
 # @references

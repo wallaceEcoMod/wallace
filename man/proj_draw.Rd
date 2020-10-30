@@ -7,13 +7,13 @@
 proj_draw(polyPjXY, polyPjID, drawPjBuf, logger = NULL, spN = NULL)
 }
 \arguments{
-\item{polyPjXY}{Coordinates of polygon endpoints obtained from user drawn polygon.}
+\item{polyPjXY}{coordinates of polygon endpoints obtained from user drawn polygon}
 
-\item{polyPjID}{Numeric ID to be used in the generation of the polygon.}
+\item{polyPjID}{numeric ID to be used in the generation of the polygon}
 
-\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny, otherwise leave the default NULL}
+\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny, otherwise leave the default NULL}
 
-\item{spN}{Character. Used to obtain species name for logger messages}
+\item{spN}{character used to obtain species name for logger messages}
 
 \item{drawBgBuf}{the buffer to be used in generating the SpatialPolygonsDataFrame, must be >=0 . A number must be specified.}
 }
@@ -22,7 +22,7 @@ This functions returns a SpatialPolygonsDataFrame based on the user specified co
 This SpatialPolygonsDataFrame may be larger than specified if drawBgBuf > 0.
 }
 \description{
-This function creates a polygon object from coordinates of user drwan poylgon in the GUI
+This function creates a polygon object from coordinates of user drawn poylgon in the GUI.
 }
 \details{
 This function is used in the project model component. In the GUI, the user draws a polygon to be used
@@ -42,5 +42,5 @@ polygonTest<-proj_draw(polyPjXY=userDrawPoly, polyPjID, drawPjBuf, logger = NULL
 \code{\link{proj_userEnvs}}
 }
 \author{
-Gonzalo Pinilla gpinillabuitrago@gradcenter.cuny.edu
+Gonzalo Pinilla <gpinillabuitrago@gradcenter.cuny.edu>
 }

@@ -1,17 +1,17 @@
 
 #' @title vis_bioclimPlot Visualize bivariate plot of bioclim model
 #' @description
-#' This functions creates a bivariate plot with two of the environmental variables used for modeling as x and y axes and occurrencies as observations
+#' This functions creates a bivariate plot with two of the environmental variables used for modeling as x and y axes and occurrences as observations.
 #'
 #' @details
-#' This is a bivariate plot with x and y axes representing two of the envo=ironmental layers used for modelling (user selected although 1 and 2 as default)/
+#' This is a bivariate plot with x and y axes representing two of the environmental layers used for modeling (user selected although 1 and 2 as default)/
 #' Occurrences used for modeling are shown with differential visualization if they are outside of the selected percentile distribution (for any variable).
-#' Plot also includes a rectangle representing the bivariate bioclimatic enveloppe according to a provided percentile.
+#' Plot also includes a rectangle representing the bivariate bioclimatic envelope according to a provided percentile.
 #'
-#' @param x Bioclim model including values for each environmental layer at each occurrence point.
-#' @param a Numeric. Environmental layer to be used as x axis. Default is layer 1.
-#' @param b Numeric. Environmental layer to be used as x axis. Default is layer 2.
-#' @param p Numeric (0-1). Percentile distribution to be used for plotting enveloppe and showing points outside of enveloppe. Default is 0.9.
+#' @param x bioclim model including values for each environmental layer at each occurrence point
+#' @param a Numeric Environmental layer to be used as x axis. Default is layer 1.
+#' @param b Numeric Environmental layer to be used as x axis. Default is layer 2.
+#' @param p Numeric (0-1) percentile distribution to be used for plotting envelope and showing points outside of envelope. Default is 0.9
 
 # @keywords
 #'
@@ -31,7 +31,7 @@
 #' @return A bivariate plot of environmental values for occurrences. Includes a blue rectangle representing the bioclimatic enveloppe given p.
 #' Occurrences that are inside the enveloppe for all layers (included those not plotted) are shown as green circles and those outside of the enveloppe for one ore more variables are plotted as orange triangles/
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
-#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
 #' @seealso
 #'\code{\link{model_bioclim}} \code{\link[ENMeval]{ENMevaluate}}

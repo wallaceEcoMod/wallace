@@ -18,7 +18,7 @@ part_partitionOccs(
 \arguments{
 \item{occs}{data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.}
 
-\item{bg}{Coordinates of background points to be used for modelling.}
+\item{bg}{coordinates of background points to be used for modeling}
 
 \item{method}{Partitioning method to be used, one of 5 options: \cr
 (1) 'jack' Non-spatial Partition - jackknife  \cr
@@ -27,13 +27,13 @@ part_partitionOccs(
 (4) 'cb1' spatial Partition - checkerboard 1 (K=2)  \cr
 (5) 'cb2' spatial Partition - checkerboard 2 (K=4)  \cr}
 
-\item{kfolds}{Number of partitions to create if selected method is random k-fold (must be >=2). If other method then keep default of NULL}
+\item{kfolds}{number of partitions to create if selected method is random k-fold (must be >=2). If other method then keep default of NULL}
 
-\item{bgMask}{A RasterStack or a RasterBrick of environmental layers cropped and masked.}
+\item{bgMask}{a RasterStack or a RasterBrick of environmental layers cropped and masked}
 
-\item{aggFact}{Aggregation factor to be used when using checkerboard partition (must be >=1)}
+\item{aggFact}{aggregation factor to be used when using checkerboard partition (must be >=1)}
 
-\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
 \item{spN}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages}
@@ -42,7 +42,7 @@ otherwise leave the default NULL}
 A list of two vectors containing group assignments for occurrences (occs.grp) and background points (bg.grp).
 }
 \description{
-this function partitions occurrence data and background points according to a user selected method.
+This function partitions occurrence data and background points according to a user selected method.
 }
 \details{
 This function is used in the partition occurrence data component.
@@ -65,9 +65,9 @@ partfold <- part_partitionOccs(occs, bgSample, method = folds, kfolds=4, bgMask 
 \code{\link[ENMeval]{partitions}}
 }
 \author{
-Jamie Kass < jamie.m.kass@gmail.com >
+Jamie Kass <jamie.m.kass@gmail.com>
 
-Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
 
-Andrea Paz < paz.andreita@gmail.com>
+Andrea Paz <paz.andreita@gmail.com>
 }

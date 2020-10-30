@@ -1,6 +1,6 @@
 #' @title occs_userOccs Loads user provided occurrence records
 #' @description
-#' Load user database with species occurrence records. Returns a list of lists, one per species provided in database an each species list with a set of appropriate fields
+#' Load user database with species occurrence records. Returns a list of lists, one per species provided in database in each species list with a set of appropriate fields
 #' @details
 #' This function is called by the module occs_queryDb to load a user provided database for
 #' species occurrence records, subset to only those records with coordinates,
@@ -11,7 +11,7 @@
 #' @param txtName name of database without the extension. Database must have at least three columns named 'scientific_name', 'longitude', 'latitude'
 #' @param txtSep  field separator used in database (as in read.delim)
 #' @param txtDec  decimal separator used for coordinates in database
-#' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 # @keywords
 #'
@@ -21,9 +21,9 @@
 #'user.occs <- occs_userOccs(txtPath, txtName,txtSep=",",txtDec=".")
 #'
 #'
-#' @return List of lists. One list per species with occurence records. Each indiivudal species list with appropriate fields for analysis
-#' @author Jamie Kass < jamie.m.kass@@gmail.com >
-#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
+#' @return List of lists. One list per species with occurence records. Each individual species list with appropriate fields for analysis
+#' @author Jamie Kass <jamie.m.kass@@gmail.com>
+#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
 
 # @seealso

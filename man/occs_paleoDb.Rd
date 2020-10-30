@@ -11,9 +11,9 @@ occs_paleoDb(spName, occNum, timeInterval, logger = NULL)
 
 \item{occNum}{integer maximum number of records}
 
-\item{timeInterval}{character , currently a single timeInterval is allowed: "Holocene" (Holocene).}
+\item{timeInterval}{character currently a single timeInterval is allowed: "Holocene" (Holocene).}
 
-\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 }
 \value{
@@ -34,9 +34,9 @@ timeInterval<-"Holocene"
 occsPaleo<- occs_paleoDb(spName, occNum, timeInterval, logger = NULL)
 }
 \author{
-Jamie Kass < jamie.m.kass@gmail.com >
+Jamie Kass <jamie.m.kass@gmail.com>
 
-Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
 
 Sara Varela <sara_varela@yahoo.com>
 }

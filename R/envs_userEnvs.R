@@ -9,7 +9,7 @@
 #' @param rasPath character of path to rasters, must be the full path including file name and extension
 #' @param rasName character vector of raster names to be assigned to loaded rasters
 #' @param doBrick logical converts downloaded rasters to brick for faster processing
-#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 # @keywords
 #'

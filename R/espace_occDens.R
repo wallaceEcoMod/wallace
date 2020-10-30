@@ -6,10 +6,10 @@
 #' This fuctions implements a density estimation for each region in the environmental space (gridded at 100*100 pixels).
 #' Then an occurrence density is estimated using a kernel density approach. The density of environmental conditions in the background is calcuated in the same way.
 #
-#' @param sp.name1 character, name of species 1 to be analyzed
-#' @param sp.name2 character, name of species 2 to be analyzed.
+#' @param sp.name1 character name of species 1 to be analyzed
+#' @param sp.name2 character name of species 2 to be analyzed
 #' @param pca pca output of pca component ( in list format)
-#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 # @keywords
 #'

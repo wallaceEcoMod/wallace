@@ -7,13 +7,13 @@
 espace_occDens(sp.name1, sp.name2, pca, logger = NULL)
 }
 \arguments{
-\item{sp.name1}{character, name of species 1 to be analyzed}
+\item{sp.name1}{character name of species 1 to be analyzed}
 
-\item{sp.name2}{character, name of species 2 to be analyzed.}
+\item{sp.name2}{character name of species 2 to be analyzed}
 
 \item{pca}{pca output of pca component ( in list format)}
 
-\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 }
 \value{

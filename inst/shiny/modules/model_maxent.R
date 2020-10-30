@@ -45,13 +45,16 @@ model_maxent_module_ui <- function(id) {
     strong("Clamping?"),
     tags$div(title = 'Clamp model predictions?',
              selectInput(ns("clamp"), label = '',
-                         choices = list("", "TRUE", "FALSE"))),
+                         choices = list("None selected" = '',
+                                        "TRUE" = "TRUE",
+                                        "FALSE" = "FALSE"))),
     strong("Parallel?"),
     tags$div(
       title = 'Use parallel option for quicker analysis? (**)',
       selectInput(ns("parallel"), label = '',
-                  choices = list("", "TRUE", "FALSE"),
-                  selected = "FALSE"),
+                  choices = list("None selected" = '',
+                                 "TRUE" = "TRUE",
+                                 "FALSE" = "FALSE")),
       conditionalPanel(
         sprintf("input['%s'] == 'TRUE'", ns("parallel")),
         numericInput(
@@ -122,7 +125,7 @@ model_maxent_module_server <- function(input, output, session, common) {
                                  input$rms,
                                  input$rmsStep,
                                  input$fcs,
-                                 input$clamp,
+                                 as.logical(input$clamp),
                                  input$algMaxent,
                                  catEnvs,
                                  input$parallel,
@@ -135,23 +138,21 @@ model_maxent_module_server <- function(input, output, session, common) {
       spp[[sp]]$evalOut <- res.maxent
 
       # METADATA ####
+      # Metadata obtained from ENMeval RMM object
+      spp[[sp]]$rmm$model$algorithm <- res.maxent@rmm$model$algorithm
+      spp[[sp]]$rmm$model$tuneSettings <- res.maxent@rmm$model$tuneSettings
+      spp[[sp]]$rmm$assessment <- res.maxent@rmm$assessment
+      # Overwrite metadata
       spp[[sp]]$rmm$model$algorithms <- input$algMaxent
-      spp[[sp]]$rmm$model$algorithm$maxent$featureSet <- input$fcs
+      spp[[sp]]$rmm$model$algorithm$maxent$clamping <- as.logical(input$clamp)
       spp[[sp]]$rmm$model$algorithm$maxent$regularizationMultiplierSet <- input$rms
+      spp[[sp]]$rmm$model$algorithm$maxent$featureSet <- input$fcs
       spp[[sp]]$rmm$model$algorithm$maxent$regularizationRule <- paste("increment by",
                                                              input$rmsStep)
-      spp[[sp]]$rmm$model$algorithm$maxent$clamping <- input$clamp
       spp[[sp]]$rmm$model$algorithm$maxent$categorical <- catEnvs
       spp[[sp]]$rmm$model$algorithm$maxent$parallel <- input$parallel
       spp[[sp]]$rmm$model$algorithm$maxent$nCores <- input$numCores
-      if(input$algMaxent == "maxent.jar") {
-        ver <- paste("Maxent", maxentJARversion(), "via dismo",
-                     packageVersion('dismo'))
-      }
-      if(input$algMaxent == "maxnet") {
-        ver <- paste("maxnet", packageVersion('maxnet'))
-      }
-      spp[[sp]]$rmm$model$algorithm$maxent$notes <- ver
+
     }
     common$update_component(tab = "Results")
 })

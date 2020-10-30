@@ -9,15 +9,15 @@
 #'
 #' @param spName character species name. For paleobioDb it returns records associated with the specified taxonomic name, including any synonyms.
 #' @param occNum integer maximum number of records
-#' @param timeInterval character , currently a single timeInterval is allowed: "Holocene" (Holocene).
-#' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#' @param timeInterval character currently a single timeInterval is allowed: "Holocene" (Holocene).
+#' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 # @keywords
 #'
 #' @return A list of 2 dataframes. First dataframe is the original dowloaded dataset, second data frame without duplicates and with appropriate fields for analyses
 
-#' @author Jamie Kass < jamie.m.kass@@gmail.com >
-#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Jamie Kass <jamie.m.kass@@gmail.com>
+#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 #' @author Sara Varela <sara_varela@@yahoo.com>
 #' @examples
 #'spName<-"Didelphis virginiana"

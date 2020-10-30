@@ -8,9 +8,9 @@
 #' @param z1 ecospat niche object for species 1 from espace_occDens
 #' @param z2 ecospat niche object for species 2 from espace_occDens
 #' @param iter number of iterations
-#' @param equivalency Logical. Whether to run equivalency test. Default is False.
-#' @param similarity Logical. Whether to run similarity test. Default is True
-#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#' @param equivalency logical whether to run equivalency test. Default is FALSE
+#' @param similarity logical whether to run similarity test. Default is TRUE
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 # @keywords
 #'
@@ -40,7 +40,7 @@
 #'TestNicheOv<-espace_nicheOv(z1=TestOccDens[[sp.name1]], z2=TestOccDens[[sp.name2]], iter=100 , equivalency = TRUE, similarity = TRUE, logger = NULL)
 #'
 #' @return A list of 4 elements if all is set to TRUE. Elements are overlap (Schoener's D), USE (ecopstat.niche.dyn.index), equiv and simil
-#' @author Jamie Kass <jamie.m.kass@@gmail.com >
+#' @author Jamie Kass <jamie.m.kass@@gmail.com>
 #' @author Olivier Broennimann <olivier.broennimann@@unil.ch>
 # @note
 

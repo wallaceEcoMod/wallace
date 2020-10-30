@@ -306,6 +306,7 @@ proj_time_module_server <- function(input, output, session, common) {
     }
 
     # FUNCTION CALL ####
+    req(projTimeEnvs)
     predType <- rmm()$prediction$notes
     if (spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM") {
       projTime.out <- proj_time(evalOut = evalOut(),

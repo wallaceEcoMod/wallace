@@ -7,28 +7,28 @@
 proj_mess(occs, bg, bgMsk, projExtRas, time, logger = NULL, spN = NULL)
 }
 \arguments{
-\item{occs}{A data frame of occurences used for modeling and values of environmental variables for each point}
+\item{occs}{a data frame of occurrences used for modeling and values of environmental variables for each point}
 
-\item{bg}{A data frame of points used as background for modeling and values of environmental variables for each point}
+\item{bg}{a data frame of points used as background for modeling and values of environmental variables for each point}
 
-\item{bgMsk}{A rasterBrick or rasterStack of environmental variables used for modeling. They must be cropped and masked to extent used in model training}
+\item{bgMsk}{a rasterBrick or rasterStack of environmental variables used for modeling. They must be cropped and masked to extent used in model training}
 
-\item{projExtRas}{A rasterStack or rasterBrick of environmental variables to be used for projecting}
+\item{projExtRas}{a rasterStack or rasterBrick of environmental variables to be used for projecting}
 
 \item{time}{a string of the time used for projecting (e.g. "2040 MIROC6 ssp126)}
 
-\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
-\item{spN}{Character. Used to obtain species name for logger messages}
+\item{spN}{character used to obtain species name for logger messages}
 }
 \description{
-This function generates a MESS map for the new variables for projection based on variables and points used for modeling in previous components
+This function generates a MESS map for the new variables for projection based on variables and points used for modeling in previous components.
 }
 \details{
 This functions allows for the creation of a MESS map for the new provided variables for projection.
-These variables are either user uploaded or selected from worldclim database.
-MESS map is based on occurence and background points used for generating the model and the environmental values at those points
+These variables are either user uploaded or selected from WorldClim database.
+MESS map is based on occurrence and background points used for generating the model and the environmental values at those points.
 }
 \examples{
 spN<-"Panthera onca"
@@ -58,5 +58,5 @@ projMess<- proj_mess(occs=modelOccs, bg=modelBg, bgMsk=bgMsk, projExtRas=projExt
 \author{
 Jamie Kass <jkass@gradcenter.cuny.edu>
 
-Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
 }
