@@ -45,13 +45,16 @@ model_maxent_module_ui <- function(id) {
     strong("Clamping?"),
     tags$div(title = 'Clamp model predictions?',
              selectInput(ns("clamp"), label = '',
-                         choices = list("", "TRUE", "FALSE"))),
+                         choices = list("None selected" = '',
+                                        "TRUE" = "TRUE",
+                                        "FALSE" = "FALSE"))),
     strong("Parallel?"),
     tags$div(
       title = 'Use parallel option for quicker analysis? (**)',
       selectInput(ns("parallel"), label = '',
-                  choices = list("", "TRUE", "FALSE"),
-                  selected = "FALSE"),
+                  choices = list("None selected" = '',
+                                 "TRUE" = "TRUE",
+                                 "FALSE" = "FALSE")),
       conditionalPanel(
         sprintf("input['%s'] == 'TRUE'", ns("parallel")),
         numericInput(
