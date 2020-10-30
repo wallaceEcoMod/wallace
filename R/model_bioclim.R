@@ -6,12 +6,12 @@
 #' The function generates model in ENMeval using a user provided partition of occurrences from previous components in the GUI.
 #'
 #' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.
-#' @param bg  Coordinates of background points to be used for modelling.
-#' @param user.grp  A list of two vectors containing group assignments for occurrences (occs.grp) and background points (bg.grp).
-#' @param bgMsk A RasterStack or a RasterBrick of environmental layers cropped and masked to match the provided background extent.
-#' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#' @param bg  coordinates of background points to be used for modeling
+#' @param user.grp  a list of two vectors containing group assignments for occurrences (occs.grp) and background points (bg.grp)
+#' @param bgMsk a RasterStack or a RasterBrick of environmental layers cropped and masked to match the provided background extent
+#' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
-#' @param spN Species name to be used for all logger messages
+#' @param spN species name to be used for all logger messages
 
 # @keywords
 #'
@@ -30,7 +30,7 @@
 #' @return Function returns an ENMevaluate object with all the evaluated models and a selection of appropriate fields.
 
 #' @author Jamie M. Kass <jkass@@gradcenter.cuny.edu>
-#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
 
 #' @seealso \code{\link[ENMeval]{ENMevaluate}}

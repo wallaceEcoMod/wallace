@@ -1,16 +1,16 @@
 #' @title envs_worldclim Obtain worldclim variables
-#' @description download worldclim variables. see www.worldclim.com
+#' @description download worldclim variables. See www.worldclim.com.
 #'
 #' @details
 #' This function is called by the module envs to download worldclim variables from www.worldclim.com.
-#' The variables to be dowloaded are selected by the user with bcSel and the resolution with bcRes
+#' The variables to be dowloaded are selected by the user with bcSel and the resolution with bcRes.
 #' It returns either a rasterStack or rasterBrick of selected variables with appropriate names for further analyses.
 #'
 #' @param bcRes numeric resolution of the climatic layers. Currently avaialable resolutions are 0.5, 2.5 and 10
 #' @param bcSel character vector with bionames to be selected
 #' @param mapCntr numeric vector with longitude and latitude for a tile. Required for bcRes 0.5, for other resolutions world data will be downloaded
 #' @param doBrick logical converts downloaded rasters to brick for faster processing
-#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 #'
 # @keywords
@@ -22,8 +22,8 @@
 #'
 #' @return A rasterStack or a rasterBrick (if doBrick=TRUE) of downloaded worldclim rasters at the requested resolution
 #'
-#' @author Jamie Kass < jamie.m.kass@@gmail.com >
-#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Jamie Kass <jamie.m.kass@@gmail.com>
+#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
 #' @seealso \code{\link[raster]{getData}}
 # @references
