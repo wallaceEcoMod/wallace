@@ -84,7 +84,7 @@ Generate a map of the Maxent generated model with no threshold
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
 predSel_{{spAbr}} <- ENMeval::enm.maxent.jar@predict(
   m_{{spAbr}}, bgMask_{{spAbr}},
-  clamp = {{clamp_rmd}},
+  doClamp = {{clamp_rmd}},
   other.settings = list(pred.type = "{{predType_rmd}}"))
 #Get values of prediction
 mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
@@ -122,7 +122,7 @@ Generate a map of the Maxent generated model with a "{{thresholdRule_rmd}}" thre
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
 predSel_{{spAbr}} <- ENMeval::enm.maxent.jar@predict(
   m_{{spAbr}}, bgMask_{{spAbr}},
-  clamp = {{clamp_rmd}},
+  doClamp = {{clamp_rmd}},
   other.settings = list(pred.type = "{{predType_rmd}}"))
 # Applied selected threshold
 predSel_{{spAbr}} <- predSel_{{spAbr}} > {{threshold_rmd}}

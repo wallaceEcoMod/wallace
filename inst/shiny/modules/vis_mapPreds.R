@@ -106,7 +106,7 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
                                                                     pred.type = predType))
                            } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
                              predSel <- ENMeval::enm.maxent.jar@predict(m, bgMask(),
-                                                                        clamp = clamping,
+                                                                        doClamp = clamping,
                                                                         other.settings = list(
                                                                         pred.type = predType))
                            }

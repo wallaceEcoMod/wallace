@@ -88,7 +88,7 @@ proj_time <- function(evalOut, curModel, envs, pjExt, alg, outputType = NULL,
     } else if (alg == 'maxent.jar') {
       modProjTime <- ENMeval::enm.maxent.jar@predict(evalOut@models[[curModel]],
                                                      pjtMsk,
-                                                     clamp = clamp,
+                                                     doClamp = clamp,
                                                      other.settings = list(
                                                      pred.type = outputType))
     }
