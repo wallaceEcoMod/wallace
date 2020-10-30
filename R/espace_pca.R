@@ -7,13 +7,13 @@
 #' environmental variables and not the point coordinates as outputed by model objects. The PCA is calibrated over the whole set of background points
 #' The provided species name(s) are only used for logger messages and not for querying or selecting occurrences.
 
-#' @param sp.name1 character, name of species 1 to be analyzed
-#' @param sp.name2 character, name of species 2 to be analyzed. Default is NULL.
-#' @param occs.z1 table of occurrences with environmental values only for sp1.
-#' @param occs.z2 table of occurrences with environmental values only for sp2 Default is NULL.
-#' @param bgPts.z1 table of background points with environmental values only for sp1.
-#' @param bgPts.z2 table of background points with environmental values only for sp2. Default is NULL.
-#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#' @param sp.name1 character name of species 1 to be analyzed
+#' @param sp.name2 character name of species 2 to be analyzed. Default is NULL
+#' @param occs.z1 table of occurrences with environmental values only for sp1
+#' @param occs.z2 table of occurrences with environmental values only for sp2. Default is NULL
+#' @param bgPts.z1 table of background points with environmental values only for sp1
+#' @param bgPts.z2 table of background points with environmental values only for sp2. Default is NULL
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 #' @examples
 #' sp.name1<-"Panthera onca"
@@ -28,7 +28,7 @@
 #' @return A list of 14 elements of classes dudi and pca as in dudi.pca
 #' @seealso \code{\link[ade4]{dudi.pca}}
 #'
-#' @author Jamie Kass < jamie.m.kass@@gmail.com >
+#' @author Jamie Kass <jamie.m.kass@@gmail.com>
 #' @author Olivier Broennimann <olivier.broennimann@@unil.ch>
 #' @export
 
