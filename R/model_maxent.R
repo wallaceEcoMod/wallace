@@ -57,7 +57,7 @@
 #' @export
 
 model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
-                         clampSel, algMaxent, catEnvs, parallel = FALSE,
+                         clampSel, algMaxent, catEnvs = NULL, parallel = FALSE,
                          numCores = NULL, logger = NULL, spN = NULL) {
 
   if (is.null(user.grp)) {

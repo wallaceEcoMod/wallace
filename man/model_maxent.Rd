@@ -14,7 +14,7 @@ model_maxent(
   fcs,
   clampSel,
   algMaxent,
-  catEnvs,
+  catEnvs = NULL,
   parallel = FALSE,
   numCores = NULL,
   logger = NULL,
