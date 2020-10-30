@@ -64,7 +64,7 @@ Imports:
     XML,
     zip
 Remotes:
-    gepinillab/ENMEval@dev2
+    gepinillab/ENMEval@dev
 Description: The 'shiny' application Wallace is a modular platform for 
     reproducible modeling of species niches and distributions. Wallace
     guides users through a complete analysis, from the acquisition of species
