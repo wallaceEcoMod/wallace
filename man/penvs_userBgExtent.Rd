@@ -14,15 +14,15 @@ penvs_userBgExtent(
 )
 }
 \arguments{
-\item{bgShp_path}{Path to the user provided shapefile or csv with vertex coordinates. M}
+\item{bgShp_path}{path to the user provided shapefile or csv with vertex coordinates}
 
-\item{bgShp_name}{Name of the user porvided shapefile or csv with vertex coordinates.}
+\item{bgShp_name}{name of the user provided shapefile or csv with vertex coordinates}
 
-\item{userBgBuf}{Buffer to be used in creating the background extent must be >=0}
+\item{userBgBuf}{buffer to be used in creating the background extent must be >=0}
 
 \item{occs}{data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.}
 
-\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
 \item{spN}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages}
@@ -32,11 +32,11 @@ This function returns a SpatialPolygons object with the user provided shape (+ a
 The polygon will be at least large enough to contain all occurrences.
 }
 \description{
-This function generates a background area according to a user provided polygon and buffer
+This function generates a background area according to a user provided polygon and buffer.
 }
 \details{
 This function is used in the select study region component. Here, the user provides either a shapefile or a csv with vertex coordinates
-with the desired shape for the background extent, the user may include a buffer to the given polygon. The buffered poylgon must include all occurrences (occs) or function will return an error.
+with the desired shape for the background extent, the user may include a buffer to the given polygon. The buffered polygon must include all occurrences (occs) or function will return an error.
 The function returns a SpatialPolygons object of the desired extent (+ buffer).
 }
 \examples{
@@ -51,9 +51,9 @@ userBgbf <- penvs_userBgExtent(bgShp_path = Path, bgShp_name = Name, userBgBuf =
 \code{\link{penvs_drawBgExtent}}, \code{\link{penvs_bgExtent}}, \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}
 }
 \author{
-Jamie Kass < jamie.m.kass@gmail.com >
+Jamie Kass <jamie.m.kass@gmail.com>
 
-Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
 
-Andrea Paz < paz.andreita@gmail.com>
+Andrea Paz <paz.andreita@gmail.com>
 }

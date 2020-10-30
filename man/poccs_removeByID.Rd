@@ -7,11 +7,11 @@
 poccs_removeByID(occs, removeID, logger = NULL, spN = NULL)
 }
 \arguments{
-\item{occs}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data.}
+\item{occs}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data}
 
-\item{removeID}{The ID of the occurrence to be removed from the occurrences dataframe.}
+\item{removeID}{the ID of the occurrence to be removed from the occurrences dataframe}
 
-\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
 \item{spN}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages}
@@ -21,12 +21,12 @@ A new occurence dataframe without the user selected occurrence mantaining all
 columns from original dataframe for further analyses.
 }
 \description{
-This function removes user selected occurrences by ID
+This function removes user selected occurrences by ID.
 }
 \details{
 This function is called by the remove occurrences by ID module. It allows for removal of a single
 occurrence flagged by the user on the map. The function will return
-a data frame of occurrences with all relevant columns for futher analyses and without the
+a data frame of occurrences with all relevant columns for further analyses and without the
 occurrence selected by the user
 }
 \examples{
@@ -38,7 +38,7 @@ out.ID <- poccs_removeByID(occs, removeID,spN=spN)
 
 }
 \author{
-Jamie Kass < jamie.m.kass@gmail.com >
+Jamie Kass <jamie.m.kass@gmail.com>
 
-Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
 }

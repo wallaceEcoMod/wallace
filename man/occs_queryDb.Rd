@@ -16,7 +16,7 @@ occs_queryDb(
 )
 }
 \arguments{
-\item{spNames}{character species Latin name, with format "Genus species"}
+\item{spNames}{character species Latin name, with format "Genus species".}
 
 \item{occDb}{character biodiversity database to query; current choices are
 "gbif", "vertnet", and "bison"}
@@ -35,17 +35,17 @@ metadata associated with occurrence records and is not stored or used by
 \item{gbifEmail}{specify only if using `occCite` with GBIF to get a
 complete list of original data sources in a citable format.}
 
-\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
 \item{gbifPW=NULL}{specify only if using `occCite` with GBIF to get a complete
 list of original data sources in a citable format.}
 }
 \value{
-List of lists. One list per species with occurence records. Each indiivudal species list with appropriate fields for analysis
+list of lists one list per species with occurrence records. Each individual species list with appropriate fields for analysis
 }
 \description{
-Queries a given database for occurrence data on the provided species'
+Queries a given database for occurrence data on the provided species
 }
 \details{
 This function is called by the module occs_queryDb to query a database for
@@ -57,11 +57,11 @@ appropriate to studies in biogeography.
 occs_queryDb(spName = "Tremarctos ornatus", occDb = "gbif", occNum = 100)
 }
 \author{
-Jamie Kass < jamie.m.kass@gmail.com >
+Jamie Kass <jamie.m.kass@gmail.com>
 
-Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
 
 Hannah Owens
 
-Andrea Paz < paz.andreita@gmail.com>
+Andrea Paz <paz.andreita@gmail.com>
 }

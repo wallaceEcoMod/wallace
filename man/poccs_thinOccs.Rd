@@ -7,11 +7,11 @@
 poccs_thinOccs(occs, thinDist, logger = NULL, spN = NULL)
 }
 \arguments{
-\item{occs}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data.}
+\item{occs}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data}
 
-\item{thinDist}{Distance in meters to be used for thinning. Number must be positive.}
+\item{thinDist}{distance in meters to be used for thinning. Number must be positive.}
 
-\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
 \item{spN}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages}
@@ -20,7 +20,7 @@ otherwise leave the default NULL}
 Output is a data frame of thinned occurences (all occurences at a distance >thinDist) with the same columns as occs
 }
 \description{
-The function thins the observed occurences by a user provided distance
+The function thins the observed occurrences by a user provided distance.
 }
 \details{
 This function is called by the component poccs: process occurrence data to thin the occurence data
@@ -39,7 +39,7 @@ out.thin <- poccs_thinOccs(occs=occs, thinDist=30,spN=spN,logger=NULL)
 \code{\link[spThin]{thin}}
 }
 \author{
-Jamie Kass < jamie.m.kass@gmail.com >
+Jamie Kass <jamie.m.kass@gmail.com>
 
-Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
 }

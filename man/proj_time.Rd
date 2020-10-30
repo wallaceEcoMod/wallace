@@ -19,22 +19,22 @@ proj_time(
 \arguments{
 \item{evalOut}{ENMevaluate output from previous module and using any of the available algorithms}
 
-\item{curModel}{If algorithm is maxent, model selected by user as best or optimal, in terms of feature class and regularization multiplier (e.g 'L_1'). Else must be 1}
+\item{curModel}{if algorithm is maxent, model selected by user as best or optimal, in terms of feature class and regularization multiplier (e.g 'L_1'). Otherwise must be 1}
 
-\item{envs}{Environmental layers of different time to be used for projecting the model. They must match the layers used for generating the model in the model component}
+\item{envs}{environmental layers of different time to be used for projecting the model. They must match the layers used for generating the model in the model component}
 
-\item{pjExt}{Extent of the area to project the model to. This is defined by the user in the map of the GUI and is provided as a SpatialPolygons object.}
+\item{pjExt}{extent of the area to project the model. This is defined by the user in the map of the GUI and is provided as a SpatialPolygons object}
 
-\item{alg}{Modeling algorithm used in the model component. Can be one of : 'bioclim', 'maxent.jar' or 'maxnet'}
+\item{alg}{modeling algorithm used in the model component. Can be one of : 'bioclim', 'maxent.jar' or 'maxnet'}
 
-\item{outputType}{Output type to be used when algorithm is maxnet or maxent.jar.}
+\item{outputType}{output type to be used when algorithm is maxnet or maxent.jar}
 
-\item{clamp}{logical, whether projection will be of clamped or unclamped model.}
+\item{clamp}{logical whether projection will be of clamped or unclamped model}
 
-\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
-\item{spN}{Character. Used to obtain species name for logger messages}
+\item{spN}{character Used to obtain species name for logger messages}
 }
 \value{
 A list of two elements: projExt and projTime.
@@ -42,7 +42,7 @@ The first is a RasterBrick or RasterStack of the environmental variables cropped
 The second element is a raster of the projected model with the specified output type.
 }
 \description{
-Function projects the model generated in previous components to a new time and area using provided layers
+Function projects the model generated in previous components to a new time and area using provided layers.
 }
 \details{
 This functions allows for the projection of the model created in previous components to a new time and area.
@@ -77,5 +77,5 @@ Jamie Kass <jkass@gradcenter.cuny.edu>
 
 Andrea Paz <paz.andreita@gmail.com>
 
-Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago < pinillabuitrago@gradcenter.cuny.edu>
 }
