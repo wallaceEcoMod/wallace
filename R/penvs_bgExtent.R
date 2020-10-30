@@ -1,16 +1,16 @@
 
 #' @title penvs_bgExtent Generate background extent
-#' @description This function generates a background area according to a user provided method
+#' @description This function generates a background area according to a user provided method.
 #'
 #' @details
 #' This function is used in the select study region component. Here, the user can select between three methods,
 #' 'bounding box' , 'point buffers' or ' minimum convex polygon' to determine the background extent based on the
 #' observed occurrences. The function returns a SpatialPolygonsDataFrame object of the desired extent.
 #'
-#' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.
-#' @param bgSel Method of backround building. Must be one of three options: 'bounding box' , 'point buffers' or ' minimum convex polygon'
-#' @param bgBuf buffer distance in degrees to be used in the building of the background area.
-#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data
+#' @param bgSel method of background building. Must be one of three options: 'bounding box' , 'point buffers' or ' minimum convex polygon'
+#' @param bgBuf buffer distance in degrees to be used in the building of the background area
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #' otherwise leave the default NULL
 #' @param spN data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages
 # @keywords
@@ -21,8 +21,8 @@
 #' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf=0.5,logger = NULL, spN = NULL)
 #'
 #' @return A SpatialPolygonsDataFrame object that contains all occurrences from occs
-#' @author Jamie Kass < jamie.m.kass@@gmail.com >
-#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Jamie Kass <jamie.m.kass@@gmail.com>
+#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
 
 #' @seealso \code{\link{penvs_userBgExtent}}, \code{\link{penvs_drawBgExtent}}, \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}

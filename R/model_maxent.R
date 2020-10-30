@@ -4,23 +4,23 @@
 #'
 #' @details
 #' The function generates model in ENMeval using a user provided partition of occurrences from previous components in the GUI.
-#' User can activate clamping and input de tuning arguments to be used for model building
+#' User can activate clamping and input tuning arguments to be used for model building
 #'
 #' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.
-#' @param bg  Coordinates of background points to be used for modelling.
-#' @param user.grp  A list of two vectors containing group assignments for occurrences (occs.grp) and background points (bg.grp).
-#' @param bgMsk A RasterStack or a RasterBrick of environmental layers cropped and masked to match the provided background extent.
-#' @param rms Vector of range of regularization multipliers to be used in the ENMeval run
-#' @param rmsStep Step to be used when defining regularization multipliers to be used from the provided range.
-#' @param fcs Feature classes to be tested in the ENM eval run
-#' @param clampSel Boolean Use of clamping in the model
-#' @param algMaxent Algorithm tu be used in modeling. A selection of "maxnet" or "maxent.jar"
-#' @param catEnvs  If categorical predictor variables are included must provide the names
-#' @param parallel Whether to use parallel in the generation of models. Default is FALSE
-#' @param numCores If using parallel how many cores to use. Default is NULL
-#' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#' @param bg  coordinates of background points to be used for modeling
+#' @param user.grp  a list of two vectors containing group assignments for occurrences (occs.grp) and background points (bg.grp)
+#' @param bgMsk a RasterStack or a RasterBrick of environmental layers cropped and masked to match the provided background extent
+#' @param rms vector of range of regularization multipliers to be used in the ENMeval run
+#' @param rmsStep step to be used when defining regularization multipliers to be used from the provided range.
+#' @param fcs feature classes to be tested in the ENMeval run
+#' @param clampSel Boolean use of clamping in the model
+#' @param algMaxent algorithm to be used in modeling. A selection of "maxnet" or "maxent.jar"
+#' @param catEnvs  if categorical predictor variables are included must provide the names
+#' @param parallel whether to use parallel in the generation of models. Default is FALSE
+#' @param numCores if using parallel how many cores to use. Default is NULL
+#' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
-#' @param spN Species name to be used for all logger messages
+#' @param spN species name to be used for all logger messages
 
 # @keywords
 #'
@@ -44,7 +44,7 @@
 #'
 #' @return Function returns an ENMevaluate object with all the evaluated models and a selection of appropriate fields.
 #' @author Jamie M. Kass <jkass@@gradcenter.cuny.edu>
-#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
 
 #' @seealso \code{\link[ENMeval]{ENMevaluate}}

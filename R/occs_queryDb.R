@@ -1,6 +1,6 @@
 #' occs_queryDb Query online database for species occurrence records.
 #'
-#' @description  Queries a given database for occurrence data on the provided species'
+#' @description  Queries a given database for occurrence data on the provided species
 #'
 #' @details
 #' This function is called by the module occs_queryDb to query a database for
@@ -8,11 +8,11 @@
 #' remove records with duplicate coordinates, and select some columns with fields
 #' appropriate to studies in biogeography.
 #'
-#' @param spNames character species Latin name, with format "Genus species"
+#' @param spNames character species Latin name, with format "Genus species".
 #' @param occDb character biodiversity database to query; current choices are
 #' "gbif", "vertnet", and "bison"
 #' @param occNum numeric maximum number of occurrence records to return
-#' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 #' @param doCitations set TRUE to use `occCite` to get a complete list of original
 #'  data sources in a citable format
@@ -25,12 +25,12 @@
 #' complete list of original data sources in a citable format.
 #' @param gbifPW=NULL  specify only if using `occCite` with GBIF to get a complete
 #' list of original data sources in a citable format.
-#' @return List of lists. One list per species with occurence records. Each indiivudal species list with appropriate fields for analysis
+#' @return list of lists one list per species with occurrence records. Each individual species list with appropriate fields for analysis
 #'
-#' @author Jamie Kass < jamie.m.kass@@gmail.com >
-#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Jamie Kass <jamie.m.kass@@gmail.com>
+#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 #' @author Hannah Owens
-#' @author Andrea Paz < paz.andreita@@gmail.com>
+#' @author Andrea Paz <paz.andreita@@gmail.com>
 #' @examples
 #' occs_queryDb(spName = "Tremarctos ornatus", occDb = "gbif", occNum = 100)
 #' @export

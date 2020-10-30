@@ -1,6 +1,6 @@
 
 #' @title part_partitionOccs Partition occurrence data
-#' @description this function partitions occurrence data and background points according to a user selected method.
+#' @description This function partitions occurrence data and background points according to a user selected method.
 #'
 #' @details
 #' This function is used in the partition occurrence data component.
@@ -8,17 +8,17 @@
 #' A list of group assignments for both occurrences and background points is returned.
 #'
 #' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.
-#' @param bg Coordinates of background points to be used for modelling.
+#' @param bg coordinates of background points to be used for modeling
 #' @param method Partitioning method to be used, one of 5 options: \cr
 #'  (1) 'jack' Non-spatial Partition - jackknife  \cr
 #'  (2) 'rand' Non-spatial Partition - random k-fold  \cr
 #'  (3) 'block' spatial Partition - block  \cr
 #'  (4) 'cb1' spatial Partition - checkerboard 1 (K=2)  \cr
 #'  (5) 'cb2' spatial Partition - checkerboard 2 (K=4)  \cr
-#' @param kfolds Number of partitions to create if selected method is random k-fold (must be >=2). If other method then keep default of NULL
-#' @param bgMask A RasterStack or a RasterBrick of environmental layers cropped and masked.
-#' @param aggFact Aggregation factor to be used when using checkerboard partition (must be >=1)
-#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#' @param kfolds number of partitions to create if selected method is random k-fold (must be >=2). If other method then keep default of NULL
+#' @param bgMask a RasterStack or a RasterBrick of environmental layers cropped and masked
+#' @param aggFact aggregation factor to be used when using checkerboard partition (must be >=1)
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #' otherwise leave the default NULL
 #' @param spN data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages
 # @keywords
@@ -35,9 +35,9 @@
 #' partfold <- part_partitionOccs(occs, bgSample, method = folds, kfolds=4, bgMask = NULL, aggFact = NULL,spN=spN)
 #'
 #' @return A list of two vectors containing group assignments for occurrences (occs.grp) and background points (bg.grp).
-#' @author Jamie Kass < jamie.m.kass@@gmail.com >
-#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
-#' @author Andrea Paz < paz.andreita@@gmail.com>
+#' @author Jamie Kass <jamie.m.kass@@gmail.com>
+#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Andrea Paz <paz.andreita@@gmail.com>
 # @note
 #' @seealso \code{\link[ENMeval]{partitions}}
 # @references

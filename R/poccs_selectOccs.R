@@ -1,5 +1,5 @@
 #' @title poccs_selectOccs Remove occurrences outside of polygon
-#' @description This function removes occurrences outside of a user created polygon
+#' @description This function removes occurrences outside of a user created polygon.
 #'
 #' @details
 #' This function is called by the select occurrences on map module. It allows for removal of
@@ -7,10 +7,10 @@
 #' a data frame of occurrences with all relevant columns for further analyses and without the
 #' occurrences outside of the polygon.
 #'
-#' @param occs data frame of cleaned occurrences obtained from component occs: Obtain occurrence data.
-#' @param polySelXY matrix of longitude and latitude describing the expert drawn polygon.
-#' @param polySelID Polygon ID to be used in SpatialPolygons creation, defaults to 1.
-#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+#' @param occs data frame of cleaned occurrences obtained from component occs: Obtain occurrence data
+#' @param polySelXY matrix of longitude and latitude describing the expert drawn polygon
+#' @param polySelID polygon ID to be used in SpatialPolygons creation, defaults to 1
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 #' @param spN data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages
 # @keywords
@@ -26,8 +26,8 @@
 
 #' @return A new occurence dataframe including only occurences inside the provided polygon and mantaining all
 #' columns from original dataframe for further analyses.
-#' @author Jamie Kass < jamie.m.kass@@gmail.com >
-#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Jamie Kass <jamie.m.kass@@gmail.com>
+#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
 
 # @seealso
