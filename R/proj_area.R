@@ -11,7 +11,6 @@
 #' @param envs environmental layers to be used for projecting the model. They must match the layers used for generating the model in the model component
 #' @param outputType output type to be used when algorithm is maxnet or maxent.jar
 #' @param alg character. modeling algorithm used in the model component. Can be one of : 'BIOCLIM', 'maxent.jar' or 'maxnet'
-#' @param clamp logical. Whether projection will be of clamped or unclamped model
 #' @param pjExt extent of the area to project the model. This is defined by the user in the map of the GUI and is provided as a SpatialPolygons object
 #' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
@@ -51,17 +50,22 @@
 #' @export
 
 proj_area <- function(evalOut, curModel, envs, pjExt, alg, outputType = NULL,
-                      clamp = NULL, logger = NULL, spN = NULL) {
+                     # clamp = NULL,
+                      logger = NULL, spN = NULL) {
   newPoly <- pjExt
 
   if (alg == 'BIOCLIM') {
     logger %>% writeLog(hlSpp(spN), 'New area projection for BIOCLIM model.')
-  } else if (alg == 'maxent.jar'| clamp == TRUE) {
+  }
+  #else if (alg == 'maxent.jar'| clamp == TRUE) {
 
-     logger %>% writeLog(hlSpp(spN), 'New area projection for clamped model ', curModel, '.')
+   #  logger %>% writeLog(hlSpp(spN), 'New area projection for clamped model ', curModel, '.')
 
-       } else if (clamp == FALSE) {
-       logger %>% writeLog(hlSpp(spN), 'New area projection for unclamped model ', curModel, '.')
+    #   }
+else
+  #if (clamp == FALSE)
+  {
+       logger %>% writeLog(hlSpp(spN), 'New area projection', curModel, '.')
     }
 
 
@@ -78,13 +82,13 @@ proj_area <- function(evalOut, curModel, envs, pjExt, alg, outputType = NULL,
       if (outputType == "raw") outputType <- "exponential"
       modProjArea <- ENMeval::enm.maxnet@predict(evalOut@models[[curModel]],
                                                  projMsk,
-                                                 doClamp = clamp,
+                                                # doClamp = clamp,
                                                  other.settings = list(
                                                  pred.type = outputType))
     } else if (alg == 'maxent.jar') {
       modProjArea <- ENMeval::enm.maxent.jar@predict(evalOut@models[[curModel]],
                                                      projMsk,
-                                                     doClamp = clamp,
+                                                     #doClamp = clamp,
                                                      other.settings = list(
                                                      pred.type = outputType))
     }
