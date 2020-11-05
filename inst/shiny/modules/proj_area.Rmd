@@ -18,7 +18,7 @@ proj_area_{{spAbr}} <- proj_area(
   envs = projAreaEnvs_{{spAbr}} , 
   outputType = "{{outputType_rmd}}",
   alg = "{{alg_rmd}}",
-  clamp = {{clamp_rmd}},
+ #clamp = {{clamp_rmd}},
   pjExt = proj_draw_{{spAbr}}) 
 # store the cropped projection variables
 projExt_{{spAbr}} <- proj_area_{{spAbr}}$projExt
@@ -70,7 +70,7 @@ proj_area_{{spAbr}} <- proj_area(
   envs = projAreaEnvs_{{spAbr}} , 
   outputType = "{{outputType_rmd}}",
   alg = "{{alg_rmd}}",
-  clamp = {{clamp_rmd}},
+  #clamp = {{clamp_rmd}},
   pjExt = proj_draw_{{spAbr}}) 
 
 #store the cropped projection variables
@@ -127,7 +127,7 @@ proj_area_{{spAbr}} <- proj_area(
   envs = projAreaEnvs_{{spAbr}} , 
   outputType = "{{outputType_rmd}}",
   alg = "{{alg_rmd}}",
-  clamp = {{clamp_rmd}},
+  #clamp = {{clamp_rmd}},
   pjExt = proj_userExt_{{spAbr}}) 
 #store the cropped projection variables
 projExt_{{spAbr}} <- proj_area_{{spAbr}}$projExt
@@ -178,7 +178,7 @@ proj_area_{{spAbr}} <- proj_area(
   envs = projAreaEnvs_{{spAbr}} , 
   outputType = "{{outputType_rmd}}",
   alg = "{{alg_rmd}}",
-  clamp = {{clamp_rmd}},
+#  clamp = {{clamp_rmd}},
   pjExt = proj_userExt_{{spAbr}}) 
 
 #store the cropped projection variables
