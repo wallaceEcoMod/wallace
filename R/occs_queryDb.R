@@ -8,13 +8,13 @@
 #' remove records with duplicate coordinates, and select some columns with fields
 #' appropriate to studies in biogeography.
 #'
-#' @param spNames character species Latin name, with format "Genus species".
-#' @param occDb character biodiversity database to query; current choices are
+#' @param spNames character. Species Latin name, with format "Genus species".
+#' @param occDb character. Biodiversity database to query; current choices are
 #' "gbif", "vertnet", and "bison"
-#' @param occNum numeric maximum number of occurrence records to return
-#' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+#' @param occNum numeric. Maximum number of occurrence records to return
+#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
-#' @param doCitations set TRUE to use `occCite` to get a complete list of original
+#' @param doCitations logical. Set TRUE to use `occCite` to get a complete list of original
 #'  data sources in a citable format
 #' @param gbifUser specify only if using `occCite` with GBIF to get a complete list
 #'  of original data sources in a citable format. This, as well as `gbifEmail`

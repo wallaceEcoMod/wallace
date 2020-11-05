@@ -13,11 +13,11 @@
 #' @param envs environmental layers of different time to be used for projecting the model. They must match the layers used for generating the model in the model component
 #' @param outputType output type to be used when algorithm is maxnet or maxent.jar
 #' @param alg modeling algorithm used in the model component. Can be one of : 'bioclim', 'maxent.jar' or 'maxnet'
-#' @param clamp logical whether projection will be of clamped or unclamped model
+#' @param clamp logical. Whether projection will be of clamped or unclamped model
 #' @param pjExt extent of the area to project the model. This is defined by the user in the map of the GUI and is provided as a SpatialPolygons object
-#' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
-#' @param spN character Used to obtain species name for logger messages
+#' @param spN character. Used to obtain species name for logger messages
 # @keywords
 #'
 #' @examples
@@ -45,7 +45,7 @@
 #' The second element is a raster of the projected model with the specified output type.
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 #' @author Andrea Paz <paz.andreita@@gmail.com>
-#' @author Gonzalo E. Pinilla-Buitrago < pinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
 #' @seealso \code{\link[dismo]{predict}}, \code{\link{proj_time}} \code{\link{proj_userEnvs}}
 #'

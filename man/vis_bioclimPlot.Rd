@@ -9,11 +9,11 @@ vis_bioclimPlot(x, a = 1, b = 2, p = 0.9, ...)
 \arguments{
 \item{x}{bioclim model including values for each environmental layer at each occurrence point}
 
-\item{a}{Numeric Environmental layer to be used as x axis. Default is layer 1.}
+\item{a}{numeri.c Environmental layer to be used as x axis. Default is layer 1.}
 
-\item{b}{Numeric Environmental layer to be used as x axis. Default is layer 2.}
+\item{b}{numeric. Environmental layer to be used as x axis. Default is layer 2.}
 
-\item{p}{Numeric (0-1) percentile distribution to be used for plotting envelope and showing points outside of envelope. Default is 0.9}
+\item{p}{numeric. (0-1) percentile distribution to be used for plotting envelope and showing points outside of envelope. Default is 0.9}
 }
 \value{
 A bivariate plot of environmental values for occurrences. Includes a blue rectangle representing the bioclimatic enveloppe given p.

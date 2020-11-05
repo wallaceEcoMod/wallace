@@ -8,10 +8,10 @@
 #' The function returns a SpatialPolygonsDataFrame object of the desired extent (+ buffer).
 
 #' @param polyPjXY coordinates of polygon endpoints obtained from user drawn polygon
-#' @param polyPjID numeric ID to be used in the generation of the polygon
+#' @param polyPjID numeric .ID to be used in the generation of the polygon
 #' @param drawBgBuf the buffer to be used in generating the SpatialPolygonsDataFrame, must be >=0 . A number must be specified.
-#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny, otherwise leave the default NULL
-#' @param spN character used to obtain species name for logger messages
+#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny, otherwise leave the default NULL
+#' @param spN character. Used to obtain species name for logger messages
 # @keywords
 #'
 #' @examples

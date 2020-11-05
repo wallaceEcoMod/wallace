@@ -11,9 +11,9 @@ penvs_bgSample(occs, bgMask, bgPtsNum, logger = NULL, spN = NULL)
 
 \item{bgMask}{a RasterStack or a RasterBrick of environmental layers cropped and masked}
 
-\item{bgPtsNum}{number of points to be sampled from the area, they will be sampled as long as <= non NA cells in any reference layer}
+\item{bgPtsNum}{numeric. Number of points to be sampled from the area, they will be sampled as long as <= non NA cells in any reference layer}
 
-\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
 \item{spN}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages}
