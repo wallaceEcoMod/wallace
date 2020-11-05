@@ -7,15 +7,15 @@
 envs_worldclim(bcRes, bcSel, mapCntr, doBrick, logger = NULL)
 }
 \arguments{
-\item{bcRes}{numeric resolution of the climatic layers. Currently avaialable resolutions are 0.5, 2.5 and 10}
+\item{bcRes}{numeric. Resolution of the climatic layers. Currently avaialable resolutions are 0.5, 2.5 and 10}
 
-\item{bcSel}{character vector with bionames to be selected}
+\item{bcSel}{character. Vector with bionames to be selected}
 
-\item{mapCntr}{numeric vector with longitude and latitude for a tile. Required for bcRes 0.5, for other resolutions world data will be downloaded}
+\item{mapCntr}{numeric. Vector with longitude and latitude for a tile. Required for bcRes 0.5, for other resolutions world data will be downloaded}
 
-\item{doBrick}{logical converts downloaded rasters to brick for faster processing}
+\item{doBrick}{logical. Converts downloaded rasters to brick for faster processing}
 
-\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 }
 \value{

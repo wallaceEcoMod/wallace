@@ -25,13 +25,13 @@ proj_area(
 
 \item{pjExt}{extent of the area to project the model. This is defined by the user in the map of the GUI and is provided as a SpatialPolygons object}
 
-\item{alg}{modeling algorithm used in the model component. Can be one of : 'BIOCLIM', 'maxent.jar' or 'maxnet'}
+\item{alg}{character. modeling algorithm used in the model component. Can be one of : 'BIOCLIM', 'maxent.jar' or 'maxnet'}
 
 \item{outputType}{output type to be used when algorithm is maxnet or maxent.jar}
 
-\item{clamp}{logical whether projection will be of clamped or unclamped model}
+\item{clamp}{logical. Whether projection will be of clamped or unclamped model}
 
-\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
 \item{spN}{Character used to obtain species name for logger messages}
