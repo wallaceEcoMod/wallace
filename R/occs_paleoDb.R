@@ -7,10 +7,10 @@
 #' species occurrence records in the holocene. It removes records with duplicate coordinates, and select some columns with fields
 #' appropriate to studies in biogeography.
 #'
-#' @param spName character species name. For paleobioDb it returns records associated with the specified taxonomic name, including any synonyms.
+#' @param spName character. Species name. For paleobioDb it returns records associated with the specified taxonomic name, including any synonyms.
 #' @param occNum integer maximum number of records
 #' @param timeInterval character currently a single timeInterval is allowed: "Holocene" (Holocene).
-#' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 # @keywords
 #'

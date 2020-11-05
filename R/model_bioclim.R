@@ -9,9 +9,9 @@
 #' @param bg  coordinates of background points to be used for modeling
 #' @param user.grp  a list of two vectors containing group assignments for occurrences (occs.grp) and background points (bg.grp)
 #' @param bgMsk a RasterStack or a RasterBrick of environmental layers cropped and masked to match the provided background extent
-#' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
-#' @param spN species name to be used for all logger messages
+#' @param spN character. Species name to be used for all logger messages
 
 # @keywords
 #'

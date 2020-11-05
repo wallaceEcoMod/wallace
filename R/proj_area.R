@@ -10,10 +10,10 @@
 #' @param curModel If algorithm is maxent, model selected by user as best or optimal, in terms of feature class and regularization multiplier (e.g 'L_1'). Else must be 1
 #' @param envs environmental layers to be used for projecting the model. They must match the layers used for generating the model in the model component
 #' @param outputType output type to be used when algorithm is maxnet or maxent.jar
-#' @param alg modeling algorithm used in the model component. Can be one of : 'BIOCLIM', 'maxent.jar' or 'maxnet'
-#' @param clamp logical whether projection will be of clamped or unclamped model
+#' @param alg character. modeling algorithm used in the model component. Can be one of : 'BIOCLIM', 'maxent.jar' or 'maxnet'
+#' @param clamp logical. Whether projection will be of clamped or unclamped model
 #' @param pjExt extent of the area to project the model. This is defined by the user in the map of the GUI and is provided as a SpatialPolygons object
-#' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 #' @param spN Character used to obtain species name for logger messages
 # @keywords

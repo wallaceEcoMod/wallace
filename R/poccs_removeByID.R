@@ -10,7 +10,7 @@
 #'
 #' @param occs data frame of cleaned occurrences obtained from component occs: Obtain occurrence data
 #' @param removeID the ID of the occurrence to be removed from the occurrences dataframe
-#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 #' @param spN data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages
 
