@@ -15,14 +15,14 @@ occs_userOccs(txtPath, txtName, txtSep, txtDec, logger = NULL)
 
 \item{txtDec}{decimal separator used for coordinates in database}
 
-\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 }
 \value{
-List of lists. One list per species with occurence records. Each indiivudal species list with appropriate fields for analysis
+List of lists. One list per species with occurence records. Each individual species list with appropriate fields for analysis
 }
 \description{
-Load user database with species occurrence records. Returns a list of lists, one per species provided in database an each species list with a set of appropriate fields
+Load user database with species occurrence records. Returns a list of lists, one per species provided in database in each species list with a set of appropriate fields
 }
 \details{
 This function is called by the module occs_queryDb to load a user provided database for
@@ -38,7 +38,7 @@ user.occs <- occs_userOccs(txtPath, txtName,txtSep=",",txtDec=".")
 
 }
 \author{
-Jamie Kass < jamie.m.kass@gmail.com >
+Jamie Kass <jamie.m.kass@gmail.com>
 
-Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
 }

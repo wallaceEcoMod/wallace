@@ -7,13 +7,13 @@
 poccs_selectOccs(occs, polySelXY, polySelID = 1, logger = NULL, spN = NULL)
 }
 \arguments{
-\item{occs}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data.}
+\item{occs}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data}
 
-\item{polySelXY}{matrix of longitude and latitude describing the expert drawn polygon.}
+\item{polySelXY}{matrix of longitude and latitude describing the expert drawn polygon}
 
-\item{polySelID}{Polygon ID to be used in SpatialPolygons creation, defaults to 1.}
+\item{polySelID}{polygon ID to be used in SpatialPolygons creation, defaults to 1}
 
-\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
 \item{spN}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages}
@@ -23,7 +23,7 @@ A new occurence dataframe including only occurences inside the provided polygon 
 columns from original dataframe for further analyses.
 }
 \description{
-This function removes occurrences outside of a user created polygon
+This function removes occurrences outside of a user created polygon.
 }
 \details{
 This function is called by the select occurrences on map module. It allows for removal of
@@ -40,7 +40,7 @@ expertAddedPoly <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
 out.occs<- poccs_selectOccs(occs, polySelXY = expertAddedPoly,polySelID = 1, logger = NULL, spN = spN)
 }
 \author{
-Jamie Kass < jamie.m.kass@gmail.com >
+Jamie Kass <jamie.m.kass@gmail.com>
 
-Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
 }

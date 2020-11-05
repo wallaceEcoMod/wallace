@@ -7,16 +7,16 @@
 envs_ecoClimate(bcAOGCM, bcScenario, ecoClimSel, logger = NULL)
 }
 \arguments{
-\item{bcAOGCM}{name of the Atmospheric and Oceanic Global Circulation Model.
+\item{bcAOGCM}{Name of the Atmospheric and Oceanic Global Circulation Model.
 Options are: "CCSM", "CNRM", "MIROC", "FGOALS", "GISS", "IPSL","MRI", "MPI"}
 
-\item{bcScenario}{select the temporal scenario that you want to download.
+\item{bcScenario}{Select the temporal scenario that you want to download.
 Options are: "LGM" (21,000 years ago), "Holo" (6,000 years ago),
 "Present", "Future 2.6" (rcp 2.6), "Future 4.5" (rcp 4.5), "Future 6" (rcp 6), "Future 8.5" (rcp 8.5)}
 
 \item{ecoClimSel}{Numeric vector with list of variables to select.}
 
-\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 }
 \value{
@@ -28,8 +28,8 @@ download ecoClimate variables. See www.ecoclimate.org.
 \details{
 #' This function is called by the module envs to download ecoClimate variables from www.ecoclimate.org.
 The variables to be dowloaded are selected by the user with bcSel and the resolution is fixed to 0.5 degrees
-This function currently gets ariables from Dropbox and the process takes significantly more time than for other datasets.
-It returns a rasterStack o of selected variables.
+This function currently gets variables from Dropbox and the process takes significantly more time than for other datasets.
+It returns a rasterStack of selected variables.
 }
 \examples{
 bcAOGCM="CCSM"
@@ -43,5 +43,5 @@ Sara Varela <sara_varela@yahoo.com>
 
 Jamie M. Kass <jamie.m.kass@gmail.com>
 
-Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
 }

@@ -19,29 +19,29 @@ proj_userEnvs(
 \arguments{
 \item{evalOut}{ENMevaluate output from previous module and using any of the available algorithms}
 
-\item{curModel}{If algorithm is maxent, model selected by user as best or optimal, in terms of feature class and regularization multiplier (e.g 'L_1'). Else must be 1}
+\item{curModel}{if algorithm is maxent, model selected by user as best or optimal, in terms of feature class and regularization multiplier (e.g 'L_1'). Otherwise it must be 1}
 
-\item{envs}{User provided environmental layers (in raster format) to be used for projection.}
+\item{envs}{user provided environmental layers (in raster format) to be used for projection}
 
-\item{pjExt}{Extent of the area to project the model to. This must be provided by the user as a shapefileor as a SpatialPolygons object}
+\item{pjExt}{extent of the area to project the model. This must be provided by the user as a shapefile or as a SpatialPolygons object}
 
-\item{alg}{Modeling algorithm used in the model component. Can be one of : 'BIOCLIM', 'maxent.jar' or 'maxnet'}
+\item{alg}{modeling algorithm used in the model component. Can be one of : 'BIOCLIM', 'maxent.jar' or 'maxnet'}
 
-\item{outputType}{Output type to be used when algorithm is maxnet or maxent.jar.}
+\item{outputType}{output type to be used when algorithm is maxnet or maxent.jar}
 
-\item{clamp}{logical, whether projection will be of clamped or unclamped model.}
+\item{clamp}{logical whether projection will be of clamped or unclamped model}
 
-\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
-\item{spN}{Character. Used to obtain species name for logger messages}
+\item{spN}{character used to obtain species name for logger messages}
 }
 \description{
-The function projects the model generated in previous components to user uploaded environmental variables
+The function projects the model generated in previous components to user uploaded environmental variables.
 }
 \details{
 This functions allows for the projection of the model created in previous components to a new time and area provided by the user.
-The projection time and area is user provided The model will be projected to the new time and area as long as the environmental variables provided are available for the area and match the variables used for model building.
+The projection time and area is user provided. The model will be projected to the new time and area as long as the environmental variables provided are available for the area and match the variables used for model building.
 This function returns a list including the cropped environmental variables used for projecting and the projected model.
 }
 \examples{
@@ -67,5 +67,5 @@ Jamie Kass <jkass@gradcenter.cuny.edu>
 
 Andrea Paz <paz.andreita@gmail.com>
 
-Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
 }

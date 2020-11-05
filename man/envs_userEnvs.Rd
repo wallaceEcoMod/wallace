@@ -13,7 +13,7 @@ envs_userEnvs(rasPath, rasName, doBrick = FALSE, logger = NULL)
 
 \item{doBrick}{logical converts downloaded rasters to brick for faster processing}
 
-\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 }
 \value{

@@ -20,11 +20,11 @@ espace_nicheOv(
 
 \item{iter}{number of iterations}
 
-\item{equivalency}{Logical. Whether to run equivalency test. Default is False.}
+\item{equivalency}{logical whether to run equivalency test. Default is FALSE}
 
-\item{similarity}{Logical. Whether to run similarity test. Default is True}
+\item{similarity}{logical whether to run similarity test. Default is TRUE}
 
-\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 }
 \value{
@@ -65,7 +65,7 @@ TestNicheOv<-espace_nicheOv(z1=TestOccDens[[sp.name1]], z2=TestOccDens[[sp.name2
 \code{\link{espace_pca}} \code{\link{espace_occDens}} \code{\link[ecospat]{niche.overlap}}  \code{\link[ecospat]{niche.dyn.index}} \code{\link[ecospat]{niche.equivalency.test}} \code{\link[ecospat]{niche.similarity.test}}
 }
 \author{
-Jamie Kass <jamie.m.kass@gmail.com >
+Jamie Kass <jamie.m.kass@gmail.com>
 
 Olivier Broennimann <olivier.broennimann@unil.ch>
 }

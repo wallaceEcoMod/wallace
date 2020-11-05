@@ -14,7 +14,7 @@ model_maxent(
   fcs,
   clampSel,
   algMaxent,
-  catEnvs,
+  catEnvs = NULL,
   parallel = FALSE,
   numCores = NULL,
   logger = NULL,
@@ -24,32 +24,32 @@ model_maxent(
 \arguments{
 \item{occs}{data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.}
 
-\item{bg}{Coordinates of background points to be used for modelling.}
+\item{bg}{coordinates of background points to be used for modeling}
 
-\item{user.grp}{A list of two vectors containing group assignments for occurrences (occs.grp) and background points (bg.grp).}
+\item{user.grp}{a list of two vectors containing group assignments for occurrences (occs.grp) and background points (bg.grp)}
 
-\item{bgMsk}{A RasterStack or a RasterBrick of environmental layers cropped and masked to match the provided background extent.}
+\item{bgMsk}{a RasterStack or a RasterBrick of environmental layers cropped and masked to match the provided background extent}
 
-\item{rms}{Vector of range of regularization multipliers to be used in the ENMeval run}
+\item{rms}{vector of range of regularization multipliers to be used in the ENMeval run}
 
-\item{rmsStep}{Step to be used when defining regularization multipliers to be used from the provided range.}
+\item{rmsStep}{step to be used when defining regularization multipliers to be used from the provided range.}
 
-\item{fcs}{Feature classes to be tested in the ENM eval run}
+\item{fcs}{feature classes to be tested in the ENMeval run}
 
-\item{clampSel}{Boolean Use of clamping in the model}
+\item{clampSel}{Boolean use of clamping in the model}
 
-\item{algMaxent}{Algorithm tu be used in modeling. A selection of "maxnet" or "maxent.jar"}
+\item{algMaxent}{algorithm to be used in modeling. A selection of "maxnet" or "maxent.jar"}
 
-\item{catEnvs}{If categorical predictor variables are included must provide the names}
+\item{catEnvs}{if categorical predictor variables are included must provide the names}
 
-\item{parallel}{Whether to use parallel in the generation of models. Default is FALSE}
+\item{parallel}{whether to use parallel in the generation of models. Default is FALSE}
 
-\item{numCores}{If using parallel how many cores to use. Default is NULL}
+\item{numCores}{if using parallel how many cores to use. Default is NULL}
 
-\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
+\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
-\item{spN}{Species name to be used for all logger messages}
+\item{spN}{species name to be used for all logger messages}
 }
 \value{
 Function returns an ENMevaluate object with all the evaluated models and a selection of appropriate fields.
@@ -59,7 +59,7 @@ This functions generates maxent or maxnet models using ENMeval 2.0 and user prov
 }
 \details{
 The function generates model in ENMeval using a user provided partition of occurrences from previous components in the GUI.
-User can activate clamping and input de tuning arguments to be used for model building
+User can activate clamping and input tuning arguments to be used for model building
 }
 \examples{
 spN<-"Panthera onca"
@@ -84,5 +84,5 @@ maxentAlg <- model_maxent(occs=occs, bg=bg, user.grp=partblock, bgMsk=bgMsk, rms
 \author{
 Jamie M. Kass <jkass@gradcenter.cuny.edu>
 
-Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
 }
