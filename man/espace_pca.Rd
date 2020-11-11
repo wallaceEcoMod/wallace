@@ -15,9 +15,9 @@ espace_pca(
 )
 }
 \arguments{
-\item{sp.name1}{character name of species 1 to be analyzed}
+\item{sp.name1}{character. Name of species 1 to be analyzed}
 
-\item{sp.name2}{character name of species 2 to be analyzed. Default is NULL}
+\item{sp.name2}{character. Name of species 2 to be analyzed. Default is NULL}
 
 \item{occs.z1}{table of occurrences with environmental values only for sp1}
 
@@ -27,7 +27,7 @@ espace_pca(
 
 \item{bgPts.z2}{table of background points with environmental values only for sp2. Default is NULL}
 
-\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 }
 \value{

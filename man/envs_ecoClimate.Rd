@@ -16,7 +16,7 @@ Options are: "LGM" (21,000 years ago), "Holo" (6,000 years ago),
 
 \item{ecoClimSel}{Numeric vector with list of variables to select.}
 
-\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 }
 \value{
