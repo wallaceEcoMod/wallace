@@ -287,6 +287,21 @@ maxentJARversion <- function() {
 # VISUALIZE ####
 ####################### #
 #' @export
+predictMaxnet <- function(mod, envs, clamp, type) {
+  requireNamespace("maxnet", quietly = TRUE)
+  envs.n <- raster::nlayers(envs)
+  envs.pts <- raster::getValues(envs) %>% as.data.frame()
+  mxnet.p <- predict(mod, envs.pts, type = type,
+                     clamp = clamp)
+  envs.pts[as.numeric(row.names(mxnet.p)), "pred"] <- mxnet.p
+  pred <- raster::rasterFromXYZ(cbind(raster::coordinates(envs),
+                                      envs.pts$pred),
+                                res = raster::res(envs),
+                                crs = raster::crs(envs))
+  return(pred)
+}
+
+#' @export
 evalPlots <- function(evalOut) {
   par(mfrow=c(3,2))
   fc <- length(unique(evalOut@features))
