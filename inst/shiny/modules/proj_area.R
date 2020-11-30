@@ -165,7 +165,7 @@ proj_area_module_server <- function(input, output, session, common) {
                                 pjExt = spp[[curSp()]]$project$pjExt,
                                 alg = spp[[curSp()]]$rmm$model$algorithms,
                                 outputType = predType,
-                                #clamp = rmm()$model$algorithm$maxent$clamping,
+                                clamp = rmm()$model$algorithm$maxent$clamping,
                                 logger,
                                 spN = curSp())
     }

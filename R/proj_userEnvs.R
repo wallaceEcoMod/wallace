@@ -12,6 +12,7 @@
 #' @param outputType output type to be used when algorithm is maxnet or maxent.jar
 #' @param alg modeling algorithm used in the model component. Can be one of : 'BIOCLIM', 'maxent.jar' or 'maxnet'
 #' @param pjExt extent of the area to project the model. This must be provided by the user as a shapefile or as a SpatialPolygons object
+#' @param clamp logical. Whether projection will be of clamped or unclamped model
 #' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 #' @param spN character. Used to obtain species name for logger messages
@@ -49,8 +50,7 @@
 #' @export
 
 proj_userEnvs <- function(evalOut, curModel, envs, pjExt, alg, outputType = NULL,
-                           #clamp = NULL,
-                          logger = NULL, spN = NULL) {
+                          clamp = NULL, logger = NULL, spN = NULL) {
   newPoly <- pjExt
 
   if (alg == 'BIOCLIM') {
@@ -73,17 +73,13 @@ proj_userEnvs <- function(evalOut, curModel, envs, pjExt, alg, outputType = NULL
       modProjUser <- dismo::predict(evalOut@models[[curModel]], projMsk)
     } else if (alg == 'maxnet') {
       if (outputType == "raw") outputType <- "exponential"
-      modProjUser <- ENMeval::enm.maxnet@predict(evalOut@models[[curModel]],
-                                                 projMsk,
-                                                 #doClamp = clamp,
-                                                 other.settings = list(
-                                                 pred.type = outputType))
+      modProjUser <- predictMaxnet(evalOut@models[[curModel]], projMsk,
+                                   type = outputType, clamp = clamp)
     } else if (alg == 'maxent.jar') {
-      modProjUser <- ENMeval::enm.maxent.jar@predict(evalOut@models[[curModel]],
-                                                     projMsk,
-                                                    # doClamp = clamp,
-                                                     other.settings = list(
-                                                     pred.type = outputType))
+      modProjUser <- dismo::predict(evalOut@models[[curModel]], projMsk,
+                                    args = c(paste0("outputformat=", outputType),
+                                             paste0("doclamp=", tolower(as.character(clamp)))),
+                                    na.rm = TRUE)
     }
   })
 
