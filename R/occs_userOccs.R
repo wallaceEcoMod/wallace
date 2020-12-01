@@ -55,7 +55,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
   if (!all(c('scientific_name', 'longitude', 'latitude') %in% names(txt))) {
     logger %>% writeLog(
       type = "error",
-      paste0('Please input txt file with columns "scientific_name", ',
+      paste0('Please input a file with columns "scientific_name", ',
              '"longitude", "latitude" or check delimeter and decimal ',
              'separators. (**)'))
     return()

@@ -65,10 +65,10 @@ for (i in algorithm) {
     # the output is an ENMeval object
     expect_is(maxentAlg, "ENMevaluation")
     #the output has 9 slots with correct names
-    expect_equal(length(slotNames(maxentAlg)), 17)
+    expect_equal(length(slotNames(maxentAlg)), 20)
     expect_equal(slotNames(maxentAlg),c("algorithm","tune.settings","partition.method","partition.settings",
-                                        "other.settings","results","results.partitions","models", "variable.importance",
-                                        "predictions","taxon.name","occs","occs.grp","bg","bg.grp","overlap","rmm"))
+                                        "other.settings","doClamp","clamp.directions","results","results.partitions","models", "variable.importance",
+                                        "predictions","taxon.name","occs","occs.testing","occs.grp","bg","bg.grp","overlap","rmm"))
     # element within the evaluation are:
     # character
     expect_is(maxentAlg@algorithm, "character")
