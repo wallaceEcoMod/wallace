@@ -1,5 +1,6 @@
 # wallace 1.0.6.3
 - rgbif updated dependency
+- Clamping option back for maxent.jar (Thanks for the new version of Maxent 3.4.4)
 
 # wallace 1.0.6.2
 - Double distance in point buffer fixed.
