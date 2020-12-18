@@ -378,7 +378,7 @@ evalPreds <- e$predictions
 # define the vector of regularization multipliers to test
 rms <- seq({{rms1}}, {{rms2}}, {{rmsStep}})
 # iterate model building over all chosen parameter settings
-e <- ENMeval::ENMevaluate(occs.xy, envsBgMsk, bg.coords = bg.xy, RMvalues = rms, fc = {{fcs}}, 
+e <- ENMeval::ENMevaluate(occ = occs.xy, env = envsBgMsk, bg.coords = bg.xy, RMvalues = rms, fc = {{fcs}}, 
                           method = 'user', occs.grp, bg.grp, clamp = {{clamp}}, algorithm = "{{algMaxent}}")
 
 # unpack the results data frame, the list of models, and the RasterStack of raw predictions

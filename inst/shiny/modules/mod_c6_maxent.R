@@ -86,8 +86,8 @@ maxent_MOD <- function(input, output, session, rvs) {
     }
    
     occs.xy <- rvs$occs %>% dplyr::select(longitude, latitude)
-    
-    e <- ENMeval::ENMevaluate(occs.xy, rvs$bgMsk, bg.coords = rvs$bgPts,
+    colnames(rvs$bgPts) <- names(occs.xy)
+    e <- ENMeval::ENMevaluate(occ = occs.xy, env = rvs$bgMsk, bg.coords = rvs$bgPts,
                               RMvalues = rms, fc = input$fcs, method = 'user', 
                               occ.grp = rvs$occsGrp, bg.grp = rvs$bgGrp, 
                               bin.output = TRUE, clamp = rvs$clamp,
