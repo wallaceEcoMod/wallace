@@ -100,7 +100,7 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
     if (maxentJARversion() < "3.4.4") {
       logger %>% writeLog(
         type = "error",
-        "Please, use the updated version of Maxent (v3.4.4). Currently, you are",
+        "Please, use the updated version of Maxent (v3.4.4). Currently, you are ",
         "using (", maxentJARversion(), ").(**)"
       )
       return()
