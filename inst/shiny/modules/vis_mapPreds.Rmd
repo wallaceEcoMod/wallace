@@ -82,11 +82,10 @@ Generate a map of the Maxent generated model with no threshold
 ```{r, echo = {{vis_mapPreds_knit & vis_map_maxent_knit  & !vis_map_threshold_knit}}, include = {{vis_mapPreds_knit & vis_map_maxent_knit & !vis_map_threshold_knit}}}
 # Select current model and obtain raster prediction
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
-predSel_{{spAbr}} <- dismo::predict(
+predSel_{{spAbr}} <- ENMeval::enm.maxent.jar@predict(
   m_{{spAbr}}, bgMask_{{spAbr}},
-  args = c(paste0("outputformat=", "{{predType_rmd}}"), 
-           paste0("doclamp=", tolower(as.character({{clamp_rmd}})))), 
-  na.rm = TRUE)
+  doClamp = {{clamp_rmd}},
+  other.settings = list(pred.type = "{{predType_rmd}}"))
 #Get values of prediction
 mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
 #Define colors and legend  
@@ -121,11 +120,10 @@ Generate a map of the Maxent generated model with a "{{thresholdRule_rmd}}" thre
 ```{r, echo = {{vis_mapPreds_knit & vis_map_maxent_knit & vis_map_threshold_knit}}, include = {{vis_mapPreds_knit & vis_map_maxent_knit & vis_map_threshold_knit}}}
 # Select current model and obtain raster prediction
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
-predSel_{{spAbr}} <- dismo::predict(
+predSel_{{spAbr}} <- ENMeval::enm.maxent.jar@predict(
   m_{{spAbr}}, bgMask_{{spAbr}},
-  args = c(paste0("outputformat=", "{{predType_rmd}}"), 
-           paste0("doclamp=", tolower(as.character({{clamp_rmd}})))), 
-  na.rm = TRUE)
+  doClamp = {{clamp_rmd}},
+  other.settings = list(pred.type = "{{predType_rmd}}"))
 # Applied selected threshold
 predSel_{{spAbr}} <- predSel_{{spAbr}} > {{threshold_rmd}}
 #Get values of prediction
@@ -162,9 +160,10 @@ Generate a map of the maxnet generated model with no threshold
 ```{r, echo = {{vis_mapPreds_knit & vis_map_maxnet_knit & !vis_map_threshold_knit}}, include = {{vis_mapPreds_knit & vis_map_maxnet_knit & !vis_map_threshold_knit}}}
 # Select current model and obtain raster prediction
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
-predSel_{{spAbr}} <- predictMaxnet(m_{{spAbr}}, bgMask_{{spAbr}},
-                                   type = "{{predType_rmd}}", 
-                                   clamp = {{clamp_rmd}})
+predSel_{{spAbr}} <-  ENMeval::enm.maxnet@predict(
+  m_{{spAbr}}, bgMask_{{spAbr}}, 
+  doClamp = {{clamp_rmd}},
+  other.settings = list(pred.type = "{{predType_rmd}}"))
 #Get values of prediction
 mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
 #Define colors and legend  
@@ -199,9 +198,10 @@ Generate a map of the maxnet generated model with with a "{{thresholdRule_rmd}}"
 ```{r, echo = {{vis_mapPreds_knit & vis_map_maxnet_knit & vis_map_threshold_knit}}, include = {{vis_mapPreds_knit & vis_map_maxnet_knit & vis_map_threshold_knit}}}
 # Select current model and obtain raster prediction
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]] 
-predSel_{{spAbr}} <- predictMaxent(m_{{spAbr}}, bgMask_{{spAbr}},
-                                   type = "{{predType_rmd}}", 
-                                   clamp = {{clamp_rmd}})
+predSel_{{spAbr}} <-  ENMeval::enm.maxnet@predict(
+  m_{{spAbr}}, bgMask_{{spAbr}},
+  doClamp = {{clamp_rmd}},
+  other.settings = list(pred.type = "{{predType_rmd}}"))
 # Applied selected threshold
 predSel_{{spAbr}} <- predSel_{{spAbr}} > {{threshold_rmd}}
 

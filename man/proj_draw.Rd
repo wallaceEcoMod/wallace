@@ -9,11 +9,11 @@ proj_draw(polyPjXY, polyPjID, drawPjBuf, logger = NULL, spN = NULL)
 \arguments{
 \item{polyPjXY}{coordinates of polygon endpoints obtained from user drawn polygon}
 
-\item{polyPjID}{numeric .ID to be used in the generation of the polygon}
+\item{polyPjID}{numeric ID to be used in the generation of the polygon}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny, otherwise leave the default NULL}
+\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny, otherwise leave the default NULL}
 
-\item{spN}{character. Used to obtain species name for logger messages}
+\item{spN}{character used to obtain species name for logger messages}
 
 \item{drawBgBuf}{the buffer to be used in generating the SpatialPolygonsDataFrame, must be >=0 . A number must be specified.}
 }

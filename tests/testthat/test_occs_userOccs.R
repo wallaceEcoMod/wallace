@@ -21,7 +21,7 @@ test_that("error checks", {
    # user's input headers are in an invalid format
   expect_error(occs_userOccs(txtPath = './Data/Marmosops_wrong.csv',
                            txtName = 'Marmosops_wrong',txtSep=",",txtDec="."),
-               'Please input a file with columns "scientific_name", "longitude", "latitude" or check delimeter and decimal separators. (**)',fixed=T)
+               'Please input txt file with columns "scientific_name", "longitude", "latitude" or check delimeter and decimal separators. (**)',fixed=T)
   expect_error(occs_userOccs(txtPath='./Data/Marmosops_wrongSP.csv',txtName='Data/Marmosops_wrongSP.csv',txtSep=",",txtDec="."),
               'Please input just genus and species epithet in scientific name field in your file (e.g., "Canis lupus")(**).',fixed=T)
   expect_error(occs_userOccs(txtPath='./Data/Marmosops_sp.csv',txtSep=" ",txtDec="."),

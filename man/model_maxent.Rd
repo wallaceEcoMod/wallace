@@ -38,18 +38,18 @@ model_maxent(
 
 \item{clampSel}{Boolean use of clamping in the model}
 
-\item{algMaxent}{character. algorithm to be used in modeling. A selection of "maxnet" or "maxent.jar"}
+\item{algMaxent}{algorithm to be used in modeling. A selection of "maxnet" or "maxent.jar"}
 
 \item{catEnvs}{if categorical predictor variables are included must provide the names}
 
-\item{parallel}{logical. Whether to use parallel in the generation of models. Default is FALSE}
+\item{parallel}{whether to use parallel in the generation of models. Default is FALSE}
 
-\item{numCores}{numeric. If using parallel how many cores to use. Default is NULL}
+\item{numCores}{if using parallel how many cores to use. Default is NULL}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
-\item{spN}{character. Species name to be used for all logger messages}
+\item{spN}{species name to be used for all logger messages}
 }
 \value{
 Function returns an ENMevaluate object with all the evaluated models and a selection of appropriate fields.

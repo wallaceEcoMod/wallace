@@ -10,7 +10,7 @@
 #' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data
 #' @param envs a RasterStack or RasterBrick of environmental layers to be processed. This determines the output type.
 #' @param bgExt a SpatialPolygonsDataFrame with the background area to be used for processing
-#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #' otherwise leave the default NULL
 #' @param spN species name to be used for all logger messages
 

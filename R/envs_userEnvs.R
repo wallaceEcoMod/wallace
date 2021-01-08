@@ -6,10 +6,10 @@
 #' This function is called by the module envs to load user provided raster variables for use in further analyses.
 #' It returns either a rasterStack or rasterBrick of loaded variables with appropriate names for further analyses.
 #'
-#' @param rasPath character. Path to rasters, must be the full path including file name and extension
-#' @param rasName character. Vector of raster names to be assigned to loaded rasters
-#' @param doBrick logical. Converts downloaded rasters to brick for faster processing
-#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+#' @param rasPath character of path to rasters, must be the full path including file name and extension
+#' @param rasName character vector of raster names to be assigned to loaded rasters
+#' @param doBrick logical converts downloaded rasters to brick for faster processing
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 # @keywords
 #'
@@ -20,8 +20,8 @@
 #'
 #' @return A rasterStack or a rasterBrick (if doBrick=TRUE) of user provided rasters
 #'
-#' @author Jamie Kass <jamie.m.kass@@gmail.com >
-#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Jamie Kass < jamie.m.kass@@gmail.com >
+#' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
 
 # @seealso

@@ -53,7 +53,7 @@ occs_queryDb_module_server <- function(input, output, session, common) {
 
   observeEvent(input$goDbOccs, {
     # WARNING ####
-    if ( input$occsDb!="bien" & input$occsNum < 1) {
+    if (input$occsNum < 1) {
       logger %>% writeLog(type = 'warning',
                           "Enter a non-zero number of occurrences.")
       return()

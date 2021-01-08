@@ -18,13 +18,13 @@ espace_nicheOv(
 
 \item{z2}{ecospat niche object for species 2 from espace_occDens}
 
-\item{iter}{numeric. Number of iterations}
+\item{iter}{number of iterations}
 
-\item{equivalency}{logical. Whether to run equivalency test. Default is FALSE}
+\item{equivalency}{logical whether to run equivalency test. Default is FALSE}
 
-\item{similarity}{logical. Whether to run similarity test. Default is TRUE}
+\item{similarity}{logical whether to run similarity test. Default is TRUE}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 }
 \value{

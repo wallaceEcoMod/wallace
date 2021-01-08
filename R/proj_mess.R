@@ -12,9 +12,9 @@
 #' @param bgMsk a rasterBrick or rasterStack of environmental variables used for modeling. They must be cropped and masked to extent used in model training
 #' @param projExtRas a rasterStack or rasterBrick of environmental variables to be used for projecting
 #' @param time a string of the time used for projecting (e.g. "2040 MIROC6 ssp126)
-#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+#' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
-#' @param spN character. Used to obtain species name for logger messages
+#' @param spN character used to obtain species name for logger messages
 # @keywords
 #'
 #' @examples

@@ -16,14 +16,14 @@ occs_queryDb(
 )
 }
 \arguments{
-\item{spNames}{character. Species Latin name, with format "Genus species".}
+\item{spNames}{character species Latin name, with format "Genus species".}
 
-\item{occDb}{character. Biodiversity database to query; current choices are
+\item{occDb}{character biodiversity database to query; current choices are
 "gbif", "vertnet", and "bison"}
 
-\item{occNum}{numeric. Maximum number of occurrence records to return}
+\item{occNum}{numeric maximum number of occurrence records to return}
 
-\item{doCitations}{logical. Set TRUE to use `occCite` to get a complete list of original
+\item{doCitations}{set TRUE to use `occCite` to get a complete list of original
 data sources in a citable format}
 
 \item{gbifUser}{specify only if using `occCite` with GBIF to get a complete list
@@ -35,7 +35,7 @@ metadata associated with occurrence records and is not stored or used by
 \item{gbifEmail}{specify only if using `occCite` with GBIF to get a
 complete list of original data sources in a citable format.}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
 \item{gbifPW=NULL}{specify only if using `occCite` with GBIF to get a complete

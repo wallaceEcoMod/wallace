@@ -7,10 +7,10 @@
 #'
 #' @param z1 ecospat niche object for species 1 from espace_occDens
 #' @param z2 ecospat niche object for species 2 from espace_occDens
-#' @param iter numeric. Number of iterations
-#' @param equivalency logical. Whether to run equivalency test. Default is FALSE
-#' @param similarity logical. Whether to run similarity test. Default is TRUE
-#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+#' @param iter number of iterations
+#' @param equivalency logical whether to run equivalency test. Default is FALSE
+#' @param similarity logical whether to run similarity test. Default is TRUE
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 # @keywords
 #'

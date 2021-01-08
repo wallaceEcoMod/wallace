@@ -5,8 +5,8 @@ context("espace_nicheOv")
 source("test_helper_functions.R")
 
 ###SET PARAMETERS (running model)
-sp.name1<-"Pristimantis bogotensis"
-sp.name2<-"Dendropsophus labialis"
+sp.name1<-"Panthera onca"
+sp.name2<-"Procyon lotor"
 species<-c(sp.name1,sp.name2)
 model<-list()
 for (i in 1:2){

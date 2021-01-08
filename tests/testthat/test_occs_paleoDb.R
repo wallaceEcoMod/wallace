@@ -69,13 +69,9 @@ source("test_helper_functions.R")
 
   ##Check headers for both original and cleaned tables
 
-  keyPaleoHeaders<- #c("scientific_name", "longitude", "latitude", "early_interval",
-                     # "late_interval", "country", "collection_no", "record_type",
-                      #"early_age", "late_age", "occID")
-  c("occID"  ,         "scientific_name", "longitude"    ,   "latitude"      ,  "early_interval" ,
-  "late_interval" ,
-  "country"    ,     "collection_no"  , "record_type"    , "early_age"  ,
-   "late_age"    )
+  keyPaleoHeaders<- c("scientific_name", "longitude", "latitude", "early_interval",
+                      "late_interval", "country", "collection_no", "record_type",
+                      "early_age", "late_age", "occID")
 
   test_that("headers check",{
 

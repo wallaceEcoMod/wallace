@@ -14,13 +14,13 @@
 #' @param rmsStep step to be used when defining regularization multipliers to be used from the provided range.
 #' @param fcs feature classes to be tested in the ENMeval run
 #' @param clampSel Boolean use of clamping in the model
-#' @param algMaxent character. algorithm to be used in modeling. A selection of "maxnet" or "maxent.jar"
+#' @param algMaxent algorithm to be used in modeling. A selection of "maxnet" or "maxent.jar"
 #' @param catEnvs  if categorical predictor variables are included must provide the names
-#' @param parallel logical. Whether to use parallel in the generation of models. Default is FALSE
-#' @param numCores numeric. If using parallel how many cores to use. Default is NULL
-#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+#' @param parallel whether to use parallel in the generation of models. Default is FALSE
+#' @param numCores if using parallel how many cores to use. Default is NULL
+#' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
-#' @param spN character. Species name to be used for all logger messages
+#' @param spN species name to be used for all logger messages
 
 # @keywords
 #'
@@ -97,10 +97,10 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
       return()
     }
 
-    if (maxentJARversion() < "3.4.4") {
+    if (maxentJARversion() < "3.4.1") {
       logger %>% writeLog(
         type = "error",
-        "Please, use the updated version of Maxent (v3.4.4). Currently, you are ",
+        "Please, use the updated version of Maxent (v3.4.1). Currently, you are",
         "using (", maxentJARversion(), ").(**)"
       )
       return()

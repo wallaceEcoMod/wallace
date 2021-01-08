@@ -7,9 +7,9 @@
 #' The function returns a SpatialPolygons object of the desired extent (+ buffer).
 #'
 #' @param bgShp_path path to the user provided shapefile or csv with vertex coordinates
-#' @param bgShp_name name of the user provided shapefile or csv with vertex coordinates
-#' @param userBgBuf numeric. Buffer to be used in creating the background extent must be >=0
-#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+#' @param bgShp_name name of the user porvided shapefile or csv with vertex coordinates
+#' @param userBgBuf buffer to be used in creating the background extent must be >=0
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #' otherwise leave the default NULL
 #' @param spN data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages
 # @keywords

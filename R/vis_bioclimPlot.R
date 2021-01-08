@@ -9,9 +9,9 @@
 #' Plot also includes a rectangle representing the bivariate bioclimatic envelope according to a provided percentile.
 #'
 #' @param x bioclim model including values for each environmental layer at each occurrence point
-#' @param a numeri.c Environmental layer to be used as x axis. Default is layer 1.
-#' @param b numeric. Environmental layer to be used as x axis. Default is layer 2.
-#' @param p numeric. (0-1) percentile distribution to be used for plotting envelope and showing points outside of envelope. Default is 0.9
+#' @param a Numeric Environmental layer to be used as x axis. Default is layer 1.
+#' @param b Numeric Environmental layer to be used as x axis. Default is layer 2.
+#' @param p Numeric (0-1) percentile distribution to be used for plotting envelope and showing points outside of envelope. Default is 0.9
 
 # @keywords
 #'

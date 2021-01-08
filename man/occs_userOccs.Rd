@@ -15,7 +15,7 @@ occs_userOccs(txtPath, txtName, txtSep, txtDec, logger = NULL)
 
 \item{txtDec}{decimal separator used for coordinates in database}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 }
 \value{

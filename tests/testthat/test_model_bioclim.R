@@ -37,10 +37,10 @@ test_that("output type checks", {
   # the output is a list
   expect_is(bioclimAlg, "ENMevaluation")
   #the output has 9 slots with correct names
-  expect_equal(length(slotNames(bioclimAlg)), 20)
+  expect_equal(length(slotNames(bioclimAlg)), 17)
   expect_equal(slotNames(bioclimAlg),c("algorithm","tune.settings","partition.method","partition.settings",
-                                       "other.settings","doClamp","clamp.directions","results","results.partitions","models","variable.importance",
-                                       "predictions","taxon.name","occs","occs.testing","occs.grp","bg","bg.grp","overlap","rmm"))
+                                       "other.settings","results","results.partitions","models","variable.importance",
+                                       "predictions","taxon.name","occs","occs.grp","bg","bg.grp","overlap","rmm"))
   # element within the evaluation are:
   # character
   expect_is(bioclimAlg@algorithm, "character")
