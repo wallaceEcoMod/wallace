@@ -43,7 +43,6 @@ Imports:
     magrittr,
     maptools,
     mapview,
-    maxnet,
     neotoma,
     paleobioDB,
     pryr,

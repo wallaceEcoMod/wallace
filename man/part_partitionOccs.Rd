@@ -20,20 +20,20 @@ part_partitionOccs(
 
 \item{bg}{coordinates of background points to be used for modeling}
 
-\item{method}{character. Partitioning method to be used, one of 5 options: \cr
+\item{method}{Partitioning method to be used, one of 5 options: \cr
 (1) 'jack' Non-spatial Partition - jackknife  \cr
 (2) 'rand' Non-spatial Partition - random k-fold  \cr
 (3) 'block' spatial Partition - block  \cr
 (4) 'cb1' spatial Partition - checkerboard 1 (K=2)  \cr
 (5) 'cb2' spatial Partition - checkerboard 2 (K=4)  \cr}
 
-\item{kfolds}{numeric. Number of partitions to create if selected method is random k-fold (must be >=2). If other method then keep default of NULL}
+\item{kfolds}{number of partitions to create if selected method is random k-fold (must be >=2). If other method then keep default of NULL}
 
 \item{bgMask}{a RasterStack or a RasterBrick of environmental layers cropped and masked}
 
-\item{aggFact}{numeric. Aggregation factor to be used when using checkerboard partition (must be >=1)}
+\item{aggFact}{aggregation factor to be used when using checkerboard partition (must be >=1)}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
 \item{spN}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages}

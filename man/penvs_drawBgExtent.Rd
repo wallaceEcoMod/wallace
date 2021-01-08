@@ -16,13 +16,13 @@ penvs_drawBgExtent(
 \arguments{
 \item{polyExtXY}{coordinates of polygon endpoints obtained from user drawn polygon in GUI}
 
-\item{polyExtID}{numeric. ID to be used in the generation of the polygon}
+\item{polyExtID}{numeric ID to be used in the generation of the polygon}
 
 \item{drawBgBuf}{the buffer to be used in generating the SpatialPolygonsDataFrame, maybe be 0 or >0. A number must be specified.}
 
 \item{occs}{data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
 \item{spN}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages}

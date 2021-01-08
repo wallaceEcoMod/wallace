@@ -8,9 +8,9 @@
 #' observed occurrences. The function returns a SpatialPolygonsDataFrame object of the desired extent.
 #'
 #' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data
-#' @param bgSel character. Method of background building. Must be one of three options: 'bounding box' , 'point buffers' or ' minimum convex polygon'
-#' @param bgBuf numeric. Buffer distance in degrees to be used in the building of the background area
-#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+#' @param bgSel method of background building. Must be one of three options: 'bounding box' , 'point buffers' or ' minimum convex polygon'
+#' @param bgBuf buffer distance in degrees to be used in the building of the background area
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #' otherwise leave the default NULL
 #' @param spN data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages
 # @keywords

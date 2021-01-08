@@ -11,9 +11,9 @@ poccs_selectOccs(occs, polySelXY, polySelID = 1, logger = NULL, spN = NULL)
 
 \item{polySelXY}{matrix of longitude and latitude describing the expert drawn polygon}
 
-\item{polySelID}{numeric. Polygon ID to be used in SpatialPolygons creation, defaults to 1}
+\item{polySelID}{polygon ID to be used in SpatialPolygons creation, defaults to 1}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
 \item{spN}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages}

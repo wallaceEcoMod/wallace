@@ -9,16 +9,16 @@
 #'
 #' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.
 #' @param bg coordinates of background points to be used for modeling
-#' @param method character. Partitioning method to be used, one of 5 options: \cr
+#' @param method Partitioning method to be used, one of 5 options: \cr
 #'  (1) 'jack' Non-spatial Partition - jackknife  \cr
 #'  (2) 'rand' Non-spatial Partition - random k-fold  \cr
 #'  (3) 'block' spatial Partition - block  \cr
 #'  (4) 'cb1' spatial Partition - checkerboard 1 (K=2)  \cr
 #'  (5) 'cb2' spatial Partition - checkerboard 2 (K=4)  \cr
-#' @param kfolds numeric. Number of partitions to create if selected method is random k-fold (must be >=2). If other method then keep default of NULL
+#' @param kfolds number of partitions to create if selected method is random k-fold (must be >=2). If other method then keep default of NULL
 #' @param bgMask a RasterStack or a RasterBrick of environmental layers cropped and masked
-#' @param aggFact numeric. Aggregation factor to be used when using checkerboard partition (must be >=1)
-#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+#' @param aggFact aggregation factor to be used when using checkerboard partition (must be >=1)
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #' otherwise leave the default NULL
 #' @param spN data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages
 # @keywords

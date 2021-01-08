@@ -100,18 +100,15 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
                            clamping <- spp[[curSp()]]$rmm$model$algorithm$maxent$clamping
                            if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
                              if (predType == "raw") predType <- "exponential"
-                             predSel <- predictMaxnet(m, bgMask(),
-                                                type = predType, clamp = FALSE)
+                             predSel <- ENMeval::enm.maxnet@predict(m, bgMask(),
+                                                                    doClamp = clamping,
+                                                                    other.settings = list(
+                                                                    pred.type = predType))
                            } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
-                             outputFormat <- paste0("outputformat=", predType)
-                             if (clamping == TRUE) {
-                               doClamp <- "doclamp=true"
-                             } else {
-                               doClamp <- "doclamp=false"
-                             }
-                             predSel <- dismo::predict(m, bgMask(),
-                                                       args = c(outputFormat, doClamp),
-                                                       na.rm = TRUE)
+                             predSel <- ENMeval::enm.maxent.jar@predict(m, bgMask(),
+                                                                        doClamp = clamping,
+                                                                        other.settings = list(
+                                                                        pred.type = predType))
                            }
                          })
       # define crs

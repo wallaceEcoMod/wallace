@@ -9,8 +9,8 @@
 #'
 #' @param occs data frame of cleaned occurrences obtained from component occs: Obtain occurrence data
 #' @param polySelXY matrix of longitude and latitude describing the expert drawn polygon
-#' @param polySelID numeric. Polygon ID to be used in SpatialPolygons creation, defaults to 1
-#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+#' @param polySelID polygon ID to be used in SpatialPolygons creation, defaults to 1
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 #' @param spN data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages
 # @keywords

@@ -8,10 +8,10 @@
 
 #'
 #' @param polyExtXY coordinates of polygon endpoints obtained from user drawn polygon in GUI
-#' @param polyExtID numeric. ID to be used in the generation of the polygon
+#' @param polyExtID numeric ID to be used in the generation of the polygon
 #' @param drawBgBuf the buffer to be used in generating the SpatialPolygonsDataFrame, maybe be 0 or >0. A number must be specified.
 #' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data
-#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #' otherwise leave the default NULL
 #' @param spN data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages
 # @keywords

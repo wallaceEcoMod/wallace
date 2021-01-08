@@ -13,7 +13,7 @@ penvs_bgMask(occs, envs, bgExt, logger = NULL, spN = NULL)
 
 \item{bgExt}{a SpatialPolygonsDataFrame with the background area to be used for processing}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
 \item{spN}{species name to be used for all logger messages}

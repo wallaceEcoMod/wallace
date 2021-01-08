@@ -9,7 +9,6 @@ longitude <- c(-27.78641, -74.09170, -84.01930, -129.74867, -142.19085, -45.5504
 latitude <- c(-40.40539, -37.02010, 2.28455, 40.75350, 56.35954, 54.55045, -7.11861)
 ##make into matrix
 userDrawPoly <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
-spN<-"Panthera onca"
 ##set buffer test 0 and >0
 drawPjBufZero = 0
 drawPjBuf = 0.5
