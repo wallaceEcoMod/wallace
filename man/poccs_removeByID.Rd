@@ -11,7 +11,7 @@ poccs_removeByID(occs, removeID, logger = NULL, spN = NULL)
 
 \item{removeID}{the ID of the occurrence to be removed from the occurrences dataframe}
 
-\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
 \item{spN}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages}

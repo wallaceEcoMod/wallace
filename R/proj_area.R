@@ -10,10 +10,10 @@
 #' @param curModel If algorithm is maxent, model selected by user as best or optimal, in terms of feature class and regularization multiplier (e.g 'L_1'). Else must be 1
 #' @param envs environmental layers to be used for projecting the model. They must match the layers used for generating the model in the model component
 #' @param outputType output type to be used when algorithm is maxnet or maxent.jar
-#' @param alg modeling algorithm used in the model component. Can be one of : 'BIOCLIM', 'maxent.jar' or 'maxnet'
-#' @param clamp logical whether projection will be of clamped or unclamped model
+#' @param alg character. modeling algorithm used in the model component. Can be one of : 'BIOCLIM', 'maxent.jar' or 'maxnet'
 #' @param pjExt extent of the area to project the model. This is defined by the user in the map of the GUI and is provided as a SpatialPolygons object
-#' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+#' @param clamp logical. Whether projection will be of clamped or unclamped model
+#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 #' @param spN Character used to obtain species name for logger messages
 # @keywords
@@ -57,12 +57,10 @@ proj_area <- function(evalOut, curModel, envs, pjExt, alg, outputType = NULL,
   if (alg == 'BIOCLIM') {
     logger %>% writeLog(hlSpp(spN), 'New area projection for BIOCLIM model.')
   } else if (alg == 'maxent.jar'| clamp == TRUE) {
-
-     logger %>% writeLog(hlSpp(spN), 'New area projection for clamped model ', curModel, '.')
-
-       } else if (clamp == FALSE) {
-       logger %>% writeLog(hlSpp(spN), 'New area projection for unclamped model ', curModel, '.')
-    }
+    logger %>% writeLog(hlSpp(spN), 'New area projection for clamped model ', curModel, '.')
+  } else if (clamp == FALSE) {
+    logger %>% writeLog(hlSpp(spN), 'New area projection for unclamped model ', curModel, '.')
+  }
 
 
   smartProgress(logger,
@@ -76,17 +74,13 @@ proj_area <- function(evalOut, curModel, envs, pjExt, alg, outputType = NULL,
       modProjArea <- dismo::predict(evalOut@models[[curModel]], projMsk)
     } else if (alg == 'maxnet') {
       if (outputType == "raw") outputType <- "exponential"
-      modProjArea <- ENMeval::enm.maxnet@predict(evalOut@models[[curModel]],
-                                                 projMsk,
-                                                 doClamp = clamp,
-                                                 other.settings = list(
-                                                 pred.type = outputType))
+      modProjArea <- predictMaxnet(evalOut@models[[curModel]], projMsk,
+                                   type = outputType, clamp = clamp)
     } else if (alg == 'maxent.jar') {
-      modProjArea <- ENMeval::enm.maxent.jar@predict(evalOut@models[[curModel]],
-                                                     projMsk,
-                                                     doClamp = clamp,
-                                                     other.settings = list(
-                                                     pred.type = outputType))
+      modProjArea <- dismo::predict(evalOut@models[[curModel]], projMsk,
+                                    args = c(paste0("outputformat=", outputType),
+                                             paste0("doclamp=", tolower(as.character(clamp)))),
+                                    na.rm = TRUE)
     }
   })
 

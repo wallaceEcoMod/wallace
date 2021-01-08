@@ -11,7 +11,7 @@
 #' @param txtName name of database without the extension. Database must have at least three columns named 'scientific_name', 'longitude', 'latitude'
 #' @param txtSep  field separator used in database (as in read.delim)
 #' @param txtDec  decimal separator used for coordinates in database
-#' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 # @keywords
 #'
@@ -55,7 +55,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
   if (!all(c('scientific_name', 'longitude', 'latitude') %in% names(txt))) {
     logger %>% writeLog(
       type = "error",
-      paste0('Please input txt file with columns "scientific_name", ',
+      paste0('Please input a file with columns "scientific_name", ',
              '"longitude", "latitude" or check delimeter and decimal ',
              'separators. (**)'))
     return()

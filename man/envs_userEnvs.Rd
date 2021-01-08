@@ -7,13 +7,13 @@
 envs_userEnvs(rasPath, rasName, doBrick = FALSE, logger = NULL)
 }
 \arguments{
-\item{rasPath}{character of path to rasters, must be the full path including file name and extension}
+\item{rasPath}{character. Path to rasters, must be the full path including file name and extension}
 
-\item{rasName}{character vector of raster names to be assigned to loaded rasters}
+\item{rasName}{character. Vector of raster names to be assigned to loaded rasters}
 
-\item{doBrick}{logical converts downloaded rasters to brick for faster processing}
+\item{doBrick}{logical. Converts downloaded rasters to brick for faster processing}
 
-\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 }
 \value{
@@ -33,7 +33,7 @@ userEnvs <- envs_userEnvs(rasPath = Path, rasName = Name,doBrick=TRUE)
 
 }
 \author{
-Jamie Kass < jamie.m.kass@gmail.com >
+Jamie Kass <jamie.m.kass@gmail.com >
 
-Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
 }

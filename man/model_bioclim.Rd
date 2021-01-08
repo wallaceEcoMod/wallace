@@ -15,10 +15,10 @@ model_bioclim(occs, bg, user.grp, bgMsk, logger = NULL, spN = NULL)
 
 \item{bgMsk}{a RasterStack or a RasterBrick of environmental layers cropped and masked to match the provided background extent}
 
-\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
-\item{spN}{species name to be used for all logger messages}
+\item{spN}{character. Species name to be used for all logger messages}
 }
 \value{
 Function returns an ENMevaluate object with all the evaluated models and a selection of appropriate fields.

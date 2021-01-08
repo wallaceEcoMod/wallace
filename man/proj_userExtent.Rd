@@ -9,11 +9,11 @@ proj_userExtent(bgShp_path, bgShp_name, userBgBuf, logger = NULL, spN = NULL)
 \arguments{
 \item{bgShp_path}{path to the user provided shapefile or csv with vertex coordinates}
 
-\item{bgShp_name}{name of the user porvided shapefile or csv with vertex coordinates}
+\item{bgShp_name}{name of the user provided shapefile or csv with vertex coordinates}
 
-\item{userBgBuf}{buffer to be used in creating the background extent must be >=0}
+\item{userBgBuf}{numeric. Buffer to be used in creating the background extent must be >=0}
 
-\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
 \item{spN}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages}

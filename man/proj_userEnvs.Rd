@@ -29,12 +29,12 @@ proj_userEnvs(
 
 \item{outputType}{output type to be used when algorithm is maxnet or maxent.jar}
 
-\item{clamp}{logical whether projection will be of clamped or unclamped model}
+\item{clamp}{logical. Whether projection will be of clamped or unclamped model}
 
-\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
-\item{spN}{character used to obtain species name for logger messages}
+\item{spN}{character. Used to obtain species name for logger messages}
 }
 \description{
 The function projects the model generated in previous components to user uploaded environmental variables.

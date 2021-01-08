@@ -11,8 +11,8 @@
 #'
 #' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data
 #' @param bgMask a RasterStack or a RasterBrick of environmental layers cropped and masked
-#' @param bgPtsNum number of points to be sampled from the area, they will be sampled as long as <= non NA cells in any reference layer
-#' @param logger  stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+#' @param bgPtsNum numeric. Number of points to be sampled from the area, they will be sampled as long as <= non NA cells in any reference layer
+#' @param logger  Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #' otherwise leave the default NULL
 #' @param spN data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages
 # @keywords

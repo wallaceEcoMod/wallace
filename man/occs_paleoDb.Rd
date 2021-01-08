@@ -7,13 +7,13 @@
 occs_paleoDb(spName, occNum, timeInterval, logger = NULL)
 }
 \arguments{
-\item{spName}{character species name. For paleobioDb it returns records associated with the specified taxonomic name, including any synonyms.}
+\item{spName}{character. Species name. For paleobioDb it returns records associated with the specified taxonomic name, including any synonyms.}
 
 \item{occNum}{integer maximum number of records}
 
 \item{timeInterval}{character currently a single timeInterval is allowed: "Holocene" (Holocene).}
 
-\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 }
 \value{
