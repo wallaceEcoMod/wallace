@@ -172,6 +172,15 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
     }
     spp[[curSp()]]$visualization$mapPred <- predSel.thr
     spp[[curSp()]]$visualization$mapPredVals <- getRasterVals(predSel.thr, predType)
+    spp[[curSp()]]$postProc$prediction <- predSel.thr
+    # For Biomodelos
+    spp[[curSp()]]$biomodelos$prediction <- predSel
+    biom.thr <- quantile(occPredVals,
+                         probs = c(0, 0.1, 0.2, 0.3))
+    biom.thr <- c(biom.thr, ifelse(input$threshold == 'none', NA, thr.sel))
+    names(biom.thr) <- c("MTP", "O10", "O20", "O30", "user")
+    spp[[curSp()]]$biomodelos$thrs <- biom.thr
+
     # METADATA ####
     spp[[curSp()]]$rmd$vis_curModel <- curModel()
     spp[[curSp()]]$rmm$prediction$Type <- predType
@@ -205,12 +214,12 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
 }
 
 vis_mapPreds_module_map <- function(map, common) {
-
-  spp <- common$spp
   curSp <- common$curSp
+  spp <- common$spp
+  req(spp[[curSp()]]$occs)
+  occs <- common$occs
   mapPred <- common$mapPred
   rmm <- common$rmm
-  occs <- common$occs
   bgShpXY <- common$bgShpXY
 
   # Map logic

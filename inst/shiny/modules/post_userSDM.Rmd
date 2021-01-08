@@ -1,0 +1,7 @@
+```{asis, echo = {{post_userSDM_knit}}, eval = {{post_userSDM_knit}}, include = {{post_userSDM_knit}}}
+#
+```
+
+```{r, echo = {{post_userSDM_knit}}, include = {{post_userSDM_knit}}}
+#
+```

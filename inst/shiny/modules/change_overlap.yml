@@ -1,0 +1,5 @@
+component: "change"
+short_name: "Overlap"
+long_name: "Ratio Overlap"
+authors: "Andrea Paz"
+package: [raster, changeRangeR]

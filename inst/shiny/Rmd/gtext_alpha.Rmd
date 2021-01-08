@@ -1,0 +1,12 @@
+---
+title: "alpha"
+output: html_document
+---
+
+### **Component: Alpha Diversity**
+
+**ORIENTATION**
+
+Alpha diversity refers to a local measure of diversity. It can refer to a local measure of any dimension of biodiversity (taxonomic, functional or phylogenetic). There are countless indexes to measure local diversity for each dimension that take (or not) different aspects into account going from the simplest counts to indexes including abundances, relatedness etc. Generally, the simplest indexes (counts) are more widely used. This is the case for taxonomic diversity with species richness (count of species), for phylogenetic diversity with Faith’s PD (1992 count of phylogeny branches or nodes) and for functional diversity with functional richness (niche space occupied by the community). 
+
+Component Alpha diversity performs analyzes and visualizations of community diversity metrics based on individual species distribution maps. Community metrics are calculated at the pixel level (One pixel is treated as one community). Wallace currently allows to: 1) Compute species richness (Module Species richness) as the number of species in each pixel, 2) calculate the species endemism (Module Species Endemism) as the number of species found in a pixel divided by the total number of pixels in which they are found

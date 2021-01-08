@@ -202,6 +202,7 @@ proj_area_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$project$pjEnvs <- projExt
     spp[[curSp()]]$project$mapProj <- projAreaThr
     spp[[curSp()]]$project$mapProjVals <- getRasterVals(projAreaThr, predType)
+    spp[[curSp()]]$postProc$prediction <- projAreaThr
 
     # METADATA ####
     spp[[curSp()]]$rmm$code$wallace$project_curModel <- curModel()
@@ -264,10 +265,11 @@ proj_area_module_server <- function(input, output, session, common) {
 }
 
 proj_area_module_map <- function(map, common) {
-
-  spp <- common$spp
-  evalOut <- common$evalOut
   curSp <- common$curSp
+  spp <- common$spp
+  req(spp[[curSp()]]$occs)
+  occs <- common$occs
+  evalOut <- common$evalOut
   rmm <- common$rmm
   mapProj <- common$mapProj
 

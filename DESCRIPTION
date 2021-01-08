@@ -29,6 +29,7 @@ Depends:
 Imports:
     ade4,
     BIEN,
+    changeRangeR,
     dismo,
     dplyr (>= 1.0.2),
     DT (>= 0.5),
@@ -61,6 +62,7 @@ Imports:
     sp,
     spocc (>= 0.8.0),
     spThin,
+    stars,
     tools,
     XML,
     zip

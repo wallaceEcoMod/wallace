@@ -44,7 +44,10 @@ penvs_userBgExtent_module_server <- function(input, output, session, common) {
   occs <- common$occs
 
   observeEvent(input$goUserBg, {
+    common$update_component(tab = "Map")
+
     # ERRORS ####
+
     if (is.null(envs())) {
       logger %>%
         writeLog(type = 'error',
@@ -183,10 +186,10 @@ penvs_userBgExtent_module_server <- function(input, output, session, common) {
 }
 
 penvs_userBgExtent_module_map <- function(map, common) {
-  spp <- common$spp
   curSp <- common$curSp
+  spp <- common$spp
+  req(spp[[curSp()]]$occs)
   occs <- common$occs
-
   if (is.null(spp[[curSp()]]$procEnvs$bgExt)) {
     map %>% clearAll() %>%
       addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,

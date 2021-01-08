@@ -14,18 +14,22 @@ tagList(
     header = tagList(
       tags$head(tags$link(href = "css/styles.css", rel = "stylesheet"))
     ),
-    title = glue::glue('#WallaceEcoMod'),
+    title = glue::glue('#'),
     tabPanel("Intro", value = 'intro'),
     tabPanel("Occ Data", value = 'occs'),
     tabPanel("Env Data", value = 'envs'),
-    tabPanel("Process Occs", value = 'poccs'),
-    tabPanel("Process Envs", value = 'penvs'),
+    tabPanel("Proc Occs", value = 'poccs'),
+    tabPanel("Procs Envs", value = 'penvs'),
     # tabPanel("Sampling", value='samp'),
     tabPanel("Env Space", value = 'espace'),
-    tabPanel("Partition Occs", value = 'part'),
+    tabPanel("Part Occs", value = 'part'),
     tabPanel("Model", value = 'model'),
     tabPanel("Visualize", value = 'vis'),
     tabPanel("Project", value = 'proj'),
+    tabPanel("User SDM", value = 'post'),
+    tabPanel("Mask", value = 'mask'),
+    tabPanel("ChangeRR", value = 'change'),
+    tabPanel("Alpha Div", value = 'alpha'),
     tabPanel("Reproduce", value = 'rep'),
     navbarMenu("Help", icon = icon("question-circle"),
                HTML('<a href="https://groups.google.com/g/wallaceEcoMod" target="_blank">Google Group</a>'),
@@ -219,7 +223,51 @@ tagList(
                                  .butResPj:hover {background-color: #830D03;
                                  color: white;}"))
           ),
-          # REPRODUCIBILITY
+          # Upload User SDM ####
+          conditionalPanel(
+            "input.tabs == 'post'",
+            h4("Upload user-specified SDM (**)"),
+            radioButtons(
+              "postSel", "Modules Available:",
+              choices = insert_modules_options("post")
+            ),
+            tags$hr(),
+            insert_modules_ui("post")
+          ),
+          # Upload User SDM ####
+          conditionalPanel(
+            "input.tabs == 'mask'",
+            h4("Mask SDM (**)"),
+            radioButtons(
+              "maskSel", "Modules Available:",
+              choices = insert_modules_options("mask")
+            ),
+            tags$hr(),
+            insert_modules_ui("mask")
+          ),
+          # Change ####
+          conditionalPanel(
+            "input.tabs == 'change'",
+            h4("Change RangeR"),
+            radioButtons(
+              "changeSel", "Modules Available:",
+              choices = insert_modules_options("change")
+            ),
+            tags$hr(),
+            insert_modules_ui("change")
+          ),
+          # ALPHA ####
+          conditionalPanel(
+            "input.tabs == 'alpha'",
+            h4("Alpha diversity"),
+            radioButtons(
+              "alphaSel", "Modules Available:",
+              choices = insert_modules_options("alpha")
+            ),
+            tags$hr(),
+            insert_modules_ui("alpha")
+          ),
+          # REPRODUCIBILITY ####
           conditionalPanel(
             "input.tabs == 'rep'",
             h4("Reproduce Session"),
@@ -482,10 +530,81 @@ tagList(
                                                        "PNG" = 'png'))),
                   column(2, shinyjs::disabled(downloadButton('dlMess', "MESS file(**)")))
                 )
+              ),
+              conditionalPanel(
+                "input.tabs == 'post'",
+                br(),
+                fluidRow(
+                  column(3, h5("No available data for downloading."))
+                )
+              ),
+              conditionalPanel(
+                "input.tabs == 'mask'",
+                br(),
+                fluidRow(
+                  column(3, h5("Download Masked prediction (Select download file type**)")),
+                  column(2, selectInput('maskFileType',
+                                        label = NULL,
+                                        choices = list("GeoTIFF" = 'GTiff',
+                                                       "GRD" = 'raster',
+                                                       "ASCII" = 'ascii',
+                                                       "PNG" = 'png'))),
+                  column(2, shinyjs::disabled(downloadButton('dlMask', "Mask file(**)")))
+                )
+              ),
+              conditionalPanel(
+                "input.tabs == 'change'",
+                br(),
+                fluidRow(
+                  column(3, h5("Download mapped cropped to overlap areas")),
+                  column(2, selectInput('OverlapFileType',
+                                        label = NULL,
+                                        choices = list("GeoTIFF" = 'GTiff',
+                                                       "GRD" = 'raster',
+                                                       "ASCII" = 'ascii',
+                                                       "PNG" = 'png'))),
+                  column(2, shinyjs::disabled(downloadButton('dlOverlap', "Overlap file")))
+                )
+              ),
+              conditionalPanel(
+                "input.tabs == 'alpha'",
+                br(),
+                fluidRow(
+                  column(3, h5("Download list of species used for species richness calculations")),
+                  column(2, shinyjs::disabled(downloadButton('dlSpListSR', "CSV file")))
+                ),
+                br(),
+                fluidRow(
+                  column(3, h5("Download species richness map (Select file type)")),
+                  column(2, selectInput('richFileType',
+                                        label = NULL,
+                                        choices = list("GeoTIFF" = 'GTiff',
+                                                       "GRD" = 'raster',
+                                                       "ASCII" = 'ascii',
+                                                       "PNG" = 'png'))),
+                  column(2, shinyjs::disabled(downloadButton('dlRich', "Richness file")))
+                ),
+                br(),
+                fluidRow(
+                  column(3, h5("Download list of species used for species endemism calculations")),
+                  column(2, shinyjs::disabled(downloadButton('dlSpListSE', "CSV file")))
+                ),
+                br(),
+                fluidRow(
+                  column(3, h5("Download species enedemism map (Select file type)")),
+                  column(2, selectInput('endFileType',
+                                        label = NULL,
+                                        choices = list("GeoTIFF" = 'GTiff',
+                                                       "GRD" = 'raster',
+                                                       "ASCII" = 'ascii',
+                                                       "PNG" = 'png'))),
+                  column(2, shinyjs::disabled(downloadButton('dlEnd', "Endemism file")))
+                )
               )
             )
           )
         ),
+
         conditionalPanel(
           "input.tabs == 'rep' & input.repSel == 'rep_markdown'",
           column(8,
@@ -496,6 +615,12 @@ tagList(
           "input.tabs == 'rep' & input.repSel == 'rep_rmms'",
           column(8,
                  includeMarkdown("modules/rep_rmms.Rmd")
+          )
+        ),
+        conditionalPanel(
+          "input.tabs == 'rep' & input.repSel == 'rep_biomodelos'",
+          column(8,
+                 includeMarkdown("custom_modules/rep_biomodelos.Rmd")
           )
         ),
         conditionalPanel(

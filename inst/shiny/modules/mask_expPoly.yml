@@ -1,0 +1,5 @@
+component: "mask"
+short_name: "Expert Polygon (**)"
+long_name: "Remove/Add by expert opinion (**)"
+authors: "Gonzalo E. Pinilla-Buitrago (**)"
+package: [raster]

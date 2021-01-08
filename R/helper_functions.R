@@ -35,6 +35,11 @@ formatSpName <- function(spNames) {
 }
 
 #' @export
+fileNameNoExt <- function(f) {
+  sub(pattern = "(.*)\\..*$", replacement = "\\1", f)
+}
+
+#' @export
 writeSpp <- function(spp, sp, dir) {
   if(!is.null(spp[[sp]]$occs)) write.csv(spp[[sp]]$occs, file.path(dir, paste0(sp, "_occs.csv")))
   if(!is.null(spp[[sp]]$bg)) write.csv(spp[[sp]]$bg, file.path(dir, paste0(sp, "_bg.csv")))
@@ -108,11 +113,11 @@ map_occs <- function(map, occs, fillColor = 'red', fillOpacity = 0.2, customZoom
 
 # map all background polygons
 #' @export
-mapBgPolys <- function(map, bgShpXY) {
+mapBgPolys <- function(map, bgShpXY, color = "blue", group = "proj") {
   for (shp in bgShpXY) {
     map %>%
       addPolygons(lng = shp[,1], lat = shp[,2], fill = FALSE,
-                  weight = 4, color = "blue", group = 'proj')
+                  weight = 4, color = color, group = group)
   }
 }
 

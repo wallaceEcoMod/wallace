@@ -51,6 +51,9 @@ poccs_removeByID_module_server <- function(input, output, session, common) {
 }
 
 poccs_removeByID_module_map <- function(map, common) {
+  curSp <- common$curSp
+  spp <- common$spp
+  req(spp[[curSp()]]$occs)
   occs <- common$occs
   # Map logic
   map %>% leaflet.extras::removeDrawToolbar() %>%

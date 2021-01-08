@@ -1,0 +1,14 @@
+```{asis, echo = {{occs_biomodelos_knit}}, eval = {{occs_biomodelos_knit}}, include = {{occs_biomodelos_knit}}}
+### Obtain Occurrence Data
+You searched the BioModelos database for *`r "{{spName}}"`*.
+```
+
+```{r, echo = {{occs_biomodelos_knit}}, include = {{occs_biomodelos_knit}}}
+# Specify the BioModelos API key
+bioKey <- ''
+# Query selected database for occurrence records
+bioModelos_{{spAbr}} <- occs_biomodelos(
+  spN = "{{spName}}",
+  bioKey = bioKey)
+occs_{{spAbr}} <- bioModelos_{{spAbr}}$cleaned
+```

@@ -38,6 +38,8 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
   bgExt <- common$bgExt
 
   observeEvent(input$goDrawBg, {
+    common$update_component(tab = "Map")
+
     # WARNING ####
     if (is.null(envs())) {
       logger %>%
@@ -162,10 +164,10 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
 }
 
 penvs_drawBgExtent_module_map <- function(map, common) {
-  spp <- common$spp
   curSp <- common$curSp
+  spp <- common$spp
+  req(spp[[curSp()]]$occs)
   occs <- common$occs
-
   map %>% leaflet.extras::addDrawToolbar(
     targetGroup = 'draw',
     polylineOptions = FALSE,
