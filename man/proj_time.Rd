@@ -29,12 +29,12 @@ proj_time(
 
 \item{outputType}{output type to be used when algorithm is maxnet or maxent.jar}
 
-\item{clamp}{logical whether projection will be of clamped or unclamped model}
+\item{clamp}{logical. Whether projection will be of clamped or unclamped model}
 
-\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
-\item{spN}{character Used to obtain species name for logger messages}
+\item{spN}{character. Used to obtain species name for logger messages}
 }
 \value{
 A list of two elements: projExt and projTime.
@@ -77,5 +77,5 @@ Jamie Kass <jkass@gradcenter.cuny.edu>
 
 Andrea Paz <paz.andreita@gmail.com>
 
-Gonzalo E. Pinilla-Buitrago < pinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
 }

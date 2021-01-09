@@ -16,8 +16,10 @@ occs <- as.data.frame(out.gbif[[1]]$cleaned)
 # enviromental data
 envs <- envs_worldclim(bcRes = 10, bcSel = c("bio01","bio02","bio07","bio13","bio14","bio15","bio19"), doBrick = FALSE)
 # remove records without enviromental values
+
 records <- which(is.na(raster::extract(envs$bio01, occs[,3:4])) == TRUE)
-occs <- occs[-records, ]
+if(length(records)>=1){
+occs <- occs[-records, ]}
 # background extent
 bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
 # background masked
@@ -65,10 +67,10 @@ for (i in algorithm) {
     # the output is an ENMeval object
     expect_is(maxentAlg, "ENMevaluation")
     #the output has 9 slots with correct names
-    expect_equal(length(slotNames(maxentAlg)), 17)
+    expect_equal(length(slotNames(maxentAlg)), 20)
     expect_equal(slotNames(maxentAlg),c("algorithm","tune.settings","partition.method","partition.settings",
-                                        "other.settings","results","results.partitions","models", "variable.importance",
-                                        "predictions","taxon.name","occs","occs.grp","bg","bg.grp","overlap","rmm"))
+                                        "other.settings","doClamp","clamp.directions","results","results.partitions","models", "variable.importance",
+                                        "predictions","taxon.name","occs","occs.testing","occs.grp","bg","bg.grp","overlap","rmm"))
     # element within the evaluation are:
     # character
     expect_is(maxentAlg@algorithm, "character")

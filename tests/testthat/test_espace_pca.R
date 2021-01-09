@@ -9,8 +9,8 @@ source("test_helper_functions.R")
 ###Using bioclim for testing
 
 ###SET PARAMETERS (running model)
-  sp.name1<-"Panthera onca"
-  sp.name2<-"Procyon lotor"
+  sp.name1<-"Pristimantis bogotensis"
+  sp.name2<-"Dendropsophus labialis"
   species<-c(sp.name1,sp.name2)
   model<-list()
   for (i in 1:2){
