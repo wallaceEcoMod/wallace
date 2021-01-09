@@ -564,8 +564,20 @@ tagList(
                                                        "ASCII" = 'ascii',
                                                        "PNG" = 'png'))),
                   column(2, shinyjs::disabled(downloadButton('dlOverlap', "Overlap file")))
+                ) ,
+                br(),
+                fluidRow(
+                  column(3, h5("Download AOO raster")),
+                  column(2, selectInput('AOOFileType',
+                                        label = NULL,
+                                        choices = list("GeoTIFF" = 'GTiff',
+                                                       "GRD" = 'raster',
+                                                       "ASCII" = 'ascii',
+                                                       "PNG" = 'png'))),
+                  column(2, shinyjs::disabled(downloadButton('dlAOO', "AOO raster")))
                 )
               ),
+
               conditionalPanel(
                 "input.tabs == 'alpha'",
                 br(),

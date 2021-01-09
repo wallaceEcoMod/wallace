@@ -4,14 +4,14 @@
 \alias{mask_spatialPoly}
 \title{mask_spatialPoly}
 \usage{
-mask_spatialPoly(bgShp_path, bgShp_name, bgExt, logger = NULL, spN = NULL)
+mask_spatialPoly(bgShp_path, bgShp_name, sdm, logger = NULL, spN = NULL)
 }
 \arguments{
 \item{bgShp_path}{Path to the user provided shapefile}
 
 \item{bgShp_name}{Name of the user porvided shapefile}
 
-\item{bgExt}{x}
+\item{sdm}{x}
 
 \item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
