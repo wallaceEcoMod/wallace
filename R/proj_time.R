@@ -13,11 +13,11 @@
 #' @param envs environmental layers of different time to be used for projecting the model. They must match the layers used for generating the model in the model component
 #' @param outputType output type to be used when algorithm is maxnet or maxent.jar
 #' @param alg modeling algorithm used in the model component. Can be one of : 'bioclim', 'maxent.jar' or 'maxnet'
-#' @param clamp logical whether projection will be of clamped or unclamped model
 #' @param pjExt extent of the area to project the model. This is defined by the user in the map of the GUI and is provided as a SpatialPolygons object
-#' @param logger logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+#' @param clamp logical. Whether projection will be of clamped or unclamped model
+#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
-#' @param spN character Used to obtain species name for logger messages
+#' @param spN character. Used to obtain species name for logger messages
 # @keywords
 #'
 #' @examples
@@ -45,7 +45,7 @@
 #' The second element is a raster of the projected model with the specified output type.
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 #' @author Andrea Paz <paz.andreita@@gmail.com>
-#' @author Gonzalo E. Pinilla-Buitrago < pinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
 #' @seealso \code{\link[dismo]{predict}}, \code{\link{proj_time}} \code{\link{proj_userEnvs}}
 #'
@@ -62,11 +62,9 @@ proj_time <- function(evalOut, curModel, envs, pjExt, alg, outputType = NULL,
   if (alg == 'BIOCLIM') {
     logger %>% writeLog(hlSpp(spN), 'Projection in time for BIOCLIM model.')
   } else if (alg == 'maxent.jar'| clamp == TRUE) {
-
     logger %>% writeLog(hlSpp(spN), 'Projection in time for clamped model ', curModel, '.')
-
   } else if (clamp == FALSE) {
-    logger %>% writeLog(hlSpp(spN), 'New time projection for unclamped ', curModel, '.')
+    logger %>% writeLog(hlSpp(spN), 'New time projection for unclamped model' , curModel, '.')
   }
 
 
@@ -80,19 +78,14 @@ proj_time <- function(evalOut, curModel, envs, pjExt, alg, outputType = NULL,
       modProjTime <- dismo::predict(evalOut@models[[curModel]], pjtMsk)
     } else if (alg == 'maxnet') {
       if (outputType == "raw") outputType <- "exponential"
-      modProjTime <- ENMeval::enm.maxnet@predict(evalOut@models[[curModel]],
-                                                 pjtMsk,
-                                                 doClamp = clamp,
-                                                 other.settings = list(
-                                                 pred.type = outputType))
+      modProjTime <- predictMaxnet(evalOut@models[[curModel]], pjtMsk,
+                                   type = outputType, clamp = clamp)
     } else if (alg == 'maxent.jar') {
-      modProjTime <- ENMeval::enm.maxent.jar@predict(evalOut@models[[curModel]],
-                                                     pjtMsk,
-                                                     doClamp = clamp,
-                                                     other.settings = list(
-                                                     pred.type = outputType))
+      modProjTime <- dismo::predict(evalOut@models[[curModel]], pjtMsk,
+                                    args = c(paste0("outputformat=", outputType),
+                                             paste0("doclamp=", tolower(as.character(clamp)))),
+                                    na.rm = TRUE)
     }
   })
-
   return(list(projExt = pjtMsk, projTime = modProjTime))
 }

@@ -11,7 +11,7 @@ poccs_thinOccs(occs, thinDist, logger = NULL, spN = NULL)
 
 \item{thinDist}{distance in meters to be used for thinning. Number must be positive.}
 
-\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
 \item{spN}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages}

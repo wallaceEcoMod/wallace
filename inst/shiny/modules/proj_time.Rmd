@@ -25,7 +25,8 @@ proj_time_{{spAbr}} <-proj_time(
   pjExt = bgExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}}) 
+  clamp = {{clamp_rmd}}
+  ) 
 # store the cropped projection variables
 projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 
@@ -82,7 +83,8 @@ proj_time_{{spAbr}} <-proj_time(
   pjExt = bgExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}}) 
+  clamp = {{clamp_rmd}}
+  ) 
 
 #store the cropped projection variables
 projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
@@ -148,7 +150,8 @@ proj_time_{{spAbr}} <-proj_time(
   pjExt = proj_draw_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}}) 
+  clamp = {{clamp_rmd}}
+ ) 
 #store the cropped projection variables
 projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 
@@ -212,7 +215,8 @@ proj_time_{{spAbr}} <-proj_time(
   pjExt = proj_draw_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}})
+  clamp = {{clamp_rmd}}
+ )
 
 #store the cropped projection variables
 projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
@@ -280,7 +284,8 @@ proj_time_{{spAbr}} <-proj_time(
   pjExt = proj_userExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}}) 
+  clamp = {{clamp_rmd}}
+  ) 
 # store the cropped projection variables
 projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 
@@ -347,7 +352,8 @@ proj_time_{{spAbr}} <-proj_time(
   pjExt = proj_userExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}}) 
+  clamp = {{clamp_rmd}}
+  ) 
 #store the cropped projection variables
 projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 # Add threshold if specified 
@@ -401,7 +407,8 @@ proj_time_{{spAbr}} <-proj_time(
   pjExt = bgExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}}) 
+  clamp = {{clamp_rmd}}
+  ) 
 #store the cropped projection variables
 projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
  
@@ -452,7 +459,8 @@ proj_time_{{spAbr}} <-proj_time(
   pjExt = bgExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}}) 
+  clamp = {{clamp_rmd}}
+  ) 
 #store the cropped projection variables
 projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 # Add threshold if specified 
@@ -512,7 +520,8 @@ proj_time_{{spAbr}} <-proj_time(
   pjExt = proj_draw_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}}) 
+  clamp = {{clamp_rmd}}
+  ) 
 # Store the cropped projection variables
 projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 
@@ -569,7 +578,8 @@ proj_time_{{spAbr}} <-proj_time(
   pjExt = proj_draw_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}}) 
+  clamp = {{clamp_rmd}}
+ ) 
 
 #store the cropped projection variables
 projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
@@ -630,7 +640,8 @@ proj_time_{{spAbr}} <-proj_time(
   pjExt = proj_userExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}}) 
+  clamp = {{clamp_rmd}}
+) 
 
 # store the cropped projection variables
 projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
@@ -690,7 +701,8 @@ proj_time_{{spAbr}} <-proj_time(
   pjExt = proj_userExt_{{spAbr}},
   alg = "{{alg_rmd}}",
   outputType = "{{outputType_rmd}}",
-  clamp = {{clamp_rmd}}) 
+  clamp = {{clamp_rmd}}
+ ) 
 #store the cropped projection variables
 projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 # Add threshold if specified 

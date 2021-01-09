@@ -71,7 +71,7 @@ test_that("output type checks", {
   expect_match(gsub(" \\(.*\\)","",unique(out.gbif[[i]]$cleaned$scientific_name)),spNames[i],ignore.case=T)
   # if the database holds more records than the specified by the user (occNum),
   # the number of records downloaded is:
-  if (total_occ$count >= occNum){
+  if (total_occ$meta$count >= occNum){
     # the same as specified in the function (occNum)
     expect_equal(occNum, nrow(out.gbif[[i]]$orig))
   } else { # if not
@@ -273,3 +273,5 @@ test_that("Bien headers", {
 })
 
 }
+
+

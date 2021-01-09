@@ -17,10 +17,10 @@ proj_mess(occs, bg, bgMsk, projExtRas, time, logger = NULL, spN = NULL)
 
 \item{time}{a string of the time used for projecting (e.g. "2040 MIROC6 ssp126)}
 
-\item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
-\item{spN}{character used to obtain species name for logger messages}
+\item{spN}{character. Used to obtain species name for logger messages}
 }
 \description{
 This function generates a MESS map for the new variables for projection based on variables and points used for modeling in previous components.
