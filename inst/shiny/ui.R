@@ -575,6 +575,11 @@ tagList(
                                                        "ASCII" = 'ascii',
                                                        "PNG" = 'png'))),
                   column(2, shinyjs::disabled(downloadButton('dlAOO', "AOO raster")))
+                ),
+                br(),
+                fluidRow(
+                  column(3, h5("Download EOO shapefile")),
+                  column(2, shinyjs::disabled(downloadButton('dlEOO', "ZIP file")))
                 )
               ),
 

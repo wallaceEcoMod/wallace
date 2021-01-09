@@ -158,8 +158,9 @@ function(input, output, session) {
     shinyjs::toggleState("dlProj", !is.null(spp[[curSp()]]$project$pjEnvs))
     shinyjs::toggleState("dlMess", !is.null(spp[[curSp()]]$project$messVals))
     shinyjs::toggleState("dlAOO", !is.null(spp[[curSp()]]$rmm$data$change$AOO))
+    shinyjs::toggleState("dlEOO", !is.null(spp[[curSp()]]$rmm$data$change$EOO))
     shinyjs::toggleState("dlOverlap", !is.null(spp[[curSp()]]$change$overlapRaster))
-    shinyjs::toggleState("dlMask", !is.null(spp[[curSp()]]$mask$removePoly) |
+    shinyjs::toggleState("dlMask",!is.null(spp[[curSp()]]$mask$removePoly) |
                            !is.null(spp[[curSp()]]$mask$tempLog) |
                            !is.null(spp[[curSp()]]$mask$spatialFlag))
     # shinyjs::toggleState("dlWhatever", !is.null(spp[[curSp()]]$whatever))
@@ -1191,7 +1192,25 @@ function(input, output, session) {
   ########################################### #
   ### COMPONENT: CHANGERRR DIVERSITY ####
   ########################################### #
-  #dowload AOO map
+  #Dowload EOO shapefile
+  output$dlEOO <- downloadHandler(
+    filename = function() paste0(curSp(), "_EOOShp.zip"),
+    content = function(file) {
+      tmpdir <- tempdir()
+      setwd(tempdir())
+      n <- curSp()
+
+      raster::shapefile(x= spp[[curSp()]]$rmm$data$change$EOO,
+                      filename = paste0(n, '_EOOShp'),overwrite=TRUE)
+
+      exts <- c('dbf','shp', 'shx')
+      fs <- paste0(n, '_EOOShp.', exts)
+      zip::zipr(zipfile = file, files = fs)
+      if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
+    },
+    contentType = "application/zip"
+  )
+  #download AOO map
   output$dlAOO <- downloadHandler(
     filename = function() {
       ext <- switch(input$AOOFileType, raster = 'zip', ascii = 'asc',
@@ -1212,27 +1231,27 @@ function(input, output, session) {
           AOOras <-  spp[[curSp()]]$rmm$data$change$AOO
           raster::crs(AOOras) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
           OverlapVals <- spp[[curSp()]]$change$overlapvalues
-          #  rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-          # legendPal <- colorNumeric(rev(rasCols), OverlapVals, na.color = 'transparent')
+        #  rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+         # legendPal <- colorNumeric(rev(rasCols), OverlapVals, na.color = 'transparent')
           #rasPal <- colorNumeric(rasCols, OverlapVals, na.color = 'transparent')
           # Create legend
-          ##Add legend
-          m <- leaflet() %>% addLegend("bottomright", colors = c('gray', 'red'),
-                                       title = "AOO",
-                                       labels = c("Presence", "Absence"),
-                                       opacity = 1, layerId = 'expert') %>%
-            addProviderTiles(input$bmap) %>%
-            addRasterImage(AOOras, colors = c('gray', 'red'),
-                           opacity = 0.7, group = 'change', layerId = 'AOO',
-                           method = "ngb")
-          mapview::mapshot(m, file = file)
+            ##Add legend
+           m <- leaflet() %>% addLegend("bottomright", colors = c('gray', 'red'),
+                      title = "AOO",
+                      labels = c("Presence", "Absence"),
+                      opacity = 1, layerId = 'expert') %>%
+              addProviderTiles(input$bmap) %>%
+             addRasterImage(AOOras, colors = c('gray', 'red'),
+                            opacity = 0.7, group = 'change', layerId = 'AOO',
+                            method = "ngb")
+            mapview::mapshot(m, file = file)
 
 
         } else if (input$AOOFileType == 'raster') {
           fileName <-  "AOO"
           tmpdir <- tempdir()
           raster::writeRaster(spp[[curSp()]]$rmm$data$change$AOO, file.path(tmpdir, fileName),
-                              format = input$AOOFileType, overwrite = TRUE)
+                               format = input$AOOFileType, overwrite = TRUE)
           owd <- setwd(tmpdir)
           fs <- paste0(fileName, c('.grd', '.gri'))
           zip::zipr(zipfile = file, files = fs)
