@@ -7,9 +7,9 @@
 occs_biomodelos(spN, bioKey, logger = NULL)
 }
 \arguments{
-\item{spN}{character species name. For biomodelos it returns records associated with the specified taxonomic name, including any synonyms.}
+\item{spN}{character species name. For BioModelos it returns records associated with the specified taxonomic name, including any synonyms.}
 
-\item{bioKey}{character. Key to access biomodelos API}
+\item{bioKey}{character. Key to access BioModelos API}
 
 \item{logger}{logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
@@ -18,10 +18,10 @@ otherwise leave the default NULL}
 A list of 2 dataframes. First dataframe is the original dowloaded dataset, second data frame without duplicates and with appropriate fields for analyses
 }
 \description{
-query biomodelos database and returns the complete list of data, data with coordinates, and data with no duplicates
+query BioModelos database and returns the complete list of data, data with coordinates, and data with no duplicates
 }
 \details{
-This function is called by the module occs_biomodelos to query the biomodelos database for
+This function is called by the module occs_biomodelos to query the BioModelos database for
 species occurrence records. It removes records with duplicate coordinates, and select some columns with fields
 appropriate to studies in biogeography.
 }
