@@ -6,6 +6,7 @@ Title: A Modular Platform for Reproducible Modeling of Species Niches
 Authors@R: 
     c(person("Jamie M.", "Kass", email = "jkass@gradcenter.cuny.edu", role = c("aut", "cre")),
     person("Gonzalo E.", "Pinilla-Buitrago", email = "gpinillabuitrago@gradcenter.cuny.edu", role = "aut"),
+    person("Andrea", "Paz", email = "paz.andreita@gmail.com", role = "aut"))
 	  person("Bruno", "Vilela", email = "bvilela@wustl.edu", role = "aut"),
 	  person("Matthew E.", "Aiello-Lammens", email = "matt.lammens@gmail.com", role = "aut"),
 	  person("Robert", "Muscarella", email = "bob.muscarella@gmail.com", role = "aut"),
@@ -15,6 +16,7 @@ Authors@R:
 Author: 
     Jamie M. Kass [aut, cre],
     Gonzalo E. Pinilla-Buitrago [aut],
+    Andrea Paz [aut],
     Bruno Vilela [aut],
     Matthew E. Aiello-Lammens [aut],
     Robert Muscarella [aut],
@@ -67,7 +69,7 @@ Imports:
     XML,
     zip
 Remotes:
-    gepinillab/ENMEval@dev
+    andrepazv/ENMeval@bioclim_test
 Description: The 'shiny' application Wallace is a modular platform for 
     reproducible modeling of species niches and distributions. Wallace
     guides users through a complete analysis, from the acquisition of species
