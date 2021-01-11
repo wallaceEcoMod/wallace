@@ -122,8 +122,10 @@ change_overlap_module_server <- function(input, output, session, common) {
      return()
    }
 
+    shpcrop<-rgeos::gBuffer(polyOverlap,byid = TRUE, width=0)
+    shpcrop<-raster::crop(shpcrop,raster::extent(spp[[curSp()]]$change$Plot))
     spp[[curSp()]]$change$polyOverlap <- polyOverlap
-
+    spp[[curSp()]]$change$polyOverlapCrop <- shpcrop
   })
   ###add this if we want to include field selection
 
@@ -330,15 +332,15 @@ change_overlap_module_map <- function(map, common) {
                      method = "ngb")
   }
   # Add just projection Polygon
-  req(spp[[curSp()]]$change$polyOverlap)
+  req(spp[[curSp()]]$change$polyOverlapCrop)
   #raster::crs(spp[[curSp()]]$change$polyOverlap) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
-  polyOvXY <- spp[[curSp()]]$change$polyOverlap@polygons
+  polyOvXY <- spp[[curSp()]]$change$polyOverlapCrop@polygons
   if(length(polyOvXY) == 1) {
     shp <- list(polyOvXY[[1]]@Polygons[[1]]@coords)
   } else {
     shp <- lapply(polyOvXY, function(x) x@Polygons[[1]]@coords)
   }
-  bb <- spp[[curSp()]]$change$polyOverlap@bbox
+  bb <- spp[[curSp()]]$change$polyOverlapCrop@bbox
   bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
   map %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
