@@ -281,6 +281,7 @@ BioClim_eval <- function (occs, bg.pts, occ.grp, bg.grp, env) {
   
   # COMPILE AND SUMMARIZE RESULTS
   stats <- as.data.frame(rbind(AUC.TEST, AUC.DIFF, ORmin, OR10))
+  stats <- sapply(stats, as.numeric)
   stats <- cbind(apply(stats, 1, mean), ENMeval::corrected.var(stats, nk), stats)
   colnames(stats) <- c("Mean", "Variance", paste("Bin", 1:nk))
   rownames(stats) <- c("test.AUC", "diff.AUC","test.orMTP","test.or10pct")
