@@ -6,7 +6,7 @@ Title: A Modular Platform for Reproducible Modeling of Species Niches
 Authors@R: 
     c(person("Jamie M.", "Kass", email = "jkass@gradcenter.cuny.edu", role = c("aut", "cre")),
     person("Gonzalo E.", "Pinilla-Buitrago", email = "gpinillabuitrago@gradcenter.cuny.edu", role = "aut"),
-    person("Andrea", "Paz", email = "paz.andreita@gmail.com", role = "aut"))
+    person("Andrea", "Paz", email = "paz.andreita@gmail.com", role = "aut"),
 	  person("Bruno", "Vilela", email = "bvilela@wustl.edu", role = "aut"),
 	  person("Matthew E.", "Aiello-Lammens", email = "matt.lammens@gmail.com", role = "aut"),
 	  person("Robert", "Muscarella", email = "bob.muscarella@gmail.com", role = "aut"),
