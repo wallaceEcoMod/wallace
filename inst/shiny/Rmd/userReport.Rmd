@@ -368,10 +368,10 @@ You selected the `r "{{enmSel}}"` model.
 ```{r bioclim, echo = mod.bioclim, include = mod.bioclim}
 e <- BioClim_eval(as.data.frame(occs.xy), bg.xy, occs.grp, bg.grp, envsBgMsk)
 # unpack the results data frame and list of models
-evalTbl <- e$results
-evalMods <- e$models
-names(e$predictions) <- "BIOCLIM"
-evalPreds <- e$predictions
+evalTbl <- e@results
+evalMods <- e@models
+names(e@predictions) <- "BIOCLIM"
+evalPreds <- e@predictions
 ```
 
 ```{r maxent, echo = mod.maxent, include = mod.maxent, results = 'hide'}

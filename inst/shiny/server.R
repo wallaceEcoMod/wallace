@@ -558,7 +558,7 @@ shinyServer(function(input, output, session) {
                                               options = list(scrollX = TRUE,
                                                              sDom  = '<"top">rtp<"bottom">'))
     output$lambdas <- renderPrint({
-      modCur <- rvs$mods[[rvs$modSel]]
+      modCur <- rvs$mods[[as.character(rvs$modSel)]]
       if (rvs$algMaxent == "maxnet") {
         modCur$betas
       } else if (rvs$algMaxent == "maxent.jar") {
@@ -584,9 +584,9 @@ shinyServer(function(input, output, session) {
     # stop if no occurrence partition group
     req(rvs$occsGrp)
     rvs$comp6 <- 'bioclim'  # record the enm selected
-    rvs$mods <- e$models
-    rvs$modPreds <- e$predictions
-    rvs$modRes <- e$results
+    rvs$mods <- e@models
+    rvs$modPreds <- e@predictions
+    rvs$modRes <- e@results
     output$evalTbls <- renderUI({
       tagList(
         br(), 
@@ -634,6 +634,7 @@ shinyServer(function(input, output, session) {
   # ui that populates with the names of environmental predictors used
   output$envSelUI <- renderUI({
     req(rvs$modPreds)
+    req(rvs$modSel)
     # for Maxent, only display the environmental predictors with non-zero beta coefficients
     # from the lambdas file (the predictors that were not removed via regularization)
     if (rvs$comp6 == "maxent") {
