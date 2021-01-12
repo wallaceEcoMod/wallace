@@ -17,6 +17,10 @@ output: html_document
 
 <a href="https://www.researchgate.net/profile/Gonzalo_Pinilla-Buitrago" target="_blank">Gonzalo E. Pinilla-Buitrago</a> (co-developer) is PhD candidate at CUNY Graduate Center and City College of New York.
 
+<img src="img/bethany.jpg" alt="bethany" style="width: 100px;"/>
+
+Bethany Johnson (co-developer) Graduated with a BS in Biology from the City College of New York in 2020.
+
 <img src="img/bruno.png" alt="bruno" style="width: 100px;"/>
 
 <a href="https://www.researchgate.net/profile/Bruno_Vilela3" target="_blank">Bruno Vilela</a> (co-developer) is a coauthor of spThin and currently a professor at Universidade Federal da Bahia in Brazil.
