@@ -639,9 +639,9 @@ shinyServer(function(input, output, session) {
     if (rvs$comp6 == "maxent") {
       modCur <- rvs$mods[[rvs$modSel]]
       if (rvs$algMaxent == "maxnet") {
-        nonZeroCoefs <- mxNonzeroCoefs(modCur, maxentVersion = "maxnet")
+        nonZeroCoefs <- mxNonzeroCoefs(modCur, alg = "maxnet")
       } else if(rvs$algMaxent == "maxent.jar") {
-        nonZeroCoefs <- mxNonzeroCoefs(modCur, maxentVersion = "maxent.jar")
+        nonZeroCoefs <- mxNonzeroCoefs(modCur, alg = "maxent.jar")
       }
       envsNames <- names(rvs$bgMsk[[nonZeroCoefs]])
       rvs$mxNonZeroCoefs <- envsNames
