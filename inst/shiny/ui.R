@@ -556,7 +556,7 @@ tagList(
                 "input.tabs == 'change'",
                 br(),
                 fluidRow(
-                  column(3, h5("Download mapped cropped to overlap areas")),
+                  column(3, h5("Download distribution map or AOO cropped to overlap areas")),
                   column(2, selectInput('OverlapFileType',
                                         label = NULL,
                                         choices = list("GeoTIFF" = 'GTiff',
@@ -564,7 +564,16 @@ tagList(
                                                        "ASCII" = 'ascii',
                                                        "PNG" = 'png'))),
                   column(2, shinyjs::disabled(downloadButton('dlOverlap', "Overlap file")))
-                ) ,
+                ),
+                br(),
+                fluidRow(
+                  column(3, h5("Download EOO cropped to overlap areas")),
+                  column(2, selectInput('OverlapEOOFileType',
+                                        label = NULL,
+                                        choices = list("shapefile" = 'shapefile',
+                                                       "PNG" = 'png'))),
+                  column(2, shinyjs::disabled(downloadButton('dlOverlapEOO', "Overlap EOO file")))
+                ),
                 br(),
                 fluidRow(
                   column(3, h5("Download AOO raster")),

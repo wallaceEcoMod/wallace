@@ -12,7 +12,8 @@ selectInput(ns("selRasterSource") , label = "Select raster for calculations",
  choices = list("Wallace SDM" = "wallace",
 "Projected SDM" = "proj",
 "User SDM" = "sdm",
-"Masked SDM" = "masked")),
+"Masked SDM" = "masked",
+"AOO" = "aoo")),
  actionButton(ns("goInputRaster"), "Select"),
 
 tags$hr(),
@@ -86,6 +87,20 @@ change_time_module_server <- function(input, output, session, common) {
       }
       spp[[curSp()]]$change$time <- spp[[curSp()]]$postProc$prediction
       logger %>% writeLog( "SDM area after masking for environmental variables through time will be calculated based on Masked SDM ")
+
+    }
+    if(input$selRasterSource == "aoo"){
+      #CAREFUL: as its set up now if user doesn t do maskrangeR this object will be something else
+      #(either user uploaed SDM or wallace SDM) this must be fixed in other components so it works smoothly
+
+      if (!is.null( spp[[curSp()]]$rmm$data$change$AOO)) {
+        logger %>%
+          writeLog(type = 'error',
+                   'Do an AOO calculation before doing time calculations')
+        return()
+      }
+      spp[[curSp()]]$change$time <-  spp[[curSp()]]$rmm$data$change$AOO
+      logger %>% writeLog( "SDM area after masking for environmental variables through time will be calculated based on AOO")
 
     }
   })
