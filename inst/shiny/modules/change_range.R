@@ -586,12 +586,12 @@ map %>%
                       lat1 = zoomExt[3], lat2 = zoomExt[4])
     map %>%
       ##Add legend
-      addLegend("bottomright", colors = c('gray', 'red'),
+      addLegend("bottomright", colors = c('red', 'grey'),
                 title = "AOO",
                 labels = c("Presence", "Absence"),
                 opacity = 1, layerId = 'expert') %>%
     ##ADD polygon
-    addRasterImage(AOOras, colors = c('gray', 'red'),
+    addRasterImage(AOOras, colors = c('red', 'grey'),
                    opacity = 0.7, group = 'change', layerId = 'AOO',
                    method = "ngb")
   }

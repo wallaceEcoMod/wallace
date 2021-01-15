@@ -2,12 +2,15 @@ change_overlap_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
     span("Step 1:", class = "step"),
-    span("Choose Input raster", class = "stepText"), br(), br(),
+    span("Choose Input range map", class = "stepText"), br(), br(),
     selectInput(ns("selSource") , label = "Select raster for calculations",
                 choices = list("Wallace SDM" = "wallace",
                                "Projected SDM" = "proj",
                                "User SDM" = "sdm",
-                               "Masked SDM" = "masked")),
+                               "Masked SDM" = "masked",
+                               "EOO" = "eoo",
+                                "AOO" = "aoo"
+                               )),
 
     actionButton(ns("goInputRaster"), "Select"),
     tags$hr(),
@@ -74,7 +77,7 @@ change_overlap_module_server <- function(input, output, session, common) {
       #CAREFUL: as its set up now if user doesn t do maskrangeR this object will be something else
       #(either user uploaed SDM or wallace SDM) this must be fixed in other components so it works smoothly
 
-      if (!is.null(spp[[curSp()]]$postProc$prediction)) {
+      if (is.null(spp[[curSp()]]$postProc$prediction)) {
         logger %>%
           writeLog(type = 'error',
                    'Do a maskRangeR analysis before doing range calculations')
@@ -82,6 +85,29 @@ change_overlap_module_server <- function(input, output, session, common) {
       }
       spp[[curSp()]]$change$Plot <- spp[[curSp()]]$postProc$prediction
     }
+    if(input$selSource == "eoo"){
+
+      if (is.null(spp[[curSp()]]$rmm$data$change$EOO)) {
+        logger %>%
+          writeLog(type = 'error',
+                   'Do an EOO calculation in the area module before doing range calculations')
+        return()
+      }
+      spp[[curSp()]]$change$Plot1 <-   spp[[curSp()]]$rmm$data$change$EOO
+    }
+    if(input$selSource == "aoo"){
+      #CAREFUL: as its set up now if user doesn t do maskrangeR this object will be something else
+      #(either user uploaed SDM or wallace SDM) this must be fixed in other components so it works smoothly
+
+      if (is.null(spp[[curSp()]]$rmm$data$change$AOO)) {
+        logger %>%
+          writeLog(type = 'error',
+                   'Do an AOO calculation in the area module before doing range calculations')
+        return()
+      }
+      spp[[curSp()]]$change$Plot <-   spp[[curSp()]]$rmm$data$change$AOO
+    }
+
   })
 
  observeEvent(input$goInputPoly, {
@@ -123,7 +149,10 @@ change_overlap_module_server <- function(input, output, session, common) {
    }
 
     shpcrop<-rgeos::gBuffer(polyOverlap,byid = TRUE, width=0)
-    shpcrop<-raster::crop(shpcrop,raster::extent(spp[[curSp()]]$change$Plot))
+   ##crop polygon for visualization if range is a raster
+     if(!is.null(spp[[curSp()]]$change$Plot)){
+    shpcrop<-raster::crop(shpcrop,raster::extent(spp[[curSp()]]$change$Plot))}
+
     spp[[curSp()]]$change$polyOverlap <- polyOverlap
     spp[[curSp()]]$change$polyOverlapCrop <- shpcrop
   })
@@ -255,6 +284,45 @@ change_overlap_module_server <- function(input, output, session, common) {
 
     }
 
+    if(input$selSource == "eoo"){
+
+      smartProgress(
+        logger,
+        message = "Calculating range overlap ", {
+          r = spp[[curSp()]]$rmm$data$change$EOO
+          shp = spp[[curSp()]]$change$polyOverlap
+          raster::crs(shp) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+          raster::crs(r) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+          ratio.Overlap <- changeRangeR::ratioOverlap(r = r , shp =  shp,field = spp[[curSp()]]$change$ShpField, category = category)
+        })
+      req(ratio.Overlap)
+      logger %>% writeLog( "Proportion of EOO that is contained by landcover categories calculated ")
+      # LOAD INTO SPP ####
+      spp[[curSp()]]$change$overlapPoly <- ratio.Overlap$maskedRange
+      spp[[curSp()]]$change$overlapvalue <- ratio.Overlap$ratio
+     # spp[[curSp()]]$change$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
+
+    }
+    if(input$selSource == "aoo"){
+
+      smartProgress(
+        logger,
+        message = "Calculating range overlap ", {
+          r = spp[[curSp()]]$rmm$data$change$AOO
+          shp = spp[[curSp()]]$change$polyOverlap
+          raster::crs(shp) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+          raster::crs(r) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+          ratio.Overlap <- changeRangeR::ratioOverlap(r = r , shp =  shp,field = spp[[curSp()]]$change$ShpField, category = category)
+        })
+      req(ratio.Overlap)
+      logger %>% writeLog("Proportion of AOO that is contained by landcover categories calculated ")
+      # LOAD INTO SPP ####
+      spp[[curSp()]]$change$overlapRaster <- ratio.Overlap$maskedRange
+      spp[[curSp()]]$change$overlapvalue <- ratio.Overlap$ratio
+      spp[[curSp()]]$change$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
+
+    }
+
   })
 
 
@@ -298,7 +366,34 @@ change_overlap_module_map <- function(map, common) {
  spp <- common$spp
   curSp <- common$curSp
   map %>% clearAll()
+  #if EOO is selected plot the polygon
+  if(!is.null(spp[[curSp()]]$change$Plot1)){
+
+    polyEOO <- spp[[curSp()]]$rmm$data$change$EOO@polygons[[1]]@Polygons
+    bb <- spp[[curSp()]]$rmm$data$change$EOO@bbox
+    bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
+    map %>%
+      fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
+    map %>%
+      ##Add legend
+      addLegend("bottomright", colors = "gray",
+                title = "EOO", labels = "EOO",
+                opacity = 1)
+    ##ADD polygon
+    if (length(polyEOO) == 1) {
+      xy <- list(polyEOO[[1]]@coords)
+    } else {
+      xy <- lapply(polyEOO, function(x) x@coords)
+    }
+    for (shp in xy) {
+      map %>%
+        addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4, color = "gray",
+                    group = 'change')
+    }
+  }
   #plot SDM to use
+
+  if(!is.null(spp[[curSp()]]$change$Plot)){
   req(spp[[curSp()]]$change$Plot)
   sdm <-  spp[[curSp()]]$change$Plot
   raster::crs(sdm) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
@@ -312,15 +407,26 @@ change_overlap_module_map <- function(map, common) {
   if (length(unique(SDMVals)) == 3 |
       length(unique(SDMVals)) == 2) {
     map %>%
-      addLegend("bottomright", colors = c('gray', 'red'),
+      addLegend("bottomright", colors = c('red', 'grey'),
                 title = "SDM",
                 labels = c("Presence", "Absence"),
                 opacity = 1, layerId = 'sdm') %>%
-      addRasterImage(sdm, colors = c('gray', 'red'),
+      addRasterImage(sdm, colors = c('grey', 'red'),
                      opacity = 0.7, group = 'change', layerId = 'sdm',
                      method = "ngb")
-  } else {
-    # if threshold specified
+  }
+  else if (length(unique(SDMVals)) == 1) {
+    map %>%
+      addLegend("bottomright", colors = 'red',
+                title = "AOO",
+                labels = "Presence",
+                opacity = 1, layerId = 'expert') %>%
+      addRasterImage(sdm, colors = 'red',
+                     opacity = 0.7, group = 'change', layerId = 'Overlap',
+                     method = "ngb")
+  }
+  else {
+    # if no threshold specified
     legendPal <- colorNumeric(rev(rasCols), SDMVals, na.color = 'transparent')
     rasPal <- colorNumeric(rasCols, SDMVals, na.color = 'transparent')
     map %>%
@@ -330,6 +436,7 @@ change_overlap_module_map <- function(map, common) {
       addRasterImage(sdm, colors = rasPal,
                      opacity = 0.7, group = 'change', layerId = 'sdm',
                      method = "ngb")
+  }
   }
   # Add just projection Polygon
   req(spp[[curSp()]]$change$polyOverlapCrop)
@@ -349,9 +456,35 @@ change_overlap_module_map <- function(map, common) {
                         color = "red", fill=FALSE, group = 'change')
   }
 
-
- ##Plot overlap
-  req(spp[[curSp()]]$change$overlapRaster)
+##Plot overlap of polygons (EOO case)
+  if(!is.null(spp[[curSp()]]$change$overlapPoly)){
+ req(spp[[curSp()]]$change$overlapPoly)
+ polyOver <- spp[[curSp()]]$change$overlapPoly@polygons[[1]]@Polygons
+ bb <- spp[[curSp()]]$change$overlapPoly@bbox
+ bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
+ map %>%
+   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
+ map %>%
+   ##Add legend
+   addLegend("bottomright", colors = "red",
+             title = "Overlap", labels = "Overlap",
+             opacity = 1)
+ ##ADD polygon
+ if (length(polyOver) == 1) {
+   xy <- list(polyOver[[1]]@coords)
+ } else {
+   xy <- lapply(polyOver, function(x) x@coords)
+ }
+ for (shp in xy) {
+   map %>%
+     addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4, color = "red",
+                 group = 'change')
+ }
+  }
+##Plot overlap of raster vs raster (code to get unclear)
+##Plot overlap of poly and raster (SDM vs. polygon case)
+  if(!is.null(spp[[curSp()]]$change$overlapRaster)){
+ req(spp[[curSp()]]$change$overlapRaster)
 
     Overlap <-  spp[[curSp()]]$change$overlapRaster
     raster::crs(Overlap) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
@@ -367,14 +500,25 @@ change_overlap_module_map <- function(map, common) {
   if (length(unique(OverlapVals)) == 3 |
       length(unique(OverlapVals)) == 2) {
     map %>%
-      addLegend("bottomright", colors = c('gray', 'red'),
+      addLegend("bottomright", colors = c('red', 'grey'),
                 title = "Range Overlap",
                 labels = c("Presence", "Absence"),
                 opacity = 1, layerId = 'expert') %>%
       addRasterImage(Overlap, colors = c('gray', 'red'),
                      opacity = 0.7, group = 'change', layerId = 'Overlap',
                      method = "ngb")
-  } else {
+  }
+  else if (length(unique(OverlapVals)) == 1) {
+      map %>%
+        addLegend("bottomright", colors = 'red',
+                  title = "Range Overlap",
+                  labels = "Presence",
+                  opacity = 1, layerId = 'expert') %>%
+        addRasterImage(Overlap, colors = 'red',
+                       opacity = 0.7, group = 'change', layerId = 'Overlap',
+                       method = "ngb")
+  }
+  else {
     # if threshold specified
     legendPal <- colorNumeric(rev(rasCols), OverlapVals, na.color = 'transparent')
     rasPal <- colorNumeric(rasCols, OverlapVals, na.color = 'transparent')
@@ -386,7 +530,7 @@ change_overlap_module_map <- function(map, common) {
                      opacity = 0.7, group = 'change', layerId = 'Overlap',
                      method = "ngb")
   }
-
+}
 
 }
 change_overlap_module_rmd <- function(species) {
