@@ -31,7 +31,7 @@ change_overlap_module_ui <- function(id) {
     actionButton(ns("goInputOver"), "Load"), br(),
     tags$hr(),
     span("Step 3:", class = "step"),
-    span("Choose field of interest (if input is a shapefile)", class = "stepText"), br(),
+    span("Choose field of interest (if input is a shapefile, else go to step 4)", class = "stepText"), br(),
     #Add a conditional panel showing the fields in the shapefile
     uiOutput(ns('selFieldui')),
     uiOutput(ns('selCatdui')),
