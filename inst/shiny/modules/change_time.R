@@ -85,13 +85,13 @@ change_time_module_server <- function(input, output, session, common) {
       #CAREFUL: as its set up now if user doesn t do maskrangeR this object will be something else
       #(either user uploaed SDM or wallace SDM) this must be fixed in other components so it works smoothly
 
-      if (is.null(spp[[curSp()]]$postProc$prediction)) {
+      if (is.null(spp[[curSp()]]$mask$prediction)) {
         logger %>%
           writeLog(type = 'error',
                    'Do a maskRangeR analysis before doing range calculations')
         return()
       }
-      spp[[curSp()]]$change$time <- spp[[curSp()]]$postProc$prediction
+      spp[[curSp()]]$change$time <-     spp[[curSp()]]$mask$prediction
       logger %>% writeLog( "SDM area after masking for environmental variables through time will be calculated based on Masked SDM ")
 
     }
