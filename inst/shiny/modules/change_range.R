@@ -172,18 +172,16 @@ change_range_module_server <- function(input, output, session, common) {
         common$update_component(tab = "Results")
       }
       if(input$selSource == "mask"){
-        #CAREFUL: as its set up now if user doesn t do maskrangeR this object will be something else
-        #(either user uploaed SDM or wallace SDM) this must be fixed in other components so it works smoothly
 
 
         # ERRORS ####
-        if (is.null(spp[[curSp()]]$postProc$prediction)) {
+        if (is.null(spp[[curSp()]]$mask$prediction)) {
           logger %>%
             writeLog(type = 'error',
                      'Do a maskRangeR analysis before doing range calculations')
           return()
         }
-        p <- spp[[curSp()]]$postProc$prediction
+        p <- spp[[curSp()]]$mask$prediction
         p[p == 0] <- NA
         if (length(unique(raster::values(p)))> 2) {
           logger %>%
@@ -197,7 +195,7 @@ change_range_module_server <- function(input, output, session, common) {
 
             # FUNCTION CALL ####
             ##First project to equal area
-            p <-  spp[[curSp()]]$postProc$prediction
+            p <-      spp[[curSp()]]$mask$prediction
             ##PROJECT
             p<-raster::projectRaster(p,crs="+proj=aea +lat_1=-5 +lat_2=-42 +lat_0=-32 +lon_0=-60 +x_0=0 +y_0=0 +ellps=aust_SA +units=m")
             # find the number of cells that are not NA
@@ -464,10 +462,8 @@ change_range_module_server <- function(input, output, session, common) {
         common$update_component(tab = "Map")
       }
       else if (input$selSource2 =="mask"){
-        #CAREFUL: as its set up now if user doesn t do maskrangeR this object will be something else
-        #(either user uploaed SDM or wallace SDM) this must be fixed in other components so it works smoothly
 
-        p <- spp[[curSp()]]$postProc$prediction
+        p <- spp[[curSp()]]$mask$prediction
         p[p == 0] <- NA
         if (length(unique(raster::values(p)))> 2) {
           logger %>%

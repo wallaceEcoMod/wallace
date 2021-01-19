@@ -81,10 +81,8 @@ change_overlap_module_server <- function(input, output, session, common) {
       spp[[curSp()]]$change$Plot <- spp[[curSp()]]$postProc$OrigPred
     }
     if(input$selSource == "masked"){
-      #CAREFUL: as its set up now if user doesn t do maskrangeR this object will be something else
-      #(either user uploaed SDM or wallace SDM) this must be fixed in other components so it works smoothly
 
-      if (is.null(spp[[curSp()]]$postProc$prediction)) {
+      if (is.null(    spp[[curSp()]]$mask$prediction)) {
         logger %>%
           writeLog(type = 'error',
                    'Do a maskRangeR analysis before doing range calculations')
@@ -301,7 +299,7 @@ change_overlap_module_server <- function(input, output, session, common) {
         smartProgress(
         logger,
         message = "Calculating range overlap ", {
-      r = spp[[curSp()]]$postProc$prediction
+      r =     spp[[curSp()]]$mask$prediction
     #  shp = spp[[curSp()]]$change$polyOverlap
       raster::crs(shp) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
       raster::crs(r) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
