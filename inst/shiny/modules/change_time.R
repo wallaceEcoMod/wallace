@@ -7,12 +7,14 @@ change_time_module_ui <- function(id) {
                       #Threshold numeric input
                       #years used (numeric input?)
 span("Step 1:", class = "step"),
- span("Choose Input raster", class = "stepText"), br(), br(),
-selectInput(ns("selRasterSource") , label = "Select raster for calculations",
+ span("Choose Input range", class = "stepText"), br(), br(),
+selectInput(ns("selRasterSource") , label = "Select range for calculations",
  choices = list("Wallace SDM" = "wallace",
 "Projected SDM" = "proj",
 "User SDM" = "sdm",
-"Masked SDM" = "masked")),
+"Masked SDM" = "masked",
+"AOO" = "aoo",
+"EOO" ="eoo")),
  actionButton(ns("goInputRaster"), "Select"),
 
 tags$hr(),
@@ -22,6 +24,11 @@ fileInput(ns("changeEnvs"), label = "Upload environmental rasters",
           accept = c(".tif", ".asc"), multiple = TRUE),
 numericInput(ns("EnvThrVal"), "Set threshold value",
              value = 0, min = 0),
+selectInput(ns("selBound") , label = "Select bounds to be used for calculations",
+            choices = list("Lower" = "lower",
+                           "Upper" = "upper",
+                           "Neither" = "neither",
+                           "Both" = "both")),
 actionButton(ns("goInputEnvs"), "Load"),
 
 tags$hr(),
@@ -78,7 +85,7 @@ change_time_module_server <- function(input, output, session, common) {
       #CAREFUL: as its set up now if user doesn t do maskrangeR this object will be something else
       #(either user uploaed SDM or wallace SDM) this must be fixed in other components so it works smoothly
 
-      if (!is.null(spp[[curSp()]]$postProc$prediction)) {
+      if (is.null(spp[[curSp()]]$postProc$prediction)) {
         logger %>%
           writeLog(type = 'error',
                    'Do a maskRangeR analysis before doing range calculations')
@@ -86,6 +93,34 @@ change_time_module_server <- function(input, output, session, common) {
       }
       spp[[curSp()]]$change$time <- spp[[curSp()]]$postProc$prediction
       logger %>% writeLog( "SDM area after masking for environmental variables through time will be calculated based on Masked SDM ")
+
+    }
+    if(input$selRasterSource == "aoo"){
+      #CAREFUL: as its set up now if user doesn t do maskrangeR this object will be something else
+      #(either user uploaed SDM or wallace SDM) this must be fixed in other components so it works smoothly
+
+      if (is.null( spp[[curSp()]]$rmm$data$change$AOO)) {
+        logger %>%
+          writeLog(type = 'error',
+                   'Do an AOO calculation before doing time calculations')
+        return()
+      }
+      spp[[curSp()]]$change$time <-  spp[[curSp()]]$rmm$data$change$AOO
+      logger %>% writeLog( "SDM area after masking for environmental variables through time will be calculated based on AOO")
+
+    }
+    if(input$selRasterSource == "eoo"){
+      #CAREFUL: as its set up now if user doesn t do maskrangeR this object will be something else
+      #(either user uploaed SDM or wallace SDM) this must be fixed in other components so it works smoothly
+
+      if (is.null(spp[[curSp()]]$rmm$data$change$EOO)) {
+        logger %>%
+          writeLog(type = 'error',
+                   'Do an EOO calculation before doing time calculations')
+        return()
+      }
+      spp[[curSp()]]$change$time1 <-  spp[[curSp()]]$rmm$data$change$EOO
+      logger %>% writeLog( "SDM area after masking for environmental variables through time will be calculated based on EOO")
 
     }
   })
@@ -118,23 +153,41 @@ change_time_module_server <- function(input, output, session, common) {
       logger %>% writeLog(type = 'error', "Please enter the years for all inputed variables")
       return()
     }
-    if(!is.null(spp[[curSp()]]$change$time)){
+    if(is.null(spp[[curSp()]]$change$time1)){
     smartProgress(
       logger,
       message = "Calculating area change through time ", {
     SDM <- spp[[curSp()]]$change$time
     rStack <- raster::projectRaster(spp[[curSp()]]$change$changeEnvs, SDM, method = 'bilinear')
     threshold <- spp[[curSp()]]$change$changeEnvsThr
-
+    bound <- input$selBound
     ##run function
-    SDM.time <- changeRangeR::envChange(rStack = rStack, SDM = SDM, threshold = threshold)
+    SDM.time <- changeRangeR::envChange(rStack = rStack, binaryRange = SDM, threshold = threshold, bound=bound)
     ### Set up years for plotting
-
       })
 
       logger %>% writeLog( "SDM area after masking for environmental variables through time calculation done")
       # LOAD INTO SPP ####
-      spp[[curSp()]]$change$AreaTime <-SDM.time$Area
+      spp[[curSp()]]$change$AreaTime <-SDM.time$allAreas
+      spp[[curSp()]]$change$Years <- years
+      common$update_component(tab = "Results")
+    }
+   else if(!is.null(spp[[curSp()]]$change$time1)){
+      smartProgress(
+        logger,
+        message = "Calculating area change through time ", {
+          rStack <- spp[[curSp()]]$change$changeEnvs
+          eoo <- spp[[curSp()]]$change$time1
+          threshold <- spp[[curSp()]]$change$changeEnvsThr
+          bound <- input$selBound
+          ##run function
+          SDM.time <- changeRangeR::envChange(rStack = rStack, binaryRange = eoo, threshold = threshold, bound=bound)
+          ### Set up years for plotting
+        })
+
+      logger %>% writeLog( "SDM area after masking for environmental variables through time calculation done")
+      # LOAD INTO SPP ####
+      spp[[curSp()]]$change$AreaTime <-SDM.time$allAreas
       spp[[curSp()]]$change$Years <- years
       common$update_component(tab = "Results")
     }
@@ -199,8 +252,34 @@ change_time_module_map <- function(map, common) {
   # Map logic
   spp <- common$spp
   curSp <- common$curSp
+  #if EOO is selected plot the polygon
+  if(!is.null(spp[[curSp()]]$change$time1)){
+
+    polyEOO <- spp[[curSp()]]$rmm$data$change$EOO@polygons[[1]]@Polygons
+    bb <- spp[[curSp()]]$rmm$data$change$EOO@bbox
+    bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
+    map %>%
+      fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
+    map %>%
+      ##Add legend
+      addLegend("bottomright", colors = "gray",
+                title = "EOO", labels = "EOO",
+                opacity = 1)
+    ##ADD polygon
+    if (length(polyEOO) == 1) {
+      xy <- list(polyEOO[[1]]@coords)
+    } else {
+      xy <- lapply(polyEOO, function(x) x@coords)
+    }
+    for (shp in xy) {
+      map %>%
+        addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4, color = "gray",
+                    group = 'change')
+    }
+  }
   #plot SDM to use
-  req(spp[[curSp()]]$change$time)
+  if(is.null(spp[[curSp()]]$change$time1)){
+    req(spp[[curSp()]]$change$time)
   sdm <-  spp[[curSp()]]$change$time
   raster::crs(sdm) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
   SDMVals <- getRasterVals(sdm)
@@ -213,7 +292,7 @@ change_time_module_map <- function(map, common) {
   if (length(unique(SDMVals)) == 3 |
       length(unique(SDMVals)) == 2) {
     map %>%
-      addLegend("bottomright", colors = c('gray', 'red'),
+      addLegend("bottomright", colors = c('red', 'grey'),
                 title = "SDM",
                 labels = c("Presence", "Absence"),
                 opacity = 1, layerId = 'sdm') %>%
@@ -231,6 +310,7 @@ change_time_module_map <- function(map, common) {
       addRasterImage(sdm, colors = rasPal,
                      opacity = 0.7, group = 'change', layerId = 'sdm',
                      method = "ngb")
+  }
   }
 
 }

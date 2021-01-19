@@ -1,6 +1,13 @@
 alpha_richness_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
+      span("Step 1:", class = "step"),
+      span("Choose source of range maps", class = "stepText"), br(), br(),
+      selectInput(ns("selSource") , label = "Select source of range maps",
+                  choices = list("Wallace created SDM" = "proj",
+                                 "User uploaded SDM" = "sdm"
+                  )),
+
     # UI
     uiOutput(ns("alphaRich")),
     actionButton(ns("GoRichness"), "Run")
@@ -38,13 +45,13 @@ alpha_richness_module_server <- function(input, output, session, common) {
       return()
     }
 
-
+if (input$selSource=='proj'){
    for (i in 1:length(curSp())){
      sp<-curSp()[i]
      if (is.null(spp[[sp]]$project$mapProj)) {
        logger %>%
          writeLog(type = 'error',
-                  'Project your model before doing multisp. calculations')
+                  'Models must be of the same area for multisp. calculations, please use the transfer module to transfer to same geographical space')
        return()
      }
      if (is.null(spp[[sp]]$rmm$prediction$transfer$environment1$thresholdSet)) {
@@ -69,7 +76,7 @@ alpha_richness_module_server <- function(input, output, session, common) {
           if(raster::extent(all_stack[[1]])!=raster::extent(spp[[sp]]$project$mapProj)){
            logger %>%
              writeLog(type = 'error',
-                      'Please project all models to the same area')
+                      'All models must be for the same area. Please use the transfer module to transfer to same geographical area')
             return()
           }
           else {
@@ -80,7 +87,48 @@ alpha_richness_module_server <- function(input, output, session, common) {
         # FUNCTION CALL ####
         SR <-  raster::calc(all_stack, sum, na.rm = T)
                        })
+}
+    if(input$selSource=='sdm'){
+      for (i in 1:length(curSp())){
+        sp<-curSp()[i]
+        if (is.null(spp[[curSp()]]$postProc$OrigPred)) {
+          logger %>%
+            writeLog(type = 'error',
+                     'Please upload a model for each species')
+          return()
+        }
+        if (length(unique(getRasterVals(spp[[curSp()]]$postProc$OrigPred)))>3) {
+          logger %>%
+            writeLog(type = 'error',
+                     'Uploaded models must be thresholded (binary) before doing multisp. calculations')
+          return()
+        }
+      }
+      smartProgress(
+        logger,
+        message = "Generating a species richness map", {
+          #get all models
+          sp1<-curSp()[1]
+          all_stack<-spp[[sp1]]$postProc$OrigPred
 
+          for (i in 2:length(curSp())){
+            sp<-curSp()[i]
+            #evaluate if same extent
+            if(raster::extent(all_stack[[1]])!=raster::extent(spp[[sp]]$postProc$OrigPred)){
+              logger %>%
+                writeLog(type = 'error',
+                         'All models must be of the same extent. Please ensure all uploaded models are')
+              return()
+            }
+            else {
+              all_stack<-raster::stack(all_stack,spp[[sp]]$postProc$OrigPred)
+            }
+          }
+
+          # FUNCTION CALL ####
+          SR <-  raster::calc(all_stack, sum, na.rm = T)
+        })
+    }
     req(SR)
     logger %>% writeLog( "Species richness calculated ")
     # LOAD INTO SPP ####

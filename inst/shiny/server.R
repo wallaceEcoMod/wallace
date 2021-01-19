@@ -160,6 +160,7 @@ function(input, output, session) {
     shinyjs::toggleState("dlAOO", !is.null(spp[[curSp()]]$rmm$data$change$AOO))
     shinyjs::toggleState("dlEOO", !is.null(spp[[curSp()]]$rmm$data$change$EOO))
     shinyjs::toggleState("dlOverlap", !is.null(spp[[curSp()]]$change$overlapRaster))
+    shinyjs::toggleState("dlOverlapEOO", !is.null(spp[[curSp()]]$change$overlapPoly))
     shinyjs::toggleState("dlMask",!is.null(spp[[curSp()]]$mask$removePoly) |
                            !is.null(spp[[curSp()]]$mask$tempLog) |
                            !is.null(spp[[curSp()]]$mask$spatialFlag))
@@ -1236,7 +1237,7 @@ function(input, output, session) {
           #rasPal <- colorNumeric(rasCols, OverlapVals, na.color = 'transparent')
           # Create legend
             ##Add legend
-           m <- leaflet() %>% addLegend("bottomright", colors = c('gray', 'red'),
+           m <- leaflet() %>% addLegend("bottomright", colors = c('red', 'grey'),
                       title = "AOO",
                       labels = c("Presence", "Absence"),
                       opacity = 1, layerId = 'expert') %>%
@@ -1266,7 +1267,70 @@ function(input, output, session) {
       }
     }
   )
-  # download overlap map
+  #download overlap map if from EOO
+  output$dlOverlapEOO <- downloadHandler(
+    filename = function() {
+      ext <- switch(input$OverlapEOOFileType, shapefile = 'zip', png = 'png')
+
+      paste0( "OverlapEOO", '.', ext)
+
+    },
+    content = function(file) {
+      if(require(rgdal)) {
+        if (input$OverlapFileType == 'png') {
+          if (!webshot::is_phantomjs_installed()) {
+            logger %>%
+              writeLog(type = "error", "To download PNG prediction, you need to",
+                       " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
+                       " in your R console. ")
+          }
+
+          polyOver <- spp[[curSp()]]$change$overlapPoly@polygons[[1]]@Polygons
+          m <- leaflet() %>%
+            ##Add legend
+            addLegend("bottomright", colors = "red",
+                      title = "Overlap", labels = "Overlap",
+                      opacity = 1)
+          ##ADD polygon
+          if (length(polyOver) == 1) {
+            xy <- list(polyOver[[1]]@coords)
+          } else {
+            xy <- lapply(polyOver, function(x) x@coords)
+          }
+          for (shp in xy) {
+            m %>%
+              addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4, color = "red",
+                          group = 'change')
+          }
+
+          mapview::mapshot(m, file = file)
+
+        }
+        else if (input$OverlapFileType == 'shapefile') {
+          tmpdir <- tempdir()
+          setwd(tempdir())
+          n <- curSp()
+          overlapPoly <- spp[[curSp()]]$change$overlapPoly
+          rgdal::writeOGR(obj = overlapPoly,
+                          dsn = tmpdir,
+                          layer = paste0(n, '_OverlapEOO'),
+                          driver = "ESRI Shapefile",
+                          overwrite_layer = TRUE)
+
+          exts <- c('dbf', 'shp', 'shx')
+          fs <- paste0(n, '_OverlapEOO.', exts)
+          zip::zipr(zipfile = file, files = fs)
+          if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
+        }
+
+      } else {
+        logger %>% writeLog("Please install the rgdal package before downloading rasters.")
+      }
+    }
+  )
+
+
+  # download overlap map if from raster (SDM or AOO)
   output$dlOverlap <- downloadHandler(
     filename = function() {
       ext <- switch(input$OverlapFileType, raster = 'zip', ascii = 'asc',
@@ -1284,6 +1348,7 @@ function(input, output, session) {
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in your R console. ")
           }
+
           Overlap <-  spp[[curSp()]]$change$overlapRaster
           raster::crs(Overlap) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
           OverlapVals <- spp[[curSp()]]$change$overlapvalues
@@ -1295,7 +1360,7 @@ function(input, output, session) {
           if (length(unique(OverlapVals)) == 3 |
               length(unique(OverlapVals)) == 2) {
             m <- leaflet() %>%
-              addLegend("bottomright", colors = c('gray', 'red'),
+              addLegend("bottomright", colors = c('red', 'grey'),
                         title = "Range Overlap",
                         labels = c("Presence", "Absence"),
                         opacity = 1, layerId = 'expert') %>%
@@ -1304,8 +1369,21 @@ function(input, output, session) {
                              opacity = 0.7, group = 'change', layerId = 'Overlap',
                              method = "ngb")
             mapview::mapshot(m, file = file)
-          } else {
-            # if threshold specified
+          }
+          else if (length(unique(OverlapVals)) == 1) {
+            m <- leaflet() %>%
+              addLegend("bottomright", colors = 'red',
+                        title = "Range Overlap",
+                        labels = "Presence",
+                        opacity = 1, layerId = 'expert') %>%
+              addProviderTiles(input$bmap) %>%
+              addRasterImage(Overlap, colors = 'red',
+                             opacity = 0.7, group = 'change', layerId = 'Overlap',
+                             method = "ngb")
+            mapview::mapshot(m, file = file)
+            }
+          else {
+            # if no threshold specified
             legendPal <- colorNumeric(rev(rasCols), OverlapVals, na.color = 'transparent')
             rasPal <- colorNumeric(rasCols, OverlapVals, na.color = 'transparent')
             m <- leaflet() %>%
