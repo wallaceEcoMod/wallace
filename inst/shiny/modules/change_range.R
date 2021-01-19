@@ -177,7 +177,7 @@ change_range_module_server <- function(input, output, session, common) {
 
 
         # ERRORS ####
-        if (!is.null(spp[[curSp()]]$postProc$prediction)) {
+        if (is.null(spp[[curSp()]]$postProc$prediction)) {
           logger %>%
             writeLog(type = 'error',
                      'Do a maskRangeR analysis before doing range calculations')
