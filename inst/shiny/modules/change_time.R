@@ -22,8 +22,8 @@ span("Step 2:", class = "step"),
 span("Choose environmental variables", class = "stepText"), br(), br(),
 fileInput(ns("changeEnvs"), label = "Upload environmental rasters",
           accept = c(".tif", ".asc"), multiple = TRUE),
-numericInput(ns("EnvThrVal"), "Set threshold value",
-             value = 0, min = 0),
+textInput(ns("EnvThrVal"), "Set threshold value",
+             placeholder = "for single threshold: 40, for range: 30,60 ",value=""),
 selectInput(ns("selBound") , label = "Select bounds to be used for calculations",
             choices = list("Lower" = "lower",
                            "Upper" = "upper",
@@ -142,13 +142,15 @@ change_time_module_server <- function(input, output, session, common) {
      return()
    }
    spp[[curSp()]]$change$changeEnvs <- rStack
-   spp[[curSp()]]$change$changeEnvsThr <-input$EnvThrVal
+   threshold <- as.numeric(trimws(strsplit(input$EnvThrVal, ",")[[1]]))
+   spp[[curSp()]]$change$changeEnvsThr <-threshold
       })
   })
 
   observeEvent(input$goInputYears, {
     req(spp[[curSp()]]$change$changeEnvs)
     years <- trimws(strsplit(input$Years, ",")[[1]])
+
     if (raster::nlayers(spp[[curSp()]]$change$changeEnvs)!=length(years)) {
       logger %>% writeLog(type = 'error', "Please enter the years for all inputed variables")
       return()
