@@ -489,8 +489,10 @@ change_overlap_module_map <- function(map, common) {
 ##Plot overlap of polygons (EOO case)
   if(!is.null(spp[[curSp()]]$change$overlapPoly)){
  req(spp[[curSp()]]$change$overlapPoly)
- polyOver <- spp[[curSp()]]$change$overlapPoly@polygons[[1]]@Polygons
- bb <- spp[[curSp()]]$change$overlapPoly@bbox
+    polyOver <- as_Spatial(spp[[curSp()]]$change$overlapPoly)
+    bb <- polyOver@bbox
+ polyOver <- polyOver@polygons[[1]]@Polygons
+
  bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
  map %>%
    fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
