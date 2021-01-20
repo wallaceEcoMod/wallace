@@ -164,7 +164,7 @@ change_overlap_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$change$polyOverlapCrop <- shpcrop
    }
    if(input$changeOverlap=='raster'){
-     userRaster <- post_userSDM(rasPath = input$changeOverlapRaster$datapath,
+     userRaster <- change_raster(rasPath = input$changeOverlapRaster$datapath,
                               rasName = input$changeOverlapRaster$name,
                               logger)
      if (!is.null(userRaster)) {
