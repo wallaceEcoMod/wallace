@@ -171,7 +171,7 @@ change_time_module_server <- function(input, output, session, common) {
 
       logger %>% writeLog( "SDM area after masking for environmental variables through time calculation done")
       # LOAD INTO SPP ####
-      spp[[curSp()]]$change$AreaTime <-SDM.time$allAreas
+      spp[[curSp()]]$change$AreaTime <-SDM.time$Area
       spp[[curSp()]]$change$Years <- years
       common$update_component(tab = "Results")
     }
@@ -190,7 +190,7 @@ change_time_module_server <- function(input, output, session, common) {
 
       logger %>% writeLog( "SDM area after masking for environmental variables through time calculation done")
       # LOAD INTO SPP ####
-      spp[[curSp()]]$change$AreaTime <-SDM.time$allAreas
+      spp[[curSp()]]$change$AreaTime <-SDM.time$Area
       spp[[curSp()]]$change$Years <- years
       common$update_component(tab = "Results")
     }
