@@ -153,7 +153,10 @@ change_time_module_server <- function(input, output, session, common) {
       logger %>% writeLog(type = 'error', "Please enter the years for all inputed variables")
       return()
     }
-    if(is.null(spp[[curSp()]]$change$time1)){
+    if (is.null(spp[[curSp()]]$change$time1)&is.null(spp[[curSp()]]$change$time)){
+      logger %>% writeLog( type = 'error',"No SDM is selected for the calculations")
+    }
+    else if(is.null(spp[[curSp()]]$change$time1)){
     smartProgress(
       logger,
       message = "Calculating area change through time ", {
@@ -168,7 +171,7 @@ change_time_module_server <- function(input, output, session, common) {
 
       logger %>% writeLog( "SDM area after masking for environmental variables through time calculation done")
       # LOAD INTO SPP ####
-      spp[[curSp()]]$change$AreaTime <-SDM.time$allAreas
+      spp[[curSp()]]$change$AreaTime <-SDM.time$Area
       spp[[curSp()]]$change$Years <- years
       common$update_component(tab = "Results")
     }
@@ -187,13 +190,11 @@ change_time_module_server <- function(input, output, session, common) {
 
       logger %>% writeLog( "SDM area after masking for environmental variables through time calculation done")
       # LOAD INTO SPP ####
-      spp[[curSp()]]$change$AreaTime <-SDM.time$allAreas
+      spp[[curSp()]]$change$AreaTime <-SDM.time$Area
       spp[[curSp()]]$change$Years <- years
       common$update_component(tab = "Results")
     }
-else{
-  logger %>% writeLog( type = 'error',"No SDM is selected for the calculations")
-}
+
 
 
 
