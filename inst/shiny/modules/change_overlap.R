@@ -423,7 +423,7 @@ change_overlap_module_map <- function(map, common) {
   }
   #plot SDM to use
 
-  if(!is.null(spp[[curSp()]]$change$Plot)){
+  if(is.null(spp[[curSp()]]$change$Plot1)){
   req(spp[[curSp()]]$change$Plot)
   sdm <-  spp[[curSp()]]$change$Plot
   raster::crs(sdm) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
