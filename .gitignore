@@ -27,3 +27,4 @@ KeepNA
 keepInteger
 inst/doc
 *Thumbs.db
+inst/shiny/restart.txt
