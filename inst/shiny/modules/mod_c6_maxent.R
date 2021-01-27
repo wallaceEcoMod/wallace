@@ -23,10 +23,6 @@ maxent_UI <- function(id) {
   }
 
 maxent_MOD <- function(input, output, session, rvs) {
-  observe({
-    shinyjs::toggleState("clamp", condition = (input$algMaxent == "maxnet"))
-  })
-  
   reactive({
     
     if (is.null(rvs$occsGrp)) {
