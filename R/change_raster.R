@@ -1,5 +1,5 @@
 #'
-#' @title  post_userSDM
+#' @title  change_raster
 #' @description Upload user-specified SDM prediction
 #'
 #' @details
