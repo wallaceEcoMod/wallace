@@ -88,16 +88,16 @@ if (input$selSource=='proj'){
         SR <-  raster::calc(all_stack, sum, na.rm = T)
                        })
 }
-    if(input$selSource=='sdm'){
+if(input$selSource=='sdm'){
       for (i in 1:length(curSp())){
         sp<-curSp()[i]
-        if (is.null(spp[[curSp()]]$postProc$OrigPred)) {
+        if (is.null(spp[[sp]]$postProc$OrigPred)) {
           logger %>%
             writeLog(type = 'error',
                      'Please upload a model for each species')
           return()
         }
-        if (length(unique(getRasterVals(spp[[curSp()]]$postProc$OrigPred)))>3) {
+        if (length(unique(getRasterVals(spp[[sp]]$postProc$OrigPred)))>3) {
           logger %>%
             writeLog(type = 'error',
                      'Uploaded models must be thresholded (binary) before doing multisp. calculations')
@@ -114,7 +114,7 @@ if (input$selSource=='proj'){
           for (i in 2:length(curSp())){
             sp<-curSp()[i]
             #evaluate if same extent
-            if(raster::extent(all_stack[[1]])!=raster::extent(spp[[sp]]$postProc$OrigPred)){
+            if(raster::extent(all_stack)!=raster::extent(spp[[sp]]$postProc$OrigPred)){
               logger %>%
                 writeLog(type = 'error',
                          'All models must be of the same extent. Please ensure all uploaded models are')
@@ -124,7 +124,7 @@ if (input$selSource=='proj'){
               all_stack<-raster::stack(all_stack,spp[[sp]]$postProc$OrigPred)
             }
           }
-
+          req(all_stack)
           # FUNCTION CALL ####
           SR <-  raster::calc(all_stack, sum, na.rm = T)
         })
