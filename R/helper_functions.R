@@ -215,7 +215,7 @@ popUpContent <- function(x) {
 #' @export
 remEnvsValsNA <- function(occs, occsEnvsVals, sppName, logger) {
   withProgress(message = "Checking for points with NA values...", {
-    na.rowNums <- which(rowSums(is.na(occsEnvsVals)) > 1)
+    na.rowNums <- which(rowSums(is.na(occsEnvsVals)) >= 1)
     if (length(na.rowNums) == length(occsEnvsVals)) {
       logger %>% writeLog(
         type = 'error',
