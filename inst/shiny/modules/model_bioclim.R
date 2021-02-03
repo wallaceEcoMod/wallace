@@ -17,7 +17,6 @@ model_bioclim_module_server <- function(input, output, session, common) {
   logger <- common$logger
 
   observeEvent(input$goBIOCLIM, {
-    # Testing merging problem
     # loop over all species if batch is on
     if(input$batch == TRUE) spLoop <- allSp() else spLoop <- curSp()
 
