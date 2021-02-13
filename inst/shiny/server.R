@@ -533,6 +533,22 @@ shinyServer(function(input, output, session) {
     modPart.round <- cbind(rvs$modPart[, 1:2], 
                            round(rvs$modPart[, 3:ncols.Part], digits = 3))
     # render both full model and partition avg datatable, and individual partition datatable
+    output$evalTbl <- DT::renderDataTable(modRes.round, 
+                                          options = list(scrollX = TRUE,
+                                                         sDom  = '<"top">rtp<"bottom">'))
+    output$evalTblBins <- DT::renderDataTable(modPart.round, 
+                                              options = list(scrollX = TRUE,
+                                                             sDom  = '<"top">rtp<"bottom">'))
+    output$lambdas <- renderPrint({
+      modCur <- rvs$mods[[as.character(rvs$modSel)]]
+      if (rvs$algMaxent == "maxnet") {
+        modCur$betas
+      } else if (rvs$algMaxent == "maxent.jar") {
+        modCur@lambdas
+      }
+    })
+    shinyjs::show(id = "evalTblBins")
+    
     output$evalTbls <- renderUI({
       tabsetPanel(
         tabPanel("Evaluation", 
@@ -551,22 +567,6 @@ shinyServer(function(input, output, session) {
       )
       
     })
-    output$evalTbl <- DT::renderDataTable(modRes.round, 
-                                          options = list(scrollX = TRUE,
-                                                         sDom  = '<"top">rtp<"bottom">'))
-    output$evalTblBins <- DT::renderDataTable(modPart.round, 
-                                              options = list(scrollX = TRUE,
-                                                             sDom  = '<"top">rtp<"bottom">'))
-    output$lambdas <- renderPrint({
-      modCur <- rvs$mods[[as.character(rvs$modSel)]]
-      if (rvs$algMaxent == "maxnet") {
-        modCur$betas
-      } else if (rvs$algMaxent == "maxent.jar") {
-        modCur@lambdas
-      }
-    })
-    shinyjs::show(id = "evalTblBins")
-    
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     # customize visualizations for maxent
@@ -587,21 +587,30 @@ shinyServer(function(input, output, session) {
     rvs$mods <- e@models
     rvs$modPreds <- e@predictions
     rvs$modRes <- e@results
+    rvs$modPart <- e@results.partitions
+    output$evalTbl <- DT::renderDataTable(round(rvs$modRes, digits = 3), 
+                                          options = list(scrollX = TRUE, 
+                                                         sDom  = '<"top">rtp<"bottom">'))
+    output$evalTblBins <- DT::renderDataTable(
+      round(rvs$modPart[, 2:ncol(rvs$modPart)], digits = 3),
+      options = list(scrollX = TRUE, sDom  = '<"top">rtp<"bottom">'))
     output$evalTbls <- renderUI({
       tagList(
-        br(), 
-        div("Full model, partition bin average and individual evaluation statistics", id="stepText"), br(), br(),
-        DT::dataTableOutput('evalTbl')
+        br(),
+        div("Full model and partition bin average evaluation statistics", 
+            id = "stepText"), br(), br(),
+        DT::dataTableOutput('evalTbl'), br(), 
+        div("Individual partition bin evaluation statistics", 
+            id = "stepText"), br(), br(),
+        DT::dataTableOutput('evalTblBins') 
       )
     })
-    output$evalTbl <- DT::renderDataTable(round(rvs$modRes, digits=3), options = list(scrollX = TRUE,
-                                                                                      sDom  = '<"top">rtp<"bottom">'))
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     updateRadioButtons(session, "visSel", 
                        choices = list("BIOCLIM Envelope Plots" = 'bcPlots',
                                       "Map Prediction" = 'map'))
-    shinyjs::hide(id = "evalTblBins")
+    shinyjs::show(id = "evalTblBins")
   })
   
   # download for partitioned occurrence records csv
