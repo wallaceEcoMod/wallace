@@ -308,6 +308,7 @@ envsBgMsk <- raster::mask(envsBgCrop, bgExt)
 bg.xy <- dismo::randomPoints(envsBgMsk, {{bgPtsNum}})
 # convert matrix output to data frame
 bg.xy <- as.data.frame(bg.xy)  
+colnames(bg.xy) <- c("longitude", "latitude")
 ```
 
 
@@ -328,27 +329,29 @@ You selected to partition your occurrence data by the `r partSwitch` method.
 
 ```{r blockGrp, echo = part.block, include = part.block}
 occs.xy <- occs[c('longitude', 'latitude')]
-group.data <- ENMeval::get.block(occ=occs.xy, bg.coords=bg.xy)
+group.data <- ENMeval::get.block(occ = occs.xy, bg = bg.xy)
 ```
 
 ```{r check1Grp, echo = part.cb1, include = part.cb1}
 occs.xy <- occs[c('longitude', 'latitude')]
-group.data <- ENMeval::get.checkerboard1(occ=occs.xy, env=envsBgMsk, bg.coords=bg.xy, aggregation.factor={{aggFact}})
+group.data <- ENMeval::get.checkerboard1(occ = occs.xy, env = envsBgMsk,
+                                         bg = bg.xy, aggregation.factor = {{aggFact}})
 ```
 
 ```{r check2Grp, echo = part.cb2, include = part.cb2}
 occs.xy <- occs[c('longitude', 'latitude')]
-group.data <- ENMeval::get.checkerboard2(occ=occs.xy, env=envsBgMsk, bg.coords=bg.xy, aggregation.factor={{aggFact}})
+group.data <- ENMeval::get.checkerboard2(occ = occs.xy, env = envsBgMsk,
+                                         bg = bg.xy, aggregation.factor = {{aggFact}})
 ```
 
 ```{r jackGrp, echo = part.jack, include = part.jack}
 occs.xy <- occs[c('longitude', 'latitude')]
-group.data <- ENMeval::get.jackknife(occ=occs.xy, bg.coords=bg.xy)
+group.data <- ENMeval::get.jackknife(occ = occs.xy, bg = bg.xy)
 ```
 
 ```{r randGrp, echo = part.rand, include = part.rand}
 occs.xy <- occs[c('longitude', 'latitude')]
-group.data <- ENMeval::get.randomkfold(occ=occs.xy, bg.coords=bg.xy, kfolds={{kfolds}})
+group.data <- ENMeval::get.randomkfold(occ = occs.xy, bg = bg.xy, kfolds = {{kfolds}})
 ```
 
 ```{r  echo = part.any, include = part.any}
@@ -366,11 +369,13 @@ You selected the `r "{{enmSel}}"` model.
 ```
 
 ```{r bioclim, echo = mod.bioclim, include = mod.bioclim}
-e <- BioClim_eval(as.data.frame(occs.xy), bg.xy, occs.grp, bg.grp, envsBgMsk)
+e <- ENMeval::ENMevaluate(occs = occs.xy, envs = envsBgMsk, bg = bg.xy,
+                          algorithm = "bioclim", partitions = "user",
+                          occ.grp = occs.grp, bg.grp = bg.grp)
 # unpack the results data frame and list of models
 evalTbl <- e@results
 evalMods <- e@models
-names(e@predictions) <- "BIOCLIM"
+names(e@predictions) <- "bioclim"
 evalPreds <- e@predictions
 ```
 
@@ -378,8 +383,10 @@ evalPreds <- e@predictions
 # define the vector of regularization multipliers to test
 rms <- seq({{rms1}}, {{rms2}}, {{rmsStep}})
 # iterate model building over all chosen parameter settings
-e <- ENMeval::ENMevaluate(occ = occs.xy, env = envsBgMsk, bg.coords = bg.xy, RMvalues = rms, fc = {{fcs}}, 
-                          method = 'user', occs.grp, bg.grp, clamp = {{clamp}}, algorithm = "{{algMaxent}}")
+e <- ENMeval::ENMevaluate(occ = occs.xy, env = envsBgMsk, bg.coords = bg.xy,
+                          RMvalues = rms, fc = {{fcs}}, method = 'user', 
+                          occs.grp, bg.grp, clamp = {{clamp}}, 
+                          algorithm = "{{algMaxent}}")
 
 # unpack the results data frame, the list of models, and the RasterStack of raw predictions
 evalTbl <- e@results
@@ -405,7 +412,7 @@ plot(evalMods[["{{modSel}}"]], vars = {{mxNonZeroCoefs}}, type = "cloglog")
 
 ```{r bcPlot, echo = viz.bcPlot, include = viz.bcPlot}
 # view BIOCLIM envelope plot
-plot(evalMods[['BIOCLIM']], a = {{bcPlot1}}, b = {{bcPlot2}}, p = {{bcPlotP}})
+plot(evalMods[['bioclim']], a = {{bcPlot1}}, b = {{bcPlot2}}, p = {{bcPlotP}})
 ```
 
 ```{r evalPlot, echo = viz.mxEval, include = viz.mxEval}
