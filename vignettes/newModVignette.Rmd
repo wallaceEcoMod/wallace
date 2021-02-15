@@ -50,12 +50,15 @@ Before moving forward, we should go over some important points about the structu
 To access the data on the species currently selected, we index `spp` with a reactive function that returns the selected species' name, called `curSp()`. Since `spp` updates based on user input, it is necessary to use a reactive function to retrieve the species name. By running `spp[[curSp()]]`, we can see a list of data objects for the selected species.
 <!-- CM: show an example of this spp -->
 Below is the complete list of reactive functions used internally in *Wallace* as shortcuts that return characters (i.e. text) based on user selections.
+
 ```{r echo=FALSE, results="asis", eval=TRUE} 
 df1 <- data.frame("shortcut"=c("curSp()","curMsp()", "allSp()","spIn()","curEnv()","curModel()","component()","module()"),
 "output"=c("selected species name",'selected species names separated by "|"',"vector of all species names","if batch on, all species names, if batch off, selected species name", "selected environmental variable","selected model","selected component","selected module"))
 knitr::kable(df1)
 ```
+
 In addition, some data objects that are used often in the analysis have special reactive functions associated with them as shortcuts. For example, the occurrence data table `spp[[curSp()]]$occs` can be accessed with the shortcut function `occs()`, and the environmental variable RasterStack `spp[[curSp()]]$envs` can be accessed with `envs()`. **NOTE**: These functions cannot be used to overwrite entities in the list---in this case, you must use the long form. 
+
 For example:
 ```{r}
 # this will not work
@@ -63,7 +66,9 @@ occs() <- newDF
 # this will work
 spp[[curSp()]]$occs <- newDF
 ```
+
 Please find below the complete list of reactive functions used internally in *Wallace* as shortcuts to return data objects based on user selections.
+
 ```{r echo=FALSE, results="asis", eval=TRUE} 
 df2 <- data.frame("description" = c("occurrence locality coordinates", "environmental raster(s)", 
 "background locality coordinates", "background extent polygon",
@@ -85,6 +90,7 @@ df2 <- data.frame("description" = c("occurrence locality coordinates", "environm
 knitr::kable(df2)
 #"character", "character vector", 
 ```
+
 ## Module structure overview
 There are 5 necessary steps to adding a functional module: 1) write an R function, 2) write a `shiny` module that calls this R function, 3) modify `ui.R` to display your module's controls, 4) modify `server.R` to implement your module's functionality when these controls are used, and finally 5) write an R Markdown file that includes the guidance text for your module. The example we will go over is for a module that calculates pairwise Pearson's correlation coefficients for all environmental data. 
 ### Step 1: Write an R function
