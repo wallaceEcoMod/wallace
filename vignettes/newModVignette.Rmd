@@ -19,7 +19,9 @@ plot(1,1,type="p", pch=119, cex = 15, font = 4, axes = FALSE, ann=F)
 *Wallace* is an `R`-based, interactive application for reproducible ecological modeling. The application is also expandable through the addition of new modules, which in *Wallace* are discrete parts of the modeling analysis. Also, please see our <a href="https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.12945" target="_blank">publication</a> in *Methods in Ecology and Evolution* to read in detail about our philosophy for *Wallace*, the modularity of the application, and our vision for module authorship.
 This vignette explains the module authorship process, focusing on the steps necessary for adding a module, and also on best practices and some troubleshooting. This vignette is tailored for researchers who would like to author their own *Wallace* module based on some technique they'd like to disseminate to the community or use themselves within the *Wallace* workflow. Thus to follow along, it will help to have at least an intermediate understanding of `R` programming. 
 *Wallace* is built using an R package for developing graphic user interface applications called `shiny`, and the modules in *Wallace* are structured as `shiny` modules. Before proceeding, it is advisable to read through the <a href="https://shiny.rstudio.com/tutorial/written-tutorial/lesson1/" target="_blank">tutorial</a> on `shiny` to give you a firm foundation of the basics. Also very helpful is this <a href="https://shiny.rstudio.com/articles/modules.html" target="_blank">instructional page</a> on `shiny` modules. For further reading, there are many more `shiny` informational resources <a href="https://shiny.rstudio.com/tutorial/" target="_blank">here</a> as well.
+
 ## *Wallace* package structure
+
 First, a brief outline of the file structure of the `wallace` package. The starred directories/files are the ones we'll be concentrating in this vignette. Particular focus will be on the two main scripts `ui.R` and `server.R`. The `ui.R` file controls the layout and appearance of the application, while the `server.R` file contains the instructions needed to build the application. Also of note is the script that includes helper functions, and the directories for modules (`/inst/shiny/modules`), module functions (`/R`), and guidance text (`/inst/shiny/Rmd`).
 ```
 /wallace
@@ -45,25 +47,33 @@ First, a brief outline of the file structure of the `wallace` package. The starr
 └──wallace.Rproj........................# R project file -- when developing, load wallace with this
 
 ```
+
 ## *Wallace* data structure
+
 Before moving forward, we should go over some important points about the structure of the data that *Wallace* stores on species. All species-specific data is recorded in a reactiveValues list called `spp`. In `shiny`, reactive objects are dynamic entities that update whenever the user makes a change using the `shiny` interface (i.e., pushes a button, selects a value). Thus `spp` will update depending on what species is currently selected by the user.
 To access the data on the species currently selected, we index `spp` with a reactive function that returns the selected species' name, called `curSp()`. Since `spp` updates based on user input, it is necessary to use a reactive function to retrieve the species name. By running `spp[[curSp()]]`, we can see a list of data objects for the selected species.
 <!-- CM: show an example of this spp -->
 Below is the complete list of reactive functions used internally in *Wallace* as shortcuts that return characters (i.e. text) based on user selections.
+
 ```{r echo=FALSE, results="asis", eval=TRUE} 
 df1 <- data.frame("shortcut"=c("curSp()","curMsp()", "allSp()","spIn()","curEnv()","curModel()","component()","module()"),
 "output"=c("selected species name",'selected species names separated by "|"',"vector of all species names","if batch on, all species names, if batch off, selected species name", "selected environmental variable","selected model","selected component","selected module"))
 knitr::kable(df1)
 ```
+
 In addition, some data objects that are used often in the analysis have special reactive functions associated with them as shortcuts. For example, the occurrence data table `spp[[curSp()]]$occs` can be accessed with the shortcut function `occs()`, and the environmental variable RasterStack `spp[[curSp()]]$envs` can be accessed with `envs()`. **NOTE**: These functions cannot be used to overwrite entities in the list---in this case, you must use the long form. 
+
 For example:
+
 ```{r}
 # this will not work
 occs() <- newDF
 # this will work
 spp[[curSp()]]$occs <- newDF
 ```
+
 Please find below the complete list of reactive functions used internally in *Wallace* as shortcuts to return data objects based on user selections.
+
 ```{r echo=FALSE, results="asis", eval=TRUE} 
 df2 <- data.frame("description" = c("occurrence locality coordinates", "environmental raster(s)", 
 "background locality coordinates", "background extent polygon",
@@ -85,72 +95,86 @@ df2 <- data.frame("description" = c("occurrence locality coordinates", "environm
 knitr::kable(df2)
 #"character", "character vector", 
 ```
+
 ## Module structure overview
+
 There are 5 necessary steps to adding a functional module: 1) write an R function, 2) write a `shiny` module that calls this R function, 3) modify `ui.R` to display your module's controls, 4) modify `server.R` to implement your module's functionality when these controls are used, and finally 5) write an R Markdown file that includes the guidance text for your module. The example we will go over is for a module that calculates pairwise Pearson's correlation coefficients for all environmental data. 
+
 ### Step 1: Write an R function
+
 Let's first write a function that carries out the module's analysis. For this simple example, we will print a matrix of pairwise Pearson's correlation coefficients for all environmental data. For simplicity, we will call the `layerStats()` function from the **raster** package (Hijmans & van Etten, 2012). This function takes the following inputs: 1) RasterStack of environmental data and 2) statistic to compute (here we will use Pearson's correlation coefficient). We will then write a Wallace function to call the `layerStats()` function in the Wallace framework.
 Our Wallace function also contains an argument, "shinyLogs", which is a "reactive" object (in particular for this case, `shiny::reactiveVal()`) that holds all the text and HTML formatting for the log window. Reactive variables such as shinyLogs can only be used within reactive contexts -- they will not work for regular R functions.
 Thus, when the function is run inside *Wallace*, the parameter "shinyLogs" should be set to the reactive object with the same name. When this is done, messages entered with `writeLog()` will be sent to the *Wallace* log window, and `smartProgress()` will generate a shiny progress bar in the lower-right corner of the interface. When the function is run outside *Wallace*, just leave shinyLogs at its default NULL, which will make `writeLog()` and `smartProgress()` print messages and progress bars to the R console, respectively.
 Let's now write a function that calculates the Pearson correlations between variable pairs. Save the code below as a script to: `wallace/R/PearsonRaster.R`.
+
 ```{r}
 wallacelayerStats <- function (x, asSample = TRUE, na.rm = FALSE, shinyLogs = NULL){
-if(!require(raster)){
-shinyLogs %>% writeLog("Please install the raster package before running.")
-return()
-}
-smartProgress(shinyLogs, message = "calculating pairwise Pearson's correlations",{
-corrs <- layerStats(x, stat = "pearson", na.rm = T)
-})
-shinyLogs %>% writeLog("Pearson complete")
-return(corrs)
+  if(!require(raster)){
+    shinyLogs %>% writeLog("Please install the raster package before running.")
+    return()
+  }
+  smartProgress(shinyLogs, message = "calculating pairwise Pearson's correlations",{
+    corrs <- layerStats(x, stat = "pearson", na.rm = T)
+  })
+  shinyLogs %>% writeLog("Pearson complete")
+  return(corrs)
 }
 ```
+
 <!-- CBM: why is na.rm an argument of the function? I added na.rm = T in layerStats() so the correlations could be calculated. -->
 <!-- CBM: Also, I think we need to add something about putting roxygen comments on this file -- seems like you need them so that the NAMESPACE includes the function. -->
+
 ### Step 2: Write a `shiny` module that calls your function
+
 In the module script, we need to define two main functions, `runCorr_UI()` and `runCorr_MOD()`, which specify the logic for `ui.R` and `server.R`, respectively. 
 The function `runCorr_UI()` details the user interface (UI) controls. The argument "id" is the only one necessary for the module UI function, and should be the ID name you assign to this module when you initialize these functions in `ui.R` and `server.R` (steps 3 and 4). Shiny modules operate in their own unique namespaces, and so use of the `NS()` function is necessary to ensure the module's UI controls can talk to `ui.R`. The variable `ns` (for namespace), returned from `NS(id)`, is used to wrap around the ID names of shiny UI objects, as in `numericInput(ns("degFr"), ...)`, to enable this connection to `ui.R`. 
 The function `runCorr_MOD()` will be a wrapper for a shiny reactive expression. Inside, there is a template for the essential parts needed in a *Wallace* module. The first, "ERRORS", catches any possible errors before the module's core functionality is run. If there is an error, it writes a log message and then returns to `server.R`. The user will need to define these errors in order to catch them. Next, we call the function from `/wallace/R` and make sure it returns what we expect. Next, we load the model object into `spp`. Finally, we fill in the right metadata fields for the rangeModelMetadata object in `spp`. As shiny modules are in their own namespaces, if we want to refer to any of the results from the module in `server.R`, we need to put them into the `spp` reactiveValues list. Please note this below in the `runCorr_MOD()` function. 
 After `runCorr_MOD()`, the final function is `runCorr_INFO()`, which includes information on the packages used in the module for the UI around the controls. It is called in `ui.R`. Other modules that plot onto the leaflet map have a "MAP" function as well (see queryDB.R for an example).
 Save the code below as a single script in `wallace/inst/shiny/modules/mod_runCorr.R`.
+
 ```{r}
 # filename: mod_runCorr.R
 # this function details the graphic user interface (UI) logic
 runCorr_UI <- function(id) {
-ns <- NS(id)
-tagList(
-tags$div(title="Calculate pairwise Pearson's Correlation matrix for environmental predictors"),
-uiOutput(ns("correls"))
-)
+  ns <- NS(id)
+  tagList(tags$div(title="Calculate pairwise Pearson's Correlation matrix for 
+                           environmental predictors"),
+          uiOutput(ns("correls"))
+  )
 }
 # this function details the server logic (calculations, etc.)
 runCorr_MOD <- function(input, output, session) {
-reactive({
-# ERRORS ####
-# check to make sure background masking was done in "Process Envs" before proceeding. The reactive object can be accessed in the table above.
-if(is.null(spp[[curSp()]]$procEnvs$bgMask)) {
-shinyLogs %>% writeLog(type = 'error', "Before calculating correlations, please mask
-environmental data for", curSp(), ".")
-return()
-}
-# FUNCTION CALL ####
-# run the module function from /wallace/R
-mod.Corr <- wallacelayerStats(x = spp[[curSp()]]$procEnvs$bgMask, asSample = TRUE, na.rm = FALSE, shinyLogs = shinyLogs)
-# ensure the model object was returned before proceeding
-req(mod.Corr)
-# LOAD INTO SPP ####
-spp[[curSp()]]$correls <- mod.Corr
-})
+  reactive({
+    # ERRORS ####
+    # check to make sure background masking was done in "Process Envs" before proceeding. The reactive object can be accessed in the table above.
+    if(is.null(spp[[curSp()]]$procEnvs$bgMask)) {
+      shinyLogs %>% writeLog(type = 'error', 
+      "Before calculating correlations, please mask environmental data for", 
+      curSp(), ".")
+      return()
+    }
+    # FUNCTION CALL ####
+    # run the module function from /wallace/R
+    mod.Corr <- wallacelayerStats(x = spp[[curSp()]]$procEnvs$bgMask, asSample = TRUE,
+                                  na.rm = FALSE, shinyLogs = shinyLogs)
+    # ensure the model object was returned before proceeding
+    req(mod.Corr)
+    # LOAD INTO SPP ####
+    spp[[curSp()]]$correls <- mod.Corr
+  })
 }
 # this function specifies metadata used by ui.R
 runCorr_INFO <- infoGenerator(modName = "Pearson Correlation",
-modAuts = "Peter Galante",
-pkgName = "raster")
+                              modAuts = "Peter Galante",
+                              pkgName = "raster")
 ```
+
 ### Step 3: Modify `ui.R`
+
 Next, the function for our new module's UI must be referenced in the file `ui.R` so *Wallace* can display the controls and package information. 
 Open `inst/shiny/ui.R` and navigate to the ESPACE component. We will be adding some code to the existing code block within `shiny::conditionalPanel()`. This function displays UI only if the logical statement in the first parameter is met, which in this case is the user selection of the "Model" component tab. We'll first add a new radio button for our new module, then create a new `conditionalPanel()` block that specifies all the UI necessary for our module. Most of the UI logic is in `runCorr_UI()`, which we defined in `mod_runCorr.R` above. Note here that we use "runCorr_uiID" as our module ID---we will be referencing the same ID name in `server.R`. We also use the *Wallace* internal functions `uiTop()` (in this block) and `uiBottom()` (below the download button) to display the package information we defined in `runCorr_INFO()`. Lastly, we add the `shiny::actionButton()` below the module UI---when we modify `server.R`, we'll add code that runs the module once the user presses this button. 
 Please see the comments noting where we made changes to the original "Model" component UI code in `ui.R`.
+
 ```{r}
 # ESPACE ####
 conditionalPanel("input.tabs == 'espace'",
@@ -188,13 +212,17 @@ conditionalPanel("input.tabs == 'espace'",
                  #end change
                  HTML('<hr>'),
                  conditionalPanel("input.espaceSel == 'pca'", uiBottom(espace_pca_INFO)),
-                 conditionalPanel("input.espaceSel == 'occDens'", uiBottom(espace_occDens_INFO)),
-                 conditionalPanel("input.espaceSel == 'nicheOv'", uiBottom(espace_nicheOv_INFO)),
+                 conditionalPanel("input.espaceSel == 'occDens'",
+                                  uiBottom(espace_occDens_INFO)),
+                 conditionalPanel("input.espaceSel == 'nicheOv'",
+                                  uiBottom(espace_nicheOv_INFO)),
                  #begin change
-                 conditionalPanel("input.espaceSel == 'modCorr'", uiBottom(espace_runCorr_INFO))
+                 conditionalPanel("input.espaceSel == 'modCorr'",
+                                  uiBottom(espace_runCorr_INFO))
                  #end change
 )
 ```
+
 ```{r}
 # --- RESULTS WINDOW ---
 column(
@@ -287,50 +315,60 @@ column(
           nicheOv_resultsUI("cEspace_nicheOv_uiID")
         )
       )
-      ```
-      <!-- CBM: Not sure how much of that code we need to copy and paste in above, just wanted to show where the addition was -->
-        ### Step 4: Modify `server.R`
-        Finally, we need to call the module and the other functions from `mod_runCorr.R` in `server.R`. Open `server.R` and navigate to the ESPACE component. You should see "module Principle Components Analysis", "module Occurrence Density Grids", and "module Niche Overlap" code blocks, wrapped in `observeEvent()`. This `shiny` function initiates whatever is inside the block when an action is taken by the user, which in this case is a button press. The button we are observing is `input$goRunCorr`, which we just specified in `ui.R`. The `input$` part is needed to get entities defined in `ui.R` when we are in `server.R`. 
-      Within this `observeEvent()` block, we will call our module with `shiny::callModule()`. We assign the reactive expression output to a variable, and then initialize it by running the module function on the next line. We do not assign the module initialization itself to a variable because this module has no output---all the data generated is internally added to the reactiveValues list `spp`. Finally, we make some UI updates (which can only be made in `server.R`) to switch to the "Results" tab automatically to view the table.
-      ```{r}
-      # # # # # # # # # # # #
-      # module Correlation ####
-      # # # # # # # # # # # #
-      # assign module function to variable
-      modCorr <- callModule(runCorr_MOD, 'cEspace_runCorr_uiID')
-      observeEvent(input$goRunCorr, {
-        # initialize module
-        modCorr()
-        # initialize Correlation matrix results table
-        # switch to Results tab
-        updateTabsetPanel(session, 'main', selected = 'Results')
-        # update radio buttons for Visualization component
-        #updateRadioButtons(session, "curSp", selected = curSp())
-      })
-      # CONSOLE PRINT
-      output$corrSummary <- renderPrint({
-        req(spp[[curSp()]]$correls)
-        spp[[curSp()]]$correls
-      })
-      ```
-      ### Step 5: Write `gtext_espace_modCorr.Rmd`
-      The last vital step is writing guidance text for your module. This text is meant for the benefit of other users who would like to read a detailed description of what your module does and where to find more relevant information. 
+```
+      
+<!-- CBM: Not sure how much of that code we need to copy and paste in above, just wanted to show where the addition was -->
+
+### Step 4: Modify `server.R`
+
+Finally, we need to call the module and the other functions from `mod_runCorr.R` in `server.R`. Open `server.R` and navigate to the ESPACE component. You should see "module Principle Components Analysis", "module Occurrence Density Grids", and "module Niche Overlap" code blocks, wrapped in `observeEvent()`. This `shiny` function initiates whatever is inside the block when an action is taken by the user, which in this case is a button press. The button we are observing is `input$goRunCorr`, which we just specified in `ui.R`. The `input$` part is needed to get entities defined in `ui.R` when we are in `server.R`. 
+
+Within this `observeEvent()` block, we will call our module with `shiny::callModule()`. We assign the reactive expression output to a variable, and then initialize it by running the module function on the next line. We do not assign the module initialization itself to a variable because this module has no output---all the data generated is internally added to the reactiveValues list `spp`. Finally, we make some UI updates (which can only be made in `server.R`) to switch to the "Results" tab automatically to view the table.
+```{r}
+# # # # # # # # # # # #
+# module Correlation ####
+# # # # # # # # # # # #
+# assign module function to variable
+modCorr <- callModule(runCorr_MOD, 'cEspace_runCorr_uiID')
+observeEvent(input$goRunCorr, {
+  # initialize module
+  modCorr()
+  # initialize Correlation matrix results table
+  # switch to Results tab
+  updateTabsetPanel(session, 'main', selected = 'Results')
+  # update radio buttons for Visualization component
+  #updateRadioButtons(session, "curSp", selected = curSp())
+})
+# CONSOLE PRINT
+output$corrSummary <- renderPrint({
+  req(spp[[curSp()]]$correls)
+  spp[[curSp()]]$correls
+})
+```
+
+### Step 5: Write `gtext_espace_modCorr.Rmd`
+
+The last vital step is writing guidance text for your module. This text is meant for the benefit of other users who would like to read a detailed description of what your module does and where to find more relevant information. 
       There are three categories for guidance text. BACKGROUND provides general information about the framing of the module's technique in the grand scheme of things. IMPLEMENTATION describes how the technique is used in this module. Finally, REFERENCES is a bibliography of academic sources that are referenced in the text.
 Save the code below as a script to: `wallace/inst/shiny/Rmd/gtext_espace_modCorr.Rmd`. This filename is a combination of the component shortcut name "espace" (from the tabPanel value name in `ui.R`) and the module shortcut name "modCorr" (from the radio button ID in `ui.R`). Code in `server.R` automatically references the guidance text if the name matches this syntax and loads it in the "Component Guidance" and "Module Guidance" tabs in the map window.
+
 ```{markdown}
 ---
-  title: "runCorrelation analysis"
+title: "runCorrelation analysis"
 output: html_document
 ---
   
-  **BACKGROUND**
+**BACKGROUND**
   
   Sometimes we are interested in correlations ...
+
 **IMPLEMENTATION**
   
   This module uses the R package `raster` to calculate pairwise correlations, and ...
+
 **REFERENCES** 
   
     Robert J. Hijmans & Jacob van Etten (2012). raster: Geographic analysis and modeling with raster data. R package version 2.0-12. http://CRAN.R-project.org/package=raster
 ```
+
 As we improve *Wallace* and release new versions, we always make a big effort to simplify the module authorship process.
