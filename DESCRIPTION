@@ -43,7 +43,7 @@ Imports:
     geojsonsf,
     leaflet.extras (>= 1.0.0),
     magrittr,
-    maskRanger,
+    maskRangeR,
     maptools,
     mapview,
     maxnet,
