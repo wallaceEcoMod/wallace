@@ -27,7 +27,7 @@ textInput(ns("EnvThrVal"), "Set threshold value",
 selectInput(ns("selBound") , label = "Select bounds to be used for calculations",
             choices = list("Lower" = "lower",
                            "Upper" = "upper",
-                           "Neither" = "neither",
+                           "Not Applicable" = "neither",
                            "Both" = "both")),
 actionButton(ns("goInputEnvs"), "Load"),
 
