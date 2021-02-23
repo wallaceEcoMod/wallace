@@ -19,7 +19,7 @@ selectInput(ns("selRasterSource") , label = "Select range for calculations",
 
 tags$hr(),
 span("Step 2:", class = "step"),
-span("Choose environmental variables", class = "stepText"), br(), br(),
+span("Choose environmental data", class = "stepText"), br(), br(),
 fileInput(ns("changeEnvs"), label = "Upload environmental rasters",
           accept = c(".tif", ".asc"), multiple = TRUE),
 textInput(ns("EnvThrVal"), "Set threshold value",
@@ -206,10 +206,10 @@ change_time_module_server <- function(input, output, session, common) {
   output$TimeAreas <- renderUI({
     # Result
     output$areaMasked <- renderPrint({ paste(
-        "SDM area (in Km^2) after masking for environmental variables through time for:",  spp[[curSp()]]$change$Years,
+        "SDM area (in km^2) after masking for environmental variables through time for:",  spp[[curSp()]]$change$Years,
         spp[[curSp()]]$change$AreaTime) })
     output$timePlot <- renderPlot({
-      plot(y = spp[[curSp()]]$change$AreaTime, x = spp[[curSp()]]$change$Years, main = "SDM area change", ylab = "area (square m)",xlab="Time")
+      plot(y = spp[[curSp()]]$change$AreaTime, x = spp[[curSp()]]$change$Years, main = "SDM area change", ylab = "area (square km)",xlab="Time")
       lines(y = spp[[curSp()]]$change$AreaTime, x = spp[[curSp()]]$change$Years)
     })
 

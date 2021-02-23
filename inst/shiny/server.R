@@ -164,6 +164,9 @@ function(input, output, session) {
     shinyjs::toggleState("dlMask",!is.null(spp[[curSp()]]$mask$removePoly) |
                            !is.null(spp[[curSp()]]$mask$tempLog) |
                            !is.null(spp[[curSp()]]$mask$spatialFlag))
+    shinyjs::toggleState("dlAreaTimePlot",!is.null(spp[[curSp()]]$change$AreaTime))
+    shinyjs::toggleState("dlAreaTime",!is.null(spp[[curSp()]]$change$AreaTime))
+
     # shinyjs::toggleState("dlWhatever", !is.null(spp[[curSp()]]$whatever))
   })
 
@@ -1415,6 +1418,31 @@ function(input, output, session) {
       } else {
         logger %>% writeLog("Please install the rgdal package before downloading rasters.")
       }
+    }
+  )
+  output$dlAreaTime<- downloadHandler(
+    filename = function() {
+      paste0("Area_through_time", ".csv")
+    },
+    content = function(file) {
+      tbl <- data.frame(spp[[curSp()]]$change$Years,spp[[curSp()]]$change$AreaTime)
+      names(tbl)<-c("Year","Area in km^2")
+      write_csv_robust(tbl, file, row.names = FALSE)
+    }
+  )
+  output$dlAreaTimePlot<-  downloadHandler(
+    filename = function() {
+
+      paste0(curSp(), "_Area_through_time.png")
+    },
+    content = function(file) {
+      png(file, width = 400, height = 400)
+
+      req(spp[[curSp()]]$change$AreaTime)
+      req(spp[[curSp()]]$change$Years)
+      plot(y = spp[[curSp()]]$change$AreaTime, x = spp[[curSp()]]$change$Years, main = "SDM area change", ylab = "area (square km)",xlab="Time")
+      lines(y = spp[[curSp()]]$change$AreaTime, x = spp[[curSp()]]$change$Years)
+      dev.off()
     }
   )
   changeField <- reactive(input$selField)
