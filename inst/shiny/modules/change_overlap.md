@@ -11,8 +11,10 @@ Wallace calculates proportion overlap using the changeRangeR function ratioOverl
 
 These analyses require the following data:
 
-Shapefile: With environmental information relevant to the species’ distribution. *NOTE: You must upload all three files (.shp, .shx, .dbf)
-SDM: This can be a continuous or thresholded sdm. You can make the model in wallace or upload the sdm in in the User SDM component.
+Shapefile/raster: With environmental information relevant to the species’ distribution. *NOTE: You must upload all three files (.shp, .shx, .dbf) when using a shapefile.
+(optional) either 1) a shapefile of land cover features or 2) a continuousnraster. Must be in same projection as r parameter. If shp is a raster, then the number of cells within each quantile are calculated
+SDM: 	
+Either raster or shapefile object representing a binary range. You can make the model in wallace, upload the sdm in in the User SDM component or use AOO/EOO for calculations
 
 
 
