@@ -1,5 +1,11 @@
 source("funcs/functions.R", local = TRUE)
 
+if (!require(librarian)){
+  install.packages("librarian")
+  library(librarian)
+}
+shelf(dismo, dplyr, DT, ENMeval, jsonlite, knitr, leaflet, leaflet.extras, raster, RColorBrewer, rmarkdown, shinyjs, sp, spocc, zip)
+
 options(shiny.maxRequestSize=5000*1024^2)
 
 shinyServer(function(input, output, session) {
