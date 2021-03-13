@@ -58,6 +58,15 @@ espace_pca_module_server <- function(input, output, session, common) {
       )
       return()
     }
+    for(sp in curSp()) {
+      if (is.null(spp[[sp]]$procEnvs$bgMask)) {
+        logger %>% writeLog(
+          type = 'error', hlSpp(sp),
+          "Before partitioning occurrences, mask your ",
+          "environmental variables by your background extent.")
+        return()
+      }
+    }
     # ERRORS ####
     if(input$pcaPlotSel == "") {
       logger %>% writeLog(type = "error", "Please choose a PCA plotting type.")
