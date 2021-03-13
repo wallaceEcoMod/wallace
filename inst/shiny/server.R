@@ -493,32 +493,40 @@ function(input, output, session) {
       }
       tmpdir <- tempdir()
       req(spp[[mSp]]$pca)
-      png(paste0(tmpdir, "\\pcaScatterOccs.png"), width = 500, height = 500)
-      x <- spp[[mSp]]$pca$scores[spp[[mSp]]$pca$scores$bg == 'sp', ]
-      x.f <- factor(x$sp)
+      png(paste0("pcaScatterOccs.png"), width = 500, height = 500)
+      #png(paste0(tmpdir, "\\pcaScatterOccs.png"), width = 500, height = 500)
+        x <- spp[[mSp]]$pca$scores[spp[[mSp]]$pca$scores$bg == 'sp', ]
+        x.f <- factor(x$sp)
       ade4::s.class(x, x.f, xax = 1, yax = 2,
                     col = c("red", "blue"), cstar = 0, cpoint = 0.1)
       dev.off()
-      png(paste0(tmpdir, "\\pcaScatterOccsBg.png"), width = 500, height = 500)
+      png(paste0("pcaScatterOccsBg.png"), width = 500, height = 500)
+      #png(paste0(tmpdir, "\\pcaScatterOccsBg.png"), width = 500, height = 500)
       x <- spp[[mSp]]$pca$scores[spp[[mSp]]$pca$scores$sp == 'bg', ]
       x.f <- factor(x$bg)
       ade4::s.class(x, x.f, xax = 1, yax = 2,
                     col = c("red", "blue"), cstar = 0, cpoint = 0.1)
       dev.off()
-      png(paste0(tmpdir, "\\pcaCorCircle.png"), width = 500, height = 500)
+      png(paste0("pcaCorCircle.png"), width = 500, height = 500)
+      #png(paste0(tmpdir, "\\pcaCorCircle.png"), width = 500, height = 500)
       ade4::s.corcircle(spp[[mSp]]$pca$co, xax = 1, yax = 2,
                         lab = input$pcaSel, full = FALSE, box = TRUE)
       dev.off()
-      png(paste0(tmpdir, "\\pcaScree.png"), width = 500, height = 500)
+      png(paste0("pcaScree.png"), width = 500, height = 500)
+      #png(paste0(tmpdir, "\\pcaScree.png"), width = 500, height = 500)
       screeplot(spp[[mSp]]$pca, main = NULL)
       dev.off()
-      sink(paste0(tmpdir, "\\pcaOut.txt"))
+      sink(paste0("pcaOut.txt"))
+      #sink(paste0(tmpdir, "\\pcaOut.txt"))
       print(summary(spp[[mSp]]$pca))
       sink()
+
+      fs<-c("pcaScatterOccs.png", "pcaScatterOccsBg.png",
+            "pcaCorCircle.png","pcaScree.png","pcaOut.txt")
       owd <- setwd(tmpdir)
+      setwd(owd)
       zip::zipr(zipfile = file,
-                files = c("pcaScatterOccs.png", "pcaScatterOccsBg.png",
-                          "pcaCorCircle.png", "pcaScree.png", "pcaOut.txt"))
+                files = fs)
       setwd(owd)
     }
   )
@@ -728,13 +736,14 @@ function(input, output, session) {
       for (i in parEval) {
         # png(paste0(tmpdir, "\\", gsub("[[:punct:]]", "_", i), ".png"))
         ENMeval::evalplot.stats(spp[[curSp()]]$evalOut, i, "rm", "fc")
-        ggplot2::ggsave(paste0(tmpdir, "\\",
-                               gsub("[[:punct:]]", "_", i), ".png"))
+        ggplot2::ggsave(paste0(gsub("[[:punct:]]", "_", i), ".png"))
         # dev.off()
       }
       owd <- setwd(tmpdir)
+      setwd(owd)
+      fs<-paste0(gsub("[[:punct:]]", "_", parEval), ".png")
       zip::zipr(zipfile = file,
-               files = paste0(gsub("[[:punct:]]", "_", parEval), ".png"))
+               files = fs)
       setwd(owd)
     }
   )
@@ -747,7 +756,7 @@ function(input, output, session) {
       if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
         namesEnvs <- mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxnet")
         for (i in namesEnvs) {
-          png(paste0(tmpdir, "\\", i, ".png"))
+          png(paste0(i, ".png"))
           suppressWarnings(
             maxnet::response.plot(evalOut()@models[[curModel()]], v = i,
                                   type = "cloglog")
@@ -757,13 +766,15 @@ function(input, output, session) {
       } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
         namesEnvs <- mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxent.jar")
         for (i in namesEnvs) {
-          png(paste0(tmpdir, "\\", i, ".png"))
+          png(paste0( i, ".png"))
           dismo::response(evalOut()@models[[curModel()]], var = i)
           dev.off()
         }
       }
       owd <- setwd(tmpdir)
-      zip::zipr(zipfile = file, files = paste0(namesEnvs, ".png"))
+      setwd(owd)
+      fs<- paste0(namesEnvs, ".png")
+      zip::zipr(zipfile = file, files = fs)
       setwd(owd)
     }
   )
