@@ -37,7 +37,7 @@
 
 #occs_queryDb <- function(spName, occDb, occNum, logger=NULL) {
 occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
-                         gbifUser = NULL, gbifEmail = NULL, gbifPW = NULL,
+                         gbifUser = NULL, gbifEmail = NULL, gbifPW = NULL,RmUncertain=FALSE,
                          logger = NULL) {
   # Get all species names for textInput Shiny
   if (length(spNames) == 1) {
@@ -179,6 +179,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
     occsOrig["networkKeys"] <- NULL
     # subset to just records with latitude and longitude
     occsXY <- occsOrig[!is.na(occsOrig$latitude) & !is.na(occsOrig$longitude),]
+
     # if no records with coordinates, throw warning
     if (nrow(occsXY) == 0) {
       logger %>% writeLog(
@@ -186,6 +187,19 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
         hlSpp(formatSpName(sp)),
         'No records with coordinates found in ', occDb, ". (**)")
       return()
+    }
+    noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
+    noUncertainRem <-0
+    if (RmUncertain==TRUE){
+      if(is.null(occsXY$coordinateUncertaintyInMeters)){
+        logger %>% writeLog(
+          type = 'warning',
+          hlSpp(formatSpName(sp)),
+          'No records with coordinate uncertainty information found in ', occDb, ".")
+        return()}
+      else {occsXY <-occsXY[!is.na(occsXY$coordinateUncertaintyInMeters),]
+      noUncertainRem<- nrow(occsOrig) - (nrow(occsXY)+noCoordsRem)}
+
     }
     # round longitude and latitude with 5 digits
     occsXY['longitude'] <- round(occsXY['longitude'], 5)
@@ -195,6 +209,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
     occs <- occsXY[!dups,]
 
     if (occDb == 'gbif') {
+
       fields <- c("name", "longitude", "latitude", "country", "stateProvince",
                   "locality", "year", "basisOfRecord", "catalogNumber",
                   "institutionCode", "elevation", "coordinateUncertaintyInMeters")
@@ -206,6 +221,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
                       institution_code = institutionCode,
                       catalog_number = catalogNumber,
                       uncertainty = coordinateUncertaintyInMeters)
+
     } else if (occDb == 'vertnet') { # standardize VertNet column names
       fields <- c("name", "longitude", "latitude", "country", "stateprovince",
                   "locality", "year", "basisofrecord", "catalognumber",
@@ -267,14 +283,26 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
     # get total number of records found in database
     totRows <- q[[occDb]]$meta$found
 
-    logger %>%
+   if(RmUncertain==TRUE){
+     logger %>%
+       writeLog(hlSpp(formatSpName(sp)), 'Total ', occDb, ' records returned [', nrow(occsOrig),
+                '] out of [', totRows, '] total',
+                if (!(doCitations | occDb == 'bien')) {paste0(' (limit ', occNum,')')},
+                '. Records without coordinates removed [', noCoordsRem, ']. Records without uncertainty information removed [',  noUncertainRem,
+                ']. Duplicated records removed [', dupsRem,
+                ']. Remaining records [', nrow(occs), '].')
+   }
+    else {logger %>%
       writeLog(hlSpp(formatSpName(sp)), 'Total ', occDb, ' records returned [', nrow(occsOrig),
                '] out of [', totRows, '] total',
                if (!(doCitations | occDb == 'bien')) {paste0(' (limit ', occNum,')')},
                '. Records without coordinates removed [', noCoordsRem,
                ']. Duplicated records removed [', dupsRem,
                ']. Remaining records [', nrow(occs), '].')
-    # put into list
+    }
+
+
+     # put into list
     if (doCitations & occDb == "gbif") {
       occList[[formatSpName(sp)]] <- list(orig = occsOrig, cleaned = occs,
                                           citation = citeGBIF)

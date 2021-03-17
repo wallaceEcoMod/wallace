@@ -10,6 +10,10 @@ occs_queryDb_module_ui <- function(id) {
                           inline = TRUE)),
     conditionalPanel(
       sprintf("input['%s'] == 'gbif'", ns("occsDb")),
+      tags$div(
+        title = "Check to get only occurrences with uncertainty information (**)",
+        checkboxInput(ns("uncertainty"), label = strong("Keep only occurrences with uncertainty info"), value = FALSE) # Check default (value = FALSE)
+      ),
       checkboxInput(ns("doCitations"),
                     label = 'Include Data Source Citations',
                     value = FALSE),
@@ -62,7 +66,7 @@ occs_queryDb_module_server <- function(input, output, session, common) {
     # FUNCTION CALL ####
     occsList <- occs_queryDb(input$spNames, input$occsDb, input$occsNum,
                              input$doCitations, input$gbifUser, input$gbifEmail,
-                             input$gbifPW, logger)
+                             input$gbifPW, input$uncertainty, logger)
     req(occsList)
 
     for (sp in names(occsList)) {
