@@ -95,8 +95,8 @@ model_maxent_module_server <- function(input, output, session, common) {
       logger %>% writeLog(type = 'error', "Please specify parallel setting.")
       return()
     }
-    if(input$rmsStep < 0) {
-      logger %>% writeLog(type = 'error', "Please specify a positive multiplier step value.")
+    if(input$rmsStep <= 0) {
+      logger %>% writeLog(type = 'error', "Please specify a positive multiplier step value that is greater than 0.")
       return()
     }
 
