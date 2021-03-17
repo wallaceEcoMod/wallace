@@ -189,24 +189,13 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
       return()
     }
     noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
-    noUncertainRem <-0
-    if (RmUncertain==TRUE){
-      if(is.null(occsXY$coordinateUncertaintyInMeters)){
-        logger %>% writeLog(
-          type = 'warning',
-          hlSpp(formatSpName(sp)),
-          'No records with coordinate uncertainty information found in ', occDb, ".")
-        return()}
-      else {occsXY <-occsXY[!is.na(occsXY$coordinateUncertaintyInMeters),]
-      noUncertainRem<- nrow(occsOrig) - (nrow(occsXY)+noCoordsRem)}
 
-    }
+
     # round longitude and latitude with 5 digits
     occsXY['longitude'] <- round(occsXY['longitude'], 5)
     occsXY['latitude'] <- round(occsXY['latitude'], 5)
 
-    dups <- duplicated(occsXY[,c('longitude','latitude')])
-    occs <- occsXY[!dups,]
+    occs<-occsXY
 
     if (occDb == 'gbif') {
 
@@ -263,7 +252,21 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
         dplyr::rename(scientific_name = scrubbed_species_binomial,
                                      institution_code = collection_code)
     }
+    noUncertainRem <-0
+    if (RmUncertain==TRUE){
 
+      occs <-occs[!is.na(occs$uncertainty),]
+      noUncertainRem<- nrow(occsOrig) - (nrow(occs)+noCoordsRem)
+      if(nrow(occs)==0){
+        logger %>% writeLog(
+          type = 'warning',
+          hlSpp(formatSpName(sp)),
+          'No records with coordinate uncertainty information found in ', occDb, ".")
+        return()
+    }
+}
+dups <- duplicated(occs[,c('longitude','latitude')])
+occs <- occs[!dups,]
     # subset by key columns and make id and popup columns
     cols <- c("occID", "scientific_name", "longitude", "latitude", "country",
               "state_province", "locality", "year", "record_type", "catalog_number",
