@@ -71,8 +71,8 @@ test_that("Component 7 BIOCLIM Envelope Plots: Buttons", {
 test_that("Component 7 Maxent Evaluation Plots: Select", { 
   field.mxEval$clickElement()
   # this selectInput can have an item clicked first to list the options
-  dataValues <- list("'avg.diff.AUC'","'avg.test.orMTP'","'avg.test.or10pct'","'delta.AICc'")
-  selectDropdownItem(comp7Tab, "'avg.test.AUC'", dataValues)
+  dataValues <- list("'auc.diff.avg'","'or.mtp.avg'","'or.10p.avg'","'delta.AICc'")
+  selectDropdownItem(comp7Tab, "'auc.val.avg'", dataValues)
 })
 
 test_that("Component 7 Maxent Evaluation Plots: Buttons", { 

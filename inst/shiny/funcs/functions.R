@@ -252,67 +252,6 @@ thresh <- function(modOccVals, type) {
 # COMP 7 ####
 ####################### #
 
-# plot ENMeval stats based on user selection ("value")
-evalPlot <- function(res, value) {
-  fc <- length(unique(res$features))
-  col <- rainbow(fc)
-  rm <- length(unique(res$rm))
-  xlab <- "Regularization Multiplier"
-  
-  if (value != "delta.AICc") {
-    variance <- gsub('avg', 'var', value)
-  } else {
-    variance <- NULL
-  }
-  
-  y <- res[,value]
-  
-  if (value != "delta.AICc") {
-    v <- res[,variance]
-    # ylim <- c(min(y-v), max(y+v))
-    ylim <- c(0, 1)
-  } else {
-    ylim <- c(min(y, na.rm=TRUE), max(y, na.rm=TRUE))
-  }
-  
-  
-  plot(res$rm, y, col='white', ylim=ylim, ylab=value, xlab=xlab, axes=F, cex.lab=1.5)
-  if (value=="delta.AICc") abline(h=2, lty=3)
-  axis(1, at= unique(res$rm))
-  axis(2)
-  box()
-  for (j in 1:length(unique(res$features))){
-    s <- ((fc*rm)-fc+j)
-    points(res$rm[seq(j, s, fc)], y[seq(j, s, fc)], type="l", col=col[j])
-    if (!is.null(variance)) {
-      arrows(res$rm[seq(j, s, fc)],
-             y[seq(j, s, fc)] + v[seq(j, s, fc)],
-             res$rm[seq(j, s, fc)],
-             y[seq(j, s, fc)] - v[seq(j, s, fc)],
-             code=3, length=.05, angle=90, col=col[j])
-    }
-  }
-  points(res$rm, y, bg=col, pch=21)
-  legend("topright", legend=unique(res$features), pt.bg=col, pch=21, bg='white', cex=1, ncol=2)
-}
-
-evalPlots <- function(results) {
-  par(mfrow=c(3,2))
-  fc <- length(unique(results$features))
-  col <- rainbow(fc)
-  rm <- length(unique(results$rm))
-  plot(rep(1, times=fc), 1:fc, ylim=c(.5,fc+1), xlim=c(0,3), axes=F, ylab='', xlab='', cex=2, pch=21, bg=col)
-  segments(rep(.8, times=fc), 1:fc, rep(1.2, times=fc), 1:fc, lwd=1, col=col)
-  points(rep(1, times=fc), 1:fc, ylim=c(-1,fc+2), cex=2, pch=21, bg=col)
-  text(x=rep(1.3, times=fc), y=1:fc, labels=unique(results$features), adj=0)
-  text(x=1, y=fc+1, labels="Feature Classes", adj=.20, cex=1.3, font=2)
-  ENMeval::eval.plot(results, legend=FALSE, value="delta.AICc")
-  ENMeval::eval.plot(results, legend=FALSE, value="Mean.AUC", variance="Var.AUC")
-  ENMeval::eval.plot(results, legend=FALSE, value="Mean.AUC.DIFF", variance="Var.AUC.DIFF")
-  ENMeval::eval.plot(results, legend=FALSE, value="Mean.ORmin", variance="Var.ORmin")
-  ENMeval::eval.plot(results, legend=FALSE, value="Mean.OR10", variance="Var.OR10")
-}
-
 # borrowed from the plot method for bioclim in dismo v.1.1-1
 bc.plot <- function(x, a=1, b=2, p=0.9, ...) {
   
@@ -341,10 +280,6 @@ bc.plot <- function(x, a=1, b=2, p=0.9, ...) {
   x2 <- quantile(d[,a], probs=1-p, type=type)
   y1 <- quantile(d[,b], probs=p, type=type)
   y2 <- quantile(d[,b], probs=1-p, type=type)
-  #		x1 <- myquantile(x[,a], p)
-  #		x2 <- myquantile(x[,a], 1-p)
-  #		y1 <- myquantile(x[,b], p)
-  #		y2 <- myquantile(x[,b], 1-p)
   polygon(rbind(c(x1,y1), c(x1,y2), c(x2,y2), c(x2,y1), c(x1,y1)), border='blue', lwd=2)
   points(d[i,a], d[i,b], xlab=colnames(x)[a], ylab=colnames(x)[b], col='green' )
   points(d[!i,a], d[!i,b], col='red', pch=3)

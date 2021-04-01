@@ -573,6 +573,7 @@ shinyServer(function(input, output, session) {
       )
       
     })
+    
     # switch to Results tab
     updateTabsetPanel(session, 'main', selected = 'Results')
     # customize visualizations for maxent

@@ -226,13 +226,13 @@ The results appear in two tables of evaluation statistics, allowing comparison o
 
 How do we choose the "best" model? There is a mountain of literature about this, and there is really no single answer. AUC and OR (omission rate) were calculated using our partitions, and AIC was instead calculated using the model prediction of the full calibration background extent (and all of the thinned occurrence points). Although AIC does not incorporate the cross-validation results, it does explicitly penalize model complexity---models with more parameters tend to have a worse AIC score. It's really up to the user to decide, and the guidance text has some references which should help you learn more.
 
-For this vignette, we will use sequential criteria on cross-validation results. First, we will prioritize models that did not omit many of the occurrence points in the predicted area. Sort the results table by "avg.test.or10pct", or the 10 percentile training presence threshold applied to testing data (see guidance text for details). In our set of models, the model with the lowest avg.test.or10pct was H_1 (hinge features and regularization multiplier of 1).
+For this vignette, we will use sequential criteria on cross-validation results. First, we will prioritize models that did not omit many of the occurrence points in the predicted area. Sort the results table by "or.10p.avg", or the 10 percentile training presence threshold applied to testing data (see guidance text for details). In our set of models, the model with the lowest or.10p.avg was H_1 (hinge features and regularization multiplier of 1).
 
 ```{r}
 knitr::include_graphics("vignette_img/6_b_model.jpg")
 ```
 
-If there had been a tie we could for example have chosen the model with the highest "avg.test.AUC" (average test AUC), but in this case, model H_1 had the lowest OR. When we examine test AUC for this model, we see it is reasonably high relative to the other models.
+If there had been a tie we could for example have chosen the model with the highest "auc.val.avg" (average test AUC), but in this case, model H_1 had the lowest OR. When we examine test AUC for this model, we see it is reasonably high relative to the other models.
 
 ```{r}
 knitr::include_graphics("vignette_img/6_c_model.jpg")
