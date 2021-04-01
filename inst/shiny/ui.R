@@ -319,17 +319,17 @@ tagList(
                 br(),
                 fluidRow(
                   column(3, h5("Download original occurrence data")),
-                  column(2, shinyjs::disabled(downloadButton('dlDbOccs', "CVS file")))
+                  column(2, shinyjs::disabled(downloadButton('dlDbOccs', "CSV file")))
                 ),
                 br(),
                 fluidRow(
                   column(3, h5("Download current table")),
-                  column(2, shinyjs::disabled(downloadButton('dlOccs', "CVS file")))
+                  column(2, shinyjs::disabled(downloadButton('dlOccs', "CSV file")))
                 ),
                 br(),
                 fluidRow(
                   column(3, h5("Download all data")),
-                  column(2, shinyjs::disabled(downloadButton('dlAllOccs', "CVS file")))
+                  column(2, shinyjs::disabled(downloadButton('dlAllOccs', "CSV file")))
                 )
               ),
               conditionalPanel(
@@ -337,7 +337,7 @@ tagList(
                 br(),
                 fluidRow(
                   column(3, h5("Download processed occurence table")),
-                  column(2, shinyjs::disabled(downloadButton('dlProcOccs', "CVS file")))
+                  column(2, shinyjs::disabled(downloadButton('dlProcOccs', "CSV file")))
                 )
               ),
               conditionalPanel(
@@ -373,7 +373,7 @@ tagList(
                 br(),
                 fluidRow(
                   column(3, h5("Download sample background points")),
-                  column(2, shinyjs::disabled(downloadButton('dlBgPts', "CVS file")))
+                  column(2, shinyjs::disabled(downloadButton('dlBgPts', "CSV file")))
                 )
               ),
               conditionalPanel(
@@ -399,7 +399,7 @@ tagList(
                 br(),
                 fluidRow(
                   column(3, h5("Download occurrence and background localities with partition values")),
-                  column(2, shinyjs::disabled(downloadButton('dlPart', "CVS file")))
+                  column(2, shinyjs::disabled(downloadButton('dlPart', "CSV file")))
                 )
               ),
               conditionalPanel(
