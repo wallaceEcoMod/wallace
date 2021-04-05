@@ -1,3 +1,6 @@
+# wallace 1.1.0
+- Working with new version of ENMeval (v2)
+
 # wallace 1.0.6.3
 - rgbif updated dependency
 - Clamping option back for maxent.jar (Thanks for the new version of Maxent 3.4.4)
