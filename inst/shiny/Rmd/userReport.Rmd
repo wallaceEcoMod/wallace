@@ -385,13 +385,13 @@ rms <- seq({{rms1}}, {{rms2}}, {{rmsStep}})
 # iterate model building over all chosen parameter settings
 e <- ENMeval::ENMevaluate(occ = occs.xy, env = envsBgMsk, bg.coords = bg.xy,
                           RMvalues = rms, fc = {{fcs}}, method = 'user', 
-                          occs.grp, bg.grp, clamp = {{clamp}}, 
-                          algorithm = "{{algMaxent}}")
+                          occ.grp = occs.grp, bg.grp = bg.grp, 
+                          clamp = {{clamp}}, algorithm = "{{algMaxent}}")
 
 # unpack the results data frame, the list of models, and the RasterStack of raw predictions
 evalTbl <- e@results
 evalMods <- e@models
-names(evalMods) <- e@results$settings
+names(evalMods) <- e@tune.settings$tune.args
 evalPreds <- e@predictions
 ```
 
@@ -417,7 +417,7 @@ plot(evalMods[['bioclim']], a = {{bcPlot1}}, b = {{bcPlot2}}, p = {{bcPlotP}})
 
 ```{r evalPlot, echo = viz.mxEval, include = viz.mxEval}
 # view ENMeval results
-ENMeval::eval.plot(evalTbl, value = "{{mxEvalSel}}")
+ENMeval::evalplot.stats(e, stats = "{{mxEvalSel}}", "rm", "fc")
 ```
 
 ```{r mapPred, echo = viz.pred, include = viz.pred}
@@ -437,12 +437,12 @@ pred <- evalPreds[["{{modSel}}"]]
 
 ```{r maxnetLog, echo = viz.pred.log & alg.maxnet, include = viz.pred.log}
 # generate logistic prediction
-pred <- ENMeval::maxnet.predictRaster(mod, envsBgMsk, type = 'logistic', clamp = {{clamp}})
+pred <- predictMaxnet(mod, envsBgMsk, type = 'logistic', clamp = {{clamp}})
 ```
 
 ```{r maxnetCll, echo = viz.pred.cll & alg.maxnet, include = viz.pred.cll}
 # generate cloglog prediction
-pred <- ENMeval::maxnet.predictRaster(mod, envsBgMsk, type = 'cloglog', clamp = {{clamp}}) 
+pred <- predictMaxnet(mod, envsBgMsk, type = 'cloglog', clamp = {{clamp}}) 
 ```
 
 ```{r maxentLog, echo = viz.pred.log & alg.maxent, include = viz.pred.log}
@@ -487,19 +487,19 @@ Now use crop and mask the predictor variables by projPoly, and use the maxnet.pr
 ```{r projAreaMaxnet.raw, echo = pj.area & alg.maxnet & viz.pred.raw, include = pj.area}
 predsProj <- raster::crop(envs, projPoly)
 predsProj <- raster::mask(predsProj, projPoly)
-proj <- ENMeval::maxnet.predictRaster(mod, predsProj, type = 'exponential', clamp = {{clamp}})
+proj <- predictMaxnet(mod, predsProj, type = 'exponential', clamp = {{clamp}})
 ```
 
 ```{r projAreaMaxnet.log, echo = pj.area & alg.maxnet & viz.pred.log, include = pj.area}
 predsProj <- raster::crop(envs, projPoly)
 predsProj <- raster::mask(predsProj, projPoly)
-proj <- ENMeval::maxnet.predictRaster(mod, predsProj, type = 'logistic', clamp = {{clamp}})
+proj <- predictMaxnet(mod, predsProj, type = 'logistic', clamp = {{clamp}})
 ```
 
 ```{r projAreaMaxnet.cll, echo = pj.area & alg.maxnet & viz.pred.cll, include = pj.area}
 predsProj <- raster::crop(envs, projPoly)
 predsProj <- raster::mask(predsProj, projPoly)
-proj <- ENMeval::maxnet.predictRaster(mod, predsProj, type = 'cloglog', clamp = {{clamp}})
+proj <- predictMaxnet(mod, predsProj, type = 'cloglog', clamp = {{clamp}})
 ```
 
 ```{asis, echo = pj.area & alg.maxent, eval = pj.area, include = pj.area}
@@ -565,17 +565,17 @@ predsProj <- raster::subset(predsProj, names(envs))
 
 ```{r pTNet.raw, echo = pj.time & alg.maxnet & viz.pred.raw, include = pj.time}
 # predict model
-proj <- ENMeval::maxnet.predictRaster(mod, predsProj, type = 'exponential', clamp = {{clamp}})
+proj <- predictMaxnet(mod, predsProj, type = 'exponential', clamp = {{clamp}})
 ```
 
 ```{r pTNet.log, echo = pj.time & alg.maxnet & viz.pred.log, include = pj.time}
 # predict model
-proj <- ENMeval::maxnet.predictRaster(mod, predsProj, type = 'logistic', clamp = {{clamp}})
+proj <- predictMaxnet(mod, predsProj, type = 'logistic', clamp = {{clamp}})
 ```
 
 ```{r pTNet.cll, echo = pj.time & alg.maxnet & viz.pred.cll, include = pj.time}
 # predict model
-proj <- ENMeval::maxnet.predictRaster(mod, predsProj, type = 'cloglog', clamp = {{clamp}})
+proj <- predictMaxnet(mod, predsProj, type = 'cloglog', clamp = {{clamp}})
 ```
 
 ```{r pTEnt.raw, echo = pj.time & alg.maxent & viz.pred.raw, include = pj.time}
