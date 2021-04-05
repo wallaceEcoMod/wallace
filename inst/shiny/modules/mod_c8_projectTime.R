@@ -121,7 +121,7 @@ projectTime_MOD <- function(input, output, session, rvs) {
       } else if (rvs$comp6 == 'maxent') {
         if (rvs$algMaxent == "maxnet") {
           if (rvs$comp7.type == "raw") {pargs <- "exponential"} else {pargs <- rvs$comp7.type}
-          modProjTime <- ENMeval::maxnet.predictRaster(modCur, pjtMsk, type = pargs, clamp = rvs$clamp)
+          modProjTime <- predictMaxnet(modCur, pjtMsk, type = pargs, clamp = rvs$clamp)
         } else if (rvs$algMaxent == "maxent.jar") {
           pargs <- paste0("outputformat=", rvs$comp7.type)
           modProjTime <- dismo::predict(modCur, pjtMsk, args = pargs)

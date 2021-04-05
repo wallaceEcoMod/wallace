@@ -43,7 +43,7 @@ mapPredsMaxent_MOD <- function(input, output, session, rvs) {
       if (is.null(rvs$modPredsLog)) {
         withProgress(message = "Generating logistic predictions...", {
           logPredsList <- if (rvs$algMaxent == "maxnet") {
-            sapply(rvs$mods, function(x) ENMeval::maxnet.predictRaster(x, rvs$bgMsk, type=pargs, 
+            sapply(rvs$mods, function(x) predictMaxnet(x, rvs$bgMsk, type=pargs, 
                                                                        clamp = rvs$clamp))
           } else if (rvs$algMaxent == "maxent.jar") {
             sapply(rvs$mods, function(x) dismo::predict(x, rvs$bgMsk, 
@@ -62,7 +62,7 @@ mapPredsMaxent_MOD <- function(input, output, session, rvs) {
       if (is.null(rvs$modPredsCLL)) {
         withProgress(message = "Generating cloglog predictions...", {
           cllPredsList <- if (rvs$algMaxent == "maxnet") {
-            sapply(rvs$mods, function(x) ENMeval::maxnet.predictRaster(x, rvs$bgMsk, type = pargs, 
+            sapply(rvs$mods, function(x) predictMaxnet(x, rvs$bgMsk, type = pargs, 
                                                                        clamp = rvs$clamp))
           } else if (rvs$algMaxent == "maxent.jar") {
             sapply(rvs$mods, function(x) dismo::predict(x, rvs$bgMsk, 

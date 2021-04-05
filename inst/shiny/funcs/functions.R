@@ -252,6 +252,20 @@ thresh <- function(modOccVals, type) {
 # COMP 7 ####
 ####################### #
 
+predictMaxnet <- function(mod, envs, clamp, type) {
+  requireNamespace("maxnet", quietly = TRUE)
+  envs.n <- raster::nlayers(envs)
+  envs.pts <- raster::getValues(envs) %>% as.data.frame()
+  mxnet.p <- predict(mod, envs.pts, type = type,
+                     clamp = clamp)
+  envs.pts[as.numeric(row.names(mxnet.p)), "pred"] <- mxnet.p
+  pred <- raster::rasterFromXYZ(cbind(raster::coordinates(envs),
+                                      envs.pts$pred),
+                                res = raster::res(envs),
+                                crs = raster::crs(envs))
+  return(pred)
+}
+
 # borrowed from the plot method for bioclim in dismo v.1.1-1
 bc.plot <- function(x, a=1, b=2, p=0.9, ...) {
   
