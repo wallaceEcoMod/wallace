@@ -44,7 +44,7 @@ tagList(
           # OBTAIN OCCS ####
           conditionalPanel(
             "input.tabs == 'occs'",
-            h4("Obtain Occurrence Data"),
+            div("Obtain Occurrence Data", class = "componentName"),
             radioButtons(
               "occsSel", "Modules Available:",
               choices = insert_modules_options("occs")
@@ -55,7 +55,7 @@ tagList(
           # OBTAIN ENVS ####
           conditionalPanel(
             "input.tabs == 'envs'",
-            h4("Obtain Environmental Data"),
+            div("Obtain Environmental Data", class = "componentName"),
             radioButtons(
               "envsSel", "Modules Available:",
               choices = insert_modules_options("envs")
@@ -66,7 +66,7 @@ tagList(
           # PROCESS OCCS ####
           conditionalPanel(
             "input.tabs == 'poccs'",
-            h4("Process Occurrence Data"),
+            div("Process Occurrence Data", class = "componentName"),
             radioButtons(
               "poccsSel", "Modules Available:",
               choices = insert_modules_options("poccs")
@@ -96,7 +96,7 @@ tagList(
           ),
           conditionalPanel(
             "input.tabs == 'penvs'",
-            h4("Process Environmental Data"),
+            div("Process Environmental Data", class = "componentName"),
             radioButtons(
               "penvsSel", "Modules Available:",
               choices = insert_modules_options("penvs")
@@ -163,7 +163,7 @@ tagList(
           # ESPACE ####
           conditionalPanel(
             "input.tabs == 'espace'",
-            h4("Environmental Space"),
+            div("Environmental Space", class = "componentName"),
             radioButtons(
               "espaceSel", "Modules Available:",
               choices = insert_modules_options("espace")
@@ -174,7 +174,7 @@ tagList(
           # PARTITION ####
           conditionalPanel(
             "input.tabs == 'part'",
-            h4("Partition Occurrence Data"),
+            div("Partition Occurrence Data", class = "componentName"),
             radioButtons(
               "partSel", "Modules Available:",
               choices = insert_modules_options("part")
@@ -185,7 +185,7 @@ tagList(
           # MODEL ####
           conditionalPanel(
             "input.tabs == 'model'",
-            h4("Build and Evaluate Niche Model"),
+            div("Build and Evaluate Niche Model", class = "componentName"),
             radioButtons("modelSel", "Modules Available:",
               choices = insert_modules_options("model")),
             tags$hr(),
@@ -194,7 +194,7 @@ tagList(
           # VISUALIZE ####
           conditionalPanel(
             "input.tabs == 'vis'",
-            h4("Visualize Model Results"),
+            div("Visualize Model Results", class = "componentName"),
             radioButtons("visSel", "Modules Available:",
               choices = insert_modules_options("vis")),
             tags$hr(),
@@ -203,7 +203,7 @@ tagList(
           # PROJECT ####
           conditionalPanel(
             "input.tabs == 'proj'",
-            h4("Project Model"),
+            div("Project Model", class = "componentName"),
             radioButtons(
               "projSel", "Modules Available:",
               choices = insert_modules_options("proj")),
@@ -222,7 +222,7 @@ tagList(
           # REPRODUCIBILITY
           conditionalPanel(
             "input.tabs == 'rep'",
-            h4("Reproduce Session"),
+            div("Reproduce Session", class = "componentName"),
             radioButtons(
               "repSel", "Modules Available:",
               choices = insert_modules_options("rep")
