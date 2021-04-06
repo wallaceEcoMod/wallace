@@ -29,18 +29,36 @@ hr {
   height:7px;
 }
 .componentName {
-  color:darkorange;
-  font-size:18pt;
+  color:#dd4814;
+  display:inline-block;
+  font-size:16pt;
   font-weight:bold;
+}
+.compHelpButton {
+  display:inline-block;
+  margin:0px;
+  font-size:14pt;
 }
 .rpkg {
   font-size:12pt;
   font-weight:bold;
 }
 .mod {
+  display:inline;
   color:purple;
   font-size:14pt;
   font-weight:bold;
+}
+.modHelpButton {
+  color:purple;
+  margin:0px;
+  font-size:12pt;
+}
+.modHelpButton:hover {
+  color:#9370DB;
+}
+.modHelpButton:focus {
+  color:purple;
 }
 .pkgDes {
   font-size:10pt;

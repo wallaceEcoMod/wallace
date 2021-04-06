@@ -44,14 +44,15 @@ uiBottom <- function(mod_INFO) {
   return(ls)
 }
 
-infoGenerator <- function(pkgName, modName , modAuts) {
+infoGenerator <- function(pkgName, modName , modAuts, modID) {
   pkgInfo <- sapply(pkgName, packageDescription, simplify = FALSE)
   pkgTitl <- sapply(pkgInfo, function(x) x$Title)
   # remove square brackets and spaces before commas
   pkgAuts <- sapply(pkgInfo, function(x) gsub("\\s+,", ",", gsub("\n|\\[.*?\\]", "", x$Author)))
   # remove parens and spaces before commas
   pkgAuts <- sapply(pkgAuts, function(x) gsub("\\s+,", ",", gsub("\\(.*?\\)", "", x)))
-  list(modName = modName,
+  list(modID = modID,
+       modName = modName,
        modAuts = modAuts,
        pkgName = pkgName,
        pkgTitl = pkgTitl,

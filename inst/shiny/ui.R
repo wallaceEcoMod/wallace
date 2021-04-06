@@ -27,7 +27,7 @@ tagList(
     tabPanel("Visualize", value = 'vis'),
     tabPanel("Project", value = 'proj'),
     tabPanel("Reproduce", value = 'rep'),
-    navbarMenu("Help", icon = icon("question-circle"),
+    navbarMenu("Help", icon = icon("life-ring"),
                HTML('<a href="https://groups.google.com/g/wallaceEcoMod" target="_blank">Google Group</a>'),
                HTML('<a href="https://github.com/wallaceEcoMod/wallace/issues" target="_blank">GitHub Issues</a>'))
   ),
@@ -44,10 +44,12 @@ tagList(
           # OBTAIN OCCS ####
           conditionalPanel(
             "input.tabs == 'occs'",
-            div("Obtain Occurrence Data", class = "componentName"),
+            div("Component: Obtain Occurrence Data", class = "componentName"),
+            help_comp_ui("occsHelp"),
             radioButtons(
               "occsSel", "Modules Available:",
-              choices = insert_modules_options("occs")
+              choices = insert_modules_options("occs"),
+              selected = character(0)
             ),
             tags$hr(),
             insert_modules_ui("occs")
@@ -55,10 +57,12 @@ tagList(
           # OBTAIN ENVS ####
           conditionalPanel(
             "input.tabs == 'envs'",
-            div("Obtain Environmental Data", class = "componentName"),
+            div("Component: Obtain Environmental Data", class = "componentName"),
+            help_comp_ui("envsHelp"),
             radioButtons(
               "envsSel", "Modules Available:",
-              choices = insert_modules_options("envs")
+              choices = insert_modules_options("envs"),
+              selected = character(0)
             ),
             tags$hr(),
             insert_modules_ui("envs")
@@ -66,10 +70,12 @@ tagList(
           # PROCESS OCCS ####
           conditionalPanel(
             "input.tabs == 'poccs'",
-            div("Process Occurrence Data", class = "componentName"),
+            div("Component: Process Occurrence Data", class = "componentName"),
+            help_comp_ui("poccsHelp"),
             radioButtons(
               "poccsSel", "Modules Available:",
-              choices = insert_modules_options("poccs")
+              choices = insert_modules_options("poccs"),
+              selected = character(0)
               #"Profile Occurrences" = "profOccs"), # CM
             ),
             tags$hr(),
@@ -96,10 +102,12 @@ tagList(
           ),
           conditionalPanel(
             "input.tabs == 'penvs'",
-            div("Process Environmental Data", class = "componentName"),
+            div("Component: Process Environmental Data", class = "componentName"),
+            help_comp_ui("penvsHelp"),
             radioButtons(
               "penvsSel", "Modules Available:",
-              choices = insert_modules_options("penvs")
+              choices = insert_modules_options("penvs"),
+              selected = character(0)
             ),
             tags$hr(),
             insert_modules_ui("penvs"),
@@ -163,10 +171,12 @@ tagList(
           # ESPACE ####
           conditionalPanel(
             "input.tabs == 'espace'",
-            div("Environmental Space", class = "componentName"),
+            div("Component: Environmental Space", class = "componentName"),
+            help_comp_ui("espaceHelp"),
             radioButtons(
               "espaceSel", "Modules Available:",
-              choices = insert_modules_options("espace")
+              choices = insert_modules_options("espace"),
+              selected = character(0)
             ),
             tags$hr(),
             insert_modules_ui("espace")
@@ -174,10 +184,12 @@ tagList(
           # PARTITION ####
           conditionalPanel(
             "input.tabs == 'part'",
-            div("Partition Occurrence Data", class = "componentName"),
+            div("Component: Partition Occurrence Data", class = "componentName"),
+            help_comp_ui("partHelp"),
             radioButtons(
               "partSel", "Modules Available:",
-              choices = insert_modules_options("part")
+              choices = insert_modules_options("part"),
+              selected = character(0)
             ),
             tags$hr(),
             insert_modules_ui("part")
@@ -185,28 +197,34 @@ tagList(
           # MODEL ####
           conditionalPanel(
             "input.tabs == 'model'",
-            div("Build and Evaluate Niche Model", class = "componentName"),
+            div("Component: Build and Evaluate Niche Model", class = "componentName"),
+            help_comp_ui("modelHelp"),
             radioButtons("modelSel", "Modules Available:",
-              choices = insert_modules_options("model")),
+                         choices = insert_modules_options("model"),
+                         selected = character(0)),
             tags$hr(),
             insert_modules_ui("model")
           ),
           # VISUALIZE ####
           conditionalPanel(
             "input.tabs == 'vis'",
-            div("Visualize Model Results", class = "componentName"),
+            div("Component: Visualize Model Results", class = "componentName"),
+            help_comp_ui("visHelp"),
             radioButtons("visSel", "Modules Available:",
-              choices = insert_modules_options("vis")),
+                         choices = insert_modules_options("vis"),
+                         selected = character(0)),
             tags$hr(),
             insert_modules_ui("vis")
           ),
           # PROJECT ####
           conditionalPanel(
             "input.tabs == 'proj'",
-            div("Project Model", class = "componentName"),
+            div("Component: Project Model", class = "componentName"),
+            help_comp_ui("projHelp"),
             radioButtons(
               "projSel", "Modules Available:",
-              choices = insert_modules_options("proj")),
+              choices = insert_modules_options("proj"),
+              selected = character(0)),
             tags$hr(),
             insert_modules_ui("proj"),
             tags$hr(),
@@ -222,10 +240,11 @@ tagList(
           # REPRODUCIBILITY
           conditionalPanel(
             "input.tabs == 'rep'",
-            div("Reproduce Session", class = "componentName"),
+            div("Component: Reproduce Session", class = "componentName"),
             radioButtons(
               "repSel", "Modules Available:",
-              choices = insert_modules_options("rep")
+              choices = insert_modules_options("rep"),
+              selected = character(0)
             ),
             tags$hr(),
             insert_modules_ui("rep")

@@ -45,10 +45,51 @@ function(input, output, session) {
 
   # UI for module guidance text
   output$gtext_module <- renderUI({
+    req(module())
     file <- COMPONENT_MODULES[[component()]][[module()]]$instructions
     if (is.null(file)) return()
     includeMarkdown(file)
   })
+
+  # Help Component
+  observeEvent(input$occsHelp, updateTabsetPanel(session, "main", "Component Guidance"))
+  observeEvent(input$envsHelp, updateTabsetPanel(session, "main", "Component Guidance"))
+  observeEvent(input$poccsHelp, updateTabsetPanel(session, "main", "Component Guidance"))
+  observeEvent(input$penvsHelp, updateTabsetPanel(session, "main", "Component Guidance"))
+  observeEvent(input$espaceHelp, updateTabsetPanel(session, "main", "Component Guidance"))
+  observeEvent(input$partHelp, updateTabsetPanel(session, "main", "Component Guidance"))
+  observeEvent(input$modelHelp, updateTabsetPanel(session, "main", "Component Guidance"))
+  observeEvent(input$visHelp, updateTabsetPanel(session, "main", "Component Guidance"))
+  observeEvent(input$projHelp, updateTabsetPanel(session, "main", "Component Guidance"))
+
+  # Help Module
+  observeEvent(input$occs_queryDbHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$occs_paleoDbHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$occs_userOccsHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$envs_worldclimHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$envs_ecoclimateHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$envs_userEnvsHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$poccs_selectOccsHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$poccs_removeByIDHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$poccs_thinOccsHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$penvs_bgExtentHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$penvs_drawBgExtentHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$penvs_userBgExtentHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$espace_pcaHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$espace_occDensHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$espace_nicheOvHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$part_nonSpatHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$part_spatHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$model_maxentHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$model_bioclimHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$vis_mapPredsHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$vis_maxentEvalPlotHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$vis_responsePlotHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$vis_bioclimPlotHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$proj_areaHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$proj_timeHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$proj_userHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$proj_messHelp, updateTabsetPanel(session, "main", "Module Guidance"))
 
   ######################## #
   ### MAPPING LOGIC ####
