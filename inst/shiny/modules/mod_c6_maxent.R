@@ -47,7 +47,12 @@ maxent_MOD <- function(input, output, session, rvs) {
     }
     
     if (is.null(input$fcs)) {
-      rvs %>% writeLog(type = 'error', 'Select feature classes first.')
+      rvs %>% writeLog(type = 'warning', 'Select feature classes first.')
+      return()
+    }
+    
+    if (input$rmsStep <= 0) {
+      rvs %>% writeLog(type = 'warning', "Please specify a positive multiplier step value that is greater than 0.")
       return()
     }
     
