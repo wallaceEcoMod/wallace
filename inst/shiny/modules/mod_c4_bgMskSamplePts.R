@@ -14,6 +14,12 @@ bgMskAndSamplePts_MOD <- function(input, output, session, rvs) {
       return()
     }
     
+    if (input$bgPtsNum < 1) {
+      rvs %>% writeLog(type = 'warning',
+                       "Enter a non-zero number of background points.")
+      return()
+    }
+    
     # record for RMD
     rvs$bgPtsNum <- input$bgPtsNum
     
