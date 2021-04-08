@@ -69,7 +69,8 @@ create_module <- function(id, dir, map = FALSE, result = FALSE, rmd = FALSE, sav
     r_file <- gsub("\n *output\\$.*?})\n", "", r_file)
   }
   if (!rmd) {
-    r_file <- gsub("\n\\{\\{id}}_module_rmd <- function.*?}", "", r_file)
+    r_file <- gsub("\n\\{\\{id}}_module_rmd <- function.*?)\n}", "", r_file)
+
   }
   if (!save) {
     r_file <- gsub("\n *return\\(list\\(.*?))\n", "", r_file)
