@@ -70,11 +70,7 @@ Robert J. Hijmans (2019). raster: Geographic Data Analysis and Modeling. R packa
 
 4. In the same directory as the YAML and md files, you need to have an R file named `correlations.R` with the source code used in the module. This R file to contains the skeleton of:
 
-    - A function named `correlations_module_ui` that returns the UI for this module.
-    This function should follow the conventions for general Shiny modules - it
-    should take a single argument, and use it to namespace all its UI. The UI
-    needs to be returned from the function. There should usually be some sort
-    of a "Run" button.
+- A function named `correlations_module_ui` that returns the UI for this module. This function should follow the conventions for general Shiny modules - it should take a single argument, and use it to namespace all its UI. The UI needs to be returned from the function. There should usually be some sort of a "Run" button.
     
 ```{r, eval = F}
 correlations_module_ui <- function(id) {
@@ -85,17 +81,17 @@ correlations_module_ui <- function(id) {
     checkboxInput(ns("batch"), label = strong("Batch"), value = T),
     ## Give the action button a name and a label.
     actionButton(ns("runCorrs"), label = "Calculate correlations"),
+    ## Make a space between the buttons
+    tags$br(),
+    tags$br(),
     ## UI for reselecting variables after calculating correlations
     uiOutput(ns("VarSelect")),
     actionButton(ns("selectConfirm"), label = "Select Variables")
-    )
+  )
 }
 ```
     
-    - A function named `correlations_module_server` that defines the server for this module.
-    This function should follow the conventions for general Shiny modules - it
-    should take `input`, `output`, and `session` as parameters, as well as one
-    extra parameter named `common`.
+- A function named `correlations_module_server` that defines the server for this module. This function should follow the conventions for general Shiny modules - it should take `input`, `output`, and `session` as parameters, as well as one extra parameter named `common`.
     
 The `common` variable supplied to a module's server and map function is a list containing:
   - The following reactive variables that can be used by the module: logger, spp, curSp, allSp, curEnv, curModel, component, module, envs.global, mapCntr
@@ -114,6 +110,7 @@ correlations_module_server <- function(input, output, session, common) {
   VarSelector <- common$VarSelector
 
   output$VarSelect <- renderUI({
+    req(curSp())  # this needs to be first, else bgMask() will return an error
     req(bgMask())
     shinyWidgets::pickerInput(
       "VarSelector",
@@ -234,5 +231,5 @@ species' scientific name.
 
 ## 6. After creating a module, you need to tell the Wallace app to use your new module. You do this by calling the function
 ```{r}
-wallace::register_module(register_module("./inst/shiny/custom_modules/correlations.yml"))
+wallace::register_module("./inst/shiny/custom_modules/correlations.yml")
 ```

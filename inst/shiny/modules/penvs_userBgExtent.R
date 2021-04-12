@@ -145,7 +145,7 @@ penvs_userBgExtent_module_server <- function(input, output, session, common) {
         logger %>%
           writeLog(type = "error", hlSpp(sp),
                    "One or more occurrence points have NULL raster values.",
-                   "This can sometimes happen for points on the margin of the study extent.",
+                   " This can sometimes happen for points on the margin of the study extent.",
                    " Please increase the buffer slightly to include them.")
         return()
       }

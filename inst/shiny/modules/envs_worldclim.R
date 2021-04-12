@@ -88,7 +88,10 @@ envs_worldclim_module_server <- function(input, output, session, common) {
         occsEnvsVals <- as.data.frame(raster::extract(wcbc, occs.xy))
       })
       # remove occurrence records with NA environmental values
-      spp[[sp]]$occs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, sp, logger)
+      spp[[sp]]$occs <- remEnvsValsNA(occs = spp[[sp]]$occs,
+                                      occsEnvsVals = occsEnvsVals,
+                                      sppName = sp,
+                                      logger = logger)
       # also remove variable value rows with NA environmental values
       occsEnvsVals <- na.omit(occsEnvsVals)
 
