@@ -26,7 +26,7 @@ Author:
 Maintainer: Jamie M. Kass <jamie.m.kass@gmail.com>
 Depends:
     R (>= 3.5.0),
-    shiny (>= 1.2.0),
+    shiny (>= 1.6.0),
     leaflet (>= 2.0.2)
 Imports:
     ade4,
@@ -59,7 +59,7 @@ Imports:
     shinyalert,
     shinyjs,
     shinythemes,
-    shinyWidgets,
+    shinyWidgets (>= 0.6.0),
     sp,
     spocc (>= 0.8.0),
     spThin,
