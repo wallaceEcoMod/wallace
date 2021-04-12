@@ -66,6 +66,7 @@ Imports:
     spocc (>= 0.8.0),
     spThin,
     stars,
+    terra,
     tools,
     XML,
     zip

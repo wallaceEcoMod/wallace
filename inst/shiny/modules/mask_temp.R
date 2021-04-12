@@ -198,8 +198,10 @@ mask_temp_module_map <- function(map, common) {
 
   req(spp[[curSp()]]$mask$tempLog)
   userRaster <- spp[[curSp()]]$postProc$prediction
-  xy.raster <- dismo::randomPoints(userRaster, 1000)
-  userValues <- raster::extract(userRaster, as.matrix(xy.raster))
+  # xy.raster <- dismo::randomPoints(userRaster, 1000)
+  userValues <- terra::spatSample(x = terra::rast(userRaster),
+                                  size = 100)[, 1] %>% unique()
+  # userValues <- raster::extract(userRaster, as.matrix(xy.raster))
 
   map %>% clearMarkers() %>%
     clearShapes() %>%
@@ -219,8 +221,8 @@ mask_temp_module_map <- function(map, common) {
                 opacity = 1, layerId = 'expert')
   } else {
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-    legendPal <- colorNumeric(rev(rasCols), userValues, na.color = 'transparent')
-    rasPal <- colorNumeric(rasCols, userValues, na.color = 'transparent')
+    legendPal <- colorNumeric(rev(rasCols), seq(0, 1, 0.1), na.color = 'transparent')
+    rasPal <- colorNumeric(rasCols, seq(0, 1, 0.1), na.color = 'transparent')
     map %>%
       addRasterImage(spp[[curSp()]]$postProc$prediction,
                      colors = rasPal, opacity = 0.7, group = 'mask',
