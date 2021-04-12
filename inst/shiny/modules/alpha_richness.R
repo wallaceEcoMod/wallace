@@ -4,7 +4,8 @@ alpha_richness_module_ui <- function(id) {
       span("Step 1:", class = "step"),
       span("Choose source of range maps", class = "stepText"), br(), br(),
       selectInput(ns("selSource") , label = "Select source of range maps",
-                  choices = list("Wallace created SDM" = "proj",
+                  choices = list("Wallace SDM" = "wallace",
+                                 "Projected SDM" = "proj",
                                  "User uploaded SDM" = "sdm"
                   )),
 
@@ -44,14 +45,64 @@ alpha_richness_module_server <- function(input, output, session, common) {
       )
       return()
     }
+    if (input$selSource=='wallace'){
+      for (i in 1:length(curSp())){
+        sp<-curSp()[i]
+        if (is.null(spp[[sp]]$visualization$mapPred)) {
+          logger %>%
+            writeLog(type = 'error',
+                     'No spatial representation of the model has been generated, please first use the visualize component to visualize your model')
+          return()
+        }
+        if (is.null(spp[[sp]]$rmm$rmm$prediction$binary$thresholdSet)) {
+          logger %>%
+            writeLog(type = 'error',
+                     'Generate a thresholded prediction before doing multisp. calculations')
+          return()
+        }
 
+      }
+      #Processing
+      smartProgress(
+        logger,
+        message = "Generating a species richness map", {
+          #get all models
+          all_models<-list()
+          for (i in 1:length(curSp())){
+            all_models[[i]]<-spp[[curSp()[i]]]$visualization$mapPred
+          }
+          all_extents<-lapply(all_models,raster::extent)
+          all_extents<-lapply(all_extents,as.vector)
+          xmin<-min(unlist(lapply(all_extents, function(l) l[[1]])))
+          ymin<-min(unlist(lapply(all_extents, function(l) l[[3]])))
+          xmax<-max(unlist(lapply(all_extents, function(l) l[[2]])))
+          ymax<-max(unlist(lapply(all_extents, function(l) l[[4]])))
+          new_extent<-raster::extent(c(xmin,xmax,ymin,ymax))
+          #get all models
+          sp1<-curSp()[1]
+          all_stack<- raster::extend(spp[[sp1]]$visualization$mapPred,new_extent)
+
+
+          for (i in 2:length(curSp())){
+            sp<-curSp()[i]
+            #evaluate if same extent
+
+            r1 <- raster::extend(spp[[sp]]$visualization$mapPred, new_extent)
+            all_stack<-raster::stack(all_stack,r1)
+          }
+
+          req(all_stack)
+          # FUNCTION CALL ####
+          SR <-  raster::calc(all_stack, sum, na.rm = T)
+        })
+    }
 if (input$selSource=='proj'){
    for (i in 1:length(curSp())){
      sp<-curSp()[i]
      if (is.null(spp[[sp]]$project$mapProj)) {
        logger %>%
          writeLog(type = 'error',
-                  'Models must be of the same area for multisp. calculations, please use the transfer module to transfer to same geographical space')
+                  'Projected model does not exist, please use the transfer module to transfer to same geographical space')
        return()
      }
      if (is.null(spp[[sp]]$rmm$prediction$transfer$environment1$thresholdSet)) {
@@ -67,23 +118,31 @@ if (input$selSource=='proj'){
       logger,
       message = "Generating a species richness map", {
         #get all models
+        all_models<-list()
+        for (i in 1:length(curSp())){
+          all_models[[i]]<-spp[[curSp()[i]]]$project$mapProj
+        }
+        all_extents<-lapply(all_models,raster::extent)
+        all_extents<-lapply(all_extents,as.vector)
+        xmin<-min(unlist(lapply(all_extents, function(l) l[[1]])))
+        ymin<-min(unlist(lapply(all_extents, function(l) l[[3]])))
+        xmax<-max(unlist(lapply(all_extents, function(l) l[[2]])))
+        ymax<-max(unlist(lapply(all_extents, function(l) l[[4]])))
+        new_extent<-raster::extent(c(xmin,xmax,ymin,ymax))
+        #get all models
         sp1<-curSp()[1]
-        all_stack<-spp[[sp1]]$project$mapProj
+        all_stack<- raster::extend(spp[[sp1]]$project$mapProj,new_extent)
+
 
         for (i in 2:length(curSp())){
-         sp<-curSp()[i]
+          sp<-curSp()[i]
           #evaluate if same extent
-          if(raster::extent(all_stack[[1]])!=raster::extent(spp[[sp]]$project$mapProj)){
-           logger %>%
-             writeLog(type = 'error',
-                      'All models must be for the same area. Please use the transfer module to transfer to same geographical area')
-            return()
-          }
-          else {
-          all_stack<-raster::stack(all_stack,spp[[sp]]$project$mapProj)
-          }
+
+          r1 <- raster::extend(spp[[sp]]$project$mapProj, new_extent)
+          all_stack<-raster::stack(all_stack,r1)
         }
 
+        req(all_stack)
         # FUNCTION CALL ####
         SR <-  raster::calc(all_stack, sum, na.rm = T)
                        })
@@ -97,6 +156,12 @@ if(input$selSource=='sdm'){
                      'Please upload a model for each species')
           return()
         }
+            #if(raster::res(spp[[curSp()[1]]]$postProc$OrigPred)!=raster::res(spp[[sp]]$postProc$OrigPred)){
+        # logger %>%
+         # writeLog(type = 'error',
+          #   'Uploaded models must be of the same resolution')
+         #return()
+        #}
         if (length(unique(getRasterVals(spp[[sp]]$postProc$OrigPred)))>3) {
           logger %>%
             writeLog(type = 'error',
@@ -107,23 +172,31 @@ if(input$selSource=='sdm'){
       smartProgress(
         logger,
         message = "Generating a species richness map", {
+          ##Get the extent of all models and keep the max
+          all_models<-list()
+          for (i in 1:length(curSp())){
+            all_models[[i]]<-spp[[curSp()[i]]]$postProc$OrigPred
+          }
+          all_extents<-lapply(all_models,raster::extent)
+          all_extents<-lapply(all_extents,as.vector)
+          xmin<-min(unlist(lapply(all_extents, function(l) l[[1]])))
+          ymin<-min(unlist(lapply(all_extents, function(l) l[[3]])))
+          xmax<-max(unlist(lapply(all_extents, function(l) l[[2]])))
+          ymax<-max(unlist(lapply(all_extents, function(l) l[[4]])))
+          new_extent<-raster::extent(c(xmin,xmax,ymin,ymax))
           #get all models
           sp1<-curSp()[1]
-          all_stack<-spp[[sp1]]$postProc$OrigPred
+          all_stack<- raster::extend(spp[[sp1]]$postProc$OrigPred,new_extent)
+
 
           for (i in 2:length(curSp())){
             sp<-curSp()[i]
             #evaluate if same extent
-            if(raster::extent(all_stack)!=raster::extent(spp[[sp]]$postProc$OrigPred)){
-              logger %>%
-                writeLog(type = 'error',
-                         'All models must be of the same extent. Please ensure all uploaded models are')
-              return()
+
+            r1 <- raster::extend(spp[[sp]]$postProc$OrigPred, new_extent)
+              all_stack<-raster::stack(all_stack,r1)
             }
-            else {
-              all_stack<-raster::stack(all_stack,spp[[sp]]$postProc$OrigPred)
-            }
-          }
+
           req(all_stack)
           # FUNCTION CALL ####
           SR <-  raster::calc(all_stack, sum, na.rm = T)

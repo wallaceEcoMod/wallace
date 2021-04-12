@@ -132,7 +132,7 @@ mask_temp_module_server <- function(input, output, session, common) {
     }
     ppRastersNameList <- setNames(as.list(n), n)
     shinyWidgets::pickerInput("selTempMask",
-                              label = "Select raster for masking (**)",
+                              label = "Select raster for masking the SDM",
                               choices = ppRastersNameList,
                               multiple = FALSE,
                               selected = ppRastersNameList)
@@ -145,7 +145,7 @@ mask_temp_module_server <- function(input, output, session, common) {
     sliderInput("sliderTemp", label = "Select lower and upper bounds",
                 min = 0,
                 max = 100,
-                value = c(minV, 100),
+                value = c(minV, maxV),
                 step = 0.1)
   })
 
