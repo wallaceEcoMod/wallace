@@ -22,7 +22,7 @@ Maintainer:
   Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
 Depends: 
   R (>= 3.5.0), 
-  ENMeval (>= 1.9.0),
+  ENMeval (>= 2.0.0),
   leaflet (>= 2.0.2),
   shiny (>= 1.1.0)
 Imports: 
