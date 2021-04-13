@@ -26,6 +26,7 @@ Author:
 Maintainer: Jamie M. Kass <jamie.m.kass@gmail.com>
 Depends:
     R (>= 3.5.0),
+    ENMeval (>= 2.0.0),
     shiny (>= 1.6.0),
     leaflet (>= 2.0.2)
 Imports:
@@ -36,7 +37,6 @@ Imports:
     DT (>= 0.5),
     ecospat,
     httr,
-    ENMeval (>= 2.0.0),
     gam,
     glue,
     geojsonsf,
@@ -67,7 +67,7 @@ Imports:
     XML,
     zip
 Remotes:
-    andrepazv/ENMeval@bioclim_test
+    jamiemkass/ENMeval@master
 Description: The 'shiny' application Wallace is a modular platform for 
     reproducible modeling of species niches and distributions. Wallace
     guides users through a complete analysis, from the acquisition of species
