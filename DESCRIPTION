@@ -41,6 +41,7 @@ Imports:
     gam,
     glue,
     geojsonsf,
+    leafem,
     leaflet.extras (>= 1.0.0),
     magrittr,
     maskRangeR,

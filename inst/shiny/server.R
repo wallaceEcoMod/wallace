@@ -1137,10 +1137,10 @@ function(input, output, session) {
                        " in you are R console. (**)")
           }
           userRaster <- spp[[curSp()]]$postProc$prediction
-          userValues <- raster::values(userRaster)
+          userValues <- terra::spatSample(x = terra::rast(userRaster),
+                                          size = 100, na.rm = TRUE)[, 1]
 
-          if (length(unique(userValues)) == 3 |
-              length(unique(userValues)) == 2) {
+          if (!any(userValues != 0 | userValues != 1)) {
             m -> leaflet() %>%
               addRasterImage(userRaster,
                              colors = c('gray', 'darkgreen'), opacity = 0.7, group = 'mask',
@@ -1152,14 +1152,17 @@ function(input, output, session) {
             mapview::mapshot(m, file = file)
           } else {
             rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-            legendPal <- colorNumeric(rev(rasCols), userValues, na.color = 'transparent')
-            rasPal <- colorNumeric(rasCols, userValues, na.color = 'transparent')
+            quanRas <- quantile(c(raster::minValue(userRaster),
+                                  raster::maxValue(userRaster)),
+                                probs = seq(0, 1, 0.1))
+            legendPal <- colorNumeric(rev(rasCols), quanRas, na.color = 'transparent')
             m -> leaflet() %>%
-              addRasterImage(userRaster,
-                             colors = rasPal, opacity = 0.7, group = 'mask',
-                             layerId = 'postPred', method = "ngb") %>%
+              leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
+                                   colorOptions = leafem::colorOptions(
+                                     palette = colorRampPalette(colors = rasCols)),
+                                   opacity = 0.7, group = 'mask', layerId = 'postPred') %>%
               addLegend("bottomright", pal = legendPal, title = "Suitability<br>(User) (**)",
-                        values = userValues, layerId = "expert",
+                        values = quanRas, layerId = "expert",
                         labFormat = reverseLabels(2, reverse_order = TRUE))
             mapview::mapshot(m, file = file)
           }

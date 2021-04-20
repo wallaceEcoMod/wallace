@@ -43,9 +43,6 @@ mask_tempAnnotate <- function(occs, env, envDates, logger = NULL) {
                                       dateScale = "year")
     bounds <- raster::quantile(datedOccs$env,
                                prob = c(0, .025, .25, .5, .75, .975, 1),
-                               na.rm = T)
-  # })
-  # tempValues <- as.data.frame(tempExtractValues)
-  # tempValues <- tempValues$env[order(as.numeric(row.names(tempValues)))]
+                               na.rm = TRUE)
   return(bounds)
 }

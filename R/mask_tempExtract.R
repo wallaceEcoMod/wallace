@@ -37,17 +37,20 @@ mask_tempExtract <- function(lowerInp, upperInp, maskRaster, pred,
   }
   # compare prediction and mask Raster
   smartProgress(logger, message = "Masking ...", {
-    pred <- raster::resample(pred, maskRaster, "ngb")
-    sameExt <- raster::compareRaster(maskRaster, pred, extent = FALSE, rowcol = FALSE,
-                                     crs = TRUE, res = TRUE, stopiffalse = FALSE)
+    pred <- terra::rast(pred)
+    maskRaster <- terra::rast(maskRaster)
+    pred <- terra::resample(pred, maskRaster, "near")
+    sameExt <- terra::compareGeom(maskRaster, pred, ext = FALSE,
+                                  rowcol = FALSE, crs = TRUE, res = TRUE)
     if (sameExt == FALSE) {
       logger %>%
         writeLog(type = 'warning', hlSpp(spN),
                  "Rasters don't have the same resolution, crs or origin. (**)")
       return()
     }
-    maskRaster <- raster::crop(maskRaster, pred)
+    maskRaster <- terra::crop(maskRaster, pred)
     postPred <- pred * (maskRaster >= lowerInp) * (maskRaster <= upperInp)
+    postPred <- postPred %>% terra::trim() %>% raster::raster()
   })
   return(postPred)
 }

@@ -225,34 +225,38 @@ mask_expPoly_module_map <- function(map, common) {
 
   req(spp[[curSp()]]$mask$expertPoly)
   userRaster <- spp[[curSp()]]$postProc$prediction
-  userValues <- raster::values(userRaster)
+  userValues <- terra::spatSample(x = terra::rast(userRaster),
+                                  size = 100, na.rm = TRUE)[, 1]
 
   map %>% clearMarkers() %>%
     clearShapes() %>%
     clearAll() %>%
+    removeImage('projPred') %>%
     # add background polygon
     mapBgPolys(bgShpXY(), color = 'green', group = 'post')
 
-  if (length(unique(userValues)) == 3 |
-      length(unique(userValues)) == 2) {
+  if (!any(userValues != 0 | userValues != 1)) {
     map %>%
-      addRasterImage(spp[[curSp()]]$postProc$prediction,
-                     colors = c('gray', 'darkgreen'), opacity = 0.7, group = 'mask',
-                     layerId = 'postPred', method = "ngb") %>%
+      leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
+                           colorOptions = leafem::colorOptions(
+                             palette = colorRampPalette(colors = rasCols)),
+                           opacity = 0.7, group = 'mask', layerId = 'postPred') %>%
       addLegend("bottomright", colors = c('gray', 'darkgreen'),
                 title = "Distribution<br>map",
                 labels = c("Unsuitable", "Suitable"),
                 opacity = 1, layerId = 'expert')
   } else {
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-    legendPal <- colorNumeric(rev(rasCols), userValues, na.color = 'transparent')
-    rasPal <- colorNumeric(rasCols, userValues, na.color = 'transparent')
+    quanRas <- quantile(c(raster::minValue(userRaster),
+                          raster::maxValue(userRaster)),
+                        probs = seq(0, 1, 0.1))
+    legendPal <- colorNumeric(rev(rasCols), quanRas, na.color = 'transparent')
     map %>%
       addRasterImage(spp[[curSp()]]$postProc$prediction,
                      colors = rasPal, opacity = 0.7, group = 'mask',
                      layerId = 'postPred', method = "ngb") %>%
       addLegend("bottomright", pal = legendPal, title = "Suitability<br>(User) (**)",
-                values = userValues, layerId = "expert",
+                values = quanRas, layerId = "expert",
                 labFormat = reverseLabels(2, reverse_order = TRUE))
   }
   req(spp[[curSp()]]$postProc$prediction)
