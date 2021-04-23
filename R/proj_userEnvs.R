@@ -70,7 +70,8 @@ proj_userEnvs <- function(evalOut, curModel, envs, pjExt, alg, outputType = NULL
   smartProgress(logger,
                 message = 'Projecting model to user uploaded environmental variables & area', {
     if (alg == 'BIOCLIM') {
-      modProjUser <- dismo::predict(evalOut@models[[curModel]], projMsk)
+      modProjUser <- dismo::predict(evalOut@models[[curModel]], projMsk,
+                                    useC = FALSE)
     } else if (alg == 'maxnet') {
       if (outputType == "raw") outputType <- "exponential"
       modProjUser <- predictMaxnet(evalOut@models[[curModel]], projMsk,

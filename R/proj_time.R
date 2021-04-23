@@ -75,7 +75,8 @@ proj_time <- function(evalOut, curModel, envs, pjExt, alg, outputType = NULL,
 
   smartProgress(logger, message = ("Projecting to new time..."), {
     if (alg == 'BIOCLIM') {
-      modProjTime <- dismo::predict(evalOut@models[[curModel]], pjtMsk)
+      modProjTime <- dismo::predict(evalOut@models[[curModel]], pjtMsk,
+                                    useC = FALSE)
     } else if (alg == 'maxnet') {
       if (outputType == "raw") outputType <- "exponential"
       modProjTime <- predictMaxnet(evalOut@models[[curModel]], pjtMsk,
