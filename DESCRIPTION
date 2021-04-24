@@ -22,21 +22,18 @@ Maintainer:
   Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
 Depends: 
   R (>= 3.5.0), 
-  ENMeval (>= 2.0.0),
   leaflet (>= 2.0.2),
   shiny (>= 1.1.0)
 Imports: 
   dismo,
   dplyr,
   DT (>= 0.4),
-  ggplot2,
+  ENMeval (>= 2.0.0),
   jsonlite,
   leaflet.extras, 
   magrittr, 
-  maptools, 
   raster, 
   RColorBrewer,
-  rgbif (>= 3.3.0),
   rgeos, 
   rgdal, 
   rmarkdown, 
@@ -45,9 +42,12 @@ Imports:
   sp,
   spocc (>= 0.8.0), 
   spThin, 
-  testthat, 
-  XML, 
   zip
+Suggests: 
+  knitr,
+  rgbif (>= 3.3.0),
+  testthat, 
+  XML
 Remotes:
   jamiemkass/ENMeval@master
 Description: The 'shiny' application 'wallace' is a modular platform for reproducible modeling of species niches and distributions. 'wallace' guides users through a complete analysis, from the acquisition of species occurrence and environmental data to visualizing model predictions on an interactive map, thus bundling complex workflows into a single, streamlined interface.
@@ -55,7 +55,6 @@ License: GPL-3
 URL: https://wallaceEcoMod.github.io
 Encoding: UTF-8
 RoxygenNote: 7.1.1
-Suggests: knitr
 NeedsCompilation: no
 Packaged: 2017-11-29 05:26:31 UTC; musasabi
 VignetteBuilder: knitr

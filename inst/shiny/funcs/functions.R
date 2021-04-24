@@ -457,7 +457,7 @@ printVecAsis <- function(x) {
 }
 
 #####################
-# Download utlities #
+# Download utilities #
 #####################
 
 convert_list_cols <- function(x) {
