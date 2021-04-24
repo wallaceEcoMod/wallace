@@ -533,7 +533,7 @@ Now use crop and mask the predictor variables by projPoly, and use the dismo::pr
 ```{r projAreaBioclim, echo = pj.area & mod.bioclim, include = pj.area}
 predsProj <- raster::crop(envs, projPoly)
 predsProj <- raster::mask(predsProj, projPoly)
-proj <- dismo::predict(mod, predsProj)
+proj <- dismo::predict(mod, predsProj, useC = FALSE)
 ```
 
 ```{asis, echo = pj.time & alg.maxnet, eval = pj.time, include = pj.time}
@@ -595,7 +595,7 @@ proj <- dismo::predict(mod, predsProj, args = c('outputformat=cloglog'))
 
 ```{r pTBioclim, echo = pj.time & mod.bioclim, include = pj.time}
 # predict model
-proj <- dismo::predict(mod, predsProj)
+proj <- dismo::predict(mod, predsProj, useC = FALSE)
 ```
 
 ```{r, echo = pj.thr, include = pj.thr}

@@ -117,7 +117,7 @@ projectTime_MOD <- function(input, output, session, rvs) {
     
     withProgress(message = ("Projecting to new time..."), {
       if (rvs$comp6 == 'bioclim') {
-        modProjTime <- dismo::predict(modCur, pjtMsk)
+        modProjTime <- dismo::predict(modCur, pjtMsk, useC = FALSE)
       } else if (rvs$comp6 == 'maxent') {
         if (rvs$algMaxent == "maxnet") {
           if (rvs$comp7.type == "raw") {pargs <- "exponential"} else {pargs <- rvs$comp7.type}
