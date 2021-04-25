@@ -91,6 +91,7 @@ occs_queryDb_module_server <- function(input, output, session, common) {
       spp[[sp]]$rmm$data$occurrence$yearMin <- min(occsList[[sp]]$cleaned$year)
       spp[[sp]]$rmm$data$occurrence$yearMax <- max(occsList[[sp]]$cleaned$year)
       spp[[sp]]$rmm$code$wallace$occsNum <- input$occsNum
+      spp[[sp]]$rmm$code$wallace$uncertainty <- input$uncertainty
       if (input$doCitations | input$occsDb == 'bien') {
         spp[[sp]]$rmm$code$wallace$occsNum <- nrow(occsList[[sp]]$orig)
       }
@@ -145,6 +146,7 @@ occs_queryDb_module_rmd <- function(species) {
     occNum_rmd = species$rmm$code$wallace$occsNum,
     doCitations_rmd = species$rmm$code$wallace$doCitations,
     gbifUser_rmd = species$rmm$code$wallace$gbifUser,
-    gbifEmail_rmd = species$rmm$code$wallace$gbifEmail
+    gbifEmail_rmd = species$rmm$code$wallace$gbifEmail,
+    uncertainty_rmd = species$rmm$code$wallace$uncertainty
   )
 }
