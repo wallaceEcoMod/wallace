@@ -368,7 +368,7 @@ function(input, output, session) {
     spp[[curSp()]]$procOccs$occsThin <- NULL
     spp[[curSp()]]$rmm$code$wallace$removedIDs <- NULL
     logger %>% writeLog(
-      hlSpp(curSp()), "Reset to original occurrences (n =",
+      hlSpp(curSp()), "Reset to original occurrences (n = ",
       nrow(spp[[curSp()]]$occs), ").")
     # MAPPING
     map %>%
