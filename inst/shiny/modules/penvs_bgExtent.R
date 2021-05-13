@@ -125,14 +125,6 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
 
       # LOAD INTO SPP ####
       spp[[sp]]$procEnvs$bgMask <- bgMask
-      #Remove occurrence records that are cell duplicates if they exist
-      occs.xy<-  spp[[sp]]$occs[c("longitude","latitude")]
-      occs.cellNo <- raster::extract(bgMask, occs.xy, cellnumbers = TRUE)
-      occs.dups <- duplicated(occs.cellNo[,1])
-      if(sum(occs.dups) > 0) {
-        spp[[sp]]$occs<-spp[[sp]]$occs[!occs.dups,]
-        logger %>% writeLog(hlSpp(sp), paste0("Removed ",sum(occs.dups)," occurrence localities that shared the same grid cell as another"))
-      }
 
       # add columns for env variables beginning with "envs_" to bg tbl
       spp[[sp]]$bg <- cbind(scientific_name = paste0("bg_", sp), bgPts,

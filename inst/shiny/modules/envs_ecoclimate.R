@@ -72,13 +72,19 @@ envs_ecoclimate_module_server <- function(input, output, session, common) {
     # PROCESSING ####
     for (sp in spLoop) {
       # remove occurrences with NA values for variables
-      withProgress(message = paste0("Extracting environmental values for occurrences of ",
-                                    spName(sp), "..."), {
-                                      occsEnvsVals <- as.data.frame(raster::extract(ecoClims,
-                                                                                    spp[[sp]]$occs[c('longitude', 'latitude')]))
-                                    })
+      withProgress(
+        message = paste0("Extracting environmental values for occurrences of ",
+                         spName(sp), "..."), {
+                           occsEnvsVals <- as.data.frame(
+                             raster::extract(ecoClims,
+                                             spp[[sp]]$occs[, c('longitude', 'latitude')],
+                                             cellnumbers = TRUE))
+                           })
       # remove occurrences with NA environmental values
       spp[[sp]]$occs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, sp, logger)
+
+      # Remove duplicated same cell values
+      occsEnvsVals <- occsEnvsVals[!duplicated(occsEnvsVals[, 1]), -1]
       # also remove variable value rows with NA environmental values
       occsEnvsVals <- na.omit(occsEnvsVals)
 
