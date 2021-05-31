@@ -1,9 +1,14 @@
 uiTop <- function(mod_INFO) {
+  modID <- mod_INFO$modID
   modName <- mod_INFO$modName
   pkgName <- mod_INFO$pkgName
   pkgTitl <- mod_INFO$pkgTitl
 
-  ls <- list(div(paste("Module: ", modName), class = "mod"))
+  ls <- list(div(paste("Module: ", modName), class = "mod"),
+             actionLink(paste0(modID, "Help"),
+                        label = "", icon = icon("question-circle"),
+                        class = "modHelpButton"),
+             br())
 
   for (i in seq_along(pkgName)) {
     ls <- c(ls, list(span(pkgName[i], class = "rpkg"),
@@ -35,21 +40,22 @@ uiBottom <- function(mod_INFO) {
   ls
 }
 
-ui_top <- function(pkgName, modName , modAuts) {
-  uiTop(infoGenerator(pkgName, modName , modAuts))
+ui_top <- function(pkgName, modName, modAuts, modID) {
+  uiTop(infoGenerator(pkgName, modName, modAuts, modID))
 }
-ui_bottom <- function(pkgName, modName , modAuts) {
-  uiBottom(infoGenerator(pkgName, modName , modAuts))
+ui_bottom <- function(pkgName, modName, modAuts, modID) {
+  uiBottom(infoGenerator(pkgName, modName, modAuts, modID))
 }
 
-infoGenerator <- function(pkgName, modName , modAuts) {
+infoGenerator <- function(pkgName, modName, modAuts, modID) {
   pkgInfo <- sapply(pkgName, packageDescription, simplify = FALSE)
   pkgTitl <- sapply(pkgInfo, function(x) x$Title)
   # remove square brackets and spaces before commas
   pkgAuts <- sapply(pkgInfo, function(x) gsub("\\s+,", ",", gsub("\n|\\[.*?\\]", "", x$Author)))
   # remove parens and spaces before commas
   pkgAuts <- sapply(pkgAuts, function(x) gsub("\\s+,", ",", gsub("\\(.*?\\)", "", x)))
-  list(modName = modName,
+  list(modID = modID,
+       modName = modName,
        modAuts = modAuts,
        pkgName = pkgName,
        pkgTitl = pkgTitl,
@@ -73,6 +79,7 @@ insert_modules_ui <- function(component) {
     conditionalPanel(
       glue("input.{component}Sel == '{module$id}'"),
       ui_top(
+        modID = module$id,
         modName = module$long_name,
         modAuts = module$authors,
         pkgName = module$package
@@ -80,6 +87,7 @@ insert_modules_ui <- function(component) {
       do.call(module$ui_function, list(module$id)),
       tags$hr(),
       ui_bottom(
+        modID = module$id,
         modName = module$long_name,
         modAuts = module$authors,
         pkgName = module$package
@@ -97,4 +105,10 @@ insert_modules_results <- function(component) {
       do.call(module$result_function, list(module$id))
     )
   })
+}
+
+# Add helper button for component
+help_comp_ui <- function(name) {
+  actionLink(name, label = "", icon = icon("question-circle"),
+             class = "compHelpButton")
 }

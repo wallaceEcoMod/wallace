@@ -31,7 +31,7 @@ tagList(
     tabPanel("ChangeRR", value = 'change'),
     tabPanel("Alpha Div", value = 'alpha'),
     tabPanel("Reproduce", value = 'rep'),
-    navbarMenu("Help", icon = icon("question-circle"),
+    navbarMenu("Help", icon = icon("life-ring"),
                HTML('<a href="https://groups.google.com/g/wallaceEcoMod" target="_blank">Google Group</a>'),
                HTML('<a href="https://github.com/wallaceEcoMod/wallace/issues" target="_blank">GitHub Issues</a>'))
   ),
@@ -48,10 +48,12 @@ tagList(
           # OBTAIN OCCS ####
           conditionalPanel(
             "input.tabs == 'occs'",
-            h4("Obtain Occurrence Data"),
+            div("Component: Obtain Occurrence Data", class = "componentName"),
+            help_comp_ui("occsHelp"),
             radioButtons(
               "occsSel", "Modules Available:",
-              choices = insert_modules_options("occs")
+              choices = insert_modules_options("occs"),
+              selected = character(0)
             ),
             tags$hr(),
             insert_modules_ui("occs")
@@ -59,10 +61,12 @@ tagList(
           # OBTAIN ENVS ####
           conditionalPanel(
             "input.tabs == 'envs'",
-            h4("Obtain Environmental Data"),
+            div("Component: Obtain Environmental Data", class = "componentName"),
+            help_comp_ui("envsHelp"),
             radioButtons(
               "envsSel", "Modules Available:",
-              choices = insert_modules_options("envs")
+              choices = insert_modules_options("envs"),
+              selected = character(0)
             ),
             tags$hr(),
             insert_modules_ui("envs")
@@ -70,10 +74,12 @@ tagList(
           # PROCESS OCCS ####
           conditionalPanel(
             "input.tabs == 'poccs'",
-            h4("Process Occurrence Data"),
+            div("Component: Process Occurrence Data", class = "componentName"),
+            help_comp_ui("poccsHelp"),
             radioButtons(
               "poccsSel", "Modules Available:",
-              choices = insert_modules_options("poccs")
+              choices = insert_modules_options("poccs"),
+              selected = character(0)
               #"Profile Occurrences" = "profOccs"), # CM
             ),
             tags$hr(),
@@ -100,10 +106,12 @@ tagList(
           ),
           conditionalPanel(
             "input.tabs == 'penvs'",
-            h4("Process Environmental Data"),
+            div("Component: Process Environmental Data", class = "componentName"),
+            help_comp_ui("penvsHelp"),
             radioButtons(
               "penvsSel", "Modules Available:",
-              choices = insert_modules_options("penvs")
+              choices = insert_modules_options("penvs"),
+              selected = character(0)
             ),
             tags$hr(),
             insert_modules_ui("penvs"),
@@ -167,10 +175,12 @@ tagList(
           # ESPACE ####
           conditionalPanel(
             "input.tabs == 'espace'",
-            h4("Environmental Space"),
+            div("Component: Environmental Space", class = "componentName"),
+            help_comp_ui("espaceHelp"),
             radioButtons(
               "espaceSel", "Modules Available:",
-              choices = insert_modules_options("espace")
+              choices = insert_modules_options("espace"),
+              selected = character(0)
             ),
             tags$hr(),
             insert_modules_ui("espace")
@@ -178,10 +188,12 @@ tagList(
           # PARTITION ####
           conditionalPanel(
             "input.tabs == 'part'",
-            h4("Partition Occurrence Data"),
+            div("Component: Partition Occurrence Data", class = "componentName"),
+            help_comp_ui("partHelp"),
             radioButtons(
               "partSel", "Modules Available:",
-              choices = insert_modules_options("part")
+              choices = insert_modules_options("part"),
+              selected = character(0)
             ),
             tags$hr(),
             insert_modules_ui("part")
@@ -189,28 +201,34 @@ tagList(
           # MODEL ####
           conditionalPanel(
             "input.tabs == 'model'",
-            h4("Build and Evaluate Niche Model"),
+            div("Component: Build and Evaluate Niche Model", class = "componentName"),
+            help_comp_ui("modelHelp"),
             radioButtons("modelSel", "Modules Available:",
-              choices = insert_modules_options("model")),
+                         choices = insert_modules_options("model"),
+                         selected = character(0)),
             tags$hr(),
             insert_modules_ui("model")
           ),
           # VISUALIZE ####
           conditionalPanel(
             "input.tabs == 'vis'",
-            h4("Visualize Model Results"),
+            div("Component: Visualize Model Results", class = "componentName"),
+            help_comp_ui("visHelp"),
             radioButtons("visSel", "Modules Available:",
-              choices = insert_modules_options("vis")),
+                         choices = insert_modules_options("vis"),
+                         selected = character(0)),
             tags$hr(),
             insert_modules_ui("vis")
           ),
           # PROJECT ####
           conditionalPanel(
             "input.tabs == 'proj'",
-            h4("Project Model"),
+            div("Component: Project Model", class = "componentName"),
+            help_comp_ui("projHelp"),
             radioButtons(
               "projSel", "Modules Available:",
-              choices = insert_modules_options("proj")),
+              choices = insert_modules_options("proj"),
+              selected = character(0)),
             tags$hr(),
             insert_modules_ui("proj"),
             tags$hr(),
@@ -270,10 +288,11 @@ tagList(
           # REPRODUCIBILITY ####
           conditionalPanel(
             "input.tabs == 'rep'",
-            h4("Reproduce Session"),
+            div("Component: Reproduce Session", class = "componentName"),
             radioButtons(
               "repSel", "Modules Available:",
-              choices = insert_modules_options("rep")
+              choices = insert_modules_options("rep"),
+              selected = character(0)
             ),
             tags$hr(),
             insert_modules_ui("rep")
@@ -367,17 +386,17 @@ tagList(
                 br(),
                 fluidRow(
                   column(3, h5("Download original occurrence data")),
-                  column(2, shinyjs::disabled(downloadButton('dlDbOccs', "CVS file")))
+                  column(2, shinyjs::disabled(downloadButton('dlDbOccs', "CSV file")))
                 ),
                 br(),
                 fluidRow(
                   column(3, h5("Download current table")),
-                  column(2, shinyjs::disabled(downloadButton('dlOccs', "CVS file")))
+                  column(2, shinyjs::disabled(downloadButton('dlOccs', "CSV file")))
                 ),
                 br(),
                 fluidRow(
                   column(3, h5("Download all data")),
-                  column(2, shinyjs::disabled(downloadButton('dlAllOccs', "CVS file")))
+                  column(2, shinyjs::disabled(downloadButton('dlAllOccs', "CSV file")))
                 )
               ),
               conditionalPanel(
@@ -385,7 +404,7 @@ tagList(
                 br(),
                 fluidRow(
                   column(3, h5("Download processed occurence table")),
-                  column(2, shinyjs::disabled(downloadButton('dlProcOccs', "CVS file")))
+                  column(2, shinyjs::disabled(downloadButton('dlProcOccs', "CSV file")))
                 )
               ),
               conditionalPanel(
@@ -421,7 +440,7 @@ tagList(
                 br(),
                 fluidRow(
                   column(3, h5("Download sample background points")),
-                  column(2, shinyjs::disabled(downloadButton('dlBgPts', "CVS file")))
+                  column(2, shinyjs::disabled(downloadButton('dlBgPts', "CSV file")))
                 )
               ),
               conditionalPanel(
@@ -447,7 +466,7 @@ tagList(
                 br(),
                 fluidRow(
                   column(3, h5("Download occurrence and background localities with partition values")),
-                  column(2, shinyjs::disabled(downloadButton('dlPart', "CVS file")))
+                  column(2, shinyjs::disabled(downloadButton('dlPart', "CSV file")))
                 )
               ),
               conditionalPanel(

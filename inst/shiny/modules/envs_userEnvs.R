@@ -56,13 +56,18 @@ envs_userEnvs_module_server <- function(input, output, session, common) {
         message = paste0("Extracting environmental values for occurrences of ",
                          sp, "..."), {
         occsEnvsVals <-
-          as.data.frame(raster::extract(userEnvs,
-                                        spp[[sp]]$occs[c('longitude', 'latitude')]))
+          as.data.frame(
+            raster::extract(userEnvs,
+                            spp[[sp]]$occs[, c('longitude', 'latitude')],
+                            cellnumbers = TRUE))
       })
       # remove occurrence records with NA environmental values
       spp[[sp]]$occs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, sp, logger)
+      # Remove duplicated same cell values
+      occsEnvsVals <- occsEnvsVals[!duplicated(occsEnvsVals[, 1]), -1]
       # also remove variable value rows with NA environmental values
       occsEnvsVals <- na.omit(occsEnvsVals)
+
 
       logger %>% writeLog(hlSpp(sp), "User specified variables (",
                           paste(names(userEnvs), collapse = ", "),

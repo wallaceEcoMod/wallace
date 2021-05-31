@@ -28,22 +28,42 @@ hr {
 .shiny-progress .progress {
   height:7px;
 }
-
+.componentName {
+  color:#dd4814;
+  display:inline-block;
+  font-size:16pt;
+  font-weight:bold;
+}
+.compHelpButton {
+  display:inline-block;
+  margin:0px;
+  font-size:14pt;
+}
 .rpkg {
   font-size:12pt;
   font-weight:bold;
 }
 .mod {
-  color:purple;
-  font-size:18pt;
+  display:inline;
+  color:#699FA1;
+  font-size:14pt;
   font-weight:bold;
+}
+.modHelpButton {
+  color:#699FA1;
+  margin:0px;
+  font-size:12pt;
+}
+.modHelpButton:hover {
+  color:#A5D6D9;
+}
+.modHelpButton:focus {
+  color:#699FA1;
 }
 .pkgDes {
   font-size:10pt;
   font-style:italic;
 }
-
-
 .step {
   color:red;
   font-weight:bold;
@@ -53,7 +73,6 @@ hr {
   font-style:italic;
   font-size:14pt;
 }
-
 .butResOccs {
   background-color: #C51E10;
   color: white;
@@ -77,7 +96,6 @@ hr {
 .leaflet-top {
   z-index: 999 !important;
 }
-
 #save_warning {
   color: red;
 }

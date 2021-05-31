@@ -7,7 +7,7 @@ Generate a map of the Bioclim generated model with no threshold
 # Select current model and obtain raster prediction
 
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
-predSel_{{spAbr}} <- dismo::predict(m_{{spAbr}}, bgMask_{{spAbr}})
+predSel_{{spAbr}} <- dismo::predict(m_{{spAbr}}, bgMask_{{spAbr}}, useC = FALSE)
 #Get values of prediction
 mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
 #Define colors and legend  
@@ -44,7 +44,7 @@ Generate a map of the Bioclim generated model with a "{{thresholdRule_rmd}}" thr
 # Select current model and obtain raster prediction
 
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
-predSel_{{spAbr}} <- dismo::predict(m_{{spAbr}}, bgMask_{{spAbr}})
+predSel_{{spAbr}} <- dismo::predict(m_{{spAbr}}, bgMask_{{spAbr}}, useC = FALSE)
 # Applied selected threshold
 predSel_{{spAbr}} <- predSel_{{spAbr}} > {{threshold_rmd}}
 #Get values of prediction

@@ -8,8 +8,13 @@ occs_queryDb_module_ui <- function(id) {
                                       "BISON" = 'bison',
                                       "BIEN" = 'bien'),
                           inline = TRUE)),
+    tags$div(
+      title = "Check to get only occurrences with uncertainty information (**)",
+      checkboxInput(ns("uncertainty"), label = strong("Keep only occurrences with uncertainty values"), value = FALSE)
+    ),
     conditionalPanel(
       sprintf("input['%s'] == 'gbif'", ns("occsDb")),
+
       checkboxInput(ns("doCitations"),
                     label = 'Include Data Source Citations',
                     value = FALSE),
@@ -62,7 +67,7 @@ occs_queryDb_module_server <- function(input, output, session, common) {
     # FUNCTION CALL ####
     occsList <- occs_queryDb(input$spNames, input$occsDb, input$occsNum,
                              input$doCitations, input$gbifUser, input$gbifEmail,
-                             input$gbifPW, logger)
+                             input$gbifPW, input$uncertainty, logger)
     req(occsList)
 
     for (sp in names(occsList)) {
@@ -86,6 +91,7 @@ occs_queryDb_module_server <- function(input, output, session, common) {
       spp[[sp]]$rmm$data$occurrence$yearMin <- min(occsList[[sp]]$cleaned$year)
       spp[[sp]]$rmm$data$occurrence$yearMax <- max(occsList[[sp]]$cleaned$year)
       spp[[sp]]$rmm$code$wallace$occsNum <- input$occsNum
+      spp[[sp]]$rmm$code$wallace$uncertainty <- input$uncertainty
       if (input$doCitations | input$occsDb == 'bien') {
         spp[[sp]]$rmm$code$wallace$occsNum <- nrow(occsList[[sp]]$orig)
       }
@@ -141,6 +147,7 @@ occs_queryDb_module_rmd <- function(species) {
     occNum_rmd = species$rmm$code$wallace$occsNum,
     doCitations_rmd = species$rmm$code$wallace$doCitations,
     gbifUser_rmd = species$rmm$code$wallace$gbifUser,
-    gbifEmail_rmd = species$rmm$code$wallace$gbifEmail
+    gbifEmail_rmd = species$rmm$code$wallace$gbifEmail,
+    uncertainty_rmd = species$rmm$code$wallace$uncertainty
   )
 }

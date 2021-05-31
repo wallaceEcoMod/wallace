@@ -79,7 +79,7 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
     if (spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM") {
       predType <- "BIOCLIM"
       m <- evalOut()@models[[curModel()]]
-      predSel <- dismo::predict(m, bgMask())
+      predSel <- dismo::predict(m, bgMask(), useC = FALSE)
       # define crs
       raster::crs(predSel) <- raster::crs(bgMask())
       # define predSel name

@@ -45,10 +45,51 @@ function(input, output, session) {
 
   # UI for module guidance text
   output$gtext_module <- renderUI({
+    req(module())
     file <- COMPONENT_MODULES[[component()]][[module()]]$instructions
     if (is.null(file)) return()
     includeMarkdown(file)
   })
+
+  # Help Component
+  observeEvent(input$occsHelp, updateTabsetPanel(session, "main", "Component Guidance"))
+  observeEvent(input$envsHelp, updateTabsetPanel(session, "main", "Component Guidance"))
+  observeEvent(input$poccsHelp, updateTabsetPanel(session, "main", "Component Guidance"))
+  observeEvent(input$penvsHelp, updateTabsetPanel(session, "main", "Component Guidance"))
+  observeEvent(input$espaceHelp, updateTabsetPanel(session, "main", "Component Guidance"))
+  observeEvent(input$partHelp, updateTabsetPanel(session, "main", "Component Guidance"))
+  observeEvent(input$modelHelp, updateTabsetPanel(session, "main", "Component Guidance"))
+  observeEvent(input$visHelp, updateTabsetPanel(session, "main", "Component Guidance"))
+  observeEvent(input$projHelp, updateTabsetPanel(session, "main", "Component Guidance"))
+
+  # Help Module
+  observeEvent(input$occs_queryDbHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$occs_paleoDbHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$occs_userOccsHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$envs_worldclimHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$envs_ecoclimateHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$envs_userEnvsHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$poccs_selectOccsHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$poccs_removeByIDHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$poccs_thinOccsHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$penvs_bgExtentHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$penvs_drawBgExtentHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$penvs_userBgExtentHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$espace_pcaHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$espace_occDensHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$espace_nicheOvHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$part_nonSpatHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$part_spatHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$model_maxentHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$model_bioclimHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$vis_mapPredsHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$vis_maxentEvalPlotHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$vis_responsePlotHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$vis_bioclimPlotHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$proj_areaHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$proj_timeHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$proj_userHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$proj_messHelp, updateTabsetPanel(session, "main", "Module Guidance"))
 
   ######################## #
   ### MAPPING LOGIC ####
@@ -368,7 +409,7 @@ function(input, output, session) {
     spp[[curSp()]]$procOccs$occsThin <- NULL
     spp[[curSp()]]$rmm$code$wallace$removedIDs <- NULL
     logger %>% writeLog(
-      hlSpp(curSp()), "Reset to original occurrences (n =",
+      hlSpp(curSp()), "Reset to original occurrences (n = ",
       nrow(spp[[curSp()]]$occs), ").")
     # MAPPING
     map %>%
@@ -534,32 +575,40 @@ function(input, output, session) {
       }
       tmpdir <- tempdir()
       req(spp[[mSp]]$pca)
-      png(paste0(tmpdir, "\\pcaScatterOccs.png"), width = 500, height = 500)
-      x <- spp[[mSp]]$pca$scores[spp[[mSp]]$pca$scores$bg == 'sp', ]
-      x.f <- factor(x$sp)
+      png(paste0("pcaScatterOccs.png"), width = 500, height = 500)
+      #png(paste0(tmpdir, "\\pcaScatterOccs.png"), width = 500, height = 500)
+        x <- spp[[mSp]]$pca$scores[spp[[mSp]]$pca$scores$bg == 'sp', ]
+        x.f <- factor(x$sp)
       ade4::s.class(x, x.f, xax = 1, yax = 2,
                     col = c("red", "blue"), cstar = 0, cpoint = 0.1)
       dev.off()
-      png(paste0(tmpdir, "\\pcaScatterOccsBg.png"), width = 500, height = 500)
+      png(paste0("pcaScatterOccsBg.png"), width = 500, height = 500)
+      #png(paste0(tmpdir, "\\pcaScatterOccsBg.png"), width = 500, height = 500)
       x <- spp[[mSp]]$pca$scores[spp[[mSp]]$pca$scores$sp == 'bg', ]
       x.f <- factor(x$bg)
       ade4::s.class(x, x.f, xax = 1, yax = 2,
                     col = c("red", "blue"), cstar = 0, cpoint = 0.1)
       dev.off()
-      png(paste0(tmpdir, "\\pcaCorCircle.png"), width = 500, height = 500)
+      png(paste0("pcaCorCircle.png"), width = 500, height = 500)
+      #png(paste0(tmpdir, "\\pcaCorCircle.png"), width = 500, height = 500)
       ade4::s.corcircle(spp[[mSp]]$pca$co, xax = 1, yax = 2,
                         lab = input$pcaSel, full = FALSE, box = TRUE)
       dev.off()
-      png(paste0(tmpdir, "\\pcaScree.png"), width = 500, height = 500)
+      png(paste0("pcaScree.png"), width = 500, height = 500)
+      #png(paste0(tmpdir, "\\pcaScree.png"), width = 500, height = 500)
       screeplot(spp[[mSp]]$pca, main = NULL)
       dev.off()
-      sink(paste0(tmpdir, "\\pcaOut.txt"))
+      sink(paste0("pcaOut.txt"))
+      #sink(paste0(tmpdir, "\\pcaOut.txt"))
       print(summary(spp[[mSp]]$pca))
       sink()
+
+      fs<-c("pcaScatterOccs.png", "pcaScatterOccsBg.png",
+            "pcaCorCircle.png","pcaScree.png","pcaOut.txt")
       owd <- setwd(tmpdir)
+      setwd(owd)
       zip::zipr(zipfile = file,
-                files = c("pcaScatterOccs.png", "pcaScatterOccsBg.png",
-                          "pcaCorCircle.png", "pcaScree.png", "pcaOut.txt"))
+                files = fs)
       setwd(owd)
     }
   )
@@ -769,13 +818,14 @@ function(input, output, session) {
       for (i in parEval) {
         # png(paste0(tmpdir, "\\", gsub("[[:punct:]]", "_", i), ".png"))
         ENMeval::evalplot.stats(spp[[curSp()]]$evalOut, i, "rm", "fc")
-        ggplot2::ggsave(paste0(tmpdir, "\\",
-                               gsub("[[:punct:]]", "_", i), ".png"))
+        ggplot2::ggsave(paste0(gsub("[[:punct:]]", "_", i), ".png"))
         # dev.off()
       }
       owd <- setwd(tmpdir)
+      setwd(owd)
+      fs<-paste0(gsub("[[:punct:]]", "_", parEval), ".png")
       zip::zipr(zipfile = file,
-               files = paste0(gsub("[[:punct:]]", "_", parEval), ".png"))
+               files = fs)
       setwd(owd)
     }
   )
@@ -788,7 +838,7 @@ function(input, output, session) {
       if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
         namesEnvs <- mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxnet")
         for (i in namesEnvs) {
-          png(paste0(tmpdir, "\\", i, ".png"))
+          png(paste0(i, ".png"))
           suppressWarnings(
             maxnet::response.plot(evalOut()@models[[curModel()]], v = i,
                                   type = "cloglog")
@@ -798,13 +848,15 @@ function(input, output, session) {
       } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
         namesEnvs <- mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxent.jar")
         for (i in namesEnvs) {
-          png(paste0(tmpdir, "\\", i, ".png"))
+          png(paste0( i, ".png"))
           dismo::response(evalOut()@models[[curModel()]], var = i)
           dev.off()
         }
       }
       owd <- setwd(tmpdir)
-      zip::zipr(zipfile = file, files = paste0(namesEnvs, ".png"))
+      setwd(owd)
+      fs<- paste0(namesEnvs, ".png")
+      zip::zipr(zipfile = file, files = fs)
       setwd(owd)
     }
   )

@@ -71,7 +71,8 @@ proj_area <- function(evalOut, curModel, envs, pjExt, alg, outputType = NULL,
 
   smartProgress(logger, message = 'Projecting model to new area...', {
     if (alg == 'BIOCLIM') {
-      modProjArea <- dismo::predict(evalOut@models[[curModel]], projMsk)
+      modProjArea <- dismo::predict(evalOut@models[[curModel]], projMsk,
+                                    useC = FALSE)
     } else if (alg == 'maxnet') {
       if (outputType == "raw") outputType <- "exponential"
       modProjArea <- predictMaxnet(evalOut@models[[curModel]], projMsk,

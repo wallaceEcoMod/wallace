@@ -1,7 +1,0 @@
-```{asis, echo = {{correlations_knit}}, eval = {{correlations_knit}}, include = {{correlations_knit}}}
-Calculate pearsons correlations and select vars
-```
-
-```{r, echo = {{correlations_knit}}, include = {{correlations_knit}}}
-# R code to run 
-```

@@ -1,5 +1,0 @@
-component: "penvs"
-short_name: "Pearson's correlations"
-long_name: "Calculate pairwise Pearson's correlations between environmental layers"
-authors: "P. Galante, G. Pinilla-Buitrago, J. Kass, S. Chang"
-package: [dismo]

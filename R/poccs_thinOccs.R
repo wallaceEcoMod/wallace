@@ -63,7 +63,7 @@ poccs_thinOccs <- function(occs, thinDist, logger = NULL, spN = NULL) {
   })
 
   logger %>% writeLog(
-    hlSpp(spN), 'Total records thinned (', thinDist, 'km) to ',
+    hlSpp(spN), 'Total records thinned (', thinDist, ' km) to ',
     nrow(occs.thin), ' localities')
 
   if (nrow(occs.thin) < 4) {

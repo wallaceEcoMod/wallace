@@ -61,7 +61,7 @@ vis_bioclimPlot <- function(x, a=1, b=2, p=0.9, ...) {
   p <- min(1,  max(0, p))
   if (p > 0.5) p <- 1 - p
   p <- p / 2
-  prd <- dismo::predict(x, d)
+  prd <- dismo::predict(x, d, useC = FALSE)
   i <- prd > p & prd < (1-p)
   plot(d[,a], d[,b], xlab=colnames(d)[a], ylab=colnames(d)[b], cex=0)
   type=6

@@ -43,7 +43,7 @@ proj_time_module_ui <- function(id) {
     span("Project (**)", class = "stepText"), br(),
     p("Project model to projected extent (red) (**)"),
     radioButtons(ns('selTimeVar'), label = "Select source of variables",
-                 choices = list("Worldclim" = "worldclim",
+                 choices = list("WorldClim" = "worldclim",
                                 "ecoClimate" = "ecoclimate"),
                  inline = TRUE),
     conditionalPanel(sprintf("input['%s'] == 'worldclim'", ns("selTimeVar")),
