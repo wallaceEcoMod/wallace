@@ -61,6 +61,10 @@ function(input, output, session) {
   observeEvent(input$modelHelp, updateTabsetPanel(session, "main", "Component Guidance"))
   observeEvent(input$visHelp, updateTabsetPanel(session, "main", "Component Guidance"))
   observeEvent(input$projHelp, updateTabsetPanel(session, "main", "Component Guidance"))
+  observeEvent(input$postHelp, updateTabsetPanel(session, "main", "Component Guidance"))
+  observeEvent(input$maskHelp, updateTabsetPanel(session, "main", "Component Guidance"))
+  observeEvent(input$changeHelp, updateTabsetPanel(session, "main", "Component Guidance"))
+  observeEvent(input$alphaHelp, updateTabsetPanel(session, "main", "Component Guidance"))
 
   # Help Module
   observeEvent(input$occs_queryDbHelp, updateTabsetPanel(session, "main", "Module Guidance"))
@@ -90,6 +94,16 @@ function(input, output, session) {
   observeEvent(input$proj_timeHelp, updateTabsetPanel(session, "main", "Module Guidance"))
   observeEvent(input$proj_userHelp, updateTabsetPanel(session, "main", "Module Guidance"))
   observeEvent(input$proj_messHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$post_userSDMHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$mask_expPolyHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$mask_spatialHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$mask_tempHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$change_overlapHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$change_rangeHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$change_timeHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$alpha_endemismHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$alpha_richnessHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+
 
   ######################## #
   ### MAPPING LOGIC ####

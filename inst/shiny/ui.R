@@ -193,8 +193,7 @@ tagList(
             radioButtons(
               "partSel", "Modules Available:",
               choices = insert_modules_options("part"),
-              selected = character(0)
-            ),
+              selected = character(0)),
             tags$hr(),
             insert_modules_ui("part")
           ),
@@ -244,44 +243,49 @@ tagList(
           # Upload User SDM ####
           conditionalPanel(
             "input.tabs == 'post'",
-            h4("Upload user-specified SDM (**)"),
+            div("Component: Upload user-specified SDM (**)",
+                class = "componentName"),
+            help_comp_ui("postHelp"),
             radioButtons(
               "postSel", "Modules Available:",
-              choices = insert_modules_options("post")
-            ),
+              choices = insert_modules_options("post"),
+              selected = character(0)),
             tags$hr(),
             insert_modules_ui("post")
           ),
           # Upload User SDM ####
           conditionalPanel(
             "input.tabs == 'mask'",
-            h4("Mask SDM (**)"),
+            div("Component: Mask SDM (**)", class = "componentName"),
+            help_comp_ui("maskHelp"),
             radioButtons(
               "maskSel", "Modules Available:",
-              choices = insert_modules_options("mask")
-            ),
+              choices = insert_modules_options("mask"),
+              selected = character(0)),
             tags$hr(),
             insert_modules_ui("mask")
           ),
           # Change ####
           conditionalPanel(
             "input.tabs == 'change'",
-            h4("Change RangeR"),
+            div("Component: Change RangeR (**)", class = "componentName"),
+            help_comp_ui("changeHelp"),
             radioButtons(
               "changeSel", "Modules Available:",
-              choices = insert_modules_options("change")
-            ),
+              choices = insert_modules_options("change"),
+              selected = character(0)),
             tags$hr(),
             insert_modules_ui("change")
           ),
           # ALPHA ####
           conditionalPanel(
             "input.tabs == 'alpha'",
-            h4("Alpha diversity"),
+            div("Component: Alpha diversity (**)", class = "componentName"),
+            help_comp_ui("alphaHelp"),
             radioButtons(
               "alphaSel", "Modules Available:",
-              choices = insert_modules_options("alpha")
-            ),
+              choices = insert_modules_options("alpha"),
+              selected = character(0)),
             tags$hr(),
             insert_modules_ui("alpha")
           ),
@@ -292,8 +296,7 @@ tagList(
             radioButtons(
               "repSel", "Modules Available:",
               choices = insert_modules_options("rep"),
-              selected = character(0)
-            ),
+              selected = character(0)),
             tags$hr(),
             insert_modules_ui("rep")
           )
