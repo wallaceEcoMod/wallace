@@ -27,7 +27,7 @@ tagList(
     tabPanel("Visualize", value = 'vis'),
     tabPanel("Project", value = 'proj'),
     tabPanel("Reproduce", value = 'rep'),
-    navbarMenu("Help", icon = icon("life-ring"),
+    navbarMenu("Support", icon = icon("life-ring"),
                HTML('<a href="https://groups.google.com/g/wallaceEcoMod" target="_blank">Google Group</a>'),
                HTML('<a href="https://github.com/wallaceEcoMod/wallace/issues" target="_blank">GitHub Issues</a>'))
   ),
