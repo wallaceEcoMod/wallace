@@ -28,8 +28,10 @@ tagList(
     tabPanel("Project", value = 'proj'),
     tabPanel("Reproduce", value = 'rep'),
     navbarMenu("Support", icon = icon("life-ring"),
+               HTML('<a href="https://wallaceecomod.github.io/" target="_blank">Wallace Homepage</a>'),
                HTML('<a href="https://groups.google.com/g/wallaceEcoMod" target="_blank">Google Group</a>'),
-               HTML('<a href="https://github.com/wallaceEcoMod/wallace/issues" target="_blank">GitHub Issues</a>'))
+               HTML('<a href="https://github.com/wallaceEcoMod/wallace/issues" target="_blank">GitHub Issues</a>'),
+               HTML('<a href="mailto: WallaceEcoMod@gmail.com" target="_blank">Send Email</a>'))
   ),
   tags$div(
     class = "container-fluid",
@@ -296,7 +298,7 @@ tagList(
               )
             ),
             tabPanel(
-              'Table', br(),
+              'Occurrences', br(),
               DT::dataTableOutput('occTbl')
             ),
             tabPanel(
@@ -309,17 +311,19 @@ tagList(
               })
             ),
             tabPanel(
-              'Component Guidance',
+              'Component Guidance', icon = icon("info-circle"),
               uiOutput('gtext_component')
             ),
             tabPanel(
-              'Module Guidance',
+              'Module Guidance', icon = icon("info-circle", class = "modHelpButton"),
               uiOutput('gtext_module')
             ),
             tabPanel(
-              'Save session',
-              h4("Save session"),
-              p(paste0("By saving your session into a file, you can resume ",
+              'Save', icon = icon("save"),
+              br(),
+              h5(em("Note: To save your session code or metadata, use the Reproduce component")),
+              wellPanel(h4("Save Session"),
+              p(paste0("By saving your session into an RDS file, you can resume ",
                        "working on it at a later time or you can share the file",
                        " with a collaborator.")),
               shinyjs::hidden(p(
@@ -329,10 +333,11 @@ tagList(
                        "downloaded file may be large and the download might",
                        " take a long time.")
                 )),
-              downloadButton("save_session", "Save Session")
-            ),
-            tabPanel(
-              'Download',
+              downloadButton("save_session", "Save Session"),
+              br()
+              ),
+              wellPanel(h4("Save Data"),
+              p(paste0("Download data/results from analyses from currently selected module")),
               conditionalPanel(
                 "input.tabs == 'occs'",
                 br(),
@@ -352,14 +357,6 @@ tagList(
                 )
               ),
               conditionalPanel(
-                "input.tabs == 'poccs'",
-                br(),
-                fluidRow(
-                  column(3, h5("Download processed occurence table")),
-                  column(2, shinyjs::disabled(downloadButton('dlProcOccs', "CSV file")))
-                )
-              ),
-              conditionalPanel(
                 "input.tabs == 'envs'",
                 br(),
                 fluidRow(
@@ -370,6 +367,14 @@ tagList(
                                                        "GRD" = 'raster',
                                                        "ASCII" = 'ascii'))),
                   column(2, shinyjs::disabled(downloadButton('dlGlobalEnvs', "ZIP file")))
+                )
+              ),
+              conditionalPanel(
+                "input.tabs == 'poccs'",
+                br(),
+                fluidRow(
+                  column(3, h5("Download processed occurence table")),
+                  column(2, shinyjs::disabled(downloadButton('dlProcOccs', "CSV file")))
                 )
               ),
               conditionalPanel(
@@ -504,7 +509,7 @@ tagList(
               )
             )
           )
-        ),
+        )),
         conditionalPanel(
           "input.tabs == 'rep' & input.repSel == 'rep_markdown'",
           column(8,
@@ -522,19 +527,24 @@ tagList(
           tabsetPanel(
             id = 'introTabs',
             tabPanel(
-              'Intro',
+              'About', #note this used to be named 'intro' so the files will be named 'intro'
               includeMarkdown("Rmd/text_intro.Rmd")
             ),
             tabPanel(
-              'About',
+              'Team', #note this used to be named 'about' so the files will be named 'about'
               fluidRow(
                 column(8, includeMarkdown("Rmd/text_about.Rmd")
                 )
               )
             ),
             tabPanel(
-              'Load',
+              'How To Use',
+              includeMarkdown("Rmd/text_how_to_use.Rmd")
+            ),
+            tabPanel(
+              'Load Prior Session',
               h4("Load session"),
+              h5("If you saved a prior session of Wallace (RDS file), you can load it here."),
               fileInput("load_session", "", accept = ".rds"),
               actionButton('goLoad_session', 'Load RDS')
             )

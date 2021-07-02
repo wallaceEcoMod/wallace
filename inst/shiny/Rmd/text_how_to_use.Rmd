@@ -1,0 +1,6 @@
+---
+title: "How To Use Wallace"
+output: html_document
+---
+
+This is an instructional manual on how to use the *Wallace* ecological niche modeling app!

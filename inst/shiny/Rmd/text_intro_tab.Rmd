@@ -5,43 +5,56 @@ output: html_document
 
 #### WORKFLOW
 
-*Wallace* (v1.9.0) currently includes the following components and modules:  
+*Wallace* (v1.9.0) currently includes ten components, or steps of a possible workflow. Each component includes two or more modules, which are possible analyses for that step.  
 
-**1**: *Obtain Occurrence Data*  
-- Query Database  
+**Components:**  
+
+**1.** *Obtain Occurrence Data*  
+- Query Present Database 
+- Query Paleo Database
 - User-specified Occurrences
 
-**2:** *Process Occurrence Data*  
-- Select Occurrences on Map  
-- Remove Occurrences by ID  
-- Spatial Thin  
-
-**3:** *Obtain Environmental Data*  
+**2.** *Obtain Environmental Data*  
 - WorldClim
 - EcoClimate
 - User-specified Environmental Data
 
-**4:** *Process Environmental Data*  
-- Select Study Region  
-- User-specified Study Region
+**3.** *Process Occurrence Data*  
+- Select Occurrences on Map  
+- Remove Occurrences by ID  
+- Spatial Thin  
 
-**5:** *Partition Occurrence Data*  
+**4.** *Process Environmental Data*  
+- Select Study Region by Extent
+- Draw Polygon(**)
+- User-specified Study Region  
+
+**5.** *Environmental Space*  
+- Environmental Ordination  
+- Occurrence Density Grid  
+- Niche Overlap  
+
+**6.** *Partition Occurrence Data*  
 - Non-spatial Partition  
 - Spatial Partition  
 
-**6:** *Build and Evaluate Niche Model*  
-- BIOCLIM  
+**7.** *Build and Evaluate Niche Model*  
 - Maxent  
+- BIOCLIM  
 
-**7:** *Visualize Model Results*  
-- BIOCLIM Envelope Plot  
+**8.** *Visualize Model Results*  
+- Map Prediction  
 - Maxent Evaluation Plots  
 - Plot Response Curves  
-- Map Prediction  
+- BIOCLIM Envelope Plot  
 
-**8:** *Project Model*  
-- Project to New Area  
+**9.** *Project Model*  
+- Project to New Extent  
 - Project to New Time  
+- Project to User Environments
 - Calculate Environmental Similarity  
 
-**Download Session Code**  
+**10.** *Reproduce*  
+- Download Session Code  
+- Download Metadata  
+
