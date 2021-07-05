@@ -22,7 +22,7 @@ proj_area_module_ui <- function(id) {
         numericInput(ns("drawPjBuf"), label = "Study region buffer distance (degree)",
                      value = 0, min = 0, step = 0.5))),
     actionButton(ns("goProjExtArea"), "Create(**)"), br(),
-    tags$hr(),
+    tags$hr(class = "hrDotted"),
     span("Step 2:", class = "step"),
     span("Project (**)", class = "stepText"), br(),
     p("Project model to project extent (red) (**)"),

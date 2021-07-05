@@ -13,7 +13,7 @@ penvs_drawBgExtent_module_ui <- function(id) {
       checkboxInput(ns("batch1"), label = strong("Batch"), value = FALSE) # Check default (value = FALSE)
     ),
     actionButton(ns('goDrawBg'), "Create(**)"),
-    tags$hr(),
+    tags$hr(class = "hrDotted"),
     span("Step 2:", class = "step"),
     span("Sample Background Points", class = "stepText"), br(), br(),
     strong(paste0('Mask predictor rasters by background extent and sample',

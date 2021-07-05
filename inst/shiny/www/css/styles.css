@@ -70,7 +70,7 @@ hr {
   font-style:italic;
 }
 .step {
-  color: red;
+  color: #DD8627;
   font-weight:bold;
   font-size:14pt;
 }
@@ -99,6 +99,12 @@ hr {
   border-bottom: 1px dashed #606060;
   background: transparent;
 }
+.hrDotted {
+  border: 0;
+  border-bottom: 1px dotted #606060;
+  background: transparent;
+}
+
 .leaflet-top {
   z-index: 999 !important;
 }

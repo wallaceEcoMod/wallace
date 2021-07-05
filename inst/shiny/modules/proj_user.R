@@ -38,7 +38,7 @@ proj_user_module_ui <- function(id) {
     conditionalPanel(sprintf("input['%s'] == 'pjCur'", ns("projExt")),
                      p('You will use the same extent (**)')),
     actionButton(ns("goProjExtUser"), "Create(**)"), br(),
-    tags$hr(),
+    tags$hr(class = "hrDotted"),
     span("Step 2:", class = "step"),
     span("Project (**)", class = "stepText"), br(),
     p("Project model to projected extent (red) (**)"),
