@@ -24,7 +24,10 @@ penvs_drawBgExtent_module_ui <- function(id) {
       title = "Add Batch guidance text here (**)",
       checkboxInput(ns("batch2"), label = strong("Batch"), value = FALSE) # Check default (value = FALSE)
     ),
-    actionButton(ns("goBgMask"), "Sample")
+    actionButton(ns("goBgMask"), "Sample"),
+    tags$hr(class = "hrDashed"),
+    actionButton(ns("goReset_penvs"), "Reset", class = 'butReset'),
+    strong(" background (**)")
   )
 }
 
@@ -144,6 +147,18 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
       # METADATA ####
       spp[[sp]]$rmm$data$occurrence$backgroundSampleSizeSet <- input$bgPtsNum
     }
+  })
+
+  # reset background button functionality
+  observeEvent(input$goReset_penvs, {
+    req(curSp())
+    spp[[curSp()]]$procEnvs$bgExt <- NULL
+    spp[[curSp()]]$procEnvs$bgMask <- NULL
+    spp[[curSp()]]$bg <- NULL
+    spp[[curSp()]]$bgPts <- NULL
+    spp[[curSp()]]$rmm$data$occurrence$backgroundSampleSizeSet <- NULL
+    logger %>% writeLog(
+      hlSpp(curSp()), "Reset background extent and background points (**).")
   })
 
   return(list(

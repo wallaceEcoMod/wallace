@@ -42,7 +42,10 @@ proj_area_module_ui <- function(id) {
                   min = 0, max = 1, value = .05)),
     conditionalPanel(paste0("input['", ns("threshold"), "'] == 'none'"),
                      uiOutput(ns("noThrs"))),
-    actionButton(ns('goProjectArea'), "Project")
+    actionButton(ns('goProjectArea'), "Project"),
+    tags$hr(class = "hrDashed"),
+    actionButton(ns("goResetProj"), "Reset", class = 'butReset'),
+    strong(" projection extent (**)")
   )
 }
 
@@ -241,6 +244,14 @@ proj_area_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$rmm$prediction$transfer$notes <- NULL
 
     common$update_component(tab = "Map")
+  })
+
+  # Reset Projection Extent button functionality
+  observeEvent(input$goResetProj, {
+    spp[[curSp()]]$polyPjXY <- NULL
+    spp[[curSp()]]$polyPjID <- NULL
+    spp[[curSp()]]$project <- NULL
+    logger %>% writeLog("Reset projection extent.")
   })
 
   return(list(

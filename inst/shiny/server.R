@@ -359,23 +359,6 @@ function(input, output, session) {
   # # # # # # # # # # # # # # # # # #
   # PROCESS OCCS: other controls ####
   # # # # # # # # # # # # # # # # # #
-
-  # reset occurrences button functionality
-  observeEvent(input$goResetOccs, {
-    req(curSp())
-    spp[[curSp()]]$occs <- spp[[curSp()]]$occData$occsCleaned
-    spp[[curSp()]]$rmm$code$wallace$occsSelPolyCoords <- NULL
-    spp[[curSp()]]$procOccs$occsThin <- NULL
-    spp[[curSp()]]$rmm$code$wallace$removedIDs <- NULL
-    logger %>% writeLog(
-      hlSpp(curSp()), "Reset to original occurrences (n = ",
-      nrow(spp[[curSp()]]$occs), ").")
-    # MAPPING
-    map %>%
-      map_occs(occs()) %>%
-      zoom2Occs(occs())
-  })
-
   # DOWNLOAD: current processed occurrence data table
   output$dlProcOccs <- downloadHandler(
     filename = function() paste0(curSp(), "_processed_occs.csv"),
@@ -404,9 +387,9 @@ function(input, output, session) {
   bgShpXY <- reactive({
     req(bgExt())
     polys <- bgExt()@polygons[[1]]@Polygons
-    if(length(polys) == 1) {
+    if (length(polys) == 1) {
       xy <- list(polys[[1]]@coords)
-    }else{
+    } else{
       xy <- lapply(polys, function(x) x@coords)
     }
     return(xy)
@@ -469,22 +452,6 @@ function(input, output, session) {
       write_csv_robust(tbl, file, row.names = FALSE)
     }
   )
-
-  # reset background button functionality
-  observeEvent(input$goReset_penvs, {
-    req(curSp())
-    spp[[curSp()]]$procEnvs$bgExt <- NULL
-    spp[[curSp()]]$procEnvs$bgMask <- NULL
-    spp[[curSp()]]$bg <- NULL
-    spp[[curSp()]]$bgPts <- NULL
-    spp[[curSp()]]$rmm$data$occurrence$backgroundSampleSizeSet <- NULL
-    logger %>% writeLog(
-      hlSpp(curSp()), "Reset background extent and background points (**).")
-    # MAPPING
-    map %>%
-      map_occs(occs()) %>%
-      zoom2Occs(occs())
-  })
 
   ############################################## #
   ### COMPONENT: SAMPLING BIAS ####
@@ -911,18 +878,6 @@ function(input, output, session) {
 
   # convenience function for mapped model prediction raster for current species
   mapProj <- reactive(spp[[curSp()]]$project$mapProj)
-
-  # Reset Projection Extent button functionality
-  observeEvent(input$goResetProj, {
-    map %>%
-      removeShape("projExt") %>%
-      removeImage("projRas") %>%
-      removeControl("proj")
-    spp[[curSp()]]$polyPjXY <- NULL
-    spp[[curSp()]]$polyPjID <- NULL
-    spp[[curSp()]]$project <- NULL
-    logger %>% writeLog("Reset projection extent.")
-  })
 
   # DOWNLOAD: Shapefile of projection extent
   output$dlPjShp <- downloadHandler(

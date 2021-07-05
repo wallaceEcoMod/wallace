@@ -70,7 +70,7 @@ hr {
   font-style:italic;
 }
 .step {
-  color:red;
+  color: red;
   font-weight:bold;
   font-size:14pt;
 }
@@ -78,13 +78,13 @@ hr {
   font-style:italic;
   font-size:14pt;
 }
-.butResOccs {
+.butReset {
   background-color: #C51E10;
   color: white;
   padding: 5px 5px;
   border: none;
 }
-.butResOccs:hover {
+.butReset:hover {
   background-color: #830D03;
   color: white;
 }
@@ -94,9 +94,10 @@ hr {
   padding: 1px 1px;
   border: none;
 }
-.butResPj:hover {
-  background-color: #830D03;
-  color: white;
+.hrDashed {
+  border: 0;
+  border-bottom: 1px dashed #606060;
+  background: transparent;
 }
 .leaflet-top {
   z-index: 999 !important;
