@@ -40,7 +40,7 @@ hr {
   font-size:14pt;
 }
 .rpkg {
-  font-size:12pt;
+  font-size:10pt;
   font-weight:bold;
 }
 .mod {
@@ -59,6 +59,11 @@ hr {
 }
 .modHelpButton:focus {
   color:#699FA1;
+}
+.pkgTitl {
+  font-size:10pt;
+  font-weight:bold;
+  font-style:italic;
 }
 .pkgDes {
   font-size:10pt;
