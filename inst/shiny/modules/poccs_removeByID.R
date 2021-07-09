@@ -3,7 +3,10 @@ poccs_removeByID_module_ui <- function(id) {
   tagList(
     numericInput(ns("removeID"), label = "Enter the record ID to be removed",
                  value = 0),
-    actionButton(ns("goRemoveByID"), "Remove Occurrence")
+    actionButton(ns("goRemoveByID"), "Remove Occurrence"),
+    tags$hr(class = "hrDashed"),
+    actionButton(ns("goResetOccs"), "Reset", class = 'butReset'),
+    strong(" to original occurrence")
   )
 }
 
@@ -35,6 +38,18 @@ poccs_removeByID_module_server <- function(input, output, session, common) {
     }
 
     common$update_component(tab = "Map")
+  })
+
+  # reset occurrences button functionality
+  observeEvent(input$goResetOccs, {
+    req(curSp())
+    spp[[curSp()]]$occs <- spp[[curSp()]]$occData$occsCleaned
+    spp[[curSp()]]$rmm$code$wallace$occsSelPolyCoords <- NULL
+    spp[[curSp()]]$procOccs$occsThin <- NULL
+    spp[[curSp()]]$rmm$code$wallace$removedIDs <- NULL
+    logger %>% writeLog(
+      hlSpp(curSp()), "Reset to original occurrences (n = ",
+      nrow(spp[[curSp()]]$occs), ").")
   })
 
   return(list(

@@ -2,7 +2,6 @@ uiTop <- function(mod_INFO) {
   modID <- mod_INFO$modID
   modName <- mod_INFO$modName
   pkgName <- mod_INFO$pkgName
-  pkgTitl <- mod_INFO$pkgTitl
 
   ls <- list(div(paste("Module: ", modName), class = "mod"),
              actionLink(paste0(modID, "Help"),
@@ -10,11 +9,14 @@ uiTop <- function(mod_INFO) {
                         class = "modHelpButton"),
              br())
 
-  for (i in seq_along(pkgName)) {
-    ls <- c(ls, list(span(pkgName[i], class = "rpkg"),
-                     span(paste(':', pkgTitl[i]), class = "pkgDes"),
-                     br()))
-  }
+  ls <- c(ls, list(span("R packages:", class = "rpkg"),
+                   span(paste(pkgName, collapse = ", "), class = "pkgDes"),
+                   br()))
+  # for (i in seq_along(pkgName)) {
+  #   ls <- c(ls, list(span(pkgName[i], class = "rpkg"),
+  #                    span(paste(':', pkgTitl[i]), class = "pkgDes"),
+  #                    br()))
+  # }
 
   ls <- c(ls, list(HTML('<hr>')))
   ls
@@ -24,12 +26,16 @@ uiBottom <- function(mod_INFO) {
   modAuts <- mod_INFO$modAuts
   pkgName <- mod_INFO$pkgName
   pkgAuts <- mod_INFO$pkgAuts
+  pkgTitl <- mod_INFO$pkgTitl
 
-  ls <- list(div(paste('Module Developers:', modAuts), class = "pkgDes"))
+  ls <- list(span('Module Developers:', class = "rpkg"),
+             span(modAuts, class = "pkgDes"), br(), br())
 
   for (i in seq_along(pkgName)) {
     ls <- c(ls, list(
-      span(pkgName[i], class = "rpkg"), "references", br(),
+      span(pkgName[i], class = "rpkg"),
+      "references", br(),
+      div(paste(pkgTitl[i]), class = "pkgTitl"),
       div(paste('Package Developers:', pkgAuts[i]), class = "pkgDes"),
       a("CRAN", href = file.path("http://cran.r-project.org/web/packages",
                                  pkgName[i], "index.html"), target = "_blank"), " | ",

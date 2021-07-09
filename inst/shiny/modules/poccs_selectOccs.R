@@ -5,7 +5,10 @@ poccs_selectOccs_module_ui <- function(id) {
     "(", HTML("<font color='blue'><b>NOTE</b></font>"),
     ': to begin drawing, click hexagon icon on map toolbar,
     and when complete, press "Finish" and then the "Select Occurrences" button)', br(), br(),
-    actionButton(ns("goSelectOccs"), "Select Occurrences")
+    actionButton(ns("goSelectOccs"), "Select Occurrences"),
+    tags$hr(class = "hrDashed"),
+    actionButton(ns("goResetOccs"), "Reset", class = 'butReset'),
+    strong(" to original occurrence")
   )
 }
 
@@ -33,6 +36,18 @@ poccs_selectOccs_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$rmm$code$wallace$occsSelPolyCoords <- paste0('X: ', polyX, ', Y: ', polyY)
 
     common$update_component(tab = "Map")
+  })
+
+  # reset occurrences button functionality
+  observeEvent(input$goResetOccs, {
+    req(curSp())
+    spp[[curSp()]]$occs <- spp[[curSp()]]$occData$occsCleaned
+    spp[[curSp()]]$rmm$code$wallace$occsSelPolyCoords <- NULL
+    spp[[curSp()]]$procOccs$occsThin <- NULL
+    spp[[curSp()]]$rmm$code$wallace$removedIDs <- NULL
+    logger %>% writeLog(
+      hlSpp(curSp()), "Reset to original occurrences (n = ",
+      nrow(spp[[curSp()]]$occs), ").")
   })
 }
 

@@ -81,7 +81,7 @@ tagList(
               #"Profile Occurrences" = "profOccs"), # CM
             ),
             tags$hr(),
-            insert_modules_ui("poccs"),
+            insert_modules_ui("poccs")
             # CM: start comment
             # conditionalPanel("input.poccsSel == 'profOccs'",
             #                  uiTop(profileOccs_INFO),
@@ -91,16 +91,6 @@ tagList(
             #                  uiBottom(profileOccs_INFO)
             # ),
             # CM: End comment
-            tags$hr(),
-            tags$strong("Reset to original occurrences"),
-            tags$br(),
-            actionButton("goResetOccs", "Reset", class = 'butResOccs'),
-            tags$head(tags$style(".butResOccs {background-color: #C51E10;
-                               color: white;
-                               padding: 5px 5px;
-                               border: none;}
-                               .butResOccs:hover {background-color: #830D03;
-                               color: white;}"))
           ),
           conditionalPanel(
             "input.tabs == 'penvs'",
@@ -112,17 +102,7 @@ tagList(
               selected = character(0)
             ),
             tags$hr(),
-            insert_modules_ui("penvs"),
-            tags$hr(),
-            tags$strong("Reset background (**)"),
-            tags$br(),
-            actionButton("goReset_penvs", "Reset", class = 'butResPenvs'),
-            tags$head(tags$style(".butResPenvs {background-color: #C51E10;
-                               color: white;
-                               padding: 5px 5px;
-                               border: none;}
-                               .butResPenvs:hover {background-color: #830D03;
-                               color: white;}"))
+            insert_modules_ui("penvs")
           ),
           # SAMPLING BIAS ####
           # conditionalPanel(
@@ -228,16 +208,7 @@ tagList(
               choices = insert_modules_options("proj"),
               selected = character(0)),
             tags$hr(),
-            insert_modules_ui("proj"),
-            tags$hr(),
-            strong("Reset projection extent"), br(),
-            actionButton("goResetProj", "Reset", class = 'butResPj'),
-            tags$head(tags$style(".butResPj {background-color: #C51E10;
-                                 color: white;
-                                 padding: 1px 1px;
-                                 border: none;}
-                                 .butResPj:hover {background-color: #830D03;
-                                 color: white;}"))
+            insert_modules_ui("proj")
           ),
           # REPRODUCIBILITY
           conditionalPanel(

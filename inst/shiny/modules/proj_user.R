@@ -38,7 +38,7 @@ proj_user_module_ui <- function(id) {
     conditionalPanel(sprintf("input['%s'] == 'pjCur'", ns("projExt")),
                      p('You will use the same extent (**)')),
     actionButton(ns("goProjExtUser"), "Create(**)"), br(),
-    tags$hr(),
+    tags$hr(class = "hrDotted"),
     span("Step 2:", class = "step"),
     span("Project (**)", class = "stepText"), br(),
     p("Project model to projected extent (red) (**)"),
@@ -62,7 +62,10 @@ proj_user_module_ui <- function(id) {
                                  min = 0, max = 1, value = .05)),
     conditionalPanel(paste0("input['", ns("threshold"), "'] == 'none'"),
                      uiOutput(ns("noThrs"))),
-    actionButton(ns('goProjectUser'), "Project")
+    actionButton(ns('goProjectUser'), "Project"),
+    tags$hr(class = "hrDashed"),
+    actionButton(ns("goResetProj"), "Reset", class = 'butReset'),
+    strong(" projection extent (**)")
   )
 }
 
@@ -319,6 +322,14 @@ proj_user_module_server <- function(input, output, session, common) {
     }
     spp[[curSp()]]$rmm$prediction$transfer$notes <- NULL
     spp[[curSp()]]$rmm$code$wallace$userPjName <- input$userProjEnvs$name
+  })
+
+  # Reset Projection Extent button functionality
+  observeEvent(input$goResetProj, {
+    spp[[curSp()]]$polyPjXY <- NULL
+    spp[[curSp()]]$polyPjID <- NULL
+    spp[[curSp()]]$project <- NULL
+    logger %>% writeLog("Reset projection extent.")
   })
 
   return(list(
