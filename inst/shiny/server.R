@@ -194,7 +194,7 @@ function(input, output, session) {
   output$curSpUI <- renderUI({
     # check that a species is in the list already -- if not, don't proceed
     req(length(reactiveValuesToList(spp)) > 0)
-    # get the species names
+        # get the species names
     n <- names(spp)[order(names(spp))]
     # remove multispecies names from list
     n <- n[!grepl(".", n, fixed = TRUE)]
@@ -206,8 +206,12 @@ function(input, output, session) {
     # make a named list of their names
     sppNameList <- c(list("Current species" = ""), setNames(as.list(n), n))
     # generate a selectInput ui that lists the available species
-    selectizeInput('curSp', label = NULL , choices = sppNameList,
-                   multiple = TRUE, selected = selected, options = options)
+    if (is.null(module())) {
+      span("...Select a module (**)...", class = "step")
+    } else {
+      selectizeInput('curSp', label = NULL, choices = sppNameList,
+                     multiple = TRUE, selected = selected, options = options)
+    }
   })
 
   curSp <- reactive(input$curSp)
