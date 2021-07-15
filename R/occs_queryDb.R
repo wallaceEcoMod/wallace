@@ -253,10 +253,10 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
         dplyr::rename(scientific_name = scrubbed_species_binomial,
                                      institution_code = collection_code)
     }
-    noUncertainRem <-0
-    if (RmUncertain==TRUE){
+    noUncertainRem <- 0
+    if (RmUncertain == TRUE) {
 
-      occs <-occs[!is.na(occs$uncertainty),]
+      occs <- occs[!is.na(occs$uncertainty), ]
       noUncertainRem<- nrow(occsOrig) - (nrow(occs)+noCoordsRem)
       if(nrow(occs)==0){
         logger %>% writeLog(
@@ -287,18 +287,19 @@ occs <- occs[!dups,]
     # get total number of records found in database
     totRows <- q[[occDb]]$meta$found
 
-   if(RmUncertain==TRUE){
+   if (RmUncertain == TRUE) {
      logger %>%
-       writeLog(hlSpp(formatSpName(sp)), 'Total ', occDb, ' records returned [', nrow(occsOrig),
-                '] out of [', totRows, '] total',
+       writeLog(hlSpp(formatSpName(sp)), 'Total ', occDb, ' records returned [',
+                nrow(occsOrig), '] out of [', totRows, '] total',
                 if (!(doCitations | occDb == 'bien')) {paste0(' (limit ', occNum,')')},
-                '. Records without coordinates removed [', noCoordsRem, ']. Records without uncertainty information removed [',  noUncertainRem,
-                ']. Duplicated records removed [', dupsRem,
+                '. Records without coordinates removed [', noCoordsRem,
+                ']. Records without uncertainty information removed [',
+                noUncertainRem, ']. Duplicated records removed [', dupsRem,
                 ']. Remaining records [', nrow(occs), '].')
    }
     else {logger %>%
-      writeLog(hlSpp(formatSpName(sp)), 'Total ', occDb, ' records returned [', nrow(occsOrig),
-               '] out of [', totRows, '] total',
+      writeLog(hlSpp(formatSpName(sp)), 'Total ', occDb, ' records returned [',
+               nrow(occsOrig), '] out of [', totRows, '] total',
                if (!(doCitations | occDb == 'bien')) {paste0(' (limit ', occNum,')')},
                '. Records without coordinates removed [', noCoordsRem,
                ']. Duplicated records removed [', dupsRem,

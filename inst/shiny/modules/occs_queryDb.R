@@ -10,7 +10,9 @@ occs_queryDb_module_ui <- function(id) {
                           inline = TRUE)),
     tags$div(
       title = "Check to get only occurrences with uncertainty information (**)",
-      checkboxInput(ns("uncertainty"), label = strong("Keep only occurrences with uncertainty values"), value = FALSE)
+      checkboxInput(ns("uncertainty"),
+                    label = strong("Keep only occurrences with uncertainty values"),
+                    value = FALSE)
     ),
     conditionalPanel(
       sprintf("input['%s'] == 'gbif'", ns("occsDb")),
