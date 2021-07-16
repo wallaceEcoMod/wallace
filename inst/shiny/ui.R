@@ -293,194 +293,208 @@ tagList(
               'Save', icon = icon("save"),
               br(),
               h5(em("Note: To save your session code or metadata, use the Reproduce component")),
-              wellPanel(h4("Save Session"),
-              p(paste0("By saving your session into an RDS file, you can resume ",
+              wellPanel(
+                h4("Save Session"),
+                p(paste0("By saving your session into an RDS file, you can resume ",
                        "working on it at a later time or you can share the file",
                        " with a collaborator.")),
-              shinyjs::hidden(p(
-                id = "save_warning",
-                icon("warning"),
-                paste0("The current session data is large, which means the ",
-                       "downloaded file may be large and the download might",
-                       " take a long time.")
-                )),
-              downloadButton("save_session", "Save Session"),
-              br()
+                shinyjs::hidden(p(
+                  id = "save_warning",
+                  icon("warning"),
+                  paste0("The current session data is large, which means the ",
+                         "downloaded file may be large and the download might",
+                         " take a long time.")
+                  )),
+                downloadButton("save_session", "Save Session"),
+                br()
               ),
-              wellPanel(h4("Save Data"),
-              p(paste0("Download data/results from analyses from currently selected module")),
-              conditionalPanel(
-                "input.tabs == 'occs'",
-                br(),
-                fluidRow(
-                  column(3, h5("Download original occurrence data")),
-                  column(2, shinyjs::disabled(downloadButton('dlDbOccs', "CSV file")))
+              wellPanel(
+                h4("Save Data"),
+                p(paste0("Download data/results from analyses from currently selected module")),
+                ## save module data BEGIN ##
+                # save occs #
+                conditionalPanel(
+                  "input.tabs == 'occs'",
+                  br(),
+                  fluidRow(
+                    column(3, h5("Download original occurrence data")),
+                    column(2, shinyjs::disabled(downloadButton('dlDbOccs', "CSV file")))
+                  ),
+                  br(),
+                  fluidRow(
+                    column(3, h5("Download current table")),
+                    column(2, shinyjs::disabled(downloadButton('dlOccs', "CSV file")))
+                  ),
+                  br(),
+                  fluidRow(
+                    column(3, h5("Download all data")),
+                    column(2, shinyjs::disabled(downloadButton('dlAllOccs', "CSV file")))
+                  )
                 ),
-                br(),
-                fluidRow(
-                  column(3, h5("Download current table")),
-                  column(2, shinyjs::disabled(downloadButton('dlOccs', "CSV file")))
+                # save envs #
+                conditionalPanel(
+                  "input.tabs == 'envs'",
+                  br(),
+                  fluidRow(
+                    column(3, h5("Download environmental variables (Select download file type)")),
+                    column(2, selectInput('globalEnvsFileType',
+                                          label = NULL,
+                                          choices = list("GeoTIFF" = 'GTiff',
+                                                         "GRD" = 'raster',
+                                                         "ASCII" = 'ascii'))),
+                    column(2, shinyjs::disabled(downloadButton('dlGlobalEnvs', "ZIP file")))
+                  )
                 ),
-                br(),
-                fluidRow(
-                  column(3, h5("Download all data")),
-                  column(2, shinyjs::disabled(downloadButton('dlAllOccs', "CSV file")))
-                )
-              ),
-              conditionalPanel(
-                "input.tabs == 'envs'",
-                br(),
-                fluidRow(
-                  column(3, h5("Download environmental variables (Select download file type)")),
-                  column(2, selectInput('globalEnvsFileType',
-                                        label = NULL,
-                                        choices = list("GeoTIFF" = 'GTiff',
-                                                       "GRD" = 'raster',
-                                                       "ASCII" = 'ascii'))),
-                  column(2, shinyjs::disabled(downloadButton('dlGlobalEnvs', "ZIP file")))
-                )
-              ),
-              conditionalPanel(
-                "input.tabs == 'poccs'",
-                br(),
-                fluidRow(
-                  column(3, h5("Download processed occurence table")),
-                  column(2, shinyjs::disabled(downloadButton('dlProcOccs', "CSV file")))
-                )
-              ),
-              conditionalPanel(
-                "input.tabs == 'penvs'",
-                br(),
-                fluidRow(
-                  column(3, h5("Download shapefile of background extent")),
-                  column(2, shinyjs::disabled(downloadButton('dlBgShp', "ZIP file")))
+                # save poccs #
+                conditionalPanel(
+                  "input.tabs == 'poccs'",
+                  br(),
+                  fluidRow(
+                    column(3, h5("Download processed occurence table")),
+                    column(2, shinyjs::disabled(downloadButton('dlProcOccs', "CSV file")))
+                  )
                 ),
-                br(),
-                fluidRow(
-                  column(3, h5("Download predictor rasters masked to background extent (Select download file type)")),
-                  column(2, selectInput('bgMskFileType',
-                                        label = NULL,
-                                        choices = list("GeoTIFF" = 'GTiff',
-                                                       "GRD" = 'raster',
-                                                       "ASCII" = 'ascii'))),
-                  column(2, shinyjs::disabled(downloadButton('dlMskEnvs', "ZIP file")))
+                # save penvs #
+                conditionalPanel(
+                  "input.tabs == 'penvs'",
+                  br(),
+                  fluidRow(
+                    column(3, h5("Download shapefile of background extent")),
+                    column(2, shinyjs::disabled(downloadButton('dlBgShp', "ZIP file")))
+                  ),
+                  br(),
+                  fluidRow(
+                    column(3, h5("Download predictor rasters masked to background extent (Select download file type)")),
+                    column(2, selectInput('bgMskFileType',
+                                          label = NULL,
+                                          choices = list("GeoTIFF" = 'GTiff',
+                                                         "GRD" = 'raster',
+                                                         "ASCII" = 'ascii'))),
+                    column(2, shinyjs::disabled(downloadButton('dlMskEnvs', "ZIP file")))
+                  ),
+                  br(),
+                  fluidRow(
+                    column(3, h5("Download sample background points")),
+                    column(2, shinyjs::disabled(downloadButton('dlBgPts', "CSV file")))
+                  )
                 ),
-                br(),
-                fluidRow(
-                  column(3, h5("Download sample background points")),
-                  column(2, shinyjs::disabled(downloadButton('dlBgPts', "CSV file")))
-                )
-              ),
-              conditionalPanel(
-                "input.tabs == 'espace'",
-                br(),
-                fluidRow(
-                  column(3, h5("Download PCA results")),
-                  column(2, shinyjs::disabled(downloadButton('dlPcaResults', "ZIP file")))
+                # save espace #
+                conditionalPanel(
+                  "input.tabs == 'espace'",
+                  br(),
+                  fluidRow(
+                    column(3, h5("Download PCA results")),
+                    column(2, shinyjs::disabled(downloadButton('dlPcaResults', "ZIP file")))
+                  ),
+                  br(),
+                  fluidRow(
+                    column(3, h5("Download Occurence density grid")),
+                    column(2, shinyjs::disabled(downloadButton('dlOccDens', "PNG file")))
+                  ),
+                  br(),
+                  fluidRow(
+                    column(3, h5("Download Niche Overlap plot")),
+                    column(2, shinyjs::disabled(downloadButton('dlNicheOvPlot', "PNG file")))
+                  )
                 ),
-                br(),
-                fluidRow(
-                  column(3, h5("Download Occurence density grid")),
-                  column(2, shinyjs::disabled(downloadButton('dlOccDens', "PNG file")))
+                # save part #
+                conditionalPanel(
+                  "input.tabs == 'part'",
+                  br(),
+                  fluidRow(
+                    column(3, h5("Download occurrence and background localities with partition values")),
+                    column(2, shinyjs::disabled(downloadButton('dlPart', "CSV file")))
+                  )
                 ),
-                br(),
-                fluidRow(
-                  column(3, h5("Download Niche Overlap plot")),
-                  column(2, shinyjs::disabled(downloadButton('dlNicheOvPlot', "PNG file")))
-                )
-              ),
-              conditionalPanel(
-                "input.tabs == 'part'",
-                br(),
-                fluidRow(
-                  column(3, h5("Download occurrence and background localities with partition values")),
-                  column(2, shinyjs::disabled(downloadButton('dlPart', "CSV file")))
-                )
-              ),
-              conditionalPanel(
-                "input.tabs == 'model'",
-                br(),
-                fluidRow(
-                  column(3, h5("Download evaluation table")),
-                  column(2, shinyjs::disabled(downloadButton('dlEvalTbl', "CSV file")))
-                ), br(),
-                fluidRow(
-                  column(3, h5("Download evaluation groups table")),
-                  column(2, shinyjs::disabled(downloadButton('dlEvalTblBins', "CSV file")))
-                )
-              ),
-              conditionalPanel(
-                "input.tabs == 'vis'",
-                br(),
-                fluidRow(
-                  column(3, h5("Download Bioclim plot (**)")),
-                  column(2, shinyjs::disabled(downloadButton('dlVisBioclim', "PNG file")))
+                # save model #
+                conditionalPanel(
+                  "input.tabs == 'model'",
+                  br(),
+                  fluidRow(
+                    column(3, h5("Download evaluation table")),
+                    column(2, shinyjs::disabled(downloadButton('dlEvalTbl', "CSV file")))
+                  ), br(),
+                  fluidRow(
+                    column(3, h5("Download evaluation groups table")),
+                    column(2, shinyjs::disabled(downloadButton('dlEvalTblBins', "CSV file")))
+                  )
                 ),
-                br(),
-                fluidRow(
-                  column(3, h5("Download Maxent plots (**)")),
-                  column(2, shinyjs::disabled(downloadButton('dlMaxentPlots', "ZIP file")))
+                # save vis #
+                conditionalPanel(
+                  "input.tabs == 'vis'",
+                  br(),
+                  fluidRow(
+                    column(3, h5("Download Bioclim plot (**)")),
+                    column(2, shinyjs::disabled(downloadButton('dlVisBioclim', "PNG file")))
+                  ),
+                  br(),
+                  fluidRow(
+                    column(3, h5("Download Maxent plots (**)")),
+                    column(2, shinyjs::disabled(downloadButton('dlMaxentPlots', "ZIP file")))
+                  ),
+                  br(),
+                  fluidRow(
+                    column(3, h5("Download Response plots (**)")),
+                    column(2, shinyjs::disabled(downloadButton('dlRespCurves', "ZIP file")))
+                  ),
+                  br(),
+                  fluidRow(
+                    column(3, h5("Download current prediction (Select download file type**)")),
+                    column(2, selectInput('predFileType',
+                                          label = NULL,
+                                          choices = list("GeoTIFF" = 'GTiff',
+                                                         "GRD" = 'raster',
+                                                         "ASCII" = 'ascii',
+                                                         "PNG" = 'png'))),
+                    column(2, shinyjs::disabled(downloadButton('dlPred', "Prediction file(**)")))
+                  )
                 ),
-                br(),
-                fluidRow(
-                  column(3, h5("Download Response plots (**)")),
-                  column(2, shinyjs::disabled(downloadButton('dlRespCurves', "ZIP file")))
-                ),
-                br(),
-                fluidRow(
-                  column(3, h5("Download current prediction (Select download file type**)")),
-                  column(2, selectInput('predFileType',
-                                        label = NULL,
-                                        choices = list("GeoTIFF" = 'GTiff',
-                                                       "GRD" = 'raster',
-                                                       "ASCII" = 'ascii',
-                                                       "PNG" = 'png'))),
-                  column(2, shinyjs::disabled(downloadButton('dlPred', "Prediction file(**)")))
-                )
-              ),
-              conditionalPanel(
-                "input.tabs == 'proj'",
-                br(),
-                fluidRow(
-                  column(3, h5("Download shapefile of projection extent")),
-                  column(2, shinyjs::disabled(downloadButton('dlPjShp', "ZIP file")))
-                ),
-                br(),
-                fluidRow(
-                  column(3, h5("Download projected environmental variables (Select download file type)")),
-                  column(2, selectInput('projEnvsFileType',
-                                        label = NULL,
-                                        choices = list("GeoTIFF" = 'GTiff',
-                                                       "GRD" = 'raster',
-                                                       "ASCII" = 'ascii'))),
-                  column(2, shinyjs::disabled(downloadButton('dlProjEnvs', "ZIP file")))
-                ),
-                br(),
-                fluidRow(
-                  column(3, h5("Download projection (Select download file type**)")),
-                  column(2, selectInput('projFileType',
-                                        label = NULL,
-                                        choices = list("GeoTIFF" = 'GTiff',
-                                                       "GRD" = 'raster',
-                                                       "ASCII" = 'ascii',
-                                                       "PNG" = 'png'))),
-                  column(2, shinyjs::disabled(downloadButton('dlProj', "Projection file(**)")))
-                ),
-                br(),
-                fluidRow(
-                  column(3, h5("Download MESS (Select download file type**)")),
-                  column(2, selectInput('messFileType',
-                                        label = NULL,
-                                        choices = list("GeoTIFF" = 'GTiff',
-                                                       "GRD" = 'raster',
-                                                       "ASCII" = 'ascii',
-                                                       "PNG" = 'png'))),
-                  column(2, shinyjs::disabled(downloadButton('dlMess', "MESS file(**)")))
+                # save proj #
+                conditionalPanel(
+                  "input.tabs == 'proj'",
+                  br(),
+                  fluidRow(
+                    column(3, h5("Download shapefile of projection extent")),
+                    column(2, shinyjs::disabled(downloadButton('dlPjShp', "ZIP file")))
+                  ),
+                  br(),
+                  fluidRow(
+                    column(3, h5("Download projected environmental variables (Select download file type)")),
+                    column(2, selectInput('projEnvsFileType',
+                                          label = NULL,
+                                          choices = list("GeoTIFF" = 'GTiff',
+                                                         "GRD" = 'raster',
+                                                         "ASCII" = 'ascii'))),
+                    column(2, shinyjs::disabled(downloadButton('dlProjEnvs', "ZIP file")))
+                  ),
+                  br(),
+                  fluidRow(
+                    column(3, h5("Download projection (Select download file type**)")),
+                    column(2, selectInput('projFileType',
+                                          label = NULL,
+                                          choices = list("GeoTIFF" = 'GTiff',
+                                                         "GRD" = 'raster',
+                                                         "ASCII" = 'ascii',
+                                                         "PNG" = 'png'))),
+                    column(2, shinyjs::disabled(downloadButton('dlProj', "Projection file(**)")))
+                  ),
+                  br(),
+                  fluidRow(
+                    column(3, h5("Download MESS (Select download file type**)")),
+                    column(2, selectInput('messFileType',
+                                          label = NULL,
+                                          choices = list("GeoTIFF" = 'GTiff',
+                                                         "GRD" = 'raster',
+                                                         "ASCII" = 'ascii',
+                                                         "PNG" = 'png'))),
+                    column(2, shinyjs::disabled(downloadButton('dlMess', "MESS file(**)")))
+                  )
                 )
               )
             )
           )
-        )),
+        ),
+        ## save module data END ##
         conditionalPanel(
           "input.tabs == 'rep' & input.repSel == 'rep_markdown'",
           column(8,
