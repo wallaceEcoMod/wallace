@@ -2,4 +2,4 @@ component: "vis"
 short_name: "Maxent Evaluation Plots"
 long_name: "Maxent Evaluation Plots"
 authors: "Jamie M. Kass, Robert Muscarella, Bruno Vilela, Gonzalo E. Pinilla-Buitrago, Robert P. Anderson"
-package: [ENMeval, dismo]
+package: [ENMeval]
