@@ -27,6 +27,12 @@ function(input, output, session) {
   component <- reactive({
     input$tabs
   })
+  observe({
+    if (component() == "_stopapp") {
+      shinyjs::runjs("window.close();")
+      stopApp()
+    }
+  })
   module <- reactive({
     if (component() == "intro") "intro"
     else input[[glue("{component()}Sel")]]

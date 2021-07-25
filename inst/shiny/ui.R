@@ -30,7 +30,8 @@ tagList(
     tabPanel("Reproduce", value = 'rep'),
     navbarMenu("Support", icon = icon("life-ring"),
                HTML('<a href="https://groups.google.com/g/wallaceEcoMod" target="_blank">Google Group</a>'),
-               HTML('<a href="https://github.com/wallaceEcoMod/wallace/issues" target="_blank">GitHub Issues</a>'))
+               HTML('<a href="https://github.com/wallaceEcoMod/wallace/issues" target="_blank">GitHub Issues</a>')),
+    tabPanel(NULL, icon = icon("power-off"), value = "_stopapp")
   ),
   tags$div(
     class = "container-fluid",
