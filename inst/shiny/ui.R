@@ -1,9 +1,10 @@
 resourcePath <- system.file("shiny", "www", package = "wallace")
+shiny::addResourcePath("wallaceres", resourcePath)
 
 tagList(
   shinyjs::useShinyjs(),
   shinyjs::extendShinyjs(
-    script = file.path(resourcePath, "js", "shinyjs-funcs.js"),
+    script = file.path("wallaceres", "js", "shinyjs-funcs.js"),
     functions = c("scrollLogger", "removeModule")
   ),
   shinyalert::useShinyalert(),
