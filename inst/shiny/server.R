@@ -1309,10 +1309,16 @@ function(input, output, session) {
       updateTabsetPanel(session, "main", selected = tab)
     },
 
-    # Remove a specific module so that it will not be selectable in the UI
-    remove_module = function(component = COMPONENTS, module) {
+    # Disable a specific module so that it will not be selectable in the UI
+    disable_module = function(component = COMPONENTS, module) {
       component <- match.arg(component)
-      shinyjs::js$removeModule(component = component, module = module)
+      shinyjs::js$disableModule(component = component, module = module)
+    },
+
+    # Enable a specific module so that it will be selectable in the UI
+    enable_module = function(component = COMPONENTS, module) {
+      component <- match.arg(component)
+      shinyjs::js$enableModule(component = component, module = module)
     }
   )
 

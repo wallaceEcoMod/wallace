@@ -5,7 +5,7 @@ tagList(
   shinyjs::useShinyjs(),
   shinyjs::extendShinyjs(
     script = file.path("wallaceres", "js", "shinyjs-funcs.js"),
-    functions = c("scrollLogger", "removeModule")
+    functions = c("scrollLogger", "disableModule", "enableModule")
   ),
   shinyalert::useShinyalert(),
   navbarPage(
