@@ -58,15 +58,11 @@ function(input, output, session) {
   })
 
   # Help Component
-  observeEvent(input$occsHelp, updateTabsetPanel(session, "main", "Component Guidance"))
-  observeEvent(input$envsHelp, updateTabsetPanel(session, "main", "Component Guidance"))
-  observeEvent(input$poccsHelp, updateTabsetPanel(session, "main", "Component Guidance"))
-  observeEvent(input$penvsHelp, updateTabsetPanel(session, "main", "Component Guidance"))
-  observeEvent(input$espaceHelp, updateTabsetPanel(session, "main", "Component Guidance"))
-  observeEvent(input$partHelp, updateTabsetPanel(session, "main", "Component Guidance"))
-  observeEvent(input$modelHelp, updateTabsetPanel(session, "main", "Component Guidance"))
-  observeEvent(input$visHelp, updateTabsetPanel(session, "main", "Component Guidance"))
-  observeEvent(input$projHelp, updateTabsetPanel(session, "main", "Component Guidance"))
+  help_components <- c("occs", "envs", "poccs", "penvs", "espace", "part", "model", "vis", "proj")
+  lapply(help_components, function(component) {
+    btn_id <- paste0(component, "Help")
+    observeEvent(input[[btn_id]], updateTabsetPanel(session, "main", "Component Guidance"))
+  })
 
   # Help Module
   observeEvent(input$occs_queryDbHelp, updateTabsetPanel(session, "main", "Module Guidance"))
@@ -186,12 +182,12 @@ function(input, output, session) {
     # shinyjs::toggleState("dlWhatever", !is.null(spp[[curSp()]]$whatever))
   })
 
- observe({
-   req(length(curSp()) == 2)
-   shinyjs::toggleState("dlPcaResults", !is.null(spp[[paste0(curSp()[1],".",curSp()[2])]]$pca))
-   shinyjs::toggleState("dlOccDens", !is.null(spp[[paste0(curSp()[1],".",curSp()[2])]]$occDens))
-   shinyjs::toggleState("dlNicheOvPlot", !is.null(spp[[paste0(curSp()[1],".",curSp()[2])]]$nicheOv))
- })
+  observe({
+    req(length(curSp()) == 2)
+    shinyjs::toggleState("dlPcaResults", !is.null(spp[[paste0(curSp()[1],".",curSp()[2])]]$pca))
+    shinyjs::toggleState("dlOccDens", !is.null(spp[[paste0(curSp()[1],".",curSp()[2])]]$occDens))
+    shinyjs::toggleState("dlNicheOvPlot", !is.null(spp[[paste0(curSp()[1],".",curSp()[2])]]$nicheOv))
+  })
 
   # # # # # # # # # # # # # # # # # #
   # OBTAIN OCCS: other controls ####
@@ -200,7 +196,7 @@ function(input, output, session) {
   output$curSpUI <- renderUI({
     # check that a species is in the list already -- if not, don't proceed
     req(length(reactiveValuesToList(spp)) > 0)
-        # get the species names
+    # get the species names
     n <- names(spp)[order(names(spp))]
     # remove multispecies names from list
     n <- n[!grepl(".", n, fixed = TRUE)]
@@ -271,7 +267,7 @@ function(input, output, session) {
     content = function(file) {
       l <- lapply(allSp(), function(x) {
         data.frame(spp[[x]]$occData$occsCleaned, stringsAsFactors = FALSE)
-        })
+      })
       tbl <- dplyr::bind_rows(l)
       tbl <- tbl %>% dplyr::select(-pop)
       write_csv_robust(tbl, file, row.names = FALSE)
@@ -326,23 +322,23 @@ function(input, output, session) {
     content = function(file) {
       withProgress(
         message = paste0("Preparing ", paste0(spp[[curSp()]]$envs, '_envs.zip ...')), {
-        tmpdir <- tempdir()
-        owd <- setwd(tmpdir)
-        on.exit(setwd(owd))
-        type <- input$globalEnvsFileType
-        nm <- names(envs.global[[spp[[curSp()]]$envs]])
+          tmpdir <- tempdir()
+          owd <- setwd(tmpdir)
+          on.exit(setwd(owd))
+          type <- input$globalEnvsFileType
+          nm <- names(envs.global[[spp[[curSp()]]$envs]])
 
-        raster::writeRaster(envs.global[[spp[[curSp()]]$envs]], nm, bylayer = TRUE,
-                            format = type, overwrite = TRUE)
-        ext <- switch(type, raster = 'grd', ascii = 'asc', GTiff = 'tif')
+          raster::writeRaster(envs.global[[spp[[curSp()]]$envs]], nm, bylayer = TRUE,
+                              format = type, overwrite = TRUE)
+          ext <- switch(type, raster = 'grd', ascii = 'asc', GTiff = 'tif')
 
-        fs <- paste0(nm, '.', ext)
-        if (ext == 'grd') {
-          fs <- c(fs, paste0(nm, '.gri'))
-        }
-        zip::zipr(zipfile = file, files = fs)
-        if (file.exists(paste0(file, ".zip"))) file.rename(paste0(file, ".zip"), file)
-      })
+          fs <- paste0(nm, '.', ext)
+          if (ext == 'grd') {
+            fs <- c(fs, paste0(nm, '.gri'))
+          }
+          zip::zipr(zipfile = file, files = fs)
+          if (file.exists(paste0(file, ".zip"))) file.rename(paste0(file, ".zip"), file)
+        })
     },
     contentType = "application/zip"
   )
@@ -513,8 +509,8 @@ function(input, output, session) {
       req(spp[[mSp]]$pca)
       png(paste0("pcaScatterOccs.png"), width = 500, height = 500)
       #png(paste0(tmpdir, "\\pcaScatterOccs.png"), width = 500, height = 500)
-        x <- spp[[mSp]]$pca$scores[spp[[mSp]]$pca$scores$bg == 'sp', ]
-        x.f <- factor(x$sp)
+      x <- spp[[mSp]]$pca$scores[spp[[mSp]]$pca$scores$bg == 'sp', ]
+      x.f <- factor(x$sp)
       ade4::s.class(x, x.f, xax = 1, yax = 2,
                     col = c("red", "blue"), cstar = 0, cpoint = 0.1)
       dev.off()
@@ -761,7 +757,7 @@ function(input, output, session) {
       setwd(owd)
       fs<-paste0(gsub("[[:punct:]]", "_", parEval), ".png")
       zip::zipr(zipfile = file,
-               files = fs)
+                files = fs)
       setwd(owd)
     }
   )
@@ -1270,7 +1266,7 @@ function(input, output, session) {
       }
       zip::zipr(zipfile = file, files = paste0(namesSpp, "_RMM.csv"))
       setwd(owd)
-  })
+    })
 
   # Create a data structure that holds variables and functions used by modules
   common = list(
