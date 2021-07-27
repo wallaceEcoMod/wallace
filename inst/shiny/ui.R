@@ -294,7 +294,7 @@ tagList(
               br(),
               h5(em("Note: To save your session code or metadata, use the Reproduce component")),
               wellPanel(
-                h4("Save Session"),
+                h4(strong("Save Session")),
                 p(paste0("By saving your session into an RDS file, you can resume ",
                        "working on it at a later time or you can share the file",
                        " with a collaborator.")),
@@ -309,7 +309,7 @@ tagList(
                 br()
               ),
               wellPanel(
-                h4("Save Data"),
+                h4(strong("Download Data")),
                 p(paste0("Download data/results from analyses from currently selected module")),
                 ## save module data BEGIN ##
                 # save occs #
