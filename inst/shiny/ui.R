@@ -213,7 +213,7 @@ tagList(
           # REPRODUCIBILITY
           conditionalPanel(
             "input.tabs == 'rep'",
-            div("Component: Reproduce Session", class = "componentName"),
+            div("Component: Reproduce", class = "componentName"),
             radioButtons(
               "repSel", "Modules Available:",
               choices = insert_modules_options("rep"),
