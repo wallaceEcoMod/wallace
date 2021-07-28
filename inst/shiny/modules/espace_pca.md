@@ -1,4 +1,4 @@
-### **Module: Principal Components Analysis**
+### **Module: Environmental Ordination**
 
 **BACKGROUND**
 
