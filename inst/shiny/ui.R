@@ -424,17 +424,17 @@ tagList(
                   "input.tabs == 'vis'",
                   br(),
                   fluidRow(
-                    column(3, h5("Download Bioclim plot (**)")),
+                    column(3, h5("Download Bioclim plot")),
                     column(2, shinyjs::disabled(downloadButton('dlVisBioclim', "PNG file")))
                   ),
                   br(),
                   fluidRow(
-                    column(3, h5("Download Maxent plots (**)")),
+                    column(3, h5("Download Maxent plots")),
                     column(2, shinyjs::disabled(downloadButton('dlMaxentPlots', "ZIP file")))
                   ),
                   br(),
                   fluidRow(
-                    column(3, h5("Download Response plots (**)")),
+                    column(3, h5("Download Response plots")),
                     column(2, shinyjs::disabled(downloadButton('dlRespCurves', "ZIP file")))
                   ),
                   br(),
@@ -446,7 +446,7 @@ tagList(
                                                          "GRD" = 'raster',
                                                          "ASCII" = 'ascii',
                                                          "PNG" = 'png'))),
-                    column(2, shinyjs::disabled(downloadButton('dlPred', "Prediction file(**)")))
+                    column(2, shinyjs::disabled(downloadButton('dlPred', "Prediction file")))
                   )
                 ),
                 # save proj #
@@ -476,7 +476,7 @@ tagList(
                                                          "GRD" = 'raster',
                                                          "ASCII" = 'ascii',
                                                          "PNG" = 'png'))),
-                    column(2, shinyjs::disabled(downloadButton('dlProj', "Projection file(**)")))
+                    column(2, shinyjs::disabled(downloadButton('dlProj', "Projection file")))
                   ),
                   br(),
                   fluidRow(
@@ -487,7 +487,7 @@ tagList(
                                                          "GRD" = 'raster',
                                                          "ASCII" = 'ascii',
                                                          "PNG" = 'png'))),
-                    column(2, shinyjs::disabled(downloadButton('dlMess', "MESS file(**)")))
+                    column(2, shinyjs::disabled(downloadButton('dlMess', "MESS file")))
                   )
                 )
               )

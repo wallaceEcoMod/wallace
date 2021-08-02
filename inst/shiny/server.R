@@ -669,7 +669,7 @@ function(input, output, session) {
     envList <- setNames(as.list(n), n)
     shinyWidgets::pickerInput(
       "selCatEnvs",
-      label = "Select categorical variables (**)",
+      label = "Select categorical variables",
       choices = envList,
       multiple = TRUE)
   })
@@ -806,9 +806,9 @@ function(input, output, session) {
           req(mapPred())
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
-              writeLog(type = "error", "To download PNG prediction, you require to",
+              writeLog(type = "error", "To download PNG prediction, you're required to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
-                       " in you are R console. (**)")
+                       " in you are R console.")
           }
           if (rmm()$prediction$binary$thresholdRule != 'none') {
             mapPredVals <- 0:1
@@ -947,9 +947,9 @@ function(input, output, session) {
           req(mapProj())
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
-              writeLog(type = "error", "To download PNG prediction, you require to",
+              writeLog(type = "error", "To download PNG prediction, you're required to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
-                       " in you are R console. (**)")
+                       " in you are R console.")
           }
           if (rmm()$prediction$transfer$environment1$thresholdRule != 'none') {
             mapProjVals <- 0:1
@@ -1025,9 +1025,9 @@ function(input, output, session) {
         if (input$messFileType == 'png') {
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
-              writeLog(type = "error", "To download PNG prediction, you require to",
+              writeLog(type = "error", "To download PNG prediction, you're required to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
-                       " in you are R console. (**)")
+                       " in you are R console.")
           }
           rasVals <- spp[[curSp()]]$project$messVals
           polyPjXY <- spp[[curSp()]]$project$pjExt@polygons[[1]]@Polygons
@@ -1422,11 +1422,11 @@ function(input, output, session) {
       }
     }
     if (is.null(noEnvsSpp)) {
-      shinyalert::shinyalert(title = "Session loaded (**)", type = "success")
+      shinyalert::shinyalert(title = "Session loaded", type = "success")
     } else {
       msgEnvAgain <- paste0("Load variables again for: ",
                             paste0(noEnvsSpp, collapse = ", "))
-      shinyalert::shinyalert(title = "Session loaded (**)", type = "warning",
+      shinyalert::shinyalert(title = "Session loaded", type = "warning",
                              text = msgEnvAgain)
     }
   })

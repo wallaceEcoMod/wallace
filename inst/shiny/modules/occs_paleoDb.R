@@ -3,7 +3,7 @@ occs_paleoDb_module_ui <- function(id) {
   tagList(
     shinyWidgets::pickerInput(
       ns("timeInterval"),
-      label = "Select interval (**)",
+      label = "Select interval",
       choices = setNames(as.list(c('Quaternary', 'Holocene', 'Pleistocene',
                                    'Late Pleistocene', 'Middle Pleistocene',
                                    'Calabrian', 'Gelasian')),

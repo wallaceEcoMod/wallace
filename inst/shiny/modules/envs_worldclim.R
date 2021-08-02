@@ -14,11 +14,11 @@ envs_worldclim_module_ui <- function(id) {
                                         "10 arcmin" = 10))), # Check default (No selected parameter)
     checkboxInput(
       ns("doBrick"),
-      label = "Save to memory for faster processing and save/load option(**)",
+      label = "Save to memory for faster processing and save/load option",
       value = FALSE), # Check default (value = FALSE)
     shinyWidgets::pickerInput(
       "bcSel",
-      label = "Select bioclim variables (**)",
+      label = "Select bioclim variables",
       choices = setNames(as.list(paste0('bio', sprintf("%02d", 1:19))),
                          paste0('bio', sprintf("%02d", 1:19))),
       multiple = TRUE,
@@ -38,7 +38,7 @@ envs_worldclim_module_ui <- function(id) {
         paste0("Using map center coordinates as reference for tile download. ",
                "You can vizualize the tile in the bottomleft corner on ",
                "the map. All occurrence outside of the purple polygon will ",
-               "be removed (**)")), br(), br(),
+               "be removed")), br(), br(),
       textOutput(ns("ctrLatLon"))
     ),
     br(),
@@ -98,7 +98,7 @@ envs_worldclim_module_server <- function(input, output, session, common) {
       # also remove variable value rows with NA environmental values
       occsEnvsVals <- na.omit(occsEnvsVals)
 
-      logger %>% writeLog(hlSpp(sp), "Worldclim variables ready to use. (**)")
+      logger %>% writeLog(hlSpp(sp), "Worldclim variables ready to use.")
 
       # LOAD INTO SPP ####
       # add reference to WorldClim bioclim data

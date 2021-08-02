@@ -4,7 +4,7 @@ envs_ecoclimate_module_ui <- function(id) {
     # UI
     tags$div(title = 'Select AOGCM',
              selectInput(ns("bcAOGCM"),
-                         label = "Select the Atmospheric Oceanic General Circulation Model you want to use (**)",
+                         label = "Select the Atmospheric Oceanic General Circulation Model you want to use",
                          choices = list("Select AOGCMs" = "",
                                         "CCSM" = "CCSM",
                                         "CNRM" = "CNRM",
@@ -17,7 +17,7 @@ envs_ecoclimate_module_ui <- function(id) {
              )),
     tags$div(title = 'Select Scenario',
              selectInput(ns("bcScenario"),
-                         label = "select the temporal scenario that you want to use (**)",
+                         label = "select the temporal scenario that you want to use",
                          choices = list("Select Scenario" = "",
                                         "Present" = "Present",
                                         "Holocene (6,000 years ago)" = "Holo",
@@ -25,7 +25,7 @@ envs_ecoclimate_module_ui <- function(id) {
              )),
     shinyWidgets::pickerInput(
       "ecoClimSel",
-      label = "Select bioclim variables (**)",
+      label = "Select bioclimatic variables",
       choices = setNames(as.list(1:19),
                          paste0('bio', sprintf("%02d", 1:19))),
       multiple = TRUE,
@@ -88,7 +88,7 @@ envs_ecoclimate_module_server <- function(input, output, session, common) {
       # also remove variable value rows with NA environmental values
       occsEnvsVals <- na.omit(occsEnvsVals)
 
-      logger %>% writeLog(hlSpp(sp), "EcoClimate variables ready to use. (**)")
+      logger %>% writeLog(hlSpp(sp), "EcoClimate variables ready to use.")
 
       # LOAD INTO SPP ####
       spp[[sp]]$envs <- nmEcoClimate

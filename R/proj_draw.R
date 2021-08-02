@@ -43,10 +43,10 @@ proj_draw <- function(polyPjXY, polyPjID, drawPjBuf, logger = NULL, spN = NULL) 
   bgExt <- sp::SpatialPolygonsDataFrame(bgExt, data = data.frame(x = 1),
                                         match.ID = FALSE)
   if (drawPjBuf == 0) {
-    logger %>% writeLog(hlSpp(spN), 'Draw polygon without buffer(**).')
+    logger %>% writeLog(hlSpp(spN), 'Draw polygon without buffer.')
   } else {
     logger %>% writeLog(hlSpp(spN), 'Draw polygon with buffer of ',
-                        drawPjBuf, ' degrees (**).')
+                        drawPjBuf, ' degrees.')
   }
   return(bgExt)
 }

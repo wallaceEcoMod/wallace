@@ -101,7 +101,7 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
       logger %>% writeLog(
         type = "error",
         "Please, use the updated version of Maxent (v3.4.4). Currently, you are ",
-        "using (", maxentJARversion(), ").(**)"
+        "using (", maxentJARversion(), ")."
       )
       return()
     }
@@ -165,7 +165,7 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
     "Maxent ran successfully and output evaluation ",
     "results for ", nrow(e@results), " models (Regularization multiplier values: [",
     paste(rms.interval, collapse = ", "),"]; Feature classes: [",
-    paste(fcs, collapse = ", "), endTxt, "(**)")
+    paste(fcs, collapse = ", "), endTxt, "")
   return(e)
 
 }

@@ -59,7 +59,7 @@ envs_ecoClimate <- function(bcAOGCM, bcScenario, ecoClimSel, logger = NULL) {
   logger %>% writeLog("Environmental predictors: ecoClimate bioclimatic variables ",
                       paste(names(ecoClimatelayers), collapse = ", "),
                       " at 0.5 degree resolution. Global Circulation Model = ",
-                      bcAOGCM, ", Scenario = ", bcScenario, ". (**)")
+                      bcAOGCM, ", Scenario = ", bcScenario, ". ")
 
   return(ecoClimatelayers)
 }

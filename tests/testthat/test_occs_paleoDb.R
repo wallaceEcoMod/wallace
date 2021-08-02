@@ -22,10 +22,10 @@ source("test_helper_functions.R")
   test_that("error checks", {
           # the user doesn't input any species name
           expect_error(occs_paleoDb( occNum, occNum, timeInterval),
-                       'Please input both genus and species names of ONE species. (**)',fixed=T)
+                       'Please input both genus and species names of ONE species. ',fixed=T)
           # the user inputs just one name (genus or epithet)
           expect_error(occs_paleoDb(spName = genus,occNum, timeInterval),
-                       'Please input both genus and species names of ONE species. (**)',fixed=T)
+                       'Please input both genus and species names of ONE species. ',fixed=T)
           # the species' name has spelling errors, or it is not found in the database
           expect_error(occs_paleoDb(spName = spNameError, occNum, timeInterval),
                       paste0(hlSpp(spNameError),"No records found, please check the spelling."),fixed=T)

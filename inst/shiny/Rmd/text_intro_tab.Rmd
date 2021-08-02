@@ -26,7 +26,7 @@ output: html_document
 
 **4.** *Process Environmental Data*  
 - Select Study Region by Extent
-- Draw Polygon(**)
+- Draw Polygon
 - User-specified Study Region  
 
 **5.** *Environmental Space*  

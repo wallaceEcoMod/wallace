@@ -31,7 +31,7 @@ penvs_bgExtent_module_ui <- function(id) {
     actionButton(ns("goBgMask"), "Sample"),
     tags$hr(class = "hrDashed"),
     actionButton(ns("goReset_penvs"), "Reset", class = 'butReset'),
-    strong(" background (**)")
+    strong(" background")
   )
 }
 
@@ -105,7 +105,7 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
             type = "error", hlSpp(sp),
             "Number of requested background points (n = ", input$bgPtsNum, ") is ",
             "higher than the maximum points available on the background extent ",
-            "(n = ", bgNonNA, "). Please reduce the number of requested points. (**)")
+            "(n = ", bgNonNA, "). Please reduce the number of requested points.")
         return()
       }
       bgPts <- penvs_bgSample(spp[[sp]]$occs, bgMask, input$bgPtsNum, logger,
@@ -153,7 +153,7 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$bgPts <- NULL
     spp[[curSp()]]$rmm$data$occurrence$backgroundSampleSizeSet <- NULL
     logger %>% writeLog(
-      hlSpp(curSp()), "Reset background extent and background points (**).")
+      hlSpp(curSp()), "Reset background extent and background points.")
   })
 
   return(list(

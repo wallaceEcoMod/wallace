@@ -90,7 +90,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
           if (is.null(login)) {
             logger %>% writeLog(
               type = 'error',
-              "There is an error in your GBIF credentials. Please check them (**)"
+              "There is an error in your GBIF credentials. Please check them"
             )
             return()
           }
@@ -102,7 +102,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
               writeLog(
                 type = "error",
                 hlSpp(formatSpName(sp)),
-                "There is no match in GBIF database. Please check the spelling. (**)"
+                "There is no match in GBIF database. Please check the spelling."
               )
             return()
           }
@@ -112,7 +112,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
                 type = 'warning',
                 hlSpp(inputMatch),
                 "There is no a stricly match in the GBIF search. Data ",
-                "downloaded corresponds to ", em(bestMatch), ". (**)")
+                "downloaded corresponds to ", em(bestMatch), ". ")
           }
 
           myBTO <- occCite::occQuery(x = sp,
@@ -143,7 +143,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
           logger %>%
             writeLog(
               hlSpp(formatSpName(sp)),
-              "(**) #CiteTheDOI: Gbif.org (", dateDOI,
+              " #CiteTheDOI: Gbif.org (", dateDOI,
               ") GBIF Ocurrence Download https://doi.org/", doiGBIF
             )
         }
@@ -165,7 +165,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
       logger %>%
         writeLog(type = 'error',
                  hlSpp(formatSpName(sp)),
-                 'No records found, please check the spelling. (**)')
+                 'No records found. Please check the spelling.')
       next
     }
     # extract occurrence tibbles
@@ -186,7 +186,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
       logger %>% writeLog(
         type = 'warning',
         hlSpp(formatSpName(sp)),
-        'No records with coordinates found in ', occDb, ". (**)")
+        'No records with coordinates found in ', occDb, ". ")
       return()
     }
     noCoordsRem <- nrow(occsOrig) - nrow(occsXY)

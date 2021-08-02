@@ -39,7 +39,7 @@ test_that("error checks", {
   expect_error(penvs_userBgExtent(bgShp_path = Path, bgShp_name = Name.s, userBgBuf = 0.5,occs=occs,spN=spN),'If entering a shapefile, please select all the following files: .shp, .shx, .dbf.',fixed=T)
   expect_error(penvs_userBgExtent(bgShp_path = Path, bgShp_name = Name.p, userBgBuf = 0.5, occs=occs,spN=spN ),'Please enter either a CSV file of vertex coordinates or shapefile (.shp, .shx, .dbf).',fixed=T)
   #The user background does not include all occurrences
-  expect_error(penvs_userBgExtent(bgShp_path = Path, bgShp_name = Name, userBgBuf = 0.5, occs=occs_out,spN=spNOut ),'The polygon did not include all localities(**). You can remove localities in Process Occs component',fixed=T)
+  expect_error(penvs_userBgExtent(bgShp_path = Path, bgShp_name = Name, userBgBuf = 0.5, occs=occs_out,spN=spNOut ),'The polygon did not include all localities. You can remove localities in Process Occs component',fixed=T)
 })
 
 ### test output features

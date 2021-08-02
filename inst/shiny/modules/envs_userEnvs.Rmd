@@ -7,7 +7,7 @@ Using user-specified variables.
 ## Specify the directory with the environmental variables
 dir_envs_{{spAbr}} <- ""
 envs_path <- file.path(dir_envs_{{spAbr}}, {{userRasName_rmd}})
-# Create environmental object (**)
+# Create environmental object 
 envs_{{spAbr}} <- envs_userEnvs(
   rasPath = envs_path,
   rasName = {{userRasName_rmd}},

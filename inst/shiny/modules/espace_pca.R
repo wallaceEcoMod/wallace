@@ -40,7 +40,7 @@ espace_pca_module_server <- function(input, output, session, common) {
       shiny::tagList(
         shinyWidgets::pickerInput(
           ns("pcaSel"),
-          label = "Select variables available for both species(**)",
+          label = "Select variables available for both species",
           choices = setNames(as.list(shared_Names), shared_Names),
           multiple = TRUE,
           selected = shared_Names,

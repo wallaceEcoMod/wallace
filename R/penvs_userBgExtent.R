@@ -94,7 +94,7 @@ penvs_userBgExtent <- function(bgShp_path, bgShp_name, userBgBuf, occs,
     } else if (ptRem > 0) {
       logger %>%
         writeLog(type = 'error', hlSpp(spN),
-                 "The polygon did not include all localities(**). ",
+                 "The polygon did not include all localities. ",
                  "You can remove localities in Process Occs component")
       return()
     }

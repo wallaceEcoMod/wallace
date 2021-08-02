@@ -47,7 +47,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
     logger %>% writeLog(
       type = "error",
       paste0("There is something wrong in your file. Check file format or ",
-             "delimiter and decimal separators.(**)"))
+             "delimiter and decimal separators."))
     return()
   }
 
@@ -57,7 +57,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
       type = "error",
       paste0('Please input a file with columns "scientific_name", ',
              '"longitude", "latitude" in that order or check delimeter and decimal ',
-             'separators. (**)'))
+             'separators. '))
     return()
   }
 
@@ -82,7 +82,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
     logger %>%
       writeLog(type = 'error',
                paste0('Please input just genus and species epithet in scientific',
-                      ' name field in your file (e.g., "Canis lupus")(**).'))
+                      ' name field in your file (e.g., "Canis lupus").'))
     return()
   }
 
@@ -97,7 +97,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
   else if (!is.numeric(txt$longitude) | !is.numeric(txt$latitude)) {
     logger %>% writeLog(
       type = "error",
-      paste0('Please input txt file. No all values in longitude or latitude are numeric.(**)'))
+      paste0('Please input txt file. No all values in longitude or latitude are numeric.'))
     return()
   }
 
