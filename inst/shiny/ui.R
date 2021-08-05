@@ -1,10 +1,11 @@
 resourcePath <- system.file("shiny", "www", package = "wallace")
+shiny::addResourcePath("wallaceres", resourcePath)
 
 tagList(
   shinyjs::useShinyjs(),
   shinyjs::extendShinyjs(
-    script = file.path(resourcePath, "js", "shinyjs-funcs.js"),
-    functions = c("scrollLogger", "removeModule")
+    script = file.path("wallaceres", "js", "shinyjs-funcs.js"),
+    functions = c("scrollLogger", "disableModule", "enableModule")
   ),
   shinyalert::useShinyalert(),
   navbarPage(
@@ -31,7 +32,8 @@ tagList(
                HTML('<a href="https://wallaceecomod.github.io/" target="_blank">Wallace Homepage</a>'),
                HTML('<a href="https://groups.google.com/g/wallaceEcoMod" target="_blank">Google Group</a>'),
                HTML('<a href="https://github.com/wallaceEcoMod/wallace/issues" target="_blank">GitHub Issues</a>'),
-               HTML('<a href="mailto: WallaceEcoMod@gmail.com" target="_blank">Send Email</a>'))
+               HTML('<a href="mailto: WallaceEcoMod@gmail.com" target="_blank">Send Email</a>')),
+    tabPanel(NULL, icon = icon("power-off"), value = "_stopapp")
   ),
   tags$div(
     class = "container-fluid",

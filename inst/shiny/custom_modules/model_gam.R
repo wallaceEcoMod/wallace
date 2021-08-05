@@ -67,7 +67,7 @@ gam_module_server <- function(input, output, session, common) {
     }
 
     common$update_component(tab = "Results")
-    common$remove_module(component = "vis", module = "mapPreds")
+    common$disable_module(component = "vis", module = "mapPreds")
   })
 
   output$gamSummary <- renderPrint({
