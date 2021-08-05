@@ -288,11 +288,11 @@ tagList(
               uiOutput('gtext_component')
             ),
             tabPanel(
-              'Module Guidance', icon = icon("info-circle", class = "modHelpButton"),
+              'Module Guidance', icon = icon("info-circle", class = "mod_icon"),
               uiOutput('gtext_module')
             ),
             tabPanel(
-              'Save', icon = icon("save"),
+              'Save', icon = icon("save", class = "save_icon"),
               br(),
               h5(em("Note: To save your session code or metadata, use the Reproduce component")),
               wellPanel(

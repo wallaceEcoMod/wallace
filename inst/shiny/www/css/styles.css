@@ -111,3 +111,11 @@ hr {
 #save_warning {
   color: red;
 }
+.save_icon {
+  color:#606060;
+  margin:0px;
+}
+.mod_icon {
+  color:#699FA1;
+  margin:0px;
+}
