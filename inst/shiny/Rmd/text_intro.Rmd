@@ -39,7 +39,7 @@ For more information and relevant links see our <a href="https://wallaceecomod.g
 
 ### **Watch webinars about _Wallace_**
 
-*The following webinar was part of "ENM 2020", a free online course on ecological niche modeling, organized by Town Peterson. The full series can be found on Youtube: <a href="https://www.youtube.com/playlist?list=PLhEJuWmv8Jf67qSdifDvgOk5DOJsNNiam" target="_blank">ENM 2020</a>.*
+*The following webinar was part of "ENM 2020", a free online course on ecological niche modeling, organized by Town Peterson. The full series can be found on YouTube: <a href="https://www.youtube.com/playlist?list=PLhEJuWmv8Jf67qSdifDvgOk5DOJsNNiam" target="_blank">ENM 2020</a>.*
 
 Kass, J.M. and G.E. Pinilla-Buitrago. 18 May 2020. “Wallace Ecological Modeling Application: flexible and reproducible modeling of species’ niches and distributions built for community expansion.” ENM 2020: Online course in ecological niche modeling (Peterson, A. T. editor), Week 19, Talk 2. <a href="https://youtu.be/kWNyNd2X1uo" target="_blank">Watch on YouTube</a>.  
 
@@ -49,7 +49,9 @@ Kass, J. M. 9 May 2018. "WALLACE: A flexible platform for reproducible modeling 
 
 *The following webinar was part of the "Modelado de Distribuciones Potenciales" series, organized by Angela Cuervo.*
 
-Anderson, R. P. 21 May 2018. "El software Wallace para modelar nichos y distribuciones: Un coche con motor R, volante de ratón y cerebro de humano." Broadcast from the City College of New York, City University of New York. <a href="https://www.youtube.com/watch?v=0652g9PDKp4" target="_blank">Watch on YouTube</a>. 
+Anderson, R. P. 21 May 2018. "El software Wallace para modelar nichos y distribuciones: Un coche con motor R, volante de ratón y cerebro de humano." Broadcast from the City College of New York, City University of New York. <a href="https://www.youtube.com/watch?v=0652g9PDKp4" target="_blank">Watch on YouTube</a>.  
+
+*For more videos, check out the <a href="https://www.youtube.com/channel/UCDSLCE5bmw12B7oqmlKk7rg" target="_blank">Wallace EcoMod YouTube channel</a>.*
 
 ### **Contribute to _Wallace_**
 
