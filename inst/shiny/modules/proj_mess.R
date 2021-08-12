@@ -27,7 +27,7 @@ proj_mess_module_server <- function(input, output, session, common) {
       logger %>%
         writeLog(
           type = 'error',
-          "The polygon has not been finished. Please define a polygon. (**)"
+          "The polygon has not been finished. Please define a polygon."
      )
       return()
     }

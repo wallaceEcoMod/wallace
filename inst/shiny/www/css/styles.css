@@ -13,7 +13,7 @@
   width:450px;
   padding:5px;
   overflow:auto;
-  border:1px solid green;
+  border:1px solid grey;
 }
 hr {
     border: none;
@@ -110,4 +110,12 @@ hr {
 }
 #save_warning {
   color: red;
+}
+.save_icon {
+  color:#606060;
+  margin:0px;
+}
+.mod_icon {
+  color:#699FA1;
+  margin:0px;
 }

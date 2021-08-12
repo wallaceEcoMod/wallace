@@ -2,8 +2,8 @@ penvs_drawBgExtent_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
     span("Step 1:", class = "step"),
-    span("Draw Background Extent(**)", class = "stepText"), br(), br(),
-    "Draw a polygon and select buffer distance(**)", br(), br(),
+    span("Draw Background Extent", class = "stepText"), br(), br(),
+    "Draw a polygon and select buffer distance", br(), br(),
     tags$p(paste0('Buffer area in degrees (1 degree = ~111 km). Exact length',
                   ' varies based on latitudinal position.')),
     numericInput(ns("drawBgBuf"), label = "Study region buffer distance (degree)",
@@ -12,7 +12,7 @@ penvs_drawBgExtent_module_ui <- function(id) {
       title = "Add Batch guidance text here (**)",
       checkboxInput(ns("batch1"), label = strong("Batch"), value = FALSE) # Check default (value = FALSE)
     ),
-    actionButton(ns('goDrawBg'), "Create(**)"),
+    actionButton(ns('goDrawBg'), "Create"),
     tags$hr(class = "hrDotted"),
     span("Step 2:", class = "step"),
     span("Sample Background Points", class = "stepText"), br(), br(),
@@ -27,7 +27,7 @@ penvs_drawBgExtent_module_ui <- function(id) {
     actionButton(ns("goBgMask"), "Sample"),
     tags$hr(class = "hrDashed"),
     actionButton(ns("goReset_penvs"), "Reset", class = 'butReset'),
-    strong(" background (**)")
+    strong(" background")
   )
 }
 
@@ -110,7 +110,7 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
             type = "error", hlSpp(sp),
             "Number of requested background points (n = ", input$bgPtsNum, ") is ",
             "higher than the maximum points available on the background extent ",
-            "(n = ", bgNonNA, "). Please reduce the number of requested points. (**)")
+            "(n = ", bgNonNA, "). Please reduce the number of requested points.")
         return()
       }
       bgPts <- penvs_bgSample(spp[[sp]]$occs,
@@ -158,7 +158,7 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$bgPts <- NULL
     spp[[curSp()]]$rmm$data$occurrence$backgroundSampleSizeSet <- NULL
     logger %>% writeLog(
-      hlSpp(curSp()), "Reset background extent and background points (**).")
+      hlSpp(curSp()), "Reset background extent and background points.")
   })
 
   return(list(

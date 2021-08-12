@@ -68,8 +68,8 @@ poccs_thinOccs <- function(occs, thinDist, logger = NULL, spN = NULL) {
 
   if (nrow(occs.thin) < 4) {
     logger %>% writeLog(type = 'error',
-      hlSpp(spN), "After removing occurrences, there is three or less points. ",
-      "You need more occurrences to continue the analysis (**)."
+      hlSpp(spN), "After removing occurrences, there are three or less points. ",
+      "You need more occurrences to continue the analysis."
     )
     return()
   }

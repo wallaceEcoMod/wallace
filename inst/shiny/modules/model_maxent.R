@@ -36,7 +36,7 @@ model_maxent_module_ui <- function(id) {
                             '[1, 1.5, 2, 2.5, 3]).'),
              numericInput(ns("rmsStep"), label = "Multiplier step value",
                           value = 1)),
-    strong("Are you using a categorical variable? (**)"),
+    strong("Are you using a categorical variable?"),
     tags$div(title = '',
              selectInput(ns("categSel"), label = '',
                          choices = list("NO", "YES")),
@@ -50,7 +50,7 @@ model_maxent_module_ui <- function(id) {
                                         "FALSE" = "FALSE"))),
     strong("Parallel?"),
     tags$div(
-      title = 'Use parallel option for quicker analysis? (**)',
+      title = 'Use parallel option for quicker analysis?',
       selectInput(ns("parallel"), label = '',
                   choices = list("None selected" = '',
                                  "TRUE" = "TRUE",

@@ -33,7 +33,7 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
   # if two names not entered, throw error and return
   if (nameSplit != 2) {
     logger %>% writeLog(type = 'error',
-      'Please input both genus and species names of ONE species. (**)')
+      'Please input both genus and species names of ONE species.')
     return()
   }
   spName <- paste0(toupper(substring(spName, 1, 1)),

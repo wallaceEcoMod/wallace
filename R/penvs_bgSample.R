@@ -53,7 +53,7 @@ penvs_bgSample <- function(occs, bgMask, bgPtsNum, logger = NULL, spN = NULL) {
     logger %>%
       writeLog(
         hlSpp(spN), bgPtsNum, " random background points sampled out of ",
-        bgNonNA, " total points. (**)")
+        bgNonNA, " total points. ")
   } else {
     logger %>%
       writeLog(type = "warning",

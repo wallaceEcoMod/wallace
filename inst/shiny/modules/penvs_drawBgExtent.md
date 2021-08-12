@@ -1,4 +1,4 @@
-### **Module:** ***Draw Study Region***
+### **Module:** ***Draw Study Region With Polygon Tool***
 
 **BACKGROUND**
 

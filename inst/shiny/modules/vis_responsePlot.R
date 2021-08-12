@@ -2,7 +2,7 @@ vis_responsePlot_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
     uiOutput(ns("curEnvUI")),
-    h5("Reponse curves are displayed automatically in 'Results' tab(**)")
+    h5("Reponse curves are displayed automatically in 'Results' tab")
   )
 }
 
@@ -50,7 +50,7 @@ vis_responsePlot_module_server <- function(input, output, session, common) {
     if (spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM") {
       par(mar = c(0,0,0,0))
       plot(c(0, 1), c(0, 1), ann = F, bty = 'n', type = 'n', xaxt = 'n', yaxt = 'n')
-      text(x = 0.25, y = 1, "Response curves module requires a Maxent model (**)",
+      text(x = 0.25, y = 1, "Response curves module requires a Maxent model",
            cex = 1.2, col = "#641E16")
     } else if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
       req(curEnv())

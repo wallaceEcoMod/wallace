@@ -78,8 +78,8 @@ poccs_selectOccs <- function(occs, polySelXY, polySelID = 1, logger = NULL, spN 
 
     if (nrow(occs.sel) < 4) {
       logger %>% writeLog(type = 'error',
-        hlSpp(spN), "After removing occurrences, there is three or less points. ",
-        "You need more occurrences to continue the analysis (**)."
+        hlSpp(spN), "After removing occurrences, there are three or less points. ",
+        "You need more occurrences to continue the analysis."
       )
       return()
     }

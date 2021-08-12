@@ -21,17 +21,17 @@ We engineered *Wallace* to be used by a broad audience that includes graduate st
 
 ### **Attributes of _Wallace_**
 
-* **<span style="color:blue">open</span>**: the code is free to use and modify (GPL 3.0), and it gives users access to some of the largest public online biodiversity databases
+* **open**: the code is free to use and modify (GPL 3.0), and it gives users access to some of the largest public online biodiversity databases
 
-* **<span style="color:blue">expandible</span>**: users can author and contribute modules that enable new methodogical options
+* **expandible**: users can author and contribute modules that enable new methodogical options
 
-* **<span style="color:blue">flexible</span>**: options for user uploads and downloads of results
+* **flexible**: options for user uploads and downloads of results
 
-* **<span style="color:blue">interactive</span>**: includes an embedded zoomable `leaflet` map, sortable `DF` data tables, and visualizations of results
+* **interactive**: includes an embedded zoomable `leaflet` map, sortable `DF` data tables, and visualizations of results
 
-* **<span style="color:blue">instructive</span>**: features guidance text that educates users about theoretical and analytical aspects of each step in the workflow
+* **instructive**: features guidance text that educates users about theoretical and analytical aspects of each step in the workflow
 
-* **<span style="color:blue">reproducible</span>**: users can download an `rmarkdown` .Rmd file that when run reproduces the analysis
+* **reproducible**: users can download an `rmarkdown` .Rmd file that when run reproduces the analysis
 
 ### **_Wallace_ website**
 
@@ -39,13 +39,19 @@ For more information and relevant links see our <a href="https://wallaceecomod.g
 
 ### **Watch webinars about _Wallace_**
 
+*The following webinar was part of "ENM 2020", a free online course on ecological niche modeling, organized by Town Peterson. The full series can be found on YouTube: <a href="https://www.youtube.com/playlist?list=PLhEJuWmv8Jf67qSdifDvgOk5DOJsNNiam" target="_blank">ENM 2020</a>.*
+
+Kass, J.M. and G.E. Pinilla-Buitrago. 18 May 2020. “Wallace Ecological Modeling Application: flexible and reproducible modeling of species’ niches and distributions built for community expansion.” ENM 2020: Online course in ecological niche modeling (Peterson, A. T. editor), Week 19, Talk 2. <a href="https://youtu.be/kWNyNd2X1uo" target="_blank">Watch on YouTube</a>.  
+
 *The following webinar was the "37th Global Online Biodiversity Informatics Seminar" in the Biodiversity Informatics Training Curriculum organized by Town Peterson.*
 
 Kass, J. M. 9 May 2018. "WALLACE: A flexible platform for reproducible modeling of species niches and distributions built for community expansion." Broadcast from the City College of New York, City University of New York. <a href="https://www.youtube.com/watch?v=00CSd9vx2CE&feature=youtu.be" target="_blank">Watch on YouTube</a>.
 
 *The following webinar was part of the "Modelado de Distribuciones Potenciales" series, organized by Angela Cuervo.*
 
-Anderson, R. P. 21 May 2018. "El software Wallace para modelar nichos y distribuciones: Un coche con motor R, volante de ratón y cerebro de humano." Broadcast from the City College of New York, City University of New York. <a href="https://www.youtube.com/watch?v=0652g9PDKp4" target="_blank">Watch on YouTube</a>. 
+Anderson, R. P. 21 May 2018. "El software Wallace para modelar nichos y distribuciones: Un coche con motor R, volante de ratón y cerebro de humano." Broadcast from the City College of New York, City University of New York. <a href="https://www.youtube.com/watch?v=0652g9PDKp4" target="_blank">Watch on YouTube</a>.  
+
+*For more videos, check out the <a href="https://www.youtube.com/channel/UCDSLCE5bmw12B7oqmlKk7rg" target="_blank">Wallace EcoMod YouTube channel</a>.*
 
 ### **Contribute to _Wallace_**
 
@@ -53,7 +59,7 @@ Contributors should submit pull requests to the *Wallace* <a href="https://githu
 
 ### **Contact us**
 
-Please <a href="mailto:wallaceecomod@gmail.com">email us</a> with any other questions.
+Please <a href="mailto:wallaceecomod@gmail.com" target="_blank">email us</a> with any other questions.
 
 <br>
 **-----------------------------------------------------**
