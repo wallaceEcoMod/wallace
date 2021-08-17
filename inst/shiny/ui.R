@@ -510,6 +510,12 @@ tagList(
           )
         ),
         conditionalPanel(
+          "input.tabs == 'rep' & input.repSel == 'rep_refPackages'",
+          column(8,
+                 includeMarkdown("modules/rep_refPackages.Rmd")
+          )
+        ),
+        conditionalPanel(
           "input.tabs == 'intro'",
           tabsetPanel(
             id = 'introTabs',

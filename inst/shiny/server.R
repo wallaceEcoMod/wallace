@@ -1268,6 +1268,30 @@ function(input, output, session) {
       setwd(owd)
     })
 
+  ################################
+  ### REFERENCE FUNCTIONALITY ####
+  ################################
+
+  output$dlrefPackages <- downloadHandler(
+    filename = function() {paste0("ref-packages-", Sys.Date(),
+                                  filetype_to_ext(input$refFileType))},
+    content = function(file) {
+      md_ref_file <- tempfile(pattern = "ref_", fileext = ".md")
+      rmarkdown::render("Rmd/references.Rmd",
+                        output_format =
+                          switch(
+                            input$rmdFileType,
+                            "Rmd" = rmarkdown::github_document(html_preview = FALSE),
+                            "PDF" = rmarkdown::pdf_document(),
+                            "HTML" = rmarkdown::html_document(),
+                            "Word" = rmarkdown::word_document()
+                          ),
+                        output_file = md_ref_file,
+                        clean = TRUE,
+                        encoding = "UTF-8")
+      file.rename(md_ref_file, file)
+    })
+
   # Create a data structure that holds variables and functions used by modules
   common = list(
     # Reactive variables to pass on to modules

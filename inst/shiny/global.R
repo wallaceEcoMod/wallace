@@ -55,7 +55,8 @@ base_module_configs <- c(
   "modules/proj_user.yml",
   "modules/proj_mess.yml",
   "modules/rep_markdown.yml",
-  "modules/rep_rmms.yml"
+  "modules/rep_rmms.yml",
+  "modules/rep_refPackages.yml"
 )
 
 # Load user-defined modules
