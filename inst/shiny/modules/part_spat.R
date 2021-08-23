@@ -53,6 +53,10 @@ part_spat_module_server <- function(input, output, session, common) {
       spp[[sp]]$bg$partition <- group.data$bg.grp
       spp[[sp]]$rmm$code$wallace$partition_code <- input$partitionSpatSel
       spp[[sp]]$rmm$code$wallace$partition_agg <- input$aggFact
+
+      # REFERENCES
+      knitcitations::citep(citation("ENMeval", auto = TRUE))
+
       # METADATA ####
       spp[[sp]]$rmm$model$partition$Spatial <- 'Spatial'
       if(input$partitionSpatSel == 'block') {

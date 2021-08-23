@@ -389,6 +389,9 @@ proj_time_module_server <- function(input, output, session, common) {
                                                 '_', input$pjAOGCM)
     }
 
+    # REFERENCES
+    knitcitations::citep(citation("dismo"))
+
     # METADATA ####
     spp[[curSp()]]$rmm$code$wallace$project_curModel <- curModel()
     spp[[curSp()]]$rmm$code$wallace$project_time <- TRUE

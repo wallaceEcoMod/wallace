@@ -45,6 +45,9 @@ poccs_thinOccs_module_server <- function(input, output, session, common) {
       spp[[sp]]$occs <- occs.thin
       spp[[sp]]$procOccs$occsThin <- occs.thin
 
+      # REFERENCES ####
+      knitcitations::citep(citation("spThin"))
+
       # METADATA ####
       # perhaps there should be a thinDist metadata field?
       spp[[sp]]$rmm$code$wallace$thinDistKm <- input$thinDist

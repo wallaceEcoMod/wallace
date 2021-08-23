@@ -35,6 +35,7 @@ Imports:
     gam,
     glue,
     geojsonsf,
+    knitcitations,
     leaflet.extras (>= 1.0.0),
     magrittr,
     maptools,

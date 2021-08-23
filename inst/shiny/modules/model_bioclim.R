@@ -46,6 +46,10 @@ model_bioclim_module_server <- function(input, output, session, common) {
       # LOAD INTO SPP ####
       spp[[sp]]$evalOut <- m.bioclim
 
+      # REFERENCES
+      knitcitations::citep(citation("dismo"))
+      knitcitations::citep(citation("ENMeval", auto = TRUE))
+
       # METADATA ####
       spp[[sp]]$rmm$model$algorithms <- "BIOCLIM"
       spp[[sp]]$rmm$model$algorithm$bioclim$notes <- "ENMeval/dismo package implementation"

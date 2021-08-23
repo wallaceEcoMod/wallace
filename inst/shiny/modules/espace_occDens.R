@@ -48,6 +48,10 @@ espace_occDens_module_server <- function(input, output, session, common) {
     req(occDens)
     spp[[mspName]]$occDens <- occDens
 
+    # REFERENCES
+    knitcitations::citep(citation("adehabitatHR"))
+    knitcitations::citep(citation("ecospat"))
+
     common$update_component(tab = "Results")
   })
 

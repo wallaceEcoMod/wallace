@@ -50,6 +50,9 @@ part_nonSpat_module_server <- function(input, output, session, common) {
       spp[[sp]]$occs$partition <- group.data$occs.grp
       spp[[sp]]$bg$partition <- group.data$bg.grp
 
+      # REFERENCES
+      knitcitations::citep(citation("ENMeval", auto = TRUE))
+
       # METADATA ####
       spp[[sp]]$rmm$code$wallace$partition_code <- input$partNspSel
       spp[[sp]]$rmm$model$partition$NonSpatial <- 'Non-spatial'

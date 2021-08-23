@@ -117,6 +117,9 @@ espace_pca_module_server <- function(input, output, session, common) {
      spp[[mspName]]$pc1<-input$pc1
      spp[[mspName]]$pc2<-input$pc2
     common$update_component(tab = "Results")
+
+    # REFERENCES
+    knitcitations::citep(citation("ade4"))
   })
 
   output$pcaControls <- renderUI({

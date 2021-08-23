@@ -30,6 +30,9 @@ poccs_selectOccs_module_server <- function(input, output, session, common) {
     # LOAD INTO SPP ####
     spp[[curSp()]]$occs <- occs.sel
 
+    # REFERENCES ####
+    knitcitations::citep(citation("leaflet.extras"))
+
     # METADATA ####
     polyX <- printVecAsis(round(spp[[curSp()]]$polySelXY[,1], digits = 4))
     polyY <- printVecAsis(round(spp[[curSp()]]$polySelXY[,2], digits = 4))

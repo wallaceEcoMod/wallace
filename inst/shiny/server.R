@@ -1258,6 +1258,8 @@ function(input, output, session) {
   output$dlRMM <- downloadHandler(
     filename = function() {paste0("wallace-metadata-", Sys.Date(), ".zip")},
     content = function(file) {
+      # REFERENCES ####
+      knitcitations::citep(citation("rangeModelMetadata"))
       tmpdir <- tempdir()
       owd <- setwd(tmpdir)
       namesSpp <- allSp()
@@ -1276,20 +1278,35 @@ function(input, output, session) {
     filename = function() {paste0("ref-packages-", Sys.Date(),
                                   filetype_to_ext(input$refFileType))},
     content = function(file) {
+      # Create BIB file
+      bib_file <- "Rmd/references.bib"
+      temp_bib_file <- tempfile(pattern = "ref_", fileext = ".bib")
+      # Package always cited
+      knitcitations::citep(citation("wallace"))
+      knitcitations::citep(citation("knitcitations"))
+      knitcitations::citep(citation("knitr"))
+      knitcitations::citep(citation("rmarkdown"))
+      knitcitations::citep(citation("raster"))
+      # Write BIBTEX file
+      knitcitations::write.bibtex(file = temp_bib_file)
+      # Replace NOTE fields with VERSION when R package
+      bib_ref <- readLines(temp_bib_file)
+      bib_ref  <- gsub(pattern = "note = \\{R package version", replace = "version = \\{R package", x = bib_ref)
+      writeLines(bib_ref, con = temp_bib_file)
+      file.rename(temp_bib_file, bib_file)
+      # Render reference file
       md_ref_file <- tempfile(pattern = "ref_", fileext = ".md")
       rmarkdown::render("Rmd/references.Rmd",
                         output_format =
                           switch(
-                            input$rmdFileType,
-                            "Rmd" = rmarkdown::github_document(html_preview = FALSE),
+                            input$refFileType,
                             "PDF" = rmarkdown::pdf_document(),
                             "HTML" = rmarkdown::html_document(),
                             "Word" = rmarkdown::word_document()
                           ),
-                        output_file = md_ref_file,
+                        output_file = file,
                         clean = TRUE,
                         encoding = "UTF-8")
-      file.rename(md_ref_file, file)
     })
 
   # Create a data structure that holds variables and functions used by modules

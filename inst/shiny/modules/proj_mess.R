@@ -43,6 +43,10 @@ proj_mess_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$project$messVals <- getRasterVals(mss)
     spp[[curSp()]]$rmm$code$wallace$MESS <- TRUE
     spp[[curSp()]]$rmm$code$wallace$MESSTime <- time
+
+    # REFERENCES
+    knitcitations::citep(citation("dismo"))
+
     # METADATA
     spp[[curSp()]]$rmm$prediction$uncertainty$extrapolation <-
       "MESS (multivariate environmental similarity surface)"

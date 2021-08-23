@@ -1,7 +1,8 @@
 ---
-title: REFERENCES (Wallace Session `r Sys.Date()`)
+title: 'REFERENCES (**)'
+bibliography: 'references.bib'
+nocite: '@*'
 ---
-
 ```{r, include=FALSE}
 library(knitr)
 knit_engines$set(asis = function(options) {
@@ -10,5 +11,4 @@ knit_engines$set(asis = function(options) {
 knitr::opts_chunk$set(message = FALSE, warning = FALSE, eval = FALSE)
 ```
 
-Insert References...
 

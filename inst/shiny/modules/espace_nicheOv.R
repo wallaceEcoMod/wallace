@@ -49,6 +49,9 @@ espace_nicheOv_module_server <- function(input, output, session, common) {
     # LOAD INTO SPP ####
     spp[[mspName]]$nicheOv <- nicheOv
 
+    # REFERENCES
+    knitcitations::citep(citation("ecospat"))
+
     common$update_component(tab = "Results")
   })
 

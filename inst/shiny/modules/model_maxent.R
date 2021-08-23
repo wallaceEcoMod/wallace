@@ -158,6 +158,11 @@ model_maxent_module_server <- function(input, output, session, common) {
       spp[[sp]]$rmm$model$algorithm$maxent$nCores <- input$numCores
 
     }
+    # REFERENCES
+    if (input$algMaxent == "maxent.jar") knitcitations::citep(citation("dismo"))
+    if (input$algMaxent == "maxnet") knitcitations::citep(citation("maxnet"))
+    knitcitations::citep(citation("ENMeval", auto = TRUE))
+
     common$update_component(tab = "Results")
 })
 

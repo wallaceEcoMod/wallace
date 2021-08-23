@@ -68,6 +68,10 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
       # LOAD INTO SPP ####
       spp[[sp]]$procEnvs$bgExt <- bgExt
 
+      # REFERENCES ####
+      knitcitations::citep(citation("rgeos"))
+      knitcitations::citep(citation("sp"))
+
       # METADATA ####
       spp[[sp]]$rmm$data$occurrence$backgroundSampleSizeRule <-
         paste0(input$bgSel, ', ', input$bgBuf, ' degree buffer')

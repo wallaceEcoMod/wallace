@@ -61,6 +61,9 @@ occs_paleoDb_module_server <- function(input, output, session, common) {
                       rmm = rangeModelMetadata::rmmTemplate(),
                       rmd = list())
 
+    # REFERENCES ####
+    knitcitations::citep(citation("paleobioDB"))
+
     # METADATA ####
     spp[[sp]]$rmm$data$occurrence$taxon <- sp
     spp[[sp]]$rmm$data$occurrence$dataType <- "presence only"

@@ -27,6 +27,9 @@ poccs_removeByID_module_server <- function(input, output, session, common) {
     # LOAD INTO SPP ####
     spp[[curSp()]]$occs <- occs.rem
 
+    # REFERENCES ####
+    knitcitations::citep(citation("leaflet.extras"))
+
     # METADATA ####
     # if no removeIDs are recorded yet, make a list to record them
     # if at least one exists, add to the list
