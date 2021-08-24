@@ -4,11 +4,11 @@ Using WorldClim (http://www.worldclim.org/) bioclimatic dataset at resolution of
 ```
 
 ```{r, echo = {{envs_worldclim_knit}}, include = {{envs_worldclim_knit}}}
-# Download environmental data (**)
+# Download environmental data 
 envs_{{spAbr}} <- envs_worldclim(
   bcRes = {{wcRes_rmd}}, 
   bcSel = {{bcSel_rmd}}, 
-  mapCntr = {{mapCntr_rmd}}, # Mandatory for 30 arcsec resolution (**)  
+  mapCntr = {{mapCntr_rmd}}, # Mandatory for 30 arcsec resolution   
   doBrick = {{wcBrick_rmd}})
 occs_xy_{{spAbr}} <- occs_{{spAbr}}[c('longitude', 'latitude')]
 occs_vals_{{spAbr}} <- as.data.frame(raster::extract(envs_{{spAbr}}, occs_xy_{{spAbr}}))

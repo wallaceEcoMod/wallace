@@ -5,7 +5,7 @@ You searched the `r "{{occDb_rmd}}"` database for *`r "{{spName}}"`*, limited to
 
 ```{asis, echo = {{occs_queryDb_knit & occs_citation_knit}}, eval = {{occs_queryDb_knit & occs_citation_knit}}, include = {{occs_queryDb_knit & occs_citation_knit}}}
 ### Obtain Occurrence Data
-You searched the `r "{{occDb_rmd}}"` database for *`r "{{spName}}"`*, limited to `r {{occNum_rmd}}` records, using the citation option (**). You decided to remove occurrences without uncertainty information? `r {{uncertainty_rmd}}`
+You searched the `r "{{occDb_rmd}}"` database for *`r "{{spName}}"`*, limited to `r {{occNum_rmd}}` records, using the citation option. You decided to remove occurrences without uncertainty information? `r {{uncertainty_rmd}}`
 ```
 
 ```{r, echo = {{occs_queryDb_knit & !occs_citation_knit}}, include = {{occs_queryDb_knit & !occs_citation_knit}}}
@@ -26,10 +26,10 @@ queryDb_{{spAbr}} <- occs_queryDb(
   doCitations = {{doCitations_rmd}},
   gbifUser = "{{gbifUser_rmd}}", 
   gbifEmail = "{{gbifEmail_rmd}}",
-  # Please type your GBIF password (**)
+  # Please type your GBIF password 
   gbifPW = "",
   RmUncertain = {{uncertainty_rmd}})
 occs_{{spAbr}} <- queryDb_{{spAbr}}${{sp}}$cleaned
-# Print DOI and date of your search (**)
+# Print DOI and date of your search 
 queryDb_{{spAbr}}${{sp}}$citation
 ```

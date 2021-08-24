@@ -90,7 +90,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
           if (is.null(login)) {
             logger %>% writeLog(
               type = 'error',
-              "There is an error in your GBIF credentials. Please check them (**)"
+              "There is an error in your GBIF credentials. Please check them"
             )
             return()
           }
@@ -102,7 +102,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
               writeLog(
                 type = "error",
                 hlSpp(formatSpName(sp)),
-                "There is no match in GBIF database. Please check the spelling. (**)"
+                "There is no match in GBIF database. Please check the spelling."
               )
             return()
           }
@@ -112,7 +112,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
                 type = 'warning',
                 hlSpp(inputMatch),
                 "There is no a stricly match in the GBIF search. Data ",
-                "downloaded corresponds to ", em(bestMatch), ". (**)")
+                "downloaded corresponds to ", em(bestMatch), ". ")
           }
 
           myBTO <- occCite::occQuery(x = sp,
@@ -143,7 +143,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
           logger %>%
             writeLog(
               hlSpp(formatSpName(sp)),
-              "(**) #CiteTheDOI: Gbif.org (", dateDOI,
+              " #CiteTheDOI: Gbif.org (", dateDOI,
               ") GBIF Ocurrence Download https://doi.org/", doiGBIF
             )
         }
@@ -165,7 +165,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
       logger %>%
         writeLog(type = 'error',
                  hlSpp(formatSpName(sp)),
-                 'No records found, please check the spelling. (**)')
+                 'No records found. Please check the spelling.')
       next
     }
     # extract occurrence tibbles
@@ -186,7 +186,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
       logger %>% writeLog(
         type = 'warning',
         hlSpp(formatSpName(sp)),
-        'No records with coordinates found in ', occDb, ". (**)")
+        'No records with coordinates found in ', occDb, ". ")
       return()
     }
     noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
@@ -253,10 +253,10 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
         dplyr::rename(scientific_name = scrubbed_species_binomial,
                                      institution_code = collection_code)
     }
-    noUncertainRem <-0
-    if (RmUncertain==TRUE){
+    noUncertainRem <- 0
+    if (RmUncertain == TRUE) {
 
-      occs <-occs[!is.na(occs$uncertainty),]
+      occs <- occs[!is.na(occs$uncertainty), ]
       noUncertainRem<- nrow(occsOrig) - (nrow(occs)+noCoordsRem)
       if(nrow(occs)==0){
         logger %>% writeLog(
@@ -287,18 +287,19 @@ occs <- occs[!dups,]
     # get total number of records found in database
     totRows <- q[[occDb]]$meta$found
 
-   if(RmUncertain==TRUE){
+   if (RmUncertain == TRUE) {
      logger %>%
-       writeLog(hlSpp(formatSpName(sp)), 'Total ', occDb, ' records returned [', nrow(occsOrig),
-                '] out of [', totRows, '] total',
+       writeLog(hlSpp(formatSpName(sp)), 'Total ', occDb, ' records returned [',
+                nrow(occsOrig), '] out of [', totRows, '] total',
                 if (!(doCitations | occDb == 'bien')) {paste0(' (limit ', occNum,')')},
-                '. Records without coordinates removed [', noCoordsRem, ']. Records without uncertainty information removed [',  noUncertainRem,
-                ']. Duplicated records removed [', dupsRem,
+                '. Records without coordinates removed [', noCoordsRem,
+                ']. Records without uncertainty information removed [',
+                noUncertainRem, ']. Duplicated records removed [', dupsRem,
                 ']. Remaining records [', nrow(occs), '].')
    }
     else {logger %>%
-      writeLog(hlSpp(formatSpName(sp)), 'Total ', occDb, ' records returned [', nrow(occsOrig),
-               '] out of [', totRows, '] total',
+      writeLog(hlSpp(formatSpName(sp)), 'Total ', occDb, ' records returned [',
+               nrow(occsOrig), '] out of [', totRows, '] total',
                if (!(doCitations | occDb == 'bien')) {paste0(' (limit ', occNum,')')},
                '. Records without coordinates removed [', noCoordsRem,
                ']. Duplicated records removed [', dupsRem,

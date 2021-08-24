@@ -9,8 +9,10 @@ occs_queryDb_module_ui <- function(id) {
                                       "BIEN" = 'bien'),
                           inline = TRUE)),
     tags$div(
-      title = "Check to get only occurrences with uncertainty information (**)",
-      checkboxInput(ns("uncertainty"), label = strong("Keep only occurrences with uncertainty values"), value = FALSE)
+      title = "Check to get only occurrences with uncertainty information",
+      checkboxInput(ns("uncertainty"),
+                    label = strong("Keep only occurrences with uncertainty values"),
+                    value = FALSE)
     ),
     conditionalPanel(
       sprintf("input['%s'] == 'gbif'", ns("occsDb")),
@@ -58,10 +60,18 @@ occs_queryDb_module_server <- function(input, output, session, common) {
 
   observeEvent(input$goDbOccs, {
     # WARNING ####
-    if ( input$occsDb!="bien" & input$occsNum < 1) {
-      logger %>% writeLog(type = 'warning',
-                          "Enter a non-zero number of occurrences.")
-      return()
+    if (input$occsDb != "bien") {
+      if (input$occsDb != "gbif" & input$occsNum < 1) {
+        logger %>% writeLog(type = 'warning',
+                            "Enter a non-zero number of occurrences.")
+        return()
+      }
+      if (input$occsDb == "gbif" & input$occsNum < 1 &
+          input$doCitations == FALSE) {
+        logger %>% writeLog(type = 'warning',
+                            "Enter a non-zero number of occurrences.")
+        return()
+      }
     }
 
     # FUNCTION CALL ####
@@ -84,6 +94,17 @@ occs_queryDb_module_server <- function(input, output, session, common) {
                         rmm = rangeModelMetadata::rmmTemplate(),
                         rmd = list())
 
+      # REFERENCES ####
+      if (input$occsDb == "bien") {
+        knitcitations::citep(citation("BIEN"))
+      } else {
+        if (input$doCitations) {
+          knitcitations::citep(citation("occCite"))
+        } else {
+          knitcitations::citep(citation("spocc"))
+        }
+      }
+
       # METADATA ####
       spp[[sp]]$rmm$data$occurrence$taxon <- sp
       spp[[sp]]$rmm$data$occurrence$dataType <- "presence only"
@@ -96,7 +117,8 @@ occs_queryDb_module_server <- function(input, output, session, common) {
         spp[[sp]]$rmm$code$wallace$occsNum <- nrow(occsList[[sp]]$orig)
       }
       spp[[sp]]$rmm$code$wallace$occsRemoved <- input$occsNum - nrow(occsList[[sp]]$cleaned)
-      # Store citations
+
+      # Store DOI citations
       if (input$doCitations) {
         spp[[sp]]$rmm$data$occurrence$sources <- input$occsDb
         spp[[sp]]$rmm$code$wallace$gbifDOI <- occsList[[sp]]$citation
@@ -107,6 +129,7 @@ occs_queryDb_module_server <- function(input, output, session, common) {
         spp[[sp]]$rmm$data$occurrence$sources <- input$occsDb
       }
     }
+
     common$update_component(tab = "Map")
   })
 

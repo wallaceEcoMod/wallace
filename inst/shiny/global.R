@@ -64,7 +64,8 @@ base_module_configs <- c(
   "modules/alpha_richness.yml",
   "modules/alpha_endemism.yml",
   "modules/rep_markdown.yml",
-  "modules/rep_rmms.yml"
+  "modules/rep_rmms.yml",
+  "modules/rep_refPackages.yml"
 )
 
 # Load user-defined modules

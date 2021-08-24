@@ -4,11 +4,11 @@ occs_userOccs_module_ui <- function(id) {
     fileInput(ns("userCSV"), label = "Upload Occurrence CSV", accept = ".csv"),
     checkboxInput(
       ns("noCSV"), value = FALSE,
-      label = "Do you want to define another delimiter-separated and decimal values? (**)"),
+      label = "Do you want to define delimiter-separated and decimal values?"),
     conditionalPanel(
       sprintf("input['%s'] == 1", ns("noCSV")),
-      textInput(ns("sepCSV"), label = "Define delimiter-separator (**)", value = ","),
-      textInput(ns("decCSV"), label = "Define decimal-separator (**)", value = ".")
+      textInput(ns("sepCSV"), label = "Define delimiter-separator", value = ","),
+      textInput(ns("decCSV"), label = "Define decimal-separator", value = ".")
     ),
     actionButton(ns("goUserOccs"), "Load Occurrences")
   )

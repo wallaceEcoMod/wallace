@@ -27,6 +27,12 @@ function(input, output, session) {
   component <- reactive({
     input$tabs
   })
+  observe({
+    if (component() == "_stopapp") {
+      shinyjs::runjs("window.close();")
+      stopApp()
+    }
+  })
   module <- reactive({
     if (component() == "intro") "intro"
     else input[[glue("{component()}Sel")]]
@@ -52,19 +58,11 @@ function(input, output, session) {
   })
 
   # Help Component
-  observeEvent(input$occsHelp, updateTabsetPanel(session, "main", "Component Guidance"))
-  observeEvent(input$envsHelp, updateTabsetPanel(session, "main", "Component Guidance"))
-  observeEvent(input$poccsHelp, updateTabsetPanel(session, "main", "Component Guidance"))
-  observeEvent(input$penvsHelp, updateTabsetPanel(session, "main", "Component Guidance"))
-  observeEvent(input$espaceHelp, updateTabsetPanel(session, "main", "Component Guidance"))
-  observeEvent(input$partHelp, updateTabsetPanel(session, "main", "Component Guidance"))
-  observeEvent(input$modelHelp, updateTabsetPanel(session, "main", "Component Guidance"))
-  observeEvent(input$visHelp, updateTabsetPanel(session, "main", "Component Guidance"))
-  observeEvent(input$projHelp, updateTabsetPanel(session, "main", "Component Guidance"))
-  observeEvent(input$postHelp, updateTabsetPanel(session, "main", "Component Guidance"))
-  observeEvent(input$maskHelp, updateTabsetPanel(session, "main", "Component Guidance"))
-  observeEvent(input$changeHelp, updateTabsetPanel(session, "main", "Component Guidance"))
-  observeEvent(input$alphaHelp, updateTabsetPanel(session, "main", "Component Guidance"))
+  help_components <- c("occs", "envs", "poccs", "penvs", "espace", "part", "model", "vis", "proj")
+  lapply(help_components, function(component) {
+    btn_id <- paste0(component, "Help")
+    observeEvent(input[[btn_id]], updateTabsetPanel(session, "main", "Component Guidance"))
+  })
 
   # Help Module
   observeEvent(input$occs_queryDbHelp, updateTabsetPanel(session, "main", "Module Guidance"))
@@ -231,6 +229,7 @@ function(input, output, session) {
    shinyjs::toggleState("dlOccDens", !is.null(spp[[paste0(curSp()[1],".",curSp()[2])]]$occDens))
    shinyjs::toggleState("dlNicheOvPlot", !is.null(spp[[paste0(curSp()[1],".",curSp()[2])]]$nicheOv))
  })
+
  observe({
    req(length(curSp()) > 2)
    shinyjs::toggleState("dlRich", !is.null(spp[["multisp"]]$SR))
@@ -238,7 +237,6 @@ function(input, output, session) {
    shinyjs::toggleState("dlSpListSR", !is.null(spp[["multisp"]]$ListSR))
    shinyjs::toggleState("dlSpListSE", !is.null(spp[["multisp"]]$ListSE))
  })
-
 
   # # # # # # # # # # # # # # # # # #
   # OBTAIN OCCS: other controls ####
@@ -261,8 +259,12 @@ function(input, output, session) {
     # make a named list of their names
     sppNameList <- c(list("Current species" = ""), setNames(as.list(n), n))
     # generate a selectInput ui that lists the available species
-    selectizeInput('curSp', label = NULL , choices = sppNameList,
-                   multiple = TRUE, selected = selected, options = options)
+    if (is.null(module())) {
+      span("...Select a module (**)...", class = "step")
+    } else {
+      selectizeInput('curSp', label = NULL, choices = sppNameList,
+                     multiple = TRUE, selected = selected, options = options)
+    }
   })
 
   curSp <- reactive(input$curSp)
@@ -316,7 +318,7 @@ function(input, output, session) {
     content = function(file) {
       l <- lapply(allSp(), function(x) {
         data.frame(spp[[x]]$occData$occsCleaned, stringsAsFactors = FALSE)
-        })
+      })
       tbl <- dplyr::bind_rows(l)
       tbl <- tbl %>% dplyr::select(-pop)
       write_csv_robust(tbl, file, row.names = FALSE)
@@ -371,23 +373,23 @@ function(input, output, session) {
     content = function(file) {
       withProgress(
         message = paste0("Preparing ", paste0(spp[[curSp()]]$envs, '_envs.zip ...')), {
-        tmpdir <- tempdir()
-        owd <- setwd(tmpdir)
-        on.exit(setwd(owd))
-        type <- input$globalEnvsFileType
-        nm <- names(envs.global[[spp[[curSp()]]$envs]])
+          tmpdir <- tempdir()
+          owd <- setwd(tmpdir)
+          on.exit(setwd(owd))
+          type <- input$globalEnvsFileType
+          nm <- names(envs.global[[spp[[curSp()]]$envs]])
 
-        raster::writeRaster(envs.global[[spp[[curSp()]]$envs]], nm, bylayer = TRUE,
-                            format = type, overwrite = TRUE)
-        ext <- switch(type, raster = 'grd', ascii = 'asc', GTiff = 'tif')
+          raster::writeRaster(envs.global[[spp[[curSp()]]$envs]], nm, bylayer = TRUE,
+                              format = type, overwrite = TRUE)
+          ext <- switch(type, raster = 'grd', ascii = 'asc', GTiff = 'tif')
 
-        fs <- paste0(nm, '.', ext)
-        if (ext == 'grd') {
-          fs <- c(fs, paste0(nm, '.gri'))
-        }
-        zip::zipr(zipfile = file, files = fs)
-        if (file.exists(paste0(file, ".zip"))) file.rename(paste0(file, ".zip"), file)
-      })
+          fs <- paste0(nm, '.', ext)
+          if (ext == 'grd') {
+            fs <- c(fs, paste0(nm, '.gri'))
+          }
+          zip::zipr(zipfile = file, files = fs)
+          if (file.exists(paste0(file, ".zip"))) file.rename(paste0(file, ".zip"), file)
+        })
     },
     contentType = "application/zip"
   )
@@ -414,23 +416,6 @@ function(input, output, session) {
   # # # # # # # # # # # # # # # # # #
   # PROCESS OCCS: other controls ####
   # # # # # # # # # # # # # # # # # #
-
-  # reset occurrences button functionality
-  observeEvent(input$goResetOccs, {
-    req(curSp())
-    spp[[curSp()]]$occs <- spp[[curSp()]]$occData$occsCleaned
-    spp[[curSp()]]$rmm$code$wallace$occsSelPolyCoords <- NULL
-    spp[[curSp()]]$procOccs$occsThin <- NULL
-    spp[[curSp()]]$rmm$code$wallace$removedIDs <- NULL
-    logger %>% writeLog(
-      hlSpp(curSp()), "Reset to original occurrences (n = ",
-      nrow(spp[[curSp()]]$occs), ").")
-    # MAPPING
-    map %>%
-      map_occs(occs()) %>%
-      zoom2Occs(occs())
-  })
-
   # DOWNLOAD: current processed occurrence data table
   output$dlProcOccs <- downloadHandler(
     filename = function() paste0(curSp(), "_processed_occs.csv"),
@@ -459,9 +444,9 @@ function(input, output, session) {
   bgShpXY <- reactive({
     req(bgExt())
     polys <- bgExt()@polygons[[1]]@Polygons
-    if(length(polys) == 1) {
+    if (length(polys) == 1) {
       xy <- list(polys[[1]]@coords)
-    }else{
+    } else{
       xy <- lapply(polys, function(x) x@coords)
     }
     return(xy)
@@ -525,22 +510,6 @@ function(input, output, session) {
     }
   )
 
-  # reset background button functionality
-  observeEvent(input$goReset_penvs, {
-    req(curSp())
-    spp[[curSp()]]$procEnvs$bgExt <- NULL
-    spp[[curSp()]]$procEnvs$bgMask <- NULL
-    spp[[curSp()]]$bg <- NULL
-    spp[[curSp()]]$bgPts <- NULL
-    spp[[curSp()]]$rmm$data$occurrence$backgroundSampleSizeSet <- NULL
-    logger %>% writeLog(
-      hlSpp(curSp()), "Reset background extent and background points (**).")
-    # MAPPING
-    map %>%
-      map_occs(occs()) %>%
-      zoom2Occs(occs())
-  })
-
   ############################################## #
   ### COMPONENT: SAMPLING BIAS ####
   ############################################## #
@@ -591,8 +560,8 @@ function(input, output, session) {
       req(spp[[mSp]]$pca)
       png(paste0("pcaScatterOccs.png"), width = 500, height = 500)
       #png(paste0(tmpdir, "\\pcaScatterOccs.png"), width = 500, height = 500)
-        x <- spp[[mSp]]$pca$scores[spp[[mSp]]$pca$scores$bg == 'sp', ]
-        x.f <- factor(x$sp)
+      x <- spp[[mSp]]$pca$scores[spp[[mSp]]$pca$scores$bg == 'sp', ]
+      x.f <- factor(x$sp)
       ade4::s.class(x, x.f, xax = 1, yax = 2,
                     col = c("red", "blue"), cstar = 0, cpoint = 0.1)
       dev.off()
@@ -757,7 +726,7 @@ function(input, output, session) {
     envList <- setNames(as.list(n), n)
     shinyWidgets::pickerInput(
       "selCatEnvs",
-      label = "Select categorical variables (**)",
+      label = "Select categorical variables",
       choices = envList,
       multiple = TRUE)
   })
@@ -839,7 +808,7 @@ function(input, output, session) {
       setwd(owd)
       fs<-paste0(gsub("[[:punct:]]", "_", parEval), ".png")
       zip::zipr(zipfile = file,
-               files = fs)
+                files = fs)
       setwd(owd)
     }
   )
@@ -894,9 +863,9 @@ function(input, output, session) {
           req(mapPred())
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
-              writeLog(type = "error", "To download PNG prediction, you require to",
+              writeLog(type = "error", "To download PNG prediction, you're required to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
-                       " in you are R console. (**)")
+                       " in you are R console.")
           }
           if (rmm()$prediction$binary$thresholdRule != 'none') {
             mapPredVals <- 0:1
@@ -967,18 +936,6 @@ function(input, output, session) {
   # convenience function for mapped model prediction raster for current species
   mapProj <- reactive(spp[[curSp()]]$project$mapProj)
 
-  # Reset Projection Extent button functionality
-  observeEvent(input$goResetProj, {
-    map %>%
-      removeShape("projExt") %>%
-      removeImage("projRas") %>%
-      removeControl("proj")
-    spp[[curSp()]]$polyPjXY <- NULL
-    spp[[curSp()]]$polyPjID <- NULL
-    spp[[curSp()]]$project <- NULL
-    logger %>% writeLog("Reset projection extent.")
-  })
-
   # DOWNLOAD: Shapefile of projection extent
   output$dlPjShp <- downloadHandler(
     filename = function() paste0(curSp(), '_projShp.zip'),
@@ -1047,9 +1004,9 @@ function(input, output, session) {
           req(mapProj())
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
-              writeLog(type = "error", "To download PNG prediction, you require to",
+              writeLog(type = "error", "To download PNG prediction, you're required to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
-                       " in you are R console. (**)")
+                       " in you are R console.")
           }
           if (rmm()$prediction$transfer$environment1$thresholdRule != 'none') {
             mapProjVals <- 0:1
@@ -1125,9 +1082,9 @@ function(input, output, session) {
         if (input$messFileType == 'png') {
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
-              writeLog(type = "error", "To download PNG prediction, you require to",
+              writeLog(type = "error", "To download PNG prediction, you're required to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
-                       " in you are R console. (**)")
+                       " in you are R console.")
           }
           rasVals <- spp[[curSp()]]$project$messVals
           polyPjXY <- spp[[curSp()]]$project$pjExt@polygons[[1]]@Polygons
@@ -1815,6 +1772,8 @@ function(input, output, session) {
   output$dlRMM <- downloadHandler(
     filename = function() {paste0("wallace-metadata-", Sys.Date(), ".zip")},
     content = function(file) {
+      # REFERENCES ####
+      knitcitations::citep(citation("rangeModelMetadata"))
       tmpdir <- tempdir()
       owd <- setwd(tmpdir)
       namesSpp <- allSp()
@@ -1823,7 +1782,46 @@ function(input, output, session) {
       }
       zip::zipr(zipfile = file, files = paste0(namesSpp, "_RMM.csv"))
       setwd(owd)
-  })
+    })
+
+  ################################
+  ### REFERENCE FUNCTIONALITY ####
+  ################################
+
+  output$dlrefPackages <- downloadHandler(
+    filename = function() {paste0("ref-packages-", Sys.Date(),
+                                  filetype_to_ext(input$refFileType))},
+    content = function(file) {
+      # Create BIB file
+      bib_file <- "Rmd/references.bib"
+      temp_bib_file <- tempfile(pattern = "ref_", fileext = ".bib")
+      # Package always cited
+      knitcitations::citep(citation("wallace"))
+      knitcitations::citep(citation("knitcitations"))
+      knitcitations::citep(citation("knitr"))
+      knitcitations::citep(citation("rmarkdown"))
+      knitcitations::citep(citation("raster"))
+      # Write BIBTEX file
+      knitcitations::write.bibtex(file = temp_bib_file)
+      # Replace NOTE fields with VERSION when R package
+      bib_ref <- readLines(temp_bib_file)
+      bib_ref  <- gsub(pattern = "note = \\{R package version", replace = "version = \\{R package", x = bib_ref)
+      writeLines(bib_ref, con = temp_bib_file)
+      file.rename(temp_bib_file, bib_file)
+      # Render reference file
+      md_ref_file <- tempfile(pattern = "ref_", fileext = ".md")
+      rmarkdown::render("Rmd/references.Rmd",
+                        output_format =
+                          switch(
+                            input$refFileType,
+                            "PDF" = rmarkdown::pdf_document(),
+                            "HTML" = rmarkdown::html_document(),
+                            "Word" = rmarkdown::word_document()
+                          ),
+                        output_file = file,
+                        clean = TRUE,
+                        encoding = "UTF-8")
+    })
 
   bioSp <- reactive(input$bioSp)
 
@@ -1872,10 +1870,16 @@ function(input, output, session) {
       updateTabsetPanel(session, "main", selected = tab)
     },
 
-    # Remove a specific module so that it will not be selectable in the UI
-    remove_module = function(component = COMPONENTS, module) {
+    # Disable a specific module so that it will not be selectable in the UI
+    disable_module = function(component = COMPONENTS, module) {
       component <- match.arg(component)
-      shinyjs::js$removeModule(component = component, module = module)
+      shinyjs::js$disableModule(component = component, module = module)
+    },
+
+    # Enable a specific module so that it will be selectable in the UI
+    enable_module = function(component = COMPONENTS, module) {
+      component <- match.arg(component)
+      shinyjs::js$enableModule(component = component, module = module)
     }
   )
 
@@ -1995,11 +1999,11 @@ function(input, output, session) {
       }
     }
     if (is.null(noEnvsSpp)) {
-      shinyalert::shinyalert(title = "Session loaded (**)", type = "success")
+      shinyalert::shinyalert(title = "Session loaded", type = "success")
     } else {
       msgEnvAgain <- paste0("Load variables again for: ",
                             paste0(noEnvsSpp, collapse = ", "))
-      shinyalert::shinyalert(title = "Session loaded (**)", type = "warning",
+      shinyalert::shinyalert(title = "Session loaded", type = "warning",
                              text = msgEnvAgain)
     }
   })

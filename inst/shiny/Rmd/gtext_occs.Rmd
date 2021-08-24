@@ -3,7 +3,7 @@ title: "occs"
 output: html_document
 ---
 
-### **Component: Obtain Occurrence Records**
+### **Component: Obtain Occurrence Data**
 
 **ORIENTATION**
 

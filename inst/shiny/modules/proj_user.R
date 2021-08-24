@@ -2,11 +2,11 @@ proj_user_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
     span("Step 1:", class = "step"),
-    span("Choose Study Region (**)", class = "stepText"), br(), br(),
-    selectInput(ns('projExt'), label = "Select method (**)",
-                choices = list("Draw polygon(**)" = 'pjDraw',
-                               "Same extent (**)" = 'pjCur',
-                               "User-specified polygon(**)" = 'pjUser')),
+    span("Choose Study Region", class = "stepText"), br(), br(),
+    selectInput(ns('projExt'), label = "Select method",
+                choices = list("Draw polygon" = 'pjDraw',
+                               "Same extent" = 'pjCur',
+                               "User-specified polygon" = 'pjUser')),
     conditionalPanel(sprintf("input['%s'] == 'pjUser'", ns("projExt")),
                      fileInput(
                        ns("userPjShp"),
@@ -24,7 +24,7 @@ proj_user_module_ui <- function(id) {
                                     value = 0, min = 0, step = 0.5)
                      )),
     conditionalPanel(sprintf("input['%s'] == 'pjDraw'", ns("projExt")),
-                     p("Draw a polygon and select buffer distance(**)"),
+                     p("Draw a polygon and select buffer distance"),
                      tags$div(
                        title = paste0(
                          'Buffer area in degrees (1 degree = ~111 km). Exact',
@@ -36,17 +36,17 @@ proj_user_module_ui <- function(id) {
                          value = 0, min = 0, step = 0.5)
                      )),
     conditionalPanel(sprintf("input['%s'] == 'pjCur'", ns("projExt")),
-                     p('You will use the same extent (**)')),
-    actionButton(ns("goProjExtUser"), "Create(**)"), br(),
-    tags$hr(),
+                     p('You will use the same extent')),
+    actionButton(ns("goProjExtUser"), "Create"), br(),
+    tags$hr(class = "hrDotted"),
     span("Step 2:", class = "step"),
-    span("Project (**)", class = "stepText"), br(),
-    p("Project model to projected extent (red) (**)"),
+    span("Project", class = "stepText"), br(),
+    p("Project model to projected extent (red) "),
     uiOutput(ns("projUserNames")),
     fileInput(ns("userProjEnvs"),
               label = paste0('Input rasters in single-file format (i.e. .tif, ',
                              '.asc). All rasters must have the same extent and ',
-                             'resolution (cell size). (**)'),
+                             'resolution (cell size).'),
               accept = c(".asc", ".tif"), multiple = TRUE),
     tags$div(title = paste0('Create binary map of predicted presence/absence ',
                             'assuming all values above threshold value represent ',
@@ -62,7 +62,10 @@ proj_user_module_ui <- function(id) {
                                  min = 0, max = 1, value = .05)),
     conditionalPanel(paste0("input['", ns("threshold"), "'] == 'none'"),
                      uiOutput(ns("noThrs"))),
-    actionButton(ns('goProjectUser'), "Project")
+    actionButton(ns('goProjectUser'), "Project"),
+    tags$hr(class = "hrDashed"),
+    actionButton(ns("goResetProj"), "Reset", class = 'butReset'),
+    strong(" projection extent")
   )
 }
 
@@ -81,7 +84,7 @@ proj_user_module_server <- function(input, output, session, common) {
     ns <- session$ns
     req(curSp(), evalOut())
     if (spp[[curSp()]]$rmm$model$algorithms != "BIOCLIM") {
-      h5("Prediction output is the same than Visualize component (**)")
+      h5("Prediction output is the same than Visualize component")
     }
   })
 
@@ -93,7 +96,7 @@ proj_user_module_server <- function(input, output, session, common) {
     if(is.null(spp[[sp]]$envs)) return()
     envNames <- names(envs.global[[spp[[sp]]$envs]])
     tagList(
-      tags$em("Your files must be named as: (**)"),
+      tags$em("Your files must be named as: "),
       tags$p(paste(spp[[curSp()]]$rmm$data$environment$variableNames,
                    collapse = ", "))
     )
@@ -123,7 +126,7 @@ proj_user_module_server <- function(input, output, session, common) {
     }
     if (input$projExt == 'pjUser') {
       if (is.null(input$userPjShp$datapath)) {
-        logger %>% writeLog(type = 'error', paste0("Specified filepath(s) (**)"))
+        logger %>% writeLog(type = 'error', paste0("Specified filepath(s)"))
         return()
       }
     }
@@ -134,11 +137,11 @@ proj_user_module_server <- function(input, output, session, common) {
                           input$drawPjBuf, logger, spN = curSp())
       if (input$drawPjBuf == 0 ) {
         logger %>% writeLog(
-          hlSpp(curSp()), 'Draw polygon without buffer(**).')
+          hlSpp(curSp()), 'Draw polygon without buffer.')
       } else {
         logger %>% writeLog(
           hlSpp(curSp()), 'Draw polygon with buffer of ', input$drawPjBuf,
-          ' degrees (**).')
+          ' degrees.')
       }
       # METADATA ####
       spp[[curSp()]]$rmm$code$wallace$PjBuff <- input$drawPjBuf
@@ -174,7 +177,7 @@ proj_user_module_server <- function(input, output, session, common) {
       polyPj <- spp[[curSp()]]$procEnvs$bgExt
       logger %>% writeLog(
         hlSpp(curSp()),
-        'Projection extent equal to current extent region. (**)')
+        'Projection extent equal to current extent region.')
     }
     # LOAD INTO SPP ####
     spp[[curSp()]]$project$pjExt <- polyPj
@@ -203,7 +206,7 @@ proj_user_module_server <- function(input, output, session, common) {
         length(spp[[curSp()]]$rmm$data$environment$variableNames)) {
       logger %>%
         writeLog(type = 'error', "Number of files are not the same that the ",
-                 "enviromental variables (**)")
+                 "enviromental variables")
       return()
     }
     # Check if the filesnames are the same that envs()
@@ -212,7 +215,7 @@ proj_user_module_server <- function(input, output, session, common) {
       logger %>%
         writeLog(type = 'error',
                  paste0("Raster files don't have same names. You must name your",
-                        " files as: (**) "),
+                        " files as: "),
                  em(paste(spp[[curSp()]]$rmm$data$environment$variableNames,
                           collapse = ", ")), ".")
       return()
@@ -227,7 +230,7 @@ proj_user_module_server <- function(input, output, session, common) {
     if (!rgeos::gIntersects(spp[[curSp()]]$project$pjExt,
                             as(raster::extent(userProjEnvs), 'SpatialPolygons'))) {
       logger %>%
-        writeLog(type = 'error', 'Extents do not overlap (**)')
+        writeLog(type = 'error', 'Extents do not overlap')
       return()
     }
 
@@ -269,12 +272,12 @@ proj_user_module_server <- function(input, output, session, common) {
         thr <- quantile(occPredVals, probs = input$trainPresQuantile)
       }
       projUserThr <- projUser > thr
-      logger %>% writeLog(hlSpp(curSp()), "Projection of model to user-specified files (**)",
+      logger %>% writeLog(hlSpp(curSp()), "Projection of model to user-specified files",
                           'with threshold ', input$threshold, ' (',
                           formatC(thr, format = "e", 2), ').')
     } else {
       projUserThr <- projUser
-      logger %>% writeLog(hlSpp(curSp()), "Projection of model to user-specified files (**)",
+      logger %>% writeLog(hlSpp(curSp()), "Projection of model to user-specified files",
                           'with ', predType, ' output.')
     }
     raster::crs(projUserThr) <- raster::crs(envs())
@@ -320,6 +323,14 @@ proj_user_module_server <- function(input, output, session, common) {
     }
     spp[[curSp()]]$rmm$prediction$transfer$notes <- NULL
     spp[[curSp()]]$rmm$code$wallace$userPjName <- input$userProjEnvs$name
+  })
+
+  # Reset Projection Extent button functionality
+  observeEvent(input$goResetProj, {
+    spp[[curSp()]]$polyPjXY <- NULL
+    spp[[curSp()]]$polyPjID <- NULL
+    spp[[curSp()]]$project <- NULL
+    logger %>% writeLog("Reset projection extent.")
   })
 
   return(list(

@@ -3,7 +3,7 @@ envs_userEnvs_module_ui <- function(id) {
   tagList(
     checkboxInput(
       ns("doBrick"),
-      label = "Save to memory for faster processing and save/load option (**)",
+      label = "Save to memory for faster processing and save/load option",
       value = FALSE), # Check default (value = FALSE)
     fileInput(ns("userEnvs"), label = "Input rasters",
               accept = c(".tif", ".asc"), multiple = TRUE),
@@ -71,7 +71,7 @@ envs_userEnvs_module_server <- function(input, output, session, common) {
 
       logger %>% writeLog(hlSpp(sp), "User specified variables (",
                           paste(names(userEnvs), collapse = ", "),
-                          ") ready to use. (**)")
+                          ") ready to use.")
 
 
       # LOAD INTO SPP ####
@@ -100,7 +100,7 @@ envs_userEnvs_module_server <- function(input, output, session, common) {
     }
 
     common$update_component(tab = "Results")
-    common$remove_module(component = "proj", module = "projTime")
+    common$disable_module(component = "proj", module = "projTime")
   })
 
   output$envsPrint <- renderPrint({

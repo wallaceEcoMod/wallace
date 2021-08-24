@@ -26,5 +26,9 @@ run_wallace <- function(launch.browser = TRUE, port = getOption("shiny.port"),
     wallace::register_module(paste0(app_path, "/custom_modules/occs_biomodelos.yml"))
     wallace::register_module(paste0(app_path, "/custom_modules/rep_biomodelos.yml"))
   }
+  knitcitations::cleanbib()
+  options("citation_format" = "pandoc")
+  preexisting_objects <- ls(envir = .GlobalEnv)
+  on.exit(rm(list = setdiff(ls(envir = .GlobalEnv), preexisting_objects), envir = .GlobalEnv))
   return(shiny::runApp(app_path, launch.browser = launch.browser, port = port))
 }

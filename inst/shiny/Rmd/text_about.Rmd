@@ -3,19 +3,20 @@ title: "about"
 output: html_document
 ---
 
-#### *Wallace* was created by an international team of ecologists:
+#### *Wallace* was created by an international team of ecologists and biogeographers:  
+<br>
+<img src="img/gonzalo.png" alt="gonzalo" style="width: 100px;"/>
+
+<a href="https://www.researchgate.net/profile/Gonzalo_Pinilla-Buitrago" target="_blank">Gonzalo E. Pinilla-Buitrago</a> (lead developer) is PhD candidate at CUNY Graduate Center and City College of New York.
 
 <img src="img/jamie.jpg" alt="jamie" style="width: 100px;"/>
 
-<a href="https://www.researchgate.net/profile/Jamie_Kass" target="_blank">Jamie M. Kass</a> (lead developer) is a coauthor of ENMeval and currently a PhD candidate at CUNY Graduate Center and City College of New York. In 2019, he will begain a JSPS postdoctoral fellowship at Okinawa Institute of Science and Technology in Japan.
+<a href="https://www.researchgate.net/profile/Jamie_Kass" target="_blank">Jamie M. Kass</a> ( co-developer) is a coauthor of ENMeval and currently a PhD candidate at CUNY Graduate Center and City College of New York. In 2019, he will begain a JSPS postdoctoral fellowship at Okinawa Institute of Science and Technology in Japan.
  
 <img src="img/andrea.png" alt="andrea" style="width: 100px;"/>
 
 <a href="https://andrepazv.github.io" target="_blank">Andrea Paz</a> (co-developer) is PhD candidate at CUNY Graduate Center and City College of New York graduating in the spring 2021.
 
-<img src="img/gonzalo.png" alt="gonzalo" style="width: 100px;"/>
-
-<a href="https://www.researchgate.net/profile/Gonzalo_Pinilla-Buitrago" target="_blank">Gonzalo E. Pinilla-Buitrago</a> (co-developer) is PhD candidate at CUNY Graduate Center and City College of New York.
 
 <img src="img/bethany.jpg" alt="bethany" style="width: 100px;"/>
 
@@ -39,7 +40,7 @@ Bethany Johnson (co-developer) Graduated with a BS in Biology from the City Coll
 
 <img src="img/rob.png" alt="rob" style="width: 100px;"/>
 
-<a href="https://www.researchgate.net/profile/Robert_Anderson7" target="_blank">Robert P. Anderson</a> (co-developer) is a coauthor of spThin and ENMeval, and Professor of Biology at City College of New York, CUNY. 
+<a href="https://scholar.google.com/citations?user=KSRr5EQAAAAJ&hl=en&oi=ao" target="_blank">Robert P. Anderson</a> (co-developer) is a coauthor of spThin and ENMeval, and Professor of Biology at City College of New York, CUNY. 
 
 <img src="img/valentina.png" alt="valentina" style="width: 100px;"/>
 
@@ -47,4 +48,4 @@ Bethany Johnson (co-developer) Graduated with a BS in Biology from the City Coll
 
 <img src="img/sarah.png" alt="sarah" style="width: 100px;"/>
 
-Sarah Mennan (collaborator) recently completed her undergraduate degree from the City College of New York.
+Sarah Meenan (collaborator) recently completed her undergraduate degree from the City College of New York.

@@ -194,6 +194,9 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
     }
     spp[[curSp()]]$rmm$prediction$notes <- predType
 
+    # REFERENCES
+    knitcitations::citep(citation("dismo"))
+
 
     common$update_component(tab = "Map")
   })

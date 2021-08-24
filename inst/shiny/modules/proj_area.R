@@ -2,10 +2,10 @@ proj_area_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
     span("Step 1:", class = "step"),
-    span("Choose Study Region (**)", class = "stepText"), br(), br(),
-    selectInput(ns('projExt'), label = "Select method (**)",
-      choices = list("Draw polygon(**)" = 'pjDraw',
-                     "User-specified polygon(**)" = 'pjUser')),
+    span("Choose Study Region", class = "stepText"), br(), br(),
+    selectInput(ns('projExt'), label = "Select method",
+      choices = list("Draw polygon" = 'pjDraw',
+                     "User-specified polygon" = 'pjUser')),
     conditionalPanel(sprintf("input['%s'] == 'pjUser'", ns("projExt")),
       fileInput(ns("userPjShp"),
                 label = paste0('Upload polygon in shapefile (.shp, .shx, .dbf) or ',
@@ -16,16 +16,16 @@ proj_area_module_ui <- function(id) {
         numericInput(ns("userPjBuf"), label = "Study region buffer distance (degree)",
                      value = 0, min = 0, step = 0.5))),
     conditionalPanel(sprintf("input['%s'] == 'pjDraw'", ns("projExt")),
-      p("Draw a polygon and select buffer distance(**)"),
+      p("Draw a polygon and select buffer distance"),
       tags$div(title = paste0('Buffer area in degrees (1 degree = ~111 km). Exact',
                               ' length varies based on latitudinal position.'),
         numericInput(ns("drawPjBuf"), label = "Study region buffer distance (degree)",
                      value = 0, min = 0, step = 0.5))),
-    actionButton(ns("goProjExtArea"), "Create(**)"), br(),
-    tags$hr(),
+    actionButton(ns("goProjExtArea"), "Create"), br(),
+    tags$hr(class = "hrDotted"),
     span("Step 2:", class = "step"),
-    span("Project (**)", class = "stepText"), br(),
-    p("Project model to project extent (red) (**)"),
+    span("Project", class = "stepText"), br(),
+    p("Project model to project extent (red) "),
     tags$div(
       title = paste0(
         'Create binary map of predicted presence/absence assuming ',
@@ -42,7 +42,10 @@ proj_area_module_ui <- function(id) {
                   min = 0, max = 1, value = .05)),
     conditionalPanel(paste0("input['", ns("threshold"), "'] == 'none'"),
                      uiOutput(ns("noThrs"))),
-    actionButton(ns('goProjectArea'), "Project")
+    actionButton(ns('goProjectArea'), "Project"),
+    tags$hr(class = "hrDashed"),
+    actionButton(ns("goResetProj"), "Reset", class = 'butReset'),
+    strong(" projection extent ")
   )
 }
 
@@ -60,7 +63,7 @@ proj_area_module_server <- function(input, output, session, common) {
     ns <- session$ns
     req(curSp(), evalOut())
     if (spp[[curSp()]]$rmm$model$algorithms != "BIOCLIM") {
-      h5("Prediction output is the same than Visualize component (**)")
+      h5("Prediction output is the same than Visualize component ")
     }
   })
 
@@ -82,7 +85,7 @@ proj_area_module_server <- function(input, output, session, common) {
     }
     if (input$projExt == 'pjUser') {
       if (is.null(input$userPjShp$datapath)) {
-        logger %>% writeLog(type = 'error', "Specified filepath(s) (**)")
+        logger %>% writeLog(type = 'error', "Specified filepath(s) ")
         return()
       }
     }
@@ -93,11 +96,11 @@ proj_area_module_server <- function(input, output, session, common) {
                           input$drawPjBuf, logger, spN = curSp())
       if (input$drawPjBuf == 0 ) {
         logger %>% writeLog(
-          hlSpp(curSp()), 'Draw polygon without buffer(**).')
+          hlSpp(curSp()), 'Draw polygon without buffer.')
       } else {
         logger %>% writeLog(
           hlSpp(curSp()), 'Draw polygon with buffer of ', input$drawPjBuf,
-          ' degrees (**).')
+          ' degrees.')
       }
       # METADATA ####
       polyX <- printVecAsis(round(spp[[curSp()]]$polyPjXY[, 1], digits = 4))
@@ -242,6 +245,14 @@ proj_area_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$rmm$prediction$transfer$notes <- NULL
 
     common$update_component(tab = "Map")
+  })
+
+  # Reset Projection Extent button functionality
+  observeEvent(input$goResetProj, {
+    spp[[curSp()]]$polyPjXY <- NULL
+    spp[[curSp()]]$polyPjID <- NULL
+    spp[[curSp()]]$project <- NULL
+    logger %>% writeLog("Reset projection extent.")
   })
 
   return(list(

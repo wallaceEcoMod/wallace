@@ -3,6 +3,12 @@ Version: 1.9.0
 Date: 2018-11-14
 Title: A Modular Platform for Reproducible Modeling of Species Niches 
     and Distributions
+Description: The 'shiny' application Wallace is a modular platform for 
+    reproducible modeling of species niches and distributions. Wallace
+    guides users through a complete analysis, from the acquisition of species
+    occurrence and environmental data to visualizing model predictions on an 
+    interactive map, thus bundling complex workflows into a single, 
+    streamlined interface.
 Authors@R: 
     c(person("Jamie M.", "Kass", email = "jkass@gradcenter.cuny.edu", role = c("aut", "cre")),
     person("Gonzalo E.", "Pinilla-Buitrago", email = "gpinillabuitrago@gradcenter.cuny.edu", role = "aut"),
@@ -13,17 +19,6 @@ Authors@R:
 	  person("Cory", "Merow", email = "corymerow@gmail.com", role = "aut"),
 	  person("Robert P.", "Anderson", email = "randerson@ccny.cuny.edu", role = "aut"),
 	  person("Dean", "Attali", email = "daattali@gmail.com", role = "aut"))
-Author: 
-    Jamie M. Kass [aut, cre],
-    Gonzalo E. Pinilla-Buitrago [aut],
-    Andrea Paz [aut],
-    Bruno Vilela [aut],
-    Matthew E. Aiello-Lammens [aut],
-    Robert Muscarella [aut],
-    Cory Merow [aut],
-    Robert P. Anderson [aut],
-    Dean Attali [aut]
-Maintainer: Jamie M. Kass <jamie.m.kass@gmail.com>
 Depends:
     R (>= 3.5.0),
     ENMeval (>= 2.0.0),
@@ -41,6 +36,7 @@ Imports:
     gam,
     glue,
     geojsonsf,
+    knitcitations,
     leafem,
     leaflet.extras (>= 1.0.0),
     magrittr,
@@ -49,6 +45,7 @@ Imports:
     mapview,
     maxnet,
     neotoma,
+    occCite,
     paleobioDB,
     pryr,
     rangeModelMetadata,
@@ -71,17 +68,12 @@ Imports:
     tools,
     XML,
     zip
-Description: The 'shiny' application Wallace is a modular platform for 
-    reproducible modeling of species niches and distributions. Wallace
-    guides users through a complete analysis, from the acquisition of species
-    occurrence and environmental data to visualizing model predictions on an 
-    interactive map, thus bundling complex workflows into a single, 
-    streamlined interface.
+Suggests: 
+    knitr,
+    testthat, 
+    RSelenium
 License: GPL-3
 URL: https://wallaceEcoMod.github.io
 Encoding: UTF-8
 RoxygenNote: 7.1.1
-Suggests: knitr, testthat, RSelenium
-NeedsCompilation: no
-Packaged: 2017-11-29 05:26:31 UTC; musasabi
 VignetteBuilder: knitr

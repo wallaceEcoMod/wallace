@@ -13,7 +13,7 @@
   width:450px;
   padding:5px;
   overflow:auto;
-  border:1px solid green;
+  border:1px solid grey;
 }
 hr {
     border: none;
@@ -40,7 +40,7 @@ hr {
   font-size:14pt;
 }
 .rpkg {
-  font-size:12pt;
+  font-size:10pt;
   font-weight:bold;
 }
 .mod {
@@ -60,12 +60,17 @@ hr {
 .modHelpButton:focus {
   color:#699FA1;
 }
+.pkgTitl {
+  font-size:10pt;
+  font-weight:bold;
+  font-style:italic;
+}
 .pkgDes {
   font-size:10pt;
   font-style:italic;
 }
 .step {
-  color:red;
+  color: #DD8627;
   font-weight:bold;
   font-size:14pt;
 }
@@ -73,13 +78,13 @@ hr {
   font-style:italic;
   font-size:14pt;
 }
-.butResOccs {
+.butReset {
   background-color: #C51E10;
   color: white;
   padding: 5px 5px;
   border: none;
 }
-.butResOccs:hover {
+.butReset:hover {
   background-color: #830D03;
   color: white;
 }
@@ -89,13 +94,28 @@ hr {
   padding: 1px 1px;
   border: none;
 }
-.butResPj:hover {
-  background-color: #830D03;
-  color: white;
+.hrDashed {
+  border: 0;
+  border-bottom: 1px dashed #606060;
+  background: transparent;
 }
+.hrDotted {
+  border: 0;
+  border-bottom: 1px dotted #606060;
+  background: transparent;
+}
+
 .leaflet-top {
   z-index: 999 !important;
 }
 #save_warning {
   color: red;
+}
+.save_icon {
+  color:#606060;
+  margin:0px;
+}
+.mod_icon {
+  color:#699FA1;
+  margin:0px;
 }

@@ -1,0 +1,14 @@
+---
+title: 'REFERENCES (**)'
+bibliography: 'references.bib'
+nocite: '@*'
+---
+```{r, include=FALSE}
+library(knitr)
+knit_engines$set(asis = function(options) {
+  if (options$echo && options$eval) knit_child(text = options$code)
+})
+knitr::opts_chunk$set(message = FALSE, warning = FALSE, eval = FALSE)
+```
+
+

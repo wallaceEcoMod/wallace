@@ -17,7 +17,7 @@ penvs_bgExtent_module_ui <- function(id) {
       checkboxInput(ns("batch1"), label = strong("Batch"), value = FALSE) # Check default (value = FALSE)
     ),
     actionButton(ns("goBgExt"), "Select"),
-    tags$hr(),
+    tags$hr(class = "hrDotted"),
     span("Step 2:", class = "step"),
     span("Sample Background Points", class = "stepText"), br(), br(),
     strong(paste0('Mask predictor rasters by background extent and sample',
@@ -28,7 +28,10 @@ penvs_bgExtent_module_ui <- function(id) {
       title = "Add Batch guidance text here (**)",
       checkboxInput(ns("batch2"), label = strong("Batch"), value = FALSE) # Check default (value = FALSE)
     ),
-    actionButton(ns("goBgMask"), "Sample")
+    actionButton(ns("goBgMask"), "Sample"),
+    tags$hr(class = "hrDashed"),
+    actionButton(ns("goReset_penvs"), "Reset", class = 'butReset'),
+    strong(" background")
   )
 }
 
@@ -64,6 +67,10 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
 
       # LOAD INTO SPP ####
       spp[[sp]]$procEnvs$bgExt <- bgExt
+
+      # REFERENCES ####
+      knitcitations::citep(citation("rgeos"))
+      knitcitations::citep(citation("sp"))
 
       # METADATA ####
       spp[[sp]]$rmm$data$occurrence$backgroundSampleSizeRule <-
@@ -102,7 +109,7 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
             type = "error", hlSpp(sp),
             "Number of requested background points (n = ", input$bgPtsNum, ") is ",
             "higher than the maximum points available on the background extent ",
-            "(n = ", bgNonNA, "). Please reduce the number of requested points. (**)")
+            "(n = ", bgNonNA, "). Please reduce the number of requested points.")
         return()
       }
       bgPts <- penvs_bgSample(spp[[sp]]$occs, bgMask, input$bgPtsNum, logger,
@@ -140,6 +147,19 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
     }
     common$update_component(tab = "Map")
   })
+
+  # reset background button functionality
+  observeEvent(input$goReset_penvs, {
+    req(curSp())
+    spp[[curSp()]]$procEnvs$bgExt <- NULL
+    spp[[curSp()]]$procEnvs$bgMask <- NULL
+    spp[[curSp()]]$bg <- NULL
+    spp[[curSp()]]$bgPts <- NULL
+    spp[[curSp()]]$rmm$data$occurrence$backgroundSampleSizeSet <- NULL
+    logger %>% writeLog(
+      hlSpp(curSp()), "Reset background extent and background points.")
+  })
+
   return(list(
     save = function() {
       list(

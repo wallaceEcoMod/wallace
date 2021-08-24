@@ -3,7 +3,7 @@ occs_paleoDb_module_ui <- function(id) {
   tagList(
     shinyWidgets::pickerInput(
       ns("timeInterval"),
-      label = "Select interval (**)",
+      label = "Select interval",
       choices = setNames(as.list(c('Quaternary', 'Holocene', 'Pleistocene',
                                    'Late Pleistocene', 'Middle Pleistocene',
                                    'Calabrian', 'Gelasian')),
@@ -60,6 +60,9 @@ occs_paleoDb_module_server <- function(input, output, session, common) {
                                      occsCleaned = occs),
                       rmm = rangeModelMetadata::rmmTemplate(),
                       rmd = list())
+
+    # REFERENCES ####
+    knitcitations::citep(citation("paleobioDB"))
 
     # METADATA ####
     spp[[sp]]$rmm$data$occurrence$taxon <- sp
