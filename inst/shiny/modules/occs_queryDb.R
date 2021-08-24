@@ -60,10 +60,18 @@ occs_queryDb_module_server <- function(input, output, session, common) {
 
   observeEvent(input$goDbOccs, {
     # WARNING ####
-    if ( input$occsDb!="bien" & input$occsNum < 1) {
-      logger %>% writeLog(type = 'warning',
-                          "Enter a non-zero number of occurrences.")
-      return()
+    if (input$occsDb != "bien") {
+      if (input$occsDb != "gbif" & input$occsNum < 1) {
+        logger %>% writeLog(type = 'warning',
+                            "Enter a non-zero number of occurrences.")
+        return()
+      }
+      if (input$occsDb == "gbif" & input$occsNum < 1 &
+          input$doCitations == FALSE) {
+        logger %>% writeLog(type = 'warning',
+                            "Enter a non-zero number of occurrences.")
+        return()
+      }
     }
 
     # FUNCTION CALL ####
