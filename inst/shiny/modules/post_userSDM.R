@@ -84,15 +84,16 @@ post_userSDM_module_map <- function(map, common) {
   # Define raster colors and shiny legend
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
   # if it is threshold specified
-  if (!any(userValues != 0 | userValues != 1)) {
+  if (!any(userValues > 0 & userValues < 1)) {
     map %>%
       addLegend("bottomright", colors = c('gray', 'darkgreen'),
                 title = "Distribution<br>map",
                 labels = c("Unsuitable", "Suitable"),
                 opacity = 1, layerId = 'expert') %>%
-      addRasterImage(userRaster, colors = c('gray', 'darkgreen'),
-                     opacity = 0.7, group = 'mask', layerId = 'postPred',
-                     method = "ngb")
+      leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
+                           colorOptions = leafem::colorOptions(
+                             palette = colorRampPalette(colors = c('gray', 'darkgreen'))),
+                           opacity = 0.7, group = 'post', layerId = 'postPred')
   } else {
     # if threshold specified
     quanRas <- quantile(c(raster::minValue(userRaster),
@@ -106,7 +107,7 @@ post_userSDM_module_map <- function(map, common) {
       leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
                            colorOptions = leafem::colorOptions(
                              palette = colorRampPalette(colors = rasCols)),
-                           opacity = 0.7, group = 'mask', layerId = 'postPred')
+                           opacity = 0.7, group = 'post', layerId = 'postPred')
   }
 }
 

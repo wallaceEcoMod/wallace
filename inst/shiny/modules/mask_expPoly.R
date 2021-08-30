@@ -232,15 +232,16 @@ mask_expPoly_module_map <- function(map, common) {
     clearShapes() %>%
     clearAll() %>%
     removeImage('projPred') %>%
+    removeImage('maskPred') %>%
     # add background polygon
     mapBgPolys(bgShpXY(), color = 'green', group = 'post')
 
-  if (!any(userValues != 0 | userValues != 1)) {
+  if (!any(userValues > 0 & userValues < 1)) {
     map %>%
       leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
                            colorOptions = leafem::colorOptions(
-                             palette = colorRampPalette(colors = rasCols)),
-                           opacity = 0.7, group = 'mask', layerId = 'postPred') %>%
+                             palette = colorRampPalette(colors = c('gray', 'darkgreen'))),
+                           opacity = 0.7, group = 'mask', layerId = 'maskPred') %>%
       addLegend("bottomright", colors = c('gray', 'darkgreen'),
                 title = "Distribution<br>map",
                 labels = c("Unsuitable", "Suitable"),
@@ -252,9 +253,10 @@ mask_expPoly_module_map <- function(map, common) {
                         probs = seq(0, 1, 0.1))
     legendPal <- colorNumeric(rev(rasCols), quanRas, na.color = 'transparent')
     map %>%
-      addRasterImage(spp[[curSp()]]$postProc$prediction,
-                     colors = rasPal, opacity = 0.7, group = 'mask',
-                     layerId = 'postPred', method = "ngb") %>%
+      leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
+                           colorOptions = leafem::colorOptions(
+                             palette = colorRampPalette(colors = rasCols)),
+                           opacity = 0.7, group = 'mask', layerId = 'maskPred') %>%
       addLegend("bottomright", pal = legendPal, title = "Suitability<br>(User) (**)",
                 values = quanRas, layerId = "expert",
                 labFormat = reverseLabels(2, reverse_order = TRUE))

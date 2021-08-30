@@ -1163,11 +1163,14 @@ function(input, output, session) {
           userValues <- terra::spatSample(x = terra::rast(userRaster),
                                           size = 100, na.rm = TRUE)[, 1]
 
-          if (!any(userValues != 0 | userValues != 1)) {
+          if (!any(userValues > 0 & userValues < 1)) {
             m -> leaflet() %>%
-              addRasterImage(userRaster,
-                             colors = c('gray', 'darkgreen'), opacity = 0.7, group = 'mask',
-                             layerId = 'postPred', method = "ngb") %>%
+              leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
+                                   colorOptions = leafem::colorOptions(
+                                     palette = colorRampPalette(
+                                       colors = c('gray', 'darkgreen'))),
+                                   opacity = 0.7, group = 'mask',
+                                   layerId = 'maskPred') %>%
               addLegend("bottomright", colors = c('gray', 'darkgreen'),
                         title = "Distribution<br>map",
                         labels = c("Unsuitable", "Suitable"),
@@ -1183,7 +1186,7 @@ function(input, output, session) {
               leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
                                    colorOptions = leafem::colorOptions(
                                      palette = colorRampPalette(colors = rasCols)),
-                                   opacity = 0.7, group = 'mask', layerId = 'postPred') %>%
+                                   opacity = 0.7, group = 'mask', layerId = 'maskPred') %>%
               addLegend("bottomright", pal = legendPal, title = "Suitability<br>(User) (**)",
                         values = quanRas, layerId = "expert",
                         labFormat = reverseLabels(2, reverse_order = TRUE))
