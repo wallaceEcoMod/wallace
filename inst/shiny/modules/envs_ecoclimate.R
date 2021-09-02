@@ -32,7 +32,7 @@ envs_ecoclimate_module_ui <- function(id) {
       selected = 1:19,
       options = list(`actions-box` = TRUE)),
     tags$div(
-      title = "Add Batch guidance text here (**)",
+      title = "Apply selection to ALL species loaded",
       checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE) # Check default (value = FALSE)
     ),
     em("ecoClimate layers have a resolution of 0.5 degrees"), br(), br(),
