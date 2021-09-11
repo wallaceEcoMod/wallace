@@ -173,6 +173,8 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$visualization$mapPred <- predSel.thr
     spp[[curSp()]]$visualization$mapPredVals <- getRasterVals(predSel.thr, predType)
     spp[[curSp()]]$postProc$prediction <- predSel.thr
+    spp[[curSp()]]$postProc$OrigPred <- predSel.thr
+    spp[[curSp()]]$postProc$origBgExt <- spp[[curSp()]]$procEnvs$bgExt
     # For Biomodelos
     spp[[curSp()]]$biomodelos$prediction <- predSel
     biom.thr <- quantile(occPredVals,
