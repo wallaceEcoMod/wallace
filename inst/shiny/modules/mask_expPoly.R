@@ -14,7 +14,7 @@ mask_expPoly_module_ui <- function(id) {
     conditionalPanel(sprintf("input['%s'] == 'expDraw'", ns("polyExpSel")),
                      p("Draw a polygon (**)")),
     actionButton(ns("goInputPoly"), "Create(**)"), br(),
-    tags$hr(),
+    tags$hr(class = "hrDotted"),
     span("Step 2:", class = "step"),
     span("Choose action (**)", class = "stepText"), br(),
     p("Add or remove polygon (**)"),
@@ -23,7 +23,10 @@ mask_expPoly_module_ui <- function(id) {
       radioButtons(ns("actExpPoly"), "",
                    choices = list("Add polygon" = 'addPoly',
                                   "Remove polygon" = 'remPoly'), inline = TRUE),
-      actionButton(ns('goActionPoly'), "Mask (**)"))
+      actionButton(ns('goActionPoly'), "Mask (**)")),
+    tags$hr(class = "hrDashed"),
+    actionButton(ns("goReset_mask"), "Reset", class = 'butReset'),
+    strong(" prediction")
   )
 }
 
@@ -64,15 +67,15 @@ mask_expPoly_module_server <- function(input, output, session, common) {
     if (input$polyExpSel == 'expDraw') {
       polyMask <- proj_draw(spp[[curSp()]]$polyMaskXY, spp[[curSp()]]$polyMaskID,
                             0, logger, spN = curSp())
-            polyX <- printVecAsis(round(spp[[curSp()]]$polyMaskXY[, 1], digits = 4))
+      polyX <- printVecAsis(round(spp[[curSp()]]$polyMaskXY[, 1], digits = 4))
       polyY <- printVecAsis(round(spp[[curSp()]]$polyMaskXY[, 2], digits = 4))
 
-      if(is.null(spp[[curSp()]]$mask$expertPoly)) {
+      if (is.null(spp[[curSp()]]$mask$expertPoly)) {
         spp[[curSp()]]$mask$expertPoly <- list()
         spp[[curSp()]]$mask$removePoly <- list()
       }
       # LOAD INTO SPP ####
-      # Check if polygon as already created
+      # Check if polygon is already created
       if (length(spp[[curSp()]]$mask$expertPoly) == 0) {
         spp[[curSp()]]$mask$expertPoly <- c(spp[[curSp()]]$mask$expertPoly,
                                             polyMask)
@@ -87,6 +90,8 @@ mask_expPoly_module_server <- function(input, output, session, common) {
           spp[[curSp()]]$mask$expertPoly <- c(spp[[curSp()]]$mask$expertPoly,
                                               polyMask)
           spp[[curSp()]]$mask$flagPoly <- FALSE
+        } else {
+          spp[[curSp()]]$mask$flagPoly <- TRUE
         }
       }
       # METADATA ####
@@ -112,7 +117,7 @@ mask_expPoly_module_server <- function(input, output, session, common) {
           list(dsn = input$polyExpShp$datapath[i], layer = shpName)
       }
 
-      if (rgeos::gDisjoint(spp[[curSp()]]$postProc$bgExt, polyMask)) {
+      if (rgeos::gIntersects(spp[[curSp()]]$postProc$bgExt, polyMask)) {
         logger %>% writeLog(
           type = 'error', hlSpp(curSp()),
           "The polygon is outside the background extent. Please specify a new polygon. (**)"
@@ -137,7 +142,6 @@ mask_expPoly_module_server <- function(input, output, session, common) {
         spp[[curSp()]]$mask$expertPoly <- c(spp[[curSp()]]$mask$expertPoly,
                                             polyMask)
         spp[[curSp()]]$mask$flagPoly <- FALSE
-        print(spp[[curSp()]]$mask$flagPoly)
       } else {
         # Last polygon updated
         lastPoly <- spp[[curSp()]]$mask$expertPoly[[length(spp[[curSp()]]$mask$expertPoly)]]
@@ -148,6 +152,8 @@ mask_expPoly_module_server <- function(input, output, session, common) {
           spp[[curSp()]]$mask$expertPoly <- c(spp[[curSp()]]$mask$expertPoly,
                                               polyMask)
           spp[[curSp()]]$mask$flagPoly <- FALSE
+        } else {
+          spp[[curSp()]]$mask$flagPoly <- TRUE
         }
       }
     }
@@ -168,13 +174,7 @@ mask_expPoly_module_server <- function(input, output, session, common) {
       }
     }
     # FUNCTION CALL ####
-    if (spp[[curSp()]]$mask$flagPoly == TRUE) {
-      logger %>% writeLog(
-        type = 'error', hlSpp(curSp()),
-        "Polygon for masking already used (**). You need to defined a new polygon."
-      )
-      return()
-    } else {
+    if (spp[[curSp()]]$mask$flagPoly == FALSE) {
       polyMask <- spp[[curSp()]]$mask$expertPoly[[length(spp[[curSp()]]$mask$expertPoly)]]
       expertRast <- mask_expPoly(polyMask, spp[[curSp()]]$postProc$prediction,
                                  removePoly, bgExt = bgExt(), logger)
@@ -186,13 +186,29 @@ mask_expPoly_module_server <- function(input, output, session, common) {
         logger %>% writeLog(
           hlSpp(curSp()), "The polygon was removed (**)")
       }
+      # LOAD INTO SPP ####
+      spp[[curSp()]]$postProc$prediction <- expertRast$pred
+      spp[[curSp()]]$mask$prediction <- expertRast$pred
+      spp[[curSp()]]$mask$removePoly <- c(spp[[curSp()]]$mask$removePoly, removePoly)
+      spp[[curSp()]]$procEnvs$bgExt <- expertRast$ext
+    } else {
+      logger %>% writeLog(
+        type = "error", hlSpp(curSp()),
+        "The polygon was already used. Define a new one (**)")
     }
-    # LOAD INTO SPP ####
-    spp[[curSp()]]$postProc$prediction <- expertRast$pred
-    spp[[curSp()]]$mask$prediction <- expertRast$pred
-    spp[[curSp()]]$mask$removePoly <- c(spp[[curSp()]]$mask$removePoly, removePoly)
-    spp[[curSp()]]$procEnvs$bgExt <- expertRast$ext
+  })
 
+  # Reset prediction
+  observeEvent(input$goReset_mask, {
+    req(curSp())
+    spp[[curSp()]]$postProc$prediction <- spp[[curSp()]]$postProc$OrigPred
+    spp[[curSp()]]$procEnvs$bgExt <- spp[[curSp()]]$postProc$origBgExt
+    spp[[curSp()]]$mask$expertPoly <- NULL
+    spp[[curSp()]]$mask$prediction <- NULL
+    spp[[curSp()]]$mask$removePoly <- NULL
+    spp[[curSp()]]$mask$flagPoly <- NULL
+    logger %>% writeLog(
+      hlSpp(curSp()), "Reset prediction (**).")
   })
 
   return(list(
@@ -211,11 +227,11 @@ mask_expPoly_module_server <- function(input, output, session, common) {
 }
 
 mask_expPoly_module_map <- function(map, common) {
-
   spp <- common$spp
   curSp <- common$curSp
   bgShpXY <- common$bgShpXY
 
+  req(spp[[curSp()]]$postProc$prediction)
   # Map logic
   map %>% leaflet.extras::addDrawToolbar(
     targetGroup = 'draw', polylineOptions = FALSE, rectangleOptions = FALSE,
@@ -223,25 +239,24 @@ mask_expPoly_module_map <- function(map, common) {
     editOptions = leaflet.extras::editToolbarOptions()
   )
 
-  req(spp[[curSp()]]$mask$expertPoly)
   userRaster <- spp[[curSp()]]$postProc$prediction
   userValues <- terra::spatSample(x = terra::rast(userRaster),
                                   size = 100, na.rm = TRUE)[, 1]
 
-  map %>% clearMarkers() %>%
-    clearShapes() %>%
-    clearAll() %>%
-    removeImage('projPred') %>%
-    removeImage('maskPred') %>%
-    # add background polygon
-    mapBgPolys(bgShpXY(), color = 'green', group = 'post')
+  shinyjs::delay(1000,
+                 map %>%
+                   clearAll() %>%
+                   mapPNG(curSp()) %>%
+                   # add background polygon
+                   mapBgPolys(bgShpXY(), color = 'green', group = 'postBg')
+  )
 
   if (!any(userValues > 0 & userValues < 1)) {
     map %>%
       leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
                            colorOptions = leafem::colorOptions(
                              palette = colorRampPalette(colors = c('gray', 'darkgreen'))),
-                           opacity = 0.7, group = 'mask', layerId = 'maskPred') %>%
+                           opacity = 0.7, group = 'mask', layerId = 'postPred') %>%
       addLegend("bottomright", colors = c('gray', 'darkgreen'),
                 title = "Distribution<br>map",
                 labels = c("Unsuitable", "Suitable"),
@@ -256,18 +271,22 @@ mask_expPoly_module_map <- function(map, common) {
       leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
                            colorOptions = leafem::colorOptions(
                              palette = colorRampPalette(colors = rasCols)),
-                           opacity = 0.7, group = 'mask', layerId = 'maskPred') %>%
+                           opacity = 0.7, group = 'mask', layerId = 'postPred') %>%
       addLegend("bottomright", pal = legendPal, title = "Suitability<br>(User) (**)",
                 values = quanRas, layerId = "expert",
                 labFormat = reverseLabels(2, reverse_order = TRUE))
   }
-  req(spp[[curSp()]]$postProc$prediction)
-  # Plot Polygon
-  expertPoly <- spp[[curSp()]]$mask$expertPoly
-  xy <- ggplot2::fortify(expertPoly[[length(expertPoly)]])
-  map %>% clearGroup('maskShp') %>%
-    addPolygons(lng = xy[, 1], lat = xy[, 2],
-                weight = 4, color = "black", group = 'maskShp')
+
+  if (!is.null((spp[[curSp()]]$mask$flagPoly))) {
+    if (spp[[curSp()]]$mask$flagPoly == FALSE) {
+      # Plot Polygon
+      expertPoly <- spp[[curSp()]]$mask$expertPoly
+      xy <- ggplot2::fortify(expertPoly[[length(expertPoly)]])
+      map %>%
+        addPolygons(lng = xy[, 1], lat = xy[, 2],
+                    weight = 4, color = "black", group = 'maskShp')
+    }
+  }
 }
 
 mask_expPoly_module_rmd <- function(species) {

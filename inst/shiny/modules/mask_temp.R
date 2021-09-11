@@ -7,7 +7,7 @@ mask_temp_module_ui <- function(id) {
               label = "Upload environmental rasters for masking distribution map",
               multiple = TRUE),
     actionButton(ns("goTempRasters"), "Load (**)", class = "tempRast"), br(),
-    tags$hr(),
+    tags$hr(class = "hrDotted"),
     span("Step 2:", class = "step"),
     span("Bounds (**)", class = "stepText"), br(),
     uiOutput(ns("curTempRastersUI")),
@@ -17,13 +17,16 @@ mask_temp_module_ui <- function(id) {
                               multiple = TRUE,
                               selected = setNames(as.list(2001:2019), 2001:2019)),
     actionButton(ns('goAnnotate'), "Get Bounds (**)"), br(),
-    tags$hr(),
+    tags$hr(class = "hrDotted"),
     span("Step 3:", class = "step"),
     span("Mask (**)", class = "stepText"), br(),
     uiOutput(ns("curMaskRasterUI")),
     p("Provide lower and/or upper bound values for masking"),
     uiOutput(ns("sliderMaskUI")),
-    actionButton(ns('goTempMask'), "Mask (**)")
+    actionButton(ns('goTempMask'), "Mask (**)"),
+    tags$hr(class = "hrDashed"),
+    actionButton(ns("goReset_mask"), "Reset", class = 'butReset'),
+    strong(" prediction")
   )
 }
 
@@ -36,6 +39,16 @@ mask_temp_module_server <- function(input, output, session, common) {
   selTempRaster <- common$selTempRaster
   selTempMask <- common$selTempMask
   sliderTemp <- common$sliderTemp
+
+  # Reset prediction
+  observeEvent(input$goReset_mask, {
+    req(curSp())
+    spp[[curSp()]]$postProc$prediction <- spp[[curSp()]]$postProc$OrigPred
+    spp[[curSp()]]$procEnvs$bgExt <- spp[[curSp()]]$postProc$origBgExt
+    spp[[curSp()]]$mask$prediction <- NULL
+    logger %>% writeLog(
+      hlSpp(curSp()), "Reset prediction (**).")
+  })
 
   observeEvent(input$goTempRasters, {
     curSp <- common$curSp
@@ -168,11 +181,11 @@ mask_temp_module_server <- function(input, output, session, common) {
     # LOAD INTO SPP ####
     spp[[curSp()]]$postProc$prediction <- doTempExtract
     spp[[curSp()]]$mask$prediction <- doTempExtract
-    spp[[curSp()]]$mask$tempLog <- TRUE
 
     common$update_component(tab = "Map")
 
   })
+
 
   return(list(
     save = function() {
@@ -196,40 +209,44 @@ mask_temp_module_map <- function(map, common) {
   curSp <- common$curSp
   bgShpXY <- common$bgShpXY
 
-  req(spp[[curSp()]]$mask$tempLog)
+  req(spp[[curSp()]]$postProc$prediction)
+
   userRaster <- spp[[curSp()]]$postProc$prediction
   userValues <- terra::spatSample(x = terra::rast(userRaster),
                                   size = 100, na.rm = TRUE)[, 1]
-
-  map %>% clearMarkers() %>%
-    clearShapes() %>%
-    clearAll() %>%
-    removeImage('projPred') %>%
-    removeImage('maskPred') %>%
-    # add background polygon
-    mapBgPolys(bgShpXY(), color = 'green', group = 'post')
+  # The delay allows the map to wait a second until the prediction raster is
+  # replace for the original when using Reset. If the delay is not used,
+  # big rasters will be not removed from the map.
+  shinyjs::delay(1000,
+    map %>%
+      clearAll() %>%
+      mapPNG(curSp()) %>%
+      # add background polygon
+      mapBgPolys(bgShpXY(), color = 'green', group = 'postBg')
+  )
 
   if (!any(userValues > 0 & userValues < 1)) {
     map %>%
       leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
                            colorOptions = leafem::colorOptions(
                              palette = colorRampPalette(colors = c('gray', 'darkgreen'))),
-                           opacity = 0.7, group = 'mask', layerId = 'maskPred') %>%
+                           opacity = 0.7, group = 'mask', layerId = 'postPred') %>%
       addLegend("bottomright", colors = c('gray', 'darkgreen'),
                 title = "Distribution<br>map",
                 labels = c("Unsuitable", "Suitable"),
                 opacity = 1, layerId = 'expert')
   } else {
+    rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
     quanRas <- quantile(c(raster::minValue(userRaster),
                           raster::maxValue(userRaster)),
                         probs = seq(0, 1, 0.1))
-    rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
     legendPal <- colorNumeric(rev(rasCols), quanRas, na.color = 'transparent')
     map %>%
       leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
                            colorOptions = leafem::colorOptions(
                              palette = colorRampPalette(colors = rasCols)),
-                           opacity = 0.7, group = 'mask', layerId = 'maskPred') %>%
+                           opacity = 0.7, group = 'mask',
+                           layerId = 'postPred') %>%
       addLegend("bottomright", pal = legendPal, title = "Suitability<br>(User) (**)",
                 values = quanRas, layerId = "expert",
                 labFormat = reverseLabels(2, reverse_order = TRUE))

@@ -7,12 +7,15 @@ mask_spatial_module_ui <- function(id) {
               label = 'Upload polygon in shapefile (.shp, .shx, .dbf)',
               accept = c(".dbf", ".shx", ".shp"), multiple = TRUE),
     actionButton(ns("goMaskShp"), "Load (**)"), br(),
-    tags$hr(),
+    tags$hr(class = "hrDotted"),
     span("Step 2:", class = "step"),
     span("Select fields (**)", class = "stepText"), br(), br(),
     uiOutput(ns("maskFieldsUI")),
     uiOutput(ns("maskAttributeUI")),
-    actionButton(ns("goSpatialMask"), "Mask (**)"), br(),
+    actionButton(ns("goSpatialMask"), "Mask (**)"),
+    tags$hr(class = "hrDashed"),
+    actionButton(ns("goReset_mask"), "Reset", class = 'butReset'),
+    strong(" prediction")
   )
 }
 
@@ -109,8 +112,15 @@ mask_spatial_module_server <- function(input, output, session, common) {
     # METADATA ####
   })
 
-  output$result <- renderText({
-    # Result
+  # Reset prediction
+  observeEvent(input$goReset_mask, {
+    req(curSp())
+    spp[[curSp()]]$postProc$prediction <- spp[[curSp()]]$postProc$OrigPred
+    spp[[curSp()]]$procEnvs$bgExt <- spp[[curSp()]]$postProc$origBgExt
+    spp[[curSp()]]$mask$prediction <- NULL
+    spp[[curSp()]]$mask$spatialMask <- NULL
+    logger %>% writeLog(
+      hlSpp(curSp()), "Reset prediction (**).")
   })
 
   return(list(
@@ -139,26 +149,25 @@ mask_spatial_module_map <- function(map, common) {
   maskFields <- common$maskFields
   maskAttribute <- common$maskAttribute
 
-  req(spp[[curSp()]]$mask$spatialMask)
-  req(maskFields(), maskAttribute())
-  map %>% clearMarkers() %>%
-    clearShapes() %>%
-    clearAll() %>%
-    clearGroup(group = "post") %>%
-    clearGroup(group = "mask") %>%
-    # add background polygon
-    mapBgPolys(bgShpXY(), color = 'green', group = 'mask')
+  req(spp[[curSp()]]$postProc$prediction)
 
   userRaster <- spp[[curSp()]]$postProc$prediction
   userValues <- terra::spatSample(x = terra::rast(userRaster),
                                   size = 100, na.rm = TRUE)[, 1]
+  shinyjs::delay(1000,
+                 map %>%
+                   clearAll() %>%
+                   mapPNG(curSp()) %>%
+                   # add background polygon
+                   mapBgPolys(bgShpXY(), color = 'green', group = 'postBg')
+  )
 
   if (!any(userValues > 0 & userValues < 1)) {
     map %>%
       leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
                            colorOptions = leafem::colorOptions(
                              palette = colorRampPalette(colors = c('gray', 'darkgreen'))),
-                           opacity = 0.7, group = 'mask', layerId = 'maskPred') %>%
+                           opacity = 0.7, layerId = 'postPred') %>%
       addLegend("bottomright", colors = c('gray', 'darkgreen'),
                 title = "Distribution<br>map",
                 labels = c("Unsuitable", "Suitable"),
@@ -173,12 +182,14 @@ mask_spatial_module_map <- function(map, common) {
       leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
                            colorOptions = leafem::colorOptions(
                              palette = colorRampPalette(colors = rasCols)),
-                           opacity = 0.7, group = 'mask', layerId = 'maskPred') %>%
+                           opacity = 0.7, layerId = 'postPred') %>%
       addLegend("bottomright", pal = legendPal, title = "Suitability<br>(User) (**)",
                 values = quanRas, layerId = "expert",
                 labFormat = reverseLabels(2, reverse_order = TRUE))
   }
   # Plot Polygon
+  req(maskFields(), maskAttribute())
+  req(spp[[curSp()]]$mask$spatialMask)
   spatialMask <- spp[[curSp()]]$mask$spatialMask
   selAtt <- subset(spatialMask,
                    spatialMask[[maskFields()]] %in% maskAttribute())
