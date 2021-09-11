@@ -214,9 +214,7 @@ function(input, output, session) {
     shinyjs::toggleState("dlEOO", !is.null(spp[[curSp()]]$rmm$data$change$EOO))
     shinyjs::toggleState("dlOverlap", !is.null(spp[[curSp()]]$change$overlapRaster))
     shinyjs::toggleState("dlOverlapEOO", !is.null(spp[[curSp()]]$change$overlapPoly))
-    shinyjs::toggleState("dlMask",!is.null(spp[[curSp()]]$mask$removePoly) |
-                           !is.null(spp[[curSp()]]$mask$tempLog) |
-                           !is.null(spp[[curSp()]]$mask$spatialFlag))
+    shinyjs::toggleState("dlMask",!is.null(spp[[curSp()]]$mask$prediction))
     shinyjs::toggleState("dlAreaTimePlot",!is.null(spp[[curSp()]]$change$AreaTime))
     shinyjs::toggleState("dlAreaTime",!is.null(spp[[curSp()]]$change$AreaTime))
 
@@ -1150,27 +1148,27 @@ function(input, output, session) {
       paste0(curSp(), '_mask.', ext)
     },
     content = function(file) {
-      if(require(rgdal)) {
+      if (require(rgdal)) {
+        req(spp[[curSp()]]$mask$prediction)
+        userRaster <- spp[[curSp()]]$mask$prediction
+        userValues <- terra::spatSample(x = terra::rast(userRaster),
+                                          size = 100, na.rm = TRUE)[, 1]
         if (input$maskFileType == 'png') {
-          req(spp[[curSp()]]$postProc$prediction)
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
               writeLog(type = "error", "To download PNG prediction, you require to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in you are R console. (**)")
           }
-          userRaster <- spp[[curSp()]]$postProc$prediction
-          userValues <- terra::spatSample(x = terra::rast(userRaster),
-                                          size = 100, na.rm = TRUE)[, 1]
-
           if (!any(userValues > 0 & userValues < 1)) {
-            m -> leaflet() %>%
-              leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
+            m <- leaflet() %>%
+              addProviderTiles(input$bmap) %>%
+              leafem::addGeoRaster(userRaster,
                                    colorOptions = leafem::colorOptions(
                                      palette = colorRampPalette(
                                        colors = c('gray', 'darkgreen'))),
-                                   opacity = 0.7, group = 'mask',
-                                   layerId = 'maskPred') %>%
+                                   opacity = 0.7, group = 'maskDL',
+                                   layerId = 'maskDL') %>%
               addLegend("bottomright", colors = c('gray', 'darkgreen'),
                         title = "Distribution<br>map",
                         labels = c("Unsuitable", "Suitable"),
@@ -1182,29 +1180,28 @@ function(input, output, session) {
                                   raster::maxValue(userRaster)),
                                 probs = seq(0, 1, 0.1))
             legendPal <- colorNumeric(rev(rasCols), quanRas, na.color = 'transparent')
-            m -> leaflet() %>%
-              leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
+            m <- leaflet() %>%
+              addProviderTiles(input$bmap) %>%
+              leafem::addGeoRaster(userRaster,
                                    colorOptions = leafem::colorOptions(
                                      palette = colorRampPalette(colors = rasCols)),
-                                   opacity = 0.7, group = 'mask', layerId = 'maskPred') %>%
+                                   opacity = 0.7, group = 'maskDL', layerId = 'maskDL') %>%
               addLegend("bottomright", pal = legendPal, title = "Suitability<br>(User) (**)",
                         values = quanRas, layerId = "expert",
                         labFormat = reverseLabels(2, reverse_order = TRUE))
             mapview::mapshot(m, file = file)
           }
-          # Plot Polygon
-
-        } else if (input$predFileType == 'raster') {
+        } else if (input$maskFileType == 'raster') {
           fileName <- curSp()
           tmpdir <- tempdir()
-          raster::writeRaster(spp[[curSp()]]$postProc$prediction, file.path(tmpdir, fileName),
+          raster::writeRaster(userRaster, file.path(tmpdir, fileName),
                               format = input$maskFileType, overwrite = TRUE)
           owd <- setwd(tmpdir)
           fs <- paste0(fileName, c('.grd', '.gri'))
           zip::zipr(zipfile = file, files = fs)
           setwd(owd)
         } else {
-          r <- raster::writeRaster(spp[[curSp()]]$postProc$prediction, file, format = input$maskFileType,
+          r <- raster::writeRaster(userRaster, file, format = input$maskFileType,
                                    overwrite = TRUE)
           file.rename(r@file@name, file)
         }
