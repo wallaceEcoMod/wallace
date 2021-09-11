@@ -161,6 +161,16 @@ zoom2Occs <- function(map, occs) {
   #                      layerId = as.numeric(rownames(values$origOccs)),
   #                      icon = ~icons(occIcons[basisNum]))
 }
+# Button for PNG map
+#' @export
+mapPNG <- function(map, sp_name) {
+  leaflet.extras2::addEasyprint(map,
+    options = leaflet.extras2::easyprintOptions(
+      exportOnly = TRUE,
+      sizeModes = "Current",
+      filename = paste0(sp_name, "_map"),
+      hideControlContainer = FALSE))
+}
 
 # zooms appropriately for any extent
 #' @export
@@ -466,7 +476,7 @@ printVecAsis <- function(x, asChar = FALSE) {
 }
 
 #####################
-# Download utlities #
+# Download utilities #
 #####################
 #' @export
 convert_list_cols <- function(x) {
@@ -482,3 +492,5 @@ convert_list_cols <- function(x) {
 write_csv_robust <- function(x, ...) {
   write.csv(convert_list_cols(x), ...)
 }
+
+
