@@ -33,6 +33,7 @@ post_userSDM_module_server <- function(input, output, session, common) {
           spp[[newSppName]]$postProc$prediction <- userSDMs$sdm
           spp[[newSppName]]$postProc$OrigPred <- userSDMs$sdm
           spp[[newSppName]]$procEnvs$bgExt <- userSDMs$extSdm
+          spp[[newSppName]]$postProc$origBgExt <- userSDMs$extSdm
         }
       } else {
         if (!is.null(spp[[newSppName]]$visualization$mapPred)) {
@@ -67,7 +68,7 @@ post_userSDM_module_map <- function(map, common) {
   bgShpXY <- common$bgShpXY
 
   # Map logic
-  req(spp[[curSp()]]$postProc$OrigPred, spp[[curSp()]]$procEnvs$bgExt)
+  req(spp[[curSp()]]$postProc$prediction)
   # Zoom
   userRaster <- spp[[curSp()]]$postProc$prediction
   userValues <- terra::spatSample(x = terra::rast(userRaster),
@@ -76,8 +77,12 @@ post_userSDM_module_map <- function(map, common) {
   map %>% fitBounds(lng1 = zoomExt[1], lng2 = zoomExt[2],
                     lat1 = zoomExt[3], lat2 = zoomExt[4])
 
-  map %>% clearMarkers() %>%
-    clearShapes() %>% clearAll() %>%
+  map %>%
+    clearAll() %>%
+    mapPNG(curSp()) %>%
+    addEasyButton(easyButton(
+      icon = htmltools::span(class = "star", htmltools::HTML("&starf;")),
+      onClick = JS("function(btn, map){ map.invalidateSize();}"))) %>%
     # add background polygon
     mapBgPolys(bgShpXY(), color = 'green', group = 'post')
 
