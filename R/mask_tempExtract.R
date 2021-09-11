@@ -50,6 +50,7 @@ mask_tempExtract <- function(lowerInp, upperInp, maskRaster, pred,
     }
     maskRaster <- terra::crop(maskRaster, pred)
     postPred <- pred * (maskRaster >= lowerInp) * (maskRaster <= upperInp)
+    postPred[postPred <= 0] <- NA
     postPred <- postPred %>% terra::trim() %>% raster::raster()
   })
   return(postPred)

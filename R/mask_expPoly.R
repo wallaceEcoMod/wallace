@@ -49,7 +49,7 @@ mask_expPoly <- function(polyMask, prediction, bgExt, rem = FALSE,
     } else {
       smartProgress(logger, message = "Removing area..", {
         newPred <- prediction - remRaster
-        newPred[newPred < 0] <- NA
+        newPred[newPred <= 0] <- NA
         newPred <- raster::trim(newPred)
         extPoly <- raster::extent(newPred)
         extPoly <- as(extPoly, 'SpatialPolygons')
