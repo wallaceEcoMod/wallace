@@ -211,7 +211,7 @@ function(input, output, session) {
     if (is.null(module())) {
       span("...Select a module (**)...", class = "step")
     } else {
-      selectizeInput('curSp', label = NULL, choices = sppNameList,
+      selectizeInput('curSp', label = "Select species: (**)", choices = sppNameList,
                      multiple = TRUE, selected = selected, options = options)
     }
   })
@@ -657,8 +657,11 @@ function(input, output, session) {
     if(!is.null(curModel())) selected <- curModel() else selected <- n[1]
     modsNameList <- c(list("Current model" = ""), setNames(as.list(n), n))
     options <- list(maxItems = 1)
-    selectizeInput('curModel', label = NULL , choices = modsNameList,
-                   multiple = TRUE, selected = selected, options = options)
+    if (!is.null(module())) {
+      selectizeInput('curModel', label = "Select model: (**)" ,
+                     choices = modsNameList, multiple = TRUE,
+                     selected = selected, options = options)
+    }
   })
 
   # shortcut to currently selected model, read from modSelUI
