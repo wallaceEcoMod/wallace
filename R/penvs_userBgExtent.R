@@ -72,7 +72,7 @@ penvs_userBgExtent <- function(bgShp_path, bgShp_name, userBgBuf, occs,
     }
 
     if (userBgBuf >= 0) {
-      bgExt <- rgeos::gBuffer(bgExt, width = userBgBuf)
+      bgExt <- rgeos::gBuffer(bgExt, width = userBgBuf, byid = TRUE)
     }
 
     ### Points outside polygon
