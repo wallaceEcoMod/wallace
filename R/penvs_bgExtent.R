@@ -70,7 +70,7 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL, spN = NULL) {
                'Change buffer distance to positive or negative value.')
       return()
     }
-    bgExt <- rgeos::gBuffer(occs.sp, width = bgBuf)
+    bgExt <- rgeos::gBuffer(occs.sp, width = bgBuf, byid = TRUE)
     msg <- paste0("Study extent: buffered points.  Buffered by ", bgBuf, " degrees.")
   }
 

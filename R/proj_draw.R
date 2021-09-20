@@ -39,7 +39,7 @@
 proj_draw <- function(polyPjXY, polyPjID, drawPjBuf, logger = NULL, spN = NULL) {
   newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(polyPjXY)),
                                                    ID = polyPjID)))
-  bgExt <- rgeos::gBuffer(newPoly, width = drawPjBuf)
+  bgExt <- rgeos::gBuffer(newPoly, width = drawPjBuf, byid = TRUE)
   bgExt <- sp::SpatialPolygonsDataFrame(bgExt, data = data.frame(x = 1),
                                         match.ID = FALSE)
   if (drawPjBuf == 0) {

@@ -50,7 +50,7 @@ penvs_drawBgExtent <- function(polyExtXY, polyExtID, drawBgBuf, occs,
   intersect <- sp::over(pts, newPoly)
   ptRem <- ifelse(all(!is.na(intersect)), 0, as.numeric(which(is.na(intersect))))
   if (ptRem == 0) {
-    bgExt <- rgeos::gBuffer(newPoly, width = drawBgBuf)
+    bgExt <- rgeos::gBuffer(newPoly, width = drawBgBuf, byid = TRUE)
     if (drawBgBuf == 0) {
       logger %>% writeLog(hlSpp(spN), 'Draw polygon without buffer.')
     } else {
