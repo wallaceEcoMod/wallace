@@ -58,6 +58,14 @@ envs_ecoclimate_module_server <- function(input, output, session, common) {
                                  "obtain occurrence data in 'Occ Data' component."))
       return()
     }
+    # Specify more than 2 variables
+    if (length(bcSel()) < 2) {
+      logger %>%
+        writeLog(
+          type = 'error',
+          "Select more than two variables.(**)")
+      return()
+    }
 
     # FUNCTION CALL ####
     ecoClims <- envs_ecoClimate(input$bcAOGCM, input$bcScenario,
