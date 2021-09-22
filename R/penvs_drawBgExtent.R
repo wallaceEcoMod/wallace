@@ -50,16 +50,14 @@ penvs_drawBgExtent <- function(polyExtXY, polyExtID, drawBgBuf, occs,
   intersect <- sp::over(pts, newPoly)
   ptRem <- ifelse(all(!is.na(intersect)), 0, as.numeric(which(is.na(intersect))))
   if (ptRem == 0) {
-    bgExt <- rgeos::gBuffer(newPoly, width = drawBgBuf, byid = TRUE)
+    bgExt <- rgeos::gBuffer(newPoly, width = drawBgBuf)
+    bgExt <- as(bgExt, "SpatialPolygonsDataFrame")
     if (drawBgBuf == 0) {
       logger %>% writeLog(hlSpp(spN), 'Draw polygon without buffer.')
     } else {
       logger %>% writeLog(hlSpp(spN), 'Draw polygon with buffer of ',
                           drawBgBuf, ' degrees.')
     }
-    bgExt <- sp::SpatialPolygonsDataFrame(bgExt,
-                                          data = data.frame(x = 1),
-                                          match.ID = FALSE)
     return(bgExt)
   } else if (ptRem > 0) {
     logger %>%

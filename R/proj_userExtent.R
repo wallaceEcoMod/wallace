@@ -63,7 +63,7 @@ proj_userExtent <- function(bgShp_path, bgShp_name, userBgBuf,
   }
 
   if (userBgBuf >= 0) {
-    bgExt <- rgeos::gBuffer(bgExt, width = userBgBuf, byid = TRUE)
+    bgExt <- rgeos::gBuffer(bgExt, width = userBgBuf)
     bgExt <- as(bgExt, "SpatialPolygonsDataFrame")
   }
   if (userBgBuf > 0) {
