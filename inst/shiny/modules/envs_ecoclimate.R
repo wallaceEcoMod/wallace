@@ -59,7 +59,7 @@ envs_ecoclimate_module_server <- function(input, output, session, common) {
       return()
     }
     # Specify more than 2 variables
-    if (length(bcSel()) < 2) {
+    if (length(ecoClimSel()) < 2) {
       logger %>%
         writeLog(
           type = 'error',
