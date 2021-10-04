@@ -39,6 +39,7 @@ Imports:
     knitcitations,
     leafem,
     leaflet.extras (>= 1.0.0),
+    leaflet.extras2,
     magrittr,
     maskRangeR,
     maptools,
@@ -75,5 +76,5 @@ Suggests:
 License: GPL-3
 URL: https://wallaceEcoMod.github.io
 Encoding: UTF-8
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 VignetteBuilder: knitr
