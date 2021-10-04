@@ -242,22 +242,25 @@ change_overlap_module_server <- function(input, output, session, common) {
         message = "Calculating range overlap ", {
       r = spp[[curSp()]]$visualization$mapPred
       #shp = spp[[curSp()]]$change$polyOverlap
-      raster::crs(shp) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
-      raster::crs(r) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+      raster::crs(shp) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 ")
+      raster::crs(r) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
+
+
       ratio.Overlap <- changeRangeR::ratioOverlap(r = r, shp = shp, field=spp[[curSp()]]$change$ShpField, category = category,subfield=    spp[[curSp()]]$change$subfield)
         })
       req(ratio.Overlap)
       logger %>% writeLog( "Proportion of range area that is contained by landcover categories calculated ")
       # LOAD INTO SPP ####
-
-      spp[[curSp()]]$change$overlapRaster <- ratio.Overlap$maskedRange
-      spp[[curSp()]]$change$overlapvalue <- ratio.Overlap$ratio
-      if(is.list(ratio.Overlap$maskedRange)){
+      if(length(ratio.Overlap$maskedRange)>1)
+      {
+        names(ratio.Overlap$maskedRange) <- NULL
         ratio.Overlap$maskedRange$fun <- mean
         ratio.Overlap$maskedRange$na.rm <- TRUE
-
         ratio.Overlap$maskedRange <- do.call(raster::mosaic, ratio.Overlap$maskedRange)
       }
+      else {ratio.Overlap$maskedRange<-ratio.Overlap$maskedRange[[1]]}
+      spp[[curSp()]]$change$overlapRaster <- ratio.Overlap$maskedRange
+      spp[[curSp()]]$change$overlapvalue <- ratio.Overlap$ratio
       spp[[curSp()]]$change$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
 
 
@@ -270,21 +273,23 @@ change_overlap_module_server <- function(input, output, session, common) {
         message = "Calculating range overlap ", {
       r = spp[[curSp()]]$project$mapProj
      # shp = spp[[curSp()]]$change$polyOverlap
-      raster::crs(shp) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
-      raster::crs(r) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+      raster::crs(shp) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 ")
+      raster::crs(r) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
       ratio.Overlap <- changeRangeR::ratioOverlap(r = r, shp = shp, field= spp[[curSp()]]$change$ShpField, category = category,   subfield= spp[[curSp()]]$change$subfield)
         })
       req(ratio.Overlap)
       logger %>% writeLog( "Proportion of projected range area that is contained by landcover categories calculated ")
       # LOAD INTO SPP ####
-      spp[[curSp()]]$change$overlapRaster <- ratio.Overlap$maskedRange
-      spp[[curSp()]]$change$overlapvalue <- ratio.Overlap$ratio
-      if(is.list(ratio.Overlap$maskedRange)){
+      if(length(ratio.Overlap$maskedRange)>1)
+      {
+        names(ratio.Overlap$maskedRange) <- NULL
         ratio.Overlap$maskedRange$fun <- mean
         ratio.Overlap$maskedRange$na.rm <- TRUE
-
         ratio.Overlap$maskedRange <- do.call(raster::mosaic, ratio.Overlap$maskedRange)
       }
+      else {ratio.Overlap$maskedRange<-ratio.Overlap$maskedRange[[1]]}
+      spp[[curSp()]]$change$overlapRaster <- ratio.Overlap$maskedRange
+      spp[[curSp()]]$change$overlapvalue <- ratio.Overlap$ratio
       spp[[curSp()]]$change$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
 
       common$update_component(tab = "Map")
@@ -298,22 +303,25 @@ change_overlap_module_server <- function(input, output, session, common) {
         message = "Calculating range overlap ", {
       r = spp[[curSp()]]$postProc$OrigPred
     #  shp = spp[[curSp()]]$change$polyOverlap
-      raster::crs(shp) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
-      raster::crs(r) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+      raster::crs(shp) <- sf::st_crs(4326)$wkt
+      raster::crs(r) <-sf::st_crs(4326)$wkt
       ratio.Overlap <- changeRangeR::ratioOverlap(r = r , shp = shp, field = spp[[curSp()]]$change$ShpField, category = category,   subfield= spp[[curSp()]]$change$subfield)
       #ratio.Overlap <- changeRangeR::ratioOverlap(r = r , shp = shp, category = "All")
       })
     # LOAD INTO SPP ####
     req(ratio.Overlap)
     logger %>% writeLog( "Proportion of user provided range area that is contained by landcover categories calculated ")
-      spp[[curSp()]]$change$overlapRaster <- ratio.Overlap$maskedRange
+    if(length(ratio.Overlap$maskedRange)>1)
+      {
+    names(ratio.Overlap$maskedRange) <- NULL
+     ratio.Overlap$maskedRange$fun <- mean
+    ratio.Overlap$maskedRange$na.rm <- TRUE
+     ratio.Overlap$maskedRange <- do.call(raster::mosaic, ratio.Overlap$maskedRange)
+    }
+    else {ratio.Overlap$maskedRange<-ratio.Overlap$maskedRange[[1]]}
+     spp[[curSp()]]$change$overlapRaster <- ratio.Overlap$maskedRange
       spp[[curSp()]]$change$overlapvalue <- ratio.Overlap$ratio
-      if(is.list(ratio.Overlap$maskedRange)){
-        ratio.Overlap$maskedRange$fun <- mean
-        ratio.Overlap$maskedRange$na.rm <- TRUE
 
-        ratio.Overlap$maskedRange <- do.call(raster::mosaic, ratio.Overlap$maskedRange)
-      }
       spp[[curSp()]]$change$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
 
 }
@@ -333,14 +341,16 @@ change_overlap_module_server <- function(input, output, session, common) {
       req(ratio.Overlap)
       logger %>% writeLog( "Proportion of masked range area that is contained by landcover categories calculated ")
       # LOAD INTO SPP ####
-      spp[[curSp()]]$change$overlapRaster <- ratio.Overlap$maskedRange
-      spp[[curSp()]]$change$overlapvalue <- ratio.Overlap$ratio
-      if(is.list(ratio.Overlap$maskedRange)){
+      if(length(ratio.Overlap$maskedRange)>1)
+      {
+        names(ratio.Overlap$maskedRange) <- NULL
         ratio.Overlap$maskedRange$fun <- mean
         ratio.Overlap$maskedRange$na.rm <- TRUE
-
         ratio.Overlap$maskedRange <- do.call(raster::mosaic, ratio.Overlap$maskedRange)
       }
+      else {ratio.Overlap$maskedRange<-ratio.Overlap$maskedRange[[1]]}
+      spp[[curSp()]]$change$overlapRaster <- ratio.Overlap$maskedRange
+      spp[[curSp()]]$change$overlapvalue <- ratio.Overlap$ratio
       spp[[curSp()]]$change$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
 
     }
@@ -378,14 +388,16 @@ change_overlap_module_server <- function(input, output, session, common) {
       req(ratio.Overlap)
       logger %>% writeLog("Proportion of AOO that is contained by landcover categories calculated ")
       # LOAD INTO SPP ####
-      spp[[curSp()]]$change$overlapRaster <- ratio.Overlap$maskedRange
-      spp[[curSp()]]$change$overlapvalue <- ratio.Overlap$ratio
-      if(is.list(ratio.Overlap$maskedRange)){
+      if(length(ratio.Overlap$maskedRange)>1)
+      {
+        names(ratio.Overlap$maskedRange) <- NULL
         ratio.Overlap$maskedRange$fun <- mean
         ratio.Overlap$maskedRange$na.rm <- TRUE
-
         ratio.Overlap$maskedRange <- do.call(raster::mosaic, ratio.Overlap$maskedRange)
       }
+      else {ratio.Overlap$maskedRange<-ratio.Overlap$maskedRange[[1]]}
+      spp[[curSp()]]$change$overlapRaster <- ratio.Overlap$maskedRange
+      spp[[curSp()]]$change$overlapvalue <- ratio.Overlap$ratio
       spp[[curSp()]]$change$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
 
     }
@@ -464,7 +476,7 @@ change_overlap_module_map <- function(map, common) {
   if(is.null(spp[[curSp()]]$change$Plot1)){
   req(spp[[curSp()]]$change$Plot)
   sdm <-  spp[[curSp()]]$change$Plot
-  raster::crs(sdm) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
+  raster::crs(sdm) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 ")
   SDMVals <- getRasterVals(sdm)
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
   legendPal <- colorNumeric(rev(rasCols), SDMVals, na.color = 'transparent')
@@ -557,14 +569,14 @@ change_overlap_module_map <- function(map, common) {
  req(spp[[curSp()]]$change$overlapRaster)
 
     Overlap <-  spp[[curSp()]]$change$overlapRaster
-    if(is.list(Overlap)){
-    Overlap$fun <- mean
-    Overlap$na.rm <- TRUE
+  #  if(is.list(Overlap)){
+   # Overlap$fun <- mean
+    #Overlap$na.rm <- TRUE
 
-    Overlap <- do.call(raster::mosaic, Overlap)
-    }
+   #Overlap <- do.call(raster::mosaic, Overlap)
+  #  }
 
-    raster::crs(Overlap) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
+    raster::crs(Overlap) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 ")
     OverlapVals <- spp[[curSp()]]$change$overlapvalues
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
   legendPal <- colorNumeric(rev(rasCols), OverlapVals, na.color = 'transparent')
