@@ -35,6 +35,14 @@ envs_userEnvs_module_server <- function(input, output, session, common) {
       logger %>% writeLog(type = 'error', "Raster files not uploaded.")
       return()
     }
+    # Specify more than 2 variables
+    if (length(input$userEnvs$name) < 2) {
+      logger %>%
+        writeLog(
+          type = 'error',
+          "Select more than two variables.(**)")
+      return()
+    }
 
     userEnvs <- envs_userEnvs(rasPath = input$userEnvs$datapath,
                               rasName = input$userEnvs$name,

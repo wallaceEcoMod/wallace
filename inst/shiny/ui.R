@@ -235,7 +235,9 @@ tagList(
             column(
               4,
               absolutePanel(
+                div(style = "margin-top: -10px"),
                 uiOutput("curSpUI"),
+                div(style = "margin-top: -12px"),
                 uiOutput("curModelUI")
               )
             ),
@@ -243,6 +245,9 @@ tagList(
               2,
               offset = 1,
               align = "left",
+              div(style = "margin-top: -10px"),
+              strong("Window log (**)"),
+              div(style = "margin-top: 5px"),
               div(
                 id = "wallaceLog",
                 div(id = "logHeader", div(id = "logContent"))

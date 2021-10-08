@@ -73,6 +73,7 @@ penvs_userBgExtent <- function(bgShp_path, bgShp_name, userBgBuf, occs,
 
     if (userBgBuf >= 0) {
       bgExt <- rgeos::gBuffer(bgExt, width = userBgBuf)
+      bgExt <- as(bgExt, "SpatialPolygonsDataFrame")
     }
 
     ### Points outside polygon
@@ -80,9 +81,8 @@ penvs_userBgExtent <- function(bgShp_path, bgShp_name, userBgBuf, occs,
     occs.xy <- occs[c('longitude', 'latitude')]
     # make spatial pts object of original occs and preserve origID
     pts <- sp::SpatialPointsDataFrame(occs.xy, data = occs['occID'])
-    intersect <- sp::over(pts, bgExt)
-    ptRem <- ifelse(all(!is.na(intersect)), 0, as.numeric(which(is.na(intersect))))
-
+    intersecto <- sp::over(pts, bgExt)
+    ptRem <- ifelse(all(!is.na(intersecto)), 0, as.numeric(which(is.na(intersecto))))
     if (ptRem == 0) {
       if (userBgBuf > 0) {
         logger %>% writeLog(hlSpp(spN), 'Study extent user-defined polygon buffered by ',

@@ -67,7 +67,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
   txt.xy$scientific_name <- trimws(txt.xy$scientific_name)
   # get all species names
   occs <- txt.xy %>% dplyr::filter(!grepl("bg_", scientific_name))
-  spNames <- trimws(as.character(unique(occs$scientific_name)))
+  spNames <- trimws(as.character(occs$scientific_name))
 
   spCap <- function(x) {
     paste0(toupper(substring(x, 1, 1)), substring(x, 2, nchar(x)))
@@ -100,10 +100,12 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
       paste0('Please input txt file. No all values in longitude or latitude are numeric.'))
     return()
   }
+  # Transform scientific_name field
+  txt.xy$scientific_name <- spNames
 
   # put species into a list in the same form as spp
   occsList <- list()
-  for (i in spNames) {
+  for (i in unique(spNames)) {
     sp.occs <- txt.xy %>% dplyr::filter(scientific_name == i)
     # add occID field if it doesn't exist
     if(!("occID" %in% names(sp.occs))) sp.occs$occID <- row.names(sp.occs)

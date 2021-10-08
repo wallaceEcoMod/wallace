@@ -77,13 +77,9 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL, spN = NULL) {
   if (bgBuf > 0 & bgSel != 'point buffers') {
     bgExt <- rgeos::gBuffer(bgExt, width = bgBuf)
     logger %>% writeLog(hlSpp(spN), msg, ' Buffered by ', bgBuf, ' degrees.')
-  }else{
+  } else {
     logger %>% writeLog(hlSpp(spN), msg)
   }
-
-  # make into SP data frame
-  bgExt <- sp::SpatialPolygonsDataFrame(bgExt, data = data.frame(x = 1),
-                                        match.ID = FALSE)
-
+  bgExt <- as(bgExt, "SpatialPolygonsDataFrame")
   return(bgExt)
 }
