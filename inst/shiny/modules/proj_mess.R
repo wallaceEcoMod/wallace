@@ -20,7 +20,7 @@ proj_mess_module_server <- function(input, output, session, common) {
   observeEvent(input$goEnvSimilarity, {
     # ERRORS ####
     if (is.null(mapProj())) {
-      logger %>% writeLog(type = 'error', 'Project to new area or time first.')
+      logger %>% writeLog(type = 'error', 'Transfer to new area or time first.')
       return()
     }
     if (is.null(spp[[curSp()]]$project$pjExt)) {

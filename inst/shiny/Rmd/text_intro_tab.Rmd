@@ -48,10 +48,10 @@ output: html_document
 - Plot Response Curves  
 - BIOCLIM Envelope Plot  
 
-**9.** *Project Model*  
-- Project to New Extent  
-- Project to New Time  
-- Project to User Environments
+**9.** *Model Transfer*  
+- Transfer to New Extent  
+- Transfer to New Time  
+- Transfer to User Environments
 - Calculate Environmental Similarity  
 
 **10.** *Reproduce*  

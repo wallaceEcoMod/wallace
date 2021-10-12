@@ -40,8 +40,8 @@ proj_user_module_ui <- function(id) {
     actionButton(ns("goProjExtUser"), "Create"), br(),
     tags$hr(class = "hrDotted"),
     span("Step 2:", class = "step"),
-    span("Project", class = "stepText"), br(),
-    p("Project model to projected extent (red) "),
+    span("Transfer", class = "stepText"), br(),
+    p("Transfer model to projected extent (red) "),
     uiOutput(ns("projUserNames")),
     fileInput(ns("userProjEnvs"),
               label = paste0('Input rasters in single-file format (i.e. .tif, ',
@@ -62,7 +62,7 @@ proj_user_module_ui <- function(id) {
                                  min = 0, max = 1, value = .05)),
     conditionalPanel(paste0("input['", ns("threshold"), "'] == 'none'"),
                      uiOutput(ns("noThrs"))),
-    actionButton(ns('goProjectUser'), "Project"),
+    actionButton(ns('goProjectUser'), "Transfer"),
     tags$hr(class = "hrDashed"),
     actionButton(ns("goResetProj"), "Reset", class = 'butReset'),
     strong(" projection extent")
@@ -301,7 +301,7 @@ proj_user_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$rmm$data$transfer$environment1$extentSet <-
       printVecAsis(as.vector(projExt@extent), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$extentRule <-
-      "project to user-specified files"
+      "transfer to user-specified files"
     spp[[curSp()]]$rmm$data$transfer$environment1$sources <- "user"
 
     spp[[curSp()]]$rmm$prediction$transfer$environment1$units <-

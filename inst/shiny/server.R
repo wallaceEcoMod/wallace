@@ -871,7 +871,7 @@ function(input, output, session) {
   )
 
   ########################################### #
-  ### COMPONENT: PROJECT MODEL ####
+  ### COMPONENT: MODEL TRANSFER ####
   ########################################### #
 
   # # # # # # # # # # # # # # # # # #

@@ -26,7 +26,7 @@ tagList(
     tabPanel("Partition Occs", value = 'part'),
     tabPanel("Model", value = 'model'),
     tabPanel("Visualize", value = 'vis'),
-    tabPanel("Project", value = 'proj'),
+    tabPanel("Transfer", value = 'proj'),
     tabPanel("Reproduce", value = 'rep'),
     navbarMenu("Support", icon = icon("life-ring"),
                HTML('<a href="https://wallaceecomod.github.io/" target="_blank">Wallace Homepage</a>'),
@@ -203,7 +203,7 @@ tagList(
           # PROJECT ####
           conditionalPanel(
             "input.tabs == 'proj'",
-            div("Component: Project Model", class = "componentName"),
+            div("Component: Model Transfer", class = "componentName"),
             help_comp_ui("projHelp"),
             radioButtons(
               "projSel", "Modules Available:",

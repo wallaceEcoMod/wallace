@@ -24,8 +24,8 @@ proj_area_module_ui <- function(id) {
     actionButton(ns("goProjExtArea"), "Create"), br(),
     tags$hr(class = "hrDotted"),
     span("Step 2:", class = "step"),
-    span("Project", class = "stepText"), br(),
-    p("Project model to project extent (red) "),
+    span("Transfer", class = "stepText"), br(),
+    p("Transfer model to project extent (red) "),
     tags$div(
       title = paste0(
         'Create binary map of predicted presence/absence assuming ',
@@ -42,7 +42,7 @@ proj_area_module_ui <- function(id) {
                   min = 0, max = 1, value = .05)),
     conditionalPanel(paste0("input['", ns("threshold"), "'] == 'none'"),
                      uiOutput(ns("noThrs"))),
-    actionButton(ns('goProjectArea'), "Project"),
+    actionButton(ns('goProjectArea'), "Transfer"),
     tags$hr(class = "hrDashed"),
     actionButton(ns("goResetProj"), "Reset", class = 'butReset'),
     strong(" projection extent ")
@@ -222,7 +222,7 @@ proj_area_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$rmm$data$transfer$environment1$extentSet <-
       printVecAsis(as.vector(projExt@extent), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$extentRule <-
-      "project to user-selected new area"
+      "transfer to user-selected new area"
     spp[[curSp()]]$rmm$data$transfer$environment1$sources <-
       spp[[curSp()]]$rmm$data$environment$sources
     spp[[curSp()]]$rmm$prediction$transfer$environment1$units <-
