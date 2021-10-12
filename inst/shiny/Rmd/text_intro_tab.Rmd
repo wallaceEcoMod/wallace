@@ -29,7 +29,7 @@ output: html_document
 - Draw Polygon
 - User-specified Study Region  
 
-**5.** *Environmental Space*  
+**5.** *Characterize Environmental Space*  
 - Environmental Ordination  
 - Occurrence Density Grid  
 - Niche Overlap  

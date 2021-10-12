@@ -155,7 +155,7 @@ tagList(
           # ESPACE ####
           conditionalPanel(
             "input.tabs == 'espace'",
-            div("Component: Environmental Space", class = "componentName"),
+            div("Component: Characterize Environmental Space", class = "componentName"),
             help_comp_ui("espaceHelp"),
             radioButtons(
               "espaceSel", "Modules Available:",
