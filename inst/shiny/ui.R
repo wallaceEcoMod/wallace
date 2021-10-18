@@ -246,7 +246,7 @@ tagList(
               offset = 1,
               align = "left",
               div(style = "margin-top: -10px"),
-              strong("Window log (**)"),
+              strong("Window log"),
               div(style = "margin-top: 5px"),
               div(
                 id = "wallaceLog",
