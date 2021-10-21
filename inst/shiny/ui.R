@@ -307,7 +307,7 @@ tagList(
                        " with a collaborator.")),
                 shinyjs::hidden(p(
                   id = "save_warning",
-                  icon("warning"),
+                  icon("exclamation-triangle"),
                   paste0("The current session data is large, which means the ",
                          "downloaded file may be large and the download might",
                          " take a long time.")
