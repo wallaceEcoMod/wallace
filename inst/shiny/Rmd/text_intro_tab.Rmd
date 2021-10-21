@@ -46,7 +46,7 @@ output: html_document
 - Map Prediction  
 - Maxent Evaluation Plots  
 - Plot Response Curves  
-- BIOCLIM Envelope Plot  
+- BIOCLIM Envelope Plots  
 
 **9.** *Model Transfer*  
 - Transfer to New Extent  
