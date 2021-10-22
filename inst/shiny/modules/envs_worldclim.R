@@ -69,7 +69,7 @@ envs_worldclim_module_server <- function(input, output, session, common) {
       logger %>%
         writeLog(
           type = 'error',
-          "Select more than two variables.(**)")
+          "Select more than two variables.")
       return()
     }
 

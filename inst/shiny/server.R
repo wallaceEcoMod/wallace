@@ -209,9 +209,9 @@ function(input, output, session) {
     sppNameList <- c(list("Current species" = ""), setNames(as.list(n), n))
     # generate a selectInput ui that lists the available species
     if (is.null(module())) {
-      span("...Select a module (**)...", class = "step")
+      span("...Select a module...", class = "step")
     } else {
-      selectizeInput('curSp', label = "Select species: (**)", choices = sppNameList,
+      selectizeInput('curSp', label = "Species log", choices = sppNameList,
                      multiple = TRUE, selected = selected, options = options)
     }
   })
@@ -654,7 +654,7 @@ function(input, output, session) {
     modsNameList <- c(list("Current model" = ""), setNames(as.list(n), n))
     options <- list(maxItems = 1)
     if (!is.null(module())) {
-      selectizeInput('curModel', label = "Select model: (**)" ,
+      selectizeInput('curModel', label = "Select model: " ,
                      choices = modsNameList, multiple = TRUE,
                      selected = selected, options = options)
     }
