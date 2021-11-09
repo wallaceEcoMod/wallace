@@ -57,4 +57,5 @@ output: html_document
 **10.** *Reproduce*  
 - Download Session Code  
 - Download Metadata  
+- Download Package References (**)
 
