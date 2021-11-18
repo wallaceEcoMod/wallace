@@ -308,7 +308,8 @@ function(input, output, session) {
 
   # map center coordinates for 30 arcsec download
   mapCntr <- reactive({
-    round(as.numeric(input$map_center), digits = 3)
+    req(occs())
+    round(c(mean(occs()$longitude), mean(occs()$latitude)), digits = 3)
   })
 
   # CONSOLE PRINT
@@ -1305,6 +1306,10 @@ function(input, output, session) {
                         encoding = "UTF-8")
     })
 
+  ################################
+  ### COMMON LIST FUNTIONALITY ####
+  ################################
+
   # Create a data structure that holds variables and functions used by modules
   common = list(
     # Reactive variables to pass on to modules
@@ -1325,7 +1330,6 @@ function(input, output, session) {
     envs = envs,
     bcSel = bcSel,
     ecoClimSel = ecoClimSel,
-    VarSelector = VarSelector,
     bg = bg,
     bgExt = bgExt,
     bgMask = bgMask,
