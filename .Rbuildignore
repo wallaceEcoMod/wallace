@@ -10,3 +10,4 @@ cmip5*    # worldclim files
 ^tests$
 ^wallace.Rproj$
 ^selenium-server-standalone.jar$
+^\.github$
