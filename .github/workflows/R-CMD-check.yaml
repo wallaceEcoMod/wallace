@@ -32,6 +32,11 @@ jobs:
       - uses: actions/checkout@v2
 
       - uses: r-lib/actions/setup-pandoc@v1
+      
+      - name:  Installing GDAL and PROJ in macOS
+        if: runner.os == 'macOS'
+        run:  brew install gdal proj  	
+        shell: bash
 
       - uses: r-lib/actions/setup-r@v1
         with:
