@@ -49,6 +49,3 @@ jobs:
           extra-packages: rcmdcheck
 
       - uses: r-lib/actions/check-r-package@v1
-
-      - name: testhat skipped because is based on RSelenium. It needs to run manually.
-        if: always()
