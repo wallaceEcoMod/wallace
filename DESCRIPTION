@@ -1,6 +1,6 @@
 Package: wallace
-Version: 1.1.0
-Date: 2021-05-04
+Version: 1.1.1
+Date: 2021-11-23
 Title: A Modular Platform for Reproducible Modeling of Species Niches and Distributions
 Authors@R: c(
   person("Jamie M.", "Kass", email = "jamie.kass@oist.jp", role = "aut"),
@@ -52,7 +52,7 @@ Description: The 'shiny' application 'wallace' is a modular platform for reprodu
 License: GPL-3
 URL: https://wallaceEcoMod.github.io
 Encoding: UTF-8
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 NeedsCompilation: no
 Packaged: 2017-11-29 05:26:31 UTC; musasabi
 VignetteBuilder: knitr
