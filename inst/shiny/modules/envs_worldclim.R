@@ -35,7 +35,7 @@ envs_worldclim_module_ui <- function(id) {
       sprintf("input['%s'] == '0.5'", ns("wcRes")),
       em("Batch option not available for 30 arcsec resolution."), br(), br(),
       strong(
-        paste0("Using map center coordinates as reference for tile download. ",
+        paste0("Coordinates centroid as reference for tile download. ",
                "You can vizualize the tile in the bottomleft corner on ",
                "the map. All occurrence outside of the purple polygon will ",
                "be removed")), br(), br(),
@@ -145,7 +145,7 @@ envs_worldclim_module_server <- function(input, output, session, common) {
 
   # text showing the current map center
   output$ctrLatLon <- renderText({
-    glue::glue('Using map center {join(mapCntr())}')
+    glue::glue('Using coordinate centroid {join(mapCntr())}')
   })
 
   output$envsPrint <- renderPrint({
