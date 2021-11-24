@@ -1,5 +1,5 @@
 component: "penvs"
-short_name: "Draw polygon"
+short_name: "Draw study region"
 long_name: "Draw-specified Study Region"
 authors: "Gonzalo E. Pinilla-Buitrago, Jamie M. Kass, Bruno Vilela, Robert P. Anderson"
 package: []
