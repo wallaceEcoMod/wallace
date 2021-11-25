@@ -13,7 +13,10 @@ envs_{{spAbr}} <- envs_userEnvs(
   rasName = {{userRasName_rmd}},
   doBrick = {{userBrick_rmd}})
 occs_xy_{{spAbr}} <- occs_{{spAbr}}[c('longitude', 'latitude')]
-occs_vals_{{spAbr}} <- as.data.frame(raster::extract(envs_{{spAbr}}, occs_xy_{{spAbr}}))
+occs_vals_{{spAbr}} <- as.data.frame(raster::extract(envs_{{spAbr}}, occs_xy_{{spAbr}}, cellnumbers = TRUE))
+# Remove duplicated same cell values
+occs_{{spAbr}} <- occs_{{spAbr}}[!duplicated(occs_vals_{{spAbr}}[, 1]), ]
+occs_vals_{{spAbr}} <- occs_vals_{{spAbr}}[!duplicated(occs_vals_{{spAbr}}[, 1]), -1]
 # remove occurrence records with NA environmental values
 occs_{{spAbr}} <- occs_{{spAbr}}[!(rowSums(is.na(occs_vals_{{spAbr}})) > 1), ]
 # also remove variable value rows with NA environmental values
