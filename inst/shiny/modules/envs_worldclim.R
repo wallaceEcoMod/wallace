@@ -27,7 +27,7 @@ envs_worldclim_module_ui <- function(id) {
     conditionalPanel(
       sprintf("input['%s'] != '0.5'", ns("wcRes")),
       tags$div(
-        title = "Add Batch guidance text here (**)",
+        title = "Apply selection to ALL species loaded",
         checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE) # Check default (value = FALSE)
       )
     ),
@@ -69,7 +69,7 @@ envs_worldclim_module_server <- function(input, output, session, common) {
       logger %>%
         writeLog(
           type = 'error',
-          "Select more than two variables.(**)")
+          "Select more than two variables.")
       return()
     }
 

@@ -4,7 +4,7 @@ userBiasFile_UI <- function(id) {
   tagList(
     fileInput(ns("userBiasFile"), label = "Upload BiasFile"),
     tags$div(
-      title = "Add Batch guidance text here (**)",
+      title = "Apply selection to ALL species loaded",
       checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE)
     )
   )

@@ -13,7 +13,7 @@ penvs_userBgExtent_module_ui <- function(id) {
                           label = "Study region buffer distance (degree)",
                           value = 0, min = 0, step = 0.5)),
     tags$div(
-      title = "Add Batch guidance text here (**)",
+      title = "Apply selection to ALL species loaded",
       checkboxInput(ns("batch1"), label = strong("Batch"), value = FALSE) # Check default (value = FALSE)
     ),
     actionButton(ns("goUserBg"), "Load"),
@@ -25,7 +25,7 @@ penvs_userBgExtent_module_ui <- function(id) {
     numericInput(ns("bgPtsNum"), label = "No. of background points",
                  value = 10000, min = 1, step = 1), # Check default (value = 10000)
     tags$div(
-      title = "Add Batch guidance text here (**)",
+      title = "Apply selection to ALL species loaded",
       checkboxInput(ns("batch2"), label = strong("Batch"), value = FALSE) # Check default (value = FALSE)
     ),
     actionButton(ns("goBgMask"), "Sample"),

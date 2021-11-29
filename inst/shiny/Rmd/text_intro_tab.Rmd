@@ -26,10 +26,10 @@ output: html_document
 
 **4.** *Process Environmental Data*  
 - Select Study Region by Extent
-- Draw Polygon
+- Draw Study Region
 - User-specified Study Region  
 
-**5.** *Environmental Space*  
+**5.** *Characterize Environmental Space*  
 - Environmental Ordination  
 - Occurrence Density Grid  
 - Niche Overlap  
@@ -46,15 +46,16 @@ output: html_document
 - Map Prediction  
 - Maxent Evaluation Plots  
 - Plot Response Curves  
-- BIOCLIM Envelope Plot  
+- BIOCLIM Envelope Plots  
 
-**9.** *Project Model*  
-- Project to New Extent  
-- Project to New Time  
-- Project to User Environments
+**9.** *Model Transfer*  
+- Transfer to New Extent  
+- Transfer to New Time  
+- Transfer to User Environments
 - Calculate Environmental Similarity  
 
 **10.** *Reproduce*  
 - Download Session Code  
 - Download Metadata  
+- Download Package References 
 

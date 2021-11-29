@@ -3,7 +3,7 @@ title: "espace"
 output: html_document
 ---
 
-### **Component: Environmental Space**
+### **Component: Characterize Environmental Space**
 This is a draft and will be updated soon
 
 **ORIENTATION**

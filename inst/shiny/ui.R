@@ -26,7 +26,7 @@ tagList(
     tabPanel("Partition Occs", value = 'part'),
     tabPanel("Model", value = 'model'),
     tabPanel("Visualize", value = 'vis'),
-    tabPanel("Project", value = 'proj'),
+    tabPanel("Transfer", value = 'proj'),
     tabPanel("Reproduce", value = 'rep'),
     navbarMenu("Support", icon = icon("life-ring"),
                HTML('<a href="https://wallaceecomod.github.io/" target="_blank">Wallace Homepage</a>'),
@@ -155,7 +155,7 @@ tagList(
           # ESPACE ####
           conditionalPanel(
             "input.tabs == 'espace'",
-            div("Component: Environmental Space", class = "componentName"),
+            div("Component: Characterize Environmental Space", class = "componentName"),
             help_comp_ui("espaceHelp"),
             radioButtons(
               "espaceSel", "Modules Available:",
@@ -203,7 +203,7 @@ tagList(
           # PROJECT ####
           conditionalPanel(
             "input.tabs == 'proj'",
-            div("Component: Project Model", class = "componentName"),
+            div("Component: Model Transfer", class = "componentName"),
             help_comp_ui("projHelp"),
             radioButtons(
               "projSel", "Modules Available:",
@@ -246,7 +246,7 @@ tagList(
               offset = 1,
               align = "left",
               div(style = "margin-top: -10px"),
-              strong("Window log (**)"),
+              strong("Window log"),
               div(style = "margin-top: 5px"),
               div(
                 id = "wallaceLog",
@@ -307,7 +307,7 @@ tagList(
                        " with a collaborator.")),
                 shinyjs::hidden(p(
                   id = "save_warning",
-                  icon("warning"),
+                  icon("exclamation-triangle"),
                   paste0("The current session data is large, which means the ",
                          "downloaded file may be large and the download might",
                          " take a long time.")
