@@ -2,7 +2,8 @@
 userEnvs_UI <- function(id) {
   ns <- NS(id)
   tagList(
-    fileInput(ns("userEnvs"), label = "Input rasters", multiple = TRUE)
+    fileInput(ns("userEnvs"), label = "Input rasters", multiple = TRUE,
+              accept = c(".tif", ".asc"))
   )
 }
 
