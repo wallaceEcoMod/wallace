@@ -448,6 +448,11 @@ proj_time_module_server <- function(input, output, session, common) {
       printVecAsis(raster::cellStats(projTimeThr, max), asChar = TRUE)
     if(!(input$threshold == 'none')) {
       spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet <- thr
+      if (input$threshold == 'qtp') {
+        spp[[curSp()]]$rmm$code$wallace$transferQuantile <- input$trainPresQuantile
+      } else {
+        spp[[curSp()]]$rmm$code$wallace$transferQuantile <- 0
+      }
     } else {
       spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet <- NULL
     }
@@ -582,9 +587,10 @@ proj_time_module_rmd <- function(species) {
       species$procEnvs$bgExt} else {NULL},
     ##Use of threshold for projection
     proj_time_threshold_knit = !is.null(species$rmm$prediction$transfer$environment1$thresholdSet),
-    thresholdRule_rmd = species$rmm$prediction$transfer$environment1$thresholdRule,
-    threshold_rmd = if (!is.null(species$rmm$prediction$transfer$environment1$thresholdSet)){
+    proj_thresholdRule_rmd = species$rmm$prediction$transfer$environment1$thresholdRule,
+    proj_threshold_rmd = if (!is.null(species$rmm$prediction$transfer$environment1$thresholdSet)){
       species$rmm$prediction$transfer$environment1$thresholdSet} else {0},
+    proj_probQuantile_rmd = species$rmm$code$wallace$transferQuantile,
     ###for guidance text
       ##name of environmental variables used
     envs_name_rmd = species$rmm$data$transfer$environment1$sources,

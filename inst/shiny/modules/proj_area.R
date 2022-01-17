@@ -233,10 +233,16 @@ proj_area_module_server <- function(input, output, session, common) {
       printVecAsis(raster::cellStats(projAreaThr, max), asChar = TRUE)
     if(!(input$threshold == 'none')) {
       spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet <- thr
+      if (input$threshold == 'qtp') {
+        spp[[curSp()]]$rmm$code$wallace$transferQuantile <- input$trainPresQuantile
+      } else {
+        spp[[curSp()]]$rmm$code$wallace$transferQuantile <- 0
+      }
     } else {
       spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet <- NULL
     }
     spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdRule <- input$threshold
+
     if (!is.null(spp[[curSp()]]$rmm$model$algorithm$maxent$clamping)) {
       spp[[curSp()]]$rmm$prediction$transfer$environment1$extrapolation <-
         spp[[curSp()]]$rmm$model$algorithm$maxent$clamping
@@ -353,10 +359,10 @@ proj_area_module_rmd <- function(species) {
     proj_area_extent_knit = !is.null(species$rmm$code$wallace$userPjShpParams),
     ##Use of threshold for projection
     proj_area_threshold_knit = !is.null(species$rmm$prediction$transfer$environment1$thresholdSet),
-    thresholdRule_rmd = species$rmm$prediction$transfer$environment1$thresholdRule,
-    threshold_rmd = if (!is.null(species$rmm$prediction$transfer$environment1$thresholdSet)){
-    species$rmm$prediction$transfer$environment1$thresholdSet} else {0}
-
+    proj_thresholdRule_rmd = species$rmm$prediction$transfer$environment1$thresholdRule,
+    proj_threshold_rmd = if (!is.null(species$rmm$prediction$transfer$environment1$thresholdSet)){
+    species$rmm$prediction$transfer$environment1$thresholdSet} else {0},
+    proj_probQuantile_rmd = species$rmm$code$wallace$transferQuantile
 
   )
 }

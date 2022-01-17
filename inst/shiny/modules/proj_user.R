@@ -312,6 +312,11 @@ proj_user_module_server <- function(input, output, session, common) {
       printVecAsis(raster::cellStats(projUserThr, max), asChar = TRUE)
     if(!(input$threshold == 'none')) {
       spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet <- thr
+      if (input$threshold == 'qtp') {
+        spp[[curSp()]]$rmm$code$wallace$transferQuantile <- input$trainPresQuantile
+      } else {
+        spp[[curSp()]]$rmm$code$wallace$transferQuantile <- 0
+      }
     } else {
       spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet <- NULL
     }
@@ -425,9 +430,10 @@ proj_user_module_rmd <- function(species) {
     userPjName_rmd = printVecAsis(species$rmm$code$wallace$userPjName),
     ##Use of threshold for projection
     proj_user_threshold_knit = !is.null(species$rmm$prediction$transfer$environment1$thresholdSet),
-    thresholdRule_rmd = species$rmm$prediction$transfer$environment1$thresholdRule,
-    threshold_rmd = if (!is.null(species$rmm$prediction$transfer$environment1$thresholdSet)){
+    proj_thresholdRule_rmd = species$rmm$prediction$transfer$environment1$thresholdRule,
+    proj_threshold_rmd = if (!is.null(species$rmm$prediction$transfer$environment1$thresholdSet)){
       species$rmm$prediction$transfer$environment1$thresholdSet} else {0},
+    proj_probQuantile_rmd = species$rmm$code$wallace$transferQuantile,
     ##Determine the type of projection extent to use correct RMD function
     proj_user_user_knit = !is.null(species$rmm$code$wallace$userPjShpParams),
     proj_user_drawn_knit = !is.null(species$rmm$code$wallace$drawExtPolyPjCoords),
