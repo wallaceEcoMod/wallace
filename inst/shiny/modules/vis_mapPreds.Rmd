@@ -199,15 +199,15 @@ Generate a map of the maxnet generated model with with a "{{thresholdRule_rmd}}"
 ```{r, echo = {{vis_mapPreds_knit & vis_map_maxnet_knit & vis_map_threshold_knit}}, include = {{vis_mapPreds_knit & vis_map_maxnet_knit & vis_map_threshold_knit}}}
 # Select current model and obtain raster prediction
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]] 
-predSel_{{spAbr}} <- predictMaxent(m_{{spAbr}}, bgMask_{{spAbr}},
+predSel_{{spAbr}} <- predictMaxnet(m_{{spAbr}}, bgMask_{{spAbr}},
                                    type = "{{predType_rmd}}", 
                                    clamp = {{clamp_rmd}})
 # Applied selected threshold
 predSel_{{spAbr}} <- predSel_{{spAbr}} > {{threshold_rmd}}
 
-#Get values of prediction
+# Get values of prediction
 mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
-#Define colors and legend  
+# Define colors and legend  
 rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 legendPal <- colorNumeric(rev(rasCols), mapPredVals_{{spAbr}}, na.color = 'transparent')
 rasPal <- c('gray', 'blue')
@@ -226,7 +226,7 @@ m  %>%
   addRasterImage(predSel_{{spAbr}}, colors = rasPal, opacity = 0.7,
                  group = 'vis', layerId = 'mapPred', method = "ngb") %>%
  ##add background polygons
-  addPolygons(data = bgExt_{{spAbr}},fill = FALSE,
+  addPolygons(data = bgExt_{{spAbr}}, fill = FALSE,
               weight = 4, color = "blue", group = 'proj')
 
 ```

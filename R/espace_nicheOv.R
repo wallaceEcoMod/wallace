@@ -61,7 +61,7 @@ espace_nicheOv <- function(z1, z2, iter = 100, equivalency = FALSE,
   nicheOv$overlap <- ecospat::ecospat.niche.overlap(z1, z2, cor = TRUE)
 
 
-  #unfilling, stability, expansion indices (Guisan et al. 2014 TREE)
+  # Unfilling, stability, expansion indices (Guisan et al. 2014 TREE)
   nicheOv$USE <- ecospat::ecospat.niche.dyn.index(z1, z2, intersection = 0)$dynamic.index.w
 
   # niche tests
