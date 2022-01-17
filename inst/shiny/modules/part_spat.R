@@ -11,7 +11,7 @@ part_spat_module_ui <- function(id) {
                      numericInput(ns("aggFact"), label = "Aggregation Factor",
                                   value = 2, min = 2)),
     tags$div(
-      title = "Add Batch guidance text here (**)",
+      title = "Apply selection to ALL species loaded",
       checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE) # Check default (value = FALSE)
     ),
     actionButton(ns("goPartitionSpat"), "Partition")

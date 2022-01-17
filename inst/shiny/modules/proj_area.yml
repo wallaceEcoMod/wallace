@@ -1,5 +1,5 @@
 component: "proj"
-short_name: "Project to New Extent"
-long_name: "Project to New Extent"
+short_name: "Transfer to New Extent"
+long_name: "Transfer to New Extent"
 authors: "Jamie M. Kass, Bruno Vilela, Gonzalo E. Pinilla-Buitrago, Robert P. Anderson"
 package: [dismo]

@@ -21,6 +21,8 @@ We engineered *Wallace* to be used by a broad audience that includes graduate st
 
 ### **Attributes of _Wallace_**
 
+* **accessible**: lowers barriers to implement cutting-edge SDM techniques, offers support through various networks (Google Group, email, etc.)
+
 * **open**: the code is free to use and modify (GPL 3.0), and it gives users access to some of the largest public online biodiversity databases
 
 * **expandible**: users can author and contribute modules that enable new methodogical options
@@ -31,7 +33,7 @@ We engineered *Wallace* to be used by a broad audience that includes graduate st
 
 * **instructive**: features guidance text that educates users about theoretical and analytical aspects of each step in the workflow
 
-* **reproducible**: users can download an `rmarkdown` .Rmd file that when run reproduces the analysis
+* **reproducible**: users can download an `rmarkdown` .Rmd file that when run reproduces the analysis, ability to save sessions and load later
 
 ### **_Wallace_ website**
 

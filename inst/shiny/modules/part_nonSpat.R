@@ -9,7 +9,7 @@ part_nonSpat_module_ui <- function(id) {
                      numericInput(ns("kfolds"), label = "Number of Folds",
                                   value = 2, min = 2)),
     tags$div(
-      title = "Add Batch guidance text here (**)",
+      title = "Apply selection to ALL species loaded",
       checkboxInput(ns("batch"), label = strong("Batch"), value = FALSE) # Check default (value = FALSE)
     ),
     actionButton(ns("goPartitionNonSpat"), "Partition")

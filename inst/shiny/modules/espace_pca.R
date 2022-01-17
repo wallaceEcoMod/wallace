@@ -25,7 +25,7 @@ espace_pca_module_server <- function(input, output, session, common) {
     req(curSp())
     if (length(curSp()) == 1) {
       shiny::tagList(
-        shiny::em("Select two species in species menu(**)"),
+        shiny::em("Select two species in species menu"),
         br()
       )
     } else if (length(curSp()) == 2) {
