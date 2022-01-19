@@ -33,7 +33,7 @@ rasVals_{{spAbr}} <-  getRasterVals(projMess_{{spAbr}})
   #Create map
   m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m  %>%
-    addLegend("bottomright", pal = legendPal_{{spAbr}}, title = "MESS Values",
+    leaflet::addLegend("bottomright", pal = legendPal_{{spAbr}}, title = "MESS Values",
               values = rasVals_{{spAbr}}, layerId = 'proj',
               labFormat = reverseLabels(2, reverse_order=TRUE)) %>%
   # map model prediction raster and projection polygon
