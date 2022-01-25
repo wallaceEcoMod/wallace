@@ -113,6 +113,14 @@ proj_area_module_server <- function(input, output, session, common) {
     if (input$projExt == 'pjUser') {
       polyPj <- proj_userExtent(input$userPjShp$datapath, input$userPjShp$name,
                                 input$userPjBuf, logger, spN = curSp())
+      # ERRORS ####
+      # Check that the extents of raster and projection extent instersects
+      if (!rgeos::gIntersects(spp[[curSp()]]$project$pjExt,
+                              as(raster::extent(userProjEnvs), 'SpatialPolygons'))) {
+        logger %>%
+          writeLog(type = 'error', 'Extents do not overlap')
+        return()
+      }
       # METADATA ####
       spp[[curSp()]]$rmm$code$wallace$PjBuff <- input$userPjBuf
       # get extensions of all input files
@@ -148,6 +156,13 @@ proj_area_module_server <- function(input, output, session, common) {
     }
     if (is.null(spp[[curSp()]]$project$pjExt)) {
       logger %>% writeLog(type = 'error', 'Select projection extent first.')
+      return()
+    }
+    # Check that the extents of raster and projection extent intersects
+    if (!rgeos::gIntersects(spp[[curSp()]]$project$pjExt,
+                            as(raster::extent(envs()), 'SpatialPolygons'))) {
+      logger %>%
+        writeLog(type = 'error', 'Extents do not overlap')
       return()
     }
 
