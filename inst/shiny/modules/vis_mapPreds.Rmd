@@ -39,32 +39,39 @@ m  %>%
 ### Visualize
 Generate a map of the Bioclim generated model with a "{{thresholdRule_rmd}}" threshold rule of {{threshold_rmd}}.
 ```
-
 ```{r, echo = {{vis_mapPreds_knit & vis_map_bioclim_knit  & vis_map_threshold_knit}}, include = {{vis_mapPreds_knit & vis_map_bioclim_knit  & vis_map_threshold_knit}}}
 # Select current model and obtain raster prediction
-
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
 predSel_{{spAbr}} <- dismo::predict(m_{{spAbr}}, bgMask_{{spAbr}}, useC = FALSE)
+# extract the suitability values for all occurrences
+occs_xy_{{spAbr}} <- occs_{{spAbr}}[c('longitude', 'latitude')]
+# determine the threshold based on the current prediction
+occPredVals_{{spAbr}} <- raster::extract(predSel_{{spAbr}}, occs_xy_{{spAbr}})
+# Define probability of quantile based on selected threshold
+thresProb_{{spAbr}} <- switch("{{thresholdRule_rmd}}", 
+                              "mtp" = 0, "p10" = 0.1, "qtp" = {{probQuantile_rmd}})
+# Define threshold value
+thres_{{spAbr}} <- quantile(occPredVals_{{spAbr}}, probs = thresProb_{{spAbr}})
 # Applied selected threshold
-predSel_{{spAbr}} <- predSel_{{spAbr}} > {{threshold_rmd}}
-#Get values of prediction
+predSel_{{spAbr}} <- predSel_{{spAbr}} > thres_{{spAbr}}
+# Get values of prediction
 mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
-#Define colors and legend  
+# Define colors and legend  
 rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 legendPal <- colorNumeric(rev(rasCols), mapPredVals_{{spAbr}}, na.color = 'transparent')
 rasPal <- c('gray', 'blue')
-#Generate map
+# Generate map
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m  %>%
  addLegend("bottomright", colors = c('gray', 'blue'),
                 title = "Thresholded Suitability<br>(Training)",
                 labels = c("predicted absence", "predicted presence"),
                 opacity = 1, layerId = "train") %>% 
-  #add occurrence data
+  # add occurrence data
   addCircleMarkers(data = occs_{{spAbr}}, lat = ~latitude, lng = ~longitude,
                    radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                    fillOpacity = 0.2, weight = 2, popup = ~pop) %>% 
-  ##Add model prediction
+  ## Add model prediction
   addRasterImage(predSel_{{spAbr}}, colors = rasPal, opacity = 0.7,
                  group = 'vis', layerId = 'mapPred', method = "ngb") %>%
  ##add background polygons
@@ -126,8 +133,17 @@ predSel_{{spAbr}} <- dismo::predict(
   args = c(paste0("outputformat=", "{{predType_rmd}}"), 
            paste0("doclamp=", tolower(as.character({{clamp_rmd}})))), 
   na.rm = TRUE)
+# extract the suitability values for all occurrences
+occs_xy_{{spAbr}} <- occs_{{spAbr}}[c('longitude', 'latitude')]
+# determine the threshold based on the current prediction
+occPredVals_{{spAbr}} <- raster::extract(predSel_{{spAbr}}, occs_xy_{{spAbr}})
+# Define probability of quantile based on selected threshold
+thresProb_{{spAbr}} <- switch("{{thresholdRule_rmd}}", 
+                              "mtp" = 0, "p10" = 0.1, "qtp" = {{probQuantile_rmd}})
+# Define threshold value
+thres_{{spAbr}} <- quantile(occPredVals_{{spAbr}}, probs = thresProb_{{spAbr}})
 # Applied selected threshold
-predSel_{{spAbr}} <- predSel_{{spAbr}} > {{threshold_rmd}}
+predSel_{{spAbr}} <- predSel_{{spAbr}} > thres_{{spAbr}}
 #Get values of prediction
 mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
 #Define colors and legend  
@@ -199,15 +215,24 @@ Generate a map of the maxnet generated model with with a "{{thresholdRule_rmd}}"
 ```{r, echo = {{vis_mapPreds_knit & vis_map_maxnet_knit & vis_map_threshold_knit}}, include = {{vis_mapPreds_knit & vis_map_maxnet_knit & vis_map_threshold_knit}}}
 # Select current model and obtain raster prediction
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]] 
-predSel_{{spAbr}} <- predictMaxent(m_{{spAbr}}, bgMask_{{spAbr}},
+predSel_{{spAbr}} <- predictMaxnet(m_{{spAbr}}, bgMask_{{spAbr}},
                                    type = "{{predType_rmd}}", 
                                    clamp = {{clamp_rmd}})
+# extract the suitability values for all occurrences
+occs_xy_{{spAbr}} <- occs_{{spAbr}}[c('longitude', 'latitude')]
+# determine the threshold based on the current prediction
+occPredVals_{{spAbr}} <- raster::extract(predSel_{{spAbr}}, occs_xy_{{spAbr}})
+# Define probability of quantile based on selected threshold
+thresProb_{{spAbr}} <- switch("{{thresholdRule_rmd}}", 
+                              "mtp" = 0, "p10" = 0.1, "qtp" = {{probQuantile_rmd}})
+# Define threshold value
+thres_{{spAbr}} <- quantile(occPredVals_{{spAbr}}, probs = thresProb_{{spAbr}})
 # Applied selected threshold
-predSel_{{spAbr}} <- predSel_{{spAbr}} > {{threshold_rmd}}
+predSel_{{spAbr}} <- predSel_{{spAbr}} > thres_{{spAbr}}
 
-#Get values of prediction
+# Get values of prediction
 mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
-#Define colors and legend  
+# Define colors and legend  
 rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 legendPal <- colorNumeric(rev(rasCols), mapPredVals_{{spAbr}}, na.color = 'transparent')
 rasPal <- c('gray', 'blue')
@@ -226,7 +251,7 @@ m  %>%
   addRasterImage(predSel_{{spAbr}}, colors = rasPal, opacity = 0.7,
                  group = 'vis', layerId = 'mapPred', method = "ngb") %>%
  ##add background polygons
-  addPolygons(data = bgExt_{{spAbr}},fill = FALSE,
+  addPolygons(data = bgExt_{{spAbr}}, fill = FALSE,
               weight = 4, color = "blue", group = 'proj')
 
 ```

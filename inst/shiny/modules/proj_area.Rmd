@@ -52,7 +52,7 @@ m %>%
 
 ```{asis, echo = {{proj_area_knit & !proj_area_extent_knit & proj_area_threshold_knit}}, eval = {{proj_area_knit  & !proj_area_extent_knit & proj_area_threshold_knit}}, include = {{proj_area_knit & !proj_area_extent_knit & proj_area_threshold_knit}}}
 ## Project model
-Projecting the model to a new user drawn area using a "{{thresholdRule_rmd}}" threshold of {{threshold_rmd}}. 
+Projecting the model to a new user drawn area using a "{{proj_thresholdRule_rmd}}" threshold of {{proj_threshold_rmd}}. 
 ```
 
 ```{r, echo =  {{proj_area_knit & !proj_area_extent_knit & proj_area_threshold_knit}}, include = {{proj_area_knit & !proj_area_extent_knit & proj_area_threshold_knit}}}
@@ -75,8 +75,19 @@ proj_area_{{spAbr}} <- proj_area(
 
 #store the cropped projection variables
 projExt_{{spAbr}} <- proj_area_{{spAbr}}$projExt
+
+# extract the suitability values for all occurrences
+occs_xy_{{spAbr}} <- occs_{{spAbr}}[c('longitude', 'latitude')]
+# determine the threshold based on the current prediction
+occPredVals_{{spAbr}} <- raster::extract(predSel_{{spAbr}}, occs_xy_{{spAbr}})
+# Define probability of quantile based on selected threshold
+proj_thresProb_{{spAbr}} <- switch("{{proj_thresholdRule_rmd}}", 
+                                   "mtp" = 0, "p10" = 0.1, "qtp" = {{proj_probQuantile_rmd}})
+# Define threshold value
+proj_thres_{{spAbr}} <- quantile(occPredVals_{{spAbr}}, 
+                                 probs = proj_thresProb_{{spAbr}})
 # Add threshold if specified 
-proj_area_{{spAbr}} <- proj_area_{{spAbr}}$projArea > {{threshold_rmd}}
+proj_area_{{spAbr}} <- proj_area_{{spAbr}}$projArea > proj_thres_{{spAbr}}
 
 ##Make map
 ###Make map of projection
@@ -159,7 +170,7 @@ m %>%
 
 ```{asis, echo = {{proj_area_knit & proj_area_extent_knit & proj_area_threshold_knit}} , eval = {{proj_area_knit & proj_area_extent_knit & proj_area_threshold_knit}}, include = {{proj_area_knit & proj_area_extent_knit & proj_area_threshold_knit}}}
 ## Project model
-Projecting the model to a new user provided area using a "{{thresholdRule_rmd}}" threshold of {{threshold_rmd}}. 
+Projecting the model to a new user provided area using a "{{proj_thresholdRule_rmd}}" threshold of {{proj_threshold_rmd}}. 
 ```
 
 ```{r, echo = {{proj_area_knit & proj_area_extent_knit & proj_area_threshold_knit}}, include = {{proj_area_knit & proj_area_extent_knit & proj_area_threshold_knit}}}
@@ -181,10 +192,20 @@ proj_area_{{spAbr}} <- proj_area(
   clamp = {{clamp_rmd}},
   pjExt = proj_userExt_{{spAbr}}) 
 
-#store the cropped projection variables
+# store the cropped projection variables
 projExt_{{spAbr}} <- proj_area_{{spAbr}}$projExt
+# extract the suitability values for all occurrences
+occs_xy_{{spAbr}} <- occs_{{spAbr}}[c('longitude', 'latitude')]
+# determine the threshold based on the current prediction
+occPredVals_{{spAbr}} <- raster::extract(predSel_{{spAbr}}, occs_xy_{{spAbr}})
+# Define probability of quantile based on selected threshold
+proj_thresProb_{{spAbr}} <- switch("{{proj_thresholdRule_rmd}}", 
+                                   "mtp" = 0, "p10" = 0.1, "qtp" = {{proj_probQuantile_rmd}})
+# Define threshold value
+proj_thres_{{spAbr}} <- quantile(occPredVals_{{spAbr}}, 
+                                 probs = proj_thresProb_{{spAbr}})
 # Add threshold if specified 
-proj_area_{{spAbr}} <- proj_area_{{spAbr}}$projArea > {{threshold_rmd}}
+proj_area_{{spAbr}} <- proj_area_{{spAbr}}$projArea > proj_thresProb_{{spAbr}}
 
 ##Make map
 ###Make map of projection

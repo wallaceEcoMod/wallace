@@ -33,7 +33,7 @@ vis_bioclimPlot_module_server <- function(input, output, session, common) {
     if (spp[[curSp()]]$rmm$model$algorithms != "BIOCLIM") {
       par(mar = c(0,0,0,0))
       plot(c(0, 1), c(0, 1), ann = F, bty = 'n', type = 'n', xaxt = 'n', yaxt = 'n')
-      text(x = 0.25, y = 1, "Bioclim plot module requires a Bioclim model",
+      text(x = 0.25, y = 1, "Bioclim plots module requires a Bioclim model",
            cex = 1.2, col = "#641E16")
     } else if (spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM") {
       # FUNCTION CALL ####

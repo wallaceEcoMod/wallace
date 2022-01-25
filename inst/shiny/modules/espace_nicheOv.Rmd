@@ -1,36 +1,30 @@
 ```{asis, echo = {{espace_nicheOv_knit}}, eval = {{espace_nicheOv_knit}}, include = {{espace_nicheOv_knit}}}
 ### Environmental space 
 Evaluating niche overlap between *`r "{{spName1}}"`* & *`r "{{spName2}}"`* for which the occurrence density grid was computed. Running equivalence test ({{equiv_rmd}}) and similarity test {{simil_rmd}}
-
 ```
 
 ```{r, echo = {{espace_nicheOv_knit}}, include = {{espace_nicheOv_knit}}}
-##Run tests 
+## Run tests 
 espace_nicheOv_{{multAbr}} <- espace_nicheOv(
   z1 = espace_occDens_{{multAbr}}[["{{spName1}}"]],
   z2 = espace_occDens_{{multAbr}}[["{{spName2}}"]],
   iter = 100,
-  equivalency = {{equiv_rmd}},
   similarity = {{simil_rmd}}) 
-    # plots
-    layout(matrix(c(1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3), 4, 3, byrow = F))
-    # layout.show(3)
+# Plots
+layout(matrix(c(1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3), 4, 3, byrow = F))
 
-    ecospat::ecospat.plot.niche.dyn(
-      espace_occDens_{{multAbr}}[["{{spName1}}"]],
-      espace_occDens_{{multAbr}}[["{{spName2}}"]],
-      0.5,
-      title = mSp,
-      colz1 = "blue",
-      colz2 = "red",
-      colinter = "purple",
-      colZ1 = "blue",
-      colZ2 = "red"
-    )
-    if ({{equiv_rmd}}==TRUE)
-      ecospat::ecospat.plot.overlap.test(espace_nicheOv_{{multAbr}} $equiv,
-                                         "D", "Equivalency test")
-    if ({{simil_rmd}}==TRUE)
-      ecospat::ecospat.plot.overlap.test(espace_nicheOv_{{multAbr}}$simil,
-                                         "D", "Similarity test")
+ecospat::ecospat.plot.niche.dyn(
+  espace_occDens_{{multAbr}}[["{{spName1}}"]],
+  espace_occDens_{{multAbr}}[["{{spName2}}"]],
+  0.5,
+  title = "{{spName1}}_{{spName2}}",
+  colz1 = "blue",
+  colz2 = "red",
+  colinter = "purple",
+  colZ1 = "blue",
+  colZ2 = "red"
+)
+# Plot
+ecospat::ecospat.plot.overlap.test(espace_nicheOv_{{multAbr}}$simil,
+                                   "D", "Similarity test") 
 ```

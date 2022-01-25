@@ -26,7 +26,7 @@ tagList(
     tabPanel("Part Occs", value = 'part'),
     tabPanel("Model", value = 'model'),
     tabPanel("Visualize", value = 'vis'),
-    tabPanel("Project", value = 'proj'),
+    tabPanel("Transfer", value = 'proj'),
     tabPanel("User SDM", value = 'post'),
     tabPanel("Mask", value = 'mask'),
     tabPanel("ChangeRR", value = 'change'),
@@ -159,7 +159,7 @@ tagList(
           # ESPACE ####
           conditionalPanel(
             "input.tabs == 'espace'",
-            div("Component: Environmental Space", class = "componentName"),
+            div("Component: Characterize Environmental Space", class = "componentName"),
             help_comp_ui("espaceHelp"),
             radioButtons(
               "espaceSel", "Modules Available:",
@@ -206,7 +206,7 @@ tagList(
           # PROJECT ####
           conditionalPanel(
             "input.tabs == 'proj'",
-            div("Component: Project Model", class = "componentName"),
+            div("Component: Model Transfer", class = "componentName"),
             help_comp_ui("projHelp"),
             radioButtons(
               "projSel", "Modules Available:",
@@ -286,7 +286,9 @@ tagList(
             column(
               4,
               absolutePanel(
+                div(style = "margin-top: -10px"),
                 uiOutput("curSpUI"),
+                div(style = "margin-top: -12px"),
                 uiOutput("curModelUI")
               )
             ),
@@ -294,6 +296,9 @@ tagList(
               2,
               offset = 1,
               align = "left",
+              div(style = "margin-top: -10px"),
+              strong("Window log"),
+              div(style = "margin-top: 5px"),
               div(
                 id = "wallaceLog",
                 div(id = "logHeader", div(id = "logContent"))
@@ -353,7 +358,7 @@ tagList(
                        " with a collaborator.")),
                 shinyjs::hidden(p(
                   id = "save_warning",
-                  icon("warning"),
+                  icon("exclamation-triangle"),
                   paste0("The current session data is large, which means the ",
                          "downloaded file may be large and the download might",
                          " take a long time.")

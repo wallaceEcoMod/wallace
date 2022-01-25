@@ -40,8 +40,8 @@ proj_time_module_ui <- function(id) {
     actionButton(ns("goProjExtTime"), "Create"), br(),
     tags$hr(class = "hrDotted"),
     span("Step 2:", class = "step"),
-    span("Project", class = "stepText"), br(),
-    p("Project model to projected extent (red) "),
+    span("Transfer", class = "stepText"), br(),
+    p("Transfer model to projected extent (red) "),
     radioButtons(ns('selTimeVar'), label = "Select source of variables",
                  choices = list("WorldClim" = "worldclim",
                                 "ecoClimate" = "ecoclimate"),
@@ -97,7 +97,7 @@ proj_time_module_ui <- function(id) {
                                  min = 0, max = 1, value = .05)),
     conditionalPanel(paste0("input['", ns("threshold"), "'] == 'none'"),
                      uiOutput(ns("noThrs"))),
-    actionButton(ns('goProjectTime'), "Project"),
+    actionButton(ns('goProjectTime'), "Transfer"),
     tags$hr(class = "hrDashed"),
     actionButton(ns("goResetProj"), "Reset", class = 'butReset'),
     strong(" projection extent")
@@ -248,7 +248,7 @@ proj_time_module_server <- function(input, output, session, common) {
     if(envsRes < 0.01) {
       logger %>%
         writeLog(type = 'error',
-                 paste0('Project to New Time currently only available with ',
+                 paste0('Transfer to New Time currently only available with ',
                         'resolutions >30 arc seconds.'))
       return()
     }
@@ -259,7 +259,7 @@ proj_time_module_server <- function(input, output, session, common) {
         writeLog(type = 'error', hlSpp(curSp()),
                  "Your model is using non-bioclimatic variables or non-conventional",
                  " names (i.e., ", paste0(nonBios, collapse = ", "),
-                 "). You can not project to a New Time.")
+                 "). You can not transfer to a New Time.")
       return()
     }
 
@@ -408,7 +408,7 @@ proj_time_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$rmm$data$transfer$environment1$extentSet <-
       printVecAsis(as.vector(projExt@extent), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$extentRule <-
-      "project to user-selected new time"
+      "transfer to user-selected new time"
     if (input$selTimeVar == "worldclim") {
       projYr <- paste0('20', input$selTime)
       ###For RMD only
@@ -452,6 +452,11 @@ proj_time_module_server <- function(input, output, session, common) {
       printVecAsis(raster::cellStats(projTimeThr, max), asChar = TRUE)
     if(!(input$threshold == 'none')) {
       spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet <- thr
+      if (input$threshold == 'qtp') {
+        spp[[curSp()]]$rmm$code$wallace$transferQuantile <- input$trainPresQuantile
+      } else {
+        spp[[curSp()]]$rmm$code$wallace$transferQuantile <- 0
+      }
     } else {
       spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet <- NULL
     }
@@ -587,9 +592,10 @@ proj_time_module_rmd <- function(species) {
       species$procEnvs$bgExt} else {NULL},
     ##Use of threshold for projection
     proj_time_threshold_knit = !is.null(species$rmm$prediction$transfer$environment1$thresholdSet),
-    thresholdRule_rmd = species$rmm$prediction$transfer$environment1$thresholdRule,
-    threshold_rmd = if (!is.null(species$rmm$prediction$transfer$environment1$thresholdSet)){
+    proj_thresholdRule_rmd = species$rmm$prediction$transfer$environment1$thresholdRule,
+    proj_threshold_rmd = if (!is.null(species$rmm$prediction$transfer$environment1$thresholdSet)){
       species$rmm$prediction$transfer$environment1$thresholdSet} else {0},
+    proj_probQuantile_rmd = species$rmm$code$wallace$transferQuantile,
     ###for guidance text
       ##name of environmental variables used
     envs_name_rmd = species$rmm$data$transfer$environment1$sources,

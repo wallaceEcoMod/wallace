@@ -24,8 +24,8 @@ proj_area_module_ui <- function(id) {
     actionButton(ns("goProjExtArea"), "Create"), br(),
     tags$hr(class = "hrDotted"),
     span("Step 2:", class = "step"),
-    span("Project", class = "stepText"), br(),
-    p("Project model to project extent (red) "),
+    span("Transfer", class = "stepText"), br(),
+    p("Transfer model to project extent (red) "),
     tags$div(
       title = paste0(
         'Create binary map of predicted presence/absence assuming ',
@@ -42,7 +42,7 @@ proj_area_module_ui <- function(id) {
                   min = 0, max = 1, value = .05)),
     conditionalPanel(paste0("input['", ns("threshold"), "'] == 'none'"),
                      uiOutput(ns("noThrs"))),
-    actionButton(ns('goProjectArea'), "Project"),
+    actionButton(ns('goProjectArea'), "Transfer"),
     tags$hr(class = "hrDashed"),
     actionButton(ns("goResetProj"), "Reset", class = 'butReset'),
     strong(" projection extent ")
@@ -225,7 +225,7 @@ proj_area_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$rmm$data$transfer$environment1$extentSet <-
       printVecAsis(as.vector(projExt@extent), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$extentRule <-
-      "project to user-selected new area"
+      "transfer to user-selected new area"
     spp[[curSp()]]$rmm$data$transfer$environment1$sources <-
       spp[[curSp()]]$rmm$data$environment$sources
     spp[[curSp()]]$rmm$prediction$transfer$environment1$units <-
@@ -236,10 +236,16 @@ proj_area_module_server <- function(input, output, session, common) {
       printVecAsis(raster::cellStats(projAreaThr, max), asChar = TRUE)
     if(!(input$threshold == 'none')) {
       spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet <- thr
+      if (input$threshold == 'qtp') {
+        spp[[curSp()]]$rmm$code$wallace$transferQuantile <- input$trainPresQuantile
+      } else {
+        spp[[curSp()]]$rmm$code$wallace$transferQuantile <- 0
+      }
     } else {
       spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet <- NULL
     }
     spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdRule <- input$threshold
+
     if (!is.null(spp[[curSp()]]$rmm$model$algorithm$maxent$clamping)) {
       spp[[curSp()]]$rmm$prediction$transfer$environment1$extrapolation <-
         spp[[curSp()]]$rmm$model$algorithm$maxent$clamping
@@ -357,10 +363,10 @@ proj_area_module_rmd <- function(species) {
     proj_area_extent_knit = !is.null(species$rmm$code$wallace$userPjShpParams),
     ##Use of threshold for projection
     proj_area_threshold_knit = !is.null(species$rmm$prediction$transfer$environment1$thresholdSet),
-    thresholdRule_rmd = species$rmm$prediction$transfer$environment1$thresholdRule,
-    threshold_rmd = if (!is.null(species$rmm$prediction$transfer$environment1$thresholdSet)){
-    species$rmm$prediction$transfer$environment1$thresholdSet} else {0}
-
+    proj_thresholdRule_rmd = species$rmm$prediction$transfer$environment1$thresholdRule,
+    proj_threshold_rmd = if (!is.null(species$rmm$prediction$transfer$environment1$thresholdSet)){
+    species$rmm$prediction$transfer$environment1$thresholdSet} else {0},
+    proj_probQuantile_rmd = species$rmm$code$wallace$transferQuantile
 
   )
 }

@@ -258,9 +258,9 @@ function(input, output, session) {
     sppNameList <- c(list("Current species" = ""), setNames(as.list(n), n))
     # generate a selectInput ui that lists the available species
     if (is.null(module())) {
-      span("...Select a module (**)...", class = "step")
+      span("...Select a module...", class = "step")
     } else {
-      selectizeInput('curSp', label = NULL, choices = sppNameList,
+      selectizeInput('curSp', label = "Species log", choices = sppNameList,
                      multiple = TRUE, selected = selected, options = options)
     }
   })
@@ -357,7 +357,8 @@ function(input, output, session) {
 
   # map center coordinates for 30 arcsec download
   mapCntr <- reactive({
-    round(as.numeric(input$map_center), digits = 3)
+    req(occs())
+    round(c(mean(occs()$longitude), mean(occs()$latitude)), digits = 3)
   })
 
   # CONSOLE PRINT
@@ -455,7 +456,8 @@ function(input, output, session) {
     filename = function() paste0(curSp(), "_bgShp.zip"),
     content = function(file) {
       tmpdir <- tempdir()
-      setwd(tempdir())
+      owd <- setwd(tmpdir)
+      on.exit(setwd(owd))
       n <- curSp()
 
       rgdal::writeOGR(obj = bgExt(),
@@ -467,7 +469,8 @@ function(input, output, session) {
       exts <- c('dbf', 'shp', 'shx')
       fs <- paste0(n, '_bgShp.', exts)
       zip::zipr(zipfile = file, files = fs)
-      if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
+      if (file.exists(paste0(file, ".zip"))) {
+        file.rename(paste0(file, ".zip"), file)}
     },
     contentType = "application/zip"
   )
@@ -547,6 +550,9 @@ function(input, output, session) {
       paste0(mspName, "_PcaResults.zip")
     },
     content = function(file) {
+      tmpdir <- tempdir()
+      owd <- setwd(tmpdir)
+      on.exit(setwd(owd))
       if (length(curSp()) == 2) {
         mSp <- paste(curSp(), collapse = ".")
         sp1 <- curSp()[1]
@@ -554,43 +560,34 @@ function(input, output, session) {
       } else {
         mSp <- curSp()
       }
-      tmpdir <- tempdir()
       req(spp[[mSp]]$pca)
       png(paste0("pcaScatterOccs.png"), width = 500, height = 500)
-      #png(paste0(tmpdir, "\\pcaScatterOccs.png"), width = 500, height = 500)
       x <- spp[[mSp]]$pca$scores[spp[[mSp]]$pca$scores$bg == 'sp', ]
       x.f <- factor(x$sp)
       ade4::s.class(x, x.f, xax = 1, yax = 2,
                     col = c("red", "blue"), cstar = 0, cpoint = 0.1)
       dev.off()
       png(paste0("pcaScatterOccsBg.png"), width = 500, height = 500)
-      #png(paste0(tmpdir, "\\pcaScatterOccsBg.png"), width = 500, height = 500)
       x <- spp[[mSp]]$pca$scores[spp[[mSp]]$pca$scores$sp == 'bg', ]
       x.f <- factor(x$bg)
       ade4::s.class(x, x.f, xax = 1, yax = 2,
                     col = c("red", "blue"), cstar = 0, cpoint = 0.1)
       dev.off()
       png(paste0("pcaCorCircle.png"), width = 500, height = 500)
-      #png(paste0(tmpdir, "\\pcaCorCircle.png"), width = 500, height = 500)
       ade4::s.corcircle(spp[[mSp]]$pca$co, xax = 1, yax = 2,
                         lab = input$pcaSel, full = FALSE, box = TRUE)
       dev.off()
       png(paste0("pcaScree.png"), width = 500, height = 500)
-      #png(paste0(tmpdir, "\\pcaScree.png"), width = 500, height = 500)
       screeplot(spp[[mSp]]$pca, main = NULL)
       dev.off()
       sink(paste0("pcaOut.txt"))
-      #sink(paste0(tmpdir, "\\pcaOut.txt"))
       print(summary(spp[[mSp]]$pca))
       sink()
 
-      fs<-c("pcaScatterOccs.png", "pcaScatterOccsBg.png",
+      fs <- c("pcaScatterOccs.png", "pcaScatterOccsBg.png",
             "pcaCorCircle.png","pcaScree.png","pcaOut.txt")
-      owd <- setwd(tmpdir)
-      setwd(owd)
       zip::zipr(zipfile = file,
                 files = fs)
-      setwd(owd)
     }
   )
 
@@ -706,8 +703,11 @@ function(input, output, session) {
     if(!is.null(curModel())) selected <- curModel() else selected <- n[1]
     modsNameList <- c(list("Current model" = ""), setNames(as.list(n), n))
     options <- list(maxItems = 1)
-    selectizeInput('curModel', label = NULL , choices = modsNameList,
-                   multiple = TRUE, selected = selected, options = options)
+    if (!is.null(module())) {
+      selectizeInput('curModel', label = "Select model: " ,
+                     choices = modsNameList, multiple = TRUE,
+                     selected = selected, options = options)
+    }
   })
 
   # shortcut to currently selected model, read from modSelUI
@@ -795,19 +795,17 @@ function(input, output, session) {
     filename = function() {paste0(curSp(), "_evalPlots.zip")},
     content = function(file) {
       tmpdir <- tempdir()
+      owd <- setwd(tmpdir)
+      on.exit(setwd(owd))
       parEval <- c('auc.val', 'auc.diff', 'or.mtp', 'or.10p', 'delta.AICc')
       for (i in parEval) {
-        # png(paste0(tmpdir, "\\", gsub("[[:punct:]]", "_", i), ".png"))
         ENMeval::evalplot.stats(spp[[curSp()]]$evalOut, i, "rm", "fc")
         ggplot2::ggsave(paste0(gsub("[[:punct:]]", "_", i), ".png"))
         # dev.off()
       }
-      owd <- setwd(tmpdir)
-      setwd(owd)
-      fs<-paste0(gsub("[[:punct:]]", "_", parEval), ".png")
+      fs <- paste0(gsub("[[:punct:]]", "_", parEval), ".png")
       zip::zipr(zipfile = file,
                 files = fs)
-      setwd(owd)
     }
   )
 
@@ -816,6 +814,8 @@ function(input, output, session) {
     filename = function() {paste0(curSp(), "_responseCurves.zip")},
     content = function(file) {
       tmpdir <- tempdir()
+      owd <- setwd(tmpdir)
+      on.exit(setwd(owd))
       if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
         namesEnvs <- mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxnet")
         for (i in namesEnvs) {
@@ -834,11 +834,8 @@ function(input, output, session) {
           dev.off()
         }
       }
-      owd <- setwd(tmpdir)
-      setwd(owd)
-      fs<- paste0(namesEnvs, ".png")
+      fs <- paste0(namesEnvs, ".png")
       zip::zipr(zipfile = file, files = fs)
-      setwd(owd)
     }
   )
 
@@ -856,6 +853,9 @@ function(input, output, session) {
       }
     },
     content = function(file) {
+      tmpdir <- tempdir()
+      owd <- setwd(tmpdir)
+      on.exit(setwd(owd))
       if(require(rgdal)) {
         if (input$predFileType == 'png') {
           req(mapPred())
@@ -904,13 +904,10 @@ function(input, output, session) {
           mapview::mapshot(m, file = file)
         } else if (input$predFileType == 'raster') {
           fileName <- curSp()
-          tmpdir <- tempdir()
           raster::writeRaster(mapPred(), file.path(tmpdir, fileName),
                               format = input$predFileType, overwrite = TRUE)
-          owd <- setwd(tmpdir)
           fs <- paste0(fileName, c('.grd', '.gri'))
           zip::zipr(zipfile = file, files = fs)
-          setwd(owd)
         } else {
           r <- raster::writeRaster(mapPred(), file, format = input$predFileType,
                                    overwrite = TRUE)
@@ -924,7 +921,7 @@ function(input, output, session) {
   )
 
   ########################################### #
-  ### COMPONENT: PROJECT MODEL ####
+  ### COMPONENT: MODEL TRANSFER ####
   ########################################### #
 
   # # # # # # # # # # # # # # # # # #
@@ -939,9 +936,9 @@ function(input, output, session) {
     filename = function() paste0(curSp(), '_projShp.zip'),
     content = function(file) {
       tmpdir <- tempdir()
-      setwd(tempdir())
+      owd <- setwd(tmpdir)
+      on.exit(setwd(owd))
       n <- curSp()
-
       rgdal::writeOGR(obj = spp[[curSp()]]$project$pjExt,
                       dsn = tmpdir,
                       layer = paste0(n, '_projShp'),
@@ -997,6 +994,9 @@ function(input, output, session) {
       }
     },
     content = function(file) {
+      tmpdir <- tempdir()
+      owd <- setwd(tmpdir)
+      on.exit(setwd(owd))
       if(require(rgdal)) {
         if (input$projFileType == 'png') {
           req(mapProj())
@@ -1048,13 +1048,10 @@ function(input, output, session) {
           mapview::mapshot(m, file = file)
         } else if (input$projFileType == 'raster') {
           fileName <- curSp()
-          tmpdir <- tempdir()
           raster::writeRaster(mapProj(), file.path(tmpdir, fileName),
                               format = input$projFileType, overwrite = TRUE)
-          owd <- setwd(tmpdir)
           fs <- paste0(fileName, c('.grd', '.gri'))
           zip::zipr(zipfile = file, files = fs)
-          setwd(owd)
         } else {
           r <- raster::writeRaster(mapProj(), file, format = input$projFileType,
                                    overwrite = TRUE)
@@ -1074,6 +1071,9 @@ function(input, output, session) {
       paste0(curSp(), "_mess.", ext)
     },
     content = function(file) {
+      tmpdir <- tempdir()
+      owd <- setwd(tmpdir)
+      on.exit(setwd(owd))
       if(require(rgdal)) {
         req(spp[[curSp()]]$project$mess, spp[[curSp()]]$project$pjExt)
         mess <- spp[[curSp()]]$project$mess
@@ -1119,13 +1119,10 @@ function(input, output, session) {
           mapview::mapshot(m, file = file)
         } else if (input$messFileType == 'raster') {
           fileName <- curSp()
-          tmpdir <- tempdir()
           raster::writeRaster(mess, file.path(tmpdir, fileName),
                               format = input$messFileType, overwrite = TRUE)
-          owd <- setwd(tmpdir)
           fs <- paste0(fileName, c('.grd', '.gri'))
           zip::zipr(zipfile = file, files = fs)
-          setwd(owd)
         } else {
           r <- raster::writeRaster(mess, file, format = input$messFileType,
                                    overwrite = TRUE)
@@ -1772,16 +1769,16 @@ function(input, output, session) {
   output$dlRMM <- downloadHandler(
     filename = function() {paste0("wallace-metadata-", Sys.Date(), ".zip")},
     content = function(file) {
-      # REFERENCES ####
-      knitcitations::citep(citation("rangeModelMetadata"))
       tmpdir <- tempdir()
       owd <- setwd(tmpdir)
+      on.exit(setwd(owd))
+      # REFERENCES ####
+      knitcitations::citep(citation("rangeModelMetadata"))
       namesSpp <- allSp()
       for (i in namesSpp) {
         rangeModelMetadata::rmmToCSV(spp[[i]]$rmm, filename = paste0(i, "_RMM.csv"))
       }
       zip::zipr(zipfile = file, files = paste0(namesSpp, "_RMM.csv"))
-      setwd(owd)
     })
 
   ################################
@@ -1825,6 +1822,10 @@ function(input, output, session) {
 
   bioSp <- reactive(input$bioSp)
 
+  ################################
+  ### COMMON LIST FUNTIONALITY ####
+  ################################
+
   # Create a data structure that holds variables and functions used by modules
   common = list(
     # Reactive variables to pass on to modules
@@ -1845,7 +1846,6 @@ function(input, output, session) {
     envs = envs,
     bcSel = bcSel,
     ecoClimSel = ecoClimSel,
-    VarSelector = VarSelector,
     bg = bg,
     bgExt = bgExt,
     bgMask = bgMask,

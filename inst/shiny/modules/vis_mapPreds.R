@@ -187,8 +187,13 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$rmd$vis_curModel <- curModel()
     spp[[curSp()]]$rmm$prediction$Type <- predType
     spp[[curSp()]]$rmm$prediction$binary$thresholdRule <- input$threshold
-    if(input$threshold != 'none') {
+    if (input$threshold != 'none') {
       spp[[curSp()]]$rmm$prediction$binary$thresholdSet <- thr.sel
+      if (input$threshold == 'qtp') {
+        spp[[curSp()]]$rmm$code$wallace$trainPresQuantile <- input$trainPresQuantile
+      } else {
+        spp[[curSp()]]$rmm$code$wallace$trainPresQuantile <- 0
+      }
     } else {
       spp[[curSp()]]$rmm$prediction$binary$thresholdSet <- NULL
       spp[[curSp()]]$rmm$prediction$continuous$minVal <- min(occPredVals)
@@ -273,9 +278,10 @@ vis_mapPreds_module_rmd <- function(species) {
     curModel_rmd = if(!is.null(species$rmd$vis_curModel)){species$rmd$vis_curModel} else {NULL},
     clamp_rmd =  species$rmm$model$algorithm$maxent$clamping,
     predType_rmd = species$rmm$prediction$Type,
-    threshold_rmd = if (!is.null(species$rmm$prediction$binary$thresholdSet)){
+    threshold_rmd = if (!is.null(species$rmm$prediction$binary$thresholdSet)) {
       species$rmm$prediction$binary$thresholdSet} else {0},
-    thresholdRule_rmd = species$rmm$prediction$binary$thresholdRule
+    thresholdRule_rmd = species$rmm$prediction$binary$thresholdRule,
+    probQuantile_rmd = species$rmm$code$wallace$trainPresQuantile
   )
 }
 
