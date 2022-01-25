@@ -43,7 +43,7 @@ rasPal_{{spAbr}} <- colorNumeric(rasCols_{{spAbr}}, mapProjVals_{{spAbr}}, na.co
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
-  addLegend("bottomright", pal = legendPal,
+  leaflet::addLegend("bottomright", pal = legendPal,
             title = "Predicted Suitability<br>(Projected)",
             values = mapProjVals_{{spAbr}}, layerId = 'proj',
             labFormat = reverseLabels(2, reverse_order = TRUE)) %>%
@@ -110,7 +110,7 @@ rasPal_{{spAbr}} <- c('gray', 'red')
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
-  addLegend("bottomright", colors = c('gray', 'red'),
+  leaflet::addLegend("bottomright", colors = c('gray', 'red'),
             title = "Thresholded Suitability<br>(Projected)",
             labels = c("predicted absence", "predicted presence"),
             opacity = 1, layerId = 'proj')%>%
@@ -174,7 +174,7 @@ rasPal_{{spAbr}} <- colorNumeric(rasCols_{{spAbr}}, mapProjVals_{{spAbr}}, na.co
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
-  addLegend("bottomright", pal = legendPal,
+  leaflet::addLegend("bottomright", pal = legendPal,
             title = "Predicted Suitability<br>(Projected)",
             values = mapProjVals_{{spAbr}}, layerId = 'proj',
             labFormat = reverseLabels(2, reverse_order = TRUE)) %>%
@@ -249,7 +249,7 @@ rasPal_{{spAbr}} <- c('gray', 'red')
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
-  addLegend("bottomright", colors = c('gray', 'red'),
+  leaflet::addLegend("bottomright", colors = c('gray', 'red'),
             title = "Thresholded Suitability<br>(Projected)",
             labels = c("predicted absence", "predicted presence"),
             opacity = 1, layerId = 'proj') %>%
@@ -317,7 +317,7 @@ rasPal_{{spAbr}} <- colorNumeric(rasCols_{{spAbr}}, mapProjVals_{{spAbr}},
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
-  addLegend("bottomright", pal = legendPal,
+  leaflet::addLegend("bottomright", pal = legendPal,
             title = "Predicted Suitability<br>(Projected)",
             values = mapProjVals_{{spAbr}}, layerId = 'proj',
             labFormat = reverseLabels(2, reverse_order = TRUE)) %>%
@@ -392,7 +392,7 @@ rasPal_{{spAbr}} <- c('gray', 'red')
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
-  addLegend("bottomright", colors = c('gray', 'red'),
+  leaflet::addLegend("bottomright", colors = c('gray', 'red'),
            title = "Thresholded Suitability<br>(Projected)",
            labels = c("predicted absence", "predicted presence"),
            opacity = 1, layerId = 'proj')%>%
@@ -447,7 +447,7 @@ rasPal_{{spAbr}} <- colorNumeric(rasCols_{{spAbr}}, mapProjVals_{{spAbr}},
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
-  addLegend("bottomright", pal = legendPal,
+  leaflet::addLegend("bottomright", pal = legendPal,
             title = "Predicted Suitability<br>(Projected)",
             values = mapProjVals_{{spAbr}}, layerId = 'proj',
             labFormat = reverseLabels(2, reverse_order = TRUE)) %>%
@@ -506,7 +506,7 @@ rasPal_{{spAbr}} <- c('gray', 'red')
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
-  addLegend("bottomright", colors = c('gray', 'red'),
+  leaflet::addLegend("bottomright", colors = c('gray', 'red'),
             title = "Thresholded Suitability<br>(Projected)",
             labels = c("predicted absence", "predicted presence"),
             opacity = 1, layerId = 'proj') %>%
@@ -565,7 +565,7 @@ rasPal_{{spAbr}} <- colorNumeric(rasCols_{{spAbr}}, mapProjVals_{{spAbr}}, na.co
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
-  addLegend("bottomright", pal = legendPal,
+  leaflet::addLegend("bottomright", pal = legendPal,
             title = "Predicted Suitability<br>(Projected)",
             values = mapProjVals_{{spAbr}}, layerId = 'proj',
             labFormat = reverseLabels(2, reverse_order = TRUE)) %>%
@@ -633,7 +633,7 @@ rasPal_{{spAbr}} <- c('gray', 'red')
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
-  addLegend("bottomright", colors = c('gray', 'red'),
+  leaflet::addLegend("bottomright", colors = c('gray', 'red'),
             title = "Thresholded Suitability<br>(Projected)",
             labels = c("predicted absence", "predicted presence"),
             opacity = 1, layerId = 'proj')%>%
@@ -695,7 +695,7 @@ rasPal_{{spAbr}} <- colorNumeric(rasCols_{{spAbr}}, mapProjVals_{{spAbr}},
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
-  addLegend("bottomright", pal = legendPal,
+  leaflet::addLegend("bottomright", pal = legendPal,
             title = "Predicted Suitability<br>(Projected)",
             values = mapProjVals_{{spAbr}}, layerId = 'proj',
             labFormat = reverseLabels(2, reverse_order = TRUE)) %>%
@@ -762,7 +762,7 @@ rasPal_{{spAbr}} <- c('gray', 'red')
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
-  addLegend("bottomright", colors = c('gray', 'red'),
+  leaflet::addLegend("bottomright", colors = c('gray', 'red'),
             title = "Thresholded Suitability<br>(Projected)",
             labels = c("predicted absence", "predicted presence"),
             opacity = 1, layerId = 'proj')%>%
