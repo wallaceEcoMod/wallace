@@ -26,7 +26,6 @@ Depends:
     leaflet (>= 2.0.2)
 Imports:
     ade4,
-    BIEN,
     dismo,
     dplyr (>= 1.0.2),
     DT (>= 0.5),
@@ -42,7 +41,6 @@ Imports:
     mapview,
     maxnet,
     neotoma,
-    occCite,
     paleobioDB,
     pryr,
     rangeModelMetadata,
@@ -64,11 +62,13 @@ Imports:
     XML,
     zip
 Suggests: 
+    BIEN,
     knitr,
-    testthat, 
-    RSelenium
+    RSelenium,
+    testthat,
+    occCite
 License: GPL-3
 URL: https://wallaceEcoMod.github.io
 Encoding: UTF-8
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 VignetteBuilder: knitr
