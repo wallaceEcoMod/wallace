@@ -17,7 +17,7 @@ rasPal <- colorNumeric(rasCols, mapPredVals_{{spAbr}}, na.color = 'transparent')
 #Generate map
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m  %>%
-  addLegend("bottomright", pal = legendPal,
+  leaflet::addLegend("bottomright", pal = legendPal,
             title = "Predicted Suitability<br>(Training)",
             values = mapPredVals_{{spAbr}}, layerId = "train",
             labFormat = reverseLabels(2, reverse_order = TRUE)) %>% 
@@ -63,7 +63,7 @@ rasPal <- c('gray', 'blue')
 # Generate map
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m  %>%
- addLegend("bottomright", colors = c('gray', 'blue'),
+ leaflet::addLegend("bottomright", colors = c('gray', 'blue'),
                 title = "Thresholded Suitability<br>(Training)",
                 labels = c("predicted absence", "predicted presence"),
                 opacity = 1, layerId = "train") %>% 
@@ -103,7 +103,7 @@ rasPal <- colorNumeric(rasCols, mapPredVals_{{spAbr}}, na.color = 'transparent')
 #Generate map
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m  %>%
-  addLegend("bottomright", pal = legendPal,
+  leaflet::addLegend("bottomright", pal = legendPal,
             title = "Predicted Suitability<br>(Training)",
             values = mapPredVals_{{spAbr}}, layerId = "train",
             labFormat = reverseLabels(2, reverse_order = TRUE)) %>% 
@@ -153,7 +153,7 @@ rasPal <- c('gray', 'blue')
 # Generate map  
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m  %>%
-  addLegend("bottomright", colors = c('gray', 'blue'),
+  leaflet::addLegend("bottomright", colors = c('gray', 'blue'),
             title = "Thresholded Suitability<br>(Training)",
             labels = c("predicted absence", "predicted presence"),
             opacity = 1, layerId = "train") %>% 
@@ -190,7 +190,7 @@ rasPal <- colorNumeric(rasCols, mapPredVals_{{spAbr}}, na.color = 'transparent')
 #Generate map
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m  %>%
-  addLegend("bottomright", pal = legendPal,
+  leaflet::addLegend("bottomright", pal = legendPal,
             title = "Predicted Suitability<br>(Training)",
             values = mapPredVals_{{spAbr}}, layerId = "train",
             labFormat = reverseLabels(2, reverse_order = TRUE)) %>% 
@@ -239,7 +239,7 @@ rasPal <- c('gray', 'blue')
 # Generate map
 m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m  %>%
-  addLegend("bottomright", colors = c('gray', 'blue'),
+  leaflet::addLegend("bottomright", colors = c('gray', 'blue'),
             title = "Thresholded Suitability<br>(Training)",
             labels = c("predicted absence", "predicted presence"),
             opacity = 1, layerId = "train") %>% 

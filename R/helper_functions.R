@@ -230,38 +230,38 @@ popUpContent <- function(x) {
 #' @export
 remEnvsValsNA <- function(occs, occsEnvsVals, sppName, logger) {
   withProgress(message = "Checking for points with NA values and in same cells...", {
-    # Remove same cell duplicates
-    occs.dups <- duplicated(occsEnvsVals[, 1])
-    if(sum(occs.dups) > 0) {
-      logger %>%
-        writeLog(type = 'warning',
-                 hlSpp(sppName), "Removed ", sum(occs.dups), " localities that ",
-                 "shared the same grid cell. occIDs: ",
-                 paste(occs[occs.dups, "occID"], collapse = ', '), ".")
-      occs <- occs[!occs.dups, ]
-      occsEnvsVals <- occsEnvsVals[!occs.dups, ]
-    }
     na.rowNums <- which(rowSums(is.na(occsEnvsVals[, -1])) >= 1)
-    if (length(na.rowNums) == length(occsEnvsVals)) {
+    if (length(na.rowNums) == nrow(occsEnvsVals)) {
       logger %>% writeLog(
         type = 'error',
         hlSpp(sppName), paste0('No localities overlay with environmental ',
-        'predictors. All localities may be marine -- please redo with ',
-        'terrestrial occurrences.')
+                               'predictors. For example, all localities may be marine -- please redo with ',
+                               'terrestrial occurrences.')
       )
       return()
     }
     if (length(na.rowNums) > 0) {
-      occs.notNA <- occs[-na.rowNums, ]
       logger %>% writeLog(
         type = 'warning',
         hlSpp(sppName), 'Removed records without environmental values with occIDs: ',
-        paste(occs[na.rowNums, "occID"], collapse = ', '), ".")
-      return(occs.notNA)
+        paste(sort(occs[na.rowNums, "occID"]), collapse = ', '), ".")
+      occs <- occs[-na.rowNums, ]
+      occsEnvsVals <- occsEnvsVals[-na.rowNums, ]
     }
-    return(occs)
+    # Remove same cell duplicates
+    occs.dups <- duplicated(occsEnvsVals[, 1])
+    if (sum(occs.dups) > 0) {
+      logger %>%
+        writeLog(type = 'warning',
+                 hlSpp(sppName), "Removed ", sum(occs.dups), " localities that ",
+                 "shared the same grid cell. occIDs: ",
+                 paste(sort(occs[occs.dups, "occID"]), collapse = ', '), ".")
+      occs <- occs[!occs.dups, ]
+      occsEnvsVals <- occsEnvsVals[!occs.dups, ]
+    }
+    return(list(occs = occs, occsEnvsVals = occsEnvsVals))
   })
-  }
+}
 
 ####################### #
 # PROCESS ENVS ####

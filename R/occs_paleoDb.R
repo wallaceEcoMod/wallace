@@ -132,5 +132,5 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
     '] (limit ', occNum, '). Records without coordinates removed [',
     noCoordsRem, ']. Duplicated records removed [', dupsRem,
     ']. Remaining records [', nrow(occs), '].')
-  return(list(orig = occsOrig, cleaned = occs))
+  return(list(orig = occsOrig, cleaned = as.data.frame(occs)))
 }

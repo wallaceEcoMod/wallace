@@ -309,10 +309,12 @@ occs <- occs[!dups,]
 
      # put into list
     if (doCitations & occDb == "gbif") {
-      occList[[formatSpName(sp)]] <- list(orig = occsOrig, cleaned = occs,
+      occList[[formatSpName(sp)]] <- list(orig = occsOrig,
+                                          cleaned = as.data.frame(occs),
                                           citation = citeGBIF)
     } else {
-      occList[[formatSpName(sp)]] <- list(orig = occsOrig, cleaned = occs)
+      occList[[formatSpName(sp)]] <- list(orig = occsOrig,
+                                          cleaned = as.data.frame(occs))
     }
   }
   return(occList)

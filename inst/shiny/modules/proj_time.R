@@ -308,6 +308,15 @@ proj_time_module_server <- function(input, output, session, common) {
       )
     }
 
+    # ERRORS ####
+    # Check that the extents of raster and projection extent intersects
+    if (!rgeos::gIntersects(spp[[curSp()]]$project$pjExt,
+                            as(raster::extent(projTimeEnvs), 'SpatialPolygons'))) {
+      logger %>%
+        writeLog(type = 'error', 'Extents do not overlap')
+      return()
+    }
+
     # FUNCTION CALL ####
     req(projTimeEnvs)
     predType <- rmm()$prediction$notes

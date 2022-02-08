@@ -88,13 +88,16 @@ envs_ecoclimate_module_server <- function(input, output, session, common) {
                                              spp[[sp]]$occs[, c('longitude', 'latitude')],
                                              cellnumbers = TRUE))
                            })
-      # remove occurrences with NA environmental values
-      spp[[sp]]$occs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, sp, logger)
 
-      # Remove duplicated same cell values
-      occsEnvsVals <- occsEnvsVals[!duplicated(occsEnvsVals[, 1]), -1]
-      # also remove variable value rows with NA environmental values
-      occsEnvsVals <- na.omit(occsEnvsVals)
+      # remove occurrence records with NA environmental values
+      remOccs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, sp, logger)
+      if (!is.null(remOccs)) {
+        spp[[sp]]$occs <- remOccs$occs
+        occsEnvsVals <- remOccs$occsEnvsVals
+      } else {
+        # When remOccs is null, means that all localities have NAs
+        return()
+      }
 
       logger %>% writeLog(hlSpp(sp), "EcoClimate variables ready to use.")
 
