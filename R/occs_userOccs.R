@@ -139,7 +139,8 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
     dups <- duplicated(occsXY[,c('longitude','latitude')])
     occs <- occsXY[!dups,]
 
-    occsList[[n]] <- list(orig = sp.occs, cleaned = occs)
+    occsList[[n]] <- list(orig = sp.occs,
+                          cleaned = as.data.frame(occs))
 
     # subset by key columns and make id and popup columns
     dupsRem <- nrow(sp.occs) - nrow(occs)
