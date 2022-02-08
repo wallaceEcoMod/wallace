@@ -1,6 +1,6 @@
 Package: wallace
-Version: 1.1.1
-Date: 2021-11-23
+Version: 1.1.2
+Date: 2022-02-28
 Title: A Modular Platform for Reproducible Modeling of Species Niches and Distributions
 Authors@R: c(
   person("Jamie M.", "Kass", email = "jamie.kass@oist.jp", role = "aut"),
@@ -28,6 +28,7 @@ Imports:
   dismo,
   dplyr,
   DT (>= 0.4),
+  ecospat,
   ENMeval (>= 2.0.0),
   jsonlite,
   leaflet.extras, 
