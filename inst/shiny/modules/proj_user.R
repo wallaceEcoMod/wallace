@@ -226,7 +226,7 @@ proj_user_module_server <- function(input, output, session, common) {
                                   rasName = input$userProjEnvs$name)
 
     # ERRORS ####
-    # Check that the extents of raster and projection extent instersects
+    # Check that the extents of raster and projection extent intersects
     if (!rgeos::gIntersects(spp[[curSp()]]$project$pjExt,
                             as(raster::extent(userProjEnvs), 'SpatialPolygons'))) {
       logger %>%

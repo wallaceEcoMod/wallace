@@ -96,15 +96,16 @@ envs_worldclim_module_server <- function(input, output, session, common) {
         occs.xy <- spp[[sp]]$occs[, c('longitude', 'latitude')]
         occsEnvsVals <- as.data.frame(raster::extract(wcbc, occs.xy, cellnumbers = TRUE))
       })
+
       # remove occurrence records with NA environmental values
-      spp[[sp]]$occs <- remEnvsValsNA(occs = spp[[sp]]$occs,
-                                      occsEnvsVals = occsEnvsVals,
-                                      sppName = sp,
-                                      logger = logger)
-      # Remove duplicated same cell values
-      occsEnvsVals <- occsEnvsVals[!duplicated(occsEnvsVals[, 1]), -1]
-      # also remove variable value rows with NA environmental values
-      occsEnvsVals <- na.omit(occsEnvsVals)
+      remOccs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, sp, logger)
+      if (!is.null(remOccs)) {
+        spp[[sp]]$occs <- remOccs$occs
+        occsEnvsVals <- remOccs$occsEnvsVals
+      } else {
+        # When remOccs is null, means that all localities have NAs
+        return()
+      }
 
       logger %>% writeLog(hlSpp(sp), "Worldclim variables ready to use.")
 
