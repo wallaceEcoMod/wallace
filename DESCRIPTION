@@ -67,6 +67,8 @@ Suggests:
     knitr,
     RSelenium,
     testthat
+Remotes:
+    hannahlowens/occCite
 License: GPL-3
 URL: https://wallaceEcoMod.github.io
 Encoding: UTF-8
