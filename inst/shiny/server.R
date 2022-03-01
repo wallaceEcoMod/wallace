@@ -585,11 +585,12 @@ function(input, output, session) {
         spp[[mSp]]$occDens[[sp2]],
         0.5,
         title = mSp,
-        colz1 = "blue",
-        colz2 = "red",
-        colinter = "purple",
+        col.unf = "blue",
+        col.exp = "red",
+        col.stab = "purple",
         colZ1 = "blue",
-        colZ2 = "red"
+        colZ2 = "red",
+        transparency = 25
       )
       req(spp[[mSp]]$nicheOv)
       if (!is.null(spp[[mSp]]$nicheOv$equiv))

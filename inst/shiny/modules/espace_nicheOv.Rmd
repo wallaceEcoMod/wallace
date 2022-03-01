@@ -18,11 +18,12 @@ ecospat::ecospat.plot.niche.dyn(
   espace_occDens_{{multAbr}}[["{{spName2}}"]],
   0.5,
   title = "{{spName1}}_{{spName2}}",
-  colz1 = "blue",
-  colz2 = "red",
-  colinter = "purple",
+  col.unf = "blue",
+  col.exp = "red",
+  col.stab = "purple",
   colZ1 = "blue",
-  colZ2 = "red"
+  colZ2 = "red",
+  transparency = 25
 )
 # Plot
 ecospat::ecospat.plot.overlap.test(espace_nicheOv_{{multAbr}}$simil,

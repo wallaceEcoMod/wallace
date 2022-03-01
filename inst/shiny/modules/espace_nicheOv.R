@@ -84,26 +84,30 @@ espace_nicheOv_module_server <- function(input, output, session, common) {
     }
     req(spp[[mSp]]$nicheOv)
     # plots
-    layout(matrix(c(1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3), 4, 3, byrow = F))
+    # layout(matrix(c(1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3), 4, 3, byrow = F))
     # layout.show(3)
+    par(mfrow = c(1, 2))
 
     ecospat::ecospat.plot.niche.dyn(
       spp[[mSp]]$occDens[[sp1]],
       spp[[mSp]]$occDens[[sp2]],
       0.5,
       title = mSp,
-      colz1 = "blue",
-      colz2 = "red",
-      colinter = "purple",
+      col.unf = "blue",
+      col.exp = "red",
+      col.stab = "purple",
       colZ1 = "blue",
-      colZ2 = "red"
+      colZ2 = "red",
+      transparency = 25
     )
-    if (!is.null(spp[[mSp]]$nicheOv$equiv))
-      ecospat::ecospat.plot.overlap.test(spp[[mSp]]$nicheOv$equiv,
-                                         "D", "Equivalency test")
+    box()
+    # if (!is.null(spp[[mSp]]$nicheOv$equiv))
+    #   ecospat::ecospat.plot.overlap.test(spp[[mSp]]$nicheOv$equiv,
+    #                                      "D", "Equivalency test")
     if (!is.null(spp[[mSp]]$nicheOv$simil))
       ecospat::ecospat.plot.overlap.test(spp[[mSp]]$nicheOv$simil,
                                          "D", "Similarity test")
+    par(mfrow = c(1, 1))
   })
 }
 
