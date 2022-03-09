@@ -7,7 +7,9 @@ for (f in list.files('./modules')) {
 # Define UI for application
 shinyUI(tagList(
   shinyjs::useShinyjs(),
-  navbarPage(theme=shinythemes::shinytheme('united'), id='tabs', collapsible=TRUE,
+  navbarPage(theme=bslib::bs_theme(version = 3, 
+                                   bootswatch = "united"), 
+             id='tabs', collapsible=TRUE,
              title='Wallace',
              tabPanel("Intro", value=0),
              tabPanel("1 Occ Data", value=1),

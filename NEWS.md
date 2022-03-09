@@ -1,3 +1,6 @@
+# wallace 1.1.3
+- shinytheme() replaced by bslib::bs_theme(). Fixed issue with newer version of RStudio
+
 # wallace 1.1.2
 - Adding ecospat in Depends for fixing CBI calculation.
 

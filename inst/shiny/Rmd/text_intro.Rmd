@@ -5,7 +5,7 @@ output: html_document
 
 ### **What is *Wallace*?**  
 
-Welcome to *Wallace*, a flexible application for reproducible ecological modeling, built for community expansion. The current version of *Wallace* (v1.1.2) steps the user through a full niche/distribution modeling analysis, from data acquisition to visualizing results.
+Welcome to *Wallace*, a flexible application for reproducible ecological modeling, built for community expansion. The current version of *Wallace* (v1.1.3) steps the user through a full niche/distribution modeling analysis, from data acquisition to visualizing results.
 
 The application is written in `R` with the web app development package `shiny`. Please find the stable version of *Wallace* on <a href="https://CRAN.R-project.org/package=wallace" target="_blank">CRAN</a>, and the development version on <a href="https://github.com/wallaceEcoMod/wallace" target="_blank">Github</a>. We also maintain a *Wallace* <a href="https://wallaceecomod.github.io/" target="_blank">website</a> that has some basic info, links, and will be updated with tutorial materials in the near future.
 
