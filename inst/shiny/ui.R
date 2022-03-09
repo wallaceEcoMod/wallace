@@ -9,7 +9,8 @@ tagList(
   ),
   shinyalert::useShinyalert(),
   navbarPage(
-    theme = shinythemes::shinytheme('united'),
+    theme = bslib::bs_theme(version = 3,
+                            bootswatch = "united"),
     id = 'tabs',
     collapsible = TRUE,
     header = tagList(

@@ -55,7 +55,6 @@ Imports:
     rmarkdown,
     shinyalert,
     shinyjs,
-    shinythemes,
     shinyWidgets (>= 0.6.0),
     sp,
     spocc (>= 0.8.0),
