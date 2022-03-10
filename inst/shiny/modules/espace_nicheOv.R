@@ -86,7 +86,7 @@ espace_nicheOv_module_server <- function(input, output, session, common) {
     # plots
     # layout(matrix(c(1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3), 4, 3, byrow = F))
     # layout.show(3)
-    par(mfrow = c(1, 2))
+    graphics::par(mfrow = c(1, 2))
 
     ecospat::ecospat.plot.niche.dyn(
       spp[[mSp]]$occDens[[sp1]],
@@ -107,7 +107,7 @@ espace_nicheOv_module_server <- function(input, output, session, common) {
     if (!is.null(spp[[mSp]]$nicheOv$simil))
       ecospat::ecospat.plot.overlap.test(spp[[mSp]]$nicheOv$simil,
                                          "D", "Similarity test")
-    par(mfrow = c(1, 1))
+    graphics::par(mfrow = c(1, 1))
   })
 }
 

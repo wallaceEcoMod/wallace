@@ -123,7 +123,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
           # make something with the same slots as spocc that we use
           q <- list(gbif = list(meta = list(found = NULL),
                                 data = list(formatSpName(sp))))
-          gbif_raw <- read.table(unz(
+          gbif_raw <- utils::read.table(unz(
             as.character(myBTO@occResults[[bestMatch]][['GBIF']][['RawOccurrences']]),
             "occurrence.txt"), sep = "\t", header = TRUE, quote = "",
             encoding = "UTF-8")

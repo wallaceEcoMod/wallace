@@ -549,7 +549,7 @@ function(input, output, session) {
     },
     content = function(file) {
       png(file, width = 1000, height = 500)
-      par(mfrow=c(1,2))
+      graphics::par(mfrow=c(1,2))
       if (length(curSp()) == 2) {
         mSp <- paste(curSp(), collapse = ".")
         sp1 <- curSp()[1]
@@ -606,7 +606,7 @@ function(input, output, session) {
         "Both :", round(spp[[mSp]]$nicheOv$USE[2], 2)
       )
       plot.new()
-      text(0.5, 0.5, ovMetrics, cex = 2, font = 2, )
+      graphics::text(0.5, 0.5, ovMetrics, cex = 2, font = 2, )
       dev.off()
     }
   )

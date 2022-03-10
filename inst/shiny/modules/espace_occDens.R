@@ -57,7 +57,7 @@ espace_occDens_module_server <- function(input, output, session, common) {
 
   # PLOTS ####
   output$occDensPlot <- renderPlot({
-    par(mfrow = c(1,2))
+    graphics::par(mfrow = c(1,2))
     if (length(curSp()) == 2) {
       mSp <- paste(curSp(), collapse = ".")
       sp1 <- curSp()[1]

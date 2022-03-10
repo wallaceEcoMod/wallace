@@ -37,7 +37,7 @@ proj_userExtent <- function(bgShp_path, bgShp_name, userBgBuf,
   # get extensions of all input files
   exts <- sapply(strsplit(bgShp_name, '\\.'), FUN = function(x) x[2])
   if (length(exts) == 1 & exts[1] == 'csv') {
-    f <- read.csv(bgShp_path, header = TRUE)
+    f <- utils::read.csv(bgShp_path, header = TRUE)
     bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(f)), 1)))
   } else if ('shp' %in% exts) {
     if (length(exts) < 3) {
@@ -64,7 +64,7 @@ proj_userExtent <- function(bgShp_path, bgShp_name, userBgBuf,
 
   if (userBgBuf >= 0) {
     bgExt <- rgeos::gBuffer(bgExt, width = userBgBuf)
-    bgExt <- as(bgExt, "SpatialPolygonsDataFrame")
+    bgExt <- methods::as(bgExt, "SpatialPolygonsDataFrame")
   }
   if (userBgBuf > 0) {
     logger %>% writeLog(hlSpp(spN), 'Projection extent user-defined polygon buffered by ',

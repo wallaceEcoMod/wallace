@@ -80,6 +80,6 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL, spN = NULL) {
   } else {
     logger %>% writeLog(hlSpp(spN), msg)
   }
-  bgExt <- as(bgExt, "SpatialPolygonsDataFrame")
+  bgExt <- methods::as(bgExt, "SpatialPolygonsDataFrame")
   return(bgExt)
 }

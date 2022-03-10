@@ -63,7 +63,7 @@ runGAM <- function(occs.vals, bg.vals, degFr, spN, shinyLogs=NULL) {
   # put everything together in a table for modeling
   d <- data.frame(pa = bin, vals)
   # make formula
-  f <- as.formula(paste("pa", paste(degFrs, collapse = " + "), sep = " ~ "))
+  f <- stats::as.formula(paste("pa", paste(degFrs, collapse = " + "), sep = " ~ "))
   # run the GAM
   smartProgress(shinyLogs, message = paste("Running GAM for", spName), {
     mod <- gam(f, family = "binomial", data = d)

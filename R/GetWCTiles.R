@@ -10,7 +10,7 @@
 # @examples
 #'
 #'
-# @return 
+# @return
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 # @note
 
@@ -28,7 +28,8 @@ getWCTiles <- function(occs) {
   coordTiles <-  data.frame(occs[row.names(c),])
   x <- list()
   for (i in 1:nrow(coordTiles)) {
-    x[[i]] <- getData('worldclim', var = 'bio', res = 0.5, lon = coordTiles[i, 1], lat = coordTiles[i, 2])
+    x[[i]] <- raster::getData('worldclim', var = 'bio', res = 0.5,
+                              lon = coordTiles[i, 1], lat = coordTiles[i, 2])
   }
   y <- do.call(merge, x)
   return(y)
@@ -43,6 +44,6 @@ getWCTiles <- function(occs) {
 #mosaic<-getWCTiles(occs)
 #
 #plot(mosaic[[1]])
-#points(occs)
-#t2<-Sys.time() 
+#graphics::points(occs)
+#t2<-Sys.time()
 #t2-t1 # 5 tiles ->24.75397 mins, memory.size = 2786.77

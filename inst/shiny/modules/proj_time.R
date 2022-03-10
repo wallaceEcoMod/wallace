@@ -311,7 +311,7 @@ proj_time_module_server <- function(input, output, session, common) {
     # ERRORS ####
     # Check that the extents of raster and projection extent intersects
     if (!rgeos::gIntersects(spp[[curSp()]]$project$pjExt,
-                            as(raster::extent(projTimeEnvs), 'SpatialPolygons'))) {
+                            methods::as(raster::extent(projTimeEnvs), 'SpatialPolygons'))) {
       logger %>%
         writeLog(type = 'error', 'Extents do not overlap')
       return()
@@ -350,11 +350,11 @@ proj_time_module_server <- function(input, output, session, common) {
     if(!(input$threshold == 'none')) {
       # use threshold from present-day model training area
       if (input$threshold == 'mtp') {
-        thr <- quantile(occPredVals, probs = 0)
+        thr <- stats::quantile(occPredVals, probs = 0)
       } else if (input$threshold == 'p10') {
-        thr <- quantile(occPredVals, probs = 0.1)
+        thr <- stats::quantile(occPredVals, probs = 0.1)
       } else if (input$threshold == 'qtp'){
-        thr <- quantile(occPredVals, probs = input$trainPresQuantile)
+        thr <- stats::quantile(occPredVals, probs = input$trainPresQuantile)
       }
       projTimeThr <- projTime > thr
       if (input$selTimeVar == 'worldclim') {

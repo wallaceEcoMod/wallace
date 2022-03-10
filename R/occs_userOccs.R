@@ -40,8 +40,8 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
                           logger = NULL) {
 
   # read in txt
-  txt <- tryCatch(expr = read.delim(file = txtPath, header = TRUE, sep = txtSep,
-                                    dec = txtDec),
+  txt <- tryCatch(expr = utils::read.delim(file = txtPath, header = TRUE,
+                                           sep = txtSep, dec = txtDec),
                   error = function(e) "error")
   if (class(txt) == "character") {
     logger %>% writeLog(

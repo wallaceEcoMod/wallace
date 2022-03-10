@@ -132,11 +132,11 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
     # get the chosen threshold value
     if (input$threshold != 'none') {
       if (input$threshold == 'mtp') {
-        thr.sel <- quantile(occPredVals, probs = 0)
+        thr.sel <- stats::quantile(occPredVals, probs = 0)
       } else if (input$threshold == 'p10') {
-        thr.sel <- quantile(occPredVals, probs = 0.1)
+        thr.sel <- stats::quantile(occPredVals, probs = 0.1)
       } else if (input$threshold == 'qtp'){
-        thr.sel <- quantile(occPredVals, probs = input$trainPresQuantile)
+        thr.sel <- stats::quantile(occPredVals, probs = input$trainPresQuantile)
       }
       predSel.thr <- predSel > thr.sel
       # rename prediction raster if thresholded

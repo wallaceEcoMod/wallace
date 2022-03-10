@@ -40,7 +40,7 @@ proj_draw <- function(polyPjXY, polyPjID, drawPjBuf, logger = NULL, spN = NULL) 
   newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(polyPjXY)),
                                                    ID = polyPjID)))
   bgExt <- rgeos::gBuffer(newPoly, width = drawPjBuf)
-  bgExt <- as(bgExt, "SpatialPolygonsDataFrame")
+  bgExt <- methods::as(bgExt, "SpatialPolygonsDataFrame")
   if (drawPjBuf == 0) {
     logger %>% writeLog(hlSpp(spN), 'Draw polygon without buffer.')
   } else {

@@ -273,7 +273,7 @@ Buffer size of the study extent polygon defined as `r {{bgBuf}}` km.
 
 ```{r bgBufWid, echo = bg.bufWid, include = bg.bufWid}
 bgExt <- rgeos::gBuffer(bgExt, width = {{bgBuf}})
-bgExt <- as(bgExt, "SpatialPolygonsDataFrame")
+bgExt <- methods::as(bgExt, "SpatialPolygonsDataFrame")
 ```
 
 ```{asis, echo = bg.any, eval = bg.any, include = bg.any}

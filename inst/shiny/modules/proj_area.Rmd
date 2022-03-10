@@ -84,7 +84,7 @@ occPredVals_{{spAbr}} <- raster::extract(predSel_{{spAbr}}, occs_xy_{{spAbr}})
 proj_thresProb_{{spAbr}} <- switch("{{proj_thresholdRule_rmd}}", 
                                    "mtp" = 0, "p10" = 0.1, "qtp" = {{proj_probQuantile_rmd}})
 # Define threshold value
-proj_thres_{{spAbr}} <- quantile(occPredVals_{{spAbr}}, 
+proj_thres_{{spAbr}} <- stats::quantile(occPredVals_{{spAbr}}, 
                                  probs = proj_thresProb_{{spAbr}})
 # Add threshold if specified 
 proj_area_{{spAbr}} <- proj_area_{{spAbr}}$projArea > proj_thres_{{spAbr}}
@@ -202,8 +202,8 @@ occPredVals_{{spAbr}} <- raster::extract(predSel_{{spAbr}}, occs_xy_{{spAbr}})
 proj_thresProb_{{spAbr}} <- switch("{{proj_thresholdRule_rmd}}", 
                                    "mtp" = 0, "p10" = 0.1, "qtp" = {{proj_probQuantile_rmd}})
 # Define threshold value
-proj_thres_{{spAbr}} <- quantile(occPredVals_{{spAbr}}, 
-                                 probs = proj_thresProb_{{spAbr}})
+proj_thres_{{spAbr}} <- stats::quantile(occPredVals_{{spAbr}}, 
+                                        probs = proj_thresProb_{{spAbr}})
 # Add threshold if specified 
 proj_area_{{spAbr}} <- proj_area_{{spAbr}}$projArea > proj_thresProb_{{spAbr}}
 

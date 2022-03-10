@@ -65,11 +65,11 @@ vis_bioclimPlot <- function(x, a=1, b=2, p=0.9, ...) {
   i <- prd > p & prd < (1-p)
   plot(d[,a], d[,b], xlab=colnames(d)[a], ylab=colnames(d)[b], cex=0)
   type=6
-  x1 <- quantile(d[,a], probs=p, type=type)
-  x2 <- quantile(d[,a], probs=1-p, type=type)
-  y1 <- quantile(d[,b], probs=p, type=type)
-  y2 <- quantile(d[,b], probs=1-p, type=type)
-  polygon(rbind(c(x1,y1), c(x1,y2), c(x2,y2), c(x2,y1), c(x1,y1)), border='#0072B2', lwd=2)
-  points(d[i,a], d[i,b], xlab=colnames(x)[a], ylab=colnames(x)[b], col='#009E73' ,pch=16)
-  points(d[!i,a], d[!i,b], col="#D55E00", pch=17)
+  x1 <- stats::quantile(d[,a], probs=p, type=type)
+  x2 <- stats::quantile(d[,a], probs=1-p, type=type)
+  y1 <- stats::quantile(d[,b], probs=p, type=type)
+  y2 <- stats::quantile(d[,b], probs=1-p, type=type)
+  graphics::polygon(rbind(c(x1,y1), c(x1,y2), c(x2,y2), c(x2,y1), c(x1,y1)), border='#0072B2', lwd=2)
+  graphics::points(d[i,a], d[i,b], xlab=colnames(x)[a], ylab=colnames(x)[b], col='#009E73' ,pch=16)
+  graphics::points(d[!i,a], d[!i,b], col="#D55E00", pch=17)
 }

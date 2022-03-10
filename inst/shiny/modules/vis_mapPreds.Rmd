@@ -51,7 +51,8 @@ occPredVals_{{spAbr}} <- raster::extract(predSel_{{spAbr}}, occs_xy_{{spAbr}})
 thresProb_{{spAbr}} <- switch("{{thresholdRule_rmd}}", 
                               "mtp" = 0, "p10" = 0.1, "qtp" = {{probQuantile_rmd}})
 # Define threshold value
-thres_{{spAbr}} <- quantile(occPredVals_{{spAbr}}, probs = thresProb_{{spAbr}})
+thres_{{spAbr}} <- stats::quantile(occPredVals_{{spAbr}}, 
+                                   probs = thresProb_{{spAbr}})
 # Applied selected threshold
 predSel_{{spAbr}} <- predSel_{{spAbr}} > thres_{{spAbr}}
 # Get values of prediction
@@ -141,7 +142,7 @@ occPredVals_{{spAbr}} <- raster::extract(predSel_{{spAbr}}, occs_xy_{{spAbr}})
 thresProb_{{spAbr}} <- switch("{{thresholdRule_rmd}}", 
                               "mtp" = 0, "p10" = 0.1, "qtp" = {{probQuantile_rmd}})
 # Define threshold value
-thres_{{spAbr}} <- quantile(occPredVals_{{spAbr}}, probs = thresProb_{{spAbr}})
+thres_{{spAbr}} <- stats::quantile(occPredVals_{{spAbr}}, probs = thresProb_{{spAbr}})
 # Applied selected threshold
 predSel_{{spAbr}} <- predSel_{{spAbr}} > thres_{{spAbr}}
 #Get values of prediction
@@ -226,7 +227,7 @@ occPredVals_{{spAbr}} <- raster::extract(predSel_{{spAbr}}, occs_xy_{{spAbr}})
 thresProb_{{spAbr}} <- switch("{{thresholdRule_rmd}}", 
                               "mtp" = 0, "p10" = 0.1, "qtp" = {{probQuantile_rmd}})
 # Define threshold value
-thres_{{spAbr}} <- quantile(occPredVals_{{spAbr}}, probs = thresProb_{{spAbr}})
+thres_{{spAbr}} <- stats::quantile(occPredVals_{{spAbr}}, probs = thresProb_{{spAbr}})
 # Applied selected threshold
 predSel_{{spAbr}} <- predSel_{{spAbr}} > thres_{{spAbr}}
 

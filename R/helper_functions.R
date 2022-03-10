@@ -36,8 +36,8 @@ formatSpName <- function(spNames) {
 
 #' @export
 writeSpp <- function(spp, sp, dir) {
-  if(!is.null(spp[[sp]]$occs)) write.csv(spp[[sp]]$occs, file.path(dir, paste0(sp, "_occs.csv")))
-  if(!is.null(spp[[sp]]$bg)) write.csv(spp[[sp]]$bg, file.path(dir, paste0(sp, "_bg.csv")))
+  if(!is.null(spp[[sp]]$occs)) utils::write.csv(spp[[sp]]$occs, file.path(dir, paste0(sp, "_occs.csv")))
+  if(!is.null(spp[[sp]]$bg)) utils::write.csv(spp[[sp]]$bg, file.path(dir, paste0(sp, "_bg.csv")))
   if(!is.null(spp[[sp]]$procEnvs$bgMask)) raster::writeRaster(spp[[sp]]$procEnvs$bgMask, file.path(dir, paste0(sp, "_bgMask.tif")), bylayer = TRUE)
 }
 
@@ -139,9 +139,9 @@ zoom2Occs <- function(map, occs) {
   #   for (i in 1:9) {
   #     f <- tempfile(fileext = '.png')
   #     png(f, width = width, height = height, bg = 'transparent')
-  #     par(mar = c(0, 0, 0, 0))
+  #     graphics::par(mar = c(0, 0, 0, 0))
   #     plot.new()
-  #     points(.5, .5, pch = occIcons[i], cex = min(width, height) / 8, col='red', ...)
+  #     graphics::points(.5, .5, pch = occIcons[i], cex = min(width, height) / 8, col='red', ...)
   #     dev.off()
   #     files[i] <- f
   #   }
@@ -256,7 +256,7 @@ remEnvsValsNA <- function(occs, occsEnvsVals, sppName, logger) {
 #' @export
 mcp <- function(xy) {
   xy <- as.data.frame(sp::coordinates(xy))
-  coords.t <- chull(xy[, 1], xy[, 2])
+  coords.t <- grDevices::chull(xy[, 1], xy[, 2])
   xy.bord <- xy[coords.t, ]
   xy.bord <- rbind(xy.bord[nrow(xy.bord), ], xy.bord)
   return(sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(as.matrix(xy.bord))), 1))))
@@ -290,8 +290,8 @@ predictMaxnet <- function(mod, envs, clamp, type) {
   requireNamespace("maxnet", quietly = TRUE)
   envs.n <- raster::nlayers(envs)
   envs.pts <- raster::getValues(envs) %>% as.data.frame()
-  mxnet.p <- predict(mod, envs.pts, type = type,
-                     clamp = clamp)
+  mxnet.p <- stats::predict(mod, envs.pts, type = type,
+                            clamp = clamp)
   envs.pts[as.numeric(row.names(mxnet.p)), "pred"] <- mxnet.p
   pred <- raster::rasterFromXYZ(cbind(raster::coordinates(envs),
                                       envs.pts$pred),
@@ -302,15 +302,16 @@ predictMaxnet <- function(mod, envs, clamp, type) {
 
 #' @export
 evalPlots <- function(evalOut) {
-  par(mfrow=c(3,2))
+  graphics::par(mfrow=c(3,2))
   fc <- length(unique(evalOut@features))
-  col <- rainbow(fc)
+  col <- grDevices::rainbow(fc)
   rm <- length(unique(evalOut@rm))
-  plot(rep(1, times=fc), 1:fc, ylim=c(.5,fc+1), xlim=c(0,3), axes=F, ylab='', xlab='', cex=2, pch=21, bg=col)
-  segments(rep(.8, times=fc), 1:fc, rep(1.2, times=fc), 1:fc, lwd=1, col=col)
-  points(rep(1, times=fc), 1:fc, ylim=c(-1,fc+2), cex=2, pch=21, bg=col)
-  text(x=rep(1.3, times=fc), y=1:fc, labels=unique(evalOut@features), adj=0)
-  text(x=1, y=fc+1, labels="Feature Classes", adj=.20, cex=1.3, font=2)
+  plot(rep(1, times=fc), 1:fc, ylim=c(.5,fc+1), xlim=c(0,3), axes=F, ylab='',
+       xlab='', cex=2, pch=21, bg=col)
+  graphics::segments(rep(.8, times=fc), 1:fc, rep(1.2, times=fc), 1:fc, lwd=1, col=col)
+  graphics::points(rep(1, times=fc), 1:fc, ylim=c(-1,fc+2), cex=2, pch=21, bg=col)
+  graphics::text(x=rep(1.3, times=fc), y=1:fc, labels=unique(evalOut@features), adj=0)
+  graphics::text(x=1, y=fc+1, labels="Feature Classes", adj=.20, cex=1.3, font=2)
   ENMeval::eval.plot(evalOut, legend=FALSE, value="delta.AICc")
   ENMeval::eval.plot(evalOut, legend=FALSE, value="Mean.AUC", variance="Var.AUC")
   ENMeval::eval.plot(evalOut, legend=FALSE, value="Mean.AUC.DIFF", variance="Var.AUC.DIFF")
@@ -376,15 +377,15 @@ respCurv <- function(mod, i) {  # copied mostly from dismo
   mm <- v[rep(1:v.nr, xlm), ]
   mm[, i] <- rep(vi.rx, v.nr)
   mm[, -i] <- rep(colMeans(mm[,-i]), each=nrow(mm))
-  p <- predict(mod, mm)
+  p <- stats::predict(mod, mm)
   plot(cbind(vi.rx, p[1:xlm]), type='l', ylim=0:1, col = 'red', lwd = 2,
        ylab = 'predicted value', xlab = names(v)[i])
   pres.r <- range(mod@presence[, i])
-  abline(v = pres.r[1], col='blue')  # vertical blue lines indicate min and max of presence vals
-  abline(v = pres.r[2], col='blue')
+  graphics::abline(v = pres.r[1], col='blue')  # vertical blue lines indicate min and max of presence vals
+  graphics::abline(v = pres.r[2], col='blue')
   abs.r <- range(mod@absence[, i])
-  abline(v = abs.r[1], col='green') # vertical green lines indicate min and max of background vals
-  abline(v = abs.r[2], col='green')
+  graphics::abline(v = abs.r[1], col='green') # vertical green lines indicate min and max of background vals
+  graphics::abline(v = abs.r[2], col='green')
   #graphics::text(x = vals, y = pred, labels = row.names(mod@presence), pos = 3, offset = 1)
 }
 
@@ -475,5 +476,5 @@ convert_list_cols <- function(x) {
 }
 #' @export
 write_csv_robust <- function(x, ...) {
-  write.csv(convert_list_cols(x), ...)
+  utils::write.csv(convert_list_cols(x), ...)
 }

@@ -29,7 +29,7 @@
 samp_userBiasBg <- function(csvPath, csvName, shinyLogs = NULL) {
 
   # read in csv
-  csv <- read.csv(csvPath, header = TRUE)
+  csv <- utils::read.csv(csvPath, header = TRUE)
 
   # check to make sure all column names are correct
   if (!all(c('scientific_name', 'longitude', 'latitude') %in% names(csv))) {

@@ -159,7 +159,7 @@
 #   print(grades2)
 #   # colors for partition symbology
 #   n <- length(unique(grades))
-#   newColors <- gsub("FF$", "", rainbow(n))
+#   newColors <- gsub("FF$", "", grDevices::rainbow(n))
 #   partsFill <- newColors[match(grades, sort(unique(grades)))]
 #
 #   map %>% clearAll() %>%

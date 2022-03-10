@@ -21,7 +21,6 @@ Authors@R:
 	  person("Dean", "Attali", email = "daattali@gmail.com", role = "aut"))
 Depends:
     R (>= 3.5.0),
-    ENMeval (>= 2.0.0),
     shiny (>= 1.6.0),
     leaflet (>= 2.0.2)
 Imports:
@@ -31,6 +30,7 @@ Imports:
     dplyr (>= 1.0.2),
     DT (>= 0.5),
     ecospat,
+    ENMeval (>= 2.0.3),
     httr,
     glue,
     geojsonsf,
@@ -40,6 +40,7 @@ Imports:
     maptools,
     mapview,
     maxnet,
+    methods,
     neotoma,
     occCite,
     paleobioDB,
@@ -51,6 +52,7 @@ Imports:
     rgbif (>= 3.3.0),
     rgdal,
     rgeos,
+    rJava,
     rmarkdown,
     shinyalert,
     shinyjs,
@@ -62,6 +64,7 @@ Imports:
     XML,
     zip
 Suggests: 
+    jsonlite,
     knitr,
     testthat
 Remotes:

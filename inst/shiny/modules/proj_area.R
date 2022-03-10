@@ -116,7 +116,8 @@ proj_area_module_server <- function(input, output, session, common) {
       # ERRORS ####
       # Check that the extents of raster and projection extent instersects
       if (!rgeos::gIntersects(spp[[curSp()]]$project$pjExt,
-                              as(raster::extent(userProjEnvs), 'SpatialPolygons'))) {
+                              methods::as(raster::extent(userProjEnvs),
+                                          'SpatialPolygons'))) {
         logger %>%
           writeLog(type = 'error', 'Extents do not overlap')
         return()
@@ -160,7 +161,7 @@ proj_area_module_server <- function(input, output, session, common) {
     }
     # Check that the extents of raster and projection extent intersects
     if (!rgeos::gIntersects(spp[[curSp()]]$project$pjExt,
-                            as(raster::extent(envs()), 'SpatialPolygons'))) {
+                            methods::as(raster::extent(envs()), 'SpatialPolygons'))) {
       logger %>%
         writeLog(type = 'error', 'Extents do not overlap')
       return()
@@ -198,11 +199,11 @@ proj_area_module_server <- function(input, output, session, common) {
 
     if(!(input$threshold == 'none')) {
       if (input$threshold == 'mtp') {
-        thr <- quantile(occPredVals, probs = 0)
+        thr <- stats::quantile(occPredVals, probs = 0)
       } else if (input$threshold == 'p10') {
-        thr <- quantile(occPredVals, probs = 0.1)
+        thr <- stats::quantile(occPredVals, probs = 0.1)
       } else if (input$threshold == 'qtp'){
-        thr <- quantile(occPredVals, probs = input$trainPresQuantile)
+        thr <- stats::quantile(occPredVals, probs = input$trainPresQuantile)
       }
       projAreaThr <- projArea > thr
       logger %>% writeLog(hlSpp(curSp()), "Projection of model to new area with threshold ",

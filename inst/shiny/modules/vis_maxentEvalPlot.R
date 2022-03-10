@@ -43,9 +43,9 @@ vis_maxentEvalPlot_module_server <- function(input, output, session, common) {
   output$maxentEvalPlot <- renderPlot({
     req(curSp(), evalOut())
     if (spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM") {
-      par(mar = c(0,0,0,0))
+      graphics::par(mar = c(0,0,0,0))
       plot(c(0, 1), c(0, 1), ann = F, bty = 'n', type = 'n', xaxt = 'n', yaxt = 'n')
-      text(x = 0.25, y = 1, "Evaluation plot module requires a Maxent model",
+      graphics::text(x = 0.25, y = 1, "Evaluation plot module requires a Maxent model",
            cex = 1.2, col = "#641E16")
     } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar" |
         spp[[curSp()]]$rmm$model$algorithms == "maxnet") {

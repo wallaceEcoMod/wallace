@@ -348,7 +348,7 @@ ecoClimate_getdata<- function (AOGCM, Baseline, Scenario, logger = NULL) {
   fnDw <- utils::download.file(url = FinURL, destfile = fn, method = "auto",
                               quiet = FALSE, mode = "wb", cacheOK = TRUE)
   if (file.exists(fn) & fnDw == 0) {
-    climate_data <- read.table(fn, TRUE)
+    climate_data <- utils::read.table(fn, TRUE)
     sp::gridded(climate_data) <- ~ long + lat
     map_climate<- raster::stack(climate_data)[[-1]]
   } else {

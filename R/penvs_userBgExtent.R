@@ -46,7 +46,7 @@ penvs_userBgExtent <- function(bgShp_path, bgShp_name, userBgBuf, occs,
     # get extensions of all input files
     exts <- sapply(strsplit(bgShp_name, '\\.'), FUN = function(x) x[2])
     if (length(exts) == 1 & exts[1] == 'csv') {
-      f <- read.csv(bgShp_path, header = TRUE)
+      f <- utils::read.csv(bgShp_path, header = TRUE)
       bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(f)), 1)))
     } else if ('shp' %in% exts) {
       if (length(exts) < 3) {
@@ -73,7 +73,7 @@ penvs_userBgExtent <- function(bgShp_path, bgShp_name, userBgBuf, occs,
 
     if (userBgBuf >= 0) {
       bgExt <- rgeos::gBuffer(bgExt, width = userBgBuf)
-      bgExt <- as(bgExt, "SpatialPolygonsDataFrame")
+      bgExt <- methods::as(bgExt, "SpatialPolygonsDataFrame")
     }
 
     ### Points outside polygon
