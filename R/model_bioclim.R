@@ -21,7 +21,7 @@
 #' occs <- as.data.frame(out.gbif[[1]]$cleaned)
 #' occs <- poccs_thinOccs(occs = occs, thinDist = 10)
 #' envs <- envs_worldclim(bcRes = 10,
-#'                        bcSel = list(TRUE, TRUE, TRUE, TRUE, TRUE),
+#'                        bcSel = c("bio03", "bio04", "bio13", "bio14"),
 #'                        doBrick = FALSE)
 #' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
 #' bgMask <- penvs_bgMask(occs, envs, bgExt)

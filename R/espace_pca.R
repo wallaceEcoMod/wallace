@@ -20,7 +20,7 @@
 #'                                              occDb = "gbif",
 #'                                              occNum = 100)[[1]]$cleaned)
 #' envs <- wallace::envs_worldclim(bcRes = 10,
-#'                                 bcSel = list(TRUE, TRUE, TRUE, TRUE, TRUE),
+#'                                 bcSel = c("bio03", "bio04", "bio13", "bio14"),
 #'                                 doBrick = FALSE)
 #' bgExt <- wallace::penvs_bgExtent(occs, bgSel = 'bounding box',
 #'                                  bgBuf = 0.5)

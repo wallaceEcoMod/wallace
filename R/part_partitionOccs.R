@@ -27,11 +27,11 @@
 #' occs <- occs_queryDb(spName = "Panthera onca", occDb = "gbif", occNum = 100)
 #' occs <- as.data.frame(occs[[1]]$cleaned)
 #' envs <- envs_worldclim(bcRes = 10,
-#'                        bcSel = list(TRUE, TRUE, TRUE, TRUE, TRUE),
+#'                        bcSel = c("bio03", "bio04", "bio13", "bio14"),
 #'                        doBrick = FALSE)
 #' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
 #' bgMask <- penvs_bgMask(occs, envs, bgExt)
-#' bgSample <- penvs_bgSample(occs, bgMask, bgPtsNum=1000)
+#' bgSample <- penvs_bgSample(occs, bgMask, bgPtsNum = 1000)
 #' folds <- 'rand'
 #' partfold <- part_partitionOccs(occs, bgSample, method = folds, kfolds = 4,
 #'                                bgMask = NULL, aggFact = NULL)
