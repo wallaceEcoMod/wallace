@@ -32,7 +32,6 @@ Imports:
     DT (>= 0.5),
     ecospat,
     httr,
-    gam,
     glue,
     geojsonsf,
     knitcitations,
