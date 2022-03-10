@@ -53,7 +53,7 @@
 #' @author Olivier Broennimann <olivier.broennimann@@unil.ch>
 # @note
 
-#' @seealso  \code{\link{espace_pca}} \code{\link{espace_occDens}} \code{\link[ecospat]{niche.overlap}}  \code{\link[ecospat]{niche.dyn.index}} \code{\link[ecospat]{niche.equivalency.test}} \code{\link[ecospat]{niche.similarity.test}}
+#' @seealso  \code{\link{espace_pca}} \code{\link{espace_occDens}} \code{\link[ecospat]{ecospat.niche.overlap}}  \code{\link[ecospat]{ecospat.niche.dyn.index}} \code{\link[ecospat]{ecospat.niche.equivalency.test}} \code{\link[ecospat]{ecospat.niche.similarity.test}}
 # @references
 # @aliases - a list of additional topic names that will be mapped to
 # this documentation when the user looks them up from the command

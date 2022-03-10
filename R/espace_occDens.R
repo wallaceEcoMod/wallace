@@ -51,7 +51,7 @@
 #' @author Jamie Kass <jamie.m.kass@@gmail.com >
 #' @author Olivier Broennimann <olivier.broennimann@@unil.ch>
 # @note
-#' @seealso \code{\link{espace_pca}} \code{\link{espace_nicheOv}} \code{\link[ecospat]{grid.clim.dyn}} \code{\link[adeHabitatHR]{kernelUD}}
+#' @seealso \code{\link{espace_pca}} \code{\link{espace_nicheOv}} \code{\link[ecospat]{ecospat.grid.clim.dyn}}
 # @references
 # @aliases - a list of additional topic names that will be mapped to
 # this documentation when the user looks them up from the command
