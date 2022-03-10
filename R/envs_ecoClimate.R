@@ -78,6 +78,8 @@ envs_ecoClimate <- function(bcAOGCM, bcScenario, ecoClimSel, logger = NULL) {
 #' @param Scenario Select a temporal scenario.
 #' Options are: "LGM" (21,000 years ago), "Holo" (6,000 years ago),
 #' "Present", "Future 2.6" (rcp 2.6), "Future 4.5" (rcp 4.5), "Future 6" (rcp 6), "Future 8.5" (rcp 8.5)
+#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+#' otherwise leave the default NULL
 #' @export
 #' @examples \dontrun{
 #' CCSM_mod_present <- ecoclimate_getdata("CCSM", "Modern", "Present")
@@ -86,7 +88,7 @@ envs_ecoClimate <- function(bcAOGCM, bcScenario, ecoClimSel, logger = NULL) {
 #' }
 #'
 
-ecoClimate_getdata<- function (AOGCM, Baseline, Scenario, logger = NULL) {
+ecoClimate_getdata <- function (AOGCM, Baseline, Scenario, logger = NULL) {
 
   if (!(AOGCM %in% c("CCSM", "CNRM", "MIROC", "COSMOS", "FGOALS", "GISS",
                      "IPSL", "MRI", "MPI"))) {
