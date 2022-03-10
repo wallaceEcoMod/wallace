@@ -41,7 +41,6 @@ First, a brief outline of the file structure of the `wallace` package. The starr
 ├──NAMESPACE............................#
 ├──NEWS.md..............................#
 ├──README.md............................#
-├──selenium-server-standalone.jar.......#
 └──wallace.Rproj........................# R project file -- when developing, load wallace with this
 
 ```

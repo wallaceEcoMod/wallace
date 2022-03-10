@@ -64,7 +64,6 @@ Imports:
     zip
 Suggests: 
     knitr,
-    RSelenium,
     testthat
 Remotes:
     hannahlowens/occCite
