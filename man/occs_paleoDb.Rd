@@ -28,10 +28,10 @@ species occurrence records in the holocene. It removes records with duplicate co
 appropriate to studies in biogeography.
 }
 \examples{
-spName<-"Didelphis virginiana"
-occNum<-100
-timeInterval<-"Holocene"
-occsPaleo<- occs_paleoDb(spName, occNum, timeInterval, logger = NULL)
+spName <- "Didelphis virginiana"
+occNum <- 100
+timeInterval <- "Holocene"
+occsPaleo <- occs_paleoDb(spName, occNum, timeInterval)
 }
 \author{
 Jamie Kass <jamie.m.kass@gmail.com>

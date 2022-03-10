@@ -15,29 +15,38 @@
 # @keywords
 #'
 #' @examples
-#'sp.name1<-"Panthera onca"
-#'sp.name2<-"Procyon lotor"
-#'species<-c(sp.name1,sp.name2)
-#"model<-list()
-#'for (i in 1:2){
-#'  occs <-  occs_queryDb(spName = species[i], occDb = "gbif", occNum = 100)
-#'  occs <- as.data.frame(occs[[1]]$cleaned)
-#'    occs <- poccs_thinOccs(occs = occs, thinDist = 10,spN=species[i])
-#' envs <- envs_worldclim(bcRes = 10,  bcSel = c("bio01","bio02","bio13","bio14"), doBrick = FALSE)
-#' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=species[i])
-#'bgMask <- penvs_bgMask(occs, envs, bgExt,spN=species[i])
-#'bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 1000,spN=species[i])
-#' partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=species[i])
-#'  bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=species[i])
-#' model[i]<-bioclimAlg }
-##Remove coordinates (lat/long from tables)
-#'occs.z1<-model[[1]]@@occs[3:length(model[[1]]@@occs)]
-#'occs.z2<-model[[2]]@@occs[3:length(model[[2]]@@occs)]
-#'bgPts.z1<-model[[1]]@@bg[3:length(model[[1]]@@bg)]
-#'bgPts.z2<-model[[2]]@@bg[3:length(model[[2]]@@bg)]
-#'Testpca<-espace_pca(sp.name1,sp.name2,occs.z1,occs.z2,bgPts.z1,bgPts.z2)
-#'TestOccDens<-espace_occDens(sp.name1, sp.name2,Testpca)
-#'TestNicheOv<-espace_nicheOv(z1=TestOccDens[[sp.name1]], z2=TestOccDens[[sp.name2]], iter=100 , equivalency = TRUE, similarity = TRUE, logger = NULL)
+#' sp.name1 <- "Panthera onca"
+#' sp.name2 <- "Procyon lotor"
+#' species <- c(sp.name1, sp.name2)
+#' model <- list()
+#' for (i in 1:2) {
+#'   occs <-  occs_queryDb(spName = species[i], occDb = "gbif", occNum = 100)
+#'   occs <- as.data.frame(occs[[1]]$cleaned)
+#'   occs <- poccs_thinOccs(occs = occs, thinDist = 10,spN=species[i])
+#'   envs <- envs_worldclim(bcRes = 10,
+#'                          bcSel = c("bio01","bio02","bio13","bio14"),
+#'                          doBrick = FALSE)
+#'   bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
+#'   bgMask <- penvs_bgMask(occs, envs, bgExt)
+#'   bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 1000, spN = species[i])
+#'   partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL,
+#'                                   bgMask = NULL, aggFact = NULL)
+#'   bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp,
+#'                               partblock$bg.grp, bgMask)
+#'   model[i] <- bioclimAlg
+#' }
+## Remove coordinates (lat/long from tables)
+#' occs.z1 <- model[[1]]@@occs[3:length(model[[1]]@@occs)]
+#' occs.z2 <- model[[2]]@@occs[3:length(model[[2]]@@occs)]
+#' bgPts.z1 <- model[[1]]@@bg[3:length(model[[1]]@@bg)]
+#' bgPts.z2 <- model[[2]]@@bg[3:length(model[[2]]@@bg)]
+#' Testpca <- espace_pca(sp.name1, sp.name2, occs.z1, occs.z2,
+#'                       bgPts.z1, bgPts.z2)
+#' TestOccDens <- espace_occDens(sp.name1, sp.name2, Testpca)
+#' TestNicheOv <- espace_nicheOv(z1 = TestOccDens[[sp.name1]],
+#'                               z2 = TestOccDens[[sp.name2]],
+#'                               iter = 100 , equivalency = TRUE,
+#'                               similarity = TRUE)
 #'
 #' @return A list of 4 elements if all is set to TRUE. Elements are overlap (Schoener's D), USE (ecopstat.niche.dyn.index), equiv and simil
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
@@ -54,7 +63,7 @@
 #' @export
 
 espace_nicheOv <- function(z1, z2, iter = 100, equivalency = FALSE,
-                            similarity = TRUE, logger = NULL) {
+                           similarity = TRUE, logger = NULL) {
   nicheOv <- list()
 
   # Schoener's D

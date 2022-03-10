@@ -20,10 +20,10 @@
 # @keywords
 #'
 #' @examples
-#'bcAOGCM="CCSM"
-#'bcScenario="LGM"
-#'ecoClimSel=c(1,2,3)
-#'varsEcoClimate<-envs_ecoClimate(bcAOGCM, bcScenario, ecoClimSel, logger = NULL)
+#' bcAOGCM <- "CCSM"
+#' bcScenario <- "LGM"
+#' ecoClimSel <- c(1,2,3)
+#' varsEcoClimate <- envs_ecoClimate(bcAOGCM, bcScenario, ecoClimSel)
 #'
 #' @return A rasterStack of selected variables
 #' @author Sara Varela <sara_varela@@yahoo.com>
@@ -69,7 +69,7 @@ envs_ecoClimate <- function(bcAOGCM, bcScenario, ecoClimSel, logger = NULL) {
 #'
 #' download ecoClimate layers. more info at www.ecoclimate.org
 #'
-#' @usage ecoClimate_getdata (AOGCM, Baseline, Scenario)
+#' @usage ecoClimate_getdata(AOGCM, Baseline, Scenario)
 #'
 #' @param AOGCM Select the AOGCM.
 #' Options are: "CCSM", "CNRM", "MIROC", "COSMOS", "FGOALS", "GISS", "IPSL","MRI", "MPI"
@@ -80,9 +80,9 @@ envs_ecoClimate <- function(bcAOGCM, bcScenario, ecoClimSel, logger = NULL) {
 #' "Present", "Future 2.6" (rcp 2.6), "Future 4.5" (rcp 4.5), "Future 6" (rcp 6), "Future 8.5" (rcp 8.5)
 #' @export
 #' @examples \dontrun{
-#' CCSM_mod_present<- ecoclimate_getdata ("CCSM", "Modern", "Present")
+#' CCSM_mod_present <- ecoclimate_getdata("CCSM", "Modern", "Present")
 #' dev.new()
-#' plot (CCSM_mod_present)
+#' plot(CCSM_mod_present)
 #' }
 #'
 
@@ -369,10 +369,11 @@ ecoClimate_getdata<- function (AOGCM, Baseline, Scenario, logger = NULL) {
 #' @param extent vector. xmin, xmax, ymin, ymax. e.g. c()
 #' @export
 #' @examples \dontrun{
-#' CCSM_mod_present<- ecoclimate_getdata ("CCSM", "Modern", "Present")
-#' Europe_CCSM_m_p_bio1_12<- ecoClimate_select (CCSM_mod_present, c(1,12), extent=c(-20, 80, 20, 80))
+#' CCSM_mod_present <- ecoclimate_getdata("CCSM", "Modern", "Present")
+#' Europe_CCSM_m_p_bio1_12 <- ecoClimate_select(CCSM_mod_present, c(1, 12),
+#'                                              extent = c(-20, 80, 20, 80))
 #' dev.new()
-#' plot (Europe_CCSM_m_p_bio1_12)
+#' plot(Europe_CCSM_m_p_bio1_12)
 #' }
 #'
 #'

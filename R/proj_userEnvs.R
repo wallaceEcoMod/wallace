@@ -20,20 +20,28 @@
 # @keywords
 #'
 #' @examples
-#' spN<-"Panthera onca"
-#'out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
-#"occs <- as.data.frame(out.gbif[[1]]$cleaned)
-#'envs <- envs_worldclim(bcRes = 10, bcSel = c('bio01','bio19'), doBrick = FALSE)
-#"bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
-#'bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
-#'bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=spN)
-#'partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=spN)
-#'Path <- list.files(path='./tests/testthat/shapefile', pattern = "COL_adm0.", full.names = TRUE)
-#'userExt<-rgdal::readOGR(Path[2])
-#'modAlg <- model_bioclim(occs, partblock$bg.grp,  partblock$occ.grp, bgGrp, bgMask,spN=spN)
-#'envsFut<-list.files(path='./wc10/Future', pattern = ".tif$", full.names = TRUE)
-#'envsFut<-raster::stack(envsFut)
-#'modProj <- proj_userEnvs(evalOut = modAlg, curModel=1, envs=envsFut,alg='BIOCLIM', pjExt = userExt)
+#' out.gbif <- occs_queryDb(spName = "Panthera onca", occDb = "gbif",
+#'                          occNum = 100)
+#' occs <- as.data.frame(out.gbif[[1]]$cleaned)
+#' envs <- envs_worldclim(bcRes = 10, bcSel = c('bio01','bio19'),
+#'                        doBrick = FALSE)
+#' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box',
+#'                         bgBuf = 0.5)
+#' bgMask <- penvs_bgMask(occs, envs, bgExt)
+#' bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000)
+#' partblock <- part_partitionOccs(occs, bg, method = 'block',
+#'                                 kfolds = NULL, bgMask = NULL,
+#'                                 aggFact = NULL)
+#' Path <- list.files(path='./tests/testthat/shapefile',
+#'                    pattern = "COL_adm0.", full.names = TRUE)
+#' userExt <- rgdal::readOGR(Path[2])
+#' modAlg <- model_bioclim(occs, partblock$bg.grp,
+#'                         partblock$occ.grp, bgGrp, bgMask)
+#' envsFut <- list.files(path = './wc10/Future', pattern = ".tif$",
+#'                       full.names = TRUE)
+#' envsFut <- raster::stack(envsFut)
+#' modProj <- proj_userEnvs(evalOut = modAlg, curModel = 1, envs = envsFut,
+#'                          alg = 'BIOCLIM', pjExt = userExt)
 #'
 # @return
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>

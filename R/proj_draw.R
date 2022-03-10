@@ -15,12 +15,16 @@
 # @keywords
 #'
 #' @examples
-#'longitude <- c(-27.78641, -74.09170, -84.01930, -129.74867, -142.19085, -45.55045, -28.56050)
-#'latitude <- c(-40.40539, -37.02010, 2.28455, 40.75350, 56.35954, 54.55045, -7.11861)
-#'userDrawPoly <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
-#'drawPjBuf = 0.5
-#' polyPjID=1
-#' polygonTest<-proj_draw(polyPjXY=userDrawPoly, polyPjID, drawPjBuf, logger = NULL)
+#' longitude <- c(-27.78641, -74.09170, -84.01930, -129.74867,
+#'                -142.19085, -45.55045, -28.56050)
+#' latitude <- c(-40.40539, -37.02010, 2.28455, 40.75350,
+#'               56.35954, 54.55045, -7.11861)
+#' userDrawPoly <- matrix(c(longitude, latitude), byrow = FALSE,
+#'                        ncol = 2)
+#' drawPjBuf <- 0.5
+#' polyPjID <- 1
+#' polygonTest <- proj_draw(polyPjXY = userDrawPoly, polyPjID,
+#'                          drawPjBuf)
 #'
 #' @return This functions returns a SpatialPolygonsDataFrame based on the user specified coordinates (drawn on map).
 #' This SpatialPolygonsDataFrame may be larger than specified if drawBgBuf > 0.

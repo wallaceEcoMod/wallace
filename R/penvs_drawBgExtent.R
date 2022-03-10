@@ -17,13 +17,16 @@
 # @keywords
 #'
 #' @examples
-#' spN<-"Panthera onca"
-#' occs <-  occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
+#' occs <- occs_queryDb(spName = "Panthera onca", occDb = "gbif", occNum = 100)
 #' occs <- as.data.frame(occs[[1]]$cleaned)
-#' longitude <- c(-27.78641, -74.09170, -84.01930, -129.74867, -142.19085, -45.55045, -28.56050)
-#' latitude <- c(-40.40539, -37.02010, 2.28455, 40.75350, 56.35954, 54.55045, -7.11861)
-#' expertDrawPoly <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
-#' drawBgBf <- penvs_drawBgExtent(polyExtXY = expertDrawPoly, polyExtID = 1, drawBgBuf = 0.5, occs,spN=spN)
+#' longitude <- c(-27.78641, -74.09170, -84.01930, -129.74867,
+#'                -142.19085, -45.55045, -28.56050)
+#' latitude <- c(-40.40539, -37.02010, 2.28455, 40.75350,
+#'               56.35954, 54.55045, -7.11861)
+#' expertDrawPoly <- matrix(c(longitude, latitude), byrow = FALSE,
+#'                          ncol = 2)
+#' drawBgBf <- penvs_drawBgExtent(polyExtXY = expertDrawPoly, polyExtID = 1,
+#'                                drawBgBuf = 0.5, occs)
 #' @return This functions returns a SpatialPolygonsDataFrame based on the user specified coordinates (drawn on map)
 #' This SpatialPolygonsDataFrame may be larger than specified if drawBgBuf > 0. The SpatialPolygonsDataFrame will include all occurrences.
 

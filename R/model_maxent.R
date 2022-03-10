@@ -25,21 +25,28 @@
 # @keywords
 #'
 #' @examples
-#'spN<-"Panthera onca"
-#'out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 1000)
-#'occs <- as.data.frame(out.gbif[[1]]$cleaned)
-#'envs <- envs_worldclim(bcRes = 10, bcSel = c("bio01","bio02","bio07","bio13","bio14","bio15","bio19"), doBrick = FALSE)
-# remove records without enviromental values
-#'records <- which(is.na(raster::extract(envs$bio01, occs[,3:4])) == TRUE)
-#'occs <- occs[-records, ]
-#'bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
-#'bgMsk <- penvs_bgMask(occs, envs, bgExt,spN=spN)
-#'bg <-penvs_bgSample(occs, bgMsk, bgPtsNum = 10000,spN=spN)
-#'partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=spN)
-#'rms <- c(1:2)
-#'rmsStep <- 1
-#'fcs <- c('L', 'LQ', 'H', 'LQH','LQHP')
-#'maxentAlg <- model_maxent(occs=occs, bg=bg, user.grp=partblock, bgMsk=bgMsk, rms=rms, rmsStep, fcs, clampSel = TRUE,algMaxent = "maxnet",catEnvs=NULL,parallel=FALSE,numCores=NULL,logger=NULL,spN=spN)
+#' out.gbif <- occs_queryDb(spName = "Panthera onca", occDb = "gbif", occNum = 1000)
+#' occs <- as.data.frame(out.gbif[[1]]$cleaned)
+#' envs <- envs_worldclim(bcRes = 10,
+#'                        bcSel = c("bio01","bio02","bio07","bio13",
+#'                                  "bio14","bio15","bio19"),
+#'                        doBrick = FALSE)
+#' ## remove records without environmental values
+#' records <- which(is.na(raster::extract(envs$bio01, occs[,3:4])) == TRUE)
+#' occs <- occs[-records, ]
+#' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
+#' bgMsk <- penvs_bgMask(occs, envs, bgExt)
+#' bg <-penvs_bgSample(occs, bgMsk, bgPtsNum = 10000)
+#' partblock <- part_partitionOccs(occs, bg, method = 'block',
+#'                                 kfolds = NULL, bgMask = NULL,
+#'                                 aggFact = NULL)
+#' rms <- c(1:2)
+#' rmsStep <- 1
+#' fcs <- c('L', 'LQ', 'H', 'LQH','LQHP')
+#' maxentAlg <- model_maxent(occs = occs, bg = bg, user.grp = partblock,
+#'                           bgMsk = bgMsk, rms = rms, rmsStep, fcs,
+#'                           clampSel = TRUE, algMaxent = "maxnet",
+#'                           parallel = FALSE)
 
 #'
 #' @return Function returns an ENMevaluate object with all the evaluated models and a selection of appropriate fields.

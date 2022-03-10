@@ -40,12 +40,17 @@ with the desired shape for the background extent, the user may include a buffer 
 The function returns a SpatialPolygons object of the desired extent (+ buffer).
 }
 \examples{
-"espeletia argentea" endemic to Colombia (provided shapefile in test folder)
-occs <-  occs_queryDb(spName = "espeletia argentea", occDb = "gbif", occNum = 100)
+## "Espeletia argentea" endemic to Colombia (provided shp in test folder)
+occs <-  occs_queryDb(spName = "Espeletia argentea", occDb = "gbif",
+                      occNum = 100)
 occs <- as.data.frame(occs[[1]]$cleaned)
-Path <- list.files(path='./tests/testthat/shapefile', pattern = "COL_adm0.", full.names = TRUE)
-Name <- list.files(path='./tests/testthat/shapefile', pattern = "COL_adm0.", full.names = FALSE)
-userBgbf <- penvs_userBgExtent(bgShp_path = Path, bgShp_name = Name, userBgBuf = 0.5,occs=occs)
+Path <- list.files(path='./tests/testthat/shapefile',
+                   pattern = "COL_adm0.", full.names = TRUE)
+Name <- list.files(path='./tests/testthat/shapefile',
+                   pattern = "COL_adm0.", full.names = FALSE)
+userBgbf <- penvs_userBgExtent(bgShp_path = Path, bgShp_name = Name,
+                               userBgBuf = 0.5, occs = occs)
+
 }
 \seealso{
 \code{\link{penvs_drawBgExtent}}, \code{\link{penvs_bgExtent}}, \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}

@@ -6,7 +6,8 @@
 #' @param port The port for the shiny server to listen on. Defaults to a random available port.
 #' @note Please see the official website (\url{https://wallaceecomod.github.io/}) for more details. If you have questions about the application, please participate in the \href{https://groups.google.com/forum/#!forum/wallaceecomod}{Google Group}, or email the team directly: \url{wallaceEcoMod@@gmail.com}.
 #'
-#' @examples if(interactive()){
+#' @examples
+#' if(interactive()) {
 #' run_wallace()
 #' }
 #'

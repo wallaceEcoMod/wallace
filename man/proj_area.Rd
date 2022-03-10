@@ -50,20 +50,30 @@ The projection area is user provided in the map of the GUI. The model will be pr
 This function returns a list including the cropped environmental variables used for projecting and the projected model.
 }
 \examples{
-spN<-"Panthera onca"
-out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
+out.gbif <- occs_queryDb(spName = "Panthera onca", occDb = "gbif",
+                         occNum = 100)
 occs <- as.data.frame(out.gbif[[1]]$cleaned)
-envs <- envs_worldclim(bcRes = 10, bcSel = c("bio01","bio02","bio13","bio14"), doBrick = FALSE)
-bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
-bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
-bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=spN)
-partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=spN)
-longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331, -66.47149, -66.71319, -71.11931)
-latitude <- c(13.18379, 7.52315, 0.93105, -1.70167, 0.98391, 6.09208, 12.74980)
-selCoords <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
+envs <- envs_worldclim(bcRes = 10,
+                       bcSel = c("bio01","bio02","bio13","bio14"),
+                       doBrick = FALSE)
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
+bgMask <- penvs_bgMask(occs, envs, bgExt)
+bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000)
+partblock <- part_partitionOccs(occs, bg, method = 'block',
+                                kfolds = NULL, bgMask = NULL,
+                                aggFact = NULL)
+# extent to project
+longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331,
+               -66.47149, -66.71319, -71.11931)
+latitude <- c(13.18379, 7.52315, 0.93105,
+              -1.70167, 0.98391, 6.09208, 12.74980)
+selCoords <- matrix(c(longitude, latitude), byrow = FALSE, ncol = 2)
 expertAddedPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)), ID=1)))
-modAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=occs)
-modProj <- proj_area(evalOut = modAlg, curModel = 1, envs, outputType = 'raw', alg='BIOCLIM', pjExt = expertAddedPoly)
+modAlg <- model_bioclim(occs, bg, partblock$occ.grp,
+                        partblock$bg.grp, bgMask,spN=occs)
+modProj <- proj_area(evalOut = modAlg, curModel = 1, envs,
+                     outputType = 'raw', alg = 'BIOCLIM',
+                     pjExt = expertAddedPoly)
 
 }
 \seealso{

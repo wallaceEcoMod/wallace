@@ -39,7 +39,8 @@
 
 #occs_queryDb <- function(spName, occDb, occNum, logger=NULL) {
 occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
-                         gbifUser = NULL, gbifEmail = NULL, gbifPW = NULL,RmUncertain=FALSE,
+                         gbifUser = NULL, gbifEmail = NULL, gbifPW = NULL,
+                         RmUncertain = FALSE,
                          logger = NULL) {
   # Get all species names for textInput Shiny
   if (length(spNames) == 1) {

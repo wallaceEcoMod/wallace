@@ -29,7 +29,7 @@ It returns either a rasterStack or rasterBrick of loaded variables with appropri
 \examples{
 Path <- list.files(path='./wc10/', pattern = "*cut.tif$", full.names = TRUE)
 Name <- list.files(path='./wc10/', pattern = "*cut.tif$", full.names = FALSE)
-userEnvs <- envs_userEnvs(rasPath = Path, rasName = Name,doBrick=TRUE)
+userEnvs <- envs_userEnvs(rasPath = Path, rasName = Name, doBrick = TRUE)
 
 }
 \author{

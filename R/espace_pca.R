@@ -16,14 +16,20 @@
 #' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
 #' @examples
-#' sp.name1 <- "Panthera onca"
-#' occs <-  as.data.frame(wallace::occs_queryDb(spName = sp.name1, occDb = "gbif", occNum = 100)[[1]]$cleaned)
-#' envs <- wallace::envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
-#' bgExt <- wallace::penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5, spN = sp.name1)
-#' bgMask <- wallace::penvs_bgMask(occs, envs, bgExt,spN=sp.name1)
-#' bg <- wallace::penvs_bgSample(occs, bgMask, bgPtsNum = 1000, spN = sp.name1)
-#' bioclimAlg <- wallace::model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask, spN = sp.name1)
-#' espace_pca(sp.name1, occs.z1 = bioclimAlg@@occs[3:7], bgPts.z1 = bioclimAlg@@bg[3:7])
+#' occs <-  as.data.frame(wallace::occs_queryDb(spName = "Panthera onca",
+#'                                              occDb = "gbif",
+#'                                              occNum = 100)[[1]]$cleaned)
+#' envs <- wallace::envs_worldclim(bcRes = 10,
+#'                                 bcSel = list(TRUE, TRUE, TRUE, TRUE, TRUE),
+#'                                 doBrick = FALSE)
+#' bgExt <- wallace::penvs_bgExtent(occs, bgSel = 'bounding box',
+#'                                  bgBuf = 0.5)
+#' bgMask <- wallace::penvs_bgMask(occs, envs, bgExt)
+#' bg <- wallace::penvs_bgSample(occs, bgMask, bgPtsNum = 1000)
+#' bioclimAlg <- wallace::model_bioclim(occs, bg, partblock$occ.grp,
+#'                                      partblock$bg.grp, bgMask)
+#' espace_pca(sp.name1, occs.z1 = bioclimAlg@@occs[3:7],
+#'            bgPts.z1 = bioclimAlg@@bg[3:7])
 #'
 #' @return A list of 14 elements of classes dudi and pca as in dudi.pca
 #' @seealso \code{\link[ade4]{dudi.pca}}

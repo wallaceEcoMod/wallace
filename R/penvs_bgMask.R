@@ -18,12 +18,14 @@
 # @keywords
 #'
 #' @examples
-#' spN<-"Panthera onca"
-#'occs <-  occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
-#'occs <- as.data.frame(occs[[1]]$cleaned)
-#'envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = TRUE)
-#'bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
-#'bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
+#' spN <- "Panthera onca"
+#' occs <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
+#' occs <- as.data.frame(occs[[1]]$cleaned)
+#' envs <- envs_worldclim(bcRes = 10,
+#'                        bcSel = list(TRUE, TRUE, TRUE, TRUE, TRUE),
+#'                        doBrick = TRUE)
+#' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
+#' bgMask <- penvs_bgMask(occs, envs, bgExt)
 
 #'
 #' @return A RasterStack or a RasterBrick of environmental layers cropped and masked to match the provided background extent.

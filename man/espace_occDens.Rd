@@ -29,29 +29,36 @@ Then an occurrence density is estimated using a kernel density approach. The den
 }
 \examples{
 ###SET PARAMETERS (running model)
-sp.name1<-"Panthera onca"
-sp.name2<-"Procyon lotor"
-species<-c(sp.name1,sp.name2)
-##make models for both species to get necessary inputs
-model<-list()
-for (i in 1:2){
-occs <- as.data.frame(occs[[1]]$cleaned)
-occs <- poccs_thinOccs(occs = occs, thinDist = 10,spN=species[i])
-envs <- envs_worldclim(bcRes = 10,  bcSel = c("bio01","bio02","bio13","bio14"), doBrick = FALSE)
-bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=species[i])
-bgMask <- penvs_bgMask(occs, envs, bgExt,spN=species[i])
- bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 1000,spN=species[i])
-partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=species[i])
-bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=species[i])
-model[i]<-bioclimAlg }
-##Set parameters for running PCA and occDens
-occs.z1<-model[[1]]@occs[3:length(model[[1]]@occs)]
-occs.z2<-model[[2]]@occs[3:length(model[[2]]@occs)]
-bgPts.z1<-model[[1]]@bg[3:length(model[[1]]@bg)]
-bgPts.z2<-model[[2]]@bg[3:length(model[[2]]@bg)]
-Testpca<-espace_pca(sp.name1,sp.name2,occs.z1,occs.z2,bgPts.z1,bgPts.z2)
+sp.name1 <- "Panthera onca"
+sp.name2 <- "Procyon lotor"
+species <- c(sp.name1, sp.name2)
+## make models for both species to get necessary inputs
+model <- list()
+for (i in 1:2) {
+  occs <- occs_queryDb(spName = species[i], occDb = "gbif", occNum = 100)
+  occs <- as.data.frame(occs[[1]]$cleaned)
+  occs <- poccs_thinOccs(occs = occs, thinDist = 10, spN = species[i])
+  envs <- envs_worldclim(bcRes = 10,
+                         bcSel = c("bio01","bio02","bio13","bio14"),
+                         doBrick = FALSE)
+  bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
+  bgMask <- penvs_bgMask(occs, envs, bgExt)
+  bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 1000)
+  partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL,
+                                  bgMask = NULL, aggFact = NULL)
+  bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp,
+                              partblock$bg.grp, bgMask)
+  model[i] <- bioclimAlg
+}
+## Set parameters for running PCA and occDens
+occs.z1 <- model[[1]]@occs[3:length(model[[1]]@occs)]
+occs.z2 <- model[[2]]@occs[3:length(model[[2]]@occs)]
+bgPts.z1 <- model[[1]]@bg[3:length(model[[1]]@bg)]
+bgPts.z2 <- model[[2]]@bg[3:length(model[[2]]@bg)]
+Testpca <- espace_pca(sp.name1, sp.name2, occs.z1, occs.z2,
+                      bgPts.z1, bgPts.z2)
 ###RUN FUNCTION
-TestOccDens<-espace_occDens(sp.name1, sp.name2,Testpca)
+TestOccDens <- espace_occDens(sp.name1, sp.name2, Testpca)
 
 }
 \seealso{

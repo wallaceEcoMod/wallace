@@ -33,7 +33,7 @@ appropriate to studies in biogeography.
 \examples{
 txtPath <- './Data/Marmosops_sp.csv'
 txtName <- 'Marmosops_sp'
-user.occs <- occs_userOccs(txtPath, txtName,txtSep=",",txtDec=".")
+user.occs <- occs_userOccs(txtPath, txtName, txtSep = ",", txtDec = ".")
 
 
 }

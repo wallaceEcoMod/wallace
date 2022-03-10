@@ -18,7 +18,7 @@
 #' @examples
 #' bcRes <- 10 # (10 arcmin)
 #' envar <- c('bio01', 'bio02', 'bio03', 'bio10', 'bio11')
-#' arcmin10 <- envs_worldclim(bcRes, bcSel= envar,doBrick=T)
+#' arcmin10 <- envs_worldclim(bcRes, bcSel = envar, doBrick = TRUE)
 #'
 #' @return A rasterStack or a rasterBrick (if doBrick=TRUE) of downloaded worldclim rasters at the requested resolution
 #'

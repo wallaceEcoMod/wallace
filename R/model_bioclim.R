@@ -16,16 +16,19 @@
 # @keywords
 #'
 #' @examples
-#'spN="Panthera onca"
-#'out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
-#'occs <- as.data.frame(out.gbif[[1]]$cleaned)
-#'occs <- poccs_thinOccs(occs = occs, thinDist = 10,spN=spN)
-#'envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
-#'bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
-#'bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
-#'bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=spN)
-#'partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL, aggFact = NULL,spN=spN)
-#'bioclimAlg <- model_bioclim(occs, bg, user.grp=partblock, bgMask,spN=spN)
+#' out.gbif <- occs_queryDb(spName = "Panthera onca", occDb = "gbif",
+#'                          occNum = 100)
+#' occs <- as.data.frame(out.gbif[[1]]$cleaned)
+#' occs <- poccs_thinOccs(occs = occs, thinDist = 10)
+#' envs <- envs_worldclim(bcRes = 10,
+#'                        bcSel = list(TRUE, TRUE, TRUE, TRUE, TRUE),
+#'                        doBrick = FALSE)
+#' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
+#' bgMask <- penvs_bgMask(occs, envs, bgExt)
+#' bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000)
+#' partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL,
+#'                                 bgMask = NULL, aggFact = NULL)
+#' bioclimAlg <- model_bioclim(occs, bg, user.grp = partblock, bgMask)
 #'
 #' @return Function returns an ENMevaluate object with all the evaluated models and a selection of appropriate fields.
 

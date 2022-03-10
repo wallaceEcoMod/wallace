@@ -34,13 +34,15 @@ If the requested number of points is larger than the number of cells in the refe
 a proportion of the requested will be returned.
 }
 \examples{
-spN<-"Panthera onca"
-occs <-  occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
+occs <-  occs_queryDb(spName = "Panthera onca", occDb = "gbif",
+                      occNum = 100)
 occs <- as.data.frame(occs[[1]]$cleaned)
-envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = TRUE)
-bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
-bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
-bgsample <- penvs_bgSample(occs, bgMask, bgPtsNum=1000,spN=spN)
+envs <- envs_worldclim(bcRes = 10,
+                       bcSel = list(TRUE, TRUE, TRUE, TRUE, TRUE),
+                       doBrick = TRUE)
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
+bgMask <- penvs_bgMask(occs, envs, bgExt)
+bgsample <- penvs_bgSample(occs, bgMask, bgPtsNum = 1000)
 
 }
 \seealso{

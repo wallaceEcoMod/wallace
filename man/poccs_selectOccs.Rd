@@ -32,12 +32,16 @@ a data frame of occurrences with all relevant columns for further analyses and w
 occurrences outside of the polygon.
 }
 \examples{
-spN<-"Panthera onca"
-occs <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 1000)[[1]]$cleaned
-longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331, -66.47149, -66.71319, -71.11931)
-latitude <- c(13.18379, 7.52315, 0.93105, -1.70167, 0.98391, 6.09208, 12.74980)
-expertAddedPoly <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
-out.occs<- poccs_selectOccs(occs, polySelXY = expertAddedPoly,polySelID = 1, logger = NULL, spN = spN)
+spN <- "Panthera onca"
+occs <- occs_queryDb(spName = spN, occDb = "gbif",
+                     occNum = 1000)[[1]]$cleaned
+longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331,
+               -66.47149, -66.71319, -71.11931)
+latitude <- c(13.18379, 7.52315, 0.93105, -1.70167,
+              0.98391, 6.09208, 12.74980)
+expertAddedPoly <- matrix(c(longitude, latitude), byrow = FALSE, ncol = 2)
+out.occs<- poccs_selectOccs(occs, polySelXY = expertAddedPoly,
+                            polySelID = 1)
 }
 \author{
 Jamie Kass <jamie.m.kass@gmail.com>

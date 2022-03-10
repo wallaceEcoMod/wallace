@@ -15,10 +15,11 @@
 # @keywords
 #'
 #' @examples
-#' spN<-"Panthera onca"
+#' spN <- "Panthera onca"
 #' out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
 #' occs <- as.data.frame(out.gbif[[1]]$cleaned)
-#' out.thin <- poccs_thinOccs(occs=occs, thinDist=30,spN=spN,logger=NULL)
+#' out.thin <- poccs_thinOccs(occs=occs, thinDist = 30,
+#'                            spN = spN, logger = NULL)
 #'
 #'
 #' @return Output is a data frame of thinned occurences (all occurences at a distance >thinDist) with the same columns as occs

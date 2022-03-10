@@ -4,7 +4,7 @@
 \alias{ecoClimate_getdata}
 \title{ecoClimate_getdata}
 \usage{
-ecoClimate_getdata (AOGCM, Baseline, Scenario)
+ecoClimate_getdata(AOGCM, Baseline, Scenario)
 }
 \arguments{
 \item{AOGCM}{Select the AOGCM.
@@ -22,9 +22,9 @@ download ecoClimate layers. more info at www.ecoclimate.org
 }
 \examples{
 \dontrun{
-CCSM_mod_present<- ecoclimate_getdata ("CCSM", "Modern", "Present")
+CCSM_mod_present <- ecoclimate_getdata("CCSM", "Modern", "Present")
 dev.new()
-plot (CCSM_mod_present)
+plot(CCSM_mod_present)
 }
 
 }

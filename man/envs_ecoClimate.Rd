@@ -32,10 +32,10 @@ This function currently gets variables from Dropbox and the process takes signif
 It returns a rasterStack of selected variables.
 }
 \examples{
-bcAOGCM="CCSM"
-bcScenario="LGM"
-ecoClimSel=c(1,2,3)
-varsEcoClimate<-envs_ecoClimate(bcAOGCM, bcScenario, ecoClimSel, logger = NULL)
+bcAOGCM <- "CCSM"
+bcScenario <- "LGM"
+ecoClimSel <- c(1,2,3)
+varsEcoClimate <- envs_ecoClimate(bcAOGCM, bcScenario, ecoClimSel)
 
 }
 \author{

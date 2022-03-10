@@ -50,24 +50,34 @@ The projection area is user provided in the map of the GUI and the projection ti
 This function returns a list including the cropped environmental variables used for projecting and the projected model.
 }
 \examples{
-spN<-"Panthera onca"
-out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
+out.gbif <- occs_queryDb(spName = "Panthera onca", occDb = "gbif",
+                         occNum = 100)
 occs <- as.data.frame(out.gbif[[1]]$cleaned)
-envs <- envs_worldclim(bcRes = 10, bcSel = c('bio01','bio19'), doBrick = FALSE)
-bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
-bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
-bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=spN)
-partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=spN)
+envs <- envs_worldclim(bcRes = 10, bcSel = c('bio01','bio19'),
+                       doBrick = FALSE)
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
+bgMask <- penvs_bgMask(occs, envs, bgExt)
+bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000)
+partblock <- part_partitionOccs(occs, bg, method = 'block',
+                                kfolds = NULL, bgMask = NULL,
+                                aggFact = NULL)
 ## extent to project
-longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331, -66.47149, -66.71319, -71.11931)
-latitude <- c(13.18379, 7.52315, 0.93105, -1.70167, 0.98391, 6.09208, 12.74980)
-selCoords <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
+longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331,
+               -66.47149, -66.71319, -71.11931)
+latitude <- c(13.18379, 7.52315, 0.93105, -1.70167,
+              0.98391, 6.09208, 12.74980)
+selCoords <- matrix(c(longitude, latitude), byrow = FALSE, ncol = 2)
 expertAddedPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)), ID=1)))
-##projection time layers, using worldclim 2.1 Future 2021-2040 MIROC6 ssp126 bioclims as example
-envsFut<-list.files(path='./tests/testthat/wc10/Future', pattern = ".tif$", full.names = TRUE)
-envsFut<-raster::stack(envsFut)
-modAlg <- model_bioclim(occs, bg, partblock$occ.grp, bgGrp = partblock$bg.grp, bgMask,spN=spN)
-modProj <- proj_time(evalOut = modAlg, curModel=1, envs=envsFut,alg='BIOCLIM', pjExt = expertAddedPoly)
+## Projection time layers, using worldclim 2.1 Future 2021-2040
+## MIROC6 ssp126 bioclims as example
+envsFut <- list.files(path='./tests/testthat/wc10/Future',
+                      pattern = ".tif$", full.names = TRUE)
+envsFut <- raster::stack(envsFut)
+modAlg <- model_bioclim(occs, bg, partblock$occ.grp,
+                        bgGrp = partblock$bg.grp, bgMask)
+modProj <- proj_time(evalOut = modAlg, curModel = 1,
+                     envs = envsFut, alg = 'BIOCLIM',
+                     pjExt = expertAddedPoly)
 }
 \seealso{
 \code{\link[dismo]{predict}}, \code{\link{proj_time}} \code{\link{proj_userEnvs}}

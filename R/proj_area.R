@@ -19,21 +19,30 @@
 # @keywords
 #'
 #' @examples
-#' spN<-"Panthera onca"
-#'out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
-#'occs <- as.data.frame(out.gbif[[1]]$cleaned)
-#'envs <- envs_worldclim(bcRes = 10, bcSel = c("bio01","bio02","bio13","bio14"), doBrick = FALSE)
-#'bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
-#'bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
-#'bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=spN)
-#'partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=spN)
-## extent to project
-#'longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331, -66.47149, -66.71319, -71.11931)
-#'latitude <- c(13.18379, 7.52315, 0.93105, -1.70167, 0.98391, 6.09208, 12.74980)
-#'selCoords <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
-#'expertAddedPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)), ID=1)))
-#'modAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=occs)
-#'modProj <- proj_area(evalOut = modAlg, curModel = 1, envs, outputType = 'raw', alg='BIOCLIM', pjExt = expertAddedPoly)
+#' out.gbif <- occs_queryDb(spName = "Panthera onca", occDb = "gbif",
+#'                          occNum = 100)
+#' occs <- as.data.frame(out.gbif[[1]]$cleaned)
+#' envs <- envs_worldclim(bcRes = 10,
+#'                        bcSel = c("bio01","bio02","bio13","bio14"),
+#'                        doBrick = FALSE)
+#' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
+#' bgMask <- penvs_bgMask(occs, envs, bgExt)
+#' bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000)
+#' partblock <- part_partitionOccs(occs, bg, method = 'block',
+#'                                 kfolds = NULL, bgMask = NULL,
+#'                                 aggFact = NULL)
+#' # extent to project
+#' longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331,
+#'                -66.47149, -66.71319, -71.11931)
+#' latitude <- c(13.18379, 7.52315, 0.93105,
+#'               -1.70167, 0.98391, 6.09208, 12.74980)
+#' selCoords <- matrix(c(longitude, latitude), byrow = FALSE, ncol = 2)
+#' expertAddedPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)), ID=1)))
+#' modAlg <- model_bioclim(occs, bg, partblock$occ.grp,
+#'                         partblock$bg.grp, bgMask,spN=occs)
+#' modProj <- proj_area(evalOut = modAlg, curModel = 1, envs,
+#'                      outputType = 'raw', alg = 'BIOCLIM',
+#'                      pjExt = expertAddedPoly)
 #'
 #' @return A list of two elements: projExt and projArea.
 #' The first is a RasterBrick or a RasterStack of the environmental variables cropped to the projection area.

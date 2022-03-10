@@ -17,11 +17,11 @@
 # @keywords
 #'
 #' @examples
-#' spN<-"Panthera onca"
-#'out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
-#'occs <- as.data.frame(out.gbif[[1]]$cleaned)
-#'removeID <- 81
-#'out.ID <- poccs_removeByID(occs, removeID,spN=spN)
+#' out.gbif <- occs_queryDb(spName = "Panthera onca", occDb = "gbif",
+#'                          occNum = 100)
+#' occs <- as.data.frame(out.gbif[[1]]$cleaned)
+#' removeID <- 81
+#' out.ID <- poccs_removeByID(occs, removeID)
 #'
 #' @return A new occurence dataframe without the user selected occurrence mantaining all
 #' columns from original dataframe for further analyses.

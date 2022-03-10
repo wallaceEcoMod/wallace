@@ -16,9 +16,9 @@
 # @keywords
 #'
 #' @examples
-#' occs <-  occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
+#' occs <-  occs_queryDb(spName = "Panthera onca", occDb = "gbif", occNum = 100)
 #' occs <- as.data.frame(occs[[1]]$cleaned)
-#' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf=0.5,logger = NULL, spN = NULL)
+#' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
 #'
 #' @return A SpatialPolygonsDataFrame object that contains all occurrences from occs
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>

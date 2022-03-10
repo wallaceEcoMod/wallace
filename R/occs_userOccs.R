@@ -16,9 +16,9 @@
 # @keywords
 #'
 #' @examples
-#'txtPath <- './Data/Marmosops_sp.csv'
-#'txtName <- 'Marmosops_sp'
-#'user.occs <- occs_userOccs(txtPath, txtName,txtSep=",",txtDec=".")
+#' txtPath <- './Data/Marmosops_sp.csv'
+#' txtName <- 'Marmosops_sp'
+#' user.occs <- occs_userOccs(txtPath, txtName, txtSep = ",", txtDec = ".")
 #'
 #'
 #' @return List of lists. One list per species with occurence records. Each individual species list with appropriate fields for analysis
