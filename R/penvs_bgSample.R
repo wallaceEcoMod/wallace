@@ -38,14 +38,15 @@
 # this documentation when the user looks them up from the command
 # line.
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
-
+#' @importFrom rlang .data
 #' @export
 
 penvs_bgSample <- function(occs, bgMask, bgPtsNum, logger = NULL, spN = NULL) {
   # sample random background points
   smartProgress(logger, message = "Generating background points...", {
     bgXY <- dismo::randomPoints(bgMask, bgPtsNum)
-    bgXY <- bgXY %>% as.data.frame() %>% dplyr::select(longitude = x, latitude = y)
+    bgXY <- bgXY %>% as.data.frame() %>%
+      dplyr::select(longitude = .data$x, latitude = .data$y)
     bgNonNA <- raster::ncell(bgMask) - raster::freq(bgMask, value = NA)[[1]]
   })
   bg.prop <- round(nrow(bgXY)/bgPtsNum, digits = 2)

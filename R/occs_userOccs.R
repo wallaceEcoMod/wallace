@@ -33,7 +33,7 @@
 # line.
 # @family - a family name. All functions that have the same family tag will be linked
 #  in the documentation.
-
+#' @importFrom rlang .data
 #' @export
 
 occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
@@ -63,10 +63,10 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
 
 
   # subset to just records with non-NA latitude and longitude
-  txt.xy <- txt %>% dplyr::filter(!is.na(latitude) & !is.na(longitude))
+  txt.xy <- txt %>% dplyr::filter(!is.na(.data$latitude) & !is.na(.data$longitude))
   txt.xy$scientific_name <- trimws(txt.xy$scientific_name)
   # get all species names
-  occs <- txt.xy %>% dplyr::filter(!grepl("bg_", scientific_name))
+  occs <- txt.xy %>% dplyr::filter(!grepl("bg_", .data$scientific_name))
   spNames <- trimws(as.character(occs$scientific_name))
 
   spCap <- function(x) {
@@ -121,8 +121,8 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
               "institution_code", "elevation", "uncertainty")
     sp.occs <- sp.occs %>%
       dplyr::select(dplyr::one_of(cols)) %>%
-      dplyr::mutate(year = as.integer(year),
-                    uncertainty = as.numeric(uncertainty)) %>%
+      dplyr::mutate(year = as.integer(.data$year),
+                    uncertainty = as.numeric(.data$uncertainty)) %>%
       # # make new column for leaflet marker popup content
       dplyr::mutate(pop = unlist(apply(sp.occs, 1, popUpContent))) %>%
       dplyr::arrange_(cols)

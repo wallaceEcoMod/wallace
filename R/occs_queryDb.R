@@ -34,6 +34,7 @@
 #' @author Andrea Paz <paz.andreita@@gmail.com>
 #' @examples
 #' occs_queryDb(spName = "Tremarctos ornatus", occDb = "gbif", occNum = 100)
+#' @importFrom rlang .data
 #' @export
 
 #occs_queryDb <- function(spName, occDb, occNum, logger=NULL) {
@@ -128,11 +129,16 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
             "occurrence.txt"), sep = "\t", header = TRUE, quote = "",
             encoding = "UTF-8")
           gbif_occCite_df <- gbif_raw %>% dplyr::as_tibble() %>%
-            dplyr::select(scientificName, decimalLongitude, decimalLatitude, countryCode,
-                          stateProvince, locality, year, basisOfRecord, catalogNumber,
-                          institutionCode, elevation, coordinateUncertaintyInMeters) %>%
-            dplyr::rename(name = scientificName, longitude = decimalLongitude,
-                          latitude = decimalLatitude, country = countryCode)
+            dplyr::select(.data$scientificName, .data$decimalLongitude,
+                          .data$decimalLatitude, .data$countryCode,
+                          .data$stateProvince, .data$locality, .data$year,
+                          .data$basisOfRecord, .data$catalogNumber,
+                          .data$institutionCode, .data$elevation,
+                          .data$coordinateUncertaintyInMeters) %>%
+            dplyr::rename(name = .data$scientificName,
+                          longitude = .data$decimalLongitude,
+                          latitude = .data$decimalLatitude,
+                          country = .data$countryCode)
           q[[occDb]]$meta$found <-
             nrow(myBTO@occResults[[bestMatch]][['GBIF']][['OccurrenceTable']])
           q[[occDb]]$data[[formatSpName(sp)]] <- gbif_occCite_df
@@ -205,12 +211,12 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
                   "institutionCode", "elevation", "coordinateUncertaintyInMeters")
       for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
       occs <- occs %>%
-        dplyr::rename(scientific_name = name,
-                      state_province = stateProvince,
-                      record_type = basisOfRecord,
-                      institution_code = institutionCode,
-                      catalog_number = catalogNumber,
-                      uncertainty = coordinateUncertaintyInMeters)
+        dplyr::rename(scientific_name = .data$name,
+                      state_province = .data$stateProvince,
+                      record_type = .data$basisOfRecord,
+                      institution_code = .data$institutionCode,
+                      catalog_number = .data$catalogNumber,
+                      uncertainty = .data$coordinateUncertaintyInMeters)
 
     } else if (occDb == 'vertnet') { # standardize VertNet column names
       fields <- c("name", "longitude", "latitude", "country", "stateprovince",
@@ -219,28 +225,28 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
                   "coordinateuncertaintyinmeters")
       for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
       occs <- occs %>%
-        dplyr::rename(scientific_name = name,
-                      state_province = stateprovince,
-                      record_type = basisofrecord,
-                      institution_code = institutioncode,
-                      catalog_number = catalognumber,
-                      elevation = maximumelevationinmeters,
-                      uncertainty = coordinateuncertaintyinmeters)
+        dplyr::rename(scientific_name = .data$name,
+                      state_province = .data$stateprovince,
+                      record_type = .data$basisofrecord,
+                      institution_code = .data$institutioncode,
+                      catalog_number = .data$catalognumber,
+                      elevation = .data$maximumelevationinmeters,
+                      uncertainty = .data$coordinateuncertaintyinmeters)
     } else if (occDb == 'bison') { # standardize BISON column names
       fields <- c("providedScientificName", "longitude", "latitude", "countryCode",
                   "stateProvince", "verbatimLocality", "year", "basisOfRecord",
                   "catalogNumber", "ownerInstitutionCollectionCode",
                   "verbatimElevation", "uncertainty")
       for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
-      occs <- occs %>% dplyr::rename(scientific_name = providedScientificName,
-                                     country = countryCode,
-                                     state_province = stateProvince,
-                                     locality = verbatimLocality,
-                                     record_type = basisOfRecord,
+      occs <- occs %>% dplyr::rename(scientific_name = .data$providedScientificName,
+                                     country = .data$countryCode,
+                                     state_province = .data$stateProvince,
+                                     locality = .data$verbatimLocality,
+                                     record_type = .data$basisOfRecord,
                                      institution_code =
-                                       ownerInstitutionCollectionCode,
-                                     catalog_number = catalogNumber,
-                                     elevation = verbatimElevation)
+                                       .data$ownerInstitutionCollectionCode,
+                                     catalog_number = .data$catalogNumber,
+                                     elevation = .data$verbatimElevation)
     } else if (occDb == 'bien') {
       fields <- c("scrubbed_species_binomial", "longitude", "latitude",
                   "collection_code", "country", "state_province", "locality", "year",
@@ -250,8 +256,8 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
       # "elevation", "uncertainty"
       for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
       occs <- occs %>% dplyr::as_tibble() %>%
-        dplyr::rename(scientific_name = scrubbed_species_binomial,
-                                     institution_code = collection_code)
+        dplyr::rename(scientific_name = .data$scrubbed_species_binomial,
+                      institution_code = .data$collection_code)
     }
     noUncertainRem <- 0
     if (RmUncertain == TRUE) {
@@ -274,8 +280,8 @@ occs <- occs[!dups,]
               "institution_code", "elevation", "uncertainty")
     occs <- occs %>%
       dplyr::select(dplyr::one_of(cols)) %>%
-      dplyr::mutate(year = as.integer(year),
-                    uncertainty = as.numeric(uncertainty)) %>%
+      dplyr::mutate(year = as.integer(.data$year),
+                    uncertainty = as.numeric(.data$uncertainty)) %>%
       # # make new column for leaflet marker popup content
       dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent))) %>%
       dplyr::arrange_(cols)

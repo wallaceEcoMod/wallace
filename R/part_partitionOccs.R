@@ -46,6 +46,7 @@
 # line.
 # @family - a family name. All functions that have the same family tag will be
 # linked in the documentation.
+#' @importFrom rlang .data
 #' @export
 
 part_partitionOccs <- function(occs, bg, method, kfolds = NULL, bgMask = NULL,
@@ -56,8 +57,8 @@ part_partitionOccs <- function(occs, bg, method, kfolds = NULL, bgMask = NULL,
     return()
   }
 
-  occs.xy <- occs %>% dplyr::select(longitude, latitude)
-  bg.xy <- bg %>% dplyr::select(longitude, latitude)
+  occs.xy <- occs %>% dplyr::select(.data$longitude, .data$latitude)
+  bg.xy <- bg %>% dplyr::select(.data$longitude, .data$latitude)
 
   if (method == 'jack') {
     group.data <- ENMeval::get.jackknife(occs.xy, bg.xy)

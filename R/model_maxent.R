@@ -54,6 +54,7 @@
 # line.
 # @family - a family name. All functions that have the same family tag will be
 # linked in the documentation.
+#' @importFrom rlang .data
 #' @export
 
 model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
@@ -127,8 +128,8 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
   }
 
   # get just coordinates
-  occs.xy <- occs %>% dplyr::select(longitude, latitude)
-  bg.xy <- bg %>% dplyr::select(longitude, latitude)
+  occs.xy <- occs %>% dplyr::select(.data$longitude, .data$latitude)
+  bg.xy <- bg %>% dplyr::select(.data$longitude, .data$latitude)
   # run ENMeval
   e <- ENMeval::ENMevaluate(occs = as.data.frame(occs.xy),
                             bg = as.data.frame(bg.xy),

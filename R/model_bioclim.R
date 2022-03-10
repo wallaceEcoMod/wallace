@@ -39,15 +39,15 @@
 # this documentation when the user looks them up from the command
 # line.
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
-
+#' @importFrom rlang .data
 #' @export
 
 model_bioclim <- function(occs, bg, user.grp, bgMsk, logger = NULL,
                           spN = NULL) {
 
   # get just coordinates
-  occs.xy <- occs %>% dplyr::select(longitude, latitude)
-  bg.xy <- bg %>% dplyr::select(longitude, latitude)
+  occs.xy <- occs %>% dplyr::select(.data$longitude, .data$latitude)
+  bg.xy <- bg %>% dplyr::select(.data$longitude, .data$latitude)
 
   smartProgress(logger,
                 message = paste0("Building/Evaluating BIOCLIM model for ",
