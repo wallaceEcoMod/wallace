@@ -16,7 +16,10 @@ tagList(
     header = tagList(
       tags$head(tags$link(href = "css/styles.css", rel = "stylesheet"))
     ),
-    title = glue::glue('#WallaceEcoMod'),
+    # title = glue::glue('v1.9.0'),
+    title = img(src = "image.png", height = '50', width = '50',
+                style = "margin-top: -15px"),
+    windowTitle = "#WallaceEcoMod",
     tabPanel("Intro", value = 'intro'),
     tabPanel("Occ Data", value = 'occs'),
     tabPanel("Env Data", value = 'envs'),
