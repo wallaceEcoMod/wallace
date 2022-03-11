@@ -48,7 +48,7 @@
 # @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 
-vis_bioclimPlot <- function(x, a=1, b=2, p=0.9, ...) {
+vis_bioclimPlot <- function(x, a = 1, b = 2, p = 0.9) {
 
   d <- x@presence
 

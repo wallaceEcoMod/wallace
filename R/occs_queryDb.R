@@ -23,7 +23,7 @@
 #'  `wallace` for any other purposes.
 #' @param gbifEmail  specify only if using `occCite` with GBIF to get a
 #' complete list of original data sources in a citable format.
-#' @param gbifPW=NULL  specify only if using `occCite` with GBIF to get a complete
+#' @param gbifPW specify only if using `occCite` with GBIF to get a complete
 #' list of original data sources in a citable format.
 #' @param RmUncertain specify if occurrences wothout uncertainty information should be removed (default is FALSE)
 #' @return list of lists one list per species with occurrence records. Each individual species list with appropriate fields for analysis
