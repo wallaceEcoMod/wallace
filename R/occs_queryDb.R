@@ -42,6 +42,17 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
                          gbifUser = NULL, gbifEmail = NULL, gbifPW = NULL,
                          RmUncertain = FALSE,
                          logger = NULL) {
+  if (occDb == "bien" & !requireNamespace("BIEN", quietly = TRUE)) {
+    logger %>%
+      alfred.writeLog(
+        type = "error",
+        "This option is available if you install the 'BIEN' package. If you ",
+        "want to install it, close Wallace and run the following line in the ",
+        "R Console: ", em("install.packages('BIEN')")
+      )
+    return()
+  }
+
   # Get all species names for textInput Shiny
   if (length(spNames) == 1) {
     if (grepl(x = spNames, pattern = ",")) {
