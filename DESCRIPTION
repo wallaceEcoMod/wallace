@@ -42,7 +42,6 @@ Imports:
     rgdal,
     rgeos,
     rlang,
-    rJava,
     rmarkdown,
     shinyalert,
     shinyjs,
@@ -60,6 +59,7 @@ Suggests:
     mapview,
     occCite,
     paleobioDB,
+    rJava,
     testthat
 License: GPL-3
 URL: https://wallaceEcoMod.github.io
