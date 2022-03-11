@@ -69,13 +69,13 @@ proj_userEnvs <- function(evalOut, curModel, envs, pjExt, alg, outputType = NULL
     logger %>% writeLog(alfred.hlSpp(spN), 'User specified projection for unclamped model', curModel, '.')
   }
 
-  smartProgress(logger,
+  alfred.smartProgress(logger,
                 message = "Masking environmental grids to projection extent...", {
     projMsk <- raster::crop(envs, newPoly)
     projMsk <- raster::mask(projMsk, newPoly)
   })
 
-  smartProgress(logger,
+  alfred.smartProgress(logger,
                 message = 'Projecting model to user uploaded environmental variables & area', {
     if (alg == 'BIOCLIM') {
       modProjUser <- dismo::predict(evalOut@models[[curModel]], projMsk,

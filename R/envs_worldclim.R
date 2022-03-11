@@ -39,7 +39,7 @@ envs_worldclim <- function(bcRes, bcSel, mapCntr, doBrick, logger = NULL) {
     return()
   }
 
-  smartProgress(logger, message = "Retrieving WorldClim data...", {
+  alfred.smartProgress(logger, message = "Retrieving WorldClim data...", {
       wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes,
                               lon = mapCntr[1], lat = mapCntr[2])
       # change names if bio01 is bio1, and so forth
@@ -55,7 +55,7 @@ envs_worldclim <- function(bcRes, bcSel, mapCntr, doBrick, logger = NULL) {
 
   # convert to brick for faster processing
   if(doBrick == TRUE) {
-    smartProgress(logger, message = "Converting to RasterBrick for faster processing...", {
+    alfred.smartProgress(logger, message = "Converting to RasterBrick for faster processing...", {
       wcbc <- raster::brick(wcbc)
     })
   }

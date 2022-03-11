@@ -38,7 +38,7 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
   }
   spName <- paste0(toupper(substring(spName, 1, 1)),
                    substring(spName, 2, nchar(spName)))
-  smartProgress(logger, message = paste0("Querying paleobioDB ..."), {
+  alfred.smartProgress(logger, message = paste0("Querying paleobioDB ..."), {
     occsOrig <- try(paleobioDB::pbdb_occurrences(taxon_name = spName,
                                                  limit = occNum,
                                                  interval = timeInterval,
@@ -56,7 +56,7 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
   #   } else if (timeInterval == "Holo") {
   #
   #     # query database
-  #     smartProgress(logger, message = paste0("Querying ", occDb, " ..."), {
+  #     alfred.smartProgress(logger, message = paste0("Querying ", occDb, " ..."), {
   #       occsOrig <- try(paleobioDB::pbdb_occurrences(scientific_name=spName, limit=occNum, vocab="pbdb",
   #                                                    max_ma= 0.02, show=c("coords", "bin", "loc")), silent =TRUE)
   #     })

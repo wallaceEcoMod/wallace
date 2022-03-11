@@ -45,7 +45,7 @@
 
 penvs_bgSample <- function(occs, bgMask, bgPtsNum, logger = NULL, spN = NULL) {
   # sample random background points
-  smartProgress(logger, message = "Generating background points...", {
+  alfred.smartProgress(logger, message = "Generating background points...", {
     bgXY <- dismo::randomPoints(bgMask, bgPtsNum)
     bgXY <- bgXY %>% as.data.frame() %>%
       dplyr::select(longitude = .data$x, latitude = .data$y)

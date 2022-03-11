@@ -108,7 +108,7 @@ part_partitionOccs <- function(occs, bg, method, kfolds = NULL, bgMask = NULL,
   }
 
   if(method == 'cb1') {
-    smartProgress(logger, message = "Aggregating rasters...", {
+    alfred.smartProgress(logger, message = "Aggregating rasters...", {
       group.data <- ENMeval::get.checkerboard1(occs.xy, bgMask, bg.xy, aggFact)
     })
 
@@ -118,7 +118,7 @@ part_partitionOccs <- function(occs, bg, method, kfolds = NULL, bgMask = NULL,
   }
 
   if(method == 'cb2') {
-    smartProgress(logger, message = "Aggregating rasters...", {
+    alfred.smartProgress(logger, message = "Aggregating rasters...", {
       group.data <- ENMeval::get.checkerboard2(occs.xy, bgMask, bg.xy, aggFact)
     })
 

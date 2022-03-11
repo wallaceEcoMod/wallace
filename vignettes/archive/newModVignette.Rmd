@@ -89,7 +89,7 @@ There are 5 necessary steps to adding a functional module: 1) write an R functio
 ### Step 1: Write an R function
 Let's first write a function that carries out the module's analysis. For this simple example, we will print a matrix of pairwise Pearson's correlation coefficients for all environmental data. For simplicity, we will call the `layerStats()` function from the **raster** package (Hijmans & van Etten, 2012). This function takes the following inputs: 1) RasterStack of environmental data and 2) statistic to compute (here we will use Pearson's correlation coefficient). We will then write a Wallace function to call the `layerStats()` function in the Wallace framework.
 Our Wallace function also contains an argument, "shinyLogs", which is a "reactive" object (in particular for this case, `shiny::reactiveVal()`) that holds all the text and HTML formatting for the log window. Reactive variables such as shinyLogs can only be used within reactive contexts -- they will not work for regular R functions.
-Thus, when the function is run inside *Wallace*, the parameter "shinyLogs" should be set to the reactive object with the same name. When this is done, messages entered with `writeLog()` will be sent to the *Wallace* log window, and `smartProgress()` will generate a shiny progress bar in the lower-right corner of the interface. When the function is run outside *Wallace*, just leave shinyLogs at its default NULL, which will make `writeLog()` and `smartProgress()` print messages and progress bars to the R console, respectively.
+Thus, when the function is run inside *Wallace*, the parameter "shinyLogs" should be set to the reactive object with the same name. When this is done, messages entered with `writeLog()` will be sent to the *Wallace* log window, and `alfred.smartProgress()` will generate a shiny progress bar in the lower-right corner of the interface. When the function is run outside *Wallace*, just leave shinyLogs at its default NULL, which will make `writeLog()` and `alfred.smartProgress()` print messages and progress bars to the R console, respectively.
 Let's now write a function that calculates the Pearson correlations between variable pairs. Save the code below as a script to: `wallace/R/PearsonRaster.R`.
 ```{r}
 wallacelayerStats <- function (x, asSample = TRUE, na.rm = FALSE, shinyLogs = NULL){
@@ -97,7 +97,7 @@ if(!requireNamespace('raster')){
 shinyLogs %>% writeLog("Please install the raster package before running.")
 return()
 }
-smartProgress(shinyLogs, message = "calculating pairwise Pearson's correlations",{
+alfred.smartProgress(shinyLogs, message = "calculating pairwise Pearson's correlations",{
 corrs <- layerStats(x, stat = "pearson", na.rm = T)
 })
 shinyLogs %>% writeLog("Pearson complete")

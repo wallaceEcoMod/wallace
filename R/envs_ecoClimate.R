@@ -39,7 +39,7 @@
 #' @export
 #'
 envs_ecoClimate <- function(bcAOGCM, bcScenario, ecoClimSel, logger = NULL) {
-  smartProgress(logger, message = "Retrieving ecoClimate data...", {
+  alfred.smartProgress(logger, message = "Retrieving ecoClimate data...", {
     ecoClimatelayers <- ecoClimate_getdata(AOGCM = bcAOGCM,
                                            Baseline = "Modern",
                                            Scenario = bcScenario,

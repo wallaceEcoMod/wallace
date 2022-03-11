@@ -78,12 +78,12 @@ proj_time <- function(evalOut, curModel, envs, pjExt, alg, outputType = NULL,
   }
 
 
-  smartProgress(logger, message = "Clipping environmental data to current extent...", {
+  alfred.smartProgress(logger, message = "Clipping environmental data to current extent...", {
     pjtMsk <- raster::crop(envs, newPoly)
     pjtMsk <- raster::mask(pjtMsk, newPoly)
   })
 
-  smartProgress(logger, message = ("Projecting to new time..."), {
+  alfred.smartProgress(logger, message = ("Projecting to new time..."), {
     if (alg == 'BIOCLIM') {
       modProjTime <- dismo::predict(evalOut@models[[curModel]], pjtMsk,
                                     useC = FALSE)

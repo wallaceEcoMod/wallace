@@ -134,7 +134,7 @@ correlations_module_server <- function(input, output, session, common) {
     # If batch is true, loop through all species (allSp())
     for (sp in spLoop){
     # FUNCTION CALL ####
-      smartProgress(logger, message = "Calculating pairwise correlations", {envCorrs <- raster::layerStats(x = spp[[sp]]$procEnvs$bgMask, na.rm = T, stat = "pearson")})
+      alfred.smartProgress(logger, message = "Calculating pairwise correlations", {envCorrs <- raster::layerStats(x = spp[[sp]]$procEnvs$bgMask, na.rm = T, stat = "pearson")})
     # To update the log window
     logger %>% writeLog(alfred.hlSpp(sp), "Finished calculating correlations")
     #envCorrs <- raster::layerStats(x = bgMask(), na.rm = T, stat = "pearson")

@@ -36,7 +36,7 @@
 
 envs_userEnvs <- function(rasPath, rasName, doBrick = FALSE, logger = NULL){
 
-  smartProgress(logger, message = "Reading in rasters...", {
+  alfred.smartProgress(logger, message = "Reading in rasters...", {
     rasStack <- raster::stack(rasPath)
   })
   # assign names
@@ -54,7 +54,7 @@ envs_userEnvs <- function(rasPath, rasName, doBrick = FALSE, logger = NULL){
 
   # convert to brick for faster processing
   if(doBrick == TRUE) {
-    smartProgress(logger, message = "Converting to RasterBrick for faster processing...", {
+    alfred.smartProgress(logger, message = "Converting to RasterBrick for faster processing...", {
       rasStack  <- raster::brick(rasStack)
     })
   }

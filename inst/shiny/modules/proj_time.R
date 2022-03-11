@@ -281,7 +281,7 @@ proj_time_module_server <- function(input, output, session, common) {
                           'make a different selection.'))
         return()
       }
-      smartProgress(
+      alfred.smartProgress(
         logger,
         message = paste("Retrieving WorldClim data for", input$selTime,
                         input$selRCP, "..."),
@@ -296,7 +296,7 @@ proj_time_module_server <- function(input, output, session, common) {
         }
       )
     } else if (input$selTimeVar == 'ecoclimate') {
-      smartProgress(
+      alfred.smartProgress(
         logger,
         message = paste0("Retrieving ecoClimate data of GCM ", input$pjAOGCM,
                          " for ", input$pjScenario, "..."),

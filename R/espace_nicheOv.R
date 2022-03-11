@@ -75,7 +75,7 @@ espace_nicheOv <- function(z1, z2, iter = 100, equivalency = FALSE,
 
   # niche tests
   if (equivalency == TRUE) {
-    smartProgress(logger, message = "Calculating niche equivalency...", {
+    alfred.smartProgress(logger, message = "Calculating niche equivalency...", {
       nicheOv$equiv <- ecospat::ecospat.niche.equivalency.test(
         z1, z2, iter, overlap.alternative = "higher"
       )
@@ -83,7 +83,7 @@ espace_nicheOv <- function(z1, z2, iter = 100, equivalency = FALSE,
   }
 
   if (similarity == TRUE) {
-    smartProgress(logger, message = "Calculating niche similarity", {
+    alfred.smartProgress(logger, message = "Calculating niche similarity", {
       nicheOv$simil <- ecospat::ecospat.niche.similarity.test(
         z1, z2, iter, overlap.alternative = "higher", rand.type = 1
       )

@@ -61,10 +61,16 @@ alfred.hlSpp <- function(spN) {
   }
 }
 
-# either prints a message to console or makes a progress bar in the shiny app
-# the entry of the first param "logs" turns on shiny functionality
+#
+#' @title alfred.smartProgress
+#' @description For internal use. Either prints a message to console or makes
+#' a progress bar in the shiny app the entry of the first param "logs" turns on
+#' shiny functionality
+#' @param logs Wallace logger
+#' @param message A single-element character vector; the message to be displayed to the user.
+#' @param expr The work to be done.
 #' @export
-smartProgress <- function(logs, message, expr) {
+alfred.smartProgress <- function(logs, message, expr) {
   if(!is.null(logs)) {
     withProgress(message = message, expr)
   } else {

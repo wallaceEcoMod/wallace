@@ -72,13 +72,13 @@ proj_area <- function(evalOut, curModel, envs, pjExt, alg, outputType = NULL,
   }
 
 
-  smartProgress(logger,
+  alfred.smartProgress(logger,
                 message = "Masking environmental grids to projection extent...", {
     projMsk <- raster::crop(envs, newPoly)
     projMsk <- raster::mask(projMsk, newPoly)
   })
 
-  smartProgress(logger, message = 'Projecting model to new area...', {
+  alfred.smartProgress(logger, message = 'Projecting model to new area...', {
     if (alg == 'BIOCLIM') {
       modProjArea <- dismo::predict(evalOut@models[[curModel]], projMsk,
                                     useC = FALSE)

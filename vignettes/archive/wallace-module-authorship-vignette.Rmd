@@ -42,7 +42,7 @@ There are 5 necessary steps to adding a functional module: 1) write an R functio
 
 ## Step 1: Write a function
 
-Let's first write a function that carries out the module's analysis. This function takes the following inputs: environmental predictor values at 1) occurrence points, 2) background points, 3) degrees of freedom for the spline smoothing terms in the GAM, 4) the species name, and 5) shinyLogs. The last one, shinyLogs, is a "reactive" object (in particular for this case, `shiny::reactiveVal()`) that holds all the text and HTML formatting for the log window. Reactive objects are dynamic entities that update whenever the user makes a change using the shiny interface (i.e., pushes a button, selects a value), and are necessary for shiny to be functional. However, they will not work for regular R functions. Thus, when the function is run inside *Wallace*, the parameter "shinyLogs" should be set to the reactive object with the same name. When this is done, messages entered with `writeLog()` will be sent to the *Wallace* log window, and `smartProgress()` will generate a shiny progress bar in the lower-right corner of the interface. When the function is run outside *Wallace*, just leave shinyLogs at its default NULL, which will make `writeLog()` and `smartProgress()` print messages and progress bars to the R console, respectively.
+Let's first write a function that carries out the module's analysis. This function takes the following inputs: environmental predictor values at 1) occurrence points, 2) background points, 3) degrees of freedom for the spline smoothing terms in the GAM, 4) the species name, and 5) shinyLogs. The last one, shinyLogs, is a "reactive" object (in particular for this case, `shiny::reactiveVal()`) that holds all the text and HTML formatting for the log window. Reactive objects are dynamic entities that update whenever the user makes a change using the shiny interface (i.e., pushes a button, selects a value), and are necessary for shiny to be functional. However, they will not work for regular R functions. Thus, when the function is run inside *Wallace*, the parameter "shinyLogs" should be set to the reactive object with the same name. When this is done, messages entered with `writeLog()` will be sent to the *Wallace* log window, and `alfred.smartProgress()` will generate a shiny progress bar in the lower-right corner of the interface. When the function is run outside *Wallace*, just leave shinyLogs at its default NULL, which will make `writeLog()` and `alfred.smartProgress()` print messages and progress bars to the R console, respectively.
 
 Let's now write a function that fits a GAM and outputs the model object. Save the code below as a script to: `wallace/R/runGAM.R`.
 
@@ -64,7 +64,7 @@ runGAM <- function(occs.vals, bg.vals, degFr, spN, shinyLogs=NULL) {
   # make formula
   f <- stats::as.formula(paste("pa", paste(degFrs, collapse = " + "), sep = " ~ "))
   # run the GAM
-  smartProgress(shinyLogs, message = paste("Running GAM for", spName), {
+  alfred.smartProgress(shinyLogs, message = paste("Running GAM for", spName), {
     mod <- gam(f, family = "binomial", data = d)
   })
   # write log message

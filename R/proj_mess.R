@@ -76,7 +76,7 @@ proj_mess <- function(occs, bg, bgMsk, projExtRas, time, logger = NULL, spN = NU
   projExtRas2 <- projExtRas
   names(projExtRas2) <- names(bgMsk)
 
-  smartProgress(logger, message = "Generating MESS map...", {
+  alfred.smartProgress(logger, message = "Generating MESS map...", {
     mss <- suppressWarnings(dismo::mess(projExtRas2, allVals))
     # for mapping purposes, set all infinite values to NA
     mss[is.infinite(mss)] <- NA

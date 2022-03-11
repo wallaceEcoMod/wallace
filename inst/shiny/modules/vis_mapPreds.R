@@ -92,7 +92,7 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
       }
       # if selected prediction type is not raw, transform
       # transform and redefine predSel
-      smartProgress(
+      alfred.smartProgress(
         logger,
         message = paste0("Generating ", input$maxentPredType,
                          " prediction for model ", curModel(), "..."), {

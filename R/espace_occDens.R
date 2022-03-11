@@ -67,7 +67,7 @@ espace_occDens <- function(sp.name1, sp.name2, pca, logger = NULL) {
   scores.occs1 <- pca$scores[sp == sp.name1, 1:2]
   scores.bg2 <- pca$scores[bg == sp.name2, 1:2]
   scores.occs2 <- pca$scores[sp == sp.name2, 1:2]
-  smartProgress(logger, message = "Running occurrence density grids...", {
+  alfred.smartProgress(logger, message = "Running occurrence density grids...", {
     occDens1 <- ecospat::ecospat.grid.clim.dyn(scores.bg12, scores.bg1,
                                                scores.occs1, 100)
    # incProgress(1/2)

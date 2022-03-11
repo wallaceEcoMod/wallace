@@ -68,7 +68,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
 
   for (sp in spNames) {
     # query database
-    smartProgress(logger,
+    alfred.smartProgress(logger,
                   message = paste0("Querying ", occDb, " for ", sp, "..."), {
       if (occDb == 'bison' | occDb == 'vertnet') {
         q <- spocc::occ(sp, occDb, limit = occNum)
