@@ -23,7 +23,6 @@
 #' @export
 
 getWCTiles <- function(occs) {
-  library(raster)
   c <- unique(occs %/% 30)
   coordTiles <-  data.frame(occs[row.names(c),])
   x <- list()

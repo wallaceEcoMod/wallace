@@ -49,7 +49,7 @@ Let's now write a function that fits a GAM and outputs the model object. Save th
 
 ```{r}
 runGAM <- function(occs.vals, bg.vals, degFr, spN, shinyLogs=NULL) {
-  if(!require(gam)) {
+  if(!requireNamespace('gam')) {
     shinyLogs %>% writeLog("Please install the gam package before running.")
     return()
   }

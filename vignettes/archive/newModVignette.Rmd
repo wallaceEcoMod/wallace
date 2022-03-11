@@ -93,7 +93,7 @@ Thus, when the function is run inside *Wallace*, the parameter "shinyLogs" shoul
 Let's now write a function that calculates the Pearson correlations between variable pairs. Save the code below as a script to: `wallace/R/PearsonRaster.R`.
 ```{r}
 wallacelayerStats <- function (x, asSample = TRUE, na.rm = FALSE, shinyLogs = NULL){
-if(!require(raster)){
+if(!requireNamespace('raster')){
 shinyLogs %>% writeLog("Please install the raster package before running.")
 return()
 }

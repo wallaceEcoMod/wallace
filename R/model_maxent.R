@@ -93,7 +93,7 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
       return()
     }
 
-    if (!require('rJava')) {
+    if (!requireNamespace('rJava')) {
       logger %>% writeLog(
         type = "error",
         paste0('Package rJava cannot load. Please download the latest version of ',
