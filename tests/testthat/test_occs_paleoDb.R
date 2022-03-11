@@ -28,7 +28,7 @@ source("test_helper_functions.R")
                        'Please input both genus and species names of ONE species. ',fixed=T)
           # the species' name has spelling errors, or it is not found in the database
           expect_error(occs_paleoDb(spName = spNameError, occNum, timeInterval),
-                      paste0(hlSpp(spNameError),"No records found, please check the spelling."),fixed=T)
+                      paste0(alfred.hlSpp(spNameError),"No records found, please check the spelling."),fixed=T)
         })
 
  ###Test of warnings:
@@ -37,7 +37,7 @@ source("test_helper_functions.R")
  # test_that("warnings checks", {
     # the species is found in the database, but it does not have coordinates (Log & lat)
    # expect_warning(occs_paleoDb(spName = "impossible species", occNum=1, timeInterval),
-    #               paste0(hlSpp(impossible species), "No records with coordinates found in paleobioDB."),fixed=T)
+    #               paste0(alfred.hlSpp(impossible species), "No records with coordinates found in paleobioDB."),fixed=T)
 #  })
 
   ### test output features

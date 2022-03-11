@@ -60,7 +60,7 @@ model_bioclim <- function(occs, bg, user.grp, bgMsk, logger = NULL,
                                user.grp= user.grp)
   })
 
-  logger %>% writeLog(hlSpp(spN),
+  logger %>% writeLog(alfred.hlSpp(spN),
                       "BIOCLIM ran successfully and output evaluation results.")
 
   return(e)

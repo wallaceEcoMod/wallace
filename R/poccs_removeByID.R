@@ -53,12 +53,12 @@ poccs_removeByID <- function(occs, removeID, logger = NULL, spN = NULL) {
   occs.remID <- occs[-i,]
 
   logger %>% writeLog(
-    hlSpp(spN), "Removed occurrence with occID = ", removeID,
+    alfred.hlSpp(spN), "Removed occurrence with occID = ", removeID,
     ". Updated data has n = ", nrow(occs.remID), " records.")
 
   if (nrow(occs.remID) < 4) {
     logger %>% writeLog(type = 'error',
-      hlSpp(spN), "After removing occurrences, there are three or less points. ",
+      alfred.hlSpp(spN), "After removing occurrences, there are three or less points. ",
       "You need more occurrences to continue the analysis."
     )
     return()

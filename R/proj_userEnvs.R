@@ -62,11 +62,11 @@ proj_userEnvs <- function(evalOut, curModel, envs, pjExt, alg, outputType = NULL
   newPoly <- pjExt
 
   if (alg == 'BIOCLIM') {
-    logger %>% writeLog(hlSpp(spN), 'User specified projection for BIOCLIM model.')
+    logger %>% writeLog(alfred.hlSpp(spN), 'User specified projection for BIOCLIM model.')
   } else if (alg == 'maxent.jar' | clamp == TRUE) {
-    logger %>% writeLog(hlSpp(spN), 'User specified projection for clamped model ', curModel, '.')
+    logger %>% writeLog(alfred.hlSpp(spN), 'User specified projection for clamped model ', curModel, '.')
   } else if (clamp == FALSE) {
-    logger %>% writeLog(hlSpp(spN), 'User specified projection for unclamped model', curModel, '.')
+    logger %>% writeLog(alfred.hlSpp(spN), 'User specified projection for unclamped model', curModel, '.')
   }
 
   smartProgress(logger,

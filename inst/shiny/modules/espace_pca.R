@@ -61,7 +61,7 @@ espace_pca_module_server <- function(input, output, session, common) {
     for(sp in curSp()) {
       if (is.null(spp[[sp]]$procEnvs$bgMask)) {
         logger %>% writeLog(
-          type = 'error', hlSpp(sp),
+          type = 'error', alfred.hlSpp(sp),
           "Before partitioning occurrences, mask your ",
           "environmental variables by your background extent.")
         return()
@@ -81,7 +81,7 @@ espace_pca_module_server <- function(input, output, session, common) {
     pcaSel <- input$pcaSel
     if (is.null(pcaSel)) {
       logger %>% writeLog(
-        type = "error", hlSpp(paste0(curSp()[1], " and ", curSp()[2])),
+        type = "error", alfred.hlSpp(paste0(curSp()[1], " and ", curSp()[2])),
         " must have the same environmental variables."
       )
       return()

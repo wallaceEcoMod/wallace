@@ -67,10 +67,10 @@ proj_userExtent <- function(bgShp_path, bgShp_name, userBgBuf,
     bgExt <- methods::as(bgExt, "SpatialPolygonsDataFrame")
   }
   if (userBgBuf > 0) {
-    logger %>% writeLog(hlSpp(spN), 'Projection extent user-defined polygon buffered by ',
+    logger %>% writeLog(alfred.hlSpp(spN), 'Projection extent user-defined polygon buffered by ',
                         userBgBuf, ' degrees.')
   } else {
-    logger %>% writeLog(hlSpp(spN), "Projection extent: user-defined polygon.")
+    logger %>% writeLog(alfred.hlSpp(spN), "Projection extent: user-defined polygon.")
   }
   return(bgExt)
 }

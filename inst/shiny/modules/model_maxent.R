@@ -107,7 +107,7 @@ model_maxent_module_server <- function(input, output, session, common) {
     for(sp in spLoop) {
       # ERRORS ####
       if (is.null(spp[[sp]]$occs$partition)) {
-        logger %>% writeLog(type = 'error', hlSpp(sp),
+        logger %>% writeLog(type = 'error', alfred.hlSpp(sp),
                             "Before building a model, please partition ",
                             "occurrences for cross-validation.")
         return()

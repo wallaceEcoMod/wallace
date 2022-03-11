@@ -82,7 +82,7 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
   if (class(occsOrig) == "try-error") {
     logger %>% writeLog(
       type = 'error',
-      hlSpp(hlSpp(alfred.fmtSpN(spName))), "No records found, please check the spelling.")
+      alfred.hlSpp(alfred.hlSpp(alfred.fmtSpN(spName))), "No records found, please check the spelling.")
     return()
   }
 
@@ -107,7 +107,7 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
   # if (nrow(occsXY) == 0) {
   #   logger %>% writeLog(
   #     type = 'warning',
-  #     hlSpp(spName), "No records with coordinates found in paleobioDB.")
+  #     alfred.hlSpp(spName), "No records with coordinates found in paleobioDB.")
   # }
   occsXY <- occsOrig
 
@@ -128,7 +128,7 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
 
   dupsRem <- nrow(occsXY) - nrow(occs)
   logger %>% writeLog(
-    hlSpp(alfred.fmtSpN(spName)), 'Total paleobioDb records returned [', nrow(occsOrig),
+    alfred.hlSpp(alfred.fmtSpN(spName)), 'Total paleobioDb records returned [', nrow(occsOrig),
     '] (limit ', occNum, '). Records without coordinates removed [',
     noCoordsRem, ']. Duplicated records removed [', dupsRem,
     ']. Remaining records [', nrow(occs), '].')

@@ -47,14 +47,16 @@ alfred.fmtSpN <- function(spN) {
   return(spN.fmt)
 }
 
-# Highlight species name in Windows Log
+#' @title alfred.hlSpp
+#' @description For internal use. Green and bold species name in Windows Log
+#' @param spN Species name
 #' @export
-hlSpp <- function(scientificName) {
-  if (is.null(scientificName)) {
+alfred.hlSpp <- function(spN) {
+  if (is.null(spN)) {
     return("")
-  } else if (grepl("_", scientificName)) {
-    scientificName <- gsub("_", " ", scientificName)
-    boldSpp <- paste0('<font color="#003300"><b><i>', scientificName, '</i> | </b></font>')
+  } else if (grepl("_", spN)) {
+    spN <- gsub("_", " ", spN)
+    boldSpp <- paste0('<font color="#003300"><b><i>', spN, '</i> | </b></font>')
     return(boldSpp)
   }
 }
@@ -217,7 +219,7 @@ remEnvsValsNA <- function(occs, occsEnvsVals, sppName, logger) {
     if (length(na.rowNums) == nrow(occsEnvsVals)) {
       logger %>% writeLog(
         type = 'error',
-        hlSpp(sppName), paste0('No localities overlay with environmental ',
+        alfred.hlSpp(sppName), paste0('No localities overlay with environmental ',
                                'predictors. For example, all localities may be marine -- please redo with ',
                                'terrestrial occurrences.')
       )
@@ -226,7 +228,7 @@ remEnvsValsNA <- function(occs, occsEnvsVals, sppName, logger) {
     if (length(na.rowNums) > 0) {
       logger %>% writeLog(
         type = 'warning',
-        hlSpp(sppName), 'Removed records without environmental values with occIDs: ',
+        alfred.hlSpp(sppName), 'Removed records without environmental values with occIDs: ',
         paste(sort(occs[na.rowNums, "occID"]), collapse = ', '), ".")
       occs <- occs[-na.rowNums, ]
       occsEnvsVals <- occsEnvsVals[-na.rowNums, ]
@@ -236,7 +238,7 @@ remEnvsValsNA <- function(occs, occsEnvsVals, sppName, logger) {
     if (sum(occs.dups) > 0) {
       logger %>%
         writeLog(type = 'warning',
-                 hlSpp(sppName), "Removed ", sum(occs.dups), " localities that ",
+                 alfred.hlSpp(sppName), "Removed ", sum(occs.dups), " localities that ",
                  "shared the same grid cell. occIDs: ",
                  paste(sort(occs[occs.dups, "occID"]), collapse = ', '), ".")
       occs <- occs[!occs.dups, ]

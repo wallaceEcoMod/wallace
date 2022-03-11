@@ -96,10 +96,10 @@ proj_area_module_server <- function(input, output, session, common) {
                           input$drawPjBuf, logger, spN = curSp())
       if (input$drawPjBuf == 0 ) {
         logger %>% writeLog(
-          hlSpp(curSp()), 'Draw polygon without buffer.')
+          alfred.hlSpp(curSp()), 'Draw polygon without buffer.')
       } else {
         logger %>% writeLog(
-          hlSpp(curSp()), 'Draw polygon with buffer of ', input$drawPjBuf,
+          alfred.hlSpp(curSp()), 'Draw polygon with buffer of ', input$drawPjBuf,
           ' degrees.')
       }
       # METADATA ####
@@ -206,11 +206,11 @@ proj_area_module_server <- function(input, output, session, common) {
         thr <- stats::quantile(occPredVals, probs = input$trainPresQuantile)
       }
       projAreaThr <- projArea > thr
-      logger %>% writeLog(hlSpp(curSp()), "Projection of model to new area with threshold ",
+      logger %>% writeLog(alfred.hlSpp(curSp()), "Projection of model to new area with threshold ",
                           input$threshold, ' (', formatC(thr, format = "e", 2), ').')
     } else {
       projAreaThr <- projArea
-      logger %>% writeLog(hlSpp(curSp()), "Projection of model to new area with ",
+      logger %>% writeLog(alfred.hlSpp(curSp()), "Projection of model to new area with ",
                           predType, ' output.')
     }
     raster::crs(projAreaThr) <- raster::crs(envs())

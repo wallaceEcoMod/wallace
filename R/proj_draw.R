@@ -46,9 +46,9 @@ proj_draw <- function(polyPjXY, polyPjID, drawPjBuf, logger = NULL, spN = NULL) 
   bgExt <- rgeos::gBuffer(newPoly, width = drawPjBuf)
   bgExt <- methods::as(bgExt, "SpatialPolygonsDataFrame")
   if (drawPjBuf == 0) {
-    logger %>% writeLog(hlSpp(spN), 'Draw polygon without buffer.')
+    logger %>% writeLog(alfred.hlSpp(spN), 'Draw polygon without buffer.')
   } else {
-    logger %>% writeLog(hlSpp(spN), 'Draw polygon with buffer of ',
+    logger %>% writeLog(alfred.hlSpp(spN), 'Draw polygon with buffer of ',
                         drawPjBuf, ' degrees.')
   }
   return(bgExt)

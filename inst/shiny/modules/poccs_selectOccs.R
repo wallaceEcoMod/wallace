@@ -49,7 +49,7 @@ poccs_selectOccs_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$procOccs$occsThin <- NULL
     spp[[curSp()]]$rmm$code$wallace$removedIDs <- NULL
     logger %>% writeLog(
-      hlSpp(curSp()), "Reset to original occurrences (n = ",
+      alfred.hlSpp(curSp()), "Reset to original occurrences (n = ",
       nrow(spp[[curSp()]]$occs), ").")
   })
 }

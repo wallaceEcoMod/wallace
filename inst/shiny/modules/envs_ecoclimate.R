@@ -99,7 +99,7 @@ envs_ecoclimate_module_server <- function(input, output, session, common) {
         return()
       }
 
-      logger %>% writeLog(hlSpp(sp), "EcoClimate variables ready to use.")
+      logger %>% writeLog(alfred.hlSpp(sp), "EcoClimate variables ready to use.")
 
       # LOAD INTO SPP ####
       spp[[sp]]$envs <- nmEcoClimate

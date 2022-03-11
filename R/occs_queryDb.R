@@ -103,7 +103,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
             logger %>%
               writeLog(
                 type = "error",
-                hlSpp(alfred.fmtSpN(sp)),
+                alfred.hlSpp(alfred.fmtSpN(sp)),
                 "There is no match in GBIF database. Please check the spelling."
               )
             return()
@@ -112,7 +112,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
             logger %>%
               writeLog(
                 type = 'warning',
-                hlSpp(inputMatch),
+                alfred.hlSpp(inputMatch),
                 "There is no a stricly match in the GBIF search. Data ",
                 "downloaded corresponds to ", em(bestMatch), ". ")
           }
@@ -149,7 +149,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
           citeGBIF <- list(doi = doiGBIF, date = dateDOI)
           logger %>%
             writeLog(
-              hlSpp(alfred.fmtSpN(sp)),
+              alfred.hlSpp(alfred.fmtSpN(sp)),
               " #CiteTheDOI: Gbif.org (", dateDOI,
               ") GBIF Ocurrence Download https://doi.org/", doiGBIF
             )
@@ -171,7 +171,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
     if (q[[occDb]]$meta$found == 0) {
       logger %>%
         writeLog(type = 'error',
-                 hlSpp(alfred.fmtSpN(sp)),
+                 alfred.hlSpp(alfred.fmtSpN(sp)),
                  'No records found. Please check the spelling.')
       next
     }
@@ -192,7 +192,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
     if (nrow(occsXY) == 0) {
       logger %>% writeLog(
         type = 'warning',
-        hlSpp(alfred.fmtSpN(sp)),
+        alfred.hlSpp(alfred.fmtSpN(sp)),
         'No records with coordinates found in ', occDb, ". ")
       return()
     }
@@ -268,7 +268,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
       if(nrow(occs)==0){
         logger %>% writeLog(
           type = 'warning',
-          hlSpp(alfred.fmtSpN(sp)),
+          alfred.hlSpp(alfred.fmtSpN(sp)),
           'No records with coordinate uncertainty information found in ', occDb, ".")
         return()
     }
@@ -296,7 +296,7 @@ occs <- occs[!dups,]
 
    if (RmUncertain == TRUE) {
      logger %>%
-       writeLog(hlSpp(alfred.fmtSpN(sp)), 'Total ', occDb, ' records returned [',
+       writeLog(alfred.hlSpp(alfred.fmtSpN(sp)), 'Total ', occDb, ' records returned [',
                 nrow(occsOrig), '] out of [', totRows, '] total',
                 if (!(doCitations | occDb == 'bien')) {paste0(' (limit ', occNum,')')},
                 '. Records without coordinates removed [', noCoordsRem,
@@ -305,7 +305,7 @@ occs <- occs[!dups,]
                 ']. Remaining records [', nrow(occs), '].')
    }
     else {logger %>%
-      writeLog(hlSpp(alfred.fmtSpN(sp)), 'Total ', occDb, ' records returned [',
+      writeLog(alfred.hlSpp(alfred.fmtSpN(sp)), 'Total ', occDb, ' records returned [',
                nrow(occsOrig), '] out of [', totRows, '] total',
                if (!(doCitations | occDb == 'bien')) {paste0(' (limit ', occNum,')')},
                '. Records without coordinates removed [', noCoordsRem,

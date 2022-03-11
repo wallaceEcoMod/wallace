@@ -80,7 +80,7 @@ envs_userEnvs_module_server <- function(input, output, session, common) {
         return()
       }
 
-      logger %>% writeLog(hlSpp(sp), "User specified variables (",
+      logger %>% writeLog(alfred.hlSpp(sp), "User specified variables (",
                           paste(names(userEnvs), collapse = ", "),
                           ") ready to use.")
 

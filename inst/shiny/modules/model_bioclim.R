@@ -25,7 +25,7 @@ model_bioclim_module_server <- function(input, output, session, common) {
       # ERRORS ####
       if(is.null(spp[[sp]]$occs$partition)) {
         logger %>% writeLog(
-          type = 'error', hlSpp(sp),
+          type = 'error', alfred.hlSpp(sp),
           "Before building a model, please partition occurrences for cross-validation.")
         return()
       }

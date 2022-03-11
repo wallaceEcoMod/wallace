@@ -65,51 +65,51 @@ test_that("error checks", {
   # method is random partition and kfolds parameter is NULL
   expect_error(part_partitionOccs(occs, bgSample, method = folds, kfolds = NULL, bgMask = NULL,
                                 aggFact = NULL,spN=spN),
-                                paste0(hlSpp(spN),
+                                paste0(alfred.hlSpp(spN),
                                        "Please specify a kfold value to use the random partition function."),fixed=T)
   # method is random partition and kfolds < 2
   expect_error(part_partitionOccs(occs, bgSample, method = folds, kfolds = 1, bgMask = NULL,
-                                aggFact = NULL,spN=spN), paste0(hlSpp(spN),
+                                aggFact = NULL,spN=spN), paste0(alfred.hlSpp(spN),
                                                                 "Please specify a kfold value greater than 1."),fixed=T)
   # method is checkerboard 1 but aggregation factor parameter < 1
   expect_error(part_partitionOccs(occs, bgSample, method = cb1, kfolds = NULL, bgMask,
-                                aggFact = -2,spN=spN), paste0(hlSpp(spN),
+                                aggFact = -2,spN=spN), paste0(alfred.hlSpp(spN),
                                                               "Please specify a positive aggregation factor greater than 1."),fixed=T)
   # method is checkerboard 2 but aggregation factor parameter < 1
   expect_error(part_partitionOccs(occs, bgSample, method = cb2, kfolds = NULL, bgMask,
-                                aggFact = -2,spN=spN), paste0(hlSpp(spN),
+                                aggFact = -2,spN=spN), paste0(alfred.hlSpp(spN),
                                                               "Please specify a positive aggregation factor greater than 1."),fixed=T)
   # method is checkerboard 1 but aggregation factor parameter = 1
   expect_error(part_partitionOccs(occs, bgSample, method = cb1, kfolds = NULL, bgMask,
-                                aggFact = 1,spN=spN), paste0(hlSpp(spN),
+                                aggFact = 1,spN=spN), paste0(alfred.hlSpp(spN),
                                                              "Please specify a positive aggregation factor greater than 1."),fixed=T)
   # method is checkerboard 2 but aggregation factor parameter = 1
   expect_error(part_partitionOccs(occs, bgSample, method = cb2, kfolds = NULL, bgMask,
-                                aggFact = 1,spN=spN), paste0(hlSpp(spN),
+                                aggFact = 1,spN=spN), paste0(alfred.hlSpp(spN),
                                                              "Please specify a positive aggregation factor greater than 1."),fixed=T)
   # method is checkerboard 1 but aggregation factor parameter is NA
   expect_error(part_partitionOccs(occs, bgSample, method = cb1, kfolds = NULL, bgMask,
-                                aggFact = NA,spN=spN), paste0(hlSpp(spN),
+                                aggFact = NA,spN=spN), paste0(alfred.hlSpp(spN),
                                                               "Please specify a positive aggregation factor greater than 1."),fixed=T)
   # method is checkerboard 2 but aggregation factor parameter is NA
   expect_error(part_partitionOccs(occs, bgSample, method = cb2, kfolds = NULL, bgMask,
-                                aggFact = NA,spN=spN), paste0(hlSpp(spN),
+                                aggFact = NA,spN=spN), paste0(alfred.hlSpp(spN),
                                                               "Please specify a positive aggregation factor greater than 1."),fixed=T)
   # method is checkerboard 1 but aggregation factor parameter is NULL
   expect_error(part_partitionOccs(occs, bgSample, method = cb1, kfolds = NULL, bgMask,
-                                  aggFact = NULL,spN=spN), paste0(hlSpp(spN),
+                                  aggFact = NULL,spN=spN), paste0(alfred.hlSpp(spN),
                                                                    "Please specify an aggregation factor to use checkerboard partition functions."),fixed=T)
   # method is checkerboard 2 but aggregation factor parameter is NULL
   expect_error(part_partitionOccs(occs, bgSample, method = cb2, kfolds = NULL, bgMask,
-                                  aggFact = NULL,spN=spN), paste0(hlSpp(spN),
+                                  aggFact = NULL,spN=spN), paste0(alfred.hlSpp(spN),
                                                                   "Please specify an aggregation factor to use checkerboard partition functions."),fixed=T)
   # method is checkerboard 1 but athe bgMask parameter is NULL
   expect_error(part_partitionOccs(occs, bgSample, method = cb1, kfolds = NULL, bgMask = NULL,
-                                aggFact = 2,spN=spN), paste0(hlSpp(spN),
+                                aggFact = 2,spN=spN), paste0(alfred.hlSpp(spN),
                                                              "Please specify a background mask to use checkerboard partition functions."),fixed=T)
   # method is checkerboard 2 but athe bgMask parameter is NULL
   expect_error(part_partitionOccs(occs, bgSample, method = cb2, kfolds = NULL, bgMask = NULL,
-                                aggFact = 2,spN=spN), paste0(hlSpp(spN),
+                                aggFact = 2,spN=spN), paste0(alfred.hlSpp(spN),
                                                              "Please specify a background mask to use checkerboard partition functions."),fixed=T)
 })
 

@@ -80,7 +80,7 @@ proj_mess <- function(occs, bg, bgMsk, projExtRas, time, logger = NULL, spN = NU
     mss <- suppressWarnings(dismo::mess(projExtRas2, allVals))
     # for mapping purposes, set all infinite values to NA
     mss[is.infinite(mss)] <- NA
-    logger %>% writeLog(hlSpp(spN), "Generated MESS map for ", time, ".")
+    logger %>% writeLog(alfred.hlSpp(spN), "Generated MESS map for ", time, ".")
   })
 
   return(mss)

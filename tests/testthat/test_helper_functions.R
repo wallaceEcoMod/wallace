@@ -144,7 +144,7 @@ remEnvsValsNA <- function(occs, occsEnvsVals, sppName, logger) {
     if (length(na.rowNums) == nrow(occsEnvsVals)) {
       logger %>% writeLog(
         type = 'error',
-        hlSpp(sppName), paste0('No localities overlay with environmental ',
+        alfred.hlSpp(sppName), paste0('No localities overlay with environmental ',
                                'predictors. For example, all localities may be marine -- please redo with ',
                                'terrestrial occurrences.')
       )
@@ -153,7 +153,7 @@ remEnvsValsNA <- function(occs, occsEnvsVals, sppName, logger) {
     if (length(na.rowNums) > 0) {
       logger %>% writeLog(
         type = 'warning',
-        hlSpp(sppName), 'Removed records without environmental values with occIDs: ',
+        alfred.hlSpp(sppName), 'Removed records without environmental values with occIDs: ',
         paste(sort(occs[na.rowNums, "occID"]), collapse = ', '), ".")
       occs <- occs[-na.rowNums, ]
       occsEnvsVals <- occsEnvsVals[-na.rowNums, ]
@@ -163,7 +163,7 @@ remEnvsValsNA <- function(occs, occsEnvsVals, sppName, logger) {
     if (sum(occs.dups) > 0) {
       logger %>%
         writeLog(type = 'warning',
-                 hlSpp(sppName), "Removed ", sum(occs.dups), " localities that ",
+                 alfred.hlSpp(sppName), "Removed ", sum(occs.dups), " localities that ",
                  "shared the same grid cell. occIDs: ",
                  paste(sort(occs[occs.dups, "occID"]), collapse = ', '), ".")
       occs <- occs[!occs.dups, ]

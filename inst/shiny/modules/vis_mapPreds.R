@@ -144,7 +144,7 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
       nameAlg <- ifelse(spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM",
                         "",
                         paste0(" ", spp[[curSp()]]$rmm$model$algorithms, " "))
-      logger %>% writeLog(hlSpp(curSp()),
+      logger %>% writeLog(alfred.hlSpp(curSp()),
                           input$threshold, ' threshold selected for ', nameAlg, predType,
                           ' (', formatC(thr.sel, format = "e", 2), ').')
     } else {
@@ -154,14 +154,14 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
     # write to log box
     if (predType == 'BIOCLIM') {
       logger %>% writeLog(
-        hlSpp(curSp()), "BIOCLIM model prediction plotted.")
+        alfred.hlSpp(curSp()), "BIOCLIM model prediction plotted.")
     } else if (input$threshold != 'none'){
       logger %>% writeLog(
-        hlSpp(curSp()), spp[[curSp()]]$rmm$model$algorithms,
+        alfred.hlSpp(curSp()), spp[[curSp()]]$rmm$model$algorithms,
         " model prediction plotted.")
     } else if (input$threshold == 'none'){
       logger %>% writeLog(
-        hlSpp(curSp()), spp[[curSp()]]$rmm$model$algorithms, " ",
+        alfred.hlSpp(curSp()), spp[[curSp()]]$rmm$model$algorithms, " ",
         predType, " model prediction plotted.")
     }
 

@@ -137,10 +137,10 @@ proj_user_module_server <- function(input, output, session, common) {
                           input$drawPjBuf, logger, spN = curSp())
       if (input$drawPjBuf == 0 ) {
         logger %>% writeLog(
-          hlSpp(curSp()), 'Draw polygon without buffer.')
+          alfred.hlSpp(curSp()), 'Draw polygon without buffer.')
       } else {
         logger %>% writeLog(
-          hlSpp(curSp()), 'Draw polygon with buffer of ', input$drawPjBuf,
+          alfred.hlSpp(curSp()), 'Draw polygon with buffer of ', input$drawPjBuf,
           ' degrees.')
       }
       # METADATA ####
@@ -176,7 +176,7 @@ proj_user_module_server <- function(input, output, session, common) {
     if (input$projExt == 'pjCur') {
       polyPj <- spp[[curSp()]]$procEnvs$bgExt
       logger %>% writeLog(
-        hlSpp(curSp()),
+        alfred.hlSpp(curSp()),
         'Projection extent equal to current extent region.')
     }
     # LOAD INTO SPP ####
@@ -272,12 +272,12 @@ proj_user_module_server <- function(input, output, session, common) {
         thr <- stats::quantile(occPredVals, probs = input$trainPresQuantile)
       }
       projUserThr <- projUser > thr
-      logger %>% writeLog(hlSpp(curSp()), "Projection of model to user-specified files",
+      logger %>% writeLog(alfred.hlSpp(curSp()), "Projection of model to user-specified files",
                           'with threshold ', input$threshold, ' (',
                           formatC(thr, format = "e", 2), ').')
     } else {
       projUserThr <- projUser
-      logger %>% writeLog(hlSpp(curSp()), "Projection of model to user-specified files",
+      logger %>% writeLog(alfred.hlSpp(curSp()), "Projection of model to user-specified files",
                           'with ', predType, ' output.')
     }
     raster::crs(projUserThr) <- raster::crs(envs())

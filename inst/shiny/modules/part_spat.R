@@ -34,7 +34,7 @@ part_spat_module_server <- function(input, output, session, common) {
     for(sp in spLoop) {
       if (is.null(bgMask())) {
         logger %>% writeLog(
-          type = 'error', hlSpp(sp),
+          type = 'error', alfred.hlSpp(sp),
           "Before partitioning occurrences, mask your ",
           "environmental variables by your background extent.")
         return()

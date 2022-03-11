@@ -107,7 +107,7 @@ envs_worldclim_module_server <- function(input, output, session, common) {
         return()
       }
 
-      logger %>% writeLog(hlSpp(sp), "Worldclim variables ready to use.")
+      logger %>% writeLog(alfred.hlSpp(sp), "Worldclim variables ready to use.")
 
       # LOAD INTO SPP ####
       # add reference to WorldClim bioclim data

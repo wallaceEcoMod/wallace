@@ -70,19 +70,19 @@ poccs_selectOccs <- function(occs, polySelXY, polySelID = 1, logger = NULL, spN 
     # need code here to format the string better
     if (is.na(ptRemIndex[1])){
       logger %>% writeLog(type = 'warning',
-                          hlSpp(spN), "Your polygon is selecting all occurrences. None will be removed.")
+                          alfred.hlSpp(spN), "Your polygon is selecting all occurrences. None will be removed.")
       occs.sel <- occs
       return()
     }
     occs.sel <- occs[-ptRemIndex,]
 
     logger %>% writeLog(
-      hlSpp(spN), "Removing occurrence(s) with occID = ", remIDs,
+      alfred.hlSpp(spN), "Removing occurrence(s) with occID = ", remIDs,
       ". Updated data has n = ", nrow(occs.sel), " records.")
 
     if (nrow(occs.sel) < 4) {
       logger %>% writeLog(type = 'error',
-        hlSpp(spN), "After removing occurrences, there are three or less points. ",
+        alfred.hlSpp(spN), "After removing occurrences, there are three or less points. ",
         "You need more occurrences to continue the analysis."
       )
       return()

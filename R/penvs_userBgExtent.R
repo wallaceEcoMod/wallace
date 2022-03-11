@@ -90,15 +90,15 @@ penvs_userBgExtent <- function(bgShp_path, bgShp_name, userBgBuf, occs,
     ptRem <- ifelse(all(!is.na(intersecto)), 0, as.numeric(which(is.na(intersecto))))
     if (ptRem == 0) {
       if (userBgBuf > 0) {
-        logger %>% writeLog(hlSpp(spN), 'Study extent user-defined polygon buffered by ',
+        logger %>% writeLog(alfred.hlSpp(spN), 'Study extent user-defined polygon buffered by ',
                             userBgBuf, ' degrees.')
       } else {
-        logger %>% writeLog(hlSpp(spN), "Study extent: user-defined polygon.")
+        logger %>% writeLog(alfred.hlSpp(spN), "Study extent: user-defined polygon.")
       }
       return(bgExt)
     } else if (ptRem > 0) {
       logger %>%
-        writeLog(type = 'error', hlSpp(spN),
+        writeLog(type = 'error', alfred.hlSpp(spN),
                  "The polygon did not include all localities. ",
                  "You can remove localities in Process Occs component")
       return()

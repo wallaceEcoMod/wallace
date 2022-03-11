@@ -80,9 +80,9 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL, spN = NULL) {
 
   if (bgBuf > 0 & bgSel != 'point buffers') {
     bgExt <- rgeos::gBuffer(bgExt, width = bgBuf)
-    logger %>% writeLog(hlSpp(spN), msg, ' Buffered by ', bgBuf, ' degrees.')
+    logger %>% writeLog(alfred.hlSpp(spN), msg, ' Buffered by ', bgBuf, ' degrees.')
   } else {
-    logger %>% writeLog(hlSpp(spN), msg)
+    logger %>% writeLog(alfred.hlSpp(spN), msg)
   }
   bgExt <- methods::as(bgExt, "SpatialPolygonsDataFrame")
   return(bgExt)

@@ -50,7 +50,7 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
     common$update_component(tab = "Map")
     # ERRORS ####
     if (is.null(envs())) {
-      logger %>% writeLog(type = 'error', hlSpp(curSp()), 'Environmental variables missing.',
+      logger %>% writeLog(type = 'error', alfred.hlSpp(curSp()), 'Environmental variables missing.',
                           '. Obtain them in component 3.')
       return()
     }
@@ -106,7 +106,7 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
       if ((bgNonNA + 1) < input$bgPtsNum) {
         logger %>%
           writeLog(
-            type = "error", hlSpp(sp),
+            type = "error", alfred.hlSpp(sp),
             "Number of requested background points (n = ", input$bgPtsNum, ") is ",
             "higher than the maximum points available on the background extent ",
             "(n = ", bgNonNA, "). Please reduce the number of requested points.")
@@ -123,7 +123,7 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
       NApoints <- sum(rowSums(is.na(raster::extract(bgMask, spp[[sp]]$occs[ , c("longitude", "latitude")]))))
       if (NApoints > 0) {
         logger %>%
-          writeLog(type = "error", hlSpp(sp),
+          writeLog(type = "error", alfred.hlSpp(sp),
                    "One or more occurrence points have NULL raster values.",
                    " This can sometimes happen for points on the margin of the study extent.",
                    " Please increase the buffer slightly to include them.")
@@ -157,7 +157,7 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$bgPts <- NULL
     spp[[curSp()]]$rmm$data$occurrence$backgroundSampleSizeSet <- NULL
     logger %>% writeLog(
-      hlSpp(curSp()), "Reset background extent and background points.")
+      alfred.hlSpp(curSp()), "Reset background extent and background points.")
   })
 
   return(list(

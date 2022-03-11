@@ -183,10 +183,10 @@ proj_time_module_server <- function(input, output, session, common) {
                           input$drawPjBuf, logger, spN = curSp())
       if (input$drawPjBuf == 0 ) {
         logger %>% writeLog(
-          hlSpp(curSp()), 'Draw polygon without buffer.')
+          alfred.hlSpp(curSp()), 'Draw polygon without buffer.')
       } else {
         logger %>% writeLog(
-          hlSpp(curSp()), 'Draw polygon with buffer of ', input$drawPjBuf,
+          alfred.hlSpp(curSp()), 'Draw polygon with buffer of ', input$drawPjBuf,
           ' degrees.')
       }
       # METADATA ####
@@ -222,7 +222,7 @@ proj_time_module_server <- function(input, output, session, common) {
     if (input$projExt == 'pjCur') {
       polyPj <- spp[[curSp()]]$procEnvs$bgExt
       logger %>% writeLog(
-        hlSpp(curSp()),
+        alfred.hlSpp(curSp()),
         'Projection extent equal to current extent region.')
     }
     # LOAD INTO SPP ####
@@ -256,7 +256,7 @@ proj_time_module_server <- function(input, output, session, common) {
     if(!all(names(envs()) %in% paste0('bio', sprintf("%02d", 1:19)))) {
       nonBios <- names(envs())[!names(envs()) %in% paste0('bio', sprintf("%02d", 1:19))]
       logger %>%
-        writeLog(type = 'error', hlSpp(curSp()),
+        writeLog(type = 'error', alfred.hlSpp(curSp()),
                  "Your model is using non-bioclimatic variables or non-conventional",
                  " names (i.e., ", paste0(nonBios, collapse = ", "),
                  "). You can not transfer to a New Time.")
@@ -358,13 +358,13 @@ proj_time_module_server <- function(input, output, session, common) {
       }
       projTimeThr <- projTime > thr
       if (input$selTimeVar == 'worldclim') {
-        logger %>% writeLog(hlSpp(curSp()), "Projection of model to ", paste0('20', input$selTime),
+        logger %>% writeLog(alfred.hlSpp(curSp()), "Projection of model to ", paste0('20', input$selTime),
                             ' with threshold ', input$threshold, ' (',
                             formatC(thr, format = "e", 2), ") for GCM ",
                             GCMlookup[input$selGCM], " under RCP ",
                             as.numeric(input$selRCP)/10.0, ".")
       } else if (input$selTimeVar == 'ecoclimate') {
-        logger %>% writeLog(hlSpp(curSp()), "Projection of model to ", input$pjScenario,
+        logger %>% writeLog(alfred.hlSpp(curSp()), "Projection of model to ", input$pjScenario,
                             ' with threshold ', input$threshold, ' (',
                             formatC(thr, format = "e", 2), ") for GCM ",
                             input$pjAOGCM, ".")
@@ -372,11 +372,11 @@ proj_time_module_server <- function(input, output, session, common) {
     } else {
       projTimeThr <- projTime
       if (input$selTimeVar == 'worldclim') {
-        logger %>% writeLog(hlSpp(curSp()), "Projection of model to ", paste0('20', input$selTime),
+        logger %>% writeLog(alfred.hlSpp(curSp()), "Projection of model to ", paste0('20', input$selTime),
                             ' with ', predType, " output for GCM ", GCMlookup[input$selGCM],
                             " under RCP ", as.numeric(input$selRCP)/10.0, ".")
       } else if (input$selTimeVar == 'ecoclimate') {
-        logger %>% writeLog(hlSpp(curSp()), "Projection of model to ", input$pjScenario,
+        logger %>% writeLog(alfred.hlSpp(curSp()), "Projection of model to ", input$pjScenario,
                             ' with ', predType, " output for GCM ", input$pjAOGCM, ".")
       }
     }

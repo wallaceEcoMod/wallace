@@ -55,12 +55,12 @@ penvs_bgSample <- function(occs, bgMask, bgPtsNum, logger = NULL, spN = NULL) {
   if(bg.prop == 1) {
     logger %>%
       writeLog(
-        hlSpp(spN), bgPtsNum, " random background points sampled out of ",
+        alfred.hlSpp(spN), bgPtsNum, " random background points sampled out of ",
         bgNonNA, " total points. ")
   } else {
     logger %>%
       writeLog(type = "warning",
-        hlSpp(spN), bgPtsNum, " random background points requested, but only ",
+        alfred.hlSpp(spN), bgPtsNum, " random background points requested, but only ",
         100 * bg.prop, "% of points (n = ", nrow(bgXY), ") were able to be sampled. ",
         "The maximum number of background points available to be sample on the polygon extent is ",
         bgNonNA, ".")
