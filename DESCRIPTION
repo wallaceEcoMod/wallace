@@ -39,7 +39,6 @@ Imports:
     rangeModelMetadata,
     raster,
     RColorBrewer,
-    repmis,
     rgbif (>= 3.3.0),
     rgdal,
     rgeos,
