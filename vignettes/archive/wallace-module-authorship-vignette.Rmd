@@ -22,7 +22,6 @@ First, a brief outline of the file structure of the `wallace` package. The starr
 ├── inst
 |   ├── docs  # vignette documents
 |   └── shiny
-|   └────  example_data
 *|   └────  helper_functions.R  # helper functions not specific to any one module
 |   └────  js  # javascript files (currently only log window)
 *|   └────  modules  # .R files for each module
