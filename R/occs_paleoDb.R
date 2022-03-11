@@ -27,6 +27,16 @@
 #' @export
 
 occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
+  if (!requireNamespace("paleobioDB", quietly = TRUE)) {
+    logger %>%
+      alfred.writeLog(
+        type = "error",
+        "This module is available if you install the 'paleobioDB' package. If you ",
+        "want to install it, close Wallace and run the following line in the ",
+        "R Console: ", em("install.packages('paleobioDB')")
+      )
+    return()
+  }
   spName <- trimws(spName)
   # figure out how many separate names (components of scientific name) were entered
   nameSplit <- length(unlist(strsplit(spName, " ")))
@@ -46,22 +56,6 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
                                                  show = c("coords", "bin", "loc")),
                     silent = TRUE)
   })
-
-  # if (occDb == "PaleobioDB") {
-  #
-  #   if (timeInterval == "LGM") {
-  #     logger %>% alfred.writeLog(type = 'error',
-  #       'PaleobioDB does not have separate LGM records. You can only download Holocene records.')
-  #     return()
-  #   } else if (timeInterval == "Holo") {
-  #
-  #     # query database
-  #     alfred.smartProgress(logger, message = paste0("Querying ", occDb, " ..."), {
-  #       occsOrig <- try(paleobioDB::pbdb_occurrences(scientific_name=spName, limit=occNum, vocab="pbdb",
-  #                                                    max_ma= 0.02, show=c("coords", "bin", "loc")), silent =TRUE)
-  #     })
-  #   }
-  # }
 
   if (class(occsOrig) == "try-error") {
     logger %>% alfred.writeLog(
