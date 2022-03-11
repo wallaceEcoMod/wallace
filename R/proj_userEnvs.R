@@ -82,8 +82,8 @@ proj_userEnvs <- function(evalOut, curModel, envs, pjExt, alg, outputType = NULL
                                     useC = FALSE)
     } else if (alg == 'maxnet') {
       if (outputType == "raw") outputType <- "exponential"
-      modProjUser <- predictMaxnet(evalOut@models[[curModel]], projMsk,
-                                   type = outputType, clamp = clamp)
+      modProjUser <- alfred.predictMaxnet(evalOut@models[[curModel]], projMsk,
+                                          type = outputType, clamp = clamp)
     } else if (alg == 'maxent.jar') {
       modProjUser <- dismo::predict(evalOut@models[[curModel]], projMsk,
                                     args = c(paste0("outputformat=", outputType),

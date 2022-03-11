@@ -33,9 +33,9 @@ vis_responsePlot_module_server <- function(input, output, session, common) {
     req(curSp(), evalOut(), curModel())
     if (spp[[curSp()]]$rmm$model$algorithms != "BIOCLIM") {
       if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
-        n <- mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxnet")
+        n <- alfred.mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxnet")
       } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
-        n <- mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxent.jar")
+        n <- alfred.mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxent.jar")
       }
       envsNameList <- c(setNames(as.list(n), n))
       selectizeInput("curEnv", label = "Select variable" ,

@@ -100,8 +100,9 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
                            clamping <- spp[[curSp()]]$rmm$model$algorithm$maxent$clamping
                            if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
                              if (predType == "raw") predType <- "exponential"
-                             predSel <- predictMaxnet(m, bgMask(),
-                                                type = predType, clamp = FALSE)
+                             predSel <- alfred.predictMaxnet(m, bgMask(),
+                                                             type = predType,
+                                                             clamp = FALSE)
                            } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
                              outputFormat <- paste0("outputformat=", predType)
                              if (clamping == TRUE) {

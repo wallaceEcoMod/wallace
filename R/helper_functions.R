@@ -295,9 +295,13 @@ alfred.getRasterVals <- function(r, type = 'raw') {
   return(v)
 }
 
-## pulls out all non-zero, non-redundant (removes hinge/product/threshold) predictor names
+#' @title alfred.mxNonzeroCoefs
+#' @description For internal use. Pulls out all non-zero, non-redundant
+#' (removes hinge/product/threshold) predictor names
+#' @param mx Model object
+#' @param alg Maxent version used. It can be "maxent.jar" or "maxnet"
 #' @export
-mxNonzeroCoefs <- function(mx, alg) {
+alfred.mxNonzeroCoefs <- function(mx, alg) {
   if (alg == "maxent.jar") {
     lambdas <- mx@lambdas[1:(length(mx@lambdas)-4)]
     x <- data.frame(var = sapply(lambdas, FUN = function(x) strsplit(x, ',')[[1]][1]),
@@ -332,8 +336,14 @@ mxNonzeroCoefs <- function(mx, alg) {
   }
 }
 
+#' @title alfred.predictMaxnet
+#' @description Create a raster prediction for a maxnet model
+#' @param mod Model object
+#' @param envs Environmental rasters
+#' @param clamp Use clamping. Boolean
+#' @param type Maxent prediction type. It can be "raw", "logistic" or "cloglog"
 #' @export
-predictMaxnet <- function(mod, envs, clamp, type) {
+alfred.predictMaxnet <- function(mod, envs, clamp, type) {
   requireNamespace("maxnet", quietly = TRUE)
   envs.n <- raster::nlayers(envs)
   envs.pts <- raster::getValues(envs) %>% as.data.frame()

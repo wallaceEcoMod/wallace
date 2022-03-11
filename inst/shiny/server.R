@@ -725,7 +725,7 @@ function(input, output, session) {
       owd <- setwd(tmpdir)
       on.exit(setwd(owd))
       if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
-        namesEnvs <- mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxnet")
+        namesEnvs <- alfred.mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxnet")
         for (i in namesEnvs) {
           png(paste0(i, ".png"))
           suppressWarnings(
@@ -735,7 +735,7 @@ function(input, output, session) {
           dev.off()
         }
       } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
-        namesEnvs <- mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxent.jar")
+        namesEnvs <- alfred.mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxent.jar")
         for (i in namesEnvs) {
           png(paste0( i, ".png"))
           dismo::response(evalOut()@models[[curModel()]], var = i)

@@ -89,8 +89,8 @@ proj_time <- function(evalOut, curModel, envs, pjExt, alg, outputType = NULL,
                                     useC = FALSE)
     } else if (alg == 'maxnet') {
       if (outputType == "raw") outputType <- "exponential"
-      modProjTime <- predictMaxnet(evalOut@models[[curModel]], pjtMsk,
-                                   type = outputType, clamp = clamp)
+      modProjTime <- alfred.predictMaxnet(evalOut@models[[curModel]], pjtMsk,
+                                          type = outputType, clamp = clamp)
     } else if (alg == 'maxent.jar') {
       modProjTime <- dismo::predict(evalOut@models[[curModel]], pjtMsk,
                                     args = c(paste0("outputformat=", outputType),
