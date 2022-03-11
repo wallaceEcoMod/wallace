@@ -106,7 +106,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
   # put species into a list in the same form as spp
   occsList <- list()
   for (i in unique(spNames)) {
-    sp.occs <- txt.xy %>% dplyr::filter(scientific_name == i)
+    sp.occs <- txt.xy %>% dplyr::filter(.data$scientific_name == i)
     # add occID field if it doesn't exist
     if(!("occID" %in% names(sp.occs))) sp.occs$occID <- row.names(sp.occs)
     # add all cols to match dbOccs if not already there
@@ -151,7 +151,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
       dupsRem, "]. Remaining records [", nrow(occs), "].")
 
     # look for background records
-    sp.bg <- txt.xy %>% dplyr::filter(scientific_name == paste0("bg_", i))
+    sp.bg <- txt.xy %>% dplyr::filter(.data$scientific_name == paste0("bg_", i))
     # if they exist, load them into occsList for the current species
     if(nrow(sp.bg) > 0) {
       occsList[[n]]$bg <- sp.bg
