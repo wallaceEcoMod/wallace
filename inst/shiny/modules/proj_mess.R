@@ -100,7 +100,7 @@ proj_mess_module_map <- function(map, common) {
   map %>% removeControl("proj") %>%
     addLegend("bottomright", pal = legendPal, title = "MESS Values",
               values = rasVals, layerId = 'proj',
-              labFormat = reverseLabels(2, reverse_order=TRUE))
+              labFormat = alfred.reverseLabel(2, reverse_order=TRUE))
   # map model prediction raster and projection polygon
   map %>% clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
     addRasterImage(mess, colors = rasPal, opacity = 0.9,

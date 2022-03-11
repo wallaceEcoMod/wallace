@@ -794,7 +794,7 @@ function(input, output, session) {
             rasPal <- colorNumeric(rasCols, mapPredVals, na.color='transparent')
             legendPal <- colorNumeric(rev(rasCols), mapPredVals, na.color='transparent')
             mapTitle <- "Predicted Suitability<br>(Training)"
-            mapLabFormat <- reverseLabels(2, reverse_order=TRUE)
+            mapLabFormat <- alfred.reverseLabel(2, reverse_order=TRUE)
             mapOpacity <- NULL
           }
           m <- leaflet() %>%
@@ -935,7 +935,7 @@ function(input, output, session) {
             rasPal <- colorNumeric(rasCols, mapProjVals, na.color='transparent')
             legendPal <- colorNumeric(rev(rasCols), mapProjVals, na.color='transparent')
             mapTitle <- "Predicted Suitability<br>(Projected)"
-            mapLabFormat <- reverseLabels(2, reverse_order=TRUE)
+            mapLabFormat <- alfred.reverseLabel(2, reverse_order=TRUE)
             mapOpacity <- NULL
           }
           polyPjXY <- spp[[curSp()]]$project$pjExt@polygons[[1]]@Polygons

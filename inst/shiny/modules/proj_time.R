@@ -562,7 +562,7 @@ proj_time_module_map <- function(map, common) {
       addLegend("bottomright", pal = legendPal,
                 title = "Predicted Suitability<br>(Projected)",
                 values = mapProjVals, layerId = 'proj',
-                labFormat = reverseLabels(2, reverse_order = TRUE))
+                labFormat = alfred.reverseLabel(2, reverse_order = TRUE))
   }
   # map model prediction raster and projection polygon
   map %>% clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%

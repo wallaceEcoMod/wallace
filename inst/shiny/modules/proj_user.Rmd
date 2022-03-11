@@ -40,7 +40,7 @@ m %>%
   leaflet::addLegend("bottomright", pal = legendPal,
             title = "Predicted Suitability<br>(Projected)",
             values = mapProjVals_{{spAbr}}, layerId = 'proj',
-            labFormat = reverseLabels(2, reverse_order = TRUE)) %>%
+            labFormat = alfred.reverseLabel(2, reverse_order = TRUE)) %>%
 # map model prediction raster and projection polygon
   clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
   addRasterImage(proj_userEnvs_{{spAbr}}$projUser, colors = rasPal_{{spAbr}}, opacity = 0.7,
@@ -162,7 +162,7 @@ m %>%
   leaflet::addLegend("bottomright", pal = legendPal,
             title = "Predicted Suitability<br>(Projected)",
             values = mapProjVals_{{spAbr}}, layerId = 'proj',
-            labFormat = reverseLabels(2, reverse_order = TRUE)) %>%
+            labFormat = alfred.reverseLabel(2, reverse_order = TRUE)) %>%
 # map model prediction raster and projection polygon
   clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
   addRasterImage(proj_userEnvs_{{spAbr}}$projUser, colors = rasPal_{{spAbr}}, opacity = 0.7,
@@ -291,7 +291,7 @@ m %>%
   leaflet::addLegend("bottomright", pal = legendPal,
             title = "Predicted Suitability<br>(Projected)",
             values = mapProjVals_{{spAbr}}, layerId = 'proj',
-            labFormat = reverseLabels(2, reverse_order = TRUE)) %>%
+            labFormat = alfred.reverseLabel(2, reverse_order = TRUE)) %>%
 
 # map model prediction raster and projection polygon
   clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%

@@ -357,8 +357,12 @@ alfred.predictMaxnet <- function(mod, envs, clamp, type) {
   return(pred)
 }
 
+#' @title alfred.reverseLabels
+#' @description For internal use. Reverse label in leaflet legends
+#' @param ... labelFormat parameters
+#' @param reverse_order Reverse order or legends
 #' @export
-reverseLabels <- function(..., reverse_order = FALSE) {
+alfred.reverseLabels <- function(..., reverse_order = FALSE) {
   if (reverse_order) {
     function(type = "numeric", cuts) {
       cuts <- sort(cuts, decreasing = TRUE)

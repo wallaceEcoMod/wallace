@@ -242,7 +242,7 @@ vis_mapPreds_module_map <- function(map, common) {
       addLegend("bottomright", pal = legendPal,
                 title = "Predicted Suitability<br>(Training)",
                 values = mapPredVals, layerId = "train",
-                labFormat = reverseLabels(2, reverse_order = TRUE))
+                labFormat = alfred.reverseLabel(2, reverse_order = TRUE))
   }
 
   # function to map all background polygons
