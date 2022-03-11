@@ -83,19 +83,9 @@ tagList(
               "poccsSel", "Modules Available:",
               choices = insert_modules_options("poccs"),
               selected = character(0)
-              #"Profile Occurrences" = "profOccs"), # CM
             ),
             tags$hr(),
             insert_modules_ui("poccs")
-            # CM: start comment
-            # conditionalPanel("input.poccsSel == 'profOccs'",
-            #                  uiTop(profileOccs_INFO),
-            #                  actionButton("goProfileOccs", "Profile Occurrences"), br(), br(),
-            #                  profileOccs_UI('poccs_profileOccs_uiID'),
-            #                  actionButton("goProfileOccsClean", "Clean Occurrences"),
-            #                  uiBottom(profileOccs_INFO)
-            # ),
-            # CM: End comment
           ),
           conditionalPanel(
             "input.tabs == 'penvs'",

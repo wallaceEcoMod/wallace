@@ -348,21 +348,6 @@ function(input, output, session) {
   ### COMPONENT: PROCESS OCCURRENCE DATA ####
   ########################################### #
 
-  # # # # # # # # # # # # # # # # # # # #
-  # module Profile Occurrences ####
-  # # # # # # # # # # # # # # # # # # # #
-  # CM: start comment
-  # observeEvent(input$goProfileOccs, {
-  #   profileOccs <- callModule(profileOccs_MOD, 'poccs_profileOccs_uiID')
-  #   profileOccs()
-  # })
-  #
-  # observeEvent(input$goProfileOccsClean, {
-  #   profileOccsClean <- callModule(profileOccsClean_MOD, 'poccs_profileOccsClean_uiID')
-  #   profileOccsClean()
-  # })
-  # CM: end comment
-
   # # # # # # # # # # # # # # # # # #
   # PROCESS OCCS: other controls ####
   # # # # # # # # # # # # # # # # # #
