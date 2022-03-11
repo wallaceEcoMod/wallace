@@ -90,13 +90,13 @@ alfred.spName <- function(spN) {
   }
 }
 
-#' Add text to a logger
-#'
+#' @title alfred.writeLog
+#' @description For internal use. Add text to a logger
 #' @param logger The logger to write the text to. Can be NULL or a function
 #' @param ... Messages to write to the logger
 #' @param type One of "default", "error", "warning"
 #' @export
-writeLog <- function(logger, ..., type = 'default') {
+alfred.writeLog <- function(logger, ..., type = 'default') {
   if (is.null(logger)) {
     if (type == 'error') {
       stop(paste0(..., collapse = ""), call. = FALSE)
@@ -224,7 +224,7 @@ remEnvsValsNA <- function(occs, occsEnvsVals, sppName, logger) {
   withProgress(message = "Checking for points with NA values and in same cells...", {
     na.rowNums <- which(rowSums(is.na(occsEnvsVals[, -1])) >= 1)
     if (length(na.rowNums) == nrow(occsEnvsVals)) {
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         type = 'error',
         alfred.hlSpp(sppName), paste0('No localities overlay with environmental ',
                                'predictors. For example, all localities may be marine -- please redo with ',
@@ -233,7 +233,7 @@ remEnvsValsNA <- function(occs, occsEnvsVals, sppName, logger) {
       return()
     }
     if (length(na.rowNums) > 0) {
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         type = 'warning',
         alfred.hlSpp(sppName), 'Removed records without environmental values with occIDs: ',
         paste(sort(occs[na.rowNums, "occID"]), collapse = ', '), ".")
@@ -244,7 +244,7 @@ remEnvsValsNA <- function(occs, occsEnvsVals, sppName, logger) {
     occs.dups <- duplicated(occsEnvsVals[, 1])
     if (sum(occs.dups) > 0) {
       logger %>%
-        writeLog(type = 'warning',
+        alfred.writeLog(type = 'warning',
                  alfred.hlSpp(sppName), "Removed ", sum(occs.dups), " localities that ",
                  "shared the same grid cell. occIDs: ",
                  paste(sort(occs[occs.dups, "occID"]), collapse = ', '), ".")

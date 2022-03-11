@@ -43,7 +43,7 @@ envs_userEnvs <- function(rasPath, rasName, doBrick = FALSE, logger = NULL){
   names(rasStack) <- tools::file_path_sans_ext(rasName)
 
   if(is.na(raster::crs(rasStack))) {
-    logger %>% writeLog(
+    logger %>% alfred.writeLog(
       type = "warning",
       paste0('Input rasters have undefined coordinate reference system (CRS). ',
              'Mapping functionality in components Visualize Model Results and ',

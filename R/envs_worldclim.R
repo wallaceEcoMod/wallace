@@ -35,7 +35,7 @@
 
 envs_worldclim <- function(bcRes, bcSel, mapCntr, doBrick, logger = NULL) {
   if(bcRes == '') {
-    logger %>% writeLog(type = 'error', 'Select a raster resolution.')
+    logger %>% alfred.writeLog(type = 'error', 'Select a raster resolution.')
     return()
   }
 
@@ -60,7 +60,7 @@ envs_worldclim <- function(bcRes, bcSel, mapCntr, doBrick, logger = NULL) {
     })
   }
 
-  logger %>% writeLog("WorldClim bioclimatic variables ",
+  logger %>% alfred.writeLog("WorldClim bioclimatic variables ",
                       paste(names(wcbc), collapse = ", "), " at ",
                       bcRes, " arcmin resolution.")
   return(wcbc)

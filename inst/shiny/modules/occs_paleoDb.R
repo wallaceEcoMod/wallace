@@ -35,7 +35,7 @@ occs_paleoDb_module_server <- function(input, output, session, common) {
   observeEvent(input$goPaleoDbOccs, {
     # WARNING ####
     if (input$occsNumPB < 1) {
-      logger %>% writeLog(type = 'warning', "Enter a non-zero number of ocurrences.")
+      logger %>% alfred.writeLog(type = 'warning', "Enter a non-zero number of ocurrences.")
       return()
     }
 

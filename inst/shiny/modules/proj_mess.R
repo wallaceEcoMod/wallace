@@ -20,12 +20,12 @@ proj_mess_module_server <- function(input, output, session, common) {
   observeEvent(input$goEnvSimilarity, {
     # ERRORS ####
     if (is.null(mapProj())) {
-      logger %>% writeLog(type = 'error', 'Transfer to new area or time first.')
+      logger %>% alfred.writeLog(type = 'error', 'Transfer to new area or time first.')
       return()
     }
     if (is.null(spp[[curSp()]]$project$pjExt)) {
       logger %>%
-        writeLog(
+        alfred.writeLog(
           type = 'error',
           "The polygon has not been finished. Please define a polygon."
      )

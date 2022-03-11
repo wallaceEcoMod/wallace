@@ -69,7 +69,7 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
                          numCores = NULL, logger = NULL, spN = NULL) {
 
   if (is.null(user.grp)) {
-    logger %>% writeLog(
+    logger %>% alfred.writeLog(
       type = 'error',
       "Before building a model, please partition occurrences for cross-validation."
     )
@@ -82,7 +82,7 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
     jar <- paste(system.file(package = "dismo"), "/java/maxent.jar", sep = '')
     if (!file.exists(jar)) {
       logger %>%
-        writeLog(
+        alfred.writeLog(
           type = 'error',
           "To use Maxent, make sure you download, ", strong("maxent.jar"),
           " from the ",
@@ -94,7 +94,7 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
     }
 
     if (!requireNamespace('rJava')) {
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         type = "error",
         paste0('Package rJava cannot load. Please download the latest version of ',
                'Java, and make sure it is the correct version (e.g. 64-bit for a ',
@@ -120,7 +120,7 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
     maxentJARversion <- try(rJava::.jcall(mxe, "S", "meversion"))
 
     if (maxentJARversion < "3.4.4") {
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         type = "error",
         "Please, use the updated version of Maxent (v3.4.4). Currently, you are ",
         "using (", maxentJARversion, ")."
@@ -184,7 +184,7 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
   endTxt <- paste("]), using", algMaxent, "with clamping",
                   ifelse(clampSel, "on.", "off."))
 
-  logger %>% writeLog(alfred.hlSpp(spN),
+  logger %>% alfred.writeLog(alfred.hlSpp(spN),
     "Maxent ran successfully and output evaluation ",
     "results for ", nrow(e@results), " models (Regularization multiplier values: [",
     paste(rms.interval, collapse = ", "),"]; Feature classes: [",

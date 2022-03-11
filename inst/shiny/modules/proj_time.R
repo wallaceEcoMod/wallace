@@ -152,7 +152,7 @@ proj_time_module_server <- function(input, output, session, common) {
     # ERRORS ####
     if (is.null(spp[[curSp()]]$visualization$mapPred)) {
       logger %>%
-        writeLog(
+        alfred.writeLog(
           type = 'error',
           'Calculate a model prediction in model component before projecting.'
         )
@@ -161,7 +161,7 @@ proj_time_module_server <- function(input, output, session, common) {
     if (input$projExt == 'pjDraw') {
       if (is.null(spp[[curSp()]]$polyPjXY)) {
         logger %>%
-          writeLog(
+          alfred.writeLog(
             type = 'error',
             paste0("The polygon has not been drawn and finished. Please use the ",
                    "draw toolbar on the left-hand of the map to complete the ",
@@ -172,7 +172,7 @@ proj_time_module_server <- function(input, output, session, common) {
     }
     if (input$projExt == 'pjUser') {
       if (is.null(input$userPjShp$datapath)) {
-        logger %>% writeLog(type = 'error', paste0("Specified filepath(s) "))
+        logger %>% alfred.writeLog(type = 'error', paste0("Specified filepath(s) "))
         return()
       }
     }
@@ -182,10 +182,10 @@ proj_time_module_server <- function(input, output, session, common) {
       polyPj <- proj_draw(spp[[curSp()]]$polyPjXY, spp[[curSp()]]$polyPjID,
                           input$drawPjBuf, logger, spN = curSp())
       if (input$drawPjBuf == 0 ) {
-        logger %>% writeLog(
+        logger %>% alfred.writeLog(
           alfred.hlSpp(curSp()), 'Draw polygon without buffer.')
       } else {
-        logger %>% writeLog(
+        logger %>% alfred.writeLog(
           alfred.hlSpp(curSp()), 'Draw polygon with buffer of ', input$drawPjBuf,
           ' degrees.')
       }
@@ -221,7 +221,7 @@ proj_time_module_server <- function(input, output, session, common) {
 
     if (input$projExt == 'pjCur') {
       polyPj <- spp[[curSp()]]$procEnvs$bgExt
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         alfred.hlSpp(curSp()),
         'Projection extent equal to current extent region.')
     }
@@ -235,19 +235,19 @@ proj_time_module_server <- function(input, output, session, common) {
     # ERRORS ####
     if (is.null(spp[[curSp()]]$visualization$mapPred)) {
       logger %>%
-        writeLog(
+        alfred.writeLog(
           type = 'error',
           'Calculate a model prediction in visualization component before projecting.')
       return()
     }
     if (is.null(spp[[curSp()]]$project$pjExt)) {
-      logger %>% writeLog(type = 'error', 'Select projection extent first.')
+      logger %>% alfred.writeLog(type = 'error', 'Select projection extent first.')
       return()
     }
     envsRes <- raster::res(envs())[1]
     if(envsRes < 0.01) {
       logger %>%
-        writeLog(type = 'error',
+        alfred.writeLog(type = 'error',
                  paste0('Transfer to New Time currently only available with ',
                         'resolutions >30 arc seconds.'))
       return()
@@ -256,7 +256,7 @@ proj_time_module_server <- function(input, output, session, common) {
     if(!all(names(envs()) %in% paste0('bio', sprintf("%02d", 1:19)))) {
       nonBios <- names(envs())[!names(envs()) %in% paste0('bio', sprintf("%02d", 1:19))]
       logger %>%
-        writeLog(type = 'error', alfred.hlSpp(curSp()),
+        alfred.writeLog(type = 'error', alfred.hlSpp(curSp()),
                  "Your model is using non-bioclimatic variables or non-conventional",
                  " names (i.e., ", paste0(nonBios, collapse = ", "),
                  "). You can not transfer to a New Time.")
@@ -276,7 +276,7 @@ proj_time_module_server <- function(input, output, session, common) {
       i <- m[which(input$selGCM == gcms), which(input$selRCP == rcps)]
       if (!i) {
         logger %>%
-          writeLog(type = 'error',
+          alfred.writeLog(type = 'error',
                    paste0('This combination of GCM and RCP is not available. Please ',
                           'make a different selection.'))
         return()
@@ -313,7 +313,7 @@ proj_time_module_server <- function(input, output, session, common) {
     if (!rgeos::gIntersects(spp[[curSp()]]$project$pjExt,
                             methods::as(raster::extent(projTimeEnvs), 'SpatialPolygons'))) {
       logger %>%
-        writeLog(type = 'error', 'Extents do not overlap')
+        alfred.writeLog(type = 'error', 'Extents do not overlap')
       return()
     }
 
@@ -358,13 +358,13 @@ proj_time_module_server <- function(input, output, session, common) {
       }
       projTimeThr <- projTime > thr
       if (input$selTimeVar == 'worldclim') {
-        logger %>% writeLog(alfred.hlSpp(curSp()), "Projection of model to ", paste0('20', input$selTime),
+        logger %>% alfred.writeLog(alfred.hlSpp(curSp()), "Projection of model to ", paste0('20', input$selTime),
                             ' with threshold ', input$threshold, ' (',
                             formatC(thr, format = "e", 2), ") for GCM ",
                             GCMlookup[input$selGCM], " under RCP ",
                             as.numeric(input$selRCP)/10.0, ".")
       } else if (input$selTimeVar == 'ecoclimate') {
-        logger %>% writeLog(alfred.hlSpp(curSp()), "Projection of model to ", input$pjScenario,
+        logger %>% alfred.writeLog(alfred.hlSpp(curSp()), "Projection of model to ", input$pjScenario,
                             ' with threshold ', input$threshold, ' (',
                             formatC(thr, format = "e", 2), ") for GCM ",
                             input$pjAOGCM, ".")
@@ -372,11 +372,11 @@ proj_time_module_server <- function(input, output, session, common) {
     } else {
       projTimeThr <- projTime
       if (input$selTimeVar == 'worldclim') {
-        logger %>% writeLog(alfred.hlSpp(curSp()), "Projection of model to ", paste0('20', input$selTime),
+        logger %>% alfred.writeLog(alfred.hlSpp(curSp()), "Projection of model to ", paste0('20', input$selTime),
                             ' with ', predType, " output for GCM ", GCMlookup[input$selGCM],
                             " under RCP ", as.numeric(input$selRCP)/10.0, ".")
       } else if (input$selTimeVar == 'ecoclimate') {
-        logger %>% writeLog(alfred.hlSpp(curSp()), "Projection of model to ", input$pjScenario,
+        logger %>% alfred.writeLog(alfred.hlSpp(curSp()), "Projection of model to ", input$pjScenario,
                             ' with ', predType, " output for GCM ", input$pjAOGCM, ".")
       }
     }
@@ -480,7 +480,7 @@ proj_time_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$polyPjXY <- NULL
     spp[[curSp()]]$polyPjID <- NULL
     spp[[curSp()]]$project <- NULL
-    logger %>% writeLog("Reset projection extent.")
+    logger %>% alfred.writeLog("Reset projection extent.")
   })
 
   return(list(

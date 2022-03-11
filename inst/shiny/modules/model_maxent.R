@@ -84,19 +84,19 @@ model_maxent_module_server <- function(input, output, session, common) {
 
   observeEvent(input$goMaxent, {
     if(is.null(input$fcs)) {
-      logger %>% writeLog(type = 'error', "No feature classes selected.")
+      logger %>% alfred.writeLog(type = 'error', "No feature classes selected.")
       return()
     }
     if(input$clamp == "") {
-      logger %>% writeLog(type = 'error', "Please specify clamping setting.")
+      logger %>% alfred.writeLog(type = 'error', "Please specify clamping setting.")
       return()
     }
     if(input$parallel == "") {
-      logger %>% writeLog(type = 'error', "Please specify parallel setting.")
+      logger %>% alfred.writeLog(type = 'error', "Please specify parallel setting.")
       return()
     }
     if(input$rmsStep <= 0) {
-      logger %>% writeLog(type = 'error', "Please specify a positive multiplier step value that is greater than 0.")
+      logger %>% alfred.writeLog(type = 'error', "Please specify a positive multiplier step value that is greater than 0.")
       return()
     }
 
@@ -107,7 +107,7 @@ model_maxent_module_server <- function(input, output, session, common) {
     for(sp in spLoop) {
       # ERRORS ####
       if (is.null(spp[[sp]]$occs$partition)) {
-        logger %>% writeLog(type = 'error', alfred.hlSpp(sp),
+        logger %>% alfred.writeLog(type = 'error', alfred.hlSpp(sp),
                             "Before building a model, please partition ",
                             "occurrences for cross-validation.")
         return()

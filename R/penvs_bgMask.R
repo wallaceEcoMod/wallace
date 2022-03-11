@@ -44,7 +44,7 @@
 
 penvs_bgMask <- function(occs, envs, bgExt, logger = NULL, spN = NULL) {
   if (is.null(bgExt)) {
-    logger %>% writeLog(type = 'error', alfred.hlSpp(spN),
+    logger %>% alfred.writeLog(type = 'error', alfred.hlSpp(spN),
                         "Before sampling background points, define the background extent.")
     return()
   }
@@ -54,7 +54,7 @@ penvs_bgMask <- function(occs, envs, bgExt, logger = NULL, spN = NULL) {
     bgMask <- raster::mask(bgCrop, bgExt)
   })
 
-  logger %>% writeLog(alfred.hlSpp(spN), 'Environmental data masked.')
+  logger %>% alfred.writeLog(alfred.hlSpp(spN), 'Environmental data masked.')
 
   return(bgMask)
 }

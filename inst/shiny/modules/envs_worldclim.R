@@ -60,14 +60,14 @@ envs_worldclim_module_server <- function(input, output, session, common) {
   observeEvent(input$goEnvData, {
     # ERRORS ####
     if (is.null(curSp())) {
-      logger %>% writeLog(type = 'error',
+      logger %>% alfred.writeLog(type = 'error',
       "Before obtaining environmental variables, obtain occurrence data in 'Occ Data' component.")
       return()
     }
     # Specify more than 2 variables
     if (length(bcSel()) < 2) {
       logger %>%
-        writeLog(
+        alfred.writeLog(
           type = 'error',
           "Select more than two variables.")
       return()
@@ -107,7 +107,7 @@ envs_worldclim_module_server <- function(input, output, session, common) {
         return()
       }
 
-      logger %>% writeLog(alfred.hlSpp(sp), "Worldclim variables ready to use.")
+      logger %>% alfred.writeLog(alfred.hlSpp(sp), "Worldclim variables ready to use.")
 
       # LOAD INTO SPP ####
       # add reference to WorldClim bioclim data

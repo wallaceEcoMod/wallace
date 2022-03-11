@@ -142,7 +142,7 @@ remEnvsValsNA <- function(occs, occsEnvsVals, sppName, logger) {
   withProgress(message = "Checking for points with NA values and in same cells...", {
     na.rowNums <- which(rowSums(is.na(occsEnvsVals[, -1])) >= 1)
     if (length(na.rowNums) == nrow(occsEnvsVals)) {
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         type = 'error',
         alfred.hlSpp(sppName), paste0('No localities overlay with environmental ',
                                'predictors. For example, all localities may be marine -- please redo with ',
@@ -151,7 +151,7 @@ remEnvsValsNA <- function(occs, occsEnvsVals, sppName, logger) {
       return()
     }
     if (length(na.rowNums) > 0) {
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         type = 'warning',
         alfred.hlSpp(sppName), 'Removed records without environmental values with occIDs: ',
         paste(sort(occs[na.rowNums, "occID"]), collapse = ', '), ".")
@@ -162,7 +162,7 @@ remEnvsValsNA <- function(occs, occsEnvsVals, sppName, logger) {
     occs.dups <- duplicated(occsEnvsVals[, 1])
     if (sum(occs.dups) > 0) {
       logger %>%
-        writeLog(type = 'warning',
+        alfred.writeLog(type = 'warning',
                  alfred.hlSpp(sppName), "Removed ", sum(occs.dups), " localities that ",
                  "shared the same grid cell. occIDs: ",
                  paste(sort(occs[occs.dups, "occID"]), collapse = ', '), ".")

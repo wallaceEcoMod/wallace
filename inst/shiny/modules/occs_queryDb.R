@@ -62,13 +62,13 @@ occs_queryDb_module_server <- function(input, output, session, common) {
     # WARNING ####
     if (input$occsDb != "bien") {
       if (input$occsDb != "gbif" & input$occsNum < 1) {
-        logger %>% writeLog(type = 'warning',
+        logger %>% alfred.writeLog(type = 'warning',
                             "Enter a non-zero number of occurrences.")
         return()
       }
       if (input$occsDb == "gbif" & input$occsNum < 1 &
           input$doCitations == FALSE) {
-        logger %>% writeLog(type = 'warning',
+        logger %>% alfred.writeLog(type = 'warning',
                             "Enter a non-zero number of occurrences.")
         return()
       }

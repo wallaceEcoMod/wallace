@@ -32,7 +32,7 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
   nameSplit <- length(unlist(strsplit(spName, " ")))
   # if two names not entered, throw error and return
   if (nameSplit != 2) {
-    logger %>% writeLog(type = 'error',
+    logger %>% alfred.writeLog(type = 'error',
       'Please input both genus and species names of ONE species.')
     return()
   }
@@ -50,7 +50,7 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
   # if (occDb == "PaleobioDB") {
   #
   #   if (timeInterval == "LGM") {
-  #     logger %>% writeLog(type = 'error',
+  #     logger %>% alfred.writeLog(type = 'error',
   #       'PaleobioDB does not have separate LGM records. You can only download Holocene records.')
   #     return()
   #   } else if (timeInterval == "Holo") {
@@ -80,7 +80,7 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
   # }
 
   if (class(occsOrig) == "try-error") {
-    logger %>% writeLog(
+    logger %>% alfred.writeLog(
       type = 'error',
       alfred.hlSpp(alfred.hlSpp(alfred.fmtSpN(spName))), "No records found, please check the spelling.")
     return()
@@ -105,7 +105,7 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
   # all plaeobioDB recors have coords, so this warning is commented until future database
   # occsXY <-  occsOrig[!is.na(occsOrig$longitude) & !is.na(occsOrig$latitude),]
   # if (nrow(occsXY) == 0) {
-  #   logger %>% writeLog(
+  #   logger %>% alfred.writeLog(
   #     type = 'warning',
   #     alfred.hlSpp(spName), "No records with coordinates found in paleobioDB.")
   # }
@@ -127,7 +127,7 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
 
   dupsRem <- nrow(occsXY) - nrow(occs)
-  logger %>% writeLog(
+  logger %>% alfred.writeLog(
     alfred.hlSpp(alfred.fmtSpN(spName)), 'Total paleobioDb records returned [', nrow(occsOrig),
     '] (limit ', occNum, '). Records without coordinates removed [',
     noCoordsRem, ']. Duplicated records removed [', dupsRem,

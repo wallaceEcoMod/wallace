@@ -13,7 +13,7 @@ espace_nicheOv_module_server <- function(input, output, session, common) {
 
   observeEvent(input$goNicheOv, {
     if (length(curSp()) != 2) {
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         type = "error",
         "Please select two species to run the niche overlap module."
       )
@@ -21,7 +21,7 @@ espace_nicheOv_module_server <- function(input, output, session, common) {
     }
     mspName <- paste(curSp(), collapse = ".")
     if (is.null(spp[[mspName]])) {
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         type = "error",
         paste0("Please run PCA and occurrence density with two species before",
                " running the niche overlap module.")
@@ -30,7 +30,7 @@ espace_nicheOv_module_server <- function(input, output, session, common) {
     }
     # if a multispecies analysis has been run, but not occDens
     if (is.null(spp[[mspName]]$occDens)) {
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         type = "error",
         paste0("Please run occurrence density with two species before running",
                " the niche overlap module.")

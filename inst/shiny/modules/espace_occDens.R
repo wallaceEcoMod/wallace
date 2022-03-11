@@ -15,7 +15,7 @@ espace_occDens_module_server <- function(input, output, session, common) {
   observeEvent(input$goOccDens, {
     # ERRORS ####
     if (length(curSp()) != 2) {
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         type = "error",
         "Please select two species to run the occurrence density grid module."
       )
@@ -24,7 +24,7 @@ espace_occDens_module_server <- function(input, output, session, common) {
     # if no multispecies analysis has been run yet
     mspName <- paste(curSp(), collapse = ".")
     if (is.null(spp[[mspName]])) {
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         type = "error",
         "Please run PCA with two species before running the occurrence density grid module."
       )
@@ -32,7 +32,7 @@ espace_occDens_module_server <- function(input, output, session, common) {
     }
     # if a multispecies analysis has been run, but not PCA
     if (is.null(spp[[mspName]]$pca)) {
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         type = "error",
         "Please run PCA with two species before running the occurrence density grid module."
       )

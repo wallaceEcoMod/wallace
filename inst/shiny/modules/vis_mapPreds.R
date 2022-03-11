@@ -49,14 +49,14 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
   observeEvent(input$goMapPreds, {
     # ERRORS ####
     if(is.null(evalOut())) {
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         type = 'error',
         "Models must be run before visualizing model predictions.")
       return()
     }
 
     if(is.na(input$threshold)) {
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         type = 'error', "Please select a thresholding rule.")
       return()
     }
@@ -65,7 +65,7 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
     predSel <- evalOut()@predictions[[curModel()]]
     raster::crs(predSel) <- raster::crs(bgMask())
     if(is.na(raster::crs(predSel))) {
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         type = "error",
         paste0("Model prediction raster has undefined coordinate reference ",
                "system (CRS), and thus cannot be mapped. This is likely due to",
@@ -144,7 +144,7 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
       nameAlg <- ifelse(spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM",
                         "",
                         paste0(" ", spp[[curSp()]]$rmm$model$algorithms, " "))
-      logger %>% writeLog(alfred.hlSpp(curSp()),
+      logger %>% alfred.writeLog(alfred.hlSpp(curSp()),
                           input$threshold, ' threshold selected for ', nameAlg, predType,
                           ' (', formatC(thr.sel, format = "e", 2), ').')
     } else {
@@ -153,14 +153,14 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
 
     # write to log box
     if (predType == 'BIOCLIM') {
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         alfred.hlSpp(curSp()), "BIOCLIM model prediction plotted.")
     } else if (input$threshold != 'none'){
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         alfred.hlSpp(curSp()), spp[[curSp()]]$rmm$model$algorithms,
         " model prediction plotted.")
     } else if (input$threshold == 'none'){
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         alfred.hlSpp(curSp()), spp[[curSp()]]$rmm$model$algorithms, " ",
         predType, " model prediction plotted.")
     }

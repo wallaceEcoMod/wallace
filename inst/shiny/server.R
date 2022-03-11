@@ -769,7 +769,7 @@ function(input, output, session) {
           req(mapPred())
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
-              writeLog(type = "error", "To download PNG prediction, you're required to",
+              alfred.writeLog(type = "error", "To download PNG prediction, you're required to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in you are R console.")
           }
@@ -823,7 +823,7 @@ function(input, output, session) {
         }
       } else {
         logger %>%
-          writeLog("Please install the rgdal package before downloading rasters.")
+          alfred.writeLog("Please install the rgdal package before downloading rasters.")
       }
     }
   )
@@ -910,7 +910,7 @@ function(input, output, session) {
           req(mapProj())
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
-              writeLog(type = "error", "To download PNG prediction, you're required to",
+              alfred.writeLog(type = "error", "To download PNG prediction, you're required to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in you are R console.")
           }
@@ -966,7 +966,7 @@ function(input, output, session) {
           file.rename(r@file@name, file)
         }
       } else {
-        logger %>% writeLog("Please install the rgdal package before downloading rasters.")
+        logger %>% alfred.writeLog("Please install the rgdal package before downloading rasters.")
       }
     }
   )
@@ -988,7 +988,7 @@ function(input, output, session) {
         if (input$messFileType == 'png') {
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
-              writeLog(type = "error", "To download PNG prediction, you're required to",
+              alfred.writeLog(type = "error", "To download PNG prediction, you're required to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in you are R console.")
           }
@@ -1037,7 +1037,7 @@ function(input, output, session) {
           file.rename(r@file@name, file)
         }
       } else {
-        logger %>% writeLog("Please install the rgdal package before downloading rasters.")
+        logger %>% alfred.writeLog("Please install the rgdal package before downloading rasters.")
       }
     }
   )

@@ -70,13 +70,13 @@ proj_area_module_server <- function(input, output, session, common) {
   observeEvent(input$goProjExtArea, {
     # ERRORS ####
     if (is.null(spp[[curSp()]]$visualization$mapPred)) {
-      logger %>% writeLog(type = 'error',
+      logger %>% alfred.writeLog(type = 'error',
           'Calculate a model prediction in model component before projecting.')
       return()
     }
     if (input$projExt == 'pjDraw') {
       if (is.null(spp[[curSp()]]$polyPjXY)) {
-        logger %>% writeLog(type = 'error',
+        logger %>% alfred.writeLog(type = 'error',
             paste0("The polygon has not been drawn and finished. Please use the ",
                    "draw toolbar on the left-hand of the map to complete the ",
                    "polygon."))
@@ -85,7 +85,7 @@ proj_area_module_server <- function(input, output, session, common) {
     }
     if (input$projExt == 'pjUser') {
       if (is.null(input$userPjShp$datapath)) {
-        logger %>% writeLog(type = 'error', "Specified filepath(s) ")
+        logger %>% alfred.writeLog(type = 'error', "Specified filepath(s) ")
         return()
       }
     }
@@ -95,10 +95,10 @@ proj_area_module_server <- function(input, output, session, common) {
       polyPj <- proj_draw(spp[[curSp()]]$polyPjXY, spp[[curSp()]]$polyPjID,
                           input$drawPjBuf, logger, spN = curSp())
       if (input$drawPjBuf == 0 ) {
-        logger %>% writeLog(
+        logger %>% alfred.writeLog(
           alfred.hlSpp(curSp()), 'Draw polygon without buffer.')
       } else {
-        logger %>% writeLog(
+        logger %>% alfred.writeLog(
           alfred.hlSpp(curSp()), 'Draw polygon with buffer of ', input$drawPjBuf,
           ' degrees.')
       }
@@ -119,7 +119,7 @@ proj_area_module_server <- function(input, output, session, common) {
                               methods::as(raster::extent(userProjEnvs),
                                           'SpatialPolygons'))) {
         logger %>%
-          writeLog(type = 'error', 'Extents do not overlap')
+          alfred.writeLog(type = 'error', 'Extents do not overlap')
         return()
       }
       # METADATA ####
@@ -151,19 +151,19 @@ proj_area_module_server <- function(input, output, session, common) {
     # ERRORS ####
     if (is.null(spp[[curSp()]]$visualization$mapPred)) {
       logger %>%
-        writeLog(type = 'error',
+        alfred.writeLog(type = 'error',
                  'Calculate a model prediction in model component before projecting.')
       return()
     }
     if (is.null(spp[[curSp()]]$project$pjExt)) {
-      logger %>% writeLog(type = 'error', 'Select projection extent first.')
+      logger %>% alfred.writeLog(type = 'error', 'Select projection extent first.')
       return()
     }
     # Check that the extents of raster and projection extent intersects
     if (!rgeos::gIntersects(spp[[curSp()]]$project$pjExt,
                             methods::as(raster::extent(envs()), 'SpatialPolygons'))) {
       logger %>%
-        writeLog(type = 'error', 'Extents do not overlap')
+        alfred.writeLog(type = 'error', 'Extents do not overlap')
       return()
     }
 
@@ -206,11 +206,11 @@ proj_area_module_server <- function(input, output, session, common) {
         thr <- stats::quantile(occPredVals, probs = input$trainPresQuantile)
       }
       projAreaThr <- projArea > thr
-      logger %>% writeLog(alfred.hlSpp(curSp()), "Projection of model to new area with threshold ",
+      logger %>% alfred.writeLog(alfred.hlSpp(curSp()), "Projection of model to new area with threshold ",
                           input$threshold, ' (', formatC(thr, format = "e", 2), ').')
     } else {
       projAreaThr <- projArea
-      logger %>% writeLog(alfred.hlSpp(curSp()), "Projection of model to new area with ",
+      logger %>% alfred.writeLog(alfred.hlSpp(curSp()), "Projection of model to new area with ",
                           predType, ' output.')
     }
     raster::crs(projAreaThr) <- raster::crs(envs())
@@ -273,7 +273,7 @@ proj_area_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$polyPjXY <- NULL
     spp[[curSp()]]$polyPjID <- NULL
     spp[[curSp()]]$project <- NULL
-    logger %>% writeLog("Reset projection extent.")
+    logger %>% alfred.writeLog("Reset projection extent.")
   })
 
   return(list(

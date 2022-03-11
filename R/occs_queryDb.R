@@ -60,7 +60,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
   # if two names not entered, throw error and return
   if (!all(namesSplitCheck)) {
     logger %>%
-      writeLog(type = 'error', 'Please input both genus and species names.')
+      alfred.writeLog(type = 'error', 'Please input both genus and species names.')
     return()
   }
 
@@ -79,7 +79,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
           myOccCitations <- NULL
         } else if (doCitations == TRUE) {
           if(any(unlist(lapply(list(gbifUser, gbifEmail, gbifPW), is.null)))) {
-            logger %>% writeLog(
+            logger %>% alfred.writeLog(
               type = 'error',
               paste0('Please specify your GBIF username, email, and password. ',
               'This is needed to get citations for occurrence records. Wallace ',
@@ -90,7 +90,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
           login <- occCite::GBIFLoginManager(user = gbifUser, email = gbifEmail,
                                              pwd = gbifPW)
           if (is.null(login)) {
-            logger %>% writeLog(
+            logger %>% alfred.writeLog(
               type = 'error',
               "There is an error in your GBIF credentials. Please check them"
             )
@@ -101,7 +101,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
           inputMatch <- as.character(nameGBIF@cleanedTaxonomy$`Input Name`)
           if (bestMatch == "No match") {
             logger %>%
-              writeLog(
+              alfred.writeLog(
                 type = "error",
                 alfred.hlSpp(alfred.fmtSpN(sp)),
                 "There is no match in GBIF database. Please check the spelling."
@@ -110,7 +110,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
           }
           if (bestMatch != inputMatch) {
             logger %>%
-              writeLog(
+              alfred.writeLog(
                 type = 'warning',
                 alfred.hlSpp(inputMatch),
                 "There is no a stricly match in the GBIF search. Data ",
@@ -148,7 +148,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
                             "%d %B %Y")
           citeGBIF <- list(doi = doiGBIF, date = dateDOI)
           logger %>%
-            writeLog(
+            alfred.writeLog(
               alfred.hlSpp(alfred.fmtSpN(sp)),
               " #CiteTheDOI: Gbif.org (", dateDOI,
               ") GBIF Ocurrence Download https://doi.org/", doiGBIF
@@ -170,7 +170,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
     # if species not found, print message to log box and return
     if (q[[occDb]]$meta$found == 0) {
       logger %>%
-        writeLog(type = 'error',
+        alfred.writeLog(type = 'error',
                  alfred.hlSpp(alfred.fmtSpN(sp)),
                  'No records found. Please check the spelling.')
       next
@@ -190,7 +190,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
 
     # if no records with coordinates, throw warning
     if (nrow(occsXY) == 0) {
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         type = 'warning',
         alfred.hlSpp(alfred.fmtSpN(sp)),
         'No records with coordinates found in ', occDb, ". ")
@@ -266,7 +266,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
       occs <- occs[!is.na(occs$uncertainty), ]
       noUncertainRem<- nrow(occsOrig) - (nrow(occs)+noCoordsRem)
       if(nrow(occs)==0){
-        logger %>% writeLog(
+        logger %>% alfred.writeLog(
           type = 'warning',
           alfred.hlSpp(alfred.fmtSpN(sp)),
           'No records with coordinate uncertainty information found in ', occDb, ".")
@@ -296,7 +296,7 @@ occs <- occs[!dups,]
 
    if (RmUncertain == TRUE) {
      logger %>%
-       writeLog(alfred.hlSpp(alfred.fmtSpN(sp)), 'Total ', occDb, ' records returned [',
+       alfred.writeLog(alfred.hlSpp(alfred.fmtSpN(sp)), 'Total ', occDb, ' records returned [',
                 nrow(occsOrig), '] out of [', totRows, '] total',
                 if (!(doCitations | occDb == 'bien')) {paste0(' (limit ', occNum,')')},
                 '. Records without coordinates removed [', noCoordsRem,
@@ -305,7 +305,7 @@ occs <- occs[!dups,]
                 ']. Remaining records [', nrow(occs), '].')
    }
     else {logger %>%
-      writeLog(alfred.hlSpp(alfred.fmtSpN(sp)), 'Total ', occDb, ' records returned [',
+      alfred.writeLog(alfred.hlSpp(alfred.fmtSpN(sp)), 'Total ', occDb, ' records returned [',
                nrow(occsOrig), '] out of [', totRows, '] total',
                if (!(doCitations | occDb == 'bien')) {paste0(' (limit ', occNum,')')},
                '. Records without coordinates removed [', noCoordsRem,

@@ -42,7 +42,7 @@ proj_userExtent <- function(bgShp_path, bgShp_name, userBgBuf,
   } else if ('shp' %in% exts) {
     if (length(exts) < 3) {
       logger %>%
-        writeLog(type = 'error',
+        alfred.writeLog(type = 'error',
                  paste0('If entering a shapefile, please select all the ',
                         'following files: .shp, .shx, .dbf.'))
       return()
@@ -56,7 +56,7 @@ proj_userExtent <- function(bgShp_path, bgShp_name, userBgBuf,
     bgExt <- rgdal::readOGR(file.path(pathdir, bgShp_name)[i])
   } else {
     logger %>%
-      writeLog(type = 'error',
+      alfred.writeLog(type = 'error',
                paste0('Please enter either a CSV file of vertex coordinates ',
                       'or shapefile (.shp, .shx, .dbf).'))
     return()
@@ -67,10 +67,10 @@ proj_userExtent <- function(bgShp_path, bgShp_name, userBgBuf,
     bgExt <- methods::as(bgExt, "SpatialPolygonsDataFrame")
   }
   if (userBgBuf > 0) {
-    logger %>% writeLog(alfred.hlSpp(spN), 'Projection extent user-defined polygon buffered by ',
+    logger %>% alfred.writeLog(alfred.hlSpp(spN), 'Projection extent user-defined polygon buffered by ',
                         userBgBuf, ' degrees.')
   } else {
-    logger %>% writeLog(alfred.hlSpp(spN), "Projection extent: user-defined polygon.")
+    logger %>% alfred.writeLog(alfred.hlSpp(spN), "Projection extent: user-defined polygon.")
   }
   return(bgExt)
 }

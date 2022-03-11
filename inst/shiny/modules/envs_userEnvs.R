@@ -27,18 +27,18 @@ envs_userEnvs_module_server <- function(input, output, session, common) {
   observeEvent(input$goUserEnvs, {
     # ERRORS ####
     if (is.null(curSp())) {
-      logger %>% writeLog(type = 'error', "Before obtaining environmental variables,
+      logger %>% alfred.writeLog(type = 'error', "Before obtaining environmental variables,
                              obtain occurrence data in 'Occ Data' component.")
       return()
     }
     if (is.null(input$userEnvs)) {
-      logger %>% writeLog(type = 'error', "Raster files not uploaded.")
+      logger %>% alfred.writeLog(type = 'error', "Raster files not uploaded.")
       return()
     }
     # Specify more than 2 variables
     if (length(input$userEnvs$name) < 2) {
       logger %>%
-        writeLog(
+        alfred.writeLog(
           type = 'error',
           "Select more than two variables.")
       return()
@@ -80,7 +80,7 @@ envs_userEnvs_module_server <- function(input, output, session, common) {
         return()
       }
 
-      logger %>% writeLog(alfred.hlSpp(sp), "User specified variables (",
+      logger %>% alfred.writeLog(alfred.hlSpp(sp), "User specified variables (",
                           paste(names(userEnvs), collapse = ", "),
                           ") ready to use.")
 

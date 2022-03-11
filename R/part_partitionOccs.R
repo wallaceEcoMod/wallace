@@ -55,7 +55,7 @@ part_partitionOccs <- function(occs, bg, method, kfolds = NULL, bgMask = NULL,
                                aggFact = NULL, logger = NULL, spN = NULL) {
 
   if (method == '') {
-    logger %>% writeLog(type = 'error', "Please select a partitioning option.")
+    logger %>% alfred.writeLog(type = 'error', "Please select a partitioning option.")
     return()
   }
 
@@ -64,43 +64,43 @@ part_partitionOccs <- function(occs, bg, method, kfolds = NULL, bgMask = NULL,
 
   if (method == 'jack') {
     group.data <- ENMeval::get.jackknife(occs.xy, bg.xy)
-    logger %>% writeLog(alfred.hlSpp(spN), "Occurrences partitioned by jackknife method.")
+    logger %>% alfred.writeLog(alfred.hlSpp(spN), "Occurrences partitioned by jackknife method.")
   }
 
   if (method == 'rand') {
     if(is.null(kfolds)) {
-      logger %>% writeLog(type = 'error', alfred.hlSpp(spN),
+      logger %>% alfred.writeLog(type = 'error', alfred.hlSpp(spN),
                           "Please specify a kfold value to use the random partition function.")
       return()
     }
     if (kfolds < 2) {
-      logger %>% writeLog(type = 'error', alfred.hlSpp(spN),
+      logger %>% alfred.writeLog(type = 'error', alfred.hlSpp(spN),
                           "Please specify a kfold value greater than 1.")
       return()
     }
     group.data <- ENMeval::get.randomkfold(occs.xy, bg.xy, kfolds)
-    logger %>% writeLog(alfred.hlSpp(spN),
+    logger %>% alfred.writeLog(alfred.hlSpp(spN),
                         "Occurrences partitioned by random k-fold (k = ", kfolds, ").")
   }
 
   if (method == 'block') {
     group.data <- ENMeval::get.block(occs.xy, bg.xy)
-    logger %>% writeLog(alfred.hlSpp(spN), "Occurrences partitioned by block method.")
+    logger %>% alfred.writeLog(alfred.hlSpp(spN), "Occurrences partitioned by block method.")
   }
 
   if (method == 'cb1' | method == 'cb2') {
     if(is.null(aggFact)) {
-      logger %>% writeLog(type = 'error', alfred.hlSpp(spN),
+      logger %>% alfred.writeLog(type = 'error', alfred.hlSpp(spN),
                           "Please specify an aggregation factor to use checkerboard partition functions.")
       return()
     }
     if(is.na(aggFact) | aggFact <= 1) {
-      logger %>% writeLog(type = 'error', alfred.hlSpp(spN),
+      logger %>% alfred.writeLog(type = 'error', alfred.hlSpp(spN),
                           "Please specify a positive aggregation factor greater than 1.")
       return()
     }
     if(is.null(bgMask)) {
-      logger %>% writeLog(type = 'error', alfred.hlSpp(spN),
+      logger %>% alfred.writeLog(type = 'error', alfred.hlSpp(spN),
                           "Please specify a background mask to use checkerboard partition functions.")
       return()
     }
@@ -112,7 +112,7 @@ part_partitionOccs <- function(occs, bg, method, kfolds = NULL, bgMask = NULL,
       group.data <- ENMeval::get.checkerboard1(occs.xy, bgMask, bg.xy, aggFact)
     })
 
-    logger %>% writeLog(alfred.hlSpp(spN),
+    logger %>% alfred.writeLog(alfred.hlSpp(spN),
                         "Occurrences partitioned by checkerboard 1 method with ",
                         "aggregation factor ", aggFact, ".")
   }
@@ -122,7 +122,7 @@ part_partitionOccs <- function(occs, bg, method, kfolds = NULL, bgMask = NULL,
       group.data <- ENMeval::get.checkerboard2(occs.xy, bgMask, bg.xy, aggFact)
     })
 
-    logger %>% writeLog(alfred.hlSpp(spN),
+    logger %>% alfred.writeLog(alfred.hlSpp(spN),
                         "Occurrences partitioned by checkerboard 2 method with ",
                         "aggregation factor ", aggFact, ".")
   }

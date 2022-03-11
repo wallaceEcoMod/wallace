@@ -53,7 +53,7 @@ envs_ecoclimate_module_server <- function(input, output, session, common) {
   observeEvent(input$goEcoClimData, {
     # WARNING ####
     if (is.null(curSp())) {
-      logger %>% writeLog(type = 'error',
+      logger %>% alfred.writeLog(type = 'error',
                           paste0("Before obtaining environmental variables, ",
                                  "obtain occurrence data in 'Occ Data' component."))
       return()
@@ -61,7 +61,7 @@ envs_ecoclimate_module_server <- function(input, output, session, common) {
     # Specify more than 2 variables
     if (length(ecoClimSel()) < 2) {
       logger %>%
-        writeLog(
+        alfred.writeLog(
           type = 'error',
           "Select more than two variables.")
       return()
@@ -99,7 +99,7 @@ envs_ecoclimate_module_server <- function(input, output, session, common) {
         return()
       }
 
-      logger %>% writeLog(alfred.hlSpp(sp), "EcoClimate variables ready to use.")
+      logger %>% alfred.writeLog(alfred.hlSpp(sp), "EcoClimate variables ready to use.")
 
       # LOAD INTO SPP ####
       spp[[sp]]$envs <- nmEcoClimate

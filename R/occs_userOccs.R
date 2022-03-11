@@ -44,7 +44,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
                                            sep = txtSep, dec = txtDec),
                   error = function(e) "error")
   if (class(txt) == "character") {
-    logger %>% writeLog(
+    logger %>% alfred.writeLog(
       type = "error",
       paste0("There is something wrong in your file. Check file format or ",
              "delimiter and decimal separators."))
@@ -53,7 +53,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
 
   # check to make sure all column names are correct
   if (length(which(c('scientific_name', 'longitude', 'latitude') == names(txt)))!=3) {
-    logger %>% writeLog(
+    logger %>% alfred.writeLog(
       type = "error",
       paste0('Please input a file with columns "scientific_name", ',
              '"longitude", "latitude" in that order or check delimeter and decimal ',
@@ -80,7 +80,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
   # if two names not entered, throw error and return
   if (!all(namesSplitCheck)) {
     logger %>%
-      writeLog(type = 'error',
+      alfred.writeLog(type = 'error',
                paste0('Please input just genus and species epithet in scientific',
                       ' name field in your file (e.g., "Canis lupus").'))
     return()
@@ -88,14 +88,14 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
 
 
   if (nrow(occs) == 0) {
-    logger %>% writeLog(type = 'warning',
+    logger %>% alfred.writeLog(type = 'warning',
       'No records with coordinates found in ', txtName, ".")
     return()
   }
 
   # Check that longitude and latitude are numeric
   else if (!is.numeric(txt$longitude) | !is.numeric(txt$latitude)) {
-    logger %>% writeLog(
+    logger %>% alfred.writeLog(
       type = "error",
       paste0('Please input txt file. No all values in longitude or latitude are numeric.'))
     return()
@@ -145,7 +145,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
     # subset by key columns and make id and popup columns
     dupsRem <- nrow(sp.occs) - nrow(occs)
 
-    logger %>% writeLog(
+    logger %>% alfred.writeLog(
       alfred.hlSpp(n), "Data uploaded from <i>'", txtName,
       "'</i>: Duplicated records removed [",
       dupsRem, "]. Remaining records [", nrow(occs), "].")
@@ -155,7 +155,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
     # if they exist, load them into occsList for the current species
     if(nrow(sp.bg) > 0) {
       occsList[[n]]$bg <- sp.bg
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         alfred.hlSpp(n), "Data for uploaded from <i>'", txtName, "'</i>: ",
         nrow(sp.bg), " background records.")
     }

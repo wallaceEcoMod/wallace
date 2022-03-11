@@ -70,11 +70,11 @@ proj_time <- function(evalOut, curModel, envs, pjExt, alg, outputType = NULL,
                       clamp = NULL, logger = NULL, spN = NULL) {
   newPoly <- pjExt
   if (alg == 'BIOCLIM') {
-    logger %>% writeLog(alfred.hlSpp(spN), 'Projection in time for BIOCLIM model.')
+    logger %>% alfred.writeLog(alfred.hlSpp(spN), 'Projection in time for BIOCLIM model.')
   } else if (alg == 'maxent.jar'| clamp == TRUE) {
-    logger %>% writeLog(alfred.hlSpp(spN), 'Projection in time for clamped model ', curModel, '.')
+    logger %>% alfred.writeLog(alfred.hlSpp(spN), 'Projection in time for clamped model ', curModel, '.')
   } else if (clamp == FALSE) {
-    logger %>% writeLog(alfred.hlSpp(spN), 'New time projection for unclamped model' , curModel, '.')
+    logger %>% alfred.writeLog(alfred.hlSpp(spN), 'New time projection for unclamped model' , curModel, '.')
   }
 
 

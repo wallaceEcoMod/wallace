@@ -106,7 +106,7 @@ proj_user_module_server <- function(input, output, session, common) {
     # ERRORS ####
     if (is.null(spp[[curSp()]]$visualization$mapPred)) {
       logger %>%
-        writeLog(
+        alfred.writeLog(
           type = 'error',
           'Calculate a model prediction in model component before projecting.'
         )
@@ -115,7 +115,7 @@ proj_user_module_server <- function(input, output, session, common) {
     if (input$projExt == 'pjDraw') {
       if (is.null(spp[[curSp()]]$polyPjXY)) {
         logger %>%
-          writeLog(
+          alfred.writeLog(
             type = 'error',
             paste0("The polygon has not been drawn and finished. Please use the ",
                    "draw toolbar on the left-hand of the map to complete the ",
@@ -126,7 +126,7 @@ proj_user_module_server <- function(input, output, session, common) {
     }
     if (input$projExt == 'pjUser') {
       if (is.null(input$userPjShp$datapath)) {
-        logger %>% writeLog(type = 'error', paste0("Specified filepath(s)"))
+        logger %>% alfred.writeLog(type = 'error', paste0("Specified filepath(s)"))
         return()
       }
     }
@@ -136,10 +136,10 @@ proj_user_module_server <- function(input, output, session, common) {
       polyPj <- proj_draw(spp[[curSp()]]$polyPjXY, spp[[curSp()]]$polyPjID,
                           input$drawPjBuf, logger, spN = curSp())
       if (input$drawPjBuf == 0 ) {
-        logger %>% writeLog(
+        logger %>% alfred.writeLog(
           alfred.hlSpp(curSp()), 'Draw polygon without buffer.')
       } else {
-        logger %>% writeLog(
+        logger %>% alfred.writeLog(
           alfred.hlSpp(curSp()), 'Draw polygon with buffer of ', input$drawPjBuf,
           ' degrees.')
       }
@@ -175,7 +175,7 @@ proj_user_module_server <- function(input, output, session, common) {
 
     if (input$projExt == 'pjCur') {
       polyPj <- spp[[curSp()]]$procEnvs$bgExt
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         alfred.hlSpp(curSp()),
         'Projection extent equal to current extent region.')
     }
@@ -189,23 +189,23 @@ proj_user_module_server <- function(input, output, session, common) {
     # ERRORS ####
     if (is.null(spp[[curSp()]]$visualization$mapPred)) {
       logger %>%
-        writeLog(type = 'error',
+        alfred.writeLog(type = 'error',
                  'Calculate a model prediction in visualize component before projecting.')
       return()
     }
     if (is.null(spp[[curSp()]]$project$pjExt)) {
-      logger %>% writeLog(type = 'error', 'Select projection extent first.')
+      logger %>% alfred.writeLog(type = 'error', 'Select projection extent first.')
       return()
     }
     if (is.null(input$userProjEnvs)) {
-      logger %>% writeLog(type = 'error', "Raster files not uploaded.")
+      logger %>% alfred.writeLog(type = 'error', "Raster files not uploaded.")
       return()
     }
     # Check the number of selected files
     if (length(input$userProjEnvs$name) !=
         length(spp[[curSp()]]$rmm$data$environment$variableNames)) {
       logger %>%
-        writeLog(type = 'error', "Number of files are not the same that the ",
+        alfred.writeLog(type = 'error', "Number of files are not the same that the ",
                  "enviromental variables")
       return()
     }
@@ -213,7 +213,7 @@ proj_user_module_server <- function(input, output, session, common) {
     if (!identical(tools::file_path_sans_ext(sort(input$userProjEnvs$name)),
                    sort(spp[[curSp()]]$rmm$data$environment$variableNames))) {
       logger %>%
-        writeLog(type = 'error',
+        alfred.writeLog(type = 'error',
                  paste0("Raster files don't have same names. You must name your",
                         " files as: "),
                  em(paste(spp[[curSp()]]$rmm$data$environment$variableNames,
@@ -230,7 +230,7 @@ proj_user_module_server <- function(input, output, session, common) {
     if (!rgeos::gIntersects(spp[[curSp()]]$project$pjExt,
                             methods::as(raster::extent(userProjEnvs), 'SpatialPolygons'))) {
       logger %>%
-        writeLog(type = 'error', 'Extents do not overlap')
+        alfred.writeLog(type = 'error', 'Extents do not overlap')
       return()
     }
 
@@ -272,12 +272,12 @@ proj_user_module_server <- function(input, output, session, common) {
         thr <- stats::quantile(occPredVals, probs = input$trainPresQuantile)
       }
       projUserThr <- projUser > thr
-      logger %>% writeLog(alfred.hlSpp(curSp()), "Projection of model to user-specified files",
+      logger %>% alfred.writeLog(alfred.hlSpp(curSp()), "Projection of model to user-specified files",
                           'with threshold ', input$threshold, ' (',
                           formatC(thr, format = "e", 2), ').')
     } else {
       projUserThr <- projUser
-      logger %>% writeLog(alfred.hlSpp(curSp()), "Projection of model to user-specified files",
+      logger %>% alfred.writeLog(alfred.hlSpp(curSp()), "Projection of model to user-specified files",
                           'with ', predType, ' output.')
     }
     raster::crs(projUserThr) <- raster::crs(envs())
@@ -334,7 +334,7 @@ proj_user_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$polyPjXY <- NULL
     spp[[curSp()]]$polyPjID <- NULL
     spp[[curSp()]]$project <- NULL
-    logger %>% writeLog("Reset projection extent.")
+    logger %>% alfred.writeLog("Reset projection extent.")
   })
 
   return(list(
