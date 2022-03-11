@@ -47,10 +47,9 @@ Imports:
     shinyjs,
     shinyWidgets (>= 0.6.0),
     sp,
-    spocc (>= 0.8.0),
+    spocc (>= 1.2.0),
     spThin,
     tools,
-    XML,
     zip
 Suggests: 
     BIEN,

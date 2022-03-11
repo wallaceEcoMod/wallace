@@ -7,7 +7,6 @@ tagList(
     script = file.path("wallaceres", "js", "shinyjs-funcs.js"),
     functions = c("scrollLogger", "disableModule", "enableModule")
   ),
-  shinyalert::useShinyalert(),
   navbarPage(
     theme = bslib::bs_theme(version = 3,
                             bootswatch = "united"),
