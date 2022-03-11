@@ -772,6 +772,17 @@ function(input, output, session) {
               alfred.writeLog(type = "error", "To download PNG prediction, you're required to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in you are R console.")
+            return()
+          }
+          if (!requireNamespace("mapview")) {
+            logger %>%
+              alfred.writeLog(
+                type = "error",
+                "PNG option is available if you install the 'mapview' package. If you ",
+                "want to install it, close Wallace and run the following line in the ",
+                "R Console: ", em("install.packages('mapview')")
+              )
+            return()
           }
           if (rmm()$prediction$binary$thresholdRule != 'none') {
             mapPredVals <- 0:1
@@ -913,6 +924,17 @@ function(input, output, session) {
               alfred.writeLog(type = "error", "To download PNG prediction, you're required to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in you are R console.")
+            return()
+          }
+          if (!requireNamespace("mapview")) {
+            logger %>%
+              alfred.writeLog(
+                type = "error",
+                "PNG option is available if you install the 'mapview' package. If you ",
+                "want to install it, close Wallace and run the following line in the ",
+                "R Console: ", em("install.packages('mapview')")
+              )
+            return()
           }
           if (rmm()$prediction$transfer$environment1$thresholdRule != 'none') {
             mapProjVals <- 0:1
@@ -991,6 +1013,17 @@ function(input, output, session) {
               alfred.writeLog(type = "error", "To download PNG prediction, you're required to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in you are R console.")
+            return()
+          }
+          if (!requireNamespace("mapview")) {
+            logger %>%
+              alfred.writeLog(
+                type = "error",
+                "PNG option is available if you install the 'mapview' package. If you ",
+                "want to install it, close Wallace and run the following line in the ",
+                "R Console: ", em("install.packages('mapview')")
+              )
+            return()
           }
           rasVals <- spp[[curSp()]]$project$messVals
           polyPjXY <- spp[[curSp()]]$project$pjExt@polygons[[1]]@Polygons

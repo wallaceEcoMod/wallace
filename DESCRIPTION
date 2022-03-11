@@ -34,8 +34,6 @@ Imports:
     knitcitations,
     leaflet.extras (>= 1.0.0),
     magrittr,
-    maptools,
-    mapview,
     maxnet,
     methods,
     neotoma,
@@ -65,6 +63,7 @@ Suggests:
     BIEN,
     jsonlite,
     knitr,
+    mapview,
     testthat
 Remotes:
     hannahlowens/occCite
