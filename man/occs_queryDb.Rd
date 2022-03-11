@@ -36,13 +36,13 @@ metadata associated with occurrence records and is not stored or used by
 \item{gbifEmail}{specify only if using `occCite` with GBIF to get a
 complete list of original data sources in a citable format.}
 
+\item{gbifPW}{specify only if using `occCite` with GBIF to get a complete
+list of original data sources in a citable format.}
+
 \item{RmUncertain}{specify if occurrences wothout uncertainty information should be removed (default is FALSE)}
 
 \item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
-
-\item{gbifPW=NULL}{specify only if using `occCite` with GBIF to get a complete
-list of original data sources in a citable format.}
 }
 \value{
 list of lists one list per species with occurrence records. Each individual species list with appropriate fields for analysis

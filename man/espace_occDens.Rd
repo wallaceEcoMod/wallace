@@ -62,7 +62,7 @@ TestOccDens <- espace_occDens(sp.name1, sp.name2, Testpca)
 
 }
 \seealso{
-\code{\link{espace_pca}} \code{\link{espace_nicheOv}} \code{\link[ecospat]{grid.clim.dyn}} \code{\link[adeHabitatHR]{kernelUD}}
+\code{\link{espace_pca}} \code{\link{espace_nicheOv}} \code{\link[ecospat]{ecospat.grid.clim.dyn}}
 }
 \author{
 Jamie Kass <jamie.m.kass@gmail.com >

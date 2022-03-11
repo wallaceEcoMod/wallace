@@ -38,7 +38,7 @@ occs <-  occs_queryDb(spName = "Panthera onca", occDb = "gbif",
                       occNum = 100)
 occs <- as.data.frame(occs[[1]]$cleaned)
 envs <- envs_worldclim(bcRes = 10,
-                       bcSel = list(TRUE, TRUE, TRUE, TRUE, TRUE),
+                       bcSel = c("bio03", "bio04", "bio13", "bio14"),
                        doBrick = TRUE)
 bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
 bgMask <- penvs_bgMask(occs, envs, bgExt)

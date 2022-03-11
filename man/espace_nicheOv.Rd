@@ -72,7 +72,7 @@ TestNicheOv <- espace_nicheOv(z1 = TestOccDens[[sp.name1]],
 
 }
 \seealso{
-\code{\link{espace_pca}} \code{\link{espace_occDens}} \code{\link[ecospat]{niche.overlap}}  \code{\link[ecospat]{niche.dyn.index}} \code{\link[ecospat]{niche.equivalency.test}} \code{\link[ecospat]{niche.similarity.test}}
+\code{\link{espace_pca}} \code{\link{espace_occDens}} \code{\link[ecospat]{ecospat.niche.overlap}}  \code{\link[ecospat]{ecospat.niche.dyn.index}} \code{\link[ecospat]{ecospat.niche.equivalency.test}} \code{\link[ecospat]{ecospat.niche.similarity.test}}
 }
 \author{
 Jamie Kass <jamie.m.kass@gmail.com>

@@ -4,7 +4,7 @@
 \alias{vis_bioclimPlot}
 \title{vis_bioclimPlot Visualize bivariate plot of bioclim model}
 \usage{
-vis_bioclimPlot(x, a = 1, b = 2, p = 0.9, ...)
+vis_bioclimPlot(x, a = 1, b = 2, p = 0.9)
 }
 \arguments{
 \item{x}{bioclim model including values for each environmental layer at each occurrence point}
