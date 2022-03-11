@@ -228,7 +228,7 @@ vis_mapPreds_module_map <- function(map, common) {
   # if threshold specified
   if (rmm()$prediction$binary$thresholdRule != 'none') {
     rasPal <- c('gray', 'blue')
-    map %>% clearAll() %>%
+    map %>% alfred.clearAll() %>%
       addLegend("bottomright", colors = c('gray', 'blue'),
                 title = "Thresholded Suitability<br>(Training)",
                 labels = c("predicted absence", "predicted presence"),
@@ -237,7 +237,7 @@ vis_mapPreds_module_map <- function(map, common) {
     # if no threshold specified
     legendPal <- colorNumeric(rev(rasCols), mapPredVals, na.color = 'transparent')
     rasPal <- colorNumeric(rasCols, mapPredVals, na.color = 'transparent')
-    map %>% clearAll() %>%
+    map %>% alfred.clearAll() %>%
       addLegend("bottomright", pal = legendPal,
                 title = "Predicted Suitability<br>(Training)",
                 values = mapPredVals, layerId = "train",

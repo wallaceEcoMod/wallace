@@ -159,7 +159,7 @@ envs_ecoclimate_module_result <- function(id) {
 
 envs_ecoclimate_module_map <- function(map, common) {
   occs <- common$occs
-  map %>% clearAll() %>%
+  map %>% alfred.clearAll() %>%
     addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                      radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                      fillOpacity = 0.2, weight = 2, popup = ~pop)

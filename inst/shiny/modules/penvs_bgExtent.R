@@ -184,12 +184,12 @@ penvs_bgExtent_module_map <- function(map, common) {
   occs <- common$occs
 
   if (is.null(spp[[curSp()]]$procEnvs$bgExt)) {
-    map %>% clearAll() %>%
+    map %>% alfred.clearAll() %>%
       addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                        radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                        fillOpacity = 0.2, weight = 2, popup = ~pop)
   } else {
-    map %>% clearAll() %>%
+    map %>% alfred.clearAll() %>%
       addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                        radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                        fillOpacity = 0.2, weight = 2, popup = ~pop)

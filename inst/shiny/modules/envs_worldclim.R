@@ -182,7 +182,7 @@ envs_worldclim_module_map <- function(map, common) {
   mapCntr <- c(mean(occs()$longitude), mean(occs()$latitude))
   lon_tile <- seq(-180, 180, 30)
   lat_tile <- seq(-60, 90, 30)
-  map %>% clearAll() %>%
+  map %>% alfred.clearAll() %>%
     addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                      radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                      fillOpacity = 0.2, weight = 2, popup = ~pop) %>%

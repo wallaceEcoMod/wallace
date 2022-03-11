@@ -72,7 +72,7 @@ poccs_removeByID_module_map <- function(map, common) {
   occs <- common$occs
   # Map logic
   map %>% leaflet.extras::removeDrawToolbar() %>%
-    clearAll() %>%
+    alfred.clearAll() %>%
     addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                      radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                      fillOpacity = 0.2, weight = 2, popup = ~pop) %>%

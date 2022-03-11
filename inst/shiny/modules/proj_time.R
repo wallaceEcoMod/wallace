@@ -537,7 +537,7 @@ proj_time_module_map <- function(map, common) {
   }
   bb <- spp[[curSp()]]$project$pjExt@bbox
   bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
-  map %>% clearAll() %>% removeImage('projRas') %>%
+  map %>% alfred.clearAll() %>% removeImage('projRas') %>%
     fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
   for (poly in shp) {
     map %>% addPolygons(lng = poly[, 1], lat = poly[, 2], weight = 4,

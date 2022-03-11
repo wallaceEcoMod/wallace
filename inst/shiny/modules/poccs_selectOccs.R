@@ -57,7 +57,7 @@ poccs_selectOccs_module_server <- function(input, output, session, common) {
 poccs_selectOccs_module_map <- function(map, common) {
   occs <- common$occs
   # Map logic
-  map %>% clearAll() %>%
+  map %>% alfred.clearAll() %>%
     addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                      radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                      fillOpacity = 0.2, weight = 2, popup = ~pop) %>%

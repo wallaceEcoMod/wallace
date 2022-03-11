@@ -129,8 +129,11 @@ alfred.writeLog <- function(logger, ..., type = 'default') {
 # MAPPING #
 ####################### #
 
+#' @title alfred.clearAll
+#' @description For internal use. Clean everything in leaflet map.
+#' @param map leaflet map
 #' @export
-clearAll <- function(map) {
+alfred.clearAll <- function(map) {
   map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>%
     clearControls() %>% removeLayersControl()
 }

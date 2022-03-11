@@ -99,7 +99,7 @@ part_nonSpat_module_map <- function(map, common) {
       newColors <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(n = 11, "RdYlBu"))(max(occsGrp))
     }
     partsFill <- newColors[occsGrp]
-    map %>% clearAll() %>%
+    map %>% alfred.clearAll() %>%
       addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                        radius = 5, color = 'red', fill = TRUE,
                        fillColor = partsFill, fillOpacity = 1, weight = 2,
@@ -108,7 +108,7 @@ part_nonSpat_module_map <- function(map, common) {
                 title = "Partition Groups", labels = sort(unique(occsGrp)),
                 opacity = 1)
   } else {
-    map %>% clearAll() %>%
+    map %>% alfred.clearAll() %>%
       addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                        radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                        fillOpacity = 0.2, weight = 2, popup = ~pop) %>%

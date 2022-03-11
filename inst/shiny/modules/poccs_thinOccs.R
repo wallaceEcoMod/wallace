@@ -87,7 +87,7 @@ poccs_thinOccs_module_map <- function(map, common) {
   if (!is.null(spp[[curSp()]]$procOccs$occsThin)) {
 
     occs.preThin <- spp[[curSp()]]$procOccs$occsPreThin
-    map %>% clearAll() %>%
+    map %>% alfred.clearAll() %>%
       addCircleMarkers(data = occs.preThin, lat = ~latitude, lng = ~longitude,
                        radius = 5, color = 'red', fill = TRUE, fillColor = "blue",
                        fillOpacity = 1, weight = 2, popup = ~pop) %>%
@@ -99,7 +99,7 @@ poccs_thinOccs_module_map <- function(map, common) {
                 labels = c('retained', 'removed'), opacity = 1)
   } else {
     # if you haven't thinned, map all points red
-    map %>% clearAll() %>%
+    map %>% alfred.clearAll() %>%
       addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                        radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                        fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
