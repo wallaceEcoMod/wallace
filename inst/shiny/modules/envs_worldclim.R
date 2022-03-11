@@ -98,7 +98,7 @@ envs_worldclim_module_server <- function(input, output, session, common) {
       })
 
       # remove occurrence records with NA environmental values
-      remOccs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, sp, logger)
+      remOccs <- alfred.remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, sp, logger)
       if (!is.null(remOccs)) {
         spp[[sp]]$occs <- remOccs$occs
         occsEnvsVals <- remOccs$occsEnvsVals
