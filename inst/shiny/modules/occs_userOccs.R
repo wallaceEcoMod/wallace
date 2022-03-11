@@ -84,7 +84,7 @@ occs_userOccs_module_map <- function(map, common) {
     addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude,
                      radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                      fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
-    zoom2Occs(occs)
+    alfred.zoom2Occs(occs)
 }
 
 occs_userOccs_module_rmd <- function(species) {

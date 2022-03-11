@@ -94,7 +94,7 @@ poccs_thinOccs_module_map <- function(map, common) {
       addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                        radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                        fillOpacity = 1, weight = 2, popup = ~pop) %>%
-      zoom2Occs(occs()) %>%
+      alfred.zoom2Occs(occs()) %>%
       addLegend("bottomright", colors = c('red', 'blue'), title = "Occ Records",
                 labels = c('retained', 'removed'), opacity = 1)
   } else {
@@ -103,7 +103,7 @@ poccs_thinOccs_module_map <- function(map, common) {
       addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                        radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                        fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
-      zoom2Occs(occs()) %>%
+      alfred.zoom2Occs(occs()) %>%
       leaflet.extras::removeDrawToolbar(clearFeatures = TRUE)
   }
 }

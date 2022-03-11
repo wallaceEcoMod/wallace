@@ -138,9 +138,24 @@ alfred.clearAll <- function(map) {
     clearControls() %>% removeLayersControl()
 }
 
-# zoom to occ pts
+# zooms appropriately for any polygon
 #' @export
-zoom2Occs <- function(map, occs) {
+polyZoom <- function(xmin, ymin, xmax, ymax, fraction) {
+  x <- (xmax - xmin) * fraction
+  y <- (ymax - ymin) * fraction
+  x1 <- xmin - x
+  x2 <- xmax + x
+  y1 <- ymin - y
+  y2 <- ymax + y
+  return(c(x1, y1, x2, y2))
+}
+
+#' @title alfred.zoom2Occs
+#' @description For internal use. Zoom to occ pts.
+#' @param map leaflet map
+#' @param occs occurrences table
+#' @export
+alfred.zoom2Occs <- function(map, occs) {
   lat <- occs["latitude"]
   lon <- occs["longitude"]
   lg.diff <- abs(max(lon) - min(lon))
@@ -175,18 +190,6 @@ zoom2Occs <- function(map, occs) {
   # proxy %>% addMarkers(data = values$origOccs, lat = ~latitude, lng = ~longitude,
   #                      layerId = as.numeric(rownames(values$origOccs)),
   #                      icon = ~icons(occIcons[basisNum]))
-}
-
-# zooms appropriately for any polygon
-#' @export
-polyZoom <- function(xmin, ymin, xmax, ymax, fraction) {
-  x <- (xmax - xmin) * fraction
-  y <- (ymax - ymin) * fraction
-  x1 <- xmin - x
-  x2 <- xmax + x
-  y1 <- ymin - y
-  y2 <- ymax + y
-  return(c(x1, y1, x2, y2))
 }
 
 ####################### #
