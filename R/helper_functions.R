@@ -201,8 +201,11 @@ alfred.zoom2Occs <- function(map, occs) {
 ####################### #
 # OBTAIN OCCS #
 ####################### #
+#' @title alfred.popUpContent
+#' @description For internal use. Make new column for leaflet marker popup content
+#' @param occs occurrence table
 #' @export
-popUpContent <- function(x) {
+alfred.popUpContent <- function(occs) {
   lat <- round(as.numeric(x['latitude']), digits = 2)
   lon <- round(as.numeric(x['longitude']), digits = 2)
   as.character(tagList(

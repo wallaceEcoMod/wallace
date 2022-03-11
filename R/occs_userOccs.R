@@ -124,7 +124,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
       dplyr::mutate(year = as.integer(.data$year),
                     uncertainty = as.numeric(.data$uncertainty)) %>%
       # # make new column for leaflet marker popup content
-      dplyr::mutate(pop = unlist(apply(sp.occs, 1, popUpContent))) %>%
+      dplyr::mutate(pop = unlist(apply(sp.occs, 1, alfred.popUpContent))) %>%
       dplyr::arrange_(cols)
 
     n <- alfred.fmtSpN(i)
