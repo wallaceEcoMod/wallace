@@ -375,8 +375,12 @@ alfred.reverseLabels <- function(..., reverse_order = FALSE) {
 ##################### #
 # DOWNLOAD #
 ##################### #
+#' @title alfred.write_csv_robust
+#' @description For internal use. Write Robust CSV
+#' @param x Table
+#' @param ... labelFormat parameters
 #' @export
-write_csv_robust <- function(x, ...) {
+alfred.write_csv_robust <- function(x, ...) {
   a <- dplyr::mutate_if(.tbl = x,
                         .predicate = function(col) inherits(col, "list"),
                         .funs = function(col) {

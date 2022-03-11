@@ -257,7 +257,7 @@ function(input, output, session) {
       if(!is.null(bg())) {
         tbl <- rbind(tbl, bg())
       }
-      write_csv_robust(tbl, file, row.names = FALSE)
+      alfred.write_csv_robust(tbl, file, row.names = FALSE)
     }
   )
 
@@ -270,7 +270,7 @@ function(input, output, session) {
       })
       tbl <- dplyr::bind_rows(l)
       tbl <- tbl %>% dplyr::select(-pop)
-      write_csv_robust(tbl, file, row.names = FALSE)
+      alfred.write_csv_robust(tbl, file, row.names = FALSE)
     }
   )
 
@@ -282,7 +282,7 @@ function(input, output, session) {
       glue("{n}_{source}_raw.csv")
     },
     content = function(file) {
-      write_csv_robust(spp[[curSp()]]$occData$occsOrig, file, row.names = FALSE)
+      alfred.write_csv_robust(spp[[curSp()]]$occData$occsOrig, file, row.names = FALSE)
     }
   )
 
@@ -356,7 +356,7 @@ function(input, output, session) {
     filename = function() paste0(curSp(), "_processed_occs.csv"),
     content = function(file) {
       tbl <- occs() %>% dplyr::select(-pop)
-      write_csv_robust(tbl, file, row.names = FALSE)
+      alfred.write_csv_robust(tbl, file, row.names = FALSE)
     }
   )
 
@@ -443,7 +443,7 @@ function(input, output, session) {
     },
     content = function(file) {
       tbl <- as.data.frame(spp[[curSp()]]$bgPts)
-      write_csv_robust(tbl, file, row.names = FALSE)
+      alfred.write_csv_robust(tbl, file, row.names = FALSE)
     }
   )
 
@@ -582,7 +582,7 @@ function(input, output, session) {
       all.bind <- cbind(occs.bg.bind, c(spp[[curSp()]]$occs$partition,
                                         spp[[curSp()]]$bg$partition))
       names(all.bind)[4] <- "group"
-      write_csv_robust(all.bind, file, row.names = FALSE)
+      alfred.write_csv_robust(all.bind, file, row.names = FALSE)
     }
   )
 
@@ -652,7 +652,7 @@ function(input, output, session) {
     },
     content = function(file) {
       evalTbl <- spp[[curSp()]]$evalOut@results
-      write_csv_robust(evalTbl, file, row.names = FALSE)
+      alfred.write_csv_robust(evalTbl, file, row.names = FALSE)
     }
   )
 
@@ -669,7 +669,7 @@ function(input, output, session) {
     },
     content = function(file) {
       evalTblBins <- spp[[curSp()]]$evalOut@results.partitions
-      write_csv_robust(evalTblBins, file, row.names = FALSE)
+      alfred.write_csv_robust(evalTblBins, file, row.names = FALSE)
     }
   )
 
