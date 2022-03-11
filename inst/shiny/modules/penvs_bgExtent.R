@@ -116,7 +116,7 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
                               spN = sp)
       req(bgPts)
       withProgress(
-        message = paste0("Extracting background values for ", spName(sp), "..."), {
+        message = paste0("Extracting background values for ", alfred.spName(sp), "..."), {
           bgEnvsVals <- as.data.frame(raster::extract(bgMask, bgPts))
         })
 

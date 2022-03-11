@@ -82,7 +82,7 @@ envs_ecoclimate_module_server <- function(input, output, session, common) {
       # remove occurrences with NA values for variables
       withProgress(
         message = paste0("Extracting environmental values for occurrences of ",
-                         spName(sp), "..."), {
+                         alfred.spName(sp), "..."), {
                            occsEnvsVals <- as.data.frame(
                              raster::extract(ecoClims,
                                              spp[[sp]]$occs[, c('longitude', 'latitude')],

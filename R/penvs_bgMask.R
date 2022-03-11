@@ -49,7 +49,7 @@ penvs_bgMask <- function(occs, envs, bgExt, logger = NULL, spN = NULL) {
     return()
   }
   # mask envs by background extent
-  alfred.smartProgress(logger, message = paste0("Masking rasters for ", spName(spN), "..."), {
+  alfred.smartProgress(logger, message = paste0("Masking rasters for ", alfred.spName(spN), "..."), {
     bgCrop <- raster::crop(envs, bgExt)
     bgMask <- raster::mask(bgCrop, bgExt)
   })

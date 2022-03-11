@@ -137,7 +137,7 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
   if (!is.null(logger)) {
     progress <- shiny::Progress$new()
     progress$set(message = paste0("Building/Evaluating ENMs for ",
-                                  spName(spN), "..."),
+                                  alfred.spName(spN), "..."),
                  value = 0)
     on.exit(progress$close())
     n <- length(rms.interval) * length(fcs)

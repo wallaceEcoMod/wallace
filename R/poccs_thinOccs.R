@@ -49,7 +49,7 @@ poccs_thinOccs <- function(occs, thinDist, logger = NULL, spN = NULL) {
     return()
   }
   # query database
-  alfred.smartProgress(logger, message = paste0("Spatially thinning for ", spName(spN), "..."), {  # start progress bar
+  alfred.smartProgress(logger, message = paste0("Spatially thinning for ", alfred.spName(spN), "..."), {  # start progress bar
     output <- spThin::thin(occs, 'latitude', 'longitude', 'scientific_name', thin.par = thinDist,
                            reps = 100, locs.thinned.list.return = TRUE, write.files = FALSE,
                            verbose = FALSE)

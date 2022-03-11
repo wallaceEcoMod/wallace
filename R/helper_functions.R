@@ -61,7 +61,6 @@ alfred.hlSpp <- function(spN) {
   }
 }
 
-#
 #' @title alfred.smartProgress
 #' @description For internal use. Either prints a message to console or makes
 #' a progress bar in the shiny app the entry of the first param "logs" turns on
@@ -79,13 +78,15 @@ alfred.smartProgress <- function(logs, message, expr) {
   }
 }
 
-# retrieves the species name for use internally in non-shiny functions
+#' @title alfred.spName
+#' @description For internal use. Retrieves the species name for use internally in non-shiny functions
+#' @param spN Species name
 #' @export
-spName <- function(sp) {
-  if (is.null(sp)) {
+alfred.spName <- function(spN) {
+  if (is.null(spN)) {
     return("species")
   } else {
-    return(paste(strsplit(as.character(sp), "_")[[1]], collapse = " "))
+    return(paste(strsplit(as.character(spN), "_")[[1]], collapse = " "))
   }
 }
 

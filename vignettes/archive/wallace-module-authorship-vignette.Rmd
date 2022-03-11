@@ -68,7 +68,7 @@ runGAM <- function(occs.vals, bg.vals, degFr, spN, shinyLogs=NULL) {
     mod <- gam(f, family = "binomial", data = d)
   })
   # write log message
-  shinyLogs %>% writeLog("GAM ran successfully for ", em(spName(spN)), ".")
+  shinyLogs %>% writeLog("GAM ran successfully for ", em(alfred.spName(spN)), ".")
   # output model object
   return(mod)
 }
@@ -152,7 +152,7 @@ runGAM_MOD <- function(input, output, session) {
       # check to make sure partitioning was done in the last component before proceeding
       if(is.null(spp[[sp]]$occs$partition)) {
         shinyLogs %>% writeLog(type = 'error', "Before building a model, please partition 
-                               occurrences for cross-validation for", em(spName(curSp())), ".")
+                               occurrences for cross-validation for", em(alfred.spName(curSp())), ".")
         return()
       }
       

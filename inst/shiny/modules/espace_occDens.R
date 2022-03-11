@@ -66,8 +66,8 @@ espace_occDens_module_server <- function(input, output, session, common) {
       mSp <- curSp()
     }
     req(spp[[mSp]]$occDens)
-    ecospat::ecospat.plot.niche(spp[[mSp]]$occDens[[sp1]], title = spName(sp1))
-    ecospat::ecospat.plot.niche(spp[[mSp]]$occDens[[sp2]], title = spName(sp2))
+    ecospat::ecospat.plot.niche(spp[[mSp]]$occDens[[sp1]], title = alfred.spName(sp1))
+    ecospat::ecospat.plot.niche(spp[[mSp]]$occDens[[sp2]], title = alfred.spName(sp2))
   })
 }
 

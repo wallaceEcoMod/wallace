@@ -54,7 +54,7 @@ model_bioclim <- function(occs, bg, user.grp, bgMsk, logger = NULL,
 
   alfred.smartProgress(logger,
                 message = paste0("Building/Evaluating BIOCLIM model for ",
-                                 spName(spN), "..."), {
+                                 alfred.spName(spN), "..."), {
      e <- ENMeval::ENMevaluate(occs = occs.xy, envs = bgMsk, bg = bg.xy,
                                algorithm = "bioclim", partitions = "user",
                                user.grp= user.grp)

@@ -514,8 +514,8 @@ function(input, output, session) {
         mSp <- curSp()
       }
       req(spp[[mSp]]$occDens)
-      ecospat::ecospat.plot.niche(spp[[mSp]]$occDens[[sp1]], title = spName(sp1))
-      ecospat::ecospat.plot.niche(spp[[mSp]]$occDens[[sp2]], title = spName(sp2))
+      ecospat::ecospat.plot.niche(spp[[mSp]]$occDens[[sp1]], title = alfred.spName(sp1))
+      ecospat::ecospat.plot.niche(spp[[mSp]]$occDens[[sp2]], title = alfred.spName(sp2))
       dev.off()
     }
   )
@@ -1093,7 +1093,7 @@ function(input, output, session) {
             }
             knit_params <- c(
               file = rmd_file,
-              spName = spName(sp),
+              spName = alfred.spName(sp),
               sp = sp,
               spAbr = spAbr[[sp]],
               rmd_vars
@@ -1111,7 +1111,7 @@ function(input, output, session) {
                                     fileext = ".md")
         rmarkdown::render(input = "Rmd/userReport_species.Rmd",
                           params = list(child_rmds = species_rmds,
-                                        spName = spName(sp),
+                                        spName = alfred.spName(sp),
                                         spAbr = spAbr[[sp]]),
                           output_format = rmarkdown::github_document(html_preview = FALSE),
                           output_file = species_md_file,
@@ -1137,8 +1137,8 @@ function(input, output, session) {
               }
               knit_params <- c(
                 file = rmd_file,
-                spName1 = spName(namesMult[1]),
-                spName2 = spName(namesMult[2]),
+                spName1 = alfred.spName(namesMult[1]),
+                spName2 = alfred.spName(namesMult[2]),
                 sp1 = namesMult[1],
                 spAbr1 = spAbr[[namesMult[1]]],
                 sp2 = namesMult[2],
@@ -1159,8 +1159,8 @@ function(input, output, session) {
                                           fileext = ".md")
           rmarkdown::render(input = "Rmd/userReport_multSpecies.Rmd",
                             params = list(child_rmds = multSpecies_rmds,
-                                          spName1 = spName(namesMult[1]),
-                                          spName2 = spName(namesMult[2]),
+                                          spName1 = alfred.spName(namesMult[1]),
+                                          spName2 = alfred.spName(namesMult[2]),
                                           multAbr = paste0(spAbr[[namesMult[1]]], "_",
                                                            spAbr[[namesMult[2]]])
                             ),

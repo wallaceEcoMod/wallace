@@ -92,7 +92,7 @@ envs_worldclim_module_server <- function(input, output, session, common) {
     for (sp in spLoop) {
       # get environmental variable values per occurrence record
       withProgress(message = paste0("Extracting environmental values for occurrences of ",
-                                    spName(sp), "..."), {
+                                    alfred.spName(sp), "..."), {
         occs.xy <- spp[[sp]]$occs[, c('longitude', 'latitude')]
         occsEnvsVals <- as.data.frame(raster::extract(wcbc, occs.xy, cellnumbers = TRUE))
       })
