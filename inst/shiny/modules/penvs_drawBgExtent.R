@@ -74,8 +74,8 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
       # METADATA ####
       ##Record buffer size
       spp[[sp]]$rmm$code$wallace$bgBuf <- input$drawBgBuf
-      polyX <- printVecAsis(round(spp[[curSp()]]$polyExtXY[, 1], digits = 4))
-      polyY <- printVecAsis(round(spp[[curSp()]]$polyExtXY[, 2], digits = 4))
+      polyX <- alfred.printVecAsis(round(spp[[curSp()]]$polyExtXY[, 1], digits = 4))
+      polyY <- alfred.printVecAsis(round(spp[[curSp()]]$polyExtXY[, 2], digits = 4))
       spp[[curSp()]]$rmm$code$wallace$drawExtPolyCoords <-
         paste0('Draw Polygon (X: ', polyX, ', Y: ', polyY, ')')
       spp[[sp]]$rmm$data$occurrence$backgroundSampleSizeRule <-
@@ -220,7 +220,7 @@ penvs_drawBgExtent_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
     penvs_drawBgExtent_knit = !is.null(species$rmm$code$wallace$drawExtPolyCoords),
-    polyExtXY_rmd = printVecAsis(species$polyExtXY),
+    polyExtXY_rmd = alfred.printVecAsis(species$polyExtXY),
     polyExtID_rmd =  species$polyExtID,
     drawBgBuf_rmd = species$rmm$code$wallace$bgBuf,
     bgPtsNum_rmd = species$rmm$data$occurrence$backgroundSampleSizeSet

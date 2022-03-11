@@ -201,8 +201,8 @@ envs_worldclim_module_rmd <- function(species) {
   list(
     envs_worldclim_knit = !is.null(species$rmm$code$wallace$wcRes),
     wcRes_rmd = species$rmm$code$wallace$wcRes,
-    bcSel_rmd = printVecAsis(species$rmm$code$wallace$bcSel),
-    mapCntr_rmd = printVecAsis(species$rmm$code$wallace$mapCntr),
+    bcSel_rmd = alfred.printVecAsis(species$rmm$code$wallace$bcSel),
+    mapCntr_rmd = alfred.printVecAsis(species$rmm$code$wallace$mapCntr),
     wcBrick_rmd = species$rmm$code$wallace$wcBrick
   )
 }

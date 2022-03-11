@@ -34,8 +34,8 @@ poccs_selectOccs_module_server <- function(input, output, session, common) {
     knitcitations::citep(citation("leaflet.extras"))
 
     # METADATA ####
-    polyX <- printVecAsis(round(spp[[curSp()]]$polySelXY[,1], digits = 4))
-    polyY <- printVecAsis(round(spp[[curSp()]]$polySelXY[,2], digits = 4))
+    polyX <- alfred.printVecAsis(round(spp[[curSp()]]$polySelXY[,1], digits = 4))
+    polyY <- alfred.printVecAsis(round(spp[[curSp()]]$polySelXY[,2], digits = 4))
     spp[[curSp()]]$rmm$code$wallace$occsSelPolyCoords <- paste0('X: ', polyX, ', Y: ', polyY)
 
     common$update_component(tab = "Map")
@@ -72,7 +72,7 @@ poccs_selectOccs_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
     poccs_selectByID_knit = !is.null(species$rmm$code$wallace$occsSelPolyCoords),
-    selectByID_xy_rmd = printVecAsis(species$polySelXY),
+    selectByID_xy_rmd = alfred.printVecAsis(species$polySelXY),
     selectByID_id_rmd = species$polySelID
   )
 }

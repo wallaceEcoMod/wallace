@@ -256,9 +256,9 @@ model_maxent_module_rmd <- function(species) {
       if (!is.null(species$rmm$model$algorithms)) {
       species$rmm$model$algorithms != "BIOCLIM"
       } else {FALSE},
-    rms_rmd =  printVecAsis(species$rmm$model$algorithm$maxent$regularizationMultiplierSet),
+    rms_rmd =  alfred.printVecAsis(species$rmm$model$algorithm$maxent$regularizationMultiplierSet),
     rmsStep_rmd =  gsub("increment by", "", species$rmm$model$algorithm$maxent$regularizationRule),
-    fcs_rmd = printVecAsis(species$rmm$model$algorithm$maxent$featureSet),
+    fcs_rmd = alfred.printVecAsis(species$rmm$model$algorithm$maxent$featureSet),
     clampSel_rmd = species$rmm$model$algorithm$maxent$clamping,
     algMaxent_rmd = species$rmm$model$algorithms,
     parallel_rmd = species$rmm$model$algorithm$maxent$parallel,

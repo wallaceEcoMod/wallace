@@ -171,7 +171,7 @@ envs_ecoclimate_module_rmd <- function(species) {
     envs_ecoclimate_knit = !is.null(species$rmm$code$wallace$bcAOGCM),
     bcAOGCM_rmd = species$rmm$code$wallace$bcAOGCM,
     bcScenario_rmd = species$rmm$code$wallace$bcScenario,
-    ecoClimSel_rmd =  printVecAsis(as.numeric(species$rmm$code$wallace$ecoClimSel))
+    ecoClimSel_rmd =  alfred.printVecAsis(as.numeric(species$rmm$code$wallace$ecoClimSel))
     ##Alternative using rmm instead of RMD object but not working
     #grepl("ecoClimate",species$rmm$data$environment$sources)
   )

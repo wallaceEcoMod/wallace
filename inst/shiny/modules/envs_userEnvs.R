@@ -139,7 +139,7 @@ envs_userEnvs_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
     envs_userEnvs_knit = !is.null(species$rmm$code$wallace$userRasName),
-    userRasName_rmd = printVecAsis(species$rmm$code$wallace$userRasName),
+    userRasName_rmd = alfred.printVecAsis(species$rmm$code$wallace$userRasName),
     userBrick_rmd = species$rmm$code$wallace$userBrick
   )
 }

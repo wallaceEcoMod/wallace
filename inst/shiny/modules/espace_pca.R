@@ -222,7 +222,7 @@ espace_pca_module_result <- function(id) {
 espace_pca_module_rmd <- function(species) {
   list(
     espace_pca_knit = !is.null(species$pca),
-    pcaSel_rmd = printVecAsis(species$pcaSel),
+    pcaSel_rmd = alfred.printVecAsis(species$pcaSel),
     pcaPlotSel_rmd = species$pcaPlotSel,
     pc1_rmd = species$pc1,
     pc2_rmd = species$pc2

@@ -191,8 +191,8 @@ proj_time_module_server <- function(input, output, session, common) {
       }
       # METADATA ####
       spp[[curSp()]]$rmm$code$wallace$PjBuff <- input$drawPjBuf
-      polyX <- printVecAsis(round(spp[[curSp()]]$polyPjXY[, 1], digits = 4))
-      polyY <- printVecAsis(round(spp[[curSp()]]$polyPjXY[, 2], digits = 4))
+      polyX <- alfred.printVecAsis(round(spp[[curSp()]]$polyPjXY[, 1], digits = 4))
+      polyY <- alfred.printVecAsis(round(spp[[curSp()]]$polyPjXY[, 2], digits = 4))
       spp[[curSp()]]$rmm$code$wallace$drawExtPolyPjCoords <-
         paste0('X: ', polyX, ', Y: ', polyY)
     }
@@ -405,13 +405,13 @@ proj_time_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$rmm$code$wallace$project_curModel <- curModel()
     spp[[curSp()]]$rmm$code$wallace$project_time <- TRUE
     spp[[curSp()]]$rmm$data$transfer$environment1$minVal <-
-      printVecAsis(raster::cellStats(projExt, min), asChar = TRUE)
+      alfred.printVecAsis(raster::cellStats(projExt, min), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$maxVal <-
-      printVecAsis(raster::cellStats(projExt, max), asChar = TRUE)
+      alfred.printVecAsis(raster::cellStats(projExt, max), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$resolution <-
       paste(round(raster::res(projExt)[1] * 60, digits = 2), "degrees")
     spp[[curSp()]]$rmm$data$transfer$environment1$extentSet <-
-      printVecAsis(as.vector(projExt@extent), asChar = TRUE)
+      alfred.printVecAsis(as.vector(projExt@extent), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$extentRule <-
       "transfer to user-selected new time"
     if (input$selTimeVar == "worldclim") {
@@ -452,9 +452,9 @@ proj_time_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$rmm$prediction$transfer$environment1$units <-
       ifelse(predType == "raw", "relative occurrence rate", predType)
     spp[[curSp()]]$rmm$prediction$transfer$environment1$minVal <-
-      printVecAsis(raster::cellStats(projTimeThr, min), asChar = TRUE)
+      alfred.printVecAsis(raster::cellStats(projTimeThr, min), asChar = TRUE)
     spp[[curSp()]]$rmm$prediction$transfer$environment1$maxVal <-
-      printVecAsis(raster::cellStats(projTimeThr, max), asChar = TRUE)
+      alfred.printVecAsis(raster::cellStats(projTimeThr, max), asChar = TRUE)
     if(!(input$threshold == 'none')) {
       spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet <- thr
       if (input$threshold == 'qtp') {
@@ -588,7 +588,7 @@ proj_time_module_rmd <- function(species) {
     proj_time_drawn_knit = !is.null(species$rmm$code$wallace$drawExtPolyPjCoords),
     ###arguments for creating extent
     polyPjXY_rmd = if(!is.null(species$rmm$code$wallace$drawExtPolyPjCoords)){
-      printVecAsis(species$polyPjXY)} else {NULL},
+      alfred.printVecAsis(species$polyPjXY)} else {NULL},
     polyPjID_rmd =  if(!is.null(species$rmm$code$wallace$drawExtPolyPjCoords)){
       species$polyPjID} else {0},
     BgBuf_rmd = species$rmm$code$wallace$PjBuff,

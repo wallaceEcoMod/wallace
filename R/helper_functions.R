@@ -1,9 +1,12 @@
 ####################### #
 # MISC #
 ####################### #
-
+#' @title alfred.printVecAsis
+#' @description For internal use. Print vector as character string
+#' @param x vector
+#' @param asChar exclude c notation at the begging of string
 #' @export
-printVecAsis <- function(x, asChar = FALSE) {
+alfred.printVecAsis <- function(x, asChar = FALSE) {
   if (is.character(x)) {
     if (length(x) == 1) {
       return(paste0("\'", x, "\'"))
@@ -32,7 +35,7 @@ printVecAsis <- function(x, asChar = FALSE) {
 ####################### #
 
 #' @export
-formatSpName <- function(spNames, underscore = FALSE) {
+formatSpName <- function(spNames) {
   spNames <- as.character(spNames)
   # separate by space
   spNames.fmt <- sapply(spNames, function(x) strsplit(x, split = ' '))

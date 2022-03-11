@@ -83,7 +83,7 @@ poccs_removeByID_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
     poccs_removeByID_knit = !is.null(species$rmm$code$wallace$removedIDs),
-    removeByID_id_rmd = printVecAsis(species$rmm$code$wallace$removedIDs)
+    removeByID_id_rmd = alfred.printVecAsis(species$rmm$code$wallace$removedIDs)
   )
 }
 

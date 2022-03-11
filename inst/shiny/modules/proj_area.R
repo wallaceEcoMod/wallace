@@ -103,8 +103,8 @@ proj_area_module_server <- function(input, output, session, common) {
           ' degrees.')
       }
       # METADATA ####
-      polyX <- printVecAsis(round(spp[[curSp()]]$polyPjXY[, 1], digits = 4))
-      polyY <- printVecAsis(round(spp[[curSp()]]$polyPjXY[, 2], digits = 4))
+      polyX <- alfred.printVecAsis(round(spp[[curSp()]]$polyPjXY[, 1], digits = 4))
+      polyY <- alfred.printVecAsis(round(spp[[curSp()]]$polyPjXY[, 2], digits = 4))
       spp[[curSp()]]$rmm$code$wallace$drawExtPolyPjCoords <-
         paste0('X: ', polyX, ', Y: ', polyY)
       spp[[curSp()]]$rmm$code$wallace$PjBuff <- input$drawPjBuf
@@ -226,9 +226,9 @@ proj_area_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$rmm$code$wallace$project_curModel <- curModel()
     spp[[curSp()]]$rmm$code$wallace$project_area <- TRUE
     spp[[curSp()]]$rmm$data$transfer$environment1$minVal <-
-      printVecAsis(raster::cellStats(projExt, min), asChar = TRUE)
+      alfred.printVecAsis(raster::cellStats(projExt, min), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$maxVal <-
-      printVecAsis(raster::cellStats(projExt, max), asChar = TRUE)
+      alfred.printVecAsis(raster::cellStats(projExt, max), asChar = TRUE)
     if (spp[[curSp()]]$rmm$data$environment$sources == 'WorldClim 1.4') {
       spp[[curSp()]]$rmm$data$transfer$environment1$yearMin <- 1960
       spp[[curSp()]]$rmm$data$transfer$environment1$yearMax <- 1990
@@ -236,7 +236,7 @@ proj_area_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$rmm$data$transfer$environment1$resolution <-
       paste(round(raster::res(projExt)[1] * 60, digits = 2), "degrees")
     spp[[curSp()]]$rmm$data$transfer$environment1$extentSet <-
-      printVecAsis(as.vector(projExt@extent), asChar = TRUE)
+      alfred.printVecAsis(as.vector(projExt@extent), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$extentRule <-
       "transfer to user-selected new area"
     spp[[curSp()]]$rmm$data$transfer$environment1$sources <-
@@ -244,9 +244,9 @@ proj_area_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$rmm$prediction$transfer$environment1$units <-
       ifelse(predType == "raw", "relative occurrence rate", predType)
     spp[[curSp()]]$rmm$prediction$transfer$environment1$minVal <-
-      printVecAsis(raster::cellStats(projAreaThr, min), asChar = TRUE)
+      alfred.printVecAsis(raster::cellStats(projAreaThr, min), asChar = TRUE)
     spp[[curSp()]]$rmm$prediction$transfer$environment1$maxVal <-
-      printVecAsis(raster::cellStats(projAreaThr, max), asChar = TRUE)
+      alfred.printVecAsis(raster::cellStats(projAreaThr, max), asChar = TRUE)
     if(!(input$threshold == 'none')) {
       spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet <- thr
       if (input$threshold == 'qtp') {
@@ -367,7 +367,7 @@ proj_area_module_rmd <- function(species) {
     clamp_rmd = species$rmm$model$algorithm$maxent$clamping,
     ###arguments for creating extent
     polyPjXY_rmd = if(!is.null(species$rmm$code$wallace$drawExtPolyPjCoords)){
-    printVecAsis(species$polyPjXY)} else {NULL},
+    alfred.printVecAsis(species$polyPjXY)} else {NULL},
     polyPjID_rmd =  if(!is.null(species$rmm$code$wallace$drawExtPolyPjCoords)){
      species$polyPjID} else {0},
     BgBuf_rmd = species$rmm$code$wallace$PjBuff,

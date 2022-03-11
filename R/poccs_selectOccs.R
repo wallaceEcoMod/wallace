@@ -66,7 +66,7 @@ poccs_selectOccs <- function(occs, polySelXY, polySelID = 1, logger = NULL, spN 
 
     ptRemIndex <- as.numeric(which(is.na(intersect)))
 
-    remIDs <- printVecAsis(pts[ptRemIndex,]$occID)
+    remIDs <- alfred.printVecAsis(pts[ptRemIndex,]$occID)
     # need code here to format the string better
     if (is.na(ptRemIndex[1])){
       logger %>% writeLog(type = 'warning',
