@@ -4,7 +4,7 @@
 \alias{ecoClimate_getdata}
 \title{ecoClimate_getdata}
 \usage{
-ecoClimate_getdata(AOGCM, Baseline, Scenario)
+ecoClimate_getdata(AOGCM, Baseline, Scenario, logger)
 }
 \arguments{
 \item{AOGCM}{Select the AOGCM.

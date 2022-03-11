@@ -243,9 +243,20 @@ vis_mapPreds_module_map <- function(map, common) {
                 values = mapPredVals, layerId = "train",
                 labFormat = reverseLabels(2, reverse_order = TRUE))
   }
+
+  # function to map all background polygons
+  mapBgPolys <- function(map, bgShpXY) {
+    for (shp in bgShpXY) {
+      map %>%
+        addPolygons(lng = shp[,1], lat = shp[,2], fill = FALSE,
+                    weight = 4, color = "blue", group = 'proj')
+    }
+  }
   # map model prediction raster
   map %>%
-    map_occs(occs()) %>%
+    addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
+                     radius = 5, color = 'red', fill = TRUE, fillColor = 'red',
+                     fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
     addRasterImage(mapPred(), colors = rasPal, opacity = 0.7,
                    group = 'vis', layerId = 'mapPred', method = "ngb") %>%
     # add background polygon(s)

@@ -61,7 +61,11 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL, spN = NULL) {
     bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(bb)), 1)))
     msg <- "Study extent: bounding box."
   } else if (bgSel == "minimum convex polygon") {
-    bgExt <- mcp(occs.xy)
+    mcp.xy <- as.data.frame(sp::coordinates(occs.xy))
+    coords.t <- grDevices::chull(mcp.xy[, 1], mcp.xy[, 2])
+    xy.bord <- mcp.xy[coords.t, ]
+    xy.bord <- rbind(xy.bord[nrow(xy.bord), ], xy.bord)
+    bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(as.matrix(xy.bord))), 1)))
     msg <- "Study extent: minimum convex polygon."
   } else if (bgSel == 'point buffers') {
     if (bgBuf == 0) {

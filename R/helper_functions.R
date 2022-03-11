@@ -1,14 +1,55 @@
 ####################### #
-# MISC ####
+# MISC #
 ####################### #
 
-# retrieves the species name for use internally in non-shiny functions
 #' @export
-spName <- function(sp) {
-  if (is.null(sp)) {
-    return("species")
+printVecAsis <- function(x, asChar = FALSE) {
+  if (is.character(x)) {
+    if (length(x) == 1) {
+      return(paste0("\'", x, "\'"))
+    } else {
+      if (asChar == FALSE) {
+        return(paste0("c(", paste(sapply(x, function(a) paste0("\'", a, "\'")), collapse = ", "), ")"))
+      } else {
+        return(paste0("(", paste(sapply(x, function(a) paste0("\'", a, "\'")), collapse = ", "), ")"))
+      }
+    }
   } else {
-    return(paste(strsplit(as.character(sp), "_")[[1]], collapse = " "))
+    if (length(x) == 1) {
+      return(x)
+    } else {
+      if (asChar == FALSE) {
+        return(paste0("c(", paste(x, collapse = ", "), ")"))
+      } else {
+        return(paste0("(", paste(x, collapse = ", "), ")"))
+      }
+    }
+  }
+}
+
+####################### #
+# SHINY LOG #
+####################### #
+
+#' @export
+formatSpName <- function(spNames, underscore = FALSE) {
+  spNames <- as.character(spNames)
+  # separate by space
+  spNames.fmt <- sapply(spNames, function(x) strsplit(x, split = ' '))
+  # put underscores in
+  spNames.fmt <- sapply(spNames.fmt, function(x) paste(x, collapse = '_'))
+  return(spNames.fmt)
+}
+
+# Highlight species name in Windows Log
+#' @export
+hlSpp <- function(scientificName) {
+  if (is.null(scientificName)) {
+    return("")
+  } else if (grepl("_", scientificName)) {
+    scientificName <- gsub("_", " ", scientificName)
+    boldSpp <- paste0('<font color="#003300"><b><i>', scientificName, '</i> | </b></font>')
+    return(boldSpp)
   }
 }
 
@@ -24,21 +65,14 @@ smartProgress <- function(logs, message, expr) {
   }
 }
 
+# retrieves the species name for use internally in non-shiny functions
 #' @export
-formatSpName <- function(spNames) {
-  spNames <- as.character(spNames)
-  # separate by space
-  spNames.fmt <- sapply(spNames, function(x) strsplit(x, split=' '))
-  # put underscores in
-  spNames.fmt <- sapply(spNames.fmt, function(x) paste(x, collapse='_'))
-  return(spNames.fmt)
-}
-
-#' @export
-writeSpp <- function(spp, sp, dir) {
-  if(!is.null(spp[[sp]]$occs)) utils::write.csv(spp[[sp]]$occs, file.path(dir, paste0(sp, "_occs.csv")))
-  if(!is.null(spp[[sp]]$bg)) utils::write.csv(spp[[sp]]$bg, file.path(dir, paste0(sp, "_bg.csv")))
-  if(!is.null(spp[[sp]]$procEnvs$bgMask)) raster::writeRaster(spp[[sp]]$procEnvs$bgMask, file.path(dir, paste0(sp, "_bgMask.tif")), bylayer = TRUE)
+spName <- function(sp) {
+  if (is.null(sp)) {
+    return("species")
+  } else {
+    return(paste(strsplit(as.character(sp), "_")[[1]], collapse = " "))
+  }
 }
 
 #' Add text to a logger
@@ -76,45 +110,9 @@ writeLog <- function(logger, ..., type = 'default') {
   invisible()
 }
 
-# Highlight species name in Windows Log
-#' @export
-hlSpp <- function(scientificName) {
-  if (is.null(scientificName)) {
-    return("")
-  } else if (grepl("_", scientificName)) {
-    scientificName <- gsub("_", " ", scientificName)
-    boldSpp <- paste0('<font color="#003300"><b><i>', scientificName, '</i> | </b></font>')
-    return(boldSpp)
-  }
-}
-
 ####################### #
-# MAPPING ####
+# MAPPING #
 ####################### #
-
-# map occurrences with the Wallace default symbology
-#' @export
-map_occs <- function(map, occs, fillColor = 'red', fillOpacity = 0.2, customZoom = NULL) {
-  map %>%
-    addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude,
-                     radius = 5, color = 'red', fill = TRUE, fillColor = fillColor,
-                     fillOpacity = fillOpacity, weight = 2, popup = ~pop)
-  if(is.null(customZoom)) {
-    map %>% zoom2Occs(occs)
-  } else {
-    map %>% zoom2Occs(customZoom)
-  }
-}
-
-# map all background polygons
-#' @export
-mapBgPolys <- function(map, bgShpXY) {
-  for (shp in bgShpXY) {
-    map %>%
-      addPolygons(lng = shp[,1], lat = shp[,2], fill = FALSE,
-                  weight = 4, color = "blue", group = 'proj')
-  }
-}
 
 #' @export
 clearAll <- function(map) {
@@ -125,10 +123,14 @@ clearAll <- function(map) {
 # zoom to occ pts
 #' @export
 zoom2Occs <- function(map, occs) {
-  # map %>% clearShapes()
   lat <- occs["latitude"]
   lon <- occs["longitude"]
-  z <- smartZoom(lon, lat)
+  lg.diff <- abs(max(lon) - min(lon))
+  lt.diff <- abs(max(lat) - min(lat))
+  if (lg.diff > 1) lg.diff <- 1
+  if (lt.diff > 1) lt.diff <- 1
+  z <- c(min(lon - lg.diff), min(lat - lt.diff),
+         max(lon + lg.diff), max(lat + lt.diff))
   map %>% fitBounds(z[1], z[2], z[3], z[4])
 
   ## this section makes letter icons for occs based on basisOfRecord
@@ -157,16 +159,6 @@ zoom2Occs <- function(map, occs) {
   #                      icon = ~icons(occIcons[basisNum]))
 }
 
-# zooms appropriately for any extent
-#' @export
-smartZoom <- function(longi, lati) {
-  lg.diff <- abs(max(longi) - min(longi))
-  lt.diff <- abs(max(lati) - min(lati))
-  if (lg.diff > 1) lg.diff <- 1
-  if (lt.diff > 1) lt.diff <- 1
-  c(min(longi-lg.diff), min(lati-lt.diff), max(longi+lg.diff), max(lati+lt.diff))
-}
-
 # zooms appropriately for any polygon
 #' @export
 polyZoom <- function(xmin, ymin, xmax, ymax, fraction) {
@@ -180,7 +172,7 @@ polyZoom <- function(xmin, ymin, xmax, ymax, fraction) {
 }
 
 ####################### #
-# OBTAIN OCCS ####
+# OBTAIN OCCS #
 ####################### #
 #' @export
 popUpContent <- function(x) {
@@ -210,7 +202,7 @@ popUpContent <- function(x) {
 }
 
 ####################### #
-# COMP 3 ####
+# ENV DATA #
 ####################### #
 #' @export
 remEnvsValsNA <- function(occs, occsEnvsVals, sppName, logger) {
@@ -249,77 +241,26 @@ remEnvsValsNA <- function(occs, occsEnvsVals, sppName, logger) {
 }
 
 ####################### #
-# PROCESS ENVS ####
+# VISUALIZE & PROJECT #
 ####################### #
-
-# make a minimum convex polygon as SpatialPolygons object
+# retrieve the value range for a prediction raster for plotting
 #' @export
-mcp <- function(xy) {
-  xy <- as.data.frame(sp::coordinates(xy))
-  coords.t <- grDevices::chull(xy[, 1], xy[, 2])
-  xy.bord <- xy[coords.t, ]
-  xy.bord <- rbind(xy.bord[nrow(xy.bord), ], xy.bord)
-  return(sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(as.matrix(xy.bord))), 1))))
-}
-
-####################### #
-# MODEL ####
-####################### #
-#' @export
-maxentJARversion <- function() {
-  if (is.null(getOption('dismo_rJavaLoaded'))) {
-    # to avoid trouble on macs
-    Sys.setenv(NOAWT=TRUE)
-    if ( requireNamespace('rJava') ) {
-      rJava::.jpackage('dismo')
-      options(dismo_rJavaLoaded=TRUE)
-    } else {
-      stop('rJava cannot be loaded')
-    }
-  }
-  mxe <- rJava::.jnew("meversion")
-  v <- try(rJava::.jcall(mxe, "S", "meversion"))
+getRasterVals <- function(r, type='raw') {
+  v <- raster::values(r)
+  # remove NAs
+  v <- v[!is.na(v)]
+  if(type == 'logistic' | type == 'cloglog') v <- c(v, 0, 1)  # set to 0-1 scale
   return(v)
 }
 
-####################### #
-# VISUALIZE ####
-####################### #
-#' @export
-predictMaxnet <- function(mod, envs, clamp, type) {
-  requireNamespace("maxnet", quietly = TRUE)
-  envs.n <- raster::nlayers(envs)
-  envs.pts <- raster::getValues(envs) %>% as.data.frame()
-  mxnet.p <- stats::predict(mod, envs.pts, type = type,
-                            clamp = clamp)
-  envs.pts[as.numeric(row.names(mxnet.p)), "pred"] <- mxnet.p
-  pred <- raster::rasterFromXYZ(cbind(raster::coordinates(envs),
-                                      envs.pts$pred),
-                                res = raster::res(envs),
-                                crs = raster::crs(envs))
-  return(pred)
-}
-
-# make data.frame of lambdas vector from Maxent model object
-#' @export
-lambdasDF <- function(mx, alg) {
-  if (alg == "maxent.jar") {
-    lambdas <- mx@lambdas[1:(length(mx@lambdas)-4)]
-    data.frame(var = sapply(lambdas, FUN = function(x) strsplit(x, ',')[[1]][1]),
-               coef = sapply(lambdas, FUN = function(x) as.numeric(strsplit(x, ',')[[1]][2])),
-               row.names=1:length(lambdas))
-  } else if (alg == "maxnet") {
-    lambdas <- mx$betas
-    data.frame(var = names(lambdas),
-               coef = lambdas,
-               row.names = 1:length(lambdas))
-  }
-}
 ## pulls out all non-zero, non-redundant (removes hinge/product/threshold) predictor names
 #' @export
 mxNonzeroCoefs <- function(mx, alg) {
   if (alg == "maxent.jar") {
-    x <- lambdasDF(mx, alg)
+    lambdas <- mx@lambdas[1:(length(mx@lambdas)-4)]
+    x <- data.frame(var = sapply(lambdas, FUN = function(x) strsplit(x, ',')[[1]][1]),
+                    coef = sapply(lambdas, FUN = function(x) as.numeric(strsplit(x, ',')[[1]][2])),
+                    row.names = 1:length(lambdas))
     #remove any rows that have a zero lambdas value (Second column)
     x <- x[(x[,2] != 0),]
     #remove any rows that have duplicate "var"s (hinges, quadratics, product)
@@ -331,7 +272,10 @@ mxNonzeroCoefs <- function(mx, alg) {
     x <- unique(unlist(strsplit(x, split = "\\*")))
     x <- sort(x)
   } else if (alg == "maxnet") {
-    x <- lambdasDF(mx, alg)
+    lambdas <- mx$betas
+    x <- data.frame(var = names(lambdas),
+                    coef = lambdas,
+                    row.names = 1:length(lambdas))
     #remove any rows that have a zero lambdas value (Second column)
     x <- x[(x[,2] != 0),]
     #remove any rows that have duplicate "var"s (hinges, quadratics, product)
@@ -347,58 +291,20 @@ mxNonzeroCoefs <- function(mx, alg) {
 }
 
 #' @export
-respCurv <- function(mod, i) {  # copied mostly from dismo
-  v <- rbind(mod@presence, mod@absence)
-  v.nr <- nrow(v)
-  vi <- v[, i]
-  vi.r <- range(vi)
-  expand <- 10
-  xlm <- 25
-  vi.rx <- seq(vi.r[1]-expand, vi.r[2]+expand, length.out=xlm)
-  mm <- v[rep(1:v.nr, xlm), ]
-  mm[, i] <- rep(vi.rx, v.nr)
-  mm[, -i] <- rep(colMeans(mm[,-i]), each=nrow(mm))
-  p <- stats::predict(mod, mm)
-  plot(cbind(vi.rx, p[1:xlm]), type='l', ylim=0:1, col = 'red', lwd = 2,
-       ylab = 'predicted value', xlab = names(v)[i])
-  pres.r <- range(mod@presence[, i])
-  graphics::abline(v = pres.r[1], col='blue')  # vertical blue lines indicate min and max of presence vals
-  graphics::abline(v = pres.r[2], col='blue')
-  abs.r <- range(mod@absence[, i])
-  graphics::abline(v = abs.r[1], col='green') # vertical green lines indicate min and max of background vals
-  graphics::abline(v = abs.r[2], col='green')
-  #graphics::text(x = vals, y = pred, labels = row.names(mod@presence), pos = 3, offset = 1)
+predictMaxnet <- function(mod, envs, clamp, type) {
+  requireNamespace("maxnet", quietly = TRUE)
+  envs.n <- raster::nlayers(envs)
+  envs.pts <- raster::getValues(envs) %>% as.data.frame()
+  mxnet.p <- stats::predict(mod, envs.pts, type = type,
+                            clamp = clamp)
+  envs.pts[as.numeric(row.names(mxnet.p)), "pred"] <- mxnet.p
+  pred <- raster::rasterFromXYZ(cbind(raster::coordinates(envs),
+                                      envs.pts$pred),
+                                res = raster::res(envs),
+                                crs = raster::crs(envs))
+  return(pred)
 }
 
-# retrieve the value range for a prediction raster for plotting
-#' @export
-getRasterVals <- function(r, type='raw') {
-  v <- raster::values(r)
-  # remove NAs
-  v <- v[!is.na(v)]
-  if(type == 'logistic' | type == 'cloglog') v <- c(v, 0, 1)  # set to 0-1 scale
-  return(v)
-}
-
-# getAllThresh <- function(occPredVals) {
-#   # remove all NA
-#   occPredVals <- na.omit(occPredVals)
-#   # apply minimum training presence threshold
-#   min.thr <- min(occPredVals)
-#   # Define 10% training presence threshold
-#   if (length(occPredVals) < 10) {  # if less than 10 occ values, find 90% of total and round down
-#     pct10 <- ceiling(length(occPredVals) * 0.1)
-#   } else {  # if greater than or equal to 10 occ values, round up
-#     pct10 <- floor(length(occPredVals) * 0.1)
-#   }
-#   pct10.thr <- sort(occPredVals)[pct10]  # apply 10% training presence threshold over all models
-#   return(list(mtp = min.thr, p10 = pct10.thr))
-# }
-
-
-####################### #
-# PROJECT ####
-####################### #
 #' @export
 reverseLabels <- function(..., reverse_order = FALSE) {
   if (reverse_order) {
@@ -410,52 +316,17 @@ reverseLabels <- function(..., reverse_order = FALSE) {
   }
 }
 
-####################### #
-# SESSION CODE ####
-####################### #
-#' @export
-makeCap <- function(x) paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)))
-#' @export
-getSpName <- function() deparse(substitute(input$spName))
-#' @export
-printVecAsis <- function(x, asChar = FALSE) {
-  if (is.character(x)) {
-    if (length(x) == 1) {
-      return(paste0("\'", x, "\'"))
-    } else {
-      if (asChar == FALSE) {
-        return(paste0("c(", paste(sapply(x, function(a) paste0("\'", a, "\'")), collapse = ", "), ")"))
-      } else {
-        return(paste0("(", paste(sapply(x, function(a) paste0("\'", a, "\'")), collapse = ", "), ")"))
-      }
-    }
-  } else {
-    if (length(x) == 1) {
-      return(x)
-    } else {
-      if (asChar == FALSE) {
-        return(paste0("c(", paste(x, collapse = ", "), ")"))
-      } else {
-        return(paste0("(", paste(x, collapse = ", "), ")"))
-      }
-    }
-  }
-}
-
-#####################
-# Download utlities #
-#####################
-#' @export
-convert_list_cols <- function(x) {
-  dplyr::mutate_if(.tbl = x,
-                   .predicate = function(col) inherits(col, "list"),
-                   .funs = function(col) {
-                     vapply(col,
-                            jsonlite::toJSON,
-                            character(1L))
-                   })
-}
+##################### #
+# DOWNLOAD #
+##################### #
 #' @export
 write_csv_robust <- function(x, ...) {
-  utils::write.csv(convert_list_cols(x), ...)
+  a <- dplyr::mutate_if(.tbl = x,
+                        .predicate = function(col) inherits(col, "list"),
+                        .funs = function(col) {
+                       vapply(col,
+                              jsonlite::toJSON,
+                              character(1L))
+                          })
+  utils::write.csv(a, ...)
 }

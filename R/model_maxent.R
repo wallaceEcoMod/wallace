@@ -105,11 +105,25 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
       return()
     }
 
-    if (maxentJARversion() < "3.4.4") {
+    # Check maxent version
+    if (is.null(getOption('dismo_rJavaLoaded'))) {
+      # to avoid trouble on macs
+      Sys.setenv(NOAWT=TRUE)
+      if ( requireNamespace('rJava') ) {
+        rJava::.jpackage('dismo')
+        options(dismo_rJavaLoaded=TRUE)
+      } else {
+        stop('rJava cannot be loaded')
+      }
+    }
+    mxe <- rJava::.jnew("meversion")
+    maxentJARversion <- try(rJava::.jcall(mxe, "S", "meversion"))
+
+    if (maxentJARversion < "3.4.4") {
       logger %>% writeLog(
         type = "error",
         "Please, use the updated version of Maxent (v3.4.4). Currently, you are ",
-        "using (", maxentJARversion(), ")."
+        "using (", maxentJARversion, ")."
       )
       return()
     }
@@ -123,7 +137,8 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
   if (!is.null(logger)) {
     progress <- shiny::Progress$new()
     progress$set(message = paste0("Building/Evaluating ENMs for ",
-                                  spName(spN), "..."), value = 0)
+                                  spName(spN), "..."),
+                 value = 0)
     on.exit(progress$close())
     n <- length(rms.interval) * length(fcs)
     updateProgress <- function(value = NULL, detail = NULL) {

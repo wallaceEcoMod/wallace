@@ -100,7 +100,10 @@ part_nonSpat_module_map <- function(map, common) {
     }
     partsFill <- newColors[occsGrp]
     map %>% clearAll() %>%
-      map_occs(occs(), fillColor = partsFill, fillOpacity = 1) %>%
+      addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
+                       radius = 5, color = 'red', fill = TRUE,
+                       fillColor = partsFill, fillOpacity = 1, weight = 2,
+                       popup = ~pop) %>%
       addLegend("bottomright", colors = newColors,
                 title = "Partition Groups", labels = sort(unique(occsGrp)),
                 opacity = 1)

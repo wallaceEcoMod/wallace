@@ -69,7 +69,7 @@ envs_ecoClimate <- function(bcAOGCM, bcScenario, ecoClimSel, logger = NULL) {
 #'
 #' @description download ecoClimate layers. more info at www.ecoclimate.org
 #'
-#' @usage ecoClimate_getdata(AOGCM, Baseline, Scenario)
+#' @usage ecoClimate_getdata(AOGCM, Baseline, Scenario, logger)
 #'
 #' @param AOGCM Select the AOGCM.
 #' Options are: "CCSM", "CNRM", "MIROC", "COSMOS", "FGOALS", "GISS", "IPSL","MRI", "MPI"
@@ -364,7 +364,7 @@ ecoClimate_getdata <- function (AOGCM, Baseline, Scenario, logger = NULL) {
 #'
 #' select which bioclimatic variables and set the extent you want (crop the raster stack to your study extent)
 #'
-#' @usage ecoClimate_select (map_climate, Sels=c(1:19), extent=c(-180, 180, -90, 90))
+#' @usage ecoClimate_select(map_climate, Sels=c(1:19), extent=c(-180, 180, -90, 90))
 #'
 #' @param map_climate raster stack with all the variables
 #' @param Sels vector of integer numbers. 1 for bio1, 2 for bio2, etc. e.g. Sels= c(1,12,6) for selecting bio1, bio12 and bio6

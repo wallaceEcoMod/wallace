@@ -4,7 +4,7 @@
 \alias{ecoClimate_select}
 \title{ecoClimate_select}
 \usage{
-ecoClimate_select (map_climate, Sels=c(1:19), extent=c(-180, 180, -90, 90))
+ecoClimate_select(map_climate, Sels=c(1:19), extent=c(-180, 180, -90, 90))
 }
 \arguments{
 \item{map_climate}{raster stack with all the variables}
