@@ -138,9 +138,15 @@ alfred.clearAll <- function(map) {
     clearControls() %>% removeLayersControl()
 }
 
-# zooms appropriately for any polygon
+#' @title alfred.polyZoom
+#' @description For internal use. Zooms appropriately for any polygon
+#' @param xmin Minimum longitude
+#' @param xmax Maximum longitude
+#' @param ymin Minimum latitude
+#' @param ymax Maximum latitude
+#' @param fraction Expand zoom fraction
 #' @export
-polyZoom <- function(xmin, ymin, xmax, ymax, fraction) {
+alfred.polyZoom <- function(xmin, ymin, xmax, ymax, fraction) {
   x <- (xmax - xmin) * fraction
   y <- (ymax - ymin) * fraction
   x1 <- xmin - x

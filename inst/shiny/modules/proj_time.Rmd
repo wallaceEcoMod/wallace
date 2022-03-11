@@ -33,7 +33,7 @@ projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 
 ###Make map of projection
 bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
-bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
+bbZoom <- alfred.polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
                    bb_{{spAbr}}[2, 2], fraction = 0.05)
 mapProjVals_{{spAbr}} <- getRasterVals(proj_time_{{spAbr}}$projTime,"{{outputType_rmd}}")
 rasCols_{{spAbr}} <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
@@ -101,7 +101,7 @@ proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime > proj_thresProb_{{spAbr}}
 ##Make map
 ###Make map of projection
 bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
-bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
+bbZoom <- alfred.polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
                    bb_{{spAbr}}[2, 2], fraction = 0.05)
 mapProjVals_{{spAbr}} <- getRasterVals(proj_time_{{spAbr}},"{{outputType_rmd}}")
 
@@ -164,7 +164,7 @@ projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 
 ###Make map of projection
 bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
-bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
+bbZoom <- alfred.polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
                    bb_{{spAbr}}[2, 2], fraction = 0.05)
 mapProjVals_{{spAbr}} <- getRasterVals(proj_time_{{spAbr}}$projTime,"{{outputType_rmd}}")
 rasCols_{{spAbr}} <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
@@ -240,7 +240,7 @@ proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime > proj_thresProb_{{spAbr}}
 ##Make map
 ###Make map of projection
 bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
-bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
+bbZoom <- alfred.polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
                    bb_{{spAbr}}[2, 2], fraction = 0.05)
 mapProjVals_{{spAbr}} <- getRasterVals(proj_time_{{spAbr}},"{{outputType_rmd}}")
 
@@ -305,7 +305,7 @@ projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 
 ###Make map of projection
 bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
-bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
+bbZoom <- alfred.polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
                    bb_{{spAbr}}[2, 2], fraction = 0.05)
 mapProjVals_{{spAbr}} <- getRasterVals(proj_time_{{spAbr}}$projTime,"{{outputType_rmd}}")
 rasCols_{{spAbr}} <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
@@ -383,7 +383,7 @@ proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime > proj_thresProb_{{spAbr}}
 ##Make map
 ###Make map of projection
 bb_{{spAbr}} <- bgExt_{{spAbr}}@bbox
-bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
+bbZoom <- alfred.polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
                    bb_{{spAbr}}[2, 2], fraction = 0.05)
 mapProjVals_{{spAbr}} <- getRasterVals(proj_time_{{spAbr}},"{{outputType_rmd}}")
 
@@ -435,7 +435,7 @@ projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
  
  ###Make map of projection
 bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
-bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
+bbZoom <- alfred.polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
                    bb_{{spAbr}}[2, 2], fraction = 0.05)
 mapProjVals_{{spAbr}} <- getRasterVals(proj_time_{{spAbr}}$projTime,"{{outputType_rmd}}")
 rasCols_{{spAbr}} <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
@@ -497,7 +497,7 @@ proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime > proj_thresProb_{{spAbr}}
 ##Make map
 ###Make map of projection
 bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
-bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
+bbZoom <- alfred.polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
                    bb_{{spAbr}}[2, 2], fraction = 0.05)
 mapProjVals_{{spAbr}} <- getRasterVals(proj_time_{{spAbr}},"{{outputType_rmd}}")
 
@@ -555,7 +555,7 @@ projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 
 ###Make map of projection
 bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
-bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
+bbZoom <- alfred.polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
                    bb_{{spAbr}}[2, 2], fraction = 0.05)
 mapProjVals_{{spAbr}} <- getRasterVals(proj_time_{{spAbr}}$projTime,"{{outputType_rmd}}")
 rasCols_{{spAbr}} <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
@@ -624,7 +624,7 @@ proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime > proj_thresProb_{{spAbr}}
 ##Make map
 ###Make map of projection
 bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
-bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
+bbZoom <- alfred.polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
                    bb_{{spAbr}}[2, 2], fraction = 0.05)
 mapProjVals_{{spAbr}} <- getRasterVals(proj_time_{{spAbr}},"{{outputType_rmd}}")
 
@@ -683,7 +683,7 @@ projExt_{{spAbr}} <- proj_time_{{spAbr}}$projExt
 
 ###Make map of projection
 bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
-bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
+bbZoom <- alfred.polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
                    bb_{{spAbr}}[2, 2], fraction = 0.05)
 mapProjVals_{{spAbr}} <- getRasterVals(proj_time_{{spAbr}}$projTime,"{{outputType_rmd}}")
 rasCols_{{spAbr}} <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
@@ -753,7 +753,7 @@ proj_time_{{spAbr}} <- proj_time_{{spAbr}}$projTime > proj_thresProb_{{spAbr}}
 ##Make map
 ###Make map of projection
 bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
-bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
+bbZoom <- alfred.polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
                    bb_{{spAbr}}[2, 2], fraction = 0.05)
 mapProjVals_{{spAbr}} <- getRasterVals(proj_time_{{spAbr}},"{{outputType_rmd}}")
 
