@@ -12,7 +12,7 @@ projMess_{{spAbr}} <- proj_mess(
   time = "{{time_rmd}}")
 
 # Generate MESS map
-rasVals_{{spAbr}} <-  getRasterVals(projMess_{{spAbr}})
+rasVals_{{spAbr}} <-  alfred.getRasterVals(projMess_{{spAbr}})
 
   # define colorRamp for mess
   if (max(rasVals_{{spAbr}}) > 0 & min(rasVals_{{spAbr}}) < 0) {

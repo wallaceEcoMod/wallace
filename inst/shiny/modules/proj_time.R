@@ -388,7 +388,7 @@ proj_time_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$project$pjEnvs <- projExt
     spp[[curSp()]]$project$projTimeEnvs <- projTimeEnvs
     spp[[curSp()]]$project$mapProj <- projTimeThr
-    spp[[curSp()]]$project$mapProjVals <- getRasterVals(projTimeThr, predType)
+    spp[[curSp()]]$project$mapProjVals <- alfred.getRasterVals(projTimeThr, predType)
     if (input$selTimeVar == "worldclim") {
       spp[[curSp()]]$project$pjEnvsDl <- paste0('CMIP5_', envsRes * 60, "min_RCP",
                                                 input$selRCP, "_", input$selGCM,

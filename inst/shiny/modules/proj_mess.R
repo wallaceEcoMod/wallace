@@ -40,7 +40,7 @@ proj_mess_module_server <- function(input, output, session, common) {
 
     # LOAD INTO SPP ####
     spp[[curSp()]]$project$mess <- mss
-    spp[[curSp()]]$project$messVals <- getRasterVals(mss)
+    spp[[curSp()]]$project$messVals <- alfred.getRasterVals(mss)
     spp[[curSp()]]$rmm$code$wallace$MESS <- TRUE
     spp[[curSp()]]$rmm$code$wallace$MESSTime <- time
 

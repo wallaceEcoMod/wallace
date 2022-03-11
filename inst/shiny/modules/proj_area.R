@@ -220,7 +220,7 @@ proj_area_module_server <- function(input, output, session, common) {
     # LOAD INTO SPP ####
     spp[[curSp()]]$project$pjEnvs <- projExt
     spp[[curSp()]]$project$mapProj <- projAreaThr
-    spp[[curSp()]]$project$mapProjVals <- getRasterVals(projAreaThr, predType)
+    spp[[curSp()]]$project$mapProjVals <- alfred.getRasterVals(projAreaThr, predType)
 
     # METADATA ####
     spp[[curSp()]]$rmm$code$wallace$project_curModel <- curModel()

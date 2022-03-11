@@ -171,7 +171,7 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
       spp[[curSp()]]$visualization$thresholds <- thr.sel # were you recording multiple before?
     }
     spp[[curSp()]]$visualization$mapPred <- predSel.thr
-    spp[[curSp()]]$visualization$mapPredVals <- getRasterVals(predSel.thr, predType)
+    spp[[curSp()]]$visualization$mapPredVals <- alfred.getRasterVals(predSel.thr, predType)
     # METADATA ####
     spp[[curSp()]]$rmd$vis_curModel <- curModel()
     spp[[curSp()]]$rmm$prediction$Type <- predType

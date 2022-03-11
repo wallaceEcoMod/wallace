@@ -287,7 +287,7 @@ proj_user_module_server <- function(input, output, session, common) {
     # LOAD INTO SPP ####
     spp[[curSp()]]$project$pjEnvs <- projExt
     spp[[curSp()]]$project$mapProj <- projUserThr
-    spp[[curSp()]]$project$mapProjVals <- getRasterVals(projUserThr, predType)
+    spp[[curSp()]]$project$mapProjVals <- alfred.getRasterVals(projUserThr, predType)
 
     # METADATA ####
     spp[[curSp()]]$rmm$code$wallace$project_curModel <- curModel()

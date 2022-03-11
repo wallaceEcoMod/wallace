@@ -29,7 +29,7 @@ projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
 bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
 bbZoom <- alfred.polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
                    bb_{{spAbr}}[2, 2], fraction = 0.05)
-mapProjVals_{{spAbr}} <- getRasterVals(proj_userEnvs_{{spAbr}}$projUser, "{{outputType_rmd}}")
+mapProjVals_{{spAbr}} <- alfred.getRasterVals(proj_userEnvs_{{spAbr}}$projUser, "{{outputType_rmd}}")
 rasCols_{{spAbr}} <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 # if no threshold specified
 legendPal <- colorNumeric(rev(rasCols_{{spAbr}}), mapProjVals_{{spAbr}}, na.color = 'transparent')
@@ -94,7 +94,7 @@ proj_userEnvs_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projUser > proj_thres_{{spAbr
 bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
 bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
                    bb_{{spAbr}}[2, 2], fraction = 0.05)
-mapProjVals_{{spAbr}} <- getRasterVals(proj_userEnvs_{{spAbr}},"{{outputType_rmd}}")
+mapProjVals_{{spAbr}} <- alfred.getRasterVals(proj_userEnvs_{{spAbr}},"{{outputType_rmd}}")
 
   # if threshold specified
 rasPal_{{spAbr}} <- c('gray', 'red')
@@ -151,7 +151,7 @@ projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
 bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
 bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
                    bb_{{spAbr}}[2, 2], fraction = 0.05)
-mapProjVals_{{spAbr}} <- getRasterVals( proj_userEnvs_{{spAbr}}$projUser,"{{outputType_rmd}}")
+mapProjVals_{{spAbr}} <- alfred.getRasterVals( proj_userEnvs_{{spAbr}}$projUser,"{{outputType_rmd}}")
 rasCols_{{spAbr}} <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 # if no threshold specified
 legendPal <- colorNumeric(rev(rasCols_{{spAbr}}), mapProjVals_{{spAbr}}, na.color = 'transparent')
@@ -222,7 +222,7 @@ proj_userEnvs_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projUser > proj_thres_{{spAbr
 bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
 bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
                    bb_{{spAbr}}[2, 2], fraction = 0.05)
-mapProjVals_{{spAbr}} <- getRasterVals(proj_userEnvs_{{spAbr}},"{{outputType_rmd}}")
+mapProjVals_{{spAbr}} <- alfred.getRasterVals(proj_userEnvs_{{spAbr}},"{{outputType_rmd}}")
 
 # if threshold specified
 rasPal_{{spAbr}} <- c('gray', 'red')
@@ -280,7 +280,7 @@ projExt_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projExt
 bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
 bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
                    bb_{{spAbr}}[2, 2], fraction = 0.05)
-mapProjVals_{{spAbr}} <- getRasterVals(proj_userEnvs_{{spAbr}}$projUser,"{{outputType_rmd}}")
+mapProjVals_{{spAbr}} <- alfred.getRasterVals(proj_userEnvs_{{spAbr}}$projUser,"{{outputType_rmd}}")
 rasCols_{{spAbr}} <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 # if no threshold specified
 legendPal <- colorNumeric(rev(rasCols_{{spAbr}}), mapProjVals_{{spAbr}}, na.color = 'transparent')
@@ -353,7 +353,7 @@ proj_userEnvs_{{spAbr}} <- proj_userEnvs_{{spAbr}}$projUser > proj_thres_{{spAbr
 bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
 bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
                    bb_{{spAbr}}[2, 2], fraction = 0.05)
-mapProjVals_{{spAbr}} <- getRasterVals(proj_userEnvs_{{spAbr}},"{{outputType_rmd}}")
+mapProjVals_{{spAbr}} <- alfred.getRasterVals(proj_userEnvs_{{spAbr}},"{{outputType_rmd}}")
 
   # if threshold specified
 rasPal_{{spAbr}} <- c('gray', 'red')

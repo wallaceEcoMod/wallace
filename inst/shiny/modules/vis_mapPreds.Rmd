@@ -9,7 +9,7 @@ Generate a map of the Bioclim generated model with no threshold
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
 predSel_{{spAbr}} <- dismo::predict(m_{{spAbr}}, bgMask_{{spAbr}}, useC = FALSE)
 #Get values of prediction
-mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
+mapPredVals_{{spAbr}} <- alfred.getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
 #Define colors and legend  
 rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 legendPal <- colorNumeric(rev(rasCols), mapPredVals_{{spAbr}}, na.color = 'transparent')
@@ -56,7 +56,7 @@ thres_{{spAbr}} <- stats::quantile(occPredVals_{{spAbr}},
 # Applied selected threshold
 predSel_{{spAbr}} <- predSel_{{spAbr}} > thres_{{spAbr}}
 # Get values of prediction
-mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
+mapPredVals_{{spAbr}} <- alfred.getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
 # Define colors and legend  
 rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 legendPal <- colorNumeric(rev(rasCols), mapPredVals_{{spAbr}}, na.color = 'transparent')
@@ -96,7 +96,7 @@ predSel_{{spAbr}} <- dismo::predict(
            paste0("doclamp=", tolower(as.character({{clamp_rmd}})))), 
   na.rm = TRUE)
 #Get values of prediction
-mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
+mapPredVals_{{spAbr}} <- alfred.getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
 #Define colors and legend  
 rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 legendPal <- colorNumeric(rev(rasCols), mapPredVals_{{spAbr}}, na.color = 'transparent')
@@ -146,7 +146,7 @@ thres_{{spAbr}} <- stats::quantile(occPredVals_{{spAbr}}, probs = thresProb_{{sp
 # Applied selected threshold
 predSel_{{spAbr}} <- predSel_{{spAbr}} > thres_{{spAbr}}
 #Get values of prediction
-mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
+mapPredVals_{{spAbr}} <- alfred.getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
 #Define colors and legend  
 rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 legendPal <- colorNumeric(rev(rasCols), mapPredVals_{{spAbr}}, na.color = 'transparent')
@@ -183,7 +183,7 @@ predSel_{{spAbr}} <- predictMaxnet(m_{{spAbr}}, bgMask_{{spAbr}},
                                    type = "{{predType_rmd}}", 
                                    clamp = {{clamp_rmd}})
 #Get values of prediction
-mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
+mapPredVals_{{spAbr}} <- alfred.getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
 #Define colors and legend  
 rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 legendPal <- colorNumeric(rev(rasCols), mapPredVals_{{spAbr}}, na.color = 'transparent')
@@ -232,7 +232,7 @@ thres_{{spAbr}} <- stats::quantile(occPredVals_{{spAbr}}, probs = thresProb_{{sp
 predSel_{{spAbr}} <- predSel_{{spAbr}} > thres_{{spAbr}}
 
 # Get values of prediction
-mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
+mapPredVals_{{spAbr}} <- alfred.getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
 # Define colors and legend  
 rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 legendPal <- colorNumeric(rev(rasCols), mapPredVals_{{spAbr}}, na.color = 'transparent')

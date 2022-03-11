@@ -282,9 +282,12 @@ alfred.remEnvsValsNA <- function(occs, occsEnvsVals, spN, logger) {
 ####################### #
 # VISUALIZE & PROJECT #
 ####################### #
-# retrieve the value range for a prediction raster for plotting
+#' @title alfred.getRasterVals
+#' @description Retrieve the value range for a prediction raster for plotting
+#' @param r raster
+#' @param type Maxent prediction type. It can be "raw", "logistic" or "cloglog"
 #' @export
-getRasterVals <- function(r, type='raw') {
+alfred.getRasterVals <- function(r, type = 'raw') {
   v <- raster::values(r)
   # remove NAs
   v <- v[!is.na(v)]
