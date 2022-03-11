@@ -206,28 +206,28 @@ alfred.zoom2Occs <- function(map, occs) {
 #' @param occs occurrence table
 #' @export
 alfred.popUpContent <- function(occs) {
-  lat <- round(as.numeric(x['latitude']), digits = 2)
-  lon <- round(as.numeric(x['longitude']), digits = 2)
+  lat <- round(as.numeric(occs['latitude']), digits = 2)
+  lon <- round(as.numeric(occs['longitude']), digits = 2)
   as.character(tagList(
-    tags$strong(paste("occID:", x['occID'])),
+    tags$strong(paste("occID:", occs['occID'])),
     tags$br(),
     tags$strong(paste("Latitude:", lat)),
     tags$br(),
     tags$strong(paste("Longitude:", lon)),
     tags$br(),
-    tags$strong(paste("Year:", x['year'])),
+    tags$strong(paste("Year:", occs['year'])),
     tags$br(),
-    tags$strong(paste("Inst. Code:", x['institutionCode'])),
+    tags$strong(paste("Inst. Code:", occs['institutionCode'])),
     tags$br(),
-    tags$strong(paste("Country:", x['country'])),
+    tags$strong(paste("Country:", occs['country'])),
     tags$br(),
-    tags$strong(paste("State/Prov.:", x['stateProvince'])),
+    tags$strong(paste("State/Prov.:", occs['stateProvince'])),
     tags$br(),
-    tags$strong(paste("Locality:", x['locality'])),
+    tags$strong(paste("Locality:", occs['locality'])),
     tags$br(),
-    tags$strong(paste("Elevation:", x['elevation'])),
+    tags$strong(paste("Elevation:", occs['elevation'])),
     tags$br(),
-    tags$strong(paste("Basis of Record:", x['basisOfRecord']))
+    tags$strong(paste("Basis of Record:", occs['basisOfRecord']))
   ))
 }
 
