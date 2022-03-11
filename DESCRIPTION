@@ -52,6 +52,7 @@ Imports:
     rgbif (>= 3.3.0),
     rgdal,
     rgeos,
+    rlang,
     rJava,
     rmarkdown,
     shinyalert,
