@@ -246,7 +246,7 @@ function(input, output, session) {
   # DOWNLOAD: current species occurrence data table
   output$dlOccs <- downloadHandler(
     filename = function() {
-      n <- formatSpName(curSp())
+      n <- alfred.fmtSpN(curSp())
       source <- rmm()$data$occurrence$sources
       glue("{n}_{source}.csv")
     },
@@ -277,7 +277,7 @@ function(input, output, session) {
   # DOWNLOAD: occsOrig
   output$dlDbOccs <- downloadHandler(
     filename = function() {
-      n <- formatSpName(curSp())
+      n <- alfred.fmtSpN(curSp())
       source <- rmm()$data$occurrence$sources
       glue("{n}_{source}_raw.csv")
     },

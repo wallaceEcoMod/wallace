@@ -34,14 +34,17 @@ alfred.printVecAsis <- function(x, asChar = FALSE) {
 # SHINY LOG #
 ####################### #
 
+#' @title alfred.fmtSpN
+#' @description For internal use. Format species name with underscore
+#' @param spN Species name
 #' @export
-formatSpName <- function(spNames) {
-  spNames <- as.character(spNames)
+alfred.fmtSpN <- function(spN) {
+  spN <- as.character(spN)
   # separate by space
-  spNames.fmt <- sapply(spNames, function(x) strsplit(x, split = ' '))
+  spN.fmt <- sapply(spN, function(x) strsplit(x, split = ' '))
   # put underscores in
-  spNames.fmt <- sapply(spNames.fmt, function(x) paste(x, collapse = '_'))
-  return(spNames.fmt)
+  spN.fmt <- sapply(spN.fmt, function(x) paste(x, collapse = '_'))
+  return(spN.fmt)
 }
 
 # Highlight species name in Windows Log

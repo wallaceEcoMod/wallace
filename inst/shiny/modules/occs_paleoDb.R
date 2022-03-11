@@ -48,7 +48,7 @@ occs_paleoDb_module_server <- function(input, output, session, common) {
     # LOAD INTO SPP ####
     occsOrig <- occsTbls$orig
     occs <- occsTbls$cleaned
-    sp <- formatSpName(input$spNamePB)
+    sp <- alfred.fmtSpN(input$spNamePB)
     sp <- paste0(toupper(substring(sp, 1, 1)), substring(sp, 2, nchar(sp)))
     # if species name is already in list, overwrite it
     if (!is.null(spp[[sp]])) spp[[sp]] <- NULL

@@ -82,7 +82,7 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
   if (class(occsOrig) == "try-error") {
     logger %>% writeLog(
       type = 'error',
-      hlSpp(hlSpp(formatSpName(spName))), "No records found, please check the spelling.")
+      hlSpp(hlSpp(alfred.fmtSpN(spName))), "No records found, please check the spelling.")
     return()
   }
 
@@ -128,7 +128,7 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
 
   dupsRem <- nrow(occsXY) - nrow(occs)
   logger %>% writeLog(
-    hlSpp(formatSpName(spName)), 'Total paleobioDb records returned [', nrow(occsOrig),
+    hlSpp(alfred.fmtSpN(spName)), 'Total paleobioDb records returned [', nrow(occsOrig),
     '] (limit ', occNum, '). Records without coordinates removed [',
     noCoordsRem, ']. Duplicated records removed [', dupsRem,
     ']. Remaining records [', nrow(occs), '].')

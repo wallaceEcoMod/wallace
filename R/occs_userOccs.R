@@ -127,7 +127,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
       dplyr::mutate(pop = unlist(apply(sp.occs, 1, popUpContent))) %>%
       dplyr::arrange_(cols)
 
-    n <- formatSpName(i)
+    n <- alfred.fmtSpN(i)
 
     # subset to just records with latitude and longitude
     occsXY <- sp.occs[!is.na(sp.occs$latitude) & !is.na(sp.occs$longitude),]

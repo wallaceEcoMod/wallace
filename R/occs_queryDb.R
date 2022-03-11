@@ -103,7 +103,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
             logger %>%
               writeLog(
                 type = "error",
-                hlSpp(formatSpName(sp)),
+                hlSpp(alfred.fmtSpN(sp)),
                 "There is no match in GBIF database. Please check the spelling."
               )
             return()
@@ -124,7 +124,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
           #myOccCitations <- occCite::occCitation(myBTO)
           # make something with the same slots as spocc that we use
           q <- list(gbif = list(meta = list(found = NULL),
-                                data = list(formatSpName(sp))))
+                                data = list(alfred.fmtSpN(sp))))
           gbif_raw <- utils::read.table(unz(
             as.character(myBTO@occResults[[bestMatch]][['GBIF']][['RawOccurrences']]),
             "occurrence.txt"), sep = "\t", header = TRUE, quote = "",
@@ -142,14 +142,14 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
                           country = .data$countryCode)
           q[[occDb]]$meta$found <-
             nrow(myBTO@occResults[[bestMatch]][['GBIF']][['OccurrenceTable']])
-          q[[occDb]]$data[[formatSpName(sp)]] <- gbif_occCite_df
+          q[[occDb]]$data[[alfred.fmtSpN(sp)]] <- gbif_occCite_df
           doiGBIF <- myBTO@occResults[[bestMatch]][['GBIF']]$Metadata$doi
           dateDOI <- format(as.Date(myBTO@occResults[[bestMatch]][['GBIF']]$Metadata$created),
                             "%d %B %Y")
           citeGBIF <- list(doi = doiGBIF, date = dateDOI)
           logger %>%
             writeLog(
-              hlSpp(formatSpName(sp)),
+              hlSpp(alfred.fmtSpN(sp)),
               " #CiteTheDOI: Gbif.org (", dateDOI,
               ") GBIF Ocurrence Download https://doi.org/", doiGBIF
             )
@@ -161,9 +161,9 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
         qBien <- BIEN::BIEN_occurrence_species(species = sp)
         # make something with the same slots as spocc that we use
         q <- list(bien = list(meta = list(found = NULL),
-                              data = list(formatSpName(sp))))
+                              data = list(alfred.fmtSpN(sp))))
         q[[occDb]]$meta$found <- nrow(qBien)
-        q[[occDb]]$data[[formatSpName(sp)]] <- qBien
+        q[[occDb]]$data[[alfred.fmtSpN(sp)]] <- qBien
       }
     })
 
@@ -171,13 +171,13 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
     if (q[[occDb]]$meta$found == 0) {
       logger %>%
         writeLog(type = 'error',
-                 hlSpp(formatSpName(sp)),
+                 hlSpp(alfred.fmtSpN(sp)),
                  'No records found. Please check the spelling.')
       next
     }
     # extract occurrence tibbles
 
-    occsOrig <- q[[occDb]]$data[[formatSpName(sp)]]
+    occsOrig <- q[[occDb]]$data[[alfred.fmtSpN(sp)]]
     # make sure latitude and longitude are numeric (sometimes they aren't)
     occsOrig$latitude <- as.numeric(occsOrig$latitude)
     occsOrig$longitude <- as.numeric(occsOrig$longitude)
@@ -192,7 +192,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
     if (nrow(occsXY) == 0) {
       logger %>% writeLog(
         type = 'warning',
-        hlSpp(formatSpName(sp)),
+        hlSpp(alfred.fmtSpN(sp)),
         'No records with coordinates found in ', occDb, ". ")
       return()
     }
@@ -268,7 +268,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
       if(nrow(occs)==0){
         logger %>% writeLog(
           type = 'warning',
-          hlSpp(formatSpName(sp)),
+          hlSpp(alfred.fmtSpN(sp)),
           'No records with coordinate uncertainty information found in ', occDb, ".")
         return()
     }
@@ -296,7 +296,7 @@ occs <- occs[!dups,]
 
    if (RmUncertain == TRUE) {
      logger %>%
-       writeLog(hlSpp(formatSpName(sp)), 'Total ', occDb, ' records returned [',
+       writeLog(hlSpp(alfred.fmtSpN(sp)), 'Total ', occDb, ' records returned [',
                 nrow(occsOrig), '] out of [', totRows, '] total',
                 if (!(doCitations | occDb == 'bien')) {paste0(' (limit ', occNum,')')},
                 '. Records without coordinates removed [', noCoordsRem,
@@ -305,7 +305,7 @@ occs <- occs[!dups,]
                 ']. Remaining records [', nrow(occs), '].')
    }
     else {logger %>%
-      writeLog(hlSpp(formatSpName(sp)), 'Total ', occDb, ' records returned [',
+      writeLog(hlSpp(alfred.fmtSpN(sp)), 'Total ', occDb, ' records returned [',
                nrow(occsOrig), '] out of [', totRows, '] total',
                if (!(doCitations | occDb == 'bien')) {paste0(' (limit ', occNum,')')},
                '. Records without coordinates removed [', noCoordsRem,
@@ -316,11 +316,11 @@ occs <- occs[!dups,]
 
      # put into list
     if (doCitations & occDb == "gbif") {
-      occList[[formatSpName(sp)]] <- list(orig = occsOrig,
+      occList[[alfred.fmtSpN(sp)]] <- list(orig = occsOrig,
                                           cleaned = as.data.frame(occs),
                                           citation = citeGBIF)
     } else {
-      occList[[formatSpName(sp)]] <- list(orig = occsOrig,
+      occList[[alfred.fmtSpN(sp)]] <- list(orig = occsOrig,
                                           cleaned = as.data.frame(occs))
     }
   }
