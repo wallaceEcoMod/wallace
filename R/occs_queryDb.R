@@ -53,6 +53,18 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
     return()
   }
 
+  if (occDb == "gbif" & doCitations == TRUE &
+      !requireNamespace("occCite", quietly = TRUE)) {
+    logger %>%
+      alfred.writeLog(
+        type = "error",
+        "This option is available if you install the 'occCite' package. If you ",
+        "want to install it, close Wallace and run the following line in the ",
+        "R Console: ", em("install.packages('occCite')")
+      )
+    return()
+  }
+
   # Get all species names for textInput Shiny
   if (length(spNames) == 1) {
     if (grepl(x = spNames, pattern = ",")) {
@@ -132,7 +144,6 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
                                      datasource = "gbif",
                                      GBIFLogin = login,
                                      checkPreviousGBIFDownload = FALSE)
-          #myOccCitations <- occCite::occCitation(myBTO)
           # make something with the same slots as spocc that we use
           q <- list(gbif = list(meta = list(found = NULL),
                                 data = list(alfred.fmtSpN(sp))))
@@ -166,9 +177,6 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
             )
         }
       } else if (occDb == 'bien') {
-        # myBTO <- occCite::studyTaxonList(x = sp, datasources = "NCBI")
-        # myBTO <- occCite::occQuery(x = myBTO, datasources = 'bien', limit = occNum)
-        # myOccCitations <- NULL
         qBien <- BIEN::BIEN_occurrence_species(species = sp)
         # make something with the same slots as spocc that we use
         q <- list(bien = list(meta = list(found = NULL),

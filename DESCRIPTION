@@ -36,7 +36,6 @@ Imports:
     magrittr,
     maxnet,
     methods,
-    occCite,
     paleobioDB,
     pryr,
     rangeModelMetadata,
@@ -63,9 +62,8 @@ Suggests:
     jsonlite,
     knitr,
     mapview,
+    occCite,
     testthat
-Remotes:
-    hannahlowens/occCite
 License: GPL-3
 URL: https://wallaceEcoMod.github.io
 Encoding: UTF-8
