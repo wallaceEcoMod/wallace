@@ -463,35 +463,6 @@ function(input, output, session) {
   )
 
   ############################################## #
-  ### COMPONENT: SAMPLING BIAS ####
-  ############################################## #
-
-  # # # # # # # # # # # # # # # # # #
-  # module User Background Data ####
-  # # # # # # # # # # # # # # # # # #
-  observeEvent(input$goUserBGUpload, {
-    userBGUpload <- callModule(userBG_MOD, 'samp_userBiasBg_uiID')
-    userBGUpload()
-  })
-
-  # # # # # # # # # # # # # # # # # #
-  # module User Bias File        ####
-  # # # # # # # # # # # # # # # # # #
-  observeEvent(input$goBiasFileUpload, {
-    userBiasFileUpload <- callModule(userBiasFile_MOD, 'samp_biasFileUpload')
-    userBiasFileUpload()
-  })
-
-  # # # # # # # # # # # # # # # # # #
-  # module Make Target Group ####
-  # # # # # # # # # # # # # # # # # #
-  observeEvent(input$goTargetDbOccs, {
-    targetQueryDB <- callModule(queryDb_MOD, 'samp_queryDb_uiID', targetGroup = TRUE)
-    occsList <- targetQueryDB()
-    targetGroupBG <- callModule(targetGroupBG_MOD, 'samp_targetGroupBg_uiID', occsList)
-  })
-
-  ############################################## #
   ### COMPONENT: ESPACE ####
   ############################################## #
 
