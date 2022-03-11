@@ -25,7 +25,6 @@ Depends:
     leaflet (>= 2.0.2)
 Imports:
     ade4,
-    dismo,
     dplyr (>= 1.0.2),
     DT (>= 0.5),
     ecospat,
@@ -34,10 +33,7 @@ Imports:
     knitcitations,
     leaflet.extras (>= 1.0.0),
     magrittr,
-    maxnet,
     methods,
-    rangeModelMetadata,
-    raster,
     RColorBrewer,
     rgdal,
     rgeos,
@@ -46,19 +42,24 @@ Imports:
     shinyalert,
     shinyjs,
     shinyWidgets (>= 0.6.0),
-    sp,
     spocc (>= 1.2.0),
     spThin,
     tools,
     zip
 Suggests: 
     BIEN,
+    dismo,
     jsonlite,
     knitr,
     mapview,
+    maxnet,
     occCite,
     paleobioDB,
+    rangeModelMetadata,
+    raster,
+    rgbif (>= 3.3.0),
     rJava,
+    sp,
     testthat
 License: GPL-3
 URL: https://wallaceEcoMod.github.io
