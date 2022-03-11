@@ -65,9 +65,9 @@ envs_ecoClimate <- function(bcAOGCM, bcScenario, ecoClimSel, logger = NULL) {
 }
 
 ###Auxiliary functions
-#' ecoClimate_getdata
+#' @title ecoClimate_getdata
 #'
-#' download ecoClimate layers. more info at www.ecoclimate.org
+#' @description download ecoClimate layers. more info at www.ecoclimate.org
 #'
 #' @usage ecoClimate_getdata(AOGCM, Baseline, Scenario)
 #'
