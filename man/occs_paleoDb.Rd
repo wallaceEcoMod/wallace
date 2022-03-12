@@ -27,16 +27,14 @@ This function is called by the module occs_queryDb to query the paleobioDB datab
 species occurrence records in the holocene. It removes records with duplicate coordinates, and select some columns with fields
 appropriate to studies in biogeography.
 }
-\examples{
-spName <- "Didelphis virginiana"
-occNum <- 100
-timeInterval <- "Holocene"
-occsPaleo <- occs_paleoDb(spName, occNum, timeInterval)
-}
 \author{
 Jamie Kass <jamie.m.kass@gmail.com>
 
 Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
 
 Sara Varela <sara_varela@yahoo.com>
+#spName <- "Didelphis virginiana"
+#occNum <- 100
+#timeInterval <- "Holocene"
+#occsPaleo <- occs_paleoDb(spName, occNum, timeInterval)
 }

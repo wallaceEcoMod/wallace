@@ -19,11 +19,11 @@
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 #' @author Sara Varela <sara_varela@@yahoo.com>
-#' @examples
-#' spName <- "Didelphis virginiana"
-#' occNum <- 100
-#' timeInterval <- "Holocene"
-#' occsPaleo <- occs_paleoDb(spName, occNum, timeInterval)
+# @examples
+#' #spName <- "Didelphis virginiana"
+#' #occNum <- 100
+#' #timeInterval <- "Holocene"
+#' #occsPaleo <- occs_paleoDb(spName, occNum, timeInterval)
 #' @export
 
 occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {

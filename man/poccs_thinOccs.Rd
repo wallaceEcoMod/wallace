@@ -28,11 +28,9 @@ to a user specified distance. Providing an output with preserved columns appropr
 and a maximized number of occurrences that are separated by at least the provided distance.
 }
 \examples{
-spN <- "Panthera onca"
-out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
+out.gbif <- occs_queryDb(spName = "Panthera onca", occDb = "gbif", occNum = 100)
 occs <- as.data.frame(out.gbif[[1]]$cleaned)
-out.thin <- poccs_thinOccs(occs=occs, thinDist = 30,
-                           spN = spN, logger = NULL)
+out.thin <- poccs_thinOccs(occs=occs, thinDist = 30)
 
 
 }

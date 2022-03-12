@@ -38,37 +38,35 @@ The niche overlap quantification is based on the occurrence densities and the de
 The function computes 4 different things, Schoener's D, unfilling, stability, expansion indices (Guisan et al. 2014 TREE), and tests for niche equivalency and niche similarity.
 }
 \examples{
+envs <- envs_worldclim(bcRes = 10,
+                       bcSel = c("bio01","bio02","bio13","bio14"),
+                       doBrick = FALSE)
 sp.name1 <- "Panthera onca"
 sp.name2 <- "Procyon lotor"
-species <- c(sp.name1, sp.name2)
-model <- list()
-for (i in 1:2) {
-  occs <-  occs_queryDb(spName = species[i], occDb = "gbif", occNum = 100)
-  occs <- as.data.frame(occs[[1]]$cleaned)
-  occs <- poccs_thinOccs(occs = occs, thinDist = 10,spN=species[i])
-  envs <- envs_worldclim(bcRes = 10,
-                         bcSel = c("bio01","bio02","bio13","bio14"),
-                         doBrick = FALSE)
-  bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
-  bgMask <- penvs_bgMask(occs, envs, bgExt)
-  bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 1000, spN = species[i])
-  partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL,
-                                  bgMask = NULL, aggFact = NULL)
-  bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp,
-                              partblock$bg.grp, bgMask)
-  model[i] <- bioclimAlg
-}
-occs.z1 <- model[[1]]@occs[3:length(model[[1]]@occs)]
-occs.z2 <- model[[2]]@occs[3:length(model[[2]]@occs)]
-bgPts.z1 <- model[[1]]@bg[3:length(model[[1]]@bg)]
-bgPts.z2 <- model[[2]]@bg[3:length(model[[2]]@bg)]
-Testpca <- espace_pca(sp.name1, sp.name2, occs.z1, occs.z2,
-                      bgPts.z1, bgPts.z2)
-TestOccDens <- espace_occDens(sp.name1, sp.name2, Testpca)
-TestNicheOv <- espace_nicheOv(z1 = TestOccDens[[sp.name1]],
-                              z2 = TestOccDens[[sp.name2]],
-                              iter = 100 , equivalency = TRUE,
-                              similarity = TRUE)
+occs.z1 <- occs_queryDb(spName = sp.name1, occDb = "gbif",
+                        occNum = 100)[[1]]$cleaned
+occs.z2 <- occs_queryDb(spName = sp.name2, occDb = "gbif",
+                        occNum = 100)[[1]]$cleaned
+bgExt.z1 <- penvs_bgExtent(occs.z1, bgSel = 'bounding box', bgBuf = 0.5)
+bgExt.z2 <- penvs_bgExtent(occs.z2, bgSel = 'bounding box', bgBuf = 0.5)
+bgMask.z1 <- penvs_bgMask(occs.z1, envs, bgExt.z1)
+bgMask.z2 <- penvs_bgMask(occs.z2, envs, bgExt.z2)
+bgPts.z1 <- penvs_bgSample(occs.z1, bgMask.z1, bgPtsNum = 1000)
+bgPts.z2 <- penvs_bgSample(occs.z2, bgMask.z2, bgPtsNum = 1000)
+occsExt.z1 <- na.omit(raster::extract(envs,
+                                      occs.z1[, c("longitude", "latitude")]))
+occsExt.z2 <- na.omit(raster::extract(envs,
+                                      occs.z2[, c("longitude", "latitude")]))
+bgExt.z1 <- raster::extract(envs, bgPts.z1[, c("longitude", "latitude")])
+bgExt.z2 <- raster::extract(envs, bgPts.z2[, c("longitude", "latitude")])
+pcaZ <- espace_pca(sp.name1, sp.name2,
+                   occsExt.z1, occsExt.z2,
+                   bgExt.z1, bgExt.z2)
+occDens <- espace_occDens(sp.name1, sp.name2, pcaZ)
+nicheOv <- espace_nicheOv(z1 = occDens[[sp.name1]],
+                          z2 = occDens[[sp.name2]],
+                          iter = 100, equivalency = TRUE,
+                          similarity = TRUE)
 
 }
 \seealso{

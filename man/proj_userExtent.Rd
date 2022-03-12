@@ -29,6 +29,14 @@ This function is used in the projection component. Here, the user provides eithe
 with the desired shape for the projection extent, the user may include a buffer to the given polygon.
 The function returns a SpatialPolygons object of the desired extent (+ buffer).
 }
+\examples{
+pathShp <- list.files(system.file("extdata/shp", package = "wallace"),
+                      full.names = TRUE)
+nameShp <- list.files(system.file("extdata/shp", package = "wallace"),
+                      full.names = FALSE)
+projUser <- proj_userExtent(bgShp_path = pathShp, bgShp_name = nameShp,
+                            userBgBuf = 1)
+}
 \seealso{
 \code{\link{penvs_drawBgExtent}}, \code{\link{penvs_bgExtent}}, \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}
 }

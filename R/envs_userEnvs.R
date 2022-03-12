@@ -14,9 +14,12 @@
 # @keywords
 #'
 #' @examples
-#' Path <- list.files(path='./wc10/', pattern = "*cut.tif$", full.names = TRUE)
-#' Name <- list.files(path='./wc10/', pattern = "*cut.tif$", full.names = FALSE)
-#' userEnvs <- envs_userEnvs(rasPath = Path, rasName = Name, doBrick = TRUE)
+#' pathRast <- list.files(system.file("extdata/wc10", package = "wallace"),
+#'                        pattern = "cut.tif$", full.names = TRUE)
+#' nameRast <- list.files(system.file("extdata/wc10", package = "wallace"),
+#'                        pattern = "cut.tif$", full.names = FALSE)
+#' userEnvs <- envs_userEnvs(rasPath = pathRast, rasName = nameRast,
+#'                           doBrick = TRUE)
 #'
 #' @return A rasterStack or a rasterBrick (if doBrick=TRUE) of user provided rasters
 #'

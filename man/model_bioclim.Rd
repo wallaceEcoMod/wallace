@@ -42,7 +42,7 @@ bgMask <- penvs_bgMask(occs, envs, bgExt)
 bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000)
 partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL,
                                 bgMask = NULL, aggFact = NULL)
-bioclimAlg <- model_bioclim(occs, bg, user.grp = partblock, bgMask)
+m <- model_bioclim(occs, bg, partblock, bgMask)
 
 }
 \seealso{

@@ -28,7 +28,7 @@
 #' bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000)
 #' partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL,
 #'                                 bgMask = NULL, aggFact = NULL)
-#' bioclimAlg <- model_bioclim(occs, bg, user.grp = partblock, bgMask)
+#' m <- model_bioclim(occs, bg, partblock, bgMask)
 #'
 #' @return Function returns an ENMevaluate object with all the evaluated models and a selection of appropriate fields.
 
@@ -53,11 +53,11 @@ model_bioclim <- function(occs, bg, user.grp, bgMsk, logger = NULL,
   bg.xy <- bg %>% dplyr::select(.data$longitude, .data$latitude)
 
   alfred.smartProgress(logger,
-                message = paste0("Building/Evaluating BIOCLIM model for ",
+                       message = paste0("Building/Evaluating BIOCLIM model for ",
                                  alfred.spName(spN), "..."), {
      e <- ENMeval::ENMevaluate(occs = occs.xy, envs = bgMsk, bg = bg.xy,
                                algorithm = "bioclim", partitions = "user",
-                               user.grp= user.grp)
+                               user.grp = user.grp)
   })
 
   logger %>% alfred.writeLog(alfred.hlSpp(spN),

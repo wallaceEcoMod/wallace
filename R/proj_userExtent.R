@@ -12,10 +12,13 @@
 #' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #' otherwise leave the default NULL
 #' @param spN data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages
-# @keywords
-
-# @keywords
-#'
+#' @examples
+#' pathShp <- list.files(system.file("extdata/shp", package = "wallace"),
+#'                       full.names = TRUE)
+#' nameShp <- list.files(system.file("extdata/shp", package = "wallace"),
+#'                       full.names = FALSE)
+#' projUser <- proj_userExtent(bgShp_path = pathShp, bgShp_name = nameShp,
+#'                             userBgBuf = 1)
 #' @return This function returns a SpatialPolygons object with the user provided shape (+ a buffer is userBgBuf >0).
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>

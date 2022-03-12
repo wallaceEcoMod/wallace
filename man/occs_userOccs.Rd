@@ -31,7 +31,7 @@ remove records with duplicate coordinates, and select some columns with fields
 appropriate to studies in biogeography.
 }
 \examples{
-txtPath <- './Data/Marmosops_sp.csv'
+txtPath <- system.file("extdata/Marmosops_sp.csv", package = "wallace")
 txtName <- 'Marmosops_sp'
 user.occs <- occs_userOccs(txtPath, txtName, txtSep = ",", txtDec = ".")
 

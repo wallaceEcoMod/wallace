@@ -79,11 +79,11 @@ partblock <- part_partitionOccs(occs, bg, method = 'block',
                                 aggFact = NULL)
 rms <- c(1:2)
 rmsStep <- 1
-fcs <- c('L', 'LQ', 'H', 'LQH','LQHP')
-maxentAlg <- model_maxent(occs = occs, bg = bg, user.grp = partblock,
-                          bgMsk = bgMsk, rms = rms, rmsStep, fcs,
-                          clampSel = TRUE, algMaxent = "maxnet",
-                          parallel = FALSE)
+fcs <- c('L', 'LQ')
+m <- model_maxent(occs = occs, bg = bg, user.grp = partblock,
+                  bgMsk = bgMsk, rms = rms, rmsStep, fcs,
+                  clampSel = TRUE, algMaxent = "maxnet",
+                  parallel = FALSE)
 
 }
 \seealso{

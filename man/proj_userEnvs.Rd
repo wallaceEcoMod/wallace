@@ -57,15 +57,13 @@ bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000)
 partblock <- part_partitionOccs(occs, bg, method = 'block',
                                 kfolds = NULL, bgMask = NULL,
                                 aggFact = NULL)
-Path <- list.files(path='./tests/testthat/shapefile',
-                   pattern = "COL_adm0.", full.names = TRUE)
-userExt <- rgdal::readOGR(Path[2])
-modAlg <- model_bioclim(occs, partblock$bg.grp,
-                        partblock$occ.grp, bgGrp, bgMask)
-envsFut <- list.files(path = './wc10/Future', pattern = ".tif$",
+userExt <- rgdal::readOGR(system.file("extdata/shp", package = "wallace"))
+m <- model_bioclim(occs, bg, partblock, bgMask)
+envsFut <- list.files(path = system.file('extdata/wc10/future',
+                                         package = "wallace"),
                       full.names = TRUE)
 envsFut <- raster::stack(envsFut)
-modProj <- proj_userEnvs(evalOut = modAlg, curModel = 1, envs = envsFut,
+modProj <- proj_userEnvs(evalOut = m, curModel = 1, envs = envsFut,
                          alg = 'BIOCLIM', pjExt = userExt)
 
 }

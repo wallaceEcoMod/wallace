@@ -44,21 +44,30 @@ environmental variables and not the point coordinates as outputed by model objec
 The provided species name(s) are only used for logger messages and not for querying or selecting occurrences.
 }
 \examples{
-occs <-  as.data.frame(wallace::occs_queryDb(spName = "Panthera onca",
-                                             occDb = "gbif",
-                                             occNum = 100)[[1]]$cleaned)
-envs <- wallace::envs_worldclim(bcRes = 10,
-                                bcSel = c("bio03", "bio04", "bio13", "bio14"),
-                                doBrick = FALSE)
-bgExt <- wallace::penvs_bgExtent(occs, bgSel = 'bounding box',
-                                 bgBuf = 0.5)
-bgMask <- wallace::penvs_bgMask(occs, envs, bgExt)
-bg <- wallace::penvs_bgSample(occs, bgMask, bgPtsNum = 1000)
-bioclimAlg <- wallace::model_bioclim(occs, bg, partblock$occ.grp,
-                                     partblock$bg.grp, bgMask)
-espace_pca(sp.name1, occs.z1 = bioclimAlg@occs[3:7],
-           bgPts.z1 = bioclimAlg@bg[3:7])
-
+envs <- envs_worldclim(bcRes = 10,
+                       bcSel = c("bio01","bio02","bio13","bio14"),
+                       doBrick = FALSE)
+sp.name1 <- "Panthera onca"
+sp.name2 <- "Procyon lotor"
+occs.z1 <- occs_queryDb(spName = sp.name1, occDb = "gbif",
+                        occNum = 100)[[1]]$cleaned
+occs.z2 <- occs_queryDb(spName = sp.name2, occDb = "gbif",
+                        occNum = 100)[[1]]$cleaned
+bgExt.z1 <- penvs_bgExtent(occs.z1, bgSel = 'bounding box', bgBuf = 0.5)
+bgExt.z2 <- penvs_bgExtent(occs.z2, bgSel = 'bounding box', bgBuf = 0.5)
+bgMask.z1 <- penvs_bgMask(occs.z1, envs, bgExt.z1)
+bgMask.z2 <- penvs_bgMask(occs.z2, envs, bgExt.z2)
+bgPts.z1 <- penvs_bgSample(occs.z1, bgMask.z1, bgPtsNum = 1000)
+bgPts.z2 <- penvs_bgSample(occs.z2, bgMask.z2, bgPtsNum = 1000)
+occsExt.z1 <- na.omit(raster::extract(envs,
+                                      occs.z1[, c("longitude", "latitude")]))
+occsExt.z2 <- na.omit(raster::extract(envs,
+                                      occs.z2[, c("longitude", "latitude")]))
+bgExt.z1 <- raster::extract(envs, bgPts.z1[, c("longitude", "latitude")])
+bgExt.z2 <- raster::extract(envs, bgPts.z2[, c("longitude", "latitude")])
+pcaZ <- espace_pca(sp.name1, sp.name2,
+                   occsExt.z1, occsExt.z2,
+                   bgExt.z1, bgExt.z2)
 }
 \seealso{
 \code{\link[ade4]{dudi.pca}}

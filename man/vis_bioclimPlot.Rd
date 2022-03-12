@@ -30,20 +30,20 @@ Plot also includes a rectangle representing the bivariate bioclimatic envelope a
 \examples{
 out.gbif <- occs_queryDb(spName = "Panthera onca", occDb = "gbif",
                          occNum = 100)
-occs <- as.data.frame(out.gbif[[1]],
+occs <- as.data.frame(out.gbif[[1]]$cleaned,
                       bcSel = c("bio01", "bio02", "bio13", "bio14"),
                       doBrick = FALSE)
+envs <- envs_worldclim(bcRes = 10,
+                       bcSel = c("bio03", "bio14"),
+                       doBrick = FALSE)
 bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
 bgMask <- penvs_bgMask(occs, envs, bgExt)
 bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000)
 partblock <- part_partitionOccs(occs, bg, method = 'block',
                                 kfolds = NULL, bgMask = NULL,
                                 aggFact = NULL)
-occs$partition <- partblock$occ.grp
-bg$partition <- partblock$bg.grp
-bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp,
-                            partblock$bg.grp, bgMask)
-bioclimPlot <- vis_bioclimPlot(x = bioclimAlg@models$bioclim,
+m <- model_bioclim(occs, bg, partblock, bgMask)
+bioclimPlot <- vis_bioclimPlot(x = m@models$bioclim,
                                a = 1, b = 2, p = 1)
 
 }

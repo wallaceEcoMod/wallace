@@ -40,8 +40,8 @@ longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331,
 latitude <- c(13.18379, 7.52315, 0.93105, -1.70167,
               0.98391, 6.09208, 12.74980)
 expertAddedPoly <- matrix(c(longitude, latitude), byrow = FALSE, ncol = 2)
-out.occs<- poccs_selectOccs(occs, polySelXY = expertAddedPoly,
-                            polySelID = 1)
+out.occs <- poccs_selectOccs(occs, polySelXY = expertAddedPoly,
+                             polySelID = 1)
 }
 \author{
 Jamie Kass <jamie.m.kass@gmail.com>

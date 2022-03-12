@@ -27,9 +27,12 @@ This function is called by the module envs to load user provided raster variable
 It returns either a rasterStack or rasterBrick of loaded variables with appropriate names for further analyses.
 }
 \examples{
-Path <- list.files(path='./wc10/', pattern = "*cut.tif$", full.names = TRUE)
-Name <- list.files(path='./wc10/', pattern = "*cut.tif$", full.names = FALSE)
-userEnvs <- envs_userEnvs(rasPath = Path, rasName = Name, doBrick = TRUE)
+pathRast <- list.files(system.file("extdata/wc10", package = "wallace"),
+                       pattern = "cut.tif$", full.names = TRUE)
+nameRast <- list.files(system.file("extdata/wc10", package = "wallace"),
+                       pattern = "cut.tif$", full.names = FALSE)
+userEnvs <- envs_userEnvs(rasPath = pathRast, rasName = nameRast,
+                          doBrick = TRUE)
 
 }
 \author{

@@ -22,11 +22,11 @@
 #' occs <-  occs_queryDb(spName = "Espeletia argentea", occDb = "gbif",
 #'                       occNum = 100)
 #' occs <- as.data.frame(occs[[1]]$cleaned)
-#' Path <- list.files(path='./tests/testthat/shapefile',
-#'                    pattern = "COL_adm0.", full.names = TRUE)
-#' Name <- list.files(path='./tests/testthat/shapefile',
-#'                    pattern = "COL_adm0.", full.names = FALSE)
-#' userBgbf <- penvs_userBgExtent(bgShp_path = Path, bgShp_name = Name,
+#' pathShp <- list.files(system.file("extdata/shp", package = "wallace"),
+#'                       full.names = TRUE)
+#' nameShp <- list.files(system.file("extdata/shp", package = "wallace"),
+#'                       full.names = FALSE)
+#' userBgbf <- penvs_userBgExtent(bgShp_path = pathShp, bgShp_name = nameShp,
 #'                                userBgBuf = 0.5, occs = occs)
 #'
 #' @return This function returns a SpatialPolygons object with the user provided shape (+ a buffer is userBgBuf >0).

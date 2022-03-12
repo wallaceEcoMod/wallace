@@ -25,8 +25,8 @@
 #' latitude <- c(13.18379, 7.52315, 0.93105, -1.70167,
 #'               0.98391, 6.09208, 12.74980)
 #' expertAddedPoly <- matrix(c(longitude, latitude), byrow = FALSE, ncol = 2)
-#' out.occs<- poccs_selectOccs(occs, polySelXY = expertAddedPoly,
-#'                             polySelID = 1)
+#' out.occs <- poccs_selectOccs(occs, polySelXY = expertAddedPoly,
+#'                              polySelID = 1)
 
 #' @return A new occurence dataframe including only occurences inside the provided polygon and mantaining all
 #' columns from original dataframe for further analyses.

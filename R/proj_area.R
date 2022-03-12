@@ -37,12 +37,13 @@
 #' latitude <- c(13.18379, 7.52315, 0.93105,
 #'               -1.70167, 0.98391, 6.09208, 12.74980)
 #' selCoords <- matrix(c(longitude, latitude), byrow = FALSE, ncol = 2)
-#' expertAddedPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)), ID=1)))
-#' modAlg <- model_bioclim(occs, bg, partblock$occ.grp,
-#'                         partblock$bg.grp, bgMask,spN=occs)
-#' modProj <- proj_area(evalOut = modAlg, curModel = 1, envs,
-#'                      outputType = 'raw', alg = 'BIOCLIM',
-#'                      pjExt = expertAddedPoly)
+#' polyExt <-
+#'   sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)),
+#'                       ID = 1)))
+#' m <- model_bioclim(occs, bg, partblock, bgMask)
+#' modProj <- proj_area(evalOut = m, curModel = 1, envs,
+#'                      outputType = 'cloglog', alg = 'BIOCLIM',
+#'                      pjExt = polyExt)
 #'
 #' @return A list of two elements: projExt and projArea.
 #' The first is a RasterBrick or a RasterStack of the environmental variables cropped to the projection area.

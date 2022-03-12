@@ -67,15 +67,17 @@ longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331,
 latitude <- c(13.18379, 7.52315, 0.93105, -1.70167,
               0.98391, 6.09208, 12.74980)
 selCoords <- matrix(c(longitude, latitude), byrow = FALSE, ncol = 2)
-expertAddedPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)), ID=1)))
+expertAddedPoly <-
+  sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)),
+                      ID = 1)))
 ## Projection time layers, using worldclim 2.1 Future 2021-2040
 ## MIROC6 ssp126 bioclims as example
-envsFut <- list.files(path='./tests/testthat/wc10/Future',
-                      pattern = ".tif$", full.names = TRUE)
+envsFut <- list.files(path = system.file('extdata/wc10/future',
+                                         package = "wallace"),
+                      full.names = TRUE)
 envsFut <- raster::stack(envsFut)
-modAlg <- model_bioclim(occs, bg, partblock$occ.grp,
-                        bgGrp = partblock$bg.grp, bgMask)
-modProj <- proj_time(evalOut = modAlg, curModel = 1,
+m <- model_bioclim(occs, bg, partblock, bgMask)
+modProj <- proj_time(evalOut = m, curModel = 1,
                      envs = envsFut, alg = 'BIOCLIM',
                      pjExt = expertAddedPoly)
 }

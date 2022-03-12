@@ -2,9 +2,9 @@
 % Please edit documentation in R/proj_mess.R
 \name{proj_mess}
 \alias{proj_mess}
-\title{proj_mess generate MESS map for projection time}
+\title{proj_mess generate MESS map for projection raster}
 \usage{
-proj_mess(occs, bg, bgMsk, projExtRas, time, logger = NULL, spN = NULL)
+proj_mess(occs, bg, bgMsk, projExtRas, logger = NULL, spN = NULL)
 }
 \arguments{
 \item{occs}{a data frame of occurrences used for modeling and values of environmental variables for each point}
@@ -14,8 +14,6 @@ proj_mess(occs, bg, bgMsk, projExtRas, time, logger = NULL, spN = NULL)
 \item{bgMsk}{a rasterBrick or rasterStack of environmental variables used for modeling. They must be cropped and masked to extent used in model training}
 
 \item{projExtRas}{a rasterStack or rasterBrick of environmental variables to be used for projecting}
-
-\item{time}{a string of the time used for projecting (e.g. "2040 MIROC6 ssp126)}
 
 \item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
@@ -37,32 +35,33 @@ occs <- as.data.frame(out.gbif[[1]]$cleaned)
 envs <- envs_worldclim(bcRes = 10, bcSel = c('bio01','bio19'),
                        doBrick = FALSE)
 bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
-bgMsk <- penvs_bgMsk(occs, envs, bgExt)
+bgMsk <- penvs_bgMask(occs, envs, bgExt)
 bg <- penvs_bgSample(occs, bgMsk, bgPtsNum = 10000)
 partblock <- part_partitionOccs(occs, bg, method = 'block',
                                 kfolds = NULL, bgMask = NULL,
                                 aggFact = NULL)
-bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp,
-                            partblock$bg.grp, bgMsk)
-modelOccs <- bioclimAlg@occs
-modelBg <- bioclimAlg@bg
-longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331,
-               -66.47149, -66.71319, -71.11931)
-latitude <- c(13.18379, 7.52315, 0.93105, -1.70167,
-              0.98391, 6.09208, 12.74980)
-selCoords <- matrix(c(longitude, latitude), byrow = FALSE, ncol = 2)
-expertAddedPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)), ID=1)))
+m <- model_bioclim(occs, bg, partblock, bgMsk)
+occsEnvs <- m@occs
+bgEnvs <- m@bg
+lon <- c(-71.58400, -78.81300, -79.34034, -69.83331,
+         -66.47149, -66.71319, -71.11931)
+lat <- c(13.18379, 7.52315, 0.93105, -1.70167,
+         0.98391, 6.09208, 12.74980)
+selCoords <- matrix(c(lon, lat), byrow = FALSE, ncol = 2)
+expertAddedPoly <-
+  sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)),
+                      ID = 1)))
 # projection time layers, using worldclim 2.1 Future 2021-2040
 # MIROC6 ssp126 bioclims as example
-envsFut <- list.files(path='./wc10/Future', pattern = ".tif$",
+envsFut <- list.files(path = system.file('extdata/wc10/future',
+                                         package = "wallace"),
                       full.names = TRUE)
 envsFut <- raster::stack(envsFut)
 projExtRas <- raster::crop(envsFut, expertAddedPoly)
 projExtRas <- raster::mask(projExtRas, expertAddedPoly)
-time <- "2021-2040 MIROC6 ssp126"
 ## run function
-projMess <- proj_mess(occs = modelOccs, bg = modelBg, bgMsk = bgMsk,
-                      projExtRas = projExtRas, time = time)
+projMess <- proj_mess(occs = occsEnvs, bg = bgEnvs, bgMsk = bgMsk,
+                      projExtRas = projExtRas)
 
 }
 \seealso{
