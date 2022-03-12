@@ -99,7 +99,7 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
   occs <- occs %>% dplyr::select(dplyr::one_of(cols)) %>%
     # make new column for leaflet marker popup content
     dplyr::mutate(pop = unlist(apply(occs, 1, alfred.popUpContent))) %>%
-    dplyr::arrange_(cols)
+    dplyr::arrange(dplyr::across(cols))
   occs$early_age <- as.numeric(occs$early_age)
   occs$late_age <- as.numeric(occs$late_age)
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)

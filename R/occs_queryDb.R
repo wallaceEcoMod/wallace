@@ -192,7 +192,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
         alfred.writeLog(type = 'error',
                  alfred.hlSpp(alfred.fmtSpN(sp)),
                  'No records found. Please check the spelling.')
-      next
+      return()
     }
     # extract occurrence tibbles
 
@@ -304,7 +304,7 @@ occs <- occs[!dups,]
                     uncertainty = as.numeric(.data$uncertainty)) %>%
       # # make new column for leaflet marker popup content
       dplyr::mutate(pop = unlist(apply(occs, 1, alfred.popUpContent))) %>%
-      dplyr::arrange_(cols)
+      dplyr::arrange(dplyr::across(cols))
 
     # subset by key columns and make id and popup columns
     noCoordsRem <- nrow(occsOrig) - nrow(occsXY)

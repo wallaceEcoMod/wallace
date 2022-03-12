@@ -52,7 +52,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
   }
 
   # check to make sure all column names are correct
-  if (length(which(c('scientific_name', 'longitude', 'latitude') == names(txt)))!=3) {
+  if (length(which(c('scientific_name', 'longitude', 'latitude') == names(txt))) != 3) {
     logger %>% alfred.writeLog(
       type = "error",
       paste0('Please input a file with columns "scientific_name", ',
@@ -125,7 +125,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
                     uncertainty = as.numeric(.data$uncertainty)) %>%
       # # make new column for leaflet marker popup content
       dplyr::mutate(pop = unlist(apply(sp.occs, 1, alfred.popUpContent))) %>%
-      dplyr::arrange_(cols)
+      dplyr::arrange(dplyr::across(cols))
 
     n <- alfred.fmtSpN(i)
 
