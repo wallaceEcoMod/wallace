@@ -2,9 +2,6 @@
 #### MODULE: Select Study Region
 context("bgSample")
 
-source("test_helper_functions.R")
-
-
 ### Set parameters
 
 ## occurrences
@@ -23,7 +20,7 @@ bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
 
 ## Number of background points to sample
 bgPtsNum <- 100
-bgPtsNum_big<-100000
+bgPtsNum_big <- 40007
 
 ### run function
 bgsample <- penvs_bgSample(occs, bgMask, bgPtsNum,spN=spN)

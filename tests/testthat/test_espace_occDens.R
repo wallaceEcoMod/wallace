@@ -2,12 +2,9 @@
 #### MODULE: Occurence density grid
 context("espace_occDens")
 
-source("test_helper_functions.R")
-
 ##Function has no warning or error messages.
 ##To run this function a PCA must exist, this requires a model to be created first allowing for access to environmental data for occs and background
 ###Using bioclim for testing
-
 ###SET PARAMETERS (running model)
 sp.name1<-"Pristimantis bogotensis"
 sp.name2<-"Dendropsophus labialis"
@@ -23,16 +20,16 @@ for (i in 1:2){
   # enviromental data
   envs <- envs_worldclim(bcRes = 10,  bcSel = c("bio01","bio02","bio13","bio14"), doBrick = FALSE)
   # background extent
-  bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=species[i])
+  bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
   # background masked
-  bgMask <- penvs_bgMask(occs, envs, bgExt,spN=species[i])
+  bgMask <- penvs_bgMask(occs, envs, bgExt)
   ## background sample
-  bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 1000,spN=species[i])
+  bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 316)
   ## Partition
   partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,
-                                  aggFact = NULL,spN=species[i])
+                                  aggFact = NULL)
   ### Create model
-  bioclimAlg <- model_bioclim(occs, bg, partblock, bgMask,spN=species[i])
+  bioclimAlg <- model_bioclim(occs, bg, partblock, bgMask)
 
   model[[i]]<-bioclimAlg
 }
@@ -46,7 +43,6 @@ bgPts.z2<-model[[2]]@bg[3:length(model[[2]]@bg)]
 Testpca<-espace_pca(sp.name1,sp.name2,occs.z1,occs.z2,bgPts.z1,bgPts.z2)
 ###RUN FUNCTION
 TestOccDens<-espace_occDens(sp.name1, sp.name2,Testpca)
-
 test_that("output checks", {
   #output is a list
   expect_equal(mode(TestOccDens),"list")
@@ -60,8 +56,10 @@ test_that("output checks", {
   expect_equal(length(TestOccDens[[sp.name1]]),10)
   expect_equal(length(TestOccDens[[sp.name2]]),10)
   ##The name of the slots of each list is correct
-  expect_equal(names(TestOccDens[[sp.name1]]),c("x","y","z","z.uncor","z.cor","Z","glob","glob1","sp","w"))
-  expect_equal(names(TestOccDens[[sp.name2]]),c("x","y","z","z.uncor","z.cor","Z","glob","glob1","sp","w"))
+  expect_equal(names(TestOccDens[[sp.name1]]),
+               c("y","x","z","z.uncor","z.cor","Z","glob","glob1","sp","w"))
+  expect_equal(names(TestOccDens[[sp.name2]]),
+               c("y","x","z","z.uncor","z.cor","Z","glob","glob1","sp","w"))
    ##Test that all outputs but x and y and inputs (including occupancy, density and weights) are all raster layers
   #sp1
   expect_is(TestOccDens[[sp.name1]]$z,'RasterLayer')

@@ -2,9 +2,6 @@
 #### MODULE: BIOCLIM
 context("model_bioclim")
 
-source("test_helper_functions.R")
-
-
 ### Set parameters
 spN="Panthera onca"
 ## get records
@@ -23,15 +20,14 @@ bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
 # background masked
 bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
 ## background sample
-bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=spN)
+bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 1000,spN=spN)
 
 ## Partition
 partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,
-                              aggFact = NULL,spN=spN)
+                                aggFact = NULL,spN=spN)
 
 ### run function
 bioclimAlg <- model_bioclim(occs, bg, user.grp=partblock, bgMask,spN=spN)
-
 
 ### test output features
 test_that("output type checks", {

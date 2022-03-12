@@ -2,9 +2,6 @@
 #### MODULE: Draw polygon
 context("drawBgExtent")
 
-source("test_helper_functions.R")
-
-
 ### Set parameters
 
 ## occurrences

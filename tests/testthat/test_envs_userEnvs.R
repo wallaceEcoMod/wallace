@@ -6,15 +6,17 @@
 #### MODULE: User-specified
 context("userEnvs")
 
-source("test_helper_functions.R")
+# source("test_helper_functions.R")
 
 
 ### Set parameters
 
 ## path to files
-Path <- list.files(path='./wc10/', pattern = "*cut.tif$", full.names = TRUE)
+Path <- list.files(path = './extdata/wc10/',
+                   pattern = "cut.tif$", full.names = TRUE)
 ## files name
-Name <- list.files(path='./wc10/', pattern = "*cut.tif$", full.names = FALSE)
+Name <- list.files(path = './extdata/wc10/',
+                   pattern = "cut.tif$", full.names = FALSE)
 
 
 ### run function
@@ -24,8 +26,15 @@ userEnvs_stack <- envs_userEnvs(rasPath = Path, rasName = Name,doBrick=FALSE)
 ### test if the warning messages appear when they are supposed to
 test_that("warning checks", {
   # input rasters have undefined coordinate reference system (CRS)
-  expect_warning(envs_userEnvs(rasPath = './wc10/bio_NoProjection.tif',
-                             rasName = 'no_Projection'),'Input rasters have undefined coordinate reference system (CRS). Mapping functionality in components Visualize Model Results and Project Model will not work. If you wish to map rasters in these components, please define their projections and upload again. See guidance text in this module for more details.',fixed=T)
+  expect_warning(
+    envs_userEnvs(rasPath = './extdata/wc10/bio_NoProjection.tif',
+                  rasName = 'no_Projection'),
+    paste0('Input rasters have undefined coordinate reference system (CRS). ',
+           'Mapping functionality in components Visualize Model Results and ',
+           'Project Model will not work. If you wish to map rasters in these ',
+           'components, please define their projections and upload again. See ',
+           'guidance text in this module for more details.'),
+    fixed = TRUE)
   })
 
 ### test output features

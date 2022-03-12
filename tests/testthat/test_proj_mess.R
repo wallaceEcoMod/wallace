@@ -2,8 +2,6 @@
 #### MODULE: Generate MESS map of projection layers
 context("proj_mess")
 
-source("test_helper_functions.R")
-
 ## occurrences
 spN<-"Panthera onca"
 out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
@@ -33,13 +31,14 @@ latitude <- c(13.18379, 7.52315, 0.93105, -1.70167, 0.98391, 6.09208, 12.74980)
 selCoords <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
 expertAddedPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)), ID=1)))
 ##projection time layers, using worldclim 2.1 Future 2021-2040 MIROC6 ssp126 bioclims as example
-envsFut<-list.files(path='./wc10/Future', pattern = ".tif$", full.names = TRUE)
+envsFut<-list.files(path = system.file("extdata/wc10/future",
+                                       package = "wallace"),
+                    pattern = ".tif$", full.names = TRUE)
 envsFut<-raster::stack(envsFut)
 projExtRas<-raster::crop(envsFut,expertAddedPoly)
 projExtRas<-raster::mask(projExtRas,expertAddedPoly)
-time<-"2021-2040 MIROC6 ssp126"
 ### run function
-projMess<- proj_mess(occs=modelOccs, bg=modelBg, bgMsk=bgMsk, projExtRas=projExtRas, time=time, spN=spN,logger = NULL)
+projMess<- proj_mess(occs=modelOccs, bg=modelBg, bgMsk=bgMsk, projExtRas=projExtRas)
 
     ### test output features
     test_that("output type checks", {

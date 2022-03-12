@@ -2,8 +2,6 @@
 #### MODULE: ecoClimate
 context("ecoClimate")
 
-source("test_helper_functions.R")
-
 ##Set parameters
 
 bcAOGCM="CCSM"

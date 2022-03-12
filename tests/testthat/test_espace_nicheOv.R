@@ -2,28 +2,25 @@
 #### MODULE: espace
 context("espace_nicheOv")
 
-source("test_helper_functions.R")
-
 ###SET PARAMETERS (running model)
 sp.name1<-"Pristimantis bogotensis"
 sp.name2<-"Dendropsophus labialis"
 species<-c(sp.name1,sp.name2)
 model<-list()
-for (i in 1:2){
-
+for (i in 1:2) {
   ## occurrences
   occs <-  occs_queryDb(spName = species[i], occDb = "gbif", occNum = 1000)
   occs <- as.data.frame(occs[[1]]$cleaned)
   ## process data
- # occs <- poccs_thinOccs(occs = occs, thinDist = 10,spN=species[i]) ##Removed because warning from spthin on different names
+  # occs <- poccs_thinOccs(occs = occs, thinDist = 10,spN=species[i]) ##Removed because warning from spthin on different names
   # enviromental data
   envs <- envs_worldclim(bcRes = 10,  bcSel = c("bio01","bio02","bio13","bio14"), doBrick = FALSE)
   # background extent
-  bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=species[i])
+  bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
   # background masked
-  bgMask <- penvs_bgMask(occs, envs, bgExt,spN=species[i])
+  bgMask <- penvs_bgMask(occs, envs, bgExt)
   ## background sample
-  bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 1000,spN=species[i])
+  bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 316)
   ## Partition
   partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,
                                   aggFact = NULL,spN=species[i])
@@ -48,8 +45,7 @@ z2=TestOccDens[[sp.name2]]
 iter=100
 TestNicheOv<-espace_nicheOv(z1, z2, iter , equivalency = TRUE, similarity = TRUE, logger = NULL)
 
-
-  ### test output features
+### test output features
   test_that("output checks", {
   ##Output is a list
   expect_is(TestNicheOv,"list")
@@ -65,10 +61,10 @@ TestNicheOv<-espace_nicheOv(z1, z2, iter , equivalency = TRUE, similarity = TRUE
   expect_equal(length(TestNicheOv$USE),3)
 
    expect_is(TestNicheOv$equiv,'list')
-   expect_equal(length(TestNicheOv$equiv),4)
+   expect_equal(length(TestNicheOv$equiv),7)
 
    expect_is(TestNicheOv$simil,'list')
-   expect_equal(length(TestNicheOv$simil),4)
+   expect_equal(length(TestNicheOv$simil),7)
    ###number of iterations for tests matches
    expect_equal(length(TestNicheOv$equiv$sim$D),iter)
    expect_equal(length(TestNicheOv$simil$sim$D),iter)

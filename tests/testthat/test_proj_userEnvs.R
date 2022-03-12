@@ -2,8 +2,6 @@
 #### MODULE: Project to User provided area
 context("proj_userEnvs")
 
-source("test_helper_functions.R")
-
 ## occurrences
 spN="Panthera onca"
 out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 1000)
@@ -24,17 +22,19 @@ partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMas
 
 ## model
 # regularization multipliers
-rms <- c(1:2)
+rms <- c(1, 1)
 # regularization multipliers step value
 rmsStep <- 1
 # feature classes
-fcs <- c('L', 'H', 'LQH')
+fcs <- c('L')
 
 ## extent to project from user provided shapefile
-Path <- list.files(path='./shapefile', pattern = "COL_adm0.", full.names = TRUE)
+Path <- list.files(path = system.file("extdata/shp", package = "wallace"),
+                   pattern = "COL_adm0.", full.names = TRUE)
 userExt<-rgdal::readOGR(Path[2])
 #new envs
-envsFut<-list.files(path='./wc10/Future', pattern = ".tif$", full.names = TRUE)
+envsFut<-list.files(path = system.file("extdata/wc10/future", package = "wallace"),
+                    pattern = ".tif$", full.names = TRUE)
 envsFut<-raster::stack(envsFut)
 ###iterating items
 # outputType

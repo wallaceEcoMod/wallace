@@ -2,9 +2,6 @@
 #### MODULE: Non-spatial Partition & Spatial Partition
 context("partitionOccs")
 
-source("test_helper_functions.R")
-
-
 ### Set parameters
 
 ## occurrences

@@ -2,11 +2,6 @@
 #### MODULE: Select Study Region
 context("bgMask")
 
-source("test_helper_functions.R")
-
-
-### Set parameters
-
 ## occurrences
 spN<-"Panthera onca"
 occs <-  occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)

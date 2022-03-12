@@ -2,10 +2,6 @@
 #### MODULE: Spatial Thin
 context("thinOccs")
 
-source("test_helper_functions.R")
-
-
-### Set parameters
 
 ## occurrences
 spN="Panthera onca"

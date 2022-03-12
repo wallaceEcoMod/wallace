@@ -2,9 +2,6 @@
 #### MODULE: Maxent.Jar & Maxnet
 context("model_maxent")
 
-source("test_helper_functions.R")
-
-
 ### Set parameters
 
 ## occurrences
@@ -14,9 +11,10 @@ occs <- as.data.frame(out.gbif[[1]]$cleaned)
 
 ## background mask
 # enviromental data
-envs <- envs_worldclim(bcRes = 10, bcSel = c("bio01","bio02","bio07","bio13","bio14","bio15","bio19"), doBrick = FALSE)
+envs <- envs_worldclim(bcRes = 10,
+                       bcSel = c("bio01","bio02","bio07","bio13","bio14","bio15","bio19"),
+                       doBrick = FALSE)
 # remove records without enviromental values
-
 records <- which(is.na(raster::extract(envs$bio01, occs[,3:4])) == TRUE)
 if(length(records)>=1){
 occs <- occs[-records, ]}
@@ -50,7 +48,9 @@ jar_f <- paste(system.file(package = "dismo"), "/maxent.jar", sep = '')
 test_that("error checks", {
   # user has not partitioned occurrences
   expect_error(model_maxent(occs, bg, user.grp = NULL, bgMsk, rms, rmsStep, fcs,
-                         clampSel = TRUE, catEnvs=NULL,algMaxent = algorithm[1],spN=spN), "Before building a model, please partition occurrences for cross-validation.")
+                            clampSel = TRUE, catEnvs=NULL,
+                            algMaxent = algorithm[1],spN=spN),
+               "Before building a model, please partition occurrences for cross-validation.")
 })
 ##missing 2 errors related to jar
 
@@ -60,8 +60,10 @@ test_that("error checks", {
 for (i in algorithm) {
   ### run function
 
-  maxentAlg <- model_maxent(occs=occs, bg=bg, user.grp=partblock, bgMsk=bgMsk, rms=rms, rmsStep, fcs, clampSel = TRUE,
-                         algMaxent = i,catEnvs=NULL,parallel=FALSE,numCores=NULL,logger=NULL,spN=spN)
+  maxentAlg <- model_maxent(occs=occs, bg=bg, user.grp=partblock, bgMsk=bgMsk,
+                            rms=rms, rmsStep, fcs, clampSel = TRUE,
+                            algMaxent = i,catEnvs=NULL,parallel=FALSE,
+                            numCores=NULL,logger=NULL,spN=spN)
 
   test_that("output type checks", {
     # the output is an ENMeval object

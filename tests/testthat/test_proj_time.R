@@ -2,8 +2,6 @@
 #### MODULE: Project to New time
 context("proj_time")
 
-source("test_helper_functions.R")
-
 ###
 spN="Panthera onca"
 ## occurrences
@@ -24,11 +22,11 @@ partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMas
                                 aggFact = NULL,spN=spN)
 ## model
 # regularization multipliers
-rms <- c(1:2)
+rms <- c(1, 1)
 # regularization multipliers step value
 rmsStep <- 1
 # feature classes
-fcs <- c('L', 'H', 'LQH')
+fcs <- c('L')
 
 ## extent to project
 # set coordinates
@@ -37,7 +35,8 @@ latitude <- c(13.18379, 7.52315, 0.93105, -1.70167, 0.98391, 6.09208, 12.74980)
 selCoords <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
 expertAddedPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)), ID=1)))
 ##projection time layers, using worldclim 2.1 Future 2021-2040 MIROC6 ssp126 bioclims as example
-envsFut<-list.files(path='./wc10/Future', pattern = ".tif$", full.names = TRUE)
+envsFut<-list.files(path = system.file("extdata/wc10/future", package = "wallace"),
+                    pattern = ".tif$", full.names = TRUE)
 envsFut<-raster::stack(envsFut)
 ###iterating items
 # outputType

@@ -2,9 +2,6 @@
 #### MODULE: WorldClim
 context("WorldClim")
 
-source("test_helper_functions.R")
-
-
 ### Set parameters
 ## resolution
 bcRes <- 10 # (10 arcmin)

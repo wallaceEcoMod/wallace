@@ -2,9 +2,6 @@
 #### MODULE: Select Occurrences On Map
 context("selectOccs")
 
-source("test_helper_functions.R")
-
-
 ### Set parameters
 
 ## occurrences

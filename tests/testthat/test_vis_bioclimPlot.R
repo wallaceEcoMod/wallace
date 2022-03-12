@@ -2,9 +2,6 @@
 #### MODULE: BIOCLIM Envelope Plots
 context("bioclimPlot")
 
-source("test_helper_functions.R")
-
-
 ### Set parameters
 
 ## get records

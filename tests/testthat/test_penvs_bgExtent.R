@@ -2,9 +2,6 @@
 #### MODULE: Select Study Region
 context("bgExtent")
 
-source("test_helper_functions.R")
-
-
 ### Set parameters
 
 ## occurrences

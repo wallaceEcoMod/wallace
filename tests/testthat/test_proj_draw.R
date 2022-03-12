@@ -2,8 +2,6 @@
 #### MODULE: Project to User provided area
 context("proj_draw")
 
-source("test_helper_functions.R")
-
 # set coordinates (as in GUI)
 longitude <- c(-27.78641, -74.09170, -84.01930, -129.74867, -142.19085, -45.55045, -28.56050)
 latitude <- c(-40.40539, -37.02010, 2.28455, 40.75350, 56.35954, 54.55045, -7.11861)

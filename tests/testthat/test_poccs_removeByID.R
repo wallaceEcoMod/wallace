@@ -2,9 +2,6 @@
 #### MODULE: Remove Occurrences By ID
 context("removeByID")
 
-source("test_helper_functions.R")
-
-
 ### Set parameters
 
 ## occurrences
