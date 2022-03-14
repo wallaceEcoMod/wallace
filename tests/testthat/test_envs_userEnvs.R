@@ -12,12 +12,11 @@ context("userEnvs")
 ### Set parameters
 
 ## path to files
-Path <- list.files(path = './extdata/wc10/',
-                   pattern = "cut.tif$", full.names = TRUE)
+Path <- list.files(system.file("extdata/wc10", package = "wallace"),
+                       pattern = ".tif$", full.names = TRUE)
 ## files name
-Name <- list.files(path = './extdata/wc10/',
-                   pattern = "cut.tif$", full.names = FALSE)
-
+Name <- list.files(system.file("extdata/wc10", package = "wallace"),
+                   pattern = ".tif$", full.names = FALSE)
 
 ### run function
 userEnvs <- envs_userEnvs(rasPath = Path, rasName = Name,doBrick=TRUE)

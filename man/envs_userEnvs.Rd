@@ -7,30 +7,36 @@
 envs_userEnvs(rasPath, rasName, doBrick = FALSE, logger = NULL)
 }
 \arguments{
-\item{rasPath}{character. Path to rasters, must be the full path including file name and extension}
+\item{rasPath}{character. Path to rasters, must be the full path including
+file name and extension}
 
-\item{rasName}{character. Vector of raster names to be assigned to loaded rasters}
+\item{rasName}{character. Vector of raster names to be assigned to
+loaded rasters}
 
-\item{doBrick}{logical. Converts downloaded rasters to brick for faster processing}
+\item{doBrick}{logical. Converts downloaded rasters to brick for faster
+processing}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-otherwise leave the default NULL}
+\item{logger}{Stores all notification messages to be displayed in the Log
+Window of Wallace GUI. Insert the logger reactive list here for running in
+shiny, otherwise leave the default NULL}
 }
 \value{
-A rasterStack or a rasterBrick (if doBrick=TRUE) of user provided rasters
+A rasterStack or a rasterBrick (if doBrick = TRUE) of user
+  provided rasters
 }
 \description{
 Load user provided rasters
 }
 \details{
-This function is called by the module envs to load user provided raster variables for use in further analyses.
-It returns either a rasterStack or rasterBrick of loaded variables with appropriate names for further analyses.
+This function is called by the module envs to load user provided raster
+  variables for use in further analyses. It returns either a rasterStack or
+  rasterBrick of loaded variables with appropriate names for further analyses.
 }
 \examples{
 pathRast <- list.files(system.file("extdata/wc10", package = "wallace"),
-                       pattern = "cut.tif$", full.names = TRUE)
+                       pattern = ".tif$", full.names = TRUE)
 nameRast <- list.files(system.file("extdata/wc10", package = "wallace"),
-                       pattern = "cut.tif$", full.names = FALSE)
+                       pattern = ".tif$", full.names = FALSE)
 userEnvs <- envs_userEnvs(rasPath = pathRast, rasName = nameRast,
                           doBrick = TRUE)
 

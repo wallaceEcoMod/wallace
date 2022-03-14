@@ -2,37 +2,34 @@
 #' @title  envs_userEnvs
 #' @description Load user provided rasters
 #'
-#' @details
-#' This function is called by the module envs to load user provided raster variables for use in further analyses.
-#' It returns either a rasterStack or rasterBrick of loaded variables with appropriate names for further analyses.
+#' @details This function is called by the module envs to load user provided raster
+#'   variables for use in further analyses. It returns either a rasterStack or
+#'   rasterBrick of loaded variables with appropriate names for further analyses.
 #'
-#' @param rasPath character. Path to rasters, must be the full path including file name and extension
-#' @param rasName character. Vector of raster names to be assigned to loaded rasters
-#' @param doBrick logical. Converts downloaded rasters to brick for faster processing
-#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-#'  otherwise leave the default NULL
+#' @param rasPath character. Path to rasters, must be the full path including
+#'   file name and extension
+#' @param rasName character. Vector of raster names to be assigned to
+#'   loaded rasters
+#' @param doBrick logical. Converts downloaded rasters to brick for faster
+#'   processing
+#' @param logger Stores all notification messages to be displayed in the Log
+#'   Window of Wallace GUI. Insert the logger reactive list here for running in
+#'   shiny, otherwise leave the default NULL
 # @keywords
 #'
 #' @examples
 #' pathRast <- list.files(system.file("extdata/wc10", package = "wallace"),
-#'                        pattern = "cut.tif$", full.names = TRUE)
+#'                        pattern = ".tif$", full.names = TRUE)
 #' nameRast <- list.files(system.file("extdata/wc10", package = "wallace"),
-#'                        pattern = "cut.tif$", full.names = FALSE)
+#'                        pattern = ".tif$", full.names = FALSE)
 #' userEnvs <- envs_userEnvs(rasPath = pathRast, rasName = nameRast,
 #'                           doBrick = TRUE)
 #'
-#' @return A rasterStack or a rasterBrick (if doBrick=TRUE) of user provided rasters
+#' @return A rasterStack or a rasterBrick (if doBrick = TRUE) of user
+#'   provided rasters
 #'
 #' @author Jamie Kass <jamie.m.kass@@gmail.com >
 #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
-# @note
-
-# @seealso
-# @references
-# @aliases - a list of additional topic names that will be mapped to
-# this documentation when the user looks them up from the command
-# line.
-# @family - a family name. All functions that have the same family tag will be linked in the documentation.
 #' @export
 #'
 #'
