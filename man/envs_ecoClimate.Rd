@@ -12,7 +12,8 @@ Options are: "CCSM", "CNRM", "MIROC", "FGOALS", "GISS", "IPSL","MRI", "MPI"}
 
 \item{bcScenario}{Select the temporal scenario that you want to download.
 Options are: "LGM" (21,000 years ago), "Holo" (6,000 years ago),
-"Present", "Future 2.6" (rcp 2.6), "Future 4.5" (rcp 4.5), "Future 6" (rcp 6), "Future 8.5" (rcp 8.5)}
+"Present", "Future 2.6" (rcp 2.6), "Future 4.5" (rcp 4.5), "Future 6" (rcp 6),
+"Future 8.5" (rcp 8.5)}
 
 \item{ecoClimSel}{Numeric vector with list of variables to select.}
 
@@ -35,7 +36,9 @@ It returns a rasterStack of selected variables.
 bcAOGCM <- "CCSM"
 bcScenario <- "LGM"
 ecoClimSel <- c(1,2,3)
+\dontrun{
 varsEcoClimate <- envs_ecoClimate(bcAOGCM, bcScenario, ecoClimSel)
+}
 
 }
 \author{

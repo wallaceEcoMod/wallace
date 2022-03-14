@@ -7,35 +7,31 @@
 #' The variables to be dowloaded are selected by the user with bcSel and the resolution is fixed to 0.5 degrees
 #' This function currently gets variables from Dropbox and the process takes significantly more time than for other datasets.
 #' It returns a rasterStack of selected variables.
-
 #'
 #' @param bcAOGCM Name of the Atmospheric and Oceanic Global Circulation Model.
-#' Options are: "CCSM", "CNRM", "MIROC", "FGOALS", "GISS", "IPSL","MRI", "MPI"
+#'   Options are: "CCSM", "CNRM", "MIROC", "FGOALS", "GISS", "IPSL","MRI", "MPI"
 #' @param bcScenario Select the temporal scenario that you want to download.
-#' Options are: "LGM" (21,000 years ago), "Holo" (6,000 years ago),
-#' "Present", "Future 2.6" (rcp 2.6), "Future 4.5" (rcp 4.5), "Future 6" (rcp 6), "Future 8.5" (rcp 8.5)
+#'   Options are: "LGM" (21,000 years ago), "Holo" (6,000 years ago),
+#'   "Present", "Future 2.6" (rcp 2.6), "Future 4.5" (rcp 4.5), "Future 6" (rcp 6),
+#'   "Future 8.5" (rcp 8.5)
 #' @param ecoClimSel Numeric vector with list of variables to select.
 #' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-#'  otherwise leave the default NULL
-# @keywords
+#'   otherwise leave the default NULL
 #'
 #' @examples
 #' bcAOGCM <- "CCSM"
 #' bcScenario <- "LGM"
 #' ecoClimSel <- c(1,2,3)
+#' \dontrun{
 #' varsEcoClimate <- envs_ecoClimate(bcAOGCM, bcScenario, ecoClimSel)
+#' }
 #'
 #' @return A rasterStack of selected variables
+#'
 #' @author Sara Varela <sara_varela@@yahoo.com>
 #' @author Jamie M. Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
-
-# @note
-# @references
-# @aliases - a list of additional topic names that will be mapped to
-# this documentation when the user looks them up from the command
-# line.
-# @family - a family name. All functions that have the same family tag will be linked in the documentation.
+#'
 #' @export
 #'
 envs_ecoClimate <- function(bcAOGCM, bcScenario, ecoClimSel, logger = NULL) {
@@ -72,15 +68,18 @@ envs_ecoClimate <- function(bcAOGCM, bcScenario, ecoClimSel, logger = NULL) {
 #' @usage ecoClimate_getdata(AOGCM, Baseline, Scenario, logger)
 #'
 #' @param AOGCM Select the AOGCM.
-#' Options are: "CCSM", "CNRM", "MIROC", "COSMOS", "FGOALS", "GISS", "IPSL","MRI", "MPI"
+#'   Options are: "CCSM", "CNRM", "MIROC", "COSMOS", "FGOALS", "GISS", "IPSL",
+#'   "MRI", "MPI"
 #' @param Baseline Select a baseline for the climatic layers.
-#' Options are: "Pre-industrial" (piControl-1760), "Historical" (1900-1949), "Modern" (1950-1999)
+#'   Options are: "Pre-industrial" (piControl-1760), "Historical" (1900-1949),
+#'   "Modern" (1950-1999)
 #' @param Scenario Select a temporal scenario.
-#' Options are: "LGM" (21,000 years ago), "Holo" (6,000 years ago),
-#' "Present", "Future 2.6" (rcp 2.6), "Future 4.5" (rcp 4.5), "Future 6" (rcp 6), "Future 8.5" (rcp 8.5)
+#'   Options are: "LGM" (21,000 years ago), "Holo" (6,000 years ago),
+#'   "Present", "Future 2.6" (rcp 2.6), "Future 4.5" (rcp 4.5), "Future 6" (rcp 6), "Future 8.5" (rcp 8.5)
 #' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-#' otherwise leave the default NULL
+#'   otherwise leave the default NULL
 #' @export
+#'
 #' @examples \dontrun{
 #' CCSM_mod_present <- ecoclimate_getdata("CCSM", "Modern", "Present")
 #' dev.new()

@@ -8,10 +8,12 @@ ecoClimate_getdata(AOGCM, Baseline, Scenario, logger)
 }
 \arguments{
 \item{AOGCM}{Select the AOGCM.
-Options are: "CCSM", "CNRM", "MIROC", "COSMOS", "FGOALS", "GISS", "IPSL","MRI", "MPI"}
+Options are: "CCSM", "CNRM", "MIROC", "COSMOS", "FGOALS", "GISS", "IPSL",
+"MRI", "MPI"}
 
 \item{Baseline}{Select a baseline for the climatic layers.
-Options are: "Pre-industrial" (piControl-1760), "Historical" (1900-1949), "Modern" (1950-1999)}
+Options are: "Pre-industrial" (piControl-1760), "Historical" (1900-1949),
+"Modern" (1950-1999)}
 
 \item{Scenario}{Select a temporal scenario.
 Options are: "LGM" (21,000 years ago), "Holo" (6,000 years ago),
