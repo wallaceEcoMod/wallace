@@ -1,6 +1,6 @@
 Package: wallace
 Version: 1.9.0
-Date: 2018-11-14
+Date: 2022-03-14
 Title: A Modular Platform for Reproducible Modeling of Species Niches 
     and Distributions
 Description: The 'shiny' application Wallace is a modular platform for 
@@ -10,8 +10,8 @@ Description: The 'shiny' application Wallace is a modular platform for
     interactive map, thus bundling complex workflows into a single, 
     streamlined interface.
 Authors@R: 
-    c(person("Jamie M.", "Kass", email = "jkass@gradcenter.cuny.edu", role = c("aut", "cre")),
-    person("Gonzalo E.", "Pinilla-Buitrago", email = "gpinillabuitrago@gradcenter.cuny.edu", role = "aut"),
+    c(person("Jamie M.", "Kass", email = "jkass@gradcenter.cuny.edu", role = "aut"),
+    person("Gonzalo E.", "Pinilla-Buitrago", email = "gpinillabuitrago@gradcenter.cuny.edu", role = c("aut", "cre")),
 	 	person("Andrea", "Paz", email = "paz.andreita@gmail.com", role = "aut"),
 	  person("Bruno", "Vilela", email = "bvilela@wustl.edu", role = "aut"),
 	  person("Matthew E.", "Aiello-Lammens", email = "matt.lammens@gmail.com", role = "aut"),
