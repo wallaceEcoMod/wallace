@@ -16,7 +16,7 @@ vignettes/*.pdf
 spatial_thin_log.txt
 # worldclim files
 cmip5
-wc10
+/wc10
 # r proj files
 .Rproj.user
 .RData
