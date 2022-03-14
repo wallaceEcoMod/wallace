@@ -7,27 +7,34 @@
 envs_worldclim(bcRes, bcSel, mapCntr, doBrick, logger = NULL)
 }
 \arguments{
-\item{bcRes}{numeric. Resolution of the climatic layers. Currently avaialable resolutions are 0.5, 2.5 and 10}
+\item{bcRes}{numeric. Resolution of the climatic layers. Currently
+avaialable resolutions are 0.5, 2.5 and 10.}
 
-\item{bcSel}{character. Vector with bionames to be selected}
+\item{bcSel}{character. Vector with bionames to be selected.}
 
-\item{mapCntr}{numeric. Vector with longitude and latitude for a tile. Required for bcRes 0.5, for other resolutions world data will be downloaded}
+\item{mapCntr}{numeric. Vector with longitude and latitude for a tile.
+Required for bcRes 0.5, for other resolutions world data will be downloaded.}
 
-\item{doBrick}{logical. Converts downloaded rasters to brick for faster processing}
+\item{doBrick}{logical. Converts downloaded rasters to brick for faster
+processing.}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-otherwise leave the default NULL}
+\item{logger}{Stores all notification messages to be displayed in the
+Log Window of Wallace GUI. Insert the logger reactive list here for
+running in shiny, otherwise leave the default NULL.}
 }
 \value{
-A rasterStack or a rasterBrick (if doBrick=TRUE) of downloaded worldclim rasters at the requested resolution
+A rasterStack or a rasterBrick (if doBrick=TRUE) of downloaded
+ worldclim rasters at the requested resolution.
 }
 \description{
 download worldclim variables. See www.worldclim.com.
 }
 \details{
-This function is called by the module envs to download worldclim variables from www.worldclim.com.
-The variables to be dowloaded are selected by the user with bcSel and the resolution with bcRes.
-It returns either a rasterStack or rasterBrick of selected variables with appropriate names for further analyses.
+This function is called by the module envs to download
+  worldclim variables from www.worldclim.com. The variables to be dowloaded
+  are selected by the user with bcSel and the resolution with bcRes. It
+  returns either a rasterStack or rasterBrick of selected variables with
+  appropriate names for further analyses.
 }
 \examples{
 bcRes <- 10 # (10 arcmin)
