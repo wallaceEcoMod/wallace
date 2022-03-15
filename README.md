@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/wallaceEcoMod/wallace.svg?branch=master)](https://travis-ci.org/wallaceEcoMod/wallace) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![CRAN version](http://www.r-pkg.org/badges/version/wallace)](https://CRAN.R-project.org/package=wallace) [![downloads](https://cranlogs.r-pkg.org:443/badges/grand-total/wallace?color=orange)](https://cranlogs.r-pkg.org:443/badges/grand-total/wallace?color=orange)
+[![R-CMD-check](https://github.com/wallaceEcoMod/wallace/workflows/R-CMD-check/badge.svg)](https://github.com/wallaceEcoMod/wallace/actions)[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) [![CRAN version](http://www.r-pkg.org/badges/version/wallace)](https://CRAN.R-project.org/package=wallace) [![downloads](https://cranlogs.r-pkg.org:443/badges/grand-total/wallace?color=orange)](https://cranlogs.r-pkg.org:443/badges/grand-total/wallace?color=orange)
 
 # Wallace (v1.9.0)
 
