@@ -4,7 +4,7 @@
 \alias{occs_userOccs}
 \title{occs_userOccs Loads user provided occurrence records}
 \usage{
-occs_userOccs(txtPath, txtName, txtSep, txtDec, logger = NULL)
+occs_userOccs(txtPath, txtName, txtSep = ",", txtDec = ".", logger = NULL)
 }
 \arguments{
 \item{txtPath}{path to database including database name and extension}

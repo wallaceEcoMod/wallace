@@ -36,7 +36,7 @@
 #' @importFrom rlang .data
 #' @export
 
-occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
+occs_userOccs <- function(txtPath, txtName, txtSep = ",", txtDec = ".",
                           logger = NULL) {
 
   # read in txt
