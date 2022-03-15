@@ -119,13 +119,20 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
     mxe <- rJava::.jnew("meversion")
     maxentJARversion <- try(rJava::.jcall(mxe, "S", "meversion"))
 
-    if (maxentJARversion < "3.4.4") {
+    if (maxentJARversion < "3.4.3") {
       logger %>% alfred.writeLog(
         type = "error",
         "Please, use the updated version of Maxent (v3.4.4). Currently, you are ",
         "using (", maxentJARversion, ")."
       )
       return()
+    }
+    if (maxentJARversion == "3.4.3") {
+      logger %>% alfred.writeLog(
+        type = "error",
+        "Please, consider to updated version of Maxent (v3.4.4). Currently, you are ",
+        "using (", maxentJARversion, ")."
+      )
     }
   }
 
