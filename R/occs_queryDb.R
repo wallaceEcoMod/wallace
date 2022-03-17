@@ -48,7 +48,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
   if (occDb == "bien" & !requireNamespace("BIEN", quietly = TRUE)) {
     logger %>%
       alfred.writeLog(
-        type = "error",
+        type = "warning",
         "This option is available if you install the 'BIEN' package. If you ",
         "want to install it, close Wallace and run the following line in the ",
         "R Console: ", em("install.packages('BIEN')")
@@ -60,7 +60,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
       !requireNamespace("occCite", quietly = TRUE)) {
     logger %>%
       alfred.writeLog(
-        type = "error",
+        type = "warning",
         "This option is available if you install the 'occCite' package. If you ",
         "want to install it, close Wallace and run the following line in the ",
         "R Console: ", em("install.packages('occCite')")

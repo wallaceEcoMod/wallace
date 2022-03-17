@@ -20,7 +20,9 @@ Log Window of Wallace GUI. Insert the logger reactive list here for
 running in shiny, otherwise leave the default NULL}
 }
 \value{
-A list of 2 dataframes. First dataframe is the original dowloaded dataset, second data frame without duplicates and with appropriate fields for analyses
+A list of 2 dataframes. First dataframe is the original dowloaded
+  dataset, second data frame without duplicates and with appropriate fields
+  for analyses.
 }
 \description{
 query paleobioDB database and returns the complete list of data, data with
@@ -32,14 +34,18 @@ This function is called by the module occs_queryDb to query the paleobioDB
   records with duplicate coordinates, and select some columns with fields
   appropriate to studies in biogeography.
 }
+\examples{
+\dontrun{
+spName <- "Didelphis virginiana"
+occNum <- 100
+timeInterval <- "Holocene"
+occsPaleo <- occs_paleoDb(spName, occNum, timeInterval)
+}
+}
 \author{
 Jamie Kass <jamie.m.kass@gmail.com>
 
 Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
 
 Sara Varela <sara_varela@yahoo.com>
-#spName <- "Didelphis virginiana"
-#occNum <- 100
-#timeInterval <- "Holocene"
-#occsPaleo <- occs_paleoDb(spName, occNum, timeInterval)
 }

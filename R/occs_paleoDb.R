@@ -17,22 +17,26 @@
 #' @param logger Stores all notification messages to be displayed in the
 #'   Log Window of Wallace GUI. Insert the logger reactive list here for
 #'   running in shiny, otherwise leave the default NULL
-#' @return A list of 2 dataframes. First dataframe is the original dowloaded dataset, second data frame without duplicates and with appropriate fields for analyses
+#' @return A list of 2 dataframes. First dataframe is the original dowloaded
+#'   dataset, second data frame without duplicates and with appropriate fields
+#'   for analyses.
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 #' @author Sara Varela <sara_varela@@yahoo.com>
-# @examples
-#' #spName <- "Didelphis virginiana"
-#' #occNum <- 100
-#' #timeInterval <- "Holocene"
-#' #occsPaleo <- occs_paleoDb(spName, occNum, timeInterval)
+#' @examples
+#' \dontrun{
+#' spName <- "Didelphis virginiana"
+#' occNum <- 100
+#' timeInterval <- "Holocene"
+#' occsPaleo <- occs_paleoDb(spName, occNum, timeInterval)
+#' }
 #' @export
 
 occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
   if (!requireNamespace("paleobioDB", quietly = TRUE)) {
     logger %>%
       alfred.writeLog(
-        type = "error",
+        type = "warning",
         "This module is available if you install the 'paleobioDB' package. If you ",
         "want to install it, close Wallace and run the following line in the ",
         "R Console: ", em("install.packages('paleobioDB')")

@@ -26,7 +26,7 @@ out.bien <- occs_queryDb(spNames = spNamesPlants, occDb = "bien", occNum)
 ### test if the error messages appear when they are supposed to
 test_that("error checks", {
   # the user doesn't input any species name
-  expect_error(occs_queryDb( occDb, occNum),
+  expect_error(occs_queryDb(occDb, occNum),
                'Please input both genus and species names.')
   # the user inputs just one name (genus or epithet)
   expect_error(occs_queryDb(spNames = "panthera", occDb, occNum),
