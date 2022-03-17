@@ -39,6 +39,7 @@ This function is used in the select study region component. Here, the
    format (either a Brick or a rasterStack).
 }
 \examples{
+\dontrun{
 occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
                  package = "wallace"))[, 2:3]
 occs$occID <- 1:nrow(occs)
@@ -50,6 +51,7 @@ envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
                       pattern = ".tif$", full.names = FALSE))
 bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
 bgMask <- penvs_bgMask(occs, envs, bgExt)
+}
 
 }
 \seealso{

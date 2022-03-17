@@ -22,6 +22,7 @@
 #'   in shiny, otherwise leave the default NULL.
 #' @param spN species name to be used for all logger messages
 #' @examples
+#' \dontrun{
 #' occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
 #'                  package = "wallace"))[, 2:3]
 #' occs$occID <- 1:nrow(occs)
@@ -33,6 +34,7 @@
 #'                       pattern = ".tif$", full.names = FALSE))
 #' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
 #' bgMask <- penvs_bgMask(occs, envs, bgExt)
+#' }
 #'
 #' @return A RasterStack or a RasterBrick of environmental layers cropped and
 #'   masked to match the provided background extent.
