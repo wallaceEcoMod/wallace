@@ -53,7 +53,7 @@ poccs_thinOccs <- function(occs, thinDist, logger = NULL, spN = NULL) {
                            long.col = 'longitude', spec.col = 'scientific_name',
                            thin.par = thinDist, reps = 100,
                            locs.thinned.list.return = TRUE, write.files = FALSE,
-                           verbose = FALSE)
+                           write.log.file = FALSE, verbose = FALSE)
 
     # pull thinned dataset with max records, not just the first in the list
     maxThin <- which(sapply(output, nrow) == max(sapply(output, nrow)))

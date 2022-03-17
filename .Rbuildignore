@@ -9,5 +9,3 @@ cmip5*    # worldclim files
 ^\.github$
 ^wc10
 ^vignettes$
-^spatial_thin_log\.txt$
-^tests\testthat\spatial_thin_log\.txt$
