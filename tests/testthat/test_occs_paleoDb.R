@@ -37,14 +37,14 @@ test_that("error checks", {
 ##Function has one warning for records without coordinates, this is forbidden by
 ##the database
 ##thus making the case impossible. If it was possible it would look like this:
-test_that("warnings checks", {
-# the species is found in the database, but it does not have coordinates (Log & lat)
-expect_warning(occs_paleoDb(spName = "impossible species", occNum = 1,
-                            timeInterval),
-               paste0(alfred.hlSpp("impossible species"),
-                      "No records with coordinates found in paleobioDB."),
-               fixed = TRUE)
-})
+# test_that("warnings checks", {
+# # the species is found in the database, but it does not have coordinates (Log & lat)
+# expect_warning(occs_paleoDb(spName = "impossible species", occNum = 1,
+#                             timeInterval),
+#                paste0(alfred.hlSpp("impossible species"),
+#                       "No records with coordinates found in paleobioDB."),
+#                fixed = TRUE)
+# })
 
 # test output features
 test_that("output type checks", {
@@ -73,9 +73,9 @@ test_that("output data checks", {
                spName, ignore.case = TRUE, all = TRUE)
 })
 ##Check headers for both original and cleaned tables
-keyPaleoHeaders <- c("scientific_name", "longitude", "latitude", "early_interval",
+keyPaleoHeaders <- c("occID", "scientific_name", "longitude", "latitude", "early_interval",
                      "late_interval", "country", "collection_no", "record_type",
-                     "early_age", "late_age", "occID")
+                     "early_age", "late_age")
 test_that("headers check", {
     expect_false('FALSE' %in%  (keyPaleoHeaders %in% names(occsPaleo$orig)))
     # the headers in the claned table are the ones specified in the function
