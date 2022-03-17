@@ -1,21 +1,23 @@
 #' @title `occs_paleoDb` query paleobioDB database
 #' @description
-#' query paleobioDB database and returns the complete list of data, data with coordinates, and data with no duplicates
+#' query paleobioDB database and returns the complete list of data, data with
+#'   coordinates, and data with no duplicates
 #'
 #' @details
-#'This function is called by the module occs_queryDb to query the paleobioDB database for
-#' species occurrence records in the holocene. It removes records with duplicate coordinates, and select some columns with fields
-#' appropriate to studies in biogeography.
+#' This function is called by the module occs_queryDb to query the paleobioDB
+#'   database for species occurrence records in the holocene. It removes
+#'   records with duplicate coordinates, and select some columns with fields
+#'   appropriate to studies in biogeography.
 #'
-#' @param spName character. Species name. For paleobioDb it returns records associated with the specified taxonomic name, including any synonyms.
-#' @param occNum integer maximum number of records
-#' @param timeInterval character currently a single timeInterval is allowed: "Holocene" (Holocene).
-#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-#'  otherwise leave the default NULL
-# @keywords
-#'
+#' @param spName character. Species name. For paleobioDb it returns records
+#'   associated with the specified taxonomic name, including any synonyms.
+#' @param occNum integer maximum number of records.
+#' @param timeInterval character currently a single timeInterval is allowed:
+#'   "Holocene" (Holocene).
+#' @param logger Stores all notification messages to be displayed in the
+#'   Log Window of Wallace GUI. Insert the logger reactive list here for
+#'   running in shiny, otherwise leave the default NULL
 #' @return A list of 2 dataframes. First dataframe is the original dowloaded dataset, second data frame without duplicates and with appropriate fields for analyses
-
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 #' @author Sara Varela <sara_varela@@yahoo.com>
@@ -60,7 +62,8 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
   if (class(occsOrig) == "try-error") {
     logger %>% alfred.writeLog(
       type = 'error',
-      alfred.hlSpp(alfred.hlSpp(alfred.fmtSpN(spName))), "No records found, please check the spelling.")
+      alfred.hlSpp(alfred.hlSpp(alfred.fmtSpN(spName))),
+      "No records found, please check the spelling.")
     return()
   }
 
@@ -106,8 +109,9 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
 
   dupsRem <- nrow(occsXY) - nrow(occs)
   logger %>% alfred.writeLog(
-    alfred.hlSpp(alfred.fmtSpN(spName)), 'Total paleobioDb records returned [', nrow(occsOrig),
-    '] (limit ', occNum, '). Records without coordinates removed [',
+    alfred.hlSpp(alfred.fmtSpN(spName)),
+    'Total paleobioDb records returned [', nrow(occsOrig), '] (limit ', occNum,
+    '). Records without coordinates removed [',
     noCoordsRem, ']. Duplicated records removed [', dupsRem,
     ']. Remaining records [', nrow(occs), '].')
   return(list(orig = occsOrig, cleaned = as.data.frame(occs)))

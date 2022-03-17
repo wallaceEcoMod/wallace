@@ -1,38 +1,43 @@
 
 #' @title Occurence density grid
-#' @description calculates the part of environmental space more densly populated by species & the availability of environmental conditions in the background
+#' @description calculates the part of environmental space more densly
+#'   populated by species & the availability of environmental conditions in the
+#'   background
 #'
 #' @details
-#' This fuctions implements a density estimation for each region in the environmental space (gridded at 100*100 pixels).
-#' Then an occurrence density is estimated using a kernel density approach. The density of environmental conditions in the background is calcuated in the same way.
+#' This fuctions implements a density estimation for each region in the
+#'   environmental space (gridded at 100*100 pixels). Then an occurrence
+#'   density is estimated using a kernel density approach. The density of
+#'   environmental conditions in the background is calcuated in the same way.
 #
-#' @param sp.name1 character name of species 1 to be analyzed
-#' @param sp.name2 character name of species 2 to be analyzed
+#' @param sp.name1 character name of species 1 to be analyzed.
+#' @param sp.name2 character name of species 2 to be analyzed.
 #' @param pca pca output of pca component ( in list format)
-#' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-#'  otherwise leave the default NULL
-# @keywords
-#'
+#' @param logger stores all notification messages to be displayed in the Log
+#'   Window of Wallace GUI. Insert the logger reactive list here for running in
+#'   shiny, otherwise leave the default NULL.
 #' @examples
-#' envs <- envs_worldclim(bcRes = 10,
-#'                        bcSel = c("bio01","bio02","bio13","bio14"),
-#'                        doBrick = FALSE)
-#' sp.name1 <- "Panthera onca"
-#' sp.name2 <- "Procyon lotor"
-#' occs.z1 <- occs_queryDb(spName = sp.name1, occDb = "gbif",
-#'                         occNum = 100)[[1]]$cleaned
-#' occs.z2 <- occs_queryDb(spName = sp.name2, occDb = "gbif",
-#'                         occNum = 100)[[1]]$cleaned
-#' bgExt.z1 <- penvs_bgExtent(occs.z1, bgSel = 'bounding box', bgBuf = 0.5)
-#' bgExt.z2 <- penvs_bgExtent(occs.z2, bgSel = 'bounding box', bgBuf = 0.5)
-#' bgMask.z1 <- penvs_bgMask(occs.z1, envs, bgExt.z1)
-#' bgMask.z2 <- penvs_bgMask(occs.z2, envs, bgExt.z2)
-#' bgPts.z1 <- penvs_bgSample(occs.z1, bgMask.z1, bgPtsNum = 1000)
-#' bgPts.z2 <- penvs_bgSample(occs.z2, bgMask.z2, bgPtsNum = 1000)
-#' occsExt.z1 <- na.omit(raster::extract(envs,
-#'                                       occs.z1[, c("longitude", "latitude")]))
-#' occsExt.z2 <- na.omit(raster::extract(envs,
-#'                                       occs.z2[, c("longitude", "latitude")]))
+#' sp.name1 <- "Bassaricyon_alleni"
+#' sp.name2 <- "Bassaricyon_neblina"
+#' envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
+#'                                            package = "wallace"),
+#'                       pattern = ".tif$", full.names = TRUE),
+#'                       rasName = list.files(system.file("extdata/wc",
+#'                                            package = "wallace"),
+#'                       pattern = ".tif$", full.names = FALSE))
+#'
+#' occs.z1 <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
+#'                     package = "wallace"))
+#' occs.z2 <- read.csv(system.file("extdata/Bassaricyon_neblina.csv",
+#'                     package = "wallace"))
+#'
+#' bgPts.z1 <- read.csv(system.file("extdata/Bassaricyon_alleni_bgPoints.csv",
+#'                      package = "wallace"))
+#' bgPts.z2 <- read.csv(system.file("extdata/Bassaricyon_neblina_bgPoints.csv",
+#'                      package = "wallace"))
+#'
+#' occsExt.z1 <- raster::extract(envs, occs.z1[, c("longitude", "latitude")])
+#' occsExt.z2 <- raster::extract(envs, occs.z2[, c("longitude", "latitude")])
 #' bgExt.z1 <- raster::extract(envs, bgPts.z1[, c("longitude", "latitude")])
 #' bgExt.z2 <- raster::extract(envs, bgPts.z2[, c("longitude", "latitude")])
 #' pcaZ <- espace_pca(sp.name1, sp.name2,
@@ -40,17 +45,15 @@
 #'                    bgExt.z1, bgExt.z2)
 #' occDens <- espace_occDens(sp.name1, sp.name2, pcaZ)
 #'
-#' @return Returns a list of 2 lists (one for each species). Each list is an ecospat noche object that contains 10 species specific slots with information outputed by ecospat::grid.clim.dyn.
-#' z.uncor is the density of occurrence of the species and z.cor the occupancy of the environment by the species. It has the input parameters as individual slots.
+#' @return Returns a list of 2 lists (one for each species). Each list is an
+#'   ecospat noche object that contains 10 species specific slots with
+#'   information outputed by ecospat::grid.clim.dyn. z.uncor is the density of
+#'   occurrence of the species and z.cor the occupancy of the environment by
+#'   the species. It has the input parameters as individual slots.
 #' @author Jamie Kass <jamie.m.kass@@gmail.com >
 #' @author Olivier Broennimann <olivier.broennimann@@unil.ch>
-# @note
-#' @seealso \code{\link{espace_pca}} \code{\link{espace_nicheOv}} \code{\link[ecospat]{ecospat.grid.clim.dyn}}
-# @references
-# @aliases - a list of additional topic names that will be mapped to
-# this documentation when the user looks them up from the command
-# line.
-# @family - a family name. All functions that have the same family tag will be linked in the documentation.
+#' @seealso \code{\link{espace_pca}} \code{\link{espace_nicheOv}}
+#'  \code{\link[ecospat]{ecospat.grid.clim.dyn}}
 #' @export
 
 espace_occDens <- function(sp.name1, sp.name2, pca, logger = NULL) {

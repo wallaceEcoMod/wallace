@@ -4,7 +4,7 @@
 \alias{envs_worldclim}
 \title{envs_worldclim Obtain worldclim variables}
 \usage{
-envs_worldclim(bcRes, bcSel, mapCntr, doBrick, logger = NULL)
+envs_worldclim(bcRes, bcSel, mapCntr, doBrick = FALSE, logger = NULL)
 }
 \arguments{
 \item{bcRes}{numeric. Resolution of the climatic layers. Currently
@@ -38,8 +38,8 @@ This function is called by the module envs to download
 }
 \examples{
 bcRes <- 10 # (10 arcmin)
-envar <- c('bio01', 'bio02', 'bio03', 'bio10', 'bio11')
-arcmin10 <- envs_worldclim(bcRes, bcSel = envar, doBrick = TRUE)
+envar <- c('bio05', 'bio06', 'bio13', 'bio14')
+arcmin10 <- envs_worldclim(bcRes, bcSel = envar)
 
 }
 \seealso{

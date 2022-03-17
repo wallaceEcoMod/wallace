@@ -12,9 +12,11 @@ alfred.printVecAsis <- function(x, asChar = FALSE) {
       return(paste0("\'", x, "\'"))
     } else {
       if (asChar == FALSE) {
-        return(paste0("c(", paste(sapply(x, function(a) paste0("\'", a, "\'")), collapse = ", "), ")"))
+        return(paste0("c(", paste(sapply(x, function(a) paste0("\'", a, "\'")),
+                                  collapse = ", "), ")"))
       } else {
-        return(paste0("(", paste(sapply(x, function(a) paste0("\'", a, "\'")), collapse = ", "), ")"))
+        return(paste0("(", paste(sapply(x, function(a) paste0("\'", a, "\'")),
+                                 collapse = ", "), ")"))
       }
     }
   } else {
@@ -66,7 +68,8 @@ alfred.hlSpp <- function(spN) {
 #' a progress bar in the shiny app the entry of the first param "logs" turns on
 #' shiny functionality
 #' @param logs Wallace logger
-#' @param message A single-element character vector; the message to be displayed to the user.
+#' @param message A single-element character vector; the message to be displayed
+#'   to the user.
 #' @param expr The work to be done.
 #' @export
 alfred.smartProgress <- function(logs, message, expr) {
@@ -79,7 +82,8 @@ alfred.smartProgress <- function(logs, message, expr) {
 }
 
 #' @title alfred.spName
-#' @description For internal use. Retrieves the species name for use internally in non-shiny functions
+#' @description For internal use. Retrieves the species name for use internally
+#'   in non-shiny functions
 #' @param spN Species name
 #' @export
 alfred.spName <- function(spN) {

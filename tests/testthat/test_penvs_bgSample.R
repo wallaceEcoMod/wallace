@@ -34,10 +34,14 @@ test_that("output type checks", {
   expect_equal(ncol(bgsample), 2)
   # the headers of columns correspond to longitude and latitude
   expect_equal(c('longitude', 'latitude'), names(bgsample))
-  # the number of background points sampled are the same as specified in the function
+  # the number of background points sampled are the same as specified in the
+  #  function
   expect_equal(nrow(bgsample), bgPtsNum)
-  # the number of background points sampled are the the max possible if bgPtsNum is bigger than available
-  expect_equal(nrow(bgsample_big),(raster::ncell(bgMask) - raster::freq(bgMask, value = NA)[[1]]))
+  # the number of background points sampled are the the max possible if
+  # bgPtsNum is bigger than available
+  expect_equal(
+    nrow(bgsample_big),
+    (raster::ncell(bgMask) - raster::freq(bgMask, value = NA)[[1]]))
 
   # check if all the points sampled overlap with the study region
   # set longitude and latitude

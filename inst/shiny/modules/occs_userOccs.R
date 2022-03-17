@@ -20,6 +20,8 @@ occs_userOccs_module_server <- function(input, output, session, common) {
 
   observeEvent(input$goUserOccs, {
     # FUNCTION CALL ####
+    print(input$sepCSV)
+    print(input$decCSV)
     if (input$noCSV == 0 | is.null(input$noCSV)) {
       occsList <- occs_userOccs(input$userCSV$datapath, input$userCSV$name,
                                 ",", ".", logger)

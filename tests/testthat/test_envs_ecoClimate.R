@@ -9,7 +9,7 @@ bcScenario="LGM"
 ecoClimSel=c(1,2,3,15,16)
 
 ##Run function for output tests
-varsEcoClimate<-envs_ecoClimate(bcAOGCM, bcScenario, ecoClimSel, logger = NULL)
+varsEcoClimate<-envs_ecoClimate(bcAOGCM, bcScenario, ecoClimSel)
 ##set error parameters
 wrongAOGCM="CTSM"
 wrongScenario='notscenario'
@@ -19,15 +19,20 @@ bcScenarioFail='Present'
 ##start testing
 test_that('error_checks', {
   ##wrong AOGCM
-  expect_error(envs_ecoClimate(bcAOGCM=wrongAOGCM, bcScenario, ecoClimSel, logger = NULL),
-  (paste0("ecoClimate has no data for AOGCM=", wrongAOGCM, ". Check the spelling.")))
+  expect_error(envs_ecoClimate(bcAOGCM = wrongAOGCM, bcScenario, ecoClimSel),
+  (paste0("ecoClimate has no data for AOGCM=", wrongAOGCM,
+          ". Check the spelling.")))
   ##wrong Scenario
-  expect_error(envs_ecoClimate(bcAOGCM, bcScenario=wrongScenario, ecoClimSel, logger = NULL),
-               paste0("ecoClimate has no data for Scenario=", wrongScenario, ". Check the spelling."))
+  expect_error(envs_ecoClimate(bcAOGCM, bcScenario = wrongScenario, ecoClimSel,
+                               logger = NULL),
+               paste0("ecoClimate has no data for Scenario=", wrongScenario,
+                      ". Check the spelling."))
 
     ##NON existent combination of parameters
-  expect_error(envs_ecoClimate(bcAOGCM=AOGCMFail, bcScenario=bcScenarioFail, ecoClimSel, logger = NULL),
-               paste0("ecoClimate has no data for AOGCM = ", AOGCMFail, ", Baseline =  Modern", ", Scenario = ", bcScenarioFail))
+  expect_error(envs_ecoClimate(bcAOGCM = AOGCMFail, bcScenario = bcScenarioFail,
+                               ecoClimSel),
+               paste0("ecoClimate has no data for AOGCM = ", AOGCMFail,
+                      ", Baseline =  Modern", ", Scenario = ", bcScenarioFail))
 
   })
 

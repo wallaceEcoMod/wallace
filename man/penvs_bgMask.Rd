@@ -7,41 +7,55 @@
 penvs_bgMask(occs, envs, bgExt, logger = NULL, spN = NULL)
 }
 \arguments{
-\item{occs}{data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data}
+\item{occs}{data frame of cleaned or processed occurrences obtained from
+components occs: Obtain occurrence data or, poccs: Process occurrence data.}
 
-\item{envs}{a RasterStack or RasterBrick of environmental layers to be processed. This determines the output type.}
+\item{envs}{a RasterStack or RasterBrick of environmental layers to be
+processed. This determines the output type.}
 
-\item{bgExt}{a SpatialPolygonsDataFrame with the background area to be used for processing}
+\item{bgExt}{a SpatialPolygonsDataFrame with the background area to be used
+for processing.}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-otherwise leave the default NULL}
+\item{logger}{Stores all notification messages to be displayed in the Log
+Window of Wallace GUI. Insert the logger reactive list here for running
+in shiny, otherwise leave the default NULL.}
 
 \item{spN}{species name to be used for all logger messages}
 }
 \value{
-A RasterStack or a RasterBrick of environmental layers cropped and masked to match the provided background extent.
+A RasterStack or a RasterBrick of environmental layers cropped and
+  masked to match the provided background extent.
 }
 \description{
-This functions crops and masks the environmental data to the provided background area.
+This functions crops and masks the environmental data to the
+  provided background area.
 }
 \details{
-This function is used in the select study region component. Here, the environmental layers to be used in the modeling
- are cropped and masked to the provided background area. The background area is determined in the function penvs_bgExtent from the same component.
- The function returns the provided environmental layers cropped and masked in the provided format (either a Brick or a rasterStack)
+This function is used in the select study region component. Here, the
+   environmental layers to be used in the modeling are cropped and masked
+   to the provided background area. The background area is determined in
+   the function penvs_bgExtent from the same component. The function returns
+   the provided environmental layers cropped and masked in the provided
+   format (either a Brick or a rasterStack).
 }
 \examples{
-spN <- "Panthera onca"
-occs <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
-occs <- as.data.frame(occs[[1]]$cleaned)
-envs <- envs_worldclim(bcRes = 10,
-                       bcSel = c("bio03", "bio04", "bio13", "bio14"),
-                       doBrick = TRUE)
+occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
+                 package = "wallace"))[, 2:3]
+occs$occID <- 1:nrow(occs)
+envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
+                                           package = "wallace"),
+                      pattern = ".tif$", full.names = TRUE),
+                      rasName = list.files(system.file("extdata/wc",
+                                           package = "wallace"),
+                      pattern = ".tif$", full.names = FALSE))
 bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
 bgMask <- penvs_bgMask(occs, envs, bgExt)
 
 }
 \seealso{
-\code{\link{penvs_userBgExtent}}, \code{\link{penvs_drawBgExtent}}, \code{\link{penvs_bgExtent}} , \code{\link{penvs_bgSample}}
+\code{\link{penvs_userBgExtent}},
+  \code{\link{penvs_drawBgExtent}}, \code{\link{penvs_bgExtent}},
+  \code{\link{penvs_bgSample}}
 }
 \author{
 Jamie Kass <jamie.m.kass@gmail.com>

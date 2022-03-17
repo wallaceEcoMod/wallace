@@ -3,44 +3,33 @@
 context("espace_occDens")
 
 ##Function has no warning or error messages.
-##To run this function a PCA must exist, this requires a model to be created first allowing for access to environmental data for occs and background
+## To run this function a PCA must exist, this requires a model to be created
+## first allowing for access to environmental data for occs and background
 ###Using bioclim for testing
 ###SET PARAMETERS (running model)
-sp.name1<-"Pristimantis bogotensis"
-sp.name2<-"Dendropsophus labialis"
-species<-c(sp.name1,sp.name2)
-model<-list()
-for (i in 1:2){
-
-  ## occurrences
-  occs <-  occs_queryDb(spName = species[i], occDb = "gbif", occNum = 1000)
-  occs <- as.data.frame(occs[[1]]$cleaned)
-  ## process data
-  #occs <- poccs_thinOccs(occs = occs, thinDist = 10,spN=species[i]) ##Removed because warning from spthin on different names
-  # enviromental data
-  envs <- envs_worldclim(bcRes = 10,  bcSel = c("bio01","bio02","bio13","bio14"), doBrick = FALSE)
-  # background extent
-  bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
-  # background masked
-  bgMask <- penvs_bgMask(occs, envs, bgExt)
-  ## background sample
-  bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 316)
-  ## Partition
-  partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,
-                                  aggFact = NULL)
-  ### Create model
-  bioclimAlg <- model_bioclim(occs, bg, partblock, bgMask)
-
-  model[[i]]<-bioclimAlg
-}
-##Set parameters
-##Remove coordinates (lat/long from tables)
-occs.z1<-model[[1]]@occs[3:length(model[[1]]@occs)]
-occs.z2<-model[[2]]@occs[3:length(model[[2]]@occs)]
-bgPts.z1<-model[[1]]@bg[3:length(model[[1]]@bg)]
-bgPts.z2<-model[[2]]@bg[3:length(model[[2]]@bg)]
+sp.name1 <- "Bassaricyon_alleni"
+sp.name2 <- "Bassaricyon_neblina"
+envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
+                                                       package = "wallace"),
+                                           pattern = ".tif$", full.names = TRUE),
+                      rasName = list.files(system.file("extdata/wc",
+                                                       package = "wallace"),
+                                           pattern = ".tif$", full.names = FALSE))
+occs.z1 <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
+                                package = "wallace"))
+occs.z2 <- read.csv(system.file("extdata/Bassaricyon_neblina.csv",
+                                package = "wallace"))
+bgPts.z1 <- read.csv(system.file("extdata/Bassaricyon_alleni_bgPoints.csv",
+                                 package = "wallace"))
+bgPts.z2 <- read.csv(system.file("extdata/Bassaricyon_neblina_bgPoints.csv",
+                                 package = "wallace"))
+occsExt.z1 <- raster::extract(envs, occs.z1[, c("longitude", "latitude")])
+occsExt.z2 <- raster::extract(envs, occs.z2[, c("longitude", "latitude")])
+bgExt.z1 <- raster::extract(envs, bgPts.z1[, c("longitude", "latitude")])
+bgExt.z2 <- raster::extract(envs, bgPts.z2[, c("longitude", "latitude")])
 ###Generate pca for further analyses
-Testpca<-espace_pca(sp.name1,sp.name2,occs.z1,occs.z2,bgPts.z1,bgPts.z2)
+Testpca <- espace_pca(sp.name1, sp.name2, occsExt.z1, occsExt.z2,
+                      bgExt.z1, bgExt.z2)
 ###RUN FUNCTION
 TestOccDens<-espace_occDens(sp.name1, sp.name2,Testpca)
 test_that("output checks", {
@@ -60,7 +49,8 @@ test_that("output checks", {
                c("y","x","z","z.uncor","z.cor","Z","glob","glob1","sp","w"))
   expect_equal(names(TestOccDens[[sp.name2]]),
                c("y","x","z","z.uncor","z.cor","Z","glob","glob1","sp","w"))
-   ##Test that all outputs but x and y and inputs (including occupancy, density and weights) are all raster layers
+   ## Test that all outputs but x and y and inputs (including occupancy, density
+   ## and weights) are all raster layers
   #sp1
   expect_is(TestOccDens[[sp.name1]]$z,'RasterLayer')
   expect_is(TestOccDens[[sp.name1]]$Z,'RasterLayer')
@@ -73,7 +63,6 @@ test_that("output checks", {
   expect_is(TestOccDens[[sp.name2]]$z.uncor,'RasterLayer')
   expect_is(TestOccDens[[sp.name2]]$z.cor,'RasterLayer')
   expect_is(TestOccDens[[sp.name2]]$w,'RasterLayer')
-
   })
 
 

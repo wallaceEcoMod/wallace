@@ -2,21 +2,23 @@
 #' @title envs_ecoClimate Obtain ecoClimate variables
 #' @description download ecoClimate variables. See www.ecoclimate.org.
 #'
-#' @details
-#' #' This function is called by the module envs to download ecoClimate variables from www.ecoclimate.org.
-#' The variables to be dowloaded are selected by the user with bcSel and the resolution is fixed to 0.5 degrees
-#' This function currently gets variables from Dropbox and the process takes significantly more time than for other datasets.
-#' It returns a rasterStack of selected variables.
+#' @details This function is called by the module envs to download ecoClimate
+#'   variables from www.ecoclimate.org. The variables to be dowloaded are
+#'   selected by the user with bcSel and the resolution is fixed to 0.5 degrees.
+#'   This function currently gets variables from Dropbox and the process takes
+#'   significantly more time than for other datasets. It returns a rasterStack
+#'   of selected variables.
 #'
 #' @param bcAOGCM Name of the Atmospheric and Oceanic Global Circulation Model.
 #'   Options are: "CCSM", "CNRM", "MIROC", "FGOALS", "GISS", "IPSL","MRI", "MPI"
 #' @param bcScenario Select the temporal scenario that you want to download.
 #'   Options are: "LGM" (21,000 years ago), "Holo" (6,000 years ago),
-#'   "Present", "Future 2.6" (rcp 2.6), "Future 4.5" (rcp 4.5), "Future 6" (rcp 6),
-#'   "Future 8.5" (rcp 8.5)
+#'   "Present", "Future 2.6" (rcp 2.6), "Future 4.5" (rcp 4.5),
+#'   "Future 6" (rcp 6), "Future 8.5" (rcp 8.5)
 #' @param ecoClimSel Numeric vector with list of variables to select.
-#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-#'   otherwise leave the default NULL
+#' @param logger Stores all notification messages to be displayed in the Log
+#'   Window of Wallace GUI. Insert the logger reactive list here for running in
+#'   shiny, otherwise leave the default NULL
 #'
 #' @examples
 #' bcAOGCM <- "CCSM"
@@ -46,7 +48,8 @@ envs_ecoClimate <- function(bcAOGCM, bcScenario, ecoClimSel, logger = NULL) {
   # Changing rasters names
   names(ecoClimatelayers) <- gsub("\\.", "", names(ecoClimatelayers))
   i <- grep('bio[0-9]$', names(ecoClimatelayers))
-  editNames <- paste('bio', sapply(strsplit(names(ecoClimatelayers)[i], 'bio'), function(x) x[2]), sep = '0')
+  editNames <- paste('bio', sapply(strsplit(names(ecoClimatelayers)[i], 'bio'),
+                                   function(x) x[2]), sep = '0')
   names(ecoClimatelayers)[i] <- editNames
 
   # Define WGS84
@@ -75,8 +78,10 @@ envs_ecoClimate <- function(bcAOGCM, bcScenario, ecoClimSel, logger = NULL) {
 #'   "Modern" (1950-1999)
 #' @param Scenario Select a temporal scenario.
 #'   Options are: "LGM" (21,000 years ago), "Holo" (6,000 years ago),
-#'   "Present", "Future 2.6" (rcp 2.6), "Future 4.5" (rcp 4.5), "Future 6" (rcp 6), "Future 8.5" (rcp 8.5)
-#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+#'   "Present", "Future 2.6" (rcp 2.6), "Future 4.5" (rcp 4.5), "Future 6" (rcp 6),
+#'   "Future 8.5" (rcp 8.5)
+#' @param logger Stores all notification messages to be displayed in the Log
+#'   Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'   otherwise leave the default NULL
 #' @export
 #'
@@ -95,10 +100,12 @@ ecoClimate_getdata <- function (AOGCM, Baseline, Scenario, logger = NULL) {
   }
 
   if (!(Baseline %in% c("Pre-industrial", "Historical","Modern"))) {
-    stop(paste0("ecoClimate has no data for Baseline=", Baseline, ". Check the spelling."))
+    stop(paste0("ecoClimate has no data for Baseline=", Baseline,
+                ". Check the spelling."))
   }
 
-  if (!(Scenario %in% c("LGM", "Holo", "Present", "Future 2.6", "Future 4.5", "Future 6", "Future 8.5"))) {
+  if (!(Scenario %in% c("LGM", "Holo", "Present", "Future 2.6", "Future 4.5",
+                        "Future 6", "Future 8.5"))) {
     stop(paste0("ecoClimate has no data for Scenario=", Scenario, ". Check the spelling."))
   }
 

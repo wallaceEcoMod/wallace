@@ -38,25 +38,27 @@ The niche overlap quantification is based on the occurrence densities and the de
 The function computes 4 different things, Schoener's D, unfilling, stability, expansion indices (Guisan et al. 2014 TREE), and tests for niche equivalency and niche similarity.
 }
 \examples{
-envs <- envs_worldclim(bcRes = 10,
-                       bcSel = c("bio01","bio02","bio13","bio14"),
-                       doBrick = FALSE)
-sp.name1 <- "Panthera onca"
-sp.name2 <- "Procyon lotor"
-occs.z1 <- occs_queryDb(spName = sp.name1, occDb = "gbif",
-                        occNum = 100)[[1]]$cleaned
-occs.z2 <- occs_queryDb(spName = sp.name2, occDb = "gbif",
-                        occNum = 100)[[1]]$cleaned
-bgExt.z1 <- penvs_bgExtent(occs.z1, bgSel = 'bounding box', bgBuf = 0.5)
-bgExt.z2 <- penvs_bgExtent(occs.z2, bgSel = 'bounding box', bgBuf = 0.5)
-bgMask.z1 <- penvs_bgMask(occs.z1, envs, bgExt.z1)
-bgMask.z2 <- penvs_bgMask(occs.z2, envs, bgExt.z2)
-bgPts.z1 <- penvs_bgSample(occs.z1, bgMask.z1, bgPtsNum = 1000)
-bgPts.z2 <- penvs_bgSample(occs.z2, bgMask.z2, bgPtsNum = 1000)
-occsExt.z1 <- na.omit(raster::extract(envs,
-                                      occs.z1[, c("longitude", "latitude")]))
-occsExt.z2 <- na.omit(raster::extract(envs,
-                                      occs.z2[, c("longitude", "latitude")]))
+sp.name1 <- "Bassaricyon_alleni"
+sp.name2 <- "Bassaricyon_neblina"
+envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
+                                           package = "wallace"),
+                      pattern = ".tif$", full.names = TRUE),
+                      rasName = list.files(system.file("extdata/wc",
+                                           package = "wallace"),
+                      pattern = ".tif$", full.names = FALSE))
+
+occs.z1 <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
+                    package = "wallace"))
+occs.z2 <- read.csv(system.file("extdata/Bassaricyon_neblina.csv",
+                    package = "wallace"))
+
+bgPts.z1 <- read.csv(system.file("extdata/Bassaricyon_alleni_bgPoints.csv",
+                     package = "wallace"))
+bgPts.z2 <- read.csv(system.file("extdata/Bassaricyon_neblina_bgPoints.csv",
+                     package = "wallace"))
+
+occsExt.z1 <- raster::extract(envs, occs.z1[, c("longitude", "latitude")])
+occsExt.z2 <- raster::extract(envs, occs.z2[, c("longitude", "latitude")])
 bgExt.z1 <- raster::extract(envs, bgPts.z1[, c("longitude", "latitude")])
 bgExt.z2 <- raster::extract(envs, bgPts.z2[, c("longitude", "latitude")])
 pcaZ <- espace_pca(sp.name1, sp.name2,

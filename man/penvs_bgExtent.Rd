@@ -30,8 +30,9 @@ This function is used in the select study region component. Here, the user can s
 observed occurrences. The function returns a SpatialPolygonsDataFrame object of the desired extent.
 }
 \examples{
-occs <-  occs_queryDb(spName = "Panthera onca", occDb = "gbif", occNum = 100)
-occs <- as.data.frame(occs[[1]]$cleaned)
+occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
+                 package = "wallace"))[, 2:3]
+occs$occID <- 1:nrow(occs)
 bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
 
 }

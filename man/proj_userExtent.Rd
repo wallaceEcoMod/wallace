@@ -7,27 +7,37 @@
 proj_userExtent(bgShp_path, bgShp_name, userBgBuf, logger = NULL, spN = NULL)
 }
 \arguments{
-\item{bgShp_path}{path to the user provided shapefile or csv with vertex coordinates}
+\item{bgShp_path}{path to the user provided shapefile or csv with
+vertex coordinates.}
 
-\item{bgShp_name}{name of the user provided shapefile or csv with vertex coordinates}
+\item{bgShp_name}{name of the user provided shapefile or csv with
+vertex coordinates.}
 
-\item{userBgBuf}{numeric. Buffer to be used in creating the background extent must be >=0}
+\item{userBgBuf}{numeric. Buffer to be used in creating the background
+extent must be >= 0.}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-otherwise leave the default NULL}
+\item{logger}{Stores all notification messages to be displayed in the Log
+Window of Wallace GUI. Insert the logger reactive list here for running
+in shiny, otherwise leave the default NULL.}
 
-\item{spN}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages}
+\item{spN}{data frame of cleaned occurrences obtained from component
+occs: Obtain occurrence data. Used to obtain species name for logger
+messages.}
 }
 \value{
-This function returns a SpatialPolygons object with the user provided shape (+ a buffer is userBgBuf >0).
+This function returns a SpatialPolygons object with the user
+  provided shape (+ a buffer is userBgBuf >0).
 }
 \description{
-This function generates a projection area according to a user provided polygon and buffer.
+This function generates a projection area according to a user
+  provided polygon and buffer.
 }
 \details{
-This function is used in the projection component. Here, the user provides either a shapefile or a csv with vertex coordinates
-with the desired shape for the projection extent, the user may include a buffer to the given polygon.
-The function returns a SpatialPolygons object of the desired extent (+ buffer).
+This function is used in the projection component. Here, the user provides
+  either a shapefile or a csv with vertex coordinates with the desired shape
+  for the projection extent, the user may include a buffer to the given
+  polygon. The function returns a SpatialPolygons object of the desired
+  extent (+ buffer).
 }
 \examples{
 pathShp <- list.files(system.file("extdata/shp", package = "wallace"),
@@ -38,7 +48,8 @@ projUser <- proj_userExtent(bgShp_path = pathShp, bgShp_name = nameShp,
                             userBgBuf = 1)
 }
 \seealso{
-\code{\link{penvs_drawBgExtent}}, \code{\link{penvs_bgExtent}}, \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}
+\code{\link{penvs_drawBgExtent}}, \code{\link{penvs_bgExtent}},
+  \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}
 }
 \author{
 Jamie Kass <jamie.m.kass@gmail.com>

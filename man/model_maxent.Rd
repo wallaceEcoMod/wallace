@@ -22,66 +22,75 @@ model_maxent(
 )
 }
 \arguments{
-\item{occs}{data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.}
+\item{occs}{data frame of cleaned or processed occurrences obtained from
+components occs: Obtain occurrence data or, poccs: Process occurrence data.}
 
-\item{bg}{coordinates of background points to be used for modeling}
+\item{bg}{coordinates of background points to be used for modeling.}
 
-\item{user.grp}{a list of two vectors containing group assignments for occurrences (occs.grp) and background points (bg.grp)}
+\item{user.grp}{a list of two vectors containing group assignments for
+occurrences (occs.grp) and background points (bg.grp).}
 
-\item{bgMsk}{a RasterStack or a RasterBrick of environmental layers cropped and masked to match the provided background extent}
+\item{bgMsk}{a RasterStack or a RasterBrick of environmental layers cropped
+and masked to match the provided background extent.}
 
-\item{rms}{vector of range of regularization multipliers to be used in the ENMeval run}
+\item{rms}{vector of range of regularization multipliers to be used in the
+ENMeval run.}
 
-\item{rmsStep}{step to be used when defining regularization multipliers to be used from the provided range.}
+\item{rmsStep}{step to be used when defining regularization multipliers to
+be used from the provided range.}
 
-\item{fcs}{feature classes to be tested in the ENMeval run}
+\item{fcs}{feature classes to be tested in the ENMeval run.}
 
-\item{clampSel}{Boolean use of clamping in the model}
+\item{clampSel}{Boolean use of clamping in the model.}
 
-\item{algMaxent}{character. algorithm to be used in modeling. A selection of "maxnet" or "maxent.jar"}
+\item{algMaxent}{character. algorithm to be used in modeling. A selection
+of "maxnet" or "maxent.jar".}
 
-\item{catEnvs}{if categorical predictor variables are included must provide the names}
+\item{catEnvs}{if categorical predictor variables are included must provide
+the names.}
 
-\item{parallel}{logical. Whether to use parallel in the generation of models. Default is FALSE}
+\item{parallel}{logical. Whether to use parallel in the generation of
+models. Default is FALSE}
 
-\item{numCores}{numeric. If using parallel how many cores to use. Default is NULL}
+\item{numCores}{numeric. If using parallel how many cores to use. Default is
+NULL.}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-otherwise leave the default NULL}
+\item{logger}{Stores all notification messages to be displayed in the Log
+Window of Wallace GUI. Insert the logger reactive list here for running in
+shiny, otherwise leave the default NULL.}
 
-\item{spN}{character. Species name to be used for all logger messages}
+\item{spN}{character. Species name to be used for all logger messages.}
 }
 \value{
-Function returns an ENMevaluate object with all the evaluated models and a selection of appropriate fields.
+Function returns an ENMevaluate object with all the evaluated models
+  and a selection of appropriate fields.
 }
 \description{
-This functions generates maxent or maxnet models using ENMeval 2.0 and user provided tuning parameters.
+This functions generates maxent or maxnet models using
+  ENMeval 2.0 and user provided tuning parameters.
 }
 \details{
-The function generates model in ENMeval using a user provided partition of occurrences from previous components in the GUI.
-User can activate clamping and input tuning arguments to be used for model building
+The function generates model in ENMeval using a user provided partition of
+  occurrences from previous components in the GUI. User can activate
+  clamping and input tuning arguments to be used for model building.
 }
 \examples{
-out.gbif <- occs_queryDb(spName = "Panthera onca", occDb = "gbif", occNum = 1000)
-occs <- as.data.frame(out.gbif[[1]]$cleaned)
-envs <- envs_worldclim(bcRes = 10,
-                       bcSel = c("bio01","bio02","bio07","bio13",
-                                 "bio14","bio15","bio19"),
-                       doBrick = FALSE)
-## remove records without environmental values
-records <- which(is.na(raster::extract(envs$bio01, occs[,3:4])) == TRUE)
-occs <- occs[-records, ]
-bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
-bgMsk <- penvs_bgMask(occs, envs, bgExt)
-bg <-penvs_bgSample(occs, bgMsk, bgPtsNum = 10000)
-partblock <- part_partitionOccs(occs, bg, method = 'block',
-                                kfolds = NULL, bgMask = NULL,
-                                aggFact = NULL)
+envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
+                                           package = "wallace"),
+                      pattern = ".tif$", full.names = TRUE),
+                      rasName = list.files(system.file("extdata/wc",
+                                           package = "wallace"),
+                      pattern = ".tif$", full.names = FALSE))
+occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
+                 package = "wallace"))
+bg <- read.csv(system.file("extdata/Bassaricyon_alleni_bgPoints.csv",
+               package = "wallace"))
+partblock <- part_partitionOccs(occs, bg, method = 'block')
 rms <- c(1:2)
 rmsStep <- 1
 fcs <- c('L', 'LQ')
 m <- model_maxent(occs = occs, bg = bg, user.grp = partblock,
-                  bgMsk = bgMsk, rms = rms, rmsStep, fcs,
+                  bgMsk = envs, rms = rms, rmsStep, fcs,
                   clampSel = TRUE, algMaxent = "maxnet",
                   parallel = FALSE)
 

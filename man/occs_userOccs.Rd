@@ -9,31 +9,36 @@ occs_userOccs(txtPath, txtName, txtSep = ",", txtDec = ".", logger = NULL)
 \arguments{
 \item{txtPath}{path to database including database name and extension}
 
-\item{txtName}{name of database without the extension. Database must have at least three columns named 'scientific_name', 'longitude', 'latitude'}
+\item{txtName}{name of database without the extension. Database must have
+at least three columns named 'scientific_name', 'longitude', 'latitude'}
 
 \item{txtSep}{field separator used in database (as in read.delim)}
 
 \item{txtDec}{decimal separator used for coordinates in database}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-otherwise leave the default NULL}
+\item{logger}{Stores all notification messages to be displayed in the Log
+Window of Wallace GUI. Insert the logger reactive list here for running
+in shiny, otherwise leave the default NULL}
 }
 \value{
-List of lists. One list per species with occurence records. Each individual species list with appropriate fields for analysis
+List of lists. One list per species with occurence records. Each
+  individual species list with appropriate fields for analysis
 }
 \description{
-Load user database with species occurrence records. Returns a list of lists, one per species provided in database in each species list with a set of appropriate fields
+Load user database with species occurrence records. Returns a list of lists,
+  one per species provided in database in each species list with a set of
+  appropriate fields
 }
 \details{
-This function is called by the module occs_queryDb to load a user provided database for
-species occurrence records, subset to only those records with coordinates,
-remove records with duplicate coordinates, and select some columns with fields
-appropriate to studies in biogeography.
+This function is called by the module occs_queryDb to load a user provided
+database for species occurrence records, subset to only those records with
+coordinates, remove records with duplicate coordinates, and select some
+columns with fields appropriate to studies in biogeography.
 }
 \examples{
-txtPath <- system.file("extdata/Marmosops_sp.csv", package = "wallace")
-txtName <- 'Marmosops_sp'
-user.occs <- occs_userOccs(txtPath, txtName, txtSep = ",", txtDec = ".")
+txtPath <- system.file("extdata/Bassaricyon_alleni.csv", package = "wallace")
+txtName <- 'Bassaricyon_alleni'
+user.occs <- occs_userOccs(txtPath, txtName)
 
 
 }

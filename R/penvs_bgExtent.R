@@ -1,23 +1,29 @@
 
 #' @title penvs_bgExtent Generate background extent
-#' @description This function generates a background area according to a user provided method.
+#' @description This function generates a background area according to a user
+#'   provided method.
 #'
-#' @details
-#' This function is used in the select study region component. Here, the user can select between three methods,
-#' 'bounding box' , 'point buffers' or ' minimum convex polygon' to determine the background extent based on the
-#' observed occurrences. The function returns a SpatialPolygonsDataFrame object of the desired extent.
+#' @details This function is used in the select study region component. Here,
+#'   the user can select between three methods, 'bounding box', 'point buffers'
+#'   or ' minimum convex polygon' to determine the background extent based on the
+#'   observed occurrences. The function returns a SpatialPolygonsDataFrame
+#'   object of the desired extent.
 #'
-#' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data
-#' @param bgSel character. Method of background building. Must be one of three options: 'bounding box' , 'point buffers' or ' minimum convex polygon'
-#' @param bgBuf numeric. Buffer distance in degrees to be used in the building of the background area
-#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-#' otherwise leave the default NULL
-#' @param spN data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages
-# @keywords
-#'
+#' @param occs data frame of cleaned or processed occurrences obtained from
+#'   components occs: Obtain occurrence data or, poccs: Process occurrence data.
+#' @param bgSel character. Method of background building. Must be one of three
+#'   options: 'bounding box' , 'point buffers' or ' minimum convex polygon'.
+#' @param bgBuf numeric. Buffer distance in degrees to be used in the building
+#'   of the background area.
+#' @param logger Stores all notification messages to be displayed in the Log
+#'   Window of Wallace GUI. Insert the logger reactive list here for running in
+#'   shiny, otherwise leave the default NULL.
+#' @param spN data frame of cleaned occurrences obtained from component occs:
+#'   Obtain occurrence data. Used to obtain species name for logger messages.
 #' @examples
-#' occs <-  occs_queryDb(spName = "Panthera onca", occDb = "gbif", occNum = 100)
-#' occs <- as.data.frame(occs[[1]]$cleaned)
+#' occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
+#'                  package = "wallace"))[, 2:3]
+#' occs$occID <- 1:nrow(occs)
 #' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
 #'
 #' @return A SpatialPolygonsDataFrame object that contains all occurrences from occs
@@ -25,12 +31,8 @@
 #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
 
-#' @seealso \code{\link{penvs_userBgExtent}}, \code{\link{penvs_drawBgExtent}}, \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}
-# @references
-# @aliases - a list of additional topic names that will be mapped to
-# this documentation when the user looks them up from the command
-# line.
-# @family - a family name. All functions that have the same family tag will be linked in the documentation.
+#' @seealso \code{\link{penvs_userBgExtent}}, \code{\link{penvs_drawBgExtent}},
+#'   \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}
 #' @export
 #'
 

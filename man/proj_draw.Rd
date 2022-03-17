@@ -7,27 +7,34 @@
 proj_draw(polyPjXY, polyPjID, drawPjBuf, logger = NULL, spN = NULL)
 }
 \arguments{
-\item{polyPjXY}{coordinates of polygon endpoints obtained from user drawn polygon}
+\item{polyPjXY}{coordinates of polygon endpoints obtained from user
+drawn polygon}
 
 \item{polyPjID}{numeric .ID to be used in the generation of the polygon}
 
-\item{drawPjBuf}{the buffer to be used in generating the SpatialPolygonsDataFrame, must be >=0 . A number must be specified.}
+\item{drawPjBuf}{the buffer to be used in generating the
+SpatialPolygonsDataFrame, must be >=0 . A number must be specified.}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny, otherwise leave the default NULL}
+\item{logger}{Stores all notification messages to be displayed in the
+Log Window of Wallace GUI. Insert the logger reactive list here for
+running in shiny, otherwise leave the default NULL}
 
 \item{spN}{character. Used to obtain species name for logger messages}
 }
 \value{
-This functions returns a SpatialPolygonsDataFrame based on the user specified coordinates (drawn on map).
-This SpatialPolygonsDataFrame may be larger than specified if drawBgBuf > 0.
+This functions returns a SpatialPolygonsDataFrame based on the user
+  specified coordinates (drawn on map). This SpatialPolygonsDataFrame may be
+  larger than specified if drawBgBuf > 0.
 }
 \description{
-This function creates a polygon object from coordinates of user drawn poylgon in the GUI.
+This function creates a polygon object from coordinates of user
+  drawn poylgon in the GUI.
 }
 \details{
-This function is used in the project model component. In the GUI, the user draws a polygon to be used
-as the projection extent and may include a buffer to the given polygon.
-The function returns a SpatialPolygonsDataFrame object of the desired extent (+ buffer).
+This function is used in the project model component. In the GUI, the user
+  draws a polygon to be used as the projection extent and may include a
+  buffer to the given polygon. The function returns a
+  SpatialPolygonsDataFrame object of the desired extent (+ buffer).
 }
 \examples{
 longitude <- c(-27.78641, -74.09170, -84.01930, -129.74867,

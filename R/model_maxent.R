@@ -1,55 +1,63 @@
 
 #' @title model_maxent Generate maxent or maxnet model
-#' @description This functions generates maxent or maxnet models using ENMeval 2.0 and user provided tuning parameters.
+#' @description This functions generates maxent or maxnet models using
+#'   ENMeval 2.0 and user provided tuning parameters.
 #'
 #' @details
-#' The function generates model in ENMeval using a user provided partition of occurrences from previous components in the GUI.
-#' User can activate clamping and input tuning arguments to be used for model building
+#' The function generates model in ENMeval using a user provided partition of
+#'   occurrences from previous components in the GUI. User can activate
+#'   clamping and input tuning arguments to be used for model building.
 #'
-#' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.
-#' @param bg  coordinates of background points to be used for modeling
-#' @param user.grp  a list of two vectors containing group assignments for occurrences (occs.grp) and background points (bg.grp)
-#' @param bgMsk a RasterStack or a RasterBrick of environmental layers cropped and masked to match the provided background extent
-#' @param rms vector of range of regularization multipliers to be used in the ENMeval run
-#' @param rmsStep step to be used when defining regularization multipliers to be used from the provided range.
-#' @param fcs feature classes to be tested in the ENMeval run
-#' @param clampSel Boolean use of clamping in the model
-#' @param algMaxent character. algorithm to be used in modeling. A selection of "maxnet" or "maxent.jar"
-#' @param catEnvs  if categorical predictor variables are included must provide the names
-#' @param parallel logical. Whether to use parallel in the generation of models. Default is FALSE
-#' @param numCores numeric. If using parallel how many cores to use. Default is NULL
-#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-#'  otherwise leave the default NULL
-#' @param spN character. Species name to be used for all logger messages
+#' @param occs data frame of cleaned or processed occurrences obtained from
+#'   components occs: Obtain occurrence data or, poccs: Process occurrence data.
+#' @param bg  coordinates of background points to be used for modeling.
+#' @param user.grp  a list of two vectors containing group assignments for
+#'   occurrences (occs.grp) and background points (bg.grp).
+#' @param bgMsk a RasterStack or a RasterBrick of environmental layers cropped
+#'   and masked to match the provided background extent.
+#' @param rms vector of range of regularization multipliers to be used in the
+#'   ENMeval run.
+#' @param rmsStep step to be used when defining regularization multipliers to
+#'   be used from the provided range.
+#' @param fcs feature classes to be tested in the ENMeval run.
+#' @param clampSel Boolean use of clamping in the model.
+#' @param algMaxent character. algorithm to be used in modeling. A selection
+#'   of "maxnet" or "maxent.jar".
+#' @param catEnvs  if categorical predictor variables are included must provide
+#'   the names.
+#' @param parallel logical. Whether to use parallel in the generation of
+#'   models. Default is FALSE
+#' @param numCores numeric. If using parallel how many cores to use. Default is
+#'   NULL.
+#' @param logger Stores all notification messages to be displayed in the Log
+#'   Window of Wallace GUI. Insert the logger reactive list here for running in
+#'   shiny, otherwise leave the default NULL.
+#' @param spN character. Species name to be used for all logger messages.
 
 # @keywords
 #'
 #' @examples
-#' out.gbif <- occs_queryDb(spName = "Panthera onca", occDb = "gbif", occNum = 1000)
-#' occs <- as.data.frame(out.gbif[[1]]$cleaned)
-#' envs <- envs_worldclim(bcRes = 10,
-#'                        bcSel = c("bio01","bio02","bio07","bio13",
-#'                                  "bio14","bio15","bio19"),
-#'                        doBrick = FALSE)
-#' ## remove records without environmental values
-#' records <- which(is.na(raster::extract(envs$bio01, occs[,3:4])) == TRUE)
-#' occs <- occs[-records, ]
-#' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
-#' bgMsk <- penvs_bgMask(occs, envs, bgExt)
-#' bg <-penvs_bgSample(occs, bgMsk, bgPtsNum = 10000)
-#' partblock <- part_partitionOccs(occs, bg, method = 'block',
-#'                                 kfolds = NULL, bgMask = NULL,
-#'                                 aggFact = NULL)
+#' envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
+#'                                            package = "wallace"),
+#'                       pattern = ".tif$", full.names = TRUE),
+#'                       rasName = list.files(system.file("extdata/wc",
+#'                                            package = "wallace"),
+#'                       pattern = ".tif$", full.names = FALSE))
+#' occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
+#'                  package = "wallace"))
+#' bg <- read.csv(system.file("extdata/Bassaricyon_alleni_bgPoints.csv",
+#'                package = "wallace"))
+#' partblock <- part_partitionOccs(occs, bg, method = 'block')
 #' rms <- c(1:2)
 #' rmsStep <- 1
 #' fcs <- c('L', 'LQ')
 #' m <- model_maxent(occs = occs, bg = bg, user.grp = partblock,
-#'                   bgMsk = bgMsk, rms = rms, rmsStep, fcs,
+#'                   bgMsk = envs, rms = rms, rmsStep, fcs,
 #'                   clampSel = TRUE, algMaxent = "maxnet",
 #'                   parallel = FALSE)
-
 #'
-#' @return Function returns an ENMevaluate object with all the evaluated models and a selection of appropriate fields.
+#' @return Function returns an ENMevaluate object with all the evaluated models
+#'   and a selection of appropriate fields.
 #' @author Jamie M. Kass <jkass@@gradcenter.cuny.edu>
 #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 # @note

@@ -7,65 +7,61 @@
 proj_mess(occs, bg, bgMsk, projExtRas, logger = NULL, spN = NULL)
 }
 \arguments{
-\item{occs}{a data frame of occurrences used for modeling and values of environmental variables for each point}
+\item{occs}{a data frame of occurrences used for modeling and values of
+environmental variables for each point.}
 
-\item{bg}{a data frame of points used as background for modeling and values of environmental variables for each point}
+\item{bg}{a data frame of points used as background for modeling and values
+of environmental variables for each point.}
 
-\item{bgMsk}{a rasterBrick or rasterStack of environmental variables used for modeling. They must be cropped and masked to extent used in model training}
+\item{bgMsk}{a rasterBrick or rasterStack of environmental variables used
+for modeling. They must be cropped and masked to extent used in model
+training.}
 
-\item{projExtRas}{a rasterStack or rasterBrick of environmental variables to be used for projecting}
+\item{projExtRas}{a rasterStack or rasterBrick of environmental variables
+to be used for projecting.}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-otherwise leave the default NULL}
+\item{logger}{Stores all notification messages to be displayed in the Log
+Window of Wallace GUI. Insert the logger reactive list here for running
+in shiny, otherwise leave the default NULL.}
 
 \item{spN}{character. Used to obtain species name for logger messages}
 }
 \description{
-This function generates a MESS map for the new variables for projection based on variables and points used for modeling in previous components.
+This function generates a MESS map for the new variables for
+projection based on variables and points used for modeling in previous
+components.
 }
 \details{
-This functions allows for the creation of a MESS map for the new provided variables for projection.
-These variables are either user uploaded or selected from WorldClim database.
-MESS map is based on occurrence and background points used for generating the model and the environmental values at those points.
+This functions allows for the creation of a MESS map for the new provided
+variables for projection. These variables are either user uploaded or
+selected from WorldClim database. MESS map is based on occurrence and
+background points used for generating the model and the environmental values
+at those points.
 }
 \examples{
-out.gbif <- occs_queryDb(spName = "Panthera onca", occDb = "gbif",
-                         occNum = 100)
-occs <- as.data.frame(out.gbif[[1]]$cleaned)
-envs <- envs_worldclim(bcRes = 10, bcSel = c('bio01','bio19'),
-                       doBrick = FALSE)
-bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
-bgMsk <- penvs_bgMask(occs, envs, bgExt)
-bg <- penvs_bgSample(occs, bgMsk, bgPtsNum = 10000)
-partblock <- part_partitionOccs(occs, bg, method = 'block',
-                                kfolds = NULL, bgMask = NULL,
-                                aggFact = NULL)
-m <- model_bioclim(occs, bg, partblock, bgMsk)
+envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
+                                           package = "wallace"),
+                      pattern = ".tif$", full.names = TRUE),
+                      rasName = list.files(system.file("extdata/wc",
+                                           package = "wallace"),
+                      pattern = ".tif$", full.names = FALSE))
+# load model
+m <- readRDS(system.file("extdata/model.RDS",
+                         package = "wallace"))
 occsEnvs <- m@occs
 bgEnvs <- m@bg
-lon <- c(-71.58400, -78.81300, -79.34034, -69.83331,
-         -66.47149, -66.71319, -71.11931)
-lat <- c(13.18379, 7.52315, 0.93105, -1.70167,
-         0.98391, 6.09208, 12.74980)
-selCoords <- matrix(c(lon, lat), byrow = FALSE, ncol = 2)
-expertAddedPoly <-
-  sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)),
-                      ID = 1)))
-# projection time layers, using worldclim 2.1 Future 2021-2040
-# MIROC6 ssp126 bioclims as example
-envsFut <- list.files(path = system.file('extdata/wc10/future',
+envsFut <- list.files(path = system.file('extdata/wc/future',
                                          package = "wallace"),
                       full.names = TRUE)
 envsFut <- raster::stack(envsFut)
-projExtRas <- raster::crop(envsFut, expertAddedPoly)
-projExtRas <- raster::mask(projExtRas, expertAddedPoly)
 ## run function
-projMess <- proj_mess(occs = occsEnvs, bg = bgEnvs, bgMsk = bgMsk,
-                      projExtRas = projExtRas)
+projMess <- proj_mess(occs = occsEnvs, bg = bgEnvs, bgMsk = envs,
+                      projExtRas = envsFut)
 
 }
 \seealso{
-\code{\link[dismo]{mess}}, \code{\link{proj_time}} \code{\link{proj_userEnvs}}
+\code{\link[dismo]{mess}}, \code{\link{proj_time}}
+\code{\link{proj_userEnvs}}
 }
 \author{
 Jamie Kass <jkass@gradcenter.cuny.edu>

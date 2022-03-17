@@ -4,16 +4,16 @@ context("thinOccs")
 
 
 ## occurrences
-spN="Panthera onca"
-out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
-occs <- as.data.frame(out.gbif[[1]]$cleaned)
+occs <- read.csv(system.file("extdata/Bassaricyon_neblina.csv",
+                             package = "wallace"))
+occs$occID <- 1:nrow(occs)
 
 ## thinning distance (km)
 thinDist <- 30
 
 
 ### run function
-out.thin <- poccs_thinOccs(occs=occs, thinDist,spN=spN)
+out.thin <- poccs_thinOccs(occs = occs, thinDist)
 
 
 ### test if the error messages appear when they are supposed to

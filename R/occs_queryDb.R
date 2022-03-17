@@ -4,36 +4,39 @@
 #'
 #' @details
 #' This function is called by the module occs_queryDb to query a database for
-#' species occurrence records, subset to only those records with coordinates,
-#' remove records with duplicate coordinates, and select some columns with fields
-#' appropriate to studies in biogeography.
+#'   species occurrence records, subset to only those records with coordinates,
+#'   remove records with duplicate coordinates, and select some columns with fields
+#'   appropriate to studies in biogeography.
 #'
 #' @param spNames character. Species Latin name, with format "Genus species".
 #' @param occDb character. Biodiversity database to query; current choices are
-#' "gbif", "vertnet", and "bison"
+#'   "gbif", "vertnet", and "bison"
 #' @param occNum numeric. Maximum number of occurrence records to return
-#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-#'  otherwise leave the default NULL
-#' @param doCitations logical. Set TRUE to use `occCite` to get a complete list of original
-#'  data sources in a citable format
+#' @param logger Stores all notification messages to be displayed in the Log
+#'   Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+#'   otherwise leave the default NULL
+#' @param doCitations logical. Set TRUE to use `occCite` to get a complete list
+#'   of original data sources in a citable format
 #' @param gbifUser specify only if using `occCite` with GBIF to get a complete list
-#'  of original data sources in a citable format. This, as well as `gbifEmail`
-#'  and `gbifPW` are constraints imposed by GBIF to obtain the complete set of
-#'  metadata associated with occurrence records and is not stored or used by
-#'  `wallace` for any other purposes.
+#'   of original data sources in a citable format. This, as well as `gbifEmail`
+#'   and `gbifPW` are constraints imposed by GBIF to obtain the complete set of
+#'   metadata associated with occurrence records and is not stored or used by
+#'   `wallace` for any other purposes.
 #' @param gbifEmail  specify only if using `occCite` with GBIF to get a
-#' complete list of original data sources in a citable format.
+#'   complete list of original data sources in a citable format.
 #' @param gbifPW specify only if using `occCite` with GBIF to get a complete
-#' list of original data sources in a citable format.
-#' @param RmUncertain specify if occurrences wothout uncertainty information should be removed (default is FALSE)
-#' @return list of lists one list per species with occurrence records. Each individual species list with appropriate fields for analysis
+#'   list of original data sources in a citable format.
+#' @param RmUncertain specify if occurrences wothout uncertainty information
+#'   should be removed (default is FALSE)
+#' @return list of lists one list per species with occurrence records. Each
+#'   individual species list with appropriate fields for analysis
 #'
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 #' @author Hannah Owens
 #' @author Andrea Paz <paz.andreita@@gmail.com>
 #' @examples
-#' occs_queryDb(spName = "Tremarctos ornatus", occDb = "gbif", occNum = 100)
+#' occs_queryDb(spName = "Bassaricyon alleni", occDb = "gbif", occNum = 100)
 #' @importFrom rlang .data
 #' @export
 
@@ -256,7 +259,8 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
       fields <- c("providedScientificName", "longitude", "latitude", "countryCode",
                   "stateProvince", "verbatimLocality", "year", "basisOfRecord",
                   "catalogNumber", "ownerInstitutionCollectionCode",
-                  "verbatimElevation", "uncertainty")
+                  "elevation", "uncertainty")
+      # BISON field requirements (no downloaded by spocc) "elevation"
       for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
       occs <- occs %>% dplyr::rename(scientific_name = .data$providedScientificName,
                                      country = .data$countryCode,
@@ -265,8 +269,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
                                      record_type = .data$basisOfRecord,
                                      institution_code =
                                        .data$ownerInstitutionCollectionCode,
-                                     catalog_number = .data$catalogNumber,
-                                     elevation = .data$verbatimElevation)
+                                     catalog_number = .data$catalogNumber)
     } else if (occDb == 'bien') {
       fields <- c("scrubbed_species_binomial", "longitude", "latitude",
                   "collection_code", "country", "state_province", "locality", "year",

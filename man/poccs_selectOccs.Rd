@@ -7,34 +7,43 @@
 poccs_selectOccs(occs, polySelXY, polySelID = 1, logger = NULL, spN = NULL)
 }
 \arguments{
-\item{occs}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data}
+\item{occs}{data frame of cleaned occurrences obtained from component
+occs: Obtain occurrence data.}
 
-\item{polySelXY}{matrix of longitude and latitude describing the expert drawn polygon}
+\item{polySelXY}{matrix of longitude and latitude describing the expert
+drawn polygon.}
 
-\item{polySelID}{numeric. Polygon ID to be used in SpatialPolygons creation, defaults to 1}
+\item{polySelID}{numeric. Polygon ID to be used in SpatialPolygons creation,
+defaults to 1.}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-otherwise leave the default NULL}
+\item{logger}{Stores all notification messages to be displayed in the Log
+Window of Wallace GUI. Insert the logger reactive list here for running in
+shiny, otherwise leave the default NULL.}
 
-\item{spN}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages}
+\item{spN}{data frame of cleaned occurrences obtained from component
+occs: Obtain occurrence data. Used to obtain species name for logger
+messages.}
 }
 \value{
-A new occurence dataframe including only occurences inside the provided polygon and mantaining all
-columns from original dataframe for further analyses.
+A new occurence dataframe including only occurences inside the
+provided polygon and mantaining all columns from original dataframe for
+further analyses.
 }
 \description{
-This function removes occurrences outside of a user created polygon.
+This function removes occurrences outside of a user created
+  polygon.
 }
 \details{
-This function is called by the select occurrences on map module. It allows for removal of
-occurrences outside the user drawn polygon in the map. The function will return
-a data frame of occurrences with all relevant columns for further analyses and without the
-occurrences outside of the polygon.
+This function is called by the select occurrences on map module. It
+  allows for removal of occurrences outside the user drawn polygon in
+  the map. The function will return a data frame of occurrences with all
+  relevant columns for further analyses and without the occurrences outside
+  of the polygon.
 }
 \examples{
-spN <- "Panthera onca"
-occs <- occs_queryDb(spName = spN, occDb = "gbif",
-                     occNum = 1000)[[1]]$cleaned
+occs <- read.csv(system.file("extdata/Bassaricyon_neblina.csv",
+                             package = "wallace"))[, 2:3]
+occs$occID <- 1:nrow(occs)
 longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331,
                -66.47149, -66.71319, -71.11931)
 latitude <- c(13.18379, 7.52315, 0.93105, -1.70167,

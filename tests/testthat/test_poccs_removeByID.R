@@ -5,16 +5,16 @@ context("removeByID")
 ### Set parameters
 
 ## occurrences
-spN="Panthera onca"
-out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
-occs <- as.data.frame(out.gbif[[1]]$cleaned)
+occs <- read.csv(system.file("extdata/Bassaricyon_neblina.csv",
+                 package = "wallace"))[, 2:3]
+occs$occID <- 1:nrow(occs)
 
 ## record to remove
-removeID <- 81
+removeID <- 11
 
 
 ### run function
-out.ID <- poccs_removeByID(occs, removeID,spN=spN)
+out.ID <- poccs_removeByID(occs, removeID)
 
 
 ### test if the error messages appear when they are supposed to
@@ -38,5 +38,5 @@ test_that("output data checks", {
   # the original data frame has one record more than the thinned  one
   expect_equal((nrow(out.ID)), (nrow(occs))-1)
    # the ID removed corresponds to the one specified by the user (removeID)
-  expect_false(81 %in% out.ID$occID)
+  expect_false(11 %in% out.ID$occID)
   })

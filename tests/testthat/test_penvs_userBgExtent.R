@@ -3,30 +3,24 @@
 context("userBgExtent")
 
 ### Set parameters
-##ocurrences to test function for Colombia using "espeletia argentea" endemic to Colombia (provided shapefile)
-spN="Espeletia argentea"
-occs <-  occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
-occs <- as.data.frame(occs[[1]]$cleaned)
-
-## occurrences to test outside of user polygon (this species is distributed in central/sout america)
-spNOut<-"Panthera onca"
-occs_out <-  occs_queryDb(spName = spNOut, occDb = "gbif", occNum = 100)
-occs_out <- as.data.frame(occs_out[[1]]$cleaned)
+occs <- read.csv(system.file("extdata/Bassaricyon_neblina.csv",
+                 package = "wallace"))[, 2:3]
+occs$occID <- 1:nrow(occs)
+## occurrences to test outside of user polygon (this species is distributed in
+## central/sout america)
+occs_out <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
+                             package = "wallace"))[, 2:3]
+occs_out$occID <- 1:nrow(occs_out)
 ## path to files
 Path <- list.files(path = system.file("extdata/shp", package = "wallace"),
-                   pattern = "COL_adm0.",
                    full.names = TRUE)
 
 ## files name
 Name <- list.files(path = system.file("extdata/shp", package = "wallace"),
-                   pattern = "COL_adm0.",
                    full.names = FALSE)
 
 ### generate wrong parameters (to test error messages)
-Name.s <- list.files(path = system.file("extdata/shp", package = "wallace"),
-                     pattern = ".s", full.names = FALSE)
-Name.p <- list.files(path = system.file("extdata/shp", package = "wallace"),
-                     pattern = ".prj", full.names = FALSE)
+Name.p <- "Bassaricyon_neblina.prj"
 
 
 ### run function
@@ -43,8 +37,8 @@ sp::proj4string(userBg) <- sp::CRS("+proj=longlat +datum=WGS84")
 test_that("error checks", {
   # the user has not loaded the environmental data
   expect_error(
-    penvs_userBgExtent(bgShp_path = Path,
-                       bgShp_name = Name.s,
+    penvs_userBgExtent(bgShp_path = Path[1:2],
+                       bgShp_name = Name[1:2],
                        userBgBuf = 0.5,
                        occs = occs),
     'If entering a shapefile, please select all the following files: .shp, .shx, .dbf.',
@@ -60,7 +54,7 @@ test_that("error checks", {
     penvs_userBgExtent(bgShp_path = Path,
                        bgShp_name = Name,
                        userBgBuf = 0.5,
-                       occs=occs_out),
+                       occs = occs_out),
     'The polygon did not include all localities. You can remove localities in Process Occs component',
     fixed = T)
 })

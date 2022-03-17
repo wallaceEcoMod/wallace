@@ -5,8 +5,8 @@
 ^NEWS\.md$          # A news file written in Markdown
 \.DS_Store$	    # for macs
 spatial_thin_log.txt    # spThin files
-wc*    # worldclim files
 cmip5*    # worldclim files
 ^wallace.Rproj
-vignettes*
 ^\.github$
+^wc10$
+^vignettes$

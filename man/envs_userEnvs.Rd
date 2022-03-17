@@ -33,12 +33,11 @@ This function is called by the module envs to load user provided raster
   rasterBrick of loaded variables with appropriate names for further analyses.
 }
 \examples{
-pathRast <- list.files(system.file("extdata/wc10", package = "wallace"),
+pathRast <- list.files(system.file("extdata/wc", package = "wallace"),
                        pattern = ".tif$", full.names = TRUE)
-nameRast <- list.files(system.file("extdata/wc10", package = "wallace"),
+nameRast <- list.files(system.file("extdata/wc", package = "wallace"),
                        pattern = ".tif$", full.names = FALSE)
-userEnvs <- envs_userEnvs(rasPath = pathRast, rasName = nameRast,
-                          doBrick = TRUE)
+userEnvs <- envs_userEnvs(rasPath = pathRast, rasName = nameRast)
 
 }
 \author{

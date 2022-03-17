@@ -20,8 +20,8 @@
 #'
 #' @examples
 #' bcRes <- 10 # (10 arcmin)
-#' envar <- c('bio01', 'bio02', 'bio03', 'bio10', 'bio11')
-#' arcmin10 <- envs_worldclim(bcRes, bcSel = envar, doBrick = TRUE)
+#' envar <- c('bio05', 'bio06', 'bio13', 'bio14')
+#' arcmin10 <- envs_worldclim(bcRes, bcSel = envar)
 #'
 #' @return A rasterStack or a rasterBrick (if doBrick=TRUE) of downloaded
 #'  worldclim rasters at the requested resolution.
@@ -33,7 +33,8 @@
 #'
 #' @export
 
-envs_worldclim <- function(bcRes, bcSel, mapCntr, doBrick, logger = NULL) {
+envs_worldclim <- function(bcRes, bcSel, mapCntr, doBrick = FALSE,
+                           logger = NULL) {
   if(bcRes == '') {
     logger %>% alfred.writeLog(type = 'error', 'Select a raster resolution.')
     return()
@@ -56,7 +57,8 @@ envs_worldclim <- function(bcRes, bcSel, mapCntr, doBrick, logger = NULL) {
 
   # convert to brick for faster processing
   if(doBrick == TRUE) {
-    alfred.smartProgress(logger, message = "Converting to RasterBrick for faster processing...", {
+    alfred.smartProgress(logger,
+                         message = "Converting to RasterBrick for faster processing...", {
       wcbc <- raster::brick(wcbc)
     })
   }

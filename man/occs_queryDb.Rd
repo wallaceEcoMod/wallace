@@ -57,7 +57,7 @@ remove records with duplicate coordinates, and select some columns with fields
 appropriate to studies in biogeography.
 }
 \examples{
-occs_queryDb(spName = "Tremarctos ornatus", occDb = "gbif", occNum = 100)
+occs_queryDb(spName = "Bassaricyon alleni", occDb = "gbif", occNum = 100)
 }
 \author{
 Jamie Kass <jamie.m.kass@gmail.com>
