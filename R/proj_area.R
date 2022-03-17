@@ -30,6 +30,7 @@
 #'   in shiny, otherwise leave the default NULL.
 #' @param spN Character used to obtain species name for logger messages
 #' @examples
+#' \dontrun{
 #' envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
 #'                                            package = "wallace"),
 #'                       pattern = ".tif$", full.names = TRUE),
@@ -51,6 +52,7 @@
 #' modProj <- proj_area(evalOut = m, curModel = 1, envs,
 #'                      outputType = 'cloglog', alg = 'maxent.jar',
 #'                      clamp = TRUE, pjExt = polyExt)
+#' }
 #'
 #' @return A list of two elements: projExt and projArea. The first is a
 #'   RasterBrick or a RasterStack of the environmental variables cropped to the
