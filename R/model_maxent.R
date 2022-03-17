@@ -139,7 +139,6 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
     }
     if (maxentJARversion == "3.4.3") {
       logger %>% alfred.writeLog(
-        type = "warning",
         "Please, consider to updated version of Maxent (v3.4.4). Currently, you are ",
         "using (", maxentJARversion, ")."
       )
