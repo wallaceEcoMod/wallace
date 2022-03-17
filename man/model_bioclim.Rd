@@ -37,6 +37,7 @@ The function generates model in ENMeval using a user provided partition of
   occurrences from previous components in the GUI.
 }
 \examples{
+\dontrun{
 envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
                                            package = "wallace"),
                       pattern = ".tif$", full.names = TRUE),
@@ -49,6 +50,7 @@ bg <- read.csv(system.file("extdata/Bassaricyon_alleni_bgPoints.csv",
                package = "wallace"))
 partblock <- part_partitionOccs(occs, bg, method = 'block')
 m <- model_bioclim(occs, bg, partblock, envs)
+}
 
 }
 \seealso{

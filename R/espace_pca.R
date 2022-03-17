@@ -25,6 +25,7 @@
 #'   Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 #'   otherwise leave the default NULL
 #' @examples
+#' \dontrun{
 #' sp.name1 <- "Bassaricyon_alleni"
 #' sp.name2 <- "Bassaricyon_neblina"
 #' envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
@@ -51,6 +52,7 @@
 #' pcaZ <- espace_pca(sp.name1, sp.name2,
 #'                    occsExt.z1, occsExt.z2,
 #'                    bgExt.z1, bgExt.z2)
+#' }
 #' @return A list of 14 elements of classes dudi and pca as in dudi.pca
 #' @seealso \code{\link[ade4]{dudi.pca}}
 #'

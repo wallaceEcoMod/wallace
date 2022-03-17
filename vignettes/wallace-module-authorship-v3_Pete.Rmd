@@ -24,8 +24,8 @@ To begin, use the `wallace::create_module()` function to generate the template f
     - rmd, boolean; will the module report anything in the session code download?
     - save, boolean; will the module save custom data when the user saves the current session?
 
-```{r, eval = F}
-wallace::create_module(id = "correlations", dir = "./inst/shiny/custom_modules", map = F, result = T, rmd = F, save = F)
+```{r, eval = FALSE}
+wallace::create_module(id = "correlations", dir = "./inst/shiny/custom_modules", map = FALSE, result = TRUE, rmd = FALSE, save = FALSE)
 ```
 
 ### Edit the four new files created in the ./custom_modules directory
@@ -39,7 +39,7 @@ Four new files will be created in the ./custom_modules directory: correlations.y
     - authors: The author or authors of this module
     - package: The R package that is used by this module
     
-```{r, eval = F}
+```{r, eval = FALSE}
 component: "penvs"
 short_name: "Pearson's correlations"
 long_name: "Calculate pairwise Pearson's correlations between environmental layers"
@@ -72,7 +72,7 @@ Robert J. Hijmans (2019). raster: Geographic Data Analysis and Modeling. R packa
 
 - A function named `correlations_module_ui` that returns the UI for this module. This function should follow the conventions for general Shiny modules - it should take a single argument, and use it to namespace all its UI. The UI needs to be returned from the function. There should usually be some sort of a "Run" button.
     
-```{r, eval = F}
+```{r, eval = FALSE}
 correlations_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
@@ -100,7 +100,7 @@ The `common` variable supplied to a module's server and map function is a list c
   - A function `disable_module(component, module)` to disable a specific module from the UI
   - A function `enable_module(component, module)` to enable a specific module from the UI after it has been disabled
   
-```{r, eval = F}
+```{r, eval = FALSE}
 correlations_module_server <- function(input, output, session, common) {
   ## Define common objects that will be used in this function
   logger <- common$logger
@@ -134,10 +134,10 @@ correlations_module_server <- function(input, output, session, common) {
     # If batch is true, loop through all species (allSp())
     for (sp in spLoop){
     # FUNCTION CALL ####
-      alfred.smartProgress(logger, message = "Calculating pairwise correlations", {envCorrs <- raster::layerStats(x = spp[[sp]]$procEnvs$bgMask, na.rm = T, stat = "pearson")})
+      alfred.smartProgress(logger, message = "Calculating pairwise correlations", {envCorrs <- raster::layerStats(x = spp[[sp]]$procEnvs$bgMask, na.rm = TRUE, stat = "pearson")})
     # To update the log window
     logger %>% writeLog(alfred.hlSpp(sp), "Finished calculating correlations")
-    #envCorrs <- raster::layerStats(x = bgMask(), na.rm = T, stat = "pearson")
+    #envCorrs <- raster::layerStats(x = bgMask(), na.rm = TRUE, stat = "pearson")
 
     # LOAD INTO SPP ####
   spp[[sp]]$procEnvs$envCorrs <- envCorrs$`pearson correlation coefficient`
@@ -171,11 +171,11 @@ Two lines in the file server.R need to be updated:
 The component controls (here, COMPONENT: OBTAIN ENVIRONMENTAL DATA), and  to create a shortcut to values nested inside common list (METADATA FUNCTIONALITY).
 
 The server.R file is found at **./inst/shiny/server.R**
-```{r, eval = F}
+```{r, eval = FALSE}
 VarSelector <- reactive(input$VarSelector)
 ```
 
-```{r, eval = F}
+```{r, eval = FALSE}
 VarSelector = VarSelector,
 ```
   
@@ -186,7 +186,7 @@ VarSelector = VarSelector,
     
     We call the results function "envCorrTable" from the server function, above.
     
-```{r, eval = F}
+```{r, eval = FALSE}
 correlations_module_result <- function(id) {
   ns <- NS(id)
   #spp <- common$spp
@@ -199,7 +199,7 @@ correlations_module_result <- function(id) {
     - *OPTIONAL:* A function named `correlations_module_map` that modifies the map. This
     function takes two arguments: `map` (a reference to a leaflet map) and
     `common` (the same parameter that is given to the server function - see below for details).
-```{r, eval = F}
+```{r, eval = FALSE}
 correlations_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(

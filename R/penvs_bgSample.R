@@ -26,6 +26,7 @@
 #' @param spN data frame of cleaned occurrences obtained from component occs:
 #'   Obtain occurrence data. Used to obtain species name for logger messages.
 #' @examples
+#' \dontrun{
 #' occs <-  occs_queryDb(spName = "Panthera onca", occDb = "gbif",
 #'                       occNum = 100)
 #' occs <- as.data.frame(occs[[1]]$cleaned)
@@ -35,6 +36,7 @@
 #' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
 #' bgMask <- penvs_bgMask(occs, envs, bgExt)
 #' bgsample <- penvs_bgSample(occs, bgMask, bgPtsNum = 1000)
+#' }
 #'
 #' @return a dataframe containing point coordinates (longitude and latitude).
 #' All points are within the area provided in the RasterBrick or RasterStack (bgMask).

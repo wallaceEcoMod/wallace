@@ -75,6 +75,7 @@ The function generates model in ENMeval using a user provided partition of
   clamping and input tuning arguments to be used for model building.
 }
 \examples{
+\dontrun{
 envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
                                            package = "wallace"),
                       pattern = ".tif$", full.names = TRUE),
@@ -93,6 +94,7 @@ m <- model_maxent(occs = occs, bg = bg, user.grp = partblock,
                   bgMsk = envs, rms = rms, rmsStep, fcs,
                   clampSel = TRUE, algMaxent = "maxnet",
                   parallel = FALSE)
+}
 
 }
 \seealso{

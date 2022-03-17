@@ -83,9 +83,6 @@ espace_nicheOv_module_server <- function(input, output, session, common) {
       mSp <- curSp()
     }
     req(spp[[mSp]]$nicheOv)
-    # plots
-    # layout(matrix(c(1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3), 4, 3, byrow = F))
-    # layout.show(3)
     graphics::par(mfrow = c(1, 2))
 
     ecospat::ecospat.plot.niche.dyn(

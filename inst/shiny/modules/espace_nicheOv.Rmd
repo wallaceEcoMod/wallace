@@ -11,7 +11,7 @@ espace_nicheOv_{{multAbr}} <- espace_nicheOv(
   iter = 100,
   similarity = {{simil_rmd}}) 
 # Plots
-layout(matrix(c(1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3), 4, 3, byrow = F))
+layout(matrix(c(1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3), 4, 3, byrow = FALSE))
 
 ecospat::ecospat.plot.niche.dyn(
   espace_occDens_{{multAbr}}[["{{spName1}}"]],

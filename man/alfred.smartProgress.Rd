@@ -9,7 +9,8 @@ alfred.smartProgress(logs, message, expr)
 \arguments{
 \item{logs}{Wallace logger}
 
-\item{message}{A single-element character vector; the message to be displayed to the user.}
+\item{message}{A single-element character vector; the message to be displayed
+to the user.}
 
 \item{expr}{The work to be done.}
 }

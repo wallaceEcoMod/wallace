@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 
 ## *Wallace* modules (v.1.9.0)
 
-```{r wallace logo, echo = F, fig.width=4, fig.height=3, fig=T, eval = T}
+```{r wallace logo, echo = FALSE, fig.width=4, fig.height=3, fig=TRUE, eval = TRUE}
 plot(1,1,type="p", pch=119, cex = 15, font = 4, axes = FALSE, ann=F)
 ```
 
@@ -98,13 +98,13 @@ shinyLogs %>% writeLog("Please install the raster package before running.")
 return()
 }
 alfred.smartProgress(shinyLogs, message = "calculating pairwise Pearson's correlations",{
-corrs <- layerStats(x, stat = "pearson", na.rm = T)
+corrs <- layerStats(x, stat = "pearson", na.rm = TRUE)
 })
 shinyLogs %>% writeLog("Pearson complete")
 return(corrs)
 }
 ```
-<!-- CBM: why is na.rm an argument of the function? I added na.rm = T in layerStats() so the correlations could be calculated. -->
+<!-- CBM: why is na.rm an argument of the function? I added na.rm = TRUE in layerStats() so the correlations could be calculated. -->
 <!-- CBM: Also, I think we need to add something about putting roxygen comments on this file -- seems like you need them so that the NAMESPACE includes the function. -->
 ### Step 2: Write a `shiny` module that calls your function
 In the module script, we need to define two main functions, `runCorr_UI()` and `runCorr_MOD()`, which specify the logic for `ui.R` and `server.R`, respectively. 

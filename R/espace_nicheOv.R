@@ -19,6 +19,7 @@
 #'   Window of Wallace GUI. Insert the logger reactive list here for running in
 #'   shiny, otherwise leave the default NULL.
 #' @examples
+#' \dontrun{
 #' sp.name1 <- "Bassaricyon_alleni"
 #' sp.name2 <- "Bassaricyon_neblina"
 #' envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
@@ -50,6 +51,7 @@
 #'                           z2 = occDens[[sp.name2]],
 #'                           iter = 100, equivalency = TRUE,
 #'                           similarity = TRUE)
+#' }
 #'
 #' @return A list of 4 elements if all is set to TRUE. Elements are overlap
 #'   (Schoener's D), USE (ecopstat.niche.dyn.index), equiv and simil.

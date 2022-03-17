@@ -21,6 +21,7 @@
 #' @param p numeric. (0-1) percentile distribution to be used for plotting
 #'   envelope and showing points outside of envelope. Default is 0.9
 #' @examples
+#' \dontrun{
 #' envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
 #'                                            package = "wallace"),
 #'                       pattern = ".tif$", full.names = TRUE),
@@ -35,6 +36,7 @@
 #' m <- model_bioclim(occs, bg, partblock, envs)
 #' bioclimPlot <- vis_bioclimPlot(x = m@@models$bioclim,
 #'                                a = 1, b = 2, p = 1)
+#' }
 #'
 #' @return A bivariate plot of environmental values for occurrences. Includes a
 #'   blue rectangle representing the bioclimatic enveloppe given p. Occurrences

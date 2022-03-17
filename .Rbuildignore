@@ -4,9 +4,10 @@
 ^cran-comments\.md$ # Comments for CRAN submission
 ^NEWS\.md$          # A news file written in Markdown
 \.DS_Store$	    # for macs
-spatial_thin_log.txt    # spThin files
 cmip5*    # worldclim files
 ^wallace.Rproj
 ^\.github$
-^wc10$
+^wc10
 ^vignettes$
+^spatial_thin_log\.txt$
+^tests\testthat\spatial_thin_log\.txt$

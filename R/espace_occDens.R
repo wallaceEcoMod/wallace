@@ -17,6 +17,7 @@
 #'   Window of Wallace GUI. Insert the logger reactive list here for running in
 #'   shiny, otherwise leave the default NULL.
 #' @examples
+#' \dontrun{
 #' sp.name1 <- "Bassaricyon_alleni"
 #' sp.name2 <- "Bassaricyon_neblina"
 #' envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
@@ -44,6 +45,7 @@
 #'                    occsExt.z1, occsExt.z2,
 #'                    bgExt.z1, bgExt.z2)
 #' occDens <- espace_occDens(sp.name1, sp.name2, pcaZ)
+#' }
 #'
 #' @return Returns a list of 2 lists (one for each species). Each list is an
 #'   ecospat noche object that contains 10 species specific slots with

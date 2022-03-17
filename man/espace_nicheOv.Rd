@@ -14,30 +14,38 @@ espace_nicheOv(
 )
 }
 \arguments{
-\item{z1}{ecospat niche object for species 1 from espace_occDens}
+\item{z1}{ecospat niche object for species 1 from espace_occDens.}
 
-\item{z2}{ecospat niche object for species 2 from espace_occDens}
+\item{z2}{ecospat niche object for species 2 from espace_occDens.}
 
-\item{iter}{numeric. Number of iterations}
+\item{iter}{numeric. Number of iterations.}
 
-\item{equivalency}{logical. Whether to run equivalency test. Default is FALSE}
+\item{equivalency}{logical. Whether to run equivalency test. Default is FALSE.}
 
-\item{similarity}{logical. Whether to run similarity test. Default is TRUE}
+\item{similarity}{logical. Whether to run similarity test. Default is TRUE.}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-otherwise leave the default NULL}
+\item{logger}{Stores all notification messages to be displayed in the Log
+Window of Wallace GUI. Insert the logger reactive list here for running in
+shiny, otherwise leave the default NULL.}
 }
 \value{
-A list of 4 elements if all is set to TRUE. Elements are overlap (Schoener's D), USE (ecopstat.niche.dyn.index), equiv and simil
+A list of 4 elements if all is set to TRUE. Elements are overlap
+  (Schoener's D), USE (ecopstat.niche.dyn.index), equiv and simil.
 }
 \description{
-Function evaluates niche overlap between the two species for which the occurrence density grid was computed
+Function evaluates niche overlap between the two species for
+  which the occurrence density grid was computed
 }
 \details{
-The niche overlap quantification is based on the occurrence densities and the densities of environmental conditions available in the background extent that are estimated in the module Occurrence Density Grid.
-The function computes 4 different things, Schoener's D, unfilling, stability, expansion indices (Guisan et al. 2014 TREE), and tests for niche equivalency and niche similarity.
+The niche overlap quantification is based on the occurrence densities and
+  the densities of environmental conditions available in the background extent
+  that are estimated in the module Occurrence Density Grid. The function
+  computes 4 different things, Schoener's D, unfilling, stability,
+  expansion indices (Guisan et al. 2014 TREE), and tests for niche
+  equivalency and niche similarity.
 }
 \examples{
+\dontrun{
 sp.name1 <- "Bassaricyon_alleni"
 sp.name2 <- "Bassaricyon_neblina"
 envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
@@ -69,10 +77,15 @@ nicheOv <- espace_nicheOv(z1 = occDens[[sp.name1]],
                           z2 = occDens[[sp.name2]],
                           iter = 100, equivalency = TRUE,
                           similarity = TRUE)
+}
 
 }
 \seealso{
-\code{\link{espace_pca}} \code{\link{espace_occDens}} \code{\link[ecospat]{ecospat.niche.overlap}}  \code{\link[ecospat]{ecospat.niche.dyn.index}} \code{\link[ecospat]{ecospat.niche.equivalency.test}} \code{\link[ecospat]{ecospat.niche.similarity.test}}
+\code{\link{espace_pca}} \code{\link{espace_occDens}}
+  \code{\link[ecospat]{ecospat.niche.overlap}}
+  \code{\link[ecospat]{ecospat.niche.dyn.index}}
+  \code{\link[ecospat]{ecospat.niche.equivalency.test}}
+  \code{\link[ecospat]{ecospat.niche.similarity.test}}
 }
 \author{
 Jamie Kass <jamie.m.kass@gmail.com>

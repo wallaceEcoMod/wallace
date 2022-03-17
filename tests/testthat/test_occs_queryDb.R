@@ -73,7 +73,7 @@ test_that("output type checks", {
   expect_is(out.gbif[[i]][c("orig","cleaned")], "list")
   #downloaded species corresponds to queried species
   expect_match(gsub(" \\(.*\\)","",unique(out.gbif[[i]]$cleaned$scientific_name)),
-               spNames[i], ignore.case = T)
+               spNames[i], ignore.case = TRUE)
   # if the database holds more records than the specified by the user (occNum),
   # the number of records downloaded is:
   if (total_occ$meta$count >= occNum){

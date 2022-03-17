@@ -19,9 +19,11 @@
 #'   running in shiny, otherwise leave the default NULL.
 #'
 #' @examples
+#' \dontrun{
 #' bcRes <- 10 # (10 arcmin)
 #' envar <- c('bio05', 'bio06', 'bio13', 'bio14')
 #' arcmin10 <- envs_worldclim(bcRes, bcSel = envar)
+#' }
 #'
 #' @return A rasterStack or a rasterBrick (if doBrick=TRUE) of downloaded
 #'  worldclim rasters at the requested resolution.

@@ -20,6 +20,7 @@
 #' @param spN character. Species name to be used for all logger messages.
 #'
 #' @examples
+#' \dontrun{
 #' envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
 #'                                            package = "wallace"),
 #'                       pattern = ".tif$", full.names = TRUE),
@@ -32,6 +33,7 @@
 #'                package = "wallace"))
 #' partblock <- part_partitionOccs(occs, bg, method = 'block')
 #' m <- model_bioclim(occs, bg, partblock, envs)
+#' }
 #'
 #' @return Function returns an ENMevaluate object with all the evaluated models
 #'   and a selection of appropriate fields.

@@ -10,5 +10,6 @@ alfred.spName(spN)
 \item{spN}{Species name}
 }
 \description{
-For internal use. Retrieves the species name for use internally in non-shiny functions
+For internal use. Retrieves the species name for use internally
+  in non-shiny functions
 }

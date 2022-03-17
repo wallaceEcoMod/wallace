@@ -13,7 +13,7 @@ longitude <- c(-27.78641, -74.09170, -84.01930, -129.74867, -142.19085,
 latitude <- c(-40.40539, -37.02010, 2.28455, 40.75350, 56.35954,
               54.55045, -7.11861)
 # generate matrix
-expertDrawPoly <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
+expertDrawPoly <- matrix(c(longitude, latitude), byrow = FALSE, ncol = 2)
 
 ## Small polygon (to test error message)
 # set coordinates
@@ -22,7 +22,7 @@ longitude2 <- c(-71.58400, -78.81300, -79.34034, -69.83331, -66.47149,
 latitude2 <- c(13.18379, 7.52315, 0.93105, -1.70167, 0.98391,
                6.09208, 12.74980)
 # generate matrix
-expertDrawPoly2 <- matrix(c(longitude2, latitude2), byrow = F, ncol = 2)
+expertDrawPoly2 <- matrix(c(longitude2, latitude2), byrow = FALSE, ncol = 2)
 
 
 ### run function and set coordinates reference system

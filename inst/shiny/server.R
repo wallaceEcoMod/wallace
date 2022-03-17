@@ -527,7 +527,7 @@ function(input, output, session) {
     },
     content = function(file) {
       png(file, width = 1000, height = 500)
-      layout(matrix(c(1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3), 4, 3, byrow = F))
+      layout(matrix(c(1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3), 4, 3, byrow = FALSE))
       if (length(curSp()) == 2) {
         mSp <- paste(curSp(), collapse = ".")
         sp1 <- curSp()[1]

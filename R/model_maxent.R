@@ -37,6 +37,7 @@
 # @keywords
 #'
 #' @examples
+#' \dontrun{
 #' envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
 #'                                            package = "wallace"),
 #'                       pattern = ".tif$", full.names = TRUE),
@@ -55,6 +56,7 @@
 #'                   bgMsk = envs, rms = rms, rmsStep, fcs,
 #'                   clampSel = TRUE, algMaxent = "maxnet",
 #'                   parallel = FALSE)
+#' }
 #'
 #' @return Function returns an ENMevaluate object with all the evaluated models
 #'   and a selection of appropriate fields.
@@ -137,7 +139,7 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
     }
     if (maxentJARversion == "3.4.3") {
       logger %>% alfred.writeLog(
-        type = "error",
+        type = "warning",
         "Please, consider to updated version of Maxent (v3.4.4). Currently, you are ",
         "using (", maxentJARversion, ")."
       )

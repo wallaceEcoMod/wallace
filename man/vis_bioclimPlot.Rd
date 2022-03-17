@@ -39,6 +39,7 @@ This is a bivariate plot with x and y axes representing two of the
   bivariate bioclimatic envelope according to a provided percentile.
 }
 \examples{
+\dontrun{
 envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
                                            package = "wallace"),
                       pattern = ".tif$", full.names = TRUE),
@@ -53,6 +54,7 @@ partblock <- part_partitionOccs(occs, bg, method = 'block')
 m <- model_bioclim(occs, bg, partblock, envs)
 bioclimPlot <- vis_bioclimPlot(x = m@models$bioclim,
                                a = 1, b = 2, p = 1)
+}
 
 }
 \seealso{

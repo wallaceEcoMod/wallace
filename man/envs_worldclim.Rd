@@ -37,9 +37,11 @@ This function is called by the module envs to download
   appropriate names for further analyses.
 }
 \examples{
+\dontrun{
 bcRes <- 10 # (10 arcmin)
 envar <- c('bio05', 'bio06', 'bio13', 'bio14')
 arcmin10 <- envs_worldclim(bcRes, bcSel = envar)
+}
 
 }
 \seealso{

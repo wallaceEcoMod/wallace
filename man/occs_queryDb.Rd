@@ -24,8 +24,8 @@ occs_queryDb(
 
 \item{occNum}{numeric. Maximum number of occurrence records to return}
 
-\item{doCitations}{logical. Set TRUE to use `occCite` to get a complete list of original
-data sources in a citable format}
+\item{doCitations}{logical. Set TRUE to use `occCite` to get a complete list
+of original data sources in a citable format}
 
 \item{gbifUser}{specify only if using `occCite` with GBIF to get a complete list
 of original data sources in a citable format. This, as well as `gbifEmail`
@@ -39,25 +39,30 @@ complete list of original data sources in a citable format.}
 \item{gbifPW}{specify only if using `occCite` with GBIF to get a complete
 list of original data sources in a citable format.}
 
-\item{RmUncertain}{specify if occurrences wothout uncertainty information should be removed (default is FALSE)}
+\item{RmUncertain}{specify if occurrences wothout uncertainty information
+should be removed (default is FALSE)}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+\item{logger}{Stores all notification messages to be displayed in the Log
+Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 }
 \value{
-list of lists one list per species with occurrence records. Each individual species list with appropriate fields for analysis
+list of lists one list per species with occurrence records. Each
+  individual species list with appropriate fields for analysis
 }
 \description{
 Queries a given database for occurrence data on the provided species
 }
 \details{
 This function is called by the module occs_queryDb to query a database for
-species occurrence records, subset to only those records with coordinates,
-remove records with duplicate coordinates, and select some columns with fields
-appropriate to studies in biogeography.
+  species occurrence records, subset to only those records with coordinates,
+  remove records with duplicate coordinates, and select some columns with fields
+  appropriate to studies in biogeography.
 }
 \examples{
-occs_queryDb(spName = "Bassaricyon alleni", occDb = "gbif", occNum = 100)
+\dontrun{
+occs_queryDb(spName = "Bassaricyon alleni", occDb = "gbif", occNum = 10)
+}
 }
 \author{
 Jamie Kass <jamie.m.kass@gmail.com>

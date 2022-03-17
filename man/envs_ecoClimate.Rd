@@ -12,13 +12,14 @@ Options are: "CCSM", "CNRM", "MIROC", "FGOALS", "GISS", "IPSL","MRI", "MPI"}
 
 \item{bcScenario}{Select the temporal scenario that you want to download.
 Options are: "LGM" (21,000 years ago), "Holo" (6,000 years ago),
-"Present", "Future 2.6" (rcp 2.6), "Future 4.5" (rcp 4.5), "Future 6" (rcp 6),
-"Future 8.5" (rcp 8.5)}
+"Present", "Future 2.6" (rcp 2.6), "Future 4.5" (rcp 4.5),
+"Future 6" (rcp 6), "Future 8.5" (rcp 8.5)}
 
 \item{ecoClimSel}{Numeric vector with list of variables to select.}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-otherwise leave the default NULL}
+\item{logger}{Stores all notification messages to be displayed in the Log
+Window of Wallace GUI. Insert the logger reactive list here for running in
+shiny, otherwise leave the default NULL}
 }
 \value{
 A rasterStack of selected variables
@@ -27,10 +28,12 @@ A rasterStack of selected variables
 download ecoClimate variables. See www.ecoclimate.org.
 }
 \details{
-#' This function is called by the module envs to download ecoClimate variables from www.ecoclimate.org.
-The variables to be dowloaded are selected by the user with bcSel and the resolution is fixed to 0.5 degrees
-This function currently gets variables from Dropbox and the process takes significantly more time than for other datasets.
-It returns a rasterStack of selected variables.
+This function is called by the module envs to download ecoClimate
+  variables from www.ecoclimate.org. The variables to be dowloaded are
+  selected by the user with bcSel and the resolution is fixed to 0.5 degrees.
+  This function currently gets variables from Dropbox and the process takes
+  significantly more time than for other datasets. It returns a rasterStack
+  of selected variables.
 }
 \examples{
 bcAOGCM <- "CCSM"

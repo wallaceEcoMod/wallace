@@ -36,15 +36,15 @@
 #' @author Hannah Owens
 #' @author Andrea Paz <paz.andreita@@gmail.com>
 #' @examples
-#' occs_queryDb(spName = "Bassaricyon alleni", occDb = "gbif", occNum = 100)
+#' \dontrun{
+#' occs_queryDb(spName = "Bassaricyon alleni", occDb = "gbif", occNum = 10)
+#' }
 #' @importFrom rlang .data
 #' @export
 
-#occs_queryDb <- function(spName, occDb, occNum, logger=NULL) {
 occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
                          gbifUser = NULL, gbifEmail = NULL, gbifPW = NULL,
-                         RmUncertain = FALSE,
-                         logger = NULL) {
+                         RmUncertain = FALSE, logger = NULL) {
   if (occDb == "bien" & !requireNamespace("BIEN", quietly = TRUE)) {
     logger %>%
       alfred.writeLog(

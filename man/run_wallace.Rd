@@ -26,7 +26,6 @@ or email the team directly: \email{wallaceEcoMod@gmail.com}.
 if(interactive()) {
 run_wallace()
 }
-
 }
 \author{
 Jamie Kass <jkass@gradcenter.cuny.edu>

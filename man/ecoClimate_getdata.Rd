@@ -17,9 +17,11 @@ Options are: "Pre-industrial" (piControl-1760), "Historical" (1900-1949),
 
 \item{Scenario}{Select a temporal scenario.
 Options are: "LGM" (21,000 years ago), "Holo" (6,000 years ago),
-"Present", "Future 2.6" (rcp 2.6), "Future 4.5" (rcp 4.5), "Future 6" (rcp 6), "Future 8.5" (rcp 8.5)}
+"Present", "Future 2.6" (rcp 2.6), "Future 4.5" (rcp 4.5), "Future 6" (rcp 6),
+"Future 8.5" (rcp 8.5)}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+\item{logger}{Stores all notification messages to be displayed in the Log
+Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 }
 \description{

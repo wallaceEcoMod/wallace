@@ -15,35 +15,45 @@ espace_pca(
 )
 }
 \arguments{
-\item{sp.name1}{character. Name of species 1 to be analyzed}
+\item{sp.name1}{character. Name of species 1 to be analyzed.}
 
-\item{sp.name2}{character. Name of species 2 to be analyzed. Default is NULL}
+\item{sp.name2}{character. Name of species 2 to be analyzed. Default is NULL.}
 
-\item{occs.z1}{table of occurrences with environmental values only for sp1}
+\item{occs.z1}{table of occurrences with environmental values only for sp1.}
 
-\item{occs.z2}{table of occurrences with environmental values only for sp2. Default is NULL}
+\item{occs.z2}{table of occurrences with environmental values only for sp2.
+Default is NULL.}
 
-\item{bgPts.z1}{table of background points with environmental values only for sp1}
+\item{bgPts.z1}{table of background points with environmental values only
+for sp1.}
 
-\item{bgPts.z2}{table of background points with environmental values only for sp2. Default is NULL}
+\item{bgPts.z2}{table of background points with environmental values only
+for sp2. Default is NULL.}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+\item{logger}{Stores all notification messages to be displayed in the Log
+Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 }
 \value{
 A list of 14 elements of classes dudi and pca as in dudi.pca
 }
 \description{
-Principal component analysis to reduce dimensionalty of environmental space
+Principal component analysis to reduce dimensionalty of
+  environmental space
 }
 \details{
-This function is called by the component espace to calibrate a pca for one (default) or 2 species in environmental space.
-When using within Wallace GUI parameters are obtained from the model object, in particular,
-table of occurences with environmental values and table of background points with environmental values. User must be careful as these tables must contain only
-environmental variables and not the point coordinates as outputed by model objects. The PCA is calibrated over the whole set of background points
-The provided species name(s) are only used for logger messages and not for querying or selecting occurrences.
+This function is called by the component espace to calibrate a pca for one
+  (default) or 2 species in environmental space. When using within Wallace
+  GUI parameters are obtained from the model object, in particular, table of
+  occurences with environmental values and table of background points with
+  environmental values. User must be careful as these tables must contain only
+  environmental variables and not the point coordinates as outputed by model
+  objects. The PCA is calibrated over the whole set of background points.
+  The provided species name(s) are only used for logger messages and not for
+  querying or selecting occurrences.
 }
 \examples{
+\dontrun{
 sp.name1 <- "Bassaricyon_alleni"
 sp.name2 <- "Bassaricyon_neblina"
 envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
@@ -70,6 +80,7 @@ bgExt.z2 <- raster::extract(envs, bgPts.z2[, c("longitude", "latitude")])
 pcaZ <- espace_pca(sp.name1, sp.name2,
                    occsExt.z1, occsExt.z2,
                    bgExt.z1, bgExt.z2)
+}
 }
 \seealso{
 \code{\link[ade4]{dudi.pca}}

@@ -7,27 +7,36 @@
 espace_occDens(sp.name1, sp.name2, pca, logger = NULL)
 }
 \arguments{
-\item{sp.name1}{character name of species 1 to be analyzed}
+\item{sp.name1}{character name of species 1 to be analyzed.}
 
-\item{sp.name2}{character name of species 2 to be analyzed}
+\item{sp.name2}{character name of species 2 to be analyzed.}
 
 \item{pca}{pca output of pca component ( in list format)}
 
-\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-otherwise leave the default NULL}
+\item{logger}{stores all notification messages to be displayed in the Log
+Window of Wallace GUI. Insert the logger reactive list here for running in
+shiny, otherwise leave the default NULL.}
 }
 \value{
-Returns a list of 2 lists (one for each species). Each list is an ecospat noche object that contains 10 species specific slots with information outputed by ecospat::grid.clim.dyn.
-z.uncor is the density of occurrence of the species and z.cor the occupancy of the environment by the species. It has the input parameters as individual slots.
+Returns a list of 2 lists (one for each species). Each list is an
+  ecospat noche object that contains 10 species specific slots with
+  information outputed by ecospat::grid.clim.dyn. z.uncor is the density of
+  occurrence of the species and z.cor the occupancy of the environment by
+  the species. It has the input parameters as individual slots.
 }
 \description{
-calculates the part of environmental space more densly populated by species & the availability of environmental conditions in the background
+calculates the part of environmental space more densly
+  populated by species & the availability of environmental conditions in the
+  background
 }
 \details{
-This fuctions implements a density estimation for each region in the environmental space (gridded at 100*100 pixels).
-Then an occurrence density is estimated using a kernel density approach. The density of environmental conditions in the background is calcuated in the same way.
+This fuctions implements a density estimation for each region in the
+  environmental space (gridded at 100*100 pixels). Then an occurrence
+  density is estimated using a kernel density approach. The density of
+  environmental conditions in the background is calcuated in the same way.
 }
 \examples{
+\dontrun{
 sp.name1 <- "Bassaricyon_alleni"
 sp.name2 <- "Bassaricyon_neblina"
 envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
@@ -55,10 +64,12 @@ pcaZ <- espace_pca(sp.name1, sp.name2,
                    occsExt.z1, occsExt.z2,
                    bgExt.z1, bgExt.z2)
 occDens <- espace_occDens(sp.name1, sp.name2, pcaZ)
+}
 
 }
 \seealso{
-\code{\link{espace_pca}} \code{\link{espace_nicheOv}} \code{\link[ecospat]{ecospat.grid.clim.dyn}}
+\code{\link{espace_pca}} \code{\link{espace_nicheOv}}
+ \code{\link[ecospat]{ecospat.grid.clim.dyn}}
 }
 \author{
 Jamie Kass <jamie.m.kass@gmail.com >

@@ -56,7 +56,7 @@ test_that("error checks", {
                        userBgBuf = 0.5,
                        occs = occs_out),
     'The polygon did not include all localities. You can remove localities in Process Occs component',
-    fixed = T)
+    fixed = TRUE)
 })
 
 ### test output features

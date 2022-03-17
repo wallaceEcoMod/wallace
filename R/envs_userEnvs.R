@@ -18,11 +18,13 @@
 # @keywords
 #'
 #' @examples
+#' \dontrun{
 #' pathRast <- list.files(system.file("extdata/wc", package = "wallace"),
 #'                        pattern = ".tif$", full.names = TRUE)
 #' nameRast <- list.files(system.file("extdata/wc", package = "wallace"),
 #'                        pattern = ".tif$", full.names = FALSE)
 #' userEnvs <- envs_userEnvs(rasPath = pathRast, rasName = nameRast)
+#' }
 #'
 #' @return A rasterStack or a rasterBrick (if doBrick = TRUE) of user
 #'   provided rasters
