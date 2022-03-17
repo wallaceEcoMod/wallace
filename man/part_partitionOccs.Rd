@@ -61,6 +61,7 @@ A list of group assignments for both occurrences and background points is
   returned.
 }
 \examples{
+\dontrun{
 envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
                                            package = "wallace"),
                       pattern = ".tif$", full.names = TRUE),
@@ -72,6 +73,7 @@ occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
 bg <- read.csv(system.file("extdata/Bassaricyon_alleni_bgPoints.csv",
                package = "wallace"))
 partblock <- part_partitionOccs(occs, bg, method = 'rand', kfold = 4)
+}
 
 }
 \seealso{

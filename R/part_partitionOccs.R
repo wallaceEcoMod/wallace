@@ -33,6 +33,7 @@
 #'   messages.
 #'
 #' @examples
+#' \dontrun{
 #' envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
 #'                                            package = "wallace"),
 #'                       pattern = ".tif$", full.names = TRUE),
@@ -44,6 +45,7 @@
 #' bg <- read.csv(system.file("extdata/Bassaricyon_alleni_bgPoints.csv",
 #'                package = "wallace"))
 #' partblock <- part_partitionOccs(occs, bg, method = 'rand', kfold = 4)
+#' }
 #'
 #' @return A list of two vectors containing group assignments for occurrences
 #'   (occs.grp) and background points (bg.grp).
