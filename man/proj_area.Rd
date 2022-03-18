@@ -64,6 +64,7 @@ This functions allows for the projection of the model created in previous
   and the projected model.
 }
 \examples{
+\dontrun{
 envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
                                            package = "wallace"),
                       pattern = ".tif$", full.names = TRUE),
@@ -85,6 +86,7 @@ m <- readRDS(system.file("extdata/model.RDS",
 modProj <- proj_area(evalOut = m, curModel = 1, envs,
                      outputType = 'cloglog', alg = 'maxent.jar',
                      clamp = TRUE, pjExt = polyExt)
+}
 
 }
 \seealso{
