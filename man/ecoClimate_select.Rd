@@ -4,7 +4,7 @@
 \alias{ecoClimate_select}
 \title{ecoClimate_select}
 \usage{
-ecoClimate_select (map_climate, Sels=c(1:19), extent=c(-180, 180, -90, 90))
+ecoClimate_select(map_climate, Sels=c(1:19), extent=c(-180, 180, -90, 90))
 }
 \arguments{
 \item{map_climate}{raster stack with all the variables}
@@ -18,10 +18,11 @@ select which bioclimatic variables and set the extent you want (crop the raster 
 }
 \examples{
 \dontrun{
-CCSM_mod_present<- ecoclimate_getdata ("CCSM", "Modern", "Present")
-Europe_CCSM_m_p_bio1_12<- ecoClimate_select (CCSM_mod_present, c(1,12), extent=c(-20, 80, 20, 80))
+CCSM_mod_present <- ecoclimate_getdata("CCSM", "Modern", "Present")
+Europe_CCSM_m_p_bio1_12 <- ecoClimate_select(CCSM_mod_present, c(1, 12),
+                                             extent = c(-20, 80, 20, 80))
 dev.new()
-plot (Europe_CCSM_m_p_bio1_12)
+plot(Europe_CCSM_m_p_bio1_12)
 }
 
 

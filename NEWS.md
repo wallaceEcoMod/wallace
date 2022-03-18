@@ -1,19 +1,24 @@
-# wallace 1.9.0
-- in dev
-- coordinates on the map
-- bien option
-- download all your data
-- new sub-tab download
-- coordinates uncertainty
-- duplicates removed in userOccs #202
-- coordinates on map #174
-- download background points #195
-- Draw polygon tool in the Process Environmental Data component #192
-- png map download the same as shiny
-- more informative filenames
-- menus fixed
-- removed deafult options
-- quantile training
+# wallace 2.0
+- What is new?
+
+# wallace 1.1.3
+- shinytheme() replaced by bslib::bs_theme(). Fixed issue with newer version of RStudio
+
+# wallace 1.1.2
+- Adding ecospat in Depends for fixing CBI calculation.
+
+# wallace 1.1.1
+- Migration to GitHub Actions for Continuous Integration testing
+
+# wallace 1.1.0
+- Working with new version of ENMeval (v2)
+
+# wallace 1.0.6.3
+- rgbif updated dependency
+- Clamping option back for maxent.jar (Thanks for the new version of Maxent 3.4.4)
+
+# wallace 1.0.6.2
+- Double distance in point buffer fixed.
 
 # wallace 1.0.6.1
 - Adding a couple convenience functions for running wallace headless by @isaacovercast

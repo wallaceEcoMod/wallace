@@ -1,5 +1,0 @@
-component: "model"
-short_name: "GAM"
-long_name: "Generalized Additive Model"
-authors: "Johnny Modules, Alfred Russel Wallace"
-package: [gam]

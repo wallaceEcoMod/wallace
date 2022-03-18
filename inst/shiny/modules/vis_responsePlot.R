@@ -33,9 +33,9 @@ vis_responsePlot_module_server <- function(input, output, session, common) {
     req(curSp(), evalOut(), curModel())
     if (spp[[curSp()]]$rmm$model$algorithms != "BIOCLIM") {
       if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
-        n <- mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxnet")
+        n <- alfred.mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxnet")
       } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
-        n <- mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxent.jar")
+        n <- alfred.mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxent.jar")
       }
       envsNameList <- c(setNames(as.list(n), n))
       selectizeInput("curEnv", label = "Select variable" ,
@@ -48,9 +48,9 @@ vis_responsePlot_module_server <- function(input, output, session, common) {
   output$responsePlot <- renderPlot({
     req(curSp(), evalOut())
     if (spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM") {
-      par(mar = c(0,0,0,0))
-      plot(c(0, 1), c(0, 1), ann = F, bty = 'n', type = 'n', xaxt = 'n', yaxt = 'n')
-      text(x = 0.25, y = 1, "Response curves module requires a Maxent model",
+      graphics::par(mar = c(0,0,0,0))
+      plot(c(0, 1), c(0, 1), ann = FALSE, bty = 'n', type = 'n', xaxt = 'n', yaxt = 'n')
+      graphics::text(x = 0.25, y = 1, "Response curves module requires a Maxent model",
            cex = 1.2, col = "#641E16")
     } else if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
       req(curEnv())

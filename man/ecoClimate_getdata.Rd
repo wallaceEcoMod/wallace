@@ -4,27 +4,34 @@
 \alias{ecoClimate_getdata}
 \title{ecoClimate_getdata}
 \usage{
-ecoClimate_getdata (AOGCM, Baseline, Scenario)
+ecoClimate_getdata(AOGCM, Baseline, Scenario, logger)
 }
 \arguments{
 \item{AOGCM}{Select the AOGCM.
-Options are: "CCSM", "CNRM", "MIROC", "COSMOS", "FGOALS", "GISS", "IPSL","MRI", "MPI"}
+Options are: "CCSM", "CNRM", "MIROC", "COSMOS", "FGOALS", "GISS", "IPSL",
+"MRI", "MPI"}
 
 \item{Baseline}{Select a baseline for the climatic layers.
-Options are: "Pre-industrial" (piControl-1760), "Historical" (1900-1949), "Modern" (1950-1999)}
+Options are: "Pre-industrial" (piControl-1760), "Historical" (1900-1949),
+"Modern" (1950-1999)}
 
 \item{Scenario}{Select a temporal scenario.
 Options are: "LGM" (21,000 years ago), "Holo" (6,000 years ago),
-"Present", "Future 2.6" (rcp 2.6), "Future 4.5" (rcp 4.5), "Future 6" (rcp 6), "Future 8.5" (rcp 8.5)}
+"Present", "Future 2.6" (rcp 2.6), "Future 4.5" (rcp 4.5), "Future 6" (rcp 6),
+"Future 8.5" (rcp 8.5)}
+
+\item{logger}{Stores all notification messages to be displayed in the Log
+Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+otherwise leave the default NULL}
 }
 \description{
 download ecoClimate layers. more info at www.ecoclimate.org
 }
 \examples{
 \dontrun{
-CCSM_mod_present<- ecoclimate_getdata ("CCSM", "Modern", "Present")
+CCSM_mod_present <- ecoclimate_getdata("CCSM", "Modern", "Present")
 dev.new()
-plot (CCSM_mod_present)
+plot(CCSM_mod_present)
 }
 
 }

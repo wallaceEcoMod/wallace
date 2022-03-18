@@ -152,7 +152,7 @@ proj_time_module_server <- function(input, output, session, common) {
     # ERRORS ####
     if (is.null(spp[[curSp()]]$visualization$mapPred)) {
       logger %>%
-        writeLog(
+        alfred.writeLog(
           type = 'error',
           'Calculate a model prediction in model component before projecting.'
         )
@@ -161,7 +161,7 @@ proj_time_module_server <- function(input, output, session, common) {
     if (input$projExt == 'pjDraw') {
       if (is.null(spp[[curSp()]]$polyPjXY)) {
         logger %>%
-          writeLog(
+          alfred.writeLog(
             type = 'error',
             paste0("The polygon has not been drawn and finished. Please use the ",
                    "draw toolbar on the left-hand of the map to complete the ",
@@ -172,7 +172,7 @@ proj_time_module_server <- function(input, output, session, common) {
     }
     if (input$projExt == 'pjUser') {
       if (is.null(input$userPjShp$datapath)) {
-        logger %>% writeLog(type = 'error', paste0("Specified filepath(s) "))
+        logger %>% alfred.writeLog(type = 'error', paste0("Specified filepath(s) "))
         return()
       }
     }
@@ -182,17 +182,17 @@ proj_time_module_server <- function(input, output, session, common) {
       polyPj <- proj_draw(spp[[curSp()]]$polyPjXY, spp[[curSp()]]$polyPjID,
                           input$drawPjBuf, logger, spN = curSp())
       if (input$drawPjBuf == 0 ) {
-        logger %>% writeLog(
-          hlSpp(curSp()), 'Draw polygon without buffer.')
+        logger %>% alfred.writeLog(
+          alfred.hlSpp(curSp()), 'Draw polygon without buffer.')
       } else {
-        logger %>% writeLog(
-          hlSpp(curSp()), 'Draw polygon with buffer of ', input$drawPjBuf,
+        logger %>% alfred.writeLog(
+          alfred.hlSpp(curSp()), 'Draw polygon with buffer of ', input$drawPjBuf,
           ' degrees.')
       }
       # METADATA ####
       spp[[curSp()]]$rmm$code$wallace$PjBuff <- input$drawPjBuf
-      polyX <- printVecAsis(round(spp[[curSp()]]$polyPjXY[, 1], digits = 4))
-      polyY <- printVecAsis(round(spp[[curSp()]]$polyPjXY[, 2], digits = 4))
+      polyX <- alfred.printVecAsis(round(spp[[curSp()]]$polyPjXY[, 1], digits = 4))
+      polyY <- alfred.printVecAsis(round(spp[[curSp()]]$polyPjXY[, 2], digits = 4))
       spp[[curSp()]]$rmm$code$wallace$drawExtPolyPjCoords <-
         paste0('X: ', polyX, ', Y: ', polyY)
     }
@@ -221,8 +221,8 @@ proj_time_module_server <- function(input, output, session, common) {
 
     if (input$projExt == 'pjCur') {
       polyPj <- spp[[curSp()]]$procEnvs$bgExt
-      logger %>% writeLog(
-        hlSpp(curSp()),
+      logger %>% alfred.writeLog(
+        alfred.hlSpp(curSp()),
         'Projection extent equal to current extent region.')
     }
     # LOAD INTO SPP ####
@@ -235,19 +235,19 @@ proj_time_module_server <- function(input, output, session, common) {
     # ERRORS ####
     if (is.null(spp[[curSp()]]$visualization$mapPred)) {
       logger %>%
-        writeLog(
+        alfred.writeLog(
           type = 'error',
           'Calculate a model prediction in visualization component before projecting.')
       return()
     }
     if (is.null(spp[[curSp()]]$project$pjExt)) {
-      logger %>% writeLog(type = 'error', 'Select projection extent first.')
+      logger %>% alfred.writeLog(type = 'error', 'Select projection extent first.')
       return()
     }
     envsRes <- raster::res(envs())[1]
     if(envsRes < 0.01) {
       logger %>%
-        writeLog(type = 'error',
+        alfred.writeLog(type = 'error',
                  paste0('Transfer to New Time currently only available with ',
                         'resolutions >30 arc seconds.'))
       return()
@@ -256,7 +256,7 @@ proj_time_module_server <- function(input, output, session, common) {
     if(!all(names(envs()) %in% paste0('bio', sprintf("%02d", 1:19)))) {
       nonBios <- names(envs())[!names(envs()) %in% paste0('bio', sprintf("%02d", 1:19))]
       logger %>%
-        writeLog(type = 'error', hlSpp(curSp()),
+        alfred.writeLog(type = 'error', alfred.hlSpp(curSp()),
                  "Your model is using non-bioclimatic variables or non-conventional",
                  " names (i.e., ", paste0(nonBios, collapse = ", "),
                  "). You can not transfer to a New Time.")
@@ -276,12 +276,12 @@ proj_time_module_server <- function(input, output, session, common) {
       i <- m[which(input$selGCM == gcms), which(input$selRCP == rcps)]
       if (!i) {
         logger %>%
-          writeLog(type = 'error',
+          alfred.writeLog(type = 'error',
                    paste0('This combination of GCM and RCP is not available. Please ',
                           'make a different selection.'))
         return()
       }
-      smartProgress(
+      alfred.smartProgress(
         logger,
         message = paste("Retrieving WorldClim data for", input$selTime,
                         input$selRCP, "..."),
@@ -296,7 +296,7 @@ proj_time_module_server <- function(input, output, session, common) {
         }
       )
     } else if (input$selTimeVar == 'ecoclimate') {
-      smartProgress(
+      alfred.smartProgress(
         logger,
         message = paste0("Retrieving ecoClimate data of GCM ", input$pjAOGCM,
                          " for ", input$pjScenario, "..."),
@@ -311,9 +311,9 @@ proj_time_module_server <- function(input, output, session, common) {
     # ERRORS ####
     # Check that the extents of raster and projection extent intersects
     if (!rgeos::gIntersects(spp[[curSp()]]$project$pjExt,
-                            as(raster::extent(projTimeEnvs), 'SpatialPolygons'))) {
+                            methods::as(raster::extent(projTimeEnvs), 'SpatialPolygons'))) {
       logger %>%
-        writeLog(type = 'error', 'Extents do not overlap')
+        alfred.writeLog(type = 'error', 'Extents do not overlap')
       return()
     }
 
@@ -350,21 +350,21 @@ proj_time_module_server <- function(input, output, session, common) {
     if(!(input$threshold == 'none')) {
       # use threshold from present-day model training area
       if (input$threshold == 'mtp') {
-        thr <- quantile(occPredVals, probs = 0)
+        thr <- stats::quantile(occPredVals, probs = 0)
       } else if (input$threshold == 'p10') {
-        thr <- quantile(occPredVals, probs = 0.1)
+        thr <- stats::quantile(occPredVals, probs = 0.1)
       } else if (input$threshold == 'qtp'){
-        thr <- quantile(occPredVals, probs = input$trainPresQuantile)
+        thr <- stats::quantile(occPredVals, probs = input$trainPresQuantile)
       }
       projTimeThr <- projTime > thr
       if (input$selTimeVar == 'worldclim') {
-        logger %>% writeLog(hlSpp(curSp()), "Projection of model to ", paste0('20', input$selTime),
+        logger %>% alfred.writeLog(alfred.hlSpp(curSp()), "Projection of model to ", paste0('20', input$selTime),
                             ' with threshold ', input$threshold, ' (',
                             formatC(thr, format = "e", 2), ") for GCM ",
                             GCMlookup[input$selGCM], " under RCP ",
                             as.numeric(input$selRCP)/10.0, ".")
       } else if (input$selTimeVar == 'ecoclimate') {
-        logger %>% writeLog(hlSpp(curSp()), "Projection of model to ", input$pjScenario,
+        logger %>% alfred.writeLog(alfred.hlSpp(curSp()), "Projection of model to ", input$pjScenario,
                             ' with threshold ', input$threshold, ' (',
                             formatC(thr, format = "e", 2), ") for GCM ",
                             input$pjAOGCM, ".")
@@ -372,11 +372,11 @@ proj_time_module_server <- function(input, output, session, common) {
     } else {
       projTimeThr <- projTime
       if (input$selTimeVar == 'worldclim') {
-        logger %>% writeLog(hlSpp(curSp()), "Projection of model to ", paste0('20', input$selTime),
+        logger %>% alfred.writeLog(alfred.hlSpp(curSp()), "Projection of model to ", paste0('20', input$selTime),
                             ' with ', predType, " output for GCM ", GCMlookup[input$selGCM],
                             " under RCP ", as.numeric(input$selRCP)/10.0, ".")
       } else if (input$selTimeVar == 'ecoclimate') {
-        logger %>% writeLog(hlSpp(curSp()), "Projection of model to ", input$pjScenario,
+        logger %>% alfred.writeLog(alfred.hlSpp(curSp()), "Projection of model to ", input$pjScenario,
                             ' with ', predType, " output for GCM ", input$pjAOGCM, ".")
       }
     }
@@ -388,7 +388,7 @@ proj_time_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$project$pjEnvs <- projExt
     spp[[curSp()]]$project$projTimeEnvs <- projTimeEnvs
     spp[[curSp()]]$project$mapProj <- projTimeThr
-    spp[[curSp()]]$project$mapProjVals <- getRasterVals(projTimeThr, predType)
+    spp[[curSp()]]$project$mapProjVals <- alfred.getRasterVals(projTimeThr, predType)
     if (input$selTimeVar == "worldclim") {
       spp[[curSp()]]$project$pjEnvsDl <- paste0('CMIP5_', envsRes * 60, "min_RCP",
                                                 input$selRCP, "_", input$selGCM,
@@ -405,13 +405,13 @@ proj_time_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$rmm$code$wallace$project_curModel <- curModel()
     spp[[curSp()]]$rmm$code$wallace$project_time <- TRUE
     spp[[curSp()]]$rmm$data$transfer$environment1$minVal <-
-      printVecAsis(raster::cellStats(projExt, min), asChar = TRUE)
+      alfred.printVecAsis(raster::cellStats(projExt, min), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$maxVal <-
-      printVecAsis(raster::cellStats(projExt, max), asChar = TRUE)
+      alfred.printVecAsis(raster::cellStats(projExt, max), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$resolution <-
       paste(round(raster::res(projExt)[1] * 60, digits = 2), "degrees")
     spp[[curSp()]]$rmm$data$transfer$environment1$extentSet <-
-      printVecAsis(as.vector(projExt@extent), asChar = TRUE)
+      alfred.printVecAsis(as.vector(projExt@extent), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$extentRule <-
       "transfer to user-selected new time"
     if (input$selTimeVar == "worldclim") {
@@ -452,9 +452,9 @@ proj_time_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$rmm$prediction$transfer$environment1$units <-
       ifelse(predType == "raw", "relative occurrence rate", predType)
     spp[[curSp()]]$rmm$prediction$transfer$environment1$minVal <-
-      printVecAsis(raster::cellStats(projTimeThr, min), asChar = TRUE)
+      alfred.printVecAsis(raster::cellStats(projTimeThr, min), asChar = TRUE)
     spp[[curSp()]]$rmm$prediction$transfer$environment1$maxVal <-
-      printVecAsis(raster::cellStats(projTimeThr, max), asChar = TRUE)
+      alfred.printVecAsis(raster::cellStats(projTimeThr, max), asChar = TRUE)
     if(!(input$threshold == 'none')) {
       spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet <- thr
       if (input$threshold == 'qtp') {
@@ -480,7 +480,7 @@ proj_time_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$polyPjXY <- NULL
     spp[[curSp()]]$polyPjID <- NULL
     spp[[curSp()]]$project <- NULL
-    logger %>% writeLog("Reset projection extent.")
+    logger %>% alfred.writeLog("Reset projection extent.")
   })
 
   return(list(
@@ -536,8 +536,8 @@ proj_time_module_map <- function(map, common) {
     shp <- lapply(polyPjXY, function(x) x@coords)
   }
   bb <- spp[[curSp()]]$project$pjExt@bbox
-  bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
-  map %>% clearAll() %>% removeImage('projRas') %>%
+  bbZoom <- alfred.polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
+  map %>% alfred.clearAll() %>% removeImage('projRas') %>%
     fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
   for (poly in shp) {
     map %>% addPolygons(lng = poly[, 1], lat = poly[, 2], weight = 4,
@@ -562,7 +562,7 @@ proj_time_module_map <- function(map, common) {
       addLegend("bottomright", pal = legendPal,
                 title = "Predicted Suitability<br>(Projected)",
                 values = mapProjVals, layerId = 'proj',
-                labFormat = reverseLabels(2, reverse_order = TRUE))
+                labFormat = alfred.reverseLabel(2, reverse_order = TRUE))
   }
   # map model prediction raster and projection polygon
   map %>% clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
@@ -588,7 +588,7 @@ proj_time_module_rmd <- function(species) {
     proj_time_drawn_knit = !is.null(species$rmm$code$wallace$drawExtPolyPjCoords),
     ###arguments for creating extent
     polyPjXY_rmd = if(!is.null(species$rmm$code$wallace$drawExtPolyPjCoords)){
-      printVecAsis(species$polyPjXY)} else {NULL},
+      alfred.printVecAsis(species$polyPjXY)} else {NULL},
     polyPjID_rmd =  if(!is.null(species$rmm$code$wallace$drawExtPolyPjCoords)){
       species$polyPjID} else {0},
     BgBuf_rmd = species$rmm$code$wallace$PjBuff,

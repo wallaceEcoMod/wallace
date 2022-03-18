@@ -44,12 +44,12 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
     # WARNING ####
     if (is.null(envs())) {
       logger %>%
-        writeLog(type = 'error',
+        alfred.writeLog(type = 'error',
                  'Environmental variables missing. Obtain them in component 3.')
       return()
     }
     if (is.null(spp[[curSp()]]$polyExtXY)) {
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         type = 'error',
         paste0("The polygon has not been drawn and finished. Please use the ",
                "draw toolbar on the left-hand of the map to complete ",
@@ -74,8 +74,8 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
       # METADATA ####
       ##Record buffer size
       spp[[sp]]$rmm$code$wallace$bgBuf <- input$drawBgBuf
-      polyX <- printVecAsis(round(spp[[curSp()]]$polyExtXY[, 1], digits = 4))
-      polyY <- printVecAsis(round(spp[[curSp()]]$polyExtXY[, 2], digits = 4))
+      polyX <- alfred.printVecAsis(round(spp[[curSp()]]$polyExtXY[, 1], digits = 4))
+      polyY <- alfred.printVecAsis(round(spp[[curSp()]]$polyExtXY[, 2], digits = 4))
       spp[[curSp()]]$rmm$code$wallace$drawExtPolyCoords <-
         paste0('Draw Polygon (X: ', polyX, ', Y: ', polyY, ')')
       spp[[sp]]$rmm$data$occurrence$backgroundSampleSizeRule <-
@@ -86,7 +86,7 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
   observeEvent(input$goBgMask, {
     # WARNING ####
     if (input$bgPtsNum < 1) {
-      logger %>% writeLog(type = 'warning',
+      logger %>% alfred.writeLog(type = 'warning',
                           "Enter a non-zero number of background points.")
       return()
     }
@@ -106,8 +106,8 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
       bgNonNA <- raster::ncell(bgMask) - raster::freq(bgMask, value = NA)[[1]]
       if ((bgNonNA + 1) < input$bgPtsNum) {
         logger %>%
-          writeLog(
-            type = "error", hlSpp(sp),
+          alfred.writeLog(
+            type = "error", alfred.hlSpp(sp),
             "Number of requested background points (n = ", input$bgPtsNum, ") is ",
             "higher than the maximum points available on the background extent ",
             "(n = ", bgNonNA, "). Please reduce the number of requested points.")
@@ -120,13 +120,13 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
                               spN = sp)
       req(bgPts)
       withProgress(message = paste0("Extracting background values for ",
-                                    spName(sp), "..."), {
+                                    alfred.spName(sp), "..."), {
         bgEnvsVals <- as.data.frame(raster::extract(bgMask, bgPts))
       })
 
       if (sum(rowSums(is.na(raster::extract(bgMask, spp[[sp]]$occs[ , c("longitude", "latitude")])))) > 0) {
         logger %>%
-          writeLog(type = "error", hlSpp(sp),
+          alfred.writeLog(type = "error", alfred.hlSpp(sp),
                    "One or more occurrence points have NULL raster values.",
                    " This can sometimes happen for points on the margin of the study extent.",
                    " Please increase the buffer slightly to include them.")
@@ -157,8 +157,8 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$bg <- NULL
     spp[[curSp()]]$bgPts <- NULL
     spp[[curSp()]]$rmm$data$occurrence$backgroundSampleSizeSet <- NULL
-    logger %>% writeLog(
-      hlSpp(curSp()), "Reset background extent and background points.")
+    logger %>% alfred.writeLog(
+      alfred.hlSpp(curSp()), "Reset background extent and background points.")
   })
 
   return(list(
@@ -193,12 +193,12 @@ penvs_drawBgExtent_module_map <- function(map, common) {
   )
 
   if (is.null(spp[[curSp()]]$procEnvs$bgExt)) {
-    map %>% clearAll() %>%
+    map %>% alfred.clearAll() %>%
       addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                        radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                        fillOpacity = 0.2, weight = 2, popup = ~pop)
   } else {
-    map %>% clearAll() %>%
+    map %>% alfred.clearAll() %>%
       addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                        radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                        fillOpacity = 0.2, weight = 2, popup = ~pop)
@@ -220,7 +220,7 @@ penvs_drawBgExtent_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
     penvs_drawBgExtent_knit = !is.null(species$rmm$code$wallace$drawExtPolyCoords),
-    polyExtXY_rmd = printVecAsis(species$polyExtXY),
+    polyExtXY_rmd = alfred.printVecAsis(species$polyExtXY),
     polyExtID_rmd =  species$polyExtID,
     drawBgBuf_rmd = species$rmm$code$wallace$bgBuf,
     bgPtsNum_rmd = species$rmm$data$occurrence$backgroundSampleSizeSet

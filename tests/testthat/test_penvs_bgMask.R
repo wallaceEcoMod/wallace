@@ -2,30 +2,23 @@
 #### MODULE: Select Study Region
 context("bgMask")
 
-source("test_helper_functions.R")
-
-
-### Set parameters
-
-## occurrences
-spN<-"Panthera onca"
-occs <-  occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
-occs <- as.data.frame(occs[[1]]$cleaned)
-
-## enviromental variables
-envs <- envs_worldclim(bcRes = 10, bcSel = c("bio01","bio02","bio13","bio14"), doBrick = FALSE)
-
-## background extent
-bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
-
-### run function
-bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
+occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
+                 package = "wallace"))[, 2:3]
+occs$occID <- 1:nrow(occs)
+envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
+                                           package = "wallace"),
+                      pattern = ".tif$", full.names = TRUE),
+                      rasName = list.files(system.file("extdata/wc",
+                                           package = "wallace"),
+                      pattern = ".tif$", full.names = FALSE))
+bgExt <- penvs_bgExtent(occs, bgSel = 'minimum convex polygon', bgBuf = 0.5)
+bgMask <- penvs_bgMask(occs, envs, bgExt)
 
 
 ### test if the error messages appear when they are supposed to
 test_that("error checks", {
   # the user has not selected the background extent
-  expect_error(penvs_bgMask(occs, envs, bgExt=NULL,spN=spN),
+  expect_error(penvs_bgMask(occs, envs, bgExt = NULL),
                'Before sampling background points, define the background extent.')
 })
 
@@ -40,8 +33,12 @@ test_that("output type checks", {
   # all the environmental layers have the same amount of pixels
   expect_equal(raster::cellStats(bgMask, sum), raster::cellStats(bgMask, sum))
   # the original layers have more pixels than the masked ones
-  expect_true(raster::cellStats(bgMask$bio01, sum) < raster::cellStats(envs$bio01, sum))
-  expect_true(raster::cellStats(bgMask$bio02, sum) < raster::cellStats(envs$bio02, sum))
-  expect_true(raster::cellStats(bgMask$bio13, sum) < raster::cellStats(envs$bio13, sum))
-  expect_true(raster::cellStats(bgMask$bio14, sum) < raster::cellStats(envs$bio14, sum))
+  expect_true(
+    raster::cellStats(bgMask$bio05, sum) < raster::cellStats(envs$bio05, sum))
+  expect_true(
+    raster::cellStats(bgMask$bio06, sum) < raster::cellStats(envs$bio06, sum))
+  expect_true(
+    raster::cellStats(bgMask$bio13, sum) < raster::cellStats(envs$bio13, sum))
+  expect_true(
+    raster::cellStats(bgMask$bio14, sum) < raster::cellStats(envs$bio14, sum))
 })

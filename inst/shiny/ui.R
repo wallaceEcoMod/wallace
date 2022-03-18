@@ -7,21 +7,22 @@ tagList(
     script = file.path("wallaceres", "js", "shinyjs-funcs.js"),
     functions = c("scrollLogger", "disableModule", "enableModule")
   ),
-  shinyalert::useShinyalert(),
   navbarPage(
-    theme = shinythemes::shinytheme('united'),
+    theme = bslib::bs_theme(version = 3,
+                            bootswatch = "united"),
     id = 'tabs',
     collapsible = TRUE,
     header = tagList(
       tags$head(tags$link(href = "css/styles.css", rel = "stylesheet"))
     ),
-    title = glue::glue('#WallaceEcoMod'),
+    title = img(src = "image.png", height = '50', width = '50',
+                style = "margin-top: -15px"),
+    windowTitle = "#WallaceEcoMod",
     tabPanel("Intro", value = 'intro'),
     tabPanel("Occ Data", value = 'occs'),
     tabPanel("Env Data", value = 'envs'),
     tabPanel("Process Occs", value = 'poccs'),
     tabPanel("Process Envs", value = 'penvs'),
-    # tabPanel("Sampling", value='samp'),
     tabPanel("Env Space", value = 'espace'),
     tabPanel("Partition Occs", value = 'part'),
     tabPanel("Model", value = 'model'),
@@ -80,19 +81,9 @@ tagList(
               "poccsSel", "Modules Available:",
               choices = insert_modules_options("poccs"),
               selected = character(0)
-              #"Profile Occurrences" = "profOccs"), # CM
             ),
             tags$hr(),
             insert_modules_ui("poccs")
-            # CM: start comment
-            # conditionalPanel("input.poccsSel == 'profOccs'",
-            #                  uiTop(profileOccs_INFO),
-            #                  actionButton("goProfileOccs", "Profile Occurrences"), br(), br(),
-            #                  profileOccs_UI('poccs_profileOccs_uiID'),
-            #                  actionButton("goProfileOccsClean", "Clean Occurrences"),
-            #                  uiBottom(profileOccs_INFO)
-            # ),
-            # CM: End comment
           ),
           conditionalPanel(
             "input.tabs == 'penvs'",
@@ -106,52 +97,6 @@ tagList(
             tags$hr(),
             insert_modules_ui("penvs")
           ),
-          # SAMPLING BIAS ####
-          # conditionalPanel(
-          #   "input.tabs == 'samp'",
-          #   h4("Accounting for Sampling Bias"),
-          #   radioButtons(
-          #     "samplingBias", "Modules Available:",
-          #     choices = list("User-specified" = "biasBgUser",
-          #                    "Make Target Group" = "biasBgMake",
-          #                    #"Sampling Covariates" = "sampCov",
-          #                    "Bias Surface" = "biasFile")
-          #   ),
-          #   tags$hr(),
-          #   conditionalPanel(
-          #     "input.samplingBias == 'bgUserTarget'",
-          #     #uiTop(bgExtent_INFO),
-          #     span("Upload custom background", class="stepText"), br(), br(),
-          #     userBiasBg_UI('samp_biasBG_uiID'),
-          #     actionButton("goUserBiasBgUpload", "Select"), br(), br()#,
-          #   ),
-          #   conditionalPanel(
-          #     "input.samplingBias == 'biasBgMake'",
-          #     #uiTop(bgExtent_INFO),
-          #     span("Step 1:", class="step"),
-          #     span("Specify Target Group Species", class="stepText"), br(), br(),
-          #     #queryDb_UI('samp_queryDb_uiID'),
-          #     actionButton("goTargetDbOccs", "Query Database"), br(), br()#,
-          #   ),
-          #   # Placeholder not implemented yet
-          #   # conditionalPanel("input.samplingBias == 'sampCov'",
-          #   #                  #uiTop(userBgExtent_INFO),
-          #   #                  span("Step 1:", class="step"),
-          #   #                  span("Choose Background Extent", class="stepText"), br(), br(),
-          #   #                  userBgExtent_UI('c4_userBgExtent'),
-          #   #                  actionButton("goUserBg", "Load")),
-          #   conditionalPanel(
-          #     "input.samplingBias == 'biasFile'",
-          #     #uiTop(drawBgExtent_INFO),
-          #     span("Upload Bias File", class="stepText"), br(), br(),
-          #     userBiasFile_UI('samp_biasFileUpload'),
-          #     actionButton("goBiasFileUpload", "Upload")
-          #   ),
-          #   tags$hr()
-          #   #conditionalPanel("input.penvsSel == 'bgTarget'", uiBottom(bgExtent_INFO)),
-          #   #conditionalPanel("input.penvsSel == 'sampCov'", uiBottom(userBgExtent_INFO)),
-          #   #conditionalPanel("input.penvsSel == 'biasSurf'", uiBottom(drawBgExtent_INFO))
-          # ),
           # ESPACE ####
           conditionalPanel(
             "input.tabs == 'espace'",

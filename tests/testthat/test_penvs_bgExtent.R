@@ -2,18 +2,14 @@
 #### MODULE: Select Study Region
 context("bgExtent")
 
-source("test_helper_functions.R")
-
-
 ### Set parameters
 
 ## occurrences
-spN<-"Panthera onca"
-occs <-  occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
-occs <- as.data.frame(occs[[1]]$cleaned)
+occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
+                 package = "wallace"))[, 2:3]
+occs$occID <- 1:nrow(occs)
 # database with less than 2 occurences (to test error message)
-foccs <-  occs_queryDb(spName = spN, occDb = "gbif", occNum = 1)
-foccs <- as.data.frame(foccs[[1]]$cleaned)
+foccs <-  occs[1:2, ]
 
 
 ## background extent
@@ -26,26 +22,30 @@ bgBuf <- 0.5
 
 ### run function and set coordinates reference system
 ## background extent: bounding Box
-bgExt1 <- penvs_bgExtent(occs, bgSel = bBox, bgBuf=bgBuf,logger = NULL, spN = spN)
+bgExt1 <- penvs_bgExtent(occs, bgSel = bBox, bgBuf = bgBuf, logger = NULL)
 raster::crs(bgExt1) <- "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=WGS84"
 ## background extent: point Buffers
-bgExt2 <- penvs_bgExtent(occs, bgSel = bPoint, bgBuf=bgBuf,spN=spN,logger = NULL)
+bgExt2 <- penvs_bgExtent(occs, bgSel = bPoint, bgBuf = bgBuf, logger = NULL)
 raster::crs(bgExt2) <- "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=WGS84"
 ## background extent: minimum Convex Polygon
-bgExt3 <- penvs_bgExtent(occs, bgSel = bPoly, bgBuf=bgBuf,spN=spN, logger=NULL)
+bgExt3 <- penvs_bgExtent(occs, bgSel = bPoly, bgBuf = bgBuf, logger = NULL)
 raster::crs(bgExt3) <- "+proj=lcc +lat_1=48 +lat_2=33 +lon_0=-100 +ellps=WGS84"
 
 
 ### test if the error messages appear when they are supposed to
 test_that("error checks", {
 
-  # <= 2 records with longitude and latitude. Error is the same but des not pass test.
-  expect_error(penvs_bgExtent(occs = foccs, bgSel = bBox, bgBuf), 'Too few localities (<2) to create a background polygon.',fixed=TRUE)
+  # <= 2 records with longitude and latitude. Error is the same but des not
+  # pass test.
+  expect_error(penvs_bgExtent(occs = foccs, bgSel = bBox, bgBuf),
+               'Too few localities (<2) to create a background polygon.',
+               fixed=TRUE)
 
   #Expected error is
 
   # buffer == 0 while using Point Buffers as background extent
-  expect_error(penvs_bgExtent(occs , bgSel = bPoint, bgBuf = 0),'Change buffer distance to positive or negative value.')
+  expect_error(penvs_bgExtent(occs , bgSel = bPoint, bgBuf = 0),
+               'Change buffer distance to positive or negative value.')
 })
 
 ### test output features

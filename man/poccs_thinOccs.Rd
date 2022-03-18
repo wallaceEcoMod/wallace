@@ -7,31 +7,38 @@
 poccs_thinOccs(occs, thinDist, logger = NULL, spN = NULL)
 }
 \arguments{
-\item{occs}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data}
+\item{occs}{data frame of cleaned occurrences obtained from component occs:
+Obtain occurrence data}
 
-\item{thinDist}{distance in meters to be used for thinning. Number must be positive.}
+\item{thinDist}{distance in meters to be used for thinning. Number must be
+positive.}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-otherwise leave the default NULL}
+\item{logger}{Stores all notification messages to be displayed in the Log
+Window of Wallace GUI. Insert the logger reactive list here for running
+in shiny, otherwise leave the default NULL.}
 
-\item{spN}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages}
+\item{spN}{data frame of cleaned occurrences obtained from component occs:
+Obtain occurrence data. Used to obtain species name for logger messages.}
 }
 \value{
-Output is a data frame of thinned occurences (all occurences at a distance >thinDist) with the same columns as occs
+Output is a data frame of thinned occurences (all occurences at a
+  distance >thinDist) with the same columns as occs
 }
 \description{
-The function thins the observed occurrences by a user provided distance.
+The function thins the observed occurrences by a user provided
+  distance.
 }
 \details{
-This function is called by the component poccs: process occurrence data to thin the occurence data
-to a user specified distance. Providing an output with preserved columns appropriate for further analyses
-and a maximized number of occurrences that are separated by at least the provided distance.
+This function is called by the component poccs: process occurrence data to
+  thin the occurence data to a user specified distance. Providing an output
+  with preserved columns appropriate for further analyses and a maximized
+  number of occurrences that are separated by at least the provided distance.
 }
 \examples{
-spN<-"Panthera onca"
-out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
-occs <- as.data.frame(out.gbif[[1]]$cleaned)
-out.thin <- poccs_thinOccs(occs=occs, thinDist=30,spN=spN,logger=NULL)
+occs <- read.csv(system.file("extdata/Bassaricyon_neblina.csv",
+                             package = "wallace"))
+occs$occID <- 1:nrow(occs)
+out.thin <- poccs_thinOccs(occs = occs, thinDist = 30)
 
 
 }

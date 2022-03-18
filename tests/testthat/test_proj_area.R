@@ -2,82 +2,43 @@
 #### MODULE: Project to New Extent
 context("proj_area")
 
-source("test_helper_functions.R")
-
-## occurrences
-spN="Panthera onca"
-out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 1000)
-occs <- as.data.frame(out.gbif[[1]]$cleaned)
-
 ## background mask
 # enviromental data
-envs <- envs_worldclim(bcRes = 10, bcSel = c("bio01","bio02","bio13","bio14"), doBrick = FALSE)
-# background extent
-bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
-# background masked
-bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
-## background sample
-bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=spN)
-
-## Partition
-partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,
-                                aggFact = NULL,spN=spN)
-
-## model
-# regularization multipliers
-rms <- c(1:2)
-# regularization multipliers step value
-rmsStep <- 1
-# feature classes
-fcs <- c('L', 'H', 'LQH')
+envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
+                                           package = "wallace"),
+                      pattern = ".tif$", full.names = TRUE),
+                      rasName = list.files(system.file("extdata/wc",
+                                           package = "wallace"),
+                      pattern = ".tif$", full.names = FALSE))
 
 ## extent to project
 # set coordinates
-longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331, -66.47149, -66.71319, -71.11931)
+longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331, -66.47149, -66.71319,
+               -71.11931)
 latitude <- c(13.18379, 7.52315, 0.93105, -1.70167, 0.98391, 6.09208, 12.74980)
 # generate matrix
-selCoords <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
-expertAddedPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)), ID=1)))
-##select coordinates only
-occs.xy <- occs %>% dplyr::select(longitude, latitude)
-bg.xy <- bg %>% dplyr::select(longitude, latitude)
-###iterating items
-# outputType
-outputType <- c('raw', 'logistic', 'cloglog')
-# algorithm
-algorithm <- c('maxent.jar','maxnet','BIOCLIM')
-# build model and test for both algorithms
-for (i in algorithm) {
-  if(i== 'BIOCLIM'){
-    modAlg <- model_bioclim(occs, bg, partblock, bgMask,spN=spN)
-    curModel=1
-  }
-  else{
-    modAlg <- model_maxent(occs.xy, bg.xy, partblock, bgMask, rms, rmsStep, fcs, clampSel = TRUE,
-                          algMaxent = i,catEnvs=NULL,spN=spN)
-    curModel='fc.L_rm.1'
-  }
+selCoords <- matrix(c(longitude, latitude), byrow = FALSE, ncol = 2)
+polyExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)),
+                                                         ID = 1)))
+# load model
+m <- readRDS(system.file("extdata/model.RDS",
+                        package = "wallace"))
+modProj <- proj_area(evalOut = m, curModel = 1, envs,
+                     outputType = 'cloglog', alg = 'maxent.jar',
+                     clamp = TRUE, pjExt = polyExt)
 
-for (j in outputType) {
-  ### run function
-  modProj <- proj_area(evalOut = modAlg, curModel, envs, outputType = j,
-                            alg=i,clamp=FALSE, pjExt = expertAddedPoly, spN=spN )
-
-   ### test output features
-  test_that("output type checks", {
-    # the output is a list
-    expect_is(modProj, "list")
-    # the output list has five elements
-    expect_equal(length(modProj), 2)
-    # element within the output list are:
-    # a rasterBrick
-    expect_is(modProj$projExt, "RasterBrick")
-    # a rasterLayer
-    expect_is(modProj$projArea, "RasterLayer")
-    # there are as many projection extents as environmental variables used
-    expect_equal(raster::nlayers(envs), raster::nlayers(modProj$projExt))
-    # there is 1 projection area
-    expect_equal(raster::nlayers(modProj$projArea), 1)
-  })
-}
-}
+test_that("output type checks", {
+  # the output is a list
+  expect_is(modProj, "list")
+  # the output list has five elements
+  expect_equal(length(modProj), 2)
+  # element within the output list are:
+  # a rasterBrick
+  expect_is(modProj$projExt, "RasterBrick")
+  # a rasterLayer
+  expect_is(modProj$projArea, "RasterLayer")
+  # there are as many projection extents as environmental variables used
+  expect_equal(raster::nlayers(envs), raster::nlayers(modProj$projExt))
+  # there is 1 projection area
+  expect_equal(raster::nlayers(modProj$projArea), 1)
+})

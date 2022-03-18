@@ -246,7 +246,7 @@ function(input, output, session) {
   # DOWNLOAD: current species occurrence data table
   output$dlOccs <- downloadHandler(
     filename = function() {
-      n <- formatSpName(curSp())
+      n <- alfred.fmtSpN(curSp())
       source <- rmm()$data$occurrence$sources
       glue("{n}_{source}.csv")
     },
@@ -257,7 +257,7 @@ function(input, output, session) {
       if(!is.null(bg())) {
         tbl <- rbind(tbl, bg())
       }
-      write_csv_robust(tbl, file, row.names = FALSE)
+      alfred.write_csv_robust(tbl, file, row.names = FALSE)
     }
   )
 
@@ -270,19 +270,19 @@ function(input, output, session) {
       })
       tbl <- dplyr::bind_rows(l)
       tbl <- tbl %>% dplyr::select(-pop)
-      write_csv_robust(tbl, file, row.names = FALSE)
+      alfred.write_csv_robust(tbl, file, row.names = FALSE)
     }
   )
 
   # DOWNLOAD: occsOrig
   output$dlDbOccs <- downloadHandler(
     filename = function() {
-      n <- formatSpName(curSp())
+      n <- alfred.fmtSpN(curSp())
       source <- rmm()$data$occurrence$sources
       glue("{n}_{source}_raw.csv")
     },
     content = function(file) {
-      write_csv_robust(spp[[curSp()]]$occData$occsOrig, file, row.names = FALSE)
+      alfred.write_csv_robust(spp[[curSp()]]$occData$occsOrig, file, row.names = FALSE)
     }
   )
 
@@ -348,21 +348,6 @@ function(input, output, session) {
   ### COMPONENT: PROCESS OCCURRENCE DATA ####
   ########################################### #
 
-  # # # # # # # # # # # # # # # # # # # #
-  # module Profile Occurrences ####
-  # # # # # # # # # # # # # # # # # # # #
-  # CM: start comment
-  # observeEvent(input$goProfileOccs, {
-  #   profileOccs <- callModule(profileOccs_MOD, 'poccs_profileOccs_uiID')
-  #   profileOccs()
-  # })
-  #
-  # observeEvent(input$goProfileOccsClean, {
-  #   profileOccsClean <- callModule(profileOccsClean_MOD, 'poccs_profileOccsClean_uiID')
-  #   profileOccsClean()
-  # })
-  # CM: end comment
-
   # # # # # # # # # # # # # # # # # #
   # PROCESS OCCS: other controls ####
   # # # # # # # # # # # # # # # # # #
@@ -371,7 +356,7 @@ function(input, output, session) {
     filename = function() paste0(curSp(), "_processed_occs.csv"),
     content = function(file) {
       tbl <- occs() %>% dplyr::select(-pop)
-      write_csv_robust(tbl, file, row.names = FALSE)
+      alfred.write_csv_robust(tbl, file, row.names = FALSE)
     }
   )
 
@@ -458,38 +443,9 @@ function(input, output, session) {
     },
     content = function(file) {
       tbl <- as.data.frame(spp[[curSp()]]$bgPts)
-      write_csv_robust(tbl, file, row.names = FALSE)
+      alfred.write_csv_robust(tbl, file, row.names = FALSE)
     }
   )
-
-  ############################################## #
-  ### COMPONENT: SAMPLING BIAS ####
-  ############################################## #
-
-  # # # # # # # # # # # # # # # # # #
-  # module User Background Data ####
-  # # # # # # # # # # # # # # # # # #
-  observeEvent(input$goUserBGUpload, {
-    userBGUpload <- callModule(userBG_MOD, 'samp_userBiasBg_uiID')
-    userBGUpload()
-  })
-
-  # # # # # # # # # # # # # # # # # #
-  # module User Bias File        ####
-  # # # # # # # # # # # # # # # # # #
-  observeEvent(input$goBiasFileUpload, {
-    userBiasFileUpload <- callModule(userBiasFile_MOD, 'samp_biasFileUpload')
-    userBiasFileUpload()
-  })
-
-  # # # # # # # # # # # # # # # # # #
-  # module Make Target Group ####
-  # # # # # # # # # # # # # # # # # #
-  observeEvent(input$goTargetDbOccs, {
-    targetQueryDB <- callModule(queryDb_MOD, 'samp_queryDb_uiID', targetGroup = TRUE)
-    occsList <- targetQueryDB()
-    targetGroupBG <- callModule(targetGroupBG_MOD, 'samp_targetGroupBg_uiID', occsList)
-  })
 
   ############################################## #
   ### COMPONENT: ESPACE ####
@@ -549,7 +505,7 @@ function(input, output, session) {
     },
     content = function(file) {
       png(file, width = 1000, height = 500)
-      par(mfrow=c(1,2))
+      graphics::par(mfrow=c(1,2))
       if (length(curSp()) == 2) {
         mSp <- paste(curSp(), collapse = ".")
         sp1 <- curSp()[1]
@@ -558,8 +514,8 @@ function(input, output, session) {
         mSp <- curSp()
       }
       req(spp[[mSp]]$occDens)
-      ecospat::ecospat.plot.niche(spp[[mSp]]$occDens[[sp1]], title = spName(sp1))
-      ecospat::ecospat.plot.niche(spp[[mSp]]$occDens[[sp2]], title = spName(sp2))
+      ecospat::ecospat.plot.niche(spp[[mSp]]$occDens[[sp1]], title = alfred.spName(sp1))
+      ecospat::ecospat.plot.niche(spp[[mSp]]$occDens[[sp2]], title = alfred.spName(sp2))
       dev.off()
     }
   )
@@ -571,7 +527,7 @@ function(input, output, session) {
     },
     content = function(file) {
       png(file, width = 1000, height = 500)
-      layout(matrix(c(1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3), 4, 3, byrow = F))
+      layout(matrix(c(1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3), 4, 3, byrow = FALSE))
       if (length(curSp()) == 2) {
         mSp <- paste(curSp(), collapse = ".")
         sp1 <- curSp()[1]
@@ -585,11 +541,12 @@ function(input, output, session) {
         spp[[mSp]]$occDens[[sp2]],
         0.5,
         title = mSp,
-        colz1 = "blue",
-        colz2 = "red",
-        colinter = "purple",
+        col.unf = "blue",
+        col.exp = "red",
+        col.stab = "purple",
         colZ1 = "blue",
-        colZ2 = "red"
+        colZ2 = "red",
+        transparency = 25
       )
       req(spp[[mSp]]$nicheOv)
       if (!is.null(spp[[mSp]]$nicheOv$equiv))
@@ -605,7 +562,7 @@ function(input, output, session) {
         "Both :", round(spp[[mSp]]$nicheOv$USE[2], 2)
       )
       plot.new()
-      text(0.5, 0.5, ovMetrics, cex = 2, font = 2, )
+      graphics::text(0.5, 0.5, ovMetrics, cex = 2, font = 2, )
       dev.off()
     }
   )
@@ -625,7 +582,7 @@ function(input, output, session) {
       all.bind <- cbind(occs.bg.bind, c(spp[[curSp()]]$occs$partition,
                                         spp[[curSp()]]$bg$partition))
       names(all.bind)[4] <- "group"
-      write_csv_robust(all.bind, file, row.names = FALSE)
+      alfred.write_csv_robust(all.bind, file, row.names = FALSE)
     }
   )
 
@@ -695,7 +652,7 @@ function(input, output, session) {
     },
     content = function(file) {
       evalTbl <- spp[[curSp()]]$evalOut@results
-      write_csv_robust(evalTbl, file, row.names = FALSE)
+      alfred.write_csv_robust(evalTbl, file, row.names = FALSE)
     }
   )
 
@@ -712,7 +669,7 @@ function(input, output, session) {
     },
     content = function(file) {
       evalTblBins <- spp[[curSp()]]$evalOut@results.partitions
-      write_csv_robust(evalTblBins, file, row.names = FALSE)
+      alfred.write_csv_robust(evalTblBins, file, row.names = FALSE)
     }
   )
 
@@ -768,7 +725,7 @@ function(input, output, session) {
       owd <- setwd(tmpdir)
       on.exit(setwd(owd))
       if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
-        namesEnvs <- mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxnet")
+        namesEnvs <- alfred.mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxnet")
         for (i in namesEnvs) {
           png(paste0(i, ".png"))
           suppressWarnings(
@@ -778,7 +735,7 @@ function(input, output, session) {
           dev.off()
         }
       } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
-        namesEnvs <- mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxent.jar")
+        namesEnvs <- alfred.mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxent.jar")
         for (i in namesEnvs) {
           png(paste0( i, ".png"))
           dismo::response(evalOut()@models[[curModel()]], var = i)
@@ -812,9 +769,20 @@ function(input, output, session) {
           req(mapPred())
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
-              writeLog(type = "error", "To download PNG prediction, you're required to",
+              alfred.writeLog(type = "error", "To download PNG prediction, you're required to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in you are R console.")
+            return()
+          }
+          if (!requireNamespace("mapview")) {
+            logger %>%
+              alfred.writeLog(
+                type = "error",
+                "PNG option is available if you install the 'mapview' package. If you ",
+                "want to install it, close Wallace and run the following line in the ",
+                "R Console: ", em("install.packages('mapview')")
+              )
+            return()
           }
           if (rmm()$prediction$binary$thresholdRule != 'none') {
             mapPredVals <- 0:1
@@ -837,7 +805,7 @@ function(input, output, session) {
             rasPal <- colorNumeric(rasCols, mapPredVals, na.color='transparent')
             legendPal <- colorNumeric(rev(rasCols), mapPredVals, na.color='transparent')
             mapTitle <- "Predicted Suitability<br>(Training)"
-            mapLabFormat <- reverseLabels(2, reverse_order=TRUE)
+            mapLabFormat <- alfred.reverseLabel(2, reverse_order=TRUE)
             mapOpacity <- NULL
           }
           m <- leaflet() %>%
@@ -866,7 +834,7 @@ function(input, output, session) {
         }
       } else {
         logger %>%
-          writeLog("Please install the rgdal package before downloading rasters.")
+          alfred.writeLog("Please install the rgdal package before downloading rasters.")
       }
     }
   )
@@ -953,9 +921,20 @@ function(input, output, session) {
           req(mapProj())
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
-              writeLog(type = "error", "To download PNG prediction, you're required to",
+              alfred.writeLog(type = "error", "To download PNG prediction, you're required to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in you are R console.")
+            return()
+          }
+          if (!requireNamespace("mapview")) {
+            logger %>%
+              alfred.writeLog(
+                type = "error",
+                "PNG option is available if you install the 'mapview' package. If you ",
+                "want to install it, close Wallace and run the following line in the ",
+                "R Console: ", em("install.packages('mapview')")
+              )
+            return()
           }
           if (rmm()$prediction$transfer$environment1$thresholdRule != 'none') {
             mapProjVals <- 0:1
@@ -978,7 +957,7 @@ function(input, output, session) {
             rasPal <- colorNumeric(rasCols, mapProjVals, na.color='transparent')
             legendPal <- colorNumeric(rev(rasCols), mapProjVals, na.color='transparent')
             mapTitle <- "Predicted Suitability<br>(Projected)"
-            mapLabFormat <- reverseLabels(2, reverse_order=TRUE)
+            mapLabFormat <- alfred.reverseLabel(2, reverse_order=TRUE)
             mapOpacity <- NULL
           }
           polyPjXY <- spp[[curSp()]]$project$pjExt@polygons[[1]]@Polygons
@@ -1009,7 +988,7 @@ function(input, output, session) {
           file.rename(r@file@name, file)
         }
       } else {
-        logger %>% writeLog("Please install the rgdal package before downloading rasters.")
+        logger %>% alfred.writeLog("Please install the rgdal package before downloading rasters.")
       }
     }
   )
@@ -1031,9 +1010,20 @@ function(input, output, session) {
         if (input$messFileType == 'png') {
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
-              writeLog(type = "error", "To download PNG prediction, you're required to",
+              alfred.writeLog(type = "error", "To download PNG prediction, you're required to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in you are R console.")
+            return()
+          }
+          if (!requireNamespace("mapview")) {
+            logger %>%
+              alfred.writeLog(
+                type = "error",
+                "PNG option is available if you install the 'mapview' package. If you ",
+                "want to install it, close Wallace and run the following line in the ",
+                "R Console: ", em("install.packages('mapview')")
+              )
+            return()
           }
           rasVals <- spp[[curSp()]]$project$messVals
           polyPjXY <- spp[[curSp()]]$project$pjExt@polygons[[1]]@Polygons
@@ -1080,7 +1070,7 @@ function(input, output, session) {
           file.rename(r@file@name, file)
         }
       } else {
-        logger %>% writeLog("Please install the rgdal package before downloading rasters.")
+        logger %>% alfred.writeLog("Please install the rgdal package before downloading rasters.")
       }
     }
   )
@@ -1136,7 +1126,7 @@ function(input, output, session) {
             }
             knit_params <- c(
               file = rmd_file,
-              spName = spName(sp),
+              spName = alfred.spName(sp),
               sp = sp,
               spAbr = spAbr[[sp]],
               rmd_vars
@@ -1154,7 +1144,7 @@ function(input, output, session) {
                                     fileext = ".md")
         rmarkdown::render(input = "Rmd/userReport_species.Rmd",
                           params = list(child_rmds = species_rmds,
-                                        spName = spName(sp),
+                                        spName = alfred.spName(sp),
                                         spAbr = spAbr[[sp]]),
                           output_format = rmarkdown::github_document(html_preview = FALSE),
                           output_file = species_md_file,
@@ -1180,8 +1170,8 @@ function(input, output, session) {
               }
               knit_params <- c(
                 file = rmd_file,
-                spName1 = spName(namesMult[1]),
-                spName2 = spName(namesMult[2]),
+                spName1 = alfred.spName(namesMult[1]),
+                spName2 = alfred.spName(namesMult[2]),
                 sp1 = namesMult[1],
                 spAbr1 = spAbr[[namesMult[1]]],
                 sp2 = namesMult[2],
@@ -1202,8 +1192,8 @@ function(input, output, session) {
                                           fileext = ".md")
           rmarkdown::render(input = "Rmd/userReport_multSpecies.Rmd",
                             params = list(child_rmds = multSpecies_rmds,
-                                          spName1 = spName(namesMult[1]),
-                                          spName2 = spName(namesMult[2]),
+                                          spName1 = alfred.spName(namesMult[1]),
+                                          spName2 = alfred.spName(namesMult[2]),
                                           multAbr = paste0(spAbr[[namesMult[1]]], "_",
                                                            spAbr[[namesMult[2]]])
                             ),
@@ -1373,7 +1363,7 @@ function(input, output, session) {
   })
 
   observe({
-    spp_size <- as.numeric(pryr::object_size(reactiveValuesToList(spp)))
+    spp_size <- as.numeric(utils::object.size(reactiveValuesToList(spp)))
     shinyjs::toggle("save_warning", condition = (spp_size >= SAVE_SESSION_SIZE_MB_WARNING * MB))
   })
 

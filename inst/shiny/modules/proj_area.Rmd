@@ -26,9 +26,9 @@ projExt_{{spAbr}} <- proj_area_{{spAbr}}$projExt
  
  ###Make map of projection
 bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
-bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
+bbZoom <- alfred.polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
                    bb_{{spAbr}}[2, 2], fraction = 0.05)
-mapProjVals_{{spAbr}} <- getRasterVals(proj_area_{{spAbr}}$projArea,"{{outputType_rmd}}")
+mapProjVals_{{spAbr}} <- alfred.getRasterVals(proj_area_{{spAbr}}$projArea,"{{outputType_rmd}}")
 rasCols_{{spAbr}} <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 # if no threshold specified
 legendPal <- colorNumeric(rev(rasCols_{{spAbr}}), mapProjVals_{{spAbr}}, na.color = 'transparent')
@@ -39,7 +39,7 @@ m %>%
   leaflet::addLegend("bottomright", pal = legendPal,
             title = "Predicted Suitability<br>(Projected)",
             values = mapProjVals_{{spAbr}}, layerId = 'proj',
-            labFormat = reverseLabels(2, reverse_order = TRUE)) %>%
+            labFormat = alfred.reverseLabel(2, reverse_order = TRUE)) %>%
 # map model prediction raster and projection polygon
   clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
   addRasterImage(proj_area_{{spAbr}}$projArea, colors = rasPal_{{spAbr}}, opacity = 0.7,
@@ -84,7 +84,7 @@ occPredVals_{{spAbr}} <- raster::extract(predSel_{{spAbr}}, occs_xy_{{spAbr}})
 proj_thresProb_{{spAbr}} <- switch("{{proj_thresholdRule_rmd}}", 
                                    "mtp" = 0, "p10" = 0.1, "qtp" = {{proj_probQuantile_rmd}})
 # Define threshold value
-proj_thres_{{spAbr}} <- quantile(occPredVals_{{spAbr}}, 
+proj_thres_{{spAbr}} <- stats::quantile(occPredVals_{{spAbr}}, 
                                  probs = proj_thresProb_{{spAbr}})
 # Add threshold if specified 
 proj_area_{{spAbr}} <- proj_area_{{spAbr}}$projArea > proj_thres_{{spAbr}}
@@ -92,9 +92,9 @@ proj_area_{{spAbr}} <- proj_area_{{spAbr}}$projArea > proj_thres_{{spAbr}}
 ##Make map
 ###Make map of projection
 bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
-bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
+bbZoom <- alfred.polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
                    bb_{{spAbr}}[2, 2], fraction = 0.05)
-mapProjVals_{{spAbr}} <- getRasterVals(proj_area_{{spAbr}},"{{outputType_rmd}}")
+mapProjVals_{{spAbr}} <- alfred.getRasterVals(proj_area_{{spAbr}},"{{outputType_rmd}}")
 
 # if threshold specified
 rasPal_{{spAbr}} <- c('gray', 'red')
@@ -145,9 +145,9 @@ projExt_{{spAbr}} <- proj_area_{{spAbr}}$projExt
  
  ###Make map of projection
 bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
-bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
+bbZoom <- alfred.polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
                    bb_{{spAbr}}[2, 2], fraction = 0.05)
-mapProjVals_{{spAbr}} <- getRasterVals(proj_area_{{spAbr}}$projArea,"{{outputType_rmd}}")
+mapProjVals_{{spAbr}} <- alfred.getRasterVals(proj_area_{{spAbr}}$projArea,"{{outputType_rmd}}")
 rasCols_{{spAbr}} <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 # if no threshold specified
 legendPal <- colorNumeric(rev(rasCols_{{spAbr}}), mapProjVals_{{spAbr}}, na.color = 'transparent')
@@ -158,7 +158,7 @@ m %>%
   leaflet::addLegend("bottomright", pal = legendPal,
             title = "Predicted Suitability<br>(Projected)",
             values = mapProjVals_{{spAbr}}, layerId = 'proj',
-            labFormat = reverseLabels(2, reverse_order = TRUE)) %>%
+            labFormat = alfred.reverseLabel(2, reverse_order = TRUE)) %>%
 # map model prediction raster and projection polygon
   clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
   addRasterImage(proj_area_{{spAbr}}$projArea, colors = rasPal_{{spAbr}}, opacity = 0.7,
@@ -202,17 +202,17 @@ occPredVals_{{spAbr}} <- raster::extract(predSel_{{spAbr}}, occs_xy_{{spAbr}})
 proj_thresProb_{{spAbr}} <- switch("{{proj_thresholdRule_rmd}}", 
                                    "mtp" = 0, "p10" = 0.1, "qtp" = {{proj_probQuantile_rmd}})
 # Define threshold value
-proj_thres_{{spAbr}} <- quantile(occPredVals_{{spAbr}}, 
-                                 probs = proj_thresProb_{{spAbr}})
+proj_thres_{{spAbr}} <- stats::quantile(occPredVals_{{spAbr}}, 
+                                        probs = proj_thresProb_{{spAbr}})
 # Add threshold if specified 
 proj_area_{{spAbr}} <- proj_area_{{spAbr}}$projArea > proj_thresProb_{{spAbr}}
 
 ##Make map
 ###Make map of projection
 bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
-bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
+bbZoom <- alfred.polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
                    bb_{{spAbr}}[2, 2], fraction = 0.05)
-mapProjVals_{{spAbr}} <- getRasterVals(proj_area_{{spAbr}},"{{outputType_rmd}}")
+mapProjVals_{{spAbr}} <- alfred.getRasterVals(proj_area_{{spAbr}},"{{outputType_rmd}}")
 
   # if threshold specified
 rasPal_{{spAbr}} <- c('gray', 'red')

@@ -2,17 +2,14 @@
 #### MODULE: WorldClim
 context("WorldClim")
 
-source("test_helper_functions.R")
-
-
 ### Set parameters
 ## resolution
 bcRes <- 10 # (10 arcmin)
 ## variables to download
-envar <- c('bio01', 'bio02', 'bio03', 'bio10', 'bio11')
+envar <- c('bio05', 'bio06', 'bio13', 'bio14')
 
 ### run function
-arcmin10 <- envs_worldclim(bcRes, bcSel= envar,doBrick=T)
+arcmin10 <- envs_worldclim(bcRes, bcSel = envar)
 
 
 ### test if the error messages appear when they are supposed to
@@ -25,12 +22,12 @@ test_that("error checks", {
 ### test output features
 test_that("output type checks", {
   # the output is a RasterBrick
-  expect_is(arcmin10, "RasterBrick")
+  expect_is(arcmin10, "RasterStack")
   # the number of layer is the same as specified in the selected variables list
   expect_equal(length(envar), raster::nlayers(arcmin10))
   # the resolution is right
   expect_equal((raster::res(arcmin10)), c(10/60, 10/60))
   # the names are right
-  expect_equal(names(arcmin10), c("bio01", "bio02", "bio03", "bio10", "bio11"))
+  expect_equal(names(arcmin10), c("bio05", "bio06", "bio13", "bio14"))
   })
 

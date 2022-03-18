@@ -50,7 +50,7 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
     common$update_component(tab = "Map")
     # ERRORS ####
     if (is.null(envs())) {
-      logger %>% writeLog(type = 'error', hlSpp(curSp()), 'Environmental variables missing.',
+      logger %>% alfred.writeLog(type = 'error', alfred.hlSpp(curSp()), 'Environmental variables missing.',
                           '. Obtain them in component 3.')
       return()
     }
@@ -88,7 +88,7 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
   observeEvent(input$goBgMask, {
     # WARNING ####
     if (input$bgPtsNum < 1) {
-      logger %>% writeLog(type = 'warning',
+      logger %>% alfred.writeLog(type = 'warning',
                           "Enter a non-zero number of background points.")
       return()
     }
@@ -105,8 +105,8 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
       bgNonNA <- raster::ncell(bgMask) - raster::freq(bgMask, value = NA)[[1]]
       if ((bgNonNA + 1) < input$bgPtsNum) {
         logger %>%
-          writeLog(
-            type = "error", hlSpp(sp),
+          alfred.writeLog(
+            type = "error", alfred.hlSpp(sp),
             "Number of requested background points (n = ", input$bgPtsNum, ") is ",
             "higher than the maximum points available on the background extent ",
             "(n = ", bgNonNA, "). Please reduce the number of requested points.")
@@ -116,14 +116,14 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
                               spN = sp)
       req(bgPts)
       withProgress(
-        message = paste0("Extracting background values for ", spName(sp), "..."), {
+        message = paste0("Extracting background values for ", alfred.spName(sp), "..."), {
           bgEnvsVals <- as.data.frame(raster::extract(bgMask, bgPts))
         })
 
       NApoints <- sum(rowSums(is.na(raster::extract(bgMask, spp[[sp]]$occs[ , c("longitude", "latitude")]))))
       if (NApoints > 0) {
         logger %>%
-          writeLog(type = "error", hlSpp(sp),
+          alfred.writeLog(type = "error", alfred.hlSpp(sp),
                    "One or more occurrence points have NULL raster values.",
                    " This can sometimes happen for points on the margin of the study extent.",
                    " Please increase the buffer slightly to include them.")
@@ -156,8 +156,8 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$bg <- NULL
     spp[[curSp()]]$bgPts <- NULL
     spp[[curSp()]]$rmm$data$occurrence$backgroundSampleSizeSet <- NULL
-    logger %>% writeLog(
-      hlSpp(curSp()), "Reset background extent and background points.")
+    logger %>% alfred.writeLog(
+      alfred.hlSpp(curSp()), "Reset background extent and background points.")
   })
 
   return(list(
@@ -184,12 +184,12 @@ penvs_bgExtent_module_map <- function(map, common) {
   occs <- common$occs
 
   if (is.null(spp[[curSp()]]$procEnvs$bgExt)) {
-    map %>% clearAll() %>%
+    map %>% alfred.clearAll() %>%
       addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                        radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                        fillOpacity = 0.2, weight = 2, popup = ~pop)
   } else {
-    map %>% clearAll() %>%
+    map %>% alfred.clearAll() %>%
       addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                        radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                        fillOpacity = 0.2, weight = 2, popup = ~pop)

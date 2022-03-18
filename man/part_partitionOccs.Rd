@@ -16,9 +16,10 @@ part_partitionOccs(
 )
 }
 \arguments{
-\item{occs}{data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.}
+\item{occs}{data frame of cleaned or processed occurrences obtained from
+components occs: Obtain occurrence data or, poccs: Process occurrence data.}
 
-\item{bg}{coordinates of background points to be used for modeling}
+\item{bg}{coordinates of background points to be used for modeling.}
 
 \item{method}{character. Partitioning method to be used, one of 5 options: \cr
 (1) 'jack' Non-spatial Partition - jackknife  \cr
@@ -27,38 +28,52 @@ part_partitionOccs(
 (4) 'cb1' spatial Partition - checkerboard 1 (K=2)  \cr
 (5) 'cb2' spatial Partition - checkerboard 2 (K=4)  \cr}
 
-\item{kfolds}{numeric. Number of partitions to create if selected method is random k-fold (must be >=2). If other method then keep default of NULL}
+\item{kfolds}{numeric. Number of partitions to create if selected method is
+random k-fold (must be >=2). If other method then keep default of NULL.}
 
-\item{bgMask}{a RasterStack or a RasterBrick of environmental layers cropped and masked}
+\item{bgMask}{a RasterStack or a RasterBrick of environmental layers cropped
+and masked.}
 
-\item{aggFact}{numeric. Aggregation factor to be used when using checkerboard partition (must be >=1)}
+\item{aggFact}{numeric. Aggregation factor to be used when using checkerboard
+partition (must be >= 1).}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-otherwise leave the default NULL}
+\item{logger}{Stores all notification messages to be displayed in the Log
+Window of Wallace GUI. Insert the logger reactive list here for running
+in shiny, otherwise leave the default NULL.}
 
-\item{spN}{data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages}
+\item{spN}{data frame of cleaned occurrences obtained from component
+occs: Obtain occurrence data. Used to obtain species name for logger
+messages.}
 }
 \value{
-A list of two vectors containing group assignments for occurrences (occs.grp) and background points (bg.grp).
+A list of two vectors containing group assignments for occurrences
+  (occs.grp) and background points (bg.grp).
 }
 \description{
-This function partitions occurrence data and background points according to a user selected method.
+This function partitions occurrence data and background points
+  according to a user selected method.
 }
 \details{
 This function is used in the partition occurrence data component.
-A user selected method is used to partition occurrence and background points into different groups for model testing.
-A list of group assignments for both occurrences and background points is returned.
+A user selected method is used to partition occurrence and background points
+  into different groups for model testing.
+A list of group assignments for both occurrences and background points is
+  returned.
 }
 \examples{
-spN<-"Panthera onca"
-occs <-  occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
-occs <- as.data.frame(occs[[1]]$cleaned)
-envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
-bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
-bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
-bgSample <- penvs_bgSample(occs, bgMask, bgPtsNum=1000,spN=spN)
-folds <- 'rand'
-partfold <- part_partitionOccs(occs, bgSample, method = folds, kfolds=4, bgMask = NULL, aggFact = NULL,spN=spN)
+\dontrun{
+envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
+                                           package = "wallace"),
+                      pattern = ".tif$", full.names = TRUE),
+                      rasName = list.files(system.file("extdata/wc",
+                                           package = "wallace"),
+                      pattern = ".tif$", full.names = FALSE))
+occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
+                 package = "wallace"))
+bg <- read.csv(system.file("extdata/Bassaricyon_alleni_bgPoints.csv",
+               package = "wallace"))
+partblock <- part_partitionOccs(occs, bg, method = 'rand', kfold = 4)
+}
 
 }
 \seealso{

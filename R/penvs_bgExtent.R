@@ -1,36 +1,38 @@
 
 #' @title penvs_bgExtent Generate background extent
-#' @description This function generates a background area according to a user provided method.
+#' @description This function generates a background area according to a user
+#'   provided method.
 #'
-#' @details
-#' This function is used in the select study region component. Here, the user can select between three methods,
-#' 'bounding box' , 'point buffers' or ' minimum convex polygon' to determine the background extent based on the
-#' observed occurrences. The function returns a SpatialPolygonsDataFrame object of the desired extent.
+#' @details This function is used in the select study region component. Here,
+#'   the user can select between three methods, 'bounding box', 'point buffers'
+#'   or ' minimum convex polygon' to determine the background extent based on the
+#'   observed occurrences. The function returns a SpatialPolygonsDataFrame
+#'   object of the desired extent.
 #'
-#' @param occs data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data
-#' @param bgSel character. Method of background building. Must be one of three options: 'bounding box' , 'point buffers' or ' minimum convex polygon'
-#' @param bgBuf numeric. Buffer distance in degrees to be used in the building of the background area
-#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-#' otherwise leave the default NULL
-#' @param spN data frame of cleaned occurrences obtained from component occs: Obtain occurrence data. Used to obtain species name for logger messages
-# @keywords
-#'
+#' @param occs data frame of cleaned or processed occurrences obtained from
+#'   components occs: Obtain occurrence data or, poccs: Process occurrence data.
+#' @param bgSel character. Method of background building. Must be one of three
+#'   options: 'bounding box' , 'point buffers' or ' minimum convex polygon'.
+#' @param bgBuf numeric. Buffer distance in degrees to be used in the building
+#'   of the background area.
+#' @param logger Stores all notification messages to be displayed in the Log
+#'   Window of Wallace GUI. Insert the logger reactive list here for running in
+#'   shiny, otherwise leave the default NULL.
+#' @param spN data frame of cleaned occurrences obtained from component occs:
+#'   Obtain occurrence data. Used to obtain species name for logger messages.
 #' @examples
-#' occs <-  occs_queryDb(spName = "panthera onca", occDb = "gbif", occNum = 100)
-#' occs <- as.data.frame(occs[[1]]$cleaned)
-#' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf=0.5,logger = NULL, spN = NULL)
+#' occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
+#'                  package = "wallace"))[, 2:3]
+#' occs$occID <- 1:nrow(occs)
+#' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
 #'
 #' @return A SpatialPolygonsDataFrame object that contains all occurrences from occs
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
 
-#' @seealso \code{\link{penvs_userBgExtent}}, \code{\link{penvs_drawBgExtent}}, \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}
-# @references
-# @aliases - a list of additional topic names that will be mapped to
-# this documentation when the user looks them up from the command
-# line.
-# @family - a family name. All functions that have the same family tag will be linked in the documentation.
+#' @seealso \code{\link{penvs_userBgExtent}}, \code{\link{penvs_drawBgExtent}},
+#'   \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}
 #' @export
 #'
 
@@ -38,7 +40,7 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL, spN = NULL) {
 
   if (nrow(occs) <= 2) {
     logger %>%
-      writeLog(type = 'error',
+      alfred.writeLog(type = 'error',
                'Too few localities (<2) to create a background polygon.')
     return()
   }
@@ -61,12 +63,16 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL, spN = NULL) {
     bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(bb)), 1)))
     msg <- "Study extent: bounding box."
   } else if (bgSel == "minimum convex polygon") {
-    bgExt <- mcp(occs.xy)
+    mcp.xy <- as.data.frame(sp::coordinates(occs.xy))
+    coords.t <- grDevices::chull(mcp.xy[, 1], mcp.xy[, 2])
+    xy.bord <- mcp.xy[coords.t, ]
+    xy.bord <- rbind(xy.bord[nrow(xy.bord), ], xy.bord)
+    bgExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(as.matrix(xy.bord))), 1)))
     msg <- "Study extent: minimum convex polygon."
   } else if (bgSel == 'point buffers') {
     if (bgBuf == 0) {
       logger %>%
-      writeLog(type = 'error',
+      alfred.writeLog(type = 'error',
                'Change buffer distance to positive or negative value.')
       return()
     }
@@ -76,10 +82,10 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL, spN = NULL) {
 
   if (bgBuf > 0 & bgSel != 'point buffers') {
     bgExt <- rgeos::gBuffer(bgExt, width = bgBuf)
-    logger %>% writeLog(hlSpp(spN), msg, ' Buffered by ', bgBuf, ' degrees.')
+    logger %>% alfred.writeLog(alfred.hlSpp(spN), msg, ' Buffered by ', bgBuf, ' degrees.')
   } else {
-    logger %>% writeLog(hlSpp(spN), msg)
+    logger %>% alfred.writeLog(alfred.hlSpp(spN), msg)
   }
-  bgExt <- as(bgExt, "SpatialPolygonsDataFrame")
+  bgExt <- methods::as(bgExt, "SpatialPolygonsDataFrame")
   return(bgExt)
 }

@@ -17,60 +17,88 @@ proj_time(
 )
 }
 \arguments{
-\item{evalOut}{ENMevaluate output from previous module and using any of the available algorithms}
+\item{evalOut}{ENMevaluate output from previous module and using any of
+the available algorithms.}
 
-\item{curModel}{if algorithm is maxent, model selected by user as best or optimal, in terms of feature class and regularization multiplier (e.g 'L_1'). Otherwise must be 1}
+\item{curModel}{if algorithm is maxent, model selected by user as best
+or optimal, in terms of feature class and regularization multiplier (e.g
+'L_1'). Otherwise must be 1.}
 
-\item{envs}{environmental layers of different time to be used for projecting the model. They must match the layers used for generating the model in the model component}
+\item{envs}{environmental layers of different time to be used for projecting
+the model. They must match the layers used for generating the model in the
+model component.}
 
-\item{pjExt}{extent of the area to project the model. This is defined by the user in the map of the GUI and is provided as a SpatialPolygons object}
+\item{pjExt}{extent of the area to project the model. This is defined by the
+user in the map of the GUI and is provided as a SpatialPolygons object.}
 
-\item{alg}{modeling algorithm used in the model component. Can be one of : 'bioclim', 'maxent.jar' or 'maxnet'}
+\item{alg}{modeling algorithm used in the model component. Can be one of:
+'bioclim', 'maxent.jar' or 'maxnet'.}
 
-\item{outputType}{output type to be used when algorithm is maxnet or maxent.jar}
+\item{outputType}{output type to be used when algorithm is maxnet or
+maxent.jar.}
 
-\item{clamp}{logical. Whether projection will be of clamped or unclamped model}
+\item{clamp}{logical. Whether projection will be of clamped or unclamped
+model.}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-otherwise leave the default NULL}
+\item{logger}{Stores all notification messages to be displayed in the Log
+Window of Wallace GUI. Insert the logger reactive list here for running in
+shiny, otherwise leave the default NULL.}
 
-\item{spN}{character. Used to obtain species name for logger messages}
+\item{spN}{character. Used to obtain species name for logger messages.}
 }
 \value{
-A list of two elements: projExt and projTime.
-The first is a RasterBrick or RasterStack of the environmental variables cropped to the projection area.
-The second element is a raster of the projected model with the specified output type.
+A list of two elements: projExt and projTime. The first is a
+  RasterBrick or RasterStack of the environmental variables cropped to the
+  projection area. The second element is a raster of the projected model
+  with the specified output type.
 }
 \description{
-Function projects the model generated in previous components to a new time and area using provided layers.
+Function projects the model generated in previous components to
+  a new time and area using provided layers.
 }
 \details{
-This functions allows for the projection of the model created in previous components to a new time and area.
-The projection area is user provided in the map of the GUI and the projection time user selected. The model will be projected to the new area and time as long as the environmental variables are available for the area.
-This function returns a list including the cropped environmental variables used for projecting and the projected model.
+This functions allows for the projection of the model created in previous
+  components to a new time and area. The projection area is user provided in
+  the map of the GUI and the projection time user selected. The model will
+  be projected to the new area and time as long as the environmental
+  variables are available for the area. This function returns a list
+  including the cropped environmental variables used for projecting and
+  the projected model.
 }
 \examples{
-spN<-"Panthera onca"
-out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
-occs <- as.data.frame(out.gbif[[1]]$cleaned)
-envs <- envs_worldclim(bcRes = 10, bcSel = c('bio01','bio19'), doBrick = FALSE)
-bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
-bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
-bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=spN)
-partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=spN)
+envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
+                                                       package = "wallace"),
+                                           pattern = ".tif$",
+                                           full.names = TRUE),
+                      rasName = list.files(system.file("extdata/wc",
+                                                       package = "wallace"),
+                                           pattern = ".tif$",
+                                           full.names = FALSE))
 ## extent to project
-longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331, -66.47149, -66.71319, -71.11931)
+# set coordinates
+longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331, -66.47149, -66.71319,
+               -71.11931)
 latitude <- c(13.18379, 7.52315, 0.93105, -1.70167, 0.98391, 6.09208, 12.74980)
-selCoords <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
-expertAddedPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)), ID=1)))
-##projection time layers, using worldclim 2.1 Future 2021-2040 MIROC6 ssp126 bioclims as example
-envsFut<-list.files(path='./tests/testthat/wc10/Future', pattern = ".tif$", full.names = TRUE)
-envsFut<-raster::stack(envsFut)
-modAlg <- model_bioclim(occs, bg, partblock$occ.grp, bgGrp = partblock$bg.grp, bgMask,spN=spN)
-modProj <- proj_time(evalOut = modAlg, curModel=1, envs=envsFut,alg='BIOCLIM', pjExt = expertAddedPoly)
+# generate matrix
+selCoords <- matrix(c(longitude, latitude), byrow = FALSE, ncol = 2)
+polyExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)),
+                                                 ID = 1)))
+# load model
+m <- readRDS(system.file("extdata/model.RDS",
+                         package = "wallace"))
+occsEnvs <- m@occs
+bgEnvs <- m@bg
+envsFut <- list.files(path = system.file('extdata/wc/future',
+                                         package = "wallace"),
+                      full.names = TRUE)
+envsFut <- raster::stack(envsFut)
+modProj <- proj_time(evalOut = m, curModel = 1,
+                     envs = envsFut, alg = 'maxent.jar',
+                     pjExt = polyExt, clamp = FALSE, outputType = 'cloglog')
 }
 \seealso{
-\code{\link[dismo]{predict}}, \code{\link{proj_time}} \code{\link{proj_userEnvs}}
+\code{\link[dismo]{predict}}, \code{\link{proj_time}}
+\code{\link{proj_userEnvs}}
 }
 \author{
 Jamie Kass <jkass@gradcenter.cuny.edu>

@@ -12,7 +12,7 @@ projMess_{{spAbr}} <- proj_mess(
   time = "{{time_rmd}}")
 
 # Generate MESS map
-rasVals_{{spAbr}} <-  getRasterVals(projMess_{{spAbr}})
+rasVals_{{spAbr}} <-  alfred.getRasterVals(projMess_{{spAbr}})
 
   # define colorRamp for mess
   if (max(rasVals_{{spAbr}}) > 0 & min(rasVals_{{spAbr}}) < 0) {
@@ -35,7 +35,7 @@ rasVals_{{spAbr}} <-  getRasterVals(projMess_{{spAbr}})
 m  %>%
     leaflet::addLegend("bottomright", pal = legendPal_{{spAbr}}, title = "MESS Values",
               values = rasVals_{{spAbr}}, layerId = 'proj',
-              labFormat = reverseLabels(2, reverse_order=TRUE)) %>%
+              labFormat = alfred.reverseLabel(2, reverse_order=TRUE)) %>%
   # map model prediction raster and projection polygon
  clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
     addRasterImage(projMess_{{spAbr}}, colors =   rasPal_{{spAbr}} , opacity = 0.9,

@@ -17,57 +17,81 @@ proj_area(
 )
 }
 \arguments{
-\item{evalOut}{ENMevaluate output from previous module and using any of the available algorithms}
+\item{evalOut}{ENMevaluate output from previous module and using any of the
+available algorithms.}
 
-\item{curModel}{If algorithm is maxent, model selected by user as best or optimal, in terms of feature class and regularization multiplier (e.g 'L_1'). Else must be 1}
+\item{curModel}{If algorithm is maxent, model selected by user as best or
+optimal, in terms of feature class and regularization multiplier
+(e.g 'L_1'). Else must be 1.}
 
-\item{envs}{environmental layers to be used for projecting the model. They must match the layers used for generating the model in the model component}
+\item{envs}{environmental layers to be used for projecting the model. They
+must match the layers used for generating the model in the model component.}
 
-\item{pjExt}{extent of the area to project the model. This is defined by the user in the map of the GUI and is provided as a SpatialPolygons object}
+\item{pjExt}{extent of the area to project the model. This is defined by the
+user in the map of the GUI and is provided as a SpatialPolygons object.}
 
-\item{alg}{character. modeling algorithm used in the model component. Can be one of : 'BIOCLIM', 'maxent.jar' or 'maxnet'}
+\item{alg}{character. modeling algorithm used in the model component. Can
+be one of : 'BIOCLIM', 'maxent.jar' or 'maxnet'.}
 
-\item{outputType}{output type to be used when algorithm is maxnet or maxent.jar}
+\item{outputType}{output type to be used when algorithm is maxnet
+or maxent.jar.}
 
-\item{clamp}{logical. Whether projection will be of clamped or unclamped model}
+\item{clamp}{logical. Whether projection will be of clamped or unclamped
+model.}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-otherwise leave the default NULL}
+\item{logger}{Stores all notification messages to be displayed in the Log
+Window of Wallace GUI. Insert the logger reactive list here for running
+in shiny, otherwise leave the default NULL.}
 
 \item{spN}{Character used to obtain species name for logger messages}
 }
 \value{
-A list of two elements: projExt and projArea.
-The first is a RasterBrick or a RasterStack of the environmental variables cropped to the projection area.
-The second element is a raster of the projected model with the specified output type.
+A list of two elements: projExt and projArea. The first is a
+  RasterBrick or a RasterStack of the environmental variables cropped to the
+  projection area. The second element is a raster of the projected model with
+  the specified output type.
 }
 \description{
-Function projects the model generated in previous components to a new user drawn area.
+Function projects the model generated in previous components to
+  a new user drawn area.
 }
 \details{
-This functions allows for the projection of the model created in previous components to a new area.
-The projection area is user provided in the map of the GUI. The model will be projected to the new area as long as the environmental variables are available for the area.
-This function returns a list including the cropped environmental variables used for projecting and the projected model.
+This functions allows for the projection of the model created in previous
+  components to a new area. The projection area is user provided in the map
+  of the GUI. The model will be projected to the new area as long as the
+  environmental variables are available for the area. This function returns
+  a list including the cropped environmental variables used for projecting
+  and the projected model.
 }
 \examples{
-spN<-"Panthera onca"
-out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
-occs <- as.data.frame(out.gbif[[1]]$cleaned)
-envs <- envs_worldclim(bcRes = 10, bcSel = c("bio01","bio02","bio13","bio14"), doBrick = FALSE)
-bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
-bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
-bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=spN)
-partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=spN)
-longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331, -66.47149, -66.71319, -71.11931)
-latitude <- c(13.18379, 7.52315, 0.93105, -1.70167, 0.98391, 6.09208, 12.74980)
-selCoords <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
-expertAddedPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)), ID=1)))
-modAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=occs)
-modProj <- proj_area(evalOut = modAlg, curModel = 1, envs, outputType = 'raw', alg='BIOCLIM', pjExt = expertAddedPoly)
+\dontrun{
+envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
+                                           package = "wallace"),
+                      pattern = ".tif$", full.names = TRUE),
+                      rasName = list.files(system.file("extdata/wc",
+                                           package = "wallace"),
+                      pattern = ".tif$", full.names = FALSE))
+# extent to project
+longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331,
+               -66.47149, -66.71319, -71.11931)
+latitude <- c(13.18379, 7.52315, 0.93105,
+              -1.70167, 0.98391, 6.09208, 12.74980)
+selCoords <- matrix(c(longitude, latitude), byrow = FALSE, ncol = 2)
+polyExt <-
+  sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)),
+                      ID = 1)))
+# load model
+m <- readRDS(system.file("extdata/model.RDS",
+                         package = "wallace"))
+modProj <- proj_area(evalOut = m, curModel = 1, envs,
+                     outputType = 'cloglog', alg = 'maxent.jar',
+                     clamp = TRUE, pjExt = polyExt)
+}
 
 }
 \seealso{
-\code{\link[dismo]{predict}}, \code{\link{proj_time}} \code{\link{proj_userEnvs}}
+\code{\link[dismo]{predict}}, \code{\link{proj_time}}
+\code{\link{proj_userEnvs}}
 }
 \author{
 Jamie Kass <jkass@gradcenter.cuny.edu>

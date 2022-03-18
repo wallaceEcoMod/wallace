@@ -70,13 +70,13 @@ proj_area_module_server <- function(input, output, session, common) {
   observeEvent(input$goProjExtArea, {
     # ERRORS ####
     if (is.null(spp[[curSp()]]$visualization$mapPred)) {
-      logger %>% writeLog(type = 'error',
+      logger %>% alfred.writeLog(type = 'error',
           'Calculate a model prediction in model component before projecting.')
       return()
     }
     if (input$projExt == 'pjDraw') {
       if (is.null(spp[[curSp()]]$polyPjXY)) {
-        logger %>% writeLog(type = 'error',
+        logger %>% alfred.writeLog(type = 'error',
             paste0("The polygon has not been drawn and finished. Please use the ",
                    "draw toolbar on the left-hand of the map to complete the ",
                    "polygon."))
@@ -85,7 +85,7 @@ proj_area_module_server <- function(input, output, session, common) {
     }
     if (input$projExt == 'pjUser') {
       if (is.null(input$userPjShp$datapath)) {
-        logger %>% writeLog(type = 'error', "Specified filepath(s) ")
+        logger %>% alfred.writeLog(type = 'error', "Specified filepath(s) ")
         return()
       }
     }
@@ -95,16 +95,16 @@ proj_area_module_server <- function(input, output, session, common) {
       polyPj <- proj_draw(spp[[curSp()]]$polyPjXY, spp[[curSp()]]$polyPjID,
                           input$drawPjBuf, logger, spN = curSp())
       if (input$drawPjBuf == 0 ) {
-        logger %>% writeLog(
-          hlSpp(curSp()), 'Draw polygon without buffer.')
+        logger %>% alfred.writeLog(
+          alfred.hlSpp(curSp()), 'Draw polygon without buffer.')
       } else {
-        logger %>% writeLog(
-          hlSpp(curSp()), 'Draw polygon with buffer of ', input$drawPjBuf,
+        logger %>% alfred.writeLog(
+          alfred.hlSpp(curSp()), 'Draw polygon with buffer of ', input$drawPjBuf,
           ' degrees.')
       }
       # METADATA ####
-      polyX <- printVecAsis(round(spp[[curSp()]]$polyPjXY[, 1], digits = 4))
-      polyY <- printVecAsis(round(spp[[curSp()]]$polyPjXY[, 2], digits = 4))
+      polyX <- alfred.printVecAsis(round(spp[[curSp()]]$polyPjXY[, 1], digits = 4))
+      polyY <- alfred.printVecAsis(round(spp[[curSp()]]$polyPjXY[, 2], digits = 4))
       spp[[curSp()]]$rmm$code$wallace$drawExtPolyPjCoords <-
         paste0('X: ', polyX, ', Y: ', polyY)
       spp[[curSp()]]$rmm$code$wallace$PjBuff <- input$drawPjBuf
@@ -116,9 +116,10 @@ proj_area_module_server <- function(input, output, session, common) {
       # ERRORS ####
       # Check that the extents of raster and projection extent instersects
       if (!rgeos::gIntersects(spp[[curSp()]]$project$pjExt,
-                              as(raster::extent(userProjEnvs), 'SpatialPolygons'))) {
+                              methods::as(raster::extent(userProjEnvs),
+                                          'SpatialPolygons'))) {
         logger %>%
-          writeLog(type = 'error', 'Extents do not overlap')
+          alfred.writeLog(type = 'error', 'Extents do not overlap')
         return()
       }
       # METADATA ####
@@ -150,19 +151,19 @@ proj_area_module_server <- function(input, output, session, common) {
     # ERRORS ####
     if (is.null(spp[[curSp()]]$visualization$mapPred)) {
       logger %>%
-        writeLog(type = 'error',
+        alfred.writeLog(type = 'error',
                  'Calculate a model prediction in model component before projecting.')
       return()
     }
     if (is.null(spp[[curSp()]]$project$pjExt)) {
-      logger %>% writeLog(type = 'error', 'Select projection extent first.')
+      logger %>% alfred.writeLog(type = 'error', 'Select projection extent first.')
       return()
     }
     # Check that the extents of raster and projection extent intersects
     if (!rgeos::gIntersects(spp[[curSp()]]$project$pjExt,
-                            as(raster::extent(envs()), 'SpatialPolygons'))) {
+                            methods::as(raster::extent(envs()), 'SpatialPolygons'))) {
       logger %>%
-        writeLog(type = 'error', 'Extents do not overlap')
+        alfred.writeLog(type = 'error', 'Extents do not overlap')
       return()
     }
 
@@ -198,18 +199,18 @@ proj_area_module_server <- function(input, output, session, common) {
 
     if(!(input$threshold == 'none')) {
       if (input$threshold == 'mtp') {
-        thr <- quantile(occPredVals, probs = 0)
+        thr <- stats::quantile(occPredVals, probs = 0)
       } else if (input$threshold == 'p10') {
-        thr <- quantile(occPredVals, probs = 0.1)
+        thr <- stats::quantile(occPredVals, probs = 0.1)
       } else if (input$threshold == 'qtp'){
-        thr <- quantile(occPredVals, probs = input$trainPresQuantile)
+        thr <- stats::quantile(occPredVals, probs = input$trainPresQuantile)
       }
       projAreaThr <- projArea > thr
-      logger %>% writeLog(hlSpp(curSp()), "Projection of model to new area with threshold ",
+      logger %>% alfred.writeLog(alfred.hlSpp(curSp()), "Projection of model to new area with threshold ",
                           input$threshold, ' (', formatC(thr, format = "e", 2), ').')
     } else {
       projAreaThr <- projArea
-      logger %>% writeLog(hlSpp(curSp()), "Projection of model to new area with ",
+      logger %>% alfred.writeLog(alfred.hlSpp(curSp()), "Projection of model to new area with ",
                           predType, ' output.')
     }
     raster::crs(projAreaThr) <- raster::crs(envs())
@@ -219,15 +220,15 @@ proj_area_module_server <- function(input, output, session, common) {
     # LOAD INTO SPP ####
     spp[[curSp()]]$project$pjEnvs <- projExt
     spp[[curSp()]]$project$mapProj <- projAreaThr
-    spp[[curSp()]]$project$mapProjVals <- getRasterVals(projAreaThr, predType)
+    spp[[curSp()]]$project$mapProjVals <- alfred.getRasterVals(projAreaThr, predType)
 
     # METADATA ####
     spp[[curSp()]]$rmm$code$wallace$project_curModel <- curModel()
     spp[[curSp()]]$rmm$code$wallace$project_area <- TRUE
     spp[[curSp()]]$rmm$data$transfer$environment1$minVal <-
-      printVecAsis(raster::cellStats(projExt, min), asChar = TRUE)
+      alfred.printVecAsis(raster::cellStats(projExt, min), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$maxVal <-
-      printVecAsis(raster::cellStats(projExt, max), asChar = TRUE)
+      alfred.printVecAsis(raster::cellStats(projExt, max), asChar = TRUE)
     if (spp[[curSp()]]$rmm$data$environment$sources == 'WorldClim 1.4') {
       spp[[curSp()]]$rmm$data$transfer$environment1$yearMin <- 1960
       spp[[curSp()]]$rmm$data$transfer$environment1$yearMax <- 1990
@@ -235,7 +236,7 @@ proj_area_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$rmm$data$transfer$environment1$resolution <-
       paste(round(raster::res(projExt)[1] * 60, digits = 2), "degrees")
     spp[[curSp()]]$rmm$data$transfer$environment1$extentSet <-
-      printVecAsis(as.vector(projExt@extent), asChar = TRUE)
+      alfred.printVecAsis(as.vector(projExt@extent), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$extentRule <-
       "transfer to user-selected new area"
     spp[[curSp()]]$rmm$data$transfer$environment1$sources <-
@@ -243,9 +244,9 @@ proj_area_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$rmm$prediction$transfer$environment1$units <-
       ifelse(predType == "raw", "relative occurrence rate", predType)
     spp[[curSp()]]$rmm$prediction$transfer$environment1$minVal <-
-      printVecAsis(raster::cellStats(projAreaThr, min), asChar = TRUE)
+      alfred.printVecAsis(raster::cellStats(projAreaThr, min), asChar = TRUE)
     spp[[curSp()]]$rmm$prediction$transfer$environment1$maxVal <-
-      printVecAsis(raster::cellStats(projAreaThr, max), asChar = TRUE)
+      alfred.printVecAsis(raster::cellStats(projAreaThr, max), asChar = TRUE)
     if(!(input$threshold == 'none')) {
       spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet <- thr
       if (input$threshold == 'qtp') {
@@ -272,7 +273,7 @@ proj_area_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$polyPjXY <- NULL
     spp[[curSp()]]$polyPjID <- NULL
     spp[[curSp()]]$project <- NULL
-    logger %>% writeLog("Reset projection extent.")
+    logger %>% alfred.writeLog("Reset projection extent.")
   })
 
   return(list(
@@ -318,8 +319,8 @@ proj_area_module_map <- function(map, common) {
     shp <- lapply(polyPjXY, function(x) x@coords)
   }
   bb <- spp[[curSp()]]$project$pjExt@bbox
-  bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
-  map %>% clearAll() %>% removeImage('projRas') %>%
+  bbZoom <- alfred.polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
+  map %>% alfred.clearAll() %>% removeImage('projRas') %>%
     fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
   for (poly in shp) {
     map %>% addPolygons(lng = poly[, 1], lat = poly[, 2], weight = 4,
@@ -344,7 +345,7 @@ proj_area_module_map <- function(map, common) {
       addLegend("bottomright", pal = legendPal,
                 title = "Predicted Suitability<br>(Projected)",
                 values = mapProjVals, layerId = 'proj',
-                labFormat = reverseLabels(2, reverse_order = TRUE))
+                labFormat = alfred.reverseLabel(2, reverse_order = TRUE))
   }
   # map model prediction raster and projection polygon
   map %>% clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
@@ -366,7 +367,7 @@ proj_area_module_rmd <- function(species) {
     clamp_rmd = species$rmm$model$algorithm$maxent$clamping,
     ###arguments for creating extent
     polyPjXY_rmd = if(!is.null(species$rmm$code$wallace$drawExtPolyPjCoords)){
-    printVecAsis(species$polyPjXY)} else {NULL},
+    alfred.printVecAsis(species$polyPjXY)} else {NULL},
     polyPjID_rmd =  if(!is.null(species$rmm$code$wallace$drawExtPolyPjCoords)){
      species$polyPjID} else {0},
     BgBuf_rmd = species$rmm$code$wallace$PjBuff,

@@ -1,30 +1,58 @@
 #' @title espace_pca Principal component analysis
-#' @description Principal component analysis to reduce dimensionalty of environmental space
+#' @description Principal component analysis to reduce dimensionalty of
+#'   environmental space
 #' @details
-#' This function is called by the component espace to calibrate a pca for one (default) or 2 species in environmental space.
-#' When using within Wallace GUI parameters are obtained from the model object, in particular,
-#' table of occurences with environmental values and table of background points with environmental values. User must be careful as these tables must contain only
-#' environmental variables and not the point coordinates as outputed by model objects. The PCA is calibrated over the whole set of background points
-#' The provided species name(s) are only used for logger messages and not for querying or selecting occurrences.
+#' This function is called by the component espace to calibrate a pca for one
+#'   (default) or 2 species in environmental space. When using within Wallace
+#'   GUI parameters are obtained from the model object, in particular, table of
+#'   occurences with environmental values and table of background points with
+#'   environmental values. User must be careful as these tables must contain only
+#'   environmental variables and not the point coordinates as outputed by model
+#'   objects. The PCA is calibrated over the whole set of background points.
+#'   The provided species name(s) are only used for logger messages and not for
+#'   querying or selecting occurrences.
 
-#' @param sp.name1 character. Name of species 1 to be analyzed
-#' @param sp.name2 character. Name of species 2 to be analyzed. Default is NULL
-#' @param occs.z1 table of occurrences with environmental values only for sp1
-#' @param occs.z2 table of occurrences with environmental values only for sp2. Default is NULL
-#' @param bgPts.z1 table of background points with environmental values only for sp1
-#' @param bgPts.z2 table of background points with environmental values only for sp2. Default is NULL
-#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-#'  otherwise leave the default NULL
+#' @param sp.name1 character. Name of species 1 to be analyzed.
+#' @param sp.name2 character. Name of species 2 to be analyzed. Default is NULL.
+#' @param occs.z1 table of occurrences with environmental values only for sp1.
+#' @param occs.z2 table of occurrences with environmental values only for sp2.
+#'   Default is NULL.
+#' @param bgPts.z1 table of background points with environmental values only
+#'   for sp1.
+#' @param bgPts.z2 table of background points with environmental values only
+#'   for sp2. Default is NULL.
+#' @param logger Stores all notification messages to be displayed in the Log
+#'   Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
+#'   otherwise leave the default NULL
 #' @examples
-#' sp.name1 <- "Panthera onca"
-#' occs <-  as.data.frame(wallace::occs_queryDb(spName = sp.name1, occDb = "gbif", occNum = 100)[[1]]$cleaned)
-#' envs <- wallace::envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
-#' bgExt <- wallace::penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5, spN = sp.name1)
-#' bgMask <- wallace::penvs_bgMask(occs, envs, bgExt,spN=sp.name1)
-#' bg <- wallace::penvs_bgSample(occs, bgMask, bgPtsNum = 1000, spN = sp.name1)
-#' bioclimAlg <- wallace::model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask, spN = sp.name1)
-#' espace_pca(sp.name1, occs.z1 = bioclimAlg@@occs[3:7], bgPts.z1 = bioclimAlg@@bg[3:7])
+#' \dontrun{
+#' sp.name1 <- "Bassaricyon_alleni"
+#' sp.name2 <- "Bassaricyon_neblina"
+#' envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
+#'                                            package = "wallace"),
+#'                       pattern = ".tif$", full.names = TRUE),
+#'                       rasName = list.files(system.file("extdata/wc",
+#'                                            package = "wallace"),
+#'                       pattern = ".tif$", full.names = FALSE))
 #'
+#' occs.z1 <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
+#'                     package = "wallace"))
+#' occs.z2 <- read.csv(system.file("extdata/Bassaricyon_neblina.csv",
+#'                     package = "wallace"))
+#'
+#' bgPts.z1 <- read.csv(system.file("extdata/Bassaricyon_alleni_bgPoints.csv",
+#'                      package = "wallace"))
+#' bgPts.z2 <- read.csv(system.file("extdata/Bassaricyon_neblina_bgPoints.csv",
+#'                      package = "wallace"))
+#'
+#' occsExt.z1 <- raster::extract(envs, occs.z1[, c("longitude", "latitude")])
+#' occsExt.z2 <- raster::extract(envs, occs.z2[, c("longitude", "latitude")])
+#' bgExt.z1 <- raster::extract(envs, bgPts.z1[, c("longitude", "latitude")])
+#' bgExt.z2 <- raster::extract(envs, bgPts.z2[, c("longitude", "latitude")])
+#' pcaZ <- espace_pca(sp.name1, sp.name2,
+#'                    occsExt.z1, occsExt.z2,
+#'                    bgExt.z1, bgExt.z2)
+#' }
 #' @return A list of 14 elements of classes dudi and pca as in dudi.pca
 #' @seealso \code{\link[ade4]{dudi.pca}}
 #'
@@ -58,7 +86,8 @@ espace_pca <- function(sp.name1, sp.name2 = NULL, occs.z1, occs.z2 = NULL,
   } else {
     spNames <- paste0(sp.name1, " and ", sp.name2)
   }
-  logger %>% writeLog(hlSpp(spNames), "Principal component analysis.")
+  logger %>% alfred.writeLog(alfred.hlSpp(spNames),
+                             "Principal component analysis.")
 
   return(pca)
 }

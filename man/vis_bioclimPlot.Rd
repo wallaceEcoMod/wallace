@@ -4,41 +4,57 @@
 \alias{vis_bioclimPlot}
 \title{vis_bioclimPlot Visualize bivariate plot of bioclim model}
 \usage{
-vis_bioclimPlot(x, a = 1, b = 2, p = 0.9, ...)
+vis_bioclimPlot(x, a = 1, b = 2, p = 0.9)
 }
 \arguments{
-\item{x}{bioclim model including values for each environmental layer at each occurrence point}
+\item{x}{bioclim model including values for each environmental layer at
+each occurrence point}
 
-\item{a}{numeri.c Environmental layer to be used as x axis. Default is layer 1.}
+\item{a}{numeric Environmental layer to be used as x axis. Default is
+layer 1.}
 
-\item{b}{numeric. Environmental layer to be used as x axis. Default is layer 2.}
+\item{b}{numeric. Environmental layer to be used as x axis. Default is
+layer 2.}
 
-\item{p}{numeric. (0-1) percentile distribution to be used for plotting envelope and showing points outside of envelope. Default is 0.9}
+\item{p}{numeric. (0-1) percentile distribution to be used for plotting
+envelope and showing points outside of envelope. Default is 0.9}
 }
 \value{
-A bivariate plot of environmental values for occurrences. Includes a blue rectangle representing the bioclimatic enveloppe given p.
-Occurrences that are inside the envelope for all layers (included those not plotted) are shown as green circles and those outside of the envelope for one ore more variables are plotted as orange triangles/
+A bivariate plot of environmental values for occurrences. Includes a
+  blue rectangle representing the bioclimatic enveloppe given p. Occurrences
+  that are inside the envelope for all layers (included those not plotted)
+  are shown as green circles and those outside of the envelope for one ore
+  more variables are plotted as orange triangles.
 }
 \description{
-This functions creates a bivariate plot with two of the environmental variables used for modeling as x and y axes and occurrences as observations.
+This functions creates a bivariate plot with two of the environmental
+  variables used for modeling as x and y axes and occurrences as observations.
 }
 \details{
-This is a bivariate plot with x and y axes representing two of the environmental layers used for modeling (user selected although 1 and 2 as default)/
-Occurrences used for modeling are shown with differential visualization if they are outside of the selected percentile distribution (for any variable).
-Plot also includes a rectangle representing the bivariate bioclimatic envelope according to a provided percentile.
+This is a bivariate plot with x and y axes representing two of the
+  environmental layers used for modeling (user selected although 1 and 2 as
+  default). Occurrences used for modeling are shown with differential
+  visualization if they are outside of the selected percentile distribution
+  (for any variable). Plot also includes a rectangle representing the
+  bivariate bioclimatic envelope according to a provided percentile.
 }
 \examples{
-spN<-"Panthera onca"
-out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
-occs <- as.data.frame(out.gbif[[1]]bcSel = c("bio01","bio02","bio13","bio14"), doBrick = FALSE)
-bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
-bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
-bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=spN)
-partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=spN)
-occs$partition <- partblock$occ.grp
-bg$partition <- partblock$bg.grp
-bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMask,spN=spN)
-bioclimPlot <- vis_bioclimPlot(x = bioclimAlg@models$bioclim, a=1, b=2, p=1)
+\dontrun{
+envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
+                                           package = "wallace"),
+                      pattern = ".tif$", full.names = TRUE),
+                      rasName = list.files(system.file("extdata/wc",
+                                           package = "wallace"),
+                      pattern = ".tif$", full.names = FALSE))
+occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
+                 package = "wallace"))
+bg <- read.csv(system.file("extdata/Bassaricyon_alleni_bgPoints.csv",
+               package = "wallace"))
+partblock <- part_partitionOccs(occs, bg, method = 'block')
+m <- model_bioclim(occs, bg, partblock, envs)
+bioclimPlot <- vis_bioclimPlot(x = m@models$bioclim,
+                               a = 1, b = 2, p = 1)
+}
 
 }
 \seealso{
