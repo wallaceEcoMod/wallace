@@ -11,7 +11,6 @@ txtName <- 'Marmosops_sp'
 user.occs <- occs_userOccs(txtPath, txtName,
                            txtSep = ",", txtDec = ".")
 
-
 ### test if the error messages appear when they are supposed to
 test_that("error checks", {
    # user's input headers are in an invalid format

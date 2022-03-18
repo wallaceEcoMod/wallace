@@ -63,7 +63,7 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
                     silent = TRUE)
   })
 
-  if (class(occsOrig) == "try-error") {
+  if (inherits(occsOrig, "try-error")) {
     logger %>% alfred.writeLog(
       type = 'error',
       alfred.hlSpp(alfred.hlSpp(alfred.fmtSpN(spName))),

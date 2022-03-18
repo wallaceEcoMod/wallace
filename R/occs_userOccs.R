@@ -37,7 +37,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep = ",", txtDec = ".",
   txt <- tryCatch(expr = utils::read.delim(file = txtPath, header = TRUE,
                                            sep = txtSep, dec = txtDec),
                   error = function(e) "error")
-  if (class(txt) == "character") {
+  if (inherits(txt, "character")) {
     logger %>% alfred.writeLog(
       type = "error",
       paste0("There is something wrong in your file. Check file format or ",
