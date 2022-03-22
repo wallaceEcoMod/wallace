@@ -31,7 +31,7 @@
 #'
 
 post_userSDM <- function(rasPath, rasName, logger = NULL) {
-  spName <- fileNameNoExt(rasName)
+  spName <- alfred.fileNameNoExt(rasName)
   spName <- paste0(toupper(substring(spName, 1, 1)),
                    substring(spName, 2, nchar(spName)))
   # Check genus and species name on file
@@ -44,7 +44,7 @@ post_userSDM <- function(rasPath, rasName, logger = NULL) {
   alfred.smartProgress(logger, message = "Uploading user-specified SDM (**)...", {
     r <- raster::raster(rasPath)
     r <- raster::trim(r)
-    names(r) <- fileNameNoExt(rasName)
+    names(r) <- alfred.fileNameNoExt(rasName)
     extPoly <- raster::extent(r)
     if (extPoly@xmin < -180 | extPoly@xmax > 180 |
         extPoly@ymin < -90 | extPoly@ymax > 90) {

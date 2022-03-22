@@ -31,11 +31,11 @@
 #'
 
 change_raster <- function(rasPath, rasName, logger = NULL) {
-  rasterName <- fileNameNoExt(rasName)
+  rasterName <- alfred.fileNameNoExt(rasName)
   alfred.smartProgress(logger, message = "Uploading user-specified SDM (**)...", {
     r <- raster::raster(rasPath)
     r <- raster::trim(r)
-    names(r) <- fileNameNoExt(rasName)
+    names(r) <- alfred.fileNameNoExt(rasName)
     extPoly <- raster::extent(r)
     if (extPoly@xmin < -180 | extPoly@xmax > 180 |
         extPoly@ymin < -90 | extPoly@ymax > 90) {

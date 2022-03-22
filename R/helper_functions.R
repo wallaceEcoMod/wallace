@@ -32,6 +32,14 @@ alfred.printVecAsis <- function(x, asChar = FALSE) {
   }
 }
 
+#' @title alfred.fileNameNoExt
+#' @description For internal use. Delete file extensions
+#' @param f file path
+#' @export
+alfred.fileNameNoExt <- function(f) {
+  sub(pattern = "(.*)\\..*$", replacement = "\\1", f)
+}
+
 ####################### #
 # SHINY LOG #
 ####################### #
@@ -140,6 +148,19 @@ alfred.writeLog <- function(logger, ..., type = 'default') {
 alfred.clearAll <- function(map) {
   map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>%
     clearControls() %>% removeLayersControl()
+}
+
+#' @title alfred.mapBgPolys
+#' @description For internal use. Function to map all background polygons
+#' @param map leaflet map
+#' @param bgShpXY Polygon
+#' @export
+alfred.mapBgPolys <- function(map, bgShpXY, color, group) {
+  for (shp in bgShpXY) {
+    map %>%
+      addPolygons(lng = shp[,1], lat = shp[,2], fill = FALSE,
+                  weight = 4, color = color, group = group)
+  }
 }
 
 #' @title alfred.polyZoom

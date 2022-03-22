@@ -248,7 +248,7 @@ mask_expPoly_module_map <- function(map, common) {
                    alfred.clearAll() %>%
                    mapPNG(curSp()) %>%
                    # add background polygon
-                   mapBgPolys(bgShpXY(), color = 'green', group = 'postBg')
+                   alfred.mapBgPolys(bgShpXY(), color = 'green', group = 'postBg')
   )
 
   if (!any(userValues > 0 & userValues < 1)) {

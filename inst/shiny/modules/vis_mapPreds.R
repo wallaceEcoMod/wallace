@@ -256,14 +256,6 @@ vis_mapPreds_module_map <- function(map, common) {
                 labFormat = alfred.reverseLabel(2, reverse_order = TRUE))
   }
 
-  # function to map all background polygons
-  mapBgPolys <- function(map, bgShpXY) {
-    for (shp in bgShpXY) {
-      map %>%
-        addPolygons(lng = shp[,1], lat = shp[,2], fill = FALSE,
-                    weight = 4, color = "blue", group = 'proj')
-    }
-  }
   # map model prediction raster
   map %>%
     addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
@@ -272,7 +264,7 @@ vis_mapPreds_module_map <- function(map, common) {
     addRasterImage(mapPred(), colors = rasPal, opacity = 0.7,
                    group = 'vis', layerId = 'mapPred', method = "ngb") %>%
     # add background polygon(s)
-    mapBgPolys(bgShpXY())
+    alfred.mapBgPolys(bgShpXY(), color = "blue", group = 'proj')
 }
 
 vis_mapPreds_module_rmd <- function(species) {

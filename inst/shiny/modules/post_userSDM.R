@@ -20,7 +20,7 @@ post_userSDM_module_server <- function(input, output, session, common) {
     # FUNCTION CALL ####
     for (i in 1:length(input$sdmFile$name)) {
       ###########################
-      newSppName <- fileNameNoExt(alfred.fmtSpN(input$sdmFile$name[i]))
+      newSppName <- alfred.fileNameNoExt(alfred.fmtSpN(input$sdmFile$name[i]))
 
       if (!(newSppName %in% names(spp))) {
         userSDMs <- post_userSDM(rasPath = input$sdmFile$datapath[i],
@@ -84,7 +84,7 @@ post_userSDM_module_map <- function(map, common) {
       icon = htmltools::span(class = "star", htmltools::HTML("&starf;")),
       onClick = JS("function(btn, map){ map.invalidateSize();}"))) %>%
     # add background polygon
-    mapBgPolys(bgShpXY(), color = 'green', group = 'post')
+    alfred.mapBgPolys(bgShpXY(), color = 'green', group = 'post')
 
   # Define raster colors and shiny legend
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
