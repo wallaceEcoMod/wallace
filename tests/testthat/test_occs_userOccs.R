@@ -2,41 +2,57 @@
 #### MODULE: User-specified
 context("userOccs")
 
-source("test_helper_functions.R")
-
-
 ### Set parameters
 ## path to the file
-txtPath <- './Data/Marmosops_sp.csv'
-## file name
+txtPath <- system.file("extdata/Marmosops_sp.csv", package = "wallace")
 txtName <- 'Marmosops_sp'
 
-
 ### run function
-user.occs <- occs_userOccs(txtPath, txtName,txtSep=",",txtDec=".")
-
+user.occs <- occs_userOccs(txtPath, txtName,
+                           txtSep = ",", txtDec = ".")
 
 ### test if the error messages appear when they are supposed to
 test_that("error checks", {
    # user's input headers are in an invalid format
-  expect_error(occs_userOccs(txtPath = './Data/Marmosops_wrong.csv',
-                           txtName = 'Marmosops_wrong',txtSep=",",txtDec="."),
-               'Please input a file with columns "scientific_name", "longitude", "latitude" or check delimeter and decimal separators.',fixed=T)
-  expect_error(occs_userOccs(txtPath='./Data/Marmosops_wrongSP.csv',txtName='Data/Marmosops_wrongSP.csv',txtSep=",",txtDec="."),
-              'Please input just genus and species epithet in scientific name field in your file (e.g., "Canis lupus").',fixed=T)
-  expect_error(occs_userOccs(txtPath='./Data/Marmosops_sp.csv',txtSep=" ",txtDec="."),
-              "There is something wrong in your file. Check file format or delimiter and decimal separators.",fixed=T)
+  expect_error(
+    occs_userOccs(txtPath = './extdata/Marmosops_wrong.csv',
+                  txtName = 'Marmosops_wrong',
+                  txtSep = ",", txtDec = "."),
+    paste0('Please input a file with columns "scientific_name", ',
+           '"longitude", "latitude" in that order or check delimeter and ',
+           'decimal separators.'),
+    fixed = TRUE)
+  expect_error(
+    occs_userOccs(txtPath = './extdata/Marmosops_wrongSP.csv',
+                  txtName = 'Marmosops_wrongSP',
+                  txtSep = ",", txtDec = "."),
+    paste0('Please input just genus and species epithet in scientific name ',
+           'field in your file (e.g., "Canis lupus").'),
+    fixed = TRUE)
+  expect_error(
+    occs_userOccs(txtPath = './extdata/Marmosops_sp.csv',
+                  txtName = 'Marmosops_sp',
+                  txtSep = " ", txtDec = "."),
+    paste0('There is something wrong in your file. Check file format or ',
+           'delimiter and decimal separators.'),
+    fixed = TRUE)
 
-  expect_error(occs_userOccs(txtPath='./Data/cerdocyon-thous-2.csv',txtName='Data/cerdocyon-thous-2.csv',txtSep=",",txtDec="."),
-              'Please input txt file. No all values in longitude or latitude are numeric.',fixed=T)
+  expect_error(
+    occs_userOccs(txtPath = './extdata/cerdocyon-thous-2.csv',
+                  txtName = 'cerdocyon-thous-2',
+                  txtSep = ",", txtDec = "."),
+    'Please input txt file. No all values in longitude or latitude are numeric.',
+    fixed = TRUE)
  })
 
 ### test if the warning messages appear when they are supposed to
 test_that("warnings checks", {
    # user's input does not have coordinates
-  expect_warning(occs_userOccs(txtPath = './Data/Marmosops_NA.csv',
-                             txtName = 'Marmosops_NA',txtSep=",",txtDec="."),
-                 paste0('No records with coordinates found in ', "Marmosops_NA", "."))
+  expect_warning(
+    occs_userOccs(txtPath = './extdata/Marmosops_NA.csv',
+                  txtName = 'Marmosops_NA',
+                  txtSep = ",", txtDec = "."),
+    paste0('No records with coordinates found in ', "Marmosops_NA", "."))
   })
 
 ### test output features

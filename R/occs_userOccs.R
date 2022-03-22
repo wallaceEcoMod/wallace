@@ -1,50 +1,44 @@
 #' @title occs_userOccs Loads user provided occurrence records
 #' @description
-#' Load user database with species occurrence records. Returns a list of lists, one per species provided in database in each species list with a set of appropriate fields
+#' Load user database with species occurrence records. Returns a list of lists,
+#'   one per species provided in database in each species list with a set of
+#'   appropriate fields
 #' @details
-#' This function is called by the module occs_queryDb to load a user provided database for
-#' species occurrence records, subset to only those records with coordinates,
-#' remove records with duplicate coordinates, and select some columns with fields
-#' appropriate to studies in biogeography.
+#' This function is called by the module occs_queryDb to load a user provided
+#' database for species occurrence records, subset to only those records with
+#' coordinates, remove records with duplicate coordinates, and select some
+#' columns with fields appropriate to studies in biogeography.
 #'
 #' @param txtPath path to database including database name and extension
-#' @param txtName name of database without the extension. Database must have at least three columns named 'scientific_name', 'longitude', 'latitude'
+#' @param txtName name of database without the extension. Database must have
+#'   at least three columns named 'scientific_name', 'longitude', 'latitude'
 #' @param txtSep  field separator used in database (as in read.delim)
 #' @param txtDec  decimal separator used for coordinates in database
-#' @param logger Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-#'  otherwise leave the default NULL
-# @keywords
-#'
+#' @param logger Stores all notification messages to be displayed in the Log
+#'   Window of Wallace GUI. Insert the logger reactive list here for running
+#'   in shiny, otherwise leave the default NULL
 #' @examples
-#'txtPath <- './Data/Marmosops_sp.csv'
-#'txtName <- 'Marmosops_sp'
-#'user.occs <- occs_userOccs(txtPath, txtName,txtSep=",",txtDec=".")
+#' txtPath <- system.file("extdata/Bassaricyon_alleni.csv", package = "wallace")
+#' txtName <- 'Bassaricyon_alleni'
+#' user.occs <- occs_userOccs(txtPath, txtName)
 #'
 #'
-#' @return List of lists. One list per species with occurence records. Each individual species list with appropriate fields for analysis
+#' @return List of lists. One list per species with occurence records. Each
+#'   individual species list with appropriate fields for analysis
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
-# @note
-
-# @seealso
-# @references
-# @aliases - a list of additional topic names that will be mapped to
-# this documentation when the user looks them up from the command
-# line.
-# @family - a family name. All functions that have the same family tag will be linked
-#  in the documentation.
-
+#' @importFrom rlang .data
 #' @export
 
-occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
+occs_userOccs <- function(txtPath, txtName, txtSep = ",", txtDec = ".",
                           logger = NULL) {
 
   # read in txt
-  txt <- tryCatch(expr = read.delim(file = txtPath, header = TRUE, sep = txtSep,
-                                    dec = txtDec),
+  txt <- tryCatch(expr = utils::read.delim(file = txtPath, header = TRUE,
+                                           sep = txtSep, dec = txtDec),
                   error = function(e) "error")
-  if (class(txt) == "character") {
-    logger %>% writeLog(
+  if (inherits(txt, "character")) {
+    logger %>% alfred.writeLog(
       type = "error",
       paste0("There is something wrong in your file. Check file format or ",
              "delimiter and decimal separators."))
@@ -52,8 +46,8 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
   }
 
   # check to make sure all column names are correct
-  if (length(which(c('scientific_name', 'longitude', 'latitude') == names(txt)))!=3) {
-    logger %>% writeLog(
+  if (length(which(c('scientific_name', 'longitude', 'latitude') == names(txt))) != 3) {
+    logger %>% alfred.writeLog(
       type = "error",
       paste0('Please input a file with columns "scientific_name", ',
              '"longitude", "latitude" in that order or check delimeter and decimal ',
@@ -63,10 +57,10 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
 
 
   # subset to just records with non-NA latitude and longitude
-  txt.xy <- txt %>% dplyr::filter(!is.na(latitude) & !is.na(longitude))
+  txt.xy <- txt %>% dplyr::filter(!is.na(.data$latitude) & !is.na(.data$longitude))
   txt.xy$scientific_name <- trimws(txt.xy$scientific_name)
   # get all species names
-  occs <- txt.xy %>% dplyr::filter(!grepl("bg_", scientific_name))
+  occs <- txt.xy %>% dplyr::filter(!grepl("bg_", .data$scientific_name))
   spNames <- trimws(as.character(occs$scientific_name))
 
   spCap <- function(x) {
@@ -80,7 +74,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
   # if two names not entered, throw error and return
   if (!all(namesSplitCheck)) {
     logger %>%
-      writeLog(type = 'error',
+      alfred.writeLog(type = 'error',
                paste0('Please input just genus and species epithet in scientific',
                       ' name field in your file (e.g., "Canis lupus").'))
     return()
@@ -88,16 +82,16 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
 
 
   if (nrow(occs) == 0) {
-    logger %>% writeLog(type = 'warning',
+    logger %>% alfred.writeLog(type = 'warning',
       'No records with coordinates found in ', txtName, ".")
     return()
   }
 
   # Check that longitude and latitude are numeric
   else if (!is.numeric(txt$longitude) | !is.numeric(txt$latitude)) {
-    logger %>% writeLog(
+    logger %>% alfred.writeLog(
       type = "error",
-      paste0('Please input txt file. No all values in longitude or latitude are numeric.'))
+      'Please input txt file. No all values in longitude or latitude are numeric.')
     return()
   }
   # Transform scientific_name field
@@ -106,7 +100,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
   # put species into a list in the same form as spp
   occsList <- list()
   for (i in unique(spNames)) {
-    sp.occs <- txt.xy %>% dplyr::filter(scientific_name == i)
+    sp.occs <- txt.xy %>% dplyr::filter(.data$scientific_name == i)
     # add occID field if it doesn't exist
     if(!("occID" %in% names(sp.occs))) sp.occs$occID <- row.names(sp.occs)
     # add all cols to match dbOccs if not already there
@@ -121,13 +115,13 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
               "institution_code", "elevation", "uncertainty")
     sp.occs <- sp.occs %>%
       dplyr::select(dplyr::one_of(cols)) %>%
-      dplyr::mutate(year = as.integer(year),
-                    uncertainty = as.numeric(uncertainty)) %>%
+      dplyr::mutate(year = as.integer(.data$year),
+                    uncertainty = as.numeric(.data$uncertainty)) %>%
       # # make new column for leaflet marker popup content
-      dplyr::mutate(pop = unlist(apply(sp.occs, 1, popUpContent))) %>%
-      dplyr::arrange_(cols)
+      dplyr::mutate(pop = unlist(apply(sp.occs, 1, alfred.popUpContent))) %>%
+      dplyr::arrange(dplyr::across(cols))
 
-    n <- formatSpName(i)
+    n <- alfred.fmtSpN(i)
 
     # subset to just records with latitude and longitude
     occsXY <- sp.occs[!is.na(sp.occs$latitude) & !is.na(sp.occs$longitude),]
@@ -145,18 +139,18 @@ occs_userOccs <- function(txtPath, txtName, txtSep, txtDec,
     # subset by key columns and make id and popup columns
     dupsRem <- nrow(sp.occs) - nrow(occs)
 
-    logger %>% writeLog(
-      hlSpp(n), "Data uploaded from <i>'", txtName,
+    logger %>% alfred.writeLog(
+      alfred.hlSpp(n), "Data uploaded from <i>'", txtName,
       "'</i>: Duplicated records removed [",
       dupsRem, "]. Remaining records [", nrow(occs), "].")
 
     # look for background records
-    sp.bg <- txt.xy %>% dplyr::filter(scientific_name == paste0("bg_", i))
+    sp.bg <- txt.xy %>% dplyr::filter(.data$scientific_name == paste0("bg_", i))
     # if they exist, load them into occsList for the current species
     if(nrow(sp.bg) > 0) {
       occsList[[n]]$bg <- sp.bg
-      logger %>% writeLog(
-        hlSpp(n), "Data for uploaded from <i>'", txtName, "'</i>: ",
+      logger %>% alfred.writeLog(
+        alfred.hlSpp(n), "Data for uploaded from <i>'", txtName, "'</i>: ",
         nrow(sp.bg), " background records.")
     }
   }

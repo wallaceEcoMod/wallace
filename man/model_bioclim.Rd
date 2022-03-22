@@ -7,39 +7,50 @@
 model_bioclim(occs, bg, user.grp, bgMsk, logger = NULL, spN = NULL)
 }
 \arguments{
-\item{occs}{data frame of cleaned or processed occurrences obtained from components occs: Obtain occurrence data or, poccs: Process occurrence data.}
+\item{occs}{data frame of cleaned or processed occurrences obtained from
+components occs: Obtain occurrence data or, poccs: Process occurrence data.}
 
-\item{bg}{coordinates of background points to be used for modeling}
+\item{bg}{coordinates of background points to be used for modeling.}
 
-\item{user.grp}{a list of two vectors containing group assignments for occurrences (occs.grp) and background points (bg.grp)}
+\item{user.grp}{a list of two vectors containing group assignments for
+occurrences (occs.grp) and background points (bg.grp).}
 
-\item{bgMsk}{a RasterStack or a RasterBrick of environmental layers cropped and masked to match the provided background extent}
+\item{bgMsk}{a RasterStack or a RasterBrick of environmental layers cropped
+and masked to match the provided background extent.}
 
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-otherwise leave the default NULL}
+\item{logger}{Stores all notification messages to be displayed in the Log
+Window of Wallace GUI. Insert the logger reactive list here for running
+in shiny, otherwise leave the default NULL.}
 
-\item{spN}{character. Species name to be used for all logger messages}
+\item{spN}{character. Species name to be used for all logger messages.}
 }
 \value{
-Function returns an ENMevaluate object with all the evaluated models and a selection of appropriate fields.
+Function returns an ENMevaluate object with all the evaluated models
+  and a selection of appropriate fields.
 }
 \description{
-This functions generates maxent or maxnet models using ENMeval 2.0
+This functions generates maxent or maxnet models using
+  ENMeval 2.0
 }
 \details{
-The function generates model in ENMeval using a user provided partition of occurrences from previous components in the GUI.
+The function generates model in ENMeval using a user provided partition of
+  occurrences from previous components in the GUI.
 }
 \examples{
-spN="Panthera onca"
-out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
-occs <- as.data.frame(out.gbif[[1]]$cleaned)
-occs <- poccs_thinOccs(occs = occs, thinDist = 10,spN=spN)
-envs <- envs_worldclim(bcRes = 10, bcSel = list(TRUE,TRUE,TRUE,TRUE,TRUE), doBrick = FALSE)
-bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
-bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
-bg <- penvs_bgSample(occs, bgMask, bgPtsNum = 10000,spN=spN)
-partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL, aggFact = NULL,spN=spN)
-bioclimAlg <- model_bioclim(occs, bg, user.grp=partblock, bgMask,spN=spN)
+\dontrun{
+envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
+                                           package = "wallace"),
+                      pattern = ".tif$", full.names = TRUE),
+                      rasName = list.files(system.file("extdata/wc",
+                                           package = "wallace"),
+                      pattern = ".tif$", full.names = FALSE))
+occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
+                 package = "wallace"))
+bg <- read.csv(system.file("extdata/Bassaricyon_alleni_bgPoints.csv",
+               package = "wallace"))
+partblock <- part_partitionOccs(occs, bg, method = 'block')
+m <- model_bioclim(occs, bg, partblock, envs)
+}
 
 }
 \seealso{

@@ -54,6 +54,9 @@ ui_bottom <- function(pkgName, modName, modAuts, modID) {
 }
 
 infoGenerator <- function(pkgName, modName, modAuts, modID) {
+  # Use installed package only (some packages are Suggested)
+  pkgName <- pkgName[vapply(pkgName, requireNamespace, TRUE, quietly = TRUE)]
+
   pkgInfo <- sapply(pkgName, packageDescription, simplify = FALSE)
   pkgTitl <- sapply(pkgInfo, function(x) x$Title)
   # remove square brackets and spaces before commas

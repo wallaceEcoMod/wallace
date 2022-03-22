@@ -49,14 +49,14 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
   observeEvent(input$goMapPreds, {
     # ERRORS ####
     if(is.null(evalOut())) {
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         type = 'error',
         "Models must be run before visualizing model predictions.")
       return()
     }
 
     if(is.na(input$threshold)) {
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         type = 'error', "Please select a thresholding rule.")
       return()
     }
@@ -65,7 +65,7 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
     predSel <- evalOut()@predictions[[curModel()]]
     raster::crs(predSel) <- raster::crs(bgMask())
     if(is.na(raster::crs(predSel))) {
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         type = "error",
         paste0("Model prediction raster has undefined coordinate reference ",
                "system (CRS), and thus cannot be mapped. This is likely due to",
@@ -92,7 +92,7 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
       }
       # if selected prediction type is not raw, transform
       # transform and redefine predSel
-      smartProgress(
+      alfred.smartProgress(
         logger,
         message = paste0("Generating ", input$maxentPredType,
                          " prediction for model ", curModel(), "..."), {
@@ -100,8 +100,9 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
                            clamping <- spp[[curSp()]]$rmm$model$algorithm$maxent$clamping
                            if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
                              if (predType == "raw") predType <- "exponential"
-                             predSel <- predictMaxnet(m, bgMask(),
-                                                type = predType, clamp = FALSE)
+                             predSel <- alfred.predictMaxnet(m, bgMask(),
+                                                             type = predType,
+                                                             clamp = FALSE)
                            } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
                              outputFormat <- paste0("outputformat=", predType)
                              if (clamping == TRUE) {
@@ -132,11 +133,11 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
     # get the chosen threshold value
     if (input$threshold != 'none') {
       if (input$threshold == 'mtp') {
-        thr.sel <- quantile(occPredVals, probs = 0)
+        thr.sel <- stats::quantile(occPredVals, probs = 0)
       } else if (input$threshold == 'p10') {
-        thr.sel <- quantile(occPredVals, probs = 0.1)
+        thr.sel <- stats::quantile(occPredVals, probs = 0.1)
       } else if (input$threshold == 'qtp'){
-        thr.sel <- quantile(occPredVals, probs = input$trainPresQuantile)
+        thr.sel <- stats::quantile(occPredVals, probs = input$trainPresQuantile)
       }
       predSel.thr <- predSel > thr.sel
       # rename prediction raster if thresholded
@@ -144,7 +145,7 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
       nameAlg <- ifelse(spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM",
                         "",
                         paste0(" ", spp[[curSp()]]$rmm$model$algorithms, " "))
-      logger %>% writeLog(hlSpp(curSp()),
+      logger %>% alfred.writeLog(alfred.hlSpp(curSp()),
                           input$threshold, ' threshold selected for ', nameAlg, predType,
                           ' (', formatC(thr.sel, format = "e", 2), ').')
     } else {
@@ -153,15 +154,15 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
 
     # write to log box
     if (predType == 'BIOCLIM') {
-      logger %>% writeLog(
-        hlSpp(curSp()), "BIOCLIM model prediction plotted.")
+      logger %>% alfred.writeLog(
+        alfred.hlSpp(curSp()), "BIOCLIM model prediction plotted.")
     } else if (input$threshold != 'none'){
-      logger %>% writeLog(
-        hlSpp(curSp()), spp[[curSp()]]$rmm$model$algorithms,
+      logger %>% alfred.writeLog(
+        alfred.hlSpp(curSp()), spp[[curSp()]]$rmm$model$algorithms,
         " model prediction plotted.")
     } else if (input$threshold == 'none'){
-      logger %>% writeLog(
-        hlSpp(curSp()), spp[[curSp()]]$rmm$model$algorithms, " ",
+      logger %>% alfred.writeLog(
+        alfred.hlSpp(curSp()), spp[[curSp()]]$rmm$model$algorithms, " ",
         predType, " model prediction plotted.")
     }
 
@@ -171,7 +172,7 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
       spp[[curSp()]]$visualization$thresholds <- thr.sel # were you recording multiple before?
     }
     spp[[curSp()]]$visualization$mapPred <- predSel.thr
-    spp[[curSp()]]$visualization$mapPredVals <- getRasterVals(predSel.thr, predType)
+    spp[[curSp()]]$visualization$mapPredVals <- alfred.getRasterVals(predSel.thr, predType)
     spp[[curSp()]]$postProc$prediction <- predSel.thr
     spp[[curSp()]]$postProc$OrigPred <- predSel.thr
     spp[[curSp()]]$postProc$origBgExt <- spp[[curSp()]]$procEnvs$bgExt
@@ -239,7 +240,7 @@ vis_mapPreds_module_map <- function(map, common) {
   # if threshold specified
   if (rmm()$prediction$binary$thresholdRule != 'none') {
     rasPal <- c('gray', 'blue')
-    map %>% clearAll() %>%
+    map %>% alfred.clearAll() %>%
       addLegend("bottomright", colors = c('gray', 'blue'),
                 title = "Thresholded Suitability<br>(Training)",
                 labels = c("predicted absence", "predicted presence"),
@@ -248,15 +249,26 @@ vis_mapPreds_module_map <- function(map, common) {
     # if no threshold specified
     legendPal <- colorNumeric(rev(rasCols), mapPredVals, na.color = 'transparent')
     rasPal <- colorNumeric(rasCols, mapPredVals, na.color = 'transparent')
-    map %>% clearAll() %>%
+    map %>% alfred.clearAll() %>%
       addLegend("bottomright", pal = legendPal,
                 title = "Predicted Suitability<br>(Training)",
                 values = mapPredVals, layerId = "train",
-                labFormat = reverseLabels(2, reverse_order = TRUE))
+                labFormat = alfred.reverseLabel(2, reverse_order = TRUE))
+  }
+
+  # function to map all background polygons
+  mapBgPolys <- function(map, bgShpXY) {
+    for (shp in bgShpXY) {
+      map %>%
+        addPolygons(lng = shp[,1], lat = shp[,2], fill = FALSE,
+                    weight = 4, color = "blue", group = 'proj')
+    }
   }
   # map model prediction raster
   map %>%
-    map_occs(occs()) %>%
+    addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
+                     radius = 5, color = 'red', fill = TRUE, fillColor = 'red',
+                     fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
     addRasterImage(mapPred(), colors = rasPal, opacity = 0.7,
                    group = 'vis', layerId = 'mapPred', method = "ngb") %>%
     # add background polygon(s)

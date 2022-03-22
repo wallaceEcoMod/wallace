@@ -1,6 +1,6 @@
 Package: wallace
-Version: 1.9.0
-Date: 2018-11-14
+Version: 1.9.1
+Date: 2022-03-17
 Title: A Modular Platform for Reproducible Modeling of Species Niches 
     and Distributions
 Description: The 'shiny' application Wallace is a modular platform for 
@@ -10,9 +10,9 @@ Description: The 'shiny' application Wallace is a modular platform for
     interactive map, thus bundling complex workflows into a single, 
     streamlined interface.
 Authors@R: 
-    c(person("Jamie M.", "Kass", email = "jkass@gradcenter.cuny.edu", role = c("aut", "cre")),
-    person("Gonzalo E.", "Pinilla-Buitrago", email = "gpinillabuitrago@gradcenter.cuny.edu", role = "aut"),
-    person("Andrea", "Paz", email = "paz.andreita@gmail.com", role = "aut"),
+    c(person("Jamie M.", "Kass", email = "jkass@gradcenter.cuny.edu", role = "aut"),
+    person("Gonzalo E.", "Pinilla-Buitrago", email = "gpinillabuitrago@gradcenter.cuny.edu", role = c("aut", "cre")),
+	 	person("Andrea", "Paz", email = "paz.andreita@gmail.com", role = "aut"),
 	  person("Bruno", "Vilela", email = "bvilela@wustl.edu", role = "aut"),
 	  person("Matthew E.", "Aiello-Lammens", email = "matt.lammens@gmail.com", role = "aut"),
 	  person("Robert", "Muscarella", email = "bob.muscarella@gmail.com", role = "aut"),
@@ -21,60 +21,51 @@ Authors@R:
 	  person("Dean", "Attali", email = "daattali@gmail.com", role = "aut"))
 Depends:
     R (>= 3.5.0),
-    ENMeval (>= 2.0.0),
     shiny (>= 1.6.0),
     leaflet (>= 2.0.2)
 Imports:
     ade4,
-    BIEN,
-    changeRangeR,
-    dismo,
     dplyr (>= 1.0.2),
     DT (>= 0.5),
     ecospat,
-    httr,
-    gam,
+    ENMeval (>= 2.0.3),
     glue,
-    geojsonsf,
     knitcitations,
     leafem,
     leaflet.extras (>= 1.0.0),
     leaflet.extras2,
     magrittr,
-    maskRangeR,
-    maptools,
-    mapview,
-    maxnet,
-    neotoma,
-    occCite,
-    paleobioDB,
-    pryr,
-    rangeModelMetadata,
-    raster,
+    methods,
     RColorBrewer,
-    repmis,
-    rgbif (>= 3.3.0),
     rgdal,
     rgeos,
+    rlang,
     rmarkdown,
     shinyalert,
     shinyjs,
-    shinythemes,
     shinyWidgets (>= 0.6.0),
-    sp,
-    spocc (>= 0.8.0),
+    spocc (>= 1.2.0),
     spThin,
     stars,
     terra,
     tools,
-    XML,
     zip
 Suggests: 
+    BIEN,
+    dismo,
+    jsonlite,
     knitr,
-    testthat, 
-    RSelenium
+    mapview,
+    maxnet,
+    occCite,
+    paleobioDB,
+    rangeModelMetadata,
+    raster,
+    rgbif (>= 3.3.0),
+    rJava,
+    sp,
+    testthat
 License: GPL-3
 URL: https://wallaceEcoMod.github.io
 Encoding: UTF-8
 RoxygenNote: 7.1.2
-VignetteBuilder: knitr

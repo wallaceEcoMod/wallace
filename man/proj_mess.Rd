@@ -2,58 +2,66 @@
 % Please edit documentation in R/proj_mess.R
 \name{proj_mess}
 \alias{proj_mess}
-\title{proj_mess generate MESS map for projection time}
+\title{proj_mess generate MESS map for projection raster}
 \usage{
-proj_mess(occs, bg, bgMsk, projExtRas, time, logger = NULL, spN = NULL)
+proj_mess(occs, bg, bgMsk, projExtRas, logger = NULL, spN = NULL)
 }
 \arguments{
-\item{occs}{a data frame of occurrences used for modeling and values of environmental variables for each point}
+\item{occs}{a data frame of occurrences used for modeling and values of
+environmental variables for each point.}
 
-\item{bg}{a data frame of points used as background for modeling and values of environmental variables for each point}
+\item{bg}{a data frame of points used as background for modeling and values
+of environmental variables for each point.}
 
-\item{bgMsk}{a rasterBrick or rasterStack of environmental variables used for modeling. They must be cropped and masked to extent used in model training}
+\item{bgMsk}{a rasterBrick or rasterStack of environmental variables used
+for modeling. They must be cropped and masked to extent used in model
+training.}
 
-\item{projExtRas}{a rasterStack or rasterBrick of environmental variables to be used for projecting}
+\item{projExtRas}{a rasterStack or rasterBrick of environmental variables
+to be used for projecting.}
 
-\item{time}{a string of the time used for projecting (e.g. "2040 MIROC6 ssp126)}
-
-\item{logger}{Stores all notification messages to be displayed in the Log Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
-otherwise leave the default NULL}
+\item{logger}{Stores all notification messages to be displayed in the Log
+Window of Wallace GUI. Insert the logger reactive list here for running
+in shiny, otherwise leave the default NULL.}
 
 \item{spN}{character. Used to obtain species name for logger messages}
 }
 \description{
-This function generates a MESS map for the new variables for projection based on variables and points used for modeling in previous components.
+This function generates a MESS map for the new variables for
+projection based on variables and points used for modeling in previous
+components.
 }
 \details{
-This functions allows for the creation of a MESS map for the new provided variables for projection.
-These variables are either user uploaded or selected from WorldClim database.
-MESS map is based on occurrence and background points used for generating the model and the environmental values at those points.
+This functions allows for the creation of a MESS map for the new provided
+variables for projection. These variables are either user uploaded or
+selected from WorldClim database. MESS map is based on occurrence and
+background points used for generating the model and the environmental values
+at those points.
 }
 \examples{
-spN<-"Panthera onca"
-out.gbif <- occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
-occs <- as.data.frame(out.gbif[[1]]$cleaned)
-envs <- envs_worldclim(bcRes = 10, bcSel = c('bio01','bio19'), doBrick = FALSE)
-bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
-bgMsk <- penvs_bgMsk(occs, envs, bgExt,spN=occs)
-bg <- penvs_bgSample(occs, bgMsk, bgPtsNum = 10000,spN=spN)
-partblock <- part_partitionOccs(occs, bg, method = 'block', kfolds = NULL, bgMask = NULL,aggFact = NULL,spN=spN)
-bioclimAlg <- model_bioclim(occs, bg, partblock$occ.grp, partblock$bg.grp, bgMsk,spN=spN)
-modelOccs<-bioclimAlg@occs
-modelBg<-bioclimAlg@bg
-longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331, -66.47149, -66.71319, -71.11931)
-latitude <- c(13.18379, 7.52315, 0.93105, -1.70167, 0.98391, 6.09208, 12.74980)
-selCoords <- matrix(c(longitude, latitude), byrow = F, ncol = 2)
-expertAddedPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)), ID=1)))
-envsFut<-list.files(path='./wc10/Future', pattern = ".tif$", full.names = TRUE)
-projExtRas<-raster::mask(projExtRas,expertAddedPoly)
-time<-"2021-2040 MIROC6 ssp126"
-projMess<- proj_mess(occs=modelOccs, bg=modelBg, bgMsk=bgMsk, projExtRas=projExtRas, time=time, logger = NULL)
+envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
+                                           package = "wallace"),
+                      pattern = ".tif$", full.names = TRUE),
+                      rasName = list.files(system.file("extdata/wc",
+                                           package = "wallace"),
+                      pattern = ".tif$", full.names = FALSE))
+# load model
+m <- readRDS(system.file("extdata/model.RDS",
+                         package = "wallace"))
+occsEnvs <- m@occs
+bgEnvs <- m@bg
+envsFut <- list.files(path = system.file('extdata/wc/future',
+                                         package = "wallace"),
+                      full.names = TRUE)
+envsFut <- raster::stack(envsFut)
+## run function
+projMess <- proj_mess(occs = occsEnvs, bg = bgEnvs, bgMsk = envs,
+                      projExtRas = envsFut)
 
 }
 \seealso{
-\code{\link[dismo]{mess}}, \code{\link{proj_time}} \code{\link{proj_userEnvs}}
+\code{\link[dismo]{mess}}, \code{\link{proj_time}}
+\code{\link{proj_userEnvs}}
 }
 \author{
 Jamie Kass <jkass@gradcenter.cuny.edu>

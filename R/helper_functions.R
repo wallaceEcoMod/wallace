@@ -1,21 +1,78 @@
 ####################### #
-# MISC ####
+# MISC #
 ####################### #
-
-# retrieves the species name for use internally in non-shiny functions
+#' @title alfred.printVecAsis
+#' @description For internal use. Print vector as character string
+#' @param x vector
+#' @param asChar exclude c notation at the begging of string
 #' @export
-spName <- function(sp) {
-  if (is.null(sp)) {
-    return("species")
+alfred.printVecAsis <- function(x, asChar = FALSE) {
+  if (is.character(x)) {
+    if (length(x) == 1) {
+      return(paste0("\'", x, "\'"))
+    } else {
+      if (asChar == FALSE) {
+        return(paste0("c(", paste(sapply(x, function(a) paste0("\'", a, "\'")),
+                                  collapse = ", "), ")"))
+      } else {
+        return(paste0("(", paste(sapply(x, function(a) paste0("\'", a, "\'")),
+                                 collapse = ", "), ")"))
+      }
+    }
   } else {
-    return(paste(strsplit(as.character(sp), "_")[[1]], collapse = " "))
+    if (length(x) == 1) {
+      return(x)
+    } else {
+      if (asChar == FALSE) {
+        return(paste0("c(", paste(x, collapse = ", "), ")"))
+      } else {
+        return(paste0("(", paste(x, collapse = ", "), ")"))
+      }
+    }
   }
 }
 
-# either prints a message to console or makes a progress bar in the shiny app
-# the entry of the first param "logs" turns on shiny functionality
+####################### #
+# SHINY LOG #
+####################### #
+
+#' @title alfred.fmtSpN
+#' @description For internal use. Format species name with underscore
+#' @param spN Species name
 #' @export
-smartProgress <- function(logs, message, expr) {
+alfred.fmtSpN <- function(spN) {
+  spN <- as.character(spN)
+  # separate by space
+  spN.fmt <- sapply(spN, function(x) strsplit(x, split = ' '))
+  # put underscores in
+  spN.fmt <- sapply(spN.fmt, function(x) paste(x, collapse = '_'))
+  return(spN.fmt)
+}
+
+#' @title alfred.hlSpp
+#' @description For internal use. Green and bold species name in Windows Log
+#' @param spN Species name
+#' @export
+alfred.hlSpp <- function(spN) {
+  if (is.null(spN)) {
+    return("")
+  } else if (grepl("_", spN)) {
+    spN <- gsub("_", " ", spN)
+    boldSpp <- paste0('<font color="#003300"><b><i>', spN, '</i> | </b></font>')
+    return(boldSpp)
+  }
+}
+
+#' @title alfred.smartProgress
+#' @description For internal use. Either prints a message to console or makes
+#' a progress bar in the shiny app the entry of the first param "logs" turns on
+#' shiny functionality
+#' @param logs Wallace logger
+#' @param message A single-element character vector; the message to be displayed
+#'   to the user.
+#' @param expr The work to be done.
+#' @export
+alfred.smartProgress <- function(logs, message, expr) {
   if(!is.null(logs)) {
     withProgress(message = message, expr)
   } else {
@@ -24,35 +81,26 @@ smartProgress <- function(logs, message, expr) {
   }
 }
 
+#' @title alfred.spName
+#' @description For internal use. Retrieves the species name for use internally
+#'   in non-shiny functions
+#' @param spN Species name
 #' @export
-formatSpName <- function(spNames) {
-  spNames <- as.character(spNames)
-  # separate by space
-  spNames.fmt <- sapply(spNames, function(x) strsplit(x, split=' '))
-  # put underscores in
-  spNames.fmt <- sapply(spNames.fmt, function(x) paste(x, collapse='_'))
-  return(spNames.fmt)
+alfred.spName <- function(spN) {
+  if (is.null(spN)) {
+    return("species")
+  } else {
+    return(paste(strsplit(as.character(spN), "_")[[1]], collapse = " "))
+  }
 }
 
-#' @export
-fileNameNoExt <- function(f) {
-  sub(pattern = "(.*)\\..*$", replacement = "\\1", f)
-}
-
-#' @export
-writeSpp <- function(spp, sp, dir) {
-  if(!is.null(spp[[sp]]$occs)) write.csv(spp[[sp]]$occs, file.path(dir, paste0(sp, "_occs.csv")))
-  if(!is.null(spp[[sp]]$bg)) write.csv(spp[[sp]]$bg, file.path(dir, paste0(sp, "_bg.csv")))
-  if(!is.null(spp[[sp]]$procEnvs$bgMask)) raster::writeRaster(spp[[sp]]$procEnvs$bgMask, file.path(dir, paste0(sp, "_bgMask.tif")), bylayer = TRUE)
-}
-
-#' Add text to a logger
-#'
+#' @title alfred.writeLog
+#' @description For internal use. Add text to a logger
 #' @param logger The logger to write the text to. Can be NULL or a function
 #' @param ... Messages to write to the logger
 #' @param type One of "default", "error", "warning"
 #' @export
-writeLog <- function(logger, ..., type = 'default') {
+alfred.writeLog <- function(logger, ..., type = 'default') {
   if (is.null(logger)) {
     if (type == 'error') {
       stop(paste0(..., collapse = ""), call. = FALSE)
@@ -81,59 +129,51 @@ writeLog <- function(logger, ..., type = 'default') {
   invisible()
 }
 
-# Highlight species name in Windows Log
-#' @export
-hlSpp <- function(scientificName) {
-  if (is.null(scientificName)) {
-    return("")
-  } else if (grepl("_", scientificName)) {
-    scientificName <- gsub("_", " ", scientificName)
-    boldSpp <- paste0('<font color="#003300"><b><i>', scientificName, '</i> | </b></font>')
-    return(boldSpp)
-  }
-}
-
 ####################### #
-# MAPPING ####
+# MAPPING #
 ####################### #
 
-# map occurrences with the Wallace default symbology
+#' @title alfred.clearAll
+#' @description For internal use. Clean everything in leaflet map.
+#' @param map leaflet map
 #' @export
-map_occs <- function(map, occs, fillColor = 'red', fillOpacity = 0.2, customZoom = NULL) {
-  map %>%
-    addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude,
-                     radius = 5, color = 'red', fill = TRUE, fillColor = fillColor,
-                     fillOpacity = fillOpacity, weight = 2, popup = ~pop)
-  if(is.null(customZoom)) {
-    map %>% zoom2Occs(occs)
-  } else {
-    map %>% zoom2Occs(customZoom)
-  }
-}
-
-# map all background polygons
-#' @export
-mapBgPolys <- function(map, bgShpXY, color = "blue", group = "proj") {
-  for (shp in bgShpXY) {
-    map %>%
-      addPolygons(lng = shp[,1], lat = shp[,2], fill = FALSE,
-                  weight = 4, color = color, group = group)
-  }
-}
-
-#' @export
-clearAll <- function(map) {
+alfred.clearAll <- function(map) {
   map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>%
     clearControls() %>% removeLayersControl()
 }
 
-# zoom to occ pts
+#' @title alfred.polyZoom
+#' @description For internal use. Zooms appropriately for any polygon
+#' @param xmin Minimum longitude
+#' @param xmax Maximum longitude
+#' @param ymin Minimum latitude
+#' @param ymax Maximum latitude
+#' @param fraction Expand zoom fraction
 #' @export
-zoom2Occs <- function(map, occs) {
-  # map %>% clearShapes()
+alfred.polyZoom <- function(xmin, ymin, xmax, ymax, fraction) {
+  x <- (xmax - xmin) * fraction
+  y <- (ymax - ymin) * fraction
+  x1 <- xmin - x
+  x2 <- xmax + x
+  y1 <- ymin - y
+  y2 <- ymax + y
+  return(c(x1, y1, x2, y2))
+}
+
+#' @title alfred.zoom2Occs
+#' @description For internal use. Zoom to occ pts.
+#' @param map leaflet map
+#' @param occs occurrences table
+#' @export
+alfred.zoom2Occs <- function(map, occs) {
   lat <- occs["latitude"]
   lon <- occs["longitude"]
-  z <- smartZoom(lon, lat)
+  lg.diff <- abs(max(lon) - min(lon))
+  lt.diff <- abs(max(lat) - min(lat))
+  if (lg.diff > 1) lg.diff <- 1
+  if (lt.diff > 1) lt.diff <- 1
+  z <- c(min(lon - lg.diff), min(lat - lt.diff),
+         max(lon + lg.diff), max(lat + lt.diff))
   map %>% fitBounds(z[1], z[2], z[3], z[4])
 
   ## this section makes letter icons for occs based on basisOfRecord
@@ -144,9 +184,9 @@ zoom2Occs <- function(map, occs) {
   #   for (i in 1:9) {
   #     f <- tempfile(fileext = '.png')
   #     png(f, width = width, height = height, bg = 'transparent')
-  #     par(mar = c(0, 0, 0, 0))
+  #     graphics::par(mar = c(0, 0, 0, 0))
   #     plot.new()
-  #     points(.5, .5, pch = occIcons[i], cex = min(width, height) / 8, col='red', ...)
+  #     graphics::points(.5, .5, pch = occIcons[i], cex = min(width, height) / 8, col='red', ...)
   #     dev.off()
   #     files[i] <- f
   #   }
@@ -172,78 +212,67 @@ mapPNG <- function(map, sp_name) {
       hideControlContainer = FALSE))
 }
 
-# zooms appropriately for any extent
-#' @export
-smartZoom <- function(longi, lati) {
-  lg.diff <- abs(max(longi) - min(longi))
-  lt.diff <- abs(max(lati) - min(lati))
-  if (lg.diff > 1) lg.diff <- 1
-  if (lt.diff > 1) lt.diff <- 1
-  c(min(longi-lg.diff), min(lati-lt.diff), max(longi+lg.diff), max(lati+lt.diff))
-}
-
-# zooms appropriately for any polygon
-#' @export
-polyZoom <- function(xmin, ymin, xmax, ymax, fraction) {
-  x <- (xmax - xmin) * fraction
-  y <- (ymax - ymin) * fraction
-  x1 <- xmin - x
-  x2 <- xmax + x
-  y1 <- ymin - y
-  y2 <- ymax + y
-  return(c(x1, y1, x2, y2))
-}
-
 ####################### #
-# OBTAIN OCCS ####
+# OBTAIN OCCS #
 ####################### #
+#' @title alfred.popUpContent
+#' @description For internal use. Make new column for leaflet marker popup content
+#' @param occs occurrence table
 #' @export
-popUpContent <- function(x) {
-  lat <- round(as.numeric(x['latitude']), digits = 2)
-  lon <- round(as.numeric(x['longitude']), digits = 2)
+alfred.popUpContent <- function(occs) {
+  lat <- round(as.numeric(occs['latitude']), digits = 2)
+  lon <- round(as.numeric(occs['longitude']), digits = 2)
   as.character(tagList(
-    tags$strong(paste("occID:", x['occID'])),
+    tags$strong(paste("occID:", occs['occID'])),
     tags$br(),
     tags$strong(paste("Latitude:", lat)),
     tags$br(),
     tags$strong(paste("Longitude:", lon)),
     tags$br(),
-    tags$strong(paste("Year:", x['year'])),
+    tags$strong(paste("Year:", occs['year'])),
     tags$br(),
-    tags$strong(paste("Inst. Code:", x['institutionCode'])),
+    tags$strong(paste("Inst. Code:", occs['institutionCode'])),
     tags$br(),
-    tags$strong(paste("Country:", x['country'])),
+    tags$strong(paste("Country:", occs['country'])),
     tags$br(),
-    tags$strong(paste("State/Prov.:", x['stateProvince'])),
+    tags$strong(paste("State/Prov.:", occs['stateProvince'])),
     tags$br(),
-    tags$strong(paste("Locality:", x['locality'])),
+    tags$strong(paste("Locality:", occs['locality'])),
     tags$br(),
-    tags$strong(paste("Elevation:", x['elevation'])),
+    tags$strong(paste("Elevation:", occs['elevation'])),
     tags$br(),
-    tags$strong(paste("Basis of Record:", x['basisOfRecord']))
+    tags$strong(paste("Basis of Record:", occs['basisOfRecord']))
   ))
 }
 
 ####################### #
-# COMP 3 ####
+# ENV DATA #
 ####################### #
+#' @title alfred.remEnvsValsNA
+#' @description For internal use. Remove occs with NA values
+#' @param occs occurrence table
+#' @param occsEnvsVals Occurrence table with environmental values
+#' @param spN Species name
+#' @param logger Wallace logger
 #' @export
-remEnvsValsNA <- function(occs, occsEnvsVals, sppName, logger) {
+alfred.remEnvsValsNA <- function(occs, occsEnvsVals, spN, logger) {
   withProgress(message = "Checking for points with NA values and in same cells...", {
     na.rowNums <- which(rowSums(is.na(occsEnvsVals[, -1])) >= 1)
     if (length(na.rowNums) == nrow(occsEnvsVals)) {
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         type = 'error',
-        hlSpp(sppName), paste0('No localities overlay with environmental ',
-                               'predictors. For example, all localities may be marine -- please redo with ',
-                               'terrestrial occurrences.')
+        alfred.hlSpp(spN),
+        paste0('No localities overlay with environmental ',
+               'predictors. For example, all localities may be marine -- please redo with ',
+               'terrestrial occurrences.')
       )
       return()
     }
     if (length(na.rowNums) > 0) {
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         type = 'warning',
-        hlSpp(sppName), 'Removed records without environmental values with occIDs: ',
+        alfred.hlSpp(spN),
+        'Removed records without environmental values with occIDs: ',
         paste(sort(occs[na.rowNums, "occID"]), collapse = ', '), ".")
       occs <- occs[-na.rowNums, ]
       occsEnvsVals <- occsEnvsVals[-na.rowNums, ]
@@ -252,10 +281,11 @@ remEnvsValsNA <- function(occs, occsEnvsVals, sppName, logger) {
     occs.dups <- duplicated(occsEnvsVals[, 1])
     if (sum(occs.dups) > 0) {
       logger %>%
-        writeLog(type = 'warning',
-                 hlSpp(sppName), "Removed ", sum(occs.dups), " localities that ",
-                 "shared the same grid cell. occIDs: ",
-                 paste(sort(occs[occs.dups, "occID"]), collapse = ', '), ".")
+        alfred.writeLog(
+          type = 'warning',
+          alfred.hlSpp(spN), "Removed ", sum(occs.dups), " localities that ",
+          "shared the same grid cell. occIDs: ",
+          paste(sort(occs[occs.dups, "occID"]), collapse = ', '), ".")
       occs <- occs[!occs.dups, ]
       occsEnvsVals <- occsEnvsVals[!occs.dups, ]
     }
@@ -264,95 +294,33 @@ remEnvsValsNA <- function(occs, occsEnvsVals, sppName, logger) {
 }
 
 ####################### #
-# PROCESS ENVS ####
+# VISUALIZE & PROJECT #
 ####################### #
-
-# make a minimum convex polygon as SpatialPolygons object
+#' @title alfred.getRasterVals
+#' @description Retrieve the value range for a prediction raster for plotting
+#' @param r raster
+#' @param type Maxent prediction type. It can be "raw", "logistic" or "cloglog"
 #' @export
-mcp <- function(xy) {
-  xy <- as.data.frame(sp::coordinates(xy))
-  coords.t <- chull(xy[, 1], xy[, 2])
-  xy.bord <- xy[coords.t, ]
-  xy.bord <- rbind(xy.bord[nrow(xy.bord), ], xy.bord)
-  return(sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(as.matrix(xy.bord))), 1))))
-}
-
-####################### #
-# MODEL ####
-####################### #
-#' @export
-maxentJARversion <- function() {
-  if (is.null(getOption('dismo_rJavaLoaded'))) {
-    # to avoid trouble on macs
-    Sys.setenv(NOAWT=TRUE)
-    if ( requireNamespace('rJava') ) {
-      rJava::.jpackage('dismo')
-      options(dismo_rJavaLoaded=TRUE)
-    } else {
-      stop('rJava cannot be loaded')
-    }
-  }
-  mxe <- rJava::.jnew("meversion")
-  v <- try(rJava::.jcall(mxe, "S", "meversion"))
+alfred.getRasterVals <- function(r, type = 'raw') {
+  v <- raster::values(r)
+  # remove NAs
+  v <- v[!is.na(v)]
+  if(type == 'logistic' | type == 'cloglog') v <- c(v, 0, 1)  # set to 0-1 scale
   return(v)
 }
 
-####################### #
-# VISUALIZE ####
-####################### #
+#' @title alfred.mxNonzeroCoefs
+#' @description For internal use. Pulls out all non-zero, non-redundant
+#' (removes hinge/product/threshold) predictor names
+#' @param mx Model object
+#' @param alg Maxent version used. It can be "maxent.jar" or "maxnet"
 #' @export
-predictMaxnet <- function(mod, envs, clamp, type) {
-  requireNamespace("maxnet", quietly = TRUE)
-  envs.n <- raster::nlayers(envs)
-  envs.pts <- raster::getValues(envs) %>% as.data.frame()
-  mxnet.p <- predict(mod, envs.pts, type = type,
-                     clamp = clamp)
-  envs.pts[as.numeric(row.names(mxnet.p)), "pred"] <- mxnet.p
-  pred <- raster::rasterFromXYZ(cbind(raster::coordinates(envs),
-                                      envs.pts$pred),
-                                res = raster::res(envs),
-                                crs = raster::crs(envs))
-  return(pred)
-}
-
-#' @export
-evalPlots <- function(evalOut) {
-  par(mfrow=c(3,2))
-  fc <- length(unique(evalOut@features))
-  col <- rainbow(fc)
-  rm <- length(unique(evalOut@rm))
-  plot(rep(1, times=fc), 1:fc, ylim=c(.5,fc+1), xlim=c(0,3), axes=F, ylab='', xlab='', cex=2, pch=21, bg=col)
-  segments(rep(.8, times=fc), 1:fc, rep(1.2, times=fc), 1:fc, lwd=1, col=col)
-  points(rep(1, times=fc), 1:fc, ylim=c(-1,fc+2), cex=2, pch=21, bg=col)
-  text(x=rep(1.3, times=fc), y=1:fc, labels=unique(evalOut@features), adj=0)
-  text(x=1, y=fc+1, labels="Feature Classes", adj=.20, cex=1.3, font=2)
-  ENMeval::eval.plot(evalOut, legend=FALSE, value="delta.AICc")
-  ENMeval::eval.plot(evalOut, legend=FALSE, value="Mean.AUC", variance="Var.AUC")
-  ENMeval::eval.plot(evalOut, legend=FALSE, value="Mean.AUC.DIFF", variance="Var.AUC.DIFF")
-  ENMeval::eval.plot(evalOut, legend=FALSE, value="Mean.ORmin", variance="Var.ORmin")
-  ENMeval::eval.plot(evalOut, legend=FALSE, value="Mean.OR10", variance="Var.OR10")
-}
-
-# make data.frame of lambdas vector from Maxent model object
-#' @export
-lambdasDF <- function(mx, alg) {
+alfred.mxNonzeroCoefs <- function(mx, alg) {
   if (alg == "maxent.jar") {
     lambdas <- mx@lambdas[1:(length(mx@lambdas)-4)]
-    data.frame(var = sapply(lambdas, FUN = function(x) strsplit(x, ',')[[1]][1]),
-               coef = sapply(lambdas, FUN = function(x) as.numeric(strsplit(x, ',')[[1]][2])),
-               row.names=1:length(lambdas))
-  } else if (alg == "maxnet") {
-    lambdas <- mx$betas
-    data.frame(var = names(lambdas),
-               coef = lambdas,
-               row.names = 1:length(lambdas))
-  }
-}
-## pulls out all non-zero, non-redundant (removes hinge/product/threshold) predictor names
-#' @export
-mxNonzeroCoefs <- function(mx, alg) {
-  if (alg == "maxent.jar") {
-    x <- lambdasDF(mx, alg)
+    x <- data.frame(var = sapply(lambdas, FUN = function(x) strsplit(x, ',')[[1]][1]),
+                    coef = sapply(lambdas, FUN = function(x) as.numeric(strsplit(x, ',')[[1]][2])),
+                    row.names = 1:length(lambdas))
     #remove any rows that have a zero lambdas value (Second column)
     x <- x[(x[,2] != 0),]
     #remove any rows that have duplicate "var"s (hinges, quadratics, product)
@@ -364,7 +332,10 @@ mxNonzeroCoefs <- function(mx, alg) {
     x <- unique(unlist(strsplit(x, split = "\\*")))
     x <- sort(x)
   } else if (alg == "maxnet") {
-    x <- lambdasDF(mx, alg)
+    lambdas <- mx$betas
+    x <- data.frame(var = names(lambdas),
+                    coef = lambdas,
+                    row.names = 1:length(lambdas))
     #remove any rows that have a zero lambdas value (Second column)
     x <- x[(x[,2] != 0),]
     #remove any rows that have duplicate "var"s (hinges, quadratics, product)
@@ -379,61 +350,33 @@ mxNonzeroCoefs <- function(mx, alg) {
   }
 }
 
+#' @title alfred.predictMaxnet
+#' @description Create a raster prediction for a maxnet model
+#' @param mod Model object
+#' @param envs Environmental rasters
+#' @param clamp Use clamping. Boolean
+#' @param type Maxent prediction type. It can be "raw", "logistic" or "cloglog"
 #' @export
-respCurv <- function(mod, i) {  # copied mostly from dismo
-  v <- rbind(mod@presence, mod@absence)
-  v.nr <- nrow(v)
-  vi <- v[, i]
-  vi.r <- range(vi)
-  expand <- 10
-  xlm <- 25
-  vi.rx <- seq(vi.r[1]-expand, vi.r[2]+expand, length.out=xlm)
-  mm <- v[rep(1:v.nr, xlm), ]
-  mm[, i] <- rep(vi.rx, v.nr)
-  mm[, -i] <- rep(colMeans(mm[,-i]), each=nrow(mm))
-  p <- predict(mod, mm)
-  plot(cbind(vi.rx, p[1:xlm]), type='l', ylim=0:1, col = 'red', lwd = 2,
-       ylab = 'predicted value', xlab = names(v)[i])
-  pres.r <- range(mod@presence[, i])
-  abline(v = pres.r[1], col='blue')  # vertical blue lines indicate min and max of presence vals
-  abline(v = pres.r[2], col='blue')
-  abs.r <- range(mod@absence[, i])
-  abline(v = abs.r[1], col='green') # vertical green lines indicate min and max of background vals
-  abline(v = abs.r[2], col='green')
-  #graphics::text(x = vals, y = pred, labels = row.names(mod@presence), pos = 3, offset = 1)
+alfred.predictMaxnet <- function(mod, envs, clamp, type) {
+  requireNamespace("maxnet", quietly = TRUE)
+  envs.n <- raster::nlayers(envs)
+  envs.pts <- raster::getValues(envs) %>% as.data.frame()
+  mxnet.p <- stats::predict(mod, envs.pts, type = type,
+                            clamp = clamp)
+  envs.pts[as.numeric(row.names(mxnet.p)), "pred"] <- mxnet.p
+  pred <- raster::rasterFromXYZ(cbind(raster::coordinates(envs),
+                                      envs.pts$pred),
+                                res = raster::res(envs),
+                                crs = raster::crs(envs))
+  return(pred)
 }
 
-# retrieve the value range for a prediction raster for plotting
+#' @title alfred.reverseLabel
+#' @description For internal use. Reverse label in leaflet legends
+#' @param ... labelFormat parameters
+#' @param reverse_order Reverse order or legends
 #' @export
-getRasterVals <- function(r, type='raw') {
-  v <- raster::values(r)
-  # remove NAs
-  v <- v[!is.na(v)]
-  if(type == 'logistic' | type == 'cloglog') v <- c(v, 0, 1)  # set to 0-1 scale
-  return(v)
-}
-
-# getAllThresh <- function(occPredVals) {
-#   # remove all NA
-#   occPredVals <- na.omit(occPredVals)
-#   # apply minimum training presence threshold
-#   min.thr <- min(occPredVals)
-#   # Define 10% training presence threshold
-#   if (length(occPredVals) < 10) {  # if less than 10 occ values, find 90% of total and round down
-#     pct10 <- ceiling(length(occPredVals) * 0.1)
-#   } else {  # if greater than or equal to 10 occ values, round up
-#     pct10 <- floor(length(occPredVals) * 0.1)
-#   }
-#   pct10.thr <- sort(occPredVals)[pct10]  # apply 10% training presence threshold over all models
-#   return(list(mtp = min.thr, p10 = pct10.thr))
-# }
-
-
-####################### #
-# PROJECT ####
-####################### #
-#' @export
-reverseLabels <- function(..., reverse_order = FALSE) {
+alfred.reverseLabel <- function(..., reverse_order = FALSE) {
   if (reverse_order) {
     function(type = "numeric", cuts) {
       cuts <- sort(cuts, decreasing = TRUE)
@@ -443,54 +386,23 @@ reverseLabels <- function(..., reverse_order = FALSE) {
   }
 }
 
-####################### #
-# SESSION CODE ####
-####################### #
+##################### #
+# DOWNLOAD #
+##################### #
+#' @title alfred.write_csv_robust
+#' @description For internal use. Write Robust CSV
+#' @param x Table
+#' @param ... labelFormat parameters
 #' @export
-makeCap <- function(x) paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)))
-#' @export
-getSpName <- function() deparse(substitute(input$spName))
-#' @export
-printVecAsis <- function(x, asChar = FALSE) {
-  if (is.character(x)) {
-    if (length(x) == 1) {
-      return(paste0("\'", x, "\'"))
-    } else {
-      if (asChar == FALSE) {
-        return(paste0("c(", paste(sapply(x, function(a) paste0("\'", a, "\'")), collapse = ", "), ")"))
-      } else {
-        return(paste0("(", paste(sapply(x, function(a) paste0("\'", a, "\'")), collapse = ", "), ")"))
-      }
-    }
-  } else {
-    if (length(x) == 1) {
-      return(x)
-    } else {
-      if (asChar == FALSE) {
-        return(paste0("c(", paste(x, collapse = ", "), ")"))
-      } else {
-        return(paste0("(", paste(x, collapse = ", "), ")"))
-      }
-    }
-  }
-}
-
-#####################
-# Download utilities #
-#####################
-#' @export
-convert_list_cols <- function(x) {
-  dplyr::mutate_if(.tbl = x,
-                   .predicate = function(col) inherits(col, "list"),
-                   .funs = function(col) {
-                     vapply(col,
-                            jsonlite::toJSON,
-                            character(1L))
-                   })
-}
-#' @export
-write_csv_robust <- function(x, ...) {
-  write.csv(convert_list_cols(x), ...)
+alfred.write_csv_robust <- function(x, ...) {
+  a <- dplyr::mutate_if(.tbl = x,
+                        .predicate = function(col) inherits(col, "list"),
+                        .funs = function(col) {
+                       vapply(col,
+                              jsonlite::toJSON,
+                              character(1L))
+                          })
+  utils::write.csv(a, ...)
 }
 
 

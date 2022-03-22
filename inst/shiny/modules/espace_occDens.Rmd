@@ -10,7 +10,7 @@ espace_occDens_{{multAbr}} <- espace_occDens(
   sp.name2 = "{{spName2}}", 
   pca = espace_pca_{{multAbr}}) 
 # Plots
-par(mfrow = c(1,2))
+graphics::par(mfrow = c(1,2))
 ecospat::ecospat.plot.niche(espace_occDens_{{multAbr}}[["{{spName1}}"]], 
                             title = "{{spName1}}")
 ecospat::ecospat.plot.niche(espace_occDens_{{multAbr}}[["{{spName2}}"]], 

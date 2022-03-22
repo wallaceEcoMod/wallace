@@ -52,7 +52,7 @@ espace_pca_module_server <- function(input, output, session, common) {
   observeEvent(input$goPCA, {
     # ERRORS ####
     if (length(curSp()) != 2) {
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         type = "error",
         "Please select two species to run the PCA module."
       )
@@ -60,8 +60,8 @@ espace_pca_module_server <- function(input, output, session, common) {
     }
     for(sp in curSp()) {
       if (is.null(spp[[sp]]$procEnvs$bgMask)) {
-        logger %>% writeLog(
-          type = 'error', hlSpp(sp),
+        logger %>% alfred.writeLog(
+          type = 'error', alfred.hlSpp(sp),
           "Before partitioning occurrences, mask your ",
           "environmental variables by your background extent.")
         return()
@@ -69,7 +69,7 @@ espace_pca_module_server <- function(input, output, session, common) {
     }
     # ERRORS ####
     if(input$pcaPlotSel == "") {
-      logger %>% writeLog(type = "error", "Please choose a PCA plotting type.")
+      logger %>% alfred.writeLog(type = "error", "Please choose a PCA plotting type.")
       return()
     }
 
@@ -80,8 +80,8 @@ espace_pca_module_server <- function(input, output, session, common) {
     sp2.envNames <- names(envs.global[[spp[[sp2]]$envs]])
     pcaSel <- input$pcaSel
     if (is.null(pcaSel)) {
-      logger %>% writeLog(
-        type = "error", hlSpp(paste0(curSp()[1], " and ", curSp()[2])),
+      logger %>% alfred.writeLog(
+        type = "error", alfred.hlSpp(paste0(curSp()[1], " and ", curSp()[2])),
         " must have the same environmental variables."
       )
       return()
@@ -222,7 +222,7 @@ espace_pca_module_result <- function(id) {
 espace_pca_module_rmd <- function(species) {
   list(
     espace_pca_knit = !is.null(species$pca),
-    pcaSel_rmd = printVecAsis(species$pcaSel),
+    pcaSel_rmd = alfred.printVecAsis(species$pcaSel),
     pcaPlotSel_rmd = species$pcaPlotSel,
     pc1_rmd = species$pc1,
     pc2_rmd = species$pc2

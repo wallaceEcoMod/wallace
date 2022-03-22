@@ -7,7 +7,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 ```
 
-## *Wallace* modules (v.1.9.0)
+## *Wallace* modules (v1.9.1)
 
 *Wallace* is an `R`-based, interactive application for reproducible ecological modeling. The application is also expandible via the addition of new modules, which in *Wallace* are discrete parts of the modeling analysis. This vignette steps through the module authorship process, focusing on the steps involved in adding a module, and also on best practices and some troubleshooting. This vignette was tailored for researchers who would like to author their own *Wallace* module based on some technique they'd like to disseminate to the community or use themselves within the *Wallace* workflow. Thus to follow along, it will help to have at least an intermediate understanding of `R` programming. Also, please see our <a href="https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.12945" target="_blank">publication</a> in *Methods in Ecology and Evolution* to read in detail about our philosophy for *Wallace*, the modularity of the application, and our vision for module authorship.
 
@@ -22,7 +22,6 @@ First, a brief outline of the file structure of the `wallace` package. The starr
 ├── inst
 |   ├── docs  # vignette documents
 |   └── shiny
-|   └────  example_data
 *|   └────  helper_functions.R  # helper functions not specific to any one module
 |   └────  js  # javascript files (currently only log window)
 *|   └────  modules  # .R files for each module
@@ -43,13 +42,13 @@ There are 5 necessary steps to adding a functional module: 1) write an R functio
 
 ## Step 1: Write a function
 
-Let's first write a function that carries out the module's analysis. This function takes the following inputs: environmental predictor values at 1) occurrence points, 2) background points, 3) degrees of freedom for the spline smoothing terms in the GAM, 4) the species name, and 5) shinyLogs. The last one, shinyLogs, is a "reactive" object (in particular for this case, `shiny::reactiveVal()`) that holds all the text and HTML formatting for the log window. Reactive objects are dynamic entities that update whenever the user makes a change using the shiny interface (i.e., pushes a button, selects a value), and are necessary for shiny to be functional. However, they will not work for regular R functions. Thus, when the function is run inside *Wallace*, the parameter "shinyLogs" should be set to the reactive object with the same name. When this is done, messages entered with `writeLog()` will be sent to the *Wallace* log window, and `smartProgress()` will generate a shiny progress bar in the lower-right corner of the interface. When the function is run outside *Wallace*, just leave shinyLogs at its default NULL, which will make `writeLog()` and `smartProgress()` print messages and progress bars to the R console, respectively.
+Let's first write a function that carries out the module's analysis. This function takes the following inputs: environmental predictor values at 1) occurrence points, 2) background points, 3) degrees of freedom for the spline smoothing terms in the GAM, 4) the species name, and 5) shinyLogs. The last one, shinyLogs, is a "reactive" object (in particular for this case, `shiny::reactiveVal()`) that holds all the text and HTML formatting for the log window. Reactive objects are dynamic entities that update whenever the user makes a change using the shiny interface (i.e., pushes a button, selects a value), and are necessary for shiny to be functional. However, they will not work for regular R functions. Thus, when the function is run inside *Wallace*, the parameter "shinyLogs" should be set to the reactive object with the same name. When this is done, messages entered with `writeLog()` will be sent to the *Wallace* log window, and `alfred.smartProgress()` will generate a shiny progress bar in the lower-right corner of the interface. When the function is run outside *Wallace*, just leave shinyLogs at its default NULL, which will make `writeLog()` and `alfred.smartProgress()` print messages and progress bars to the R console, respectively.
 
 Let's now write a function that fits a GAM and outputs the model object. Save the code below as a script to: `wallace/R/runGAM.R`.
 
 ```{r}
 runGAM <- function(occs.vals, bg.vals, degFr, spN, shinyLogs=NULL) {
-  if(!require(gam)) {
+  if(!requireNamespace('gam')) {
     shinyLogs %>% writeLog("Please install the gam package before running.")
     return()
   }
@@ -63,13 +62,13 @@ runGAM <- function(occs.vals, bg.vals, degFr, spN, shinyLogs=NULL) {
   # put everything together in a table for modeling
   d <- data.frame(pa = bin, vals)
   # make formula
-  f <- as.formula(paste("pa", paste(degFrs, collapse = " + "), sep = " ~ "))
+  f <- stats::as.formula(paste("pa", paste(degFrs, collapse = " + "), sep = " ~ "))
   # run the GAM
-  smartProgress(shinyLogs, message = paste("Running GAM for", spName), {
+  alfred.smartProgress(shinyLogs, message = paste("Running GAM for", spName), {
     mod <- gam(f, family = "binomial", data = d)
   })
   # write log message
-  shinyLogs %>% writeLog("GAM ran successfully for ", em(spName(spN)), ".")
+  shinyLogs %>% writeLog("GAM ran successfully for ", em(alfred.spName(spN)), ".")
   # output model object
   return(mod)
 }
@@ -153,7 +152,7 @@ runGAM_MOD <- function(input, output, session) {
       # check to make sure partitioning was done in the last component before proceeding
       if(is.null(spp[[sp]]$occs$partition)) {
         shinyLogs %>% writeLog(type = 'error', "Before building a model, please partition 
-                               occurrences for cross-validation for", em(spName(curSp())), ".")
+                               occurrences for cross-validation for", em(alfred.spName(curSp())), ".")
         return()
       }
       

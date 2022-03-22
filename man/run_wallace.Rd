@@ -13,22 +13,28 @@ run_wallace(
 \arguments{
 \item{launch.browser}{Whether or not to launch a new browser window.}
 
-\item{port}{The port for the shiny server to listen on. Defaults to a random available port.}
+\item{port}{The port for the shiny server to listen on. Defaults to a
+random available port.}
 
 \item{biomodelos}{logical}
 }
 \description{
-This function runs the \emph{Wallace} application in the user's default web browser.
+This function runs the \emph{Wallace} application in the user's
+default web browser.
 }
 \note{
-Please see the official website (\url{https://wallaceecomod.github.io/}) for more details. If you have questions about the application, please participate in the \href{https://groups.google.com/forum/#!forum/wallaceecomod}{Google Group}, or email the team directly: \url{wallaceEcoMod@gmail.com}.
+Please see the official website (\url{https://wallaceecomod.github.io/})
+for more details. If you have questions about the application,
+please participate in the \href{https://groups.google.com/forum/#!forum/wallaceecomod}{Google Group},
+or email the team directly: \email{wallaceEcoMod@gmail.com}.
 }
 \examples{
-if(interactive()){
+if(interactive()) {
 run_wallace()
 }
-
 }
 \author{
 Jamie Kass <jkass@gradcenter.cuny.edu>
+
+Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
 }

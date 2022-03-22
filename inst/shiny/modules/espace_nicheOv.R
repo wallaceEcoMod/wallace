@@ -13,7 +13,7 @@ espace_nicheOv_module_server <- function(input, output, session, common) {
 
   observeEvent(input$goNicheOv, {
     if (length(curSp()) != 2) {
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         type = "error",
         "Please select two species to run the niche overlap module."
       )
@@ -21,7 +21,7 @@ espace_nicheOv_module_server <- function(input, output, session, common) {
     }
     mspName <- paste(curSp(), collapse = ".")
     if (is.null(spp[[mspName]])) {
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         type = "error",
         paste0("Please run PCA and occurrence density with two species before",
                " running the niche overlap module.")
@@ -30,7 +30,7 @@ espace_nicheOv_module_server <- function(input, output, session, common) {
     }
     # if a multispecies analysis has been run, but not occDens
     if (is.null(spp[[mspName]]$occDens)) {
-      logger %>% writeLog(
+      logger %>% alfred.writeLog(
         type = "error",
         paste0("Please run occurrence density with two species before running",
                " the niche overlap module.")
@@ -83,27 +83,28 @@ espace_nicheOv_module_server <- function(input, output, session, common) {
       mSp <- curSp()
     }
     req(spp[[mSp]]$nicheOv)
-    # plots
-    layout(matrix(c(1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3), 4, 3, byrow = F))
-    # layout.show(3)
+    graphics::par(mfrow = c(1, 2))
 
     ecospat::ecospat.plot.niche.dyn(
       spp[[mSp]]$occDens[[sp1]],
       spp[[mSp]]$occDens[[sp2]],
       0.5,
       title = mSp,
-      colz1 = "blue",
-      colz2 = "red",
-      colinter = "purple",
+      col.unf = "blue",
+      col.exp = "red",
+      col.stab = "purple",
       colZ1 = "blue",
-      colZ2 = "red"
+      colZ2 = "red",
+      transparency = 25
     )
-    if (!is.null(spp[[mSp]]$nicheOv$equiv))
-      ecospat::ecospat.plot.overlap.test(spp[[mSp]]$nicheOv$equiv,
-                                         "D", "Equivalency test")
+    box()
+    # if (!is.null(spp[[mSp]]$nicheOv$equiv))
+    #   ecospat::ecospat.plot.overlap.test(spp[[mSp]]$nicheOv$equiv,
+    #                                      "D", "Equivalency test")
     if (!is.null(spp[[mSp]]$nicheOv$simil))
       ecospat::ecospat.plot.overlap.test(spp[[mSp]]$nicheOv$simil,
                                          "D", "Similarity test")
+    graphics::par(mfrow = c(1, 1))
   })
 }
 
