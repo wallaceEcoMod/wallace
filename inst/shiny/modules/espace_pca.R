@@ -148,7 +148,8 @@ espace_pca_module_server <- function(input, output, session, common) {
         x.f <- factor(x$bg)
       }
       ade4::s.class(x, x.f, xax = input$pc1, yax = input$pc2,
-                    col = c("red", "blue"), cstar = 0, cpoint = 0.1)
+                    col = c("red", "blue"), cstar = 0, cpoint = 0.1, sub = "t",
+                    possub = "topright")
     })
     output$pcaCorCircle <- renderPlot({
       if (length(curSp()) == 1) {
@@ -176,7 +177,16 @@ espace_pca_module_server <- function(input, output, session, common) {
         mSp <- paste(curSp(), collapse = ".")
       }
       req(spp[[mSp]]$pca)
-      summary(spp[[mSp]]$pca)
+      k <- round(100 * spp[[mSp]]$pca$eig / sum(spp[[mSp]]$pca$eig), 2)
+      names(k) <- paste0("PC", 1:length(spp[[mSp]]$pca$eig), "(%)")
+      j <- spp[[mSp]]$pca$c1
+      names(j) <- paste0("PC", 1:length(spp[[mSp]]$pca$eig))
+      cat(c("Variance explained:",
+            capture.output(k), "",
+            "Loadings:",
+            capture.output(j), "",
+            capture.output(summary(spp[[mSp]]$pca))),
+            sep = "\n")
     })
     tabsetPanel(
       tabPanel("PCA scatter plot",
@@ -193,7 +203,7 @@ espace_pca_module_server <- function(input, output, session, common) {
                )),
       tabPanel("PCA results summary",
                tagList(
-                 verbatimTextOutput(session$ns("pcaOut"))
+                verbatimTextOutput(session$ns("pcaOut"))
                ))
     )
   })
