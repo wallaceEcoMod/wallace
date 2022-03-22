@@ -55,9 +55,13 @@
 
 proj_mess <- function(occs, bg, bgMsk, projExtRas, logger = NULL, spN = NULL) {
 
-  occsVals <- occs[,names(bgMsk)]
-  bgVals <- bg[,names(bgMsk)]
-  allVals <- rbind(occsVals, bgVals)
+  occsVals <- occs[, names(bgMsk)]
+  if (is.null(bg)) {
+    allVals <- occsVals
+  } else {
+    bgVals <- bg[, names(bgMsk)]
+    allVals <- rbind(occsVals, bgVals)
+  }
 
   # rename rasters to match originals
   projExtRas2 <- projExtRas

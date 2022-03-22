@@ -35,8 +35,14 @@ proj_mess_module_server <- function(input, output, session, common) {
     # FUNCTION CALL ####
     projYr <- spp[[curSp()]]$rmm$data$transfer$environment1$yearMax
     time <- ifelse(projYr == "1990", "present-day", projYr)
-    mss <- proj_mess(occs(), bg(), bgMask(), spp[[curSp()]]$project$pjEnvs,
-                     time, logger, spN = curSp())
+    if (spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM") {
+      mss <- proj_mess(occs(), bg = NULL, bgMask(), spp[[curSp()]]$project$pjEnvs,
+                       time, logger, spN = curSp())
+    } else {
+      mss <- proj_mess(occs(), bg(), bgMask(), spp[[curSp()]]$project$pjEnvs,
+                       time, logger, spN = curSp())
+    }
+
 
     # LOAD INTO SPP ####
     spp[[curSp()]]$project$mess <- mss
