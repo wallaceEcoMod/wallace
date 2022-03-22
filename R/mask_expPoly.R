@@ -47,7 +47,7 @@ mask_expPoly <- function(polyMask, prediction, bgExt, rem = FALSE,
       newPred[newPred < 0] <- 0
       extPoly <- bgExt
     } else {
-      smartProgress(logger, message = "Removing area..", {
+      alfred.smartProgress(logger, message = "Removing area..", {
         newPred <- prediction - remRaster
         newPred[newPred <= 0] <- NA
         newPred <- raster::trim(newPred)

@@ -32,7 +32,7 @@
 
 change_raster <- function(rasPath, rasName, logger = NULL) {
   rasterName <- fileNameNoExt(rasName)
-  smartProgress(logger, message = "Uploading user-specified SDM (**)...", {
+  alfred.smartProgress(logger, message = "Uploading user-specified SDM (**)...", {
     r <- raster::raster(rasPath)
     r <- raster::trim(r)
     names(r) <- fileNameNoExt(rasName)
@@ -40,7 +40,7 @@ change_raster <- function(rasPath, rasName, logger = NULL) {
     if (extPoly@xmin < -180 | extPoly@xmax > 180 |
         extPoly@ymin < -90 | extPoly@ymax > 90) {
       logger %>%
-        writeLog(
+        alfred.writeLog(
           type = "error", "Wrong extent projection. '", rasName,"' cannot be uploaded. (**)")
       return()
     }

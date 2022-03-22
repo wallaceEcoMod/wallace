@@ -37,11 +37,11 @@ post_userSDM <- function(rasPath, rasName, logger = NULL) {
   # Check genus and species name on file
   if (!(length(strsplit(spName, " ")[[1]]) == 2 | length(strsplit(spName, "_")[[1]]) == 2)) {
     logger %>%
-      writeLog(type = 'warning', "'",
+      alfred.writeLog(type = 'warning', "'",
                rasName, "' without genus and species names (e.g. Canis_lupus.tif).")
     return()
   }
-  smartProgress(logger, message = "Uploading user-specified SDM (**)...", {
+  alfred.smartProgress(logger, message = "Uploading user-specified SDM (**)...", {
     r <- raster::raster(rasPath)
     r <- raster::trim(r)
     names(r) <- fileNameNoExt(rasName)
@@ -49,7 +49,7 @@ post_userSDM <- function(rasPath, rasName, logger = NULL) {
     if (extPoly@xmin < -180 | extPoly@xmax > 180 |
         extPoly@ymin < -90 | extPoly@ymax > 90) {
       logger %>%
-        writeLog(
+        alfred.writeLog(
           type = "error", "Wrong extent projection. '", rasName,"' cannot be uploaded. (**)")
       return()
     }
@@ -58,8 +58,8 @@ post_userSDM <- function(rasPath, rasName, logger = NULL) {
 
   if (is.na(raster::crs(r))) {
     logger %>%
-      writeLog(
-        type = "warning", hlSpp(spName),
+      alfred.writeLog(
+        type = "warning", alfred.hlSpp(spName),
         'Input rasters have undefined coordinate reference system (CRS). ',
         'Mapping functionality in components Visualize Model Results and ',
         'Project Model will not work. If you wish to map rasters in these ',

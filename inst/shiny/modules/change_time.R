@@ -52,33 +52,33 @@ change_time_module_server <- function(input, output, session, common) {
     if(input$selRasterSource == "wallace"){
       if (is.null(spp[[curSp()]]$visualization$mapPred)) {
         logger %>%
-          writeLog(type = 'error',
+          alfred.writeLog(type = 'error',
                    'Visualize your model before doing overlap calculations')
         return()
       }
       spp[[curSp()]]$change$time <- spp[[curSp()]]$visualization$mapPred
-      logger %>% writeLog( "SDM area after masking for environmental variables through time will be calculated based on Wallace SDM ")
+      logger %>% alfred.writeLog( "SDM area after masking for environmental variables through time will be calculated based on Wallace SDM ")
     }
     if(input$selRasterSource == "proj"){
       if (is.null(spp[[curSp()]]$project$mapProj)) {
         logger %>%
-          writeLog(type = 'error',
+          alfred.writeLog(type = 'error',
                    'Project your model before doing overlap calculations')
         return()
       }
       spp[[curSp()]]$change$time <-  spp[[curSp()]]$project$mapProj
-      logger %>% writeLog( "SDM area after masking for environmental variables through time will be calculated based on Projected SDM ")
+      logger %>% alfred.writeLog( "SDM area after masking for environmental variables through time will be calculated based on Projected SDM ")
 
     }
     if(input$selRasterSource == "sdm"){
       if (is.null(spp[[curSp()]]$postProc$OrigPred)) {
         logger %>%
-          writeLog(type = 'error',
+          alfred.writeLog(type = 'error',
                    'Load you model in component User SDM before doing range calculations')
         return()
       }
       spp[[curSp()]]$change$time <- spp[[curSp()]]$postProc$OrigPred
-      logger %>% writeLog( "SDM area after masking for environmental variables through time will be calculated based on User provided SDM ")
+      logger %>% alfred.writeLog( "SDM area after masking for environmental variables through time will be calculated based on User provided SDM ")
 
     }
     if(input$selRasterSource == "masked"){
@@ -87,12 +87,12 @@ change_time_module_server <- function(input, output, session, common) {
 
       if (is.null(spp[[curSp()]]$mask$prediction)) {
         logger %>%
-          writeLog(type = 'error',
+          alfred.writeLog(type = 'error',
                    'Do a maskRangeR analysis before doing range calculations')
         return()
       }
       spp[[curSp()]]$change$time <-     spp[[curSp()]]$mask$prediction
-      logger %>% writeLog( "SDM area after masking for environmental variables through time will be calculated based on Masked SDM ")
+      logger %>% alfred.writeLog( "SDM area after masking for environmental variables through time will be calculated based on Masked SDM ")
 
     }
     if(input$selRasterSource == "aoo"){
@@ -101,12 +101,12 @@ change_time_module_server <- function(input, output, session, common) {
 
       if (is.null( spp[[curSp()]]$rmm$data$change$AOO)) {
         logger %>%
-          writeLog(type = 'error',
+          alfred.writeLog(type = 'error',
                    'Do an AOO calculation before doing time calculations')
         return()
       }
       spp[[curSp()]]$change$time <-  spp[[curSp()]]$rmm$data$change$AOO
-      logger %>% writeLog( "SDM area after masking for environmental variables through time will be calculated based on AOO")
+      logger %>% alfred.writeLog( "SDM area after masking for environmental variables through time will be calculated based on AOO")
 
     }
     if(input$selRasterSource == "eoo"){
@@ -115,30 +115,30 @@ change_time_module_server <- function(input, output, session, common) {
 
       if (is.null(spp[[curSp()]]$rmm$data$change$EOO)) {
         logger %>%
-          writeLog(type = 'error',
+          alfred.writeLog(type = 'error',
                    'Do an EOO calculation before doing time calculations')
         return()
       }
       spp[[curSp()]]$change$time1 <-  spp[[curSp()]]$rmm$data$change$EOO
-      logger %>% writeLog( "SDM area after masking for environmental variables through time will be calculated based on EOO")
+      logger %>% alfred.writeLog( "SDM area after masking for environmental variables through time will be calculated based on EOO")
 
     }
   })
   observeEvent(input$goInputEnvs, {
     if (is.null(input$changeEnvs)) {
-      logger %>% writeLog(type = 'error', "Raster files not uploaded")
+      logger %>% alfred.writeLog(type = 'error', "Raster files not uploaded")
       return()
     }
     if (is.null(input$EnvThrVal)) {
-      logger %>% writeLog(type = 'error', "Please enter a threshold for environmental layers")
+      logger %>% alfred.writeLog(type = 'error', "Please enter a threshold for environmental layers")
       return()
     }
-    smartProgress(
+    alfred.smartProgress(
       logger,
       message = "Loading environmental variables ", {
    rStack <- raster::stack(input$changeEnvs$datapath)
    if (raster::nlayers(rStack)==1) {
-     logger %>% writeLog(type = 'error', "Please upload more than one environmental variable")
+     logger %>% alfred.writeLog(type = 'error', "Please upload more than one environmental variable")
      return()
    }
    spp[[curSp()]]$change$changeEnvs <- rStack
@@ -152,14 +152,14 @@ change_time_module_server <- function(input, output, session, common) {
     years <- trimws(strsplit(input$Years, ",")[[1]])
 
     if (raster::nlayers(spp[[curSp()]]$change$changeEnvs)!=length(years)) {
-      logger %>% writeLog(type = 'error', "Please enter the years for all inputed variables")
+      logger %>% alfred.writeLog(type = 'error', "Please enter the years for all inputed variables")
       return()
     }
     if (is.null(spp[[curSp()]]$change$time1)&is.null(spp[[curSp()]]$change$time)){
-      logger %>% writeLog( type = 'error',"No SDM is selected for the calculations")
+      logger %>% alfred.writeLog( type = 'error',"No SDM is selected for the calculations")
     }
     else if(is.null(spp[[curSp()]]$change$time1)){
-    smartProgress(
+      alfred.smartProgress(
       logger,
       message = "Calculating area change through time ", {
     SDM <- spp[[curSp()]]$change$time
@@ -171,14 +171,14 @@ change_time_module_server <- function(input, output, session, common) {
     ### Set up years for plotting
       })
 
-      logger %>% writeLog( "SDM area after masking for environmental variables through time calculation done")
+      logger %>% alfred.writeLog( "SDM area after masking for environmental variables through time calculation done")
       # LOAD INTO SPP ####
       spp[[curSp()]]$change$AreaTime <-SDM.time$Area
       spp[[curSp()]]$change$Years <- years
       common$update_component(tab = "Results")
     }
    else if(!is.null(spp[[curSp()]]$change$time1)){
-      smartProgress(
+     alfred.smartProgress(
         logger,
         message = "Calculating area change through time ", {
           rStack <- spp[[curSp()]]$change$changeEnvs
@@ -190,7 +190,7 @@ change_time_module_server <- function(input, output, session, common) {
           ### Set up years for plotting
         })
 
-      logger %>% writeLog( "SDM area after masking for environmental variables through time calculation done")
+      logger %>% alfred.writeLog( "SDM area after masking for environmental variables through time calculation done")
       # LOAD INTO SPP ####
       spp[[curSp()]]$change$AreaTime <-SDM.time$Area
       spp[[curSp()]]$change$Years <- years
@@ -260,7 +260,7 @@ change_time_module_map <- function(map, common) {
 
     polyEOO <- spp[[curSp()]]$rmm$data$change$EOO@polygons[[1]]@Polygons
     bb <- spp[[curSp()]]$rmm$data$change$EOO@bbox
-    bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
+    bbZoom <- alfred.polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
     map %>%
       fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
     map %>%
@@ -285,7 +285,7 @@ change_time_module_map <- function(map, common) {
     req(spp[[curSp()]]$change$time)
   sdm <-  spp[[curSp()]]$change$time
   raster::crs(sdm) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
-  SDMVals <- getRasterVals(sdm)
+  SDMVals <- alfred.getRasterVals(sdm)
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
   legendPal <- colorNumeric(rev(rasCols), SDMVals, na.color = 'transparent')
   rasPal <- colorNumeric(rasCols, SDMVals, na.color = 'transparent')
@@ -309,7 +309,7 @@ change_time_module_map <- function(map, common) {
     map %>%
       addLegend("bottomright", pal = legendPal, title = "SDM",
                 values = SDMVals, layerId = "sdm",
-                labFormat = reverseLabels(2, reverse_order=TRUE)) %>%
+                labFormat = alfred.reverseLabel(2, reverse_order=TRUE)) %>%
       addRasterImage(sdm, colors = rasPal,
                      opacity = 0.7, group = 'change', layerId = 'sdm',
                      method = "ngb")

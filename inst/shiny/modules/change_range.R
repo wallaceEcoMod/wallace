@@ -54,17 +54,17 @@ change_range_module_server <- function(input, output, session, common) {
         # ERRORS ####
         if (is.null(spp[[curSp()]]$visualization$mapPred)) {
           logger %>%
-            writeLog(type = 'error',
+            alfred.writeLog(type = 'error',
                      'Visualize your model before doing range calculations')
           return()
         }
         if (is.null( spp[[curSp()]]$visualization$thresholds)) {
           logger %>%
-            writeLog(type = 'error',
+            alfred.writeLog(type = 'error',
                      'Generate a thresholded model before doing range calculations')
           return()
         }
-        smartProgress(
+        alfred.smartProgress(
           logger,
           message = "Calculating a range size estimate using a South America Albers Equal Area Conic projection", {
 
@@ -84,7 +84,7 @@ change_range_module_server <- function(input, output, session, common) {
           })
 
         req(area)
-        logger %>% writeLog( "Species range size calculated based on Wallace SDM ")
+        logger %>% alfred.writeLog( "Species range size calculated based on Wallace SDM ")
         # LOAD INTO SPP ####
         spp[[curSp()]]$change$range <- area
         spp[[curSp()]]$change$rangetype <- input$selSource
@@ -94,17 +94,17 @@ change_range_module_server <- function(input, output, session, common) {
       # ERRORS ####
       if (is.null(spp[[curSp()]]$project$mapProj)) {
         logger %>%
-          writeLog(type = 'error',
+          alfred.writeLog(type = 'error',
                    'Project your model before doing range calculations')
         return()
       }
       if (is.null(spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet)) {
         logger %>%
-          writeLog(type = 'error',
+          alfred.writeLog(type = 'error',
                    'Generate a thresholded prediction before doing range calculations')
         return()
       }
-    smartProgress(
+        alfred.smartProgress(
       logger,
       message = "Calculating a range size estimate using a South America Albers Equal Area Conic projection", {
 
@@ -124,7 +124,7 @@ change_range_module_server <- function(input, output, session, common) {
 })
 
     req(area)
-    logger %>% writeLog( "Species range size calculated based on  projected SDM ")
+    logger %>% alfred.writeLog( "Species range size calculated based on  projected SDM ")
     # LOAD INTO SPP ####
       spp[[curSp()]]$change$range <- area
     spp[[curSp()]]$change$rangetype <- input$selSource
@@ -134,7 +134,7 @@ change_range_module_server <- function(input, output, session, common) {
         # ERRORS ####
         if (is.null(spp[[curSp()]]$postProc$OrigPred)) {
           logger %>%
-            writeLog(type = 'error',
+            alfred.writeLog(type = 'error',
                      'Load you model in component User SDM before doing range calculations')
           return()
         }
@@ -142,11 +142,11 @@ change_range_module_server <- function(input, output, session, common) {
         p[p == 0] <- NA
         if (length(unique(raster::values(p)))> 2) {
           logger %>%
-            writeLog(type = 'error',
+            alfred.writeLog(type = 'error',
                      'Generate a thresholded prediction before doing range calculations')
           return()
         }
-        smartProgress(
+        alfred.smartProgress(
           logger,
           message = "Calculating a range size estimate using a South America Albers Equal Area Conic projection on a user uploaded SDM", {
 
@@ -165,7 +165,7 @@ change_range_module_server <- function(input, output, session, common) {
           })
 
         req(area)
-        logger %>% writeLog( "Species range size calculated based on User SDM ")
+        logger %>% alfred.writeLog( "Species range size calculated based on User SDM ")
         # LOAD INTO SPP ####
         spp[[curSp()]]$change$range <- area
         spp[[curSp()]]$change$rangetype <- input$selSource
@@ -177,7 +177,7 @@ change_range_module_server <- function(input, output, session, common) {
         # ERRORS ####
         if (is.null(spp[[curSp()]]$mask$prediction)) {
           logger %>%
-            writeLog(type = 'error',
+            alfred.writeLog(type = 'error',
                      'Do a maskRangeR analysis before doing range calculations')
           return()
         }
@@ -185,11 +185,11 @@ change_range_module_server <- function(input, output, session, common) {
         p[p == 0] <- NA
         if (length(unique(raster::values(p)))> 2) {
           logger %>%
-            writeLog(type = 'error',
+            alfred.writeLog(type = 'error',
                      'Generate a thresholded prediction before doing range calculations')
           return()
         }
-        smartProgress(
+        alfred.smartProgress(
           logger,
           message = "Calculating a range size estimate using a South America Albers Equal Area Conic projection on a masked SDM", {
 
@@ -208,7 +208,7 @@ change_range_module_server <- function(input, output, session, common) {
           })
 
         req(area)
-        logger %>% writeLog( "Species range size calculated based on masked SDM ")
+        logger %>% alfred.writeLog( "Species range size calculated based on masked SDM ")
         # LOAD INTO SPP ####
         spp[[curSp()]]$change$range <- area
         spp[[curSp()]]$change$rangetype <- input$selSource
@@ -223,17 +223,17 @@ change_range_module_server <- function(input, output, session, common) {
         ##check that the projection exists and that it is thresholded
         if (is.null(spp[[curSp()]]$visualization$mapPred)) {
           logger %>%
-            writeLog(type = 'error',
+            alfred.writeLog(type = 'error',
                      'Project your model before doing EOO calculations')
           return()
         }
         if (is.null(spp[[curSp()]]$visualization$thresholds)) {
           logger %>%
-            writeLog(type = 'error',
+            alfred.writeLog(type = 'error',
                      'Generate a thresholded prediction before doing EOO calculations')
           return()
         }
-        smartProgress(
+        alfred.smartProgress(
           logger,
           message = "Calculating an EOO estimate based on the thresholded SDM ", {
             #must reclass the sdm to get 0 to be NA
@@ -245,7 +245,7 @@ change_range_module_server <- function(input, output, session, common) {
 
           })
         req(aeoosdm)
-        logger %>% writeLog( "Calculated an EOO estimate based on a thresholded SDM. This is an approximation based on a non-projected SDM")
+        logger %>% alfred.writeLog( "Calculated an EOO estimate based on a thresholded SDM. This is an approximation based on a non-projected SDM")
         # LOAD INTO SPP ####
         spp[[curSp()]]$rmm$data$change$EOOval <- aeoosdm
         spp[[curSp()]]$rmm$data$change$EOOtype <- input$selSource1
@@ -256,7 +256,7 @@ change_range_module_server <- function(input, output, session, common) {
         ##check that the projection exists and that it is thresholded
         if (is.null(spp[[curSp()]]$postProc$OrigPred)) {
           logger %>%
-            writeLog(type = 'error',
+            alfred.writeLog(type = 'error',
                      'Project load a model before doing EOO calculations')
           return()
         }
@@ -264,11 +264,11 @@ change_range_module_server <- function(input, output, session, common) {
         p[p == 0] <- NA
         if (length(unique(raster::values(p)))> 2) {
           logger %>%
-            writeLog(type = 'error',
+            alfred.writeLog(type = 'error',
                      'Generate a thresholded prediction before doing range calculations')
           return()
         }
-        smartProgress(
+        alfred.smartProgress(
           logger,
           message = "Calculating an EOO estimate based on the user provided SDM ", {
             #must reclass the sdm to get 0 to be NA
@@ -280,7 +280,7 @@ change_range_module_server <- function(input, output, session, common) {
 
           })
         req(aeoosdm)
-        logger %>% writeLog( "Calculated an EOO estimate based on a user provided SDM. This is an approximation based on a non-projected SDM")
+        logger %>% alfred.writeLog( "Calculated an EOO estimate based on a user provided SDM. This is an approximation based on a non-projected SDM")
         # LOAD INTO SPP ####
         spp[[curSp()]]$rmm$data$change$EOOval <- aeoosdm
         spp[[curSp()]]$rmm$data$change$EOOtype <- input$selSource1
@@ -291,17 +291,17 @@ change_range_module_server <- function(input, output, session, common) {
         ##check that the projection exists and that it is thresholded
         if (is.null(spp[[curSp()]]$project$mapProj)) {
           logger %>%
-            writeLog(type = 'error',
+            alfred.writeLog(type = 'error',
                      'Project your model before doing EOO calculations')
           return()
         }
         if (is.null(spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet)) {
           logger %>%
-            writeLog(type = 'error',
+            alfred.writeLog(type = 'error',
                      'Generate a thresholded prediction before doing EOO calculations')
           return()
         }
-        smartProgress(
+        alfred.smartProgress(
           logger,
           message = "Calculating an EOO estimate based on the projected thresholded SDM ", {
             #must reclass the sdm to get 0 to be NA
@@ -313,7 +313,7 @@ change_range_module_server <- function(input, output, session, common) {
 
           })
         req(aeoosdm)
-        logger %>% writeLog( "Calculated an EOO estimate based on a projected thresholded SDM. This is an approximation based on a non-projected SDM")
+        logger %>% alfred.writeLog( "Calculated an EOO estimate based on a projected thresholded SDM. This is an approximation based on a non-projected SDM")
         # LOAD INTO SPP ####
         spp[[curSp()]]$rmm$data$change$EOOval <- aeoosdm
         spp[[curSp()]]$rmm$data$change$EOOtype <- input$selSource1
@@ -323,11 +323,11 @@ change_range_module_server <- function(input, output, session, common) {
       if (input$selSource1 == "occs"){
         if (is.null(spp[[curSp()]]$occs)) {
           logger %>%
-            writeLog(type = 'error',
+            alfred.writeLog(type = 'error',
                      'Get or upload occurrence data for this species before doing EOO calculations (names must match)')
           return()
         }
-        smartProgress(
+        alfred.smartProgress(
           logger,
           message = "Calculating an EOO estimate based on occurrence points ", {
           occs <- spp[[curSp()]]$occs
@@ -340,7 +340,7 @@ change_range_module_server <- function(input, output, session, common) {
 
       })
         req(eoo)
-        logger %>% writeLog( "Calculated an EOO estimate based on occurrences. This is an approximation based on unprojected coordinates")
+        logger %>% alfred.writeLog( "Calculated an EOO estimate based on occurrences. This is an approximation based on unprojected coordinates")
 
         # LOAD INTO SPP ####
         spp[[curSp()]]$rmm$data$change$EOOval <- area
@@ -354,13 +354,13 @@ change_range_module_server <- function(input, output, session, common) {
         ##check that the projection exists and that it is thresholded
         if (is.null(spp[[curSp()]]$visualization$mapPred)) {
           logger %>%
-            writeLog(type = 'error',
+            alfred.writeLog(type = 'error',
                      'Visualize your model before doing AOO calculations')
           return()
         }
         if (is.null(spp[[curSp()]]$visualization$thresholds)) {
           logger %>%
-            writeLog(type = 'error',
+            alfred.writeLog(type = 'error',
                      'Visualize a thresholded prediction before doing AOO calculations')
           return()
         }
@@ -372,7 +372,7 @@ change_range_module_server <- function(input, output, session, common) {
       #  p[!is.na(p)] <- 1
         AOOlocs<-changeRangeR::aooArea(r = p, locs = occs.xy)
         req(AOOlocs)
-        logger %>% writeLog( "Calculated an AOO estimate based on an SDM and occurrences. This is an approximation based on unprojected coordinates")
+        logger %>% alfred.writeLog( "Calculated an AOO estimate based on an SDM and occurrences. This is an approximation based on unprojected coordinates")
 
         # LOAD INTO SPP ####
 
@@ -385,13 +385,13 @@ change_range_module_server <- function(input, output, session, common) {
         ##check that the projection exists and that it is thresholded
         if (is.null(spp[[curSp()]]$visualization$mapPred)) {
           logger %>%
-            writeLog(type = 'error',
+            alfred.writeLog(type = 'error',
                      'Visualize your model before doing AOO calculations')
           return()
         }
         if (is.null(spp[[curSp()]]$visualization$thresholds)) {
           logger %>%
-            writeLog(type = 'error',
+            alfred.writeLog(type = 'error',
                      'Visualize a thresholded prediction before doing AOO calculations')
           return()
         }
@@ -399,7 +399,7 @@ change_range_module_server <- function(input, output, session, common) {
         p[p == 0] <- NA
         AOO<-changeRangeR::aooArea(r = p)
         req(AOO)
-        logger %>% writeLog( "Calculated an AOO estimate based on an SDM. This is an approximation based on unprojected coordinates")
+        logger %>% alfred.writeLog( "Calculated an AOO estimate based on an SDM. This is an approximation based on unprojected coordinates")
 
         # LOAD INTO SPP ####
         spp[[curSp()]]$rmm$data$change$AOOval <- AOO$area
@@ -411,13 +411,13 @@ change_range_module_server <- function(input, output, session, common) {
         ##check that the projection exists and that it is thresholded
         if (is.null(spp[[curSp()]]$project$mapProj)) {
           logger %>%
-            writeLog(type = 'error',
+            alfred.writeLog(type = 'error',
                      'Project your model before doing AOO calculations')
           return()
         }
         if (is.null(spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet)) {
           logger %>%
-            writeLog(type = 'error',
+            alfred.writeLog(type = 'error',
                      'Generate a thresholded prediction before doing AOO calculations')
           return()
         }
@@ -425,7 +425,7 @@ change_range_module_server <- function(input, output, session, common) {
         p[p == 0] <- NA
         AOO<-changeRangeR::aooArea(r = p)
         req(AOO)
-        logger %>% writeLog( "Calculated an AOO estimate based on an SDM. This is an approximation based on unprojected coordinates")
+        logger %>% alfred.writeLog( "Calculated an AOO estimate based on an SDM. This is an approximation based on unprojected coordinates")
 
         # LOAD INTO SPP ####
         spp[[curSp()]]$rmm$data$change$AOOval <- AOO$area
@@ -437,7 +437,7 @@ change_range_module_server <- function(input, output, session, common) {
         ##check that the projection exists and that it is thresholded
         if (is.null(spp[[curSp()]]$postProc$OrigPred)) {
           logger %>%
-            writeLog(type = 'error',
+            alfred.writeLog(type = 'error',
                      'Upload your model before doing AOO calculations')
           return()
         }
@@ -445,7 +445,7 @@ change_range_module_server <- function(input, output, session, common) {
         p[p == 0] <- NA
         if (length(unique(raster::values(p)))> 2) {
           logger %>%
-            writeLog(type = 'error',
+            alfred.writeLog(type = 'error',
                      'Generate a thresholded prediction before doing range calculations')
           return()
         }
@@ -453,7 +453,7 @@ change_range_module_server <- function(input, output, session, common) {
         p[p == 0] <- NA
         AOO<-changeRangeR::aooArea(r = p)
         req(AOO)
-        logger %>% writeLog( "Calculated an AOO estimate based on an user uploaded SDM. This is an approximation based on unprojected coordinates")
+        logger %>% alfred.writeLog( "Calculated an AOO estimate based on an user uploaded SDM. This is an approximation based on unprojected coordinates")
 
         # LOAD INTO SPP ####
         spp[[curSp()]]$rmm$data$change$AOOval <- AOO$area
@@ -467,13 +467,13 @@ change_range_module_server <- function(input, output, session, common) {
         p[p == 0] <- NA
         if (length(unique(raster::values(p)))> 2) {
           logger %>%
-            writeLog(type = 'error',
+            alfred.writeLog(type = 'error',
                      'Generate a thresholded prediction before doing AOO calculations')
           return()
         }
         AOO<-aooArea(r = p)
         req(AOO)
-        logger %>% writeLog( "Calculated an AOO estimate based on a masked SDM. This is an approximation based on unprojected coordinates")
+        logger %>% alfred.writeLog( "Calculated an AOO estimate based on a masked SDM. This is an approximation based on unprojected coordinates")
 
         # LOAD INTO SPP ####
         spp[[curSp()]]$rmm$data$change$AOOval <- AOO$area
@@ -549,12 +549,12 @@ change_range_module_map <- function(map, common) {
   # Map logic
  spp <- common$spp
   curSp <- common$curSp
-  map %>% clearAll()
+  map %>% alfred.clearAll()
 if(!is.null(spp[[curSp()]]$rmm$data$change$EOO)){
 
  polyEOO <- spp[[curSp()]]$rmm$data$change$EOO@polygons[[1]]@Polygons
  bb <- spp[[curSp()]]$rmm$data$change$EOO@bbox
- bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
+ bbZoom <- alfred.polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
  map %>%
    fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
 map %>%

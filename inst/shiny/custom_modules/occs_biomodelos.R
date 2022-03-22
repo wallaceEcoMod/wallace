@@ -22,7 +22,7 @@ occs_biomodelos_module_server <- function(input, output, session, common) {
     # LOAD INTO SPP ####
     occsOrig <- occsTbls$orig
     occs <- occsTbls$cleaned
-    sp <- formatSpName(input$spNameBM)
+    sp <- alfred.fmtSpN(input$spNameBM)
     sp <- paste0(toupper(substring(sp, 1, 1)), substring(sp, 2, nchar(sp)))
     # if species name is already in list, overwrite it
     if (!is.null(spp[[sp]])) spp[[sp]] <- NULL
@@ -66,11 +66,11 @@ occs_biomodelos_module_map <- function(map, common) {
   spp <- common$spp
   req(spp[[curSp()]]$occs)
   occs <- spp[[curSp()]]$occData$occsCleaned
-  map %>% clearAll() %>%
+  map %>% alfred.clearAll() %>%
     addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude,
                      radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                      fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
-    zoom2Occs(occs)
+    alfred.zoom2Occs(occs)
 }
 
 occs_biomodelos_module_rmd <- function(species) {

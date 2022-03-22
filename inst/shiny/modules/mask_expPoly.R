@@ -40,15 +40,15 @@ mask_expPoly_module_server <- function(input, output, session, common) {
   observeEvent(input$goInputPoly, {
     # ERRORS ####
     if (is.null(spp[[curSp()]]$postProc$prediction)) {
-      logger %>% writeLog(
-        type = 'error', hlSpp(curSp()),
+      logger %>% alfred.writeLog(
+        type = 'error', alfred.hlSpp(curSp()),
         'Calculate/Upload a model prediction(**)')
       return()
     }
     if (input$polyExpSel == 'expDraw') {
       if (is.null(spp[[curSp()]]$polyMaskXY)) {
-        logger %>% writeLog(
-          type = 'error', hlSpp(curSp()),
+        logger %>% alfred.writeLog(
+          type = 'error', alfred.hlSpp(curSp()),
           "The polygon has not been drawn and finished. Please use the draw ",
           "toolbar on the left-hand of the map to complete the polygon.")
         return()
@@ -56,8 +56,8 @@ mask_expPoly_module_server <- function(input, output, session, common) {
     }
     if (input$polyExpSel == 'expUser') {
       if (is.null(input$polyExpShp$datapath)) {
-        logger %>% writeLog(
-          type = 'error', hlSpp(curSp()),
+        logger %>% alfred.writeLog(
+          type = 'error', alfred.hlSpp(curSp()),
           "Specified filepath(s) (**)")
         return()
       }
@@ -67,8 +67,8 @@ mask_expPoly_module_server <- function(input, output, session, common) {
     if (input$polyExpSel == 'expDraw') {
       polyMask <- proj_draw(spp[[curSp()]]$polyMaskXY, spp[[curSp()]]$polyMaskID,
                             0, logger, spN = curSp())
-      polyX <- printVecAsis(round(spp[[curSp()]]$polyMaskXY[, 1], digits = 4))
-      polyY <- printVecAsis(round(spp[[curSp()]]$polyMaskXY[, 2], digits = 4))
+      polyX <- alfred.printVecAsis(round(spp[[curSp()]]$polyMaskXY[, 1], digits = 4))
+      polyY <- alfred.printVecAsis(round(spp[[curSp()]]$polyMaskXY[, 2], digits = 4))
 
       if (is.null(spp[[curSp()]]$mask$expertPoly)) {
         spp[[curSp()]]$mask$expertPoly <- list()
@@ -118,16 +118,16 @@ mask_expPoly_module_server <- function(input, output, session, common) {
       }
 
       if (rgeos::gIntersects(spp[[curSp()]]$postProc$bgExt, polyMask)) {
-        logger %>% writeLog(
-          type = 'error', hlSpp(curSp()),
+        logger %>% alfred.writeLog(
+          type = 'error', alfred.hlSpp(curSp()),
           "The polygon is outside the background extent. Please specify a new polygon. (**)"
         )
         return()
       }
 
       if (is.null(polyMask)) {
-        logger %>% writeLog(
-          type = 'warning', hlSpp(curSp()),
+        logger %>% alfred.writeLog(
+          type = 'warning', alfred.hlSpp(curSp()),
           "No polygon uploaded (**)"
         )
         return()
@@ -166,8 +166,8 @@ mask_expPoly_module_server <- function(input, output, session, common) {
     removePoly <- ifelse(input$actExpPoly == "addPoly", FALSE, TRUE)
     if (!(binBool == 3 | binBool == 2)) {
       if (removePoly == FALSE) {
-        logger %>% writeLog(
-          type = 'error', hlSpp(curSp()),
+        logger %>% alfred.writeLog(
+          type = 'error', alfred.hlSpp(curSp()),
           "You cannot add a polygon to a continous map (**)."
         )
         return()
@@ -180,11 +180,11 @@ mask_expPoly_module_server <- function(input, output, session, common) {
                                  removePoly, bgExt = bgExt(), logger)
       spp[[curSp()]]$mask$flagPoly <- TRUE
       if (removePoly == FALSE) {
-        logger %>% writeLog(
-          hlSpp(curSp()), "The polygon was added (**)")
+        logger %>% alfred.writeLog(
+          alfred.hlSpp(curSp()), "The polygon was added (**)")
       } else {
-        logger %>% writeLog(
-          hlSpp(curSp()), "The polygon was removed (**)")
+        logger %>% alfred.writeLog(
+          alfred.hlSpp(curSp()), "The polygon was removed (**)")
       }
       # LOAD INTO SPP ####
       spp[[curSp()]]$postProc$prediction <- expertRast$pred
@@ -192,8 +192,8 @@ mask_expPoly_module_server <- function(input, output, session, common) {
       spp[[curSp()]]$mask$removePoly <- c(spp[[curSp()]]$mask$removePoly, removePoly)
       spp[[curSp()]]$procEnvs$bgExt <- expertRast$ext
     } else {
-      logger %>% writeLog(
-        type = "error", hlSpp(curSp()),
+      logger %>% alfred.writeLog(
+        type = "error", alfred.hlSpp(curSp()),
         "The polygon was already used. Define a new one (**)")
     }
   })
@@ -207,8 +207,8 @@ mask_expPoly_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$mask$prediction <- NULL
     spp[[curSp()]]$mask$removePoly <- NULL
     spp[[curSp()]]$mask$flagPoly <- NULL
-    logger %>% writeLog(
-      hlSpp(curSp()), "Reset prediction (**).")
+    logger %>% alfred.writeLog(
+      alfred.hlSpp(curSp()), "Reset prediction (**).")
   })
 
   return(list(
@@ -245,7 +245,7 @@ mask_expPoly_module_map <- function(map, common) {
 
   shinyjs::delay(1000,
                  map %>%
-                   clearAll() %>%
+                   alfred.clearAll() %>%
                    mapPNG(curSp()) %>%
                    # add background polygon
                    mapBgPolys(bgShpXY(), color = 'green', group = 'postBg')
@@ -274,7 +274,7 @@ mask_expPoly_module_map <- function(map, common) {
                            opacity = 0.7, group = 'mask', layerId = 'postPred') %>%
       addLegend("bottomright", pal = legendPal, title = "Suitability<br>(User) (**)",
                 values = quanRas, layerId = "expert",
-                labFormat = reverseLabels(2, reverse_order = TRUE))
+                labFormat = alfred.reverseLabel(2, reverse_order = TRUE))
   }
 
   if (!is.null((spp[[curSp()]]$mask$flagPoly))) {
