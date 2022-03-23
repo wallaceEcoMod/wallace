@@ -228,7 +228,8 @@ proj_user_module_server <- function(input, output, session, common) {
     # ERRORS ####
     # Check that the extents of raster and projection extent intersects
     if (!rgeos::gIntersects(spp[[curSp()]]$project$pjExt,
-                            methods::as(raster::extent(userProjEnvs), 'SpatialPolygons'))) {
+                            methods::as(raster::extent(userProjEnvs),
+                                        'SpatialPolygons'))) {
       logger %>%
         alfred.writeLog(type = 'error', 'Extents do not overlap')
       return()
@@ -272,7 +273,8 @@ proj_user_module_server <- function(input, output, session, common) {
         thr <- stats::quantile(occPredVals, probs = input$trainPresQuantile)
       }
       projUserThr <- projUser > thr
-      logger %>% alfred.writeLog(alfred.hlSpp(curSp()), "Projection of model to user-specified files",
+      logger %>% alfred.writeLog(
+        alfred.hlSpp(curSp()), "Projection of model to user-specified files",
                           'with threshold ', input$threshold, ' (',
                           formatC(thr, format = "e", 2), ').')
     } else {
