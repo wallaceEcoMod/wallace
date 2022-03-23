@@ -20,7 +20,7 @@ out.vert <- occs_queryDb(spNames, occDb = "vertnet", occNum)
 # Bison
 out.bison <- occs_queryDb(spNames, occDb = "bison", occNum)
 # BIEN
-out.bien <- occs_queryDb(spNames = spNamesPlants, occDb = "bien", occNum)
+# out.bien <- occs_queryDb(spNames = spNamesPlants, occDb = "bien", occNum)
 
 
 ### test if the error messages appear when they are supposed to
@@ -239,54 +239,53 @@ test_that("Bison headers", {
 headersBien <- c("scrubbed_species_binomial", "longitude", "latitude",
                  "collection_code")
 
-for (i in 1:length(spNamesPlants)){
-  ##Check output
-  test_that("output type checks", {
-    # the output is a list
-    expect_is(out.bien, "list")
-    #the list has as many elements as species names provided
-    expect_equal(length(out.bien), length(spNamesPlants))
-    # each individual species result is a list
-    expect_is(out.bien[[i]], "list")
-    #Each individual list has two elements
-    expect_equal(length(out.bien[[i]]), 2)
-    # the elements on the main list are lists too
-    expect_is(out.bien[[i]][c("orig","cleaned")], "list")
-    # Correct species dowloaded in each case
-    expect_match(unique(out.bien[[i]]$cleaned$scientific_name),spNamesPlants[i],
-                 ignore.case=T)
-
-    # cleaned list has 14 columns
-    expect_equal(14, ncol(out.bien[[i]]$cleaned))
-  })
-  ### test function stepts
-  test_that("output data checks", {
-    # if the original database has records without coordinates OR duplicates:
-    if ((TRUE %in% duplicated(out.bien[[i]]$orig[,c('longitude','latitude')]) == TRUE)|
-        (NA %in% out.bien$orig[,c('longitude','latitude')]) == TRUE){
-      # the cleaned table must have fewer records than the original one
-      expect_true((nrow(out.bien[[i]]$orig)) > (nrow(out.bien[[i]]$cleaned)))
-    } else { # if not,
-      # both tables should have the same number of records
-      expect_true((nrow(out.bien[[i]]$orig)) == (nrow(out.bien[[i]]$cleaned)))
-    }
-    # there are not "NA" values in longitude OR latitude columns in the cleaned table
-    expect_false(NA %in% out.bien[[i]]$cleaned$latitude) |
-      (NA %in% out.bien[[i]]$cleaned$longitude)
-    # there are not duplicate values in longitude AND latitude columns in the cleaned table
-    expect_false(TRUE %in% duplicated(out.bien[[i]]$cleaned[,c('longitude','latitude')]))
-  })
-# check headers
-test_that("Bien headers", {
-  # the original headers haven't changed
-  expect_false('FALSE' %in%  (headersBien %in% names(out.bien[[i]]$orig)))
-  # the headers in the claned table are the ones specified in the function
-  expect_equal(names(out.bien[[i]]$cleaned),
-               c("occID", "scientific_name", "longitude", "latitude", "country",
-          "state_province", "locality", "year", "record_type", "catalog_number",
-          "institution_code", "elevation", "uncertainty","pop"))
-})
-
-}
+# for (i in 1:length(spNamesPlants)){
+#   ##Check output
+#   test_that("output type checks", {
+#     # the output is a list
+#     expect_is(out.bien, "list")
+#     #the list has as many elements as species names provided
+#     expect_equal(length(out.bien), length(spNamesPlants))
+#     # each individual species result is a list
+#     expect_is(out.bien[[i]], "list")
+#     #Each individual list has two elements
+#     expect_equal(length(out.bien[[i]]), 2)
+#     # the elements on the main list are lists too
+#     expect_is(out.bien[[i]][c("orig","cleaned")], "list")
+#     # Correct species dowloaded in each case
+#     expect_match(unique(out.bien[[i]]$cleaned$scientific_name),spNamesPlants[i],
+#                  ignore.case=T)
+#
+#     # cleaned list has 14 columns
+#     expect_equal(14, ncol(out.bien[[i]]$cleaned))
+#   })
+#   ### test function stepts
+#   test_that("output data checks", {
+#     # if the original database has records without coordinates OR duplicates:
+#     if ((TRUE %in% duplicated(out.bien[[i]]$orig[,c('longitude','latitude')]) == TRUE)|
+#         (NA %in% out.bien$orig[,c('longitude','latitude')]) == TRUE){
+#       # the cleaned table must have fewer records than the original one
+#       expect_true((nrow(out.bien[[i]]$orig)) > (nrow(out.bien[[i]]$cleaned)))
+#     } else { # if not,
+#       # both tables should have the same number of records
+#       expect_true((nrow(out.bien[[i]]$orig)) == (nrow(out.bien[[i]]$cleaned)))
+#     }
+#     # there are not "NA" values in longitude OR latitude columns in the cleaned table
+#     expect_false(NA %in% out.bien[[i]]$cleaned$latitude) |
+#       (NA %in% out.bien[[i]]$cleaned$longitude)
+#     # there are not duplicate values in longitude AND latitude columns in the cleaned table
+#     expect_false(TRUE %in% duplicated(out.bien[[i]]$cleaned[,c('longitude','latitude')]))
+#   })
+# # check headers
+# test_that("Bien headers", {
+#   # the original headers haven't changed
+#   expect_false('FALSE' %in%  (headersBien %in% names(out.bien[[i]]$orig)))
+#   # the headers in the claned table are the ones specified in the function
+#   expect_equal(names(out.bien[[i]]$cleaned),
+#                c("occID", "scientific_name", "longitude", "latitude", "country",
+#           "state_province", "locality", "year", "record_type", "catalog_number",
+#           "institution_code", "elevation", "uncertainty","pop"))
+# })
+# }
 
 

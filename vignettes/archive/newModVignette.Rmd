@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 ```
 
-## *Wallace* modules (v1.9.1)
+## *Wallace* modules (v1.9.1-3)
 
 ```{r wallace logo, echo = FALSE, fig.width=4, fig.height=3, fig=TRUE, eval = TRUE}
 plot(1,1,type="p", pch=119, cex = 15, font = 4, axes = FALSE, ann=F)

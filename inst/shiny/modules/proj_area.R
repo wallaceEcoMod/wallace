@@ -54,6 +54,7 @@ proj_area_module_server <- function(input, output, session, common) {
   spp <- common$spp
   evalOut <- common$evalOut
   envs <- common$envs
+  envs.global <- common$envs.global
   rmm <- common$rmm
   curSp <- common$curSp
   curModel <- common$curModel
@@ -89,6 +90,7 @@ proj_area_module_server <- function(input, output, session, common) {
         return()
       }
     }
+
 
     # FUNCTION CALL ####
     if (input$projExt == 'pjDraw') {
@@ -165,6 +167,30 @@ proj_area_module_server <- function(input, output, session, common) {
       logger %>%
         alfred.writeLog(type = 'error', 'Extents do not overlap')
       return()
+    }
+
+    if (is.null(envs())) {
+      logger %>%
+        alfred.writeLog(
+          type = 'error',
+          'Environmental variables missing. Obtain them in component 3.')
+      return()
+    } else {
+      diskRast <- raster::fromDisk(envs.global[[spp[[curSp()]]$envs]])
+      if (diskRast) {
+        if (class(envs.global[[spp[[curSp()]]$envs]]) == "RasterStack") {
+          diskExist <- !file.exists(envs.global[[spp[[curSp()]]$envs]]@layers[[1]]@file@name)
+        } else if (class(envs.global[[spp[[curSp()]]$envs]]) == "RasterBrick") {
+          diskExist <- !file.exists(envs.global[[spp[[curSp()]]$envs]]@file@name)
+        }
+        if (diskExist) {
+          logger %>%
+            alfred.writeLog(
+              type = 'error',
+              'Environmental variables missing. Please upload again.')
+          return()
+        }
+      }
     }
 
     # FUNCTION CALL ####

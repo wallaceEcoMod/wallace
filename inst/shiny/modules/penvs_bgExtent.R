@@ -50,8 +50,10 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
     common$update_component(tab = "Map")
     # ERRORS ####
     if (is.null(envs())) {
-      logger %>% alfred.writeLog(type = 'error', alfred.hlSpp(curSp()), 'Environmental variables missing.',
-                          '. Obtain them in component 3.')
+      logger %>% alfred.writeLog(
+        type = 'error',
+        alfred.hlSpp(curSp()),
+        'Environmental variables missing. Obtain them in component 3.')
       return()
     }
     req(curSp(), occs())
