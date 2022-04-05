@@ -42,7 +42,7 @@ m %>%
             labFormat = alfred.reverseLabel(2, reverse_order = TRUE)) %>%
 # map model prediction raster and projection polygon
   clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
-  addRasterImage(proj_area_{{spAbr}}$projAime, colors = rasPal_{{spAbr}}, opacity = 0.7,
+  addRasterImage(proj_area_{{spAbr}}$projArea, colors = rasPal_{{spAbr}}, opacity = 0.7,
                  layerId = 'projRas', group = 'proj', method = "ngb") %>%
  ##add projection polygon (user drawn area)
   addPolygons(data = proj_draw_{{spAbr}}, fill = FALSE,
