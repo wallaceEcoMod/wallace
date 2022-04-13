@@ -1,12 +1,12 @@
 
-#' @title proj_mess generate MESS map for projection raster
+#' @title xfer_mess generate MESS map for transferred raster
 #' @description This function generates a MESS map for the new variables for
-#' projection based on variables and points used for modeling in previous
+#' transferring based on variables and points used for modeling in previous
 #' components.
 #'
 #' @details
 #' This functions allows for the creation of a MESS map for the new provided
-#' variables for projection. These variables are either user uploaded or
+#' variables for transferring. These variables are either user uploaded or
 #' selected from WorldClim database. MESS map is based on occurrence and
 #' background points used for generating the model and the environmental values
 #' at those points.
@@ -18,8 +18,8 @@
 #' @param bgMsk a rasterBrick or rasterStack of environmental variables used
 #'   for modeling. They must be cropped and masked to extent used in model
 #'   training.
-#' @param projExtRas a rasterStack or rasterBrick of environmental variables
-#'   to be used for projecting.
+#' @param xferExtRas a rasterStack or rasterBrick of environmental variables
+#'   to be used for transferring.
 #' @param logger Stores all notification messages to be displayed in the Log
 #'   Window of Wallace GUI. Insert the logger reactive list here for running
 #'   in shiny, otherwise leave the default NULL.
@@ -41,19 +41,19 @@
 #'                       full.names = TRUE)
 #' envsFut <- raster::stack(envsFut)
 #' ## run function
-#' projMess <- proj_mess(occs = occsEnvs, bg = bgEnvs, bgMsk = envs,
-#'                       projExtRas = envsFut)
+#' xferMess <- xfer_mess(occs = occsEnvs, bg = bgEnvs, bgMsk = envs,
+#'                       xferExtRas = envsFut)
 #'
 # @return
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 
 # @note
-#' @seealso \code{\link[dismo]{mess}}, \code{\link{proj_time}}
-#' \code{\link{proj_userEnvs}}
+#' @seealso \code{\link[dismo]{mess}}, \code{\link{xfer_time}}
+#' \code{\link{xfer_userEnvs}}
 #' @export
 
-proj_mess <- function(occs, bg, bgMsk, projExtRas, logger = NULL, spN = NULL) {
+xfer_mess <- function(occs, bg, bgMsk, xferExtRas, logger = NULL, spN = NULL) {
 
   occsVals <- occs[, names(bgMsk)]
   if (is.null(bg)) {
@@ -64,11 +64,11 @@ proj_mess <- function(occs, bg, bgMsk, projExtRas, logger = NULL, spN = NULL) {
   }
 
   # rename rasters to match originals
-  projExtRas2 <- projExtRas
-  names(projExtRas2) <- names(bgMsk)
+  xferExtRas2 <- xferExtRas
+  names(xferExtRas2) <- names(bgMsk)
 
   alfred.smartProgress(logger, message = "Generating MESS map...", {
-    mss <- suppressWarnings(dismo::mess(projExtRas2, allVals))
+    mss <- suppressWarnings(dismo::mess(xferExtRas2, allVals))
     # for mapping purposes, set all infinite values to NA
     mss[is.infinite(mss)] <- NA
     logger %>% alfred.writeLog(alfred.hlSpp(spN), "Generated MESS map.")

@@ -1,8 +1,8 @@
-#### COMPONENT proj: Project Model
-#### MODULE: Project to User provided area
-context("proj_userEnvs")
+#### COMPONENT xfer: Transfer Model
+#### MODULE: Transfer to User provided area
+context("xfer_userEnvs")
 
-## extent to project
+## extent to transfer
 # set coordinates
 longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331, -66.47149, -66.71319,
                -71.11931)
@@ -19,23 +19,23 @@ envsFut <- list.files(path = system.file('extdata/wc/future',
                       full.names = TRUE)
 envsFut <- raster::stack(envsFut)
 ### run function
-modProj <- proj_userEnvs(evalOut = m, curModel = 1, envs = envsFut,
+modXfer <- xfer_userEnvs(evalOut = m, curModel = 1, envs = envsFut,
                          outputType = "cloglog", alg = "maxent.jar",
-                         clamp = FALSE, pjExt = polyExt)
+                         clamp = FALSE, xfExt = polyExt)
 
 ### test output features
 test_that("output type checks", {
   # the output is a list
-  expect_is(modProj, "list")
+  expect_is(modXfer, "list")
   # the output list has five elements
-  expect_equal(length(modProj), 2)
+  expect_equal(length(modXfer), 2)
   # element within the output list are:
   # a rasterBrick
-  expect_is(modProj$projExt, "RasterBrick")
+  expect_is(modXfer$xferExt, "RasterBrick")
   # a rasterLayer
-  expect_is(modProj$projUser, "RasterLayer")
-  # there are as many projection extents as environmental variables used
-  expect_equal(raster::nlayers(envsFut), raster::nlayers(modProj$projExt))
-  # there is 1 projection area
-  expect_equal(raster::nlayers(modProj$projUser), 1)
+  expect_is(modXfer$xferUser, "RasterLayer")
+  # there are as many extent of transfers as environmental variables used
+  expect_equal(raster::nlayers(envsFut), raster::nlayers(modXfer$xferExt))
+  # there is 1 area of transfer
+  expect_equal(raster::nlayers(modXfer$xferUser), 1)
 })

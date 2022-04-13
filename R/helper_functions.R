@@ -284,7 +284,7 @@ alfred.remEnvsValsNA <- function(occs, occsEnvsVals, spN, logger) {
 }
 
 ####################### #
-# VISUALIZE & PROJECT #
+# VISUALIZE & TRANSFER #
 ####################### #
 #' @title alfred.getRasterVals
 #' @description Retrieve the value range for a prediction raster for plotting

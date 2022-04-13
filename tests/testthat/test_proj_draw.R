@@ -1,6 +1,6 @@
-#### COMPONENT proj: Project Model
-#### MODULE: Project to User provided area
-context("proj_draw")
+#### COMPONENT xfer: Transfer Model
+#### MODULE: Transfer to User provided area
+context("xfer_draw")
 
 # set coordinates (as in GUI)
 longitude <- c(-27.78641, -74.09170, -84.01930, -129.74867, -142.19085,
@@ -10,13 +10,13 @@ latitude <- c(-40.40539, -37.02010, 2.28455, 40.75350, 56.35954,
 ##make into matrix
 userDrawPoly <- matrix(c(longitude, latitude), byrow = FALSE, ncol = 2)
 ##set buffer test 0 and >0
-drawPjBufZero = 0
-drawPjBuf = 0.5
+drawXfBufZero = 0
+drawXfBuf = 0.5
 ## setId to 1
-polyPjID = 1
-polygonTest <- proj_draw(polyPjXY = userDrawPoly, polyPjID, drawPjBuf)
-polygonTestZero <- proj_draw(polyPjXY = userDrawPoly, polyPjID,
-                             drawPjBuf = drawPjBufZero)
+polyXfID = 1
+polygonTest <- xfer_draw(polyXfXY = userDrawPoly, polyXfID, drawXfBuf)
+polygonTestZero <- xfer_draw(polyXfXY = userDrawPoly, polyXfID,
+                             drawXfBuf = drawXfBufZero)
 
 test_that("output type checks", {
   # the drawn polygon does not include all localities

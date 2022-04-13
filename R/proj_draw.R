@@ -1,17 +1,17 @@
 
-#' @title proj_draw Draw projection extent
+#' @title xfer_draw Draw extent of transfer
 #' @description This function creates a polygon object from coordinates of user
 #'   drawn poylgon in the GUI.
 #'
 #' @details
-#' This function is used in the project model component. In the GUI, the user
-#'   draws a polygon to be used as the projection extent and may include a
+#' This function is used in the transfer model component. In the GUI, the user
+#'   draws a polygon to be used as the extent of transfer and may include a
 #'   buffer to the given polygon. The function returns a
 #'   SpatialPolygonsDataFrame object of the desired extent (+ buffer).
-#' @param polyPjXY coordinates of polygon endpoints obtained from user
+#' @param polyXfXY coordinates of polygon endpoints obtained from user
 #'   drawn polygon
-#' @param polyPjID numeric .ID to be used in the generation of the polygon
-#' @param drawPjBuf the buffer to be used in generating the
+#' @param polyXfID numeric .ID to be used in the generation of the polygon
+#' @param drawXfBuf the buffer to be used in generating the
 #'   SpatialPolygonsDataFrame, must be >=0 . A number must be specified.
 #' @param logger Stores all notification messages to be displayed in the
 #'   Log Window of Wallace GUI. Insert the logger reactive list here for
@@ -24,10 +24,10 @@
 #'               56.35954, 54.55045, -7.11861)
 #' userDrawPoly <- matrix(c(longitude, latitude), byrow = FALSE,
 #'                        ncol = 2)
-#' drawPjBuf <- 0.5
-#' polyPjID <- 1
-#' polygonTest <- proj_draw(polyPjXY = userDrawPoly, polyPjID,
-#'                          drawPjBuf)
+#' drawXfBuf <- 0.5
+#' polyXfID <- 1
+#' polygonTest <- xfer_draw(polyXfXY = userDrawPoly, polyXfID,
+#'                          drawXfBuf)
 #'
 #' @return This functions returns a SpatialPolygonsDataFrame based on the user
 #'   specified coordinates (drawn on map). This SpatialPolygonsDataFrame may be
@@ -35,19 +35,19 @@
 
 #' @author Gonzalo Pinilla <gpinillabuitrago@@gradcenter.cuny.edu>
 # @note
-#' @seealso  \code{\link{proj_userEnvs}}
+#' @seealso  \code{\link{xfer_userEnvs}}
 #' @export
 
-proj_draw <- function(polyPjXY, polyPjID, drawPjBuf, logger = NULL, spN = NULL) {
-  newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(polyPjXY)),
-                                                   ID = polyPjID)))
-  bgExt <- rgeos::gBuffer(newPoly, width = drawPjBuf)
+xfer_draw <- function(polyXfXY, polyXfID, drawXfBuf, logger = NULL, spN = NULL) {
+  newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(polyXfXY)),
+                                                   ID = polyXfID)))
+  bgExt <- rgeos::gBuffer(newPoly, width = drawXfBuf)
   bgExt <- methods::as(bgExt, "SpatialPolygonsDataFrame")
-  if (drawPjBuf == 0) {
+  if (drawXfBuf == 0) {
     logger %>% alfred.writeLog(alfred.hlSpp(spN), 'Draw polygon without buffer.')
   } else {
     logger %>% alfred.writeLog(alfred.hlSpp(spN), 'Draw polygon with buffer of ',
-                        drawPjBuf, ' degrees.')
+                        drawXfBuf, ' degrees.')
   }
   return(bgExt)
 }

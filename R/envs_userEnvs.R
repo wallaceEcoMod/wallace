@@ -48,7 +48,7 @@ envs_userEnvs <- function(rasPath, rasName, doBrick = FALSE, logger = NULL){
       type = "warning",
       paste0('Input rasters have undefined coordinate reference system (CRS). ',
              'Mapping functionality in components Visualize Model Results and ',
-             'Project Model will not work. If you wish to map rasters in these ',
+             'Transfer Model will not work. If you wish to map rasters in these ',
              'components, please define their projections and upload again. ',
              'See guidance text in this module for more details.'))
   }

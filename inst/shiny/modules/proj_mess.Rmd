@@ -1,17 +1,17 @@
-```{asis, echo = {{proj_mess_knit}}, eval = {{proj_mess_knit}}, include = {{proj_mess_knit}}}
-Generate a MESS map for the projection variables given the variables used for modelling
+```{asis, echo = {{xfer_mess_knit}}, eval = {{xfer_mess_knit}}, include = {{xfer_mess_knit}}}
+Generate a MESS map for the transferring variables given the variables used for modelling
 ```
 
-```{r, echo = {{proj_mess_knit}}, include = {{proj_mess_knit}}}
+```{r, echo = {{xfer_mess_knit}}, include = {{xfer_mess_knit}}}
 # R code to generate MESS raster
-projMess_{{spAbr}} <- proj_mess(
+xferMess_{{spAbr}} <- xfer_mess(
   occs = occs_{{spAbr}},
   bg = bgEnvsVals_{{spAbr}} ,
   bgMsk =  bgMask_{{spAbr}},
-  projExtRas =  projExt_{{spAbr}})
+  xferExtRas =  xferExt_{{spAbr}})
 
 # Generate MESS map
-rasVals_{{spAbr}} <-  alfred.getRasterVals(projMess_{{spAbr}})
+rasVals_{{spAbr}} <-  alfred.getRasterVals(xferMess_{{spAbr}})
 
   # define colorRamp for mess
   if (max(rasVals_{{spAbr}}) > 0 & min(rasVals_{{spAbr}}) < 0) {
@@ -33,15 +33,15 @@ rasVals_{{spAbr}} <-  alfred.getRasterVals(projMess_{{spAbr}})
   m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
 m  %>%
     leaflet::addLegend("bottomright", pal = legendPal_{{spAbr}}, title = "MESS Values",
-              values = rasVals_{{spAbr}}, layerId = 'proj',
+              values = rasVals_{{spAbr}}, layerId = 'xfer',
               labFormat = alfred.reverseLabel(2, reverse_order=TRUE)) %>%
-  # map model prediction raster and projection polygon
- clearMarkers() %>% clearShapes() %>% removeImage('projRas') %>%
-    addRasterImage(projMess_{{spAbr}}, colors =   rasPal_{{spAbr}} , opacity = 0.9,
-                   layerId = 'projRas', group = 'proj', method = "ngb") %>%
-  ##add projection polygon: this we need to fix for now please replace bgExt_{{spAbr}} for the name of your projection polygon.
+  # map model prediction raster and transferring polygon
+ clearMarkers() %>% clearShapes() %>% removeImage('xferRas') %>%
+    addRasterImage(xferMess_{{spAbr}}, colors =   rasPal_{{spAbr}} , opacity = 0.9,
+                   layerId = 'xferRas', group = 'xfer', method = "ngb") %>%
+  ##add transferring polygon: this we need to fix for now please replace bgExt_{{spAbr}} for the name of your transferring polygon.
   addPolygons(data = bgExt_{{spAbr}}, fill = FALSE,
-              weight = 4, color = "blue", group = 'proj')
+              weight = 4, color = "blue", group = 'xfer')
 
 
 

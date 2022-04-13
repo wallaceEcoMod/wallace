@@ -1,32 +1,32 @@
 
-#' @title proj_time Project model to a new time
-#' @description Function projects the model generated in previous components to
+#' @title xfer_time Transfer model to a new time
+#' @description Function transfers the model generated in previous components to
 #'   a new time and area using provided layers.
 
 #' @details
-#' This functions allows for the projection of the model created in previous
-#'   components to a new time and area. The projection area is user provided in
-#'   the map of the GUI and the projection time user selected. The model will
-#'   be projected to the new area and time as long as the environmental
+#' This functions allows transferring the model created in previous
+#'   components to a new time and area. The area of transfer is user provided in
+#'   the map of the GUI and the transfer time user selected. The model will
+#'   be transferred to the new area and time as long as the environmental
 #'   variables are available for the area. This function returns a list
-#'   including the cropped environmental variables used for projecting and
-#'   the projected model.
+#'   including the cropped environmental variables used for transferring and
+#'   the transferred model.
 #'
 #' @param evalOut ENMevaluate output from previous module and using any of
 #'   the available algorithms.
 #' @param curModel if algorithm is maxent, model selected by user as best
 #'   or optimal, in terms of feature class and regularization multiplier (e.g
 #'   'L_1'). Otherwise must be 1.
-#' @param envs environmental layers of different time to be used for projecting
+#' @param envs environmental layers of different time to be used for transferring
 #'   the model. They must match the layers used for generating the model in the
 #'   model component.
 #' @param outputType output type to be used when algorithm is maxnet or
 #'   maxent.jar.
 #' @param alg modeling algorithm used in the model component. Can be one of:
 #'   'bioclim', 'maxent.jar' or 'maxnet'.
-#' @param pjExt extent of the area to project the model. This is defined by the
+#' @param xfExt extent of the area to transfer the model. This is defined by the
 #'   user in the map of the GUI and is provided as a SpatialPolygons object.
-#' @param clamp logical. Whether projection will be of clamped or unclamped
+#' @param clamp logical. Whether transfer will be of clamped or unclamped
 #'   model.
 #' @param logger Stores all notification messages to be displayed in the Log
 #'   Window of Wallace GUI. Insert the logger reactive list here for running in
@@ -41,7 +41,7 @@
 #'                                                        package = "wallace"),
 #'                                            pattern = ".tif$",
 #'                                            full.names = FALSE))
-#' ## extent to project
+#' ## extent to transfer
 #' # set coordinates
 #' longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331, -66.47149, -66.71319,
 #'                -71.11931)
@@ -59,64 +59,64 @@
 #'                                          package = "wallace"),
 #'                       full.names = TRUE)
 #' envsFut <- raster::stack(envsFut)
-#' modProj <- proj_time(evalOut = m, curModel = 1,
+#' modXfer <- xfer_time(evalOut = m, curModel = 1,
 #'                      envs = envsFut, alg = 'maxent.jar',
-#'                      pjExt = polyExt, clamp = FALSE, outputType = 'cloglog')
+#'                      xfExt = polyExt, clamp = FALSE, outputType = 'cloglog')
 
 
-#' @return A list of two elements: projExt and projTime. The first is a
+#' @return A list of two elements: xferExt and xferTime. The first is a
 #'   RasterBrick or RasterStack of the environmental variables cropped to the
-#'   projection area. The second element is a raster of the projected model
+#'   area of transfer. The second element is a raster of the transferred model
 #'   with the specified output type.
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 #' @author Andrea Paz <paz.andreita@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
-#' @seealso \code{\link[dismo]{predict}}, \code{\link{proj_time}}
-#' \code{\link{proj_userEnvs}}
+#' @seealso \code{\link[dismo]{predict}}, \code{\link{xfer_time}}
+#' \code{\link{xfer_userEnvs}}
 #' @export
 
-proj_time <- function(evalOut, curModel, envs, pjExt, alg, outputType = NULL,
+xfer_time <- function(evalOut, curModel, envs, xfExt, alg, outputType = NULL,
                       clamp = NULL, logger = NULL, spN = NULL) {
-  newPoly <- pjExt
+  newPoly <- xfExt
   if (alg == 'BIOCLIM') {
     logger %>% alfred.writeLog(
       alfred.hlSpp(spN),
-      'Projection in time for BIOCLIM model.')
+      'Transferring in time for BIOCLIM model.')
   } else if (alg == 'maxent.jar'| clamp == TRUE) {
     logger %>% alfred.writeLog(
       alfred.hlSpp(spN),
-      'Projection in time for clamped model ', curModel, '.')
+      'Transferring in time for clamped model ', curModel, '.')
   } else if (clamp == FALSE) {
     logger %>% alfred.writeLog(
       alfred.hlSpp(spN),
-      'New time projection for unclamped model' , curModel, '.')
+      'New time transfer for unclamped model' , curModel, '.')
   }
 
 
   alfred.smartProgress(
     logger,
     message = "Clipping environmental data to current extent...", {
-    pjtMsk <- raster::crop(envs, newPoly)
-    pjtMsk <- raster::mask(pjtMsk, newPoly)
+    xftMsk <- raster::crop(envs, newPoly)
+    xftMsk <- raster::mask(xftMsk, newPoly)
   })
 
   alfred.smartProgress(
     logger,
-    message = ("Projecting to new time..."), {
+    message = ("Transferring to new time..."), {
     if (alg == 'BIOCLIM') {
-      modProjTime <- dismo::predict(evalOut@models[[curModel]], pjtMsk,
+      modXferTime <- dismo::predict(evalOut@models[[curModel]], xftMsk,
                                     useC = FALSE)
     } else if (alg == 'maxnet') {
       if (outputType == "raw") outputType <- "exponential"
-      modProjTime <- alfred.predictMaxnet(evalOut@models[[curModel]], pjtMsk,
+      modXferTime <- alfred.predictMaxnet(evalOut@models[[curModel]], xftMsk,
                                           type = outputType, clamp = clamp)
     } else if (alg == 'maxent.jar') {
-      modProjTime <- dismo::predict(
-        evalOut@models[[curModel]], pjtMsk,
+      modXferTime <- dismo::predict(
+        evalOut@models[[curModel]], xftMsk,
         args = c(paste0("outputformat=", outputType),
                  paste0("doclamp=", tolower(as.character(clamp)))),
         na.rm = TRUE)
     }
   })
-  return(list(projExt = pjtMsk, projTime = modProjTime))
+  return(list(xferExt = xftMsk, xferTime = modXferTime))
 }

@@ -111,7 +111,7 @@ envs_userEnvs_module_server <- function(input, output, session, common) {
     }
 
     common$update_component(tab = "Results")
-    common$disable_module(component = "proj", module = "projTime")
+    common$disable_module(component = "xfer", module = "xferTime")
   })
 
   output$envsPrint <- renderPrint({

@@ -27,7 +27,7 @@ tagList(
     tabPanel("Partition Occs", value = 'part'),
     tabPanel("Model", value = 'model'),
     tabPanel("Visualize", value = 'vis'),
-    tabPanel("Transfer", value = 'proj'),
+    tabPanel("Transfer", value = 'xfer'),
     tabPanel("Reproduce", value = 'rep'),
     navbarMenu("Support", icon = icon("life-ring"),
                HTML('<a href="https://wallaceecomod.github.io/" target="_blank">Wallace Homepage</a>'),
@@ -145,17 +145,17 @@ tagList(
             tags$hr(),
             insert_modules_ui("vis")
           ),
-          # PROJECT ####
+          # TRANSFER ####
           conditionalPanel(
-            "input.tabs == 'proj'",
+            "input.tabs == 'xfer'",
             div("Component: Model Transfer", class = "componentName"),
-            help_comp_ui("projHelp"),
+            help_comp_ui("xferHelp"),
             radioButtons(
-              "projSel", "Modules Available:",
-              choices = insert_modules_options("proj"),
+              "xferSel", "Modules Available:",
+              choices = insert_modules_options("xfer"),
               selected = character(0)),
             tags$hr(),
-            insert_modules_ui("proj")
+            insert_modules_ui("xfer")
           ),
           # REPRODUCIBILITY
           conditionalPanel(
@@ -401,34 +401,34 @@ tagList(
                     column(2, shinyjs::disabled(downloadButton('dlPred', "Prediction file")))
                   )
                 ),
-                # save proj #
+                # save xfer #
                 conditionalPanel(
-                  "input.tabs == 'proj'",
+                  "input.tabs == 'xfer'",
                   br(),
                   fluidRow(
-                    column(3, h5("Download shapefile of projection extent")),
-                    column(2, shinyjs::disabled(downloadButton('dlPjShp', "ZIP file")))
+                    column(3, h5("Download shapefile of extent of transfer")),
+                    column(2, shinyjs::disabled(downloadButton('dlXfShp', "ZIP file")))
                   ),
                   br(),
                   fluidRow(
-                    column(3, h5("Download projected environmental variables (Select download file type)")),
-                    column(2, selectInput('projEnvsFileType',
+                    column(3, h5("Download environmental variables of transfer (Select download file type)")),
+                    column(2, selectInput('xferEnvsFileType',
                                           label = NULL,
                                           choices = list("GeoTIFF" = 'GTiff',
                                                          "GRD" = 'raster',
                                                          "ASCII" = 'ascii'))),
-                    column(2, shinyjs::disabled(downloadButton('dlProjEnvs', "ZIP file")))
+                    column(2, shinyjs::disabled(downloadButton('dlXferEnvs', "ZIP file")))
                   ),
                   br(),
                   fluidRow(
-                    column(3, h5("Download projection (Select download file type**)")),
-                    column(2, selectInput('projFileType',
+                    column(3, h5("Download transfer (Select download file type**)")),
+                    column(2, selectInput('xferFileType',
                                           label = NULL,
                                           choices = list("GeoTIFF" = 'GTiff',
                                                          "GRD" = 'raster',
                                                          "ASCII" = 'ascii',
                                                          "PNG" = 'png'))),
-                    column(2, shinyjs::disabled(downloadButton('dlProj', "Projection file")))
+                    column(2, shinyjs::disabled(downloadButton('dlXfer', "Transfer file")))
                   ),
                   br(),
                   fluidRow(

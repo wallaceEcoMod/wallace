@@ -1,11 +1,11 @@
-#' @title proj_userExtent: user provided projection extent
-#' @description This function generates a projection area according to a user
+#' @title xfer_userExtent: user provided extent of transfer
+#' @description This function generates an area of transfer according to a user
 #'   provided polygon and buffer.
 #'
 #' @details
-#' This function is used in the projection component. Here, the user provides
+#' This function is used in the transfer component. Here, the user provides
 #'   either a shapefile or a csv with vertex coordinates with the desired shape
-#'   for the projection extent, the user may include a buffer to the given
+#'   for the extent of transfer, the user may include a buffer to the given
 #'   polygon. The function returns a SpatialPolygons object of the desired
 #'   extent (+ buffer).
 #'
@@ -26,7 +26,7 @@
 #'                       full.names = TRUE)
 #' nameShp <- list.files(system.file("extdata/shp", package = "wallace"),
 #'                       full.names = FALSE)
-#' projUser <- proj_userExtent(bgShp_path = pathShp, bgShp_name = nameShp,
+#' xferUser <- xfer_userExtent(bgShp_path = pathShp, bgShp_name = nameShp,
 #'                             userBgBuf = 1)
 #' @return This function returns a SpatialPolygons object with the user
 #'   provided shape (+ a buffer is userBgBuf >0).
@@ -37,7 +37,7 @@
 #'   \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}
 #' @export
 
-proj_userExtent <- function(bgShp_path, bgShp_name, userBgBuf,
+xfer_userExtent <- function(bgShp_path, bgShp_name, userBgBuf,
                             logger = NULL, spN = NULL) {
   pathdir <- dirname(bgShp_path)
   pathfile <- basename(bgShp_path)
@@ -76,12 +76,12 @@ proj_userExtent <- function(bgShp_path, bgShp_name, userBgBuf,
   if (userBgBuf > 0) {
     logger %>% alfred.writeLog(
       alfred.hlSpp(spN),
-      'Projection extent user-defined polygon buffered by ',
+      'Transferring extent user-defined polygon buffered by ',
       userBgBuf, ' degrees.')
   } else {
     logger %>% alfred.writeLog(
       alfred.hlSpp(spN),
-      "Projection extent: user-defined polygon.")
+      "Transferring extent: user-defined polygon.")
   }
   return(bgExt)
 }

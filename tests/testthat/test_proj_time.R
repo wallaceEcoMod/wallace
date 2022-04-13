@@ -1,6 +1,6 @@
-#### COMPONENT proj: Project Model
-#### MODULE: Project to New time
-context("proj_time")
+#### COMPONENT xfer: Transfer Model
+#### MODULE: Transfer to New time
+context("xfer_time")
 
 envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
                                                        package = "wallace"),
@@ -8,7 +8,7 @@ envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
                       rasName = list.files(system.file("extdata/wc",
                                                        package = "wallace"),
                                            pattern = ".tif$", full.names = FALSE))
-## extent to project
+## extent to transfer
 # set coordinates
 longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331, -66.47149, -66.71319,
                -71.11931)
@@ -26,23 +26,23 @@ envsFut <- list.files(path = system.file('extdata/wc/future',
                                          package = "wallace"),
                       full.names = TRUE)
 envsFut <- raster::stack(envsFut)
-modProj <- proj_time(evalOut = m, curModel = 1,
+modXfer <- xfer_time(evalOut = m, curModel = 1,
                      envs = envsFut, alg = 'maxent.jar',
-                     pjExt = polyExt, clamp = FALSE, outputType = 'cloglog')
+                     xfExt = polyExt, clamp = FALSE, outputType = 'cloglog')
 
 # build model and test for both algorithms
 test_that("output type checks", {
   # the output is a list
-  expect_is(modProj, "list")
+  expect_is(modXfer, "list")
   # the output list has five elements
-  expect_equal(length(modProj), 2)
+  expect_equal(length(modXfer), 2)
   # element within the output list are:
   # a rasterBrick
-  expect_is(modProj$projExt, "RasterBrick")
+  expect_is(modXfer$xferExt, "RasterBrick")
   # a rasterLayer
-  expect_is(modProj$projTime, "RasterLayer")
-  # there are as many projection extents as environmental variables used
-  expect_equal(raster::nlayers(envs), raster::nlayers(modProj$projExt))
-  # there is 1 projection area
-  expect_equal(raster::nlayers(modProj$projTime), 1)
+  expect_is(modXfer$xferTime, "RasterLayer")
+  # there are as many extents of transfer as environmental variables used
+  expect_equal(raster::nlayers(envs), raster::nlayers(modXfer$xferExt))
+  # there is 1 area of extent
+  expect_equal(raster::nlayers(modXfer$xferTime), 1)
 })

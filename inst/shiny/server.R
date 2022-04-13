@@ -58,7 +58,7 @@ function(input, output, session) {
   })
 
   # Help Component
-  help_components <- c("occs", "envs", "poccs", "penvs", "espace", "part", "model", "vis", "proj")
+  help_components <- c("occs", "envs", "poccs", "penvs", "espace", "part", "model", "vis", "xfer")
   lapply(help_components, function(component) {
     btn_id <- paste0(component, "Help")
     observeEvent(input[[btn_id]], updateTabsetPanel(session, "main", "Component Guidance"))
@@ -88,10 +88,10 @@ function(input, output, session) {
   observeEvent(input$vis_maxentEvalPlotHelp, updateTabsetPanel(session, "main", "Module Guidance"))
   observeEvent(input$vis_responsePlotHelp, updateTabsetPanel(session, "main", "Module Guidance"))
   observeEvent(input$vis_bioclimPlotHelp, updateTabsetPanel(session, "main", "Module Guidance"))
-  observeEvent(input$proj_areaHelp, updateTabsetPanel(session, "main", "Module Guidance"))
-  observeEvent(input$proj_timeHelp, updateTabsetPanel(session, "main", "Module Guidance"))
-  observeEvent(input$proj_userHelp, updateTabsetPanel(session, "main", "Module Guidance"))
-  observeEvent(input$proj_messHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$xfer_areaHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$xfer_timeHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$xfer_userHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$xfer_messHelp, updateTabsetPanel(session, "main", "Module Guidance"))
 
   ######################## #
   ### MAPPING LOGIC ####
@@ -129,9 +129,9 @@ function(input, output, session) {
       spp[[curSp()]]$polyExtXY <- xy
       spp[[curSp()]]$polyExtID <- id
     }
-    if(component() == 'proj') {
-      spp[[curSp()]]$polyPjXY <- xy
-      spp[[curSp()]]$polyPjID <- id
+    if(component() == 'xfer') {
+      spp[[curSp()]]$polyXfXY <- xy
+      spp[[curSp()]]$polyXfID <- id
     }
     # UI CONTROLS - for some reason, curSp() disappears here unless input is updated
     updateSelectInput(session, "curSp", selected = curSp())
@@ -175,10 +175,10 @@ function(input, output, session) {
     shinyjs::toggleState("dlMaxentPlots", !is.null(spp[[curSp()]]$rmm$model$algorithm$maxent$notes))
     shinyjs::toggleState("dlRespCurves", !is.null(spp[[curSp()]]$rmm$model$algorithm$maxent$notes))
     shinyjs::toggleState("dlPred", !is.null(spp[[curSp()]]$visualization$occPredVals))
-    shinyjs::toggleState("dlPjShp", !is.null(spp[[curSp()]]$project$pjExt))
-    shinyjs::toggleState("dlProjEnvs", !is.null(spp[[curSp()]]$project$pjEnvsDl))
-    shinyjs::toggleState("dlProj", !is.null(spp[[curSp()]]$project$pjEnvs))
-    shinyjs::toggleState("dlMess", !is.null(spp[[curSp()]]$project$messVals))
+    shinyjs::toggleState("dlXfShp", !is.null(spp[[curSp()]]$transfer$xfExt))
+    shinyjs::toggleState("dlXferEnvs", !is.null(spp[[curSp()]]$transfer$xfEnvsDl))
+    shinyjs::toggleState("dlXfer", !is.null(spp[[curSp()]]$transfer$xfEnvs))
+    shinyjs::toggleState("dlMess", !is.null(spp[[curSp()]]$transfer$messVals))
     # shinyjs::toggleState("dlWhatever", !is.null(spp[[curSp()]]$whatever))
   })
 
@@ -819,7 +819,7 @@ function(input, output, session) {
             addRasterImage(mapPred(), colors = rasPal, opacity = 0.7,
                            group = 'vis', layerId = 'mapPred', method = "ngb") %>%
             addPolygons(data = bgExt(), fill = FALSE, weight = 4, color = "blue",
-                        group='proj')
+                        group='xfer')
           mapview::mapshot(m, file = file)
         } else if (input$predFileType == 'raster') {
           fileName <- curSp()
@@ -844,47 +844,47 @@ function(input, output, session) {
   ########################################### #
 
   # # # # # # # # # # # # # # # # # #
-  # PROJECT: other controls ####
+  # TRANSFER: other controls ####
   # # # # # # # # # # # # # # # # # #
 
   # convenience function for mapped model prediction raster for current species
-  mapProj <- reactive(spp[[curSp()]]$project$mapProj)
+  mapXfer <- reactive(spp[[curSp()]]$transfer$mapXfer)
 
-  # DOWNLOAD: Shapefile of projection extent
-  output$dlPjShp <- downloadHandler(
-    filename = function() paste0(curSp(), '_projShp.zip'),
+  # DOWNLOAD: Shapefile of extent of transfer
+  output$dlXfShp <- downloadHandler(
+    filename = function() paste0(curSp(), '_xferShp.zip'),
     content = function(file) {
       tmpdir <- tempdir()
       owd <- setwd(tmpdir)
       on.exit(setwd(owd))
       n <- curSp()
-      rgdal::writeOGR(obj = spp[[curSp()]]$project$pjExt,
+      rgdal::writeOGR(obj = spp[[curSp()]]$transfer$xfExt,
                       dsn = tmpdir,
-                      layer = paste0(n, '_projShp'),
+                      layer = paste0(n, '_xferShp'),
                       driver = "ESRI Shapefile",
                       overwrite_layer = TRUE)
 
       exts <- c('dbf', 'shp', 'shx')
-      fs <- paste0(n, '_projShp.', exts)
+      fs <- paste0(n, '_xferShp.', exts)
       zip::zipr(zipfile = file, files = fs)
       if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
     },
     contentType = "application/zip"
   )
 
-  # DOWNLOAD: Projected envs
-  output$dlProjEnvs <- downloadHandler(
-    filename = function() paste0(spp[[curSp()]]$project$pjEnvsDl, '_pjEnvs.zip'),
+  # DOWNLOAD: Transferred envs
+  output$dlXferEnvs <- downloadHandler(
+    filename = function() paste0(spp[[curSp()]]$transfer$xfEnvsDl, '_xfEnvs.zip'),
     content = function(file) {
       withProgress(
-        message = paste0("Preparing ", paste0(spp[[curSp()]]$project$pjEnvsDl, '_pjEnvs.zip...')), {
+        message = paste0("Preparing ", paste0(spp[[curSp()]]$transfer$xfEnvsDl, '_xfEnvs.zip...')), {
           tmpdir <- tempdir()
           owd <- setwd(tmpdir)
           on.exit(setwd(owd))
-          type <- input$projEnvsFileType
-          nm <- names(spp[[curSp()]]$project$projTimeEnvs)
+          type <- input$xferEnvsFileType
+          nm <- names(spp[[curSp()]]$transfer$xferTimeEnvs)
 
-          raster::writeRaster(spp[[curSp()]]$project$projTimeEnvs, nm, bylayer = TRUE,
+          raster::writeRaster(spp[[curSp()]]$transfer$xferTimeEnvs, nm, bylayer = TRUE,
                               format = type, overwrite = TRUE)
           ext <- switch(type, raster = 'grd', ascii = 'asc', GTiff = 'tif')
 
@@ -900,16 +900,16 @@ function(input, output, session) {
   )
 
   # download for model predictions (restricted to background extent)
-  output$dlProj <- downloadHandler(
+  output$dlXfer <- downloadHandler(
     filename = function() {
-      ext <- switch(input$projFileType, raster = 'zip', ascii = 'asc',
+      ext <- switch(input$xferFileType, raster = 'zip', ascii = 'asc',
                     GTiff = 'tif', png = 'png')
       thresholdRule <- rmm()$prediction$transfer$environment1$thresholdRule
       predType <- rmm()$prediction$notes
       if (thresholdRule == 'none') {
-        paste0(curSp(), "_proj_", predType, '.', ext)
+        paste0(curSp(), "_xfer_", predType, '.', ext)
       } else {
-        paste0(curSp(), "_proj_", thresholdRule, '.', ext)
+        paste0(curSp(), "_xfer_", thresholdRule, '.', ext)
       }
     },
     content = function(file) {
@@ -917,8 +917,8 @@ function(input, output, session) {
       owd <- setwd(tmpdir)
       on.exit(setwd(owd))
       if(require(rgdal)) {
-        if (input$projFileType == 'png') {
-          req(mapProj())
+        if (input$xferFileType == 'png') {
+          req(mapXfer())
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
               alfred.writeLog(type = "error", "To download PNG prediction, you're required to",
@@ -937,10 +937,10 @@ function(input, output, session) {
             return()
           }
           if (rmm()$prediction$transfer$environment1$thresholdRule != 'none') {
-            mapProjVals <- 0:1
+            mapXferVals <- 0:1
             rasPal <- c('gray', 'red')
             legendPal <- colorBin(rasPal, 0:1, bins = 2)
-            mapTitle <- "Thresholded Suitability<br>(Projected)"
+            mapTitle <- "Thresholded Suitability<br>(Transferred)"
             mapLabFormat <- function(type, cuts, p) {
               n = length(cuts)
               cuts[n] = "predicted presence"
@@ -953,37 +953,37 @@ function(input, output, session) {
             mapOpacity <- 1
           } else {
             rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-            mapProjVals <- spp[[curSp()]]$project$mapProjVals
-            rasPal <- colorNumeric(rasCols, mapProjVals, na.color='transparent')
-            legendPal <- colorNumeric(rev(rasCols), mapProjVals, na.color='transparent')
-            mapTitle <- "Predicted Suitability<br>(Projected)"
+            mapXferVals <- spp[[curSp()]]$transfer$mapXferVals
+            rasPal <- colorNumeric(rasCols, mapXferVals, na.color='transparent')
+            legendPal <- colorNumeric(rev(rasCols), mapXferVals, na.color='transparent')
+            mapTitle <- "Predicted Suitability<br>(Transferred)"
             mapLabFormat <- alfred.reverseLabel(2, reverse_order=TRUE)
             mapOpacity <- NULL
           }
-          polyPjXY <- spp[[curSp()]]$project$pjExt@polygons[[1]]@Polygons
-          if(length(polyPjXY) == 1) {
-            shp <- polyPjXY[[1]]@coords
+          polyXfXY <- spp[[curSp()]]$transfer$xfExt@polygons[[1]]@Polygons
+          if(length(polyXfXY) == 1) {
+            shp <- polyXfXY[[1]]@coords
           } else {
-            shp <- lapply(polyPjXY, function(x) x@coords)
+            shp <- lapply(polyXfXY, function(x) x@coords)
           }
           m <- leaflet() %>%
             addLegend("bottomright", pal = legendPal, title = mapTitle,
                       labFormat = mapLabFormat, opacity = mapOpacity,
-                      values = mapProjVals, layerId = "train") %>%
+                      values = mapXferVals, layerId = "train") %>%
             addProviderTiles(input$bmap) %>%
-            addRasterImage(mapProj(), colors = rasPal, opacity = 0.7,
-                           group = 'vis', layerId = 'mapProj', method = "ngb") %>%
+            addRasterImage(mapXfer(), colors = rasPal, opacity = 0.7,
+                           group = 'vis', layerId = 'mapXfer', method = "ngb") %>%
             addPolygons(lng = shp[, 1], lat = shp[, 2], fill = FALSE,
-                        weight = 4, color = "red", group = 'proj')
+                        weight = 4, color = "red", group = 'xfer')
           mapview::mapshot(m, file = file)
-        } else if (input$projFileType == 'raster') {
+        } else if (input$xferFileType == 'raster') {
           fileName <- curSp()
-          raster::writeRaster(mapProj(), file.path(tmpdir, fileName),
-                              format = input$projFileType, overwrite = TRUE)
+          raster::writeRaster(mapXfer(), file.path(tmpdir, fileName),
+                              format = input$xferFileType, overwrite = TRUE)
           fs <- paste0(fileName, c('.grd', '.gri'))
           zip::zipr(zipfile = file, files = fs)
         } else {
-          r <- raster::writeRaster(mapProj(), file, format = input$projFileType,
+          r <- raster::writeRaster(mapXfer(), file, format = input$xferFileType,
                                    overwrite = TRUE)
           file.rename(r@file@name, file)
         }
@@ -1005,8 +1005,8 @@ function(input, output, session) {
       owd <- setwd(tmpdir)
       on.exit(setwd(owd))
       if(require(rgdal)) {
-        req(spp[[curSp()]]$project$mess, spp[[curSp()]]$project$pjExt)
-        mess <- spp[[curSp()]]$project$mess
+        req(spp[[curSp()]]$transfer$mess, spp[[curSp()]]$transfer$xfExt)
+        mess <- spp[[curSp()]]$transfer$mess
         if (input$messFileType == 'png') {
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
@@ -1025,12 +1025,12 @@ function(input, output, session) {
               )
             return()
           }
-          rasVals <- spp[[curSp()]]$project$messVals
-          polyPjXY <- spp[[curSp()]]$project$pjExt@polygons[[1]]@Polygons
-          if(length(polyPjXY) == 1) {
-            shp <- polyPjXY[[1]]@coords
+          rasVals <- spp[[curSp()]]$transfer$messVals
+          polyXfXY <- spp[[curSp()]]$transfer$xfExt@polygons[[1]]@Polygons
+          if(length(polyXfXY) == 1) {
+            shp <- polyXfXY[[1]]@coords
           } else {
-            shp <- lapply(polyPjXY, function(x) x@coords)
+            shp <- lapply(polyXfXY, function(x) x@coords)
           }
           # define colorRamp for mess
           if (max(rasVals) > 0 & min(rasVals) < 0) {
@@ -1054,9 +1054,9 @@ function(input, output, session) {
                       values = rasVals, layerId = "train") %>%
             addProviderTiles(input$bmap) %>%
             addRasterImage(mess, colors = rasPal, opacity = 0.7,
-                           group = 'vis', layerId = 'mapProj', method = "ngb") %>%
+                           group = 'vis', layerId = 'mapXfer', method = "ngb") %>%
             addPolygons(lng = shp[, 1], lat = shp[, 2], fill = FALSE,
-                        weight = 4, color = "red", group = 'proj')
+                        weight = 4, color = "red", group = 'xfer')
           mapview::mapshot(m, file = file)
         } else if (input$messFileType == 'raster') {
           fileName <- curSp()
@@ -1327,7 +1327,7 @@ function(input, output, session) {
     selCatEnvs = selCatEnvs,
     evalOut = evalOut,
     mapPred = mapPred,
-    mapProj = mapProj,
+    mapXfer = mapXfer,
     rmm = rmm,
 
     # Switch to a new component tab
