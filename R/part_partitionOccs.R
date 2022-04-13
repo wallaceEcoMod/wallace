@@ -1,11 +1,11 @@
 
 #' @title part_partitionOccs Partition occurrence data
 #' @description This function partitions occurrence data and background points
-#'   according to a user selected method.
+#'   according to a user-selected method.
 #'
 #' @details
 #' This function is used in the partition occurrence data component.
-#' A user selected method is used to partition occurrence and background points
+#' A user-selected method is used to partition occurrence and background points
 #'   into different groups for model testing.
 #' A list of group assignments for both occurrences and background points is
 #'   returned.

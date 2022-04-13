@@ -1,14 +1,14 @@
-#' @title envs_worldclim Obtain worldclim variables
-#' @description download worldclim variables. See www.worldclim.com.
+#' @title envs_worldclim Obtain WorldClim variables
+#' @description download WorldClim variables. See www.worldclim.com.
 #'
 #' @details This function is called by the module envs to download
-#'   worldclim variables from www.worldclim.com. The variables to be dowloaded
+#'   WorldClim variables from www.worldclim.com. The variables to be dowloaded
 #'   are selected by the user with bcSel and the resolution with bcRes. It
 #'   returns either a rasterStack or rasterBrick of selected variables with
 #'   appropriate names for further analyses.
 #'
 #' @param bcRes numeric. Resolution of the climatic layers. Currently
-#'   avaialable resolutions are 0.5, 2.5 and 10.
+#'   available resolutions are 0.5, 2.5 and 10.
 #' @param bcSel character. Vector with bionames to be selected.
 #' @param mapCntr numeric. Vector with longitude and latitude for a tile.
 #'   Required for bcRes 0.5, for other resolutions world data will be downloaded.
