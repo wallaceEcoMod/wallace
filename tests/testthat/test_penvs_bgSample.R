@@ -3,28 +3,28 @@
 context("bgSample")
 
 ### Set parameters
-
-## occurrences
-spN<-"Panthera onca"
-occs <-  occs_queryDb(spName = spN, occDb = "gbif", occNum = 100)
-occs <- as.data.frame(occs[[1]]$cleaned)
-
-## background mask
-# enviromental data
-envs <- envs_worldclim(bcRes = 10, bcSel = c("bio03", "bio04", "bio13", "bio14"),
-                       doBrick = FALSE)
+occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
+                             package = "wallace"))[, 2:3]
+occs$occID <- 1:nrow(occs)
+# environmental data
+envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
+                                                       package = "wallace"),
+                                           pattern = ".tif$", full.names = TRUE),
+                      rasName = list.files(system.file("extdata/wc",
+                                                       package = "wallace"),
+                                           pattern = ".tif$", full.names = FALSE))
 # background extent
-bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5,spN=spN)
+bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
 # background masked
-bgMask <- penvs_bgMask(occs, envs, bgExt,spN=spN)
+bgMask <- penvs_bgMask(occs, envs, bgExt)
 
 ## Number of background points to sample
 bgPtsNum <- 100
-bgPtsNum_big <- 40007
+bgPtsNum_big <- 19525
 
 ### run function
-bgsample <- penvs_bgSample(occs, bgMask, bgPtsNum,spN=spN)
-bgsample_big <- penvs_bgSample(occs, bgMask, bgPtsNum_big,spN=spN)
+bgsample <- penvs_bgSample(occs, bgMask, bgPtsNum)
+bgsample_big <- penvs_bgSample(occs, bgMask, bgPtsNum_big)
 
 ### test output features
 test_that("output type checks", {
