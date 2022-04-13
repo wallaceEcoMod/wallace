@@ -27,7 +27,7 @@ Obtain occurrence data. Used to obtain species name for logger messages.}
 A SpatialPolygonsDataFrame object that contains all occurrences from occs
 }
 \description{
-This function generates a background area according to a user
+This function generates a background area according to a user-
   provided method.
 }
 \details{

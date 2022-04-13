@@ -40,7 +40,7 @@ Function evaluates niche overlap between the two species for
 The niche overlap quantification is based on the occurrence densities and
   the densities of environmental conditions available in the background extent
   that are estimated in the module Occurrence Density Grid. The function
-  computes 4 different things, Schoener's D, unfilling, stability,
+  computes 4 different things; Schoener's D, unfilling, stability,
   expansion indices (Guisan et al. 2014 TREE), and tests for niche
   equivalency and niche similarity.
 }

@@ -25,15 +25,15 @@ Returns a list of 2 lists (one for each species). Each list is an
   the species. It has the input parameters as individual slots.
 }
 \description{
-calculates the part of environmental space more densly
+calculates the part of environmental space more densely
   populated by species & the availability of environmental conditions in the
   background
 }
 \details{
-This fuctions implements a density estimation for each region in the
+This function implements a density estimation for each region in the
   environmental space (gridded at 100*100 pixels). Then an occurrence
   density is estimated using a kernel density approach. The density of
-  environmental conditions in the background is calcuated in the same way.
+  environmental conditions in the background is calculated in the same way.
 }
 \examples{
 \dontrun{

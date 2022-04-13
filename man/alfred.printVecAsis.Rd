@@ -9,7 +9,7 @@ alfred.printVecAsis(x, asChar = FALSE)
 \arguments{
 \item{x}{vector}
 
-\item{asChar}{exclude c notation at the begging of string}
+\item{asChar}{exclude c notation at the beginning of string}
 }
 \description{
 For internal use. Print vector as character string
