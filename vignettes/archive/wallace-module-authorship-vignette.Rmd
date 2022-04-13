@@ -7,7 +7,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
 ```
 
-## *Wallace* modules (v1.9.1)
+## *Wallace* modules (v1.9.1-4)
 
 *Wallace* is an `R`-based, interactive application for reproducible ecological modeling. The application is also expandible via the addition of new modules, which in *Wallace* are discrete parts of the modeling analysis. This vignette steps through the module authorship process, focusing on the steps involved in adding a module, and also on best practices and some troubleshooting. This vignette was tailored for researchers who would like to author their own *Wallace* module based on some technique they'd like to disseminate to the community or use themselves within the *Wallace* workflow. Thus to follow along, it will help to have at least an intermediate understanding of `R` programming. Also, please see our <a href="https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.12945" target="_blank">publication</a> in *Methods in Ecology and Evolution* to read in detail about our philosophy for *Wallace*, the modularity of the application, and our vision for module authorship.
 

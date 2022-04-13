@@ -8,8 +8,7 @@ projMess_{{spAbr}} <- proj_mess(
   occs = occs_{{spAbr}},
   bg = bgEnvsVals_{{spAbr}} ,
   bgMsk =  bgMask_{{spAbr}},
-  projExtRas =  projExt_{{spAbr}} ,
-  time = "{{time_rmd}}")
+  projExtRas =  projExt_{{spAbr}})
 
 # Generate MESS map
 rasVals_{{spAbr}} <-  alfred.getRasterVals(projMess_{{spAbr}})

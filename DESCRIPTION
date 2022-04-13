@@ -1,6 +1,6 @@
 Package: wallace
-Version: 1.9.1
-Date: 2022-03-17
+Version: 1.9.1-4
+Date: 2022-04-05
 Title: A Modular Platform for Reproducible Modeling of Species Niches 
     and Distributions
 Description: The 'shiny' application Wallace is a modular platform for 
