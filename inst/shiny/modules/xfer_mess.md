@@ -2,7 +2,7 @@
 
 **BACKGROUND**  
 
-When projecting a niche/distributional model to new conditions, the new region/time period frequently contains environmental values and combinations that are different than those where it was made (termed “non-analog conditions”). Realistic use of such projections requires detecting any non-analog conditions and assessing the degree to which extrapolation in environmental space affects the prediction (Williams and Jackson 2007, Fitzpatrick and Hargrove 2009, Anderson 2013). Multivariate environmental similarity surfaces (MESS) constitute one way to address these issues (Elith et al. 2010). High positive values (cooler colors on the map) indicate increasing similarity with the conditions used to train the model, and low negative values (warmer colors on the map) indicate increasing difference.
+When transferring a niche/distributional model to new conditions, the new region/time period frequently contains environmental values and combinations that are different than those where it was made (termed “non-analog conditions”). Realistic use of such transfers requires detecting any non-analog conditions and assessing the degree to which extrapolation in environmental space affects the prediction (Williams and Jackson 2007, Fitzpatrick and Hargrove 2009, Anderson 2013). Multivariate environmental similarity surfaces (MESS) constitute one way to address these issues (Elith et al. 2010). High positive values (cooler colors on the map) indicate increasing similarity with the conditions used to train the model, and low negative values (warmer colors on the map) indicate increasing difference.
 
 **IMPLEMENTATION** 
 
