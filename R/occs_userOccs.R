@@ -23,7 +23,7 @@
 #' user.occs <- occs_userOccs(txtPath, txtName)
 #'
 #'
-#' @return List of lists. One list per species with occurence records. Each
+#' @return List of lists. One list per species with occurrence records. Each
 #'   individual species list with appropriate fields for analysis
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>

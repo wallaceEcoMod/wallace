@@ -9,7 +9,7 @@
 #'    to the provided background area. The background area is determined in
 #'    the function penvs_bgExtent from the same component. The function returns
 #'    the provided environmental layers cropped and masked in the provided
-#'    format (either a Brick or a rasterStack).
+#'    format (either a rasterBrick or a rasterStack).
 #'
 #' @param occs data frame of cleaned or processed occurrences obtained from
 #'   components occs: Obtain occurrence data or, poccs: Process occurrence data.

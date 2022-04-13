@@ -10,7 +10,7 @@ Users may upload one or more raster files, which must be in single-file format (
 
 **NOTES**
 
-If the input rasters have no coordinate reference system (CRS) defined (listed as NA), users will be unable to map the rasters in later components. Users will be notified of this in **Module:** ***Map Prediction*** in **Component: Visualize Model Results**, and the mapping functionality will not work. To remedy this problem, users can define the CRS for each raster and save the new version in R with the following code:
+If the input rasters have no coordinate reference system (CRS) defined (listed as NA), users will be unable to map the rasters in later components. Users will be notified of this in Module: *Map Prediction* in **Component: Visualize Model Results**, and the mapping functionality will not work. To remedy this problem, users can define the CRS for each raster and save the new version in R with the following code:
 
 ```{r}
 library(raster)

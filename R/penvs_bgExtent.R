@@ -1,6 +1,6 @@
 
 #' @title penvs_bgExtent Generate background extent
-#' @description This function generates a background area according to a user
+#' @description This function generates a background area according to a user-
 #'   provided method.
 #'
 #' @details This function is used in the select study region component. Here,

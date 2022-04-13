@@ -1,10 +1,10 @@
 
-#' @title model_bioclim Generate Biolcim model
-#' @description This functions generates maxent or maxnet models using
+#' @title model_bioclim Generate Bioclim model
+#' @description The function generates a BIOCLIM model using
 #'   ENMeval 2.0
 #'
 #' @details
-#' The function generates model in ENMeval using a user provided partition of
+#' The function generates a model in ENMeval using a user provided partition of
 #'   occurrences from previous components in the GUI.
 #'
 #' @param occs data frame of cleaned or processed occurrences obtained from
