@@ -3,7 +3,7 @@
 #' @description download ecoClimate variables. See www.ecoclimate.org.
 #'
 #' @details This function is called by the module envs to download ecoClimate
-#'   variables from www.ecoclimate.org. The variables to be dowloaded are
+#'   variables from www.ecoclimate.org. The variables to be downloaded are
 #'   selected by the user with bcSel and the resolution is fixed to 0.5 degrees.
 #'   This function currently gets variables from Dropbox and the process takes
 #'   significantly more time than for other datasets. It returns a rasterStack
@@ -18,7 +18,7 @@
 #' @param ecoClimSel Numeric vector with list of variables to select.
 #' @param logger Stores all notification messages to be displayed in the Log
 #'   Window of Wallace GUI. Insert the logger reactive list here for running in
-#'   shiny, otherwise leave the default NULL
+#'   shiny, otherwise leave the default NULL.
 #'
 #' @examples
 #' bcAOGCM <- "CCSM"

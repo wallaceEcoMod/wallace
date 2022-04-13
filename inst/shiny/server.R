@@ -211,7 +211,7 @@ function(input, output, session) {
     if (is.null(module())) {
       span("...Select a module...", class = "step")
     } else {
-      selectizeInput('curSp', label = "Species log", choices = sppNameList,
+      selectizeInput('curSp', label = "Species menu", choices = sppNameList,
                      multiple = TRUE, selected = selected, options = options)
     }
   })

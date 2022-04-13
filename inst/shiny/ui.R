@@ -191,7 +191,7 @@ tagList(
               offset = 1,
               align = "left",
               div(style = "margin-top: -10px"),
-              strong("Window log"),
+              strong("Log window"),
               div(style = "margin-top: 5px"),
               div(
                 id = "wallaceLog",
@@ -450,19 +450,19 @@ tagList(
         conditionalPanel(
           "input.tabs == 'rep' & input.repSel == 'rep_markdown'",
           column(8,
-                 includeMarkdown("modules/rep_markdown.Rmd")
+                 includeMarkdown("modules/rep_markdown.md")
           )
         ),
         conditionalPanel(
           "input.tabs == 'rep' & input.repSel == 'rep_rmms'",
           column(8,
-                 includeMarkdown("modules/rep_rmms.Rmd")
+                 includeMarkdown("modules/rep_rmms.md")
           )
         ),
         conditionalPanel(
           "input.tabs == 'rep' & input.repSel == 'rep_refPackages'",
           column(8,
-                 includeMarkdown("modules/rep_refPackages.Rmd")
+                 includeMarkdown("modules/rep_refPackages.md")
           )
         ),
         conditionalPanel(

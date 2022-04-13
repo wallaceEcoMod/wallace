@@ -10,7 +10,7 @@
 #'
 #' @param spNames character. Species Latin name, with format "Genus species".
 #' @param occDb character. Biodiversity database to query; current choices are
-#'   "gbif", "vertnet", and "bison"
+#'   "gbif", "vertnet", "bison", and "BIEN"
 #' @param occNum numeric. Maximum number of occurrence records to return
 #' @param logger Stores all notification messages to be displayed in the Log
 #'   Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
@@ -26,7 +26,7 @@
 #'   complete list of original data sources in a citable format.
 #' @param gbifPW specify only if using `occCite` with GBIF to get a complete
 #'   list of original data sources in a citable format.
-#' @param RmUncertain specify if occurrences wothout uncertainty information
+#' @param RmUncertain specify if occurrences without uncertainty information
 #'   should be removed (default is FALSE)
 #' @return list of lists one list per species with occurrence records. Each
 #'   individual species list with appropriate fields for analysis

@@ -4,7 +4,7 @@
 #' @title alfred.printVecAsis
 #' @description For internal use. Print vector as character string
 #' @param x vector
-#' @param asChar exclude c notation at the begging of string
+#' @param asChar exclude c notation at the beginning of string
 #' @export
 alfred.printVecAsis <- function(x, asChar = FALSE) {
   if (is.character(x)) {

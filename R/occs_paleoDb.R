@@ -5,8 +5,8 @@
 #'
 #' @details
 #' This function is called by the module occs_queryDb to query the paleobioDB
-#'   database for species occurrence records in the holocene. It removes
-#'   records with duplicate coordinates, and select some columns with fields
+#'   database for species occurrence records in the Holocene. It removes
+#'   records with duplicate coordinates, and selects some columns with fields
 #'   appropriate to studies in biogeography.
 #'
 #' @param spName character. Species name. For paleobioDb it returns records
@@ -17,8 +17,8 @@
 #' @param logger Stores all notification messages to be displayed in the
 #'   Log Window of Wallace GUI. Insert the logger reactive list here for
 #'   running in shiny, otherwise leave the default NULL
-#' @return A list of 2 dataframes. First dataframe is the original dowloaded
-#'   dataset, second data frame without duplicates and with appropriate fields
+#' @return A list of 2 dataframes. First dataframe is the original downloaded
+#'   dataset, second dataframe without duplicates and with appropriate fields
 #'   for analyses.
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
