@@ -7,12 +7,15 @@ output: html_document
 
 **ORIENTATION**
 
-Niche/distributional modeling analyses require georeferenced occurrence records for the species (e.g., with latitude/longitude). At present, Component **Obtain Occurrence Records** focuses on data documenting the *presence* of the species (i.e., not any information on its absence or non-detection; Franklin 2010 chap. 4; Peterson et al. 2011 chapter 5; Anderson 2012). *Wallace* currently allows users either to: 1) obtain occurrence records from selected online biodiversity databases and download the results (Module ***Query Database***); or 2) upload their own dataset (Module ***User-specified Occurrences***). 
+Niche/distributional modeling analyses require georeferenced occurrence records for the species (e.g., with latitude/longitude). At present, **Component: Obtain Occurrence Records** focuses on data documenting the presence of the species (i.e., not any information on its absence or non-detection; Franklin 2010 chap. 4; Peterson et al. 2011 chapter 5; Anderson 2012). *Wallace* currently allows users to: 1) obtain present-day occurrence records (from dates in the past century or so) from selected online biodiversity databases and download the information (Module: *Query Database [Present]*); 2) obtain paleontological occurrence records from selected online biodiversity databases and download the information (Module: *Query Database [Paleo]*); 
+or 3) upload their own dataset (Module: *User-specified Occurrences*).  
+Unlike previous versions of *Wallace*, multiple species now can be uploaded in the same session.
+
 
 **REFERENCES**
 
-Anderson, R. P. (2012). Harnessing the world's biodiversity data: promise and peril in ecological niche modeling of species distributions. *Annals of the New York Academy of Sciences*. 1260: 66-80.
+Anderson, R. P. (2012). Harnessing the world's biodiversity data: promise and peril in ecological niche modeling of species distributions. *Annals of the New York Academy of Sciences*, 1260(1), 66-80. <a href="https://doi.org/10.1111/j.1749-6632.2011.06440.x" target="_blank">https://doi.org/10.1111/j.1749-6632.2011.06440.x</a>
 
-Franklin J. (2010). Mapping Species Distributions: Spatial Inference and Prediction. Data for species distribution models: the biological data. In: Mapping species distributions: spatial inference and prediction. Cambridge: Cambridge University Press.
+Franklin J. (2010). Data for species distribution models: the biological data. In: Mapping Species Distributions: Spatial Inference and Prediction. Cambridge: Cambridge University Press. <a href="https://doi.org/10.1017/CBO9780511810602.007"target="_blank">https://doi.org/10.1017/CBO9780511810602.007</a>
 
-Peterson A.T., Soberón J., Pearson R.G., Anderson R.P., Martinez-Meyer E., Nakamura M., & Araújo M.B. (2011). Species Occurrence Data. In: *Ecological Niches and Geographic Distributions*. Princeton, New Jersey: Monographs in Population Biology, 49. Princeton University Press.
+Peterson A. T., Soberón J., Pearson R. G., Anderson R. P., Martinez-Meyer E., Nakamura M., Araújo M.B. (2011). Species' Occurrence Data. In: Ecological Niches and Geographic Distributions. Princeton, New Jersey: Monographs in Population Biology, 49. Princeton University Press. <a href="https://doi.org/10.23943/princeton/9780691136868.003.0005" target="_blank">https://doi.org/10.23943/princeton/9780691136868.003.0005</a> 
