@@ -1,0 +1,51 @@
+---
+title: "team"
+output: html_document
+---
+
+#### *Wallace* was created by an international team of ecologists and biogeographers:  
+<br>
+<img src="img/gonzalo.png" alt="gonzalo" style="width: 100px;"/>
+
+<a href="https://www.researchgate.net/profile/Gonzalo_Pinilla-Buitrago" target="_blank">Gonzalo E. Pinilla-Buitrago</a> (lead developer) is PhD candidate at CUNY Graduate Center and City College of New York.
+
+<img src="img/jamie.jpg" alt="jamie" style="width: 100px;"/>
+
+<a href="https://www.researchgate.net/profile/Jamie_Kass" target="_blank">Jamie M. Kass</a> ( co-developer) is a coauthor of ENMeval and currently a PhD candidate at CUNY Graduate Center and City College of New York. In 2019, he will begain a JSPS postdoctoral fellowship at Okinawa Institute of Science and Technology in Japan.
+ 
+<img src="img/andrea.png" alt="andrea" style="width: 100px;"/>
+
+<a href="https://andrepazv.github.io" target="_blank">Andrea Paz</a> (co-developer) is PhD candidate at CUNY Graduate Center and City College of New York graduating in the spring 2021.
+
+
+<img src="img/bethany.jpg" alt="bethany" style="width: 100px;"/>
+
+Bethany Johnson (co-developer) Graduated with a BS in Biology from the City College of New York in 2020.
+
+<img src="img/bruno.png" alt="bruno" style="width: 100px;"/>
+
+<a href="https://www.researchgate.net/profile/Bruno_Vilela3" target="_blank">Bruno Vilela</a> (co-developer) is a coauthor of spThin and currently a professor at Universidade Federal da Bahia in Brazil.
+
+<img src="img/matt.png" alt="matt" style="width: 100px;"/>
+
+<a href="https://www.researchgate.net/profile/Matthew_Aiello-Lammens" target="_blank">Matthew Aiello-Lammens</a> (co-developer) is the lead author of spThin and Assistant Professor of Biology at Pace University.
+
+<img src="img/bob.png" alt="bob" style="width: 100px;"/>
+
+<a href="https://www.researchgate.net/profile/Robert_Muscarella" target="_blank">Robert Muscarella</a> (co-developer) is the lead author of ENMeval and currently is a reasercher at Aarhus University in Denmark. In 2019, he will began a professor position at Uppsala University in Sweden.
+
+<img src="img/cory.png" alt="cory" style="width: 100px;"/>
+
+<a href="https://www.researchgate.net/profile/Cory_Merow2" target="_blank">Cory Merow</a> (co-developer) is currently a researcher at the University of Connecticut.
+
+<img src="img/rob.png" alt="rob" style="width: 100px;"/>
+
+<a href="https://scholar.google.com/citations?user=KSRr5EQAAAAJ&hl=en&oi=ao" target="_blank">Robert P. Anderson</a> (co-developer) is a coauthor of spThin and ENMeval, and Professor of Biology at City College of New York, CUNY. 
+
+<img src="img/valentina.png" alt="valentina" style="width: 100px;"/>
+
+<a href="https://www.researchgate.net/profile/Valentina_Grisales_Betancur" target="_blank">Valentina Grisales-Betancur</a> (collaborator) is an undergraduate student at EAFIT University in Colombia.
+
+<img src="img/sarah.png" alt="sarah" style="width: 100px;"/>
+
+Sarah Meenan (collaborator) recently completed her undergraduate degree from the City College of New York.

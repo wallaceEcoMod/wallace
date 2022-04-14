@@ -476,13 +476,13 @@ tagList(
           tabsetPanel(
             id = 'introTabs',
             tabPanel(
-              'About', #note this used to be named 'intro' so the files will be named 'intro'
-              includeMarkdown("Rmd/text_intro.Rmd")
+              'About',
+              includeMarkdown("Rmd/text_about.Rmd")
             ),
             tabPanel(
-              'Team', #note this used to be named 'about' so the files will be named 'about'
+              'Team',
               fluidRow(
-                column(8, includeMarkdown("Rmd/text_about.Rmd")
+                column(8, includeMarkdown("Rmd/text_team.Rmd")
                 )
               )
             ),
