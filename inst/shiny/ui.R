@@ -493,7 +493,7 @@ tagList(
             tabPanel(
               'Load Prior Session',
               h4("Load session"),
-              h5("If you saved a prior session of Wallace (RDS file), you can load it here."),
+              includeMarkdown("Rmd/text_loadsesh.Rmd"),
               fileInput("load_session", "", accept = ".rds"),
               actionButton('goLoad_session', 'Load RDS')
             )

@@ -11,7 +11,7 @@ output: html_document
 
 <img src="img/jamie.jpg" alt="jamie" style="width: 100px;"/>
 
-<a href="https://www.researchgate.net/profile/Jamie_Kass" target="_blank">Jamie M. Kass</a> ( co-developer) is a coauthor of ENMeval and currently a PhD candidate at CUNY Graduate Center and City College of New York. In 2019, he will begain a JSPS postdoctoral fellowship at Okinawa Institute of Science and Technology in Japan.
+<a href="https://www.researchgate.net/profile/Jamie_Kass" target="_blank">Jamie M. Kass</a> ( co-developer) is a coauthor of ENMeval and currently a PhD candidate at CUNY Graduate Center and City College of New York. In 2019, he will begin a JSPS postdoctoral fellowship at Okinawa Institute of Science and Technology in Japan.
  
 <img src="img/andrea.png" alt="andrea" style="width: 100px;"/>
 

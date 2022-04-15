@@ -18,7 +18,7 @@ Anderson R.P., Raza A. (2010). The effect of the extent of the study region on G
 
 Anderson R.P. (2013). A framework for using niche models to estimate impacts of climate change on species distributions. *Annals of the New York Academy of Sciences*. 1297: 8-28.
 
-Anderson, R. P. (2015). El modelado de nichos y distribuciones: no es simplemente "clic, clic, clic." [With English and French translations: Modeling niches and distributions: it's not just "click, click, click" and La modélisation de niche et de distributions: ce n'est pas juste "clic, clic, clic"]. *Biogeografía*. 8: 4-27.
+Anderson, R. P. (2015). El modelado de nichos y distribuciones: no es simplemente "clic, clic, clic." [With English and French translations: Modeling niches and distributions: it's not just "click, click, click" and La modélisation de niche et de distributions: ce n'est pas juste "clic, clic, clic"]. *Biogeografía*, 8, 4-27. <a href="https://2278aec0-37af-4634-a250-8bb191f1aab7.filesusr.com/ugd/e41566_e8acb6f9c20c44fa9cd729161582857d.pdf" target="_blank">pdf</a>
 
 Barve N., Barve V., Jiménez-Valverde A., Lira-Noriega A., Maher S.P., Peterson A.T., Soberón J., Villalobos F. (2011). The crucial role of the accessible area in ecological niche modeling and species distribution modeling. *Ecological Modelling*. 222: 1810-1819.
 
@@ -28,7 +28,7 @@ Gerstner, B. E., Kass, J. M., Kays, R., Helgen, K. M., Anderson, R. P. (2018). R
 
 Merow, C., Smith, M. J., & Silander, J. A. (2013). A practical guide to MaxEnt for modeling species' distributions: what it does, and why inputs and settings matter. *Ecography*. 36: 1058-1069.
 
-Peterson A. T., Soberón J., Pearson R. G., Anderson R. P., Martinez-Meyer E., Nakamura M., Araújo M. B. (2011). Modeling Ecological Niches. In: *Ecological Niches and Geographic Distributions*. Princeton, New Jersey: Monographs in Population Biology, 49. Princeton University Press.
+Peterson A. T., Soberón J., Pearson R. G., Anderson R. P., Martinez-Meyer E., Nakamura M., Araújo M. B. (2011). Modeling Ecological Niches. In: *Ecological Niches and Geographic Distributions*. Princeton, New Jersey: *Monographs in Population Biology*, 49. Princeton University Press. <a href="https://doi.org/10.23943/princeton/9780691136868.003.0005" target="_blank">https://doi.org/10.23943/princeton/9780691136868.003.0005</a> 
 
 Saupe, E. E., Barve, V., Myers, C. E., Soberón, J., Barve, N., Hensz, C. M., ... & Lira-Noriega, A. (2012). Variation in niche and distribution model performance: the need for a priori assessment of key causal factors. *Ecological Modelling*. 237: 11-22.
 

@@ -1,0 +1,9 @@
+---
+title: "text_loadsesh"
+output: html_document
+---
+
+Users now have the option to stop and save their work, so that they can resume at a later time.
+Each component (Obtain Occurrence Data, Obtain Environmental Data, etc.) has a Save Session feature within the ‘Save’ tab, allowing users to save their progress up to that point as an RDS file (.rds). 
+
+This file can be uploaded here, in the Load Session tab, allowing the user to continue the workflow where they left off. 

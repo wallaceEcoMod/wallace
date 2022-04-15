@@ -26,7 +26,7 @@ We engineered *Wallace* to be used by a broad audience that includes graduate st
 
 * **open**: the code is free to use and modify (GPL 3.0), and it gives users access to some of the largest public online biodiversity databases
 
-* **expandible**: users can author and contribute modules that enable new methodogical options
+* **expandible**: users can author and contribute modules that enable new methodological options
 
 * **flexible**: options for user uploads and downloads of results
 
