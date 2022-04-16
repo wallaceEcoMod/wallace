@@ -1,6 +1,6 @@
 
-#' @title model_maxent Generate maxent or maxnet model
-#' @description This functions generates maxent or maxnet models using
+#' @title model_maxent Generate maxent.jar or maxnet model
+#' @description This functions generates maxent.jar or maxnet models using
 #'   ENMeval 2.0 and user provided tuning parameters.
 #'
 #' @details
