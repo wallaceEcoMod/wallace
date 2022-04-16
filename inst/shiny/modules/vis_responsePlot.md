@@ -10,9 +10,9 @@ In addition to model performance, researchers often are interested in the relati
 
 This module relies on plotting functionality from R package `dismo`.
 
-Users must first select a model. Depending on the `ENMeval` settings selected in Component **Model**, there may be multiple choices for Maxent. Users must then choose a predictor variable to view its response curve. The predictor variables available for selection in the dropdown menu are the variables with non-zero coefficients in the model (i.e., non-zero lambda values). Users can download the currently displayed response curve plot as an image file (.png).
+Users must first select a model. Depending on the `ENMeval` settings selected in **Component: Build and Evaluate Niche Model**, there may be multiple choices for Maxent. Users must then choose a predictor variable to view its response curve. The predictor variables available for selection in the dropdown menu are the variables with non-zero coefficients in the model (i.e., non-zero lambda values). Users can download the currently displayed response curve plot as an image file (.png).
 
 **REFERENCES**
 
-Elith, J., & Graham, C. H. (2009). Do they? How do they? WHY do they differ? On finding reasons for differing performances of species distribution models. *Ecography*, 32, 66-77. <a href="https://doi.org/10.1111/j.1600-0587.2008.05505.x" target="_blank">https://doi.org/10.1111/j.1600-0587.2008.05505.x</a>
+Elith, J., & Graham, C.H. (2009). Do they? How do they? WHY do they differ? On finding reasons for differing performances of species distribution models. *Ecography*, 32, 66-77. <a href="https://doi.org/10.1111/j.1600-0587.2008.05505.x" target="_blank">https://doi.org/10.1111/j.1600-0587.2008.05505.x</a>
 

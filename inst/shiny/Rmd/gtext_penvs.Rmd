@@ -25,13 +25,13 @@ Anderson, R.P. (2015). El modelado de nichos y distribuciones: no es simplemente
  
 Anderson, R.P. (2013). A framework for using niche models to estimate impacts of climate change on species distributions. *Annals of the New York Academy of Sciences*, 1297(1), 8-28. <a href="https://doi.org/10.1111/nyas.12264" target="_blank">https://doi.org/10.1111/nyas.12264</a>
  
-Anderson, R.P., & Raza A. (2010). The effect of the extent of the study region on GIS models of species geographic distributions and estimates of niche evolution: preliminary tests with montane rodents (genus Nephelomys) in Venezuela. *Journal of Biogeography*, 37(7), 1378-1393. <a href="https://doi.org/10.1111/j.1365-2699.2010.02290.x" target="_blank">https://doi.org/10.1111/j.1365-2699.2010.02290.x</a>
+Anderson, R.P., & Raza A. (2010). The effect of the extent of the study region on GIS models of species geographic distributions and estimates of niche evolution: preliminary tests with montane rodents (genus *Nephelomys*) in Venezuela. *Journal of Biogeography*, 37(7), 1378-1393. <a href="https://doi.org/10.1111/j.1365-2699.2010.02290.x" target="_blank">https://doi.org/10.1111/j.1365-2699.2010.02290.x</a>
  
 Barve, N., Barve, V., Jiménez-Valverde, A., Lira-Noriega, A., Maher, S.P., Peterson A.T., Soberón J., & Villalobos F. (2011). The crucial role of the accessible area in ecological niche modeling and species distribution modeling. *Ecological Modelling*, 222(11), 1810-1819. <a href="https://doi.org/10.1016/j.ecolmodel.2011.02.011" target="_blank">https://doi.org/10.1016/j.ecolmodel.2011.02.011</a>
  
 Franklin, J. (2010). Mapping Species Distributions: Spatial Inference and Prediction. Data for species distribution models: the biological data. In: *Mapping species distributions: spatial inference and prediction*. Cambridge: Cambridge University Press. <a href=" " target="_blank"></a>
  
-Gerstner, B.E., Kass, J.M., Kays, R., Helgen, K.M.,&  Anderson, R.P. (2018). Revised distributional estimates for the recently discovered olinguito (Bassaricyon neblina), with comments on natural and taxonomic history. *Journal of Mammalogy*, 99(2), 321-332. <a href="https://doi.org/10.1093/jmammal/gyy012" target="_blank">https://doi.org/10.1093/jmammal/gyy012</a>
+Gerstner, B.E., Kass, J.M., Kays, R., Helgen, K.M., & Anderson, R.P. (2018). Revised distributional estimates for the recently discovered olinguito (*Bassaricyon neblina*), with comments on natural and taxonomic history. *Journal of Mammalogy*, 99(2), 321-332. <a href="https://doi.org/10.1093/jmammal/gyy012" target="_blank">https://doi.org/10.1093/jmammal/gyy012</a>
  
 Guevara, L., Gerstner, B.E., Kass, J.M., & Anderson, R.P. (2018). Toward ecologically realistic predictions of species distributions: A cross-time example from tropical montane cloud forests. *Global Change Biology*, 24(4), 1511-1522. <a href="https://doi.org/10.1111/gcb.13992" target="_blank">https://doi.org/10.1111/gcb.13992</a>
  
@@ -43,4 +43,4 @@ Saupe, E.E., Barve, V., Myers, C.E., Soberón, J., Barve, N., Hensz, C.M., Peter
  
 Williams, J.W., & Jackson, S.T. (2007). Novel climates, no-analog communities, and ecological surprises. *Frontiers in Ecology and the Environment*, 5(9), 475-482. <a href="https://doi.org/10.1890/070037" target="_blank">https://doi.org/10.1890/070037</a>
  
-VanDerWal, J., Shoo, L.P., Graham, C., Williams, S.E. (2009). Selecting pseudo-absence data for presence-only distribution modeling: How far should you stray from what you know?. *Ecological Modelling*, 220(4), 589-594. <a href="https://doi.org/10.1016/j.ecolmodel.2008.11.010" target="_blank">https://doi.org/10.1016/j.ecolmodel.2008.11.010</a>
+VanDerWal, J., Shoo, L.P., Graham, C., & Williams, S.E. (2009). Selecting pseudo-absence data for presence-only distribution modeling: How far should you stray from what you know?. *Ecological Modelling*, 220(4), 589-594. <a href="https://doi.org/10.1016/j.ecolmodel.2008.11.010" target="_blank">https://doi.org/10.1016/j.ecolmodel.2008.11.010</a>

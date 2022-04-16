@@ -10,9 +10,9 @@ The dataset available in Wallace includes simulations for modern times (1950-199
 
 **REFERENCES**
 
-Hijmans, R.J., Cameron, S.E., Parra, J.L., Jones, P.G., Jarvis, A. (2005). Very high resolution interpolated climate surfaces for global land areas. *International Journal of Climatology*, 25(15),  1965-1978. <a href="https://doi.org/10.1002/joc.1276" target="_blank">https://doi.org/10.1002/joc.1276</a> 
+Hijmans, R.J., Cameron, S.E., Parra, J.L., Jones, P.G., & Jarvis, A. (2005). Very high resolution interpolated climate surfaces for global land areas. *International Journal of Climatology*, 25(15),  1965-1978. <a href="https://doi.org/10.1002/joc.1276" target="_blank">https://doi.org/10.1002/joc.1276</a> 
 
-Lima-Ribeiro, M.S., Varela, S., González-Hernández, J., de Oliveira, G., Diniz-Filho, J.A.F., Terribile, L.C. (2015). EcoClimate: a database of climate data from multiple models for past, present, and future for macroecologists and biogeographers. *Biodiversity Informatics*, 10, 1-21. <a href="https://doi.org/10.17161/bi.v10i0.4955" target="_blank">https://doi.org/10.17161/bi.v10i0.4955</a> 
+Lima-Ribeiro, M.S., Varela, S., González-Hernández, J., de Oliveira, G., Diniz-Filho, J.A.F., & Terribile, L.C. (2015). EcoClimate: a database of climate data from multiple models for past, present, and future for macroecologists and biogeographers. *Biodiversity Informatics*, 10, 1-21. <a href="https://doi.org/10.17161/bi.v10i0.4955" target="_blank">https://doi.org/10.17161/bi.v10i0.4955</a> 
 
 Varela, S., Lima-Ribeiro, M. S., & Terribile, L. C. (2015). A Short Guide to the Climatic Variables of the Last Glacial Maximum for Biogeographers. *PloS One*, 10(6), e0129037. <a href="https://doi.org/10.1371/journal.pone.0129037" target="_blank">https://doi.org/10.1371/journal.pone.0129037</a> 
 

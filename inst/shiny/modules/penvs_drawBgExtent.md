@@ -13,7 +13,7 @@ Wallace then masks the environmental grids by the resulting polygon. Users can d
 
 **REFERENCES**
 
-Bivand, R., Rundel, C., Pebesma, E.,  Stuetz, R., Hufthammer, K.O., Giraudoux, P., Davis, M, Santilli, S. (2021). rgeos: Interface to Geometry Engine - Open Source ('GEOS'). CRAN. R package Version 0.5-0.9. 
+Bivand, R., Rundel, C., Pebesma, E.,  Stuetz, R., Hufthammer, K.O., Giraudoux, P., Davis, M, & Santilli, S. (2021). rgeos: Interface to Geometry Engine - Open Source ('GEOS'). CRAN. R package Version 0.5-0.9. 
 <a href="https://cran.r-project.org/web/packages/rgeos/index.html" target="_blank">https://cran.r-project.org/web/packages/rgeos/index.html</a>  
 
 Cheng, et al. (2022). leaflet: Create Interactive Web Maps with the JavaScript 'Leaflet' Library. R package Version 2.1. 

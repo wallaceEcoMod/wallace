@@ -2,23 +2,31 @@
 
 **BACKGROUND**
 
-Maxent is a machine learning algorithm that estimates the species' response to the environment, constrained to be as close to uniform across the study region as possible given the input data at hand (Phillips et al. 2006, Elith et al. 2011). Maxent characterizes the background environment available in the study region by a random sample drawn from it, and hence is called a presence-background ENM technique. It has been shown to be among the highest-performing niche/distributional modeling techniques for a wide range of environments and species (Elith et al. 2006), including for small sample sizes (Hernandez et al. 2006).
+Maxent is a machine learning algorithm that estimates the species' response to the environment, constrained to be as close to uniform across the study region as possible given the input data at hand (Phillips et al. 2006, Elith et al. 2011). Maxent characterizes the background environment available in the study region by a random sample drawn from it, and hence is called a presence-background technique. It has been shown to be among the highest-performing niche/distributional modeling techniques for a wide range of environments and species (Elith et al. 2006), including for small sample sizes (Hernandez et al. 2006).
 
-As a machine learning technique, Maxent has the ability to make internal decisions about variable selection and model fit (James et al. 2013); nevertheless, various external decisions can greatly affect model complexity and geographic predictions. Importantly, the Maxent software leveraged here gives users the ability to increase or decrease the potential for model complexity through two key factors: feature classes and the regularization multiplier. First, various *feature classes* determine the shape of available modeled relationships in environmental space.  More (and more complicated) feature classes lead to the potential for higher model complexity. The features offered by *Wallace* are linear (L), quadratic (Q), hinge (H), and product (P). Second, higher values for the *regularization multiplier* penalize complexity to a greater degree, and hence tend to lead to simpler models with fewer variables. These settings can hold especially strong influence on model output for Maxent (Warren and Seifert 2011, Radosavljevic & Anderson 2014). For these reasons, evaluating model performance and estimating optimal model complexity constitute important elements of a niche/distributional modeling study with Maxent (e.g., simultaneously varying the feature classes allowed and the regularization multiplers applied to each of them; finer step values for the regularization multiplier can lead to more precise estimation of the optimal regularization setting). See Phillips and Dudík (2008) for technical information, and both Elith et al. (2011) and Merow et al. (2013) for other explanations.
+As a machine learning technique, Maxent has the ability to make internal decisions about variable selection and model fit (James et al. 2013); nevertheless, various external decisions can greatly affect model complexity and geographic predictions. Importantly, the Maxent software leveraged here gives users the ability to increase or decrease the potential for model complexity through two key factors: feature classes and the regularization multiplier. First, various feature classes determine the shape of available modeled relationships in environmental space. More (and more complicated) feature classes lead to the potential for higher model complexity. The standard features offered by Wallace are linear (L), quadratic (Q), hinge (H), and product (P); see below for explanation of categorical variables. Second, higher values for the regularization multiplier penalize complexity to a greater degree, and hence tend to lead to simpler models with fewer variables. These settings can hold especially strong influence on model output for Maxent (Warren and Seifert 2011, Radosavljevic & Anderson 2014). For these reasons, evaluating model performance and estimating optimal model complexity constitute important elements of a niche/distributional modeling study with Maxent (e.g., simultaneously varying the feature classes allowed and the regularization multipliers applied to each of them; finer step values for the regularization multiplier can lead to more precise determination of the optimal regularization setting).  
+
+See Phillips and Dudík (2008) for technical information, and both Elith et al. (2011) and Merow et al. (2013) for other explanations.
 
 **IMPLEMENTATION** 
 
-This module uses the R packages `ENMeval` and `dismo` to build and evaluate Maxent niche/distributional models across a wide range of model settings for feature classes and regularization multipliers (Muscarella et al. 2014).
+This module leverages the R packages `ENMeval` and `dismo` (Kass et al. 2021, Hijmans et al. 2020) to build and evaluate Maxent niche/distributional models across a wide range of model settings for feature classes and regularization multipliers (Muscarella et al. 2014). It does so by using those packages to call and run either the `maxnet` R package or the Java program that implements Maxent (Phillips 2021). 
 
-It automates two workflows: 1) building a suite of candidate models with differing constraints on complexity; and 2) quantifying their performance. Regarding the first, it makes models with various combinations of feature classes and regularization multipliers. The field remains far from any consensus regarding model evaluation and estimation of optimal model complexity (especially for presence-background datasets like those used in Maxent). Nevertheless, the particular evaluation metrics provided here (see Component **Model** guidance) can aid the user in selecting optimal settings (Radosavljevic & Anderson 2014). Users can download a .csv file of the evaluation statistics table. Users can also view the lambdas file information for each Maxent model (by selecting the model in the dropdown menu). That file shows the parameter name in the first column, the model coefficient (i.e., lambda value) in the second column, and the minimum and maximum values for that parameter in the third and fourth columns, respectively. Each parameter is a feature of one (or two, for product features) of the original variables, and thus more than one row may correspond to different features of the same variable. Note that parameters with lambda values of 0 were not included in the model. See the <a href="https://github.com/mrmaxent/Maxent/blob/d3bd281f7b1ffb13b8a37439d9843caaa14e7888/density/help.html.pre" target="_blank">Maxent help documentation</a> for details. Further, the evaluation results can be viewed graphically in Component **Visualize Model Results** with Module ***Maxent Evaluation Plots***, and response curves for each variable can be viewed with Module ***Plot Response Curves***. 
+This module automates two workflows: 1) building a suite of candidate models with differing constraints on complexity; and 2) quantifying their performance. Regarding the first, it makes models with various combinations of feature classes and regularization multipliers. The field remains far from any consensus regarding model evaluation and estimation of optimal model complexity (especially for presence-background datasets like those used in Maxent). Nevertheless, the particular evaluation metrics provided here (see **Component: Build and Evaluate Niche Model** guidance text) can aid the user in selecting optimal settings (Radosavljevic & Anderson 2014). Users indicate if any predictor variables were categorical by selecting YES/NO; if YES, the relevant variables should be selected in the drop-down box.  
 
-Making predictions for the full study extent can be complicated by the need to extrapolate into environmental conditions not found in the training dataset. With Maxent, for raster predictions generated by the model, predicted suitability values for environmental conditions more extreme than the training values (i.e., non-analog conditions) can be set to (i.e., 'clamped' to) the suitability values associated with the minimum (at the low end) or maximum (at the high end) value of the variable in the training dataset. This commonly occurs for any transfers made to regions and/or time periods different from the training extent (see Component **Transfer**), and even can happen for predictions within the training extent when the background sample did not include all pixels of the full study extent. If 'clamping' is not employed, the model's response is applied (unconstrained) to any pixels requiring environmental extrapolation. 
+Making predictions for the full study extent can be complicated by the need to extrapolate into environmental conditions not found in the training dataset. With Maxent, for raster predictions generated by the model, predicted suitability values for environmental conditions more extreme than the training values (i.e., non-analog conditions) can be set to (i.e., 'clamped' to) the suitability values associated with the minimum (at the low end) or maximum (at the high end) value of the variable in the training dataset. This commonly occurs for any projections made to regions and/or time periods different from the training extent (see **Component: Model Transfer**, and even can happen for predictions within the training extent when the background sample did not include all pixels of the full study extent. Users choose to clamp with TRUE/FALSE. If 'clamping' is not employed, the model's response is applied (unconstrained) to any pixels requiring environmental extrapolation.
+Note: For this module, the Parallel option can be turned on, and users can then select the number of cores to be used in the analysis (up to the maximum of the machine being used). 
 
-*NOTE*: However, with the maxent.jar option, model predictions are currently always 'clamped' for grid cells with environmental values more extreme than those of the training dataset (background sample plus occurrence records). This is because, due to a bug in the `predict()` function in `dismo`, the "clamping" option is always on for model predictions (i.e., clamping cannot be turned off using dismo, to allow an unconstrained extrapolation beyond the environmental condtions of the training dataset). 
+Additionally, if the Batch option is checked, the model selections will apply for all species uploaded. Otherwise, the user can select a particular species in the drop-down menu to individualize model building.
+
+After Maxent is finished running, the ‘Results’ tab opens to the evaluation tables. These tables can be downloaded as .csv files in the ‘Save’ tab.
+Users can also view the Lambdas file information for each Maxent model (by selecting the model in the dropdown menu). That file shows the parameter name in the first column, the model coefficient (i.e., lambda value) in the second column, and the minimum and maximum values for that parameter in the third and fourth columns, respectively. Each parameter is a feature of one (or two, for product features) of the original variables, and thus more than one row may correspond to different features of the same variable. Note that parameters with lambda values of 0 were not included in the model. See the Maxent help documentation for details. 
+
+Further, the evaluation results can be viewed graphically in **Component: Visualize Model Results** with Module: *Maxent Evaluation Plots*, and response curves for each variable can be viewed with Module: *Plot Response Curves*.
 
 **TROUBLESHOOTING**
 
-If you receive this error in the R console:
+A. If you receive this error in the R console:
 
 <font color='red'>Warning: Error in rJava::.jarray: java.lang.OutOfMemoryError: Java heap space</font>
 
@@ -26,24 +34,36 @@ Start a new R session to ensure `rJava` is not loaded, then run the following in
 
 `options(java.parameters = "-Xmx8000m")`
 
+B. Another common error is:
+
+<font color='red'>Warning: Error in .jcheck: No running JVM detected. Maybe .jinit() would help</font>
+
+The best fix for this is to restart R.
+
 **REFERENCES**
 
-Elith J., Graham C.H., Anderson R.P., Dudík M., Ferrier S., Guisan A., Hijmans R.J., Huettmann F., Leathwick J.R., Leahmann A., Li J., Lohmann L.G., Loiselle B.A., Manion G., Moritz C., Nakamura M., Nakazawa Y., Overton J.M., Peterson A.T., Phillips S.J., Richardson K.S., Scachetti-Pereira R., Schapire R.E., Soberón J., Williams S., Wisz M.S., Zimmermann N.E. 2006. Novel methods improve prediction of species' distributions from occurrence data. *Ecography*. 29: 129-151.
-
-Elith, J., Phillips, S.J., Hastie, T., Dudík, M., Chee, Y.E., & Yates, C.J. (2011). A statistical explanation of MaxEnt for ecologists. *Diversity and Distributions*. 17: 43-57.
-
-Hernandez, P.A., Graham, C. H., Master, L.L., & Albert, D.L. (2006). The effect of sample size and species characteristics on performance of different species distribution modeling methods. *Ecography*. 29: 773-785.
-
-James, G., Witten, D., Hastie, T., & Tibshirani, R. (2013). *An Introduction to Statistical Learning* (Vol. 6). New York: Springer.
-
-Merow C., Smith M.J., Silander J.A. (2013). A practical guide to MaxEnt for modeling species' distributions: What it does, and why inputs and settings matter. *Ecography*. 36: 1058-1069.
-
-Muscarella, R., Galante, P. J., Soley-Guardia, M., Boria, R. A., Kass, J. M., Uriarte, M., & Anderson, R. P. (2014). ENMeval: An R package for conducting spatially independent evaluations and estimating optimal model complexity for Maxent ecological niche models. *Methods in Ecology and Evolution*. 5: 1198-1205.
-
-Phillips, S.J., Anderson, R.P. & Schapire, R.E. (2006) Maximum entropy modeling of species geographic distributions. *Ecological Modelling*. 190: 231-259.
-
-Phillips, S.J., & Dudík, M. (2008). Modeling of species distributions with Maxent: new extensions and a comprehensive evaluation. *Ecography*. 31: 161-175.
-
-Radosavljevic A., Anderson R.P. (2014). Making better Maxent models of species distributions: complexity, overfitting and evaluation. *Journal of Biogeography*. 41: 629-643.
-
-Warren, D. L., & Seifert, S. N. (2011). Ecological niche modeling in Maxent : the importance of model complexity and the performance of model selection criteria. *Ecological Applications*. 21: 335-342.
+Elith, J., Graham, C.H., Anderson, R.P., Dudík, M., Ferrier, S., Guisan, A., Hijmans, R.J., Huettmann, F., Leathwick, J.R., Leahmann, A., Li, J., Lohmann, L.G., Loiselle, B.A., Manion, G., Moritz, C., Nakamura, M., Nakazawa, Y., Overton, J.M., Peterson, A.T., Phillips, S.J., Richardson, K.S., Scachetti-Pereira, R., Schapire, R.E., Soberón, J., Williams, S., Wisz, M.S., & Zimmermann, N.E. (2006). Novel methods improve prediction of species' distributions from occurrence data. *Ecography*, 29(2), 129-151. <a href="https://doi.org/10.1111/j.2006.0906-7590.04596.x" target="_blank">https://doi.org/10.1111/j.2006.0906-7590.04596.x</a>
+ 
+Elith, J., Phillips, S.J., Hastie, T., Dudík, M., Chee, Y.E., & Yates, C.J. (2011). A statistical explanation of MaxEnt for ecologists. *Diversity and Distributions*, 17(1), 43-57. <a href="https://doi.org/10.1111/j.1472-4642.2010.00725.x" target="_blank">https://doi.org/10.1111/j.1472-4642.2010.00725.x</a>
+ 
+Hernandez, P.A., Graham, C.H., Master, L.L., & Albert, D.L. (2006). The effect of sample size and species characteristics on performance of different species distribution modeling methods. *Ecography*, 29(5), 773-785. <a href="https://doi.org/10.1111/j.0906-7590.2006.04700.x" target="_blank">https://doi.org/10.1111/j.0906-7590.2006.04700.x</a>
+ 
+Hijmans, R.J., Phillips, S., Leathwick, J., & Elith, J. (2020). dismo: Species Distribution Modeling. R package version 1.3-3. <a href="https://CRAN.R-project.org/package=dismo" target="_blank">https://CRAN.R-project.org/package=dismo</a>
+ 
+James, G., Witten, D., Hastie, T., & Tibshirani, R. (2013). *An Introduction to Statistical Learning with applications in R*. Springer. <a href="https://doi.org/10.1007/978-1-4614-7138-7" target="_blank">https://doi.org/10.1007/978-1-4614-7138-7</a>
+ 
+Kass, J., Muscarella, R., Galante, P.J., Bohl, C.L., Pinilla-Buitrago, G.E., Boria, R.A., Soley-Guardia, M., & Anderson, R.P. (2021). ENMeval: Automated Tuning and Evaluations of Ecological Niche Models. R package version 2.0.1. <a href="https://CRAN.R-project.org/package=ENMeval" target="_blank">https://CRAN.R-project.org/package=ENMeval</a>
+ 
+Merow, C., Smith, M.J., & Silander, J.A. (2013). A practical guide to MaxEnt for modeling species' distributions: What it does, and why inputs and settings matter. *Ecography*, 36(10), 1058-1069. <a href="https://doi.org/10.1111/j.1600-0587.2013.07872.x" target="_blank">https://doi.org/10.1111/j.1600-0587.2013.07872.x</a>
+ 
+Muscarella, R., Galante, P.J., Soley-Guardia, M., Boria, R.A., Kass, J.M., Uriarte, M., Anderson, R.P. (2014). ENMeval: An R package for conducting spatially independent evaluations and estimating optimal model complexity for Maxent ecological niche models. *Methods in Ecology and Evolution*, 5(11), 1198-1205. <a href="https://doi.org/10.1111/2041-210X.12261" target="_blank">https://doi.org/10.1111/2041-210X.12261</a>
+ 
+Phillips, S.J., Anderson, R.P., Schapire, R.E. (2006) Maximum entropy modeling of species geographic distributions. *Ecological Modelling*, 190(3-4), 231-259. <a href="https://doi.org/10.1016/j.ecolmodel.2005.03.026" target="_blank">https://doi.org/10.1016/j.ecolmodel.2005.03.026</a>
+ 
+Phillips, S.J., & Dudík, M. (2008). Modeling of species distributions with Maxent: new extensions and a comprehensive evaluation. *Ecography*, 31(2), 161-175. <a href="https://doi.org/10.1111/j.0906-7590.2008.5203.x" target="_blank">https://doi.org/10.1111/j.0906-7590.2008.5203.x</a>
+ 
+Phillips, S. (2021). maxnet: Fitting 'Maxent' Species Distribution Models with 'glmnet'. CRAN. R package version 0.4.1. <a href="https://cran.r-project.org/web/packages/maxnet/index.html" target="_blank">https://cran.r-project.org/web/packages/maxnet/index.html</a>
+ 
+Radosavljevic, A., & Anderson, R.P. (2014). Making better Maxent models of species distributions: complexity, overfitting and evaluation. *Journal of Biogeography*, 41(4), 629-643. <a href="https://doi.org/10.1111/jbi.12227" target="_blank">https://doi.org/10.1111/jbi.12227</a>
+ 
+Warren, D.L., & Seifert, S.N. (2011). Ecological niche modeling in Maxent : the importance of model complexity and the performance of model selection criteria. *Ecological Applications*, 21(2), 335-342. <a href="https://doi.org/10.1890/10-1171.1" target="_blank">https://doi.org/10.1890/10-1171.1</a>
