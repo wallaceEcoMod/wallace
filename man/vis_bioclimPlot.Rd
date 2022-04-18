@@ -2,7 +2,7 @@
 % Please edit documentation in R/vis_bioclimPlot.R
 \name{vis_bioclimPlot}
 \alias{vis_bioclimPlot}
-\title{vis_bioclimPlot Visualize bivariate plot of bioclim model}
+\title{vis_bioclimPlot Visualize bivariate plot of BIOCLIM model}
 \usage{
 vis_bioclimPlot(x, a = 1, b = 2, p = 0.9)
 }
@@ -21,7 +21,7 @@ envelope and showing points outside of envelope. Default is 0.9}
 }
 \value{
 A bivariate plot of environmental values for occurrences. Includes a
-  blue rectangle representing the bioclimatic enveloppe given p. Occurrences
+  blue rectangle representing the bioclimatic envelope given p. Occurrences
   that are inside the envelope for all layers (included those not plotted)
   are shown as green circles and those outside of the envelope for one ore
   more variables are plotted as orange triangles.
