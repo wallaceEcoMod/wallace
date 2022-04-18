@@ -1,5 +1,5 @@
 
-#' @title Occurence density grid
+#' @title Occurrence density grid
 #' @description calculates the part of environmental space more densely
 #'   populated by species & the availability of environmental conditions in the
 #'   background

@@ -5,7 +5,7 @@
 #' @details
 #' This functions allows transferring the model created in previous
 #'   components to a new time and area provided by the user. The transferring
-#'   time and area is user provided. The model will be transferred to the new
+#'   time and area is user-provided. The model will be transferred to the new
 #'   time and area as long as the environmental variables provided are
 #'   available for the area and match the variables used for model building.
 #'   This function returns a list including the cropped environmental variables

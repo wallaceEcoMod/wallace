@@ -2,7 +2,7 @@
 #' @description download WorldClim variables. See www.worldclim.com.
 #'
 #' @details This function is called by the module envs to download
-#'   WorldClim variables from www.worldclim.com. The variables to be dowloaded
+#'   WorldClim variables from www.worldclim.com. The variables to be downloaded
 #'   are selected by the user with bcSel and the resolution with bcRes. It
 #'   returns either a rasterStack or rasterBrick of selected variables with
 #'   appropriate names for further analyses.

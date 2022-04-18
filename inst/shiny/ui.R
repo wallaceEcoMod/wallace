@@ -476,13 +476,13 @@ tagList(
           tabsetPanel(
             id = 'introTabs',
             tabPanel(
-              'About', #note this used to be named 'intro' so the files will be named 'intro'
-              includeMarkdown("Rmd/text_intro.Rmd")
+              'About',
+              includeMarkdown("Rmd/text_about.Rmd")
             ),
             tabPanel(
-              'Team', #note this used to be named 'about' so the files will be named 'about'
+              'Team',
               fluidRow(
-                column(8, includeMarkdown("Rmd/text_about.Rmd")
+                column(8, includeMarkdown("Rmd/text_team.Rmd")
                 )
               )
             ),
@@ -493,7 +493,7 @@ tagList(
             tabPanel(
               'Load Prior Session',
               h4("Load session"),
-              h5("If you saved a prior session of Wallace (RDS file), you can load it here."),
+              includeMarkdown("Rmd/text_loadsesh.Rmd"),
               fileInput("load_session", "", accept = ".rds"),
               actionButton('goLoad_session', 'Load RDS')
             )

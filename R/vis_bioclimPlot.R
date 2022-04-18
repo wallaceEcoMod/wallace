@@ -1,5 +1,5 @@
 
-#' @title vis_bioclimPlot Visualize bivariate plot of bioclim model
+#' @title vis_bioclimPlot Visualize bivariate plot of BIOCLIM model
 #' @description
 #' This functions creates a bivariate plot with two of the environmental
 #'   variables used for modeling as x and y axes and occurrences as observations.
@@ -39,7 +39,7 @@
 #' }
 #'
 #' @return A bivariate plot of environmental values for occurrences. Includes a
-#'   blue rectangle representing the bioclimatic enveloppe given p. Occurrences
+#'   blue rectangle representing the bioclimatic envelope given p. Occurrences
 #'   that are inside the envelope for all layers (included those not plotted)
 #'   are shown as green circles and those outside of the envelope for one ore
 #'   more variables are plotted as orange triangles.

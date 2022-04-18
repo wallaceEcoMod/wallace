@@ -2,8 +2,8 @@
 #' @description Principal component analysis to reduce dimensionality of
 #'   environmental space
 #' @details
-#' This function is called by the component espace to calibrate a PCA for one
-#'   (default) or 2 species in environmental space. When using within Wallace,
+#' This function is called by the component espace to calibrate a PCA for
+#'   2 species in environmental space. When using within Wallace,
 #'   GUI parameters are obtained from the model object, in particular, table of
 #'   occurrences with environmental values and table of background points with
 #'   environmental values. User must be careful as these tables must contain only
