@@ -91,7 +91,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep = ",", txtDec = ".",
   else if (!is.numeric(txt$longitude) | !is.numeric(txt$latitude)) {
     logger %>% alfred.writeLog(
       type = "error",
-      'Please input txt file. No all values in longitude or latitude are numeric.')
+      'Please input txt file. Not all values in longitude or latitude are numeric.')
     return()
   }
   # Transform scientific_name field
