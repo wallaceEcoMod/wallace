@@ -62,6 +62,6 @@ Suggests:
     sp,
     testthat
 License: GPL-3
-URL: https://wallaceEcoMod.github.io
+URL: http://wallaceecomod.github.io/wallace/,
 Encoding: UTF-8
 RoxygenNote: 7.1.2
