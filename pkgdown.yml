@@ -1,0 +1,11 @@
+pandoc: 2.7.3
+pkgdown: 2.0.2
+pkgdown_sha: ~
+articles:
+  module-addition-vignette: module-addition-vignette.html
+  wallace_vignette: wallace_vignette.html
+last_built: 2022-04-19T21:39Z
+urls:
+  reference: http://wallaceecomod.github.io/wallace/reference
+  article: http://wallaceecomod.github.io/wallace/articles
+
