@@ -35,7 +35,7 @@ occs_paleoDb_module_server <- function(input, output, session, common) {
   observeEvent(input$goPaleoDbOccs, {
     # WARNING ####
     if (input$occsNumPB < 1) {
-      logger %>% alfred.writeLog(type = 'warning', "Enter a non-zero number of ocurrences.")
+      logger %>% writeLog(type = 'warning', "Enter a non-zero number of ocurrences.")
       return()
     }
 
@@ -48,7 +48,7 @@ occs_paleoDb_module_server <- function(input, output, session, common) {
     # LOAD INTO SPP ####
     occsOrig <- occsTbls$orig
     occs <- occsTbls$cleaned
-    sp <- alfred.fmtSpN(input$spNamePB)
+    sp <- fmtSpN(input$spNamePB)
     sp <- paste0(toupper(substring(sp, 1, 1)), substring(sp, 2, nchar(sp)))
     # if species name is already in list, overwrite it
     if (!is.null(spp[[sp]])) spp[[sp]] <- NULL
@@ -100,11 +100,11 @@ occs_paleoDb_module_map <- function(map, common) {
   spp <- common$spp
   curSp <- common$curSp
   occs <- spp[[curSp()]]$occData$occsCleaned
-  map %>% alfred.clearAll() %>%
+  map %>% clearAll() %>%
     addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude,
                      radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                      fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
-    alfred.zoom2Occs(occs)
+    zoom2Occs(occs)
 }
 
 occs_paleoDb_module_rmd <- function(species) {

@@ -9,7 +9,7 @@ Generate a map of the Bioclim generated model with no threshold
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
 predSel_{{spAbr}} <- dismo::predict(m_{{spAbr}}, bgMask_{{spAbr}}, useC = FALSE)
 #Get values of prediction
-mapPredVals_{{spAbr}} <- alfred.getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
+mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
 #Define colors and legend  
 rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 legendPal <- colorNumeric(rev(rasCols), mapPredVals_{{spAbr}}, na.color = 'transparent')
@@ -20,7 +20,7 @@ m  %>%
   leaflet::addLegend("bottomright", pal = legendPal,
             title = "Predicted Suitability<br>(Training)",
             values = mapPredVals_{{spAbr}}, layerId = "train",
-            labFormat = alfred.reverseLabel(2, reverse_order = TRUE)) %>% 
+            labFormat = reverseLabel(2, reverse_order = TRUE)) %>% 
   #add occurrence data
   addCircleMarkers(data = occs_{{spAbr}}, lat = ~latitude, lng = ~longitude,
                    radius = 5, color = 'red', fill = TRUE, fillColor = "red",
@@ -56,7 +56,7 @@ thres_{{spAbr}} <- stats::quantile(occPredVals_{{spAbr}},
 # Applied selected threshold
 predSel_{{spAbr}} <- predSel_{{spAbr}} > thres_{{spAbr}}
 # Get values of prediction
-mapPredVals_{{spAbr}} <- alfred.getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
+mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
 # Define colors and legend  
 rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 legendPal <- colorNumeric(rev(rasCols), mapPredVals_{{spAbr}}, na.color = 'transparent')
@@ -96,7 +96,7 @@ predSel_{{spAbr}} <- dismo::predict(
            paste0("doclamp=", tolower(as.character({{clamp_rmd}})))), 
   na.rm = TRUE)
 #Get values of prediction
-mapPredVals_{{spAbr}} <- alfred.getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
+mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
 #Define colors and legend  
 rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 legendPal <- colorNumeric(rev(rasCols), mapPredVals_{{spAbr}}, na.color = 'transparent')
@@ -107,7 +107,7 @@ m  %>%
   leaflet::addLegend("bottomright", pal = legendPal,
             title = "Predicted Suitability<br>(Training)",
             values = mapPredVals_{{spAbr}}, layerId = "train",
-            labFormat = alfred.reverseLabel(2, reverse_order = TRUE)) %>% 
+            labFormat = reverseLabel(2, reverse_order = TRUE)) %>% 
   #add occurrence data
   addCircleMarkers(data = occs_{{spAbr}}, lat = ~latitude, lng = ~longitude,
                    radius = 5, color = 'red', fill = TRUE, fillColor = "red",
@@ -146,7 +146,7 @@ thres_{{spAbr}} <- stats::quantile(occPredVals_{{spAbr}}, probs = thresProb_{{sp
 # Applied selected threshold
 predSel_{{spAbr}} <- predSel_{{spAbr}} > thres_{{spAbr}}
 #Get values of prediction
-mapPredVals_{{spAbr}} <- alfred.getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
+mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
 #Define colors and legend  
 rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 legendPal <- colorNumeric(rev(rasCols), mapPredVals_{{spAbr}}, na.color = 'transparent')
@@ -179,11 +179,11 @@ Generate a map of the maxnet generated model with no threshold
 ```{r, echo = {{vis_mapPreds_knit & vis_map_maxnet_knit & !vis_map_threshold_knit}}, include = {{vis_mapPreds_knit & vis_map_maxnet_knit & !vis_map_threshold_knit}}}
 # Select current model and obtain raster prediction
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
-predSel_{{spAbr}} <- alfred.predictMaxnet(m_{{spAbr}}, bgMask_{{spAbr}},
+predSel_{{spAbr}} <- predictMaxnet(m_{{spAbr}}, bgMask_{{spAbr}},
                                           type = "{{predType_rmd}}", 
                                           clamp = {{clamp_rmd}})
 #Get values of prediction
-mapPredVals_{{spAbr}} <- alfred.getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
+mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
 #Define colors and legend  
 rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 legendPal <- colorNumeric(rev(rasCols), mapPredVals_{{spAbr}}, na.color = 'transparent')
@@ -194,7 +194,7 @@ m  %>%
   leaflet::addLegend("bottomright", pal = legendPal,
             title = "Predicted Suitability<br>(Training)",
             values = mapPredVals_{{spAbr}}, layerId = "train",
-            labFormat = alfred.reverseLabel(2, reverse_order = TRUE)) %>% 
+            labFormat = reverseLabel(2, reverse_order = TRUE)) %>% 
   #add occurrence data
   addCircleMarkers(data = occs_{{spAbr}}, lat = ~latitude, lng = ~longitude,
                    radius = 5, color = 'red', fill = TRUE, fillColor = "red",
@@ -216,7 +216,7 @@ Generate a map of the maxnet generated model with with a "{{thresholdRule_rmd}}"
 ```{r, echo = {{vis_mapPreds_knit & vis_map_maxnet_knit & vis_map_threshold_knit}}, include = {{vis_mapPreds_knit & vis_map_maxnet_knit & vis_map_threshold_knit}}}
 # Select current model and obtain raster prediction
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]] 
-predSel_{{spAbr}} <- alfred.predictMaxnet(m_{{spAbr}}, bgMask_{{spAbr}},
+predSel_{{spAbr}} <- predictMaxnet(m_{{spAbr}}, bgMask_{{spAbr}},
                                           type = "{{predType_rmd}}", 
                                           clamp = {{clamp_rmd}})
 # extract the suitability values for all occurrences
@@ -232,7 +232,7 @@ thres_{{spAbr}} <- stats::quantile(occPredVals_{{spAbr}}, probs = thresProb_{{sp
 predSel_{{spAbr}} <- predSel_{{spAbr}} > thres_{{spAbr}}
 
 # Get values of prediction
-mapPredVals_{{spAbr}} <- alfred.getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
+mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
 # Define colors and legend  
 rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
 legendPal <- colorNumeric(rev(rasCols), mapPredVals_{{spAbr}}, na.color = 'transparent')

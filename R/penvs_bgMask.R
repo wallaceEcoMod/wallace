@@ -47,21 +47,21 @@
 
 penvs_bgMask <- function(occs, envs, bgExt, logger = NULL, spN = NULL) {
   if (is.null(bgExt)) {
-    logger %>% alfred.writeLog(
+    logger %>% writeLog(
       type = 'error',
-      alfred.hlSpp(spN),
+      hlSpp(spN),
       "Before sampling background points, define the background extent.")
     return()
   }
   # mask envs by background extent
-  alfred.smartProgress(logger,
+  smartProgress(logger,
                        message = paste0("Masking rasters for ",
-                                        alfred.spName(spN), "..."), {
+                                        spName(spN), "..."), {
     bgCrop <- raster::crop(envs, bgExt)
     bgMask <- raster::mask(bgCrop, bgExt)
   })
 
-  logger %>% alfred.writeLog(alfred.hlSpp(spN), 'Environmental data masked.')
+  logger %>% writeLog(hlSpp(spN), 'Environmental data masked.')
 
   return(bgMask)
 }

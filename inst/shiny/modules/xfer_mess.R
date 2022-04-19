@@ -20,12 +20,12 @@ xfer_mess_module_server <- function(input, output, session, common) {
   observeEvent(input$goEnvSimilarity, {
     # ERRORS ####
     if (is.null(mapXfer())) {
-      logger %>% alfred.writeLog(type = 'error', 'Transfer to new area or time first.')
+      logger %>% writeLog(type = 'error', 'Transfer to new area or time first.')
       return()
     }
     if (is.null(spp[[curSp()]]$transfer$xfExt)) {
       logger %>%
-        alfred.writeLog(
+        writeLog(
           type = 'error',
           "The polygon has not been finished. Please define a polygon."
      )
@@ -45,7 +45,7 @@ xfer_mess_module_server <- function(input, output, session, common) {
 
     # LOAD INTO SPP ####
     spp[[curSp()]]$transfer$mess <- mss
-    spp[[curSp()]]$transfer$messVals <- alfred.getRasterVals(mss)
+    spp[[curSp()]]$transfer$messVals <- getRasterVals(mss)
     spp[[curSp()]]$rmm$code$wallace$MESS <- TRUE
     spp[[curSp()]]$rmm$code$wallace$MESSTime <- time
 
@@ -105,7 +105,7 @@ xfer_mess_module_map <- function(map, common) {
   map %>% removeControl("xfer") %>%
     addLegend("bottomright", pal = legendPal, title = "MESS Values",
               values = rasVals, layerId = 'xfer',
-              labFormat = alfred.reverseLabel(2, reverse_order=TRUE))
+              labFormat = reverseLabel(2, reverse_order=TRUE))
   # map model prediction raster and transfer polygon
   map %>% clearMarkers() %>% clearShapes() %>% removeImage('xferRas') %>%
     addRasterImage(mess, colors = rasPal, opacity = 0.9,
@@ -121,7 +121,7 @@ xfer_mess_module_rmd <- function(species) {
   list(
     xfer_mess_knit = !is.null(species$rmm$code$wallace$MESS),
     time_rmd = species$rmm$code$wallace$MESSTime
-   # polyXfXY_rmd <- alfred.printVecAsis(species$transfer$xfExt@polygons[[1]]@Polygons)
+   # polyXfXY_rmd <- printVecAsis(species$transfer$xfExt@polygons[[1]]@Polygons)
     # xfer_mess_knit = species$rmm$code$wallace$someFlag,
     # var1 = species$rmm$code$wallace$someSetting1,
     # var2 = species$rmm$code$wallace$someSetting2

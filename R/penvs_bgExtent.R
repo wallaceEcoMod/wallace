@@ -40,7 +40,7 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL, spN = NULL) {
 
   if (nrow(occs) <= 2) {
     logger %>%
-      alfred.writeLog(type = 'error',
+      writeLog(type = 'error',
                'Too few localities (<2) to create a background polygon.')
     return()
   }
@@ -72,7 +72,7 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL, spN = NULL) {
   } else if (bgSel == 'point buffers') {
     if (bgBuf == 0) {
       logger %>%
-      alfred.writeLog(type = 'error',
+      writeLog(type = 'error',
                'Change buffer distance to positive or negative value.')
       return()
     }
@@ -82,9 +82,9 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL, spN = NULL) {
 
   if (bgBuf > 0 & bgSel != 'point buffers') {
     bgExt <- rgeos::gBuffer(bgExt, width = bgBuf)
-    logger %>% alfred.writeLog(alfred.hlSpp(spN), msg, ' Buffered by ', bgBuf, ' degrees.')
+    logger %>% writeLog(hlSpp(spN), msg, ' Buffered by ', bgBuf, ' degrees.')
   } else {
-    logger %>% alfred.writeLog(alfred.hlSpp(spN), msg)
+    logger %>% writeLog(hlSpp(spN), msg)
   }
   bgExt <- methods::as(bgExt, "SpatialPolygonsDataFrame")
   return(bgExt)

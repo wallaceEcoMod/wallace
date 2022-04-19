@@ -79,11 +79,11 @@ xfer_time <- function(evalOut, curModel, envs, xfExt, alg, outputType = NULL,
                       clamp = NULL, logger = NULL, spN = NULL) {
   newPoly <- xfExt
   if (alg == 'BIOCLIM') {
-    logger %>% alfred.writeLog(
-      alfred.hlSpp(spN),
+    logger %>% writeLog(
+      hlSpp(spN),
       'Transferring in time for BIOCLIM model.')
   } else if (alg == 'maxent.jar'| clamp == TRUE) {
-    logger %>% alfred.writeLog(
+    logger %>% writeLog(
       alfred.hlSpp(spN),
       'Transferring in time for clamped model ', curModel, '.')
   } else if (clamp == FALSE) {

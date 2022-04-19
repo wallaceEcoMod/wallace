@@ -79,7 +79,7 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
                          numCores = NULL, logger = NULL, spN = NULL) {
 
   if (is.null(user.grp)) {
-    logger %>% alfred.writeLog(
+    logger %>% writeLog(
       type = 'error',
       "Before building a model, please partition occurrences for cross-validation."
     )
@@ -92,7 +92,7 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
     jar <- paste(system.file(package = "dismo"), "/java/maxent.jar", sep = '')
     if (!file.exists(jar)) {
       logger %>%
-        alfred.writeLog(
+        writeLog(
           type = 'error',
           "To use Maxent, make sure you download, ", strong("maxent.jar"),
           " from the ",
@@ -104,7 +104,7 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
     }
 
     if (!requireNamespace('rJava')) {
-      logger %>% alfred.writeLog(
+      logger %>% writeLog(
         type = "error",
         paste0('Package rJava cannot load. Please download the latest version of ',
                'Java, and make sure it is the correct version (e.g. 64-bit for a ',
@@ -130,7 +130,7 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
     maxentJARversion <- try(rJava::.jcall(mxe, "S", "meversion"))
 
     if (maxentJARversion < "3.4.3") {
-      logger %>% alfred.writeLog(
+      logger %>% writeLog(
         type = "error",
         "Please, use the updated version of Maxent (v3.4.4). Currently, you are ",
         "using (", maxentJARversion, ")."
@@ -138,7 +138,7 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
       return()
     }
     if (maxentJARversion == "3.4.3") {
-      logger %>% alfred.writeLog(
+      logger %>% writeLog(
         "Please, consider to updated version of Maxent (v3.4.4). Currently, you are ",
         "using (", maxentJARversion, ")."
       )
@@ -153,7 +153,7 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
   if (!is.null(logger)) {
     progress <- shiny::Progress$new()
     progress$set(message = paste0("Building/Evaluating ENMs for ",
-                                  alfred.spName(spN), "..."),
+                                  spName(spN), "..."),
                  value = 0)
     on.exit(progress$close())
     n <- length(rms.interval) * length(fcs)
@@ -200,7 +200,7 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
   endTxt <- paste("]), using", algMaxent, "with clamping",
                   ifelse(clampSel, "on.", "off."))
 
-  logger %>% alfred.writeLog(alfred.hlSpp(spN),
+  logger %>% writeLog(hlSpp(spN),
     "Maxent ran successfully and output evaluation ",
     "results for ", nrow(e@results), " models (Regularization multiplier values: [",
     paste(rms.interval, collapse = ", "),"]; Feature classes: [",

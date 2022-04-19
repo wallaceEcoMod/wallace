@@ -28,7 +28,7 @@ vis_maxentEvalPlot_module_server <- function(input, output, session, common) {
           spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
         # ERRORS ####
         if (is.null(input$maxentEvalSel)) {
-          logger %>% alfred.writeLog(type = 'error', "Please choose a statistic to plot.")
+          logger %>% writeLog(type = 'error', "Please choose a statistic to plot.")
           return()
         }
         # METADATA ####

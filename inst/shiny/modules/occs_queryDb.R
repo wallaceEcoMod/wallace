@@ -62,13 +62,13 @@ occs_queryDb_module_server <- function(input, output, session, common) {
     # WARNING ####
     if (input$occsDb != "bien") {
       if (input$occsDb != "gbif" & input$occsNum < 1) {
-        logger %>% alfred.writeLog(type = 'warning',
+        logger %>% writeLog(type = 'warning',
                             "Enter a non-zero number of occurrences.")
         return()
       }
       if (input$occsDb == "gbif" & input$occsNum < 1 &
           input$doCitations == FALSE) {
-        logger %>% alfred.writeLog(type = 'warning',
+        logger %>% writeLog(type = 'warning',
                             "Enter a non-zero number of occurrences.")
         return()
       }
@@ -151,11 +151,11 @@ occs_queryDb_module_map <- function(map, common) {
   spp <- common$spp
   curSp <- common$curSp
   occs <- spp[[curSp()]]$occData$occsCleaned
-  map %>% alfred.clearAll() %>%
+  map %>% clearAll() %>%
     addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude,
                      radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                      fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
-    alfred.zoom2Occs(occs)
+    zoom2Occs(occs)
 }
 
 occs_queryDb_module_rmd <- function(species) {

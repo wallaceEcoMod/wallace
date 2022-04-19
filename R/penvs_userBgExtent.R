@@ -57,7 +57,7 @@ penvs_userBgExtent <- function(bgShp_path, bgShp_name, userBgBuf, occs,
     } else if ('shp' %in% exts) {
       if (length(exts) < 3) {
         logger %>%
-          alfred.writeLog(type = 'error',
+          writeLog(type = 'error',
                    paste0('If entering a shapefile, please select all the ',
                           'following files: .shp, .shx, .dbf.'))
         return()
@@ -71,7 +71,7 @@ penvs_userBgExtent <- function(bgShp_path, bgShp_name, userBgBuf, occs,
       bgExt <- rgdal::readOGR(file.path(pathdir, bgShp_name)[i])
     } else {
       logger %>%
-        alfred.writeLog(type = 'error',
+        writeLog(type = 'error',
                  paste0('Please enter either a CSV file of vertex coordinates ',
                         'or shapefile (.shp, .shx, .dbf).'))
       return()
@@ -92,18 +92,18 @@ penvs_userBgExtent <- function(bgShp_path, bgShp_name, userBgBuf, occs,
                     as.numeric(which(is.na(intersecto))))
     if (ptRem == 0) {
       if (userBgBuf > 0) {
-        logger %>% alfred.writeLog(
-          alfred.hlSpp(spN),
+        logger %>% writeLog(
+          hlSpp(spN),
           'Study extent user-defined polygon buffered by ', userBgBuf,
           ' degrees.')
       } else {
-        logger %>% alfred.writeLog(
-          alfred.hlSpp(spN), "Study extent: user-defined polygon.")
+        logger %>% writeLog(
+          hlSpp(spN), "Study extent: user-defined polygon.")
       }
       return(bgExt)
     } else if (ptRem > 0) {
       logger %>%
-        alfred.writeLog(type = 'error', alfred.hlSpp(spN),
+        writeLog(type = 'error', hlSpp(spN),
                  "The polygon did not include all localities. ",
                  "You can remove localities in Process Occs component")
       return()
