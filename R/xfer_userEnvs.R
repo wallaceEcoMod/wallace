@@ -64,27 +64,27 @@ xfer_userEnvs <- function(evalOut, curModel, envs, xfExt, alg, outputType = NULL
   newPoly <- xfExt
 
   if (alg == 'BIOCLIM') {
-    logger %>% alfred.writeLog(
-      alfred.hlSpp(spN),
+    logger %>% writeLog(
+      hlSpp(spN),
       'User specified transfer for BIOCLIM model.')
   } else if (alg == 'maxent.jar' | clamp == TRUE) {
-    logger %>% alfred.writeLog(
-      alfred.hlSpp(spN),
+    logger %>% writeLog(
+      hlSpp(spN),
       'User specified transfer for clamped model ', curModel, '.')
   } else if (clamp == FALSE) {
-    logger %>% alfred.writeLog(
-      alfred.hlSpp(spN),
+    logger %>% writeLog(
+      hlSpp(spN),
       'User specified transfer for unclamped model', curModel, '.')
   }
 
-  alfred.smartProgress(
+  smartProgress(
     logger,
     message = "Masking environmental grids to transfer extent...", {
       xferMsk <- raster::crop(envs, newPoly)
       xferMsk <- raster::mask(xferMsk, newPoly)
   })
 
-  alfred.smartProgress(
+  smartProgress(
     logger,
     message = 'Transferring model to user uploaded environmental variables & area', {
     if (alg == 'BIOCLIM') {
@@ -92,7 +92,7 @@ xfer_userEnvs <- function(evalOut, curModel, envs, xfExt, alg, outputType = NULL
                                     useC = FALSE)
     } else if (alg == 'maxnet') {
       if (outputType == "raw") outputType <- "exponential"
-      modxferUser <- alfred.predictMaxnet(evalOut@models[[curModel]], xferMsk,
+      modxferUser <- predictMaxnet(evalOut@models[[curModel]], xferMsk,
                                           type = outputType, clamp = clamp)
     } else if (alg == 'maxent.jar') {
       modXferUser <- dismo::predict(

@@ -33,7 +33,7 @@ test_that("error checks", {
                'Please input both genus and species names.')
   # the species' name has spelling errors, or it is not found in the database
   expect_error(occs_queryDb(spNames = "Panthera onc", occDb, occNum),
-               paste0(alfred.hlSpp("Panthera_onc"),
+               paste0(hlSpp("Panthera_onc"),
                       'No records found. Please check the spelling.'),
                fixed = TRUE)
   })
@@ -45,7 +45,7 @@ test_that("error checks", {
   # GEPB (2022-03-12): It is not working because trigger another error message
   # befero: No records found. Please check the spelling.
   # expect_warning(occs_queryDb(spName = "Artibeus macleayii", occDb, occNum),
-  #               paste0(alfred.hlSpp("Artibeus_macleayii"),
+  #               paste0(hlSpp("Artibeus_macleayii"),
   #                      'No records with coordinates found in ', occDb,". "),
   #               fixed = TRUE)
   #             })

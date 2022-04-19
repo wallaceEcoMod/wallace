@@ -25,54 +25,6 @@
     <loc>/news/index.html</loc>
   </url>
   <url>
-    <loc>/reference/alfred.clearAll.html</loc>
-  </url>
-  <url>
-    <loc>/reference/alfred.fmtSpN.html</loc>
-  </url>
-  <url>
-    <loc>/reference/alfred.getRasterVals.html</loc>
-  </url>
-  <url>
-    <loc>/reference/alfred.hlSpp.html</loc>
-  </url>
-  <url>
-    <loc>/reference/alfred.mxNonzeroCoefs.html</loc>
-  </url>
-  <url>
-    <loc>/reference/alfred.polyZoom.html</loc>
-  </url>
-  <url>
-    <loc>/reference/alfred.popUpContent.html</loc>
-  </url>
-  <url>
-    <loc>/reference/alfred.predictMaxnet.html</loc>
-  </url>
-  <url>
-    <loc>/reference/alfred.printVecAsis.html</loc>
-  </url>
-  <url>
-    <loc>/reference/alfred.remEnvsValsNA.html</loc>
-  </url>
-  <url>
-    <loc>/reference/alfred.reverseLabel.html</loc>
-  </url>
-  <url>
-    <loc>/reference/alfred.smartProgress.html</loc>
-  </url>
-  <url>
-    <loc>/reference/alfred.spName.html</loc>
-  </url>
-  <url>
-    <loc>/reference/alfred.writeLog.html</loc>
-  </url>
-  <url>
-    <loc>/reference/alfred.write_csv_robust.html</loc>
-  </url>
-  <url>
-    <loc>/reference/alfred.zoom2Occs.html</loc>
-  </url>
-  <url>
     <loc>/reference/clearAll.html</loc>
   </url>
   <url>
