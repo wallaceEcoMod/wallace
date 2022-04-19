@@ -2,7 +2,7 @@
 % Please edit documentation in R/model_maxent.R
 \name{model_maxent}
 \alias{model_maxent}
-\title{model_maxent Generate maxent or maxnet model}
+\title{model_maxent Generate maxent.jar or maxnet model}
 \usage{
 model_maxent(
   occs,
@@ -66,7 +66,7 @@ Function returns an ENMevaluate object with all the evaluated models
   and a selection of appropriate fields.
 }
 \description{
-This functions generates maxent or maxnet models using
+This functions generates maxent.jar or maxnet models using
   ENMeval 2.0 and user provided tuning parameters.
 }
 \details{

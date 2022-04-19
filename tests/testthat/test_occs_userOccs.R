@@ -41,7 +41,7 @@ test_that("error checks", {
     occs_userOccs(txtPath = './extdata/cerdocyon-thous-2.csv',
                   txtName = 'cerdocyon-thous-2',
                   txtSep = ",", txtDec = "."),
-    'Please input txt file. No all values in longitude or latitude are numeric.',
+    'Please input txt file. Not all values in longitude or latitude are numeric.',
     fixed = TRUE)
  })
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/espace_occDens.R
 \name{espace_occDens}
 \alias{espace_occDens}
-\title{Occurence density grid}
+\title{Occurrence density grid}
 \usage{
 espace_occDens(sp.name1, sp.name2, pca, logger = NULL)
 }
