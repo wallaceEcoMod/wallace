@@ -9,3 +9,6 @@ cmip5*    # worldclim files
 ^\.github$
 ^wc10
 ^vignettes$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

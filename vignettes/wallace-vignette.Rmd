@@ -9,7 +9,7 @@ author:
 date: 06/08/2018; updated 07/12/18
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Wallace Vignette}
+  %\VignetteIndexEntry{Wallace Ecological Modeling Application Vignette}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
