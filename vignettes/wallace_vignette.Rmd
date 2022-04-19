@@ -16,7 +16,7 @@ knitr::opts_chunk$set(collapse=TRUE, message=FALSE, warning=FALSE, comment="#>",
 ```
 
 ```{r, out.width="25%", fig.align='center'}
-knitr::include_graphics("v2Vignette_img/logo.png")
+knitr::include_graphics("vignette_img/logo.png")
 ```
 
 # Preface
@@ -85,7 +85,7 @@ The `R` console displays messages regarding R-package information or any error m
 If you'd like to use the `R` console while running *Wallace*, open a terminal window (MacOS/Linux) or command prompt (Windows), initialize `R`, and then run the lines above.
 
 ```{r, out.width="50%"}
-knitr::include_graphics("v2Vignette_img/setup_1.png")
+knitr::include_graphics("vignette_img/setup_1.png")
 ```
 
 An example with Terminal in MacOS  
@@ -99,7 +99,7 @@ To exit *Wallace*, hit 'Escape' while in the `R` console and close the browser w
 # <a id="Orientation"></a>Orientation {#orientation}
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/orientation_1.png")
+knitr::include_graphics("vignette_img/orientation_1.png")
 ```
 
 We'll begin with an orientation of the *Wallace* interface. After running the code above, *Wallace* opens to the **Intro** page. The *Intro* tab contains background information about the program. The *Team* tab has details about the developers and collaborators who contributed to *Wallace*. The *How to Use* tab contains brief user manual; it is an abridged version of this vignette without a worked example. The *Load Prior Session* tab is for just that- loading a prior session, which we will get to [later](#Save).
@@ -109,7 +109,7 @@ Along the top in the orange panel are the **Components**, which represent the st
 Click on the component tab after Intro, **Occ Data**, select a module, and consult the schematic below showing the different parts of *Wallace*.
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/orientation_2.png")
+knitr::include_graphics("vignette_img/orientation_2.png")
 ```
 
 (**1**) These are the components. You will be stepping sequentially through them. We have newly added a Support button (**1a**), which links to the Google Group, email, website, and the Github page to report issues. Here is the quit button (**1b**), which will end the session.\
@@ -137,11 +137,11 @@ We'll be modeling two species of olingo:
 Make sure you are in the first component, **Obtain Occurrence Data**, and click to read the component guidance text. There are three modules available for obtaining occurrence data: *Query Database (Present)*, *Query Database(Paleo)*, and *User-Specified*. Choose a module and click on the module guidance text. Notice the module guidance texts change as you select between the three modules. Let's read through these to get a better understanding of what is involved in obtaining occurrence data, and how *Wallace* implements it.  
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/occs_1.png")
+knitr::include_graphics("vignette_img/occs_1.png")
 ```
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/occs_2.png")
+knitr::include_graphics("vignette_img/occs_2.png")
 ```
 
 Let's proceed to getting occurrences. We'll be using present data and as such use the *Query Database (Present)* module. There are a selection of databases to choose from and the option to only return occurrences that contain information on coordinate uncertainty. If you have a GBIF User ID, checking the "Include Data Source" box will allow you to log in with your username and password and send the data source citations to your email. 
@@ -152,19 +152,19 @@ After the download is complete, the log window will contain information on the a
 
 ***Numbers may be different.*
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/occs_3.png")
+knitr::include_graphics("vignette_img/occs_3.png")
 ```
 
 Now click on the "Occurrences" tab to view more information on the records. The developers chose the fields that are displayed based on their general relevance to studies on species ranges.
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/occs_4.png")
+knitr::include_graphics("vignette_img/occs_4.png")
 ```
 
 Click the **Save** tab. The first save box allows you to download your session. It is available here in all the components and modules (See Save & Load section for more details). The download options below the save box change depending on which module is selected and the analysis run. Here, you can get a .csv file of the records just acquired. The first option will download the original database fields for every downloaded record (before any filtering). The second option downloads the current table. The third option, Download all data, is unavailable at this point but that will change after we include our second species.
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/occs_5.png")
+knitr::include_graphics("vignette_img/occs_5.png")
 ```
 
 A major improvement in *Wallace* v2.0 from previous versions is the ability to model multiple species in the same session. Let's add another species to model.
@@ -175,7 +175,7 @@ If you have our own data, you can import it using the third module, *User-specif
 We'll continue with GBIF present data. Search the database for *Bassaricyon alleni* (eastern lowland olingo), keeping the max set at 200. This returns 81 records and cleans it to 42 records. You might have noticed the log window updated, but the map is the same. The map will not change automatically and because *Bassaricyon neblina* is still selected in the Species log, it is still showing that data. Toggle between species to show the map of *Bassarricyon alleni*.
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/occs_6.png")
+knitr::include_graphics("vignette_img/occs_6.png")
 ```
   
 Click back to the **Save** tab. Notice the third option which was unavailable before is now available.
@@ -191,7 +191,7 @@ The third module, *User-specified*, is for uploading your own rasters into Walla
 We'll be using WorldClim. The first time you use Wallace these data are downloaded to a temporary folder in your hard drive; after that they will simply be loaded from this local directory. You have the option to save to memory for faster processing- this internally saves the data temporarily as a rasterbrick in your RAM for Wallace to access. Finer resolutions will take longer to download. The finest resolution data (**30 arcsec**) is served by tile, and thus a single tile that corresponds to the map center will be downloaded. Set the resolution to 30 arcsec and the latitudinal and longitudinal points of the map center will be given. To visualize how well the tile will encompass the points, click the **30 arcsec tile** box in the bottom left corner of the map. The points outside the tile will be excluded; you may need to zoom out to see fully.
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/env_1.png")
+knitr::include_graphics("vignette_img/env_1.png")
 ```
   
 Choose the 2.5 arcmin bioclimatic variable resolution and keep all 19 bioclimatic variables checked. Note that the selections made will be performed for only the species selected in the Species log box, unless the Batch box is checked.
@@ -201,13 +201,13 @@ Check Batch and Load Env Data.
 Notice the progress bar in the bottom-right corner.  
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/env_2.png")
+knitr::include_graphics("vignette_img/env_2.png")
 ```
   
 After the rasters have loaded, the "Results" tab will display summary information about them (e.g. resolution, extent, cell number, etc.). In addition to downloading the rasters, Wallace will also remove any occurrence points with no environmental values (i.e., points that did not overlap with the rasters).
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/env_3.png")
+knitr::include_graphics("vignette_img/env_3.png")
 ```
 
 You can download your environmental variables from within the Download Data section of the Save tab.
@@ -222,26 +222,26 @@ We will practice using the first two modules with this species. In the first mod
 Click on the polygon icon on the map toolbar. 
 
 ```{r, fig.align = 'center', out.width="50%"}
-knitr::include_graphics("v2Vignette_img/poccs_1.png")
+knitr::include_graphics("vignette_img/poccs_1.png")
 ```
 
 This opens the drawing tool. Click to begin drawing- each click connects to the last with a line. Draw a shape around South America, omitting the record in Bolivia. If you make a mistake drawing, you can click "Delete last point" or Cancel to start over. To finish drawing, click on the first point you made, or click 'Finish' in the drawing tool. This finalizes the shape to use in analysis. Now click 'Select Occurrences' and you will see the point in Bolivia disappear. To remove the blue shaded polygon, click on the Trashcan icon in the map and hit 'Clear All'. If you are displeased or have made an error, the red Reset button will revert back to the original points. Since we arbitrarily removed the record in Bolivia, click reset to return to our original dataset. 
   
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/poccs_2.png")
+knitr::include_graphics("vignette_img/poccs_2.png")
 ```
   
 We will now remove it again, this time using the second module, *Remove Occurrences by ID*. With the pointer, click on the record in Bolivia. Information on the record will pop up, starting with the OccID. In this case it is OccID #18 (it may be a different number for you). Other information from the attribute table will be available. For example, the record has no information (NA) on the institution code, state/province, or basis. Since we know the OccID number, we can find the full information associated in the Occurrences tab. Click there and find the record. Here we can see it is a preserved specimen from the Museum of Southwestern Biology (MSB). Go back to the map. Enter "18" for the ID to be removed and remove occurrence. You will see the point disappear again. Click reset.
 
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/poccs_3.png")
+knitr::include_graphics("vignette_img/poccs_3.png")
 ```
   
 Click on the module **Spatial Thin**. This lets you attempt to reduce a presumed spatial bias by running a spatial thinning function on the points to make sure they're all a defined distance from one another. We will use "10 km" as an example and thin for both species by using the *Batch* option again.  
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/poccs_4.png")
+knitr::include_graphics("vignette_img/poccs_4.png")
 ```
 
 We are now left with 35 points for *Bassaricyon alleni* and 21 for *Bassaricyon neblina* (your numbers may be different). You can zoom in to see what the function did. Red points were retained, and blue points were removed. Download the processed occurrence datasets as a .csv by clicking on the button within the **Download** tab. Reminder: the data downloaded is only for the species currently in the species drop-down menu.
@@ -254,8 +254,8 @@ You can explore the different options for delineating the study extent here. Eac
 Set the species to *B. neblina* and use *Select study region* to a minimum convex polygon with a 0.7° buffer distance. Then switch to *B. alleni* and use point buffers with a 0.7° buffer.
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/penvs_1.png")
-knitr::include_graphics("v2Vignette_img/penvs_2.png")
+knitr::include_graphics("vignette_img/penvs_1.png")
+knitr::include_graphics("vignette_img/penvs_2.png")
 ```
   
 Alternatively, you can draw your own polygon (using the same polygon drawing tool we tested in the previous component **Process occs**. 
@@ -264,7 +264,7 @@ If you have a file of the background extent, you can upload it into the *User-sp
 Next, complete "Step 2", which both clips the rasters by the study extent and samples the background points. Set the number of background points to 10,000 (bigger, more extensive, samples are better; See component guidance text), check **Batch**, and click the **Sample** button.
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/penvs_3.png")
+knitr::include_graphics("vignette_img/penvs_3.png")
 ```
 
 You may find requesting 10,000 background points exceeds the amount in the background extent. The available number of points will be given in the log window, and that amount can be used instead of 10,000. 
@@ -276,7 +276,7 @@ Click the **Download** button if you want a zip file of the clipped rasters (e.g
 Before we begin the **Environmental Ordination** analysis, you need to select two species to work with. If you had more than two species uploaded, select two from the species log drop-down. Since we only have two uploaded, click in the species log box and select the second species. Both names will appear in the species log box simultaneously.
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/espace_1.png")
+knitr::include_graphics("vignette_img/espace_1.png")
 ```
 
 Unlike the other components which let you perform the modules in any order, the modules within **Environmental Space** are progressive and need to be performed consecutively (i.e., you can't get an Occurrence Density Grid without first performing an Environmental ordination).
@@ -285,33 +285,33 @@ The first module *Environmental Ordination* is for calculating Principal Compone
 The PCA Scatterplot appears in the Results tab.
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/espace_2.png")
+knitr::include_graphics("vignette_img/espace_2.png")
 ```
 
 You can also view the PCA correlation circle, PCA screenplot, and the PCA results summary. For more information on these statistics, consult the module guidance text.
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/espace_3.png")
+knitr::include_graphics("vignette_img/espace_3.png")
 ```
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/espace_4.png")
+knitr::include_graphics("vignette_img/espace_4.png")
 ```
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/espace_5.png")
+knitr::include_graphics("vignette_img/espace_5.png")
 ```
 
 Next, run an Occurrence Density Grid...
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/espace_6.png")
+knitr::include_graphics("vignette_img/espace_6.png")
 ```
 
 And calculate Niche overlap...
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/espace_7.png")
+knitr::include_graphics("vignette_img/espace_7.png")
 ```
 
 Since we have yet to model, this overlap is calculated from the occurrence densities and the densities of the environmental conditions from the density grid results of the previous module. The overlap is quantified using Schoener's D metric.
@@ -326,13 +326,13 @@ There's a whole literature on how to best partition data for modeling. One optio
 Another option is to partition using spatial blocking---for example, by drawing lines on a map to divide the data. Spatial partitioning with k-fold cross-validation forces the model to predict to regions that are distant from those used to train the model. For *Bassaricyon alleni*, environmental conditions in the Andes of Colombia and Ecuador may differ considerably from conditions in Bolivia. If the model has accurate predictions on average on withheld spatially partitioned data, it likely has good transferability, which means it can transfer well to new values of predictor variables (as distant areas are usually more environmentally different than close areas). Please refer to the guidance text for more details on all the types of partitioning offered in Wallace. <br> Here's an example of jacknife (k=n), which assigns each point to a its own partition group, so the number of bins equals the number of occurrences.
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/part_1.png")
+knitr::include_graphics("vignette_img/part_1.png")
 ```
 
 Here's an example of spatial blocking, which assigns each point to one of four spatially separate partition groups.
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/part_2.png")
+knitr::include_graphics("vignette_img/part_2.png")
 ```
 
 We'll use this method now for faster computation, but it is recommended to review the guidance text and other literature to make an informed decision on partition methods.
@@ -356,13 +356,13 @@ run_wallace()
 In the **Intro** component, use the **Load** tab to import your .rds session file.
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/save_1.png")
+knitr::include_graphics("vignette_img/save_1.png")
 ```
 
 A box will pop up-- It looks like other *Wallace* warning messages, but in this case it is indicating the session is loaded. You can now carry on with the previous analysis.
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/save_2.png")
+knitr::include_graphics("vignette_img/save_2.png")
 ```
 
 # <a id="Model"></a>Model {#model}
@@ -397,13 +397,13 @@ Make sure *Bassaricyon neblina* is in the species box and Batch is unchecked bef
 The 3 feature class combinations (L, LQ, H) \* 8 regularization multipliers (0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4) = 24 candidate models. The feature classes H will enable substantial complexity in the response, so it takes a bit longer to run than the simpler models.
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/model_1.png")
+knitr::include_graphics("vignette_img/model_1.png")
 ```
 
 The results appear in two tables of evaluation statistics, allowing comparison of the different models you just built. The first table is full model and partition averages statistics; There should be 24 rows: one for each of the feature class / regularization multiplier combinations you selected. In the first table, statistics from the models built from the 4 occurrence data partition groups are averaged. In the second table, statistics from each of the 4 groups are displayed separately, so it contains 96 rows (each of the 4 folds for each of the 24 models).
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/model_2.png")
+knitr::include_graphics("vignette_img/model_2.png")
 ```
 
 How do we choose the "best" model?  
@@ -412,18 +412,18 @@ There is a mountain of literature about this, and there is really no single answ
 The evaluation metrics table can be sorted. First, we will prioritize models that did not omit many of the occurrence points in the predicted area. Sort the results table in ascending order by "or.10p.avg", or the 10-percentile training presence threshold applied to testing data (see guidance text for details).
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/model_3.png")
+knitr::include_graphics("vignette_img/model_3.png")
 ```
 
 Let's also look at AUC values.
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/model_4.png")
+knitr::include_graphics("vignette_img/model_4.png")
 ```
 
 And AICc...
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/model_5.png")
+knitr::include_graphics("vignette_img/model_5.png")
 ```
 
 In our example, if we had chosen the model with the lowest AICc score, we would have ended up with LQ_2.
@@ -432,7 +432,7 @@ Note: your values may be different.
 Next to the **Evaluation** results, you can access the Maxent **Lambda** files for each of the models (changing the candidate model in the drop-down box changes the output).
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/model_6.png")
+knitr::include_graphics("vignette_img/model_6.png")
 ```
 
 Use the  **Download** tab to download the evaluation tables.
@@ -444,31 +444,31 @@ The module *Maxent Evaluation Plots*, enables users to evaluate the performance 
 Below, see how feature class and regularization multiplier affects AUC values.
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/vis_1.png")
+knitr::include_graphics("vignette_img/vis_1.png")
 ```
 
 We should also examine the **response curves**, which show how the predicted suitability (y-axis) changes based on different values of each variable (x-axis). If you want to see the results for a particular model, select it by using the dropdown menu below the species box. Below is one of the response curves for model LQ_2 on mean precipitation of the driest month (bio14). 
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/vis_2.png")
+knitr::include_graphics("vignette_img/vis_2.png")
 ```
 
 You can also visualize model predictions on the map. Predictions of suitability can be continuous (a range of values from low -- high suitability) or binary (thresholded to just two values: 0-unsuitable and 1-suitable). Please see the module guidance for information about Maxent model output scales and thresholding rules. Here is the mapped prediction for model LQ_2, no threshold, in cloglog output.
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/vis_3.png")
+knitr::include_graphics("vignette_img/vis_3.png")
 ```
 
 Below is the mapped prediction of the same model, this time with the threshold set to 10-percentile training presence. Some of the occurrence points may fall outside the blue areas that represent suitable areas for *Bassaricyon neblina*. This thresholded prediction was used to calculate the 10-percentile training presence omission rate from the evaluation statistics.
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/vis_4.png")
+knitr::include_graphics("vignette_img/vis_4.png")
 ```
 
 Try mapping the prediction with the threshold set to the less strict 'minimum training presence' and notice the difference. You can also threshold by a quantile of training presences. Try setting the quantile to different values and notice the change in prediction.
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/vis_5.png")
+knitr::include_graphics("vignette_img/vis_5.png")
 ```
 
 You may have noticed the batch option is not available for this component. Users need to select optimum models relative to each species, therefor predictions can only be run individually.\
@@ -485,13 +485,13 @@ We are now taking this model and projecting it to variable ranges that were pote
 Let's begin with *Project to New Extent* and see if Peru has suitable area for the olinguito. In Step 1, use the polygon drawing tool to draw around Peru with a 1-degree buffer and hit Create. Alternatively, you can upload a shapefile or CSV file with fields "longitude, latitude" to use as a study region.
 (**)
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/Proj_1.png")
+knitr::include_graphics("vignette_img/Proj_1.png")
 ```
 
 In Step 2, choose a threshold or no threshold and Project.
 (**)
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/Proj_2.png")
+knitr::include_graphics("vignette_img/Proj_2.png")
 ```
 
 Note: to remove the outline of the polygon from the prediction, click the Trashcan icon and "Clear all".\
@@ -499,13 +499,13 @@ Now let's try *Project to New Time*. There are three options to choose a study r
 Below, model H_4 has been projected to the year 2070 under a severe climate scenario: representative concentration pathway (RCP) 8.5. Notice also that there are several global circulation models (GCMs) to choose from---these all represent different efforts to model future climate. We used CCSM4 for this tutorial. Not all GCMs have raster data for each RCP. See the module guidance text for more on RCPs and GCMs. Note: some databases have phased out RCPs for Shared Socioeconomic Pathways (SSPs), so be advised some literature might use SSP terminology instead of RCP.
 (**)
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/Proj_3.png")
+knitr::include_graphics("vignette_img/Proj_3.png")
 ```
 
 Below is the projection made binary by the 10-percentile training presence threshold. We can see some of these differences between present and future projection a bit more clearly now.
 (**)
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/Proj_4.png")
+knitr::include_graphics("vignette_img/Proj_4.png")
 ```
 
 The third module, *Project to User environments*, gives users the option to project to their own uploaded environments. The first step is the same as before (select the study region) but in the second step they can upload single-format rasters (.tif, .asc) to use as the environment. Note: the rasters must have the same extent and resolution (cell size) and the names of the files must correspond to the environmental variables used in modeling. To assist, there is a message "Your files must be named as: ..." indicating the correct file names to use.  
@@ -513,7 +513,7 @@ The third module, *Project to User environments*, gives users the option to proj
 When projecting, there may be areas within our new ranges of values that have high uncertainty because they are very different from the values used in model-building. In order to visualize where these areas are, we can use the fourth module *Calculate Environmental Similarity*, to plot a MESS map. MESS stands for (M)ultivariate (E)nvironmental (S)imilarity (S)urface: please see the module guidance text for details. Below is the MESS for our projection. All the blue values correspond to areas similar to those used in model-building, while the red ones are much more different. We can see that future climate values at high elevation are similar, whereas those at lower elevations west towards the coast are very different in some places. We may therefore interpret that projected suitability in these areas has high uncertainty.
 (**)
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/Proj_5.png")
+knitr::include_graphics("vignette_img/Proj_5.png")
 ```
 
 # <a id="Reprod"></a>Reproduce
@@ -522,14 +522,14 @@ A major advantage of *Wallace* compared to other GUI-based software is reproduci
 To download the script, select Rmd and click Download.
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/reprod_1a.png")
+knitr::include_graphics("vignette_img/reprod_1a.png")
 ```
 
 Now, you should have an .Rmd file that contains your complete analysis. R Markdown* files combine regular text with **code chunks**. Modules from *Wallace* are indicated as headers denoted by **\#\#\#**. For a quick reference to Rmd syntax, see <a href=" https://rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf" target="_blank">here</a>.
 
 (**)
 ```{r, out.width="50%", fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/reprod_1b.png")
+knitr::include_graphics("vignette_img/reprod_1b.png")
 ```
 
 You might want to open a new R window and try running some of this code. Remember that later sections of code may depend on things that were done earlier, so they may not all run if you skip ahead. Note that any **Env Space** analysis will appear at the end of the file. Also remember that if you close your Wallace session you'll lose your progress in the web browser (but your .Rmd will be unaffected). If you use RStudio, you can open this Rmd and click **knit** to compile your workflow into a sharable html document.
@@ -539,21 +539,21 @@ Note that you can change anything you like in this code to build upon your workf
 You can also download the Metadata from Analysis. This will download as a zip and contain a CSV file (.csv) for each species.  
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/reprod_2a.png")
+knitr::include_graphics("vignette_img/reprod_2a.png")
 ```
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/reprod_2b.png")
+knitr::include_graphics("vignette_img/reprod_2b.png")
 ```
 
 The last module available in the **Reproduce** component is *Reference packages*. Here, you can download the citations for all the R-packages used in the analysis.
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/reprod_3a.png")
+knitr::include_graphics("vignette_img/reprod_3a.png")
 ```
 
 ```{r, fig.align = 'center'}
-knitr::include_graphics("v2Vignette_img/reprod_3b.png")
+knitr::include_graphics("vignette_img/reprod_3b.png")
 ```
 
 # <a id="Con"></a>Conclusion
