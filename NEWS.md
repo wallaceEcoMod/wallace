@@ -1,8 +1,47 @@
 # wallace 2.0
-- What is new?
+What is new in this version?
+
+1. Stop and start your work whenever you want: This version allows you to save a session partway through the workflow and then restart it.  Try this out via the “Save session” tab if you think that is something that matches the way you would run analyses (intermediate-to-advanced users).
+
+2. Greater reproducibility regarding occurrence records: As a step towards greater documentation and reproducibility in biodiversity informatics, this version of Wallace provides an option of querying GBIF and receiving a DOI for the data provided. If you are already a registered GBIF user, check the “Include Data Source Citations” option under the Query Database (Present) module of the OccData component.
+
+3. Cross-time transfers: If you will later be interested in transferring your models to estimates of future (or past) climate, try out the updated Transfer component. This version now has data from WorldClim and EcoClimate (which also has reconstructed data for the past). Make your original model with the same climatic data source that you would like to use for transferring across time periods.
+
+4. Make models for multiple species in the same Wallace session: This advancement supports two important other functionalities: comparisons of species in environmental space (see below).  If you are interested in either of these, try making models for more than one species now. To get the data to do this, in the OccData component either run the query multiple times or do it once with scientific names separated by commas.  Then, in later components use the pull-down menu in the top center of the interface to indicate the species that you want to work with.
+
+5. Environmental space comparisons: It may not be as directly linked to conservation as many of the other advances, but this version now has several modules in the EnvSpace component, which allows users to examine characteristics of environmental space across species, like niche overlap.  If this matches your research interests (for academic purposes, or to study invasive species, for example), try them out.
+
+6. Redesigned R-markdown functionalities: Because of the way this version of Wallace is redesigned, it now makes the documentation files in a new way (Reproduce component).  In addition to making sure that you can download the documentation in ways readable to humans (like pdf), it would be helpful to the development team to have users download the executable RMD code and confirm that it runs successfully in R (intermediate-to-advanced users).
+
+Summary of new features:
+
+General - Several species in the same session
+General - New download sub-tab at each component
+General - Save and reload session
+Occs - PaleobioDB - Fossil occs (New module!)
+Occs - BIEN (New option!)
+Occs - GBIF OccCite (New option!)
+Occs - Delimitator and Separator (New option!)
+Envs - EcoClimate (New module, including paleo reconstructions!)
+General - Select variables with pickerInput
+General - Batch option (to repeat decisions for other species)
+Process Env - Draw polygon (New module!)
+Environmental Space - NEW COMPONENT with various new modules
+Model - maxnet and maxent.jar - Categorical variables (New option!)
+Model - maxnet and maxent.jar - Parallel (New option!)
+Vis - New bioclim plot
+Vis - New maxent plots
+Vis - mapPred - New threshold option
+Xfer - userXfer - User specified rasters
+Xfer - user background extent (New Option!)
+Xfer - user-specified transferring extent (New option!)
+Xfer - New Time - Ecolimate (New Option!)
+RMD - New Structure 
+Metadata - based on rangeModelMetadata package.
+
 
 # wallace 1.1.3
-- shinytheme() replaced by bslib::bs_theme(). Fixed issue with newer version of RStudio
+- shinytheme() replaced by bslib::bs_theme(). Fixed issue with newer version of RStudio.
 
 # wallace 1.1.2
 - Adding ecospat in Depends for fixing CBI calculation.
