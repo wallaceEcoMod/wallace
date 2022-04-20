@@ -15,30 +15,29 @@ What is new in this version?
 
 Summary of new features:
 
-General - Several species in the same session
-General - New download sub-tab at each component
-General - Save and reload session
-Occs - PaleobioDB - Fossil occs (New module!)
-Occs - BIEN (New option!)
-Occs - GBIF OccCite (New option!)
-Occs - Delimitator and Separator (New option!)
-Envs - EcoClimate (New module, including paleo reconstructions!)
-General - Select variables with pickerInput
-General - Batch option (to repeat decisions for other species)
-Process Env - Draw polygon (New module!)
-Environmental Space - NEW COMPONENT with various new modules
-Model - maxnet and maxent.jar - Categorical variables (New option!)
-Model - maxnet and maxent.jar - Parallel (New option!)
-Vis - New bioclim plot
-Vis - New maxent plots
-Vis - mapPred - New threshold option
-Xfer - userXfer - User specified rasters
-Xfer - user background extent (New Option!)
-Xfer - user-specified transferring extent (New option!)
-Xfer - New Time - Ecolimate (New Option!)
-RMD - New Structure 
-Metadata - based on rangeModelMetadata package.
-
+* General - Several species in the same session
+* General - New download sub-tab at each component
+* General - Save and reload session
+* Occs - PaleobioDB - Fossil occs (New module!)
+* Occs - BIEN (New option!)
+* Occs - GBIF OccCite (New option!)
+* Occs - Delimitator and Separator (New option!)
+* Envs - EcoClimate (New module, including paleo reconstructions!)
+* General - Select variables with pickerInput
+* General - Batch option (to repeat decisions for other species)
+* Process Env - Draw polygon (New module!)
+* Environmental Space - NEW COMPONENT with various new modules
+* Model - maxnet and maxent.jar - Categorical variables (New option!)
+* Model - maxnet and maxent.jar - Parallel (New option!)
+* Vis - New bioclim plot
+* Vis - New maxent plots
+* Vis - mapPred - New threshold option
+* Xfer - userXfer - User specified rasters
+* Xfer - user background extent (New Option!)
+* Xfer - user-specified transferring extent (New option!)
+* Xfer - New Time - Ecolimate (New Option!)
+* RMD - New Structure 
+* Metadata - based on rangeModelMetadata package.
 
 # wallace 1.1.3
 - shinytheme() replaced by bslib::bs_theme(). Fixed issue with newer version of RStudio.
