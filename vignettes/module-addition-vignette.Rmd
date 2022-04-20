@@ -2,10 +2,14 @@
 title: "How to write a module in Wallace"
 author: "Jamie Kass, Gonzalo Pinilla-Buitrago, Siew Fong Chen, Peter Galante, Bethany Johnson, Dean Attali"
 date: "April 19, 2022"
-output: html_document
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Wallace Ecological Modeling Application v2.0 Vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval = FALSE)
+knitr::opts_chunk$set(echo = TRUE, eval = FALSE, out.width = "800px")
 ```
 *Wallace* is an `R`-based, interactive application for reproducible ecological modeling, currently focusing on species distribution modeling. The application is composed of sequential steps of analysis called “components”, and methodological options within each component called “modules”. A key feature is that the application is expandible via the addition of new modules. This vignette guides users through the module authorship process, explaining the steps involved in adding a module, best practices to follow, and occasional troubleshooting. This vignette primarily targets researchers who want to author their own *Wallace* module that performs some additional analysis either for their own use or for others to use within the *Wallace* workflow. To follow along, it will help to have at least an intermediate understanding of `R` programming. Also, please see our <a href="https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.12945" target="_blank">publication</a> in *Methods in Ecology and Evolution* to read in detail about our philosophy for *Wallace*, the modularity of the application, and our vision for module authorship.
 
@@ -151,8 +155,13 @@ There are seven necessary steps to adding a module:
 4. Modify the *.yml file to define internal parameters in Wallace.  For example; the titles, authors, package used, and more importantly, the component in where your new module will be placed.
 5. Add source code to the *.R file to display your module's controls and implement its functionality.   
 6. Fill the *.Rmd with guidance text for your module.
-7. Tell the Wallace app to use your new module.  
- 
+7. *Optional:* Add session code to be incorporate in markdown to reproduce analysis in an R environment. 
+8. Tell the Wallace app to use your new module.  
+
+```{r, fig.align = 'center', echo=FALSE, eval=TRUE}
+knitr::include_graphics("vignette_img/module-addition.png")
+```
+
 The example module we will describe calculates pairwise Pearson's correlation coefficients for all environmental data, and will be added to the existing Process Environmental Data (penvs) component. 
 
 ### Step 1: Define ID
@@ -218,8 +227,8 @@ We have just specified the functionality for the module, an .R script that goes 
 * dir (string): Folder path in which your module will be saved. You will use "./inst/shiny/custom_modules"
 * result (boolean): TRUE for this example. TRUE if the module should support showing information in the Result tab. See more in Step 5, option *iii*.
 * map (boolean): FALSE for this example. TRUE if the module should support modifying the map. See more in Step 5, option *iv*.
-* rmd (boolean): FALSE for this example. TRUE if the module should add Rmd code to the Session Code. See more in Step 5, option *v*.
-* save (boolean): FALSE for this example.  TRUE if the module saves custom data when the user saves the current session. See more in Step 5, option *vi*.
+* save (boolean): FALSE for this example.  TRUE if the module saves custom data when the user saves the current session. See more in Step 5, option *v*.
+* rmd (boolean): FALSE for this example. TRUE if the module should add Rmd code to the Session Code. See more in Step 7.
 
 ```{r, eval = F}
 wallace::create_module(id = "penvs_correlations", 
@@ -293,7 +302,7 @@ penvs_correlations_module_server <- function(input, output, session, common) {
     req(bgMask())
     shinyWidgets::pickerInput(
       "VarSelector",
-      label = "Select variables (**)",
+      label = "Select variables",
       choices = setNames(as.list(names(bgMask())), names(bgMask())),
       multiple = TRUE,
       selected = names(bgMask()),
@@ -427,11 +436,7 @@ penvs_correlations_module_result <- function(id) {
 ```
 iv) *OPTIONAL:* A function named `penvs_correlations_module_map` that modifies the map. This function takes two arguments: `map` (a reference to a leaflet map) and `common` (the same parameter from the server function).
 
-v) *OPTIONAL:* A function named `penvs_correlations_module_rmd` that adds code to the “Session Code” Rmd output to enable reproducibility of your module analysis. This function returns a list with variables that are used in the module's RMD code, and takes an argument `species` that contains all the information for the current species. 
-If you specified the rmd parameter as TRUE in create_module() from Step 3, the file template  `penvs_correlations.Rmd` will be created in the custom_module directory. You should add code to this RMD file to repeat the module analysis. If you need to use any variables originally specified by the user during the session, you can use double curly brackets and define it inside the `penvs_correlations_module_rmd` function. For example, in modules/occs_queryDb.R line #169, the number of occurrences to download from gbif (occs_queryDb module) is saved in occNum_rmd. Then, see line #16 in modules/occs_queryDb.Rmd to find the same object with curly brackets, {{occNum_rmd}}, is used to create the specific session code of the module.
-Two variables are always made automatically available for these RMD code chunks: `{{sp}}` is the species ID and `{{spName}}` is the species' scientific name. See other module RMD files for examples in inst/shiny/modules .
-
-vi) *OPTIONAL:* The `penvs_correlations_module_server` function can enable the module to record the session information when the session is saved. This option will be enabled when you specified the parameter save as TRUE when using create_module().  It returns a list with two functions: `save()` and `load(state)`. The `save()` function takes no arguments and should return a named list with all the variables to save. The `load(state)` function takes one argument, which should consist of the same list of variables that were saved.
+v) *OPTIONAL:* The `penvs_correlations_module_server` function can enable the module to record the session information when the session is saved. This option will be enabled when you specified the parameter save as TRUE when using create_module().  It returns a list with two functions: `save()` and `load(state)`. The `save()` function takes no arguments and should return a named list with all the variables to save. The `load(state)` function takes one argument, which should consist of the same list of variables that were saved.
 
 ### Step 6: Guidance text for your module
 The last vital step is writing guidance text for your module. This text provides a detailed description of what your module does and where to find more relevant information for the benefit of other users. To add these instructions and other information for your module, you need to edit the Markdown file  `penvs_correlations.md`. Enter the background information for the module’s analysis, any methodological details that help users understand what the module does and why they might want to use it, and any relevant references to the literature. Guidance texts have three sections. BACKGROUND provides general information about the framing of the module's technique in the grand scheme of things. IMPLEMENTATION describes how the technique is used in this module. Finally, REFERENCES is a bibliography of academic sources that are referenced in the text.
@@ -453,7 +458,12 @@ Robert J. Hijmans (2019). raster: Geographic Data Analysis and Modeling. R packa
 
 ```
 
-### Step 7: Tell the Wallace app to use your module
+### Step 7: Session code to reproduce analysis in an R environment 
+*OPTIONAL:* A function named `penvs_correlations_module_rmd` that adds code to the “Session Code” Rmd output to enable reproducibility of your module analysis. This function returns a list with variables that are used in the module's RMD code, and takes an argument `species` that contains all the information for the current species. 
+If you specified the rmd parameter as TRUE in create_module() from Step 3, the file template  `penvs_correlations.Rmd` will be created in the custom_module directory. You should add code to this RMD file to repeat the module analysis. If you need to use any variables originally specified by the user during the session, you can use double curly brackets and define it inside the `penvs_correlations_module_rmd` function. For example, in modules/occs_queryDb.R line #169, the number of occurrences to download from gbif (occs_queryDb module) is saved in occNum_rmd. Then, see line #16 in modules/occs_queryDb.Rmd to find the same object with curly brackets, {{occNum_rmd}}, is used to create the specific session code of the module.
+Two variables are always made automatically available for these RMD code chunks: `{{sp}}` is the species ID and `{{spName}}` is the species' scientific name. See other module RMD files for examples in inst/shiny/modules.
+
+### Final step: Tell the Wallace app to use your module
 Congratulations! You finished creating your module. The final step is to tell the *Wallace* application to use it by calling the `register_module()` function.
 
 ```{r}
