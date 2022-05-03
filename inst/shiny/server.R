@@ -778,7 +778,8 @@ function(input, output, session) {
             logger %>%
               writeLog(
                 type = "error",
-                "PNG option is available if you install the 'mapview' package. If you ",
+                "PNG option is available if you install the 'mapview' package ",
+                "(which is a suggested package for Wallace, not a required dependency). If you ",
                 "want to install it, close Wallace and run the following line in the ",
                 "R Console: ", em("install.packages('mapview')")
               )
@@ -930,7 +931,8 @@ function(input, output, session) {
             logger %>%
               writeLog(
                 type = "error",
-                "PNG option is available if you install the 'mapview' package. If you ",
+                "PNG option is available if you install the 'mapview' package ",
+                "(which is a suggested package for Wallace, not a required dependency). If you ",
                 "want to install it, close Wallace and run the following line in the ",
                 "R Console: ", em("install.packages('mapview')")
               )
@@ -1019,7 +1021,8 @@ function(input, output, session) {
             logger %>%
               writeLog(
                 type = "error",
-                "PNG option is available if you install the 'mapview' package. If you ",
+                "PNG option is available if you install the 'mapview' package ",
+                "(which is a suggested package for Wallace, not a required dependency). If you ",
                 "want to install it, close Wallace and run the following line in the ",
                 "R Console: ", em("install.packages('mapview')")
               )

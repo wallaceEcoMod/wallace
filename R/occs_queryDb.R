@@ -49,7 +49,8 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
     logger %>%
       writeLog(
         type = "warning",
-        "This option is available if you install the 'BIEN' package. If you ",
+        "This option is available if you install the 'BIEN' package ",
+        "(which is a suggested package for Wallace, not a required dependency). If you ",
         "want to install it, close Wallace and run the following line in the ",
         "R Console: ", em("install.packages('BIEN')")
       )
@@ -61,7 +62,8 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
     logger %>%
       writeLog(
         type = "warning",
-        "This option is available if you install the 'occCite' package. If you ",
+        "This option is available if you install the 'occCite' package ",
+        "(which is a suggested package for Wallace, not a required dependency). If you ",
         "want to install it, close Wallace and run the following line in the ",
         "R Console: ", em("install.packages('occCite')")
       )

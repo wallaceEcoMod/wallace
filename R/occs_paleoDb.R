@@ -37,7 +37,8 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
     logger %>%
       writeLog(
         type = "warning",
-        "This module is available if you install the 'paleobioDB' package. If you ",
+        "This module is available if you install the 'paleobioDB' package ",
+        "(which is a suggested package for Wallace, not a required dependency). If you ",
         "want to install it, close Wallace and run the following line in the ",
         "R Console: ", em("install.packages('paleobioDB')")
       )
