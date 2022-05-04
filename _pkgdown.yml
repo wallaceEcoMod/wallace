@@ -1,8 +1,11 @@
 url: http://wallaceecomod.github.io/wallace/
 template:
   bootstrap: 5
+  bootswatch: united
 navbar:
- components:
+  structure:
+    left:  [articles, news, reference]
+  components:
    articles:
     text: Vignettes
     menu:
