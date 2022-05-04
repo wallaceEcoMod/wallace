@@ -36,8 +36,9 @@ Summary of new features:
 * Xfer - user background extent (New Option!)
 * Xfer - user-specified transferring extent (New option!)
 * Xfer - New Time - Ecolimate (New Option!)
-* RMD - New Structure 
-* Metadata - based on rangeModelMetadata package.
+* Rep - RMD - New Structure 
+* Rep - Metadata - based on rangeModelMetadata package (New module!)
+* Rep - RefPackages (New module!)
 
 # wallace 1.1.3
 - shinytheme() replaced by bslib::bs_theme(). Fixed issue with newer version of RStudio.
