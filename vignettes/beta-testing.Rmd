@@ -1,0 +1,159 @@
+---
+title: "Wallace v1.9 (beta testing of what will become v2!)"
+date: "5/3/2022"
+output: html_document
+---
+
+### ENGLISH
+*Para instrucciones en español, ir al final*
+
+**Overview: The Wallace development team and several external partners are ready for beta testing and feedback on a redesigned and expanded version.**
+
+**What is new in this version?** See this youtube video for more info (<a href="https://www.youtube.com/watch?v=NRtKwtCansw" target="_blank">Link</a>).
+
+**1. Stop and start your work whenever you want:** This version allows you to save a session partway through the workflow and then restart it.  Try this out via the “Save session” section of the Save tab if you think that is something that matches the way you would run analyses (intermediate-to-advanced users).
+
+**2. Greater reproducibility regarding occurrence records:** As a step towards greater documentation and reproducibility in biodiversity informatics, this version of Wallace provides an option of querying GBIF and receiving a DOI for the data provided. If you are already a registered GBIF user, check the “Include Data Source Citations” option under the Query Database (Present) module of the **Occ Data** component.
+
+**3. Cross-time transfers:** If you will later be interested in transferring your models to estimates of future (or past) climate, try out the updated **Transfer** component. This version now has data from WorldClim and EcoClimate (which also has reconstructed data for the past). Make your original model with the same climatic data source that you would like to use for transferring across time periods.
+
+**4. Make models for multiple species in the same Wallace session:** This advancement supports two important other functionalities: comparisons of species in environmental space (see below).  If you are interested in either of these, try making models for more than one species now. To get the data to do this, in the **Occ Data** component either run the query multiple times or do it once with scientific names separated by commas.  Then, in later components use the pull-down menu in the top center of the interface to indicate the species that you want to work with.
+
+**5. Environmental space comparisons:** It may not be as directly linked to conservation as many of the other advances, but this version now has several modules in the **Env Space** component, which allows users to examine characteristics of environmental space across species, like niche overlap.  If this matches your research interests (for academic purposes, or to study invasive species, for example), try them out.
+
+**6. Redesigned R-markdown functionalities:** Because of the way this version of Wallace is redesigned, it now makes the documentation files in a new way (**Reproduce** component).  In addition to making sure that you can download the documentation in ways readable to humans (like pdf), it would be helpful to the development team to have users download the executable RMD code and confirm that it runs successfully in R (intermediate-to-advanced users).
+
+#### **Summary of new features**
+* General - Several species in the same session
+* General - New download sub-tab at each component
+* General - Save and reload session
+* Occs - PaleobioDB - Fossil occs (New module!)
+* Occs - BIEN (New option!)
+* Occs - GBIF OccCite (New option!)
+* Occs - Delimitator and Separator (New option!)
+* Envs - EcoClimate (New module, including paleo reconstructions!)
+* General - Select variables with pickerInput
+* General - Batch option (to repeat decisions for other species)
+* Process Env - Draw polygon (New module!)
+* Environmental Space - NEW COMPONENT with various new modules
+* Model - maxnet and maxent.jar - Categorical variables (New option!)
+* Model - maxnet and maxent.jar - Parallel (New option!)
+* Vis - New bioclim plot
+* Vis - New maxent plots
+* Vis - mapPred - New threshold option
+* Xfer - userXfer - User specified rasters
+* Xfer - user background extent (New Option!)
+* Xfer - user-specified transferring extent (New option!)
+* Xfer - New Time - Ecolimate (New Option!)
+* Rep- RMD - New Structure 
+* Rep- Metadata - based on rangeModelMetadata package (New module!)
+* Rep- RefPackages (New module!)
+
+#### **Instructions for Installation**
+<u>Beginner R users:</u> Please update to the latest version of R (v4) and update all packages (in R Studio (go to tools - check for package updates) before starting with the installation steps below (see “More details on installing R and RStudio for beginner R users” at the end of this document. Then, jump back up to the main instructions and proceed with “Run the following lines in R”.) 
+
+<u>Advanced R users:</u> Update `rgbif`, `paleobioDB`, `sf`, and proceed to “Run the following lines in R” below.
+
+Run the following lines in R:
+```{r, eval=FALSE}
+# install the remotes package to help you install other things
+install.packages("remotes")
+remotes::install_github("wallaceEcoMod/wallace")
+# Open wallace
+library(wallace)
+run_wallace()
+```
+
+<span style="color: red;">***Important note!***</span>  
+After testing the development version of Wallace, if you want to go back to the older version, you need to install Wallace again from CRAN. You can use the following code:
+```{r, eval=FALSE}
+install.packages("wallace")
+```
+
+#### **Report bugs** 
+If you find a bug, let us know by filling out this <a href="https://docs.google.com/forms/d/e/1FAIpQLSd4giDOteMbzOkyN-rLghMqWFeVjxjjL1AAWxIt-7qyAQDcbA/viewform?usp=sf_link" target="_blank">Google Form</a>.
+
+If you have a GitHub account, you also can report issues <a href="https://github.com/wallaceEcoMod/wallace/issues" target="_blank">here</a>.
+
+If you have another suggestion, please write to the <a href="mailto:wallaceecomod@gmail.com" target="_blank">Wallace email</a>, specifying that you have been testing the development version.
+
+**Do you want to know more about Wallace?**
+Please visit our <a href="https://wallaceecomod.github.io/" target="_blank">website</a>.
+
+#### **More details on installing R and RStudio for beginner R users**
+R is an open-source statistical software package that has the ability to do GIS operations among many other things. We use it in conjunction with RStudio, an easy way to manage R code.
+
+To download R (<a href="https://cran.r-project.org/bin/windows/base/R-4.2.0-win.exe" target="_blank">Windows</a>, <a href="https://cran.r-project.org/bin/macosx/base/R-4.2.0.pkg" target="_blank">Mac</a>) 
+
+To download RStudio. Install RStudio Desktop (Free, Open Source) accepting the default pathways. https://rstudio.com/products/rstudio/download/
+
+Now, you will need to tell RStudio where R lives. Open RStudio, go to Tools -> Global Options and change the R version by navigating to where you saved R. Unless you have a reason against it, you should use the 64-bit version of R (64 and 32 bit R are both downloaded).
+
+If you are a Windows user, please also install RTools from here - (even if you have already installed R) https://cran.r-project.org/bin/windows/Rtools/ (choose 64 bit unless you have a reason not to). And follow the steps under “Putting Rtools on the PATH”.
+
+***
+### ESPAÑOL
+
+**Descripción general:** El equipo de desarrollo de Wallace y varios de sus colaboradores externos están listos para realizar pruebas y recibir comentarios sobre una versión rediseñada y ampliada de Wallace.
+
+**¿Qué hay de nuevo en esta versión?** Vea este video de YouTube para obtener más información (<a href="https://www.youtube.com/watch?v=NRtKwtCansw" target="_blank">Link</a>).
+
+#### Resumen de nuevas características
+* General - Correr varias especies en una misma sesión
+* General - Nueva pestaña de descarga (más opciones y mejor organización)
+* General - Guardar y cargar la sesión (pueden guardar Wallace en cualquier punto y continuar en otro momento)
+* Occs - PaleobioDB - Ocurrencias de fósiles (¡Módulo nuevo!)
+* Occs - Base de datos BIEN (¡Nueva opción!)
+* Occs - GBIF OccCite (¡Nueva opción!)
+* Occs - Delimitador y separador de decimales personalizado (¡Nueva opción!)
+* Envs - EcoClimate (Módulo nuevo, variables climáticas que incluyen reconstrucciones del pasado)
+* General - Batch (Para repetir decisiones en varias especies)
+* Process Env - Dibujar polígono para definir área de estudio (¡Módulo nuevo!)
+* Environmental Space - NUEVO COMPONENTE! PCA y sobrelapamiento de nicho
+* Model - maxnet and maxent.jar - Variables categoricas (¡Nueva opción!)
+* Model - maxnet and maxent.jar - Correr modelos en paralelo (¡Nueva opción!)
+* Vis - Nuevo bioclim plot
+* Vis - Nuevos maxent plots
+* Vis - mapPred - Nueva opción de umbral de corte
+* Xfer - userXfer - Usuarios pueden especificar sus propios rasters
+* Xfer - Seguir utilizando la misma área de calibración del modelo (¡Nueva opción!)
+* Xfer - Definir área de proyección con un shapefile  (¡Nueva opción!)
+* Xfer - Nueva opción de variables climáticas - Ecoclimate (¡Nueva opción!)
+* Rep- RMD - Nueva estructura 
+* Rep- Metadatos basados en el paquete rangeModelMetadata (¡Módulo nuevo!)
+* Rep- RefPackages (¡Módulo nuevo!)
+
+#### **Instrucciones de instalación**
+<u>Usuarios principiantes de R:</u> actualice a la última versión de R (v4) y actualice todos los paquetes (en R Studio: vaya a herramientas - busque actualizaciones de paquetes) antes de comenzar con los pasos de instalación a continuación. Consulte “Más detalles sobre la instalación de R y RStudio para usuarios principiantes de R ” al final de este documento.
+
+<u>Usuarios avanzados de R:</u> Actualice `rgbif`, `paleobioDB`, `sf` y proceda a “Ejecutar las siguientes líneas en R” a continuación.
+
+**Correr las siguientes líneas en R:**
+```{r, eval=FALSE}
+# Instalar el paquete remotes
+install.packages("remotes")
+remotes::install_github("wallaceEcoMod/wallace")
+# Abrir Wallace
+library(wallace)
+run_wallace()
+```
+
+<span style="color: red;">***¡Importante!***</span>  
+Después de probar la versión de desarrollo de Wallace, si desea volver a la versión anterior, debe instalar nuevamente Wallace y ENMeval de CRAN. Puede utilizar el siguiente código:
+install.packages("wallace")
+
+
+#### **Reportar bugs y problemas**
+Si encuentra algún bug, pueden registrarlo en español en esta <a href="https://docs.google.com/forms/d/e/1FAIpQLSd4giDOteMbzOkyN-rLghMqWFeVjxjjL1AAWxIt-7qyAQDcbA/viewform?usp=sf_link" target="_blank">Plantilla de Google</a>.  
+Si tienen cuenta en Github, pueden reportar los bugs <a href="https://github.com/wallaceEcoMod/wallace/issues" target="_blank">aquí</a>.  
+¿Alguna otra sugerencia? Escribanos en español a nuestro <a href="mailto:wallaceecomod@gmail.com" target="_blank">correo</a>. Por favor especificar que está probando la versión beta.
+
+#### **Más detalles sobre la instalación de R y RStudio para usuarios principiantes de R**
+R es un paquete de software estadístico de código abierto que tiene la capacidad de realizar operaciones GIS, entre muchas otras cosas. Lo usamos junto con RStudio, una forma fácil de administrar el código R.
+
+Para descargar R (<a href="https://cran.r-project.org/bin/windows/base/R-4.2.0-win.exe" target="_blank">Windows</a>, <a href="https://cran.r-project.org/bin/macosx/base/R-4.2.0.pkg" target="_blank">Mac</a>) 
+
+Para descargar RStudio. Instale RStudio Desktop (gratuito, código abierto) aceptando las rutas predeterminadas. https://rstudio.com/products/rstudio/download/
+Ahora, deberá decirle a RStudio dónde vive R. Abra RStudio, vaya a Herramientas -> Opciones globales y cambie la versión R navegando hasta donde guardó R. A menos que tenga una razón en contra, debe usar la versión de 64 bits de R (se descargan tanto R de 64 como de 32 bits) ).
+
+Si es un usuario de Windows, también instale RTools desde aquí - (incluso si ya ha instalado R) https://cran.r-project.org/bin/windows/Rtools/ (elija 64 bits a menos que tenga una razón No a). Y siga los pasos de "Colocación de Rtools en la RUTA".

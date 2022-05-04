@@ -1,4 +1,17 @@
 url: http://wallaceecomod.github.io/wallace/
 template:
   bootstrap: 5
+navbar:
+ components:
+   articles:
+    text: Vignettes
+    menu:
+    - text: Tutorial Vignette v2
+      href: articles/wallace_vignette.html
+    - text: Module addition
+      href: articles/module-addition-vignette.html
+    - text: -------
+    - text: "Beta Testing"
+    - text: Install instructions
+      href: articles/beta-testing.html
 
