@@ -45,9 +45,9 @@ output: html_document
 * Xfer - user background extent (New Option!)
 * Xfer - user-specified transferring extent (New option!)
 * Xfer - New Time - Ecolimate (New Option!)
-* Rep- RMD - New Structure 
-* Rep- Metadata - based on rangeModelMetadata package (New module!)
-* Rep- RefPackages (New module!)
+* Rep - RMD - New Structure 
+* Rep - Metadata - based on rangeModelMetadata package (New module!)
+* Rep - RefPackages (New module!)
 
 #### **Instructions for Installation**
 <u>Beginner R users:</u> Please update to the latest version of R (v4) and update all packages (in R Studio (go to tools - check for package updates) before starting with the installation steps below (see “More details on installing R and RStudio for beginner R users” at the end of this document. Then, jump back up to the main instructions and proceed with “Run the following lines in R”.) 
