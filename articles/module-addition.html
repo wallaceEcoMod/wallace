@@ -22,11 +22,11 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <nav class="navbar fixed-top navbar-dark navbar-expand-lg bg-primary"><div class="container">
     
     <a class="navbar-brand me-2" href="../index.html">wallace</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.3-1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -35,18 +35,23 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
-</li>
 <li class="active nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/module-addition-vignette.html">How to write a module in Wallace</a>
-    <a class="dropdown-item" href="../articles/wallace_vignette.html">Wallace Ecological Modeling Application v2.0 Vignette</a>
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-vignettes">Vignettes</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-vignettes">
+    <a class="dropdown-item" href="../articles/tutorial-v2.html">Tutorial Vignette v2</a>
+    <a class="dropdown-item" href="../articles/module-addition.html">Module addition</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>Beta Testing</h6>
+    <a class="dropdown-item" href="../articles/beta-testing.html">Install instructions</a>
+    <h6 class="dropdown-header" data-toc-skip>Archive</h6>
+    <a class="dropdown-item" href="../articles/tutorial-v1.html">Tutorial Vignette v1</a>
   </div>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
@@ -62,7 +67,7 @@
 
 
 
-<script src="module-addition-vignette_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+<script src="module-addition_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <main id="main"><div class="page-header">
       <img src="" class="logo" alt=""><h1>How to write a module in Wallace</h1>
                         <h4 data-toc-skip class="author">Jamie Kass, Gonzalo Pinilla-Buitrago, Siew Fong Chen, Peter Galante, Bethany Johnson, Dean Attali</h4>
@@ -70,7 +75,7 @@
             <h4 data-toc-skip class="date">April 19, 2022</h4>
       
       
-      <div class="d-none name"><code>module-addition-vignette.Rmd</code></div>
+      <div class="d-none name"><code>module-addition.Rmd</code></div>
     </div>
 
     
@@ -274,8 +279,11 @@
 <li>Add source code to the *.R file to display your module’s controls and implement its functionality.<br>
 </li>
 <li>Fill the *.Rmd with guidance text for your module.</li>
+<li>
+<em>Optional:</em> Add session code to be incorporate in markdown to reproduce analysis in an R environment.</li>
 <li>Tell the Wallace app to use your new module.</li>
 </ol>
+<p><img src="vignette_img/module-addition.png" width="800px" style="display: block; margin: auto;"></p>
 <p>The example module we will describe calculates pairwise Pearson’s correlation coefficients for all environmental data, and will be added to the existing Process Environmental Data (penvs) component.</p>
 <div class="section level3">
 <h3 id="step-1-define-id">Step 1: Define ID<a class="anchor" aria-label="anchor" href="#step-1-define-id"></a>
@@ -373,8 +381,8 @@
 <li>dir (string): Folder path in which your module will be saved. You will use “./inst/shiny/custom_modules”</li>
 <li>result (boolean): TRUE for this example. TRUE if the module should support showing information in the Result tab. See more in Step 5, option <em>iii</em>.</li>
 <li>map (boolean): FALSE for this example. TRUE if the module should support modifying the map. See more in Step 5, option <em>iv</em>.</li>
-<li>rmd (boolean): FALSE for this example. TRUE if the module should add Rmd code to the Session Code. See more in Step 5, option <em>v</em>.</li>
-<li>save (boolean): FALSE for this example. TRUE if the module saves custom data when the user saves the current session. See more in Step 5, option <em>vi</em>.</li>
+<li>save (boolean): FALSE for this example. TRUE if the module saves custom data when the user saves the current session. See more in Step 5, option <em>v</em>.</li>
+<li>rmd (boolean): FALSE for this example. TRUE if the module should add Rmd code to the Session Code. See more in Step 7.</li>
 </ul>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">wallace</span><span class="fu">::</span><span class="fu"><a href="../reference/create_module.html">create_module</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"penvs_correlations"</span>, 
@@ -444,7 +452,7 @@ save <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</
     <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/req.html" class="external-link">req</a></span><span class="op">(</span><span class="fu">bgMask</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
     <span class="fu">shinyWidgets</span><span class="fu">::</span><span class="fu"><a href="https://dreamrs.github.io/shinyWidgets/reference/pickerInput.html" class="external-link">pickerInput</a></span><span class="op">(</span>
       <span class="st">"VarSelector"</span>,
-      label <span class="op">=</span> <span class="st">"Select variables (**)"</span>,
+      label <span class="op">=</span> <span class="st">"Select variables"</span>,
       choices <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu">bgMask</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu">bgMask</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
       multiple <span class="op">=</span> <span class="cn">TRUE</span>,
       selected <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu">bgMask</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,
@@ -568,7 +576,6 @@ save <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</
 <span class="op">}</span></code></pre></div>
 <ol start="4" style="list-style-type: lower-roman">
 <li><p><em>OPTIONAL:</em> A function named <code>penvs_correlations_module_map</code> that modifies the map. This function takes two arguments: <code>map</code> (a reference to a leaflet map) and <code>common</code> (the same parameter from the server function).</p></li>
-<li><p><em>OPTIONAL:</em> A function named <code>penvs_correlations_module_rmd</code> that adds code to the “Session Code” Rmd output to enable reproducibility of your module analysis. This function returns a list with variables that are used in the module’s RMD code, and takes an argument <code>species</code> that contains all the information for the current species. If you specified the rmd parameter as TRUE in create_module() from Step 3, the file template <code>penvs_correlations.Rmd</code> will be created in the custom_module directory. You should add code to this RMD file to repeat the module analysis. If you need to use any variables originally specified by the user during the session, you can use double curly brackets and define it inside the <code>penvs_correlations_module_rmd</code> function. For example, in modules/occs_queryDb.R line #169, the number of occurrences to download from gbif (occs_queryDb module) is saved in occNum_rmd. Then, see line #16 in modules/occs_queryDb.Rmd to find the same object with curly brackets, {{occNum_rmd}}, is used to create the specific session code of the module. Two variables are always made automatically available for these RMD code chunks: <code>{{sp}}</code> is the species ID and <code>{{spName}}</code> is the species’ scientific name. See other module RMD files for examples in inst/shiny/modules .</p></li>
 <li><p><em>OPTIONAL:</em> The <code>penvs_correlations_module_server</code> function can enable the module to record the session information when the session is saved. This option will be enabled when you specified the parameter save as TRUE when using create_module(). It returns a list with two functions: <code><a href="https://rdrr.io/r/base/save.html" class="external-link">save()</a></code> and <code>load(state)</code>. The <code><a href="https://rdrr.io/r/base/save.html" class="external-link">save()</a></code> function takes no arguments and should return a named list with all the variables to save. The <code>load(state)</code> function takes one argument, which should consist of the same list of variables that were saved.</p></li>
 </ol>
 </div>
@@ -592,7 +599,12 @@ Robert J. Hijmans (2019). raster: Geographic Data Analysis and Modeling. R packa
 </code></pre>
 </div>
 <div class="section level3">
-<h3 id="step-7-tell-the-wallace-app-to-use-your-module">Step 7: Tell the Wallace app to use your module<a class="anchor" aria-label="anchor" href="#step-7-tell-the-wallace-app-to-use-your-module"></a>
+<h3 id="step-7-session-code-to-reproduce-analysis-in-an-r-environment">Step 7: Session code to reproduce analysis in an R environment<a class="anchor" aria-label="anchor" href="#step-7-session-code-to-reproduce-analysis-in-an-r-environment"></a>
+</h3>
+<p><em>OPTIONAL:</em> A function named <code>penvs_correlations_module_rmd</code> that adds code to the “Session Code” Rmd output to enable reproducibility of your module analysis. This function returns a list with variables that are used in the module’s RMD code, and takes an argument <code>species</code> that contains all the information for the current species. If you specified the rmd parameter as TRUE in create_module() from Step 3, the file template <code>penvs_correlations.Rmd</code> will be created in the custom_module directory. You should add code to this RMD file to repeat the module analysis. If you need to use any variables originally specified by the user during the session, you can use double curly brackets and define it inside the <code>penvs_correlations_module_rmd</code> function. For example, in modules/occs_queryDb.R line #169, the number of occurrences to download from gbif (occs_queryDb module) is saved in occNum_rmd. Then, see line #16 in modules/occs_queryDb.Rmd to find the same object with curly brackets, {{occNum_rmd}}, is used to create the specific session code of the module. Two variables are always made automatically available for these RMD code chunks: <code>{{sp}}</code> is the species ID and <code>{{spName}}</code> is the species’ scientific name. See other module RMD files for examples in inst/shiny/modules.</p>
+</div>
+<div class="section level3">
+<h3 id="final-step-tell-the-wallace-app-to-use-your-module">Final step: Tell the Wallace app to use your module<a class="anchor" aria-label="anchor" href="#final-step-tell-the-wallace-app-to-use-your-module"></a>
 </h3>
 <p>Congratulations! You finished creating your module. The final step is to tell the <em>Wallace</em> application to use it by calling the <code><a href="../reference/register_module.html">register_module()</a></code> function.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
@@ -613,7 +625,7 @@ Robert J. Hijmans (2019). raster: Geographic Data Analysis and Modeling. R packa
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
     </footer>

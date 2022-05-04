@@ -6,11 +6,11 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <nav class="navbar fixed-top navbar-dark navbar-expand-lg bg-primary"><div class="container">
     
     <a class="navbar-brand me-2" href="../index.html">wallace</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.3-1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -18,18 +18,23 @@
     </button>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
-      <ul class="navbar-nav me-auto"><li class="nav-item">
-  <a class="nav-link" href="../reference/index.html">Reference</a>
-</li>
-<li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/module-addition-vignette.html">How to write a module in Wallace</a>
-    <a class="dropdown-item" href="../articles/wallace_vignette.html">Wallace Ecological Modeling Application v2.0 Vignette</a>
+      <ul class="navbar-nav me-auto"><li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-vignettes">Vignettes</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-vignettes">
+    <a class="dropdown-item" href="../articles/tutorial-v2.html">Tutorial Vignette v2</a>
+    <a class="dropdown-item" href="../articles/module-addition.html">Module addition</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>Beta Testing</h6>
+    <a class="dropdown-item" href="../articles/beta-testing.html">Install instructions</a>
+    <h6 class="dropdown-header" data-toc-skip>Archive</h6>
+    <a class="dropdown-item" href="../articles/tutorial-v1.html">Tutorial Vignette v1</a>
   </div>
 </li>
 <li class="active nav-item">
   <a class="nav-link" href="../news/index.html">Changelog</a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="../reference/index.html">Reference</a>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
         <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off"></form>
@@ -55,24 +60,43 @@
 <li><p>Environmental space comparisons: It may not be as directly linked to conservation as many of the other advances, but this version now has several modules in the EnvSpace component, which allows users to examine characteristics of environmental space across species, like niche overlap. If this matches your research interests (for academic purposes, or to study invasive species, for example), try them out.</p></li>
 <li><p>Redesigned R-markdown functionalities: Because of the way this version of Wallace is redesigned, it now makes the documentation files in a new way (Reproduce component). In addition to making sure that you can download the documentation in ways readable to humans (like pdf), it would be helpful to the development team to have users download the executable RMD code and confirm that it runs successfully in R (intermediate-to-advanced users).</p></li>
 </ol><p>Summary of new features:</p>
-<p>General - Several species in the same session General - New download sub-tab at each component General - Save and reload session Occs - PaleobioDB - Fossil occs (New module!) Occs - BIEN (New option!) Occs - GBIF OccCite (New option!) Occs - Delimitator and Separator (New option!) Envs - EcoClimate (New module, including paleo reconstructions!) General - Select variables with pickerInput General - Batch option (to repeat decisions for other species) Process Env - Draw polygon (New module!) Environmental Space - NEW COMPONENT with various new modules Model - maxnet and maxent.jar - Categorical variables (New option!) Model - maxnet and maxent.jar - Parallel (New option!) Vis - New bioclim plot Vis - New maxent plots Vis - mapPred - New threshold option Xfer - userXfer - User specified rasters Xfer - user background extent (New Option!) Xfer - user-specified transferring extent (New option!) Xfer - New Time - Ecolimate (New Option!) RMD - New Structure Metadata - based on rangeModelMetadata package.</p>
-</div>
+<ul><li>General - Several species in the same session</li>
+<li>General - New download sub-tab at each component</li>
+<li>General - Save and reload session</li>
+<li>Occs - PaleobioDB - Fossil occs (New module!)</li>
+<li>Occs - BIEN (New option!)</li>
+<li>Occs - GBIF OccCite (New option!)</li>
+<li>Occs - Delimitator and Separator (New option!)</li>
+<li>Envs - EcoClimate (New module, including paleo reconstructions!)</li>
+<li>General - Select variables with pickerInput</li>
+<li>General - Batch option (to repeat decisions for other species)</li>
+<li>Process Env - Draw polygon (New module!)</li>
+<li>Environmental Space - NEW COMPONENT with various new modules</li>
+<li>Model - maxnet and maxent.jar - Categorical variables (New option!)</li>
+<li>Model - maxnet and maxent.jar - Parallel (New option!)</li>
+<li>Vis - New bioclim plot</li>
+<li>Vis - New maxent plots</li>
+<li>Vis - mapPred - New threshold option</li>
+<li>Xfer - userXfer - User specified rasters</li>
+<li>Xfer - user background extent (New Option!)</li>
+<li>Xfer - user-specified transferring extent (New option!)</li>
+<li>Xfer - New Time - Ecolimate (New Option!)</li>
+<li>Rep - RMD - New Structure</li>
+<li>Rep - Metadata - based on rangeModelMetadata package (New module!)</li>
+<li>Rep - RefPackages (New module!)</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.3" id="wallace-113">wallace 1.1.3<a class="anchor" aria-label="anchor" href="#wallace-113"></a></h2><p class="text-muted">CRAN release: 2022-03-09</p>
-<ul><li>shinytheme() replaced by bslib::bs_theme(). Fixed issue with newer version of RStudio.</li>
-</ul></div>
+<ul><li>shinytheme() replaced by bslib::bs_theme(). Fixed issue with newer version of RStudio.</li></ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.2" id="wallace-112">wallace 1.1.2<a class="anchor" aria-label="anchor" href="#wallace-112"></a></h2><p class="text-muted">CRAN release: 2022-02-13</p>
-<ul><li>Adding ecospat in Depends for fixing CBI calculation.</li>
-</ul></div>
+<ul><li>Adding ecospat in Depends for fixing CBI calculation.</li></ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.1" id="wallace-111">wallace 1.1.1<a class="anchor" aria-label="anchor" href="#wallace-111"></a></h2>
-<ul><li>Migration to GitHub Actions for Continuous Integration testing</li>
-</ul></div>
+<ul><li>Migration to GitHub Actions for Continuous Integration testing</li></ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.0" id="wallace-110">wallace 1.1.0<a class="anchor" aria-label="anchor" href="#wallace-110"></a></h2><p class="text-muted">CRAN release: 2021-05-24</p>
-<ul><li>Working with new version of ENMeval (v2)</li>
-</ul></div>
+<ul><li>Working with new version of ENMeval (v2)</li></ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.6.3" id="wallace-1063">wallace 1.0.6.3<a class="anchor" aria-label="anchor" href="#wallace-1063"></a></h2><p class="text-muted">CRAN release: 2020-12-06</p>
 <ul><li>rgbif updated dependency</li>
@@ -80,12 +104,10 @@
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.6.2" id="wallace-1062">wallace 1.0.6.2<a class="anchor" aria-label="anchor" href="#wallace-1062"></a></h2><p class="text-muted">CRAN release: 2020-02-13</p>
-<ul><li>Double distance in point buffer fixed.</li>
-</ul></div>
+<ul><li>Double distance in point buffer fixed.</li></ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.6.1" id="wallace-1061">wallace 1.0.6.1<a class="anchor" aria-label="anchor" href="#wallace-1061"></a></h2>
-<ul><li>Adding a couple convenience functions for running wallace headless by @isaacovercast</li>
-</ul></div>
+<ul><li>Adding a couple convenience functions for running wallace headless by @isaacovercast</li></ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.6" id="wallace-106">wallace 1.0.6<a class="anchor" aria-label="anchor" href="#wallace-106"></a></h2><p class="text-muted">CRAN release: 2018-10-07</p>
 <ul><li>Wallace no longer needs rJava to run! Oh happy days! Wallace is now compatible with ENMeval 0.3.0, which now has no rJava dependency and runs Maxent using maxnet by default (CRAN package maxnet; <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/ecog.03049" class="external-link uri">https://onlinelibrary.wiley.com/doi/abs/10.1111/ecog.03049</a>). This means Wallace no longer loads rJava automatically when using the ENMeval partition functions or running Maxent. You can still select the Java implementation of Maxent by choosing “maxent.jar” in the Maxent module, whereupon rJava will load.</li>
@@ -137,8 +159,7 @@
 </ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.1" id="wallace-101">wallace 1.0.1<a class="anchor" aria-label="anchor" href="#wallace-101"></a></h2><p class="text-muted">CRAN release: 2017-11-29</p>
-<ul><li>Removed button used for development.</li>
-</ul></div>
+<ul><li>Removed button used for development.</li></ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.0.0" id="wallace-100">wallace 1.0.0<a class="anchor" aria-label="anchor" href="#wallace-100"></a></h2>
 <ul><li>Biggest change: reprogrammed most of the software to integrate shiny modules. Now each module is a separate script in /inst/shiny/modules that contains both UI and server logic. This should make authorship and integration of new modules much easier.</li>
@@ -178,7 +199,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
 </div>
 
     </footer></div>
