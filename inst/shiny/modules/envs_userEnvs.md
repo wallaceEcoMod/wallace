@@ -10,7 +10,7 @@ Users may upload one or more raster files, which must be in single-file format (
 
 **NOTES**
 
-If the input rasters have no coordinate reference system (CRS) defined (listed as NA), users will be unable to map the rasters in later components. Users will be notified of this in **Module:** ***Map Prediction*** in **Component: Visualize Model Results**, and the mapping functionality will not work. To remedy this problem, users can define the CRS for each raster and save the new version in R with the following code:
+If the input rasters have no coordinate reference system (CRS) defined (listed as NA), users will be unable to map the rasters in later components. Users will be notified of this in Module: *Map Prediction* in **Component: Visualize Model Results**, and the mapping functionality will not work. To remedy this problem, users can define the CRS for each raster and save the new version in R with the following code:
 
 ```{r}
 library(raster)
@@ -24,4 +24,4 @@ writeRaster(r, path_to_new_projected_raster_file)
 
 Users will need to know what the original CRS of their rasters is, then look up (i.e., Google search) its proj4 format. After saving, upload the new projected rasters and continue with your analysis. 
 
-**NOTE**: A reminder that some file types like .asc cannot embed CRS information in the file, so please avoid these types -- instead use types such as .tif that retain the CRS.
+*NOTE: A reminder that some file types like .asc cannot embed CRS information in the file, so please avoid these types -- instead use types such as .tif that retain the CRS.*

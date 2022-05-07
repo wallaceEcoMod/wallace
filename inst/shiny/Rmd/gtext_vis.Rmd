@@ -7,10 +7,11 @@ output: html_document
 
 **ORIENTATION**
 
-Niche/distributional models can be used to make predictions across geographic space, and the modeled response can be examined in environmental space as well (Elith and Graham 2009; Guisan and Zimmermann 2000). Component **Visualize Model Results** gives the user options for visualizations from both perspectives. *Wallace* provides 1) bivariate environmental envelope plots for BIOCLIM models (Module ***BIOCLIM Envelope Plots***), 2) plots showing evaluation results over the range of Maxent models explored (Module ***Maxent Evaluation Plots***), 3) response curves that depict how model response relates to changes in the environmental predictor variables (Module ***Plot Response Curves***), and 4) maps of model predictions in the study region (Module ***Map Prediction***. All plots are displayed in the "Results" tab. 
+Niche/distributional models can be used to make transfers across geographic space, and the modeled response can be examined in environmental space as well (Elith and Graham 2009; Guisan and Zimmermann 2000). Additionally, inspecting quantitative measures of performance constitutes a key exercise. **Component: Visualize Model Results** gives the user options for all of these. *Wallace* provides 1) bivariate environmental envelope plots for BIOCLIM models (Module: *BIOCLIM Envelope Plots*), 2) plots showing evaluation results over the range of Maxent models explored (Module: *Maxent Evaluation Plots*), 3) response curves that depict how model suitability relates to changes in the environmental predictor variables (Module: *Plot Response Curves*), and 4) maps of model predictions in the study region (Module: *Map Prediction*). All plots are displayed in the “Results” tab, and the geographic projection appears in the “Map” tab.
+
 
 **REFERENCES**
 
-Elith, J., & Graham, C. H. (2009). Do they? How do they? WHY do they differ? On finding reasons for differing performances of species distribution models. *Ecography*. 32: 66-77.
+Elith, J., & Graham, C.H. (2009). Do they? How do they? WHY do they differ? On finding reasons for differing performances of species distribution models. *Ecography*, 32, 66-77. <a href="https://doi.org/10.1111/j.1600-0587.2008.05505.x" target="_blank">https://doi.org/10.1111/j.1600-0587.2008.05505.x</a>
 
-Guisan, A., & Zimmermann, N. E. (2000). Predictive habitat distribution models in ecology. *Ecological Modelling*. 135: 147-186.
+Guisan, A., & Zimmermann, N.E. (2000). Predictive habitat distribution models in ecology. *Ecological Modelling*, 135(2-3), 147-186. <a href="https://doi.org/10.1016/S0304-3800(00)00354-9" target="_blank">https://doi.org/10.1016/S0304-3800(00)00354-9</a>

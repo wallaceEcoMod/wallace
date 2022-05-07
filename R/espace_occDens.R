@@ -1,14 +1,14 @@
 
-#' @title Occurence density grid
-#' @description calculates the part of environmental space more densly
+#' @title Occurrence density grid
+#' @description calculates the part of environmental space more densely
 #'   populated by species & the availability of environmental conditions in the
 #'   background
 #'
 #' @details
-#' This fuctions implements a density estimation for each region in the
+#' This function implements a density estimation for each region in the
 #'   environmental space (gridded at 100*100 pixels). Then an occurrence
 #'   density is estimated using a kernel density approach. The density of
-#'   environmental conditions in the background is calcuated in the same way.
+#'   environmental conditions in the background is calculated in the same way.
 #
 #' @param sp.name1 character name of species 1 to be analyzed.
 #' @param sp.name2 character name of species 2 to be analyzed.
@@ -66,7 +66,7 @@ espace_occDens <- function(sp.name1, sp.name2, pca, logger = NULL) {
   scores.occs1 <- pca$scores[sp == sp.name1, 1:2]
   scores.bg2 <- pca$scores[bg == sp.name2, 1:2]
   scores.occs2 <- pca$scores[sp == sp.name2, 1:2]
-  alfred.smartProgress(logger, message = "Running occurrence density grids...", {
+  smartProgress(logger, message = "Running occurrence density grids...", {
     occDens1 <- ecospat::ecospat.grid.clim.dyn(scores.bg12, scores.bg1,
                                                scores.occs1, 100)
    # incProgress(1/2)
@@ -78,7 +78,7 @@ espace_occDens <- function(sp.name1, sp.name2, pca, logger = NULL) {
   occDens[[sp.name1]] <- occDens1
   occDens[[sp.name2]] <- occDens2
 
-  logger %>% alfred.writeLog(alfred.hlSpp(paste0(sp.name1, " and ", sp.name2)),
+  logger %>% writeLog(hlSpp(paste0(sp.name1, " and ", sp.name2)),
                       "Occurrence density grid.")
 
   return(occDens)

@@ -1,51 +1,104 @@
 ---
-title: "about"
+title: "intro"
 output: html_document
 ---
 
-#### *Wallace* was created by an international team of ecologists and biogeographers:  
+### **What is *Wallace*?**  
+
+<img src="logo.png" alt="logo" style="width: 150px; float:right; padding:10px;"/>
+Welcome to *Wallace*, a flexible application for reproducible ecological modeling, built for community expansion. The current version of *Wallace* (v1.9.3-2) steps the user through a full niche/distribution modeling analysis, from data acquisition to visualizing results.
+
+The application is written in `R` with the web app development package `shiny`. Please find the stable version of *Wallace* on <a href="https://CRAN.R-project.org/package=wallace" target="_blank">CRAN</a>, and the development version on <a href="https://github.com/wallaceEcoMod/wallace" target="_blank">Github</a>. We also maintain a *Wallace* <a href="https://wallaceecomod.github.io/" target="_blank">website</a> that has some basic info, links, and will be updated with tutorial materials in the near future.
+
+*Wallace* is designed to facilitate spatial biodiversity research, and currently concentrates on modeling species niches and distributions using occurrence datasets and environmental predictor variables. These models provide an estimate of the species' response to environmental conditions, and can be used to generate maps that indicate suitable areas for the species (i.e. its potential geographic distribution; Guisan & Thuiller 2005; Elith & Leathwick 2009; Franklin 2010a; Peterson et al. 2011). This research area has grown tremendously over the past two decades, with applications to pressing environmental issues such as conservation biology (Franklin 2010b), invasive species (Ficetola et al. 2007), zoonotic diseases (González et al. 2010), and climate-change impacts (Kearney et al. 2010).
+
+Also, for more detail, please see our paper in Methods in Ecology and Evolution.
+
+Kass J. M., Vilela B., Aiello-Lammens M. E., Muscarella R., Merow C., Anderson R. P. (2018). Wallace: A flexible platform for reproducible modeling of species niches and distributions built for community expansion. *Methods Ecol Evol*. 2018. 9: 1151-1156. <a href="https://doi.org/10.1111/2041-210X.12945" target="_blank">DOI: 10.1111/2041-210X.12945</a>
+
+### **Who is *Wallace* for?**  
+
+We engineered *Wallace* to be used by a broad audience that includes graduate students, ecologists, conservation practitioners, natural resource managers, educators, and programmers. Anyone, regardless of programming ability, can use *Wallace* to perform an analysis, learn about the methods, and share the results. Additionally, those who want to disseminate a technique can author a module for *Wallace*. 
+
+### **Attributes of _Wallace_**
+
+* **accessible**: lowers barriers to implement cutting-edge SDM techniques, offers support through various networks (Google Group, email, etc.)
+
+* **open**: the code is free to use and modify (GPL 3.0), and it gives users access to some of the largest public online biodiversity databases
+
+* **expandible**: users can author and contribute modules that enable new methodological options
+
+* **flexible**: options for user uploads and downloads of results
+
+* **interactive**: includes an embedded zoomable `leaflet` map, sortable `DF` data tables, and visualizations of results
+
+* **instructive**: features guidance text that educates users about theoretical and analytical aspects of each step in the workflow
+
+* **reproducible**: users can download an `rmarkdown` .Rmd file that when run reproduces the analysis, ability to save sessions and load later
+
+### **_Wallace_ website**
+
+For more information and relevant links see our <a href="https://wallaceecomod.github.io/" target="_blank">website</a>.
+
+### **Watch webinars about _Wallace_**
+
+*The following webinar was part of "ENM 2020", a free online course on ecological niche modeling, organized by Town Peterson. The full series can be found on YouTube: <a href="https://www.youtube.com/playlist?list=PLhEJuWmv8Jf67qSdifDvgOk5DOJsNNiam" target="_blank">ENM 2020</a>.*
+
+Kass, J.M. and G.E. Pinilla-Buitrago. 18 May 2020. “Wallace Ecological Modeling Application: flexible and reproducible modeling of species’ niches and distributions built for community expansion.” ENM 2020: Online course in ecological niche modeling (Peterson, A. T. editor), Week 19, Talk 2. <a href="https://youtu.be/kWNyNd2X1uo" target="_blank">Watch on YouTube</a>.  
+
+*The following webinar was the "37th Global Online Biodiversity Informatics Seminar" in the Biodiversity Informatics Training Curriculum organized by Town Peterson.*
+
+Kass, J. M. 9 May 2018. "WALLACE: A flexible platform for reproducible modeling of species niches and distributions built for community expansion." Broadcast from the City College of New York, City University of New York. <a href="https://www.youtube.com/watch?v=00CSd9vx2CE&feature=youtu.be" target="_blank">Watch on YouTube</a>.
+
+*The following webinar was part of the "Modelado de Distribuciones Potenciales" series, organized by Angela Cuervo.*
+
+Anderson, R. P. 21 May 2018. "El software Wallace para modelar nichos y distribuciones: Un coche con motor R, volante de ratón y cerebro de humano." Broadcast from the City College of New York, City University of New York. <a href="https://www.youtube.com/watch?v=0652g9PDKp4" target="_blank">Watch on YouTube</a>.  
+
+*For more videos, check out the <a href="https://www.youtube.com/channel/UCDSLCE5bmw12B7oqmlKk7rg" target="_blank">Wallace EcoMod YouTube channel</a>.*
+
+### **Contribute to _Wallace_**
+
+Contributors should submit pull requests to the *Wallace* <a href="https://github.com/wallaceEcoMod/wallace" target="_blank">Github account</a> for module authorship or significant code contributions to either the UI or server files. Also, please connect on Github to post code-related issues and the <a href="https://groups.google.com/forum/#!forum/wallaceecomod" target="_blank">Google Group</a> for methodological and other broader-scope questions, thoughts, or suggestions for improvement.
+
+### **Contact us**
+
+Please <a href="mailto:wallaceecomod@gmail.com" target="_blank">email us</a> with any other questions.
+
 <br>
-<img src="img/gonzalo.png" alt="gonzalo" style="width: 100px;"/>
+**-----------------------------------------------------**
+<br>
 
-<a href="https://www.researchgate.net/profile/Gonzalo_Pinilla-Buitrago" target="_blank">Gonzalo E. Pinilla-Buitrago</a> (lead developer) is PhD candidate at CUNY Graduate Center and City College of New York.
+#### **Acknowledgments**
 
-<img src="img/jamie.jpg" alt="jamie" style="width: 100px;"/>
+We dedicate this software to Alfred Russel Wallace, the co-discoverer of evolution by natural selection and the founder of the field of biogeography. 
 
-<a href="https://www.researchgate.net/profile/Jamie_Kass" target="_blank">Jamie M. Kass</a> ( co-developer) is a coauthor of ENMeval and currently a PhD candidate at CUNY Graduate Center and City College of New York. In 2019, he will begain a JSPS postdoctoral fellowship at Okinawa Institute of Science and Technology in Japan.
- 
-<img src="img/andrea.png" alt="andrea" style="width: 100px;"/>
+Currently, *Wallace* is being expanded via funding from the U.S. National Science Foundation DBI-1661510 and NASA 80NSSC18K0406.
 
-<a href="https://andrepazv.github.io" target="_blank">Andrea Paz</a> (co-developer) is PhD candidate at CUNY Graduate Center and City College of New York graduating in the spring 2021.
+*Wallace* was inspired by the 2015 Ebbe Nielsen Challenge of the Global Biodiversity Information Facility (GBIF), for which it was recognized as a finalist and received prize funding.
+
+This material is based upon work supported by the U.S. National Science Foundation (NSF) and National Aeronautics and Space Administration (NASA) under Grant Numbers NSF DBI-1661510 (RPA), DBI-1650241 (RPA), DEB-1119915 (RPA), DEB-1046328 (MEA), and DBI-1401312 (RM); and NASA 80NSSC18K0406. Any opinions, findings, and conclusions or recommendations expressed in this material are those of the author(s) and do not necessarily reflect the views of the National Science Foundation or of NASA.
+
+Additional sources of funding include: for JMK, a CUNY Science Scholarship and a CUNY Graduate Center Provost Digital Innovation Grant; for BV, a Coordination for the Improvement of Higher Education Personnel (CAPES) doctoral grant from Brazil; for Grisales-Betancur, a fellowship of the 'Asociación Nacional de Empresarios' from Colombia; for Meenan, the City College Fellows program.
 
 
-<img src="img/bethany.jpg" alt="bethany" style="width: 100px;"/>
+#### **References**
 
-Bethany Johnson (co-developer) Graduated with a BS in Biology from the City College of New York in 2020.
+1. Anderson, R. P. (2012). Harnessing the world's biodiversity data: promise and peril in ecological niche modeling of species distributions. *Annals of the New York Academy of Sciences*. 1260: 66-80.
 
-<img src="img/bruno.png" alt="bruno" style="width: 100px;"/>
+2. Anderson, R. P. (2015). El modelado de nichos y distribuciones: no es simplemente "clic, clic, clic." [With English and French translations: Modeling niches and distributions: it's not just "click, click, click" and La modélisation de niche et de distributions: ce n'est pas juste "clic, clic, clic"]. *Biogeografía*. 8: 4-27.
 
-<a href="https://www.researchgate.net/profile/Bruno_Vilela3" target="_blank">Bruno Vilela</a> (co-developer) is a coauthor of spThin and currently a professor at Universidade Federal da Bahia in Brazil.
+3. Elith J. & Leathwick J.R. (2009). Species distribution models: ecological explanation and prediction across space and time. *Annual Review of Ecology, Evolution, and Systematics*. 40: 677-697.
 
-<img src="img/matt.png" alt="matt" style="width: 100px;"/>
+4. Ficetola G.F., Thuiller W. & Miaud C. (2007) Prediction and validation of the potential global distribution of a problematic alien invasive species &horbar; the American bullfrog. *Diversity and Distributions*. 13: 476-485.
 
-<a href="https://www.researchgate.net/profile/Matthew_Aiello-Lammens" target="_blank">Matthew Aiello-Lammens</a> (co-developer) is the lead author of spThin and Assistant Professor of Biology at Pace University.
+5. Franklin J. (2010a). Mapping species distributions: spatial inference and prediction. Cambridge: Cambridge University Press.
 
-<img src="img/bob.png" alt="bob" style="width: 100px;"/>
+6. Franklin J. (2010b) Moving beyond static species distribution models in support of conservation biogeography. *Diversity and Distributions*. 16: 321-330.
 
-<a href="https://www.researchgate.net/profile/Robert_Muscarella" target="_blank">Robert Muscarella</a> (co-developer) is the lead author of ENMeval and currently is a reasercher at Aarhus University in Denmark. In 2019, he will began a professor position at Uppsala University in Sweden.
+7. González, C., Wang, O., Strutz, S. E., González-Salazar, C., Sánchez-Cordero, V., & Sarkar, S. 2010. Climate change and risk of leishmaniasis in North America: predictions from ecological niche models of vector and reservoir species. *PLoS Neglected Tropical Diseases*. 4: e585.
 
-<img src="img/cory.png" alt="cory" style="width: 100px;"/>
+8. Guisan A. & Thuiller W. (2005). Predicting species distribution: offering more than simple habitat models. *Ecology Letters*. 8: 993-1009.
 
-<a href="https://www.researchgate.net/profile/Cory_Merow2" target="_blank">Cory Merow</a> (co-developer) is currently a researcher at the University of Connecticut.
+9. Kearney M.R., Wintle B.A. & Porter W.P. (2010) Correlative and mechanistic models of species distribution provide congruent forecasts under climate change. *Conservation Letters*. 3: 203-213.
 
-<img src="img/rob.png" alt="rob" style="width: 100px;"/>
-
-<a href="https://scholar.google.com/citations?user=KSRr5EQAAAAJ&hl=en&oi=ao" target="_blank">Robert P. Anderson</a> (co-developer) is a coauthor of spThin and ENMeval, and Professor of Biology at City College of New York, CUNY. 
-
-<img src="img/valentina.png" alt="valentina" style="width: 100px;"/>
-
-<a href="https://www.researchgate.net/profile/Valentina_Grisales_Betancur" target="_blank">Valentina Grisales-Betancur</a> (collaborator) is an undergraduate student at EAFIT University in Colombia.
-
-<img src="img/sarah.png" alt="sarah" style="width: 100px;"/>
-
-Sarah Meenan (collaborator) recently completed her undergraduate degree from the City College of New York.
+10. Peterson A.T., Soberón J., Pearson R.G., Anderson R.P., Martinez-Meyer E., Nakamura M., Araújo M.B. (2011). Ecological niches and geographic distributions. Princeton, New Jersey: Monographs in Population Biology, 49. Princeton University Press.

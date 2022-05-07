@@ -61,15 +61,15 @@ penvs_drawBgExtent <- function(polyExtXY, polyExtID, drawBgBuf, occs,
     bgExt <- rgeos::gBuffer(newPoly, width = drawBgBuf)
     bgExt <- methods::as(bgExt, "SpatialPolygonsDataFrame")
     if (drawBgBuf == 0) {
-      logger %>% alfred.writeLog(alfred.hlSpp(spN), 'Draw polygon without buffer.')
+      logger %>% writeLog(hlSpp(spN), 'Draw polygon without buffer.')
     } else {
-      logger %>% alfred.writeLog(alfred.hlSpp(spN), 'Draw polygon with buffer of ',
+      logger %>% writeLog(hlSpp(spN), 'Draw polygon with buffer of ',
                           drawBgBuf, ' degrees.')
     }
     return(bgExt)
   } else if (ptRem > 0) {
     logger %>%
-      alfred.writeLog(type = 'error', alfred.hlSpp(spN),
+      writeLog(type = 'error', hlSpp(spN),
                "The drawn polygon did not include all localities. ",
                "Remove the polygon before drawing a new one.")
     return()

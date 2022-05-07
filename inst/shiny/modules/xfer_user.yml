@@ -1,0 +1,5 @@
+component: "xfer"
+short_name: "Transfer to User Environments"
+long_name: "Transfer to User Environments"
+authors: "Gonzalo E. Pinilla-Buitrago, Jamie M. Kass, Robert P. Anderson"
+package: [dismo]

@@ -37,13 +37,13 @@
 
 poccs_removeByID <- function(occs, removeID, logger = NULL, spN = NULL) {
   if (is.null(occs)) {
-    logger %>% alfred.writeLog(type = 'error',
+    logger %>% writeLog(type = 'error',
       "Before processing occurrences, obtain the data in component 1.")
     return()
   }
 
   if (!(removeID %in% occs$occID)) {
-    logger %>% alfred.writeLog(type = 'error','Entered occID not found.')
+    logger %>% writeLog(type = 'error','Entered occID not found.')
     return()
   }
 
@@ -52,13 +52,13 @@ poccs_removeByID <- function(occs, removeID, logger = NULL, spN = NULL) {
   # remove the row
   occs.remID <- occs[-i,]
 
-  logger %>% alfred.writeLog(
-    alfred.hlSpp(spN), "Removed occurrence with occID = ", removeID,
+  logger %>% writeLog(
+    hlSpp(spN), "Removed occurrence with occID = ", removeID,
     ". Updated data has n = ", nrow(occs.remID), " records.")
 
   if (nrow(occs.remID) < 4) {
-    logger %>% alfred.writeLog(type = 'error',
-      alfred.hlSpp(spN), "After removing occurrences, there are three or less points. ",
+    logger %>% writeLog(type = 'error',
+      hlSpp(spN), "After removing occurrences, there are three or less points. ",
       "You need more occurrences to continue the analysis."
     )
     return()

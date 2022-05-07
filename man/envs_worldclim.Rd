@@ -2,13 +2,13 @@
 % Please edit documentation in R/envs_worldclim.R
 \name{envs_worldclim}
 \alias{envs_worldclim}
-\title{envs_worldclim Obtain worldclim variables}
+\title{envs_worldclim Obtain WorldClim variables}
 \usage{
 envs_worldclim(bcRes, bcSel, mapCntr, doBrick = FALSE, logger = NULL)
 }
 \arguments{
 \item{bcRes}{numeric. Resolution of the climatic layers. Currently
-avaialable resolutions are 0.5, 2.5 and 10.}
+available resolutions are 0.5, 2.5 and 10.}
 
 \item{bcSel}{character. Vector with bionames to be selected.}
 
@@ -27,11 +27,11 @@ A rasterStack or a rasterBrick (if doBrick=TRUE) of downloaded
  worldclim rasters at the requested resolution.
 }
 \description{
-download worldclim variables. See www.worldclim.com.
+download WorldClim variables. See www.worldclim.com.
 }
 \details{
 This function is called by the module envs to download
-  worldclim variables from www.worldclim.com. The variables to be dowloaded
+  WorldClim variables from www.worldclim.com. The variables to be downloaded
   are selected by the user with bcSel and the resolution with bcRes. It
   returns either a rasterStack or rasterBrick of selected variables with
   appropriate names for further analyses.

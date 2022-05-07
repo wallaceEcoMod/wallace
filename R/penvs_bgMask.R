@@ -9,7 +9,7 @@
 #'    to the provided background area. The background area is determined in
 #'    the function penvs_bgExtent from the same component. The function returns
 #'    the provided environmental layers cropped and masked in the provided
-#'    format (either a Brick or a rasterStack).
+#'    format (either a rasterBrick or a rasterStack).
 #'
 #' @param occs data frame of cleaned or processed occurrences obtained from
 #'   components occs: Obtain occurrence data or, poccs: Process occurrence data.
@@ -47,21 +47,21 @@
 
 penvs_bgMask <- function(occs, envs, bgExt, logger = NULL, spN = NULL) {
   if (is.null(bgExt)) {
-    logger %>% alfred.writeLog(
+    logger %>% writeLog(
       type = 'error',
-      alfred.hlSpp(spN),
+      hlSpp(spN),
       "Before sampling background points, define the background extent.")
     return()
   }
   # mask envs by background extent
-  alfred.smartProgress(logger,
+  smartProgress(logger,
                        message = paste0("Masking rasters for ",
-                                        alfred.spName(spN), "..."), {
+                                        spName(spN), "..."), {
     bgCrop <- raster::crop(envs, bgExt)
     bgMask <- raster::mask(bgCrop, bgExt)
   })
 
-  logger %>% alfred.writeLog(alfred.hlSpp(spN), 'Environmental data masked.')
+  logger %>% writeLog(hlSpp(spN), 'Environmental data masked.')
 
   return(bgMask)
 }

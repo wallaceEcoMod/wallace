@@ -27,13 +27,13 @@ Obtain occurrence data. Used to obtain species name for logger messages.}
 A SpatialPolygonsDataFrame object that contains all occurrences from occs
 }
 \description{
-This function generates a background area according to a user
+This function generates a background area according to a user-
   provided method.
 }
 \details{
 This function is used in the select study region component. Here,
-  the user can select between three methods, 'bounding box', 'point buffers'
-  or ' minimum convex polygon' to determine the background extent based on the
+  the user can select between three methods ('bounding box', 'point buffers'
+  or ' minimum convex polygon') to determine the background extent based on the
   observed occurrences. The function returns a SpatialPolygonsDataFrame
   object of the desired extent.
 }

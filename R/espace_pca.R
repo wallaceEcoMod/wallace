@@ -1,13 +1,13 @@
 #' @title espace_pca Principal component analysis
-#' @description Principal component analysis to reduce dimensionalty of
+#' @description Principal component analysis to reduce dimensionality of
 #'   environmental space
 #' @details
-#' This function is called by the component espace to calibrate a pca for one
-#'   (default) or 2 species in environmental space. When using within Wallace
+#' This function is called by the component espace to calibrate a PCA for
+#'   2 species in environmental space. When using within Wallace,
 #'   GUI parameters are obtained from the model object, in particular, table of
-#'   occurences with environmental values and table of background points with
+#'   occurrences with environmental values and table of background points with
 #'   environmental values. User must be careful as these tables must contain only
-#'   environmental variables and not the point coordinates as outputed by model
+#'   environmental variables and not the point coordinates as outputted by model
 #'   objects. The PCA is calibrated over the whole set of background points.
 #'   The provided species name(s) are only used for logger messages and not for
 #'   querying or selecting occurrences.
@@ -86,7 +86,7 @@ espace_pca <- function(sp.name1, sp.name2 = NULL, occs.z1, occs.z2 = NULL,
   } else {
     spNames <- paste0(sp.name1, " and ", sp.name2)
   }
-  logger %>% alfred.writeLog(alfred.hlSpp(spNames),
+  logger %>% writeLog(hlSpp(spNames),
                              "Principal component analysis.")
 
   return(pca)

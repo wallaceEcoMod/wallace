@@ -6,7 +6,7 @@
 #' The niche overlap quantification is based on the occurrence densities and
 #'   the densities of environmental conditions available in the background extent
 #'   that are estimated in the module Occurrence Density Grid. The function
-#'   computes 4 different things, Schoener's D, unfilling, stability,
+#'   computes 4 different things; Schoener's D, unfilling, stability,
 #'   expansion indices (Guisan et al. 2014 TREE), and tests for niche
 #'   equivalency and niche similarity.
 #'
@@ -78,7 +78,7 @@ espace_nicheOv <- function(z1, z2, iter = 100, equivalency = FALSE,
 
   # niche tests
   if (equivalency == TRUE) {
-    alfred.smartProgress(logger, message = "Calculating niche equivalency...", {
+    smartProgress(logger, message = "Calculating niche equivalency...", {
       nicheOv$equiv <- ecospat::ecospat.niche.equivalency.test(
         z1, z2, iter, overlap.alternative = "higher"
       )
@@ -86,7 +86,7 @@ espace_nicheOv <- function(z1, z2, iter = 100, equivalency = FALSE,
   }
 
   if (similarity == TRUE) {
-    alfred.smartProgress(logger, message = "Calculating niche similarity", {
+    smartProgress(logger, message = "Calculating niche similarity", {
       nicheOv$simil <- ecospat::ecospat.niche.similarity.test(
         z1, z2, iter, overlap.alternative = "higher", rand.type = 1
       )

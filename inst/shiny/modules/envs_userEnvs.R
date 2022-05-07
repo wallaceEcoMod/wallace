@@ -27,18 +27,18 @@ envs_userEnvs_module_server <- function(input, output, session, common) {
   observeEvent(input$goUserEnvs, {
     # ERRORS ####
     if (is.null(curSp())) {
-      logger %>% alfred.writeLog(type = 'error', "Before obtaining environmental variables,
+      logger %>% writeLog(type = 'error', "Before obtaining environmental variables,
                              obtain occurrence data in 'Occ Data' component.")
       return()
     }
     if (is.null(input$userEnvs)) {
-      logger %>% alfred.writeLog(type = 'error', "Raster files not uploaded.")
+      logger %>% writeLog(type = 'error', "Raster files not uploaded.")
       return()
     }
     # Specify more than 2 variables
     if (length(input$userEnvs$name) < 2) {
       logger %>%
-        alfred.writeLog(
+        writeLog(
           type = 'error',
           "Select more than two variables.")
       return()
@@ -71,7 +71,7 @@ envs_userEnvs_module_server <- function(input, output, session, common) {
       })
 
       # remove occurrence records with NA environmental values
-      remOccs <- alfred.remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, sp, logger)
+      remOccs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, sp, logger)
       if (!is.null(remOccs)) {
         spp[[sp]]$occs <- remOccs$occs
         occsEnvsVals <- remOccs$occsEnvsVals
@@ -80,7 +80,7 @@ envs_userEnvs_module_server <- function(input, output, session, common) {
         return()
       }
 
-      logger %>% alfred.writeLog(alfred.hlSpp(sp), "User specified variables (",
+      logger %>% writeLog(hlSpp(sp), "User specified variables (",
                           paste(names(userEnvs), collapse = ", "),
                           ") ready to use.")
 
@@ -111,7 +111,7 @@ envs_userEnvs_module_server <- function(input, output, session, common) {
     }
 
     common$update_component(tab = "Results")
-    common$disable_module(component = "proj", module = "projTime")
+    common$disable_module(component = "xfer", module = "xferTime")
   })
 
   output$envsPrint <- renderPrint({
@@ -132,7 +132,7 @@ envs_userEnvs_module_map <- function(map, common) {
   spp <- common$spp
   req(spp[[curSp()]]$occs)
   occs <- common$occs
-  map %>% alfred.clearAll() %>%
+  map %>% clearAll() %>%
     addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                      radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                      fillOpacity = 0.2, weight = 2, popup = ~pop)
@@ -142,7 +142,7 @@ envs_userEnvs_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
     envs_userEnvs_knit = !is.null(species$rmm$code$wallace$userRasName),
-    userRasName_rmd = alfred.printVecAsis(species$rmm$code$wallace$userRasName),
+    userRasName_rmd = printVecAsis(species$rmm$code$wallace$userRasName),
     userBrick_rmd = species$rmm$code$wallace$userBrick
   )
 }

@@ -81,11 +81,11 @@ occs_userOccs_module_map <- function(map, common) {
   spp <- common$spp
   req(spp[[curSp()]]$occs)
   occs <- spp[[curSp()]]$occData$occsCleaned
-  map %>% alfred.clearAll() %>%
+  map %>% clearAll() %>%
     addCircleMarkers(data = occs, lat = ~latitude, lng = ~longitude,
                      radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                      fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
-    alfred.zoom2Occs(occs)
+    zoom2Occs(occs)
 }
 
 occs_userOccs_module_rmd <- function(species) {

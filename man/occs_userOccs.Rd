@@ -21,7 +21,7 @@ Window of Wallace GUI. Insert the logger reactive list here for running
 in shiny, otherwise leave the default NULL}
 }
 \value{
-List of lists. One list per species with occurence records. Each
+List of lists. One list per species with occurrence records. Each
   individual species list with appropriate fields for analysis
 }
 \description{

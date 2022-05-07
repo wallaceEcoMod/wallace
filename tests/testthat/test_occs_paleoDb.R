@@ -28,7 +28,7 @@ test_that("error checks", {
                fixed = TRUE)
   # the species' name has spelling errors, or it is not found in the database
   expect_error(occs_paleoDb(spName = spNameError, occNum, timeInterval),
-               paste0(alfred.hlSpp(spNameError),
+               paste0(hlSpp(spNameError),
                       "No records found, please check the spelling."),
                fixed = TRUE)
 })
@@ -41,7 +41,7 @@ test_that("error checks", {
 # # the species is found in the database, but it does not have coordinates (Log & lat)
 # expect_warning(occs_paleoDb(spName = "impossible species", occNum = 1,
 #                             timeInterval),
-#                paste0(alfred.hlSpp("impossible species"),
+#                paste0(hlSpp("impossible species"),
 #                       "No records with coordinates found in paleobioDB."),
 #                fixed = TRUE)
 # })

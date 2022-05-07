@@ -52,7 +52,7 @@
 
 penvs_bgSample <- function(occs, bgMask, bgPtsNum, logger = NULL, spN = NULL) {
   # sample random background points
-  alfred.smartProgress(logger, message = "Generating background points...", {
+  smartProgress(logger, message = "Generating background points...", {
     bgXY <- dismo::randomPoints(bgMask, bgPtsNum)
     bgXY <- bgXY %>% as.data.frame() %>%
       dplyr::select(longitude = .data$x, latitude = .data$y)
@@ -61,13 +61,13 @@ penvs_bgSample <- function(occs, bgMask, bgPtsNum, logger = NULL, spN = NULL) {
   bg.prop <- round(nrow(bgXY)/bgPtsNum, digits = 2)
   if(bg.prop == 1) {
     logger %>%
-      alfred.writeLog(
-        alfred.hlSpp(spN), bgPtsNum, " random background points sampled out of ",
+      writeLog(
+        hlSpp(spN), bgPtsNum, " random background points sampled out of ",
         bgNonNA, " total points. ")
   } else {
     logger %>%
-      alfred.writeLog(type = "warning",
-        alfred.hlSpp(spN), bgPtsNum, " random background points requested, but only ",
+      writeLog(type = "warning",
+        hlSpp(spN), bgPtsNum, " random background points requested, but only ",
         100 * bg.prop, "% of points (n = ", nrow(bgXY), ") were able to be sampled. ",
         "The maximum number of background points available to be sample on the polygon extent is ",
         bgNonNA, ".")

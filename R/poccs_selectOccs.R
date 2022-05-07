@@ -43,12 +43,12 @@
 poccs_selectOccs <- function(occs, polySelXY, polySelID = 1, logger = NULL,
                              spN = NULL) {
   if (is.null(occs)) {
-    logger %>% alfred.writeLog(type = 'error',
+    logger %>% writeLog(type = 'error',
       "Before processing occurrences, obtain the data in component 1.")
     return()
   }
   if (is.null(polySelXY)) {
-    logger %>% alfred.writeLog(
+    logger %>% writeLog(
       type = 'error',
       'The polygon has not been finished. Please press "Finish" on the map ',
       'toolbar then the "Select Occurrences" button.')
@@ -67,26 +67,26 @@ poccs_selectOccs <- function(occs, polySelXY, polySelID = 1, logger = NULL,
 
     ptRemIndex <- as.numeric(which(is.na(intersect)))
 
-    remIDs <- alfred.printVecAsis(pts[ptRemIndex,]$occID)
+    remIDs <- printVecAsis(pts[ptRemIndex,]$occID)
     # need code here to format the string better
     if (is.na(ptRemIndex[1])){
-      logger %>% alfred.writeLog(
+      logger %>% writeLog(
         type = 'warning',
-        alfred.hlSpp(spN),
+        hlSpp(spN),
         "Your polygon is selecting all occurrences. None will be removed.")
       occs.sel <- occs
       return()
     }
     occs.sel <- occs[-ptRemIndex,]
 
-    logger %>% alfred.writeLog(
-      alfred.hlSpp(spN), "Removing occurrence(s) with occID = ", remIDs,
+    logger %>% writeLog(
+      hlSpp(spN), "Removing occurrence(s) with occID = ", remIDs,
       ". Updated data has n = ", nrow(occs.sel), " records.")
 
     if (nrow(occs.sel) < 4) {
-      logger %>% alfred.writeLog(
+      logger %>% writeLog(
         type = 'error',
-        alfred.hlSpp(spN),
+        hlSpp(spN),
         "After removing occurrences, there are three or less points. ",
         "You need more occurrences to continue the analysis."
       )

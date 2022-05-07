@@ -1,14 +1,14 @@
-#' @title envs_worldclim Obtain worldclim variables
-#' @description download worldclim variables. See www.worldclim.com.
+#' @title envs_worldclim Obtain WorldClim variables
+#' @description download WorldClim variables. See www.worldclim.com.
 #'
 #' @details This function is called by the module envs to download
-#'   worldclim variables from www.worldclim.com. The variables to be dowloaded
+#'   WorldClim variables from www.worldclim.com. The variables to be downloaded
 #'   are selected by the user with bcSel and the resolution with bcRes. It
 #'   returns either a rasterStack or rasterBrick of selected variables with
 #'   appropriate names for further analyses.
 #'
 #' @param bcRes numeric. Resolution of the climatic layers. Currently
-#'   avaialable resolutions are 0.5, 2.5 and 10.
+#'   available resolutions are 0.5, 2.5 and 10.
 #' @param bcSel character. Vector with bionames to be selected.
 #' @param mapCntr numeric. Vector with longitude and latitude for a tile.
 #'   Required for bcRes 0.5, for other resolutions world data will be downloaded.
@@ -38,11 +38,11 @@
 envs_worldclim <- function(bcRes, bcSel, mapCntr, doBrick = FALSE,
                            logger = NULL) {
   if(bcRes == '') {
-    logger %>% alfred.writeLog(type = 'error', 'Select a raster resolution.')
+    logger %>% writeLog(type = 'error', 'Select a raster resolution.')
     return()
   }
 
-  alfred.smartProgress(logger, message = "Retrieving WorldClim data...", {
+  smartProgress(logger, message = "Retrieving WorldClim data...", {
       wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes,
                               lon = mapCntr[1], lat = mapCntr[2])
       # change names if bio01 is bio1, and so forth
@@ -59,13 +59,13 @@ envs_worldclim <- function(bcRes, bcSel, mapCntr, doBrick = FALSE,
 
   # convert to brick for faster processing
   if(doBrick == TRUE) {
-    alfred.smartProgress(logger,
+    smartProgress(logger,
                          message = "Converting to RasterBrick for faster processing...", {
       wcbc <- raster::brick(wcbc)
     })
   }
 
-  logger %>% alfred.writeLog("WorldClim bioclimatic variables ",
+  logger %>% writeLog("WorldClim bioclimatic variables ",
                       paste(names(wcbc), collapse = ", "), " at ",
                       bcRes, " arcmin resolution.")
   return(wcbc)

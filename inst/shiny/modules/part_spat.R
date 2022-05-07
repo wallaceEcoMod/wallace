@@ -33,8 +33,8 @@ part_spat_module_server <- function(input, output, session, common) {
     # PROCESSING ####
     for(sp in spLoop) {
       if (is.null(bgMask())) {
-        logger %>% alfred.writeLog(
-          type = 'error', alfred.hlSpp(sp),
+        logger %>% writeLog(
+          type = 'error', hlSpp(sp),
           "Before partitioning occurrences, mask your ",
           "environmental variables by your background extent.")
         return()
@@ -110,7 +110,7 @@ part_spat_module_map <- function(map, common) {
       newColors <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(n = 11, "RdYlBu"))(max(occsGrp))
     }
     partsFill <- newColors[occsGrp]
-    map %>% alfred.clearAll() %>%
+    map %>% clearAll() %>%
       addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                        radius = 5, color = 'red', fill = TRUE,
                        fillColor = partsFill, fillOpacity = 1, weight = 2,
@@ -119,11 +119,11 @@ part_spat_module_map <- function(map, common) {
                 title = "Partition Groups", labels = sort(unique(occsGrp)),
                 opacity = 1)
   } else {
-    map %>% alfred.clearAll() %>%
+    map %>% clearAll() %>%
       addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                        radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                        fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
-      alfred.zoom2Occs(occs())
+      zoom2Occs(occs())
   }
 }
 

@@ -1,0 +1,234 @@
+```{asis, echo = {{xfer_area_knit & !xfer_area_extent_knit & xfer_area_threshold_knit}}, eval = {{xfer_area_knit  & !xfer_area_extent_knit & !xfer_area_threshold_knit}}, include = {{xfer_area_knit & !xfer_area_extent_knit & !xfer_area_threshold_knit}}}
+## Transfer model
+Transfering the model to a new user drawn area 
+```
+
+```{r, echo =  {{xfer_area_knit & !xfer_area_extent_knit & !xfer_area_threshold_knit}}, include = {{xfer_area_knit & !xfer_area_extent_knit & !xfer_area_threshold_knit}}}
+# First must generate the transfer area according to the drawn polygon in the GUI
+xfer_draw_{{spAbr}} <-xfer_draw(
+  polyXfXY = matrix({{polyXfXY_rmd}},ncol=2,byrow=FALSE),
+  polyXfID = {{polyXfID_rmd}},
+  drawXfBuf = {{BgBuf_rmd}})
+# Create object of transfer variables
+xferAreaEnvs_{{spAbr}} <- envs_{{spAbr}}
+# Generate a transfer of the model to the desired area
+xfer_area_{{spAbr}} <- xfer_area(
+  evalOut = model_{{spAbr}},
+  curModel = "{{curModel_rmd}}",
+  envs = xferAreaEnvs_{{spAbr}} , 
+  outputType = "{{outputType_rmd}}",
+  alg = "{{alg_rmd}}",
+  clamp = {{clamp_rmd}},
+  xfExt = xfer_draw_{{spAbr}}) 
+# store the cropped transfer variables
+xferExt_{{spAbr}} <- xfer_area_{{spAbr}}$xferExt
+ #map result
+ 
+ ###Make map of transfer
+bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
+bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
+                   bb_{{spAbr}}[2, 2], fraction = 0.05)
+mapXferVals_{{spAbr}} <- getRasterVals(xfer_area_{{spAbr}}$xferArea,"{{outputType_rmd}}")
+rasCols_{{spAbr}} <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+# if no threshold specified
+legendPal <- colorNumeric(rev(rasCols_{{spAbr}}), mapXferVals_{{spAbr}}, na.color = 'transparent')
+rasPal_{{spAbr}} <- colorNumeric(rasCols_{{spAbr}}, mapXferVals_{{spAbr}}, na.color = 'transparent')
+m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
+m %>%
+  fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
+  leaflet::addLegend("bottomright", pal = legendPal,
+            title = "Predicted Suitability<br>(Transfered)",
+            values = mapXferVals_{{spAbr}}, layerId = 'xfer',
+            labFormat = reverseLabel(2, reverse_order = TRUE)) %>%
+# map model prediction raster and transfer polygon
+  clearMarkers() %>% clearShapes() %>% removeImage('xferRas') %>%
+  addRasterImage(xfer_area_{{spAbr}}$xferArea, colors = rasPal_{{spAbr}}, opacity = 0.7,
+                 layerId = 'xferRas', group = 'xfer', method = "ngb") %>%
+ ##add transfer polygon (user drawn area)
+  addPolygons(data = xfer_draw_{{spAbr}}, fill = FALSE,
+              weight = 4, color = "blue", group = 'xfer')
+
+```
+
+```{asis, echo = {{xfer_area_knit & !xfer_area_extent_knit & xfer_area_threshold_knit}}, eval = {{xfer_area_knit  & !xfer_area_extent_knit & xfer_area_threshold_knit}}, include = {{xfer_area_knit & !xfer_area_extent_knit & xfer_area_threshold_knit}}}
+## Transfer model
+Transfering the model to a new user drawn area using a "{{xfer_thresholdRule_rmd}}" threshold of {{xfer_threshold_rmd}}. 
+```
+
+```{r, echo =  {{xfer_area_knit & !xfer_area_extent_knit & xfer_area_threshold_knit}}, include = {{xfer_area_knit & !xfer_area_extent_knit & xfer_area_threshold_knit}}}
+# First must generate the transfer area according to the drawn polygon in the GUI
+xfer_draw_{{spAbr}} <-xfer_draw(
+  polyXfXY = matrix({{polyXfXY_rmd}},ncol=2,byrow=FALSE),
+  polyXfID = {{polyXfID_rmd}},
+  drawXfBuf = {{BgBuf_rmd}})
+# Create object of transfer variables
+xferAreaEnvs_{{spAbr}} <- envs_{{spAbr}}
+# Generate a transfer of the model to the desired area
+xfer_area_{{spAbr}} <- xfer_area(
+  evalOut = model_{{spAbr}},
+  curModel = "{{curModel_rmd}}",
+  envs = xferAreaEnvs_{{spAbr}} , 
+  outputType = "{{outputType_rmd}}",
+  alg = "{{alg_rmd}}",
+  clamp = {{clamp_rmd}},
+  xfExt = xfer_draw_{{spAbr}}) 
+
+#store the cropped transfer variables
+xferExt_{{spAbr}} <- xfer_area_{{spAbr}}$xferExt
+
+# extract the suitability values for all occurrences
+occs_xy_{{spAbr}} <- occs_{{spAbr}}[c('longitude', 'latitude')]
+# determine the threshold based on the current prediction
+occPredVals_{{spAbr}} <- raster::extract(predSel_{{spAbr}}, occs_xy_{{spAbr}})
+# Define probability of quantile based on selected threshold
+xfer_thresProb_{{spAbr}} <- switch("{{xfer_thresholdRule_rmd}}", 
+                                   "mtp" = 0, "p10" = 0.1, "qtp" = {{xfer_probQuantile_rmd}})
+# Define threshold value
+xfer_thres_{{spAbr}} <- stats::quantile(occPredVals_{{spAbr}}, 
+                                 probs = xfer_thresProb_{{spAbr}})
+# Add threshold if specified 
+xfer_area_{{spAbr}} <- xfer_area_{{spAbr}}$xferArea > xfer_thres_{{spAbr}}
+
+##Make map
+###Make map of transfer
+bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
+bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
+                   bb_{{spAbr}}[2, 2], fraction = 0.05)
+mapXferVals_{{spAbr}} <- getRasterVals(xfer_area_{{spAbr}},"{{outputType_rmd}}")
+
+# if threshold specified
+rasPal_{{spAbr}} <- c('gray', 'red')
+m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
+m %>%
+  fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
+  leaflet::addLegend("bottomright", colors = c('gray', 'red'),
+            title = "Thresholded Suitability<br>(Transfered)",
+            labels = c("predicted absence", "predicted presence"),
+            opacity = 1, layerId = 'xfer')%>%
+
+# map model prediction raster and transfer polygon
+  clearMarkers() %>% clearShapes() %>% removeImage('xferRas') %>%
+  addRasterImage(xfer_area_{{spAbr}}, colors = rasPal_{{spAbr}}, opacity = 0.7,
+                 layerId = 'xferRas', group = 'xfer', method = "ngb") %>%
+ ##add transfer polygon (user drawn area)
+  addPolygons(data = xfer_draw_{{spAbr}}, fill = FALSE,
+              weight = 4, color = "blue", group = 'xfer')
+
+```
+
+```{asis, echo = {{xfer_area_knit & xfer_area_extent_knit}} , eval = {{xfer_area_knit & xfer_area_extent_knit }}, include = {{xfer_area_knit & xfer_area_extent_knit}}}
+## Transfer model
+Transfering the model to a new user provided area 
+```
+
+```{r, echo = {{xfer_area_knit & xfer_area_extent_knit}}, include = {{xfer_area_knit & xfer_area_extent_knit}}}
+# First must generate the transfer area based on user provided files
+  ##User must input the path to shapefile or csv file and the file name 
+xfer_userExt_{{spAbr}} <- xfer_userExtent(
+  bgShp_path = "Input path here",
+  bgShp_name = "Input file name here",
+  userBgBuf = {{BgBuf_rmd}})
+
+# Create object of transfer variables
+xferAreaEnvs_{{spAbr}} <- envs_{{spAbr}}
+# Generate a transfer of the model to the desired area
+xfer_area_{{spAbr}} <- xfer_area(
+  evalOut = model_{{spAbr}},
+  curModel = "{{curModel_rmd}}",
+  envs = xferAreaEnvs_{{spAbr}} , 
+  outputType = "{{outputType_rmd}}",
+  alg = "{{alg_rmd}}",
+  clamp = {{clamp_rmd}},
+  xfExt = xfer_userExt_{{spAbr}}) 
+#store the cropped transfer variables
+xferExt_{{spAbr}} <- xfer_area_{{spAbr}}$xferExt
+ 
+ ###Make map of transfer
+bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
+bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
+                   bb_{{spAbr}}[2, 2], fraction = 0.05)
+mapXferVals_{{spAbr}} <- getRasterVals(xfer_area_{{spAbr}}$xferArea,"{{outputType_rmd}}")
+rasCols_{{spAbr}} <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+# if no threshold specified
+legendPal <- colorNumeric(rev(rasCols_{{spAbr}}), mapXferVals_{{spAbr}}, na.color = 'transparent')
+rasPal_{{spAbr}} <- colorNumeric(rasCols_{{spAbr}}, mapXferVals_{{spAbr}}, na.color = 'transparent')
+m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
+m %>%
+  fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
+  leaflet::addLegend("bottomright", pal = legendPal,
+            title = "Predicted Suitability<br>(Transfered)",
+            values = mapXferVals_{{spAbr}}, layerId = 'xfer',
+            labFormat = reverseLabel(2, reverse_order = TRUE)) %>%
+# map model prediction raster and transfer polygon
+  clearMarkers() %>% clearShapes() %>% removeImage('xferRas') %>%
+  addRasterImage(xfer_area_{{spAbr}}$xferArea, colors = rasPal_{{spAbr}}, opacity = 0.7,
+                 layerId = 'xferRas', group = 'xfer', method = "ngb") %>%
+ ##add transfer polygon (user provided area)
+  addPolygons(data = xfer_userExt_{{spAbr}}, fill = FALSE,
+              weight = 4, color = "blue", group = 'xfer')
+```
+
+```{asis, echo = {{xfer_area_knit & xfer_area_extent_knit & xfer_area_threshold_knit}} , eval = {{xfer_area_knit & xfer_area_extent_knit & xfer_area_threshold_knit}}, include = {{xfer_area_knit & xfer_area_extent_knit & xfer_area_threshold_knit}}}
+## Transfer model
+Transfering the model to a new user provided area using a "{{xfer_thresholdRule_rmd}}" threshold of {{xfer_threshold_rmd}}. 
+```
+
+```{r, echo = {{xfer_area_knit & xfer_area_extent_knit & xfer_area_threshold_knit}}, include = {{xfer_area_knit & xfer_area_extent_knit & xfer_area_threshold_knit}}}
+# First must generate the transfer area based on user provided files
+  ##User must input the path to shapefile or csv file and the file name 
+xfer_userExt_{{spAbr}} <- xfer_userExtent(
+  bgShp_path = "Input path here",
+  bgShp_name = "Input file name here",
+  userBgBuf = {{BgBuf_rmd}})
+# Create object of transfer variables
+xferAreaEnvs_{{spAbr}} <- envs_{{spAbr}}
+# Generate a transfer of the model to the desired area
+xfer_area_{{spAbr}} <- xfer_area(
+  evalOut = model_{{spAbr}},
+  curModel = "{{curModel_rmd}}",
+  envs = xferAreaEnvs_{{spAbr}} , 
+  outputType = "{{outputType_rmd}}",
+  alg = "{{alg_rmd}}",
+  clamp = {{clamp_rmd}},
+  xfExt = xfer_userExt_{{spAbr}}) 
+
+# store the cropped transfer variables
+xferExt_{{spAbr}} <- xfer_area_{{spAbr}}$xferExt
+# extract the suitability values for all occurrences
+occs_xy_{{spAbr}} <- occs_{{spAbr}}[c('longitude', 'latitude')]
+# determine the threshold based on the current prediction
+occPredVals_{{spAbr}} <- raster::extract(predSel_{{spAbr}}, occs_xy_{{spAbr}})
+# Define probability of quantile based on selected threshold
+xfer_thresProb_{{spAbr}} <- switch("{{xfer_thresholdRule_rmd}}", 
+                                   "mtp" = 0, "p10" = 0.1, "qtp" = {{xfer_probQuantile_rmd}})
+# Define threshold value
+xfer_thres_{{spAbr}} <- stats::quantile(occPredVals_{{spAbr}}, 
+                                        probs = xfer_thresProb_{{spAbr}})
+# Add threshold if specified 
+xfer_area_{{spAbr}} <- xfer_area_{{spAbr}}$xferArea > xfer_thresProb_{{spAbr}}
+
+##Make map
+###Make map of transfer
+bb_{{spAbr}} <-  bgExt_{{spAbr}}@bbox
+bbZoom <- polyZoom(bb_{{spAbr}}[1, 1], bb_{{spAbr}}[2, 1], bb_{{spAbr}}[1, 2], 
+                   bb_{{spAbr}}[2, 2], fraction = 0.05)
+mapXferVals_{{spAbr}} <- getRasterVals(xfer_area_{{spAbr}},"{{outputType_rmd}}")
+
+  # if threshold specified
+rasPal_{{spAbr}} <- c('gray', 'red')
+m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
+m %>%
+  fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
+  leaflet::addLegend("bottomright", colors = c('gray', 'red'),
+            title = "Thresholded Suitability<br>(Transfered)",
+            labels = c("predicted absence", "predicted presence"),
+            opacity = 1, layerId = 'xfer')%>%
+# map model prediction raster and transfer polygon
+  clearMarkers() %>% clearShapes() %>% removeImage('xferRas') %>%
+  addRasterImage(xfer_area_{{spAbr}}, colors = rasPal_{{spAbr}}, opacity = 0.7,
+                 layerId = 'xferRas', group = 'xfer', method = "ngb") %>%
+ ##add transfer polygon (user provided area)
+  addPolygons(data = xfer_userExt_{{spAbr}}, fill = FALSE,
+              weight = 4, color = "blue", group = 'xfer')
+
+```

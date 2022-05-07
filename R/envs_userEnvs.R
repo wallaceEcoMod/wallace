@@ -37,25 +37,25 @@
 
 envs_userEnvs <- function(rasPath, rasName, doBrick = FALSE, logger = NULL){
 
-  alfred.smartProgress(logger, message = "Reading in rasters...", {
+  smartProgress(logger, message = "Reading in rasters...", {
     rasStack <- raster::stack(rasPath)
   })
   # assign names
   names(rasStack) <- tools::file_path_sans_ext(rasName)
 
   if(is.na(raster::crs(rasStack))) {
-    logger %>% alfred.writeLog(
+    logger %>% writeLog(
       type = "warning",
       paste0('Input rasters have undefined coordinate reference system (CRS). ',
              'Mapping functionality in components Visualize Model Results and ',
-             'Project Model will not work. If you wish to map rasters in these ',
+             'Transfer Model will not work. If you wish to map rasters in these ',
              'components, please define their projections and upload again. ',
              'See guidance text in this module for more details.'))
   }
 
   # convert to brick for faster processing
   if(doBrick == TRUE) {
-    alfred.smartProgress(logger, message = "Converting to RasterBrick for faster processing...", {
+    smartProgress(logger, message = "Converting to RasterBrick for faster processing...", {
       rasStack  <- raster::brick(rasStack)
     })
   }

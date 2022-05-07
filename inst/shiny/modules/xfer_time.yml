@@ -1,0 +1,5 @@
+component: "xfer"
+short_name: "Transfer to New Time"
+long_name: "Transfer to New Time"
+authors: "Jamie M. Kass, Bruno Vilela, Gonzalo E. Pinilla-Buitrago, Robert P. Anderson"
+package: [dismo]

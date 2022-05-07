@@ -1,0 +1,48 @@
+```{asis, echo = {{xfer_mess_knit}}, eval = {{xfer_mess_knit}}, include = {{xfer_mess_knit}}}
+Generate a MESS map for the transferring variables given the variables used for modelling
+```
+
+```{r, echo = {{xfer_mess_knit}}, include = {{xfer_mess_knit}}}
+# R code to generate MESS raster
+xferMess_{{spAbr}} <- xfer_mess(
+  occs = occs_{{spAbr}},
+  bg = bgEnvsVals_{{spAbr}} ,
+  bgMsk =  bgMask_{{spAbr}},
+  xferExtRas =  xferExt_{{spAbr}})
+
+# Generate MESS map
+rasVals_{{spAbr}} <-  getRasterVals(xferMess_{{spAbr}})
+
+  # define colorRamp for mess
+  if (max(rasVals_{{spAbr}}) > 0 & min(rasVals_{{spAbr}}) < 0) {
+    rc1 <- colorRampPalette(colors = rev(RColorBrewer::brewer.pal(n = 3, name = 'Reds')),
+                            space = "Lab")(abs(min(rasVals_{{spAbr}})))
+    rc2 <- colorRampPalette(colors = RColorBrewer::brewer.pal(n = 3, name = 'Blues'),
+                            space = "Lab")(max(rasVals_{{spAbr}}))
+    rasCols_{{spAbr}} <- c(rc1, rc2)
+  } else if (max(rasVals_{{spAbr}}) < 0 & min(rasVals_{{spAbr}}) < 0) {
+    rasCols_{{spAbr}} <- colorRampPalette(colors = rev(RColorBrewer::brewer.pal(n = 3, name = 'Reds')),
+                                space = "Lab")(abs(min(rasVals)))
+  } else if (max(rasVals_{{spAbr}}) > 0 & min(rasVals_{{spAbr}}) > 0) {
+    rasCols{{spAbr}} <- colorRampPalette(colors = RColorBrewer::brewer.pal(n = 3, name = 'Blues'),
+                                space = "Lab")(max(rasVals_{{spAbr}}))
+  }
+  legendPal_{{spAbr}} <- colorNumeric(rev(rasCols_{{spAbr}}), rasVals_{{spAbr}}, na.color='transparent')
+  rasPal_{{spAbr}} <- colorNumeric(rasCols_{{spAbr}}, rasVals_{{spAbr}}, na.color='transparent')
+  #Create map
+  m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap) 
+m  %>%
+    leaflet::addLegend("bottomright", pal = legendPal_{{spAbr}}, title = "MESS Values",
+              values = rasVals_{{spAbr}}, layerId = 'xfer',
+              labFormat = reverseLabel(2, reverse_order=TRUE)) %>%
+  # map model prediction raster and transferring polygon
+ clearMarkers() %>% clearShapes() %>% removeImage('xferRas') %>%
+    addRasterImage(xferMess_{{spAbr}}, colors =   rasPal_{{spAbr}} , opacity = 0.9,
+                   layerId = 'xferRas', group = 'xfer', method = "ngb") %>%
+  ##add transferring polygon: this we need to fix for now please replace bgExt_{{spAbr}} for the name of your transferring polygon.
+  addPolygons(data = bgExt_{{spAbr}}, fill = FALSE,
+              weight = 4, color = "blue", group = 'xfer')
+
+
+
+```

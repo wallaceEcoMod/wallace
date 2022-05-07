@@ -15,7 +15,7 @@ tagList(
     header = tagList(
       tags$head(tags$link(href = "css/styles.css", rel = "stylesheet"))
     ),
-    title = img(src = "image.png", height = '50', width = '50',
+    title = img(src = "logo.png", height = '50', width = '50',
                 style = "margin-top: -15px"),
     windowTitle = "#WallaceEcoMod",
     tabPanel("Intro", value = 'intro'),
@@ -27,7 +27,7 @@ tagList(
     tabPanel("Part Occs", value = 'part'),
     tabPanel("Model", value = 'model'),
     tabPanel("Visualize", value = 'vis'),
-    tabPanel("Transfer", value = 'proj'),
+    tabPanel("Transfer", value = 'xfer'),
     tabPanel("User SDM", value = 'post'),
     tabPanel("Mask", value = 'mask'),
     tabPanel("ChangeRR", value = 'change'),
@@ -148,17 +148,17 @@ tagList(
             tags$hr(),
             insert_modules_ui("vis")
           ),
-          # PROJECT ####
+          # TRANSFER ####
           conditionalPanel(
-            "input.tabs == 'proj'",
+            "input.tabs == 'xfer'",
             div("Component: Model Transfer", class = "componentName"),
-            help_comp_ui("projHelp"),
+            help_comp_ui("xferHelp"),
             radioButtons(
-              "projSel", "Modules Available:",
-              choices = insert_modules_options("proj"),
+              "xferSel", "Modules Available:",
+              choices = insert_modules_options("xfer"),
               selected = character(0)),
             tags$hr(),
-            insert_modules_ui("proj")
+            insert_modules_ui("xfer")
           ),
           # Upload User SDM ####
           conditionalPanel(
@@ -242,7 +242,7 @@ tagList(
               offset = 1,
               align = "left",
               div(style = "margin-top: -10px"),
-              strong("Window log"),
+              strong("Log window"),
               div(style = "margin-top: 5px"),
               div(
                 id = "wallaceLog",
@@ -452,34 +452,34 @@ tagList(
                     column(2, shinyjs::disabled(downloadButton('dlPred', "Prediction file")))
                   )
                 ),
-                # save proj #
+                # save xfer #
                 conditionalPanel(
-                  "input.tabs == 'proj'",
+                  "input.tabs == 'xfer'",
                   br(),
                   fluidRow(
-                    column(3, h5("Download shapefile of projection extent")),
-                    column(2, shinyjs::disabled(downloadButton('dlPjShp', "ZIP file")))
+                    column(3, h5("Download shapefile of extent of transfer")),
+                    column(2, shinyjs::disabled(downloadButton('dlXfShp', "ZIP file")))
                   ),
                   br(),
                   fluidRow(
-                    column(3, h5("Download projected environmental variables (Select download file type)")),
-                    column(2, selectInput('projEnvsFileType',
+                    column(3, h5("Download environmental variables of transfer (Select download file type)")),
+                    column(2, selectInput('xferEnvsFileType',
                                           label = NULL,
                                           choices = list("GeoTIFF" = 'GTiff',
                                                          "GRD" = 'raster',
                                                          "ASCII" = 'ascii'))),
-                    column(2, shinyjs::disabled(downloadButton('dlProjEnvs', "ZIP file")))
+                    column(2, shinyjs::disabled(downloadButton('dlXferEnvs', "ZIP file")))
                   ),
                   br(),
                   fluidRow(
-                    column(3, h5("Download projection (Select download file type**)")),
-                    column(2, selectInput('projFileType',
+                    column(3, h5("Download transfer (Select download file type**)")),
+                    column(2, selectInput('xferFileType',
                                           label = NULL,
                                           choices = list("GeoTIFF" = 'GTiff',
                                                          "GRD" = 'raster',
                                                          "ASCII" = 'ascii',
                                                          "PNG" = 'png'))),
-                    column(2, shinyjs::disabled(downloadButton('dlProj', "Projection file")))
+                    column(2, shinyjs::disabled(downloadButton('dlXfer', "Transfer file")))
                   ),
                   br(),
                   fluidRow(
@@ -604,15 +604,21 @@ tagList(
           )
         ),
         conditionalPanel(
+          "input.tabs == 'rep' & input.repSel == null",
+          column(8,
+                 includeMarkdown("Rmd/gtext_rep.Rmd")
+          )
+        ),
+        conditionalPanel(
           "input.tabs == 'rep' & input.repSel == 'rep_markdown'",
           column(8,
-                 includeMarkdown("modules/rep_markdown.Rmd")
+                 includeMarkdown("modules/rep_markdown.md")
           )
         ),
         conditionalPanel(
           "input.tabs == 'rep' & input.repSel == 'rep_rmms'",
           column(8,
-                 includeMarkdown("modules/rep_rmms.Rmd")
+                 includeMarkdown("modules/rep_rmms.md")
           )
         ),
         conditionalPanel(
@@ -624,7 +630,7 @@ tagList(
         conditionalPanel(
           "input.tabs == 'rep' & input.repSel == 'rep_refPackages'",
           column(8,
-                 includeMarkdown("modules/rep_refPackages.Rmd")
+                 includeMarkdown("modules/rep_refPackages.md")
           )
         ),
         conditionalPanel(
@@ -632,13 +638,13 @@ tagList(
           tabsetPanel(
             id = 'introTabs',
             tabPanel(
-              'About', #note this used to be named 'intro' so the files will be named 'intro'
-              includeMarkdown("Rmd/text_intro.Rmd")
+              'About',
+              includeMarkdown("Rmd/text_about.Rmd")
             ),
             tabPanel(
-              'Team', #note this used to be named 'about' so the files will be named 'about'
+              'Team',
               fluidRow(
-                column(8, includeMarkdown("Rmd/text_about.Rmd")
+                column(8, includeMarkdown("Rmd/text_team.Rmd")
                 )
               )
             ),
@@ -649,7 +655,7 @@ tagList(
             tabPanel(
               'Load Prior Session',
               h4("Load session"),
-              h5("If you saved a prior session of Wallace (RDS file), you can load it here."),
+              includeMarkdown("Rmd/text_loadsesh.Rmd"),
               fileInput("load_session", "", accept = ".rds"),
               actionButton('goLoad_session', 'Load RDS')
             )

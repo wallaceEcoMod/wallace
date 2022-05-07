@@ -4,7 +4,7 @@
 \alias{alfred.mapBgPolys}
 \title{alfred.mapBgPolys}
 \usage{
-alfred.mapBgPolys(map, bgShpXY)
+alfred.mapBgPolys(map, bgShpXY, color, group)
 }
 \arguments{
 \item{map}{leaflet map}

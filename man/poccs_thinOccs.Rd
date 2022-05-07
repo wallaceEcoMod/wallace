@@ -30,7 +30,7 @@ The function thins the observed occurrences by a user provided
 }
 \details{
 This function is called by the component poccs: process occurrence data to
-  thin the occurence data to a user specified distance. Providing an output
+  thin the occurrence data to a user specified distance. Providing an output
   with preserved columns appropriate for further analyses and a maximized
   number of occurrences that are separated by at least the provided distance.
 }

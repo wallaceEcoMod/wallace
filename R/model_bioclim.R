@@ -1,10 +1,10 @@
 
-#' @title model_bioclim Generate Biolcim model
-#' @description This functions generates maxent or maxnet models using
+#' @title model_bioclim Generate Bioclim model
+#' @description The function generates a BIOCLIM model using
 #'   ENMeval 2.0
 #'
 #' @details
-#' The function generates model in ENMeval using a user provided partition of
+#' The function generates a model in ENMeval using a user provided partition of
 #'   occurrences from previous components in the GUI.
 #'
 #' @param occs data frame of cleaned or processed occurrences obtained from
@@ -53,15 +53,15 @@ model_bioclim <- function(occs, bg, user.grp, bgMsk, logger = NULL,
   occs.xy <- occs %>% dplyr::select(.data$longitude, .data$latitude)
   bg.xy <- bg %>% dplyr::select(.data$longitude, .data$latitude)
 
-  alfred.smartProgress(logger,
+  smartProgress(logger,
                        message = paste0("Building/Evaluating BIOCLIM model for ",
-                                 alfred.spName(spN), "..."), {
+                                 spName(spN), "..."), {
      e <- ENMeval::ENMevaluate(occs = occs.xy, envs = bgMsk, bg = bg.xy,
                                algorithm = "bioclim", partitions = "user",
                                user.grp = user.grp)
   })
 
-  logger %>% alfred.writeLog(alfred.hlSpp(spN),
+  logger %>% writeLog(hlSpp(spN),
                       "BIOCLIM ran successfully and output evaluation results.")
 
   return(e)

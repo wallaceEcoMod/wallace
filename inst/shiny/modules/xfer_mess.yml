@@ -1,0 +1,5 @@
+component: "xfer"
+short_name: "Calculate Environmental Similarity"
+long_name: "Calculate Environmental Similarity"
+authors: "Jamie M. Kass, Bruno Vilela, Gonzalo E. Pinilla-Buitrago, Robert P. Anderson"
+package: [dismo]

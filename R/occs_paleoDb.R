@@ -5,8 +5,8 @@
 #'
 #' @details
 #' This function is called by the module occs_queryDb to query the paleobioDB
-#'   database for species occurrence records in the holocene. It removes
-#'   records with duplicate coordinates, and select some columns with fields
+#'   database for species occurrence records in the Holocene. It removes
+#'   records with duplicate coordinates, and selects some columns with fields
 #'   appropriate to studies in biogeography.
 #'
 #' @param spName character. Species name. For paleobioDb it returns records
@@ -17,8 +17,8 @@
 #' @param logger Stores all notification messages to be displayed in the
 #'   Log Window of Wallace GUI. Insert the logger reactive list here for
 #'   running in shiny, otherwise leave the default NULL
-#' @return A list of 2 dataframes. First dataframe is the original dowloaded
-#'   dataset, second data frame without duplicates and with appropriate fields
+#' @return A list of 2 dataframes. First dataframe is the original downloaded
+#'   dataset, second dataframe without duplicates and with appropriate fields
 #'   for analyses.
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
@@ -35,9 +35,10 @@
 occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
   if (!requireNamespace("paleobioDB", quietly = TRUE)) {
     logger %>%
-      alfred.writeLog(
+      writeLog(
         type = "warning",
-        "This module is available if you install the 'paleobioDB' package. If you ",
+        "This module is available if you install the 'paleobioDB' package ",
+        "(which is a suggested package for Wallace, not a required dependency). If you ",
         "want to install it, close Wallace and run the following line in the ",
         "R Console: ", em("install.packages('paleobioDB')")
       )
@@ -48,13 +49,13 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
   nameSplit <- length(unlist(strsplit(spName, " ")))
   # if two names not entered, throw error and return
   if (nameSplit != 2) {
-    logger %>% alfred.writeLog(type = 'error',
+    logger %>% writeLog(type = 'error',
       'Please input both genus and species names of ONE species.')
     return()
   }
   spName <- paste0(toupper(substring(spName, 1, 1)),
                    substring(spName, 2, nchar(spName)))
-  alfred.smartProgress(logger, message = paste0("Querying paleobioDB ..."), {
+  smartProgress(logger, message = paste0("Querying paleobioDB ..."), {
     occsOrig <- try(paleobioDB::pbdb_occurrences(taxon_name = spName,
                                                  limit = occNum,
                                                  interval = timeInterval,
@@ -64,9 +65,9 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
   })
 
   if (inherits(occsOrig, "try-error")) {
-    logger %>% alfred.writeLog(
+    logger %>% writeLog(
       type = 'error',
-      alfred.hlSpp(alfred.hlSpp(alfred.fmtSpN(spName))),
+      hlSpp(hlSpp(fmtSpN(spName))),
       "No records found, please check the spelling.")
     return()
   }
@@ -90,9 +91,9 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
   # all plaeobioDB recors have coords, so this warning is commented until future database
   # occsXY <-  occsOrig[!is.na(occsOrig$longitude) & !is.na(occsOrig$latitude),]
   # if (nrow(occsXY) == 0) {
-  #   logger %>% alfred.writeLog(
+  #   logger %>% writeLog(
   #     type = 'warning',
-  #     alfred.hlSpp(spName), "No records with coordinates found in paleobioDB.")
+  #     hlSpp(spName), "No records with coordinates found in paleobioDB.")
   # }
   occsXY <- occsOrig
 
@@ -105,15 +106,15 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
             "early_age", "late_age")
   occs <- occs %>% dplyr::select(dplyr::one_of(cols)) %>%
     # make new column for leaflet marker popup content
-    dplyr::mutate(pop = unlist(apply(occs, 1, alfred.popUpContent))) %>%
+    dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent))) %>%
     dplyr::arrange(dplyr::across(cols))
   occs$early_age <- as.numeric(occs$early_age)
   occs$late_age <- as.numeric(occs$late_age)
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
 
   dupsRem <- nrow(occsXY) - nrow(occs)
-  logger %>% alfred.writeLog(
-    alfred.hlSpp(alfred.fmtSpN(spName)),
+  logger %>% writeLog(
+    hlSpp(fmtSpN(spName)),
     'Total paleobioDb records returned [', nrow(occsOrig), '] (limit ', occNum,
     '). Records without coordinates removed [',
     noCoordsRem, ']. Duplicated records removed [', dupsRem,

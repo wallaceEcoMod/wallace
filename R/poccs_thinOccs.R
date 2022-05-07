@@ -5,7 +5,7 @@
 #'
 #' @details
 #' This function is called by the component poccs: process occurrence data to
-#'   thin the occurence data to a user specified distance. Providing an output
+#'   thin the occurrence data to a user specified distance. Providing an output
 #'   with preserved columns appropriate for further analyses and a maximized
 #'   number of occurrences that are separated by at least the provided distance.
 #'
@@ -35,20 +35,20 @@
 
 poccs_thinOccs <- function(occs, thinDist, logger = NULL, spN = NULL) {
   if (is.null(occs)) {
-    logger %>% alfred.writeLog(type = 'error',
+    logger %>% writeLog(type = 'error',
       "Before processing occurrences, obtain the data in component 1.")
     return()
   }
 
   if (thinDist <= 0) {
-    logger %>% alfred.writeLog(type = "error",
+    logger %>% writeLog(type = "error",
       'Assign positive distance to thinning parameter.')
     return()
   }
   # query database
-  alfred.smartProgress(logger,
+  smartProgress(logger,
                        message = paste0("Spatially thinning for ",
-                                        alfred.spName(spN), "..."), {
+                                        spName(spN), "..."), {
     output <- spThin::thin(loc.data = occs, lat.col = 'latitude',
                            long.col = 'longitude', spec.col = 'scientific_name',
                            thin.par = thinDist, reps = 100,
@@ -65,13 +65,13 @@ poccs_thinOccs <- function(occs, thinDist, logger = NULL, spN = NULL) {
     # }
   })
 
-  logger %>% alfred.writeLog(
-    alfred.hlSpp(spN), 'Total records thinned (', thinDist, ' km) to ',
+  logger %>% writeLog(
+    hlSpp(spN), 'Total records thinned (', thinDist, ' km) to ',
     nrow(occs.thin), ' localities')
 
   if (nrow(occs.thin) < 4) {
-    logger %>% alfred.writeLog(type = 'error',
-      alfred.hlSpp(spN),
+    logger %>% writeLog(type = 'error',
+      hlSpp(spN),
       "After removing occurrences, there are three or less points. ",
       "You need more occurrences to continue the analysis."
     )

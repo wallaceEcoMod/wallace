@@ -34,8 +34,8 @@ poccs_selectOccs_module_server <- function(input, output, session, common) {
     knitcitations::citep(citation("leaflet.extras"))
 
     # METADATA ####
-    polyX <- alfred.printVecAsis(round(spp[[curSp()]]$polySelXY[,1], digits = 4))
-    polyY <- alfred.printVecAsis(round(spp[[curSp()]]$polySelXY[,2], digits = 4))
+    polyX <- printVecAsis(round(spp[[curSp()]]$polySelXY[,1], digits = 4))
+    polyY <- printVecAsis(round(spp[[curSp()]]$polySelXY[,2], digits = 4))
     spp[[curSp()]]$rmm$code$wallace$occsSelPolyCoords <- paste0('X: ', polyX, ', Y: ', polyY)
 
     common$update_component(tab = "Map")
@@ -48,8 +48,8 @@ poccs_selectOccs_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$rmm$code$wallace$occsSelPolyCoords <- NULL
     spp[[curSp()]]$procOccs$occsThin <- NULL
     spp[[curSp()]]$rmm$code$wallace$removedIDs <- NULL
-    logger %>% alfred.writeLog(
-      alfred.hlSpp(curSp()), "Reset to original occurrences (n = ",
+    logger %>% writeLog(
+      hlSpp(curSp()), "Reset to original occurrences (n = ",
       nrow(spp[[curSp()]]$occs), ").")
   })
 }
@@ -60,11 +60,11 @@ poccs_selectOccs_module_map <- function(map, common) {
   req(spp[[curSp()]]$occs)
   occs <- common$occs
   # Map logic
-  map %>% alfred.clearAll() %>%
+  map %>% clearAll() %>%
     addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                      radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                      fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
-    alfred.zoom2Occs(occs()) %>%
+    zoom2Occs(occs()) %>%
     leaflet.extras::addDrawToolbar(targetGroup='draw', polylineOptions = FALSE,
                                    rectangleOptions = FALSE, circleOptions = FALSE,
                                    markerOptions = FALSE, circleMarkerOptions = FALSE,
@@ -75,7 +75,7 @@ poccs_selectOccs_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
     poccs_selectByID_knit = !is.null(species$rmm$code$wallace$occsSelPolyCoords),
-    selectByID_xy_rmd = alfred.printVecAsis(species$polySelXY),
+    selectByID_xy_rmd = printVecAsis(species$polySelXY),
     selectByID_id_rmd = species$polySelID
   )
 }
