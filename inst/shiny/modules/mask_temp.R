@@ -46,19 +46,19 @@ mask_temp_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$postProc$prediction <- spp[[curSp()]]$postProc$OrigPred
     spp[[curSp()]]$procEnvs$bgExt <- spp[[curSp()]]$postProc$origBgExt
     spp[[curSp()]]$mask$prediction <- NULL
-    logger %>% alfred.writeLog(
-      alfred.hlSpp(curSp()), "Reset prediction (**).")
+    logger %>% writeLog(
+      hlSpp(curSp()), "Reset prediction (**).")
   })
 
   observeEvent(input$goTempRasters, {
     curSp <- common$curSp
     if (is.null(curSp())) {
-      logger %>% alfred.writeLog(type = 'error', "Upload some occs or userSDM (**).")
+      logger %>% writeLog(type = 'error', "Upload some occs or userSDM (**).")
       return()
     }
 
     if (is.null(input$tempRasters$datapath)) {
-      logger %>% alfred.writeLog(type = 'warning',
+      logger %>% writeLog(type = 'warning',
                           "Wait until data is uploaded or specify rasters(**)")
       return()
     }
@@ -88,15 +88,15 @@ mask_temp_module_server <- function(input, output, session, common) {
 
   observeEvent(input$goAnnotate, {
     if (is.null(occs())) {
-      logger %>% alfred.writeLog(type = 'error', alfred.(curSp()), "Upload occs (**).")
+      logger %>% writeLog(type = 'error', (curSp()), "Upload occs (**).")
       return()
     }
     if (is.null(spp[[curSp()]]$postProc$prediction)) {
-      logger %>% alfred.writeLog(type = 'error', alfred.hlSpp(curSp()), "Upload SDM prediction (**).")
+      logger %>% writeLog(type = 'error', hlSpp(curSp()), "Upload SDM prediction (**).")
       return()
     }
     if (is.null(spp[[curSp()]]$postProc$rasters)) {
-      logger %>% alfred.writeLog(type = 'error', alfred.hlSpp(curSp()), "Raster files not uploaded.")
+      logger %>% writeLog(type = 'error', hlSpp(curSp()), "Raster files not uploaded.")
       return()
     }
     # Prepare rasters
@@ -111,7 +111,7 @@ mask_temp_module_server <- function(input, output, session, common) {
                                      envDates = input$yearInput,
                                      logger)
 
-    logger %>% alfred.writeLog(alfred.hlSpp(curSp()), "Values were extracted (**)")
+    logger %>% writeLog(hlSpp(curSp()), "Values were extracted (**)")
 
     # # subset by key columns and make id and popup columns
     # cols <- c("occID", "scientific_name", "longitude", "latitude", "year",
@@ -165,7 +165,7 @@ mask_temp_module_server <- function(input, output, session, common) {
   observeEvent(input$goTempMask, {
     # ERRORS ####
     if (is.null(spp[[curSp()]]$mask$bounds)) {
-      logger %>% alfred.writeLog(type = 'error', alfred.hlSpp(curSp()),
+      logger %>% writeLog(type = 'error', hlSpp(curSp()),
                              "Get first masking values in previous step (**).")
       return()
     }
@@ -176,7 +176,7 @@ mask_temp_module_server <- function(input, output, session, common) {
         maskRaster = spp[[curSp()]]$postProc$rasters[[selTempMask()]],
         pred = spp[[curSp()]]$postProc$prediction, logger)
 
-    logger %>% alfred.writeLog(alfred.hlSpp(curSp()), "The prediction was masked (**)")
+    logger %>% writeLog(hlSpp(curSp()), "The prediction was masked (**)")
 
     # LOAD INTO SPP ####
     spp[[curSp()]]$postProc$prediction <- doTempExtract
@@ -219,10 +219,10 @@ mask_temp_module_map <- function(map, common) {
   # big rasters will be not removed from the map.
   shinyjs::delay(1000,
     map %>%
-      alfred.clearAll() %>%
+      clearAll() %>%
       mapPNG(curSp()) %>%
       # add background polygon
-      alfred.mapBgPolys(bgShpXY(), color = 'green', group = 'postBg')
+      mapBgPolys(bgShpXY(), color = 'green', group = 'postBg')
   )
 
   if (!any(userValues > 0 & userValues < 1)) {
@@ -249,7 +249,7 @@ mask_temp_module_map <- function(map, common) {
                            layerId = 'postPred') %>%
       addLegend("bottomright", pal = legendPal, title = "Suitability<br>(User) (**)",
                 values = quanRas, layerId = "expert",
-                labFormat = alfred.reverseLabel(2, reverse_order = TRUE))
+                labFormat = reverseLabel(2, reverse_order = TRUE))
   }
 }
 

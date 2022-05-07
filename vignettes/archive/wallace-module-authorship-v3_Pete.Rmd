@@ -134,9 +134,9 @@ correlations_module_server <- function(input, output, session, common) {
     # If batch is true, loop through all species (allSp())
     for (sp in spLoop){
     # FUNCTION CALL ####
-      alfred.smartProgress(logger, message = "Calculating pairwise correlations", {envCorrs <- raster::layerStats(x = spp[[sp]]$procEnvs$bgMask, na.rm = TRUE, stat = "pearson")})
+      smartProgress(logger, message = "Calculating pairwise correlations", {envCorrs <- raster::layerStats(x = spp[[sp]]$procEnvs$bgMask, na.rm = TRUE, stat = "pearson")})
     # To update the log window
-    logger %>% alfred.writeLog(alfred.hlSpp(sp), "Finished calculating correlations")
+    logger %>% writeLog(hlSpp(sp), "Finished calculating correlations")
     #envCorrs <- raster::layerStats(x = bgMask(), na.rm = TRUE, stat = "pearson")
 
     # LOAD INTO SPP ####
@@ -161,8 +161,8 @@ correlations_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$procEnvs$bgMask <- spp[[curSp()]]$procEnvs$bgMask[[VarSelector()]]
 
     # Add a line to logger to identify which variables were selected
-        # alfred.hlSpp() prints the species name in green, bold, and italics
-    logger %>% alfred.writeLog(alfred.hlSpp(curSp()), "Selected: ", paste0(names(spp[[curSp()]]$procEnvs$bgMask), collapse = ", "))
+        # hlSpp() prints the species name in green, bold, and italics
+    logger %>% writeLog(hlSpp(curSp()), "Selected: ", paste0(names(spp[[curSp()]]$procEnvs$bgMask), collapse = ", "))
   })
 }
 ```

@@ -32,11 +32,11 @@
 mask_tempExtract <- function(lowerInp, upperInp, maskRaster, pred,
                              logger = NULL, spN = NULL) {
   if (is.na(lowerInp) & is.na(upperInp)) {
-    logger %>% alfred.writeLog(type = 'error', alfred.hlSpp(spN), "Please, provide bounds (**)")
+    logger %>% writeLog(type = 'error', hlSpp(spN), "Please, provide bounds (**)")
     return()
   }
   # compare prediction and mask Raster
-  alfred.smartProgress(logger, message = "Masking ...", {
+  smartProgress(logger, message = "Masking ...", {
     pred <- terra::rast(pred)
     maskRaster <- terra::rast(maskRaster)
     pred <- terra::resample(pred, maskRaster, "near")
@@ -44,7 +44,7 @@ mask_tempExtract <- function(lowerInp, upperInp, maskRaster, pred,
                                   rowcol = FALSE, crs = TRUE, res = TRUE)
     if (sameExt == FALSE) {
       logger %>%
-        alfred.writeLog(type = 'warning', alfred.hlSpp(spN),
+        writeLog(type = 'warning', hlSpp(spN),
                  "Rasters don't have the same resolution, crs or origin. (**)")
       return()
     }

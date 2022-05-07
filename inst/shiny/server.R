@@ -1100,7 +1100,7 @@ function(input, output, session) {
           rasPal <- colorNumeric(rasCols, rasVals, na.color='transparent')
           m <- leaflet() %>%
             addLegend("bottomright", pal = legendPal, title = "MESS Values",
-                      labFormat = alfred.reverseLabel(2, reverse_order=TRUE),
+                      labFormat = reverseLabel(2, reverse_order=TRUE),
                       values = rasVals, layerId = "train") %>%
             addProviderTiles(input$bmap) %>%
             addRasterImage(mess, colors = rasPal, opacity = 0.7,
@@ -1176,7 +1176,7 @@ function(input, output, session) {
                                    opacity = 0.7, group = 'maskDL', layerId = 'maskDL') %>%
               addLegend("bottomright", pal = legendPal, title = "Suitability<br>(User) (**)",
                         values = quanRas, layerId = "expert",
-                        labFormat = alfred.reverseLabel(2, reverse_order = TRUE))
+                        labFormat = reverseLabel(2, reverse_order = TRUE))
             mapview::mapshot(m, file = file)
           }
         } else if (input$maskFileType == 'raster') {
@@ -1280,7 +1280,7 @@ function(input, output, session) {
           file.rename(r@file@name, file)
         }
       } else {
-        logger %>% alfred.writeLog("Please install the rgdal package before downloading rasters.")
+        logger %>% writeLog("Please install the rgdal package before downloading rasters.")
       }
     }
   )
@@ -1341,7 +1341,7 @@ function(input, output, session) {
         }
 
       } else {
-        logger %>% alfred.writeLog("Please install the rgdal package before downloading rasters.")
+        logger %>% writeLog("Please install the rgdal package before downloading rasters.")
       }
     }
   )
@@ -1406,7 +1406,7 @@ function(input, output, session) {
             m <- leaflet() %>%
               addLegend("bottomright", pal = legendPal, title = "Range Overlap",
                         values = OverlapVals, layerId = "overlap",
-                        labFormat = alfred.reverseLabel(2, reverse_order=TRUE)) %>%
+                        labFormat = reverseLabel(2, reverse_order=TRUE)) %>%
               addProviderTiles(input$bmap) %>%
               addRasterImage(Overlap, colors = rasPal,
                              opacity = 0.7, group = 'change', layerId = 'Overlap',
@@ -1430,7 +1430,7 @@ function(input, output, session) {
           file.rename(r@file@name, file)
         }
       } else {
-        logger %>% alfred.writeLog("Please install the rgdal package before downloading rasters.")
+        logger %>% writeLog("Please install the rgdal package before downloading rasters.")
       }
     }
   )
@@ -1441,7 +1441,7 @@ function(input, output, session) {
     content = function(file) {
       tbl <- data.frame(spp[[curSp()]]$change$Years,spp[[curSp()]]$change$AreaTime)
       names(tbl)<-c("Year","Area in km^2")
-      alfred.write_csv_robust(tbl, file, row.names = FALSE)
+      write_csv_robust(tbl, file, row.names = FALSE)
     }
   )
   output$dlAreaTimePlot<-  downloadHandler(
@@ -1471,7 +1471,7 @@ function(input, output, session) {
     },
     content = function(file) {
       tbl <- as.data.frame(spp[["multisp"]]$ListSR)
-      alfred.write_csv_robust(tbl, file, row.names = FALSE)
+      write_csv_robust(tbl, file, row.names = FALSE)
     }
   )
   output$dlSpListSE <- downloadHandler(
@@ -1480,7 +1480,7 @@ function(input, output, session) {
     },
     content = function(file) {
       tbl <- as.data.frame(spp[["multisp"]]$ListSEs)
-      alfred.write_csv_robust(tbl, file, row.names = FALSE)
+      write_csv_robust(tbl, file, row.names = FALSE)
     }
   )
   # download richness map
@@ -1507,7 +1507,7 @@ function(input, output, session) {
             rasPal <- colorNumeric(rasCols, mapSRVals, na.color='transparent')
             legendPal <- colorNumeric(rev(rasCols), mapSRVals, na.color='transparent')
             mapTitle <- "Species Richness"
-            mapLabFormat <- alfred.reverseLabel(2, reverse_order=TRUE)
+            mapLabFormat <- reverseLabel(2, reverse_order=TRUE)
             mapOpacity <- NULL
           m <- leaflet() %>%
             addLegend("bottomright", pal = legendPal, title = mapTitle,
@@ -1532,7 +1532,7 @@ function(input, output, session) {
           file.rename(r@file@name, file)
         }
       } else {
-        logger %>% alfred.writeLog("Please install the rgdal package before downloading rasters.")
+        logger %>% writeLog("Please install the rgdal package before downloading rasters.")
       }
     }
   )
@@ -1561,7 +1561,7 @@ function(input, output, session) {
           rasPal <- colorNumeric(rasCols, mapSEVals, na.color='transparent')
           legendPal <- colorNumeric(rev(rasCols), mapSEVals, na.color='transparent')
           mapTitle <- "Species Endemism"
-          mapLabFormat <- alfred.reverseLabel(2, reverse_order=TRUE)
+          mapLabFormat <- reverseLabel(2, reverse_order=TRUE)
           mapOpacity <- NULL
           m <- leaflet() %>%
             addLegend("bottomright", pal = legendPal, title = mapTitle,
@@ -1586,7 +1586,7 @@ function(input, output, session) {
           file.rename(r@file@name, file)
         }
       } else {
-        logger %>% alfred.writeLog("Please install the rgdal package before downloading rasters.")
+        logger %>% writeLog("Please install the rgdal package before downloading rasters.")
       }
     }
   )

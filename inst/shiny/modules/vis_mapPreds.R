@@ -263,7 +263,7 @@ vis_mapPreds_module_map <- function(map, common) {
     addRasterImage(mapPred(), colors = rasPal, opacity = 0.7,
                    group = 'vis', layerId = 'mapPred', method = "ngb") %>%
     # add background polygon(s)
-    alfred.mapBgPolys(bgShpXY(), color = "blue", group = 'proj')
+    mapBgPolys(bgShpXY(), color = "blue", group = 'proj')
 }
 
 vis_mapPreds_module_rmd <- function(species) {

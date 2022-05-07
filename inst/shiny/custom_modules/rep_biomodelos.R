@@ -126,7 +126,7 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
           }
           knit_params <- c(
             file = rmd_file,
-            spName = alfred.spName(sp),
+            spName = spName(sp),
             sp = sp,
             spAbr = spAbr[[sp]],
             rmd_vars
@@ -144,7 +144,7 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
                                   fileext = ".md")
       rmarkdown::render(input = "Rmd/userReport_species.Rmd",
                         params = list(child_rmds = species_rmds,
-                                      spName = alfred.spName(sp),
+                                      spName = spName(sp),
                                       spAbr = spAbr[[sp]]),
                         output_format = rmarkdown::github_document(html_preview = FALSE),
                         output_file = species_md_file,

@@ -33,11 +33,11 @@ printVecAsis <- function(x, asChar = FALSE) {
   }
 }
 
-#' @title alfred.fileNameNoExt
+#' @title fileNameNoExt
 #' @description For internal use. Delete file extensions
 #' @param f file path
 #' @export
-alfred.fileNameNoExt <- function(f) {
+fileNameNoExt <- function(f) {
   sub(pattern = "(.*)\\..*$", replacement = "\\1", f)
 }
 
@@ -157,12 +157,12 @@ clearAll <- function(map) {
     clearControls() %>% removeLayersControl()
 }
 
-#' @title alfred.mapBgPolys
+#' @title mapBgPolys
 #' @description For internal use. Function to map all background polygons
 #' @param map leaflet map
 #' @param bgShpXY Polygon
 #' @export
-alfred.mapBgPolys <- function(map, bgShpXY, color, group) {
+mapBgPolys <- function(map, bgShpXY, color, group) {
   for (shp in bgShpXY) {
     map %>%
       addPolygons(lng = shp[,1], lat = shp[,2], fill = FALSE,

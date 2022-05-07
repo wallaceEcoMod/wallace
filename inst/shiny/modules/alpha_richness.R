@@ -39,7 +39,7 @@ alpha_richness_module_server <- function(input, output, session, common) {
     # WARNING ####
     # ERRORS ####
     if (length(curSp()) < 2) {
-      logger %>% alfred.writeLog(
+      logger %>% writeLog(
         type = "error",
         "Please select at least two species to run the richness module."
       )
@@ -50,20 +50,20 @@ alpha_richness_module_server <- function(input, output, session, common) {
         sp<-curSp()[i]
         if (is.null(spp[[sp]]$visualization$mapPred)) {
           logger %>%
-            alfred.writeLog(type = 'error',
+            writeLog(type = 'error',
                             'No spatial representation of the model has been generated, please first use the visualize component to visualize your model')
           return()
         }
         if (is.null(spp[[sp]]$rmm$rmm$prediction$binary$thresholdSet)) {
           logger %>%
-            alfred.writeLog(type = 'error',
+            writeLog(type = 'error',
                      'Generate a thresholded prediction before doing multisp. calculations')
           return()
         }
 
       }
       #Processing
-      alfred.smartProgress(
+      smartProgress(
         logger,
         message = "Generating a species richness map", {
           #get all models
@@ -101,20 +101,20 @@ if (input$selSource=='proj'){
      sp<-curSp()[i]
      if (is.null(spp[[sp]]$project$mapProj)) {
        logger %>%
-         alfred.writeLog(type = 'error',
+         writeLog(type = 'error',
                   'Projected model does not exist, please use the transfer module to transfer to same geographical space')
        return()
      }
      if (is.null(spp[[sp]]$rmm$prediction$transfer$environment1$thresholdSet)) {
       logger %>%
-         alfred.writeLog(type = 'error',
+         writeLog(type = 'error',
                  'Generate a thresholded prediction before doing multisp. calculations')
       return()
      }
 
    }
     #Processing
-  alfred.smartProgress(
+  smartProgress(
       logger,
       message = "Generating a species richness map", {
         #get all models
@@ -152,24 +152,24 @@ if(input$selSource=='sdm'){
         sp<-curSp()[i]
         if (is.null(spp[[sp]]$postProc$OrigPred)) {
           logger %>%
-            alfred.writeLog(type = 'error',
+            writeLog(type = 'error',
                      'Please upload a model for each species')
           return()
         }
             #if(raster::res(spp[[curSp()[1]]]$postProc$OrigPred)!=raster::res(spp[[sp]]$postProc$OrigPred)){
         # logger %>%
-         # alfred.writeLog(type = 'error',
+         # writeLog(type = 'error',
           #   'Uploaded models must be of the same resolution')
          #return()
         #}
-        if (length(unique(alfred.getRasterVals(spp[[sp]]$postProc$OrigPred)))>3) {
+        if (length(unique(getRasterVals(spp[[sp]]$postProc$OrigPred)))>3) {
           logger %>%
-            alfred.writeLog(type = 'error',
+            writeLog(type = 'error',
                      'Uploaded models must be thresholded (binary) before doing multisp. calculations')
           return()
         }
       }
-  alfred.smartProgress(
+  smartProgress(
         logger,
         message = "Generating a species richness map", {
           ##Get the extent of all models and keep the max
@@ -203,7 +203,7 @@ if(input$selSource=='sdm'){
         })
     }
     req(SR)
-    logger %>% alfred.writeLog( "Species richness calculated ")
+    logger %>% writeLog( "Species richness calculated ")
     # LOAD INTO SPP ####
     # this name concatenates the species names when there are two or more
   #  mspName <- paste(curSp(), collapse = ".")
@@ -214,7 +214,7 @@ if(input$selSource=='sdm'){
       spp[[mspName]]$SR <- SR
     }
 
-     spp[[mspName]]$mapSRVals <- alfred.getRasterVals(SR)
+     spp[[mspName]]$mapSRVals <- getRasterVals(SR)
      spp[[mspName]]$ListSR <- curSp()
 
     common$update_component(tab = "Map")
@@ -258,11 +258,11 @@ alpha_richness_module_map <- function(map, common) {
   rasPal <- colorNumeric(rasCols, mapSRVals, na.color = 'transparent')
   # Create legend
   req(SR)
-  map %>% alfred.clearAll() %>%
+  map %>% clearAll() %>%
     addLegend("bottomright", pal = legendPal,
               title = "Species richness",
               values = mapSRVals, layerId = "train",
-              labFormat = alfred.reverseLabel(2, reverse_order = TRUE))
+              labFormat = reverseLabel(2, reverse_order = TRUE))
   #MAP richness
   map %>% addRasterImage(SR, colors = rasPal, opacity = 0.7,
                    layerId = 'SR', group = 'alpha', method = "ngb")

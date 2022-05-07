@@ -31,16 +31,16 @@
 #'
 
 change_raster <- function(rasPath, rasName, logger = NULL) {
-  rasterName <- alfred.fileNameNoExt(rasName)
-  alfred.smartProgress(logger, message = "Uploading user-specified SDM (**)...", {
+  rasterName <- fileNameNoExt(rasName)
+  smartProgress(logger, message = "Uploading user-specified SDM (**)...", {
     r <- raster::raster(rasPath)
     r <- raster::trim(r)
-    names(r) <- alfred.fileNameNoExt(rasName)
+    names(r) <- fileNameNoExt(rasName)
     extPoly <- raster::extent(r)
     if (extPoly@xmin < -180 | extPoly@xmax > 180 |
         extPoly@ymin < -90 | extPoly@ymax > 90) {
       logger %>%
-        alfred.writeLog(
+        writeLog(
           type = "error", "Wrong extent projection. '", rasName,"' cannot be uploaded. (**)")
       return()
     }

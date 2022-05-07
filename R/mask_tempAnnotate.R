@@ -30,7 +30,7 @@
 
 mask_tempAnnotate <- function(occs, env, envDates, logger = NULL) {
   # this should be a formal date object of class "POSIXct" "POSIXt"
-  # alfred.smartProgress(logger, message = "Annotate ... (**)", {
+  # smartProgress(logger, message = "Annotate ... (**)", {
     envDates <- lubridate::parse_date_time(envDates, orders = c("Y", "Ym"))
     datedOccs <- occs
     datedOccs$date <- lubridate::parse_date_time(datedOccs$year, orders = c("Y", "Ym"))

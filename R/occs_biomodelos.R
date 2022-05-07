@@ -25,7 +25,7 @@ occs_biomodelos <- function(spN, bioKey, logger = NULL) {
   nameSplit <- length(unlist(strsplit(spN, " ")))
   # if two names not entered, throw error and return
   if (nameSplit != 2) {
-    logger %>% alfred.writeLog(type = 'error',
+    logger %>% writeLog(type = 'error',
       'Please input both genus and species names of ONE species. (**)')
     return()
   }
@@ -41,14 +41,14 @@ occs_biomodelos <- function(spN, bioKey, logger = NULL) {
   jsonSearch <-  httr::content(respSearch, 'parsed')
 
   if (length(jsonSearch) == 0) {
-    logger %>% alfred.writeLog(
+    logger %>% writeLog(
       type = 'error',
-      alfred.hlSpp(spN), "Species name not found, please check the spelling")
+      hlSpp(spN), "Species name not found, please check the spelling")
     return()
   }
 
   if (jsonSearch == "Unauthorized") {
-    logger %>% alfred.writeLog(
+    logger %>% writeLog(
       type = 'error', "API key is not working.")
     return()
   }
@@ -56,7 +56,7 @@ occs_biomodelos <- function(spN, bioKey, logger = NULL) {
   urlOccs <- paste('https://api-biomodelos.humboldt.org.co/v2/species/records/',
                    jsonSearch[[1]]$taxID, sep = '')
 
-  alfred.smartProgress(logger, message = paste0("Querying BioModelos ..."), {
+  smartProgress(logger, message = paste0("Querying BioModelos ..."), {
     respOccs <- httr::GET(urlOccs,
                           httr::add_headers(host = 'api-biomodelos.humboldt.org.co',
                                             authorization = paste0('apiKey ', bioKey)))
@@ -65,9 +65,9 @@ occs_biomodelos <- function(spN, bioKey, logger = NULL) {
   })
 
   if (nrow(geo) == 0) {
-    logger %>% alfred.writeLog(
+    logger %>% writeLog(
       type = 'error',
-      alfred.hlSpp(spN), "Species without records on BioModelos")
+      hlSpp(spN), "Species without records on BioModelos")
     return()
   }
 
@@ -105,15 +105,15 @@ occs_biomodelos <- function(spN, bioKey, logger = NULL) {
     dplyr::mutate(year = as.integer(year),
                   uncertainty = as.numeric(uncertainty)) %>%
     # # make new column for leaflet marker popup content
-    dplyr::mutate(pop = unlist(apply(occs, 1, alfred.popUpContent))) %>%
+    dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent))) %>%
     dplyr::arrange_(cols)
 
   # subset by key columns and make id and popup columns
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
   dupsRem <- nrow(occsXY) - nrow(occs)
 
-  logger %>% alfred.writeLog(
-    alfred.hlSpp(spN), 'Total BioModelos records returned [', nrow(occsOrig),
+  logger %>% writeLog(
+    hlSpp(spN), 'Total BioModelos records returned [', nrow(occsOrig),
     ']. Records without coordinates removed [',
     noCoordsRem, ']. Duplicated records removed [', dupsRem,
     ']. Remaining records [', nrow(occs), '].')

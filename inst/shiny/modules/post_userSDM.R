@@ -14,20 +14,20 @@ post_userSDM_module_server <- function(input, output, session, common) {
   observeEvent(input$goUserSDM, {
     # WARNING ####
     if (is.null(input$sdmFile)) {
-      logger %>% alfred.writeLog(type = 'error', "Raster files not uploaded (**)")
+      logger %>% writeLog(type = 'error', "Raster files not uploaded (**)")
       return()
     }
     # FUNCTION CALL ####
     for (i in 1:length(input$sdmFile$name)) {
       ###########################
-      newSppName <- alfred.fileNameNoExt(alfred.fmtSpN(input$sdmFile$name[i]))
+      newSppName <- fileNameNoExt(fmtSpN(input$sdmFile$name[i]))
 
       if (!(newSppName %in% names(spp))) {
         userSDMs <- post_userSDM(rasPath = input$sdmFile$datapath[i],
                                  rasName = input$sdmFile$name[i],
                                  logger)
         if (!is.null(userSDMs)) {
-          logger %>% alfred.writeLog(alfred.hlSpp(newSppName), "User SDM prediction loaded (**)")
+          logger %>% writeLog(hlSpp(newSppName), "User SDM prediction loaded (**)")
           # LOAD INTO SPP ####
           spp[[newSppName]] <- list()
           spp[[newSppName]]$postProc$prediction <- userSDMs$sdm
@@ -37,15 +37,15 @@ post_userSDM_module_server <- function(input, output, session, common) {
         }
       } else {
         if (!is.null(spp[[newSppName]]$visualization$mapPred)) {
-          logger %>% alfred.writeLog(
-            type = "error", alfred.hlSpp(newSppName),
+          logger %>% writeLog(
+            type = "error", hlSpp(newSppName),
             "Prediction already available on Wallace. You cannot upload a user raster.")
           return()
         } else { # If occs exists
           userSDMs <- post_userSDM(rasPath = input$sdmFile$datapath[i],
                                    rasName = input$sdmFile$name[i],
                                    logger)
-          logger %>% alfred.writeLog(alfred.hlSpp(newSppName), "User SDM prediction loaded (**)")
+          logger %>% writeLog(hlSpp(newSppName), "User SDM prediction loaded (**)")
           # LOAD INTO SPP ####
           spp[[newSppName]]$postProc$prediction <- userSDMs$sdm
           spp[[newSppName]]$postProc$OrigPred <- userSDMs$sdm
@@ -78,13 +78,13 @@ post_userSDM_module_map <- function(map, common) {
                     lat1 = zoomExt[3], lat2 = zoomExt[4])
 
   map %>%
-    alfred.clearAll() %>%
+    clearAll() %>%
     mapPNG(curSp()) %>%
     addEasyButton(easyButton(
       icon = htmltools::span(class = "star", htmltools::HTML("&starf;")),
       onClick = JS("function(btn, map){ map.invalidateSize();}"))) %>%
     # add background polygon
-    alfred.mapBgPolys(bgShpXY(), color = 'green', group = 'post')
+    mapBgPolys(bgShpXY(), color = 'green', group = 'post')
 
   # Define raster colors and shiny legend
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
@@ -108,7 +108,7 @@ post_userSDM_module_map <- function(map, common) {
     map %>%
       addLegend("bottomright", pal = legendPal, title = "Suitability<br>(User) (**)",
                 values = quanRas, layerId = "expert",
-                labFormat = alfred.reverseLabel(2, reverse_order = TRUE)) %>%
+                labFormat = reverseLabel(2, reverse_order = TRUE)) %>%
       leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
                            colorOptions = leafem::colorOptions(
                              palette = colorRampPalette(colors = rasCols)),

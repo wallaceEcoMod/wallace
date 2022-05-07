@@ -61,7 +61,7 @@ change_overlap_module_server <- function(input, output, session, common) {
     if(input$selSource == "wallace"){
       if (is.null(spp[[curSp()]]$visualization$mapPred)) {
         logger %>%
-          alfred.writeLog(type = 'error',
+          writeLog(type = 'error',
                    'Visualize your model before doing overlap calculations')
         return()
       }
@@ -70,7 +70,7 @@ change_overlap_module_server <- function(input, output, session, common) {
     if(input$selSource == "proj"){
       if (is.null(spp[[curSp()]]$project$mapProj)) {
         logger %>%
-          alfred.writeLog(type = 'error',
+          writeLog(type = 'error',
                    'Project your model before doing overlap calculations')
         return()
       }
@@ -79,7 +79,7 @@ change_overlap_module_server <- function(input, output, session, common) {
     if(input$selSource == "sdm"){
       if (is.null(spp[[curSp()]]$postProc$OrigPred)) {
         logger %>%
-          alfred.writeLog(type = 'error',
+          writeLog(type = 'error',
                    'Load you model in component User SDM before doing range calculations')
         return()
       }
@@ -89,7 +89,7 @@ change_overlap_module_server <- function(input, output, session, common) {
 
       if (is.null(    spp[[curSp()]]$mask$prediction)) {
         logger %>%
-          alfred.writeLog(type = 'error',
+          writeLog(type = 'error',
                    'Do a maskRangeR analysis before doing range calculations')
         return()
       }
@@ -99,7 +99,7 @@ change_overlap_module_server <- function(input, output, session, common) {
 
       if (is.null(spp[[curSp()]]$rmm$data$change$EOO)) {
         logger %>%
-          alfred.writeLog(type = 'error',
+          writeLog(type = 'error',
                    'Do an EOO calculation in the area module before doing range calculations')
         return()
       }
@@ -111,7 +111,7 @@ change_overlap_module_server <- function(input, output, session, common) {
 
       if (is.null(spp[[curSp()]]$rmm$data$change$AOO)) {
         logger %>%
-          alfred.writeLog(type = 'error',
+          writeLog(type = 'error',
                    'Do an AOO calculation in the area module before doing range calculations')
         return()
       }
@@ -122,8 +122,8 @@ change_overlap_module_server <- function(input, output, session, common) {
 
  observeEvent(input$goInputOver, {
    if (is.null(spp[[curSp()]]$postProc$prediction)) {
-     logger %>% alfred.writeLog(
-       type = 'error', alfred.hlSpp(curSp()), 'Calculate/Upload a model prediction (**)')
+     logger %>% writeLog(
+       type = 'error', hlSpp(curSp()), 'Calculate/Upload a model prediction (**)')
      return()
    }
    if(input$changeOverlap=='shapefile'){
@@ -134,12 +134,12 @@ change_overlap_module_server <- function(input, output, session, common) {
    if ('shp' %in% exts) {
      if (length(exts) < 3) {
        logger %>%
-         alfred.writeLog(type = 'error',
+         writeLog(type = 'error',
                   paste0('If entering a shapefile, please select all the ',
                          'following files: .shp, .shx, .dbf.'))
        return()
      }
-     alfred.smartProgress(
+     smartProgress(
        logger,
        message = "Uploading user provided shapefile ", {
      # get index of .shp
@@ -149,11 +149,11 @@ change_overlap_module_server <- function(input, output, session, common) {
      }
      # read in shapefile and extract coords
      polyOverlap  <- rgdal::readOGR(file.path(pathdir, input$changeOverlapShp$name)[i])
-     logger %>% alfred.writeLog( "User shapefile loaded ")
+     logger %>% writeLog( "User shapefile loaded ")
 })
    } else {
      logger %>%
-       alfred.writeLog(type = 'error',
+       writeLog(type = 'error',
                 paste0('Please enter a ',
                        'shapefile (.shp, .shx, .dbf).'))
      return()
@@ -173,7 +173,7 @@ change_overlap_module_server <- function(input, output, session, common) {
                               rasName = input$changeOverlapRaster$name,
                               logger)
      if (!is.null(userRaster)) {
-       logger %>% alfred.writeLog("User raster file loaded ")
+       logger %>% writeLog("User raster file loaded ")
      }
      spp[[curSp()]]$change$RasOverlap <- userRaster$sdm
 
@@ -237,7 +237,7 @@ change_overlap_module_server <- function(input, output, session, common) {
     }
     if(input$selSource == "wallace"){
 
-      alfred.smartProgress(
+      smartProgress(
         logger,
         message = "Calculating range overlap ", {
       r = spp[[curSp()]]$visualization$mapPred
@@ -249,7 +249,7 @@ change_overlap_module_server <- function(input, output, session, common) {
       ratio.Overlap <- changeRangeR::ratioOverlap(r = r, shp = shp, field=spp[[curSp()]]$change$ShpField, category = category,subfield=    spp[[curSp()]]$change$subfield)
         })
       req(ratio.Overlap)
-      logger %>% alfred.writeLog( "Proportion of range area that is contained by landcover categories calculated ")
+      logger %>% writeLog( "Proportion of range area that is contained by landcover categories calculated ")
       # LOAD INTO SPP ####
       if(length(ratio.Overlap$maskedRange)>1)
       {
@@ -261,14 +261,14 @@ change_overlap_module_server <- function(input, output, session, common) {
       else {ratio.Overlap$maskedRange<-ratio.Overlap$maskedRange[[1]]}
       spp[[curSp()]]$change$overlapRaster <- ratio.Overlap$maskedRange
       spp[[curSp()]]$change$overlapvalue <- ratio.Overlap$ratio
-      spp[[curSp()]]$change$overlapvalues <- alfred.getRasterVals(ratio.Overlap$maskedRange)
+      spp[[curSp()]]$change$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
 
 
     }
 
     if(input$selSource == "proj"){
 
-      alfred.smartProgress(
+      smartProgress(
         logger,
         message = "Calculating range overlap ", {
       r = spp[[curSp()]]$project$mapProj
@@ -278,7 +278,7 @@ change_overlap_module_server <- function(input, output, session, common) {
       ratio.Overlap <- changeRangeR::ratioOverlap(r = r, shp = shp, field= spp[[curSp()]]$change$ShpField, category = category,   subfield= spp[[curSp()]]$change$subfield)
         })
       req(ratio.Overlap)
-      logger %>% alfred.writeLog( "Proportion of projected range area that is contained by landcover categories calculated ")
+      logger %>% writeLog( "Proportion of projected range area that is contained by landcover categories calculated ")
       # LOAD INTO SPP ####
       if(length(ratio.Overlap$maskedRange)>1)
       {
@@ -290,7 +290,7 @@ change_overlap_module_server <- function(input, output, session, common) {
       else {ratio.Overlap$maskedRange<-ratio.Overlap$maskedRange[[1]]}
       spp[[curSp()]]$change$overlapRaster <- ratio.Overlap$maskedRange
       spp[[curSp()]]$change$overlapvalue <- ratio.Overlap$ratio
-      spp[[curSp()]]$change$overlapvalues <- alfred.getRasterVals(ratio.Overlap$maskedRange)
+      spp[[curSp()]]$change$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
 
       common$update_component(tab = "Map")
     }
@@ -298,7 +298,7 @@ change_overlap_module_server <- function(input, output, session, common) {
 
     if(input$selSource == "sdm"){
 
-      alfred.smartProgress(
+      smartProgress(
         logger,
         message = "Calculating range overlap ", {
       r = spp[[curSp()]]$postProc$OrigPred
@@ -310,7 +310,7 @@ change_overlap_module_server <- function(input, output, session, common) {
       })
     # LOAD INTO SPP ####
     req(ratio.Overlap)
-    logger %>% alfred.writeLog( "Proportion of user provided range area that is contained by landcover categories calculated ")
+    logger %>% writeLog( "Proportion of user provided range area that is contained by landcover categories calculated ")
     if(length(ratio.Overlap$maskedRange)>1)
       {
     names(ratio.Overlap$maskedRange) <- NULL
@@ -322,14 +322,14 @@ change_overlap_module_server <- function(input, output, session, common) {
      spp[[curSp()]]$change$overlapRaster <- ratio.Overlap$maskedRange
       spp[[curSp()]]$change$overlapvalue <- ratio.Overlap$ratio
 
-      spp[[curSp()]]$change$overlapvalues <- alfred.getRasterVals(ratio.Overlap$maskedRange)
+      spp[[curSp()]]$change$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
 
 }
     if(input$selSource == "masked"){
       #CAREFUL: as its set up now if user doesn t do maskrangeR this object will be something else
       #(either user uploaed SDM or wallace SDM) this must be fixed in other components so it works smoothly
 
-      alfred.smartProgress(
+      smartProgress(
         logger,
         message = "Calculating range overlap ", {
       r =     spp[[curSp()]]$mask$prediction
@@ -339,7 +339,7 @@ change_overlap_module_server <- function(input, output, session, common) {
       ratio.Overlap <- changeRangeR::ratioOverlap(r = r , shp =  shp,field = spp[[curSp()]]$change$ShpField, category = category,   subfield=  spp[[curSp()]]$change$subfield)
         })
       req(ratio.Overlap)
-      logger %>% alfred.writeLog( "Proportion of masked range area that is contained by landcover categories calculated ")
+      logger %>% writeLog( "Proportion of masked range area that is contained by landcover categories calculated ")
       # LOAD INTO SPP ####
       if(length(ratio.Overlap$maskedRange)>1)
       {
@@ -351,13 +351,13 @@ change_overlap_module_server <- function(input, output, session, common) {
       else {ratio.Overlap$maskedRange<-ratio.Overlap$maskedRange[[1]]}
       spp[[curSp()]]$change$overlapRaster <- ratio.Overlap$maskedRange
       spp[[curSp()]]$change$overlapvalue <- ratio.Overlap$ratio
-      spp[[curSp()]]$change$overlapvalues <- alfred.getRasterVals(ratio.Overlap$maskedRange)
+      spp[[curSp()]]$change$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
 
     }
 
     if(input$selSource == "eoo"){
 
-      alfred.smartProgress(
+      smartProgress(
         logger,
         message = "Calculating range overlap ", {
           r = spp[[curSp()]]$rmm$data$change$EOO
@@ -367,16 +367,16 @@ change_overlap_module_server <- function(input, output, session, common) {
           ratio.Overlap <- changeRangeR::ratioOverlap(r = r , shp =  shp,field = spp[[curSp()]]$change$ShpField, category = category,   subfield= spp[[curSp()]]$change$subfield)
         })
       req(ratio.Overlap)
-      logger %>% alfred.writeLog( "Proportion of EOO that is contained by landcover categories calculated ")
+      logger %>% writeLog( "Proportion of EOO that is contained by landcover categories calculated ")
       # LOAD INTO SPP ####
       spp[[curSp()]]$change$overlapPoly <- ratio.Overlap$maskedRange
       spp[[curSp()]]$change$overlapvalue <- ratio.Overlap$ratio
-     # spp[[curSp()]]$change$overlapvalues <- alfred.getRasterVals(ratio.Overlap$maskedRange)
+     # spp[[curSp()]]$change$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
 
     }
     if(input$selSource == "aoo"){
 
-      alfred.smartProgress(
+      smartProgress(
         logger,
         message = "Calculating range overlap ", {
           r = spp[[curSp()]]$rmm$data$change$AOO
@@ -386,7 +386,7 @@ change_overlap_module_server <- function(input, output, session, common) {
           ratio.Overlap <- changeRangeR::ratioOverlap(r = r , shp =  shp,field = spp[[curSp()]]$change$ShpField, category = category,subfield=    spp[[curSp()]]$change$subfield)
         })
       req(ratio.Overlap)
-      logger %>% alfred.writeLog("Proportion of AOO that is contained by landcover categories calculated ")
+      logger %>% writeLog("Proportion of AOO that is contained by landcover categories calculated ")
       # LOAD INTO SPP ####
       if(length(ratio.Overlap$maskedRange)>1)
       {
@@ -398,7 +398,7 @@ change_overlap_module_server <- function(input, output, session, common) {
       else {ratio.Overlap$maskedRange<-ratio.Overlap$maskedRange[[1]]}
       spp[[curSp()]]$change$overlapRaster <- ratio.Overlap$maskedRange
       spp[[curSp()]]$change$overlapvalue <- ratio.Overlap$ratio
-      spp[[curSp()]]$change$overlapvalues <- alfred.getRasterVals(ratio.Overlap$maskedRange)
+      spp[[curSp()]]$change$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
 
     }
 
@@ -445,13 +445,13 @@ change_overlap_module_map <- function(map, common) {
   # Map logic
  spp <- common$spp
   curSp <- common$curSp
-  map %>% alfred.clearAll()
+  map %>% clearAll()
   #if EOO is selected plot the polygon
   if(!is.null(spp[[curSp()]]$change$Plot1)){
 
     polyEOO <- spp[[curSp()]]$rmm$data$change$EOO@polygons[[1]]@Polygons
     bb <- spp[[curSp()]]$rmm$data$change$EOO@bbox
-    bbZoom <- alfred.polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
+    bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
     map %>%
       fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
     map %>%
@@ -477,7 +477,7 @@ change_overlap_module_map <- function(map, common) {
   req(spp[[curSp()]]$change$Plot)
   sdm <-  spp[[curSp()]]$change$Plot
   raster::crs(sdm) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 ")
-  SDMVals <- alfred.getRasterVals(sdm)
+  SDMVals <- getRasterVals(sdm)
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
   legendPal <- colorNumeric(rev(rasCols), SDMVals, na.color = 'transparent')
   rasPal <- colorNumeric(rasCols, SDMVals, na.color = 'transparent')
@@ -512,7 +512,7 @@ change_overlap_module_map <- function(map, common) {
     map %>%
       addLegend("bottomright", pal = legendPal, title = "SDM",
                 values = SDMVals, layerId = "sdm",
-                labFormat = alfred.reverseLabel(2, reverse_order=TRUE)) %>%
+                labFormat = reverseLabel(2, reverse_order=TRUE)) %>%
       addRasterImage(sdm, colors = rasPal,
                      opacity = 0.7, group = 'change', layerId = 'sdm',
                      method = "ngb")
@@ -528,7 +528,7 @@ change_overlap_module_map <- function(map, common) {
     shp <- lapply(polyOvXY, function(x) x@Polygons[[1]]@coords)
   }
   bb <- spp[[curSp()]]$change$polyOverlapCrop@bbox
-  bbZoom <- alfred.polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
+  bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
   map %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
   for (poly in shp) {
@@ -543,7 +543,7 @@ change_overlap_module_map <- function(map, common) {
     bb <- polyOver@bbox
  polyOver <- polyOver@polygons[[1]]@Polygons
 
- bbZoom <- alfred.polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
+ bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
  map %>%
    fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
  map %>%
@@ -585,7 +585,7 @@ change_overlap_module_map <- function(map, common) {
   map %>% fitBounds(lng1 = zoomExt[1], lng2 = zoomExt[2],
                     lat1 = zoomExt[3], lat2 = zoomExt[4])
   # Create legend
-  map %>% alfred.clearAll()
+  map %>% clearAll()
   if (length(unique(OverlapVals)) == 3 |
       length(unique(OverlapVals)) == 2) {
     map %>%
@@ -614,7 +614,7 @@ change_overlap_module_map <- function(map, common) {
     map %>%
       addLegend("bottomright", pal = legendPal, title = "Range Overlap",
                 values = OverlapVals, layerId = "overlap",
-                labFormat = alfred.reverseLabel(2, reverse_order=TRUE)) %>%
+                labFormat = reverseLabel(2, reverse_order=TRUE)) %>%
       addRasterImage(Overlap, colors = rasPal,
                      opacity = 0.7, group = 'change', layerId = 'Overlap',
                      method = "ngb")

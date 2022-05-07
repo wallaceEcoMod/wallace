@@ -29,7 +29,7 @@ mask_spatialPoly <- function(bgShp_path, bgShp_name, sdm,
   if ('shp' %in% exts) {
     if (length(exts) < 3) {
       logger %>%
-        alfred.writeLog(type = 'error', alfred.hlSpp(spN),
+        writeLog(type = 'error', hlSpp(spN),
                  paste0('If entering a shapefile, please select all the ',
                         'following files: .shp, .shx, .dbf.'))
       return()
@@ -39,33 +39,33 @@ mask_spatialPoly <- function(bgShp_path, bgShp_name, sdm,
     if (!file.exists(file.path(pathdir, bgShp_name)[i])) {
       file.rename(bgShp_path, file.path(pathdir, bgShp_name))
     }
-    alfred.smartProgress(logger, message = "Uploading shapefile ...", {
+    smartProgress(logger, message = "Uploading shapefile ...", {
       polyData <- rgdal::readOGR(file.path(pathdir, bgShp_name)[i])
     })
 
   } else {
     logger %>%
-      alfred.writeLog(type = 'error',
+      writeLog(type = 'error',
                'Please enter shapefile (.shp, .shx, .dbf).')
     return()
   }
 
   if (is.na(raster::crs(polyData, asText = TRUE))) {
-    logger %>% alfred.writeLog(
-      type = 'warning', alfred.hlSpp(spN),
+    logger %>% writeLog(
+      type = 'warning', hlSpp(spN),
       "Projection not found for shapefile. It is assume that shapefile datum ",
       "is WGS84 (**)"
     )
   }
   # if (!rgeos::gIntersects(sdm, polyData)) {
-  #   logger %>% alfred.writeLog(
-  #     type = 'error', alfred.hlSpp(spN),
+  #   logger %>% writeLog(
+  #     type = 'error', hlSpp(spN),
   #     "Shapefile does not match with background extent. Please specify a new polygon. (**)"
   #   )
   #   return()
   # }
 
-  alfred.smartProgress(logger, message = "Intersecting spatial data ...", {
+  smartProgress(logger, message = "Intersecting spatial data ...", {
     sdm <- stars::st_as_stars(sdm)
     sdm <- sdm >= 0
     # polR <- sf::as_Spatial(sf::st_as_sf(sdm, as_points = FALSE, merge = TRUE))
@@ -77,8 +77,8 @@ mask_spatialPoly <- function(bgShp_path, bgShp_name, sdm,
     spatialPoly <- sf::as_Spatial(sf::st_intersection(sf::st_make_valid(polyData),
                                                       sf::st_make_valid(polR)))
     if (length(spatialPoly) < 1) {
-      logger %>% alfred.writeLog(
-        type = 'error', alfred.hlSpp(spN),
+      logger %>% writeLog(
+        type = 'error', hlSpp(spN),
         "Shapefile does not match with background extent. Please specify a new polygon. (**)"
       )
       return()

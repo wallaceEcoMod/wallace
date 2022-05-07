@@ -30,13 +30,13 @@ mask_spatial_module_server <- function(input, output, session, common) {
   observeEvent(input$goMaskShp, {
     # WARNING ####
     if (is.null(spp[[curSp()]]$postProc$prediction)) {
-      logger %>% alfred.writeLog(
-        type = 'error', alfred.hlSpp(curSp()), 'Calculate/Upload a model prediction (**)')
+      logger %>% writeLog(
+        type = 'error', hlSpp(curSp()), 'Calculate/Upload a model prediction (**)')
       return()
     }
     if (is.null(input$maskShp$datapath)) {
-      logger %>% alfred.writeLog(
-        type = 'error', alfred.hlSpp(curSp()), "Specified filepath(s) (**)")
+      logger %>% writeLog(
+        type = 'error', hlSpp(curSp()), "Specified filepath(s) (**)")
       return()
     }
     # FUNCTION CALL ####
@@ -46,7 +46,7 @@ mask_spatial_module_server <- function(input, output, session, common) {
     # LOAD INTO SPP ####
     spp[[curSp()]]$mask$spatialMask <- spatialMask
 
-    logger %>% alfred.writeLog(alfred.hlSpp(curSp()), "Spatial data uploaded.")
+    logger %>% writeLog(hlSpp(curSp()), "Spatial data uploaded.")
     # METADATA ####
 
   })
@@ -106,8 +106,8 @@ mask_spatial_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$postProc$prediction <- maskPred
     spp[[curSp()]]$mask$prediction <- maskPred
     spp[[curSp()]]$procEnvs$bgExt <- bgExt
-    logger %>% alfred.writeLog(
-      alfred.hlSpp(curSp()), "Spatial Masked (**)")
+    logger %>% writeLog(
+      hlSpp(curSp()), "Spatial Masked (**)")
 
     # METADATA ####
   })
@@ -119,8 +119,8 @@ mask_spatial_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$procEnvs$bgExt <- spp[[curSp()]]$postProc$origBgExt
     spp[[curSp()]]$mask$prediction <- NULL
     spp[[curSp()]]$mask$spatialMask <- NULL
-    logger %>% alfred.writeLog(
-      alfred.hlSpp(curSp()), "Reset prediction (**).")
+    logger %>% writeLog(
+      hlSpp(curSp()), "Reset prediction (**).")
   })
 
   return(list(
@@ -156,10 +156,10 @@ mask_spatial_module_map <- function(map, common) {
                                   size = 100, na.rm = TRUE)[, 1]
   shinyjs::delay(1000,
                  map %>%
-                   alfred.clearAll() %>%
+                   clearAll() %>%
                    mapPNG(curSp()) %>%
                    # add background polygon
-                   alfred.mapBgPolys(bgShpXY(), color = 'green', group = 'postBg')
+                   mapBgPolys(bgShpXY(), color = 'green', group = 'postBg')
   )
 
   if (!any(userValues > 0 & userValues < 1)) {
@@ -185,7 +185,7 @@ mask_spatial_module_map <- function(map, common) {
                            opacity = 0.7, layerId = 'postPred') %>%
       addLegend("bottomright", pal = legendPal, title = "Suitability<br>(User) (**)",
                 values = quanRas, layerId = "expert",
-                labFormat = alfred.reverseLabel(2, reverse_order = TRUE))
+                labFormat = reverseLabel(2, reverse_order = TRUE))
   }
   # Plot Polygon
   req(maskFields(), maskAttribute())
