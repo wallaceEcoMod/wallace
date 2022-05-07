@@ -92,7 +92,7 @@ xfer_userEnvs <- function(evalOut, curModel, envs, xfExt, alg, outputType = NULL
                                     useC = FALSE)
     } else if (alg == 'maxnet') {
       if (outputType == "raw") outputType <- "exponential"
-      modxferUser <- predictMaxnet(evalOut@models[[curModel]], xferMsk,
+      modXferUser <- predictMaxnet(evalOut@models[[curModel]], xferMsk,
                                           type = outputType, clamp = clamp)
     } else if (alg == 'maxent.jar') {
       modXferUser <- dismo::predict(
