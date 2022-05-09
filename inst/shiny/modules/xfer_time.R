@@ -311,7 +311,8 @@ xfer_time_module_server <- function(input, output, session, common) {
     # ERRORS ####
     # Check that the extents of raster and extent of transfer intersects
     if (!rgeos::gIntersects(spp[[curSp()]]$transfer$xfExt,
-                            methods::as(raster::extent(xferTimeEnvs), 'SpatialPolygons'))) {
+                            methods::as(raster::extent(xferTimeEnvs),
+                                        'SpatialPolygons'))) {
       logger %>%
         writeLog(type = 'error', 'Extents do not overlap')
       return()
