@@ -1,6 +1,6 @@
 ---
 title: "How to write a module in Wallace"
-author: "Jamie Kass, Gonzalo Pinilla-Buitrago, Siew Fong Chen, Peter Galante, Bethany Johnson, Dean Attali"
+author: "Gonzalo Pinilla-Buitrago, Jamie M. Kass, Siew Fong Chen, Peter Galante, Bethany Johnson, Dean Attali"
 date: "April 19, 2022"
 output: rmarkdown::html_vignette
 vignette: >
