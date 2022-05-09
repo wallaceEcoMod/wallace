@@ -527,7 +527,7 @@ function(input, output, session) {
     },
     content = function(file) {
       png(file, width = 1000, height = 500)
-      layout(matrix(c(1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 3, 3), 4, 3, byrow = FALSE))
+      graphics::par(mfrow = c(1, 2))
       if (length(curSp()) == 2) {
         mSp <- paste(curSp(), collapse = ".")
         sp1 <- curSp()[1]
@@ -548,21 +548,21 @@ function(input, output, session) {
         colZ2 = "red",
         transparency = 25
       )
+      box()
       req(spp[[mSp]]$nicheOv)
-      if (!is.null(spp[[mSp]]$nicheOv$equiv))
-        ecospat::ecospat.plot.overlap.test(spp[[mSp]]$nicheOv$equiv,
-                                           "D", "Equivalency test")
+      # if (!is.null(spp[[mSp]]$nicheOv$equiv))
+      #   ecospat::ecospat.plot.overlap.test(spp[[mSp]]$nicheOv$equiv,
+      #                                      "D", "Equivalency test")
       if (!is.null(spp[[mSp]]$nicheOv$simil))
         ecospat::ecospat.plot.overlap.test(spp[[mSp]]$nicheOv$simil,
                                            "D", "Similarity test")
       ovMetrics <- paste(
-        "Overlap D = ", round(spp[[mSp]]$nicheOv$overlap$D, 2), "\n",
-        "Sp1 only :", round(spp[[mSp]]$nicheOv$USE[3], 2), "\n",
-        "Sp2 only :", round(spp[[mSp]]$nicheOv$USE[1], 2), "\n",
-        "Both :", round(spp[[mSp]]$nicheOv$USE[2], 2)
+        "Overlap D = ", round(spp[[mSp]]$nicheOv$overlap$D, 2),
+        " | Sp1 only :", round(spp[[mSp]]$nicheOv$USE[3], 2),
+        " | Sp2 only :", round(spp[[mSp]]$nicheOv$USE[1], 2),
+        " | Both :", round(spp[[mSp]]$nicheOv$USE[2], 2)
       )
-      plot.new()
-      graphics::text(0.5, 0.5, ovMetrics, cex = 2, font = 2, )
+      graphics::mtext(ovMetrics, outer = TRUE, line = -1)
       dev.off()
     }
   )
