@@ -121,9 +121,9 @@ change_overlap_module_server <- function(input, output, session, common) {
   })
 
  observeEvent(input$goInputOver, {
-   if (is.null(spp[[curSp()]]$postProc$prediction)) {
-     logger %>% writeLog(
-       type = 'error', hlSpp(curSp()), 'Calculate/Upload a model prediction (**)')
+   if (is.null(spp[[curSp()]]$change$Plot)) {
+     logger %>% alfred.writeLog(
+       type = 'error', hlSpp(curSp()), 'Calculate/Upload a species distribution')
      return()
    }
    if(input$changeOverlap=='shapefile'){
@@ -178,7 +178,12 @@ change_overlap_module_server <- function(input, output, session, common) {
      spp[[curSp()]]$change$RasOverlap <- userRaster$sdm
 
      }
-
+    sameRes <- identical(res( spp[[curSp()]]$change$RasOverlap), res(spp[[curSp()]]$change$Plot))
+      if (!sameRes)) {
+     logger %>% alfred.writeLog(
+       type = 'error', alfred.hlSpp(curSp()), 'Raster resolution must be the same as species distribtuion resolution')
+     return()
+   }
   })
 
   ###add this if we want to include field selection
