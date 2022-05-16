@@ -116,8 +116,8 @@ xfer_area_module_server <- function(input, output, session, common) {
       polyXf <- xfer_userExtent(input$userXfShp$datapath, input$userXfShp$name,
                                 input$userXfBuf, logger, spN = curSp())
       # ERRORS ####
-      # Check that the extents of raster and transferion extent intersects
-      if (!rgeos::gIntersects(spp[[curSp()]]$transfer$xfExt,
+      # Check that the extents of raster and transfer extent intersects
+      if (!rgeos::gIntersects(polyXf,
                               methods::as(raster::extent(envs()),
                                           'SpatialPolygons'))) {
         logger %>%
@@ -161,9 +161,10 @@ xfer_area_module_server <- function(input, output, session, common) {
       logger %>% writeLog(type = 'error', 'Select transferion extent first.')
       return()
     }
-    # Check that the extents of raster and transferion extent intersects
+    # Check that the extents of raster and transfer extent intersects
     if (!rgeos::gIntersects(spp[[curSp()]]$transfer$xfExt,
-                            methods::as(raster::extent(envs()), 'SpatialPolygons'))) {
+                            methods::as(raster::extent(envs()),
+                                        'SpatialPolygons'))) {
       logger %>%
         writeLog(type = 'error', 'Extents do not overlap')
       return()
