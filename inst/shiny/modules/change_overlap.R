@@ -179,7 +179,7 @@ change_overlap_module_server <- function(input, output, session, common) {
 
      }
     sameRes <- identical(res( spp[[curSp()]]$change$RasOverlap), res(spp[[curSp()]]$change$Plot))
-      if (!sameRes)) {
+      if (!sameRes) {
      logger %>% alfred.writeLog(
        type = 'error', alfred.hlSpp(curSp()), 'Raster resolution must be the same as species distribtuion resolution')
      return()
