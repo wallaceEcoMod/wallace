@@ -62,8 +62,8 @@ poccs_thinOccs_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$rmm$code$wallace$occsSelPolyCoords <- NULL
     spp[[curSp()]]$procOccs$occsThin <- NULL
     spp[[curSp()]]$rmm$code$wallace$removedIDs <- NULL
-    logger %>% alfred.writeLog(
-      alfred.hlSpp(curSp()), "Reset to original occurrences (n = ",
+    logger %>% writeLog(
+      hlSpp(curSp()), "Reset to original occurrences (n = ",
       nrow(spp[[curSp()]]$occs), ").")
   })
 
@@ -87,23 +87,23 @@ poccs_thinOccs_module_map <- function(map, common) {
   if (!is.null(spp[[curSp()]]$procOccs$occsThin)) {
 
     occs.preThin <- spp[[curSp()]]$procOccs$occsPreThin
-    map %>% alfred.clearAll() %>%
+    map %>% clearAll() %>%
       addCircleMarkers(data = occs.preThin, lat = ~latitude, lng = ~longitude,
                        radius = 5, color = 'red', fill = TRUE, fillColor = "blue",
                        fillOpacity = 1, weight = 2, popup = ~pop) %>%
       addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                        radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                        fillOpacity = 1, weight = 2, popup = ~pop) %>%
-      alfred.zoom2Occs(occs()) %>%
+      zoom2Occs(occs()) %>%
       addLegend("bottomright", colors = c('red', 'blue'), title = "Occ Records",
                 labels = c('retained', 'removed'), opacity = 1)
   } else {
     # if you haven't thinned, map all points red
-    map %>% alfred.clearAll() %>%
+    map %>% clearAll() %>%
       addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                        radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                        fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
-      alfred.zoom2Occs(occs()) %>%
+      zoom2Occs(occs()) %>%
       leaflet.extras::removeDrawToolbar(clearFeatures = TRUE)
   }
 }

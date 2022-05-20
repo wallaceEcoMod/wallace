@@ -84,19 +84,19 @@ model_maxent_module_server <- function(input, output, session, common) {
 
   observeEvent(input$goMaxent, {
     if(is.null(input$fcs)) {
-      logger %>% alfred.writeLog(type = 'error', "No feature classes selected.")
+      logger %>% writeLog(type = 'error', "No feature classes selected.")
       return()
     }
     if(input$clamp == "") {
-      logger %>% alfred.writeLog(type = 'error', "Please specify clamping setting.")
+      logger %>% writeLog(type = 'error', "Please specify clamping setting.")
       return()
     }
     if(input$parallel == "") {
-      logger %>% alfred.writeLog(type = 'error', "Please specify parallel setting.")
+      logger %>% writeLog(type = 'error', "Please specify parallel setting.")
       return()
     }
     if(input$rmsStep <= 0) {
-      logger %>% alfred.writeLog(type = 'error', "Please specify a positive multiplier step value that is greater than 0.")
+      logger %>% writeLog(type = 'error', "Please specify a positive multiplier step value that is greater than 0.")
       return()
     }
 
@@ -107,7 +107,7 @@ model_maxent_module_server <- function(input, output, session, common) {
     for(sp in spLoop) {
       # ERRORS ####
       if (is.null(spp[[sp]]$occs$partition)) {
-        logger %>% alfred.writeLog(type = 'error', alfred.hlSpp(sp),
+        logger %>% writeLog(type = 'error', hlSpp(sp),
                             "Before building a model, please partition ",
                             "occurrences for cross-validation.")
         return()
@@ -256,9 +256,9 @@ model_maxent_module_rmd <- function(species) {
       if (!is.null(species$rmm$model$algorithms)) {
       species$rmm$model$algorithms != "BIOCLIM"
       } else {FALSE},
-    rms_rmd =  alfred.printVecAsis(species$rmm$model$algorithm$maxent$regularizationMultiplierSet),
+    rms_rmd =  printVecAsis(species$rmm$model$algorithm$maxent$regularizationMultiplierSet),
     rmsStep_rmd =  gsub("increment by", "", species$rmm$model$algorithm$maxent$regularizationRule),
-    fcs_rmd = alfred.printVecAsis(species$rmm$model$algorithm$maxent$featureSet),
+    fcs_rmd = printVecAsis(species$rmm$model$algorithm$maxent$featureSet),
     clampSel_rmd = species$rmm$model$algorithm$maxent$clamping,
     algMaxent_rmd = species$rmm$model$algorithms,
     parallel_rmd = species$rmm$model$algorithm$maxent$parallel,

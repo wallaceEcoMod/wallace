@@ -66,7 +66,46 @@ espace_occDens <- function(sp.name1, sp.name2, pca, logger = NULL) {
   scores.occs1 <- pca$scores[sp == sp.name1, 1:2]
   scores.bg2 <- pca$scores[bg == sp.name2, 1:2]
   scores.occs2 <- pca$scores[sp == sp.name2, 1:2]
-  alfred.smartProgress(logger, message = "Running occurrence density grids...", {
+  # Checking if occs points are outside of PCA bg extent
+  axis.min <- apply(scores.bg12, 2, min, na.rm = TRUE)
+  axis.max <- apply(scores.bg12, 2, max, na.rm = TRUE)
+
+  occs.check1 <- data.frame(cbind(
+    (scores.occs1[, 1] - axis.min[1]) / abs(axis.max[1] - axis.min[1]),
+    (scores.occs1[, 2] - axis.min[2]) / abs(axis.max[2]  - axis.min[2])
+  ))
+
+  occs.check2 <- data.frame(cbind(
+    (scores.occs2[, 1] - axis.min[1]) / abs(axis.max[1] - axis.min[1]),
+    (scores.occs2[, 2] - axis.min[2]) / abs(axis.max[2]  - axis.min[2])
+  ))
+  out.occ1 <- which(occs.check1 < 0, arr.ind = TRUE)
+  out.occ2 <- which(occs.check2 < 0, arr.ind = TRUE)
+
+  if (nrow(out.occ1) > 0) {
+    scores.occs1 <- scores.occs1[-(out.occ1[1:(length(out.occ1)/2)]), ]
+    logger %>% writeLog(
+      type = "warning",
+      hlSpp(sp.name1),
+      "Occurrences outside of the extent of the background points in the ",
+      "PCA space. A number of occurrences (n = ", nrow(out.occ1), ") were ",
+      "removed for continuing with the occurrence density grid analysis."
+    )
+  }
+
+  if (nrow(out.occ2) > 0) {
+    scores.occs2 <- scores.occs2[-(out.occ2[1:(length(out.occ2)/2)]), ]
+    logger %>% writeLog(
+      type = "warning",
+      hlSpp(sp.name2),
+      "Occurrences outside of the extent of the background points in the ",
+      "PCA space. A number of occurrences (n = ", nrow(out.occ2), ") were ",
+      "removed for continuing with the occurrence density grid analysis."
+    )
+  }
+
+  smartProgress(logger, message = "Running occurrence density grids...", {
+
     occDens1 <- ecospat::ecospat.grid.clim.dyn(scores.bg12, scores.bg1,
                                                scores.occs1, 100)
    # incProgress(1/2)
@@ -78,7 +117,7 @@ espace_occDens <- function(sp.name1, sp.name2, pca, logger = NULL) {
   occDens[[sp.name1]] <- occDens1
   occDens[[sp.name2]] <- occDens2
 
-  logger %>% alfred.writeLog(alfred.hlSpp(paste0(sp.name1, " and ", sp.name2)),
+  logger %>% writeLog(hlSpp(paste0(sp.name1, " and ", sp.name2)),
                       "Occurrence density grid.")
 
   return(occDens)

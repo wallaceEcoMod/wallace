@@ -11,7 +11,7 @@ xferMess_{{spAbr}} <- xfer_mess(
   xferExtRas =  xferExt_{{spAbr}})
 
 # Generate MESS map
-rasVals_{{spAbr}} <-  alfred.getRasterVals(xferMess_{{spAbr}})
+rasVals_{{spAbr}} <-  getRasterVals(xferMess_{{spAbr}})
 
   # define colorRamp for mess
   if (max(rasVals_{{spAbr}}) > 0 & min(rasVals_{{spAbr}}) < 0) {
@@ -34,7 +34,7 @@ rasVals_{{spAbr}} <-  alfred.getRasterVals(xferMess_{{spAbr}})
 m  %>%
     leaflet::addLegend("bottomright", pal = legendPal_{{spAbr}}, title = "MESS Values",
               values = rasVals_{{spAbr}}, layerId = 'xfer',
-              labFormat = alfred.reverseLabel(2, reverse_order=TRUE)) %>%
+              labFormat = reverseLabel(2, reverse_order=TRUE)) %>%
   # map model prediction raster and transferring polygon
  clearMarkers() %>% clearShapes() %>% removeImage('xferRas') %>%
     addRasterImage(xferMess_{{spAbr}}, colors =   rasPal_{{spAbr}} , opacity = 0.9,

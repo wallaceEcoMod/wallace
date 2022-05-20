@@ -38,7 +38,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep = ",", txtDec = ".",
                                            sep = txtSep, dec = txtDec),
                   error = function(e) "error")
   if (inherits(txt, "character")) {
-    logger %>% alfred.writeLog(
+    logger %>% writeLog(
       type = "error",
       paste0("There is something wrong in your file. Check file format or ",
              "delimiter and decimal separators."))
@@ -47,7 +47,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep = ",", txtDec = ".",
 
   # check to make sure all column names are correct
   if (length(which(c('scientific_name', 'longitude', 'latitude') == names(txt))) != 3) {
-    logger %>% alfred.writeLog(
+    logger %>% writeLog(
       type = "error",
       paste0('Please input a file with columns "scientific_name", ',
              '"longitude", "latitude" in that order or check delimeter and decimal ',
@@ -74,7 +74,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep = ",", txtDec = ".",
   # if two names not entered, throw error and return
   if (!all(namesSplitCheck)) {
     logger %>%
-      alfred.writeLog(type = 'error',
+      writeLog(type = 'error',
                paste0('Please input just genus and species epithet in scientific',
                       ' name field in your file (e.g., "Canis lupus").'))
     return()
@@ -82,14 +82,14 @@ occs_userOccs <- function(txtPath, txtName, txtSep = ",", txtDec = ".",
 
 
   if (nrow(occs) == 0) {
-    logger %>% alfred.writeLog(type = 'warning',
+    logger %>% writeLog(type = 'warning',
       'No records with coordinates found in ', txtName, ".")
     return()
   }
 
   # Check that longitude and latitude are numeric
   else if (!is.numeric(txt$longitude) | !is.numeric(txt$latitude)) {
-    logger %>% alfred.writeLog(
+    logger %>% writeLog(
       type = "error",
       'Please input txt file. Not all values in longitude or latitude are numeric.')
     return()
@@ -118,10 +118,10 @@ occs_userOccs <- function(txtPath, txtName, txtSep = ",", txtDec = ".",
       dplyr::mutate(year = as.integer(.data$year),
                     uncertainty = as.numeric(.data$uncertainty)) %>%
       # # make new column for leaflet marker popup content
-      dplyr::mutate(pop = unlist(apply(sp.occs, 1, alfred.popUpContent))) %>%
+      dplyr::mutate(pop = unlist(apply(sp.occs, 1, popUpContent))) %>%
       dplyr::arrange(dplyr::across(cols))
 
-    n <- alfred.fmtSpN(i)
+    n <- fmtSpN(i)
 
     # subset to just records with latitude and longitude
     occsXY <- sp.occs[!is.na(sp.occs$latitude) & !is.na(sp.occs$longitude),]
@@ -139,8 +139,8 @@ occs_userOccs <- function(txtPath, txtName, txtSep = ",", txtDec = ".",
     # subset by key columns and make id and popup columns
     dupsRem <- nrow(sp.occs) - nrow(occs)
 
-    logger %>% alfred.writeLog(
-      alfred.hlSpp(n), "Data uploaded from <i>'", txtName,
+    logger %>% writeLog(
+      hlSpp(n), "Data uploaded from <i>'", txtName,
       "'</i>: Duplicated records removed [",
       dupsRem, "]. Remaining records [", nrow(occs), "].")
 
@@ -149,8 +149,8 @@ occs_userOccs <- function(txtPath, txtName, txtSep = ",", txtDec = ".",
     # if they exist, load them into occsList for the current species
     if(nrow(sp.bg) > 0) {
       occsList[[n]]$bg <- sp.bg
-      logger %>% alfred.writeLog(
-        alfred.hlSpp(n), "Data for uploaded from <i>'", txtName, "'</i>: ",
+      logger %>% writeLog(
+        hlSpp(n), "Data for uploaded from <i>'", txtName, "'</i>: ",
         nrow(sp.bg), " background records.")
     }
   }

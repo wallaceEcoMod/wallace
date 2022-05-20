@@ -53,7 +53,7 @@ envs_ecoclimate_module_server <- function(input, output, session, common) {
   observeEvent(input$goEcoClimData, {
     # WARNING ####
     if (is.null(curSp())) {
-      logger %>% alfred.writeLog(type = 'error',
+      logger %>% writeLog(type = 'error',
                           paste0("Before obtaining environmental variables, ",
                                  "obtain occurrence data in 'Occ Data' component."))
       return()
@@ -61,7 +61,7 @@ envs_ecoclimate_module_server <- function(input, output, session, common) {
     # Specify more than 2 variables
     if (length(ecoClimSel()) < 2) {
       logger %>%
-        alfred.writeLog(
+        writeLog(
           type = 'error',
           "Select more than two variables.")
       return()
@@ -82,7 +82,7 @@ envs_ecoclimate_module_server <- function(input, output, session, common) {
       # remove occurrences with NA values for variables
       withProgress(
         message = paste0("Extracting environmental values for occurrences of ",
-                         alfred.spName(sp), "..."), {
+                         spName(sp), "..."), {
                            occsEnvsVals <- as.data.frame(
                              raster::extract(ecoClims,
                                              spp[[sp]]$occs[, c('longitude', 'latitude')],
@@ -90,7 +90,7 @@ envs_ecoclimate_module_server <- function(input, output, session, common) {
                            })
 
       # remove occurrence records with NA environmental values
-      remOccs <- alfred.remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, sp, logger)
+      remOccs <- remEnvsValsNA(spp[[sp]]$occs, occsEnvsVals, sp, logger)
       if (!is.null(remOccs)) {
         spp[[sp]]$occs <- remOccs$occs
         occsEnvsVals <- remOccs$occsEnvsVals
@@ -99,7 +99,7 @@ envs_ecoclimate_module_server <- function(input, output, session, common) {
         return()
       }
 
-      logger %>% alfred.writeLog(alfred.hlSpp(sp), "EcoClimate variables ready to use.")
+      logger %>% writeLog(hlSpp(sp), "EcoClimate variables ready to use.")
 
       # LOAD INTO SPP ####
       spp[[sp]]$envs <- nmEcoClimate
@@ -159,7 +159,7 @@ envs_ecoclimate_module_result <- function(id) {
 
 envs_ecoclimate_module_map <- function(map, common) {
   occs <- common$occs
-  map %>% alfred.clearAll() %>%
+  map %>% clearAll() %>%
     addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                      radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                      fillOpacity = 0.2, weight = 2, popup = ~pop)
@@ -171,7 +171,7 @@ envs_ecoclimate_module_rmd <- function(species) {
     envs_ecoclimate_knit = !is.null(species$rmm$code$wallace$bcAOGCM),
     bcAOGCM_rmd = species$rmm$code$wallace$bcAOGCM,
     bcScenario_rmd = species$rmm$code$wallace$bcScenario,
-    ecoClimSel_rmd =  alfred.printVecAsis(as.numeric(species$rmm$code$wallace$ecoClimSel))
+    ecoClimSel_rmd =  printVecAsis(as.numeric(species$rmm$code$wallace$ecoClimSel))
     ##Alternative using rmm instead of RMD object but not working
     #grepl("ecoClimate",species$rmm$data$environment$sources)
   )

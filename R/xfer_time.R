@@ -79,28 +79,28 @@ xfer_time <- function(evalOut, curModel, envs, xfExt, alg, outputType = NULL,
                       clamp = NULL, logger = NULL, spN = NULL) {
   newPoly <- xfExt
   if (alg == 'BIOCLIM') {
-    logger %>% alfred.writeLog(
-      alfred.hlSpp(spN),
+    logger %>% writeLog(
+      hlSpp(spN),
       'Transferring in time for BIOCLIM model.')
   } else if (alg == 'maxent.jar'| clamp == TRUE) {
-    logger %>% alfred.writeLog(
-      alfred.hlSpp(spN),
+    logger %>% writeLog(
+      hlSpp(spN),
       'Transferring in time for clamped model ', curModel, '.')
   } else if (clamp == FALSE) {
-    logger %>% alfred.writeLog(
-      alfred.hlSpp(spN),
+    logger %>% writeLog(
+      hlSpp(spN),
       'New time transfer for unclamped model' , curModel, '.')
   }
 
 
-  alfred.smartProgress(
+  smartProgress(
     logger,
     message = "Clipping environmental data to current extent...", {
     xftMsk <- raster::crop(envs, newPoly)
     xftMsk <- raster::mask(xftMsk, newPoly)
   })
 
-  alfred.smartProgress(
+  smartProgress(
     logger,
     message = ("Transferring to new time..."), {
     if (alg == 'BIOCLIM') {
@@ -108,7 +108,7 @@ xfer_time <- function(evalOut, curModel, envs, xfExt, alg, outputType = NULL,
                                     useC = FALSE)
     } else if (alg == 'maxnet') {
       if (outputType == "raw") outputType <- "exponential"
-      modXferTime <- alfred.predictMaxnet(evalOut@models[[curModel]], xftMsk,
+      modXferTime <- predictMaxnet(evalOut@models[[curModel]], xftMsk,
                                           type = outputType, clamp = clamp)
     } else if (alg == 'maxent.jar') {
       modXferTime <- dismo::predict(

@@ -47,9 +47,10 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
                          RmUncertain = FALSE, logger = NULL) {
   if (occDb == "bien" & !requireNamespace("BIEN", quietly = TRUE)) {
     logger %>%
-      alfred.writeLog(
+      writeLog(
         type = "warning",
-        "This option is available if you install the 'BIEN' package. If you ",
+        "This option is available if you install the 'BIEN' package ",
+        "(which is a suggested package for Wallace, not a required dependency). If you ",
         "want to install it, close Wallace and run the following line in the ",
         "R Console: ", em("install.packages('BIEN')")
       )
@@ -59,9 +60,10 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
   if (occDb == "gbif" & doCitations == TRUE &
       !requireNamespace("occCite", quietly = TRUE)) {
     logger %>%
-      alfred.writeLog(
+      writeLog(
         type = "warning",
-        "This option is available if you install the 'occCite' package. If you ",
+        "This option is available if you install the 'occCite' package ",
+        "(which is a suggested package for Wallace, not a required dependency). If you ",
         "want to install it, close Wallace and run the following line in the ",
         "R Console: ", em("install.packages('occCite')")
       )
@@ -86,7 +88,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
   # if two names not entered, throw error and return
   if (!all(namesSplitCheck)) {
     logger %>%
-      alfred.writeLog(type = 'error', 'Please input both genus and species names.')
+      writeLog(type = 'error', 'Please input both genus and species names.')
     return()
   }
 
@@ -94,7 +96,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
 
   for (sp in spNames) {
     # query database
-    alfred.smartProgress(logger,
+    smartProgress(logger,
                   message = paste0("Querying ", occDb, " for ", sp, "..."), {
       if (occDb == 'bison' | occDb == 'vertnet') {
         q <- spocc::occ(sp, occDb, limit = occNum)
@@ -105,7 +107,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
           myOccCitations <- NULL
         } else if (doCitations == TRUE) {
           if(any(unlist(lapply(list(gbifUser, gbifEmail, gbifPW), is.null)))) {
-            logger %>% alfred.writeLog(
+            logger %>% writeLog(
               type = 'error',
               paste0('Please specify your GBIF username, email, and password. ',
               'This is needed to get citations for occurrence records. Wallace ',
@@ -116,7 +118,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
           login <- occCite::GBIFLoginManager(user = gbifUser, email = gbifEmail,
                                              pwd = gbifPW)
           if (is.null(login)) {
-            logger %>% alfred.writeLog(
+            logger %>% writeLog(
               type = 'error',
               "There is an error in your GBIF credentials. Please check them"
             )
@@ -127,18 +129,18 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
           inputMatch <- as.character(nameGBIF@cleanedTaxonomy$`Input Name`)
           if (bestMatch == "No match") {
             logger %>%
-              alfred.writeLog(
+              writeLog(
                 type = "error",
-                alfred.hlSpp(alfred.fmtSpN(sp)),
+                hlSpp(fmtSpN(sp)),
                 "There is no match in GBIF database. Please check the spelling."
               )
             return()
           }
           if (bestMatch != inputMatch) {
             logger %>%
-              alfred.writeLog(
+              writeLog(
                 type = 'warning',
-                alfred.hlSpp(inputMatch),
+                hlSpp(inputMatch),
                 "There is no a stricly match in the GBIF search. Data ",
                 "downloaded corresponds to ", em(bestMatch), ". ")
           }
@@ -149,7 +151,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
                                      checkPreviousGBIFDownload = FALSE)
           # make something with the same slots as spocc that we use
           q <- list(gbif = list(meta = list(found = NULL),
-                                data = list(alfred.fmtSpN(sp))))
+                                data = list(fmtSpN(sp))))
           gbif_raw <- utils::read.table(unz(
             as.character(myBTO@occResults[[bestMatch]][['GBIF']][['RawOccurrences']]),
             "occurrence.txt"), sep = "\t", header = TRUE, quote = "",
@@ -167,14 +169,14 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
                           country = .data$countryCode)
           q[[occDb]]$meta$found <-
             nrow(myBTO@occResults[[bestMatch]][['GBIF']][['OccurrenceTable']])
-          q[[occDb]]$data[[alfred.fmtSpN(sp)]] <- gbif_occCite_df
+          q[[occDb]]$data[[fmtSpN(sp)]] <- gbif_occCite_df
           doiGBIF <- myBTO@occResults[[bestMatch]][['GBIF']]$Metadata$doi
           dateDOI <- format(as.Date(myBTO@occResults[[bestMatch]][['GBIF']]$Metadata$created),
                             "%d %B %Y")
           citeGBIF <- list(doi = doiGBIF, date = dateDOI)
           logger %>%
-            alfred.writeLog(
-              alfred.hlSpp(alfred.fmtSpN(sp)),
+            writeLog(
+              hlSpp(fmtSpN(sp)),
               " #CiteTheDOI: Gbif.org (", dateDOI,
               ") GBIF Ocurrence Download https://doi.org/", doiGBIF
             )
@@ -183,23 +185,23 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
         qBien <- BIEN::BIEN_occurrence_species(species = sp)
         # make something with the same slots as spocc that we use
         q <- list(bien = list(meta = list(found = NULL),
-                              data = list(alfred.fmtSpN(sp))))
+                              data = list(fmtSpN(sp))))
         q[[occDb]]$meta$found <- nrow(qBien)
-        q[[occDb]]$data[[alfred.fmtSpN(sp)]] <- qBien
+        q[[occDb]]$data[[fmtSpN(sp)]] <- qBien
       }
     })
 
     # if species not found, print message to log box and return
     if (q[[occDb]]$meta$found == 0) {
       logger %>%
-        alfred.writeLog(type = 'error',
-                 alfred.hlSpp(alfred.fmtSpN(sp)),
+        writeLog(type = 'error',
+                 hlSpp(fmtSpN(sp)),
                  'No records found. Please check the spelling.')
       return()
     }
     # extract occurrence tibbles
 
-    occsOrig <- q[[occDb]]$data[[alfred.fmtSpN(sp)]]
+    occsOrig <- q[[occDb]]$data[[fmtSpN(sp)]]
     # make sure latitude and longitude are numeric (sometimes they aren't)
     occsOrig$latitude <- as.numeric(occsOrig$latitude)
     occsOrig$longitude <- as.numeric(occsOrig$longitude)
@@ -212,9 +214,9 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
 
     # if no records with coordinates, throw warning
     if (nrow(occsXY) == 0) {
-      logger %>% alfred.writeLog(
+      logger %>% writeLog(
         type = 'warning',
-        alfred.hlSpp(alfred.fmtSpN(sp)),
+        hlSpp(fmtSpN(sp)),
         'No records with coordinates found in ', occDb, ". ")
       return()
     }
@@ -288,9 +290,9 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
       occs <- occs[!is.na(occs$uncertainty), ]
       noUncertainRem<- nrow(occsOrig) - (nrow(occs)+noCoordsRem)
       if(nrow(occs)==0){
-        logger %>% alfred.writeLog(
+        logger %>% writeLog(
           type = 'warning',
-          alfred.hlSpp(alfred.fmtSpN(sp)),
+          hlSpp(fmtSpN(sp)),
           'No records with coordinate uncertainty information found in ', occDb, ".")
         return()
     }
@@ -306,7 +308,7 @@ occs <- occs[!dups,]
       dplyr::mutate(year = as.integer(.data$year),
                     uncertainty = as.numeric(.data$uncertainty)) %>%
       # # make new column for leaflet marker popup content
-      dplyr::mutate(pop = unlist(apply(occs, 1, alfred.popUpContent))) %>%
+      dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent))) %>%
       dplyr::arrange(dplyr::across(cols))
 
     # subset by key columns and make id and popup columns
@@ -318,7 +320,7 @@ occs <- occs[!dups,]
 
    if (RmUncertain == TRUE) {
      logger %>%
-       alfred.writeLog(alfred.hlSpp(alfred.fmtSpN(sp)), 'Total ', occDb, ' records returned [',
+       writeLog(hlSpp(fmtSpN(sp)), 'Total ', occDb, ' records returned [',
                 nrow(occsOrig), '] out of [', totRows, '] total',
                 if (!(doCitations | occDb == 'bien')) {paste0(' (limit ', occNum,')')},
                 '. Records without coordinates removed [', noCoordsRem,
@@ -327,7 +329,7 @@ occs <- occs[!dups,]
                 ']. Remaining records [', nrow(occs), '].')
    }
     else {logger %>%
-      alfred.writeLog(alfred.hlSpp(alfred.fmtSpN(sp)), 'Total ', occDb, ' records returned [',
+      writeLog(hlSpp(fmtSpN(sp)), 'Total ', occDb, ' records returned [',
                nrow(occsOrig), '] out of [', totRows, '] total',
                if (!(doCitations | occDb == 'bien')) {paste0(' (limit ', occNum,')')},
                '. Records without coordinates removed [', noCoordsRem,
@@ -338,11 +340,11 @@ occs <- occs[!dups,]
 
      # put into list
     if (doCitations & occDb == "gbif") {
-      occList[[alfred.fmtSpN(sp)]] <- list(orig = occsOrig,
+      occList[[fmtSpN(sp)]] <- list(orig = occsOrig,
                                            cleaned = as.data.frame(occs),
                                            citation = citeGBIF)
     } else {
-      occList[[alfred.fmtSpN(sp)]] <- list(orig = occsOrig,
+      occList[[fmtSpN(sp)]] <- list(orig = occsOrig,
                                            cleaned = as.data.frame(occs))
     }
   }

@@ -1,0 +1,31 @@
+citHeader("To cite wallace in publications use:")
+
+citEntry(
+  entry    = "Article",
+  title    = "Wallace v2: A flexible platform for reproducible modeling of species niches and distributions built for community expansion",
+  author   = personList(
+    as.person("J. M. Kass"),
+    as.person("G. E. Pinilla-Buitrago"),
+    as.person("A. Paz"),
+    as.person("B. Johnson"),
+    as.person("V. Grisales-Betancur"),
+    as.person("S. I. Meenan"),
+    as.person("P. J. Galante"),
+    as.person("C. Merow"),
+    as.person("O. Broennimann"),
+    as.person("S. Varela"),
+    as.person("B. S. Maitner"),
+    as.person("H. Owens"),
+    as.person("M. E. Aiello-Lammens"),
+    as.person("M. E. Blair"),
+    as.person("R. P. Anderson")
+  ),
+  journal  = "In review",
+  year     = "2022",
+  volume   = "",
+  number   = "",
+  pages    = "",
+  url      = "",
+  textVersion =
+  paste("Kass, J.M., Pinilla-Buitrago, G.E., Paz, A., Johnson, B., Grisales-Betancur, V., Meenan S.I., Galante, P.J., Merow, C., Broennimann, O., Varela, S., Maitner, B.S., Owens, H., Aiello-Lammens, M.E., Blair, M.E. & Anderson, R.P. Wallace v2: A flexible platform for reproducible modeling of species niches and distributions built for community expansion. In Review.")
+)

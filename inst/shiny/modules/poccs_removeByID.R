@@ -50,8 +50,8 @@ poccs_removeByID_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$rmm$code$wallace$occsSelPolyCoords <- NULL
     spp[[curSp()]]$procOccs$occsThin <- NULL
     spp[[curSp()]]$rmm$code$wallace$removedIDs <- NULL
-    logger %>% alfred.writeLog(
-      alfred.hlSpp(curSp()), "Reset to original occurrences (n = ",
+    logger %>% writeLog(
+      hlSpp(curSp()), "Reset to original occurrences (n = ",
       nrow(spp[[curSp()]]$occs), ").")
   })
 
@@ -72,18 +72,18 @@ poccs_removeByID_module_map <- function(map, common) {
   occs <- common$occs
   # Map logic
   map %>% leaflet.extras::removeDrawToolbar() %>%
-    alfred.clearAll() %>%
+    clearAll() %>%
     addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                      radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                      fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
-    alfred.zoom2Occs(occs())
+    zoom2Occs(occs())
 }
 
 poccs_removeByID_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
     poccs_removeByID_knit = !is.null(species$rmm$code$wallace$removedIDs),
-    removeByID_id_rmd = alfred.printVecAsis(species$rmm$code$wallace$removedIDs)
+    removeByID_id_rmd = printVecAsis(species$rmm$code$wallace$removedIDs)
   )
 }
 

@@ -1,6 +1,6 @@
 Package: wallace
-Version: 1.9.2-2
-Date: 2022-04-13
+Version: 1.9.3-4
+Date: 2022-05-19
 Title: A Modular Platform for Reproducible Modeling of Species Niches 
     and Distributions
 Description: The 'shiny' application Wallace is a modular platform for 
@@ -10,15 +10,24 @@ Description: The 'shiny' application Wallace is a modular platform for
     interactive map, thus bundling complex workflows into a single, 
     streamlined interface.
 Authors@R: 
-    c(person("Jamie M.", "Kass", email = "jkass@gradcenter.cuny.edu", role = "aut"),
+    c(person("Jamie M.", "Kass", email = "jamie.kass@oist.jp", role = "aut"),
     person("Gonzalo E.", "Pinilla-Buitrago", email = "gpinillabuitrago@gradcenter.cuny.edu", role = c("aut", "cre")),
 	 	person("Andrea", "Paz", email = "paz.andreita@gmail.com", role = "aut"),
-	  person("Bruno", "Vilela", email = "bvilela@wustl.edu", role = "aut"),
+	 	person("Bethany A.", "Johnson", email = "bjohnso005@citymail.cuny.edu", role = "aut"),
+	 	person("Valentina", "Grisales-Betancur", email = "vgrisale@eafit.edu.co", role = "aut"),
+	  person("Dean", "Attali", email = "daattali@gmail.com", role = "aut"),
 	  person("Matthew E.", "Aiello-Lammens", email = "matt.lammens@gmail.com", role = "aut"),
-	  person("Robert", "Muscarella", email = "bob.muscarella@gmail.com", role = "aut"),
 	  person("Cory", "Merow", email = "corymerow@gmail.com", role = "aut"),
+	  person("Mary E.", "Blair", email = "mblair1@amnh.org", role = "aut"),
 	  person("Robert P.", "Anderson", email = "randerson@ccny.cuny.edu", role = "aut"),
-	  person("Dean", "Attali", email = "daattali@gmail.com", role = "aut"))
+	  person("Sarah I.", "Meenan", email = "sarah.meenan@gmail.com", role = "ctb"),
+	  person("Olivier", "Broennimann", email = "olivier.broennimann@unil.ch", role = "ctb"),
+	  person("Peter J.", "Galante", email = "pgalante@amnh.org", role = "ctb"),
+	  person("Brian S.", "Maitner", email = "bmaitner@gmail.com", role = "ctb"),
+	  person("Hannah L.", "Owens", email = "hannah.owens@gmail.com", role = "ctb"),
+	  person("Sara", "Varela", email = "sara_varela@yahoo.com", role = "ctb"),
+	  person("Bruno", "Vilela", email = "bvilela@wustl.edu", role = "ctb"),
+	  person("Robert", "Muscarella", email = "bob.muscarella@gmail.com", role = "ctb"))
 Depends:
     R (>= 3.5.0),
     shiny (>= 1.6.0),
@@ -62,6 +71,6 @@ Suggests:
     sp,
     testthat
 License: GPL-3
-URL: https://wallaceEcoMod.github.io
+URL: http://wallaceecomod.github.io/wallace/,
 Encoding: UTF-8
 RoxygenNote: 7.1.2

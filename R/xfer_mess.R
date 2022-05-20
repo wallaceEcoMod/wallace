@@ -67,11 +67,11 @@ xfer_mess <- function(occs, bg, bgMsk, xferExtRas, logger = NULL, spN = NULL) {
   xferExtRas2 <- xferExtRas
   names(xferExtRas2) <- names(bgMsk)
 
-  alfred.smartProgress(logger, message = "Generating MESS map...", {
+  smartProgress(logger, message = "Generating MESS map...", {
     mss <- suppressWarnings(dismo::mess(xferExtRas2, allVals))
     # for mapping purposes, set all infinite values to NA
     mss[is.infinite(mss)] <- NA
-    logger %>% alfred.writeLog(alfred.hlSpp(spN), "Generated MESS map.")
+    logger %>% writeLog(hlSpp(spN), "Generated MESS map.")
   })
 
   return(mss)

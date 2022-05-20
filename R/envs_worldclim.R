@@ -38,11 +38,11 @@
 envs_worldclim <- function(bcRes, bcSel, mapCntr, doBrick = FALSE,
                            logger = NULL) {
   if(bcRes == '') {
-    logger %>% alfred.writeLog(type = 'error', 'Select a raster resolution.')
+    logger %>% writeLog(type = 'error', 'Select a raster resolution.')
     return()
   }
 
-  alfred.smartProgress(logger, message = "Retrieving WorldClim data...", {
+  smartProgress(logger, message = "Retrieving WorldClim data...", {
       wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes,
                               lon = mapCntr[1], lat = mapCntr[2])
       # change names if bio01 is bio1, and so forth
@@ -59,13 +59,13 @@ envs_worldclim <- function(bcRes, bcSel, mapCntr, doBrick = FALSE,
 
   # convert to brick for faster processing
   if(doBrick == TRUE) {
-    alfred.smartProgress(logger,
+    smartProgress(logger,
                          message = "Converting to RasterBrick for faster processing...", {
       wcbc <- raster::brick(wcbc)
     })
   }
 
-  logger %>% alfred.writeLog("WorldClim bioclimatic variables ",
+  logger %>% writeLog("WorldClim bioclimatic variables ",
                       paste(names(wcbc), collapse = ", "), " at ",
                       bcRes, " arcmin resolution.")
   return(wcbc)

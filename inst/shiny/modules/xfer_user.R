@@ -106,7 +106,7 @@ xfer_user_module_server <- function(input, output, session, common) {
     # ERRORS ####
     if (is.null(spp[[curSp()]]$visualization$mapPred)) {
       logger %>%
-        alfred.writeLog(
+        writeLog(
           type = 'error',
           'Calculate a model prediction in model component before transferring.'
         )
@@ -115,7 +115,7 @@ xfer_user_module_server <- function(input, output, session, common) {
     if (input$xferExt == 'xfDraw') {
       if (is.null(spp[[curSp()]]$polyXfXY)) {
         logger %>%
-          alfred.writeLog(
+          writeLog(
             type = 'error',
             paste0("The polygon has not been drawn and finished. Please use the ",
                    "draw toolbar on the left-hand of the map to complete the ",
@@ -126,7 +126,7 @@ xfer_user_module_server <- function(input, output, session, common) {
     }
     if (input$xferExt == 'xfUser') {
       if (is.null(input$userXfShp$datapath)) {
-        logger %>% alfred.writeLog(type = 'error', paste0("Specified filepath(s)"))
+        logger %>% writeLog(type = 'error', paste0("Specified filepath(s)"))
         return()
       }
     }
@@ -136,17 +136,17 @@ xfer_user_module_server <- function(input, output, session, common) {
       polyXf <- xfer_draw(spp[[curSp()]]$polyXfXY, spp[[curSp()]]$polyXfID,
                           input$drawXfBuf, logger, spN = curSp())
       if (input$drawXfBuf == 0 ) {
-        logger %>% alfred.writeLog(
-          alfred.hlSpp(curSp()), 'Draw polygon without buffer.')
+        logger %>% writeLog(
+          hlSpp(curSp()), 'Draw polygon without buffer.')
       } else {
-        logger %>% alfred.writeLog(
-          alfred.hlSpp(curSp()), 'Draw polygon with buffer of ', input$drawXfBuf,
+        logger %>% writeLog(
+          hlSpp(curSp()), 'Draw polygon with buffer of ', input$drawXfBuf,
           ' degrees.')
       }
       # METADATA ####
       spp[[curSp()]]$rmm$code$wallace$XfBuff <- input$drawXfBuf
-      polyX <- alfred.printVecAsis(round(spp[[curSp()]]$polyXfXY[, 1], digits = 4))
-      polyY <- alfred.printVecAsis(round(spp[[curSp()]]$polyXfXY[, 2], digits = 4))
+      polyX <- printVecAsis(round(spp[[curSp()]]$polyXfXY[, 1], digits = 4))
+      polyY <- printVecAsis(round(spp[[curSp()]]$polyXfXY[, 2], digits = 4))
       spp[[curSp()]]$rmm$code$wallace$drawExtPolyXfCoords <-
         paste0('X: ', polyX, ', Y: ', polyY)
     }
@@ -175,8 +175,8 @@ xfer_user_module_server <- function(input, output, session, common) {
 
     if (input$xferExt == 'xfCur') {
       polyXf <- spp[[curSp()]]$procEnvs$bgExt
-      logger %>% alfred.writeLog(
-        alfred.hlSpp(curSp()),
+      logger %>% writeLog(
+        hlSpp(curSp()),
         'Extent of transfer equal to current extent region.')
     }
     # LOAD INTO SPP ####
@@ -189,23 +189,23 @@ xfer_user_module_server <- function(input, output, session, common) {
     # ERRORS ####
     if (is.null(spp[[curSp()]]$visualization$mapPred)) {
       logger %>%
-        alfred.writeLog(type = 'error',
+        writeLog(type = 'error',
                  'Calculate a model prediction in visualize component before transferring.')
       return()
     }
     if (is.null(spp[[curSp()]]$transfer$xfExt)) {
-      logger %>% alfred.writeLog(type = 'error', 'Select extent of transfer first.')
+      logger %>% writeLog(type = 'error', 'Select extent of transfer first.')
       return()
     }
     if (is.null(input$userXferEnvs)) {
-      logger %>% alfred.writeLog(type = 'error', "Raster files not uploaded.")
+      logger %>% writeLog(type = 'error', "Raster files not uploaded.")
       return()
     }
     # Check the number of selected files
     if (length(input$userXferEnvs$name) !=
         length(spp[[curSp()]]$rmm$data$environment$variableNames)) {
       logger %>%
-        alfred.writeLog(type = 'error', "Number of files are not the same that the ",
+        writeLog(type = 'error', "Number of files are not the same that the ",
                  "enviromental variables")
       return()
     }
@@ -213,7 +213,7 @@ xfer_user_module_server <- function(input, output, session, common) {
     if (!identical(tools::file_path_sans_ext(sort(input$userXferEnvs$name)),
                    sort(spp[[curSp()]]$rmm$data$environment$variableNames))) {
       logger %>%
-        alfred.writeLog(type = 'error',
+        writeLog(type = 'error',
                  paste0("Raster files don't have same names. You must name your",
                         " files as: "),
                  em(paste(spp[[curSp()]]$rmm$data$environment$variableNames,
@@ -231,7 +231,7 @@ xfer_user_module_server <- function(input, output, session, common) {
                             methods::as(raster::extent(userXferEnvs),
                                         'SpatialPolygons'))) {
       logger %>%
-        alfred.writeLog(type = 'error', 'Extents do not overlap')
+        writeLog(type = 'error', 'Extents do not overlap')
       return()
     }
 
@@ -273,13 +273,13 @@ xfer_user_module_server <- function(input, output, session, common) {
         thr <- stats::quantile(occPredVals, probs = input$trainPresQuantile)
       }
       xferUserThr <- xferUser > thr
-      logger %>% alfred.writeLog(
-        alfred.hlSpp(curSp()), "Transferring of model to user-specified files",
+      logger %>% writeLog(
+        hlSpp(curSp()), "Transferring of model to user-specified files",
                           'with threshold ', input$threshold, ' (',
                           formatC(thr, format = "e", 2), ').')
     } else {
       xferUserThr <- xferUser
-      logger %>% alfred.writeLog(alfred.hlSpp(curSp()), "Transferring of model to user-specified files",
+      logger %>% writeLog(hlSpp(curSp()), "Transferring of model to user-specified files",
                           'with ', predType, ' output.')
     }
     raster::crs(xferUserThr) <- raster::crs(envs())
@@ -289,19 +289,19 @@ xfer_user_module_server <- function(input, output, session, common) {
     # LOAD INTO SPP ####
     spp[[curSp()]]$transfer$xfEnvs <- xferExt
     spp[[curSp()]]$transfer$mapXfer <- xferUserThr
-    spp[[curSp()]]$transfer$mapXferVals <- alfred.getRasterVals(xferUserThr, predType)
+    spp[[curSp()]]$transfer$mapXferVals <- getRasterVals(xferUserThr, predType)
 
     # METADATA ####
     spp[[curSp()]]$rmm$code$wallace$transfer_curModel <- curModel()
     spp[[curSp()]]$rmd$transfer_user <-TRUE
     spp[[curSp()]]$rmm$data$transfer$environment1$minVal <-
-      alfred.printVecAsis(raster::cellStats(xferExt, min), asChar = TRUE)
+      printVecAsis(raster::cellStats(xferExt, min), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$maxVal <-
-      alfred.printVecAsis(raster::cellStats(xferExt, max), asChar = TRUE)
+      printVecAsis(raster::cellStats(xferExt, max), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$resolution <-
       paste(round(raster::res(xferExt)[1] * 60, digits = 2), "degrees")
     spp[[curSp()]]$rmm$data$transfer$environment1$extentSet <-
-      alfred.printVecAsis(as.vector(xferExt@extent), asChar = TRUE)
+      printVecAsis(as.vector(xferExt@extent), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$extentRule <-
       "transfer to user-specified files"
     spp[[curSp()]]$rmm$data$transfer$environment1$sources <- "user"
@@ -309,9 +309,9 @@ xfer_user_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$rmm$prediction$transfer$environment1$units <-
       ifelse(predType == "raw", "relative occurrence rate", predType)
     spp[[curSp()]]$rmm$prediction$transfer$environment1$minVal <-
-      alfred.printVecAsis(raster::cellStats(xferUserThr, min), asChar = TRUE)
+      printVecAsis(raster::cellStats(xferUserThr, min), asChar = TRUE)
     spp[[curSp()]]$rmm$prediction$transfer$environment1$maxVal <-
-      alfred.printVecAsis(raster::cellStats(xferUserThr, max), asChar = TRUE)
+      printVecAsis(raster::cellStats(xferUserThr, max), asChar = TRUE)
     if(!(input$threshold == 'none')) {
       spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet <- thr
       if (input$threshold == 'qtp') {
@@ -336,7 +336,7 @@ xfer_user_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$polyXfXY <- NULL
     spp[[curSp()]]$polyXfID <- NULL
     spp[[curSp()]]$transfer <- NULL
-    logger %>% alfred.writeLog("Reset extent of transfer.")
+    logger %>% writeLog("Reset extent of transfer.")
   })
 
   return(list(
@@ -383,8 +383,8 @@ xfer_user_module_map <- function(map, common) {
     shp <- lapply(polyXfXY, function(x) x@coords)
   }
   bb <- spp[[curSp()]]$transfer$xfExt@bbox
-  bbZoom <- alfred.polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
-  map %>% alfred.clearAll() %>% removeImage('xferRas') %>%
+  bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
+  map %>% clearAll() %>% removeImage('xferRas') %>%
     fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
   for (poly in shp) {
     map %>% addPolygons(lng = poly[, 1], lat = poly[, 2], weight = 4,
@@ -409,7 +409,7 @@ xfer_user_module_map <- function(map, common) {
       addLegend("bottomright", pal = legendPal,
                 title = "Predicted Suitability<br>(Transferred)",
                 values = mapXferVals, layerId = 'xfer',
-                labFormat = alfred.reverseLabel(2, reverse_order = TRUE))
+                labFormat = reverseLabel(2, reverse_order = TRUE))
   }
   # map model prediction raster and polygon of transfer
   map %>% clearMarkers() %>% clearShapes() %>% removeImage('xferRas') %>%
@@ -429,7 +429,7 @@ xfer_user_module_rmd <- function(species) {
     outputType_rmd = species$rmm$prediction$notes,
     alg_rmd = species$rmm$model$algorithms,
     clamp_rmd = species$rmm$model$algorithm$maxent$clamping,
-    userXfName_rmd = alfred.printVecAsis(species$rmm$code$wallace$userXfName),
+    userXfName_rmd = printVecAsis(species$rmm$code$wallace$userXfName),
     ##Use of threshold for transferring
     xfer_user_threshold_knit = !is.null(species$rmm$prediction$transfer$environment1$thresholdSet),
     xfer_thresholdRule_rmd = species$rmm$prediction$transfer$environment1$thresholdRule,
@@ -441,7 +441,7 @@ xfer_user_module_rmd <- function(species) {
     xfer_user_drawn_knit = !is.null(species$rmm$code$wallace$drawExtPolyXfCoords),
     ###arguments for creating extent
     polyXfXY_rmd = if(!is.null(species$rmm$code$wallace$drawExtPolyXfCoords)){
-      alfred.printVecAsis(species$polyXfXY)} else {NULL},
+      printVecAsis(species$polyXfXY)} else {NULL},
     polyXfID_rmd =  if(!is.null(species$rmm$code$wallace$drawExtPolyXfCoords)){
       species$polyXfID} else {0},
     BgBuf_rmd = species$rmm$code$wallace$XfBuff,
