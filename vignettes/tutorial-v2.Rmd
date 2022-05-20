@@ -90,7 +90,7 @@ Click on the component tab **Occ Data**, select a module, and consult the schema
 knitr::include_graphics("vignette_img/orientation_2.png")
 ```
 
-(**1**) These are the components. You will be stepping sequentially through them. **Wallace v2** now includes a Support button (**1a**), which links to the Google Group, email, website, and the Github page to report issues, as well as the quit button (**1b**), which will end the session.\
+(**1**) These are the components. You will be stepping sequentially through them. *Wallace v2* now includes a Support button (**1a**), which links to the Google Group, email, website, and the Github page to report issues, as well as the quit button (**1b**), which will end the session.\
 (**2**) This is the toolbar with all the user interface controls, such as buttons, text inputs, etc. You can see that the module *Query Database (Present)* is currently selected. You'll see that two other modules exist for this component: *Query Database (Paleo)* and *User-specified*. This last module lets you upload your own occurrence data. Try choosing it instead and notice that the toolbar changes, then click back to *Query Database (Present)*.\
 Both the **Component** and *Module* have '?' buttons next to the title text. Clicking these will link to the respective guidance texts.\
 Within this toolbar, you can find the module name and the `R` packages it uses (**2a**), as well as the control panel for the selected module (**2b**). Modules can be contributed by other researchers and the developers; CRAN links and documentation are at the bottom.\
@@ -211,7 +211,7 @@ This opens the drawing tool. Click to begin drawing---each click connects to the
 knitr::include_graphics("vignette_img/poccs_2.png")
 ```
   
-We will now remove it again, this time using the second module, *Remove Occurrences by ID*. With the pointer, click on the record in Bolivia. Information on the record will pop up, starting with the OccID. In this case it is OccID #18 (it may be a different number for you). Other information from the attribute table will be available. For example, the record has no information (NA) on the institution code, state/province, or basis. Since we know the OccID number, we can find the full information associated in the Occurrences tab. Click there and find the record. Here we can see it is a preserved specimen from the Museum of Southwestern Biology (MSB). Go back to the map. Enter "18" for the ID to be removed and remove occurrence. You will see the point disappear again. Click reset to get it back again..
+We will now remove it again, this time using the second module, *Remove Occurrences by ID*. With the pointer, click on the record in Bolivia. Information on the record will pop up, starting with the OccID. In this case it is OccID #18 (it may be a different number for you). Other information from the attribute table will be available. For example, the record has no information (NA) on the institution code, state/province, or basis. Since we know the OccID number, we can find the full information associated in the Occurrences tab. Click there and find the record. Here we can see it is a preserved specimen from the Museum of Southwestern Biology (MSB). Go back to the map. Enter "18" for the ID to be removed and "Remove Occurrence". You will see the point disappear again. Click reset to get it back again..
 
 
 ```{r, fig.align = 'center'}
