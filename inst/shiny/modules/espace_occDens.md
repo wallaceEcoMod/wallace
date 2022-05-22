@@ -2,7 +2,7 @@
 
 **BACKGROUND**
 
-Ordination scatterplots with ellipses in Module: *Environmental Ordination* are a standard way to represent niches. However, they do not represent which part of the environmental space is occupied more densely by the species, nor do they show the availability of environmental conditions present within the background extent. The Module: Occurrence Density Grid calculates and plots both of these.
+Ordination scatterplots with ellipses in Module: *Environmental Ordination* are a standard way to represent niches. However, they do not represent which part of the environmental space is occupied more densely by the species, nor do they show the availability of environmental conditions present within the background extent. The Module: *Occurrence Density Grid* calculates and plots both of these.
 
 **IMPLEMENTATION**
 
