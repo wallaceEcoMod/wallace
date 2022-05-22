@@ -92,7 +92,7 @@ function(input, output, session) {
   observeEvent(input$xfer_timeHelp, updateTabsetPanel(session, "main", "Module Guidance"))
   observeEvent(input$xfer_userHelp, updateTabsetPanel(session, "main", "Module Guidance"))
   observeEvent(input$xfer_messHelp, updateTabsetPanel(session, "main", "Module Guidance"))
-  observeEvent(input$post_userSDMHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$mask_userSDMHelp, updateTabsetPanel(session, "main", "Module Guidance"))
   observeEvent(input$mask_expPolyHelp, updateTabsetPanel(session, "main", "Module Guidance"))
   observeEvent(input$mask_spatialHelp, updateTabsetPanel(session, "main", "Module Guidance"))
   observeEvent(input$mask_tempHelp, updateTabsetPanel(session, "main", "Module Guidance"))

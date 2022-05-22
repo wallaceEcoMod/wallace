@@ -1,4 +1,4 @@
-post_userSDM_module_ui <- function(id) {
+mask_userSDM_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
     fileInput(ns("sdmFile"), label = "Upload distribution map (**)",
@@ -7,7 +7,7 @@ post_userSDM_module_ui <- function(id) {
   )
 }
 
-post_userSDM_module_server <- function(input, output, session, common) {
+mask_userSDM_module_server <- function(input, output, session, common) {
   spp <- common$spp
   logger <- common$logger
 
@@ -23,7 +23,7 @@ post_userSDM_module_server <- function(input, output, session, common) {
       newSppName <- fileNameNoExt(fmtSpN(input$sdmFile$name[i]))
 
       if (!(newSppName %in% names(spp))) {
-        userSDMs <- post_userSDM(rasPath = input$sdmFile$datapath[i],
+        userSDMs <- mask_userSDM(rasPath = input$sdmFile$datapath[i],
                                  rasName = input$sdmFile$name[i],
                                  logger)
         if (!is.null(userSDMs)) {
@@ -42,7 +42,7 @@ post_userSDM_module_server <- function(input, output, session, common) {
             "Prediction already available on Wallace. You cannot upload a user raster.")
           return()
         } else { # If occs exists
-          userSDMs <- post_userSDM(rasPath = input$sdmFile$datapath[i],
+          userSDMs <- mask_userSDM(rasPath = input$sdmFile$datapath[i],
                                    rasName = input$sdmFile$name[i],
                                    logger)
           logger %>% writeLog(hlSpp(newSppName), "User SDM prediction loaded (**)")
@@ -61,7 +61,7 @@ post_userSDM_module_server <- function(input, output, session, common) {
   })
 }
 
-post_userSDM_module_map <- function(map, common) {
+mask_userSDM_module_map <- function(map, common) {
 
   curSp <- common$curSp
   spp <- common$spp
@@ -116,10 +116,10 @@ post_userSDM_module_map <- function(map, common) {
   }
 }
 
-post_userSDM_module_rmd <- function(species) {
+mask_userSDM_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    post_userSDM_knit = FALSE
+    mask_userSDM_knit = FALSE
     # var1 = species$rmm$code$wallace$someSetting1,
     # var2 = species$rmm$code$wallace$someSetting2
   )

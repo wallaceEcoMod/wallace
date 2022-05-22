@@ -28,7 +28,6 @@ tagList(
     tabPanel("Model", value = 'model'),
     tabPanel("Visualize", value = 'vis'),
     tabPanel("Transfer", value = 'xfer'),
-    tabPanel("User SDM", value = 'post'),
     tabPanel("Mask", value = 'mask'),
     tabPanel("Indicators", value = 'change'),
     tabPanel("Diversity", value = 'alpha'),
@@ -159,19 +158,6 @@ tagList(
               selected = character(0)),
             tags$hr(),
             insert_modules_ui("xfer")
-          ),
-          # Upload User SDM ####
-          conditionalPanel(
-            "input.tabs == 'post'",
-            div("Component: Upload user-specified SDM (**)",
-                class = "componentName"),
-            help_comp_ui("postHelp"),
-            radioButtons(
-              "postSel", "Modules Available:",
-              choices = insert_modules_options("post"),
-              selected = character(0)),
-            tags$hr(),
-            insert_modules_ui("post")
           ),
           # Upload User SDM ####
           conditionalPanel(
@@ -492,13 +478,6 @@ tagList(
                                                          "PNG" = 'png'))),
                     column(2, shinyjs::disabled(downloadButton('dlMess', "MESS file")))
                   )
-                )
-              ),
-              conditionalPanel(
-                "input.tabs == 'post'",
-                br(),
-                fluidRow(
-                  column(3, h5("No available data for downloading."))
                 )
               ),
               conditionalPanel(

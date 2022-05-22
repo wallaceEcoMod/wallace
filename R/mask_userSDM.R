@@ -1,5 +1,5 @@
 #'
-#' @title  post_userSDM
+#' @title  mask_userSDM
 #' @description Upload user-specified SDM prediction
 #'
 #' @details
@@ -30,7 +30,7 @@
 #'
 #'
 
-post_userSDM <- function(rasPath, rasName, logger = NULL) {
+mask_userSDM <- function(rasPath, rasName, logger = NULL) {
   spName <- fileNameNoExt(rasName)
   spName <- paste0(toupper(substring(spName, 1, 1)),
                    substring(spName, 2, nchar(spName)))

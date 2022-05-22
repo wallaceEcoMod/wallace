@@ -20,7 +20,7 @@ for (file in base_module_files) source(file, local = TRUE)
 # The components that have modules. These names must match the values of the
 # tabs of the components in the UI.
 COMPONENTS <- c("occs", "envs", "poccs", "penvs", "espace", "part", "model",
-                "vis", "xfer", "post", "mask", "change", "alpha", "rep")
+                "vis", "xfer", "mask", "change", "alpha", "rep")
 
 # Information about modules that various parts of the app need access to
 COMPONENT_MODULES <- list()
@@ -54,7 +54,7 @@ base_module_configs <- c(
   "modules/xfer_time.yml",
   "modules/xfer_user.yml",
   "modules/xfer_mess.yml",
-  "modules/post_userSDM.yml",
+  "modules/mask_userSDM.yml",
   "modules/mask_spatial.yml",
   "modules/mask_expPoly.yml",
   "modules/mask_temp.yml",
