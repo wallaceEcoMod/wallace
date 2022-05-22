@@ -161,6 +161,9 @@ clearAll <- function(map) {
 #' @description For internal use. Function to map all background polygons
 #' @param map leaflet map
 #' @param bgShpXY Polygon
+#' @param color Color of polygon
+#' @param group Group leaflet
+#' @keywords internal
 #' @export
 mapBgPolys <- function(map, bgShpXY, color, group) {
   for (shp in bgShpXY) {

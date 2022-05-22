@@ -1,31 +1,13 @@
 
 #' @title mask_tempExtract
-#' @description ..
-#'
-#' @details
-#' See Examples.
-#'
-#' @param lower x
-#' @param upper x
-#' @param maskRaster x
-#' @param pred x
-#' @param logger x
-#' @param spN x
-# @keywords
-#'
-# @examples
-#'
-#'
-# @return
+#' @description To mask prediction by temporal thresholds.
+#' @param lowerInp Lower bound value
+#' @param upperInp Upper bound value
+#' @param maskRaster Masking raster
+#' @param pred Prediction
+#' @param logger logger
+#' @param spN Species name.
 #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
-# @note
-# @seealso
-# @references
-# @aliases - a list of additional topic names that will be mapped to
-# this documentation when the user looks them up from the command
-# line.
-# @family - a family name. All functions that have the same family tag will be linked in the documentation.
-
 #' @export
 #'
 

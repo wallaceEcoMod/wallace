@@ -1,31 +1,12 @@
 
 #' @title mask_expPoly
-#' @description ..
-#'
-#' @details
-#' See Examples.
-#'
-#' @param polyAddRem x
-#' @param prediction x
-#' @param rem x
-#' @param bgExt x
-#' @param logger x
-#' @param spN Character. Used to obtain species name for logger messages
-# @keywords
-#'
-# @examples
-#'
-#'
-# @return
+#' @description Remove or add polygon to prediction
+#' @param polyMask Polygon in shapefile
+#' @param prediction Raster prediction
+#' @param bgExt Polygon of background extent
+#' @param rem Remove areas of polygon from prediction
+#' @param logger logger
 #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
-# @note
-# @seealso
-# @references
-# @aliases - a list of additional topic names that will be mapped to
-# this documentation when the user looks them up from the command
-# line.
-# @family - a family name. All functions that have the same family tag will be linked in the documentation.
-
 #' @export
 #'
 
