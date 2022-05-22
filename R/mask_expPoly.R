@@ -33,7 +33,7 @@ mask_expPoly <- function(polyMask, prediction, bgExt, rem = FALSE,
         newPred[newPred <= 0] <- NA
         newPred <- raster::trim(newPred)
         extPoly <- raster::extent(newPred)
-        extPoly <- as(extPoly, 'SpatialPolygons')
+        extPoly <- methods::as(extPoly, 'SpatialPolygons')
       })
     }
   }

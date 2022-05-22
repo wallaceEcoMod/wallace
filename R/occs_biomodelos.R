@@ -88,13 +88,13 @@ occs_biomodelos <- function(spN, bioKey, logger = NULL) {
               "suggestedStateProvince", "verbatimLocality", "year", "basisOfRecord",
               "catalogNumber", "institutionCode", "verbatimElevation", "uncertainty")
   for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
-  occs <- occs %>% dplyr::rename(scientific_name = acceptedNameUsage,
-                                 state_province = suggestedStateProvince,
-                                 locality = verbatimLocality,
-                                 record_type = basisOfRecord,
-                                 institution_code = institutionCode,
-                                 catalog_number = catalogNumber,
-                                 elevation = verbatimElevation)
+  occs <- occs %>% dplyr::rename(scientific_name = .data$acceptedNameUsage,
+                                 state_province = .data$suggestedStateProvince,
+                                 locality = .data$verbatimLocality,
+                                 record_type = .data$basisOfRecord,
+                                 institution_code = .data$institutionCode,
+                                 catalog_number = .data$catalogNumber,
+                                 elevation = .data$verbatimElevation)
 
   # subset by key columns and make id and popup columns
   cols <- c("occID", "scientific_name", "longitude", "latitude", "country",
@@ -102,8 +102,8 @@ occs_biomodelos <- function(spN, bioKey, logger = NULL) {
             "institution_code", "elevation", "uncertainty")
   occs <- occs %>%
     dplyr::select(dplyr::one_of(cols)) %>%
-    dplyr::mutate(year = as.integer(year),
-                  uncertainty = as.numeric(uncertainty)) %>%
+    dplyr::mutate(year = as.integer(.data$year),
+                  uncertainty = as.numeric(.data$uncertainty)) %>%
     # # make new column for leaflet marker popup content
     dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent))) %>%
     dplyr::arrange_(cols)

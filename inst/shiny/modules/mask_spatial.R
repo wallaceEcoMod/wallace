@@ -97,7 +97,7 @@ mask_spatial_module_server <- function(input, output, session, common) {
     maskPred <- raster::mask(maskPred, dissPoly)
     newPred <- raster::trim(maskPred)
     extPoly <- raster::extent(maskPred)
-    bgExt <- as(extPoly, 'SpatialPolygons')
+    bgExt <- methods::as(extPoly, 'SpatialPolygons')
     raster::crs(bgExt) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
     raster::crs(maskPred) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
 

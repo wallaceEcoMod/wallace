@@ -53,7 +53,7 @@ mask_userSDM <- function(rasPath, rasName, logger = NULL) {
           type = "error", "Wrong extent projection. '", rasName,"' cannot be uploaded. (**)")
       return()
     }
-    extPoly <- as(extPoly, 'SpatialPolygons')
+    extPoly <- methods::as(extPoly, 'SpatialPolygons')
   })
 
   if (is.na(raster::crs(r))) {

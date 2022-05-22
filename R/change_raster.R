@@ -44,7 +44,7 @@ change_raster <- function(rasPath, rasName, logger = NULL) {
           type = "error", "Wrong extent projection. '", rasName,"' cannot be uploaded. (**)")
       return()
     }
-    extPoly <- as(extPoly, 'SpatialPolygons')
+    extPoly <- methods::as(extPoly, 'SpatialPolygons')
   })
 
   return(list(sdm = r, extSdm = extPoly))
