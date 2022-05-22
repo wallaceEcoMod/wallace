@@ -1,4 +1,4 @@
-alpha_richness_module_ui <- function(id) {
+diver_richness_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
       span("Step 1:", class = "step"),
@@ -10,12 +10,12 @@ alpha_richness_module_ui <- function(id) {
                   )),
 
     # UI
-    uiOutput(ns("alphaRich")),
+    uiOutput(ns("diverRich")),
     actionButton(ns("GoRichness"), "Run")
   )
 }
 
-alpha_richness_module_server <- function(input, output, session, common) {
+diver_richness_module_server <- function(input, output, session, common) {
   logger <- common$logger
   spp <- common$spp
   curSp <- common$curSp
@@ -23,7 +23,7 @@ alpha_richness_module_server <- function(input, output, session, common) {
   mapProj <- common$mapProj
   allSp <- common$allSp
 
-  output$alphaRich <- renderUI({
+  output$diverRich <- renderUI({
     ns <- session$ns
     req(curSp())
     if (length(curSp()) == 1) {
@@ -237,14 +237,14 @@ curSp()
 
 }
 
-alpha_richness_module_result <- function(id) {
+diver_richness_module_result <- function(id) {
   ns <- NS(id)
 
   # Result UI
   verbatimTextOutput(ns("result"))
 }
 
-alpha_richness_module_map <- function(map, common) {
+diver_richness_module_map <- function(map, common) {
   # Map logic
   spp <- common$spp
   curSp <- common$curSp
@@ -265,13 +265,13 @@ alpha_richness_module_map <- function(map, common) {
               labFormat = reverseLabel(2, reverse_order = TRUE))
   #MAP richness
   map %>% addRasterImage(SR, colors = rasPal, opacity = 0.7,
-                   layerId = 'SR', group = 'alpha', method = "ngb")
+                   layerId = 'SR', group = 'diver', method = "ngb")
 }
 
-alpha_richness_module_rmd <- function(species) {
+diver_richness_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    alpha_richness_knit = FALSE
+    diver_richness_knit = FALSE
     #species$rmm$code$wallace$someFlag,
     #var1 = species$rmm$code$wallace$someSetting1,
     #var2 = species$rmm$code$wallace$someSetting2

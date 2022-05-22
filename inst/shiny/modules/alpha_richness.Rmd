@@ -1,7 +1,0 @@
-```{asis, echo = {{alpha_richness_knit}}, eval = {{alpha_richness_knit}}, include = {{alpha_richness_knit}}}
-# 
-```
-
-```{r, echo = {{alpha_richness_knit}}, include = {{alpha_richness_knit}}}
-#
-```

@@ -99,8 +99,8 @@ function(input, output, session) {
   observeEvent(input$change_overlapHelp, updateTabsetPanel(session, "main", "Module Guidance"))
   observeEvent(input$change_rangeHelp, updateTabsetPanel(session, "main", "Module Guidance"))
   observeEvent(input$change_timeHelp, updateTabsetPanel(session, "main", "Module Guidance"))
-  observeEvent(input$alpha_endemismHelp, updateTabsetPanel(session, "main", "Module Guidance"))
-  observeEvent(input$alpha_richnessHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$diver_endemismHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$diver_richnessHelp, updateTabsetPanel(session, "main", "Module Guidance"))
 
   ######################## #
   ### MAPPING LOGIC ####
@@ -154,7 +154,7 @@ function(input, output, session) {
   # Call the module-specific map function for the current module
 
   observe({
-    if (component() == 'alpha') {# must have one species selected and occurrence data
+    if (component() == 'diver') {# must have one species selected and occurrence data
       #req(length(curSp()) ==1, occs(), module())
       #for this to work with multisp we can't require occs as we will have more than 1 curSp
       req(length(curSp()) >=1, module())
@@ -250,8 +250,8 @@ function(input, output, session) {
     if(!is.null(curSp())) selected <- curSp() else selected <- n[1]
     # if espace component, allow for multiple species selection
     if(component() == 'espace') options <- list(maxItems = 2)
-    #if alpha component, allow for multiple species selection
-    else if (component() == 'alpha') options <- list(maxItems = 100) else options <- list(maxItems = 1)
+    #if diver component, allow for multiple species selection
+    else if (component() == 'diver') options <- list(maxItems = 100) else options <- list(maxItems = 1)
     # make a named list of their names
     sppNameList <- c(list("Current species" = ""), setNames(as.list(n), n))
     # generate a selectInput ui that lists the available species
@@ -1515,7 +1515,7 @@ function(input, output, session) {
                       values = mapSRVals, layerId = "train") %>%
             addProviderTiles(input$bmap) %>%
             addRasterImage( spp[["multisp"]]$SR, colors = rasPal, opacity = 0.7,
-                           group = 'alpha', layerId = 'SR', method = "ngb")
+                           group = 'diver', layerId = 'SR', method = "ngb")
           mapview::mapshot(m, file = file)
         } else if (input$richFileType == 'raster') {
           fileName <-  "Richness"
@@ -1569,7 +1569,7 @@ function(input, output, session) {
                       values = mapSEVals, layerId = "train") %>%
             addProviderTiles(input$bmap) %>%
             addRasterImage( spp[["multisp"]]$SE, colors = rasPal, opacity = 0.7,
-                            group = 'alpha', layerId = 'SE', method = "ngb")
+                            group = 'diver', layerId = 'SE', method = "ngb")
           mapview::mapshot(m, file = file)
         } else if (input$richFileType == 'raster') {
           fileName <-  "Endemism"

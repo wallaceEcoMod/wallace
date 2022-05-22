@@ -1,0 +1,7 @@
+```{asis, echo = {{diver_richness_knit}}, eval = {{diver_richness_knit}}, include = {{diver_richness_knit}}}
+# 
+```
+
+```{r, echo = {{diver_richness_knit}}, include = {{diver_richness_knit}}}
+#
+```

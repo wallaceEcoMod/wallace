@@ -30,7 +30,7 @@ tagList(
     tabPanel("Transfer", value = 'xfer'),
     tabPanel("Mask", value = 'mask'),
     tabPanel("Indicators", value = 'change'),
-    tabPanel("Diversity", value = 'alpha'),
+    tabPanel("Diversity", value = 'diver'),
     tabPanel("Reproduce", value = 'rep'),
     navbarMenu("Support", icon = icon("life-ring"),
                HTML('<a href="https://wallaceecomod.github.io/" target="_blank">Wallace Homepage</a>'),
@@ -185,15 +185,15 @@ tagList(
           ),
           # ALPHA ####
           conditionalPanel(
-            "input.tabs == 'alpha'",
-            div("Component: Alpha diversity (**)", class = "componentName"),
-            help_comp_ui("alphaHelp"),
+            "input.tabs == 'diver'",
+            div("Component: Diversity (**)", class = "componentName"),
+            help_comp_ui("diverHelp"),
             radioButtons(
-              "alphaSel", "Modules Available:",
-              choices = insert_modules_options("alpha"),
+              "diverSel", "Modules Available:",
+              choices = insert_modules_options("diver"),
               selected = character(0)),
             tags$hr(),
-            insert_modules_ui("alpha")
+            insert_modules_ui("diver")
           ),
           # REPRODUCIBILITY ####
           conditionalPanel(
@@ -545,7 +545,7 @@ tagList(
               ),
 
               conditionalPanel(
-                "input.tabs == 'alpha'",
+                "input.tabs == 'diver'",
                 br(),
                 fluidRow(
                   column(3, h5("Download list of species used for species richness calculations")),

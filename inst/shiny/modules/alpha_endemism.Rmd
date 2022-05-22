@@ -1,7 +1,0 @@
-```{asis, echo = {{alpha_endemism_knit}}, eval = {{alpha_endemism_knit}}, include = {{alpha_endemism_knit}}}
-#
-```
-
-```{r, echo = {{alpha_endemism_knit}}, include = {{alpha_endemism_knit}}}
-#
-```

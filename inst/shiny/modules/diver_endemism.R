@@ -1,4 +1,4 @@
-alpha_endemism_module_ui <-  function(id) {
+diver_endemism_module_ui <-  function(id) {
   ns <- shiny::NS(id)
   tagList(
     span("Step 1:", class = "step"),
@@ -10,12 +10,12 @@ alpha_endemism_module_ui <-  function(id) {
                 )),
 
     # UI
-    uiOutput(ns("alphaEnd")),
+    uiOutput(ns("diverEnd")),
     actionButton(ns("Goendemism"), "Run")
   )
 }
 
-alpha_endemism_module_server <- function(input, output, session, common) {
+diver_endemism_module_server <- function(input, output, session, common) {
   logger <- common$logger
   spp <- common$spp
   curSp <- common$curSp
@@ -23,7 +23,7 @@ alpha_endemism_module_server <- function(input, output, session, common) {
   mapProj <- common$mapProj
   allSp <- common$allSp
 
-  output$alphaEnd <- renderUI({
+  output$diverEnd <- renderUI({
     ns <- session$ns
     req(curSp())
     if (length(curSp()) == 1) {
@@ -257,14 +257,14 @@ alpha_endemism_module_server <- function(input, output, session, common) {
 
 }
 
-alpha_endemism_module_result <- function(id) {
+diver_endemism_module_result <- function(id) {
 ns <- NS(id)
 
 # Result UI
 verbatimTextOutput(ns("result"))
 }
 
-alpha_endemism_module_map <- function(map, common) {
+diver_endemism_module_map <- function(map, common) {
   # Map logic
   spp <- common$spp
   curSp <- common$curSp
@@ -285,13 +285,13 @@ alpha_endemism_module_map <- function(map, common) {
               labFormat = reverseLabel(2, reverse_order = TRUE))
   #MAP endemism
   map %>% addRasterImage(SE, colors = rasPal, opacity = 0.7,
-                         layerId = 'SE', group = 'alpha', method = "ngb")
+                         layerId = 'SE', group = 'diver', method = "ngb")
 }
 
-alpha_endemism_module_rmd <- function(species) {
+diver_endemism_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    alpha_endemism_knit = FALSE
+    diver_endemism_knit = FALSE
     #species$rmm$code$wallace$someFlag,
     #var1 = species$rmm$code$wallace$someSetting1,
     #var2 = species$rmm$code$wallace$someSetting2
