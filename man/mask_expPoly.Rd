@@ -7,23 +7,18 @@
 mask_expPoly(polyMask, prediction, bgExt, rem = FALSE, logger = NULL)
 }
 \arguments{
-\item{prediction}{x}
+\item{polyMask}{Polygon in shapefile}
 
-\item{bgExt}{x}
+\item{prediction}{Raster prediction}
 
-\item{rem}{x}
+\item{bgExt}{Polygon of background extent}
 
-\item{logger}{x}
+\item{rem}{Remove areas of polygon from prediction}
 
-\item{polyAddRem}{x}
-
-\item{spN}{Character. Used to obtain species name for logger messages}
+\item{logger}{logger}
 }
 \description{
-..
-}
-\details{
-See Examples.
+Remove or add polygon to prediction
 }
 \author{
 Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>

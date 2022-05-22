@@ -10,7 +10,12 @@ mapBgPolys(map, bgShpXY, color, group)
 \item{map}{leaflet map}
 
 \item{bgShpXY}{Polygon}
+
+\item{color}{Color of polygon}
+
+\item{group}{Group leaflet}
 }
 \description{
 For internal use. Function to map all background polygons
 }
+\keyword{internal}

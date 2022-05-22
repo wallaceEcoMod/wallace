@@ -14,23 +14,20 @@ mask_tempExtract(
 )
 }
 \arguments{
-\item{maskRaster}{x}
+\item{lowerInp}{Lower bound value}
 
-\item{pred}{x}
+\item{upperInp}{Upper bound value}
 
-\item{logger}{x}
+\item{maskRaster}{Masking raster}
 
-\item{spN}{x}
+\item{pred}{Prediction}
 
-\item{lower}{x}
+\item{logger}{logger}
 
-\item{upper}{x}
+\item{spN}{Species name.}
 }
 \description{
-..
-}
-\details{
-See Examples.
+To mask prediction by temporal thresholds.
 }
 \author{
 Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>

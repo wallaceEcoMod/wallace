@@ -7,21 +7,16 @@
 mask_tempAnnotate(occs, env, envDates, logger = NULL)
 }
 \arguments{
-\item{occs}{x}
+\item{occs}{Occurrences}
 
-\item{envDates}{x}
+\item{env}{Stack of raster}
 
-\item{logger}{x}
+\item{envDates}{String with the years of rasters}
 
-\item{envList}{x}
-
-\item{envExtent}{x}
+\item{logger}{logger}
 }
 \description{
-..
-}
-\details{
-See Examples.
+Obtain temporal matched values
 }
 \author{
 Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
