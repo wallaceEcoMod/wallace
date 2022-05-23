@@ -178,7 +178,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
      spp[[curSp()]]$indic$RasOverlap <- userRaster$sdm
 
      }
-    sameRes <- identical(res( spp[[curSp()]]$indic$RasOverlap), res(spp[[curSp()]]$indic$Plot))
+   sameRes <- identical(res(spp[[curSp()]]$indic$RasOverlap), res(spp[[curSp()]]$indic$Plot))
       if (!sameRes) {
      logger %>% alfred.writeLog(
        type = 'error', alfred.hlSpp(curSp()), 'Raster resolution must be the same as species distribtuion resolution')
