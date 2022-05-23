@@ -96,9 +96,9 @@ function(input, output, session) {
   observeEvent(input$mask_expPolyHelp, updateTabsetPanel(session, "main", "Module Guidance"))
   observeEvent(input$mask_spatialHelp, updateTabsetPanel(session, "main", "Module Guidance"))
   observeEvent(input$mask_tempHelp, updateTabsetPanel(session, "main", "Module Guidance"))
-  observeEvent(input$change_overlapHelp, updateTabsetPanel(session, "main", "Module Guidance"))
-  observeEvent(input$change_rangeHelp, updateTabsetPanel(session, "main", "Module Guidance"))
-  observeEvent(input$change_timeHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$indic_overlapHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$indic_rangeHelp, updateTabsetPanel(session, "main", "Module Guidance"))
+  observeEvent(input$indic_timeHelp, updateTabsetPanel(session, "main", "Module Guidance"))
   observeEvent(input$diver_endemismHelp, updateTabsetPanel(session, "main", "Module Guidance"))
   observeEvent(input$diver_richnessHelp, updateTabsetPanel(session, "main", "Module Guidance"))
 
@@ -209,13 +209,13 @@ function(input, output, session) {
     shinyjs::toggleState("dlXferEnvs", !is.null(spp[[curSp()]]$project$pjEnvsDl))
     shinyjs::toggleState("dlXfer", !is.null(spp[[curSp()]]$project$pjEnvs))
     shinyjs::toggleState("dlMess", !is.null(spp[[curSp()]]$project$messVals))
-    shinyjs::toggleState("dlAOO", !is.null(spp[[curSp()]]$rmm$data$change$AOO))
-    shinyjs::toggleState("dlEOO", !is.null(spp[[curSp()]]$rmm$data$change$EOO))
-    shinyjs::toggleState("dlOverlap", !is.null(spp[[curSp()]]$change$overlapRaster))
-    shinyjs::toggleState("dlOverlapEOO", !is.null(spp[[curSp()]]$change$overlapPoly))
+    shinyjs::toggleState("dlAOO", !is.null(spp[[curSp()]]$rmm$data$indic$AOO))
+    shinyjs::toggleState("dlEOO", !is.null(spp[[curSp()]]$rmm$data$indic$EOO))
+    shinyjs::toggleState("dlOverlap", !is.null(spp[[curSp()]]$indic$overlapRaster))
+    shinyjs::toggleState("dlOverlapEOO", !is.null(spp[[curSp()]]$indic$overlapPoly))
     shinyjs::toggleState("dlMask",!is.null(spp[[curSp()]]$mask$prediction))
-    shinyjs::toggleState("dlAreaTimePlot",!is.null(spp[[curSp()]]$change$AreaTime))
-    shinyjs::toggleState("dlAreaTime",!is.null(spp[[curSp()]]$change$AreaTime))
+    shinyjs::toggleState("dlAreaTimePlot",!is.null(spp[[curSp()]]$indic$AreaTime))
+    shinyjs::toggleState("dlAreaTime",!is.null(spp[[curSp()]]$indic$AreaTime))
     # shinyjs::toggleState("dlWhatever", !is.null(spp[[curSp()]]$whatever))
   })
 
@@ -1218,7 +1218,7 @@ function(input, output, session) {
       setwd(tempdir())
       n <- curSp()
 
-      raster::shapefile(x= spp[[curSp()]]$rmm$data$change$EOO,
+      raster::shapefile(x= spp[[curSp()]]$rmm$data$indic$EOO,
                       filename = paste0(n, '_EOOShp'),overwrite=TRUE)
 
       exts <- c('dbf','shp', 'shx')
@@ -1246,9 +1246,9 @@ function(input, output, session) {
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in your R console. ")
           }
-          AOOras <-  spp[[curSp()]]$rmm$data$change$AOO
+          AOOras <-  spp[[curSp()]]$rmm$data$indic$AOO
           raster::crs(AOOras) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
-          OverlapVals <- spp[[curSp()]]$change$overlapvalues
+          OverlapVals <- spp[[curSp()]]$indic$overlapvalues
         #  rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
          # legendPal <- colorNumeric(rev(rasCols), OverlapVals, na.color = 'transparent')
           #rasPal <- colorNumeric(rasCols, OverlapVals, na.color = 'transparent')
@@ -1260,7 +1260,7 @@ function(input, output, session) {
                       opacity = 1, layerId = 'expert') %>%
               addProviderTiles(input$bmap) %>%
              addRasterImage(AOOras, colors = c('gray', 'red'),
-                            opacity = 0.7, group = 'change', layerId = 'AOO',
+                            opacity = 0.7, group = 'indic', layerId = 'AOO',
                             method = "ngb")
             mapview::mapshot(m, file = file)
 
@@ -1268,14 +1268,14 @@ function(input, output, session) {
         } else if (input$AOOFileType == 'raster') {
           fileName <-  "AOO"
           tmpdir <- tempdir()
-          raster::writeRaster(spp[[curSp()]]$rmm$data$change$AOO, file.path(tmpdir, fileName),
+          raster::writeRaster(spp[[curSp()]]$rmm$data$indic$AOO, file.path(tmpdir, fileName),
                                format = input$AOOFileType, overwrite = TRUE)
           owd <- setwd(tmpdir)
           fs <- paste0(fileName, c('.grd', '.gri'))
           zip::zipr(zipfile = file, files = fs)
           setwd(owd)
         } else {
-          r <- raster::writeRaster(spp[[curSp()]]$rmm$data$change$AOO, file, format = input$AOOFileType,
+          r <- raster::writeRaster(spp[[curSp()]]$rmm$data$indic$AOO, file, format = input$AOOFileType,
                                    overwrite = TRUE)
           file.rename(r@file@name, file)
         }
@@ -1302,7 +1302,7 @@ function(input, output, session) {
                        " in your R console. ")
           }
 
-          polyOver <- spp[[curSp()]]$change$overlapPoly@polygons[[1]]@Polygons
+          polyOver <- spp[[curSp()]]$indic$overlapPoly@polygons[[1]]@Polygons
           m <- leaflet() %>%
             ##Add legend
             addLegend("bottomright", colors = "red",
@@ -1317,7 +1317,7 @@ function(input, output, session) {
           for (shp in xy) {
             m %>%
               addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4, color = "red",
-                          group = 'change')
+                          group = 'indic')
           }
 
           mapview::mapshot(m, file = file)
@@ -1327,7 +1327,7 @@ function(input, output, session) {
           tmpdir <- tempdir()
           setwd(tempdir())
           n <- curSp()
-          overlapPoly <- spp[[curSp()]]$change$overlapPoly
+          overlapPoly <- spp[[curSp()]]$indic$overlapPoly
           rgdal::writeOGR(obj = overlapPoly,
                           dsn = tmpdir,
                           layer = paste0(n, '_OverlapEOO'),
@@ -1366,9 +1366,9 @@ function(input, output, session) {
                        " in your R console. ")
           }
 
-          Overlap <-  spp[[curSp()]]$change$overlapRaster
+          Overlap <-  spp[[curSp()]]$indic$overlapRaster
           raster::crs(Overlap) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
-          OverlapVals <- spp[[curSp()]]$change$overlapvalues
+          OverlapVals <- spp[[curSp()]]$indic$overlapvalues
           rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
           legendPal <- colorNumeric(rev(rasCols), OverlapVals, na.color = 'transparent')
           rasPal <- colorNumeric(rasCols, OverlapVals, na.color = 'transparent')
@@ -1383,7 +1383,7 @@ function(input, output, session) {
                         opacity = 1, layerId = 'expert') %>%
               addProviderTiles(input$bmap) %>%
               addRasterImage(Overlap, colors = c('gray', 'red'),
-                             opacity = 0.7, group = 'change', layerId = 'Overlap',
+                             opacity = 0.7, group = 'indic', layerId = 'Overlap',
                              method = "ngb")
             mapview::mapshot(m, file = file)
           }
@@ -1395,7 +1395,7 @@ function(input, output, session) {
                         opacity = 1, layerId = 'expert') %>%
               addProviderTiles(input$bmap) %>%
               addRasterImage(Overlap, colors = 'red',
-                             opacity = 0.7, group = 'change', layerId = 'Overlap',
+                             opacity = 0.7, group = 'indic', layerId = 'Overlap',
                              method = "ngb")
             mapview::mapshot(m, file = file)
             }
@@ -1409,7 +1409,7 @@ function(input, output, session) {
                         labFormat = reverseLabel(2, reverse_order=TRUE)) %>%
               addProviderTiles(input$bmap) %>%
               addRasterImage(Overlap, colors = rasPal,
-                             opacity = 0.7, group = 'change', layerId = 'Overlap',
+                             opacity = 0.7, group = 'indic', layerId = 'Overlap',
                              method = "ngb")
             mapview::mapshot(m, file = file)
           }
@@ -1418,14 +1418,14 @@ function(input, output, session) {
         } else if (input$OverlapFileType == 'raster') {
           fileName <-  "Overlap"
           tmpdir <- tempdir()
-          raster::writeRaster( spp[[curSp()]]$change$overlapRaster, file.path(tmpdir, fileName),
+          raster::writeRaster( spp[[curSp()]]$indic$overlapRaster, file.path(tmpdir, fileName),
                                format = input$OverlapFileType, overwrite = TRUE)
           owd <- setwd(tmpdir)
           fs <- paste0(fileName, c('.grd', '.gri'))
           zip::zipr(zipfile = file, files = fs)
           setwd(owd)
         } else {
-          r <- raster::writeRaster(spp[[curSp()]]$change$overlapRaster, file, format = input$OverlapFileType,
+          r <- raster::writeRaster(spp[[curSp()]]$indic$overlapRaster, file, format = input$OverlapFileType,
                                    overwrite = TRUE)
           file.rename(r@file@name, file)
         }
@@ -1439,7 +1439,7 @@ function(input, output, session) {
       paste0("Area_through_time", ".csv")
     },
     content = function(file) {
-      tbl <- data.frame(spp[[curSp()]]$change$Years,spp[[curSp()]]$change$AreaTime)
+      tbl <- data.frame(spp[[curSp()]]$indic$Years,spp[[curSp()]]$indic$AreaTime)
       names(tbl)<-c("Year","Area in km^2")
       write_csv_robust(tbl, file, row.names = FALSE)
     }
@@ -1452,15 +1452,15 @@ function(input, output, session) {
     content = function(file) {
       png(file, width = 400, height = 400)
 
-      req(spp[[curSp()]]$change$AreaTime)
-      req(spp[[curSp()]]$change$Years)
-      plot(y = spp[[curSp()]]$change$AreaTime, x = spp[[curSp()]]$change$Years, main = "SDM area change", ylab = "area (square km)",xlab="Time")
-      lines(y = spp[[curSp()]]$change$AreaTime, x = spp[[curSp()]]$change$Years)
+      req(spp[[curSp()]]$indic$AreaTime)
+      req(spp[[curSp()]]$indic$Years)
+      plot(y = spp[[curSp()]]$indic$AreaTime, x = spp[[curSp()]]$indic$Years, main = "SDM area indic", ylab = "area (square km)",xlab="Time")
+      lines(y = spp[[curSp()]]$indic$AreaTime, x = spp[[curSp()]]$indic$Years)
       dev.off()
     }
   )
-  changeField <- reactive(input$selField)
-  changeCategory <- reactive(input$selCat)
+  indicField <- reactive(input$selField)
+  indicCategory <- reactive(input$selCat)
   ########################################### #
   ### COMPONENT: ALPHA DIVERSITY ####
   ########################################### #
@@ -1851,8 +1851,8 @@ function(input, output, session) {
     evalOut = evalOut,
     mapPred = mapPred,
     mapXfer = mapXfer,
-    changeField = changeField,
-    changeCategory  = changeCategory,
+    indicField = indicField,
+    indicCategory  = indicCategory,
     rmm = rmm,
 
     # Switch to a new component tab

@@ -2,7 +2,7 @@
 
 **BACKGROUND**
 
-For users that have information on past environmental conditions or future scenarios, they can calculate changes in metrics over time and view a line graph and table of those changes.
+For users that have information on past environmental conditions or future scenarios, they can calculate indics in metrics over time and view a line graph and table of those indics.
 
 **IMPLEMENTATION**
 

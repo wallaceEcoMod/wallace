@@ -29,7 +29,7 @@ tagList(
     tabPanel("Visualize", value = 'vis'),
     tabPanel("Transfer", value = 'xfer'),
     tabPanel("Mask", value = 'mask'),
-    tabPanel("Indicators", value = 'change'),
+    tabPanel("Indicators", value = 'indic'),
     tabPanel("Diversity", value = 'diver'),
     tabPanel("Reproduce", value = 'rep'),
     navbarMenu("Support", icon = icon("life-ring"),
@@ -173,15 +173,15 @@ tagList(
           ),
           # Change ####
           conditionalPanel(
-            "input.tabs == 'change'",
+            "input.tabs == 'indic'",
             div("Component: Change RangeR (**)", class = "componentName"),
-            help_comp_ui("changeHelp"),
+            help_comp_ui("indicHelp"),
             radioButtons(
-              "changeSel", "Modules Available:",
-              choices = insert_modules_options("change"),
+              "indicSel", "Modules Available:",
+              choices = insert_modules_options("indic"),
               selected = character(0)),
             tags$hr(),
-            insert_modules_ui("change")
+            insert_modules_ui("indic")
           ),
           # ALPHA ####
           conditionalPanel(
@@ -495,7 +495,7 @@ tagList(
                 )
               ),
               conditionalPanel(
-                "input.tabs == 'change'",
+                "input.tabs == 'indic'",
                 br(),
                 fluidRow(
                   column(3, h5("Download distribution map or AOO cropped to overlap areas")),

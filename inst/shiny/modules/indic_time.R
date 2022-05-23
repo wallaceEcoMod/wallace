@@ -1,4 +1,4 @@
-change_time_module_ui <- function(id) {
+indic_time_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
 
@@ -20,7 +20,7 @@ selectInput(ns("selRasterSource") , label = "Select range for calculations",
 tags$hr(),
 span("Step 2:", class = "step"),
 span("Choose environmental data", class = "stepText"), br(), br(),
-fileInput(ns("changeEnvs"), label = "Upload environmental rasters",
+fileInput(ns("indicEnvs"), label = "Upload environmental rasters",
           accept = c(".tif", ".asc"), multiple = TRUE),
 textInput(ns("EnvThrVal"), "Set threshold value",
              placeholder = "for single threshold: 40, for range: 30,60 ",value=""),
@@ -41,7 +41,7 @@ actionButton(ns("goInputYears"), "Calculate")
   )
 }
 
-change_time_module_server <- function(input, output, session, common) {
+indic_time_module_server <- function(input, output, session, common) {
   logger <- common$logger
   spp <- common$spp
   curSp <- common$curSp
@@ -56,7 +56,7 @@ change_time_module_server <- function(input, output, session, common) {
                    'Visualize your model before doing overlap calculations')
         return()
       }
-      spp[[curSp()]]$change$time <- spp[[curSp()]]$visualization$mapPred
+      spp[[curSp()]]$indic$time <- spp[[curSp()]]$visualization$mapPred
       logger %>% writeLog( "SDM area after masking for environmental variables through time will be calculated based on Wallace SDM ")
     }
     if(input$selRasterSource == "proj"){
@@ -66,7 +66,7 @@ change_time_module_server <- function(input, output, session, common) {
                    'Project your model before doing overlap calculations')
         return()
       }
-      spp[[curSp()]]$change$time <-  spp[[curSp()]]$project$mapProj
+      spp[[curSp()]]$indic$time <-  spp[[curSp()]]$project$mapProj
       logger %>% writeLog( "SDM area after masking for environmental variables through time will be calculated based on Projected SDM ")
 
     }
@@ -77,7 +77,7 @@ change_time_module_server <- function(input, output, session, common) {
                    'Load you model in component User SDM before doing range calculations')
         return()
       }
-      spp[[curSp()]]$change$time <- spp[[curSp()]]$postProc$OrigPred
+      spp[[curSp()]]$indic$time <- spp[[curSp()]]$postProc$OrigPred
       logger %>% writeLog( "SDM area after masking for environmental variables through time will be calculated based on User provided SDM ")
 
     }
@@ -91,7 +91,7 @@ change_time_module_server <- function(input, output, session, common) {
                    'Do a maskRangeR analysis before doing range calculations')
         return()
       }
-      spp[[curSp()]]$change$time <-     spp[[curSp()]]$mask$prediction
+      spp[[curSp()]]$indic$time <-     spp[[curSp()]]$mask$prediction
       logger %>% writeLog( "SDM area after masking for environmental variables through time will be calculated based on Masked SDM ")
 
     }
@@ -99,13 +99,13 @@ change_time_module_server <- function(input, output, session, common) {
       #CAREFUL: as its set up now if user doesn t do maskrangeR this object will be something else
       #(either user uploaed SDM or wallace SDM) this must be fixed in other components so it works smoothly
 
-      if (is.null( spp[[curSp()]]$rmm$data$change$AOO)) {
+      if (is.null( spp[[curSp()]]$rmm$data$indic$AOO)) {
         logger %>%
           writeLog(type = 'error',
                    'Do an AOO calculation before doing time calculations')
         return()
       }
-      spp[[curSp()]]$change$time <-  spp[[curSp()]]$rmm$data$change$AOO
+      spp[[curSp()]]$indic$time <-  spp[[curSp()]]$rmm$data$indic$AOO
       logger %>% writeLog( "SDM area after masking for environmental variables through time will be calculated based on AOO")
 
     }
@@ -113,19 +113,19 @@ change_time_module_server <- function(input, output, session, common) {
       #CAREFUL: as its set up now if user doesn t do maskrangeR this object will be something else
       #(either user uploaed SDM or wallace SDM) this must be fixed in other components so it works smoothly
 
-      if (is.null(spp[[curSp()]]$rmm$data$change$EOO)) {
+      if (is.null(spp[[curSp()]]$rmm$data$indic$EOO)) {
         logger %>%
           writeLog(type = 'error',
                    'Do an EOO calculation before doing time calculations')
         return()
       }
-      spp[[curSp()]]$change$time1 <-  spp[[curSp()]]$rmm$data$change$EOO
+      spp[[curSp()]]$indic$time1 <-  spp[[curSp()]]$rmm$data$indic$EOO
       logger %>% writeLog( "SDM area after masking for environmental variables through time will be calculated based on EOO")
 
     }
   })
   observeEvent(input$goInputEnvs, {
-    if (is.null(input$changeEnvs)) {
+    if (is.null(input$indicEnvs)) {
       logger %>% writeLog(type = 'error', "Raster files not uploaded")
       return()
     }
@@ -136,35 +136,35 @@ change_time_module_server <- function(input, output, session, common) {
     smartProgress(
       logger,
       message = "Loading environmental variables ", {
-   rStack <- raster::stack(input$changeEnvs$datapath)
+   rStack <- raster::stack(input$indicEnvs$datapath)
    if (raster::nlayers(rStack)==1) {
      logger %>% writeLog(type = 'error', "Please upload more than one environmental variable")
      return()
    }
-   spp[[curSp()]]$change$changeEnvs <- rStack
+   spp[[curSp()]]$indic$indicEnvs <- rStack
    threshold <- as.numeric(trimws(strsplit(input$EnvThrVal, ",")[[1]]))
-   spp[[curSp()]]$change$changeEnvsThr <-threshold
+   spp[[curSp()]]$indic$indicEnvsThr <-threshold
       })
   })
 
   observeEvent(input$goInputYears, {
-    req(spp[[curSp()]]$change$changeEnvs)
+    req(spp[[curSp()]]$indic$indicEnvs)
     years <- trimws(strsplit(input$Years, ",")[[1]])
 
-    if (raster::nlayers(spp[[curSp()]]$change$changeEnvs)!=length(years)) {
+    if (raster::nlayers(spp[[curSp()]]$indic$indicEnvs)!=length(years)) {
       logger %>% writeLog(type = 'error', "Please enter the years for all inputed variables")
       return()
     }
-    if (is.null(spp[[curSp()]]$change$time1)&is.null(spp[[curSp()]]$change$time)){
+    if (is.null(spp[[curSp()]]$indic$time1)&is.null(spp[[curSp()]]$indic$time)){
       logger %>% writeLog( type = 'error',"No SDM is selected for the calculations")
     }
-    else if(is.null(spp[[curSp()]]$change$time1)){
+    else if(is.null(spp[[curSp()]]$indic$time1)){
       smartProgress(
       logger,
-      message = "Calculating area change through time ", {
-    SDM <- spp[[curSp()]]$change$time
-    rStack <- raster::projectRaster(spp[[curSp()]]$change$changeEnvs, SDM, method = 'bilinear')
-    threshold <- spp[[curSp()]]$change$changeEnvsThr
+      message = "Calculating area indic through time ", {
+    SDM <- spp[[curSp()]]$indic$time
+    rStack <- raster::projectRaster(spp[[curSp()]]$indic$indicEnvs, SDM, method = 'bilinear')
+    threshold <- spp[[curSp()]]$indic$indicEnvsThr
     bound <- input$selBound
     ##run function
     SDM.time <- changeRangeR::envChange(rStack = rStack, binaryRange = SDM, threshold = threshold, bound=bound)
@@ -173,17 +173,17 @@ change_time_module_server <- function(input, output, session, common) {
 
       logger %>% writeLog( "SDM area after masking for environmental variables through time calculation done")
       # LOAD INTO SPP ####
-      spp[[curSp()]]$change$AreaTime <-SDM.time$Area
-      spp[[curSp()]]$change$Years <- years
+      spp[[curSp()]]$indic$AreaTime <-SDM.time$Area
+      spp[[curSp()]]$indic$Years <- years
       common$update_component(tab = "Results")
     }
-   else if(!is.null(spp[[curSp()]]$change$time1)){
+   else if(!is.null(spp[[curSp()]]$indic$time1)){
      smartProgress(
         logger,
-        message = "Calculating area change through time ", {
-          rStack <- spp[[curSp()]]$change$changeEnvs
-          eoo <- spp[[curSp()]]$change$time1
-          threshold <- spp[[curSp()]]$change$changeEnvsThr
+        message = "Calculating area indic through time ", {
+          rStack <- spp[[curSp()]]$indic$indicEnvs
+          eoo <- spp[[curSp()]]$indic$time1
+          threshold <- spp[[curSp()]]$indic$indicEnvsThr
           bound <- input$selBound
           ##run function
           SDM.time <- changeRangeR::envChange(rStack = rStack, binaryRange = eoo, threshold = threshold, bound=bound)
@@ -192,8 +192,8 @@ change_time_module_server <- function(input, output, session, common) {
 
       logger %>% writeLog( "SDM area after masking for environmental variables through time calculation done")
       # LOAD INTO SPP ####
-      spp[[curSp()]]$change$AreaTime <-SDM.time$Area
-      spp[[curSp()]]$change$Years <- years
+      spp[[curSp()]]$indic$AreaTime <-SDM.time$Area
+      spp[[curSp()]]$indic$Years <- years
       common$update_component(tab = "Results")
     }
 
@@ -206,11 +206,11 @@ change_time_module_server <- function(input, output, session, common) {
   output$TimeAreas <- renderUI({
     # Result
     output$areaMasked <- renderPrint({ paste(
-        "SDM area (in km^2) after masking for environmental variables through time for:",  spp[[curSp()]]$change$Years,
-        spp[[curSp()]]$change$AreaTime) })
+        "SDM area (in km^2) after masking for environmental variables through time for:",  spp[[curSp()]]$indic$Years,
+        spp[[curSp()]]$indic$AreaTime) })
     output$timePlot <- renderPlot({
-      plot(y = spp[[curSp()]]$change$AreaTime, x = spp[[curSp()]]$change$Years, main = "SDM area change", ylab = "area (square km)",xlab="Time")
-      lines(y = spp[[curSp()]]$change$AreaTime, x = spp[[curSp()]]$change$Years)
+      plot(y = spp[[curSp()]]$indic$AreaTime, x = spp[[curSp()]]$indic$Years, main = "SDM area indic", ylab = "area (square km)",xlab="Time")
+      lines(y = spp[[curSp()]]$indic$AreaTime, x = spp[[curSp()]]$indic$Years)
     })
 
     tabsetPanel(
@@ -244,22 +244,22 @@ change_time_module_server <- function(input, output, session, common) {
 
 }
 
-change_time_module_result <- function(id) {
+indic_time_module_result <- function(id) {
 ns <- NS(id)
 # Result UI
 uiOutput(ns("TimeAreas"))
 
 }
 
-change_time_module_map <- function(map, common) {
+indic_time_module_map <- function(map, common) {
   # Map logic
   spp <- common$spp
   curSp <- common$curSp
   #if EOO is selected plot the polygon
-  if(!is.null(spp[[curSp()]]$change$time1)){
+  if(!is.null(spp[[curSp()]]$indic$time1)){
 
-    polyEOO <- spp[[curSp()]]$rmm$data$change$EOO@polygons[[1]]@Polygons
-    bb <- spp[[curSp()]]$rmm$data$change$EOO@bbox
+    polyEOO <- spp[[curSp()]]$rmm$data$indic$EOO@polygons[[1]]@Polygons
+    bb <- spp[[curSp()]]$rmm$data$indic$EOO@bbox
     bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
     map %>%
       fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
@@ -277,13 +277,13 @@ change_time_module_map <- function(map, common) {
     for (shp in xy) {
       map %>%
         addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4, color = "gray",
-                    group = 'change')
+                    group = 'indic')
     }
   }
   #plot SDM to use
-  if(is.null(spp[[curSp()]]$change$time1)){
-    req(spp[[curSp()]]$change$time)
-  sdm <-  spp[[curSp()]]$change$time
+  if(is.null(spp[[curSp()]]$indic$time1)){
+    req(spp[[curSp()]]$indic$time)
+  sdm <-  spp[[curSp()]]$indic$time
   raster::crs(sdm) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
   SDMVals <- getRasterVals(sdm)
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
@@ -300,7 +300,7 @@ change_time_module_map <- function(map, common) {
                 labels = c("Presence", "Absence"),
                 opacity = 1, layerId = 'sdm') %>%
       addRasterImage(sdm, colors = c('gray', 'red'),
-                     opacity = 0.7, group = 'change', layerId = 'sdm',
+                     opacity = 0.7, group = 'indic', layerId = 'sdm',
                      method = "ngb")
   } else {
     # if threshold specified
@@ -311,17 +311,17 @@ change_time_module_map <- function(map, common) {
                 values = SDMVals, layerId = "sdm",
                 labFormat = reverseLabel(2, reverse_order=TRUE)) %>%
       addRasterImage(sdm, colors = rasPal,
-                     opacity = 0.7, group = 'change', layerId = 'sdm',
+                     opacity = 0.7, group = 'indic', layerId = 'sdm',
                      method = "ngb")
   }
   }
 
 }
 
-change_time_module_rmd <- function(species) {
+indic_time_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    change_time_knit = FALSE
+    indic_time_knit = FALSE
     #species$rmm$code$wallace$someFlag,
     #var1 = species$rmm$code$wallace$someSetting1,
     #var2 = species$rmm$code$wallace$someSetting2

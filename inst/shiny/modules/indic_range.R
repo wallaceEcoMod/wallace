@@ -1,20 +1,20 @@
-change_range_module_ui <- function(id) {
+indic_range_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
-    selectInput(ns("changeRangeSel"), "Options Available:",
+    selectInput(ns("indicRangeSel"), "Options Available:",
                 choices = list("None selected" = '',
                                "Range size" = "range",
                                "EOO" = "eoo",
                                "AOO" = "aoo")), # Check default (no selected)
     conditionalPanel(sprintf("input['%1$s'] == 'range'",
-                             ns("changeRangeSel")),
+                             ns("indicRangeSel")),
                      selectInput(ns("selSource") , label = "Select source for calculations",
                                  choices = list("Wallace SDM" = "wallace",
                                                 "Projected SDM" = "proj",
                                                 "User SDM" = "user",
                                                 "Masked SDM" = "mask"))),
     conditionalPanel(sprintf("input['%1$s'] == 'eoo'",
-                             ns("changeRangeSel")),
+                             ns("indicRangeSel")),
                      selectInput(ns("selSource1") , label = "Select source for calculations",
                                   choices = list("Occurrences" = "occs",
                                                  "Wallace SDM" = "wallace",
@@ -23,7 +23,7 @@ change_range_module_ui <- function(id) {
                                                  ))),
 
     conditionalPanel(sprintf("input['%1$s'] == 'aoo'",
-                             ns("changeRangeSel")),
+                             ns("indicRangeSel")),
                      selectInput(ns("selSource2") , label = "Select source for calculations",
                                  choices = list("Occurrences & Wallace SDM" = "occs",
                                                 "Wallace SDM" = "wallace",
@@ -36,7 +36,7 @@ change_range_module_ui <- function(id) {
   )
 }
 
-change_range_module_server <- function(input, output, session, common) {
+indic_range_module_server <- function(input, output, session, common) {
   logger <- common$logger
   spp <- common$spp
   curSp <- common$curSp
@@ -49,7 +49,7 @@ change_range_module_server <- function(input, output, session, common) {
     # WARNING ####
 
     #Processing
-    if(input$changeRangeSel == "range"){
+    if(input$indicRangeSel == "range"){
       if(input$selSource == "wallace"){
         # ERRORS ####
         if (is.null(spp[[curSp()]]$visualization$mapPred)) {
@@ -86,8 +86,8 @@ change_range_module_server <- function(input, output, session, common) {
         req(area)
         logger %>% writeLog( "Species range size calculated based on Wallace SDM ")
         # LOAD INTO SPP ####
-        spp[[curSp()]]$change$range <- area
-        spp[[curSp()]]$change$rangetype <- input$selSource
+        spp[[curSp()]]$indic$range <- area
+        spp[[curSp()]]$indic$rangetype <- input$selSource
         common$update_component(tab = "Results")
       }
       if(input$selSource == "proj"){
@@ -126,8 +126,8 @@ change_range_module_server <- function(input, output, session, common) {
     req(area)
     logger %>% writeLog( "Species range size calculated based on  projected SDM ")
     # LOAD INTO SPP ####
-      spp[[curSp()]]$change$range <- area
-    spp[[curSp()]]$change$rangetype <- input$selSource
+      spp[[curSp()]]$indic$range <- area
+    spp[[curSp()]]$indic$rangetype <- input$selSource
     common$update_component(tab = "Results")
       }
       if(input$selSource == "user"){
@@ -167,8 +167,8 @@ change_range_module_server <- function(input, output, session, common) {
         req(area)
         logger %>% writeLog( "Species range size calculated based on User SDM ")
         # LOAD INTO SPP ####
-        spp[[curSp()]]$change$range <- area
-        spp[[curSp()]]$change$rangetype <- input$selSource
+        spp[[curSp()]]$indic$range <- area
+        spp[[curSp()]]$indic$rangetype <- input$selSource
         common$update_component(tab = "Results")
       }
       if(input$selSource == "mask"){
@@ -210,14 +210,14 @@ change_range_module_server <- function(input, output, session, common) {
         req(area)
         logger %>% writeLog( "Species range size calculated based on masked SDM ")
         # LOAD INTO SPP ####
-        spp[[curSp()]]$change$range <- area
-        spp[[curSp()]]$change$rangetype <- input$selSource
+        spp[[curSp()]]$indic$range <- area
+        spp[[curSp()]]$indic$rangetype <- input$selSource
         common$update_component(tab = "Results")
 
       }
     }
     ##if calculating EOO
-    else if(input$changeRangeSel == "eoo"){
+    else if(input$indicRangeSel == "eoo"){
       ##Check wether based on sdm or on occurrences
       if(input$selSource1 == "wallace"){
         ##check that the projection exists and that it is thresholded
@@ -247,9 +247,9 @@ change_range_module_server <- function(input, output, session, common) {
         req(aeoosdm)
         logger %>% writeLog( "Calculated an EOO estimate based on a thresholded SDM. This is an approximation based on a non-projected SDM")
         # LOAD INTO SPP ####
-        spp[[curSp()]]$rmm$data$change$EOOval <- aeoosdm
-        spp[[curSp()]]$rmm$data$change$EOOtype <- input$selSource1
-        spp[[curSp()]]$rmm$data$change$EOO <- eooSDM
+        spp[[curSp()]]$rmm$data$indic$EOOval <- aeoosdm
+        spp[[curSp()]]$rmm$data$indic$EOOtype <- input$selSource1
+        spp[[curSp()]]$rmm$data$indic$EOO <- eooSDM
         common$update_component(tab = "Map")
       }
       if(input$selSource1 == "user"){
@@ -282,9 +282,9 @@ change_range_module_server <- function(input, output, session, common) {
         req(aeoosdm)
         logger %>% writeLog( "Calculated an EOO estimate based on a user provided SDM. This is an approximation based on a non-projected SDM")
         # LOAD INTO SPP ####
-        spp[[curSp()]]$rmm$data$change$EOOval <- aeoosdm
-        spp[[curSp()]]$rmm$data$change$EOOtype <- input$selSource1
-        spp[[curSp()]]$rmm$data$change$EOO <- eooSDM
+        spp[[curSp()]]$rmm$data$indic$EOOval <- aeoosdm
+        spp[[curSp()]]$rmm$data$indic$EOOtype <- input$selSource1
+        spp[[curSp()]]$rmm$data$indic$EOO <- eooSDM
         common$update_component(tab = "Map")
       }
       if(input$selSource1 == "proj"){
@@ -315,9 +315,9 @@ change_range_module_server <- function(input, output, session, common) {
         req(aeoosdm)
         logger %>% writeLog( "Calculated an EOO estimate based on a projected thresholded SDM. This is an approximation based on a non-projected SDM")
         # LOAD INTO SPP ####
-        spp[[curSp()]]$rmm$data$change$EOOval <- aeoosdm
-        spp[[curSp()]]$rmm$data$change$EOOtype <- input$selSource1
-        spp[[curSp()]]$rmm$data$change$EOO <- eooSDM
+        spp[[curSp()]]$rmm$data$indic$EOOval <- aeoosdm
+        spp[[curSp()]]$rmm$data$indic$EOOtype <- input$selSource1
+        spp[[curSp()]]$rmm$data$indic$EOO <- eooSDM
         common$update_component(tab = "Map")
       }
       if (input$selSource1 == "occs"){
@@ -343,13 +343,13 @@ change_range_module_server <- function(input, output, session, common) {
         logger %>% writeLog( "Calculated an EOO estimate based on occurrences. This is an approximation based on unprojected coordinates")
 
         # LOAD INTO SPP ####
-        spp[[curSp()]]$rmm$data$change$EOOval <- area
-        spp[[curSp()]]$rmm$data$change$EOOtype <- input$selSource1
-        spp[[curSp()]]$rmm$data$change$EOO <- eoo
+        spp[[curSp()]]$rmm$data$indic$EOOval <- area
+        spp[[curSp()]]$rmm$data$indic$EOOtype <- input$selSource1
+        spp[[curSp()]]$rmm$data$indic$EOO <- eoo
         common$update_component(tab = "Map")
       }
     }
-    else if (input$changeRangeSel == "aoo"){
+    else if (input$indicRangeSel == "aoo"){
       if(input$selSource2 =="occs"){
         ##check that the projection exists and that it is thresholded
         if (is.null(spp[[curSp()]]$visualization$mapPred)) {
@@ -376,9 +376,9 @@ change_range_module_server <- function(input, output, session, common) {
 
         # LOAD INTO SPP ####
 
-        spp[[curSp()]]$rmm$data$change$AOOval <- AOOlocs$area
-        spp[[curSp()]]$rmm$data$change$AOOtype <- input$selSource2
-        spp[[curSp()]]$rmm$data$change$AOO <- AOOlocs$aooRaster
+        spp[[curSp()]]$rmm$data$indic$AOOval <- AOOlocs$area
+        spp[[curSp()]]$rmm$data$indic$AOOtype <- input$selSource2
+        spp[[curSp()]]$rmm$data$indic$AOO <- AOOlocs$aooRaster
         common$update_component(tab = "Map")
       }
       else if (input$selSource2 =="wallace"){
@@ -402,9 +402,9 @@ change_range_module_server <- function(input, output, session, common) {
         logger %>% writeLog( "Calculated an AOO estimate based on an SDM. This is an approximation based on unprojected coordinates")
 
         # LOAD INTO SPP ####
-        spp[[curSp()]]$rmm$data$change$AOOval <- AOO$area
-        spp[[curSp()]]$rmm$data$change$AOOtype <- input$selSource2
-        spp[[curSp()]]$rmm$data$change$AOO <- AOO$aooRaster
+        spp[[curSp()]]$rmm$data$indic$AOOval <- AOO$area
+        spp[[curSp()]]$rmm$data$indic$AOOtype <- input$selSource2
+        spp[[curSp()]]$rmm$data$indic$AOO <- AOO$aooRaster
         common$update_component(tab = "Map")
       }
       else if (input$selSource2 =="proj"){
@@ -428,9 +428,9 @@ change_range_module_server <- function(input, output, session, common) {
         logger %>% writeLog( "Calculated an AOO estimate based on an SDM. This is an approximation based on unprojected coordinates")
 
         # LOAD INTO SPP ####
-        spp[[curSp()]]$rmm$data$change$AOOval <- AOO$area
-        spp[[curSp()]]$rmm$data$change$AOOtype <- input$selSource2
-        spp[[curSp()]]$rmm$data$change$AOO <- AOO$aooRaster
+        spp[[curSp()]]$rmm$data$indic$AOOval <- AOO$area
+        spp[[curSp()]]$rmm$data$indic$AOOtype <- input$selSource2
+        spp[[curSp()]]$rmm$data$indic$AOO <- AOO$aooRaster
         common$update_component(tab = "Map")
       }
       else if (input$selSource2 =="user"){
@@ -456,9 +456,9 @@ change_range_module_server <- function(input, output, session, common) {
         logger %>% writeLog( "Calculated an AOO estimate based on an user uploaded SDM. This is an approximation based on unprojected coordinates")
 
         # LOAD INTO SPP ####
-        spp[[curSp()]]$rmm$data$change$AOOval <- AOO$area
-        spp[[curSp()]]$rmm$data$change$AOOtype <- input$selSource2
-        spp[[curSp()]]$rmm$data$change$AOO <- AOO$aooRaster
+        spp[[curSp()]]$rmm$data$indic$AOOval <- AOO$area
+        spp[[curSp()]]$rmm$data$indic$AOOtype <- input$selSource2
+        spp[[curSp()]]$rmm$data$indic$AOO <- AOO$aooRaster
         common$update_component(tab = "Map")
       }
       else if (input$selSource2 =="mask"){
@@ -476,9 +476,9 @@ change_range_module_server <- function(input, output, session, common) {
         logger %>% writeLog( "Calculated an AOO estimate based on a masked SDM. This is an approximation based on unprojected coordinates")
 
         # LOAD INTO SPP ####
-        spp[[curSp()]]$rmm$data$change$AOOval <- AOO$area
-        spp[[curSp()]]$rmm$data$change$AOOtype <- input$selSource2
-        spp[[curSp()]]$rmm$data$change$AOO <- AOO$aooRaster
+        spp[[curSp()]]$rmm$data$indic$AOOval <- AOO$area
+        spp[[curSp()]]$rmm$data$indic$AOOtype <- input$selSource2
+        spp[[curSp()]]$rmm$data$indic$AOO <- AOO$aooRaster
         common$update_component(tab = "Map")
       }
     }
@@ -488,31 +488,31 @@ change_range_module_server <- function(input, output, session, common) {
 
  # output$result <- renderPrint({
   #  # Result
-   # spp[[curSp()]]$change$range[1]
-    #spp[[curSp()]]$rmm$data$change$EOOval
-  #  spp[[curSp()]]$rmm$data$change$AOOval
+   # spp[[curSp()]]$indic$range[1]
+    #spp[[curSp()]]$rmm$data$indic$EOOval
+  #  spp[[curSp()]]$rmm$data$indic$AOOval
 #  })
   output$areas <- renderText({
     # Result
-    if(is.null(spp[[curSp()]]$change$range[1])){
-      spp[[curSp()]]$change$range[1]<-"Not calculated"
-      spp[[curSp()]]$change$rangetype<-NA}
-    if(is.null(spp[[curSp()]]$rmm$data$change$EOOval)){
-      spp[[curSp()]]$rmm$data$change$EOOval<-"Not calculated"
-      spp[[curSp()]]$rmm$data$change$EOOtype<-NA}
-    if(is.null(spp[[curSp()]]$rmm$data$change$AOOval)){
-      spp[[curSp()]]$rmm$data$change$AOOval<-"Not calculated"
-      spp[[curSp()]]$rmm$data$change$AOOtype<-NA}
+    if(is.null(spp[[curSp()]]$indic$range[1])){
+      spp[[curSp()]]$indic$range[1]<-"Not calculated"
+      spp[[curSp()]]$indic$rangetype<-NA}
+    if(is.null(spp[[curSp()]]$rmm$data$indic$EOOval)){
+      spp[[curSp()]]$rmm$data$indic$EOOval<-"Not calculated"
+      spp[[curSp()]]$rmm$data$indic$EOOtype<-NA}
+    if(is.null(spp[[curSp()]]$rmm$data$indic$AOOval)){
+      spp[[curSp()]]$rmm$data$indic$AOOval<-"Not calculated"
+      spp[[curSp()]]$rmm$data$indic$AOOtype<-NA}
     # define contents for both evaluation tables
-    #all_areas<-c(spp[[curSp()]]$change$range[1],spp[[curSp()]]$rmm$data$change$EOOval,spp[[curSp()]]$rmm$data$change$AOOval)
-    #rangetype<-paste0("Range based on ", spp[[curSp()]]$change$rangetype)
-    #eootype<-paste0("EOO based on ", spp[[curSp()]]$rmm$data$change$EOOtype)
-    #aootype<-paste0("AOO based on ", spp[[curSp()]]$rmm$data$change$AOOtype)
+    #all_areas<-c(spp[[curSp()]]$indic$range[1],spp[[curSp()]]$rmm$data$indic$EOOval,spp[[curSp()]]$rmm$data$indic$AOOval)
+    #rangetype<-paste0("Range based on ", spp[[curSp()]]$indic$rangetype)
+    #eootype<-paste0("EOO based on ", spp[[curSp()]]$rmm$data$indic$EOOtype)
+    #aootype<-paste0("AOO based on ", spp[[curSp()]]$rmm$data$indic$AOOtype)
     #names(all_areas)<-c(rangetype,eootype,aootype)
       paste(
-        "Range based on", spp[[curSp()]]$change$rangetype, spp[[curSp()]]$change$range[1],"Km^2", "\n",
-        "EOO based on ",  spp[[curSp()]]$rmm$data$change$EOOtype, spp[[curSp()]]$rmm$data$change$EOOval,"Km^2","\n",
-        "AOO based on ", spp[[curSp()]]$rmm$data$change$AOOtype, spp[[curSp()]]$rmm$data$change$AOOval)
+        "Range based on", spp[[curSp()]]$indic$rangetype, spp[[curSp()]]$indic$range[1],"Km^2", "\n",
+        "EOO based on ",  spp[[curSp()]]$rmm$data$indic$EOOtype, spp[[curSp()]]$rmm$data$indic$EOOval,"Km^2","\n",
+        "AOO based on ", spp[[curSp()]]$rmm$data$indic$AOOtype, spp[[curSp()]]$rmm$data$indic$AOOval)
 
 
   })
@@ -521,14 +521,14 @@ change_range_module_server <- function(input, output, session, common) {
     save = function() {
       # Save any values that should be saved when the current session is saved
       list(
-        changeRangeSel = input$changeRangeSel,
+        indicRangeSel = input$indicRangeSel,
         selSource = input$selSource,
         selSource1 = input$selSource1,
         selSource2 = input$selSource2)
     },
     load = function(state) {
       # Load
-      updateSelectInput(session, 'changeRangeSel', selected = state$changeRangeSel)
+      updateSelectInput(session, 'indicRangeSel', selected = state$indicRangeSel)
       updateSelectInput(session, ' selSource', selected = state$selSource)
       updateSelectInput(session, ' selSource1', selected = state$selSource1)
       updateSelectInput(session, ' selSource2', selected = state$selSource2)
@@ -537,7 +537,7 @@ change_range_module_server <- function(input, output, session, common) {
 
 }
 
-change_range_module_result <- function(id) {
+indic_range_module_result <- function(id) {
 ns <- NS(id)
 # Result UI
 verbatimTextOutput(ns("areas"))
@@ -545,15 +545,15 @@ verbatimTextOutput(ns("areas"))
 
 }
 
-change_range_module_map <- function(map, common) {
+indic_range_module_map <- function(map, common) {
   # Map logic
  spp <- common$spp
   curSp <- common$curSp
   map %>% clearAll()
-if(!is.null(spp[[curSp()]]$rmm$data$change$EOO)){
+if(!is.null(spp[[curSp()]]$rmm$data$indic$EOO)){
 
- polyEOO <- spp[[curSp()]]$rmm$data$change$EOO@polygons[[1]]@Polygons
- bb <- spp[[curSp()]]$rmm$data$change$EOO@bbox
+ polyEOO <- spp[[curSp()]]$rmm$data$indic$EOO@polygons[[1]]@Polygons
+ bb <- spp[[curSp()]]$rmm$data$indic$EOO@bbox
  bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
  map %>%
    fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
@@ -571,12 +571,12 @@ map %>%
   for (shp in xy) {
     map %>%
       addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4, color = "gray",
-                  group = 'change')
+                  group = 'indic')
   }
 }
-  if(!is.null(spp[[curSp()]]$rmm$data$change$AOO)){
+  if(!is.null(spp[[curSp()]]$rmm$data$indic$AOO)){
 
-    AOOras <- spp[[curSp()]]$rmm$data$change$AOO
+    AOOras <- spp[[curSp()]]$rmm$data$indic$AOO
     zoomExt <- raster::extent(AOOras)
     map %>% fitBounds(lng1 = zoomExt[1], lng2 = zoomExt[2],
                       lat1 = zoomExt[3], lat2 = zoomExt[4])
@@ -588,16 +588,16 @@ map %>%
                 opacity = 1, layerId = 'expert') %>%
     ##ADD polygon
     addRasterImage(AOOras, colors = c('red', 'grey'),
-                   opacity = 0.7, group = 'change', layerId = 'AOO',
+                   opacity = 0.7, group = 'indic', layerId = 'AOO',
                    method = "ngb")
   }
 
 }
 
-change_range_module_rmd <- function(species) {
+indic_range_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    change_range_knit = FALSE
+    indic_range_knit = FALSE
     #species$rmm$code$wallace$someFlag,
     #var1 = species$rmm$code$wallace$someSetting1,
     #var2 = species$rmm$code$wallace$someSetting2

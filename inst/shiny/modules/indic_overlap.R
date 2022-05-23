@@ -1,4 +1,4 @@
-change_overlap_module_ui <- function(id) {
+indic_overlap_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
     span("Step 1:", class = "step"),
@@ -16,16 +16,16 @@ change_overlap_module_ui <- function(id) {
     tags$hr(),
     span("Step 2:", class = "step"),
     span("Choose Overlap Map", class = "stepText"), br(), br(),
-    selectInput(ns('changeOverlap'), label = "Select type",
+    selectInput(ns('indicOverlap'), label = "Select type",
                 choices = list("Shapefile" = 'shapefile',
                                "Raster" = 'raster')),
-    conditionalPanel(sprintf("input['%s'] == 'shapefile'", ns("changeOverlap")),
-                     fileInput(ns("changeOverlapShp"),
+    conditionalPanel(sprintf("input['%s'] == 'shapefile'", ns("indicOverlap")),
+                     fileInput(ns("indicOverlapShp"),
                                label = 'Upload polygon in shapefile (.shp, .shx, .dbf) format',
                                accept = c(".dbf", ".shx", ".shp"), multiple = TRUE),
                      ),
-    conditionalPanel(sprintf("input['%s'] == 'raster'", ns("changeOverlap")),
-                     fileInput(ns("changeOverlapRaster"), label = "Upload raster file to overlap",
+    conditionalPanel(sprintf("input['%s'] == 'raster'", ns("indicOverlap")),
+                     fileInput(ns("indicOverlapRaster"), label = "Upload raster file to overlap",
                                accept = c(".tif", ".asc"))
                      ),
     actionButton(ns("goInputOver"), "Load"), br(),
@@ -48,14 +48,14 @@ change_overlap_module_ui <- function(id) {
   )
 }
 
-change_overlap_module_server <- function(input, output, session, common) {
+indic_overlap_module_server <- function(input, output, session, common) {
   logger <- common$logger
   spp <- common$spp
   curSp <- common$curSp
   curModel <- common$curModel
   mapProj <- common$mapProj
-  changeField <- common$changeField
-  changeCategory <- common$changeCategory
+  indicField <- common$indicField
+  indicCategory <- common$indicCategory
 
   observeEvent(input$goInputRaster, {
     if(input$selSource == "wallace"){
@@ -65,7 +65,7 @@ change_overlap_module_server <- function(input, output, session, common) {
                    'Visualize your model before doing overlap calculations')
         return()
       }
-      spp[[curSp()]]$change$Plot <- spp[[curSp()]]$visualization$mapPred
+      spp[[curSp()]]$indic$Plot <- spp[[curSp()]]$visualization$mapPred
     }
     if(input$selSource == "proj"){
       if (is.null(spp[[curSp()]]$project$mapProj)) {
@@ -74,7 +74,7 @@ change_overlap_module_server <- function(input, output, session, common) {
                    'Project your model before doing overlap calculations')
         return()
       }
-      spp[[curSp()]]$change$Plot <-  spp[[curSp()]]$project$mapProj
+      spp[[curSp()]]$indic$Plot <-  spp[[curSp()]]$project$mapProj
     }
     if(input$selSource == "sdm"){
       if (is.null(spp[[curSp()]]$postProc$OrigPred)) {
@@ -83,7 +83,7 @@ change_overlap_module_server <- function(input, output, session, common) {
                    'Load you model in component User SDM before doing range calculations')
         return()
       }
-      spp[[curSp()]]$change$Plot <- spp[[curSp()]]$postProc$OrigPred
+      spp[[curSp()]]$indic$Plot <- spp[[curSp()]]$postProc$OrigPred
     }
     if(input$selSource == "masked"){
 
@@ -93,44 +93,44 @@ change_overlap_module_server <- function(input, output, session, common) {
                    'Do a maskRangeR analysis before doing range calculations')
         return()
       }
-      spp[[curSp()]]$change$Plot <- spp[[curSp()]]$postProc$prediction
+      spp[[curSp()]]$indic$Plot <- spp[[curSp()]]$postProc$prediction
     }
     if(input$selSource == "eoo"){
 
-      if (is.null(spp[[curSp()]]$rmm$data$change$EOO)) {
+      if (is.null(spp[[curSp()]]$rmm$data$indic$EOO)) {
         logger %>%
           writeLog(type = 'error',
                    'Do an EOO calculation in the area module before doing range calculations')
         return()
       }
-      spp[[curSp()]]$change$Plot1 <-   spp[[curSp()]]$rmm$data$change$EOO
+      spp[[curSp()]]$indic$Plot1 <-   spp[[curSp()]]$rmm$data$indic$EOO
     }
     if(input$selSource == "aoo"){
       #CAREFUL: as its set up now if user doesn t do maskrangeR this object will be something else
       #(either user uploaed SDM or wallace SDM) this must be fixed in other components so it works smoothly
 
-      if (is.null(spp[[curSp()]]$rmm$data$change$AOO)) {
+      if (is.null(spp[[curSp()]]$rmm$data$indic$AOO)) {
         logger %>%
           writeLog(type = 'error',
                    'Do an AOO calculation in the area module before doing range calculations')
         return()
       }
-      spp[[curSp()]]$change$Plot <-   spp[[curSp()]]$rmm$data$change$AOO
+      spp[[curSp()]]$indic$Plot <-   spp[[curSp()]]$rmm$data$indic$AOO
     }
 
   })
 
  observeEvent(input$goInputOver, {
-   if (is.null(spp[[curSp()]]$change$Plot)) {
+   if (is.null(spp[[curSp()]]$indic$Plot)) {
      logger %>% alfred.writeLog(
        type = 'error', hlSpp(curSp()), 'Calculate/Upload a species distribution')
      return()
    }
-   if(input$changeOverlap=='shapefile'){
-   pathdir <- dirname(input$changeOverlapShp$datapath)
-   pathfile <- basename(input$changeOverlapShp$datapath)
+   if(input$indicOverlap=='shapefile'){
+   pathdir <- dirname(input$indicOverlapShp$datapath)
+   pathfile <- basename(input$indicOverlapShp$datapath)
    # get extensions of all input files
-   exts <- sapply(strsplit(input$changeOverlapShp$name, '\\.'), FUN = function(x) x[2])
+   exts <- sapply(strsplit(input$indicOverlapShp$name, '\\.'), FUN = function(x) x[2])
    if ('shp' %in% exts) {
      if (length(exts) < 3) {
        logger %>%
@@ -144,11 +144,11 @@ change_overlap_module_server <- function(input, output, session, common) {
        message = "Uploading user provided shapefile ", {
      # get index of .shp
      i <- which(exts == 'shp')
-     if (!file.exists(file.path(pathdir, input$changeOverlapShp$name)[i])) {
-       file.rename(input$changeOverlapShp$datapath, file.path(pathdir, input$changeOverlapShp$name))
+     if (!file.exists(file.path(pathdir, input$indicOverlapShp$name)[i])) {
+       file.rename(input$indicOverlapShp$datapath, file.path(pathdir, input$indicOverlapShp$name))
      }
      # read in shapefile and extract coords
-     polyOverlap  <- rgdal::readOGR(file.path(pathdir, input$changeOverlapShp$name)[i])
+     polyOverlap  <- rgdal::readOGR(file.path(pathdir, input$indicOverlapShp$name)[i])
      logger %>% writeLog( "User shapefile loaded ")
 })
    } else {
@@ -162,23 +162,23 @@ change_overlap_module_server <- function(input, output, session, common) {
 
     shpcrop<-rgeos::gBuffer(polyOverlap,byid = TRUE, width=0)
    ##crop polygon for visualization if range is a raster
-     if(!is.null(spp[[curSp()]]$change$Plot)){
-    shpcrop<-raster::crop(shpcrop,raster::extent(spp[[curSp()]]$change$Plot))}
+     if(!is.null(spp[[curSp()]]$indic$Plot)){
+    shpcrop<-raster::crop(shpcrop,raster::extent(spp[[curSp()]]$indic$Plot))}
 
-    spp[[curSp()]]$change$polyOverlap <- polyOverlap
-    spp[[curSp()]]$change$polyOverlapCrop <- shpcrop
+    spp[[curSp()]]$indic$polyOverlap <- polyOverlap
+    spp[[curSp()]]$indic$polyOverlapCrop <- shpcrop
    }
-   if(input$changeOverlap=='raster'){
-     userRaster <- change_raster(rasPath = input$changeOverlapRaster$datapath,
-                              rasName = input$changeOverlapRaster$name,
+   if(input$indicOverlap=='raster'){
+     userRaster <- indic_raster(rasPath = input$indicOverlapRaster$datapath,
+                              rasName = input$indicOverlapRaster$name,
                               logger)
      if (!is.null(userRaster)) {
        logger %>% writeLog("User raster file loaded ")
      }
-     spp[[curSp()]]$change$RasOverlap <- userRaster$sdm
+     spp[[curSp()]]$indic$RasOverlap <- userRaster$sdm
 
      }
-    sameRes <- identical(res( spp[[curSp()]]$change$RasOverlap), res(spp[[curSp()]]$change$Plot))
+    sameRes <- identical(res( spp[[curSp()]]$indic$RasOverlap), res(spp[[curSp()]]$indic$Plot))
       if (!sameRes) {
      logger %>% alfred.writeLog(
        type = 'error', alfred.hlSpp(curSp()), 'Raster resolution must be the same as species distribtuion resolution')
@@ -191,8 +191,8 @@ change_overlap_module_server <- function(input, output, session, common) {
   output$selFieldui <- renderUI({
     #add a conditional on providing a file
     req(curSp())
-    if(!is.null(spp[[curSp()]]$change$polyOverlap)){
-   fields <- colnames(spp[[curSp()]]$change$polyOverlap@data)
+    if(!is.null(spp[[curSp()]]$indic$polyOverlap)){
+   fields <- colnames(spp[[curSp()]]$indic$polyOverlap@data)
     }
     else {fields<-c("load shapefile first")}
 
@@ -206,10 +206,10 @@ change_overlap_module_server <- function(input, output, session, common) {
 
   output$selCatdui <- renderUI({
     #add a conditional on providing a file
-    req(curSp(),req(spp[[curSp()]]$change$polyOverlap),req(changeField()))
-    if(!is.null(changeField())){
-      field <- changeField()
-      category <- as.character(unique(spp[[curSp()]]$change$polyOverlap[[field]]))
+    req(curSp(),req(spp[[curSp()]]$indic$polyOverlap),req(indicField()))
+    if(!is.null(indicField())){
+      field <- indicField()
+      category <- as.character(unique(spp[[curSp()]]$indic$polyOverlap[[field]]))
       category <- c("All",category)
     }
     else {category<-c("load shapefile first")}
@@ -226,19 +226,19 @@ change_overlap_module_server <- function(input, output, session, common) {
 
   observeEvent(input$goOverlap,{
     ##condition on which overlap if shp do this if raster then not , stored variables would be different though
-    if(input$changeOverlap=='shapefile'){
-    spp[[curSp()]]$change$ShpCat <-   changeCategory()
-    spp[[curSp()]]$change$ShpField <-    changeField()
-    spp[[curSp()]]$change$subfield <- input$doSubfield
-    category<-changeCategory()
-    shp = spp[[curSp()]]$change$polyOverlap
+    if(input$indicOverlap=='shapefile'){
+    spp[[curSp()]]$indic$ShpCat <-   indicCategory()
+    spp[[curSp()]]$indic$ShpField <-    indicField()
+    spp[[curSp()]]$indic$subfield <- input$doSubfield
+    category<-indicCategory()
+    shp = spp[[curSp()]]$indic$polyOverlap
     }
-    else if(input$changeOverlap=='raster'){
-      shp = spp[[curSp()]]$change$RasOverlap
-      spp[[curSp()]]$change$ShpCat <-   NULL
-      spp[[curSp()]]$change$ShpField <-    NULL
+    else if(input$indicOverlap=='raster'){
+      shp = spp[[curSp()]]$indic$RasOverlap
+      spp[[curSp()]]$indic$ShpCat <-   NULL
+      spp[[curSp()]]$indic$ShpField <-    NULL
       category<-NULL
-      spp[[curSp()]]$change$subfield <- FALSE
+      spp[[curSp()]]$indic$subfield <- FALSE
     }
     if(input$selSource == "wallace"){
 
@@ -246,12 +246,12 @@ change_overlap_module_server <- function(input, output, session, common) {
         logger,
         message = "Calculating range overlap ", {
       r = spp[[curSp()]]$visualization$mapPred
-      #shp = spp[[curSp()]]$change$polyOverlap
+      #shp = spp[[curSp()]]$indic$polyOverlap
       raster::crs(shp) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 ")
       raster::crs(r) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
 
 
-      ratio.Overlap <- changeRangeR::ratioOverlap(r = r, shp = shp, field=spp[[curSp()]]$change$ShpField, category = category,subfield=    spp[[curSp()]]$change$subfield)
+      ratio.Overlap <- changeRangeR::ratioOverlap(r = r, shp = shp, field=spp[[curSp()]]$indic$ShpField, category = category,subfield=    spp[[curSp()]]$indic$subfield)
         })
       req(ratio.Overlap)
       logger %>% writeLog( "Proportion of range area that is contained by landcover categories calculated ")
@@ -264,9 +264,9 @@ change_overlap_module_server <- function(input, output, session, common) {
         ratio.Overlap$maskedRange <- do.call(raster::mosaic, ratio.Overlap$maskedRange)
       }
       else {ratio.Overlap$maskedRange<-ratio.Overlap$maskedRange[[1]]}
-      spp[[curSp()]]$change$overlapRaster <- ratio.Overlap$maskedRange
-      spp[[curSp()]]$change$overlapvalue <- ratio.Overlap$ratio
-      spp[[curSp()]]$change$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
+      spp[[curSp()]]$indic$overlapRaster <- ratio.Overlap$maskedRange
+      spp[[curSp()]]$indic$overlapvalue <- ratio.Overlap$ratio
+      spp[[curSp()]]$indic$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
 
 
     }
@@ -277,10 +277,10 @@ change_overlap_module_server <- function(input, output, session, common) {
         logger,
         message = "Calculating range overlap ", {
       r = spp[[curSp()]]$project$mapProj
-     # shp = spp[[curSp()]]$change$polyOverlap
+     # shp = spp[[curSp()]]$indic$polyOverlap
       raster::crs(shp) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 ")
       raster::crs(r) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")
-      ratio.Overlap <- changeRangeR::ratioOverlap(r = r, shp = shp, field= spp[[curSp()]]$change$ShpField, category = category,   subfield= spp[[curSp()]]$change$subfield)
+      ratio.Overlap <- changeRangeR::ratioOverlap(r = r, shp = shp, field= spp[[curSp()]]$indic$ShpField, category = category,   subfield= spp[[curSp()]]$indic$subfield)
         })
       req(ratio.Overlap)
       logger %>% writeLog( "Proportion of projected range area that is contained by landcover categories calculated ")
@@ -293,9 +293,9 @@ change_overlap_module_server <- function(input, output, session, common) {
         ratio.Overlap$maskedRange <- do.call(raster::mosaic, ratio.Overlap$maskedRange)
       }
       else {ratio.Overlap$maskedRange<-ratio.Overlap$maskedRange[[1]]}
-      spp[[curSp()]]$change$overlapRaster <- ratio.Overlap$maskedRange
-      spp[[curSp()]]$change$overlapvalue <- ratio.Overlap$ratio
-      spp[[curSp()]]$change$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
+      spp[[curSp()]]$indic$overlapRaster <- ratio.Overlap$maskedRange
+      spp[[curSp()]]$indic$overlapvalue <- ratio.Overlap$ratio
+      spp[[curSp()]]$indic$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
 
       common$update_component(tab = "Map")
     }
@@ -307,10 +307,10 @@ change_overlap_module_server <- function(input, output, session, common) {
         logger,
         message = "Calculating range overlap ", {
       r = spp[[curSp()]]$postProc$OrigPred
-    #  shp = spp[[curSp()]]$change$polyOverlap
+    #  shp = spp[[curSp()]]$indic$polyOverlap
       raster::crs(shp) <- sf::st_crs(4326)$wkt
       raster::crs(r) <-sf::st_crs(4326)$wkt
-      ratio.Overlap <- changeRangeR::ratioOverlap(r = r , shp = shp, field = spp[[curSp()]]$change$ShpField, category = category,   subfield= spp[[curSp()]]$change$subfield)
+      ratio.Overlap <- changeRangeR::ratioOverlap(r = r , shp = shp, field = spp[[curSp()]]$indic$ShpField, category = category,   subfield= spp[[curSp()]]$indic$subfield)
       #ratio.Overlap <- changeRangeR::ratioOverlap(r = r , shp = shp, category = "All")
       })
     # LOAD INTO SPP ####
@@ -324,10 +324,10 @@ change_overlap_module_server <- function(input, output, session, common) {
      ratio.Overlap$maskedRange <- do.call(raster::mosaic, ratio.Overlap$maskedRange)
     }
     else {ratio.Overlap$maskedRange<-ratio.Overlap$maskedRange[[1]]}
-     spp[[curSp()]]$change$overlapRaster <- ratio.Overlap$maskedRange
-      spp[[curSp()]]$change$overlapvalue <- ratio.Overlap$ratio
+     spp[[curSp()]]$indic$overlapRaster <- ratio.Overlap$maskedRange
+      spp[[curSp()]]$indic$overlapvalue <- ratio.Overlap$ratio
 
-      spp[[curSp()]]$change$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
+      spp[[curSp()]]$indic$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
 
 }
     if(input$selSource == "masked"){
@@ -338,10 +338,10 @@ change_overlap_module_server <- function(input, output, session, common) {
         logger,
         message = "Calculating range overlap ", {
       r =     spp[[curSp()]]$mask$prediction
-    #  shp = spp[[curSp()]]$change$polyOverlap
+    #  shp = spp[[curSp()]]$indic$polyOverlap
       raster::crs(shp) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
       raster::crs(r) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
-      ratio.Overlap <- changeRangeR::ratioOverlap(r = r , shp =  shp,field = spp[[curSp()]]$change$ShpField, category = category,   subfield=  spp[[curSp()]]$change$subfield)
+      ratio.Overlap <- changeRangeR::ratioOverlap(r = r , shp =  shp,field = spp[[curSp()]]$indic$ShpField, category = category,   subfield=  spp[[curSp()]]$indic$subfield)
         })
       req(ratio.Overlap)
       logger %>% writeLog( "Proportion of masked range area that is contained by landcover categories calculated ")
@@ -354,9 +354,9 @@ change_overlap_module_server <- function(input, output, session, common) {
         ratio.Overlap$maskedRange <- do.call(raster::mosaic, ratio.Overlap$maskedRange)
       }
       else {ratio.Overlap$maskedRange<-ratio.Overlap$maskedRange[[1]]}
-      spp[[curSp()]]$change$overlapRaster <- ratio.Overlap$maskedRange
-      spp[[curSp()]]$change$overlapvalue <- ratio.Overlap$ratio
-      spp[[curSp()]]$change$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
+      spp[[curSp()]]$indic$overlapRaster <- ratio.Overlap$maskedRange
+      spp[[curSp()]]$indic$overlapvalue <- ratio.Overlap$ratio
+      spp[[curSp()]]$indic$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
 
     }
 
@@ -365,18 +365,18 @@ change_overlap_module_server <- function(input, output, session, common) {
       smartProgress(
         logger,
         message = "Calculating range overlap ", {
-          r = spp[[curSp()]]$rmm$data$change$EOO
-    #      shp = spp[[curSp()]]$change$polyOverlap
+          r = spp[[curSp()]]$rmm$data$indic$EOO
+    #      shp = spp[[curSp()]]$indic$polyOverlap
           raster::crs(shp) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
           raster::crs(r) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
-          ratio.Overlap <- changeRangeR::ratioOverlap(r = r , shp =  shp,field = spp[[curSp()]]$change$ShpField, category = category,   subfield= spp[[curSp()]]$change$subfield)
+          ratio.Overlap <- changeRangeR::ratioOverlap(r = r , shp =  shp,field = spp[[curSp()]]$indic$ShpField, category = category,   subfield= spp[[curSp()]]$indic$subfield)
         })
       req(ratio.Overlap)
       logger %>% writeLog( "Proportion of EOO that is contained by landcover categories calculated ")
       # LOAD INTO SPP ####
-      spp[[curSp()]]$change$overlapPoly <- ratio.Overlap$maskedRange
-      spp[[curSp()]]$change$overlapvalue <- ratio.Overlap$ratio
-     # spp[[curSp()]]$change$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
+      spp[[curSp()]]$indic$overlapPoly <- ratio.Overlap$maskedRange
+      spp[[curSp()]]$indic$overlapvalue <- ratio.Overlap$ratio
+     # spp[[curSp()]]$indic$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
 
     }
     if(input$selSource == "aoo"){
@@ -384,11 +384,11 @@ change_overlap_module_server <- function(input, output, session, common) {
       smartProgress(
         logger,
         message = "Calculating range overlap ", {
-          r = spp[[curSp()]]$rmm$data$change$AOO
-     #     shp = spp[[curSp()]]$change$polyOverlap
+          r = spp[[curSp()]]$rmm$data$indic$AOO
+     #     shp = spp[[curSp()]]$indic$polyOverlap
           raster::crs(shp) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
           raster::crs(r) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
-          ratio.Overlap <- changeRangeR::ratioOverlap(r = r , shp =  shp,field = spp[[curSp()]]$change$ShpField, category = category,subfield=    spp[[curSp()]]$change$subfield)
+          ratio.Overlap <- changeRangeR::ratioOverlap(r = r , shp =  shp,field = spp[[curSp()]]$indic$ShpField, category = category,subfield=    spp[[curSp()]]$indic$subfield)
         })
       req(ratio.Overlap)
       logger %>% writeLog("Proportion of AOO that is contained by landcover categories calculated ")
@@ -401,9 +401,9 @@ change_overlap_module_server <- function(input, output, session, common) {
         ratio.Overlap$maskedRange <- do.call(raster::mosaic, ratio.Overlap$maskedRange)
       }
       else {ratio.Overlap$maskedRange<-ratio.Overlap$maskedRange[[1]]}
-      spp[[curSp()]]$change$overlapRaster <- ratio.Overlap$maskedRange
-      spp[[curSp()]]$change$overlapvalue <- ratio.Overlap$ratio
-      spp[[curSp()]]$change$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
+      spp[[curSp()]]$indic$overlapRaster <- ratio.Overlap$maskedRange
+      spp[[curSp()]]$indic$overlapvalue <- ratio.Overlap$ratio
+      spp[[curSp()]]$indic$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
 
     }
 
@@ -414,8 +414,8 @@ change_overlap_module_server <- function(input, output, session, common) {
 
   output$result <- renderText({
     # Result
- #   spp[[curSp()]]$change$overlapvalue)
-  gsub("%","%\n",  spp[[curSp()]]$change$overlapvalue)
+ #   spp[[curSp()]]$indic$overlapvalue)
+  gsub("%","%\n",  spp[[curSp()]]$indic$overlapvalue)
 
   })
 
@@ -423,7 +423,7 @@ change_overlap_module_server <- function(input, output, session, common) {
     save = function() {
       # Save any values that should be saved when the current session is saved
       list(
-        changeRangeSel = input$changeRangeSel,
+        indicRangeSel = input$indicRangeSel,
         selSource = input$selSource,
         selField = input$selField,
         selCat = input$selCat
@@ -431,7 +431,7 @@ change_overlap_module_server <- function(input, output, session, common) {
     },
     load = function(state) {
       # Load
-      updateSelectInput(session, 'changeRangeSel', selected = state$changeRangeSel)
+      updateSelectInput(session, 'indicRangeSel', selected = state$indicRangeSel)
       updateSelectInput(session, ' selSource', selected = state$selSource)
      updateSelectInput(session, ' selField', selected = state$selField)
      updateSelectInput(session, ' selCat', selected = state$selCat)
@@ -440,22 +440,22 @@ change_overlap_module_server <- function(input, output, session, common) {
 
 }
 
-change_overlap_module_result <- function(id) {
+indic_overlap_module_result <- function(id) {
 ns <- NS(id)
 # Result UI
 verbatimTextOutput(ns("result"))
 }
 
-change_overlap_module_map <- function(map, common) {
+indic_overlap_module_map <- function(map, common) {
   # Map logic
  spp <- common$spp
   curSp <- common$curSp
   map %>% clearAll()
   #if EOO is selected plot the polygon
-  if(!is.null(spp[[curSp()]]$change$Plot1)){
+  if(!is.null(spp[[curSp()]]$indic$Plot1)){
 
-    polyEOO <- spp[[curSp()]]$rmm$data$change$EOO@polygons[[1]]@Polygons
-    bb <- spp[[curSp()]]$rmm$data$change$EOO@bbox
+    polyEOO <- spp[[curSp()]]$rmm$data$indic$EOO@polygons[[1]]@Polygons
+    bb <- spp[[curSp()]]$rmm$data$indic$EOO@bbox
     bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
     map %>%
       fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
@@ -473,14 +473,14 @@ change_overlap_module_map <- function(map, common) {
     for (shp in xy) {
       map %>%
         addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4, color = "gray",
-                    group = 'change')
+                    group = 'indic')
     }
   }
   #plot SDM to use
 
-  if(is.null(spp[[curSp()]]$change$Plot1)){
-  req(spp[[curSp()]]$change$Plot)
-  sdm <-  spp[[curSp()]]$change$Plot
+  if(is.null(spp[[curSp()]]$indic$Plot1)){
+  req(spp[[curSp()]]$indic$Plot)
+  sdm <-  spp[[curSp()]]$indic$Plot
   raster::crs(sdm) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 ")
   SDMVals <- getRasterVals(sdm)
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
@@ -497,7 +497,7 @@ change_overlap_module_map <- function(map, common) {
                 labels = c("Presence", "Absence"),
                 opacity = 1, layerId = 'sdm') %>%
       addRasterImage(sdm, colors = c('grey', 'red'),
-                     opacity = 0.7, group = 'change', layerId = 'sdm',
+                     opacity = 0.7, group = 'indic', layerId = 'sdm',
                      method = "ngb")
   }
   else if (length(unique(SDMVals)) == 1) {
@@ -507,7 +507,7 @@ change_overlap_module_map <- function(map, common) {
                 labels = "Presence",
                 opacity = 1, layerId = 'expert') %>%
       addRasterImage(sdm, colors = 'red',
-                     opacity = 0.7, group = 'change', layerId = 'Overlap',
+                     opacity = 0.7, group = 'indic', layerId = 'Overlap',
                      method = "ngb")
   }
   else {
@@ -519,32 +519,32 @@ change_overlap_module_map <- function(map, common) {
                 values = SDMVals, layerId = "sdm",
                 labFormat = reverseLabel(2, reverse_order=TRUE)) %>%
       addRasterImage(sdm, colors = rasPal,
-                     opacity = 0.7, group = 'change', layerId = 'sdm',
+                     opacity = 0.7, group = 'indic', layerId = 'sdm',
                      method = "ngb")
   }
   }
   # Add just projection Polygon
-  req(spp[[curSp()]]$change$polyOverlapCrop)
-  #raster::crs(spp[[curSp()]]$change$polyOverlap) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
-  polyOvXY <- spp[[curSp()]]$change$polyOverlapCrop@polygons
+  req(spp[[curSp()]]$indic$polyOverlapCrop)
+  #raster::crs(spp[[curSp()]]$indic$polyOverlap) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
+  polyOvXY <- spp[[curSp()]]$indic$polyOverlapCrop@polygons
   if(length(polyOvXY) == 1) {
     shp <- list(polyOvXY[[1]]@Polygons[[1]]@coords)
   } else {
     shp <- lapply(polyOvXY, function(x) x@Polygons[[1]]@coords)
   }
-  bb <- spp[[curSp()]]$change$polyOverlapCrop@bbox
+  bb <- spp[[curSp()]]$indic$polyOverlapCrop@bbox
   bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
   map %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
   for (poly in shp) {
     map %>% addPolygons(lng = poly[, 1], lat = poly[, 2], weight = 4,
-                        color = "red", fill=FALSE, group = 'change')
+                        color = "red", fill=FALSE, group = 'indic')
   }
 
 ##Plot overlap of polygons (EOO case)
-  if(!is.null(spp[[curSp()]]$change$overlapPoly)){
- req(spp[[curSp()]]$change$overlapPoly)
-    polyOver <- as_Spatial(spp[[curSp()]]$change$overlapPoly)
+  if(!is.null(spp[[curSp()]]$indic$overlapPoly)){
+ req(spp[[curSp()]]$indic$overlapPoly)
+    polyOver <- as_Spatial(spp[[curSp()]]$indic$overlapPoly)
     bb <- polyOver@bbox
  polyOver <- polyOver@polygons[[1]]@Polygons
 
@@ -565,15 +565,15 @@ change_overlap_module_map <- function(map, common) {
  for (shp in xy) {
    map %>%
      addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4, color = "red",
-                 group = 'change')
+                 group = 'indic')
  }
   }
 ##Plot overlap of raster vs raster (code to get unclear)
 ##Plot overlap of poly and raster (SDM vs. polygon case)
-  if(!is.null(spp[[curSp()]]$change$overlapRaster)){
- req(spp[[curSp()]]$change$overlapRaster)
+  if(!is.null(spp[[curSp()]]$indic$overlapRaster)){
+ req(spp[[curSp()]]$indic$overlapRaster)
 
-    Overlap <-  spp[[curSp()]]$change$overlapRaster
+    Overlap <-  spp[[curSp()]]$indic$overlapRaster
   #  if(is.list(Overlap)){
    # Overlap$fun <- mean
     #Overlap$na.rm <- TRUE
@@ -582,7 +582,7 @@ change_overlap_module_map <- function(map, common) {
   #  }
 
     raster::crs(Overlap) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 ")
-    OverlapVals <- spp[[curSp()]]$change$overlapvalues
+    OverlapVals <- spp[[curSp()]]$indic$overlapvalues
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
   legendPal <- colorNumeric(rev(rasCols), OverlapVals, na.color = 'transparent')
   rasPal <- colorNumeric(rasCols, OverlapVals, na.color = 'transparent')
@@ -599,7 +599,7 @@ change_overlap_module_map <- function(map, common) {
                 labels = c("Presence", "Absence"),
                 opacity = 1, layerId = 'expert') %>%
       addRasterImage(Overlap, colors = c('gray', 'red'),
-                     opacity = 0.7, group = 'change', layerId = 'Overlap',
+                     opacity = 0.7, group = 'indic', layerId = 'Overlap',
                      method = "ngb")
   }
   else if (length(unique(OverlapVals)) == 1) {
@@ -609,7 +609,7 @@ change_overlap_module_map <- function(map, common) {
                   labels = "Presence",
                   opacity = 1, layerId = 'expert') %>%
         addRasterImage(Overlap, colors = 'red',
-                       opacity = 0.7, group = 'change', layerId = 'Overlap',
+                       opacity = 0.7, group = 'indic', layerId = 'Overlap',
                        method = "ngb")
   }
   else {
@@ -621,16 +621,16 @@ change_overlap_module_map <- function(map, common) {
                 values = OverlapVals, layerId = "overlap",
                 labFormat = reverseLabel(2, reverse_order=TRUE)) %>%
       addRasterImage(Overlap, colors = rasPal,
-                     opacity = 0.7, group = 'change', layerId = 'Overlap',
+                     opacity = 0.7, group = 'indic', layerId = 'Overlap',
                      method = "ngb")
   }
 }
 
 }
-change_overlap_module_rmd <- function(species) {
+indic_overlap_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
   list(
-    change_overlap_knit = FALSE
+    indic_overlap_knit = FALSE
     #species$rmm$code$wallace$someFlag,
     #var1 = species$rmm$code$wallace$someSetting1,
     #var2 = species$rmm$code$wallace$someSetting2

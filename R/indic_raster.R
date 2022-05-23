@@ -1,5 +1,5 @@
 #'
-#' @title  change_raster
+#' @title  indic_raster
 #' @description Upload user-specified SDM prediction
 #'
 #' @details
@@ -30,7 +30,7 @@
 #'
 #'
 
-change_raster <- function(rasPath, rasName, logger = NULL) {
+indic_raster <- function(rasPath, rasName, logger = NULL) {
   rasterName <- fileNameNoExt(rasName)
   smartProgress(logger, message = "Uploading user-specified SDM (**)...", {
     r <- raster::raster(rasPath)
