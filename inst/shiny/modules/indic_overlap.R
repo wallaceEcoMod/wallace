@@ -128,7 +128,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
 
   observeEvent(input$goInputOver, {
     if (is.null(spp[[curSp()]]$indic$Plot)) {
-      logger %>% alfred.writeLog(
+      logger %>% writeLog(
         type = 'error', hlSpp(curSp()), 'Calculate/Upload a species distribution')
       return()
     }
@@ -187,8 +187,8 @@ indic_overlap_module_server <- function(input, output, session, common) {
     sameRes <- identical(res(spp[[curSp()]]$indic$RasOverlap),
                          res(spp[[curSp()]]$indic$Plot))
     if (!sameRes) {
-      logger %>% alfred.writeLog(
-        type = 'error', alfred.hlSpp(curSp()),
+      logger %>% writeLog(
+        type = 'error', hlSpp(curSp()),
         'Raster resolution must be the same as species distribtuion resolution')
       return()
     }

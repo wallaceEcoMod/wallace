@@ -250,7 +250,6 @@ mask_expPoly_module_map <- function(map, common) {
                    # add background polygon
                    mapBgPolys(bgShpXY(), color = 'green', group = 'postBg')
   )
-
   if (!any(userValues > 0 & userValues < 1)) {
     map %>%
       leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,

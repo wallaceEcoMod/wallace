@@ -136,13 +136,11 @@ mask_spatial_module_server <- function(input, output, session, common) {
 
 mask_spatial_module_result <- function(id) {
   ns <- NS(id)
-
   # Result UI
   verbatimTextOutput(ns("result"))
 }
 
 mask_spatial_module_map <- function(map, common) {
-
   spp <- common$spp
   curSp <- common$curSp
   bgShpXY <- common$bgShpXY

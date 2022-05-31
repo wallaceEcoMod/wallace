@@ -114,7 +114,6 @@ diver_richness_module_server <- function(input, output, session, common) {
                      'multisp. calculations')
           return()
         }
-
       }
       #Processing
       smartProgress(
@@ -136,8 +135,7 @@ diver_richness_module_server <- function(input, output, session, common) {
           sp1 <- curSp()[1]
           all_stack <- raster::extend(spp[[sp1]]$project$mapProj,new_extent)
 
-
-          for (i in 2:length(curSp())){
+          for (i in 2:length(curSp())) {
             sp <- curSp()[i]
             #evaluate if same extent
 
