@@ -8,31 +8,33 @@ indic_range_module_ui <- function(id) {
                                "AOO" = "aoo")), # Check default (no selected)
     conditionalPanel(sprintf("input['%1$s'] == 'range'",
                              ns("indicRangeSel")),
-                     selectInput(ns("selSource") , label = "Select source for calculations",
+                     selectInput(ns("selSource") ,
+                                 label = "Select source for calculations",
                                  choices = list("Wallace SDM" = "wallace",
                                                 "Projected SDM" = "proj",
                                                 "User SDM" = "user",
                                                 "Masked SDM" = "mask"))),
     conditionalPanel(sprintf("input['%1$s'] == 'eoo'",
                              ns("indicRangeSel")),
-                     selectInput(ns("selSource1") , label = "Select source for calculations",
-                                  choices = list("Occurrences" = "occs",
-                                                 "Wallace SDM" = "wallace",
-                                                 "Projected SDM" = "proj",
-                                                 "User SDM" = "user"
-                                                 ))),
+                     selectInput(ns("selSource1") ,
+                                 label = "Select source for calculations",
+                                 choices = list("Occurrences" = "occs",
+                                                "Wallace SDM" = "wallace",
+                                                "Projected SDM" = "proj",
+                                                "User SDM" = "user"
+                                 ))),
 
     conditionalPanel(sprintf("input['%1$s'] == 'aoo'",
                              ns("indicRangeSel")),
-                     selectInput(ns("selSource2") , label = "Select source for calculations",
+                     selectInput(ns("selSource2") ,
+                                 label = "Select source for calculations",
                                  choices = list("Occurrences & Wallace SDM" = "occs",
                                                 "Wallace SDM" = "wallace",
                                                 "Projected SDM" = "proj",
                                                 "User SDM" = "user",
                                                 "Masked SDM" = "mask"))),
-##question for mary add option to do range for sdm that comes from maskRangeR or uploaded?
+    ##question for mary add option to do range for sdm that comes from maskRangeR or uploaded?
     actionButton(ns("goRange"), "Calculate")
-
   )
 }
 
@@ -66,14 +68,15 @@ indic_range_module_server <- function(input, output, session, common) {
         }
         smartProgress(
           logger,
-          message = "Calculating a range size estimate using a South America Albers Equal Area Conic projection", {
-
+          message = paste0("Calculating a range size estimate using a ",
+                           "South America Albers Equal Area Conic projection"), {
             # FUNCTION CALL ####
             ##First project to equal area
             p <- spp[[curSp()]]$visualization$mapPred
-
             ##PROJECT
-            p<-raster::projectRaster(p,crs="+proj=aea +lat_1=-5 +lat_2=-42 +lat_0=-32 +lon_0=-60 +x_0=0 +y_0=0 +ellps=aust_SA +units=m")
+            p <- raster::projectRaster(
+              p,
+              crs = "+proj=aea +lat_1=-5 +lat_2=-42 +lat_0=-32 +lon_0=-60 +x_0=0 +y_0=0 +ellps=aust_SA +units=m")
             # find the number of cells that are not NA
             pCells <- raster::ncell(p[!is.na(p)])
             # Convert the raster resolution to km^s
@@ -91,56 +94,14 @@ indic_range_module_server <- function(input, output, session, common) {
         common$update_component(tab = "Results")
       }
       if(input$selSource == "proj"){
-      # ERRORS ####
-      if (is.null(spp[[curSp()]]$project$mapProj)) {
-        logger %>%
-          writeLog(type = 'error',
-                   'Project your model before doing range calculations')
-        return()
-      }
-      if (is.null(spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet)) {
-        logger %>%
-          writeLog(type = 'error',
-                   'Generate a thresholded prediction before doing range calculations')
-        return()
-      }
-        smartProgress(
-      logger,
-      message = "Calculating a range size estimate using a South America Albers Equal Area Conic projection", {
-
-        # FUNCTION CALL ####
-        ##First project to equal area
-        p <- spp[[curSp()]]$project$mapProj
-
-        ##PROJECT
-        p<-raster::projectRaster(p,crs="+proj=aea +lat_1=-5 +lat_2=-42 +lat_0=-32 +lon_0=-60 +x_0=0 +y_0=0 +ellps=aust_SA +units=m")
-        # find the number of cells that are not NA
-        pCells <- raster::ncell(p[!is.na(p)])
-        # Convert the raster resolution to km^s
-        Resolution <- (raster::res(p)/1000)^2
-        # Multiply the two
-        area <- pCells * Resolution
-
-})
-
-    req(area)
-    logger %>% writeLog( "Species range size calculated based on  projected SDM ")
-    # LOAD INTO SPP ####
-      spp[[curSp()]]$indic$range <- area
-    spp[[curSp()]]$indic$rangetype <- input$selSource
-    common$update_component(tab = "Results")
-      }
-      if(input$selSource == "user"){
         # ERRORS ####
-        if (is.null(spp[[curSp()]]$postProc$OrigPred)) {
+        if (is.null(spp[[curSp()]]$project$mapProj)) {
           logger %>%
             writeLog(type = 'error',
-                     'Load you model in component User SDM before doing range calculations')
+                     'Project your model before doing range calculations')
           return()
         }
-        p <- spp[[curSp()]]$postProc$OrigPred
-        p[p == 0] <- NA
-        if (length(unique(raster::values(p)))> 2) {
+        if (is.null(spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet)) {
           logger %>%
             writeLog(type = 'error',
                      'Generate a thresholded prediction before doing range calculations')
@@ -148,13 +109,16 @@ indic_range_module_server <- function(input, output, session, common) {
         }
         smartProgress(
           logger,
-          message = "Calculating a range size estimate using a South America Albers Equal Area Conic projection on a user uploaded SDM", {
-
+          message = paste0("Calculating a range size estimate using a ",
+                           "South America Albers Equal Area Conic projection"), {
             # FUNCTION CALL ####
-            ##First project to equal area
-            p <- spp[[curSp()]]$postProc$OrigPred
-            ##PROJECT
-            p<-raster::projectRaster(p,crs="+proj=aea +lat_1=-5 +lat_2=-42 +lat_0=-32 +lon_0=-60 +x_0=0 +y_0=0 +ellps=aust_SA +units=m")
+            ## First project to equal area
+            p <- spp[[curSp()]]$project$mapProj
+
+            ## PROJECT
+            p <- raster::projectRaster(
+              p,
+              crs = "+proj=aea +lat_1=-5 +lat_2=-42 +lat_0=-32 +lon_0=-60 +x_0=0 +y_0=0 +ellps=aust_SA +units=m")
             # find the number of cells that are not NA
             pCells <- raster::ncell(p[!is.na(p)])
             # Convert the raster resolution to km^s
@@ -165,15 +129,57 @@ indic_range_module_server <- function(input, output, session, common) {
           })
 
         req(area)
-        logger %>% writeLog( "Species range size calculated based on User SDM ")
+        logger %>% writeLog("Species range size calculated based on  projected SDM")
+        # LOAD INTO SPP ####
+        spp[[curSp()]]$indic$range <- area
+        spp[[curSp()]]$indic$rangetype <- input$selSource
+        common$update_component(tab = "Results")
+      }
+      if (input$selSource == "user") {
+        # ERRORS ####
+        if (is.null(spp[[curSp()]]$postProc$OrigPred)) {
+          logger %>%
+            writeLog(type = 'error',
+                     'Load you model in component User SDM before doing range calculations')
+          return()
+        }
+        p <- spp[[curSp()]]$postProc$OrigPred
+        p[p == 0] <- NA
+        if (length(unique(raster::values(p))) > 2) {
+          logger %>%
+            writeLog(type = 'error',
+                     'Generate a thresholded prediction before doing range calculations')
+          return()
+        }
+        smartProgress(
+          logger,
+          message = paste0("Calculating a range size estimate using a South ",
+                           "America Albers Equal Area Conic projection on a ",
+                           "user uploaded SDM"), {
+
+            # FUNCTION CALL ####
+            ##First project to equal area
+            p <- spp[[curSp()]]$postProc$OrigPred
+            ##PROJECT
+            p <- raster::projectRaster(
+              p,
+              crs = "+proj=aea +lat_1=-5 +lat_2=-42 +lat_0=-32 +lon_0=-60 +x_0=0 +y_0=0 +ellps=aust_SA +units=m")
+            # find the number of cells that are not NA
+            pCells <- raster::ncell(p[!is.na(p)])
+            # Convert the raster resolution to km^s
+            Resolution <- (raster::res(p)/1000)^2
+            # Multiply the two
+            area <- pCells * Resolution
+
+          })
+        req(area)
+        logger %>% writeLog("Species range size calculated based on User SDM")
         # LOAD INTO SPP ####
         spp[[curSp()]]$indic$range <- area
         spp[[curSp()]]$indic$rangetype <- input$selSource
         common$update_component(tab = "Results")
       }
       if(input$selSource == "mask"){
-
-
         # ERRORS ####
         if (is.null(spp[[curSp()]]$mask$prediction)) {
           logger %>%
@@ -191,35 +197,35 @@ indic_range_module_server <- function(input, output, session, common) {
         }
         smartProgress(
           logger,
-          message = "Calculating a range size estimate using a South America Albers Equal Area Conic projection on a masked SDM", {
+          message = paste0("Calculating a range size estimate using a South ",
+                           "America Albers Equal Area Conic projection on ",
+                           "a masked SDM"), {
 
             # FUNCTION CALL ####
             ##First project to equal area
-            p <-      spp[[curSp()]]$mask$prediction
+            p <- spp[[curSp()]]$mask$prediction
             ##PROJECT
-            p<-raster::projectRaster(p,crs="+proj=aea +lat_1=-5 +lat_2=-42 +lat_0=-32 +lon_0=-60 +x_0=0 +y_0=0 +ellps=aust_SA +units=m")
+            p <- raster::projectRaster(
+              p,
+              crs = "+proj=aea +lat_1=-5 +lat_2=-42 +lat_0=-32 +lon_0=-60 +x_0=0 +y_0=0 +ellps=aust_SA +units=m")
             # find the number of cells that are not NA
             pCells <- raster::ncell(p[!is.na(p)])
             # Convert the raster resolution to km^s
             Resolution <- (raster::res(p)/1000)^2
             # Multiply the two
             area <- pCells * Resolution
-
           })
-
         req(area)
-        logger %>% writeLog( "Species range size calculated based on masked SDM ")
+        logger %>% writeLog("Species range size calculated based on masked SDM")
         # LOAD INTO SPP ####
         spp[[curSp()]]$indic$range <- area
         spp[[curSp()]]$indic$rangetype <- input$selSource
         common$update_component(tab = "Results")
-
       }
-    }
-    ##if calculating EOO
-    else if(input$indicRangeSel == "eoo"){
-      ##Check wether based on sdm or on occurrences
-      if(input$selSource1 == "wallace"){
+    ## if calculating EOO
+    } else if (input$indicRangeSel == "eoo") {
+      ## Check wether based on sdm or on occurrences
+      if (input$selSource1 == "wallace") {
         ##check that the projection exists and that it is thresholded
         if (is.null(spp[[curSp()]]$visualization$mapPred)) {
           logger %>%
@@ -242,17 +248,18 @@ indic_range_module_server <- function(input, output, session, common) {
             p.pts <- raster::rasterToPoints(p)
             eooSDM <- changeRangeR::mcp(p.pts[,1:2])
             aeoosdm <- raster::area(eooSDM)/1000000
-
           })
         req(aeoosdm)
-        logger %>% writeLog( "Calculated an EOO estimate based on a thresholded SDM. This is an approximation based on a non-projected SDM")
+        logger %>% writeLog("Calculated an EOO estimate based on a ",
+                            "thresholded SDM. This is an approximation ",
+                            "based on a non-projected SDM")
         # LOAD INTO SPP ####
         spp[[curSp()]]$rmm$data$indic$EOOval <- aeoosdm
         spp[[curSp()]]$rmm$data$indic$EOOtype <- input$selSource1
         spp[[curSp()]]$rmm$data$indic$EOO <- eooSDM
         common$update_component(tab = "Map")
       }
-      if(input$selSource1 == "user"){
+      if (input$selSource1 == "user") {
         ##check that the projection exists and that it is thresholded
         if (is.null(spp[[curSp()]]$postProc$OrigPred)) {
           logger %>%
@@ -264,8 +271,9 @@ indic_range_module_server <- function(input, output, session, common) {
         p[p == 0] <- NA
         if (length(unique(raster::values(p)))> 2) {
           logger %>%
-            writeLog(type = 'error',
-                     'Generate a thresholded prediction before doing range calculations')
+            writeLog(
+              type = 'error',
+              'Generate a thresholded prediction before doing range calculations')
           return()
         }
         smartProgress(
@@ -280,14 +288,16 @@ indic_range_module_server <- function(input, output, session, common) {
 
           })
         req(aeoosdm)
-        logger %>% writeLog( "Calculated an EOO estimate based on a user provided SDM. This is an approximation based on a non-projected SDM")
+        logger %>% writeLog("Calculated an EOO estimate based on a user ",
+                            "provided SDM. This is an approximation based ",
+                            "on a non-projected SDM")
         # LOAD INTO SPP ####
         spp[[curSp()]]$rmm$data$indic$EOOval <- aeoosdm
         spp[[curSp()]]$rmm$data$indic$EOOtype <- input$selSource1
         spp[[curSp()]]$rmm$data$indic$EOO <- eooSDM
         common$update_component(tab = "Map")
       }
-      if(input$selSource1 == "proj"){
+      if (input$selSource1 == "proj") {
         ##check that the projection exists and that it is thresholded
         if (is.null(spp[[curSp()]]$project$mapProj)) {
           logger %>%
@@ -305,15 +315,16 @@ indic_range_module_server <- function(input, output, session, common) {
           logger,
           message = "Calculating an EOO estimate based on the projected thresholded SDM ", {
             #must reclass the sdm to get 0 to be NA
-        p <- spp[[curSp()]]$project$mapProj
-        p[p == 0] <- NA
-        p.pts <- raster::rasterToPoints(p)
-        eooSDM <- changeRangeR::mcp(p.pts[,1:2])
-        aeoosdm <- raster::area(eooSDM)/1000000
-
+            p <- spp[[curSp()]]$project$mapProj
+            p[p == 0] <- NA
+            p.pts <- raster::rasterToPoints(p)
+            eooSDM <- changeRangeR::mcp(p.pts[,1:2])
+            aeoosdm <- raster::area(eooSDM)/1000000
           })
         req(aeoosdm)
-        logger %>% writeLog( "Calculated an EOO estimate based on a projected thresholded SDM. This is an approximation based on a non-projected SDM")
+        logger %>% writeLog("Calculated an EOO estimate based on a projected ",
+                            "thresholded SDM. This is an approximation based ",
+                            "on a non-projected SDM")
         # LOAD INTO SPP ####
         spp[[curSp()]]$rmm$data$indic$EOOval <- aeoosdm
         spp[[curSp()]]$rmm$data$indic$EOOtype <- input$selSource1
@@ -324,23 +335,25 @@ indic_range_module_server <- function(input, output, session, common) {
         if (is.null(spp[[curSp()]]$occs)) {
           logger %>%
             writeLog(type = 'error',
-                     'Get or upload occurrence data for this species before doing EOO calculations (names must match)')
+                     'Get or upload occurrence data for this species before ",
+                     "doing EOO calculations (names must match)')
           return()
         }
         smartProgress(
           logger,
           message = "Calculating an EOO estimate based on occurrence points ", {
-          occs <- spp[[curSp()]]$occs
-        occs.xy <- occs %>% dplyr::select(longitude, latitude)
-        # Create a minimum convex polygon around the occurrences
-        eoo <- changeRangeR::mcp(occs.xy)
-        # Define the coordinate reference system as unprojected
-        raster::crs(eoo) <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-        area <- raster::area(eoo)/1000000
+            occs <- spp[[curSp()]]$occs
+            occs.xy <- occs %>% dplyr::select(longitude, latitude)
+            # Create a minimum convex polygon around the occurrences
+            eoo <- changeRangeR::mcp(occs.xy)
+            # Define the coordinate reference system as unprojected
+            raster::crs(eoo) <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+            area <- raster::area(eoo)/1000000
 
-      })
+          })
         req(eoo)
-        logger %>% writeLog( "Calculated an EOO estimate based on occurrences. This is an approximation based on unprojected coordinates")
+        logger %>% writeLog("Calculated an EOO estimate based on occurrences. ",
+                            "This is an approximation based on unprojected coordinates")
 
         # LOAD INTO SPP ####
         spp[[curSp()]]$rmm$data$indic$EOOval <- area
@@ -369,13 +382,14 @@ indic_range_module_server <- function(input, output, session, common) {
         # Using filtered records how to use unfiltered?
         occs <- spp[[curSp()]]$occs
         occs.xy <- occs %>% dplyr::select(longitude, latitude)
-      #  p[!is.na(p)] <- 1
+        #  p[!is.na(p)] <- 1
         AOOlocs<-changeRangeR::aooArea(r = p, locs = occs.xy)
         req(AOOlocs)
-        logger %>% writeLog( "Calculated an AOO estimate based on an SDM and occurrences. This is an approximation based on unprojected coordinates")
+        logger %>% writeLog("Calculated an AOO estimate based on an SDM ",
+                            "and occurrences. This is an approximation based ",
+                            "on unprojected coordinates")
 
         # LOAD INTO SPP ####
-
         spp[[curSp()]]$rmm$data$indic$AOOval <- AOOlocs$area
         spp[[curSp()]]$rmm$data$indic$AOOtype <- input$selSource2
         spp[[curSp()]]$rmm$data$indic$AOO <- AOOlocs$aooRaster
@@ -399,15 +413,15 @@ indic_range_module_server <- function(input, output, session, common) {
         p[p == 0] <- NA
         AOO<-changeRangeR::aooArea(r = p)
         req(AOO)
-        logger %>% writeLog( "Calculated an AOO estimate based on an SDM. This is an approximation based on unprojected coordinates")
+        logger %>% writeLog("Calculated an AOO estimate based on an SDM. This ",
+                            "is an approximation based on unprojected coordinates")
 
         # LOAD INTO SPP ####
         spp[[curSp()]]$rmm$data$indic$AOOval <- AOO$area
         spp[[curSp()]]$rmm$data$indic$AOOtype <- input$selSource2
         spp[[curSp()]]$rmm$data$indic$AOO <- AOO$aooRaster
         common$update_component(tab = "Map")
-      }
-      else if (input$selSource2 =="proj"){
+      } else if (input$selSource2 == "proj") {
         ##check that the projection exists and that it is thresholded
         if (is.null(spp[[curSp()]]$project$mapProj)) {
           logger %>%
@@ -423,17 +437,16 @@ indic_range_module_server <- function(input, output, session, common) {
         }
         p <- spp[[curSp()]]$project$mapProj
         p[p == 0] <- NA
-        AOO<-changeRangeR::aooArea(r = p)
+        AOO <- changeRangeR::aooArea(r = p)
         req(AOO)
-        logger %>% writeLog( "Calculated an AOO estimate based on an SDM. This is an approximation based on unprojected coordinates")
-
+        logger %>% writeLog("Calculated an AOO estimate based on an SDM. This ",
+                            "is an approximation based on unprojected coordinates")
         # LOAD INTO SPP ####
         spp[[curSp()]]$rmm$data$indic$AOOval <- AOO$area
         spp[[curSp()]]$rmm$data$indic$AOOtype <- input$selSource2
         spp[[curSp()]]$rmm$data$indic$AOO <- AOO$aooRaster
         common$update_component(tab = "Map")
-      }
-      else if (input$selSource2 =="user"){
+      } else if (input$selSource2 == "user") {
         ##check that the projection exists and that it is thresholded
         if (is.null(spp[[curSp()]]$postProc$OrigPred)) {
           logger %>%
@@ -451,30 +464,29 @@ indic_range_module_server <- function(input, output, session, common) {
         }
         p <- spp[[curSp()]]$postProc$OrigPred
         p[p == 0] <- NA
-        AOO<-changeRangeR::aooArea(r = p)
+        AOO <- changeRangeR::aooArea(r = p)
         req(AOO)
-        logger %>% writeLog( "Calculated an AOO estimate based on an user uploaded SDM. This is an approximation based on unprojected coordinates")
-
+        logger %>% writeLog("Calculated an AOO estimate based on an user ",
+                            "uploaded SDM. This is an approximation based ",
+                            "on unprojected coordinates")
         # LOAD INTO SPP ####
         spp[[curSp()]]$rmm$data$indic$AOOval <- AOO$area
         spp[[curSp()]]$rmm$data$indic$AOOtype <- input$selSource2
         spp[[curSp()]]$rmm$data$indic$AOO <- AOO$aooRaster
         common$update_component(tab = "Map")
-      }
-      else if (input$selSource2 =="mask"){
-
+      } else if (input$selSource2 == "mask") {
         p <- spp[[curSp()]]$mask$prediction
         p[p == 0] <- NA
-        if (length(unique(raster::values(p)))> 2) {
+        if (length(unique(raster::values(p))) > 2) {
           logger %>%
             writeLog(type = 'error',
                      'Generate a thresholded prediction before doing AOO calculations')
           return()
         }
-        AOO<-aooArea(r = p)
+        AOO <- aooArea(r = p)
         req(AOO)
-        logger %>% writeLog( "Calculated an AOO estimate based on a masked SDM. This is an approximation based on unprojected coordinates")
-
+        logger %>% writeLog("Calculated an AOO estimate based on a masked SDM. ",
+                            "This is an approximation based on unprojected coordinates")
         # LOAD INTO SPP ####
         spp[[curSp()]]$rmm$data$indic$AOOval <- AOO$area
         spp[[curSp()]]$rmm$data$indic$AOOtype <- input$selSource2
@@ -482,37 +494,41 @@ indic_range_module_server <- function(input, output, session, common) {
         common$update_component(tab = "Map")
       }
     }
-    })
-
-
-
- # output$result <- renderPrint({
+  })
+  # output$result <- renderPrint({
   #  # Result
-   # spp[[curSp()]]$indic$range[1]
-    #spp[[curSp()]]$rmm$data$indic$EOOval
+  # spp[[curSp()]]$indic$range[1]
+  #spp[[curSp()]]$rmm$data$indic$EOOval
   #  spp[[curSp()]]$rmm$data$indic$AOOval
-#  })
+  #  })
   output$areas <- renderText({
     # Result
-    if(is.null(spp[[curSp()]]$indic$range[1])){
-      spp[[curSp()]]$indic$range[1]<-"Not calculated"
-      spp[[curSp()]]$indic$rangetype<-NA}
-    if(is.null(spp[[curSp()]]$rmm$data$indic$EOOval)){
-      spp[[curSp()]]$rmm$data$indic$EOOval<-"Not calculated"
-      spp[[curSp()]]$rmm$data$indic$EOOtype<-NA}
-    if(is.null(spp[[curSp()]]$rmm$data$indic$AOOval)){
-      spp[[curSp()]]$rmm$data$indic$AOOval<-"Not calculated"
-      spp[[curSp()]]$rmm$data$indic$AOOtype<-NA}
+    if (is.null(spp[[curSp()]]$indic$range[1])) {
+      spp[[curSp()]]$indic$range[1] <- "Not calculated"
+      spp[[curSp()]]$indic$rangetype <- NA
+    }
+    if (is.null(spp[[curSp()]]$rmm$data$indic$EOOval)) {
+      spp[[curSp()]]$rmm$data$indic$EOOval <- "Not calculated"
+      spp[[curSp()]]$rmm$data$indic$EOOtype <- NA
+    }
+    if (is.null(spp[[curSp()]]$rmm$data$indic$AOOval)) {
+      spp[[curSp()]]$rmm$data$indic$AOOval <- "Not calculated"
+      spp[[curSp()]]$rmm$data$indic$AOOtype <- NA
+    }
     # define contents for both evaluation tables
-    #all_areas<-c(spp[[curSp()]]$indic$range[1],spp[[curSp()]]$rmm$data$indic$EOOval,spp[[curSp()]]$rmm$data$indic$AOOval)
+    #all_areas<-c(spp[[curSp()]]$indic$range[1],spp[[curSp()]]$rmm$data$indic$EOOval,
+    #spp[[curSp()]]$rmm$data$indic$AOOval)
     #rangetype<-paste0("Range based on ", spp[[curSp()]]$indic$rangetype)
     #eootype<-paste0("EOO based on ", spp[[curSp()]]$rmm$data$indic$EOOtype)
     #aootype<-paste0("AOO based on ", spp[[curSp()]]$rmm$data$indic$AOOtype)
     #names(all_areas)<-c(rangetype,eootype,aootype)
-      paste(
-        "Range based on", spp[[curSp()]]$indic$rangetype, spp[[curSp()]]$indic$range[1],"Km^2", "\n",
-        "EOO based on ",  spp[[curSp()]]$rmm$data$indic$EOOtype, spp[[curSp()]]$rmm$data$indic$EOOval,"Km^2","\n",
-        "AOO based on ", spp[[curSp()]]$rmm$data$indic$AOOtype, spp[[curSp()]]$rmm$data$indic$AOOval)
+    paste(
+      "Range based on", spp[[curSp()]]$indic$rangetype,
+      spp[[curSp()]]$indic$range[1],"Km^2", "\n",
+      "EOO based on ",  spp[[curSp()]]$rmm$data$indic$EOOtype,
+      spp[[curSp()]]$rmm$data$indic$EOOval,"Km^2","\n",
+      "AOO based on ", spp[[curSp()]]$rmm$data$indic$AOOtype,
+      spp[[curSp()]]$rmm$data$indic$AOOval)
 
 
   })
@@ -538,42 +554,42 @@ indic_range_module_server <- function(input, output, session, common) {
 }
 
 indic_range_module_result <- function(id) {
-ns <- NS(id)
-# Result UI
-verbatimTextOutput(ns("areas"))
+  ns <- NS(id)
+  # Result UI
+  verbatimTextOutput(ns("areas"))
 
 
 }
 
 indic_range_module_map <- function(map, common) {
   # Map logic
- spp <- common$spp
+  spp <- common$spp
   curSp <- common$curSp
   map %>% clearAll()
-if(!is.null(spp[[curSp()]]$rmm$data$indic$EOO)){
+  if(!is.null(spp[[curSp()]]$rmm$data$indic$EOO)){
 
- polyEOO <- spp[[curSp()]]$rmm$data$indic$EOO@polygons[[1]]@Polygons
- bb <- spp[[curSp()]]$rmm$data$indic$EOO@bbox
- bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
- map %>%
-   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
-map %>%
-  ##Add legend
-  addLegend("bottomright", colors = "gray",
-            title = "EOO", labels = "EOO",
-            opacity = 1)
+    polyEOO <- spp[[curSp()]]$rmm$data$indic$EOO@polygons[[1]]@Polygons
+    bb <- spp[[curSp()]]$rmm$data$indic$EOO@bbox
+    bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
+    map %>%
+      fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
+    map %>%
+      ##Add legend
+      addLegend("bottomright", colors = "gray",
+                title = "EOO", labels = "EOO",
+                opacity = 1)
     ##ADD polygon
-   if (length(polyEOO) == 1) {
-    xy <- list(polyEOO[[1]]@coords)
+    if (length(polyEOO) == 1) {
+      xy <- list(polyEOO[[1]]@coords)
     } else {
       xy <- lapply(polyEOO, function(x) x@coords)
     }
-  for (shp in xy) {
-    map %>%
-      addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4, color = "gray",
-                  group = 'indic')
+    for (shp in xy) {
+      map %>%
+        addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4, color = "gray",
+                    group = 'indic')
+    }
   }
-}
   if(!is.null(spp[[curSp()]]$rmm$data$indic$AOO)){
 
     AOOras <- spp[[curSp()]]$rmm$data$indic$AOO
@@ -586,10 +602,10 @@ map %>%
                 title = "AOO",
                 labels = c("Presence", "Absence"),
                 opacity = 1, layerId = 'expert') %>%
-    ##ADD polygon
-    addRasterImage(AOOras, colors = c('red', 'grey'),
-                   opacity = 0.7, group = 'indic', layerId = 'AOO',
-                   method = "ngb")
+      ##ADD polygon
+      addRasterImage(AOOras, colors = c('red', 'grey'),
+                     opacity = 0.7, group = 'indic', layerId = 'AOO',
+                     method = "ngb")
   }
 
 }
