@@ -12,7 +12,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">wallace</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.3-5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.3-6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,46 +83,75 @@
     <dl><dt>occs</dt>
 <dd><p>data frame of cleaned or processed occurrences obtained from
 components occs: Obtain occurrence data or, poccs: Process occurrence data.</p></dd>
+
+
 <dt>bg</dt>
 <dd><p>coordinates of background points to be used for modeling.</p></dd>
+
+
 <dt>user.grp</dt>
 <dd><p>a list of two vectors containing group assignments for
 occurrences (occs.grp) and background points (bg.grp).</p></dd>
+
+
 <dt>bgMsk</dt>
 <dd><p>a RasterStack or a RasterBrick of environmental layers cropped
 and masked to match the provided background extent.</p></dd>
+
+
 <dt>rms</dt>
 <dd><p>vector of range of regularization multipliers to be used in the
 ENMeval run.</p></dd>
+
+
 <dt>rmsStep</dt>
 <dd><p>step to be used when defining regularization multipliers to
 be used from the provided range.</p></dd>
+
+
 <dt>fcs</dt>
 <dd><p>feature classes to be tested in the ENMeval run.</p></dd>
+
+
 <dt>clampSel</dt>
 <dd><p>Boolean use of clamping in the model.</p></dd>
+
+
 <dt>algMaxent</dt>
 <dd><p>character. algorithm to be used in modeling. A selection
 of "maxnet" or "maxent.jar".</p></dd>
+
+
 <dt>catEnvs</dt>
 <dd><p>if categorical predictor variables are included must provide
 the names.</p></dd>
+
+
 <dt>parallel</dt>
 <dd><p>logical. Whether to use parallel in the generation of
 models. Default is FALSE</p></dd>
+
+
 <dt>numCores</dt>
 <dd><p>numeric. If using parallel how many cores to use. Default is
 NULL.</p></dd>
+
+
 <dt>logger</dt>
 <dd><p>Stores all notification messages to be displayed in the Log
 Window of Wallace GUI. Insert the logger reactive list here for running in
 shiny, otherwise leave the default NULL.</p></dd>
+
+
 <dt>spN</dt>
 <dd><p>character. Species name to be used for all logger messages.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>Function returns an ENMevaluate object with all the evaluated models
+    
+
+<p>Function returns an ENMevaluate object with all the evaluated models
   and a selection of appropriate fields.</p>
     </div>
     <div class="section level2">
@@ -175,7 +204,7 @@ shiny, otherwise leave the default NULL.</p></dd>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
     </footer></div>

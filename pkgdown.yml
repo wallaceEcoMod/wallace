@@ -1,12 +1,12 @@
 pandoc: 2.7.3
-pkgdown: 2.0.3
+pkgdown: 2.0.4
 pkgdown_sha: ~
 articles:
   beta-testing: beta-testing.html
   module-addition: module-addition.html
   tutorial-v1: tutorial-v1.html
   tutorial-v2: tutorial-v2.html
-last_built: 2022-05-23T21:15Z
+last_built: 2022-06-12T22:01Z
 urls:
   reference: http://wallaceecomod.github.io/wallace/reference
   article: http://wallaceecomod.github.io/wallace/articles
