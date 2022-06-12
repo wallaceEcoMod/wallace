@@ -1,6 +1,6 @@
 Package: wallace
-Version: 1.9.3-5
-Date: 2022-05-23
+Version: 1.9.3-6
+Date: 2022-06-12
 Title: A Modular Platform for Reproducible Modeling of Species Niches 
     and Distributions
 Description: The 'shiny' application Wallace is a modular platform for 
@@ -33,13 +33,13 @@ Depends:
     shiny (>= 1.6.0),
     leaflet (>= 2.0.2)
 Imports:
-    ade4,
     dplyr (>= 1.0.2),
     DT (>= 0.5),
     ecospat,
     ENMeval (>= 2.0.3),
     glue,
     knitcitations,
+    leafem,
     leaflet.extras (>= 1.0.0),
     magrittr,
     methods,
@@ -56,6 +56,7 @@ Imports:
     tools,
     zip
 Suggests: 
+    ade4,
     BIEN,
     dismo,
     jsonlite,
