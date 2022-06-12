@@ -33,6 +33,23 @@ printVecAsis <- function(x, asChar = FALSE) {
   }
 }
 
+#' @title Spurious package call to avoid note of functions outside R folder
+#' @description For internal use.
+#' @param x
+#' @keywords internal
+#' @export
+spurious <- function(x) {
+  DT::renderDataTable(x)
+  RColorBrewer::brewer.pal(x)
+  leafem::addMouseCoordinates(x)
+  leaflet.extras::removeDrawToolbar(x)
+  rmarkdown::github_document(x)
+  shinyWidgets::pickerInput(x)
+  shinyjs::disable(x)
+  zip::zipr(x)
+  return()
+}
+
 ####################### #
 # SHINY LOG #
 ####################### #
