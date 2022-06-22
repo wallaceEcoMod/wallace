@@ -41,7 +41,7 @@ indic_range_module_server <- function(input, output, session, common) {
   spp <- common$spp
   curSp <- common$curSp
   curModel <- common$curModel
-  mapProj <- common$mapProj
+  mapXfer <- commo$mapXfer
 
 
 
@@ -92,7 +92,7 @@ indic_range_module_server <- function(input, output, session, common) {
       }
       if(input$selSource == "proj"){
       # ERRORS ####
-      if (is.null(spp[[curSp()]]$project$mapProj)) {
+      if (is.null(spp[[curSp()]]$transfer$mapXfer)) {
         logger %>%
           writeLog(type = 'error',
                    'Project your model before doing range calculations')
@@ -110,7 +110,7 @@ indic_range_module_server <- function(input, output, session, common) {
 
         # FUNCTION CALL ####
         ##First project to equal area
-        p <- spp[[curSp()]]$project$mapProj
+        p <- spp[[curSp()]]$transfer$mapXfer
 
         ##PROJECT
         p<-raster::projectRaster(p,crs="+proj=aea +lat_1=-5 +lat_2=-42 +lat_0=-32 +lon_0=-60 +x_0=0 +y_0=0 +ellps=aust_SA +units=m")
@@ -289,7 +289,7 @@ indic_range_module_server <- function(input, output, session, common) {
       }
       if(input$selSource1 == "proj"){
         ##check that the projection exists and that it is thresholded
-        if (is.null(spp[[curSp()]]$project$mapProj)) {
+        if (is.null(spp[[curSp()]]$transfer$mapXfer)) {
           logger %>%
             writeLog(type = 'error',
                      'Project your model before doing EOO calculations')
@@ -305,7 +305,7 @@ indic_range_module_server <- function(input, output, session, common) {
           logger,
           message = "Calculating an EOO estimate based on the projected thresholded SDM ", {
             #must reclass the sdm to get 0 to be NA
-        p <- spp[[curSp()]]$project$mapProj
+        p <- spp[[curSp()]]$transfer$mapXfer
         p[p == 0] <- NA
         p.pts <- raster::rasterToPoints(p)
         eooSDM <- changeRangeR::mcp(p.pts[,1:2])
@@ -409,7 +409,7 @@ indic_range_module_server <- function(input, output, session, common) {
       }
       else if (input$selSource2 =="proj"){
         ##check that the projection exists and that it is thresholded
-        if (is.null(spp[[curSp()]]$project$mapProj)) {
+        if (is.null(spp[[curSp()]]$transfer$mapXfer)) {
           logger %>%
             writeLog(type = 'error',
                      'Project your model before doing AOO calculations')
@@ -421,7 +421,7 @@ indic_range_module_server <- function(input, output, session, common) {
                      'Generate a thresholded prediction before doing AOO calculations')
           return()
         }
-        p <- spp[[curSp()]]$project$mapProj
+        p <- spp[[curSp()]]$transfer$mapXfer
         p[p == 0] <- NA
         AOO<-changeRangeR::aooArea(r = p)
         req(AOO)
