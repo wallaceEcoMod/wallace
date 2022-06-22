@@ -41,7 +41,7 @@ indic_range_module_server <- function(input, output, session, common) {
   spp <- common$spp
   curSp <- common$curSp
   curModel <- common$curModel
-  mapXfer <- commo$mapXfer
+  mapXfer <- common$mapXfer
 
 
 
