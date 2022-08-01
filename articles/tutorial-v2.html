@@ -8,8 +8,8 @@
 <meta name="description" content="wallace">
 <title>Wallace Ecological Modeling Application v2.0 Vignette • wallace</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Wallace Ecological Modeling Application v2.0 Vignette">
 <meta property="og:description" content="wallace">
@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">wallace</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.3-6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.3-7</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -110,13 +110,13 @@ Additionally, we anticipate that this vignette (and those in the future) for the
 <p>For <code>wallace</code> to work, you should be using R version 3.5.0 or later. Download for <a href="https://cran.r-project.org/bin/windows/base/" target="_blank" class="external-link">Windows</a> or <a href="https://cran.r-project.org/bin/macosx/" target="_blank" class="external-link">Mac</a>.</p>
 <p>To install and load <em>Wallace v2.0</em>, open either the <code>R</code> GUI or RStudio and run the code below. It’s the only code you’ll have to run to use <code>wallace</code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Install Wallace from GitHub</span>
-<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span>
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"wallaceEcoMod/wallace"</span><span class="op">)</span>
-<span class="co"># Load Wallace</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://wallaceecomod.github.io/wallace/">wallace</a></span><span class="op">)</span>
-<span class="co"># Run Wallace</span>
-<span class="fu"><a href="../reference/run_wallace.html">run_wallace</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># Install Wallace from GitHub</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"wallaceEcoMod/wallace"</span><span class="op">)</span></span>
+<span><span class="co"># Load Wallace</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://wallaceecomod.github.io/wallace/">wallace</a></span><span class="op">)</span></span>
+<span><span class="co"># Run Wallace</span></span>
+<span><span class="fu"><a href="../reference/run_wallace.html">run_wallace</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>The <em>Wallace</em> GUI will open in your default web browser, and the <code>R</code> console will be occupied while <em>Wallace</em> is running.</p>
 <p>The <code>R</code> console displays messages regarding R-package information or any error messages if complications arise, including valuable information for troubleshooting. If you intend to ask a question in the Google Group (preferred) or by email, please include any errors messages from the console.</p>
 <p>If you’d like to use the <code>R</code> console while running <em>Wallace</em>, open another <code>R</code> session, or alternatively a terminal window (MacOS/Linux) or command prompt (Windows) and initialize <code>R</code>, then run the lines above.</p>
@@ -263,8 +263,8 @@ We will practice using the first two modules with this species. In the first mod
 <p>Click ‘Save Session’ within the “Save” tab. This tab is available from any of the Components. This will save your progress as an RDS (.rds) file, a file type used to save R objects. After it is saved, you can hit the stop sign in the upper right corner or close the browser window and exit R/RStudio. <em>Note: if the Wallace session is closed before saving results and/or the session, all work will be lost</em>.</p>
 <p>When you are ready to resume, load Wallace again.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://wallaceecomod.github.io/wallace/">wallace</a></span><span class="op">)</span>
-<span class="fu"><a href="../reference/run_wallace.html">run_wallace</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://wallaceecomod.github.io/wallace/">wallace</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/run_wallace.html">run_wallace</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>In the <strong>Intro</strong> component, use the “Load Prior Session” tab to import your .rds session file.</p>
 <p><img src="vignette_img/save_1.png" width="800px" style="display: block; margin: auto;"></p>
 <p>A box will pop up– It looks like other <em>Wallace</em> warning messages, but in this case it is indicating the session is loaded. It may be necessary to reload your variables, using <strong>Occ Data</strong> and <strong>Env Data</strong> as previously carried out. You can now carry on with the previous analysis.</p>
@@ -427,7 +427,7 @@ This material is based upon work supported by the National Science Foundation un
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
     </footer>

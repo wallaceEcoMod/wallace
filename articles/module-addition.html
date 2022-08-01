@@ -8,8 +8,8 @@
 <meta name="description" content="wallace">
 <title>How to write a module in Wallace • wallace</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="How to write a module in Wallace">
 <meta property="og:description" content="wallace">
@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">wallace</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.3-6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.3-7</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -189,10 +189,10 @@
 <p>In addition, some data objects that are used often in the analysis have special shortcut reactive functions associated with them. For example, the occurrence data table <code>spp[[curSp()]]$occs</code> can be accessed with the shortcut function <code>occs()</code>. <strong>NOTE</strong>: These functions cannot be used to overwrite entities in the list—in this case, you must use the explicit, non-reactive reference.</p>
 <p>For example:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># this will not work to overwrite</span>
-<span class="fu">occs</span><span class="op">(</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">newDF</span>
-<span class="co"># this will work</span>
-<span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">occs</span> <span class="op">&lt;-</span> <span class="va">newDF</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># this will not work to overwrite</span></span>
+<span><span class="fu">occs</span><span class="op">(</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">newDF</span></span>
+<span><span class="co"># this will work</span></span>
+<span><span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">occs</span> <span class="op">&lt;-</span> <span class="va">newDF</span></span></code></pre></div>
 <p>Below is the complete list of reactive functions used internally in <em>Wallace</em> as shortcuts to return data objects based on user selections.</p>
 <table class="table">
 <colgroup>
@@ -348,27 +348,27 @@
 <p>This function has arguments for the 1) environmental rasterStack masked by the background extent (bgMask), 2) the name of the species (spN), and 3) logger, a reactive value object that holds all the text and HTML formatting for the log window. Reactive variables such as logger can only be used within reactive contexts – they will not work for regular R functions. When this function is run internally, the argument “logger” should be set to the reactive value object <code>logger</code>, which will get updated with the messages produced by our module function. This sends messages entered with <code><a href="../reference/writeLog.html">writeLog()</a></code> to the <em>Wallace</em> log window. The function <code><a href="../reference/smartProgress.html">smartProgress()</a></code> will generate a shiny progress bar in the lower-right corner of the interface that tracks the progress of the <code>layerStats()</code> function. If the module function is run outside of a <em>Wallace</em> session, the argument “logger” should be left at the default NULL, which will make <code><a href="../reference/writeLog.html">writeLog()</a></code> and <code><a href="../reference/smartProgress.html">smartProgress()</a></code> print messages and progress bars to the R console, respectively. Additionally, hlSpp() is a function that will highlight the printed text in bold green. This function should be used as the first parameter for writeLog() to highlight the printed species name (e.g., “Canis lupus | …Your message here…”).</p>
 <p>Open a new R Script and write the module function as written below. This is a basic R function with some <em>Wallace</em> functionality that gets saved into the <code>/R</code> directory with the other package functions. Do not forget to document your function following basic <a href="https://cran.r-project.org/web/packages/roxygen2/vignettes/rd.html" target="_blank" class="external-link">roxygen</a> structure with <code>@export</code> at the end, as we will need to include reference to this function in the NAMESPACE. Save the code below as <code>wallace/R/penvs_correlations.R</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co">#' @title penvs_correlations</span>
-<span class="co">#' @description Runs Pearson correlations between variable pairs</span>
-<span class="co">#' @param bgMask Environmental rasters for study region.</span>
-<span class="co">#' @param spN Species' name for log window.</span>
-<span class="co">#' @param logger Reactive values list of log window text.</span>
-<span class="co">#’ @details Any additional details needed.</span>
-<span class="co">#' @return A data frame</span>
-<span class="co">#' @author Juan Perez</span>
-
-<span class="co">#' @export</span>
-
-<span class="va">penvs_correlations</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">bgMask</span>, <span class="va">spN</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">logger</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span>
-  <span class="fu"><a href="../reference/smartProgress.html">smartProgress</a></span><span class="op">(</span><span class="va">logger</span>, 
-                message <span class="op">=</span> <span class="st">"Calculating pairwise Pearson's correlations"</span>, <span class="op">{</span>
-                  <span class="va">envCorrs</span> <span class="op">&lt;-</span> <span class="fu">layerStats</span><span class="op">(</span><span class="va">bgMask</span>, 
-                                         stat <span class="op">=</span> <span class="st">"pearson"</span>, 
-                                         na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-                <span class="op">}</span><span class="op">)</span>
-  <span class="va">logger</span> <span class="op"><a href="https://rdrr.io/pkg/leaflet/man/leaflet-imports.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/writeLog.html">writeLog</a></span><span class="op">(</span><span class="fu"><a href="../reference/hlSpp.html">hlSpp</a></span><span class="op">(</span><span class="va">spN</span><span class="op">)</span>, <span class="st">"Pearson complete"</span><span class="op">)</span>
-  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">envCorrs</span><span class="op">)</span>
-<span class="op">}</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co">#' @title penvs_correlations</span></span>
+<span><span class="co">#' @description Runs Pearson correlations between variable pairs</span></span>
+<span><span class="co">#' @param bgMask Environmental rasters for study region.</span></span>
+<span><span class="co">#' @param spN Species' name for log window.</span></span>
+<span><span class="co">#' @param logger Reactive values list of log window text.</span></span>
+<span><span class="co">#’ @details Any additional details needed.</span></span>
+<span><span class="co">#' @return A data frame</span></span>
+<span><span class="co">#' @author Juan Perez</span></span>
+<span></span>
+<span><span class="co">#' @export</span></span>
+<span></span>
+<span><span class="va">penvs_correlations</span> <span class="op">&lt;-</span> <span class="kw">function</span> <span class="op">(</span><span class="va">bgMask</span>, <span class="va">spN</span> <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">logger</span> <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="../reference/smartProgress.html">smartProgress</a></span><span class="op">(</span><span class="va">logger</span>, </span>
+<span>                message <span class="op">=</span> <span class="st">"Calculating pairwise Pearson's correlations"</span>, <span class="op">{</span></span>
+<span>                  <span class="va">envCorrs</span> <span class="op">&lt;-</span> <span class="fu">layerStats</span><span class="op">(</span><span class="va">bgMask</span>, </span>
+<span>                                         stat <span class="op">=</span> <span class="st">"pearson"</span>, </span>
+<span>                                         na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>                <span class="op">}</span><span class="op">)</span></span>
+<span>  <span class="va">logger</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/writeLog.html">writeLog</a></span><span class="op">(</span><span class="fu"><a href="../reference/hlSpp.html">hlSpp</a></span><span class="op">(</span><span class="va">spN</span><span class="op">)</span>, <span class="st">"Pearson complete"</span><span class="op">)</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">envCorrs</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <p>In the case that your function becomes too long or has many nested functions, you can write auxiliary (helper) functions in the same file (see <code>wallace/R/envs_ecoClimate.R</code> for an example).</p>
 <p>Once your module function is finished, we will add it to the package NAMESPACE by running <code>devtools::document()</code> or by pressing <code>Ctrl/Cmd + Shift + D</code> in Rstudio. Finally, load the function using <code>devtools::load_all()</code>.</p>
 </div>
@@ -385,12 +385,12 @@
 <li>rmd (boolean): FALSE for this example. TRUE if the module should add Rmd code to the Session Code. See more in Step 7.</li>
 </ul>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">wallace</span><span class="fu">::</span><span class="fu"><a href="../reference/create_module.html">create_module</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"penvs_correlations"</span>, 
-dir <span class="op">=</span> <span class="st">"./inst/shiny/custom_modules"</span>, 
-map <span class="op">=</span> <span class="cn">FALSE</span>,
-result <span class="op">=</span> <span class="cn">TRUE</span>, 
-rmd <span class="op">=</span> <span class="cn">FALSE</span>, 
-save <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">wallace</span><span class="fu">::</span><span class="fu"><a href="../reference/create_module.html">create_module</a></span><span class="op">(</span>id <span class="op">=</span> <span class="st">"penvs_correlations"</span>, </span>
+<span>dir <span class="op">=</span> <span class="st">"./inst/shiny/custom_modules"</span>, </span>
+<span>map <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>result <span class="op">=</span> <span class="cn">TRUE</span>, </span>
+<span>rmd <span class="op">=</span> <span class="cn">FALSE</span>, </span>
+<span>save <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>Four new files will be created in the <code>./custom_modules</code> directory: penvs_correlations.yml, penvs_correlations.md, penvs_correlations.R, and optionally penvs_correlations.Rmd.</p>
 </div>
 <div class="section level3">
@@ -418,118 +418,118 @@ save <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</
 <li>A function named <code>penvs_correlations_module_ui</code> returns the user interface (UI) for this module, which includes the controls that the user interacts with to input module parameters and run functions. This function should follow the conventions for general Shiny modules—it should take a single argument called “id”, use it to create a unique namespace for the module, and return a list of UI objects. Usually, there should at least be a button that runs the module function. Shiny modules operate in their own unique namespaces, and so use of the <code><a href="https://rdrr.io/pkg/shiny/man/NS.html" class="external-link">NS()</a></code> function is necessary to ensure the module’s UI controls can talk to <code>ui.R</code>. The function <code>ns()</code> (for namespace), returned from <code>NS(id)</code>, is run on the ID names of shiny UI input elements, as in <code>numericInput(ns("degFr"), ...)</code>, to enable this connection to <code>ui.R</code>. See the <a href="https://shiny.rstudio.com/articles/modules.html" target="_blank" class="external-link">shiny module vignette</a> for more details.</li>
 </ol>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">penvs_correlations_module_ui</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">ns</span> <span class="op">&lt;-</span> <span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/NS.html" class="external-link">NS</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/htmltools/man/tagList.html" class="external-link">tagList</a></span><span class="op">(</span>
-    <span class="co"># UI</span>
-    <span class="co">## Add a checkbox for batch processing (more than 1 species)</span>
-    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/checkboxInput.html" class="external-link">checkboxInput</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"batch"</span><span class="op">)</span>, label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/htmltools/man/builder.html" class="external-link">strong</a></span><span class="op">(</span><span class="st">"Batch"</span><span class="op">)</span>, value <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,
-    <span class="co">## Give the action button a name and a label.</span>
-    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/actionButton.html" class="external-link">actionButton</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"runCorrs"</span><span class="op">)</span>, label <span class="op">=</span> <span class="st">"Calculate correlations"</span><span class="op">)</span>,
-    <span class="co">## UI for reselecting variables after calculating correlations. This custom input one will create in the server module function</span>
-    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/htmlOutput.html" class="external-link">uiOutput</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"VarSelect"</span><span class="op">)</span><span class="op">)</span>,
-    <span class="co">## UI button to select variables to be used in the analysis.</span>
-    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/actionButton.html" class="external-link">actionButton</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"selectConfirm"</span><span class="op">)</span>, label <span class="op">=</span> <span class="st">"Select Variables"</span><span class="op">)</span>
-    <span class="op">)</span>
-<span class="op">}</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">penvs_correlations_module_ui</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">ns</span> <span class="op">&lt;-</span> <span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/NS.html" class="external-link">NS</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/htmltools/man/tagList.html" class="external-link">tagList</a></span><span class="op">(</span></span>
+<span>    <span class="co"># UI</span></span>
+<span>    <span class="co">## Add a checkbox for batch processing (more than 1 species)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/checkboxInput.html" class="external-link">checkboxInput</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"batch"</span><span class="op">)</span>, label <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/htmltools/man/builder.html" class="external-link">strong</a></span><span class="op">(</span><span class="st">"Batch"</span><span class="op">)</span>, value <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    <span class="co">## Give the action button a name and a label.</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/actionButton.html" class="external-link">actionButton</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"runCorrs"</span><span class="op">)</span>, label <span class="op">=</span> <span class="st">"Calculate correlations"</span><span class="op">)</span>,</span>
+<span>    <span class="co">## UI for reselecting variables after calculating correlations. This custom input one will create in the server module function</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/htmlOutput.html" class="external-link">uiOutput</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"VarSelect"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    <span class="co">## UI button to select variables to be used in the analysis.</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/actionButton.html" class="external-link">actionButton</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"selectConfirm"</span><span class="op">)</span>, label <span class="op">=</span> <span class="st">"Select Variables"</span><span class="op">)</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <ol start="2" style="list-style-type: lower-roman">
 <li>A function named <code>penvs_correlations_module_server</code> that defines the server functionality for this module. This function should follow the conventions for general Shiny modules— it should take arguments <code>input</code>, <code>output</code>, and <code>session</code>, as well as one extra argument <code>common</code>.</li>
 </ol>
 <p>The <code>common</code> variable supplied to a module’s server function (and map function, explained later) is a list containing: The following reactive variables that can be used by the module: logger, spp, curSp, allSp, curEnv, curModel, component, module, envs.global, mapCntr. The following reactives that are shortcuts to reactives inside spp: occs, envs, bg, bgExt, bgMask, evalOut, mapPred, mapXfer, rmm. A function <code>update_component(tab)</code> that allows you to switch to a new tab within the component.</p>
 <p>This function <code>penvs_correlations_module_server()</code> is a wrapper for a shiny reactive expression. Inside, there is a template for the essential parts needed in a <em>Wallace</em> module. First, we specify shorter names for the shortcut variables inside the “common” list. Next, we specify a UI function that can use reactive values inside of this server function—in this case, we want to know the names of the environmental variables input so they can be printed to the UI control (see Creating a reactive shortcut in the next section for more details). After this, we specify when the module function gets run. The function <code><a href="https://rdrr.io/pkg/shiny/man/observeEvent.html" class="external-link">observeEvent()</a></code> performs an action in response to an event (e.g., clicking a button created by <code>penvs_correlations_module_ui()</code>). Inside of each <code><a href="https://rdrr.io/pkg/shiny/man/observeEvent.html" class="external-link">observeEvent()</a></code>, you need to include the following code. The first, “WARNING”, catches any possible errors before the module’s core functionality is run. If there is an error, the function stops and a log error message is written. The user will need to define these errors in order to catch them and prevent the module from crashing unexpectedly. Next, under “FUNCTION CALL”, we call the function from <code>/wallace/R</code> and make sure it returns what we expect. Next, under “LOAD INTO SPP”, we load the model object into <code>spp</code>. Finally, under “METADATA”, we fill in appropriate metadata fields for the rangeModelMetadata object in <code>spp</code>. Ultimately, the module author decides what metadata to include, but we encourage authors to explore the rangeModelMetadata object, decide which fields best apply to your module, and enter information detailed enough to enable reproducibility. As shiny modules exist in their own namespaces, if we want to refer to any of the results from the module later (in other modules), we need to put them into the <code>spp</code> reactiveValues list.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">penvs_correlations_module_server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span>, <span class="va">common</span><span class="op">)</span> <span class="op">{</span>
-  <span class="co">## Define common objects that will be used in this function</span>
-  <span class="va">logger</span> <span class="op">&lt;-</span> <span class="va">common</span><span class="op">$</span><span class="va">logger</span>
-  <span class="va">spp</span>    <span class="op">&lt;-</span> <span class="va">common</span><span class="op">$</span><span class="va">spp</span>
-  <span class="va">allSp</span>  <span class="op">&lt;-</span> <span class="va">common</span><span class="op">$</span><span class="va">allSp</span>
-  <span class="va">curSp</span>  <span class="op">&lt;-</span> <span class="va">common</span><span class="op">$</span><span class="va">curSp</span>
-  <span class="va">bgMask</span> <span class="op">&lt;-</span> <span class="va">common</span><span class="op">$</span><span class="va">bgMask</span> <span class="co"># raster stack after masking by background</span>
-  <span class="va">VarSelector</span> <span class="op">&lt;-</span> <span class="va">common</span><span class="op">$</span><span class="va">VarSelector</span> <span class="co"># See how to create and include a reactive shortcut later in the main text.</span>
-
-  <span class="co"># Create a custom UI input</span>
-  <span class="va">output</span><span class="op">$</span><span class="va">VarSelect</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderUI.html" class="external-link">renderUI</a></span><span class="op">(</span><span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/req.html" class="external-link">req</a></span><span class="op">(</span><span class="fu">bgMask</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-    <span class="fu">shinyWidgets</span><span class="fu">::</span><span class="fu"><a href="https://dreamrs.github.io/shinyWidgets/reference/pickerInput.html" class="external-link">pickerInput</a></span><span class="op">(</span>
-      <span class="st">"VarSelector"</span>,
-      label <span class="op">=</span> <span class="st">"Select variables"</span>,
-      choices <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu">bgMask</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu">bgMask</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,
-      multiple <span class="op">=</span> <span class="cn">TRUE</span>,
-      selected <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu">bgMask</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,
-      options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>`actions-box` <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span>
-  <span class="op">}</span><span class="op">)</span>
-
-<span class="co">## When action button defined in the ui function above is clicked, do the following:</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/observeEvent.html" class="external-link">observeEvent</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">runCorrs</span>, <span class="op">{</span>
-     <span class="co"># WARNING ####</span>
-    <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="fu">bgMask</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
-      <span class="va">logger</span> <span class="op"><a href="https://rdrr.io/pkg/leaflet/man/leaflet-imports.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/writeLog.html">writeLog</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">'error'</span>, <span class="fu"><a href="../reference/hlSpp.html">hlSpp</a></span><span class="op">(</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>, <span class="st">'Background data missing. Sample study region first'</span><span class="op">)</span>
-      <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="op">)</span>
-    <span class="op">}</span>
-    <span class="co"># Check that the background has already been selected</span>
-    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/req.html" class="external-link">req</a></span><span class="op">(</span><span class="fu">bgMask</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
-       
-    <span class="co"># Set up if you want batch to be allowed</span>
-      <span class="co"># allSp() is the list of species selected</span>
-      <span class="co"># curSp() refers to the currently selected species in the GUI</span>
-    <span class="kw">if</span> <span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">batch</span> <span class="op">==</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="va">spLoop</span> <span class="op">&lt;-</span> <span class="fu">allSp</span><span class="op">(</span><span class="op">)</span> <span class="kw">else</span> <span class="va">spLoop</span> <span class="op">&lt;-</span> <span class="fu">curSp</span><span class="op">(</span><span class="op">)</span>
-    <span class="co"># If batch is true, loop through all species (allSp())</span>
-    <span class="kw">for</span> <span class="op">(</span><span class="va">sp</span> <span class="kw">in</span> <span class="va">spLoop</span><span class="op">)</span><span class="op">{</span>
-    <span class="co"># FUNCTION CALL ####</span>
-      <span class="fu"><a href="../reference/smartProgress.html">smartProgress</a></span><span class="op">(</span><span class="va">logger</span>, message <span class="op">=</span> <span class="st">"Calculating pairwise correlations"</span>, <span class="op">{</span>
-        <span class="va">envCorrs</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/layerStats.html" class="external-link">layerStats</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">spp</span><span class="op">[[</span><span class="va">sp</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">procEnvs</span><span class="op">$</span><span class="va">bgMask</span>, na.rm <span class="op">=</span> <span class="cn">T</span>, stat <span class="op">=</span> <span class="st">"pearson"</span><span class="op">)</span><span class="op">}</span><span class="op">)</span>
-    <span class="co"># To update the log window</span>
-    <span class="va">logger</span> <span class="op"><a href="https://rdrr.io/pkg/leaflet/man/leaflet-imports.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/writeLog.html">writeLog</a></span><span class="op">(</span><span class="fu"><a href="../reference/hlSpp.html">hlSpp</a></span><span class="op">(</span><span class="va">sp</span><span class="op">)</span>, <span class="st">"Finished calculating correlations"</span><span class="op">)</span>
-    <span class="co">#envCorrs &lt;- raster::layerStats(x = bgMask(), na.rm = T, stat = "pearson")</span>
-
-    <span class="co"># LOAD INTO SPP ####</span>
-  <span class="va">spp</span><span class="op">[[</span><span class="va">sp</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">procEnvs</span><span class="op">$</span><span class="va">envCorrs</span> <span class="op">&lt;-</span> <span class="va">envCorrs</span><span class="op">$</span><span class="va">`pearson correlation coefficient`</span>
-
-    <span class="co"># METADATA ####</span>
-
-  <span class="op">}</span>
-  <span class="co"># Switch to Results tab to display results</span>
-  <span class="va">common</span><span class="op">$</span><span class="fu">update_component</span><span class="op">(</span>tab <span class="op">=</span> <span class="st">"Results"</span><span class="op">)</span>
-  <span class="op">}</span><span class="op">)</span>
-
-  <span class="co"># Define output as a table</span>
-  <span class="va">output</span><span class="op">$</span><span class="va">envCorrTable</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPrint.html" class="external-link">renderText</a></span><span class="op">(</span><span class="op">{</span>
-    <span class="co"># Result</span>
-    <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">procEnvs</span><span class="op">$</span><span class="va">envCorrs</span>, format <span class="op">=</span> <span class="st">'html'</span><span class="op">)</span>
-  <span class="op">}</span><span class="op">)</span>
-
-  <span class="co">## Observe when selection is confirmed</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/observeEvent.html" class="external-link">observeEvent</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">selectConfirm</span>, <span class="op">{</span>
-    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/req.html" class="external-link">req</a></span><span class="op">(</span><span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">procEnvs</span><span class="op">$</span><span class="va">envCorrs</span><span class="op">)</span>
-
-    <span class="co">## update bg object</span>
-    <span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">procEnvs</span><span class="op">$</span><span class="va">bgMask</span> <span class="op">&lt;-</span> <span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">procEnvs</span><span class="op">$</span><span class="va">bgMask</span><span class="op">[[</span><span class="fu">VarSelector</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span>
-
-    <span class="co"># Add a line to logger to identify which variables were selected</span>
-        <span class="co"># hlSpp() prints the species name in green, bold, and italics</span>
-    <span class="va">logger</span> <span class="op"><a href="https://rdrr.io/pkg/leaflet/man/leaflet-imports.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/writeLog.html">writeLog</a></span><span class="op">(</span><span class="fu"><a href="../reference/hlSpp.html">hlSpp</a></span><span class="op">(</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>, <span class="st">"Selected: "</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">procEnvs</span><span class="op">$</span><span class="va">bgMask</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">", "</span><span class="op">)</span><span class="op">)</span>
-  <span class="op">}</span><span class="op">)</span>
-<span class="op">}</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">penvs_correlations_module_server</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">input</span>, <span class="va">output</span>, <span class="va">session</span>, <span class="va">common</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="co">## Define common objects that will be used in this function</span></span>
+<span>  <span class="va">logger</span> <span class="op">&lt;-</span> <span class="va">common</span><span class="op">$</span><span class="va">logger</span></span>
+<span>  <span class="va">spp</span>    <span class="op">&lt;-</span> <span class="va">common</span><span class="op">$</span><span class="va">spp</span></span>
+<span>  <span class="va">allSp</span>  <span class="op">&lt;-</span> <span class="va">common</span><span class="op">$</span><span class="va">allSp</span></span>
+<span>  <span class="va">curSp</span>  <span class="op">&lt;-</span> <span class="va">common</span><span class="op">$</span><span class="va">curSp</span></span>
+<span>  <span class="va">bgMask</span> <span class="op">&lt;-</span> <span class="va">common</span><span class="op">$</span><span class="va">bgMask</span> <span class="co"># raster stack after masking by background</span></span>
+<span>  <span class="va">VarSelector</span> <span class="op">&lt;-</span> <span class="va">common</span><span class="op">$</span><span class="va">VarSelector</span> <span class="co"># See how to create and include a reactive shortcut later in the main text.</span></span>
+<span></span>
+<span>  <span class="co"># Create a custom UI input</span></span>
+<span>  <span class="va">output</span><span class="op">$</span><span class="va">VarSelect</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderUI.html" class="external-link">renderUI</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/req.html" class="external-link">req</a></span><span class="op">(</span><span class="fu">bgMask</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu">shinyWidgets</span><span class="fu">::</span><span class="fu"><a href="https://dreamrs.github.io/shinyWidgets/reference/pickerInput.html" class="external-link">pickerInput</a></span><span class="op">(</span></span>
+<span>      <span class="st">"VarSelector"</span>,</span>
+<span>      label <span class="op">=</span> <span class="st">"Select variables"</span>,</span>
+<span>      choices <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html" class="external-link">setNames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">as.list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu">bgMask</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu">bgMask</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>      multiple <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>      selected <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="fu">bgMask</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>      options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>`actions-box` <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">## When action button defined in the ui function above is clicked, do the following:</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/observeEvent.html" class="external-link">observeEvent</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">runCorrs</span>, <span class="op">{</span></span>
+<span>     <span class="co"># WARNING ####</span></span>
+<span>    <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="fu">bgMask</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span>      <span class="va">logger</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/writeLog.html">writeLog</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">'error'</span>, <span class="fu"><a href="../reference/hlSpp.html">hlSpp</a></span><span class="op">(</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>, <span class="st">'Background data missing. Sample study region first'</span><span class="op">)</span></span>
+<span>      <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>    <span class="op">}</span></span>
+<span>    <span class="co"># Check that the background has already been selected</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/req.html" class="external-link">req</a></span><span class="op">(</span><span class="fu">bgMask</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span>       </span>
+<span>    <span class="co"># Set up if you want batch to be allowed</span></span>
+<span>      <span class="co"># allSp() is the list of species selected</span></span>
+<span>      <span class="co"># curSp() refers to the currently selected species in the GUI</span></span>
+<span>    <span class="kw">if</span> <span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">batch</span> <span class="op">==</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="va">spLoop</span> <span class="op">&lt;-</span> <span class="fu">allSp</span><span class="op">(</span><span class="op">)</span> <span class="kw">else</span> <span class="va">spLoop</span> <span class="op">&lt;-</span> <span class="fu">curSp</span><span class="op">(</span><span class="op">)</span></span>
+<span>    <span class="co"># If batch is true, loop through all species (allSp())</span></span>
+<span>    <span class="kw">for</span> <span class="op">(</span><span class="va">sp</span> <span class="kw">in</span> <span class="va">spLoop</span><span class="op">)</span><span class="op">{</span></span>
+<span>    <span class="co"># FUNCTION CALL ####</span></span>
+<span>      <span class="fu"><a href="../reference/smartProgress.html">smartProgress</a></span><span class="op">(</span><span class="va">logger</span>, message <span class="op">=</span> <span class="st">"Calculating pairwise correlations"</span>, <span class="op">{</span></span>
+<span>        <span class="va">envCorrs</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/layerStats.html" class="external-link">layerStats</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">spp</span><span class="op">[[</span><span class="va">sp</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">procEnvs</span><span class="op">$</span><span class="va">bgMask</span>, na.rm <span class="op">=</span> <span class="cn">T</span>, stat <span class="op">=</span> <span class="st">"pearson"</span><span class="op">)</span><span class="op">}</span><span class="op">)</span></span>
+<span>    <span class="co"># To update the log window</span></span>
+<span>    <span class="va">logger</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/writeLog.html">writeLog</a></span><span class="op">(</span><span class="fu"><a href="../reference/hlSpp.html">hlSpp</a></span><span class="op">(</span><span class="va">sp</span><span class="op">)</span>, <span class="st">"Finished calculating correlations"</span><span class="op">)</span></span>
+<span>    <span class="co">#envCorrs &lt;- raster::layerStats(x = bgMask(), na.rm = T, stat = "pearson")</span></span>
+<span></span>
+<span>    <span class="co"># LOAD INTO SPP ####</span></span>
+<span>  <span class="va">spp</span><span class="op">[[</span><span class="va">sp</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">procEnvs</span><span class="op">$</span><span class="va">envCorrs</span> <span class="op">&lt;-</span> <span class="va">envCorrs</span><span class="op">$</span><span class="va">`pearson correlation coefficient`</span></span>
+<span></span>
+<span>    <span class="co"># METADATA ####</span></span>
+<span></span>
+<span>  <span class="op">}</span></span>
+<span>  <span class="co"># Switch to Results tab to display results</span></span>
+<span>  <span class="va">common</span><span class="op">$</span><span class="fu">update_component</span><span class="op">(</span>tab <span class="op">=</span> <span class="st">"Results"</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co"># Define output as a table</span></span>
+<span>  <span class="va">output</span><span class="op">$</span><span class="va">envCorrTable</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPrint.html" class="external-link">renderText</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>    <span class="co"># Result</span></span>
+<span>    <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">procEnvs</span><span class="op">$</span><span class="va">envCorrs</span>, format <span class="op">=</span> <span class="st">'html'</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="co">## Observe when selection is confirmed</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/observeEvent.html" class="external-link">observeEvent</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">selectConfirm</span>, <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/req.html" class="external-link">req</a></span><span class="op">(</span><span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">procEnvs</span><span class="op">$</span><span class="va">envCorrs</span><span class="op">)</span></span>
+<span></span>
+<span>    <span class="co">## update bg object</span></span>
+<span>    <span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">procEnvs</span><span class="op">$</span><span class="va">bgMask</span> <span class="op">&lt;-</span> <span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">procEnvs</span><span class="op">$</span><span class="va">bgMask</span><span class="op">[[</span><span class="fu">VarSelector</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span></span>
+<span></span>
+<span>    <span class="co"># Add a line to logger to identify which variables were selected</span></span>
+<span>        <span class="co"># hlSpp() prints the species name in green, bold, and italics</span></span>
+<span>    <span class="va">logger</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/writeLog.html">writeLog</a></span><span class="op">(</span><span class="fu"><a href="../reference/hlSpp.html">hlSpp</a></span><span class="op">(</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>, <span class="st">"Selected: "</span>, <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">procEnvs</span><span class="op">$</span><span class="va">bgMask</span><span class="op">)</span>, collapse <span class="op">=</span> <span class="st">", "</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <p><strong><em>Creating a reactive shortcut</em></strong></p>
 <p>The custom UI slot (“varSelector”) in the server function (penvs_correlations_module_server) requires the names of the selected variables that were uploaded in the previous component (e.g., WorldClim, ecoClimate, user-specified). Because the numbers and names of the rasters will change depending on which rasters were uploaded, we need to create a reactive function to get their names. In addition to writing the code to make this UI object in the server file above, we additionally need to add two lines to the main “inst/shiny/server.R” file.</p>
 <p>The first line creates the reactive object. For organizational purposes, reactive shortcuts should be placed with the other shortcuts created in each component. Please add only the <em>last</em> line in the “COMPONENT: PROCESS ENVIRONMENTAL DATA” section, which should be at line #380.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R">  <span class="co">############################################## #</span>
-  <span class="co">### COMPONENT: PROCESS ENVIRONMENTAL DATA ####</span>
-  <span class="co">############################################## #</span>
-
-  <span class="co"># # # # # # # # # # # # # # # # # #</span>
-  <span class="co"># PROCESS ENVS: other controls ####</span>
-  <span class="co"># # # # # # # # # # # # # # # # # #</span>
-
-  <span class="co"># convenience function for background points table for current species</span>
-  <span class="va">bg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">bg</span><span class="op">)</span>
-  <span class="co"># convenience function for background polygon for current species</span>
-  <span class="va">bgExt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">procEnvs</span><span class="op">$</span><span class="va">bgExt</span><span class="op">)</span>
-  <span class="co"># convenience function for environmental variable rasters masked to background for current species</span>
-  <span class="va">bgMask</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">procEnvs</span><span class="op">$</span><span class="va">bgMask</span><span class="op">)</span>
-  <span class="co"># THIS LINE WILL CREATE THE REACTIVE</span>
-  <span class="va">VarSelector</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">VarSelector</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span>  <span class="co">############################################## #</span></span>
+<span>  <span class="co">### COMPONENT: PROCESS ENVIRONMENTAL DATA ####</span></span>
+<span>  <span class="co">############################################## #</span></span>
+<span></span>
+<span>  <span class="co"># # # # # # # # # # # # # # # # # #</span></span>
+<span>  <span class="co"># PROCESS ENVS: other controls ####</span></span>
+<span>  <span class="co"># # # # # # # # # # # # # # # # # #</span></span>
+<span></span>
+<span>  <span class="co"># convenience function for background points table for current species</span></span>
+<span>  <span class="va">bg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">bg</span><span class="op">)</span></span>
+<span>  <span class="co"># convenience function for background polygon for current species</span></span>
+<span>  <span class="va">bgExt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">procEnvs</span><span class="op">$</span><span class="va">bgExt</span><span class="op">)</span></span>
+<span>  <span class="co"># convenience function for environmental variable rasters masked to background for current species</span></span>
+<span>  <span class="va">bgMask</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">procEnvs</span><span class="op">$</span><span class="va">bgMask</span><span class="op">)</span></span>
+<span>  <span class="co"># THIS LINE WILL CREATE THE REACTIVE</span></span>
+<span>  <span class="va">VarSelector</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">VarSelector</span><span class="op">)</span></span></code></pre></div>
 <p>The second line will add the shortcut to the common list. Please search for “COMMON LIST FUNCTIONALITY” (#1310) in the server file, and add it to the section of “Shortcuts to values nested inside spp”.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1"></a>  <span class="co">################################</span></span>
 <span id="cb10-2"><a href="#cb10-2"></a>  <span class="co">### COMMON LIST FUNCTIONALITY ####</span></span>
@@ -569,11 +569,11 @@ save <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</
 <li>A function named <code>penvs_correlations_module_result</code> that returns the UI output for the results of the module function (i.e., plot, table). Any outputs need to be rendered in the <code>penvs_correlation_module_server</code> function, and the ID name of these outputs are specified here (in this scenario, output$envCorrTable). This function should also follow the same conventions regarding module namespace as the previous functions.</li>
 </ol>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">penvs_correlations_module_result</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">ns</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/NS.html" class="external-link">NS</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span>
-  <span class="co"># Result UI as html</span>
-  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/htmlOutput.html" class="external-link">htmlOutput</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"envCorrTable"</span><span class="op">)</span><span class="op">)</span>
-<span class="op">}</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">penvs_correlations_module_result</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">ns</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/NS.html" class="external-link">NS</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span></span>
+<span>  <span class="co"># Result UI as html</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/htmlOutput.html" class="external-link">htmlOutput</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"envCorrTable"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span></code></pre></div>
 <ol start="4" style="list-style-type: lower-roman">
 <li><p><em>OPTIONAL:</em> A function named <code>penvs_correlations_module_map</code> that modifies the map. This function takes two arguments: <code>map</code> (a reference to a leaflet map) and <code>common</code> (the same parameter from the server function).</p></li>
 <li><p><em>OPTIONAL:</em> The <code>penvs_correlations_module_server</code> function can enable the module to record the session information when the session is saved. This option will be enabled when you specified the parameter save as TRUE when using create_module(). It returns a list with two functions: <code><a href="https://rdrr.io/r/base/save.html" class="external-link">save()</a></code> and <code>load(state)</code>. The <code><a href="https://rdrr.io/r/base/save.html" class="external-link">save()</a></code> function takes no arguments and should return a named list with all the variables to save. The <code>load(state)</code> function takes one argument, which should consist of the same list of variables that were saved.</p></li>
@@ -608,7 +608,7 @@ Robert J. Hijmans (2019). raster: Geographic Data Analysis and Modeling. R packa
 </h3>
 <p>Congratulations! You finished creating your module. The final step is to tell the <em>Wallace</em> application to use it by calling the <code><a href="../reference/register_module.html">register_module()</a></code> function.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">wallace</span><span class="fu">::</span><span class="fu"><a href="../reference/register_module.html">register_module</a></span><span class="op">(</span><span class="st">"./inst/shiny/custom_modules/penvs_correlations.yml"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">wallace</span><span class="fu">::</span><span class="fu"><a href="../reference/register_module.html">register_module</a></span><span class="op">(</span><span class="st">"./inst/shiny/custom_modules/penvs_correlations.yml"</span><span class="op">)</span></span></code></pre></div>
 <p>Then, you just need to open <em>Wallace</em> using <code><a href="../reference/run_wallace.html">run_wallace()</a></code> and your new module is ready for a test drive!</p>
 </div>
 </div>
@@ -625,7 +625,7 @@ Robert J. Hijmans (2019). raster: Geographic Data Analysis and Modeling. R packa
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
     </footer>
