@@ -45,7 +45,7 @@ indic_time_module_server <- function(input, output, session, common) {
   spp <- common$spp
   curSp <- common$curSp
   curModel <- common$curModel
-  mapProj <- common$mapProj
+  mapXfer <- common$mapXfer
 
   observeEvent(input$goInputRaster, {
     if (input$selRasterSource == "wallace") {
@@ -59,14 +59,14 @@ indic_time_module_server <- function(input, output, session, common) {
       logger %>% writeLog("SDM area after masking for environmental variables ",
                           "through time will be calculated based on Wallace SDM ")
     }
-    if (input$selRasterSource == "proj") {
-      if (is.null(spp[[curSp()]]$project$mapProj)) {
+    if(input$selRasterSource == "proj"){
+      if (is.null(spp[[curSp()]]$transfer$mapXfer)) {
         logger %>%
           writeLog(type = 'error',
                    'Project your model before doing overlap calculations')
         return()
       }
-      spp[[curSp()]]$indic$time <-spp[[curSp()]]$project$mapProj
+      spp[[curSp()]]$indic$time <-spp[[curSp()]]$transfer$mapXfer
       logger %>% writeLog("SDM area after masking for environmental variables ",
                           "through time will be calculated based on Projected SDM.")
 

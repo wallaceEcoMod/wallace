@@ -57,7 +57,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
   spp <- common$spp
   curSp <- common$curSp
   curModel <- common$curModel
-  mapProj <- common$mapProj
+  mapXfer <- common$mapXfer
   indicField <- common$indicField
   indicCategory <- common$indicCategory
 
@@ -72,13 +72,13 @@ indic_overlap_module_server <- function(input, output, session, common) {
       spp[[curSp()]]$indic$Plot <- spp[[curSp()]]$visualization$mapPred
     }
     if(input$selSource == "proj"){
-      if (is.null(spp[[curSp()]]$project$mapProj)) {
+      if (is.null(spp[[curSp()]]$transfer$mapXfer)) {
         logger %>%
           writeLog(type = 'error',
                    'Project your model before doing overlap calculations')
         return()
       }
-      spp[[curSp()]]$indic$Plot <-  spp[[curSp()]]$project$mapProj
+      spp[[curSp()]]$indic$Plot <-  spp[[curSp()]]$transfer$mapXfer
     }
     if(input$selSource == "sdm"){
       if (is.null(spp[[curSp()]]$postProc$OrigPred)) {
@@ -279,7 +279,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
       smartProgress(
         logger,
         message = "Calculating range overlap ", {
-          r = spp[[curSp()]]$project$mapProj
+          r = spp[[curSp()]]$transfer$mapXfer
           # shp = spp[[curSp()]]$indic$polyOverlap
           raster::crs(shp) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 ")
           raster::crs(r) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0")

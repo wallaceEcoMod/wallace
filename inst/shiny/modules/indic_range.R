@@ -43,7 +43,7 @@ indic_range_module_server <- function(input, output, session, common) {
   spp <- common$spp
   curSp <- common$curSp
   curModel <- common$curModel
-  mapProj <- common$mapProj
+  mapXfer <- common$mapXfer
 
 
 
@@ -95,7 +95,7 @@ indic_range_module_server <- function(input, output, session, common) {
       }
       if(input$selSource == "proj"){
         # ERRORS ####
-        if (is.null(spp[[curSp()]]$project$mapProj)) {
+        if (is.null(spp[[curSp()]]$transfer$mapXfer)) {
           logger %>%
             writeLog(type = 'error',
                      'Project your model before doing range calculations')
@@ -113,7 +113,7 @@ indic_range_module_server <- function(input, output, session, common) {
                            "South America Albers Equal Area Conic projection"), {
             # FUNCTION CALL ####
             ## First project to equal area
-            p <- spp[[curSp()]]$project$mapProj
+            p <- spp[[curSp()]]$transfer$mapXfer
 
             ## PROJECT
             p <- raster::projectRaster(
@@ -125,7 +125,6 @@ indic_range_module_server <- function(input, output, session, common) {
             Resolution <- (raster::res(p)/1000)^2
             # Multiply the two
             area <- pCells * Resolution
-
           })
 
         req(area)
@@ -299,7 +298,7 @@ indic_range_module_server <- function(input, output, session, common) {
       }
       if (input$selSource1 == "proj") {
         ##check that the projection exists and that it is thresholded
-        if (is.null(spp[[curSp()]]$project$mapProj)) {
+        if (is.null(spp[[curSp()]]$transfer$mapXfer)) {
           logger %>%
             writeLog(type = 'error',
                      'Project your model before doing EOO calculations')
@@ -315,7 +314,7 @@ indic_range_module_server <- function(input, output, session, common) {
           logger,
           message = "Calculating an EOO estimate based on the projected thresholded SDM ", {
             #must reclass the sdm to get 0 to be NA
-            p <- spp[[curSp()]]$project$mapProj
+            p <- spp[[curSp()]]$transfer$mapXfer
             p[p == 0] <- NA
             p.pts <- raster::rasterToPoints(p)
             eooSDM <- changeRangeR::mcp(p.pts[,1:2])
@@ -382,8 +381,8 @@ indic_range_module_server <- function(input, output, session, common) {
         # Using filtered records how to use unfiltered?
         occs <- spp[[curSp()]]$occs
         occs.xy <- occs %>% dplyr::select(longitude, latitude)
-        #  p[!is.na(p)] <- 1
-        AOOlocs<-changeRangeR::aooArea(r = p, locs = occs.xy)
+      #  p[!is.na(p)] <- 1
+        AOOlocs<-changeRangeR::AOOarea(r = p, locs = occs.xy)
         req(AOOlocs)
         logger %>% writeLog("Calculated an AOO estimate based on an SDM ",
                             "and occurrences. This is an approximation based ",
@@ -411,7 +410,7 @@ indic_range_module_server <- function(input, output, session, common) {
         }
         p <- spp[[curSp()]]$visualization$mapPred
         p[p == 0] <- NA
-        AOO<-changeRangeR::aooArea(r = p)
+        AOO<-changeRangeR::AOOarea(r = p)
         req(AOO)
         logger %>% writeLog("Calculated an AOO estimate based on an SDM. This ",
                             "is an approximation based on unprojected coordinates")
@@ -423,7 +422,7 @@ indic_range_module_server <- function(input, output, session, common) {
         common$update_component(tab = "Map")
       } else if (input$selSource2 == "proj") {
         ##check that the projection exists and that it is thresholded
-        if (is.null(spp[[curSp()]]$project$mapProj)) {
+        if (is.null(spp[[curSp()]]$transfer$mapXfer)) {
           logger %>%
             writeLog(type = 'error',
                      'Project your model before doing AOO calculations')
@@ -435,9 +434,9 @@ indic_range_module_server <- function(input, output, session, common) {
                      'Generate a thresholded prediction before doing AOO calculations')
           return()
         }
-        p <- spp[[curSp()]]$project$mapProj
+        p <- spp[[curSp()]]$transfer$mapXfer
         p[p == 0] <- NA
-        AOO <- changeRangeR::aooArea(r = p)
+        AOO<-changeRangeR::AOOarea(r = p)
         req(AOO)
         logger %>% writeLog("Calculated an AOO estimate based on an SDM. This ",
                             "is an approximation based on unprojected coordinates")
@@ -464,7 +463,7 @@ indic_range_module_server <- function(input, output, session, common) {
         }
         p <- spp[[curSp()]]$postProc$OrigPred
         p[p == 0] <- NA
-        AOO <- changeRangeR::aooArea(r = p)
+        AOO<-changeRangeR::AOOarea(r = p)
         req(AOO)
         logger %>% writeLog("Calculated an AOO estimate based on an user ",
                             "uploaded SDM. This is an approximation based ",
@@ -483,7 +482,7 @@ indic_range_module_server <- function(input, output, session, common) {
                      'Generate a thresholded prediction before doing AOO calculations')
           return()
         }
-        AOO <- aooArea(r = p)
+        AOO<-AOOarea(r = p)
         req(AOO)
         logger %>% writeLog("Calculated an AOO estimate based on a masked SDM. ",
                             "This is an approximation based on unprojected coordinates")

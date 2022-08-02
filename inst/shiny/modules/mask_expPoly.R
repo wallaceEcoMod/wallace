@@ -65,7 +65,7 @@ mask_expPoly_module_server <- function(input, output, session, common) {
 
     # FUNCTION CALL ####
     if (input$polyExpSel == 'expDraw') {
-      polyMask <- proj_draw(spp[[curSp()]]$polyMaskXY, spp[[curSp()]]$polyMaskID,
+      polyMask <- xfer_draw(spp[[curSp()]]$polyMaskXY, spp[[curSp()]]$polyMaskID,
                             0, logger, spN = curSp())
       polyX <- printVecAsis(round(spp[[curSp()]]$polyMaskXY[, 1], digits = 4))
       polyY <- printVecAsis(round(spp[[curSp()]]$polyMaskXY[, 2], digits = 4))
@@ -100,7 +100,7 @@ mask_expPoly_module_server <- function(input, output, session, common) {
     }
 
     if (input$polyExpSel == 'expUser') {
-      polyMask <- proj_userExtent(input$polyExpShp$datapath, input$polyExpShp$name,
+      polyMask <- xfer_userExtent(input$polyExpShp$datapath, input$polyExpShp$name,
                                   0, logger, spN = curSp())
       # get extensions of all input files
       exts <- sapply(strsplit(input$polyExpShp$name, '\\.'),
