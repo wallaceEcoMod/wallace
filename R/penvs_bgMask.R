@@ -57,8 +57,20 @@ penvs_bgMask <- function(occs, envs, bgExt, logger = NULL, spN = NULL) {
   smartProgress(logger,
                        message = paste0("Masking rasters for ",
                                         spName(spN), "..."), {
+
     bgCrop <- raster::crop(envs, bgExt)
     bgMask <- raster::mask(bgCrop, bgExt)
+    # GEPB: Workaround when raster alignment is changed after crop, which makes appears
+    # new duplicated occs in the same grid cells.
+    occsEnvsVals <- as.data.frame(raster::extract(bgMask,
+                                                  occs[, c('longitude', 'latitude')],
+                                                  cellnumbers = TRUE))
+    occs.dups <- duplicated(occsEnvsVals[, 1])
+    if (sum(occs.dups) > 0) {
+      bgMask <- terra::project(terra::rast(bgMask),
+                               terra::rast(envs), method = 'near')
+      bgMask <- as(bgMask, "Raster")
+    }
   })
 
   logger %>% writeLog(hlSpp(spN), 'Environmental data masked.')
