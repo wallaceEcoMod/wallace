@@ -48,20 +48,21 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
 
   observeEvent(input$goBgExt, {
     common$update_component(tab = "Map")
-    # ERRORS ####
-    if (is.null(envs())) {
-      logger %>% writeLog(
-        type = 'error',
-        hlSpp(curSp()),
-        'Environmental variables missing. Obtain them in component 3.')
-      return()
-    }
     req(curSp(), occs())
 
     # loop over all species if batch is on
     if (input$batch1 == TRUE) spLoop <- allSp() else spLoop <- curSp()
 
+
     for (sp in spLoop) {
+      # ERRORS ####
+      if (is.null(spp[[sp]]$envs)) {
+        logger %>% writeLog(
+          type = 'error',
+          hlSpp(sp),
+          'Environmental variables missing. Obtain them in component 3.')
+        return()
+      }
       # FUNCTION CALL ####
       bgExt <- penvs_bgExtent(spp[[sp]]$occs, input$bgSel, input$bgBuf, logger,
                               spN = sp)
