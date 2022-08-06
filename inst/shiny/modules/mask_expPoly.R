@@ -246,7 +246,6 @@ mask_expPoly_module_map <- function(map, common) {
   shinyjs::delay(1000,
                  map %>%
                    clearAll() %>%
-                   mapPNG(curSp()) %>%
                    # add background polygon
                    mapBgPolys(bgShpXY(), color = 'green', group = 'postBg')
   )

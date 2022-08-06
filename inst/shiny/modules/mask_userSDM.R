@@ -79,10 +79,6 @@ mask_userSDM_module_map <- function(map, common) {
 
   map %>%
     clearAll() %>%
-    mapPNG(curSp()) %>%
-    addEasyButton(easyButton(
-      icon = htmltools::span(class = "star", htmltools::HTML("&starf;")),
-      onClick = JS("function(btn, map){ map.invalidateSize();}"))) %>%
     # add background polygon
     mapBgPolys(bgShpXY(), color = 'green', group = 'post')
 

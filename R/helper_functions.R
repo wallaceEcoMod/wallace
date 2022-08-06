@@ -252,22 +252,6 @@ zoom2Occs <- function(map, occs) {
   #                      icon = ~icons(occIcons[basisNum]))
 }
 
-# Button for PNG map
-#' @title mapPNG
-#' @description For internal use. Print map in PNG
-#' @param map leaflet map
-#' @param sp_name species name
-#' @keywords internal
-#' @export
-mapPNG <- function(map, sp_name) {
-  leaflet.extras2::addEasyprint(map,
-    options = leaflet.extras2::easyprintOptions(
-      exportOnly = TRUE,
-      sizeModes = "Current",
-      filename = paste0(sp_name, "_map"),
-      hideControlContainer = FALSE))
-}
-
 ####################### #
 # OBTAIN OCCS #
 ####################### #
