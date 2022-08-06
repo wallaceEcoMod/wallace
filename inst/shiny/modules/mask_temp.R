@@ -209,20 +209,15 @@ mask_temp_module_map <- function(map, common) {
   curSp <- common$curSp
   bgShpXY <- common$bgShpXY
 
-  req(spp[[curSp()]]$postProc$prediction)
+  req(spp[[curSp()]]$mask$prediction)
 
   userRaster <- spp[[curSp()]]$postProc$prediction
   userValues <- terra::spatSample(x = terra::rast(userRaster),
                                   size = 100, na.rm = TRUE)[, 1]
-  # The delay allows the map to wait a second until the prediction raster is
-  # replace for the original when using Reset. If the delay is not used,
-  # big rasters will be not removed from the map.
-  shinyjs::delay(1000,
-    map %>%
-      clearAll() %>%
-      # add background polygon
-      mapBgPolys(bgShpXY(), color = 'green', group = 'postBg')
-  )
+  map %>%
+    clearAll() %>%
+    # add background polygon
+    mapBgPolys(bgShpXY(), color = 'green', group = 'mask')
 
   if (!any(userValues > 0 & userValues < 1)) {
     map %>%

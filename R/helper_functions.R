@@ -170,8 +170,13 @@ writeLog <- function(logger, ..., type = 'default') {
 #' @keywords internal
 #' @export
 clearAll <- function(map) {
+  # r <- raster::raster(nrow = 1, ncol = 1, xmn = 0, ymn = 0, xmx = 1, ymx = 1)
+  # raster::values(r) <- 0
   map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>%
-    clearControls() %>% removeLayersControl()
+      clearControls() %>% removeLayersControl() %>%
+      # leafem::addGeoRaster(r, group = 'mask', layerId = 'postPred') %>%
+      clearGroup("mask")
+
 }
 
 #' @title mapBgPolys

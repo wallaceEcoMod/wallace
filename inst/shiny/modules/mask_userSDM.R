@@ -53,9 +53,8 @@ mask_userSDM_module_server <- function(input, output, session, common) {
         }
       }
 
-
       # METADATA ####
-
+      spp[[newSppName]]$rmm$code$wallace$userSDM <- TRUE
     }
     common$update_component(tab = "Map")
   })
@@ -68,7 +67,7 @@ mask_userSDM_module_map <- function(map, common) {
   bgShpXY <- common$bgShpXY
 
   # Map logic
-  req(spp[[curSp()]]$postProc$prediction)
+  req(spp[[curSp()]]$rmm$code$wallace$userSDM)
   # Zoom
   userRaster <- spp[[curSp()]]$postProc$prediction
   userValues <- terra::spatSample(x = terra::rast(userRaster),
@@ -80,7 +79,7 @@ mask_userSDM_module_map <- function(map, common) {
   map %>%
     clearAll() %>%
     # add background polygon
-    mapBgPolys(bgShpXY(), color = 'green', group = 'post')
+    mapBgPolys(bgShpXY(), color = 'green', group = 'mask')
 
   # Define raster colors and shiny legend
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
@@ -94,7 +93,7 @@ mask_userSDM_module_map <- function(map, common) {
       leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
                            colorOptions = leafem::colorOptions(
                              palette = colorRampPalette(colors = c('gray', 'darkgreen'))),
-                           opacity = 0.7, group = 'post', layerId = 'postPred')
+                           opacity = 0.7, group = 'mask', layerId = 'maskPred')
   } else {
     # if threshold specified
     quanRas <- quantile(c(raster::minValue(userRaster),
@@ -108,7 +107,7 @@ mask_userSDM_module_map <- function(map, common) {
       leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
                            colorOptions = leafem::colorOptions(
                              palette = colorRampPalette(colors = rasCols)),
-                           opacity = 0.7, group = 'post', layerId = 'postPred')
+                           opacity = 0.7, group = 'mask', layerId = 'maskPred')
   }
 }
 

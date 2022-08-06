@@ -1160,7 +1160,8 @@ function(input, output, session) {
               addLegend("bottomright", colors = c('gray', 'darkgreen'),
                         title = "Distribution<br>map",
                         labels = c("Unsuitable", "Suitable"),
-                        opacity = 1, layerId = 'expert')
+                        opacity = 1, layerId = 'expert') %>%
+              mapBgPolys(bgShpXY(), color = 'green', group = 'maskDL')
             mapview::mapshot(m, file = file)
           } else {
             rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
@@ -1176,7 +1177,8 @@ function(input, output, session) {
                                    opacity = 0.7, group = 'maskDL', layerId = 'maskDL') %>%
               addLegend("bottomright", pal = legendPal, title = "Suitability<br>(User) (**)",
                         values = quanRas, layerId = "expert",
-                        labFormat = reverseLabel(2, reverse_order = TRUE))
+                        labFormat = reverseLabel(2, reverse_order = TRUE)) %>%
+              mapBgPolys(bgShpXY(), color = 'green', group = 'maskDL')
             mapview::mapshot(m, file = file)
           }
         } else if (input$maskFileType == 'raster') {

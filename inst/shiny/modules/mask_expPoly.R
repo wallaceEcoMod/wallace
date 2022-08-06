@@ -239,50 +239,45 @@ mask_expPoly_module_map <- function(map, common) {
     editOptions = leaflet.extras::editToolbarOptions()
   )
 
-  userRaster <- spp[[curSp()]]$postProc$prediction
-  userValues <- terra::spatSample(x = terra::rast(userRaster),
-                                  size = 100, na.rm = TRUE)[, 1]
-
-  shinyjs::delay(1000,
-                 map %>%
-                   clearAll() %>%
-                   # add background polygon
-                   mapBgPolys(bgShpXY(), color = 'green', group = 'postBg')
-  )
-  if (!any(userValues > 0 & userValues < 1)) {
-    map %>%
-      leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
-                           colorOptions = leafem::colorOptions(
-                             palette = colorRampPalette(colors = c('gray', 'darkgreen'))),
-                           opacity = 0.7, group = 'mask', layerId = 'postPred') %>%
-      addLegend("bottomright", colors = c('gray', 'darkgreen'),
-                title = "Distribution<br>map",
-                labels = c("Unsuitable", "Suitable"),
-                opacity = 1, layerId = 'expert')
-  } else {
-    rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-    quanRas <- quantile(c(raster::minValue(userRaster),
-                          raster::maxValue(userRaster)),
-                        probs = seq(0, 1, 0.1))
-    legendPal <- colorNumeric(rev(rasCols), quanRas, na.color = 'transparent')
-    map %>%
-      leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
-                           colorOptions = leafem::colorOptions(
-                             palette = colorRampPalette(colors = rasCols)),
-                           opacity = 0.7, group = 'mask', layerId = 'postPred') %>%
-      addLegend("bottomright", pal = legendPal, title = "Suitability<br>(User) (**)",
-                values = quanRas, layerId = "expert",
-                labFormat = reverseLabel(2, reverse_order = TRUE))
-  }
-
   if (!is.null((spp[[curSp()]]$mask$flagPoly))) {
     if (spp[[curSp()]]$mask$flagPoly == FALSE) {
       # Plot Polygon
       expertPoly <- spp[[curSp()]]$mask$expertPoly
       xy <- ggplot2::fortify(expertPoly[[length(expertPoly)]])
-      map %>%
+      map %>% clearAll() %>%
         addPolygons(lng = xy[, 1], lat = xy[, 2],
-                    weight = 4, color = "black", group = 'maskShp')
+                    weight = 4, color = "black", group = 'mask')
+    }
+    userRaster <- spp[[curSp()]]$postProc$prediction
+    userValues <- terra::spatSample(x = terra::rast(userRaster),
+                                    size = 100, na.rm = TRUE)[, 1]
+
+    if (!any(userValues > 0 & userValues < 1)) {
+      map %>%
+        leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
+                             colorOptions = leafem::colorOptions(
+                               palette = colorRampPalette(colors = c('gray', 'darkgreen'))),
+                             opacity = 0.7, group = 'mask', layerId = 'postPred') %>%
+        addLegend("bottomright", colors = c('gray', 'darkgreen'),
+                  title = "Distribution<br>map",
+                  labels = c("Unsuitable", "Suitable"),
+                  opacity = 1, layerId = 'expert') %>%
+        mapBgPolys(bgShpXY(), color = 'green', group = 'mask')
+    } else {
+      rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+      quanRas <- quantile(c(raster::minValue(userRaster),
+                            raster::maxValue(userRaster)),
+                          probs = seq(0, 1, 0.1))
+      legendPal <- colorNumeric(rev(rasCols), quanRas, na.color = 'transparent')
+      map %>% clearAll() %>%
+        leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
+                             colorOptions = leafem::colorOptions(
+                               palette = colorRampPalette(colors = rasCols)),
+                             opacity = 0.7, group = 'mask', layerId = 'postPred') %>%
+        addLegend("bottomright", pal = legendPal, title = "Suitability<br>(User) (**)",
+                  values = quanRas, layerId = "expert",
+                  labFormat = reverseLabel(2, reverse_order = TRUE)) %>%
+        mapBgPolys(bgShpXY(), color = 'green', group = 'mask')
     }
   }
 }

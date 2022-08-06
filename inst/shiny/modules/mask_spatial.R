@@ -147,24 +147,37 @@ mask_spatial_module_map <- function(map, common) {
   maskFields <- common$maskFields
   maskAttribute <- common$maskAttribute
 
-  req(spp[[curSp()]]$postProc$prediction)
+  req(maskFields(), maskAttribute())
+  req(spp[[curSp()]]$mask$spatialMask)
 
   userRaster <- spp[[curSp()]]$postProc$prediction
   userValues <- terra::spatSample(x = terra::rast(userRaster),
                                   size = 100, na.rm = TRUE)[, 1]
-  shinyjs::delay(1000,
-                 map %>%
-                   clearAll() %>%
-                   # add background polygon
-                   mapBgPolys(bgShpXY(), color = 'green', group = 'postBg')
-  )
+  map %>%
+    clearAll() %>%
+    # add background polygon
+    mapBgPolys(bgShpXY(), color = 'green', group = 'postBg')
+
+  # Plot Polygon
+  spatialMask <- spp[[curSp()]]$mask$spatialMask
+  selAtt <- subset(spatialMask,
+                   spatialMask[[maskFields()]] %in% maskAttribute())
+  noSelAtt <- subset(spatialMask,
+                   !spatialMask[[maskFields()]] %in% maskAttribute())
+  map %>% clearGroup('maskSpatial') %>%
+    addPolygons(data = noSelAtt,
+                weight = 4, color = "blue", group = 'maskSpatial') %>%
+    addPolygons(data = selAtt,
+                weight = 4, color = "yellow", group = 'maskSpatial') %>%
+    addLayersControl(overlayGroups = 'maskSpatial', position = "bottomleft",
+                     options = layersControlOptions(collapsed = FALSE))
 
   if (!any(userValues > 0 & userValues < 1)) {
     map %>%
       leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
                            colorOptions = leafem::colorOptions(
                              palette = colorRampPalette(colors = c('gray', 'darkgreen'))),
-                           opacity = 0.7, layerId = 'postPred') %>%
+                           opacity = 0.7, group = 'mask', layerId = 'postPred') %>%
       addLegend("bottomright", colors = c('gray', 'darkgreen'),
                 title = "Distribution<br>map",
                 labels = c("Unsuitable", "Suitable"),
@@ -179,26 +192,11 @@ mask_spatial_module_map <- function(map, common) {
       leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
                            colorOptions = leafem::colorOptions(
                              palette = colorRampPalette(colors = rasCols)),
-                           opacity = 0.7, layerId = 'postPred') %>%
+                           opacity = 0.7, group = 'mask', layerId = 'postPred') %>%
       addLegend("bottomright", pal = legendPal, title = "Suitability<br>(User) (**)",
                 values = quanRas, layerId = "expert",
                 labFormat = reverseLabel(2, reverse_order = TRUE))
   }
-  # Plot Polygon
-  req(maskFields(), maskAttribute())
-  req(spp[[curSp()]]$mask$spatialMask)
-  spatialMask <- spp[[curSp()]]$mask$spatialMask
-  selAtt <- subset(spatialMask,
-                   spatialMask[[maskFields()]] %in% maskAttribute())
-  noSelAtt <- subset(spatialMask,
-                   !spatialMask[[maskFields()]] %in% maskAttribute())
-  map %>% clearGroup('maskSpatial') %>%
-    addPolygons(data = noSelAtt,
-                weight = 4, color = "blue", group = 'maskSpatial') %>%
-    addPolygons(data = selAtt,
-                weight = 4, color = "yellow", group = 'maskSpatial') %>%
-    addLayersControl(overlayGroups = 'maskSpatial', position = "bottomleft",
-                     options = layersControlOptions(collapsed = FALSE))
 
 }
 
