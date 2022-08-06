@@ -35,7 +35,7 @@ printVecAsis <- function(x, asChar = FALSE) {
 
 #' @title Spurious package call to avoid note of functions outside R folder
 #' @description For internal use.
-#' @param x
+#' @param x x
 #' @keywords internal
 #' @export
 spurious <- function(x) {

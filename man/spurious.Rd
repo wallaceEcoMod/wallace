@@ -6,6 +6,9 @@
 \usage{
 spurious(x)
 }
+\arguments{
+\item{x}{x}
+}
 \description{
 For internal use.
 }
