@@ -5,7 +5,7 @@ uiTop <- function(mod_INFO) {
 
   ls <- list(div(paste("Module: ", modName), class = "mod"),
              actionLink(paste0(modID, "Help"),
-                        label = "", icon = icon("question-circle"),
+                        label = "", icon = icon("circle-question"),
                         class = "modHelpButton"),
              br())
 
@@ -118,6 +118,6 @@ insert_modules_results <- function(component) {
 
 # Add helper button for component
 help_comp_ui <- function(name) {
-  actionLink(name, label = "", icon = icon("question-circle"),
+  actionLink(name, label = "", icon = icon("circle-question"),
              class = "compHelpButton")
 }
