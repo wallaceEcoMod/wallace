@@ -271,15 +271,15 @@ tagList(
               })
             ),
             tabPanel(
-              'Component Guidance', icon = icon("info-circle"),
+              'Component Guidance', icon = icon("circle-info"),
               uiOutput('gtext_component')
             ),
             tabPanel(
-              'Module Guidance', icon = icon("info-circle", class = "mod_icon"),
+              'Module Guidance', icon = icon("circle-info", class = "mod_icon"),
               uiOutput('gtext_module')
             ),
             tabPanel(
-              'Save', icon = icon("save", class = "save_icon"),
+              'Save', icon = icon("floppy-disk", class = "save_icon"),
               br(),
               h5(em("Note: To save your session code or metadata, use the Reproduce component")),
               wellPanel(
@@ -289,7 +289,7 @@ tagList(
                        " with a collaborator.")),
                 shinyjs::hidden(p(
                   id = "save_warning",
-                  icon("exclamation-triangle"),
+                  icon("triangle-exclamation"),
                   paste0("The current session data is large, which means the ",
                          "downloaded file may be large and the download might",
                          " take a long time.")

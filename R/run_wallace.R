@@ -1,6 +1,4 @@
 #' @title Run \emph{Wallace} Application
-#'
-#'
 #' @description This function runs the \emph{Wallace} application in the user's
 #' default web browser.
 #' @param launch.browser Whether or not to launch a new browser window.

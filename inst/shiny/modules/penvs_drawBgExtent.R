@@ -41,15 +41,6 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
   bgExt <- common$bgExt
 
   observeEvent(input$goDrawBg, {
-    common$update_component(tab = "Map")
-
-    # WARNING ####
-    if (is.null(envs())) {
-      logger %>%
-        writeLog(type = 'error',
-                 'Environmental variables missing. Obtain them in component 3.')
-      return()
-    }
     if (is.null(spp[[curSp()]]$polyExtXY)) {
       logger %>% writeLog(
         type = 'error',
@@ -67,6 +58,14 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
     if (input$batch1 == TRUE) spLoop <- allSp() else spLoop <- curSp()
 
     for (sp in spLoop) {
+      # ERRORS ####
+      if (is.null(spp[[sp]]$envs)) {
+        logger %>% writeLog(
+          type = 'error',
+          hlSpp(sp),
+          'Environmental variables missing. Obtain them in component 3.')
+        return()
+      }
       # FUNCTION CALL ####
       drawBgExt <- penvs_drawBgExtent(drawExtXY, drawExtID, input$drawBgBuf,
                                       spp[[sp]]$occs, logger, spN = sp)

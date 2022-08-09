@@ -146,6 +146,7 @@ envs_worldclim_module_server <- function(input, output, session, common) {
 
   # text showing the current map center
   output$ctrLatLon <- renderText({
+    req(curSp(), occs())
     glue::glue('Using coordinate centroid {join(mapCntr())}')
   })
 

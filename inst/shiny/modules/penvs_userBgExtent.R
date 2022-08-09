@@ -50,13 +50,6 @@ penvs_userBgExtent_module_server <- function(input, output, session, common) {
     common$update_component(tab = "Map")
 
     # ERRORS ####
-
-    if (is.null(envs())) {
-      logger %>%
-        writeLog(type = 'error',
-                 'Environmental variables missing. Obtain them in component 3.')
-      return()
-    }
     if (is.null(input$userBgShp)) {
       logger %>%
         writeLog(type = 'error',
@@ -70,6 +63,14 @@ penvs_userBgExtent_module_server <- function(input, output, session, common) {
 
     # PROCESSING ####
     for (sp in spLoop) {
+      # ERRORS ####
+      if (is.null(spp[[sp]]$envs)) {
+        logger %>% writeLog(
+          type = 'error',
+          hlSpp(sp),
+          'Environmental variables missing. Obtain them in component 3.')
+        return()
+      }
       # FUNCTION CALL ####
       userBgExt <- penvs_userBgExtent(input$userBgShp$datapath,
                                       input$userBgShp$name,
