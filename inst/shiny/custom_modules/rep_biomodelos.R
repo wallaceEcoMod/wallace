@@ -55,8 +55,13 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
     manifest <- list(
       edited_occurrences = paste0(bioSp(), '_processed_occs.csv'),
       raster_model_prediction = paste0(bioSp(), '_pred.tif'),
-      # raster_model_continuous = paste0(bioSp(), '_cloglog.tif'),
       raster_model_threshold = paste0(bioSp(), '_thr.csv'),
+      raster_model_modified_expert =
+        if (is.null(spp[[bioSp()]]$biomodelos$predExpert)) {
+          "No model prediction modified by expert."
+        } else {
+          paste0(bioSp(), '_pred_expert.tif')
+        },
       shape_file_mask = paste0(bioSp(), '_projectionExtentShp.zip'),
       model_metadata = paste0(bioSp(), '_metadata.csv'),
       wallace_session = paste0(bioSp(), '_session.Rmd')
@@ -80,6 +85,13 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
     tmpThrs <- file.path(tmpdir, paste0(bioSp(), '_thr.csv'))
     write.csv(spp[[bioSp()]]$biomodelos$thrs, tmpThrs, row.names = FALSE)
 
+    # Create raster model modified by expert
+    if (!is.null(spp[[bioSp()]]$biomodelos$predExpert)) {
+      tmpPredExp <- file.path(tmpdir, paste0(bioSp(), '_pred_expert.tif'))
+      raster::writeRaster(spp[[bioSp()]]$biomodelos$predExpert, tmpPredExp,
+                          overwrite = TRUE)
+    }
+
     # Create extent shapefile
     # add req ext
     tmpExt <- file.path(tmpdir, paste0(bioSp(), '_projectionExtentShp.zip'))
@@ -92,7 +104,7 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
     fsExt <- file.path(tmpdir, paste0(bioSp(), '_bgShp.', exts))
     zip::zipr(zipfile = tmpExt, files = fsExt)
 
-    # Create extent shapefile
+    # Create Metadata
     # add req metadata
     tmpRMM <- file.path(tmpdir, paste0(bioSp(), '_metadata.csv'))
     rangeModelMetadata::rmmToCSV(spp[[bioSp()]]$rmm, filename = tmpRMM)
@@ -165,8 +177,12 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
 
     # Create ZIP file
     tmpZIP <- file.path(tmpdir, paste0(spp[[bioSp()]]$rmm$code$wallace$biomodelosTaxID, '.zip'))
+    filesZIP <- c(tmpOccs, tmpPred, tmpThrs, tmpExt, tmpRMM, tmpRMD)
+    if (exists(tmpPredExp)) {
+      filesZIP <- c(filesZIP, tmpPredExp)
+    }
     zip::zipr(zipfile = tmpZIP,
-              files = c(tmpOccs, tmpPred, tmpExt, tmpRMM, tmpRMD))
+              files = filesZIP)
 
     PAYLOAD <- list(
       taxID = spp[[bioSp()]]$rmm$code$wallace$biomodelosTaxID,
