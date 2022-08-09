@@ -213,9 +213,10 @@ function(input, output, session) {
     shinyjs::toggleState("dlEOO", !is.null(spp[[curSp()]]$rmm$data$indic$EOO))
     shinyjs::toggleState("dlOverlap", !is.null(spp[[curSp()]]$indic$overlapRaster))
     shinyjs::toggleState("dlOverlapEOO", !is.null(spp[[curSp()]]$indic$overlapPoly))
-    shinyjs::toggleState("dlMask",!is.null(spp[[curSp()]]$mask$prediction))
-    shinyjs::toggleState("dlAreaTimePlot",!is.null(spp[[curSp()]]$indic$AreaTime))
-    shinyjs::toggleState("dlAreaTime",!is.null(spp[[curSp()]]$indic$AreaTime))
+    shinyjs::toggleState("dlMask", !is.null(spp[[curSp()]]$mask$prediction))
+    shinyjs::toggleState("dlMaskExpPoly", !is.null(spp[[curSp()]]$mask$removePoly))
+    shinyjs::toggleState("dlAreaTimePlot", !is.null(spp[[curSp()]]$indic$AreaTime))
+    shinyjs::toggleState("dlAreaTime", !is.null(spp[[curSp()]]$indic$AreaTime))
     # shinyjs::toggleState("dlWhatever", !is.null(spp[[curSp()]]$whatever))
   })
 
@@ -1126,7 +1127,7 @@ function(input, output, session) {
   )
 
   ########################################### #
-  ### COMPONENT: MasK ####
+  ### COMPONENT: Mask ####
   ########################################### #
 
   output$dlMask <- downloadHandler(
@@ -1200,6 +1201,32 @@ function(input, output, session) {
           writeLog("Please install the rgdal package before downloading rasters.")
       }
     }
+  )
+
+  # DOWNLOAD: Shapefile of expert polygons
+  output$dlMaskExpPoly <- downloadHandler(
+    filename = function() paste0(curSp(), '_maskExpPoly.zip'),
+    content = function(file) {
+      tmpdir <- tempdir()
+      owd <- setwd(tmpdir)
+      on.exit(setwd(owd))
+      n <- curSp()
+      expertPolys <- do.call("rbind",
+                             c(args = lapply(seq_along(spp[[curSp()]]$mask$expertPoly),
+                                             function(i){spp[[curSp()]]$mask$expertPoly[i][[1]]}),
+                               makeUniqueIDs = TRUE))
+      rgdal::writeOGR(obj = expertPolys,
+                      dsn = tmpdir,
+                      layer = paste0(n, '_maskExpShp'),
+                      driver = "ESRI Shapefile",
+                      overwrite_layer = TRUE)
+
+      exts <- c('dbf', 'shp', 'shx')
+      fs <- paste0(n, '_maskExpShp.', exts)
+      zip::zipr(zipfile = file, files = fs)
+      if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
+    },
+    contentType = "application/zip"
   )
 
   selTempRaster <- reactive(input$selTempRaster)
@@ -1464,6 +1491,7 @@ function(input, output, session) {
   )
   indicField <- reactive(input$selField)
   indicCategory <- reactive(input$selCat)
+
   ########################################### #
   ### COMPONENT: ALPHA DIVERSITY ####
   ########################################### #

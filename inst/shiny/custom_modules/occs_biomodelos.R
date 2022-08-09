@@ -39,8 +39,6 @@ occs_biomodelos_module_server <- function(input, output, session, common) {
     spp[[sp]]$rmm$data$occurrence$taxon <- sp
     spp[[sp]]$rmm$data$occurrence$dataType <- "presence only"
     spp[[sp]]$rmm$data$occurrence$presenceSampleSize <- nrow(occs)
-    # spp[[sp]]$rmm$data$occurrence$yearMin <- paste(min(occs$late_age), "mya")
-    # spp[[sp]]$rmm$data$occurrence$yearMax <- paste(max(occs$early_age), "mya")
     spp[[sp]]$rmm$code$wallace$occsRemoved <- nrow(occsOrig) - nrow(occs)
     spp[[sp]]$rmm$data$occurrence$sources <- "Biomodelos"
     spp[[sp]]$rmm$code$wallace$biomodelosTaxID <- occsTbls$taxID

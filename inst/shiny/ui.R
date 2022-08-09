@@ -492,7 +492,12 @@ tagList(
                                                        "ASCII" = 'ascii',
                                                        "PNG" = 'png'))),
                   column(2, shinyjs::disabled(downloadButton('dlMask', "Mask file(**)")))
-                )
+                ),
+                br(),
+                fluidRow(
+                  column(3, h5("Download shapefile of added and/or removed polygon(s)")),
+                  column(2, shinyjs::disabled(downloadButton('dlMaskExpPoly', "ZIP file")))
+                ),
               ),
               conditionalPanel(
                 "input.tabs == 'indic'",

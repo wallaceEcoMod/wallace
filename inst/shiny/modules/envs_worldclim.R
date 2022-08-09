@@ -106,7 +106,6 @@ envs_worldclim_module_server <- function(input, output, session, common) {
         # When remOccs is null, means that all localities have NAs
         return()
       }
-
       logger %>% writeLog(hlSpp(sp), "Worldclim variables ready to use.")
 
       # LOAD INTO SPP ####

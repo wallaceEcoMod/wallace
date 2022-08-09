@@ -106,7 +106,7 @@ occs_biomodelos <- function(spN, bioKey, logger = NULL) {
                   uncertainty = as.numeric(.data$uncertainty)) %>%
     # # make new column for leaflet marker popup content
     dplyr::mutate(pop = unlist(apply(occs, 1, popUpContent))) %>%
-    dplyr::arrange_(cols)
+    dplyr::arrange(dplyr::across(cols))
 
   # subset by key columns and make id and popup columns
   noCoordsRem <- nrow(occsOrig) - nrow(occsXY)
@@ -117,5 +117,5 @@ occs_biomodelos <- function(spN, bioKey, logger = NULL) {
     ']. Records without coordinates removed [',
     noCoordsRem, ']. Duplicated records removed [', dupsRem,
     ']. Remaining records [', nrow(occs), '].')
-  return(list(orig = occsOrig, cleaned = occs, taxID = jsonSearch[[1]]$taxID))
+  return(list(orig = occsOrig, cleaned = as.data.frame(occs), taxID = jsonSearch[[1]]$taxID))
 }

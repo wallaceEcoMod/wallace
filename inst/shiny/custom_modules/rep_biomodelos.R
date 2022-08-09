@@ -62,7 +62,13 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
         } else {
           paste0(bioSp(), '_pred_expert.tif')
         },
-      shape_file_mask = paste0(bioSp(), '_projectionExtentShp.zip'),
+      shape_file_expert =
+        if (is.null(spp[[bioSp()]]$mask$expertPoly)) {
+        "No model prediction modified by expert."
+      } else {
+        paste0(bioSp(), '_expertPolygonsShp.zip')
+      },
+      shape_file_extent = paste0(bioSp(), '_projectionExtentShp.zip'),
       model_metadata = paste0(bioSp(), '_metadata.csv'),
       wallace_session = paste0(bioSp(), '_session.Rmd')
     )
@@ -91,6 +97,24 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
       raster::writeRaster(spp[[bioSp()]]$biomodelos$predExpert, tmpPredExp,
                           overwrite = TRUE)
     }
+
+    # Create shapefile of expert polygons
+    if (!is.null(spp[[bioSp()]]$mask$expertPoly)) {
+      tmpExpPoly <- file.path(tmpdir, paste0(bioSp(), '_expertPolygonsShp.zip'))
+      expertPolys <- do.call("rbind",
+                             c(args = lapply(seq_along(spp[[bioSp()]]$mask$expertPoly),
+                                             function(i){spp[[bioSp()]]$mask$expertPoly[i][[1]]}),
+                               makeUniqueIDs = TRUE))
+      rgdal::writeOGR(obj = expertPolys,
+                      dsn = tmpdir,
+                      layer = paste0(bioSp(), '_expertPolygonsShp'),
+                      driver = "ESRI Shapefile",
+                      overwrite_layer = TRUE)
+      extsExpPoly <- c('dbf', 'shp', 'shx')
+      fsExpPoly <- file.path(tmpdir, paste0(bioSp(), '_expertPolygonsShp.', extsExpPoly))
+      zip::zipr(zipfile = tmpExpPoly , files = fsExpPoly )
+    }
+
 
     # Create extent shapefile
     # add req ext
@@ -178,9 +202,13 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
     # Create ZIP file
     tmpZIP <- file.path(tmpdir, paste0(spp[[bioSp()]]$rmm$code$wallace$biomodelosTaxID, '.zip'))
     filesZIP <- c(tmpOccs, tmpPred, tmpThrs, tmpExt, tmpRMM, tmpRMD)
-    if (exists(tmpPredExp)) {
+    if (!is.null(spp[[bioSp()]]$biomodelos$predExpert)) {
       filesZIP <- c(filesZIP, tmpPredExp)
     }
+    if (!is.null(spp[[bioSp()]]$mask$expertPolyt)) {
+      filesZIP <- c(filesZIP, tmpPredExp)
+    }
+
     zip::zipr(zipfile = tmpZIP,
               files = filesZIP)
 
