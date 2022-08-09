@@ -10,12 +10,8 @@ mask_temp_module_ui <- function(id) {
     tags$hr(class = "hrDotted"),
     span("Step 2:", class = "step"),
     span("Bounds (**)", class = "stepText"), br(),
+    uiOutput(ns("yearInputUI")),
     uiOutput(ns("curTempRastersUI")),
-    shinyWidgets::pickerInput(ns("yearInput"),
-                              label = "Select years",
-                              choices = setNames(as.list(2001:2019), 2001:2019),
-                              multiple = TRUE,
-                              selected = setNames(as.list(2001:2019), 2001:2019)),
     actionButton(ns('goAnnotate'), "Get Bounds (**)"), br(),
     tags$hr(class = "hrDotted"),
     span("Step 3:", class = "step"),
@@ -37,6 +33,7 @@ mask_temp_module_server <- function(input, output, session, common) {
   logger <- common$logger
   occs <- common$occs
   selTempRaster <- common$selTempRaster
+  yearInput <- common$yearInput
   selTempMask <- common$selTempMask
   sliderTemp <- common$sliderTemp
 
@@ -104,32 +101,35 @@ mask_temp_module_server <- function(input, output, session, common) {
     # crop climate data to study region
     env <- raster::crop(env, spp[[curSp()]]$postProc$prediction)
     # Prepare year vector
+    occs_subset <- occs()
+    occs_subset <- occs_subset[occs_subset$year %in% as.numeric(yearInput()), ]
     # FUNCTION CALL
 
-    tempExtract <- mask_tempAnnotate(occs = occs(),
+    tempExtract <- mask_tempAnnotate(occs = occs_subset,
                                      env = env,
-                                     envDates = input$yearInput,
+                                     envDates = yearInput(),
                                      logger)
 
     logger %>% writeLog(hlSpp(curSp()), "Values were extracted (**)")
-
-    # # subset by key columns and make id and popup columns
-    # cols <- c("occID", "scientific_name", "longitude", "latitude", "year",
-    #           "extractedValue", "country", "state_province", "locality", "record_type",
-    #           "catalog_number", "institution_code", "elevation", "uncertainty",
-    #           "pop")
-    # occsEnvs <- occs()
-    # if (!('extractedValue' %in% names(occsEnvs))) {
-    #   occsEnvs <- cbind.data.frame(occsEnvs, extractedValue = tempExtract)
-    #   occsEnvs <- occsEnvs[, cols]
-    # } else {
-    #   occsEnvs[, 'extractedValue'] <- tempExtract
-    # }
 
     # LOAD INTO SPP ####
     spp[[curSp()]]$mask$bounds <- as.data.frame(tempExtract)
     common$update_component(tab = "Results")
   })
+
+  output$yearInputUI <- renderUI({
+    req(curSp(), occs())
+    occs_table <- occs()
+    years <- unique(occs_table$year) %>% na.omit()
+    shinyWidgets::pickerInput("yearInput",
+                              label = "Select years",
+                              choices = setNames(as.list(years), years),
+                              multiple = TRUE,
+                              selected = setNames(as.list(years), years),
+                              options = list(`actions-box` = TRUE))
+  })
+
+
 
   output$boundsPrint <- renderPrint({
     req(curSp(), spp[[curSp()]]$mask$bounds)

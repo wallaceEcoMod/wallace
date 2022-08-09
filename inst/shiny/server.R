@@ -1203,6 +1203,7 @@ function(input, output, session) {
   )
 
   selTempRaster <- reactive(input$selTempRaster)
+  yearInput <- reactive(input$yearInput)
   selTempMask <- reactive(input$selTempMask)
   sliderTemp <- reactive(input$sliderTemp)
   maskFields <- reactive(input$maskFields)
@@ -1845,6 +1846,7 @@ function(input, output, session) {
     bgShpXY = bgShpXY,
     selCatEnvs = selCatEnvs,
     selTempRaster = selTempRaster,
+    yearInput = yearInput,
     selTempMask = selTempMask,
     sliderTemp = sliderTemp,
     maskFields = maskFields,
