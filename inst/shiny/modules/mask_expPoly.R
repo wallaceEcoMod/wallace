@@ -70,6 +70,14 @@ mask_expPoly_module_server <- function(input, output, session, common) {
       polyX <- printVecAsis(round(spp[[curSp()]]$polyMaskXY[, 1], digits = 4))
       polyY <- printVecAsis(round(spp[[curSp()]]$polyMaskXY[, 2], digits = 4))
 
+      if (!rgeos::gIntersects(spp[[curSp()]]$procEnvs$bgExt, polyMask)) {
+        logger %>% writeLog(
+          type = 'error', hlSpp(curSp()),
+          "The polygon is outside the background extent. Please specify a new polygon. (**)"
+        )
+        return()
+      }
+
       if (is.null(spp[[curSp()]]$mask$expertPoly)) {
         spp[[curSp()]]$mask$expertPoly <- list()
         spp[[curSp()]]$mask$removePoly <- list()
@@ -117,7 +125,7 @@ mask_expPoly_module_server <- function(input, output, session, common) {
           list(dsn = input$polyExpShp$datapath[i], layer = shpName)
       }
 
-      if (rgeos::gIntersects(spp[[curSp()]]$postProc$bgExt, polyMask)) {
+      if (!rgeos::gIntersects(spp[[curSp()]]$procEnvs$bgExt, polyMask)) {
         logger %>% writeLog(
           type = 'error', hlSpp(curSp()),
           "The polygon is outside the background extent. Please specify a new polygon. (**)"
@@ -177,15 +185,8 @@ mask_expPoly_module_server <- function(input, output, session, common) {
     if (spp[[curSp()]]$mask$flagPoly == FALSE) {
       polyMask <- spp[[curSp()]]$mask$expertPoly[[length(spp[[curSp()]]$mask$expertPoly)]]
       expertRast <- mask_expPoly(polyMask, spp[[curSp()]]$postProc$prediction,
-                                 removePoly, bgExt = bgExt(), logger)
+                                 removePoly, bgExt = bgExt(), logger, spN = curSp())
       spp[[curSp()]]$mask$flagPoly <- TRUE
-      if (removePoly == FALSE) {
-        logger %>% writeLog(
-          hlSpp(curSp()), "The polygon was added (**)")
-      } else {
-        logger %>% writeLog(
-          hlSpp(curSp()), "The polygon was removed (**)")
-      }
       # LOAD INTO SPP ####
       spp[[curSp()]]$postProc$prediction <- expertRast$pred
       spp[[curSp()]]$mask$prediction <- expertRast$pred

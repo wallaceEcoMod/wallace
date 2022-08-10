@@ -57,32 +57,46 @@ mask_spatialPoly <- function(bgShp_path, bgShp_name, sdm,
       "is WGS84 (**)"
     )
   }
-  # if (!rgeos::gIntersects(sdm, polyData)) {
-  #   logger %>% writeLog(
-  #     type = 'error', hlSpp(spN),
-  #     "Shapefile does not match with background extent. Please specify a new polygon. (**)"
-  #   )
-  #   return()
-  # }
+  if (!rgeos::gIntersects(as(raster::extent(sdm), 'SpatialPolygons'), polyData)) {
+    logger %>% writeLog(
+      type = 'error', hlSpp(spN),
+      "Shapefile does not match with sdm extent. Please specify a new polygon. (**)"
+    )
+    return()
+  }
 
   smartProgress(logger, message = "Intersecting spatial data ...", {
     sdm <- stars::st_as_stars(sdm)
     sdm <- sdm >= 0
-    # polR <- sf::as_Spatial(sf::st_as_sf(sdm, as_points = FALSE, merge = TRUE))
+
     polR <- sf::st_as_sf(sdm, as_points = FALSE, merge = TRUE)
-    # spatialPoly <- raster::intersect(polyData, polR)
     polyData <- rgeos::gBuffer(polyData, byid = TRUE, width = 0)
     polyData <- sf::st_as_sf(polyData)
-    sf::st_crs(polyData) <- sf::st_crs(polR)
-    spatialPoly <- sf::as_Spatial(sf::st_intersection(sf::st_make_valid(polyData),
-                                                      sf::st_make_valid(polR)))
-    if (length(spatialPoly) < 1) {
+    # Check for NAs
+    v <- raster::extract(prediction, polyMask)
+    v <- is.na(unlist(v))
+
+    if (sum(v) == length(v)) {
       logger %>% writeLog(
         type = 'error', hlSpp(spN),
-        "Shapefile does not match with background extent. Please specify a new polygon. (**)"
+        paste("The polygon just included NA values.",
+              "Please, select a polygon that intersects model prediction.(**)")
       )
       return()
     }
+
+    if (sum(v) > 0) {
+      logger %>% writeLog(
+        type = 'warning', hlSpp(spN),
+        paste("The polygon selected included some cells with NA values.",
+              "You cannot changes the predictions (suitable or unsuitable),",
+              "in these cells.(**)")
+      )
+    }
+    sf::st_crs(polyData) <- sf::st_crs(polR)
+    spatialPoly <- sf::as_Spatial(sf::st_intersection(sf::st_make_valid(polyData),
+                                                      sf::st_make_valid(polR)))
   })
+  logger %>% writeLog(hlSpp(spN), "Spatial data uploaded.")
   return(spatialPoly)
 }

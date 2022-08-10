@@ -46,8 +46,6 @@ mask_spatial_module_server <- function(input, output, session, common) {
     # LOAD INTO SPP ####
     spp[[curSp()]]$mask$spatialMask <- spatialMask
 
-    logger %>% writeLog(hlSpp(curSp()), "Spatial data uploaded.")
-    # METADATA ####
 
   })
 

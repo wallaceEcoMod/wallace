@@ -4,7 +4,14 @@
 \alias{mask_expPoly}
 \title{mask_expPoly}
 \usage{
-mask_expPoly(polyMask, prediction, bgExt, rem = FALSE, logger = NULL)
+mask_expPoly(
+  polyMask,
+  prediction,
+  bgExt,
+  rem = FALSE,
+  logger = NULL,
+  spN = NULL
+)
 }
 \arguments{
 \item{polyMask}{Polygon in shapefile}
@@ -16,6 +23,8 @@ mask_expPoly(polyMask, prediction, bgExt, rem = FALSE, logger = NULL)
 \item{rem}{Remove areas of polygon from prediction}
 
 \item{logger}{logger}
+
+\item{spN}{species name}
 }
 \description{
 Remove or add polygon to prediction

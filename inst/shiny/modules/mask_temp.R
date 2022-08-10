@@ -80,7 +80,8 @@ mask_temp_module_server <- function(input, output, session, common) {
                               label = "Select/deselect environmental rasters",
                               choices = ppRastersNameList,
                               multiple = TRUE,
-                              selected = ppRastersNameList)
+                              selected = NULL,
+                              options = list(`actions-box` = TRUE))
   })
 
   observeEvent(input$goAnnotate, {
@@ -89,22 +90,45 @@ mask_temp_module_server <- function(input, output, session, common) {
       return()
     }
     if (is.null(spp[[curSp()]]$postProc$prediction)) {
-      logger %>% writeLog(type = 'error', hlSpp(curSp()), "Upload SDM prediction (**).")
+      logger %>% writeLog(type = 'error', hlSpp(curSp()),
+                          "Upload SDM prediction (**).")
       return()
     }
     if (is.null(spp[[curSp()]]$postProc$rasters)) {
-      logger %>% writeLog(type = 'error', hlSpp(curSp()), "Raster files not uploaded.")
+      logger %>% writeLog(type = 'error', hlSpp(curSp()),
+                          "Raster files not uploaded.")
       return()
     }
-    # Prepare rasters
-    env <- raster::stack(spp[[curSp()]]$postProc$rasters[[selTempRaster()]])
-    # crop climate data to study region
-    env <- raster::crop(env, spp[[curSp()]]$postProc$prediction)
-    # Prepare year vector
-    occs_subset <- occs()
-    occs_subset <- occs_subset[occs_subset$year %in% as.numeric(yearInput()), ]
-    # FUNCTION CALL
+    if (is.null(yearInput())) {
+      logger %>% writeLog(type = 'error', hlSpp(curSp()),
+                          "Select occurrences and rasters years (**)")
+      return()
+    }
+    if (is.null(selTempRaster())) {
+      logger %>% writeLog(type = 'error', hlSpp(curSp()),
+                          "Select temporal rasters (**).")
+      return()
+    }
+    if (length(yearInput()) != length(selTempRaster())) {
+      logger %>% writeLog(type = 'error', hlSpp(curSp()),
+                          "Numbers of selected years and raster are not equal (**).")
+      return()
+    }
+    smartProgress(
+      logger,
+      message = paste0("Preparing rasters for extraction... (**)"),
+      {
+        # Prepare rasters
+        env <- raster::stack(spp[[curSp()]]$postProc$rasters[[selTempRaster()]])
+        # crop climate data to study region
+        env <- raster::crop(env, spp[[curSp()]]$postProc$prediction)
+        # Prepare year vector
+        occs_subset <- occs()
+        occs_subset <- occs_subset[occs_subset$year %in% as.numeric(yearInput()), ]
+      }
+    )
 
+    # FUNCTION CALL
     tempExtract <- mask_tempAnnotate(occs = occs_subset,
                                      env = env,
                                      envDates = yearInput(),
@@ -120,12 +144,12 @@ mask_temp_module_server <- function(input, output, session, common) {
   output$yearInputUI <- renderUI({
     req(curSp(), occs())
     occs_table <- occs()
-    years <- unique(occs_table$year) %>% na.omit()
+    years <- unique(occs_table$year) %>% na.omit() %>% sort()
     shinyWidgets::pickerInput("yearInput",
                               label = "Select years",
                               choices = setNames(as.list(years), years),
                               multiple = TRUE,
-                              selected = setNames(as.list(years), years),
+                              selected = NULL,
                               options = list(`actions-box` = TRUE))
   })
 
@@ -148,7 +172,7 @@ mask_temp_module_server <- function(input, output, session, common) {
                               label = "Select raster for masking the SDM",
                               choices = ppRastersNameList,
                               multiple = FALSE,
-                              selected = ppRastersNameList)
+                              selected = NULL)
   })
 
   output$sliderMaskUI <- renderUI({
