@@ -320,6 +320,9 @@ indic_overlap_module_server <- function(input, output, session, common) {
       req(ratio.Overlap)
       logger %>% writeLog("Proportion of user provided range area that is ",
                           "contained by landcover categories calculated ")
+       if (input$indicOverlap == 'shapefile') {
+      
+    } 
       if (length(ratio.Overlap$maskedRange) > 1) {
         names(ratio.Overlap$maskedRange) <- NULL
         ratio.Overlap$maskedRange$fun <- mean
@@ -328,6 +331,10 @@ indic_overlap_module_server <- function(input, output, session, common) {
                                              ratio.Overlap$maskedRange)
       } else {
         ratio.Overlap$maskedRange <- ratio.Overlap$maskedRange[[1]]
+      }
+      }
+      else if(input$indicOverlap=='raster') {
+      ratio.Overlap$maskedRange <- ratio.Overlap$maskedRange[[1]]
       }
       spp[[curSp()]]$indic$overlapRaster <- ratio.Overlap$maskedRange
       spp[[curSp()]]$indic$overlapvalue <- ratio.Overlap$ratio
