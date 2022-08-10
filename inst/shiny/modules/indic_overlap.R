@@ -322,7 +322,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
                           "contained by landcover categories calculated ")
        if (input$indicOverlap == 'shapefile') {
       
-    } 
+    
       if (length(ratio.Overlap$maskedRange) > 1) {
         names(ratio.Overlap$maskedRange) <- NULL
         ratio.Overlap$maskedRange$fun <- mean
