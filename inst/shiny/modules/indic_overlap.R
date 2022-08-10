@@ -310,7 +310,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
       smartProgress(
         logger,
         message = "Calculating range overlap ", {
-          r = spp[[curSp()]]$postProc$OrigPred
+          r = spp[[curSp()]]$indic$Plot
           #  shp = spp[[curSp()]]$indic$polyOverlap
           raster::crs(shp) <- sf::st_crs(4326)$wkt
           raster::crs(r) <- sf::st_crs(4326)$wkt
