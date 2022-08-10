@@ -46,12 +46,11 @@ occs_userOccs <- function(txtPath, txtName, txtSep = ",", txtDec = ".",
   }
 
   # check to make sure all column names are correct
-  if (length(which(c('scientific_name', 'longitude', 'latitude') == names(txt))) != 3) {
+  if (sum(c('scientific_name', 'longitude', 'latitude') %in% names(txt)) != 3) {
     logger %>% writeLog(
       type = "error",
       paste0('Please input a file with columns "scientific_name", ',
-             '"longitude", "latitude" in that order or check delimeter and decimal ',
-             'separators. '))
+             '"longitude", "latitude". '))
     return()
   }
 
