@@ -183,15 +183,16 @@ indic_overlap_module_server <- function(input, output, session, common) {
         logger %>% writeLog("User raster file loaded ")
       }
       spp[[curSp()]]$indic$RasOverlap <- userRaster$sdm
-    }
-    sameRes <- identical(res(spp[[curSp()]]$indic$RasOverlap),
-                         res(spp[[curSp()]]$indic$Plot))
-    if (!sameRes) {
+       sameRes <- identical(raster::res(spp[[curSp()]]$indic$RasOverlap),
+                         raster::res(spp[[curSp()]]$indic$Plot))
+    if (sameRes==FALSE) {
       logger %>% writeLog(
         type = 'error', hlSpp(curSp()),
         'Raster resolution must be the same as species distribtuion resolution')
       return()
     }
+    }
+   
   })
 
   ###add this if we want to include field selection
