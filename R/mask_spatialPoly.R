@@ -66,14 +66,16 @@ mask_spatialPoly <- function(bgShp_path, bgShp_name, sdm,
   }
 
   smartProgress(logger, message = "Intersecting spatial data ...", {
-    sdm <- stars::st_as_stars(sdm)
+    sdm <- terra::rast(sdm)
     sdm <- sdm >= 0
 
-    polR <- sf::st_as_sf(sdm, as_points = FALSE, merge = TRUE)
+    polR <- sf::st_as_sf(terra::as.polygons(sdm, trunc = TRUE, dissolve = TRUE,
+                                            values = TRUE),
+                         as_points = FALSE, merge = TRUE)
     polyData <- rgeos::gBuffer(polyData, byid = TRUE, width = 0)
     polyData <- sf::st_as_sf(polyData)
     # Check for NAs
-    v <- raster::extract(prediction, polyMask)
+    v <- terra::extract(sdm, polyData)
     v <- is.na(unlist(v))
 
     if (sum(v) == length(v)) {
