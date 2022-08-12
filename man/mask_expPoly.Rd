@@ -7,7 +7,7 @@
 mask_expPoly(
   polyMask,
   prediction,
-  bgExt,
+  polyExt,
   rem = FALSE,
   logger = NULL,
   spN = NULL
@@ -18,7 +18,7 @@ mask_expPoly(
 
 \item{prediction}{Raster prediction}
 
-\item{bgExt}{Polygon of background extent}
+\item{polyExt}{Polygon of background extent}
 
 \item{rem}{Remove areas of polygon from prediction}
 

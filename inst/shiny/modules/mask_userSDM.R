@@ -30,10 +30,8 @@ mask_userSDM_module_server <- function(input, output, session, common) {
           logger %>% writeLog(hlSpp(newSppName), "User SDM prediction loaded (**)")
           # LOAD INTO SPP ####
           spp[[newSppName]] <- list()
-          spp[[newSppName]]$postProc$prediction <- userSDMs$sdm
-          spp[[newSppName]]$postProc$OrigPred <- userSDMs$sdm
-          spp[[newSppName]]$procEnvs$bgExt <- userSDMs$extSdm
-          spp[[newSppName]]$postProc$origBgExt <- userSDMs$extSdm
+          spp[[newSppName]]$mask$userSDM <- userSDMs$sdm
+          spp[[newSppName]]$mask$polyExt <- userSDMs$extSdm
         }
       } else {
         if (!is.null(spp[[newSppName]]$visualization$mapPred)) {
@@ -47,9 +45,8 @@ mask_userSDM_module_server <- function(input, output, session, common) {
                                    logger)
           logger %>% writeLog(hlSpp(newSppName), "User SDM prediction loaded (**)")
           # LOAD INTO SPP ####
-          spp[[newSppName]]$postProc$prediction <- userSDMs$sdm
-          spp[[newSppName]]$postProc$OrigPred <- userSDMs$sdm
-          spp[[newSppName]]$procEnvs$bgExt <- userSDMs$extSdm
+          spp[[newSppName]]$mask$userSDM <- userSDMs$sdm
+          spp[[newSppName]]$mask$polyExt <- userSDMs$extSdm
         }
       }
 
@@ -64,12 +61,12 @@ mask_userSDM_module_map <- function(map, common) {
 
   curSp <- common$curSp
   spp <- common$spp
-  bgShpXY <- common$bgShpXY
+  bgPostXY <- common$bgPostXY
 
   # Map logic
-  req(spp[[curSp()]]$rmm$code$wallace$userSDM)
+  req(spp[[curSp()]]$mask$userSDM)
   # Zoom
-  userRaster <- spp[[curSp()]]$postProc$prediction
+  userRaster <- spp[[curSp()]]$mask$userSDM
   userValues <- terra::spatSample(x = terra::rast(userRaster),
                                   size = 100, na.rm = TRUE)[, 1]
   zoomExt <- raster::extent(userRaster)
@@ -79,7 +76,7 @@ mask_userSDM_module_map <- function(map, common) {
   map %>%
     clearAll() %>%
     # add background polygon
-    mapBgPolys(bgShpXY(), color = 'green', group = 'mask')
+    mapBgPolys(bgPostXY(), color = 'green', group = 'mask')
 
   # Define raster colors and shiny legend
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
@@ -90,7 +87,7 @@ mask_userSDM_module_map <- function(map, common) {
                 title = "Distribution<br>map",
                 labels = c("Unsuitable", "Suitable"),
                 opacity = 1, layerId = 'expert') %>%
-      leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
+      leafem::addGeoRaster(spp[[curSp()]]$mask$userSDM,
                            colorOptions = leafem::colorOptions(
                              palette = colorRampPalette(colors = c('gray', 'darkgreen'))),
                            opacity = 0.7, group = 'mask', layerId = 'maskPred')
@@ -104,7 +101,7 @@ mask_userSDM_module_map <- function(map, common) {
       addLegend("bottomright", pal = legendPal, title = "Suitability<br>(User) (**)",
                 values = quanRas, layerId = "expert",
                 labFormat = reverseLabel(2, reverse_order = TRUE)) %>%
-      leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
+      leafem::addGeoRaster(spp[[curSp()]]$mask$userSDM,
                            colorOptions = leafem::colorOptions(
                              palette = colorRampPalette(colors = rasCols)),
                            opacity = 0.7, group = 'mask', layerId = 'maskPred')

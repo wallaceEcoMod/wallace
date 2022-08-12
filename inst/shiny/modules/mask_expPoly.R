@@ -35,11 +35,11 @@ mask_expPoly_module_server <- function(input, output, session, common) {
   spp <- common$spp
   curSp <- common$curSp
   logger <- common$logger
-  bgExt <- common$bgExt
+  polyExt <- common$polyExt
 
   observeEvent(input$goInputPoly, {
     # ERRORS ####
-    if (is.null(spp[[curSp()]]$postProc$prediction)) {
+    if (is.null(spp[[curSp()]]$mask$prediction)) {
       logger %>% writeLog(
         type = 'error', hlSpp(curSp()),
         'Calculate/Upload a model prediction(**)')
@@ -70,7 +70,7 @@ mask_expPoly_module_server <- function(input, output, session, common) {
       polyX <- printVecAsis(round(spp[[curSp()]]$polyMaskXY[, 1], digits = 4))
       polyY <- printVecAsis(round(spp[[curSp()]]$polyMaskXY[, 2], digits = 4))
 
-      if (!rgeos::gIntersects(spp[[curSp()]]$procEnvs$bgExt, polyMask)) {
+      if (!rgeos::gIntersects(spp[[curSp()]]$mask$polyExt, polyMask)) {
         logger %>% writeLog(
           type = 'error', hlSpp(curSp()),
           "The polygon is outside the background extent. Please specify a new polygon. (**)"
@@ -125,7 +125,7 @@ mask_expPoly_module_server <- function(input, output, session, common) {
           list(dsn = input$polyExpShp$datapath[i], layer = shpName)
       }
 
-      if (!rgeos::gIntersects(spp[[curSp()]]$procEnvs$bgExt, polyMask)) {
+      if (!rgeos::gIntersects(spp[[curSp()]]$mask$polyExt, polyMask)) {
         logger %>% writeLog(
           type = 'error', hlSpp(curSp()),
           "The polygon is outside the background extent. Please specify a new polygon. (**)"
@@ -170,7 +170,7 @@ mask_expPoly_module_server <- function(input, output, session, common) {
   observeEvent(input$goActionPoly, {
     # WARNING ####
     req(spp[[curSp()]]$mask$expertPoly)
-    binBool <- length(unique(raster::values(spp[[curSp()]]$postProc$prediction)))
+    binBool <- length(unique(raster::values(spp[[curSp()]]$mask$prediction)))
     removePoly <- ifelse(input$actExpPoly == "addPoly", FALSE, TRUE)
     if (!(binBool == 3 | binBool == 2)) {
       if (removePoly == FALSE) {
@@ -184,16 +184,16 @@ mask_expPoly_module_server <- function(input, output, session, common) {
     # FUNCTION CALL ####
     if (spp[[curSp()]]$mask$flagPoly == FALSE) {
       polyMask <- spp[[curSp()]]$mask$expertPoly[[length(spp[[curSp()]]$mask$expertPoly)]]
-      expertRast <- mask_expPoly(polyMask, spp[[curSp()]]$postProc$prediction,
-                                 removePoly, bgExt = bgExt(), logger, spN = curSp())
+      expertRast <- mask_expPoly(polyMask, spp[[curSp()]]$mask$prediction,
+                                 removePoly, polyExt = polyExt(), logger, spN = curSp())
       spp[[curSp()]]$mask$flagPoly <- TRUE
       # LOAD INTO SPP ####
-      spp[[curSp()]]$postProc$prediction <- expertRast$pred
+      spp[[curSp()]]$mask$prediction <- expertRast$pred
       spp[[curSp()]]$mask$prediction <- expertRast$pred
       spp[[curSp()]]$biomodelos$predExpert <- expertRast$pred
       spp[[curSp()]]$mask$expertPoly[[length(spp[[curSp()]]$mask$expertPoly)]]$removed <- removePoly
       spp[[curSp()]]$mask$removePoly <- c(spp[[curSp()]]$mask$removePoly, removePoly)
-      spp[[curSp()]]$procEnvs$bgExt <- expertRast$ext
+      spp[[curSp()]]$mask$polyExt <- expertRast$ext
     } else {
       logger %>% writeLog(
         type = "error", hlSpp(curSp()),
@@ -204,10 +204,9 @@ mask_expPoly_module_server <- function(input, output, session, common) {
   # Reset prediction
   observeEvent(input$goReset_mask, {
     req(curSp())
-    spp[[curSp()]]$postProc$prediction <- spp[[curSp()]]$postProc$OrigPred
-    spp[[curSp()]]$procEnvs$bgExt <- spp[[curSp()]]$postProc$origBgExt
+    spp[[curSp()]]$mask$prediction <- spp[[curSp()]]$mask$origPred
+    spp[[curSp()]]$mask$polyExt <- spp[[curSp()]]$mask$origPolyExt
     spp[[curSp()]]$mask$expertPoly <- NULL
-    spp[[curSp()]]$mask$prediction <- NULL
     spp[[curSp()]]$mask$removePoly <- NULL
     spp[[curSp()]]$mask$flagPoly <- NULL
     logger %>% writeLog(
@@ -232,9 +231,9 @@ mask_expPoly_module_server <- function(input, output, session, common) {
 mask_expPoly_module_map <- function(map, common) {
   spp <- common$spp
   curSp <- common$curSp
-  bgShpXY <- common$bgShpXY
+  bgPostXY <- common$bgPostXY
 
-  req(spp[[curSp()]]$postProc$prediction)
+  req(spp[[curSp()]]$mask$prediction)
   # Map logic
   map %>% leaflet.extras::addDrawToolbar(
     targetGroup = 'draw', polylineOptions = FALSE, rectangleOptions = FALSE,
@@ -251,13 +250,13 @@ mask_expPoly_module_map <- function(map, common) {
         addPolygons(lng = xy[, 1], lat = xy[, 2],
                     weight = 4, color = "black", group = 'mask')
     }
-    userRaster <- spp[[curSp()]]$postProc$prediction
+    userRaster <- spp[[curSp()]]$mask$prediction
     userValues <- terra::spatSample(x = terra::rast(userRaster),
                                     size = 100, na.rm = TRUE)[, 1]
 
     if (!any(userValues > 0 & userValues < 1)) {
       map %>%
-        leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
+        leafem::addGeoRaster(spp[[curSp()]]$mask$prediction,
                              colorOptions = leafem::colorOptions(
                                palette = colorRampPalette(colors = c('gray', 'darkgreen'))),
                              opacity = 0.7, group = 'mask', layerId = 'postPred') %>%
@@ -265,7 +264,7 @@ mask_expPoly_module_map <- function(map, common) {
                   title = "Distribution<br>map",
                   labels = c("Unsuitable", "Suitable"),
                   opacity = 1, layerId = 'expert') %>%
-        mapBgPolys(bgShpXY(), color = 'green', group = 'mask')
+        mapBgPolys(bgPostXY(), color = 'green', group = 'mask')
     } else {
       rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
       quanRas <- quantile(c(raster::minValue(userRaster),
@@ -273,14 +272,14 @@ mask_expPoly_module_map <- function(map, common) {
                           probs = seq(0, 1, 0.1))
       legendPal <- colorNumeric(rev(rasCols), quanRas, na.color = 'transparent')
       map %>% clearAll() %>%
-        leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
+        leafem::addGeoRaster(spp[[curSp()]]$mask$prediction,
                              colorOptions = leafem::colorOptions(
                                palette = colorRampPalette(colors = rasCols)),
                              opacity = 0.7, group = 'mask', layerId = 'postPred') %>%
         addLegend("bottomright", pal = legendPal, title = "Suitability<br>(User) (**)",
                   values = quanRas, layerId = "expert",
                   labFormat = reverseLabel(2, reverse_order = TRUE)) %>%
-        mapBgPolys(bgShpXY(), color = 'green', group = 'mask')
+        mapBgPolys(bgPostXY(), color = 'green', group = 'mask')
     }
   }
 }

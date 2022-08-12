@@ -1129,6 +1129,20 @@ function(input, output, session) {
   ########################################### #
   ### COMPONENT: Mask ####
   ########################################### #
+  # convenience function for background polygon for current species
+  postExt <- reactive(spp[[curSp()]]$mask$postExt)
+
+  # get the coordinates of the current background extent shape
+  bgPostXY <- reactive({
+    req(postExt())
+    polys <- postExt()@polygons[[1]]@Polygons
+    if (length(polys) == 1) {
+      xy <- list(polys[[1]]@coords)
+    } else{
+      xy <- lapply(polys, function(x) x@coords)
+    }
+    return(xy)
+  })
 
   output$dlMask <- downloadHandler(
     filename = function() {
@@ -1162,7 +1176,7 @@ function(input, output, session) {
                         title = "Distribution<br>map",
                         labels = c("Unsuitable", "Suitable"),
                         opacity = 1, layerId = 'expert') %>%
-              mapBgPolys(bgShpXY(), color = 'green', group = 'maskDL')
+              mapBgPolys(bgPostXY(), color = 'green', group = 'maskDL')
             mapview::mapshot(m, file = file)
           } else {
             rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
@@ -1179,7 +1193,7 @@ function(input, output, session) {
               addLegend("bottomright", pal = legendPal, title = "Suitability<br>(User) (**)",
                         values = quanRas, layerId = "expert",
                         labFormat = reverseLabel(2, reverse_order = TRUE)) %>%
-              mapBgPolys(bgShpXY(), color = 'green', group = 'maskDL')
+              mapBgPolys(bgPostXY(), color = 'green', group = 'maskDL')
             mapview::mapshot(m, file = file)
           }
         } else if (input$maskFileType == 'raster') {
@@ -1872,6 +1886,8 @@ function(input, output, session) {
     bgExt = bgExt,
     bgMask = bgMask,
     bgShpXY = bgShpXY,
+    postExt = postExt,
+    bgPostXY = bgPostXY,
     selCatEnvs = selCatEnvs,
     selTempRaster = selTempRaster,
     yearInput = yearInput,

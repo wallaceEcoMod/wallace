@@ -390,9 +390,6 @@ xfer_time_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$transfer$xferTimeEnvs <- xferTimeEnvs
     spp[[curSp()]]$transfer$mapXfer <- xferTimeThr
     spp[[curSp()]]$transfer$mapXferVals <- getRasterVals(xferTimeThr, predType)
-    spp[[curSp()]]$postProc$prediction <- xferTimeThr
-    spp[[curSp()]]$postProc$OrigPred <- xferTimeThr
-    spp[[curSp()]]$postProc$origBgExt <- xferExt
     if (input$selTimeVar == "worldclim") {
       spp[[curSp()]]$transfer$xfEnvsDl <- paste0('CMIP5_', envsRes * 60, "min_RCP",
                                                 input$selRCP, "_", input$selGCM,

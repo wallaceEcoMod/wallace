@@ -72,14 +72,14 @@ indic_time_module_server <- function(input, output, session, common) {
 
     }
     if (input$selRasterSource == "sdm") {
-      if (is.null(spp[[curSp()]]$postProc$OrigPred)) {
+      if (is.null(spp[[curSp()]]$mask$userSDM)) {
         logger %>%
           writeLog(type = 'error',
                    'Load you model in component User SDM before doing range ',
                    'calculations')
         return()
       }
-      spp[[curSp()]]$indic$time <- spp[[curSp()]]$postProc$OrigPred
+      spp[[curSp()]]$indic$time <- spp[[curSp()]]$mask$userSDM
       logger %>% writeLog("SDM area after masking for environmental variables ",
                           "through time will be calculated based on User provided SDM.")
 

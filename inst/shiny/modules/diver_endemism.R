@@ -161,19 +161,19 @@ diver_endemism_module_server <- function(input, output, session, common) {
     if(input$selSource=='sdm'){
       for (i in 1:length(curSp())){
         sp<-curSp()[i]
-        if (is.null(spp[[sp]]$postProc$OrigPred)) {
+        if (is.null(spp[[sp]]$mask$userSDM)) {
           logger %>%
             writeLog(type = 'error',
                      'Please upload a model for each species')
           return()
         }
-        #if(raster::res(spp[[curSp()[1]]]$postProc$OrigPred)!=raster::res(spp[[sp]]$postProc$OrigPred)){
+        #if(raster::res(spp[[curSp()[1]]]$mask$userSDM)!=raster::res(spp[[sp]]$mask$userSDM)){
         # logger %>%
         # writeLog(type = 'error',
         #   'Uploaded models must be of the same resolution')
         #return()
         #}
-        if (length(unique(getRasterVals(spp[[sp]]$postProc$OrigPred)))>3) {
+        if (length(unique(getRasterVals(spp[[sp]]$mask$userSDM)))>3) {
           logger %>%
             writeLog(type = 'error',
                      'Uploaded models must be thresholded (binary) before doing multisp. calculations')
@@ -186,7 +186,7 @@ diver_endemism_module_server <- function(input, output, session, common) {
           ##Get the extent of all models and keep the max
           all_models <- list()
           for (i in 1:length(curSp())){
-            all_models[[i]] <- spp[[curSp()[i]]]$postProc$OrigPred
+            all_models[[i]] <- spp[[curSp()[i]]]$mask$userSDM
           }
           all_extents <- lapply(all_models,raster::extent)
           all_extents <- lapply(all_extents,as.vector)
@@ -197,13 +197,13 @@ diver_endemism_module_server <- function(input, output, session, common) {
           new_extent <- raster::extent(c(xmin,xmax,ymin,ymax))
           #get all models
           sp1 <- curSp()[1]
-          all_stack <- raster::extend(spp[[sp1]]$postProc$OrigPred,new_extent)
+          all_stack <- raster::extend(spp[[sp1]]$mask$userSDM, new_extent)
 
 
           for (i in 2:length(curSp())){
             sp <- curSp()[i]
             #evaluate if same extent
-            r1 <- raster::extend(spp[[sp]]$postProc$OrigPred, new_extent)
+            r1 <- raster::extend(spp[[sp]]$mask$userSDM, new_extent)
             all_stack <- raster::stack(all_stack,r1)
           }
           req(all_stack)

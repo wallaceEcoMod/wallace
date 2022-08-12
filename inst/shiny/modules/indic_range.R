@@ -136,13 +136,13 @@ indic_range_module_server <- function(input, output, session, common) {
       }
       if (input$selSource == "user") {
         # ERRORS ####
-        if (is.null(spp[[curSp()]]$postProc$OrigPred)) {
+        if (is.null(spp[[curSp()]]$mask$userSDM)) {
           logger %>%
             writeLog(type = 'error',
                      'Load you model in component User SDM before doing range calculations')
           return()
         }
-        p <- spp[[curSp()]]$postProc$OrigPred
+        p <- spp[[curSp()]]$mask$userSDM
         p[p == 0] <- NA
         if (length(unique(raster::values(p))) > 2) {
           logger %>%
@@ -158,7 +158,7 @@ indic_range_module_server <- function(input, output, session, common) {
 
             # FUNCTION CALL ####
             ##First project to equal area
-            p <- spp[[curSp()]]$postProc$OrigPred
+            p <- spp[[curSp()]]$mask$userSDM
             ##PROJECT
             p <- raster::projectRaster(
               p,
@@ -260,13 +260,13 @@ indic_range_module_server <- function(input, output, session, common) {
       }
       if (input$selSource1 == "user") {
         ##check that the projection exists and that it is thresholded
-        if (is.null(spp[[curSp()]]$postProc$OrigPred)) {
+        if (is.null(spp[[curSp()]]$mask$userSDM)) {
           logger %>%
             writeLog(type = 'error',
                      'Project load a model before doing EOO calculations')
           return()
         }
-        p <- spp[[curSp()]]$postProc$OrigPred
+        p <- spp[[curSp()]]$mask$userSDM
         p[p == 0] <- NA
         if (length(unique(raster::values(p)))> 2) {
           logger %>%
@@ -279,7 +279,7 @@ indic_range_module_server <- function(input, output, session, common) {
           logger,
           message = "Calculating an EOO estimate based on the user provided SDM ", {
             #must reclass the sdm to get 0 to be NA
-            p <- spp[[curSp()]]$postProc$OrigPred
+            p <- spp[[curSp()]]$mask$userSDM
             p[p == 0] <- NA
             p.pts <- raster::rasterToPoints(p)
             eooSDM <- changeRangeR::mcp(p.pts[,1:2])
@@ -447,13 +447,13 @@ indic_range_module_server <- function(input, output, session, common) {
         common$update_component(tab = "Map")
       } else if (input$selSource2 == "user") {
         ##check that the projection exists and that it is thresholded
-        if (is.null(spp[[curSp()]]$postProc$OrigPred)) {
+        if (is.null(spp[[curSp()]]$mask$userSDM)) {
           logger %>%
             writeLog(type = 'error',
                      'Upload your model before doing AOO calculations')
           return()
         }
-        p <- spp[[curSp()]]$postProc$OrigPred
+        p <- spp[[curSp()]]$mask$userSDM
         p[p == 0] <- NA
         if (length(unique(raster::values(p)))> 2) {
           logger %>%
@@ -461,7 +461,7 @@ indic_range_module_server <- function(input, output, session, common) {
                      'Generate a thresholded prediction before doing range calculations')
           return()
         }
-        p <- spp[[curSp()]]$postProc$OrigPred
+        p <- spp[[curSp()]]$mask$userSDM
         p[p == 0] <- NA
         AOO<-changeRangeR::AOOarea(r = p)
         req(AOO)

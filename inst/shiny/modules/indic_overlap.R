@@ -81,14 +81,14 @@ indic_overlap_module_server <- function(input, output, session, common) {
       spp[[curSp()]]$indic$Plot <-  spp[[curSp()]]$transfer$mapXfer
     }
     if(input$selSource == "sdm"){
-      if (is.null(spp[[curSp()]]$postProc$OrigPred)) {
+      if (is.null(spp[[curSp()]]$mask$userSDM)) {
         logger %>%
           writeLog(
             type = 'error',
             'Load you model in component User SDM before doing range calculations')
         return()
       }
-      spp[[curSp()]]$indic$Plot <- spp[[curSp()]]$postProc$OrigPred
+      spp[[curSp()]]$indic$Plot <- spp[[curSp()]]$mask$userSDM
     }
     if(input$selSource == "masked"){
 
@@ -98,7 +98,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
                    'Do a maskRangeR analysis before doing range calculations')
         return()
       }
-      spp[[curSp()]]$indic$Plot <- spp[[curSp()]]$postProc$prediction
+      spp[[curSp()]]$indic$Plot <- spp[[curSp()]]$mask$userSDM
     }
     if(input$selSource == "eoo"){
 
@@ -309,7 +309,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
       smartProgress(
         logger,
         message = "Calculating range overlap ", {
-          r = spp[[curSp()]]$postProc$OrigPred
+          r = spp[[curSp()]]$mask$userSDM
           #  shp = spp[[curSp()]]$indic$polyOverlap
           raster::crs(shp) <- sf::st_crs(4326)$wkt
           raster::crs(r) <- sf::st_crs(4326)$wkt

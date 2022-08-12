@@ -29,7 +29,7 @@ mask_spatial_module_server <- function(input, output, session, common) {
 
   observeEvent(input$goMaskShp, {
     # WARNING ####
-    if (is.null(spp[[curSp()]]$postProc$prediction)) {
+    if (is.null(spp[[curSp()]]$mask$prediction)) {
       logger %>% writeLog(
         type = 'error', hlSpp(curSp()), 'Calculate/Upload a model prediction (**)')
       return()
@@ -41,7 +41,7 @@ mask_spatial_module_server <- function(input, output, session, common) {
     }
     # FUNCTION CALL ####
     spatialMask <- mask_spatialPoly(input$maskShp$datapath, input$maskShp$name,
-                                    spp[[curSp()]]$postProc$prediction,
+                                    spp[[curSp()]]$mask$prediction,
                                     logger, spN = curSp())
     # LOAD INTO SPP ####
     spp[[curSp()]]$mask$spatialMask <- spatialMask
@@ -91,19 +91,19 @@ mask_spatial_module_server <- function(input, output, session, common) {
     selectedPoly <- subset(spatialMask,
                            spatialMask[[maskFields()]] %in% maskAttribute())
     dissPoly <- rgeos::gUnaryUnion(selectedPoly)
-    maskPred <- raster::crop(spp[[curSp()]]$postProc$prediction, dissPoly)
+    maskPred <- raster::crop(spp[[curSp()]]$mask$prediction, dissPoly)
     maskPred <- raster::mask(maskPred, dissPoly)
     newPred <- raster::trim(maskPred)
     extPoly <- raster::extent(maskPred)
-    bgExt <- methods::as(extPoly, 'SpatialPolygons')
-    raster::crs(bgExt) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
+    polyExt <- methods::as(extPoly, 'SpatialPolygons')
+    raster::crs(polyExt) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
     raster::crs(maskPred) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
 
     # LOAD INTO SPP ####
     spp[[curSp()]]$mask$spatialMask <- selectedPoly
-    spp[[curSp()]]$postProc$prediction <- maskPred
     spp[[curSp()]]$mask$prediction <- maskPred
-    spp[[curSp()]]$procEnvs$bgExt <- bgExt
+    spp[[curSp()]]$mask$prediction <- maskPred
+    spp[[curSp()]]$mask$polyExt <- polyExt
     logger %>% writeLog(
       hlSpp(curSp()), "Spatial Masked (**)")
 
@@ -113,9 +113,8 @@ mask_spatial_module_server <- function(input, output, session, common) {
   # Reset prediction
   observeEvent(input$goReset_mask, {
     req(curSp())
-    spp[[curSp()]]$postProc$prediction <- spp[[curSp()]]$postProc$OrigPred
-    spp[[curSp()]]$procEnvs$bgExt <- spp[[curSp()]]$postProc$origBgExt
-    spp[[curSp()]]$mask$prediction <- NULL
+    spp[[curSp()]]$mask$prediction <- spp[[curSp()]]$mask$origPred
+    spp[[curSp()]]$mask$polyExt <- spp[[curSp()]]$mask$origPolyExt
     spp[[curSp()]]$mask$spatialMask <- NULL
     logger %>% writeLog(
       hlSpp(curSp()), "Reset prediction (**).")
@@ -141,20 +140,20 @@ mask_spatial_module_result <- function(id) {
 mask_spatial_module_map <- function(map, common) {
   spp <- common$spp
   curSp <- common$curSp
-  bgShpXY <- common$bgShpXY
+  bgPostXY <- common$bgPostXY
   maskFields <- common$maskFields
   maskAttribute <- common$maskAttribute
 
   req(maskFields(), maskAttribute())
   req(spp[[curSp()]]$mask$spatialMask)
 
-  userRaster <- spp[[curSp()]]$postProc$prediction
+  userRaster <- spp[[curSp()]]$mask$prediction
   userValues <- terra::spatSample(x = terra::rast(userRaster),
                                   size = 100, na.rm = TRUE)[, 1]
   map %>%
     clearAll() %>%
     # add background polygon
-    mapBgPolys(bgShpXY(), color = 'green', group = 'postBg')
+    mapBgPolys(bgPostXY(), color = 'green', group = 'mask')
 
   # Plot Polygon
   spatialMask <- spp[[curSp()]]$mask$spatialMask
@@ -172,7 +171,7 @@ mask_spatial_module_map <- function(map, common) {
 
   if (!any(userValues > 0 & userValues < 1)) {
     map %>%
-      leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
+      leafem::addGeoRaster(spp[[curSp()]]$mask$prediction,
                            colorOptions = leafem::colorOptions(
                              palette = colorRampPalette(colors = c('gray', 'darkgreen'))),
                            opacity = 0.7, group = 'mask', layerId = 'postPred') %>%
@@ -187,7 +186,7 @@ mask_spatial_module_map <- function(map, common) {
                         probs = seq(0, 1, 0.1))
     legendPal <- colorNumeric(rev(rasCols), quanRas, na.color = 'transparent')
     map %>%
-      leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
+      leafem::addGeoRaster(spp[[curSp()]]$mask$prediction,
                            colorOptions = leafem::colorOptions(
                              palette = colorRampPalette(colors = rasCols)),
                            opacity = 0.7, group = 'mask', layerId = 'postPred') %>%

@@ -248,9 +248,6 @@ xfer_area_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$transfer$xfEnvs <- xferExt
     spp[[curSp()]]$transfer$mapXfer <- xferAreaThr
     spp[[curSp()]]$transfer$mapXferVals <- getRasterVals(xferAreaThr, predType)
-    spp[[curSp()]]$postProc$prediction <- xferAreaThr
-    spp[[curSp()]]$postProc$OrigPred <- xferAreaThr
-    spp[[curSp()]]$postProc$origBgExt <- xferExt
 
     # METADATA ####
     spp[[curSp()]]$rmm$code$wallace$transfer_curModel <- curModel()

@@ -40,9 +40,8 @@ mask_temp_module_server <- function(input, output, session, common) {
   # Reset prediction
   observeEvent(input$goReset_mask, {
     req(curSp())
-    spp[[curSp()]]$postProc$prediction <- spp[[curSp()]]$postProc$OrigPred
-    spp[[curSp()]]$procEnvs$bgExt <- spp[[curSp()]]$postProc$origBgExt
-    spp[[curSp()]]$mask$prediction <- NULL
+    spp[[curSp()]]$mask$prediction <- spp[[curSp()]]$mask$origPred
+    spp[[curSp()]]$mask$polyExt <- spp[[curSp()]]$mask$origPolyExt
     logger %>% writeLog(
       hlSpp(curSp()), "Reset prediction (**).")
   })
@@ -65,13 +64,13 @@ mask_temp_module_server <- function(input, output, session, common) {
                                logger = logger)
 
     # LOAD INTO SPP ####
-    spp[[curSp()]]$postProc$rasters <- ppRasters
+    spp[[curSp()]]$mask$rasters <- ppRasters
   })
 
   output$curTempRastersUI <- renderUI({
-    req(curSp(), spp[[curSp()]]$postProc$rasters)
-    if(!is.null(spp[[curSp()]]$postProc$rasters)) {
-      n <- c(names(spp[[curSp()]]$postProc$rasters))
+    req(curSp(), spp[[curSp()]]$mask$rasters)
+    if(!is.null(spp[[curSp()]]$mask$rasters)) {
+      n <- c(names(spp[[curSp()]]$mask$rasters))
     } else {
       n <- NULL
     }
@@ -89,12 +88,12 @@ mask_temp_module_server <- function(input, output, session, common) {
       logger %>% writeLog(type = 'error', (curSp()), "Upload occs (**).")
       return()
     }
-    if (is.null(spp[[curSp()]]$postProc$prediction)) {
+    if (is.null(spp[[curSp()]]$mask$prediction)) {
       logger %>% writeLog(type = 'error', hlSpp(curSp()),
                           "Upload SDM prediction (**).")
       return()
     }
-    if (is.null(spp[[curSp()]]$postProc$rasters)) {
+    if (is.null(spp[[curSp()]]$mask$rasters)) {
       logger %>% writeLog(type = 'error', hlSpp(curSp()),
                           "Raster files not uploaded.")
       return()
@@ -119,9 +118,9 @@ mask_temp_module_server <- function(input, output, session, common) {
       message = paste0("Preparing rasters for extraction... (**)"),
       {
         # Prepare rasters
-        env <- raster::stack(spp[[curSp()]]$postProc$rasters[[selTempRaster()]])
+        env <- raster::stack(spp[[curSp()]]$mask$rasters[[selTempRaster()]])
         # crop climate data to study region
-        env <- raster::crop(env, spp[[curSp()]]$postProc$prediction)
+        env <- raster::crop(env, spp[[curSp()]]$mask$prediction)
         # Prepare year vector
         occs_subset <- occs()
         occs_subset <- occs_subset[occs_subset$year %in% as.numeric(yearInput()), ]
@@ -162,8 +161,8 @@ mask_temp_module_server <- function(input, output, session, common) {
 
   output$curMaskRasterUI <- renderUI({
     req(curSp(), spp[[curSp()]]$mask$bounds)
-    if(!is.null(spp[[curSp()]]$postProc$rasters)) {
-      n <- c(names(spp[[curSp()]]$postProc$rasters))
+    if(!is.null(spp[[curSp()]]$mask$rasters)) {
+      n <- c(names(spp[[curSp()]]$mask$rasters))
     } else {
       n <- NULL
     }
@@ -197,13 +196,13 @@ mask_temp_module_server <- function(input, output, session, common) {
     doTempExtract <-
       mask_tempExtract(
         lowerInp = sliderTemp()[1], upperInp = sliderTemp()[2],
-        maskRaster = spp[[curSp()]]$postProc$rasters[[selTempMask()]],
-        pred = spp[[curSp()]]$postProc$prediction, logger)
+        maskRaster = spp[[curSp()]]$mask$rasters[[selTempMask()]],
+        pred = spp[[curSp()]]$mask$prediction, logger)
 
     logger %>% writeLog(hlSpp(curSp()), "The prediction was masked (**)")
 
     # LOAD INTO SPP ####
-    spp[[curSp()]]$postProc$prediction <- doTempExtract
+    spp[[curSp()]]$mask$prediction <- doTempExtract
     spp[[curSp()]]$mask$prediction <- doTempExtract
 
     common$update_component(tab = "Map")
@@ -231,21 +230,21 @@ mask_temp_module_result <- function(id) {
 mask_temp_module_map <- function(map, common) {
   spp <- common$spp
   curSp <- common$curSp
-  bgShpXY <- common$bgShpXY
+  bgPostXY <- common$bgPostXY
 
   req(spp[[curSp()]]$mask$prediction)
 
-  userRaster <- spp[[curSp()]]$postProc$prediction
+  userRaster <- spp[[curSp()]]$mask$prediction
   userValues <- terra::spatSample(x = terra::rast(userRaster),
                                   size = 100, na.rm = TRUE)[, 1]
   map %>%
     clearAll() %>%
     # add background polygon
-    mapBgPolys(bgShpXY(), color = 'green', group = 'mask')
+    mapBgPolys(bgPostXY(), color = 'green', group = 'mask')
 
   if (!any(userValues > 0 & userValues < 1)) {
     map %>%
-      leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
+      leafem::addGeoRaster(spp[[curSp()]]$mask$prediction,
                            colorOptions = leafem::colorOptions(
                              palette = colorRampPalette(colors = c('gray', 'darkgreen'))),
                            opacity = 0.7, group = 'mask', layerId = 'postPred') %>%
@@ -260,7 +259,7 @@ mask_temp_module_map <- function(map, common) {
                         probs = seq(0, 1, 0.1))
     legendPal <- colorNumeric(rev(rasCols), quanRas, na.color = 'transparent')
     map %>%
-      leafem::addGeoRaster(spp[[curSp()]]$postProc$prediction,
+      leafem::addGeoRaster(spp[[curSp()]]$mask$prediction,
                            colorOptions = leafem::colorOptions(
                              palette = colorRampPalette(colors = rasCols)),
                            opacity = 0.7, group = 'mask',
