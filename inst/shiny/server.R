@@ -1129,13 +1129,15 @@ function(input, output, session) {
   ########################################### #
   ### COMPONENT: Mask ####
   ########################################### #
-  # convenience function for background polygon for current species
-  postExt <- reactive(spp[[curSp()]]$mask$postExt)
+
+
+  # convenience function for extent polygon
+  polyExt <- reactive(spp[[curSp()]]$mask$polyExt)
 
   # get the coordinates of the current background extent shape
   bgPostXY <- reactive({
-    req(postExt())
-    polys <- postExt()@polygons[[1]]@Polygons
+    req(polyExt())
+    polys <- polyExt()@polygons[[1]]@Polygons
     if (length(polys) == 1) {
       xy <- list(polys[[1]]@coords)
     } else{
@@ -1143,6 +1145,10 @@ function(input, output, session) {
     }
     return(xy)
   })
+
+  selMaskPrExp <- reactive(input$selMaskPrExp)
+  selMaskPrSpa <- reactive(input$selMaskPrSpa)
+  selMaskPrTemp <- reactive(input$selMaskPrTemp)
 
   output$dlMask <- downloadHandler(
     filename = function() {
@@ -1153,8 +1159,8 @@ function(input, output, session) {
     content = function(file) {
       if (require(rgdal)) {
         req(spp[[curSp()]]$mask$prediction)
-        userRaster <- spp[[curSp()]]$mask$prediction
-        userValues <- terra::spatSample(x = terra::rast(userRaster),
+        maskRaster <- spp[[curSp()]]$mask$prediction
+        maskValues <- terra::spatSample(x = terra::rast(maskRaster),
                                           size = 100, na.rm = TRUE)[, 1]
         if (input$maskFileType == 'png') {
           if (!webshot::is_phantomjs_installed()) {
@@ -1166,7 +1172,7 @@ function(input, output, session) {
           if (!any(userValues > 0 & userValues < 1)) {
             m <- leaflet() %>%
               addProviderTiles(input$bmap) %>%
-              leafem::addGeoRaster(userRaster,
+              leafem::addGeoRaster(maskRaster,
                                    colorOptions = leafem::colorOptions(
                                      palette = colorRampPalette(
                                        colors = c('gray', 'darkgreen'))),
@@ -1180,13 +1186,13 @@ function(input, output, session) {
             mapview::mapshot(m, file = file)
           } else {
             rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-            quanRas <- quantile(c(raster::minValue(userRaster),
-                                  raster::maxValue(userRaster)),
+            quanRas <- quantile(c(raster::minValue(maskRaster),
+                                  raster::maxValue(maskRaster)),
                                 probs = seq(0, 1, 0.1))
             legendPal <- colorNumeric(rev(rasCols), quanRas, na.color = 'transparent')
             m <- leaflet() %>%
               addProviderTiles(input$bmap) %>%
-              leafem::addGeoRaster(userRaster,
+              leafem::addGeoRaster(maskRaster,
                                    colorOptions = leafem::colorOptions(
                                      palette = colorRampPalette(colors = rasCols)),
                                    opacity = 0.7, group = 'maskDL', layerId = 'maskDL') %>%
@@ -1199,14 +1205,14 @@ function(input, output, session) {
         } else if (input$maskFileType == 'raster') {
           fileName <- curSp()
           tmpdir <- tempdir()
-          raster::writeRaster(userRaster, file.path(tmpdir, fileName),
+          raster::writeRaster(maskRaster, file.path(tmpdir, fileName),
                               format = input$maskFileType, overwrite = TRUE)
           owd <- setwd(tmpdir)
           fs <- paste0(fileName, c('.grd', '.gri'))
           zip::zipr(zipfile = file, files = fs)
           setwd(owd)
         } else {
-          r <- raster::writeRaster(userRaster, file, format = input$maskFileType,
+          r <- raster::writeRaster(maskRaster, file, format = input$maskFileType,
                                    overwrite = TRUE)
           file.rename(r@file@name, file)
         }
@@ -1886,9 +1892,12 @@ function(input, output, session) {
     bgExt = bgExt,
     bgMask = bgMask,
     bgShpXY = bgShpXY,
-    postExt = postExt,
+    polyExt = polyExt,
     bgPostXY = bgPostXY,
     selCatEnvs = selCatEnvs,
+    selMaskPrExp = selMaskPrExp,
+    selMaskPrSpa = selMaskPrSpa,
+    selMaskPrTemp = selMaskPrTemp,
     selTempRaster = selTempRaster,
     yearInput = yearInput,
     selTempMask = selTempMask,

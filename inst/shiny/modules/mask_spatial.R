@@ -2,13 +2,18 @@ mask_spatial_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
     span("Step 1:", class = "step"),
+    span("Select prediction to mask (**)", class = "stepText"), br(),
+    uiOutput(ns("maskSpaUI")),
+    actionButton(ns('goSelMaskPrSpa'), "Select (**)"),
+    tags$hr(class = "hrDotted"),
+    span("Step 2:", class = "step"),
     span("Upload Spatial Data(**)", class = "stepText"), br(), br(),
     fileInput(ns("maskShp"),
               label = 'Upload polygon in shapefile (.shp, .shx, .dbf)',
               accept = c(".dbf", ".shx", ".shp"), multiple = TRUE),
     actionButton(ns("goMaskShp"), "Load (**)"), br(),
     tags$hr(class = "hrDotted"),
-    span("Step 2:", class = "step"),
+    span("Step 3:", class = "step"),
     span("Select fields (**)", class = "stepText"), br(), br(),
     uiOutput(ns("maskFieldsUI")),
     uiOutput(ns("maskAttributeUI")),
@@ -26,12 +31,65 @@ mask_spatial_module_server <- function(input, output, session, common) {
   logger <- common$logger
   maskFields <- common$maskFields
   maskAttribute <- common$maskAttribute
+  selMaskPrSpa <- common$selMaskPrSpa
+
+  output$maskSpaUI <- renderUI({
+    req(curSp())
+    n <- c()
+    if (!is.null(spp[[curSp()]]$visualization$mapPred)) {
+      n <- c(n, "Wallace SDM")
+    }
+    if (!is.null(spp[[curSp()]]$transfer$mapXfer)) {
+      n <- c(n, "Transferred SDM")
+    }
+    if (!is.null(spp[[curSp()]]$mask$userSDM)) {
+      n <- c(n, "User-specified SDM")
+    }
+    if (is.null(n)) {
+      p("Perform or upload model prediction (**)")
+    } else {
+      maskPredList <- setNames(as.list(n), n)
+      shinyWidgets::pickerInput("selMaskPrSpa",
+                                label = "",
+                                choices = maskPredList,
+                                multiple = FALSE,
+                                selected = NULL)
+    }
+  })
+
+  observeEvent(input$goSelMaskPrSpa, {
+    if (selMaskPrSpa() == "Wallace SDM") {
+      spp[[curSp()]]$mask$origPred <- spp[[curSp()]]$visualization$mapPred
+      spp[[curSp()]]$mask$origPolyExt <- spp[[curSp()]]$procEnvs$bgExt
+      spp[[curSp()]]$mask$prediction <- NULL
+      spp[[curSp()]]$mask$polyExt <- NULL
+      logger %>% writeLog(
+        hlSpp(curSp()), "Wallace SDM selected for masking (**).")
+    }
+    if (selMaskPrSpa() == "Transferred SDM") {
+      spp[[curSp()]]$mask$origPred <-  spp[[curSp()]]$transfer$mapXfer
+      spp[[curSp()]]$mask$origPolyExt <- spp[[curSp()]]$transfer$xfExt
+      spp[[curSp()]]$mask$prediction <- NULL
+      spp[[curSp()]]$mask$polyExt <- NULL
+      logger %>% writeLog(
+        hlSpp(curSp()), "Transferred SDM selected for masking (**).")
+
+    }
+    if (selMaskPrSpa() == "User-specified SDM") {
+      spp[[curSp()]]$mask$origPred <-  spp[[curSp()]]$mask$userSDM
+      spp[[curSp()]]$mask$origPolyExt <- spp[[curSp()]]$mask$userPolyExt
+      spp[[curSp()]]$mask$prediction <- NULL
+      spp[[curSp()]]$mask$polyExt <- NULL
+      logger %>% writeLog(
+        hlSpp(curSp()), "User-specified SDM selected for masking (**).")
+    }
+  })
 
   observeEvent(input$goMaskShp, {
     # WARNING ####
-    if (is.null(spp[[curSp()]]$mask$prediction)) {
+    if (is.null(spp[[curSp()]]$mask$origPred)) {
       logger %>% writeLog(
-        type = 'error', hlSpp(curSp()), 'Calculate/Upload a model prediction (**)')
+        type = 'error', hlSpp(curSp()), 'Select a model prediction (**)')
       return()
     }
     if (is.null(input$maskShp$datapath)) {
@@ -40,13 +98,19 @@ mask_spatial_module_server <- function(input, output, session, common) {
       return()
     }
     # FUNCTION CALL ####
+    if (is.null(spp[[curSp()]]$mask$prediction)) {
+      maskPred <- spp[[curSp()]]$mask$origPred
+    } else {
+      maskPred <- spp[[curSp()]]$mask$prediction
+    }
     spatialMask <- mask_spatialPoly(input$maskShp$datapath, input$maskShp$name,
-                                    spp[[curSp()]]$mask$prediction,
+                                    maskPred,
                                     logger, spN = curSp())
     # LOAD INTO SPP ####
     spp[[curSp()]]$mask$spatialMask <- spatialMask
-
-
+    if (is.null(spp[[curSp()]]$mask$polyExt)) {
+      spp[[curSp()]]$mask$polyExt <- spp[[curSp()]]$mask$origPolyExt
+    }
   })
 
   output$maskFieldsUI <- renderUI({
@@ -91,7 +155,13 @@ mask_spatial_module_server <- function(input, output, session, common) {
     selectedPoly <- subset(spatialMask,
                            spatialMask[[maskFields()]] %in% maskAttribute())
     dissPoly <- rgeos::gUnaryUnion(selectedPoly)
-    maskPred <- raster::crop(spp[[curSp()]]$mask$prediction, dissPoly)
+
+    if (is.null(spp[[curSp()]]$mask$prediction)) {
+      maskPred <- spp[[curSp()]]$mask$origPred
+    } else {
+      maskPred <- spp[[curSp()]]$mask$prediction
+    }
+    maskPred <- raster::crop(maskPred, dissPoly)
     maskPred <- raster::mask(maskPred, dissPoly)
     newPred <- raster::trim(maskPred)
     extPoly <- raster::extent(maskPred)
@@ -101,7 +171,6 @@ mask_spatial_module_server <- function(input, output, session, common) {
 
     # LOAD INTO SPP ####
     spp[[curSp()]]$mask$spatialMask <- selectedPoly
-    spp[[curSp()]]$mask$prediction <- maskPred
     spp[[curSp()]]$mask$prediction <- maskPred
     spp[[curSp()]]$mask$polyExt <- polyExt
     logger %>% writeLog(
@@ -113,8 +182,8 @@ mask_spatial_module_server <- function(input, output, session, common) {
   # Reset prediction
   observeEvent(input$goReset_mask, {
     req(curSp())
-    spp[[curSp()]]$mask$prediction <- spp[[curSp()]]$mask$origPred
-    spp[[curSp()]]$mask$polyExt <- spp[[curSp()]]$mask$origPolyExt
+    spp[[curSp()]]$mask$prediction <- NULL
+    spp[[curSp()]]$mask$polyExt <- NULL
     spp[[curSp()]]$mask$spatialMask <- NULL
     logger %>% writeLog(
       hlSpp(curSp()), "Reset prediction (**).")
@@ -144,34 +213,38 @@ mask_spatial_module_map <- function(map, common) {
   maskFields <- common$maskFields
   maskAttribute <- common$maskAttribute
 
-  req(maskFields(), maskAttribute())
-  req(spp[[curSp()]]$mask$spatialMask)
+  req(spp[[curSp()]]$mask$origPred)
 
-  userRaster <- spp[[curSp()]]$mask$prediction
-  userValues <- terra::spatSample(x = terra::rast(userRaster),
-                                  size = 100, na.rm = TRUE)[, 1]
+  if (is.null(spp[[curSp()]]$mask$prediction)) {
+    maskPred <- spp[[curSp()]]$mask$origPred
+  } else {
+    maskPred <- spp[[curSp()]]$mask$prediction
+  }
+
+  if (is.null(spp[[curSp()]]$mask$polyExt)) {
+    xyPoly <- spp[[curSp()]]$mask$origPolyExt
+    polys <- xyPoly@polygons[[1]]@Polygons
+    if (length(polys) == 1) {
+      xyPoly <- list(polys[[1]]@coords)
+    } else{
+      xyPoly <- lapply(polys, function(x) x@coords)
+    }
+  } else {
+    xyPoly <- bgPostXY()
+  }
+
   map %>%
     clearAll() %>%
     # add background polygon
-    mapBgPolys(bgPostXY(), color = 'green', group = 'mask')
+    mapBgPolys(xyPoly, color = 'green', group = 'mask')
 
-  # Plot Polygon
-  spatialMask <- spp[[curSp()]]$mask$spatialMask
-  selAtt <- subset(spatialMask,
-                   spatialMask[[maskFields()]] %in% maskAttribute())
-  noSelAtt <- subset(spatialMask,
-                   !spatialMask[[maskFields()]] %in% maskAttribute())
-  map %>% clearGroup('maskSpatial') %>%
-    addPolygons(data = noSelAtt,
-                weight = 4, color = "blue", group = 'maskSpatial') %>%
-    addPolygons(data = selAtt,
-                weight = 4, color = "yellow", group = 'maskSpatial') %>%
-    addLayersControl(overlayGroups = 'maskSpatial', position = "bottomleft",
-                     options = layersControlOptions(collapsed = FALSE))
 
-  if (!any(userValues > 0 & userValues < 1)) {
+  maskValues <- terra::spatSample(x = terra::rast(maskPred),
+                                  size = 100, na.rm = TRUE)[, 1]
+
+  if (!any(maskValues > 0 & maskValues < 1)) {
     map %>%
-      leafem::addGeoRaster(spp[[curSp()]]$mask$prediction,
+      leafem::addGeoRaster(maskPred,
                            colorOptions = leafem::colorOptions(
                              palette = colorRampPalette(colors = c('gray', 'darkgreen'))),
                            opacity = 0.7, group = 'mask', layerId = 'postPred') %>%
@@ -181,20 +254,35 @@ mask_spatial_module_map <- function(map, common) {
                 opacity = 1, layerId = 'expert')
   } else {
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-    quanRas <- quantile(c(raster::minValue(userRaster),
-                          raster::maxValue(userRaster)),
+    quanRas <- quantile(c(raster::minValue(maskPred),
+                          raster::maxValue(maskPred)),
                         probs = seq(0, 1, 0.1))
     legendPal <- colorNumeric(rev(rasCols), quanRas, na.color = 'transparent')
     map %>%
-      leafem::addGeoRaster(spp[[curSp()]]$mask$prediction,
+      leafem::addGeoRaster(maskPred,
                            colorOptions = leafem::colorOptions(
                              palette = colorRampPalette(colors = rasCols)),
                            opacity = 0.7, group = 'mask', layerId = 'postPred') %>%
-      addLegend("bottomright", pal = legendPal, title = "Suitability<br>(User) (**)",
+      addLegend("bottomright", pal = legendPal, title = "Suitability<br>(Mask) (**)",
                 values = quanRas, layerId = "expert",
                 labFormat = reverseLabel(2, reverse_order = TRUE))
   }
 
+  req(maskFields(), maskAttribute())
+  req(spp[[curSp()]]$mask$spatialMask)
+  # Plot Polygon
+  spatialMask <- spp[[curSp()]]$mask$spatialMask
+  selAtt <- subset(spatialMask,
+                   spatialMask[[maskFields()]] %in% maskAttribute())
+  noSelAtt <- subset(spatialMask,
+                     !spatialMask[[maskFields()]] %in% maskAttribute())
+  map %>% clearGroup('maskSpatial') %>%
+    addPolygons(data = noSelAtt,
+                weight = 4, color = "blue", group = 'maskSpatial') %>%
+    addPolygons(data = selAtt,
+                weight = 4, color = "yellow", group = 'maskSpatial') %>%
+    addLayersControl(overlayGroups = 'maskSpatial', position = "bottomleft",
+                     options = layersControlOptions(collapsed = FALSE))
 }
 
 mask_spatial_module_rmd <- function(species) {

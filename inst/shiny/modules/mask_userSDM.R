@@ -31,7 +31,7 @@ mask_userSDM_module_server <- function(input, output, session, common) {
           # LOAD INTO SPP ####
           spp[[newSppName]] <- list()
           spp[[newSppName]]$mask$userSDM <- userSDMs$sdm
-          spp[[newSppName]]$mask$polyExt <- userSDMs$extSdm
+          spp[[newSppName]]$mask$userPolyExt <- userSDMs$extSdm
         }
       } else {
         if (!is.null(spp[[newSppName]]$visualization$mapPred)) {
@@ -46,7 +46,7 @@ mask_userSDM_module_server <- function(input, output, session, common) {
           logger %>% writeLog(hlSpp(newSppName), "User SDM prediction loaded (**)")
           # LOAD INTO SPP ####
           spp[[newSppName]]$mask$userSDM <- userSDMs$sdm
-          spp[[newSppName]]$mask$polyExt <- userSDMs$extSdm
+          spp[[newSppName]]$mask$userPolyExt <- userSDMs$extSdm
         }
       }
 
@@ -61,7 +61,6 @@ mask_userSDM_module_map <- function(map, common) {
 
   curSp <- common$curSp
   spp <- common$spp
-  bgPostXY <- common$bgPostXY
 
   # Map logic
   req(spp[[curSp()]]$mask$userSDM)
@@ -69,6 +68,13 @@ mask_userSDM_module_map <- function(map, common) {
   userRaster <- spp[[curSp()]]$mask$userSDM
   userValues <- terra::spatSample(x = terra::rast(userRaster),
                                   size = 100, na.rm = TRUE)[, 1]
+  userPolyExt <- spp[[curSp()]]$mask$userPolyExt
+  polys <- userPolyExt@polygons[[1]]@Polygons
+  if (length(polys) == 1) {
+    xy <- list(polys[[1]]@coords)
+  } else{
+    xy <- lapply(polys, function(x) x@coords)
+  }
   zoomExt <- raster::extent(userRaster)
   map %>% fitBounds(lng1 = zoomExt[1], lng2 = zoomExt[2],
                     lat1 = zoomExt[3], lat2 = zoomExt[4])
@@ -76,7 +82,8 @@ mask_userSDM_module_map <- function(map, common) {
   map %>%
     clearAll() %>%
     # add background polygon
-    mapBgPolys(bgPostXY(), color = 'green', group = 'mask')
+    mapBgPolys(xy,
+               color = 'green', group = 'mask')
 
   # Define raster colors and shiny legend
   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
