@@ -34,7 +34,7 @@ indic_raster <- function(rasPath, rasName, logger = NULL) {
   rasterName <- fileNameNoExt(rasName)
   smartProgress(logger, message = "Uploading user-specified SDM (**)...", {
     r <- raster::raster(rasPath)
-    r <- raster::trim(r)
+   # r <- raster::trim(r) ##this creates a problem when comparing resolutions for overlapping rasters
     names(r) <- fileNameNoExt(rasName)
     extPoly <- raster::extent(r)
     if (extPoly@xmin < -180 | extPoly@xmax > 180 |

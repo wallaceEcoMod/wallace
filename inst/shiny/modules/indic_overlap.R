@@ -111,7 +111,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
       }
       spp[[curSp()]]$indic$Plot1 <- spp[[curSp()]]$rmm$data$indic$EOO
     }
-    if(input$selSource == "aoo"){
+    if (input$selSource == "aoo") {
       #CAREFUL: as its set up now if user doesn t do maskrangeR this object will be something else
       #(either user uploaed SDM or wallace SDM) this must be fixed in other components so it works smoothly
 
@@ -132,7 +132,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
         type = 'error', hlSpp(curSp()), 'Calculate/Upload a species distribution')
       return()
     }
-    if(input$indicOverlap == 'shapefile'){
+    if (input$indicOverlap == 'shapefile') {
       pathdir <- dirname(input$indicOverlapShp$datapath)
       pathfile <- basename(input$indicOverlapShp$datapath)
       # get extensions of all input files
@@ -170,28 +170,29 @@ indic_overlap_module_server <- function(input, output, session, common) {
       ##crop polygon for visualization if range is a raster
       if(!is.null(spp[[curSp()]]$indic$Plot)){
         shpcrop <- raster::crop(shpcrop,
-                                raster::extent(spp[[curSp()]]$indic$Plot))}
-
+                                raster::extent(spp[[curSp()]]$indic$Plot))
+      }
       spp[[curSp()]]$indic$polyOverlap <- polyOverlap
       spp[[curSp()]]$indic$polyOverlapCrop <- shpcrop
     }
-    if(input$indicOverlap == 'raster'){
+    if (input$indicOverlap == 'raster') {
       userRaster <- indic_raster(rasPath = input$indicOverlapRaster$datapath,
                                  rasName = input$indicOverlapRaster$name,
                                  logger)
       if (!is.null(userRaster)) {
         logger %>% writeLog("User raster file loaded ")
       }
-      spp[[curSp()]]$indic$RasOverlap <- userRaster$sdm
-    }
-    sameRes <- identical(res(spp[[curSp()]]$indic$RasOverlap),
-                         res(spp[[curSp()]]$indic$Plot))
-    if (!sameRes) {
+    spp[[curSp()]]$indic$RasOverlap <- userRaster$sdm
+    sameRes <- identical(raster::res(spp[[curSp()]]$indic$RasOverlap),
+                         raster::res(spp[[curSp()]]$indic$Plot))
+    if (sameRes==FALSE) {
       logger %>% writeLog(
         type = 'error', hlSpp(curSp()),
         'Raster resolution must be the same as species distribtuion resolution')
       return()
     }
+    }
+
   })
 
   ###add this if we want to include field selection
@@ -309,7 +310,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
       smartProgress(
         logger,
         message = "Calculating range overlap ", {
-          r = spp[[curSp()]]$mask$userSDM
+          r = spp[[curSp()]]$indic$Plot
           #  shp = spp[[curSp()]]$indic$polyOverlap
           raster::crs(shp) <- sf::st_crs(4326)$wkt
           raster::crs(r) <- sf::st_crs(4326)$wkt
@@ -319,6 +320,9 @@ indic_overlap_module_server <- function(input, output, session, common) {
       req(ratio.Overlap)
       logger %>% writeLog("Proportion of user provided range area that is ",
                           "contained by landcover categories calculated ")
+       if (input$indicOverlap == 'shapefile') {
+
+
       if (length(ratio.Overlap$maskedRange) > 1) {
         names(ratio.Overlap$maskedRange) <- NULL
         ratio.Overlap$maskedRange$fun <- mean
@@ -327,6 +331,10 @@ indic_overlap_module_server <- function(input, output, session, common) {
                                              ratio.Overlap$maskedRange)
       } else {
         ratio.Overlap$maskedRange <- ratio.Overlap$maskedRange[[1]]
+      }
+      }
+      else if(input$indicOverlap=='raster') {
+      ratio.Overlap$maskedRange <- ratio.Overlap$maskedRange[[1]]
       }
       spp[[curSp()]]$indic$overlapRaster <- ratio.Overlap$maskedRange
       spp[[curSp()]]$indic$overlapvalue <- ratio.Overlap$ratio
