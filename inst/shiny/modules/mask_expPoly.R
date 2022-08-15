@@ -54,15 +54,23 @@ mask_expPoly_module_server <- function(input, output, session, common) {
     if (!is.null(spp[[curSp()]]$mask$userSDM)) {
       n <- c(n, "User-specified SDM")
     }
+    if (!is.null(spp[[curSp()]]$mask$prediction)) {
+      n <- c("Masked SDM", n)
+    }
     if (is.null(n)) {
       p("Perform or upload model prediction (**)")
     } else {
+      if ("Masked SDM" %in% n) {
+        defSel <- NULL
+      } else {
+        defSel <- "Masked SDM"
+      }
       maskPredList <- setNames(as.list(n), n)
       shinyWidgets::pickerInput("selMaskPrExp",
                                 label = "",
                                 choices = maskPredList,
                                 multiple = FALSE,
-                                selected = NULL)
+                                selected = defSel)
     }
   })
 
