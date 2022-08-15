@@ -117,10 +117,10 @@ mask_userSDM_module_map <- function(map, common) {
 
 mask_userSDM_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
-  list(
-    mask_userSDM_knit = FALSE
+  # list(
+  #   mask_userSDM_knit = FALSE
     # var1 = species$rmm$code$wallace$someSetting1,
     # var2 = species$rmm$code$wallace$someSetting2
-  )
+  # )
 }
 

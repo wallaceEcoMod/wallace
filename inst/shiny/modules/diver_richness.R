@@ -267,11 +267,11 @@ diver_richness_module_map <- function(map, common) {
 
 diver_richness_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
-  list(
-    diver_richness_knit = FALSE
+  # list(
+  #   diver_richness_knit = FALSE
     #species$rmm$code$wallace$someFlag,
     #var1 = species$rmm$code$wallace$someSetting1,
     #var2 = species$rmm$code$wallace$someSetting2
-  )
+  # )
 }
 

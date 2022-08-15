@@ -625,11 +625,11 @@ indic_overlap_module_map <- function(map, common) {
 
 indic_overlap_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
-  list(
-    indic_overlap_knit = FALSE
+  # list(
+  #   indic_overlap_knit = FALSE
     #species$rmm$code$wallace$someFlag,
     #var1 = species$rmm$code$wallace$someSetting1,
     #var2 = species$rmm$code$wallace$someSetting2
-  )
+  # )
 }
 
