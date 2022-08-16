@@ -19,8 +19,7 @@ test_that("error checks", {
                   txtName = 'Marmosops_wrong',
                   txtSep = ",", txtDec = "."),
     paste0('Please input a file with columns "scientific_name", ',
-           '"longitude", "latitude" in that order or check delimeter and ',
-           'decimal separators.'),
+           '"longitude", "latitude".'),
     fixed = TRUE)
   expect_error(
     occs_userOccs(txtPath = './extdata/Marmosops_wrongSP.csv',
