@@ -11,7 +11,7 @@ indic_range_module_ui <- function(id) {
                      selectInput(ns("selSource") ,
                                  label = "Select source for calculations",
                                  choices = list("Wallace SDM" = "wallace",
-                                                "Projected SDM" = "proj",
+                                                "Transferred SDM" = "xfer",
                                                 "User SDM" = "user",
                                                 "Masked SDM" = "mask"))),
     conditionalPanel(sprintf("input['%1$s'] == 'eoo'",
@@ -20,7 +20,7 @@ indic_range_module_ui <- function(id) {
                                  label = "Select source for calculations",
                                  choices = list("Occurrences" = "occs",
                                                 "Wallace SDM" = "wallace",
-                                                "Projected SDM" = "proj",
+                                                "Transferred SDM" = "xfer",
                                                 "User SDM" = "user"
                                  ))),
 
@@ -30,7 +30,7 @@ indic_range_module_ui <- function(id) {
                                  label = "Select source for calculations",
                                  choices = list("Occurrences & Wallace SDM" = "occs",
                                                 "Wallace SDM" = "wallace",
-                                                "Projected SDM" = "proj",
+                                                "Transferred SDM" = "xfer",
                                                 "User SDM" = "user",
                                                 "Masked SDM" = "mask"))),
     ##question for mary add option to do range for sdm that comes from maskRangeR or uploaded?
@@ -93,7 +93,7 @@ indic_range_module_server <- function(input, output, session, common) {
         spp[[curSp()]]$indic$rangetype <- input$selSource
         common$update_component(tab = "Results")
       }
-      if(input$selSource == "proj"){
+      if(input$selSource == "xfer"){
         # ERRORS ####
         if (is.null(spp[[curSp()]]$transfer$mapXfer)) {
           logger %>%
@@ -225,11 +225,11 @@ indic_range_module_server <- function(input, output, session, common) {
     } else if (input$indicRangeSel == "eoo") {
       ## Check wether based on sdm or on occurrences
       if (input$selSource1 == "wallace") {
-        ##check that the projection exists and that it is thresholded
+        ##check that the transfer exists and that it is thresholded
         if (is.null(spp[[curSp()]]$visualization$mapPred)) {
           logger %>%
             writeLog(type = 'error',
-                     'Project your model before doing EOO calculations')
+                     'Transfer your model before doing EOO calculations')
           return()
         }
         if (is.null(spp[[curSp()]]$visualization$thresholds)) {
@@ -251,7 +251,7 @@ indic_range_module_server <- function(input, output, session, common) {
         req(aeoosdm)
         logger %>% writeLog("Calculated an EOO estimate based on a ",
                             "thresholded SDM. This is an approximation ",
-                            "based on a non-projected SDM")
+                            "based on a non-transferred SDM")
         # LOAD INTO SPP ####
         spp[[curSp()]]$rmm$data$indic$EOOval <- aeoosdm
         spp[[curSp()]]$rmm$data$indic$EOOtype <- input$selSource1
@@ -259,11 +259,11 @@ indic_range_module_server <- function(input, output, session, common) {
         common$update_component(tab = "Map")
       }
       if (input$selSource1 == "user") {
-        ##check that the projection exists and that it is thresholded
+        ##check that the transfer exists and that it is thresholded
         if (is.null(spp[[curSp()]]$mask$userSDM)) {
           logger %>%
             writeLog(type = 'error',
-                     'Project load a model before doing EOO calculations')
+                     'Load a model before doing EOO calculations')
           return()
         }
         p <- spp[[curSp()]]$mask$userSDM
@@ -289,19 +289,19 @@ indic_range_module_server <- function(input, output, session, common) {
         req(aeoosdm)
         logger %>% writeLog("Calculated an EOO estimate based on a user ",
                             "provided SDM. This is an approximation based ",
-                            "on a non-projected SDM")
+                            "on a non-transferred SDM")
         # LOAD INTO SPP ####
         spp[[curSp()]]$rmm$data$indic$EOOval <- aeoosdm
         spp[[curSp()]]$rmm$data$indic$EOOtype <- input$selSource1
         spp[[curSp()]]$rmm$data$indic$EOO <- eooSDM
         common$update_component(tab = "Map")
       }
-      if (input$selSource1 == "proj") {
-        ##check that the projection exists and that it is thresholded
+      if (input$selSource1 == "xfer") {
+        ##check that the transfer exists and that it is thresholded
         if (is.null(spp[[curSp()]]$transfer$mapXfer)) {
           logger %>%
             writeLog(type = 'error',
-                     'Project your model before doing EOO calculations')
+                     'Transfer your model before doing EOO calculations')
           return()
         }
         if (is.null(spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet)) {
@@ -312,7 +312,7 @@ indic_range_module_server <- function(input, output, session, common) {
         }
         smartProgress(
           logger,
-          message = "Calculating an EOO estimate based on the projected thresholded SDM ", {
+          message = "Calculating an EOO estimate based on the transferred thresholded SDM ", {
             #must reclass the sdm to get 0 to be NA
             p <- spp[[curSp()]]$transfer$mapXfer
             p[p == 0] <- NA
@@ -321,9 +321,9 @@ indic_range_module_server <- function(input, output, session, common) {
             aeoosdm <- raster::area(eooSDM)/1000000
           })
         req(aeoosdm)
-        logger %>% writeLog("Calculated an EOO estimate based on a projected ",
+        logger %>% writeLog("Calculated an EOO estimate based on a transferred ",
                             "thresholded SDM. This is an approximation based ",
-                            "on a non-projected SDM")
+                            "on a non-transferred SDM")
         # LOAD INTO SPP ####
         spp[[curSp()]]$rmm$data$indic$EOOval <- aeoosdm
         spp[[curSp()]]$rmm$data$indic$EOOtype <- input$selSource1
@@ -363,7 +363,7 @@ indic_range_module_server <- function(input, output, session, common) {
     }
     else if (input$indicRangeSel == "aoo"){
       if(input$selSource2 =="occs"){
-        ##check that the projection exists and that it is thresholded
+        ##check that the transfer exists and that it is thresholded
         if (is.null(spp[[curSp()]]$visualization$mapPred)) {
           logger %>%
             writeLog(type = 'error',
@@ -394,8 +394,8 @@ indic_range_module_server <- function(input, output, session, common) {
         spp[[curSp()]]$rmm$data$indic$AOO <- AOOlocs$aooRaster
         common$update_component(tab = "Map")
       }
-      else if (input$selSource2 =="wallace"){
-        ##check that the projection exists and that it is thresholded
+      else if (input$selSource2 == "wallace"){
+        ##check that the transfer exists and that it is thresholded
         if (is.null(spp[[curSp()]]$visualization$mapPred)) {
           logger %>%
             writeLog(type = 'error',
@@ -420,12 +420,12 @@ indic_range_module_server <- function(input, output, session, common) {
         spp[[curSp()]]$rmm$data$indic$AOOtype <- input$selSource2
         spp[[curSp()]]$rmm$data$indic$AOO <- AOO$aooRaster
         common$update_component(tab = "Map")
-      } else if (input$selSource2 == "proj") {
-        ##check that the projection exists and that it is thresholded
+      } else if (input$selSource2 == "xfer") {
+        ##check that the transfer exists and that it is thresholded
         if (is.null(spp[[curSp()]]$transfer$mapXfer)) {
           logger %>%
             writeLog(type = 'error',
-                     'Project your model before doing AOO calculations')
+                     'Transfer your model before doing AOO calculations')
           return()
         }
         if (is.null(spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet)) {
@@ -446,7 +446,7 @@ indic_range_module_server <- function(input, output, session, common) {
         spp[[curSp()]]$rmm$data$indic$AOO <- AOO$aooRaster
         common$update_component(tab = "Map")
       } else if (input$selSource2 == "user") {
-        ##check that the projection exists and that it is thresholded
+        ##check that the transfer exists and that it is thresholded
         if (is.null(spp[[curSp()]]$mask$userSDM)) {
           logger %>%
             writeLog(type = 'error',

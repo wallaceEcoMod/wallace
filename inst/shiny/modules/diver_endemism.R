@@ -5,7 +5,7 @@ diver_endemism_module_ui <-  function(id) {
     span("Choose source of range maps", class = "stepText"), br(), br(),
     selectInput(ns("selSource") , label = "Select source of range maps",
                 choices = list("Wallace SDM" = "wallace",
-                               "Projected SDM" = "proj",
+                               "Transferred SDM" = "xfer",
                                "User uploaded SDM" = "sdm"
                 )),
     # UI
@@ -19,7 +19,7 @@ diver_endemism_module_server <- function(input, output, session, common) {
   spp <- common$spp
   curSp <- common$curSp
   curModel <- common$curModel
-  mapProj <- common$mapProj
+  mapXfer <- common$mapXfer
   allSp <- common$allSp
 
   output$diverEnd <- renderUI({
@@ -100,13 +100,13 @@ diver_endemism_module_server <- function(input, output, session, common) {
 
         })
     }
-    if (input$selSource == 'proj'){
+    if (input$selSource == 'xfer'){
       for (i in 1:length(curSp())){
         sp <- curSp()[i]
-        if (is.null(spp[[sp]]$project$mapProj)) {
+        if (is.null(spp[[sp]]$transfer$mapXfer)) {
           logger %>%
             writeLog(type = 'error',
-                     'Projected model does not exist, please use the transfer ',
+                     'Transferred model does not exist, please use the transfer ',
                      'module to transfer to same geographical space')
           return()
         }
@@ -126,7 +126,7 @@ diver_endemism_module_server <- function(input, output, session, common) {
           #get all models
           all_models < -list()
           for (i in 1:length(curSp())) {
-            all_models[[i]] <- spp[[curSp()[i]]]$project$mapProj
+            all_models[[i]] <- spp[[curSp()[i]]]$transfer$mapXfer
           }
           all_extents <- lapply(all_models, raster::extent)
           all_extents <- lapply(all_extents, as.vector)
@@ -141,14 +141,14 @@ diver_endemism_module_server <- function(input, output, session, common) {
           new_extent <- raster::extent(c(xmin, xmax, ymin, ymax))
           #get all models
           sp1 <- curSp()[1]
-          all_stack<- raster::extend(spp[[sp1]]$project$mapProj,new_extent)
+          all_stack<- raster::extend(spp[[sp1]]$transfer$mapXfer, new_extent)
 
 
           for (i in 2:length(curSp())){
             sp<-curSp()[i]
             #evaluate if same extent
 
-            r1 <- raster::extend(spp[[sp]]$project$mapProj, new_extent)
+            r1 <- raster::extend(spp[[sp]]$transfer$mapXfer, new_extent)
             all_stack<-raster::stack(all_stack,r1)
           }
 

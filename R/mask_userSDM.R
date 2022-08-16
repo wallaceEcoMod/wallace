@@ -61,8 +61,8 @@ mask_userSDM <- function(rasPath, rasName, logger = NULL) {
       writeLog(
         type = "warning", hlSpp(spName),
         'Input rasters have undefined coordinate reference system (CRS). ',
-        'Mapping functionality in components Visualize Model Results and ',
-        'Project Model will not work. If you wish to map rasters in these ',
+        'Mapping functionality in components Visualize and ',
+        'Transfer will not work. If you wish to map rasters in these ',
         'components, please define their projections and upload again. ',
         'See guidance text in this module for more details.')
     return()

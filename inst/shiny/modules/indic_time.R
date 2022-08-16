@@ -9,7 +9,7 @@ indic_time_module_ui <- function(id) {
     span("Choose Input range", class = "stepText"), br(), br(),
     selectInput(ns("selRasterSource") , label = "Select range for calculations",
                 choices = list("Wallace SDM" = "wallace",
-                               "Projected SDM" = "proj",
+                               "Transferred SDM" = "xfer",
                                "User SDM" = "sdm",
                                "Masked SDM" = "masked",
                                "AOO" = "aoo",
@@ -59,16 +59,16 @@ indic_time_module_server <- function(input, output, session, common) {
       logger %>% writeLog("SDM area after masking for environmental variables ",
                           "through time will be calculated based on Wallace SDM ")
     }
-    if(input$selRasterSource == "proj"){
+    if(input$selRasterSource == "xfer"){
       if (is.null(spp[[curSp()]]$transfer$mapXfer)) {
         logger %>%
           writeLog(type = 'error',
-                   'Project your model before doing overlap calculations')
+                   'Transfer your model before doing overlap calculations')
         return()
       }
       spp[[curSp()]]$indic$time <-spp[[curSp()]]$transfer$mapXfer
       logger %>% writeLog("SDM area after masking for environmental variables ",
-                          "through time will be calculated based on Projected SDM.")
+                          "through time will be calculated based on transferred SDM.")
 
     }
     if (input$selRasterSource == "sdm") {

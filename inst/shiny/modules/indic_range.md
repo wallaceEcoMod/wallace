@@ -14,7 +14,7 @@ It is important to follow the guidelines of the relevant IUCN SSC SG when calcul
 
 **IMPLEMENTATION**
 
-In this module you can calculate areas from a wallace model, a wallace projected model, a masked model (made in the Mask component), or a user provided SDM.
+In this module you can calculate areas from a wallace model, a wallace transferred model, a masked model (made in the Mask component), or a user provided SDM.
 “Range Size” calculates the area in km squared for the species’ range as defined by a binary raster.
 Users can calculate IUCN’s EOO via two options 1) MCP/convex hull around occurrence localities, 2) MCP/convex hull area of a binary SDM.
 Users can calculate AOO either 1) with occurrence points, 2) from the pre-masked thresholded SDM, and 3) from the masked thresholded SDM.

@@ -8,7 +8,7 @@ output: html_document
 
   Translating a species’ current distribution into meaningful conservation metrics in a repeatable and transparent way to inform conservation planning and decision-making remains an outstanding issue in conservation biology. By using a species distribution model (SDM), as well as landscape requirements (e.g., forest cover), we can mask the output of an SDM to only those areas likely to be suitable to estimate the species’ current
 range (as we implement in the Wallace component Mask). From these reduced model outputs, upper bounds of IUCN metrics regarding area of occupancy (AOO) and extent of occurrence (EOO) can be calculated to inform the assessment of a species’ conservation status, in combination with other information. In
-addition, we can calculate the proportion of a species’ range size that is protected, that is threatened, or that is associated with different land cover types. If past or future model projections or geospatial data
+addition, we can calculate the proportion of a species’ range size that is protected, that is threatened, or that is associated with different land cover types. If past or future model transfers or geospatial data
 on habitat for masking are available, we can also calculate and visualize indic in these metrics over time. These indic metrics can then inform IUCN red-listing assessments and forward-thinking conservation planning.
 
 **Implementation**

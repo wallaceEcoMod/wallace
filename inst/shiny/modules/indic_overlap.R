@@ -5,7 +5,7 @@ indic_overlap_module_ui <- function(id) {
     span("Choose Input range map", class = "stepText"), br(), br(),
     selectInput(ns("selSource") , label = "Select raster for calculations",
                 choices = list("Wallace SDM" = "wallace",
-                               "Projected SDM" = "proj",
+                               "Transferred SDM" = "xfer",
                                "User SDM" = "sdm",
                                "Masked SDM" = "masked",
                                "EOO" = "eoo",
@@ -71,11 +71,11 @@ indic_overlap_module_server <- function(input, output, session, common) {
       }
       spp[[curSp()]]$indic$Plot <- spp[[curSp()]]$visualization$mapPred
     }
-    if(input$selSource == "proj"){
+    if (input$selSource == "xfer"){
       if (is.null(spp[[curSp()]]$transfer$mapXfer)) {
         logger %>%
           writeLog(type = 'error',
-                   'Project your model before doing overlap calculations')
+                   'Transfer your model before doing overlap calculations')
         return()
       }
       spp[[curSp()]]$indic$Plot <-  spp[[curSp()]]$transfer$mapXfer
@@ -276,7 +276,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
       spp[[curSp()]]$indic$overlapvalue <- ratio.Overlap$ratio
       spp[[curSp()]]$indic$overlapvalues <- getRasterVals(ratio.Overlap$maskedRange)
     }
-    if (input$selSource == "proj") {
+    if (input$selSource == "xfer") {
       smartProgress(
         logger,
         message = "Calculating range overlap ", {
