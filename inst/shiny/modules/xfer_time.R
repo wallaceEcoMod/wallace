@@ -552,7 +552,7 @@ xfer_time_module_map <- function(map, common) {
     rasPal <- c('gray', 'red')
     map %>% removeControl("xfer") %>%
       addLegend("bottomright", colors = c('gray', 'red'),
-                title = "Thresholded Suitability<br>(Transfered)",
+                title = "Thresholded Suitability<br>(Transferred)",
                 labels = c("predicted absence", "predicted presence"),
                 opacity = 1, layerId = 'xfer')
   } else {
@@ -561,7 +561,7 @@ xfer_time_module_map <- function(map, common) {
     rasPal <- colorNumeric(rasCols, mapXferVals, na.color = 'transparent')
     map %>% removeControl("xfer") %>%
       addLegend("bottomright", pal = legendPal,
-                title = "Predicted Suitability<br>(Transfered)",
+                title = "Predicted Suitability<br>(Transferred)",
                 values = mapXferVals, layerId = 'xfer',
                 labFormat = reverseLabel(2, reverse_order = TRUE))
   }
