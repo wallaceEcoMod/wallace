@@ -267,7 +267,11 @@ mask_expPoly_module_server <- function(input, output, session, common) {
                                  removePoly, polyExt = spp[[curSp()]]$mask$polyExt,
                                  logger, spN = curSp())
       spp[[curSp()]]$mask$flagPoly <- TRUE
+      maskThr <- terra::spatSample(x = terra::rast(maskPred),
+                                   size = 100, na.rm = TRUE)[, 1]
+      maskThr <- !any(maskThr > 0 & maskThr < 1)
       # LOAD INTO SPP ####
+      spp[[curSp()]]$mask$maskThr <- maskThr
       spp[[curSp()]]$mask$prediction <- expertRast$pred
       spp[[curSp()]]$biomodelos$predExpert <- expertRast$pred
       spp[[curSp()]]$mask$expertPoly[[length(spp[[curSp()]]$mask$expertPoly)]]$removed <- removePoly

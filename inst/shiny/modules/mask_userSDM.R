@@ -28,8 +28,13 @@ mask_userSDM_module_server <- function(input, output, session, common) {
                                  logger)
         if (!is.null(userSDMs)) {
           logger %>% writeLog(hlSpp(newSppName), "User SDM prediction loaded (**)")
+
+          userThr <- terra::spatSample(x = terra::rast(userSDMs$sdm),
+                                       size = 100, na.rm = TRUE)[, 1]
+          userThr <- !any(userThr > 0 & userThr < 1)
           # LOAD INTO SPP ####
           spp[[newSppName]] <- list()
+          spp[[newSppName]]$mask$userThr <- userThr
           spp[[newSppName]]$mask$userSDM <- userSDMs$sdm
           spp[[newSppName]]$mask$userPolyExt <- userSDMs$extSdm
         }

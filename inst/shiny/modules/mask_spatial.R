@@ -176,8 +176,11 @@ mask_spatial_module_server <- function(input, output, session, common) {
     polyExt <- methods::as(extPoly, 'SpatialPolygons')
     raster::crs(polyExt) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
     raster::crs(maskPred) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
-
+    maskThr <- terra::spatSample(x = terra::rast(maskPred),
+                                 size = 100, na.rm = TRUE)[, 1]
+    maskThr <- !any(maskThr > 0 & maskThr < 1)
     # LOAD INTO SPP ####
+    spp[[curSp()]]$mask$maskThr <- maskThr
     spp[[curSp()]]$mask$spatialMask <- selectedPoly
     spp[[curSp()]]$mask$prediction <- maskPred
     spp[[curSp()]]$mask$polyExt <- polyExt
