@@ -115,14 +115,14 @@ indic_overlap_module_server <- function(input, output, session, common) {
       #CAREFUL: as its set up now if user doesn t do maskrangeR this object will be something else
       #(either user uploaed SDM or wallace SDM) this must be fixed in other components so it works smoothly
 
-      if (is.null(spp[[curSp()]]$rmm$data$indic$AOO)) {
+      if (is.null(spp[[curSp()]]$rmm$data$indic$AOOraster)) {
         logger %>%
           writeLog(
             type = 'error',
             'Do an AOO calculation in the area module before doing range calculations')
         return()
       }
-      spp[[curSp()]]$indic$Plot <- spp[[curSp()]]$rmm$data$indic$AOO
+      spp[[curSp()]]$indic$Plot <- spp[[curSp()]]$rmm$data$indic$AOOraster
     }
   })
 
@@ -397,7 +397,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
       smartProgress(
         logger,
         message = "Calculating range overlap ", {
-          r = spp[[curSp()]]$rmm$data$indic$AOO
+          r = spp[[curSp()]]$rmm$data$indic$AOOraster
           #     shp = spp[[curSp()]]$indic$polyOverlap
           raster::crs(shp) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
           raster::crs(r) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"

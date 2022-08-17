@@ -209,7 +209,7 @@ function(input, output, session) {
     shinyjs::toggleState("dlXferEnvs", !is.null(spp[[curSp()]]$transfer$xfEnvsDl))
     shinyjs::toggleState("dlXfer", !is.null(spp[[curSp()]]$transfer$xfEnvs))
     shinyjs::toggleState("dlMess", !is.null(spp[[curSp()]]$transfer$messVals))
-    shinyjs::toggleState("dlAOO", !is.null(spp[[curSp()]]$rmm$data$indic$AOO))
+    shinyjs::toggleState("dlAOO", !is.null(spp[[curSp()]]$rmm$data$indic$AOOraster))
     shinyjs::toggleState("dlEOO", !is.null(spp[[curSp()]]$rmm$data$indic$EOOpoly))
     shinyjs::toggleState("dlOverlap", !is.null(spp[[curSp()]]$indic$overlapRaster))
     shinyjs::toggleState("dlOverlapEOO", !is.null(spp[[curSp()]]$indic$overlapPoly))
@@ -1298,7 +1298,7 @@ function(input, output, session) {
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in your R console. ")
           }
-          AOOras <-  spp[[curSp()]]$rmm$data$indic$AOO
+          AOOras <-  spp[[curSp()]]$rmm$data$indic$AOOraster
           raster::crs(AOOras) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
           OverlapVals <- spp[[curSp()]]$indic$overlapvalues
         #  rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
@@ -1320,15 +1320,16 @@ function(input, output, session) {
         } else if (input$AOOFileType == 'raster') {
           fileName <-  "AOO"
           tmpdir <- tempdir()
-          raster::writeRaster(spp[[curSp()]]$rmm$data$indic$AOO, file.path(tmpdir, fileName),
-                               format = input$AOOFileType, overwrite = TRUE)
+          raster::writeRaster(spp[[curSp()]]$rmm$data$indic$AOOraster,
+                              file.path(tmpdir, fileName),
+                              format = input$AOOFileType, overwrite = TRUE)
           owd <- setwd(tmpdir)
           fs <- paste0(fileName, c('.grd', '.gri'))
           zip::zipr(zipfile = file, files = fs)
           setwd(owd)
         } else {
-          r <- raster::writeRaster(spp[[curSp()]]$rmm$data$indic$AOO, file, format = input$AOOFileType,
-                                   overwrite = TRUE)
+          r <- raster::writeRaster(spp[[curSp()]]$rmm$data$indic$AOOraster, file,
+                                   format = input$AOOFileType, overwrite = TRUE)
           file.rename(r@file@name, file)
         }
       } else {

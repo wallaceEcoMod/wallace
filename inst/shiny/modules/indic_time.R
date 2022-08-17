@@ -100,13 +100,13 @@ indic_time_module_server <- function(input, output, session, common) {
     if (input$selRasterSource == "aoo") {
       #CAREFUL: as its set up now if user doesn t do maskrangeR this object will be something else
       #(either user uploaed SDM or wallace SDM) this must be fixed in other components so it works smoothly
-      if (is.null( spp[[curSp()]]$rmm$data$indic$AOO)) {
+      if (is.null( spp[[curSp()]]$rmm$data$indic$AOOraster)) {
         logger %>%
           writeLog(type = 'error',
                    'Do an AOO calculation before doing time calculations')
         return()
       }
-      spp[[curSp()]]$indic$time <- spp[[curSp()]]$rmm$data$indic$AOO
+      spp[[curSp()]]$indic$time <- spp[[curSp()]]$rmm$data$indic$AOOraster
       logger %>% writeLog("SDM area after masking for environmental variables ",
                           "through time will be calculated based on AOO")
 

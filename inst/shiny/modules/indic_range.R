@@ -178,7 +178,7 @@ indic_range_module_server <- function(input, output, session, common) {
                                 xfer = "transferred SDM",
                                 user = "user-specified SDM",
                                 mask = "masked SDM"),
-                        " (", round(areaEOO, 2), " km^2).",
+                        " (", round(areaEOO, 2), " km^2). ",
                         "This is an approximation using the ",
                         "World Cylindrical Equal Area projection ",
                         "(IUCN recommendation)."))
@@ -190,77 +190,51 @@ indic_range_module_server <- function(input, output, session, common) {
       common$update_component(tab = "Map")
       ## if calculating AOO
     } else if (input$indicRangeSel == "aoo") {
-      if (input$selSource2 == "occs") {
-        p <- spp[[curSp()]]$visualization$mapPred
-        p[p == 0] <- NA
-        # Using filtered records how to use unfiltered?
-        occs <- spp[[curSp()]]$occs
-        occs.xy <- occs %>% dplyr::select(longitude, latitude)
-      #  p[!is.na(p)] <- 1
-        AOOlocs<-changeRangeR::AOOarea(r = p, locs = occs.xy)
-        req(AOOlocs)
-        logger %>% writeLog("Calculated an AOO estimate based on an SDM ",
-                            "and occurrences. This is an approximation based ",
-                            "on unprojected coordinates")
+      if (selAreaSource() == "occs") {
+        p.pts <- spp[[curSp()]]$occs %>%
+          dplyr::select(longitude, latitude)
+      }
+      r <- switch (selAreaSource(),
+                   occs = spp[[curSp()]]$visualization$mapPred,
+                   wallace = spp[[curSp()]]$visualization$mapPred,
+                   xfer = spp[[curSp()]]$transfer$mapXfer,
+                   user = spp[[curSp()]]$mask$userSDM,
+                   mask = spp[[curSp()]]$mask$prediction)
+      ## Unsuitable for NAs
+      r[r == 0] <- NA
+      ###
+      if (selAreaSource() == "occs") {
+        AOO <- changeRangeR::AOOarea(r = r, locs = p.pts)
+      } else {
+        AOO <- changeRangeR::AOOarea(r = r)
+      }
+      # Project to SR-ORG 8287 (IUCN recommendation)
+      sr8287 <- "+proj=cea +lon_0=0 +lat_ts=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs"
+      AOOr <- terra::rast(AOO$aooRaster)
+      AOOr[AOOr == 0] <- NA
+      AOOv <- terra::as.polygons(AOOr) %>%
+        terra::project(y = sr8287)
+      areaAOO <- terra::expanse(AOOv, unit = "km")
 
-        # LOAD INTO SPP ####
-        spp[[curSp()]]$rmm$data$indic$AOOval <- AOOlocs$area
-        spp[[curSp()]]$rmm$data$indic$AOOtype <- input$selSource2
-        spp[[curSp()]]$rmm$data$indic$AOO <- AOOlocs$aooRaster
-        common$update_component(tab = "Map")
-      }
-      if (input$selSource2 == "wallace") {
-        p <- spp[[curSp()]]$visualization$mapPred
-        p[p == 0] <- NA
-        AOO <- changeRangeR::AOOarea(r = p)
-        req(AOO)
-        logger %>% writeLog("Calculated an AOO estimate based on an SDM. This ",
-                            "is an approximation based on unprojected coordinates")
-
-        # LOAD INTO SPP ####
-        spp[[curSp()]]$rmm$data$indic$AOOval <- AOO$area
-        spp[[curSp()]]$rmm$data$indic$AOOtype <- input$selSource2
-        spp[[curSp()]]$rmm$data$indic$AOO <- AOO$aooRaster
-        common$update_component(tab = "Map")
-      }
-      if (input$selSource2 == "xfer") {
-        p <- spp[[curSp()]]$transfer$mapXfer
-        p[p == 0] <- NA
-        AOO<-changeRangeR::AOOarea(r = p)
-        req(AOO)
-        logger %>% writeLog("Calculated an AOO estimate based on an SDM. This ",
-                            "is an approximation based on unprojected coordinates")
-        # LOAD INTO SPP ####
-        spp[[curSp()]]$rmm$data$indic$AOOval <- AOO$area
-        spp[[curSp()]]$rmm$data$indic$AOOtype <- input$selSource2
-        spp[[curSp()]]$rmm$data$indic$AOO <- AOO$aooRaster
-        common$update_component(tab = "Map")
-      }
-      if (input$selSource2 == "user") {
-        p <- spp[[curSp()]]$mask$userSDM
-        p[p == 0] <- NA
-        AOO<-changeRangeR::AOOarea(r = p)
-        req(AOO)
-        logger %>% writeLog("Calculated an AOO estimate based on an user ",
-                            "uploaded SDM. This is an approximation based ",
-                            "on unprojected coordinates")
-        # LOAD INTO SPP ####
-        spp[[curSp()]]$rmm$data$indic$AOOval <- AOO$area
-        spp[[curSp()]]$rmm$data$indic$AOOtype <- input$selSource2
-        spp[[curSp()]]$rmm$data$indic$AOO <- AOO$aooRaster
-        common$update_component(tab = "Map")
-      }
-      if (input$selSource2 == "mask") {
-        AOO<-AOOarea(r = p)
-        req(AOO)
-        logger %>% writeLog("Calculated an AOO estimate based on a masked SDM. ",
-                            "This is an approximation based on unprojected coordinates")
-        # LOAD INTO SPP ####
-        spp[[curSp()]]$rmm$data$indic$AOOval <- AOO$area
-        spp[[curSp()]]$rmm$data$indic$AOOtype <- input$selSource2
-        spp[[curSp()]]$rmm$data$indic$AOO <- AOO$aooRaster
-        common$update_component(tab = "Map")
-      }
+      req(AOO)
+      logger %>%
+        writeLog(hlSpp(curSp()),
+                 paste0("Calculated an AOO estimate based on ",
+                        switch (selAreaSource(),
+                                occs = "occurrences",
+                                wallace = "wallace SDM",
+                                xfer = "transferred SDM",
+                                user = "user-specified SDM",
+                                mask = "masked SDM"),
+                        " (", round(areaAOO, 2), " km^2). ",
+                        "This is an approximation using the ",
+                        "World Cylindrical Equal Area projection ",
+                        "(IUCN recommendation)."))
+      # LOAD INTO SPP ####
+      spp[[curSp()]]$rmm$data$indic$AOOarea <- areaAOO
+      spp[[curSp()]]$rmm$data$indic$AOOsource <- selAreaSource()
+      spp[[curSp()]]$rmm$data$indic$AOOraster <- AOO$aooRaster
+      common$update_component(tab = "Map")
     }
   })
 
@@ -274,17 +248,17 @@ indic_range_module_server <- function(input, output, session, common) {
       spp[[curSp()]]$rmm$data$indic$EOOarea <- "Not calculated"
       spp[[curSp()]]$rmm$data$indic$EOOsource <- NA
     }
-    if (is.null(spp[[curSp()]]$rmm$data$indic$AOOval)) {
-      spp[[curSp()]]$rmm$data$indic$AOOval <- "Not calculated"
-      spp[[curSp()]]$rmm$data$indic$AOOtype <- NA
+    if (is.null(spp[[curSp()]]$rmm$data$indic$AOOarea)) {
+      spp[[curSp()]]$rmm$data$indic$AOOarea <- "Not calculated"
+      spp[[curSp()]]$rmm$data$indic$AOOsource <- NA
     }
     paste(
       "Range based on", spp[[curSp()]]$indic$rangeSource,
-      spp[[curSp()]]$indic$rangeArea,"Km^2", "\n",
+      spp[[curSp()]]$indic$rangeArea," Km^2", "\n",
       "EOO based on ",  spp[[curSp()]]$rmm$data$indic$EOOsource,
-      spp[[curSp()]]$rmm$data$indic$EOOarea,"Km^2","\n",
-      "AOO based on ", spp[[curSp()]]$rmm$data$indic$AOOtype,
-      spp[[curSp()]]$rmm$data$indic$AOOval)
+      spp[[curSp()]]$rmm$data$indic$EOOarea," Km^2","\n",
+      "AOO based on ", spp[[curSp()]]$rmm$data$indic$AOOsource,
+      spp[[curSp()]]$rmm$data$indic$AOOarea," Km^2.")
   })
 
   return(list(
@@ -336,9 +310,8 @@ indic_range_module_map <- function(map, common) {
                     group = 'indic')
     }
   }
-  if(!is.null(spp[[curSp()]]$rmm$data$indic$AOO)){
-
-    AOOras <- spp[[curSp()]]$rmm$data$indic$AOO
+  if (!is.null(spp[[curSp()]]$rmm$data$indic$AOOraster)) {
+    AOOras <- spp[[curSp()]]$rmm$data$indic$AOOraster
     zoomExt <- raster::extent(AOOras)
     map %>% fitBounds(lng1 = zoomExt[1], lng2 = zoomExt[2],
                       lat1 = zoomExt[3], lat2 = zoomExt[4])
