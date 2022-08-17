@@ -1258,8 +1258,10 @@ function(input, output, session) {
 
 
   ########################################### #
-  ### COMPONENT: CHANGERRR DIVERSITY ####
+  ### COMPONENT: INDICATORS ####
   ########################################### #
+  selAreaSource <- reactive(input$selAreaSource)
+
   #Dowload EOO shapefile
   output$dlEOO <- downloadHandler(
     filename = function() paste0(curSp(), "_EOOShp.zip"),
@@ -1910,6 +1912,7 @@ function(input, output, session) {
     mapXfer = mapXfer,
     indicField = indicField,
     indicCategory  = indicCategory,
+    selAreaSource = selAreaSource,
     rmm = rmm,
 
     # Switch to a new component tab
