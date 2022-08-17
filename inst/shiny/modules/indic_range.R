@@ -139,9 +139,8 @@ indic_range_module_server <- function(input, output, session, common) {
       spp[[curSp()]]$indic$rangeArea <- areaRange
       spp[[curSp()]]$indic$rangeSource <- selAreaSource()
       common$update_component(tab = "Results")
-    }
     ## if calculating EOO
-    else if (input$indicRangeSel == "eoo") {
+    } else if (input$indicRangeSel == "eoo") {
       smartProgress(
         logger,
         message = "Calculating an EOO estimate...", {
@@ -158,7 +157,7 @@ indic_range_module_server <- function(input, output, session, common) {
             ## Unsuitable for NAs
             r[r == 0] <- NA
             p.pts <- terra::as.points(r) %>%
-              terra::as.data.frame(xy = TRUE) %>%
+              terra::geom() %>% data.frame() %>%
               dplyr::select(x, y)
           }
           wgs84 <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
@@ -166,8 +165,8 @@ indic_range_module_server <- function(input, output, session, common) {
           eoo <- changeRangeR::mcp(p.pts, wgs84)
           # Project to SR-ORG 8287 (IUCN recommendation)
           sr8287 <- "+proj=cea +lon_0=0 +lat_ts=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs"
-          eoo <- terra::project(terra::vect(eoo), y = sr8287)
-          areaEOO <- terra::expanse(eoo, unit = "km")
+          eooPr <- terra::project(terra::vect(eoo), y = sr8287)
+          areaEOO <- terra::expanse(eooPr, unit = "km")
         })
       req(eoo)
       logger %>%
@@ -190,8 +189,7 @@ indic_range_module_server <- function(input, output, session, common) {
       spp[[curSp()]]$rmm$data$indic$EOOpoly <- eoo
       common$update_component(tab = "Map")
       ## if calculating AOO
-    }
-    else if (input$indicRangeSel == "aoo") {
+    } else if (input$indicRangeSel == "aoo") {
       if (input$selSource2 == "occs") {
         p <- spp[[curSp()]]$visualization$mapPred
         p[p == 0] <- NA
@@ -293,7 +291,7 @@ indic_range_module_server <- function(input, output, session, common) {
     save = function() {
       # Save any values that should be saved when the current session is saved
       list(
-        indicRangeSel = input$indicRangeSel,
+        indicRangeSel = input$indicRangeSel
         )
     },
     load = function(state) {
@@ -355,7 +353,6 @@ indic_range_module_map <- function(map, common) {
                      opacity = 0.7, group = 'indic', layerId = 'AOO',
                      method = "ngb")
   }
-
 }
 
 indic_range_module_rmd <- function(species) {
