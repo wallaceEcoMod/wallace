@@ -49,24 +49,70 @@ indic_range_module_server <- function(input, output, session, common) {
 
 
   observeEvent(input$goRange, {
-    # WARNING ####
-
+    # ERRORS ####
+    if (input$selSource == "wallace") {
+      if (is.null(spp[[curSp()]]$visualization$mapPred)) {
+        logger %>%
+          writeLog(type = 'error',
+                   'Visualize your model before doing calculations.')
+        return()
+      }
+      if (is.null(spp[[curSp()]]$visualization$thresholds)) {
+        logger %>%
+          writeLog(type = 'error',
+                   'Generate a thresholded model before doingcalculations.')
+        return()
+      }
+    }
+    if (input$selSource == "xfer") {
+      if (is.null(spp[[curSp()]]$transfer$mapXfer)) {
+        logger %>%
+          writeLog(type = 'error',
+                   'Project your model before doing calculations')
+        return()
+      }
+      if (is.null(spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet)) {
+        logger %>%
+          writeLog(type = 'error',
+                   'Generate a thresholded prediction before doing calculations')
+        return()
+      }
+    }
+    if (input$selSource == "user") {
+      if (is.null(spp[[curSp()]]$mask$userSDM)) {
+        logger %>%
+          writeLog(type = 'error',
+                   'Load you model in component User SDM before doing calculations')
+        return()
+      }
+      p <- spp[[curSp()]]$mask$userSDM
+      p[p == 0] <- NA
+      if (length(unique(raster::values(p))) > 2) {
+        logger %>%
+          writeLog(type = 'error',
+                   'Generate a thresholded prediction before doing calculations')
+        return()
+      }
+    }
+    if (input$selSource == "mask") {
+      if (is.null(spp[[curSp()]]$mask$prediction)) {
+        logger %>%
+          writeLog(type = 'error',
+                   'Do a maskRangeR analysis before doing calculations')
+        return()
+      }
+      p <- spp[[curSp()]]$mask$prediction
+      p[p == 0] <- NA
+      if (length(unique(raster::values(p)))> 2) {
+        logger %>%
+          writeLog(type = 'error',
+                   'Generate a thresholded prediction before doing calculations')
+        return()
+      }
+    }
     #Processing
     if (input$indicRangeSel == "range") {
       if (input$selSource == "wallace") {
-        # ERRORS ####
-        if (is.null(spp[[curSp()]]$visualization$mapPred)) {
-          logger %>%
-            writeLog(type = 'error',
-                     'Visualize your model before doing range calculations')
-          return()
-        }
-        if (is.null( spp[[curSp()]]$visualization$thresholds)) {
-          logger %>%
-            writeLog(type = 'error',
-                     'Generate a thresholded model before doing range calculations')
-          return()
-        }
         smartProgress(
           logger,
           message = paste0("Calculating a range size estimate using a ",
@@ -84,9 +130,7 @@ indic_range_module_server <- function(input, output, session, common) {
             Resolution <- (raster::res(p)/1000)^2
             # Multiply the two
             area <- pCells * Resolution
-
           })
-
         req(area)
         logger %>% writeLog("Species range size calculated based on Wallace SDM.")
         # LOAD INTO SPP ####
@@ -95,19 +139,6 @@ indic_range_module_server <- function(input, output, session, common) {
         common$update_component(tab = "Results")
       }
       if (input$selSource == "xfer") {
-        # ERRORS ####
-        if (is.null(spp[[curSp()]]$transfer$mapXfer)) {
-          logger %>%
-            writeLog(type = 'error',
-                     'Project your model before doing range calculations')
-          return()
-        }
-        if (is.null(spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet)) {
-          logger %>%
-            writeLog(type = 'error',
-                     'Generate a thresholded prediction before doing range calculations')
-          return()
-        }
         smartProgress(
           logger,
           message = paste0("Calculating a range size estimate using a ",
@@ -136,21 +167,6 @@ indic_range_module_server <- function(input, output, session, common) {
         common$update_component(tab = "Results")
       }
       if (input$selSource == "user") {
-        # ERRORS ####
-        if (is.null(spp[[curSp()]]$mask$userSDM)) {
-          logger %>%
-            writeLog(type = 'error',
-                     'Load you model in component User SDM before doing range calculations')
-          return()
-        }
-        p <- spp[[curSp()]]$mask$userSDM
-        p[p == 0] <- NA
-        if (length(unique(raster::values(p))) > 2) {
-          logger %>%
-            writeLog(type = 'error',
-                     'Generate a thresholded prediction before doing range calculations')
-          return()
-        }
         smartProgress(
           logger,
           message = paste0("Calculating a range size estimate using a South ",
@@ -180,21 +196,6 @@ indic_range_module_server <- function(input, output, session, common) {
         common$update_component(tab = "Results")
       }
       if (input$selSource == "mask") {
-        # ERRORS ####
-        if (is.null(spp[[curSp()]]$mask$prediction)) {
-          logger %>%
-            writeLog(type = 'error',
-                     'Do a maskRangeR analysis before doing range calculations')
-          return()
-        }
-        p <- spp[[curSp()]]$mask$prediction
-        p[p == 0] <- NA
-        if (length(unique(raster::values(p)))> 2) {
-          logger %>%
-            writeLog(type = 'error',
-                     'Generate a thresholded prediction before doing range calculations')
-          return()
-        }
         smartProgress(
           logger,
           message = paste0("Calculating a range size estimate using a South ",
@@ -225,20 +226,37 @@ indic_range_module_server <- function(input, output, session, common) {
     ## if calculating EOO
     } else if (input$indicRangeSel == "eoo") {
       ## Check whether based on sdm or on occurrences
+      if (input$selSource1 == "occs") {
+        if (is.null(spp[[curSp()]]$occs)) {
+          logger %>%
+            writeLog(type = 'error',
+                     'Get or upload occurrence data for this species before ",
+                     "doing EOO calculations (names must match)')
+          return()
+        }
+        smartProgress(
+          logger,
+          message = "Calculating an EOO estimate based on occurrence points ", {
+            occs <- spp[[curSp()]]$occs
+            occs.xy <- occs %>% dplyr::select(longitude, latitude)
+            # Create a minimum convex polygon around the occurrences
+            eoo <- changeRangeR::mcp(occs.xy)
+            # Define the coordinate reference system as unprojected
+            raster::crs(eoo) <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+            area <- raster::area(eoo)/1000000
+
+          })
+        req(eoo)
+        logger %>% writeLog("Calculated an EOO estimate based on occurrences. ",
+                            "This is an approximation based on unprojected coordinates")
+
+        # LOAD INTO SPP ####
+        spp[[curSp()]]$rmm$data$indic$EOOval <- area
+        spp[[curSp()]]$rmm$data$indic$EOOtype <- input$selSource1
+        spp[[curSp()]]$rmm$data$indic$EOO <- eoo
+        common$update_component(tab = "Map")
+      }
       if (input$selSource1 == "wallace") {
-        ##check that the transfer exists and that it is thresholded
-        if (is.null(spp[[curSp()]]$visualization$mapPred)) {
-          logger %>%
-            writeLog(type = 'error',
-                     'Transfer your model before doing EOO calculations')
-          return()
-        }
-        if (is.null(spp[[curSp()]]$visualization$thresholds)) {
-          logger %>%
-            writeLog(type = 'error',
-                     'Generate a thresholded prediction before doing EOO calculations')
-          return()
-        }
         smartProgress(
           logger,
           message = "Calculating an EOO estimate based on the thresholded SDM ", {
@@ -253,6 +271,40 @@ indic_range_module_server <- function(input, output, session, common) {
         logger %>% writeLog("Calculated an EOO estimate based on a ",
                             "thresholded SDM. This is an approximation ",
                             "based on a non-transferred SDM")
+        # LOAD INTO SPP ####
+        spp[[curSp()]]$rmm$data$indic$EOOval <- aeoosdm
+        spp[[curSp()]]$rmm$data$indic$EOOtype <- input$selSource1
+        spp[[curSp()]]$rmm$data$indic$EOO <- eooSDM
+        common$update_component(tab = "Map")
+      }
+      if (input$selSource1 == "xfer") {
+        ##check that the transfer exists and that it is thresholded
+        if (is.null(spp[[curSp()]]$transfer$mapXfer)) {
+          logger %>%
+            writeLog(type = 'error',
+                     'Transfer your model before doing EOO calculations')
+          return()
+        }
+        if (is.null(spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet)) {
+          logger %>%
+            writeLog(type = 'error',
+                     'Generate a thresholded prediction before doing EOO calculations')
+          return()
+        }
+        smartProgress(
+          logger,
+          message = "Calculating an EOO estimate based on the transferred thresholded SDM ", {
+            #must reclass the sdm to get 0 to be NA
+            p <- spp[[curSp()]]$transfer$mapXfer
+            p[p == 0] <- NA
+            p.pts <- raster::rasterToPoints(p)
+            eooSDM <- changeRangeR::mcp(p.pts[,1:2])
+            aeoosdm <- raster::area(eooSDM)/1000000
+          })
+        req(aeoosdm)
+        logger %>% writeLog("Calculated an EOO estimate based on a transferred ",
+                            "thresholded SDM. This is an approximation based ",
+                            "on a non-transferred SDM")
         # LOAD INTO SPP ####
         spp[[curSp()]]$rmm$data$indic$EOOval <- aeoosdm
         spp[[curSp()]]$rmm$data$indic$EOOtype <- input$selSource1
@@ -295,70 +347,6 @@ indic_range_module_server <- function(input, output, session, common) {
         spp[[curSp()]]$rmm$data$indic$EOOval <- aeoosdm
         spp[[curSp()]]$rmm$data$indic$EOOtype <- input$selSource1
         spp[[curSp()]]$rmm$data$indic$EOO <- eooSDM
-        common$update_component(tab = "Map")
-      }
-      if (input$selSource1 == "xfer") {
-        ##check that the transfer exists and that it is thresholded
-        if (is.null(spp[[curSp()]]$transfer$mapXfer)) {
-          logger %>%
-            writeLog(type = 'error',
-                     'Transfer your model before doing EOO calculations')
-          return()
-        }
-        if (is.null(spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet)) {
-          logger %>%
-            writeLog(type = 'error',
-                     'Generate a thresholded prediction before doing EOO calculations')
-          return()
-        }
-        smartProgress(
-          logger,
-          message = "Calculating an EOO estimate based on the transferred thresholded SDM ", {
-            #must reclass the sdm to get 0 to be NA
-            p <- spp[[curSp()]]$transfer$mapXfer
-            p[p == 0] <- NA
-            p.pts <- raster::rasterToPoints(p)
-            eooSDM <- changeRangeR::mcp(p.pts[,1:2])
-            aeoosdm <- raster::area(eooSDM)/1000000
-          })
-        req(aeoosdm)
-        logger %>% writeLog("Calculated an EOO estimate based on a transferred ",
-                            "thresholded SDM. This is an approximation based ",
-                            "on a non-transferred SDM")
-        # LOAD INTO SPP ####
-        spp[[curSp()]]$rmm$data$indic$EOOval <- aeoosdm
-        spp[[curSp()]]$rmm$data$indic$EOOtype <- input$selSource1
-        spp[[curSp()]]$rmm$data$indic$EOO <- eooSDM
-        common$update_component(tab = "Map")
-      }
-      if (input$selSource1 == "occs") {
-        if (is.null(spp[[curSp()]]$occs)) {
-          logger %>%
-            writeLog(type = 'error',
-                     'Get or upload occurrence data for this species before ",
-                     "doing EOO calculations (names must match)')
-          return()
-        }
-        smartProgress(
-          logger,
-          message = "Calculating an EOO estimate based on occurrence points ", {
-            occs <- spp[[curSp()]]$occs
-            occs.xy <- occs %>% dplyr::select(longitude, latitude)
-            # Create a minimum convex polygon around the occurrences
-            eoo <- changeRangeR::mcp(occs.xy)
-            # Define the coordinate reference system as unprojected
-            raster::crs(eoo) <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-            area <- raster::area(eoo)/1000000
-
-          })
-        req(eoo)
-        logger %>% writeLog("Calculated an EOO estimate based on occurrences. ",
-                            "This is an approximation based on unprojected coordinates")
-
-        # LOAD INTO SPP ####
-        spp[[curSp()]]$rmm$data$indic$EOOval <- area
-        spp[[curSp()]]$rmm$data$indic$EOOtype <- input$selSource1
-        spp[[curSp()]]$rmm$data$indic$EOO <- eoo
         common$update_component(tab = "Map")
       }
       ## if calculating AOO
@@ -411,7 +399,7 @@ indic_range_module_server <- function(input, output, session, common) {
         }
         p <- spp[[curSp()]]$visualization$mapPred
         p[p == 0] <- NA
-        AOO<-changeRangeR::AOOarea(r = p)
+        AOO <- changeRangeR::AOOarea(r = p)
         req(AOO)
         logger %>% writeLog("Calculated an AOO estimate based on an SDM. This ",
                             "is an approximation based on unprojected coordinates")
