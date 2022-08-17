@@ -122,10 +122,10 @@ indic_range_module_server <- function(input, output, session, common) {
           ## Project to SR-ORG 8287
           sr8287 <- "+proj=cea +lon_0=0 +lat_ts=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs"
           p <- terra::project(p, y = sr8287)
-          area <- terra::expanse(p, unit = "km")
+          areaRange <- terra::expanse(p, unit = "km")
         }
       )
-      req(area)
+      req(areaRange)
       logger %>%
         writeLog(hlSpp(curSp()),
                  paste0("Species range size calculated based on ",
@@ -134,102 +134,61 @@ indic_range_module_server <- function(input, output, session, common) {
                                 xfer = "transferred SDM",
                                 user = "user-specified SDM",
                                 mask = "masked SDM"),
-                        " (", round(area, 2), " km^2)."))
+                        " (", round(areaRange, 2), " km^2)."))
       # LOAD INTO SPP ####
-      spp[[curSp()]]$indic$range <- area
-      spp[[curSp()]]$indic$rangetype <- selAreaSource()
+      spp[[curSp()]]$indic$rangeArea <- areaRange
+      spp[[curSp()]]$indic$rangeSource <- selAreaSource()
       common$update_component(tab = "Results")
     }
     ## if calculating EOO
     else if (input$indicRangeSel == "eoo") {
-      ## Check whether based on sdm or on occurrences
-      if (input$selSource1 == "occs") {
-        smartProgress(
-          logger,
-          message = "Calculating an EOO estimate based on occurrence points ", {
-            occs <- spp[[curSp()]]$occs
-            occs.xy <- occs %>% dplyr::select(longitude, latitude)
-            # Create a minimum convex polygon around the occurrences
-            eoo <- changeRangeR::mcp(occs.xy)
-            # Define the coordinate reference system as unprojected
-            raster::crs(eoo) <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-            area <- raster::area(eoo)/1000000
+      smartProgress(
+        logger,
+        message = "Calculating an EOO estimate...", {
+          if (selAreaSource() == "occs") {
+            p.pts <- spp[[curSp()]]$occs %>%
+              dplyr::select(longitude, latitude)
+          } else {
+            r <- switch (selAreaSource(),
+                         wallace = spp[[curSp()]]$visualization$mapPred,
+                         xfer = spp[[curSp()]]$transfer$mapXfer,
+                         user = spp[[curSp()]]$mask$userSDM,
+                         mask = spp[[curSp()]]$mask$prediction)
+            r <- terra::rast(r)
+            ## Unsuitable for NAs
+            r[r == 0] <- NA
+            p.pts <- terra::as.points(r) %>%
+              terra::as.data.frame(xy = TRUE) %>%
+              dplyr::select(x, y)
+          }
+          wgs84 <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+          # Create a minimum convex polygon around the occurrences
+          eoo <- changeRangeR::mcp(p.pts, wgs84)
+          # Project to SR-ORG 8287 (IUCN recommendation)
+          sr8287 <- "+proj=cea +lon_0=0 +lat_ts=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs"
+          eoo <- terra::project(terra::vect(eoo), y = sr8287)
+          areaEOO <- terra::expanse(eoo, unit = "km")
+        })
+      req(eoo)
+      logger %>%
+        writeLog(hlSpp(curSp()),
+                 paste0("Calculated an EOO estimate based on ",
+                        switch (selAreaSource(),
+                                occs = "occurrences",
+                                wallace = "wallace SDM",
+                                xfer = "transferred SDM",
+                                user = "user-specified SDM",
+                                mask = "masked SDM"),
+                        " (", round(areaEOO, 2), " km^2).",
+                        "This is an approximation using the ",
+                        "World Cylindrical Equal Area projection ",
+                        "(IUCN recommendation)."))
 
-          })
-        req(eoo)
-        logger %>% writeLog("Calculated an EOO estimate based on occurrences. ",
-                            "This is an approximation based on unprojected coordinates")
-
-        # LOAD INTO SPP ####
-        spp[[curSp()]]$rmm$data$indic$EOOval <- area
-        spp[[curSp()]]$rmm$data$indic$EOOtype <- input$selSource1
-        spp[[curSp()]]$rmm$data$indic$EOO <- eoo
-        common$update_component(tab = "Map")
-      }
-      if (input$selSource1 == "wallace") {
-        smartProgress(
-          logger,
-          message = "Calculating an EOO estimate based on the thresholded SDM ", {
-            #must reclass the sdm to get 0 to be NA
-            p <- spp[[curSp()]]$visualization$mapPred
-            p[p == 0] <- NA
-            p.pts <- raster::rasterToPoints(p)
-            eooSDM <- changeRangeR::mcp(p.pts[,1:2])
-            aeoosdm <- raster::area(eooSDM)/1000000
-          })
-        req(aeoosdm)
-        logger %>% writeLog("Calculated an EOO estimate based on a ",
-                            "thresholded SDM. This is an approximation ",
-                            "based on a non-transferred SDM")
-        # LOAD INTO SPP ####
-        spp[[curSp()]]$rmm$data$indic$EOOval <- aeoosdm
-        spp[[curSp()]]$rmm$data$indic$EOOtype <- input$selSource1
-        spp[[curSp()]]$rmm$data$indic$EOO <- eooSDM
-        common$update_component(tab = "Map")
-      }
-      if (input$selSource1 == "xfer") {
-        smartProgress(
-          logger,
-          message = "Calculating an EOO estimate based on the transferred thresholded SDM ", {
-            #must reclass the sdm to get 0 to be NA
-            p <- spp[[curSp()]]$transfer$mapXfer
-            p[p == 0] <- NA
-            p.pts <- raster::rasterToPoints(p)
-            eooSDM <- changeRangeR::mcp(p.pts[,1:2])
-            aeoosdm <- raster::area(eooSDM)/1000000
-          })
-        req(aeoosdm)
-        logger %>% writeLog("Calculated an EOO estimate based on a transferred ",
-                            "thresholded SDM. This is an approximation based ",
-                            "on a non-transferred SDM")
-        # LOAD INTO SPP ####
-        spp[[curSp()]]$rmm$data$indic$EOOval <- aeoosdm
-        spp[[curSp()]]$rmm$data$indic$EOOtype <- input$selSource1
-        spp[[curSp()]]$rmm$data$indic$EOO <- eooSDM
-        common$update_component(tab = "Map")
-      }
-      if (input$selSource1 == "user") {
-        smartProgress(
-          logger,
-          message = "Calculating an EOO estimate based on the user provided SDM ", {
-            #must reclass the sdm to get 0 to be NA
-            p <- spp[[curSp()]]$mask$userSDM
-            p[p == 0] <- NA
-            p.pts <- raster::rasterToPoints(p)
-            eooSDM <- changeRangeR::mcp(p.pts[,1:2])
-            aeoosdm <- raster::area(eooSDM)/1000000
-
-          })
-        req(aeoosdm)
-        logger %>% writeLog("Calculated an EOO estimate based on a user ",
-                            "provided SDM. This is an approximation based ",
-                            "on a non-transferred SDM")
-        # LOAD INTO SPP ####
-        spp[[curSp()]]$rmm$data$indic$EOOval <- aeoosdm
-        spp[[curSp()]]$rmm$data$indic$EOOtype <- input$selSource1
-        spp[[curSp()]]$rmm$data$indic$EOO <- eooSDM
-        common$update_component(tab = "Map")
-      }
+      # LOAD INTO SPP ####
+      spp[[curSp()]]$rmm$data$indic$EOOarea <- areaEOO
+      spp[[curSp()]]$rmm$data$indic$EOOsource <- selAreaSource()
+      spp[[curSp()]]$rmm$data$indic$EOO <- eoo
+      common$update_component(tab = "Map")
       ## if calculating AOO
     }
     else if (input$indicRangeSel == "aoo") {
@@ -309,23 +268,23 @@ indic_range_module_server <- function(input, output, session, common) {
 
   output$areas <- renderText({
     # Result
-    if (is.null(spp[[curSp()]]$indic$range[1])) {
-      spp[[curSp()]]$indic$range[1] <- "Not calculated"
-      spp[[curSp()]]$indic$rangetype <- NA
+    if (is.null(spp[[curSp()]]$indic$rangeArea)) {
+      spp[[curSp()]]$indic$rangeArea <- "Not calculated"
+      spp[[curSp()]]$indic$rangeSource <- NA
     }
-    if (is.null(spp[[curSp()]]$rmm$data$indic$EOOval)) {
-      spp[[curSp()]]$rmm$data$indic$EOOval <- "Not calculated"
-      spp[[curSp()]]$rmm$data$indic$EOOtype <- NA
+    if (is.null(spp[[curSp()]]$rmm$data$indic$EOOarea)) {
+      spp[[curSp()]]$rmm$data$indic$EOOarea <- "Not calculated"
+      spp[[curSp()]]$rmm$data$indic$EOOsource <- NA
     }
     if (is.null(spp[[curSp()]]$rmm$data$indic$AOOval)) {
       spp[[curSp()]]$rmm$data$indic$AOOval <- "Not calculated"
       spp[[curSp()]]$rmm$data$indic$AOOtype <- NA
     }
     paste(
-      "Range based on", spp[[curSp()]]$indic$rangetype,
-      spp[[curSp()]]$indic$range[1],"Km^2", "\n",
-      "EOO based on ",  spp[[curSp()]]$rmm$data$indic$EOOtype,
-      spp[[curSp()]]$rmm$data$indic$EOOval,"Km^2","\n",
+      "Range based on", spp[[curSp()]]$indic$rangeSource,
+      spp[[curSp()]]$indic$rangeArea,"Km^2", "\n",
+      "EOO based on ",  spp[[curSp()]]$rmm$data$indic$EOOsource,
+      spp[[curSp()]]$rmm$data$indic$EOOarea,"Km^2","\n",
       "AOO based on ", spp[[curSp()]]$rmm$data$indic$AOOtype,
       spp[[curSp()]]$rmm$data$indic$AOOval)
   })
