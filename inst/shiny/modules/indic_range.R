@@ -21,8 +21,9 @@ indic_range_module_ui <- function(id) {
                                  choices = list("Occurrences" = "occs",
                                                 "Wallace SDM" = "wallace",
                                                 "Transferred SDM" = "xfer",
-                                                "User SDM" = "user"
-                                 ))),
+                                                "User SDM" = "user" #,
+                                                #"Masked SDM" = "mask"
+                                                ))),
 
     conditionalPanel(sprintf("input['%1$s'] == 'aoo'",
                              ns("indicRangeSel")),
@@ -51,8 +52,8 @@ indic_range_module_server <- function(input, output, session, common) {
     # WARNING ####
 
     #Processing
-    if(input$indicRangeSel == "range"){
-      if(input$selSource == "wallace"){
+    if (input$indicRangeSel == "range") {
+      if (input$selSource == "wallace") {
         # ERRORS ####
         if (is.null(spp[[curSp()]]$visualization$mapPred)) {
           logger %>%
@@ -87,13 +88,13 @@ indic_range_module_server <- function(input, output, session, common) {
           })
 
         req(area)
-        logger %>% writeLog( "Species range size calculated based on Wallace SDM ")
+        logger %>% writeLog("Species range size calculated based on Wallace SDM.")
         # LOAD INTO SPP ####
         spp[[curSp()]]$indic$range <- area
         spp[[curSp()]]$indic$rangetype <- input$selSource
         common$update_component(tab = "Results")
       }
-      if(input$selSource == "xfer"){
+      if (input$selSource == "xfer") {
         # ERRORS ####
         if (is.null(spp[[curSp()]]$transfer$mapXfer)) {
           logger %>%
@@ -178,7 +179,7 @@ indic_range_module_server <- function(input, output, session, common) {
         spp[[curSp()]]$indic$rangetype <- input$selSource
         common$update_component(tab = "Results")
       }
-      if(input$selSource == "mask"){
+      if (input$selSource == "mask") {
         # ERRORS ####
         if (is.null(spp[[curSp()]]$mask$prediction)) {
           logger %>%
@@ -223,7 +224,7 @@ indic_range_module_server <- function(input, output, session, common) {
       }
     ## if calculating EOO
     } else if (input$indicRangeSel == "eoo") {
-      ## Check wether based on sdm or on occurrences
+      ## Check whether based on sdm or on occurrences
       if (input$selSource1 == "wallace") {
         ##check that the transfer exists and that it is thresholded
         if (is.null(spp[[curSp()]]$visualization$mapPred)) {
@@ -330,7 +331,7 @@ indic_range_module_server <- function(input, output, session, common) {
         spp[[curSp()]]$rmm$data$indic$EOO <- eooSDM
         common$update_component(tab = "Map")
       }
-      if (input$selSource1 == "occs"){
+      if (input$selSource1 == "occs") {
         if (is.null(spp[[curSp()]]$occs)) {
           logger %>%
             writeLog(type = 'error',
@@ -360,9 +361,9 @@ indic_range_module_server <- function(input, output, session, common) {
         spp[[curSp()]]$rmm$data$indic$EOO <- eoo
         common$update_component(tab = "Map")
       }
-    }
-    else if (input$indicRangeSel == "aoo"){
-      if(input$selSource2 =="occs"){
+      ## if calculating AOO
+    } else if (input$indicRangeSel == "aoo") {
+      if (input$selSource2 == "occs") {
         ##check that the transfer exists and that it is thresholded
         if (is.null(spp[[curSp()]]$visualization$mapPred)) {
           logger %>%
@@ -394,7 +395,7 @@ indic_range_module_server <- function(input, output, session, common) {
         spp[[curSp()]]$rmm$data$indic$AOO <- AOOlocs$aooRaster
         common$update_component(tab = "Map")
       }
-      else if (input$selSource2 == "wallace"){
+      if (input$selSource2 == "wallace") {
         ##check that the transfer exists and that it is thresholded
         if (is.null(spp[[curSp()]]$visualization$mapPred)) {
           logger %>%
@@ -420,7 +421,8 @@ indic_range_module_server <- function(input, output, session, common) {
         spp[[curSp()]]$rmm$data$indic$AOOtype <- input$selSource2
         spp[[curSp()]]$rmm$data$indic$AOO <- AOO$aooRaster
         common$update_component(tab = "Map")
-      } else if (input$selSource2 == "xfer") {
+      }
+      if (input$selSource2 == "xfer") {
         ##check that the transfer exists and that it is thresholded
         if (is.null(spp[[curSp()]]$transfer$mapXfer)) {
           logger %>%
@@ -445,7 +447,8 @@ indic_range_module_server <- function(input, output, session, common) {
         spp[[curSp()]]$rmm$data$indic$AOOtype <- input$selSource2
         spp[[curSp()]]$rmm$data$indic$AOO <- AOO$aooRaster
         common$update_component(tab = "Map")
-      } else if (input$selSource2 == "user") {
+      }
+      if (input$selSource2 == "user") {
         ##check that the transfer exists and that it is thresholded
         if (is.null(spp[[curSp()]]$mask$userSDM)) {
           logger %>%
@@ -473,7 +476,8 @@ indic_range_module_server <- function(input, output, session, common) {
         spp[[curSp()]]$rmm$data$indic$AOOtype <- input$selSource2
         spp[[curSp()]]$rmm$data$indic$AOO <- AOO$aooRaster
         common$update_component(tab = "Map")
-      } else if (input$selSource2 == "mask") {
+      }
+      if (input$selSource2 == "mask") {
         p <- spp[[curSp()]]$mask$prediction
         p[p == 0] <- NA
         if (length(unique(raster::values(p))) > 2) {
