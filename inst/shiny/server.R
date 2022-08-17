@@ -210,7 +210,7 @@ function(input, output, session) {
     shinyjs::toggleState("dlXfer", !is.null(spp[[curSp()]]$transfer$xfEnvs))
     shinyjs::toggleState("dlMess", !is.null(spp[[curSp()]]$transfer$messVals))
     shinyjs::toggleState("dlAOO", !is.null(spp[[curSp()]]$rmm$data$indic$AOO))
-    shinyjs::toggleState("dlEOO", !is.null(spp[[curSp()]]$rmm$data$indic$EOO))
+    shinyjs::toggleState("dlEOO", !is.null(spp[[curSp()]]$rmm$data$indic$EOOpoly))
     shinyjs::toggleState("dlOverlap", !is.null(spp[[curSp()]]$indic$overlapRaster))
     shinyjs::toggleState("dlOverlapEOO", !is.null(spp[[curSp()]]$indic$overlapPoly))
     shinyjs::toggleState("dlMask", !is.null(spp[[curSp()]]$mask$prediction))
@@ -1270,7 +1270,7 @@ function(input, output, session) {
       setwd(tempdir())
       n <- curSp()
 
-      raster::shapefile(x= spp[[curSp()]]$rmm$data$indic$EOO,
+      raster::shapefile(x= spp[[curSp()]]$rmm$data$indic$EOOpoly,
                       filename = paste0(n, '_EOOShp'),overwrite=TRUE)
 
       exts <- c('dbf','shp', 'shx')

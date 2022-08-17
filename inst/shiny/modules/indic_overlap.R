@@ -102,14 +102,14 @@ indic_overlap_module_server <- function(input, output, session, common) {
     }
     if(input$selSource == "eoo"){
 
-      if (is.null(spp[[curSp()]]$rmm$data$indic$EOO)) {
+      if (is.null(spp[[curSp()]]$rmm$data$indic$EOOpoly)) {
         logger %>%
           writeLog(
             type = 'error',
             'Do an EOO calculation in the area module before doing range calculations')
         return()
       }
-      spp[[curSp()]]$indic$Plot1 <- spp[[curSp()]]$rmm$data$indic$EOO
+      spp[[curSp()]]$indic$Plot1 <- spp[[curSp()]]$rmm$data$indic$EOOpoly
     }
     if (input$selSource == "aoo") {
       #CAREFUL: as its set up now if user doesn t do maskrangeR this object will be something else
@@ -376,7 +376,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
       smartProgress(
         logger,
         message = "Calculating range overlap ", {
-          r = spp[[curSp()]]$rmm$data$indic$EOO
+          r = spp[[curSp()]]$rmm$data$indic$EOOpoly
           #      shp = spp[[curSp()]]$indic$polyOverlap
           raster::crs(shp) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
           raster::crs(r) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0"
@@ -465,8 +465,8 @@ indic_overlap_module_map <- function(map, common) {
   #if EOO is selected plot the polygon
   if(!is.null(spp[[curSp()]]$indic$Plot1)){
 
-    polyEOO <- spp[[curSp()]]$rmm$data$indic$EOO@polygons[[1]]@Polygons
-    bb <- spp[[curSp()]]$rmm$data$indic$EOO@bbox
+    polyEOO <- spp[[curSp()]]$rmm$data$indic$EOOpoly@polygons[[1]]@Polygons
+    bb <- spp[[curSp()]]$rmm$data$indic$EOOpoly@bbox
     bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
     map %>%
       fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])

@@ -187,7 +187,7 @@ indic_range_module_server <- function(input, output, session, common) {
       # LOAD INTO SPP ####
       spp[[curSp()]]$rmm$data$indic$EOOarea <- areaEOO
       spp[[curSp()]]$rmm$data$indic$EOOsource <- selAreaSource()
-      spp[[curSp()]]$rmm$data$indic$EOO <- eoo
+      spp[[curSp()]]$rmm$data$indic$EOOpoly <- eoo
       common$update_component(tab = "Map")
       ## if calculating AOO
     }
@@ -314,10 +314,10 @@ indic_range_module_map <- function(map, common) {
   spp <- common$spp
   curSp <- common$curSp
   map %>% clearAll()
-  if(!is.null(spp[[curSp()]]$rmm$data$indic$EOO)){
+  if(!is.null(spp[[curSp()]]$rmm$data$indic$EOOpoly)){
 
-    polyEOO <- spp[[curSp()]]$rmm$data$indic$EOO@polygons[[1]]@Polygons
-    bb <- spp[[curSp()]]$rmm$data$indic$EOO@bbox
+    polyEOO <- spp[[curSp()]]$rmm$data$indic$EOOpoly@polygons[[1]]@Polygons
+    bb <- spp[[curSp()]]$rmm$data$indic$EOOpoly@bbox
     bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
     map %>%
       fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
