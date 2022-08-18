@@ -58,6 +58,30 @@ spurious <- function(x) {
   return()
 }
 
+#' @title Call WKT for World_Cylindrical_Equal_Area or WGS84
+#' @description For internal use.
+#' @param x "wcea" or "wgs84"
+#' @keywords internal
+#' @export
+getWKT <- function(x) {
+  if (x == "wcea") {
+    wkt <- paste0('PROJCS["World_Cylindrical_Equal_Area",GEOGCS["GCS_WGS_1984",',
+                   'DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],',
+                   'PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]],',
+                   'PROJECTION["Cylindrical_Equal_Area"],PARAMETER["false_easting",0.0],',
+                   'PARAMETER["false_northing",0.0],PARAMETER["central_meridian",0.0],',
+                   'PARAMETER["standard_parallel_1",0.0],UNIT["Meter",1.0]]')
+  } else if (x == "wgs84") {
+    wkt <- paste0('GEOGCS["WGS 84",DATUM["WGS_1984",',
+                  'SPHEROID["WGS 84",6378137,298.257223563,',
+                  'AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],',
+                  'PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],',
+                  'UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],',
+                  'AUTHORITY["EPSG","4326"]]')
+  }
+  return(wkt)
+}
+
 ####################### #
 # SHINY LOG #
 ####################### #

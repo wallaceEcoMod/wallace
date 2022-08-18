@@ -128,8 +128,7 @@ indic_range_module_server <- function(input, output, session, common) {
           ## Raster to polygon
           p <- terra::as.polygons(terra::rast(r))
           ## Project to SR-ORG 8287
-          sr8287 <- "+proj=cea +lon_0=0 +lat_ts=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs"
-          p <- terra::project(p, y = sr8287)
+          p <- terra::project(p, y = getWKT("wcea"))
           areaRange <- terra::expanse(p, unit = "km")
         }
       )
@@ -171,9 +170,8 @@ indic_range_module_server <- function(input, output, session, common) {
           wgs84 <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
           # Create a minimum convex polygon around the occurrences
           eoo <- changeRangeR::mcp(p.pts, wgs84)
-          # Project to SR-ORG 8287 (IUCN recommendation)
-          sr8287 <- "+proj=cea +lon_0=0 +lat_ts=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs"
-          eooPr <- terra::project(terra::vect(eoo), y = sr8287)
+          # Project to WCEA (IUCN recommendation)
+          eooPr <- terra::project(terra::vect(eoo), y = getWKT("wcea"))
           areaEOO <- terra::expanse(eooPr, unit = "km")
         })
       req(eoo)
@@ -198,7 +196,6 @@ indic_range_module_server <- function(input, output, session, common) {
       common$update_component(tab = "Map")
       ## if calculating AOO
     } else if (input$indicRangeSel == "aoo") {
-      sr8287 <- "+proj=cea +lon_0=0 +lat_ts=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs"
       r <- switch (selAreaSource(),
                    wallace = spp[[curSp()]]$visualization$mapPred,
                    xfer = spp[[curSp()]]$transfer$mapXfer,
@@ -211,20 +208,21 @@ indic_range_module_server <- function(input, output, session, common) {
         p.pts <- spp[[curSp()]]$occs %>%
           dplyr::select(longitude, latitude) %>%
           terra::vect(geom = c("longitude", "latitude"))
-        terra::crs(p.pts) <- "EPSG:4326"
-        p.pts <- terra::project(p.pts, sr8287)
+        terra::crs(p.pts) <- getWKT("wgs84")
+        p.pts <- terra::project(p.pts, getWKT("wcea"))
         rast_temp <- terra::rast(terra::ext(p.pts), resolution = 2000,
-                                 crs = sr8287)
+                                 crs = getWKT("wcea"))
         AOOproj <- terra::rasterize(p.pts, rast_temp, field = 1)
         AOOarea <- terra::freq(AOOproj, value = 1)$count * 4
-        AOOraster <- terra::project(AOOproj, "EPSG:4326")
+        AOOraster <- terra::project(AOOproj, getWKT("wgs84"))
       } else {
         AOO <- changeRangeR::AOOarea(r = r)
-        # Project to SR-ORG 8287 (IUCN recommendation)
-        AOOraster <- terra::rast(AOO$aooRaster)
+        AOOraster <- terra::rast(AOO$aooRaster) %>%
+          terra::project(getWKT("wgs84"))
         AOOraster[AOOraster == 0] <- NA
+        # Project to WCEA (IUCN recommendation)
         AOOv <- terra::as.polygons(AOOraster) %>%
-          terra::project(y = sr8287)
+          terra::project(y = getWKT("wcea"))
         AOOarea <- terra::expanse(AOOv, unit = "km")
       }
       req(AOOraster)
@@ -250,26 +248,29 @@ indic_range_module_server <- function(input, output, session, common) {
   })
 
   output$areas <- renderText({
+    resTxt <- c()
     # Result
-    if (is.null(spp[[curSp()]]$indic$rangeArea)) {
-      spp[[curSp()]]$indic$rangeArea <- "Not calculated"
-      spp[[curSp()]]$indic$rangeSource <- NA
+    if (!is.null(spp[[curSp()]]$indic$rangeArea)) {
+      resTxt <- paste0(
+        "Range (", spp[[curSp()]]$indic$rangeSource, "): ",
+        round(spp[[curSp()]]$indic$rangeArea, 2)," km^2", "\n")
     }
-    if (is.null(spp[[curSp()]]$rmm$data$indic$EOOarea)) {
-      spp[[curSp()]]$rmm$data$indic$EOOarea <- "Not calculated"
-      spp[[curSp()]]$rmm$data$indic$EOOsource <- NA
+    if (!is.null(spp[[curSp()]]$rmm$data$indic$EOOarea)) {
+      resTxt <- paste0(resTxt,
+        "EOO (",  spp[[curSp()]]$rmm$data$indic$EOOsource, "): ",
+        round(spp[[curSp()]]$rmm$data$indic$EOOarea, 2)," km^2","\n")
     }
-    if (is.null(spp[[curSp()]]$rmm$data$indic$AOOarea)) {
-      spp[[curSp()]]$rmm$data$indic$AOOarea <- "Not calculated"
-      spp[[curSp()]]$rmm$data$indic$AOOsource <- NA
+    if (!is.null(spp[[curSp()]]$rmm$data$indic$AOOarea)) {
+      resTxt <- paste0(resTxt,
+        "AOO (", spp[[curSp()]]$rmm$data$indic$AOOsource, "): ",
+        round(spp[[curSp()]]$rmm$data$indic$AOOarea, 2)," km^2"
+      )
     }
-    paste(
-      "Range based on", spp[[curSp()]]$indic$rangeSource,
-      spp[[curSp()]]$indic$rangeArea," Km^2", "\n",
-      "EOO based on ",  spp[[curSp()]]$rmm$data$indic$EOOsource,
-      spp[[curSp()]]$rmm$data$indic$EOOarea," Km^2","\n",
-      "AOO based on ", spp[[curSp()]]$rmm$data$indic$AOOsource,
-      spp[[curSp()]]$rmm$data$indic$AOOarea," Km^2.")
+    if (is.null(resTxt)) {
+      "Run area calculation (**)"
+    } else {
+      resTxt
+    }
   })
 
   return(list(
