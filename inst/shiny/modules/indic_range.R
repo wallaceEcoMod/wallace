@@ -31,15 +31,15 @@ indic_range_module_server <- function(input, output, session, common) {
         }
       }
       if (!is.null(spp[[curSp()]]$visualization$mapPred)) {
-        n <- c(n, "wallace")
+        n <- c("wallace", n)
         l <- c("Wallace SDM", l)
       }
       if (!is.null(spp[[curSp()]]$transfer$mapXfer)) {
-        n <- c(n, "xfer")
+        n <- c("xfer", n)
         l <- c("Transferred SDM", l)
       }
       if (!is.null(spp[[curSp()]]$mask$userSDM)) {
-        n <- c(n, "user")
+        n <- c("user", n)
         l <- c("User-specified SDM", l)
       }
       if (!is.null(spp[[curSp()]]$mask$prediction)) {
