@@ -15,7 +15,7 @@ timeInterval <- "Holocene"
 
 # run function if no Windows
 # if (Sys.info()['sysname'] != "Windows") {
-#   occsPaleo <- occs_paleoDb(spName, occNum, timeInterval, logger = NULL)
+   occsPaleo <- occs_paleoDb(spName, occNum, timeInterval, logger = NULL)
 # }
 
 
