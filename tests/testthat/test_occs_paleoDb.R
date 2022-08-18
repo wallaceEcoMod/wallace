@@ -14,16 +14,16 @@ occNum <- 100
 timeInterval <- "Holocene"
 
 # run function if no Windows
-if (Sys.info()['sysname'] != "Windows") {
-  occsPaleo <- occs_paleoDb(spName, occNum, timeInterval, logger = NULL)
-}
+# if (Sys.info()['sysname'] != "Windows") {
+#   occsPaleo <- occs_paleoDb(spName, occNum, timeInterval, logger = NULL)
+# }
 
 
 ###Test that erorrs check
   ### test if the error messages appear when they are supposed to
 test_that("error checks", {
   # paleobioDB failing in Windows
-  skip_on_os("windows")
+  # skip_on_os("windows")
   # the user doesn't input any species name
   expect_error(occs_paleoDb( occNum, occNum, timeInterval),
                'Please input both genus and species names of ONE species.',
@@ -55,7 +55,7 @@ test_that("error checks", {
 # test output features
 test_that("output type checks", {
   # paleobioDB failing in Windows
-  skip_on_os("windows")
+  # skip_on_os("windows")
   #output is a list
   expect_is(occsPaleo, "list")
   #List has two elements
@@ -63,7 +63,7 @@ test_that("output type checks", {
 })
 test_that("output data checks", {
   # paleobioDB failing in Windows
-  skip_on_os("windows")
+  # skip_on_os("windows")
   # if the original database has records without coordinates OR duplicates:
   if ((TRUE %in% duplicated(occsPaleo$orig[,c('longitude','latitude')]) == TRUE) |
       (NA %in% occsPaleo$orig[,c('longitude','latitude')]) == TRUE){
@@ -83,13 +83,14 @@ test_that("output data checks", {
                spName, ignore.case = TRUE, all = TRUE)
 })
 ##Check headers for both original and cleaned tables
-keyPaleoHeaders <- c("occID", "scientific_name", "longitude", "latitude", "early_interval",
-                     "late_interval", "country", "collection_no", "record_type",
+keyPaleoHeaders <- c("occID", "scientific_name", "longitude", "latitude",
+                     # "early_interval", "late_interval",
+                     "country", "collection_no", "record_type",
                      "early_age", "late_age")
 
 test_that("headers check", {
   # paleobioDB failing in Windows
-  skip_on_os("windows")
+  # skip_on_os("windows")
   #
   expect_false('FALSE' %in%  (keyPaleoHeaders %in% names(occsPaleo$orig)))
   # the headers in the claned table are the ones specified in the function

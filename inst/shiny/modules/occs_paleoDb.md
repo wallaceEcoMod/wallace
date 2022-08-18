@@ -8,7 +8,7 @@ The Paleobiology Database (<a href="paleobiodb.org" target="_blank">paleobiodb.o
 
 This module relies on the R package `paleobioDB` to download occurrence data from the Quaternary (Holocene and the Pleistocene with its four ages; Varela et al. 2015). Users need to specify the scientific name and the maximum number of occurrences to download.
 
-The records used in downstream analyses in Wallace are filtered to remove those without georeferences (latitude/longitude coordinates) and that have exact duplicate coordinates as other records (including the same number of decimal places). The "Occurrences” tab displays all the filtered records with several key fields: name, longitude, latitude, early_interval, late_interval, country, early_age, and late_age. The original and filtered records are available for download as .csv files in the “Save” tab.
+The records used in downstream analyses in Wallace are filtered to remove those without georeferences (latitude/longitude coordinates) and that have exact duplicate coordinates as other records (including the same number of decimal places). The "Occurrences” tab displays all the filtered records with several key fields: name, longitude, latitude, country, early_age, and late_age. The original and filtered records are available for download as .csv files in the “Save” tab.
 
 **REFERENCES**
 
