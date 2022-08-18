@@ -55,6 +55,14 @@ indic_range_module_server <- function(input, output, session, common) {
   })
 
   observeEvent(input$goRange, {
+    # WARNING ####
+    if (is.null(selAreaSource())) {
+      logger %>%
+        writeLog(type = 'warning',
+                 hlSpp(curSp()),
+                 "No source available for calculations (**).")
+      return()
+    }
     # ERRORS ####
     if (selAreaSource() == "occs") {
       if (is.null(spp[[curSp()]]$occs)) {
@@ -190,12 +198,8 @@ indic_range_module_server <- function(input, output, session, common) {
       common$update_component(tab = "Map")
       ## if calculating AOO
     } else if (input$indicRangeSel == "aoo") {
-      if (selAreaSource() == "occs") {
-        p.pts <- spp[[curSp()]]$occs %>%
-          dplyr::select(longitude, latitude)
-      }
+      sr8287 <- "+proj=cea +lon_0=0 +lat_ts=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs"
       r <- switch (selAreaSource(),
-                   occs = spp[[curSp()]]$visualization$mapPred,
                    wallace = spp[[curSp()]]$visualization$mapPred,
                    xfer = spp[[curSp()]]$transfer$mapXfer,
                    user = spp[[curSp()]]$mask$userSDM,
@@ -204,19 +208,26 @@ indic_range_module_server <- function(input, output, session, common) {
       r[r == 0] <- NA
       ###
       if (selAreaSource() == "occs") {
-        AOO <- changeRangeR::AOOarea(r = r, locs = p.pts)
+        p.pts <- spp[[curSp()]]$occs %>%
+          dplyr::select(longitude, latitude) %>%
+          terra::vect(geom = c("longitude", "latitude"))
+        terra::crs(p.pts) <- "EPSG:4326"
+        p.pts <- terra::project(p.pts, sr8287)
+        rast_temp <- terra::rast(terra::ext(p.pts), resolution = 2000,
+                                 crs = sr8287)
+        AOOproj <- terra::rasterize(p.pts, rast_temp, field = 1)
+        AOOarea <- terra::freq(AOOproj, value = 1)$count * 4
+        AOOraster <- terra::project(AOOproj, "EPSG:4326")
       } else {
         AOO <- changeRangeR::AOOarea(r = r)
+        # Project to SR-ORG 8287 (IUCN recommendation)
+        AOOraster <- terra::rast(AOO$aooRaster)
+        AOOraster[AOOraster == 0] <- NA
+        AOOv <- terra::as.polygons(AOOraster) %>%
+          terra::project(y = sr8287)
+        AOOarea <- terra::expanse(AOOv, unit = "km")
       }
-      # Project to SR-ORG 8287 (IUCN recommendation)
-      sr8287 <- "+proj=cea +lon_0=0 +lat_ts=0 +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs"
-      AOOr <- terra::rast(AOO$aooRaster)
-      AOOr[AOOr == 0] <- NA
-      AOOv <- terra::as.polygons(AOOr) %>%
-        terra::project(y = sr8287)
-      areaAOO <- terra::expanse(AOOv, unit = "km")
-
-      req(AOO)
+      req(AOOraster)
       logger %>%
         writeLog(hlSpp(curSp()),
                  paste0("Calculated an AOO estimate based on ",
@@ -226,14 +237,14 @@ indic_range_module_server <- function(input, output, session, common) {
                                 xfer = "transferred SDM",
                                 user = "user-specified SDM",
                                 mask = "masked SDM"),
-                        " (", round(areaAOO, 2), " km^2). ",
+                        " (", round(AOOarea, 2), " km^2). ",
                         "This is an approximation using the ",
                         "World Cylindrical Equal Area projection ",
                         "(IUCN recommendation)."))
       # LOAD INTO SPP ####
-      spp[[curSp()]]$rmm$data$indic$AOOarea <- areaAOO
+      spp[[curSp()]]$rmm$data$indic$AOOarea <- AOOarea
       spp[[curSp()]]$rmm$data$indic$AOOsource <- selAreaSource()
-      spp[[curSp()]]$rmm$data$indic$AOOraster <- AOO$aooRaster
+      spp[[curSp()]]$rmm$data$indic$AOOraster <- methods::as(AOOraster, "Raster")
       common$update_component(tab = "Map")
     }
   })
