@@ -216,14 +216,25 @@ indic_range_module_server <- function(input, output, session, common) {
         AOOarea <- terra::freq(AOOproj, value = 1)$count * 4
         AOOraster <- terra::project(AOOproj, getWKT("wgs84"))
       } else {
-        AOO <- changeRangeR::AOOarea(r = r)
-        AOOraster <- terra::rast(AOO$aooRaster) %>%
-          terra::project(getWKT("wgs84"))
-        AOOraster[AOOraster == 0] <- NA
-        # Project to WCEA (IUCN recommendation)
-        AOOv <- terra::as.polygons(AOOraster) %>%
-          terra::project(y = getWKT("wcea"))
-        AOOarea <- terra::expanse(AOOv, unit = "km")
+        #AOO <- changeRangeR::AOOarea(r = r)
+        # AOOraster <- terra::rast(AOO$aooRaster) %>%
+        #   terra::project(getWKT("wgs84"))
+        # AOOraster[AOOraster == 0] <- NA
+        # # Project to WCEA (IUCN recommendation)
+        # AOOv <- terra::as.polygons(AOOraster) %>%
+        #   terra::project(y = getWKT("wcea"))
+        # AOOarea <- terra::expanse(AOOv, unit = "km")
+        r <- terra::rast(r)
+        ## Unsuitable for NAs
+        r[r == 0] <- NA
+        p.poly <- terra::as.polygons(r)
+        terra::crs(p.poly) <- getWKT("wgs84")
+        p.poly <- terra::project(p.poly, getWKT("wcea"))
+        rast_temp <- terra::rast(terra::ext(p.poly), resolution = 2000,
+                                 crs = getWKT("wcea"), vals = 1)
+        AOOmask <- terra::mask(rast_temp, p.poly)
+        AOOarea <- terra::freq(AOOmask, value = 1)$count * 4
+        AOOraster <- terra::project(AOOmask, getWKT("wgs84"))
       }
       req(AOOraster)
       logger %>%
