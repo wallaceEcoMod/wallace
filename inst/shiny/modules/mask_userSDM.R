@@ -19,44 +19,30 @@ mask_userSDM_module_server <- function(input, output, session, common) {
     }
     # FUNCTION CALL ####
     for (i in 1:length(input$sdmFile$name)) {
-      ###########################
-      newSppName <- fileNameNoExt(fmtSpN(input$sdmFile$name[i]))
-
-      if (!(newSppName %in% names(spp))) {
-        userSDMs <- mask_userSDM(rasPath = input$sdmFile$datapath[i],
-                                 rasName = input$sdmFile$name[i],
-                                 logger)
-        if (!is.null(userSDMs)) {
-          logger %>% writeLog(hlSpp(newSppName), "User SDM prediction loaded (**)")
-
-          userThr <- terra::spatSample(x = terra::rast(userSDMs$sdm),
-                                       size = 100, na.rm = TRUE)[, 1]
-          userThr <- !any(userThr > 0 & userThr < 1)
-          # LOAD INTO SPP ####
-          spp[[newSppName]] <- list()
-          spp[[newSppName]]$mask$userThr <- userThr
-          spp[[newSppName]]$mask$userSDM <- userSDMs$sdm
-          spp[[newSppName]]$mask$userPolyExt <- userSDMs$extSdm
-        }
-      } else {
-        if (!is.null(spp[[newSppName]]$visualization$mapPred)) {
-          logger %>% writeLog(
-            type = "error", hlSpp(newSppName),
-            "Prediction already available on Wallace. You cannot upload a user raster.")
-          return()
-        } else { # If occs exists
-          userSDMs <- mask_userSDM(rasPath = input$sdmFile$datapath[i],
-                                   rasName = input$sdmFile$name[i],
-                                   logger)
-          logger %>% writeLog(hlSpp(newSppName), "User SDM prediction loaded (**)")
-          # LOAD INTO SPP ####
-          spp[[newSppName]]$mask$userSDM <- userSDMs$sdm
-          spp[[newSppName]]$mask$userPolyExt <- userSDMs$extSdm
-        }
+      # Create species object if does not exists
+      sppName <- fileNameNoExt(fmtSpN(input$sdmFile$name[i]))
+      if (!(sppName %in% names(spp))) {
+        spp[[sppName]] <- list()
+        logger %>% writeLog(hlSpp(sppName),
+                            "New species registered (**).")
       }
 
+      userSDMs <- mask_userSDM(rasPath = input$sdmFile$datapath[i],
+                               rasName = input$sdmFile$name[i],
+                               logger)
+      # Check if prediction is threshold
+      userThr <- terra::spatSample(x = terra::rast(userSDMs$sdm),
+                                   size = 100, na.rm = TRUE)[, 1]
+      userThr <- !any(userThr > 0 & userThr < 1)
+
+      # LOAD INTO SPP ####
+      spp[[sppName]]$mask$userThr <- userThr
+      spp[[sppName]]$mask$userSDM <- userSDMs$sdm * 1
+      spp[[sppName]]$mask$userPolyExt <- userSDMs$extSdm
+      logger %>% writeLog(hlSpp(sppName), "User SDM prediction loaded (**)")
+
       # METADATA ####
-      spp[[newSppName]]$rmm$code$wallace$userSDM <- TRUE
+      spp[[sppName]]$rmm$code$wallace$userSDM <- TRUE
     }
     common$update_component(tab = "Map")
   })
