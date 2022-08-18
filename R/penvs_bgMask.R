@@ -69,7 +69,7 @@ penvs_bgMask <- function(occs, envs, bgExt, logger = NULL, spN = NULL) {
     if (sum(occs.dups) > 0) {
       bgMask <- terra::project(terra::rast(bgMask),
                                terra::rast(envs), method = 'near')
-      bgMask <- as(bgMask, "Raster")
+      bgMask <- methods::as(bgMask, "Raster")
     }
   })
 
