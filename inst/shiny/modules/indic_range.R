@@ -122,14 +122,7 @@ indic_range_module_server <- function(input, output, session, common) {
                        xfer = spp[[curSp()]]$transfer$mapXfer,
                        user = spp[[curSp()]]$mask$userSDM,
                        mask = spp[[curSp()]]$mask$prediction)
-
-          ## Unsuitable for NAs
-          r[r == 0] <- NA
-          ## Raster to polygon
-          p <- terra::as.polygons(terra::rast(r))
-          ## Project to SR-ORG 8287
-          p <- terra::project(p, y = getWKT("wcea"))
-          areaRange <- terra::expanse(p, unit = "km")
+          areaRange <- indic_area(r, wkt = getWKT("wcea"), logger)
         }
       )
       req(areaRange)
@@ -154,25 +147,16 @@ indic_range_module_server <- function(input, output, session, common) {
           if (selAreaSource() == "occs") {
             p.pts <- spp[[curSp()]]$occs %>%
               dplyr::select(longitude, latitude)
+            eoo <- indic_eoo(occs = p.pts, lon = "longitude", lat = "latitude",
+                             wkt = getWKT("wcea"), logger = logger)
           } else {
             r <- switch (selAreaSource(),
                          wallace = spp[[curSp()]]$visualization$mapPred,
                          xfer = spp[[curSp()]]$transfer$mapXfer,
                          user = spp[[curSp()]]$mask$userSDM,
                          mask = spp[[curSp()]]$mask$prediction)
-            r <- terra::rast(r)
-            ## Unsuitable for NAs
-            r[r == 0] <- NA
-            p.pts <- terra::as.points(r) %>%
-              terra::geom() %>% data.frame() %>%
-              dplyr::select(x, y)
+            eoo <- indic_eoo(r, wkt = getWKT("wcea"), logger = logger)
           }
-          wgs84 <- "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
-          # Create a minimum convex polygon around the occurrences
-          eoo <- changeRangeR::mcp(p.pts, wgs84)
-          # Project to WCEA (IUCN recommendation)
-          eooPr <- terra::project(terra::vect(eoo), y = getWKT("wcea"))
-          areaEOO <- terra::expanse(eooPr, unit = "km")
         })
       req(eoo)
       logger %>%
@@ -184,63 +168,40 @@ indic_range_module_server <- function(input, output, session, common) {
                                 xfer = "transferred SDM",
                                 user = "user-specified SDM",
                                 mask = "masked SDM"),
-                        " (", round(areaEOO, 2), " km^2). ",
+                        " (", round(eoo$area, 2), " km^2). ",
                         "This is an approximation using the ",
                         "World Cylindrical Equal Area projection ",
                         "(IUCN recommendation)."))
 
       # LOAD INTO SPP ####
-      spp[[curSp()]]$indic$EOOarea <- areaEOO
+      spp[[curSp()]]$indic$EOOarea <- eoo$area
       spp[[curSp()]]$indic$EOOsource <- selAreaSource()
-      spp[[curSp()]]$indic$EOOpoly <- eoo
+      spp[[curSp()]]$indic$EOOpoly <- eoo$eooPoly
       if (selAreaSource() != "occs") {
-        spp[[curSp()]]$indic$EOObaseRaster <- methods::as(r, "Raster")
+        r[r == 0] <- NA
+        spp[[curSp()]]$indic$EOObaseRaster <- r
       }
       spp[[curSp()]]$flags$indicAreaMap <- "eoo"
       common$update_component(tab = "Map")
       ## if calculating AOO
     } else if (input$indicRangeSel == "aoo") {
-      r <- switch (selAreaSource(),
-                   wallace = spp[[curSp()]]$visualization$mapPred,
-                   xfer = spp[[curSp()]]$transfer$mapXfer,
-                   user = spp[[curSp()]]$mask$userSDM,
-                   mask = spp[[curSp()]]$mask$prediction)
-      ## Unsuitable for NAs
-      r[r == 0] <- NA
-      ###
       if (selAreaSource() == "occs") {
         p.pts <- spp[[curSp()]]$occs %>%
-          dplyr::select(longitude, latitude) %>%
-          terra::vect(geom = c("longitude", "latitude"))
-        terra::crs(p.pts) <- getWKT("wgs84")
-        rast_temp <- terra::rast(terra::ext(terra::project(p.pts, getWKT("wcea"))) + 2000,
-                                 resolution = 2000, crs = getWKT("wcea"))
-        rast_temp <- terra::project(rast_temp, getWKT("wgs84"))
-        AOOraster <- terra::rasterize(p.pts, rast_temp, field = 1, update = TRUE) %>%
-          terra::trim()
-        AOOarea <- terra::freq(AOOraster, value = 1)$count * 4
+          dplyr::select(longitude, latitude)
+        aoo <- indic_aoo(occs = p.pts, lon = "longitude", lat = "latitude",
+                         wktFrom = getWKT("wgs84"), wktTo = getWKT("wcea"),
+                         logger = logger)
+
       } else {
-        #AOO <- changeRangeR::AOOarea(r = r)
-        # AOOraster <- terra::rast(AOO$aooRaster) %>%
-        #   terra::project(getWKT("wgs84"))
-        # AOOraster[AOOraster == 0] <- NA
-        # # Project to WCEA (IUCN recommendation)
-        # AOOv <- terra::as.polygons(AOOraster) %>%
-        #   terra::project(y = getWKT("wcea"))
-        # AOOarea <- terra::expanse(AOOv, unit = "km")
-        r <- terra::rast(r)
-        ## Unsuitable for NAs
-        r[r == 0] <- NA
-        p.poly <- terra::as.polygons(r)
-        terra::crs(p.poly) <- getWKT("wgs84")
-        rast_temp <- terra::rast(terra::ext(terra::project(p.poly, getWKT("wcea"))) + 2000,
-                                 resolution = 2000, crs = getWKT("wcea"),
-                                 vals = 1)
-        rast_temp <- terra::project(rast_temp , getWKT("wgs84"))
-        AOOraster <- terra::mask(rast_temp, p.poly)
-        AOOarea <- terra::freq(AOOraster, value = 1)$count * 4
+        r <- switch (selAreaSource(),
+                     wallace = spp[[curSp()]]$visualization$mapPred,
+                     xfer = spp[[curSp()]]$transfer$mapXfer,
+                     user = spp[[curSp()]]$mask$userSDM,
+                     mask = spp[[curSp()]]$mask$prediction)
+        aoo <- indic_aoo(r, wktFrom = getWKT("wgs84"), wktTo = getWKT("wcea"),
+                         logger = logger)
       }
-      req(AOOraster)
+      req(aoo)
       logger %>%
         writeLog(hlSpp(curSp()),
                  paste0("Calculated an AOO estimate based on ",
@@ -250,14 +211,14 @@ indic_range_module_server <- function(input, output, session, common) {
                                 xfer = "transferred SDM",
                                 user = "user-specified SDM",
                                 mask = "masked SDM"),
-                        " (", round(AOOarea, 2), " km^2). ",
+                        " (", round(aoo$area, 2), " km^2). ",
                         "This is an approximation using the ",
                         "World Cylindrical Equal Area projection ",
                         "(IUCN recommendation)."))
       # LOAD INTO SPP ####
-      spp[[curSp()]]$indic$AOOarea <- AOOarea
+      spp[[curSp()]]$indic$AOOarea <- aoo$area
       spp[[curSp()]]$indic$AOOsource <- selAreaSource()
-      spp[[curSp()]]$indic$AOOraster <- methods::as(AOOraster, "Raster")
+      spp[[curSp()]]$indic$AOOraster <- aoo$AOOraster
       spp[[curSp()]]$flags$indicAreaMap <- "aoo"
       common$update_component(tab = "Map")
     }
