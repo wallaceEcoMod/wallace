@@ -190,11 +190,11 @@ indic_range_module_server <- function(input, output, session, common) {
                         "(IUCN recommendation)."))
 
       # LOAD INTO SPP ####
-      spp[[curSp()]]$rmm$data$indic$EOOarea <- areaEOO
-      spp[[curSp()]]$rmm$data$indic$EOOsource <- selAreaSource()
-      spp[[curSp()]]$rmm$data$indic$EOOpoly <- eoo
+      spp[[curSp()]]$indic$EOOarea <- areaEOO
+      spp[[curSp()]]$indic$EOOsource <- selAreaSource()
+      spp[[curSp()]]$indic$EOOpoly <- eoo
       if (selAreaSource() != "occs") {
-        spp[[curSp()]]$rmm$data$indic$EOObaseRaster <- methods::as(r, "Raster")
+        spp[[curSp()]]$indic$EOObaseRaster <- methods::as(r, "Raster")
       }
       spp[[curSp()]]$flags$indicAreaMap <- "eoo"
       common$update_component(tab = "Map")
@@ -255,9 +255,9 @@ indic_range_module_server <- function(input, output, session, common) {
                         "World Cylindrical Equal Area projection ",
                         "(IUCN recommendation)."))
       # LOAD INTO SPP ####
-      spp[[curSp()]]$rmm$data$indic$AOOarea <- AOOarea
-      spp[[curSp()]]$rmm$data$indic$AOOsource <- selAreaSource()
-      spp[[curSp()]]$rmm$data$indic$AOOraster <- methods::as(AOOraster, "Raster")
+      spp[[curSp()]]$indic$AOOarea <- AOOarea
+      spp[[curSp()]]$indic$AOOsource <- selAreaSource()
+      spp[[curSp()]]$indic$AOOraster <- methods::as(AOOraster, "Raster")
       spp[[curSp()]]$flags$indicAreaMap <- "aoo"
       common$update_component(tab = "Map")
     }
@@ -271,15 +271,15 @@ indic_range_module_server <- function(input, output, session, common) {
         "Range (", spp[[curSp()]]$indic$rangeSource, "): ",
         round(spp[[curSp()]]$indic$rangeArea, 2)," km^2", "\n")
     }
-    if (!is.null(spp[[curSp()]]$rmm$data$indic$EOOarea)) {
+    if (!is.null(spp[[curSp()]]$indic$EOOarea)) {
       resTxt <- paste0(resTxt,
-        "EOO (",  spp[[curSp()]]$rmm$data$indic$EOOsource, "): ",
-        round(spp[[curSp()]]$rmm$data$indic$EOOarea, 2)," km^2","\n")
+        "EOO (",  spp[[curSp()]]$indic$EOOsource, "): ",
+        round(spp[[curSp()]]$indic$EOOarea, 2)," km^2","\n")
     }
-    if (!is.null(spp[[curSp()]]$rmm$data$indic$AOOarea)) {
+    if (!is.null(spp[[curSp()]]$indic$AOOarea)) {
       resTxt <- paste0(resTxt,
-        "AOO (", spp[[curSp()]]$rmm$data$indic$AOOsource, "): ",
-        round(spp[[curSp()]]$rmm$data$indic$AOOarea, 2)," km^2"
+        "AOO (", spp[[curSp()]]$indic$AOOsource, "): ",
+        round(spp[[curSp()]]$indic$AOOarea, 2)," km^2"
       )
     }
     if (is.null(resTxt)) {
@@ -318,8 +318,8 @@ indic_range_module_map <- function(map, common) {
 
   if (spp[[curSp()]]$flags$indicAreaMap == "eoo") {
     map %>% clearAll()
-    polyEOO <- spp[[curSp()]]$rmm$data$indic$EOOpoly@polygons[[1]]@Polygons
-    bb <- spp[[curSp()]]$rmm$data$indic$EOOpoly@bbox
+    polyEOO <- spp[[curSp()]]$indic$EOOpoly@polygons[[1]]@Polygons
+    bb <- spp[[curSp()]]$indic$EOOpoly@bbox
     bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
     map %>%
       fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
@@ -338,7 +338,7 @@ indic_range_module_map <- function(map, common) {
         addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4,
                     color = "darkorange", group = 'indic')
     }
-    if (spp[[curSp()]]$rmm$data$indic$EOOsource == "occs") {
+    if (spp[[curSp()]]$indic$EOOsource == "occs") {
       map %>%
         addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                          radius = 5, color = 'red', fill = TRUE, fillColor = 'red',
@@ -347,14 +347,14 @@ indic_range_module_map <- function(map, common) {
       map %>%
         addLegend("bottomright", colors = 'darkgrey', labels = "Range map",
                   opacity = 1, layerId = 'prediction') %>%
-        leafem::addGeoRaster(spp[[curSp()]]$rmm$data$indic$EOObaseRaster,
+        leafem::addGeoRaster(spp[[curSp()]]$indic$EOObaseRaster,
                              colorOptions = leafem::colorOptions(
                                palette = colorRampPalette(colors = 'darkgrey')),
                              opacity = 0.7, group = 'indic', layerId = 'indicRange')
     }
   } else if (spp[[curSp()]]$flags$indicAreaMap == "aoo") {
     map %>% clearAll()
-    AOOras <- spp[[curSp()]]$rmm$data$indic$AOOraster
+    AOOras <- spp[[curSp()]]$indic$AOOraster
     map %>%
       ##Add legend
       addLegend("bottomright", colors = "darkorange",
@@ -366,7 +366,7 @@ indic_range_module_map <- function(map, common) {
                              palette = colorRampPalette(colors = 'darkorange')),
                            opacity = 1, group = 'indic',
                            layerId = 'indicAOO')
-    if (spp[[curSp()]]$rmm$data$indic$AOOsource == "occs") {
+    if (spp[[curSp()]]$indic$AOOsource == "occs") {
       map %>%
         addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                          radius = 5, color = 'red', fill = TRUE, fillColor = 'red',

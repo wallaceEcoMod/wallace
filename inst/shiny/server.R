@@ -209,8 +209,8 @@ function(input, output, session) {
     shinyjs::toggleState("dlXferEnvs", !is.null(spp[[curSp()]]$transfer$xfEnvsDl))
     shinyjs::toggleState("dlXfer", !is.null(spp[[curSp()]]$transfer$xfEnvs))
     shinyjs::toggleState("dlMess", !is.null(spp[[curSp()]]$transfer$messVals))
-    shinyjs::toggleState("dlAOO", !is.null(spp[[curSp()]]$rmm$data$indic$AOOraster))
-    shinyjs::toggleState("dlEOO", !is.null(spp[[curSp()]]$rmm$data$indic$EOOpoly))
+    shinyjs::toggleState("dlAOO", !is.null(spp[[curSp()]]$indic$AOOraster))
+    shinyjs::toggleState("dlEOO", !is.null(spp[[curSp()]]$indic$EOOpoly))
     shinyjs::toggleState("dlOverlap", !is.null(spp[[curSp()]]$indic$overlapRaster))
     shinyjs::toggleState("dlOverlapEOO", !is.null(spp[[curSp()]]$indic$overlapPoly))
     shinyjs::toggleState("dlMask", !is.null(spp[[curSp()]]$mask$prediction))
@@ -1270,7 +1270,7 @@ function(input, output, session) {
       setwd(tempdir())
       n <- curSp()
 
-      raster::shapefile(x= spp[[curSp()]]$rmm$data$indic$EOOpoly,
+      raster::shapefile(x= spp[[curSp()]]$indic$EOOpoly,
                       filename = paste0(n, '_EOOShp'),overwrite=TRUE)
 
       exts <- c('dbf','shp', 'shx')
@@ -1298,7 +1298,7 @@ function(input, output, session) {
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in your R console. ")
           }
-          AOOras <-  spp[[curSp()]]$rmm$data$indic$AOOraster
+          AOOras <-  spp[[curSp()]]$indic$AOOraster
           raster::crs(AOOras) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
           OverlapVals <- spp[[curSp()]]$indic$overlapvalues
         #  rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
@@ -1320,7 +1320,7 @@ function(input, output, session) {
         } else if (input$AOOFileType == 'raster') {
           fileName <-  "AOO"
           tmpdir <- tempdir()
-          raster::writeRaster(spp[[curSp()]]$rmm$data$indic$AOOraster,
+          raster::writeRaster(spp[[curSp()]]$indic$AOOraster,
                               file.path(tmpdir, fileName),
                               format = input$AOOFileType, overwrite = TRUE)
           owd <- setwd(tmpdir)
@@ -1328,7 +1328,7 @@ function(input, output, session) {
           zip::zipr(zipfile = file, files = fs)
           setwd(owd)
         } else {
-          r <- raster::writeRaster(spp[[curSp()]]$rmm$data$indic$AOOraster, file,
+          r <- raster::writeRaster(spp[[curSp()]]$indic$AOOraster, file,
                                    format = input$AOOFileType, overwrite = TRUE)
           file.rename(r@file@name, file)
         }

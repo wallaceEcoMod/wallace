@@ -100,13 +100,13 @@ indic_time_module_server <- function(input, output, session, common) {
     if (input$selRasterSource == "aoo") {
       #CAREFUL: as its set up now if user doesn t do maskrangeR this object will be something else
       #(either user uploaed SDM or wallace SDM) this must be fixed in other components so it works smoothly
-      if (is.null( spp[[curSp()]]$rmm$data$indic$AOOraster)) {
+      if (is.null( spp[[curSp()]]$indic$AOOraster)) {
         logger %>%
           writeLog(type = 'error',
                    'Do an AOO calculation before doing time calculations')
         return()
       }
-      spp[[curSp()]]$indic$time <- spp[[curSp()]]$rmm$data$indic$AOOraster
+      spp[[curSp()]]$indic$time <- spp[[curSp()]]$indic$AOOraster
       logger %>% writeLog("SDM area after masking for environmental variables ",
                           "through time will be calculated based on AOO")
 
@@ -114,13 +114,13 @@ indic_time_module_server <- function(input, output, session, common) {
     if (input$selRasterSource == "eoo") {
       #CAREFUL: as its set up now if user doesn t do maskrangeR this object will be something else
       #(either user uploaed SDM or wallace SDM) this must be fixed in other components so it works smoothly
-      if (is.null(spp[[curSp()]]$rmm$data$indic$EOOpoly)) {
+      if (is.null(spp[[curSp()]]$indic$EOOpoly)) {
         logger %>%
           writeLog(type = 'error',
                    'Do an EOO calculation before doing time calculations')
         return()
       }
-      spp[[curSp()]]$indic$time1 <- spp[[curSp()]]$rmm$data$indic$EOOpoly
+      spp[[curSp()]]$indic$time1 <- spp[[curSp()]]$indic$EOOpoly
       logger %>% writeLog("SDM area after masking for environmental variables ",
                           "through time will be calculated based on EOO")
 
@@ -257,8 +257,8 @@ indic_time_module_map <- function(map, common) {
   curSp <- common$curSp
   #if EOO is selected plot the polygon
   if (!is.null(spp[[curSp()]]$indic$time1)) {
-    polyEOO <- spp[[curSp()]]$rmm$data$indic$EOOpoly@polygons[[1]]@Polygons
-    bb <- spp[[curSp()]]$rmm$data$indic$EOOpoly@bbox
+    polyEOO <- spp[[curSp()]]$indic$EOOpoly@polygons[[1]]@Polygons
+    bb <- spp[[curSp()]]$indic$EOOpoly@bbox
     bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
     map %>%
       fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
