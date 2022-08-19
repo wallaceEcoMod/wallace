@@ -213,13 +213,11 @@ indic_range_module_server <- function(input, output, session, common) {
           dplyr::select(longitude, latitude) %>%
           terra::vect(geom = c("longitude", "latitude"))
         terra::crs(p.pts) <- getWKT("wgs84")
-        rast_temp <- terra::rast(terra::ext(terra::project(p.pts, getWKT("wcea"))),
+        rast_temp <- terra::rast(terra::ext(terra::project(p.pts, getWKT("wcea"))) + 2000,
                                  resolution = 2000, crs = getWKT("wcea"))
-        print(terra::res(rast_temp))
         rast_temp <- terra::project(rast_temp, getWKT("wgs84"))
-        print(terra::res(rast_temp))
-        AOOraster <- terra::rasterize(p.pts, rast_temp, field = 1, update = TRUE)
-        print(terra::res(AOOraster))
+        AOOraster <- terra::rasterize(p.pts, rast_temp, field = 1, update = TRUE) %>%
+          terra::trim()
         AOOarea <- terra::freq(AOOraster, value = 1)$count * 4
       } else {
         #AOO <- changeRangeR::AOOarea(r = r)
@@ -235,12 +233,12 @@ indic_range_module_server <- function(input, output, session, common) {
         r[r == 0] <- NA
         p.poly <- terra::as.polygons(r)
         terra::crs(p.poly) <- getWKT("wgs84")
-        p.poly <- terra::project(p.poly, getWKT("wcea"))
-        rast_temp <- terra::rast(terra::ext(p.poly), resolution = 2000,
-                                 crs = getWKT("wcea"), vals = 1)
-        AOOmask <- terra::mask(rast_temp, p.poly)
-        AOOarea <- terra::freq(AOOmask, value = 1)$count * 4
-        AOOraster <- terra::project(AOOmask, getWKT("wgs84"))
+        rast_temp <- terra::rast(terra::ext(terra::project(p.poly, getWKT("wcea"))) + 2000,
+                                 resolution = 2000, crs = getWKT("wcea"),
+                                 vals = 1)
+        rast_temp <- terra::project(rast_temp , getWKT("wgs84"))
+        AOOraster <- terra::mask(rast_temp, p.poly)
+        AOOarea <- terra::freq(AOOraster, value = 1)$count * 4
       }
       req(AOOraster)
       logger %>%
