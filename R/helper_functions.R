@@ -198,9 +198,7 @@ clearAll <- function(map) {
   # raster::values(r) <- 0
   map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>%
       clearControls() %>% removeLayersControl() %>%
-      # leafem::addGeoRaster(r, group = 'mask', layerId = 'postPred') %>%
-      clearGroup("mask")
-
+      clearGroup("mask") %>% clearGroup("indic")
 }
 
 #' @title mapBgPolys

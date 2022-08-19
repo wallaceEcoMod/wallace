@@ -193,6 +193,10 @@ indic_range_module_server <- function(input, output, session, common) {
       spp[[curSp()]]$rmm$data$indic$EOOarea <- areaEOO
       spp[[curSp()]]$rmm$data$indic$EOOsource <- selAreaSource()
       spp[[curSp()]]$rmm$data$indic$EOOpoly <- eoo
+      if (selAreaSource() != "occs") {
+        spp[[curSp()]]$rmm$data$indic$EOObaseRaster <- methods::as(r, "Raster")
+      }
+      spp[[curSp()]]$flags$indicAreaMap <- "eoo"
       common$update_component(tab = "Map")
       ## if calculating AOO
     } else if (input$indicRangeSel == "aoo") {
@@ -209,12 +213,14 @@ indic_range_module_server <- function(input, output, session, common) {
           dplyr::select(longitude, latitude) %>%
           terra::vect(geom = c("longitude", "latitude"))
         terra::crs(p.pts) <- getWKT("wgs84")
-        p.pts <- terra::project(p.pts, getWKT("wcea"))
-        rast_temp <- terra::rast(terra::ext(p.pts), resolution = 2000,
-                                 crs = getWKT("wcea"))
-        AOOproj <- terra::rasterize(p.pts, rast_temp, field = 1)
-        AOOarea <- terra::freq(AOOproj, value = 1)$count * 4
-        AOOraster <- terra::project(AOOproj, getWKT("wgs84"))
+        rast_temp <- terra::rast(terra::ext(terra::project(p.pts, getWKT("wcea"))),
+                                 resolution = 2000, crs = getWKT("wcea"))
+        print(terra::res(rast_temp))
+        rast_temp <- terra::project(rast_temp, getWKT("wgs84"))
+        print(terra::res(rast_temp))
+        AOOraster <- terra::rasterize(p.pts, rast_temp, field = 1, update = TRUE)
+        print(terra::res(AOOraster))
+        AOOarea <- terra::freq(AOOraster, value = 1)$count * 4
       } else {
         #AOO <- changeRangeR::AOOarea(r = r)
         # AOOraster <- terra::rast(AOO$aooRaster) %>%
@@ -254,6 +260,7 @@ indic_range_module_server <- function(input, output, session, common) {
       spp[[curSp()]]$rmm$data$indic$AOOarea <- AOOarea
       spp[[curSp()]]$rmm$data$indic$AOOsource <- selAreaSource()
       spp[[curSp()]]$rmm$data$indic$AOOraster <- methods::as(AOOraster, "Raster")
+      spp[[curSp()]]$flags$indicAreaMap <- "aoo"
       common$update_component(tab = "Map")
     }
   })
@@ -308,9 +315,11 @@ indic_range_module_map <- function(map, common) {
   # Map logic
   spp <- common$spp
   curSp <- common$curSp
-  map %>% clearAll()
-  if(!is.null(spp[[curSp()]]$rmm$data$indic$EOOpoly)){
+  occs <- common$occs
+  req(spp[[curSp()]]$flags$indicAreaMap)
 
+  if (spp[[curSp()]]$flags$indicAreaMap == "eoo") {
+    map %>% clearAll()
     polyEOO <- spp[[curSp()]]$rmm$data$indic$EOOpoly@polygons[[1]]@Polygons
     bb <- spp[[curSp()]]$rmm$data$indic$EOOpoly@bbox
     bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
@@ -318,9 +327,8 @@ indic_range_module_map <- function(map, common) {
       fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
     map %>%
       ##Add legend
-      addLegend("bottomright", colors = "gray",
-                title = "EOO", labels = "EOO",
-                opacity = 1)
+      addLegend("bottomright", colors = "darkorange",
+                labels = "EOO", opacity = 1)
     ##ADD polygon
     if (length(polyEOO) == 1) {
       xy <- list(polyEOO[[1]]@coords)
@@ -329,25 +337,43 @@ indic_range_module_map <- function(map, common) {
     }
     for (shp in xy) {
       map %>%
-        addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4, color = "gray",
-                    group = 'indic')
+        addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4,
+                    color = "darkorange", group = 'indic')
     }
-  }
-  if (!is.null(spp[[curSp()]]$rmm$data$indic$AOOraster)) {
+    if (spp[[curSp()]]$rmm$data$indic$EOOsource == "occs") {
+      map %>%
+        addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
+                         radius = 5, color = 'red', fill = TRUE, fillColor = 'red',
+                         fillOpacity = 0.2, weight = 2, popup = ~pop)
+    } else {
+      map %>%
+        addLegend("bottomright", colors = 'darkgrey', labels = "Range map",
+                  opacity = 1, layerId = 'prediction') %>%
+        leafem::addGeoRaster(spp[[curSp()]]$rmm$data$indic$EOObaseRaster,
+                             colorOptions = leafem::colorOptions(
+                               palette = colorRampPalette(colors = 'darkgrey')),
+                             opacity = 0.7, group = 'indic', layerId = 'indicRange')
+    }
+  } else if (spp[[curSp()]]$flags$indicAreaMap == "aoo") {
+    map %>% clearAll()
     AOOras <- spp[[curSp()]]$rmm$data$indic$AOOraster
-    zoomExt <- raster::extent(AOOras)
-    map %>% fitBounds(lng1 = zoomExt[1], lng2 = zoomExt[2],
-                      lat1 = zoomExt[3], lat2 = zoomExt[4])
     map %>%
       ##Add legend
-      addLegend("bottomright", colors = c('red', 'grey'),
-                title = "AOO",
-                labels = c("Presence", "Absence"),
-                opacity = 1, layerId = 'expert') %>%
-      ##ADD polygon
-      addRasterImage(AOOras, colors = c('red', 'grey'),
-                     opacity = 0.7, group = 'indic', layerId = 'AOO',
-                     method = "ngb")
+      addLegend("bottomright", colors = "darkorange",
+                labels = "AOO",
+                opacity = 1, layerId = 'aooLegend') %>%
+      ##ADD raster
+      leafem::addGeoRaster(AOOras,
+                           colorOptions = leafem::colorOptions(
+                             palette = colorRampPalette(colors = 'darkorange')),
+                           opacity = 1, group = 'indic',
+                           layerId = 'indicAOO')
+    if (spp[[curSp()]]$rmm$data$indic$AOOsource == "occs") {
+      map %>%
+        addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
+                         radius = 5, color = 'red', fill = TRUE, fillColor = 'red',
+                         fillOpacity = 0.2, weight = 2, popup = ~pop)
+    }
   }
 }
 
