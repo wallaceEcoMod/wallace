@@ -316,17 +316,26 @@ indic_range_module_map <- function(map, common) {
   } else if (spp[[curSp()]]$flags$indicAreaMap == "aoo") {
     map %>% clearAll()
     AOOras <- spp[[curSp()]]$indic$AOOraster
+    # AOO raster transform to polygon for visualization
+    AOOpol <- terra::rast(AOOras)
+    AOOpol <- terra::as.polygons(AOOpol)
+    AOOpol <- AOOpol %>% terra::project(getWKT("wgs84")) %>%
+      sf::st_as_sf()
+
+    # Zoom
+    bb <- sf::st_bbox(AOOpol) %>% as.vector()
+    bbZoom <- polyZoom(bb[1], bb[2], bb[3], bb[4], fraction = 0.05)
+    map %>%
+      fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
+
     map %>%
       ##Add legend
       addLegend("bottomright", colors = "darkorange",
                 labels = "AOO",
                 opacity = 1, layerId = 'aooLegend') %>%
-      ##ADD raster
-      leafem::addGeoRaster(AOOras,
-                           colorOptions = leafem::colorOptions(
-                             palette = colorRampPalette(colors = 'darkorange')),
-                           opacity = 1, group = 'indic',
-                           layerId = 'indicAOO')
+      ##ADD polygon
+      leafem::addFeatures(AOOpol, fillColor = 'darkorange', fillOpacity = 0.9,
+                          opacity = 0, group = 'indic', layerId = 'indicAOO')
     if (spp[[curSp()]]$indic$AOOsource == "occs") {
       map %>%
         addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,

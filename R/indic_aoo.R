@@ -33,11 +33,13 @@ indic_aoo <- function(r = NULL, occs = NULL, lon = NULL, lat = NULL,
           dplyr::select(c(lon, lat)) %>%
           terra::vect(geom = c(lon, lat))
         terra::crs(p.pts) <- wktFrom
-        rast_temp <- terra::rast(terra::ext(terra::project(p.pts, wktTo)) + 2000,
+        rast_temp <- terra::rast(terra::ext(terra::project(p.pts, wktTo)) + 10000,
                                  resolution = 2000, crs = wktTo)
-        rast_temp <- terra::project(rast_temp, wktFrom)
-        AOOraster <- terra::rasterize(p.pts, rast_temp, field = 1, update = TRUE) %>%
+        terra::origin(rast_temp) <- c(0,0)
+        AOOraster <- terra::rasterize(terra::project(p.pts, wktTo), rast_temp,
+                                       field = 1, update = TRUE) %>%
           terra::trim()
+        terra::origin(AOOraster) <- c(0,0)
         AOOarea <- terra::freq(AOOraster, value = 1)$count * 4
       }
     }
@@ -46,11 +48,12 @@ indic_aoo <- function(r = NULL, occs = NULL, lon = NULL, lat = NULL,
     ## Unsuitable for NAs
     r[r == 0] <- NA
     p.poly <- terra::as.polygons(r)
-    rast_temp <- terra::rast(terra::ext(terra::project(p.poly, wktTo)) + 2000,
+    rast_temp <- terra::rast(terra::ext(terra::project(p.poly, wktTo)) + 10000,
                              resolution = 2000, crs = wktTo,
                              vals = 1)
-    rast_temp <- terra::project(rast_temp , wktFrom)
-    AOOraster <- terra::mask(rast_temp, p.poly)
+    terra::origin(rast_temp) <- c(0,0)
+    AOOraster <- terra::mask(rast_temp, terra::project(p.poly, wktTo)) %>%
+      terra::trim()
     AOOarea <- terra::freq(AOOraster, value = 1)$count * 4
   } else {
     logger %>% writeLog("Provide occurrences or raster (**).")
