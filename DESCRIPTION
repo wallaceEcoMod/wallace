@@ -1,6 +1,6 @@
 Package: wallace
-Version: 2022.08.15
-Date: 2022-08-15
+Version: 2022.08.21
+Date: 2022-08-21
 Title: A Modular Platform for Reproducible Modeling of Species Niches 
     and Distributions
 Description: The 'shiny' application Wallace is a modular platform for 
@@ -34,6 +34,7 @@ Depends:
     leaflet (>= 2.0.2)
 Imports:
     dplyr (>= 1.0.2),
+    changeRangeR,
     DT (>= 0.5),
     ecospat,
     ENMeval (>= 2.0.3),
@@ -77,6 +78,7 @@ Suggests:
     spThin,
     spocc (>= 1.2.0),
     testthat
+Remotes: cmerow/changeRangeR
 License: GPL-3
 URL: http://wallaceecomod.github.io/wallace/,
 Encoding: UTF-8
