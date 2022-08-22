@@ -199,11 +199,10 @@ indic_overlap_module_server <- function(input, output, session, common) {
         logger %>% writeLog(type = 'error', "Specified filepath(s).")
         return()
       }
-      inputOverlap <- xfer_userExtent(input$polyExpShp$datapath,
-                                      input$polyExpShp$name,
+      inputOverlap <- xfer_userExtent(input$indicOverlapShp$datapath,
+                                      input$indicOverlapShp$name,
                                       0, logger, spN = curSp())
       spp[[curSp()]]$indic$inputOverlap <- inputOverlap
-      print(class(inputOverlap))
     }
     if (input$indicOverlap == 'raster') {
       userRaster <- mask_userSDM(rasPath = input$indicOverlapRaster$datapath,
@@ -211,7 +210,6 @@ indic_overlap_module_server <- function(input, output, session, common) {
                                  logger)
       spp[[curSp()]]$indic$inputOverlap <- userRaster
       logger %>% writeLog(hlSpp(curSp()), "User raster file loaded.")
-      print(class(inputOverlap))
     }
   })
 
@@ -220,6 +218,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
   output$overlapFieldUI <- renderUI({
     #add a conditional on providing a file
     req(curSp(), spp[[curSp()]]$indic$inputOverlap)
+    req(class(spp[[curSp()]]$indic$inputOverlap) == "SpatialPolygonsDataFrame")
     if (!is.null(spp[[curSp()]]$indic$inputOverlap)) {
       fields <- colnames(spp[[curSp()]]$indic$inputOverlap@data)
     } else {
@@ -460,7 +459,7 @@ indic_overlap_module_result <- function(id) {
 }
 
 indic_overlap_module_map <- function(map, common) {
-  # Map logic
+  # # Map logic
   spp <- common$spp
   curSp <- common$curSp
   map %>% clearAll()
