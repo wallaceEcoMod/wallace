@@ -139,7 +139,7 @@ mask_spatial_module_server <- function(input, output, session, common) {
 
   output$maskAttributeUI <- renderUI({
     req(curSp(), spp[[curSp()]]$mask$spatialMask, maskFields())
-    if(!is.null(maskFields())) {
+    if (!is.null(maskFields())) {
       polMask <- spp[[curSp()]]$mask$spatialMask
       n <- unique(polMask[[maskFields()]])
     } else {

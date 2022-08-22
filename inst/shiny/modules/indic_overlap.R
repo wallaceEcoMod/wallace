@@ -30,8 +30,8 @@ indic_overlap_module_ui <- function(id) {
          class = "stepText"),
     br(),
     #Add a conditional panel showing the fields in the shapefile
-    uiOutput(ns('selFieldui')),
-    uiOutput(ns('selCatdui')),
+    uiOutput(ns('overlapFieldUI')),
+    uiOutput(ns('overlapCatUI')),
     checkboxInput(ns("doSubfield"),
                   label = 'Results per subfield',
                   value = FALSE),
@@ -49,10 +49,10 @@ indic_overlap_module_server <- function(input, output, session, common) {
   curSp <- common$curSp
   curModel <- common$curModel
   mapXfer <- common$mapXfer
-  indicField <- common$indicField
-  indicCategory <- common$indicCategory
+  overlapField <- common$overlapField
+  overlapCat <- common$overlapCat
 
-  ## STEP 1
+  # STEP 1 #####
   output$indicOverlapSourceUI <- renderUI({
     req(curSp())
     if (input$indicOverlapSel != "") {
@@ -187,7 +187,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$indic$overlapSourcePoly <- rangeMap
   })
 
-  ## STEP 2
+  # STEP 2 #####
   observeEvent(input$goInputOver, {
     if (is.null(spp[[curSp()]]$indic$overlapSourcePoly)) {
       logger %>% writeLog(
@@ -227,50 +227,49 @@ indic_overlap_module_server <- function(input, output, session, common) {
     }
   })
 
-  ###add this if we want to include field selection
-  output$selFieldui <- renderUI({
+  # STEP 3 #####
+  # Add this if we want to include field selection
+  output$overlapFieldUI <- renderUI({
     #add a conditional on providing a file
-    req(curSp())
+    req(curSp(), spp[[curSp()]]$indic$polyOverlap)
     if (!is.null(spp[[curSp()]]$indic$polyOverlap)) {
       fields <- colnames(spp[[curSp()]]$indic$polyOverlap@data)
     } else {
-      fields <- c("load shapefile first")
+      fields <- NULL
     }
     fields <- setNames(as.list(fields), fields)
-    shinyWidgets::pickerInput("selField",
+    shinyWidgets::pickerInput("overlapField",
                               label = "Select field",
-                              choices =   fields ,
+                              choices = fields,
                               multiple = FALSE,
-                              selected =   fields )
+                              selected = fields)
   })
 
-  output$selCatdui <- renderUI({
+  output$overlapCatUI <- renderUI({
     #add a conditional on providing a file
-    req(curSp(), req(spp[[curSp()]]$indic$polyOverlap), req(indicField()))
-    if (!is.null(indicField())) {
-      field <- indicField()
-      category <- as.character(unique(spp[[curSp()]]$indic$polyOverlap[[field]]))
-      category <- c("All",category)
+    req(curSp(), spp[[curSp()]]$indic$polyOverlap, overlapField())
+    if (!is.null(overlapField())) {
+      category <- as.character(unique(spp[[curSp()]]$indic$polyOverlap[[overlapField()]]))
     } else {
-      category <- c("load shapefile first")
+      category <- NULL
     }
     category <- setNames(as.list(category), category)
-    shinyWidgets::pickerInput("selCat",
-                              label = "Select category",
+    shinyWidgets::pickerInput("overlapCat",
+                              label = "Select Category",
                               choices = category,
                               multiple = TRUE,
-                              selected = "All",
+                              selected = category,
                               options = list(`actions-box` = TRUE))
-
   })
 
   observeEvent(input$goOverlap,{
-    ##condition on which overlap if shp do this if raster then not , stored variables would be different though
+    # Condition on which overlap if shp do this if raster then not, stored
+    # variables would be different though
     if (input$indicOverlap == 'shapefile') {
-      spp[[curSp()]]$indic$ShpCat <- indicCategory()
-      spp[[curSp()]]$indic$ShpField <- indicField()
+      spp[[curSp()]]$indic$ShpCat <- overlapCat()
+      spp[[curSp()]]$indic$ShpField <- overlapField()
       spp[[curSp()]]$indic$subfield <- input$doSubfield
-      category<-indicCategory()
+      category<-overlapCat()
       shp = spp[[curSp()]]$indic$polyOverlap
     } else if(input$indicOverlap=='raster') {
       shp = spp[[curSp()]]$indic$polyOverlap
@@ -465,19 +464,8 @@ indic_overlap_module_server <- function(input, output, session, common) {
   return(list(
     save = function() {
       # Save any values that should be saved when the current session is saved
-      list(
-        indicRangeSel = input$indicRangeSel,
-        selSource = input$selSource,
-        selField = input$selField,
-        selCat = input$selCat
-      )
     },
     load = function(state) {
-      # Load
-      updateSelectInput(session, 'indicRangeSel', selected = state$indicRangeSel)
-      updateSelectInput(session, ' selSource', selected = state$selSource)
-      updateSelectInput(session, ' selField', selected = state$selField)
-      updateSelectInput(session, ' selCat', selected = state$selCat)
     }
   ))
 

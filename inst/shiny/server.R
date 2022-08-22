@@ -1512,8 +1512,8 @@ function(input, output, session) {
       dev.off()
     }
   )
-  indicField <- reactive(input$selField)
-  indicCategory <- reactive(input$selCat)
+  overlapField <- reactive(input$overlapField)
+  overlapCat <- reactive(input$overlapCat)
 
   ########################################### #
   ### COMPONENT: ALPHA DIVERSITY ####
@@ -1911,8 +1911,8 @@ function(input, output, session) {
     evalOut = evalOut,
     mapPred = mapPred,
     mapXfer = mapXfer,
-    indicField = indicField,
-    indicCategory  = indicCategory,
+    overlapField = overlapField,
+    overlapCat  = overlapCat,
     selAreaSource = selAreaSource,
     rmm = rmm,
 
