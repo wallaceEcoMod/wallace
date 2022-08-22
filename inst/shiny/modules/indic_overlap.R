@@ -4,7 +4,7 @@ indic_overlap_module_ui <- function(id) {
     span("Step 1:", class = "step"),
     uiOutput(ns("indicOverlapSourceUI")),
     actionButton(ns("goInputRaster"), "Select"),
-    tags$hr(),
+    tags$hr(class = "hrDotted"),
     span("Step 2:", class = "step"),
     span("Choose Overlap Map", class = "stepText"), br(), br(),
     selectInput(ns('indicOverlap'), label = "Select type",
@@ -24,7 +24,7 @@ indic_overlap_module_ui <- function(id) {
                        accept = c(".tif", ".asc"))
     ),
     actionButton(ns("goInputOver"), "Load"), br(),
-    tags$hr(),
+    tags$hr(class = "hrDotted"),
     span("Step 3:", class = "step"),
     span("Choose field of interest (if input is a shapefile, else go to step 4)",
          class = "stepText"),
@@ -52,6 +52,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
   indicField <- common$indicField
   indicCategory <- common$indicCategory
 
+  ## STEP 1
   output$indicOverlapSourceUI <- renderUI({
     req(curSp())
     if (input$indicOverlapSel != "") {
@@ -186,6 +187,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$indic$overlapSourcePoly <- rangeMap
   })
 
+  ## STEP 2
   observeEvent(input$goInputOver, {
     if (is.null(spp[[curSp()]]$indic$overlapSourcePoly)) {
       logger %>% writeLog(
@@ -193,66 +195,36 @@ indic_overlap_module_server <- function(input, output, session, common) {
       return()
     }
     if (input$indicOverlap == 'shapefile') {
-      pathdir <- dirname(input$indicOverlapShp$datapath)
-      pathfile <- basename(input$indicOverlapShp$datapath)
-      # get extensions of all input files
-      exts <- sapply(strsplit(input$indicOverlapShp$name, '\\.'),
-                     FUN = function(x) x[2])
-      if ('shp' %in% exts) {
-        if (length(exts) < 3) {
-          logger %>%
-            writeLog(type = 'error',
-                     paste0('If entering a shapefile, please select all the ',
-                            'following files: .shp, .shx, .dbf.'))
-          return()
-        }
-        smartProgress(
-          logger,
-          message = "Uploading user provided shapefile ", {
-            # get index of .shp
-            i <- which(exts == 'shp')
-            if (!file.exists(file.path(pathdir, input$indicOverlapShp$name)[i])) {
-              file.rename(input$indicOverlapShp$datapath,
-                          file.path(pathdir, input$indicOverlapShp$name))
-            }
-            # read in shapefile and extract coords
-            polyOverlap  <- rgdal::readOGR(file.path(pathdir, input$indicOverlapShp$name)[i])
-            logger %>% writeLog( "User shapefile loaded ")
-          })
-      } else {
-        logger %>%
-          writeLog(type = 'error',
-                   paste0('Please enter a ',
-                          'shapefile (.shp, .shx, .dbf).'))
+      # ERROR
+      if (is.null(input$indicOverlapShp$datapath)) {
+        logger %>% writeLog(type = 'error', "Specified filepath(s).")
         return()
       }
-      shpcrop <- rgeos::gBuffer(polyOverlap, byid = TRUE, width = 0)
-      ##crop polygon for visualization if range is a raster
-      if (!is.null(spp[[curSp()]]$indic$overlapSourcePoly)) {
-        shpcrop <- raster::crop(shpcrop,
-                                raster::extent(spp[[curSp()]]$indic$overlapSourcePoly))
-      }
+      polyOverlap <- xfer_userExtent(input$polyExpShp$datapath,
+                                     input$polyExpShp$name,
+                                     0, logger, spN = curSp())
       spp[[curSp()]]$indic$polyOverlap <- polyOverlap
-      spp[[curSp()]]$indic$polyOverlapCrop <- shpcrop
     }
     if (input$indicOverlap == 'raster') {
-      userRaster <- indic_raster(rasPath = input$indicOverlapRaster$datapath,
+      userRaster <- mask_userSDM(rasPath = input$indicOverlapRaster$datapath,
                                  rasName = input$indicOverlapRaster$name,
                                  logger)
       if (!is.null(userRaster)) {
-        logger %>% writeLog("User raster file loaded ")
+        userValues <- terra::spatSample(x = terra::rast(userRaster$sdm),
+                                        size = 100, na.rm = TRUE)[, 1]
+        if (any(userValues > 0 & userValues < 1)) {
+          logger %>% writeLog(type = 'error',
+                              hlSpp(curSp()),
+                              "Upload a binary raster (0 and 1 values) (**).")
+          return()
+        }
+        # Transform to polygon
+        r <- terra::rast(userRaster$sdm)
+        polyOverlap <- terra::as.polygons(r) %>% sf::st_as_sf()
+        spp[[curSp()]]$indic$polyOverlap <- polyOverlap
+        logger %>% writeLog(hlSpp(curSp()), "User raster file loaded.")
       }
-    spp[[curSp()]]$indic$RasOverlap <- userRaster$sdm
-    sameRes <- identical(raster::res(spp[[curSp()]]$indic$RasOverlap),
-                         raster::res(spp[[curSp()]]$indic$overlapSourcePoly))
-    if (sameRes==FALSE) {
-      logger %>% writeLog(
-        type = 'error', hlSpp(curSp()),
-        'Raster resolution must be the same as species distribtuion resolution')
-      return()
     }
-    }
-
   })
 
   ###add this if we want to include field selection
@@ -301,7 +273,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
       category<-indicCategory()
       shp = spp[[curSp()]]$indic$polyOverlap
     } else if(input$indicOverlap=='raster') {
-      shp = spp[[curSp()]]$indic$RasOverlap
+      shp = spp[[curSp()]]$indic$polyOverlap
       spp[[curSp()]]$indic$ShpCat <-   NULL
       spp[[curSp()]]$indic$ShpField <-    NULL
       category<-NULL
@@ -592,15 +564,14 @@ indic_overlap_module_map <- function(map, common) {
     }
   }
   # Add just projection Polygon
-  req(spp[[curSp()]]$indic$polyOverlapCrop)
-  #raster::crs(spp[[curSp()]]$indic$polyOverlap) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
-  polyOvXY <- spp[[curSp()]]$indic$polyOverlapCrop@polygons
+  req(spp[[curSp()]]$indic$polyOverlap)
+  polyOvXY <- spp[[curSp()]]$indic$polyOverlap@polygons
   if(length(polyOvXY) == 1) {
     shp <- list(polyOvXY[[1]]@Polygons[[1]]@coords)
   } else {
     shp <- lapply(polyOvXY, function(x) x@Polygons[[1]]@coords)
   }
-  bb <- spp[[curSp()]]$indic$polyOverlapCrop@bbox
+  bb <- spp[[curSp()]]$indic$polyOverlap@bbox
   bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
   map %>%
     fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
