@@ -1261,6 +1261,7 @@ function(input, output, session) {
   ### COMPONENT: INDICATORS ####
   ########################################### #
   selAreaSource <- reactive(input$selAreaSource)
+  selOverlapSource <- reactive(input$selOverlapSource)
 
   #Dowload EOO shapefile
   output$dlEOO <- downloadHandler(
@@ -1911,9 +1912,10 @@ function(input, output, session) {
     evalOut = evalOut,
     mapPred = mapPred,
     mapXfer = mapXfer,
+    selAreaSource = selAreaSource,
+    selOverlapSource = selOverlapSource,
     overlapField = overlapField,
     overlapCat  = overlapCat,
-    selAreaSource = selAreaSource,
     rmm = rmm,
 
     # Switch to a new component tab
