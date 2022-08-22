@@ -2,16 +2,7 @@ indic_overlap_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
     span("Step 1:", class = "step"),
-    span("Choose Input range map", class = "stepText"), br(), br(),
-    selectInput(ns("selSource") , label = "Select raster for calculations",
-                choices = list("Wallace SDM" = "wallace",
-                               "Transferred SDM" = "xfer",
-                               "User SDM" = "sdm",
-                               "Masked SDM" = "masked",
-                               "EOO" = "eoo",
-                               "AOO" = "aoo"
-                )),
-
+    uiOutput(ns("indicOverlapSourceUI")),
     actionButton(ns("goInputRaster"), "Select"),
     tags$hr(),
     span("Step 2:", class = "step"),
@@ -61,47 +52,90 @@ indic_overlap_module_server <- function(input, output, session, common) {
   indicField <- common$indicField
   indicCategory <- common$indicCategory
 
+  output$indicOverlapSourceUI <- renderUI({
+    req(curSp())
+    if (input$indicOverlapSel != "") {
+      n <- c()
+      l <- c()
+      if (!is.null(spp[[curSp()]]$visualization$mapPred)) {
+        n <- c("wallace", n)
+        l <- c("Wallace SDM", l)
+      }
+      if (!is.null(spp[[curSp()]]$transfer$mapXfer)) {
+        n <- c("xfer", n)
+        l <- c("Transferred SDM", l)
+      }
+      if (!is.null(spp[[curSp()]]$mask$userSDM)) {
+        n <- c("user", n)
+        l <- c("User-specified SDM", l)
+      }
+      if (!is.null(spp[[curSp()]]$mask$prediction)) {
+        n <- c("mask", n)
+        l <- c("Masked SDM", l)
+      }
+      if (!is.null(spp[[curSp()]]$indic$EOOpoly)) {
+        n <- c("eoo", n)
+        l <- c("Extent of Occurrence (EOO)", l)
+      }
+      if (!is.null(spp[[curSp()]]$indic$AOOraster)) {
+        n <- c("aoo", n)
+        l <- c("Area of Ocupancy (AOO)", l)
+      }
+      indicOverlapSourceList <- setNames(as.list(n), l)
+      shinyWidgets::pickerInput("selOverlapSource",
+                                label = "Select source for calculations",
+                                choices = indicOverlapSourceList,
+                                multiple = FALSE)
+    }
+  })
+
   observeEvent(input$goInputRaster, {
-    if(input$selSource == "wallace"){
-      if (is.null(spp[[curSp()]]$visualization$mapPred)) {
+    # WARNING ####
+    if (is.null(selOverlapSource())) {
+      logger %>%
+        writeLog(type = 'warning',
+                 hlSpp(curSp()),
+                 "No source available for calculations (**).")
+      return()
+    }
+    # ERRORS ####
+    if (selOverlapSource() == "wallace") {
+      if (is.null(spp[[curSp()]]$visualization$thresholds)) {
         logger %>%
           writeLog(type = 'error',
-                   'Visualize your model before doing overlap calculations')
+                   hlSpp(curSp()),
+                   'Generate a thresholded model before doing calculations.')
         return()
       }
-      spp[[curSp()]]$indic$Plot <- spp[[curSp()]]$visualization$mapPred
     }
-    if (input$selSource == "xfer"){
-      if (is.null(spp[[curSp()]]$transfer$mapXfer)) {
+    if (selOverlapSource() == "xfer") {
+      if (is.null(spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet)) {
         logger %>%
           writeLog(type = 'error',
-                   'Transfer your model before doing overlap calculations')
+                   hlSpp(curSp()),
+                   'Generate a thresholded prediction before doing calculations')
         return()
       }
-      spp[[curSp()]]$indic$Plot <-  spp[[curSp()]]$transfer$mapXfer
     }
-    if(input$selSource == "sdm"){
-      if (is.null(spp[[curSp()]]$mask$userSDM)) {
-        logger %>%
-          writeLog(
-            type = 'error',
-            'Load you model in component User SDM before doing range calculations')
-        return()
-      }
-      spp[[curSp()]]$indic$Plot <- spp[[curSp()]]$mask$userSDM
-    }
-    if(input$selSource == "masked"){
-
-      if (is.null(    spp[[curSp()]]$mask$prediction)) {
+    if (selOverlapSource() == "user") {
+      if (!shiny::isTruthy(spp[[curSp()]]$mask$userThr)) {
         logger %>%
           writeLog(type = 'error',
-                   'Do a maskRangeR analysis before doing range calculations')
+                   hlSpp(curSp()),
+                   'Load a user thresholded prediction before doing calculations.')
         return()
       }
-      spp[[curSp()]]$indic$Plot <- spp[[curSp()]]$mask$userSDM
     }
-    if(input$selSource == "eoo"){
-
+    if (selOverlapSource() == "mask") {
+      if (!spp[[curSp()]]$mask$maskThr) {
+        logger %>%
+          writeLog(type = 'error',
+                   hlSpp(curSp()),
+                   'Mask a thresholded prediction before doing calculations.')
+        return()
+      }
+    }
+    if (selOverlapSource() == "eoo") {
       if (is.null(spp[[curSp()]]$indic$EOOpoly)) {
         logger %>%
           writeLog(
@@ -109,12 +143,8 @@ indic_overlap_module_server <- function(input, output, session, common) {
             'Do an EOO calculation in the area module before doing range calculations')
         return()
       }
-      spp[[curSp()]]$indic$Plot1 <- spp[[curSp()]]$indic$EOOpoly
     }
-    if (input$selSource == "aoo") {
-      #CAREFUL: as its set up now if user doesn t do maskrangeR this object will be something else
-      #(either user uploaed SDM or wallace SDM) this must be fixed in other components so it works smoothly
-
+    if (selOverlapSource() == "aoo") {
       if (is.null(spp[[curSp()]]$indic$AOOraster)) {
         logger %>%
           writeLog(
@@ -122,12 +152,42 @@ indic_overlap_module_server <- function(input, output, session, common) {
             'Do an AOO calculation in the area module before doing range calculations')
         return()
       }
-      spp[[curSp()]]$indic$Plot <- spp[[curSp()]]$indic$AOOraster
     }
+    rangeMap <- switch (selOverlapSource(),
+                        wallace = spp[[curSp()]]$visualization$mapPred,
+                        xfer = spp[[curSp()]]$transfer$mapXfer,
+                        user = spp[[curSp()]]$mask$userSDM,
+                        mask = spp[[curSp()]]$mask$prediction,
+                        eoo = spp[[curSp()]]$indic$EOOpoly,
+                        aoo = spp[[curSp()]]$indic$AOOraster)
+    # Transform to polygon
+    if (class(rangeMap) == "Raster") {
+      r <- terra::rast(rangeMap)
+      r[r == 0] <- NA
+      rangeMap <- terra::as.polygons(r)
+      # Project AOO raster to WGS84
+      if (selOverlapSource() == "aoo") {
+        rangeMap <- terra::project(rangeMap, getWKT("wgs84"))
+      }
+      rangeMap <- sf::st_as_sf(rangeMap)
+    }
+    req(rangeMap)
+    logger %>%
+      writeLog(hlSpp(curSp()),
+               paste0(switch (selOverlapSource(),
+                              wallace = "Wallace SDM",
+                              xfer = "Transferred SDM",
+                              user = "User-specified SDM",
+                              mask = "Masked SDM",
+                              eoo = "Extent of Occurrence (EOO)",
+                              aoo = "Area of Ocupancy (AOO)"),
+                      " selected for overlap analysis (**)"))
+    # LOAD TO SPP
+    spp[[curSp()]]$indic$overlapSourcePoly <- rangeMap
   })
 
   observeEvent(input$goInputOver, {
-    if (is.null(spp[[curSp()]]$indic$Plot)) {
+    if (is.null(spp[[curSp()]]$indic$overlapSourcePoly)) {
       logger %>% writeLog(
         type = 'error', hlSpp(curSp()), 'Calculate/Upload a species distribution')
       return()
@@ -168,9 +228,9 @@ indic_overlap_module_server <- function(input, output, session, common) {
       }
       shpcrop <- rgeos::gBuffer(polyOverlap, byid = TRUE, width = 0)
       ##crop polygon for visualization if range is a raster
-      if(!is.null(spp[[curSp()]]$indic$Plot)){
+      if (!is.null(spp[[curSp()]]$indic$overlapSourcePoly)) {
         shpcrop <- raster::crop(shpcrop,
-                                raster::extent(spp[[curSp()]]$indic$Plot))
+                                raster::extent(spp[[curSp()]]$indic$overlapSourcePoly))
       }
       spp[[curSp()]]$indic$polyOverlap <- polyOverlap
       spp[[curSp()]]$indic$polyOverlapCrop <- shpcrop
@@ -184,7 +244,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
       }
     spp[[curSp()]]$indic$RasOverlap <- userRaster$sdm
     sameRes <- identical(raster::res(spp[[curSp()]]$indic$RasOverlap),
-                         raster::res(spp[[curSp()]]$indic$Plot))
+                         raster::res(spp[[curSp()]]$indic$overlapSourcePoly))
     if (sameRes==FALSE) {
       logger %>% writeLog(
         type = 'error', hlSpp(curSp()),
@@ -310,7 +370,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
       smartProgress(
         logger,
         message = "Calculating range overlap ", {
-          r = spp[[curSp()]]$indic$Plot
+          r = spp[[curSp()]]$indic$overlapSourcePoly
           #  shp = spp[[curSp()]]$indic$polyOverlap
           raster::crs(shp) <- sf::st_crs(4326)$wkt
           raster::crs(r) <- sf::st_crs(4326)$wkt
@@ -463,7 +523,7 @@ indic_overlap_module_map <- function(map, common) {
   curSp <- common$curSp
   map %>% clearAll()
   #if EOO is selected plot the polygon
-  if(!is.null(spp[[curSp()]]$indic$Plot1)){
+  if (!is.null(spp[[curSp()]]$indic$overlapSourcePoly)) {
 
     polyEOO <- spp[[curSp()]]$indic$EOOpoly@polygons[[1]]@Polygons
     bb <- spp[[curSp()]]$indic$EOOpoly@bbox
@@ -489,9 +549,9 @@ indic_overlap_module_map <- function(map, common) {
   }
 
   #plot SDM to use
-  if (is.null(spp[[curSp()]]$indic$Plot1)) {
-    req(spp[[curSp()]]$indic$Plot)
-    sdm <-  spp[[curSp()]]$indic$Plot
+  if (is.null(spp[[curSp()]]$indic$overlapSourcePoly)) {
+    req(spp[[curSp()]]$indic$overlapSourcePoly)
+    sdm <-  spp[[curSp()]]$indic$overlapSourcePoly
     raster::crs(sdm) <- sp::CRS("+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 ")
     SDMVals <- getRasterVals(sdm)
     rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
