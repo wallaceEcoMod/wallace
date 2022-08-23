@@ -7,8 +7,7 @@
 indic_raster(rasPath, rasName, logger = NULL)
 }
 \arguments{
-\item{rasPath}{character of path to rasters, must be the full path including file name and extension.
-Filename need to be name with genus_species format.}
+\item{rasPath}{character of path to rasters, must be the full path including file name and extension.}
 
 \item{rasName}{character vector of raster names to be assigned to loaded rasters}
 
@@ -17,9 +16,6 @@ otherwise leave the default NULL}
 }
 \description{
 Upload user-specified SDM prediction
-}
-\details{
-See Examples.
 }
 \author{
 Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
