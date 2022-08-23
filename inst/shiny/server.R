@@ -1301,12 +1301,8 @@ function(input, output, session) {
           }
           AOOras <-  spp[[curSp()]]$indic$AOOraster
           raster::crs(AOOras) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
-          OverlapVals <- spp[[curSp()]]$indic$overlapvalues
-        #  rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-         # legendPal <- colorNumeric(rev(rasCols), OverlapVals, na.color = 'transparent')
-          #rasPal <- colorNumeric(rasCols, OverlapVals, na.color = 'transparent')
           # Create legend
-            ##Add legend
+          ##Add legend
            m <- leaflet() %>% addLegend("bottomright", colors = c('red', 'grey'),
                       title = "AOO",
                       labels = c("Presence", "Absence"),
