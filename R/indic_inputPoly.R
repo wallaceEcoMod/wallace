@@ -42,7 +42,7 @@ indic_inputPoly <- function(bgShp_path, bgShp_name, overlapArea,
     })
   } else {
     logger %>%
-      writeLog(type = 'error',
+      writeLog(type = 'error', hlSpp(spN),
                'Please enter shapefile (.shp, .shx, .dbf).')
     return()
   }
@@ -52,9 +52,9 @@ indic_inputPoly <- function(bgShp_path, bgShp_name, overlapArea,
       "Projection not found for shapefile. It is assume that shapefile datum ",
       "is WGS84 (**)"
     )
-    st_crs(polyData) <- 4326
+    sf::st_crs(polyData) <- 4326
   }
-  if (st_crs(polyData)$input != "EPSG:4326") {
+  if (sf::st_crs(polyData)$input != "EPSG:4326") {
     polyData <- sf::st_transform(polyData, 4326)
     logger %>% writeLog(
       type = 'warning', hlSpp(spN),
@@ -62,7 +62,7 @@ indic_inputPoly <- function(bgShp_path, bgShp_name, overlapArea,
       "Shapefile was reprojected to this CRS. (**)"
     )
   }
-  if (length(sf::st_intersects(polyData, overlapArea)) == 0) {
+  if (sum(lengths(sf::st_intersects(polyData, overlapArea))) == 0) {
     logger %>% writeLog(
       type = 'error', hlSpp(spN),
       "Shapefile does not intersect the area to overlap. Please specify a new polygon. (**)"
@@ -70,7 +70,10 @@ indic_inputPoly <- function(bgShp_path, bgShp_name, overlapArea,
     return()
   }
   smartProgress(logger, message = "Intersecting spatial data ...", {
-    spatialPoly <- sf::st_intersection(polyData, overlapArea)
+    nmOverlap <- names(overlapArea)
+    nmOverlap <- nmOverlap[!(nmOverlap %in% "geometry")]
+    spatialPoly <- sf::st_intersection(polyData, overlapArea) %>%
+      dplyr::select(-nmOverlap)
   })
   logger %>% writeLog(hlSpp(spN), "Spatial data uploaded.")
   return(spatialPoly)

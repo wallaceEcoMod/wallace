@@ -43,7 +43,7 @@ mask_userSDM <- function(rasPath, rasName, logger = NULL) {
   }
   smartProgress(logger, message = "Uploading user-specified SDM (**)...", {
     r <- raster::raster(rasPath)
-#    r <- raster::trim(r)  This creates a problem when doing overlap as resolutions are affected
+    r <- raster::trim(r)
     names(r) <- fileNameNoExt(rasName)
     extPoly <- raster::extent(r)
     if (extPoly@xmin < -180 | extPoly@xmax > 180 |

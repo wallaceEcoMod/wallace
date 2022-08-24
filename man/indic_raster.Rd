@@ -4,15 +4,22 @@
 \alias{indic_raster}
 \title{indic_raster}
 \usage{
-indic_raster(rasPath, rasName, logger = NULL)
+indic_raster(rasPath, rasName, overlapArea, logger = NULL, spN = NULL)
 }
 \arguments{
-\item{rasPath}{character of path to rasters, must be the full path including file name and extension.}
+\item{rasPath}{character of path to rasters, must be the full path including
+file name and extension.}
 
-\item{rasName}{character vector of raster names to be assigned to loaded rasters}
+\item{rasName}{character vector of raster names to be assigned to loaded
+rasters.}
 
-\item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
-otherwise leave the default NULL}
+\item{overlapArea}{x. An sf object.}
+
+\item{logger}{stores all notification messages to be displayed in the
+Log Window of Wallace GUI. insert the logger reactive list here for
+running in shiny, otherwise leave the default NULL.}
+
+\item{spN}{Species name}
 }
 \description{
 Upload user-specified SDM prediction
