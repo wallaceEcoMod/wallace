@@ -209,12 +209,11 @@ function(input, output, session) {
     shinyjs::toggleState("dlXferEnvs", !is.null(spp[[curSp()]]$transfer$xfEnvsDl))
     shinyjs::toggleState("dlXfer", !is.null(spp[[curSp()]]$transfer$xfEnvs))
     shinyjs::toggleState("dlMess", !is.null(spp[[curSp()]]$transfer$messVals))
+    shinyjs::toggleState("dlMask", !is.null(spp[[curSp()]]$mask$prediction))
+    shinyjs::toggleState("dlMaskExpPoly", !is.null(spp[[curSp()]]$mask$removePoly))
     shinyjs::toggleState("dlAOO", !is.null(spp[[curSp()]]$indic$AOOraster))
     shinyjs::toggleState("dlEOO", !is.null(spp[[curSp()]]$indic$EOOpoly))
     shinyjs::toggleState("dlOverlap", !is.null(spp[[curSp()]]$indic$overlapPolygon))
-    shinyjs::toggleState("dlOverlapEOO", !is.null(spp[[curSp()]]$indic$overlapPoly))
-    shinyjs::toggleState("dlMask", !is.null(spp[[curSp()]]$mask$prediction))
-    shinyjs::toggleState("dlMaskExpPoly", !is.null(spp[[curSp()]]$mask$removePoly))
     shinyjs::toggleState("dlAreaTimePlot", !is.null(spp[[curSp()]]$indic$AreaTime))
     shinyjs::toggleState("dlAreaTime", !is.null(spp[[curSp()]]$indic$AreaTime))
     # shinyjs::toggleState("dlWhatever", !is.null(spp[[curSp()]]$whatever))
@@ -1240,7 +1239,6 @@ function(input, output, session) {
                       layer = paste0(n, '_maskExpShp'),
                       driver = "ESRI Shapefile",
                       overwrite_layer = TRUE)
-
       exts <- c('dbf', 'shp', 'shx')
       fs <- paste0(n, '_maskExpShp.', exts)
       zip::zipr(zipfile = file, files = fs)
@@ -1263,32 +1261,30 @@ function(input, output, session) {
   selAreaSource <- reactive(input$selAreaSource)
   selOverlapSource <- reactive(input$selOverlapSource)
 
-  #Dowload EOO shapefile
+  # Dowload EOO shapefile
   output$dlEOO <- downloadHandler(
-    filename = function() paste0(curSp(), "_EOOShp.zip"),
+    filename = function() paste0(curSp(), "_EOO.zip"),
     content = function(file) {
       tmpdir <- tempdir()
       setwd(tempdir())
       n <- curSp()
-
-      raster::shapefile(x= spp[[curSp()]]$indic$EOOpoly,
-                      filename = paste0(n, '_EOOShp'),overwrite=TRUE)
-
+      raster::shapefile(x = spp[[curSp()]]$indic$EOOpoly,
+                        filename = paste0(n, '_EOO'),
+                        overwrite = TRUE)
       exts <- c('dbf','shp', 'shx')
-      fs <- paste0(n, '_EOOShp.', exts)
+      fs <- paste0(n, '_EOO.', exts)
       zip::zipr(zipfile = file, files = fs)
       if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
     },
     contentType = "application/zip"
   )
-  #download AOO map
+
+  # Download AOO map
   output$dlAOO <- downloadHandler(
     filename = function() {
       ext <- switch(input$AOOFileType, raster = 'zip', ascii = 'asc',
                     GTiff = 'tif', png = 'png')
-
-      paste0( "AOO", '.', ext)
-
+      paste0(curSp(), "_AOO", '.', ext)
     },
     content = function(file) {
       if(require(rgdal)) {
@@ -1299,23 +1295,37 @@ function(input, output, session) {
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in your R console. ")
           }
-          AOOras <-  spp[[curSp()]]$indic$AOOraster
-          raster::crs(AOOras) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
-          # Create legend
-          ##Add legend
-           m <- leaflet() %>% addLegend("bottomright", colors = c('red', 'grey'),
-                      title = "AOO",
-                      labels = c("Presence", "Absence"),
-                      opacity = 1, layerId = 'expert') %>%
-              addProviderTiles(input$bmap) %>%
-             addRasterImage(AOOras, colors = c('gray', 'red'),
-                            opacity = 0.7, group = 'indic', layerId = 'AOO',
-                            method = "ngb")
-            mapview::mapshot(m, file = file)
+          AOOras <- spp[[curSp()]]$indic$AOOraster
+          # AOO raster transform to polygon for visualization
+          AOOpol <- terra::rast(AOOras)
+          AOOpol <- terra::as.polygons(AOOpol)
+          AOOpol <- AOOpol %>% terra::project(getWKT("wgs84")) %>%
+            sf::st_as_sf()
 
+          # Zoom
+          bb <- sf::st_bbox(AOOpol) %>% as.vector()
+          bbZoom <- polyZoom(bb[1], bb[2], bb[3], bb[4], fraction = 0.05)
+          map %>%
+            fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
 
+          m <- leaflet() %>%
+            addProviderTiles(input$bmap) %>%
+            ##Add legend
+            addLegend("bottomright", colors = "darkorange",
+                      labels = "AOO",
+                      opacity = 1, layerId = 'aooLegend') %>%
+            ##ADD polygon
+            leafem::addFeatures(AOOpol, fillColor = 'darkorange', fillOpacity = 0.9,
+                                opacity = 0, group = 'indic', layerId = 'indicAOO')
+          if (spp[[curSp()]]$indic$AOOsource == "occs") {
+            map %>%
+              addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
+                               radius = 5, color = 'red', fill = TRUE, fillColor = 'red',
+                               fillOpacity = 0.2, weight = 2, popup = ~pop)
+          }
+          mapview::mapshot(m, file = file)
         } else if (input$AOOFileType == 'raster') {
-          fileName <-  "AOO"
+          fileName <-  paste0(curSp(), "_overlap", '.', ext)
           tmpdir <- tempdir()
           raster::writeRaster(spp[[curSp()]]$indic$AOOraster,
                               file.path(tmpdir, fileName),
@@ -1334,13 +1344,12 @@ function(input, output, session) {
       }
     }
   )
-  #download overlap map if from EOO
-  output$dlOverlapEOO <- downloadHandler(
+
+  # Download overlap map
+  output$dlOverlap <- downloadHandler(
     filename = function() {
-      ext <- switch(input$OverlapEOOFileType, shapefile = 'zip', png = 'png')
-
-      paste0( "OverlapEOO", '.', ext)
-
+      ext <- switch(input$OverlapFileType, shapefile = 'zip', png = 'png')
+      paste0(curSp(), "_overlap", '.', ext)
     },
     content = function(file) {
       if(require(rgdal)) {
@@ -1351,139 +1360,37 @@ function(input, output, session) {
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in your R console. ")
           }
-
-          polyOver <- spp[[curSp()]]$indic$overlapPoly@polygons[[1]]@Polygons
           m <- leaflet() %>%
+            addProviderTiles(input$bmap) %>%
             ##Add legend
-            addLegend("bottomright", colors = "red",
-                      title = "Overlap", labels = "Overlap",
-                      opacity = 1)
-          ##ADD polygon
-          if (length(polyOver) == 1) {
-            xy <- list(polyOver[[1]]@coords)
-          } else {
-            xy <- lapply(polyOver, function(x) x@coords)
-          }
-          for (shp in xy) {
-            m %>%
-              addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4, color = "red",
-                          group = 'indic')
-          }
-
+            addLegend("bottomright", colors = "darkred",
+                      labels = "Overlap Map", opacity = 1) %>%
+            ##ADD polygon
+            leafem::addFeatures(spp[[curSp()]]$indic$overlapPolygon,
+                                fillColor = 'darkred', fillOpacity = 0.7,
+                                opacity = 0)
           mapview::mapshot(m, file = file)
-
-        }
-        else if (input$OverlapFileType == 'shapefile') {
+        } else if (input$OverlapFileType == 'shapefile') {
           tmpdir <- tempdir()
           setwd(tempdir())
           n <- curSp()
-          overlapPoly <- spp[[curSp()]]$indic$overlapPoly
-          rgdal::writeOGR(obj = overlapPoly,
+          overlapPoly <- spp[[curSp()]]$indic$overlapPolygon
+          sf::st_write(obj = overlapPoly,
                           dsn = tmpdir,
-                          layer = paste0(n, '_OverlapEOO'),
+                          layer = paste0(n, '_Overlap'),
                           driver = "ESRI Shapefile",
-                          overwrite_layer = TRUE)
-
+                          delete_layer = TRUE)
           exts <- c('dbf', 'shp', 'shx')
-          fs <- paste0(n, '_OverlapEOO.', exts)
+          fs <- paste0(n, '_Overlap.', exts)
           zip::zipr(zipfile = file, files = fs)
           if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
         }
-
       } else {
         logger %>% writeLog("Please install the rgdal package before downloading rasters.")
       }
     }
   )
 
-
-  # download overlap map if from raster (SDM or AOO)
-  output$dlOverlap <- downloadHandler(
-    filename = function() {
-      ext <- switch(input$OverlapFileType, raster = 'zip', ascii = 'asc',
-                    GTiff = 'tif', png = 'png')
-
-      paste0( "Overlap", '.', ext)
-
-    },
-    content = function(file) {
-      if(require(rgdal)) {
-        if (input$OverlapFileType == 'png') {
-          if (!webshot::is_phantomjs_installed()) {
-            logger %>%
-              writeLog(type = "error", "To download PNG prediction, you need to",
-                       " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
-                       " in your R console. ")
-          }
-
-          Overlap <-  spp[[curSp()]]$indic$overlapPolygon
-          raster::crs(Overlap) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
-          OverlapVals <- spp[[curSp()]]$indic$overlapvalues
-          rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-          legendPal <- colorNumeric(rev(rasCols), OverlapVals, na.color = 'transparent')
-          rasPal <- colorNumeric(rasCols, OverlapVals, na.color = 'transparent')
-          # Create legend
-
-          if (length(unique(OverlapVals)) == 3 |
-              length(unique(OverlapVals)) == 2) {
-            m <- leaflet() %>%
-              addLegend("bottomright", colors = c('red', 'grey'),
-                        title = "Range Overlap",
-                        labels = c("Presence", "Absence"),
-                        opacity = 1, layerId = 'expert') %>%
-              addProviderTiles(input$bmap) %>%
-              addRasterImage(Overlap, colors = c('gray', 'red'),
-                             opacity = 0.7, group = 'indic', layerId = 'Overlap',
-                             method = "ngb")
-            mapview::mapshot(m, file = file)
-          }
-          else if (length(unique(OverlapVals)) == 1) {
-            m <- leaflet() %>%
-              addLegend("bottomright", colors = 'red',
-                        title = "Range Overlap",
-                        labels = "Presence",
-                        opacity = 1, layerId = 'expert') %>%
-              addProviderTiles(input$bmap) %>%
-              addRasterImage(Overlap, colors = 'red',
-                             opacity = 0.7, group = 'indic', layerId = 'Overlap',
-                             method = "ngb")
-            mapview::mapshot(m, file = file)
-            }
-          else {
-            # if no threshold specified
-            legendPal <- colorNumeric(rev(rasCols), OverlapVals, na.color = 'transparent')
-            rasPal <- colorNumeric(rasCols, OverlapVals, na.color = 'transparent')
-            m <- leaflet() %>%
-              addLegend("bottomright", pal = legendPal, title = "Range Overlap",
-                        values = OverlapVals, layerId = "overlap",
-                        labFormat = reverseLabel(2, reverse_order=TRUE)) %>%
-              addProviderTiles(input$bmap) %>%
-              addRasterImage(Overlap, colors = rasPal,
-                             opacity = 0.7, group = 'indic', layerId = 'Overlap',
-                             method = "ngb")
-            mapview::mapshot(m, file = file)
-          }
-
-
-        } else if (input$OverlapFileType == 'raster') {
-          fileName <-  "Overlap"
-          tmpdir <- tempdir()
-          raster::writeRaster( spp[[curSp()]]$indic$overlapPolygon, file.path(tmpdir, fileName),
-                               format = input$OverlapFileType, overwrite = TRUE)
-          owd <- setwd(tmpdir)
-          fs <- paste0(fileName, c('.grd', '.gri'))
-          zip::zipr(zipfile = file, files = fs)
-          setwd(owd)
-        } else {
-          r <- raster::writeRaster(spp[[curSp()]]$indic$overlapPolygon, file, format = input$OverlapFileType,
-                                   overwrite = TRUE)
-          file.rename(r@file@name, file)
-        }
-      } else {
-        logger %>% writeLog("Please install the rgdal package before downloading rasters.")
-      }
-    }
-  )
   output$dlAreaTime<- downloadHandler(
     filename = function() {
       paste0("Area_through_time", ".csv")
