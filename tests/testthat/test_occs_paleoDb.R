@@ -15,7 +15,7 @@ timeInterval <- "Holocene"
 
 # run function if no Windows
 if (Sys.info()['sysname'] != "Windows") {
-  occsPaleo <- occs_paleoDb(spName, occNum, timeInterval, logger = NULL)
+   occsPaleo <- occs_paleoDb(spName, occNum, timeInterval, logger = NULL)
 }
 
 
@@ -83,8 +83,9 @@ test_that("output data checks", {
                spName, ignore.case = TRUE, all = TRUE)
 })
 ##Check headers for both original and cleaned tables
-keyPaleoHeaders <- c("occID", "scientific_name", "longitude", "latitude", "early_interval",
-                     "late_interval", "country", "collection_no", "record_type",
+keyPaleoHeaders <- c("occID", "scientific_name", "longitude", "latitude",
+                     # "early_interval", "late_interval",
+                     "country", "collection_no", "record_type",
                      "early_age", "late_age")
 
 test_that("headers check", {

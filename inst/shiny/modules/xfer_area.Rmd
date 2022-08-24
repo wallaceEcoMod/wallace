@@ -37,7 +37,7 @@ m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap)
 m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
   leaflet::addLegend("bottomright", pal = legendPal,
-            title = "Predicted Suitability<br>(Transfered)",
+            title = "Predicted Suitability<br>(Transferred)",
             values = mapXferVals_{{spAbr}}, layerId = 'xfer',
             labFormat = reverseLabel(2, reverse_order = TRUE)) %>%
 # map model prediction raster and transfer polygon
@@ -102,7 +102,7 @@ m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap)
 m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
   leaflet::addLegend("bottomright", colors = c('gray', 'red'),
-            title = "Thresholded Suitability<br>(Transfered)",
+            title = "Thresholded Suitability<br>(Transferred)",
             labels = c("predicted absence", "predicted presence"),
             opacity = 1, layerId = 'xfer')%>%
 
@@ -156,7 +156,7 @@ m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap)
 m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
   leaflet::addLegend("bottomright", pal = legendPal,
-            title = "Predicted Suitability<br>(Transfered)",
+            title = "Predicted Suitability<br>(Transferred)",
             values = mapXferVals_{{spAbr}}, layerId = 'xfer',
             labFormat = reverseLabel(2, reverse_order = TRUE)) %>%
 # map model prediction raster and transfer polygon
@@ -220,7 +220,7 @@ m <- leaflet() %>% addProviderTiles(providers$Esri.WorldTopoMap)
 m %>%
   fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4]) %>%
   leaflet::addLegend("bottomright", colors = c('gray', 'red'),
-            title = "Thresholded Suitability<br>(Transfered)",
+            title = "Thresholded Suitability<br>(Transferred)",
             labels = c("predicted absence", "predicted presence"),
             opacity = 1, layerId = 'xfer')%>%
 # map model prediction raster and transfer polygon

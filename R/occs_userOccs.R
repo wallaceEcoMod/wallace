@@ -50,7 +50,7 @@ occs_userOccs <- function(txtPath, txtName, txtSep = ",", txtDec = ".",
     logger %>% writeLog(
       type = "error",
       paste0('Please input a file with columns "scientific_name", ',
-             '"longitude", "latitude". '))
+             '"longitude", "latitude".'))
     return()
   }
 

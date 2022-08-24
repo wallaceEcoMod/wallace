@@ -101,8 +101,9 @@ occs_paleoDb <- function(spName, occNum, timeInterval, logger = NULL) {
   occs <- occsXY[!dups, ]
 
   # subset by key columns and make id and popup columns
-  cols <- c("occID", "scientific_name", "longitude", "latitude", "early_interval",
-            "late_interval", "country", "collection_no", "record_type",
+  cols <- c("occID", "scientific_name", "longitude", "latitude",
+            # "early_interval", "late_interval",
+            "country", "collection_no", "record_type",
             "early_age", "late_age")
   occs <- occs %>% dplyr::select(dplyr::one_of(cols)) %>%
     # make new column for leaflet marker popup content
