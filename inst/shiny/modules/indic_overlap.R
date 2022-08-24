@@ -184,7 +184,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
     # Create/Reset after selecting a new source
     spp[[curSp()]]$indic$inputOverlap <- NULL
     spp[[curSp()]]$indic$inputOverlapSel <- NULL
-    spp[[curSp()]]$indic$overlapRaster <- NULL
+    spp[[curSp()]]$indic$overlapPolygon <- NULL
     spp[[curSp()]]$indic$overlapRatio <- NULL
     spp[[curSp()]]$indic$overlapFields <- NULL
     spp[[curSp()]]$indic$overlapCat <- NULL
@@ -220,7 +220,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
       spp[[curSp()]]$indic$inputOverlapSel <- input$indicOverlap
     }
     # Reset after selecting a new input
-    spp[[curSp()]]$indic$overlapRaster <- NULL
+    spp[[curSp()]]$indic$overlapPolygon <- NULL
     spp[[curSp()]]$indic$overlapRatio <- NULL
     spp[[curSp()]]$indic$overlapFields <- NULL
     spp[[curSp()]]$indic$overlapCat <- NULL
@@ -304,7 +304,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
       "Proportion of range area calculated (check results) (**).")
 
     # LOAD INTO SPP ####
-    spp[[curSp()]]$indic$overlapRaster <- overlap$overlapRaster
+    spp[[curSp()]]$indic$overlapPolygon <- overlap$overlapPolygon
     spp[[curSp()]]$indic$overlapRatio <- overlap$overlapRatio
     spp[[curSp()]]$indic$overlapFields <- overlapF
     spp[[curSp()]]$indic$overlapCat <- overlapC
@@ -370,7 +370,7 @@ indic_overlap_module_map <- function(map, common) {
 
   req(spp[[curSp()]]$indic$overlapSourcePoly)
 
-  if (is.null(spp[[curSp()]]$indic$overlapRaster)) {
+  if (is.null(spp[[curSp()]]$indic$overlapPolygon)) {
     map %>% clearAll()
     # Step 1 #
     sourcePoly <- spp[[curSp()]]$indic$overlapSourcePoly
@@ -451,7 +451,8 @@ indic_overlap_module_map <- function(map, common) {
                 labels = "Overlap Map",
                 opacity = 1, layerId = 'overlapLegend') %>%
       ##ADD polygon
-      leafem::addFeatures(spp[[curSp()]]$indic$overlapRaster, fillColor = 'darkred', fillOpacity = 0.7,
+      leafem::addFeatures(spp[[curSp()]]$indic$overlapPolygon,
+                          fillColor = 'darkred', fillOpacity = 0.7,
                           opacity = 0, group = 'indic', layerId = 'indicOverlap')
   }
 }

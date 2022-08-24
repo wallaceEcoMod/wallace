@@ -211,7 +211,7 @@ function(input, output, session) {
     shinyjs::toggleState("dlMess", !is.null(spp[[curSp()]]$transfer$messVals))
     shinyjs::toggleState("dlAOO", !is.null(spp[[curSp()]]$indic$AOOraster))
     shinyjs::toggleState("dlEOO", !is.null(spp[[curSp()]]$indic$EOOpoly))
-    shinyjs::toggleState("dlOverlap", !is.null(spp[[curSp()]]$indic$overlapRaster))
+    shinyjs::toggleState("dlOverlap", !is.null(spp[[curSp()]]$indic$overlapPolygon))
     shinyjs::toggleState("dlOverlapEOO", !is.null(spp[[curSp()]]$indic$overlapPoly))
     shinyjs::toggleState("dlMask", !is.null(spp[[curSp()]]$mask$prediction))
     shinyjs::toggleState("dlMaskExpPoly", !is.null(spp[[curSp()]]$mask$removePoly))
@@ -1416,7 +1416,7 @@ function(input, output, session) {
                        " in your R console. ")
           }
 
-          Overlap <-  spp[[curSp()]]$indic$overlapRaster
+          Overlap <-  spp[[curSp()]]$indic$overlapPolygon
           raster::crs(Overlap) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
           OverlapVals <- spp[[curSp()]]$indic$overlapvalues
           rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
@@ -1468,14 +1468,14 @@ function(input, output, session) {
         } else if (input$OverlapFileType == 'raster') {
           fileName <-  "Overlap"
           tmpdir <- tempdir()
-          raster::writeRaster( spp[[curSp()]]$indic$overlapRaster, file.path(tmpdir, fileName),
+          raster::writeRaster( spp[[curSp()]]$indic$overlapPolygon, file.path(tmpdir, fileName),
                                format = input$OverlapFileType, overwrite = TRUE)
           owd <- setwd(tmpdir)
           fs <- paste0(fileName, c('.grd', '.gri'))
           zip::zipr(zipfile = file, files = fs)
           setwd(owd)
         } else {
-          r <- raster::writeRaster(spp[[curSp()]]$indic$overlapRaster, file, format = input$OverlapFileType,
+          r <- raster::writeRaster(spp[[curSp()]]$indic$overlapPolygon, file, format = input$OverlapFileType,
                                    overwrite = TRUE)
           file.rename(r@file@name, file)
         }

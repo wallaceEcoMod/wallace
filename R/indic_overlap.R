@@ -31,6 +31,10 @@ indic_overlap <- function(rangeMap, inputOverlap, field = NULL,
           shp = sf::as_Spatial(inputOverlap),
           field = field,
           category = category)
+        simpRangeMap <- sf::st_union(rangeMap)
+        simpInputOverlap <- sf::st_union(
+          subset(inputOverlap, inputOverlap[[field]] %in% category))
+        overlapPolygon <- sf::st_intersection(simpRangeMap, simpInputOverlap)
       }
     )
   } else if ("RasterLayer" %in% class(inputOverlap)) {
@@ -40,16 +44,21 @@ indic_overlap <- function(rangeMap, inputOverlap, field = NULL,
         ratioOverlap <- changeRangeR::ratioOverlap(
           r = sf::as_Spatial(rangeMap),
           shp = inputOverlap)
-        # GEPB: Not sure when this scenario occurs. I get always a raster layer
+        # GEPB: Not sure when this scenario occurs.
         # if (is.list(maskedRange) & length(maskedRange) > 1) {
         #   names(maskedRange) <- NULL
         #   maskedRange$fun <- mean
         #   maskedRange$na.rm <- TRUE
         #   maskedRange <- do.call(raster::mosaic, maskedRange)
         # }
+        simpRangeMap <- sf::st_union(rangeMap)
+        simpInputOverlap <- terra::rast(inputOverlap)
+        simpInputOverlap[!is.na(simpInputOverlap)] <- 1
+        simpInputOverlap <- terra::as.polygons(simpInputOverlap) %>% sf::st_as_sf()
+        overlapPolygon <- sf::st_intersection(simpRangeMap, simpInputOverlap)
       }
     )
   }
-  return(list(overlapRaster = ratioOverlap$maskedRange,
+  return(list(overlapPolygon = overlapPolygon,
               overlapRatio = ratioOverlap$ratio))
 }
