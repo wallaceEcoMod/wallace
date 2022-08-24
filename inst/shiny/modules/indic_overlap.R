@@ -154,10 +154,10 @@ indic_overlap_module_server <- function(input, output, session, common) {
                         xfer = spp[[curSp()]]$transfer$mapXfer,
                         user = spp[[curSp()]]$mask$userSDM,
                         mask = spp[[curSp()]]$mask$prediction,
-                        eoo = spp[[curSp()]]$indic$EOOpoly,
+                        eoo = sf::st_as_sf(spp[[curSp()]]$indic$EOOpoly),
                         aoo = spp[[curSp()]]$indic$AOOraster)
     # Transform to polygon
-    if (class(rangeMap) == "RasterLayer") {
+    if ("RasterLayer" %in% class(rangeMap)) {
       r <- terra::rast(rangeMap)
       r[r == 0] <- NA
       rangeMap <- terra::as.polygons(r)
@@ -180,6 +180,14 @@ indic_overlap_module_server <- function(input, output, session, common) {
                       " selected for overlap analysis (**)"))
     # LOAD TO SPP
     spp[[curSp()]]$indic$overlapSourcePoly <- rangeMap
+    spp[[curSp()]]$indic$overlapSource <- selOverlapSource()
+    # Create/Reset after selecting a new source
+    spp[[curSp()]]$indic$inputOverlap <- NULL
+    spp[[curSp()]]$indic$inputOverlapSel <- NULL
+    spp[[curSp()]]$indic$overlapRaster <- NULL
+    spp[[curSp()]]$indic$overlapRatio <- NULL
+    spp[[curSp()]]$indic$overlapFields <- NULL
+    spp[[curSp()]]$indic$overlapCat <- NULL
   })
 
   # STEP 2 #####
@@ -202,24 +210,33 @@ indic_overlap_module_server <- function(input, output, session, common) {
       spp[[curSp()]]$indic$inputOverlap <- inputOverlap
     }
     if (input$indicOverlap == 'raster') {
-      userRaster <- indic_raster(rasPath = input$indicOverlapRaster$datapath,
-                                 rasName = input$indicOverlapRaster$name,
-                                 logger)
+      userRaster <- indic_raster(input$indicOverlapRaster$datapath,
+                                 input$indicOverlapRaster$name,
+                                 spp[[curSp()]]$indic$overlapSourcePoly,
+                                 logger, spN = curSp())
       spp[[curSp()]]$indic$inputOverlap <- userRaster
-      logger %>% writeLog(hlSpp(curSp()), "User raster file loaded.")
     }
+    if (!is.null(spp[[curSp()]]$indic$inputOverlap)) {
+      spp[[curSp()]]$indic$inputOverlapSel <- input$indicOverlap
+    }
+    # Reset after selecting a new input
+    spp[[curSp()]]$indic$overlapRaster <- NULL
+    spp[[curSp()]]$indic$overlapRatio <- NULL
+    spp[[curSp()]]$indic$overlapFields <- NULL
+    spp[[curSp()]]$indic$overlapCat <- NULL
   })
 
   # STEP 3 #####
   # Add this if we want to include field selection
   output$overlapFieldUI <- renderUI({
     #add a conditional on providing a file
-    req(curSp(), spp[[curSp()]]$indic$inputOverlap)
-    if (class(spp[[curSp()]]$indic$inputOverlap) != "sf") {
+    req(curSp())
+    req(!is.null(spp[[curSp()]]$indic$inputOverlap))
+    if (!("sf" %in% class(spp[[curSp()]]$indic$inputOverlap))) {
       p('The overlap raster is loaded. Click "Overlap" (**).')
     } else {
       fields <- names(spp[[curSp()]]$indic$inputOverlap)
-      fields <- fields[!(fields %in% c("geometry", curSp()))]
+      fields <- fields[!(fields %in% "geometry")]
       fields <- setNames(as.list(fields), fields)
       shinyWidgets::pickerInput("overlapField",
                                 label = "Select field",
@@ -232,7 +249,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
   output$overlapCatUI <- renderUI({
     #add a conditional on providing a file
     req(curSp(), spp[[curSp()]]$indic$inputOverlap, overlapField())
-    req(class(spp[[curSp()]]$indic$inputOverlap) == "sf")
+    req("sf" %in% class(spp[[curSp()]]$indic$inputOverlap))
     if (!is.null(overlapField())) {
       category <- unique(spp[[curSp()]]$indic$inputOverlap[[overlapField()]])
     } else {
@@ -254,53 +271,79 @@ indic_overlap_module_server <- function(input, output, session, common) {
         'Upload an overlap feature (raster/shapefile). (**)')
       return()
     }
-    smartProgress(
-      logger,
-      message = "Calculating range overlap ", {
-        inputOverlap <- spp[[curSp()]]$indic$inputOverlap
-        # Condition on which overlap if shp do this if raster then not, stored
-        # variables would be different though
-        if ("sf" %in% class(inputOverlap)) {
-          # GEPB: Uncomment when subfield in changeRangeR::ratioOverlap is working
-          # catAv <- unique(spp[[curSp()]]$indic$inputOverlap[[overlapField()]])
-          # if (length(catAv) == length(overlapCat())) {
-          #   categoryUse <- "All"
-          # } else {
-          #   categoryUse <- overlapCat()
-          # }
-          sf_use_s2(FALSE)
-          ratioOverlap <- changeRangeR::ratioOverlap(
-            r = sf::as_Spatial(spp[[curSp()]]$indic$overlapSourcePoly),
-            shp = sf::as_Spatial(inputOverlap),
-            field = overlapField(),
-            category = overlapCat())
-          maskedRange <- ratioOverlap$maskedRange
-        } else if ("RasterLayer" %in% class(inputOverlap)) {
-          ratioOverlap <- changeRangeR::ratioOverlap(
-            r = sf::as_Spatial(spp[[curSp()]]$indic$overlapSourcePoly),
-            shp = inputOverlap)
-          maskedRange <- ratioOverlap$maskedRange
-          # GEPB: Not when this scenario occurs. I get always a raster layer
-          if (is.list(maskedRange) & length(maskedRange) > 1) {
-            names(maskedRange) <- NULL
-            maskedRange$fun <- mean
-            maskedRange$na.rm <- TRUE
-            maskedRange <- do.call(raster::mosaic, maskedRange)
-          }
-        }
-        # Create a unique raster
-        logger %>% writeLog(hlSpp(curSp()),
-                            "Proportion of range area calculated (**).")
+    if ("sf" %in% class(spp[[curSp()]]$indic$inputOverlap)) {
+      if (is.null(overlapCat()) & is.null(overlapField())) {
+        logger %>% writeLog(
+          type = 'warning', hlSpp(curSp()),
+          'Wait until fields and categories menus are loaded. (**)')
+        return()
       }
-    )
+      if (is.null(overlapCat())) {
+        logger %>% writeLog(
+          type = 'warning', hlSpp(curSp()),
+          'Select at least one category/attribute for ', overlapField(), '. (**)')
+        return()
+      }
+    }
+    rangeMap <- spp[[curSp()]]$indic$overlapSourcePoly
+    inputOverlap <- spp[[curSp()]]$indic$inputOverlap
+
+    if ("sf" %in% class(inputOverlap)) {
+      overlapF <- overlapField()
+      overlapC <- overlapCat()
+    } else {
+      overlapF <- NULL
+      overlapC <- NULL
+    }
+
+    overlap <- indic_overlap(rangeMap, inputOverlap, field = overlapF,
+                             category = overlapC, logger, spN = curSp())
+
+    logger %>% writeLog(
+      hlSpp(curSp()),
+      "Proportion of range area calculated (check results) (**).")
+
     # LOAD INTO SPP ####
-    spp[[curSp()]]$indic$overlapRaster <- maskedRange
-    spp[[curSp()]]$indic$overlapRatio <- ratioOverlap$ratio
+    spp[[curSp()]]$indic$overlapRaster <- overlap$overlapRaster
+    spp[[curSp()]]$indic$overlapRatio <- overlap$overlapRatio
+    spp[[curSp()]]$indic$overlapFields <- overlapF
+    spp[[curSp()]]$indic$overlapCat <- overlapC
+
+    common$update_component(tab = "Results")
   })
 
-  output$result <- renderText({
+  output$result <- renderUI({
+    req(spp[[curSp()]]$indic$overlapRatio)
     # Result
-    gsub("%","%\n",  spp[[curSp()]]$indic$overlapRatio)
+    if ("sf" %in% class(spp[[curSp()]]$indic$inputOverlap)) {
+      msg <- paste("-----------------------------------------------------",
+                   paste0("OVERLAP FOR ", curSp()),
+                   "-----------------------------------------------------",
+                   paste0("Range is ", spp[[curSp()]]$indic$overlapSource, "."),
+                   paste0("Shape is a ", spp[[curSp()]]$indic$inputOverlapSel, "."),
+                   paste0("Selected shapefile field: ",
+                          spp[[curSp()]]$indic$overlapFields),
+                   paste0("Selected field categories/attributtes: ",
+                          paste(spp[[curSp()]]$indic$overlapCat,
+                                collapse = ", "), "."),
+                   "-----------------------------------------------------",
+                   "RESULTS",
+                   "-----------------------------------------------------",
+                   spp[[curSp()]]$indic$overlapRatio,
+                   sep = "<br/>")
+    } else {
+      msg <- paste("-----------------------------------------------------",
+                   paste0("OVERLAP FOR ", curSp()),
+                   "-----------------------------------------------------",
+                   paste0("Range is ", spp[[curSp()]]$indic$overlapSource, "."),
+                   paste0("Shape is a ", spp[[curSp()]]$indic$inputOverlapSel, "."),
+                   "-----------------------------------------------------",
+                   "RESULTS",
+                   "-----------------------------------------------------",
+                   paste(spp[[curSp()]]$indic$overlapRatio, collapse = "<br/>"),
+                   sep = "<br/>")
+    }
+    HTML(msg)
   })
 
   return(list(
@@ -316,7 +359,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
 indic_overlap_module_result <- function(id) {
   ns <- NS(id)
   # Result UI
-  verbatimTextOutput(ns("result"))
+  htmlOutput(ns("result"))
 }
 
 indic_overlap_module_map <- function(map, common) {
