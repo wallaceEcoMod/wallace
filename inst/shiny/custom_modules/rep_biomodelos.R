@@ -53,7 +53,7 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
 
 
     manifest <- list(
-      edited_occurrences = paste0(bioSp(), '_processed_occs.csv'),
+      edited_occurrences = paste0(bioSp(), '_occs.csv'),
       raster_model_prediction = paste0(bioSp(), '_pred.tif'),
       raster_model_threshold = paste0(bioSp(), '_thr.csv'),
       raster_model_modified_expert =
@@ -77,8 +77,11 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
     tmpdir <- tempdir()
     # Create occs
     # add req occs
-    tmpOccs <- file.path(tmpdir, paste0(bioSp(), '_processed_occs.csv'))
-    write.csv(spp[[bioSp()]]$occs, tmpOccs, row.names = FALSE)
+    tmpOccs <- file.path(tmpdir, paste0(bioSp(), '_occs.csv'))
+    occsBio <- spp[[bioSp()]]$occData$occsOrig
+    usedOccs <- occsBio$occID %in% spp[[bioSp()]]$occs$occID
+    occsBio <- cbind(occsBio, use = usedOccs)
+    write.csv(occsBio, tmpOccs, row.names = FALSE)
 
     # Create mapPrediction
     # add req pred
@@ -149,7 +152,8 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
 
     for (sp in bioSp()) {
       species_rmds <- NULL
-      for (component in names(COMPONENT_MODULES[names(COMPONENT_MODULES) != c("espace", "rep")])) {
+      compNames <- names(COMPONENT_MODULES) %in% c("espace", "mask", "indic", "diver", "rep")
+      for (component in names(COMPONENT_MODULES[!compNames])) {
         for (module in COMPONENT_MODULES[[component]]) {
           rmd_file <- module$rmd_file
           rmd_function <- module$rmd_function
@@ -168,14 +172,12 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
             rmd_vars
           )
           module_rmd <- do.call(knitr::knit_expand, knit_params)
-
           module_rmd_file <- tempfile(pattern = paste0(module$id, "_"),
                                       fileext = ".Rmd")
           writeLines(module_rmd, module_rmd_file)
           species_rmds <- c(species_rmds, module_rmd_file)
         }
       }
-
       species_md_file <- tempfile(pattern = paste0(sp, "_"),
                                   fileext = ".md")
       rmarkdown::render(input = "Rmd/userReport_species.Rmd",

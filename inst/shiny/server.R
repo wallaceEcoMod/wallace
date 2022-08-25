@@ -1586,7 +1586,8 @@ function(input, output, session) {
 
       for (sp in allSp()) {
         species_rmds <- NULL
-        for (component in names(COMPONENT_MODULES[names(COMPONENT_MODULES) != c("espace", "rep")])) {
+        compNames <- names(COMPONENT_MODULES) %in% c("espace", "mask", "indic", "diver", "rep")
+        for (component in names(COMPONENT_MODULES[!compNames])) {
           for (module in COMPONENT_MODULES[[component]]) {
             rmd_file <- module$rmd_file
             rmd_function <- module$rmd_function
@@ -1641,7 +1642,7 @@ function(input, output, session) {
               } else {
                 rmd_vars <- do.call(rmd_function, list(species = spp[[sp]]))
               }
-              knit_params <- c(
+              knit_params <- list(
                 file = rmd_file,
                 spName1 = spName(namesMult[1]),
                 spName2 = spName(namesMult[2]),

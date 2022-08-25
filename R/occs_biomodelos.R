@@ -117,5 +117,6 @@ occs_biomodelos <- function(spN, bioKey, logger = NULL) {
     ']. Records without coordinates removed [',
     noCoordsRem, ']. Duplicated records removed [', dupsRem,
     ']. Remaining records [', nrow(occs), '].')
-  return(list(orig = occsOrig, cleaned = as.data.frame(occs), taxID = jsonSearch[[1]]$taxID))
+  return(list(orig = occsOrig, cleaned = as.data.frame(occs),
+              taxID = jsonSearch[[1]]$taxID))
 }

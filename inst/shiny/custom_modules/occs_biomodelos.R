@@ -49,7 +49,7 @@ occs_biomodelos_module_server <- function(input, output, session, common) {
   return(list(
     save = function() {
       list(
-        spNameBM = input$spNameBM,
+        spNameBM = input$spNameBM
       )
     },
     load = function(state) {
