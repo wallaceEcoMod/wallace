@@ -30,7 +30,7 @@ indic_raster <- function(rasPath, rasName, overlapArea,
           "' cannot be uploaded. (**)")
       return()
     }
-    if (sum(lengths(sf::st_intersects(st_as_sfc(st_bbox(r)),
+    if (sum(lengths(sf::st_intersects(sf::st_as_sfc(sf::st_bbox(r)),
                                       overlapArea))) == 0) {
       logger %>% writeLog(
         type = 'error', hlSpp(spN),

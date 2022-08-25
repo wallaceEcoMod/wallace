@@ -35,7 +35,7 @@ indic_eoo <- function(r = NULL, occs = NULL, lon = NULL, lat = NULL,
     r[r == 0] <- NA
     p.pts <- terra::as.points(r) %>%
       terra::geom() %>% data.frame() %>%
-      dplyr::select(x, y)
+      dplyr::select(tidyselect::all_of(c("x", "y")))
   } else {
     logger %>% writeLog("Provide occurrences or raster (**).")
     return()

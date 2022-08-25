@@ -57,7 +57,8 @@ mask_spatialPoly <- function(bgShp_path, bgShp_name, sdm,
       "is WGS84 (**)"
     )
   }
-  if (!rgeos::gIntersects(as(raster::extent(sdm), 'SpatialPolygons'), polyData)) {
+  if (!rgeos::gIntersects(methods::as(raster::extent(sdm), 'SpatialPolygons'),
+                          polyData)) {
     logger %>% writeLog(
       type = 'error', hlSpp(spN),
       "Shapefile does not match with sdm extent. Please specify a new polygon. (**)"
