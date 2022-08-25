@@ -386,7 +386,7 @@ indic_overlap_module_map <- function(map, common) {
                 labels = "Range Map",
                 opacity = 1, layerId = 'sourceLegend') %>%
       ##ADD polygon
-      leafem::addFeatures(sourcePoly, fillColor = 'darkgrey', fillOpacity = 0.7,
+      leafem::addFeatures(sourcePoly, fillColor = 'darkgrey', fillOpacity = 0.6,
                           opacity = 0, group = 'indic', layerId = 'indicSource')
     # Step 2 #
     if (!is.null(spp[[curSp()]]$indic$inputOverlap)) {
@@ -413,7 +413,8 @@ indic_overlap_module_map <- function(map, common) {
                                            size = 100, na.rm = TRUE)[, 1]
         # Continues raster
         if (any(overlapValues != 0 & overlapValues != 1)) {
-          rasCols <- c("#E5F5F9", "#99D8C9", "#2CA25F")
+          rasCols <- c("#8C510A", "#D8B365", "#F6E8C3",
+                       "#C7EAE5", "#5AB4AC", "#01665E")
           quanRas <- quantile(c(raster::minValue(inputOverlap),
                                 raster::maxValue(inputOverlap)),
                               probs = seq(0, 1, 0.1))
@@ -427,9 +428,9 @@ indic_overlap_module_map <- function(map, common) {
 
         } else {
           if (any(overlapValues != 1)) {
-            rasCols <- c("grey", "yellow")
+            rasCols <- c("grey", "#01665E")
           } else {
-            rasCols <- "yellow"
+            rasCols <- "#01665E"
           }
           map %>%
             addLegend("bottomright", colors = rasCol, labels = "Overlap",
@@ -439,7 +440,7 @@ indic_overlap_module_map <- function(map, common) {
           leafem::addGeoRaster(inputOverlap,
                                colorOptions = leafem::colorOptions(
                                  palette = colorRampPalette(colors = rasCols)),
-                               opacity = 0.7, group = 'indic',
+                               opacity = 1, group = 'indic',
                                layerId = 'rasterOv')
       }
     }
