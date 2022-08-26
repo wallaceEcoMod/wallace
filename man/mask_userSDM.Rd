@@ -4,7 +4,7 @@
 \alias{mask_userSDM}
 \title{mask_userSDM}
 \usage{
-mask_userSDM(rasPath, rasName, logger = NULL)
+mask_userSDM(rasPath, rasName, logger = NULL, spN = NULL)
 }
 \arguments{
 \item{rasPath}{character of path to rasters, must be the full path including file name and extension.
@@ -14,6 +14,8 @@ Filename need to be name with genus_species format.}
 
 \item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
+
+\item{spN}{Species name}
 }
 \description{
 Upload user-specified SDM prediction
