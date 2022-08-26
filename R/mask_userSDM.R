@@ -10,6 +10,7 @@
 #' @param rasName character vector of raster names to be assigned to loaded rasters
 #' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 #'  otherwise leave the default NULL
+#' @param spN Species name
 # @keywords
 #'
 # @examples
@@ -30,17 +31,7 @@
 #'
 #'
 
-mask_userSDM <- function(rasPath, rasName, logger = NULL) {
-  spName <- fileNameNoExt(rasName)
-  spName <- paste0(toupper(substring(spName, 1, 1)),
-                   substring(spName, 2, nchar(spName)))
-  # Check genus and species name on file
-  if (!(length(strsplit(spName, " ")[[1]]) == 2 | length(strsplit(spName, "_")[[1]]) == 2)) {
-    logger %>%
-      writeLog(type = 'warning', "'",
-               rasName, "' without genus and species names (e.g. Canis_lupus.tif).")
-    return()
-  }
+mask_userSDM <- function(rasPath, rasName, logger = NULL, spN = NULL)  {
   smartProgress(logger, message = "Uploading user-specified SDM (**)...", {
     r <- raster::raster(rasPath)
     r <- raster::trim(r)
@@ -59,7 +50,7 @@ mask_userSDM <- function(rasPath, rasName, logger = NULL) {
   if (is.na(raster::crs(r))) {
     logger %>%
       writeLog(
-        type = "warning", hlSpp(spName),
+        type = "warning", hlSpp(spN),
         'Input rasters have undefined coordinate reference system (CRS). ',
         'Mapping functionality in components Visualize and ',
         'Transfer will not work. If you wish to map rasters in these ',

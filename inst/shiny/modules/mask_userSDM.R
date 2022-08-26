@@ -17,6 +17,21 @@ mask_userSDM_module_server <- function(input, output, session, common) {
       logger %>% writeLog(type = 'error', "Raster files not uploaded (**)")
       return()
     }
+    for (i in 1:length(input$sdmFile$name)) {
+      sppName <- fileNameNoExt(input$sdmFile$name[i])
+      sppName <- paste0(toupper(substring(sppName, 1, 1)),
+                        substring(sppName, 2, nchar(sppName)))
+      sppName <- stringr::str_replace(sppName, " " , "_")
+      # Check genus and species name on file
+      if (length(strsplit(sppName, "_")[[1]]) != 2) {
+        logger %>%
+          writeLog(
+            type = 'warning', "'", sppName,
+            "' file without genus and species name format (e.g. Canis_lupus.tif).")
+        return()
+      }
+    }
+
     # FUNCTION CALL ####
     for (i in 1:length(input$sdmFile$name)) {
       # Create species object if does not exists
