@@ -74,11 +74,8 @@ mask_spatialPoly <- function(bgShp_path, bgShp_name, sdm,
                                             values = TRUE),
                          as_points = FALSE, merge = TRUE)
     polyData <- rgeos::gBuffer(polyData, byid = TRUE, width = 0)
-    polyData <- sf::st_as_sf(polyData) %>%
-      dplyr::mutate(
-        dplyr::across(where(~is.character(.)),
-                      ~tidyr::replace_na(.x, "NA"))
-      )
+    polyData <- sf::st_as_sf(polyData)
+    polyData <- replace(polyData, is.na(polyData), values = "NA")
     # Check for NAs
     v <- terra::extract(sdm, polyData)
     v <- is.na(unlist(v))
