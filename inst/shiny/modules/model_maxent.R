@@ -156,6 +156,8 @@ model_maxent_module_server <- function(input, output, session, common) {
       spp[[sp]]$rmm$model$algorithm$maxent$categorical <- catEnvs
       spp[[sp]]$rmm$model$algorithm$maxent$parallel <- input$parallel
       spp[[sp]]$rmm$model$algorithm$maxent$nCores <- input$numCores
+      # For biomodelos
+      spp[[sp]]$biomodelos$modelingMethod <- "Maxent"
 
     }
     # REFERENCES

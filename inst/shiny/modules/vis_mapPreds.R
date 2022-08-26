@@ -119,7 +119,6 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
       raster::crs(predSel) <- raster::crs(bgMask())
       # define predSel name
       names(predSel) <- curModel()
-
     }
 
     # generate binary prediction based on selected thresholding rule
@@ -169,16 +168,20 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
     # LOAD INTO SPP ####
     spp[[curSp()]]$visualization$occPredVals <- occPredVals
     if (input$threshold != 'none') {
-      spp[[curSp()]]$visualization$thresholds <- thr.sel # were you recording multiple before?
+      spp[[curSp()]]$visualization$thresholds <- thr.sel
     }
     spp[[curSp()]]$visualization$mapPred <- predSel.thr
     spp[[curSp()]]$visualization$mapPredVals <- getRasterVals(predSel.thr, predType)
     # For Biomodelos
     spp[[curSp()]]$biomodelos$prediction <- predSel
+    occsOmitted <- ifelse(input$threshold == 'none', NA,
+                          nrow(occs.xy) - sum(raster::extract(predSel.thr, occs.xy)))
+    spp[[curSp()]]$biomodelos$occsOmitted <- occsOmitted
+
     biom.thr <- quantile(occPredVals,
                          probs = c(0, 0.1, 0.2, 0.3))
     biom.thr <- c(biom.thr, ifelse(input$threshold == 'none', NA, thr.sel))
-    names(biom.thr) <- c("MTP", "O10", "O20", "O30", "user")
+    names(biom.thr) <- c("0", "10", "20", "30", "user-specified")
     spp[[curSp()]]$biomodelos$thrs <- biom.thr
     # METADATA ####
     spp[[curSp()]]$rmd$vis_curModel <- curModel()

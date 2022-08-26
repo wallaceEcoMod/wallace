@@ -44,7 +44,7 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
     }
     if (is.null(spp[[bioSp()]]$biomodelos$prediction)) {
       shinyalert::shinyalert(
-        "You need a map prediction before pushing to BioModelos (**).",
+        "You need a map prediction build on Wallace before pushing to BioModelos (**).",
         type = "error")
       return()
     }
@@ -69,7 +69,8 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
         paste0(bioSp(), '_expertPolygonsShp.zip')
       },
       shape_file_extent = paste0(bioSp(), '_projectionExtentShp.zip'),
-      model_metadata = paste0(bioSp(), '_metadata.csv'),
+      biomodelos_metadata = paste0(bioSp(), '_metadata.csv'),
+      model_metadata = paste0(bioSp(), '_rmms.csv'),
       wallace_session = paste0(bioSp(), '_session.Rmd')
     )
 
@@ -92,7 +93,7 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
     # Create thr
     # add req occs
     tmpThrs <- file.path(tmpdir, paste0(bioSp(), '_thr.csv'))
-    write.csv(spp[[bioSp()]]$biomodelos$thrs, tmpThrs, row.names = FALSE)
+    write.csv(spp[[bioSp()]]$biomodelos$thrs, tmpThrs, row.names = TRUE)
 
     # Create raster model modified by expert
     if (!is.null(spp[[bioSp()]]$biomodelos$predExpert)) {
@@ -115,9 +116,8 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
                       overwrite_layer = TRUE)
       extsExpPoly <- c('dbf', 'shp', 'shx')
       fsExpPoly <- file.path(tmpdir, paste0(bioSp(), '_expertPolygonsShp.', extsExpPoly))
-      zip::zipr(zipfile = tmpExpPoly , files = fsExpPoly )
+      zip::zipr(zipfile = tmpExpPoly , files = fsExpPoly)
     }
-
 
     # Create extent shapefile
     # add req ext
@@ -132,8 +132,74 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
     zip::zipr(zipfile = tmpExt, files = fsExt)
 
     # Create Metadata
+    evalTbl <- spp[[bioSp()]]$evalOut@results
+    if (grepl("Maxent", spp[[bioSp()]]$biomodelos$modelingMethod, fixed = TRUE)) {
+      evalTbl <- evalTbl[evalTbl$tune.args == spp[[bioSp()]]$rmd$vis_curModel, ]
+    }
+    tmpBioMeta <- file.path(tmpdir, paste0(bioSp(), '_metadata.csv'))
+    bioMet <- data.frame()
+    bioMet[1, 1:2] <- c("acceptedNameUsage",
+                        unique(spp[[bioSp()]]$occs$scientific_name)[1])
+    bioMet[2, 1:2] <- c("consensusMethod",
+                        "all")
+    bioMet[3, 1:2] <- c("dd",
+                        format(Sys.Date(), "%d"))
+    bioMet[4, 1:2] <- c("license",
+                        input$selLicense)
+    bioMet[5, 1:2] <- c("methodFile",
+                        paste0(bioSp(), '_session.Rmd'))
+    bioMet[6, 1:2] <- c("mm",
+                        format(Sys.Date(), "%m"))
+    bioMet[7, 1:2] <- c("modelingMethod",
+                        spp[[bioSp()]]$biomodelos$modelingMethod)
+    bioMet[8, 1:2] <- c("omission",
+                        spp[[bioSp()]]$biomodelos$occsOmitted)
+    bioMet[9, 1:2] <- c("perfStatSD",
+                        paste(NA,  # 'auc.train',
+                              NA,  # 'cbi.train',
+                              evalTbl[1, 'auc.diff.sd'],
+                              evalTbl[1, 'auc.val.sd'],
+                              evalTbl[1, 'cbi.val.sd'],
+                              evalTbl[1, 'or.10p.sd'],
+                              evalTbl[1, 'or.mtp.sd'],
+                              sep = "; "))
+    bioMet[10, 1:2] <- c("perfStatType",
+                         paste0('auc.train; cbi.train; auc.diff.avg; ',
+                                'auc.val.avg; cbi.val.avg; or.10p.avg; ',
+                                'or.mtp.avg'))
+    bioMet[11, 1:2] <- c("perfStatValue",
+                         paste(evalTbl[1, 'auc.train'],
+                               evalTbl[1, 'cbi.train'],
+                               evalTbl[1, 'auc.diff.avg'],
+                               evalTbl[1, 'auc.val.avg'],
+                               evalTbl[1, 'cbi.val.avg'],
+                               evalTbl[1, 'or.10p.avg'],
+                               evalTbl[1, 'or.mtp.avg'],
+                               sep = "; "))
+    bioMet[12, 1:2] <- c("recsUsed",
+                         nrow(spp[[bioSp()]]$occs))
+    bioMet[13, 1:2] <- c("taxID",
+                         spp[[bioSp()]]$rmm$code$wallace$biomodelosTaxID)
+    bioMet[14, 1:2] <- c("thresholdType",
+                         switch(spp[[bioSp()]]$rmm$prediction$binary$thresholdRule,
+                                none = "Continuous",
+                                mtp = "0",
+                                p10 = "10",
+                                qtp = as.character(spp[[bioSp()]]$rmm$code$wallace$trainPresQuantile * 100)))
+    bioMet[15, 1:2] <- c("thresholdValue",
+                         spp[[bioSp()]]$rmm$prediction$binary$thresholdSet)
+    bioMet[16, 1:2] <- c("validationType",
+                         spp[[bioSp()]]$rmm$model$partition$partitionRule)
+    bioMet[17, 1:2] <- c("yyyy",
+                         format(Sys.Date(), "%Y"))
+    bioMet[18, 1:2] <- c("zip",
+                         paste0(spp[[bioSp()]]$rmm$code$wallace$biomodelosTaxID,
+                                '.zip'))
+    names(bioMet) <- c("name", "value")
+    write.csv(bioMet, tmpBioMeta, row.names = FALSE)
+
     # add req metadata
-    tmpRMM <- file.path(tmpdir, paste0(bioSp(), '_metadata.csv'))
+    tmpRMM <- file.path(tmpdir, paste0(bioSp(), '_rmms.csv'))
     rangeModelMetadata::rmmToCSV(spp[[bioSp()]]$rmm, filename = tmpRMM)
 
     # Create RMD
@@ -203,12 +269,12 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
 
     # Create ZIP file
     tmpZIP <- file.path(tmpdir, paste0(spp[[bioSp()]]$rmm$code$wallace$biomodelosTaxID, '.zip'))
-    filesZIP <- c(tmpOccs, tmpPred, tmpThrs, tmpExt, tmpRMM, tmpRMD)
+    filesZIP <- c(tmpOccs, tmpBioMeta, tmpPred, tmpThrs, tmpExt, tmpRMM, tmpRMD)
     if (!is.null(spp[[bioSp()]]$biomodelos$predExpert)) {
       filesZIP <- c(filesZIP, tmpPredExp)
     }
     if (!is.null(spp[[bioSp()]]$mask$expertPolyt)) {
-      filesZIP <- c(filesZIP, tmpPredExp)
+      filesZIP <- c(filesZIP, tmpExpPoly)
     }
 
     zip::zipr(zipfile = tmpZIP,
