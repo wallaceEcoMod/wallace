@@ -183,6 +183,7 @@ mask_expPoly_module_server <- function(input, output, session, common) {
     if (input$polyExpSel == 'expUser') {
       polyMask <- xfer_userExtent(input$polyExpShp$datapath, input$polyExpShp$name,
                                   0, logger, spN = curSp())
+      req(polyMask)
       # get extensions of all input files
       exts <- sapply(strsplit(input$polyExpShp$name, '\\.'),
                      FUN = function(x) x[2])
@@ -267,6 +268,7 @@ mask_expPoly_module_server <- function(input, output, session, common) {
       expertRast <- mask_expPoly(polyMask, maskPred,
                                  removePoly, polyExt = spp[[curSp()]]$mask$polyExt,
                                  logger, spN = curSp())
+      req(expertRast)
       spp[[curSp()]]$mask$flagPoly <- TRUE
       maskThr <- terra::spatSample(x = terra::rast(expertRast$pred),
                                    size = 100, na.rm = TRUE)[, 1]

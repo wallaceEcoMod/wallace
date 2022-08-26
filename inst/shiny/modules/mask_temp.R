@@ -119,6 +119,7 @@ mask_temp_module_server <- function(input, output, session, common) {
     ppRasters <- envs_userEnvs(rasPath = input$tempRasters$datapath,
                                rasName = input$tempRasters$name,
                                logger = logger)
+    req(ppRasters)
 
     # LOAD INTO SPP ####
     spp[[curSp()]]$mask$rasters <- ppRasters
@@ -189,7 +190,7 @@ mask_temp_module_server <- function(input, output, session, common) {
                                      env = env,
                                      envDates = yearInput(),
                                      logger)
-
+    req(tempExtract)
     logger %>% writeLog(hlSpp(curSp()), "Values were extracted (**)")
 
     # LOAD INTO SPP ####
@@ -260,6 +261,7 @@ mask_temp_module_server <- function(input, output, session, common) {
         maskRaster = spp[[curSp()]]$mask$rasters[[selTempMask()]],
         pred = maskPred, logger)
 
+    req(doTempExtract)
     logger %>% writeLog(hlSpp(curSp()), "The prediction was masked (**)")
     maskThr <- terra::spatSample(x = terra::rast(maskPred),
                                  size = 100, na.rm = TRUE)[, 1]

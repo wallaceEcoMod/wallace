@@ -207,6 +207,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
                                       input$indicOverlapShp$name,
                                       spp[[curSp()]]$indic$overlapSourcePoly,
                                       logger, spN = curSp())
+      req(inputOverlap)
       spp[[curSp()]]$indic$inputOverlap <- inputOverlap
     }
     if (input$indicOverlap == 'raster') {
@@ -214,6 +215,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
                                  input$indicOverlapRaster$name,
                                  spp[[curSp()]]$indic$overlapSourcePoly,
                                  logger, spN = curSp())
+      req(userRaster)
       spp[[curSp()]]$indic$inputOverlap <- userRaster
     }
     if (!is.null(spp[[curSp()]]$indic$inputOverlap)) {
@@ -298,6 +300,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
 
     overlap <- indic_overlap(rangeMap, inputOverlap, field = overlapF,
                              category = overlapC, logger, spN = curSp())
+    req(overlap)
 
     logger %>% writeLog(
       hlSpp(curSp()),

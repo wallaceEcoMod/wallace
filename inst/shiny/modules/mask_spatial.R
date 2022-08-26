@@ -114,6 +114,7 @@ mask_spatial_module_server <- function(input, output, session, common) {
     spatialMask <- mask_spatialPoly(input$maskShp$datapath, input$maskShp$name,
                                     maskPred,
                                     logger, spN = curSp())
+    req(spatialMask)
     # LOAD INTO SPP ####
     spp[[curSp()]]$mask$spatialMask <- spatialMask
     if (is.null(spp[[curSp()]]$mask$polyExt)) {
