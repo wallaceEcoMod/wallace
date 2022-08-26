@@ -33,7 +33,6 @@
 
 mask_userSDM <- function(rasPath, rasName, logger = NULL, spN = NULL)  {
   r <- raster::raster(rasPath)
-  print(raster::couldBeLonLat(r))
   if (!raster::couldBeLonLat(r)) {
     logger %>%
       writeLog(
@@ -48,7 +47,6 @@ mask_userSDM <- function(rasPath, rasName, logger = NULL, spN = NULL)  {
     r <- raster::trim(r)
     names(r) <- fileNameNoExt(rasName)
     extPoly <- raster::extent(r)
-    print(extPoly)
     if (extPoly@xmin < -180 | extPoly@xmax > 180 |
         extPoly@ymin < -90 | extPoly@ymax > 90) {
       logger %>%
