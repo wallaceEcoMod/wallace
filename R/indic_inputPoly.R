@@ -38,7 +38,11 @@ indic_inputPoly <- function(bgShp_path, bgShp_name, overlapArea,
       file.rename(bgShp_path, file.path(pathdir, bgShp_name))
     }
     smartProgress(logger, message = "Uploading shapefile ...", {
-      polyData <- sf::read_sf(file.path(pathdir, bgShp_name)[i])
+      polyData <- sf::read_sf(file.path(pathdir, bgShp_name)[i]) %>%
+        dplyr::mutate(
+          dplyr::across(where(~is.character(.)),
+                        ~tidyr::replace_na(.x, "NA"))
+        )
     })
   } else {
     logger %>%
@@ -62,6 +66,7 @@ indic_inputPoly <- function(bgShp_path, bgShp_name, overlapArea,
       "Shapefile was reprojected to this CRS. (**)"
     )
   }
+  sf::sf_use_s2(FALSE)
   if (sum(lengths(sf::st_intersects(polyData, overlapArea))) == 0) {
     logger %>% writeLog(
       type = 'error', hlSpp(spN),
