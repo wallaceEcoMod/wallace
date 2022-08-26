@@ -30,26 +30,31 @@ mask_userSDM_module_server <- function(input, output, session, common) {
             "' file without genus and species name format (e.g. Canis_lupus.tif).")
         return()
       }
+      if (sppName %in% names(spp)) {
+        logger %>% writeLog(hlSpp(sppName),
+                            type = 'warning',
+                            "Species already registered (**).")
+      }
     }
 
     # FUNCTION CALL ####
     for (i in 1:length(input$sdmFile$name)) {
       # Create species object if does not exists
       sppName <- fileNameNoExt(fmtSpN(input$sdmFile$name[i]))
-      if (!(sppName %in% names(spp))) {
-        spp[[sppName]] <- list()
-        logger %>% writeLog(hlSpp(sppName),
-                            "New species registered (**).")
-      }
-
       userSDMs <- mask_userSDM(rasPath = input$sdmFile$datapath[i],
                                rasName = input$sdmFile$name[i],
-                               logger)
+                               logger, spN = sppName)
+      req(userSDMs)
       # Check if prediction is threshold
       userThr <- terra::spatSample(x = terra::rast(userSDMs$sdm),
                                    size = 100, na.rm = TRUE)[, 1]
       userThr <- !any(userThr > 0 & userThr < 1)
 
+      if (!(sppName %in% names(spp))) {
+        spp[[sppName]] <- list()
+        logger %>% writeLog(hlSpp(sppName),
+                            "New species registered (**).")
+      }
       # LOAD INTO SPP ####
       spp[[sppName]]$mask$userThr <- userThr
       spp[[sppName]]$mask$userSDM <- userSDMs$sdm * 1

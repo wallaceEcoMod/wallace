@@ -32,11 +32,23 @@
 #'
 
 mask_userSDM <- function(rasPath, rasName, logger = NULL, spN = NULL)  {
+  r <- raster::raster(rasPath)
+  print(raster::couldBeLonLat(r))
+  if (!raster::couldBeLonLat(r)) {
+    logger %>%
+      writeLog(
+        type = "error", hlSpp(spN),
+        'Input rasters have undefined coordinate reference system (CRS). ',
+        'Mapping functionality will not work. ',
+        'Please define their projections and upload again. ',
+        'See guidance text in this module for more details.')
+    return()
+  }
   smartProgress(logger, message = "Uploading user-specified SDM (**)...", {
-    r <- raster::raster(rasPath)
     r <- raster::trim(r)
     names(r) <- fileNameNoExt(rasName)
     extPoly <- raster::extent(r)
+    print(extPoly)
     if (extPoly@xmin < -180 | extPoly@xmax > 180 |
         extPoly@ymin < -90 | extPoly@ymax > 90) {
       logger %>%
@@ -45,18 +57,6 @@ mask_userSDM <- function(rasPath, rasName, logger = NULL, spN = NULL)  {
       return()
     }
     extPoly <- methods::as(extPoly, 'SpatialPolygons')
+    return(list(sdm = r, extSdm = extPoly))
   })
-
-  if (is.na(raster::crs(r))) {
-    logger %>%
-      writeLog(
-        type = "warning", hlSpp(spN),
-        'Input rasters have undefined coordinate reference system (CRS). ',
-        'Mapping functionality in components Visualize and ',
-        'Transfer will not work. If you wish to map rasters in these ',
-        'components, please define their projections and upload again. ',
-        'See guidance text in this module for more details.')
-    return()
-  }
-  return(list(sdm = r, extSdm = extPoly))
 }
