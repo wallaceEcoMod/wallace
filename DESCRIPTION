@@ -49,7 +49,6 @@ Imports:
     shinyalert,
     shinyjs,
     shinyWidgets (>= 0.6.0),
-    stars,
     terra (>= 1.6-7),
     zip
 Suggests: 
