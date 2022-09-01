@@ -7,14 +7,8 @@ indic_time_module_ui <- function(id) {
     #years used (numeric input?)
     span("Step 1:", class = "step"),
     span("Choose Input range", class = "stepText"), br(), br(),
-    selectInput(ns("selRasterSource") , label = "Select range for calculations",
-                choices = list("Wallace SDM" = "wallace",
-                               "Transferred SDM" = "xfer",
-                               "User SDM" = "sdm",
-                               "Masked SDM" = "masked",
-                               "AOO" = "aoo",
-                               "EOO" ="eoo")),
-    actionButton(ns("goInputRaster"), "Select"),
+    uiOutput(ns("indicTimeSourceUI")),
+    actionButton(ns("goInputRangeTime"), "Select"),
     tags$hr(class = "hrDotted"),
     span("Step 2:", class = "step"),
     span("Choose environmental data", class = "stepText"), br(), br(),
@@ -42,85 +36,139 @@ indic_time_module_server <- function(input, output, session, common) {
   logger <- common$logger
   spp <- common$spp
   curSp <- common$curSp
+  selTimeSource <- common$selTimeSource
 
-  observeEvent(input$goInputRaster, {
-    if (input$selRasterSource == "wallace") {
-      if (is.null(spp[[curSp()]]$visualization$mapPred)) {
-        logger %>%
-          writeLog(type = 'error',
-                   'Visualize your model before doing overlap calculations')
-        return()
-      }
-      spp[[curSp()]]$indic$time <- spp[[curSp()]]$visualization$mapPred
-      logger %>% writeLog("SDM area after masking for environmental variables ",
-                          "through time will be calculated based on Wallace SDM ")
+  # STEP 1 #####
+  output$indicTimeSourceUI <- renderUI({
+    req(curSp())
+    n <- c()
+    l <- c()
+    if (!is.null(spp[[curSp()]]$visualization$mapPred)) {
+      n <- c("wallace", n)
+      l <- c("Wallace SDM", l)
     }
-    if(input$selRasterSource == "xfer"){
-      if (is.null(spp[[curSp()]]$transfer$mapXfer)) {
-        logger %>%
-          writeLog(type = 'error',
-                   'Transfer your model before doing overlap calculations')
-        return()
-      }
-      spp[[curSp()]]$indic$time <-spp[[curSp()]]$transfer$mapXfer
-      logger %>% writeLog("SDM area after masking for environmental variables ",
-                          "through time will be calculated based on transferred SDM.")
+    if (!is.null(spp[[curSp()]]$transfer$mapXfer)) {
+      n <- c("xfer", n)
+      l <- c("Transferred SDM", l)
+    }
+    if (!is.null(spp[[curSp()]]$mask$userSDM)) {
+      n <- c("user", n)
+      l <- c("User-specified SDM", l)
+    }
+    if (!is.null(spp[[curSp()]]$mask$prediction)) {
+      n <- c("mask", n)
+      l <- c("Masked SDM", l)
+    }
+    if (!is.null(spp[[curSp()]]$indic$EOOpoly)) {
+      n <- c("eoo", n)
+      l <- c("Extent of Occurrence (EOO)", l)
+    }
+    if (!is.null(spp[[curSp()]]$indic$AOOraster)) {
+      n <- c("aoo", n)
+      l <- c("Area of Ocupancy (AOO)", l)
+    }
+    indicTimeSourceList <- setNames(as.list(n), l)
+    shinyWidgets::pickerInput("selTimeSource",
+                              label = "Select source for calculations",
+                              choices = indicTimeSourceList,
+                              multiple = FALSE)
+  })
 
+  observeEvent(input$goInputRangeTime, {
+    # WARNING ####
+    if (is.null(selTimeSource())) {
+      logger %>%
+        writeLog(type = 'warning',
+                 hlSpp(curSp()),
+                 "No source available for calculations (**).")
+      return()
     }
-    if (input$selRasterSource == "sdm") {
-      if (is.null(spp[[curSp()]]$mask$userSDM)) {
+    # ERRORS ####
+    if (selTimeSource() == "wallace") {
+      if (is.null(spp[[curSp()]]$visualization$thresholds)) {
         logger %>%
           writeLog(type = 'error',
-                   'Load you model in component User SDM before doing range ',
-                   'calculations')
+                   hlSpp(curSp()),
+                   'Generate a thresholded model before doing calculations.')
         return()
       }
-      spp[[curSp()]]$indic$time <- spp[[curSp()]]$mask$userSDM
-      logger %>% writeLog("SDM area after masking for environmental variables ",
-                          "through time will be calculated based on User provided SDM.")
-
     }
-    if (input$selRasterSource == "masked") {
-      #CAREFUL: as its set up now if user doesn t do maskrangeR this object will be something else
-      #(either user uploaed SDM or wallace SDM) this must be fixed in other components so it works smoothly
-      if (is.null(spp[[curSp()]]$mask$prediction)) {
+    if (selTimeSource() == "xfer") {
+      if (is.null(spp[[curSp()]]$rmm$prediction$transfer$environment1$thresholdSet)) {
         logger %>%
           writeLog(type = 'error',
-                   'Do a maskRangeR analysis before doing range calculations')
+                   hlSpp(curSp()),
+                   'Generate a thresholded prediction before doing calculations')
         return()
       }
-      spp[[curSp()]]$indic$time <- spp[[curSp()]]$mask$prediction
-      logger %>% writeLog("SDM area after masking for environmental variables ",
-                          "through time will be calculated based on Masked SDM ")
     }
-    if (input$selRasterSource == "aoo") {
-      #CAREFUL: as its set up now if user doesn t do maskrangeR this object will be something else
-      #(either user uploaed SDM or wallace SDM) this must be fixed in other components so it works smoothly
-      if (is.null( spp[[curSp()]]$indic$AOOraster)) {
+    if (selTimeSource() == "user") {
+      if (!shiny::isTruthy(spp[[curSp()]]$mask$userThr)) {
         logger %>%
           writeLog(type = 'error',
-                   'Do an AOO calculation before doing time calculations')
+                   hlSpp(curSp()),
+                   'Load a user thresholded prediction before doing calculations.')
         return()
       }
-      spp[[curSp()]]$indic$time <- spp[[curSp()]]$indic$AOOraster
-      logger %>% writeLog("SDM area after masking for environmental variables ",
-                          "through time will be calculated based on AOO")
-
     }
-    if (input$selRasterSource == "eoo") {
-      #CAREFUL: as its set up now if user doesn t do maskrangeR this object will be something else
-      #(either user uploaed SDM or wallace SDM) this must be fixed in other components so it works smoothly
+    if (selTimeSource() == "mask") {
+      if (!spp[[curSp()]]$mask$maskThr) {
+        logger %>%
+          writeLog(type = 'error',
+                   hlSpp(curSp()),
+                   'Mask a thresholded prediction before doing calculations.')
+        return()
+      }
+    }
+    if (selTimeSource() == "eoo") {
       if (is.null(spp[[curSp()]]$indic$EOOpoly)) {
         logger %>%
-          writeLog(type = 'error',
-                   'Do an EOO calculation before doing time calculations')
+          writeLog(
+            type = 'error',
+            'Do an EOO calculation in the area module before doing range calculations')
         return()
       }
-      spp[[curSp()]]$indic$time1 <- spp[[curSp()]]$indic$EOOpoly
-      logger %>% writeLog("SDM area after masking for environmental variables ",
-                          "through time will be calculated based on EOO")
-
     }
+    if (selTimeSource() == "aoo") {
+      if (is.null(spp[[curSp()]]$indic$AOOraster)) {
+        logger %>%
+          writeLog(
+            type = 'error',
+            'Do an AOO calculation in the area module before doing range calculations')
+        return()
+      }
+    }
+    rangeMap <- switch (selTimeSource(),
+                        wallace = spp[[curSp()]]$visualization$mapPred,
+                        xfer = spp[[curSp()]]$transfer$mapXfer,
+                        user = spp[[curSp()]]$mask$userSDM,
+                        mask = spp[[curSp()]]$mask$prediction,
+                        eoo = sf::st_as_sf(spp[[curSp()]]$indic$EOOpoly),
+                        aoo = spp[[curSp()]]$indic$AOOraster)
+    # Transform to polygon
+    if ("RasterLayer" %in% class(rangeMap)) {
+      r <- terra::rast(rangeMap)
+      r[r == 0] <- NA
+      rangeMap <- terra::as.polygons(r)
+      # Project AOO raster to WGS84
+      if (selTimeSource() == "aoo") {
+        rangeMap <- terra::project(rangeMap, getWKT("wgs84"))
+      }
+      rangeMap <- sf::st_as_sf(rangeMap)
+    }
+    req(rangeMap)
+    logger %>%
+      writeLog(hlSpp(curSp()),
+               paste0("SDM area after masking for environmental variables ",
+                      "through time will be calculated based on ",
+                      switch (selTimeSource(),
+                              wallace = "Wallace SDM",
+                              xfer = "Transferred SDM",
+                              user = "User-specified SDM",
+                              mask = "Masked SDM",
+                              eoo = "Extent of Occurrence (EOO)",
+                              aoo = "Area of Ocupancy (AOO)"), "."))
+    spp[[curSp()]]$indic$timeRange <- rangeMap
   })
 
   observeEvent(input$goInputEnvs, {
@@ -157,14 +205,14 @@ indic_time_module_server <- function(input, output, session, common) {
                           "Please enter the years for all inputed variables")
       return()
     }
-    if (is.null(spp[[curSp()]]$indic$time1)&is.null(spp[[curSp()]]$indic$time)) {
+    if (is.null(spp[[curSp()]]$indic$timeRange)) {
       logger %>% writeLog( type = 'error',
                            "No SDM is selected for the calculations")
-    } else if (is.null(spp[[curSp()]]$indic$time1)) {
+    } else if (is.null(spp[[curSp()]]$indic$timeRange)) {
       smartProgress(
         logger,
         message = "Calculating area indic through time ", {
-          SDM <- spp[[curSp()]]$indic$time
+          SDM <- spp[[curSp()]]$indic$timeRange
           rStack <- raster::projectRaster(spp[[curSp()]]$indic$indicEnvs, SDM,
                                           method = 'bilinear')
           threshold <- spp[[curSp()]]$indic$indicEnvsThr
@@ -180,12 +228,12 @@ indic_time_module_server <- function(input, output, session, common) {
       spp[[curSp()]]$indic$AreaTime <-SDM.time$Area
       spp[[curSp()]]$indic$Years <- years
       common$update_component(tab = "Results")
-    } else if (!is.null(spp[[curSp()]]$indic$time1)) {
+    } else if (!is.null(spp[[curSp()]]$indic$timeRange)) {
       smartProgress(
         logger,
         message = "Calculating area indic through time ", {
           rStack <- spp[[curSp()]]$indic$indicEnvs
-          eoo <- spp[[curSp()]]$indic$time1
+          eoo <- spp[[curSp()]]$indic$timeRange
           threshold <- spp[[curSp()]]$indic$indicEnvsThr
           bound <- input$selBound
           ##run function
@@ -252,67 +300,67 @@ indic_time_module_result <- function(id) {
 
 indic_time_module_map <- function(map, common) {
   # Map logic
-  spp <- common$spp
-  curSp <- common$curSp
-  #if EOO is selected plot the polygon
-  if (!is.null(spp[[curSp()]]$indic$time1)) {
-    polyEOO <- spp[[curSp()]]$indic$EOOpoly@polygons[[1]]@Polygons
-    bb <- spp[[curSp()]]$indic$EOOpoly@bbox
-    bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
-    map %>%
-      fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
-    map %>%
-      ##Add legend
-      addLegend("bottomright", colors = "gray",
-                title = "EOO", labels = "EOO",
-                opacity = 1)
-    ##ADD polygon
-    if (length(polyEOO) == 1) {
-      xy <- list(polyEOO[[1]]@coords)
-    } else {
-      xy <- lapply(polyEOO, function(x) x@coords)
-    }
-    for (shp in xy) {
-      map %>%
-        addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4, color = "gray",
-                    group = 'indic')
-    }
-  }
-  #plot SDM to use
-  if (is.null(spp[[curSp()]]$indic$time1)) {
-    req(spp[[curSp()]]$indic$time)
-    sdm <-  spp[[curSp()]]$indic$time
-    raster::crs(sdm) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
-    SDMVals <- getRasterVals(sdm)
-    rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-    legendPal <- colorNumeric(rev(rasCols), SDMVals, na.color = 'transparent')
-    rasPal <- colorNumeric(rasCols, SDMVals, na.color = 'transparent')
-    zoomExt <- raster::extent(sdm)
-    map %>% fitBounds(lng1 = zoomExt[1], lng2 = zoomExt[2],
-                      lat1 = zoomExt[3], lat2 = zoomExt[4])
-    if (length(unique(SDMVals)) == 3 | length(unique(SDMVals)) == 2) {
-      map %>%
-        addLegend("bottomright", colors = c('red', 'grey'),
-                  title = "SDM",
-                  labels = c("Presence", "Absence"),
-                  opacity = 1, layerId = 'sdm') %>%
-        addRasterImage(sdm, colors = c('gray', 'red'),
-                       opacity = 0.7, group = 'indic', layerId = 'sdm',
-                       method = "ngb")
-    } else {
-      # if threshold specified
-      legendPal <- colorNumeric(rev(rasCols), SDMVals,
-                                na.color = 'transparent')
-      rasPal <- colorNumeric(rasCols, SDMVals, na.color = 'transparent')
-      map %>%
-        addLegend("bottomright", pal = legendPal, title = "SDM",
-                  values = SDMVals, layerId = "sdm",
-                  labFormat = reverseLabel(2, reverse_order=TRUE)) %>%
-        addRasterImage(sdm, colors = rasPal,
-                       opacity = 0.7, group = 'indic', layerId = 'sdm',
-                       method = "ngb")
-    }
-  }
+  # spp <- common$spp
+  # curSp <- common$curSp
+  # #if EOO is selected plot the polygon
+  # if (!is.null(spp[[curSp()]]$indic$timeRange)) {
+  #   polyEOO <- spp[[curSp()]]$indic$EOOpoly@polygons[[1]]@Polygons
+  #   bb <- spp[[curSp()]]$indic$EOOpoly@bbox
+  #   bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
+  #   map %>%
+  #     fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
+  #   map %>%
+  #     ##Add legend
+  #     addLegend("bottomright", colors = "gray",
+  #               title = "EOO", labels = "EOO",
+  #               opacity = 1)
+  #   ##ADD polygon
+  #   if (length(polyEOO) == 1) {
+  #     xy <- list(polyEOO[[1]]@coords)
+  #   } else {
+  #     xy <- lapply(polyEOO, function(x) x@coords)
+  #   }
+  #   for (shp in xy) {
+  #     map %>%
+  #       addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4, color = "gray",
+  #                   group = 'indic')
+  #   }
+  # }
+  # #plot SDM to use
+  # if (is.null(spp[[curSp()]]$indic$timeRange)) {
+  #   req(spp[[curSp()]]$indic$time)
+  #   sdm <-  spp[[curSp()]]$indic$timeRange
+  #   raster::crs(sdm) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
+  #   SDMVals <- getRasterVals(sdm)
+  #   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
+  #   legendPal <- colorNumeric(rev(rasCols), SDMVals, na.color = 'transparent')
+  #   rasPal <- colorNumeric(rasCols, SDMVals, na.color = 'transparent')
+  #   zoomExt <- raster::extent(sdm)
+  #   map %>% fitBounds(lng1 = zoomExt[1], lng2 = zoomExt[2],
+  #                     lat1 = zoomExt[3], lat2 = zoomExt[4])
+  #   if (length(unique(SDMVals)) == 3 | length(unique(SDMVals)) == 2) {
+  #     map %>%
+  #       addLegend("bottomright", colors = c('red', 'grey'),
+  #                 title = "SDM",
+  #                 labels = c("Presence", "Absence"),
+  #                 opacity = 1, layerId = 'sdm') %>%
+  #       addRasterImage(sdm, colors = c('gray', 'red'),
+  #                      opacity = 0.7, group = 'indic', layerId = 'sdm',
+  #                      method = "ngb")
+  #   } else {
+  #     # if threshold specified
+  #     legendPal <- colorNumeric(rev(rasCols), SDMVals,
+  #                               na.color = 'transparent')
+  #     rasPal <- colorNumeric(rasCols, SDMVals, na.color = 'transparent')
+  #     map %>%
+  #       addLegend("bottomright", pal = legendPal, title = "SDM",
+  #                 values = SDMVals, layerId = "sdm",
+  #                 labFormat = reverseLabel(2, reverse_order=TRUE)) %>%
+  #       addRasterImage(sdm, colors = rasPal,
+  #                      opacity = 0.7, group = 'indic', layerId = 'sdm',
+  #                      method = "ngb")
+  #   }
+  # }
 }
 
 indic_time_module_rmd <- function(species) {

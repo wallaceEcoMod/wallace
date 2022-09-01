@@ -1260,6 +1260,7 @@ function(input, output, session) {
   ########################################### #
   selAreaSource <- reactive(input$selAreaSource)
   selOverlapSource <- reactive(input$selOverlapSource)
+  selTimeSource <- reactive(input$selTimeSource)
 
   # Dowload EOO shapefile
   output$dlEOO <- downloadHandler(
@@ -1820,6 +1821,7 @@ function(input, output, session) {
     selOverlapSource = selOverlapSource,
     overlapField = overlapField,
     overlapCat  = overlapCat,
+    selTimeSource = selTimeSource,
     rmm = rmm,
 
     # Switch to a new component tab
