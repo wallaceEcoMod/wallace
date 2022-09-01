@@ -38,26 +38,58 @@ diver_richness_module_server <- function(input, output, session, common) {
       )
       return()
     }
-    # WARNING ####
-
     for (i in 1:length(curSp())){
       sp <- curSp()[i]
-      if (is.null(spp[[sp]]$visualization$mapPred)) {
+      rangeSp <- switch (input$selRichSource,
+                         wallace = spp[[sp]]$visualization$mapPred,
+                         xfer = spp[[sp]]$transfer$mapXfer,
+                         user = spp[[sp]]$mask$userSDM,
+                         mask = spp[[sp]]$mask$prediction)
+      if (is.null(rangeSp)) {
         logger %>%
-          writeLog(type = 'error',
-                   'No spatial representation of the model has been ',
-                   'generated, please first use the visualize component ',
-                   'to visualize your model')
+          writeLog(type = 'error', hlSpp(sp),
+                   'No range representation (', input$selRichSource, ') has been ',
+                   'generated/loaded, please provided one (**).')
         return()
       }
-      if (is.null(spp[[sp]]$rmm$rmm$prediction$binary$thresholdSet)) {
-        logger %>%
-          writeLog(type = 'error',
-                   'Generate a thresholded prediction before doing ',
-                   'multisp. calculations')
-        return()
+      if (input$selRichSource == "wallace") {
+        if (is.null(spp[[sp]]$visualization$thresholds)) {
+          logger %>%
+            writeLog(type = 'error',
+                     hlSpp(sp),
+                     'Generate a thresholded model before doing calculations.')
+          return()
+        }
+      }
+      if (input$selRichSource == "xfer") {
+        if (is.null(spp[[sp]]$rmm$prediction$transfer$environment1$thresholdSet)) {
+          logger %>%
+            writeLog(type = 'error',
+                     hlSpp(sp),
+                     'Generate a thresholded prediction before doing calculations')
+          return()
+        }
+      }
+      if (input$selRichSource == "user") {
+        if (!shiny::isTruthy(spp[[sp]]$mask$userThr)) {
+          logger %>%
+            writeLog(type = 'error',
+                     hlSpp(sp),
+                     'Load a user thresholded prediction before doing calculations.')
+          return()
+        }
+      }
+      if (input$selRichSource == "mask") {
+        if (!spp[[sp]]$mask$maskThr) {
+          logger %>%
+            writeLog(type = 'error',
+                     hlSpp(sp),
+                     'Mask a thresholded prediction before doing calculations.')
+          return()
+        }
       }
     }
+
     #Processing
     smartProgress(
       logger,
