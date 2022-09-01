@@ -15,8 +15,7 @@ indic_time_module_ui <- function(id) {
                                "AOO" = "aoo",
                                "EOO" ="eoo")),
     actionButton(ns("goInputRaster"), "Select"),
-
-    tags$hr(),
+    tags$hr(class = "hrDotted"),
     span("Step 2:", class = "step"),
     span("Choose environmental data", class = "stepText"), br(), br(),
     fileInput(ns("indicEnvs"), label = "Upload environmental rasters",
@@ -29,8 +28,7 @@ indic_time_module_ui <- function(id) {
                                "Not Applicable" = "neither",
                                "Both" = "both")),
     actionButton(ns("goInputEnvs"), "Load"),
-
-    tags$hr(),
+    tags$hr(class = "hrDotted"),
     span("Step 3:", class = "step"),
     span("Choose years", class = "stepText"), br(), br(),
     textInput(ns("Years"), label = "Enter years to be used",
@@ -44,8 +42,6 @@ indic_time_module_server <- function(input, output, session, common) {
   logger <- common$logger
   spp <- common$spp
   curSp <- common$curSp
-  curModel <- common$curModel
-  mapXfer <- common$mapXfer
 
   observeEvent(input$goInputRaster, {
     if (input$selRasterSource == "wallace") {
@@ -126,6 +122,7 @@ indic_time_module_server <- function(input, output, session, common) {
 
     }
   })
+
   observeEvent(input$goInputEnvs, {
     if (is.null(input$indicEnvs)) {
       logger %>% writeLog(type = 'error',
@@ -141,7 +138,7 @@ indic_time_module_server <- function(input, output, session, common) {
       logger,
       message = "Loading environmental variables ", {
         rStack <- raster::stack(input$indicEnvs$datapath)
-        if (raster::nlayers(rStack)==1) {
+        if (raster::nlayers(rStack) == 1) {
           logger %>% writeLog(type = 'error',
                               "Please upload more than one environmental variable")
           return()
@@ -151,6 +148,7 @@ indic_time_module_server <- function(input, output, session, common) {
         spp[[curSp()]]$indic$indicEnvsThr <- threshold
       })
   })
+
   observeEvent(input$goInputYears, {
     req(spp[[curSp()]]$indic$indicEnvs)
     years <- trimws(strsplit(input$Years, ",")[[1]])
@@ -159,7 +157,7 @@ indic_time_module_server <- function(input, output, session, common) {
                           "Please enter the years for all inputed variables")
       return()
     }
-    if (is.null(spp[[curSp()]]$indic$time1)&is.null(spp[[curSp()]]$indic$time)){
+    if (is.null(spp[[curSp()]]$indic$time1)&is.null(spp[[curSp()]]$indic$time)) {
       logger %>% writeLog( type = 'error',
                            "No SDM is selected for the calculations")
     } else if (is.null(spp[[curSp()]]$indic$time1)) {
@@ -167,11 +165,13 @@ indic_time_module_server <- function(input, output, session, common) {
         logger,
         message = "Calculating area indic through time ", {
           SDM <- spp[[curSp()]]$indic$time
-          rStack <- raster::projectRaster(spp[[curSp()]]$indic$indicEnvs, SDM, method = 'bilinear')
+          rStack <- raster::projectRaster(spp[[curSp()]]$indic$indicEnvs, SDM,
+                                          method = 'bilinear')
           threshold <- spp[[curSp()]]$indic$indicEnvsThr
           bound <- input$selBound
           ##run function
-          SDM.time <- changeRangeR::envChange(rStack = rStack, binaryRange = SDM, threshold = threshold, bound=bound)
+          SDM.time <- changeRangeR::envChange(rStack = rStack, binaryRange = SDM,
+                                              threshold = threshold, bound = bound)
           ### Set up years for plotting
         })
       logger %>% writeLog("SDM area after masking for environmental variables ",
@@ -229,17 +229,16 @@ indic_time_module_server <- function(input, output, session, common) {
   return(list(
     save = function() {
       # Save any values that should be saved when the current session is saved
-      list(
-        selSource = input$selRasterSource,
-        EnvThrVal = input$EnvThrVal,
-        Years = input$Years)
+      # list(
+        # selSource = input$selRasterSource,
+        # EnvThrVal = input$EnvThrVal,
+        # Years = input$Years)
     },
     load = function(state) {
       # Load
-      updateSelectInput(session, 'selRasterSource', selected = state$selRasterSource)
-      updateSelectInput(session, 'EnvThrVal', selected = state$EnvThrVal)
-      updateSelectInput(session, 'Years', selected = state$Years)
-
+      # updateSelectInput(session, 'selRasterSource', selected = state$selRasterSource)
+      # updateSelectInput(session, 'EnvThrVal', selected = state$EnvThrVal)
+      # updateSelectInput(session, 'Years', selected = state$Years)
     }
   ))
 
