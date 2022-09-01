@@ -185,13 +185,31 @@ indic_time_module_server <- function(input, output, session, common) {
     smartProgress(
       logger,
       message = "Loading environmental variables ", {
-        rStack <- raster::stack(input$indicEnvs$datapath)
-        if (raster::nlayers(rStack) == 1) {
+        envs <- raster::stack(input$indicEnvs$datapath)
+        if (raster::nlayers(envs) == 1) {
           logger %>% writeLog(type = 'error', hlSpp(curSp()),
                               "Please upload more than one environmental variable")
           return()
         }
-        spp[[curSp()]]$indic$indicEnvs <- rStack
+        if (is.na(raster::crs(envs))) {
+          logger %>% writeLog(
+            type = 'warning', hlSpp(curSp()),
+            "Projection not found for layers. It is assume that layer datum ",
+            "is WGS84 (**)"
+          )
+          raster::crs(envs) <- "EPSG:4326"
+        }
+        if (raster::crs(envs) != "EPSG:4326") {
+          envs <- terra::project(terra::rast(envs), getWKT("wgs84"))
+          envs <- methods::as(envs, "Raster")
+          logger %>% writeLog(
+            type = 'warning', hlSpp(curSp()),
+            "Original coordinate reference system (CRS) is not WGS84 (EPSG:4326). ",
+            "Layers were reprojected to this CRS. (**)"
+          )
+        }
+        req(envs)
+        spp[[curSp()]]$indic$indicEnvs <- envs
         threshold <- as.numeric(trimws(strsplit(input$EnvThrVal, ",")[[1]]))
         spp[[curSp()]]$indic$indicEnvsThr <- threshold
       })
@@ -218,6 +236,7 @@ indic_time_module_server <- function(input, output, session, common) {
                             thrh = spp[[curSp()]]$indic$indicEnvsThr,
                             bound = input$selBound,
                             logger, spN = curSp())
+    req(rangeArea)
     # LOAD INTO SPP ####
     spp[[curSp()]]$indic$areaTime <- rangeArea
     spp[[curSp()]]$indic$years <- years
