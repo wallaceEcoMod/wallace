@@ -38,7 +38,7 @@ diver_richness_module_server <- function(input, output, session, common) {
       )
       return()
     }
-    for (i in 1:length(curSp())){
+    for (i in 1:length(curSp())) {
       sp <- curSp()[i]
       rangeSp <- switch (input$selRichSource,
                          wallace = spp[[sp]]$visualization$mapPred,
@@ -89,6 +89,23 @@ diver_richness_module_server <- function(input, output, session, common) {
         }
       }
     }
+    all_resolutions <- list()
+    for (i in 1:length(curSp())) {
+      sp <- curSp()[i]
+      rangeSp <- switch (input$selRichSource,
+                         wallace = spp[[sp]]$visualization$mapPred,
+                         xfer = spp[[sp]]$transfer$mapXfer,
+                         user = spp[[sp]]$mask$userSDM,
+                         mask = spp[[sp]]$mask$prediction)
+      all_resolutions[[i]] <- raster::res(rangeSp)
+    }
+
+    if (length(unique(all_resolutions)) != 1) {
+      logger %>%
+        writeLog(type = 'error',
+                 "Resolutions of all rasters should be the same (**).")
+      return()
+    }
 
     #Processing
     smartProgress(
@@ -110,7 +127,6 @@ diver_richness_module_server <- function(input, output, session, common) {
         sp1 <- curSp()[1]
         all_stack <- raster::extend(spp[[sp1]]$visualization$mapPred,new_extent)
 
-
         for (i in 2:length(curSp())) {
           sp <- curSp()[i]
           #evaluate if same extent
@@ -123,6 +139,7 @@ diver_richness_module_server <- function(input, output, session, common) {
         # FUNCTION CALL ####
         SR <- raster::calc(all_stack, sum, na.rm = TRUE)
       })
+
     req(SR)
     logger %>% writeLog("Species richness calculated ")
     # LOAD INTO SPP ####
