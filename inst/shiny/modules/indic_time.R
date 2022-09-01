@@ -211,32 +211,20 @@ indic_time_module_server <- function(input, output, session, common) {
                           "No range map is selected for the calculations.")
       return()
     }
-    smartProgress(
-      logger,
-      message = "Calculating area indic through time ", {
-        rStack <- spp[[curSp()]]$indic$indicEnvs
-        SDM <- sf::as_Spatial(spp[[curSp()]]$indic$timeRange) %>%
-          raster::rasterize(rStack[[1]])
-        threshold <- spp[[curSp()]]$indic$indicEnvsThr
-        bound <- input$selBound
-        ##run function
-        SDM.time <- changeRangeR::envChange(
-          rStack = rStack,
-          binaryRange = SDM,
-          threshold = threshold,
-          bound = bound)
-        ### Set up years for plotting
-      })
-    logger %>% writeLog(hlSpp(curSp()),
-                        "Range area after masking for environmental variables ",
-                        "through time calculation done.")
+    rangeMap <- sf::as_Spatial(spp[[curSp()]]$indic$timeRange) %>%
+      raster::rasterize(spp[[curSp()]]$indic$indicEnvs[[1]])
+    rangeArea <- indic_time(range = rangeMap,
+                            envs = spp[[curSp()]]$indic$indicEnvs,
+                            thrh = spp[[curSp()]]$indic$indicEnvsThr,
+                            bound = input$selBound,
+                            logger, spN = curSp())
     # LOAD INTO SPP ####
-    spp[[curSp()]]$indic$areaTime <- SDM.time$Area
+    spp[[curSp()]]$indic$areaTime <- rangeArea
     spp[[curSp()]]$indic$years <- years
     common$update_component(tab = "Results")
   })
 
-  output$TimeAreas <- renderUI({
+  output$timeAreas <- renderUI({
     # Result
     output$areaMasked <- renderPrint({
       paste0("Range area (in km^2) after masking for environmental variables ",
@@ -280,7 +268,7 @@ indic_time_module_server <- function(input, output, session, common) {
 indic_time_module_result <- function(id) {
   ns <- NS(id)
   # Result UI
-  uiOutput(ns("TimeAreas"))
+  uiOutput(ns("timeAreas"))
 }
 
 indic_time_module_map <- function(map, common) {
