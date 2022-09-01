@@ -46,6 +46,7 @@ Imports:
     RColorBrewer,
     rlang,
     rangeModelMetadata,
+    rmarkdown,
     shinyalert,
     shinyjs,
     shinyWidgets (>= 0.6.0),
@@ -71,11 +72,11 @@ Suggests:
     rgdal,
     rgeos,
     rJava,
-    rmarkdown,
     sf,
     sp,
     spThin,
     spocc (>= 1.2.0),
+    stars,
     testthat,
     tidyselect
 Remotes: cmerow/changeRangeR
