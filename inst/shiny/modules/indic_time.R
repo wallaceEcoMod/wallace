@@ -200,7 +200,7 @@ indic_time_module_server <- function(input, output, session, common) {
           )
           raster::crs(envs) <- "EPSG:4326"
         }
-        if (raster::crs(envs) != "EPSG:4326") {
+        if (!raster::isLonLat(envs)) {
           envs <- terra::project(terra::rast(envs), getWKT("wgs84"))
           envs <- methods::as(envs, "Raster")
           logger %>% writeLog(
@@ -209,15 +209,39 @@ indic_time_module_server <- function(input, output, session, common) {
             "Layers were reprojected to this CRS. (**)"
           )
         }
-        req(envs)
-        spp[[curSp()]]$indic$indicEnvs <- envs
-        threshold <- as.numeric(trimws(strsplit(input$EnvThrVal, ",")[[1]]))
-        spp[[curSp()]]$indic$indicEnvsThr <- threshold
-        logger %>% writeLog(
-          hlSpp(curSp()),
-          paste0("Layers uploaded. Bound:", input$selBound, ". ",
-                 "Threshold(s):", paste0(threshold, collapse = ", "), "."))
       })
+    req(envs)
+    threshold <- as.numeric(trimws(strsplit(input$EnvThrVal, ",")[[1]]))
+    bound <- input$selBound
+    if ((length(threshold) != 1 & bound == "lower") |
+        (length(threshold) != 1 & bound == "upper")) {
+      logger %>% writeLog(type = "error",
+        hlSpp(curSp()),
+        "Provided one threshold value.")
+      return()
+    }
+    if (length(threshold) != 2 & bound == "both") {
+      logger %>% writeLog(type = "error",
+        hlSpp(curSp()),
+        "Provided two threshold values.")
+      return()
+    }
+    if (bound == "neither") {
+      logger %>% writeLog(
+        hlSpp(curSp()),
+        "Provided threshold ommitted.")
+      logger %>% writeLog(
+        hlSpp(curSp()),
+        paste0("Layers uploaded. Bound: ", input$selBound, "."))
+    } else {
+      logger %>% writeLog(
+        hlSpp(curSp()),
+        paste0("Layers uploaded. Bound: ", input$selBound, ". ",
+               "Threshold(s): ", paste0(threshold, collapse = ", "), "."))
+    }
+    # LOAD SPP
+    spp[[curSp()]]$indic$indicEnvs <- envs
+    spp[[curSp()]]$indic$indicEnvsThr <- threshold
   })
 
   observeEvent(input$goInputYears, {
@@ -297,67 +321,27 @@ indic_time_module_result <- function(id) {
 
 indic_time_module_map <- function(map, common) {
   # Map logic
-  # spp <- common$spp
-  # curSp <- common$curSp
-  # #if EOO is selected plot the polygon
-  # if (!is.null(spp[[curSp()]]$indic$timeRange)) {
-  #   polyEOO <- spp[[curSp()]]$indic$EOOpoly@polygons[[1]]@Polygons
-  #   bb <- spp[[curSp()]]$indic$EOOpoly@bbox
-  #   bbZoom <- polyZoom(bb[1, 1], bb[2, 1], bb[1, 2], bb[2, 2], fraction = 0.05)
-  #   map %>%
-  #     fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
-  #   map %>%
-  #     ##Add legend
-  #     addLegend("bottomright", colors = "gray",
-  #               title = "EOO", labels = "EOO",
-  #               opacity = 1)
-  #   ##ADD polygon
-  #   if (length(polyEOO) == 1) {
-  #     xy <- list(polyEOO[[1]]@coords)
-  #   } else {
-  #     xy <- lapply(polyEOO, function(x) x@coords)
-  #   }
-  #   for (shp in xy) {
-  #     map %>%
-  #       addPolygons(lng = shp[, 1], lat = shp[, 2], weight = 4, color = "gray",
-  #                   group = 'indic')
-  #   }
-  # }
-  # #plot SDM to use
-  # if (is.null(spp[[curSp()]]$indic$timeRange)) {
-  #   req(spp[[curSp()]]$indic$time)
-  #   sdm <-  spp[[curSp()]]$indic$timeRange
-  #   raster::crs(sdm) <- "+proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0 "
-  #   SDMVals <- getRasterVals(sdm)
-  #   rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-  #   legendPal <- colorNumeric(rev(rasCols), SDMVals, na.color = 'transparent')
-  #   rasPal <- colorNumeric(rasCols, SDMVals, na.color = 'transparent')
-  #   zoomExt <- raster::extent(sdm)
-  #   map %>% fitBounds(lng1 = zoomExt[1], lng2 = zoomExt[2],
-  #                     lat1 = zoomExt[3], lat2 = zoomExt[4])
-  #   if (length(unique(SDMVals)) == 3 | length(unique(SDMVals)) == 2) {
-  #     map %>%
-  #       addLegend("bottomright", colors = c('red', 'grey'),
-  #                 title = "SDM",
-  #                 labels = c("Presence", "Absence"),
-  #                 opacity = 1, layerId = 'sdm') %>%
-  #       addRasterImage(sdm, colors = c('gray', 'red'),
-  #                      opacity = 0.7, group = 'indic', layerId = 'sdm',
-  #                      method = "ngb")
-  #   } else {
-  #     # if threshold specified
-  #     legendPal <- colorNumeric(rev(rasCols), SDMVals,
-  #                               na.color = 'transparent')
-  #     rasPal <- colorNumeric(rasCols, SDMVals, na.color = 'transparent')
-  #     map %>%
-  #       addLegend("bottomright", pal = legendPal, title = "SDM",
-  #                 values = SDMVals, layerId = "sdm",
-  #                 labFormat = reverseLabel(2, reverse_order=TRUE)) %>%
-  #       addRasterImage(sdm, colors = rasPal,
-  #                      opacity = 0.7, group = 'indic', layerId = 'sdm',
-  #                      method = "ngb")
-  #   }
-  # }
+  spp <- common$spp
+  curSp <- common$curSp
+
+  req(spp[[curSp()]]$indic$timeRange)
+  map %>% clearAll()
+  # Step 1 #
+  timePoly <- spp[[curSp()]]$indic$timeRange
+  # Zoom
+  bb <- sf::st_bbox(timePoly) %>% as.vector()
+  bbZoom <- polyZoom(bb[1], bb[2], bb[3], bb[4], fraction = 0.05)
+  map %>%
+    fitBounds(bbZoom[1], bbZoom[2], bbZoom[3], bbZoom[4])
+
+  map %>%
+    ##Add legend
+    addLegend("bottomright", colors = "darkgrey",
+              labels = "Range Map",
+              opacity = 1, layerId = 'indicTimeLegend') %>%
+    ##ADD polygon
+    leafem::addFeatures(timePoly, fillColor = 'darkgrey', fillOpacity = 0.7,
+                        opacity = 0, group = 'indic', layerId = 'indicTime')
 }
 
 indic_time_module_rmd <- function(species) {
