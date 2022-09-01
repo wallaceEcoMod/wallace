@@ -214,8 +214,8 @@ function(input, output, session) {
     shinyjs::toggleState("dlAOO", !is.null(spp[[curSp()]]$indic$AOOraster))
     shinyjs::toggleState("dlEOO", !is.null(spp[[curSp()]]$indic$EOOpoly))
     shinyjs::toggleState("dlOverlap", !is.null(spp[[curSp()]]$indic$overlapPolygon))
-    shinyjs::toggleState("dlAreaTimePlot", !is.null(spp[[curSp()]]$indic$AreaTime))
-    shinyjs::toggleState("dlAreaTime", !is.null(spp[[curSp()]]$indic$AreaTime))
+    shinyjs::toggleState("dlAreaTimePlot", !is.null(spp[[curSp()]]$indic$areaTime))
+    shinyjs::toggleState("dlAreaTime", !is.null(spp[[curSp()]]$indic$areaTime))
     # shinyjs::toggleState("dlWhatever", !is.null(spp[[curSp()]]$whatever))
   })
 
@@ -1397,7 +1397,7 @@ function(input, output, session) {
       paste0("Area_through_time", ".csv")
     },
     content = function(file) {
-      tbl <- data.frame(spp[[curSp()]]$indic$Years,spp[[curSp()]]$indic$AreaTime)
+      tbl <- data.frame(spp[[curSp()]]$indic$years,spp[[curSp()]]$indic$areaTime)
       names(tbl)<-c("Year","Area in km^2")
       write_csv_robust(tbl, file, row.names = FALSE)
     }
@@ -1410,10 +1410,10 @@ function(input, output, session) {
     content = function(file) {
       png(file, width = 400, height = 400)
 
-      req(spp[[curSp()]]$indic$AreaTime)
-      req(spp[[curSp()]]$indic$Years)
-      plot(y = spp[[curSp()]]$indic$AreaTime, x = spp[[curSp()]]$indic$Years, main = "SDM area indic", ylab = "area (square km)",xlab="Time")
-      lines(y = spp[[curSp()]]$indic$AreaTime, x = spp[[curSp()]]$indic$Years)
+      req(spp[[curSp()]]$indic$areaTime)
+      req(spp[[curSp()]]$indic$years)
+      plot(y = spp[[curSp()]]$indic$areaTime, x = spp[[curSp()]]$indic$years, main = "SDM area indic", ylab = "area (square km)",xlab="Time")
+      lines(y = spp[[curSp()]]$indic$areaTime, x = spp[[curSp()]]$indic$years)
       dev.off()
     }
   )

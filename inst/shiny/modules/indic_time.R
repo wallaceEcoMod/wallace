@@ -173,12 +173,12 @@ indic_time_module_server <- function(input, output, session, common) {
 
   observeEvent(input$goInputEnvs, {
     if (is.null(input$indicEnvs)) {
-      logger %>% writeLog(type = 'error',
+      logger %>% writeLog(type = 'error', hlSpp(curSp()),
                           "Raster files not uploaded")
       return()
     }
     if (is.null(input$EnvThrVal)) {
-      logger %>% writeLog(type = 'error',
+      logger %>% writeLog(type = 'error', hlSpp(curSp()),
                           "Please enter a threshold for environmental layers")
       return()
     }
@@ -187,7 +187,7 @@ indic_time_module_server <- function(input, output, session, common) {
       message = "Loading environmental variables ", {
         rStack <- raster::stack(input$indicEnvs$datapath)
         if (raster::nlayers(rStack) == 1) {
-          logger %>% writeLog(type = 'error',
+          logger %>% writeLog(type = 'error', hlSpp(curSp()),
                               "Please upload more than one environmental variable")
           return()
         }
@@ -201,66 +201,46 @@ indic_time_module_server <- function(input, output, session, common) {
     req(spp[[curSp()]]$indic$indicEnvs)
     years <- trimws(strsplit(input$Years, ",")[[1]])
     if (raster::nlayers(spp[[curSp()]]$indic$indicEnvs) != length(years)) {
-      logger %>% writeLog(type = 'error',
-                          "Please enter the years for all inputed variables")
+      logger %>% writeLog(type = 'error', hlSpp(curSp()),
+                          "Please enter the years for all inputed variables.")
       return()
     }
     if (is.null(spp[[curSp()]]$indic$timeRange)) {
-      logger %>% writeLog( type = 'error',
-                           "No SDM is selected for the calculations")
-    } else if (is.null(spp[[curSp()]]$indic$timeRange)) {
-      smartProgress(
-        logger,
-        message = "Calculating area indic through time ", {
-          SDM <- spp[[curSp()]]$indic$timeRange
-          rStack <- raster::projectRaster(spp[[curSp()]]$indic$indicEnvs, SDM,
-                                          method = 'bilinear')
-          threshold <- spp[[curSp()]]$indic$indicEnvsThr
-          bound <- input$selBound
-          ##run function
-          SDM.time <- changeRangeR::envChange(rStack = rStack, binaryRange = SDM,
-                                              threshold = threshold, bound = bound)
-          ### Set up years for plotting
-        })
-      logger %>% writeLog("SDM area after masking for environmental variables ",
-                          "through time calculation done")
-      # LOAD INTO SPP ####
-      spp[[curSp()]]$indic$AreaTime <-SDM.time$Area
-      spp[[curSp()]]$indic$Years <- years
-      common$update_component(tab = "Results")
-    } else if (!is.null(spp[[curSp()]]$indic$timeRange)) {
-      smartProgress(
-        logger,
-        message = "Calculating area indic through time ", {
-          rStack <- spp[[curSp()]]$indic$indicEnvs
-          eoo <- spp[[curSp()]]$indic$timeRange
-          threshold <- spp[[curSp()]]$indic$indicEnvsThr
-          bound <- input$selBound
-          ##run function
-          SDM.time <- changeRangeR::envChange(
-            rStack = rStack, binaryRange = eoo, threshold = threshold,
-            bound = bound)
-          ### Set up years for plotting
-        })
-      logger %>% writeLog("SDM area after masking for environmental variables ",
-                          "through time calculation done")
-      # LOAD INTO SPP ####
-      spp[[curSp()]]$indic$AreaTime <- SDM.time$Area
-      spp[[curSp()]]$indic$Years <- years
-      common$update_component(tab = "Results")
+      logger %>% writeLog(type = 'error', hlSpp(curSp()),
+                          "No range map is selected for the calculations.")
+      return()
     }
+    smartProgress(
+      logger,
+      message = "Calculating area indic through time ", {
+        SDM <- spp[[curSp()]]$indic$timeRange
+        rStack <- spp[[curSp()]]$indic$indicEnvs
+        threshold <- spp[[curSp()]]$indic$indicEnvsThr
+        bound <- input$selBound
+        ##run function
+        SDM.time <- changeRangeR::envChange(rStack = rStack, binaryRange = SDM,
+                                            threshold = threshold, bound = bound)
+        ### Set up years for plotting
+      })
+    logger %>% writeLog(hlSpp(curSp()),
+                        "Range area after masking for environmental variables ",
+                        "through time calculation done.")
+    # LOAD INTO SPP ####
+    spp[[curSp()]]$indic$areaTime <- SDM.time$Area
+    spp[[curSp()]]$indic$years <- years
+    common$update_component(tab = "Results")
   })
 
   output$TimeAreas <- renderUI({
     # Result
     output$areaMasked <- renderPrint({
-      paste0("SDM area (in km^2) after masking for environmental variables ",
-             "through time for: ",  spp[[curSp()]]$indic$Years, " ",
-             spp[[curSp()]]$indic$AreaTime)})
+      paste0("Range area (in km^2) after masking for environmental variables ",
+             "through time for: ",  spp[[curSp()]]$indic$years, " ",
+             spp[[curSp()]]$indic$areaTime)})
     output$timePlot <- renderPlot({
-      plot(y = spp[[curSp()]]$indic$AreaTime, x = spp[[curSp()]]$indic$Years,
-           main = "SDM area indic", ylab = "area (square km)", xlab = "Time")
-      lines(y = spp[[curSp()]]$indic$AreaTime, x = spp[[curSp()]]$indic$Years)
+      plot(y = spp[[curSp()]]$indic$areaTime, x = spp[[curSp()]]$indic$years,
+           main = "Range area indic", ylab = "area (square km)", xlab = "Time")
+      lines(y = spp[[curSp()]]$indic$areaTime, x = spp[[curSp()]]$indic$years)
     })
     tabsetPanel(
       tabPanel("Area through time plot",
