@@ -169,6 +169,7 @@ indic_time_module_server <- function(input, output, session, common) {
                               eoo = "Extent of Occurrence (EOO)",
                               aoo = "Area of Ocupancy (AOO)"), "."))
     spp[[curSp()]]$indic$timeRange <- rangeMap
+    common$update_component(tab = "Map")
   })
 
   observeEvent(input$goInputEnvs, {
