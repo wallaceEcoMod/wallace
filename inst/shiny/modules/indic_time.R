@@ -212,6 +212,10 @@ indic_time_module_server <- function(input, output, session, common) {
         spp[[curSp()]]$indic$indicEnvs <- envs
         threshold <- as.numeric(trimws(strsplit(input$EnvThrVal, ",")[[1]]))
         spp[[curSp()]]$indic$indicEnvsThr <- threshold
+        logger %>% writeLog(
+          hlSpp(curSp()),
+          paste0("Layers uploaded. Bound:", input$selBound, ". ",
+                 "Threshold(s):", paste0(threshold, collapse = ", "), "."))
       })
   })
 
