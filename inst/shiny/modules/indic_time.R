@@ -15,7 +15,7 @@ indic_time_module_ui <- function(id) {
     fileInput(ns("indicEnvs"), label = "Upload environmental rasters",
               accept = c(".tif", ".asc"), multiple = TRUE),
     textInput(ns("EnvThrVal"), "Set threshold value",
-              placeholder = "for single threshold: 40, for range: 30,60 ",value=""),
+              placeholder = "for single threshold: 40, for range: 30,60 ", value=""),
     selectInput(ns("selBound") , label = "Select bounds to be used for calculations",
                 choices = list("Lower" = "lower",
                                "Upper" = "upper",
@@ -200,6 +200,7 @@ indic_time_module_server <- function(input, output, session, common) {
   observeEvent(input$goInputYears, {
     req(spp[[curSp()]]$indic$indicEnvs)
     years <- trimws(strsplit(input$Years, ",")[[1]])
+
     if (raster::nlayers(spp[[curSp()]]$indic$indicEnvs) != length(years)) {
       logger %>% writeLog(type = 'error', hlSpp(curSp()),
                           "Please enter the years for all inputed variables.")
@@ -213,13 +214,17 @@ indic_time_module_server <- function(input, output, session, common) {
     smartProgress(
       logger,
       message = "Calculating area indic through time ", {
-        SDM <- spp[[curSp()]]$indic$timeRange
         rStack <- spp[[curSp()]]$indic$indicEnvs
+        SDM <- sf::as_Spatial(spp[[curSp()]]$indic$timeRange) %>%
+          raster::rasterize(rStack[[1]])
         threshold <- spp[[curSp()]]$indic$indicEnvsThr
         bound <- input$selBound
         ##run function
-        SDM.time <- changeRangeR::envChange(rStack = rStack, binaryRange = SDM,
-                                            threshold = threshold, bound = bound)
+        SDM.time <- changeRangeR::envChange(
+          rStack = rStack,
+          binaryRange = SDM,
+          threshold = threshold,
+          bound = bound)
         ### Set up years for plotting
       })
     logger %>% writeLog(hlSpp(curSp()),
