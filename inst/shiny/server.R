@@ -3,9 +3,10 @@ function(input, output, session) {
   # REACTIVE VALUES LISTS ####
   ########################## #
 
-  # single species list of lists
+  # List of lists
   spp <- reactiveValues()
   envs.global <- reactiveValues()
+  multi.sp <- reactiveValues()
 
   # Variable to keep track of current log message
   initLogMsg <- function() {
@@ -247,11 +248,11 @@ function(input, output, session) {
     n <- n[!grepl(".", n, fixed = TRUE)]
     # if no current species selected, select the first name
     # NOTE: this line is necessary to retain the selection after selecting different tabs
-    if(!is.null(curSp())) selected <- curSp() else selected <- n[1]
+    if (!is.null(curSp())) selected <- curSp() else selected <- n[1]
     # if espace component, allow for multiple species selection
-    if(component() == 'espace') options <- list(maxItems = 2)
-    #if diver component, allow for multiple species selection
-    else if (component() == 'diver') options <- list(maxItems = 100) else options <- list(maxItems = 1)
+    if (component() == 'espace') options <- list(maxItems = 2)
+    # if diver component, allow for multiple species selection
+    if (component() == 'diver') options <- list(maxItems = 100) else options <- list(maxItems = 1)
     # make a named list of their names
     sppNameList <- c(list("Current species" = ""), setNames(as.list(n), n))
     # generate a selectInput ui that lists the available species
@@ -1785,6 +1786,7 @@ function(input, output, session) {
     curSp = curSp,
     allSp = allSp,
     multSp = multSp,
+    multi.sp = multi.sp,
     curEnv = curEnv,
     curModel = curModel,
     component = component,
@@ -1866,11 +1868,13 @@ function(input, output, session) {
     state <- list()
 
     spp_save <- reactiveValuesToList(spp)
+    multi.sp_save <- reactiveValuesToList(multi.sp)
 
     # Save general data
     state$main <- list(
       version = as.character(packageVersion("wallace")),
       spp = spp_save,
+      multi.sp = multi.sp_save,
       envs_global = reactiveValuesToList(envs.global),
       cur_sp = input$curSp,
       selected_module = sapply(COMPONENTS, function(x) input[[glue("{x}Sel")]], simplify = FALSE)
