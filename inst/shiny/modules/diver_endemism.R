@@ -18,9 +18,6 @@ diver_endemism_module_server <- function(input, output, session, common) {
   logger <- common$logger
   spp <- common$spp
   curSp <- common$curSp
-  curModel <- common$curModel
-  mapXfer <- common$mapXfer
-  allSp <- common$allSp
 
   output$diverEnd <- renderUI({
     ns <- session$ns
@@ -47,7 +44,7 @@ diver_endemism_module_server <- function(input, output, session, common) {
     # get all models
     if (input$selSource == 'wallace'){
       for (i in 1:length(curSp())){
-        sp<-curSp()[i]
+        sp <- curSp()[i]
         if (is.null(spp[[sp]]$visualization$mapPred)) {
           logger %>%
             writeLog(type = 'error',

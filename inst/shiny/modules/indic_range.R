@@ -15,8 +15,6 @@ indic_range_module_server <- function(input, output, session, common) {
   logger <- common$logger
   spp <- common$spp
   curSp <- common$curSp
-  curModel <- common$curModel
-  mapXfer <- common$mapXfer
   selAreaSource <- common$selAreaSource
 
   output$indicRangeSourceUI <- renderUI({

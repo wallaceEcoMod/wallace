@@ -43,8 +43,6 @@ indic_overlap_module_server <- function(input, output, session, common) {
   logger <- common$logger
   spp <- common$spp
   curSp <- common$curSp
-  curModel <- common$curModel
-  mapXfer <- common$mapXfer
   selOverlapSource <- common$selOverlapSource
   overlapField <- common$overlapField
   overlapCat <- common$overlapCat
