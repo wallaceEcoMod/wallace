@@ -198,7 +198,7 @@ clearAll <- function(map) {
   # raster::values(r) <- 0
   map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>%
       clearControls() %>% removeLayersControl() %>%
-      clearGroup("mask") %>% clearGroup("indic")
+      clearGroup("mask") %>% clearGroup("indic") %>% clearGroup("diver")
 }
 
 #' @title mapBgPolys

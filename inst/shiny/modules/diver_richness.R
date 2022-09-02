@@ -17,6 +17,7 @@ diver_richness_module_server <- function(input, output, session, common) {
   logger <- common$logger
   spp <- common$spp
   curSp <- common$curSp
+  multi.sp <- common$multi.sp
 
   output$diverRich <- renderUI({
     ns <- session$ns
@@ -97,12 +98,11 @@ diver_richness_module_server <- function(input, output, session, common) {
                          xfer = spp[[sp]]$transfer$mapXfer,
                          user = spp[[sp]]$mask$userSDM,
                          mask = spp[[sp]]$mask$prediction)
-      all_resolutions[[i]] <- raster::res(rangeSp)
+      all_resolutions[[i]] <- round(raster::res(rangeSp), digits = 7)
     }
-
     if (length(unique(all_resolutions)) != 1) {
       logger %>%
-        writeLog(type = 'error',
+        writeLog(type = 'error', hlSpp(paste0(length(curSp()), " species")),
                  "Resolutions of all rasters should be the same (**).")
       return()
     }
@@ -112,47 +112,37 @@ diver_richness_module_server <- function(input, output, session, common) {
       logger,
       message = "Generating a species richness map", {
         # get all models
+
         all_models <- list()
-        for (i in 1:length(curSp())){
-          all_models[[i]] <- spp[[curSp()[i]]]$visualization$mapPred
+        for (i in 1:length(curSp())) {
+          sp <- curSp()[i]
+          all_models[[i]] <- switch (input$selRichSource,
+                                     wallace = spp[[sp]]$visualization$mapPred,
+                                     xfer = spp[[sp]]$transfer$mapXfer,
+                                     user = spp[[sp]]$mask$userSDM,
+                                     mask = spp[[sp]]$mask$prediction)
         }
-        all_extents <- lapply(all_models,raster::extent)
-        all_extents <- lapply(all_extents,as.vector)
+        all_extents <- lapply(all_models, raster::extent)
+        all_extents <- lapply(all_extents, as.vector)
         xmin <- min(unlist(lapply(all_extents, function(l) l[[1]])))
         ymin <- min(unlist(lapply(all_extents, function(l) l[[3]])))
         xmax <- max(unlist(lapply(all_extents, function(l) l[[2]])))
         ymax <- max(unlist(lapply(all_extents, function(l) l[[4]])))
-        new_extent <- raster::extent(c(xmin,xmax,ymin,ymax))
-        # get all models
-        sp1 <- curSp()[1]
-        all_stack <- raster::extend(spp[[sp1]]$visualization$mapPred,new_extent)
+        new_extent <- raster::extent(c(xmin, xmax, ymin, ymax))
 
-        for (i in 2:length(curSp())) {
-          sp <- curSp()[i]
-          #evaluate if same extent
+        all_stack <- lapply(all_models, raster::extend, y = new_extent)
+        all_stack <- raster::stack(all_stack)
 
-          r1 <- raster::extend(spp[[sp]]$visualization$mapPred, new_extent)
-          all_stack <- raster::stack(all_stack,r1)
-        }
-
-        req(all_stack)
         # FUNCTION CALL ####
-        SR <- raster::calc(all_stack, sum, na.rm = TRUE)
+        richness <- raster::calc(all_stack, sum, na.rm = TRUE)
+        richness[richness == 0] <- NA
       })
 
-    req(SR)
-    logger %>% writeLog("Species richness calculated ")
+    req(richness)
+    logger %>% writeLog("Species richness calculated.")
     # LOAD INTO SPP ####
-    # this name concatenates the species names when there are two or more
-    #  mspName <- paste(curSp(), collapse = ".")
-    mspName <- "multisp"
-    if (is.null(spp[[mspName]])) {
-      spp[[mspName]] <- list(SR = SR)
-    } else {
-      spp[[mspName]]$SR <- SR
-    }
-    spp[[mspName]]$mapSRVals <- getRasterVals(SR)
-    spp[[mspName]]$ListSR <- curSp()
+    multi.sp$richness <- richness
+    multi.sp$sppRichness <- curSp()
     common$update_component(tab = "Map")
   })
 
@@ -169,26 +159,28 @@ diver_richness_module_server <- function(input, output, session, common) {
 
 diver_richness_module_map <- function(map, common) {
   # Map logic
-  # spp <- common$spp
-  # curSp <- common$curSp
-  # #SR <- common$SR
-  # # mspName <- paste(curSp(), collapse = ".")
-  # #set map parameters
-  # SR <- spp[["multisp"]]$SR
-  # mapSRVals <-  spp[["multisp"]]$mapSRVals
-  # rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-  # legendPal <- colorNumeric(rev(rasCols), mapSRVals, na.color = 'transparent')
-  # rasPal <- colorNumeric(rasCols, mapSRVals, na.color = 'transparent')
-  # # Create legend
-  # req(SR)
-  # map %>% clearAll() %>%
-  #   addLegend("bottomright", pal = legendPal,
-  #             title = "Species richness",
-  #             values = mapSRVals, layerId = "train",
-  #             labFormat = reverseLabel(2, reverse_order = TRUE))
-  # #MAP richness
-  # map %>% addRasterImage(SR, colors = rasPal, opacity = 0.7,
-  #                        layerId = 'SR', group = 'diver', method = "ngb")
+  spp <- common$spp
+  curSp <- common$curSp
+  multi.sp <- common$multi.sp
+
+  req(multi.sp$richness)
+  rich <- multi.sp$richness
+  rasCols <- c("#3288BD", "#99D594", "#E6F598",
+               "#FEE08B", "#FC8D59", "#D53E4F")
+  minV <- raster::minValue(rich)
+  maxV <- raster::maxValue(rich)
+  legendPal <- colorNumeric(rev(rasCols), minV:maxV,
+                            na.color = 'transparent')
+  map %>% clearAll() %>%
+    addLegend("bottomright", pal = legendPal,
+              title = "Richness",
+              values = minV:maxV, layerId = "richnessLeg",
+              labFormat = reverseLabel(2, reverse_order = TRUE)) %>%
+    leafem::addGeoRaster(rich,
+                         colorOptions = leafem::colorOptions(
+                           palette = colorRampPalette(colors = rasCols)),
+                         opacity = 1, group = 'diver',
+                         layerId = 'richnessRaster')
 }
 
 diver_richness_module_rmd <- function(species) {
