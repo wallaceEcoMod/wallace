@@ -1,16 +1,15 @@
-diver_endemism_module_ui <-  function(id) {
+diver_endemism_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
-    span("Step 1:", class = "step"),
     span("Choose source of range maps", class = "stepText"), br(), br(),
-    selectInput(ns("selSource") , label = "Select source of range maps",
+    selectInput(ns("selEndemSource") , label = "Select source of range maps",
                 choices = list("Wallace SDM" = "wallace",
                                "Transferred SDM" = "xfer",
-                               "User uploaded SDM" = "sdm"
-                )),
+                               "User uploaded SDM" = "user",
+                               "Masked SDM" = "mask")),
     # UI
-    uiOutput(ns("diverEnd")),
-    actionButton(ns("Goendemism"), "Run")
+    uiOutput(ns("diverEndem")),
+    actionButton(ns("goEndemism"), "Run")
   )
 }
 
@@ -18,8 +17,9 @@ diver_endemism_module_server <- function(input, output, session, common) {
   logger <- common$logger
   spp <- common$spp
   curSp <- common$curSp
+  multi.sp <- common$multi.sp
 
-  output$diverEnd <- renderUI({
+  output$diverEndem <- renderUI({
     ns <- session$ns
     req(curSp())
     if (length(curSp()) == 1) {
@@ -30,7 +30,7 @@ diver_endemism_module_server <- function(input, output, session, common) {
     }
   })
 
-  observeEvent(input$Goendemism, {
+  observeEvent(input$goEndemism, {
     # WARNING ####
     # ERRORS ####
     if (length(curSp()) < 2) {
@@ -40,195 +40,115 @@ diver_endemism_module_server <- function(input, output, session, common) {
       )
       return()
     }
-    # Processing
-    # get all models
-    if (input$selSource == 'wallace'){
-      for (i in 1:length(curSp())){
-        sp <- curSp()[i]
-        if (is.null(spp[[sp]]$visualization$mapPred)) {
-          logger %>%
-            writeLog(type = 'error',
-                     'No spatial representation of the model has been ',
-                     'generated, please first use the visualize component ',
-                     'to visualize your model')
-          return()
-        }
-        if (is.null(spp[[sp]]$rmm$rmm$prediction$binary$thresholdSet)) {
-          logger %>%
-            writeLog(type = 'error',
-                     'Generate a thresholded prediction before doing ',
-                     'multisp. calculations')
-          return()
-        }
-
+    for (i in 1:length(curSp())) {
+      sp <- curSp()[i]
+      rangeSp <- switch (input$selEndemSource,
+                         wallace = spp[[sp]]$visualization$mapPred,
+                         xfer = spp[[sp]]$transfer$mapXfer,
+                         user = spp[[sp]]$mask$userSDM,
+                         mask = spp[[sp]]$mask$prediction)
+      if (is.null(rangeSp)) {
+        logger %>%
+          writeLog(type = 'error', hlSpp(sp),
+                   'No range representation (', input$selEndemSource, ') has been ',
+                   'generated/loaded, please provided one (**).')
+        return()
       }
-      #Processing
-      smartProgress(
-        logger,
-        message = "Generating a species endemism map", {
-          #get all models
-          all_models<-list()
-          for (i in 1:length(curSp())){
-            all_models[[i]]<-spp[[curSp()[i]]]$visualization$mapPred
-          }
-          all_extents<-lapply(all_models,raster::extent)
-          all_extents<-lapply(all_extents,as.vector)
-          xmin<-min(unlist(lapply(all_extents, function(l) l[[1]])))
-          ymin<-min(unlist(lapply(all_extents, function(l) l[[3]])))
-          xmax<-max(unlist(lapply(all_extents, function(l) l[[2]])))
-          ymax<-max(unlist(lapply(all_extents, function(l) l[[4]])))
-          new_extent<-raster::extent(c(xmin,xmax,ymin,ymax))
-          #get all models
-          sp1<-curSp()[1]
-          all_stack<- raster::extend(spp[[sp1]]$visualization$mapPred,new_extent)
-
-
-          for (i in 2:length(curSp())){
-            sp<-curSp()[i]
-            #evaluate if same extent
-
-            r1 <- raster::extend(spp[[sp]]$visualization$mapPred, new_extent)
-            all_stack<-raster::stack(all_stack,r1)
-          }
-
-          req(all_stack)
-          # FUNCTION CALL ####
-          SE <- changeRangeR::SE(all_stack)
-
-        })
-    }
-    if (input$selSource == 'xfer'){
-      for (i in 1:length(curSp())){
-        sp <- curSp()[i]
-        if (is.null(spp[[sp]]$transfer$mapXfer)) {
+      if (input$selEndemSource == "wallace") {
+        if (is.null(spp[[sp]]$visualization$thresholds)) {
           logger %>%
             writeLog(type = 'error',
-                     'Transferred model does not exist, please use the transfer ',
-                     'module to transfer to same geographical space')
+                     hlSpp(sp),
+                     'Generate a thresholded model before doing calculations.')
           return()
         }
+      }
+      if (input$selEndemSource == "xfer") {
         if (is.null(spp[[sp]]$rmm$prediction$transfer$environment1$thresholdSet)) {
           logger %>%
             writeLog(type = 'error',
-                     'Generate a thresholded prediction before doing multisp. ',
-                     'calculations')
-          return()
-        }
-
-      }
-      #Processing
-      smartProgress(
-        logger,
-        message = "Generating a species endemism map", {
-          #get all models
-          all_models < -list()
-          for (i in 1:length(curSp())) {
-            all_models[[i]] <- spp[[curSp()[i]]]$transfer$mapXfer
-          }
-          all_extents <- lapply(all_models, raster::extent)
-          all_extents <- lapply(all_extents, as.vector)
-          xmin <- min(unlist(lapply(all_extents, function(l)
-            l[[1]])))
-          ymin <- min(unlist(lapply(all_extents, function(l)
-            l[[3]])))
-          xmax <- max(unlist(lapply(all_extents, function(l)
-            l[[2]])))
-          ymax <- max(unlist(lapply(all_extents, function(l)
-            l[[4]])))
-          new_extent <- raster::extent(c(xmin, xmax, ymin, ymax))
-          #get all models
-          sp1 <- curSp()[1]
-          all_stack<- raster::extend(spp[[sp1]]$transfer$mapXfer, new_extent)
-
-
-          for (i in 2:length(curSp())){
-            sp<-curSp()[i]
-            #evaluate if same extent
-
-            r1 <- raster::extend(spp[[sp]]$transfer$mapXfer, new_extent)
-            all_stack<-raster::stack(all_stack,r1)
-          }
-
-          req(all_stack)
-          # FUNCTION CALL ####
-          SE <- changeRangeR::SE(all_stack)
-
-        })
-    }
-    if(input$selSource=='sdm'){
-      for (i in 1:length(curSp())){
-        sp<-curSp()[i]
-        if (is.null(spp[[sp]]$mask$userSDM)) {
-          logger %>%
-            writeLog(type = 'error',
-                     'Please upload a model for each species')
-          return()
-        }
-        #if(raster::res(spp[[curSp()[1]]]$mask$userSDM)!=raster::res(spp[[sp]]$mask$userSDM)){
-        # logger %>%
-        # writeLog(type = 'error',
-        #   'Uploaded models must be of the same resolution')
-        #return()
-        #}
-        if (length(unique(getRasterVals(spp[[sp]]$mask$userSDM)))>3) {
-          logger %>%
-            writeLog(type = 'error',
-                     'Uploaded models must be thresholded (binary) before doing multisp. calculations')
+                     hlSpp(sp),
+                     'Generate a thresholded prediction before doing calculations')
           return()
         }
       }
-      smartProgress(
-        logger,
-        message = "Generating a species endemism map", {
-          ##Get the extent of all models and keep the max
-          all_models <- list()
-          for (i in 1:length(curSp())){
-            all_models[[i]] <- spp[[curSp()[i]]]$mask$userSDM
-          }
-          all_extents <- lapply(all_models,raster::extent)
-          all_extents <- lapply(all_extents,as.vector)
-          xmin <- min(unlist(lapply(all_extents, function(l) l[[1]])))
-          ymin <- min(unlist(lapply(all_extents, function(l) l[[3]])))
-          xmax <- max(unlist(lapply(all_extents, function(l) l[[2]])))
-          ymax <- max(unlist(lapply(all_extents, function(l) l[[4]])))
-          new_extent <- raster::extent(c(xmin,xmax,ymin,ymax))
-          #get all models
-          sp1 <- curSp()[1]
-          all_stack <- raster::extend(spp[[sp1]]$mask$userSDM, new_extent)
-
-
-          for (i in 2:length(curSp())){
-            sp <- curSp()[i]
-            #evaluate if same extent
-            r1 <- raster::extend(spp[[sp]]$mask$userSDM, new_extent)
-            all_stack <- raster::stack(all_stack,r1)
-          }
-          req(all_stack)
-          # FUNCTION CALL ####
-          SE <- changeRangeR::SE(all_stack)
-        })
+      if (input$selEndemSource == "user") {
+        if (!shiny::isTruthy(spp[[sp]]$mask$userThr)) {
+          logger %>%
+            writeLog(type = 'error',
+                     hlSpp(sp),
+                     'Load a user thresholded prediction before doing calculations.')
+          return()
+        }
+      }
+      if (input$selEndemSource == "mask") {
+        if (!spp[[sp]]$mask$maskThr) {
+          logger %>%
+            writeLog(type = 'error',
+                     hlSpp(sp),
+                     'Mask a thresholded prediction before doing calculations.')
+          return()
+        }
+      }
     }
+    all_resolutions <- list()
+    for (i in 1:length(curSp())) {
+      sp <- curSp()[i]
+      rangeSp <- switch (input$selEndemSource,
+                         wallace = spp[[sp]]$visualization$mapPred,
+                         xfer = spp[[sp]]$transfer$mapXfer,
+                         user = spp[[sp]]$mask$userSDM,
+                         mask = spp[[sp]]$mask$prediction)
+      all_resolutions[[i]] <- round(raster::res(rangeSp), digits = 7)
+    }
+    if (length(unique(all_resolutions)) != 1) {
+      logger %>%
+        writeLog(type = 'error', hlSpp(paste0(length(curSp()), " species")),
+                 "Resolutions of all rasters should be the same (**).")
+      return()
+    }
+    # Processing
+    smartProgress(
+      logger,
+      message = "Generating a species endemism map", {
+        # get all models
+        all_models <- list()
+        for (i in 1:length(curSp())) {
+          sp <- curSp()[i]
+          all_models[[i]] <- switch (input$selEndemSource,
+                                     wallace = spp[[sp]]$visualization$mapPred,
+                                     xfer = spp[[sp]]$transfer$mapXfer,
+                                     user = spp[[sp]]$mask$userSDM,
+                                     mask = spp[[sp]]$mask$prediction)
+        }
+        all_extents <- lapply(all_models, raster::extent)
+        all_extents <- lapply(all_extents, as.vector)
+        xmin <- min(unlist(lapply(all_extents, function(l) l[[1]])))
+        ymin <- min(unlist(lapply(all_extents, function(l) l[[3]])))
+        xmax <- max(unlist(lapply(all_extents, function(l) l[[2]])))
+        ymax <- max(unlist(lapply(all_extents, function(l) l[[4]])))
+        new_extent <- raster::extent(c(xmin, xmax, ymin, ymax))
+
+        all_stack <- lapply(all_models, raster::extend, y = new_extent)
+        all_stack <- raster::stack(all_stack)
+
+        req(all_stack)
+        # FUNCTION CALL ####
+        endemism <- changeRangeR::SpeciesEndemism(all_stack)
+      })
+
     # FUNCTION CALL ####
-    req(SE)
-    logger %>% writeLog("Species endemism calculated ")
+    req(endemism)
+    logger %>% writeLog("Species endemism calculated.")
     # LOAD INTO SPP ####
-    # this name concatenates the species names when there are two or more
-    #  mspName <- paste(curSp(), collapse = ".")
-    mspName <- "multisp"
-    if (is.null(spp[[mspName]])) {
-      spp[[mspName]] <- list(SE = SE)
-    } else {
-      spp[[mspName]]$SE <- SE
-    }
-    spp[[mspName]]$mapSEVals <- getRasterVals(SE)
-    spp[[mspName]]$ListSE <- curSp()
+    multi.sp$endemism <- endemism
+    multi.sp$sppEndemism <- curSp()
     common$update_component(tab = "Map")
   })
 
   output$result <- renderPrint({
     # Result
-    mspName <- "multisp"
-    spp[[mspName]]$SE
+    multi.sp$endemism
   })
 
   return(list(
@@ -251,24 +171,29 @@ diver_endemism_module_map <- function(map, common) {
   # Map logic
   spp <- common$spp
   curSp <- common$curSp
-  #SR <- common$SR
-  # mspName <- paste(curSp(), collapse = ".")
-  #set map parameters
-  SE <- spp[["multisp"]]$SE
-  mapSEVals <-  spp[["multisp"]]$mapSEVals
-  rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-  legendPal <- colorNumeric(rev(rasCols), mapSEVals, na.color = 'transparent')
-  rasPal <- colorNumeric(rasCols, mapSEVals, na.color = 'transparent')
-  # Create legend
-  req(SE)
+  multi.sp <- common$multi.sp
+
+  req(multi.sp$endemism)
+  endem <- multi.sp$endemism
+  rasCols <- c("#3288BD", "#99D594", "#E6F598",
+               "#FEE08B", "#FC8D59", "#D53E4F")
+  minV <- raster::minValue(endem)
+  maxV <- raster::maxValue(endem)
+  quanRas <- quantile(c(minV, maxV),
+                      probs = seq(0, 1, 0.1))
+  legendPal <- colorNumeric(rev(rasCols), quanRas,
+                            na.color = 'transparent')
+
   map %>% clearAll() %>%
     addLegend("bottomright", pal = legendPal,
-              title = "Species endemism",
-              values = mapSEVals, layerId = "train",
-              labFormat = reverseLabel(2, reverse_order = TRUE))
-  #MAP endemism
-  map %>% addRasterImage(SE, colors = rasPal, opacity = 0.7,
-                         layerId = 'SE', group = 'diver', method = "ngb")
+              title = "Species<br>endemism",
+              values = quanRas, layerId = "endemismLeg",
+              labFormat = reverseLabel(2, reverse_order = TRUE)) %>%
+    leafem::addGeoRaster(endem,
+                         colorOptions = leafem::colorOptions(
+                           palette = colorRampPalette(colors = rasCols)),
+                         opacity = 1, group = 'diver',
+                         layerId = 'endemismRaster')
 }
 
 diver_endemism_module_rmd <- function(species) {
