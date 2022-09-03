@@ -32,5 +32,7 @@ selected to overlap with range map. NULL is inputOverlap is a raster.}
 Overlap range map with shapefile or raster
 }
 \author{
+Andrea Paz <paz.andreita@gmail.com>
+
 Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
 }

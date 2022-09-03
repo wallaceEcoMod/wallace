@@ -8,6 +8,7 @@
 #' selected to overlap with range map. NULL is inputOverlap is a raster.
 #' @param logger logger
 #' @param spN species name
+#' @author Andrea Paz <paz.andreita@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 #' @export
 #'

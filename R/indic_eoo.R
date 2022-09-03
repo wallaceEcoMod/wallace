@@ -11,6 +11,7 @@
 #' @param logger stores all notification messages to be displayed in the Log
 #'  Window of Wallace GUI. Insert the logger reactive list here for running in
 #'  shiny, otherwise leave the default NULL
+#' @author Andrea Paz <paz.andreita@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 #' @export
 #'

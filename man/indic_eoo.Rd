@@ -27,5 +27,7 @@ shiny, otherwise leave the default NULL}
 Calculate EOO.
 }
 \author{
+Andrea Paz <paz.andreita@gmail.com>
+
 Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
 }
