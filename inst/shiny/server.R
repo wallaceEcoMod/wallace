@@ -228,11 +228,11 @@ function(input, output, session) {
  })
 
  observe({
-   req(length(curSp()) > 2)
-   shinyjs::toggleState("dlRich", !is.null(spp[["multisp"]]$SR))
-   shinyjs::toggleState("dlEnd", !is.null(spp[["multisp"]]$SE))
-   shinyjs::toggleState("dlSpListSR", !is.null(spp[["multisp"]]$ListSR))
-   shinyjs::toggleState("dlSpListSE", !is.null(spp[["multisp"]]$ListSE))
+   req(length(curSp()) >= 2)
+   shinyjs::toggleState("dlRich", !is.null(multi.sp$richness))
+   shinyjs::toggleState("dlEnd", !is.null(multi.sp$endemism))
+   shinyjs::toggleState("dlSpListSR", !is.null(multi.sp$sppRichness))
+   shinyjs::toggleState("dlSpListSE", !is.null(multi.sp$sppEndemism))
  })
 
   # # # # # # # # # # # # # # # # # #
@@ -1422,24 +1422,20 @@ function(input, output, session) {
   overlapCat <- reactive(input$overlapCat)
 
   ########################################### #
-  ### COMPONENT: ALPHA DIVERSITY ####
+  ### COMPONENT: DIVERSITY ####
   ########################################### #
   # download list of species used
   output$dlSpListSR <- downloadHandler(
-    filename = function() {
-      paste0("Species_used_SR", ".csv")
-    },
+    filename = "used_richness_spp.csv",
     content = function(file) {
-      tbl <- as.data.frame(spp[["multisp"]]$ListSR)
+      tbl <- as.data.frame(multi.sp$sppRichness)
       write_csv_robust(tbl, file, row.names = FALSE)
     }
   )
   output$dlSpListSE <- downloadHandler(
-    filename = function() {
-      paste0("Species_used_SE", ".csv")
-    },
+    filename = "used_endemism_spp.csv",
     content = function(file) {
-      tbl <- as.data.frame(spp[["multisp"]]$ListSEs)
+      tbl <- as.data.frame(multi.sp$sppEndemism)
       write_csv_robust(tbl, file, row.names = FALSE)
     }
   )
@@ -1448,9 +1444,7 @@ function(input, output, session) {
     filename = function() {
       ext <- switch(input$richFileType, raster = 'zip', ascii = 'asc',
                     GTiff = 'tif', png = 'png')
-
-        paste0( "Richness", '.', ext)
-
+      paste0("richness", '.', ext)
     },
     content = function(file) {
       if(require(rgdal)) {
@@ -1461,33 +1455,37 @@ function(input, output, session) {
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in your R console. ")
           }
-
-            rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-            mapSRVals <-  spp[["multisp"]]$mapSRVals
-            rasPal <- colorNumeric(rasCols, mapSRVals, na.color='transparent')
-            legendPal <- colorNumeric(rev(rasCols), mapSRVals, na.color='transparent')
-            mapTitle <- "Species Richness"
-            mapLabFormat <- reverseLabel(2, reverse_order=TRUE)
-            mapOpacity <- NULL
+          rich <- multi.sp$richness
+          rasCols <- c("#3288BD", "#99D594", "#E6F598",
+                       "#FEE08B", "#FC8D59", "#D53E4F")
+          minV <- raster::minValue(rich)
+          maxV <- raster::maxValue(rich)
+          legendPal <- colorNumeric(rev(rasCols), minV:maxV,
+                                    na.color = 'transparent')
           m <- leaflet() %>%
-            addLegend("bottomright", pal = legendPal, title = mapTitle,
-                      labFormat = mapLabFormat, opacity = mapOpacity,
-                      values = mapSRVals, layerId = "train") %>%
             addProviderTiles(input$bmap) %>%
-            addRasterImage( spp[["multisp"]]$SR, colors = rasPal, opacity = 0.7,
-                           group = 'diver', layerId = 'SR', method = "ngb")
+            addLegend("bottomright", pal = legendPal,
+                      title = "Richness",
+                      values = minV:maxV, layerId = "richnessLeg",
+                      labFormat = reverseLabel(2, reverse_order = TRUE)) %>%
+            leafem::addGeoRaster(rich,
+                                 colorOptions = leafem::colorOptions(
+                                   palette = colorRampPalette(colors = rasCols)),
+                                 opacity = 1, group = 'diver',
+                                 layerId = 'richnessRaster')
           mapview::mapshot(m, file = file)
         } else if (input$richFileType == 'raster') {
-          fileName <-  "Richness"
+          fileName <-  "richness"
           tmpdir <- tempdir()
-          raster::writeRaster( spp[["multisp"]]$SR, file.path(tmpdir, fileName),
+          raster::writeRaster(multi.sp$richness, file.path(tmpdir, fileName),
                               format = input$richFileType, overwrite = TRUE)
           owd <- setwd(tmpdir)
           fs <- paste0(fileName, c('.grd', '.gri'))
           zip::zipr(zipfile = file, files = fs)
           setwd(owd)
         } else {
-          r <- raster::writeRaster(spp[["multisp"]]$SR, file, format = input$richFileType,
+          r <- raster::writeRaster(multi.sp$richness, file,
+                                   format = input$richFileType,
                                    overwrite = TRUE)
           file.rename(r@file@name, file)
         }
@@ -1503,7 +1501,7 @@ function(input, output, session) {
       ext <- switch(input$endFileType, raster = 'zip', ascii = 'asc',
                     GTiff = 'tif', png = 'png')
 
-      paste0( "Endemism", '.', ext)
+      paste0( "endemism", '.', ext)
 
     },
     content = function(file) {
@@ -1515,33 +1513,40 @@ function(input, output, session) {
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
                        " in your R console. ")
           }
+          endem <- multi.sp$endemism
+          rasCols <- c("#3288BD", "#99D594", "#E6F598",
+                       "#FEE08B", "#FC8D59", "#D53E4F")
+          minV <- raster::minValue(endem)
+          maxV <- raster::maxValue(endem)
+          quanRas <- quantile(c(minV, maxV),
+                              probs = seq(0, 1, 0.1))
+          legendPal <- colorNumeric(rev(rasCols), quanRas,
+                                    na.color = 'transparent')
 
-          rasCols <- c("#2c7bb6", "#abd9e9", "#ffffbf", "#fdae61", "#d7191c")
-          mapSEVals <-  spp[["multisp"]]$mapSEVals
-          rasPal <- colorNumeric(rasCols, mapSEVals, na.color='transparent')
-          legendPal <- colorNumeric(rev(rasCols), mapSEVals, na.color='transparent')
-          mapTitle <- "Species Endemism"
-          mapLabFormat <- reverseLabel(2, reverse_order=TRUE)
-          mapOpacity <- NULL
           m <- leaflet() %>%
-            addLegend("bottomright", pal = legendPal, title = mapTitle,
-                      labFormat = mapLabFormat, opacity = mapOpacity,
-                      values = mapSEVals, layerId = "train") %>%
             addProviderTiles(input$bmap) %>%
-            addRasterImage( spp[["multisp"]]$SE, colors = rasPal, opacity = 0.7,
-                            group = 'diver', layerId = 'SE', method = "ngb")
+            addLegend("bottomright", pal = legendPal,
+                      title = "Species<br>endemism",
+                      values = quanRas, layerId = "endemismLeg",
+                      labFormat = reverseLabel(2, reverse_order = TRUE)) %>%
+            leafem::addGeoRaster(endem,
+                                 colorOptions = leafem::colorOptions(
+                                   palette = colorRampPalette(colors = rasCols)),
+                                 opacity = 1, group = 'diver',
+                                 layerId = 'endemismRaster')
           mapview::mapshot(m, file = file)
         } else if (input$richFileType == 'raster') {
-          fileName <-  "Endemism"
+          fileName <-  "endemism"
           tmpdir <- tempdir()
-          raster::writeRaster( spp[["multisp"]]$SE, file.path(tmpdir, fileName),
-                               format = input$endFileType, overwrite = TRUE)
+          raster::writeRaster(multi.sp$endemism, file.path(tmpdir, fileName),
+                              format = input$endFileType, overwrite = TRUE)
           owd <- setwd(tmpdir)
           fs <- paste0(fileName, c('.grd', '.gri'))
           zip::zipr(zipfile = file, files = fs)
           setwd(owd)
         } else {
-          r <- raster::writeRaster(spp[["multisp"]]$SE, file, format = input$endFileType,
+          r <- raster::writeRaster(multi.sp$endemism, file,
+                                   format = input$endFileType,
                                    overwrite = TRUE)
           file.rename(r@file@name, file)
         }
