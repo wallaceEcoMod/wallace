@@ -11,6 +11,9 @@ indic_time(range, envs, thrh, bound, logger = NULL, spN = NULL)
 
 \item{envs}{rasterStack. Environmental variables.}
 
+\item{thrh}{interger. Threshold of where envs layers
+should be thresholded}
+
 \item{bound}{character. character string characterizing the way the threshold
 should happen. "upper" removes values above the threshold (e.g., maximum
 human footprint). "lower" removes values below the threshold (e.g., minimum
@@ -20,9 +23,6 @@ at both threshold values (if provided; e.g., minimum and maximum temperature).}
 \item{logger}{logger}
 
 \item{spN}{species name}
-
-\item{integer}{(or integers if bound = "both") of where envs layers
-should be thresholded}
 }
 \description{
 Calculate change in range area through time

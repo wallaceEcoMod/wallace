@@ -2,7 +2,7 @@
 #' @description Calculate change in range area through time
 #' @param range sf polygon. A polygon with the range map.
 #' @param envs rasterStack. Environmental variables.
-#' @param integer (or integers if bound = "both") of where envs layers
+#' @param thrh interger. Threshold of where envs layers
 #'  should be thresholded
 #' @param bound character. character string characterizing the way the threshold
 #'  should happen. "upper" removes values above the threshold (e.g., maximum
