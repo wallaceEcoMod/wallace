@@ -281,10 +281,12 @@ mask_expPoly_module_server <- function(input, output, session, common) {
       spp[[curSp()]]$mask$removePoly <- c(spp[[curSp()]]$mask$removePoly, removePoly)
       spp[[curSp()]]$mask$polyExt <- expertRast$ext
       # For biomodelos
-      if (spp[[curSp()]]$biomodelos$modelingMethod == "Bioclim") {
-        spp[[curSp()]]$biomodelos$modelingMethod <- "Hybrid (Bioclim + Expert opinion)"
-      } else {
-        spp[[curSp()]]$biomodelos$modelingMethod <- "Hybrid (Maxent + Expert opinion)"
+      if (!is.null(spp[[curSp()]]$biomodelos$modelingMethod)) {
+        if (spp[[curSp()]]$biomodelos$modelingMethod == "Bioclim") {
+          spp[[curSp()]]$biomodelos$modelingMethod <- "Hybrid (Bioclim + Expert opinion)"
+        } else {
+          spp[[curSp()]]$biomodelos$modelingMethod <- "Hybrid (Maxent + Expert opinion)"
+        }
       }
     } else {
       logger %>% writeLog(
