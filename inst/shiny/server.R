@@ -248,11 +248,20 @@ function(input, output, session) {
     n <- n[!grepl(".", n, fixed = TRUE)]
     # if no current species selected, select the first name
     # NOTE: this line is necessary to retain the selection after selecting different tabs
-    if (!is.null(curSp())) selected <- curSp() else selected <- n[1]
+    if (!is.null(curSp())) {
+      selected <- curSp()
+    } else {
+      selected <- n[1]
+    }
     # if espace component, allow for multiple species selection
-    if (component() == 'espace') options <- list(maxItems = 2)
+    if (component() == 'espace') {
+      options <- list(maxItems = 2)
     # if diver component, allow for multiple species selection
-    if (component() == 'diver') options <- list(maxItems = 100) else options <- list(maxItems = 1)
+    } else if (component() == 'diver') {
+      options <- list(maxItems = 100)
+    } else {
+      options <- list(maxItems = 1)
+    }
     # make a named list of their names
     sppNameList <- c(list("Current species" = ""), setNames(as.list(n), n))
     # generate a selectInput ui that lists the available species
