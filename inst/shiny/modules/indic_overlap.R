@@ -434,7 +434,7 @@ indic_overlap_module_map <- function(map, common) {
             rasCols <- "#01665E"
           }
           map %>%
-            addLegend("bottomright", colors = rasCol, labels = "Overlap",
+            addLegend("bottomright", colors = rasCols, labels = "Overlap",
                       opacity = 1, layerId = 'prediction')
         }
         map %>%
