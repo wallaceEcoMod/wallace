@@ -430,11 +430,13 @@ indic_overlap_module_map <- function(map, common) {
         } else {
           if (any(overlapValues != 1)) {
             rasCols <- c("grey", "#01665E")
+            rasLabels <- c("No overlap", "Overlap")
           } else {
             rasCols <- "#01665E"
+            rasLabels <- "Overlap"
           }
           map %>%
-            addLegend("bottomright", colors = rasCols, labels = "Overlap",
+            addLegend("bottomright", colors = rasCols, labels = rasLabels,
                       opacity = 1, layerId = 'prediction')
         }
         map %>%
