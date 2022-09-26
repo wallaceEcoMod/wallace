@@ -78,7 +78,7 @@ envs_worldclim_module_server <- function(input, output, session, common) {
       wcbc <- envs_worldclim(input$wcRes, bcSel(), doBrick = input$doBrick,
                              logger = logger)
       req(wcbc)
-      envs.global[["wcbc"]] <- wcbc
+      envs.global[[paste0("wcbc_", curSp())]] <- wcbc
     } else {
       wcbc <- envs_worldclim(input$wcRes, bcSel(), mapCntr(), input$doBrick, logger)
       req(wcbc)
@@ -111,11 +111,7 @@ envs_worldclim_module_server <- function(input, output, session, common) {
 
       # LOAD INTO SPP ####
       # add reference to WorldClim bioclim data
-      if (raster::res(wcbc)[1] > 0.009) {
-        spp[[sp]]$envs <- "wcbc"
-      } else {
-        spp[[sp]]$envs <- paste0("wcbc_", sp)
-      }
+      spp[[sp]]$envs <- paste0("wcbc_", sp)
 
       # add columns for env variable values for each occurrence record
       if (!any(names(occsEnvsVals) %in% names(spp[[sp]]$occs))) {

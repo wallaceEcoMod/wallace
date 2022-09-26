@@ -35,8 +35,7 @@ espace_pca_module_server <- function(input, output, session, common) {
       if (is.null(spp[[sp2]]$envs)) return()
       sp1.envNames <- names(envs.global[[spp[[sp1]]$envs]])
       sp2.envNames <- names(envs.global[[spp[[sp2]]$envs]])
-      shared_Names <- c(sp1.envNames, sp2.envNames)
-      shared_Names <- shared_Names[duplicated(shared_Names)]
+      shared_Names <- intersect(sp1.envNames, sp2.envNames)
       shiny::tagList(
         shinyWidgets::pickerInput(
           ns("pcaSel"),
