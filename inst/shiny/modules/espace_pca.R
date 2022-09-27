@@ -167,7 +167,7 @@ espace_pca_module_server <- function(input, output, session, common) {
         mSp <- paste(curSp(), collapse = ".")
       }
       req(spp[[mSp]]$pca)
-      screeplot(spp[[mSp]]$pca, main = NULL)
+      stats::screeplot(spp[[mSp]]$pca, main = NULL)
     })
     output$pcaOut <- renderPrint({
       if (length(curSp()) == 1) {
