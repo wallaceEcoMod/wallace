@@ -24,8 +24,8 @@ userEnvs_stack <- envs_userEnvs(rasPath = Path, rasName = Name,
 test_that("warning checks", {
   # input rasters have undefined coordinate reference system (CRS)
   expect_warning(
-    envs_userEnvs(rasPath = 'extdata/wc/proj/no_projection.tif',
-                  rasName = 'no_projection'),
+    envs_userEnvs(rasPath = system.file('extdata/wc/proj/no_projection.tif', package = "wallace"),
+                  rasName = 'no_projection.tif'),
     paste0('Input rasters have undefined coordinate reference system (CRS). ',
            'Mapping functionality in components Visualize Model Results and ',
            'Transfer Model will not work. If you wish to map rasters in these ',
@@ -41,6 +41,6 @@ test_that("output type checks", {
   # the number of layer is the same as loaded by the user
   expect_equal(length(Name), raster::nlayers(userEnvs))
   # the output is a RasterStack when doBrick=FALSE
-  expect_is(userEnvs_stack ,"RasterStack")
+  expect_is(userEnvs_stack, "RasterStack")
   })
 
