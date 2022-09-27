@@ -108,13 +108,13 @@ test_that("output data checks", {
 ### check header names
 
 # original GBIF headers (removed elevation)
-headersGBIF <- c("name", "longitude", "latitude", "country", "stateProvince", "locality",
-                 "year", "basisOfRecord", "catalogNumber", "institutionCode",
-                 "coordinateUncertaintyInMeters")
+headersGBIF <- c("name", "longitude", "latitude", "country", "stateProvince",
+                 "verbatimLocality", "year", "basisOfRecord", "catalogNumber",
+                 "institutionCode", "coordinateUncertaintyInMeters")
 # check headers
 test_that("GBIF headers", {
   # the original headers haven't changed
-  expect_false('FALSE' %in%  (headersGBIF %in% names(out.gbif[[i]]$orig)))
+  expect_false('FALSE' %in% (headersGBIF %in% names(out.gbif[[i]]$orig)))
   # the headers in the claned table are the ones specified in the function
   expect_equal(names(out.gbif[[i]]$cleaned),
                c("occID", "scientific_name", "longitude", "latitude", "country",
