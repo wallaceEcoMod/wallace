@@ -113,8 +113,8 @@ espace_pca_module_server <- function(input, output, session, common) {
      spp[[mspName]]$pcaSel <- pcaSel
      spp[[mspName]]$pcaPlotSel <- input$pcaPlotSel
      ###Save inputs for PCA
-     spp[[mspName]]$pc1<-input$pc1
-     spp[[mspName]]$pc2<-input$pc2
+     spp[[mspName]]$pc1 <- input$pc1
+     spp[[mspName]]$pc2 <- input$pc2
     common$update_component(tab = "Results")
 
     # REFERENCES
@@ -149,6 +149,7 @@ espace_pca_module_server <- function(input, output, session, common) {
       ade4::s.class(x, x.f, xax = input$pc1, yax = input$pc2,
                     col = c("red", "blue"), cstar = 0, cpoint = 0.1, sub = "t",
                     possub = "topright")
+      title(xlab = paste0("PC", input$pc1), ylab = paste0("PC", input$pc2))
     })
     output$pcaCorCircle <- renderPlot({
       if (length(curSp()) == 1) {
@@ -159,6 +160,7 @@ espace_pca_module_server <- function(input, output, session, common) {
       req(spp[[mSp]]$pca)
       ade4::s.corcircle(spp[[mSp]]$pca$co, xax = input$pc1, yax = input$pc2,
                         lab = input$pcaSel, full = FALSE, box = TRUE)
+      title(xlab = paste0("PC", input$pc1), ylab = paste0("PC", input$pc2))
     })
     output$pcaScree <- renderPlot({
       if (length(curSp()) == 1) {

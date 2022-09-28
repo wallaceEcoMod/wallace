@@ -471,18 +471,25 @@ function(input, output, session) {
       png(paste0("pcaScatterOccs.png"), width = 500, height = 500)
       x <- spp[[mSp]]$pca$scores[spp[[mSp]]$pca$scores$bg == 'sp', ]
       x.f <- factor(x$sp)
-      ade4::s.class(x, x.f, xax = 1, yax = 2,
+      ade4::s.class(x, x.f, xax = spp[[mSp]]$pc1, yax = spp[[mSp]]$pc2,
                     col = c("red", "blue"), cstar = 0, cpoint = 0.1)
+      title(xlab = paste0("PC", spp[[mSp]]$pc1),
+            ylab = paste0("PC", spp[[mSp]]$pc2))
       dev.off()
       png(paste0("pcaScatterOccsBg.png"), width = 500, height = 500)
       x <- spp[[mSp]]$pca$scores[spp[[mSp]]$pca$scores$sp == 'bg', ]
       x.f <- factor(x$bg)
-      ade4::s.class(x, x.f, xax = 1, yax = 2,
+      ade4::s.class(x, x.f, xax = spp[[mSp]]$pc1, yax = spp[[mSp]]$pc2,
                     col = c("red", "blue"), cstar = 0, cpoint = 0.1)
+      title(xlab = paste0("PC", spp[[mSp]]$pc1),
+            ylab = paste0("PC", spp[[mSp]]$pc2))
       dev.off()
       png(paste0("pcaCorCircle.png"), width = 500, height = 500)
-      ade4::s.corcircle(spp[[mSp]]$pca$co, xax = 1, yax = 2,
-                        lab = input$pcaSel, full = FALSE, box = TRUE)
+      ade4::s.corcircle(spp[[mSp]]$pca$co, xax = spp[[mSp]]$pc1,
+                        yax = spp[[mSp]]$pc2, lab = input$pcaSel,
+                        full = FALSE, box = TRUE)
+      title(xlab = paste0("PC", spp[[mSp]]$pc1),
+            ylab = paste0("PC", spp[[mSp]]$pc2))
       dev.off()
       png(paste0("pcaScree.png"), width = 500, height = 500)
       screeplot(spp[[mSp]]$pca, main = NULL)
