@@ -148,7 +148,7 @@ espace_pca_module_server <- function(input, output, session, common) {
         x.f <- factor(x$bg)
       }
       ade4::s.class(x, x.f, xax = input$pc1, yax = input$pc2,
-                    col = c("red", "blue"), cstar = 0, cpoint = 0.1, sub = "t",
+                    col = c("red", "blue"), cstar = 0, cpoint = 0.1, sub = "",
                     possub = "topright")
     })
     output$pcaCorCircle <- renderPlot({
