@@ -26,9 +26,12 @@ if ("{{pcaPlotSel_rmd}}" == "occs") {
 }
 ade4::s.class(x, x.f, xax = {{pc1_rmd}}, yax = {{pc2_rmd}},
               col = c("red", "blue"), cstar = 0, cpoint = 0.1)
+title(xlab = paste0("PC", {{pc1_rmd}}), ylab = paste0("PC", {{pc2_rmd}}))
 # PCA Correlation circle
 ade4::s.corcircle(espace_pca_{{multAbr}}$co, xax = {{pc1_rmd}}, yax = {{pc2_rmd}},
                   lab = pcaSel_{{multAbr}}, full = FALSE, box = TRUE)
+      title(xlab = paste0("PC", {{pc1_rmd}}),
+            ylab = paste0("PC", {{pc2_rmd}}))
 # PCA screeplot
 screeplot(espace_pca_{{multAbr}}, main = NULL)
 # Print PCA summary of results

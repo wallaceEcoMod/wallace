@@ -73,23 +73,22 @@ envs_worldclim_module_server <- function(input, output, session, common) {
       return()
     }
 
-    if (input$wcRes != 0.5) {
-      # FUNCTION CALL ####
-      wcbc <- envs_worldclim(input$wcRes, bcSel(), doBrick = input$doBrick,
-                             logger = logger)
-      req(wcbc)
-      envs.global[["wcbc"]] <- wcbc
-    } else {
-      wcbc <- envs_worldclim(input$wcRes, bcSel(), mapCntr(), input$doBrick, logger)
-      req(wcbc)
-      envs.global[[paste0("wcbc_", curSp())]] <- wcbc
-    }
-
     # loop over all species if batch is on
-    if (input$batch == FALSE | input$wcRes == 0.5) spLoop <- curSp() else spLoop <- allSp()
+    if (input$batch == FALSE) spLoop <- curSp() else spLoop <- allSp()
 
     # PROCESSING ####
     for (sp in spLoop) {
+      # FUNCTION CALL ####
+      if (input$wcRes != 0.5) {
+        wcbc <- envs_worldclim(input$wcRes, bcSel(), doBrick = input$doBrick,
+                               logger = logger)
+        req(wcbc)
+        envs.global[[paste0("wcbc_", sp)]] <- wcbc
+      } else {
+        wcbc <- envs_worldclim(input$wcRes, bcSel(), mapCntr(), input$doBrick, logger)
+        req(wcbc)
+        envs.global[[paste0("wcbc_", sp)]] <- wcbc
+      }
       # get environmental variable values per occurrence record
       withProgress(message = paste0("Extracting environmental values for occurrences of ",
                                     spName(sp), "..."), {
@@ -111,11 +110,7 @@ envs_worldclim_module_server <- function(input, output, session, common) {
 
       # LOAD INTO SPP ####
       # add reference to WorldClim bioclim data
-      if (raster::res(wcbc)[1] > 0.009) {
-        spp[[sp]]$envs <- "wcbc"
-      } else {
-        spp[[sp]]$envs <- paste0("wcbc_", sp)
-      }
+      spp[[sp]]$envs <- paste0("wcbc_", sp)
 
       # add columns for env variable values for each occurrence record
       if (!any(names(occsEnvsVals) %in% names(spp[[sp]]$occs))) {
