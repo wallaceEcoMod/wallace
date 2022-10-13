@@ -16,7 +16,7 @@ Broennimann, O., Fitzpatrick, M.C., Pearman, P.B., Petitpierre, B., Pellissier, 
 
 Calenge, C. (2006). The package adehabitat for the R software: tool for the analysis of space and habitat use by animals. *Ecological Modelling*, 197, 1035. <a href="https://doi.org/10.1016/j.ecolmodel.2006.03.017" target="_blank">DOI:10.1016/j.ecolmodel.2006.03.017</a>  
 
-Di Cola, V., Broennimann, O., Petitpierre, B., Breiner, F.T., d’Amen, M., Randin, C., Engler, R., Pottier, J., Pio, D., Dubuis, A., Pellissier, L., Mateo, R.G., Hordijk, W., Salamin, N., & Guisan, A. (2017). ecospat: an R package to support spatial analyses and modeling of species niches and distributions. Ecography, 40(6), 774-787. <a href="https://doi.org/10.1111/ecog.02671" target="_blank">DOI:10.1111/ecog.02671</a>  
+Di Cola, V., Broennimann, O., Petitpierre, B., Breiner, F.T., d’Amen, M., Randin, C., Engler, R., Pottier, J., Pio, D., Dubuis, A., Pellissier, L., Mateo, R.G., Hordijk, W., Salamin, N., & Guisan, A. (2017). ecospat: an R package to support spatial analyses and modeling of species niches and distributions. *Ecography*, 40(6), 774-787. <a href="https://doi.org/10.1111/ecog.02671" target="_blank">DOI:10.1111/ecog.02671</a>  
 
 Duong, T. (2022). ks: Kernel Smoothing. R package version 1.13.5, <a href="https://CRAN.R-project.org/package=ks" target="_blank">CRAN</a>  
 
