@@ -1,7 +1,7 @@
 ---
 title: "Wallace Ecological Modeling Application v2.0 Vignette"
-author: Bethany A. Johnson, Gonzalo E. Pinilla-Buitrago, Andrea Paz, Jamie M. Kass, Sarah I. Meenan, Cory Merow, Robert P. Anderson
-date: "4/18/2022; updated 5/19/2022"
+author: Bethany A. Johnson, Gonzalo E. Pinilla-Buitrago, Andrea Paz, Jamie M. Kass, Sarah I. Meenan, Robert P. Anderson
+date: "4/18/2022; updated 10/13/2022"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Wallace Ecological Modeling Application v2.0 Vignette}
@@ -211,8 +211,7 @@ This opens the drawing tool. Click to begin drawing---each click connects to the
 knitr::include_graphics("vignette_img/poccs_2.png")
 ```
   
-We will now remove it again, this time using the second module, *Remove Occurrences by ID*. With the pointer, click on the record in Bolivia. Information on the record will pop up, starting with the OccID. In this case it is OccID #18 (it may be a different number for you). Other information from the attribute table will be available. For example, the record has no information (NA) on the institution code, state/province, or basis. Since we know the OccID number, we can find the full information associated in the Occurrences tab. Click there and find the record. Here we can see it is a preserved specimen from the Museum of Southwestern Biology (MSB). Go back to the map. Enter "18" for the ID to be removed and "Remove Occurrence". You will see the point disappear again. Click reset to get it back again..
-
+We will now remove it again, this time using the second module, *Remove Occurrences by ID*. With the pointer, click on the record in Bolivia. Information on the record will pop up, starting with the OccID. In this case it is OccID #18 (it may be a different number for you). Other information from the attribute table will be available. For example, the record has no information (NA) on the institution code, state/province, or basis. Since we know the OccID number, we can find the full information associated in the Occurrences tab. Click there and find the record. Here we can see it is a preserved specimen from the Museum of Southwestern Biology (MSB). Go back to the map. Enter "18" for the ID to be removed and "Remove Occurrence". You will see the point disappear again. Click reset to get it back again.
 
 ```{r, fig.align = 'center'}
 knitr::include_graphics("vignette_img/poccs_3.png")
@@ -261,14 +260,14 @@ Before we begin the Module: *Environmental Ordination* analysis, you need to sel
 knitr::include_graphics("vignette_img/espace_1.png")
 ```
 
-Module: *Environmental Ordination* is for conducting a Principal Component Analysis (PCA), which rotates multidimensional data (e.g., for many variables) to characterize a subset of axes that display the highest variation. To perform a PCA, select the variables available for both species by checking/unchecking the bioclimatic variables. Choose between "Occurrences Only" or "Occurrences & Background" for the plot selection and set the x- and y-axis components.
+Module: *Environmental Ordination* is for conducting an ordination approach called Principal Component Analysis (PCA), that maximizes the variation contained in the predictor variables into fewer ones. To perform a PCA, select the variables available for both species by checking/unchecking the bioclimatic variables. Choose between "Occurrences Only" or "Occurrences & Background" for the plot selection and set the x- and y-axis components.
 The PCA Scatter Plot appears in the Results tab.
 
 ```{r, fig.align = 'center'}
 knitr::include_graphics("vignette_img/espace_2.png")
 ```
 
-You can also view the PCA correlation circle, PCA scree plot, and the PCA results summary. For more information on these statistics, consult the module guidance text.
+You can also view the PCA correlation circle, PCA scree plot, and the PCA results summary. For more information on these statistics and how to evaluate the results, consult the module guidance text.
 
 ```{r, fig.align = 'center'}
 knitr::include_graphics("vignette_img/espace_3.png")
@@ -283,6 +282,7 @@ knitr::include_graphics("vignette_img/espace_5.png")
 ```
 
 Next, run an Occurrence Density Grid. This calculates and plots which part of the environmental space is occupied more densely by the species and the availability of environmental conditions present within the background extent. 
+Darker areas represent higher occurrence density. Areas within solid lines represent all environmental conditions available in the background extent, and areas within dashed lines represent the 50% most frequent ones
 
 ```{r, fig.align = 'center'}
 knitr::include_graphics("vignette_img/espace_6.png")
@@ -294,7 +294,8 @@ And calculate Niche overlap...
 knitr::include_graphics("vignette_img/espace_7.png")
 ```
 
-The niche overlap quantification is based on the occurrence and background densities in the available environmental space estimated in Module: *Occurrence Density Grid*. The overlap is quantified using Schoener's D metric. 
+The niche overlap quantification is based on the occurrence and background densities in the available environmental space estimated in Module: *Occurrence Density Grid*. 
+The overlap is quantified using Schoener's D metric. The environmental conditions covered only by the niche of species 1 are shown in blue, the environmental conditions covered only by the niche of species 2 are shopwn in red, and the environmental conditions covered by both species, or the niche overlap, is shown in purple. In the Similarity Test, if the observed overlap (red line) is higher than 95% of the simulated overlaps (p-value < 0.05), we can consider the two species to be more similar than random, which is not what we see here. Again, consult the module guidance texts for more help to understand the analyses and help on evaluating the results.
 
 Download the PCA results (.zip), density grid (.png), and overlap plot (.png) from the "Save" tab.
 
