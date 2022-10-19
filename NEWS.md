@@ -115,7 +115,7 @@ Summary of new features:
 - Added cloglog output option for Maxent (updated for Maxent version 3.4x) in map prediction module (comp7).
 - Partition occurrences modules (comp5) now plot on the map with a legend showing the partition group per color.
 - Maxent models now show the evaluation statistics for all partition groups (ENMevaluate() option bin.output=TRUE) -- the partition group numbers correspond to the comp5 legend.
-- Unit tests are now available for all modules in two flavors: 1) control tests run automatically via Travis with each Github push, which test that the UI buttons, forms, etc. are functioning properly; and 2) function tests which run Wallace as a user would by pushing buttons and entering fields, and as these tests take more than 5 minutes to complete, they are not automatically run for now. Unit tests will be a signature part of module contribution.
+- Unit tests are now available for all modules in two flavors: 1) control tests run automatically via Travis with each Github push, which test that the UI buttons, forms, etc. are functioning properly, and 2) function tests which run Wallace as a user would by pushing buttons and entering fields, and as these tests take more than 5 minutes to complete, they are not automatically run for now. Unit tests will be a signature part of module contribution.
 - Updated guidance text.
 
 # wallace 0.6.4

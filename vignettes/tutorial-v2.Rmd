@@ -295,7 +295,7 @@ knitr::include_graphics("vignette_img/espace_7.png")
 ```
 
 The niche overlap quantification is based on the occurrence and background densities in the available environmental space estimated in Module: *Occurrence Density Grid*. 
-The overlap is quantified using Schoener's D metric. The environmental conditions covered only by the niche of species 1 are shown in blue, the environmental conditions covered only by the niche of species 2 are shopwn in red, and the environmental conditions covered by both species, or the niche overlap, is shown in purple. In the Similarity Test, if the observed overlap (red line) is higher than 95% of the simulated overlaps (p-value < 0.05), we can consider the two species to be more similar than random, which is not what we see here. Again, consult the module guidance texts for more help to understand the analyses and help on evaluating the results.
+The overlap is quantified using Schoener's D metric. The environmental conditions covered only by the niche of species 1 are shown in blue, the environmental conditions covered only by the niche of species 2 are shown in red, and the environmental conditions covered by both species, or the niche overlap, is shown in purple. In the Similarity Test, if the observed overlap (red line) is higher than 95% of the simulated overlaps (p-value < 0.05), we can consider the two species to be more similar than random, which is not what we see here. Again, consult the module guidance texts for more help to understand the analyses and help on evaluating the results.
 
 Download the PCA results (.zip), density grid (.png), and overlap plot (.png) from the "Save" tab.
 
