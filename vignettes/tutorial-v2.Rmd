@@ -38,6 +38,8 @@ The application, which is constructed with the R package `shiny`, features a pan
 
 The *Wallace* project's <a href="https://wallaceecomod.github.io/" target="_blank">main page</a> has links to the <a href="https://groups.google.com/forum/#!forum/wallaceecomod" target="_blank">Google Group</a>, the official <a href="mailto:wallaceecomod@gmail.com" target="_blank">email</a>, the <a href="https://CRAN.R-project.org/package=wallace" target="_blank">CRAN page</a> hosting the stable version, and the <a href="https://github.com/wallaceEcoMod/wallace" target="_blank">GitHub development page</a>. Wallace also has a <a href="https://www.youtube.com/channel/UCDSLCE5bmw12B7oqmlKk7rg" target="_blank">YouTube channel</a> with various tutorial videos and recorded seminars.  
 
+If you use *Wallace* in your teaching, we would like to hear about your experiences. Please take a moment to complete the short survey: <a href="https://docs.google.com/forms/d/e/1FAIpQLSdR4qVprBBpyEZwF4sAurjKuXrxggEA7jWnINenltnUY3nWnA/viewform?usp=sf_link" target="_blank">Wallace external workshop and curriculum survey</a>.
+
 # <a id="Setup"></a>Setup {#setup}
 
 ### Installing the package

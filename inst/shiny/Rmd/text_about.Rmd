@@ -58,7 +58,9 @@ Anderson, R. P. 21 May 2018. "El software Wallace para modelar nichos y distribu
 
 ### **Contribute to _Wallace_**
 
-Contributors should submit pull requests to the *Wallace* <a href="https://github.com/wallaceEcoMod/wallace" target="_blank">Github account</a> for module authorship or significant code contributions to either the UI or server files. Also, please connect on Github to post code-related issues and the <a href="https://groups.google.com/forum/#!forum/wallaceecomod" target="_blank">Google Group</a> for methodological and other broader-scope questions, thoughts, or suggestions for improvement.
+Contributors should submit pull requests to the *Wallace* <a href="https://github.com/wallaceEcoMod/wallace" target="_blank">Github account</a> for module authorship or significant code contributions to either the UI or server files. Also, please connect on Github to post code-related issues and the <a href="https://groups.google.com/forum/#!forum/wallaceecomod" target="_blank">Google Group</a> for methodological and other broader-scope questions, thoughts, or suggestions for improvement.  
+
+If you use *Wallace* in your teaching, we would like to hear about your experiences. Please take a moment to complete the short survey: <a href="https://docs.google.com/forms/d/e/1FAIpQLSdR4qVprBBpyEZwF4sAurjKuXrxggEA7jWnINenltnUY3nWnA/viewform?usp=sf_link" target="_blank">Wallace external workshop and curriculum survey</a>.
 
 ### **Contact us**
 
