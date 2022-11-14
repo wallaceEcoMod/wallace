@@ -43,7 +43,15 @@ envs_userEnvs <- function(rasPath, rasName, doBrick = FALSE, logger = NULL){
   # assign names
   names(rasStack) <- tools::file_path_sans_ext(rasName)
 
-  if(is.na(raster::crs(rasStack))) {
+  checkNa <- raster::cellStats(!is.na(rasStack), sum)
+  if (length(unique(checkNa)) != 1) {
+    logger %>% writeLog(
+      type = "error",
+      'Input rasters have unmatching NAs pixel values.')
+    return()
+  }
+
+  if (is.na(raster::crs(rasStack))) {
     logger %>% writeLog(
       type = "warning",
       paste0('Input rasters have undefined coordinate reference system (CRS). ',
@@ -54,8 +62,9 @@ envs_userEnvs <- function(rasPath, rasName, doBrick = FALSE, logger = NULL){
   }
 
   # convert to brick for faster processing
-  if(doBrick == TRUE) {
-    smartProgress(logger, message = "Converting to RasterBrick for faster processing...", {
+  if (doBrick == TRUE) {
+    smartProgress(logger,
+                  message = "Converting to RasterBrick for faster processing...", {
       rasStack  <- raster::brick(rasStack)
     })
   }
