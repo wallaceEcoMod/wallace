@@ -43,14 +43,6 @@ envs_userEnvs <- function(rasPath, rasName, doBrick = FALSE, logger = NULL){
   # assign names
   names(rasStack) <- tools::file_path_sans_ext(rasName)
 
-  checkNa <- raster::cellStats(!is.na(rasStack), sum)
-  if (length(unique(checkNa)) != 1) {
-    logger %>% writeLog(
-      type = "error",
-      'Input rasters have unmatching NAs pixel values.')
-    return()
-  }
-
   if (is.na(raster::crs(rasStack))) {
     logger %>% writeLog(
       type = "warning",

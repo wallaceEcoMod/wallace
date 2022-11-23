@@ -49,6 +49,14 @@ envs_userEnvs_module_server <- function(input, output, session, common) {
                               doBrick = input$doBrick,
                               logger)
 
+    checkNa <- raster::cellStats(!is.na(userEnvs), sum)
+    if (length(unique(checkNa)) != 1) {
+      logger %>% writeLog(
+        type = "error",
+        'Input rasters have unmatching NAs pixel values.')
+      return()
+    }
+
     # loop over all species if batch is on
     if (input$batch == TRUE) {
       spLoop <- allSp()
