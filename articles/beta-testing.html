@@ -67,7 +67,8 @@
 
 
 
-<script src="beta-testing_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+
+<div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Wallace v1.9 (beta testing of what will become v2!)</h1>
             
@@ -83,14 +84,55 @@
 <h3 id="english">ENGLISH<a class="anchor" aria-label="anchor" href="#english"></a>
 </h3>
 <p><em>Para instrucciones en español, ir al final</em></p>
-<p><strong>Overview: The Wallace development team and several external partners are ready for beta testing and feedback on a redesigned and expanded version.</strong></p>
-<p><strong>What is new in this version?</strong> See this youtube video for more info (<a href="https://www.youtube.com/watch?v=NRtKwtCansw" target="_blank" class="external-link">Link</a>).</p>
-<p><strong>1. Stop and start your work whenever you want:</strong> This version allows you to save a session partway through the workflow and then restart it. Try this out via the “Save session” section of the Save tab if you think that is something that matches the way you would run analyses (intermediate-to-advanced users).</p>
-<p><strong>2. Greater reproducibility regarding occurrence records:</strong> As a step towards greater documentation and reproducibility in biodiversity informatics, this version of Wallace provides an option of querying GBIF and receiving a DOI for the data provided. If you are already a registered GBIF user, check the “Include Data Source Citations” option under the Query Database (Present) module of the <strong>Occ Data</strong> component.</p>
-<p><strong>3. Cross-time transfers:</strong> If you will later be interested in transferring your models to estimates of future (or past) climate, try out the updated <strong>Transfer</strong> component. This version now has data from WorldClim and EcoClimate (which also has reconstructed data for the past). Make your original model with the same climatic data source that you would like to use for transferring across time periods.</p>
-<p><strong>4. Make models for multiple species in the same Wallace session:</strong> This advancement supports two important other functionalities: comparisons of species in environmental space (see below). If you are interested in either of these, try making models for more than one species now. To get the data to do this, in the <strong>Occ Data</strong> component either run the query multiple times or do it once with scientific names separated by commas. Then, in later components use the pull-down menu in the top center of the interface to indicate the species that you want to work with.</p>
-<p><strong>5. Environmental space comparisons:</strong> It may not be as directly linked to conservation as many of the other advances, but this version now has several modules in the <strong>Env Space</strong> component, which allows users to examine characteristics of environmental space across species, like niche overlap. If this matches your research interests (for academic purposes, or to study invasive species, for example), try them out.</p>
-<p><strong>6. Redesigned R-markdown functionalities:</strong> Because of the way this version of Wallace is redesigned, it now makes the documentation files in a new way (<strong>Reproduce</strong> component). In addition to making sure that you can download the documentation in ways readable to humans (like pdf), it would be helpful to the development team to have users download the executable RMD code and confirm that it runs successfully in R (intermediate-to-advanced users).</p>
+<p><strong>Overview: The Wallace development team and several external
+partners are ready for beta testing and feedback on a redesigned and
+expanded version.</strong></p>
+<p><strong>What is new in this version?</strong> See this youtube video
+for more info
+(<a href="https://www.youtube.com/watch?v=NRtKwtCansw" target="_blank" class="external-link">Link</a>).</p>
+<p><strong>1. Stop and start your work whenever you want:</strong> This
+version allows you to save a session partway through the workflow and
+then restart it. Try this out via the “Save session” section of the Save
+tab if you think that is something that matches the way you would run
+analyses (intermediate-to-advanced users).</p>
+<p><strong>2. Greater reproducibility regarding occurrence
+records:</strong> As a step towards greater documentation and
+reproducibility in biodiversity informatics, this version of Wallace
+provides an option of querying GBIF and receiving a DOI for the data
+provided. If you are already a registered GBIF user, check the “Include
+Data Source Citations” option under the Query Database (Present) module
+of the <strong>Occ Data</strong> component.</p>
+<p><strong>3. Cross-time transfers:</strong> If you will later be
+interested in transferring your models to estimates of future (or past)
+climate, try out the updated <strong>Transfer</strong> component. This
+version now has data from WorldClim and EcoClimate (which also has
+reconstructed data for the past). Make your original model with the same
+climatic data source that you would like to use for transferring across
+time periods.</p>
+<p><strong>4. Make models for multiple species in the same Wallace
+session:</strong> This advancement supports two important other
+functionalities: comparisons of species in environmental space (see
+below). If you are interested in either of these, try making models for
+more than one species now. To get the data to do this, in the
+<strong>Occ Data</strong> component either run the query multiple times
+or do it once with scientific names separated by commas. Then, in later
+components use the pull-down menu in the top center of the interface to
+indicate the species that you want to work with.</p>
+<p><strong>5. Environmental space comparisons:</strong> It may not be as
+directly linked to conservation as many of the other advances, but this
+version now has several modules in the <strong>Env Space</strong>
+component, which allows users to examine characteristics of
+environmental space across species, like niche overlap. If this matches
+your research interests (for academic purposes, or to study invasive
+species, for example), try them out.</p>
+<p><strong>6. Redesigned R-markdown functionalities:</strong> Because of
+the way this version of Wallace is redesigned, it now makes the
+documentation files in a new way (<strong>Reproduce</strong> component).
+In addition to making sure that you can download the documentation in
+ways readable to humans (like pdf), it would be helpful to the
+development team to have users download the executable RMD code and
+confirm that it runs successfully in R (intermediate-to-advanced
+users).</p>
 <div class="section level4">
 <h4 id="summary-of-new-features">
 <strong>Summary of new features</strong><a class="anchor" aria-label="anchor" href="#summary-of-new-features"></a>
@@ -103,12 +145,14 @@
 <li>Occs - BIEN (New option!)</li>
 <li>Occs - GBIF OccCite (New option!)</li>
 <li>Occs - Delimitator and Separator (New option!)</li>
-<li>Envs - EcoClimate (New module, including paleo reconstructions!)</li>
+<li>Envs - EcoClimate (New module, including paleo
+reconstructions!)</li>
 <li>General - Select variables with pickerInput</li>
 <li>General - Batch option (to repeat decisions for other species)</li>
 <li>Process Env - Draw polygon (New module!)</li>
 <li>Environmental Space - NEW COMPONENT with various new modules</li>
-<li>Model - maxnet and maxent.jar - Categorical variables (New option!)</li>
+<li>Model - maxnet and maxent.jar - Categorical variables (New
+option!)</li>
 <li>Model - maxnet and maxent.jar - Parallel (New option!)</li>
 <li>Vis - New bioclim plot</li>
 <li>Vis - New maxent plots</li>
@@ -118,7 +162,8 @@
 <li>Xfer - user-specified transferring extent (New option!)</li>
 <li>Xfer - New Time - Ecolimate (New Option!)</li>
 <li>Rep - RMD - New Structure</li>
-<li>Rep - Metadata - based on rangeModelMetadata package (New module!)</li>
+<li>Rep - Metadata - based on rangeModelMetadata package (New
+module!)</li>
 <li>Rep - RefPackages (New module!)</li>
 </ul>
 </div>
@@ -126,8 +171,15 @@
 <h4 id="instructions-for-installation">
 <strong>Instructions for Installation</strong><a class="anchor" aria-label="anchor" href="#instructions-for-installation"></a>
 </h4>
-<p><u>Beginner R users:</u> Please update to the latest version of R (v4) and update all packages (in R Studio (go to tools - check for package updates) before starting with the installation steps below (see “More details on installing R and RStudio for beginner R users” at the end of this document. Then, jump back up to the main instructions and proceed with “Run the following lines in R”.)</p>
-<p><u>Advanced R users:</u> Update <code>rgbif</code>, <code>paleobioDB</code>, <code>sf</code>, and proceed to “Run the following lines in R” below.</p>
+<p><u>Beginner R users:</u> Please update to the latest version of R
+(v4) and update all packages (in R Studio (go to tools - check for
+package updates) before starting with the installation steps below (see
+“More details on installing R and RStudio for beginner R users” at the
+end of this document. Then, jump back up to the main instructions and
+proceed with “Run the following lines in R”.)</p>
+<p><u>Advanced R users:</u> Update <code>rgbif</code>,
+<code>paleobioDB</code>, <code>sf</code>, and proceed to “Run the
+following lines in R” below.</p>
 <p>Run the following lines in R:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install the remotes package to help you install other things</span></span>
@@ -136,8 +188,11 @@
 <span><span class="co"># Open wallace</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://wallaceecomod.github.io/wallace/">wallace</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/run_wallace.html">run_wallace</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><span style="color: red;"><strong><em>Important note!</em></strong></span><br>
-After testing the development version of Wallace, if you want to go back to the older version, you need to install Wallace again from CRAN. You can use the following code:</p>
+<p><span style="color: red;"><strong><em>Important
+note!</em></strong></span><br>
+After testing the development version of Wallace, if you want to go back
+to the older version, you need to install Wallace again from CRAN. You
+can use the following code:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"wallace"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -145,54 +200,92 @@ After testing the development version of Wallace, if you want to go back to the 
 <h4 id="report-bugs">
 <strong>Report bugs</strong><a class="anchor" aria-label="anchor" href="#report-bugs"></a>
 </h4>
-<p>If you find a bug, let us know by filling out this <a href="https://docs.google.com/forms/d/e/1FAIpQLSd4giDOteMbzOkyN-rLghMqWFeVjxjjL1AAWxIt-7qyAQDcbA/viewform?usp=sf_link" target="_blank" class="external-link">Google Form</a>.</p>
-<p>If you have a GitHub account, you also can report issues <a href="https://github.com/wallaceEcoMod/wallace/issues" target="_blank" class="external-link">here</a>.</p>
-<p>If you have another suggestion, please write to the <a href="mailto:wallaceecomod@gmail.com" target="_blank">Wallace email</a>, specifying that you have been testing the development version.</p>
-<p><strong>Do you want to know more about Wallace?</strong> Please visit our <a href="https://wallaceecomod.github.io/" target="_blank" class="external-link">website</a>.</p>
+<p>If you find a bug, let us know by filling out this
+<a href="https://docs.google.com/forms/d/e/1FAIpQLSd4giDOteMbzOkyN-rLghMqWFeVjxjjL1AAWxIt-7qyAQDcbA/viewform?usp=sf_link" target="_blank" class="external-link">Google
+Form</a>.</p>
+<p>If you have a GitHub account, you also can report issues
+<a href="https://github.com/wallaceEcoMod/wallace/issues" target="_blank" class="external-link">here</a>.</p>
+<p>If you have another suggestion, please write to the
+<a href="mailto:wallaceecomod@gmail.com" target="_blank">Wallace
+email</a>, specifying that you have been testing the development
+version.</p>
+<p><strong>Do you want to know more about Wallace?</strong> Please visit
+our
+<a href="https://wallaceecomod.github.io/" target="_blank" class="external-link">website</a>.</p>
 </div>
 <div class="section level4">
 <h4 id="more-details-on-installing-r-and-rstudio-for-beginner-r-users">
-<strong>More details on installing R and RStudio for beginner R users</strong><a class="anchor" aria-label="anchor" href="#more-details-on-installing-r-and-rstudio-for-beginner-r-users"></a>
+<strong>More details on installing R and RStudio for beginner R
+users</strong><a class="anchor" aria-label="anchor" href="#more-details-on-installing-r-and-rstudio-for-beginner-r-users"></a>
 </h4>
-<p>R is an open-source statistical software package that has the ability to do GIS operations among many other things. We use it in conjunction with RStudio, an easy way to manage R code.</p>
-<p>To download R (<a href="https://cran.r-project.org/bin/windows/base/R-4.2.0-win.exe" target="_blank" class="external-link">Windows</a>, <a href="https://cran.r-project.org/bin/macosx/base/R-4.2.0.pkg" target="_blank" class="external-link">Mac</a>)</p>
-<p>To download RStudio. Install RStudio Desktop (Free, Open Source) accepting the default pathways. <a href="https://rstudio.com/products/rstudio/download/" class="external-link uri">https://rstudio.com/products/rstudio/download/</a></p>
-<p>Now, you will need to tell RStudio where R lives. Open RStudio, go to Tools -&gt; Global Options and change the R version by navigating to where you saved R. Unless you have a reason against it, you should use the 64-bit version of R (64 and 32 bit R are both downloaded).</p>
-<p>If you are a Windows user, please also install RTools from here - (even if you have already installed R) <a href="https://cran.r-project.org/bin/windows/Rtools/" class="external-link uri">https://cran.r-project.org/bin/windows/Rtools/</a> (choose 64 bit unless you have a reason not to). And follow the steps under “Putting Rtools on the PATH”.</p>
+<p>R is an open-source statistical software package that has the ability
+to do GIS operations among many other things. We use it in conjunction
+with RStudio, an easy way to manage R code.</p>
+<p>To download R
+(<a href="https://cran.r-project.org/bin/windows/base/R-4.2.0-win.exe" target="_blank" class="external-link">Windows</a>,
+<a href="https://cran.r-project.org/bin/macosx/base/R-4.2.0.pkg" target="_blank" class="external-link">Mac</a>)</p>
+<p>To download RStudio. Install RStudio Desktop (Free, Open Source)
+accepting the default pathways. <a href="https://rstudio.com/products/rstudio/download/" class="external-link uri">https://rstudio.com/products/rstudio/download/</a></p>
+<p>Now, you will need to tell RStudio where R lives. Open RStudio, go to
+Tools -&gt; Global Options and change the R version by navigating to
+where you saved R. Unless you have a reason against it, you should use
+the 64-bit version of R (64 and 32 bit R are both downloaded).</p>
+<p>If you are a Windows user, please also install RTools from here -
+(even if you have already installed R) <a href="https://cran.r-project.org/bin/windows/Rtools/" class="external-link uri">https://cran.r-project.org/bin/windows/Rtools/</a> (choose
+64 bit unless you have a reason not to). And follow the steps under
+“Putting Rtools on the PATH”.</p>
 <hr>
 </div>
 </div>
 <div class="section level3">
 <h3 id="español">ESPAÑOL<a class="anchor" aria-label="anchor" href="#espa%C3%B1ol"></a>
 </h3>
-<p><strong>Descripción general:</strong> El equipo de desarrollo de Wallace y varios de sus colaboradores externos están listos para realizar pruebas y recibir comentarios sobre una versión rediseñada y ampliada de Wallace.</p>
-<p><strong>¿Qué hay de nuevo en esta versión?</strong> Vea este video de YouTube para obtener más información (<a href="https://www.youtube.com/watch?v=NRtKwtCansw" target="_blank" class="external-link">Link</a>).</p>
+<p><strong>Descripción general:</strong> El equipo de desarrollo de
+Wallace y varios de sus colaboradores externos están listos para
+realizar pruebas y recibir comentarios sobre una versión rediseñada y
+ampliada de Wallace.</p>
+<p><strong>¿Qué hay de nuevo en esta versión?</strong> Vea este video de
+YouTube para obtener más información
+(<a href="https://www.youtube.com/watch?v=NRtKwtCansw" target="_blank" class="external-link">Link</a>).</p>
 <div class="section level4">
 <h4 id="resumen-de-nuevas-características">Resumen de nuevas características<a class="anchor" aria-label="anchor" href="#resumen-de-nuevas-caracter%C3%ADsticas"></a>
 </h4>
 <ul>
 <li>General - Correr varias especies en una misma sesión</li>
-<li>General - Nueva pestaña de descarga (más opciones y mejor organización)</li>
-<li>General - Guardar y cargar la sesión (pueden guardar Wallace en cualquier punto y continuar en otro momento)</li>
+<li>General - Nueva pestaña de descarga (más opciones y mejor
+organización)</li>
+<li>General - Guardar y cargar la sesión (pueden guardar Wallace en
+cualquier punto y continuar en otro momento)</li>
 <li>Occs - PaleobioDB - Ocurrencias de fósiles (¡Módulo nuevo!)</li>
 <li>Occs - Base de datos BIEN (¡Nueva opción!)</li>
 <li>Occs - GBIF OccCite (¡Nueva opción!)</li>
-<li>Occs - Delimitador y separador de decimales personalizado (¡Nueva opción!)</li>
-<li>Envs - EcoClimate (Módulo nuevo, variables climáticas que incluyen reconstrucciones del pasado)</li>
+<li>Occs - Delimitador y separador de decimales personalizado (¡Nueva
+opción!)</li>
+<li>Envs - EcoClimate (Módulo nuevo, variables climáticas que incluyen
+reconstrucciones del pasado)</li>
 <li>General - Batch (Para repetir decisiones en varias especies)</li>
-<li>Process Env - Dibujar polígono para definir área de estudio (¡Módulo nuevo!)</li>
-<li>Environmental Space - NUEVO COMPONENTE! PCA y sobrelapamiento de nicho</li>
-<li>Model - maxnet and maxent.jar - Variables categoricas (¡Nueva opción!)</li>
-<li>Model - maxnet and maxent.jar - Correr modelos en paralelo (¡Nueva opción!)</li>
+<li>Process Env - Dibujar polígono para definir área de estudio (¡Módulo
+nuevo!)</li>
+<li>Environmental Space - NUEVO COMPONENTE! PCA y sobrelapamiento de
+nicho</li>
+<li>Model - maxnet and maxent.jar - Variables categoricas (¡Nueva
+opción!)</li>
+<li>Model - maxnet and maxent.jar - Correr modelos en paralelo (¡Nueva
+opción!)</li>
 <li>Vis - Nuevo bioclim plot</li>
 <li>Vis - Nuevos maxent plots</li>
 <li>Vis - mapPred - Nueva opción de umbral de corte</li>
-<li>Xfer - userXfer - Usuarios pueden especificar sus propios rasters</li>
-<li>Xfer - Seguir utilizando la misma área de calibración del modelo (¡Nueva opción!)</li>
-<li>Xfer - Definir área de proyección con un shapefile (¡Nueva opción!)</li>
-<li>Xfer - Nueva opción de variables climáticas - Ecoclimate (¡Nueva opción!)</li>
+<li>Xfer - userXfer - Usuarios pueden especificar sus propios
+rasters</li>
+<li>Xfer - Seguir utilizando la misma área de calibración del modelo
+(¡Nueva opción!)</li>
+<li>Xfer - Definir área de proyección con un shapefile (¡Nueva
+opción!)</li>
+<li>Xfer - Nueva opción de variables climáticas - Ecoclimate (¡Nueva
+opción!)</li>
 <li>Rep- RMD - Nueva estructura</li>
-<li>Rep- Metadatos basados en el paquete rangeModelMetadata (¡Módulo nuevo!)</li>
+<li>Rep- Metadatos basados en el paquete rangeModelMetadata (¡Módulo
+nuevo!)</li>
 <li>Rep- RefPackages (¡Módulo nuevo!)</li>
 </ul>
 </div>
@@ -200,8 +293,15 @@ After testing the development version of Wallace, if you want to go back to the 
 <h4 id="instrucciones-de-instalación">
 <strong>Instrucciones de instalación</strong><a class="anchor" aria-label="anchor" href="#instrucciones-de-instalaci%C3%B3n"></a>
 </h4>
-<p><u>Usuarios principiantes de R:</u> actualice a la última versión de R (v4) y actualice todos los paquetes (en R Studio: vaya a herramientas - busque actualizaciones de paquetes) antes de comenzar con los pasos de instalación a continuación. Consulte “Más detalles sobre la instalación de R y RStudio para usuarios principiantes de R” al final de este documento.</p>
-<p><u>Usuarios avanzados de R:</u> Actualice <code>rgbif</code>, <code>paleobioDB</code>, <code>sf</code> y proceda a “Ejecutar las siguientes líneas en R” a continuación.</p>
+<p><u>Usuarios principiantes de R:</u> actualice a la última versión de
+R (v4) y actualice todos los paquetes (en R Studio: vaya a herramientas
+- busque actualizaciones de paquetes) antes de comenzar con los pasos de
+instalación a continuación. Consulte “Más detalles sobre la instalación
+de R y RStudio para usuarios principiantes de R” al final de este
+documento.</p>
+<p><u>Usuarios avanzados de R:</u> Actualice <code>rgbif</code>,
+<code>paleobioDB</code>, <code>sf</code> y proceda a “Ejecutar las
+siguientes líneas en R” a continuación.</p>
 <p><strong>Correr las siguientes líneas en R:</strong></p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Instalar el paquete remotes</span></span>
@@ -211,24 +311,45 @@ After testing the development version of Wallace, if you want to go back to the 
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="http://wallaceecomod.github.io/wallace/">wallace</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/run_wallace.html">run_wallace</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><span style="color: red;"><strong><em>¡Importante!</em></strong></span><br>
-Después de probar la versión de desarrollo de Wallace, si desea volver a la versión anterior, debe instalar nuevamente Wallace y ENMeval de CRAN. Puede utilizar el siguiente código: install.packages(“wallace”)</p>
+Después de probar la versión de desarrollo de Wallace, si desea volver a
+la versión anterior, debe instalar nuevamente Wallace y ENMeval de CRAN.
+Puede utilizar el siguiente código: install.packages(“wallace”)</p>
 </div>
 <div class="section level4">
 <h4 id="reportar-bugs-y-problemas">
 <strong>Reportar bugs y problemas</strong><a class="anchor" aria-label="anchor" href="#reportar-bugs-y-problemas"></a>
 </h4>
-<p>Si encuentra algún bug, pueden registrarlo en español en esta <a href="https://docs.google.com/forms/d/e/1FAIpQLSd4giDOteMbzOkyN-rLghMqWFeVjxjjL1AAWxIt-7qyAQDcbA/viewform?usp=sf_link" target="_blank" class="external-link">Plantilla de Google</a>.<br>
-Si tienen cuenta en Github, pueden reportar los bugs <a href="https://github.com/wallaceEcoMod/wallace/issues" target="_blank" class="external-link">aquí</a>.<br>
-¿Alguna otra sugerencia? Escribanos en español a nuestro <a href="mailto:wallaceecomod@gmail.com" target="_blank">correo</a>. Por favor especificar que está probando la versión beta.</p>
+<p>Si encuentra algún bug, pueden registrarlo en español en esta
+<a href="https://docs.google.com/forms/d/e/1FAIpQLSd4giDOteMbzOkyN-rLghMqWFeVjxjjL1AAWxIt-7qyAQDcbA/viewform?usp=sf_link" target="_blank" class="external-link">Plantilla
+de Google</a>.<br>
+Si tienen cuenta en Github, pueden reportar los bugs
+<a href="https://github.com/wallaceEcoMod/wallace/issues" target="_blank" class="external-link">aquí</a>.<br>
+¿Alguna otra sugerencia? Escribanos en español a nuestro
+<a href="mailto:wallaceecomod@gmail.com" target="_blank">correo</a>. Por
+favor especificar que está probando la versión beta.</p>
 </div>
 <div class="section level4">
 <h4 id="más-detalles-sobre-la-instalación-de-r-y-rstudio-para-usuarios-principiantes-de-r">
-<strong>Más detalles sobre la instalación de R y RStudio para usuarios principiantes de R</strong><a class="anchor" aria-label="anchor" href="#m%C3%A1s-detalles-sobre-la-instalaci%C3%B3n-de-r-y-rstudio-para-usuarios-principiantes-de-r"></a>
+<strong>Más detalles sobre la instalación de R y RStudio para
+usuarios principiantes de R</strong><a class="anchor" aria-label="anchor" href="#m%C3%A1s-detalles-sobre-la-instalaci%C3%B3n-de-r-y-rstudio-para-usuarios-principiantes-de-r"></a>
 </h4>
-<p>R es un paquete de software estadístico de código abierto que tiene la capacidad de realizar operaciones GIS, entre muchas otras cosas. Lo usamos junto con RStudio, una forma fácil de administrar el código R.</p>
-<p>Para descargar R (<a href="https://cran.r-project.org/bin/windows/base/R-4.2.0-win.exe" target="_blank" class="external-link">Windows</a>, <a href="https://cran.r-project.org/bin/macosx/base/R-4.2.0.pkg" target="_blank" class="external-link">Mac</a>)</p>
-<p>Para descargar RStudio. Instale RStudio Desktop (gratuito, código abierto) aceptando las rutas predeterminadas. <a href="https://rstudio.com/products/rstudio/download/" class="external-link uri">https://rstudio.com/products/rstudio/download/</a> Ahora, deberá decirle a RStudio dónde vive R. Abra RStudio, vaya a Herramientas -&gt; Opciones globales y cambie la versión R navegando hasta donde guardó R. A menos que tenga una razón en contra, debe usar la versión de 64 bits de R (se descargan tanto R de 64 como de 32 bits) ).</p>
-<p>Si es un usuario de Windows, también instale RTools desde aquí - (incluso si ya ha instalado R) <a href="https://cran.r-project.org/bin/windows/Rtools/" class="external-link uri">https://cran.r-project.org/bin/windows/Rtools/</a> (elija 64 bits a menos que tenga una razón No a). Y siga los pasos de “Colocación de Rtools en la RUTA”.</p>
+<p>R es un paquete de software estadístico de código abierto que tiene
+la capacidad de realizar operaciones GIS, entre muchas otras cosas. Lo
+usamos junto con RStudio, una forma fácil de administrar el código
+R.</p>
+<p>Para descargar R
+(<a href="https://cran.r-project.org/bin/windows/base/R-4.2.0-win.exe" target="_blank" class="external-link">Windows</a>,
+<a href="https://cran.r-project.org/bin/macosx/base/R-4.2.0.pkg" target="_blank" class="external-link">Mac</a>)</p>
+<p>Para descargar RStudio. Instale RStudio Desktop (gratuito, código
+abierto) aceptando las rutas predeterminadas. <a href="https://rstudio.com/products/rstudio/download/" class="external-link uri">https://rstudio.com/products/rstudio/download/</a> Ahora,
+deberá decirle a RStudio dónde vive R. Abra RStudio, vaya a Herramientas
+-&gt; Opciones globales y cambie la versión R navegando hasta donde
+guardó R. A menos que tenga una razón en contra, debe usar la versión de
+64 bits de R (se descargan tanto R de 64 como de 32 bits) ).</p>
+<p>Si es un usuario de Windows, también instale RTools desde aquí -
+(incluso si ya ha instalado R) <a href="https://cran.r-project.org/bin/windows/Rtools/" class="external-link uri">https://cran.r-project.org/bin/windows/Rtools/</a> (elija 64
+bits a menos que tenga una razón No a). Y siga los pasos de “Colocación
+de Rtools en la RUTA”.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
