@@ -49,8 +49,12 @@ envs_userEnvs_module_server <- function(input, output, session, common) {
                               doBrick = input$doBrick,
                               logger)
 
-    checkNa <- raster::cellStats(!is.na(userEnvs), sum)
-    if (length(unique(checkNa)) != 1) {
+    smartProgress(logger, message = "Checking NA values...", {
+      checkNA <- terra::global(terra::rast(userEnvs),
+                               fun = "isNA")
+    })
+
+    if (length(unique(checkNA$isNA)) != 1) {
       logger %>% writeLog(
         type = "error",
         'Input rasters have unmatching NAs pixel values.')
