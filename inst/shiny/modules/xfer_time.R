@@ -287,7 +287,7 @@ xfer_time_module_server <- function(input, output, session, common) {
                         input$selRCP, "..."),
         {
           xferTimeEnvs <-
-            raster::getData('CMIP5', var = "bio", res = as.integer(envsRes * 60),
+            raster::getData('CMIP5', var = "bio", res = round(envsRes * 60, 1),
                             rcp = input$selRCP, model = input$selGCM,
                             year = input$selTime)
           names(xferTimeEnvs) <- paste0('bio', c(paste0('0',1:9), 10:19))

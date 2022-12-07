@@ -8,7 +8,7 @@ Transferring the model to the same modelling area with no threshold rule. New ti
 xferTimeEnvs_{{spAbr}} <- raster::getData(
   'CMIP5',
   var = "bio",
-  res = as.integer((raster::res(bgMask_{{spAbr}}) * 60)[1]),
+  res = round((raster::res(bgMask_{{spAbr}}) * 60)[1],1),
   rcp = {{rcp_rmd}},
   model = "{{model_rmd}}",
   year = {{year_rmd}})
@@ -66,7 +66,7 @@ Transferring the model to the same modelling area with a "{{xfer_thresholdRule_r
 xferTimeEnvs_{{spAbr}} <- raster::getData(
   'CMIP5',
   var = "bio",
-  res = as.integer((raster::res(bgMask_{{spAbr}}) * 60)[1]),
+  res = round((raster::res(bgMask_{{spAbr}}) * 60)[1],1),
   rcp = {{rcp_rmd}},
   model = "{{model_rmd}}",
   year = {{year_rmd}})
@@ -134,7 +134,7 @@ Transferring the model to a user drawn area with no threshold. New time based on
 xferTimeEnvs_{{spAbr}} <- raster::getData(
   'CMIP5',
   var = "bio",
-  res = as.integer((raster::res(bgMask_{{spAbr}}) * 60)[1]),
+  res = round((raster::res(bgMask_{{spAbr}}) * 60)[1],1),
   rcp = {{rcp_rmd}},
   model = "{{model_rmd}}",
   year = {{year_rmd}})
@@ -199,7 +199,7 @@ Transferring the model to a user drawn area with a "{{xfer_thresholdRule_rmd}}" 
 xferTimeEnvs_{{spAbr}} <- raster::getData(
   'CMIP5',
   var = "bio",
-  res = as.integer((raster::res(bgMask_{{spAbr}}) * 60)[1]),
+  res = round((raster::res(bgMask_{{spAbr}}) * 60)[1],1),
   rcp = {{rcp_rmd}},
   model = "{{model_rmd}}",
   year = {{year_rmd}})
@@ -273,7 +273,7 @@ Transferring the model to a user provided area area with no threshold. New time 
 xferTimeEnvs_{{spAbr}} <- raster::getData(
   'CMIP5',
   var = "bio",
-  res = as.integer((raster::res(bgMask_{{spAbr}}) * 60)[1]),
+  res = round((raster::res(bgMask_{{spAbr}}) * 60)[1],1),
   rcp = {{rcp_rmd}},
   model = "{{model_rmd}}",
   year = {{year_rmd}})
@@ -341,7 +341,7 @@ Transferring the model to a user provided area with a "{{xfer_thresholdRule_rmd}
 xferTimeEnvs_{{spAbr}} <- raster::getData(
   'CMIP5',
   var = "bio",
-  res = as.integer((raster::res(bgMask_{{spAbr}}) * 60)[1]),
+  res = round((raster::res(bgMask_{{spAbr}}) * 60)[1],1),
   rcp = {{rcp_rmd}},
   model = "{{model_rmd}}",
   year = {{year_rmd}})
