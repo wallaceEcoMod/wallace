@@ -59,6 +59,7 @@ This functions allows transferring the model created in previous
   used for transferring and the transferred model.
 }
 \examples{
+\dontrun{
 ## extent to transfer
 # set coordinates
 longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331, -66.47149, -66.71319,
@@ -79,6 +80,7 @@ envsFut <- raster::stack(envsFut)
 modXfer <- xfer_userEnvs(evalOut = m, curModel = 1, envs = envsFut,
                          outputType = "cloglog", alg = "maxent.jar",
                          clamp = FALSE, xfExt = polyExt)
+}
 
 }
 \seealso{

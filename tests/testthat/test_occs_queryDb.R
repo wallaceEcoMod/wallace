@@ -57,7 +57,9 @@ test_that("error checks", {
 
 for (i in 1:length(spNames)){
   ### get the total number of records found in the database
-  taxonkey <- rgbif::name_suggest(q=spNames[i], rank='species')$key[1]
+  taxonkey <- rgbif::name_suggest(q = spNames[i],
+                                  rank = 'species',
+                                  curlopts = list(http_version = 0L))$data$key[1]
   total_occ <- rgbif::occ_search(taxonkey, limit=0)
 ### test output features
 test_that("output type checks", {

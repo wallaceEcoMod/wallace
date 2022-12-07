@@ -9,7 +9,7 @@ Description: The 'shiny' application Wallace is a modular platform for
     occurrence and environmental data to visualizing model predictions on an 
     interactive map, thus bundling complex workflows into a single, 
     streamlined interface. An extensive vignette, which guides users through 
-    most package functionality can be found on the package's Github Pages 
+    most package functionality can be found on the package's GitHub Pages 
     website: <https://wallaceecomod.github.io/wallace/articles/tutorial-v2.html>.
 Authors@R: 
     c(person("Jamie M.", "Kass", email = "jamie.kass@oist.jp", role = "aut"),

@@ -25,6 +25,7 @@
 #'   in shiny, otherwise leave the default NULL.
 #' @param spN character. Used to obtain species name for logger messages
 #' @examples
+#' \dontrun{
 #' envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
 #'                                            package = "wallace"),
 #'                       pattern = ".tif$", full.names = TRUE),
@@ -43,7 +44,7 @@
 #' ## run function
 #' xferMess <- xfer_mess(occs = occsEnvs, bg = bgEnvs, bgMsk = envs,
 #'                       xferExtRas = envsFut)
-#'
+#' }
 # @return
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
