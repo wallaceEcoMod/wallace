@@ -57,10 +57,8 @@ test_that("error checks", {
 
 for (i in 1:length(spNames)){
   ### get the total number of records found in the database
-  taxonkey <- rgbif::name_suggest(q = spNames[i],
-                                  rank = 'species',
-                                  curlopts = list(http_version = 0L))$data$key[1]
-  total_occ <- rgbif::occ_search(taxonkey, limit=0)
+  occ <- spocc::occ(spNames[i], 'gbif', limit = 100)
+  total_occ <- occ[['gbif']]$meta$found
 ### test output features
 test_that("output type checks", {
   # the output is a list
@@ -76,17 +74,18 @@ test_that("output type checks", {
   #downloaded species corresponds to queried species
   expect_match(gsub(" \\(.*\\)","",unique(out.gbif[[i]]$cleaned$scientific_name)),
                spNames[i], ignore.case = TRUE)
+  # cleaned list has 14 columns
+  expect_equal(14, ncol(out.gbif[[i]]$cleaned))
   # if the database holds more records than the specified by the user (occNum),
   # the number of records downloaded is:
-  if (total_occ$meta$count >= occNum){
+  skip_on_cran()
+  if (total_occ >= occNum) {
     # the same as specified in the function (occNum)
     expect_equal(occNum, nrow(out.gbif[[i]]$orig))
   } else { # if not
     # fewer as when the database has fewer records than specified by the user
     expect_true(nrow(out.gbif[[i]]$orig) < occNum)
   }
-  # cleaned list has 14 columns
-  expect_equal(14, ncol(out.gbif[[i]]$cleaned))
   })
 
 ### test function stepts
