@@ -74,7 +74,7 @@ Sarah Meenan (contributor) completed her undergraduate degree from the City Coll
 
 <img src="img/peteG.jpg" alt="peteG" style="width: 100px;"/>
 
-<a href="https://www.amnh.org/research/staff-directory/peter-galante" target="_blank">Peter J. Galante</a> (contributor) is a visiting scientist and Biodiversity Informatics Specialist at the Center for Biodiversity and Conservation at the American Museum of Natural History.  
+<a href="https://www.amnh.org/research/staff-directory/peter-galante" target="_blank">Peter J. Galante</a> (contributor) was a Biodiversity Informatics Scientist at the Center for Biodiversity and Conservation at the American Museum of Natural History and now works as a Project Manager for Storke, LLC, a renewable energy company.
 <br>
 
 <img src="img/brianM.jpeg" alt="brianM" style="width: 100px;"/>
