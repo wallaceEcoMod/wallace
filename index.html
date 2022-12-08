@@ -10,7 +10,9 @@
     guides users through a complete analysis, from the acquisition of species
     occurrence and environmental data to visualizing model predictions on an 
     interactive map, thus bundling complex workflows into a single, 
-    streamlined interface.">
+    streamlined interface. An extensive vignette, which guides users through 
+    most package functionality can be found on the package's GitHub Pages 
+    website: &lt;https://wallaceecomod.github.io/wallace/articles/tutorial-v2.html&gt;.">
 <title>A Modular Platform for Reproducible Modeling of Species Niches 
     and Distributions • wallace</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -24,7 +26,9 @@
     guides users through a complete analysis, from the acquisition of species
     occurrence and environmental data to visualizing model predictions on an 
     interactive map, thus bundling complex workflows into a single, 
-    streamlined interface.">
+    streamlined interface. An extensive vignette, which guides users through 
+    most package functionality can be found on the package's GitHub Pages 
+    website: &lt;https://wallaceecomod.github.io/wallace/articles/tutorial-v2.html&gt;.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -38,7 +42,7 @@
     
     <a class="navbar-brand me-2" href="index.html">wallace</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.4-6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +83,7 @@
 <div class="row">
   <main id="main" class="col-md-9">
 <div class="section level1">
-<div class="page-header"><h1 id="wallace-v194-6">Wallace (v1.9.4-6)<a class="anchor" aria-label="anchor" href="#wallace-v194-6"></a>
+<div class="page-header"><h1 id="wallace-v200">Wallace (v2.0.0)<a class="anchor" aria-label="anchor" href="#wallace-v200"></a>
 </h1></div>
 <p><em>Wallace</em> is a modular platform for reproducible modeling of species niches and distributions, written in R. The application guides users through a complete analysis, from the acquisition of data to visualizing model predictions on an interactive map, thus bundling complex workflows into a single, streamlined interface.</p>
 <p>Install <em>Wallace</em> via CRAN and run the application with the following R code.</p>
@@ -100,12 +104,12 @@
 <div class="section level4">
 <h4 id="update-r-and-rstudio-versions">Update R and RStudio versions<a class="anchor" aria-label="anchor" href="#update-r-and-rstudio-versions"></a>
 </h4>
-<p>Please make sure you have installed the latest versions of both R (<a href="https://cran.r-project.org/bin/macosx/" target="_blank" class="external-link">Mac OS</a>, <a href="https://cran.r-project.org/bin/windows/base/" target="_blank" class="external-link">Windows</a>) and RStudio (<a href="https://www.rstudio.com/products/rstudio/download/" target="_blank" class="external-link">Mac OS / Windows</a>: choose the free version).</p>
+<p>Please make sure you have installed the latest versions of both R (<a href="https://cran.r-project.org/bin/macosx/" target="_blank" class="external-link">Mac OS</a>, <a href="https://cran.r-project.org/bin/windows/base/" target="_blank" class="external-link">Windows</a>) and RStudio (<a href="https://posit.co/download/rstudio-desktop/" target="_blank" class="external-link">Mac OS / Windows</a>: choose the free version).</p>
 </div>
 <div class="section level4">
 <h4 id="how-to-run-maxent-with-maxentjar">How to run Maxent with maxent.jar<a class="anchor" aria-label="anchor" href="#how-to-run-maxent-with-maxentjar"></a>
 </h4>
-<p><em>Wallace</em> v1.9.4-6 includes two options to run Maxent models: maxnet and maxent.jar. The former, which is an R implementation and fits the model with the package <code>glmnet</code>, is now the default and does not require the package <code>rJava</code> (see Phillips et al. 2017). The latter, which is the Java implementation, runs the <code>maxent()</code> function in the package <code>dismo</code>. This function requires the user to place the <code>maxent.jar</code> file in the <code>/java</code> directory of the <code>dismo</code> package root folder. You can download Maxent <a href="https://biodiversityinformatics.amnh.org/open_source/maxent/" target="_blank" class="external-link">here</a>, and locate <code>maxent.jar</code>, which is the Maxent program itself, in the downloaded folder. You can find the directory path to <code>dismo/java</code> by running <code>system.file('java', package="dismo")</code> at the R console. Simply copy <code>maxent.jar</code> and paste it into this folder. If you try to run Maxent in <em>Wallace</em> without the file in place, you will get a warning message in the log window and Maxent will not run.</p>
+<p><em>Wallace</em> v2.0.0 includes two options to run Maxent models: maxnet and maxent.jar. The former, which is an R implementation and fits the model with the package <code>glmnet</code>, is now the default and does not require the package <code>rJava</code> (see Phillips et al. 2017). The latter, which is the Java implementation, runs the <code>maxent()</code> function in the package <code>dismo</code>. This function requires the user to place the <code>maxent.jar</code> file in the <code>/java</code> directory of the <code>dismo</code> package root folder. You can download Maxent <a href="https://biodiversityinformatics.amnh.org/open_source/maxent/" target="_blank" class="external-link">here</a>, and locate <code>maxent.jar</code>, which is the Maxent program itself, in the downloaded folder. You can find the directory path to <code>dismo/java</code> by running <code>system.file('java', package="dismo")</code> at the R console. Simply copy <code>maxent.jar</code> and paste it into this folder. If you try to run Maxent in <em>Wallace</em> without the file in place, you will get a warning message in the log window and Maxent will not run.</p>
 </div>
 </div>
 <div class="section level3">

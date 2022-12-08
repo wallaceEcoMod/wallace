@@ -12,7 +12,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">wallace</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.9.4-6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -155,7 +155,8 @@ shiny, otherwise leave the default NULL.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">envs</span> <span class="op">&lt;-</span> <span class="fu"><a href="envs_userEnvs.html">envs_userEnvs</a></span><span class="op">(</span>rasPath <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/wc"</span>,</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="va">envs</span> <span class="op">&lt;-</span> <span class="fu"><a href="envs_userEnvs.html">envs_userEnvs</a></span><span class="op">(</span>rasPath <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.files.html" class="external-link">list.files</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata/wc"</span>,</span></span>
 <span class="r-in"><span>                                                       package <span class="op">=</span> <span class="st">"wallace"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                                           pattern <span class="op">=</span> <span class="st">".tif$"</span>,</span></span>
 <span class="r-in"><span>                                           full.names <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span></span>
@@ -163,7 +164,6 @@ shiny, otherwise leave the default NULL.</p></dd>
 <span class="r-in"><span>                                                       package <span class="op">=</span> <span class="st">"wallace"</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>                                           pattern <span class="op">=</span> <span class="st">".tif$"</span>,</span></span>
 <span class="r-in"><span>                                           full.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Reading in rasters...</span>
 <span class="r-in"><span><span class="co">## extent to transfer</span></span></span>
 <span class="r-in"><span><span class="co"># set coordinates</span></span></span>
 <span class="r-in"><span><span class="va">longitude</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">71.58400</span>, <span class="op">-</span><span class="fl">78.81300</span>, <span class="op">-</span><span class="fl">79.34034</span>, <span class="op">-</span><span class="fl">69.83331</span>, <span class="op">-</span><span class="fl">66.47149</span>, <span class="op">-</span><span class="fl">66.71319</span>,</span></span>
@@ -185,10 +185,7 @@ shiny, otherwise leave the default NULL.</p></dd>
 <span class="r-in"><span><span class="va">modXfer</span> <span class="op">&lt;-</span> <span class="fu">xfer_time</span><span class="op">(</span>evalOut <span class="op">=</span> <span class="va">m</span>, curModel <span class="op">=</span> <span class="fl">1</span>,</span></span>
 <span class="r-in"><span>                     envs <span class="op">=</span> <span class="va">envsFut</span>, alg <span class="op">=</span> <span class="st">'maxent.jar'</span>,</span></span>
 <span class="r-in"><span>                     xfExt <span class="op">=</span> <span class="va">polyExt</span>, clamp <span class="op">=</span> <span class="cn">FALSE</span>, outputType <span class="op">=</span> <span class="st">'cloglog'</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Transferring in time for clamped model 1.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Clipping environmental data to current extent...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Transferring to new time...</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required namespace: rJava</span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
