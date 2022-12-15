@@ -153,7 +153,7 @@ knitr::include_graphics("vignette_img/occs_5.png")
 
 A major improvement in *Wallace* v2.0 from previous versions is the ability to consider multiple species (separately) in the same session. Let's add another species to model.
 
-Aside from GBIF, you can query the Vertnet (for vertebrate data), BISON (for biodiversity data within the U.S. and Canada), and newly added BIEN (for botantical data) for species occurrence records. In the second module *Query Database (Paleo)*, you can query PaleobioDB databases for fossil records by selecting a time interval and species. Specific packages may have to be downloaded prior to loading Wallace to use these (e.g., `BIEN` and `paleoDB`).
+Aside from GBIF, you can query the Vertnet (for vertebrate data) and newly added BIEN (for botantical data) for species occurrence records. In the second module *Query Database (Paleo)*, you can query PaleobioDB databases for fossil records by selecting a time interval and species. Specific packages may have to be downloaded prior to loading Wallace to use these (e.g., `BIEN` and `paleoDB`).
 
 If you have your own occurrence data, you can import it using the third module, *User-specified*. Your occurrence data file must be a .csv with the columns "scientific_name", "longitude", and "latitude", explicitly named and in that order. It may have other columns, but those must be the first three. You also have the option to specify the delimiter and separator of your file.
 
