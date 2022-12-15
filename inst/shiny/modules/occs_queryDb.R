@@ -5,7 +5,7 @@ occs_queryDb_module_ui <- function(id) {
              radioButtons(ns("occsDb"), label = "Choose Database",
                           choices = c("GBIF" = 'gbif',
                                       "VertNet" = 'vertnet',
-                                      "BISON" = 'bison',
+                                      # "BISON" = 'bison',
                                       "BIEN" = 'bien'),
                           inline = TRUE)),
     tags$div(
@@ -41,7 +41,7 @@ occs_queryDb_module_ui <- function(id) {
                        value = "")), # Check default
     conditionalPanel(
       sprintf(
-        "(input['%1$s'] == 'gbif' & input['%2$s'] == false) | input['%1$s'] == 'vertnet' | input['%1$s'] == 'bison'" ,
+        "(input['%1$s'] == 'gbif' & input['%2$s'] == false) | input['%1$s'] == 'vertnet'" ,
         ns("occsDb"), ns("doCitations")),
       tags$div(
         title = paste0('Maximum number of occurrences recovered from ',
@@ -162,7 +162,7 @@ occs_queryDb_module_rmd <- function(species) {
   list(
     occs_queryDb_knit = species$rmm$data$occurrence$sources == 'gbif' |
       species$rmm$data$occurrence$sources == 'vernet' |
-      species$rmm$data$occurrence$sources == 'bison' |
+      # species$rmm$data$occurrence$sources == 'bison' |
       species$rmm$data$occurrence$sources == 'bien',
     occs_citation_knit = !is.null(species$rmm$code$wallace$gbifDOI),
     occDb_rmd = species$rmm$data$occurrence$sources,
