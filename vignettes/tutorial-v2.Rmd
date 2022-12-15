@@ -46,15 +46,19 @@ If you use *Wallace* in your teaching, we would like to hear about your experien
 
 For `wallace` to work, you should be using R version 3.5.0 or later. Download for <a href="https://cran.r-project.org/bin/windows/base/" target="_blank">Windows</a> or <a href="https://cran.r-project.org/bin/macosx/" target="_blank">Mac</a>.
 
-To install and load *Wallace v2.0*, open either the `R` GUI or RStudio and run the code below. It's the only code you'll have to run to use `wallace`.
+To install and load *Wallace v2.0.0*, open either the `R` GUI or RStudio and run the code below. It's the only code you'll have to run to use `wallace`.
 
 ```{r, eval = FALSE, echo = TRUE}
-# Install Wallace from GitHub
+# Install Wallace from CRAN
+install.packages("wallace")
+
+# OR install Wallace from GitHub
 install.packages("remotes")
 remotes::install_github("wallaceEcoMod/wallace")
-# Load Wallace
+
+# THEN load Wallace
 library(wallace)
-# Run Wallace
+# AND Run Wallace
 run_wallace()
 ```
 
