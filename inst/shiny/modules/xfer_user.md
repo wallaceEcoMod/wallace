@@ -20,5 +20,5 @@ Anderson, R.P. (2013). A framework for using niche models to estimate impacts of
 
 Fitzpatrick, M.C., & Hargrove, W.W. (2009). The projection of species distribution models and the problem of non-analog climate. Biodiversity and Conservation, 18, 2255. <a href="https://doi.org/10.1007/s10531-009-9584-8" target="_blank">https://doi.org/10.1007/s10531-009-9584-8</a>
 
-Kass, J., Muscarella, R., Galante, P.J., Bohl, C.L., Pinilla-Buitrago, G.E., Boria, R.A., Soley-Guardia, M., & Anderson, R.P. (2021). ENMeval: Automated Tuning and Evaluations of Ecological Niche Models. R package version 2.0.1. <a href="https://CRAN.R-project.org/package=ENMeval" target="_blank">https://CRAN.R-project.org/package=ENMeval</a> 
+Kass, J., Muscarella, R., Galante, P.J., Bohl, C.L., Pinilla-Buitrago, G.E., Boria, R.A., Soley-Guardia, M., & Anderson, R.P. (2021). ENMeval: Automated Tuning and Evaluations of Ecological Niche Models. R package version 2.0 <a href="https://CRAN.R-project.org/package=ENMeval" target="_blank">https://CRAN.R-project.org/package=ENMeval</a> 
 

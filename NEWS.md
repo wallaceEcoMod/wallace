@@ -1,6 +1,10 @@
+wallace 2.0.2
+=============
+- Workaround for test when fails to download data from vertnet and ecoClimate
+
 wallace 2.0.1
 =============
-- Add install.packages from CRAN
+- Add install.packages from CRAN in the vignette
 - Remove BISON as option to download occurrences due to it is no longer available in `spooc` package (i.e. rbison archived in CRAN, and BISON data is available via GBIF).
 
 wallace 2.0.0

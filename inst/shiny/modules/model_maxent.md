@@ -52,7 +52,7 @@ Hijmans, R.J., Phillips, S., Leathwick, J., & Elith, J. (2020). dismo: Species D
  
 James, G., Witten, D., Hastie, T., & Tibshirani, R. (2013). *An Introduction to Statistical Learning with applications in R*. Springer. <a href="https://doi.org/10.1007/978-1-4614-7138-7" target="_blank">https://doi.org/10.1007/978-1-4614-7138-7</a>
  
-Kass, J., Muscarella, R., Galante, P.J., Bohl, C.L., Pinilla-Buitrago, G.E., Boria, R.A., Soley-Guardia, M., & Anderson, R.P. (2021). ENMeval: Automated Tuning and Evaluations of Ecological Niche Models. R package version 2.0.1. <a href="https://CRAN.R-project.org/package=ENMeval" target="_blank">https://CRAN.R-project.org/package=ENMeval</a>
+Kass, J., Muscarella, R., Galante, P.J., Bohl, C.L., Pinilla-Buitrago, G.E., Boria, R.A., Soley-Guardia, M., & Anderson, R.P. (2021). ENMeval: Automated Tuning and Evaluations of Ecological Niche Models. R package version 2.0 <a href="https://CRAN.R-project.org/package=ENMeval" target="_blank">https://CRAN.R-project.org/package=ENMeval</a>
  
 Merow, C., Smith, M.J., & Silander, J.A. (2013). A practical guide to MaxEnt for modeling species' distributions: What it does, and why inputs and settings matter. *Ecography*, 36(10), 1058-1069. <a href="https://doi.org/10.1111/j.1600-0587.2013.07872.x" target="_blank">https://doi.org/10.1111/j.1600-0587.2013.07872.x</a>
  
