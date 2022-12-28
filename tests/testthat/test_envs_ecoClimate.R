@@ -9,7 +9,8 @@ bcScenario="LGM"
 ecoClimSel=c(1,2,3,15,16)
 
 ##Run function for output tests
-varsEcoClimate<-envs_ecoClimate(bcAOGCM, bcScenario, ecoClimSel)
+varsEcoClimate <- try(envs_ecoClimate(bcAOGCM, bcScenario, ecoClimSel),
+                      silent = TRUE)
 ##set error parameters
 wrongAOGCM="CTSM"
 wrongScenario='notscenario'
@@ -18,6 +19,8 @@ bcScenarioFail='Present'
 
 ##start testing
 test_that('error_checks', {
+  # Skip if cannot download
+  skip_if(class(varsEcoClimate) == "try-error")
   ##wrong AOGCM
   expect_error(envs_ecoClimate(bcAOGCM = wrongAOGCM, bcScenario, ecoClimSel),
   (paste0("ecoClimate has no data for AOGCM=", wrongAOGCM,
@@ -37,6 +40,8 @@ test_that('error_checks', {
   })
 
 test_that('output_checks', {
+  # Skip if cannot download
+  skip_if(class(varsEcoClimate) == "try-error")
   #output is a rasterstack
   expect_is(varsEcoClimate,"RasterStack")
   ##rasterstack has as many layers as requested

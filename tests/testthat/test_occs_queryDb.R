@@ -14,9 +14,11 @@ occNum <- 100
 
 ### run function
   #gbif
-out.gbif <- occs_queryDb(spNames, occDb, occNum)
+out.gbif <- try(occs_queryDb(spNames, occDb, occNum),
+                silent = TRUE)
   #Vertnet: currently not supported
-out.vert <- occs_queryDb(spNames, occDb = "vertnet", occNum)
+out.vert <- try(occs_queryDb(spNames, occDb = "vertnet", occNum),
+                silent = TRUE)
 # Bison
 # out.bison <- occs_queryDb(spNames, occDb = "bison", occNum)
 # BIEN
@@ -55,12 +57,14 @@ test_that("error checks", {
 
   ##GBIF
 
-for (i in 1:length(spNames)){
+for (i in 1:length(spNames)) {
+  # Skip if cannot download
+  skip_if(class(out.gbif) == "try-error")
   ### get the total number of records found in the database
   occ <- spocc::occ(spNames[i], 'gbif', limit = 100)
   total_occ <- occ[['gbif']]$meta$found
-### test output features
-test_that("output type checks", {
+  ### test output features
+  test_that("output type checks", {
   # the output is a list
   expect_is(out.gbif, "list")
   #the list has as many elements as species names provided
@@ -90,6 +94,8 @@ test_that("output type checks", {
 
 ### test function stepts
 test_that("output data checks", {
+  # Skip if cannot download
+  skip_if(class(out.gbif) == "try-error")
   # if the original database has records without coordinates OR duplicates:
   if ((TRUE %in% duplicated(out.gbif[[i]]$orig[,c('longitude','latitude')])) |
       !(NA %in% out.gbif[[i]]$orig[,c('longitude','latitude')])){
@@ -114,6 +120,8 @@ headersGBIF <- c("name", "longitude", "latitude", "country", "stateProvince",
                  "institutionCode", "coordinateUncertaintyInMeters")
 # check headers
 test_that("GBIF headers", {
+  # Skip if cannot download
+  skip_if(class(out.gbif) == "try-error")
   # the original headers haven't changed
   expect_false('FALSE' %in% (headersGBIF %in% names(out.gbif[[i]]$orig)))
   # the headers in the claned table are the ones specified in the function
@@ -131,27 +139,31 @@ headersVertnet <- c("name", "longitude", "latitude", "country", "stateprovince",
                     "year", "basisofrecord", "catalognumber", "institutioncode",
                     "coordinateuncertaintyinmeters")
 
-for (i in 1:length(spNames)){
-##Check output
-test_that("output type checks", {
-  # the output is a list
-  expect_is(out.vert, "list")
-  #the list has as many elements as species names provided
-  expect_equal(length(out.vert), length(spNames))
-  # each individual species result is a list
-  expect_is(out.vert[[i]], "list")
-  #Each individual list has two elements
-  expect_equal(length(out.vert[[i]]), 2)
-  # the elements on the main list are lists too
-  expect_is(out.vert[[i]][c("orig","cleaned")], "list")
-  #downloaded species corresponds to queried species.
-  expect_match(unique(out.vert[[i]]$cleaned$scientific_name),spNames[i],ignore.case=T)
+for (i in 1:length(spNames)) {
+  ##Check output
+  test_that("output type checks", {
+    # Skip if cannot download
+    skip_if(class(out.vert) == "try-error")
+    # the output is a list
+    expect_is(out.vert, "list")
+    #the list has as many elements as species names provided
+    expect_equal(length(out.vert), length(spNames))
+    # each individual species result is a list
+    expect_is(out.vert[[i]], "list")
+    #Each individual list has two elements
+    expect_equal(length(out.vert[[i]]), 2)
+    # the elements on the main list are lists too
+    expect_is(out.vert[[i]][c("orig","cleaned")], "list")
+    #downloaded species corresponds to queried species.
+    expect_match(unique(out.vert[[i]]$cleaned$scientific_name),spNames[i],ignore.case=T)
 
-  # cleaned list has 14 columns
- expect_equal(14, ncol(out.vert[[i]]$cleaned))
-})
+    # cleaned list has 14 columns
+    expect_equal(14, ncol(out.vert[[i]]$cleaned))
+  })
   ### test function stepts
   test_that("output data checks", {
+    # Skip if cannot download
+    skip_if(class(out.vert) == "try-error")
     # if the original database has records without coordinates OR duplicates:
     if ((TRUE %in% duplicated(out.vert[[i]]$orig[,c('longitude','latitude')]) == TRUE)|
        (NA %in% out.vert$orig[,c('longitude','latitude')]) == TRUE){
@@ -169,6 +181,8 @@ test_that("output type checks", {
  })
   # check headers
   test_that("Vertnet headers", {
+    # Skip if cannot download
+    skip_if(class(out.vert) == "try-error")
     # the original headers haven't changed
     expect_false('FALSE' %in%  (headersVertnet %in% names(out.vert[[i]]$orig)))
     #the headers in the cleaned table are the ones specified in the function
