@@ -1,3 +1,7 @@
+wallace 2.0.3
+=============
+- Fix conditional in test for occs_queryDB
+
 wallace 2.0.2
 =============
 - Workaround for test when fails to download data from vertnet and ecoClimate
