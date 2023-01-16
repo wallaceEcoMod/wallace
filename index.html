@@ -42,7 +42,7 @@
     
     <a class="navbar-brand me-2" href="index.html">wallace</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -83,7 +83,7 @@
 <div class="row">
   <main id="main" class="col-md-9">
 <div class="section level1">
-<div class="page-header"><h1 id="wallace-v202">Wallace (v2.0.2)<a class="anchor" aria-label="anchor" href="#wallace-v202"></a>
+<div class="page-header"><h1 id="wallace-v203">Wallace (v2.0.3)<a class="anchor" aria-label="anchor" href="#wallace-v203"></a>
 </h1></div>
 <p><em>Wallace</em> is a modular platform for reproducible modeling of species niches and distributions, written in R. The application guides users through a complete analysis, from the acquisition of data to visualizing model predictions on an interactive map, thus bundling complex workflows into a single, streamlined interface.</p>
 <p>Install <em>Wallace</em> via CRAN and run the application with the following R code.</p>
@@ -109,7 +109,7 @@
 <div class="section level4">
 <h4 id="how-to-run-maxent-with-maxentjar">How to run Maxent with maxent.jar<a class="anchor" aria-label="anchor" href="#how-to-run-maxent-with-maxentjar"></a>
 </h4>
-<p><em>Wallace</em> v2.0.2 includes two options to run Maxent models: maxnet and maxent.jar. The former, which is an R implementation and fits the model with the package <code>glmnet</code>, is now the default and does not require the package <code>rJava</code> (see Phillips et al. 2017). The latter, which is the Java implementation, runs the <code>maxent()</code> function in the package <code>dismo</code>. This function requires the user to place the <code>maxent.jar</code> file in the <code>/java</code> directory of the <code>dismo</code> package root folder. You can download Maxent <a href="https://biodiversityinformatics.amnh.org/open_source/maxent/" target="_blank" class="external-link">here</a>, and locate <code>maxent.jar</code>, which is the Maxent program itself, in the downloaded folder. You can find the directory path to <code>dismo/java</code> by running <code>system.file('java', package="dismo")</code> at the R console. Simply copy <code>maxent.jar</code> and paste it into this folder. If you try to run Maxent in <em>Wallace</em> without the file in place, you will get a warning message in the log window and Maxent will not run.</p>
+<p><em>Wallace</em> v2.0.3 includes two options to run Maxent models: maxnet and maxent.jar. The former, which is an R implementation and fits the model with the package <code>glmnet</code>, is now the default and does not require the package <code>rJava</code> (see Phillips et al. 2017). The latter, which is the Java implementation, runs the <code>maxent()</code> function in the package <code>dismo</code>. This function requires the user to place the <code>maxent.jar</code> file in the <code>/java</code> directory of the <code>dismo</code> package root folder. You can download Maxent <a href="https://biodiversityinformatics.amnh.org/open_source/maxent/" target="_blank" class="external-link">here</a>, and locate <code>maxent.jar</code>, which is the Maxent program itself, in the downloaded folder. You can find the directory path to <code>dismo/java</code> by running <code>system.file('java', package="dismo")</code> at the R console. Simply copy <code>maxent.jar</code> and paste it into this folder. If you try to run Maxent in <em>Wallace</em> without the file in place, you will get a warning message in the log window and Maxent will not run.</p>
 </div>
 </div>
 <div class="section level3">
