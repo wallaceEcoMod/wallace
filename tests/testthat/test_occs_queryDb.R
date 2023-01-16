@@ -45,7 +45,7 @@ test_that("error checks", {
 
   # the species is found in the database, but it does not have coordinates (Log & lat)
   # GEPB (2022-03-12): It is not working because trigger another error message
-  # befero: No records found. Please check the spelling.
+  # before: No records found. Please check the spelling.
   # expect_warning(occs_queryDb(spName = "Artibeus macleayii", occDb, occNum),
   #               paste0(hlSpp("Artibeus_macleayii"),
   #                      'No records with coordinates found in ', occDb,". "),
@@ -97,8 +97,8 @@ test_that("output data checks", {
   # Skip if cannot download
   skip_if(class(out.gbif) == "try-error")
   # if the original database has records without coordinates OR duplicates:
-  if ((TRUE %in% duplicated(out.gbif[[i]]$orig[,c('longitude','latitude')])) |
-      !(NA %in% out.gbif[[i]]$orig[,c('longitude','latitude')])){
+  if ((TRUE %in% duplicated(out.gbif[[i]]$orig[, c('longitude', 'latitude')])) |
+      (NA %in% out.gbif[[i]]$orig[, c('longitude', 'latitude')])) {
     # the cleaned table must have fewer records than the original one
     expect_true((nrow(out.gbif[[i]]$orig)) > (nrow(out.gbif[[i]]$cleaned)))
   } else { # if not,
