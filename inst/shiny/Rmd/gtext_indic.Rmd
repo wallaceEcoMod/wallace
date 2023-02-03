@@ -2,7 +2,7 @@
   title: "indic"
 output: html_document
 ---
-### **Component: ChangeRangeR**
+### **Component: Calculate Indicators**
 
 **Background**
 
