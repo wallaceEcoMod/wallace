@@ -54,7 +54,22 @@ output: html_document
 - Transfer to User Environments
 - Calculate Environmental Similarity  
 
-**10.** *Reproduce*  
+**10.** *Mask Prediction*  
+- Upload User Prediction  
+- Mask by Shapefile  
+- Mask by Drawn Polygon  
+- Temporal Extract  
+
+**11.** *Calculate Indicators*  
+- Calculate Area Metrics  
+- Calculate Ratio Overlap  
+- Calculate Change Over Time  
+
+**12.** *Estimate Diversity*  
+- Calculate Richness  
+- Calculate Endemism  
+
+**13.** *Reproduce*  
 - Download Session Code  
 - Download Metadata  
 - Download Package References 
