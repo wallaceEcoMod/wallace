@@ -1,5 +1,5 @@
 component: "mask"
-short_name: "Expert Polygon (**)"
-long_name: "Remove/Add by expert opinion (**)"
+short_name: "Mask by Drawn Polygon"
+long_name: "Mask by Drawn Polygon"
 authors: "Gonzalo E. Pinilla-Buitrago (**)"
 package: [raster]

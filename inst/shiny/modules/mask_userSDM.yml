@@ -1,5 +1,5 @@
 component: "mask"
-short_name: "Upload User SDM"
-long_name: "Upload User SDM"
+short_name: "Upload User Prediction"
+long_name: "Upload User Prediction"
 authors: "Gonzalo E. Pinilla-Buitrago"
 package: [raster]
