@@ -1,4 +1,4 @@
-### **Module: Change through time**
+### **Module: Calculate Change Over Time**
 
 **BACKGROUND**
 

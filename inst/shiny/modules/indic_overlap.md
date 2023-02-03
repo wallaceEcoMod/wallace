@@ -1,4 +1,4 @@
-### **Module: Ratio Overlap**
+### **Module: Calculate Ratio Overlap**
 
 **BACKGROUND**
 
