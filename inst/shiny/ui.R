@@ -162,7 +162,7 @@ tagList(
           # Upload User SDM ####
           conditionalPanel(
             "input.tabs == 'mask'",
-            div("Component: Mask SDM (**)", class = "componentName"),
+            div("Component: Mask Prediction", class = "componentName"),
             help_comp_ui("maskHelp"),
             radioButtons(
               "maskSel", "Modules Available:",
@@ -174,7 +174,7 @@ tagList(
           # Change ####
           conditionalPanel(
             "input.tabs == 'indic'",
-            div("Component: Change RangeR (**)", class = "componentName"),
+            div("Component: Calculate Indicators", class = "componentName"),
             help_comp_ui("indicHelp"),
             radioButtons(
               "indicSel", "Modules Available:",
@@ -186,7 +186,7 @@ tagList(
           # ALPHA ####
           conditionalPanel(
             "input.tabs == 'diver'",
-            div("Component: Diversity (**)", class = "componentName"),
+            div("Component: Estimate Diversity", class = "componentName"),
             help_comp_ui("diverHelp"),
             radioButtons(
               "diverSel", "Modules Available:",
