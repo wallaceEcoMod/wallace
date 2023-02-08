@@ -3,7 +3,7 @@ title: "mask"
 output: html_document
 ---
 
-### **Component: Mask map**
+### **Component: Mask Prediction**
 
 **ORIENTATION**
 

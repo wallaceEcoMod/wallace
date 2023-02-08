@@ -1,4 +1,4 @@
-### **Module: Species Richness**
+### **Module: Calculate Richness**
 
 **BACKGROUND**
 

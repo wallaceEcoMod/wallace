@@ -1,4 +1,4 @@
-### **Module: Remove/Add by expert opinion**
+### **Module: Mask by Drawn Polygon**
 
 **BACKGROUND**
 

@@ -1,4 +1,4 @@
-### **Module: Areas**
+### **Module: Calculate Area Metrics**
 
 **BACKGROUND**
 

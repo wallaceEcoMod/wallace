@@ -3,7 +3,7 @@ title: "diver"
 output: html_document
 ---
 
-### **Component: Diversity**
+### **Component: Estimate Diversity**
 
 **ORIENTATION**
 

@@ -1,5 +1,5 @@
 component: "indic"
-short_name: "Time"
-long_name: "Change through time"
+short_name: "Calculate Change Over Time"
+long_name: "Calculate Change Over Time"
 authors: "Andrea Paz"
 package: [raster, changeRangeR]

@@ -1,5 +1,5 @@
 component: "diver"
-short_name: "Endemism"
-long_name: "Endemism Calculation"
+short_name: "Calculate Endemism"
+long_name: "Calculate Endemism"
 authors: "Andrea Paz"
 package: [raster, changeRangeR]

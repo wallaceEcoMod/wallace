@@ -1,4 +1,4 @@
-### **Module: Species Endemism**
+### **Module: Calculate Endemism**
 
 **BACKGROUND**
 

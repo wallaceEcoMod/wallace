@@ -1,5 +1,5 @@
 component: "indic"
-short_name: "Areas"
-long_name: "Range/AOO/EOO"
+short_name: "Calculate Area Metrics"
+long_name: "Calculate Area Metrics"
 authors: "Andrea Paz"
 package: [raster, changeRangeR]

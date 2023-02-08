@@ -1,4 +1,4 @@
-### **Module: Temporal extract**
+### **Module: Temporal Extract**
 
 **BACKGROUND**
 
