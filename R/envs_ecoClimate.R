@@ -276,7 +276,7 @@ ecoClimate_getdata <- function (AOGCM, Baseline, Scenario, logger = NULL) {
     FinURL <- paste0("https://www.dropbox.com/sh/ei6m84sctoinhi9/AADxV4qNkInBdqpNMSASycTCa/bio%20%23baseline_Modern%281950-1999%29%23%20MRI_rcp26%282080-2100%29.txt?dl=1")
   }
   if (AOGCM == "MPI" && Baseline == "Modern" && Scenario == "Future 2.6") {
-    logger %>% writeLog(type = 'error', "ecoClimatehas no data for AOGCM = ", AOGCM, ", Baseline =  ", Baseline, ", Scenario = ", Scenario)
+    logger %>% writeLog(type = 'error', "ecoClimate has no data for AOGCM = ", AOGCM, ", Baseline =  ", Baseline, ", Scenario = ", Scenario)
     return()
   }
 

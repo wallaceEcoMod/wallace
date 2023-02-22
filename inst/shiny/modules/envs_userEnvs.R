@@ -49,6 +49,18 @@ envs_userEnvs_module_server <- function(input, output, session, common) {
                               doBrick = input$doBrick,
                               logger)
 
+    smartProgress(logger, message = "Checking NA values...", {
+      checkNA <- terra::global(terra::rast(userEnvs),
+                               fun = "isNA")
+    })
+
+    if (length(unique(checkNA$isNA)) != 1) {
+      logger %>% writeLog(
+        type = "error",
+        'Input rasters have unmatching NAs pixel values.')
+      return()
+    }
+
     # loop over all species if batch is on
     if (input$batch == TRUE) {
       spLoop <- allSp()

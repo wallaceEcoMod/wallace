@@ -66,6 +66,7 @@ This functions allows transferring the model created in previous
   the transferred model.
 }
 \examples{
+\dontrun{
 envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
                                                        package = "wallace"),
                                            pattern = ".tif$",
@@ -95,6 +96,7 @@ envsFut <- raster::stack(envsFut)
 modXfer <- xfer_time(evalOut = m, curModel = 1,
                      envs = envsFut, alg = 'maxent.jar',
                      xfExt = polyExt, clamp = FALSE, outputType = 'cloglog')
+}
 }
 \seealso{
 \code{\link[dismo]{predict}}, \code{\link{xfer_time}}

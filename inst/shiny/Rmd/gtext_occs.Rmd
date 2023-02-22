@@ -7,7 +7,7 @@ output: html_document
 
 **ORIENTATION**
 
-Niche/distributional modeling analyses require georeferenced occurrence records for the species (e.g., with latitude/longitude). At present, **Component: Obtain Occurrence Records** focuses on data documenting the presence of the species (i.e., not any information on its absence or non-detection; Franklin 2010 chap. 4; Peterson et al. 2011 chapter 5; Anderson 2012). *Wallace* currently allows users to: 1) obtain present-day occurrence records (from dates in the past century or so) from selected online biodiversity databases and download the information (Module: *Query Database [Present]*); 2) obtain paleontological occurrence records from selected online biodiversity databases and download the information (Module: *Query Database [Paleo]*); 
+Niche/distributional modeling analyses require georeferenced occurrence records for the species (e.g., with latitude/longitude). At present, **Component: Obtain Occurrence Records** focuses on data documenting the presence of the species (i.e., not any information on its absence or non-detection; Franklin 2010, Chapter 4; Peterson et al. 2011, Chapter 5; Anderson 2012). *Wallace* currently allows users to: 1) obtain present-day occurrence records (from dates in the past century or so) from selected online biodiversity databases and download the information (Module: *Query Database [Present]*), 2) obtain paleontological occurrence records from selected online biodiversity databases and download the information (Module: *Query Database [Paleo]*); 
 or 3) upload their own dataset (Module: *User-specified Occurrences*).  
 Unlike previous versions of *Wallace*, multiple species now can be uploaded in the same session.
 

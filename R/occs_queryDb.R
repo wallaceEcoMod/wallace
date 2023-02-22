@@ -10,7 +10,7 @@
 #'
 #' @param spNames character. Species Latin name, with format "Genus species".
 #' @param occDb character. Biodiversity database to query; current choices are
-#'   "gbif", "vertnet", "bison", and "BIEN"
+#'   "gbif", "vertnet", and "BIEN"
 #' @param occNum numeric. Maximum number of occurrence records to return
 #' @param logger Stores all notification messages to be displayed in the Log
 #'   Window of Wallace GUI. Insert the logger reactive list here for running in shiny,
@@ -98,7 +98,7 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
     # query database
     smartProgress(logger,
                   message = paste0("Querying ", occDb, " for ", sp, "..."), {
-      if (occDb == 'bison' | occDb == 'vertnet') {
+      if (occDb == 'vertnet') {
         q <- spocc::occ(sp, occDb, limit = occNum)
         myOccCitations <- NULL
       } else if (occDb == 'gbif') {
@@ -257,21 +257,21 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
                       catalog_number = .data$catalognumber,
                       elevation = .data$maximumelevationinmeters,
                       uncertainty = .data$coordinateuncertaintyinmeters)
-    } else if (occDb == 'bison') { # standardize BISON column names
-      fields <- c("providedScientificName", "longitude", "latitude", "countryCode",
-                  "stateProvince", "verbatimLocality", "year", "basisOfRecord",
-                  "catalogNumber", "ownerInstitutionCollectionCode",
-                  "elevation", "uncertainty")
-      # BISON field requirements (no downloaded by spocc) "elevation"
-      for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
-      occs <- occs %>% dplyr::rename(scientific_name = .data$providedScientificName,
-                                     country = .data$countryCode,
-                                     state_province = .data$stateProvince,
-                                     locality = .data$verbatimLocality,
-                                     record_type = .data$basisOfRecord,
-                                     institution_code =
-                                       .data$ownerInstitutionCollectionCode,
-                                     catalog_number = .data$catalogNumber)
+    # } else if (occDb == 'bison') { # standardize BISON column names
+    #   fields <- c("providedScientificName", "longitude", "latitude", "countryCode",
+    #               "stateProvince", "verbatimLocality", "year", "basisOfRecord",
+    #               "catalogNumber", "ownerInstitutionCollectionCode",
+    #               "elevation", "uncertainty")
+    #   # BISON field requirements (no downloaded by spocc) "elevation"
+    #   for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
+    #   occs <- occs %>% dplyr::rename(scientific_name = .data$providedScientificName,
+    #                                  country = .data$countryCode,
+    #                                  state_province = .data$stateProvince,
+    #                                  locality = .data$verbatimLocality,
+    #                                  record_type = .data$basisOfRecord,
+    #                                  institution_code =
+    #                                    .data$ownerInstitutionCollectionCode,
+    #                                  catalog_number = .data$catalogNumber)
     } else if (occDb == 'bien') {
       fields <- c("scrubbed_species_binomial", "longitude", "latitude",
                   "collection_code", "country", "state_province", "locality", "year",

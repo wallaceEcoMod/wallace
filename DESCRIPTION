@@ -8,7 +8,9 @@ Description: The 'shiny' application Wallace is a modular platform for
     guides users through a complete analysis, from the acquisition of species
     occurrence and environmental data to visualizing model predictions on an 
     interactive map, thus bundling complex workflows into a single, 
-    streamlined interface.
+    streamlined interface. An extensive vignette, which guides users through 
+    most package functionality can be found on the package's GitHub Pages 
+    website: <https://wallaceecomod.github.io/wallace/articles/tutorial-v2.html>.
 Authors@R: 
     c(person("Jamie M.", "Kass", email = "jamie.kass@oist.jp", role = "aut"),
     person("Gonzalo E.", "Pinilla-Buitrago", email = "gpinillabuitrago@gradcenter.cuny.edu", role = c("aut", "cre")),
@@ -83,4 +85,4 @@ Remotes: cmerow/changeRangeR
 License: GPL-3
 URL: http://wallaceecomod.github.io/wallace/,
 Encoding: UTF-8
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3

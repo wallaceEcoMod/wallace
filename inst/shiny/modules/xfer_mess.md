@@ -21,7 +21,7 @@ Fitzpatrick, M. C., Hargrove, W. W. (2009). The projection of species distributi
 
 Hijmans, R.J., Phillips, S., Leathwick, J., Elith, J. (2020). dismo: Species Distribution Modeling. R package version 1.3-3. <a href="https://CRAN.R-project.org/package=dismo" target="_blank">https://CRAN.R-project.org/package=dismo</a> 
 
-Kass, J., Muscarella, R., Galante, P. J., Bohl, C. L., Pinilla-Buitrago, G. E., Boria, R. A., Soley-Guardia, M., Anderson, R. P. (2021). ENMeval: Automated Tuning and Evaluations of Ecological Niche Models. R package version 2.0.1. <a href="https://CRAN.R-project.org/package=ENMeval" target="_blank">https://CRAN.R-project.org/package=ENMeval</a>
+Kass, J., Muscarella, R., Galante, P. J., Bohl, C. L., Pinilla-Buitrago, G. E., Boria, R. A., Soley-Guardia, M., Anderson, R. P. (2021). ENMeval: Automated Tuning and Evaluations of Ecological Niche Models. R package version 2.0 <a href="https://CRAN.R-project.org/package=ENMeval" target="_blank">https://CRAN.R-project.org/package=ENMeval</a>
 
 Williams, J. W., & Jackson, S. T. (2007). Novel climates, no-analog communities, and ecological surprises. Frontiers in Ecology and the Environment, 5(9), 475-482. <a href="https://doi.org/10.1890/070037" target="_blank">https://doi.org/10.1890/070037</a>
 

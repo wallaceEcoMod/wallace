@@ -33,6 +33,7 @@
 #'   shiny, otherwise leave the default NULL.
 #' @param spN character. Used to obtain species name for logger messages.
 #' @examples
+#' \dontrun{
 #' envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
 #'                                                        package = "wallace"),
 #'                                            pattern = ".tif$",
@@ -62,7 +63,7 @@
 #' modXfer <- xfer_time(evalOut = m, curModel = 1,
 #'                      envs = envsFut, alg = 'maxent.jar',
 #'                      xfExt = polyExt, clamp = FALSE, outputType = 'cloglog')
-
+#' }
 
 #' @return A list of two elements: xferExt and xferTime. The first is a
 #'   RasterBrick or RasterStack of the environmental variables cropped to the

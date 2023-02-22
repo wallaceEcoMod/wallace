@@ -39,6 +39,7 @@ background points used for generating the model and the environmental values
 at those points.
 }
 \examples{
+\dontrun{
 envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
                                            package = "wallace"),
                       pattern = ".tif$", full.names = TRUE),
@@ -57,7 +58,7 @@ envsFut <- raster::stack(envsFut)
 ## run function
 xferMess <- xfer_mess(occs = occsEnvs, bg = bgEnvs, bgMsk = envs,
                       xferExtRas = envsFut)
-
+}
 }
 \seealso{
 \code{\link[dismo]{mess}}, \code{\link{xfer_time}}

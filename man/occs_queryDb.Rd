@@ -20,7 +20,7 @@ occs_queryDb(
 \item{spNames}{character. Species Latin name, with format "Genus species".}
 
 \item{occDb}{character. Biodiversity database to query; current choices are
-"gbif", "vertnet", "bison", and "BIEN"}
+"gbif", "vertnet", and "BIEN"}
 
 \item{occNum}{numeric. Maximum number of occurrence records to return}
 

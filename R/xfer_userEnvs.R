@@ -30,6 +30,7 @@
 #'   shiny, otherwise leave the default NULL.
 #' @param spN character. Used to obtain species name for logger messages.
 #' @examples
+#' \dontrun{
 #' ## extent to transfer
 #' # set coordinates
 #' longitude <- c(-71.58400, -78.81300, -79.34034, -69.83331, -66.47149, -66.71319,
@@ -50,6 +51,7 @@
 #' modXfer <- xfer_userEnvs(evalOut = m, curModel = 1, envs = envsFut,
 #'                          outputType = "cloglog", alg = "maxent.jar",
 #'                          clamp = FALSE, xfExt = polyExt)
+#' }
 #'
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 #' @author Andrea Paz <paz.andreita@@gmail.com>

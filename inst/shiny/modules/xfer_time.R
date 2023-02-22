@@ -245,7 +245,7 @@ xfer_time_module_server <- function(input, output, session, common) {
       return()
     }
     envsRes <- raster::res(envs())[1]
-    if(envsRes < 0.01) {
+    if (envsRes < 0.01) {
       logger %>%
         writeLog(type = 'error',
                  paste0('Transfer to New Time currently only available with ',
@@ -287,7 +287,7 @@ xfer_time_module_server <- function(input, output, session, common) {
                         input$selRCP, "..."),
         {
           xferTimeEnvs <-
-            raster::getData('CMIP5', var = "bio", res = envsRes * 60,
+            raster::getData('CMIP5', var = "bio", res = round(envsRes * 60, 1),
                             rcp = input$selRCP, model = input$selGCM,
                             year = input$selTime)
           names(xferTimeEnvs) <- paste0('bio', c(paste0('0',1:9), 10:19))

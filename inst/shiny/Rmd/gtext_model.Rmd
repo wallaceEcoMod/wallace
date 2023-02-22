@@ -5,7 +5,7 @@ output: html_document
 
 ### **Component: Build and Evaluate Niche Model**
 
-Many approaches and algorithms exist for building models of species niches/distributions, as well as for evaluating them (Guisan and Thuiller, 2005; Elith et al. 2006; Franklin 2010 chaps. 6, 7, 8). **Component: Build and Evaluate Niche Model** uses the output from earlier components to build models using either presence-only or presence-background data (and associated environmental information). Wallace currently allows users to build models using either: 1) the presence-only approach BIOCLIM (Module: *BIOCLIM*); or 2) the presence-background algorithm Maxent (Module: *Maxent*).  
+Many approaches and algorithms exist for building models of species niches/distributions, as well as for evaluating them (Guisan and Thuiller, 2005; Elith et al. 2006; Franklin 2010 chaps. 6, 7, 8). **Component: Build and Evaluate Niche Model** uses the output from earlier components to build models using either presence-only or presence-background data (and associated environmental information). Wallace currently allows users to build models using either: 1) the presence-only approach BIOCLIM (Module: *BIOCLIM*), or 2) the presence-background algorithm Maxent (Module: *Maxent*).  
 
 As noted, various evaluation metrics exist for assessing niche/distributional model performance, and many are based on the ability to predict localities that are withheld for evaluation (Peterson et al. 2011). As in Zurell et al. 2020 and Kass et al. 2021, Wallace now follows the terminology of Hastie et al. (2009), which distinguishes among:  
 
