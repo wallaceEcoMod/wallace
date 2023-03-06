@@ -19,6 +19,8 @@ bcScenarioFail='Present'
 
 ##start testing
 test_that('error_checks', {
+  # skip on CRAN
+  skip_on_cran()
   # Skip if cannot download
   skip_if(class(varsEcoClimate) == "try-error")
   ##wrong AOGCM
@@ -40,6 +42,8 @@ test_that('error_checks', {
   })
 
 test_that('output_checks', {
+  # skip on CRAN
+  skip_on_cran()
   # Skip if cannot download
   skip_if(class(varsEcoClimate) == "try-error")
   #output is a rasterstack

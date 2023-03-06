@@ -8,7 +8,7 @@ context("paleoDb")
 spName <- "Didelphis virginiana"
 spNameError <- "Panthera onc"
 genus <- "panthera"
-#maximum number of occurences to download
+#maximum number of occurrences to download
 occNum <- 100
 # For PaleobioDB only Holocene is allowed.
 timeInterval <- "Holocene"
@@ -19,7 +19,7 @@ if (Sys.info()['sysname'] != "Windows") {
 }
 
 
-###Test that erorrs check
+###Test that errors check
   ### test if the error messages appear when they are supposed to
 test_that("error checks", {
   # paleobioDB failing in Windows
@@ -56,6 +56,8 @@ test_that("error checks", {
 test_that("output type checks", {
   # paleobioDB failing in Windows
   skip_on_os("windows")
+  # skip on CRAN
+  skip_on_cran()
   #output is a list
   expect_is(occsPaleo, "list")
   #List has two elements
@@ -64,6 +66,8 @@ test_that("output type checks", {
 test_that("output data checks", {
   # paleobioDB failing in Windows
   skip_on_os("windows")
+  # skip on CRAN
+  skip_on_cran()
   # if the original database has records without coordinates OR duplicates:
   if ((TRUE %in% duplicated(occsPaleo$orig[,c('longitude','latitude')]) == TRUE) |
       (NA %in% occsPaleo$orig[,c('longitude','latitude')]) == TRUE){
@@ -93,7 +97,7 @@ test_that("headers check", {
   skip_on_os("windows")
   #
   expect_false('FALSE' %in%  (keyPaleoHeaders %in% names(occsPaleo$orig)))
-  # the headers in the claned table are the ones specified in the function
+  # the headers in the cleaned table are the ones specified in the function
   expect_equal(names(occsPaleo$cleaned),c(keyPaleoHeaders,"pop"))
 })
 
