@@ -124,7 +124,7 @@ test_that("GBIF headers", {
   skip_if(class(out.gbif) == "try-error")
   # the original headers haven't changed
   expect_false('FALSE' %in% (headersGBIF %in% names(out.gbif[[i]]$orig)))
-  # the headers in the claned table are the ones specified in the function
+  # the headers in the cleaned table are the ones specified in the function
   expect_equal(names(out.gbif[[i]]$cleaned),
                c("occID", "scientific_name", "longitude", "latitude", "country",
                  "state_province", "locality", "year", "record_type",
@@ -242,7 +242,7 @@ for (i in 1:length(spNames)) {
 # test_that("Bison headers", {
 #   # the original headers haven't changed
 #   expect_false('FALSE' %in%  (headersBison %in% names(out.bison[[i]]$orig)))
-#   # the headers in the claned table are the ones specified in the function
+#   # the headers in the cleaned table are the ones specified in the function
 #   expect_equal(names(out.bison[[i]]$cleaned),
 #                c("occID", "scientific_name", "longitude", "latitude", "country",
 #                  "state_province", "locality", "year", "record_type","catalog_number",
@@ -295,7 +295,7 @@ headersBien <- c("scrubbed_species_binomial", "longitude", "latitude",
 # test_that("Bien headers", {
 #   # the original headers haven't changed
 #   expect_false('FALSE' %in%  (headersBien %in% names(out.bien[[i]]$orig)))
-#   # the headers in the claned table are the ones specified in the function
+#   # the headers in the cleaned table are the ones specified in the function
 #   expect_equal(names(out.bien[[i]]$cleaned),
 #                c("occID", "scientific_name", "longitude", "latitude", "country",
 #           "state_province", "locality", "year", "record_type", "catalog_number",
