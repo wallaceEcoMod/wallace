@@ -1,3 +1,9 @@
+wallace 2.0.4
+=============
+- Added Spanish translation of vignette
+- Updates to v2 vignette
+- `skip_on_cran()` added to several tests
+
 wallace 2.0.3
 =============
 - Fix conditional in test for occs_queryDB
