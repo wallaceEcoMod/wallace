@@ -3,7 +3,7 @@ title: "Tutorial de Wallace Aplicación de modelado Ecológico v2.0"
 author: 
 - Bethany A. Johnson, Gonzalo E. Pinilla-Buitrago, Andrea Paz, Jamie M. Kass, Sarah I. Meenan, Robert P. Anderson
 - Traducción al español por Andrea Paz y Bethany Johnson
-date: "11 March 2023"
+date: "2023-03-11"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Tutorial de Wallace Aplicación de modelado Ecológico v2.0}

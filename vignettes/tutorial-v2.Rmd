@@ -1,7 +1,7 @@
 ---
 title: "Wallace Ecological Modeling Application v2.0 Vignette"
 author: Bethany A. Johnson, Gonzalo E. Pinilla-Buitrago, Andrea Paz, Jamie M. Kass, Sarah I. Meenan, Robert P. Anderson
-date: "4/18/2022; updated 03/11/2023"
+date: "2022-04-18; updated 2023-03-11"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Wallace Ecological Modeling Application v2.0 Vignette}
@@ -101,7 +101,7 @@ knitr::include_graphics("vignette_img/orientation_2.png")
 
 (**1**) These are the components. You will be stepping sequentially through them. *Wallace v2* now includes a Support button (**1a**), which links to the Google Group, email, website, and the Github page to report issues, as well as the quit button (**1b**), which will end the session.\
 (**2**) This is the toolbar with all the user interface controls, such as buttons, text inputs, etc. You can see that the module *Query Database (Present)* is currently selected. You'll see that two other modules exist for this component: *Query Database (Paleo)* and *User-specified*. This last module lets you upload your own occurrence data. Try choosing it instead and notice that the toolbar changes, then click back to *Query Database (Present)*.\
-Both the **Component** and *Module* have queestion mark buttons (?) next to the title text. Clicking these will link to the respective guidance texts.\
+Both the **Component** and *Module* have question mark buttons (?) next to the title text. Clicking these will link to the respective guidance texts.\
 Within this toolbar, you can find the module name and the `R` packages it uses (**2a**), as well as the control panel for the selected module (**2b**). Modules can be contributed by other researchers and the developers; CRAN links and documentation are at the bottom.\
 (**3**) The right side is the visualization space. Any functions performed will trigger a message in the log window (**3a**). This window will also display any error messages. *Wallace v2.0.4* now allows the user to load multiple species. If multiple species are loaded, toggle and select between species using the species drop-down menu (**3b**).\
 The visualization space includes several tabs (**3c**), including an interactive map, occurrence records table, results window, model and component guidance text windows, and a tab for saving outputs and the current session.\
