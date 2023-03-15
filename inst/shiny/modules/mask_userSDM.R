@@ -33,7 +33,7 @@ mask_userSDM_module_server <- function(input, output, session, common) {
       if (sppName %in% names(spp)) {
         logger %>% writeLog(hlSpp(sppName),
                             type = 'warning',
-                            "Species already registered (**).")
+                            "SDM uploaded matches previously loaded occurrence data.")
       }
     }
 
@@ -59,7 +59,7 @@ mask_userSDM_module_server <- function(input, output, session, common) {
       spp[[sppName]]$mask$userThr <- userThr
       spp[[sppName]]$mask$userSDM <- userSDMs$sdm * 1
       spp[[sppName]]$mask$userPolyExt <- userSDMs$extSdm
-      logger %>% writeLog(hlSpp(sppName), "User SDM prediction loaded (**)")
+      logger %>% writeLog(hlSpp(sppName), "User SDM prediction loaded")
 
       # METADATA ####
       spp[[sppName]]$rmm$code$wallace$userSDM <- TRUE
