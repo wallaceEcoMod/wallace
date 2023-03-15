@@ -1,23 +1,33 @@
 ---
-  title: "indic"
+title: "indic"
 output: html_document
 ---
+
 ### **Component: Calculate Indicators**
 
-**Background**
+**ORIENTATION**
 
-  Translating a species’ current distribution into meaningful conservation metrics in a repeatable and transparent way to inform conservation planning and decision-making remains an outstanding issue in conservation biology. By using a species distribution model (SDM), as well as landscape requirements (e.g., forest cover), we can mask the output of an SDM to only those areas likely to be suitable to estimate the species’ current
-range (as we implement in the Wallace component Mask). From these reduced model outputs, upper bounds of IUCN metrics regarding area of occupancy (AOO) and extent of occurrence (EOO) can be calculated to inform the assessment of a species’ conservation status, in combination with other information. In
-addition, we can calculate the proportion of a species’ range size that is protected, that is threatened, or that is associated with different land cover types. If past or future model transfers or geospatial data
-on habitat for masking are available, we can also calculate and visualize indic in these metrics over time. These indic metrics can then inform IUCN red-listing assessments and forward-thinking conservation planning.
+Translating a species’ current distribution into meaningful conservation metrics in a repeatable and transparent way to inform conservation planning and decision-making remains an outstanding issue in conservation biology (IUCN 2022). By using a species distribution model (SDM), as well as landscape requirements (e.g., forest cover), we can mask the output of an SDM to only those areas likely to be suitable to estimate the species’ current range (as we implement in the component **Mask Prediction**, Merow et al. 2022). From these reduced model outputs, the upper bounds of IUCN metrics regarding extent of occurrence (EOO) and area of occupancy (AOO) can be calculated to inform the assessment of a species’ conservation status, in combination with other information (Kass et al. 2021). In addition, we can calculate the proportion of a species’ range size that is protected, that is threatened, or that is associated with different land cover types. If past or future model projections or geospatial data on habitat for masking are available, we can also calculate and visualize change in these metrics over time. These change metrics can then inform IUCN red-listing assessments and conservation planning (Galante et al. 2023). 
+In *Wallace*, users can calculate these metrics using functions from the ‘changeRangeR’ package, as implemented in three modules:  1) Calculate Area Metrics to calculate range size, EOO based on SDM or occurrence data and AOO based on SDM or occurrence data; 2) Calculate Ratio Overlap to calculate proportions of overlap between a species’ or multiple species’ ranges with a shapefile or raster; and 3) Calculate Change Over Time to visualize change in metrics over time if data from multiple years are available. 
 
-**Implementation**
+Users can calculate metrics based on SDMs made in `wallace` (*Wallace SDM*), models transferred in space and time within `wallace` (*Transferred SDM*), user-provided SDMs uploaded in the *Upload User Prediction* module of the **Mask Prediction** component (*User uploaded SDM)*, or masked models that were masked within `wallace` in the **Mask Prediction** component (*Masked SDM*). 
 
-  In Wallace we can calculate these metrics for the using the changeRangeR package, as implemented in three modules:  Areas to calculate range size, EOO based on sdm or occurrence data and AOO based on sdm, masked sdm, or occurrence data; Overlap with a shapefile; and indic over Time.
-Beyond single species, we can combine models from multiple species to calculate community-level metrics of conservation interest  - for that, see the Diversity component.
+---
 
-**References**
+**ORIENTACIÓN**
 
-IUCN Standards and Petitions Committee. 2019. Guidelines for Using the IUCN Red List Categories and Criteria. Version 14. Prepared by the Standards and Petitions Committee.
+Traducir la distribución actual de una especie en métricas de conservación significativas de una manera repetible y transparente para informar la planificación de la conservación y la toma de decisiones sigue siendo un tema pendiente en la biología de la conservación (UICN 2022). Mediante el uso de un modelo de distribución de especies (SDM), así como los requisitos del paisaje (por ejemplo, la cobertura forestal), podemos enmascarar el resultado de un SDM solo en aquellas áreas que probablemente sean adecuadas para estimar el rango actual de la especie (como lo implementamos en el componente Mask Prediction, Merow et al. 2022). A partir de estos resultados reducidos del modelo, se pueden calcular los límites superiores de las métricas de la UICN con respecto a la extensión de ocurrencia (EOO) y el área de ocupación (AOO) para informar la evaluación del estado de conservación de una especie, en combinación con otra información (Kass et al. 2021). Además, podemos calcular la proporción del área de distribución de una especie que está protegida, amenazada o asociada con diferentes tipos de cobertura terrestre. Si se encuentran disponibles las proyecciones de modelos pasadas o futuras o los datos geoespaciales sobre el hábitat para el enmascaramiento, también podemos calcular y visualizar el cambio en estas métricas a lo largo del tiempo. Estas métricas de cambio pueden luego informar las evaluaciones de la lista roja de la UICN y la planificación de la conservación (Galante et al. 2023).
 
-Merow, C., Galante, P., Gerstner, B., Johnson, B., Kass, J.M., Paz, A., Rosauer, D., Serra, P., Anderson, R.P., Blair, M. “changeRangeR: Translating species’ distributions into conservation metrics”. In prep.
+En Wallace, los usuarios pueden calcular estas métricas utilizando funciones del paquete 'changeRangeR', tal como se implementan en tres módulos: 1) Calculate Area Metrics para calcular el tamaño del rango, EOO basado en SDM o datos de ocurrencia y AOO basado en SDM o datos de ocurrencia; 2) Calculate Ratio Overlap para calcular las proporciones de superposición entre los rangos de una especie o varias especies con un archivo en formato shapefile o ráster; y 3) Calculate Change Over Time para visualizar el cambio en las métricas a lo largo del tiempo si hay datos disponibles de varios años.
+
+Los usuarios pueden calcular métricas basadas en SDM realizados en `wallace` (*Wallace SDM*), modelos transferidos en el espacio y el tiempo dentro de `wallace` (*Transferred SDM*), SDM proporcionados por el usuario cargados en el módulo Cargar predicción de usuario del componente **Mask Prediction** (*User uploaded SDM*), o modelos enmascarados que se enmascararon dentro de `wallace` en el componente **Mask Prediction** (*Masked SDM*).
+
+---
+
+**REFERENCES**
+
+Galante, P.J., Chang, S., Paz, A., Aiello-Lammens, M., Gerstner, B.E., Johnson, B.A., Kass, J.M., Merow, C., Noguera-Urbano, E.A., Pinilla-Buitrago, G.E., and Blair, M.E. (2023). changeRangeR: an R package for reproducible biodiversity change metrics from species distribution estimates. *Conservation Science & Practice*, 5(1): e12863. <a href="https://doi.org/10.1111/csp2.12863" target="_blank">DOI:10.1111/csp2.12863</a>  
+
+IUCN. (2022). Guidelines for using the IUCN red list categories and criteria. Version 15.1. IUCN Retrieved from <a href="https://www.iucnredlist.org/resources/redlistguidelines" target="_blank">www.iucnredlist.org/resources/redlistguidelines</a>
+
+Kass, J. M., Meenan, S. I., Tinoco, N., Burneo, S. F., & Anderson, R. P. (2021). Improving area of occupancy estimates for parapatric species using distribution models and support vector machines. *Ecological Applications*, 31(1). <a href="https://doi.org/10.1002/eap.2228" target="_blank">DOI:10.1002/eap.2228</a>

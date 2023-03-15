@@ -7,6 +7,29 @@ output: html_document
 
 **ORIENTATION**
 
-Diversity can refer to a local measure of any dimension of biodiversity (taxonomic, functional or phylogenetic). There are countless indexes to measure local diversity for each dimension that take (or not) different aspects into account going from the simplest counts to indexes including abundances, relatedness etc. Generally, the simplest indexes (counts) are more widely used. This is the case for taxonomic diversity with species richness (count of species), for phylogenetic diversity with Faith’s PD (1992 count of phylogeny branches or nodes) and for functional diversity with functional richness (niche space occupied by the community). 
+Alpha diversity can refer to a local measure of any dimension of biodiversity (taxonomic, functional or phylogenetic). There are countless indices to measure local diversity for each dimension ranging from the simplest counts to indexes that include abundance and relatedness. Generally, the simplest indexes (counts) are the most widely used partly because species abundance data are less commonly available. This is the case for taxonomic diversity, with species richness (count of species) as the most widely used. For phylogenetic diversity, Faith's (1992) count of phylogenetic branches or nodes is common, and for functional diversity, functional richness (niche space occupied by the community) is commonly used.
 
-Component Diversity performs analyzes and visualizations of community diversity metrics based on individual species distribution maps. Community metrics are calculated at the pixel level (One pixel is treated as one community). Wallace currently allows to: 1) Compute species richness (Module Species richness) as the number of species in each pixel, 2) calculate the species endemism (Module Species Endemism) as the number of species found in a pixel divided by the total number of pixels in which they are found
+Range estimates from multiple species can be combined to calculate assemblage-level estimates of diversity. For example, intersecting species' ranges can be used to estimate potential species richness (Calabrese et al., 2014). The benefits and disadvantages of using binary maps for macroecological applications have been well documented (Graham and Hijmans 2006). Nonetheless, estimates of species diversity can be calculated from distribution maps such as binary SDMs.
+
+In the **Estimate Diversity** component, Wallace users can perform analyses and visualizations of community diversity metrics by stacking individual species distribution maps. Community metrics are calculated at the pixel level (One pixel is treated as one community). Wallace currently allows users to: 1) Compute species richness (Module: *Calculate Richness*) as the number of species in each pixel, and 2) Calculate species endemism (Module: *Calculate Endemism*) as the number of species found in a pixel divided by the total number of pixels in which they are found.
+
+---
+
+**ORIENTACIÓN**
+
+La diversidad alfa puede referirse a una medida local de cualquier dimensión de la biodiversidad (taxonómica, funcional o filogenética). Existen innumerables índices para medir la diversidad local para cada dimensión que van desde los conteos más simples hasta índices que incluyen abundancia y parentesco. En general, los índices más simples (conteos) son los más utilizados, en parte porque los datos de abundancia de especies están disponibles con menos frecuencia. Este es el caso de la diversidad taxonómica, siendo la riqueza de especies (recuento de especies) la más utilizada. Para la diversidad filogenética, es común el conteo de ramas o nodos filogenéticos de Faith (1992), y para la diversidad funcional, se usa comúnmente la riqueza funcional (espacio de nicho ocupado por la comunidad).
+
+Las estimaciones de rango de múltiples especies se pueden combinar para calcular estimaciones de diversidad a nivel de ensamblaje. Por ejemplo, los rangos de especies que se cruzan se pueden usar para estimar la riqueza potencial de especies (Calabrese et al., 2014). Los beneficios y desventajas de usar mapas binarios para aplicaciones macroecológicas han sido bien documentados (Graham y Hijmans 2006). No obstante, las estimaciones de la diversidad de especies se pueden calcular a partir de mapas de distribución como los SDM binarios.
+
+En el componente **Estimate Diversity**, los usuarios de Wallace pueden realizar análisis y visualizaciones de métricas de diversidad de la comunidad apilando mapas de distribución de especies individuales. Las métricas de la comunidad se calculan a nivel de píxel (un píxel se trata como una comunidad). Wallace actualmente permite a los usuarios: 1) Calcular la riqueza de especies (Módulo: *Calculate Richness*) como el número de especies en cada píxel, y 2) Calcular el endemismo de especies (Módulo: *Calculate Endemism*) como el número de especies encontradas en un píxel dividido por el número total de píxeles en los que se encuentran.
+
+---
+
+**REFERENCES**
+
+Calabrese, J.M., Certain, G., Kraan, C., & Dormann, C.F. (2014). Stacking species distribution models and adjusting bias by linking them to macroecological models: Stacking species distribution models. *Global Ecology and Biogeography*, 23(1), 99–112. <a href="https://doi.org/10.1111/geb.12102" target="_blank">DOI:10.1111/geb.12102</a>
+
+Faith, D.P. (1992). Conservation evaluation and phylogenetic diversity. *Biological Conservation*, 61, 1–10. <a href="https://doi.org/10.1016/0006-3207(92)91201-3" target="_blank">DOI:10.1016/0006-3207(92)91201-3</a>
+
+Graham, C.H., & Hijmans, R.J. (2006). A comparison of methods for mapping species ranges and species richness. *Global Ecology and Biogeography*, 15(6), 578-587. <a href=" https://doi.org/10.1111/j.1466-8238.2006.00257.x" target="_blank">DOI:10.1111/j.1466-8238.2006.00257.x</a>
+
