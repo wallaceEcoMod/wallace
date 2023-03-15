@@ -31,7 +31,7 @@ Wallace actualmente permite a los usuarios: 1) cargar una predicción de usuario
 
 **REFERENCES**
 
-Merow, C., Galante, P.J., Kass, J.M., Aiello-Lammens, M., Babich Morrow, C., Gerstner, B.E., Grisales-Betancur, V., Moore, A., Noguera-Urbano, E.A., Pinilla- Buitrago, G.E., Velasquez-Tibatá, J., Anderson, R.P., Blair, M.E. (2022). Operationalizing expert knowledge in species' range estimates using diverse data types. *Frontiers of Biogeography*. 14(2), e53589. <a href="https://doi.org/10.21425/F5FBG53589" target="_blank">DOI:10.21425/F5FBG53589</a>
+Merow, C., Galante, P.J., Kass, J.M., Aiello-Lammens, M., Babich Morrow, C., Gerstner, B.E., Grisales-Betancur, V., Moore, A., Noguera-Urbano, E.A., Pinilla- Buitrago, G.E., Velasquez-Tibatá, J., Anderson, R.P., Blair, M.E. (2022). Operationalizing expert knowledge in species' range estimates using diverse data types. *Frontiers of Biogeography*, 14(2), e53589. <a href="https://doi.org/10.21425/F5FBG53589" target="_blank">DOI:10.21425/F5FBG53589</a>
 
 Soberón, J. (2007). Grinnellian and Eltonian niches and geographic distributions of species. *Ecology Letters*, 10, 1115–1123. <a href="https://doi.org/10.1111/j.1461-0248.2007.01107.x" target="_blank">DOI:10.1111/j.1461-0248.2007.01107.x</a>
 
