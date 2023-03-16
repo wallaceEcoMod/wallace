@@ -11,12 +11,11 @@ navbar:
     menu:
     - text: Tutorial Vignette v2
       href: articles/tutorial-v2.html
+    - text: Tutorial Vignette v2 (ESP)
+      href: articles/tutorial-v2-esp.html
     - text: Module addition
       href: articles/module-addition.html
     - text: -------
-    - text: "Beta Testing"
-    - text: Install instructions
-      href: articles/beta-testing.html
     - text: "Archive"
     - text: Tutorial Vignette v1
       href: articles/tutorial-v1.html

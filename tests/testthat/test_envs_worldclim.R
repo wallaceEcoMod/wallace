@@ -21,6 +21,8 @@ test_that("error checks", {
 
 ### test output features
 test_that("output type checks", {
+  # skip on CRAN
+  skip_on_cran()
   # the output is a RasterBrick
   expect_is(arcmin10, "RasterStack")
   # the number of layer is the same as specified in the selected variables list
