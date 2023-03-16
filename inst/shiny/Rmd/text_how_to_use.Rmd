@@ -4,7 +4,9 @@ output: html_document
 ---
 
 ### **Overview of** ***Wallace***
-This information is designed to orient the user to the *Wallace* interface. For detailed instructions and a sample walkthrough, please consult the <a href="" target="_blank">vignette</a>.  
+This information is designed to orient the user to the *Wallace* interface. For detailed instructions and a sample walkthrough, please consult the <a href="https://wallaceecomod.github.io/wallace/articles/tutorial-v2.html" target="_blank">vignette</a>.  
+
+*Para obtener instrucciones detalladas y un tutorial de muestra en español, consulte <a href="https://wallaceecomod.github.io/wallace/articles/tutorial-v2-esp.html" target="_blank">la viñeta en español</a>.*
 
 #### **Components and Modules**
 *Wallace* is composed of **Components** – discrete steps in the workflow. Navigate through the components by clicking on the names in the top orange navigation panel. Components need to be run consecutively, but a few are optional (e.g., **Env Space**).  
@@ -38,17 +40,17 @@ Closing the browser window will terminate the Wallace analysis, but R will remai
 #### **References**
 Anderson, R. P. (2015). El modelado de nichos y distribuciones: no es simplemente "clic, clic, clic." [With English and French translations: Modeling niches and distributions: it's not just "click, click, click" and La modélisation de niche et de distributions: ce n'est pas juste "clic, clic, clic"]. *Biogeografía*, 8, 4-27. <a href="https://2278aec0-37af-4634-a250-8bb191f1aab7.filesusr.com/ugd/e41566_e8acb6f9c20c44fa9cd729161582857d.pdf" target="_blank">pdf</a>
 
-Anderson, R.P. (2012). Harnessing the world's biodiversity data: promise and peril in ecological niche modeling of species distributions. *Annals of the New York Academy of Sciences*, 1260(1), 66-80. <a href="https://doi.org/10.1111/j.1749-6632.2011.06440.x" target="_blank">https://doi.org/10.1111/j.1749-6632.2011.06440.x</a>
+Anderson, R.P. (2012). Harnessing the world's biodiversity data: promise and peril in ecological niche modeling of species distributions. *Annals of the New York Academy of Sciences*, 1260(1), 66-80. <a href="https://doi.org/10.1111/j.1749-6632.2011.06440.x" target="_blank">DOI:10.1111/j.1749-6632.2011.06440.x</a>
 
-Franklin, J. (2010). *Mapping species distributions*. Cambridge University Press. <a href="https://doi.org/10.1017/CBO9780511810602" target="_blank">https://doi.org/10.1017/CBO9780511810602</a> 
+Franklin, J. (2010). *Mapping species distributions*. Cambridge University Press. <a href="https://doi.org/10.1017/CBO9780511810602" target="_blank">DOI:10.1017/CBO9780511810602</a> 
 
-Guisan, A., Thuiller, W., & Zimmermann, N. E. (2017). Habitat suitability and distribution models: With applications in R. Cambridge University Press. <a href="https://doi.org/10.1017/9781139028271" target="_blank">https://doi.org/10.1017/9781139028271</a>
+Guisan, A., Thuiller, W., & Zimmermann, N. E. (2017). Habitat suitability and distribution models: With applications in R. Cambridge University Press. <a href="https://doi.org/10.1017/9781139028271" target="_blank">DOI:10.1017/9781139028271</a>
 
-Kass, J.M., Vilela, B., Aiello-Lammens, M.E., Muscarella, R., Merow, C., & Anderson, R.P. (2018). Wallace: A flexible platform for reproducible modeling of species niches and distributions built for community expansion. *Methods in Ecology and Evolution*, 9(4), 1151-1156. <a href="https://doi.org/10.1111/2041-210X.12945" target="_blank">https://doi.org/10.1111/2041-210X.12945</a>
+Kass, J.M., Vilela, B., Aiello-Lammens, M.E., Muscarella, R., Merow, C., & Anderson, R.P. (2018). Wallace: A flexible platform for reproducible modeling of species niches and distributions built for community expansion. *Methods in Ecology and Evolution*, 9(4), 1151-1156. <a href="https://doi.org/10.1111/2041-210X.12945" target="_blank">DOI:10.1111/2041-210X.12945</a>
 
-Peterson, A. T. et al. (2022). ENM2020: A Free Online Course and Set of Resources on Modeling Species’ Niches and Distributions. *Biodiversity Informatics*, 17. <a href="https://doi.org/10.17161/bi.v17i.15016" target="_blank">https://doi.org/10.17161/bi.v17i.15016</a> 
+Peterson, A. T. et al. (2022). ENM2020: A Free Online Course and Set of Resources on Modeling Species’ Niches and Distributions. *Biodiversity Informatics*, 17. <a href="https://doi.org/10.17161/bi.v17i.15016" target="_blank">DOI:10.17161/bi.v17i.15016</a> 
 
 Peterson, A. T., Soberón, J., Pearson, R. G., Anderson, R. P., Martínez-Meyer, E., Nakamura, M., & Araújo, M. B. (2011). *Ecological niches and geographic distributions* (MPB-49). Princeton University Press. <a href="https://press.princeton.edu/books/paperback/9780691136882/ecological-niches-and-geographic-distributions-mpb-49" target="_blank">Princeton University Press</a> 
 
-Zurell, D., Franklin, J., König, C., Bouchet, P.J., Dormann, C.F., Elith, J., Fandos, G., Feng, X., Guillera-Arroita, G., Guisan, A., Lahoz-Monfort, J.J., Leitão, P.J., Park, D.S., Peterson, A.T., Rapacciuolo, G., Schmatz, D.R., Schröder, B., Serra-Diaz, J.M., Thuiller, W., Yates, K.L., Zimmermann,N.E., & Merow, C. (2020). A standard protocol for reporting species distribution models. *Ecography*, 43(9), 1261-1277. <a href="https://doi.org/10.1111/ecog.04960" target="_blank">https://doi.org/10.1111/ecog.04960</a> 
+Zurell, D., Franklin, J., König, C., Bouchet, P.J., Dormann, C.F., Elith, J., Fandos, G., Feng, X., Guillera-Arroita, G., Guisan, A., Lahoz-Monfort, J.J., Leitão, P.J., Park, D.S., Peterson, A.T., Rapacciuolo, G., Schmatz, D.R., Schröder, B., Serra-Diaz, J.M., Thuiller, W., Yates, K.L., Zimmermann,N.E., & Merow, C. (2020). A standard protocol for reporting species distribution models. *Ecography*, 43(9), 1261-1277. <a href="https://doi.org/10.1111/ecog.04960" target="_blank">DOI:10.1111/ecog.04960</a> 
 
