@@ -21,9 +21,9 @@ SDM: This can be a continuous or thresholded sdm. You can use a model generated 
 
 Recent environmental data: In raster file format. Must include in the filename the year of the dataset.  
 
-Dated occurrence records: To use the data-driven analysis part of this module, you must also upload in Component: **Occ Data** a user-specified csv file for your species that includes a column “year” denoting the years for your occurrence data. These years should match the years for the environmental data that you upload in this module.  
+Dated occurrence records: To use the data-driven analysis part of this module, you must also upload in **Component: Occ Data** a user-specified csv file for your species that includes a column “year” denoting the years for your occurrence data. These years should match the years for the environmental data that you upload in this module.  
  
-Users can compare how different choices of thresholds may result in different calculations of range size and changes in range size over time and view a line graph and table of those changes in Component: **Indicators** in the *Calculate Change over Time* module.
+Users can compare how different choices of thresholds may result in different calculations of range size and changes in range size over time and view a line graph and table of those changes in **Component: Indicators** in the *Calculate Change over Time* module.
 
 ---
 
@@ -47,7 +47,7 @@ SDM: Puede ser un SDM continuo o con umbral. Se puede usar un modelo generado en
 
 Datos ambientales recientes: En formato de archivo ráster. Debe incluir en el nombre del archivo el año del conjunto de datos.
 
-Registros de ocurrencia fechados: para usar la parte de análisis basado en datos de este módulo, también debe cargar en Component: **Occ Data** un archivo csv especificado por el usuario para su especie que incluye una columna "año" que indica los años para sus datos de ocurrencia. Estos años deben coincidir con los años de los datos ambientales que carga en este módulo.
+Registros de ocurrencia fechados: para usar la parte de análisis basado en datos de este módulo, también debe cargar en **Component: Occ Data** un archivo csv especificado por el usuario para su especie que incluye una columna "año" que indica los años para sus datos de ocurrencia. Estos años deben coincidir con los años de los datos ambientales que carga en este módulo.
  
 Los usuarios pueden comparar cómo las diferentes opciones de umbrales pueden resultar en diferentes cálculos del tamaño del rango y los cambios en el tamaño del rango a lo largo del tiempo y ver un gráfico de líneas y una tabla de esos cambios en **Componente: Indicators** en el Módulo *Calculate Change over Time*.
 
