@@ -1,6 +1,6 @@
 ### **Module:** ***Query BioModelos*** 
 
-1. IIngrese un nombre de género y especie para una especie de su elección que tenga parte de su distribución en Colombia para consultar la base de datos de BioModelos y obtener datos de ocurrencia. Tenga en cuenta que la especie ya debe estar en la base de datos de BioModelos (puede buscar opciones y leer más sobre BioModelos <a href="http://biomodelos.humboldt.org.co/" target="_blank">aquí</a>
+1. Ingrese un nombre de género y especie para una especie de su elección que tenga parte de su distribución en Colombia para consultar la base de datos de BioModelos y obtener datos de ocurrencia. Tenga en cuenta que la especie ya debe estar en la base de datos de BioModelos (puede buscar opciones y leer más sobre BioModelos <a href="http://biomodelos.humboldt.org.co/" target="_blank">aquí</a>
 
 2. Para “registrar la llave de la API”, ingrese la clave proporcionada por los organizadores de su taller/evento. No comparta esta clave con nadie fuera del taller.
 
