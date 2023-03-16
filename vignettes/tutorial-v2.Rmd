@@ -1,7 +1,7 @@
 ---
 title: "Wallace Ecological Modeling Application v2.0 Vignette"
 author: Bethany A. Johnson, Gonzalo E. Pinilla-Buitrago, Andrea Paz, Jamie M. Kass, Sarah I. Meenan, Robert P. Anderson
-date: "4/18/2022; updated 10/13/2022"
+date: "2022-04-18; updated 2023-03-11"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Wallace Ecological Modeling Application v2.0 Vignette}
@@ -15,13 +15,16 @@ knitr::opts_chunk$set(collapse=TRUE, message=FALSE, warning=FALSE, comment="#>",
                       out.width = "800px", echo = FALSE)
 ```
 
+This work is distributed under the <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC-BY-NC-SA 4.0</a> license.  
+\
+
 ```{r, out.width="25%", fig.align='center'}
 knitr::include_graphics("vignette_img/logo.png")
 ```
 
 # Preface
 
-Welcome to the *Wallace EcoMod v2.0* vignette. This vignette was written specifically for v2.0, so if you are using a different version, some things may not match up. Click <a href="https://wallaceecomod.github.io/wallace/articles/tutorial-v1.html" target="_blank">here</a> for the v1.0 vignette.  
+Welcome to the *Wallace EcoMod v2.0* vignette. This vignette was written specifically for v2.0, so if you are using a different version, some things may not match up. Click <a href="https://wallaceecomod.github.io/wallace/articles/tutorial-v1.html" target="_blank">here</a> for the v1.0 vignette or <a href="https://wallaceecomod.github.io/wallace/articles/tutorial-v2-esp.html" target="_blank">here</a> for this vignette in Spanish.  
 Additionally, we anticipate that this vignette (and those in the future) for the `wallace` package will be updated or appended regularly in accordance with ongoing development. 
 
 # <a id="Intro"></a>Introduction
@@ -30,11 +33,11 @@ Additionally, we anticipate that this vignette (and those in the future) for the
 
 *Wallace* has many qualities which we think make it a good example of next-generation scientific software: it's 1) accessible, 2) open, 3) expandable, 4) flexible, 5) interactive, 6) instructive, and 7) reproducible.  
 
-The application, which is constructed with the R package `shiny`, features a pannable/zoomable map and dynamic plots and tables. Data for the models can be downloaded from online databases or uploaded by the user. Most results can be downloaded, including the option to save R code that can reproduce your analysis. For more details, including on SDMs, please see our <a href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12945/full" target="_blank">initial publication</a> in *Methods in Ecology and Evolution*^1^ and our follow-up publication^2^ in *Ecography*.
+The application, which is constructed with the R package `shiny`, features a pannable/zoomable map and dynamic plots and tables. Data for the models can be downloaded from online databases or uploaded by the user. Most results can be downloaded, including the option to save R code that can reproduce your analysis. For more details, including on SDMs, please see our <a href="http://onlinelibrary.wiley.com/doi/10.1111/2041-210X.12945/full" target="_blank">initial publication</a>^1^ in *Methods in Ecology and Evolution* and our <a href="https://doi.org/10.1111/ecog.06547" target="_blank">follow-up publication</a>^2^ in *Ecography*.
 
 1.  Kass, J.M., Vilela, B., Aiello-Lammens, M.E., Muscarella, R., Merow, C., Anderson, R.P. (2018). *Wallace*: A flexible platform for reproducible modeling of species niches and distributions built for community expansion. *Methods in Ecology and Evolution*, 9(4),1151-1156. <https://doi.org/10.1111/2041-210X.12945>
 
-2.  Kass, J.M., Pinilla-Buitrago, G.E, Paz, A., Johnson, B.A., Grisales-Betancur, V.,  Meenan, S.I., Attali, D., Broennimann, O., Galante, P.J., Maitner, B.S., Owens, H.L., Varela, S., Aiello-Lammens, M.E., Merow, C., Blair, M.E., Anderson R.P. (2022). *wallace* 2: a shiny app for modeling species niches and distributions redesigned to facilitate expansion via module contributions. *Ecography*, e06547. <https://doi.org/10.1111/ecog.06547>.  
+2.  Kass, J.M., Pinilla-Buitrago, G.E, Paz, A., Johnson, B.A., Grisales-Betancur, V.,  Meenan, S.I., Attali, D., Broennimann, O., Galante, P.J., Maitner, B.S., Owens, H.L., Varela, S., Aiello-Lammens, M.E., Merow, C., Blair, M.E., Anderson R.P. (2022). *wallace* 2: a shiny app for modeling species niches and distributions redesigned to facilitate expansion via module contributions. *Ecography*, 2023(3), e06547. <https://doi.org/10.1111/ecog.06547>.  
 
 The *Wallace* project's <a href="https://wallaceecomod.github.io/" target="_blank">main page</a> has links to the <a href="https://groups.google.com/forum/#!forum/wallaceecomod" target="_blank">Google Group</a>, the official <a href="mailto:wallaceecomod@gmail.com" target="_blank">email</a>, the <a href="https://CRAN.R-project.org/package=wallace" target="_blank">CRAN page</a> hosting the stable version, and the <a href="https://github.com/wallaceEcoMod/wallace" target="_blank">GitHub development page</a>. Wallace also has a <a href="https://www.youtube.com/channel/UCDSLCE5bmw12B7oqmlKk7rg" target="_blank">YouTube channel</a> with various tutorial videos and recorded seminars.  
 
@@ -46,7 +49,7 @@ If you use *Wallace* in your teaching, we would like to hear about your experien
 
 For `wallace` to work, you should be using R version 3.5.0 or later. Download for <a href="https://cran.r-project.org/bin/windows/base/" target="_blank">Windows</a> or <a href="https://cran.r-project.org/bin/macosx/" target="_blank">Mac</a>.
 
-To install and load *Wallace v2.0.3*, open either the `R` GUI or RStudio and run the code below. It's the only code you'll have to run to use `wallace`.
+To install and load *Wallace v2.0.4*, open either the `R` GUI or RStudio and run the code below. It's the only code you'll have to run to use `wallace`.
 
 ```{r, eval = FALSE, echo = TRUE}
 # Install Wallace from CRAN
@@ -98,9 +101,9 @@ knitr::include_graphics("vignette_img/orientation_2.png")
 
 (**1**) These are the components. You will be stepping sequentially through them. *Wallace v2* now includes a Support button (**1a**), which links to the Google Group, email, website, and the Github page to report issues, as well as the quit button (**1b**), which will end the session.\
 (**2**) This is the toolbar with all the user interface controls, such as buttons, text inputs, etc. You can see that the module *Query Database (Present)* is currently selected. You'll see that two other modules exist for this component: *Query Database (Paleo)* and *User-specified*. This last module lets you upload your own occurrence data. Try choosing it instead and notice that the toolbar changes, then click back to *Query Database (Present)*.\
-Both the **Component** and *Module* have '?' buttons next to the title text. Clicking these will link to the respective guidance texts.\
+Both the **Component** and *Module* have question mark buttons (?) next to the title text. Clicking these will link to the respective guidance texts.\
 Within this toolbar, you can find the module name and the `R` packages it uses (**2a**), as well as the control panel for the selected module (**2b**). Modules can be contributed by other researchers and the developers; CRAN links and documentation are at the bottom.\
-(**3**) The right side is the visualization space. Any functions performed will trigger a message in the log window (**3a**). This window will also display any error messages. *Wallace v2.0.3* now allows the user to load multiple species. If multiple species are loaded, toggle and select between species using the species drop-down menu (**3b**).\
+(**3**) The right side is the visualization space. Any functions performed will trigger a message in the log window (**3a**). This window will also display any error messages. *Wallace v2.0.4* now allows the user to load multiple species. If multiple species are loaded, toggle and select between species using the species drop-down menu (**3b**).\
 The visualization space includes several tabs (**3c**), including an interactive map, occurrence records table, results window, model and component guidance text windows, and a tab for saving outputs and the current session.\
 
 At this stage of the analysis, no results exist, and you have no data yet for the table, but you can view the **Component Guidance** and *Module Guidance* text now. This text was written by the developers to prepare users for each component and module *theoretically* (why we should use the tools) and *methodologically* (what the tools do). The guidance text also references scientific papers from the literature for more detailed reading. Please get into the habit of consulting these before undertaking analyses---and discussing them with your peers—-as this should give you a more solid foundation for moving forward.\
@@ -153,7 +156,7 @@ knitr::include_graphics("vignette_img/occs_5.png")
 
 A major improvement in *Wallace* v2.0 from previous versions is the ability to consider multiple species (separately) in the same session. Let's add another species to model.
 
-Aside from GBIF, you can query the Vertnet (for vertebrate data) and newly added BIEN (for botantical data) for species occurrence records. In the second module *Query Database (Paleo)*, you can query PaleobioDB databases for fossil records by selecting a time interval and species. Specific packages may have to be downloaded prior to loading Wallace to use these (e.g., `BIEN` and `paleoDB`).
+Aside from GBIF, you can query the Vertnet (for vertebrate data) and newly added BIEN (for botantical data) for species occurrence records. In the second module *Query Database (Paleo)*, you can query PaleobioDB databases for fossil records by selecting a time interval and species. Specific packages may have to be downloaded prior to loading Wallace to use these (e.g., `BIEN` and `paleobioDB`).
 
 If you have your own occurrence data, you can import it using the third module, *User-specified*. Your occurrence data file must be a .csv with the columns "scientific_name", "longitude", and "latitude", explicitly named and in that order. It may have other columns, but those must be the first three. You also have the option to specify the delimiter and separator of your file.
 
@@ -258,7 +261,7 @@ A .zip file of the clipped rasters (e.g., the environmental data clipped to the 
 
 # <a id="Espace"></a>Characterize Environmental Space
 
-**Component: Characterize Environmental Space** contains multi-species analyses and is optional. Unlike some other components which let you perform the modules in any order, the modules within **Characterize Environmental Space** are sequential and thus need to be performed consecutively (i.e., you can’t get an Occurrence Density Grid without first performing an Environmental Ordination). 
+**Component: Characterize Environmental Space** contains multi-species analyses and is optional. Unlike some other components which let you perform the modules in any order, the modules within **Characterize Environmental Space** are sequential and thus need to be performed consecutively (i.e., you can’t get an *Occurrence Density Grid* without first performing an *Environmental Ordination*). 
 
 Before we begin the Module: *Environmental Ordination* analysis, you need to select two species to work with. If you had more than two species uploaded, select two from the species menu drop-down. Since we only have two uploaded, click in the species menu box and select the second species. Both names will appear in the box simultaneously---this functionality is currently only available for the **Characterize Environmental Space** component.
 
@@ -287,7 +290,7 @@ knitr::include_graphics("vignette_img/espace_4.png")
 knitr::include_graphics("vignette_img/espace_5.png")
 ```
 
-Next, run an Occurrence Density Grid. This calculates and plots which part of the environmental space is occupied more densely by the species and the availability of environmental conditions present within the background extent. 
+Next, run an *Occurrence Density Grid*. This calculates and plots which part of the environmental space is occupied more densely by the species and the availability of environmental conditions present within the background extent. 
 Darker areas represent higher occurrence density. Areas within solid lines represent all environmental conditions available in the background extent, and areas within dashed lines represent the 50% most frequent ones
 
 ```{r, fig.align = 'center'}
@@ -329,7 +332,7 @@ Partition both species using Module: *Spatial Partition* Block (*k* = 4) option.
 
 # <a id="Save"></a>Save & Load Session
 
-Before we go into Modeling, let's explore one of the great features of Wallace v2, which is the ability to stop and save your progress to be continued later. If you want to skip this step (and risk losing everything if an error occurs except the data or results you have downloaded), you can move on to [**Model**](#Model).  
+Before we go into Modeling, let's explore one of the great features of Wallace v2, which is the ability to stop and save your progress to be continued later. If you want to skip this step (and risk losing everything if an error occurs except the data or results you have downloaded), you can move on to [Model](#Model).  
 
 Click 'Save Session' within the "Save" tab. This tab is available from any of the Components. This will save your progress as an RDS (.rds) file, a file type used to save R objects. After it is saved, you can hit the stop sign in the upper right corner or close the browser window and exit R/RStudio.
 *Note: if the Wallace session is closed before saving results and/or the session, all work will be lost*.
@@ -539,7 +542,7 @@ We are currently working with various partners on exciting additions, so stay tu
 
 Thank you for following the *Wallace* v2 vignette. We hope you learned more about the updated application, its features, and modeling of species distributions and niches in general. We hate to be repetitive, but we highly encourage you to read the guidance text, follow up on the recommended publications, and hopefully let them lead you to other relevant publications that can inform you further. Also, remember to discuss these topics with your peers.
 
-We encourage you to join the <a href="https://groups.google.com/g/wallaceecomod" target="_blank">Wallace Google Group</a>--we’d love to hear your thoughts, opinions, or suggestions on how to make Wallace better for all users. Members can post to the community and be updated on any future announcements. If you find a bug in the software, it can be reported on the <a href="https://github.com/wallaceEcoMod/wallace/issues" target="_blank">GitHub issues page</a> or using the <a href="https://wallaceecomod.github.io/wallace/articles/beta-testing.html" target="_blank">bug reporting form</a>. 
+We encourage you to join the <a href="https://groups.google.com/g/wallaceecomod" target="_blank">Wallace Google Group</a>--we’d love to hear your thoughts, opinions, or suggestions on how to make Wallace better for all users. Members can post to the community and be updated on any future announcements. If you find a bug in the software, it can be reported on the <a href="https://github.com/wallaceEcoMod/wallace/issues" target="_blank">GitHub issues page</a> or using the <a href="https://forms.gle/UffoBCQnMZjWYjfk9" target="_blank">bug reporting form</a>. 
 
 # <a id="Ack"></a>Acknowledgments
 
