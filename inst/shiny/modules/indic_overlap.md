@@ -38,6 +38,6 @@ Los cálculos de superposición aparecen en la pestaña Results.
 
 **REFERENCES**
 
-Galante, P.J., Chang, S., Paz, A., Aiello-Lammens, M., Gerstner, B.E., Johnson, B.A., Kass, J.M., Merow, C., Noguera-Urbano, E.A., Pinilla-Buitrago, G.E., and Blair, M.E. (2023). changeRangeR: an R package for reproducible biodiversity change metrics from species distribution estimates. *Conservation Science & Practice*, 5(1): e12863. <a href="https://doi.org/10.1111/csp2.12863" target="_blank">DOI:10.1111/csp2.12863</a> 
+Galante, P.J., Chang, S., Paz, A., Aiello-Lammens, M., Gerstner, B.E., Johnson, B.A., Kass, J.M., Merow, C., Noguera-Urbano, E.A., Pinilla-Buitrago, G.E., and Blair, M.E. (2023). changeRangeR: an R package for reproducible biodiversity change metrics from species distribution estimates. *Conservation Science & Practice*, 5(1), e12863. <a href="https://doi.org/10.1111/csp2.12863" target="_blank">DOI:10.1111/csp2.12863</a> 
 
 Velásquez-Tibatá, J., Olaya-Rodríguez, M.H., López-Lozano, D., Gutiérrez, C., González, I. & Londoño-Murcia, M.C. (2019). BioModelos: A collaborative online system to map species distributions. *PloS ONE* 14(3), e0214522. <a href="https://doi.org/10.1371/journal.pone.0214522" target="_blank">DOI:10.1371/journal.pone.0214522</a> 
