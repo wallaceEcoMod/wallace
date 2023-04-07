@@ -14,18 +14,18 @@ Users can download a .png of the plots corresponding to the niche overlap and si
 
 **REFERENCES**
 
-Barve, N., Barve, V., Jiménez-Valverde, A., Lira-Noriega, A., Maher, S.P., Peterson, A.T., Soberón, J., & Villalobos, F. (2011). The crucial role of the accessible area in ecological niche modeling and species distribution modeling. *Ecological Modelling*, 222(11), 1810–1819. <a href="https://doi.org/10.1016/j.ecolmodel.2011.02.011" target="_blank">DOI:10.1016/j.ecolmodel.2011.02.011</a> 
+Barve, N., Barve, V., Jiménez-Valverde, A., Lira-Noriega, A., Maher, S.P., Peterson, A.T., Soberón, J., & Villalobos, F. (2011). The crucial role of the accessible area in ecological niche modeling and species distribution modeling. *Ecological Modelling*, 222(11), 1810–1819. <a href="https://doi.org/10.1016/j.ecolmodel.2011.02.011" target="_blank">DOI: 10.1016/j.ecolmodel.2011.02.011</a> 
 
-Broennimann, O., Fitzpatrick, M.C., Pearman, P.B., Petitpierre, B., Pellissier, L., Yoccoz, N.G., Thuiller, W., Fortin, M.J., Randin, C., Zimmermann, N.E., Graham, C.H., & Guisan, A. (2012). Measuring ecological niche overlap from occurrence and spatial environmental data. *Global Ecology and Biogeography*, 21(4), 481-497. <a href="https://doi.org/10.1111/j.1466-8238.2011.00698.x" target="_blank">DOI:10.1111/j.1466-8238.2011.00698.x</a> 
+Broennimann, O., Fitzpatrick, M.C., Pearman, P.B., Petitpierre, B., Pellissier, L., Yoccoz, N.G., Thuiller, W., Fortin, M.J., Randin, C., Zimmermann, N.E., Graham, C.H., & Guisan, A. (2012). Measuring ecological niche overlap from occurrence and spatial environmental data. *Global Ecology and Biogeography*, 21(4), 481-497. <a href="https://doi.org/10.1111/j.1466-8238.2011.00698.x" target="_blank">DOI: 10.1111/j.1466-8238.2011.00698.x</a> 
 
 Broennimann, O., Di Cola V., & Guisan, A. (2016). ecospat: Spatial Ecology Miscellaneous Methods. R package version 2.1.1. <a href="https://CRAN.R-project.org/package=ecospat" target="_blank">CRAN</a>
 
-Colwell, R.K., & Futuyma, D.J. (1971).  On the Measurement of Niche Breadth and Overlap. *Ecology*, 52(4), 567-576. <a href="https://doi.org/10.2307/1934144" target="_blank">DOI:10.2307/1934144</a>
+Colwell, R.K., & Futuyma, D.J. (1971).  On the Measurement of Niche Breadth and Overlap. *Ecology*, 52(4), 567-576. <a href="https://doi.org/10.2307/1934144" target="_blank">DOI: 10.2307/1934144</a>
 
-Guisan, A., Petitpierre, B., Broennimann, O., Daehler, C., & Kueffer, C. (2014). Unifying niche shift studies: Insights from biological invasions. *Trends in Ecology & Evolution*, 29(5), 260–269. <a href="https://doi.org/10.1016/j.tree.2014.02.009" target="_blank">DOI:10.1016/j.tree.2014.02.009</a>
+Guisan, A., Petitpierre, B., Broennimann, O., Daehler, C., & Kueffer, C. (2014). Unifying niche shift studies: Insights from biological invasions. *Trends in Ecology & Evolution*, 29(5), 260–269. <a href="https://doi.org/10.1016/j.tree.2014.02.009" target="_blank">DOI: 10.1016/j.tree.2014.02.009</a>
 
-Guisan, A., & Zimmermann, N.E. (2000) Predictive habitat distribution models in ecology. *Ecological Modelling*, 135(2-3), 147-186. <a href="https://doi.org/10.1016/S0304-3800(00)00354-9" target="_blank">DOI:10.1016/S0304-3800(00)00354-9</a> 
+Guisan, A., & Zimmermann, N.E. (2000) Predictive habitat distribution models in ecology. *Ecological Modelling*, 135(2-3), 147-186. <a href="https://doi.org/10.1016/S0304-3800(00)00354-9" target="_blank">DOI: 10.1016/S0304-3800(00)00354-9</a> 
 
 Schoener, T.W. (1968). Anolis lizards of Bimini: resource partitioning in a complex fauna. *Ecology*, 49(4), 704-726. <a href="https://doi.org/10.2307/1935534" target="_blank">DOI:10.2307/1935534</a> 
 
-Warren, D.L., Glor, R.E., & Turelli, M. (2008). Environmental niche equivalency versus conservatism: quantitative approaches to niche evolution. *Evolution*, 62(11), 2868–2883. <a href="https://doi.org/10.1111/j.1558-5646.2008.00482.x" target="_blank">DOI:10.1111/j.1558-5646.2008.00482.x</a> 
+Warren, D.L., Glor, R.E., & Turelli, M. (2008). Environmental niche equivalency versus conservatism: quantitative approaches to niche evolution. *Evolution*, 62(11), 2868–2883. <a href="https://doi.org/10.1111/j.1558-5646.2008.00482.x" target="_blank">DOI: 10.1111/j.1558-5646.2008.00482.x</a> 

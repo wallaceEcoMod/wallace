@@ -14,8 +14,8 @@ Unlike previous versions of *Wallace*, multiple species now can be uploaded in t
 
 **REFERENCES**
 
-Anderson, R.P. (2012). Harnessing the world's biodiversity data: promise and peril in ecological niche modeling of species distributions. *Annals of the New York Academy of Sciences*, 1260(1), 66-80. <a href="https://doi.org/10.1111/j.1749-6632.2011.06440.x" target="_blank">https://doi.org/10.1111/j.1749-6632.2011.06440.x</a>
+Anderson, R.P. (2012). Harnessing the world's biodiversity data: promise and peril in ecological niche modeling of species distributions. *Annals of the New York Academy of Sciences*, 1260(1), 66-80. <a href="https://doi.org/10.1111/j.1749-6632.2011.06440.x" target="_blank">DOI: 10.1111/j.1749-6632.2011.06440.x</a>
 
-Franklin, J. (2010). Data for species distribution models: the biological data. In: *Mapping Species Distributions: Spatial Inference and Prediction*. Cambridge: Cambridge University Press. <a href="https://doi.org/10.1017/CBO9780511810602.007"target="_blank">https://doi.org/10.1017/CBO9780511810602.007</a>
+Franklin, J. (2010). Data for species distribution models: The biological data. In: *Mapping Species Distributions: Spatial Inference and Prediction* (Ecology, Biodiversity and Conservation, pp. 55-75). Cambridge: Cambridge University Press. <a href="https://doi.org/10.1017/CBO9780511810602.007" target="_blank">DOI: 10.1017/CBO9780511810602.007</a>  
 
-Peterson, A.T., Soberón, J., Pearson, R.G., Anderson, R.P., Martinez-Meyer, E., Nakamura, M., & Araújo, M.B. (2011). Species' Occurrence Data. In: *Ecological Niches and Geographic Distributions*. Princeton, New Jersey: Monographs in Population Biology, 49. Princeton University Press. <a href="https://doi.org/10.23943/princeton/9780691136868.003.0005" target="_blank">https://doi.org/10.23943/princeton/9780691136868.003.0005</a> 
+Peterson, A.T., Soberón, J., Pearson, R.G., Anderson, R.P., Martinez-Meyer, E., Nakamura, M., & Araújo, M.B. (2011). Species' Occurrence Data. In: *Ecological Niches and Geographic Distributions*. Princeton, New Jersey: Monographs in Population Biology, 49. Princeton University Press. <a href="https://doi.org/10.23943/princeton/9780691136868.003.0005" target="_blank">DOI: 10.23943/princeton/9780691136868.003.0005</a> 

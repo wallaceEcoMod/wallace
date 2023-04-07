@@ -13,15 +13,15 @@ Users must first select a model. Depending on the ENMeval (Kass et al. 2021) set
 
 **REFERENCES**
 
-Anderson R.P. (2013). A framework for using niche models to estimate impacts of climate change on species distributions. Annals of the New York Academy of Sciences, 1297(1), 8-28. <a href="https://doi.org/10.1111/nyas.12264" target="_blank">https://doi.org/10.1111/nyas.12264
+Anderson R.P. (2013). A framework for using niche models to estimate impacts of climate change on species distributions. Annals of the New York Academy of Sciences, 1297(1), 8-28. <a href="https://doi.org/10.1111/nyas.12264" target="_blank">DOI: 10.1111/nyas.12264</a>
 
-Elith, J., Kearney, M., Phillips, S. (2010). The art of modelling range-shifting species. Methods in Ecology and Evolution, 1(4), 330-342. <a href="https://doi.org/10.1111/j.2041-210X.2010.00036.x" target="_blank">https://doi.org/10.1111/j.2041-210X.2010.00036.x
+Elith, J., Kearney, M., Phillips, S. (2010). The art of modelling range-shifting species. Methods in Ecology and Evolution, 1(4), 330-342. <a href="https://doi.org/10.1111/j.2041-210X.2010.00036.x" target="_blank">DOI: 10.1111/j.2041-210X.2010.00036.x</a>
 
-Fitzpatrick, M. C., Hargrove, W. W. (2009). The projection of species distribution models and the problem of non-analog climate. Biodiversity and Conservation, 18, 2255. <a href="https://doi.org/10.1007/s10531-009-9584-8" target="_blank">https://doi.org/10.1007/s10531-009-9584-8</a>
+Fitzpatrick, M. C., Hargrove, W. W. (2009). The projection of species distribution models and the problem of non-analog climate. Biodiversity and Conservation, 18, 2255. <a href="https://doi.org/10.1007/s10531-009-9584-8" target="_blank">DOI: 10.1007/s10531-009-9584-8</a>
 
-Hijmans, R.J., Phillips, S., Leathwick, J., Elith, J. (2020). dismo: Species Distribution Modeling. R package version 1.3-3. <a href="https://CRAN.R-project.org/package=dismo" target="_blank">https://CRAN.R-project.org/package=dismo</a> 
+Hijmans, R.J., Phillips, S., Leathwick, J., Elith, J. (2020). dismo: Species Distribution Modeling. R package version 1.3-3. <a href="https://CRAN.R-project.org/package=dismo" target="_blank">CRAN</a> 
 
-Kass, J., Muscarella, R., Galante, P. J., Bohl, C. L., Pinilla-Buitrago, G. E., Boria, R. A., Soley-Guardia, M., Anderson, R. P. (2021). ENMeval: Automated Tuning and Evaluations of Ecological Niche Models. R package version 2.0 <a href="https://CRAN.R-project.org/package=ENMeval" target="_blank">https://CRAN.R-project.org/package=ENMeval</a>
+Kass, J., Muscarella, R., Galante, P. J., Bohl, C. L., Pinilla-Buitrago, G. E., Boria, R. A., Soley-Guardia, M., Anderson, R. P. (2021). ENMeval: Automated Tuning and Evaluations of Ecological Niche Models. R package version 2.0 <a href="https://CRAN.R-project.org/package=ENMeval" target="_blank">CRAN</a>
 
-Williams, J. W., & Jackson, S. T. (2007). Novel climates, no-analog communities, and ecological surprises. Frontiers in Ecology and the Environment, 5(9), 475-482. <a href="https://doi.org/10.1890/070037" target="_blank">https://doi.org/10.1890/070037</a>
+Williams, J. W., & Jackson, S. T. (2007). Novel climates, no-analog communities, and ecological surprises. Frontiers in Ecology and the Environment, 5(9), 475-482. <a href="https://doi.org/10.1890/070037" target="_blank">DOI: 10.1890/070037</a>
 

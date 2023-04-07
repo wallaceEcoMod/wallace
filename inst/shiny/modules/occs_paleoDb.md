@@ -12,6 +12,6 @@ The records used in downstream analyses in Wallace are filtered to remove those 
 
 **REFERENCES**
 
-Varela, S., González-Hernández, J., Sgarbi, L. F., Marshall, C., Uhen, M. D., Peters, S., & McClennen, M. (2015). paleobioDB: an R package for downloading, visualizing and processing data from the Paleobiology Database. *Ecography*, 38(4), 419–425. <a href="https://doi.org/10.1111/ecog.01154" target="_blank">https://doi.org/10.1111/ecog.01154</a>
+Varela, S., González-Hernández, J., Sgarbi, L. F., Marshall, C., Uhen, M. D., Peters, S., & McClennen, M. (2015). paleobioDB: an R package for downloading, visualizing and processing data from the Paleobiology Database. *Ecography*, 38(4), 419–425. <a href="https://doi.org/10.1111/ecog.01154" target="_blank">DOI: 10.1111/ecog.01154</a>
 
-Varela, S., Lobo, J. M., & Hortal, J. (2011). Using species distribution models in paleobiogeography: A matter of data, predictors and concepts. Palaeogeography, Palaeoclimatology, *Palaeoecology*, 310(3), 451–463. <a href="https://doi.org/10.1016/j.palaeo.2011.07.021" target="_blank">https://doi.org/10.1016/j.palaeo.2011.07.021</a>
+Varela, S., Lobo, J. M., & Hortal, J. (2011). Using species distribution models in paleobiogeography: A matter of data, predictors and concepts. *Palaeogeography, Palaeoclimatology, Palaeoecology*, 310(3), 451–463. <a href="https://doi.org/10.1016/j.palaeo.2011.07.021" target="_blank">DOI: 10.1016/j.palaeo.2011.07.021</a>

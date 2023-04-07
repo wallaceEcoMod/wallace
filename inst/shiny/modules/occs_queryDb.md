@@ -14,17 +14,17 @@ For all options in this module, records used in downstream analyses in *Wallace*
 
 **REFERENCES**
 
-Anderson, R.P., Araújo, M.B., Guisan, A., Lobo, J.M., Martínez-Meyer, E., Peterson, A.T., & Soberón, J.M.. (2020). Optimizing biodiversity informatics to improve information flow, data quality, and utility for science and society. *Frontiers of Biogeography*, 12(3), e47839. <a href="https://doi.org/10.21425/F5FBG47839" target="_blank">https://doi.org/10.21425/F5FBG47839</a>  
+Anderson, R.P., Araújo, M.B., Guisan, A., Lobo, J.M., Martínez-Meyer, E., Peterson, A.T., & Soberón, J.M.. (2020). Optimizing biodiversity informatics to improve information flow, data quality, and utility for science and society. *Frontiers of Biogeography*, 12(3), e47839. <a href="https://doi.org/10.21425/F5FBG47839" target="_blank">DOI: 10.21425/F5FBG47839</a>  
 
-Chamberlain, S., Ram, K., & Hart, T. (2021). spocc: Interface to Species Occurrence Data Sources. R package version 1.2.0. <a href="https://github.com/ropensci/spocc" target="_blank">https://github.com/ropensci/spocc</a>  
+Chamberlain, S., Ram, K., & Hart, T. (2021). spocc: Interface to Species Occurrence Data Sources. R package version 1.2.0. <a href="https://github.com/ropensci/spocc" target="_blank">GitHub</a>  
 
-Gaiji, S., Chavan, V., Ariño, A.H., Otegui, J., Hobern, D., Sood, R., & Robles, E. (2013). Content assessment of the primary biodiversity data published through GBIF network: status, challenges and potentials. *Biodiversity Informatics*, 8(2), 94-172. <a href="https://doi.org/10.17161/bi.v8i2.4124" target="_blank">https://doi.org/10.17161/bi.v8i2.4124</a>  
+Gaiji, S., Chavan, V., Ariño, A.H., Otegui, J., Hobern, D., Sood, R., & Robles, E. (2013). Content assessment of the primary biodiversity data published through GBIF network: status, challenges and potentials. *Biodiversity Informatics*, 8(2), 94-172. <a href="https://doi.org/10.17161/bi.v8i2.4124" target="_blank">DOI: 10.17161/bi.v8i2.4124</a>  
 
-Owens, H.L., Merow, C., Maitner, B.S., Kass, J.M., Barve, V., & Guralnick, R.P., (2021). occCite: Tools for querying and managing large biodiversity occurrence datasets. *Ecography*, 44(8), 1228-1235. <a href="https://doi.org/10.1111/ecog.05618" target="_blank">https://doi.org/10.1111/ecog.05618</a>  
+Owens, H.L., Merow, C., Maitner, B.S., Kass, J.M., Barve, V., & Guralnick, R.P., (2021). occCite: Tools for querying and managing large biodiversity occurrence datasets. *Ecography*, 44(8), 1228-1235. <a href="https://doi.org/10.1111/ecog.05618" target="_blank">DOI: 10.1111/ecog.05618</a>  
 
-Sullivan, B.L., Wood, C.L., Iliff, M.J., Bonney, R.E., Fink, D., & Kelling, S. (2009). eBird: A citizen-based bird observation network in the biological sciences. *Biological Conservation*, 142(10), 2282-2292. <a href="https://doi.org/10.1016/j.biocon.2009.05.006" target="_blank">https://doi.org/10.1016/j.biocon.2009.05.006</a>  
+Sullivan, B.L., Wood, C.L., Iliff, M.J., Bonney, R.E., Fink, D., & Kelling, S. (2009). eBird: A citizen-based bird observation network in the biological sciences. *Biological Conservation*, 142(10), 2282-2292. <a href="https://doi.org/10.1016/j.biocon.2009.05.006" target="_blank">DOI: 10.1016/j.biocon.2009.05.006</a>  
 
-Walters, M., & Scholes, R. J. (2017). The GEO Handbook on Biodiversity Observation Networks. Springer International Publishing. <a href="https://doi.org/10.1007/978-3-319-27288-7" target="_blank">https://doi.org/10.1007/978-3-319-27288-7</a>  
+Walters, M., & Scholes, R. J. (2017). The GEO Handbook on Biodiversity Observation Networks. Springer International Publishing. <a href="https://doi.org/10.1007/978-3-319-27288-7" target="_blank">DOI: 10.1007/978-3-319-27288-7</a>  
 
 
 
