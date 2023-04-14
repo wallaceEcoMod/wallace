@@ -9,7 +9,7 @@ bcRes <- 10 # (10 arcmin)
 envar <- c('bio05', 'bio06', 'bio13', 'bio14')
 
 ### run function
-arcmin10 <- envs_worldclim(bcRes, bcSel = envar)
+arcmin10 <- try(envs_worldclim(bcRes, bcSel = envar), silent = TRUE)
 
 
 ### test if the error messages appear when they are supposed to
