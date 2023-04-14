@@ -1,3 +1,9 @@
+wallace 2.0.5
+=============
+- added try() to test_envs_worldclim.R
+- fixed broken links in guidance texts refs
+- fixed typo in thinOccs documentation
+
 wallace 2.0.4
 =============
 - Added Spanish translation of vignette

@@ -49,7 +49,7 @@ If you use *Wallace* in your teaching, we would like to hear about your experien
 
 For `wallace` to work, you should be using R version 3.5.0 or later. Download for <a href="https://cran.r-project.org/bin/windows/base/" target="_blank">Windows</a> or <a href="https://cran.r-project.org/bin/macosx/" target="_blank">Mac</a>.
 
-To install and load *Wallace v2.0.4*, open either the `R` GUI or RStudio and run the code below. It's the only code you'll have to run to use `wallace`.
+To install and load *Wallace v2.0.5*, open either the `R` GUI or RStudio and run the code below. It's the only code you'll have to run to use `wallace`.
 
 ```{r, eval = FALSE, echo = TRUE}
 # Install Wallace from CRAN
@@ -103,7 +103,7 @@ knitr::include_graphics("vignette_img/orientation_2.png")
 (**2**) This is the toolbar with all the user interface controls, such as buttons, text inputs, etc. You can see that the module *Query Database (Present)* is currently selected. You'll see that two other modules exist for this component: *Query Database (Paleo)* and *User-specified*. This last module lets you upload your own occurrence data. Try choosing it instead and notice that the toolbar changes, then click back to *Query Database (Present)*.\
 Both the **Component** and *Module* have question mark buttons (?) next to the title text. Clicking these will link to the respective guidance texts.\
 Within this toolbar, you can find the module name and the `R` packages it uses (**2a**), as well as the control panel for the selected module (**2b**). Modules can be contributed by other researchers and the developers; CRAN links and documentation are at the bottom.\
-(**3**) The right side is the visualization space. Any functions performed will trigger a message in the log window (**3a**). This window will also display any error messages. *Wallace v2.0.4* now allows the user to load multiple species. If multiple species are loaded, toggle and select between species using the species drop-down menu (**3b**).\
+(**3**) The right side is the visualization space. Any functions performed will trigger a message in the log window (**3a**). This window will also display any error messages. *Wallace v2.0.5* now allows the user to load multiple species. If multiple species are loaded, toggle and select between species using the species drop-down menu (**3b**).\
 The visualization space includes several tabs (**3c**), including an interactive map, occurrence records table, results window, model and component guidance text windows, and a tab for saving outputs and the current session.\
 
 At this stage of the analysis, no results exist, and you have no data yet for the table, but you can view the **Component Guidance** and *Module Guidance* text now. This text was written by the developers to prepare users for each component and module *theoretically* (why we should use the tools) and *methodologically* (what the tools do). The guidance text also references scientific papers from the literature for more detailed reading. Please get into the habit of consulting these before undertaking analyses---and discussing them with your peers—-as this should give you a more solid foundation for moving forward.\
