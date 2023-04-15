@@ -35,8 +35,8 @@ The “Batch” option will load the environmental variables selected at the cho
 
 **REFERENCES**
 
-Fick, S.E., & Hijmans, R.J. (2017). WorldClim 2: new 1-km spatial resolution climate surfaces for global land areas. *International Journal of Climatology*, 37(12), 4302-4315. <a href="https://doi.org/10.1002/joc.5086" target="_blank"> https://doi.org/10.1002/joc.5086</a>  
+Fick, S.E., & Hijmans, R.J. (2017). WorldClim 2: new 1-km spatial resolution climate surfaces for global land areas. *International Journal of Climatology*, 37(12), 4302-4315. <a href="https://doi.org/10.1002/joc.5086" target="_blank"> DOI: 10.1002/joc.5086</a>  
 
-Hijmans, R.J., Cameron, S.E., Parra, J.L., Jones, P.G., & Jarvis, A. (2005). Very high resolution interpolated climate surfaces for global land areas. *International Journal of Climatology*, 25(15), 1965-1978. <a href="https://doi.org/10.1002/joc.1276" target="_blank">https://doi.org/10.1002/joc.1276</a> 
+Hijmans, R.J., Cameron, S.E., Parra, J.L., Jones, P.G., & Jarvis, A. (2005). Very high resolution interpolated climate surfaces for global land areas. *International Journal of Climatology*, 25(15), 1965-1978. <a href="https://doi.org/10.1002/joc.1276" target="_blank">DOI: 10.1002/joc.1276</a> 
 
-Hijmans, R.J., et al. (2021). raster: Geographic Data Analysis and Modeling. R package version 3.4-13. <a href="https://CRAN.R-project.org/package=raster" target="_blank">https://CRAN.R-project.org/package=raster</a>
+Hijmans, R.J., et al. (2021). raster: Geographic Data Analysis and Modeling. R package version 3.4-13. <a href="https://CRAN.R-project.org/package=raster" target="_blank">CRAN</a>

@@ -20,14 +20,14 @@ Users have the option to download a zip file containing .png files of the scatte
 
 **REFERENCES**
 
-Blonder, B., Morrow, C.B., Maitner, B., Harris, D.J., Lamanna, C., Violle, C., Enquist, B.J., & Kerkhoff, A.J. (2018). New approaches for delineating n‐dimensional hypervolumes. *Methods in Ecology and Evolution*, 9(2), 305-319. <a href="https://doi.org/10.1111/2041-210X.12865" target="_blank">DOI:10.1111/2041-210X.12865</a>  
+Blonder, B., Morrow, C.B., Maitner, B., Harris, D.J., Lamanna, C., Violle, C., Enquist, B.J., & Kerkhoff, A.J. (2018). New approaches for delineating n‐dimensional hypervolumes. *Methods in Ecology and Evolution*, 9(2), 305-319. <a href="https://doi.org/10.1111/2041-210X.12865" target="_blank">DOI: 10.1111/2041-210X.12865</a>  
 
-Broennimann, O., Fitzpatrick, M.C., Pearman, P.B., Petitpierre, B., Pellissier, L., Yoccoz, N.G., Thuiller, W., Fortin, M.J., Randin, C., Zimmermann, N.E., Graham, C.H., & Guisan, A. (2012) Measuring ecological niche overlap from occurrence and spatial environmental data. *Global Ecology and Biogeography*, 21, 481-497. <a href="https://doi.org/10.1111/j.1466-8238.2011.00698.x" target="_blank">DOI:10.1111/j.1466-8238.2011.00698.x</a>  
+Broennimann, O., Fitzpatrick, M.C., Pearman, P.B., Petitpierre, B., Pellissier, L., Yoccoz, N.G., Thuiller, W., Fortin, M.J., Randin, C., Zimmermann, N.E., Graham, C.H., & Guisan, A. (2012) Measuring ecological niche overlap from occurrence and spatial environmental data. *Global Ecology and Biogeography*, 21, 481-497. <a href="https://doi.org/10.1111/j.1466-8238.2011.00698.x" target="_blank">DOI: 10.1111/j.1466-8238.2011.00698.x</a>  
 
-Dray, S., & Dufour, A-B. (2007). The ade4 Package: Implementing the Duality Diagram for Ecologists. *Journal of Statistical Software*, 22(4), 1–20. <a href="https://doi.org/10.18637/jss.v022.i04" target="_blank">DOI:10.18637/jss.v022.i04</a>  
+Dray, S., & Dufour, A-B. (2007). The ade4 Package: Implementing the Duality Diagram for Ecologists. *Journal of Statistical Software*, 22(4), 1–20. <a href="https://doi.org/10.18637/jss.v022.i04" target="_blank">DOI: 10.18637/jss.v022.i04</a>  
 
-Legendre, P., & Legendre, L. (2012). Ordination in reduced space. *Numerical Ecology*, 2, 425-520. <a href="https://doi.org/10.1016/B978-0-444-53868-0.50009-5" target="_blank">DOI:10.1016/B978-0-444-53868-0.50009-5</a>  
+Legendre, P., & Legendre, L. (2012). Ordination in reduced space. *Numerical Ecology*, 2, 425-520. <a href="https://doi.org/10.1016/B978-0-444-53868-0.50009-5" target="_blank">DOI: 10.1016/B978-0-444-53868-0.50009-5</a>  
 
-Navarro, J., Cardador, L., & Brown, R. (2015). Spatial distribution and ecological niches of non-breeding planktivorous petrels. *Scientific Reports*, 5, 12164. <a href="https://doi.org/10.1038/srep12164" target="_blank">DOI:10.1038/srep12164</a>  
+Navarro, J., Cardador, L., & Brown, R. (2015). Spatial distribution and ecological niches of non-breeding planktivorous petrels. *Scientific Reports*, 5, 12164. <a href="https://doi.org/10.1038/srep12164" target="_blank">DOI: 10.1038/srep12164</a>  
 
-Thioulouse, J., Dray, S., Dufour, A., Siberchicot, A., Jombart, T., Pavoine, S. (2018). Multivariate Analysis of Ecological Data with ade4. *Springer*. <a href="https://doi.org/10.1007/978-1-4939-8850-1" target="_blank">DOI:10.1007/978-1-4939-8850-1</a>  
+Thioulouse, J., Dray, S., Dufour, A., Siberchicot, A., Jombart, T., Pavoine, S. (2018). Multivariate Analysis of Ecological Data with ade4. *Springer*. <a href="https://doi.org/10.1007/978-1-4939-8850-1" target="_blank">DOI: 10.1007/978-1-4939-8850-1</a>  

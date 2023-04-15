@@ -7,7 +7,7 @@ output: html_document
 
 <img src="logo.png" alt="logo" style="width: 150px; float:right; padding:10px;"/>
 
-Welcome to *Wallace*, a flexible application for reproducible ecological modeling, built for community expansion. The current version of *Wallace* (v2.0.4) steps the user through a full niche/distribution modeling analysis, from data acquisition to visualizing results.
+Welcome to *Wallace*, a flexible application for reproducible ecological modeling, built for community expansion. The current version of *Wallace* (v2.0.5) steps the user through a full niche/distribution modeling analysis, from data acquisition to visualizing results.
 
 The application is written in `R` with the web app development package `shiny`. Please find the stable version of *Wallace* on <a href="https://CRAN.R-project.org/package=wallace" target="_blank">CRAN</a>, and the development version on <a href="https://github.com/wallaceEcoMod/wallace" target="_blank">Github</a>. We also maintain a *Wallace* <a href="https://wallaceecomod.github.io/" target="_blank">website</a> that has some basic info, links, and will be updated with tutorial materials in the near future.
 
@@ -15,9 +15,9 @@ The application is written in `R` with the web app development package `shiny`. 
 
 Also, for more detail, please see our initial publication in *Methods in Ecology and Evolution* and our follow-up in *Ecography*.
 
-Kass J. M., Vilela B., Aiello-Lammens M. E., Muscarella R., Merow C., Anderson R. P. (2018). *Wallace*: A flexible platform for reproducible modeling of species niches and distributions built for community expansion. *Methods Ecol Evol*. 9: 1151-1156. <a href="https://doi.org/10.1111/2041-210X.12945" target="_blank">DOI: 10.1111/2041-210X.12945</a>
+Kass J. M., Vilela B., Aiello-Lammens M. E., Muscarella R., Merow C., Anderson R. P. (2018). *Wallace*: A flexible platform for reproducible modeling of species niches and distributions built for community expansion. *Methods in Ecology and Evolultion*, 9(4): 1151-1156. <a href="https://doi.org/10.1111/2041-210X.12945" target="_blank">DOI: 10.1111/2041-210X.12945</a>
 
-Kass, J.M., Pinilla-Buitrago, G.E, Paz, A., Johnson, B.A., Grisales-Betancur, V.,  Meenan, S.I., Attali, D., Broennimann, O., Galante, P.J., Maitner, B.S., Owens, H.L., Varela, S., Aiello-Lammens, M.E., Merow, C., Blair, M.E., Anderson R.P. (2022). *wallace* 2: a shiny app for modeling species niches and distributions redesigned to facilitate expansion via module contributions. *Ecography*, in prep. <a href="https://doi.org/10.1111/ecog.06547" target="_blank">DOI: 10.1111/ecog.06547</a>.  
+Kass, J.M., Pinilla-Buitrago, G.E, Paz, A., Johnson, B.A., Grisales-Betancur, V.,  Meenan, S.I., Attali, D., Broennimann, O., Galante, P.J., Maitner, B.S., Owens, H.L., Varela, S., Aiello-Lammens, M.E., Merow, C., Blair, M.E., Anderson R.P. (2022). *wallace* 2: a shiny app for modeling species niches and distributions redesigned to facilitate expansion via module contributions. *Ecography*, 2023(3): e06547. <a href="https://doi.org/10.1111/ecog.06547" target="_blank">DOI: 10.1111/ecog.06547</a>.  
 
 ### **Who is *Wallace* for?**  
 
@@ -73,7 +73,7 @@ Please <a href="mailto:wallaceecomod@gmail.com" target="_blank">email us</a> wit
 
 If you use Wallace in your research, please cite:  
 
-Kass, J.M., Pinilla-Buitrago, G.E, Paz, A., Johnson, B.A., Grisales-Betancur, V.,  Meenan, S.I., Attali, D., Broennimann, O., Galante, P.J., Maitner, B.S., Owens, H.L., Varela, S., Aiello-Lammens, M.E., Merow, C., Blair, M.E., Anderson R.P. (2022). *wallace* 2: a shiny app for modeling species niches and distributions redesigned to facilitate expansion via module contributions. *Ecography*, e06547. <a href="https://doi.org/10.1111/ecog.06547" target="_blank">DOI: 10.1111/ecog.06547</a>.  
+Kass, J.M., Pinilla-Buitrago, G.E, Paz, A., Johnson, B.A., Grisales-Betancur, V.,  Meenan, S.I., Attali, D., Broennimann, O., Galante, P.J., Maitner, B.S., Owens, H.L., Varela, S., Aiello-Lammens, M.E., Merow, C., Blair, M.E., Anderson R.P. (2022). *wallace* 2: a shiny app for modeling species niches and distributions redesigned to facilitate expansion via module contributions. *Ecography*, 2023(3): e06547. <a href="https://doi.org/10.1111/ecog.06547" target="_blank">DOI: 10.1111/ecog.06547</a>  
 
 ***
 
@@ -93,22 +93,22 @@ Mahmoud Shahin designed the WallaceEcoMod logo with inspiration from “Wallace�
 
 #### **References**
 
-1. Anderson, R. P. (2012). Harnessing the world's biodiversity data: promise and peril in ecological niche modeling of species distributions. *Annals of the New York Academy of Sciences*. 1260: 66-80.
+1. Anderson, R. P. (2012). Harnessing the world's biodiversity data: promise and peril in ecological niche modeling of species distributions. *Annals of the New York Academy of Sciences*, 1260: 66-80.
 
-2. Anderson, R. P. (2015). El modelado de nichos y distribuciones: no es simplemente "clic, clic, clic." [With English and French translations: Modeling niches and distributions: it's not just "click, click, click" and La modélisation de niche et de distributions: ce n'est pas juste "clic, clic, clic"]. *Biogeografía*. 8: 4-27.
+2. Anderson, R. P. (2015). El modelado de nichos y distribuciones: no es simplemente "clic, clic, clic." [With English and French translations: Modeling niches and distributions: it's not just "click, click, click" and La modélisation de niche et de distributions: ce n'est pas juste "clic, clic, clic"]. *Biogeografía*, 8: 4-27.
 
-3. Elith J. & Leathwick J.R. (2009). Species distribution models: ecological explanation and prediction across space and time. *Annual Review of Ecology, Evolution, and Systematics*. 40: 677-697.
+3. Elith J. & Leathwick J.R. (2009). Species distribution models: ecological explanation and prediction across space and time. *Annual Review of Ecology, Evolution, and Systematics*, 40: 677-697.
 
-4. Ficetola G.F., Thuiller W. & Miaud C. (2007) Prediction and validation of the potential global distribution of a problematic alien invasive species &horbar; the American bullfrog. *Diversity and Distributions*. 13: 476-485.
+4. Ficetola G.F., Thuiller W. & Miaud C. (2007) Prediction and validation of the potential global distribution of a problematic alien invasive species &horbar; the American bullfrog. *Diversity and Distributions*, 13: 476-485.
 
 5. Franklin J. (2010a). Mapping species distributions: spatial inference and prediction. Cambridge: Cambridge University Press.
 
-6. Franklin J. (2010b) Moving beyond static species distribution models in support of conservation biogeography. *Diversity and Distributions*. 16: 321-330.
+6. Franklin J. (2010b) Moving beyond static species distribution models in support of conservation biogeography. *Diversity and Distributions*, 16: 321-330.
 
-7. González, C., Wang, O., Strutz, S. E., González-Salazar, C., Sánchez-Cordero, V., & Sarkar, S. 2010. Climate change and risk of leishmaniasis in North America: predictions from ecological niche models of vector and reservoir species. *PLoS Neglected Tropical Diseases*. 4: e585.
+7. González, C., Wang, O., Strutz, S. E., González-Salazar, C., Sánchez-Cordero, V., & Sarkar, S. 2010. Climate change and risk of leishmaniasis in North America: predictions from ecological niche models of vector and reservoir species. *PLoS Neglected Tropical Diseases*, 4: e585.
 
-8. Guisan A. & Thuiller W. (2005). Predicting species distribution: offering more than simple habitat models. *Ecology Letters*. 8: 993-1009.
+8. Guisan A. & Thuiller W. (2005). Predicting species distribution: offering more than simple habitat models. *Ecology Letters*, 8: 993-1009.
 
-9. Kearney M.R., Wintle B.A. & Porter W.P. (2010) Correlative and mechanistic models of species distribution provide congruent forecasts under climate change. *Conservation Letters*. 3: 203-213.
+9. Kearney M.R., Wintle B.A. & Porter W.P. (2010) Correlative and mechanistic models of species distribution provide congruent forecasts under climate change. *Conservation Letters*, 3: 203-213.
 
 10. Peterson A.T., Soberón J., Pearson R.G., Anderson R.P., Martinez-Meyer E., Nakamura M., Araújo M.B. (2011). Ecological niches and geographic distributions. Princeton, New Jersey: Monographs in Population Biology, 49. Princeton University Press.

@@ -14,7 +14,7 @@ The **Characterize Environmental Space** component performs analyses and visuali
 
 **REFERENCES**
 
-Grinnell, J. (1917). "The niche-relationships of the California Thrasher". *The Auk*, 34(4), 427–433. <a href="https://doi.org/10.2307/4072271" target="_blank">DOI:10.2307/4072271</a> 
+Grinnell, J. (1917). "The niche-relationships of the California Thrasher". *The Auk*, 34(4), 427–433. <a href="https://www.jstor.org/stable/4072262" target="_blank">DOI:10.2307/4072271</a> 
 
 Chase, J.M., & Leibold, M.A. (2003). *Ecological Niches: Linking Classical and Contemporary Approaches*. <a href="https://press.uchicago.edu/ucp/books/book/chicago/E/bo3638660.html" target="_blank">University of Chicago Press.</a>
 

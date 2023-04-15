@@ -12,8 +12,8 @@ These non-spatial partitions are either via a: 1) jackknife procedure where each
 
 **REFERENCES**
 
-Muscarella, R., Galante, P.J., Soley-Guardia, M., Boria, R.A., Kass, J.M., Uriarte, M., & Anderson, R.P. (2014). ENMeval: An R package for conducting spatially independent evaluations and estimating optimal model complexity for Maxent ecological niche models. *Methods in Ecology and Evolution*, 5(11), 1198-1205. <a href="https://doi.org/10.1111/2041-210X.12261" target="_blank">https://doi.org/10.1111/2041-210X.12261</a>
+Muscarella, R., Galante, P.J., Soley-Guardia, M., Boria, R.A., Kass, J.M., Uriarte, M., & Anderson, R.P. (2014). ENMeval: An R package for conducting spatially independent evaluations and estimating optimal model complexity for Maxent ecological niche models. *Methods in Ecology and Evolution*, 5(11), 1198-1205. <a href="https://doi.org/10.1111/2041-210X.12261" target="_blank">DOI: 10.1111/2041-210X.12261</a>
 
-Pearson, R.G., Raxworthy, C.J., Nakamura, M., & Peterson, T.A. (2007). Predicting species distributions from small numbers of occurrence records: a test case using cryptic geckos in Madagascar. *Journal of Biogeography*, 34(1), 102-117. <a href="https://doi.org/10.1111/j.1365-2699.2006.01594.x" target="_blank">https://doi.org/10.1111/j.1365-2699.2006.01594.x</a>
+Pearson, R.G., Raxworthy, C.J., Nakamura, M., & Peterson, T.A. (2007). Predicting species distributions from small numbers of occurrence records: a test case using cryptic geckos in Madagascar. *Journal of Biogeography*, 34(1), 102-117. <a href="https://doi.org/10.1111/j.1365-2699.2006.01594.x" target="_blank">DOI: 10.1111/j.1365-2699.2006.01594.x</a>
 
-Shcheglovitova, M. & R. P. Anderson. (2013). Estimating optimal complexity for ecological niche models: a jackknife approach for species with small sample sizes. *Ecological Modelling*, 269, 9-17. <a href="https://doi.org/10.1016/j.ecolmodel.2013.08.011" target="_blank">https://doi.org/10.1016/j.ecolmodel.2013.08.011</a>
+Shcheglovitova, M. & R. P. Anderson. (2013). Estimating optimal complexity for ecological niche models: a jackknife approach for species with small sample sizes. *Ecological Modelling*, 269, 9-17. <a href="https://doi.org/10.1016/j.ecolmodel.2013.08.011" target="_blank">DOI: 10.1016/j.ecolmodel.2013.08.011</a>

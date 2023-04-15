@@ -13,6 +13,6 @@ There are myriad particular ways to partition data for niche/distributional mode
 
 **REFERENCES**
 
-Guisan A., & Zimmermann N.E. (2000). Predictive habitat distribution models in ecology. *Ecological Modelling*, 135(2-3), 147-186. <a href="https://doi.org/10.1016/S0304-3800(00)00354-9" target="_blank">https://doi.org/10.1016/S0304-3800(00)00354-9</a> 
+Guisan A., & Zimmermann N.E. (2000). Predictive habitat distribution models in ecology. *Ecological Modelling*, 135(2-3), 147-186. <a href="https://doi.org/10.1016/S0304-3800(00)00354-9" target="_blank">DOI: 10.1016/S0304-3800(00)00354-9</a> 
 
-Peterson, A.T., Soberón J., Pearson, R.G., Anderson, R.P., Martinez-Meyer, E., Nakamura M., & Araújo, M.B. (2011). Evaluating Model Performance and Significance. In: *Ecological Niches and Geographic Distributions*, Princeton, New Jersey: *Monographs in Population Biology*, 49. Princeton University Press. <a href="https://doi.org/10.23943/princeton/9780691136868.003.0009" target="_blank">https://doi.org/10.23943/princeton/9780691136868.003.0009</a>
+Peterson, A.T., Soberón J., Pearson, R.G., Anderson, R.P., Martinez-Meyer, E., Nakamura M., & Araújo, M.B. (2011). Evaluating Model Performance and Significance. In: *Ecological Niches and Geographic Distributions*, Princeton, New Jersey: *Monographs in Population Biology*, 49. Princeton University Press. <a href="https://doi.org/10.23943/princeton/9780691136868.003.0009" target="_blank">DOI: 10.23943/princeton/9780691136868.003.0009</a>

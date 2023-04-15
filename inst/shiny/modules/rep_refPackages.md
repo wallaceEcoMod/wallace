@@ -12,22 +12,22 @@ Users can download a list of references for the R packages used in the analyses.
 
 **REFERENCES**
 
-Araújo, M.B., Anderson, R.P., Barbosa, A.M., Beale, C.M., Dormann, C.F., Early, R., Garcia, R.A., Guisan, A., Maiorano, L., Naimi, B., O’Hara, R.B., Zimmermann, N.E., & Rahbek, C. (2019). Standards for distribution models in biodiversity assessments. *Science Advances*, 5, 1. <a href="https://doi.org/10.1126/sciadv.aat4858" target="_blank">https://doi.org/10.1126/sciadv.aat4858</a>
+Araújo, M.B., Anderson, R.P., Barbosa, A.M., Beale, C.M., Dormann, C.F., Early, R., Garcia, R.A., Guisan, A., Maiorano, L., Naimi, B., O’Hara, R.B., Zimmermann, N.E., & Rahbek, C. (2019). Standards for distribution models in biodiversity assessments. *Science Advances*, 5, 1. <a href="https://doi.org/10.1126/sciadv.aat4858" target="_blank">DOI: 10.1126/sciadv.aat4858</a>
 
-Boettiger, C. (2021). knitcitations: Citations for 'Knitr' Markdown Files. R package version 1.0.12. <a href="https://CRAN.R-project.org/package=knitcitations" target="_blank">https://CRAN.R-project.org/package=knitcitations</a> 
+Boettiger, C. (2021). knitcitations: Citations for 'Knitr' Markdown Files. R package version 1.0.12. <a href="https://CRAN.R-project.org/package=knitcitations" target="_blank">CRAN</a> 
 
-Feng, X., Park, D.S., Walker, C., Peterson, A.T., Merow, C., & Papeş, M. (2019). A checklist for maximizing reproducibility of ecological niche models. *Nature Ecology & Evolution*, 3, 1382–1395. <a href="https://doi.org/10.1038/s41559-019-0972-5" target="_blank">https://doi.org/10.1038/s41559-019-0972-5</a>
+Feng, X., Park, D.S., Walker, C., Peterson, A.T., Merow, C., & Papeş, M. (2019). A checklist for maximizing reproducibility of ecological niche models. *Nature Ecology & Evolution*, 3, 1382–1395. <a href="https://doi.org/10.1038/s41559-019-0972-5" target="_blank">DOI: 10.1038/s41559-019-0972-5</a>
 
-Fitzpatrick, F.C., Lachmuth, S., & Haydt, N.T. (2021). The ODMAP protocol: a new tool for standardized reporting that could revolutionize species distribution modeling. *Ecography*, 44(7), 1067-1070.<a href="https://doi.org/10.1111/ecog.05700" target="_blank">https://doi.org/10.1111/ecog.05700</a>
+Fitzpatrick, F.C., Lachmuth, S., & Haydt, N.T. (2021). The ODMAP protocol: a new tool for standardized reporting that could revolutionize species distribution modeling. *Ecography*, 44(7), 1067-1070.<a href="https://doi.org/10.1111/ecog.05700" target="_blank">DOI: 10.1111/ecog.05700</a>
 
-Kass, J.M, Muscarella, R., Galante, P.J, Bohl, C.L., Pinilla-Buitrago, G.E., Boria, R.A., Soley-Guardia, M., & Anderson, R.P. (2021). ENMeval 2.0: Redesigned for customizable and reproducible modeling of species’ niches and distributions. *Methods in Ecology and Evolution*, 12(9), 1602– 1608. <a href="https://doi.org/10.1111/2041-210X.13628" target="_blank">https://doi.org/10.1111/2041-210X.13628</a>
+Kass, J.M, Muscarella, R., Galante, P.J, Bohl, C.L., Pinilla-Buitrago, G.E., Boria, R.A., Soley-Guardia, M., & Anderson, R.P. (2021). ENMeval 2.0: Redesigned for customizable and reproducible modeling of species’ niches and distributions. *Methods in Ecology and Evolution*, 12(9), 1602– 1608. <a href="https://doi.org/10.1111/2041-210X.13628" target="_blank">DOI: 10.1111/2041-210X.13628</a>
 
-McLean, M.W. (2020). RefManageR: Straightforward 'BibTeX' and 'BibLaTeX' Bibliography Management. R package version 1.3.0.  <a href="https://CRAN.R-project.org/package=RefManageR" target="_blank">https://CRAN.R-project.org/package=RefManageR</a>  
+McLean, M.W. (2020). RefManageR: Straightforward 'BibTeX' and 'BibLaTeX' Bibliography Management. R package version 1.3.0.  <a href="https://CRAN.R-project.org/package=RefManageR" target="_blank">CRAN</a>  
 
-Merow, C., Maitner, B.S., Owens, H.L., Kass, J.M., Enquist, B.J., Jetz, W., & Guralnick, R.P. (2019). Species’ range model metadata standards: RMMS. *Global Ecology and Biogeography*, 28(12), 1912–1924. <a href="https://doi.org/10.1111/geb.12993" target="_blank">https://doi.org/10.1111/geb.12993</a>
+Merow, C., Maitner, B.S., Owens, H.L., Kass, J.M., Enquist, B.J., Jetz, W., & Guralnick, R.P. (2019). Species’ range model metadata standards: RMMS. *Global Ecology and Biogeography*, 28(12), 1912–1924. <a href="https://doi.org/10.1111/geb.12993" target="_blank">DOI: 10.1111/geb.12993</a>
 
-Owens, H. L., Merow, C., Maitner, B.S., Kass, J.M., Barve, V., & Guralnick, R.P. (2021). occCite: Tools for querying and managing large biodiversity occurrence datasets. *Ecography*, 44(8), 1228-1235. <a href="https://doi.org/10.1111/ecog.05618" target="_blank">https://doi.org/10.1111/ecog.05618</a>
+Owens, H. L., Merow, C., Maitner, B.S., Kass, J.M., Barve, V., & Guralnick, R.P. (2021). occCite: Tools for querying and managing large biodiversity occurrence datasets. *Ecography*, 44(8), 1228-1235. <a href="https://doi.org/10.1111/ecog.05618" target="_blank">DOI: 10.1111/ecog.05618</a>
 
-Sofaer, H.R., Jarnevich, C.S., Pearse, I.S., Smyth, R.L, Auer, S., Cook, G.L., Edwards, T.C., Guala, G.F., Howard, T.G., Morisette, J.T., & Hamiliton, H. (2019). Development and delivery of species distribution models to inform decision-making. *BioScience*, 69(7), 544–557. <a href="https://doi.org/10.1093/biosci/biz045" target="_blank">https://doi.org/10.1093/biosci/biz045</a>
+Sofaer, H.R., Jarnevich, C.S., Pearse, I.S., Smyth, R.L, Auer, S., Cook, G.L., Edwards, T.C., Guala, G.F., Howard, T.G., Morisette, J.T., & Hamiliton, H. (2019). Development and delivery of species distribution models to inform decision-making. *BioScience*, 69(7), 544–557. <a href="https://doi.org/10.1093/biosci/biz045" target="_blank">DOI: 10.1093/biosci/biz045</a>
 
-Zurell, D., et al. (2020). A standard protocol for reporting species distribution models. *Ecography*, 43(9), 1261–1277. <a href="https://doi.org/10.1111/ecog.04960" target="_blank">https://doi.org/10.1111/ecog.04960</a>
+Zurell, D., et al. (2020). A standard protocol for reporting species distribution models. *Ecography*, 43(9), 1261–1277. <a href="https://doi.org/10.1111/ecog.04960" target="_blank">DOI: 10.1111/ecog.04960</a>
