@@ -26,7 +26,7 @@ bibentry(
   volume   = "2023(3)",
   number   = "e06547",
   pages    = "1-9",
-  url      = "https://onlinelibrary.wiley.com/doi/full/10.1111/ecog.06547",
+  url      = "https://onlinelibrary.wiley.com/doi/10.1111/ecog.06547",
   textVersion =
   paste("Kass, J.M., Pinilla-Buitrago, G.E., Paz, A., Johnson, B.A., Grisales-Betancur, V., Meenan, S.I., Attali, D., Broennimann, O., Galante, P.J., Maitner, B.S., Owens, H., Varela, S., Aiello-Lammens, Merow, C., M.E., Blair, M.E. & Anderson, R.P. (2023). wallace 2: a shiny app for modeling species niches and distributions redesigned to facilitate expansion via module contributions. Ecography, e06547. <https://doi.org/10.1111/ecog.06547>")
 )
