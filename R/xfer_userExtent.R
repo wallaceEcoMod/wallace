@@ -60,7 +60,8 @@ xfer_userExtent <- function(bgShp_path, bgShp_name, userBgBuf,
       file.rename(bgShp_path, file.path(pathdir, bgShp_name))
     }
     # read in shapefile and extract coords
-    bgExt <- rgdal::readOGR(file.path(pathdir, bgShp_name)[i])
+    #BAJ REMOVE bgExt <- rgdal::readOGR(file.path(pathdir, bgShp_name)[i])
+    bgExt <- sf::read_sf(file.path(pathdir, bgShp_name)[i])
   } else {
     logger %>%
       writeLog(type = 'error',
@@ -70,8 +71,10 @@ xfer_userExtent <- function(bgShp_path, bgShp_name, userBgBuf,
   }
 
   if (userBgBuf >= 0) {
-    bgExt <- rgeos::gBuffer(bgExt, width = userBgBuf)
-    bgExt <- methods::as(bgExt, "SpatialPolygonsDataFrame")
+    #BAJ REMOVE bgExt <- rgeos::gBuffer(bgExt, width = userBgBuf)
+    bgExt <- sf::st_buffer(bgExt, dist = userBgBuf)
+    #BAJ REMOVE bgExt <- methods::as(bgExt, "SpatialPolygonsDataFrame")
+    bgExt <- sf::as_Spatial(bgExt)
   }
   if (userBgBuf > 0) {
     logger %>% writeLog(

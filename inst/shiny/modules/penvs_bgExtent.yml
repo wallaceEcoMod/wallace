@@ -2,4 +2,4 @@ component: "penvs"
 short_name: "Select Study Region"
 long_name: "Select Study Region by Extent"
 authors: "Jamie M. Kass, Bruno Vilela, Robert P. Anderson"
-package: [sp, rgeos]
+package: [sp, sf]

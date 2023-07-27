@@ -51,6 +51,9 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL, spN = NULL) {
   # make spatial pts object of original occs and preserve origID
   occs.sp <- sp::SpatialPointsDataFrame(occs.xy, data = occs['occID'])
 
+  # make an sf obj
+  occs.sf <- sf::st_as_sf(occs.xy, coords = c("longitude", "latitude"))
+
   # generate background extent - one grid cell is added to perimeter of each shape
   # to ensure cells of points on border are included
   if (bgSel == 'bounding box') {
@@ -76,16 +79,22 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL, spN = NULL) {
                'Change buffer distance to positive or negative value.')
       return()
     }
-    bgExt <- rgeos::gBuffer(occs.sp, width = bgBuf)
+   #BAJ REMOVE bgExt <- rgeos::gBuffer(occs.sp, width = bgBuf)
+    bgExt <- sf::st_buffer(occs.sf, dist = bgBuf)
     msg <- paste0("Study extent: buffered points.  Buffered by ", bgBuf, " degrees.")
   }
 
   if (bgBuf > 0 & bgSel != 'point buffers') {
-    bgExt <- rgeos::gBuffer(bgExt, width = bgBuf)
+
+    #BAJ REMOVE bgExt <- rgeos::gBuffer(bgExt, width = bgBuf)
+    bgExt <- sf::st_as_sf(bgExt)
+    bgExt <- sf::st_buffer(bgExt, dist = bgBuf)
+
     logger %>% writeLog(hlSpp(spN), msg, ' Buffered by ', bgBuf, ' degrees.')
   } else {
     logger %>% writeLog(hlSpp(spN), msg)
   }
-  bgExt <- methods::as(bgExt, "SpatialPolygonsDataFrame")
+  #BAJ REMOVE bgExt <- methods::as(bgExt, "SpatialPolygonsDataFrame")
+  bgExt <- sf::as_Spatial(bgExt)
   return(bgExt)
 }
