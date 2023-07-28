@@ -396,11 +396,16 @@ function(input, output, session) {
       on.exit(setwd(owd))
       n <- curSp()
 
-      rgdal::writeOGR(obj = bgExt(),
+      #BAJ REMOVE rgdal::writeOGR(obj = bgExt(),
+                      #BAJ dsn = tmpdir,
+                      #BAJ layer = paste0(n, '_bgShp'),
+                      #BAJ driver = "ESRI Shapefile",
+                      #BAJ overwrite_layer = TRUE)
+      sf::st_write(obj = sf::st_as_sf(bgExt()),
                       dsn = tmpdir,
                       layer = paste0(n, '_bgShp'),
                       driver = "ESRI Shapefile",
-                      overwrite_layer = TRUE)
+                      append = FALSE) #BAJ check this
 
       exts <- c('dbf', 'shp', 'shx')
       fs <- paste0(n, '_bgShp.', exts)
@@ -771,7 +776,7 @@ function(input, output, session) {
       tmpdir <- tempdir()
       owd <- setwd(tmpdir)
       on.exit(setwd(owd))
-      if(require(rgdal)) {
+      if(require(sf)) {
         if (input$predFileType == 'png') {
           req(mapPred())
           if (!webshot::is_phantomjs_installed()) {
@@ -842,7 +847,7 @@ function(input, output, session) {
         }
       } else {
         logger %>%
-          writeLog("Please install the rgdal package before downloading rasters.")
+          writeLog("Please install the sf package before downloading rasters.")
       }
     }
   )
@@ -866,12 +871,16 @@ function(input, output, session) {
       owd <- setwd(tmpdir)
       on.exit(setwd(owd))
       n <- curSp()
-      rgdal::writeOGR(obj = spp[[curSp()]]$transfer$xfExt,
+      #BAJ REMOVE rgdal::writeOGR(obj = spp[[curSp()]]$transfer$xfExt,
+                     #BAJ dsn = tmpdir,
+                    #BAJ  layer = paste0(n, '_xferShp'),
+                    #BAJ  driver = "ESRI Shapefile",
+                   #BAJ?   overwrite_layer = TRUE) #this line overwrites the layer, used append = false to replace the layer
+      sf::st_write(obj = sf::st_as_sf(spp[[curSp()]]$transfer$xfExt),
                       dsn = tmpdir,
                       layer = paste0(n, '_xferShp'),
                       driver = "ESRI Shapefile",
-                      overwrite_layer = TRUE)
-
+                      append = FALSE)
       exts <- c('dbf', 'shp', 'shx')
       fs <- paste0(n, '_xferShp.', exts)
       zip::zipr(zipfile = file, files = fs)
@@ -924,7 +933,7 @@ function(input, output, session) {
       tmpdir <- tempdir()
       owd <- setwd(tmpdir)
       on.exit(setwd(owd))
-      if(require(rgdal)) {
+      if(require(sf)) {
         if (input$xferFileType == 'png') {
           req(mapXfer())
           if (!webshot::is_phantomjs_installed()) {
@@ -997,7 +1006,7 @@ function(input, output, session) {
           file.rename(r@file@name, file)
         }
       } else {
-        logger %>% writeLog("Please install the rgdal package before downloading rasters.")
+        logger %>% writeLog("Please install the sf package before downloading rasters.")
       }
     }
   )
@@ -1013,7 +1022,7 @@ function(input, output, session) {
       tmpdir <- tempdir()
       owd <- setwd(tmpdir)
       on.exit(setwd(owd))
-      if(require(rgdal)) {
+      if(require(sf)) {
         req(spp[[curSp()]]$transfer$mess, spp[[curSp()]]$transfer$xfExt)
         mess <- spp[[curSp()]]$transfer$mess
         if (input$messFileType == 'png') {
@@ -1080,7 +1089,7 @@ function(input, output, session) {
           file.rename(r@file@name, file)
         }
       } else {
-        logger %>% writeLog("Please install the rgdal package before downloading rasters.")
+        logger %>% writeLog("Please install the sf package before downloading rasters.")
       }
     }
   )

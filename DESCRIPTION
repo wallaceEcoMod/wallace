@@ -46,7 +46,6 @@ Imports:
     magrittr,
     methods,
     RColorBrewer,
-    rgdal,
     rlang,
     rmarkdown,
     sf,
