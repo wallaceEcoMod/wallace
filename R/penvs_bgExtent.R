@@ -53,6 +53,7 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL, spN = NULL) {
 
   # make an sf obj
   occs.sf <- sf::st_as_sf(occs.xy, coords = c("longitude", "latitude"))
+  occs.sf <- sf::st_union(occs.sf, by_feature = FALSE)
 
   # generate background extent - one grid cell is added to perimeter of each shape
   # to ensure cells of points on border are included
