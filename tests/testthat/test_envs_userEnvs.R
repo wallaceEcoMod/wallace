@@ -21,6 +21,7 @@ userEnvs_stack <- envs_userEnvs(rasPath = Path, rasName = Name,
                                 doBrick = FALSE)
 
 ### test if the warning messages appear when they are supposed to
+# BAJ (added 2023-08-03) this should be checked again after replacing raster pkg
 # GEPB (2022-09-28): Since the update of raster (v3.6-3), it looks like the projection is set
 # automatically by the function. I did not explore further but it looks like these changes are
 # due the retirement of rgdal. For this reason, the following test was not getting the expected

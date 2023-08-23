@@ -396,16 +396,11 @@ function(input, output, session) {
       on.exit(setwd(owd))
       n <- curSp()
 
-      #BAJ REMOVE rgdal::writeOGR(obj = bgExt(),
-                      #BAJ dsn = tmpdir,
-                      #BAJ layer = paste0(n, '_bgShp'),
-                      #BAJ driver = "ESRI Shapefile",
-                      #BAJ overwrite_layer = TRUE)
       sf::st_write(obj = sf::st_as_sf(bgExt()),
                       dsn = tmpdir,
                       layer = paste0(n, '_bgShp'),
                       driver = "ESRI Shapefile",
-                      append = FALSE) #BAJ check this
+                      append = FALSE)
 
       exts <- c('dbf', 'shp', 'shx')
       fs <- paste0(n, '_bgShp.', exts)
@@ -871,11 +866,7 @@ function(input, output, session) {
       owd <- setwd(tmpdir)
       on.exit(setwd(owd))
       n <- curSp()
-      #BAJ REMOVE rgdal::writeOGR(obj = spp[[curSp()]]$transfer$xfExt,
-                     #BAJ dsn = tmpdir,
-                    #BAJ  layer = paste0(n, '_xferShp'),
-                    #BAJ  driver = "ESRI Shapefile",
-                   #BAJ?   overwrite_layer = TRUE) #this line overwrites the layer, used append = false to replace the layer
+
       sf::st_write(obj = sf::st_as_sf(spp[[curSp()]]$transfer$xfExt),
                       dsn = tmpdir,
                       layer = paste0(n, '_xferShp'),

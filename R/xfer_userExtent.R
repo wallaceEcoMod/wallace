@@ -60,7 +60,6 @@ xfer_userExtent <- function(bgShp_path, bgShp_name, userBgBuf,
       file.rename(bgShp_path, file.path(pathdir, bgShp_name))
     }
     # read in shapefile and extract coords
-    #BAJ REMOVE bgExt <- rgdal::readOGR(file.path(pathdir, bgShp_name)[i])
     bgExt <- sf::read_sf(file.path(pathdir, bgShp_name)[i])
   } else {
     logger %>%
