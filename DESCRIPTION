@@ -65,7 +65,6 @@ Suggests:
     mapview,
     maxnet,
     occCite,
-    paleobioDB,
     rangeModelMetadata,
     raster,
     rgbif (>= 3.3.0),

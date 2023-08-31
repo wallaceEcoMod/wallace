@@ -127,6 +127,7 @@ knitr::include_graphics("vignette_img/occs_1.png")
 ```{r, fig.align = 'center'}
 knitr::include_graphics("vignette_img/occs_2.png")
 ```
+*Note: As of 01 September 2023, Module: Query Database [Paleo] will be temporarily unavailable.*
 
 Let's proceed to get some occurrence data. We'll be using present occurrences (as opposed to those from the deep past via fossil data, etc.) and therefore use Module: *Query Database (Present)*. There is a selection of databases to choose from, as well as the option to return only those occurrences that contain information on coordinate uncertainty  (which can be useful to filter by later). If you have a GBIF User ID, checking the "Include Data Source" box will allow you to log in with your username and password to download a DOI for the dataset. In order for this to work, you will need to install the R-package `occCite` prior to running Wallace. Since `occCite` is a suggested package, it will not install automatically like the other package dependencies. 
 

@@ -11,7 +11,6 @@ output: html_document
 
 **1.** *Obtain Occurrence Data*  
 - Query Present Database 
-- Query Paleo Database
 - User-specified Occurrences
 
 **2.** *Obtain Environmental Data*  
