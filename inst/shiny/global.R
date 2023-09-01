@@ -28,7 +28,7 @@ COMPONENT_MODULES <- list()
 # Load all Wallace base modules
 base_module_configs <- c(
   "modules/occs_queryDb.yml",
-  "modules/occs_paleoDb.yml",
+  # "modules/occs_paleoDb.yml",
   "modules/occs_userOccs.yml",
   "modules/envs_worldclim.yml",
   "modules/envs_ecoclimate.yml",

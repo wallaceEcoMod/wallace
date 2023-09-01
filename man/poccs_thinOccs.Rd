@@ -10,7 +10,7 @@ poccs_thinOccs(occs, thinDist, logger = NULL, spN = NULL)
 \item{occs}{data frame of cleaned occurrences obtained from component occs:
 Obtain occurrence data}
 
-\item{thinDist}{distance in meters to be used for thinning. Number must be
+\item{thinDist}{distance in kilometers to be used for thinning. Number must be
 positive.}
 
 \item{logger}{Stores all notification messages to be displayed in the Log

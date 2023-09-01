@@ -1,6 +1,6 @@
 Package: wallace
-Version: 2.0.5
-Date: 2023-04-14
+Version: 2.0.6
+Date: 2023-09-01
 Title: A Modular Platform for Reproducible Modeling of Species Niches 
     and Distributions
 Description: The 'shiny' application Wallace is a modular platform for 
@@ -66,7 +66,6 @@ Suggests:
     mapview,
     maxnet,
     occCite,
-    paleobioDB,
     rangeModelMetadata,
     raster,
     rgbif (>= 3.3.0),

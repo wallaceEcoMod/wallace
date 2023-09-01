@@ -11,6 +11,7 @@ Niche/distributional modeling analyses require georeferenced occurrence records 
 or 3) upload their own dataset (Module: *User-specified Occurrences*).  
 Unlike previous versions of *Wallace*, multiple species now can be uploaded in the same session.
 
+*Note: As of 01 September 2023, Module: Query Database [Paleo] will be temporarily unavailable.*
 
 **REFERENCES**
 
