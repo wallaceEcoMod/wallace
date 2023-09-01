@@ -1,3 +1,7 @@
+wallace 2.0.6
+=============
+- Removed `paleobioDB` (package off CRAN)
+
 wallace 2.0.5
 =============
 - added try() to test_envs_worldclim.R
