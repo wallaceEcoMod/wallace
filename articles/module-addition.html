@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">wallace</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -572,7 +572,7 @@ modules—it should take a single argument called “id”, use it to create a
 unique namespace for the module, and return a list of UI objects.
 Usually, there should at least be a button that runs the module
 function. Shiny modules operate in their own unique namespaces, and so
-use of the <code><a href="https://shiny.rstudio.com/reference/shiny/latest/NS.html" class="external-link">NS()</a></code> function is necessary to ensure the
+use of the <code><a href="https://rdrr.io/pkg/shiny/man/NS.html" class="external-link">NS()</a></code> function is necessary to ensure the
 module’s UI controls can talk to <code>ui.R</code>. The function
 <code>ns()</code> (for namespace), returned from <code>NS(id)</code>, is
 run on the ID names of shiny UI input elements, as in
@@ -583,17 +583,17 @@ module vignette</a> for more details.</li>
 </ol>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">penvs_correlations_module_ui</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">ns</span> <span class="op">&lt;-</span> <span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/NS.html" class="external-link">NS</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span></span>
+<span>  <span class="va">ns</span> <span class="op">&lt;-</span> <span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/shiny/man/NS.html" class="external-link">NS</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rstudio.github.io/htmltools/reference/tagList.html" class="external-link">tagList</a></span><span class="op">(</span></span>
 <span>    <span class="co"># UI</span></span>
 <span>    <span class="co">## Add a checkbox for batch processing (more than 1 species)</span></span>
-<span>    <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/checkboxInput.html" class="external-link">checkboxInput</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"batch"</span><span class="op">)</span>, label <span class="op">=</span> <span class="fu"><a href="https://rstudio.github.io/htmltools/reference/builder.html" class="external-link">strong</a></span><span class="op">(</span><span class="st">"Batch"</span><span class="op">)</span>, value <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/checkboxInput.html" class="external-link">checkboxInput</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"batch"</span><span class="op">)</span>, label <span class="op">=</span> <span class="fu"><a href="https://rstudio.github.io/htmltools/reference/builder.html" class="external-link">strong</a></span><span class="op">(</span><span class="st">"Batch"</span><span class="op">)</span>, value <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>,</span>
 <span>    <span class="co">## Give the action button a name and a label.</span></span>
-<span>    <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/actionButton.html" class="external-link">actionButton</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"runCorrs"</span><span class="op">)</span>, label <span class="op">=</span> <span class="st">"Calculate correlations"</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/actionButton.html" class="external-link">actionButton</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"runCorrs"</span><span class="op">)</span>, label <span class="op">=</span> <span class="st">"Calculate correlations"</span><span class="op">)</span>,</span>
 <span>    <span class="co">## UI for reselecting variables after calculating correlations. This custom input one will create in the server module function</span></span>
-<span>    <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/htmlOutput.html" class="external-link">uiOutput</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"VarSelect"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/htmlOutput.html" class="external-link">uiOutput</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"VarSelect"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    <span class="co">## UI button to select variables to be used in the analysis.</span></span>
-<span>    <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/actionButton.html" class="external-link">actionButton</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"selectConfirm"</span><span class="op">)</span>, label <span class="op">=</span> <span class="st">"Select Variables"</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/actionButton.html" class="external-link">actionButton</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"selectConfirm"</span><span class="op">)</span>, label <span class="op">=</span> <span class="st">"Select Variables"</span><span class="op">)</span></span>
 <span>    <span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <ol start="2" style="list-style-type: lower-roman">
@@ -621,10 +621,10 @@ of this server function—in this case, we want to know the names of the
 environmental variables input so they can be printed to the UI control
 (see Creating a reactive shortcut in the next section for more details).
 After this, we specify when the module function gets run. The function
-<code><a href="https://shiny.rstudio.com/reference/shiny/latest/observeEvent.html" class="external-link">observeEvent()</a></code> performs an action in response to an event
+<code><a href="https://rdrr.io/pkg/shiny/man/observeEvent.html" class="external-link">observeEvent()</a></code> performs an action in response to an event
 (e.g., clicking a button created by
 <code>penvs_correlations_module_ui()</code>). Inside of each
-<code><a href="https://shiny.rstudio.com/reference/shiny/latest/observeEvent.html" class="external-link">observeEvent()</a></code>, you need to include the following code. The
+<code><a href="https://rdrr.io/pkg/shiny/man/observeEvent.html" class="external-link">observeEvent()</a></code>, you need to include the following code. The
 first, “WARNING”, catches any possible errors before the module’s core
 functionality is run. If there is an error, the function stops and a log
 error message is written. The user will need to define these errors in
@@ -652,8 +652,8 @@ list.</p>
 <span>  <span class="va">VarSelector</span> <span class="op">&lt;-</span> <span class="va">common</span><span class="op">$</span><span class="va">VarSelector</span> <span class="co"># See how to create and include a reactive shortcut later in the main text.</span></span>
 <span></span>
 <span>  <span class="co"># Create a custom UI input</span></span>
-<span>  <span class="va">output</span><span class="op">$</span><span class="va">VarSelect</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/renderUI.html" class="external-link">renderUI</a></span><span class="op">(</span><span class="op">{</span></span>
-<span>    <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/req.html" class="external-link">req</a></span><span class="op">(</span><span class="fu">bgMask</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">output</span><span class="op">$</span><span class="va">VarSelect</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderUI.html" class="external-link">renderUI</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/req.html" class="external-link">req</a></span><span class="op">(</span><span class="fu">bgMask</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span>    <span class="fu">shinyWidgets</span><span class="fu">::</span><span class="fu"><a href="https://dreamrs.github.io/shinyWidgets/reference/pickerInput.html" class="external-link">pickerInput</a></span><span class="op">(</span></span>
 <span>      <span class="st">"VarSelector"</span>,</span>
 <span>      label <span class="op">=</span> <span class="st">"Select variables"</span>,</span>
@@ -664,14 +664,14 @@ list.</p>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">## When action button defined in the ui function above is clicked, do the following:</span></span>
-<span>  <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/observeEvent.html" class="external-link">observeEvent</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">runCorrs</span>, <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/observeEvent.html" class="external-link">observeEvent</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">runCorrs</span>, <span class="op">{</span></span>
 <span>     <span class="co"># WARNING ####</span></span>
 <span>    <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="fu">bgMask</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>      <span class="va">logger</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="../reference/writeLog.html">writeLog</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">'error'</span>, <span class="fu"><a href="../reference/hlSpp.html">hlSpp</a></span><span class="op">(</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>, <span class="st">'Background data missing. Sample study region first'</span><span class="op">)</span></span>
 <span>      <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="op">)</span></span>
 <span>    <span class="op">}</span></span>
 <span>    <span class="co"># Check that the background has already been selected</span></span>
-<span>    <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/req.html" class="external-link">req</a></span><span class="op">(</span><span class="fu">bgMask</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/req.html" class="external-link">req</a></span><span class="op">(</span><span class="fu">bgMask</span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span>       </span>
 <span>    <span class="co"># Set up if you want batch to be allowed</span></span>
 <span>      <span class="co"># allSp() is the list of species selected</span></span>
@@ -697,14 +697,14 @@ list.</p>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># Define output as a table</span></span>
-<span>  <span class="va">output</span><span class="op">$</span><span class="va">envCorrTable</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/renderPrint.html" class="external-link">renderText</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="va">output</span><span class="op">$</span><span class="va">envCorrTable</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/renderPrint.html" class="external-link">renderText</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>    <span class="co"># Result</span></span>
 <span>    <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">procEnvs</span><span class="op">$</span><span class="va">envCorrs</span>, format <span class="op">=</span> <span class="st">'html'</span><span class="op">)</span></span>
 <span>  <span class="op">}</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co">## Observe when selection is confirmed</span></span>
-<span>  <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/observeEvent.html" class="external-link">observeEvent</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">selectConfirm</span>, <span class="op">{</span></span>
-<span>    <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/req.html" class="external-link">req</a></span><span class="op">(</span><span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">procEnvs</span><span class="op">$</span><span class="va">envCorrs</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/observeEvent.html" class="external-link">observeEvent</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">selectConfirm</span>, <span class="op">{</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/req.html" class="external-link">req</a></span><span class="op">(</span><span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">procEnvs</span><span class="op">$</span><span class="va">envCorrs</span><span class="op">)</span></span>
 <span></span>
 <span>    <span class="co">## update bg object</span></span>
 <span>    <span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">procEnvs</span><span class="op">$</span><span class="va">bgMask</span> <span class="op">&lt;-</span> <span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">procEnvs</span><span class="op">$</span><span class="va">bgMask</span><span class="op">[[</span><span class="fu">VarSelector</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span></span>
@@ -739,13 +739,13 @@ created in each component. Please add only the <em>last</em> line in the
 <span>  <span class="co"># # # # # # # # # # # # # # # # # #</span></span>
 <span></span>
 <span>  <span class="co"># convenience function for background points table for current species</span></span>
-<span>  <span class="va">bg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">bg</span><span class="op">)</span></span>
+<span>  <span class="va">bg</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">bg</span><span class="op">)</span></span>
 <span>  <span class="co"># convenience function for background polygon for current species</span></span>
-<span>  <span class="va">bgExt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">procEnvs</span><span class="op">$</span><span class="va">bgExt</span><span class="op">)</span></span>
+<span>  <span class="va">bgExt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">procEnvs</span><span class="op">$</span><span class="va">bgExt</span><span class="op">)</span></span>
 <span>  <span class="co"># convenience function for environmental variable rasters masked to background for current species</span></span>
-<span>  <span class="va">bgMask</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">procEnvs</span><span class="op">$</span><span class="va">bgMask</span><span class="op">)</span></span>
+<span>  <span class="va">bgMask</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="va">spp</span><span class="op">[[</span><span class="fu">curSp</span><span class="op">(</span><span class="op">)</span><span class="op">]</span><span class="op">]</span><span class="op">$</span><span class="va">procEnvs</span><span class="op">$</span><span class="va">bgMask</span><span class="op">)</span></span>
 <span>  <span class="co"># THIS LINE WILL CREATE THE REACTIVE</span></span>
-<span>  <span class="va">VarSelector</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">VarSelector</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="va">VarSelector</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/reactive.html" class="external-link">reactive</a></span><span class="op">(</span><span class="va">input</span><span class="op">$</span><span class="va">VarSelector</span><span class="op">)</span></span></code></pre></div>
 <p>The second line will add the shortcut to the common list. Please
 search for “COMMON LIST FUNCTIONALITY” (#1310) in the server file, and
 add it to the section of “Shortcuts to values nested inside spp”.</p>
@@ -794,9 +794,9 @@ conventions regarding module namespace as the previous functions.</li>
 </ol>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">penvs_correlations_module_result</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="va">ns</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/NS.html" class="external-link">NS</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span></span>
+<span>  <span class="va">ns</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/NS.html" class="external-link">NS</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span></span>
 <span>  <span class="co"># Result UI as html</span></span>
-<span>  <span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/htmlOutput.html" class="external-link">htmlOutput</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"envCorrTable"</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/shiny/man/htmlOutput.html" class="external-link">htmlOutput</a></span><span class="op">(</span><span class="fu">ns</span><span class="op">(</span><span class="st">"envCorrTable"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <ol start="4" style="list-style-type: lower-roman">
 <li><p><em>OPTIONAL:</em> A function named

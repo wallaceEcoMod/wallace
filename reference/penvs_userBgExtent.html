@@ -12,7 +12,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">wallace</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.6</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -141,6 +141,21 @@ shiny, otherwise leave the default NULL.</p></dd>
 <span class="r-in"><span>                      full.names <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">userBgbf</span> <span class="op">&lt;-</span> <span class="fu">penvs_userBgExtent</span><span class="op">(</span>bgShp_path <span class="op">=</span> <span class="va">pathShp</span>, bgShp_name <span class="op">=</span> <span class="va">nameShp</span>,</span></span>
 <span class="r-in"><span>                               userBgBuf <span class="op">=</span> <span class="fl">0.2</span>, occs <span class="op">=</span> <span class="va">occs</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Please note that rgdal will be retired during October 2023,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> plan transition to sf/stars/terra functions using GDAL and PROJ</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> at your earliest convenience.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> See https://r-spatial.org/r/2023/05/15/evolution4.html and https://github.com/r-spatial/evolution</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> rgdal: version: 1.6-7, (SVN revision 1203)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Geospatial Data Abstraction Library extensions to R successfully loaded</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loaded GDAL runtime: GDAL 3.4.1, released 2021/12/27</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Path to GDAL shared files: /usr/share/gdal</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> GDAL binary built with GEOS: TRUE </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loaded PROJ runtime: Rel. 8.2.1, January 1st, 2022, [PJ_VERSION: 821]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Path to PROJ shared files: /home/runner/.local/share/proj:/usr/share/proj</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> PROJ CDN enabled: TRUE</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Linking to sp version:2.0-0</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> To mute warnings of possible GDAL/OSR exportToProj4() degradation,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> use options("rgdal_show_exportToProj4_warnings"="none") before loading sp or rgdal.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>OGR support is provided by the sf and terra packages among others</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>OGR support is provided by the sf and terra packages among others</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>OGR support is provided by the sf and terra packages among others</span>
