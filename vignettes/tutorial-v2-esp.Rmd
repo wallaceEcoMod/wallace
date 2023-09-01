@@ -130,6 +130,7 @@ knitr::include_graphics("vignette_img/occs_1.png")
 ```{r, fig.align = 'center'}
 knitr::include_graphics("vignette_img/occs_2.png")
 ```
+*Nota: A partir del 01 September 2023, el módulo Query Database (Paleo) [Consultar base de datos (Paleo)], no estará disponible temporalmente.*  
 
 Procedemos a obtener datos de ocurrencia. Usaremos ocurrencias del presente (en contraste con los del pasado obtenidos mediante datos fósiles, etc.) y por lo tanto usaremos el módulo: *Query Database (Present)*[Consultar base de datos (presente)]. Hay una selección de bases de datos para escoger, como también una opción para obtener solo las ocurrencias con información sobre la incertidumbre de las coordenadas (esto puede ser útil para filtrar más adelante). Si usted tiene un ID de usuario de GBIF, marcar la casilla "Include Data Source" [Incluir fuente de los datos] le permitirá iniciar sesión con su nombre de usuario y contraseña. Para que esto funcione, debe instalar el paquete de R occCite antes de ejecutar Wallace. Dado que `occCite` es un paquete sugerido, este no será instalado automáticamente como otras dependencias.
 
