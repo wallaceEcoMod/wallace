@@ -14,7 +14,7 @@
 #' @param bgSel character. Method of background building. Must be one of three
 #'   options: 'bounding box' , 'point buffers' or ' minimum convex polygon'.
 #' @param bgBuf numeric. Buffer distance in degrees to be used in the building
-#'   of the background area.
+#'   of the background area. Must be >0.
 #' @param logger Stores all notification messages to be displayed in the Log
 #'   Window of Wallace GUI. Insert the logger reactive list here for running in
 #'   shiny, otherwise leave the default NULL.
@@ -45,6 +45,13 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL, spN = NULL) {
     return()
   }
 
+  if (bgBuf <= 0) {
+    logger %>%
+      writeLog(type = 'error',
+               'All points need to be included. Add a positive buffer value.')
+    return()
+  }
+
   # extract just coordinates
   occs.xy <- occs[c('longitude', 'latitude')]
 
@@ -56,7 +63,7 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL, spN = NULL) {
   occs.sf <- sf::st_union(occs.sf, by_feature = FALSE)
 
   # generate background extent - one grid cell is added to perimeter of each shape
-  # to ensure cells of points on border are included
+  # to ensure cells of points on border are included #BAJ-this isn't working
   if (bgSel == 'bounding box') {
     xmin <- occs.sp@bbox[1]
     xmax <- occs.sp@bbox[3]
@@ -80,14 +87,12 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL, spN = NULL) {
                'Change buffer distance to positive or negative value.')
       return()
     }
-   #BAJ REMOVE bgExt <- rgeos::gBuffer(occs.sp, width = bgBuf)
     bgExt <- sf::st_buffer(occs.sf, dist = bgBuf)
     msg <- paste0("Study extent: buffered points.  Buffered by ", bgBuf, " degrees.")
   }
 
   if (bgBuf > 0 & bgSel != 'point buffers') {
 
-    #BAJ REMOVE bgExt <- rgeos::gBuffer(bgExt, width = bgBuf)
     bgExt <- sf::st_as_sf(bgExt)
     bgExt <- sf::st_buffer(bgExt, dist = bgBuf)
 
@@ -95,7 +100,6 @@ penvs_bgExtent <- function(occs, bgSel, bgBuf, logger = NULL, spN = NULL) {
   } else {
     logger %>% writeLog(hlSpp(spN), msg)
   }
-  #BAJ REMOVE bgExt <- methods::as(bgExt, "SpatialPolygonsDataFrame")
   bgExt <- sf::as_Spatial(bgExt)
   return(bgExt)
 }

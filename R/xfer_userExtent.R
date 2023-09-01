@@ -68,11 +68,14 @@ xfer_userExtent <- function(bgShp_path, bgShp_name, userBgBuf,
                       'or shapefile (.shp, .shx, .dbf).'))
     return()
   }
-
+  if (userBgBuf < 0) {
+    logger %>%
+      writeLog(type = 'error',
+               'Change buffer distance to positive value.')
+    return()
+  }
   if (userBgBuf >= 0) {
-    #BAJ REMOVE bgExt <- rgeos::gBuffer(bgExt, width = userBgBuf)
     bgExt <- sf::st_buffer(bgExt, dist = userBgBuf)
-    #BAJ REMOVE bgExt <- methods::as(bgExt, "SpatialPolygonsDataFrame")
     bgExt <- sf::as_Spatial(bgExt)
   }
   if (userBgBuf > 0) {

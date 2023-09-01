@@ -58,10 +58,8 @@ penvs_drawBgExtent <- function(polyExtXY, polyExtID, drawBgBuf, occs,
   intersect <- sp::over(pts, newPoly)
   ptRem <- ifelse(all(!is.na(intersect)), 0, as.numeric(which(is.na(intersect))))
   if (ptRem == 0) {
-    #BAJ REMOVE bgExt <- rgeos::gBuffer(newPoly, width = drawBgBuf)
     newPoly.sf <- sf::st_as_sf(newPoly)
     bgExt <- sf::st_buffer(newPoly.sf, dist = drawBgBuf)
-    #BAJ REMOVE bgExt <- methods::as(bgExt, "SpatialPolygonsDataFrame")
     bgExt <- sf::as_Spatial(bgExt)
     if (drawBgBuf == 0) {
       logger %>% writeLog(hlSpp(spN), 'Draw polygon without buffer.')
@@ -77,4 +75,12 @@ penvs_drawBgExtent <- function(polyExtXY, polyExtID, drawBgBuf, occs,
                "Remove the polygon before drawing a new one.")
     return()
   }
+
+  if (drawBgBuf < 0) {
+    logger %>%
+      writeLog(type = 'error',
+               'Change buffer distance to positive value.')
+    return()
+  }
+
 }

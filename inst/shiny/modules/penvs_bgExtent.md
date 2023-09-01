@@ -6,7 +6,7 @@ For niche/distribution modeling approaches that compare the environments associa
 
 **IMPLEMENTATION** 
 
-This module relies on important functions from the R packages `sp` (for defining spatial objects) and `rgeos` (for buffering spatial objects).  
+This module relies on important functions from the R packages `sp` (for defining spatial objects) and `sf` (for buffering spatial objects).  
 
 In this module, *Wallace* provides three simple ways to delimit a study region, by: 1) bounding box (rectangle with most the extreme coordinates in the four cardinal directions as vertices), 2) minimum convex polygon (a convex shape drawn around localities with minimized area), or 3) buffers around occurrence points. For each of these options, users can specify a buffer distance (in degrees; i.e. not meters). *Wallace* then masks the environmental grids by the resulting polygon. Users can download the masked grids as three raster grid formats (.asc, .grd, and .tif).
 

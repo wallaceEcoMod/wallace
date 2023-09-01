@@ -117,12 +117,9 @@ xfer_area_module_server <- function(input, output, session, common) {
                                 input$userXfBuf, logger, spN = curSp())
       # ERRORS ####
       # Check that the extents of raster and transfer extent intersects
-      #BAJ REMOVE if (!rgeos::gIntersects(polyXf,
-      #BAJ REMOVE                 methods::as(raster::extent(envs()),
-      #BAJ REMOVE                                 'SpatialPolygons'))) {
-      if (!sf::st_intersects(sf::st_as_sf(polyXf),
-                             sf::st_as_sfc(sf::st_bbox(envs())))
-          ) {
+      if (!rgeos::gIntersects(polyXf,
+                      methods::as(raster::extent(envs()),
+                                      'SpatialPolygons'))) {
         logger %>%
           writeLog(type = 'error', 'Extents do not overlap')
         return()
@@ -165,12 +162,9 @@ xfer_area_module_server <- function(input, output, session, common) {
       return()
     }
     # Check that the extents of raster and transfer extent intersects
-    #BAJ REMOVE if (!rgeos::gIntersects(spp[[curSp()]]$transfer$xfExt,
-                         #BAJ REMOVE   methods::as(raster::extent(envs()),
-                           #BAJ REMOVE             'SpatialPolygons'))) {
-    if (!sf::st_intersects(sf::st_as_sf(spp[[curSp()]]$transfer$xfExt),
-                           sf::st_as_sfc(sf::st_bbox(envs())))
-        ) {
+     if (!rgeos::gIntersects(spp[[curSp()]]$transfer$xfExt,
+                            methods::as(raster::extent(envs()),
+                                        'SpatialPolygons'))) {
       logger %>%
         writeLog(type = 'error', 'Extents do not overlap')
       return()
