@@ -44,7 +44,7 @@
 #'   are shown as green circles and those outside of the envelope for one ore
 #'   more variables are plotted as orange triangles.
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
-#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 # @note
 #' @seealso
 #'\code{\link{model_bioclim}} \code{\link[ENMeval]{ENMevaluate}}

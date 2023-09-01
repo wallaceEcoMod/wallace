@@ -50,7 +50,7 @@
 #' @return A list of two vectors containing group assignments for occurrences
 #'   (occs.grp) and background points (bg.grp).
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
-#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 #' @author Andrea Paz <paz.andreita@@gmail.com>
 # @note
 #' @seealso \code{\link[ENMeval]{partitions}}

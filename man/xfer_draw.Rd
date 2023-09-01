@@ -53,5 +53,5 @@ polygonTest <- xfer_draw(polyXfXY = userDrawPoly, polyXfID,
 \code{\link{xfer_userEnvs}}
 }
 \author{
-Gonzalo Pinilla <gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo Pinilla <gepinillab@gmail.com>
 }

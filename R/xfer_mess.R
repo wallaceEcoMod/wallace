@@ -47,7 +47,7 @@
 #' }
 # @return
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
-#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 
 # @note
 #' @seealso \code{\link[dismo]{mess}}, \code{\link{xfer_time}}

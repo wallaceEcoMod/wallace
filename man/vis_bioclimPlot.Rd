@@ -63,5 +63,5 @@ bioclimPlot <- vis_bioclimPlot(x = m@models$bioclim,
 \author{
 Jamie Kass <jkass@gradcenter.cuny.edu>
 
-Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago <gepinillab@gmail.com>
 }

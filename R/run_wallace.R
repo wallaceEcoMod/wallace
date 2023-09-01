@@ -14,7 +14,7 @@
 #' run_wallace()
 #' }
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
-#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 #' @export
 run_wallace <- function(launch.browser = TRUE, port = getOption("shiny.port")) {
   app_path <- system.file("shiny", package = "wallace")

@@ -29,7 +29,7 @@
 #' @return Output is a data frame of thinned occurences (all occurences at a
 #'   distance >thinDist) with the same columns as occs
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
-#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 #' @seealso \code{\link[spThin]{thin}}
 #' @export
 

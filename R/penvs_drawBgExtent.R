@@ -41,7 +41,7 @@
 #' include all occurrences.
 
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
-#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 # @note
 #' @seealso \code{\link{penvs_userBgExtent}}, \code{\link{penvs_bgExtent}},
 #' \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}

@@ -71,7 +71,7 @@
 #'   with the specified output type.
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 #' @author Andrea Paz <paz.andreita@@gmail.com>
-#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 #' @seealso \code{\link[dismo]{predict}}, \code{\link{xfer_time}}
 #' \code{\link{xfer_userEnvs}}
 #' @export

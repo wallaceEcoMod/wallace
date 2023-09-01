@@ -43,7 +43,7 @@
 #' Maximum number of points is equal to non NA cells in each layer of the
 #' reference brick or stack.
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
-#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 #' @seealso \code{\link{penvs_bgMask}}, \code{\link{penvs_bgExtent}}
 #'   \code{\link{penvs_userBgExtent}}, \code{\link{penvs_drawBgExtent}},
 #'   \code{\link[dismo]{randomPoints}}
