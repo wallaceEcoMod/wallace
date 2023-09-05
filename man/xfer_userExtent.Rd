@@ -54,7 +54,7 @@ xferUser <- xfer_userExtent(bgShp_path = pathShp, bgShp_name = nameShp,
 \author{
 Jamie Kass <jamie.m.kass@gmail.com>
 
-Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago <gepinillab@gmail.com>
 
 Andrea Paz <paz.andreita@gmail.com>
 }

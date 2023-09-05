@@ -37,7 +37,7 @@
 #' provided polygon and mantaining all columns from original dataframe for
 #' further analyses.
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
-#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 #' @export
 
 poccs_selectOccs <- function(occs, polySelXY, polySelID = 1, logger = NULL,

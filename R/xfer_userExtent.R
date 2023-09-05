@@ -31,7 +31,7 @@
 #' @return This function returns a SpatialPolygons object with the user
 #'   provided shape (+ a buffer is userBgBuf >0).
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
-#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 #' @author Andrea Paz <paz.andreita@@gmail.com>
 #' @seealso \code{\link{penvs_drawBgExtent}}, \code{\link{penvs_bgExtent}},
 #'   \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}

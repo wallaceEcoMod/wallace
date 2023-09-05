@@ -37,7 +37,7 @@
 #'   provided shape (+ a buffer is userBgBuf >0). The polygon will be at least
 #'   large enough to contain all occurrences.
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
-#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 #' @author Andrea Paz <paz.andreita@@gmail.com>
 # @note
 

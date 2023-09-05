@@ -30,7 +30,7 @@
 #'   provided rasters
 #'
 #' @author Jamie Kass <jamie.m.kass@@gmail.com >
-#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 #' @export
 #'
 #'

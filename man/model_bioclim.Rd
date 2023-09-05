@@ -59,5 +59,5 @@ m <- model_bioclim(occs, bg, partblock, envs)
 \author{
 Jamie M. Kass <jkass@gradcenter.cuny.edu>
 
-Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago <gepinillab@gmail.com>
 }

@@ -21,7 +21,7 @@
 #' #'   dataset, second dataframe without duplicates and with appropriate fields
 #' #'   for analyses.
 #' #' @author Jamie Kass <jamie.m.kass@@gmail.com>
-#' #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#' #' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 #' #' @author Sara Varela <sara_varela@@yahoo.com>
 #' #' @examples
 #' #' \dontrun{

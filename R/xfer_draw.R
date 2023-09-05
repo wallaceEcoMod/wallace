@@ -33,7 +33,7 @@
 #'   specified coordinates (drawn on map). This SpatialPolygonsDataFrame may be
 #'   larger than specified if drawBgBuf > 0.
 
-#' @author Gonzalo Pinilla <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo Pinilla <gepinillab@@gmail.com>
 # @note
 #' @seealso  \code{\link{xfer_userEnvs}}
 #' @export

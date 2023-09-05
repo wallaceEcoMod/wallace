@@ -28,7 +28,7 @@
 #'
 #' @return A SpatialPolygonsDataFrame object that contains all occurrences from occs
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
-#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 # @note
 
 #' @seealso \code{\link{penvs_userBgExtent}}, \code{\link{penvs_drawBgExtent}},

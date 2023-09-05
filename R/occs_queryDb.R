@@ -32,7 +32,7 @@
 #'   individual species list with appropriate fields for analysis
 #'
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
-#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 #' @author Hannah Owens
 #' @author Andrea Paz <paz.andreita@@gmail.com>
 #' @examples

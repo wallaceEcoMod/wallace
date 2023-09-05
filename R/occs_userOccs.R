@@ -26,7 +26,7 @@
 #' @return List of lists. One list per species with occurrence records. Each
 #'   individual species list with appropriate fields for analysis
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
-#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 #' @importFrom rlang .data
 #' @export
 

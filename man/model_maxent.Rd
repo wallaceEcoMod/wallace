@@ -103,5 +103,5 @@ m <- model_maxent(occs = occs, bg = bg, user.grp = partblock,
 \author{
 Jamie M. Kass <jkass@gradcenter.cuny.edu>
 
-Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago <gepinillab@gmail.com>
 }

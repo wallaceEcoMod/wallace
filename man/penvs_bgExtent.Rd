@@ -51,5 +51,5 @@ bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
 \author{
 Jamie Kass <jamie.m.kass@gmail.com>
 
-Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago <gepinillab@gmail.com>
 }
