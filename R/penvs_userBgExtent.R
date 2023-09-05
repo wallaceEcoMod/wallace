@@ -68,7 +68,8 @@ penvs_userBgExtent <- function(bgShp_path, bgShp_name, userBgBuf, occs,
         file.rename(bgShp_path, file.path(pathdir, bgShp_name))
       }
       # read in shapefile and extract coords
-      bgExt <- rgdal::readOGR(file.path(pathdir, bgShp_name)[i])
+      bgExt <- sf::st_read(file.path(pathdir, bgShp_name)[i])
+      bgExt <- sf::as_Spatial(bgExt)
     } else {
       logger %>%
         writeLog(type = 'error',
