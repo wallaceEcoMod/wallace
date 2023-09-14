@@ -56,10 +56,12 @@ penvs_drawBgExtent <- function(polyExtXY, polyExtID, drawBgBuf, occs,
   newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(polyExtXY)),
                                                    ID = polyExtID)))
   intersect <- sp::over(pts, newPoly)
+  newPoly.sf <- sf::st_as_sf(newPoly)
+
   ptRem <- ifelse(all(!is.na(intersect)), 0, as.numeric(which(is.na(intersect))))
   if (ptRem == 0) {
-    bgExt <- rgeos::gBuffer(newPoly, width = drawBgBuf)
-    bgExt <- methods::as(bgExt, "SpatialPolygonsDataFrame")
+    bgExt <- sf::st_buffer(newPoly.sf, dist = drawBgBuf)
+    bgExt <- sf::as_Spatial(bgExt)
     if (drawBgBuf == 0) {
       logger %>% writeLog(hlSpp(spN), 'Draw polygon without buffer.')
     } else {

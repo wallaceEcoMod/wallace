@@ -71,15 +71,19 @@ xfer_userExtent <- function(bgShp_path, bgShp_name, userBgBuf,
     return()
   }
 
-  if (userBgBuf >= 0) {
-    bgExt <- rgeos::gBuffer(bgExt, width = userBgBuf)
-    bgExt <- methods::as(bgExt, "SpatialPolygonsDataFrame")
-  }
   if (userBgBuf > 0) {
+    bgExt <- sf::st_as_sf(bgExt)
+    bgExt <- sf::st_buffer(bgExt, dist = userBgBuf)
+    bgExt <- sf::as_Spatial(bgExt)
     logger %>% writeLog(
       hlSpp(spN),
       'Transferring extent user-defined polygon buffered by ',
       userBgBuf, ' degrees.')
+  } else if (userBgBuf < 0) {
+    logger %>%
+      writeLog(type = 'error',
+               'Change buffer distance to a positive value.')
+    return()
   } else {
     logger %>% writeLog(
       hlSpp(spN),

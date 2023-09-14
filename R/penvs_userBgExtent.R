@@ -34,7 +34,7 @@
 #'                                userBgBuf = 0.2, occs = occs)
 #'
 #' @return This function returns a SpatialPolygons object with the user
-#'   provided shape (+ a buffer is userBgBuf >0). The polygon will be at least
+#'   provided shape (+ a buffer if userBgBuf >0). The polygon will be at least
 #'   large enough to contain all occurrences.
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
@@ -79,8 +79,13 @@ penvs_userBgExtent <- function(bgShp_path, bgShp_name, userBgBuf, occs,
     }
 
     if (userBgBuf >= 0) {
-      bgExt <- rgeos::gBuffer(bgExt, width = userBgBuf)
-      bgExt <- methods::as(bgExt, "SpatialPolygonsDataFrame")
+      bgExt <- sf::st_as_sf(bgExt)
+      bgExt <- sf::st_buffer(bgExt, dist = userBgBuf)
+      bgExt <- sf::as_Spatial(bgExt)
+    } else {
+      bgExt <- sf::st_as_sf(bgExt)
+      bgExt <- sf::st_buffer(bgExt, dist = userBgBuf)
+      bgExt <- sf::as_Spatial(bgExt)
     }
 
     ### Points outside polygon
