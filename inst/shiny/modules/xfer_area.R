@@ -45,7 +45,7 @@ xfer_area_module_ui <- function(id) {
     actionButton(ns('goTransferArea'), "Transfer"),
     tags$hr(class = "hrDashed"),
     actionButton(ns("goResetXfer"), "Reset", class = 'butReset'),
-    strong(" transferion extent ")
+    strong(" transfer extent ")
   )
 }
 
@@ -167,7 +167,7 @@ xfer_area_module_server <- function(input, output, session, common) {
       return()
     }
     if (is.null(spp[[curSp()]]$transfer$xfExt)) {
-      logger %>% writeLog(type = 'error', 'Select transferion extent first.')
+      logger %>% writeLog(type = 'error', 'Select transfer extent first.')
       return()
     }
     # Check that the extents of raster and transfer extent intersects
@@ -310,7 +310,7 @@ xfer_area_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$polyXfXY <- NULL
     spp[[curSp()]]$polyXfID <- NULL
     spp[[curSp()]]$transfer <- NULL
-    logger %>% writeLog("Reset transferion extent.")
+    logger %>% writeLog("Reset transfer extent.")
   })
 
   return(list(
@@ -347,7 +347,7 @@ xfer_area_module_map <- function(map, common) {
     circleOptions = FALSE, markerOptions = FALSE, circleMarkerOptions = FALSE,
     editOptions = leaflet.extras::editToolbarOptions()
   )
-  # Add just transferion Polygon
+  # Add just transfer Polygon
   req(spp[[curSp()]]$transfer$xfExt)
   polyXfXY <- spp[[curSp()]]$transfer$xfExt@polygons[[1]]@Polygons
   if(length(polyXfXY) == 1) {
@@ -384,7 +384,7 @@ xfer_area_module_map <- function(map, common) {
                 values = mapXferVals, layerId = 'xfer',
                 labFormat = reverseLabel(2, reverse_order = TRUE))
   }
-  # map model prediction raster and transferion polygon
+  # map model prediction raster and transfer polygon
   map %>% clearMarkers() %>% clearShapes() %>% removeImage('xferRas') %>%
     addRasterImage(mapXfer(), colors = rasPal, opacity = 0.7,
                    layerId = 'xferRas', group = 'xfer', method = "ngb")
@@ -408,9 +408,9 @@ xfer_area_module_rmd <- function(species) {
     polyXfID_rmd =  if(!is.null(species$rmm$code$wallace$drawExtPolyXfCoords)){
      species$polyXfID} else {0},
     BgBuf_rmd = species$rmm$code$wallace$XfBuff,
-    ##Determine the type of transferion extent to use correct RMD function
+    ##Determine the type of transfer extent to use correct RMD function
     xfer_area_extent_knit = !is.null(species$rmm$code$wallace$userXfShpParams),
-    ##Use of threshold for transferion
+    ##Use of threshold for transfer
     xfer_area_threshold_knit = !is.null(species$rmm$prediction$transfer$environment1$thresholdSet),
     xfer_thresholdRule_rmd = species$rmm$prediction$transfer$environment1$thresholdRule,
     xfer_threshold_rmd = if (!is.null(species$rmm$prediction$transfer$environment1$thresholdSet)){
