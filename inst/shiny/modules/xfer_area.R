@@ -117,13 +117,22 @@ xfer_area_module_server <- function(input, output, session, common) {
                                 input$userXfBuf, logger, spN = curSp())
       # ERRORS ####
       # Check that the extents of raster and transfer extent intersects
-      if (!rgeos::gIntersects(polyXf,
-                              methods::as(raster::extent(envs()),
-                                          'SpatialPolygons'))) {
+      polyXf_sfc <- sf::st_as_sfc(polyXf) #convert poly to sfc
+      envs_ext <- methods::as(raster::extent(envs()),'SpatialPolygons')
+      envs_sfc <- sf::st_as_sfc(envs_ext) #convert envs to sfc
+      #set crs to match
+      if (sf::st_crs(polyXf_sfc) != sf::st_crs(envs_sfc)) {
+        sf::st_crs(polyXf_sfc) <- sf::st_crs(envs_sfc)
         logger %>%
-          writeLog(type = 'error', 'Extents do not overlap')
+          writeLog(type = 'error', 'CRS was automatically set to match environmental variables.')
         return()
       }
+      if (!sf::st_intersects(polyXf_sfc, envs_sfc, sparse = FALSE)[1,1]) {
+        logger %>%
+          writeLog(type = 'error', 'Extents do not overlap.')
+        return()
+      }
+
       # METADATA ####
       spp[[curSp()]]$rmm$code$wallace$XfBuff <- input$userXfBuf
       # get extensions of all input files
@@ -162,11 +171,12 @@ xfer_area_module_server <- function(input, output, session, common) {
       return()
     }
     # Check that the extents of raster and transfer extent intersects
-    if (!rgeos::gIntersects(spp[[curSp()]]$transfer$xfExt,
-                            methods::as(raster::extent(envs()),
-                                        'SpatialPolygons'))) {
+      Xfer_sfc <- sf::st_as_sfc(spp[[curSp()]]$transfer$xfExt) #convert xfrExt to sfc
+      envs_ext <- methods::as(raster::extent(envs()),'SpatialPolygons')
+      envs_sfc <- sf::st_as_sfc(envs_ext) #convert envs to sfc
+    if (!sf::st_intersects(Xfer_sfc, envs_sfc, sparse = FALSE)[1,1]) {
       logger %>%
-        writeLog(type = 'error', 'Extents do not overlap')
+        writeLog(type = 'error', 'Extents do not overlap.')
       return()
     }
 

@@ -45,7 +45,6 @@ Imports:
     magrittr,
     methods,
     RColorBrewer,
-    rgeos,
     rJava,
     rlang,
     rmarkdown,
