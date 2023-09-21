@@ -26,7 +26,7 @@
 #' occs$occID <- 1:nrow(occs)
 #' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
 #'
-#' @return A SpatialPolygonsDataFrame object that contains all occurrences from occs
+#' @return A SpatialPolygons object that contains all occurrences from occs
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 # @note

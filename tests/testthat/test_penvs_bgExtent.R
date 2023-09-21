@@ -45,15 +45,15 @@ test_that("error checks", {
 
   # buffer == 0 while using Point Buffers as background extent
   expect_error(penvs_bgExtent(occs , bgSel = bPoint, bgBuf = 0),
-               'Change buffer distance to positive or negative value.')
+               'Change buffer distance to a positive value.')
 })
 
 ### test output features
 test_that("output type checks", {
   # the output is a SpatialPolygonsDataFrame
-  expect_is(bgExt1, "SpatialPolygonsDataFrame")
-  expect_is(bgExt2, "SpatialPolygonsDataFrame")
-  expect_is(bgExt3, "SpatialPolygonsDataFrame")
+  expect_is(bgExt1, "SpatialPolygons")
+  expect_is(bgExt2, "SpatialPolygons")
+  expect_is(bgExt3, "SpatialPolygons")
   # the area of each type of the background extents is different
   expect_false(raster::area(bgExt1) == raster::area(bgExt2))
   expect_false(raster::area(bgExt1) == raster::area(bgExt3))

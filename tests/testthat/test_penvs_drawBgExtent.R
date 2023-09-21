@@ -50,8 +50,8 @@ test_that("error checks", {
 ### test output features
 test_that("output type checks", {
   # the output is a SpatialPolygons
-  expect_is(drawBgBf, "SpatialPolygonsDataFrame")
-  expect_is(drawBg, "SpatialPolygonsDataFrame")
+  expect_is(drawBgBf, "SpatialPolygons")
+  expect_is(drawBg, "SpatialPolygons")
   # the area of background buffered is different from the one not buffered
   expect_true(raster::area(drawBgBf) > raster::area(drawBg))
   ## check if all the records are within the drawn polygon

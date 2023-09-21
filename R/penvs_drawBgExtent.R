@@ -35,9 +35,9 @@
 #'                          ncol = 2)
 #' drawBgBf <- penvs_drawBgExtent(polyExtXY = expertDrawPoly, polyExtID = 1,
 #'                                drawBgBuf = 0.5, occs)
-#' @return This functions returns a SpatialPolygonsDataFrame based on the user
-#' specified coordinates (drawn on map). This SpatialPolygonsDataFrame may be
-#' larger than specified if drawBgBuf > 0. The SpatialPolygonsDataFrame will
+#' @return This functions returns a SpatialPolygons object based on the user
+#' specified coordinates (drawn on map). This SpatialPolygons object may be
+#' larger than specified if drawBgBuf > 0. The SpatialPolygons object will
 #' include all occurrences.
 
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>

@@ -29,7 +29,7 @@
 #' polygonTest <- xfer_draw(polyXfXY = userDrawPoly, polyXfID,
 #'                          drawXfBuf)
 #'
-#' @return This functions returns a SpatialPolygonsDataFrame based on the user
+#' @return This functions returns a SpatialPolygons object based on the user
 #'   specified coordinates (drawn on map). This SpatialPolygonsDataFrame may be
 #'   larger than specified if drawBgBuf > 0.
 
