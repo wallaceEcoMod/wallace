@@ -223,7 +223,7 @@ xfer_time_module_server <- function(input, output, session, common) {
       polyXf <- spp[[curSp()]]$procEnvs$bgExt
       logger %>% writeLog(
         hlSpp(curSp()),
-        'Transferion extent equal to current extent region.')
+        'Transfer extent equal to current extent region.')
     }
     # LOAD INTO SPP ####
     spp[[curSp()]]$transfer$xfExt <- polyXf
@@ -360,13 +360,13 @@ xfer_time_module_server <- function(input, output, session, common) {
       }
       xferTimeThr <- xferTime > thr
       if (input$selTimeVar == 'worldclim') {
-        logger %>% writeLog(hlSpp(curSp()), "Transferion of model to ", paste0('20', input$selTime),
+        logger %>% writeLog(hlSpp(curSp()), "Transfer of model to ", paste0('20', input$selTime),
                             ' with threshold ', input$threshold, ' (',
                             formatC(thr, format = "e", 2), ") for GCM ",
                             GCMlookup[input$selGCM], " under RCP ",
                             as.numeric(input$selRCP)/10.0, ".")
       } else if (input$selTimeVar == 'ecoclimate') {
-        logger %>% writeLog(hlSpp(curSp()), "Transferion of model to ", input$xfScenario,
+        logger %>% writeLog(hlSpp(curSp()), "Transfer of model to ", input$xfScenario,
                             ' with threshold ', input$threshold, ' (',
                             formatC(thr, format = "e", 2), ") for GCM ",
                             input$xfAOGCM, ".")
@@ -374,11 +374,11 @@ xfer_time_module_server <- function(input, output, session, common) {
     } else {
       xferTimeThr <- xferTime
       if (input$selTimeVar == 'worldclim') {
-        logger %>% writeLog(hlSpp(curSp()), "Transferion of model to ", paste0('20', input$selTime),
+        logger %>% writeLog(hlSpp(curSp()), "Transfer of model to ", paste0('20', input$selTime),
                             ' with ', predType, " output for GCM ", GCMlookup[input$selGCM],
                             " under RCP ", as.numeric(input$selRCP)/10.0, ".")
       } else if (input$selTimeVar == 'ecoclimate') {
-        logger %>% writeLog(hlSpp(curSp()), "Transferion of model to ", input$xfScenario,
+        logger %>% writeLog(hlSpp(curSp()), "Transfer of model to ", input$xfScenario,
                             ' with ', predType, " output for GCM ", input$xfAOGCM, ".")
       }
     }
@@ -477,7 +477,7 @@ xfer_time_module_server <- function(input, output, session, common) {
     common$update_component(tab = "Map")
   })
 
-  # Reset Transferion Extent button functionality
+  # Reset Transfer Extent button functionality
   observeEvent(input$goResetXfer, {
     spp[[curSp()]]$polyXfXY <- NULL
     spp[[curSp()]]$polyXfID <- NULL

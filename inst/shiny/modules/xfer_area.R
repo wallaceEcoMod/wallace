@@ -243,11 +243,11 @@ xfer_area_module_server <- function(input, output, session, common) {
         thr <- stats::quantile(occPredVals, probs = input$trainPresQuantile)
       }
       xferAreaThr <- xferArea > thr
-      logger %>% writeLog(hlSpp(curSp()), "Transferion of model to new area with threshold ",
+      logger %>% writeLog(hlSpp(curSp()), "Transfer of model to new area with threshold ",
                           input$threshold, ' (', formatC(thr, format = "e", 2), ').')
     } else {
       xferAreaThr <- xferArea
-      logger %>% writeLog(hlSpp(curSp()), "Transferion of model to new area with ",
+      logger %>% writeLog(hlSpp(curSp()), "Transfer of model to new area with ",
                           predType, ' output.')
     }
     raster::crs(xferAreaThr) <- raster::crs(envs())
@@ -305,7 +305,7 @@ xfer_area_module_server <- function(input, output, session, common) {
     common$update_component(tab = "Map")
   })
 
-  # Reset Transferion Extent button functionality
+  # Reset Transfer Extent button functionality
   observeEvent(input$goResetXfer, {
     spp[[curSp()]]$polyXfXY <- NULL
     spp[[curSp()]]$polyXfID <- NULL
