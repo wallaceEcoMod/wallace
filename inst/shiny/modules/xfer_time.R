@@ -252,7 +252,6 @@ xfer_time_module_server <- function(input, output, session, common) {
                         'resolutions >30 arc seconds.'))
       return()
     }
-
     if(!all(names(envs()) %in% paste0('bio', sprintf("%02d", 1:19)))) {
       nonBios <- names(envs())[!names(envs()) %in% paste0('bio', sprintf("%02d", 1:19))]
       logger %>%
@@ -260,6 +259,18 @@ xfer_time_module_server <- function(input, output, session, common) {
                  "Your model is using non-bioclimatic variables or non-conventional",
                  " names (i.e., ", paste0(nonBios, collapse = ", "),
                  "). You can not transfer to a New Time.")
+      return()
+    }
+    if(input$selTime == "") {
+      logger %>% writeLog(type = 'error', "Please select transfer time period.")
+      return()
+    }
+    if(input$selGCM == "") {
+      logger %>% writeLog(type = 'error', "Please select global circulation model.")
+      return()
+    }
+    if(input$selRCP == "") {
+      logger %>% writeLog(type = 'error', "Please select RCP.")
       return()
     }
 
