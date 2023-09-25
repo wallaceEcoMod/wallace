@@ -29,7 +29,7 @@
 #' polygonTest <- xfer_draw(polyXfXY = userDrawPoly, polyXfID,
 #'                          drawXfBuf)
 #'
-#' @return This functions returns a SpatialPolygonsDataFrame based on the user
+#' @return This functions returns a SpatialPolygons object based on the user
 #'   specified coordinates (drawn on map). This SpatialPolygonsDataFrame may be
 #'   larger than specified if drawBgBuf > 0.
 
@@ -41,8 +41,9 @@
 xfer_draw <- function(polyXfXY, polyXfID, drawXfBuf, logger = NULL, spN = NULL) {
   newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(polyXfXY)),
                                                    ID = polyXfID)))
-  bgExt <- rgeos::gBuffer(newPoly, width = drawXfBuf)
-  bgExt <- methods::as(bgExt, "SpatialPolygonsDataFrame")
+  newPoly.sf <- sf::st_as_sf(newPoly)
+  bgExt <- sf::st_buffer(newPoly.sf, dist = drawXfBuf)
+  bgExt <- sf::as_Spatial(bgExt)
   if (drawXfBuf == 0) {
     logger %>% writeLog(hlSpp(spN), 'Draw polygon without buffer.')
   } else {

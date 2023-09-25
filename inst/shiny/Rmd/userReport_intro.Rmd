@@ -10,7 +10,7 @@ knit_engines$set(asis = function(options) {
 knitr::opts_chunk$set(message = FALSE, warning = FALSE, eval = FALSE)
 ```
 
-Please find below the R code history from your *Wallace* v2.0.6 session. 
+Please find below the R code history from your *Wallace* v2.1.0 session. 
 
 You can reproduce your session results by running this R Markdown file in RStudio. 
 
@@ -25,7 +25,7 @@ Wallace uses the following R packages that must be installed and loaded before s
 library(spocc)
 library(spThin)
 library(dismo)
-library(rgeos)
+library(sf)
 library(ENMeval)
 library(wallace)
 ```

@@ -1,3 +1,10 @@
+wallace 2.1.0
+=============
+- Removed `rgeos` (package expiring)
+- Updated team bios
+- Added clarification to occs_queryDb guidance text
+- Added error msgs to xfer_time
+
 wallace 2.0.6
 =============
 - Removed `paleobioDB` (package off CRAN)

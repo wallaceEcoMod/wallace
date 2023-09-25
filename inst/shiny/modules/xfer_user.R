@@ -227,11 +227,12 @@ xfer_user_module_server <- function(input, output, session, common) {
 
     # ERRORS ####
     # Check that the extents of raster and extent of transfer intersects
-    if (!rgeos::gIntersects(spp[[curSp()]]$transfer$xfExt,
-                            methods::as(raster::extent(userXferEnvs),
-                                        'SpatialPolygons'))) {
+      Xfer_sfc <- sf::st_as_sfc(spp[[curSp()]]$transfer$xfExt) #convert poly to sfc
+      userXferEnvs_sp <- methods::as(raster::extent(userXferEnvs),'SpatialPolygons')
+      userXferEnvs_sfc <- sf::st_as_sfc(userXferEnvs_sp) #convert user envs to sfc
+    if (!sf::st_intersects(Xfer_sfc, userXferEnvs_sfc, sparse = FALSE)[1,1]) {
       logger %>%
-        writeLog(type = 'error', 'Extents do not overlap')
+        writeLog(type = 'error', 'Extents do not overlap.')
       return()
     }
 

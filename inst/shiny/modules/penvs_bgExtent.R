@@ -72,7 +72,7 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
       spp[[sp]]$procEnvs$bgExt <- bgExt
 
       # REFERENCES ####
-      knitcitations::citep(citation("rgeos"))
+      knitcitations::citep(citation("sf"))
       knitcitations::citep(citation("sp"))
 
       # METADATA ####
