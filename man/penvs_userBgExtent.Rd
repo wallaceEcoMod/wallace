@@ -34,7 +34,7 @@ shiny, otherwise leave the default NULL.}
 }
 \value{
 This function returns a SpatialPolygons object with the user
-  provided shape (+ a buffer is userBgBuf >0). The polygon will be at least
+  provided shape (+ a buffer if userBgBuf >0). The polygon will be at least
   large enough to contain all occurrences.
 }
 \description{

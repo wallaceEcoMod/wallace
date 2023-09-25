@@ -22,7 +22,7 @@ running in shiny, otherwise leave the default NULL}
 \item{spN}{character. Used to obtain species name for logger messages}
 }
 \value{
-This functions returns a SpatialPolygonsDataFrame based on the user
+This functions returns a SpatialPolygons object based on the user
   specified coordinates (drawn on map). This SpatialPolygonsDataFrame may be
   larger than specified if drawBgBuf > 0.
 }

@@ -24,7 +24,7 @@ shiny, otherwise leave the default NULL.}
 Obtain occurrence data. Used to obtain species name for logger messages.}
 }
 \value{
-A SpatialPolygonsDataFrame object that contains all occurrences from occs
+A SpatialPolygons object that contains all occurrences from occs
 }
 \description{
 This function generates a background area according to a user-

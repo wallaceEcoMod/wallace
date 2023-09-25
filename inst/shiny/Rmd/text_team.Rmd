@@ -15,7 +15,7 @@ output: html_document
 
 <img src="img/gonzalo.png" alt="gonzalo" style="width: 100px;"/>
 
-<a href="https://scholar.google.no/citations?user=xlxAr_EAAAAJ&hl=en" target="_blank">Gonzalo E. Pinilla-Buitrago</a> (co-lead developer) received his PhD from the CUNY Graduate Center and City College of New York. He is currently a Postdoctoral Researcher at Yale University.  
+<a href="https://scholar.google.no/citations?user=xlxAr_EAAAAJ&hl=en" target="_blank">Gonzalo E. Pinilla-Buitrago</a> (co-lead developer) received his PhD from the CUNY Graduate Center and City College of New York. He is currently a Postdoctoral Researcher at University of Connecticut.  
 <br>
 
 <img src="img/andrea.png" alt="andrea" style="width: 100px;"/>
