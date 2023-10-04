@@ -7,6 +7,7 @@ source("funcs/functions.R", local = TRUE)
 # shelf(dismo, dplyr, DT, ENMeval, jsonlite, knitr, leaflet, leaflet.extras, raster, RColorBrewer, rmarkdown, shinyjs, sp, spocc, zip)
 
 options(shiny.maxRequestSize=5000*1024^2)
+options(timeout=60*30)
 
 shinyServer(function(input, output, session) {
   # disable download buttons
