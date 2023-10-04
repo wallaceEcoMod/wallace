@@ -43,6 +43,7 @@ Imports:
   spocc (>= 0.8.0), 
   spThin, 
   zip
+  markdown
 Suggests: 
   knitr,
   rgbif (>= 3.3.0),
