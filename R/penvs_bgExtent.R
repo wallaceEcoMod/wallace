@@ -29,6 +29,7 @@
 #' @return A SpatialPolygons object that contains all occurrences from occs
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
+#' @author Bethany A. Johnson <bjohnso005@@citymail.cuny.edu>
 # @note
 
 #' @seealso \code{\link{penvs_userBgExtent}}, \code{\link{penvs_drawBgExtent}},
