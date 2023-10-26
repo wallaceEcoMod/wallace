@@ -53,7 +53,7 @@ Kass, J.M. and G.E. Pinilla-Buitrago. 18 May 2020. “Wallace Ecological Modelin
 
 Kass, J. M. 9 May 2018. "WALLACE: A flexible platform for reproducible modeling of species niches and distributions built for community expansion." Broadcast from the City College of New York, City University of New York. <a href="https://www.youtube.com/watch?v=00CSd9vx2CE&feature=youtu.be" target="_blank">Global Online Seminar #37 - Wallace</a>.
 
-*Para seminarios en español, los siguientes seminarios fueron organizados por Angela Cuervo como parte de las series Modelado de Distribuciones Potenciales y Analisis Espaciales.*
+*Para seminarios en español, los siguientes seminarios fueron organizados por Angela Cuervo como parte de la serie Modelado de Distribuciones Potenciales y Analisis Espaciales.*
 
 Paz, A. 3 October 2023. "Wallace EcoMod: Nuevas funcionalidades para aplicaciones en conservación". <a href="https://www.youtube.com/live/_X5fXqRJ_EY?si=xHbQSw9dnvQemqAJ" target="_blank">Seminarios 2023 - Wallace EcoMod</a>  
 
