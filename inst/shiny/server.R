@@ -521,8 +521,8 @@ function(input, output, session) {
         mSp <- curSp()
       }
       req(spp[[mSp]]$occDens)
-      ecospat::ecospat.plot.niche(spp[[mSp]]$occDens[[sp1]], title = spName(sp1))
-      ecospat::ecospat.plot.niche(spp[[mSp]]$occDens[[sp2]], title = spName(sp2))
+      ecospat.plot.nicheDEV(spp[[mSp]]$occDens[[sp1]], title = spName(sp1))
+      ecospat.plot.nicheDEV(spp[[mSp]]$occDens[[sp2]], title = spName(sp2))
       dev.off()
     }
   )

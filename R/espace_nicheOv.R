@@ -54,7 +54,7 @@
 #' }
 #'
 #' @return A list of 4 elements if all is set to TRUE. Elements are overlap
-#'   (Schoener's D), USE (ecopstat.niche.dyn.index), equiv and simil.
+#'   (Schoener's D), USE (ecospat.niche.dyn.index), equiv and simil.
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
 #' @author Olivier Broennimann <olivier.broennimann@@unil.ch>
 #' @seealso  \code{\link{espace_pca}} \code{\link{espace_occDens}}
@@ -80,7 +80,7 @@ espace_nicheOv <- function(z1, z2, iter = 100, equivalency = FALSE,
   if (equivalency == TRUE) {
     smartProgress(logger, message = "Calculating niche equivalency...", {
       nicheOv$equiv <- ecospat::ecospat.niche.equivalency.test(
-        z1, z2, iter, overlap.alternative = "higher"
+        z1, z2, rep = 100, overlap.alternative = "higher"
       )
     })
   }
@@ -88,7 +88,7 @@ espace_nicheOv <- function(z1, z2, iter = 100, equivalency = FALSE,
   if (similarity == TRUE) {
     smartProgress(logger, message = "Calculating niche similarity", {
       nicheOv$simil <- ecospat::ecospat.niche.similarity.test(
-        z1, z2, iter, overlap.alternative = "higher", rand.type = 1
+        z1, z2, rep = 100, overlap.alternative = "higher", rand.type = 1
       )
     })
   }

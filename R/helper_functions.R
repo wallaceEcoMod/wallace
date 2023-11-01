@@ -312,6 +312,50 @@ remEnvsValsNA <- function(occs, occsEnvsVals, spN, logger) {
 }
 
 ####################### #
+# ESPACE #
+####################### #
+#' @title ecospat.plot.nicheDEV
+#' @description For internal use. Plot occ density
+#' @param z A gridclim object for the species distribution created by ecospat.grid.clim.dyn()/espace_occDens().
+#' @param title A title for the plot.
+#' @param name.axis1 A label for the first axis.
+#' @param name.axis2 A label for the second axis.
+#' @param cor Correct the occurrence densities of the species by the prevalence of the environments in its range (TRUE = yes, FALSE = no).
+#' @keywords internal
+#' @export
+ecospat.plot.nicheDEV <- function(z, title = "", name.axis1 = "Axis 1", name.axis2 = "Axis 2", cor = FALSE) {
+  if (is.null(z$y)) {
+    R <- length(z$x)
+    x <- z$x
+    xx <- sort(rep(1:length(x), 2))
+    if (cor == FALSE)
+      y1 <- z$z.uncor/max(z$z.uncor)
+    if (cor == TRUE)
+      y1 <- z$z.cor/max(z$z.cor)
+    Y1 <- z$Z/max(z$Z)
+    yy1 <- sort(rep(1:length(y1), 2))[-c(1:2, length(y1) * 2)]
+    YY1 <- sort(rep(1:length(Y1), 2))[-c(1:2, length(Y1) * 2)]
+    plot(x, y1, type = "n", xlab = name.axis1, ylab = "density of occurrence")
+    graphics::polygon(x[xx], c(0, y1[yy1], 0, 0), col = "grey")
+    graphics::lines(x[xx], c(0, Y1[YY1], 0, 0))
+  }
+  if (!is.null(z$y)) {
+    if (cor == FALSE)
+      terra::plot(z$z.uncor,col=grDevices::gray(100:0 / 100),legend=FALSE, xlab = name.axis1,
+                  ylab = name.axis2,mar = c(3.1,3.1,2.1,3.1))
+    if (cor == TRUE)
+      terra::plot(z$z.cor,col=grDevices::gray(100:0 / 100),legend=FALSE, xlab = name.axis1,
+                  ylab = name.axis2,mar = c(3.1,3.1,2.1,3.1))
+    terra::contour(
+      z$Z, add = TRUE, levels = stats::quantile(z$Z[z$Z > 0], c(0, 0.5)),
+      drawlabels = FALSE, lty = c(1, 2)
+    )
+  }
+  title(title)
+}
+# end of espace. BAJ added 10/31/2023 after ecospat.plot.niche() from ecospat 4.0.0 wasn't working
+
+####################### #
 # VISUALIZE & TRANSFER #
 ####################### #
 #' @title getRasterVals
