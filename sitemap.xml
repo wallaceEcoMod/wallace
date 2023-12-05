@@ -4,6 +4,9 @@
     <loc>http://wallaceecomod.github.io/wallace/404.html</loc>
   </url>
   <url>
+    <loc>http://wallaceecomod.github.io/wallace/LICENSE-text.html</loc>
+  </url>
+  <url>
     <loc>http://wallaceecomod.github.io/wallace/articles/index.html</loc>
   </url>
   <url>
@@ -38,6 +41,9 @@
   </url>
   <url>
     <loc>http://wallaceecomod.github.io/wallace/reference/ecoClimate_select.html</loc>
+  </url>
+  <url>
+    <loc>http://wallaceecomod.github.io/wallace/reference/ecospat.plot.nicheDEV.html</loc>
   </url>
   <url>
     <loc>http://wallaceecomod.github.io/wallace/reference/envs_ecoClimate.html</loc>
