@@ -34,6 +34,7 @@
 #'   larger than specified if drawBgBuf > 0.
 
 #' @author Gonzalo Pinilla <gepinillab@@gmail.com>
+#' @author Bethany A. Johnson <bjohnso005@@citymail.cuny.edu>
 # @note
 #' @seealso  \code{\link{xfer_userEnvs}}
 #' @export

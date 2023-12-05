@@ -1,3 +1,9 @@
+wallace 2.1.1
+=============
+- Fixed bug in occ density grid & niche overlap
+- Updated licensing
+- Updated developers & pkg maintainer
+
 wallace 2.1.0
 =============
 - Removed `rgeos` (package expiring)

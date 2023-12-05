@@ -7,7 +7,7 @@ output: html_document
 
 <img src="logo.png" alt="logo" style="width: 150px; float:right; padding:10px;"/>
 
-Welcome to *Wallace*, a flexible application for reproducible ecological modeling, built for community expansion. The current version of *Wallace* (v2.1.0) steps the user through a full niche/distribution modeling analysis, from data acquisition to visualizing results.
+Welcome to *Wallace*, a flexible application for reproducible ecological modeling, built for community expansion. The current version of *Wallace* (v2.1.1) steps the user through a full niche/distribution modeling analysis, from data acquisition to visualizing results.
 
 The application is written in `R` with the web app development package `shiny`. Please find the stable version of *Wallace* on <a href="https://CRAN.R-project.org/package=wallace" target="_blank">CRAN</a>, and the development version on <a href="https://github.com/wallaceEcoMod/wallace" target="_blank">Github</a>. We also maintain a *Wallace* <a href="https://wallaceecomod.github.io/" target="_blank">website</a> that has some basic info, links, and will be updated with tutorial materials in the near future.
 
@@ -47,15 +47,17 @@ For more information and relevant links see our <a href="https://wallaceecomod.g
 
 *The following webinar was part of "ENM 2020", a free online course on ecological niche modeling, organized by Town Peterson. The full series can be found on YouTube: <a href="https://www.youtube.com/playlist?list=PLhEJuWmv8Jf67qSdifDvgOk5DOJsNNiam" target="_blank">ENM 2020</a>.*
 
-Kass, J.M. and G.E. Pinilla-Buitrago. 18 May 2020. “Wallace Ecological Modeling Application: flexible and reproducible modeling of species’ niches and distributions built for community expansion.” ENM 2020: Online course in ecological niche modeling (Peterson, A. T. editor), Week 19, Talk 2. <a href="https://youtu.be/kWNyNd2X1uo" target="_blank">Watch on YouTube</a>.  
+Kass, J.M. and G.E. Pinilla-Buitrago. 18 May 2020. “Wallace Ecological Modeling Application: flexible and reproducible modeling of species’ niches and distributions built for community expansion.” ENM 2020: Online course in ecological niche modeling (Peterson, A. T. editor), <a href="https://youtu.be/kWNyNd2X1uo" target="_blank">Week 19, Talk 2</a>.  
 
 *The following webinar was the "37th Global Online Biodiversity Informatics Seminar" in the Biodiversity Informatics Training Curriculum organized by Town Peterson.*
 
-Kass, J. M. 9 May 2018. "WALLACE: A flexible platform for reproducible modeling of species niches and distributions built for community expansion." Broadcast from the City College of New York, City University of New York. <a href="https://www.youtube.com/watch?v=00CSd9vx2CE&feature=youtu.be" target="_blank">Watch on YouTube</a>.
+Kass, J. M. 9 May 2018. "WALLACE: A flexible platform for reproducible modeling of species niches and distributions built for community expansion." Broadcast from the City College of New York, City University of New York. <a href="https://www.youtube.com/watch?v=00CSd9vx2CE&feature=youtu.be" target="_blank">Global Online Seminar #37 - Wallace</a>.
 
-*The following webinar was part of the "Modelado de Distribuciones Potenciales" series, organized by Angela Cuervo.*
+*Para seminarios en español, los siguientes seminarios fueron organizados por Angela Cuervo como parte de la serie Modelado de Distribuciones Potenciales y Analisis Espaciales.*
 
-Anderson, R. P. 21 May 2018. "El software Wallace para modelar nichos y distribuciones: Un coche con motor R, volante de ratón y cerebro de humano." Broadcast from the City College of New York, City University of New York. <a href="https://www.youtube.com/watch?v=0652g9PDKp4" target="_blank">Watch on YouTube</a>.  
+Paz, A. 3 October 2023. "Wallace EcoMod: Nuevas funcionalidades para aplicaciones en conservación". <a href="https://www.youtube.com/live/_X5fXqRJ_EY?si=xHbQSw9dnvQemqAJ" target="_blank">Seminarios 2023 - Wallace EcoMod</a>  
+
+Anderson, R. P. 21 May 2018. "El software Wallace para modelar nichos y distribuciones: Un coche con motor R, volante de ratón y cerebro de humano." Broadcast from the City College of New York, City University of New York. <a href="https://www.youtube.com/watch?v=0652g9PDKp4" target="_blank">Analisis espaciales: 2017 - El software Wallace</a>.  
 
 *For more videos, check out the <a href="https://www.youtube.com/channel/UCDSLCE5bmw12B7oqmlKk7rg" target="_blank">Wallace EcoMod YouTube channel</a>.*
 

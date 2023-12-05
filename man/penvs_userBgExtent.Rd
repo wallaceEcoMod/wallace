@@ -71,4 +71,6 @@ Jamie Kass <jamie.m.kass@gmail.com>
 Gonzalo E. Pinilla-Buitrago <gepinillab@gmail.com>
 
 Andrea Paz <paz.andreita@gmail.com>
+
+Bethany A. Johnson <bjohnso005@citymail.cuny.edu>
 }

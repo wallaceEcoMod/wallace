@@ -1,5 +1,5 @@
 component: "penvs"
 short_name: "Select Study Region"
 long_name: "Select Study Region by Extent"
-authors: "Jamie M. Kass, Bruno Vilela, Robert P. Anderson"
+authors: "Jamie M. Kass, Bruno Vilela, Bethany A. Johnson, Robert P. Anderson"
 package: [sp, sf]

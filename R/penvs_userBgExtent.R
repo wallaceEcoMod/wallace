@@ -39,6 +39,7 @@
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 #' @author Andrea Paz <paz.andreita@@gmail.com>
+#' @author Bethany A. Johnson <bjohnso005@@citymail.cuny.edu>
 # @note
 
 #' @seealso \code{\link{penvs_drawBgExtent}}, \code{\link{penvs_bgExtent}},
