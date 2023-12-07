@@ -37,7 +37,7 @@ Depends:
 Imports:
     dplyr (>= 1.0.2),
     DT (>= 0.5),
-    ecospat,
+    ecospat (>= 4.0.0),
     ENMeval (>= 2.0.3),
     knitcitations,
     leafem,
