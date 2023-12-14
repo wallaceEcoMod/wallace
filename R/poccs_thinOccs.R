@@ -1,3 +1,26 @@
+# Wallace EcoMod: a flexible platform for reproducible modeling of
+# species niches and distributions.
+# 
+# poccs_thinOccs.R
+# File author: Wallace EcoMod Dev Team. 2023.
+# --------------------------------------------------------------------------
+# This file is part of the Wallace EcoMod application
+# (hereafter “Wallace”).
+#
+# Wallace is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
+#
+# Wallace is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Wallace. If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------------
+#
 
 #' @title poocs_thinOccs Thin occurrences
 #' @description The function thins the observed occurrences by a user provided
@@ -11,7 +34,7 @@
 #'
 #' @param occs data frame of cleaned occurrences obtained from component occs:
 #'   Obtain occurrence data
-#' @param thinDist distance in meters to be used for thinning. Number must be
+#' @param thinDist distance in kilometers to be used for thinning. Number must be
 #'   positive.
 #' @param logger Stores all notification messages to be displayed in the Log
 #'   Window of Wallace GUI. Insert the logger reactive list here for running
@@ -29,7 +52,7 @@
 #' @return Output is a data frame of thinned occurences (all occurences at a
 #'   distance >thinDist) with the same columns as occs
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
-#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 #' @seealso \code{\link[spThin]{thin}}
 #' @export
 

@@ -1,3 +1,26 @@
+# Wallace EcoMod: a flexible platform for reproducible modeling of
+# species niches and distributions.
+# 
+# penvs_drawBgExtent.R
+# File author: Wallace EcoMod Dev Team. 2023.
+# --------------------------------------------------------------------------
+# This file is part of the Wallace EcoMod application
+# (hereafter “Wallace”).
+#
+# Wallace is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
+#
+# Wallace is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Wallace. If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------------
+#
 #' @title penvs_drawBgExtent: Draw background extent
 #' @description This function generates a background area according to a user
 #'   drawn polygon and provided buffer.
@@ -35,13 +58,14 @@
 #'                          ncol = 2)
 #' drawBgBf <- penvs_drawBgExtent(polyExtXY = expertDrawPoly, polyExtID = 1,
 #'                                drawBgBuf = 0.5, occs)
-#' @return This functions returns a SpatialPolygonsDataFrame based on the user
-#' specified coordinates (drawn on map). This SpatialPolygonsDataFrame may be
-#' larger than specified if drawBgBuf > 0. The SpatialPolygonsDataFrame will
+#' @return This functions returns a SpatialPolygons object based on the user
+#' specified coordinates (drawn on map). This SpatialPolygons object may be
+#' larger than specified if drawBgBuf > 0. The SpatialPolygons object will
 #' include all occurrences.
 
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
-#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
+#' @author Bethany A. Johnson <bjohnso005@@citymail.cuny.edu>
 # @note
 #' @seealso \code{\link{penvs_userBgExtent}}, \code{\link{penvs_bgExtent}},
 #' \code{\link{penvs_bgMask}} , \code{\link{penvs_bgSample}}
@@ -56,10 +80,12 @@ penvs_drawBgExtent <- function(polyExtXY, polyExtID, drawBgBuf, occs,
   newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(polyExtXY)),
                                                    ID = polyExtID)))
   intersect <- sp::over(pts, newPoly)
+  newPoly.sf <- sf::st_as_sf(newPoly)
+
   ptRem <- ifelse(all(!is.na(intersect)), 0, as.numeric(which(is.na(intersect))))
   if (ptRem == 0) {
-    bgExt <- rgeos::gBuffer(newPoly, width = drawBgBuf)
-    bgExt <- methods::as(bgExt, "SpatialPolygonsDataFrame")
+    bgExt <- sf::st_buffer(newPoly.sf, dist = drawBgBuf)
+    bgExt <- sf::as_Spatial(bgExt)
     if (drawBgBuf == 0) {
       logger %>% writeLog(hlSpp(spN), 'Draw polygon without buffer.')
     } else {

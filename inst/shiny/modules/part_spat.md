@@ -12,4 +12,4 @@ The user can choose one of three means of spatial partitioning: the 1) "block", 
 
 **REFERENCES**
 
-Muscarella, R., Galante, P.J., Soley-Guardia, M., Boria, R.A., Kass, J.M., Uriarte, M., & Anderson, R.P. (2014). ENMeval: An R package for conducting spatially independent evaluations and estimating optimal model complexity for Maxent ecological niche models. *Methods in Ecology and Evolution*, 5(11), 1198-1205. <a href="https://doi.org/10.1111/2041-210X.12261" target="_blank">https://doi.org/10.1111/2041-210X.12261</a>
+Muscarella, R., Galante, P.J., Soley-Guardia, M., Boria, R.A., Kass, J.M., Uriarte, M., & Anderson, R.P. (2014). ENMeval: An R package for conducting spatially independent evaluations and estimating optimal model complexity for Maxent ecological niche models. *Methods in Ecology and Evolution*, 5(11), 1198-1205. <a href="https://doi.org/10.1111/2041-210X.12261" target="_blank">DOI: 10.1111/2041-210X.12261</a>

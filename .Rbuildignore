@@ -12,3 +12,4 @@ cmip5*    # worldclim files
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$
+^LICENSE$

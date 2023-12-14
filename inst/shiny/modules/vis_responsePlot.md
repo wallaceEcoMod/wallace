@@ -14,5 +14,5 @@ Users must first select a model. Depending on the `ENMeval` settings selected in
 
 **REFERENCES**
 
-Elith, J., & Graham, C.H. (2009). Do they? How do they? WHY do they differ? On finding reasons for differing performances of species distribution models. *Ecography*, 32, 66-77. <a href="https://doi.org/10.1111/j.1600-0587.2008.05505.x" target="_blank">https://doi.org/10.1111/j.1600-0587.2008.05505.x</a>
+Elith, J., & Graham, C.H. (2009). Do they? How do they? WHY do they differ? On finding reasons for differing performances of species distribution models. *Ecography*, 32, 66-77. <a href="https://doi.org/10.1111/j.1600-0587.2008.05505.x" target="_blank">DOI: 10.1111/j.1600-0587.2008.05505.x</a>
 

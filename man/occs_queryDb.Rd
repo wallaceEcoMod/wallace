@@ -67,7 +67,7 @@ occs_queryDb(spName = "Bassaricyon alleni", occDb = "gbif", occNum = 10)
 \author{
 Jamie Kass <jamie.m.kass@gmail.com>
 
-Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago <gepinillab@gmail.com>
 
 Hannah Owens
 

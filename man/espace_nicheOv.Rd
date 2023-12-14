@@ -30,7 +30,7 @@ shiny, otherwise leave the default NULL.}
 }
 \value{
 A list of 4 elements if all is set to TRUE. Elements are overlap
-  (Schoener's D), USE (ecopstat.niche.dyn.index), equiv and simil.
+  (Schoener's D), USE (ecospat.niche.dyn.index), equiv and simil.
 }
 \description{
 Function evaluates niche overlap between the two species for

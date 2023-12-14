@@ -13,6 +13,6 @@ Furthermore, at present *Wallace* provides some information characterizing the d
 
 **REFERENCES**
 
-Fitzpatrick, M.C., & Hargrove, W.W. (2009). The projection of species distribution models and the problem of non-analog climate. *Biodiversity and Conservation*, 18, 2255. <a href="https://doi.org/10.1007/s10531-009-9584-8" target="_blank">https://doi.org/10.1007/s10531-009-9584-8</a>
+Fitzpatrick, M.C., & Hargrove, W.W. (2009). The projection of species distribution models and the problem of non-analog climate. *Biodiversity and Conservation*, 18, 2255. <a href="https://doi.org/10.1007/s10531-009-9584-8" target="_blank">DOI: 10.1007/s10531-009-9584-8</a>
 
-Williams, J.W., & Jackson, S.T. (2007). Novel climates, no-analog communities, and ecological surprises. *Frontiers in Ecology and the Environment*, 5(9), 475-482. <a href="https://doi.org/10.1890/070037" target="_blank">https://doi.org/10.1890/070037</a>
+Williams, J.W., & Jackson, S.T. (2007). Novel climates, no-analog communities, and ecological surprises. *Frontiers in Ecology and the Environment*, 5(9), 475-482. <a href="https://doi.org/10.1890/070037" target="_blank">DOI: 10.1890/070037</a>

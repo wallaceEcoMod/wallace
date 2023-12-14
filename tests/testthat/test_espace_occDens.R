@@ -52,17 +52,17 @@ test_that("output checks", {
    ## Test that all outputs but x and y and inputs (including occupancy, density
    ## and weights) are all raster layers
   #sp1
-  expect_is(TestOccDens[[sp.name1]]$z,'RasterLayer')
-  expect_is(TestOccDens[[sp.name1]]$Z,'RasterLayer')
-  expect_is(TestOccDens[[sp.name1]]$z.uncor,'RasterLayer')
-  expect_is(TestOccDens[[sp.name1]]$z.cor,'RasterLayer')
-  expect_is(TestOccDens[[sp.name1]]$w,'RasterLayer')
+  expect_is(TestOccDens[[sp.name1]]$z,'SpatRaster')
+  expect_is(TestOccDens[[sp.name1]]$Z,'SpatRaster')
+  expect_is(TestOccDens[[sp.name1]]$z.uncor,'SpatRaster')
+  expect_is(TestOccDens[[sp.name1]]$z.cor,'SpatRaster')
+  expect_is(TestOccDens[[sp.name1]]$w,'SpatRaster')
   #sp2
-  expect_is(TestOccDens[[sp.name2]]$z,'RasterLayer')
-  expect_is(TestOccDens[[sp.name2]]$Z,'RasterLayer')
-  expect_is(TestOccDens[[sp.name2]]$z.uncor,'RasterLayer')
-  expect_is(TestOccDens[[sp.name2]]$z.cor,'RasterLayer')
-  expect_is(TestOccDens[[sp.name2]]$w,'RasterLayer')
+  expect_is(TestOccDens[[sp.name2]]$z,'SpatRaster')
+  expect_is(TestOccDens[[sp.name2]]$Z,'SpatRaster')
+  expect_is(TestOccDens[[sp.name2]]$z.uncor,'SpatRaster')
+  expect_is(TestOccDens[[sp.name2]]$z.cor,'SpatRaster')
+  expect_is(TestOccDens[[sp.name2]]$w,'SpatRaster')
   })
 
 

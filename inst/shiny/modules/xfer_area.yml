@@ -1,5 +1,5 @@
 component: "xfer"
 short_name: "Transfer to New Extent"
 long_name: "Transfer to New Extent"
-authors: "Jamie M. Kass, Bruno Vilela, Gonzalo E. Pinilla-Buitrago, Robert P. Anderson"
+authors: "Jamie M. Kass, Bruno Vilela, Gonzalo E. Pinilla-Buitrago, Bethany A. Johnson, Robert P. Anderson"
 package: [dismo]

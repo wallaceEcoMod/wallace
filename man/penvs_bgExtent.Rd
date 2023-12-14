@@ -24,7 +24,7 @@ shiny, otherwise leave the default NULL.}
 Obtain occurrence data. Used to obtain species name for logger messages.}
 }
 \value{
-A SpatialPolygonsDataFrame object that contains all occurrences from occs
+A SpatialPolygons object that contains all occurrences from occs
 }
 \description{
 This function generates a background area according to a user-
@@ -51,5 +51,7 @@ bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
 \author{
 Jamie Kass <jamie.m.kass@gmail.com>
 
-Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago <gepinillab@gmail.com>
+
+Bethany A. Johnson <bjohnso005@citymail.cuny.edu>
 }

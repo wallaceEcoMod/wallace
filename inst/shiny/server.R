@@ -1,3 +1,26 @@
+# Wallace EcoMod: a flexible platform for reproducible modeling of
+# species niches and distributions.
+# 
+# server.R
+# File author: Wallace EcoMod Dev Team. 2023.
+# --------------------------------------------------------------------------
+# This file is part of the Wallace EcoMod application
+# (hereafter “Wallace”).
+#
+# Wallace is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
+#
+# Wallace is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Wallace. If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------------
+#
 function(input, output, session) {
   ########################## #
   # REACTIVE VALUES LISTS ####
@@ -453,11 +476,11 @@ function(input, output, session) {
       on.exit(setwd(owd))
       n <- curSp()
 
-      rgdal::writeOGR(obj = bgExt(),
+      sf::st_write(obj = sf::st_as_sf(bgExt()),
                       dsn = tmpdir,
                       layer = paste0(n, '_bgShp'),
                       driver = "ESRI Shapefile",
-                      overwrite_layer = TRUE)
+                      append = FALSE)
 
       exts <- c('dbf', 'shp', 'shx')
       fs <- paste0(n, '_bgShp.', exts)
@@ -578,8 +601,8 @@ function(input, output, session) {
         mSp <- curSp()
       }
       req(spp[[mSp]]$occDens)
-      ecospat::ecospat.plot.niche(spp[[mSp]]$occDens[[sp1]], title = spName(sp1))
-      ecospat::ecospat.plot.niche(spp[[mSp]]$occDens[[sp2]], title = spName(sp2))
+      ecospat.plot.nicheDEV(spp[[mSp]]$occDens[[sp1]], title = spName(sp1))
+      ecospat.plot.nicheDEV(spp[[mSp]]$occDens[[sp2]], title = spName(sp2))
       dev.off()
     }
   )
@@ -828,7 +851,7 @@ function(input, output, session) {
       tmpdir <- tempdir()
       owd <- setwd(tmpdir)
       on.exit(setwd(owd))
-      if(require(rgdal)) {
+      if(require(sf)) {
         if (input$predFileType == 'png') {
           req(mapPred())
           if (!webshot::is_phantomjs_installed()) {
@@ -899,7 +922,7 @@ function(input, output, session) {
         }
       } else {
         logger %>%
-          writeLog("Please install the rgdal package before downloading rasters.")
+          writeLog("Please install the sf package before downloading rasters.")
       }
     }
   )
@@ -923,11 +946,11 @@ function(input, output, session) {
       owd <- setwd(tmpdir)
       on.exit(setwd(owd))
       n <- curSp()
-      rgdal::writeOGR(obj = spp[[curSp()]]$transfer$xfExt,
+      sf::st_write(obj = sf::st_as_sf(spp[[curSp()]]$transfer$xfExt),
                       dsn = tmpdir,
                       layer = paste0(n, '_xferShp'),
                       driver = "ESRI Shapefile",
-                      overwrite_layer = TRUE)
+                      append = FALSE)
 
       exts <- c('dbf', 'shp', 'shx')
       fs <- paste0(n, '_xferShp.', exts)
@@ -981,7 +1004,7 @@ function(input, output, session) {
       tmpdir <- tempdir()
       owd <- setwd(tmpdir)
       on.exit(setwd(owd))
-      if(require(rgdal)) {
+      if(require(sf)) {
         if (input$xferFileType == 'png') {
           req(mapXfer())
           if (!webshot::is_phantomjs_installed()) {
@@ -1054,7 +1077,7 @@ function(input, output, session) {
           file.rename(r@file@name, file)
         }
       } else {
-        logger %>% writeLog("Please install the rgdal package before downloading rasters.")
+        logger %>% writeLog("Please install the sf package before downloading rasters.")
       }
     }
   )
@@ -1070,7 +1093,7 @@ function(input, output, session) {
       tmpdir <- tempdir()
       owd <- setwd(tmpdir)
       on.exit(setwd(owd))
-      if(require(rgdal)) {
+      if(require(sf)) {
         req(spp[[curSp()]]$transfer$mess, spp[[curSp()]]$transfer$xfExt)
         mess <- spp[[curSp()]]$transfer$mess
         if (input$messFileType == 'png') {
@@ -1137,7 +1160,7 @@ function(input, output, session) {
           file.rename(r@file@name, file)
         }
       } else {
-        logger %>% writeLog("Please install the rgdal package before downloading rasters.")
+        logger %>% writeLog("Please install the sf package before downloading rasters.")
       }
     }
   )

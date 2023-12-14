@@ -1,3 +1,26 @@
+# Wallace EcoMod: a flexible platform for reproducible modeling of
+# species niches and distributions.
+# 
+# espace_occDens.R
+# File author: Wallace EcoMod Dev Team. 2023.
+# --------------------------------------------------------------------------
+# This file is part of the Wallace EcoMod application
+# (hereafter “Wallace”).
+#
+# Wallace is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
+#
+# Wallace is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Wallace. If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------------
+#
 
 #' @title Occurrence density grid
 #' @description calculates the part of environmental space more densely
@@ -48,7 +71,7 @@
 #' }
 #'
 #' @return Returns a list of 2 lists (one for each species). Each list is an
-#'   ecospat noche object that contains 10 species specific slots with
+#'   ecospat niche object that contains 10 species specific slots with
 #'   information outputed by ecospat::grid.clim.dyn. z.uncor is the density of
 #'   occurrence of the species and z.cor the occupancy of the environment by
 #'   the species. It has the input parameters as individual slots.

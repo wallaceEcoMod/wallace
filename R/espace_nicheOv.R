@@ -1,3 +1,26 @@
+# Wallace EcoMod: a flexible platform for reproducible modeling of
+# species niches and distributions.
+# 
+# espace_nicheOv.R
+# File author: Wallace EcoMod Dev Team. 2023.
+# --------------------------------------------------------------------------
+# This file is part of the Wallace EcoMod application
+# (hereafter “Wallace”).
+#
+# Wallace is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
+#
+# Wallace is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Wallace. If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------------
+#
 #' @title espace_nicheOv Niche Overlap
 #' @description Function evaluates niche overlap between the two species for
 #'   which the occurrence density grid was computed
@@ -54,7 +77,7 @@
 #' }
 #'
 #' @return A list of 4 elements if all is set to TRUE. Elements are overlap
-#'   (Schoener's D), USE (ecopstat.niche.dyn.index), equiv and simil.
+#'   (Schoener's D), USE (ecospat.niche.dyn.index), equiv and simil.
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
 #' @author Olivier Broennimann <olivier.broennimann@@unil.ch>
 #' @seealso  \code{\link{espace_pca}} \code{\link{espace_occDens}}
@@ -80,7 +103,7 @@ espace_nicheOv <- function(z1, z2, iter = 100, equivalency = FALSE,
   if (equivalency == TRUE) {
     smartProgress(logger, message = "Calculating niche equivalency...", {
       nicheOv$equiv <- ecospat::ecospat.niche.equivalency.test(
-        z1, z2, iter, overlap.alternative = "higher"
+        z1, z2, rep = 100, overlap.alternative = "higher"
       )
     })
   }
@@ -88,7 +111,7 @@ espace_nicheOv <- function(z1, z2, iter = 100, equivalency = FALSE,
   if (similarity == TRUE) {
     smartProgress(logger, message = "Calculating niche similarity", {
       nicheOv$simil <- ecospat::ecospat.niche.similarity.test(
-        z1, z2, iter, overlap.alternative = "higher", rand.type = 1
+        z1, z2, rep = 100, overlap.alternative = "higher", rand.type = 1
       )
     })
   }

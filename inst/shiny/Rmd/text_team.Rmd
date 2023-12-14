@@ -15,17 +15,20 @@ output: html_document
 
 <img src="img/gonzalo.png" alt="gonzalo" style="width: 100px;"/>
 
-<a href="https://scholar.google.no/citations?user=xlxAr_EAAAAJ&hl=en" target="_blank">Gonzalo E. Pinilla-Buitrago</a> (co-lead developer) is a PhD candidate at the CUNY Graduate Center and City College of New York.  
+<a href="https://scholar.google.no/citations?user=xlxAr_EAAAAJ&hl=en" target="_blank">Gonzalo E. Pinilla-Buitrago</a> (co-lead developer) received his PhD from the CUNY Graduate Center and City College of New York. He is currently a Postdoctoral Researcher at University of Connecticut.  
 <br>
 
 <img src="img/andrea.png" alt="andrea" style="width: 100px;"/>
 
-<a href="https://andrepazv.github.io" target="_blank">Andrea Paz</a> (developer) received her PhD at CUNY Graduate Center and City College of New York and is now a Postdoctoral Researcher at the Crowther Lab in ETH Zürich.  
+<a href="https://andrepazv.github.io" target="_blank">Andrea Paz</a> (developer) received her PhD at CUNY Graduate Center and City College of New York, after which she was a Postdoctoral Researcher at the Crowther Lab in ETH Zürich. She is now an Assistant Professor at the Biological Sciences Department, University of Montréal.  
 <br>
 
 <img src="img/bethany.jpg" alt="bethany" style="width: 100px;"/>
 
-<a href="https://github.com/bjohnso005" target="_blank">Bethany A. Johnson</a> (developer) is a Master's student at the City College of New York.  
+<a href="https://github.com/bjohnso005" target="_blank">Bethany A. Johnson</a> (developer) received her MS in Biology from the City College of New York and is currently a Visiting Scientist at the Center for Biodiversity & Conservation at the American Museum of Natural History.  
+<br>
+
+<a href="https://www.amnh.org/research/staff-directory/daniel-lopez-lozano" target="_blank">Daniel López Lozano</a> (developer) is a Biodiversity Informatics Specialist at the American Museum of Natural History's Center for Biodiversity & Conservation.   
 <br>
 
 <img src="img/valentina.png" alt="valentina" style="width: 100px;"/>
@@ -57,7 +60,7 @@ output: html_document
 
 <img src="img/mary.png" alt="mary" style="width: 100px;"/>
 
-<a href="https://www.amnh.org/research/staff-directory/mary-e-blair" target="_blank">Mary E. Blair</a> (co-manager) is the Director of Biodiversity Informatics Research at the Center for Biodiversity and Conservation at the American Museum of Natural History.  
+<a href="https://www.amnh.org/research/staff-directory/mary-e-blair" target="_blank">Mary E. Blair</a> (co-manager) is the Director of Biodiversity Informatics Research at the Center for Biodiversity & Conservation at the American Museum of Natural History.  
 <br>
 
 ## Contributors
@@ -74,7 +77,7 @@ Sarah Meenan (contributor) completed her undergraduate degree from the City Coll
 
 <img src="img/peteG.jpg" alt="peteG" style="width: 100px;"/>
 
-<a href="https://www.amnh.org/research/staff-directory/peter-galante" target="_blank">Peter J. Galante</a> (contributor) was a Biodiversity Informatics Scientist at the Center for Biodiversity and Conservation at the American Museum of Natural History and now works as a Project Manager for Storke, LLC, a renewable energy company.
+<a href="https://www.amnh.org/research/staff-directory/peter-galante" target="_blank">Peter J. Galante</a> (contributor) was formerly a Biodiversity Informatics Scientist at the Center for Biodiversity & Conservation at the American Museum of Natural History and now works as a Project Manager for Storke, LLC, a renewable energy company.
 <br>
 
 <img src="img/brianM.jpeg" alt="brianM" style="width: 100px;"/>

@@ -1,3 +1,28 @@
+wallace 2.1.1
+=============
+- Fixed bug in occ density grid & niche overlap
+- Updated licensing
+- Updated developers & pkg maintainer
+
+wallace 2.1.0
+=============
+- Removed `rgeos` (package expiring)
+- Updated team bios
+- Added clarification to occs_queryDb guidance text
+- Added error msgs to xfer_time
+
+wallace 2.0.6
+=============
+- Removed `paleobioDB` (package off CRAN)
+- Removed `rgdal` (package expiring)
+- Changed Maintainer e-mail
+
+wallace 2.0.5
+=============
+- added try() to test_envs_worldclim.R
+- fixed broken links in guidance texts refs
+- fixed typo in thinOccs documentation
+
 wallace 2.0.4
 =============
 - Added Spanish translation of vignette
