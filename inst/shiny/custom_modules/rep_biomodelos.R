@@ -109,11 +109,11 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
                              c(args = lapply(seq_along(spp[[bioSp()]]$mask$expertPoly),
                                              function(i){spp[[bioSp()]]$mask$expertPoly[i][[1]]}),
                                makeUniqueIDs = TRUE))
-      rgdal::writeOGR(obj = expertPolys,
+      sf::st_write(obj = sf::st_as_sf(expertPolys),
                       dsn = tmpdir,
                       layer = paste0(bioSp(), '_expertPolygonsShp'),
                       driver = "ESRI Shapefile",
-                      overwrite_layer = TRUE)
+                      append = FALSE)
       extsExpPoly <- c('dbf', 'shp', 'shx')
       fsExpPoly <- file.path(tmpdir, paste0(bioSp(), '_expertPolygonsShp.', extsExpPoly))
       zip::zipr(zipfile = tmpExpPoly , files = fsExpPoly)
@@ -122,11 +122,11 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
     # Create extent shapefile
     # add req ext
     tmpExt <- file.path(tmpdir, paste0(bioSp(), '_projectionExtentShp.zip'))
-    rgdal::writeOGR(obj = spp[[bioSp()]]$procEnvs$bgExt,
+    sf::st_write(obj = sf::st_as_sf(spp[[bioSp()]]$procEnvs$bgExt),
                     dsn = tmpdir,
                     layer = paste0(bioSp(), '_bgShp'),
                     driver = "ESRI Shapefile",
-                    overwrite_layer = TRUE)
+                    append = FALSE)
     exts <- c('dbf', 'shp', 'shx')
     fsExt <- file.path(tmpdir, paste0(bioSp(), '_bgShp.', exts))
     zip::zipr(zipfile = tmpExt, files = fsExt)

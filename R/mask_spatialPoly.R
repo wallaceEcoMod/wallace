@@ -40,7 +40,8 @@ mask_spatialPoly <- function(bgShp_path, bgShp_name, sdm,
       file.rename(bgShp_path, file.path(pathdir, bgShp_name))
     }
     smartProgress(logger, message = "Uploading shapefile ...", {
-      polyData <- rgdal::readOGR(file.path(pathdir, bgShp_name)[i])
+      polyData <- sf::st_read(file.path(pathdir, bgShp_name)[i])
+      polyData <- sf::as_Spatial(polyData)
     })
 
   } else {

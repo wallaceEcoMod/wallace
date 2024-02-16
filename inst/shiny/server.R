@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # server.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -1196,7 +1196,7 @@ function(input, output, session) {
       paste0(curSp(), '_mask.', ext)
     },
     content = function(file) {
-      if (require(rgdal)) {
+      if (require(sf)) {
         req(spp[[curSp()]]$mask$prediction)
         maskRaster <- spp[[curSp()]]$mask$prediction
         maskValues <- terra::spatSample(x = terra::rast(maskRaster),
@@ -1257,7 +1257,7 @@ function(input, output, session) {
         }
       } else {
         logger %>%
-          writeLog("Please install the rgdal package before downloading rasters.")
+          writeLog("Please install the sf package before downloading rasters.")
       }
     }
   )
@@ -1274,11 +1274,11 @@ function(input, output, session) {
                              c(args = lapply(seq_along(spp[[curSp()]]$mask$expertPoly),
                                              function(i){spp[[curSp()]]$mask$expertPoly[i][[1]]}),
                                makeUniqueIDs = TRUE))
-      rgdal::writeOGR(obj = expertPolys,
+      sf::st_write(obj = sf::st_as_sf(expertPolys),
                       dsn = tmpdir,
                       layer = paste0(n, '_maskExpShp'),
                       driver = "ESRI Shapefile",
-                      overwrite_layer = TRUE)
+                      append = FALSE)
       exts <- c('dbf', 'shp', 'shx')
       fs <- paste0(n, '_maskExpShp.', exts)
       zip::zipr(zipfile = file, files = fs)
@@ -1328,7 +1328,7 @@ function(input, output, session) {
       paste0(curSp(), "_AOO", '.', ext)
     },
     content = function(file) {
-      if(require(rgdal)) {
+      if(require(sf)) {
         if (input$AOOFileType == 'png') {
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
@@ -1381,7 +1381,7 @@ function(input, output, session) {
           file.rename(r@file@name, file)
         }
       } else {
-        logger %>% writeLog("Please install the rgdal package before downloading rasters.")
+        logger %>% writeLog("Please install the sf package before downloading rasters.")
       }
     }
   )
@@ -1393,7 +1393,7 @@ function(input, output, session) {
       paste0(curSp(), "_overlap", '.', ext)
     },
     content = function(file) {
-      if(require(rgdal)) {
+      if(require(sf)) {
         if (input$OverlapFileType == 'png') {
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
@@ -1427,7 +1427,7 @@ function(input, output, session) {
           if (file.exists(paste0(file, ".zip"))) {file.rename(paste0(file, ".zip"), file)}
         }
       } else {
-        logger %>% writeLog("Please install the rgdal package before downloading rasters.")
+        logger %>% writeLog("Please install the sf package before downloading rasters.")
       }
     }
   )
@@ -1486,7 +1486,7 @@ function(input, output, session) {
       paste0("richness", '.', ext)
     },
     content = function(file) {
-      if(require(rgdal)) {
+      if(require(sf)) {
         if (input$richFileType == 'png') {
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
@@ -1529,7 +1529,7 @@ function(input, output, session) {
           file.rename(r@file@name, file)
         }
       } else {
-        logger %>% writeLog("Please install the rgdal package before downloading rasters.")
+        logger %>% writeLog("Please install the sf package before downloading rasters.")
       }
     }
   )
@@ -1544,7 +1544,7 @@ function(input, output, session) {
 
     },
     content = function(file) {
-      if(require(rgdal)) {
+      if(require(sf)) {
         if (input$endFileType == 'png') {
           if (!webshot::is_phantomjs_installed()) {
             logger %>%
@@ -1590,7 +1590,7 @@ function(input, output, session) {
           file.rename(r@file@name, file)
         }
       } else {
-        logger %>% writeLog("Please install the rgdal package before downloading rasters.")
+        logger %>% writeLog("Please install the sf package before downloading rasters.")
       }
     }
   )
