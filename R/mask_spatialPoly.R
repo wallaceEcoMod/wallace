@@ -5,7 +5,7 @@
 #' x
 #'
 #' @param bgShp_path Path to the user provided shapefile
-#' @param bgShp_name Name of the user porvided shapefile
+#' @param bgShp_name Name of the user provided shapefile
 #' @param sdm x
 #' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 #' otherwise leave the default NULL
@@ -74,8 +74,9 @@ mask_spatialPoly <- function(bgShp_path, bgShp_name, sdm,
     polR <- sf::st_as_sf(terra::as.polygons(sdm, trunc = TRUE, dissolve = TRUE,
                                             values = TRUE),
                          as_points = FALSE, merge = TRUE)
-    polyData <- rgeos::gBuffer(polyData, byid = TRUE, width = 0)
+   # polyData <- rgeos::gBuffer(polyData, byid = TRUE, width = 0)
     polyData <- sf::st_as_sf(polyData)
+    polyData <- sf::st_buffer(polyData, dist = 0) # BAJ not sure why buffer of 0 is needed?
     polyData <- replace(polyData, is.na(polyData), values = "NA")
     # Check for NAs
     v <- terra::extract(sdm, polyData)
