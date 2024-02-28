@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # xfer_time.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -284,18 +284,33 @@ xfer_time_module_server <- function(input, output, session, common) {
                  "). You can not transfer to a New Time.")
       return()
     }
-    if(input$selTime == "") {
-      logger %>% writeLog(type = 'error', "Please select transfer time period.")
-      return()
+    #BAJ
+    if (input$selTimeVar == 'worldclim') {
+      # warnings for wc selections
+      if(input$selTime == "") {
+        logger %>% writeLog(type = 'error', "Please select transfer time period.")
+        return()
+        }
+      if(input$selGCM == "") {
+        logger %>% writeLog(type = 'error', "Please select global circulation model.")
+        return()
+        }
+      if(input$selRCP == "") {
+        logger %>% writeLog(type = 'error', "Please select RCP.")
+        return()
+        }
+    } else if (input$selTimeVar == 'ecoclimate') {
+      # warnings for ecoclimate selections
+      if(input$xfAOGCM == "") {
+        logger %>% writeLog(type = 'error', "Please select transfer AOGCM.")
+        return()
+      }
+      if(input$xfScenario == "") {
+        logger %>% writeLog(type = 'error', "Please select transfer temporal scenario.")
+        return()
+      }
     }
-    if(input$selGCM == "") {
-      logger %>% writeLog(type = 'error', "Please select global circulation model.")
-      return()
-    }
-    if(input$selRCP == "") {
-      logger %>% writeLog(type = 'error', "Please select RCP.")
-      return()
-    }
+
 
         # DATA ####
     if (input$selTimeVar == 'worldclim') {

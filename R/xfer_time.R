@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # xfer_time.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -95,6 +95,7 @@
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 #' @author Andrea Paz <paz.andreita@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
+#' @author Bethany A. Johnson <bjohnso005@@citymail.cuny.edu>
 #' @seealso \code{\link[dismo]{predict}}, \code{\link{xfer_time}}
 #' \code{\link{xfer_userEnvs}}
 #' @export
