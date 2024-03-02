@@ -21,6 +21,7 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
 
   spp <- common$spp
   bioSp <- common$bioSp
+  curSp <- common$curSp
 
   output$bioSpUI <- renderUI({
     # check that a species is in the list already -- if not, don't proceed
@@ -36,15 +37,23 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
   })
 
   observeEvent(input$pushBiomod, {
+    if (is.null(spp[[curSp()]]$visualization$mapPred)) {
+      #add warning
+      shinyalert::shinyalert(
+        "You need a map prediction built on Wallace in order to push payload to BioModelos. ",
+        type = "error")
+      return()
+    } else {
+
     if (spp[[bioSp()]]$rmm$data$occurrence$sources != "Biomodelos") {
       shinyalert::shinyalert(
-        "You must submit a model built with occurrences from BioModelos (**)",
+        "You must submit a model built with occurrences from BioModelos. ",
         type = "error")
       return()
     }
     if (is.null(spp[[bioSp()]]$biomodelos$prediction)) {
       shinyalert::shinyalert(
-        "You need a map prediction build on Wallace before pushing to BioModelos (**).",
+        "You need a map prediction built on Wallace before pushing to BioModelos. ",
         type = "error")
       return()
     }
@@ -302,6 +311,7 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
         "API key is not working.",
         type = "error")
       return()
+    }
     }
   })
 }
