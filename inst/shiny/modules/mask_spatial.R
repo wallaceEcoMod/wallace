@@ -163,7 +163,9 @@ mask_spatial_module_server <- function(input, output, session, common) {
     # FUNCTION CALL ####
     selectedPoly <- subset(spatialMask,
                            spatialMask[[maskFields()]] %in% maskAttribute())
-    dissPoly <- rgeos::gUnaryUnion(selectedPoly)
+    selectedPoly_sf <- sf::st_as_sf(selectedPoly)
+    dissPoly <- sf::st_union(selectedPoly_sf)
+    dissPoly <- sf::as_Spatial(dissPoly)
 
     if (is.null(spp[[curSp()]]$mask$prediction)) {
       maskPred <- spp[[curSp()]]$mask$origPred

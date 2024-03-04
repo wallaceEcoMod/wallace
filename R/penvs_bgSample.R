@@ -1,3 +1,26 @@
+# Wallace EcoMod: a flexible platform for reproducible modeling of
+# species niches and distributions.
+# 
+# penvs_bgSample.R
+# File author: Wallace EcoMod Dev Team. 2023.
+# --------------------------------------------------------------------------
+# This file is part of the Wallace EcoMod application
+# (hereafter “Wallace”).
+#
+# Wallace is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
+#
+# Wallace is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Wallace. If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------------
+#
 
 #' @title penvs_bgSample Sample background points
 #' @description This function samples background points from an area determined
@@ -43,7 +66,7 @@
 #' Maximum number of points is equal to non NA cells in each layer of the
 #' reference brick or stack.
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
-#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 #' @seealso \code{\link{penvs_bgMask}}, \code{\link{penvs_bgExtent}}
 #'   \code{\link{penvs_userBgExtent}}, \code{\link{penvs_drawBgExtent}},
 #'   \code{\link[dismo]{randomPoints}}

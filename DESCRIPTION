@@ -1,6 +1,6 @@
 Package: wallace
-Version: 2023.03.16
-Date: 2023-03-16
+Version: 2024.02.23
+Date: 2024-02-23
 Title: A Modular Platform for Reproducible Modeling of Species Niches 
     and Distributions
 Description: The 'shiny' application Wallace is a modular platform for 
@@ -13,14 +13,14 @@ Description: The 'shiny' application Wallace is a modular platform for
     website: <https://wallaceecomod.github.io/wallace/articles/tutorial-v2.html>.
 Authors@R: 
     c(person("Jamie M.", "Kass", email = "jamie.kass@oist.jp", role = "aut"),
-    person("Gonzalo E.", "Pinilla-Buitrago", email = "gpinillabuitrago@gradcenter.cuny.edu", role = c("aut", "cre")),
+    person("Gonzalo E.", "Pinilla-Buitrago", email = "gepinillab@gmail.com", role = "aut"),
 	 	person("Andrea", "Paz", email = "paz.andreita@gmail.com", role = "aut"),
 	 	person("Bethany A.", "Johnson", email = "bjohnso005@citymail.cuny.edu", role = "aut"),
 	 	person("Valentina", "Grisales-Betancur", email = "vgrisale@eafit.edu.co", role = "aut"),
 	  person("Dean", "Attali", email = "daattali@gmail.com", role = "aut"),
 	  person("Matthew E.", "Aiello-Lammens", email = "matt.lammens@gmail.com", role = "aut"),
 	  person("Cory", "Merow", email = "corymerow@gmail.com", role = "aut"),
-	  person("Mary E.", "Blair", email = "mblair1@amnh.org", role = "aut"),
+	  person("Mary E.", "Blair", email = "mblair1@amnh.org", role = c("aut", "cre")),
 	  person("Robert P.", "Anderson", email = "randerson@ccny.cuny.edu", role = "aut"),
 	  person("Sarah I.", "Meenan", email = "sarah.meenan@gmail.com", role = "ctb"),
 	  person("Olivier", "Broennimann", email = "olivier.broennimann@unil.ch", role = "ctb"),
@@ -35,10 +35,10 @@ Depends:
     shiny (>= 1.6.0),
     leaflet (>= 2.0.2)
 Imports:
-    dplyr (>= 1.0.2),
     changeRangeR,
+    dplyr (>= 1.0.2),
     DT (>= 0.5),
-    ecospat,
+    ecospat (>= 4.0.0),
     ENMeval (>= 2.0.3),
     knitcitations,
     leafem,
@@ -46,11 +46,15 @@ Imports:
     magrittr,
     maskRangeR,
     RColorBrewer,
+    rJava,
     rlang,
     rmarkdown,
+    sf,
     shinyalert,
     shinyjs,
     shinyWidgets (>= 0.6.0),
+    spocc (>= 1.2.0),
+    spThin,
     terra (>= 1.6-7),
     zip
 Suggests: 
@@ -60,6 +64,7 @@ Suggests:
     geojsonsf,
     glue,
     httr,
+    glue,
     jsonlite,
     knitr,
     lubridate,
@@ -67,20 +72,15 @@ Suggests:
     maxnet,
     methods,
     occCite,
-    paleobioDB,
     rangeModelMetadata,
     raster,
     rgbif (>= 3.3.0),
-    rgdal,
-    rgeos,
-    rJava,
     sf,
     sp,
-    spThin,
-    spocc (>= 1.2.0),
     stars,
     testthat,
-    tidyselect
+    tidyselect,
+    tools
 Remotes: cmerow/changeRangeR
 License: GPL-3
 URL: http://wallaceecomod.github.io/wallace/,

@@ -1,3 +1,26 @@
+# Wallace EcoMod: a flexible platform for reproducible modeling of
+# species niches and distributions.
+# 
+# xfer_time.R
+# File author: Wallace EcoMod Dev Team. 2023.
+# --------------------------------------------------------------------------
+# This file is part of the Wallace EcoMod application
+# (hereafter “Wallace”).
+#
+# Wallace is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
+#
+# Wallace is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Wallace. If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------------
+#
 xfer_time_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
@@ -223,7 +246,7 @@ xfer_time_module_server <- function(input, output, session, common) {
       polyXf <- spp[[curSp()]]$procEnvs$bgExt
       logger %>% writeLog(
         hlSpp(curSp()),
-        'Transferion extent equal to current extent region.')
+        'Transfer extent equal to current extent region.')
     }
     # LOAD INTO SPP ####
     spp[[curSp()]]$transfer$xfExt <- polyXf
@@ -252,7 +275,6 @@ xfer_time_module_server <- function(input, output, session, common) {
                         'resolutions >30 arc seconds.'))
       return()
     }
-
     if(!all(names(envs()) %in% paste0('bio', sprintf("%02d", 1:19)))) {
       nonBios <- names(envs())[!names(envs()) %in% paste0('bio', sprintf("%02d", 1:19))]
       logger %>%
@@ -260,6 +282,18 @@ xfer_time_module_server <- function(input, output, session, common) {
                  "Your model is using non-bioclimatic variables or non-conventional",
                  " names (i.e., ", paste0(nonBios, collapse = ", "),
                  "). You can not transfer to a New Time.")
+      return()
+    }
+    if(input$selTime == "") {
+      logger %>% writeLog(type = 'error', "Please select transfer time period.")
+      return()
+    }
+    if(input$selGCM == "") {
+      logger %>% writeLog(type = 'error', "Please select global circulation model.")
+      return()
+    }
+    if(input$selRCP == "") {
+      logger %>% writeLog(type = 'error', "Please select RCP.")
       return()
     }
 
@@ -310,11 +344,12 @@ xfer_time_module_server <- function(input, output, session, common) {
 
     # ERRORS ####
     # Check that the extents of raster and extent of transfer intersects
-    if (!rgeos::gIntersects(spp[[curSp()]]$transfer$xfExt,
-                            methods::as(raster::extent(xferTimeEnvs),
-                                        'SpatialPolygons'))) {
+      Xfer_sfc <- sf::st_as_sfc(spp[[curSp()]]$transfer$xfExt) #convert poly to sfc
+      xferTimeEnvs_sp <- methods::as(raster::extent(xferTimeEnvs),'SpatialPolygons')
+      xferTimeEnvs_sfc <- sf::st_as_sfc(xferTimeEnvs_sp) #convert xfer envs to sfc
+    if (!sf::st_intersects(Xfer_sfc, xferTimeEnvs_sfc, sparse = FALSE)[1,1]) {
       logger %>%
-        writeLog(type = 'error', 'Extents do not overlap')
+        writeLog(type = 'error', 'Extents do not overlap.')
       return()
     }
 
@@ -359,13 +394,13 @@ xfer_time_module_server <- function(input, output, session, common) {
       }
       xferTimeThr <- xferTime > thr
       if (input$selTimeVar == 'worldclim') {
-        logger %>% writeLog(hlSpp(curSp()), "Transferion of model to ", paste0('20', input$selTime),
+        logger %>% writeLog(hlSpp(curSp()), "Transfer of model to ", paste0('20', input$selTime),
                             ' with threshold ', input$threshold, ' (',
                             formatC(thr, format = "e", 2), ") for GCM ",
                             GCMlookup[input$selGCM], " under RCP ",
                             as.numeric(input$selRCP)/10.0, ".")
       } else if (input$selTimeVar == 'ecoclimate') {
-        logger %>% writeLog(hlSpp(curSp()), "Transferion of model to ", input$xfScenario,
+        logger %>% writeLog(hlSpp(curSp()), "Transfer of model to ", input$xfScenario,
                             ' with threshold ', input$threshold, ' (',
                             formatC(thr, format = "e", 2), ") for GCM ",
                             input$xfAOGCM, ".")
@@ -373,11 +408,11 @@ xfer_time_module_server <- function(input, output, session, common) {
     } else {
       xferTimeThr <- xferTime
       if (input$selTimeVar == 'worldclim') {
-        logger %>% writeLog(hlSpp(curSp()), "Transferion of model to ", paste0('20', input$selTime),
+        logger %>% writeLog(hlSpp(curSp()), "Transfer of model to ", paste0('20', input$selTime),
                             ' with ', predType, " output for GCM ", GCMlookup[input$selGCM],
                             " under RCP ", as.numeric(input$selRCP)/10.0, ".")
       } else if (input$selTimeVar == 'ecoclimate') {
-        logger %>% writeLog(hlSpp(curSp()), "Transferion of model to ", input$xfScenario,
+        logger %>% writeLog(hlSpp(curSp()), "Transfer of model to ", input$xfScenario,
                             ' with ', predType, " output for GCM ", input$xfAOGCM, ".")
       }
     }
@@ -476,7 +511,7 @@ xfer_time_module_server <- function(input, output, session, common) {
     common$update_component(tab = "Map")
   })
 
-  # Reset Transferion Extent button functionality
+  # Reset Transfer Extent button functionality
   observeEvent(input$goResetXfer, {
     spp[[curSp()]]$polyXfXY <- NULL
     spp[[curSp()]]$polyXfID <- NULL

@@ -1,3 +1,26 @@
+# Wallace EcoMod: a flexible platform for reproducible modeling of
+# species niches and distributions.
+# 
+# penvs_userBgExtent.R
+# File author: Wallace EcoMod Dev Team. 2023.
+# --------------------------------------------------------------------------
+# This file is part of the Wallace EcoMod application
+# (hereafter “Wallace”).
+#
+# Wallace is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
+#
+# Wallace is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Wallace. If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------------
+#
 #' @title penvs_userBgExtent: user provided background extent
 #' @description This function generates a background area according to a user
 #'   provided polygon and buffer.
@@ -34,11 +57,12 @@
 #'                                userBgBuf = 0.2, occs = occs)
 #'
 #' @return This function returns a SpatialPolygons object with the user
-#'   provided shape (+ a buffer is userBgBuf >0). The polygon will be at least
+#'   provided shape (+ a buffer if userBgBuf >0). The polygon will be at least
 #'   large enough to contain all occurrences.
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
-#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 #' @author Andrea Paz <paz.andreita@@gmail.com>
+#' @author Bethany A. Johnson <bjohnso005@@citymail.cuny.edu>
 # @note
 
 #' @seealso \code{\link{penvs_drawBgExtent}}, \code{\link{penvs_bgExtent}},
@@ -68,7 +92,8 @@ penvs_userBgExtent <- function(bgShp_path, bgShp_name, userBgBuf, occs,
         file.rename(bgShp_path, file.path(pathdir, bgShp_name))
       }
       # read in shapefile and extract coords
-      bgExt <- rgdal::readOGR(file.path(pathdir, bgShp_name)[i])
+      bgExt <- sf::st_read(file.path(pathdir, bgShp_name)[i])
+      bgExt <- sf::as_Spatial(bgExt)
     } else {
       logger %>%
         writeLog(type = 'error',
@@ -78,8 +103,13 @@ penvs_userBgExtent <- function(bgShp_path, bgShp_name, userBgBuf, occs,
     }
 
     if (userBgBuf >= 0) {
-      bgExt <- rgeos::gBuffer(bgExt, width = userBgBuf)
-      bgExt <- methods::as(bgExt, "SpatialPolygonsDataFrame")
+      bgExt <- sf::st_as_sf(bgExt)
+      bgExt <- sf::st_buffer(bgExt, dist = userBgBuf)
+      bgExt <- sf::as_Spatial(bgExt)
+    } else {
+      bgExt <- sf::st_as_sf(bgExt)
+      bgExt <- sf::st_buffer(bgExt, dist = userBgBuf)
+      bgExt <- sf::as_Spatial(bgExt)
     }
 
     ### Points outside polygon

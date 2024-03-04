@@ -143,10 +143,13 @@ mask_expPoly_module_server <- function(input, output, session, common) {
       polyX <- printVecAsis(round(spp[[curSp()]]$polyMaskXY[, 1], digits = 4))
       polyY <- printVecAsis(round(spp[[curSp()]]$polyMaskXY[, 2], digits = 4))
 
-      if (!rgeos::gIntersects(polyExt, polyMask)) {
+      polyExt_sf<- sf::st_as_sfc(polyExt) #convert poly to sf
+      polyMask_sf<- sf::st_as_sfc(polyMask) #convert polyMask to sf
+      # set crs?
+      if (!sf::st_intersects(polyExt_sf, polyMask_sf, sparse = FALSE)[1,1]) {
         logger %>% writeLog(
           type = 'error', hlSpp(curSp()),
-          "The polygon is outside the background extent. Please specify a new polygon. (**)"
+          "The polygon falls outside the background extent. Please specify a new polygon. "
         )
         return()
       }
@@ -199,10 +202,13 @@ mask_expPoly_module_server <- function(input, output, session, common) {
           list(dsn = input$polyExpShp$datapath[i], layer = shpName)
       }
 
-      if (!rgeos::gIntersects(polyExt, polyMask)) {
+      polyExt_sf<- sf::st_as_sfc(polyExt) #convert poly to sf
+      polyMask_sf<- sf::st_as_sfc(polyMask) #convert polyMask to sf
+      # set crs?
+      if (!sf::st_intersects(polyExt_sf, polyMask_sf, sparse = FALSE)[1,1]) {
         logger %>% writeLog(
           type = 'error', hlSpp(curSp()),
-          "The polygon is outside the background extent. Please specify a new polygon. (**)"
+          "The polygon falls outside the background extent. Please specify a new polygon. "
         )
         return()
       }

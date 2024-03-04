@@ -38,6 +38,7 @@ userEnvs_stack <- envs_userEnvs(rasPath = Path, rasName = Name,
 #            'guidance text in this module for more details.'),
 #     fixed = TRUE)
 #   })
+# BAJ (2024-02-14) rgdal has been retired and removed. this test may be added back?
 
 ### test output features
 test_that("output type checks", {

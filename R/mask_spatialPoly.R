@@ -5,7 +5,7 @@
 #' x
 #'
 #' @param bgShp_path Path to the user provided shapefile
-#' @param bgShp_name Name of the user porvided shapefile
+#' @param bgShp_name Name of the user provided shapefile
 #' @param sdm x
 #' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 #' otherwise leave the default NULL
@@ -40,7 +40,8 @@ mask_spatialPoly <- function(bgShp_path, bgShp_name, sdm,
       file.rename(bgShp_path, file.path(pathdir, bgShp_name))
     }
     smartProgress(logger, message = "Uploading shapefile ...", {
-      polyData <- rgdal::readOGR(file.path(pathdir, bgShp_name)[i])
+      polyData <- sf::st_read(file.path(pathdir, bgShp_name)[i])
+      polyData <- sf::as_Spatial(polyData)
     })
 
   } else {
@@ -57,11 +58,14 @@ mask_spatialPoly <- function(bgShp_path, bgShp_name, sdm,
       "is WGS84 (**)"
     )
   }
-  if (!rgeos::gIntersects(methods::as(raster::extent(sdm), 'SpatialPolygons'),
-                          polyData)) {
+
+  sdm_ext <- methods::as(raster::extent(sdm), 'SpatialPolygons')
+  sdm_sfc <- sf::st_as_sfc(sdm_ext) #sdm extent to sfc
+  polyData_sfc <- sf::st_as_sfc(polyData) #convert polyData to sfc
+  if (!sf::st_intersects(sdm_sfc, polyData_sfc, sparse = FALSE)[1,1]) {
     logger %>% writeLog(
       type = 'error', hlSpp(spN),
-      "Shapefile does not match with sdm extent. Please specify a new polygon. (**)"
+      "Shapefile does not match with SDM extent. Please specify a new polygon. "
     )
     return()
   }
@@ -73,8 +77,9 @@ mask_spatialPoly <- function(bgShp_path, bgShp_name, sdm,
     polR <- sf::st_as_sf(terra::as.polygons(sdm, trunc = TRUE, dissolve = TRUE,
                                             values = TRUE),
                          as_points = FALSE, merge = TRUE)
-    polyData <- rgeos::gBuffer(polyData, byid = TRUE, width = 0)
+   # polyData <- rgeos::gBuffer(polyData, byid = TRUE, width = 0)
     polyData <- sf::st_as_sf(polyData)
+    polyData <- sf::st_buffer(polyData, dist = 0) # BAJ not sure why buffer of 0 is needed?
     polyData <- replace(polyData, is.na(polyData), values = "NA")
     # Check for NAs
     v <- terra::extract(sdm, polyData)

@@ -20,8 +20,8 @@ polygonTestZero <- xfer_draw(polyXfXY = userDrawPoly, polyXfID,
 
 test_that("output type checks", {
   # the drawn polygon does not include all localities
-  expect_is(polygonTest,'SpatialPolygonsDataFrame')
-  expect_is(polygonTestZero,'SpatialPolygonsDataFrame')
+  expect_is(polygonTest,'SpatialPolygons')
+  expect_is(polygonTestZero,'SpatialPolygons')
   ###the extent of the polygon for buffer = 0 corresponds to maximum provided
   expect_equal(sp::bbox(polygonTestZero)[1,1],min(longitude))
   expect_equal(sp::bbox(polygonTestZero)[2,1],min(latitude))

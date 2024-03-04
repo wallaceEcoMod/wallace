@@ -12,8 +12,8 @@ This model uses the R package `dismo` to build BIOCLIM models, and evaluates the
 
 **REFERENCES** 
 
-Booth, T.H., Nix, H.A., Busby J.R., & Hutchinson, M.F. (2014). BIOCLIM: The first species distribution modelling package, its early applications and relevance to most current MaxEnt studies. *Diversity and Distributions*, 20(1), 1-9. <a href="https://doi.org/10.1111/ddi.12144" target="_blank">https://doi.org/10.1111/ddi.12144</a>
+Booth, T.H., Nix, H.A., Busby J.R., & Hutchinson, M.F. (2014). BIOCLIM: The first species distribution modelling package, its early applications and relevance to most current MaxEnt studies. *Diversity and Distributions*, 20(1), 1-9. <a href="https://doi.org/10.1111/ddi.12144" target="_blank">DOI: 10.1111/ddi.12144</a>
 
-Hijmans, R. J., & Graham, C.H. (2006). The ability of climate envelope models to predict the effect of climate change on species distributions. *Global Change Biology*, 12(12), 2272-2281. <a href="https://doi.org/10.1111/j.1365-2486.2006.01256.x" target="_blank">https://doi.org/10.1111/j.1365-2486.2006.01256.x</a>
+Hijmans, R. J., & Graham, C.H. (2006). The ability of climate envelope models to predict the effect of climate change on species distributions. *Global Change Biology*, 12(12), 2272-2281. <a href="https://doi.org/10.1111/j.1365-2486.2006.01256.x" target="_blank">DOI: 10.1111/j.1365-2486.2006.01256.x</a>
 
-Muscarella, R., Galante, P.J., Soley-Guardia, M., Boria, R.A., Kass, J.M., Uriarte, M., & Anderson, R.P. (2014). ENMeval: An R package for conducting spatially independent evaluations and estimating optimal model complexity for Maxent ecological niche models. *Methods in Ecology and Evolution*, 5(11), 1198-1205. <a href="https://doi.org/10.1111/2041-210X.12261" target="_blank">https://doi.org/10.1111/2041-210X.12261</a>
+Muscarella, R., Galante, P.J., Soley-Guardia, M., Boria, R.A., Kass, J.M., Uriarte, M., & Anderson, R.P. (2014). ENMeval: An R package for conducting spatially independent evaluations and estimating optimal model complexity for Maxent ecological niche models. *Methods in Ecology and Evolution*, 5(11), 1198-1205. <a href="https://doi.org/10.1111/2041-210X.12261" target="_blank">DOI: 10.1111/2041-210X.12261</a>

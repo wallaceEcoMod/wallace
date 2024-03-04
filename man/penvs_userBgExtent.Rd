@@ -34,7 +34,7 @@ shiny, otherwise leave the default NULL.}
 }
 \value{
 This function returns a SpatialPolygons object with the user
-  provided shape (+ a buffer is userBgBuf >0). The polygon will be at least
+  provided shape (+ a buffer if userBgBuf >0). The polygon will be at least
   large enough to contain all occurrences.
 }
 \description{
@@ -68,7 +68,9 @@ userBgbf <- penvs_userBgExtent(bgShp_path = pathShp, bgShp_name = nameShp,
 \author{
 Jamie Kass <jamie.m.kass@gmail.com>
 
-Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago <gepinillab@gmail.com>
 
 Andrea Paz <paz.andreita@gmail.com>
+
+Bethany A. Johnson <bjohnso005@citymail.cuny.edu>
 }

@@ -10,4 +10,4 @@ Users can select individual localities for removal from the analysis by specifyi
 
 **REFERENCES**
 
-Gaiji, S., Chavan, V., Ariño, A.H., Otegui, J., Hobern, D., Sood, R., & Robles, E. (2013). Content assessment of the primary biodiversity data published through GBIF network: status, challenges and potentials. *Biodiversity Informatics*, 8(2), 94-172. <a href="https://doi.org/10.17161/bi.v8i2.4124" target="_blank">https://doi.org/10.17161/bi.v8i2.4124</a>  
+Gaiji, S., Chavan, V., Ariño, A.H., Otegui, J., Hobern, D., Sood, R., & Robles, E. (2013). Content assessment of the primary biodiversity data published through GBIF network: status, challenges and potentials. *Biodiversity Informatics*, 8(2), 94-172. <a href="https://doi.org/10.17161/bi.v8i2.4124" target="_blank">DOI: 10.17161/bi.v8i2.4124</a>  

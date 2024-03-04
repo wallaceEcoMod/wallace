@@ -11,4 +11,4 @@ Biodiversity data (especially from aggregated online databases) typically suffer
 
 **REFERENCES**
 
-Costello, M. J., Michener, W. K., Gahegan, M., Zhang, Z. Q., & Bourne, P. E. (2013). Biodiversity data should be published, cited, and peer reviewed. *Trends in Ecology & Evolution*, 28(8), 454-461. <a href="https://doi.org/10.1016/j.tree.2013.05.002" target="_blank">https://doi.org/10.1016/j.tree.2013.05.002</a>
+Costello, M. J., Michener, W. K., Gahegan, M., Zhang, Z. Q., & Bourne, P. E. (2013). Biodiversity data should be published, cited, and peer reviewed. *Trends in Ecology & Evolution*, 28(8), 454-461. <a href="https://doi.org/10.1016/j.tree.2013.05.002" target="_blank">DOI: 10.1016/j.tree.2013.05.002</a>

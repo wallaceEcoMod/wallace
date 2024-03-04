@@ -12,12 +12,12 @@ Users can download a .png image of the density grid.
 
 **REFERENCES**
 
-Broennimann, O., Fitzpatrick, M.C., Pearman, P.B., Petitpierre, B., Pellissier, L., Yoccoz, N.G., Thuiller, W., Fortin, M.J., Randin, C., Zimmermann, N.E., Graham, C.H., & Guisan, A. (2012). Measuring ecological niche overlap from occurrence and spatial environmental data. *Global Ecology and Biogeography*, 21(4), 481-497. <a href="https://doi.org/10.1111/j.1466-8238.2011.00698.x" target="_blank">DOI:10.1111/j.1466-8238.2011.00698.x</a>  
+Broennimann, O., Fitzpatrick, M.C., Pearman, P.B., Petitpierre, B., Pellissier, L., Yoccoz, N.G., Thuiller, W., Fortin, M.J., Randin, C., Zimmermann, N.E., Graham, C.H., & Guisan, A. (2012). Measuring ecological niche overlap from occurrence and spatial environmental data. *Global Ecology and Biogeography*, 21(4), 481-497. <a href="https://doi.org/10.1111/j.1466-8238.2011.00698.x" target="_blank">DOI: 10.1111/j.1466-8238.2011.00698.x</a>  
 
-Calenge, C. (2006). The package adehabitat for the R software: tool for the analysis of space and habitat use by animals. *Ecological Modelling*, 197, 1035. <a href="https://doi.org/10.1016/j.ecolmodel.2006.03.017" target="_blank">DOI:10.1016/j.ecolmodel.2006.03.017</a>  
+Calenge, C. (2006). The package adehabitat for the R software: tool for the analysis of space and habitat use by animals. *Ecological Modelling*, 197, 1035. <a href="https://doi.org/10.1016/j.ecolmodel.2006.03.017" target="_blank">DOI: 10.1016/j.ecolmodel.2006.03.017</a>  
 
-Di Cola, V., Broennimann, O., Petitpierre, B., Breiner, F.T., d’Amen, M., Randin, C., Engler, R., Pottier, J., Pio, D., Dubuis, A., Pellissier, L., Mateo, R.G., Hordijk, W., Salamin, N., & Guisan, A. (2017). ecospat: an R package to support spatial analyses and modeling of species niches and distributions. *Ecography*, 40(6), 774-787. <a href="https://doi.org/10.1111/ecog.02671" target="_blank">DOI:10.1111/ecog.02671</a>  
+Di Cola, V., Broennimann, O., Petitpierre, B., Breiner, F.T., d’Amen, M., Randin, C., Engler, R., Pottier, J., Pio, D., Dubuis, A., Pellissier, L., Mateo, R.G., Hordijk, W., Salamin, N., & Guisan, A. (2017). ecospat: an R package to support spatial analyses and modeling of species niches and distributions. *Ecography*, 40(6), 774-787. <a href="https://doi.org/10.1111/ecog.02671" target="_blank">DOI: 10.1111/ecog.02671</a>  
 
 Duong, T. (2022). ks: Kernel Smoothing. R package version 1.13.5, <a href="https://CRAN.R-project.org/package=ks" target="_blank">CRAN</a>  
 
-Gerstner, B.E., Kass, J.M., Kays, R., Helgen, K.M., & Anderson, R.P. (2018). Revised distributional estimates for the recently discovered olinguito (Bassaricyon neblina), with comments on natural and taxonomic history. *Journal of Mammalogy*, 99(2), 321-332. <a href="https://doi.org/10.1093/jmammal/gyy012" target="_blank">DOI:0.1093/jmammal/gyy012</a>  
+Gerstner, B.E., Kass, J.M., Kays, R., Helgen, K.M., & Anderson, R.P. (2018). Revised distributional estimates for the recently discovered olinguito (Bassaricyon neblina), with comments on natural and taxonomic history. *Journal of Mammalogy*, 99(2), 321-332. <a href="https://doi.org/10.1093/jmammal/gyy012" target="_blank">DOI: 0.1093/jmammal/gyy012</a>  

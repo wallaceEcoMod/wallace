@@ -34,9 +34,9 @@ occs: Obtain occurrence data. Used to obtain species name for logger
 messages.}
 }
 \value{
-This functions returns a SpatialPolygonsDataFrame based on the user
-specified coordinates (drawn on map). This SpatialPolygonsDataFrame may be
-larger than specified if drawBgBuf > 0. The SpatialPolygonsDataFrame will
+This functions returns a SpatialPolygons object based on the user
+specified coordinates (drawn on map). This SpatialPolygons object may be
+larger than specified if drawBgBuf > 0. The SpatialPolygons object will
 include all occurrences.
 }
 \description{
@@ -70,5 +70,7 @@ drawBgBf <- penvs_drawBgExtent(polyExtXY = expertDrawPoly, polyExtID = 1,
 \author{
 Jamie Kass <jamie.m.kass@gmail.com>
 
-Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago <gepinillab@gmail.com>
+
+Bethany A. Johnson <bjohnso005@citymail.cuny.edu>
 }

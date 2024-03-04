@@ -1,3 +1,26 @@
+# Wallace EcoMod: a flexible platform for reproducible modeling of
+# species niches and distributions.
+# 
+# xfer_draw.R
+# File author: Wallace EcoMod Dev Team. 2023.
+# --------------------------------------------------------------------------
+# This file is part of the Wallace EcoMod application
+# (hereafter “Wallace”).
+#
+# Wallace is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
+#
+# Wallace is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Wallace. If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------------
+#
 
 #' @title xfer_draw Draw extent of transfer
 #' @description This function creates a polygon object from coordinates of user
@@ -29,11 +52,12 @@
 #' polygonTest <- xfer_draw(polyXfXY = userDrawPoly, polyXfID,
 #'                          drawXfBuf)
 #'
-#' @return This functions returns a SpatialPolygonsDataFrame based on the user
+#' @return This functions returns a SpatialPolygons object based on the user
 #'   specified coordinates (drawn on map). This SpatialPolygonsDataFrame may be
 #'   larger than specified if drawBgBuf > 0.
 
-#' @author Gonzalo Pinilla <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo Pinilla <gepinillab@@gmail.com>
+#' @author Bethany A. Johnson <bjohnso005@@citymail.cuny.edu>
 # @note
 #' @seealso  \code{\link{xfer_userEnvs}}
 #' @export
@@ -41,8 +65,9 @@
 xfer_draw <- function(polyXfXY, polyXfID, drawXfBuf, logger = NULL, spN = NULL) {
   newPoly <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(polyXfXY)),
                                                    ID = polyXfID)))
-  bgExt <- rgeos::gBuffer(newPoly, width = drawXfBuf)
-  bgExt <- methods::as(bgExt, "SpatialPolygonsDataFrame")
+  newPoly.sf <- sf::st_as_sf(newPoly)
+  bgExt <- sf::st_buffer(newPoly.sf, dist = drawXfBuf)
+  bgExt <- sf::as_Spatial(bgExt)
   if (drawXfBuf == 0) {
     logger %>% writeLog(hlSpp(spN), 'Draw polygon without buffer.')
   } else {

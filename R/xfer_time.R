@@ -1,3 +1,26 @@
+# Wallace EcoMod: a flexible platform for reproducible modeling of
+# species niches and distributions.
+# 
+# xfer_time.R
+# File author: Wallace EcoMod Dev Team. 2023.
+# --------------------------------------------------------------------------
+# This file is part of the Wallace EcoMod application
+# (hereafter “Wallace”).
+#
+# Wallace is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
+#
+# Wallace is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Wallace. If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------------
+#
 
 #' @title xfer_time Transfer model to a new time
 #' @description Function transfers the model generated in previous components to
@@ -71,7 +94,7 @@
 #'   with the specified output type.
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 #' @author Andrea Paz <paz.andreita@@gmail.com>
-#' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
+#' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 #' @seealso \code{\link[dismo]{predict}}, \code{\link{xfer_time}}
 #' \code{\link{xfer_userEnvs}}
 #' @export

@@ -12,16 +12,16 @@ If run with sufficient (independent) repetitions, `spThin` will produce at least
 
 **REFERENCES**
 
-Aiello-Lammens, M.E., Boria, R.A., Radosavljevic, A., Vilela, B., & Anderson, R.P. (2015). spThin: an R package for spatial thinning of species occurrence records for use in ecological niche models. *Ecography*, 38(5), 541-545. <a href="https://doi.org/10.1111/ecog.01132" target="_blank">https://doi.org/10.1111/ecog.01132</a>
+Aiello-Lammens, M.E., Boria, R.A., Radosavljevic, A., Vilela, B., & Anderson, R.P. (2015). spThin: an R package for spatial thinning of species occurrence records for use in ecological niche models. *Ecography*, 38(5), 541-545. <a href="https://doi.org/10.1111/ecog.01132" target="_blank">DOI: 10.1111/ecog.01132</a>
 
-Anderson, R.P. (2003). Real vs. artefactual absences in species distributions: tests for *Oryzomys albigularis* (Rodentia: *Muridae*) in Venezuela. *Journal of Biogeography*, 30(4), 591-605. <a href="https://doi.org/10.1046/j.1365-2699.2003.00867.x" target="_blank">https://doi.org/10.1046/j.1365-2699.2003.00867.x</a>
+Anderson, R.P. (2003). Real vs. artefactual absences in species distributions: tests for *Oryzomys albigularis* (Rodentia: *Muridae*) in Venezuela. *Journal of Biogeography*, 30(4), 591-605. <a href="https://doi.org/10.1046/j.1365-2699.2003.00867.x" target="_blank">DOI: 10.1046/j.1365-2699.2003.00867.x</a>
 
-Boria, R.A., Olson, L.E., Goodman, S.M., & Anderson, R.P. (2014). Spatial filtering to reduce sampling bias can improve the performance of ecological niche models. *Ecological Modelling*, 275, 73-77. <a href="https://doi.org/10.1016/j.ecolmodel.2013.12.012" target="_blank">https://doi.org/10.1016/j.ecolmodel.2013.12.012</a>
+Boria, R.A., Olson, L.E., Goodman, S.M., & Anderson, R.P. (2014). Spatial filtering to reduce sampling bias can improve the performance of ecological niche models. *Ecological Modelling*, 275, 73-77. <a href="https://doi.org/10.1016/j.ecolmodel.2013.12.012" target="_blank">DOI: 10.1016/j.ecolmodel.2013.12.012</a>
 
-Kadmon, R., Farber O., & Danin A. (2004). Effect of roadside bias on the accuracy of predictive maps produced by bioclimatic models. *Ecological Applications*, 14(2), 401-413. <a href="https://doi.org/10.1890/02-5364" target="_blank">https://doi.org/10.1890/02-5364</a>
+Kadmon, R., Farber O., & Danin A. (2004). Effect of roadside bias on the accuracy of predictive maps produced by bioclimatic models. *Ecological Applications*, 14(2), 401-413. <a href="https://doi.org/10.1890/02-5364" target="_blank">DOI: 10.1890/02-5364</a>
 
-Phillips, S.J., Dudík, M., Elith, J., Graham, C.H., Lehmann, A., Leathwick, J., & Ferrier, S. (2009). Sample selection bias and presence-only distribution models: implications for background and pseudo-absence data. *Ecological Applications*, 19(1), 181-197. <a href="https://doi.org/10.1890/07-2153.1" target="_blank">https://doi.org/10.1890/07-2153.1</a>
+Phillips, S.J., Dudík, M., Elith, J., Graham, C.H., Lehmann, A., Leathwick, J., & Ferrier, S. (2009). Sample selection bias and presence-only distribution models: implications for background and pseudo-absence data. *Ecological Applications*, 19(1), 181-197. <a href="https://doi.org/10.1890/07-2153.1" target="_blank">DOI: 10.1890/07-2153.1</a>
 
-Varela, S., Anderson, R.P., García-Valdés, R., & Fernández-González, F. (2014). Environmental filters reduce the effects of sampling bias and improve predictions of ecological niche models. *Ecography*, 37(11), 1084-1091. <a href="https://doi.org/10.1111/j.1600-0587.2013.00441.x" target="_blank">https://doi.org/10.1111/j.1600-0587.2013.00441.x</a>
+Varela, S., Anderson, R.P., García-Valdés, R., & Fernández-González, F. (2014). Environmental filters reduce the effects of sampling bias and improve predictions of ecological niche models. *Ecography*, 37(11), 1084-1091. <a href="https://doi.org/10.1111/j.1600-0587.2013.00441.x" target="_blank">DOI: 10.1111/j.1600-0587.2013.00441.x</a>
 
-Veloz, S.D. (2009). Spatially autocorrelated sampling falsely inflates measures of accuracy for presence-only niche models. *Journal of Biogeography*, 36(12), 2290-2299. <a href="https://doi.org/10.1111/j.1365-2699.2009.02174.x" target="_blank">https://doi.org/10.1111/j.1365-2699.2009.02174.x</a>
+Veloz, S.D. (2009). Spatially autocorrelated sampling falsely inflates measures of accuracy for presence-only niche models. *Journal of Biogeography*, 36(12), 2290-2299. <a href="https://doi.org/10.1111/j.1365-2699.2009.02174.x" target="_blank">DOI: 10.1111/j.1365-2699.2009.02174.x</a>
