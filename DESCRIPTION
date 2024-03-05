@@ -81,7 +81,6 @@ Suggests:
     testthat,
     tidyselect,
     tools
-Remotes: cmerow/changeRangeR
 License: GPL-3
 URL: http://wallaceecomod.github.io/wallace/,
 Encoding: UTF-8
