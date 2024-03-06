@@ -28,6 +28,8 @@ output: html_document
 <a href="https://github.com/bjohnso005" target="_blank">Bethany A. Johnson</a> (developer) received her MS in Biology from the City College of New York and is currently a Visiting Scientist at the Center for Biodiversity & Conservation at the American Museum of Natural History.  
 <br>
 
+<img src="img/daniel.jpeg" alt="dani" style="width: 100px;"/>
+
 <a href="https://www.amnh.org/research/staff-directory/daniel-lopez-lozano" target="_blank">Daniel López Lozano</a> (developer) is a Biodiversity Informatics Specialist at the American Museum of Natural History's Center for Biodiversity & Conservation.   
 <br>
 
