@@ -43,6 +43,7 @@ Imports:
     leafem,
     leaflet.extras (>= 1.0.0),
     magrittr,
+    markdown,
     methods,
     RColorBrewer,
     rJava,
