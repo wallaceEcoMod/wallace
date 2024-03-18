@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # poccs_selectOccs.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -98,7 +98,7 @@ poccs_selectOccs <- function(occs, polySelXY, polySelID = 1, logger = NULL,
         hlSpp(spN),
         "Your polygon is selecting all occurrences. None will be removed.")
       occs.sel <- occs
-      return()
+      return(occs.sel)
     }
     occs.sel <- occs[-ptRemIndex,]
 
