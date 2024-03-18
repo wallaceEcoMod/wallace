@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # helper_functions.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -66,6 +66,7 @@ spurious <- function(x) {
   RColorBrewer::brewer.pal(x)
   leafem::addMouseCoordinates(x)
   leaflet.extras::removeDrawToolbar(x)
+  markdown::html_format()
   rmarkdown::github_document(x)
   shinyWidgets::pickerInput(x)
   shinyjs::disable(x)

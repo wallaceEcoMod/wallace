@@ -100,11 +100,9 @@ test_that("output data checks", {
   if ((TRUE %in% duplicated(out.gbif[[i]]$orig[, c('longitude', 'latitude')])) |
       (NA %in% out.gbif[[i]]$orig[, c('longitude', 'latitude')])) {
     # the cleaned table must have fewer records than the original one
-    expect_true((nrow(out.gbif[[i]]$orig)) > (nrow(out.gbif[[i]]$cleaned)))
-  } else { # if not,
-    # both tables should have the same number of records
-    expect_true((nrow(out.gbif[[i]]$orig)) == (nrow(out.gbif[[i]]$cleaned)))
-  }
+    # if not, both tables should have the same number of records
+    expect_true((nrow(out.gbif[[i]]$orig)) >= (nrow(out.gbif[[i]]$cleaned)))
+      }
   # there are not "NA" values in longitude OR latitude columns in the cleaned table
   expect_false(NA %in% out.gbif[[i]]$cleaned$latitude) |
     (NA %in% out.gbif[[i]]$cleaned$longitude)

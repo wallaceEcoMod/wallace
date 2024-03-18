@@ -10,7 +10,7 @@ output: html_document
 
 <img src="img/jamie.jpg" alt="jamie" style="width: 100px;"/>
 
-<a href=" https://jamiemkass.github.io/" target="_blank">Jamie M. Kass</a> (co-lead developer) received his PhD at CUNY Graduate Center and City College of New York and is currently a Postdoctoral Scholar at Okinawa Institute of Science and Technology Graduate University.  
+<a href=" https://jamiemkass.github.io/" target="_blank">Jamie M. Kass</a> (co-lead developer) received his PhD at CUNY Graduate Center and City College of New York, did a Postdoc at Okinawa Institute of Science and Technology, and currently is Associate Professor at Tohoku University.  
 <br>
 
 <img src="img/gonzalo.png" alt="gonzalo" style="width: 100px;"/>
@@ -28,10 +28,12 @@ output: html_document
 <a href="https://github.com/bjohnso005" target="_blank">Bethany A. Johnson</a> (developer) received her MS in Biology from the City College of New York and is currently a Visiting Scientist at the Center for Biodiversity & Conservation at the American Museum of Natural History.  
 <br>
 
+<img src="img/daniel.jpeg" alt="dani" style="width: 100px;"/>
+
 <a href="https://www.amnh.org/research/staff-directory/daniel-lopez-lozano" target="_blank">Daniel López Lozano</a> (developer) is a Biodiversity Informatics Specialist at the American Museum of Natural History's Center for Biodiversity & Conservation.   
 <br>
 
-<img src="img/valentina.png" alt="valentina" style="width: 100px;"/>
+<img src="img/valentina.jpeg" alt="valentina" style="width: 100px;"/>
 
 <a href="https://www.researchgate.net/profile/Valentina-Grisales-Betancur" target="_blank">Valentina Grisales-Betancur</a> (developer) completed her undergraduate degree at EAFIT University in Colombia and visited the Anderson lab at CCNY and Blair lab at AMNH.  
 <br>
@@ -85,9 +87,9 @@ Sarah Meenan (contributor) completed her undergraduate degree from the City Coll
 <a href="https://www.researchgate.net/profile/Brian-Maitner" target="_blank">Brian S. Maitner</a> (contributor, external partner) is a researcher at the Geography Department of the University at Buffalo, SUNY.  
 <br>
 
-<img src="img/hannahO.png" alt="hannahO" style="width: 100px;"/>
+<img src="img/hannahO.jpeg" alt="hannahO" style="width: 100px;"/>
 
-<a href="https://hannahlowens.weebly.com/" target="_blank">Hannah Owens</a> (contributor, external partner) is a Marie Skłodowska Curie Fellow at the Center for Macroecology, Evolution, and Climate at the University of Copenhagen.  
+<a href="https://hannahlowens.weebly.com/" target="_blank">Hannah Owens</a> (contributor, external partner) is an assistant professor at the Center for Global Mountain Biodiversity & the Center for Macroecology, Evolution, and Climate; Section for Biodiversity; Globe Institute; at the University of Copenhagen.  
 <br>
 
 <img src="img/saraV.jpeg" alt="saraV" style="width: 100px;"/>

@@ -1,3 +1,11 @@
+wallace 2.1.2
+=============
+- Fixed FAIL in test_occs_queryDB
+- Fixed bug in error msgs for xfer_time
+- Fixed broken link in v1 vignette
+- Added `markdown` to imports
+- Updated team members
+
 wallace 2.1.1
 =============
 - Fixed bug in occ density grid & niche overlap
