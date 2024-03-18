@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">wallace</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -549,11 +549,11 @@ UI</li>
 <li>package: The R package that is used by this module (if more than
 one, use a comma between them)</li>
 </ul>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>component<span class="sc">:</span> <span class="st">"penvs"</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>short_name<span class="sc">:</span> <span class="st">"Pearson's correlations"</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>long_name<span class="sc">:</span> <span class="st">"Calculate pairwise Pearson's correlations between environmental layers"</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>authors<span class="sc">:</span> <span class="st">"Peter Galante"</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>package<span class="sc">:</span> [raster]</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>component<span class="sc">:</span> <span class="st">"penvs"</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>short_name<span class="sc">:</span> <span class="st">"Pearson's correlations"</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>long_name<span class="sc">:</span> <span class="st">"Calculate pairwise Pearson's correlations between environmental layers"</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>authors<span class="sc">:</span> <span class="st">"Peter Galante"</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>package<span class="sc">:</span> [raster]</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="step-5-module-controls-and-functionality">Step 5: Module controls and functionality<a class="anchor" aria-label="anchor" href="#step-5-module-controls-and-functionality"></a>
@@ -749,40 +749,40 @@ created in each component. Please add only the <em>last</em> line in the
 <p>The second line will add the shortcut to the common list. Please
 search for “COMMON LIST FUNCTIONALITY” (#1310) in the server file, and
 add it to the section of “Shortcuts to values nested inside spp”.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>  <span class="do">################################</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="do">### COMMON LIST FUNCTIONALITY ####</span></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="do">################################</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create a data structure that holds variables and functions used by modules</span></span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  common <span class="ot">=</span> <span class="fu">list</span>(</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Reactive variables to pass on to modules</span></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">logger =</span> logger,</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">spp =</span> spp,</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">curSp =</span> curSp,</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">allSp =</span> allSp,</span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">multSp =</span> multSp,</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">curEnv =</span> curEnv,</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">curModel =</span> curModel,</span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">component =</span> component,</span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">module =</span> module,</span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">envs.global =</span> envs.global,</span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">mapCntr =</span> mapCntr,</span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Shortcuts to values nested inside spp</span></span>
-<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">occs =</span> occs,</span>
-<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">envs =</span> envs,</span>
-<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">bcSel =</span> bcSel,</span>
-<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">ecoClimSel =</span> ecoClimSel,</span>
-<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">bg =</span> bg,</span>
-<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">bgExt =</span> bgExt,</span>
-<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">bgMask =</span> bgMask,</span>
-<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">bgShpXY =</span> bgShpXY,</span>
-<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">selCatEnvs =</span> selCatEnvs,</span>
-<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">evalOut =</span> evalOut,</span>
-<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">mapPred =</span> mapPred,</span>
-<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">mapXfer =</span> mapXfer,</span>
-<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">rmm =</span> rmm,</span>
-<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">VarSelector =</span> VarSelector, <span class="co"># ADD line here (do not forget to add a comma at the end)</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>  <span class="do">################################</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>  <span class="do">### COMMON LIST FUNCTIONALITY ####</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="do">################################</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>  <span class="co"># Create a data structure that holds variables and functions used by modules</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>  common <span class="ot">=</span> <span class="fu">list</span>(</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>    <span class="co"># Reactive variables to pass on to modules</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>    <span class="at">logger =</span> logger,</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>    <span class="at">spp =</span> spp,</span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>    <span class="at">curSp =</span> curSp,</span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>    <span class="at">allSp =</span> allSp,</span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>    <span class="at">multSp =</span> multSp,</span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a>    <span class="at">curEnv =</span> curEnv,</span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a>    <span class="at">curModel =</span> curModel,</span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a>    <span class="at">component =</span> component,</span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a>    <span class="at">module =</span> module,</span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a>    <span class="at">envs.global =</span> envs.global,</span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a>    <span class="at">mapCntr =</span> mapCntr,</span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a></span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a>    <span class="co"># Shortcuts to values nested inside spp</span></span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a>    <span class="at">occs =</span> occs,</span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a>    <span class="at">envs =</span> envs,</span>
+<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a>    <span class="at">bcSel =</span> bcSel,</span>
+<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a>    <span class="at">ecoClimSel =</span> ecoClimSel,</span>
+<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a>    <span class="at">bg =</span> bg,</span>
+<span id="cb10-26"><a href="#cb10-26" tabindex="-1"></a>    <span class="at">bgExt =</span> bgExt,</span>
+<span id="cb10-27"><a href="#cb10-27" tabindex="-1"></a>    <span class="at">bgMask =</span> bgMask,</span>
+<span id="cb10-28"><a href="#cb10-28" tabindex="-1"></a>    <span class="at">bgShpXY =</span> bgShpXY,</span>
+<span id="cb10-29"><a href="#cb10-29" tabindex="-1"></a>    <span class="at">selCatEnvs =</span> selCatEnvs,</span>
+<span id="cb10-30"><a href="#cb10-30" tabindex="-1"></a>    <span class="at">evalOut =</span> evalOut,</span>
+<span id="cb10-31"><a href="#cb10-31" tabindex="-1"></a>    <span class="at">mapPred =</span> mapPred,</span>
+<span id="cb10-32"><a href="#cb10-32" tabindex="-1"></a>    <span class="at">mapXfer =</span> mapXfer,</span>
+<span id="cb10-33"><a href="#cb10-33" tabindex="-1"></a>    <span class="at">rmm =</span> rmm,</span>
+<span id="cb10-34"><a href="#cb10-34" tabindex="-1"></a>    <span class="at">VarSelector =</span> VarSelector, <span class="co"># ADD line here (do not forget to add a comma at the end)</span></span></code></pre></div>
 <ol start="3" style="list-style-type: lower-roman">
 <li>A function named <code>penvs_correlations_module_result</code> that
 returns the UI output for the results of the module function (i.e.,

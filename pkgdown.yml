@@ -1,4 +1,4 @@
-pandoc: 2.19.2
+pandoc: 3.1.11
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
@@ -6,7 +6,7 @@ articles:
   tutorial-v1: tutorial-v1.html
   tutorial-v2-esp: tutorial-v2-esp.html
   tutorial-v2: tutorial-v2.html
-last_built: 2023-12-14T20:12Z
+last_built: 2024-03-18T19:14Z
 urls:
   reference: http://wallaceecomod.github.io/wallace/reference
   article: http://wallaceecomod.github.io/wallace/articles
