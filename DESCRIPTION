@@ -74,6 +74,7 @@ Suggests:
     testthat,
     tools
 License: GPL-3
-URL: http://wallaceecomod.github.io/wallace/,
+URL: http://wallaceecomod.github.io/wallace/, https://github.com/wallaceEcoMod/wallace
+BugReports: https://github.com/wallaceEcoMod/wallace/issues
 Encoding: UTF-8
 RoxygenNote: 7.2.3
