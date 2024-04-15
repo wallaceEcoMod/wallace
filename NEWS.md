@@ -1,3 +1,9 @@
+wallace 2.1.3
+=============
+- Fixed NULL error in poccs_selectOccs Rmd code
+-
+-
+
 wallace 2.1.2
 =============
 - Fixed FAIL in test_occs_queryDB
