@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # vis_maxentEvalPlot.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -32,7 +32,7 @@ vis_maxentEvalPlot_module_ui <- function(id) {
                                "average OR 10%" = 'or.10p',
                                "delta AICc" = 'delta.AICc'),
                 selected = 'auc.val'),
-    h6("Maxent evaluation plots display automatically in 'Results' tab")
+    h5("Maxent evaluation plots display automatically in 'Results' tab")
   )
 }
 
