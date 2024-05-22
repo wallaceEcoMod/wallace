@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # model_maxent.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -85,6 +85,7 @@
 #'   and a selection of appropriate fields.
 #' @author Jamie M. Kass <jkass@@gradcenter.cuny.edu>
 #' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
+#' @author Bethany A. Johnson <bjohnso005@@citymail.cuny.edu>
 # @note
 
 #' @seealso \code{\link[ENMeval]{ENMevaluate}}
@@ -189,14 +190,16 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
   }
 
   # get just coordinates
-  occs.xy <- occs %>% dplyr::select(.data$longitude, .data$latitude)
-  bg.xy <- bg %>% dplyr::select(.data$longitude, .data$latitude)
+  occs.xy <- occs %>% dplyr::select("longitude", "latitude")
+  bg.xy <- bg %>% dplyr::select("longitude", "latitude")
+  #bgMsk from rasterstack to spatraster for terra functionality
+  bgMsk_terra <- terra::rast(bgMsk)
   # run ENMeval
   e <- ENMeval::ENMevaluate(occs = as.data.frame(occs.xy),
                             bg = as.data.frame(bg.xy),
                             partitions = 'user',
                             user.grp = user.grp,
-                            envs = bgMsk,
+                            envs = bgMsk_terra,
                             tune.args = tune.args,
                             doClamp = clampSel,
                             algorithm = algMaxent,
