@@ -7,7 +7,7 @@ Generate a map of the Bioclim generated model with no threshold
 # Select current model and obtain raster prediction
 
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
-predSel_{{spAbr}} <- dismo::predict(m_{{spAbr}}, bgMask_{{spAbr}}, useC = FALSE)
+predSel_{{spAbr}} <- dismo::predict(m_{{spAbr}}, terra::rast(bgMask_{{spAbr}}))
 #Get values of prediction
 mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
 #Define colors and legend  
@@ -42,7 +42,7 @@ Generate a map of the Bioclim generated model with a "{{thresholdRule_rmd}}" thr
 ```{r, echo = {{vis_mapPreds_knit & vis_map_bioclim_knit  & vis_map_threshold_knit}}, include = {{vis_mapPreds_knit & vis_map_bioclim_knit  & vis_map_threshold_knit}}}
 # Select current model and obtain raster prediction
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
-predSel_{{spAbr}} <- dismo::predict(m_{{spAbr}}, bgMask_{{spAbr}}, useC = FALSE)
+predSel_{{spAbr}} <- dismo::predict(m_{{spAbr}}, terra::rast(bgMask_{{spAbr}}))
 # extract the suitability values for all occurrences
 occs_xy_{{spAbr}} <- occs_{{spAbr}}[c('longitude', 'latitude')]
 # determine the threshold based on the current prediction
@@ -51,7 +51,7 @@ occPredVals_{{spAbr}} <- raster::extract(predSel_{{spAbr}}, occs_xy_{{spAbr}})
 thresProb_{{spAbr}} <- switch("{{thresholdRule_rmd}}", 
                               "mtp" = 0, "p10" = 0.1, "qtp" = {{probQuantile_rmd}})
 # Define threshold value
-thres_{{spAbr}} <- stats::quantile(occPredVals_{{spAbr}}, 
+thres_{{spAbr}} <- stats::quantile(occPredVals_{{spAbr}}[,2],
                                    probs = thresProb_{{spAbr}})
 # Applied selected threshold
 predSel_{{spAbr}} <- predSel_{{spAbr}} > thres_{{spAbr}}
@@ -91,10 +91,10 @@ Generate a map of the Maxent generated model with no threshold
 # Select current model and obtain raster prediction
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
 predSel_{{spAbr}} <- dismo::predict(
-  m_{{spAbr}}, bgMask_{{spAbr}},
+  m_{{spAbr}}, terra::rast(bgMask_{{spAbr}}),
   args = c(paste0("outputformat=", "{{predType_rmd}}"), 
            paste0("doclamp=", tolower(as.character({{clamp_rmd}})))), 
-  na.rm = TRUE)
+  )
 #Get values of prediction
 mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
 #Define colors and legend  
@@ -130,10 +130,10 @@ Generate a map of the Maxent generated model with a "{{thresholdRule_rmd}}" thre
 # Select current model and obtain raster prediction
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
 predSel_{{spAbr}} <- dismo::predict(
-  m_{{spAbr}}, bgMask_{{spAbr}},
+  m_{{spAbr}}, terra::rast(bgMask_{{spAbr}}),
   args = c(paste0("outputformat=", "{{predType_rmd}}"), 
            paste0("doclamp=", tolower(as.character({{clamp_rmd}})))), 
-  na.rm = TRUE)
+  )
 # extract the suitability values for all occurrences
 occs_xy_{{spAbr}} <- occs_{{spAbr}}[c('longitude', 'latitude')]
 # determine the threshold based on the current prediction
@@ -142,7 +142,7 @@ occPredVals_{{spAbr}} <- raster::extract(predSel_{{spAbr}}, occs_xy_{{spAbr}})
 thresProb_{{spAbr}} <- switch("{{thresholdRule_rmd}}", 
                               "mtp" = 0, "p10" = 0.1, "qtp" = {{probQuantile_rmd}})
 # Define threshold value
-thres_{{spAbr}} <- stats::quantile(occPredVals_{{spAbr}}, probs = thresProb_{{spAbr}})
+thres_{{spAbr}} <- stats::quantile(occPredVals_{{spAbr}}[,2], probs = thresProb_{{spAbr}})
 # Applied selected threshold
 predSel_{{spAbr}} <- predSel_{{spAbr}} > thres_{{spAbr}}
 #Get values of prediction

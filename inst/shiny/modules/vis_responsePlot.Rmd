@@ -19,7 +19,12 @@ Visualize response curves from "{{alg_rmd}}" model.
 
 ```{r, echo = {{vis_responsePlot_knit & !vis_maxnet_knit }}, include = {{vis_responsePlot_knit & !vis_maxnet_knit}}}
 # Create response curves
-dismo::response(
-  model_{{spAbr}}@models[["{{curModel_rmd}}"]],
-  var = names(bgMask_{{spAbr}}))
+namesEnvs <- mxNonzeroCoefs(model_{{spAbr}}@models[["{{curModel_rmd}}"]], "maxent.jar")
+for (i in namesEnvs) {
+ plot(
+  predicts::partialResponse(model_{{spAbr}}@models[["{{curModel_rmd}}"]], var = i),
+  type="l"
+     )
+}
+
 ```

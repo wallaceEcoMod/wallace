@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # vis_responsePlot.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -81,7 +81,9 @@ vis_responsePlot_module_server <- function(input, output, session, common) {
         maxnet::response.plot(evalOut()@models[[curModel()]], v = curEnv(), type = "cloglog")
       )
     } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
-      dismo::response(evalOut()@models[[curModel()]], var = curEnv())
+      #dismo::response(evalOut()@models[[curModel()]], var = curEnv())
+      plot(predicts::partialResponse(evalOut()@models[[curModel()]], var = curEnv()),
+           type="l")
     }
   }, width = 700, height = 700)
 

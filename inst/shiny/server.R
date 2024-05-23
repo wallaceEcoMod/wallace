@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # server.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -768,7 +768,8 @@ function(input, output, session) {
         namesEnvs <- mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxent.jar")
         for (i in namesEnvs) {
           png(paste0( i, ".png"))
-          dismo::response(evalOut()@models[[curModel()]], var = i)
+          #dismo::response(evalOut()@models[[curModel()]], var = i)
+          plot(predicts::partialResponse(evalOut()@models[[curModel()]], var = i), type="l")
           dev.off()
         }
       }
