@@ -5,10 +5,13 @@ Visualize response curves from "{{alg_rmd}}" model.
 
 ```{r, echo = {{vis_responsePlot_knit & vis_maxnet_knit}}, include = {{vis_responsePlot_knit & vis_maxnet_knit}}}
 # Create response curves
-maxnet::response.plot(
-  model_{{spAbr}}@models[["{{curModel_rmd}}"]],
-  v = names(bgMask_{{spAbr}}),
-  type = "cloglog")
+namesEnvs <- mxNonzeroCoefs(model_{{spAbr}}@models[["{{curModel_rmd}}"]], "maxnet")
+  for (i in namesEnvs) {
+    maxnet::response.plot(
+      model_{{spAbr}}@models[["{{curModel_rmd}}"]],
+      v = i,
+      type = "cloglog")
+  }
 
 ```
 
@@ -21,10 +24,9 @@ Visualize response curves from "{{alg_rmd}}" model.
 # Create response curves
 namesEnvs <- mxNonzeroCoefs(model_{{spAbr}}@models[["{{curModel_rmd}}"]], "maxent.jar")
 for (i in namesEnvs) {
- plot(
-  predicts::partialResponse(model_{{spAbr}}@models[["{{curModel_rmd}}"]], var = i),
-  type="l"
-     )
-}
+  plot(
+    predicts::partialResponse(model_{{spAbr}}@models[["{{curModel_rmd}}"]], var = i),
+    type="l")
+  }
 
 ```
