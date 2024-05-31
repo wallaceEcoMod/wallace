@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # part_partitionOccs.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -75,6 +75,7 @@
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 #' @author Andrea Paz <paz.andreita@@gmail.com>
+#' @author Bethany A. Johnson <bjohnso005@@citymail.cuny.edu>
 # @note
 #' @seealso \code{\link[ENMeval]{partitions}}
 # @references
@@ -96,8 +97,8 @@ part_partitionOccs <- function(occs, bg, method, kfolds = NULL, bgMask = NULL,
     return()
   }
 
-  occs.xy <- occs %>% dplyr::select(.data$longitude, .data$latitude)
-  bg.xy <- bg %>% dplyr::select(.data$longitude, .data$latitude)
+  occs.xy <- occs %>% dplyr::select("longitude", "latitude")
+  bg.xy <- bg %>% dplyr::select("longitude", "latitude")
 
   if (method == 'jack') {
     group.data <- ENMeval::get.jackknife(occs.xy, bg.xy)
@@ -163,7 +164,8 @@ part_partitionOccs <- function(occs, bg, method, kfolds = NULL, bgMask = NULL,
 
   if(method == 'cb1') {
     smartProgress(logger, message = "Aggregating rasters...", {
-      group.data <- ENMeval::get.checkerboard1(occs.xy, bgMask, bg.xy, aggFact)
+      bgMask_terra <- terra::rast(bgMask)
+      group.data <- ENMeval::get.checkerboard(occs.xy, bgMask_terra, bg.xy, aggFact)
     })
 
     logger %>% writeLog(hlSpp(spN),
@@ -173,7 +175,9 @@ part_partitionOccs <- function(occs, bg, method, kfolds = NULL, bgMask = NULL,
 
   if(method == 'cb2') {
     smartProgress(logger, message = "Aggregating rasters...", {
-      group.data <- ENMeval::get.checkerboard2(occs.xy, bgMask, bg.xy, aggFact)
+      bgMask_terra <- terra::rast(bgMask)
+      aggFact <- c(aggFact,aggFact)
+      group.data <- ENMeval::get.checkerboard(occs.xy, bgMask_terra, bg.xy, aggFact)
     })
 
     logger %>% writeLog(hlSpp(spN),
