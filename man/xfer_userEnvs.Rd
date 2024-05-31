@@ -45,6 +45,12 @@ shiny, otherwise leave the default NULL.}
 
 \item{spN}{character. Used to obtain species name for logger messages.}
 }
+\value{
+A list of two elements: xferExt and xferUser. The first is a
+  RasterBrick or a RasterStack of the environmental variables cropped to the
+  area of transfer. The second element is a raster of the transferred model with
+  the specified output type.
+}
 \description{
 The function transfers the model generated in previous components
   to user uploaded environmental variables.
@@ -93,4 +99,6 @@ Jamie Kass <jkass@gradcenter.cuny.edu>
 Andrea Paz <paz.andreita@gmail.com>
 
 Gonzalo E. Pinilla-Buitrago <gepinillab@gmail.com>
+
+Bethany A. Johnson <bjohnso005@citymail.cuny.edu>
 }

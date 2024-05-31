@@ -99,4 +99,6 @@ Jamie Kass <jkass@gradcenter.cuny.edu>
 Andrea Paz <paz.andreita@gmail.com>
 
 Gonzalo E. Pinilla-Buitrago <gepinillab@gmail.com>
+
+Bethany A. Johnson <bjohnso005@citymail.cuny.edu>
 }

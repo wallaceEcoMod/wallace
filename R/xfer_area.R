@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # xfer_area.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -84,6 +84,7 @@
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 #' @author Andrea Paz <paz.andreita@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
+#' @author Bethany A. Johnson <bjohnso005@@citymail.cuny.edu>
 # @note
 #' @seealso \code{\link[dismo]{predict}}, \code{\link{xfer_time}}
 #' \code{\link{xfer_userEnvs}}
@@ -116,18 +117,22 @@ xfer_area <- function(evalOut, curModel, envs, xfExt, alg, outputType = NULL,
 
   smartProgress(logger, message = 'Transferring model to new area...', {
     if (alg == 'BIOCLIM') {
-      modXferArea <- dismo::predict(evalOut@models[[curModel]], xferMsk,
-                                    useC = FALSE)
+      modXferArea <- dismo::predict(evalOut@models[[curModel]], terra::rast(xferMsk))
+      #revert spatraster to raster
+      modXferArea <- raster::raster(modXferArea)
     } else if (alg == 'maxnet') {
       if (outputType == "raw") outputType <- "exponential"
       modXferArea <- predictMaxnet(evalOut@models[[curModel]], xferMsk,
                                           type = outputType, clamp = clamp)
     } else if (alg == 'maxent.jar') {
       modXferArea <- dismo::predict(
-        evalOut@models[[curModel]], xferMsk,
+        evalOut@models[[curModel]], terra::rast(xferMsk),
         args = c(paste0("outputformat=", outputType),
                  paste0("doclamp=", tolower(as.character(clamp)))),
-        na.rm = TRUE)
+        #na.rm = TRUE
+        )
+      #revert spatraster to raster
+      modXferArea <- raster::raster(modXferArea)
     }
   })
 

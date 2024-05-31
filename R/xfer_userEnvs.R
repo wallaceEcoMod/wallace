@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # xfer_userEnvs.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -76,9 +76,14 @@
 #'                          clamp = FALSE, xfExt = polyExt)
 #' }
 #'
+#' @return A list of two elements: xferExt and xferUser. The first is a
+#'   RasterBrick or a RasterStack of the environmental variables cropped to the
+#'   area of transfer. The second element is a raster of the transferred model with
+#'   the specified output type.
 #' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
 #' @author Andrea Paz <paz.andreita@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
+#' @author Bethany A. Johnson <bjohnso005@@citymail.cuny.edu>
 # @note
 #' @seealso \code{\link[dismo]{predict}}, \code{\link{xfer_time}}
 #'   \code{\link{xfer_userExtent}}
@@ -113,18 +118,22 @@ xfer_userEnvs <- function(evalOut, curModel, envs, xfExt, alg, outputType = NULL
     logger,
     message = 'Transferring model to user uploaded environmental variables & area', {
     if (alg == 'BIOCLIM') {
-      modXferUser <- dismo::predict(evalOut@models[[curModel]], xferMsk,
-                                    useC = FALSE)
+      modXferUser <- dismo::predict(evalOut@models[[curModel]], terra::rast(xferMsk))
+      #revert spatraster to raster
+      modXferUser <- raster::raster(modXferUser)
     } else if (alg == 'maxnet') {
       if (outputType == "raw") outputType <- "exponential"
       modXferUser <- predictMaxnet(evalOut@models[[curModel]], xferMsk,
                                           type = outputType, clamp = clamp)
     } else if (alg == 'maxent.jar') {
       modXferUser <- dismo::predict(
-        evalOut@models[[curModel]], xferMsk,
+        evalOut@models[[curModel]], terra::rast(xferMsk),
         args = c(paste0("outputformat=", outputType),
                  paste0("doclamp=", tolower(as.character(clamp)))),
-        na.rm = TRUE)
+        #na.rm = TRUE
+        )
+      #revert spatraster to raster
+      modXferUser <- raster::raster(modXferUser)
     }
   })
 

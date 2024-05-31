@@ -129,18 +129,22 @@ xfer_time <- function(evalOut, curModel, envs, xfExt, alg, outputType = NULL,
     logger,
     message = ("Transferring to new time..."), {
     if (alg == 'BIOCLIM') {
-      modXferTime <- dismo::predict(evalOut@models[[curModel]], xftMsk,
-                                    useC = FALSE)
+      modXferTime <- dismo::predict(evalOut@models[[curModel]], terra::rast(xftMsk))
+      #revert spatraster to raster
+      modXferTime <- raster::raster(modXferTime)
     } else if (alg == 'maxnet') {
       if (outputType == "raw") outputType <- "exponential"
       modXferTime <- predictMaxnet(evalOut@models[[curModel]], xftMsk,
                                           type = outputType, clamp = clamp)
     } else if (alg == 'maxent.jar') {
       modXferTime <- dismo::predict(
-        evalOut@models[[curModel]], xftMsk,
+        evalOut@models[[curModel]], terra::rast(xftMsk),
         args = c(paste0("outputformat=", outputType),
                  paste0("doclamp=", tolower(as.character(clamp)))),
-        na.rm = TRUE)
+        #na.rm = TRUE
+        )
+      #revert spatraster to raster
+      modXferTime <- raster::raster(modXferTime)
     }
   })
   return(list(xferExt = xftMsk, xferTime = modXferTime))
