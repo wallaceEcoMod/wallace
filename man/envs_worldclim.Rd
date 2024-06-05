@@ -45,10 +45,12 @@ arcmin10 <- envs_worldclim(bcRes, bcSel = envar)
 
 }
 \seealso{
-\code{\link[raster]{getData}}
+\code{\link[geodata]{worldclim_global}}, \code{\link[geodata]{worldclim_tile}}
 }
 \author{
 Jamie Kass <jamie.m.kass@gmail.com>
 
 Gonzalo E. Pinilla-Buitrago <gepinillab@gmail.com>
+
+Bethany A. Johnson <bjohnso005@citymail.cuny.edu>
 }
