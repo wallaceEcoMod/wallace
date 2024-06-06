@@ -38,14 +38,14 @@ vis_responsePlot_module_server <- function(input, output, session, common) {
   curEnv <- common$curEnv
   evalOut <- common$evalOut
 
-  observeEvent(input,{
+  observe({
     req(curSp())
     req(curModel())
     req(evalOut())
     #for rmd
-    spp[[curSp()]]$rmd$vis_responsePlot <- TRUE
     if (spp[[curSp()]]$rmm$model$algorithms == "maxnet" | spp[[curSp()]]$rmm$model$algorithms == "maxent.jar"){
       spp[[curSp()]]$rmd$vis_curModel <- curModel()
+      spp[[curSp()]]$rmd$vis_responsePlot <- TRUE
     }
   })
 
