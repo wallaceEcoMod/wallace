@@ -509,7 +509,7 @@ xfer_time_module_server <- function(input, output, session, common) {
 
       spp[[curSp()]]$rmm$data$transfer$environment1$yearMin <- xferYr
       spp[[curSp()]]$rmm$data$transfer$environment1$yearMax <- xferYr
-      spp[[curSp()]]$rmm$data$transfer$environment1$sources <- "WorldClim 1.4"
+      spp[[curSp()]]$rmm$data$transfer$environment1$sources <- "WorldClim v2.1"
       spp[[curSp()]]$rmm$data$transfer$environment1$notes <-
         paste("transfer to year", xferYr, "for GCM",
               GCMlookup[input$selGCM], "under SSP",
