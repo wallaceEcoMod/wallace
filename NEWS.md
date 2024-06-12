@@ -1,10 +1,12 @@
-wallace 2.1.3
+wallace 2.2.0
 =============
 - Fixed NULL error in poccs_selectOccs Rmd code
 - Updated for new ENMeval v2.0.5 functionality
 - Replaced deprecated `ENMeval::getcheckerboard1()` and `ENMeval::getcheckerboard2()` with `ENMeval::getcheckerboard()`
 - Replaced `raster::getdata` with `geodata` functions
 - Now using WorldClim v2.1 env data
+- Fixed issue with vis modules not knitting into session code
+- Added model name (FC + RM) to file name when prediction downloaded
 
 wallace 2.1.2
 =============
