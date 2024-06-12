@@ -86,6 +86,9 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
 
     # pick the prediction that matches the model selected
     predSel <- evalOut()@predictions[[curModel()]]
+    #reset spatraster to raster
+    predSel <- raster::raster(predSel)
+    # set CRS
     raster::crs(predSel) <- raster::crs(bgMask())
     if(is.na(raster::crs(predSel))) {
       logger %>% writeLog(
