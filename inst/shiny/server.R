@@ -786,9 +786,9 @@ function(input, output, session) {
       thresholdRule <- rmm()$prediction$binary$thresholdRule
       predType <- rmm()$prediction$notes
       if (thresholdRule == 'none') {
-        paste0(curSp(), "_", predType, '.', ext)
+        paste0(curSp(), "_", curModel(), "_", predType, '.', ext) #BAJ
       } else {
-        paste0(curSp(), "_", thresholdRule, '.', ext)
+        paste0(curSp(), "_", curModel(), "_", thresholdRule, '.', ext) #BAJ
       }
     },
     content = function(file) {
