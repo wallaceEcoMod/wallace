@@ -65,7 +65,7 @@ xferMess <- xfer_mess(occs = occsEnvs, bg = bgEnvs, bgMsk = envs,
 \code{\link{xfer_userEnvs}}
 }
 \author{
-Jamie Kass <jkass@gradcenter.cuny.edu>
+Jamie Kass <jamie.m.kass@gmail.com>
 
 Gonzalo E. Pinilla-Buitrago <gepinillab@gmail.com>
 }

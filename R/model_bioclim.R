@@ -61,7 +61,7 @@
 #' @return Function returns an ENMevaluate object with all the evaluated models
 #'   and a selection of appropriate fields.
 
-#' @author Jamie M. Kass <jkass@@gradcenter.cuny.edu>
+#' @author Jamie M. Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 #' @author Bethany A. Johnson <bjohnso005@@citymail.cuny.edu>
 # @note

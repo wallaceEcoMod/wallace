@@ -94,7 +94,7 @@ modXfer <- xfer_area(evalOut = m, curModel = 1, envs,
 \code{\link{xfer_userEnvs}}
 }
 \author{
-Jamie Kass <jkass@gradcenter.cuny.edu>
+Jamie Kass <jamie.m.kass@gmail.com>
 
 Andrea Paz <paz.andreita@gmail.com>
 

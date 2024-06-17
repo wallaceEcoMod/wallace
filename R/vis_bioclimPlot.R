@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # vis_bioclimPlot.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -66,7 +66,7 @@
 #'   that are inside the envelope for all layers (included those not plotted)
 #'   are shown as green circles and those outside of the envelope for one ore
 #'   more variables are plotted as orange triangles.
-#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+#' @author Jamie Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 # @note
 #' @seealso

@@ -80,7 +80,7 @@
 #'   RasterBrick or a RasterStack of the environmental variables cropped to the
 #'   area of transfer. The second element is a raster of the transferred model with
 #'   the specified output type.
-#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+#' @author Jamie Kass <jamie.m.kass@@gmail.com>
 #' @author Andrea Paz <paz.andreita@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 #' @author Bethany A. Johnson <bjohnso005@@citymail.cuny.edu>
