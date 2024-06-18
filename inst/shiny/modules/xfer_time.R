@@ -363,19 +363,30 @@ xfer_time_module_server <- function(input, output, session, common) {
                         input$selRCP, "..."),
         {
           #BAJ eventually add 'if res > 30, cmip6_world(), else use cmip6_tile()
-          xferTimeEnvs <- geodata::cmip6_world(model = input$selGCM,
-                                 ssp = input$selRCP,
-                                 time = input$selTime,
-                                 var = "bio",
-                                 res = round(envsRes * 60, 1),
-                                 path=tempdir())
-            #geodata::cmip6_tile(lon, lat, model, ssp, time, var, path) for 30arcsec tile
-
+          #geodata::cmip6_tile(lon, lat, model, ssp, time, var, path) for 30arcsec tile
+          xferTimeEnvs <- tryCatch(expr =
+                                     geodata::cmip6_world(model = input$selGCM,
+                                                          ssp = input$selRCP,
+                                                          time = input$selTime,
+                                                          var = "bio",
+                                                          res = round(envsRes * 60, 1),
+                                                          path=tempdir()),
+                                   error= function(e) NULL)
+          # trycatch error
+          if (is.null(xferTimeEnvs)) {
+            logger %>% writeLog(
+              type = "error",
+              paste0("Unable to retrieve data from WorldClim.
+               Server may be down.
+               Please use User-Specified module instead."))
+            return()
+          } else {
           names(xferTimeEnvs) <- paste0('bio', c(paste0('0',1:9), 10:19))
           # in case user subsetted bioclims
           xferTimeEnvs <- xferTimeEnvs[[names(envs())]]
           # convert spatraster to raster
           xferTimeEnvs <- raster::stack(xferTimeEnvs)
+          }
         }
       )
     } else if (input$selTimeVar == 'ecoclimate') {
@@ -443,11 +454,11 @@ xfer_time_module_server <- function(input, output, session, common) {
       }
       xferTimeThr <- xferTime > thr
       if (input$selTimeVar == 'worldclim') {
-        logger %>% writeLog(hlSpp(curSp()), "Transfer of model to ", paste0('20', input$selTime),
+        logger %>% writeLog(hlSpp(curSp()), "Transfer of model to ", input$selTime,
                             ' with threshold ', input$threshold, ' (',
                             formatC(thr, format = "e", 2), ") for GCM ",
-                            GCMlookup[input$selGCM], " under SSP ",
-                            as.numeric(input$selRCP)/10.0, ".")
+                            input$selGCM, " under SSP ",
+                            as.numeric(input$selRCP), ".")
       } else if (input$selTimeVar == 'ecoclimate') {
         logger %>% writeLog(hlSpp(curSp()), "Transfer of model to ", input$xfScenario,
                             ' with threshold ', input$threshold, ' (',
@@ -457,9 +468,9 @@ xfer_time_module_server <- function(input, output, session, common) {
     } else {
       xferTimeThr <- xferTime
       if (input$selTimeVar == 'worldclim') {
-        logger %>% writeLog(hlSpp(curSp()), "Transfer of model to ", paste0('20', input$selTime),
-                            ' with ', predType, " output for GCM ", GCMlookup[input$selGCM],
-                            " under SSP ", as.numeric(input$selRCP)/10.0, ".")
+        logger %>% writeLog(hlSpp(curSp()), "Transfer of model to ", input$selTime,
+                            ' with ', predType, " output for GCM ", input$selGCM,
+                            " under SSP ", as.numeric(input$selRCP), ".")
       } else if (input$selTimeVar == 'ecoclimate') {
         logger %>% writeLog(hlSpp(curSp()), "Transfer of model to ", input$xfScenario,
                             ' with ', predType, " output for GCM ", input$xfAOGCM, ".")

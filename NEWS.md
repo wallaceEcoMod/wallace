@@ -5,6 +5,7 @@ wallace 2.2.0
 - Replaced deprecated `ENMeval::getcheckerboard1()` and `ENMeval::getcheckerboard2()` with `ENMeval::getcheckerboard()`
 - Replaced `raster::getdata` with `geodata` functions
 - Now using WorldClim v2.1 env data
+- Added tryCatch for WorldClim data (warning message if server is down)
 - Fixed issue with vis modules not knitting into session code
 - Added model name (FC + RM) to file name when prediction downloaded
 

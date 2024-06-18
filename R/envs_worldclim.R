@@ -68,16 +68,27 @@ envs_worldclim <- function(bcRes, bcSel, mapCntr, doBrick = FALSE,
 
   smartProgress(logger, message = "Retrieving WorldClim data...", {
     if (bcRes == 0.5) {
-      wcbc <- geodata::worldclim_tile(var = "bio",
+      wcbc <- tryCatch(expr = geodata::worldclim_tile(var = "bio",
                                       lon = mapCntr[1], lat = mapCntr[2],
                                       path = tempdir(),
-                                      version="2.1")
+                                      version="2.1"),
+                       error= function(e) NULL)
     } else {
-      wcbc <- geodata::worldclim_global(var = "bio",
+      wcbc <- tryCatch(expr = geodata::worldclim_global(var = "bio",
                                         res = bcRes,
                                         path = tempdir(),
-                                        version = "2.1")
+                                        version = "2.1"),
+                       error= function(e) NULL)
     }
+    #trycatch error
+    if (is.null(wcbc)) {
+      logger %>% writeLog(
+        type = "error",
+        paste0("Unable to retrieve data from WorldClim.
+               Server may be down.
+               Please use User-Specified module instead."))
+      return()
+    } else {
       # change names to bioXX
       names(wcbc) <- gsub(".*_", "bio", names(wcbc))
       # change names if bio01 is bio1, and so forth
@@ -86,8 +97,8 @@ envs_worldclim <- function(bcRes, bcSel, mapCntr, doBrick = FALSE,
                                        function(x) x[2]), sep = '0')
       names(wcbc)[i] <- editNames
       wcbc <- wcbc[[bcSel]]
-  }
-  )
+    }
+  })
 
   # convert from spatraster to raster
   wcbc <- raster::stack(wcbc)
