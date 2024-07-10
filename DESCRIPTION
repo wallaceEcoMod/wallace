@@ -12,7 +12,7 @@ Description: The 'shiny' application Wallace is a modular platform for
     most package functionality can be found on the package's GitHub Pages 
     website: <https://wallaceecomod.github.io/wallace/articles/tutorial-v2.html>.
 Authors@R: 
-    c(person("Jamie M.", "Kass", email = "jamie.kass@oist.jp", role = "aut"),
+    c(person("Jamie M.", "Kass", email = "jamie.m.kass@gmail.com", role = "aut"),
     person("Gonzalo E.", "Pinilla-Buitrago", email = "gepinillab@gmail.com", role = "aut"),
     person("Andrea", "Paz", email = "paz.andreita@gmail.com", role = "aut"),
     person("Bethany A.", "Johnson", email = "bjohnso005@citymail.cuny.edu", role = "aut"),

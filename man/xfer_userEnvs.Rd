@@ -88,7 +88,7 @@ modXfer <- xfer_userEnvs(evalOut = m, curModel = 1, envs = envsFut,
   \code{\link{xfer_userExtent}}
 }
 \author{
-Jamie Kass <jkass@gradcenter.cuny.edu>
+Jamie Kass <jamie.m.kass@gmail.com>
 
 Andrea Paz <paz.andreita@gmail.com>
 

@@ -1,7 +1,7 @@
 wallace 2.1.3
 =============
 - Fixed NULL error in poccs_selectOccs Rmd code
-- 
+- Updated JK's email
 - 
 - 
 - 

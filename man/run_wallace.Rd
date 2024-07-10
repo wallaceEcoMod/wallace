@@ -28,7 +28,7 @@ run_wallace()
 }
 }
 \author{
-Jamie Kass <jkass@gradcenter.cuny.edu>
+Jamie Kass <jamie.m.kass@gmail.com>
 
 Gonzalo E. Pinilla-Buitrago <gepinillab@gmail.com>
 }
