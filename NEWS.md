@@ -2,7 +2,7 @@ wallace 2.1.3
 =============
 - Fixed NULL error in poccs_selectOccs Rmd code
 - Updated JK's email
-- 
+- Added model name (FC + RM) to file name when prediction downloaded
 - 
 - 
 
