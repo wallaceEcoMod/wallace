@@ -5,7 +5,7 @@ output: html_document
 
 #### WORKFLOW
 
-*Wallace* (v2.1.2) currently includes ten components, or steps of a possible workflow. Each component includes two or more modules, which are possible analyses for that step.  
+*Wallace* (v2.1.3) currently includes ten components, or steps of a possible workflow. Each component includes two or more modules, which are possible analyses for that step.  
 
 **Components:**  
 
