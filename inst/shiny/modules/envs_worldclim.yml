@@ -1,5 +1,5 @@
 component: "envs"
 short_name: "WorldClim Bioclims"
 long_name: "WorldClim Bioclims"
-authors: "Jamie M. Kass, Gonzalo E. Pinilla-Buitrago, Robert P. Anderson"
-package: [raster]
+authors: "Jamie M. Kass, Gonzalo E. Pinilla-Buitrago, Bethany A. Johnson, Robert P. Anderson"
+package: [raster, geodata]

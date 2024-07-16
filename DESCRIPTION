@@ -39,6 +39,7 @@ Imports:
     DT (>= 0.5),
     ecospat (>= 4.0.0),
     ENMeval (>= 2.0.3),
+    geodata,
     knitcitations,
     leafem,
     leaflet.extras (>= 1.0.0),
