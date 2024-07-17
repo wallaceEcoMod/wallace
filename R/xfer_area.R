@@ -84,6 +84,7 @@
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
 #' @author Andrea Paz <paz.andreita@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
+#' @author Bethany A. Johnson <bjohnso005@@citymail.cuny.edu>
 # @note
 #' @seealso \code{\link[dismo]{predict}}, \code{\link{xfer_time}}
 #' \code{\link{xfer_userEnvs}}

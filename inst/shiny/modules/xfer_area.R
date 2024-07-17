@@ -289,9 +289,9 @@ xfer_area_module_server <- function(input, output, session, common) {
       printVecAsis(raster::cellStats(xferExt, min), asChar = TRUE)
     spp[[curSp()]]$rmm$data$transfer$environment1$maxVal <-
       printVecAsis(raster::cellStats(xferExt, max), asChar = TRUE)
-    if (spp[[curSp()]]$rmm$data$environment$sources == 'WorldClim 1.4') {
-      spp[[curSp()]]$rmm$data$transfer$environment1$yearMin <- 1960
-      spp[[curSp()]]$rmm$data$transfer$environment1$yearMax <- 1990
+    if (spp[[curSp()]]$rmm$data$environment$sources == 'WorldClim 2.1') {
+      spp[[curSp()]]$rmm$data$transfer$environment1$yearMin <- 1970
+      spp[[curSp()]]$rmm$data$transfer$environment1$yearMax <- 2000
     }
     spp[[curSp()]]$rmm$data$transfer$environment1$resolution <-
       paste(round(raster::res(xferExt)[1] * 60, digits = 2), "degrees")

@@ -7,7 +7,7 @@ wallace 2.1.3
 - Fixed NA value warning in userEnvs
 - Fixed broken function to disable `xfer_time` when using `envs_userEnvs`
 - Replaced `raster::getdata` with `geodata` functions
-- Now using WorldClim v2.1 env data!
+- WorldClim v2.1 bioclimatic variables now available for Envs & Xfer_time!
 
 wallace 2.1.2
 =============
