@@ -8,6 +8,7 @@ wallace 2.1.3
 - Fixed broken function to disable `xfer_time` when using `envs_userEnvs`
 - Replaced `raster::getdata` with `geodata` functions
 - WorldClim v2.1 bioclimatic variables now available for Envs & Xfer_time!
+- Added tryCatch for querying worldclim data (envs_wc & xfer_time)
 
 wallace 2.1.2
 =============

@@ -364,20 +364,30 @@ xfer_time_module_server <- function(input, output, session, common) {
                         input$selRCP, "..."),
         {
           #BAJ eventually add 'if (res > 30){, cmip6_world(), }else use{ cmip6_tile()}
-          xferTimeEnvs <-
-            geodata::cmip6_world(model = input$selGCM,
-                                 ssp = input$selRCP,
-                                 time = input$selTime,
-                                 var = "bio",
-                                 res = round(envsRes * 60, 1),
-                                 path=tempdir())
+          xferTimeEnvs <- tryCatch(expr = geodata::cmip6_world(model = input$selGCM,
+                                                               ssp = input$selRCP,
+                                                               time = input$selTime,
+                                                               var = "bio",
+                                                               res = round(envsRes * 60, 1),
+                                                               path=tempdir()),
+                                   error= function(e) NULL)
           #BAJ geodata::cmip6_tile(lon, lat, model, ssp, time, var, path) for 30arcsec tile
 
+          # trycatch error
+          if (is.null(xferTimeEnvs)) {
+            logger %>% writeLog(
+              type = "error",
+              paste0("Unable to retrieve data from WorldClim.
+               Server may be down.
+               Please use User-Specified module instead."))
+            return()
+          } else {
           names(xferTimeEnvs) <- paste0('bio', c(paste0('0',1:9), 10:19))
           # in case user subsetted bioclims
           xferTimeEnvs <- xferTimeEnvs[[names(envs())]]
           # convert spatraster to raster
           xferTimeEnvs <- raster::stack(xferTimeEnvs)
+          }
         }
       )
     } else if (input$selTimeVar == 'ecoclimate') {
