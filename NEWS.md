@@ -4,6 +4,7 @@ wallace 2.1.3
 - Updated JK's email
 - Added model name (FC + RM) to file name when prediction downloaded
 - Fixed vis_responsePlot knitting to Rmd
+- Fixed predictor variable bug in vis_responsePlot Rmd
 - Fixed NA value warning in userEnvs
 - Fixed broken function to disable `xfer_time` when using `envs_userEnvs`
 - Replaced `raster::getdata` with `geodata` functions

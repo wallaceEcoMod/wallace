@@ -4,12 +4,16 @@ Visualize response curves from "{{alg_rmd}}" model.
 ```
 
 ```{r, echo = {{vis_responsePlot_knit & vis_maxnet_knit}}, include = {{vis_responsePlot_knit & vis_maxnet_knit}}}
+# Retrieve env variables
+n <- mxNonzeroCoefs(model_{{spAbr}}@models[["{{curModel_rmd}}"]], "maxnet")
+
 # Create response curves
+for (i in n) {
 maxnet::response.plot(
   model_{{spAbr}}@models[["{{curModel_rmd}}"]],
-  v = names(bgMask_{{spAbr}}),
+  v = i,
   type = "cloglog")
-
+}
 ```
 
 ```{asis, echo = {{vis_responsePlot_knit & !vis_maxnet_knit}}, eval = {{vis_responsePlot_knit & !vis_maxnet_knit}}, include = {{vis_responsePlot_knit & !vis_maxnet_knit}}}
@@ -18,8 +22,13 @@ Visualize response curves from "{{alg_rmd}}" model.
 ```
 
 ```{r, echo = {{vis_responsePlot_knit & !vis_maxnet_knit }}, include = {{vis_responsePlot_knit & !vis_maxnet_knit}}}
+# Retrieve env variables
+n <- mxNonzeroCoefs(model_{{spAbr}}@models[["{{curModel_rmd}}"]], "maxent.jar")
+
 # Create response curves
+for (i in n) {
 dismo::response(
   model_{{spAbr}}@models[["{{curModel_rmd}}"]],
-  var = names(bgMask_{{spAbr}}))
+  var = i)
+}
 ```
