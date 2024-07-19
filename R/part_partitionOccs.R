@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # part_partitionOccs.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -96,8 +96,8 @@ part_partitionOccs <- function(occs, bg, method, kfolds = NULL, bgMask = NULL,
     return()
   }
 
-  occs.xy <- occs %>% dplyr::select(.data$longitude, .data$latitude)
-  bg.xy <- bg %>% dplyr::select(.data$longitude, .data$latitude)
+  occs.xy <- occs %>% dplyr::select("longitude", "latitude")
+  bg.xy <- bg %>% dplyr::select("longitude", "latitude")
 
   if (method == 'jack') {
     group.data <- ENMeval::get.jackknife(occs.xy, bg.xy)

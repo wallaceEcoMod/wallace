@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # xfer_userEnvs.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -76,9 +76,10 @@
 #'                          clamp = FALSE, xfExt = polyExt)
 #' }
 #'
-#' @author Jamie Kass <jkass@@gradcenter.cuny.edu>
+#' @author Jamie Kass <jamie.m.kass@@gmail.com>
 #' @author Andrea Paz <paz.andreita@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
+#' @author Bethany A. Johnson <bjohnso005@@citymail.cuny.edu>
 # @note
 #' @seealso \code{\link[dismo]{predict}}, \code{\link{xfer_time}}
 #'   \code{\link{xfer_userExtent}}

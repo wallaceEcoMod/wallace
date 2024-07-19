@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # penvs_bgSample.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -78,7 +78,7 @@ penvs_bgSample <- function(occs, bgMask, bgPtsNum, logger = NULL, spN = NULL) {
   smartProgress(logger, message = "Generating background points...", {
     bgXY <- dismo::randomPoints(bgMask, bgPtsNum)
     bgXY <- bgXY %>% as.data.frame() %>%
-      dplyr::select(longitude = .data$x, latitude = .data$y)
+      dplyr::select(longitude = "x", latitude = "y")
     bgNonNA <- raster::ncell(bgMask) - raster::freq(bgMask, value = NA)[[1]]
   })
   bg.prop <- round(nrow(bgXY)/bgPtsNum, digits = 2)

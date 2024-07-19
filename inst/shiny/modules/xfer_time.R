@@ -72,15 +72,40 @@ xfer_time_module_ui <- function(id) {
     conditionalPanel(sprintf("input['%s'] == 'worldclim'", ns("selTimeVar")),
                      selectInput(ns("selTime"), label = "Select time period",
                                  choices = list("Select period" = "",
-                                                "2050" = 50,
-                                                "2070" = 70)),
-                     uiOutput(ns('selGCMui')),
-                     selectInput(ns('selRCP'), label = "Select RCP",
-                                 choices = list("Select RCP" = "",
-                                                '2.6' = 26,
-                                                '4.5' = 45,
-                                                '6.0' = 60,
-                                                '8.5' = 85))),
+                                                "2021-2040" = "2021-2040",
+                                                "2041-2060" = "2041-2060",
+                                                "2061-2080" = "2061-2080")),
+                     selectInput(ns("selGCM"), label = "Select global circulation model",
+                                 choices = list("Select GCM" = "",
+                                                "ACCESS-CM2" = "ACCESS-CM2",
+                                                "ACCESS-ESM1-5" = "ACCESS-ESM1-5",
+                                                "AWI-CM-1-1-MR" = "AWI-CM-1-1-MR",
+                                                "BCC-CSM2-MR" = "BCC-CSM2-MR",
+                                                "CanESM5" = "CanESM5",
+                                                "CanESM5-CanOE" = "CanESM5-CanOE",
+                                                "CMCC-ESM2" = "CMCC-ESM2",
+                                                "CNRM-CM6-1" = "CNRM-CM6-1",
+                                                "CNRM-CM6-1-HR" = "CNRM-CM6-1-HR",
+                                                "CNRM-ESM2-1" = "CNRM-ESM2-1",
+                                                "EC-Earth3-Veg" = "EC-Earth3-Veg",
+                                                "EC-Earth3-Veg-LR" = "EC-Earth3-Veg-LR",
+                                                "GISS-E2-1-G" = "GISS-E2-1-G",
+                                                "GISS-E2-1-H" = "GISS-E2-1-H",
+                                                "INM-CM4-8" = "INM-CM4-8",
+                                                "INM-CM5-0" = "INM-CM5-0",
+                                                "IPSL-CM6A-LR" = "IPSL-CM6A-LR",
+                                                "MIROC-ES2L" = "MIROC-ES2L",
+                                                "MIROC6" = "MIROC6",
+                                                "MPI-ESM1-2-HR" = "MPI-ESM1-2-HR",
+                                                "MPI-ESM1-2-LR" = "MPI-ESM1-2-LR",
+                                                "MRI-ESM2-0" = "MRI-ESM2-0",
+                                                "UKESM1-0-LL" = "UKESM1-0-LL")),
+                     selectInput(ns('selRCP'), label = "Select shared socioeconomic pathway",
+                                 choices = list("Select SSP" = "",
+                                                "126" = "126",
+                                                "245" = "245",
+                                                "370" = "370",
+                                                "585" = "585"))),
     conditionalPanel(sprintf("input['%s'] == 'ecoclimate'", ns("selTimeVar")),
                      tags$div(title = 'Select AOGCM',
                               selectInput(ns("xfAOGCM"),
@@ -154,22 +179,23 @@ xfer_time_module_server <- function(input, output, session, common) {
                  MG = "MRI-CGCM3", NO = "NorESM1-M")
 
   # dynamic ui for GCM selection: choices differ depending on choice of time period
-  output$selGCMui <- renderUI({
-    ns <- session$ns
-
-    if (input$selTime == 'lgm') {
-      gcms <- c('CC', 'MR', 'MC')
-    } else if (input$selTime == 'mid') {
-      gcms <- c("BC", "CC", "CE", "CN", "HG", "IP", "MR", "ME", "MG")
-    } else {
-      gcms <- c("AC", "BC", "CC", "CE", "CN", "GF", "GD", "GS", "HD",
-                "HG", "HE", "IN", "IP", "MI", "MR", "MC", "MP", "MG", "NO")
-    }
-    names(gcms) <- GCMlookup[gcms]
-    gcms <- as.list(c("Select GCM" = "", gcms))
-    selectInput(ns("selGCM"), label = "Select global circulation model",
-                choices = gcms)
-  })
+    # 7/16/2024: BAJ removed after geodata & WCv2.1 update, but kept in case needed later
+  # output$selGCMui <- renderUI({
+  #   ns <- session$ns
+  #
+  #   if (input$selTime == 'lgm') {
+  #     gcms <- c('CC', 'MR', 'MC')
+  #   } else if (input$selTime == 'mid') {
+  #     gcms <- c("BC", "CC", "CE", "CN", "HG", "IP", "MR", "ME", "MG")
+  #   } else {
+  #     gcms <- c("AC", "BC", "CC", "CE", "CN", "GF", "GD", "GS", "HD",
+  #               "HG", "HE", "IN", "IP", "MI", "MR", "MC", "MP", "MG", "NO")
+  #   }
+  #   names(gcms) <- GCMlookup[gcms]
+  #   gcms <- as.list(c("Select GCM" = "", gcms))
+  #   selectInput(ns("selGCM"), label = "Select global circulation model",
+  #               choices = gcms)
+  # })
 
   observeEvent(input$goXferExtTime, {
     # ERRORS ####
@@ -284,7 +310,7 @@ xfer_time_module_server <- function(input, output, session, common) {
                  "). You can not transfer to a New Time.")
       return()
     }
-    #BAJ
+
     if (input$selTimeVar == 'worldclim') {
       # warnings for wc selections
       if(input$selTime == "") {
@@ -296,7 +322,7 @@ xfer_time_module_server <- function(input, output, session, common) {
         return()
         }
       if(input$selRCP == "") {
-        logger %>% writeLog(type = 'error', "Please select RCP.")
+        logger %>% writeLog(type = 'error', "Please select a SSP.")
         return()
         }
     } else if (input$selTimeVar == 'ecoclimate') {
@@ -316,32 +342,52 @@ xfer_time_module_server <- function(input, output, session, common) {
     if (input$selTimeVar == 'worldclim') {
       # code taken from dismo getData() function to catch if user is trying to
       # download a missing combo of gcm / rcp
-      gcms <- c('AC', 'BC', 'CC', 'CE', 'CN', 'GF', 'GD', 'GS', 'HD', 'HG', 'HE',
-                'IN', 'IP', 'MI', 'MR', 'MC', 'MP', 'MG', 'NO')
-      rcps <- c(26, 45, 60, 85)
-      m <- matrix(c(0,1,1,0,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-                    1,1,1,1,1,1,1,0,1,1,0,0,1,0,1,1,1,0,0,1,1,1,1,0,1,1,1,1,1,0,1,
-                    0,1,1,1,1,1,1,1,1,1,1,1,1,1), ncol = 4)
-      i <- m[which(input$selGCM == gcms), which(input$selRCP == rcps)]
-      if (!i) {
-        logger %>%
-          writeLog(type = 'error',
-                   paste0('This combination of GCM and RCP is not available. Please ',
-                          'make a different selection.'))
-        return()
-      }
+      # 7/16/2024: BAJ removed after geodata & WCv2.1 update, but kept in case needed later
+      # gcms <- c('AC', 'BC', 'CC', 'CE', 'CN', 'GF', 'GD', 'GS', 'HD', 'HG', 'HE',
+      #           'IN', 'IP', 'MI', 'MR', 'MC', 'MP', 'MG', 'NO')
+      # rcps <- c(26, 45, 60, 85)
+      # m <- matrix(c(0,1,1,0,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+      #               1,1,1,1,1,1,1,0,1,1,0,0,1,0,1,1,1,0,0,1,1,1,1,0,1,1,1,1,1,0,1,
+      #               0,1,1,1,1,1,1,1,1,1,1,1,1,1), ncol = 4)
+      # i <- m[which(input$selGCM == gcms), which(input$selRCP == rcps)]
+      # if (!i) {
+      #   logger %>%
+      #     writeLog(type = 'error',
+      #              paste0('This combination of GCM and RCP is not available. Please ',
+      #                     'make a different selection.'))
+      #   return()
+      # }
+
       smartProgress(
         logger,
         message = paste("Retrieving WorldClim data for", input$selTime,
                         input$selRCP, "..."),
         {
-          xferTimeEnvs <-
-            raster::getData('CMIP5', var = "bio", res = round(envsRes * 60, 1),
-                            rcp = input$selRCP, model = input$selGCM,
-                            year = input$selTime)
+          #BAJ eventually add 'if (res > 30){, cmip6_world(), }else use{ cmip6_tile()}
+          xferTimeEnvs <- tryCatch(expr = geodata::cmip6_world(model = input$selGCM,
+                                                               ssp = input$selRCP,
+                                                               time = input$selTime,
+                                                               var = "bio",
+                                                               res = round(envsRes * 60, 1),
+                                                               path=tempdir()),
+                                   error= function(e) NULL)
+          #BAJ geodata::cmip6_tile(lon, lat, model, ssp, time, var, path) for 30arcsec tile
+
+          # trycatch error
+          if (is.null(xferTimeEnvs)) {
+            logger %>% writeLog(
+              type = "error",
+              paste0("Unable to retrieve data from WorldClim.
+               Server may be down.
+               Please use User-Specified module instead."))
+            return()
+          } else {
           names(xferTimeEnvs) <- paste0('bio', c(paste0('0',1:9), 10:19))
           # in case user subsetted bioclims
           xferTimeEnvs <- xferTimeEnvs[[names(envs())]]
+          # convert spatraster to raster
+          xferTimeEnvs <- raster::stack(xferTimeEnvs)
+          }
         }
       )
     } else if (input$selTimeVar == 'ecoclimate') {
@@ -409,11 +455,11 @@ xfer_time_module_server <- function(input, output, session, common) {
       }
       xferTimeThr <- xferTime > thr
       if (input$selTimeVar == 'worldclim') {
-        logger %>% writeLog(hlSpp(curSp()), "Transfer of model to ", paste0('20', input$selTime),
+        logger %>% writeLog(hlSpp(curSp()), "Transfer of model to ", input$selTime,
                             ' with threshold ', input$threshold, ' (',
                             formatC(thr, format = "e", 2), ") for GCM ",
-                            GCMlookup[input$selGCM], " under RCP ",
-                            as.numeric(input$selRCP)/10.0, ".")
+                            input$selGCM, " under SSP ",
+                            as.numeric(input$selRCP), ".")
       } else if (input$selTimeVar == 'ecoclimate') {
         logger %>% writeLog(hlSpp(curSp()), "Transfer of model to ", input$xfScenario,
                             ' with threshold ', input$threshold, ' (',
@@ -423,9 +469,9 @@ xfer_time_module_server <- function(input, output, session, common) {
     } else {
       xferTimeThr <- xferTime
       if (input$selTimeVar == 'worldclim') {
-        logger %>% writeLog(hlSpp(curSp()), "Transfer of model to ", paste0('20', input$selTime),
-                            ' with ', predType, " output for GCM ", GCMlookup[input$selGCM],
-                            " under RCP ", as.numeric(input$selRCP)/10.0, ".")
+        logger %>% writeLog(hlSpp(curSp()), "Transfer of model to ", input$selTime,
+                            ' with ', predType, " output for GCM ", input$selGCM,
+                            " under SSP ", as.numeric(input$selRCP), ".")
       } else if (input$selTimeVar == 'ecoclimate') {
         logger %>% writeLog(hlSpp(curSp()), "Transfer of model to ", input$xfScenario,
                             ' with ', predType, " output for GCM ", input$xfAOGCM, ".")
@@ -441,7 +487,7 @@ xfer_time_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$transfer$mapXfer <- xferTimeThr
     spp[[curSp()]]$transfer$mapXferVals <- getRasterVals(xferTimeThr, predType)
     if (input$selTimeVar == "worldclim") {
-      spp[[curSp()]]$transfer$xfEnvsDl <- paste0('CMIP5_', envsRes * 60, "min_RCP",
+      spp[[curSp()]]$transfer$xfEnvsDl <- paste0('CMIP5_', envsRes * 60, "min_SSP",
                                                 input$selRCP, "_", input$selGCM,
                                                 "_", input$selTime)
     } else if (input$selTimeVar == "ecoclimate") {
@@ -466,7 +512,7 @@ xfer_time_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$rmm$data$transfer$environment1$extentRule <-
       "transfer to user-selected new time"
     if (input$selTimeVar == "worldclim") {
-      xferYr <- paste0('20', input$selTime)
+      xferYr <- input$selTime
       ###For RMD only
       spp[[curSp()]]$rmm$code$wallace$transfer_worldclim <- TRUE
       spp[[curSp()]]$rmm$code$wallace$transfer_GCM <- input$selGCM
@@ -475,11 +521,11 @@ xfer_time_module_server <- function(input, output, session, common) {
 
       spp[[curSp()]]$rmm$data$transfer$environment1$yearMin <- xferYr
       spp[[curSp()]]$rmm$data$transfer$environment1$yearMax <- xferYr
-      spp[[curSp()]]$rmm$data$transfer$environment1$sources <- "WorldClim 1.4"
+      spp[[curSp()]]$rmm$data$transfer$environment1$sources <- "WorldClim 2.1"
       spp[[curSp()]]$rmm$data$transfer$environment1$notes <-
         paste("transfer to year", xferYr, "for GCM",
-              GCMlookup[input$selGCM], "under RCP",
-              as.numeric(input$selRCP)/10.0)
+              input$selGCM, "under SSP",
+              as.numeric(input$selRCP))
     } else if (input$selTimeVar == "ecoclimate") {
       spp[[curSp()]]$rmm$code$wallace$transfer_ecoclimate <- TRUE
       spp[[curSp()]]$rmm$code$wallace$transfer_AOGCM <- input$xfAOGCM

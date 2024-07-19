@@ -1,6 +1,6 @@
 ```{asis, echo = {{model_bioclim_knit}}, eval = {{model_bioclim_knit}}, include = {{model_bioclim_knit}}}
 ### Build and Evaluate Niche Model
-Generating a species distribution model using the bioclim alogorithm as implemented in ENMeval V2.0. 
+Generating a species distribution model using the bioclim algorithm as implemented in ENMeval V2.0. 
 ```
 
 ```{r, echo = {{model_bioclim_knit}}, include = {{model_bioclim_knit}}}

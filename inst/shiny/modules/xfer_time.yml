@@ -2,4 +2,4 @@ component: "xfer"
 short_name: "Transfer to New Time"
 long_name: "Transfer to New Time"
 authors: "Jamie M. Kass, Bruno Vilela, Gonzalo E. Pinilla-Buitrago, Bethany A. Johnson, Robert P. Anderson"
-package: [dismo]
+package: [geodata, dismo]

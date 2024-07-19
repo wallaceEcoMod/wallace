@@ -25,3 +25,7 @@ writeRaster(r, path_to_new_projected_raster_file)
 Users will need to know what the original CRS of their rasters is, then look up (i.e., Google search) its proj4 format. After saving, upload the new projected rasters and continue with your analysis. 
 
 *NOTE: A reminder that some file types like .asc cannot embed CRS information in the file, so please avoid these types -- instead use types such as .tif that retain the CRS.*
+
+A warning message will appear if your layers have NA values falling in pixels that are not consistent among each layer.  You can continue using them, but some downstream steps of analyses may not be functional. Alternatively, you can assign values in a GIS program or mask the layers to have matching NA values outside of Wallace in R.  
+
+Using your own environmental data will disable the Module: *Transfer to New Time*, as this module requires WorldClim bioclimatic variables. The Module: *Transfer to User Environments* is still available. 

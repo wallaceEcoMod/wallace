@@ -8,24 +8,24 @@ output: html_document
 
 ## Developers
 
+<img src="img/bethany.jpg" alt="bethany" style="width: 100px;"/>
+
+<a href="https://github.com/bjohnso005" target="_blank">Bethany A. Johnson</a> (lead developer) received her MS in Biology from the City College of New York and is currently a Visiting Scientist at the Center for Biodiversity & Conservation at the American Museum of Natural History.  
+<br>
+
 <img src="img/jamie.jpg" alt="jamie" style="width: 100px;"/>
 
-<a href=" https://jamiemkass.github.io/" target="_blank">Jamie M. Kass</a> (co-lead developer) received his PhD at CUNY Graduate Center and City College of New York, did a Postdoc at Okinawa Institute of Science and Technology, and currently is Associate Professor at Tohoku University.  
+<a href=" https://jamiemkass.github.io/" target="_blank">Jamie M. Kass</a> (developer) received his PhD at CUNY Graduate Center and City College of New York, did a Postdoc at Okinawa Institute of Science and Technology, and currently is Associate Professor at Tohoku University.  
 <br>
 
 <img src="img/gonzalo.png" alt="gonzalo" style="width: 100px;"/>
 
-<a href="https://scholar.google.no/citations?user=xlxAr_EAAAAJ&hl=en" target="_blank">Gonzalo E. Pinilla-Buitrago</a> (co-lead developer) received his PhD from the CUNY Graduate Center and City College of New York. He is currently a Postdoctoral Researcher at University of Connecticut.  
+<a href="https://scholar.google.no/citations?user=xlxAr_EAAAAJ&hl=en" target="_blank">Gonzalo E. Pinilla-Buitrago</a> (developer) received his PhD from the CUNY Graduate Center and City College of New York. He is currently a Postdoctoral Researcher at University of Connecticut.  
 <br>
 
 <img src="img/andrea.png" alt="andrea" style="width: 100px;"/>
 
 <a href="https://andrepazv.github.io" target="_blank">Andrea Paz</a> (developer) received her PhD at CUNY Graduate Center and City College of New York, after which she was a Postdoctoral Researcher at the Crowther Lab in ETH Zürich. She is now an Assistant Professor at the Biological Sciences Department, University of Montréal.  
-<br>
-
-<img src="img/bethany.jpg" alt="bethany" style="width: 100px;"/>
-
-<a href="https://github.com/bjohnso005" target="_blank">Bethany A. Johnson</a> (developer) received her MS in Biology from the City College of New York and is currently a Visiting Scientist at the Center for Biodiversity & Conservation at the American Museum of Natural History.  
 <br>
 
 <img src="img/daniel.jpeg" alt="dani" style="width: 100px;"/>

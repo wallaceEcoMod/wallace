@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # server.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -785,9 +785,9 @@ function(input, output, session) {
       thresholdRule <- rmm()$prediction$binary$thresholdRule
       predType <- rmm()$prediction$notes
       if (thresholdRule == 'none') {
-        paste0(curSp(), "_", predType, '.', ext)
+        paste0(curSp(), "_", curModel(), "_", predType, '.', ext)
       } else {
-        paste0(curSp(), "_", thresholdRule, '.', ext)
+        paste0(curSp(), "_", curModel(), "_", thresholdRule, '.', ext)
       }
     },
     content = function(file) {

@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # occs_queryDb.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -259,12 +259,12 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
                   "institutionCode", "elevation", "coordinateUncertaintyInMeters")
       for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
       occs <- occs %>%
-        dplyr::rename(scientific_name = .data$name,
-                      state_province = .data$stateProvince,
-                      record_type = .data$basisOfRecord,
-                      institution_code = .data$institutionCode,
-                      catalog_number = .data$catalogNumber,
-                      uncertainty = .data$coordinateUncertaintyInMeters)
+        dplyr::rename(scientific_name = "name",
+                      state_province = "stateProvince",
+                      record_type = "basisOfRecord",
+                      institution_code = "institutionCode",
+                      catalog_number = "catalogNumber",
+                      uncertainty = "coordinateUncertaintyInMeters")
 
     } else if (occDb == 'vertnet') { # standardize VertNet column names
       fields <- c("name", "longitude", "latitude", "country", "stateprovince",
@@ -273,13 +273,13 @@ occs_queryDb <- function(spNames, occDb, occNum = NULL, doCitations = FALSE,
                   "coordinateuncertaintyinmeters")
       for (i in fields) if (!(i %in% names(occs))) occs[i] <- NA
       occs <- occs %>%
-        dplyr::rename(scientific_name = .data$name,
-                      state_province = .data$stateprovince,
-                      record_type = .data$basisofrecord,
-                      institution_code = .data$institutioncode,
-                      catalog_number = .data$catalognumber,
-                      elevation = .data$maximumelevationinmeters,
-                      uncertainty = .data$coordinateuncertaintyinmeters)
+        dplyr::rename(scientific_name = "name",
+                      state_province = "stateprovince",
+                      record_type = "basisofrecord",
+                      institution_code = "institutioncode",
+                      catalog_number = "catalognumber",
+                      elevation = "maximumelevationinmeters",
+                      uncertainty = "coordinateuncertaintyinmeters")
     # } else if (occDb == 'bison') { # standardize BISON column names
     #   fields <- c("providedScientificName", "longitude", "latitude", "countryCode",
     #               "stateProvince", "verbatimLocality", "year", "basisOfRecord",
