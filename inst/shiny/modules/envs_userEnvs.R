@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # envs_userEnvs.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -79,9 +79,14 @@ envs_userEnvs_module_server <- function(input, output, session, common) {
 
     if (length(unique(checkNA$isNA)) != 1) {
       logger %>% writeLog(
-        type = "error",
-        'Input rasters have unmatching NAs pixel values.')
-      return()
+        type = "warning",
+        'Input rasters have unmatching NA pixel values.
+        This may cause issues in further analyses.
+        See Module Guidance for more info.')
+      # BAJ 7/16/2024 if users report problems with espace, add...
+      #common$disable_module(component = "espace", module = "pca")
+      #common$disable_module(component = "espace", module = "occDens")
+      #common$disable_module(component = "espace", module = "nicheOv")
     }
 
     # loop over all species if batch is on
@@ -146,7 +151,7 @@ envs_userEnvs_module_server <- function(input, output, session, common) {
     }
 
     common$update_component(tab = "Results")
-    common$disable_module(component = "xfer", module = "xferTime")
+    common$disable_module(component = "xfer", module = "time")
   })
 
   output$envsPrint <- renderPrint({

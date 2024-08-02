@@ -103,9 +103,11 @@ modXfer <- xfer_time(evalOut = m, curModel = 1,
 \code{\link{xfer_userEnvs}}
 }
 \author{
-Jamie Kass <jkass@gradcenter.cuny.edu>
+Jamie Kass <jamie.m.kass@gmail.com>
 
 Andrea Paz <paz.andreita@gmail.com>
 
 Gonzalo E. Pinilla-Buitrago <gepinillab@gmail.com>
+
+Bethany A. Johnson <bjohnso005@citymail.cuny.edu>
 }

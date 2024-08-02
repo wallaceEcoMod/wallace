@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # model_maxent.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -83,7 +83,7 @@
 #'
 #' @return Function returns an ENMevaluate object with all the evaluated models
 #'   and a selection of appropriate fields.
-#' @author Jamie M. Kass <jkass@@gradcenter.cuny.edu>
+#' @author Jamie M. Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 # @note
 
@@ -189,8 +189,8 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
   }
 
   # get just coordinates
-  occs.xy <- occs %>% dplyr::select(.data$longitude, .data$latitude)
-  bg.xy <- bg %>% dplyr::select(.data$longitude, .data$latitude)
+  occs.xy <- occs %>% dplyr::select("longitude", "latitude")
+  bg.xy <- bg %>% dplyr::select("longitude", "latitude")
   # run ENMeval
   e <- ENMeval::ENMevaluate(occs = as.data.frame(occs.xy),
                             bg = as.data.frame(bg.xy),
