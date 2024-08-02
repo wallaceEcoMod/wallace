@@ -1,6 +1,6 @@
 ```{asis, echo = {{envs_worldclim_knit}}, eval = {{envs_worldclim_knit}}, include = {{envs_worldclim_knit}}}
 ### Obtain environmental data
-Using WorldClim (http://www.worldclim.org/) bioclimatic dataset at resolution of `r {{wcRes_rmd}}` arcmin.
+Using WorldClim v2.1 (http://www.worldclim.org/) bioclimatic dataset at resolution of `r {{wcRes_rmd}}` arcmin.
 ```
 
 ```{r, echo = {{envs_worldclim_knit}}, include = {{envs_worldclim_knit}}}

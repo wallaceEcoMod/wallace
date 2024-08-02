@@ -61,7 +61,7 @@ bioclimPlot <- vis_bioclimPlot(x = m@models$bioclim,
 \code{\link{model_bioclim}} \code{\link[ENMeval]{ENMevaluate}}
 }
 \author{
-Jamie Kass <jkass@gradcenter.cuny.edu>
+Jamie Kass <jamie.m.kass@gmail.com>
 
 Gonzalo E. Pinilla-Buitrago <gepinillab@gmail.com>
 }

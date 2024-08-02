@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # envs_worldclim.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -53,8 +53,9 @@
 #'
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
+#' @author Bethany A. Johnson <bjohnso005@@citymail.cuny.edu>
 #'
-#' @seealso \code{\link[raster]{getData}}
+#' @seealso \code{\link[geodata]{worldclim_global}}, \code{\link[geodata]{worldclim_tile}}
 #'
 #' @export
 
@@ -66,19 +67,41 @@ envs_worldclim <- function(bcRes, bcSel, mapCntr, doBrick = FALSE,
   }
 
   smartProgress(logger, message = "Retrieving WorldClim data...", {
-      wcbc <- raster::getData(name = "worldclim", var = "bio", res = bcRes,
-                              lon = mapCntr[1], lat = mapCntr[2])
-      # change names if bio01 is bio1, and so forth
-      if (bcRes == 0.5) {
-        names(wcbc) <- gsub("_.*", "", names(wcbc))
-      }
+    if (bcRes == 0.5) {
+      wcbc <- tryCatch(expr = geodata::worldclim_tile(var = "bio",
+                                                      lon = mapCntr[1], lat = mapCntr[2],
+                                                      path = tempdir(),
+                                                      version="2.1"),
+                       error = function(e) NULL)
+    } else {
+      wcbc <- tryCatch(expr = geodata::worldclim_global(var = "bio",
+                                                        res = bcRes,
+                                                        path = tempdir(),
+                                                        version = "2.1"),
+                       error= function(e) NULL)
+    }
+    #trycatch error
+    if (is.null(wcbc)) {
+      logger %>% writeLog(
+        type = "error",
+        paste0("Unable to retrieve data from WorldClim.
+               Server may be down.
+               Please use User-Specified module instead."))
+      return()
+    } else {
+    # change names to bioXX
+    names(wcbc) <- gsub(".*_", "bio", names(wcbc))
+    # change names if bio01 is bio1, and so forth
       i <- grep('bio[0-9]$', names(wcbc))
       editNames <- paste('bio', sapply(strsplit(names(wcbc)[i], 'bio'),
                                        function(x) x[2]), sep = '0')
       names(wcbc)[i] <- editNames
-
       wcbc <- wcbc[[bcSel]]
+    }
   })
+
+  # convert from spatraster to raster
+  wcbc <- raster::stack(wcbc)
 
   # convert to brick for faster processing
   if(doBrick == TRUE) {

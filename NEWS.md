@@ -1,3 +1,24 @@
+wallace 2.1.3
+=============
+- Fixed NULL error in poccs_selectOccs Rmd code
+- Updated JK's email
+- Added model name (FC + RM) to file name when prediction downloaded
+- Fixed vis_responsePlot knitting to Rmd
+- Fixed predictor variable bug in vis_responsePlot Rmd
+- Fixed NA value warning in userEnvs
+- Fixed broken function to disable `xfer_time` when using `envs_userEnvs`
+- Replaced `raster::getdata` with `geodata` functions
+- WorldClim v2.1 bioclimatic variables now available for Envs & Xfer_time!
+- Added tryCatch for querying worldclim data (envs_wc & xfer_time)
+
+wallace 2.1.2
+=============
+- Fixed FAIL in test_occs_queryDB
+- Fixed bug in error msgs for xfer_time
+- Fixed broken link in v1 vignette
+- Added `markdown` to imports
+- Updated team members
+
 wallace 2.1.1
 =============
 - Fixed bug in occ density grid & niche overlap

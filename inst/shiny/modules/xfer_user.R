@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # xfer_user.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -107,7 +107,7 @@ xfer_user_module_server <- function(input, output, session, common) {
     ns <- session$ns
     req(curSp(), evalOut())
     if (spp[[curSp()]]$rmm$model$algorithms != "BIOCLIM") {
-      h5("Prediction output is the same than Visualize component")
+      h5("Prediction output is the same as Visualize component")
     }
   })
 

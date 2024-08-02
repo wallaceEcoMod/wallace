@@ -1,5 +1,5 @@
 component: occs
 short_name: Query Database (Present)
 long_name: Query Database (Present)
-authors: Jamie M. Kass, Bruno Vilela, Gonzalo E. Pinilla-Buitrago, Hannah Owens, Cory Merow, Robert P. Anderson
+authors: Jamie M. Kass, Bruno Vilela, Gonzalo E. Pinilla-Buitrago, Hannah Owens, Andrea Paz, Cory Merow, Robert P. Anderson
 package: [BIEN, occCite, spocc]
