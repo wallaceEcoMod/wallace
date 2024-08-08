@@ -9,7 +9,7 @@ mask_spatialPoly(bgShp_path, bgShp_name, sdm, logger = NULL, spN = NULL)
 \arguments{
 \item{bgShp_path}{Path to the user provided shapefile}
 
-\item{bgShp_name}{Name of the user porvided shapefile}
+\item{bgShp_name}{Name of the user provided shapefile}
 
 \item{sdm}{x}
 
