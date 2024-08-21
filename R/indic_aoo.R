@@ -21,7 +21,6 @@
 # along with Wallace. If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------------
 #
-
 #' @title  indic_aoo
 #' @description Calculate AOO.
 #'
