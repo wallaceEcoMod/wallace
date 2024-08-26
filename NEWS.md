@@ -1,3 +1,8 @@
+wallace 2.2.0
+=============
+- 
+- 
+
 wallace 2.1.3
 =============
 - Fixed NULL error in poccs_selectOccs Rmd code
