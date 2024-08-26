@@ -1,7 +1,7 @@
 wallace 2.2.0
 =============
 - 
-- 
+- RPA edits to guidance texts
 
 wallace 2.1.3
 =============
