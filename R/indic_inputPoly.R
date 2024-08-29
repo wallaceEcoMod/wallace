@@ -55,7 +55,7 @@
 #' spatialPoly <- indic_inputPoly(bgShp_path, bgShp_name, overlapArea, logger = NULL, spN = NULL)
 #' }
 #'
-#' @return An sf object of two variables: a dummy integer and an sfc multipolygon of the overlap
+#' @return A simple feature collection with 1 feature and 1 field: an integer and an sfc multipolygon of the overlap
 #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 #' @author Bethany A. Johnson <bjohnso005@@citymail.cuny.edu>
 # @note
@@ -89,7 +89,7 @@ indic_inputPoly <- function(bgShp_path, bgShp_name, overlapArea,
   } else {
     logger %>%
       writeLog(type = 'error', hlSpp(spN),
-               'Please enter shapefile (.shp, .shx, .dbf).')
+               paste0("Please enter shapefile (.shp, .shx, .dbf)."))
     return()
   }
   if (is.na(sf::st_crs(polyData))) {
