@@ -26,6 +26,6 @@ Users will need to know what the original CRS of their rasters is, then look up 
 
 *NOTE: A reminder that some file types like .asc cannot embed CRS information in the file, so please avoid these types -- instead use types such as .tif that retain the CRS.*
 
-A warning message will appear if your layers have NA values falling in pixels that are not consistent among each layer.  You can continue using them, but some downstream steps of analyses may not be functional. Alternatively, you can assign values in a GIS program or mask the layers to have matching NA values outside of Wallace in R.  
+A warning message will appear if your layers have NA values for pixels that are not consistent among all of the layers.  You can continue using them, but some downstream analyses may not be functional. Alternatively, before uploading rasters to Wallace, you can assign values in a GIS program or mask the rasters in R to have matching NA values.  
 
-Using your own environmental data will disable the Module: *Transfer to New Time*, as this module requires WorldClim bioclimatic variables. The Module: *Transfer to User Environments* is still available. 
+Using your own environmental data here will disable the later *Transfer to New Time* module, as it requires WorldClim bioclimatic variables. The later Module: *Transfer to User Environments* is still available. 

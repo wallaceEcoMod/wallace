@@ -1,3 +1,9 @@
+wallace 2.2.0
+=============
+- 
+- updated module skeleton & module addition vignette to include `knitcitations` for References
+- RPA edits to guidance texts
+
 wallace 2.1.3
 =============
 - Fixed NULL error in poccs_selectOccs Rmd code
