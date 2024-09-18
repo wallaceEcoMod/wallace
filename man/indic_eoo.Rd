@@ -4,7 +4,7 @@
 \alias{indic_eoo}
 \title{indic_eoo}
 \usage{
-indic_eoo(r = NULL, occs = NULL, lon = NULL, lat = NULL, wkt, logger)
+indic_eoo(r = NULL, occs = NULL, lon = NULL, lat = NULL, wkt, logger = NULL)
 }
 \arguments{
 \item{r}{raster. Thresholded prediction raster. It could be NULL if occs provided.}
@@ -23,11 +23,33 @@ to calculate area.}
 Window of Wallace GUI. Insert the logger reactive list here for running in
 shiny, otherwise leave the default NULL}
 }
+\value{
+A list of two elements: area and eooPoly. area is a numeric value and eooPoly is a SpatialPolygon.
+}
 \description{
 Calculate EOO.
+}
+\details{
+Calculate extent of occurrence (EOO) based on a binary raster or occurrence points.
+}
+\examples{
+\dontrun{
+# binary raster
+r <- terra::rast(system.file("extdata/Bassaricyon_neblina.tif",package = "wallace"))
+# occurrences
+occs <- read.csv(system.file("extdata/Bassaricyon_neblina.csv",package = "wallace"))
+# wcea
+wkt <- getWKT("wcea")
+
+eoo_r <- indic_eoo(r, occs = NULL, lon = NULL, lat = NULL, wkt, logger = NULL)
+eoo_o <- indic_eoo(r = NULL, occs, lon = "longitude", lat = "latitude", wkt, logger = NULL)
+}
+
 }
 \author{
 Andrea Paz <paz.andreita@gmail.com>
 
 Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
+
+Bethany A. Johnson <bjohnso005@citymail.cuny.edu>
 }

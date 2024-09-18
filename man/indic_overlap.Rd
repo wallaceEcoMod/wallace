@@ -14,25 +14,58 @@ indic_overlap(
 )
 }
 \arguments{
-\item{rangeMap}{sf polygon. A polygon with the range map.}
+\item{rangeMap}{sf object representing a binary range map.}
 
-\item{inputOverlap}{sf polygon or raster. A feature to apply overlap.}
+\item{inputOverlap}{sf polygon or continuous raster. A feature to apply overlap.}
 
 \item{field}{character. Name of the field to select categories/attributes.
-NULL is inputOverlap is a raster.}
+NULL if inputOverlap is a raster.}
 
 \item{category}{character. String with names of the categories/attributes
-selected to overlap with range map. NULL is inputOverlap is a raster.}
+selected to overlap with range map. NULL if inputOverlap is a raster.}
 
 \item{logger}{logger}
 
 \item{spN}{species name}
 }
+\value{
+A list of 2: a polygon of the overlap and the ratio overlap statistics.
+}
 \description{
-Overlap range map with shapefile or raster
+Overlap a binary range map with shapefile or raster
+}
+\details{
+This function calculates the overlap between a range map and a
+supplied shape or continuous raster. If the inputOverlap is a continuous raster, the
+function returns a polygon of the overlap and the proportion of range:
+below 25%, 25-50%, 50-75%, and 75-100%. If the inputOverlap is a polygon, the
+function returns a polygon of the overlap and the percentage of the range
+contained within the shape.
+}
+\examples{
+\dontrun{
+### Set parameters
+# range map
+rangeMap <- terra::rast(system.file("extdata/Bassaricyon_neblina.tif", package = "wallace"))
+rangeMap[rangeMap == 0] <- NA
+rangeMap <- terra::as.polygons(rangeMap)
+rangeMap <- sf::st_as_sf(rangeMap)
+# input overlap raster
+inputRaster <- raster::raster(nrows=108, ncols=108, xmn=-80, xmx=-75)
+raster::values(inputRaster)<- runif(n = (108*108))
+
+### Run function
+overlap_r <- indic_overlap(rangeMap, inputOverlap = inputRaster, field = NULL, category = NULL, logger = NULL, spN = NULL)
+}
+
+}
+\seealso{
+\code{\link{indic_raster}}, \code{\link{indic_inputPoly}}, \code{\link[changeRangeR]{ratioOverlap}}
 }
 \author{
 Andrea Paz <paz.andreita@gmail.com>
 
 Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
+
+Bethany A. Johnson <bjohnso005@citymail.cuny.edu>
 }

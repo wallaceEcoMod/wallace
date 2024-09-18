@@ -33,29 +33,29 @@
 #'   intercept. The function returns an sf object to be used in the indic_overlap()
 #'   function.
 #'
-#' @param bgShp_path Path to the user provided shapefile
-#' @param bgShp_name Name of the user provided shapefile
-#' @param overlapArea sf object. The source polygon for ratio overlap calculations
+#' @param ovShp_path Path to the user provided shapefile
+#' @param ovShp_name Name of the user provided shapefile
+#' @param overlapRange sf object. The source polygon for ratio overlap calculations
 #' @param logger stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 #' otherwise leave the default NULL
 #' @param spN character. Used to obtain species name for logger messages
-#' @example
+#' @examples
 #' \dontrun{
 #' # Overlap polygon
-#' bgShp_path <- list.files(path = system.file("extdata/shp", package = "wallace"), full.names = TRUE)
-#' bgShp_name <- list.files(path = system.file("extdata/shp", package = "wallace"), full.names = FALSE)
+#' ovShp_path <- list.files(path = system.file("extdata/wdpa", package = "wallace"), full.names = TRUE)
+#' ovShp_name <- list.files(path = system.file("extdata/wdpa", package = "wallace"), full.names = FALSE)
 #'
 #' # Source polygon
-#' r <- terra::rast(system.file("extdata/Bassaricyon_neblina.tif", package = "wallace"))
-#' r[r == 0] <- NA
-#' r <- terra::as.polygons(r)
-#' overlapArea <- sf::st_as_sf(r)
+#' overlapRange <- terra::rast(system.file("extdata/Bassaricyon_neblina.tif", package = "wallace"))
+#' overlapRange[overlapRange == 0] <- NA
+#' overlapRange <- terra::as.polygons(overlapRange)
+#' overlapRange <- sf::st_as_sf(overlapRange)
 #'
 #' # Run function
-#' spatialPoly <- indic_inputPoly(bgShp_path, bgShp_name, overlapArea, logger = NULL, spN = NULL)
+#' polyData <- indic_inputPoly(ovShp_path, ovShp_name, overlapRange, logger = NULL, spN = NULL)
 #' }
 #'
-#' @return A simple feature collection with 1 feature and 1 field: an integer and an sfc multipolygon of the overlap
+#' @return An sf object to be used for calculating ratio overlap
 #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 #' @author Bethany A. Johnson <bjohnso005@@citymail.cuny.edu>
 # @note
@@ -63,12 +63,12 @@
 #' @seealso \code{\link{indic_overlap}}
 #' @export
 
-indic_inputPoly <- function(bgShp_path, bgShp_name, overlapArea,
+indic_inputPoly <- function(ovShp_path, ovShp_name, overlapRange,
                              logger = NULL, spN = NULL) {
-  pathdir <- dirname(bgShp_path)
-  pathfile <- basename(bgShp_path)
+  pathdir <- dirname(ovShp_path)
+  pathfile <- basename(ovShp_path)
   # get extensions of all input files
-  exts <- sapply(strsplit(bgShp_name, '\\.'), FUN = function(x) x[2])
+  exts <- sapply(strsplit(ovShp_name, '\\.'), FUN = function(x) x[2])
   if ('shp' %in% exts) {
     if (length(exts) < 3) {
       logger %>%
@@ -79,11 +79,11 @@ indic_inputPoly <- function(bgShp_path, bgShp_name, overlapArea,
     }
     # get index of .shp
     i <- which(exts == 'shp')
-    if (!file.exists(file.path(pathdir, bgShp_name)[i])) {
-      file.rename(bgShp_path, file.path(pathdir, bgShp_name))
+    if (!file.exists(file.path(pathdir, ovShp_name)[i])) {
+      file.rename(ovShp_path, file.path(pathdir, ovShp_name))
     }
     smartProgress(logger, message = "Uploading shapefile ...", {
-      polyData <- sf::read_sf(file.path(pathdir, bgShp_name)[i])
+      polyData <- sf::read_sf(file.path(pathdir, ovShp_name)[i])
       polyData <- replace(polyData, is.na(polyData), values = "NA")
     })
   } else {
@@ -108,19 +108,22 @@ indic_inputPoly <- function(bgShp_path, bgShp_name, overlapArea,
     )
   }
   sf::sf_use_s2(FALSE)
-  if (sum(lengths(sf::st_intersects(polyData, overlapArea))) == 0) {
+  if (sum(lengths(sf::st_intersects(polyData, overlapRange))) == 0) {
     logger %>% writeLog(
       type = 'error', hlSpp(spN),
       "Shapefile does not intersect the area to overlap. Please specify a new polygon."
     )
     return()
   }
-  smartProgress(logger, message = "Intersecting spatial data ...", {
-    nmOverlap <- names(overlapArea)
-    nmOverlap <- nmOverlap[!(nmOverlap %in% "geometry")]
-    spatialPoly <- sf::st_intersection(polyData, overlapArea) %>%
-      dplyr::select(all_of(nmOverlap))
-  })
+  # BAJ 9/6/2024 removed the following
+  # I dont think this needs to be here, it's already in indic_overlap
+  # smartProgress(logger, message = "Intersecting spatial data ...", {
+  #   nmOverlap <- names(overlapArea)
+  #   nmOverlap <- nmOverlap[!(nmOverlap %in% "geometry")]
+  #   spatialPoly <- sf::st_intersection(polyData, overlapArea) %>%
+  #     dplyr::select(all_of(nmOverlap))
+  # })
+  # if it is added back in, change line 128 return(polyData) to return(spatialPoly)
   logger %>% writeLog(hlSpp(spN), "Spatial data uploaded.")
-  return(spatialPoly)
+  return(polyData)
 }

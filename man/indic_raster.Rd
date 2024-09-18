@@ -7,11 +7,11 @@
 indic_raster(rasPath, rasName, overlapArea, logger = NULL, spN = NULL)
 }
 \arguments{
-\item{rasPath}{character of path to rasters, must be the full path including
+\item{rasPath}{character of path to raster, must be the full path including
 file name and extension.}
 
-\item{rasName}{character vector of raster names to be assigned to loaded
-rasters.}
+\item{rasName}{character vector of raster name to be assigned to loaded
+raster.}
 
 \item{overlapArea}{x. An sf object.}
 
@@ -21,11 +21,43 @@ running in shiny, otherwise leave the default NULL.}
 
 \item{spN}{Species name}
 }
+\value{
+A rasterlayer
+}
 \description{
 Upload user-specified SDM prediction
+}
+\details{
+This function uploads a user-specified raster to be used in the calculate ratio
+overlap module. It checks to make sure the raster intersects the overlapping object(an sf object;
+a range map, EOO, AOO, masked map, etc) for calculating ratio overlap
+}
+\examples{
+\dontrun{
+#raster
+rasPath <- system.file("extdata/Bassaricyon_neblina.tif",package = "wallace")
+rasName <- "Bassaricyon_neblina.tif"
+#overlapArea
+rangeMap <- raster::raster(nrows=108, ncols=108, xmn=-79, xmx=-73)
+raster::values(rangeMap)<- runif(n = (108*108))
+##convert to sf
+rangeMap <- terra::rast(rangeMap)
+rangeMap[rangeMap == 0] <- NA
+rangeMap <- terra::as.polygons(rangeMap)
+rangeMap <- sf::st_as_sf(rangeMap)
+
+# Run function
+r <- indic_raster(rasPath, rasName, overlapArea = rangeMap, logger = NULL, spN = NULL)
+}
+
+}
+\seealso{
+\code{\link{indic_overlap}}
 }
 \author{
 Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
 
 Jamie Kass <jkass@gradcenter.cuny.edu>
+
+Bethany A. Johnson <bjohnso005@citymail.cuny.edu>
 }

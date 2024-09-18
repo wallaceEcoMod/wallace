@@ -37,7 +37,7 @@
 #'  running in shiny, otherwise leave the default NULL.
 #' @param spN Species name
 #'
-#' @example
+#' @examples
 #' \dontrun{
 #' #raster
 #' rasPath <- system.file("extdata/Bassaricyon_neblina.tif",package = "wallace")

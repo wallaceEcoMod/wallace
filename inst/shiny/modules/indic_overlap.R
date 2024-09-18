@@ -175,7 +175,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
                               mask = "Masked SDM",
                               eoo = "Extent of Occurrence (EOO)",
                               aoo = "Area of Ocupancy (AOO)"),
-                      " selected for overlap analysis (**)"))
+                      " selected for overlap analysis."))
     # LOAD TO SPP
     spp[[curSp()]]$indic$overlapSourcePoly <- rangeMap
     spp[[curSp()]]$indic$overlapSource <- selOverlapSource()
@@ -198,7 +198,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
     if (input$indicOverlap == 'shapefile') {
       # ERROR
       if (is.null(input$indicOverlapShp$datapath)) {
-        logger %>% writeLog(type = 'error', "Specified filepath(s).")
+        logger %>% writeLog(type = 'error', "Specify filepath(s).")
         return()
       }
       inputOverlap <- indic_inputPoly(input$indicOverlapShp$datapath,
@@ -259,7 +259,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
     shinyWidgets::pickerInput("overlapCat",
                               label = "Select Category",
                               choices = category,
-                              multiple = TRUE,
+                              multiple = FALSE, #BAJ 09/10/24: bug in cRR (#12). change to TRUE when fixed
                               selected = category,
                               options = list(`actions-box` = TRUE))
   })
