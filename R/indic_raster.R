@@ -89,6 +89,15 @@ indic_raster <- function(rasPath, rasName, overlapArea,
       )
       return()
     }
+    # BAJ
+    # if (raster is binary) {
+  #   logger %>%
+  #     writeLog(
+  #       type = "error", hlSpp(spN),
+  #       "The raster needs to be continuous. '", rasterName,
+  #       "' cannot be uploaded. Please upload a continuous raster. ")
+  #   return()
+  # }
   })
   logger %>% writeLog(hlSpp(spN), "User raster file loaded.")
   return(r)
