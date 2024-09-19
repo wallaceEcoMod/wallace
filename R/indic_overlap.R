@@ -38,7 +38,8 @@
 #' @param logger logger
 #' @param spN species name
 #'
-#' @examples \dontrun{
+#' @examples
+#' \dontrun{
 #' ### Set parameters
 #' # range map
 #' rangeMap <- terra::rast(system.file("extdata/Bassaricyon_neblina.tif", package = "wallace"))
