@@ -2,7 +2,7 @@ indic_time_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
     ##inputs must be: SDM so step 1 remains
-    #Environmental variables (e g forest thorugh time as rasters (multiple))
+    #Environmental variables (e.g., forest through time as rasters (multiple))
     #Threshold numeric input
     #years used (numeric input?)
     span("Step 1:", class = "step"),
@@ -156,6 +156,12 @@ indic_time_module_server <- function(input, output, session, common) {
       }
       rangeMap <- sf::st_as_sf(rangeMap)
     }
+    # BAJ is this needed here or in wallace/R/inidic_time.R?
+    # if ("SpatRaster"%in% class(range)) {
+    #   range[range == 0] <- NA
+    #   range <- terra::as.polygons(range)
+    #   range <- sf::st_as_sf(range)
+    # }
     req(rangeMap)
     logger %>%
       writeLog(hlSpp(curSp()),
@@ -258,6 +264,8 @@ indic_time_module_server <- function(input, output, session, common) {
                           "No range map is selected for the calculations.")
       return()
     }
+    # BAJ 9/25/2024: should the rangeMap match the envs, or the envs match the rangeMap?
+    # See the cRR example for indic_time where it is the opposite- the envs are changed to match the range
     rangeMap <- sf::as_Spatial(spp[[curSp()]]$indic$timeRange) %>%
       raster::rasterize(spp[[curSp()]]$indic$indicEnvs[[1]])
     rangeArea <- indic_time(range = rangeMap,

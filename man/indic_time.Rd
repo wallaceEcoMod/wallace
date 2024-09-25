@@ -7,11 +7,11 @@
 indic_time(range, envs, thrh, bound, logger = NULL, spN = NULL)
 }
 \arguments{
-\item{range}{sf polygon. A polygon with the range map.}
+\item{range}{sf polygon. A polygon with the range map. Extent must match envs.}
 
-\item{envs}{rasterStack. Environmental variables.}
+\item{envs}{rasterStack. Environmental variables. Extent must match range.}
 
-\item{thrh}{interger. Threshold of where envs layers
+\item{thrh}{integer. Threshold of where envs layers
 should be thresholded}
 
 \item{bound}{character. character string characterizing the way the threshold
@@ -24,11 +24,47 @@ at both threshold values (if provided; e.g., minimum and maximum temperature).}
 
 \item{spN}{species name}
 }
+\value{
+a matrix array of the area calculations through time
+}
 \description{
 Calculate change in range area through time
+}
+\details{
+This function calls on the changeRangeR::envchange() to calculate
+the change in range area over time. It calculates the area of polygon of a
+binary range, a masked range, EOO, or AOO, over time based on environmental
+variables uploaded by the user and a selected threshold. The bounds of the
+threshold are selected: "upper" removes values above the threshold (e.g.,
+maximum human footprint), "lower" removes values below the threshold (e.g.,
+minimum forest cover), "neither" does not threshold at any point, & finally
+"both" thresholds at both threshold values (if provided; e.g., minimum and
+maximum temperature).
+}
+\examples{
+\dontrun{
+### Set parameters
+# rasterstack of envs
+pathRast <- list.files(system.file("extdata/MODIS", package = "wallace"), pattern = ".tif$", full.names = TRUE)
+envs <- raster::stack(pathRast)
+# range map
+range <- raster::raster(system.file("extdata/Bassaricyon_neblina.tif",package = "wallace"))
+# match projections
+projected_range <- raster::projectRaster(range, envs, method = 'bilinear')
+# threshold & bounds
+thrh <- 20
+bound <- "lower"
+### Run function
+envChangeArea <- indic_time(projected_range, envs, thrh, bound, logger = NULL, spN = NULL)
+}
+}
+\seealso{
+\code{\link[changeRangeR]{envChange}}
 }
 \author{
 Andrea Paz <paz.andreita@gmail.com>
 
 Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
+
+Bethany A. Johnson <bjohnso005@citymail.cuny.edu>
 }

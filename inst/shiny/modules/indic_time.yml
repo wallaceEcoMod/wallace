@@ -1,5 +1,5 @@
 component: "indic"
 short_name: "Calculate Change Over Time"
 long_name: "Calculate Change Over Time"
-authors: "Andrea Paz"
+authors: "Andrea Paz, Bethany A. Johnson"
 package: [raster, changeRangeR]
