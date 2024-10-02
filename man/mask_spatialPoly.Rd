@@ -7,26 +7,42 @@
 mask_spatialPoly(bgShp_path, bgShp_name, sdm, logger = NULL, spN = NULL)
 }
 \arguments{
-\item{bgShp_path}{Path to the user provided shapefile}
+\item{bgShp_path}{Path to the user-provided shapefile for masking}
 
-\item{bgShp_name}{Name of the user provided shapefile}
+\item{bgShp_name}{Name of the user-provided shapefile for masking}
 
-\item{sdm}{x}
+\item{sdm}{A rasterlayer of a continuous or binary range prediction to be masked by shape}
 
 \item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
-\item{spN}{x}
+\item{spN}{character. Used to obtain species name for logger messages}
 }
 \value{
-x
+A SpatialPolygonsDataFrame for masking
 }
 \description{
-x
+Upload user-provided shapefile for masking
 }
 \details{
-x
+This function provides a spatialpolygon from a shapefile for masking
+ a continuous or binary range prediction (sdm) based on the path and name of
+ a user-provided shapefile. The shapefile must fall within the extent of the
+ range prediction. Any part of the range prediction (sdm) outside of the polygon
+ will be removed ("masked" out).
+}
+\examples{
+\dontrun{
+### Set parameters
+bgShp_path <- list.files(path = system.file("extdata/shp", package = "wallace"),full.names = TRUE)
+bgShp_name <- list.files(path = system.file("extdata/shp", package = "wallace"),full.names = FALSE)
+sdm <- raster::raster(system.file("extdata/Bassaricyon_neblina.tif",package = "wallace"))
+### Run function
+spatialMask <- mask_spatialPoly(bgShp_path,bgShp_name,sdm,logger = NULL,spN = NULL)
+}
 }
 \author{
 Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
+
+Bethany A. Johnson <bjohnso005@citymail.cuny.edu>
 }
