@@ -35,14 +35,14 @@ test_that("error checks", {
                )
   })
 
-### test if the warning messages appear when they are supposed to
-# contains NA values
-# test_that("warnings checks", {
-#   expect_warning(mask_expPoly(polyMask, prediction, polyExt,
-#                               rem = TRUE, logger = NULL, spN = NULL),
-#                  paste0("The polygon selected includes some cells with NA values. You cannot change the prediction (suitable or unsuitable) in these cells. "))
-#   })
-# BAJ 10/01/2024: this is failing and I don't know why.
+## test if the warning messages appear when they are supposed to
+#contains NA values
+test_that("warnings checks", {
+  expect_warning(mask_expPoly(polyMask, prediction, polyExt,
+                              rem = TRUE, logger = NULL, spN = NULL),
+                 paste0("The polygon selected includes some cells with NA values. You cannot change the prediction (suitable or unsuitable) in these cells. "),
+                        fixed = TRUE)
+  })
 
 ### test output features
 test_that("output checks", {
