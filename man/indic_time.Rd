@@ -20,7 +20,9 @@ human footprint). "lower" removes values below the threshold (e.g., minimum
 forest cover). "neither" does not threshold at any point. "both" thresholds
 at both threshold values (if provided; e.g., minimum and maximum temperature).}
 
-\item{logger}{logger}
+\item{logger}{stores all notification messages to be displayed in the Log
+Window of Wallace GUI. insert the logger reactive list here for running in
+shiny, otherwise leave the default NULL}
 
 \item{spN}{species name}
 }

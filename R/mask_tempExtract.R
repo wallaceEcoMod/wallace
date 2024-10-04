@@ -5,7 +5,9 @@
 #' @param upperInp Upper bound value
 #' @param maskRaster Masking raster
 #' @param pred Prediction
-#' @param logger logger
+#' @param logger stores all notification messages to be displayed in the Log
+#'  Window of Wallace GUI. insert the logger reactive list here for running in
+#'  shiny, otherwise leave the default NULL
 #' @param spN Species name.
 #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 #' @export

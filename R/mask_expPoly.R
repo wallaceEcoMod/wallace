@@ -30,7 +30,9 @@
 #' @param prediction Raster prediction, of which to add/remove polyMask.
 #' @param polyExt Polygon of the prediction background extent
 #' @param rem Remove areas of polygon from prediction or add them to prediction. (TRUE = remove, FALSE = add)
-#' @param logger logger
+#' @param logger stores all notification messages to be displayed in the Log
+#'  Window of Wallace GUI. insert the logger reactive list here for running in
+#'  shiny, otherwise leave the default NULL
 #' @param spN species name
 #' @examples
 #' \dontrun{

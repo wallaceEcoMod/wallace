@@ -22,7 +22,9 @@ mask_tempExtract(
 
 \item{pred}{Prediction}
 
-\item{logger}{logger}
+\item{logger}{stores all notification messages to be displayed in the Log
+Window of Wallace GUI. insert the logger reactive list here for running in
+shiny, otherwise leave the default NULL}
 
 \item{spN}{Species name.}
 }

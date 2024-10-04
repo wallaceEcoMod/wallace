@@ -13,7 +13,9 @@ mask_tempAnnotate(occs, env, envDates, logger = NULL)
 
 \item{envDates}{String with the years corresponding to the rasters}
 
-\item{logger}{logger}
+\item{logger}{Stores all notification messages to be displayed in the Log
+Window of Wallace GUI. Insert the logger reactive list here for running in
+shiny, otherwise leave the default NULL.}
 }
 \value{
 Numeric. Returns the quantiles

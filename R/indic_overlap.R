@@ -35,7 +35,9 @@
 #' NULL if inputOverlap is a raster.
 #' @param category character. String with names of the categories/attributes
 #' selected to overlap with range map. NULL if inputOverlap is a raster.
-#' @param logger logger
+#' @param logger stores all notification messages to be displayed in the Log
+#'  Window of Wallace GUI. insert the logger reactive list here for running in
+#'  shiny, otherwise leave the default NULL
 #' @param spN species name
 #'
 #' @examples

@@ -24,7 +24,9 @@ NULL if inputOverlap is a raster.}
 \item{category}{character. String with names of the categories/attributes
 selected to overlap with range map. NULL if inputOverlap is a raster.}
 
-\item{logger}{logger}
+\item{logger}{stores all notification messages to be displayed in the Log
+Window of Wallace GUI. insert the logger reactive list here for running in
+shiny, otherwise leave the default NULL}
 
 \item{spN}{species name}
 }
