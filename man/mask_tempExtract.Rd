@@ -14,23 +14,50 @@ mask_tempExtract(
 )
 }
 \arguments{
-\item{lowerInp}{Lower bound value}
+\item{lowerInp}{numeric. Lower bound value}
 
-\item{upperInp}{Upper bound value}
+\item{upperInp}{numeric. Upper bound value}
 
-\item{maskRaster}{Masking raster}
+\item{maskRaster}{RasterLayer. The masking raster}
 
-\item{pred}{Prediction}
+\item{pred}{RasterLayer. The range prediction to be masked}
 
 \item{logger}{stores all notification messages to be displayed in the Log
 Window of Wallace GUI. insert the logger reactive list here for running in
 shiny, otherwise leave the default NULL}
 
-\item{spN}{Species name.}
+\item{spN}{character. Used to obtain species name for logger messages}
+}
+\value{
+Returns a RasterLayer of the masked range prediction
 }
 \description{
 To mask prediction by temporal thresholds.
 }
+\details{
+Mask a range prediction (e.g., an SDM prediction) with an
+environmental raster. Set the upper and lower bounds to remove areas
+above/below those values in the masking raster from the prediction. The upper
+and lower bounds can be determined from tempAnnotate. Anything area in the
+masking raster with values below the lower bound and above the upper bound
+will be removed from the range prediction.
+}
+\examples{
+\dontrun{
+### Set parameters
+lowerInp <- 50
+upperInp <- 100
+maskRaster <- raster::raster(system.file("extdata/MODIS/2010_olinguito_Modis.tif", package = "wallace"))
+pred <- raster::raster(system.file("extdata/Bassaricyon_neblina.tif",  package = "wallace"))
+### Run function
+postPred <- mask_tempExtract(lowerInp, upperInp, maskRaster, pred, logger = NULL, spN = NULL)
+}
+}
+\seealso{
+\code{\link{mask_tempAnnotate}} #mask_tempAnnotate?
+}
 \author{
 Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
+
+Bethany A. Johnson <bjohnso005@citymail.cuny.edu>
 }
