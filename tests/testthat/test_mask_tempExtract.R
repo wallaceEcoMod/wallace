@@ -1,4 +1,4 @@
-#### COMPONENT indic: Calculate Indicators
+#### COMPONENT mask: Mask Prediction
 #### MODULE: Calculate Change Over Time
 context("tempExtract")
 
