@@ -50,7 +50,7 @@
 #' @return Returns a RasterLayer of the masked range prediction
 #' @author Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@@gradcenter.cuny.edu>
 #' @author Bethany A. Johnson <bjohnso005@@citymail.cuny.edu>
-#' @seealso \code{\link{mask_tempAnnotate}} #mask_tempAnnotate?
+#' @seealso \code{\link{mask_tempAnnotate}}
 #' @export
 #'
 
