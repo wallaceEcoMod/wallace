@@ -54,7 +54,7 @@ postPred <- mask_tempExtract(lowerInp, upperInp, maskRaster, pred, logger = NULL
 }
 }
 \seealso{
-\code{\link{mask_tempAnnotate}} #mask_tempAnnotate?
+\code{\link{mask_tempAnnotate}}
 }
 \author{
 Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
