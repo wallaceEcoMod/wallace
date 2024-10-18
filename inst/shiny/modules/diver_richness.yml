@@ -1,5 +1,5 @@
 component: "diver"
 short_name: "Calculate Richness"
 long_name: "Calculate Richness"
-authors: "Andrea Paz"
+authors: "Andrea Paz, Bethany A. Johnson"
 package: [raster]
