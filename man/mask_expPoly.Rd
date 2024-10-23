@@ -16,19 +16,46 @@ mask_expPoly(
 \arguments{
 \item{polyMask}{Polygon in shapefile}
 
-\item{prediction}{Raster prediction}
+\item{prediction}{Raster prediction, of which to add/remove polyMask.}
 
-\item{polyExt}{Polygon of background extent}
+\item{polyExt}{Polygon of the prediction background extent}
 
-\item{rem}{Remove areas of polygon from prediction}
+\item{rem}{Remove areas of polygon from prediction or add them to prediction. (TRUE = remove, FALSE = add)}
 
-\item{logger}{logger}
+\item{logger}{stores all notification messages to be displayed in the Log
+Window of Wallace GUI. insert the logger reactive list here for running in
+shiny, otherwise leave the default NULL}
 
 \item{spN}{species name}
+}
+\value{
+A list of two elements: the masked prediction and the extent
 }
 \description{
 Remove or add polygon to prediction
 }
+\details{
+Mask a range prediction by removing or adding a polygon. The polygon
+must fall partly within the extent of the prediction. If the prediction is
+continuous, only remove polygon will work.
+}
+\examples{
+\dontrun{
+### Set parameters
+# range prediction
+prediction <- raster::raster(system.file("extdata/Bassaricyon_neblina.tif", package = "wallace"))
+# bg extent
+polyExt <- terra::ext(prediction)
+polyExt <- terra::as.polygons(polyExt)
+polyExt <-sf::st_as_sf(polyExt)
+#poly for masking
+polyMask <- sf::st_read(system.file("extdata/wdpa/WDPA_COL_olinguito.shp", package = "wallace"))
+### Run function
+expertRast <- mask_expPoly(polyMask, prediction, polyExt, rem = TRUE, logger = NULL, spN = NULL)
+}
+}
 \author{
 Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
+
+Bethany A. Johnson <bjohnso005@citymail.cuny.edu>
 }

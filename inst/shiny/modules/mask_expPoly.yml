@@ -1,5 +1,5 @@
 component: "mask"
 short_name: "Mask by Drawn Polygon"
 long_name: "Mask by Drawn Polygon"
-authors: "Gonzalo E. Pinilla-Buitrago (**)"
+authors: "Gonzalo E. Pinilla-Buitrago, Bethany A. Johnson"
 package: [raster]

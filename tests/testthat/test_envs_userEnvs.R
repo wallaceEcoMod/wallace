@@ -39,6 +39,7 @@ userEnvs_stack <- envs_userEnvs(rasPath = Path, rasName = Name,
 #     fixed = TRUE)
 #   })
 # BAJ (2024-02-14) rgdal has been retired and removed. this test may be added back?
+# BAJ (2024-08-07): I deleted no_projection.tif
 
 ### test output features
 test_that("output type checks", {

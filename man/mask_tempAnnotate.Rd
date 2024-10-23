@@ -7,17 +7,46 @@
 mask_tempAnnotate(occs, env, envDates, logger = NULL)
 }
 \arguments{
-\item{occs}{Occurrences}
+\item{occs}{Dataframe of occurrence/point data. Must include years}
 
-\item{env}{Stack of raster}
+\item{env}{Rasterstack of annual environmental data}
 
-\item{envDates}{String with the years of rasters}
+\item{envDates}{String with the years corresponding to the rasters}
 
-\item{logger}{logger}
+\item{logger}{Stores all notification messages to be displayed in the Log
+Window of Wallace GUI. Insert the logger reactive list here for running in
+shiny, otherwise leave the default NULL.}
+}
+\value{
+Numeric. Returns the quantiles
 }
 \description{
-Obtain temporal matched values
+Obtain temporally matched values
+}
+\details{
+Annotate point data (e.g., occurrences) with raster values (e.g.,
+env data) based on matching years. Function returns the quantiles of values
+for use in selecting a threshold value for masking.
+}
+\examples{
+\dontrun{
+### Set parameters
+occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv", package = "wallace"))
+# assigning dummy dates, but ideally the occ data would have years
+dates <- sample(2000:2019,35, replace=T)
+occs$year <- dates
+env <- list.files(path = system.file('extdata/MODIS', package = "wallace"),full.names = TRUE)
+env <- raster::stack(env)
+envDates <- c(2005,2006,2008,2009,2010)
+### Run function
+bounds <- mask_tempAnnotate(occs, env, envDates, logger = NULL)
+}
+}
+\seealso{
+\code{\link[maskRangeR]{annotate}}, \code{\link{mask_tempExtract}}
 }
 \author{
 Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
+
+Bethany A. Johnson <bjohnso005@citymail.cuny.edu>
 }

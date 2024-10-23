@@ -25,8 +25,19 @@ This function is called by the module occs_biomodelos to query the BioModelos da
 species occurrence records. It removes records with duplicate coordinates, and select some columns with fields
 appropriate to studies in biogeography.
 }
+\examples{
+\dontrun{
+### Set parameters
+spN <- "Bassaricyon neblina"
+bioKey <- 12345
+### Run function
+occs <- occs_biomodelos(spN, bioKey, logger = NULL)
+}
+}
 \author{
 Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
 
-Peter Ersts?
+Bethany A. Johnson <bjohnso005@citymail.cuny.edu>
+
+Peter Ersts
 }

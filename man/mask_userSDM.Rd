@@ -7,24 +7,44 @@
 mask_userSDM(rasPath, rasName, logger = NULL, spN = NULL)
 }
 \arguments{
-\item{rasPath}{character of path to rasters, must be the full path including file name and extension.
+\item{rasPath}{character of path to raster, must be the full path including file name and extension.
 Filename need to be name with genus_species format.}
 
-\item{rasName}{character vector of raster names to be assigned to loaded rasters}
+\item{rasName}{character vector of raster names to be assigned to loaded raster}
 
 \item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
 \item{spN}{Species name}
 }
+\value{
+A list of two: the prediction rasterlayer and a spatialpolygon of the extent
+}
 \description{
 Upload user-specified SDM prediction
 }
 \details{
-See Examples.
+This function uploads a raster of a species' range prediction to be
+used in Wallace EcoMod. The file name needs to named in Genus_species format
+(Ex: Bassaricyon_neblina.tif) to have Wallace functionality. The raster can
+be binary or continuous, but may need to be binary for some further analyses
+in Wallace. This function returns a list of the range prediction raster as
+well as a spatial polygon of the extent of the range prediction.
+}
+\examples{
+\dontrun{
+### Set parameters
+rasPath <- system.file("extdata/Bassaricyon_neblina.tif",package = "wallace")
+rasName <- "Bassaricyon_neblina.tif"
+### Run function
+sdm <- mask_userSDM(rasPath, rasName, logger = NULL, spN = NULL)
+}
+
 }
 \author{
 Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
 
 Jamie Kass <jkass@gradcenter.cuny.edu>
+
+Bethany A. Johnson <bjohnso005@citymail.cuny.edu>
 }

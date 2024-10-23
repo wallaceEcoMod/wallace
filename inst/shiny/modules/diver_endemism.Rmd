@@ -1,5 +1,6 @@
 ```{asis, echo = {{diver_endemism_knit}}, eval = {{diver_endemism_knit}}, include = {{diver_endemism_knit}}}
-#
+### Calculate endemism
+Write something here about what is going on...
 ```
 
 ```{r, echo = {{diver_endemism_knit}}, include = {{diver_endemism_knit}}}

@@ -11,7 +11,7 @@ indic_aoo(
   lat = NULL,
   wktFrom,
   wktTo,
-  logger
+  logger = NULL
 )
 }
 \arguments{
@@ -34,9 +34,48 @@ to calculate area.}
 Window of Wallace GUI. Insert the logger reactive list here for running in
 shiny, otherwise leave the default NULL}
 }
+\value{
+A list of two elements: area and AOOraster. The first is the numeric
+value of the area (in km^2). The second is a RasterLayer of the extent
+(in WCEA & 2x2 km resolution).
+}
 \description{
 Calculate AOO.
 }
+\details{
+The function calculates the area of occupancy (AOO) from a thresholded
+prediction raster or a data.frame of occurrence records.
+}
+\examples{
+ \dontrun{
+ ### Set parameters
+ # binary raster
+ r <- terra::rast(system.file("extdata/Bassaricyon_neblina.tif",
+ package = "wallace"))
+ # occurrences
+
+ ### Run function
+ # aoo from raster
+ aoo_r <- indic_aoo(r,
+                    occs = NULL,
+                    lon = NULL,
+                    lat = NULL,
+                    wktFrom = getWKT("wgs84"),
+                    wktTo = getWKT("wcea"),
+                    logger = NULL)
+ # aoo from occs
+ aoo_occs <- indic_aoo(r <- NULL,
+                       occs,
+                       lon = "longitude",
+                       lat = "latitude",
+                       wktFrom = getWKT("wgs84"),
+                       wktTo = getWKT("wcea"),
+                       logger = NULL)
+ }
+
+}
 \author{
 Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
+
+Bethany A. Johnson <bjohnso005@citymail.cuny.edu>
 }

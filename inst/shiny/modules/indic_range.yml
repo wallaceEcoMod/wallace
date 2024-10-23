@@ -1,5 +1,5 @@
 component: "indic"
 short_name: "Calculate Area Metrics"
 long_name: "Calculate Area Metrics"
-authors: "Andrea Paz"
+authors: "Andrea Paz, Bethany A. Johnson"
 package: [raster, changeRangeR]

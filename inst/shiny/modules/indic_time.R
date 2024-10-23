@@ -1,8 +1,31 @@
+# Wallace EcoMod: a flexible platform for reproducible modeling of
+# species niches and distributions.
+#
+# indic_time.R
+# File author: Wallace EcoMod Dev Team. 2023.
+# --------------------------------------------------------------------------
+# This file is part of the Wallace EcoMod application
+# (hereafter “Wallace”).
+#
+# Wallace is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
+#
+# Wallace is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Wallace. If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------------
+#
 indic_time_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
     ##inputs must be: SDM so step 1 remains
-    #Environmental variables (e g forest thorugh time as rasters (multiple))
+    #Environmental variables (e.g., forest through time as rasters (multiple))
     #Threshold numeric input
     #years used (numeric input?)
     span("Step 1:", class = "step"),
@@ -156,6 +179,12 @@ indic_time_module_server <- function(input, output, session, common) {
       }
       rangeMap <- sf::st_as_sf(rangeMap)
     }
+    # BAJ is this needed here or in wallace/R/inidic_time.R?
+    # if ("SpatRaster"%in% class(range)) {
+    #   range[range == 0] <- NA
+    #   range <- terra::as.polygons(range)
+    #   range <- sf::st_as_sf(range)
+    # }
     req(rangeMap)
     logger %>%
       writeLog(hlSpp(curSp()),
@@ -258,6 +287,8 @@ indic_time_module_server <- function(input, output, session, common) {
                           "No range map is selected for the calculations.")
       return()
     }
+    # BAJ 9/25/2024: should the rangeMap match the envs, or the envs match the rangeMap?
+    # See the cRR example for indic_time where it is the opposite- the envs are changed to match the range
     rangeMap <- sf::as_Spatial(spp[[curSp()]]$indic$timeRange) %>%
       raster::rasterize(spp[[curSp()]]$indic$indicEnvs[[1]])
     rangeArea <- indic_time(range = rangeMap,
@@ -270,6 +301,13 @@ indic_time_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$indic$areaTime <- rangeArea
     spp[[curSp()]]$indic$years <- years
     common$update_component(tab = "Results")
+
+    # REFERENCES ####
+    knitcitations::citep(citation("raster"))
+    knitcitations::citep(citation("changeRangeR"))
+
+    # METADATA ####
+    # add metadata
   })
 
   output$timeAreas <- renderUI({

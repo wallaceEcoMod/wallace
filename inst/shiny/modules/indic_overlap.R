@@ -1,3 +1,26 @@
+# Wallace EcoMod: a flexible platform for reproducible modeling of
+# species niches and distributions.
+#
+# indic_overlap.R
+# File author: Wallace EcoMod Dev Team. 2023.
+# --------------------------------------------------------------------------
+# This file is part of the Wallace EcoMod application
+# (hereafter “Wallace”).
+#
+# Wallace is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
+#
+# Wallace is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Wallace. If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------------
+#
 indic_overlap_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
@@ -175,7 +198,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
                               mask = "Masked SDM",
                               eoo = "Extent of Occurrence (EOO)",
                               aoo = "Area of Ocupancy (AOO)"),
-                      " selected for overlap analysis (**)"))
+                      " selected for overlap analysis."))
     # LOAD TO SPP
     spp[[curSp()]]$indic$overlapSourcePoly <- rangeMap
     spp[[curSp()]]$indic$overlapSource <- selOverlapSource()
@@ -198,7 +221,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
     if (input$indicOverlap == 'shapefile') {
       # ERROR
       if (is.null(input$indicOverlapShp$datapath)) {
-        logger %>% writeLog(type = 'error', "Specified filepath(s).")
+        logger %>% writeLog(type = 'error', "Specify filepath(s).")
         return()
       }
       inputOverlap <- indic_inputPoly(input$indicOverlapShp$datapath,
@@ -259,7 +282,7 @@ indic_overlap_module_server <- function(input, output, session, common) {
     shinyWidgets::pickerInput("overlapCat",
                               label = "Select Category",
                               choices = category,
-                              multiple = TRUE,
+                              multiple = FALSE, #BAJ 09/10/24: bug in cRR (#12). change to TRUE when fixed
                               selected = category,
                               options = list(`actions-box` = TRUE))
   })
@@ -310,6 +333,13 @@ indic_overlap_module_server <- function(input, output, session, common) {
     spp[[curSp()]]$indic$overlapFields <- overlapF
     spp[[curSp()]]$indic$overlapCat <- overlapC
     common$update_component(tab = "Results")
+
+    # REFERENCES ####
+    knitcitations::citep(citation("raster"))
+    knitcitations::citep(citation("changeRangeR"))
+
+    # METADATA ####
+    # add metadata
   })
 
   output$result <- renderUI({

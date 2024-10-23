@@ -2,31 +2,65 @@
 % Please edit documentation in R/indic_inputPoly.R
 \name{indic_inputPoly}
 \alias{indic_inputPoly}
-\title{indic_inputPoly}
+\title{indic_inputPoly user-provided shapefile for ratio overlap calculations}
 \usage{
-indic_inputPoly(bgShp_path, bgShp_name, overlapArea, logger = NULL, spN = NULL)
+indic_inputPoly(
+  ovShp_path,
+  ovShp_name,
+  overlapRange,
+  logger = NULL,
+  spN = NULL
+)
 }
 \arguments{
-\item{bgShp_path}{Path to the user provided shapefile}
+\item{ovShp_path}{Path to the user provided shapefile}
 
-\item{bgShp_name}{Name of the user provided shapefile}
+\item{ovShp_name}{Name of the user provided shapefile}
 
-\item{overlapArea}{x. An sf object.}
+\item{overlapRange}{sf object. The source polygon for ratio overlap calculations}
 
 \item{logger}{stores all notification messages to be displayed in the Log Window of Wallace GUI. insert the logger reactive list here for running in shiny,
 otherwise leave the default NULL}
 
-\item{spN}{x}
+\item{spN}{character. Used to obtain species name for logger messages}
 }
 \value{
-x
+An sf object to be used for calculating ratio overlap
 }
 \description{
-x
+This function allows the user to upload a shapefile to be used in ratio overlap calculations
 }
 \details{
-x
+This function is used in the Calculate Indicators component. Here, the user
+  provides the path and name of a shapefile to be used with the source polygon
+  to calculate the ratio of overlap between the polygons. The source polygon
+  is a polygonized raster of a range map from: a Wallace SDM (prediction,
+  transfer, or masked), EOO, or AOO. The user shapefile and source polygon must
+  intercept. The function returns an sf object to be used in the indic_overlap()
+  function.
+}
+\examples{
+\dontrun{
+# Overlap polygon
+ovShp_path <- list.files(path = system.file("extdata/wdpa", package = "wallace"), full.names = TRUE)
+ovShp_name <- list.files(path = system.file("extdata/wdpa", package = "wallace"), full.names = FALSE)
+
+# Source polygon
+overlapRange <- terra::rast(system.file("extdata/Bassaricyon_neblina.tif", package = "wallace"))
+overlapRange[overlapRange == 0] <- NA
+overlapRange <- terra::as.polygons(overlapRange)
+overlapRange <- sf::st_as_sf(overlapRange)
+
+# Run function
+polyData <- indic_inputPoly(ovShp_path, ovShp_name, overlapRange, logger = NULL, spN = NULL)
+}
+
+}
+\seealso{
+\code{\link{indic_overlap}}
 }
 \author{
-Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@gradcenter.cuny.edu>
+Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
+
+Bethany A. Johnson <bjohnso005@citymail.cuny.edu>
 }

@@ -16,9 +16,24 @@ to calculate area.}
 Window of Wallace GUI. insert the logger reactive list here for running in
 shiny, otherwise leave the default NULL}
 }
+\value{
+Numeric value
+}
 \description{
 Calculate Range size in square kilometers.
 }
+\details{
+Calculate the geographic range size of a thresholded raster. The units are in square kilometers.
+}
+\examples{
+\dontrun{
+r <- terra::rast(system.file("extdata/Bassaricyon_neblina.tif",package = "wallace"))
+wkt <- getWKT("wcea")
+areaRange <- indic_area(r, wkt, logger = NULL)
+}
+}
 \author{
 Gonzalo E. Pinilla-Buitrago <gpinillabuitrago@gradcenter.cuny.edu>
+
+Bethany A. Johnson <bjohnso005@citymail.cuny.edu>
 }

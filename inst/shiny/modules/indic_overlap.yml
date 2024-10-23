@@ -1,5 +1,5 @@
 component: "indic"
 short_name: "Calculate Ratio Overlap"
 long_name: "Calculate Ratio Overlap"
-authors: "Andrea Paz"
+authors: "Andrea Paz, Bethany A. Johnson"
 package: [raster, changeRangeR]

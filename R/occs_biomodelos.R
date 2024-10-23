@@ -1,3 +1,26 @@
+# Wallace EcoMod: a flexible platform for reproducible modeling of
+# species niches and distributions.
+#
+# occs_biomodelos.R
+# File author: Wallace EcoMod Dev Team. 2023.
+# --------------------------------------------------------------------------
+# This file is part of the Wallace EcoMod application
+# (hereafter “Wallace”).
+#
+# Wallace is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
+#
+# Wallace is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Wallace. If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------------
+#
 #' @title `occs_biomodelos` query biomodelos database
 #' @description
 #' query BioModelos database and returns the complete list of data, data with coordinates, and data with no duplicates
@@ -16,7 +39,16 @@
 #' @return A list of 2 dataframes. First dataframe is the original dowloaded dataset, second data frame without duplicates and with appropriate fields for analyses
 
 #' @author Gonzalo E. Pinilla-Buitrago < gpinillabuitrago@@gradcenter.cuny.edu>
-#' @author Peter Ersts?
+#' @author Bethany A. Johnson <bjohnso005@@citymail.cuny.edu>
+#' @author Peter Ersts
+#' @examples
+#' \dontrun{
+#' ### Set parameters
+#' spN <- "Bassaricyon neblina"
+#' bioKey <- 12345
+#' ### Run function
+#' occs <- occs_biomodelos(spN, bioKey, logger = NULL)
+#' }
 #' @export
 
 occs_biomodelos <- function(spN, bioKey, logger = NULL) {
@@ -26,7 +58,7 @@ occs_biomodelos <- function(spN, bioKey, logger = NULL) {
   # if two names not entered, throw error and return
   if (nameSplit != 2) {
     logger %>% writeLog(type = 'error',
-      'Please input both genus and species names of ONE species. (**)')
+      'Please input both genus and species names of ONE species. ')
     return()
   }
   spN <- paste0(toupper(substring(spN, 1, 1)),
@@ -35,15 +67,25 @@ occs_biomodelos <- function(spN, bioKey, logger = NULL) {
   spN <- gsub(pattern = " ", replacement = "_", x = spN)
   urlSearch <- paste0('https://api-biomodelos.humboldt.org.co/v2/species/search/',
                       bioName)
-  respSearch <- httr::GET(urlSearch,
+  respSearch <- tryCatch(expr = httr::GET(urlSearch,
                           httr::add_headers(host = 'api-biomodelos.humboldt.org.co',
-                                      authorization = paste0('apiKey ', bioKey)))
-  jsonSearch <-  httr::content(respSearch, 'parsed')
+                                      authorization = paste0('apiKey ', bioKey))),
+                         error= function(e) NULL)
+                #trycatch error
+                if (is.null(respSearch)) {
+                  logger %>% writeLog(
+                  type = "error",
+                  paste0("Unable to retrieve data from BioModelos.
+                           Server may be down. "))
+                  return()
+                } else {
+    jsonSearch <-  httr::content(respSearch, 'parsed')
+    }
 
   if (length(jsonSearch) == 0) {
     logger %>% writeLog(
       type = 'error',
-      hlSpp(spN), "Species name not found, please check the spelling")
+      hlSpp(spN), "Species name not found, please check the spelling. ")
     return()
   }
 
@@ -67,7 +109,7 @@ occs_biomodelos <- function(spN, bioKey, logger = NULL) {
   if (nrow(geo) == 0) {
     logger %>% writeLog(
       type = 'error',
-      hlSpp(spN), "Species without records on BioModelos")
+      hlSpp(spN), "Species without records on BioModelos. ")
     return()
   }
 

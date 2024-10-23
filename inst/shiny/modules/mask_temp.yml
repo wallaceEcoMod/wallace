@@ -1,5 +1,5 @@
 component: "mask"
 short_name: "Temporal Extract"
 long_name: "Temporal Extract"
-authors: "Gonzalo E. Pinilla-Buitrago (**)"
+authors: "Gonzalo E. Pinilla-Buitrago, Bethany A. Johnson"
 package: [maskRangeR]

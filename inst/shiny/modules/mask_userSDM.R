@@ -1,3 +1,26 @@
+# Wallace EcoMod: a flexible platform for reproducible modeling of
+# species niches and distributions.
+#
+# mask_userSDM.R
+# File author: Wallace EcoMod Dev Team. 2023.
+# --------------------------------------------------------------------------
+# This file is part of the Wallace EcoMod application
+# (hereafter “Wallace”).
+#
+# Wallace is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License,
+# or (at your option) any later version.
+#
+# Wallace is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Wallace. If not, see <http://www.gnu.org/licenses/>.
+# --------------------------------------------------------------------------
+#
 mask_userSDM_module_ui <- function(id) {
   ns <- shiny::NS(id)
   tagList(
@@ -61,8 +84,13 @@ mask_userSDM_module_server <- function(input, output, session, common) {
       spp[[sppName]]$mask$userPolyExt <- userSDMs$extSdm
       logger %>% writeLog(hlSpp(sppName), "User SDM prediction loaded")
 
+      # REFERENCES ####
+      knitcitations::citep(citation("raster"))
+
       # METADATA ####
       spp[[sppName]]$rmm$code$wallace$userSDM <- TRUE
+      spp[[sppName]]$rmm$code$wallace$rasPath <- input$sdmFile$datapath
+      spp[[sppName]]$rmm$code$wallace$rasName <- input$sdmFile$name
     }
     common$update_component(tab = "Map")
   })
@@ -128,10 +156,10 @@ mask_userSDM_module_map <- function(map, common) {
 
 mask_userSDM_module_rmd <- function(species) {
   # Variables used in the module's Rmd code
-  # list(
-  #   mask_userSDM_knit = FALSE
-    # var1 = species$rmm$code$wallace$someSetting1,
-    # var2 = species$rmm$code$wallace$someSetting2
-  # )
+  list(
+    mask_userSDM_knit = species$rmm$code$wallace$userSDM == TRUE,
+    rasPath_rmd = species$rmm$code$wallace$rasPath,
+    rasName_rmd = species$rmm$code$wallace$rasName,
+    )
 }
 
