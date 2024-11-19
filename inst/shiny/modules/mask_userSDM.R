@@ -83,6 +83,9 @@ mask_userSDM_module_server <- function(input, output, session, common) {
       spp[[sppName]]$mask$userSDM <- userSDMs$sdm * 1
       spp[[sppName]]$mask$userPolyExt <- userSDMs$extSdm
       logger %>% writeLog(hlSpp(sppName), "User SDM prediction loaded")
+      # For biomodelos
+      spp[[sppName]]$biomodelos$mask$userSDM <- userSDMs$sdm * 1
+      spp[[sppName]]$biomodelos$mask$userPolyExt <- userSDMs$extSdm
 
       # REFERENCES ####
       knitcitations::citep(citation("raster"))
