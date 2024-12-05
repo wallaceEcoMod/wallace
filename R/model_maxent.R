@@ -85,6 +85,7 @@
 #'   and a selection of appropriate fields.
 #' @author Jamie M. Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
+#' @author Bethany A. Johnson <bjohnso005@@citymail.cuny.edu>
 # @note
 
 #' @seealso \code{\link[ENMeval]{ENMevaluate}}
@@ -196,7 +197,7 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
                             bg = as.data.frame(bg.xy),
                             partitions = 'user',
                             user.grp = user.grp,
-                            envs = bgMsk,
+                            envs = terra::rast(bgMsk),
                             tune.args = tune.args,
                             doClamp = clampSel,
                             algorithm = algMaxent,
