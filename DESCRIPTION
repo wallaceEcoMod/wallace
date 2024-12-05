@@ -67,6 +67,7 @@ Suggests:
     mapview,
     maxnet,
     occCite,
+    predicts,
     rangeModelMetadata,
     raster,
     rgbif (>= 3.3.0),
