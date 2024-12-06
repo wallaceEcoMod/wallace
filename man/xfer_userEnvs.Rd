@@ -69,16 +69,24 @@ latitude <- c(13.18379, 7.52315, 0.93105, -1.70167, 0.98391, 6.09208, 12.74980)
 selCoords <- matrix(c(longitude, latitude), byrow = FALSE, ncol = 2)
 polyExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)),
                                                  ID = 1)))
-# load model
-m <- readRDS(system.file("extdata/model.RDS",
-                         package = "wallace"))
+# build model
+occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",package = "wallace"))
+bg <- read.csv(system.file("extdata/Bassaricyon_alleni_bgPoints.csv",
+package = "wallace"))
+envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
+package = "wallace"), pattern = ".tif$", full.names = TRUE),
+rasName = list.files(system.file("extdata/wc",package = "wallace"),
+pattern = ".tif$", full.names = FALSE))
+partblock <- part_partitionOccs(occs, bg, method = 'block')
+m <- model_maxent(occs, bg, user.grp = partblock, bgMsk = envs, rms = c(1:2),
+rmsStep = 1, fcs = c('L', 'LQ'), clampSel = TRUE, algMaxent = "maxnet", parallel = FALSE)
 envsFut <- list.files(path = system.file('extdata/wc/future',
                                          package = "wallace"),
                       full.names = TRUE)
 envsFut <- raster::stack(envsFut)
 ### run function
 modXfer <- xfer_userEnvs(evalOut = m, curModel = 1, envs = envsFut,
-                         outputType = "cloglog", alg = "maxent.jar",
+                         outputType = "cloglog", alg = "maxnet",
                          clamp = FALSE, xfExt = polyExt)
 }
 

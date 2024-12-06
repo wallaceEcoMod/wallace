@@ -63,16 +63,24 @@
 #' selCoords <- matrix(c(longitude, latitude), byrow = FALSE, ncol = 2)
 #' polyExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)),
 #'                                                  ID = 1)))
-#' # load model
-#' m <- readRDS(system.file("extdata/model.RDS",
-#'                          package = "wallace"))
+#' # build model
+#' occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",package = "wallace"))
+#' bg <- read.csv(system.file("extdata/Bassaricyon_alleni_bgPoints.csv",
+#' package = "wallace"))
+#' envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
+#' package = "wallace"), pattern = ".tif$", full.names = TRUE),
+#' rasName = list.files(system.file("extdata/wc",package = "wallace"),
+#' pattern = ".tif$", full.names = FALSE))
+#' partblock <- part_partitionOccs(occs, bg, method = 'block')
+#' m <- model_maxent(occs, bg, user.grp = partblock, bgMsk = envs, rms = c(1:2),
+#' rmsStep = 1, fcs = c('L', 'LQ'), clampSel = TRUE, algMaxent = "maxnet", parallel = FALSE)
 #' envsFut <- list.files(path = system.file('extdata/wc/future',
 #'                                          package = "wallace"),
 #'                       full.names = TRUE)
 #' envsFut <- raster::stack(envsFut)
 #' ### run function
 #' modXfer <- xfer_userEnvs(evalOut = m, curModel = 1, envs = envsFut,
-#'                          outputType = "cloglog", alg = "maxent.jar",
+#'                          outputType = "cloglog", alg = "maxnet",
 #'                          clamp = FALSE, xfExt = polyExt)
 #' }
 #'
@@ -114,18 +122,16 @@ xfer_userEnvs <- function(evalOut, curModel, envs, xfExt, alg, outputType = NULL
     logger,
     message = 'Transferring model to user uploaded environmental variables & area', {
     if (alg == 'BIOCLIM') {
-      modXferUser <- dismo::predict(evalOut@models[[curModel]], xferMsk,
-                                    useC = FALSE)
+      modXferUser <- dismo::predict(evalOut@models[[curModel]], terra::rast(xferMsk))
     } else if (alg == 'maxnet') {
       if (outputType == "raw") outputType <- "exponential"
       modXferUser <- predictMaxnet(evalOut@models[[curModel]], xferMsk,
                                           type = outputType, clamp = clamp)
     } else if (alg == 'maxent.jar') {
       modXferUser <- dismo::predict(
-        evalOut@models[[curModel]], xferMsk,
+        evalOut@models[[curModel]], terra::rast(xferMsk),
         args = c(paste0("outputformat=", outputType),
-                 paste0("doclamp=", tolower(as.character(clamp)))),
-        na.rm = TRUE)
+                 paste0("doclamp=", tolower(as.character(clamp)))))
     }
   })
 
