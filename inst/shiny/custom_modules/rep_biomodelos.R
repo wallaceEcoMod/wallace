@@ -60,34 +60,55 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
   })
 
   observeEvent(input$pushBiomod, {
-    if (is.null(spp[[curSp()]]$visualization$mapPred)) {
+    if (is.null(spp[[curSp()]]$occs)) {
       #add warning
       shinyalert::shinyalert(
-        "You need a map prediction built on Wallace in order to push payload to BioModelos. ",
+        "You need occurrence data loaded in order to push payload to BioModelos. ",
         type = "error")
       return()
     } else {
 
     if (spp[[bioSp()]]$rmm$data$occurrence$sources != "Biomodelos") {
       shinyalert::shinyalert(
-        "You must submit a model built with occurrences from BioModelos. ",
+        "Your model may not be built with occurrences from BioModelos. ",
         type = "error")
-      return()
+      #return()
     }
-    if (is.null(spp[[bioSp()]]$biomodelos$prediction)) {
-      shinyalert::shinyalert(
-        "You need a map prediction built on Wallace before pushing to BioModelos. ",
-        type = "error")
-      return()
-    }
+    # if (is.null(spp[[bioSp()]]$biomodelos$prediction)) {
+    #   shinyalert::shinyalert(
+    #     "You need a map prediction built on Wallace before pushing to BioModelos. ",
+    #     type = "error")
+    #  # return()
+    # }
 
     URL <- 'https://api-biomodelos.humboldt.org.co/v2/models'
 
-
+  ### Create Manifest
     manifest <- list(
-      edited_occurrences = paste0(bioSp(), '_occs.csv'),
-      raster_model_prediction = paste0(bioSp(), '_pred.tif'),
-      raster_model_threshold = paste0(bioSp(), '_thr.csv'),
+      edited_occurrences =
+        if (is.null(spp[[bioSp()]]$occData$occsOrig)) {
+          "No occurrences uploaded. "
+        } else {
+        paste0(bioSp(), '_occs.csv')
+          },
+      raster_model_prediction =
+        if (is.null(spp[[bioSp()]]$biomodelos$prediction)) {
+          "No prediction. "
+        } else {
+        paste0(bioSp(), '_pred.tif')
+          },
+      raster_model_threshold =
+        if (is.null(spp[[bioSp()]]$biomodelos$thrs)) {
+          "No threshold values. "
+        } else {
+        paste0(bioSp(), '_thr.csv')
+          },
+      raster_user_prediction =
+        if (is.null(spp[[bioSp()]]$biomodelos$mask$userSDM)) {
+          "No user-specified SDM. "
+        } else {
+          paste0(bioSp(), '_userSDM.tif')
+        },
       raster_model_modified_expert =
         if (is.null(spp[[bioSp()]]$biomodelos$predExpert)) {
           "No model prediction modified by expert."
@@ -95,37 +116,72 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
           paste0(bioSp(), '_pred_expert.tif')
         },
       shape_file_expert =
-        if (is.null(spp[[bioSp()]]$mask$expertPoly)) {
+        if (is.null(spp[[bioSp()]]$mask$removePoly)) {
         "No model prediction modified by expert."
       } else {
-        paste0(bioSp(), '_expertPolygonsShp.zip')
+        paste0(bioSp(), '_expertPolygonShp.zip')
       },
-      shape_file_extent = paste0(bioSp(), '_projectionExtentShp.zip'),
-      biomodelos_metadata = paste0(bioSp(), '_metadata.csv'),
-      model_metadata = paste0(bioSp(), '_rmms.csv'),
-      wallace_session = paste0(bioSp(), '_session.Rmd')
+      shape_file_extent =
+        if (is.null(spp[[bioSp()]]$procEnvs$bgExt)) {
+          "No background extent. "
+        } else {
+        paste0(bioSp(), '_bgExtentShp.zip')
+          },
+      userSDM_extent =
+        if (is.null(spp[[bioSp()]]$biomodelos$mask$userPolyExt)) {
+          "No userSDM background extent. "
+        } else {
+          paste0(bioSp(), '_userSDM_ExtentShp.zip')
+        },
+      biomodelos_metadata =
+        paste0(bioSp(), '_metadata.csv'),
+      model_metadata =
+        paste0(bioSp(), '_rmms.csv'),
+      wallace_session =
+        paste0(bioSp(), '_session.Rmd')
+      # to add something else to the manifest
+      # new_thing =
+      #   if (is.null(spp[[bioSp()]]$biomodelos$check$here$to$see$if$null)) {
+      #     "Paste statement saying it is null. "
+      #   } else {
+      #     paste0(bioSp(), '_whatever.filetype')
+      #   },
     )
 
-    ### Create files
+  ### Create Files
     tmpdir <- tempdir()
     # Create occs
     # add req occs
+    if (!is.null(spp[[bioSp()]]$occData$occsOrig)) {
     tmpOccs <- file.path(tmpdir, paste0(bioSp(), '_occs.csv'))
     occsBio <- spp[[bioSp()]]$occData$occsOrig
     usedOccs <- occsBio$occID %in% spp[[bioSp()]]$occs$occID
     occsBio <- cbind(occsBio, use = usedOccs)
     write.csv(occsBio, tmpOccs, row.names = FALSE)
+    }
 
     # Create mapPrediction
     # add req pred
+    if (!is.null(spp[[bioSp()]]$biomodelos$prediction)) {
     tmpPred <- file.path(tmpdir, paste0(bioSp(), '_pred.tif'))
     raster::writeRaster(spp[[bioSp()]]$biomodelos$prediction, tmpPred,
                         overwrite = TRUE)
+    }
 
     # Create thr
     # add req occs
+    if (!is.null(spp[[bioSp()]]$biomodelos$thrs)) {
     tmpThrs <- file.path(tmpdir, paste0(bioSp(), '_thr.csv'))
     write.csv(spp[[bioSp()]]$biomodelos$thrs, tmpThrs, row.names = TRUE)
+    }
+
+    # Create userSDM prediction
+    # add req pred
+    if (!is.null(spp[[bioSp()]]$biomodelos$mask$userSDM)) {
+      tmpUserSDM <- file.path(tmpdir, paste0(bioSp(), '_userSDM.tif'))
+      raster::writeRaster(spp[[bioSp()]]$biomodelos$mask$userSDM, tmpUserSDM,
+                          overwrite = TRUE)
+    }
 
     # Create raster model modified by expert
     if (!is.null(spp[[bioSp()]]$biomodelos$predExpert)) {
@@ -135,25 +191,26 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
     }
 
     # Create shapefile of expert polygons
-    if (!is.null(spp[[bioSp()]]$mask$expertPoly)) {
-      tmpExpPoly <- file.path(tmpdir, paste0(bioSp(), '_expertPolygonsShp.zip'))
+    if (!is.null(spp[[bioSp()]]$mask$removePoly)) {
+      tmpExpPoly <- file.path(tmpdir, paste0(bioSp(), '_expertPolygonShp.zip'))
       expertPolys <- do.call("rbind",
                              c(args = lapply(seq_along(spp[[bioSp()]]$mask$expertPoly),
                                              function(i){spp[[bioSp()]]$mask$expertPoly[i][[1]]}),
                                makeUniqueIDs = TRUE))
       sf::st_write(obj = sf::st_as_sf(expertPolys),
                       dsn = tmpdir,
-                      layer = paste0(bioSp(), '_expertPolygonsShp'),
+                      layer = paste0(bioSp(), '_expertPolygonShp'),
                       driver = "ESRI Shapefile",
                       append = FALSE)
       extsExpPoly <- c('dbf', 'shp', 'shx')
-      fsExpPoly <- file.path(tmpdir, paste0(bioSp(), '_expertPolygonsShp.', extsExpPoly))
+      fsExpPoly <- file.path(tmpdir, paste0(bioSp(), '_expertPolygonShp.', extsExpPoly))
       zip::zipr(zipfile = tmpExpPoly , files = fsExpPoly)
     }
 
     # Create extent shapefile
     # add req ext
-    tmpExt <- file.path(tmpdir, paste0(bioSp(), '_projectionExtentShp.zip'))
+    if (!is.null(spp[[bioSp()]]$procEnvs$bgExt)) {
+    tmpExt <- file.path(tmpdir, paste0(bioSp(), '_bgExtentShp.zip'))
     sf::st_write(obj = sf::st_as_sf(spp[[bioSp()]]$procEnvs$bgExt),
                     dsn = tmpdir,
                     layer = paste0(bioSp(), '_bgShp'),
@@ -162,8 +219,24 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
     exts <- c('dbf', 'shp', 'shx')
     fsExt <- file.path(tmpdir, paste0(bioSp(), '_bgShp.', exts))
     zip::zipr(zipfile = tmpExt, files = fsExt)
+    }
+
+    # Create userSDM extent shapefile
+    # add req ext
+    if (!is.null(spp[[bioSp()]]$biomodelos$mask$userPolyExt)) {
+      tmpUserSDMExt <- file.path(tmpdir, paste0(bioSp(), '_userSDM_ExtentShp.zip'))
+      sf::st_write(obj = sf::st_as_sf(spp[[bioSp()]]$biomodelos$mask$userPolyExt),
+                   dsn = tmpdir,
+                   layer = paste0(bioSp(), '_userSDM_bgShp'),
+                   driver = "ESRI Shapefile",
+                   append = FALSE)
+      exts <- c('dbf', 'shp', 'shx')
+      fsExt <- file.path(tmpdir, paste0(bioSp(), '_userSDM_bgShp.', exts))
+      zip::zipr(zipfile = tmpUserSDMExt, files = fsExt)
+    }
 
     # Create Metadata
+    if (!is.null(spp[[bioSp()]]$evalOut)) {
     evalTbl <- spp[[bioSp()]]$evalOut@results
     if (grepl("Maxent", spp[[bioSp()]]$biomodelos$modelingMethod, fixed = TRUE)) {
       evalTbl <- evalTbl[evalTbl$tune.args == spp[[bioSp()]]$rmd$vis_curModel, ]
@@ -229,6 +302,7 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
                                 '.zip'))
     names(bioMet) <- c("name", "value")
     write.csv(bioMet, tmpBioMeta, row.names = FALSE)
+    }
 
     # add req metadata
     tmpRMM <- file.path(tmpdir, paste0(bioSp(), '_rmms.csv'))
@@ -299,19 +373,53 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
     combined_rmd <- gsub('``` r', '```{r}', combined_md)
     writeLines(combined_rmd, tmpRMD, useBytes = TRUE)
 
-    # Create ZIP file
-    tmpZIP <- file.path(tmpdir, paste0(spp[[bioSp()]]$rmm$code$wallace$biomodelosTaxID, '.zip'))
-    filesZIP <- c(tmpOccs, tmpBioMeta, tmpPred, tmpThrs, tmpExt, tmpRMM, tmpRMD)
+    # create file for new item added to manifest
+    # if (!is.null(spp[[bioSp()]]$biomodelos$check$here$to$see$if$null)) {
+    #   name_of_created_file <- file.path(tmpdir, paste0(bioSp(), '_whatever.filetype'))
+    #   write_function(spp[[bioSp()]]$biomodelos$NEWTHING, name_of_created_file,
+    #                       overwrite = TRUE)
+    # }
+
+
+  ### Create ZIP File
+    tmpZIP <- file.path(tmpdir, paste0(spp[[bioSp()]], '.zip'))
+    filesZIP <- c(tmpRMM, tmpRMD)
+    if (!is.null(spp[[bioSp()]]$occData$occsOrig)) {
+      filesZIP <- c(filesZIP, tmpOccs)
+    }
+    if (!is.null(spp[[bioSp()]]$evalOut)) {
+      filesZIP <- c(filesZIP, tmpBioMeta)
+    }
+    if (!is.null(spp[[bioSp()]]$biomodelos$prediction)) {
+      filesZIP <- c(filesZIP, tmpPred)
+    }
+    if (!is.null(spp[[bioSp()]]$biomodelos$thrs)) {
+      filesZIP <- c(filesZIP, tmpThrs)
+    }
+    if (!is.null(spp[[bioSp()]]$procEnvs$bgExt)) {
+      filesZIP <- c(filesZIP, tmpExt)
+    }
+    if (!is.null(spp[[bioSp()]]$biomodelos$mask$userSDM)) {
+      filesZIP <- c(filesZIP, tmpUserSDM)
+    }
+    if (!is.null(spp[[bioSp()]]$biomodelos$mask$userPolyExt)) {
+      filesZIP <- c(filesZIP, tmpUserSDMExt)
+    }
     if (!is.null(spp[[bioSp()]]$biomodelos$predExpert)) {
       filesZIP <- c(filesZIP, tmpPredExp)
     }
-    if (!is.null(spp[[bioSp()]]$mask$expertPolyt)) {
+    if (!is.null(spp[[bioSp()]]$mask$expertPoly)) {
       filesZIP <- c(filesZIP, tmpExpPoly)
     }
+    # to add something to the zip
+    #if (!is.null(spp[[bioSp()]]$check$if$null)) {
+    #   filesZIP <- c(filesZIP, name_of_created_file)
+    # }
 
     zip::zipr(zipfile = tmpZIP,
               files = filesZIP)
 
+  ### Create Payload
     PAYLOAD <- list(
       taxID = spp[[bioSp()]]$rmm$code$wallace$biomodelosTaxID,
       biomodelos_user = input$userBio,
@@ -321,10 +429,13 @@ rep_biomodelos_module_server <- function(input, output, session, common) {
       model = httr::upload_file(tmpZIP,
                                type = "application/zip")
     )
+
+
     response <- httr::content(httr::POST(URL, body = PAYLOAD, encode = "multipart",
                                          httr::add_headers(host = 'api-biomodelos.humboldt.org.co',
                                          authorization = paste0('apiKey ', input$keyPost))),
                         as = 'parsed')
+
     if (is.null(response)) {
       shinyalert::shinyalert(
         "Pushed to BioModelos (**)",
