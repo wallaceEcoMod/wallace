@@ -28,12 +28,12 @@ output: html_document
 <a href="https://andrepazv.github.io" target="_blank">Andrea Paz</a> (developer) received her PhD at CUNY Graduate Center and City College of New York, after which she was a Postdoctoral Researcher at the Crowther Lab in ETH Zürich. She is now an Assistant Professor at the Biological Sciences Department, University of Montréal.  
 <br>
 
-<img src="img/daniel.jpeg" alt="dani" style="width: 100px;"/>
-
 <img src="img/beth.png" alt="beth" style="width: 100px;"/>
 
 <a href="https://bethgerstner.weebly.com/research.html" target="_blank">Beth E. Gerstner</a> (developer, Wallace Fellow) received her PhD from Michigan State University, is a NASA FINESST Award winner, and a Wallace fellow. She currently works for Map of Life at the Center for Biodiversity and Global Change at Yale University.  
 <br>
+
+<img src="img/daniel.jpeg" alt="dani" style="width: 100px;"/>
 
 <a href="https://www.amnh.org/research/staff-directory/daniel-lopez-lozano" target="_blank">Daniel López Lozano</a> (developer) is a Biodiversity Informatics Specialist at the American Museum of Natural History's Center for Biodiversity & Conservation.   
 <br>
