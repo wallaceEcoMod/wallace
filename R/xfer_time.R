@@ -74,9 +74,13 @@
 #' selCoords <- matrix(c(longitude, latitude), byrow = FALSE, ncol = 2)
 #' polyExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)),
 #'                                                  ID = 1)))
-#' # load model
-#' m <- readRDS(system.file("extdata/model.RDS",
-#'                          package = "wallace"))
+#' # build model
+#' occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",package = "wallace"))
+#' bg <- read.csv(system.file("extdata/Bassaricyon_alleni_bgPoints.csv", package = "wallace"))
+#' partblock <- part_partitionOccs(occs, bg, method = 'block')
+#' m <- model_maxent(occs, bg, user.grp = partblock, bgMsk = envs, rms = c(1:2),
+#' rmsStep = 1, fcs = c('L', 'LQ'),
+#' clampSel = TRUE, algMaxent = "maxnet", parallel = FALSE)
 #' occsEnvs <- m@@occs
 #' bgEnvs <- m@@bg
 #' envsFut <- list.files(path = system.file('extdata/wc/future',
@@ -84,7 +88,7 @@
 #'                       full.names = TRUE)
 #' envsFut <- raster::stack(envsFut)
 #' modXfer <- xfer_time(evalOut = m, curModel = 1,
-#'                      envs = envsFut, alg = 'maxent.jar',
+#'                      envs = envsFut, alg = 'maxnet',
 #'                      xfExt = polyExt, clamp = FALSE, outputType = 'cloglog')
 #' }
 
@@ -129,18 +133,16 @@ xfer_time <- function(evalOut, curModel, envs, xfExt, alg, outputType = NULL,
     logger,
     message = ("Transferring to new time..."), {
     if (alg == 'BIOCLIM') {
-      modXferTime <- dismo::predict(evalOut@models[[curModel]], xftMsk,
-                                    useC = FALSE)
+      modXferTime <- dismo::predict(evalOut@models[[curModel]], terra::rast(xftMsk))
     } else if (alg == 'maxnet') {
       if (outputType == "raw") outputType <- "exponential"
       modXferTime <- predictMaxnet(evalOut@models[[curModel]], xftMsk,
                                           type = outputType, clamp = clamp)
     } else if (alg == 'maxent.jar') {
       modXferTime <- dismo::predict(
-        evalOut@models[[curModel]], xftMsk,
+        evalOut@models[[curModel]], terra::rast(xftMsk),
         args = c(paste0("outputformat=", outputType),
-                 paste0("doclamp=", tolower(as.character(clamp)))),
-        na.rm = TRUE)
+                 paste0("doclamp=", tolower(as.character(clamp)))))
     }
   })
   return(list(xferExt = xftMsk, xferTime = modXferTime))

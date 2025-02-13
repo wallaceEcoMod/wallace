@@ -68,6 +68,7 @@
 #'   more variables are plotted as orange triangles.
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
+#' @author Bethany A. Johnson <bjohnso005@@citymail.cuny.edu>
 # @note
 #' @seealso
 #'\code{\link{model_bioclim}} \code{\link[ENMeval]{ENMevaluate}}

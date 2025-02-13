@@ -63,6 +63,7 @@
 
 #' @author Jamie M. Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
+#' @author Bethany A. Johnson <bjohnso005@@citymail.cuny.edu>
 # @note
 
 #' @seealso \code{\link[ENMeval]{ENMevaluate}}
@@ -79,7 +80,7 @@ model_bioclim <- function(occs, bg, user.grp, bgMsk, logger = NULL,
   smartProgress(logger,
                        message = paste0("Building/Evaluating BIOCLIM model for ",
                                  spName(spN), "..."), {
-     e <- ENMeval::ENMevaluate(occs = occs.xy, envs = bgMsk, bg = bg.xy,
+     e <- ENMeval::ENMevaluate(occs = occs.xy, envs = terra::rast(bgMsk), bg = bg.xy,
                                algorithm = "bioclim", partitions = "user",
                                user.grp = user.grp)
   })

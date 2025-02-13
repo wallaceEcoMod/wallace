@@ -25,8 +25,8 @@ components occs: Obtain occurrence data or, poccs: Process occurrence data.}
 (1) 'jack' Non-spatial Partition - jackknife  \cr
 (2) 'rand' Non-spatial Partition - random k-fold  \cr
 (3) 'block' spatial Partition - block  \cr
-(4) 'cb1' spatial Partition - checkerboard 1 (K=2)  \cr
-(5) 'cb2' spatial Partition - checkerboard 2 (K=4)  \cr}
+(4) 'cb1' spatial Partition - checkerboard (k=2)  \cr
+(5) 'cb2' spatial Partition - hierarchical checkerboard (k=4)  \cr}
 
 \item{kfolds}{numeric. Number of partitions to create if selected method is
 random k-fold (must be >=2). If other method then keep default of NULL.}
@@ -85,4 +85,6 @@ Jamie Kass <jamie.m.kass@gmail.com>
 Gonzalo E. Pinilla-Buitrago <gepinillab@gmail.com>
 
 Andrea Paz <paz.andreita@gmail.com>
+
+Bethany A Johnson <bjohnso005@citymail.cuny.edu>
 }

@@ -7,7 +7,8 @@ Generate a map of the Bioclim generated model with no threshold
 # Select current model and obtain raster prediction
 
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
-predSel_{{spAbr}} <- dismo::predict(m_{{spAbr}}, bgMask_{{spAbr}}, useC = FALSE)
+predSel_{{spAbr}} <- dismo::predict(m_{{spAbr}}, terra::rast(bgMask_{{spAbr}}))
+predSel_{{spAbr}} <- raster::raster(predSel_{{spAbr}})
 #Get values of prediction
 mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
 #Define colors and legend  
@@ -42,7 +43,8 @@ Generate a map of the Bioclim generated model with a "{{thresholdRule_rmd}}" thr
 ```{r, echo = {{vis_mapPreds_knit & vis_map_bioclim_knit  & vis_map_threshold_knit}}, include = {{vis_mapPreds_knit & vis_map_bioclim_knit  & vis_map_threshold_knit}}}
 # Select current model and obtain raster prediction
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
-predSel_{{spAbr}} <- dismo::predict(m_{{spAbr}}, bgMask_{{spAbr}}, useC = FALSE)
+predSel_{{spAbr}} <- dismo::predict(m_{{spAbr}}, terra::rast(bgMask_{{spAbr}}))
+predSel_{{spAbr}} <- raster::raster(predSel_{{spAbr}})
 # extract the suitability values for all occurrences
 occs_xy_{{spAbr}} <- occs_{{spAbr}}[c('longitude', 'latitude')]
 # determine the threshold based on the current prediction
@@ -91,10 +93,10 @@ Generate a map of the Maxent generated model with no threshold
 # Select current model and obtain raster prediction
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
 predSel_{{spAbr}} <- dismo::predict(
-  m_{{spAbr}}, bgMask_{{spAbr}},
+  m_{{spAbr}}, terra::rast(bgMask_{{spAbr}}),
   args = c(paste0("outputformat=", "{{predType_rmd}}"), 
-           paste0("doclamp=", tolower(as.character({{clamp_rmd}})))), 
-  na.rm = TRUE)
+           paste0("doclamp=", tolower(as.character({{clamp_rmd}})))))
+predSel_{{spAbr}} <- raster::raster(predSel_{{spAbr}})
 #Get values of prediction
 mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
 #Define colors and legend  
@@ -130,10 +132,10 @@ Generate a map of the Maxent generated model with a "{{thresholdRule_rmd}}" thre
 # Select current model and obtain raster prediction
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
 predSel_{{spAbr}} <- dismo::predict(
-  m_{{spAbr}}, bgMask_{{spAbr}},
+  m_{{spAbr}}, terra::rast(bgMask_{{spAbr}}),
   args = c(paste0("outputformat=", "{{predType_rmd}}"), 
-           paste0("doclamp=", tolower(as.character({{clamp_rmd}})))), 
-  na.rm = TRUE)
+           paste0("doclamp=", tolower(as.character({{clamp_rmd}})))))
+predSel_{{spAbr}} <- raster::raster(predSel_{{spAbr}})
 # extract the suitability values for all occurrences
 occs_xy_{{spAbr}} <- occs_{{spAbr}}[c('longitude', 'latitude')]
 # determine the threshold based on the current prediction
