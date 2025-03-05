@@ -273,6 +273,8 @@ xfer_area_module_server <- function(input, output, session, common) {
       logger %>% writeLog(hlSpp(curSp()), "Transfer of model to new area with ",
                           predType, ' output.')
     }
+    if(spp[[curSp()]]$rmm$model$algorithms == 'maxent.jar')
+      xferAreaThr <- raster::raster(xferAreaThr)
     raster::crs(xferAreaThr) <- raster::crs(envs())
     # rename
     names(xferAreaThr) <- paste0(curModel(), '_thresh_', predType)
