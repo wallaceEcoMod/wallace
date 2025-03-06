@@ -81,10 +81,18 @@ polyExt <-
   sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)),
                       ID = 1)))
 # build model
-occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",package = "wallace"))
-bg <- read.csv(system.file("extdata/Bassaricyon_alleni_bgPoints.csv", package = "wallace"))
+occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
+  package = "wallace"))
+bg <- read.csv(system.file("extdata/Bassaricyon_alleni_bgPoints.csv",
+  package = "wallace"))
 partblock <- part_partitionOccs(occs, bg, method = 'block')
-m <- model_maxent(occs, bg, user.grp = partblock,bgMsk = envs, rms = c(1:2), rmsStep = 1, fcs = c('L', 'LQ'),clampSel = TRUE, algMaxent = "maxnet",parallel = FALSE)
+m <- model_maxent(occs, bg,
+  user.grp = partblock,
+  bgMsk = envs, rms = c(1:2),
+  rmsStep = 1, fcs = c('L', 'LQ'),
+  clampSel = TRUE,
+  algMaxent = "maxnet",
+  parallel = FALSE)
 ### run function
 modXfer <- xfer_area(evalOut = m, curModel = 1, envs,
                      outputType = 'cloglog', alg = 'maxnet',
