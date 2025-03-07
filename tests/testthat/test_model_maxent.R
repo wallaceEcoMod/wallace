@@ -78,7 +78,7 @@ for (i in algorithm) {
     expect_is(maxentAlg@models, "list")
     expect_is(maxentAlg@variable.importance,"list")
     # a raster Stack
-    expect_is(maxentAlg@predictions, "RasterStack")
+    expect_is(maxentAlg@predictions, "SpatRaster")
     # factor
     expect_is(maxentAlg@occs.grp, "factor")
     expect_is(maxentAlg@bg.grp, "factor")
@@ -86,7 +86,7 @@ for (i in algorithm) {
     # there are as much models as feature classes * rms/rmsStep
     expect_equal(length(maxentAlg@models), (length(rms)/rmsStep)*length(fcs))
     # as many rasters as models are generated
-    expect_equal(length(maxentAlg@models), raster::nlayers(maxentAlg@predictions))
+    expect_equal(length(maxentAlg@models), terra::nlyr(maxentAlg@predictions))
     # there is a model for each combination of feature classes and
     # regularization multiplier
     expect_equal(sort(as.character(maxentAlg@results$tune.args)),

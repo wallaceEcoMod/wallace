@@ -1,6 +1,6 @@
 Package: wallace
-Version: 2.1.3
-Date: 2024-07-18
+Version: 2.2.0
+Date: 2025-03-06
 Title: A Modular Platform for Reproducible Modeling of Species Niches 
     and Distributions
 Description: The 'shiny' application Wallace is a modular platform for 
@@ -13,6 +13,7 @@ Description: The 'shiny' application Wallace is a modular platform for
     website: <https://wallaceecomod.github.io/wallace/articles/tutorial-v2.html>.
 Authors@R: 
     c(person("Bethany A.", "Johnson", email = "bjohnso005@citymail.cuny.edu", role = "aut"),
+    person("Daniel F.", "Lopez-Lozano", email = "dlopezlozano@amnh.org", role = "aut"),
     person("Jamie M.", "Kass", email = "jamie.m.kass@gmail.com", role = "aut"),
     person("Gonzalo E.", "Pinilla-Buitrago", email = "gepinillab@gmail.com", role = "aut"),
     person("Andrea", "Paz", email = "paz.andreita@gmail.com", role = "aut"),
@@ -38,7 +39,7 @@ Imports:
     dplyr (>= 1.0.2),
     DT (>= 0.5),
     ecospat (>= 4.0.0),
-    ENMeval (>= 2.0.3),
+    ENMeval (>= 2.0.5),
     geodata,
     knitcitations,
     leafem,
@@ -67,6 +68,7 @@ Suggests:
     mapview,
     maxnet,
     occCite,
+    predicts,
     rangeModelMetadata,
     raster,
     rgbif (>= 3.3.0),

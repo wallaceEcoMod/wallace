@@ -40,8 +40,8 @@
 #'  (1) 'jack' Non-spatial Partition - jackknife  \cr
 #'  (2) 'rand' Non-spatial Partition - random k-fold  \cr
 #'  (3) 'block' spatial Partition - block  \cr
-#'  (4) 'cb1' spatial Partition - checkerboard 1 (K=2)  \cr
-#'  (5) 'cb2' spatial Partition - checkerboard 2 (K=4)  \cr
+#'  (4) 'cb1' spatial Partition - checkerboard (k=2)  \cr
+#'  (5) 'cb2' spatial Partition - hierarchical checkerboard (k=4)  \cr
 #' @param kfolds numeric. Number of partitions to create if selected method is
 #'   random k-fold (must be >=2). If other method then keep default of NULL.
 #' @param bgMask a RasterStack or a RasterBrick of environmental layers cropped
@@ -75,6 +75,7 @@
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 #' @author Andrea Paz <paz.andreita@@gmail.com>
+#' @author Bethany A Johnson <bjohnso005@@citymail.cuny.edu>
 # @note
 #' @seealso \code{\link[ENMeval]{partitions}}
 # @references
@@ -163,22 +164,23 @@ part_partitionOccs <- function(occs, bg, method, kfolds = NULL, bgMask = NULL,
 
   if(method == 'cb1') {
     smartProgress(logger, message = "Aggregating rasters...", {
-      group.data <- ENMeval::get.checkerboard1(occs.xy, bgMask, bg.xy, aggFact)
+      group.data <- ENMeval::get.checkerboard(occs.xy, terra::rast(bgMask), bg.xy, aggFact)
     })
 
     logger %>% writeLog(hlSpp(spN),
-                        "Occurrences partitioned by checkerboard 1 method with ",
-                        "aggregation factor ", aggFact, ".")
+                        "Occurrences partitioned by checkerboard method with ",
+                        "aggregation factor of ", aggFact, ".")
   }
 
   if(method == 'cb2') {
     smartProgress(logger, message = "Aggregating rasters...", {
-      group.data <- ENMeval::get.checkerboard2(occs.xy, bgMask, bg.xy, aggFact)
+      group.data <- ENMeval::get.checkerboard(occs.xy, terra::rast(bgMask),
+                                               bg.xy, c(aggFact, aggFact))
     })
 
     logger %>% writeLog(hlSpp(spN),
-                        "Occurrences partitioned by checkerboard 2 method with ",
-                        "aggregation factor ", aggFact, ".")
+                        "Occurrences partitioned by hierarchical checkerboard method with ",
+                        "aggregation factor of ", aggFact, ".")
   }
   return(group.data)
 }

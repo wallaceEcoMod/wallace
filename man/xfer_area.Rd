@@ -80,11 +80,22 @@ selCoords <- matrix(c(longitude, latitude), byrow = FALSE, ncol = 2)
 polyExt <-
   sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)),
                       ID = 1)))
-# load model
-m <- readRDS(system.file("extdata/model.RDS",
-                         package = "wallace"))
+# build model
+occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
+  package = "wallace"))
+bg <- read.csv(system.file("extdata/Bassaricyon_alleni_bgPoints.csv",
+  package = "wallace"))
+partblock <- part_partitionOccs(occs, bg, method = 'block')
+m <- model_maxent(occs, bg,
+  user.grp = partblock,
+  bgMsk = envs, rms = c(1:2),
+  rmsStep = 1, fcs = c('L', 'LQ'),
+  clampSel = TRUE,
+  algMaxent = "maxnet",
+  parallel = FALSE)
+### run function
 modXfer <- xfer_area(evalOut = m, curModel = 1, envs,
-                     outputType = 'cloglog', alg = 'maxent.jar',
+                     outputType = 'cloglog', alg = 'maxnet',
                      clamp = TRUE, xfExt = polyExt)
 }
 

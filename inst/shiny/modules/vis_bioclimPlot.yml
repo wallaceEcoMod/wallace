@@ -1,5 +1,5 @@
 component: "vis"
 short_name: "BIOCLIM Envelope Plots"
 long_name: "BIOCLIM Envelope Plots"
-authors: "Jamie M. Kass, Robert Muscarella, Bruno Vilela, Robert P. Anderson"
+authors: "Jamie M. Kass, Robert Muscarella, Bruno Vilela, Bethany A. Johnson, Robert P. Anderson"
 package: [dismo]

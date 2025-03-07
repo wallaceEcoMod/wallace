@@ -1,7 +1,7 @@
 ---
 title: "How to write a module in Wallace"
 author: "Gonzalo Pinilla-Buitrago, Jamie M. Kass, Siew Fong Chen, Peter Galante, Bethany A. Johnson, Dean Attali"
-date: "April 19, 2022"
+date: "April 19, 2022; updated August 26, 2024"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Wallace Ecological Modeling Application v2.0 Vignette}
@@ -285,7 +285,7 @@ The following reactive variables that can be used by the module: logger, spp, cu
 The following reactives that are shortcuts to reactives inside spp: occs, envs, bg, bgExt, bgMask, evalOut, mapPred, mapXfer, rmm.
 A function `update_component(tab)` that allows you to switch to a new tab within the component.
 
-This function `penvs_correlations_module_server()` is a wrapper for a shiny reactive expression. Inside, there is a template for the essential parts needed in a *Wallace* module. First, we specify shorter names for the shortcut variables inside the “common” list. Next, we specify a UI function that can use reactive values inside of this server function—in this case, we want to know the names of the environmental variables input so they can be printed to the UI control (see Creating a reactive shortcut in the next section for more details). After this, we specify when the module function gets run. The function `observeEvent()` performs an action in response to an event (e.g., clicking a button created by  `penvs_correlations_module_ui()`). Inside of each `observeEvent()`, you need to include the following code. The first, "WARNING", catches any possible errors before the module's core functionality is run. If there is an error, the function stops and a log error message is written. The user will need to define these errors in order to catch them and prevent the module from crashing unexpectedly. Next, under “FUNCTION CALL”, we call the function from `/wallace/R` and make sure it returns what we expect. Next, under “LOAD INTO SPP”, we load the model object into `spp`. Finally, under “METADATA”, we fill in appropriate metadata fields for the rangeModelMetadata object in `spp`. Ultimately, the module author decides what metadata to include, but we encourage authors to explore the rangeModelMetadata object, decide which fields best apply to your module, and enter information detailed enough to enable reproducibility. As shiny modules exist in their own namespaces, if we want to refer to any of the results from the module later (in other modules), we need to put them into the `spp` reactiveValues list.
+This function `penvs_correlations_module_server()` is a wrapper for a shiny reactive expression. Inside, there is a template for the essential parts needed in a *Wallace* module. First, we specify shorter names for the shortcut variables inside the “common” list. Next, we specify a UI function that can use reactive values inside of this server function—in this case, we want to know the names of the environmental variables input so they can be printed to the UI control (see Creating a reactive shortcut in the next section for more details). After this, we specify when the module function gets run. The function `observeEvent()` performs an action in response to an event (e.g., clicking a button created by  `penvs_correlations_module_ui()`). Inside of each `observeEvent()`, you need to include the following code. The first, "WARNING", catches any possible errors before the module's core functionality is run. If there is an error, the function stops and a log error message is written. The user will need to define these errors in order to catch them and prevent the module from crashing unexpectedly. Next, under “FUNCTION CALL”, we call the function from `/wallace/R` and make sure it returns what we expect. Next, under “LOAD INTO SPP”, we load the model object into `spp`. In "REFERENCES", use the `knitcitations`package `citep` to include any packages to cite in the Reference Packages module in the Reproduce component. Finally, under “METADATA”, we fill in appropriate metadata fields for the rangeModelMetadata object in `spp`. Ultimately, the module author decides what metadata to include, but we encourage authors to explore the rangeModelMetadata object, decide which fields best apply to your module, and enter information detailed enough to enable reproducibility. As shiny modules exist in their own namespaces, if we want to refer to any of the results from the module later (in other modules), we need to put them into the `spp` reactiveValues list.
 
 ```{r, eval = F}
 penvs_correlations_module_server <- function(input, output, session, common) {
@@ -335,6 +335,9 @@ penvs_correlations_module_server <- function(input, output, session, common) {
     # LOAD INTO SPP ####
   spp[[sp]]$procEnvs$envCorrs <- envCorrs$`pearson correlation coefficient`
 
+    # REFERENCES ####
+      knitcitations::citep(citation("raster", auto = TRUE))
+      
     # METADATA ####
 
   }

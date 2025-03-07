@@ -1,5 +1,5 @@
 component: "part"
 short_name: "Spatial Partition"
 long_name: "Spatial Partition"
-authors: "Jamie M. Kass, Bruno Vilela, Robert P. Anderson"
+authors: "Jamie M. Kass, Bruno Vilela, Bethany A. Johnson, Robert P. Anderson"
 package: [ENMeval]

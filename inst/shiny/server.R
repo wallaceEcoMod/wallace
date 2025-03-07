@@ -768,7 +768,7 @@ function(input, output, session) {
         namesEnvs <- mxNonzeroCoefs(evalOut()@models[[curModel()]], "maxent.jar")
         for (i in namesEnvs) {
           png(paste0( i, ".png"))
-          dismo::response(evalOut()@models[[curModel()]], var = i)
+          predicts::partialResponse(evalOut()@models[[curModel()]], var = i)
           dev.off()
         }
       }

@@ -69,11 +69,22 @@
 #' polyExt <-
 #'   sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)),
 #'                       ID = 1)))
-#' # load model
-#' m <- readRDS(system.file("extdata/model.RDS",
-#'                          package = "wallace"))
+#' # build model
+#' occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
+#'   package = "wallace"))
+#' bg <- read.csv(system.file("extdata/Bassaricyon_alleni_bgPoints.csv",
+#'   package = "wallace"))
+#' partblock <- part_partitionOccs(occs, bg, method = 'block')
+#' m <- model_maxent(occs, bg,
+#'   user.grp = partblock,
+#'   bgMsk = envs, rms = c(1:2),
+#'   rmsStep = 1, fcs = c('L', 'LQ'),
+#'   clampSel = TRUE,
+#'   algMaxent = "maxnet",
+#'   parallel = FALSE)
+#' ### run function
 #' modXfer <- xfer_area(evalOut = m, curModel = 1, envs,
-#'                      outputType = 'cloglog', alg = 'maxent.jar',
+#'                      outputType = 'cloglog', alg = 'maxnet',
 #'                      clamp = TRUE, xfExt = polyExt)
 #' }
 #'
@@ -117,18 +128,16 @@ xfer_area <- function(evalOut, curModel, envs, xfExt, alg, outputType = NULL,
 
   smartProgress(logger, message = 'Transferring model to new area...', {
     if (alg == 'BIOCLIM') {
-      modXferArea <- dismo::predict(evalOut@models[[curModel]], xferMsk,
-                                    useC = FALSE)
+      modXferArea <- dismo::predict(evalOut@models[[curModel]], terra::rast(xferMsk))
     } else if (alg == 'maxnet') {
       if (outputType == "raw") outputType <- "exponential"
       modXferArea <- predictMaxnet(evalOut@models[[curModel]], xferMsk,
                                           type = outputType, clamp = clamp)
     } else if (alg == 'maxent.jar') {
       modXferArea <- dismo::predict(
-        evalOut@models[[curModel]], xferMsk,
+        evalOut@models[[curModel]], terra::rast(xferMsk),
         args = c(paste0("outputformat=", outputType),
-                 paste0("doclamp=", tolower(as.character(clamp)))),
-        na.rm = TRUE)
+                 paste0("doclamp=", tolower(as.character(clamp)))))
     }
   })
 

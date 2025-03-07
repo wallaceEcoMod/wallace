@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # vis_mapPreds.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -86,6 +86,7 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
 
     # pick the prediction that matches the model selected
     predSel <- evalOut()@predictions[[curModel()]]
+    predSel <- raster::raster(predSel)
     raster::crs(predSel) <- raster::crs(bgMask())
     if(is.na(raster::crs(predSel))) {
       logger %>% writeLog(
@@ -102,7 +103,8 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
     if (spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM") {
       predType <- "BIOCLIM"
       m <- evalOut()@models[[curModel()]]
-      predSel <- dismo::predict(m, bgMask(), useC = FALSE)
+      predSel <- dismo::predict(m, terra::rast(bgMask()))
+      predSel <- raster::raster(predSel)
       # define crs
       raster::crs(predSel) <- raster::crs(bgMask())
       # define predSel name
@@ -133,9 +135,11 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
                              } else {
                                doClamp <- "doclamp=false"
                              }
-                             predSel <- dismo::predict(m, bgMask(),
+                             predSel <- dismo::predict(m, terra::rast(bgMask()),
                                                        args = c(outputFormat, doClamp),
-                                                       na.rm = TRUE)
+                                                       #na.rm = TRUE
+                                                       )
+                             predSel <- raster::raster(predSel)
                            }
                          })
       # define crs

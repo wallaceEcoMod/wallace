@@ -27,7 +27,7 @@ n <- mxNonzeroCoefs(model_{{spAbr}}@models[["{{curModel_rmd}}"]], "maxent.jar")
 
 # Create response curves
 for (i in n) {
-dismo::response(
+predicts::partialResponse(
   model_{{spAbr}}@models[["{{curModel_rmd}}"]],
   var = i)
 }
