@@ -8,8 +8,8 @@
 <title>Wallace Ecological Modeling Application Vignette • wallace</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Wallace Ecological Modeling Application Vignette">
 </head>
 <body>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">wallace</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -139,12 +139,12 @@ the <code>R</code> console will be occupied. You can exit
 <code>R</code> console, or by closing the browser window. A note: if you
 close the browser window running <em>Wallace</em>, <strong>your session
 will be over and all progress will be lost</strong>.</p>
-<p><img src="vignette_img/v1/0_a_intro.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F0_a_intro.jpg" width="800px"></p>
 <p>If you’d like to use the <code>R</code> console while running
 <em>Wallace</em>, open a terminal window (MacOS/Linux) or command prompt
 (Windows), initialize <code>R</code>, and then run the lines above. An
 example with Terminal in MacOS is below.</p>
-<p><img src="vignette_img/v1/0_b_intro.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F0_b_intro.jpg" width="800px"></p>
 <p>Also, if you’d like to use Maxent in <em>Wallace</em>, please note
 the following. <em>Wallace</em> uses the <code>maxent()</code> function
 in the package <code>dismo</code>. This function requires the user to
@@ -171,7 +171,7 @@ that hopefully should help.</p>
 <p>We’ll begin with the “Obtain Occurrence Data” component, but first a
 little orientation. Please consult the schematic below showing the
 different parts of <em>Wallace</em>.</p>
-<p><img src="vignette_img/v1/0_c_intro.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F0_c_intro.jpg" width="800px"></p>
 <p>You will notice tabs along the top of the <em>Wallace</em> interface:
 these are “components”, which represent discrete steps of the analysis,
 and you will be stepping sequentially through them (<em>1</em>). First,
@@ -208,8 +208,8 @@ should give you a more solid foundation for moving forward.</p>
 <strong>Obtain Occurrence Data</strong>, and then for the modules. Let’s
 read through these to get a better understanding of what is involved in
 obtaining occurrence data, and how <em>Wallace</em> implements it.</p>
-<p><img src="vignette_img/v1/1_a_occ_data.jpg" width="800px"></p>
-<p><img src="vignette_img/v1/1_b_occ_data.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F1_a_occ_data.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F1_b_occ_data.jpg" width="800px"></p>
 <p>Now that we’ve educated ourselves, let’s proceed to getting our
 occurrences. As an example, let’s download occurrence records for
 <em>Tremarctos ornatus</em> (spectacled bear) from GBIF. This is a
@@ -224,14 +224,14 @@ information (latitude, longitude) that were not duplicates. If you
 wanted 200 or more records with this information that is crucial for
 SDMs, you could increase the maximum occurrences you search for and try
 again.</p>
-<p><img src="vignette_img/v1/1_c_occ_data.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F1_c_occ_data.jpg" width="800px"></p>
 <p>Now click on the “Occs Tbl” tab to view more information on the
 records. The developers chose the fields that are displayed based on
 their general relevance to studies on species ranges. You can click the
 <strong>Download</strong> button to get a .csv file of these records,
 which has all the original database fields for every downloaded record
 (before any filtering).</p>
-<p><img src="vignette_img/v1/1_d_occ_data.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F1_d_occ_data.jpg" width="800px"></p>
 </div>
 <div class="section level2">
 <h2 id="process-occurrence-data">Process Occurrence Data<a class="anchor" aria-label="anchor" href="#process-occurrence-data"></a>
@@ -251,11 +251,11 @@ eliminate these obviously erroneous records, select the points you want
 to keep for analysis by clicking on the module <em><strong>Select
 Occurrences On Map</strong></em>. Click on the polygon icon on the map
 and draw a polygon around the points found in South America.</p>
-<p><img src="vignette_img/v1/2_a_process_occs.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F2_a_process_occs.jpg" width="800px"></p>
 <p>When you are done, click “Finish” on the polygon toolbar, then
 <strong>Select Occurrences</strong>. The map will zoom to the points
 you’ve selected.</p>
-<p><img src="vignette_img/v1/2_b_process_occs.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F2_b_process_occs.jpg" width="800px"></p>
 <p>Alternatively, you can also remove occurrences by ID with the module
 <em><strong>Remove Occurrences by ID</strong></em>. <em>Tremarctos
 ornatus</em> typically inhabits mid- to high-elevation areas. By zooming
@@ -268,7 +268,7 @@ these assumptions should not be made trivially and require
 investigation. To remove these points, click them to find their unique
 ID (“occID”) and geographic coordinates, then enter the ID and click
 <strong>Remove Occurrence</strong> to remove it.</p>
-<p><img src="vignette_img/v1/2_c_process_occs.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F2_c_process_occs.jpg" width="800px"></p>
 <p>Even after removing likely erroneous points, the points you have left
 may be clustered due to sampling bias. This often leads to artifactually
 inflated spatial autocorrelation, which can bias the environmental
@@ -282,14 +282,14 @@ while driving or gained access to sites from these roads.</p>
 This lets you attempt to reduce a presumed spatial bias by running a
 spatial thinning function on the points to make sure they’re all a
 defined distance from one another. We will use 10 km as an example.</p>
-<p><img src="vignette_img/v1/2_d_process_occs.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F2_d_process_occs.jpg" width="800px"></p>
 <p>We are now left with 44 points for our analysis (yours may be
 different). You can zoom in to see what the function did. Red points
 were retained, and blue points were removed. You can also download the
 processed occurrence dataset as .csv by clicking on the
 <strong>Download</strong> button.</p>
-<p><img src="vignette_img/v1/2_e_process_occs.jpg" width="800px"></p>
-<p><img src="vignette_img/v1/2_f_process_occs.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F2_e_process_occs.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F2_f_process_occs.jpg" width="800px"></p>
 </div>
 <div class="section level2">
 <h2 id="obtain-environmental-data">Obtain Environmental Data<a class="anchor" aria-label="anchor" href="#obtain-environmental-data"></a>
@@ -320,14 +320,14 @@ downloading the rasters, <em>Wallace</em> will also remove any
 occurrence points with no environmental values (i.e., points that did
 not overlap with the rasters). Notice the progress bar in the
 bottom-right corner.</p>
-<p><img src="vignette_img/v1/3_a_env_data.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F3_a_env_data.jpg" width="800px"></p>
 <p>After the rasters have loaded the “Results” tab will display some
 summary information about them (e.g. resolution, extent, cell number,
 etc.).</p>
-<p><img src="vignette_img/v1/3_b_env_data.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F3_b_env_data.jpg" width="800px"></p>
 <p>Note that you have the option to specify a subset of the total
 variables to use in the analysis.</p>
-<p><img src="vignette_img/v1/3_c_env_data.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F3_c_env_data.jpg" width="800px"></p>
 </div>
 <div class="section level2">
 <h2 id="process-environmental-data">Process Environmental Data<a class="anchor" aria-label="anchor" href="#process-environmental-data"></a>
@@ -351,16 +351,16 @@ the study extent, and 2) sampling the background points. Under “Step 1”,
 choose “Minimum convex polygon”, and set the study region buffer
 distance to 1 degree. Click the <strong>Select</strong> button to plot
 this shape on the map.</p>
-<p><img src="vignette_img/v1/4_a_process_envs.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F4_a_process_envs.jpg" width="800px"></p>
 <p>Next, complete “Step 2”, which both clips the rasters by the study
 extent and samples the background points. Set the number of background
 points to 10,000 (bigger, more extensive, samples are better), and click
 the <strong>Sample</strong> button. Notice via the arrow the progress
 bar in the bottom-right corner.</p>
-<p><img src="vignette_img/v1/4_b_process_envs.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F4_b_process_envs.jpg" width="800px"></p>
 <p>Click the <strong>Download</strong> button if you want a zip file of
 the clipped rasters.</p>
-<p><img src="vignette_img/v1/4_c_process_envs.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F4_c_process_envs.jpg" width="800px"></p>
 </div>
 <div class="section level2">
 <h2 id="partition-occurrences">Partition occurrences<a class="anchor" aria-label="anchor" href="#partition-occurrences"></a>
@@ -397,10 +397,10 @@ details on all the types of partitioning offered in
 <em>Wallace</em>.</p>
 <p>Here’s an example of random <em>k</em>-fold, which randomly assigns
 each point to a partition group. Here, <em>k</em> = 4.</p>
-<p><img src="vignette_img/v1/5_a_partition_occs.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F5_a_partition_occs.jpg" width="800px"></p>
 <p>Here’s an example of spatial blocking, which assigns each point to
 one of 4 spatially separate partition groups.</p>
-<p><img src="vignette_img/v1/5_b_partition_occs.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F5_b_partition_occs.jpg" width="800px"></p>
 </div>
 <div class="section level2">
 <h2 id="model">Model<a class="anchor" aria-label="anchor" href="#model"></a>
@@ -436,7 +436,7 @@ greatest predictive contribution remain in the model.</li>
 multipliers (1, 2, 3) = 9 models. The feature classes H will enable
 substantial complexity in the response, so it takes a bit longer to run
 than the simpler models.</p>
-<p><img src="vignette_img/v1/6_a_model.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F6_a_model.jpg" width="800px"></p>
 <p>The first time you run this, you may get an error message if the
 Maxent software is not in the <code>dismo</code> package folder. The
 <code>dismo</code> package is what <em>Wallace</em> uses to run Maxent
@@ -471,16 +471,16 @@ results table by “or.10p.avg”, or the 10 percentile training presence
 threshold applied to testing data (see guidance text for details). In
 our set of models, the model with the lowest or.10p.avg was H_1 (hinge
 features and regularization multiplier of 1).</p>
-<p><img src="vignette_img/v1/6_b_model.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F6_b_model.jpg" width="800px"></p>
 <p>If there had been a tie we could for example have chosen the model
 with the highest “auc.val.avg” (average test AUC), but in this case,
 model H_1 had the lowest OR. When we examine test AUC for this model, we
 see it is reasonably high relative to the other models.</p>
-<p><img src="vignette_img/v1/6_c_model.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F6_c_model.jpg" width="800px"></p>
 <p>You can also find the evaluation statistics for each individual
 partition in the table below, in comparison to the one above that only
 lists averages.</p>
-<p><img src="vignette_img/v1/6_d_model.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F6_d_model.jpg" width="800px"></p>
 <p>In our example, if we had chosen the model with the lowest AICc
 score, we would have ended up with H_3.5. Take a moment to find the
 model with the lowest AICc and compare it to the one you chose
@@ -493,7 +493,7 @@ above.</p>
 performance statistics across models. Below, see how regularization
 multiplier affects average test omission rate (using 10 percentile
 training presence threshold.)</p>
-<p><img src="vignette_img/v1/7_a_visualize.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F7_a_visualize.jpg" width="800px"></p>
 <p>We should also examine the <strong>response curves</strong>, which
 show how the predicted suitability (y-axis) changes based on different
 values of each variable (x-axis). If you want to see the results for a
@@ -504,13 +504,13 @@ response curve indicates that suitability remains stable for lower
 temperatures, but above 20 degrees C (the WorldClim values are
 multiplied by 10, so 200 deg C on the x-axis is really 20 deg C),
 suitability for <em>T. ornatus</em> decreases sharply.</p>
-<p><img src="vignette_img/v1/7_b_visualize.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F7_b_visualize.jpg" width="800px"></p>
 <p>You can also visualize model predictions on the map. Predictions of
 suitability can be continuous (a range of values) or binary (thresholded
 to just two values: 0 and 1). Please see the module guidance for
 information about Maxent model output scales and thresholding rules.
 Below is the mapped prediction for model H_1, no threshold.</p>
-<p><img src="vignette_img/v1/7_c_visualize.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F7_c_visualize.jpg" width="800px"></p>
 <p>Below is the mapped prediction of the same model, this time with the
 threshold set to 10 percentile training presence. This is the stricter
 of the two thresholding rules currently available. Some of the
@@ -520,7 +520,7 @@ used to calculate the 10 percentile training presence omission rate from
 the evaluation statistics. Try mapping the prediction with the threshold
 set to the less strict minimum training presence instead, and notice the
 difference.</p>
-<p><img src="vignette_img/v1/7_d_visualize.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F7_d_visualize.jpg" width="800px"></p>
 </div>
 <div class="section level2">
 <h2 id="project">Project<a class="anchor" aria-label="anchor" href="#project"></a>
@@ -561,11 +561,11 @@ RCP. Below is the continuous prediction. For our example, note that the
 northernmost suitable area in the present seems to be contracted
 southward, that suitability seems lower overall, and that it also
 becomes more confined to higher elevations.</p>
-<p><img src="vignette_img/v1/8_a_project.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F8_a_project.jpg" width="800px"></p>
 <p>Below is the projection made binary by the 10 percentile training
 presence threshold. We can see some of these differences between present
 and future projection a bit more clearly now.</p>
-<p><img src="vignette_img/v1/8_b_project.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F8_b_project.jpg" width="800px"></p>
 <p>As we mentioned, there may be areas within our new ranges of values
 that have high uncertainty because they are very different from the
 values used in model-building. In order to visualize where these areas
@@ -578,7 +578,7 @@ climate values at high elevation are similar, whereas those at lower
 elevations west towards the coast are very different in some places,
 especially in Colombia. We may therefore interpret that projected
 suitability in these areas has high uncertainty.</p>
-<p><img src="vignette_img/v1/8_c_project.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2F8_c_project.jpg" width="800px"></p>
 </div>
 <div class="section level2">
 <h2 id="extracting-the-code">Extracting the code<a class="anchor" aria-label="anchor" href="#extracting-the-code"></a>
@@ -596,13 +596,13 @@ directly in <code>R</code>. For .pdf downloads, some version of TeX is
 necessary to be installed on your system. Please see the text on this
 page for more details.</p>
 <p>To download the script, select Rmd and click Download.</p>
-<p><img src="vignette_img/v1/rmd_1.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2Frmd_1.jpg" width="800px"></p>
 <p>Now, you should have an .Rmd file that contains your complete
 analysis. <strong>R Markdown</strong> files combine regular text with
 <strong>code chunks</strong>. Modules from <em>Wallace</em> are
 indicated as headers denoted by <strong>###</strong>. For a quick
 reference to Rmd syntax, see <a href="https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf" class="external-link">here</a></p>
-<p><img src="vignette_img/v1/rmd_2.jpg" width="800px"></p>
+<p><img src="vignette_img%2Fv1%2Frmd_2.jpg" width="800px"></p>
 <p>You might want to open a new R window and try running some of this
 code. Remember that later sections of code may depend on things that
 were done earlier, so they may not all run if you skip ahead. Also
@@ -661,11 +661,11 @@ Grant.</p>
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Bethany A. Johnson, Jamie M. Kass, Gonzalo E. Pinilla-Buitrago, Andrea Paz, Valentina Grisales-Betancur, Dean Attali, Matthew E. Aiello-Lammens, Cory Merow, Mary E. Blair, Robert P. Anderson.</p>
+  <p>Developed by Bethany A. Johnson, Daniel F. Lopez-Lozano, Jamie M. Kass, Gonzalo E. Pinilla-Buitrago, Andrea Paz, Valentina Grisales-Betancur, Dean Attali, Matthew E. Aiello-Lammens, Cory Merow, Mary E. Blair, Robert P. Anderson.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>

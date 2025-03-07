@@ -8,8 +8,8 @@
 <title>Wallace Ecological Modeling Application v2.0 Vignette • wallace</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="../deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Wallace Ecological Modeling Application v2.0 Vignette">
 </head>
 <body>
@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">wallace</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,7 +77,7 @@ I. Meenan, Robert P. Anderson</h4>
 <p>This work is distributed under the
 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" class="external-link">CC-BY-NC-SA
 4.0</a> license.<br><br></p>
-<p><img src="vignette_img/logo.png" width="25%" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Flogo.png" width="25%" style="display: block; margin: auto;"></p>
 <div class="section level2">
 <h2 id="preface">Preface<a class="anchor" aria-label="anchor" href="#preface"></a>
 </h2>
@@ -191,7 +191,7 @@ errors messages from the console.</p>
 <em>Wallace</em>, open another <code>R</code> session, or alternatively
 a terminal window (MacOS/Linux) or command prompt (Windows) and
 initialize <code>R</code>, then run the lines above.</p>
-<p><img src="vignette_img/setup_1.png" width="50%"></p>
+<p><img src="vignette_img%2Fsetup_1.png" width="50%"></p>
 <p>An example with Terminal in MacOS.</p>
 <p>To exit <em>Wallace</em>, hit ‘Escape’ while in the <code>R</code>
 console and close the browser window, or click the quit button in the
@@ -232,7 +232,7 @@ that hopefully should help.</p>
 <h2 id="orientation">
 <a id="Orientation"></a>Orientation<a class="anchor" aria-label="anchor" href="#orientation"></a>
 </h2>
-<p><img src="vignette_img/orientation_1.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Forientation_1.png" width="800px" style="display: block; margin: auto;"></p>
 <p>We’ll begin with an orientation of the <em>Wallace</em> interface.
 After running run_wallace(), <em>Wallace</em> opens to the
 <strong>Intro</strong> page. The “About” tab contains background
@@ -251,7 +251,7 @@ modules (bulleted) currently included.</p>
 <p>Click on the component tab <strong>Occ Data</strong>, select a
 module, and consult the schematic below showing the different parts of
 the <em>Wallace</em> interface.</p>
-<p><img src="vignette_img/orientation_2.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Forientation_2.png" width="800px" style="display: block; margin: auto;"></p>
 <p>(<strong>1</strong>) These are the components. You will be stepping
 sequentially through them. <em>Wallace v2</em> now includes a Support
 button (<strong>1a</strong>), which links to the Google Group, email,
@@ -328,8 +328,8 @@ guidance text. Notice the module guidance text changes as you select
 among the three modules. Read through these to get a better
 understanding of how occurrence data is typically obtained and how
 <code>wallace</code> implements it.</p>
-<p><img src="vignette_img/occs_1.png" width="800px" style="display: block; margin: auto;"></p>
-<p><img src="vignette_img/occs_2.png" width="800px" style="display: block; margin: auto;"><em>Note: As of 01 September 2023, Module: Query Database [Paleo] will
+<p><img src="vignette_img%2Foccs_1.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Foccs_2.png" width="800px" style="display: block; margin: auto;"><em>Note: As of 01 September 2023, Module: Query Database [Paleo] will
 be temporarily unavailable.</em></p>
 <p>Let’s proceed to get some occurrence data. We’ll be using present
 occurrences (as opposed to those from the deep past via fossil data,
@@ -358,12 +358,12 @@ is sufficient, but for modeling with data-rich species, 200 may not be
 enough for adequately sampling the known range, and the maximum can be
 increased. **<em>Numbers may be different as more records are added to
 GBIF.</em></p>
-<p><img src="vignette_img/occs_3.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Foccs_3.png" width="800px" style="display: block; margin: auto;"></p>
 <p>Now click on the “Occurrences” tab to view more information on the
 records. The developers chose the fields that are displayed based on
 their general relevance to studies on species ranges. Note that you can
 download the full table with all fields.</p>
-<p><img src="vignette_img/occs_4.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Foccs_4.png" width="800px" style="display: block; margin: auto;"></p>
 <p>Click the “Save” tab. The first save box allows you to download your
 session. It is available in all the components and modules (See <a href="#Save">Save &amp; Load Session</a> section for more details). The
 download options below the Save Session box change depending on which
@@ -377,7 +377,7 @@ second species.</p>
 after downloading an object, specifically the corner tile loads but the
 rest of the map is gray, closing the download bar at the bottom of the
 page should reset the map and fix the problem.</em></p>
-<p><img src="vignette_img/occs_5.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Foccs_5.png" width="800px" style="display: block; margin: auto;"></p>
 <p>A major improvement in <em>Wallace</em> v2.0 from previous versions
 is the ability to consider multiple species (separately) in the same
 session. Let’s add another species to model.</p>
@@ -402,7 +402,7 @@ window was updated, but the map remains the same. The map will not
 change automatically, as <em>Bassaricyon neblina</em> is still selected
 in the Species menu. Toggle between species to show the map for
 <em>Bassarricyon alleni</em>.</p>
-<p><img src="vignette_img/occs_6.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Foccs_6.png" width="800px" style="display: block; margin: auto;"></p>
 <p>Click back to the “Save” tab. Notice that the third option is now
 available.</p>
 </div>
@@ -454,7 +454,7 @@ latitude and longitude of the map center will be given. To visualize how
 well the tile will cover the occurrence points, click the “30 arcsec
 tile” box in the bottom left corner of the map. The points outside the
 tile will be excluded; you may need to zoom out to see fully.</p>
-<p><img src="vignette_img/env_1.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fenv_1.png" width="800px" style="display: block; margin: auto;"></p>
 <p>Although you could download the (very big) 30 arcsec global raster
 from the WorldClim website and load it into Wallace (preferably after
 cropping it with GIS software or in <code>R</code>), we will instead
@@ -471,13 +471,13 @@ leave “Batch” unchecked. Note: The batch option is not available for 30
 arcsec resolution since different tiles may need to be accessed.</p>
 <p>Check Batch and Load Env Data.<br>
 Notice the progress bar in the bottom-right corner.</p>
-<p><img src="vignette_img/env_2.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fenv_2.png" width="800px" style="display: block; margin: auto;"></p>
 <p>After the rasters have loaded, the “Results” tab will display summary
 information about them (e.g., resolution, extent, cell number, etc.). In
 addition to downloading the rasters, <em>Wallace</em> will also remove
 any occurrence points with no environmental values (i.e., points that
 did not overlap with grid cells with data in the rasters).</p>
-<p><img src="vignette_img/env_3.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fenv_3.png" width="800px" style="display: block; margin: auto;"></p>
 <p>You can download your environmental variables from within the
 Download Data section of the “Save” tab.</p>
 </div>
@@ -515,7 +515,7 @@ first module, we will use the polygon-drawing tool to select
 occurrences. The polygon drawing tool is useful to draw extents and will
 be seen in other modules later on as well.</p>
 <p>Click on the polygon icon on the map toolbar.</p>
-<p><img src="vignette_img/poccs_1.png" width="50%" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fpoccs_1.png" width="50%" style="display: block; margin: auto;"></p>
 <p>This opens the drawing tool. Click to begin drawing—each click
 connects to the last with a line. Draw a shape around South America,
 omitting the record in Bolivia. If you make a mistake in drawing, you
@@ -528,7 +528,7 @@ toolbar and hit “Clear All”. If you are displeased or have made an
 error, the red “Reset” button in the module interface will revert back
 to the original points. Since we arbitrarily removed the record in
 Bolivia, click reset to return to our original dataset.</p>
-<p><img src="vignette_img/poccs_2.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fpoccs_2.png" width="800px" style="display: block; margin: auto;"></p>
 <p>We will now remove it again, this time using the second module,
 <em>Remove Occurrences by ID</em>. With the pointer, click on the record
 in Bolivia. Information on the record will pop up, starting with the
@@ -541,13 +541,13 @@ find the record. Here we can see it is a preserved specimen from the
 Museum of Southwestern Biology (MSB). Go back to the map. Enter “18” for
 the ID to be removed and “Remove Occurrence”. You will see the point
 disappear again. Click reset to get it back again.</p>
-<p><img src="vignette_img/poccs_3.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fpoccs_3.png" width="800px" style="display: block; margin: auto;"></p>
 <p>Next, click on the module <em>Spatial Thin</em>. This lets you
 attempt to reduce the effects of spatial sampling bias by running a
 thinning function on the points to filter out those less than a defined
 distance from one another. We will use “10 km” as an example and thin
 for each species separately by using the “Batch” option again.</p>
-<p><img src="vignette_img/poccs_4.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fpoccs_4.png" width="800px" style="display: block; margin: auto;"></p>
 <p>We are now left with 35 points for <em>Bassaricyon alleni</em> and 21
 for <em>Bassaricyon neblina</em> (your numbers may be different). You
 can zoom in to see what the function did. Red points were retained and
@@ -584,7 +584,7 @@ Now set the species to <em>B. neblina</em> and use <em>Select study
 region</em> to a minimum convex polygon with a 0.7° buffer distance.
 Then switch to <em>B. alleni</em> and use point buffers with a 0.7°
 buffer.</p>
-<p><img src="vignette_img/penvs_1.png" width="800px" style="display: block; margin: auto;"><img src="vignette_img/penvs_2.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fpenvs_1.png" width="800px" style="display: block; margin: auto;"><img src="vignette_img%2Fpenvs_2.png" width="800px" style="display: block; margin: auto;"></p>
 <p>Alternatively, you can draw your own polygon (using the same polygon
 drawing tool we tested in <strong>Component: Process occs</strong>). If
 you have a file specifying the background extent, you can upload it with
@@ -598,7 +598,7 @@ extent and samples the background points. Set the number of background
 points to 10,000 (larger samples can be appropriate for larger extents
 or those with finer resolution; see component guidance text), check
 “Batch”, and click the “Sample” button.</p>
-<p><img src="vignette_img/penvs_3.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fpenvs_3.png" width="800px" style="display: block; margin: auto;"></p>
 <p>You may find that requesting 10,000 background points exceeds the
 number of grid cells in the background extent. The available number of
 points will be given in the log window, and that amount can be used
@@ -626,7 +626,7 @@ Since we only have two uploaded, click in the species menu box and
 select the second species. Both names will appear in the box
 simultaneously—this functionality is currently only available for the
 <strong>Characterize Environmental Space</strong> component.</p>
-<p><img src="vignette_img/espace_1.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fespace_1.png" width="800px" style="display: block; margin: auto;"></p>
 <p>Module: <em>Environmental Ordination</em> is for conducting an
 ordination approach called Principal Component Analysis (PCA), that
 maximizes the variation contained in the predictor variables into fewer
@@ -635,13 +635,13 @@ by checking/unchecking the bioclimatic variables. Choose between
 “Occurrences Only” or “Occurrences &amp; Background” for the plot
 selection and set the x- and y-axis components. The PCA Scatter Plot
 appears in the Results tab.</p>
-<p><img src="vignette_img/espace_2.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fespace_2.png" width="800px" style="display: block; margin: auto;"></p>
 <p>You can also view the PCA correlation circle, PCA scree plot, and the
 PCA results summary. For more information on these statistics and how to
 evaluate the results, consult the module guidance text.</p>
-<p><img src="vignette_img/espace_3.png" width="800px" style="display: block; margin: auto;"></p>
-<p><img src="vignette_img/espace_4.png" width="800px" style="display: block; margin: auto;"></p>
-<p><img src="vignette_img/espace_5.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fespace_3.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fespace_4.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fespace_5.png" width="800px" style="display: block; margin: auto;"></p>
 <p>Next, run an <em>Occurrence Density Grid</em>. This calculates and
 plots which part of the environmental space is occupied more densely by
 the species and the availability of environmental conditions present
@@ -649,9 +649,9 @@ within the background extent. Darker areas represent higher occurrence
 density. Areas within solid lines represent all environmental conditions
 available in the background extent, and areas within dashed lines
 represent the 50% most frequent ones</p>
-<p><img src="vignette_img/espace_6.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fespace_6.png" width="800px" style="display: block; margin: auto;"></p>
 <p>And calculate Niche overlap…</p>
-<p><img src="vignette_img/espace_7.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fespace_7.png" width="800px" style="display: block; margin: auto;"></p>
 <p>The niche overlap quantification is based on the occurrence and
 background densities in the available environmental space estimated in
 Module: <em>Occurrence Density Grid</em>. The overlap is quantified
@@ -709,10 +709,10 @@ the guidance text for more details on all the types of partitioning
 offered in Wallace. <br> Here’s an example of jacknife (<em>k</em> = n),
 which assigns each point to its own partition group, so the number of
 bins equals the number of occurrences.</p>
-<p><img src="vignette_img/part_1.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fpart_1.png" width="800px" style="display: block; margin: auto;"></p>
 <p>Now here is an example of spatial blocking, which assigns each point
 to one of four spatially separate partition groups.</p>
-<p><img src="vignette_img/part_2.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fpart_2.png" width="800px" style="display: block; margin: auto;"></p>
 <p>We’ll use this last method now for faster computation, but it is
 recommended to review the guidance text and other literature––and talk
 to your peers!—to make an informed decision on partition methods.</p>
@@ -741,13 +741,13 @@ lost</em>.</p>
 <span><span class="fu"><a href="../reference/run_wallace.html">run_wallace</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>In the <strong>Intro</strong> component, use the “Load Prior Session”
 tab to import your .rds session file.</p>
-<p><img src="vignette_img/save_1.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fsave_1.png" width="800px" style="display: block; margin: auto;"></p>
 <p>A box will pop up– It looks like other <em>Wallace</em> warning
 messages, but in this case it is indicating the session is loaded. It
 may be necessary to reload your variables, using <strong>Occ
 Data</strong> and <strong>Env Data</strong> as previously carried out.
 You can now carry on with the previous analysis.</p>
-<p><img src="vignette_img/save_2.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fsave_2.png" width="800px" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2">
 <h2 id="model">
@@ -819,7 +819,7 @@ and Batch is unchecked before hitting <strong>Run</strong>.</p>
 multipliers (0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4) = 24 candidate models. The
 hinge feature class (H) will enable substantial complexity in the
 response, so it takes a bit longer to run than the simpler models.</p>
-<p><img src="vignette_img/model_1.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fmodel_1.png" width="800px" style="display: block; margin: auto;"></p>
 <p>The results appear in two tables of evaluation statistics, allowing
 comparison of the different models you just built. The first table shows
 the statistics for the full model and partition averages. There should
@@ -829,7 +829,7 @@ built from the 4 occurrence data partition groups (one withheld for each
 iteration) are averaged. In the second table, the partition group
 statistics averaged in the first table are shown, and thus it contains
 96 rows (each of the 4 folds for each of the 24 models).</p>
-<p><img src="vignette_img/model_2.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fmodel_2.png" width="800px" style="display: block; margin: auto;"></p>
 <p>How do we choose the “best” model?<br>
 There is a mountain of literature about this, and there is really no
 single answer for all datasets. The model performance statistics AUC
@@ -850,12 +850,12 @@ training presence threshold to the (withheld) validation data (see
 guidance text for details). As we would prefer a model that does not
 omit many withheld occurrences when it makes a range prediction, we are
 prioritizing low values of “or.10p.avg”.</p>
-<p><img src="vignette_img/model_3.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fmodel_3.png" width="800px" style="display: block; margin: auto;"></p>
 <p>Let’s also look at average validation AUC values (where higher values
 are better).</p>
-<p><img src="vignette_img/model_4.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fmodel_4.png" width="800px" style="display: block; margin: auto;"></p>
 <p>And AICc (where lower values are better)…
-<img src="vignette_img/model_5.png" width="800px" style="display: block; margin: auto;"></p>
+<img src="vignette_img%2Fmodel_5.png" width="800px" style="display: block; margin: auto;"></p>
 <p>In our example, if we had chosen the model with the lowest AICc
 score, we would have ended up with LQ_2. Note: your values may be
 different.</p>
@@ -863,7 +863,7 @@ different.</p>
 Maxent <strong>Lambdas</strong> file (which describe the weights for
 feature classes of each variable) for each of the models (changing the
 candidate model in the drop-down box changes the output).</p>
-<p><img src="vignette_img/model_6.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fmodel_6.png" width="800px" style="display: block; margin: auto;"></p>
 <p>Use the “Save” tab to download the evaluation tables.</p>
 </div>
 <div class="section level2">
@@ -878,7 +878,7 @@ The module <em>Maxent Evaluation Plots</em>, enables users to evaluate
 the performance statistics across models. Graphs appear in the Results
 tab. Below, see how the feature class and regularization multiplier
 selections affect average validation AUC values.</p>
-<p><img src="vignette_img/vis_1.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fvis_1.png" width="800px" style="display: block; margin: auto;"></p>
 <p>We should also examine the <strong>response curves</strong>, which
 show how the predicted suitability (y-axis) changes based on different
 values of each variable (x-axis). For these curves, the marginal
@@ -887,7 +887,7 @@ their mean values. If you want to see the results for a particular
 model, select it by using the dropdown menu below the species box. Below
 is a response curve for model LQ_2 for the mean precipitation of the
 driest month (bio14).</p>
-<p><img src="vignette_img/vis_2.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fvis_2.png" width="800px" style="display: block; margin: auto;"></p>
 <p>Of course, you can also visualize model predictions on the map.
 Predictions of suitability can be continuous (a range of values from low
 to high) or binary (thresholded to two values: 0, unsuitable and 1,
@@ -898,7 +898,7 @@ probability of presence (given key assumptions). Please see the module
 guidance for information about Maxent model output scalings and
 thresholding rules. Here is the mapped prediction for model LQ_2, no
 threshold, in cloglog output.</p>
-<p><img src="vignette_img/vis_3.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fvis_3.png" width="800px" style="display: block; margin: auto;"></p>
 <p>Below is the mapped prediction of the same model, this time with the
 threshold set to the 10-percentile training presence value (the
 occurrence suitability value we used to calculate omission rates above
@@ -908,13 +908,13 @@ outside the blue regions that represent suitable areas for
 value, as it represents not the lowest predicted suitability, but the
 value greater than the 10% lowest, the expected omission would be 0.1
 (i.e., 10% omitted).</p>
-<p><img src="vignette_img/vis_4.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fvis_4.png" width="800px" style="display: block; margin: auto;"></p>
 <p>Try mapping the prediction with the threshold set to the less strict
 ‘minimum training presence’ and notice the difference. You can also
 threshold by a quantile of training presences that are omitted. Try
 setting the quantile to different values and notice the change in
 prediction.</p>
-<p><img src="vignette_img/vis_5.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fvis_5.png" width="800px" style="display: block; margin: auto;"></p>
 <p>You may have noticed the batch option is not available for this
 component. Users need to select optimal models relative to each species,
 therefore predictions can only be mapped individually. You can download
@@ -962,11 +962,11 @@ suitable areas for the olinguito. In Step 1, use the polygon drawing
 tool to draw around Peru with a 1-degree buffer and hit “Create”.
 Alternatively, you can upload a shapefile or CSV file with records for
 vertices with fields “longitude, latitude” to use as a study region.</p>
-<p><img src="vignette_img/xfer_1.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fxfer_1.png" width="800px" style="display: block; margin: auto;"></p>
 <p>In Step 2, choose a threshold to make a binary prediction or no
 threshold for a continuous one and Transfer. Here, we see very low
 suitability for most of Peru for the olinguito.</p>
-<p><img src="vignette_img/xfer_2.png" width="800px" style="display: block; margin: auto;">
+<p><img src="vignette_img%2Fxfer_2.png" width="800px" style="display: block; margin: auto;">
 Note: to remove the outline of the polygon from the prediction, click
 the Trashcan icon and “Clear all”.</p>
 <p>If you initially used WorldClim or ecoClimate as environmental
@@ -1011,7 +1011,7 @@ values at high elevation are more similar to our training data, whereas
 those at lower elevations towards the coast are very different in some
 places. We may therefore interpret that predicted suitability in these
 areas has higher uncertainty.</p>
-<p><img src="vignette_img/xfer_3.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Fxfer_3.png" width="800px" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2">
 <h2 id="reproduce">
@@ -1032,11 +1032,11 @@ notation text, can be run directly in <code>R</code>. For .pdf
 downloads, the software TeX is necessary to be installed on your system.
 Please see the text on this page for more details.</p>
 <p>To download the script, select Rmd and click Download.
-<img src="vignette_img/reprod_1a.png" width="800px" style="display: block; margin: auto;"></p>
+<img src="vignette_img%2Freprod_1a.png" width="800px" style="display: block; margin: auto;"></p>
 <p>Now, you should have an .Rmd file that contains your complete
 analysis. Modules from Wallace are indicated as headers denoted by
 <strong>###</strong>.</p>
-<p><img src="vignette_img/reprod_1b.png" width="50%" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Freprod_1b.png" width="50%" style="display: block; margin: auto;"></p>
 <p>You might want to open a new <code>R</code> window and try running
 some of this code. Remember that later sections of code may depend on
 things that were done earlier, so they may not all run if you skip
@@ -1052,8 +1052,8 @@ reproducibility by recording the user’s methodological decisions (e.g.,
 parameter settings) and stores them in a Range Model Metadata Standards
 object. This will download as a zip and contain a CSV file (.csv) for
 each species.</p>
-<p><img src="vignette_img/reprod_2a.png" width="800px" style="display: block; margin: auto;"></p>
-<p><img src="vignette_img/reprod_2b.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Freprod_2a.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Freprod_2b.png" width="800px" style="display: block; margin: auto;"></p>
 <p>The last module available in the <strong>Reproduce</strong> component
 is <em>Reference packages</em>. Here, you can download the citations for
 all the R-packages used in the analysis. To give people credit for the
@@ -1064,8 +1064,8 @@ facilitate access to and use of many <code>R</code> packages being
 produced by the biogeography research community. Please promote this by
 citing packages…and think about making one of your own and adding it to
 a future version of Wallace someday!</p>
-<p><img src="vignette_img/reprod_3a.png" width="800px" style="display: block; margin: auto;"></p>
-<p><img src="vignette_img/reprod_3b.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Freprod_3a.png" width="800px" style="display: block; margin: auto;"></p>
+<p><img src="vignette_img%2Freprod_3b.png" width="800px" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2">
 <h2 id="conclusion">
@@ -1180,11 +1180,11 @@ and settings matter. <em>Ecography</em>, 36(10), 1058-1069.
 
 
     <footer><div class="pkgdown-footer-left">
-  <p>Developed by Bethany A. Johnson, Jamie M. Kass, Gonzalo E. Pinilla-Buitrago, Andrea Paz, Valentina Grisales-Betancur, Dean Attali, Matthew E. Aiello-Lammens, Cory Merow, Mary E. Blair, Robert P. Anderson.</p>
+  <p>Developed by Bethany A. Johnson, Daniel F. Lopez-Lozano, Jamie M. Kass, Gonzalo E. Pinilla-Buitrago, Andrea Paz, Valentina Grisales-Betancur, Dean Attali, Matthew E. Aiello-Lammens, Cory Merow, Mary E. Blair, Robert P. Anderson.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer>
