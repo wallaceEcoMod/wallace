@@ -16,7 +16,7 @@ occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
 bg <- read.csv(system.file("extdata/Bassaricyon_alleni_bgPoints.csv",
                package = "wallace"))
 partblock <- part_partitionOccs(occs, bg, method = 'block')
-m <- model_bioclim(occs, bg, partblock, envs)
+m <- model_bioclim(occs, bg, partblock, terra::rast(envs))
 
 ### run function
 bioclimPlot <- vis_bioclimPlot(x = m@models$bioclim, a = 2, b = 3,

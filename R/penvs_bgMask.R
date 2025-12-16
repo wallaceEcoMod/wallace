@@ -31,8 +31,8 @@
 #'    environmental layers to be used in the modeling are cropped and masked
 #'    to the provided background area. The background area is determined in
 #'    the function penvs_bgExtent from the same component. The function returns
-#'    the provided environmental layers cropped and masked in the provided
-#'    format (either a rasterBrick or a rasterStack).
+#'    the provided environmental layers cropped and masked in the SpatRaster
+#'    format.
 #'
 #' @param occs data frame of cleaned or processed occurrences obtained from
 #'   components occs: Obtain occurrence data or, poccs: Process occurrence data.
@@ -59,10 +59,11 @@
 #' bgMask <- penvs_bgMask(occs, envs, bgExt)
 #' }
 #'
-#' @return A RasterStack or a RasterBrick of environmental layers cropped and
+#' @return A SpatRaster of environmental layers cropped and
 #'   masked to match the provided background extent.
 #' @author Jamie Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
+#' @author Daniel Lopez-Lozano <dlopezlozano@@amnh.org.co>
 #' @seealso   \code{\link{penvs_userBgExtent}},
 #'   \code{\link{penvs_drawBgExtent}}, \code{\link{penvs_bgExtent}},
 #'   \code{\link{penvs_bgSample}}
@@ -81,18 +82,17 @@ penvs_bgMask <- function(occs, envs, bgExt, logger = NULL, spN = NULL) {
                        message = paste0("Masking rasters for ",
                                         spName(spN), "..."), {
 
-    bgCrop <- raster::crop(envs, bgExt)
-    bgMask <- raster::mask(bgCrop, bgExt)
+    envs <- terra::rast(envs)
+    bgCrop <- terra::crop(envs, bgExt)
+    bgMask <- terra::mask(bgCrop, terra::vect(bgExt))
     # GEPB: Workaround when raster alignment is changed after crop, which makes appears
     # new duplicated occs in the same grid cells.
-    occsEnvsVals <- as.data.frame(raster::extract(bgMask,
+    occsEnvsVals <- as.data.frame(terra::extract(bgMask,
                                                   occs[, c('longitude', 'latitude')],
                                                   cellnumbers = TRUE))
     occs.dups <- duplicated(occsEnvsVals[, 1])
     if (sum(occs.dups) > 0) {
-      bgMask <- terra::project(terra::rast(bgMask),
-                               terra::rast(envs), method = 'near')
-      bgMask <- methods::as(bgMask, "Raster")
+      bgMask <- terra::project(bgMask, envs, method = 'near')
     }
   })
 

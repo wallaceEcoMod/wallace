@@ -4,18 +4,19 @@ Transferring the model to the same modelling area with no threshold rule. New ti
 ```
 
 ```{r, echo = {{xfer_time_knit & !xfer_time_user_knit & !xfer_time_drawn_knit &  !xfer_time_threshold_knit & xfer_time_worldclim_knit}}, include = {{xfer_time_knit & !xfer_time_user_knit & !xfer_time_drawn_knit & !xfer_time_threshold_knit & xfer_time_worldclim_knit}}}
-#Download variables for transferring 
+#Download variables for transferring
+bgMaskR_{{spAbr}} <- raster::stack(bgMask_{{spAbr}}) 
 xferTimeEnvs_{{spAbr}} <- geodata::cmip6_world(
   model = "{{model_rmd}}",
   ssp = "{{rcp_rmd}}",
   time = "{{year_rmd}}",
   var = "bio",
-  res = round((raster::res(bgMask_{{spAbr}}) * 60)[1],1),
+  res = round((raster::res(bgMaskR_{{spAbr}}) * 60)[1],1),
   path = tempdir())
 
 names(xferTimeEnvs_{{spAbr}}) <- paste0('bio', c(paste0('0',1:9), 10:19))
 # Select variables for transferring to match variables used for modelling 
-xferTimeEnvs_{{spAbr}} <- xferTimeEnvs_{{spAbr}}[[names(bgMask_{{spAbr}})]]
+xferTimeEnvs_{{spAbr}} <- xferTimeEnvs_{{spAbr}}[[names(bgMaskR_{{spAbr}})]]
 # Convert to rasterstack
 xferTimeEnvs_{{spAbr}} <- raster::stack(xferTimeEnvs_{{spAbr}})
 
@@ -64,18 +65,19 @@ Transferring the model to the same modelling area with a "{{xfer_thresholdRule_r
 ```
 
 ```{r, echo = {{xfer_time_knit & !xfer_time_user_knit & !xfer_time_drawn_knit &  xfer_time_threshold_knit & xfer_time_worldclim_knit}}, include = {{xfer_time_knit & !xfer_time_user_knit & !xfer_time_drawn_knit &  xfer_time_threshold_knit & xfer_time_worldclim_knit}}}
-#Download variables for transferring 
+#Download variables for transferring
+bgMaskR_{{spAbr}} <- raster::stack(bgMask_{{spAbr}})
 xferTimeEnvs_{{spAbr}} <- geodata::cmip6_world(
   model = "{{model_rmd}}",
   ssp = "{{rcp_rmd}}",
   time = "{{year_rmd}}",
   var = "bio",
-  res = round((raster::res(bgMask_{{spAbr}}) * 60)[1],1),
+  res = round((raster::res(bgMaskR_{{spAbr}}) * 60)[1],1),
   path = tempdir())
 
 names(xferTimeEnvs_{{spAbr}}) <- paste0('bio', c(paste0('0',1:9), 10:19))
 # Select variables for transferring to match variables used for modelling 
-xferTimeEnvs_{{spAbr}} <- xferTimeEnvs_{{spAbr}}[[names(bgMask_{{spAbr}})]]
+xferTimeEnvs_{{spAbr}} <- xferTimeEnvs_{{spAbr}}[[names(bgMaskR_{{spAbr}})]]
 # Convert to rasterstack
 xferTimeEnvs_{{spAbr}} <- raster::stack(xferTimeEnvs_{{spAbr}})
 
@@ -134,18 +136,19 @@ Transferring the model to a user drawn area with no threshold. New time based on
 ```
 
 ```{r, echo = {{xfer_time_knit & !xfer_time_user_knit & xfer_time_drawn_knit &  !xfer_time_threshold_knit & xfer_time_worldclim_knit}}, include = {{xfer_time_knit & !xfer_time_user_knit & xfer_time_drawn_knit &  !xfer_time_threshold_knit & xfer_time_worldclim_knit}}}
-#Download variables for transferring 
+#Download variables for transferring
+bgMaskR_{{spAbr}} <- raster::stack(bgMask_{{spAbr}})
 xferTimeEnvs_{{spAbr}} <- geodata::cmip6_world(
   model = "{{model_rmd}}",
   ssp = "{{rcp_rmd}}",
   time = "{{year_rmd}}",
   var = "bio",
-  res = round((raster::res(bgMask_{{spAbr}}) * 60)[1],1),
+  res = round((raster::res(bgMaskR_{{spAbr}}) * 60)[1],1),
   path = tempdir())
 
 names(xferTimeEnvs_{{spAbr}}) <- paste0('bio', c(paste0('0',1:9), 10:19))
 # Select variables for transferring to match variables used for modelling 
-xferTimeEnvs_{{spAbr}} <- xferTimeEnvs_{{spAbr}}[[names(bgMask_{{spAbr}})]]
+xferTimeEnvs_{{spAbr}} <- xferTimeEnvs_{{spAbr}}[[names(bgMaskR_{{spAbr}})]]
 # Convert to rasterstack
 xferTimeEnvs_{{spAbr}} <- raster::stack(xferTimeEnvs_{{spAbr}})
 
@@ -201,18 +204,19 @@ Transferring the model to a user drawn area with a "{{xfer_thresholdRule_rmd}}" 
 ```
 
 ```{r, echo = {{xfer_time_knit & !xfer_time_user_knit & xfer_time_drawn_knit &  xfer_time_threshold_knit & xfer_time_worldclim_knit}}, include = {{xfer_time_knit & !xfer_time_user_knit & xfer_time_drawn_knit &  xfer_time_threshold_knit & xfer_time_worldclim_knit}}}
-#Download variables for transferring 
+#Download variables for transferring
+bgMaskR_{{spAbr}} <- raster::stack(bgMask_{{spAbr}})
 xferTimeEnvs_{{spAbr}} <- geodata::cmip6_world(
   model = "{{model_rmd}}",
   ssp = "{{rcp_rmd}}", 
   time = "{{year_rmd}}", 
   var = "bio", 
-  res = round((raster::res(bgMask_{{spAbr}}) * 60)[1],1), 
+  res = round((raster::res(bgMaskR_{{spAbr}}) * 60)[1],1), 
   path = tempdir())
 
 names(xferTimeEnvs_{{spAbr}}) <- paste0('bio', c(paste0('0',1:9), 10:19))
 # Select variables for transferring to match variables used for modelling 
-xferTimeEnvs_{{spAbr}} <- xferTimeEnvs_{{spAbr}}[[names(bgMask_{{spAbr}})]]
+xferTimeEnvs_{{spAbr}} <- xferTimeEnvs_{{spAbr}}[[names(bgMaskR_{{spAbr}})]]
 # Convert to rasterstack
 xferTimeEnvs_{{spAbr}} <- raster::stack(xferTimeEnvs_{{spAbr}})
 
@@ -277,18 +281,19 @@ Transferring the model to a user provided area area with no threshold. New time 
 
 ```{r, echo = {{xfer_time_knit & xfer_time_user_knit & !xfer_time_drawn_knit &  !xfer_time_threshold_knit & xfer_time_worldclim_knit}}, include = {{xfer_time_knit & xfer_time_user_knit & !xfer_time_drawn_knit &  !xfer_time_threshold_knit & xfer_time_worldclim_knit}}}
 
-# Download variables for transferring 
+# Download variables for transferring
+bgMaskR_{{spAbr}} <- raster::stack(bgMask_{{spAbr}})
 xferTimeEnvs_{{spAbr}} <- geodata::cmip6_world(
   model = "{{model_rmd}}",
   ssp = "{{rcp_rmd}}", 
   time = "{{year_rmd}}", 
   var = "bio", 
-  res = round((raster::res(bgMask_{{spAbr}}) * 60)[1],1), 
+  res = round((raster::res(bgMaskR_{{spAbr}}) * 60)[1],1), 
   path = tempdir())
 
 names(xferTimeEnvs_{{spAbr}}) <- paste0('bio', c(paste0('0',1:9), 10:19))
 # Select variables for transferring to match variables used for modelling 
-xferTimeEnvs_{{spAbr}} <- xferTimeEnvs_{{spAbr}}[[names(bgMask_{{spAbr}})]]
+xferTimeEnvs_{{spAbr}} <- xferTimeEnvs_{{spAbr}}[[names(bgMaskR_{{spAbr}})]]
 # Convert to rasterstack
 xferTimeEnvs_{{spAbr}} <- raster::stack(xferTimeEnvs_{{spAbr}})
 
@@ -347,17 +352,18 @@ Transferring the model to a user provided area with a "{{xfer_thresholdRule_rmd}
 ```{r, echo = {{xfer_time_knit & xfer_time_user_knit & !xfer_time_drawn_knit &  xfer_time_threshold_knit & xfer_time_worldclim_knit}}, include = {{xfer_time_knit & xfer_time_user_knit & !xfer_time_drawn_knit &  xfer_time_threshold_knit & xfer_time_worldclim_knit}}}
 
 # Download variables for transferring from Worldclim
+bgMaskR_{{spAbr}} <- raster::stack(bgMask_{{spAbr}})
 xferTimeEnvs_{{spAbr}} <- geodata::cmip6_world(
   model = "{{model_rmd}}", 
   ssp  = "{{rcp_rmd}}", 
   time = "{{year_rmd}}", 
   var = "bio", 
-  res = round((raster::res(bgMask_{{spAbr}}) * 60)[1],1), 
+  res = round((raster::res(bgMaskR_{{spAbr}}) * 60)[1],1), 
   path = tempdir())
 
 names(xferTimeEnvs_{{spAbr}}) <- paste0('bio', c(paste0('0',1:9), 10:19))
 # Select variables for transferring to match variables used for modelling 
-xferTimeEnvs_{{spAbr}} <- xferTimeEnvs_{{spAbr}}[[names(bgMask_{{spAbr}})]]
+xferTimeEnvs_{{spAbr}} <- xferTimeEnvs_{{spAbr}}[[names(bgMaskR_{{spAbr}})]]
 # Convert to rasterstack
 xferTimeEnvs_{{spAbr}} <- raster::stack(xferTimeEnvs_{{spAbr}})
 
@@ -425,10 +431,11 @@ Transferring the model to the same modelling area with no threshold rule. New ti
 
 ```{r, echo = {{xfer_time_knit & !xfer_time_user_knit & !xfer_time_drawn_knit &  !xfer_time_threshold_knit & !xfer_time_worldclim_knit}}, include = {{xfer_time_knit & !xfer_time_user_knit & !xfer_time_drawn_knit & !xfer_time_threshold_knit & !xfer_time_worldclim_knit}}}
 #Download data from ecoClimate for transferring
+bgMaskR_{{spAbr}} <- raster::stack(bgMask_{{spAbr}})
 xferTimeEnvs_{{spAbr}} <- envs_ecoClimate(
   "{{xfAOGCM_rmd}}",
   "{{xfScenario_rmd}}",
-  as.numeric(gsub("bio", "", names(bgMask_{{spAbr}}))))
+  as.numeric(gsub("bio", "", names(bgMaskR_{{spAbr}}))))
 
 # Generate a transfer of the model to the desired area and time
 xfer_time_{{spAbr}} <-xfer_time(
@@ -477,10 +484,11 @@ Transferring the model to the same modelling area with a "{{xfer_thresholdRule_r
 
 ```{r, echo = {{xfer_time_knit & !xfer_time_user_knit & !xfer_time_drawn_knit &  xfer_time_threshold_knit & !xfer_time_worldclim_knit}}, include = {{xfer_time_knit & !xfer_time_user_knit & !xfer_time_drawn_knit &  xfer_time_threshold_knit & !xfer_time_worldclim_knit}}}
 #Download data from ecoClimate for transferring
+bgMaskR_{{spAbr}} <- raster::stack(bgMask_{{spAbr}})
 xferTimeEnvs_{{spAbr}} <- envs_ecoClimate(
   "{{xfAOGCM_rmd}}",
   "{{xfScenario_rmd}}",
-  as.numeric(gsub("bio", "", names(bgMask_{{spAbr}}))))
+  as.numeric(gsub("bio", "", names(bgMaskR_{{spAbr}}))))
 
 # Generate a transfer of the model to the desired area and time
 xfer_time_{{spAbr}} <-xfer_time(
@@ -539,10 +547,11 @@ Transferring the model to a user drawn area with no threshold rule. New time bas
 
 ```{r, echo = {{xfer_time_knit & !xfer_time_user_knit & xfer_time_drawn_knit &  !xfer_time_threshold_knit & !xfer_time_worldclim_knit}}, include = {{xfer_time_knit & !xfer_time_user_knit & xfer_time_drawn_knit &  !xfer_time_threshold_knit & !xfer_time_worldclim_knit}}}
 #Download data from ecoClimate for transferring
+bgMaskR_{{spAbr}} <- raster::stack(bgMask_{{spAbr}})
 xferTimeEnvs_{{spAbr}} <- envs_ecoClimate(
   "{{xfAOGCM_rmd}}",
   "{{xfScenario_rmd}}",
-  as.numeric(gsub("bio", "", names(bgMask_{{spAbr}}))))
+  as.numeric(gsub("bio", "", names(bgMaskR_{{spAbr}}))))
 
 # Generate the area of transfer according to the drawn polygon in the GUI
 xfer_draw_{{spAbr}} <-xfer_draw(
@@ -597,10 +606,11 @@ Transferring the model to a user drawn area with a "{{xfer_thresholdRule_rmd}}" 
 
 ```{r, echo = {{xfer_time_knit & !xfer_time_user_knit & xfer_time_drawn_knit &  xfer_time_threshold_knit & !xfer_time_worldclim_knit}}, include = {{xfer_time_knit & !xfer_time_user_knit & xfer_time_drawn_knit &  xfer_time_threshold_knit & !xfer_time_worldclim_knit}}}
 #Download data from ecoClimate for transferring
+bgMaskR_{{spAbr}} <- raster::stack(bgMask_{{spAbr}})
 xferTimeEnvs_{{spAbr}} <- envs_ecoClimate(
   "{{xfAOGCM_rmd}}",
   "{{xfScenario_rmd}}",
-  as.numeric(gsub("bio", "", names(bgMask_{{spAbr}}))))
+  as.numeric(gsub("bio", "", names(bgMaskR_{{spAbr}}))))
 
 # Generate the area of transfer according to the drawn polygon in the GUI
 xfer_draw_{{spAbr}} <-xfer_draw(
@@ -665,10 +675,11 @@ Transferring the model to a user provided area with no threshold rule. New time 
 
 ```{r, echo = {{xfer_time_knit & xfer_time_user_knit & !xfer_time_drawn_knit &  !xfer_time_threshold_knit & !xfer_time_worldclim_knit}}, include = {{xfer_time_knit & xfer_time_user_knit & !xfer_time_drawn_knit &  !xfer_time_threshold_knit & !xfer_time_worldclim_knit}}}
 #Download data from ecoClimate for transferring
+bgMaskR_{{spAbr}} <- raster::stack(bgMask_{{spAbr}})
 xferTimeEnvs_{{spAbr}} <- envs_ecoClimate(
   "{{xfAOGCM_rmd}}",
   "{{xfScenario_rmd}}",
-  as.numeric(gsub("bio", "", names(bgMask_{{spAbr}}))))
+  as.numeric(gsub("bio", "", names(bgMaskR_{{spAbr}}))))
 
 # Generate the area of transfer based on user provided files
   ##User must input the path to shapefile or csv file and the file name 
@@ -726,10 +737,11 @@ Transferring the model to a user provided area with a "{{xfer_thresholdRule_rmd}
 ```{r, echo = {{xfer_time_knit & xfer_time_user_knit & !xfer_time_drawn_knit &  xfer_time_threshold_knit & !xfer_time_worldclim_knit}}, include = {{xfer_time_knit & xfer_time_user_knit & !xfer_time_drawn_knit &  xfer_time_threshold_knit & !xfer_time_worldclim_knit}}}
 
 #Download data from ecoClimate for transferring
+bgMaskR_{{spAbr}} <- raster::stack(bgMask_{{spAbr}})
 xferTimeEnvs_{{spAbr}} <- envs_ecoClimate(
   "{{xfAOGCM_rmd}}",
   "{{xfScenario_rmd}}",
-  as.numeric(gsub("bio", "", names(bgMask_{{spAbr}}))))
+  as.numeric(gsub("bio", "", names(bgMaskR_{{spAbr}}))))
 
 # Generate the area of transfer based on user provided files
   ##User must input the path to shapefile or csv file and the file name 

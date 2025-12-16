@@ -32,7 +32,7 @@ jar_f <- paste(system.file(package = "dismo"), "/maxent.jar", sep = '')
 ## test if the error messages appear when they are supposed to
 test_that("error checks", {
   # user has not partitioned occurrences
-  expect_error(model_maxent(occs, bg, bgMsk = envs, user.grp = NULL,
+  expect_error(model_maxent(occs, bg, bgMsk = terra::rest(envs), user.grp = NULL,
                             rms, rmsStep, fcs, clampSel = TRUE,
                             algMaxent = algorithm[1]),
                paste0("Before building a model, please partition occurrences ",
@@ -47,7 +47,7 @@ for (i in algorithm) {
   ### run function
 
   maxentAlg <- model_maxent(occs = occs, bg = bg, user.grp = partblock,
-                            bgMsk = envs, rms, rmsStep, fcs, clampSel = TRUE,
+                            bgMsk = terra::rast(envs), rms, rmsStep, fcs, clampSel = TRUE,
                             algMaxent = i, parallel = FALSE)
 
   test_that("output type checks", {

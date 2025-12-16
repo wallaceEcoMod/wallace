@@ -77,7 +77,7 @@
 #' partblock <- part_partitionOccs(occs, bg, method = 'block')
 #' m <- model_maxent(occs, bg,
 #'   user.grp = partblock,
-#'   bgMsk = envs, rms = c(1:2),
+#'   bgMsk = terra::rast(envs), rms = c(1:2),
 #'   rmsStep = 1, fcs = c('L', 'LQ'),
 #'   clampSel = TRUE,
 #'   algMaxent = "maxnet",
