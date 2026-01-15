@@ -477,6 +477,9 @@ xfer_time_module_server <- function(input, output, session, common) {
                             ' with ', predType, " output for GCM ", input$xfAOGCM, ".")
       }
     }
+    # SpatRaster to Raster
+    if(spp[[curSp()]]$rmm$model$algorithms %in% c('maxent.jar', 'BIOCLIM'))
+      xferTimeThr <- raster::raster(xferTimeThr)
     raster::crs(xferTimeThr) <- raster::crs(envs())
     # rename
     names(xferTimeThr) <- paste0(curModel(), '_thresh_', predType)
