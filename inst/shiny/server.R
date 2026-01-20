@@ -248,7 +248,11 @@ function(input, output, session) {
   multSp <- reactive(sort(names(reactiveValuesToList(spp))[grepl("\\.", names(reactiveValuesToList(spp)))]))
 
   # convenience function for occurrence table for current species
-  occs <- reactive(spp[[curSp()]]$occs)
+  occs <- reactive({
+    req(curSp())
+    # Defaults to the first species if multiple are selected.
+    spp[[curSp()[1]]]$occs
+  })
   # convenience function for metadata list for current species
   rmm <- reactive(spp[[curSp()]]$rmm)
 
