@@ -5,7 +5,7 @@ output: html_document
 
 ### **What is *Wallace*?**  
 
-<img src="logo.png" alt="logo" style="width: 150px; float:right; padding:10px;"/>
+<img src="../www/logo.png" alt="logo" style="width: 150px; float:right; padding:10px;"/>
 
 Welcome to *Wallace*, a flexible application for reproducible ecological modeling, built for community expansion. The current version of *Wallace* (v2.2.0) steps the user through a full niche/distribution modeling analysis, from data acquisition to visualizing results.
 
