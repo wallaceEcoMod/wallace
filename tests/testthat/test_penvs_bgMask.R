@@ -1,6 +1,7 @@
 #### COMPONENT penvs: Process Environmental Data
 #### MODULE: Select Study Region
 context("bgMask")
+library("terra")
 
 occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
                  package = "wallace"))[, 2:3]
@@ -11,9 +12,10 @@ envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
                       rasName = list.files(system.file("extdata/wc",
                                            package = "wallace"),
                       pattern = ".tif$", full.names = FALSE))
-crs(envs) <- "EPSG:4326"
+
+raster::crs(envs) <- "EPSG:4326"
 bgExt <- penvs_bgExtent(occs, bgSel = 'minimum convex polygon', bgBuf = 0.5)
-crs(bgExt) <- "EPSG:4326"
+raster::crs(bgExt) <- "EPSG:4326"
 bgMask <- penvs_bgMask(occs, envs, bgExt)
 
 

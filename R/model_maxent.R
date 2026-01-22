@@ -86,6 +86,7 @@
 #' @author Jamie M. Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 #' @author Bethany A. Johnson <bjohnso005@@citymail.cuny.edu>
+#' @author Daniel Lopez-Lozano <dlopezlozano@@amnh.org.co>
 # @note
 
 #' @seealso \code{\link[ENMeval]{ENMevaluate}}
