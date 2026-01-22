@@ -58,7 +58,7 @@
 #'                        doBrick = TRUE)
 #' bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
 #' bgMask <- penvs_bgMask(occs, envs, bgExt)
-#' bgsample <- penvs_bgSample(occs, bgMask, bgPtsNum = 1000)
+#' bgsample <- penvs_bgSample(occs, raster::stack(bgMask), bgPtsNum = 1000)
 #' }
 #'
 #' @return a dataframe containing point coordinates (longitude and latitude).

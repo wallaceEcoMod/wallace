@@ -148,7 +148,8 @@ penvs_userBgExtent_module_server <- function(input, output, session, common) {
                              logger,
                              spN = sp)
       req(bgMask)
-      bgNonNA <- raster::ncell(bgMask) - raster::freq(bgMask, value = NA)[[1]]
+      bgMaskR <- raster::stack(bgMask)
+      bgNonNA <- raster::ncell(bgMaskR) - raster::freq(bgMaskR, value = NA)[[1]]
       if ((bgNonNA + 1) < input$bgPtsNum) {
         logger %>%
           writeLog(
@@ -159,17 +160,17 @@ penvs_userBgExtent_module_server <- function(input, output, session, common) {
         return()
       }
       bgPts <- penvs_bgSample(spp[[sp]]$occs,
-                              bgMask,
+                              bgMaskR,
                               input$bgPtsNum,
                               logger,
                               spN = sp)
       req(bgPts)
       withProgress(message = paste0("Extracting background values for ",
                                     spName(sp), "..."), {
-                                      bgEnvsVals <- as.data.frame(raster::extract(bgMask, bgPts))
+                                      bgEnvsVals <- as.data.frame(terra::extract(bgMask, bgPts))
                                     })
 
-      if (sum(rowSums(is.na(raster::extract(bgMask, spp[[sp]]$occs[ , c("longitude", "latitude")])))) > 0) {
+      if (sum(rowSums(is.na(terra::extract(bgMask, spp[[sp]]$occs[ , c("longitude", "latitude")])))) > 0) {
         logger %>%
           writeLog(type = "error", hlSpp(sp),
                    "One or more occurrence points have NULL raster values.",

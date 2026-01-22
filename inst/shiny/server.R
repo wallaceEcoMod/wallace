@@ -448,7 +448,7 @@ function(input, output, session) {
       type <- input$bgMskFileType
       nm <- names(envs())
 
-      raster::writeRaster(bgMask(), nm, bylayer = TRUE,
+      raster::writeRaster(raster::stack(bgMask()), nm, bylayer = TRUE,
                           format = type, overwrite = TRUE)
       ext <- switch(type, raster = 'grd', ascii = 'asc', GTiff = 'tif')
 
@@ -805,7 +805,7 @@ function(input, output, session) {
             logger %>%
               writeLog(type = "error", "To download PNG prediction, you're required to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
-                       " in you are R console.")
+                       " in your R console.")
             return()
           }
           if (!requireNamespace("mapview")) {
@@ -958,7 +958,7 @@ function(input, output, session) {
             logger %>%
               writeLog(type = "error", "To download PNG prediction, you're required to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
-                       " in you are R console.")
+                       " in your R console.")
             return()
           }
           if (!requireNamespace("mapview")) {
@@ -1048,7 +1048,7 @@ function(input, output, session) {
             logger %>%
               writeLog(type = "error", "To download PNG prediction, you're required to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
-                       " in you are R console.")
+                       " in your R console.")
             return()
           }
           if (!requireNamespace("mapview")) {
