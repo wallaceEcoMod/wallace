@@ -94,7 +94,7 @@ poccs_removeByID_module_server <- function(input, output, session, common) {
 poccs_removeByID_module_map <- function(map, common) {
   occs <- common$occs
   # Map logic
-  map %>% leaflet.extras::removeDrawToolbar() %>%
+  map %>% removeDrawToolbar() %>%
     clearAll() %>%
     addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                      radius = 5, color = 'red', fill = TRUE, fillColor = "red",

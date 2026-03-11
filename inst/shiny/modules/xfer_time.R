@@ -622,10 +622,10 @@ xfer_time_module_map <- function(map, common) {
   mapXfer <- common$mapXfer
 
   # Map logic
-  map %>% leaflet.extras::addDrawToolbar(
+  map %>% addDrawToolbar(
     targetGroup = 'draw', polylineOptions = FALSE, rectangleOptions = FALSE,
     circleOptions = FALSE, markerOptions = FALSE, circleMarkerOptions = FALSE,
-    editOptions = leaflet.extras::editToolbarOptions()
+    editOptions = editToolbarOptions()
   )
   # Add just transfer Polygon
   req(spp[[curSp()]]$transfer$xfExt)

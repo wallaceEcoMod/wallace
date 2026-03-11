@@ -207,14 +207,14 @@ penvs_drawBgExtent_module_map <- function(map, common) {
   curSp <- common$curSp
   occs <- common$occs
 
-  map %>% leaflet.extras::addDrawToolbar(
+  map %>% addDrawToolbar(
     targetGroup = 'draw',
     polylineOptions = FALSE,
     rectangleOptions = FALSE,
     circleOptions = FALSE,
     markerOptions = FALSE,
     circleMarkerOptions = FALSE,
-    editOptions = leaflet.extras::editToolbarOptions()
+    editOptions = editToolbarOptions()
   )
 
   if (is.null(spp[[curSp()]]$procEnvs$bgExt)) {

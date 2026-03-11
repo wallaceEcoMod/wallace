@@ -43,7 +43,7 @@ Imports:
     geodata,
     knitcitations,
     leafem,
-    leaflet.extras (>= 1.0.0),
+    leafpm,
     magrittr,
     markdown,
     methods,
