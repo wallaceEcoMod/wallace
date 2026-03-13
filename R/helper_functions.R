@@ -186,7 +186,7 @@ writeLog <- function(logger, ..., type = 'default') {
 #' @export
 clearAll <- function(map) {
   map %>% clearMarkers() %>% clearShapes() %>% clearImages() %>%
-    clearControls() %>% removeLayersControl()
+    clearControls() %>% removeLayersControl() %>% removeDrawToolbar()
 }
 
 #' @title polyZoom
