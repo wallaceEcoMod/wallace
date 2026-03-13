@@ -1,14 +1,14 @@
 # ------------------------------------------------------------------------------
-# 
-# This file contains code adapted from the 'leaflet.extras' package (GPL-3) 
+#
+# This file contains code adapted from the 'leaflet.extras' package (GPL-3)
 # by Sebastian Gatscha, Bhaskar Karambelkar, Barret Schloerke, et al.
 # Original Source: https://github.com/trafficonese/leaflet.extras
 #
-# This code was included because 'leaflet.extras' was archived on CRAN 
-# (on 2026-02-19), and its functionality represents a hard dependency for 
-# this package. 
-# 
-# It provides the Leaflet Draw features required to enable polygon drawing 
+# This code was included because 'leaflet.extras' was archived on CRAN
+# (on 2026-02-19), and its functionality represents a hard dependency for
+# this package.
+#
+# It provides the Leaflet Draw features required to enable polygon drawing
 # and shape editing on the map.
 #
 # -----------------------------------------------------------------------------
@@ -23,7 +23,7 @@ drawDependencies <- function(drag = TRUE) {
     stylesheet = "lfx-draw-prod.css",
     all_files = TRUE
   )
-  
+
   if (drag) {
     drag_dep <- htmltools::htmlDependency(
       "lfx-draw-drag",
@@ -284,7 +284,8 @@ selectedPathOptions <- function(
 #' @param remove Set to false to disable removing.
 #' @param selectedPathOptions To customize shapes in editing mode pass \code{\link{selectedPathOptions}}().
 #' @param allowIntersection Determines if line segments can cross.
-#' @noRd
+#' @export
+#' @keywords internal
 editToolbarOptions <- function(
     edit = TRUE,
     remove = TRUE,
@@ -519,7 +520,8 @@ edittoolbarOptions <- function(
 #'   \item \code{mouseover}
 #'   \item \code{mouseout}
 #' }
-#' @noRd
+#' @export
+#' @keywords internal
 addDrawToolbar <- function(
     map, targetLayerId = NULL, targetGroup = NULL,
     position = c("topleft", "topright", "bottomleft", "bottomright"),
@@ -540,21 +542,21 @@ addDrawToolbar <- function(
   if (!is.null(targetGroup) && !is.null(targetLayerId)) {
     stop("To edit existing features either specify a targetGroup or a targetLayerId, but not both")
   }
-  
+
   if (!inherits(toolbar, "list")) toolbar <- NULL
   if (!inherits(handlers, "list")) handlers <- NULL
   if (!inherits(edittoolbar, "list")) edittoolbar <- NULL
   if (!inherits(edithandlers, "list")) edithandlers <- NULL
-  
+
   map$dependencies <- c(map$dependencies, drawDependencies(drag))
-  
+
   markerIconFunction <- NULL
   if (inherits(markerOptions, "list") && !is.null(markerOptions$markerIcon)) {
     stop("markerIcon is not supported in this version. Please use standard leaflet markers instead.")
   }
-  
+
   position <- match.arg(position)
-  
+
   options <- list(
     position = position,
     draw = leaflet::filterNULL(list(
@@ -572,7 +574,7 @@ addDrawToolbar <- function(
     edittoolbar = edittoolbar,
     edithandlers = edithandlers
   )
-  
+
   leaflet::invokeMethod(
     map, leaflet::getMapData(map), "addDrawToolbar",
     targetLayerId, targetGroup, options
@@ -582,7 +584,8 @@ addDrawToolbar <- function(
 #' Removes the draw toolbar
 #' @param map The map widget.
 #' @param clearFeatures Whether to clear the map of drawn features.
-#' @noRd
+#' @export
+#' @keywords internal
 removeDrawToolbar <- function(map, clearFeatures = FALSE) {
   leaflet::invokeMethod(map, leaflet::getMapData(map), "removeDrawToolbar", clearFeatures)
 }
