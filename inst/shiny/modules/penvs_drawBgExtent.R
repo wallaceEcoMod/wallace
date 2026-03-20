@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # penvs_drawBgExtent.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -207,16 +207,6 @@ penvs_drawBgExtent_module_map <- function(map, common) {
   curSp <- common$curSp
   occs <- common$occs
 
-  map %>% addDrawToolbar(
-    targetGroup = 'draw',
-    polylineOptions = FALSE,
-    rectangleOptions = FALSE,
-    circleOptions = FALSE,
-    markerOptions = FALSE,
-    circleMarkerOptions = FALSE,
-    editOptions = editToolbarOptions()
-  )
-
   if (is.null(spp[[curSp()]]$procEnvs$bgExt)) {
     map %>% clearAll() %>%
       addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
@@ -239,6 +229,16 @@ penvs_drawBgExtent_module_map <- function(map, common) {
                     group = 'bgShp')
     }
   }
+
+  map %>% addDrawToolbar(
+    targetGroup = 'draw',
+    polylineOptions = FALSE,
+    rectangleOptions = FALSE,
+    circleOptions = FALSE,
+    markerOptions = FALSE,
+    circleMarkerOptions = FALSE,
+    editOptions = editToolbarOptions()
+  )
 }
 
 penvs_drawBgExtent_module_rmd <- function(species) {
