@@ -181,7 +181,7 @@ Generate a map of the maxnet generated model with no threshold
 ```{r, echo = {{vis_mapPreds_knit & vis_map_maxnet_knit & !vis_map_threshold_knit}}, include = {{vis_mapPreds_knit & vis_map_maxnet_knit & !vis_map_threshold_knit}}}
 # Select current model and obtain raster prediction
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
-predSel_{{spAbr}} <- predictMaxnet(m_{{spAbr}}, raster(bgMask_{{spAbr}}),
+predSel_{{spAbr}} <- predictMaxnet(m_{{spAbr}}, stack(bgMask_{{spAbr}}),
                                           type = "{{predType_rmd}}", 
                                           clamp = {{clamp_rmd}})
 #Get values of prediction
@@ -218,7 +218,7 @@ Generate a map of the maxnet generated model with with a "{{thresholdRule_rmd}}"
 ```{r, echo = {{vis_mapPreds_knit & vis_map_maxnet_knit & vis_map_threshold_knit}}, include = {{vis_mapPreds_knit & vis_map_maxnet_knit & vis_map_threshold_knit}}}
 # Select current model and obtain raster prediction
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]] 
-predSel_{{spAbr}} <- predictMaxnet(m_{{spAbr}}, raster(bgMask_{{spAbr}}),
+predSel_{{spAbr}} <- predictMaxnet(m_{{spAbr}}, stack(bgMask_{{spAbr}}),
                                           type = "{{predType_rmd}}", 
                                           clamp = {{clamp_rmd}})
 # extract the suitability values for all occurrences

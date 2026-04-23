@@ -101,8 +101,11 @@ occPredVals_{{spAbr}} <- raster::extract(predSel_{{spAbr}}, occs_xy_{{spAbr}})
 # Define probability of quantile based on selected threshold
 xfer_thresProb_{{spAbr}} <- switch("{{xfer_thresholdRule_rmd}}", 
                                    "mtp" = 0, "p10" = 0.1, "qtp" = {{xfer_probQuantile_rmd}})
+# Define threshold value
+xfer_thres_{{spAbr}} <- stats::quantile(occPredVals_{{spAbr}},
+                                       probs = xfer_thresProb_{{spAbr}})
 # Add threshold if specified 
-xfer_time_{{spAbr}} <- xfer_time_{{spAbr}}$xferTime > xfer_thresProb_{{spAbr}}
+xfer_time_{{spAbr}} <- xfer_time_{{spAbr}}$xferTime > xfer_thres_{{spAbr}}
 
 ##Make map
 ###Make map of transfer
@@ -246,8 +249,11 @@ occPredVals_{{spAbr}} <- raster::extract(predSel_{{spAbr}}, occs_xy_{{spAbr}})
 # Define probability of quantile based on selected threshold
 xfer_thresProb_{{spAbr}} <- switch("{{xfer_thresholdRule_rmd}}", 
                                    "mtp" = 0, "p10" = 0.1, "qtp" = {{xfer_probQuantile_rmd}})
+# Define threshold value
+xfer_thres_{{spAbr}} <- stats::quantile(occPredVals_{{spAbr}},
+                                       probs = xfer_thresProb_{{spAbr}})
 # Add threshold if specified 
-xfer_time_{{spAbr}} <- xfer_time_{{spAbr}}$xferTime > xfer_thresProb_{{spAbr}}
+xfer_time_{{spAbr}} <- xfer_time_{{spAbr}}$xferTime > xfer_thres_{{spAbr}}
 
 ##Make map
 ###Make map of transfer
@@ -393,8 +399,11 @@ occPredVals_{{spAbr}} <- raster::extract(predSel_{{spAbr}}, occs_xy_{{spAbr}})
 # Define probability of quantile based on selected threshold
 xfer_thresProb_{{spAbr}} <- switch("{{xfer_thresholdRule_rmd}}", 
                                    "mtp" = 0, "p10" = 0.1, "qtp" = {{xfer_probQuantile_rmd}})
+# Define threshold value
+xfer_thres_{{spAbr}} <- stats::quantile(occPredVals_{{spAbr}}, 
+                                        probs = xfer_thresProb_{{spAbr}})
 # Add threshold if specified 
-xfer_time_{{spAbr}} <- xfer_time_{{spAbr}}$xferTime > xfer_thresProb_{{spAbr}}
+xfer_time_{{spAbr}} <- xfer_time_{{spAbr}}$xferTime > xfer_thres_{{spAbr}}
 
 ##Make map
 ###Make map of transfer
@@ -509,8 +518,11 @@ occPredVals_{{spAbr}} <- raster::extract(predSel_{{spAbr}}, occs_xy_{{spAbr}})
 # Define probability of quantile based on selected threshold
 xfer_thresProb_{{spAbr}} <- switch("{{xfer_thresholdRule_rmd}}", 
                                    "mtp" = 0, "p10" = 0.1, "qtp" = {{xfer_probQuantile_rmd}})
+# Define threshold value
+xfer_thres_{{spAbr}} <- stats::quantile(occPredVals_{{spAbr}}, 
+                                        probs = xfer_thresProb_{{spAbr}})
 # Add threshold if specified 
-xfer_time_{{spAbr}} <- xfer_time_{{spAbr}}$xferTime > xfer_thresProb_{{spAbr}}
+xfer_time_{{spAbr}} <- xfer_time_{{spAbr}}$xferTime > xfer_thres_{{spAbr}}
 
 ##Make map
 ###Make map of transfer
@@ -638,8 +650,11 @@ occPredVals_{{spAbr}} <- raster::extract(predSel_{{spAbr}}, occs_xy_{{spAbr}})
 # Define probability of quantile based on selected threshold
 xfer_thresProb_{{spAbr}} <- switch("{{xfer_thresholdRule_rmd}}", 
                                    "mtp" = 0, "p10" = 0.1, "qtp" = {{xfer_probQuantile_rmd}})
+# Define threshold value
+xfer_thres_{{spAbr}} <- stats::quantile(occPredVals_{{spAbr}}, 
+                                        probs = xfer_thresProb_{{spAbr}})
 # Add threshold if specified 
-xfer_time_{{spAbr}} <- xfer_time_{{spAbr}}$xferTime > xfer_thresProb_{{spAbr}}
+xfer_time_{{spAbr}} <- xfer_time_{{spAbr}}$xferTime > xfer_thres_{{spAbr}}
 
 ##Make map
 ###Make map of transfer
@@ -769,8 +784,11 @@ occPredVals_{{spAbr}} <- raster::extract(predSel_{{spAbr}}, occs_xy_{{spAbr}})
 # Define probability of quantile based on selected threshold
 xfer_thresProb_{{spAbr}} <- switch("{{xfer_thresholdRule_rmd}}", 
                                    "mtp" = 0, "p10" = 0.1, "qtp" = {{xfer_probQuantile_rmd}})
+# Define threshold value
+xfer_thres_{{spAbr}} <- stats::quantile(occPredVals_{{spAbr}}, 
+                                        probs = xfer_thresProb_{{spAbr}})
 # Add threshold if specified 
-xfer_time_{{spAbr}} <- xfer_time_{{spAbr}}$xferTime > xfer_thresProb_{{spAbr}}
+xfer_time_{{spAbr}} <- xfer_time_{{spAbr}}$xferTime > xfer_thres_{{spAbr}}
 
 ##Make map
 ###Make map of transfer
