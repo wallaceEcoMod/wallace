@@ -36,29 +36,29 @@ You can either set layerId or group or none but not both.}
 
 \item{position}{The position where the toolbar should appear.}
 
-\item{polylineOptions}{See \code{\link{drawPolylineOptions}}(). Set to FALSE to disable polyline drawing.}
+\item{polylineOptions}{See \code{drawPolylineOptions()}. Set to FALSE to disable polyline drawing.}
 
-\item{polygonOptions}{See \code{\link{drawPolygonOptions}}(). Set to FALSE to disable polygon drawing.}
+\item{polygonOptions}{See \code{drawPolygonOptions()}. Set to FALSE to disable polygon drawing.}
 
-\item{circleOptions}{See \code{\link{drawCircleOptions}}(). Set to FALSE to disable circle drawing.}
+\item{circleOptions}{See \code{drawCircleOptions()}. Set to FALSE to disable circle drawing.}
 
-\item{rectangleOptions}{See \code{\link{drawRectangleOptions}}(). Set to FALSE to disable rectangle drawing.}
+\item{rectangleOptions}{See \code{drawRectangleOptions()}. Set to FALSE to disable rectangle drawing.}
 
-\item{markerOptions}{See \code{\link{drawMarkerOptions}}(). Set to FALSE to disable marker drawing.}
+\item{markerOptions}{See \code{drawMarkerOptions()}. Set to FALSE to disable marker drawing.}
 
-\item{circleMarkerOptions}{See \code{\link{drawCircleMarkerOptions}}(). Set to FALSE to disable circle marker drawing.}
+\item{circleMarkerOptions}{See \code{drawCircleMarkerOptions()}. Set to FALSE to disable circle marker drawing.}
 
-\item{editOptions}{By default editing is disable. To enable editing pass \code{\link{editToolbarOptions}}().}
+\item{editOptions}{By default editing is disable. To enable editing pass \code{editToolbarOptions()}.}
 
 \item{singleFeature}{When set to TRUE, only one feature can be drawn at a time, the previous ones being removed.}
 
-\item{toolbar}{See \code{\link{toolbarOptions}}. Set to \code{NULL} to take Leaflets default values.}
+\item{toolbar}{See \code{toolbarOptions()}. Set to \code{NULL} to take Leaflets default values.}
 
-\item{handlers}{See \code{\link{handlersOptions}}. Set to \code{NULL} to take Leaflets default values.}
+\item{handlers}{See \code{handlersOptions()}. Set to \code{NULL} to take Leaflets default values.}
 
-\item{edittoolbar}{See \code{\link{edittoolbarOptions}}. Set to \code{NULL} to take Leaflets default values.}
+\item{edittoolbar}{See \code{edittoolbarOptions()}. Set to \code{NULL} to take Leaflets default values.}
 
-\item{edithandlers}{See \code{\link{edithandlersOptions}}. Set to \code{NULL} to take Leaflets default values.}
+\item{edithandlers}{See \code{edithandlersOptions()}. Set to \code{NULL} to take Leaflets default values.}
 
 \item{drag}{When set to \code{TRUE}, the drawn features will be draggable during editing, utilizing
 the \code{Leaflet.Draw.Drag} plugin. Otherwise, this library will not be included.}

@@ -98,7 +98,7 @@ drawShapeOptions <- function(
 #' @param feet When not metric, use feet instead of yards for display.
 #' @param nautic When not metric, not feet, use nautic mile for display.
 #' @param zIndexOffset This should be a high number to ensure that you can draw over all other layers on the map.
-#' @param shapeOptions Leaflet Polyline options. See \code{\link{drawShapeOptions}}().
+#' @param shapeOptions Leaflet Polyline options. See \code{drawShapeOptions()}.
 #' @param repeatMode Determines if the draw tool remains enabled after drawing a shape.
 #' @noRd
 drawPolylineOptions <- function(
@@ -132,7 +132,7 @@ drawPolylineOptions <- function(
 #' Options for drawing polygons
 #' @param showArea Show the area of the drawn polygon in m², ha or km². The area is only approximate and become less accurate the larger the polygon is.
 #' @param metric Determines which measurement system (metric or imperial) is used.
-#' @param shapeOptions Shape options. See \code{\link{drawShapeOptions}}().
+#' @param shapeOptions Shape options. See \code{drawShapeOptions()}.
 #' @param repeatMode Determines if the draw tool remains enabled after drawing a shape.
 #' @noRd
 drawPolygonOptions <- function(
@@ -152,7 +152,7 @@ drawPolygonOptions <- function(
 #' Options for drawing rectangles
 #' @param showArea Show the area of the drawn rectangle in m², ha or km².
 #' @param metric Determines which measurement system (metric or imperial) is used.
-#' @param shapeOptions Shape options. See \code{\link{drawShapeOptions}}().
+#' @param shapeOptions Shape options. See \code{drawShapeOptions()}.
 #' @param repeatMode Determines if the draw tool remains enabled after drawing a shape.
 #' @noRd
 drawRectangleOptions <- function(
@@ -174,7 +174,7 @@ drawRectangleOptions <- function(
 #' @param metric Determines which measurement system (metric or imperial) is used.
 #' @param feet When not metric, use feet instead of yards for display.
 #' @param nautic When not metric, not feet, use nautic mile for display.
-#' @param shapeOptions Shape options. See \code{\link{drawShapeOptions}}().
+#' @param shapeOptions Shape options. See \code{drawShapeOptions()}.
 #' @param repeatMode Determines if the draw tool remains enabled after drawing a shape.
 #' @noRd
 drawCircleOptions <- function(
@@ -282,7 +282,7 @@ selectedPathOptions <- function(
 #' Options for editing shapes
 #' @param edit Editing enabled by default. Set to false do disable editing.
 #' @param remove Set to false to disable removing.
-#' @param selectedPathOptions To customize shapes in editing mode pass \code{\link{selectedPathOptions}}().
+#' @param selectedPathOptions To customize shapes in editing mode pass \code{selectedPathOptions()}.
 #' @param allowIntersection Determines if line segments can cross.
 #' @export
 #' @keywords internal
@@ -301,7 +301,7 @@ editToolbarOptions <- function(
 }
 
 #' Options for editing handlers
-#' @description Customize tooltips for \code{\link{addDrawToolbar}}
+#' @description Customize tooltips for \code{addDrawToolbar()}
 #' @param polyline List of options for polyline tooltips.
 #' @param polygon List of options for polygon tooltips.
 #' @param rectangle List of options for rectangle tooltips.
@@ -367,7 +367,7 @@ handlersOptions <- function(
 }
 
 #' Options for editing the toolbar
-#' @description Customize the toolbar for \code{\link{addDrawToolbar}}
+#' @description Customize the toolbar for \code{addDrawToolbar()}
 #' @param actions List of options for actions toolbar button.
 #' @param finish List of options for finish toolbar button.
 #' @param undo List of options for undo toolbar button.
@@ -420,7 +420,7 @@ toolbarOptions <- function(
 }
 
 #' Options for editing edit handlers
-#' @description Customize edit handlers for \code{\link{addDrawToolbar}}
+#' @description Customize edit handlers for \code{addDrawToolbar()}
 #' @param edit List of options for editing tooltips.
 #' @param remove List of options for removing tooltips.
 #' @noRd
@@ -449,7 +449,7 @@ edithandlersOptions <- function(
 }
 
 #' Options for editing the toolbar
-#' @description Customize the edit toolbar for \code{\link{addDrawToolbar}}
+#' @description Customize the edit toolbar for \code{addDrawToolbar()}
 #' @param actions List of options for edit action tooltips.
 #' @param buttons List of options for edit button tooltips.
 #' @noRd
@@ -489,18 +489,18 @@ edittoolbarOptions <- function(
 #'  Used for adding shapes(markers, lines, polygons) and then editing them using the draw plugin.
 #'  You can either set layerId or group or none but not both.
 #' @param position The position where the toolbar should appear.
-#' @param polylineOptions See \code{\link{drawPolylineOptions}}(). Set to FALSE to disable polyline drawing.
-#' @param polygonOptions See \code{\link{drawPolygonOptions}}(). Set to FALSE to disable polygon drawing.
-#' @param circleOptions See \code{\link{drawCircleOptions}}(). Set to FALSE to disable circle drawing.
-#' @param rectangleOptions See \code{\link{drawRectangleOptions}}(). Set to FALSE to disable rectangle drawing.
-#' @param markerOptions See \code{\link{drawMarkerOptions}}(). Set to FALSE to disable marker drawing.
-#' @param circleMarkerOptions See \code{\link{drawCircleMarkerOptions}}(). Set to FALSE to disable circle marker drawing.
-#' @param editOptions By default editing is disable. To enable editing pass \code{\link{editToolbarOptions}}().
+#' @param polylineOptions See \code{drawPolylineOptions()}. Set to FALSE to disable polyline drawing.
+#' @param polygonOptions See \code{drawPolygonOptions()}. Set to FALSE to disable polygon drawing.
+#' @param circleOptions See \code{drawCircleOptions()}. Set to FALSE to disable circle drawing.
+#' @param rectangleOptions See \code{drawRectangleOptions()}. Set to FALSE to disable rectangle drawing.
+#' @param markerOptions See \code{drawMarkerOptions()}. Set to FALSE to disable marker drawing.
+#' @param circleMarkerOptions See \code{drawCircleMarkerOptions()}. Set to FALSE to disable circle marker drawing.
+#' @param editOptions By default editing is disable. To enable editing pass \code{editToolbarOptions()}.
 #' @param singleFeature When set to TRUE, only one feature can be drawn at a time, the previous ones being removed.
-#' @param toolbar See \code{\link{toolbarOptions}}. Set to \code{NULL} to take Leaflets default values.
-#' @param handlers See \code{\link{handlersOptions}}. Set to \code{NULL} to take Leaflets default values.
-#' @param edittoolbar See \code{\link{edittoolbarOptions}}. Set to \code{NULL} to take Leaflets default values.
-#' @param edithandlers See \code{\link{edithandlersOptions}}. Set to \code{NULL} to take Leaflets default values.
+#' @param toolbar See \code{toolbarOptions()}. Set to \code{NULL} to take Leaflets default values.
+#' @param handlers See \code{handlersOptions()}. Set to \code{NULL} to take Leaflets default values.
+#' @param edittoolbar See \code{edittoolbarOptions()}. Set to \code{NULL} to take Leaflets default values.
+#' @param edithandlers See \code{edithandlersOptions()}. Set to \code{NULL} to take Leaflets default values.
 #' @param drag When set to \code{TRUE}, the drawn features will be draggable during editing, utilizing
 #'    the \code{Leaflet.Draw.Drag} plugin. Otherwise, this library will not be included.
 #'
