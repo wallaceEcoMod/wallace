@@ -65,7 +65,6 @@ spurious <- function(x) {
   DT::renderDataTable(x)
   RColorBrewer::brewer.pal(x)
   leafem::addMouseCoordinates(x)
-  leaflet.extras::removeDrawToolbar(x)
   markdown::html_format()
   rmarkdown::github_document(x)
   shinyWidgets::pickerInput(x)
