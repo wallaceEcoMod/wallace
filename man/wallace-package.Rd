@@ -2,8 +2,8 @@
 % Please edit documentation in R/wallace-package.R
 \docType{package}
 \name{wallace-package}
-\alias{wallace-package}
 \alias{wallace}
+\alias{wallace-package}
 \title{\emph{Wallace}: A modular platform for reproducible ecological modeling}
 \description{
 \emph{Wallace} is a \code{shiny} app that guides users through a complete
@@ -11,11 +11,11 @@
   species occurrence and environmental data to visualizing model predictions
   on an interactive map (\code{rleaflet}), thus bundling complex workflows
   into a single, streamlined GUI interface. New functionality, in the form of
-   modules, can be added to \emph{Wallace} via contributions from the user
-   community. In addition, executable session code (R Markdown format) can
-   be downloaded to share with others or use as supplementary information
-   for scientific papers and reports. The application is run via the
-   function \code{\link{run_wallace}}.
+  modules, can be added to \emph{Wallace} via contributions from the user
+  community. In addition, executable session code (R Markdown format) can
+  be downloaded to share with others or use as supplementary information
+  for scientific papers and reports. The application is run via the
+  function \code{\link{run_wallace}}.
 }
 \details{
 Please see the official website (\url{https://wallaceecomod.github.io/}) for
@@ -60,3 +60,4 @@ Other contributors:
 }
 
 }
+\keyword{internal}
