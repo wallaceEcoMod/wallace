@@ -1,8 +1,7 @@
 ^.*\.Rproj$         # Automatically added by RStudio,
 ^\.Rproj\.user$     # used for temporary files.
 ^README\.Rmd$       # An Rmarkdown file used to generate README.md
-^cran-comments\.md$ # Comments for CRAN submission
-^NEWS\.md$          # A news file written in Markdown
+^cran-comments\.md$ # Comments for CRAN submissionS
 \.DS_Store$	    # for macs
 cmip5*    # worldclim files
 ^wallace.Rproj
@@ -13,3 +12,4 @@ cmip5*    # worldclim files
 ^docs$
 ^pkgdown$
 ^LICENSE$
+^CRAN-SUBMISSION$

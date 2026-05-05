@@ -6,6 +6,7 @@ wallace 2.2.1
 - Fixed a loading error triggered by selecting multiple species in Environmental Space.
 - Integrated the drawing functionality of leaflet.extras directly into wallace to streamline dependencies.
 - Fixed an issue with session code generation when visualizing map predictions and transferring to a new time period.
+- Fixed UI rendering issue where the power-off icon was hidden on macOS.
 
 wallace 2.2.0
 =============

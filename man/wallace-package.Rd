@@ -26,7 +26,7 @@ Please see the official website (\url{https://wallaceecomod.github.io/}) for
 \seealso{
 Useful links:
 \itemize{
-  \item \url{http://wallaceecomod.github.io/wallace/,}
+  \item \url{https://wallaceecomod.github.io/wallace/,}
 }
 
 }
@@ -35,8 +35,8 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Bethany A. Johnson \email{bjohnso005@citymail.cuny.edu}
   \item Daniel F. Lopez-Lozano \email{dlopezlozano@amnh.org}
+  \item Bethany A. Johnson \email{bjohnso005@citymail.cuny.edu}
   \item Jamie M. Kass \email{jamie.m.kass@gmail.com}
   \item Gonzalo E. Pinilla-Buitrago \email{gepinillab@gmail.com}
   \item Andrea Paz \email{paz.andreita@gmail.com}
