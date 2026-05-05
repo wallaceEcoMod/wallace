@@ -1,6 +1,6 @@
 Package: wallace
 Version: 2.2.1
-Date: 2026-04-29
+Date: 2026-05-05
 Title: A Modular Platform for Reproducible Modeling of Species Niches 
     and Distributions
 Description: The 'shiny' application Wallace is a modular platform for 
@@ -72,7 +72,7 @@ Suggests:
     raster,
     rgbif (>= 3.3.0),
     sp,
-    terra, 
+    terra (>= 1.9-11), 
     testthat,
     tools
 License: GPL-3
