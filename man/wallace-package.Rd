@@ -26,7 +26,7 @@ Please see the official website (\url{https://wallaceecomod.github.io/}) for
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://wallaceecomod.github.io/wallace/,}
+  \item \url{https://wallaceecomod.github.io/wallace/}
 }
 
 }
