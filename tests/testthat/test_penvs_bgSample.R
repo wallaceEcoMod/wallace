@@ -16,6 +16,8 @@ envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
 # background extent
 bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
 # background masked
+raster::crs(envs) <- "EPSG:4326"
+raster::crs(bgExt) <- "EPSG:4326"
 bgMask <- penvs_bgMask(occs, envs, bgExt)
 bgMaskR <- raster::stack(bgMask)
 

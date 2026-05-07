@@ -30,7 +30,7 @@ components occs: Obtain occurrence data or, poccs: Process occurrence data.}
 \item{user.grp}{a list of two vectors containing group assignments for
 occurrences (occs.grp) and background points (bg.grp).}
 
-\item{bgMsk}{a SpatRaster of environmental layers cropped and masked to 
+\item{bgMsk}{a SpatRaster of environmental layers cropped and masked to
 match the provided background extent.}
 
 \item{rms}{vector of range of regularization multipliers to be used in the

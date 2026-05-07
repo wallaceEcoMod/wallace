@@ -2,8 +2,8 @@
 % Please edit documentation in R/wallace-package.R
 \docType{package}
 \name{wallace-package}
-\alias{wallace-package}
 \alias{wallace}
+\alias{wallace-package}
 \title{\emph{Wallace}: A modular platform for reproducible ecological modeling}
 \description{
 \emph{Wallace} is a \code{shiny} app that guides users through a complete
@@ -11,11 +11,11 @@
   species occurrence and environmental data to visualizing model predictions
   on an interactive map (\code{rleaflet}), thus bundling complex workflows
   into a single, streamlined GUI interface. New functionality, in the form of
-   modules, can be added to \emph{Wallace} via contributions from the user
-   community. In addition, executable session code (R Markdown format) can
-   be downloaded to share with others or use as supplementary information
-   for scientific papers and reports. The application is run via the
-   function \code{\link{run_wallace}}.
+  modules, can be added to \emph{Wallace} via contributions from the user
+  community. In addition, executable session code (R Markdown format) can
+  be downloaded to share with others or use as supplementary information
+  for scientific papers and reports. The application is run via the
+  function \code{\link{run_wallace}}.
 }
 \details{
 Please see the official website (\url{https://wallaceecomod.github.io/}) for
@@ -26,7 +26,7 @@ Please see the official website (\url{https://wallaceecomod.github.io/}) for
 \seealso{
 Useful links:
 \itemize{
-  \item \url{http://wallaceecomod.github.io/wallace/,}
+  \item \url{https://wallaceecomod.github.io/wallace/}
 }
 
 }
@@ -35,8 +35,8 @@ Useful links:
 
 Authors:
 \itemize{
-  \item Bethany A. Johnson \email{bjohnso005@citymail.cuny.edu}
   \item Daniel F. Lopez-Lozano \email{dlopezlozano@amnh.org}
+  \item Bethany A. Johnson \email{bjohnso005@citymail.cuny.edu}
   \item Jamie M. Kass \email{jamie.m.kass@gmail.com}
   \item Gonzalo E. Pinilla-Buitrago \email{gepinillab@gmail.com}
   \item Andrea Paz \email{paz.andreita@gmail.com}
@@ -60,3 +60,4 @@ Other contributors:
 }
 
 }
+\keyword{internal}
