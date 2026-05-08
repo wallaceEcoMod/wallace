@@ -88,7 +88,7 @@ polyExt <- sp::SpatialPolygons(list(sp::Polygons(list(sp::Polygon(selCoords)),
 occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",package = "wallace"))
 bg <- read.csv(system.file("extdata/Bassaricyon_alleni_bgPoints.csv", package = "wallace"))
 partblock <- part_partitionOccs(occs, bg, method = 'block')
-m <- model_maxent(occs, bg, user.grp = partblock, bgMsk = envs, rms = c(1:2),
+m <- model_maxent(occs, bg, user.grp = partblock, bgMsk = terra::rast(envs), rms = c(1:2),
 rmsStep = 1, fcs = c('L', 'LQ'),
 clampSel = TRUE, algMaxent = "maxnet", parallel = FALSE)
 occsEnvs <- m@occs

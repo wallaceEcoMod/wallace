@@ -2,8 +2,8 @@
 % Please edit documentation in R/wallace-package.R
 \docType{package}
 \name{wallace-package}
-\alias{wallace-package}
 \alias{wallace}
+\alias{wallace-package}
 \title{\emph{Wallace}: A modular platform for reproducible ecological modeling}
 \description{
 \emph{Wallace} is a \code{shiny} app that guides users through a complete
@@ -11,11 +11,11 @@
   species occurrence and environmental data to visualizing model predictions
   on an interactive map (\code{rleaflet}), thus bundling complex workflows
   into a single, streamlined GUI interface. New functionality, in the form of
-   modules, can be added to \emph{Wallace} via contributions from the user
-   community. In addition, executable session code (R Markdown format) can
-   be downloaded to share with others or use as supplementary information
-   for scientific papers and reports. The application is run via the
-   function \code{\link{run_wallace}}.
+  modules, can be added to \emph{Wallace} via contributions from the user
+  community. In addition, executable session code (R Markdown format) can
+  be downloaded to share with others or use as supplementary information
+  for scientific papers and reports. The application is run via the
+  function \code{\link{run_wallace}}.
 }
 \details{
 Please see the official website (\url{https://wallaceecomod.github.io/}) for
@@ -23,3 +23,41 @@ Please see the official website (\url{https://wallaceecomod.github.io/}) for
   in the \href{https://groups.google.com/forum/#!forum/wallaceecomod}{Google Group},
   or email the team directly: \email{wallaceEcoMod@gmail.com}.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://wallaceecomod.github.io/wallace/}
+}
+
+}
+\author{
+\strong{Maintainer}: Mary E. Blair \email{mblair1@amnh.org}
+
+Authors:
+\itemize{
+  \item Daniel F. Lopez-Lozano \email{dlopezlozano@amnh.org}
+  \item Bethany A. Johnson \email{bjohnso005@citymail.cuny.edu}
+  \item Jamie M. Kass \email{jamie.m.kass@gmail.com}
+  \item Gonzalo E. Pinilla-Buitrago \email{gepinillab@gmail.com}
+  \item Andrea Paz \email{paz.andreita@gmail.com}
+  \item Valentina Grisales-Betancur \email{vgrisale@eafit.edu.co}
+  \item Dean Attali \email{daattali@gmail.com}
+  \item Matthew E. Aiello-Lammens \email{matt.lammens@gmail.com}
+  \item Cory Merow \email{corymerow@gmail.com}
+  \item Robert P. Anderson \email{randerson@ccny.cuny.edu}
+}
+
+Other contributors:
+\itemize{
+  \item Sarah I. Meenan \email{sarah.meenan@gmail.com} [contributor]
+  \item Olivier Broennimann \email{olivier.broennimann@unil.ch} [contributor]
+  \item Peter J. Galante \email{pgalante@amnh.org} [contributor]
+  \item Brian S. Maitner \email{bmaitner@gmail.com} [contributor]
+  \item Hannah L. Owens \email{hannah.owens@gmail.com} [contributor]
+  \item Sara Varela \email{sara_varela@yahoo.com} [contributor]
+  \item Bruno Vilela \email{bvilela@wustl.edu} [contributor]
+  \item Robert Muscarella \email{bob.muscarella@gmail.com} [contributor]
+}
+
+}
+\keyword{internal}

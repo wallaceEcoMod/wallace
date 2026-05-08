@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # poccs_removeByID.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -94,8 +94,7 @@ poccs_removeByID_module_server <- function(input, output, session, common) {
 poccs_removeByID_module_map <- function(map, common) {
   occs <- common$occs
   # Map logic
-  map %>% leaflet.extras::removeDrawToolbar() %>%
-    clearAll() %>%
+  map %>% clearAll() %>%
     addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                      radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                      fillOpacity = 0.2, weight = 2, popup = ~pop) %>%

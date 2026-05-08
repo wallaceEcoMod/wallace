@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # penvs_drawBgExtent.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -127,7 +127,8 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
                              logger,
                              spN = sp)
       req(bgMask)
-      bgNonNA <- raster::ncell(bgMask) - raster::freq(bgMask, value = NA)[[1]]
+      bgMaskR <- raster::stack(bgMask)
+      bgNonNA <- raster::ncell(bgMaskR) - raster::freq(bgMaskR, value = NA)[[1]]
       if ((bgNonNA + 1) < input$bgPtsNum) {
         logger %>%
           writeLog(
@@ -138,17 +139,17 @@ penvs_drawBgExtent_module_server <- function(input, output, session, common) {
         return()
       }
       bgPts <- penvs_bgSample(spp[[sp]]$occs,
-                              bgMask,
+                              bgMaskR,
                               input$bgPtsNum,
                               logger,
                               spN = sp)
       req(bgPts)
       withProgress(message = paste0("Extracting background values for ",
                                     spName(sp), "..."), {
-        bgEnvsVals <- as.data.frame(raster::extract(bgMask, bgPts))
+        bgEnvsVals <- as.data.frame(terra::extract(bgMask, bgPts))
       })
 
-      if (sum(rowSums(is.na(raster::extract(bgMask, spp[[sp]]$occs[ , c("longitude", "latitude")])))) > 0) {
+      if (sum(rowSums(is.na(terra::extract(bgMask, spp[[sp]]$occs[ , c("longitude", "latitude")])))) > 0) {
         logger %>%
           writeLog(type = "error", hlSpp(sp),
                    "One or more occurrence points have NULL raster values.",
@@ -206,16 +207,6 @@ penvs_drawBgExtent_module_map <- function(map, common) {
   curSp <- common$curSp
   occs <- common$occs
 
-  map %>% leaflet.extras::addDrawToolbar(
-    targetGroup = 'draw',
-    polylineOptions = FALSE,
-    rectangleOptions = FALSE,
-    circleOptions = FALSE,
-    markerOptions = FALSE,
-    circleMarkerOptions = FALSE,
-    editOptions = leaflet.extras::editToolbarOptions()
-  )
-
   if (is.null(spp[[curSp()]]$procEnvs$bgExt)) {
     map %>% clearAll() %>%
       addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
@@ -238,6 +229,16 @@ penvs_drawBgExtent_module_map <- function(map, common) {
                     group = 'bgShp')
     }
   }
+
+  map %>% addDrawToolbar(
+    targetGroup = 'draw',
+    polylineOptions = FALSE,
+    rectangleOptions = FALSE,
+    circleOptions = FALSE,
+    markerOptions = FALSE,
+    circleMarkerOptions = FALSE,
+    editOptions = editToolbarOptions()
+  )
 }
 
 penvs_drawBgExtent_module_rmd <- function(species) {

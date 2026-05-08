@@ -87,7 +87,7 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
     # pick the prediction that matches the model selected
     predSel <- evalOut()@predictions[[curModel()]]
     predSel <- raster::raster(predSel)
-    raster::crs(predSel) <- raster::crs(bgMask())
+    raster::crs(predSel) <- raster::crs(raster::stack(bgMask()))
     if(is.na(raster::crs(predSel))) {
       logger %>% writeLog(
         type = "error",
@@ -103,10 +103,10 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
     if (spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM") {
       predType <- "BIOCLIM"
       m <- evalOut()@models[[curModel()]]
-      predSel <- dismo::predict(m, terra::rast(bgMask()))
+      predSel <- dismo::predict(m, bgMask())
       predSel <- raster::raster(predSel)
       # define crs
-      raster::crs(predSel) <- raster::crs(bgMask())
+      raster::crs(predSel) <- raster::crs(raster::raster(bgMask()))
       # define predSel name
       names(predSel) <- curModel()
     } else if (spp[[curSp()]]$rmm$model$algorithms %in% c("maxent.jar", "maxnet")) {
@@ -125,7 +125,7 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
                            clamping <- spp[[curSp()]]$rmm$model$algorithm$maxent$clamping
                            if (spp[[curSp()]]$rmm$model$algorithms == "maxnet") {
                              if (predType == "raw") predType <- "exponential"
-                             predSel <- predictMaxnet(m, bgMask(),
+                             predSel <- predictMaxnet(m, raster::stack(bgMask()),
                                                              type = predType,
                                                              clamp = FALSE)
                            } else if (spp[[curSp()]]$rmm$model$algorithms == "maxent.jar") {
@@ -135,7 +135,7 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
                              } else {
                                doClamp <- "doclamp=false"
                              }
-                             predSel <- dismo::predict(m, terra::rast(bgMask()),
+                             predSel <- dismo::predict(m, bgMask(),
                                                        args = c(outputFormat, doClamp),
                                                        #na.rm = TRUE
                                                        )
@@ -143,7 +143,7 @@ vis_mapPreds_module_server <- function(input, output, session, common) {
                            }
                          })
       # define crs
-      raster::crs(predSel) <- raster::crs(bgMask())
+      raster::crs(predSel) <- raster::crs(raster::stack(bgMask()))
       # define predSel name
       names(predSel) <- curModel()
 

@@ -9,6 +9,11 @@ envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
                       rasName = list.files(system.file("extdata/wc",
                                                        package = "wallace"),
                                            pattern = ".tif$", full.names = FALSE))
+
+# Includes one categorical variable
+envsCat <- terra::rast(list.files(system.file('/ex', package='predicts'), 
+                               pattern='tif$', full.names=TRUE))
+
 occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
                              package = "wallace"))
 bg <- read.csv(system.file("extdata/Bassaricyon_alleni_bgPoints.csv",
@@ -32,7 +37,7 @@ jar_f <- paste(system.file(package = "dismo"), "/maxent.jar", sep = '')
 ## test if the error messages appear when they are supposed to
 test_that("error checks", {
   # user has not partitioned occurrences
-  expect_error(model_maxent(occs, bg, bgMsk = envs, user.grp = NULL,
+  expect_error(model_maxent(occs, bg, bgMsk = terra::rest(envs), user.grp = NULL,
                             rms, rmsStep, fcs, clampSel = TRUE,
                             algMaxent = algorithm[1]),
                paste0("Before building a model, please partition occurrences ",
@@ -47,12 +52,19 @@ for (i in algorithm) {
   ### run function
 
   maxentAlg <- model_maxent(occs = occs, bg = bg, user.grp = partblock,
-                            bgMsk = envs, rms, rmsStep, fcs, clampSel = TRUE,
+                            bgMsk = terra::rast(envs), rms, rmsStep, fcs, clampSel = TRUE,
                             algMaxent = i, parallel = FALSE)
+  # run function with one categorical variable
+  maxentAlg2 <- model_maxent(occs = occs, bg = bg, user.grp = partblock,
+                            bgMsk = envsCat, rms, rmsStep, fcs, clampSel = TRUE,
+                            algMaxent = i, catEnvs = 'biome', parallel = FALSE)
 
   test_that("output type checks", {
     # the output is an ENMeval object
     expect_is(maxentAlg, "ENMevaluation")
+    # output using categorical variables is not null and is an ENMeval object
+    expect_true(!is.null(maxentAlg2))
+    expect_is(maxentAlg2, "ENMevaluation")
     #the output has 9 slots with correct names
     expect_equal(length(slotNames(maxentAlg)), 20)
     expect_equal(slotNames(maxentAlg),

@@ -58,10 +58,10 @@ xfer_mess_module_server <- function(input, output, session, common) {
     # FUNCTION CALL ####
     xferYr <- spp[[curSp()]]$rmm$data$transfer$environment1$yearMax
     if (spp[[curSp()]]$rmm$model$algorithms == "BIOCLIM") {
-      mss <- xfer_mess(occs(), bg = NULL, bgMask(), spp[[curSp()]]$transfer$xfEnvs,
+      mss <- xfer_mess(occs(), bg = NULL, raster::stack(bgMask()), spp[[curSp()]]$transfer$xfEnvs,
                        logger, spN = curSp())
     } else {
-      mss <- xfer_mess(occs(), bg(), bgMask(), spp[[curSp()]]$transfer$xfEnvs,
+      mss <- xfer_mess(occs(), bg(), raster::stack(bgMask()), spp[[curSp()]]$transfer$xfEnvs,
                        logger, spN = curSp())
     }
 

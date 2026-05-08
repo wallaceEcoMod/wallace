@@ -78,7 +78,7 @@ package = "wallace"), pattern = ".tif$", full.names = TRUE),
 rasName = list.files(system.file("extdata/wc",package = "wallace"),
 pattern = ".tif$", full.names = FALSE))
 partblock <- part_partitionOccs(occs, bg, method = 'block')
-m <- model_maxent(occs, bg, user.grp = partblock, bgMsk = envs, rms = c(1:2),
+m <- model_maxent(occs, bg, user.grp = partblock, bgMsk = terra::rast(envs), rms = c(1:2),
 rmsStep = 1, fcs = c('L', 'LQ'), clampSel = TRUE, algMaxent = "maxnet", parallel = FALSE)
 envsFut <- list.files(path = system.file('extdata/wc/future',
                                          package = "wallace"),

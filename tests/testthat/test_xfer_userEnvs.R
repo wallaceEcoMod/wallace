@@ -23,7 +23,7 @@ envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
                                            pattern = ".tif$", full.names = FALSE))
 partblock <- part_partitionOccs(occs, bg, method = 'block')
 m <- model_maxent(occs, bg, user.grp = partblock,
-                  bgMsk = envs, rms = c(1:2), rmsStep = 1, fcs = c('L', 'LQ'),
+                  bgMsk = terra::rast(envs), rms = c(1:2), rmsStep = 1, fcs = c('L', 'LQ'),
                   clampSel = TRUE, algMaxent = "maxnet",
                   parallel = FALSE)
 envsFut <- list.files(path = system.file('extdata/wc/future',

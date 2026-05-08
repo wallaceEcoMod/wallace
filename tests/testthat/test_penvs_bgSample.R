@@ -16,15 +16,18 @@ envs <- envs_userEnvs(rasPath = list.files(system.file("extdata/wc",
 # background extent
 bgExt <- penvs_bgExtent(occs, bgSel = 'bounding box', bgBuf = 0.5)
 # background masked
+raster::crs(envs) <- "EPSG:4326"
+raster::crs(bgExt) <- "EPSG:4326"
 bgMask <- penvs_bgMask(occs, envs, bgExt)
+bgMaskR <- raster::stack(bgMask)
 
 ## Number of background points to sample
 bgPtsNum <- 100
 bgPtsNum_big <- 19525
 
 ### run function
-bgsample <- penvs_bgSample(occs, bgMask, bgPtsNum)
-bgsample_big <- penvs_bgSample(occs, bgMask, bgPtsNum_big)
+bgsample <- penvs_bgSample(occs, bgMaskR, bgPtsNum)
+bgsample_big <- penvs_bgSample(occs, bgMaskR, bgPtsNum_big)
 
 ### test output features
 test_that("output type checks", {
@@ -41,7 +44,7 @@ test_that("output type checks", {
   # bgPtsNum is bigger than available
   expect_equal(
     nrow(bgsample_big),
-    (raster::ncell(bgMask) - raster::freq(bgMask, value = NA)[[1]]))
+    (raster::ncell(bgMaskR) - raster::freq(bgMaskR, value = NA)[[1]]))
 
   # check if all the points sampled overlap with the study region
   # set longitude and latitude

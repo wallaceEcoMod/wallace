@@ -7,7 +7,7 @@ Generate a map of the Bioclim generated model with no threshold
 # Select current model and obtain raster prediction
 
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
-predSel_{{spAbr}} <- dismo::predict(m_{{spAbr}}, terra::rast(bgMask_{{spAbr}}))
+predSel_{{spAbr}} <- dismo::predict(m_{{spAbr}}, bgMask_{{spAbr}})
 predSel_{{spAbr}} <- raster::raster(predSel_{{spAbr}})
 #Get values of prediction
 mapPredVals_{{spAbr}} <- getRasterVals(predSel_{{spAbr}}, "{{predType_rmd}}")
@@ -43,7 +43,7 @@ Generate a map of the Bioclim generated model with a "{{thresholdRule_rmd}}" thr
 ```{r, echo = {{vis_mapPreds_knit & vis_map_bioclim_knit  & vis_map_threshold_knit}}, include = {{vis_mapPreds_knit & vis_map_bioclim_knit  & vis_map_threshold_knit}}}
 # Select current model and obtain raster prediction
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
-predSel_{{spAbr}} <- dismo::predict(m_{{spAbr}}, terra::rast(bgMask_{{spAbr}}))
+predSel_{{spAbr}} <- dismo::predict(m_{{spAbr}}, bgMask_{{spAbr}})
 predSel_{{spAbr}} <- raster::raster(predSel_{{spAbr}})
 # extract the suitability values for all occurrences
 occs_xy_{{spAbr}} <- occs_{{spAbr}}[c('longitude', 'latitude')]
@@ -93,7 +93,7 @@ Generate a map of the Maxent generated model with no threshold
 # Select current model and obtain raster prediction
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
 predSel_{{spAbr}} <- dismo::predict(
-  m_{{spAbr}}, terra::rast(bgMask_{{spAbr}}),
+  m_{{spAbr}}, bgMask_{{spAbr}},
   args = c(paste0("outputformat=", "{{predType_rmd}}"), 
            paste0("doclamp=", tolower(as.character({{clamp_rmd}})))))
 predSel_{{spAbr}} <- raster::raster(predSel_{{spAbr}})
@@ -132,7 +132,7 @@ Generate a map of the Maxent generated model with a "{{thresholdRule_rmd}}" thre
 # Select current model and obtain raster prediction
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
 predSel_{{spAbr}} <- dismo::predict(
-  m_{{spAbr}}, terra::rast(bgMask_{{spAbr}}),
+  m_{{spAbr}}, bgMask_{{spAbr}},
   args = c(paste0("outputformat=", "{{predType_rmd}}"), 
            paste0("doclamp=", tolower(as.character({{clamp_rmd}})))))
 predSel_{{spAbr}} <- raster::raster(predSel_{{spAbr}})
@@ -181,7 +181,7 @@ Generate a map of the maxnet generated model with no threshold
 ```{r, echo = {{vis_mapPreds_knit & vis_map_maxnet_knit & !vis_map_threshold_knit}}, include = {{vis_mapPreds_knit & vis_map_maxnet_knit & !vis_map_threshold_knit}}}
 # Select current model and obtain raster prediction
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]]
-predSel_{{spAbr}} <- predictMaxnet(m_{{spAbr}}, bgMask_{{spAbr}},
+predSel_{{spAbr}} <- predictMaxnet(m_{{spAbr}}, stack(bgMask_{{spAbr}}),
                                           type = "{{predType_rmd}}", 
                                           clamp = {{clamp_rmd}})
 #Get values of prediction
@@ -218,7 +218,7 @@ Generate a map of the maxnet generated model with with a "{{thresholdRule_rmd}}"
 ```{r, echo = {{vis_mapPreds_knit & vis_map_maxnet_knit & vis_map_threshold_knit}}, include = {{vis_mapPreds_knit & vis_map_maxnet_knit & vis_map_threshold_knit}}}
 # Select current model and obtain raster prediction
 m_{{spAbr}} <- model_{{spAbr}}@models[["{{curModel_rmd}}"]] 
-predSel_{{spAbr}} <- predictMaxnet(m_{{spAbr}}, bgMask_{{spAbr}},
+predSel_{{spAbr}} <- predictMaxnet(m_{{spAbr}}, stack(bgMask_{{spAbr}}),
                                           type = "{{predType_rmd}}", 
                                           clamp = {{clamp_rmd}})
 # extract the suitability values for all occurrences

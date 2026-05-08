@@ -15,8 +15,8 @@ components occs: Obtain occurrence data or, poccs: Process occurrence data.}
 \item{user.grp}{a list of two vectors containing group assignments for
 occurrences (occs.grp) and background points (bg.grp).}
 
-\item{bgMsk}{a RasterStack or a RasterBrick of environmental layers cropped
-and masked to match the provided background extent.}
+\item{bgMsk}{a SpatRaster of environmental layers cropped and masked to 
+match the provided background extent.}
 
 \item{logger}{Stores all notification messages to be displayed in the Log
 Window of Wallace GUI. Insert the logger reactive list here for running
@@ -49,7 +49,7 @@ occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
 bg <- read.csv(system.file("extdata/Bassaricyon_alleni_bgPoints.csv",
                package = "wallace"))
 partblock <- part_partitionOccs(occs, bg, method = 'block')
-m <- model_bioclim(occs, bg, partblock, envs)
+m <- model_bioclim(occs, bg, partblock, terra::rast(envs))
 }
 
 }

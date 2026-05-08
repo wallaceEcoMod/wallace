@@ -35,8 +35,8 @@
 #' @param bg  coordinates of background points to be used for modeling.
 #' @param user.grp  a list of two vectors containing group assignments for
 #'   occurrences (occs.grp) and background points (bg.grp).
-#' @param bgMsk a RasterStack or a RasterBrick of environmental layers cropped
-#'   and masked to match the provided background extent.
+#' @param bgMsk a SpatRaster of environmental layers cropped and masked to 
+#'   match the provided background extent.
 #' @param logger Stores all notification messages to be displayed in the Log
 #'   Window of Wallace GUI. Insert the logger reactive list here for running
 #'   in shiny, otherwise leave the default NULL.
@@ -55,7 +55,7 @@
 #' bg <- read.csv(system.file("extdata/Bassaricyon_alleni_bgPoints.csv",
 #'                package = "wallace"))
 #' partblock <- part_partitionOccs(occs, bg, method = 'block')
-#' m <- model_bioclim(occs, bg, partblock, envs)
+#' m <- model_bioclim(occs, bg, partblock, terra::rast(envs))
 #' }
 #'
 #' @return Function returns an ENMevaluate object with all the evaluated models
@@ -80,7 +80,7 @@ model_bioclim <- function(occs, bg, user.grp, bgMsk, logger = NULL,
   smartProgress(logger,
                        message = paste0("Building/Evaluating BIOCLIM model for ",
                                  spName(spN), "..."), {
-     e <- ENMeval::ENMevaluate(occs = occs.xy, envs = terra::rast(bgMsk), bg = bg.xy,
+     e <- ENMeval::ENMevaluate(occs = occs.xy, envs = bgMsk, bg = bg.xy,
                                algorithm = "bioclim", partitions = "user",
                                user.grp = user.grp)
   })

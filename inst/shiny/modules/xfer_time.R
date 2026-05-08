@@ -477,6 +477,9 @@ xfer_time_module_server <- function(input, output, session, common) {
                             ' with ', predType, " output for GCM ", input$xfAOGCM, ".")
       }
     }
+    # SpatRaster to Raster
+    if(spp[[curSp()]]$rmm$model$algorithms %in% c('maxent.jar', 'BIOCLIM'))
+      xferTimeThr <- raster::raster(xferTimeThr)
     raster::crs(xferTimeThr) <- raster::crs(envs())
     # rename
     names(xferTimeThr) <- paste0(curModel(), '_thresh_', predType)
@@ -619,10 +622,10 @@ xfer_time_module_map <- function(map, common) {
   mapXfer <- common$mapXfer
 
   # Map logic
-  map %>% leaflet.extras::addDrawToolbar(
+  map %>% addDrawToolbar(
     targetGroup = 'draw', polylineOptions = FALSE, rectangleOptions = FALSE,
     circleOptions = FALSE, markerOptions = FALSE, circleMarkerOptions = FALSE,
-    editOptions = leaflet.extras::editToolbarOptions()
+    editOptions = editToolbarOptions()
   )
   # Add just transfer Polygon
   req(spp[[curSp()]]$transfer$xfExt)

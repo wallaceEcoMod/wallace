@@ -8,102 +8,102 @@ output: html_document
 
 ## Developers
 
-<img src="img/bethany.jpg" alt="bethany" style="width: 100px;"/>
+<img src="../www/img/bethany.jpg" alt="bethany" style="width: 100px;"/>
 
 <a href="https://github.com/bjohnso005" target="_blank">Bethany A. Johnson</a> (lead developer) received her MS in Biology from the City College of New York and is currently a Visiting Scientist at the Center for Biodiversity & Conservation at the American Museum of Natural History.  
 <br>
 
-<img src="img/jamie.jpg" alt="jamie" style="width: 100px;"/>
+<img src="../www/img/jamie.jpg" alt="jamie" style="width: 100px;"/>
 
 <a href=" https://jamiemkass.github.io/" target="_blank">Jamie M. Kass</a> (developer) received his PhD at CUNY Graduate Center and City College of New York, did a Postdoc at Okinawa Institute of Science and Technology, and currently is Associate Professor at Tohoku University.  
 <br>
 
-<img src="img/gonzalo.png" alt="gonzalo" style="width: 100px;"/>
+<img src="../www/img/gonzalo.png" alt="gonzalo" style="width: 100px;"/>
 
 <a href="https://scholar.google.no/citations?user=xlxAr_EAAAAJ&hl=en" target="_blank">Gonzalo E. Pinilla-Buitrago</a> (developer) received his PhD from the CUNY Graduate Center and City College of New York. He is currently a Postdoctoral Researcher at University of Connecticut.  
 <br>
 
-<img src="img/andrea.png" alt="andrea" style="width: 100px;"/>
+<img src="../www/img/andrea.png" alt="andrea" style="width: 100px;"/>
 
 <a href="https://andrepazv.github.io" target="_blank">Andrea Paz</a> (developer) received her PhD at CUNY Graduate Center and City College of New York, after which she was a Postdoctoral Researcher at the Crowther Lab in ETH Zürich. She is now an Assistant Professor at the Biological Sciences Department, University of Montréal.  
 <br>
 
-<img src="img/daniel.jpeg" alt="dani" style="width: 100px;"/>
+<img src="../www/img/daniel.jpeg" alt="dani" style="width: 100px;"/>
 
 <a href="https://www.amnh.org/research/staff-directory/daniel-lopez-lozano" target="_blank">Daniel López Lozano</a> (developer) is a Biodiversity Informatics Specialist at the American Museum of Natural History's Center for Biodiversity & Conservation.   
 <br>
 
-<img src="img/valentina.jpeg" alt="valentina" style="width: 100px;"/>
+<img src="../www/img/valentina.jpeg" alt="valentina" style="width: 100px;"/>
 
 <a href="https://www.researchgate.net/profile/Valentina-Grisales-Betancur" target="_blank">Valentina Grisales-Betancur</a> (developer) completed her undergraduate degree at EAFIT University in Colombia and visited the Anderson lab at CCNY and Blair lab at AMNH.  
 <br>
 
-<img src="img/dean.png" alt="dean" style="width: 100px;"/>
+<img src="../www/img/dean.png" alt="dean" style="width: 100px;"/>
 
 <a href="https://deanattali.com" target="_blank">Dean Attali</a> (developer, consultant) is an R-Shiny developer and consultant with a MSc in Bioinformatics from the University of British Columbia.   
 <br>
 
 ## Managers
 
-<img src="img/rob.jpeg" alt="rob" style="width: 100px;"/>
+<img src="../www/img/rob.jpeg" alt="rob" style="width: 100px;"/>
 
 <a href="https://www.andersonlab.ccny.cuny.edu/" target="_blank">Robert P. Anderson</a> (lead manager, developer) is a Professor of Biology at City College of New York, CUNY.  
 <br>
 
-<img src="img/matt.png" alt="matt" style="width: 100px;"/>
+<img src="../www/img/matt.png" alt="matt" style="width: 100px;"/>
 
 <a href="https://www.pace.edu/profile/matthew-aiello-lammens?dyson" target="_blank">Matthew Aiello-Lammens</a> (co-manager, developer) is an Associate Professor of Biology at Pace University.  
 <br>
 
-<img src="img/cory.png" alt="cory" style="width: 100px;"/>
+<img src="../www/img/cory.png" alt="cory" style="width: 100px;"/>
 
 <a href="https://scholar.google.com/citations?user=AjOjxAsAAAAJ&hl=en" target="_blank">Cory Merow</a> (co-manager, developer) is currently a faculty researcher at the University of Connecticut.  
 <br>
 
-<img src="img/mary.png" alt="mary" style="width: 100px;"/>
+<img src="../www/img/mary.png" alt="mary" style="width: 100px;"/>
 
-<a href="https://www.amnh.org/research/staff-directory/mary-e-blair" target="_blank">Mary E. Blair</a> (co-manager) is the Director of Biodiversity Informatics Research at the Center for Biodiversity & Conservation at the American Museum of Natural History.  
+<a href="https://www.amnh.org/research/staff-directory/mary-e-blair" target="_blank">Mary E. Blair</a> (co-manager) is the Associate Director at the Center for Biodiversity & Conservation at the American Museum of Natural History.  
 <br>
 
 ## Contributors
 
-<img src="img/sarah.png" alt="sarah" style="width: 100px;"/>
+<img src="../www/img/sarah.png" alt="sarah" style="width: 100px;"/>
 
 Sarah Meenan (contributor) completed her undergraduate degree from the City College of New York and now works for the NYC Parks Department.  
 <br>
 
-<img src="img/olivier.jpeg" alt="olivier" style="width: 100px;"/>
+<img src="../www/img/olivier.jpeg" alt="olivier" style="width: 100px;"/>
 
 <a href="https://www.unil.ch/ecospat/en/home/menuinst/teamstudentsvisitors/team/in-lausanne/olivier-broennimann-first-as.html" target="_blank">Olivier Broennimann</a> (contributor, external partner) is a staff scientist in the Department of Ecology and Evolution at University of Lausanne.  
 <br>
 
-<img src="img/peteG.jpg" alt="peteG" style="width: 100px;"/>
+<img src="../www/img/peteG.jpg" alt="peteG" style="width: 100px;"/>
 
 <a href="https://www.amnh.org/research/staff-directory/peter-galante" target="_blank">Peter J. Galante</a> (contributor) was formerly a Biodiversity Informatics Scientist at the Center for Biodiversity & Conservation at the American Museum of Natural History and now works as a Project Manager for Storke, LLC, a renewable energy company.
 <br>
 
-<img src="img/brianM.jpeg" alt="brianM" style="width: 100px;"/>
+<img src="../www/img/brianM.jpeg" alt="brianM" style="width: 100px;"/>
 
 <a href="https://www.researchgate.net/profile/Brian-Maitner" target="_blank">Brian S. Maitner</a> (contributor, external partner) is a researcher at the Geography Department of the University at Buffalo, SUNY.  
 <br>
 
-<img src="img/hannahO.jpeg" alt="hannahO" style="width: 100px;"/>
+<img src="../www/img/hannahO.jpeg" alt="hannahO" style="width: 100px;"/>
 
 <a href="https://hannahlowens.weebly.com/" target="_blank">Hannah Owens</a> (contributor, external partner) is an assistant professor at the Center for Global Mountain Biodiversity & the Center for Macroecology, Evolution, and Climate; Section for Biodiversity; Globe Institute; at the University of Copenhagen.  
 <br>
 
-<img src="img/saraV.jpeg" alt="saraV" style="width: 100px;"/>
+<img src="../www/img/saraV.jpeg" alt="saraV" style="width: 100px;"/>
 
 <a href="https://paleobiogeography.org/" target="_blank">Sara Varela</a> (contributor, external partner) is a Principal Investigator at the MAPAS Lab at the University of Vigo in Spain.  
 <br>
 
 ## Past Developers
 
-<img src="img/bob.png" alt="bob" style="width: 100px;"/>
+<img src="../www/img/bob.png" alt="bob" style="width: 100px;"/>
 
 <a href="https://bobmuscarella.weebly.com/index.html" target="_blank">Robert Muscarella</a> (contributor, past developer) is an Associate Professor at Uppsala University in Sweden.  
 <br>
 
-<img src="img/bruno.png" alt="bruno" style="width: 100px;"/>
+<img src="../www/img/bruno.png" alt="bruno" style="width: 100px;"/>
 
 <a href="https://bvilela.weebly.com/" target="_blank">Bruno Vilela</a> (contributor, past developer) is a professor at Universidade Federal da Bahia in Brazil.  

@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # ui.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -57,7 +57,7 @@ tagList(
                HTML('<a href="https://groups.google.com/g/wallaceEcoMod" target="_blank">Google Group</a>'),
                HTML('<a href="https://github.com/wallaceEcoMod/wallace/issues" target="_blank">GitHub Issues</a>'),
                HTML('<a href="mailto: WallaceEcoMod@gmail.com" target="_blank">Send Email</a>')),
-    tabPanel(NULL, icon = icon("power-off"), value = "_stopapp")
+    tabPanel(HTML("&nbsp;"), icon = icon("power-off"), value = "_stopapp")
   ),
   tags$div(
     class = "container-fluid",

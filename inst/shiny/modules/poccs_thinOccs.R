@@ -1,6 +1,6 @@
 # Wallace EcoMod: a flexible platform for reproducible modeling of
 # species niches and distributions.
-# 
+#
 # poccs_thinOccs.R
 # File author: Wallace EcoMod Dev Team. 2023.
 # --------------------------------------------------------------------------
@@ -126,8 +126,7 @@ poccs_thinOccs_module_map <- function(map, common) {
       addCircleMarkers(data = occs(), lat = ~latitude, lng = ~longitude,
                        radius = 5, color = 'red', fill = TRUE, fillColor = "red",
                        fillOpacity = 0.2, weight = 2, popup = ~pop) %>%
-      zoom2Occs(occs()) %>%
-      leaflet.extras::removeDrawToolbar(clearFeatures = TRUE)
+      zoom2Occs(occs())
   }
 }
 

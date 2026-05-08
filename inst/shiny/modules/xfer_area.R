@@ -273,7 +273,8 @@ xfer_area_module_server <- function(input, output, session, common) {
       logger %>% writeLog(hlSpp(curSp()), "Transfer of model to new area with ",
                           predType, ' output.')
     }
-    if(spp[[curSp()]]$rmm$model$algorithms == 'maxent.jar')
+    # SpatRaster to Raster
+    if(spp[[curSp()]]$rmm$model$algorithms %in% c('maxent.jar', 'BIOCLIM'))
       xferAreaThr <- raster::raster(xferAreaThr)
     raster::crs(xferAreaThr) <- raster::crs(envs())
     # rename
@@ -367,10 +368,10 @@ xfer_area_module_map <- function(map, common) {
   mapXfer <- common$mapXfer
 
   # Map logic
-  map %>% leaflet.extras::addDrawToolbar(
+  map %>% addDrawToolbar(
     targetGroup = 'draw', polylineOptions = FALSE, rectangleOptions = FALSE,
     circleOptions = FALSE, markerOptions = FALSE, circleMarkerOptions = FALSE,
-    editOptions = leaflet.extras::editToolbarOptions()
+    editOptions = editToolbarOptions()
   )
   # Add just transfer Polygon
   req(spp[[curSp()]]$transfer$xfExt)

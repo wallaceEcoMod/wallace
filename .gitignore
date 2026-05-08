@@ -18,6 +18,7 @@ cmip5
 # r proj files
 .Rproj.user
 .RData
+.Rproj
 # .rmd files
 temp*
 #

@@ -1,3 +1,14 @@
+wallace 2.2.1
+=============
+- Fixed image paths in the Team section.
+- Enabled support for models with categorical variables when using ENMeval > 2.0.5.
+- Fixed an issue occurring during model transfer to new areas or time periods when using BIOCLIM or Maxent.jar.
+- Fixed a loading error triggered by selecting multiple species in Environmental Space.
+- Integrated the drawing functionality of leaflet.extras directly into wallace to streamline dependencies.
+- Fixed an issue with session code generation when visualizing map predictions and transferring to a new time period.
+- Fixed UI rendering issue where the power-off icon was hidden on macOS.
+- Fixed an issue affecting Maxent models when using terra > '1.9.11'.
+
 wallace 2.2.0
 =============
 - updated for ENMeval v2.0.5 functionality
