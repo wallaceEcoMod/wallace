@@ -128,7 +128,8 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
       bgMask <- penvs_bgMask(spp[[sp]]$occs, envs.global[[spp[[sp]]$envs]],
                              spp[[sp]]$procEnvs$bgExt, logger, spN = sp)
       req(bgMask)
-      bgNonNA <- raster::ncell(bgMask) - raster::freq(bgMask, value = NA)[[1]]
+      bgMaskR <- raster::stack(bgMask)
+      bgNonNA <- raster::ncell(bgMaskR) - raster::freq(bgMaskR, value = NA)[[1]]
       if ((bgNonNA + 1) < input$bgPtsNum) {
         logger %>%
           writeLog(
@@ -138,15 +139,15 @@ penvs_bgExtent_module_server <- function(input, output, session, common) {
             "(n = ", bgNonNA, "). Please reduce the number of requested points.")
         return()
       }
-      bgPts <- penvs_bgSample(spp[[sp]]$occs, bgMask, input$bgPtsNum, logger,
+      bgPts <- penvs_bgSample(spp[[sp]]$occs, bgMaskR, input$bgPtsNum, logger,
                               spN = sp)
       req(bgPts)
       withProgress(
         message = paste0("Extracting background values for ", spName(sp), "..."), {
-          bgEnvsVals <- as.data.frame(raster::extract(bgMask, bgPts))
+          bgEnvsVals <- as.data.frame(terra::extract(bgMask, bgPts))
         })
 
-      NApoints <- sum(rowSums(is.na(raster::extract(bgMask, spp[[sp]]$occs[ , c("longitude", "latitude")]))))
+      NApoints <- sum(rowSums(is.na(terra::extract(bgMask, spp[[sp]]$occs[ , c("longitude", "latitude")]))))
       if (NApoints > 0) {
         logger %>%
           writeLog(type = "error", hlSpp(sp),

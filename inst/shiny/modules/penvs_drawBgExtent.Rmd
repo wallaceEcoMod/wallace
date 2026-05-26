@@ -18,10 +18,10 @@ bgMask_{{spAbr}} <- penvs_bgMask(
 # Sample background points from the provided area
 bgSample_{{spAbr}} <- penvs_bgSample(
   occs = occs_{{spAbr}},
-  bgMask =  bgMask_{{spAbr}},
+  bgMask =  raster::stack(bgMask_{{spAbr}}),
   bgPtsNum = {{bgPtsNum_rmd}})
 # Extract values of environmental layers for each background point
-bgEnvsVals_{{spAbr}} <- as.data.frame(raster::extract(bgMask_{{spAbr}},  bgSample_{{spAbr}}))
+bgEnvsVals_{{spAbr}} <- as.data.frame(terra::extract(bgMask_{{spAbr}},  bgSample_{{spAbr}}))
 ##Add extracted values to background points table
 bgEnvsVals_{{spAbr}} <- cbind(scientific_name = paste0("bg_", "{{spName}}"), bgSample_{{spAbr}},
                             occID = NA, year = NA, institution_code = NA, country = NA,

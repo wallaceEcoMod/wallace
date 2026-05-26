@@ -23,7 +23,7 @@ in shiny, otherwise leave the default NULL.}
 \item{spN}{species name to be used for all logger messages}
 }
 \value{
-A RasterStack or a RasterBrick of environmental layers cropped and
+A SpatRaster of environmental layers cropped and
   masked to match the provided background extent.
 }
 \description{
@@ -35,8 +35,8 @@ This function is used in the select study region component. Here, the
    environmental layers to be used in the modeling are cropped and masked
    to the provided background area. The background area is determined in
    the function penvs_bgExtent from the same component. The function returns
-   the provided environmental layers cropped and masked in the provided
-   format (either a rasterBrick or a rasterStack).
+   the provided environmental layers cropped and masked in the SpatRaster
+   format.
 }
 \examples{
 \dontrun{
@@ -63,4 +63,6 @@ bgMask <- penvs_bgMask(occs, envs, bgExt)
 Jamie Kass <jamie.m.kass@gmail.com>
 
 Gonzalo E. Pinilla-Buitrago <gepinillab@gmail.com>
+
+Daniel Lopez-Lozano <dlopezlozano@amnh.org.co>
 }

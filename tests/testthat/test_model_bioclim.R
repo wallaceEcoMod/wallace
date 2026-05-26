@@ -14,7 +14,7 @@ occs <- read.csv(system.file("extdata/Bassaricyon_alleni.csv",
 bg <- read.csv(system.file("extdata/Bassaricyon_alleni_bgPoints.csv",
                package = "wallace"))
 partblock <- part_partitionOccs(occs, bg, method = 'block')
-bioclimAlg <- model_bioclim(occs, bg, partblock, envs)
+bioclimAlg <- model_bioclim(occs, bg, partblock, terra::rast(envs))
 
 ### test output features
 test_that("output type checks", {

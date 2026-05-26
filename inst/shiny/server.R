@@ -305,7 +305,11 @@ function(input, output, session) {
   multSp <- reactive(sort(names(reactiveValuesToList(spp))[grepl("\\.", names(reactiveValuesToList(spp)))]))
 
   # convenience function for occurrence table for current species
-  occs <- reactive(spp[[curSp()]]$occs)
+  occs <- reactive({
+    req(curSp())
+    # Defaults to the first species if multiple are selected.
+    spp[[curSp()[1]]]$occs
+  })
   # convenience function for metadata list for current species
   rmm <- reactive(spp[[curSp()]]$rmm)
 
@@ -501,7 +505,7 @@ function(input, output, session) {
       type <- input$bgMskFileType
       nm <- names(envs())
 
-      raster::writeRaster(bgMask(), nm, bylayer = TRUE,
+      raster::writeRaster(raster::stack(bgMask()), nm, bylayer = TRUE,
                           format = type, overwrite = TRUE)
       ext <- switch(type, raster = 'grd', ascii = 'asc', GTiff = 'tif')
 
@@ -858,7 +862,7 @@ function(input, output, session) {
             logger %>%
               writeLog(type = "error", "To download PNG prediction, you're required to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
-                       " in you are R console.")
+                       " in your R console.")
             return()
           }
           if (!requireNamespace("mapview")) {
@@ -1011,7 +1015,7 @@ function(input, output, session) {
             logger %>%
               writeLog(type = "error", "To download PNG prediction, you're required to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
-                       " in you are R console.")
+                       " in your R console.")
             return()
           }
           if (!requireNamespace("mapview")) {
@@ -1101,7 +1105,7 @@ function(input, output, session) {
             logger %>%
               writeLog(type = "error", "To download PNG prediction, you're required to",
                        " install PhantomJS in your machine. You can use webshot::install_phantomjs()",
-                       " in you are R console.")
+                       " in your R console.")
             return()
           }
           if (!requireNamespace("mapview")) {

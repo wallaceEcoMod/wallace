@@ -22,6 +22,6 @@ groups_{{spAbr}} <- part_partitionOccs(
   occs = occs_{{spAbr}} ,
   bg =  bgSample_{{spAbr}}, 
   method = "{{method_code_rmd}}",
-  bgMask = bgMask_{{spAbr}},
+  bgMask = raster::stack(bgMask_{{spAbr}}),
   aggFact = {{aggFact_rmd}}) 
 ```

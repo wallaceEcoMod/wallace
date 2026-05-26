@@ -30,8 +30,8 @@ components occs: Obtain occurrence data or, poccs: Process occurrence data.}
 \item{user.grp}{a list of two vectors containing group assignments for
 occurrences (occs.grp) and background points (bg.grp).}
 
-\item{bgMsk}{a RasterStack or a RasterBrick of environmental layers cropped
-and masked to match the provided background extent.}
+\item{bgMsk}{a SpatRaster of environmental layers cropped and masked to
+match the provided background extent.}
 
 \item{rms}{vector of range of regularization multipliers to be used in the
 ENMeval run.}
@@ -91,7 +91,7 @@ rms <- c(1:2)
 rmsStep <- 1
 fcs <- c('L', 'LQ')
 m <- model_maxent(occs = occs, bg = bg, user.grp = partblock,
-                  bgMsk = envs, rms = rms, rmsStep, fcs,
+                  bgMsk = terra::rast(envs), rms = rms, rmsStep, fcs,
                   clampSel = TRUE, algMaxent = "maxnet",
                   parallel = FALSE)
 }
@@ -106,4 +106,6 @@ Jamie M. Kass <jamie.m.kass@gmail.com>
 Gonzalo E. Pinilla-Buitrago <gepinillab@gmail.com>
 
 Bethany A. Johnson <bjohnso005@citymail.cuny.edu>
+
+Daniel Lopez-Lozano <dlopezlozano@amnh.org.co>
 }

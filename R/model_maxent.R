@@ -36,8 +36,8 @@
 #' @param bg  coordinates of background points to be used for modeling.
 #' @param user.grp  a list of two vectors containing group assignments for
 #'   occurrences (occs.grp) and background points (bg.grp).
-#' @param bgMsk a RasterStack or a RasterBrick of environmental layers cropped
-#'   and masked to match the provided background extent.
+#' @param bgMsk a SpatRaster of environmental layers cropped and masked to
+#'   match the provided background extent.
 #' @param rms vector of range of regularization multipliers to be used in the
 #'   ENMeval run.
 #' @param rmsStep step to be used when defining regularization multipliers to
@@ -76,7 +76,7 @@
 #' rmsStep <- 1
 #' fcs <- c('L', 'LQ')
 #' m <- model_maxent(occs = occs, bg = bg, user.grp = partblock,
-#'                   bgMsk = envs, rms = rms, rmsStep, fcs,
+#'                   bgMsk = terra::rast(envs), rms = rms, rmsStep, fcs,
 #'                   clampSel = TRUE, algMaxent = "maxnet",
 #'                   parallel = FALSE)
 #' }
@@ -86,6 +86,7 @@
 #' @author Jamie M. Kass <jamie.m.kass@@gmail.com>
 #' @author Gonzalo E. Pinilla-Buitrago <gepinillab@@gmail.com>
 #' @author Bethany A. Johnson <bjohnso005@@citymail.cuny.edu>
+#' @author Daniel Lopez-Lozano <dlopezlozano@@amnh.org.co>
 # @note
 
 #' @seealso \code{\link[ENMeval]{ENMevaluate}}
@@ -192,12 +193,18 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
   # get just coordinates
   occs.xy <- occs %>% dplyr::select("longitude", "latitude")
   bg.xy <- bg %>% dplyr::select("longitude", "latitude")
+
+  # convert the categorical variables to factors
+  if (!is.null(catEnvs)) {
+    bgMsk[[catEnvs]] <- terra::as.factor(bgMsk[[catEnvs]])
+  }
+
   # run ENMeval
   e <- ENMeval::ENMevaluate(occs = as.data.frame(occs.xy),
                             bg = as.data.frame(bg.xy),
                             partitions = 'user',
                             user.grp = user.grp,
-                            envs = terra::rast(bgMsk),
+                            envs = bgMsk,
                             tune.args = tune.args,
                             doClamp = clampSel,
                             algorithm = algMaxent,
@@ -219,7 +226,11 @@ model_maxent <- function(occs, bg, user.grp, bgMsk, rms, rmsStep, fcs,
                             updateProgress = updateProgress,
                             quiet = FALSE)
 
-  occPredVals <- raster::extract(e@predictions, occs.xy)
+  # Make sure e@predictions has an assigned CRS
+  if(terra::crs(e@predictions) == ""){
+    terra::crs(e@predictions) <- terra::crs(bgMsk)
+  }
+  occPredVals <- terra::extract(e@predictions, occs.xy)
 
   endTxt <- paste("]), using", algMaxent, "with clamping",
                   ifelse(clampSel, "on.", "off."))

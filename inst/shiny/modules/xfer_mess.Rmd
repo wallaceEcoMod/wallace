@@ -7,7 +7,7 @@ Generate a MESS map for the transferring variables given the variables used for 
 xferMess_{{spAbr}} <- xfer_mess(
   occs = occs_{{spAbr}},
   bg = bgEnvsVals_{{spAbr}} ,
-  bgMsk =  bgMask_{{spAbr}},
+  bgMsk =  raster::stack(bgMask_{{spAbr}}),
   xferExtRas =  xferExt_{{spAbr}})
 
 # Generate MESS map

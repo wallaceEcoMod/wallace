@@ -1,6 +1,6 @@
 Package: wallace
-Version: 2025.07.30
-Date: 2025-07-30
+Version: 2026.05.05
+Date: 2026-05-05
 Title: A Modular Platform for Reproducible Modeling of Species Niches 
     and Distributions
 Description: The 'shiny' application Wallace is a modular platform for 
@@ -12,8 +12,8 @@ Description: The 'shiny' application Wallace is a modular platform for
     most package functionality can be found on the package's GitHub Pages 
     website: <https://wallaceecomod.github.io/wallace/articles/tutorial-v2.html>.
 Authors@R: 
-    c(person("Bethany A.", "Johnson", email = "bjohnso005@citymail.cuny.edu", role = "aut"),
-    person("Daniel F.", "Lopez-Lozano", email = "dlopezlozano@amnh.org", role = "aut"),
+    c(person("Daniel F.", "Lopez-Lozano", email = "dlopezlozano@amnh.org", role = "aut"),
+    person("Bethany A.", "Johnson", email = "bjohnso005@citymail.cuny.edu", role = "aut"),
     person("Jamie M.", "Kass", email = "jamie.m.kass@gmail.com", role = "aut"),
     person("Gonzalo E.", "Pinilla-Buitrago", email = "gepinillab@gmail.com", role = "aut"),
     person("Andrea", "Paz", email = "paz.andreita@gmail.com", role = "aut"),
@@ -42,14 +42,13 @@ Imports:
     ecospat (>= 4.0.0),
     ENMeval (>= 2.0.5),
     geodata,
+    htmltools,
     knitcitations,
     leafem,
-    leaflet.extras (>= 1.0.0),
     lwgeom, 
     magrittr,
     maskRangeR,
     markdown,
-    methods,
     RColorBrewer,
     rJava,
     rlang,
@@ -61,7 +60,6 @@ Imports:
     spocc (>= 1.2.0),
     spThin,
     stars,
-    terra (>= 1.6-7),
     zip
 Suggests: 
     ade4,
@@ -84,10 +82,11 @@ Suggests:
     rgbif (>= 3.3.0),
     sf,
     sp,
+    terra (>= 1.9-11),
     testthat,
     tidyselect,
     tools
 License: GPL-3
-URL: http://wallaceecomod.github.io/wallace/,
+URL: https://wallaceecomod.github.io/wallace/
 Encoding: UTF-8
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.3
