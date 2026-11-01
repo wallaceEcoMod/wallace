@@ -70,6 +70,7 @@ Suggests:
     predicts,
     rangeModelMetadata,
     raster,
+    rerddap,
     rgbif (>= 3.3.0),
     sp,
     terra (>= 1.9-11), 
@@ -78,4 +79,4 @@ Suggests:
 License: GPL-3
 URL: https://wallaceecomod.github.io/wallace/
 Encoding: UTF-8
-RoxygenNote: 7.3.3
+Config/roxygen2/version: 8.1.0

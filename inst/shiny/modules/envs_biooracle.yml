@@ -1,0 +1,5 @@
+component: "envs"
+short_name: "Bio-ORACLE Marine"
+long_name: "Bio-ORACLE Marine Variables"
+authors: "Ben Best"
+package: [raster, rerddap]
