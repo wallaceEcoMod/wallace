@@ -1,3 +1,9 @@
+wallace 2.3.0
+=============
+- New Env Data module *Bio-ORACLE Marine* (`envs_biooracle()`): downloads Bio-ORACLE v3 marine layers (temperature, salinity, chlorophyll, oxygen, nutrients, pH, bathymetry, etc.) from the Bio-ORACLE ERDDAP server via the suggested `rerddap` package, with a choice of surface or benthic depth layer, long-term statistic and resolution (0.05 to 1 degree). Layers are NA over land, so occurrences on land are dropped. Helper functions `envs_biooracle_layers()` (catalogue) and `envs_biooracle_select()` (selection to ERDDAP dataset/field/layer names) are exported.
+- Query Database module: new "OBIS" database option (Ocean Biodiversity Information System, via the OBIS API v3 and the suggested `jsonlite` package) and a "GBIF + OBIS" option that queries both and removes OBIS records duplicating GBIF ones (same `occurrenceID`, or same coordinates rounded to 4 decimals and date). New exported functions `occs_queryObis()` and `occs_mergeGbifObis()`; the per-record source is kept in the `source` column of the original download.
+- Fixed the reproducible-code export of the Query Database module for VertNet downloads (source was compared to "vernet").
+
 wallace 2.2.1
 =============
 - Fixed image paths in the Team section.
