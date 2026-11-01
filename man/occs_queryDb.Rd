@@ -20,7 +20,10 @@ occs_queryDb(
 \item{spNames}{character. Species Latin name, with format "Genus species".}
 
 \item{occDb}{character. Biodiversity database to query; current choices are
-"gbif", "vertnet", and "BIEN"}
+"gbif", "vertnet", "bien", "obis" (Ocean Biodiversity Information System,
+marine records) and "gbif_obis" (both GBIF and OBIS, deduplicated with
+\code{\link{occs_mergeGbifObis}}; the per-record source is kept in the
+\code{source} column of the \code{orig} table)}
 
 \item{occNum}{numeric. Maximum number of occurrence records to return}
 
