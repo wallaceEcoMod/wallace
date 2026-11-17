@@ -35,6 +35,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Mary E. Blair \email{mblair1@amnh.org}
   \item Daniel F. Lopez-Lozano \email{dlopezlozano@amnh.org}
   \item Bethany A. Johnson \email{bjohnso005@citymail.cuny.edu}
   \item Jamie M. Kass \email{jamie.m.kass@gmail.com}

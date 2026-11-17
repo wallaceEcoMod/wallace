@@ -29,7 +29,9 @@ occs_queryDb_module_ui <- function(id) {
                           choices = c("GBIF" = 'gbif',
                                       "VertNet" = 'vertnet',
                                       # "BISON" = 'bison',
-                                      "BIEN" = 'bien'),
+                                      "BIEN" = 'bien',
+                                      "OBIS" = 'obis',
+                                      "GBIF + OBIS" = 'gbif_obis'),
                           inline = TRUE)),
     tags$div(
       title = "Check to get only occurrences with uncertainty information",
@@ -64,7 +66,9 @@ occs_queryDb_module_ui <- function(id) {
                        value = "")), # Check default
     conditionalPanel(
       sprintf(
-        "(input['%1$s'] == 'gbif' & input['%2$s'] == false) | input['%1$s'] == 'vertnet'" ,
+        paste0("(input['%1$s'] == 'gbif' & input['%2$s'] == false) | ",
+               "input['%1$s'] == 'vertnet' | input['%1$s'] == 'obis' | ",
+               "input['%1$s'] == 'gbif_obis'"),
         ns("occsDb"), ns("doCitations")),
       tags$div(
         title = paste0('Maximum number of occurrences recovered from ',
@@ -120,6 +124,11 @@ occs_queryDb_module_server <- function(input, output, session, common) {
       # REFERENCES ####
       if (input$occsDb == "bien") {
         knitcitations::citep(citation("BIEN"))
+      } else if (input$occsDb == "obis") {
+        knitcitations::citep(citation("jsonlite"))
+      } else if (input$occsDb == "gbif_obis") {
+        knitcitations::citep(citation("spocc"))
+        knitcitations::citep(citation("jsonlite"))
       } else {
         if (input$doCitations) {
           knitcitations::citep(citation("occCite"))
@@ -184,9 +193,11 @@ occs_queryDb_module_map <- function(map, common) {
 occs_queryDb_module_rmd <- function(species) {
   list(
     occs_queryDb_knit = species$rmm$data$occurrence$sources == 'gbif' |
-      species$rmm$data$occurrence$sources == 'vernet' |
+      species$rmm$data$occurrence$sources == 'vertnet' |
       # species$rmm$data$occurrence$sources == 'bison' |
-      species$rmm$data$occurrence$sources == 'bien',
+      species$rmm$data$occurrence$sources == 'bien' |
+      species$rmm$data$occurrence$sources == 'obis' |
+      species$rmm$data$occurrence$sources == 'gbif_obis',
     occs_citation_knit = !is.null(species$rmm$code$wallace$gbifDOI),
     occDb_rmd = species$rmm$data$occurrence$sources,
     occNum_rmd = species$rmm$code$wallace$occsNum,

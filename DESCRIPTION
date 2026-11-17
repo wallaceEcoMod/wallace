@@ -1,6 +1,6 @@
 Package: wallace
-Version: 2.2.1
-Date: 2026-05-05
+Version: 2.3.0
+Date: 2026-11-01
 Title: A Modular Platform for Reproducible Modeling of Species Niches 
     and Distributions
 Description: The 'shiny' application Wallace is a modular platform for 
@@ -70,6 +70,7 @@ Suggests:
     predicts,
     rangeModelMetadata,
     raster,
+    rerddap,
     rgbif (>= 3.3.0),
     sp,
     terra (>= 1.9-11), 
@@ -78,4 +79,4 @@ Suggests:
 License: GPL-3
 URL: https://wallaceecomod.github.io/wallace/
 Encoding: UTF-8
-RoxygenNote: 7.3.3
+Config/roxygen2/version: 8.1.0
